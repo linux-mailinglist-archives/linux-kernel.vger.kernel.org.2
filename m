@@ -2,154 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 350943506A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 543F8350708
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235042AbhCaSrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 14:47:40 -0400
-Received: from mga09.intel.com ([134.134.136.24]:63656 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234832AbhCaSr3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 14:47:29 -0400
-IronPort-SDR: MPjX/IdaYe5cBrJjLg4bLkJXU9Q7E5M6QXvWtxsZqR3QuSft1ExOlnQ4UhBdh6koQSxMez1tiq
- QA5pmABdBfOQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="192173746"
-X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="192173746"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 11:47:29 -0700
-IronPort-SDR: nhzEm/WpLjQ3qSieIgLCYQuYDZ60wYt+hnbZfwjY4QU5recG3vnulsZsB9jQU5gNO4r3aG52OJ
- DbqHWkqW3DTQ==
-X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="394150559"
-Received: from rhweight-mobl2.amr.corp.intel.com (HELO [10.0.2.4]) ([10.209.66.43])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 11:47:28 -0700
-Subject: Re: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
-To:     Moritz Fischer <mdf@kernel.org>, Tom Rix <trix@redhat.com>
-Cc:     "Gong, Richard" <richard.gong@intel.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "richard.gong@linux.intel.com" <richard.gong@linux.intel.com>
-References: <1612909233-13867-1-git-send-email-richard.gong@linux.intel.com>
- <MWHPR11MB001577B17723C8A046398249879E9@MWHPR11MB0015.namprd11.prod.outlook.com>
- <YF90y3Di4RbuJvr0@epycbox.lan>
- <496aa871-cfb0-faf4-4b1c-b53e56b58030@redhat.com>
- <YGC619DmLM0AAQ5p@epycbox.lan>
-From:   Russ Weight <russell.h.weight@intel.com>
-Message-ID: <6c741ab7-1ee6-cbf1-94fa-818dd7f4c5c5@intel.com>
-Date:   Wed, 31 Mar 2021 11:47:26 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S235846AbhCaS4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 14:56:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235264AbhCaSzl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 14:55:41 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F22BAC061574;
+        Wed, 31 Mar 2021 11:55:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=1zffzRfF/qksfUk6SCeozTWh8oZItRpb2EQLHTuYvzI=; b=orLBgQzrijrW5OpsL7osfl8ckM
+        nbYoQTlwXQmtmILknHgpK8O6X3sO4Mo9C1BF2jUXv2EwlahZaRokAVnAvfgdRjMLI00YYnCKzdVAZ
+        ZzugK+Ln3CIlZavNVv+1YGJFrH9Sbqt5pzKpRbJL3G78G29qZh0IWWFr45vBVvgcT2C1pb6aGGM1j
+        bN4fZSC6u3amoyRcTcTjKdZ16akY7VMknlN+HoxfQzdXluGSFHel/Qh4VRD3b4MkVC0NxRlJK98lS
+        Z5OX/ZBFGmoNLjGsPyU9zbmNRCox+nMoefzSxpMSeeCSXNvt6MGSuRn9ORtJe4pdoEpUlILqYQl0+
+        HFnyXW9w==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lRfys-004zob-MF; Wed, 31 Mar 2021 18:54:20 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-mm@kvack.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org
+Subject: [PATCH v6 25/27] mm/filemap: Convert wait_on_page_bit to wait_on_folio_bit
+Date:   Wed, 31 Mar 2021 19:47:26 +0100
+Message-Id: <20210331184728.1188084-26-willy@infradead.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210331184728.1188084-1-willy@infradead.org>
+References: <20210331184728.1188084-1-willy@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <YGC619DmLM0AAQ5p@epycbox.lan>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Moritz,
+We must always wait on the folio, otherwise we won't be woken up.
 
-On 3/28/21 10:20 AM, Moritz Fischer wrote:
-> Tom,
->
-> On Sun, Mar 28, 2021 at 08:40:24AM -0700, Tom Rix wrote:
->> On 3/27/21 11:09 AM, Moritz Fischer wrote:
->>> Hi Richard, Russ,
->>>
->>> On Thu, Feb 25, 2021 at 01:07:14PM +0000, Gong, Richard wrote:
->>>> Hi Moritz,
->>>>
->>>> Sorry for asking.
->>>>
->>>> When you have chance, can you help review the version 5 patchset submitted on 02/09/21?
->>>>
->>>> Regards,
->>>> Richard
->>>>
->>>> -----Original Message-----
->>>> From: richard.gong@linux.intel.com <richard.gong@linux.intel.com> 
->>>> Sent: Tuesday, February 9, 2021 4:20 PM
->>>> To: mdf@kernel.org; trix@redhat.com; gregkh@linuxfoundation.org; linux-fpga@vger.kernel.org; linux-kernel@vger.kernel.org
->>>> Cc: Gong, Richard <richard.gong@intel.com>
->>>> Subject: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
->>>>
->>>> From: Richard Gong <richard.gong@intel.com>
->>>>
->>>> This is 5th submission of Intel service layer and FPGA patches, which includes the missing standalone patch in the 4th submission.
->>>>
->>>> This submission includes additional changes for Intel service layer driver to get the firmware version running at FPGA SoC device. Then FPGA manager driver, one of Intel service layer driver's client, can decide whether to handle the newly added bitstream authentication function based on the retrieved firmware version. So that we can maintain FPGA manager driver the back compatible.
->>>>
->>>> Bitstream authentication makes sure a signed bitstream has valid signatures.
->>>>
->>>> The customer sends the bitstream via FPGA framework and overlay, the firmware will authenticate the bitstream but not program the bitstream to device. If the authentication passes, the bitstream will be programmed into QSPI flash and will be expected to boot without issues.
->>>>
->>>> Extend Intel service layer, FPGA manager and region drivers to support the bitstream authentication feature. 
->>>>
->>>> Richard Gong (7):
->>>>   firmware: stratix10-svc: reset COMMAND_RECONFIG_FLAG_PARTIAL to 0
->>>>   firmware: stratix10-svc: add COMMAND_AUTHENTICATE_BITSTREAM flag
->>>>   firmware: stratix10-svc: extend SVC driver to get the firmware version
->>>>   fpga: fpga-mgr: add FPGA_MGR_BITSTREAM_AUTHENTICATE flag
->>>>   fpga: of-fpga-region: add authenticate-fpga-config property
->>>>   dt-bindings: fpga: add authenticate-fpga-config property
->>>>   fpga: stratix10-soc: extend driver for bitstream authentication
->>>>
->>>>  .../devicetree/bindings/fpga/fpga-region.txt       | 10 ++++
->>>>  drivers/firmware/stratix10-svc.c                   | 12 ++++-
->>>>  drivers/fpga/of-fpga-region.c                      | 24 ++++++---
->>>>  drivers/fpga/stratix10-soc.c                       | 62 +++++++++++++++++++---
->>>>  include/linux/firmware/intel/stratix10-smc.h       | 21 +++++++-
->>>>  .../linux/firmware/intel/stratix10-svc-client.h    | 11 +++-
->>>>  include/linux/fpga/fpga-mgr.h                      |  3 ++
->>>>  7 files changed, 125 insertions(+), 18 deletions(-)
->>>>
->>>> --
->>>> 2.7.4
->>>>
->>> Apologies for the epic delay in getting back to this, I took another
->>> look at this patchset and Russ' patchset.
->>>
->>> TL;DR I'm not really a fan of using device-tree overlays for this (and
->>> again, apologies, I should've voiced this earlier ...).
->>>
->>> Anyways, let's find a common API for this and Russ' work, they're trying
->>> to achieve the same / similar thing, they should use the same API.
->>>
->>> I'd like to re-invetigate the possiblity to extend FPGA Manager with
->>> 'secure update' ops that work for both these use-cases (and I susspect
->>> hte XRT patchset will follow with a similar requirement, right after).
+This commit shrinks the kernel by 691 bytes, mostly due to moving
+the page waitqueue lookup into wait_on_folio_bit_common().
 
-Richard and I had an initial conversation today. I'll start looking at how secure operations can be integrated into the fpga manager.
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ fs/afs/write.c          |  2 +-
+ include/linux/netfs.h   |  2 +-
+ include/linux/pagemap.h | 10 ++++----
+ mm/filemap.c            | 56 ++++++++++++++++++-----------------------
+ mm/page-writeback.c     |  4 +--
+ 5 files changed, 34 insertions(+), 40 deletions(-)
 
-More to come...
-
-Thanks,
-- Russ
-
->> The xrt patchset makes heavy use of device trees.
->>
->> What is the general guidance for device tree usage ?
-> I'm not generally against using device tree, it has its place. To
-> describe hardware (and hardware *changes* with overlays) :)
->
-> What I don't like about this particular implementation w.r.t device-tree
-> usage is that it uses DT overlays as a mechanism to program the flash --
-> in place of having an API to do so.
->
-> One could add device-nodes during the DT overlay application, while the
-> FPGA doesn't actually get programmed with a new runtime image -- meaning
-> live DT and actual hardware state diverged -- worst case it'd crash.
->
-> So when roughly at the same time (from the same company even) we have two
-> patchsets that do similar things with radically different APIs I think
-> we should pause, and reflect on whether we can come up with something
-> that works for both :)
->
-> TL;DR the firmware parts to authenticate the bitstream look fine to me, the
-> way we tie it into the FPGA region I'm not a fan of.
->
-> - Moritz
+diff --git a/fs/afs/write.c b/fs/afs/write.c
+index 7af2b57e601b..93f15e5770f2 100644
+--- a/fs/afs/write.c
++++ b/fs/afs/write.c
+@@ -847,7 +847,7 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
+ 	 */
+ #ifdef CONFIG_AFS_FSCACHE
+ 	if (PageFsCache(page) &&
+-	    wait_on_page_bit_killable(page, PG_fscache) < 0)
++	    wait_on_folio_bit_killable(folio, PG_fscache) < 0)
+ 		return VM_FAULT_RETRY;
+ #endif
+ 
+diff --git a/include/linux/netfs.h b/include/linux/netfs.h
+index 9d3fbed4e30a..f44142dca767 100644
+--- a/include/linux/netfs.h
++++ b/include/linux/netfs.h
+@@ -54,7 +54,7 @@ static inline void unlock_page_fscache(struct page *page)
+ static inline void wait_on_page_fscache(struct page *page)
+ {
+ 	if (PageFsCache(page))
+-		wait_on_page_bit(compound_head(page), PG_fscache);
++		wait_on_folio_bit(page_folio(page), PG_fscache);
+ }
+ 
+ enum netfs_read_source {
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index 001f8ec67ee7..d800fae55f98 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -791,11 +791,11 @@ static inline int lock_page_or_retry(struct page *page, struct mm_struct *mm,
+ }
+ 
+ /*
+- * This is exported only for wait_on_page_locked/wait_on_page_writeback, etc.,
++ * This is exported only for wait_on_folio_locked/wait_on_folio_writeback, etc.,
+  * and should not be used directly.
+  */
+-extern void wait_on_page_bit(struct page *page, int bit_nr);
+-extern int wait_on_page_bit_killable(struct page *page, int bit_nr);
++extern void wait_on_folio_bit(struct folio *folio, int bit_nr);
++extern int wait_on_folio_bit_killable(struct folio *folio, int bit_nr);
+ 
+ /* 
+  * Wait for a folio to be unlocked.
+@@ -807,14 +807,14 @@ extern int wait_on_page_bit_killable(struct page *page, int bit_nr);
+ static inline void wait_on_folio_locked(struct folio *folio)
+ {
+ 	if (FolioLocked(folio))
+-		wait_on_page_bit(&folio->page, PG_locked);
++		wait_on_folio_bit(folio, PG_locked);
+ }
+ 
+ static inline int wait_on_folio_locked_killable(struct folio *folio)
+ {
+ 	if (!FolioLocked(folio))
+ 		return 0;
+-	return wait_on_page_bit_killable(&folio->page, PG_locked);
++	return wait_on_folio_bit_killable(folio, PG_locked);
+ }
+ 
+ static inline void wait_on_page_locked(struct page *page)
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 4591974f2c28..76e1c4be1205 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -1102,7 +1102,7 @@ static int wake_page_function(wait_queue_entry_t *wait, unsigned mode, int sync,
+ 	 *
+ 	 * So update the flags atomically, and wake up the waiter
+ 	 * afterwards to avoid any races. This store-release pairs
+-	 * with the load-acquire in wait_on_page_bit_common().
++	 * with the load-acquire in wait_on_folio_bit_common().
+ 	 */
+ 	smp_store_release(&wait->flags, flags | WQ_FLAG_WOKEN);
+ 	wake_up_state(wait->private, mode);
+@@ -1183,7 +1183,7 @@ static void wake_up_folio(struct folio *folio, int bit)
+ }
+ 
+ /*
+- * A choice of three behaviors for wait_on_page_bit_common():
++ * A choice of three behaviors for wait_on_folio_bit_common():
+  */
+ enum behavior {
+ 	EXCLUSIVE,	/* Hold ref to page and take the bit when woken, like
+@@ -1217,9 +1217,10 @@ static inline bool trylock_page_bit_common(struct page *page, int bit_nr,
+ /* How many times do we accept lock stealing from under a waiter? */
+ int sysctl_page_lock_unfairness = 5;
+ 
+-static inline int wait_on_page_bit_common(wait_queue_head_t *q,
+-	struct page *page, int bit_nr, int state, enum behavior behavior)
++static inline int wait_on_folio_bit_common(struct folio *folio, int bit_nr,
++		int state, enum behavior behavior)
+ {
++	wait_queue_head_t *q = page_waitqueue(&folio->page);
+ 	int unfairness = sysctl_page_lock_unfairness;
+ 	struct wait_page_queue wait_page;
+ 	wait_queue_entry_t *wait = &wait_page.wait;
+@@ -1228,8 +1229,8 @@ static inline int wait_on_page_bit_common(wait_queue_head_t *q,
+ 	unsigned long pflags;
+ 
+ 	if (bit_nr == PG_locked &&
+-	    !PageUptodate(page) && PageWorkingset(page)) {
+-		if (!PageSwapBacked(page)) {
++	    !FolioUptodate(folio) && FolioWorkingset(folio)) {
++		if (!FolioSwapBacked(folio)) {
+ 			delayacct_thrashing_start();
+ 			delayacct = true;
+ 		}
+@@ -1239,7 +1240,7 @@ static inline int wait_on_page_bit_common(wait_queue_head_t *q,
+ 
+ 	init_wait(wait);
+ 	wait->func = wake_page_function;
+-	wait_page.page = page;
++	wait_page.page = &folio->page;
+ 	wait_page.bit_nr = bit_nr;
+ 
+ repeat:
+@@ -1254,7 +1255,7 @@ static inline int wait_on_page_bit_common(wait_queue_head_t *q,
+ 	 * Do one last check whether we can get the
+ 	 * page bit synchronously.
+ 	 *
+-	 * Do the SetPageWaiters() marking before that
++	 * Do the SetFolioWaiters() marking before that
+ 	 * to let any waker we _just_ missed know they
+ 	 * need to wake us up (otherwise they'll never
+ 	 * even go to the slow case that looks at the
+@@ -1265,8 +1266,8 @@ static inline int wait_on_page_bit_common(wait_queue_head_t *q,
+ 	 * lock to avoid races.
+ 	 */
+ 	spin_lock_irq(&q->lock);
+-	SetPageWaiters(page);
+-	if (!trylock_page_bit_common(page, bit_nr, wait))
++	SetFolioWaiters(folio);
++	if (!trylock_page_bit_common(&folio->page, bit_nr, wait))
+ 		__add_wait_queue_entry_tail(q, wait);
+ 	spin_unlock_irq(&q->lock);
+ 
+@@ -1276,10 +1277,10 @@ static inline int wait_on_page_bit_common(wait_queue_head_t *q,
+ 	 * see whether the page bit testing has already
+ 	 * been done by the wake function.
+ 	 *
+-	 * We can drop our reference to the page.
++	 * We can drop our reference to the folio.
+ 	 */
+ 	if (behavior == DROP)
+-		put_page(page);
++		put_folio(folio);
+ 
+ 	/*
+ 	 * Note that until the "finish_wait()", or until
+@@ -1316,7 +1317,7 @@ static inline int wait_on_page_bit_common(wait_queue_head_t *q,
+ 		 *
+ 		 * And if that fails, we'll have to retry this all.
+ 		 */
+-		if (unlikely(test_and_set_bit(bit_nr, &page->flags)))
++		if (unlikely(test_and_set_bit(bit_nr, folio_flags(folio, 0))))
+ 			goto repeat;
+ 
+ 		wait->flags |= WQ_FLAG_DONE;
+@@ -1325,7 +1326,7 @@ static inline int wait_on_page_bit_common(wait_queue_head_t *q,
+ 
+ 	/*
+ 	 * If a signal happened, this 'finish_wait()' may remove the last
+-	 * waiter from the wait-queues, but the PageWaiters bit will remain
++	 * waiter from the wait-queues, but the FolioWaiters bit will remain
+ 	 * set. That's ok. The next wakeup will take care of it, and trying
+ 	 * to do it here would be difficult and prone to races.
+ 	 */
+@@ -1356,19 +1357,17 @@ static inline int wait_on_page_bit_common(wait_queue_head_t *q,
+ 	return wait->flags & WQ_FLAG_WOKEN ? 0 : -EINTR;
+ }
+ 
+-void wait_on_page_bit(struct page *page, int bit_nr)
++void wait_on_folio_bit(struct folio *folio, int bit_nr)
+ {
+-	wait_queue_head_t *q = page_waitqueue(page);
+-	wait_on_page_bit_common(q, page, bit_nr, TASK_UNINTERRUPTIBLE, SHARED);
++	wait_on_folio_bit_common(folio, bit_nr, TASK_UNINTERRUPTIBLE, SHARED);
+ }
+-EXPORT_SYMBOL(wait_on_page_bit);
++EXPORT_SYMBOL(wait_on_folio_bit);
+ 
+-int wait_on_page_bit_killable(struct page *page, int bit_nr)
++int wait_on_folio_bit_killable(struct folio *folio, int bit_nr)
+ {
+-	wait_queue_head_t *q = page_waitqueue(page);
+-	return wait_on_page_bit_common(q, page, bit_nr, TASK_KILLABLE, SHARED);
++	return wait_on_folio_bit_common(folio, bit_nr, TASK_KILLABLE, SHARED);
+ }
+-EXPORT_SYMBOL(wait_on_page_bit_killable);
++EXPORT_SYMBOL(wait_on_folio_bit_killable);
+ 
+ /**
+  * put_and_wait_on_page_locked - Drop a reference and wait for it to be unlocked
+@@ -1385,11 +1384,8 @@ EXPORT_SYMBOL(wait_on_page_bit_killable);
+  */
+ int put_and_wait_on_page_locked(struct page *page, int state)
+ {
+-	wait_queue_head_t *q;
+-
+-	page = compound_head(page);
+-	q = page_waitqueue(page);
+-	return wait_on_page_bit_common(q, page, PG_locked, state, DROP);
++	return wait_on_folio_bit_common(page_folio(page), PG_locked, state,
++			DROP);
+ }
+ 
+ /**
+@@ -1540,16 +1536,14 @@ EXPORT_SYMBOL_GPL(page_endio);
+  */
+ void __lock_folio(struct folio *folio)
+ {
+-	wait_queue_head_t *q = page_waitqueue(&folio->page);
+-	wait_on_page_bit_common(q, &folio->page, PG_locked, TASK_UNINTERRUPTIBLE,
++	wait_on_folio_bit_common(folio, PG_locked, TASK_UNINTERRUPTIBLE,
+ 				EXCLUSIVE);
+ }
+ EXPORT_SYMBOL(__lock_folio);
+ 
+ int __lock_folio_killable(struct folio *folio)
+ {
+-	wait_queue_head_t *q = page_waitqueue(&folio->page);
+-	return wait_on_page_bit_common(q, &folio->page, PG_locked, TASK_KILLABLE,
++	return wait_on_folio_bit_common(folio, PG_locked, TASK_KILLABLE,
+ 					EXCLUSIVE);
+ }
+ EXPORT_SYMBOL_GPL(__lock_folio_killable);
+diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+index 9d55ceec05c0..7aed4feabdd2 100644
+--- a/mm/page-writeback.c
++++ b/mm/page-writeback.c
+@@ -2834,7 +2834,7 @@ void wait_on_folio_writeback(struct folio *folio)
+ {
+ 	while (FolioWriteback(folio)) {
+ 		trace_wait_on_page_writeback(&folio->page, folio_mapping(folio));
+-		wait_on_page_bit(&folio->page, PG_writeback);
++		wait_on_folio_bit(folio, PG_writeback);
+ 	}
+ }
+ EXPORT_SYMBOL_GPL(wait_on_folio_writeback);
+@@ -2856,7 +2856,7 @@ int wait_on_folio_writeback_killable(struct folio *folio)
+ {
+ 	while (FolioWriteback(folio)) {
+ 		trace_wait_on_page_writeback(&folio->page, folio_mapping(folio));
+-		if (wait_on_page_bit_killable(&folio->page, PG_writeback))
++		if (wait_on_folio_bit_killable(folio, PG_writeback))
+ 			return -EINTR;
+ 	}
+ 
+-- 
+2.30.2
 
