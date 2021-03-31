@@ -2,134 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7667E34F597
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 02:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C27B34F59A
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 02:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232869AbhCaAuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 20:50:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232515AbhCaAtv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 20:49:51 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E3EC061762
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 17:49:50 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id b127so326632qkf.19
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 17:49:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=0pQ01a6Xvm310A3j8LcU50M1ntMFUct1qAGwe2for/I=;
-        b=M9zMkM0gUqc7cw+RxOeX9G/PPlsC6SW+jLTCgvz0C/xa3gwqK4tgcFoEzmM3OCdLzr
-         N2yPBFu/OH3lDcvhkvTonWi9HpbQshUZ8aUT5DqALEfUAoltXzstN7MDFv5FZmY54PQo
-         PImKhz1Y2Tg1FhNQKkn6zSzJl3mU4duB7MiiVpe+w+EHXFBnsEl9khGH61hqa9Cj+L1p
-         xmFu0rcuNN18H7VVhKb3/U45OPqOWoYJeaNYI/cWh+CSMpxn19fsUAR4rVS6GofJ+e2L
-         6xD13vOZxEHX9yng8jrzP/FNmRThNY/mVtW2LOW/VyJipkZyKYfg4HCJ4H/sHogLOmiy
-         yVLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=0pQ01a6Xvm310A3j8LcU50M1ntMFUct1qAGwe2for/I=;
-        b=bVRJm3I8gT6el8fqlNq55kmQMSa/FRVXlmPS9Y+bAxwbbA54KEcV4xPZyI8uZ2cw2F
-         oD53ulfRH44Zdcpsgqqm4WUO7bs8W383SLP31Rrv3TS142Elu7uTGfjjcOLO8e/9+rN7
-         kKhHV59sekJOZo0lEQzMXZ2kwKOPM0njlaPoyFj98upHB+va7RP771q+wmV4ragJR+o0
-         789JoPjdpNQbkJtxAAcIUj+e2yMn7+7VB9U7ycQJavPVvfAlhdBDABLxrMmEjwLoaQZX
-         q8cayfUIJ0JceAz4vnev0hJI3kjT0TVb8EsQXjG2xweRJWZ47apUBYiVPU0h6Tq7N3BM
-         6PBg==
-X-Gm-Message-State: AOAM532E4WMPCAMpoOMXjHfYuE3dCdrfQ2NoShuO/+M15rTg/dKgtRJC
-        ngj2yE1kyGJE87Xh5KxBuu79tnYNArc=
-X-Google-Smtp-Source: ABdhPJzrR2EtxZGC1kDYZcmX9KPmGp0qbO2gZiVLBiZ0lyQfYYpAA0wJAgSyOkt4jnihlIT9dxUd0jWr8Tc=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:6c6b:5d63:9b3b:4a77])
- (user=seanjc job=sendgmr) by 2002:a05:6214:8c4:: with SMTP id
- da4mr644183qvb.17.1617151789751; Tue, 30 Mar 2021 17:49:49 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 30 Mar 2021 17:49:42 -0700
-In-Reply-To: <20210331004942.2444916-1-seanjc@google.com>
-Message-Id: <20210331004942.2444916-3-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210331004942.2444916-1-seanjc@google.com>
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH 2/2] KVM: x86/mmu: Simplify code for aging SPTEs in TDP MMU
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S233061AbhCaAui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 20:50:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37752 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232882AbhCaAuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 20:50:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 98B87619CD;
+        Wed, 31 Mar 2021 00:50:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617151808;
+        bh=2c3nHvtfL79oD9AY6dOckYUpKumJUp3EWlMrIZzz+wc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=V0p3FeR9/0vrjE7Xxc8dRQn81ebAy7M6WDuKoBmwM8tgazLUWaJBEiN8f1KJoPkYG
+         5H/qenvvMBRFX1lbPwF1ypRyL5uh0tLrAhlz1A3moRfgmn6TuYKWJBFIzePu0mvMGq
+         qbg4q57OWdTMfgQF3rvmFDANYSm0e1RPO+4En1fRVnm9v7UtoHGgtsqxcraKiGaqBu
+         KvXynWIqnEvciWpQ+vJZ9gDhL+pU91LtllooT/yuG/S9JPnephElNyTuv3+2iR35UB
+         alJ+FhmBVkg7DN61e9UNIVldD9myjPp1bKI7SlEJ2V0+WiC9xDkTZ3SgDozotJ3WDV
+         e8yOFWD6JDJCA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8D15960A56;
+        Wed, 31 Mar 2021 00:50:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] net: phy: broadcom: Only advertise EEE for supported
+ modes
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161715180857.15741.13316214682722934868.git-patchwork-notify@kernel.org>
+Date:   Wed, 31 Mar 2021 00:50:08 +0000
+References: <20210330220024.1459286-1-f.fainelli@gmail.com>
+In-Reply-To: <20210330220024.1459286-1-f.fainelli@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     netdev@vger.kernel.org, andrew@lunn.ch, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use a basic NOT+AND sequence to clear the Accessed bit in TDP MMU SPTEs,
-as opposed to the fancy ffs()+clear_bit() logic that was copied from the
-legacy MMU.  The legacy MMU uses clear_bit() because it is operating on
-the SPTE itself, i.e. clearing needs to be atomic.  The TDP MMU operates
-on a local variable that it later writes to the SPTE, and so doesn't need
-to be atomic or even resident in memory.
+Hello:
 
-Opportunistically drop unnecessary initialization of new_spte, it's
-guaranteed to be written before being accessed.
+This patch was applied to netdev/net.git (refs/heads/master):
 
-Using NOT+AND instead of ffs()+clear_bit() reduces the sequence from:
+On Tue, 30 Mar 2021 15:00:24 -0700 you wrote:
+> We should not be advertising EEE for modes that we do not support,
+> correct that oversight by looking at the PHY device supported linkmodes.
+> 
+> Fixes: 99cec8a4dda2 ("net: phy: broadcom: Allow enabling or disabling of EEE")
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+>  drivers/net/phy/bcm-phy-lib.c | 13 ++++++++++---
+>  1 file changed, 10 insertions(+), 3 deletions(-)
 
-   0x0000000000058be6 <+134>:	test   %rax,%rax
-   0x0000000000058be9 <+137>:	je     0x58bf4 <age_gfn_range+148>
-   0x0000000000058beb <+139>:	test   %rax,%rdi
-   0x0000000000058bee <+142>:	je     0x58cdc <age_gfn_range+380>
-   0x0000000000058bf4 <+148>:	mov    %rdi,0x8(%rsp)
-   0x0000000000058bf9 <+153>:	mov    $0xffffffff,%edx
-   0x0000000000058bfe <+158>:	bsf    %eax,%edx
-   0x0000000000058c01 <+161>:	movslq %edx,%rdx
-   0x0000000000058c04 <+164>:	lock btr %rdx,0x8(%rsp)
-   0x0000000000058c0b <+171>:	mov    0x8(%rsp),%r15
+Here is the summary with links:
+  - [net] net: phy: broadcom: Only advertise EEE for supported modes
+    https://git.kernel.org/netdev/net/c/c056d480b40a
 
-to:
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-   0x0000000000058bdd <+125>:	test   %rax,%rax
-   0x0000000000058be0 <+128>:	je     0x58beb <age_gfn_range+139>
-   0x0000000000058be2 <+130>:	test   %rax,%r8
-   0x0000000000058be5 <+133>:	je     0x58cc0 <age_gfn_range+352>
-   0x0000000000058beb <+139>:	not    %rax
-   0x0000000000058bee <+142>:	and    %r8,%rax
-   0x0000000000058bf1 <+145>:	mov    %rax,%r15
-
-thus eliminating several memory accesses, including a locked access.
-
-Cc: Ben Gardon <bgardon@google.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/mmu/tdp_mmu.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 724088bea4b0..161b77925a19 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -951,7 +951,7 @@ static int age_gfn_range(struct kvm *kvm, struct kvm_memory_slot *slot,
- {
- 	struct tdp_iter iter;
- 	int young = 0;
--	u64 new_spte = 0;
-+	u64 new_spte;
- 
- 	rcu_read_lock();
- 
-@@ -966,8 +966,7 @@ static int age_gfn_range(struct kvm *kvm, struct kvm_memory_slot *slot,
- 		new_spte = iter.old_spte;
- 
- 		if (spte_ad_enabled(new_spte)) {
--			clear_bit((ffs(shadow_accessed_mask) - 1),
--				  (unsigned long *)&new_spte);
-+			new_spte &= ~shadow_accessed_mask;
- 		} else {
- 			/*
- 			 * Capture the dirty status of the page, so that it doesn't get
--- 
-2.31.0.291.g576ba9dcdaf-goog
 
