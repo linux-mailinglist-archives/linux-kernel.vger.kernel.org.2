@@ -2,761 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A18834FBD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7773634FBD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:47:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234320AbhCaIpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 04:45:42 -0400
-Received: from mga06.intel.com ([134.134.136.31]:7606 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232310AbhCaIpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 04:45:23 -0400
-IronPort-SDR: Z6FYpesUmLsBcBlFulcixTZX2EzLEfECmUj8CwH7Bt/d3tcDGLikkrEGMuwg5pwQ87vJvV4yU9
- N4aYELJlkhaQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="253285794"
-X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="253285794"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 01:45:23 -0700
-IronPort-SDR: 0MNtYsv/j/cbz/rskN3dS8GOG5SeWmvh+AVKjyB7ioHIF55QhF30VOZ2nsHnu3G1ms+jBPPDqY
- FsNCEgQ0hEog==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="516791164"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 31 Mar 2021 01:45:19 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 31 Mar 2021 11:45:19 +0300
-Date:   Wed, 31 Mar 2021 11:45:19 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     cristian.birsan@microchip.com
-Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org, robh+dt@kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-Subject: Re: [RFC PATCH v2 2/2] usb: typec: sama7g5_tcpc: add driver for
- Microchip sama7g5 tcpc
-Message-ID: <YGQ2n17aAQ0Q6zNx@kuha.fi.intel.com>
-References: <20210330205442.981649-1-cristian.birsan@microchip.com>
- <20210330205442.981649-3-cristian.birsan@microchip.com>
+        id S230350AbhCaIrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 04:47:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230385AbhCaIq4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 04:46:56 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 260BAC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 01:46:56 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id c16so19317161oib.3
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 01:46:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YPc+uTt6u9Gex5uKAuE32MPC9BxOddf+qqv/TJVxnp8=;
+        b=CUwpj+RHzyD2ZS7rRO1GNDE2PzqC0d1V+tHz2AvyWOQy38xnJUuF4NrGcsDCn9oHBS
+         BdRObVnsilPmfOrvCJQ2BNSrzXPeFqUtR6qq+Cnt8HrpEzmaVUzgKqNZkm3j53CZ4Kgb
+         iwHcYPynTD21mNOAd3CaFL618CigQP9mNnOTHnIzzHFOdXPB4WtSRR2g0tQa/InlaXY1
+         5rKUmXlfrOb1rRlDDNEe4sVJlFlfdqo3apxjSj8qK/CeEiD2NLFjXVEGHFUllivx8nOb
+         NhQAkmf93KyiVXdQZX+nMkHaTQ62RHxW0iB1vxDxdXyPC6gXbklAnxc3IuLTm52Zpig4
+         wXtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YPc+uTt6u9Gex5uKAuE32MPC9BxOddf+qqv/TJVxnp8=;
+        b=efk0JPbvGd6jQVmeRtoR1StyMBUrdhxj7ZlDZaGKrakuLMyG9q4CBaWsZybguSs4xv
+         QFWx8H1w3pJ62Ozu3V1PGr7TZd2VkEOxX/WzQ2WdqQvNTr7EUjpOLjSlG4BbN++w9cjZ
+         zxYwnewtVjXy1n/oJcLQmOG4hOpVOJVL2VwIql1uS1dMbE+1nVVH8THow21mHJGgHbsT
+         koHHbCLvtMwZtbvl9Ei+vqi2jpAu7b/AC/OP6jJSwYbwwBXPag7yprnGDvyjC0U3Ba86
+         /jamv59mgFUjTjbGG8hM8Sm2FJBc61N7g2o7+LTKzWCr4JqCawqSVFOqDFdAcmxVABmg
+         DwVQ==
+X-Gm-Message-State: AOAM532d3L6sVh/GpWivTr4/+ElMg3E0wDB80SANJgqRAG5IothMCHi1
+        ddKDljpuehKu3chU76nPEVL7ZqGaSm+tZD0vy1DuzAY5mM9lmA==
+X-Google-Smtp-Source: ABdhPJy8E/bi6YOlpwoEGw13JyLFarSsEH3/w33uMThsYYS5/eZIlswb2Q9MdFPBxsZf0SYFhBRDo9pCwlukz3ofwpk=
+X-Received: by 2002:a05:6808:bd6:: with SMTP id o22mr1584465oik.129.1617180415512;
+ Wed, 31 Mar 2021 01:46:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210330205442.981649-3-cristian.birsan@microchip.com>
+References: <20210201121416.1488439-1-Bilal.Wasim@imgtec.com> <20210216165926.46bbafc7@a-VirtualBox>
+In-Reply-To: <20210216165926.46bbafc7@a-VirtualBox>
+From:   Enric Balletbo Serra <eballetbo@gmail.com>
+Date:   Wed, 31 Mar 2021 10:46:44 +0200
+Message-ID: <CAFqH_517W+ZOR-vMtZEy9GY9ySD_+Sm-NcgJS2iQAO00J5LWKQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] Misc bug fixes in mtk power domain driver
+To:     Bilal Wasim <bilalwasim676@gmail.com>
+Cc:     "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Weiyi Lu <weiyi.lu@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Cristian,
+Hi Bilal,
 
-On Tue, Mar 30, 2021 at 11:54:42PM +0300, cristian.birsan@microchip.com wrote:
-> From: Cristian Birsan <cristian.birsan@microchip.com>
-> 
-> This patch adds initial driver support for the new Microchip USB
-> Type-C Port Controller (TCPC) embedded in sama7g5 SoC.
-> 
-> Signed-off-by: Cristian Birsan <cristian.birsan@microchip.com>
-> ---
->  drivers/usb/typec/tcpm/Kconfig        |   8 +
->  drivers/usb/typec/tcpm/Makefile       |   1 +
->  drivers/usb/typec/tcpm/sama7g5_tcpc.c | 610 ++++++++++++++++++++++++++
->  3 files changed, 619 insertions(+)
->  create mode 100644 drivers/usb/typec/tcpm/sama7g5_tcpc.c
-> 
-> diff --git a/drivers/usb/typec/tcpm/Kconfig b/drivers/usb/typec/tcpm/Kconfig
-> index 557f392fe24d..8ba0fd85741f 100644
-> --- a/drivers/usb/typec/tcpm/Kconfig
-> +++ b/drivers/usb/typec/tcpm/Kconfig
-> @@ -52,6 +52,14 @@ config TYPEC_FUSB302
->  	  Type-C Port Controller Manager to provide USB PD and USB
->  	  Type-C functionalities.
->  
-> +config TYPEC_SAMA7G5
-> +	tristate "Microchip SAMA7G5 Type-C Port Controller driver"
-> +	select REGMAP_MMIO
-> +	help
-> +	  Say Y or M here if your system has SAMA7G5 TCPC controller.
-> +	  It works with Type-C Port Controller Manager to provide USB
-> +	  Type-C functionalities.
-> +
->  config TYPEC_WCOVE
->  	tristate "Intel WhiskeyCove PMIC USB Type-C PHY driver"
->  	depends on ACPI
-> diff --git a/drivers/usb/typec/tcpm/Makefile b/drivers/usb/typec/tcpm/Makefile
-> index 7d499f3569fd..9abe8a7ae1cc 100644
-> --- a/drivers/usb/typec/tcpm/Makefile
-> +++ b/drivers/usb/typec/tcpm/Makefile
-> @@ -1,6 +1,7 @@
->  # SPDX-License-Identifier: GPL-2.0
->  obj-$(CONFIG_TYPEC_TCPM)		+= tcpm.o
->  obj-$(CONFIG_TYPEC_FUSB302)		+= fusb302.o
-> +obj-$(CONFIG_TYPEC_SAMA7G5)		+= sama7g5_tcpc.o
->  obj-$(CONFIG_TYPEC_WCOVE)		+= typec_wcove.o
->  typec_wcove-y				:= wcove.o
->  obj-$(CONFIG_TYPEC_TCPCI)		+= tcpci.o
-> diff --git a/drivers/usb/typec/tcpm/sama7g5_tcpc.c b/drivers/usb/typec/tcpm/sama7g5_tcpc.c
-> new file mode 100644
-> index 000000000000..2986c0fcc8a3
-> --- /dev/null
-> +++ b/drivers/usb/typec/tcpm/sama7g5_tcpc.c
-> @@ -0,0 +1,610 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Microchip SAMA7G5 Type-C Port Controller Driver
-> + *
-> + * Copyright (C) 2021 Microchip Technology, Inc. and its subsidiaries
-> + */
-> +
-> +#include <linux/clk.h>
-> +#include <linux/gpio.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/of_gpio.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/regmap.h>
-> +#include <linux/regulator/consumer.h>
-> +#include <linux/usb/pd.h>
-> +#include <linux/usb/tcpm.h>
-> +#include <linux/usb/typec.h>
-> +
-> +#define SAMA7G5_TCPC_GCLK				32000
-> +
-> +/* TCPC registers offsets */
-> +#define TCPC_CR			0x80		/* TCPC Control Register */
-> +#define TCPC_UPC		0xA0		/* TCPC PHY Control Register */
-> +#define TCPC_UPS		0xA4		/* TCPC PHY Status Register */
-> +
-> +#define TCPC_CR_RESET		0x54434301	/* Magic value */
-> +
-> +/* TCPC PHY Control Register */
-> +#define TCPC_UPC_BCDETE		BIT(29)
-> +#define TCPC_UPC_BCVSRCE	BIT(28)
-> +#define	TCPC_UPC_BCDETSEL	BIT(27)
+Thank you for your patch.
 
-Why do you have a tab right after "#define" above?
+Missatge de Bilal Wasim <bilalwasim676@gmail.com> del dia dt., 16 de
+febr. 2021 a les 13:00:
+>
+>
+> ping - can this series be merged ?
+>
 
-> +#define	TCPC_UPC_BCIDPSRCE	BIT(26)
+This series breaks my display with the current mainline. With those
+patches applied my display doesn't turn on and I get the following
+error. Note that in mainline we don't have a gpu working driver.
 
-And here?
+[   66.979546] ------------[ cut here ]------------
+[   66.984234] [CRTC:43:crtc-0] vblank wait timed out
+[   66.989070] WARNING: CPU: 2 PID: 432 at
+drivers/gpu/drm/drm_atomic_helper.c:1512
+drm_atomic_helper_wait_for_vblanks.part.0+0x278/0x2a0
+[   67.001166] Modules linked in: af_alg mwifiex_sdio mwifiex
+btmrvl_sdio btmrvl bluetooth mtk_vcodec_dec mtk_vcodec_enc cfg80211
+uvcvideo mtk
+_mdp mtk_vcodec_common v4l2_h264 v4l2_mem2mem videobuf2_dma_contig
+videobuf2_vmalloc videobuf2_memops videobuf2_v4l2 videobuf2_common
+videodev
+ smsc ecdh_generic mt8173_rt5650 ecc smsc95xx rfkill mc usbnet
+cros_ec_sensors snd_soc_rt5645 cros_ec_sensors_core elants_i2c
+mt8173_afe_pcm c
+rct10dif_ce elan_i2c industrialio_triggered_buffer sbs_battery
+cros_ec_chardev kfifo_buf cros_usbpd_charger cros_usbpd_logger
+snd_soc_rl6231 s
+nd_soc_mtk_common mtk_vpu display_connector pwm_bl fuse ip_tables x_tables ipv6
+[   67.057686] CPU: 2 PID: 432 Comm: gnome-shell Tainted: G        W
+      5.12.0-rc5+ #25
+[   67.065861] Hardware name: Google Elm (DT)
+[   67.069950] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+[   67.075952] pc :
+drm_atomic_helper_wait_for_vblanks.part.0+0x278/0x2a0
+[   67.082477] lr :
+drm_atomic_helper_wait_for_vblanks.part.0+0x278/0x2a0
+[   67.089000] sp : ffff800012c23aa0
+[   67.092308] x29: ffff800012c23aa0 x28: 0000000000000004
+[   67.097621] x27: 0000000000000000 x26: 0000000000000001
+[   67.102933] x25: 0000000000000038 x24: ffff0000c4726000
+[   67.108246] x23: 0000000000000001 x22: 0000000000000000
+[   67.113558] x21: ffff0000cabbd880 x20: ffff0000c3bd8080
+[   67.118869] x19: 0000000000000000 x18: 0000000000000000
+[   67.124180] x17: 0000000000000010 x16: 0000000000000000
+[   67.129492] x15: 0000000000000030 x14: ffffffffffffffff
+[   67.134805] x13: ffff800011ce2680 x12: 00000000000007c2
+[   67.140117] x11: 0000000000000296 x10: ffff800011d3a680
+[   67.145428] x9 : 00000000fffff000 x8 : ffff800011ce2680
+[   67.150741] x7 : ffff800011d3a680 x6 : 0000000000000000
+[   67.156052] x5 : 0000000000000000 x4 : ffff0000ff77c918
+[   67.161364] x3 : ffff0000ff783878 x2 : 0000000000000000
+[   67.166674] x1 : 0000000000000000 x0 : ffff0000cc660000
+[   67.171985] Call trace:
+[   67.174426]  drm_atomic_helper_wait_for_vblanks.part.0+0x278/0x2a0
+[   67.180603]  drm_atomic_helper_commit_tail_rpm+0x80/0xa0
+[   67.185913]  commit_tail+0xa0/0x180
+[   67.189399]  drm_atomic_helper_commit+0x160/0x370
+[   67.194100]  drm_atomic_commit+0x4c/0x60
+[   67.198022]  drm_mode_obj_set_property_ioctl+0x164/0x460
+[   67.203330]  drm_ioctl_kernel+0xc4/0x11c
+[   67.207251]  drm_ioctl+0x210/0x430
+[   67.210650]  __arm64_sys_ioctl+0xa8/0xec
+...
 
-> +#define TCPC_UPC_DMPDFE		BIT(25)
-> +#define TCPC_UPC_DMPDFD		BIT(24)
-> +#define TCPC_UPC_IP_OFF		(0 << 12)
-> +#define TCPC_UPC_IP_0P5		(1 << 12)
-> +#define TCPC_UPC_IP_1P5		(2 << 12)
-> +#define TCPC_UPC_IP_3P0		(3 << 12)
-> +#define TCPC_UPC_THRESHOLD0	(0 << 8)
-> +#define TCPC_UPC_THRESHOLD2	(2 << 8)
-> +#define TCPC_UPC_THRESHOLD4	(4 << 8)
-> +#define TCPC_UPC_THRESHOLD6	(6 << 8)
-> +
-> +/* TCPC PHY  Status Register */
-> +#define TCPC_UPS_CC2RDT		BIT(4)
-> +#define TCPC_UPS_CC1ID		BIT(3)
-> +#define TCPC_UPS_CC_MASK	GENMASK(4, 3)
-> +#define TCPC_UPS_CHGDCP		BIT(2)
-> +#define TCPC_UPS_DM		BIT(1)
-> +#define TCPC_UPS_DP		BIT(0)
-> +
-> +#define TCPC_VERSION		0xFC
-> +
-> +/* USB Type-C measurement timings */
-> +#define T_CC_MEASURE		100 /* 100 ms */
-> +
-> +#define SAMA7G5_TCPC_VBUS_IRQFLAGS (IRQF_ONESHOT \
-> +			   | IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING)
-> +
-> +struct sama7g5_tcpc {
-> +	struct device *dev;
-> +
-> +	struct workqueue_struct *wq;
-> +	struct delayed_work measure_work;
-> +
-> +	struct regmap *regmap;
-> +	void __iomem *base;
-> +
-> +	struct clk *pclk;
-> +	struct clk *gclk;
-> +
-> +	struct gpio_desc *vbus_pin;
-> +	struct regulator *vbus;
-> +
-> +	/* lock for sharing states */
-> +	struct mutex lock;
-> +
-> +	/* port status */
-> +	enum typec_cc_polarity cc_polarity;
-> +	enum typec_cc_status cc1_status;
-> +	enum typec_cc_status cc2_status;
-> +	enum typec_cc_status cc1_status_prev;
-> +	enum typec_cc_status cc2_status_prev;
-> +
-> +	/* mutex used for VBUS detection */
-> +	struct mutex vbus_mutex;
-> +	int vbus_present;
-> +	int vbus_present_prev;
-> +
-> +	unsigned int phy_status;
-> +	unsigned int phy_status_old;
-> +
-> +	struct tcpc_dev tcpc;
-> +	struct tcpm_port *tcpm;
-> +};
-> +
-> +#define tcpc_to_sama7g5_tcpc(_tcpc_) \
-> +		container_of(_tcpc_, struct sama7g5_tcpc, tcpc)
-> +
-> +static bool sama7g5_tcpc_readable_reg(struct device *dev, unsigned int reg)
-> +{
-> +	switch (reg) {
-> +	case TCPC_CR:
-> +	case TCPC_UPC:
-> +	case TCPC_UPS:
-> +		return true;
-> +	default:
-> +		return false;
-> +	}
-> +}
-> +
-> +static bool sama7g5_tcpc_writeable_reg(struct device *dev, unsigned int reg)
-> +{
-> +	switch (reg) {
-> +	case TCPC_CR:
-> +	case TCPC_UPC:
-> +	case TCPC_UPS:
-> +		return true;
-> +	default:
-> +		return false;
-> +	}
-> +}
-> +
-> +static const struct regmap_config sama7g5_tcpc_regmap_config = {
-> +	.reg_bits = 32,
-> +	.reg_stride = 4,
-> +	.val_bits = 32,
-> +	.max_register = TCPC_VERSION,
-> +	.readable_reg = sama7g5_tcpc_readable_reg,
-> +	.writeable_reg = sama7g5_tcpc_writeable_reg,
-> +};
-> +
-> +static int sama7g5_tcpc_get_vbus(struct tcpc_dev *tcpc)
-> +{
-> +	struct sama7g5_tcpc *sama7g5_tcpc = tcpc_to_sama7g5_tcpc(tcpc);
-> +	int ret;
-> +
-> +	mutex_lock(&sama7g5_tcpc->vbus_mutex);
-> +	ret = sama7g5_tcpc->vbus_present ? 1 : 0;
-> +	mutex_unlock(&sama7g5_tcpc->vbus_mutex);
-> +
-> +	return ret;
-> +}
-> +
-> +static int sama7g5_tcpc_set_vbus(struct tcpc_dev *tcpc, bool on, bool sink)
-> +{
-> +	struct sama7g5_tcpc *sama7g5_tcpc = tcpc_to_sama7g5_tcpc(tcpc);
-> +	int ret;
-> +
-> +	mutex_lock(&sama7g5_tcpc->vbus_mutex);
-> +	if (on)
-> +		ret = regulator_enable(sama7g5_tcpc->vbus);
-> +	else
-> +		ret = regulator_disable(sama7g5_tcpc->vbus);
-> +	mutex_unlock(&sama7g5_tcpc->vbus_mutex);
-> +
-> +	return ret;
-> +}
-> +
-> +static int sama7g5_tcpc_set_vconn(struct tcpc_dev *tcpc, bool on)
-> +{
-> +	/* VCONN is not supported */
-> +	return -EPERM;
-> +}
-> +
-> +static int sama7g5_tcpc_get_cc(struct tcpc_dev *tcpc, enum typec_cc_status *cc1,
-> +			       enum typec_cc_status *cc2)
-> +{
-> +	struct sama7g5_tcpc *sama7g5_tcpc = tcpc_to_sama7g5_tcpc(tcpc);
-> +
-> +	mutex_lock(&sama7g5_tcpc->lock);
-> +	*cc1 = sama7g5_tcpc->cc1_status;
-> +	*cc2 = sama7g5_tcpc->cc2_status;
-> +	mutex_unlock(&sama7g5_tcpc->lock);
-> +
-> +	return 0;
-> +}
-> +
-> +static int sama7g5_tcpc_set_cc(struct tcpc_dev *tcpc, enum typec_cc_status cc)
-> +{
-> +	struct sama7g5_tcpc *sama7g5_tcpc = tcpc_to_sama7g5_tcpc(tcpc);
-> +	unsigned int ctrl;
-> +	int ret = 0;
-> +
-> +	mutex_lock(&sama7g5_tcpc->lock);
-> +	switch (cc) {
-> +	case TYPEC_CC_RD:
-> +		ctrl = TCPC_UPC_IP_OFF;
-> +		break;
-> +	case TYPEC_CC_RP_DEF:
-> +		ctrl = TCPC_UPC_IP_0P5;
-> +		break;
-> +	default:
-> +		ret =  -EINVAL;
-> +		goto done;
-> +	}
-> +	ret = regmap_write(sama7g5_tcpc->regmap, TCPC_UPC, ctrl);
-> +done:
-> +	mutex_unlock(&sama7g5_tcpc->lock);
-> +	return ret;
-> +}
-> +
-> +static int sama7g5_tcpc_set_polarity(struct tcpc_dev *tcpc,
-> +				     enum typec_cc_polarity pol)
-> +{
-> +	return 0;
-> +}
-> +
-> +static int sama7g5_tcpc_set_roles(struct tcpc_dev *tcpc, bool attached,
-> +			   enum typec_role role, enum typec_data_role data)
-> +{
-> +	return 0;
-> +}
-> +
-> +static int sama7g5_tcpc_set_pd_rx(struct tcpc_dev *tcpc, bool on)
-> +{
-> +	return -EPERM;
-> +}
-> +
-> +static int sama7g5_tcpc_pd_transmit(struct tcpc_dev *tcpc,
-> +				    enum tcpm_transmit_type type,
-> +				    const struct pd_message *msg,
-> +				    unsigned int negotiated_rev)
-> +{
-> +	return -EPERM;
-> +}
-> +
-> +static int sama7g5_tcpc_start_toggling(struct tcpc_dev *tcpc,
-> +				       enum typec_port_type port_type,
-> +				       enum typec_cc_status cc)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +
-> +static void _sama7g5_tcpc_measure_snk(struct sama7g5_tcpc *sama7g5_tcpc)
-> +{
-> +	struct device *dev = sama7g5_tcpc->dev;
-> +	int ret;
-> +
-> +	/* Save previous CC1/CC2 state */
-> +	sama7g5_tcpc->cc1_status_prev = sama7g5_tcpc->cc1_status;
-> +	sama7g5_tcpc->cc2_status_prev = sama7g5_tcpc->cc2_status;
-> +
-> +	/* Comparator Threshold 2 */
-> +	ret = regmap_write(sama7g5_tcpc->regmap, TCPC_UPC, TCPC_UPC_IP_OFF |
-> +			   TCPC_UPC_THRESHOLD2);
+Thanks,
+  Enric
 
-How about:
-
-	ret = regmap_write(sama7g5_tcpc->regmap, TCPC_UPC,
-                           TCPC_UPC_IP_OFF | TCPC_UPC_THRESHOLD2);
-
-just to make it a bit easier to read?
-
-> +	if (ret) {
-> +		dev_err(dev, "failed to wite register: %d\n", ret);
-> +		return;
-> +	}
-> +
-> +	usleep_range(560, 1000);
-> +
-> +	ret = regmap_read(sama7g5_tcpc->regmap, TCPC_UPS,
-> +			  &sama7g5_tcpc->phy_status);
-> +	if (ret) {
-> +		dev_err(dev, "failed to read register: %d\n", ret);
-> +		return;
-> +	}
-> +
-> +	if (!(sama7g5_tcpc->phy_status & TCPC_UPS_CC_MASK)) {
-> +		/* VRa*/
-> +		sama7g5_tcpc->cc1_status = TYPEC_CC_OPEN;
-> +		sama7g5_tcpc->cc2_status = TYPEC_CC_OPEN;
-> +		return;
-> +	}
-> +
-> +	/* CC1 or CC2 is connected wait for PD messages to end ~ 30ms */
-> +	usleep_range(30000, 35000);
-> +
-> +	/* Comparator Threshold 4 */
-> +	sama7g5_tcpc->phy_status_old = sama7g5_tcpc->phy_status;
-> +
-> +	ret = regmap_write(sama7g5_tcpc->regmap, TCPC_UPC, TCPC_UPC_IP_OFF |
-> +			   TCPC_UPC_THRESHOLD4);
-
-And here:
-
-	ret = regmap_write(sama7g5_tcpc->regmap, TCPC_UPC,
-                           TCPC_UPC_IP_OFF | TCPC_UPC_THRESHOLD4);
-
-> +	if (ret) {
-> +		dev_err(dev, "failed to wite register: %d\n", ret);
-> +		return;
-> +	}
-> +
-> +	usleep_range(560, 1000);
-> +	ret = regmap_read(sama7g5_tcpc->regmap, TCPC_UPS,
-> +			  &sama7g5_tcpc->phy_status);
-> +	if (ret) {
-> +		dev_err(dev, "failed to read register: %d\n", ret);
-> +		return;
-> +	}
-> +
-> +	if ((sama7g5_tcpc->phy_status_old & TCPC_UPS_CC1ID) &&
-> +	    (!(sama7g5_tcpc->phy_status & TCPC_UPS_CC1ID))) {
-> +		sama7g5_tcpc->cc1_status = TYPEC_CC_RP_DEF;
-> +		sama7g5_tcpc->cc2_status = TYPEC_CC_OPEN;
-> +		return;
-> +	}
-> +
-> +	if ((sama7g5_tcpc->phy_status_old & TCPC_UPS_CC2RDT) &&
-> +	    (!(sama7g5_tcpc->phy_status & TCPC_UPS_CC2RDT))) {
-> +		sama7g5_tcpc->cc1_status = TYPEC_CC_OPEN;
-> +		sama7g5_tcpc->cc2_status = TYPEC_CC_RP_DEF;
-> +		return;
-> +	}
-> +
-> +	/* Comparator Threshold 6 */
-> +	sama7g5_tcpc->phy_status_old = sama7g5_tcpc->phy_status;
-> +
-> +	ret = regmap_write(sama7g5_tcpc->regmap, TCPC_UPC, TCPC_UPC_IP_OFF |
-> +			   TCPC_UPC_THRESHOLD6);
-
-Ditto?
-
-> +	if (ret) {
-> +		dev_err(dev, "failed to wite register: %d\n", ret);
-> +		return;
-> +	}
-> +
-> +	usleep_range(560, 1000);
-> +	ret = regmap_read(sama7g5_tcpc->regmap, TCPC_UPS,
-> +			  &sama7g5_tcpc->phy_status);
-> +	if (ret) {
-> +		dev_err(dev, "failed to read register: %d\n", ret);
-> +		return;
-> +	}
-> +
-> +	if ((sama7g5_tcpc->phy_status_old & TCPC_UPS_CC1ID) &&
-> +	    (!(sama7g5_tcpc->phy_status & TCPC_UPS_CC1ID))) {
-> +		sama7g5_tcpc->cc1_status = TYPEC_CC_RP_1_5;
-> +		sama7g5_tcpc->cc2_status = TYPEC_CC_OPEN;
-> +		return;
-> +	}
-> +
-> +	if ((sama7g5_tcpc->phy_status_old & TCPC_UPS_CC1ID) &&
-> +	    ((sama7g5_tcpc->phy_status & TCPC_UPS_CC1ID))) {
-> +		sama7g5_tcpc->cc1_status = TYPEC_CC_RP_3_0;
-> +		sama7g5_tcpc->cc2_status = TYPEC_CC_OPEN;
-> +		return;
-> +	}
-> +
-> +	if ((sama7g5_tcpc->phy_status_old & TCPC_UPS_CC2RDT) &&
-> +	    (!(sama7g5_tcpc->phy_status & TCPC_UPS_CC2RDT))) {
-> +		sama7g5_tcpc->cc1_status = TYPEC_CC_OPEN;
-> +		sama7g5_tcpc->cc2_status = TYPEC_CC_RP_1_5;
-> +		return;
-> +	}
-> +
-> +	if ((sama7g5_tcpc->phy_status_old & TCPC_UPS_CC2RDT) &&
-> +	    ((sama7g5_tcpc->phy_status & TCPC_UPS_CC2RDT))) {
-> +		sama7g5_tcpc->cc1_status = TYPEC_CC_OPEN;
-> +		sama7g5_tcpc->cc2_status = TYPEC_CC_RP_3_0;
-> +		return;
-> +	}
-
-It looks like you only use that phy_status_old member in this
-function, so you could make it a local variable, no?
-
-> +}
-> +
-> +static void sama7g5_tcpc_measure_work(struct work_struct *work)
-> +{
-> +	struct sama7g5_tcpc *port = container_of(work, struct sama7g5_tcpc,
-> +						 measure_work.work);
-> +
-> +	mutex_lock(&port->lock);
-> +
-> +	_sama7g5_tcpc_measure_snk(port);
-> +
-> +	/* Check if the state has changed and notify TCPM */
-> +	if (port->cc1_status != port->cc1_status_prev ||
-> +	    port->cc2_status != port->cc2_status_prev)
-> +		tcpm_cc_change(port->tcpm);
-
-And those ccx_status_prev you are only using here, so you probable
-don't need those members either.
-
-> +	mod_delayed_work(port->wq, &port->measure_work,
-> +			 msecs_to_jiffies(T_CC_MEASURE));
-> +
-> +	mutex_unlock(&port->lock);
-> +}
-> +
-> +static int sama7g5_tcpc_init(struct tcpc_dev *tcpc)
-> +{
-> +	struct sama7g5_tcpc *sama7g5_tcpc = tcpc_to_sama7g5_tcpc(tcpc);
-> +	int ret;
-> +
-> +	ret = regmap_write(sama7g5_tcpc->regmap, TCPC_CR, TCPC_CR_RESET);
-> +	if (ret)
-> +		return ret;
-> +
-> +	sama7g5_tcpc->wq =
-> +		create_singlethread_workqueue(dev_name(sama7g5_tcpc->dev));
-
-One line is enough for the above.
-
-> +	if (!sama7g5_tcpc->wq)
-> +		return -ENOMEM;
-> +
-> +	INIT_DELAYED_WORK(&sama7g5_tcpc->measure_work,
-> +			  sama7g5_tcpc_measure_work);
-> +
-> +	sama7g5_tcpc->cc1_status = TYPEC_CC_OPEN;
-> +	sama7g5_tcpc->cc2_status = TYPEC_CC_OPEN;
-> +	sama7g5_tcpc->cc1_status_prev = TYPEC_CC_OPEN;
-> +	sama7g5_tcpc->cc2_status_prev = TYPEC_CC_OPEN;
-> +	sama7g5_tcpc->cc_polarity = TYPEC_POLARITY_CC1;
-> +
-> +	/* We do not have an interrupt so polling only */
-> +	mod_delayed_work(sama7g5_tcpc->wq, &sama7g5_tcpc->measure_work,
-> +			 msecs_to_jiffies(T_CC_MEASURE));
-> +
-> +	/* Enable VBUS detection */
-> +	if (sama7g5_tcpc->vbus_pin)
-> +		enable_irq(gpiod_to_irq(sama7g5_tcpc->vbus_pin));
-> +
-> +	return 0;
-> +}
-> +
-> +static int vbus_is_present(struct sama7g5_tcpc *sama7g5_tcpc)
-> +{
-> +	if (sama7g5_tcpc->vbus_pin)
-> +		return gpiod_get_value(sama7g5_tcpc->vbus_pin);
-> +
-> +	/* No Vbus detection: Assume always present */
-> +	return 1;
-> +}
-> +
-> +static irqreturn_t sama7g5_vbus_irq_thread(int irq, void *devid)
-> +{
-> +	struct sama7g5_tcpc *sama7g5_tcpc = devid;
-> +
-> +	/* debounce */
-> +	udelay(10);
-> +
-> +	mutex_lock(&sama7g5_tcpc->vbus_mutex);
-> +
-> +	sama7g5_tcpc->vbus_present = vbus_is_present(sama7g5_tcpc);
-> +	if (sama7g5_tcpc->vbus_present != sama7g5_tcpc->vbus_present_prev) {
-> +		/* VBUS changed, notify TCPM */
-> +		tcpm_vbus_change(sama7g5_tcpc->tcpm);
-> +		sama7g5_tcpc->vbus_present_prev = sama7g5_tcpc->vbus_present;
-> +	}
-
-The vbus_present_prev looks like it could also be a local variable.
-
-> +	mutex_unlock(&sama7g5_tcpc->vbus_mutex);
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static int sama7g5_tcpc_probe(struct platform_device *pdev)
-> +{
-> +	int ret;
-> +	struct sama7g5_tcpc *sama7g5_tcpc;
-> +
-> +	struct resource *mem;
-> +	void __iomem *base;
-> +
-> +	sama7g5_tcpc = devm_kzalloc(&pdev->dev, sizeof(*sama7g5_tcpc),
-> +				    GFP_KERNEL);
-> +	if (!sama7g5_tcpc)
-> +		return -ENOMEM;
-> +
-> +	mem =  platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	base = devm_ioremap_resource(&pdev->dev, mem);
-> +	if (IS_ERR(base))
-> +		return PTR_ERR(base);
-> +	sama7g5_tcpc->base = base;
-
-        sama7g5_tcpc->base = devm_platform_ioremap_resourse(pdev, 0);
-        if (IS_ERR(sama7g5_tcpc->base))
-                return PTR_ERR(sama7g5_tcpc->base);
-
-> +	sama7g5_tcpc->regmap =  devm_regmap_init_mmio(&pdev->dev, base,
-> +						&sama7g5_tcpc_regmap_config);
-
-You can align that properly too:
-
-	sama7g5_tcpc->regmap =  devm_regmap_init_mmio(&pdev->dev, sama7g5_tcpc->base,
-                                                      &sama7g5_tcpc_regmap_config);
-
-> +	if (IS_ERR(sama7g5_tcpc->regmap)) {
-> +		dev_err(&pdev->dev, "Regmap init failed\n");
-> +		return PTR_ERR(sama7g5_tcpc->regmap);
-> +	}
-> +
-> +	/* Get the peripheral clock */
-> +	sama7g5_tcpc->pclk = devm_clk_get(&pdev->dev, "pclk");
-> +	if (IS_ERR(sama7g5_tcpc->pclk)) {
-> +		ret = PTR_ERR(sama7g5_tcpc->pclk);
-> +		dev_err(&pdev->dev,
-> +			"failed to get the peripheral clock: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = clk_prepare_enable(sama7g5_tcpc->pclk);
-> +	if (ret) {
-> +		dev_err(&pdev->dev,
-> +			"failed to enable the peripheral clock: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	/* Get the generic clock */
-> +	sama7g5_tcpc->gclk = devm_clk_get(&pdev->dev, "gclk");
-> +	if (IS_ERR(sama7g5_tcpc->gclk)) {
-> +		ret = PTR_ERR(sama7g5_tcpc->gclk);
-> +		dev_err(&pdev->dev,
-> +			"failed to get the PMC generic clock: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = clk_set_rate(sama7g5_tcpc->gclk, SAMA7G5_TCPC_GCLK);
-> +	if (ret) {
-> +		dev_err(&pdev->dev,
-> +			"unable to change gclk rate to: %u\n",
-> +			SAMA7G5_TCPC_GCLK);
-> +		return ret;
-> +	}
-> +
-> +	ret = clk_prepare_enable(sama7g5_tcpc->gclk);
-> +	if (ret) {
-> +		dev_err(&pdev->dev,
-> +			"failed to enable the generic clock: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	mutex_init(&sama7g5_tcpc->lock);
-> +	mutex_init(&sama7g5_tcpc->vbus_mutex);
-> +
-> +	sama7g5_tcpc->vbus_pin = devm_gpiod_get_optional(&pdev->dev,
-> +				"microchip,vbus", GPIOD_IN);
-
-You can align that properly.
-
-> +	if (IS_ERR(sama7g5_tcpc->vbus_pin)) {
-> +		ret = PTR_ERR(sama7g5_tcpc->vbus_pin);
-> +		dev_err(&pdev->dev, "unable to claim vbus-gpio: %d\n", ret);
-> +	}
-> +
-> +	sama7g5_tcpc->vbus = devm_regulator_get_optional(&pdev->dev, "vbus");
-> +
-> +	if (IS_ERR(sama7g5_tcpc->vbus)) {
-> +		ret = PTR_ERR(sama7g5_tcpc->vbus);
-> +		dev_err(&pdev->dev, "unable to claim vbus-supply: %d\n", ret);
-> +	}
-> +
-> +	if (sama7g5_tcpc->vbus_pin) {
-> +		irq_set_status_flags(gpiod_to_irq(sama7g5_tcpc->vbus_pin),
-> +				     IRQ_NOAUTOEN);
-> +		ret = devm_request_threaded_irq(&pdev->dev,
-> +				gpiod_to_irq(sama7g5_tcpc->vbus_pin), NULL,
-> +				sama7g5_vbus_irq_thread,
-> +				SAMA7G5_TCPC_VBUS_IRQFLAGS,
-> +				"sama7g5_tcpc", sama7g5_tcpc);
-> +		if (ret) {
-> +			sama7g5_tcpc->vbus_pin = NULL;
-> +			dev_warn(&pdev->dev,
-> +				 "failed to request vbus irq; "
-> +				 "assuming always on\n");
-> +		}
-> +	}
-> +
-> +	sama7g5_tcpc->dev = &pdev->dev;
-> +	platform_set_drvdata(pdev, sama7g5_tcpc);
-> +
-> +	sama7g5_tcpc->tcpc.init = sama7g5_tcpc_init;
-> +	sama7g5_tcpc->tcpc.get_vbus = sama7g5_tcpc_get_vbus;
-> +	sama7g5_tcpc->tcpc.set_vbus = sama7g5_tcpc_set_vbus;
-> +	sama7g5_tcpc->tcpc.set_cc = sama7g5_tcpc_set_cc;
-> +	sama7g5_tcpc->tcpc.get_cc = sama7g5_tcpc_get_cc;
-> +	sama7g5_tcpc->tcpc.set_polarity = sama7g5_tcpc_set_polarity;
-> +	sama7g5_tcpc->tcpc.set_vconn = sama7g5_tcpc_set_vconn;
-> +	sama7g5_tcpc->tcpc.start_toggling = sama7g5_tcpc_start_toggling;
-> +	sama7g5_tcpc->tcpc.set_pd_rx = sama7g5_tcpc_set_pd_rx;
-> +	sama7g5_tcpc->tcpc.set_roles = sama7g5_tcpc_set_roles;
-> +	sama7g5_tcpc->tcpc.pd_transmit = sama7g5_tcpc_pd_transmit;
-> +
-> +	sama7g5_tcpc->tcpc.fwnode = device_get_named_child_node(&pdev->dev,
-> +								"connector");
-> +	if (!sama7g5_tcpc->tcpc.fwnode) {
-> +		dev_err(&pdev->dev, "Can't find connector node.\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	sama7g5_tcpc->tcpm = tcpm_register_port(sama7g5_tcpc->dev,
-> +						&sama7g5_tcpc->tcpc);
-> +	if (IS_ERR(sama7g5_tcpc->tcpm)) {
-> +		fwnode_remove_software_node(sama7g5_tcpc->tcpc.fwnode);
-> +		return PTR_ERR(sama7g5_tcpc->tcpm);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int sama7g5_tcpc_remove(struct platform_device *pdev)
-> +{
-> +	struct sama7g5_tcpc *sama7g5_tcpc;
-> +
-> +	sama7g5_tcpc = platform_get_drvdata(pdev);
-> +
-> +	/* Mask everything */
-> +	if (sama7g5_tcpc->vbus_pin)
-> +		disable_irq(gpiod_to_irq(sama7g5_tcpc->vbus_pin));
-> +
-> +
-> +	if (!IS_ERR_OR_NULL(sama7g5_tcpc->tcpm))
-> +		tcpm_unregister_port(sama7g5_tcpc->tcpm);
-> +
-> +	destroy_workqueue(sama7g5_tcpc->wq);
-> +
-> +	clk_disable_unprepare(sama7g5_tcpc->gclk);
-> +	clk_disable_unprepare(sama7g5_tcpc->pclk);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id sama7g5_tcpc_dt_ids[] = {
-> +	{
-> +		.compatible = "microchip,sama7g5-tcpc",
-> +	},
-> +	{ /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, sama7g5_tcpc_dt_ids);
-> +
-> +static struct platform_driver sama7g5_tcpc_driver = {
-> +	.probe	= sama7g5_tcpc_probe,
-> +	.remove = sama7g5_tcpc_remove,
-> +	.driver = {
-> +		.name	= "microchip,sama7g5-tcpc",
-> +		.of_match_table	= sama7g5_tcpc_dt_ids,
-> +	},
-> +};
-> +module_platform_driver(sama7g5_tcpc_driver);
-> +
-> +MODULE_AUTHOR("Cristian Birsan <cristian.birsan@microchip.com>");
-> +MODULE_DESCRIPTION("Microchip SAMA7G5 Type-C Port Controller Driver");
-> +MODULE_LICENSE("GPL");
-
-thanks,
-
--- 
-heikki
+> On Mon,  1 Feb 2021 17:14:13 +0500
+> Bilal Wasim <bilalwasim676@gmail.com> wrote:
+>
+> > Incorrect mask for the "bus_prot_clr" field meant that imgtec
+> > gpu power domain (mfg_async) was not powered up correctly, causing
+> > failure in driver booting. Fixing this and also adding "domain_suuply"
+> > capability to "mfg_async" power domain (for mt8173) as imgtec gpu
+> > needs da9211 regulator to be enabled before enabling this subdomain.
+> >
+> > Tested with mt8173 elm chromebook.
+> >
+> > Bilal Wasim (3):
+> >   soc: mediatek: pm-domains: Use correct mask for bus_prot_clr
+> >   soc: mediatek: pm-domains: Add domain_supply cap for mfg_async PD
+> >   arm64: dts: mediatek: mt8173: Add domain supply for mfg_async
+> >
+> >  arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi | 4 ++++
+> >  arch/arm64/boot/dts/mediatek/mt8173-evb.dts  | 4 ++++
+> >  arch/arm64/boot/dts/mediatek/mt8173.dtsi     | 2 +-
+> >  drivers/soc/mediatek/mt8173-pm-domains.h     | 1 +
+> >  drivers/soc/mediatek/mtk-pm-domains.h        | 2 +-
+> >  5 files changed, 11 insertions(+), 2 deletions(-)
+> >
+>
+>
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
