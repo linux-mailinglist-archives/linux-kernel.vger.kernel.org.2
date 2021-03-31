@@ -2,114 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEAD0350AFF
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 01:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D73FB350AF7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 01:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232001AbhCaXqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 19:46:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbhCaXqY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 19:46:24 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E308C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 16:46:24 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id g20so600712qkk.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 16:46:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QVJf2tl4IWyWeYZKzdmdiismF5Kwfs0DaiffQjbKvI0=;
-        b=BftwgFsMkGP9DaHNw/lKk8TXRGWQNRqMweUE/JxfYD/LukTAV9f0zCZnvDePWoDTaK
-         tL1WKtigi8C1pPAM83ka/lOXH90VqKkxd1zF+3nIyqhqrehUTO5lop7OcWJ72ZdECfG0
-         qRVjROwVczkIp96dR5n8O3iJMgCKVXClY353M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QVJf2tl4IWyWeYZKzdmdiismF5Kwfs0DaiffQjbKvI0=;
-        b=GkWJJ57vVx6Pau8qLyODq5PR3CWMJWnws6oyyn6zMeVw/EpqgjG3CGSbJKv02zGFIv
-         wfVLHp/RgEZpycOq6H0Bs9Uc0uuhPzbTDa0n2krbf+fKbvdarLzAMC1MCJlhkv579iiv
-         +PzNBMP6XgwWSQv13Ib1/h3Bnm1kuXbnSMIy+N1L6Cj69/qLCxKaKvSFPRNMsj+IMTQP
-         IoHqPGyoYA6TjnSMAjCCDvnDjBP+EB/q8h3bBp+BrroiCcl4KEZYDd7rng5rxcu9iE6O
-         I38YJzmB8Cy26LeTC2KNagfCqL52qeUpnYVEJOzjasDZYFjC6kPHtZ+qIggUEmCrVB3/
-         UP1w==
-X-Gm-Message-State: AOAM532DzJ3H0f+6ONhGxfzOGix1M5Z7xxK0h2sFv9oF1XR5xsSNFVQC
-        k0zisqyJ1DJ5Qg3Fm+WYg/uY/T6et2gYTA==
-X-Google-Smtp-Source: ABdhPJxmhk/IVKSP6767RzkcepcdzvsyTHOOeWqrEMDFcwRi8DcQv6ZXG46Gf+566P+8evk3lRahmg==
-X-Received: by 2002:a05:620a:2046:: with SMTP id d6mr5918215qka.116.1617234382916;
-        Wed, 31 Mar 2021 16:46:22 -0700 (PDT)
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
-        by smtp.gmail.com with ESMTPSA id w12sm2461096qto.2.2021.03.31.16.46.22
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Mar 2021 16:46:22 -0700 (PDT)
-Received: by mail-yb1-f177.google.com with SMTP id j2so23016750ybj.8
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 16:46:22 -0700 (PDT)
-X-Received: by 2002:a25:8712:: with SMTP id a18mr2298312ybl.79.1617234382025;
- Wed, 31 Mar 2021 16:46:22 -0700 (PDT)
+        id S232772AbhCaXoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 19:44:06 -0400
+Received: from mga02.intel.com ([134.134.136.20]:36876 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229515AbhCaXnv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 19:43:51 -0400
+IronPort-SDR: p6+cgFZ/1GpeleyupLG9VADpRHvDNTSKp4+PXF2WvgPmCu4PT3Ce0xe0vbDUhdMJFRPeaT2nDY
+ yJAfl0z8x+fQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="179243180"
+X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
+   d="scan'208";a="179243180"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 16:43:50 -0700
+IronPort-SDR: VRxcxsUEV0sH/4DZfBI5I2LaEnMUx/NQkTnVoC7WXr8JeuKEuNiKMslo/z7SMKRlFQ9KRG92fm
+ ptyyNqAhMyTQ==
+X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
+   d="scan'208";a="379087406"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 16:43:50 -0700
+Date:   Wed, 31 Mar 2021 16:46:21 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210331164621.5f0b0d63@jacob-builder>
+In-Reply-To: <20210331123801.GD1463678@nvidia.com>
+References: <20210319124645.GP2356281@nvidia.com>
+        <YFSqDNJ5yagk4eO+@myrica>
+        <20210319135432.GT2356281@nvidia.com>
+        <20210319112221.5123b984@jacob-builder>
+        <20210322120300.GU2356281@nvidia.com>
+        <20210324120528.24d82dbd@jacob-builder>
+        <20210329163147.GG2356281@nvidia.com>
+        <MWHPR11MB18867EC048E3E3FA37F9C38F8C7D9@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210330132740.GB1403691@nvidia.com>
+        <BN6PR11MB40688BB2693A657D411E33C8C37C9@BN6PR11MB4068.namprd11.prod.outlook.com>
+        <20210331123801.GD1463678@nvidia.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210331221630.488498-1-robdclark@gmail.com>
-In-Reply-To: <20210331221630.488498-1-robdclark@gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 31 Mar 2021 16:46:10 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VJ_4ufZdCu0uh2J+WTgz2=naZNrjZDMnxjjOH-COfzJQ@mail.gmail.com>
-Message-ID: <CAD=FV=VJ_4ufZdCu0uh2J+WTgz2=naZNrjZDMnxjjOH-COfzJQ@mail.gmail.com>
-Subject: Re: [PATCH 0/4] drm/msm: Shrinker (and related) fixes
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        "Kristian H. Kristensen" <hoegsberg@google.com>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Jason,
 
-On Wed, Mar 31, 2021 at 3:14 PM Rob Clark <robdclark@gmail.com> wrote:
->
-> From: Rob Clark <robdclark@chromium.org>
->
-> I've been spending some time looking into how things behave under high
-> memory pressure.  The first patch is a random cleanup I noticed along
-> the way.  The second improves the situation significantly when we are
-> getting shrinker called from many threads in parallel.  And the last
-> two are $debugfs/gem fixes I needed so I could monitor the state of GEM
-> objects (ie. how many are active/purgable/purged) while triggering high
-> memory pressure.
->
-> We could probably go a bit further with dropping the mm_lock in the
-> shrinker->scan() loop, but this is already a pretty big improvement.
-> The next step is probably actually to add support to unpin/evict
-> inactive objects.  (We are part way there since we have already de-
-> coupled the iova lifetime from the pages lifetime, but there are a
-> few sharp corners to work through.)
->
-> Rob Clark (4):
->   drm/msm: Remove unused freed llist node
->   drm/msm: Avoid mutex in shrinker_count()
->   drm/msm: Fix debugfs deadlock
->   drm/msm: Improved debugfs gem stats
->
->  drivers/gpu/drm/msm/msm_debugfs.c      | 14 ++----
->  drivers/gpu/drm/msm/msm_drv.c          |  4 ++
->  drivers/gpu/drm/msm/msm_drv.h          | 10 ++++-
->  drivers/gpu/drm/msm/msm_fb.c           |  3 +-
->  drivers/gpu/drm/msm/msm_gem.c          | 61 +++++++++++++++++++++-----
->  drivers/gpu/drm/msm/msm_gem.h          | 58 +++++++++++++++++++++---
->  drivers/gpu/drm/msm/msm_gem_shrinker.c | 17 +------
->  7 files changed, 122 insertions(+), 45 deletions(-)
+On Wed, 31 Mar 2021 09:38:01 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-This makes a pretty big reduction in jankiness when under memory
-pressure and seems to work well for me.
+> > > Get rid of the ioasid set.
+> > >
+> > > Each driver has its own list of allowed ioasids.  
+>  [...]  
+> 
+> The /dev/ioasid FD replaces this security check. By becoming FD
+> centric you don't need additional kernel security objects.
+> 
+> Any process with access to the /dev/ioasid FD is allowed to control
+> those PASID. The seperation between VMs falls naturally from the
+> seperation of FDs without creating additional, complicated, security
+> infrastrucure in the kernel.
+> 
+> This is why all APIs must be FD focused, and you need to have a
+> logical layering of responsibility.
+> 
+>  Allocate a /dev/ioasid FD
+>  Allocate PASIDs inside the FD
+>  Assign memory to the PASIDS
+> 
+>  Open a device FD, eg from VFIO or VDP
+>  Instruct the device FD to authorize the device to access PASID A in
+>  an ioasid FD
+How do we know user provided PASID A was allocated by the ioasid FD?
+Shouldn't we validate user input by tracking which PASIDs are allocated by
+which ioasid FD? This is one reason why we have ioasid_set and its xarray.
 
-Tested-by: Douglas Anderson <dianders@chromium.org>
+>    * Prior to being authorized the device will have NO access to any
+>      PASID
+>    * Presenting BOTH the device FD and the ioasid FD to the kernel
+>      is the security check. Any process with both FDs is allowed to
+>      make the connection. This is normal Unix FD centric thinking.
+> 
+> > > Register a ioasid in the driver's list by passing the fd and ioasid #
+> > >  
+> > 
+> > The fd here is a device fd. Am I right?   
+> 
+> It would be the vfio_device FD, for instance, and a VFIO IOCTL.
+> 
+> > If yes, your idea is ioasid is allocated via /dev/ioasid and
+> > associated with device fd via either VFIO or vDPA ioctl. right?
+> > sorry I may be asking silly questions but really need to ensure we
+> > are talking in the same page.  
+> 
+> Yes, this is right
+> 
+> > > No listening to events. A simple understandable security model.  
+> > 
+> > For this suggestion, I have a little bit concern if we may have A-B/B-A
+> > lock sequence issue since it requires the /dev/ioasid (if it supports)
+> > to call back into VFIO/VDPA to check if the ioasid has been registered
+> > to device FD and record it in the per-device list. right? Let's have
+> > more discussion based on the skeleton sent by Kevin.  
+> 
+> Callbacks would be backwards.
+> 
+> User calls vfio with vfio_device fd and dev/ioasid fd
+> 
+> VFIO extracts some kernel representation of the ioasid from the ioasid
+> fd using an API
+> 
+This lookup API seems to be asking for per ioasid FD storage array. Today,
+the ioasid_set is per mm and contains a Xarray. Since each VM, KVM can only
+open one ioasid FD, this per FD array would be equivalent to the per mm
+ioasid_set, right?
+
+> VFIO does some kernel call to IOMMU/IOASID layer that says 'tell the
+> IOMMU that this PCI device is allowed to use this PASID'
+> 
+Would it be redundant to what iommu_uapi_sva_bind_gpasid() does? I thought
+the idea is to use ioasid FD IOCTL to issue IOMMU uAPI calls. Or we can
+skip this step for now and wait for the user to do SVA bind.
+
+> VFIO mdev drivers then record that the PASID is allowed in its own
+> device specific struct for later checking during other system calls.
+
+
+Thanks,
+
+Jacob
