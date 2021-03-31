@@ -2,110 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4E83509FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF42350A1A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232644AbhCaWMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 18:12:06 -0400
-Received: from mga04.intel.com ([192.55.52.120]:52036 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229787AbhCaWL7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 18:11:59 -0400
-IronPort-SDR: 2zR3dTDCXYto8bp9C1C/RXDBx/T68F3WuR2Qk3TC1aIqBRIzDoQr8effLKQ37WFW/OBE87GhMl
- R55M1/17MOmw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="189869170"
-X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="189869170"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 15:11:58 -0700
-IronPort-SDR: N30Tvd6mL2JKMavIC8UXiVqwB/LVBQ8TLvIaN0u+So0DHsmwYzbL3do0kqqQoVbZy42iTzz7iM
- V8r65CZJ4KYg==
-X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="418877305"
-Received: from algolden-mobl1.amr.corp.intel.com (HELO [10.209.172.7]) ([10.209.172.7])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 15:11:58 -0700
-Subject: Re: [PATCH v4 1/1] x86/tdx: Handle MWAIT, MONITOR and WBINVD
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
-References: <2FE32855-EA5D-44E4-AACC-25E9B1476547@amacapital.net>
- <e62cfd0ae90de435e6819979d9027f76d835a22a.1617224710.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <YGTvSvr2T2v3t3XA@google.com>
- <5d961c25-3dee-4a5d-4bba-a97d157a5a49@intel.com>
- <YGTyWUQbxVZeeko+@google.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <d8078f5d-735c-2b0f-98eb-663be2118762@intel.com>
-Date:   Wed, 31 Mar 2021 15:11:57 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232883AbhCaWQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 18:16:53 -0400
+Received: from mail-pg1-f169.google.com ([209.85.215.169]:33356 "EHLO
+        mail-pg1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232917AbhCaWQZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 18:16:25 -0400
+Received: by mail-pg1-f169.google.com with SMTP id f3so321055pgv.0;
+        Wed, 31 Mar 2021 15:16:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lAfgYSpdkPzGY4sGqjGful9TAMROlVKPNJVMCA9R3EU=;
+        b=ibLALJ5PkojGG4++2sbSyobESzV2k4icIRVt8tl/tKNYqT3C62PHjcFMxKgigUlyj0
+         IpINKdAvvmiYTM2xkpxiEVlAvhPQ2NT/K4cd1VIdhMyIHQOlMxfWH6G5A38bdl6alVwk
+         MamxYSmAS4CoGI7lwvLcbhvdsJ83eC2UVC4PNhU74vYmdEtDXft+FI4jokeSIKmelF1b
+         uyF9gfPGGRyxu1lQ+J2Nn0gAfV6Wc0O86Ma6HwIZayVIA7lp+bj4gN/LoOUlR/HveX6T
+         8PviduD4pGygkJOLhrJ5ckSelLnSIZbVIDbuhhNTB2cpwlAWvJzZ4Vrdr18WDlCS5CEo
+         zLXw==
+X-Gm-Message-State: AOAM532bTkTQWxlWGT2VHd58EUs9gaObwPPwWPXFBYhqPhnPicQcokeK
+        j+FNdnFr7zS9Gap1cyBo1ikK/X0brHE=
+X-Google-Smtp-Source: ABdhPJwCocLn0BTPGo4npIQn4N6y8qUO+z0QmR4ZVHFSCy4m31+99tvlH/Ha/oT3NcZpx2bstdOJLg==
+X-Received: by 2002:a63:1c48:: with SMTP id c8mr3928144pgm.234.1617228985028;
+        Wed, 31 Mar 2021 15:16:25 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id u4sm3019505pfk.131.2021.03.31.15.16.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 15:16:24 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 15:16:23 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Russ Weight <russell.h.weight@intel.com>
+Cc:     Moritz Fischer <mdf@kernel.org>, Tom Rix <trix@redhat.com>,
+        "Gong, Richard" <richard.gong@intel.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "richard.gong@linux.intel.com" <richard.gong@linux.intel.com>
+Subject: Re: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
+Message-ID: <YGT0t/7PEemH7iAI@epycbox.lan>
+References: <1612909233-13867-1-git-send-email-richard.gong@linux.intel.com>
+ <MWHPR11MB001577B17723C8A046398249879E9@MWHPR11MB0015.namprd11.prod.outlook.com>
+ <YF90y3Di4RbuJvr0@epycbox.lan>
+ <496aa871-cfb0-faf4-4b1c-b53e56b58030@redhat.com>
+ <YGC619DmLM0AAQ5p@epycbox.lan>
+ <6c741ab7-1ee6-cbf1-94fa-818dd7f4c5c5@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <YGTyWUQbxVZeeko+@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6c741ab7-1ee6-cbf1-94fa-818dd7f4c5c5@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/31/21 3:06 PM, Sean Christopherson wrote:
-> I've no objection to a nice message in the #VE handler.  What I'm objecting to
-> is sanity checking the CPUID model provided by the TDX module.  If we don't
-> trust the TDX module to honor the spec, then there are a huge pile of things
-> that are far higher priority than MONITOR/MWAIT.
+Hi Russ,
+On Wed, Mar 31, 2021 at 11:47:26AM -0700, Russ Weight wrote:
+> Moritz,
+> 
+> On 3/28/21 10:20 AM, Moritz Fischer wrote:
+> > Tom,
+> >
+> > On Sun, Mar 28, 2021 at 08:40:24AM -0700, Tom Rix wrote:
+> >> On 3/27/21 11:09 AM, Moritz Fischer wrote:
+> >>> Hi Richard, Russ,
+> >>>
+> >>> On Thu, Feb 25, 2021 at 01:07:14PM +0000, Gong, Richard wrote:
+> >>>> Hi Moritz,
+> >>>>
+> >>>> Sorry for asking.
+> >>>>
+> >>>> When you have chance, can you help review the version 5 patchset submitted on 02/09/21?
+> >>>>
+> >>>> Regards,
+> >>>> Richard
+> >>>>
+> >>>> -----Original Message-----
+> >>>> From: richard.gong@linux.intel.com <richard.gong@linux.intel.com> 
+> >>>> Sent: Tuesday, February 9, 2021 4:20 PM
+> >>>> To: mdf@kernel.org; trix@redhat.com; gregkh@linuxfoundation.org; linux-fpga@vger.kernel.org; linux-kernel@vger.kernel.org
+> >>>> Cc: Gong, Richard <richard.gong@intel.com>
+> >>>> Subject: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
+> >>>>
+> >>>> From: Richard Gong <richard.gong@intel.com>
+> >>>>
+> >>>> This is 5th submission of Intel service layer and FPGA patches, which includes the missing standalone patch in the 4th submission.
+> >>>>
+> >>>> This submission includes additional changes for Intel service layer driver to get the firmware version running at FPGA SoC device. Then FPGA manager driver, one of Intel service layer driver's client, can decide whether to handle the newly added bitstream authentication function based on the retrieved firmware version. So that we can maintain FPGA manager driver the back compatible.
+> >>>>
+> >>>> Bitstream authentication makes sure a signed bitstream has valid signatures.
+> >>>>
+> >>>> The customer sends the bitstream via FPGA framework and overlay, the firmware will authenticate the bitstream but not program the bitstream to device. If the authentication passes, the bitstream will be programmed into QSPI flash and will be expected to boot without issues.
+> >>>>
+> >>>> Extend Intel service layer, FPGA manager and region drivers to support the bitstream authentication feature. 
+> >>>>
+> >>>> Richard Gong (7):
+> >>>>   firmware: stratix10-svc: reset COMMAND_RECONFIG_FLAG_PARTIAL to 0
+> >>>>   firmware: stratix10-svc: add COMMAND_AUTHENTICATE_BITSTREAM flag
+> >>>>   firmware: stratix10-svc: extend SVC driver to get the firmware version
+> >>>>   fpga: fpga-mgr: add FPGA_MGR_BITSTREAM_AUTHENTICATE flag
+> >>>>   fpga: of-fpga-region: add authenticate-fpga-config property
+> >>>>   dt-bindings: fpga: add authenticate-fpga-config property
+> >>>>   fpga: stratix10-soc: extend driver for bitstream authentication
+> >>>>
+> >>>>  .../devicetree/bindings/fpga/fpga-region.txt       | 10 ++++
+> >>>>  drivers/firmware/stratix10-svc.c                   | 12 ++++-
+> >>>>  drivers/fpga/of-fpga-region.c                      | 24 ++++++---
+> >>>>  drivers/fpga/stratix10-soc.c                       | 62 +++++++++++++++++++---
+> >>>>  include/linux/firmware/intel/stratix10-smc.h       | 21 +++++++-
+> >>>>  .../linux/firmware/intel/stratix10-svc-client.h    | 11 +++-
+> >>>>  include/linux/fpga/fpga-mgr.h                      |  3 ++
+> >>>>  7 files changed, 125 insertions(+), 18 deletions(-)
+> >>>>
+> >>>> --
+> >>>> 2.7.4
+> >>>>
+> >>> Apologies for the epic delay in getting back to this, I took another
+> >>> look at this patchset and Russ' patchset.
+> >>>
+> >>> TL;DR I'm not really a fan of using device-tree overlays for this (and
+> >>> again, apologies, I should've voiced this earlier ...).
+> >>>
+> >>> Anyways, let's find a common API for this and Russ' work, they're trying
+> >>> to achieve the same / similar thing, they should use the same API.
+> >>>
+> >>> I'd like to re-invetigate the possiblity to extend FPGA Manager with
+> >>> 'secure update' ops that work for both these use-cases (and I susspect
+> >>> hte XRT patchset will follow with a similar requirement, right after).
+> 
+> Richard and I had an initial conversation today. I'll start looking at how secure operations can be integrated into the fpga manager.
+> 
+> More to come...
 
-In other words:  Don't muck with CPUID or the X86_FEATURE at all.  Don't
-check it to comply with the spec.  If something doesn't comply, we'll
-get a #VE at *SOME* point.  We don't need to do belt-and-suspenders
-programming here.
+Great, feel free to send RFCs ahead.
 
-That sounds sane to me.
+Cheers,
+Moritz
