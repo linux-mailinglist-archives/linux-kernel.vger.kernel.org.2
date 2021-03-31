@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8B834FB84
+	by mail.lfdr.de (Postfix) with ESMTP id 60B1134FB83
 	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234218AbhCaI0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 04:26:24 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:4066 "EHLO
+        id S233762AbhCaI0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 04:26:22 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:8416 "EHLO
         mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232476AbhCaIZ4 (ORCPT
+        with ESMTP id S232406AbhCaIZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 04:25:56 -0400
-X-UUID: 767e8e90e56140f2b36815a3d2f89e80-20210331
-X-UUID: 767e8e90e56140f2b36815a3d2f89e80-20210331
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        Wed, 31 Mar 2021 04:25:52 -0400
+X-UUID: d7c51d1593e244d6964a671c36a08903-20210331
+X-UUID: d7c51d1593e244d6964a671c36a08903-20210331
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
         (envelope-from <chunfeng.yun@mediatek.com>)
         (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 970412016; Wed, 31 Mar 2021 16:25:50 +0800
+        with ESMTP id 1993034478; Wed, 31 Mar 2021 16:25:49 +0800
 Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 31 Mar 2021 16:25:45 +0800
+ MTKMBS31N1.mediatek.inc (172.27.4.69) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 31 Mar 2021 16:25:46 +0800
 Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 31 Mar 2021 16:25:44 +0800
+ Transport; Wed, 31 Mar 2021 16:25:45 +0800
 From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
 To:     Mathias Nyman <mathias.nyman@intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
@@ -33,56 +33,60 @@ CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH next 1/2] usb: xhci-mtk: fix wrong remainder of bandwidth budget
-Date:   Wed, 31 Mar 2021 16:25:41 +0800
-Message-ID: <1617179142-2681-1-git-send-email-chunfeng.yun@mediatek.com>
+Subject: [PATCH next 2/2] usb: xhci-mtk: fix oops when unbind driver
+Date:   Wed, 31 Mar 2021 16:25:42 +0800
+Message-ID: <1617179142-2681-2-git-send-email-chunfeng.yun@mediatek.com>
 X-Mailer: git-send-email 1.8.1.1.dirty
+In-Reply-To: <1617179142-2681-1-git-send-email-chunfeng.yun@mediatek.com>
+References: <1617179142-2681-1-git-send-email-chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-TM-SNTS-SMTP: 3AAD719846C3AAD1837B7AB546F347E2B72316CB87607FDDEA7BCDCF48BAFCB82000:8
+X-TM-SNTS-SMTP: 614E4DE8A8471C2F373F0B87E228EECE78C7633A0599EF5262D0A24C1DDFC49F2000:8
 X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The remainder of the last bandwidth bugdget is wrong,
-it's the value alloacted in last bugdget, not unused.
+The oops happens when unbind driver through sysfs as following,
+because xhci_mtk_drop_ep() try to drop the endpoint of root hub
+which is not added by xhci_add_endpoint() and the virtual device
+is not allocated, in fact also needn't drop it, so should skip it.
 
-Reported-by: Yaqii Wu <Yaqii.Wu@mediatek.com>
+Call trace:
+ xhci_mtk_drop_ep+0x1b8/0x298
+ usb_hcd_alloc_bandwidth+0x1d8/0x380
+ usb_disable_device_endpoints+0x8c/0xe0
+ usb_disable_device+0x128/0x168
+ usb_disconnect+0xbc/0x2c8
+ usb_remove_hcd+0xd8/0x210
+ xhci_mtk_remove+0x98/0x108
+ platform_remove+0x28/0x60
+ device_release_driver_internal+0x110/0x1e8
+ device_driver_detach+0x18/0x28
+ unbind_store+0xd4/0x108
+ drv_attr_store+0x24/0x38
+
+Fixes: 14295a150050 ("usb: xhci-mtk: support to build xhci-mtk-hcd.ko")
+Reported-by: Eddie Hung <eddie.hung@mediatek.com>
 Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 ---
- drivers/usb/host/xhci-mtk-sch.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ drivers/usb/host/xhci-mtk-sch.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/usb/host/xhci-mtk-sch.c b/drivers/usb/host/xhci-mtk-sch.c
-index a59d1f6d4744..7ac76ae28998 100644
+index 7ac76ae28998..8b90da5a6ed1 100644
 --- a/drivers/usb/host/xhci-mtk-sch.c
 +++ b/drivers/usb/host/xhci-mtk-sch.c
-@@ -341,7 +341,6 @@ static void setup_sch_info(struct xhci_ep_ctx *ep_ctx,
- 		}
+@@ -872,6 +872,8 @@ int xhci_mtk_drop_ep(struct usb_hcd *hcd, struct usb_device *udev,
+ 	if (ret)
+ 		return ret;
  
- 		if (ep_type == ISOC_IN_EP || ep_type == ISOC_OUT_EP) {
--			u32 remainder;
- 
- 			if (sch_ep->esit == 1)
- 				sch_ep->pkts = esit_pkts;
-@@ -357,14 +356,12 @@ static void setup_sch_info(struct xhci_ep_ctx *ep_ctx,
- 			sch_ep->repeat = !!(sch_ep->num_budget_microframes > 1);
- 			sch_ep->bw_cost_per_microframe = maxpkt * sch_ep->pkts;
- 
--			remainder = sch_ep->bw_cost_per_microframe;
--			remainder *= sch_ep->num_budget_microframes;
--			remainder -= (maxpkt * esit_pkts);
- 			for (i = 0; i < sch_ep->num_budget_microframes - 1; i++)
- 				bwb_table[i] = sch_ep->bw_cost_per_microframe;
- 
- 			/* last one <= bw_cost_per_microframe */
--			bwb_table[i] = remainder;
-+			bwb_table[i] = maxpkt * esit_pkts
-+				       - i * sch_ep->bw_cost_per_microframe;
- 		}
- 	} else if (is_fs_or_ls(sch_ep->speed)) {
- 		sch_ep->pkts = 1; /* at most one packet for each microframe */
+-	drop_ep_quirk(hcd, udev, ep);
++	if (ep->hcpriv)
++		drop_ep_quirk(hcd, udev, ep);
++
+ 	return 0;
+ }
 -- 
 2.18.0
 
