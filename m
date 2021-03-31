@@ -2,114 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3FC5350132
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 15:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B28393501A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 15:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235521AbhCaN1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 09:27:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56242 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235755AbhCaN1N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 09:27:13 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CF05361968;
-        Wed, 31 Mar 2021 13:27:12 +0000 (UTC)
-Date:   Wed, 31 Mar 2021 09:27:11 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [GIT PULL] ftrace: Check if pages were allocated before calling
- free_pages()
-Message-ID: <20210331092711.2b23fcff@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S235796AbhCaNpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 09:45:52 -0400
+Received: from mail-bn8nam12on2056.outbound.protection.outlook.com ([40.107.237.56]:55666
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235748AbhCaNpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 09:45:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IEgVzgS0acuVY2HZUzFUYWuwgeqM/OlHQ614+Wtyl6rZKypRl2XQdv/ognIyRJRgZuwbmEwbx8HlfZe3WeWIaHJBRE5yTJhUPxrLjDiJ5FjcJtZ+aOdWQbDTRpMSIXKC5tnNi8lmBbjAm8glzYdJ03msSWXKobyleC0TKNlm2xjLVqx7VUaad2PQeyTfffZ7T11RpnYpfIeaOYuGDfcAELXqM1HwB0dMYSQRkb/atW6nCMY9YgtjlEVuubTIQK0F3QLRLwbKdaeg90lhN3ZziQmeuOPIj04WWSNw/yZdOXNvjmA1HMCWQAVvA3M/GD7bDTPm9SwPl92DtXlaQoazrA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gzKM0/kAI7/zHk3Mh6RAaYbyK/o0f7mdoms6zUOd8qE=;
+ b=G4IOF8wqkOmt3zm4uMJAsXwjf9aw+UuLfdvTfnlJF5SQtQK4xyBiQgtydGqICtaOSO9Yl9kNtsAAqCyFkQODFC6mx5325hiQk6Ktng5gfz5GkOxd6xKlrUojzwsob2ap4XA02Ubs0OMZb8S3Ni52G1YG0h0nvPEJSN7K+bTlH+T6iUVHVyGVcGTiW5vGfmDSu1NlepIcPbGStknrss6TVx9UYAoUjmKh1A0zgLCsIVHtdId3SjUbczq9A7m+CppFeZ5rz+IyuHTuXoOafOF68gDgdroHxW5HiUmeSl5KKrRAmoMe3GD2kOlG7o0e9SIbzzHyAePlFklvrJKXtliCwQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=infradead.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gzKM0/kAI7/zHk3Mh6RAaYbyK/o0f7mdoms6zUOd8qE=;
+ b=c47QLU5AzWl2d4YpxgioVNtv75OXPPfjcmydfhkjALPgm3yyKn8es77kqvJ/fI7VbsqCSCYngMGP6bbVimcrwyiqHTEAUJhm5ywVoMA5k1831ZgZ6J5hrGPd/4ulcItNRGUGckSEn02sjsbPb3iLQev+50XmYQUHD4D7y9g9DDpfknRqr/B8Qf7wDcLn0TGKi4QHpkl++vMiW19+ZAns4V5k+UJHuExHLvtuUauFo6odTW8nr/EeJMcEmQZb6uumxmPVnZAouibm22ospiRzZSbKz4+CalpfcZ73Q36FNPqFKJqTL4dNhUKL3t7PRi/PLAbOpf7QQtk1yvi7wQsfAQ==
+Received: from MWHPR21CA0062.namprd21.prod.outlook.com (2603:10b6:300:db::24)
+ by DM6PR12MB4313.namprd12.prod.outlook.com (2603:10b6:5:21e::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.29; Wed, 31 Mar
+ 2021 13:45:16 +0000
+Received: from CO1NAM11FT017.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:db:cafe::c0) by MWHPR21CA0062.outlook.office365.com
+ (2603:10b6:300:db::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.5 via Frontend
+ Transport; Wed, 31 Mar 2021 13:45:16 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT017.mail.protection.outlook.com (10.13.175.108) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3955.18 via Frontend Transport; Wed, 31 Mar 2021 13:45:14 +0000
+Received: from nvdebian.localnet (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 31 Mar
+ 2021 13:45:10 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
+        <bskeggs@redhat.com>, <akpm@linux-foundation.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kvm-ppc@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <jhubbard@nvidia.com>, <rcampbell@nvidia.com>,
+        <jglisse@redhat.com>, <hch@infradead.org>, <daniel@ffwll.ch>,
+        <willy@infradead.org>, "Christoph Hellwig" <hch@lst.de>
+Subject: Re: [PATCH v7 5/8] mm: Device exclusive memory access
+Date:   Thu, 1 Apr 2021 00:27:52 +1100
+Message-ID: <2124945.3NMGunUBXV@nvdebian>
+In-Reply-To: <20210331131854.GI1463678@nvidia.com>
+References: <20210326000805.2518-1-apopple@nvidia.com> <2521635.masqiumSp9@nvdebian> <20210331131854.GI1463678@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d4521bdf-97bf-4953-ae88-08d8f44b364e
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4313:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB431395D0037A10963BBEE22ADF7C9@DM6PR12MB4313.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4lyMc3OY1oFBNQX4BWc/hycmP9XVec5QSBFS6WAI73l9aCkoSIc9m9nsj0m8duArnHOTdlXCBKLWODQNLqtsxHACFjqflYA8mTGaUblQpzOrpj7rsvFIqtn2ndTSFlWejGvi9DFNaE/farNDkVUuI+0Oc5pITSmp/MMttb3S7WU2Brcz1bYAvShaKk424PAl7OsRqBSUS/deFTWQ8dF8QX0kBzoUphSg9QEHMJWx8xW6h/YwMUhgCISxUUYe32nmlA8TusOdeM/m4IUFk6ep7F/eUexUoCazhlskROo3xfv6awVuLsWchRqRdInoHctbzbpMlfJ2jtOCfCHP6/qbS0vXoh+EqsolsGOVcg3S3Bdl+EgnXuox5anAVJozLAURKNCuiQAvcUuN8RXXpc+1LvuHFAJVGSlzWhY9AQsERTVULgk8JWxjqvpdgbb8oaAZSy3BhZ7p8edkKJxEtz9LgKjrTRbjp3XAqrrqkZZgv3vUCC9sL11Il2GoqjidtM/Uf+ezMSFy66i+YYjKuQdRGG/1diIsMILLC4PPwQuwQzbfOQhM53jVIAAaHKXHrfCXKPI7JK2leORV88wWRzerP6nkemc5MXeG8OC7gmvbMbadc2zmm+hAPIF0hdRVHNnngiGrbce7p7IQsR7urDcnQY21rgyWWQBpeHEB13aZBTQOmQDI14KJIKtU+JiCPPta
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(39860400002)(396003)(346002)(376002)(36840700001)(46966006)(33716001)(83380400001)(82740400003)(9686003)(5660300002)(426003)(478600001)(356005)(54906003)(316002)(4326008)(6862004)(6636002)(36906005)(86362001)(26005)(70586007)(70206006)(8936002)(8676002)(9576002)(16526019)(186003)(47076005)(336012)(6666004)(36860700001)(7636003)(7416002)(2906002)(82310400003)(39026012);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Mar 2021 13:45:14.2186
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d4521bdf-97bf-4953-ae88-08d8f44b364e
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT017.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4313
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thursday, 1 April 2021 12:18:54 AM AEDT Jason Gunthorpe wrote:
+> On Wed, Mar 31, 2021 at 11:59:28PM +1100, Alistair Popple wrote:
+> 
+> > I guess that makes sense as the split could go either way at the
+> > moment but I should add a check to make sure this isn't used with
+> > pinned pages anyway.
+> 
+> Is it possible to have a pinned page under one of these things? If I
+> pin it before you migrate it then it remains pinned but hidden under
+> the swap entry?
 
-Linus,
+At the moment yes. But I had planned (and this reminded me) to add a check to 
+prevent marking pinned pages for exclusive access. This check was in the 
+original migration based implementation as I don't think it makes much sense 
+to allow exclusive access to pinned pages given it indicates another device is 
+possibly using it. 
 
-Add check of order < 0 before calling free_pages()
+> So the special logic is needed and the pinned page has to be copied
+> and written as a normal pte, not dropped as a migration entry
 
-The function addresses that are traced by ftrace are stored in pages,
-and the size is held in a variable. If there's some error in creating
-them, the allocate ones will be freed. In this case, it is possible that
-the order of pages to be freed may end up being negative due to a size of
-zero passed to get_count_order(), and then that negative number will cause
-free_pages() to free a very large section. Make sure that does not happen.
+Yep, if we end up allowing pinned pages to exist under these then that makes 
+sense. Thanks for the clarification.
 
+ - Alistair
 
-Please pull the latest trace-v5.12-rc5 tree, which can be found at:
-
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-trace-v5.12-rc5
-
-Tag SHA1: 30ee29d701d2b6848cfa1c7a163745fb68aabd36
-Head SHA1: 59300b36f85f254260c81d9dd09195fa49eb0f98
+> Jason
+> 
 
 
-Steven Rostedt (VMware) (1):
-      ftrace: Check if pages were allocated before calling free_pages()
 
-----
- kernel/trace/ftrace.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
----------------------------
-commit 59300b36f85f254260c81d9dd09195fa49eb0f98
-Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Date:   Tue Mar 30 09:58:38 2021 -0400
-
-    ftrace: Check if pages were allocated before calling free_pages()
-    
-    It is possible that on error pg->size can be zero when getting its order,
-    which would return a -1 value. It is dangerous to pass in an order of -1
-    to free_pages(). Check if order is greater than or equal to zero before
-    calling free_pages().
-    
-    Link: https://lore.kernel.org/lkml/20210330093916.432697c7@gandalf.local.home/
-    
-    Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-    Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 4d8e35575549..12223132eff4 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -3231,7 +3231,8 @@ ftrace_allocate_pages(unsigned long num_to_init)
- 	pg = start_pg;
- 	while (pg) {
- 		order = get_count_order(pg->size / ENTRIES_PER_PAGE);
--		free_pages((unsigned long)pg->records, order);
-+		if (order >= 0)
-+			free_pages((unsigned long)pg->records, order);
- 		start_pg = pg->next;
- 		kfree(pg);
- 		pg = start_pg;
-@@ -6418,7 +6419,8 @@ void ftrace_release_mod(struct module *mod)
- 		clear_mod_from_hashes(pg);
- 
- 		order = get_count_order(pg->size / ENTRIES_PER_PAGE);
--		free_pages((unsigned long)pg->records, order);
-+		if (order >= 0)
-+			free_pages((unsigned long)pg->records, order);
- 		tmp_page = pg->next;
- 		kfree(pg);
- 		ftrace_number_of_pages -= 1 << order;
-@@ -6778,7 +6780,8 @@ void ftrace_free_mem(struct module *mod, void *start_ptr, void *end_ptr)
- 		if (!pg->index) {
- 			*last_pg = pg->next;
- 			order = get_count_order(pg->size / ENTRIES_PER_PAGE);
--			free_pages((unsigned long)pg->records, order);
-+			if (order >= 0)
-+				free_pages((unsigned long)pg->records, order);
- 			ftrace_number_of_pages -= 1 << order;
- 			ftrace_number_of_groups--;
- 			kfree(pg);
