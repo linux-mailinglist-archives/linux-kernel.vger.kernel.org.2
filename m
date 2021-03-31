@@ -2,146 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EEAD350692
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 501DA35069C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235108AbhCaSnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 14:43:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56134 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235207AbhCaSnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 14:43:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1FED606A5;
-        Wed, 31 Mar 2021 18:43:14 +0000 (UTC)
-Date:   Wed, 31 Mar 2021 19:43:12 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Andrew Jones <drjones@redhat.com>, Haibo Xu <Haibo.Xu@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        qemu-devel@nongnu.org, Marc Zyngier <maz@kernel.org>,
-        Juan Quintela <quintela@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        James Morse <james.morse@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        Julien Thierry <julien.thierry.kdev@gmail.com>
-Subject: Re: [PATCH v10 2/6] arm64: kvm: Introduce MTE VM feature
-Message-ID: <20210331184311.GA10737@arm.com>
-References: <20210312151902.17853-1-steven.price@arm.com>
- <20210312151902.17853-3-steven.price@arm.com>
- <20210327152324.GA28167@arm.com>
- <20210328122131.GB17535@arm.com>
- <e0b88560-34e1-dcc4-aaa7-9a7a5b771824@arm.com>
- <20210330103013.GD18075@arm.com>
- <8977120b-841d-4882-2472-6e403bc9c797@redhat.com>
- <20210331092109.GA21921@arm.com>
- <d545a051-a02a-4c3a-0afe-66612839ba32@redhat.com>
- <86a968c8-7a0e-44a4-28c3-bac62c2b7d65@arm.com>
+        id S235394AbhCaSn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 14:43:59 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:47960 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235205AbhCaSni (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 14:43:38 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12VIOrjp180569;
+        Wed, 31 Mar 2021 18:43:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=Sgw2w+kgVfvTr68L4+Fag7PR6Rntmywf8u7lTr7+rQs=;
+ b=CwjSWA5zvaihKo2shVtnGcUUPN0zrAvRpY4vndKU+deMseJ8Og0oTBSAA/MkasmGMBm8
+ 1R/0LEuJ7LFHSB6zFd/NTRv36h4uqEVUiGGRTvPt2Liu/RKkKHQKNGO5Nbi2qZKQurwc
+ etTU+eXQc76XpM7JjWq6d/hGXl0kJ10Zy7sWe09IF+Xkvmbu7SR5VXdaKxr+mhzhDISI
+ DJf6mga0VosihXPq0/X70BA1gWCc26CHEWY3nj1YiBiMeObGxHiEfh2iM9JSYLITXPyV
+ 6V0usFK2cM+JPI/105clT3Sn5ja1D2wRzfs2venwr1SmwfGYjSelLawYqLrkji+TGsnI lg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 37mp06srf6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 31 Mar 2021 18:43:32 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12VIPXHx134962;
+        Wed, 31 Mar 2021 18:43:30 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 37mabmk9vu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 31 Mar 2021 18:43:30 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 12VIh0wM196416;
+        Wed, 31 Mar 2021 18:43:30 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 37mabmk9vg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 31 Mar 2021 18:43:29 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 12VIhSA7012148;
+        Wed, 31 Mar 2021 18:43:28 GMT
+Received: from lab02.no.oracle.com (/10.172.144.56)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 31 Mar 2021 11:43:27 -0700
+From:   =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
+To:     Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, linux-rdma@vger.kernel.org,
+        Parav Pandit <parav@nvidia.com>
+Cc:     netdev@vger.kernel.org, rds-devel@oss.oracle.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH for-next v3 0/2] Introduce rdma_set_min_rnr_timer() and use it in RDS
+Date:   Wed, 31 Mar 2021 20:43:12 +0200
+Message-Id: <1617216194-12890-1-git-send-email-haakon.bugge@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <86a968c8-7a0e-44a4-28c3-bac62c2b7d65@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Proofpoint-IMR: 1
+X-Proofpoint-ORIG-GUID: rq5vfdvUlRtfDysJlDaV4EuTC2ISjSbg
+X-Proofpoint-GUID: rq5vfdvUlRtfDysJlDaV4EuTC2ISjSbg
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9940 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 spamscore=0
+ malwarescore=0 mlxlogscore=985 mlxscore=0 clxscore=1015 bulkscore=0
+ adultscore=0 priorityscore=1501 phishscore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103300000 definitions=main-2103310126
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 11:41:20AM +0100, Steven Price wrote:
-> On 31/03/2021 10:32, David Hildenbrand wrote:
-> > On 31.03.21 11:21, Catalin Marinas wrote:
-> > > On Wed, Mar 31, 2021 at 09:34:44AM +0200, David Hildenbrand wrote:
-> > > > On 30.03.21 12:30, Catalin Marinas wrote:
-> > > > > On Mon, Mar 29, 2021 at 05:06:51PM +0100, Steven Price wrote:
-> > > > > > On 28/03/2021 13:21, Catalin Marinas wrote:
-> > > > > > > However, the bigger issue is that Stage 2 cannot disable
-> > > > > > > tagging for Stage 1 unless the memory is Non-cacheable or
-> > > > > > > Device at S2. Is there a way to detect what gets mapped in
-> > > > > > > the guest as Normal Cacheable memory and make sure it's
-> > > > > > > only early memory or hotplug but no ZONE_DEVICE (or
-> > > > > > > something else like on-chip memory)?  If we can't
-> > > > > > > guarantee that all Cacheable memory given to a guest
-> > > > > > > supports tags, we should disable the feature altogether.
-> > > > > > 
-> > > > > > In stage 2 I believe we only have two types of mapping -
-> > > > > > 'normal' or DEVICE_nGnRE (see stage2_map_set_prot_attr()).
-> > > > > > Filtering out the latter is a case of checking the 'device'
-> > > > > > variable, and makes sense to avoid the overhead you
-> > > > > > describe.
-> > > > > > 
-> > > > > > This should also guarantee that all stage-2 cacheable
-> > > > > > memory supports tags,
-> > > > > > as kvm_is_device_pfn() is simply !pfn_valid(), and
-> > > > > > pfn_valid() should only
-> > > > > > be true for memory that Linux considers "normal".
-> > > > 
-> > > > If you think "normal" == "normal System RAM", that's wrong; see
-> > > > below.
-> > > 
-> > > By "normal" I think both Steven and I meant the Normal Cacheable memory
-> > > attribute (another being the Device memory attribute).
-> 
-> Sadly there's no good standardised terminology here. Aarch64 provides the
-> "normal (cacheable)" definition. Memory which is mapped as "Normal
-> Cacheable" is implicitly MTE capable when shared with a guest (because the
-> stage 2 mappings don't allow restricting MTE other than mapping it as Device
-> memory).
-> 
-> So MTE also forces us to have a definition of memory which is "bog standard
-> memory"[1] separate from the mapping attributes. This is the main memory
-> which fully supports MTE.
-> 
-> Separate from the "bog standard" we have the "special"[1] memory, e.g.
-> ZONE_DEVICE memory may be mapped as "Normal Cacheable" at stage 1 but that
-> memory may not support MTE tags. This memory can only be safely shared with
-> a guest in the following situations:
-> 
->  1. MTE is completely disabled for the guest
-> 
->  2. The stage 2 mappings are 'device' (e.g. DEVICE_nGnRE)
-> 
->  3. We have some guarantee that guest MTE access are in some way safe.
-> 
-> (1) is the situation today (without this patch series). But it prevents the
-> guest from using MTE in any form.
-> 
-> (2) is pretty terrible for general memory, but is the get-out clause for
-> mapping devices into the guest.
-> 
-> (3) isn't something we have any architectural way of discovering. We'd need
-> to know what the device did with the MTE accesses (and any caches between
-> the CPU and the device) to ensure there aren't any side-channels or h/w
-> lockup issues. We'd also need some way of describing this memory to the
-> guest.
-> 
-> So at least for the time being the approach is to avoid letting a guest with
-> MTE enabled have access to this sort of memory.
+ib_modify_qp() is an expensive operation on some HCAs running
+virtualized. This series removes two ib_modify_qp() calls from RDS.
 
-When a slot is added by the VMM, if it asked MTE in guest (I guess
-that's an opt-in by the VMM, haven't checked the other patches), can we
-reject it if it's is going to be mapped as Normal Cacheable but it is a
-ZONE_DEVICE (i.e. !kvm_is_device_pfn() + one of David's suggestions to
-check for ZONE_DEVICE)? This way we don't need to do more expensive
-checks in set_pte_at().
+I am sending this as a v3, even though it is the first sent to
+net. This because the IB Core commit has reach v3.
 
-We could simplify the set_pte_at() further if we require that the VMM
-has a PROT_MTE mapping. This does not mean it cannot have two mappings,
-the other without PROT_MTE. But at least we get a set_pte_at() when
-swapping in which has PROT_MTE.
+HÃ¥kon Bugge (2):
+  IB/cma: Introduce rdma_set_min_rnr_timer()
+  rds: ib: Remove two ib_modify_qp() calls
 
-We could add another PROT_TAGGED or something which means PG_mte_tagged
-set but still mapped as Normal Untagged. It's just that we are short of
-pte bits for another flag.
+ drivers/infiniband/core/cma.c      | 41 ++++++++++++++++++++++++++++++++++++++
+ drivers/infiniband/core/cma_priv.h |  2 ++
+ include/rdma/rdma_cm.h             |  2 ++
+ net/rds/ib_cm.c                    | 35 +-------------------------------
+ net/rds/rdma_transport.c           |  1 +
+ 5 files changed, 47 insertions(+), 34 deletions(-)
 
-Can we somehow identify when the S2 pte is set and can we get access to
-the prior swap pte? This way we could avoid changes to set_pte_at() for
-S2 faults.
+--
+1.8.3.1
 
--- 
-Catalin
