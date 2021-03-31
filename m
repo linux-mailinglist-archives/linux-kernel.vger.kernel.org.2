@@ -2,118 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80EFC35088A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 22:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56233350893
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 22:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232678AbhCaUxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 16:53:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56084 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232741AbhCaUxe (ORCPT
+        id S232715AbhCaUzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 16:55:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232103AbhCaUzE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 16:53:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617224013;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xgbyKFWQqZbg2Gy7gmQQyJMfhuaX+Jv3XqHiA6Dpe28=;
-        b=BQOfyHB5TCmTCbGMb4YY4zlgJAGqYsJNQXsj7RJ7dGY3tgcmmAl78imANwvbey/ebBDFHn
-        tbDSqHt+DSl6xmiAf3j60tjZo50mtQBIeZlDb2ZVkZz3HlVWUTSkqhWCSVE8nEfhDB3L+y
-        vvlWjr3kElDLDRqmzr20d5yZoMkMYJ8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-400-sgfKZxsEP7qAfqAt2QBDkQ-1; Wed, 31 Mar 2021 16:53:25 -0400
-X-MC-Unique: sgfKZxsEP7qAfqAt2QBDkQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 38B71801814;
-        Wed, 31 Mar 2021 20:53:23 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.27])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 717156A8FA;
-        Wed, 31 Mar 2021 20:53:13 +0000 (UTC)
-Date:   Wed, 31 Mar 2021 16:53:10 -0400
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
-        twoerner@redhat.com, tgraf@infradead.org, dan.carpenter@oracle.com,
-        Jones Desougi <jones.desougi+netfilter@gmail.com>
-Subject: Re: [PATCH v5] audit: log nftables configuration change events once
- per table
-Message-ID: <20210331205310.GA3141668@madcap2.tricolour.ca>
-References: <28de34275f58b45fd4626a92ccae96b6d2b4e287.1616702731.git.rgb@redhat.com>
- <20210331202230.GA4109@salvia>
+        Wed, 31 Mar 2021 16:55:04 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DEB3C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 13:55:04 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id t140so129679pgb.13
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 13:55:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8bZ3bzKOfhPGnPGG60VssYCADe64CpCvkm0duGoaMAA=;
+        b=iK6Dd1WzfTgZlYmEbgnA8JsN6ev91O3XgM9qgKS6kJCpEDzjxzvzwCL7RPAIIEpMPO
+         m6g+Zrkan6Wwii54JTWoNBmrYZfJ1o2xcdda5yUzNDrzCoTAdDL5oMoveSYaiu0rppz9
+         QW6uvmXPJPJYn+Oeme3ufD9LvkkfwQLu9XavI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8bZ3bzKOfhPGnPGG60VssYCADe64CpCvkm0duGoaMAA=;
+        b=etD8FU3g88UpqvnvVRPP5rGS5x0hXxcaQRUX/qJqV20fm8KTxZKEiiEZgA5D2SR3bz
+         1snMkPCDUibJ/x/kS4vyXT5bhqdsGBqVmxqMs2FN1SQ1BRLpGoK9HbaeHCVAPRYyMwZ+
+         ssYqoTU9ONztjgx2ktkOUb//iLFl3fGfHD6SClUr/SLoVvYFP0Lh3hFCw4LnAdj8sXc0
+         HY23AlOvscQvUlO104Bnfn8GycIWnpuJg75WPsvNd+OWKSaN/h7HaRjmUBiTmZef0cvM
+         9QEk19WKDbqnwcPp9q6IFkR0sPuANAjCLAZs8vpjwsQm3VJ1r+tfR5dGJVeU6c6Tfg0b
+         bH3Q==
+X-Gm-Message-State: AOAM530UcA1+RLsJl6IekieotkBtL35TU7n2tC3bHaug04kR5ie1Fd2W
+        ZbN+VFGD8JsmaF6IKhxUCxb/mA==
+X-Google-Smtp-Source: ABdhPJzUF8uhkl0raN0ODpiCdyJAh9H7iGlPFlGsUGF89srEBkCnpo3FL1QwTdlnzj6Suocxnxa0yg==
+X-Received: by 2002:a63:af51:: with SMTP id s17mr4640944pgo.405.1617224103801;
+        Wed, 31 Mar 2021 13:55:03 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id v18sm4189804pgo.0.2021.03.31.13.55.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 13:55:03 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Potapenko <glider@google.com>,
+        Alexander Popov <alex.popov@linux.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v9 0/6] Optionally randomize kernel stack offset each syscall
+Date:   Wed, 31 Mar 2021 13:54:52 -0700
+Message-Id: <20210331205458.1871746-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210331202230.GA4109@salvia>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-31 22:22, Pablo Neira Ayuso wrote:
-> On Fri, Mar 26, 2021 at 01:38:59PM -0400, Richard Guy Briggs wrote:
-> > Reduce logging of nftables events to a level similar to iptables.
-> > Restore the table field to list the table, adding the generation.
-> > 
-> > Indicate the op as the most significant operation in the event.
-> 
-> There's a UAF, Florian reported. I'm attaching an incremental fix.
-> 
-> nf_tables_commit_audit_collect() refers to the trans object which
-> might have been already released.
+Hi Will (and Mark and Catalin),
 
-Got it.  Thanks Pablo.  I didn't see it when running nft-test.py Where
-was it reported?  Here I tried to stay out of the way by putting that
-call at the end of the loop but that was obviously a mistake in
-hindsight.  :-)
-
-> commit e4d272948d25b66d86fc241cefd95281bfb1079e
-> Author: Pablo Neira Ayuso <pablo@netfilter.org>
-> Date:   Wed Mar 31 22:19:51 2021 +0200
-> 
->     netfilter: nf_tables: use-after-free
->     
->     Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-> 
-> diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-> index 5dd4bb7cabf5..01674c0d9103 100644
-> --- a/net/netfilter/nf_tables_api.c
-> +++ b/net/netfilter/nf_tables_api.c
-> @@ -8063,6 +8063,8 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
->  	net->nft.gencursor = nft_gencursor_next(net);
->  
->  	list_for_each_entry_safe(trans, next, &net->nft.commit_list, list) {
-> +		nf_tables_commit_audit_collect(&adl, trans->ctx.table,
-> +					       trans->msg_type);
->  		switch (trans->msg_type) {
->  		case NFT_MSG_NEWTABLE:
->  			if (nft_trans_table_update(trans)) {
-> @@ -8211,8 +8213,6 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
->  			}
->  			break;
->  		}
-> -		nf_tables_commit_audit_collect(&adl, trans->ctx.table,
-> -					       trans->msg_type);
->  	}
->  
->  	nft_commit_notify(net, NETLINK_CB(skb).portid);
+Can you take this via the arm64 tree for v5.13 please? Thomas has added
+his Reviewed-by, so it only leaves arm64's. :)
 
 
-- RGB
+v9:
+- comment position nit (tglx)
+- Added tglx's Reviewed-by
+v8: https://lore.kernel.org/lkml/20210330205750.428816-1-keescook@chromium.org/
+v7: https://lore.kernel.org/lkml/20210319212835.3928492-1-keescook@chromium.org/
+v6: https://lore.kernel.org/lkml/20210315180229.1224655-1-keescook@chromium.org/
+v5: https://lore.kernel.org/lkml/20210309214301.678739-1-keescook@chromium.org/
+v4: https://lore.kernel.org/lkml/20200622193146.2985288-1-keescook@chromium.org/
+v3: https://lore.kernel.org/lkml/20200406231606.37619-1-keescook@chromium.org/
+v2: https://lore.kernel.org/lkml/20200324203231.64324-1-keescook@chromium.org/
+rfc: https://lore.kernel.org/kernel-hardening/20190329081358.30497-1-elena.reshetova@intel.com/
 
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
+This is a continuation and refactoring of Elena's earlier effort to add
+kernel stack base offset randomization. In the time since the earlier
+discussions, two attacks[1][2] were made public that depended on stack
+determinism, so we're no longer in the position of "this is a good idea
+but we have no examples of attacks". :)
+
+Earlier discussions also devolved into debates on entropy sources, which
+is mostly a red herring, given the already low entropy available due
+to stack size. Regardless, entropy can be changed/improved separately
+from this series as needed.
+
+Earlier discussions also got stuck debating how much syscall overhead
+was too much, but this is also a red herring since the feature itself
+needs to be selectable at boot with no cost for those that don't want it:
+this is solved here with static branches.
+
+So, here is the latest improved version, made as arch-agnostic as
+possible, with usage added for x86 and arm64. It also includes some small
+static branch clean ups, and addresses some surprise performance issues
+due to the stack canary[3].
+
+Thanks!
+
+-Kees
+
+[1] https://a13xp0p0v.github.io/2020/02/15/CVE-2019-18683.html
+[2] https://repositorio-aberto.up.pt/bitstream/10216/125357/2/374717.pdf
+[3] https://lore.kernel.org/lkml/202003281520.A9BFF461@keescook/
+
+
+Kees Cook (6):
+  jump_label: Provide CONFIG-driven build state defaults
+  init_on_alloc: Optimize static branches
+  stack: Optionally randomize kernel stack offset each syscall
+  x86/entry: Enable random_kstack_offset support
+  arm64: entry: Enable random_kstack_offset support
+  lkdtm: Add REPORT_STACK for checking stack offsets
+
+ .../admin-guide/kernel-parameters.txt         | 11 ++++
+ Makefile                                      |  4 ++
+ arch/Kconfig                                  | 23 ++++++++
+ arch/arm64/Kconfig                            |  1 +
+ arch/arm64/kernel/Makefile                    |  5 ++
+ arch/arm64/kernel/syscall.c                   | 16 ++++++
+ arch/x86/Kconfig                              |  1 +
+ arch/x86/entry/common.c                       |  3 ++
+ arch/x86/include/asm/entry-common.h           | 16 ++++++
+ drivers/misc/lkdtm/bugs.c                     | 17 ++++++
+ drivers/misc/lkdtm/core.c                     |  1 +
+ drivers/misc/lkdtm/lkdtm.h                    |  1 +
+ include/linux/jump_label.h                    | 19 +++++++
+ include/linux/mm.h                            | 10 ++--
+ include/linux/randomize_kstack.h              | 54 +++++++++++++++++++
+ init/main.c                                   | 23 ++++++++
+ mm/page_alloc.c                               |  4 +-
+ mm/slab.h                                     |  6 ++-
+ 18 files changed, 207 insertions(+), 8 deletions(-)
+ create mode 100644 include/linux/randomize_kstack.h
+
+-- 
+2.25.1
 
