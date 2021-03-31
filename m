@@ -2,106 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7449350333
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 17:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58983350335
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 17:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235412AbhCaPWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 11:22:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236091AbhCaPWZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 11:22:25 -0400
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F30C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 08:22:25 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id j10-20020a4ad18a0000b02901b677a0ba98so4697040oor.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 08:22:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=FGMJybI/hRs13e4CGEqaaYSPp6M7ZzjxOJNNmpMu7P8=;
-        b=ToH3KaXt25kpzkzzY0Moi+CEYzi3henlXuv0u8cR1qzgM4uU3cjgKzXDtnY0ZMpwJh
-         rdR4+rwMWQ7bwTshGdSrRfMZPl4oe71ZQSfRT8K5yquOUdbtU1ooGJQX0bvn3H6vzqYB
-         YhpkhVC3sXqfxSk15wQAaISZ1RF5krp/6T0avRUFxCikyYQOK8jxKdacpICWtnR8aamO
-         dXdMBhvC+JtSbmlqoJkuyWheBZRQatmZ4vUUHauwb1M5SEQxft9pkVZMsXc4IHEBBjru
-         Zo9KV4tVBBOwK+8hPej65yE4WrxnzYD2nx6SB0SNv3070eu+qdCH9mMMWhck8+4mOZV9
-         K0aQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to:user-agent;
-        bh=FGMJybI/hRs13e4CGEqaaYSPp6M7ZzjxOJNNmpMu7P8=;
-        b=oaiUPUP8asrquPWXNhDiRuykXGE8PFcAbKegyE/ihUp9oDRj2ttZq1bITYqNeI0h2N
-         GgETKaz6exPd3c5dlLp3jVVELTFq36Wu18WzXR/g1xHdUjhpNmFzKWbOqen8cqbzWAMq
-         4fiMUjXije1mefQgixH27I5C3F5OQOIrvTp+AA9JjLZ6bFrhQO3PJImt2/WvzJZlpjyz
-         UYuZ06EA3jJBRWtmk1U3GSzbrYS7UdhtsY7PJk8j+zFNsHdYYfI2ezxshjjheNdkWI5m
-         pMxRcIjUVgvsBdhzHR5WTWGQozsnz5NuzU85y89J4odHq5WGb2YX0HiTXhPNqK3cOX3O
-         IQ4g==
-X-Gm-Message-State: AOAM530/mSYdHhbiDaNoc0KvyddKU+F6weW2ZgSLQJNR1izOi77xOOdD
-        DQu9P6a3eq2AWWo/cT7eocC55vOy56Q=
-X-Google-Smtp-Source: ABdhPJzVOClcRBKWD7v4SglnrwN2onAoT8XpbEQL5twlcfdHGHiBaaYCubnecrVwVvSxL+JLyRDWQw==
-X-Received: by 2002:a4a:2f4b:: with SMTP id p72mr3190638oop.27.1617204144797;
-        Wed, 31 Mar 2021 08:22:24 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id n10sm514168otj.36.2021.03.31.08.22.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 31 Mar 2021 08:22:24 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 31 Mar 2021 08:22:22 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/1] driver core: platform: Declare
- early_platform_cleanup() prototype
-Message-ID: <20210331152222.GA149339@roeck-us.net>
-References: <20210331150525.59223-1-andriy.shevchenko@linux.intel.com>
+        id S236254AbhCaPWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 11:22:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56156 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236182AbhCaPWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 11:22:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 395376102A;
+        Wed, 31 Mar 2021 15:22:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617204169;
+        bh=PZdA6OkQUCLD5T11j2SNQAmYxalWfS4mcTSD9MYFgH8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=YljbhkIq0F8lakNXom3/CkHs2H6x8QHGkFFZqK23JScFpSHb6ph/e3/HwgzbsPE31
+         7QFsjXaAAT+a3BFbnwWMv2uOild3eZHsl5iPndsKmT7QkoVrdMwlibUjiK9VXljBFG
+         6OIQ8lK0mAnujwVIabpBd8/0oUg8CBUZqmWHcDaP+TeYP1emj+mok6tCR74t6jerMd
+         W5U2/Ppuh9xb7XDSZ5WTQTKiwqI5XD+YP6e5zC0ABMb6q3bZKI6+9EVfGAk+/IW3Ps
+         Jn/RlcjuGMPL3ABiCCFI7LY/YDOOGddfU5zxolPsOqm11X9kfL2vGKxAq8+xzzhUYT
+         MKzeNJTYHGlzw==
+Received: by mail-lj1-f171.google.com with SMTP id f16so24361254ljm.1;
+        Wed, 31 Mar 2021 08:22:49 -0700 (PDT)
+X-Gm-Message-State: AOAM533N0fCjE2v86cW6NbSIAiU8YSyZ07PGI9FOl4AGfe0Yb2MXQ/xH
+        xmHmGv5Mj4fDG0Fb9IP2e4o/uQvW5YShXnAe788=
+X-Google-Smtp-Source: ABdhPJxH7HojAHVGxjaEG7h6yZ0vTSAW4NtjIt7Xau7864vwv4W45Y5iltVUKESj/hE0oy9GG5oWhEubNFctDEY0GLY=
+X-Received: by 2002:a2e:919a:: with SMTP id f26mr2446120ljg.508.1617204167433;
+ Wed, 31 Mar 2021 08:22:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210331150525.59223-1-andriy.shevchenko@linux.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <1616868399-82848-1-git-send-email-guoren@kernel.org>
+ <1616868399-82848-4-git-send-email-guoren@kernel.org> <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net>
+ <CAJF2gTQNV+_txMHJw0cmtS-xcnuaCja-F7XBuOL_J0yN39c+uQ@mail.gmail.com>
+ <YGG5c4QGq6q+lKZI@hirez.programming.kicks-ass.net> <CAJF2gTQUe237NY-kh+4_Yk4DTFJmA5_xgNQ5+BMpFZpUDUEYdw@mail.gmail.com>
+ <YGHM2/s4FpWZiEQ6@hirez.programming.kicks-ass.net>
+In-Reply-To: <YGHM2/s4FpWZiEQ6@hirez.programming.kicks-ass.net>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Wed, 31 Mar 2021 23:22:35 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTS4jexKsSiXBY=5rz53LjcLUZ1K4pxjYJDVQCWx_8JTuA@mail.gmail.com>
+Message-ID: <CAJF2gTS4jexKsSiXBY=5rz53LjcLUZ1K4pxjYJDVQCWx_8JTuA@mail.gmail.com>
+Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Anup Patel <anup@brainfault.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 06:05:25PM +0300, Andy Shevchenko wrote:
-> Compiler is not happy:
-> 
->   CC      drivers/base/platform.o
-> drivers/base/platform.c:1557:20: warning: no previous prototype for ‘early_platform_cleanup’ [-Wmissing-prototypes]
->  1557 | void __weak __init early_platform_cleanup(void) { }
->       |                    ^~~~~~~~~~~~~~~~~~~~~~
-> 
-> Declare early_platform_cleanup() prototype in the header to make everyone happy.
-> 
-> Fixes: eecd37e105f0 ("drivers: Fix boot problem on SuperH")
-> Cc: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On Mon, Mar 29, 2021 at 8:50 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Mon, Mar 29, 2021 at 08:01:41PM +0800, Guo Ren wrote:
+> > u32 a = 0x55aa66bb;
+> > u16 *ptr = &a;
+> >
+> > CPU0                       CPU1
+> > =========             =========
+> > xchg16(ptr, new)     while(1)
+> >                                     WRITE_ONCE(*(ptr + 1), x);
+> >
+> > When we use lr.w/sc.w implement xchg16, it'll cause CPU0 deadlock.
+>
+> Then I think your LL/SC is broken.
+No, it's not broken LR.W/SC.W. Quote <8.3 Eventual Success of
+Store-Conditional Instructions>:
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+"As a consequence of the eventuality guarantee, if some harts in an
+execution environment are
+executing constrained LR/SC loops, and no other harts or devices in
+the execution environment
+execute an unconditional store or AMO to that reservation set, then at
+least one hart will
+eventually exit its constrained LR/SC loop. By contrast, if other
+harts or devices continue to
+write to that reservation set, it is not guaranteed that any hart will
+exit its LR/SC loop."
 
-> ---
->  include/linux/platform_device.h | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/include/linux/platform_device.h b/include/linux/platform_device.h
-> index 3f23f6e430bf..cd81e060863c 100644
-> --- a/include/linux/platform_device.h
-> +++ b/include/linux/platform_device.h
-> @@ -359,4 +359,7 @@ static inline int is_sh_early_platform_device(struct platform_device *pdev)
->  }
->  #endif /* CONFIG_SUPERH */
->  
-> +/* For now only SuperH uses it */
-> +void early_platform_cleanup(void);
-> +
->  #endif /* _PLATFORM_DEVICE_H_ */
-> -- 
-> 2.30.2
-> 
+So I think it's a feature of LR/SC. How does the above code (also use
+ll.w/sc.w to implement xchg16) running on arm64?
+
+1: ldxr
+    eor
+    cbnz ... 2f
+    stxr
+    cbnz ... 1b   // I think it would deadlock for arm64.
+
+"LL/SC fwd progress" which you have mentioned could guarantee stxr
+success? How hardware could do that?
+
+>
+> That also means you really don't want to build super complex locking
+> primitives on top, because that live-lock will percolate through.
+>
+> Step 1 would be to get your architecute fixed such that it can provide
+> fwd progress guarantees for LL/SC. Otherwise there's absolutely no point
+> in building complex systems with it.
+--
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
