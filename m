@@ -2,86 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C8034F695
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 04:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A6C434F699
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 04:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233202AbhCaCXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 22:23:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233151AbhCaCX2 (ORCPT
+        id S233181AbhCaC0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 22:26:02 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15110 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232805AbhCaC0A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 22:23:28 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA1D8C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 19:23:27 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id v10so13064258pgs.12
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 19:23:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Su8WygcebzFTKKCHgifUWkq3uQwHLbGcTbD/6QzhQFA=;
-        b=Y9JiokHr5v35wkiv4jph4u8VPmOxHEinZssITTfyCCs0Lt/OnSRwzk1QcVs5oZn7Fl
-         ULuUJWk+qSvXs6lLC2DDi+zocNiwfQCkaJWZUftdpxg8NV8bfzwXfT8hQwLeIyYCSKmO
-         5eOCOh1MnfxJnn1arPbXS91+qAnoHqWYP8Zw1bIoLOPpObfLjtKQeeahkxOxfN5ZVKAz
-         4CgtcEpHLBWQal9HaxfS3pwVvF9BZXo6z2QZ3+XDxCcMI7oTwHfPOxJtG1UlLbU+/goU
-         jTgeY1TZtgLaBkKInJgwewhTwQxQviKsRuD60jZappGyBcwtBz3d1wUWr2TuLYJqAs20
-         aANA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Su8WygcebzFTKKCHgifUWkq3uQwHLbGcTbD/6QzhQFA=;
-        b=R6usG9IScfiIAMSbR7oqQ73V5NIUKPzJNoqWbOr2RJO+rS7jHLnNXy9qzx9RQX1u17
-         6jCo8CkGsRkXpMpzFos97CUDqTtFUrW8MI8ky0/otpiXHNPy9owcdGu02vDjnf5UA0sJ
-         uKs9LdH1QALY26vbYRmlLM7Ao9avzLpKY/8kA8e72cmQgHkfFPWgyfUROScGNCLZw9wU
-         xjj5W3JndpoeM8nwsjqa1wKFTV+MTuUKeMl2RKlm9j7UO9DT6Cz8V1wCHhw7sDYCyUTp
-         AMNFEb+EpBahmYaDZ2pdg4rv1ul6ISIExvmHgrMhvOmSGaNPQHqXcz73vOer1j98iFis
-         wYFA==
-X-Gm-Message-State: AOAM5321cVvj9MbHxb6rOeCkNNScY40B1rIm7k4hSvIWlt35aASZKp9n
-        Ybjr1s2V1k/FMm76ke/6SuUsbAGu43wEuQ==
-X-Google-Smtp-Source: ABdhPJwuluuksfxHeEyLVs+MJP7emXaOY3QaGlTQNaveL0nFvokNM9H5dHQUv+3wpcbdUZItgxTNRw==
-X-Received: by 2002:a63:e5d:: with SMTP id 29mr1001171pgo.450.1617157407002;
-        Tue, 30 Mar 2021 19:23:27 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id y26sm295633pfq.187.2021.03.30.19.23.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Mar 2021 19:23:26 -0700 (PDT)
-Subject: Re: [PATCH] sata_mv: add IRQ checks
-To:     Sergey Shtylyov <s.shtylyov@omprussia.ru>,
-        linux-ide@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-References: <51436f00-27a1-e20b-c21b-0e817e0a7c86@omprussia.ru>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <885d2384-79df-f2d4-0adc-5b6be48e1943@kernel.dk>
-Date:   Tue, 30 Mar 2021 20:23:25 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 30 Mar 2021 22:26:00 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F999P4n6Hz1BFdn;
+        Wed, 31 Mar 2021 10:23:53 +0800 (CST)
+Received: from [127.0.0.1] (10.174.179.202) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Wed, 31 Mar 2021
+ 10:25:52 +0800
+Subject: Re: [PATCH 1/2] ASoC: dt-bindings: renesas, rsnd: Clear warning
+ 'dais' is a required property
+To:     Rob Herring <robh@kernel.org>
+CC:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        alsa-devel <alsa-devel@alsa-project.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+References: <20210330030631.2253-1-thunder.leizhen@huawei.com>
+ <20210330030631.2253-2-thunder.leizhen@huawei.com>
+ <20210330224551.GA842101@robh.at.kernel.org>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <2460067e-5358-3e00-0a06-010b2a3736fb@huawei.com>
+Date:   Wed, 31 Mar 2021 10:25:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <51436f00-27a1-e20b-c21b-0e817e0a7c86@omprussia.ru>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210330224551.GA842101@robh.at.kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.202]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/27/21 3:13 PM, Sergey Shtylyov wrote:
-> The function mv_platform_probe() neglects to check the results of the
-> calls to platform_get_irq() and irq_of_parse_and_map() and blithely
-> passes them to ata_host_activate() -- while the latter only checks
-> for IRQ0 (treating it as a polling mode indicattion) and passes the
-> negative values to devm_request_irq() causing it to fail as it takes
-> unsigned values for the IRQ #...
+
+
+On 2021/3/31 6:45, Rob Herring wrote:
+> On Tue, Mar 30, 2021 at 11:06:30AM +0800, Zhen Lei wrote:
+>> When I do dt_binding_check, below warning is reported:
+>> Documentation/devicetree/bindings/sound/renesas,rsnd.example.dt.yaml: \
+>> sound@ec500000: 'dais' is a required property
+>>
+>> I looked at all the dts files in the "arch/arm64/boot/dts/renesas/"
+>> directory, I found that all nodes that contain the "dais" property have
+>> compatible string: "audio-graph-card". So I can be sure that the
+>> "$ref: audio-graph.yaml#" should be corrected to
+>> "$ref: audio-graph-card.yaml#".
+>>
+>> In addition, not all nodes have compatible string "audio-graph-card", so
+>> the "$ref: audio-graph-card.yaml#" should be described as "anyOf". To
+>> ensure the validation of "anyOf" always passes, group it with the "if"
+>> statement, because the result of the "if" statement is always not empty.
 > 
-> Add to mv_platform_probe() the proper IRQ checks to pass the positive IRQ
-> #s to ata_host_activate(), propagate upstream the negative error codes,
-> and override the IRQ0 with -EINVAL (as we don't want the polling mode).
+> 'anyOf' is probably not right here.
 
-Applied, thanks.
+Oh, yes, I think I should use "if" statement to enumerate cases where
+"audio-graph-card.yaml" is required.
 
--- 
-Jens Axboe
+> 
+> In any case, the is going to conflict with my series[1].
+
+OK, I'll rework my patch based on your series.
+
+> 
+> Rob
+> 
+> [1] https://lore.kernel.org/r/20210323163634.877511-1-robh@kernel.org/
+> 
+> .
+> 
 
