@@ -2,74 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B91C3500D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 15:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DB433500DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 15:03:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235677AbhCaNBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 09:01:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45284 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235634AbhCaNBF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 09:01:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5C756196C;
-        Wed, 31 Mar 2021 13:01:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617195664;
-        bh=fpjbRjzuhhKjDVMy/Iwk4X2pjxw44PsDGZYpY5/o2yM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HfnOKjp8c8lRwPgGVAS8BSFnrABlFY4SHtoLLZTex7WdcxvhjIMbHMnMxpJH0MPpK
-         i0c8KFB7AXvwfitOwDE4RJSZLRgzaTBq0Xjqso7ZPaWJ8AxLEFdFlyd7FSm509xrMj
-         cUcRFTlZZorzERIBb0RhURjQi2NXFQGpbW3URTKv9lrxR7Kh/ZYr+a3S9iTPtXPl/L
-         T/o5T/r+H5a9/qxg+vB5rIzofyP+qMuJMHcfP8WHgGqG39yFKEn5yMN7s1vEGD+mQC
-         cbSb/ZnhxW+0Tpms5iDoIOLVfn7nqXM5E5Jo5IPcpekdIoTp72Cv7yJpx8ED4LKk5P
-         d5FG88bLfpGSQ==
-Date:   Wed, 31 Mar 2021 18:31:00 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Seiya Wang <seiya.wang@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fabien Parent <fparent@baylibre.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Zhiyong Tao <zhiyong.tao@mediatek.com>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Wenbin Mei <wenbin.mei@mediatek.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-serial@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, srv_heupstream@mediatek.com
-Subject: Re: [PATCH v2 7/8] dt-bindings: phy: fix dt_binding_check warning in
- mediatek,ufs-phy.yaml
-Message-ID: <YGRyjE+CjkJojqBM@vkoul-mobl.Dlink>
-References: <20210319023427.16711-1-seiya.wang@mediatek.com>
- <20210319023427.16711-9-seiya.wang@mediatek.com>
+        id S235707AbhCaNDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 09:03:24 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:15414 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235642AbhCaNCt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 09:02:49 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F9RJb5dNvzlX0s;
+        Wed, 31 Mar 2021 21:01:03 +0800 (CST)
+Received: from [10.69.38.196] (10.69.38.196) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Wed, 31 Mar 2021
+ 21:02:37 +0800
+Subject: Re: [PATCH 5/5] i2c: designware: Switch over to
+ i2c_freq_mode_string()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC:     <wsa@kernel.org>, <linux-i2c@vger.kernel.org>,
+        <Sergey.Semin@baikalelectronics.ru>,
+        <linux-kernel@vger.kernel.org>, <digetx@gmail.com>,
+        <treding@nvidia.com>, <jarkko.nikula@linux.intel.com>,
+        <rmk+kernel@armlinux.org.uk>, <song.bao.hua@hisilicon.com>,
+        <john.garry@huawei.com>, <mika.westerberg@linux.intel.com>,
+        <prime.zeng@huawei.com>, <linuxarm@huawei.com>
+References: <1617113966-40498-1-git-send-email-yangyicong@hisilicon.com>
+ <1617113966-40498-6-git-send-email-yangyicong@hisilicon.com>
+ <YGRQzoifaWcYrt8k@smile.fi.intel.com>
+From:   Yicong Yang <yangyicong@hisilicon.com>
+Message-ID: <79932cb0-afae-6b50-fd4a-deb16c76a7f9@hisilicon.com>
+Date:   Wed, 31 Mar 2021 21:02:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319023427.16711-9-seiya.wang@mediatek.com>
+In-Reply-To: <YGRQzoifaWcYrt8k@smile.fi.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.38.196]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19-03-21, 10:34, Seiya Wang wrote:
-> This commit fixes the warning messages of make dt_binding_check from
-> newly added mediatek,mt8195-ufsphy in mediatek,ufs-phy.yaml
+On 2021/3/31 18:37, Andy Shevchenko wrote:
+> On Tue, Mar 30, 2021 at 10:19:26PM +0800, Yicong Yang wrote:
+>> From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>>
+>> Use generic i2c_freq_mode_string() helper to print chosen bus speed.
+> 
+> Since it will be a new version (based on Jarkko's comments), I guess you may
+> add his Ack here that he gave against standalone submission of this patch.
+> 
+> What Bary reported I will fix separately.
+> 
 
-Applied, thanks
-
--- 
-~Vinod
+i'll addresse the comments and update the series with Jarkko's acked-by added.
+Thanks for reminding me!
