@@ -2,210 +2,347 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7A834FF08
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A8BA34FECB
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 12:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235361AbhCaLBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 07:01:25 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:40149 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235434AbhCaLA3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 07:00:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1617188429; x=1648724429;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=X9lDETj/GSJ03Xn4vNApYK1OklpZj6sHPlsSW7AI/RA=;
-  b=fnmZW4NI0Gt2kX9HrkWnr+aC8+uup350eSx4qXz0xUNAKk75IIjdPtus
-   DO87aFNp2OD/KRNeBQPgsk6pDpYB8lRJbmyma3bESb93UMAnIkvZ1KG6R
-   FvnjSrkxIpTlBsgMvLKloKDHYHPQS9n+XbAxvw5Ld61sMNtnywoAF+WzV
-   KMXiMG30uIdWGwIBl10I/E19++MN58ixq/d/ytMdN+/0shZhHb6ZZDyzN
-   50JBgHLUv0P6veMR2m/pBvwOk3XJY1zpQWdQmBBrdAgX44mDqLtOinhcl
-   f210/ZEBcdrWMoQPxhjB1vEn6wEPuIxtLPsrxtqp5FTw9N0PmQZ0kDsf7
-   g==;
-IronPort-SDR: tfZyjsXULctxn75Rl5BVGgdiA867zNs1kJPHw19piezvjA/hijnadtjIqgct0pPQBaiK565DG6
- 5q9OtqlR8qVtQ38Dq6HiQU5lCh/GlAC3FzMMEH5oXnCaWjDLkko4KLTHJD6yJLVzGAGBJm23zL
- wkRewM6oewESpRhygFiby3CTsFkXe/Ye/fxM1LzXnFjqG1RN3K7yP6N+QFzBw1Qga6Q608K8SC
- FLGzIavAgHmPG/evwgZBdAu/SWKS6yuBSj05+nxkaICfOK/CcbaQuXNXKR6TA2jQZGOk+xZ/Yh
- eAw=
-X-IronPort-AV: E=Sophos;i="5.81,293,1610434800"; 
-   d="scan'208";a="115333365"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 31 Mar 2021 04:00:01 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 31 Mar 2021 04:00:01 -0700
-Received: from rob-dk-mpu01.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Wed, 31 Mar 2021 03:59:59 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>, <robh+dt@kernel.org>,
-        <linux@armlinux.org.uk>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH 19/24] ARM: at91: pm: save ddr phy calibration data to securam
+        id S235203AbhCaK7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 06:59:13 -0400
+Received: from mga05.intel.com ([192.55.52.43]:21329 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235115AbhCaK66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 06:58:58 -0400
+IronPort-SDR: QyMlhF6G/n4xefUSO8SQ7F75phQ0abodGqWTKkOGp5MYg5csRfszviWlERxOVBThztNAyRqDt3
+ 0ZMtV6UZuosQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="277160535"
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
+   d="scan'208";a="277160535"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 03:58:57 -0700
+IronPort-SDR: +/zB+ImKnN/UpsWbRRjTtYlLsfOkkseUfY87iIEyrQ3f2rLW4eP93pwAZbqdyscoN+OnqPK7DU
+ jPNaOesk02LQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
+   d="scan'208";a="516844068"
+Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 31 Mar 2021 03:58:55 -0700
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Guenter Roeck <linux@roeck-us.net>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/6] usb: typec: Organize the private headers properly
 Date:   Wed, 31 Mar 2021 13:59:03 +0300
-Message-ID: <20210331105908.23027-20-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20210331105908.23027-1-claudiu.beznea@microchip.com>
-References: <20210331105908.23027-1-claudiu.beznea@microchip.com>
+Message-Id: <20210331105908.67066-2-heikki.krogerus@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210331105908.67066-1-heikki.krogerus@linux.intel.com>
+References: <20210331105908.67066-1-heikki.krogerus@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The resuming from backup mode is done with the help of bootloader.
-The bootloader reconfigure the DDR controller and DDR PHY controller.
-To speed-up the resuming process save the PHY calibration data into
-SECURAM before suspending (securam is powered on backup mode).
-This data will be later used by bootloader in DDR PHY reconfiguration
-process. Also, in the process or recalibration the first 8 words of
-the memory may get corrupted. To solve this, these 8 words are saved
-in the securam and restored by bootloader in the process of PHY
-configuration.
+Adding a header file for each subsystem - the connector
+class, alt mode bus and the class for the muxes.
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 ---
- arch/arm/mach-at91/pm.c | 60 ++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 59 insertions(+), 1 deletion(-)
+ drivers/usb/typec/bus.c   |  2 ++
+ drivers/usb/typec/bus.h   | 19 +---------
+ drivers/usb/typec/class.c | 69 +++--------------------------------
+ drivers/usb/typec/class.h | 76 +++++++++++++++++++++++++++++++++++++++
+ drivers/usb/typec/mux.c   |  4 +--
+ drivers/usb/typec/mux.h   | 21 +++++++++++
+ 6 files changed, 107 insertions(+), 84 deletions(-)
+ create mode 100644 drivers/usb/typec/class.h
+ create mode 100644 drivers/usb/typec/mux.h
 
-diff --git a/arch/arm/mach-at91/pm.c b/arch/arm/mach-at91/pm.c
-index 4dec7216a80e..91b4014d2e10 100644
---- a/arch/arm/mach-at91/pm.c
-+++ b/arch/arm/mach-at91/pm.c
-@@ -10,6 +10,7 @@
- #include <linux/io.h>
- #include <linux/of_address.h>
- #include <linux/of.h>
-+#include <linux/of_fdt.h>
- #include <linux/of_platform.h>
- #include <linux/parser.h>
- #include <linux/suspend.h>
-@@ -27,18 +28,23 @@
- #include "generic.h"
- #include "pm.h"
+diff --git a/drivers/usb/typec/bus.c b/drivers/usb/typec/bus.c
+index e8ddb81cb6df4..7f3c9a8e2bf08 100644
+--- a/drivers/usb/typec/bus.c
++++ b/drivers/usb/typec/bus.c
+@@ -9,6 +9,8 @@
+ #include <linux/usb/pd_vdo.h>
  
-+#define BACKUP_DDR_PHY_CALIBRATION	(9)
-+
- /**
-  * struct at91_pm_bu - AT91 power management backup unit data structure
-  * @suspended: true if suspended to backup mode
-  * @reserved: reserved
-  * @canary: canary data for memory checking after exit from backup mode
-  * @resume: resume API
-+ * @ddr_phy_calibration: DDR PHY calibration data: ZQ0CR0, first 8 words
-+ * of the memory
+ #include "bus.h"
++#include "class.h"
++#include "mux.h"
+ 
+ static inline int
+ typec_altmode_set_mux(struct altmode *alt, unsigned long conf, void *data)
+diff --git a/drivers/usb/typec/bus.h b/drivers/usb/typec/bus.h
+index 8ba8112d2740d..56dec268d4dd9 100644
+--- a/drivers/usb/typec/bus.h
++++ b/drivers/usb/typec/bus.h
+@@ -4,9 +4,9 @@
+ #define __USB_TYPEC_ALTMODE_H__
+ 
+ #include <linux/usb/typec_altmode.h>
+-#include <linux/usb/typec_mux.h>
+ 
+ struct bus_type;
++struct typec_mux;
+ 
+ struct altmode {
+ 	unsigned int			id;
+@@ -28,24 +28,7 @@ struct altmode {
+ 
+ extern struct bus_type typec_bus;
+ extern const struct device_type typec_altmode_dev_type;
+-extern const struct device_type typec_port_dev_type;
+ 
+ #define is_typec_altmode(_dev_) (_dev_->type == &typec_altmode_dev_type)
+-#define is_typec_port(_dev_) (_dev_->type == &typec_port_dev_type)
+-
+-extern struct class typec_mux_class;
+-
+-struct typec_switch {
+-	struct device dev;
+-	typec_switch_set_fn_t set;
+-};
+-
+-struct typec_mux {
+-	struct device dev;
+-	typec_mux_set_fn_t set;
+-};
+-
+-#define to_typec_switch(_dev_) container_of(_dev_, struct typec_switch, dev)
+-#define to_typec_mux(_dev_) container_of(_dev_, struct typec_mux, dev)
+ 
+ #endif /* __USB_TYPEC_ALTMODE_H__ */
+diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+index 45f0bf65e9aba..5fa279a96b6ef 100644
+--- a/drivers/usb/typec/class.c
++++ b/drivers/usb/typec/class.c
+@@ -6,74 +6,15 @@
+  * Author: Heikki Krogerus <heikki.krogerus@linux.intel.com>
   */
- struct at91_pm_bu {
- 	int suspended;
- 	unsigned long reserved;
- 	phys_addr_t canary;
- 	phys_addr_t resume;
-+	unsigned long ddr_phy_calibration[BACKUP_DDR_PHY_CALIBRATION];
- };
  
- /**
-@@ -48,6 +54,7 @@ struct at91_pm_bu {
-  * @ws_ids: wakup sources of_device_id array
-  * @data: PM data to be used on last phase of suspend
-  * @bu: backup unit mapped data (for backup mode)
-+ * @memcs: memory chip select
-  */
- struct at91_soc_pm {
- 	int (*config_shdwc_ws)(void __iomem *shdwc, u32 *mode, u32 *polarity);
-@@ -55,6 +62,7 @@ struct at91_soc_pm {
- 	const struct of_device_id *ws_ids;
- 	struct at91_pm_bu *bu;
- 	struct at91_pm_data data;
-+	void *memcs;
- };
+-#include <linux/device.h>
+ #include <linux/module.h>
+ #include <linux/mutex.h>
+ #include <linux/property.h>
+ #include <linux/slab.h>
+ #include <linux/usb/pd_vdo.h>
++#include <linux/usb/typec_mux.h>
  
- /**
-@@ -316,6 +324,19 @@ extern u32 at91_pm_suspend_in_sram_sz;
+ #include "bus.h"
+-
+-struct typec_plug {
+-	struct device			dev;
+-	enum typec_plug_index		index;
+-	struct ida			mode_ids;
+-	int				num_altmodes;
+-};
+-
+-struct typec_cable {
+-	struct device			dev;
+-	enum typec_plug_type		type;
+-	struct usb_pd_identity		*identity;
+-	unsigned int			active:1;
+-	u16				pd_revision; /* 0300H = "3.0" */
+-};
+-
+-struct typec_partner {
+-	struct device			dev;
+-	unsigned int			usb_pd:1;
+-	struct usb_pd_identity		*identity;
+-	enum typec_accessory		accessory;
+-	struct ida			mode_ids;
+-	int				num_altmodes;
+-	u16				pd_revision; /* 0300H = "3.0" */
+-	enum usb_pd_svdm_ver		svdm_version;
+-};
+-
+-struct typec_port {
+-	unsigned int			id;
+-	struct device			dev;
+-	struct ida			mode_ids;
+-
+-	int				prefer_role;
+-	enum typec_data_role		data_role;
+-	enum typec_role			pwr_role;
+-	enum typec_role			vconn_role;
+-	enum typec_pwr_opmode		pwr_opmode;
+-	enum typec_port_type		port_type;
+-	struct mutex			port_type_lock;
+-
+-	enum typec_orientation		orientation;
+-	struct typec_switch		*sw;
+-	struct typec_mux		*mux;
+-
+-	const struct typec_capability	*cap;
+-	const struct typec_operations   *ops;
+-};
+-
+-#define to_typec_port(_dev_) container_of(_dev_, struct typec_port, dev)
+-#define to_typec_plug(_dev_) container_of(_dev_, struct typec_plug, dev)
+-#define to_typec_cable(_dev_) container_of(_dev_, struct typec_cable, dev)
+-#define to_typec_partner(_dev_) container_of(_dev_, struct typec_partner, dev)
+-
+-static const struct device_type typec_partner_dev_type;
+-static const struct device_type typec_cable_dev_type;
+-static const struct device_type typec_plug_dev_type;
+-
+-#define is_typec_partner(_dev_) (_dev_->type == &typec_partner_dev_type)
+-#define is_typec_cable(_dev_) (_dev_->type == &typec_cable_dev_type)
+-#define is_typec_plug(_dev_) (_dev_->type == &typec_plug_dev_type)
++#include "class.h"
  
- static int at91_suspend_finish(unsigned long val)
- {
-+	int i;
-+
-+	if (soc_pm.data.mode == AT91_PM_BACKUP && soc_pm.data.ramc_phy) {
-+		/*
-+		 * The 1st 8 words of memory might get corrupted in the process
-+		 * of DDR PHY recalibration; it is saved here in securam and it
-+		 * will be restored later, after recalibration, by bootloader
-+		 */
-+		for (i = 1; i < BACKUP_DDR_PHY_CALIBRATION; i++)
-+			soc_pm.bu->ddr_phy_calibration[i] =
-+				*((unsigned int *)soc_pm.memcs + (i - 1));
-+	}
-+
- 	flush_cache_all();
- 	outer_disable();
- 
-@@ -673,12 +694,40 @@ static bool __init at91_is_pm_mode_active(int pm_mode)
- 		soc_pm.data.suspend_mode == pm_mode);
+ static DEFINE_IDA(typec_index_ida);
+ static struct class *typec_class;
+@@ -726,7 +667,7 @@ static void typec_partner_release(struct device *dev)
+ 	kfree(partner);
  }
  
-+static int __init at91_pm_backup_scan_memcs(unsigned long node,
-+					    const char *uname, int depth,
-+					    void *data)
-+{
-+	const char *type;
-+	const __be32 *reg;
-+	int *located = data;
-+	int size;
+-static const struct device_type typec_partner_dev_type = {
++const struct device_type typec_partner_dev_type = {
+ 	.name = "typec_partner",
+ 	.groups = typec_partner_groups,
+ 	.release = typec_partner_release,
+@@ -941,7 +882,7 @@ static const struct attribute_group *typec_plug_groups[] = {
+ 	NULL
+ };
+ 
+-static const struct device_type typec_plug_dev_type = {
++const struct device_type typec_plug_dev_type = {
+ 	.name = "typec_plug",
+ 	.groups = typec_plug_groups,
+ 	.release = typec_plug_release,
+@@ -1089,7 +1030,7 @@ static void typec_cable_release(struct device *dev)
+ 	kfree(cable);
+ }
+ 
+-static const struct device_type typec_cable_dev_type = {
++const struct device_type typec_cable_dev_type = {
+ 	.name = "typec_cable",
+ 	.groups = typec_cable_groups,
+ 	.release = typec_cable_release,
+diff --git a/drivers/usb/typec/class.h b/drivers/usb/typec/class.h
+new file mode 100644
+index 0000000000000..d414be58d122e
+--- /dev/null
++++ b/drivers/usb/typec/class.h
+@@ -0,0 +1,76 @@
++/* SPDX-License-Identifier: GPL-2.0 */
 +
-+	/* Memory node already located. */
-+	if (*located)
-+		return 0;
++#ifndef __USB_TYPEC_CLASS__
++#define __USB_TYPEC_CLASS__
 +
-+	type = of_get_flat_dt_prop(node, "device_type", NULL);
++#include <linux/device.h>
++#include <linux/usb/typec.h>
 +
-+	/* We are scanning "memory" nodes only. */
-+	if (!type || strcmp(type, "memory"))
-+		return 0;
++struct typec_mux;
++struct typec_switch;
 +
-+	reg = of_get_flat_dt_prop(node, "reg", &size);
-+	if (reg) {
-+		soc_pm.memcs = __va((phys_addr_t)be32_to_cpu(*reg));
-+		*located = 1;
-+	}
++struct typec_plug {
++	struct device			dev;
++	enum typec_plug_index		index;
++	struct ida			mode_ids;
++	int				num_altmodes;
++};
 +
-+	return 0;
-+}
++struct typec_cable {
++	struct device			dev;
++	enum typec_plug_type		type;
++	struct usb_pd_identity		*identity;
++	unsigned int			active:1;
++	u16				pd_revision; /* 0300H = "3.0" */
++};
 +
- static int __init at91_pm_backup_init(void)
++struct typec_partner {
++	struct device			dev;
++	unsigned int			usb_pd:1;
++	struct usb_pd_identity		*identity;
++	enum typec_accessory		accessory;
++	struct ida			mode_ids;
++	int				num_altmodes;
++	u16				pd_revision; /* 0300H = "3.0" */
++	enum usb_pd_svdm_ver		svdm_version;
++};
++
++struct typec_port {
++	unsigned int			id;
++	struct device			dev;
++	struct ida			mode_ids;
++
++	int				prefer_role;
++	enum typec_data_role		data_role;
++	enum typec_role			pwr_role;
++	enum typec_role			vconn_role;
++	enum typec_pwr_opmode		pwr_opmode;
++	enum typec_port_type		port_type;
++	struct mutex			port_type_lock;
++
++	enum typec_orientation		orientation;
++	struct typec_switch		*sw;
++	struct typec_mux		*mux;
++
++	const struct typec_capability	*cap;
++	const struct typec_operations   *ops;
++};
++
++#define to_typec_port(_dev_) container_of(_dev_, struct typec_port, dev)
++#define to_typec_plug(_dev_) container_of(_dev_, struct typec_plug, dev)
++#define to_typec_cable(_dev_) container_of(_dev_, struct typec_cable, dev)
++#define to_typec_partner(_dev_) container_of(_dev_, struct typec_partner, dev)
++
++extern const struct device_type typec_partner_dev_type;
++extern const struct device_type typec_cable_dev_type;
++extern const struct device_type typec_plug_dev_type;
++extern const struct device_type typec_port_dev_type;
++
++#define is_typec_partner(dev) ((dev)->type == &typec_partner_dev_type)
++#define is_typec_cable(dev) ((dev)->type == &typec_cable_dev_type)
++#define is_typec_plug(dev) ((dev)->type == &typec_plug_dev_type)
++#define is_typec_port(dev) ((dev)->type == &typec_port_dev_type)
++
++extern struct class typec_mux_class;
++
++#endif /* __USB_TYPEC_CLASS__ */
+diff --git a/drivers/usb/typec/mux.c b/drivers/usb/typec/mux.c
+index cf720e944aaaa..9da22ae3006c9 100644
+--- a/drivers/usb/typec/mux.c
++++ b/drivers/usb/typec/mux.c
+@@ -13,9 +13,9 @@
+ #include <linux/mutex.h>
+ #include <linux/property.h>
+ #include <linux/slab.h>
+-#include <linux/usb/typec_mux.h>
+ 
+-#include "bus.h"
++#include "class.h"
++#include "mux.h"
+ 
+ static bool dev_name_ends_with(struct device *dev, const char *suffix)
  {
- 	struct gen_pool *sram_pool;
- 	struct device_node *np;
- 	struct platform_device *pdev;
--	int ret = -ENODEV;
-+	int ret = -ENODEV, located = 0;
- 
- 	if (!IS_ENABLED(CONFIG_SOC_SAMA5D2))
- 		return -EPERM;
-@@ -713,6 +762,15 @@ static int __init at91_pm_backup_init(void)
- 	soc_pm.bu->suspended = 0;
- 	soc_pm.bu->canary = __pa_symbol(&canary);
- 	soc_pm.bu->resume = __pa_symbol(cpu_resume);
-+	if (soc_pm.data.ramc_phy) {
-+		of_scan_flat_dt(at91_pm_backup_scan_memcs, &located);
-+		if (!located)
-+			goto securam_fail;
+diff --git a/drivers/usb/typec/mux.h b/drivers/usb/typec/mux.h
+new file mode 100644
+index 0000000000000..4fd9426ee44f6
+--- /dev/null
++++ b/drivers/usb/typec/mux.h
+@@ -0,0 +1,21 @@
++/* SPDX-License-Identifier: GPL-2.0 */
 +
-+		/* DDR3PHY_ZQ0SR0 */
-+		soc_pm.bu->ddr_phy_calibration[0] = readl(soc_pm.data.ramc_phy +
-+							  0x188);
-+	}
- 
- 	return 0;
- 
++#ifndef __USB_TYPEC_MUX__
++#define __USB_TYPEC_MUX__
++
++#include <linux/usb/typec_mux.h>
++
++struct typec_switch {
++	struct device dev;
++	typec_switch_set_fn_t set;
++};
++
++struct typec_mux {
++	struct device dev;
++	typec_mux_set_fn_t set;
++};
++
++#define to_typec_switch(_dev_) container_of(_dev_, struct typec_switch, dev)
++#define to_typec_mux(_dev_) container_of(_dev_, struct typec_mux, dev)
++
++#endif /* __USB_TYPEC_MUX__ */
 -- 
-2.25.1
+2.30.2
 
