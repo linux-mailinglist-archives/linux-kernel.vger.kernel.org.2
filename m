@@ -2,87 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 573EE34F707
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 04:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60DB734F70C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 04:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233330AbhCaCzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 22:55:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34354 "EHLO mail.kernel.org"
+        id S233405AbhCaC4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 22:56:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233291AbhCaCz3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 22:55:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE9B5619D6;
-        Wed, 31 Mar 2021 02:55:28 +0000 (UTC)
+        id S233340AbhCaC4V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 22:56:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C159619D8;
+        Wed, 31 Mar 2021 02:56:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617159329;
-        bh=CeP0VvhfD5jRKipKfgRTMCR59h0WViNfjZ1mQ5IK8w4=;
+        s=k20201202; t=1617159380;
+        bh=u773bDbsKRyPswjZDFIZbgSjt0NBivr0gD8iiCtpke0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eimKdz3PK1hkrIri4gAiAtvqV18EMoJlPdlWloYhc/TPui6tJsTK3PpTBm+CiJry6
-         Ie3hOqTCVMFGOm/pl/KvSY1XY9wC0y/pbzkLpG2iirfLiZ4b56S/kVEJdhIqcIUEU1
-         20Bnnf/9HC+R/vlSW6wiFYBRFsb0JTdHZ4bS9SJO2zh/Wb6Yi1G50Z/bJmRmGAp5Z4
-         Y8q9+rlzGBZaco2L0dl3HnyFV8oC0JUvYSLad8PMfpk95iwNjNV7Tcv7MJTwkFX9DQ
-         PJ2GVjlpdWESIyqW7XTUo/W2UacgfQzbp/C7ODNIESwp2kpvy9X89eYVnhr5fq5ODi
-         v3Nh341f7o3pA==
-Date:   Wed, 31 Mar 2021 05:55:26 +0300
+        b=atRZlUClz2KWQhd2L7kr8ViPVzNOyxB7TFuVTEz33kBF3GObAwPE4tSucGLgYpMEJ
+         dgFTw4zsx3RclH0+S5IkneNsawvFPqtZOTb+UCJrXY2KuhSenPdW6/4PaP8+bXhljE
+         qmHRzfaGB863IsXwKCHmw6V8gVidqRLKgx5Cus5PXItXhrKzmyUi75s3sQ/tmFriIU
+         R7h2fd+cjKBYsCxWHgXzHW4EqO94ZOwgfPU6xHOxkjF7Gtk8pOiEJCKT1v6EonieAW
+         vUM2+KQsdJnLgVklRQXB6Yhs0z5O1WqHW5833hY2Mp7HmqTvngobWS5tBelHCXQ8t5
+         J/4Z5dspEhXiA==
+Date:   Wed, 31 Mar 2021 05:56:18 +0300
 From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Nayna Jain <nayna@linux.ibm.com>
-Cc:     linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH v3 1/3] keys: cleanup build time module signing keys
-Message-ID: <YGPkngIlvLxz4xYA@kernel.org>
-References: <20210330131636.21711-1-nayna@linux.ibm.com>
- <20210330131636.21711-2-nayna@linux.ibm.com>
+To:     Aditya Srivastava <yashsri421@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
+        rdunlap@infradead.org, dave.hansen@linux.intel.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, linux-sgx@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH] x86/sgx: fix incorrect kernel-doc comment syntax in files
+Message-ID: <YGPk0h8OikOdRnyb@kernel.org>
+References: <20210330211813.28030-1-yashsri421@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210330131636.21711-2-nayna@linux.ibm.com>
+In-Reply-To: <20210330211813.28030-1-yashsri421@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 09:16:34AM -0400, Nayna Jain wrote:
-> The "mrproper" target is still looking for build time generated keys in
-> the kernel root directory instead of certs directory. Fix the path and
-> remove the names of the files which are no longer generated.
+On Wed, Mar 31, 2021 at 02:48:13AM +0530, Aditya Srivastava wrote:
+> The opening comment mark '/**' is used for highlighting the beginning of
+> kernel-doc comments.
+> There are certain files in arch/x86/kernel/cpu/sgx, which follow this
+> syntax, but the content inside does not comply with kernel-doc.
+> Such lines were probably not meant for kernel-doc parsing, but are parsed
+> due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
+> causes unexpected warnings from kernel-doc.
 > 
-> Fixes: cfc411e7fff3 ("Move certificate handling to its own directory")
-> Signed-off-by: Nayna Jain <nayna@linux.ibm.com>
-> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
-> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+> E.g., presence of kernel-doc like comment in the header lines for
+> arch/x86/kernel/cpu/sgx/encl.h causes this warning:
+> "warning: expecting prototype for 2016(). Prototype was for _X86_ENCL_H() instead"
+> 
+> Similarly for arch/x86/kernel/cpu/sgx/arch.h too.
+> 
+> Provide a simple fix by replacing these occurrences with general comment
+> format, i.e. '/*', to prevent kernel-doc from parsing it.
+> 
+> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
 > ---
->  Makefile | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> * Applies perfectly on next-20210326
 > 
-> diff --git a/Makefile b/Makefile
-> index d4784d181123..b7c2ed2a8684 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -1523,9 +1523,9 @@ MRPROPER_FILES += include/config include/generated          \
->  		  debian snap tar-install \
->  		  .config .config.old .version \
->  		  Module.symvers \
-> -		  signing_key.pem signing_key.priv signing_key.x509	\
-> -		  x509.genkey extra_certificates signing_key.x509.keyid	\
-> -		  signing_key.x509.signer vmlinux-gdb.py \
-> +		  certs/signing_key.pem certs/signing_key.x509 \
-> +		  certs/x509.genkey \
-> +		  vmlinux-gdb.py \
->  		  *.spec
->  
->  # Directories & files removed with 'make distclean'
+>  arch/x86/kernel/cpu/sgx/arch.h | 2 +-
+>  arch/x86/kernel/cpu/sgx/encl.h | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/sgx/arch.h b/arch/x86/kernel/cpu/sgx/arch.h
+> index 26315bea1cb4..70b84bbdaa1d 100644
+> --- a/arch/x86/kernel/cpu/sgx/arch.h
+> +++ b/arch/x86/kernel/cpu/sgx/arch.h
+> @@ -1,5 +1,5 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+> -/**
+> +/*
+>   * Copyright(c) 2016-20 Intel Corporation.
+>   *
+>   * Contains data structures defined by the SGX architecture.  Data structures
+> diff --git a/arch/x86/kernel/cpu/sgx/encl.h b/arch/x86/kernel/cpu/sgx/encl.h
+> index d8d30ccbef4c..76b9bc1c5c30 100644
+> --- a/arch/x86/kernel/cpu/sgx/encl.h
+> +++ b/arch/x86/kernel/cpu/sgx/encl.h
+> @@ -1,5 +1,5 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+> -/**
+> +/*
+>   * Copyright(c) 2016-20 Intel Corporation.
+>   *
+>   * Contains the software defined data structures for enclaves.
 > -- 
-> 2.29.2
+> 2.17.1
 > 
 > 
 
-
-
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
 
 /Jarkko
