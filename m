@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9AE350863
+	by mail.lfdr.de (Postfix) with ESMTP id E7EE3350864
 	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 22:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236693AbhCaUng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 16:43:36 -0400
-Received: from st43p00im-zteg10072001.me.com ([17.58.63.167]:45022 "EHLO
-        st43p00im-zteg10072001.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236657AbhCaUnP (ORCPT
+        id S236704AbhCaUnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 16:43:37 -0400
+Received: from st43p00im-zteg10061901.me.com ([17.58.63.168]:43473 "EHLO
+        st43p00im-zteg10061901.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236660AbhCaUnS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 16:43:15 -0400
+        Wed, 31 Mar 2021 16:43:18 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-        t=1617223394; bh=Ve4jsESrp8OiRYiXnom06JM7XAJznVi4sZGNOiytr3g=;
+        t=1617223397; bh=jdxkkX2iOMFCu5vLMtxt0m50Kt2SC0QJ9iqjEUQZuEQ=;
         h=From:To:Subject:Date:Message-Id;
-        b=HZCDpWmy3Unk9YqkhBWusy5o9lAVrd/shU6/AwRFl+bZKaHGqN7rLYNyfma0xUHUD
-         hu/3AG78v71GKjG5qFRjMXhQFZN4K7nOODcYzRdRcvlFXVRrEQTXSDR36pJ7ewiDL6
-         eXrznOKzwPXRvByHme2NRE49Xwm6eta8jMm0oFAIDYUVgiMijY4aBRYhjmod2E981+
-         3JF8C0xT1JBDoH5MGK08BbS6psEGucPbTcHm3tSK/V812eBpI7inpAbBdpViS1K5PJ
-         Ks0V9R6CPjwRrlQCO1hHa7Yv5EGoLJohferw1cA3JDyb1uDgmvlsL155vuunKM76YZ
-         osNc3RnoFtNrw==
+        b=vOJaRSGZx8xa2nBmeCrlMw36qdMH1ylfeNlgplLzIreqz7aBD6uDJ1Ae7yQztD57r
+         NcC5lia5YRZj4XDKvpJC505fmKXwG4y8VEYxNZq4PyFgOlTTXZPynvWf5hq9WSirsH
+         T0wD5/g1UeYhfztrHcOvwT1PvgI47z53QVRb4AxgUFUiiayR7+QS3jTaucT6B+4kgq
+         8wGiCmwY/3aKmf6DzEwwYqy4nO11g505aXs8XXl1JKLfvv5WHxJDGn3JE3zSGD/Bgl
+         EQkMXSfVA2Xe3T1nnWr0XtJUwNDAIvq2mX3MOPauSJwenGtqLiKR8t+DOjkNf13l0p
+         y/NjRfls6oQQg==
 Received: from localhost (101.220.150.77.rev.sfr.net [77.150.220.101])
-        by st43p00im-zteg10072001.me.com (Postfix) with ESMTPSA id D8D04C0564;
-        Wed, 31 Mar 2021 20:43:12 +0000 (UTC)
+        by st43p00im-zteg10061901.me.com (Postfix) with ESMTPSA id 9A7C58605D7;
+        Wed, 31 Mar 2021 20:43:16 +0000 (UTC)
 From:   Alain Volmat <avolmat@me.com>
 To:     Patrice Chotard <patrice.chotard@foss.st.com>,
         Rob Herring <robh+dt@kernel.org>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
         linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, avolmat@me.com
-Subject: [PATCH v3 02/13] ARM: dts: sti: update flexgen compatible within stih407-clock
-Date:   Wed, 31 Mar 2021 22:42:17 +0200
-Message-Id: <20210331204228.26107-3-avolmat@me.com>
+Subject: [PATCH v3 03/13] ARM: dts: sti: update flexgen compatible within stih410-clock
+Date:   Wed, 31 Mar 2021 22:42:18 +0200
+Message-Id: <20210331204228.26107-4-avolmat@me.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210331204228.26107-1-avolmat@me.com>
 References: <20210331204228.26107-1-avolmat@me.com>
@@ -40,7 +40,7 @@ X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
  definitions=2021-03-31_10:2021-03-31,2021-03-31 signatures=0
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
  phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=714 adultscore=0 classifier=spam adjust=0 reason=mlx
+ mlxlogscore=702 adultscore=0 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.0.1-2006250000 definitions=main-2103310144
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -52,40 +52,41 @@ and set the new proper compatible corresponding.
 
 Signed-off-by: Alain Volmat <avolmat@me.com>
 ---
- arch/arm/boot/dts/stih407-clock.dtsi | 85 ++--------------------------
- 1 file changed, 6 insertions(+), 79 deletions(-)
+ arch/arm/boot/dts/stih410-clock.dtsi | 95 ++--------------------------
+ 1 file changed, 6 insertions(+), 89 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stih407-clock.dtsi b/arch/arm/boot/dts/stih407-clock.dtsi
-index 1ab40db7c91a..ecd568777e5f 100644
---- a/arch/arm/boot/dts/stih407-clock.dtsi
-+++ b/arch/arm/boot/dts/stih407-clock.dtsi
-@@ -83,15 +83,12 @@
+diff --git a/arch/arm/boot/dts/stih410-clock.dtsi b/arch/arm/boot/dts/stih410-clock.dtsi
+index 81a8c25d7ba5..04b0d7080353 100644
+--- a/arch/arm/boot/dts/stih410-clock.dtsi
++++ b/arch/arm/boot/dts/stih410-clock.dtsi
+@@ -83,16 +83,12 @@
  			};
  
  			clk_s_a0_flexgen: clk-s-a0-flexgen {
 -				compatible = "st,flexgen";
-+				compatible = "st,flexgen", "st,flexgen-stih407-a0";
++				compatible = "st,flexgen", "st,flexgen-stih410-a0";
  
  				#clock-cells = <1>;
  
  				clocks = <&clk_s_a0_pll 0>,
  					 <&clk_sysin>;
 -
--				clock-output-names = "clk-ic-lmi0";
+-				clock-output-names = "clk-ic-lmi0",
+-						     "clk-ic-lmi1";
 -				clock-critical = <CLK_IC_LMI0>;
  			};
  		};
  
-@@ -134,7 +131,7 @@
+@@ -135,7 +131,7 @@
  
  			clk_s_c0_flexgen: clk-s-c0-flexgen {
  				#clock-cells = <1>;
 -				compatible = "st,flexgen";
-+				compatible = "st,flexgen", "st,flexgen-stih407-c0";
++				compatible = "st,flexgen", "st,flexgen-stih410-c0";
  
  				clocks = <&clk_s_c0_pll0 0>,
  					 <&clk_s_c0_pll1 0>,
-@@ -144,45 +141,6 @@
+@@ -145,52 +141,6 @@
  					 <&clk_s_c0_quadfs 3>,
  					 <&clk_sysin>;
  
@@ -120,7 +121,14 @@ index 1ab40db7c91a..ecd568777e5f 100644
 -						     "clk-flash-promip",
 -						     "clk-main-disp",
 -						     "clk-aux-disp",
--						     "clk-compo-dvp";
+-						     "clk-compo-dvp",
+-						     "clk-tx-icn-hades",
+-						     "clk-rx-icn-hades",
+-						     "clk-icn-reg-16",
+-						     "clk-pp-hades",
+-						     "clk-clust-hades",
+-						     "clk-hwpe-hades",
+-						     "clk-fc-hades";
 -				clock-critical = <CLK_PROC_STFE>,
 -						 <CLK_ICN_CPU>,
 -						 <CLK_TX_ICN_DMU>,
@@ -131,12 +139,12 @@ index 1ab40db7c91a..ecd568777e5f 100644
  				/*
  				 * ARM Peripheral clock for timers
  				 */
-@@ -219,18 +177,13 @@
+@@ -227,20 +177,13 @@
  
  			clk_s_d0_flexgen: clk-s-d0-flexgen {
  				#clock-cells = <1>;
 -				compatible = "st,flexgen-audio", "st,flexgen";
-+				compatible = "st,flexgen", "st,flexgen-stih407-d0";
++				compatible = "st,flexgen", "st,flexgen-stih410-d0";
  
  				clocks = <&clk_s_d0_quadfs 0>,
  					 <&clk_s_d0_quadfs 1>,
@@ -147,11 +155,13 @@ index 1ab40db7c91a..ecd568777e5f 100644
 -				clock-output-names = "clk-pcm-0",
 -						     "clk-pcm-1",
 -						     "clk-pcm-2",
--						     "clk-spdiff";
+-						     "clk-spdiff",
+-						     "clk-pcmr10-master",
+-						     "clk-usb2-phy";
  			};
  		};
  
-@@ -253,7 +206,7 @@
+@@ -263,7 +206,7 @@
  
  			clk_s_d2_flexgen: clk-s-d2-flexgen {
  				#clock-cells = <1>;
@@ -160,7 +170,7 @@ index 1ab40db7c91a..ecd568777e5f 100644
  
  				clocks = <&clk_s_d2_quadfs 0>,
  					 <&clk_s_d2_quadfs 1>,
-@@ -262,24 +215,7 @@
+@@ -272,24 +215,7 @@
  					 <&clk_sysin>,
  					 <&clk_sysin>,
  					 <&clk_tmdsout_hdmi>;
@@ -186,7 +196,7 @@ index 1ab40db7c91a..ecd568777e5f 100644
  		};
  
  		clk_s_d3_quadfs: clk-s-d3-quadfs@9107000 {
-@@ -301,22 +237,13 @@
+@@ -311,22 +237,13 @@
  
  			clk_s_d3_flexgen: clk-s-d3-flexgen {
  				#clock-cells = <1>;
