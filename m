@@ -2,255 +2,499 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E973501FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B556350203
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235980AbhCaOPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 10:15:07 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:39589 "EHLO pegase1.c-s.fr"
+        id S235994AbhCaOQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 10:16:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235771AbhCaOPA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 10:15:00 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4F9Sxs54h1z9v329;
-        Wed, 31 Mar 2021 16:14:57 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id X2hGRp9Wscd2; Wed, 31 Mar 2021 16:14:57 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4F9Sxs44DJz9v328;
-        Wed, 31 Mar 2021 16:14:57 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8B7968B829;
-        Wed, 31 Mar 2021 16:14:58 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id xx8qZEUczKKW; Wed, 31 Mar 2021 16:14:58 +0200 (CEST)
-Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 31E078B828;
-        Wed, 31 Mar 2021 16:14:58 +0200 (CEST)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 0C9B767626; Wed, 31 Mar 2021 14:14:58 +0000 (UTC)
-Message-Id: <9121a44a2d50ba1af18d8aa5ada06c9a3bea8afd.1617200085.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/ptrace: Don't return error when getting/setting FP
- regs without CONFIG_PPC_FPU_REGS
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Wed, 31 Mar 2021 14:14:58 +0000 (UTC)
+        id S235948AbhCaOQi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 10:16:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8374560FEA;
+        Wed, 31 Mar 2021 14:16:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617200197;
+        bh=eL91uyDgEVR7LcPESV3BoTdsM+880ShbnILq99ubHig=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ffAuPYk7iWufAbgh+MbeMY9VAnT6lFxFK7C5cHXY+nXJJk59UD1vUoloU46zmcoSw
+         Hy9jwaGy26ZoqFwsOMIQlf/+LISy7fN72VIx2yVp8iOXc7Iqwq1fhG3jm4P1JaCzvX
+         K9ZqiS8IGGEnHAZ3ssIJ4xIPkzDFd7Rimo32pgj3POHlsqrjsRzpOXw3QKZZAKEHoZ
+         Wj79pyaYaxIdVBIxmrnBMCAvDZk16NXkYnvVLK0JqkZMB+bYXbehEWHU2pwMO7kM2G
+         SU1u+xeo6fsCdPjKOVGhu6xReytWfqUBb4So+I/r5ripJ/DCXHIFh5nhAos4Va4OeT
+         ET6V58uSSH4dg==
+Received: by mail-ej1-f49.google.com with SMTP id hq27so30300376ejc.9;
+        Wed, 31 Mar 2021 07:16:37 -0700 (PDT)
+X-Gm-Message-State: AOAM533IBvNBUq4HgkaWmLSekiJOvqOiELvdyx2ZRnrtNRsPXxdoz7VP
+        ZdfXM3j6RcwwqyOm/TVBXP1GIWODQVSZrFW/Mg==
+X-Google-Smtp-Source: ABdhPJzejcI3xzmZROqjlnBx1vvqU0QBzSUUdnWfIjLGXf048kmTMHFktdrHEhXvDIFX0KiSYxvRaQ/o7vvnbbw1RAY=
+X-Received: by 2002:a17:906:7f84:: with SMTP id f4mr3647628ejr.525.1617200195984;
+ Wed, 31 Mar 2021 07:16:35 -0700 (PDT)
+MIME-Version: 1.0
+References: <1615383186-18500-1-git-send-email-argus.lin@mediatek.com> <1615383186-18500-2-git-send-email-argus.lin@mediatek.com>
+In-Reply-To: <1615383186-18500-2-git-send-email-argus.lin@mediatek.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 31 Mar 2021 09:16:06 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqL-TvUZOZ8Eev5zrq2aA59SLLEMVV3Ypq-07bNccp=NRw@mail.gmail.com>
+Message-ID: <CAL_JsqL-TvUZOZ8Eev5zrq2aA59SLLEMVV3Ypq-07bNccp=NRw@mail.gmail.com>
+Subject: Re: [PATCH V2 1/2] dt-bindings: mediatek: mt6359: add ASoC mt6359
+ ASoC accdet jack document
+To:     Argus Lin <argus.lin@mediatek.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jack Yu <jack.yu@realtek.com>,
+        Shuming Fan <shumingf@realtek.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jiaxin Yu <jiaxin.yu@mediatek.com>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        "Shane.Chien" <shane.chien@mediatek.com>,
+        Chipeng Chang <chipeng.chang@mediatek.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An #ifdef CONFIG_PPC_FPU_REGS is missing in arch_ptrace() leading
-to the following Oops because [REGSET_FPR] entry is not initialised in
-native_regsets[].
+On Wed, Mar 10, 2021 at 7:33 AM Argus Lin <argus.lin@mediatek.com> wrote:
+>
+> This patch adds MediaTek MT6359 ASoC accdet jack document.
 
-[   41.917608] BUG: Unable to handle kernel instruction fetch
-[   41.922849] Faulting instruction address: 0xff8fd228
-[   41.927760] Oops: Kernel access of bad area, sig: 11 [#1]
-[   41.933089] BE PAGE_SIZE=4K PREEMPT CMPC885
-[   41.940753] Modules linked in:
-[   41.943768] CPU: 0 PID: 366 Comm: gdb Not tainted 5.12.0-rc5-s3k-dev-01666-g7aac86a0f057-dirty #4835
-[   41.952800] NIP:  ff8fd228 LR: c004d9e0 CTR: ff8fd228
-[   41.957790] REGS: caae9df0 TRAP: 0400   Not tainted  (5.12.0-rc5-s3k-dev-01666-g7aac86a0f057-dirty)
-[   41.966741] MSR:  40009032 <EE,ME,IR,DR,RI>  CR: 82004248  XER: 20000000
-[   41.973540]
-[   41.973540] GPR00: c004d9b4 caae9eb0 c1b64f60 c1b64520 c0713cd4 caae9eb8 c1bacdfc 00000004
-[   41.973540] GPR08: 00000200 ff8fd228 c1bac700 00001032 28004242 1061aaf4 00000001 106d64a0
-[   41.973540] GPR16: 00000000 00000000 7fa0a774 10610000 7fa0aef9 00000000 10610000 7fa0a538
-[   41.973540] GPR24: 7fa0a580 7fa0a570 c1bacc00 c1b64520 c1bacc00 caae9ee8 00000108 c0713cd4
-[   42.009685] NIP [ff8fd228] 0xff8fd228
-[   42.013300] LR [c004d9e0] __regset_get+0x100/0x124
-[   42.018036] Call Trace:
-[   42.020443] [caae9eb0] [c004d9b4] __regset_get+0xd4/0x124 (unreliable)
-[   42.026899] [caae9ee0] [c004da94] copy_regset_to_user+0x5c/0xb0
-[   42.032751] [caae9f10] [c002f640] sys_ptrace+0xe4/0x588
-[   42.037915] [caae9f30] [c0011010] ret_from_syscall+0x0/0x28
-[   42.043422] --- interrupt: c00 at 0xfd1f8e4
-[   42.047553] NIP:  0fd1f8e4 LR: 1004a688 CTR: 00000000
-[   42.052544] REGS: caae9f40 TRAP: 0c00   Not tainted  (5.12.0-rc5-s3k-dev-01666-g7aac86a0f057-dirty)
-[   42.061494] MSR:  0000d032 <EE,PR,ME,IR,DR,RI>  CR: 48004442  XER: 00000000
-[   42.068551]
-[   42.068551] GPR00: 0000001a 7fa0a040 77dad7e0 0000000e 00000170 00000000 7fa0a078 00000004
-[   42.068551] GPR08: 00000000 108deb88 108dda40 106d6010 44004442 1061aaf4 00000001 106d64a0
-[   42.068551] GPR16: 00000000 00000000 7fa0a774 10610000 7fa0aef9 00000000 10610000 7fa0a538
-[   42.068551] GPR24: 7fa0a580 7fa0a570 1078fe00 1078fd70 1078fd70 00000170 0fdd3244 0000000d
-[   42.104696] NIP [0fd1f8e4] 0xfd1f8e4
-[   42.108225] LR [1004a688] 0x1004a688
-[   42.111753] --- interrupt: c00
-[   42.114768] Instruction dump:
-[   42.117698] XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX
-[   42.125443] XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX
-[   42.133195] ---[ end trace d35616f22ab2100c ]---
+Seems this never made it to the DT list so no checks ran. It's got all
+sorts of errors:
 
-Adding the missing #ifdef is not good because gdb doesn't like getting
-an error when getting registers.
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,four-key-thr: 'oneOf' conditional failed, one must
+be fixed:
+ 'type' is a required property
+ Additional properties are not allowed ('maxItems' was unexpected)
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,four-key-thr: 'oneOf' conditional failed, one must
+be fixed:
+ 'enum' is a required property
+ 'const' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,four-key-thr: 'oneOf' conditional failed, one must
+be fixed:
+ '$ref' is a required property
+ 'allOf' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,accdet-name: 'oneOf' conditional failed, one must
+be fixed:
+ 'type' is a required property
+ Additional properties are not allowed ('maxItems' was unexpected)
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,accdet-name: 'oneOf' conditional failed, one must
+be fixed:
+ 'enum' is a required property
+ 'const' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,accdet-name: 'oneOf' conditional failed, one must
+be fixed:
+ '$ref' is a required property
+ 'allOf' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,eint-use-ext-res: 'oneOf' conditional failed, one
+must be fixed:
+ 'type' is a required property
+ Additional properties are not allowed ('maxItems' was unexpected)
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,eint-use-ext-res: 'oneOf' conditional failed, one
+must be fixed:
+ 'enum' is a required property
+ 'const' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,eint-use-ext-res: 'oneOf' conditional failed, one
+must be fixed:
+ '$ref' is a required property
+ 'allOf' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,tri-key-cdd-thr: 'oneOf' conditional failed, one
+must be fixed:
+ 'type' is a required property
+ Additional properties are not allowed ('maxItems' was unexpected)
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,tri-key-cdd-thr: 'oneOf' conditional failed, one
+must be fixed:
+ 'enum' is a required property
+ 'const' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,tri-key-cdd-thr: 'oneOf' conditional failed, one
+must be fixed:
+ '$ref' is a required property
+ 'allOf' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,pwm-deb-setting: 'oneOf' conditional failed, one
+must be fixed:
+ 'type' is a required property
+ Additional properties are not allowed ('maxItems' was unexpected)
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,pwm-deb-setting: 'oneOf' conditional failed, one
+must be fixed:
+ 'enum' is a required property
+ 'const' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,pwm-deb-setting: 'oneOf' conditional failed, one
+must be fixed:
+ '$ref' is a required property
+ 'allOf' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,eint-num: 'oneOf' conditional failed, one must be
+fixed:
+ 'type' is a required property
+ Additional properties are not allowed ('maxItems' was unexpected)
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,eint-num: 'oneOf' conditional failed, one must be
+fixed:
+ 'enum' is a required property
+ 'const' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,eint-num: 'oneOf' conditional failed, one must be
+fixed:
+ '$ref' is a required property
+ 'allOf' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,mic-vol: 'oneOf' conditional failed, one must be
+fixed:
+ 'type' is a required property
+ Additional properties are not allowed ('maxItems' was unexpected)
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,mic-vol: 'oneOf' conditional failed, one must be
+fixed:
+ 'enum' is a required property
+ 'const' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,mic-vol: 'oneOf' conditional failed, one must be
+fixed:
+ '$ref' is a required property
+ 'allOf' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,eint-trig-mode: 'oneOf' conditional failed, one
+must be fixed:
+ 'type' is a required property
+ Additional properties are not allowed ('maxItems' was unexpected)
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,eint-trig-mode: 'oneOf' conditional failed, one
+must be fixed:
+ 'enum' is a required property
+ 'const' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,eint-trig-mode: 'oneOf' conditional failed, one
+must be fixed:
+ '$ref' is a required property
+ 'allOf' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,three-key-thr: 'oneOf' conditional failed, one
+must be fixed:
+ 'type' is a required property
+ Additional properties are not allowed ('maxItems' was unexpected)
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,three-key-thr: 'oneOf' conditional failed, one
+must be fixed:
+ 'enum' is a required property
+ 'const' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,three-key-thr: 'oneOf' conditional failed, one
+must be fixed:
+ '$ref' is a required property
+ 'allOf' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,key-mode: 'oneOf' conditional failed, one must be
+fixed:
+ 'type' is a required property
+ Additional properties are not allowed ('maxItems' was unexpected)
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,key-mode: 'oneOf' conditional failed, one must be
+fixed:
+ 'enum' is a required property
+ 'const' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,key-mode: 'oneOf' conditional failed, one must be
+fixed:
+ '$ref' is a required property
+ 'allOf' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,eint-comp-vth: 'oneOf' conditional failed, one
+must be fixed:
+ 'type' is a required property
+ Additional properties are not allowed ('maxItems' was unexpected)
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,eint-comp-vth: 'oneOf' conditional failed, one
+must be fixed:
+ 'enum' is a required property
+ 'const' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,eint-comp-vth: 'oneOf' conditional failed, one
+must be fixed:
+ '$ref' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,eint-use-ap: 'oneOf' conditional failed, one must
+be fixed:
+ 'type' is a required property
+ Additional properties are not allowed ('maxItems' was unexpected)
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,eint-use-ap: 'oneOf' conditional failed, one must
+be fixed:
+ 'enum' is a required property
+ 'const' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,eint-use-ap: 'oneOf' conditional failed, one must
+be fixed:
+ '$ref' is a required property
+ 'allOf' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,mic-mode: 'oneOf' conditional failed, one must be
+fixed:
+ 'type' is a required property
+ Additional properties are not allowed ('maxItems' was unexpected)
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,mic-mode: 'oneOf' conditional failed, one must be
+fixed:
+ 'enum' is a required property
+ 'const' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,mic-mode: 'oneOf' conditional failed, one must be
+fixed:
+ '$ref' is a required property
+ 'allOf' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,eint-detect-mode: 'oneOf' conditional failed, one
+must be fixed:
+ 'type' is a required property
+ Additional properties are not allowed ('maxItems' was unexpected)
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,eint-detect-mode: 'oneOf' conditional failed, one
+must be fixed:
+ 'enum' is a required property
+ 'const' is a required property
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+properties:mediatek,eint-detect-mode: 'oneOf' conditional failed, one
+must be fixed:
+ '$ref' is a required property
+ 'allOf' is a required property
 
-Instead, make ptrace return 0s when CONFIG_PPC_FPU_REGS is not set.
 
-Fixes: b6254ced4da6 ("powerpc/signal: Don't manage floating point regs when no FPU")
-Cc: stable@vger.kernel.org
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/ptrace/Makefile       |  4 ++--
- arch/powerpc/kernel/ptrace/ptrace-decl.h  | 14 --------------
- arch/powerpc/kernel/ptrace/ptrace-fpu.c   | 10 ++++++++++
- arch/powerpc/kernel/ptrace/ptrace-novsx.c |  8 ++++++++
- arch/powerpc/kernel/ptrace/ptrace-view.c  |  2 --
- 5 files changed, 20 insertions(+), 18 deletions(-)
+> Signed-off-by: Argus Lin <argus.lin@mediatek.com>
+> ---
+>  .../bindings/sound/mt6359-accdet.yaml         | 164 ++++++++++++++++++
+>  1 file changed, 164 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/mt6359-accdet.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml b/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml
+> new file mode 100644
+> index 000000000000..7fb3e8dfb4c5
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml
+> @@ -0,0 +1,164 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/mt6359-accdet.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Mediatek Technologies Inc. MT6359 ASoC accdet jack driver bindings
+> +
+> +maintainers:
+> +  - Chipeng Chang <chipeng.chang@mediatek.com>
+> +
+> +description: |
+> +  This binding describes the Mediatek Technologies MT6359 ASoC
+> +  accdet jack driver.
+> +
+> +properties:
+> +  mediatek,accdet-name:
+> +    maxItems: 1
+> +    description: named as "mt6359-accdet" jack.
 
-diff --git a/arch/powerpc/kernel/ptrace/Makefile b/arch/powerpc/kernel/ptrace/Makefile
-index 8ebc11d1168d..77abd1a5a508 100644
---- a/arch/powerpc/kernel/ptrace/Makefile
-+++ b/arch/powerpc/kernel/ptrace/Makefile
-@@ -6,11 +6,11 @@
- CFLAGS_ptrace-view.o		+= -DUTS_MACHINE='"$(UTS_MACHINE)"'
- 
- obj-y				+= ptrace.o ptrace-view.o
--obj-$(CONFIG_PPC_FPU_REGS)	+= ptrace-fpu.o
-+obj-y				+= ptrace-fpu.o
- obj-$(CONFIG_COMPAT)		+= ptrace32.o
- obj-$(CONFIG_VSX)		+= ptrace-vsx.o
- ifneq ($(CONFIG_VSX),y)
--obj-$(CONFIG_PPC_FPU_REGS)	+= ptrace-novsx.o
-+obj-y				+= ptrace-novsx.o
- endif
- obj-$(CONFIG_ALTIVEC)		+= ptrace-altivec.o
- obj-$(CONFIG_SPE)		+= ptrace-spe.o
-diff --git a/arch/powerpc/kernel/ptrace/ptrace-decl.h b/arch/powerpc/kernel/ptrace/ptrace-decl.h
-index 3487f2c9735c..eafe5f0f6289 100644
---- a/arch/powerpc/kernel/ptrace/ptrace-decl.h
-+++ b/arch/powerpc/kernel/ptrace/ptrace-decl.h
-@@ -165,22 +165,8 @@ int ptrace_put_reg(struct task_struct *task, int regno, unsigned long data);
- extern const struct user_regset_view user_ppc_native_view;
- 
- /* ptrace-fpu */
--#ifdef CONFIG_PPC_FPU_REGS
- int ptrace_get_fpr(struct task_struct *child, int index, unsigned long *data);
- int ptrace_put_fpr(struct task_struct *child, int index, unsigned long data);
--#else
--static inline int
--ptrace_get_fpr(struct task_struct *child, int index, unsigned long *data)
--{
--	return -EIO;
--}
--
--static inline int
--ptrace_put_fpr(struct task_struct *child, int index, unsigned long data)
--{
--	return -EIO;
--}
--#endif
- 
- /* ptrace-(no)adv */
- void ppc_gethwdinfo(struct ppc_debug_info *dbginfo);
-diff --git a/arch/powerpc/kernel/ptrace/ptrace-fpu.c b/arch/powerpc/kernel/ptrace/ptrace-fpu.c
-index 8301cb52dd99..5dca19361316 100644
---- a/arch/powerpc/kernel/ptrace/ptrace-fpu.c
-+++ b/arch/powerpc/kernel/ptrace/ptrace-fpu.c
-@@ -8,32 +8,42 @@
- 
- int ptrace_get_fpr(struct task_struct *child, int index, unsigned long *data)
- {
-+#ifdef CONFIG_PPC_FPU_REGS
- 	unsigned int fpidx = index - PT_FPR0;
-+#endif
- 
- 	if (index > PT_FPSCR)
- 		return -EIO;
- 
-+#ifdef CONFIG_PPC_FPU_REGS
- 	flush_fp_to_thread(child);
- 	if (fpidx < (PT_FPSCR - PT_FPR0))
- 		memcpy(data, &child->thread.TS_FPR(fpidx), sizeof(long));
- 	else
- 		*data = child->thread.fp_state.fpscr;
-+#else
-+	*data = 0;
-+#endif
- 
- 	return 0;
- }
- 
- int ptrace_put_fpr(struct task_struct *child, int index, unsigned long data)
- {
-+#ifdef CONFIG_PPC_FPU_REGS
- 	unsigned int fpidx = index - PT_FPR0;
-+#endif
- 
- 	if (index > PT_FPSCR)
- 		return -EIO;
- 
-+#ifdef CONFIG_PPC_FPU_REGS
- 	flush_fp_to_thread(child);
- 	if (fpidx < (PT_FPSCR - PT_FPR0))
- 		memcpy(&child->thread.TS_FPR(fpidx), &data, sizeof(long));
- 	else
- 		child->thread.fp_state.fpscr = data;
-+#endif
- 
- 	return 0;
- }
-diff --git a/arch/powerpc/kernel/ptrace/ptrace-novsx.c b/arch/powerpc/kernel/ptrace/ptrace-novsx.c
-index b3b36835658a..7433f3db979a 100644
---- a/arch/powerpc/kernel/ptrace/ptrace-novsx.c
-+++ b/arch/powerpc/kernel/ptrace/ptrace-novsx.c
-@@ -21,12 +21,16 @@
- int fpr_get(struct task_struct *target, const struct user_regset *regset,
- 	    struct membuf to)
- {
-+#ifdef CONFIG_PPC_FPU_REGS
- 	BUILD_BUG_ON(offsetof(struct thread_fp_state, fpscr) !=
- 		     offsetof(struct thread_fp_state, fpr[32]));
- 
- 	flush_fp_to_thread(target);
- 
- 	return membuf_write(&to, &target->thread.fp_state, 33 * sizeof(u64));
-+#else
-+	return membuf_write(&to, &empty_zero_page, 33 * sizeof(u64));
-+#endif
- }
- 
- /*
-@@ -46,6 +50,7 @@ int fpr_set(struct task_struct *target, const struct user_regset *regset,
- 	    unsigned int pos, unsigned int count,
- 	    const void *kbuf, const void __user *ubuf)
- {
-+#ifdef CONFIG_PPC_FPU_REGS
- 	BUILD_BUG_ON(offsetof(struct thread_fp_state, fpscr) !=
- 		     offsetof(struct thread_fp_state, fpr[32]));
- 
-@@ -53,4 +58,7 @@ int fpr_set(struct task_struct *target, const struct user_regset *regset,
- 
- 	return user_regset_copyin(&pos, &count, &kbuf, &ubuf,
- 				  &target->thread.fp_state, 0, -1);
-+#else
-+	return 0;
-+#endif
- }
-diff --git a/arch/powerpc/kernel/ptrace/ptrace-view.c b/arch/powerpc/kernel/ptrace/ptrace-view.c
-index 0923c94f684e..3579217ca9b0 100644
---- a/arch/powerpc/kernel/ptrace/ptrace-view.c
-+++ b/arch/powerpc/kernel/ptrace/ptrace-view.c
-@@ -522,13 +522,11 @@ static const struct user_regset native_regsets[] = {
- 		.size = sizeof(long), .align = sizeof(long),
- 		.regset_get = gpr_get, .set = gpr_set
- 	},
--#ifdef CONFIG_PPC_FPU_REGS
- 	[REGSET_FPR] = {
- 		.core_note_type = NT_PRFPREG, .n = ELF_NFPREG,
- 		.size = sizeof(double), .align = sizeof(double),
- 		.regset_get = fpr_get, .set = fpr_set
- 	},
--#endif
- #ifdef CONFIG_ALTIVEC
- 	[REGSET_VMX] = {
- 		.core_note_type = NT_PPC_VMX, .n = 34,
--- 
-2.25.0
+Sounds like a constraint. Why do you need this in DT if only 1 value?
+And why expose an SoC specific name to userspace (I guess)?
 
+> +
+> +  mediatek,mic-vol:
+> +    maxItems: 1
+
+This is an array because 'maxItems' is for arrays? It needs a type
+reference. Same problem throughout.
+
+> +    description: |
+> +      accdet micbias1 voltage.
+> +
+> +      enum:
+
+The indentation is wrong here, so this is just part of 'description'.
+
+> +        - 0x00 # 1.7v - micbias1 volage is 1.7v.
+> +        - 0x01 # 1.8v - micbias1 volage is 1.8v.
+> +        - 0x02 # 1.9v - micbias1 volage is 1.9v.
+> +        - 0x03 # 2.0v - micbias1 volage is 2.0v.
+> +        - 0x04 # 2.1v - micbias1 volage is 2.1v.
+> +        - 0x05 # 2.5v - micbias1 volage is 2.5v.
+> +        - 0x06 # 2.6v - micbias1 volage is 2.6v.
+> +        - 0x07 # 2.7v - micbias1 volage is 2.7v.
+> +        - 0x08 # 2.8v - micbias1 volage is 2.8v.
+> +        - 0x09 # 2.85v - micbias1 volage is 2.85v.
+> +
+> +  mediatek,mic-mode:
+> +    maxItems: 1
+> +    description: |
+> +      value as 1, 2, 6 to indicate ACC/DCC mode. default is DCC mode 2.
+> +
+> +      enum:
+> +        - 0x01 # ACC - ACC mode.
+> +        - 0x02 # DCC - low cost without in bias.
+> +        - 0x06 # DCC - low cost with in bias.
+> +
+> +  mediatek,pwm-deb-setting:
+> +    maxItems: 15
+> +    description: |
+> +       headset-mode-setting : Indicates customized pwm, debounce setting
+> +       accdet pwm_width, pwm_thresh, fall_delay, rise_delay
+> +       debounce0, debounce1, debounce3, debounce4
+> +       eint pwm_width, eint pwm_thresh
+> +       eint deb(debounce0, debounce1, debounce2, debounce3), inv_debounce.
+
+This is a string?
+
+> +
+> +  mediatek,eint-use-ap:
+> +    maxItems: 1
+> +    description: |
+> +      indicates to use ap gpio.
+> +
+> +      enum:
+> +        - 0x00 # MT6359 eint detection mode.
+> +        - 0x01 # SoC GPIO detection mode.
+
+Would boolean work here?
+
+> +
+> +  mediatek,eint-detect-mode:
+> +    maxItems: 1
+> +    description: |
+> +      indicates to use ap gpio.
+> +
+> +      enum:
+> +        - 0x00 # detection mode with higher detection power.
+> +        - 0x01 # detection mode with lower detection power.
+> +        - 0x02 # detection mode with sw moisture detection mode.
+> +        - 0x03 # detection mode with hw moisture detection mode1.
+> +        - 0x04 # detection mode with hw moisture detection mode2.
+> +
+> +  mediatek,eint-num:
+> +    maxItems: 1
+> +    description: |
+> +      incicates pmic eint usage.
+> +
+> +      enum:
+> +        - 0x0 # PMIC_EINT0 - use pmic eint0 to trigger plug interrupt.
+> +        - 0x1 # PMIC_EINT1 - use pmic eint1 to trigger plug interrupt.
+> +        - 0x2 # PMIC_BI_EINT - use pmic eint0/1 to trigger plug interrupt.
+> +
+> +  mediatek,eint-trig-mode:
+> +    maxItems: 1
+> +    description: |
+> +      incicates pmic eint trigger mode.
+> +
+> +      enum:
+> +        - 0x0 # PMIC_GPIO - use pmic gpio to detect plug status.
+> +        - 0x1 # PMIC_INVERTER - use pmic inverter to detect plug status.
+
+Boolean instead?
+
+> +
+> +  mediatek,eint-use-ext-res:
+> +    maxItems: 1
+> +    description: |
+> +      select HP_EINT pull up resistance, default 0 use internal resistance.
+> +
+> +      enum:
+> +        - 0x0 # use internal resistor.
+> +        - 0x1 # use external resistor.
+
+Boolean?
+
+> +
+> +  mediatek,eint-comp-vth:
+> +    maxItems: 1
+> +    description: |
+> +      indicates comparator detection voltage.
+> +
+> +      enum:
+> +        - 0x00 # 2.8v.
+> +        - 0x01 # 2.4v.
+> +        - 0x02 # 2.0v.
+> +        - 0x03 # 0.7v.
+> +
+> +  mediatek,key-mode:
+> +    maxItems: 1
+> +    description: |
+> +      incicates key mode type.
+> +
+> +      enum:
+> +        - 0x0 # THREE_KEY - support 3-key key mode.
+> +        - 0x1 # FOUR_KEY - support 4-key key mode.
+> +        - 0x2 # TRI_KEY_CDD - support 3-key google CDD key mode.
+> +
+> +  mediatek,three-key-thr:
+> +    maxItems: 4
+> +    description: |
+> +      3 key device detection threshold: 0--MD_MAX--UP_MAX--DW_MAX.
+> +
+> +  mediatek,tri-key-cdd-thr:
+> +    maxItems: 4
+> +    description: |
+> +      3 key CDD device detection threshold: 0--MD_MAX--UP_MAX--DW_MAX.
+> +
+> +  mediatek,four-key-thr:
+> +    maxItems: 4
+> +    description: |
+> +      4 key device detection threshold: 0--MD_MAX--VOICE_MAX--UP_MAX--DW_MAX.
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    accdet: accdet {
+
+Where does this node go? You've got no compatible, so it's a child of
+something else?
+
+> +        mediatek,accdet-name = "mt6359-accdet";
+> +        mediatek,mic-vol = <8>;
+> +        mediatek,mic-mode = <2>;
+> +        mediatek,pwm-deb-setting = <0x500 0x500 1 0x1f0
+> +                                    0x800 0x800 0x20 0x44
+> +                                    0x4 0x1
+> +                                    0x5 0x3 0x3 0x5 0xe>;
+> +        mediatek,eint-use-ap = <0>;
+> +        mediatek,eint-detect-mode = <4>;
+> +        mediatek,eint-num = <0>;
+> +        mediatek,eint-trig-mode = <1>;
+> +        mediatek,eint-use-ext-res = <0>;
+> +        mediatek,eint-comp-vth = <2>;
+> +        mediatek,key-mode = <0>;
+> +        mediatek,three-key-thr = <0 80 220 400>;
+> +        status = "okay";
+
+Don't show status in examples.
+
+> +    };
+> +...
+
+> --
+> 2.18.0
+>
