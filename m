@@ -2,107 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7500350602
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED7DF350606
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234537AbhCaSJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 14:09:46 -0400
-Received: from mail1.perex.cz ([77.48.224.245]:35946 "EHLO mail1.perex.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233735AbhCaSJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 14:09:30 -0400
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 50375A003F;
-        Wed, 31 Mar 2021 20:09:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 50375A003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-        t=1617214165; bh=cVlBUFphs/dnp74K2p5kRDyfBDi3OUtOUvGdNmBLsP4=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=sBeAQc3JNSuqQS+Lcy4Gncbk+pJfATshMepPkXFUdX1HwkUhHIm1/haAjQb1Hfz1v
-         06blgNKsS56DwNFOFLb6Xs5AJa9bKGph6vBV7HxOpgXnDXj9M5tPNyrbEXSi3W7iVs
-         qtfeT3BowNx5VOWrz/mJ6T/G6Dr0NJa8tC8mCyKk=
-Received: from p1gen2.localdomain (unknown [192.168.100.98])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: perex)
-        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-        Wed, 31 Mar 2021 20:09:19 +0200 (CEST)
-Subject: Re: ALSA: control - add layer registration routines
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
-        Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        alsa-devel@alsa-project.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <96e9bd5c-c8db-0db8-b393-fbf4a047dc80@canonical.com>
-From:   Jaroslav Kysela <perex@perex.cz>
-Message-ID: <51ba335d-45ac-b50d-2ec6-333afd1daebf@perex.cz>
-Date:   Wed, 31 Mar 2021 20:09:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S233735AbhCaSKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 14:10:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234807AbhCaSKE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 14:10:04 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 862EEC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 11:10:04 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id e14so8321625plj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 11:10:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CRwTprnnI8wz+/z7qaTV17ZDi+HLSj0ilkKWjBU02K8=;
+        b=VPaEWj6gEDKV2/fVYPM6pBeCCmjH5CjUv8MDPhK+OFLA2zwsAWG/NkWeKzZStAo4GB
+         ccHdr3pCFCCtk6TdaQnzqtjSEnGZ83/QUQk1H6coKIXXsbFng0x/EdaWPa5gzO2xAwbH
+         ym9PALE98UahaphLi5qOR7TpbNea4i+jq5/Xg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CRwTprnnI8wz+/z7qaTV17ZDi+HLSj0ilkKWjBU02K8=;
+        b=mCzMzfNN/Bvkm7puwAVBWBkLdWvEFz1T5/a08yLZSXJ5cUY/hIWTIptMifhUNFyFUw
+         7xFsy7DPmanJxiDYD44tqW0GfuyU+DJ5bouYK4RQLWMSPBOZyQLO6thTHy0qW8CvQO0o
+         4lMBU63NUJVRlVJAlm6os6uUlFpGsc60qSj0v4icd+XdTyNfagvM2f7z6dztgZo5Fq7f
+         Rvz/KS4ThSScQ7n4lz61kL4vHFfm4PDAM9QkNO8xC/7x/s3nacy2MGx+h2gmJRXO2qoe
+         S16VOwz6ZpbvFX6NL+UV7DkYlzdiZG40mwhDtKC7Rtn9SZkxQfdHE2As8JDzrUo7/p/A
+         nNGw==
+X-Gm-Message-State: AOAM533N+TYrh9L6frbSDxA+GsIQ2pHZ+7x812P4i0s50ekMUqS9nTTu
+        VFij6/94tnpep7TrfwODHnQKrg==
+X-Google-Smtp-Source: ABdhPJwbAA32TMbB3osF08sK5TFLMQEjnc+42H9avoEUrbO+Zx4wBht1hAmZNc5xM2IMK/M2zLeYyA==
+X-Received: by 2002:a17:902:c643:b029:e7:3c10:4695 with SMTP id s3-20020a170902c643b02900e73c104695mr4370404pls.41.1617214204060;
+        Wed, 31 Mar 2021 11:10:04 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:74b3:8070:8b1:c494])
+        by smtp.gmail.com with UTF8SMTPSA id i22sm3214254pgj.90.2021.03.31.11.10.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Mar 2021 11:10:03 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 11:10:00 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, rnayak@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org
+Subject: Re: [PATCH V3 2/5] regulator: qcom-rpmh: Add PM7325/PMR735A
+ regulator support
+Message-ID: <YGS6+OtDJe4E+jTi@google.com>
+References: <1617192339-3760-1-git-send-email-skakit@codeaurora.org>
+ <1617192339-3760-3-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <96e9bd5c-c8db-0db8-b393-fbf4a047dc80@canonical.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <1617192339-3760-3-git-send-email-skakit@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne 31. 03. 21 v 17:17 Colin Ian King napsal(a):
-> Hi,
+On Wed, Mar 31, 2021 at 05:35:36PM +0530, satya priya wrote:
+> Add support for PM7325/PMR735A regulators. This ensures
+> that consumers are able to modify the physical state of PMIC
+> regulators.
 > 
-> Static analysis on linux-next with Coverity has detected a potential
-> issue in the following commit:
-> 
-> commit 3f0638a0333bfdd0549985aa620f2ab69737af47
-> Author: Jaroslav Kysela <perex@perex.cz>
-> Date:   Wed Mar 17 18:29:41 2021 +0100
-> 
->     ALSA: control - add layer registration routines
-> 
-> The static analysis is as follows:
-> 
-> 2072 void snd_ctl_disconnect_layer(struct snd_ctl_layer_ops *lops)
-> 2073 {
-> 2074        struct snd_ctl_layer_ops *lops2, *prev_lops2;
-> 2075
-> 2076        down_write(&snd_ctl_layer_rwsem);
-> 
->     assignment: Assigning: prev_lops2 = NULL.
-> 
-> 2077        for (lops2 = snd_ctl_layer, prev_lops2 = NULL; lops2; lops2
-> = lops2->next)
-> 2078                if (lops2 == lops) {
-> 
->     null: At condition prev_lops2, the value of prev_lops2 must be NULL.
->     dead_error_condition: The condition !prev_lops2 must be true.
-> 
-> 2079                        if (!prev_lops2)
-> 2080                                snd_ctl_layer = lops->next;
-> 2081                        else
-> 
->     'Constant' variable guards dead code (DEADCODE) dead_error_line:
->     Execution cannot reach this statement: prev_lops2->next = lops->next;.
->     Local variable prev_lops2 is assigned only once, to a constant
-> value, making it effectively constant throughout its scope. If this is
-> not the intent, examine the logic to see if there is a missing
-> assignment that would make prev_lops2 not remain constant.
-> 
-> 2082                                prev_lops2->next = lops->next;
-> 2083                        break;
-> 2084                }
-> 2085        up_write(&snd_ctl_layer_rwsem);
-> 2086 }
-> 
-> I couldn't quite figure out the original intent of the prev_lops use, so
-> I'd thought I'd report this issue as the code does look incorrect.
+> Signed-off-by: satya priya <skakit@codeaurora.org>
 
-Thank you. I submitted the fix here:
-
-https://lore.kernel.org/alsa-devel/20210331180702.663489-1-perex@perex.cz/
-
-					Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
