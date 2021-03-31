@@ -2,90 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF6334FFC1
+	by mail.lfdr.de (Postfix) with ESMTP id A892234FFC2
 	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235190AbhCaLwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 07:52:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58676 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235035AbhCaLwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 07:52:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA0DA61983;
-        Wed, 31 Mar 2021 11:52:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617191545;
-        bh=oYPoYBISW1U3nwgz67Ee8rLPsIXaiLi1AKK4azFtrDs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V81QxCaXo5BcqEzeHs7BvlqPDdaEyjYVePPvs3WuSN5I5bEH0xng7LgAfNS9RfWjH
-         iQb661c3nrs6KSXN8KzZi+gsZXvqVwGfws61NxzyZ0PiolDJekDMKkN2Y5b63obGTD
-         QfDIYE2lR9LIeqTaOSahYqZMycWBFJKGp9lA2IsXsHDpi/cB2soRcGp2zBuZeUMMca
-         ltiOLrzkRGV5aQu6ZJFM9fIl1iUgXSLj+Nc93kBEkO4Dk9ZU9evLoNrLlMa2OLs+6x
-         ORQGKSadN3jra5Itw8ipgu58ptTFpSTqDQHowhddnVIA9q60kt/sv2Gqa0WpqkXvWY
-         FnRKu0K/+eWdg==
-Date:   Wed, 31 Mar 2021 12:52:19 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Daniel Walker <danielwa@cisco.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Rob Herring <robh@kernel.org>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        X86 ML <x86@kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        xe-linux-external@cisco.com, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/7] powerpc: convert config files to generic cmdline
-Message-ID: <20210331115218.GB7626@willie-the-truck>
-References: <20210309000247.2989531-4-danielwa@cisco.com>
- <5f865584-09c9-d21f-ffb7-23cf07cf058e@csgroup.eu>
- <20210309212944.GR109100@zorba>
- <e4899874-1684-fa1b-443e-f4e478e05e31@csgroup.eu>
- <CAL_JsqKm76jRQYDcu3rGyUWKPLspoO=EZW_WFy=zAK+m_JYCTg@mail.gmail.com>
- <20fd7d44-8c39-48bc-25c3-990be9d9d911@csgroup.eu>
- <20210325195956.GM109100@zorba>
- <20210329100750.GB3207@willie-the-truck>
- <20210330173521.GT109100@zorba>
+        id S235253AbhCaLxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 07:53:49 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:19904 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235284AbhCaLxT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 07:53:19 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12VBXdoa166180;
+        Wed, 31 Mar 2021 07:52:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : mime-version : content-type; s=pp1;
+ bh=/V7yWWNxYngIC7wyYWbeATuXW63w4vjLjmXFFb6sRso=;
+ b=OB+QZSWfadHU9JeKkgyjq8Q8lYiOnSOXXHSQ3gM02s947l02FUplMR+qPNm2PyTH+dwA
+ oaz3wKZDBYJbHgD0PKvOirJHWN0DqE0Wiq5o+VvePWn+8XQad5xAFuTVlu3OrQhDe6eF
+ eKC0hq8SI0uzv9OzDceLOD7gmBowWTb0Mx4yNQGdTe13lukDLCkXycyTe27oBnlCEXgo
+ rEAT092CxDkPqK1XOEVJuIymXsvNNuUJ5xGusV8kpdAmprM52IKdJkvPen8Oys2o6M/h
+ LIwixMb0hovpKnjo/AxztUiS3hK4DRQ7PmhrYNjPx7p8Xm4y0WtnDYhNZ/SRVZBPe6oJ zA== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37mnfswa4w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 31 Mar 2021 07:52:52 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12VBq8c4006263;
+        Wed, 31 Mar 2021 11:52:50 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 37matt0hgx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 31 Mar 2021 11:52:49 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12VBqlDp37945762
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 31 Mar 2021 11:52:47 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AA8D1A4060;
+        Wed, 31 Mar 2021 11:52:47 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6AE48A405B;
+        Wed, 31 Mar 2021 11:52:47 +0000 (GMT)
+Received: from localhost (unknown [9.171.83.5])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 31 Mar 2021 11:52:47 +0000 (GMT)
+Date:   Wed, 31 Mar 2021 13:52:45 +0200
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Josef Bacik <jbacik@fb.com>, linux-kernel@vger.kernel.org
+Subject: User stacktrace garbage when USER_STACKTRACE_SUPPORT is not enabled
+Message-ID: <your-ad-here.call-01617191565-ext-9692@work.hours>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210330173521.GT109100@zorba>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: sDrSpfMaK1BgUhd-7ygtTgiQWv4YnO5R
+X-Proofpoint-ORIG-GUID: sDrSpfMaK1BgUhd-7ygtTgiQWv4YnO5R
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-31_03:2021-03-30,2021-03-31 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
+ spamscore=0 malwarescore=0 impostorscore=0 bulkscore=0 mlxlogscore=817
+ clxscore=1011 suspectscore=0 adultscore=0 phishscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103300000
+ definitions=main-2103310085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 10:35:21AM -0700, Daniel Walker wrote:
-> On Mon, Mar 29, 2021 at 11:07:51AM +0100, Will Deacon wrote:
-> > On Thu, Mar 25, 2021 at 12:59:56PM -0700, Daniel Walker wrote:
-> > > On Thu, Mar 25, 2021 at 01:03:55PM +0100, Christophe Leroy wrote:
-> > > > 
-> > > > Ok, so you agree we don't need to provide two CMDLINE, one to be appended and one to be prepended.
-> > > > 
-> > > > Let's only provide once CMDLINE as of today, and ask the user to select
-> > > > whether he wants it appended or prepended or replacee. Then no need to
-> > > > change all existing config to rename CONFIG_CMDLINE into either of the new
-> > > > ones.
-> > > > 
-> > > > That's the main difference between my series and Daniel's series. So I'll
-> > > > finish taking Will's comment into account and we'll send out a v3 soon.
-> > > 
-> > > It doesn't solve the needs of Cisco, I've stated many times your changes have
-> > > little value. Please stop submitting them.
-> > 
-> > FWIW, they're useful for arm64 and I will gladly review the updated series.
-> > 
-> > I don't think asking people to stop submitting patches is ever the right
-> > answer. Please don't do that.
-> 
-> Why ? It's me nacking his series, is that not allowed anymore ?
+Hi Steven,
 
-If you're that way inclined then you can "nack" whatever you want, but
-please allow the rest of us to continue reviewing the patches. You don't
-have any basis on which to veto other people's contributions and so
-demanding that somebody stops posting code is neither constructive nor
-meaningful.
+At least on s390 since commit cbc3b92ce037 ("tracing: Set kernel_stack's
+caller size properly") kernel stack trace contains 8 garbage values in the end.
+I assume those are supposed to be filled by ftrace_trace_userstack, which is
+only implemented on x86.
 
-Will
+            sshd-804   [050]  1997.252608: kernel_stack:         <stack trace>
+=> trampoline_probe_handler (549628c94)
+=> kprobe_handler (549629260)
+=> kprobe_exceptions_notify (549629370)
+=> notify_die (549686e5e)
+=> illegal_op (54960d440)
+=> __do_pgm_check (54a106b08)
+=> pgm_check_handler (54a112cc8)
+=> kretprobe_trampoline (549629438)
+=> kretprobe_trampoline (549629436)
+=> do_syscall (549611ee6)
+=> __do_syscall (54a106ccc)
+=> system_call (54a112b5a)
+=> 769010000000322
+=> 22125e4d8
+=> 22125e8f8
+=> e000054100040100
+=> _end (3220000000c)
+=> 2
+=> 20f892ec00000002
+=> 20f898b800000002
+
+kernel/trace/trace_entries.h:
+159 #define FTRACE_STACK_ENTRIES    8
+160
+161 FTRACE_ENTRY(kernel_stack, stack_entry,
+162
+163         TRACE_STACK,
+164
+165         F_STRUCT(
+166                 __field(        int,            size    )
+167                 __array(        unsigned long,  caller, FTRACE_STACK_ENTRIES    )
+168         ),
+
+Is there any reason to keep those 8 extra values in the caller array if
+CONFIG_USER_STACKTRACE_SUPPORT is not enabled? Any advice how to fix that
+gracefully? It seems to work if I simply set FTRACE_STACK_ENTRIES to 0 when
+CONFIG_USER_STACKTRACE_SUPPORT is not enabled.
