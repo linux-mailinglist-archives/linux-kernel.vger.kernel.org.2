@@ -2,70 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E037834F569
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 02:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A4434F573
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 02:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232394AbhCaAUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 20:20:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43872 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231701AbhCaAUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 20:20:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 9D8AC619A7;
-        Wed, 31 Mar 2021 00:20:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617150010;
-        bh=6kSL9gs4I6to6gpb9c/w1ktYJp1T1wUwDqb+3use/xg=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=FG9m+jXhO1gD3LN3WQHhIRX+K5kZADBfDnsDLUgxNXmZMkaGwDLHM/dZN1yxP503Y
-         P2VfnYvrHhI2By+EoYoJg554kFpCOiQQwhG7s6bSwUBbV5F5zwgY2DJ3e3u3yipcaa
-         si/T6Y/Z5GocFTnIq7MKs7p5hPccqTpoWrWbiaFXcinxMTJCaludLtJkDGGBugC5aM
-         c7F9EKLfQXG9jAEVhg7OUU2aYHEf52pqDDm+TReqP4GPyy0s+uJ0ES5lOBFSV7M9b9
-         0kAA/GPIszROxZjl3wUhD8sI/PPCgPGqHsIuKASy808IhyjIHf0znWmTn91mNMIWwR
-         vAqNfS38C6/qA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8F1B860A72;
-        Wed, 31 Mar 2021 00:20:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
+        id S232665AbhCaAZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 20:25:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232126AbhCaAY1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 20:24:27 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35EF7C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 17:24:27 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id x26so13341793pfn.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 17:24:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t8GisNUKhAXhRRmhb5Tmd7cSosC0ChQ5VE6Rcal6IVk=;
+        b=urdw3ivXzWShCpZ72V3nD7ok9QIvHP0ke8jFdQ6gOdSvymUjIs2/ErLZOItEsi3Exq
+         Zs/3q45bKVnrvrbSLkghBP8hFtj6qVeMzz3QGjNAbe8vYCKmt67b0HU/a1rimNbVG/bG
+         9i5i5OG5X0jCsbYssTZKB2kEzfUjkj/Tz2IgeJP/MkJhFphCczFN6i17moOy/H7qOQ3e
+         aI+4KGsS3P5GrnDzdy7q9IblINvwNF1BiXXQaD5XzCxZULPiIcfhxzp7xxrMM0HeWyVS
+         JANPccHlgxQi8ZyQM3ouLqwjeOC7ke9gUVjz5HNCEAVRcxOfa39fRx9hzMCTKz9mMlld
+         ffdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=t8GisNUKhAXhRRmhb5Tmd7cSosC0ChQ5VE6Rcal6IVk=;
+        b=tSul0J07IukKvciD8IjAlF4+5/RfAdwxYk07sFMWKM/SOomLfEx/n/gQU2i21ck+b4
+         p1PAZGFEHdQRvOoWGC/w9KeQCBeS2TMH/Grv0fhWbBVWU6U/epqy6uuBY3z1fXS75frN
+         rYKen+cl1iPB0Nyz4hTvdtu1HC2maQIT/DDi19huBuBXR3bYbZx+ahETwU3JA3eH5wRt
+         FVNoWU6qS18K2isU1riYlkbaXrAb5cvQKZts+oa55ncXiWNdSAC9F81OiIZ1kpuPVFqi
+         L7BnZIh5g6A1W7xSVgDdlf1FDqyTjNKgPd/EWWE2UpdvRDybcKEtTzXWxsm5bnTwA2pB
+         q/jw==
+X-Gm-Message-State: AOAM532wUP1WCxil/C3GLw+Bnh7QODls0th0JNKKQ1SlP788eCgQoop4
+        Kui3mBweSUFM9VstuWAWTVKaLg==
+X-Google-Smtp-Source: ABdhPJzu1TA+qlBzM73yS6GhrKUJdqQ2kl7j2QOiV7JjAougt35JjgWoZLN67F4hgX4tR8a+GoQsxw==
+X-Received: by 2002:aa7:9687:0:b029:22e:e5ce:95b6 with SMTP id f7-20020aa796870000b029022ee5ce95b6mr502259pfk.53.1617150266450;
+        Tue, 30 Mar 2021 17:24:26 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id p25sm169258pfe.100.2021.03.30.17.24.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Mar 2021 17:24:25 -0700 (PDT)
+Date:   Tue, 30 Mar 2021 17:24:25 -0700 (PDT)
+X-Google-Original-Date: Tue, 30 Mar 2021 17:06:40 PDT (-0700)
+Subject:     Re: [PATCH v2 2/6] clk: sifive: Use reset-simple in prci driver for PCIe driver
+In-Reply-To: <CAHCEehL63aJQPA3DdRCa3pZHWX3DH9ktgKbo1+nD=KWxADsogA@mail.gmail.com>
+CC:     sboyd@kernel.org, alex.dewar90@gmail.com, aou@eecs.berkeley.edu,
+        bhelgaas@google.com, devicetree@vger.kernel.org,
+        erik.danie@sifive.com, hayashi.kunihiko@socionext.com,
+        helgaas@kernel.org, hes@sifive.com, jh80.chung@samsung.com,
+        khilman@baylibre.com, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-riscv@lists.infradead.org, lorenzo.pieralisi@arm.com,
+        mturquette@baylibre.com, p.zabel@pengutronix.de,
+        Paul Walmsley <paul.walmsley@sifive.com>, robh+dt@kernel.org,
+        vidyas@nvidia.com, zong.li@sifive.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     greentime.hu@sifive.com
+Message-ID: <mhng-78a4de2c-8723-4b35-b64e-2e1866ad6743@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] tc-testing: add simple action change test
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161715001058.3850.13772855808502684032.git-patchwork-notify@kernel.org>
-Date:   Wed, 31 Mar 2021 00:20:10 +0000
-References: <20210330104110.25360-1-vladbu@nvidia.com>
-In-Reply-To: <20210330104110.25360-1-vladbu@nvidia.com>
-To:     Vlad Buslov <vladbu@nvidia.com>
-Cc:     memxor@gmail.com, xiyou.wangcong@gmail.com, davem@davemloft.net,
-        jhs@mojatatu.com, jiri@resnulli.us, kuba@kernel.org,
-        toke@redhat.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Mon, 29 Mar 2021 20:36:12 PDT (-0700), greentime.hu@sifive.com wrote:
+> Stephen Boyd <sboyd@kernel.org> 於 2021年3月30日 週二 上午3:14寫道：
+>>
+>> Quoting Greentime Hu (2021-03-17 23:08:09)
+>> > diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
+>> > index 71ab75a46491..f094df93d911 100644
+>> > --- a/drivers/reset/Kconfig
+>> > +++ b/drivers/reset/Kconfig
+>> > @@ -173,7 +173,7 @@ config RESET_SCMI
+>> >
+>> >  config RESET_SIMPLE
+>> >         bool "Simple Reset Controller Driver" if COMPILE_TEST
+>> > -       default ARCH_AGILEX || ARCH_ASPEED || ARCH_BITMAIN || ARCH_REALTEK || ARCH_STM32 || ARCH_STRATIX10 || ARCH_SUNXI || ARCH_ZX || ARC
+>> > +       default ARCH_AGILEX || ARCH_ASPEED || ARCH_BITMAIN || ARCH_REALTEK || ARCH_STM32 || ARCH_STRATIX10 || ARCH_SUNXI || ARCH_ZX || ARC || RISCV
+>>
+>> This conflicts. Can this default be part of the riscv defconfig instead?
+>>
+>
+> Maybe I should remove this since it has been selected by CLK_SIFIVE_PRCI?
+>
+>  config CLK_SIFIVE_PRCI
+>         bool "PRCI driver for SiFive SoCs"
+> +       select RESET_CONTROLLER
+> +       select RESET_SIMPLE
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+Ya, that's better.  IIRC I suggested something similar in some other 
+version, but I might have not actually sent the mail.
 
-On Tue, 30 Mar 2021 13:41:10 +0300 you wrote:
-> Use act_simple to verify that action created with 'tc actions change'
-> command exists after command returns. The goal is to verify internal action
-> API reference counting to ensure that the case when netlink message has
-> NLM_F_REPLACE flag set but action with specified index doesn't exist is
-> handled correctly.
-> 
-> Signed-off-by: Vlad Buslov <vladbu@nvidia.com>
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next] tc-testing: add simple action change test
-    https://git.kernel.org/netdev/net-next/c/e48792a9ec78
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+>
+>> >         help
+>> >           This enables a simple reset controller driver for reset lines that
+>> >           that can be asserted and deasserted by toggling bits in a contiguous,
+>> > @@ -187,6 +187,7 @@ config RESET_SIMPLE
+>> >            - RCC reset controller in STM32 MCUs
+>> >            - Allwinner SoCs
+>> >            - ZTE's zx2967 family
+>> > +          - SiFive FU740 SoCs
+>> >
+>> >  config RESET_STM32MP157
+>> >         bool "STM32MP157 Reset Driver" if COMPILE_TEST
