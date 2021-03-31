@@ -2,74 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AE5A34FCA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:26:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECA0F34FD20
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234534AbhCaJZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 05:25:50 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15122 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234552AbhCaJZS (ORCPT
+        id S234765AbhCaJkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 05:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234721AbhCaJkO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 05:25:18 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F9LTB6xRBz1BFhW;
-        Wed, 31 Mar 2021 17:23:10 +0800 (CST)
-Received: from ubuntu.huawei.com (10.67.174.117) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 31 Mar 2021 17:25:08 +0800
-From:   Ruiqi Gong <gongruiqi1@huawei.com>
-To:     Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>
-CC:     <linux-erofs@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        "Wang Weiyang" <wangweiyang2@huawei.com>
-Subject: [PATCH -next] erofs: Clean up spelling mistakes found in fs/erofs
-Date:   Wed, 31 Mar 2021 05:39:20 -0400
-Message-ID: <20210331093920.31923-1-gongruiqi1@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 31 Mar 2021 05:40:14 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4320AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 02:40:14 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id kt15so29040867ejb.12
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 02:40:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XMjq0EnNPHk8JnXWNq75o7oGRr8GJXa/YQ1PMp5WkcQ=;
+        b=nY1manQxEnYQkBu1Wn2T0srrVqGqwEOQN1Ah4e330sQsQRapDFRGzQV4KnfCKhsnAS
+         fM+rJS2nDNsSBdVCFkyWwQJbBWT5oZubQhoMAyv3GLf09h/U4YP8jl8ytSrisLFQ4zfY
+         AbiGATh7n+wCs2jQc8bdi9ZF/kX9vbmqgwcV4+9ZpPJOvb1jjACKsvLnUcqdDovPfu8K
+         2mHvnnIJPcw1nEo+ijzdOnXgJn82NX6WNnDtlFFsb9xOVafT0vgWPPvuszNwU8cXwmkQ
+         BGZSJtjXdthq5UsizzQTSvDssLdfK1O2V41C0lm6UAWkREoykXbg+61/eNUc1HH33NJh
+         YAUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XMjq0EnNPHk8JnXWNq75o7oGRr8GJXa/YQ1PMp5WkcQ=;
+        b=rZO8hU4mrIacN117v1E9MfBwrIZPkRdS1KauoFsHgD2PFcxp4nx0TdITbG7YtwVcVi
+         /fbf7CPBB7O4oURfFRDBCETDy8RG46YEZqpAcSrHkYbFDgJSI3Y8zs64StfFBeYFTCsJ
+         8s9VtbSI8+JVZeJe/Ff0gwuquqj+bchcleerd4fMQ6EPzkNSoEBsaKe/ft6QMOmZpRsT
+         xkdnc4Nur7ZTSs7p3AjYlpq5lmiy/584XAgfALDJjU/l6zhdo5WR7gQQ2pBEhDKP6JJt
+         EwAWX+kmjPdyGtfosLW1br51svl/SEh/x83r/MzQYk2dcQVvsrsLITByQSYzhYwI5hkd
+         FTeQ==
+X-Gm-Message-State: AOAM532agGoGcxgopcZdAw+dppsmyKoHG7rkulNlUjXfoqlfcjxC/vNo
+        Z97u8L85K8vSdaVP6fc4sZ3cMTuE2W3WQg==
+X-Google-Smtp-Source: ABdhPJz5WHF5f/iKq7TA6oJ54j2rDg2LDe5jpSIfig6wZw0GRAlXumoGdQYJ7RG6rdZjSjeOTnWx9A==
+X-Received: by 2002:a17:906:36d1:: with SMTP id b17mr2635600ejc.235.1617183613058;
+        Wed, 31 Mar 2021 02:40:13 -0700 (PDT)
+Received: from agape ([5.171.73.44])
+        by smtp.gmail.com with ESMTPSA id jj15sm831377ejc.99.2021.03.31.02.40.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 02:40:12 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     joe@perches.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Fabio Aiuto <fabioaiuto83@gmail.com>
+Subject: [PATCH 00/40] staging: rtl8723bs: replace RT_TRACE private macro 
+Date:   Wed, 31 Mar 2021 11:39:28 +0200
+Message-Id: <cover.1617183374.git.fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.117]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-zmap.c:  s/correspoinding/corresponding
-zdata.c: s/endding/ending
+this patchset replace all RT_TRACE usages with public log functions
+used for this pourpose
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Ruiqi Gong <gongruiqi1@huawei.com>
----
- fs/erofs/zdata.c | 2 +-
- fs/erofs/zmap.c  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Fabio Aiuto (40):
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    core/rtw_xmit.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    core/rtw_security.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    core/rtw_eeprom.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    core/rtw_pwrctrl.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    core/rtw_cmd.c
+  staging: rtl8723bs: remove commented RT_TRACE calls in core/rtw_mlme.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    core/rtw_mlme.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    core/rtw_mlme_ext.c
+  staging: rtl8723bs: remove commented RT_TRACE calls in core/rtw_recv.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    core/rtw_recv.c
+  staging: rtl8723bs: remove commented RT_TRACE call in
+    core/rtw_ioctl_set.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    core/rtw_ioctl_set.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    core/rtw_wlan_util.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    core/rtw_sta_mgt.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    core/rtw_ieee80211.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    hal/HalPwrSeqCmd.c
+  staging: rtl8723bs: fix constant name in hal/rtl8723b_hal_init.c
+  staging: rtl8723bs: added driver prefix in log messages
+  staging: rtl8723bs: remove commented RT_TRACE call in
+    hal/rtl8723b_hal_init.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    hal/rtl8723b_hal_init.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    hal/sdio_ops.c
+  staging: rtl8723bs: remove commented code block in
+    hal/hal_com_phycfg.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    hal/rtl8723b_phycfg.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    hal/hal_intf.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    hal/rtl8723bs_xmit.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    hal/sdio_halinit.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    hal/rtl8723bs_recv.c
+  staging: rtl8723bs: remove commented RT_TRACE calls in
+    hal/HalPhyRf_8723B.c
+  staging: rtl8723bs: remove commented RT_TRACE calls in
+    hal/rtl8723b_rf6052.c
+  staging: rtl8723bs: remove commented RT_TRACE calls in
+    os_dep/ioctl_linux.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    os_dep/ioctl_linux.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    os_dep/mlme_linux.c
+  staging: rtl8723bs: fix string format in os_dep/ioctl_cfg80211.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    os_dep/ioctl_cfg80211.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    os_dep/os_intfs.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    os_dep/recv_linux.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    os_dep/sdio_intf.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    os_dep/xmit_linux.c
+  staging: rtl8723bs: replace RT_TRACE with public printk wrappers in
+    os_dep/osdep_service.c
+  staging: rtl8723bs: remove obsolete debug macro
 
-diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
-index cd9b76216925..4226f4115981 100644
---- a/fs/erofs/zdata.c
-+++ b/fs/erofs/zdata.c
-@@ -933,7 +933,7 @@ static int z_erofs_decompress_pcluster(struct super_block *sb,
- 				 }, pagepool);
- 
- out:
--	/* must handle all compressed pages before endding pages */
-+	/* must handle all compressed pages before ending pages */
- 	for (i = 0; i < clusterpages; ++i) {
- 		page = compressed_pages[i];
- 
-diff --git a/fs/erofs/zmap.c b/fs/erofs/zmap.c
-index 14d2de35110c..b384f546d368 100644
---- a/fs/erofs/zmap.c
-+++ b/fs/erofs/zmap.c
-@@ -443,7 +443,7 @@ int z_erofs_map_blocks_iter(struct inode *inode,
- 		m.delta[0] = 1;
- 		fallthrough;
- 	case Z_EROFS_VLE_CLUSTER_TYPE_NONHEAD:
--		/* get the correspoinding first chunk */
-+		/* get the corresponding first chunk */
- 		err = z_erofs_extent_lookback(&m, m.delta[0]);
- 		if (err)
- 			goto unmap_out;
+ drivers/staging/rtl8723bs/core/rtw_cmd.c      |  55 ++--
+ drivers/staging/rtl8723bs/core/rtw_eeprom.c   |  26 +-
+ .../staging/rtl8723bs/core/rtw_ieee80211.c    | 116 +++++---
+ .../staging/rtl8723bs/core/rtw_ioctl_set.c    | 129 +++++----
+ drivers/staging/rtl8723bs/core/rtw_mlme.c     | 128 +++++----
+ drivers/staging/rtl8723bs/core/rtw_mlme_ext.c |  39 +--
+ drivers/staging/rtl8723bs/core/rtw_pwrctrl.c  |  62 ++---
+ drivers/staging/rtl8723bs/core/rtw_recv.c     | 252 +++++++++++-------
+ drivers/staging/rtl8723bs/core/rtw_security.c |  38 ++-
+ drivers/staging/rtl8723bs/core/rtw_sta_mgt.c  |  45 ++--
+ .../staging/rtl8723bs/core/rtw_wlan_util.c    |  28 +-
+ drivers/staging/rtl8723bs/core/rtw_xmit.c     | 168 ++++++++----
+ .../staging/rtl8723bs/hal/HalPhyRf_8723B.c    |   3 -
+ drivers/staging/rtl8723bs/hal/HalPwrSeqCmd.c  |  61 ++---
+ .../staging/rtl8723bs/hal/hal_com_phycfg.c    |  20 --
+ drivers/staging/rtl8723bs/hal/hal_intf.c      |   2 +-
+ .../staging/rtl8723bs/hal/rtl8723b_hal_init.c | 155 +++++------
+ .../staging/rtl8723bs/hal/rtl8723b_phycfg.c   |  48 ++--
+ .../staging/rtl8723bs/hal/rtl8723b_rf6052.c   |   2 -
+ .../staging/rtl8723bs/hal/rtl8723bs_recv.c    |   5 +-
+ .../staging/rtl8723bs/hal/rtl8723bs_xmit.c    |  42 +--
+ drivers/staging/rtl8723bs/hal/sdio_halinit.c  |  49 ++--
+ drivers/staging/rtl8723bs/hal/sdio_ops.c      |  42 +--
+ drivers/staging/rtl8723bs/include/rtw_debug.h |  17 --
+ .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c |  14 +-
+ .../staging/rtl8723bs/os_dep/ioctl_linux.c    |  87 +++---
+ drivers/staging/rtl8723bs/os_dep/mlme_linux.c |   4 +-
+ drivers/staging/rtl8723bs/os_dep/os_intfs.c   |  65 +++--
+ .../staging/rtl8723bs/os_dep/osdep_service.c  |   2 +-
+ drivers/staging/rtl8723bs/os_dep/recv_linux.c |  22 +-
+ drivers/staging/rtl8723bs/os_dep/sdio_intf.c  |  19 +-
+ drivers/staging/rtl8723bs/os_dep/xmit_linux.c |  10 +-
+ 32 files changed, 914 insertions(+), 841 deletions(-)
+
 -- 
-2.17.1
+2.20.1
 
