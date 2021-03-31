@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CEFC34FC6C
+	by mail.lfdr.de (Postfix) with ESMTP id 9070434FC6D
 	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234615AbhCaJQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 05:16:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34270 "EHLO
+        id S234664AbhCaJQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 05:16:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230527AbhCaJQF (ORCPT
+        with ESMTP id S234629AbhCaJQJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 05:16:05 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA43C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 02:15:55 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id k25so19398430iob.6
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 02:15:55 -0700 (PDT)
+        Wed, 31 Mar 2021 05:16:09 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5190EC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 02:16:09 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id r193so19374153ior.9
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 02:16:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=zzwjjkojBahFkPk5yx+4KLV3mmMczPvY6jdqhG6LqMo=;
-        b=O+szBsNMcfZXmAhipiZBpQSU0MGTPHP99mxMxJWTt39iw0+98klUogwZZm5UNSIL32
-         Pw5jvXD0cjN0d3xWz/W94US6xRFW1LOOqDORgpCrEUiauRX7zP3/GUm65rXn5h0O/wwE
-         slVPcu8ewUx4Kl47JEJFro8f0MoIaonhfcgmI=
+        bh=cTMPs2SgYmJwp4UhdhuuT2INlWhxFLMPnLXPbu2mNao=;
+        b=d+yAUQ1MQhncfG9xmpzYJoc7BbjeHST/9O/D4kawpu93JxeNCFWcO6IA1qIdjNN5tg
+         PXtBrqjR4fpOi3U1ixkgBceAo3bf0yZHKz1XRXH2psHkcKh0t9nz0KstibxuQeXctg9f
+         7cEnoB9UyGpWSEoLDgHgiZXfv64nhba9sAADM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=zzwjjkojBahFkPk5yx+4KLV3mmMczPvY6jdqhG6LqMo=;
-        b=P4AhymT8nCxps1+LBnOjiFLm98pvdCp6TsfsaXXHzTRGDKfLoVFJkGaxxSvL9SRQCQ
-         Ts3RN+vakINSr4CBhEFTVQDRJQ5BUwk5PBNfPwXQUQKGUS3DSYSjdzydfi6mKJ4Tp5Vx
-         JpSk5oR+tJKndkrPgxFHuIdMTVrpOFJCIiLfQENoZ4Gy4uBmTSRqE0epHaEyfvb/SqCq
-         cV2EWiaDy5ex92G44l2wXnIER7WbujdBF8v5InWsFF9q1p8fSh/K+7qxpJz59Ss6r707
-         M1tjw5JnA0EDkFs6vH+aOB8b2tELkkUmx2b2fJzOOeSBriaQ5LbhGZGjbMx3aCVtxF4S
-         X2Ww==
-X-Gm-Message-State: AOAM530egl1WFM6hGSDADw6cXdRKRezXhMPrjWkN2iegI+Mffo+8ZrcA
-        kGV3mXlIyQugla2TMQ7n3IFdWMZNbPXIfMLIVpGYDg==
-X-Google-Smtp-Source: ABdhPJwjo7tM7F+sIstrfOpUM82LTDQwJZRYMDcMKJTuSLaawUPoVrxDRap9cWz8IYHdEvwwzMDU9O3aqODrAQMCt6o=
-X-Received: by 2002:a05:6638:371e:: with SMTP id k30mr2137695jav.4.1617182154622;
- Wed, 31 Mar 2021 02:15:54 -0700 (PDT)
+        bh=cTMPs2SgYmJwp4UhdhuuT2INlWhxFLMPnLXPbu2mNao=;
+        b=Eqlor1fLPnfvwVMBiOK6cnKbv4e8zT/T9JMGmHYTwHZxUYeDe8qzYE4dOpaXexXi/e
+         /xW2JsI/0j+MmJjw+LjMAbMjsOnMOj1Cvlkfusf0iWkwcEMv2vxo6DrnF6RYxWs6mj9R
+         A+HdqSbFEl/8eAWWOEaOO1ySN4MDN5ZeSzNZj/7KZkS4Sj634RckloFWfyaeoc3rmChp
+         lCua0GdeBNYrfF/leoEMBNdFVcYfQ7HponHilj3r1cX1KIntfgUryUkEpbGdrxHmASXh
+         BRYmLgD9pXxD3R65o+I7XtlhYE94jdnJ/26emD3XS4GD1EGtIhs45Jn4GkVbbDGMIAL2
+         gd2g==
+X-Gm-Message-State: AOAM530fBNqrMzi0mEYclhtUp2N5FByLDWeflerHvpXU3yH7wZgIMERv
+        5ICG2eXoUSFnR7PNXUNtYjZKCgt3Hhlxld2Bd0pZYg==
+X-Google-Smtp-Source: ABdhPJyUcOCXlKhc8WLb+slH96RHwWHk8tbEKRlfVJXCa7ZxGet90BJLoDrbJaK9d11NA9fRzfijIMD0uLRQm+5uDRE=
+X-Received: by 2002:a05:6638:238c:: with SMTP id q12mr2190200jat.114.1617182168349;
+ Wed, 31 Mar 2021 02:16:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210331090659.4169966-1-enric.balletbo@collabora.com>
-In-Reply-To: <20210331090659.4169966-1-enric.balletbo@collabora.com>
+References: <20210331090659.4169966-1-enric.balletbo@collabora.com> <20210331090659.4169966-2-enric.balletbo@collabora.com>
+In-Reply-To: <20210331090659.4169966-2-enric.balletbo@collabora.com>
 From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Wed, 31 Mar 2021 17:15:28 +0800
-Message-ID: <CAJMQK-jO=yfXDa4t1WzNVmyoQnaBkQP1t1G3HgThWCRAseWk3g@mail.gmail.com>
-Subject: Re: [RESEND PATCH 1/2] arm64: defconfig: Allow mt8173-based boards to
- boot from usb
+Date:   Wed, 31 Mar 2021 17:15:42 +0800
+Message-ID: <CAJMQK-ibWYhsEU3reUPjXZ5fRFzzircQfa35BjqZJ-vSn8ZJMQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH 2/2] arm64: defconfig: Enable options to support
+ panel display for Mediatek Chromebooks
 To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
 Cc:     lkml <linux-kernel@vger.kernel.org>,
         Collabora Kernel ML <kernel@collabora.com>,
@@ -63,6 +63,7 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         Geert Uytterhoeven <geert+renesas@glider.be>,
         =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
         Jagan Teki <jagan@amarulasolutions.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
         Max Krummenacher <max.oss.09@gmail.com>,
@@ -78,9 +79,11 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Wed, Mar 31, 2021 at 5:07 PM Enric Balletbo i Serra
 <enric.balletbo@collabora.com> wrote:
 >
-> Enable the option necessary to boot mt8173-based boards to boot from
-> usb devices, like its phy and the regulators needed to have proper
-> support.
+> There are some Mediatek based Chromebooks supported in the kernel. Enable the
+> required config options to have the panel display working on both devices.
+> This was tested on the ACER Chromebook R13 (MT8173) and the Lenovo
+> Ideapad Duet (MT8183), but should also enable display support for similar
+> devices.
 >
 > Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 > ---
@@ -89,62 +92,63 @@ Reviewed-by: Hsin-Yi Wang <hsinyi@chromium.org>
 > This is only a resend rebased on top of mainline to fix some trivial
 > conflicts.
 >
->  arch/arm64/configs/defconfig | 7 +++++++
->  1 file changed, 7 insertions(+)
+>  arch/arm64/configs/defconfig | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 >
 > diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-> index d612f633b771..7b4be3807b6d 100644
+> index 7b4be3807b6d..f2dc42c9b932 100644
 > --- a/arch/arm64/configs/defconfig
 > +++ b/arch/arm64/configs/defconfig
-> @@ -448,6 +448,7 @@ CONFIG_I2C_GPIO=m
->  CONFIG_I2C_IMX=y
->  CONFIG_I2C_IMX_LPI2C=y
->  CONFIG_I2C_MESON=y
-> +CONFIG_I2C_MT65XX=y
->  CONFIG_I2C_MV64XXX=y
->  CONFIG_I2C_OMAP=y
->  CONFIG_I2C_OWL=y
-> @@ -594,6 +595,7 @@ CONFIG_MFD_EXYNOS_LPASS=m
->  CONFIG_MFD_HI6421_PMIC=y
->  CONFIG_MFD_HI655X_PMIC=y
->  CONFIG_MFD_MAX77620=y
-> +CONFIG_MFD_MT6397=y
->  CONFIG_MFD_SPMI_PMIC=y
->  CONFIG_MFD_RK808=y
->  CONFIG_MFD_SEC_CORE=y
-> @@ -611,6 +613,8 @@ CONFIG_REGULATOR_HI655X=y
->  CONFIG_REGULATOR_MAX77620=y
->  CONFIG_REGULATOR_MAX8973=y
->  CONFIG_REGULATOR_MP8859=y
-> +CONFIG_REGULATOR_MT6358=y
-> +CONFIG_REGULATOR_MT6397=y
->  CONFIG_REGULATOR_PCA9450=y
->  CONFIG_REGULATOR_PF8X00=y
->  CONFIG_REGULATOR_PFUZE100=y
-> @@ -787,6 +791,7 @@ CONFIG_USB_RENESAS_USBHS_HCD=m
->  CONFIG_USB_RENESAS_USBHS=m
->  CONFIG_USB_ACM=m
->  CONFIG_USB_STORAGE=y
-> +CONFIG_USB_MTU3=y
->  CONFIG_USB_MUSB_HDRC=y
->  CONFIG_USB_MUSB_SUNXI=y
->  CONFIG_USB_DWC3=y
-> @@ -988,6 +993,7 @@ CONFIG_OWL_PM_DOMAINS=y
->  CONFIG_RASPBERRYPI_POWER=y
->  CONFIG_FSL_DPAA=y
->  CONFIG_FSL_MC_DPIO=y
-> +CONFIG_MTK_PMIC_WRAP=y
->  CONFIG_QCOM_AOSS_QMP=y
->  CONFIG_QCOM_COMMAND_DB=y
->  CONFIG_QCOM_GENI_SE=y
-> @@ -1064,6 +1070,7 @@ CONFIG_PHY_HI6220_USB=y
->  CONFIG_PHY_HISTB_COMBPHY=y
->  CONFIG_PHY_HISI_INNO_USB2=y
->  CONFIG_PHY_MVEBU_CP110_COMPHY=y
-> +CONFIG_PHY_MTK_TPHY=y
->  CONFIG_PHY_QCOM_QMP=m
->  CONFIG_PHY_QCOM_QUSB2=m
->  CONFIG_PHY_QCOM_USB_HS=y
+> @@ -686,6 +686,7 @@ CONFIG_DRM_MSM=m
+>  CONFIG_DRM_TEGRA=m
+>  CONFIG_DRM_PANEL_LVDS=m
+>  CONFIG_DRM_PANEL_SIMPLE=m
+> +CONFIG_DRM_PANEL_BOE_TV101WUM_NL6=m
+>  CONFIG_DRM_PANEL_MANTIX_MLAF057WE51=m
+>  CONFIG_DRM_PANEL_RAYDIUM_RM67191=m
+>  CONFIG_DRM_PANEL_SITRONIX_ST7703=m
+> @@ -693,6 +694,7 @@ CONFIG_DRM_PANEL_TRULY_NT35597_WQXGA=m
+>  CONFIG_DRM_DISPLAY_CONNECTOR=m
+>  CONFIG_DRM_NWL_MIPI_DSI=m
+>  CONFIG_DRM_LONTIUM_LT9611=m
+> +CONFIG_DRM_PARADE_PS8640=m
+>  CONFIG_DRM_SII902X=m
+>  CONFIG_DRM_SIMPLE_BRIDGE=m
+>  CONFIG_DRM_THINE_THC63LVD1024=m
+> @@ -707,6 +709,8 @@ CONFIG_DRM_VC4=m
+>  CONFIG_DRM_ETNAVIV=m
+>  CONFIG_DRM_HISI_HIBMC=m
+>  CONFIG_DRM_HISI_KIRIN=m
+> +CONFIG_DRM_MEDIATEK=m
+> +CONFIG_DRM_MEDIATEK_HDMI=m
+>  CONFIG_DRM_MXSFB=m
+>  CONFIG_DRM_MESON=m
+>  CONFIG_DRM_PL111=m
+> @@ -979,6 +983,7 @@ CONFIG_ROCKCHIP_IOMMU=y
+>  CONFIG_TEGRA_IOMMU_SMMU=y
+>  CONFIG_ARM_SMMU=y
+>  CONFIG_ARM_SMMU_V3=y
+> +CONFIG_MTK_IOMMU=y
+>  CONFIG_QCOM_IOMMU=y
+>  CONFIG_REMOTEPROC=y
+>  CONFIG_QCOM_Q6V5_MSS=m
+> @@ -1051,6 +1056,8 @@ CONFIG_PWM_BCM2835=m
+>  CONFIG_PWM_CROS_EC=m
+>  CONFIG_PWM_IMX27=m
+>  CONFIG_PWM_MESON=m
+> +CONFIG_PWM_MTK_DISP=m
+> +CONFIG_PWM_MEDIATEK=m
+>  CONFIG_PWM_RCAR=m
+>  CONFIG_PWM_ROCKCHIP=y
+>  CONFIG_PWM_SAMSUNG=y
+> @@ -1095,6 +1102,7 @@ CONFIG_QCOM_L3_PMU=y
+>  CONFIG_NVMEM_IMX_OCOTP=y
+>  CONFIG_NVMEM_IMX_OCOTP_SCU=y
+>  CONFIG_QCOM_QFPROM=y
+> +CONFIG_MTK_EFUSE=y
+>  CONFIG_ROCKCHIP_EFUSE=y
+>  CONFIG_NVMEM_SUNXI_SID=y
+>  CONFIG_UNIPHIER_EFUSE=y
 > --
 > 2.30.2
 >
