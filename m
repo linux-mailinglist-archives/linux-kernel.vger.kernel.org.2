@@ -2,113 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637953500BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 14:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E69E3500BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 14:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235712AbhCaMys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 08:54:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56491 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235666AbhCaMyR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 08:54:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617195257;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BLVqguYYRqWS+fkpiZrnYWlDg4Em6ZwexNgxX0lsnu4=;
-        b=H8RavXFVBwHwcMCLYL+w7w5HA8GwqCDwN0UWs8+titAW1NYzoE8V8+P3ndQRHGgPvJxviJ
-        eyuw3IgvxPULNWW9++nk8q0Eb4KM2LKwYJuTbw4yVZy4njiulPUkL7JejYzbulGn5II+iQ
-        XKBuDL+dnurIQw5/HEX3kusHddJYqh0=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-572-GMw99CW5OJ6r9YIgsygUdQ-1; Wed, 31 Mar 2021 08:54:14 -0400
-X-MC-Unique: GMw99CW5OJ6r9YIgsygUdQ-1
-Received: by mail-qt1-f198.google.com with SMTP id g7so1090932qtb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 05:54:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BLVqguYYRqWS+fkpiZrnYWlDg4Em6ZwexNgxX0lsnu4=;
-        b=NJaEnK45b7yppEjCNt0Y0lb8lpHLs16ADqyqKB/UoOoo2wgLI/w+8fRJaTyWUOo7am
-         +3VXglt+7nCZaZDJGQZvLC5/mAD4z80598mdrg5+F4B2P+LxoAL0qCK9OeSHlNJfYVNt
-         ptId3SLJHFQdsRU294rornQTozYqnkXdRSEmD/pYAMcPy8EPFhoEJhWZjI3HBsXiXBbG
-         vmTu82iwJw1q1SvWTVbfCSF3lWdG0XH6xFkCUBKuqIzU3eUOivZXT1tLTJeXUq9vUEnH
-         kSRhuJrgFik8BJuqq77q5Z5OpxP1DKbbA4sHURVJsWuISr3vXfVmxqc2tUd/JIy7jGER
-         hNKA==
-X-Gm-Message-State: AOAM5337IKqiVB/UIF0yh6Ak0AOSAp4Eipc/+9PyYUxUr2btPhUXKBkn
-        fk80q57fGUQhlg1oX0pQVxJvUMLHrMnlDsIW4kFfQ/6epQR9EQJxQrrnyJ1x+2QFzm6mOb1nyhU
-        vt5h8Kidkp+7vRgpkBZPjsDC2
-X-Received: by 2002:a05:622a:48d:: with SMTP id p13mr2279126qtx.21.1617195253824;
-        Wed, 31 Mar 2021 05:54:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyUI7wPo7TLqkGMdpy3kH1M1sXi6ovrIE72FbmoqiknBlD6P60sY1MhBQ3ElvmViqcwOGvUsQ==
-X-Received: by 2002:a05:622a:48d:: with SMTP id p13mr2279090qtx.21.1617195253556;
-        Wed, 31 Mar 2021 05:54:13 -0700 (PDT)
-Received: from xz-x1 (bras-base-toroon474qw-grc-82-174-91-135-175.dsl.bell.ca. [174.91.135.175])
-        by smtp.gmail.com with ESMTPSA id a19sm1330189qkl.126.2021.03.31.05.54.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 05:54:12 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 08:54:09 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        linux-kselftest@vger.kernel.org, Brian Geffon <bgeffon@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH v3] userfaultfd/shmem: fix MCOPY_ATOMIC_CONTNUE behavior
-Message-ID: <20210331125409.GL429942@xz-x1>
-References: <20210329234131.304999-1-axelrasmussen@google.com>
- <20210330205519.GK429942@xz-x1>
- <CAJHvVcikF9MJepyvf6riVKZEUxQvV1QMdoQoN5Kirs0TLcn-Dg@mail.gmail.com>
+        id S235568AbhCaM4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 08:56:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44324 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235601AbhCaM4O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 08:56:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A54E861959;
+        Wed, 31 Mar 2021 12:56:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617195374;
+        bh=iR7dUcqETM3DVR/eQAZ/VKZtx+OFkr2flgVh2EJMneY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=se2cttHdgk6vJofoxFcUfK1iaywv6HwSRJp5SlFPyBqhXZ4znarGX1x6QaBWjaSdS
+         9GQIoQMB0Z1I0pNQ32P8TMwjjCcN1utH7Gu6RsurZhUUs9SlptK0BUr3UcR6yHDJbV
+         6cYWfNBCTjxqng0MyQ07KBfKlXZWfPYGbxdUtXLjbzD9QQ24h8NF2B25/cWksZs915
+         1ZI8C0uDu3M1lxhpwN8po07GVmcRbfFYMHTP2DO3zQqK+S4dRYb5yr7SNzTqvz6vn5
+         V2lnSEnyBXCB2xOHYXtrmMh7GHRKeyg4tabdmNWNYAiI2PO0VDFpblEjTz6jHx/bp+
+         7cLq7JElb2qRQ==
+Date:   Wed, 31 Mar 2021 18:26:10 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Manish Narani <manish.narani@xilinx.com>
+Cc:     laurent.pinchart@ideasonboard.com, kishon@ti.com,
+        michal.simek@xilinx.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, git@xilinx.com
+Subject: Re: [PATCH v4] phy: zynqmp: Handle the clock enable/disable properly
+Message-ID: <YGRxarYF8p28Un76@vkoul-mobl.Dlink>
+References: <1616588325-95602-1-git-send-email-manish.narani@xilinx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJHvVcikF9MJepyvf6riVKZEUxQvV1QMdoQoN5Kirs0TLcn-Dg@mail.gmail.com>
+In-Reply-To: <1616588325-95602-1-git-send-email-manish.narani@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Axel,
+On 24-03-21, 17:48, Manish Narani wrote:
+> The current driver is not handling the clock enable/disable operations
+> properly. The clocks need to be handled correctly by enabling or
+> disabling at appropriate places. This patch adds code to handle the
+> same.
 
-On Tue, Mar 30, 2021 at 04:30:13PM -0700, Axel Rasmussen wrote:
-> Yes, a refactor like that is promising. It's hard to say for certain
-> without actually looking at the result - I'll spend some time tomorrow
-> on a few options, and send along the cleanest version I come up with.
-
-Before you move onto a new version...  See this commit:
-
-5b51072e97d5 ("userfaultfd: shmem: allocate anonymous memory for MAP_PRIVATE shmem", 2018-11-30)
-
-I found it when I was thinking why not move the whole continue logic directly
-into mfill_atomic_pte(), if we can have the pte installation helper, because
-that's all we need.
-
-So previously I got the semantics a bit mixed up: for private shmem mappings,
-UFFDIO_COPY won't fill in page cache at all, but it's all private.  We keep the
-page cache empty even after UFFDIO_COPY for a private mapping.
-
-UFFDIO_CONTINUE is slightly different, since we _know_ the page cache is
-there..  So I'm thinking maybe you need to handle the continue request in
-mfill_atomic_pte() before the VM_SHARED check so as to cover both cases.
+Applied, thanks
 
 -- 
-Peter Xu
-
+~Vinod
