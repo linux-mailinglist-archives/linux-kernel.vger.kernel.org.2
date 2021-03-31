@@ -2,56 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7B083504A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 18:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 766133504B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 18:36:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234255AbhCaQeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 12:34:05 -0400
-Received: from iodev.co.uk ([46.30.189.100]:49620 "EHLO iodev.co.uk"
+        id S234439AbhCaQgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 12:36:09 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:56532 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234206AbhCaQdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 12:33:55 -0400
-Received: from localhost (121.130.77.188.dynamic.jazztel.es [188.77.130.121])
-        by iodev.co.uk (Postfix) with ESMTPSA id E7A65286FD;
-        Wed, 31 Mar 2021 18:33:53 +0200 (CEST)
-From:   Ismael Luceno <ismael@iodev.co.uk>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ismael Luceno <ismael@iodev.co.uk>
-Subject: [PATCH] docs: reporting-issues: Remove reference to oldnoconfig
-Date:   Wed, 31 Mar 2021 18:35:41 +0200
-Message-Id: <20210331163541.28356-1-ismael@iodev.co.uk>
-X-Mailer: git-send-email 2.31.1
+        id S233831AbhCaQfw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 12:35:52 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lRdon-00ECSt-Dz; Wed, 31 Mar 2021 18:35:45 +0200
+Date:   Wed, 31 Mar 2021 18:35:45 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "Modi, Geet" <geet.modi@ti.com>
+Cc:     "Bajjuri, Praneeth" <praneeth@ti.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [EXTERNAL] Re: [PATCH] net: phy: dp83867: perform soft reset and
+ retain established link
+Message-ID: <YGSk4W4mW8JQPyPl@lunn.ch>
+References: <20210324010006.32576-1-praneeth@ti.com>
+ <YFsxaBj/AvPpo13W@lunn.ch>
+ <404285EC-BBF0-4482-8454-3289C7AF3084@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <404285EC-BBF0-4482-8454-3289C7AF3084@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace it with olddefconfig. oldnoconfig didn't do what the document
-suggests (it aliased to olddefconfig), and isn't available since 4.19.
+>     > as per datasheet: https://www.ti.com/lit/ds/symlink/dp83867cr.pdf
+> 
+>     > 8.6.26 Control Register (CTRL)
+>     > do SW_RESTART to perform a reset not including the registers and is
+>     > acceptable to do this if a link is already present.
+> 
+>  
+> 
+>     I don't see any code here to determine if the like is present. What if
+>     the cable is not plugged in?
+> 
+>     This API is primarily used for reset. Link Status is checked thru different
+> register. This shall not impact the cable plug in/out. With this change, it
+> will align with DP83822 driver API.
 
-Ref: 04c459d20448 ("kconfig: remove oldnoconfig target")
-Ref: 312ee68752fa ("kconfig: announce removal of oldnoconfig if used")
-Signed-off-by: Ismael Luceno <ismael@iodev.co.uk>
----
- Documentation/admin-guide/reporting-issues.rst | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+So why is there the comment:
 
-diff --git a/Documentation/admin-guide/reporting-issues.rst b/Documentation/admin-guide/reporting-issues.rst
-index 07879d01fe68..ffa0d4c6e450 100644
---- a/Documentation/admin-guide/reporting-issues.rst
-+++ b/Documentation/admin-guide/reporting-issues.rst
-@@ -1000,8 +1000,7 @@ In the whole process keep in mind: an issue only qualifies as regression if the
- older and the newer kernel got built with a similar configuration. The best way
- to archive this: copy the configuration file (``.config``) from the old working
- kernel freshly to each newer kernel version you try. Afterwards run ``make
--oldnoconfig`` to adjust it for the needs of the new version without enabling
--any new feature, as those are allowed to cause regressions.
-+olddefconfig`` to adjust it for the needs of the new version.
- 
- 
- Write and send the report
--- 
-2.31.1
+>     >                                            and is
+>     > acceptable to do this if a link is already present.
 
+That kind of says, it is not acceptable to do this if the link is not
+present. Which is why i'm asking.
+
+	 Andrew
