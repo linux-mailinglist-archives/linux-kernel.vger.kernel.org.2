@@ -2,99 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ACF834FDED
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 12:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F72834FDF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 12:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229869AbhCaKT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 06:19:57 -0400
-Received: from mga03.intel.com ([134.134.136.65]:11279 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234666AbhCaKTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 06:19:31 -0400
-IronPort-SDR: b9oBMQVCNAq1Fam8+ng5SSrxY10P3D/MCJ3IUzy9OO4f48ZhEDAGoKF3pxRjrrVcjAgmb66zxa
- qrdVcSHTb9Pw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="192000399"
-X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="192000399"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 03:19:30 -0700
-IronPort-SDR: nvXmnEjyshWxla5V2Rhzsc6w4ZoUr4MFfjFjrVGNOcUT7WSW9nhtKpbb0bZZm9A/GKFUplHX5j
- 1rXTxGlLjhfw==
-X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="377210369"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 03:19:27 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1lRXwa-00HZih-G9; Wed, 31 Mar 2021 13:19:24 +0300
-Date:   Wed, 31 Mar 2021 13:19:24 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-Cc:     yangyicong <yangyicong@huawei.com>,
-        "wsa@kernel.org" <wsa@kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "Sergey.Semin@baikalelectronics.ru" 
-        <Sergey.Semin@baikalelectronics.ru>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "digetx@gmail.com" <digetx@gmail.com>,
-        "treding@nvidia.com" <treding@nvidia.com>,
-        "jarkko.nikula@linux.intel.com" <jarkko.nikula@linux.intel.com>,
-        "rmk+kernel@armlinux.org.uk" <rmk+kernel@armlinux.org.uk>,
-        John Garry <john.garry@huawei.com>,
-        "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH 5/5] i2c: designware: Switch over to
- i2c_freq_mode_string()
-Message-ID: <YGRMrMI2ADSV9RBa@smile.fi.intel.com>
-References: <1617113966-40498-1-git-send-email-yangyicong@hisilicon.com>
- <1617113966-40498-6-git-send-email-yangyicong@hisilicon.com>
- <baa1c622040745b0b13e99e3f7bf2cd3@hisilicon.com>
- <CAHp75VdY58Tm0FDcoVDWuw0LBKUFWC_hBCb5t=4WX_MPzsLvZw@mail.gmail.com>
- <7e82e13b245a4b11917a2e0191acdb1a@hisilicon.com>
- <CAHp75VeTj-wk3WP2-Unoti0+Cajx33b8NOUbBiSBQLmJHn=YAg@mail.gmail.com>
- <793f587a5bc744b393cf677258bce50e@hisilicon.com>
+        id S234935AbhCaKU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 06:20:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234929AbhCaKUK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 06:20:10 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D2E5C061574;
+        Wed, 31 Mar 2021 03:20:10 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id j7so19127220wrd.1;
+        Wed, 31 Mar 2021 03:20:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3rXla0hHRtnVRfLF9YfnBTiK94WVn7aEJZMJWrzafGo=;
+        b=BxYU+5fteJflK1TOZMykibmAPmMWBqlU6pyq6c3GYkZk+Zc7WDm3U2ZC4JA2TVtmMr
+         c+/Zkf7+pMiJG45AOLog4xTM+rQx5jjRD6Y0oAK75WCV0BGt6kHQaCCeFsVPz43Ltfhm
+         6aJbFXc+2aZgcGoQy1tAxDXJ7jLC31SdN9szJhmewx8z/8TNG3EAGriL+acp0oAGaB5U
+         56drsyzCNjhoHdhJn63DRgqRiqk7WZJWrp6LWoPkEZ8qo9y+/HNUVy9o1bN71kF2Bznm
+         jcKMVSTxjXN0TTIWxMD14X6MkUCJfoOSikA2dDFYqC/FOuFm/XbxroO9jJ4UP2dnYWyF
+         Uw3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3rXla0hHRtnVRfLF9YfnBTiK94WVn7aEJZMJWrzafGo=;
+        b=R/7X/kukN3yhprT7Pj7QzDukYwQyw9Vp0jIDiLUKOr+m1zBuFS1cMwSYtbi3h8vF0y
+         +nNFidzynWn8eMu8ouu70k8J8EQyeo+SeBzP9hQ1F6OOgdA0FmvM7KUOtS4EWIB0whj4
+         9ElqoiejxksaLywWPL7x6HGuDVTrDkXTCeRCVd9/sNIw6VoW+O/17PV0oaPbOYj1flDT
+         DNtTzPKfH4WOL73Y/NYn3BCqH3PemOihPnE/BWPpwPvgufBa93P8byPKQ3kOGg+i7LlU
+         P58r2ZWqMQCZMs1goiUJdWGkVW93AOPvunk+2kyxjsWIKPhaFkid/wldfeq3+nkr7cLC
+         gaPQ==
+X-Gm-Message-State: AOAM533ssMYl1QRTtgcmoc2gCDNWD/IJo2ZaHRFLFgRJCSN20qGO752y
+        lrzUpiFwfaaTsKezOUWI4mQ=
+X-Google-Smtp-Source: ABdhPJzN80ItuTRHrC4wh+zxjzi0b6qONHFSsilv18FRfi7CBNJJSZ574//AWCzfQl4jVKGUK3m9NQ==
+X-Received: by 2002:a5d:628c:: with SMTP id k12mr2765032wru.316.1617186008745;
+        Wed, 31 Mar 2021 03:20:08 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.126.134])
+        by smtp.gmail.com with ESMTPSA id n7sm3662246wrv.71.2021.03.31.03.20.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Mar 2021 03:20:08 -0700 (PDT)
+Subject: Re: [PATCH 1/4] dt-bindings: arm64: dts: mediatek: Add
+ mt8183-kukui-kakadu
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Sean Wang <sean.wang@mediatek.com>,
+        Ben Ho <Ben.Ho@mediatek.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+References: <20210331091327.1198529-1-hsinyi@chromium.org>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <28e5fe3c-aae5-9c48-74ca-f1c4964a6124@gmail.com>
+Date:   Wed, 31 Mar 2021 12:20:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <793f587a5bc744b393cf677258bce50e@hisilicon.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210331091327.1198529-1-hsinyi@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 08:53:02AM +0000, Song Bao Hua (Barry Song) wrote:
+
+
+On 31/03/2021 11:13, Hsin-Yi Wang wrote:
+> Kakadu is also known as ASUS Chromebook Detachable CM3.
 > 
-> > No, please read the code carefully.
-> > We can duplicate conditional, but it brings a bit of inconsistency to how the counters are printed.
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+
+Whole series applied to v5.12-next/dts64
+
+Thanks!
+
+> ---
+>  Documentation/devicetree/bindings/arm/mediatek.yaml | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
-> Thanks for clarification, I am still confused as the original
-> code print the real mode based on dev->master_cfg, the new
-> code is printing mode based on frequency.
+> diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
+> index cf24401edb85..9774f44b51d9 100644
+> --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
+> +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
+> @@ -138,6 +138,13 @@ properties:
+>            - const: google,juniper-sku16
+>            - const: google,juniper
+>            - const: mediatek,mt8183
+> +      - description: Google Kakadu (ASUS Chromebook Detachable CM3)
+> +        items:
+> +          - const: google,kakadu-rev3
+> +          - const: google,kakadu-rev2
+> +          - const: google,kakadu
+> +          - const: mediatek,mt8183
+> +
+>  
+>  additionalProperties: true
+>  
 > 
-> My understanding is the original code could fall back to a lower
-> speed when higher speed modes were not set successfully. For
-> example, high speed mode falls back to fast mode:
-
-This is a good catch! I should be fixed by a separate patch I assume.
-
-> if ((dev->master_cfg & DW_IC_CON_SPEED_MASK) ==
-> 		DW_IC_CON_SPEED_HIGH) {
-> 		if ((comp_param1 & DW_IC_COMP_PARAM_1_SPEED_MODE_MASK)
-> 			!= DW_IC_COMP_PARAM_1_SPEED_MODE_HIGH) {
-> 			dev_err(dev->dev, "High Speed not supported!\n");
-> 			dev->master_cfg &= ~DW_IC_CON_SPEED_MASK;
-> 			dev->master_cfg |= DW_IC_CON_SPEED_FAST;
-
-Basically we have to adjust timings here to reflect this change.
-
-> 			dev->hs_hcnt = 0;
-> 			dev->hs_lcnt = 0;
-> 		}
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
