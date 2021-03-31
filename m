@@ -2,171 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A51BD3509C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 821A03509CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232404AbhCaVse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 17:48:34 -0400
-Received: from mga02.intel.com ([134.134.136.20]:29027 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230239AbhCaVsZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 17:48:25 -0400
-IronPort-SDR: vX12jxrGuq0xe3XtWkuORTItHWn5aGH+I5j6/GFF7XEHN0nV+90Sc6UN9rH3JYl57e1ILvxJTc
- P+uZmMYbYmgw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="179228134"
-X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="179228134"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 14:48:25 -0700
-IronPort-SDR: yk80OYLcR4tKt5SiMAstpyOv/C1XaphqzO42mvr0itegwo8WfHbIUUBa3uWqTfJN+ktLFvP/hp
- xhWQ7ncb1NCA==
-X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="394215231"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 14:48:25 -0700
-Date:   Wed, 31 Mar 2021 14:50:56 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210331145056.760478ca@jacob-builder>
-In-Reply-To: <20210331183324.GR1463678@nvidia.com>
-References: <20210322120300.GU2356281@nvidia.com>
-        <20210324120528.24d82dbd@jacob-builder>
-        <20210329163147.GG2356281@nvidia.com>
-        <20210329155526.2ad791a9@jacob-builder>
-        <20210330134313.GP2356281@nvidia.com>
-        <20210330171041.70f2d7d0@jacob-builder>
-        <20210331122805.GC1463678@nvidia.com>
-        <20210331093457.753512d4@jacob-builder>
-        <20210331173148.GN1463678@nvidia.com>
-        <20210331112030.174e77b0@jacob-builder>
-        <20210331183324.GR1463678@nvidia.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S231347AbhCaVwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 17:52:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231579AbhCaVwU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 17:52:20 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43109C061574;
+        Wed, 31 Mar 2021 14:52:20 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id o5so389615qkb.0;
+        Wed, 31 Mar 2021 14:52:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iVgFfy9Gk4TopgDWAZb3OEMFsekIXo3QttoRKgThI1I=;
+        b=LlC/3vOcZu0Rh5837wBCMc/jMQBLoS5tu19QTNj1eof7IhHTCSrowwreYpcEeTbT5X
+         NlWLfUqhbD9HhkHO9DsT4Tyx2dRlg91X71xYeCMm7fKtrUmafIBq7/LrPrNoupfhFp3m
+         GewFfvppFWbs9VRkNf6T/omLtxmxV/Um2gbRVOo+AHZwOoh9mGFiVd9+oTJRsbPr+urV
+         9+SzjFJBATN+dQCPHnqvB4BC59ngCo/QcWw7P40soldfgVxjJkBfgZEWDD018mop0vXZ
+         RHFwc/5vTY5r72yfm8jOOOnGx6oz9cJw+eVDnJnP827bZO8OihlinIME1rTQWHzKsxKK
+         ckUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iVgFfy9Gk4TopgDWAZb3OEMFsekIXo3QttoRKgThI1I=;
+        b=agDMhbaDAHhjurNo28A9Y1aV0ZC/Zyt/xhO3l+yk31Vamck4ce7KHRm/vpbK+iLv7d
+         Wy6a9M6RF+Uhduu77L93Ar3mhuT2m+2/OdcydyCeDcIsBllYc8CVFLlxQJ74lNd0Qt/W
+         ZZ4PRKhthAZ4aCENq1pGyu/517QKZvod6UwcUnCWfDwHUaAIE6jOz52ffkQ+wN0yrt5Q
+         p6dJPbYNBGC5aoHTk3zyKj9y9AIzI+z3m2jwlnIiWC7PHCJqVIKiyH1tnDmp3vzxzGfv
+         xQIBg/aGjzEwZYTBKih505nmNuF7iTi45Io5/Y67q2ZdVAEP2dS0f9Bp9gu6aLkR98Ld
+         lWfQ==
+X-Gm-Message-State: AOAM533G4wIwFMIZpqZKQPjpNwq5k6JnUGs59f8qpN6bU0TE+I+fvTdK
+        ZD3YHFrVtp7CHOPDD0Q6OzU=
+X-Google-Smtp-Source: ABdhPJwK1AgyeLn7/B6+lfbSP03Q/ohuFDGUVnzdZCNHOlmGfkjpcbj+5GbXHWQQi4iDLVthXpiBHg==
+X-Received: by 2002:a37:78b:: with SMTP id 133mr5361746qkh.109.1617227539232;
+        Wed, 31 Mar 2021 14:52:19 -0700 (PDT)
+Received: from localhost ([207.98.216.60])
+        by smtp.gmail.com with ESMTPSA id d84sm2453310qke.53.2021.03.31.14.52.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 14:52:18 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 14:52:18 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: Re: [PATCH] memfd_secret: use unsigned int rather than long as
+ syscall flags type
+Message-ID: <20210331215218.GA3437@yury-ThinkPad>
+References: <20210331142345.27532-1-rppt@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210331142345.27532-1-rppt@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
-
-On Wed, 31 Mar 2021 15:33:24 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
-
-> On Wed, Mar 31, 2021 at 11:20:30AM -0700, Jacob Pan wrote:
-> > Hi Jason,
-> > 
-> > On Wed, 31 Mar 2021 14:31:48 -0300, Jason Gunthorpe <jgg@nvidia.com>
-> > wrote: 
-> > > > > We should try to avoid hidden behind the scenes kernel
-> > > > > interconnections between subsystems.
-> > > > >     
->  [...]  
->  [...]  
-> > yes, this is done in this patchset.
-> >   
->  [...]  
-> > Just to clarify, you are saying (when FREE happens before proper
-> > teardown) there is no need to proactively notify all users of the
-> > IOASID to drop their reference. Instead, just wait for the other
-> > parties to naturally close and drop their references. Am I
-> > understanding you correctly?  
+On Wed, Mar 31, 2021 at 05:23:45PM +0300, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
 > 
-> Yes. What are receivers going to do when you notify them anyhow? What
-> will a mdev do? This is how you get into they crazy locking problems.
+> Yuri Norov says:
 > 
-The receivers perform cleanup work similar to normal unbind. Drain/Abort
-PASID. Locking is an issue in that the atomic notifier is under IOASID
-spinlock, so I provided a common ordered workqueue to let mdev drivers
-queue cleanup work that cannot be done in atomic context. Not ideal. Also
-need to prevent nested notifications for certain cases.
+>   If parameter size is the same for native and compat ABIs, we may
+>   wire a syscall made by compat client to native handler. This is
+>   true for unsigned int, but not true for unsigned long or pointer.
+> 
+>   That's why I suggest using unsigned int and so avoid creating compat
+>   entry point.
+> 
+> Use unsigned int as the type of the flags parameter in memfd_secret()
+> system call.
+> 
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 
-> It is an error for userspace to shutdown like this, recover sensibly
-> and don't crash the kernel. PCIe error TLPs are expected, supress
-> them. That is what we decided on the mmu notifier discussion.
-> 
-> > I feel having the notifications can add two values:
-> > 1. Shorten the duration of errors (as you mentioned below), FD close can
-> > take a long and unpredictable time. e.g. FD shared.  
-> 
-> Only if userspace exits in some uncontrolled way. In a controlled exit
-> it can close all the FDs in the right order.
-> 
-> It is OK if userspace does something weird and ends up with disabled
-> IOASIDs. It shouldn't do that if it cares.
-> 
-Agreed.
-
-> > 2. Provide teardown ordering among PASID users. i.e. vCPU, IOMMU, mdev.
-> >  
-> 
-> This is a hard ask too, there is no natural ordering here I can see,
-> obviously we want vcpu, mdev, iommu for qemu but that doesn't seem to
-> fall out unless we explicitly hard wire it into the kernel.
-> 
-The ordering problem as I understood is that it is difficult for KVM to
-rendezvous all vCPUs before updating PASID translation table. So there
-could be in-flight enqcmd with the stale PASID after the PASID table update
-and refcount drop.
-
-If KVM is the last one to drop the PASID refcount, the PASID could be
-immediately reused and starts a new life. The in-flight enqcmd with the
-stale PASID could cause problems. The likelihood and window is very small.
-
-If we ensure KVM does PASID table update before IOMMU and mdev driver, the
-stale PASID in the in-flight enqcmd would be be drained before starting
-a new life.
-
-Perhaps Yi and Kevin can explain this better.
-
-> Doesn't kvm always kill the vCPU first based on the mmu notifier
-> shooting down all the memory? IIRC this happens before FD close?
-> 
-I don't know the answer, Kevin & Yi?
-
-> > > The duration between unmapping the ioasid and releasing all HW access
-> > > will have HW see PCIE TLP errors due to the blocked access. If
-> > > userspace messes up the order it is fine to cause this. We already had
-> > > this dicussion when talking about how to deal with process exit in the
-> > > simple SVA case.  
-> > Yes, we have disabled fault reporting during this period. The slight
-> > differences vs. the simple SVA case is that KVM is also involved and
-> > there might be an ordering requirement to stop vCPU first.  
-> 
-> KVM can continue to use the PASIDs, they are parked and DMA is
-> permanently blocked. When KVM reaches a natural point in its teardown
-> it can release them.
-> 
-> If you have to stop the vcpu from a iommu notifier you are in the
-> crazy locking world I mentioned. IMHO don't create exciting locking
-> problems just to avoid PCI errors in uncontrolled shutdown.
-> 
-> Suppress the errors instead.
-> 
-I agree, this simplify things a lot. Just need to clarify the in-flight
-enqcmd case.
-
-> Jason
-
-
-Thanks,
-
-Jacob
+Acked-by: Yury Norov <yury.norov@gmail.com>
