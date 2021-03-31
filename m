@@ -2,147 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A75983505EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BADA3505E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234699AbhCaSBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 14:01:04 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:40342 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233735AbhCaSAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234661AbhCaSAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 31 Mar 2021 14:00:30 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617213630; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=mYdCYC/FPImOY3Dj4Qxijet1JbSBWQXVRBoquvOZPb8=; b=D33tjsWXEJUiAoeH8krsXF2Y9AMbnm2y+7o4i7DBPxB89GxM5z+o4c62RiQlrIwLBFXGEEaU
- W8dhkFFfYUXnOsC5nF6s4OO2ClkaOjvTxy6/7kwPNAwV/ZxcOdzyMD2NN8ll6dubjrqzG+1g
- P+XnJYBZ+Zu9WWOq/NzciTOWHTk=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 6064b8abfebcffa80fe61ba2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 31 Mar 2021 18:00:11
- GMT
-Sender: asutoshd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 09775C43466; Wed, 31 Mar 2021 18:00:11 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7C840C433ED;
-        Wed, 31 Mar 2021 18:00:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7C840C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
-Subject: Re: [PATCH V2 2/3] scsi: ufs: add a vops to configure VCC voltage
- level
-To:     Nitin Rawat <nitirawa@codeaurora.org>, cang@codeaurora.org,
-        stummala@codeaurora.org, vbadigan@codeaurora.org,
-        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bjorn.andersson@linaro.org,
-        adrian.hunter@intel.com, bvanassche@acm.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1616363857-26760-1-git-send-email-nitirawa@codeaurora.org>
- <1616363857-26760-3-git-send-email-nitirawa@codeaurora.org>
-From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
-Message-ID: <80f681a6-165f-0610-dfea-6b66ce4abddc@codeaurora.org>
-Date:   Wed, 31 Mar 2021 11:00:07 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234641AbhCaSAX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 14:00:23 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68507C061574;
+        Wed, 31 Mar 2021 11:00:22 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id d13so9401433lfg.7;
+        Wed, 31 Mar 2021 11:00:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4Q9oxhnKEAurSYSJEH9M9Sm61COtmi4Ok3DH92mW23E=;
+        b=h2lTTlH/+QWKj7wZpU0g5C99CDE6tQqaQ5ztaODdS8rmC29fLr6Zzr0goXM/KHuhl2
+         SyVQ7j0mH5NIPXKNx6/lMvjcpwv9brWlhMmZCkgWeEPXfzylyXH7h+bqw3mni+t4PMl0
+         fG5AJpoRqAasJFzkXcgOcKut8TxjqccYSPsxyw53RBMo0IElOIw/QV3nDuf5TnFw0BLL
+         jpK+4Tfixv6ijT1wIiBcEBuTco47NCIs2vvcz6cNgSBarbfQG1U0PtXcScq8AWk0Jq3c
+         TWrxaGq+WkHSH6yozer04Gx2dLaam2idQPQ5uzQ67bZ//KQJXqJid6tuQYIipJCBxGzH
+         ijYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4Q9oxhnKEAurSYSJEH9M9Sm61COtmi4Ok3DH92mW23E=;
+        b=d2317/cLyDk/FScYCr60ImsEEGY1vLEGHdTyLgjFOfQxoaLLyo2s+Mgm436EQq3Kep
+         QGlMJ/A8w9QN3NmIdys9MWRbRHY0g4FxBuUVp7Itv77VD5KRii8vU2caz9ph10zEFTjV
+         NwwVZaf7qpu8xkxme9vcf1J8A+PwfZWI+mVJfKNuYRjIIwVuJJ+YvERXxuevkJF3ghwj
+         ZfvRAe/Ykd1YRWolZbo3v6Rz2wIKYoP7yMUCosfc7wVgKfvQqPOiom+otTeq4qWI0HXr
+         xu/UafPoc3638QPf4yjmGTeSWr/9CtTA5rGK9jCt3BQnNTzfLql8/FcRp6J3Y2fzJC7Q
+         WIgg==
+X-Gm-Message-State: AOAM531NN/zMFqDVZ4IJZZFV23YwYCRrBTjvFtNfuzjNcnnuiuPp8YRO
+        7qnQHqPTxXBIpUfsIL+lmA8=
+X-Google-Smtp-Source: ABdhPJyx4lAT+sVVFl5m4Yt0LNsve3Yt3vkYiD3cRMaY6C0bvxtOaE1jK6wf74B0uUteMcXor6j0Kg==
+X-Received: by 2002:a19:e0d:: with SMTP id 13mr2907573lfo.549.1617213620975;
+        Wed, 31 Mar 2021 11:00:20 -0700 (PDT)
+Received: from mobilestation ([95.79.127.110])
+        by smtp.gmail.com with ESMTPSA id q8sm292564lfc.223.2021.03.31.11.00.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 11:00:20 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 21:00:18 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Brad Larson <brad@pensando.io>
+Cc:     linux-arm-kernel@lists.infradead.org, arnd@arndb.de,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        broonie@kernel.org, adrian.hunter@intel.com,
+        ulf.hansson@linaro.org, olof@lixom.net, linux-gpio@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 03/13] spi: dw: Add support for Pensando Elba SoC SPI
+Message-ID: <20210331180018.jir2vusuf3sbare5@mobilestation>
+References: <20210329015938.20316-1-brad@pensando.io>
+ <20210329015938.20316-4-brad@pensando.io>
 MIME-Version: 1.0
-In-Reply-To: <1616363857-26760-3-git-send-email-nitirawa@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210329015938.20316-4-brad@pensando.io>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/21/2021 2:57 PM, Nitin Rawat wrote:
-> Add a vops to configure VCC voltage VCC voltage level
-> for platform supporting both ufs2.x and ufs 3.x devices.
+On Sun, Mar 28, 2021 at 06:59:28PM -0700, Brad Larson wrote:
+> The Pensando Elba SoC uses a GPIO based chip select
+> for two DW SPI busses with each bus having two
+> chip selects.
 > 
-> Suggested-by: Stanley Chu <stanley.chu@mediatek.com>
-> Suggested-by: Asutosh Das <asutoshd@codeaurora.org>
-> Suggested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Signed-off-by: Nitin Rawat <nitirawa@codeaurora.org>
-> Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+> Signed-off-by: Brad Larson <brad@pensando.io>
 > ---
->   drivers/scsi/ufs/ufshcd.c |  4 ++++
->   drivers/scsi/ufs/ufshcd.h | 10 ++++++++++
->   2 files changed, 14 insertions(+)
+>  drivers/spi/spi-dw-mmio.c | 28 +++++++++++++++++++++++++++-
+>  1 file changed, 27 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 633ca8e..5bfe987 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -7763,6 +7763,10 @@ static int ufshcd_add_lus(struct ufs_hba *hba)
->   		goto out;
-> 
->   	ufshcd_clear_ua_wluns(hba);
-> +	if (ufshcd_vops_setup_vcc_regulators(hba))
-This would be invoked even for platforms that don't support both 2.x and 
-3.x and don't need to set the voltages in the driver.
-I guess platforms that support both 2.x and 3.x and can't set the 
-regulator voltages from dts due to different voltage requirements of 2.x 
-and 3.x, should request the driver to set the voltages. And the driver 
-may do so after determining the device version.
-
-> +		dev_err(hba->dev,
-> +			"%s: Failed to set the VCC regulator values, continue with 2.7v\n",
-> +			__func__);
-> 
->   	/* Initialize devfreq after UFS device is detected */
->   	if (ufshcd_is_clkscaling_supported(hba)) {
-> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> index 0db796a..8f0945d 100644
-> --- a/drivers/scsi/ufs/ufshcd.h
-> +++ b/drivers/scsi/ufs/ufshcd.h
-> @@ -324,6 +324,7 @@ struct ufs_pwr_mode_info {
->    * @device_reset: called to issue a reset pulse on the UFS device
->    * @program_key: program or evict an inline encryption key
->    * @event_notify: called to notify important events
-> + * @setup_vcc_regulators : update vcc regulator level
->    */
->   struct ufs_hba_variant_ops {
->   	const char *name;
-> @@ -360,6 +361,7 @@ struct ufs_hba_variant_ops {
->   			       const union ufs_crypto_cfg_entry *cfg, int slot);
->   	void	(*event_notify)(struct ufs_hba *hba,
->   				enum ufs_event_type evt, void *data);
-> +	int    (*setup_vcc_regulators)(struct ufs_hba *hba);
->   };
-> 
->   /* clock gating state  */
-> @@ -1269,6 +1271,14 @@ static inline void ufshcd_vops_config_scaling_param(struct ufs_hba *hba,
->   		hba->vops->config_scaling_param(hba, profile, data);
->   }
-> 
-> +static inline int ufshcd_vops_setup_vcc_regulators(struct ufs_hba *hba)
+> diff --git a/drivers/spi/spi-dw-mmio.c b/drivers/spi/spi-dw-mmio.c
+> index 17c06039a74d..c323a5ceecb8 100644
+> --- a/drivers/spi/spi-dw-mmio.c
+> +++ b/drivers/spi/spi-dw-mmio.c
+> @@ -56,7 +56,7 @@ struct dw_spi_mscc {
+>  /*
+>   * The Designware SPI controller (referred to as master in the documentation)
+>   * automatically deasserts chip select when the tx fifo is empty. The chip
+> - * selects then needs to be either driven as GPIOs or, for the first 4 using the
+> + * selects then needs to be either driven as GPIOs or, for the first 4 using
+>   * the SPI boot controller registers. the final chip select is an OR gate
+>   * between the Designware SPI controller and the SPI boot controller.
+>   */
+> @@ -237,6 +237,31 @@ static int dw_spi_canaan_k210_init(struct platform_device *pdev,
+>  	return 0;
+>  }
+>  
+> +static void dw_spi_elba_set_cs(struct spi_device *spi, bool enable)
 > +{
-> +	if (hba->vops && hba->vops->setup_vcc_regulators)
-> +		return hba->vops->setup_vcc_regulators(hba);
+> +	struct dw_spi *dws = spi_master_get_devdata(spi->master);
 > +
+
+> +	if (!enable) {
+
+Please, be more attentive to the review-comments given to you before
+resending a new patchset. One more time. This version of set_cs won't
+work for Active-high CS. Each SPI controller working with GPIO-based
+chip-select is marked as supporting that feature. So your DW
+SPI controller won't be able to work correctly with SPI-devices
+activated by active-high chip-select signal. Note default
+dw_spi_set_cs() callback supports that.
+
+-Sergey
+
+> +		/*
+> +		 * Using a GPIO-based chip-select, the DW SPI
+> +		 * controller still needs its own CS bit selected
+> +		 * to start the serial engine.  On Elba the specific
+> +		 * CS doesn't matter to start the serial engine,
+> +		 * so using CS0.
+> +		 */
+> +		dw_writel(dws, DW_SPI_SER, BIT(0));
+> +	} else {
+> +		dw_writel(dws, DW_SPI_SER, 0);
+> +	}
+> +}
+> +
+> +static int dw_spi_elba_init(struct platform_device *pdev,
+> +			    struct dw_spi_mmio *dwsmmio)
+> +{
+> +	dwsmmio->dws.set_cs = dw_spi_elba_set_cs;
 > +	return 0;
 > +}
 > +
->   extern struct ufs_pm_lvl_states ufs_pm_lvl_states[];
+>  static int dw_spi_mmio_probe(struct platform_device *pdev)
+>  {
+>  	int (*init_func)(struct platform_device *pdev,
+> @@ -351,6 +376,7 @@ static const struct of_device_id dw_spi_mmio_of_match[] = {
+>  	{ .compatible = "intel,keembay-ssi", .data = dw_spi_keembay_init},
+>  	{ .compatible = "microchip,sparx5-spi", dw_spi_mscc_sparx5_init},
+>  	{ .compatible = "canaan,k210-spi", dw_spi_canaan_k210_init},
+> +	{ .compatible = "pensando,elba-spi", .data = dw_spi_elba_init},
+>  	{ /* end of table */}
+>  };
+>  MODULE_DEVICE_TABLE(of, dw_spi_mmio_of_match);
+> -- 
+> 2.17.1
 > 
->   /*
-> --
-> 2.7.4
-> 
-
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-Linux Foundation Collaborative Project
