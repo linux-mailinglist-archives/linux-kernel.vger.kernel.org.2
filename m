@@ -2,308 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0496350586
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 19:35:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A85A53505A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 19:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234322AbhCaRfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 13:35:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51006 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233867AbhCaRes (ORCPT
+        id S234253AbhCaRje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 13:39:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233735AbhCaRjV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 13:34:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617212087;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mfb3+QJTICoAcBVnRAz+A/OozCnNFwZhALhIsGKfQ1M=;
-        b=Uwel9WHAj7Io3/8AaYwRCnjHuNgpo/A3btGRPVdkyk7FwX5L3roy6z6kTTMDgSAaBrIGly
-        bYWBgrpILaWOCe6t2TnzwJv5j+JQvlbsBc7YPAAYWkuTx3Z3yGfV6ZI5Jo8xmB4FAeNL3z
-        2wV03fJwy4m+mlKG8+fSEm8UhMCbJHI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-137-ctfOQft4NFG91yjqFYrHFA-1; Wed, 31 Mar 2021 13:34:43 -0400
-X-MC-Unique: ctfOQft4NFG91yjqFYrHFA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 13357180FCA1;
-        Wed, 31 Mar 2021 17:34:42 +0000 (UTC)
-Received: from [10.36.113.60] (ovpn-113-60.ams2.redhat.com [10.36.113.60])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 70A661DB;
-        Wed, 31 Mar 2021 17:34:40 +0000 (UTC)
-Subject: Re: [PATCH] mm: use proper type for cma_[alloc|release]
-To:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        joaodias@google.com, Matthew Wilcox <willy@infradead.org>
-References: <20210331164018.710560-1-minchan@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <5af695c6-4698-9945-1d2d-164665c056f6@redhat.com>
-Date:   Wed, 31 Mar 2021 19:34:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Wed, 31 Mar 2021 13:39:21 -0400
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DAA4C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 10:39:21 -0700 (PDT)
+Received: by mail-oo1-xc2d.google.com with SMTP id i25-20020a4aa1190000b02901bbd9429832so4806274ool.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 10:39:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kali.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=NkmFG1QTNaWLlvVjiv9pwliViB1M7jgJYDg2EZ3dMok=;
+        b=TOLHVqL6Jx5pJUAWNL03GOlOr0ER1zBiBJAjBVnEGnlrF04kV320+FUpdYBKVW+egA
+         jPCDUgkB4zCW/A06Ju7bBpMInk36eKdBlwd2d1RkNpPgfx59ptOfA1o8FJnDeN2wPIGv
+         1kNbXvlMwzhLZe38pcCFWxsF1RJCHiLeYggDV7L/rNYO2iFjQAJ5p39gUmgU0SAOrlul
+         8Xef2fcv6lZNF3J61QQfUEvfuIH4pgkvr4Axk5Ak2NCXXkRIgkQRHcXQKtVjmDhEp7NW
+         4urErfWt521Hv9I0Js7wceHPr+SDyXeW5aR20MTOI4jQ5y0scz5QsY6gWCJNvyAjKF5z
+         F7zA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=NkmFG1QTNaWLlvVjiv9pwliViB1M7jgJYDg2EZ3dMok=;
+        b=cwGfiuIJ8bTXJCscbCRzLMDtwbVBRpKHfm90hXVgxElQ2eXs26A6FX7NcAdCu46mN2
+         OaaVykedlT+/JcNbdnMaQYi7dUDxH3J4Q0ZcLjwZMgdFZ+9zWcgBDRN1yu+4fpM/nYsK
+         Pi0TzSsE/nXJCtPw3YEcsHJlO7Tqh/e8WtaChS7aCiLX0v2811kdN9WXVM5BJoGOhmkE
+         RcFVbUdz5/d26X4OZ1pHJqzw0gQN6Yjbd7xwmbxHqXbVURfppKzHechWFw2Ddx27Cszx
+         P7W/+K9GH+VwGsbkWlq9smMa/SHNQYHWB37dtm/Vw8U36h22+19iGW74ZoTX6uNHDBC3
+         c04A==
+X-Gm-Message-State: AOAM53297FyLrfHEUb+KAelE5lt3ROqnzzrpI9z3S9tT4/YGGu8lngMT
+        mK9OFTTV4rIoj5AoMjdND2T7MQ==
+X-Google-Smtp-Source: ABdhPJxprMiF0zGDn3aiZrgY4HoSDJt/e63ieUbL0NnjzPGhqKsxJMPTarGSMdBCXnNl3lnPLITsxw==
+X-Received: by 2002:a4a:2a46:: with SMTP id x6mr3638863oox.85.1617212360914;
+        Wed, 31 Mar 2021 10:39:20 -0700 (PDT)
+Received: from MacBook-Pro.hackershack.net (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
+        by smtp.gmail.com with ESMTPSA id v1sm557900ooh.3.2021.03.31.10.39.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Mar 2021 10:39:20 -0700 (PDT)
+Subject: Re: [Freedreno] [v1] drm/msm/disp/dpu1: icc path needs to be set
+ before dpu runtime resume
+To:     kalyan_t@codeaurora.org
+Cc:     y@qualcomm.com, dri-devel@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        devicetree@vger.kernel.org, mkrishn@codeaurora.org,
+        hywu@google.com, dianders@chromium.org,
+        linux-kernel@vger.kernel.org, mka@google.com, robdclark@gmail.com,
+        midean@google.com
+References: <y> <1616404632-13693-1-git-send-email-kalyan_t@codeaurora.org>
+ <823f7f00-444e-8e22-e8d0-2ced97e4c291@kali.org>
+ <9847b4af5331f86641eb7be5a932078b@codeaurora.org>
+From:   Steev Klimaszewski <steev@kali.org>
+Message-ID: <b98d5a32-1776-6ae1-69ec-e06bc7143695@kali.org>
+Date:   Wed, 31 Mar 2021 12:39:17 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <20210331164018.710560-1-minchan@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <9847b4af5331f86641eb7be5a932078b@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31.03.21 18:40, Minchan Kim wrote:
-> size_t in cma_alloc is confusing since it makes people think
-> it's byte count, not pages. Change it to unsigned long[1].
-> 
-> The unsigned int in cma_release is also not right so change it.
-> Since we have unsigned long in cma_release, free_contig_range
-> should also respect it.
-> 
-> [1] 67a2e213e7e9, mm: cma: fix incorrect type conversion for size during dma allocation
-> Link: https://lore.kernel.org/linux-mm/20210324043434.GP1719932@casper.infradead.org/
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Minchan Kim <minchan@kernel.org>
-> ---
->   include/linux/cma.h        |  4 ++--
->   include/linux/gfp.h        |  2 +-
->   include/trace/events/cma.h | 22 +++++++++++-----------
->   mm/cma.c                   | 17 +++++++++--------
->   mm/page_alloc.c            |  6 +++---
->   5 files changed, 26 insertions(+), 25 deletions(-)
-> 
-> diff --git a/include/linux/cma.h b/include/linux/cma.h
-> index 217999c8a762..53fd8c3cdbd0 100644
-> --- a/include/linux/cma.h
-> +++ b/include/linux/cma.h
-> @@ -44,9 +44,9 @@ extern int cma_init_reserved_mem(phys_addr_t base, phys_addr_t size,
->   					unsigned int order_per_bit,
->   					const char *name,
->   					struct cma **res_cma);
-> -extern struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
-> +extern struct page *cma_alloc(struct cma *cma, unsigned long count, unsigned int align,
->   			      bool no_warn);
-> -extern bool cma_release(struct cma *cma, const struct page *pages, unsigned int count);
-> +extern bool cma_release(struct cma *cma, const struct page *pages, unsigned long count);
->   
->   extern int cma_for_each_area(int (*it)(struct cma *cma, void *data), void *data);
->   #endif
-> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-> index 0a88f84b08f4..529c27c6cb15 100644
-> --- a/include/linux/gfp.h
-> +++ b/include/linux/gfp.h
-> @@ -639,7 +639,7 @@ extern int alloc_contig_range(unsigned long start, unsigned long end,
->   extern struct page *alloc_contig_pages(unsigned long nr_pages, gfp_t gfp_mask,
->   				       int nid, nodemask_t *nodemask);
->   #endif
-> -void free_contig_range(unsigned long pfn, unsigned int nr_pages);
-> +void free_contig_range(unsigned long pfn, unsigned long nr_pages);
->   
->   #ifdef CONFIG_CMA
->   /* CMA stuff */
-> diff --git a/include/trace/events/cma.h b/include/trace/events/cma.h
-> index 5cf385ae7c08..c3d354702cb0 100644
-> --- a/include/trace/events/cma.h
-> +++ b/include/trace/events/cma.h
-> @@ -11,7 +11,7 @@
->   DECLARE_EVENT_CLASS(cma_alloc_class,
->   
->   	TP_PROTO(const char *name, unsigned long pfn, const struct page *page,
-> -		 unsigned int count, unsigned int align),
-> +		 unsigned long count, unsigned int align),
->   
->   	TP_ARGS(name, pfn, page, count, align),
->   
-> @@ -19,7 +19,7 @@ DECLARE_EVENT_CLASS(cma_alloc_class,
->   		__string(name, name)
->   		__field(unsigned long, pfn)
->   		__field(const struct page *, page)
-> -		__field(unsigned int, count)
-> +		__field(unsigned long, count)
->   		__field(unsigned int, align)
->   	),
->   
-> @@ -31,7 +31,7 @@ DECLARE_EVENT_CLASS(cma_alloc_class,
->   		__entry->align = align;
->   	),
->   
-> -	TP_printk("name=%s pfn=%lx page=%p count=%u align=%u",
-> +	TP_printk("name=%s pfn=%lx page=%p count=%lu align=%u",
->   		  __get_str(name),
->   		  __entry->pfn,
->   		  __entry->page,
-> @@ -42,7 +42,7 @@ DECLARE_EVENT_CLASS(cma_alloc_class,
->   TRACE_EVENT(cma_release,
->   
->   	TP_PROTO(const char *name, unsigned long pfn, const struct page *page,
-> -		 unsigned int count),
-> +		 unsigned long count),
->   
->   	TP_ARGS(name, pfn, page, count),
->   
-> @@ -50,7 +50,7 @@ TRACE_EVENT(cma_release,
->   		__string(name, name)
->   		__field(unsigned long, pfn)
->   		__field(const struct page *, page)
-> -		__field(unsigned int, count)
-> +		__field(unsigned long, count)
->   	),
->   
->   	TP_fast_assign(
-> @@ -60,7 +60,7 @@ TRACE_EVENT(cma_release,
->   		__entry->count = count;
->   	),
->   
-> -	TP_printk("name=%s pfn=%lx page=%p count=%u",
-> +	TP_printk("name=%s pfn=%lx page=%p count=%lu",
->   		  __get_str(name),
->   		  __entry->pfn,
->   		  __entry->page,
-> @@ -69,13 +69,13 @@ TRACE_EVENT(cma_release,
->   
->   TRACE_EVENT(cma_alloc_start,
->   
-> -	TP_PROTO(const char *name, unsigned int count, unsigned int align),
-> +	TP_PROTO(const char *name, unsigned long count, unsigned int align),
->   
->   	TP_ARGS(name, count, align),
->   
->   	TP_STRUCT__entry(
->   		__string(name, name)
-> -		__field(unsigned int, count)
-> +		__field(unsigned long, count)
->   		__field(unsigned int, align)
->   	),
->   
-> @@ -85,7 +85,7 @@ TRACE_EVENT(cma_alloc_start,
->   		__entry->align = align;
->   	),
->   
-> -	TP_printk("name=%s count=%u align=%u",
-> +	TP_printk("name=%s count=%lu align=%u",
->   		  __get_str(name),
->   		  __entry->count,
->   		  __entry->align)
-> @@ -94,7 +94,7 @@ TRACE_EVENT(cma_alloc_start,
->   DEFINE_EVENT(cma_alloc_class, cma_alloc_finish,
->   
->   	TP_PROTO(const char *name, unsigned long pfn, const struct page *page,
-> -		 unsigned int count, unsigned int align),
-> +		 unsigned long count, unsigned int align),
->   
->   	TP_ARGS(name, pfn, page, count, align)
->   );
-> @@ -102,7 +102,7 @@ DEFINE_EVENT(cma_alloc_class, cma_alloc_finish,
->   DEFINE_EVENT(cma_alloc_class, cma_alloc_busy_retry,
->   
->   	TP_PROTO(const char *name, unsigned long pfn, const struct page *page,
-> -		 unsigned int count, unsigned int align),
-> +		 unsigned long count, unsigned int align),
->   
->   	TP_ARGS(name, pfn, page, count, align)
->   );
-> diff --git a/mm/cma.c b/mm/cma.c
-> index de6b9f01be53..f3bca4178c7f 100644
-> --- a/mm/cma.c
-> +++ b/mm/cma.c
-> @@ -80,7 +80,7 @@ static unsigned long cma_bitmap_pages_to_bits(const struct cma *cma,
->   }
->   
->   static void cma_clear_bitmap(struct cma *cma, unsigned long pfn,
-> -			     unsigned int count)
-> +			     unsigned long count)
->   {
->   	unsigned long bitmap_no, bitmap_count;
->   
-> @@ -423,21 +423,21 @@ static inline void cma_debug_show_areas(struct cma *cma) { }
->    * This function allocates part of contiguous memory on specific
->    * contiguous memory area.
->    */
-> -struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
-> -		       bool no_warn)
-> +struct page *cma_alloc(struct cma *cma, unsigned long count,
-> +		       unsigned int align, bool no_warn)
->   {
->   	unsigned long mask, offset;
->   	unsigned long pfn = -1;
->   	unsigned long start = 0;
->   	unsigned long bitmap_maxno, bitmap_no, bitmap_count;
-> -	size_t i;
-> +	unsigned long i;
->   	struct page *page = NULL;
->   	int ret = -ENOMEM;
->   
->   	if (!cma || !cma->count || !cma->bitmap)
->   		goto out;
->   
-> -	pr_debug("%s(cma %p, count %zu, align %d)\n", __func__, (void *)cma,
-> +	pr_debug("%s(cma %p, count %lu, align %d)\n", __func__, (void *)cma,
->   		 count, align);
->   
->   	if (!count)
-> @@ -505,7 +505,7 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
->   	}
->   
->   	if (ret && !no_warn) {
-> -		pr_err_ratelimited("%s: %s: alloc failed, req-size: %zu pages, ret: %d\n",
-> +		pr_err_ratelimited("%s: %s: alloc failed, req-size: %lu pages, ret: %d\n",
->   				   __func__, cma->name, count, ret);
->   		cma_debug_show_areas(cma);
->   	}
-> @@ -534,14 +534,15 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
->    * It returns false when provided pages do not belong to contiguous area and
->    * true otherwise.
->    */
-> -bool cma_release(struct cma *cma, const struct page *pages, unsigned int count)
-> +bool cma_release(struct cma *cma, const struct page *pages,
-> +		 unsigned long count)
->   {
->   	unsigned long pfn;
->   
->   	if (!cma || !pages)
->   		return false;
->   
-> -	pr_debug("%s(page %p, count %u)\n", __func__, (void *)pages, count);
-> +	pr_debug("%s(page %p, count %lu)\n", __func__, (void *)pages, count);
->   
->   	pfn = page_to_pfn(pages);
->   
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index c53fe4fa10bf..21540fb29b0d 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -8817,9 +8817,9 @@ struct page *alloc_contig_pages(unsigned long nr_pages, gfp_t gfp_mask,
->   }
->   #endif /* CONFIG_CONTIG_ALLOC */
->   
-> -void free_contig_range(unsigned long pfn, unsigned int nr_pages)
-> +void free_contig_range(unsigned long pfn, unsigned long nr_pages)
->   {
-> -	unsigned int count = 0;
-> +	unsigned long count = 0;
->   
->   	for (; nr_pages--; pfn++) {
->   		struct page *page = pfn_to_page(pfn);
-> @@ -8827,7 +8827,7 @@ void free_contig_range(unsigned long pfn, unsigned int nr_pages)
->   		count += page_count(page) != 1;
->   		__free_page(page);
->   	}
-> -	WARN(count != 0, "%d pages are still in use!\n", count);
-> +	WARN(count != 0, "%lu pages are still in use!\n", count);
->   }
->   EXPORT_SYMBOL(free_contig_range);
->   
-> 
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+On 3/31/21 7:34 AM, kalyan_t@codeaurora.org wrote:
+> On 2021-03-31 00:04, Steev Klimaszewski wrote:
+>> On 3/22/21 4:17 AM, Kalyan Thota wrote:
+>>> From: Kalyan Thota <kalyant@codeaurora.org>
+>>>
+>>> DPU runtime resume will request for a min vote on the AXI bus as
+>>> it is a necessary step before turning ON the AXI clock.
+>>>
+> Hi Steev,
+>
+> The WARN_ON is true only for the device with compatible
+> "qcom,sc7180-mdss". For other devices its a
+> false alarm. Can you please try with the below change ?
+>
+> https://patchwork.kernel.org/project/linux-arm-msm/patch/1617190020-7931-1-git-send-email-kalyan_t@codeaurora.org/
+>
+>
+> Thanks,
+> Kalyan
+>
+Hi Kalyan,
 
--- 
-Thanks,
+Tested here, and it does get rid of the warning.  I'll keep a copy of
+the patch locally, since this is going to hit stable too at some point
+it seems, at least until another version comes out addressing the other
+comments from people way smarter than me.
 
-David / dhildenb
+-- steev
 
