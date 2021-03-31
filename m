@@ -2,173 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46F8B350449
+	by mail.lfdr.de (Postfix) with ESMTP id 9355335044A
 	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 18:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233823AbhCaQPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 12:15:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbhCaQOl (ORCPT
+        id S233887AbhCaQPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 12:15:05 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:36013 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232319AbhCaQOx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 12:14:41 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 258B3C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:14:40 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id y124-20020a1c32820000b029010c93864955so1413442wmy.5
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:14:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FEkVrZqt9llz3eUvcA5IAVVGMII33dzbxhY4iNq3068=;
-        b=j0WLvSRPcTPYEL8heIvhdTC6aDFbW5eJWuM6KsK3Y1fn9CK821uh7vWFE4WRYpU/v/
-         x0ZWUZO27gWc0BbhwmEzcg4hcAJgLJ0FrXomvyioBIkgXCd64Q/c6rX4GWE++s+Lr5+R
-         HlqDRSBaW8kY5/jiA5j06I6ukqZfZeE3toOOujKBT9b18zb7SEMHOgeWlkP6BtRzyTr0
-         bCpSO9DR5kzqL3s71RF9Rf/mCePcjEYGCl3FXf3lrP9MRuaHkzHwtK6QRt0vjmwdVeyt
-         ANfx8Hl9zWIH6hPP+TxjVL2IygEqd7SP7R33/1UdReDbxV1W3VSeON5dHRociht40rb/
-         YwPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FEkVrZqt9llz3eUvcA5IAVVGMII33dzbxhY4iNq3068=;
-        b=GtTFA5sKmvM6ViI4m/v9LoRWQjiDoN8ovizopYyMfWtFMYRDGjCicbh9F9qsSLZmm0
-         MzSBRTOERR+BAvq+JFP/Q+4n/bmpeDSv4K762+wofvU7WhdtaQVp88CQXmizZ0XjnPCq
-         3QEl4yfHr29jOZ3o8oZYHw1AV0U7juWTftXLraK7wz39VoNyHA/30wXaTfpwhqEuirJr
-         pjkpVETXhnBIpo89hdcTeV0tsG4bG6Haf1bTgJ/1JGLyNxw9qhVaoB4pR4G7Ug7vYmK6
-         O7dfPGCpQnBCzUGZXrWhFBrSSyraIGnhOLKGp2aZaEHv4iwb0MlbYFk1E2YhXroFX887
-         02Ow==
-X-Gm-Message-State: AOAM531jLAsGSqZrOEomRv+b5UBgBveqhcuXs+jH9P0RsJOFT1U9x56+
-        IRWh+JlvBRiGdsiiRO/QvNZGQkuLgnSV9w==
-X-Google-Smtp-Source: ABdhPJxCnVbthjr9Z3rmJ4AGMx228nVyU2PQFrpLplNuJ8SF3zq7eG9TAOStRa2SpmYRUvk0gz5tRQ==
-X-Received: by 2002:a05:600c:4f14:: with SMTP id l20mr3816530wmq.71.1617207278688;
-        Wed, 31 Mar 2021 09:14:38 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:1573:1dd5:899d:6362? ([2a01:e34:ed2f:f020:1573:1dd5:899d:6362])
-        by smtp.googlemail.com with ESMTPSA id u8sm5596487wrr.42.2021.03.31.09.14.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Mar 2021 09:14:38 -0700 (PDT)
-Subject: Re: [PATCH] clocksource/arm_arch_timer: add __ro_after_init and
- __init
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210330140444.4fb2a7cb@xhacker.debian>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <e6179eb3-2439-ea34-db2e-307db048e6e6@linaro.org>
-Date:   Wed, 31 Mar 2021 18:14:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 31 Mar 2021 12:14:53 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-54-t95uJ3fxP-yvQHheQ6tJXQ-1; Wed, 31 Mar 2021 17:14:48 +0100
+X-MC-Unique: t95uJ3fxP-yvQHheQ6tJXQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Wed, 31 Mar 2021 17:14:47 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Wed, 31 Mar 2021 17:14:47 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Zhang Rui' <rui.zhang@intel.com>,
+        Xiaofei Tan <tanxiaofei@huawei.com>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>
+CC:     "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Subject: RE: [PATCH v2 04/15] ACPI: table: replace __attribute__((packed)) by
+ __packed
+Thread-Topic: [PATCH v2 04/15] ACPI: table: replace __attribute__((packed)) by
+ __packed
+Thread-Index: AQHXJTqteusKxfb1K0qiX/864DlgraqcLa0ggAIDjACAABX/gA==
+Date:   Wed, 31 Mar 2021 16:14:47 +0000
+Message-ID: <e437f6e69219460099a3764ab4b9391f@AcuMS.aculab.com>
+References: <1616831193-17920-1-git-send-email-tanxiaofei@huawei.com>
+         <1616831193-17920-5-git-send-email-tanxiaofei@huawei.com>
+         <6df04be78e544e17b3b57f159312541f@AcuMS.aculab.com>
+         <34dd3de8-644d-6e44-965a-0991b7027cae@huawei.com>
+         <b5ad5909f3fb14b46d6ff0f81c10e42507a60c74.camel@intel.com>
+         <af3fd5adb62dcac93f2ff4ea7b6aff74d0106ac5.camel@intel.com>
+         <6df8e01e2e9e4906be5ceaea72c61c0f@AcuMS.aculab.com>
+ <e0d626837e577e60f226b8bbf354bd8cbb1fe40a.camel@intel.com>
+In-Reply-To: <e0d626837e577e60f226b8bbf354bd8cbb1fe40a.camel@intel.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <20210330140444.4fb2a7cb@xhacker.debian>
-Content-Type: text/plain; charset=utf-8
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+RnJvbTogWmhhbmcgUnVpDQo+IFNlbnQ6IDMxIE1hcmNoIDIwMjEgMTY6NTUNCj4gT24gVHVlLCAy
+MDIxLTAzLTMwIGF0IDA4OjE0ICswMDAwLCBEYXZpZCBMYWlnaHQgd3JvdGU6DQo+ID4gRnJvbTog
+WmhhbmcgUnVpDQo+ID4gPiBTZW50OiAzMCBNYXJjaCAyMDIxIDA5OjAwDQo+ID4gPiA+IE9uIFR1
+ZSwgMjAyMS0wMy0zMCBhdCAxMDoyMyArMDgwMCwgWGlhb2ZlaSBUYW4gd3JvdGU6DQo+ID4gPiA+
+ID4gSGkgRGF2aWQsDQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBPbiAyMDIxLzMvMjkgMTg6MDksIERh
+dmlkIExhaWdodCB3cm90ZToNCj4gPiA+ID4gPiA+IEZyb206IFhpYW9mZWkgVGFuDQo+ID4gPiA+
+ID4gPiA+IFNlbnQ6IDI3IE1hcmNoIDIwMjEgMDc6NDYNCj4gPiA+ID4gPiA+ID4NCj4gPiA+ID4g
+PiA+ID4gUmVwbGFjZSBfX2F0dHJpYnV0ZV9fKChwYWNrZWQpKSBieSBfX3BhY2tlZCBmb2xsb3dp
+bmcgdGhlDQo+ID4gPiA+ID4gPiA+IGFkdmljZSBvZiBjaGVja3BhdGNoLnBsLg0KPiA+ID4gPiA+
+ID4gPg0KPiA+ID4gPiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBYaWFvZmVpIFRhbiA8dGFueGlhb2Zl
+aUBodWF3ZWkuY29tPg0KPiA+ID4gPiA+ID4gPiAtLS0NCj4gPiA+ID4gPiA+ID4gIGRyaXZlcnMv
+YWNwaS9hY3BpX2ZwZHQuYyB8IDYgKysrLS0tDQo+ID4gPiA+ID4gPiA+ICAxIGZpbGUgY2hhbmdl
+ZCwgMyBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQ0KPiA+ID4gPiA+ID4gPg0KPiA+ID4g
+PiA+ID4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9hY3BpL2FjcGlfZnBkdC5jDQo+ID4gPiA+ID4g
+PiA+IGIvZHJpdmVycy9hY3BpL2FjcGlfZnBkdC5jDQo+ID4gPiA+ID4gPiA+IGluZGV4IGE4OWE4
+MDYuLjY5MGE4OGEgMTAwNjQ0DQo+ID4gPiA+ID4gPiA+IC0tLSBhL2RyaXZlcnMvYWNwaS9hY3Bp
+X2ZwZHQuYw0KPiA+ID4gPiA+ID4gPiArKysgYi9kcml2ZXJzL2FjcGkvYWNwaV9mcGR0LmMNCj4g
+PiA+ID4gPiA+ID4gQEAgLTUzLDcgKzUzLDcgQEAgc3RydWN0IHJlc3VtZV9wZXJmb3JtYW5jZV9y
+ZWNvcmQgew0KPiA+ID4gPiA+ID4gPiAgCXUzMiByZXN1bWVfY291bnQ7DQo+ID4gPiA+ID4gPiA+
+ICAJdTY0IHJlc3VtZV9wcmV2Ow0KPiA+ID4gPiA+ID4gPiAgCXU2NCByZXN1bWVfYXZnOw0KPiA+
+ID4gPiA+ID4gPiAtfSBfX2F0dHJpYnV0ZV9fKChwYWNrZWQpKTsNCj4gPiA+ID4gPiA+ID4gK30g
+X19wYWNrZWQ7DQo+ID4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiA+ICBzdHJ1Y3QgYm9vdF9wZXJm
+b3JtYW5jZV9yZWNvcmQgew0KPiA+ID4gPiA+ID4gPiAgCXN0cnVjdCBmcGR0X3JlY29yZF9oZWFk
+ZXIgaGVhZGVyOw0KPiA+ID4gPiA+ID4gPiBAQCAtNjMsMTMgKzYzLDEzIEBAIHN0cnVjdCBib290
+X3BlcmZvcm1hbmNlX3JlY29yZCB7DQo+ID4gPiA+ID4gPiA+ICAJdTY0IGJvb3Rsb2FkZXJfbGF1
+bmNoOw0KPiA+ID4gPiA+ID4gPiAgCXU2NCBleGl0Ym9vdHNlcnZpY2Vfc3RhcnQ7DQo+ID4gPiA+
+ID4gPiA+ICAJdTY0IGV4aXRib290c2VydmljZV9lbmQ7DQo+ID4gPiA+ID4gPiA+IC19IF9fYXR0
+cmlidXRlX18oKHBhY2tlZCkpOw0KPiA+ID4gPiA+ID4gPiArfSBfX3BhY2tlZDsNCj4gPiA+ID4g
+PiA+ID4NCj4gPiA+ID4gPiA+ID4gIHN0cnVjdCBzdXNwZW5kX3BlcmZvcm1hbmNlX3JlY29yZCB7
+DQo+ID4gPiA+ID4gPiA+ICAJc3RydWN0IGZwZHRfcmVjb3JkX2hlYWRlciBoZWFkZXI7DQo+ID4g
+PiA+ID4gPiA+ICAJdTY0IHN1c3BlbmRfc3RhcnQ7DQo+ID4gPiA+ID4gPiA+ICAJdTY0IHN1c3Bl
+bmRfZW5kOw0KPiA+ID4gPiA+ID4gPiAtfSBfX2F0dHJpYnV0ZV9fKChwYWNrZWQpKTsNCj4gPiA+
+ID4gPiA+ID4gK30gX19wYWNrZWQ7DQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gTXkgc3RhbmRh
+cmQgcXVlc3Rpb24gYWJvdXQgJ3BhY2tlZCcgaXMgd2hldGhlciBpdCBpcyBhY3R1YWxseQ0KPiA+
+ID4gPiA+ID4gbmVlZGVkLg0KPiA+ID4gPiA+ID4gSXQgc2hvdWxkIG9ubHkgYmUgdXNlZCBpZiB0
+aGUgc3RydWN0dXJlcyBtaWdodCBiZSBtaXNhbGlnbmVkDQo+ID4gPiA+ID4gPiBpbg0KPiA+ID4g
+PiA+ID4gbWVtb3J5Lg0KPiA+ID4gPiA+ID4gSWYgdGhlIG9ubHkgcHJvYmxlbSBpcyB0aGF0IGEg
+NjRiaXQgaXRlbSBuZWVkcyB0byBiZSAzMmJpdA0KPiA+ID4gPiA+ID4gYWxpZ25lZA0KPiA+ID4g
+PiA+ID4gdGhlbiBhIHN1aXRhYmxlIHR5cGUgc2hvdWxkIGJlIHVzZWQgZm9yIHRob3NlIHNwZWNp
+ZmljDQo+ID4gPiA+ID4gPiBmaWVsZHMuDQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gVGhvc2Ug
+YWxsIGxvb2sgdmVyeSBkdWJpb3VzIC0gdGhlIHN0YW5kYXJkIGhlYWRlciBpc24ndA0KPiA+ID4g
+PiA+ID4gcGFja2VkDQo+ID4gPiA+ID4gPiBzbyBldmVyeXRoaW5nIG11c3QgZWIgYXNzdW1lZCB0
+byBiZSBhdCBsZWFzdCAzMmJpdCBhbGlnbmVkLg0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+IFRo
+ZXJlIGFyZSBhbHNvIG90aGVyIHN1Yi1zdHJ1Y3R1cmVzIHRoYXQgY29udGFpbiA2NGJpdA0KPiA+
+ID4gPiA+ID4gdmFsdWVzLg0KPiA+ID4gPiA+ID4gVGhlc2UgZG9uJ3QgY29udGFpbiBwYWRkaW5n
+IC0gYnV0IHRoYXQgcmVxdWlyZXMgNjRiaXQNCj4gPiA+ID4gPiA+IGFsaWduZW1lbnQuDQo+ID4g
+PiA+ID4gPg0KPiA+ID4gPiA+ID4gVGhlIG9ubHkgcHJvYmxlbWF0aWMgc3RydWN0dXJlIGlzIHRo
+ZSBsYXN0IG9uZSAtIHdoaWNoIHdvdWxkDQo+ID4gPiA+ID4gPiBoYXZlDQo+ID4gPiA+ID4gPiBh
+IDMyYml0IHBhZCBhZnRlciB0aGUgaGVhZGVyLg0KPiA+ID4gPiA+ID4gSXMgdGhpcyBldmVuIHJp
+Z2h0IGdpdmVuIHRoYW4gdGhlcmUgYXJlIGV4cGxpY2l0IGFsaWdubWVudA0KPiA+ID4gPiA+ID4g
+cGFkcw0KPiA+ID4gPiA+ID4gaW4gc29tZSBvZiB0aGUgb3RoZXIgc3RydWN0dXJlcy4NCj4gPiA+
+ID4gPiA+DQo+ID4gPiA+ID4gPiBJZiA2NGJpdCBhbGlnbm1lbnQgaXNuJ3QgZ3VhcmFudGVlZCB0
+aGVuIGEgJzY0Yml0IGFsaWduZWQgdG8NCj4gPiA+ID4gPiA+IDMyYml0Jw0KPiA+ID4gPiA+ID4g
+dHlwZSBzaG91bGQgYmUgdXNlZCBmb3IgdGhlIHU2NCBmaWVsZHMuDQo+ID4gPiA+ID4gPg0KPiA+
+ID4gPiA+DQo+ID4gPiA+ID4gWWVzLCBzb21lIG9mIHRoZW0gaGFzIGJlZW4gYWxpZ25lZCBhbHJl
+YWR5LCB0aGVuIG5vdGhpbmcNCj4gPiA+ID4gPiBjaGFuZ2VkDQo+ID4gPiA+ID4gd2hlbg0KPiA+
+ID4gPiA+IGFkZCB0aGlzICJwYWNrZWQgIi4gTWF5YmUgdGhlIHB1cnBvc2Ugb2YgdGhlIG9yaWdp
+bmFsIGF1dGhvciBpcw0KPiA+ID4gPiA+IGZvcg0KPiA+ID4gPiA+IGV4dGVuc2lvbiwgYW5kIGNh
+biB0ZWxsIG90aGVycyB0aGF0IHRoaXMgc3RydWN0IG5lZWQgYmUgcGFja2VkLg0KPiA+ID4gPiA+
+DQo+ID4gPiA+DQo+ID4gPiA+IFRoZSBwYXRjaCBpcyB1cHN0cmVhbWVkIHJlY2VudGx5IGJ1dCBp
+dCB3YXMgbWFkZSBsb25nIHRpbWUgYWdvLg0KPiA+ID4gPiBJIHRoaW5rIHRoZSBvcmlnaW5hbCBw
+cm9ibGVtIGlzIHRoYXQgb25lIG9mIHRoZSBhZGRyZXNzLCBwcm9iYWJseQ0KPiA+ID4gPiB0aGUN
+Cj4gPiA+ID4gc3VzcGVuZF9wZXJmb3JtYW5jZSByZWNvcmQsIGlzIG5vdCA2NGJpdCBhbGlnbmVk
+LCB0aHVzIHdlIGNhbiBub3QNCj4gPiA+ID4gcmVhZA0KPiA+ID4gPiB0aGUgcHJvcGVyIGNvbnRl
+bnQgb2Ygc3VzcGVuZF9zdGFydCBhbmQgc3VzcGVuZF9lbmQsIG1hcHBlZCBmcm9tDQo+ID4gPiA+
+IHBoeXNpY2FsIG1lbW9yeS4NCj4gPiA+ID4NCj4gPiA+ID4gSSB3aWxsIHRyeSB0byBmaW5kIGEg
+bWFjaGluZSB0byByZXByb2R1Y2UgdGhlIHByb2JsZW0gd2l0aCBhbGwNCj4gPiA+ID4gX19hdHRy
+aWJ1dGVfXygocGFja2VkKSkgcmVtb3ZlZCB0byBkb3VibGUgY29uZmlybSB0aGlzLg0KPiA+ID4g
+Pg0KPiA+ID4NCj4gPiA+IFNvIGhlcmUgaXMgdGhlIHByb2JsZW0sIHdpdGhvdXQgX19hdHRyaWJ1
+dGVfXygocGFja2VkKSkNCj4gPiA+DQo+ID4gPiBbICAgIDAuODU4NDQyXSBzdXNwZW5kX3JlY29y
+ZDogMHhmZmZmYWFkNTAwMTc1MDIwDQo+ID4gPiAvc3lzL2Zpcm13YXJlL2FjcGkvZnBkdC9zdXNw
+ZW5kL3N1c3BlbmRfZW5kX25zOmFkZHI6DQo+ID4gPiAweGZmZmZhYWQ1MDAxNzUwMzAsIDE1OTk4
+MTc5MjkyNjU5ODQzMDcyDQo+ID4gPiAvc3lzL2Zpcm13YXJlL2FjcGkvZnBkdC9zdXNwZW5kL3N1
+c3BlbmRfc3RhcnRfbnM6YWRkcjoNCj4gPiA+IDB4ZmZmZmFhZDUwMDE3NTAyOCwgMA0KPiA+ID4N
+Cj4gPiA+IHN1c3BlbmRfcmVjb3JkIGlzIG1hcHBlZCB0byAweGZmZmZhYWQ1MDAxNzUwMjAsIGFu
+ZCBpdCBpcyBjb21iaW5lZA0KPiA+ID4gd2l0aA0KPiA+ID4gb25lIDMyYml0IGhlYWRlciBhbmQg
+dHdvIDY0Yml0IGZpZWxkcyAoc3VzcGVuZF9zdGFydCBhbmQNCj4gPiA+IHN1c3BlbmRfZW5kKSwN
+Cj4gPiA+IHRoaXMgaXMgaG93IGl0IGlzIGxvY2F0ZWQgaW4gcGh5c2ljYWwgbWVtb3J5Lg0KPiA+
+ID4gU28gdGhlIGFkZHJlc3NlcyBvZiB0aGUgdHdvIDY0Yml0IGZpZWxkcyBhcmUgYWN0dWFsbHkg
+bm90IDY0Yml0DQo+ID4gPiBhbGlnbmVkLg0KPiA+ID4NCj4gPiA+IERhdmlkLA0KPiA+ID4gSXMg
+dGhpcyB0aGUgImEgNjRiaXQgaXRlbSBuZWVkcyB0byBiZSAzMmJpdCBhbGlnbmVkIiBwcm9ibGVt
+IHlvdQ0KPiA+ID4gcmVmZXJyZWQ/DQo+ID4gPiBJZiB5ZXMsIHdoYXQgaXMgdGhlIHByb3BlciBm
+aXg/IHNob3VsZCBJIHVzZWQgdHdvIDMyYml0cyBmb3IgZWFjaA0KPiA+ID4gb2YNCj4gPiA+IHRo
+ZSBmaWVsZCBpbnN0ZWFkPw0KPiA+DQo+ID4gRGVmaW5lIHNvbWV0aGluZyBsaWtlOg0KPiA+IHR5
+cGVkZWYgdTY0IF9fYXR0cmlidXRlX18oKGFsaWduZWQoNCkpKSB1NjRfYWxpZ24zMjsNCj4gPiBh
+bmQgdGhlbiB1c2UgaXQgZm9yIHRoZSA2NGJpdCBzdHJ1Y3R1cmUgbWVtYmVycy4NCj4gPg0KPiBI
+aSwgRGF2aWQsDQo+IA0KPiBQbGVhc2Uga2luZGx5IGhlbHAgY2hlY2sgaWYgdGhlIGZvbGxvd2lu
+ZyBwYXRjaCBpcyB0aGUgcmlnaHQgZml4IG9yDQo+IG5vdC4gSSd2ZSB2ZXJpZmllZCBpdCB0byB3
+b3JrIG9uIG15IHRlc3QgYm94Lg0KPiANCj4gVGhlIHJlYXNvbiBJIHVzZSB0aGlzIHR5cGVkZWYg
+Zm9yIGFsbCB0aGUgdTY0IGl0ZW1zIGJlY2F1c2UgdGhlcmUgaXMgbm8NCj4gZ3VhcmFudGVlIHRo
+YXQgdGhlIHN1c3BlbmRfcGVyZm9ybWFuY2UgcmVjb3JkIGlzIGluIHRoZSBlbmQgb2YgdGhlDQo+
+IG1lbW9yeSwgdGh1cyBpdCBtYXkgcG9sbHV0ZSB0aGUgb3RoZXJzLg0KDQpMb29rcyBhYm91dCBy
+aWdodC4NCg0KCURhdmlkDQoNCj4gDQo+IEZyb20gZTE4Yzk0Mjg1NWUyZjUxZTgxNGQwNTdmZmY0
+ZGQ5NTFjZDBkMDkwNyBNb24gU2VwIDE3IDAwOjAwOjAwIDIwMDENCj4gRnJvbTogWmhhbmcgUnVp
+IDxydWkuemhhbmdAaW50ZWwuY29tPg0KPiBEYXRlOiBXZWQsIDMxIE1hciAyMDIxIDIwOjM0OjEz
+ICswODAwDQo+IFN1YmplY3Q6IFtQQVRDSF0gQUNQSTogdGFibGVzOiBGUERUOiBGaXggNjRiaXQg
+YWxpZ25tZW50IGlzc3VlDQo+IA0KPiBTb21lIG9mIHRoZSA2NGJpdCBpdGVtcyBpbiBGUERUIHRh
+YmxlIG1heSBiZSAzMmJpdCBhbGlnbmVkLg0KPiBVc2luZyBfX2F0dHJpYnV0ZV9fKChwYWNrZWQp
+KSBpcyBub3QgbmVlZGVkIGluIHRoaXMgY2FzZSwgZml4aW5nIGl0IGJ5DQo+IGFsbG93aW5nIDMy
+Yml0IGFsaWdubWVudCBmb3IgdGhlc2UgNjRiaXQgaXRlbXMuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5
+OiBaaGFuZyBSdWkgPHJ1aS56aGFuZ0BpbnRlbC5jb20+DQo+IC0tLQ0KPiAgZHJpdmVycy9hY3Bp
+L2FjcGlfZnBkdC5jIHwgMjggKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLQ0KPiAgMSBmaWxl
+IGNoYW5nZWQsIDE1IGluc2VydGlvbnMoKyksIDEzIGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAt
+LWdpdCBhL2RyaXZlcnMvYWNwaS9hY3BpX2ZwZHQuYyBiL2RyaXZlcnMvYWNwaS9hY3BpX2ZwZHQu
+Yw0KPiBpbmRleCBhODlhODA2YTdhMmEuLjk0ZTEwN2I5YTExNCAxMDA2NDQNCj4gLS0tIGEvZHJp
+dmVycy9hY3BpL2FjcGlfZnBkdC5jDQo+ICsrKyBiL2RyaXZlcnMvYWNwaS9hY3BpX2ZwZHQuYw0K
+PiBAQCAtMjMsMTIgKzIzLDE0IEBAIGVudW0gZnBkdF9zdWJ0YWJsZV90eXBlIHsNCj4gIAlTVUJU
+QUJMRV9TM1BULA0KPiAgfTsNCj4gDQo+ICt0eXBlZGVmIHU2NCBfX2F0dHJpYnV0ZV9fKChhbGln
+bmVkKDQpKSkgdTY0X2FsaWduMzI7DQo+ICsNCj4gIHN0cnVjdCBmcGR0X3N1YnRhYmxlX2VudHJ5
+IHsNCj4gIAl1MTYgdHlwZTsJCS8qIHJlZmVyIHRvIGVudW0gZnBkdF9zdWJ0YWJsZV90eXBlICov
+DQo+ICAJdTggbGVuZ3RoOw0KPiAgCXU4IHJldmlzaW9uOw0KPiAgCXUzMiByZXNlcnZlZDsNCj4g
+LQl1NjQgYWRkcmVzczsJCS8qIHBoeXNpY2FsIGFkZHJlc3Mgb2YgdGhlIFMzUFQvRkJQVCB0YWJs
+ZSAqLw0KPiArCXU2NF9hbGlnbjMyIGFkZHJlc3M7CQkvKiBwaHlzaWNhbCBhZGRyZXNzIG9mIHRo
+ZSBTM1BUL0ZCUFQgdGFibGUgKi8NCj4gIH07DQo+IA0KPiAgc3RydWN0IGZwZHRfc3VidGFibGVf
+aGVhZGVyIHsNCj4gQEAgLTUxLDI1ICs1MywyNSBAQCBzdHJ1Y3QgZnBkdF9yZWNvcmRfaGVhZGVy
+IHsNCj4gIHN0cnVjdCByZXN1bWVfcGVyZm9ybWFuY2VfcmVjb3JkIHsNCj4gIAlzdHJ1Y3QgZnBk
+dF9yZWNvcmRfaGVhZGVyIGhlYWRlcjsNCj4gIAl1MzIgcmVzdW1lX2NvdW50Ow0KPiAtCXU2NCBy
+ZXN1bWVfcHJldjsNCj4gLQl1NjQgcmVzdW1lX2F2ZzsNCj4gLX0gX19hdHRyaWJ1dGVfXygocGFj
+a2VkKSk7DQo+ICsJdTY0X2FsaWduMzIgcmVzdW1lX3ByZXY7DQo+ICsJdTY0X2FsaWduMzIgcmVz
+dW1lX2F2ZzsNCj4gK307DQo+IA0KPiAgc3RydWN0IGJvb3RfcGVyZm9ybWFuY2VfcmVjb3JkIHsN
+Cj4gIAlzdHJ1Y3QgZnBkdF9yZWNvcmRfaGVhZGVyIGhlYWRlcjsNCj4gIAl1MzIgcmVzZXJ2ZWQ7
+DQo+IC0JdTY0IGZpcm13YXJlX3N0YXJ0Ow0KPiAtCXU2NCBib290bG9hZGVyX2xvYWQ7DQo+IC0J
+dTY0IGJvb3Rsb2FkZXJfbGF1bmNoOw0KPiAtCXU2NCBleGl0Ym9vdHNlcnZpY2Vfc3RhcnQ7DQo+
+IC0JdTY0IGV4aXRib290c2VydmljZV9lbmQ7DQo+IC19IF9fYXR0cmlidXRlX18oKHBhY2tlZCkp
+Ow0KPiArCXU2NF9hbGlnbjMyIGZpcm13YXJlX3N0YXJ0Ow0KPiArCXU2NF9hbGlnbjMyIGJvb3Rs
+b2FkZXJfbG9hZDsNCj4gKwl1NjRfYWxpZ24zMiBib290bG9hZGVyX2xhdW5jaDsNCj4gKwl1NjRf
+YWxpZ24zMiBleGl0Ym9vdHNlcnZpY2Vfc3RhcnQ7DQo+ICsJdTY0X2FsaWduMzIgZXhpdGJvb3Rz
+ZXJ2aWNlX2VuZDsNCj4gK307DQo+IA0KPiAgc3RydWN0IHN1c3BlbmRfcGVyZm9ybWFuY2VfcmVj
+b3JkIHsNCj4gIAlzdHJ1Y3QgZnBkdF9yZWNvcmRfaGVhZGVyIGhlYWRlcjsNCj4gLQl1NjQgc3Vz
+cGVuZF9zdGFydDsNCj4gLQl1NjQgc3VzcGVuZF9lbmQ7DQo+IC19IF9fYXR0cmlidXRlX18oKHBh
+Y2tlZCkpOw0KPiArCXU2NF9hbGlnbjMyIHN1c3BlbmRfc3RhcnQ7DQo+ICsJdTY0X2FsaWduMzIg
+c3VzcGVuZF9lbmQ7DQo+ICt9Ow0KPiANCj4gDQo+ICBzdGF0aWMgc3RydWN0IHJlc3VtZV9wZXJm
+b3JtYW5jZV9yZWNvcmQgKnJlY29yZF9yZXN1bWU7DQo+IC0tDQo+IDIuMTcuMQ0KPiANCg0KLQ0K
+UmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1p
+bHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVz
+KQ0K
 
-
-On 30/03/2021 08:04, Jisheng Zhang wrote:
-> Some functions are not needed after booting, so mark them as __init
-> to move them to the .init section.
-> 
-> Some global variables are never modified after init, so can be
-> __ro_after_init.
-> 
-> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-
-Mar[ck] ? Any comment on this change ?
-
-
-
-> ---
->  drivers/clocksource/arm_arch_timer.c | 23 ++++++++++++-----------
->  1 file changed, 12 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
-> index d0177824c518..1b885964fb34 100644
-> --- a/drivers/clocksource/arm_arch_timer.c
-> +++ b/drivers/clocksource/arm_arch_timer.c
-> @@ -51,7 +51,7 @@
->  
->  static unsigned arch_timers_present __initdata;
->  
-> -static void __iomem *arch_counter_base;
-> +static void __iomem *arch_counter_base __ro_after_init;
->  
->  struct arch_timer {
->  	void __iomem *base;
-> @@ -60,15 +60,16 @@ struct arch_timer {
->  
->  #define to_arch_timer(e) container_of(e, struct arch_timer, evt)
->  
-> -static u32 arch_timer_rate;
-> -static int arch_timer_ppi[ARCH_TIMER_MAX_TIMER_PPI];
-> +static u32 arch_timer_rate __ro_after_init;
-> +u32 arch_timer_rate1 __ro_after_init;
-> +static int arch_timer_ppi[ARCH_TIMER_MAX_TIMER_PPI] __ro_after_init;
->  
->  static struct clock_event_device __percpu *arch_timer_evt;
->  
-> -static enum arch_timer_ppi_nr arch_timer_uses_ppi = ARCH_TIMER_VIRT_PPI;
-> -static bool arch_timer_c3stop;
-> -static bool arch_timer_mem_use_virtual;
-> -static bool arch_counter_suspend_stop;
-> +static enum arch_timer_ppi_nr arch_timer_uses_ppi __ro_after_init = ARCH_TIMER_VIRT_PPI;
-> +static bool arch_timer_c3stop __ro_after_init;
-> +static bool arch_timer_mem_use_virtual __ro_after_init;
-> +static bool arch_counter_suspend_stop __ro_after_init;
->  #ifdef CONFIG_GENERIC_GETTIMEOFDAY
->  static enum vdso_clock_mode vdso_default = VDSO_CLOCKMODE_ARCHTIMER;
->  #else
-> @@ -76,7 +77,7 @@ static enum vdso_clock_mode vdso_default = VDSO_CLOCKMODE_NONE;
->  #endif /* CONFIG_GENERIC_GETTIMEOFDAY */
->  
->  static cpumask_t evtstrm_available = CPU_MASK_NONE;
-> -static bool evtstrm_enable = IS_ENABLED(CONFIG_ARM_ARCH_TIMER_EVTSTREAM);
-> +static bool evtstrm_enable __ro_after_init = IS_ENABLED(CONFIG_ARM_ARCH_TIMER_EVTSTREAM);
->  
->  static int __init early_evtstrm_cfg(char *buf)
->  {
-> @@ -176,7 +177,7 @@ static notrace u64 arch_counter_get_cntvct(void)
->   * to exist on arm64. arm doesn't use this before DT is probed so even
->   * if we don't have the cp15 accessors we won't have a problem.
->   */
-> -u64 (*arch_timer_read_counter)(void) = arch_counter_get_cntvct;
-> +u64 (*arch_timer_read_counter)(void) __ro_after_init = arch_counter_get_cntvct;
->  EXPORT_SYMBOL_GPL(arch_timer_read_counter);
->  
->  static u64 arch_counter_read(struct clocksource *cs)
-> @@ -925,7 +926,7 @@ static int validate_timer_rate(void)
->   * rate was probed first, and don't verify that others match. If the first node
->   * probed has a clock-frequency property, this overrides the HW register.
->   */
-> -static void arch_timer_of_configure_rate(u32 rate, struct device_node *np)
-> +static void __init arch_timer_of_configure_rate(u32 rate, struct device_node *np)
->  {
->  	/* Who has more than one independent system counter? */
->  	if (arch_timer_rate)
-> @@ -939,7 +940,7 @@ static void arch_timer_of_configure_rate(u32 rate, struct device_node *np)
->  		pr_warn("frequency not available\n");
->  }
->  
-> -static void arch_timer_banner(unsigned type)
-> +static void __init arch_timer_banner(unsigned type)
->  {
->  	pr_info("%s%s%s timer(s) running at %lu.%02luMHz (%s%s%s).\n",
->  		type & ARCH_TIMER_TYPE_CP15 ? "cp15" : "",
-> 
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
