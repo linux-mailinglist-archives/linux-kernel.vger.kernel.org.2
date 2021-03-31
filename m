@@ -2,94 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C97E534FC96
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C75E034FC99
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234519AbhCaJWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 05:22:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234654AbhCaJWa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 05:22:30 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35613C061574;
-        Wed, 31 Mar 2021 02:22:30 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id a143so20463711ybg.7;
-        Wed, 31 Mar 2021 02:22:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Io/8COCIMelBlssiGf/QwkSf0NWKvCwN1kFvShgTt3k=;
-        b=e9FcEWP/5o1QjN/f0/33JiTVAOPQ3JdICqsdLJtkSrslvLe7BlX4v4Ri0gKlXbMysA
-         Vxn6iFcYPzUMVM95+IhGqaeL2jgLeVyqxxtLi2PkTdm2WQqh1uIIKxfe74Yz7mXx6GR/
-         HAd7EVV1zWR4aTaAtM46I6Tg5YBw66x8JvdJCnloZ2FdaA4r4/C5Dqxsnvhc5OYzOkk8
-         c9A9dZQe5HQj27NG4Sg8eBohonUeb9CtettyYYNjtlyOOmHMF/EH2ma4MiBFUgDAlE1B
-         wzUDATrXdAnTql6h9rdcnhwOhF/UQ6vALjOqMw44jawpZmlhCGv9PUUPa5QPzpq7MUeK
-         2oEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Io/8COCIMelBlssiGf/QwkSf0NWKvCwN1kFvShgTt3k=;
-        b=QaYTHvOfqQzKPonPpfj6Ru9+5trMv4V35LAye/gAKPf138ebjFl5JRczGKGkoh6BI/
-         8GUZa62gL5G0GsPsdD/uOuKwPVkiQ1UWZwlCrVCyK8kCW+OD1aVjDs+K+x70Wc91bRSN
-         RQ9oLX/tycvIj5vlVhvBxqsZvyi5gcsVKYMzx82Q2E+6vxHILU0zGYGntHregJjE19z4
-         DN4Swa2ZAm1EdQukGU6ZyjP0PikBombOfXG50R2SxG0D41rQAfkgZjxoJvgYud4SvyDT
-         nZ3OzBF6hbGd6fTsaRoSrj4MzNQkql/OeUYsp5d1qZHCcmR5nlZikx25FzW75obIbnfP
-         CC4g==
-X-Gm-Message-State: AOAM531fsxQ6PpGJL02XLBrREOmG/VM5VbTnGoO1cI/QQwLAU2LC8Pkt
-        qBAYROTvfkkVXWq+vE8psxQR+2R8Ird+suTiVJ4=
-X-Google-Smtp-Source: ABdhPJyu9ieNGBg82MYlajy2cM5KBzgiBlcU4P77Qs2Qg8m0lch7OrGnx++N3mC3ia88bCMGMct/gteEy8HLzGXQDqU=
-X-Received: by 2002:a25:ba87:: with SMTP id s7mr3183267ybg.222.1617182549547;
- Wed, 31 Mar 2021 02:22:29 -0700 (PDT)
+        id S234655AbhCaJXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 05:23:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44798 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234545AbhCaJWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 05:22:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F8F66198F;
+        Wed, 31 Mar 2021 09:22:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617182555;
+        bh=RytI4b+szUa9Y8qjxl14EVaICLgMoNA/tChtgCeTrQ0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pWd+5T4hnabsrqVRV7AG2Kgj6zbqAhCbb83wxY90N+uoqGK3ZYpdTwt4t/WR1gNiB
+         IV5y5akKmiWL8BkI0ZOuSp5VB9hzzDCiSrA9/0+Ey7w8bDTIPGYgJH1FDTCqBIxn4U
+         lW4AcmQ+4180h8lESKlEkgNLUie/Svl2q91XIcv7n69cVDdKrpJhPXqANYcX415eyS
+         ynuB5LPc9rIx4oNcRmtQX+xilFT6nkzUIh8ojMzWOBQBIVYniaY/xiqO5Pz873DYYy
+         4xRtefrmcXh5DrPldde5/h6j5yZVZpWWvUmAJv5MskrCkF0jz60CNHq2SGS/KW3oY4
+         0q8QBhoUCcIbw==
+Date:   Wed, 31 Mar 2021 11:22:32 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/12] i2c: Adding support for software nodes
+Message-ID: <20210331092232.GL1025@ninjato>
+References: <20210329105047.51033-1-heikki.krogerus@linux.intel.com>
 MIME-Version: 1.0
-References: <20210330074235.525747-1-Jianlin.Lv@arm.com> <20210330093149.GA5281@willie-the-truck>
-In-Reply-To: <20210330093149.GA5281@willie-the-truck>
-From:   Jianlin Lv <iecedge@gmail.com>
-Date:   Wed, 31 Mar 2021 17:22:18 +0800
-Message-ID: <CAFA-uR8_N=RHbhm4PdiB-AMCBdXsoMyM-9WgaPxPQ7-ZF6ujXA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: arm64: Redefine MOV consistent with arch insn
-To:     Will Deacon <will@kernel.org>
-Cc:     Jianlin Lv <Jianlin.Lv@arm.com>, bpf <bpf@vger.kernel.org>,
-        zlim.lnx@gmail.com, catalin.marinas@arm.com,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="FnOKg9Ah4tDwTfQS"
+Content-Disposition: inline
+In-Reply-To: <20210329105047.51033-1-heikki.krogerus@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 5:31 PM Will Deacon <will@kernel.org> wrote:
->
-> On Tue, Mar 30, 2021 at 03:42:35PM +0800, Jianlin Lv wrote:
-> > A64_MOV is currently mapped to Add Instruction. Architecturally MOV
-> > (register) is an alias of ORR (shifted register) and MOV (to or from SP)
-> > is an alias of ADD (immediate).
-> > This patch redefines A64_MOV and uses existing functionality
-> > aarch64_insn_gen_move_reg() in insn.c to encode MOV (register) instruction.
-> > For moving between register and stack pointer, rename macro to A64_MOV_SP.
->
-> What does this gain us? There's no requirement for a BPF "MOV" to match an
-> arm64 architectural "MOV", so what's the up-side of aligning them like this?
->
-> Cheers,
->
-> Will
 
-According to the description in the Arm Software Optimization Guide,
-Arithmetic(basic) and Logical(basic) instructions have the same
-Exec Latency and Execution Throughput.
-This change did not bring about a performance improvement.
-The original intention was to make the instruction map more 'natively'.
+--FnOKg9Ah4tDwTfQS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Jianlin
+
+> The old device property API (device_add_properties()) is going to be
+> removed. These prepare the i2c subsystem and drivers for the change.
+> The change is fairly trivial in case of i2c. All we need to do is add
+> complete software nodes to the devices instead of only the device
+> properties in those nodes.
+
+This looks like a nice cleanup!
+
+Reviewed-by: Wolfram Sang <wsa@kernel.org> # for the I2C parts
+
+Which tree should this go into? I can offer I2C but am also fine with
+another one...
+
+
+--FnOKg9Ah4tDwTfQS
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBkP1QACgkQFA3kzBSg
+Kbaw6A//ekld1xJ32sOmWlFDDXcO1Mm24LzRLE6F9yiNwiAYvWgqew3z+vQ62Q7W
+NxoQuBS/3Qq9ccj1DyS4oylFYGG6taoruy9YLjIH/vFgqc6lbl5ekrYKFCWe61sB
+BcwbJB9O8u2WTYSLg2mgzcz9xVCoFCCaQLskx+5LvoLS3xHrO341UlD3nFviJk3W
+qGD9lB0DmaOOmGhhTXM/Qdv4oy/slGB4GhO2tMfbYV462vbhjdxSxRmCGkbkI0Hs
+Rtc0zL1PKZvR+QgpQTu7BKdnneU07697p+D2sRiXwkR79TW9hhJh9t4c3IbbUl8s
+a8QwJaNRxSiKSXhfAojeLSgz0RvaMRrYXSQnkCbctqxOrmnAV46DCoo86jmecBbt
+wrruCQVsBoZOs9OvurJgxBdRb1+9d1PJu9nW2pNkb0MMKjbdnWvhPayl0xwoi9Ip
+Jd4H76wxxt3sx1IEsRhXyfRQ6iuLxUAFTwfSqU/NStLvw4oxWws9p6sZ9419MiUz
+1of8a0lt44DjD+kf/3+dHACCIBLR9dGBx3n8eSO6wuUOQSEhntCN81vkFiTfNyCS
+1yqRxf/RnIS6igkeo0EI/J+hn6Ky8K0oH9ZClHzKBwwscpIOCkhfnUiv6g5fblNL
+n4hdqOUK9ObDZKOgxooe+jdphYe8jhYmzkQRbyKw49uMlpQNqXI=
+=d4SE
+-----END PGP SIGNATURE-----
+
+--FnOKg9Ah4tDwTfQS--
