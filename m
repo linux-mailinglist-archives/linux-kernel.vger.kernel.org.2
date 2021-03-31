@@ -2,110 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4918F350882
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 22:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F3E350886
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 22:53:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232553AbhCaUwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 16:52:12 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:33702 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229615AbhCaUvs (ORCPT
+        id S232659AbhCaUwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 16:52:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229929AbhCaUwS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 16:51:48 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12VKXZEO128247;
-        Wed, 31 Mar 2021 16:51:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=hlfKVk43adYZo5XtpAT2DR3O6Hesu1fmqxgDa1s08AM=;
- b=bavVfejljcls0fYCoKpUiMYfS/fpLXN9jGoNJzAY96bWK34wyB+HUTUcqFJ0q2bz6ABp
- 3nX9hnnA8yy4NTh0b8zET6OaWjgQpr+N0K2duJqBTMEQcrNjuzVDFALysEv9KwXRthFQ
- MrV69hDHzmU5uxrA4q4+Exmv5W4QL7p2ARwEc0lDCZd8Hhwkrq9KO9Q/jkqGrcCraZhV
- y63jWBDGwGXdxWILHGYPEMHXtCKqlyr92V9HJVx/EK05F2dyDtthj8Zg1ywZ3RtahKXA
- eRub89x+SRfcKu3G5mzabBngst89ViZPh5mhHDft0oENYAhgVh2refEgg1hfeekq5nbx sg== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37mb6egywv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 31 Mar 2021 16:51:21 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12VKglGS024005;
-        Wed, 31 Mar 2021 20:51:19 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 37matt0w6j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 31 Mar 2021 20:51:19 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12VKov5a27525498
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 31 Mar 2021 20:50:58 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 64154A4051;
-        Wed, 31 Mar 2021 20:51:17 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 23022A4040;
-        Wed, 31 Mar 2021 20:51:17 +0000 (GMT)
-Received: from localhost (unknown [9.171.77.178])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed, 31 Mar 2021 20:51:17 +0000 (GMT)
-Date:   Wed, 31 Mar 2021 22:51:15 +0200
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Josef Bacik <jbacik@fb.com>, linux-kernel@vger.kernel.org
-Subject: Re: User stacktrace garbage when USER_STACKTRACE_SUPPORT is not
- enabled
-Message-ID: <your-ad-here.call-01617223875-ext-7005@work.hours>
-References: <your-ad-here.call-01617191565-ext-9692@work.hours>
- <20210331103749.01a7c283@gandalf.local.home>
+        Wed, 31 Mar 2021 16:52:18 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54AAFC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 13:52:17 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so1829277pjq.5
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 13:52:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yoJglSBv69WpXRq5eWsDMsVvLVSgKRL+uxkOtmCkPv4=;
+        b=ADUqKKQ3BT9AZj97LO1eTtS3t9SA7Iz5Y9gKCHGjYiSKaRi0OjZsNbCEZHlTHVsUK2
+         RNZXwtrgWGKiRwRERUqUQHhNjNE4avYwBTOHTNeXUrFuBOZpSNcUgsrOMnNOFrF4Qmmx
+         O6VxlothBKh2mwj18o5erYydCBdLp41Jx1ACR3P2G4E6KTzIjQwXv0iNU/NOfDyTFFnS
+         200CcWoWmbjT9IdQc2M/KYaGZJ9MQ4swwqQjH/lVhVw8kM/Yif9KbXdwfMKqqTFBCtHd
+         qG+c+KtKeKb557k9yYsai7I+C2YdTVQm/TDzi18tNlIaNowK9yiwFIR0cMG4QxaUuNJ2
+         ySUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yoJglSBv69WpXRq5eWsDMsVvLVSgKRL+uxkOtmCkPv4=;
+        b=f8K8SBfifB5ZzcLV1pCGEx/IrKKMaX2QNTong0aO4oBYV1ybzpH5N2QMvkrdBdffqt
+         dwSxbQGk6ND2L68tj7ov8dkXfem6sBs7qkrBv/6ZDTtlRgC1v8RgNkziaPo2Pti/pCg7
+         RaOdOjCnAd/aJMGl8Fd/TKza1foFdOFyTqJ64D8EQD1xhNuKjU0cVd/QjLKNLCCDc675
+         0u/2paZpCslaYT/2VmWPBjeMKzx/cj2VJe+qix/WmwgekMcW4jYP/n0/ZM2y7SHzWMuS
+         Trttey12o+lFI/fGnqE3Nbr4h3+qmO4Ex+m2xlhejZEC0LtS9zBKwaZEGb4T8tKcPey5
+         aX7g==
+X-Gm-Message-State: AOAM532IOEZ8DVDo0z5gnOlcKYFzwDY8gmvRACcnfxQiCXMkTtJH1kBz
+        +owETHhCKdVXtek6uk0HY5l9wg==
+X-Google-Smtp-Source: ABdhPJyf4HLSrowxJceov6XASpdTMiPhuzoLXLjATJzpx1nt33JVlntT/l7g0VYbcVhhGtzPXPv8aQ==
+X-Received: by 2002:a17:902:d4cd:b029:e5:dd6d:f9b3 with SMTP id o13-20020a170902d4cdb02900e5dd6df9b3mr4527204plg.43.1617223936594;
+        Wed, 31 Mar 2021 13:52:16 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id s28sm3246776pfd.155.2021.03.31.13.52.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 13:52:16 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 20:52:12 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ben Gardon <bgardon@google.com>
+Subject: Re: [PATCH 16/18] KVM: Don't take mmu_lock for range invalidation
+ unless necessary
+Message-ID: <YGTg/AWdieMM/mS7@google.com>
+References: <20210326021957.1424875-1-seanjc@google.com>
+ <20210326021957.1424875-17-seanjc@google.com>
+ <6e7dc7d0-f5dc-85d9-1c50-d23b761b5ff3@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210331103749.01a7c283@gandalf.local.home>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: S5wQB9zkNbZ2k8rdvXt_zppAqduJJht1
-X-Proofpoint-ORIG-GUID: S5wQB9zkNbZ2k8rdvXt_zppAqduJJht1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-31_10:2021-03-31,2021-03-31 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
- bulkscore=0 spamscore=0 impostorscore=0 priorityscore=1501 suspectscore=0
- lowpriorityscore=0 malwarescore=0 adultscore=0 mlxlogscore=999
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2103300000 definitions=main-2103310143
+In-Reply-To: <6e7dc7d0-f5dc-85d9-1c50-d23b761b5ff3@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 10:37:49AM -0400, Steven Rostedt wrote:
-> But after writing all of the above, I think I found a bug! It's this:
+On Wed, Mar 31, 2021, Paolo Bonzini wrote:
+> On 26/03/21 03:19, Sean Christopherson wrote:
+> Also, related to the first part of the series, perhaps you could structure
+> the series in a slightly different way:
 > 
-> 	size = nr_entries * sizeof(unsigned long);
-> 	event = __trace_buffer_lock_reserve(buffer, TRACE_STACK,
-> 					    sizeof(*entry) + size, trace_ctx);
+> 1) introduce the HVA walking API in common code, complete with on_lock and
+> patch 15, so that you can use on_lock to increase mmu_notifier_seq
 > 
+> 2) then migrate all architectures including x86 to the new API
 > 
-> I said the above commit did not play a role in output, but it does play a
-> role in creating the struct stack_trace entry. And by making it a fixed
-> array (even though it's not used) it added 8 more entries to the stack!
-> 
-> This should fix the problem:
-> 
-> -- Steve
-> 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index 3c605957bb5c..507a30bf26e4 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -2985,7 +2985,8 @@ static void __ftrace_trace_stack(struct trace_buffer *buffer,
->  
->  	size = nr_entries * sizeof(unsigned long);
->  	event = __trace_buffer_lock_reserve(buffer, TRACE_STACK,
-> -					    sizeof(*entry) + size, trace_ctx);
-> +				    (sizeof(*entry) - sizeof(entry->caller)) + size,
-> +				    trace_ctx);
->  	if (!event)
->  		goto out;
->  	entry = ring_buffer_event_data(event);
+> IOW, first half of patch 10 and all of patch 15; then the second half of
+> patch 10; then patches 11-14.
 
-It does! Thanks for the explanation and for the fix. I wonder why nobody
-noticed and complained about that since v5.6.
+100% agree with introducing on_lock separately from the conditional locking.
 
-Acked-by: Vasily Gorbik <gor@linux.ibm.com>
+Not so sure about introducing conditional locking and then converting non-x86
+archs.  I'd prefer to keep the conditional locking after arch conversion.
+If something does go awry, it would be nice to be able to preciesly bisect to
+the conditional locking.  Ditto if it needs to be reverted because it breaks an
+arch.
