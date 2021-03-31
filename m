@@ -2,60 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 919AF34FBD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B02DC34FBC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbhCaIkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 04:40:21 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:34972 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232984AbhCaIkJ (ORCPT
+        id S234394AbhCaIhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 04:37:41 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:15411 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234320AbhCaIhV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 04:40:09 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R771e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UTwP3vq_1617180001;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UTwP3vq_1617180001)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 31 Mar 2021 16:40:07 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     f.fainelli@gmail.com
-Cc:     bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] soc: bcm: brcmstb: remove unused variable 'brcmstb_machine_match'
-Date:   Wed, 31 Mar 2021 16:39:59 +0800
-Message-Id: <1617179999-71706-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Wed, 31 Mar 2021 04:37:21 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F9KQK4lLPzlWn4;
+        Wed, 31 Mar 2021 16:35:37 +0800 (CST)
+Received: from huawei.com (10.175.103.91) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Wed, 31 Mar 2021
+ 16:37:16 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>
+CC:     <bhelgaas@google.com>, <kishon@ti.com>
+Subject: [PATCH -next] PCI: endpoint: fix missing destroy_workqueue()
+Date:   Wed, 31 Mar 2021 16:40:12 +0800
+Message-ID: <20210331084012.2091010-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following clang warning:
+Add the missing destroy_workqueue() before return from
+pci_epf_test_init() in the error handling case and add
+destroy_workqueue() in pci_epf_test_exit().
 
-drivers/soc/bcm/brcmstb/common.c:17:34: warning: unused variable
-'brcmstb_machine_match' [-Wunused-const-variable].
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Fixes: 349e7a85b25fa ("PCI: endpoint: functions: Add an EP function to test PCI")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- drivers/soc/bcm/brcmstb/common.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/pci/endpoint/functions/pci-epf-test.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/soc/bcm/brcmstb/common.c b/drivers/soc/bcm/brcmstb/common.c
-index e87dfc6..2a01088 100644
---- a/drivers/soc/bcm/brcmstb/common.c
-+++ b/drivers/soc/bcm/brcmstb/common.c
-@@ -14,11 +14,6 @@
- static u32 family_id;
- static u32 product_id;
+diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
+index 63d5f5c6e3e0..8e24b5e50e4b 100644
+--- a/drivers/pci/endpoint/functions/pci-epf-test.c
++++ b/drivers/pci/endpoint/functions/pci-epf-test.c
+@@ -922,6 +922,7 @@ static int __init pci_epf_test_init(void)
  
--static const struct of_device_id brcmstb_machine_match[] = {
--	{ .compatible = "brcm,brcmstb", },
--	{ }
--};
--
- u32 brcmstb_get_family_id(void)
+ 	ret = pci_epf_register_driver(&test_driver);
+ 	if (ret) {
++		destroy_workqueue(kpcitest_workqueue);
+ 		pr_err("Failed to register pci epf test driver --> %d\n", ret);
+ 		return ret;
+ 	}
+@@ -932,6 +933,8 @@ module_init(pci_epf_test_init);
+ 
+ static void __exit pci_epf_test_exit(void)
  {
- 	return family_id;
++	if (kpcitest_workqueue)
++		destroy_workqueue(kpcitest_workqueue);
+ 	pci_epf_unregister_driver(&test_driver);
+ }
+ module_exit(pci_epf_test_exit);
 -- 
-1.8.3.1
+2.25.1
 
