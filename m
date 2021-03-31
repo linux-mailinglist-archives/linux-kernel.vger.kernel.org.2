@@ -2,310 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC3443504D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 18:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079F33504D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 18:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233855AbhCaQk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 12:40:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45922 "EHLO
+        id S234230AbhCaQmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 12:42:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233822AbhCaQkX (ORCPT
+        with ESMTP id S233999AbhCaQl1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 12:40:23 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EED5EC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:40:22 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id w10so10246443pgh.5
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:40:22 -0700 (PDT)
+        Wed, 31 Mar 2021 12:41:27 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545B4C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:41:26 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id v10so9606866pfn.5
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:41:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+8O1Kepk8u9e69UHvhlXgHoRhJWdtX98dvXPlXkqqCI=;
-        b=q3P49nJW+79IJcklQRQbFAQrBiv6GAqj1qHKy6Dy7k3WBIlSs873rpBGk+0BewE71Y
-         n1BpDet1J3A4wqzQAo34sAi23UfFIbSt6yVZOHgUZAWr4KvCm07+7Gk4/EUGb/Y4bnh6
-         UGLdAh6I705R33tb1iTS68XrNL+bbE1dqV2l/NPLyoCnhBKxzFSA+kjZdIyZr/1UT0lt
-         cLefNK7rt3KRFYCL8XTtBxGoENSFC5AmwQk0ojtnhBWn33tb9HopaZgabCyPE7ngJrIU
-         pCbEcFuVNxthweekixEJdjGu5pMSB25jFqWQ/3gEM3tXnJoRV0Kd78XIkLb8m/e9lKx0
-         n2mQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iR0wTKyQqrCYG4Q831SOK/hJxQXD0DTeg7JGIplTxaE=;
+        b=pDOL/AXp1YZDHSJM55VWmMHEXRZyEKHoWUfLiwu43sQHWLgrvb2clWRDjjyCUh0dsJ
+         bNDMyWcbeueU/GKG4kOjx3b7egix4+sMYZfIS9I0MmjVVx1rcp5WszmjK7+6YeQKCfOM
+         2FXvSyhaSnZkWSZYBa+Zf13p0L3I/egR0XklyggIPr+PefBGDyB7ynzXrNWFqXB2lvPg
+         VgGQ2uiEQdyQFwKIAdbJTxKQSwskTj3uIlVQzOZzPoiS3tMYr2MmjzSdDZfHyKUb7IXo
+         nUd7C6HDGQOQomM2rO6UOTojM3AlSltwg6FTYiW5B9h7N+cvmdJr9MHgjJMW5v34nPiS
+         VoEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=+8O1Kepk8u9e69UHvhlXgHoRhJWdtX98dvXPlXkqqCI=;
-        b=CQiaf7LX6z/JgfeaYFnR0l+xC8mHKaNng3bI8ilkUEKltgTpYLzyyoxDTbl3dpn02t
-         kXRWFL7K7yU1jC/PzI9ctGa1hwVZQsojhZ64ffYxTs3DIGEjU2Q6wvEyZBhS1N9wmLTI
-         Isjk8GsD5NB4Kd5QTf6RXUdp5BE5N/mmb7vn+sy08b5j4uIENcPRyVXHEjey8q0+8AQK
-         q2E06Erc7ENHA1NNjDkS+s3WEezWvaKZVSfBDYqsnjUDYxHE/Ww0SXExs7ikRMQSxPVp
-         vVmoLlBNao4WSbaqgk/fBBGcOWPOvCTz3bztGNY1OuBwk+VVzD1MRboLNcx2MR1D7tS2
-         jWuw==
-X-Gm-Message-State: AOAM531a5K9QXeBDmzKaQKvMJV1DqY5AVo8v5p+mv2V+4NmEgeh9S+oc
-        R/aHYqAu32AOmaI2ObD/mvU=
-X-Google-Smtp-Source: ABdhPJxIF8btRcrQ285U2uiqWN2V4N5+MARH+tYgNKk/E876qf/BZkz33VGbkcfo1gdrHe9sUWkrlA==
-X-Received: by 2002:a63:2e87:: with SMTP id u129mr3999808pgu.107.1617208822452;
-        Wed, 31 Mar 2021 09:40:22 -0700 (PDT)
-Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:ec18:28bb:cb6b:bff3])
-        by smtp.gmail.com with ESMTPSA id n2sm2940880pga.57.2021.03.31.09.40.21
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iR0wTKyQqrCYG4Q831SOK/hJxQXD0DTeg7JGIplTxaE=;
+        b=jjnplcsJSUdx4Gyd9E2h8IR20DdlvATxjOyjyTEMwN01KdGmT0zuwFv6AZ/ZnO4QbS
+         RYKpvYH14q/RvQEAZoOOF5IYpmZNH75+y1tT2uUyHuW24VC1+NRsQO518Fb8orxLFXa6
+         OmRXlOH5LerZs/CLrsXfRg9Z4c0ZD0kLqem5xSsp7X7DSR3ytlxBHlspUARw/VeGnHQb
+         IB+xKwoYSDkphKjSzAgY9UdMfljPgk7y+IYBYUvKMNTqfFwl8GlY3DX6hI9vHzEmjiUH
+         2L8Ehwhm3NL2yfbC48vH7Nb/ts/BS+NIcAgJ5wi3b66Nwrx3LArgmu155tgKdTQCTPG7
+         YW0w==
+X-Gm-Message-State: AOAM53394KSnOYz5GQ85uR8cIKR4g9j0uDtmd9oiUJjMpPgRHS1kiz48
+        4kbjfNYGlJF7o+HLt+xRD00MXQ==
+X-Google-Smtp-Source: ABdhPJwZrE+nqFXUOYwl468wAhlBPq8DZI8v9hc2mHxYO0VlQq5depEehdtkJEVYztZyBSLt0lNXHA==
+X-Received: by 2002:aa7:86c1:0:b029:203:900:2813 with SMTP id h1-20020aa786c10000b029020309002813mr3647646pfo.35.1617208885458;
+        Wed, 31 Mar 2021 09:41:25 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id a13sm2933328pgm.43.2021.03.31.09.41.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 09:40:21 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-From:   Minchan Kim <minchan@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        joaodias@google.com, Minchan Kim <minchan@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>
-Subject: [PATCH] mm: use proper type for cma_[alloc|release]
-Date:   Wed, 31 Mar 2021 09:40:18 -0700
-Message-Id: <20210331164018.710560-1-minchan@kernel.org>
-X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
+        Wed, 31 Mar 2021 09:41:24 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 16:41:21 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ben Gardon <bgardon@google.com>
+Subject: Re: [PATCH 16/18] KVM: Don't take mmu_lock for range invalidation
+ unless necessary
+Message-ID: <YGSmMeSOPcjxRwf6@google.com>
+References: <20210326021957.1424875-1-seanjc@google.com>
+ <20210326021957.1424875-17-seanjc@google.com>
+ <6e7dc7d0-f5dc-85d9-1c50-d23b761b5ff3@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6e7dc7d0-f5dc-85d9-1c50-d23b761b5ff3@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-size_t in cma_alloc is confusing since it makes people think
-it's byte count, not pages. Change it to unsigned long[1].
+On Wed, Mar 31, 2021, Paolo Bonzini wrote:
+> On 26/03/21 03:19, Sean Christopherson wrote:
+> > +	/*
+> > +	 * Reset the lock used to prevent memslot updates between MMU notifier
+> > +	 * range_start and range_end.  At this point no more MMU notifiers will
+> > +	 * run, but the lock could still be held if KVM's notifier was removed
+> > +	 * between range_start and range_end.  No threads can be waiting on the
+> > +	 * lock as the last reference on KVM has been dropped.  If the lock is
+> > +	 * still held, freeing memslots will deadlock.
+> > +	 */
+> > +	init_rwsem(&kvm->mmu_notifier_slots_lock);
+> 
+> I was going to say that this is nasty,
 
-The unsigned int in cma_release is also not right so change it.
-Since we have unsigned long in cma_release, free_contig_range
-should also respect it.
+Heh, I still think it's nasty.
 
-[1] 67a2e213e7e9, mm: cma: fix incorrect type conversion for size during dma allocation
-Link: https://lore.kernel.org/linux-mm/20210324043434.GP1719932@casper.infradead.org/
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: David Hildenbrand <david@redhat.com>
-Signed-off-by: Minchan Kim <minchan@kernel.org>
----
- include/linux/cma.h        |  4 ++--
- include/linux/gfp.h        |  2 +-
- include/trace/events/cma.h | 22 +++++++++++-----------
- mm/cma.c                   | 17 +++++++++--------
- mm/page_alloc.c            |  6 +++---
- 5 files changed, 26 insertions(+), 25 deletions(-)
+> then I noticed that
+> mmu_notifier_unregister uses SRCU to ensure completion of concurrent calls
+> to the MMU notifier.  So I guess it's fine, but it's better to point it out:
+> 
+> 	/*
+> 	 * At this point no more MMU notifiers will run and pending
+> 	 * calls to range_start have completed, but the lock would
+> 	 * still be held and never released if the MMU notifier was
+> 	 * removed between range_start and range_end.  Since the last
+> 	 * reference to the struct kvm has been dropped, no threads can
+> 	 * be waiting on the lock, but we might still end up taking it
+> 	 * when freeing memslots in kvm_arch_destroy_vm.  Reset the lock
+> 	 * to avoid deadlocks.
+> 	 */
+> 
+> That said, the easiest way to avoid this would be to always update
+> mmu_notifier_count.
 
-diff --git a/include/linux/cma.h b/include/linux/cma.h
-index 217999c8a762..53fd8c3cdbd0 100644
---- a/include/linux/cma.h
-+++ b/include/linux/cma.h
-@@ -44,9 +44,9 @@ extern int cma_init_reserved_mem(phys_addr_t base, phys_addr_t size,
- 					unsigned int order_per_bit,
- 					const char *name,
- 					struct cma **res_cma);
--extern struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
-+extern struct page *cma_alloc(struct cma *cma, unsigned long count, unsigned int align,
- 			      bool no_warn);
--extern bool cma_release(struct cma *cma, const struct page *pages, unsigned int count);
-+extern bool cma_release(struct cma *cma, const struct page *pages, unsigned long count);
- 
- extern int cma_for_each_area(int (*it)(struct cma *cma, void *data), void *data);
- #endif
-diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-index 0a88f84b08f4..529c27c6cb15 100644
---- a/include/linux/gfp.h
-+++ b/include/linux/gfp.h
-@@ -639,7 +639,7 @@ extern int alloc_contig_range(unsigned long start, unsigned long end,
- extern struct page *alloc_contig_pages(unsigned long nr_pages, gfp_t gfp_mask,
- 				       int nid, nodemask_t *nodemask);
- #endif
--void free_contig_range(unsigned long pfn, unsigned int nr_pages);
-+void free_contig_range(unsigned long pfn, unsigned long nr_pages);
- 
- #ifdef CONFIG_CMA
- /* CMA stuff */
-diff --git a/include/trace/events/cma.h b/include/trace/events/cma.h
-index 5cf385ae7c08..c3d354702cb0 100644
---- a/include/trace/events/cma.h
-+++ b/include/trace/events/cma.h
-@@ -11,7 +11,7 @@
- DECLARE_EVENT_CLASS(cma_alloc_class,
- 
- 	TP_PROTO(const char *name, unsigned long pfn, const struct page *page,
--		 unsigned int count, unsigned int align),
-+		 unsigned long count, unsigned int align),
- 
- 	TP_ARGS(name, pfn, page, count, align),
- 
-@@ -19,7 +19,7 @@ DECLARE_EVENT_CLASS(cma_alloc_class,
- 		__string(name, name)
- 		__field(unsigned long, pfn)
- 		__field(const struct page *, page)
--		__field(unsigned int, count)
-+		__field(unsigned long, count)
- 		__field(unsigned int, align)
- 	),
- 
-@@ -31,7 +31,7 @@ DECLARE_EVENT_CLASS(cma_alloc_class,
- 		__entry->align = align;
- 	),
- 
--	TP_printk("name=%s pfn=%lx page=%p count=%u align=%u",
-+	TP_printk("name=%s pfn=%lx page=%p count=%lu align=%u",
- 		  __get_str(name),
- 		  __entry->pfn,
- 		  __entry->page,
-@@ -42,7 +42,7 @@ DECLARE_EVENT_CLASS(cma_alloc_class,
- TRACE_EVENT(cma_release,
- 
- 	TP_PROTO(const char *name, unsigned long pfn, const struct page *page,
--		 unsigned int count),
-+		 unsigned long count),
- 
- 	TP_ARGS(name, pfn, page, count),
- 
-@@ -50,7 +50,7 @@ TRACE_EVENT(cma_release,
- 		__string(name, name)
- 		__field(unsigned long, pfn)
- 		__field(const struct page *, page)
--		__field(unsigned int, count)
-+		__field(unsigned long, count)
- 	),
- 
- 	TP_fast_assign(
-@@ -60,7 +60,7 @@ TRACE_EVENT(cma_release,
- 		__entry->count = count;
- 	),
- 
--	TP_printk("name=%s pfn=%lx page=%p count=%u",
-+	TP_printk("name=%s pfn=%lx page=%p count=%lu",
- 		  __get_str(name),
- 		  __entry->pfn,
- 		  __entry->page,
-@@ -69,13 +69,13 @@ TRACE_EVENT(cma_release,
- 
- TRACE_EVENT(cma_alloc_start,
- 
--	TP_PROTO(const char *name, unsigned int count, unsigned int align),
-+	TP_PROTO(const char *name, unsigned long count, unsigned int align),
- 
- 	TP_ARGS(name, count, align),
- 
- 	TP_STRUCT__entry(
- 		__string(name, name)
--		__field(unsigned int, count)
-+		__field(unsigned long, count)
- 		__field(unsigned int, align)
- 	),
- 
-@@ -85,7 +85,7 @@ TRACE_EVENT(cma_alloc_start,
- 		__entry->align = align;
- 	),
- 
--	TP_printk("name=%s count=%u align=%u",
-+	TP_printk("name=%s count=%lu align=%u",
- 		  __get_str(name),
- 		  __entry->count,
- 		  __entry->align)
-@@ -94,7 +94,7 @@ TRACE_EVENT(cma_alloc_start,
- DEFINE_EVENT(cma_alloc_class, cma_alloc_finish,
- 
- 	TP_PROTO(const char *name, unsigned long pfn, const struct page *page,
--		 unsigned int count, unsigned int align),
-+		 unsigned long count, unsigned int align),
- 
- 	TP_ARGS(name, pfn, page, count, align)
- );
-@@ -102,7 +102,7 @@ DEFINE_EVENT(cma_alloc_class, cma_alloc_finish,
- DEFINE_EVENT(cma_alloc_class, cma_alloc_busy_retry,
- 
- 	TP_PROTO(const char *name, unsigned long pfn, const struct page *page,
--		 unsigned int count, unsigned int align),
-+		 unsigned long count, unsigned int align),
- 
- 	TP_ARGS(name, pfn, page, count, align)
- );
-diff --git a/mm/cma.c b/mm/cma.c
-index de6b9f01be53..f3bca4178c7f 100644
---- a/mm/cma.c
-+++ b/mm/cma.c
-@@ -80,7 +80,7 @@ static unsigned long cma_bitmap_pages_to_bits(const struct cma *cma,
- }
- 
- static void cma_clear_bitmap(struct cma *cma, unsigned long pfn,
--			     unsigned int count)
-+			     unsigned long count)
- {
- 	unsigned long bitmap_no, bitmap_count;
- 
-@@ -423,21 +423,21 @@ static inline void cma_debug_show_areas(struct cma *cma) { }
-  * This function allocates part of contiguous memory on specific
-  * contiguous memory area.
-  */
--struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
--		       bool no_warn)
-+struct page *cma_alloc(struct cma *cma, unsigned long count,
-+		       unsigned int align, bool no_warn)
- {
- 	unsigned long mask, offset;
- 	unsigned long pfn = -1;
- 	unsigned long start = 0;
- 	unsigned long bitmap_maxno, bitmap_no, bitmap_count;
--	size_t i;
-+	unsigned long i;
- 	struct page *page = NULL;
- 	int ret = -ENOMEM;
- 
- 	if (!cma || !cma->count || !cma->bitmap)
- 		goto out;
- 
--	pr_debug("%s(cma %p, count %zu, align %d)\n", __func__, (void *)cma,
-+	pr_debug("%s(cma %p, count %lu, align %d)\n", __func__, (void *)cma,
- 		 count, align);
- 
- 	if (!count)
-@@ -505,7 +505,7 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
- 	}
- 
- 	if (ret && !no_warn) {
--		pr_err_ratelimited("%s: %s: alloc failed, req-size: %zu pages, ret: %d\n",
-+		pr_err_ratelimited("%s: %s: alloc failed, req-size: %lu pages, ret: %d\n",
- 				   __func__, cma->name, count, ret);
- 		cma_debug_show_areas(cma);
- 	}
-@@ -534,14 +534,15 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
-  * It returns false when provided pages do not belong to contiguous area and
-  * true otherwise.
-  */
--bool cma_release(struct cma *cma, const struct page *pages, unsigned int count)
-+bool cma_release(struct cma *cma, const struct page *pages,
-+		 unsigned long count)
- {
- 	unsigned long pfn;
- 
- 	if (!cma || !pages)
- 		return false;
- 
--	pr_debug("%s(page %p, count %u)\n", __func__, (void *)pages, count);
-+	pr_debug("%s(page %p, count %lu)\n", __func__, (void *)pages, count);
- 
- 	pfn = page_to_pfn(pages);
- 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index c53fe4fa10bf..21540fb29b0d 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -8817,9 +8817,9 @@ struct page *alloc_contig_pages(unsigned long nr_pages, gfp_t gfp_mask,
- }
- #endif /* CONFIG_CONTIG_ALLOC */
- 
--void free_contig_range(unsigned long pfn, unsigned int nr_pages)
-+void free_contig_range(unsigned long pfn, unsigned long nr_pages)
- {
--	unsigned int count = 0;
-+	unsigned long count = 0;
- 
- 	for (; nr_pages--; pfn++) {
- 		struct page *page = pfn_to_page(pfn);
-@@ -8827,7 +8827,7 @@ void free_contig_range(unsigned long pfn, unsigned int nr_pages)
- 		count += page_count(page) != 1;
- 		__free_page(page);
- 	}
--	WARN(count != 0, "%d pages are still in use!\n", count);
-+	WARN(count != 0, "%lu pages are still in use!\n", count);
- }
- EXPORT_SYMBOL(free_contig_range);
- 
--- 
-2.31.0.208.g409f899ff0-goog
+Updating mmu_notifier_count requires taking mmu_lock, which would defeat the
+purpose of these shenanigans.  I think it could be made atomic, since mmu_lock
+would be taken before the elevated count _must_ be visible, but that would
+break the mmu_notifier_range_{start,end} optimization that was recently added.
+
+Or did I completely misunderstand what you're suggesting?
+
+> I don't mind the rwsem, but at least I suggest that you
+> split the patch in two---the first one keeping the mmu_notifier_count update
+> unconditional, and the second one introducing the rwsem and the on_lock
+> function kvm_inc_notifier_count.  Please document the new lock in
+> Documentation/virt/kvm/locking.rst too.
+
+Note, will update docs.
+
+> Also, related to the first part of the series, perhaps you could structure
+> the series in a slightly different way:
+> 
+> 1) introduce the HVA walking API in common code, complete with on_lock and
+> patch 15, so that you can use on_lock to increase mmu_notifier_seq
+> 
+> 2) then migrate all architectures including x86 to the new API
+> 
+> IOW, first half of patch 10 and all of patch 15; then the second half of
+> patch 10; then patches 11-14.
+> 
+> > +#if defined(CONFIG_MMU_NOTIFIER) && defined(KVM_ARCH_WANT_MMU_NOTIFIER)
+> > +	down_write(&kvm->mmu_notifier_slots_lock);
+> > +#endif
+> >  	rcu_assign_pointer(kvm->memslots[as_id], slots);
+> > +#if defined(CONFIG_MMU_NOTIFIER) && defined(KVM_ARCH_WANT_MMU_NOTIFIER)
+> > +	up_write(&kvm->mmu_notifier_slots_lock);
+> > +#endif
+> 
+> Please do this unconditionally, the cost is minimal if the rwsem is not
+> contended (as is the case if the architecture doesn't use MMU notifiers at
+> all).
+
+It's not the cost, it's that mmu_notifier_slots_lock doesn't exist.  That's an
+easily solved problem, but then the lock wouldn't be initialized since
+kvm_init_mmu_notifier() is a nop.  That's again easy to solve, but IMO would
+look rather weird.  I guess the counter argument is that __kvm_memslots()
+wouldn't need #ifdeffery.
+
+These are the to ideas I've come up with:
+
+Option 1:
+	static int kvm_init_mmu_notifier(struct kvm *kvm)
+	{
+		init_rwsem(&kvm->mmu_notifier_slots_lock);
+
+	#if defined(CONFIG_MMU_NOTIFIER) && defined(KVM_ARCH_WANT_MMU_NOTIFIER)
+		kvm->mmu_notifier.ops = &kvm_mmu_notifier_ops;
+		return mmu_notifier_register(&kvm->mmu_notifier, current->mm);
+	#else
+		return 0;
+	#endif
+	}
+
+
+Option 2:
+	kvm_mmu_notifier_lock(kvm);
+	rcu_assign_pointer(kvm->memslots[as_id], slots);
+	kvm_mmu_notifier_unlock(kvm);
+
+
+
 
