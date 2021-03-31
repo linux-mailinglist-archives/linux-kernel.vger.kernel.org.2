@@ -2,108 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D27634F824
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 06:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E969D34F82B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 06:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233120AbhCaEzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 00:55:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233638AbhCaEzS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 00:55:18 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31ABAC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 21:55:18 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id d13so6206118lfg.7
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 21:55:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vWM2i/Jx+bgof7D8MVRWvlYvDcBJTZI4MpLJfBGFFVk=;
-        b=VT3ZzBbYHwc1X0kR4cjMxXLUu6aCOb5AUG3Qb1EuY5hFuqGu3AzdnYXaJQmMPlOZuD
-         OiHResEevDsvjTP2KRTX4qaiSLOoAFWHj3xoAX0DECTimqJ75wj3ON6f8qJkNvvolYcw
-         cVxX+mTAoDM18OqFxORXJYuJn/4lYaSVXSg0UmOs7mggZNVm7yYgMEqsAUA0K4sf/zug
-         XFMtT+2iWaY5uCtG4zIttrPkSpeQKNOVbq0eoUuz9eBCg7ERmwV88KPLk+j4kqZMF9qy
-         qFHOd+31boZPFnqTWfbejArZjMstg6LFPTcBW5iR0vSWMiqSmMzGYg7QUaPWLpiV91J6
-         KA6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vWM2i/Jx+bgof7D8MVRWvlYvDcBJTZI4MpLJfBGFFVk=;
-        b=mB/phHmjDz4bg1QVUms19Ila1gtxtkmge2Dn04c6MS/4u/Mi4fay/ZAWR0LTcAYdqb
-         JRTv541z47POzJHRg5rwkIJ3haoTIcICBZJYX/3feplmBq4uG/aXLvTTIjBHfalE/vhC
-         cEcZOdzgQznpQroybQpwe5WHx5I9r2koG+Yq+9X2ubKlOYRoKsqSFMt3D+VMSXHVupbl
-         3V5ECcHo1ICqqL3fwtfOSV7LUU+T2vNzUG+luu4m5JryqgWthD+96/Wy48SSsBCLG2X0
-         tRSwx8p3Ly/E78yzvmbggABlthSVT6a2k60h8nXtXq72g2nfL9lrBpk2uBE17fWUUQcs
-         s8+w==
-X-Gm-Message-State: AOAM533Z5u+GBkKS9/IFPUKGM8FAvGADXd+sUg+fGwml5ykxrq88/Rbr
-        EYosApBfTKLtss8m+b1FJwpe9Z2iFjdBdeKOExk=
-X-Google-Smtp-Source: ABdhPJyt8sVTIXnZKzCxMyktj5iNCSIX8kBZeQPZb/A4JrasC+CsaiAvX5n/u9azIgLNBWQnUL4w2BDyEIOb8vr2skM=
-X-Received: by 2002:a19:b81:: with SMTP id 123mr1027890lfl.553.1617166516732;
- Tue, 30 Mar 2021 21:55:16 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210330134537.423447-1-joel@jms.id.au>
-In-Reply-To: <20210330134537.423447-1-joel@jms.id.au>
-From:   Lei YU <mine260309@gmail.com>
-Date:   Wed, 31 Mar 2021 12:55:05 +0800
-Message-ID: <CAARXrtn8bq9X5nDVYrGDxT4O8xWknb0nErG_SjZRUZbbk5nguA@mail.gmail.com>
-Subject: Re: [PATCH] jffs2: Hook up splice_write callback
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "William A . Kennington III" <wak@google.com>,
-        linux-mtd@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S233646AbhCaE62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 00:58:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36854 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233629AbhCaE6O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 00:58:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DDA9619A7;
+        Wed, 31 Mar 2021 04:58:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1617166694;
+        bh=VhCpg0xlH18pm/noVi2wXAxhaSDrNM3aiNwLKbXRn+A=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Qyrk4NMX/7nDvQunY6zl8jh+ldeIm7BbDUrydK7jaAEyAPu78pi/z8ucykMlsskIL
+         2s22nIYASSEr4vVyrFNnYE6hoBbU7a6xa30e7b+3y4dWa1x3jgUHy4ZBXLBbk8tyiV
+         1LRUNvB7VwVwtq5fPl8KYdMOv9qPvfYFfEGBqPBo=
+Date:   Tue, 30 Mar 2021 21:58:12 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Chris Zankel <chris@zankel.net>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Helge Deller <deller@gmx.de>, Hugh Dickins <hughd@google.com>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Jann Horn <jannh@google.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Peter Xu <peterx@redhat.com>, Ram Pai <linuxram@us.ibm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Rik van Riel <riel@surriel.com>,
+        Rolf Eike Beer <eike-kernel@sf-tec.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v1 0/5] mm/madvise: introduce MADV_POPULATE_(READ|WRITE)
+ to prefault/prealloc memory
+Message-Id: <20210330215812.5279462ba693833680384b1b@linux-foundation.org>
+In-Reply-To: <af5555cf-d112-44fd-e030-bfe8f89c8ddc@redhat.com>
+References: <20210317110644.25343-1-david@redhat.com>
+        <af5555cf-d112-44fd-e030-bfe8f89c8ddc@redhat.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 9:45 PM Joel Stanley <joel@jms.id.au> wrote:
->
-> overlayfs using jffs2 as the upper filesystem would fail in some cases
-> since moving to v5.10. The test case used was to run 'touch' on a file
-> that exists in the lower fs, causing the modification time to be
-> updated. It returns EINVAL when the bug is triggered.
->
-> A bisection showed this was introduced in v5.9-rc1, with commit
-> 36e2c7421f02 ("fs: don't allow splice read/write without explicit ops").
-> Reverting that commit restores the expected behaviour.
->
-> Some digging showed that this was due to jffs2 lacking an implementation
-> of splice_write. (For unknown reasons the warn_unsupported that should
-> trigger was not displaying any output).
->
-> Adding this patch resolved the issue and the test now passes.
->
-> Fixes: 36e2c7421f02 ("fs: don't allow splice read/write without explicit ops")
-> Signed-off-by: Joel Stanley <joel@jms.id.au>
-> ---
->  fs/jffs2/file.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
-> index f8fb89b10227..4fc8cd698d1a 100644
-> --- a/fs/jffs2/file.c
-> +++ b/fs/jffs2/file.c
-> @@ -57,6 +57,7 @@ const struct file_operations jffs2_file_operations =
->         .mmap =         generic_file_readonly_mmap,
->         .fsync =        jffs2_fsync,
->         .splice_read =  generic_file_splice_read,
-> +       .splice_write = iter_file_splice_write,
->  };
->
->  /* jffs2_file_inode_operations */
-> --
-> 2.30.2
->
+On Tue, 30 Mar 2021 10:58:43 +0200 David Hildenbrand <david@redhat.com> wrote:
 
-Verified on g220a openbmc system that the patch fixes the issue.
+> > 
+> >   MAINTAINERS                                |   1 +
+> >   arch/alpha/include/uapi/asm/mman.h         |   3 +
+> >   arch/mips/include/uapi/asm/mman.h          |   3 +
+> >   arch/parisc/include/uapi/asm/mman.h        |   3 +
+> >   arch/xtensa/include/uapi/asm/mman.h        |   3 +
+> >   include/uapi/asm-generic/mman-common.h     |   3 +
+> >   mm/gup.c                                   |  54 ++++
+> >   mm/internal.h                              |   5 +-
+> >   mm/madvise.c                               |  69 +++++
+> >   tools/testing/selftests/vm/.gitignore      |   3 +
+> >   tools/testing/selftests/vm/Makefile        |   1 +
+> >   tools/testing/selftests/vm/madv_populate.c | 342 +++++++++++++++++++++
+> >   tools/testing/selftests/vm/run_vmtests.sh  |  16 +
+> >   13 files changed, 505 insertions(+), 1 deletion(-)
+> >   create mode 100644 tools/testing/selftests/vm/madv_populate.c
+> > 
+> 
+> Gentle ping.
 
-Tested-by: Lei YU <yulei.sh@bytedance.com>
+Ping who ;)
+
+I was hoping for more review activity.  Were no changes expected from
+the [2/5] discussion with Jann?
+
