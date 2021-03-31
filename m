@@ -2,87 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A06350520
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 18:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D0D4350521
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 18:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233784AbhCaQwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 12:52:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48504 "EHLO
+        id S233704AbhCaQxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 12:53:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234232AbhCaQwL (ORCPT
+        with ESMTP id S233966AbhCaQxw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 12:52:11 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF044C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:52:10 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id c8so20348781wrq.11
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:52:10 -0700 (PDT)
+        Wed, 31 Mar 2021 12:53:52 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6203DC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:53:52 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id o2so8208179plg.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:53:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KW7KuRreeb79kGzMH/vng/RjmZZIp935J4i4tM6jC6g=;
-        b=qnEUvEjj/xzG8LrnVtSeDVPIyff/heHBpXfIkbkH/Wf/QRY9vZDobrQMVTMn3Suj9A
-         7mhQtaRY8Xe+yVBM5I8ndcXNbzXWMUTz4TreYTYeGaI8UTiMtD/+JFkNYn61ZHVqh9xo
-         gssil2FijNu3h/w43eQIznzwojZ5y7RpmYZ8W3pO+gie+F6QAEitTpUuR1IJzm6wnZM3
-         b5cKmwG5TWezMtr+B1GIBQ3Zo/JHK0R7Dc3mngUzjPX0Us+95Vr8MIiav+Q279merITh
-         DdmskatNl3UogH+0LAyYI1Yrjo51MlJXWEZgdQVEaQYPjrcTfyPTPXkWUwBUXnPy99ny
-         PUUQ==
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=hk1eGF9UROjG/f/Flt2fUdcK/q5+Gj+fZdKcwTUQYH8=;
+        b=p+WEaeVoSyBA0mxHcFAHnmyH9tTYKSvE0ibbhRPxRDUQduiljO1luAFiZb0qjbpql6
+         yR63zxtgjsqVT5o0BG22OkkyaaORrogc0OnDKFQYB1CGkphoBz6f3pnHxINsKeiIDeHo
+         QmKzsRo6qrh1XZIjHSbNg7nUie179ftSIvOBYA3VBHo6lAMyCnN9epfUA3JgHHzPQQyB
+         yJK8ezTHafDcb4LNLHpYEAanQCevhoOyrdAnNF8cRDRHEFryHQ/NgOspx+hulpe53Gu5
+         W0h7y+beCdqcy+xmBVO0GXQo+aMHRhis0bjX3Ua1aODL520iFPaH0piN32KcU4Ul9h7L
+         ELEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KW7KuRreeb79kGzMH/vng/RjmZZIp935J4i4tM6jC6g=;
-        b=RvBzbHMaLhb/XCN9fqgD6xLB77cCKqVks3E8sahRkAJh1i++Tb6Tg1v6vL2SdzmzMz
-         kSukvJR+5Qykaxhp90MOywh7OaZbqeQNDtS1GXkpbRTex9eQIMMOVt3kQYXRunUs/4zl
-         HP+QKjWZd+wtmGtfN0hDeYrtDo4sdQDClgKWgFPLwyU7lHtQFVVY11KL/Us+m9+J36q1
-         J8Bl/UxDSX1tEsTO7Ul6Rk95m/1h2fAXmrtbEvjBvAPGpI/kUW2e95T5uX7DJb41mCoq
-         qgax/hpq6RnKHVN0N49NGofNy0YsiUXtvrQV6qwRjdOIm1BZBuJVoTGCb6w4EU++jugY
-         pE3A==
-X-Gm-Message-State: AOAM533p8bCmbQv4Ers+8uOv1LmEKTRU0NX4S0TAyGrlP9RfYAigMiz6
-        qA8Y+pznjatkjwLM2BG7VrLaRg==
-X-Google-Smtp-Source: ABdhPJybpgeOKHptSYn9F2ESwHc1TgEAW+9Xq8rONln/zJYDOUEWbiNr6PP9E51rmgYdxVMr2HRyqw==
-X-Received: by 2002:adf:dd0a:: with SMTP id a10mr4892008wrm.145.1617209529503;
-        Wed, 31 Mar 2021 09:52:09 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:1573:1dd5:899d:6362? ([2a01:e34:ed2f:f020:1573:1dd5:899d:6362])
-        by smtp.googlemail.com with ESMTPSA id c8sm4681718wmb.34.2021.03.31.09.52.08
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=hk1eGF9UROjG/f/Flt2fUdcK/q5+Gj+fZdKcwTUQYH8=;
+        b=BXCLwOJFnwS+Ukc6rAkPZ1eLZxa0gjrM8jguuDnk7VbuoAq9pkM8uYrP4yKnifv8v1
+         6pNmk8GSqvLSPUe3NMUwmlyMR09oRazVy0boXWWqTuS7cxyROLWPwhvWBTUSj9cIxNbj
+         u0F4TZ3/lD9RrZX3cSFu/Sde9TSaRCmLfu6zVHL9xLrkEb3sF4fuJp/6EvsfbfM3UuUJ
+         8I9NM2/U73yo6VndQDjdSdUFhoXThu+Nl4vQzhWSx25jcN8/yZDvGTb4iLtjnjAVFvAN
+         r4U5tatfq8XLpv4hNIKD0ggQ4xmNbZ36ZAkxWI2/3A75MgMnqSLGpbnZ1pQd4OTJWJsg
+         Dy1Q==
+X-Gm-Message-State: AOAM530Z4wpvsEFsWk57zJAfaSJTfwYUyNAkWajyNyu/JN5IRNjwOem6
+        n6aP/UgIw4wqQcmuEEIMcaqMzg==
+X-Google-Smtp-Source: ABdhPJx30pIX87T/1v4szyFkgLQbcJSdPKomLZItBbXr12z7PTW6nzPFAxKb6rJCAsys+wAg7E0kfw==
+X-Received: by 2002:a17:90a:c08a:: with SMTP id o10mr4369678pjs.67.1617209631861;
+        Wed, 31 Mar 2021 09:53:51 -0700 (PDT)
+Received: from ?IPv6:2601:646:c200:1ef2:6c04:8e42:2555:a3ed? ([2601:646:c200:1ef2:6c04:8e42:2555:a3ed])
+        by smtp.gmail.com with ESMTPSA id h15sm2848098pfo.20.2021.03.31.09.53.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Mar 2021 09:52:08 -0700 (PDT)
-Subject: Re: [PATCH] thermal/drivers/hisi: Use the correct HiSilicon copyright
-To:     Hao Fang <fanghao11@huawei.com>, edubezval@gmail.com,
-        amitk@kernel.org
-Cc:     rui.zhang@intel.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, prime.zeng@hisilicon.com
-References: <1617086733-2705-1-git-send-email-fanghao11@huawei.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <549a6349-c05c-9170-a288-59e3be8e5627@linaro.org>
-Date:   Wed, 31 Mar 2021 18:52:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <1617086733-2705-1-git-send-email-fanghao11@huawei.com>
+        Wed, 31 Mar 2021 09:53:51 -0700 (PDT)
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
+Date:   Wed, 31 Mar 2021 09:53:50 -0700
+Message-Id: <E8BCA270-4F23-4E1B-BAD6-917DBE36F5F6@amacapital.net>
+References: <CAJvTdK=evAofQRcmt_iwtYx2f_wTGUDpXzvjuiVwgZZ6BZV_Qg@mail.gmail.com>
+Cc:     David Laight <David.Laight@aculab.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        libc-alpha <libc-alpha@sourceware.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Linux API <linux-api@vger.kernel.org>
+In-Reply-To: <CAJvTdK=evAofQRcmt_iwtYx2f_wTGUDpXzvjuiVwgZZ6BZV_Qg@mail.gmail.com>
+To:     Len Brown <lenb@kernel.org>
+X-Mailer: iPhone Mail (18D70)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/03/2021 08:45, Hao Fang wrote:
-> s/Hisilicon/HiSilicon/g.
-> It should use capital S, according to
-> https://www.hisilicon.com/en/terms-of-use.
-> 
-> Signed-off-by: Hao Fang <fanghao11@huawei.com>
-> ---
 
-Applied, thanks
+> On Mar 31, 2021, at 9:31 AM, Len Brown <lenb@kernel.org> wrote:
+>=20
+> =EF=BB=BFOn Tue, Mar 30, 2021 at 6:01 PM David Laight <David.Laight@aculab=
+.com> wrote:
+>=20
+>>> Can we leave it in live registers?  That would be the speed-of-light
+>>> signal handler approach.  But we'd need to teach the signal handler to
+>>> not clobber it.  Perhaps that could be part of the contract that a
+>>> fast signal handler signs?  INIT=3D0 AMX state could simply sit
+>>> patiently in the AMX registers for the duration of the signal handler.
+>>> You can't get any faster than doing nothing :-)
+>>>=20
+>>> Of course part of the contract for the fast signal handler is that it
+>>> knows that it can't possibly use XRESTOR of the stuff on the stack to
+>>> necessarily get back to the state of the signaled thread (assuming we
+>>> even used XSTATE format on the fast signal handler stack, it would
+>>> forget the contents of the AMX registers, in this example)
+>>=20
+>> gcc will just use the AVX registers for 'normal' code within
+>> the signal handler.
+>> So it has to have its own copy of all the registers.
+>> (Well, maybe you could make the TMX instructions fault,
+>> but that would need a nested signal delivered.)
+>=20
+> This is true, by default, but it doesn't have to be true.
+>=20
+> Today, gcc has an annotation for user-level interrupts
+> https://gcc.gnu.org/onlinedocs/gcc/x86-Function-Attributes.html#x86-Functi=
+on-Attributes
+>=20
+> An analogous annotation could be created for fast signals.
+> gcc can be told exactly what registers and instructions it can use for
+> that routine.
+>=20
+> Of course, this begs the question about what routines that handler calls,
+> and that would need to be constrained too.
+>=20
+> Today signal-safety(7) advises programmers to limit what legacy signal han=
+dlers
+> can call.  There is no reason that a fast-signal-safety(7) could not be cr=
+eated
+> for the fast path.
+>=20
+>> There is also the register save buffer that you need in order
+>> to long-jump out of a signal handler.
+>> Unfortunately that is required to work.
+>> I'm pretty sure the original setjmp/longjmp just saved the stack
+>> pointer - but that really doesn't work any more.
+>>=20
+>> OTOH most signal handlers don't care - but there isn't a flag
+>> to sigset() (etc) so ask for a specific register layout.
+>=20
+> Right, the idea is to optimize for *most* signal handlers,
+> since making any changes to *all* signal handlers is intractable.
+>=20
+> So the idea is that opting-in to a fast signal handler would opt-out
+> of some legacy signal capibilities.  Complete state is one of them,
+> and thus long-jump is not supported, because the complete state
+> may not automatically be available.
+
+Long jump is probably the easiest problem of all: sigsetjmp() is a *function=
+*, following ABI, so sigsetjmp() is expected to clobber most or all of the e=
+xtended state.
+
+But this whole annotation thing will require serious compiler support. We al=
+ready have problems with compilers inlining functions and getting confused a=
+bout attributes.
+
+An API like:
+
+if (get_amx()) {
+ use AMX;
+} else {
+ don=E2=80=99t;
+}
+
+Avoids this problem. And making XCR0 dynamic, for all its faults, at least h=
+elps force a degree of discipline on user code.
 
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+>=20
+> thanks,
+> Len Brown, Intel Open Source Technology Center
