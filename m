@@ -2,87 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFAEF350A3C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 720F5350A3E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbhCaW2x convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 31 Mar 2021 18:28:53 -0400
-Received: from mail-ed1-f51.google.com ([209.85.208.51]:37676 "EHLO
-        mail-ed1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232690AbhCaW2j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 18:28:39 -0400
-Received: by mail-ed1-f51.google.com with SMTP id x21so24086316eds.4;
-        Wed, 31 Mar 2021 15:28:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qO/MnGOAo2aKNNZIMFKn7K57e/u6m6J452MXAoHJnn0=;
-        b=VxVbnybetLd06dvzjpOW7fRjTvptvQ0C9ydDaWd+Tj7B6saGjfrdIOPAL9/cUfjT5q
-         o43IS5hAL25S7NS0tQiBZQcjlJScLBn435uQKeauFeCiH6kmTfOS2kFj1P3c08mrRtvW
-         FMR9yfTsp9fdvEuWh0i1jfVK3CJXkPqReU5w2sJ168yg9xN+PSACNqeMZl/23JtOtRMy
-         VONuR4SjF+wpHNyIl9GOk+9GSY5yydc4txbOF43bbnqcwnfIizBXyYq4etC40Thcx511
-         nJ12sjzTWOWMJ9p8cyrtts2xpCxhspdDJpBqhdx35CCjxDKOvSKyjej1ZjVx+QucSWu4
-         iPjg==
-X-Gm-Message-State: AOAM530u+z8xAahD2aaL/+bdJK+vwr7rs/MLqUeD6muOaQxINCP8BKOi
-        kWkZQz/F2VZeeChIDZ5Mj0NZ3HjZZgc98F6rZV0=
-X-Google-Smtp-Source: ABdhPJyCavZ4RcFBgd4wNh9CfsMfm1DD0nwSyeJZ5JeXCQN+/vQREPStBukJfuirUEvE5rOX7izGJkTaySudPgwlUhA=
-X-Received: by 2002:aa7:d917:: with SMTP id a23mr6502007edr.122.1617229718626;
- Wed, 31 Mar 2021 15:28:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAJvTdK=evAofQRcmt_iwtYx2f_wTGUDpXzvjuiVwgZZ6BZV_Qg@mail.gmail.com>
- <E8BCA270-4F23-4E1B-BAD6-917DBE36F5F6@amacapital.net>
-In-Reply-To: <E8BCA270-4F23-4E1B-BAD6-917DBE36F5F6@amacapital.net>
-From:   Len Brown <lenb@kernel.org>
-Date:   Wed, 31 Mar 2021 18:28:27 -0400
-Message-ID: <CAJvTdK=Lqbzy6bs8qiE8MZ5LSzyZJ-FMUTcNPD4MxYJGEMBW3g@mail.gmail.com>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Dave Hansen <dave.hansen@intel.com>,
+        id S232611AbhCaW3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 18:29:24 -0400
+Received: from mga12.intel.com ([192.55.52.136]:65505 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232356AbhCaW3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 18:29:01 -0400
+IronPort-SDR: JcedoJInlTVCj0BsNXI2e7scTy29Fqo8AcSJZjlIQ2IiiDdirf/ej2PUl5EP22rLgb1MRl8cDD
+ Carzr3NlERAg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="171519342"
+X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
+   d="scan'208";a="171519342"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 15:29:00 -0700
+IronPort-SDR: rggyjLaZ054D0F0Tf3SJWQaFT5jD6r/HD0fsEAPJqBJ1TnF3qP+gciBG23FlV2gYGvIczOgMLH
+ Iqv/OljLYUew==
+X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
+   d="scan'208";a="394233606"
+Received: from sjard-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.174.17])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 15:29:00 -0700
+Subject: Re: [PATCH v4 1/1] x86/tdx: Handle MWAIT, MONITOR and WBINVD
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         Andy Lutomirski <luto@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        libc-alpha <libc-alpha@sourceware.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Linux API <linux-api@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
+References: <2FE32855-EA5D-44E4-AACC-25E9B1476547@amacapital.net>
+ <e62cfd0ae90de435e6819979d9027f76d835a22a.1617224710.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YGTvSvr2T2v3t3XA@google.com>
+ <5d961c25-3dee-4a5d-4bba-a97d157a5a49@intel.com>
+ <YGTyWUQbxVZeeko+@google.com>
+ <d8078f5d-735c-2b0f-98eb-663be2118762@intel.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <ef49222a-8ffc-dacc-4f21-3bd1ef13a2ac@linux.intel.com>
+Date:   Wed, 31 Mar 2021 15:28:58 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <d8078f5d-735c-2b0f-98eb-663be2118762@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 12:53 PM Andy Lutomirski <luto@amacapital.net> wrote:
 
-> But this whole annotation thing will require serious compiler support.
-> We already have problems with compilers inlining functions and getting confused about attributes.
 
-We added compiler annotation for user-level interrupt handlers.
-I'm not aware of it failing, or otherwise being confused.
+On 3/31/21 3:11 PM, Dave Hansen wrote:
+> On 3/31/21 3:06 PM, Sean Christopherson wrote:
+>> I've no objection to a nice message in the #VE handler.  What I'm objecting to
+>> is sanity checking the CPUID model provided by the TDX module.  If we don't
+>> trust the TDX module to honor the spec, then there are a huge pile of things
+>> that are far higher priority than MONITOR/MWAIT.
+> 
+> In other words:  Don't muck with CPUID or the X86_FEATURE at all.  Don't
+> check it to comply with the spec.  If something doesn't comply, we'll
+> get a #VE at *SOME* point.  We don't need to do belt-and-suspenders
+> programming here.
+> 
+> That sounds sane to me.
+But I think there are cases (like MCE) where SEAM does not disable them because
+there will be future support for it. We should at-least suppress such features
+in kernel.
+> 
 
-Why would compiler support for fast-signals be any more "serious"?
-
-> An API like:
->
-> if (get_amx()) {
->  use AMX;
-> } else {
->  don’t;
-> }
->
-> Avoids this problem. And making XCR0 dynamic, for all its faults, at least helps force a degree of discipline on user code.
-
-dynamic XCR0 breaks the installed base, I thought we had established that.
-
-We've also established that when running in a VMM, every update to
-XCR0 causes a VMEXIT.
-
-I thought the goal was to allow new programs to have fast signal handlers.
-By default, those fast signal handlers would have a stable state
-image, and would
-not inherit large architectural state on their stacks, and could thus
-have minimal overhead on all hardware.
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
