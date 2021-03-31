@@ -2,119 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B02C0350A4B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53B6D350A4E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbhCaWhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 18:37:34 -0400
-Received: from mail-qk1-f171.google.com ([209.85.222.171]:42579 "EHLO
-        mail-qk1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230380AbhCaWhZ (ORCPT
+        id S230401AbhCaWit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 18:38:49 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:54054 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232207AbhCaWid (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 18:37:25 -0400
-Received: by mail-qk1-f171.google.com with SMTP id y5so399107qkl.9
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 15:37:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+C5LPs0kaCkAOGtyUr9wjTwxTgqJsfzOVQYj3EvBqCI=;
-        b=Ih70V0q5qnh233mEVhOTZnqYNsDR5H1ncJgMAkZGEgDMl4ploRp+74tgO4jmEpLyGS
-         f5XoDaeW/agc5q6/M0kuhoVcd4GuEK+c8iks5KwR+PiVFJK54M7KgQcR5v0xdeGyg6iV
-         Ui0tn0sWhcRHJ+FuYQTbXYPV6I9d4SkHFfdT9PpYwU8bDcAF0II6pO6wyKZAREtnjH13
-         tn4j3roDrNwRfcy3NpWAUWa2g348mC1kc+14CWBLIaFtcyfRwELs4EQvUI5V4DqEXLcH
-         HLY6uPd5krkB0AshVRXYONjJz5WnpBj1VuS42KlK1c4y9mMyaYuWDw33GjOb0dbVbXMP
-         9Nng==
-X-Gm-Message-State: AOAM531gB3Kf8PS8TrDyaOd4GoXN2oh1c1U7NL3Mibl1KzoAz1cSAT9g
-        3d8CIJFI6JSwB6y8sv5cKFE=
-X-Google-Smtp-Source: ABdhPJwnyEfjA2R/2V/L5FusNudKlixHn/eMgkOOFBgpwD1Qrw1jiioFMoTF3opfrajqk0ksYE1MFg==
-X-Received: by 2002:a37:bc45:: with SMTP id m66mr5692073qkf.82.1617230244711;
-        Wed, 31 Mar 2021 15:37:24 -0700 (PDT)
-Received: from ?IPv6:2600:1700:65a0:78e0:6302:5415:8f3:c3fc? ([2600:1700:65a0:78e0:6302:5415:8f3:c3fc])
-        by smtp.gmail.com with ESMTPSA id j18sm2387930qtl.83.2021.03.31.15.37.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Mar 2021 15:37:24 -0700 (PDT)
-Subject: Re: [PATCH v2] nvme-tcp: Check if request has started before
- processing it
-To:     Keith Busch <kbusch@kernel.org>
-Cc:     "Ewan D. Milne" <emilne@redhat.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@fb.com>, Hannes Reinecke <hare@suse.de>,
-        Christoph Hellwig <hch@lst.de>
-References: <20210301175601.116405-1-dwagner@suse.de>
- <6b51a989-5551-e243-abda-5872411ec3ff@grimberg.me>
- <20210311094345.ogm2lxqfuszktuhp@beryllium.lan>
- <70af5b02-10c1-ab0b-1dfc-5906216871b4@grimberg.me>
- <2fc7a320c86f75507584453dd2fbd744de5c170d.camel@redhat.com>
- <ed3ccac0-79ed-fe10-89eb-d403820b4c6a@grimberg.me>
- <20210330232813.GA1935968@dhcp-10-100-145-180.wdc.com>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <756aef10-e693-276f-82ac-514a2832b07f@grimberg.me>
-Date:   Wed, 31 Mar 2021 15:37:22 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Wed, 31 Mar 2021 18:38:33 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1617230311;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MTAca8jamyiv4OQC/0ehNmkUzrYgK82+B2gnABlfuE4=;
+        b=wLJuSNRlSVF/PkDm3fuzha7lpECmwuVqtA03/nXyQDXDAWvBirH+/fYTNYqrnlItwtLK39
+        ueabTGEjWfDwJRWajmljjDlBBRKb1e4iWShFRNEaFV/o2ysNaExtYxnlKlAmRe3XZMJnKG
+        bNQvUoKtTg4fdrC48N52k6UMO9iR3DD92508uibjdl9Mmhw/WkzMQdF6Rjwqo7Q7jvmbj+
+        WxukKQ1OuTjvMmPRlRVQVfC0Htd3LczE5FTUIDbv/T8HXjwy0JEUrOjh1ErBC+f7z6rUNc
+        jP8Y+MbOuHb2pyR7nVtU21KL+1pc2hsRU+1ZQlaM5d6XOuJe6UKGsmHaYhzSQA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1617230311;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MTAca8jamyiv4OQC/0ehNmkUzrYgK82+B2gnABlfuE4=;
+        b=yTpBUljzXJtrMhJ2lcQnuH9tBbKROS0ovJE/lzzYE7vrNqhZtLuA5E4XjbMAeCAsuBkJfi
+        LNLwWc3mHTWDTwBw==
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Alexander Popov <alex.popov@linux.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 3/6] stack: Optionally randomize kernel stack offset each syscall
+In-Reply-To: <202103311453.A840B7FC5@keescook>
+References: <20210330205750.428816-1-keescook@chromium.org> <20210330205750.428816-4-keescook@chromium.org> <87im5769op.ffs@nanos.tec.linutronix.de> <202103311453.A840B7FC5@keescook>
+Date:   Thu, 01 Apr 2021 00:38:31 +0200
+Message-ID: <87v9973q54.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210330232813.GA1935968@dhcp-10-100-145-180.wdc.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Mar 31 2021 at 14:54, Kees Cook wrote:
+> On Wed, Mar 31, 2021 at 09:53:26AM +0200, Thomas Gleixner wrote:
+>> On Tue, Mar 30 2021 at 13:57, Kees Cook wrote:
+>> > +/*
+>> > + * Do not use this anywhere else in the kernel. This is used here because
+>> > + * it provides an arch-agnostic way to grow the stack with correct
+>> > + * alignment. Also, since this use is being explicitly masked to a max of
+>> > + * 10 bits, stack-clash style attacks are unlikely. For more details see
+>> > + * "VLAs" in Documentation/process/deprecated.rst
+>> > + * The asm statement is designed to convince the compiler to keep the
+>> > + * allocation around even after "ptr" goes out of scope.
+>> 
+>> Nit. That explanation of "ptr" might be better placed right at the
+>> add_random...() macro.
+>
+> Ah, yes! Fixed in v9.
 
->>>> It is, but in this situation, the controller is sending a second
->>>> completion that results in a use-after-free, which makes the
->>>> transport irrelevant. Unless there is some other flow (which is
->>>> unclear
->>>> to me) that causes this which is a bug that needs to be fixed rather
->>>> than hidden with a safeguard.
->>>>
->>>
->>> The kernel should not crash regardless of any network traffic that is
->>> sent to the system.  It should not be possible to either intentionally
->>> of mistakenly contruct packets that will deny service in this way.
->>
->> This is not specific to nvme-tcp. I can build an rdma or pci controller
->> that can trigger the same crash... I saw a similar patch from Hannes
->> implemented in the scsi level, and not the individual scsi transports..
-> 
-> If scsi wants this too, this could be made generic at the blk-mq level.
-> We just need to make something like blk_mq_tag_to_rq(), but return NULL
-> if the request isn't started.
+Hmm, looking at V9 the "ptr" thing got lost ....
 
-Makes sense...
+> +/*
+> + * Do not use this anywhere else in the kernel. This is used here because
+> + * it provides an arch-agnostic way to grow the stack with correct
+> + * alignment. Also, since this use is being explicitly masked to a max of
+> + * 10 bits, stack-clash style attacks are unlikely. For more details see
+> + * "VLAs" in Documentation/process/deprecated.rst
+> + */
+> +void *__builtin_alloca(size_t size);
+> +/*
+> + * Use, at most, 10 bits of entropy. We explicitly cap this to keep the
+> + * "VLA" from being unbounded (see above). 10 bits leaves enough room for
+> + * per-arch offset masks to reduce entropy (by removing higher bits, since
+> + * high entropy may overly constrain usable stack space), and for
+> + * compiler/arch-specific stack alignment to remove the lower bits.
+> + */
+> +#define KSTACK_OFFSET_MAX(x)	((x) & 0x3FF)
+> +
+> +/*
+> + * These macros must be used during syscall entry when interrupts and
+> + * preempt are disabled, and after user registers have been stored to
+> + * the stack.
+> + */
+> +#define add_random_kstack_offset() do {					\
 
->> I would also mention, that a crash is not even the scariest issue that
->> we can see here, because if the request happened to be reused we are
->> in the silent data corruption realm...
-> 
-> If this does happen, I think we have to come up with some way to
-> mitigate it. We're not utilizing the full 16 bits of the command_id, so
-> maybe we can append something like a generation sequence number that can
-> be checked for validity.
+> Do you want to take this via -tip (and leave off the arm64 patch until
+> it is acked), or would you rather it go via arm64? (I've sent v9 now...)
 
-That's actually a great idea. scsi needs unique tags so it encodes the
-hwq in the upper 16 bits giving the actual tag the lower 16 bits which
-is more than enough for a single queue. We can do the same with
-a gencnt that will increment in both submission and completion and we
-can validate against it.
+Either way is fine.
 
-This will be useful for all transports, so maintaining it in
-nvme_req(rq)->genctr and introducing a helper like:
-rq = nvme_find_tag(tagset, cqe->command_id)
-That will filter genctr, locate the request.
+Thanks,
 
-Also:
-nvme_validate_request_gen(rq, cqe->command_id) that would
-compare against it.
-
-
-And then a helper to set the command_id like:
-cmd->common.command_id = nvme_request_command_id(rq)
-that will both increment the genctr and build a command_id
-from it.
-
-Thoughts?
+        tglx
