@@ -2,167 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7989534F6EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 04:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C4134F6F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 04:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233069AbhCaCoI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 30 Mar 2021 22:44:08 -0400
-Received: from mail.kingsoft.com ([114.255.44.145]:18398 "EHLO
-        mail.kingsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233240AbhCaCn5 (ORCPT
+        id S233324AbhCaCol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 22:44:41 -0400
+Received: from m13115.mail.163.com ([220.181.13.115]:39595 "EHLO
+        m13115.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233293AbhCaCoR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 22:43:57 -0400
-X-AuditID: 0a580157-2cfff7000006b36a-db-6063e1e84d7d
-Received: from mail.kingsoft.com (localhost [10.88.1.79])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mail.kingsoft.com (SMG-1-NODE-87) with SMTP id 6E.51.45930.8E1E3606; Wed, 31 Mar 2021 10:43:52 +0800 (HKT)
-Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL4.kingsoft.cn
- (10.88.1.79) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 31 Mar
- 2021 10:43:52 +0800
-Date:   Wed, 31 Mar 2021 10:43:36 +0800
-From:   Aili Yao <yaoaili@kingsoft.com>
-To:     "HORIGUCHI =?UTF-8?B?TkFPWUE=?=(=?UTF-8?B?5aCA5Y+j44CA55u05Lmf?=)" 
-        <naoya.horiguchi@nec.com>
-CC:     David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
-        "sunhao2@kingsoft.com" <sunhao2@kingsoft.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Mike Kravetz <mike.kravetz@oracle.com>, <yaoaili@kingsoft.com>
-Subject: Re: [PATCH v5] mm/gup: check page hwposion status for coredump.
-Message-ID: <20210331104303.145aea53@alex-virtual-machine>
-In-Reply-To: <20210331015258.GB22060@hori.linux.bs1.fc.nec.co.jp>
-References: <20210317163714.328a038d@alex-virtual-machine>
-        <20a0d078-f49d-54d6-9f04-f6b41dd51e5f@redhat.com>
-        <20210318044600.GJ3420@casper.infradead.org>
-        <20210318133412.12078eb7@alex-virtual-machine>
-        <20210319104437.6f30e80d@alex-virtual-machine>
-        <20210320003516.GC3420@casper.infradead.org>
-        <20210322193318.377c9ce9@alex-virtual-machine>
-        <afeac310-c6aa-f9d8-6c90-e7e7f21ddf9a@redhat.com>
-        <f316ca3b-6f09-c51d-9661-66171f14ee33@redhat.com>
-        <20210331015258.GB22060@hori.linux.bs1.fc.nec.co.jp>
-Organization: kingsoft
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        Tue, 30 Mar 2021 22:44:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=4q21p
+        Y4sfrLC2Lw/NNcHPh31O6eTbSW9Hf/qFvGG9nE=; b=gftGz8arij1EamDNUskqv
+        L7l1OGIbBBD7RdFq5YvleoyiIYOgLTj2n9Cc32Q6EDNL42ydmZZc7nnyD+aHow2H
+        3hiNg2pTnUDuhVMIRuHNrytK2FVHknQuYEssrQ5VeZqJo3ivZYubfes/ywlFX2dv
+        Kf21TDxcLfQdLmAxY/UiOU=
+Received: from yacanliu$163.com ( [183.136.182.140] ) by
+ ajax-webmail-wmsvr115 (Coremail) ; Wed, 31 Mar 2021 10:44:05 +0800 (CST)
+X-Originating-IP: [183.136.182.140]
+Date:   Wed, 31 Mar 2021 10:44:05 +0800 (CST)
+From:   =?UTF-8?B?5YiY5Lqa54G/?= <yacanliu@163.com>
+To:     "Casey Schaufler" <casey@schaufler-ca.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Linux Security Module list" <linux-security-module@vger.kernel.org>
+Subject: Re:Commit f211ac154577ec9ccf07c15f18a6abf0d9bdb4ab breaks Smack TCP
+ connections
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210104(ab8c30b6)
+ Copyright (c) 2002-2021 www.mailtech.cn 163com
+In-Reply-To: <3f8328fe-e648-9d0e-729d-eb6787f11bf9@schaufler-ca.com>
+References: <3f8328fe-e648-9d0e-729d-eb6787f11bf9.ref@schaufler-ca.com>
+ <3f8328fe-e648-9d0e-729d-eb6787f11bf9@schaufler-ca.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [172.16.253.254]
-X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL4.kingsoft.cn
- (10.88.1.79)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrCLMWRmVeSWpSXmKPExsXCFcHor/viYXKCwZW96hZz1q9hs/i6/hez
-        xeVdc9gs7q35z2rxcX+wxcXGA4wWZ6YVWfz+MYfNgcNj8wotj02fJrF7nJjxm8XjxdWNLB4f
-        n95i8Xi/7yqbx+bT1R6fN8kFcERx2aSk5mSWpRbp2yVwZZz4cpW1YJJyxazLRxkbGG9KdzFy
-        ckgImEhc3LCcsYuRi0NIYDqTRMPCZVDOK0aJ58/OMINUsQioSjxY38oEYrMB2bvuzWIFsUUE
-        kiQWz/7KBNLALHCYWeLd/cPsIAlhAQ+JIytOgNm8AlYSfw4+BWvgFHCUWNPczgSx4R+zxMHX
-        ixlBEvwCYhK9V/4zQdxkL9G2ZREjRLOgxMmZT1hAbGYBTYnW7b/ZIWxtiWULX4NdJySgKHF4
-        yS92iF4liSPdM9gg7FiJpgO32CYwCs9CMmoWklGzkIxawMi8ipGlODfdcBMjJGLCdzDOa/qo
-        d4iRiYPxEKMEB7OSCK/wgcQEId6UxMqq1KL8+KLSnNTiQ4zSHCxK4ry8D5MShATSE0tSs1NT
-        C1KLYLJMHJxSDUzrDrGrhe12+fVV/1mES0abtaVAldaksoXpkTuUDPkXKKVw/jyownAgOfdg
-        X+2Kje/vaOZGy/2eOeXM/RVl5oncEtNOTtmkeUo/7xNL+/JNfhJu/K7/2nov1ZtcWhKd9fVC
-        7I8aQx+tQpWoD9sPdh+bMeP+ky0JejvXREw833XQksP9xDbptNMvTq/JiXTnOvDlIXP2P8m2
-        DSIqh+P6Zb/2Muf7L4mU43Xt2Wi1bYKnSLPJusJ1at8ZfRpqJYQ3K+dHKj7jldWseZGZlGIX
-        wX09la1ia596VucV0X6NxNv6ZYVrQ4o7My7weHRU5a/7Ibrh96XNAuxcWdePNz1SVJpS/mPC
-        NN+Fm9SfKwqlK7EUZyQaajEXFScCAMnRq1QHAwAA
+Message-ID: <9b85945.3cfb.178862aa787.Coremail.yacanliu@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: c8GowADX7e314WNgDqyxAQ--.64061W
+X-CM-SenderInfo: p1dft0xolxqiywtou0bp/xtbBdR5mS1aD+qYbBAABsR
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 31 Mar 2021 01:52:59 +0000
-HORIGUCHI NAOYA(堀口　直也) <naoya.horiguchi@nec.com> wrote:
-
-> On Fri, Mar 26, 2021 at 03:22:49PM +0100, David Hildenbrand wrote:
-> > On 26.03.21 15:09, David Hildenbrand wrote:  
-> > > On 22.03.21 12:33, Aili Yao wrote:  
-> > > > When we do coredump for user process signal, this may be one SIGBUS signal
-> > > > with BUS_MCEERR_AR or BUS_MCEERR_AO code, which means this signal is
-> > > > resulted from ECC memory fail like SRAR or SRAO, we expect the memory
-> > > > recovery work is finished correctly, then the get_dump_page() will not
-> > > > return the error page as its process pte is set invalid by
-> > > > memory_failure().
-> > > > 
-> > > > But memory_failure() may fail, and the process's related pte may not be
-> > > > correctly set invalid, for current code, we will return the poison page,
-> > > > get it dumped, and then lead to system panic as its in kernel code.
-> > > > 
-> > > > So check the hwpoison status in get_dump_page(), and if TRUE, return NULL.
-> > > > 
-> > > > There maybe other scenario that is also better to check hwposion status
-> > > > and not to panic, so make a wrapper for this check, Thanks to David's
-> > > > suggestion(<david@redhat.com>).
-> > > > 
-> > > > Link: https://lkml.kernel.org/r/20210319104437.6f30e80d@alex-virtual-machine
-> > > > Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
-> > > > Cc: David Hildenbrand <david@redhat.com>
-> > > > Cc: Matthew Wilcox <willy@infradead.org>
-> > > > Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> > > > Cc: Oscar Salvador <osalvador@suse.de>
-> > > > Cc: Mike Kravetz <mike.kravetz@oracle.com>
-> > > > Cc: Aili Yao <yaoaili@kingsoft.com>
-> > > > Cc: stable@vger.kernel.org
-> > > > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> > > > ---
-> > > >    mm/gup.c      |  4 ++++
-> > > >    mm/internal.h | 20 ++++++++++++++++++++
-> > > >    2 files changed, 24 insertions(+)
-> > > > 
-> > > > diff --git a/mm/gup.c b/mm/gup.c
-> > > > index e4c224c..6f7e1aa 100644
-> > > > --- a/mm/gup.c
-> > > > +++ b/mm/gup.c
-> > > > @@ -1536,6 +1536,10 @@ struct page *get_dump_page(unsigned long addr)
-> > > >    				      FOLL_FORCE | FOLL_DUMP | FOLL_GET);
-> > > >    	if (locked)
-> > > >    		mmap_read_unlock(mm);  
-> > > 
-> > > Thinking again, wouldn't we get -EFAULT from __get_user_pages_locked()
-> > > when stumbling over a hwpoisoned page?
-> > > 
-> > > See __get_user_pages_locked()->__get_user_pages()->faultin_page():
-> > > 
-> > > handle_mm_fault()->vm_fault_to_errno(), which translates
-> > > VM_FAULT_HWPOISON to -EFAULT, unless FOLL_HWPOISON is set (-> -EHWPOISON)
-> > > 
-> > > ?  
-> 
-> We could get -EFAULT, but sometimes not (depends on how memory_failure() fails).
-> 
-> If we failed to unmap, the page table is not converted to hwpoison entry,
-> so __get_user_pages_locked() get the hwpoisoned page.
-> 
-> If we successfully unmapped but failed in truncate_error_page() for example,
-> the processes mapping the page would get -EFAULT as expected.  But even in
-> this case, other processes could reach the error page via page cache and
-> __get_user_pages_locked() for them could return the hwpoisoned page.
-> 
-> > 
-> > Or doesn't that happen as you describe "But memory_failure() may fail, and
-> > the process's related pte may not be correctly set invalid" -- but why does
-> > that happen?  
-> 
-> Simply because memory_failure() doesn't handle some page types like ksm page
-> and zero page. Or maybe shmem thp also belongs to this class.
-> 
-> > 
-> > On a similar thought, should get_user_pages() never return a page that has
-> > HWPoison set? E.g., check also for existing PTEs if the page is hwpoisoned?  
-> 
-> Make sense to me. Maybe inserting hwpoison check into follow_page_pte() and
-> follow_huge_pmd() would work well.
-
-I think we should take more care to broadcast the hwpoison check to other cases,
-SIGBUS coredump is such a case that it is supposed to not touch the poison page, 
-and if we return NULL for this, the coredump process will get a successful finish.
-
-Other cases may also meet the requirements like coredump, but we need to identify it,
-that's the poison check wrapper's purpose. If not, we may break the integrity of the
-related action, which may be no better than panic.
-
--- 
-Thanks!
-Aili Yao
+SGkgQ2FzZXY6CgpBIHF1b3RlIGZyb20gdGhlIGxpc3RlbigyKSBtYW4gcGFnZSBvbiBteSBVYnVu
+dHUgc3lzdGVtOgpUaGUgYmFja2xvZyBhcmd1bWVudCBkZWZpbmVzIHRoZSBtYXhpbXVtIGxlbmd0
+aCB0byB3aGljaMKgCnRoZSBxdWV1ZSBvZiBwZW5kaW5nIGNvbm5lY3Rpb25zIGZvciBzb2NrZmQg
+bWF5IGdyb3cuCkkgdGhpbmsgdGhpcyBpbXBsaWVzIHRoYXQgdGhlICdiYWNrbG9nJyBtdXN0IGJl
+IGdyZWF0ZXIgdGhhbiB6ZXJvLgpJbiB0aGUgdGVzdCBzb3VyY2UgZmlsZSAodG9vbHMvc21hY2st
+aXB2NC10Y3AtcGVlcnNlYy5jKSBMaW5lIDYwCkkgZm91bmQgdGhlIGZvbGxvd2luZyBjb2RlOgpp
+ZiAobGlzdGVuKGZpcnN0c29jaywgMCkgPCAwKSB7CgnCoCDCoCBwcmludGYoIiVzLWxpc3Rlblxu
+IiwgYXJndlswXSk7CgnCoCDCoCBleGl0KDEpOwp9ClRoYXQgbWVhbnMgdGhhdCBzb2NrIHdpbGwg
+bm90IGFjY2VwdCBhbnkgcmVxdWVzdHMswqAKc28gY2xpZW50wqBUQ1AgY29ubmVjdGlvbnMgaGFu
+ZyB3aXRoIFNZTl9TRU5ULgpJbiBvcGVuc3NoIGNhc2UswqBpdCB1c2UgU1NIX0xJU1RFTl9CQUNL
+TE9HIGFzIDEyOC4KCkF0IDIwMjEtMDMtMzAgMjM6NDI6MDQsICJDYXNleSBTY2hhdWZsZXIiIDxj
+YXNleUBzY2hhdWZsZXItY2EuY29tPiB3cm90ZToKPkNvbW1pdCBmMjExYWMxNTQ1NzdlYzljY2Yw
+N2MxNWYxOGE2YWJmMGQ5YmRiNGFiICduZXQ6IGNvcnJlY3QKPnNrX2FjY2VwdHFfaXNfZnVsbCgp
+JyBicmVha3MgYSBzeXN0ZW0gd2l0aCB0aGUgU21hY2sgTFNNLgo+UmV2ZXJ0aW5nIHRoaXMgY2hh
+bmdlIHJlc3VsdHMgaW4gYSByZXR1cm4gdG8gY29ycmVjdCBiZWhhdmlvci4KPgo+VGhlIFNtYWNr
+IHRlc3RzdWl0ZSBjYW4gYmUgZm91bmQgYXQ6Cj4JaHR0cHM6Ly9naXRodWIuY29tL3NtYWNrLXRl
+YW0vc21hY2stdGVzdHN1aXRlLmdpdAo+Cj5UaGUgZmFpbGluZyB0ZXN0IGlzIGlwdjQtdGNwLWxv
+Y2FsLXBlZXJzZWMuc2gsIGJ1dCBpdCBzZWVtcwo+dGhhdCBtb3N0IFRDUCBjb25uZWN0aW9ucyBo
+YW5nIHdpdGggU1lOX1NFTlQuIE9kZGx5LCBzc2gKPnRvIDEyNy4wLjAuMSB3b3JrcywgYnV0IG90
+aGVyIFRDUCBjb25uZWN0aW9ucyB0aW1lb3V0Lgo+Cj4KPgo+CgoKCsKgCgoKwqA=
