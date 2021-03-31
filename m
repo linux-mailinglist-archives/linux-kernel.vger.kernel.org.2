@@ -2,114 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25CB435022F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C51A35023E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236111AbhCaO2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 10:28:14 -0400
-Received: from mail-ot1-f52.google.com ([209.85.210.52]:40827 "EHLO
-        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235951AbhCaO2A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 10:28:00 -0400
-Received: by mail-ot1-f52.google.com with SMTP id w31-20020a9d36220000b02901f2cbfc9743so19081306otb.7;
-        Wed, 31 Mar 2021 07:28:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=a5L9Gfl5bF9CWxUCr8sVjvHZWCe8RrXgbQdGFig1nYs=;
-        b=IZkJCgd74DfkKmCuO1NJUr4ju9yJqO72gePDRAHWDarScho1v1ad0rpqB9iMp9Q6UA
-         B9cIMIGNwf4v2HLuEu4ApAjx7obeoCd6n21MzeksFs8JLawMwbZnPJkGT/mVb9J//2nk
-         ydu3nbpHSw0Xafo4sx2vDM16wz+IbpQNuBBExq2nhgKDrufjhqUNx/H4ztGiYP7MujF3
-         Wnxd49HrosbxNpTkbIG7aZWWMcQvcTv1CJgCvgWENQ/IKHMtIBr+MRob+Hrxs90HHZQX
-         FWM6QKDWq2DJvzjIS9mjn/htuyuAKnoJ6derEaRdpMVT6b/OMNtIGhRhUIyHhkkWj/Dz
-         aY8w==
-X-Gm-Message-State: AOAM532mrnBLpRit1qfVv8KNeNv+yKKu4D15kU7D2Ke8+7k9Fw5BxXbx
-        pTkB5jr2W1m0z9326CUJlupZCAToPg==
-X-Google-Smtp-Source: ABdhPJyOs4V5V3Q3Hn8BauTqhypFGiAuWczQrsYjG6DCb8QtcbtJDsu+mU39XCkUHElkU3lAcJXO9g==
-X-Received: by 2002:a9d:68d7:: with SMTP id i23mr3005001oto.133.1617200879927;
-        Wed, 31 Mar 2021 07:27:59 -0700 (PDT)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id v136sm451146oie.15.2021.03.31.07.27.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 07:27:56 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Sameer Pujar <spujar@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-Subject: [PATCH v2 3/3] ASoC: dt-bindings: socionext: Use audio-graph-port schema
-Date:   Wed, 31 Mar 2021 09:27:48 -0500
-Message-Id: <20210331142748.2163272-4-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210331142748.2163272-1-robh@kernel.org>
-References: <20210331142748.2163272-1-robh@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S236042AbhCaObv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 10:31:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43552 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235630AbhCaObo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 10:31:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01F3760FF0;
+        Wed, 31 Mar 2021 14:31:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617201104;
+        bh=Oq2p2++lqOERCPM++AATk5Rdw/3Ja6gaVMhRgPIzPF0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=nzY/wb74M0jYfXHnZiSzoI4o7pq5Y3fTkzio1WdfkdRKufUohKQwkm1PBLN3tufHE
+         9OgAOpE32h2+T9nnF1ZCPS1coRoUrCzNA6DyKMuNSxpqkRqMIdROAGSe2CoLT6u0u0
+         /1h66strn7saF1NEJrq8/A+Hy2dp6ib8IsgmKIVMt9rrPFl0WEWvgcqy/N+E6U5hwm
+         TGkr8KWwp9XlnInAw2drOXo7N61mG3GRNZ4E45pXzIx/rRrUYdKrtzVzakE1zxYrUT
+         pBm1qXLMVF5/zB174lV3VS47Fv+LLoFhQ33oZLj5e8FJszP+LGNs4UTY3rumbNQKgY
+         KMQvZq5datBQg==
+From:   guoren@kernel.org
+To:     guoren@kernel.org
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-arch@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-xtensa@linux-xtensa.org,
+        openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
+        Guo Ren <guoren@linux.alibaba.com>
+Subject: [PATCH v6 0/9] riscv: Add qspinlock/qrwlock
+Date:   Wed, 31 Mar 2021 14:30:31 +0000
+Message-Id: <1617201040-83905-1-git-send-email-guoren@kernel.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the Socionext audio schemas to use audio-graph-port.yaml schema
-for 'port' nodes.
+From: Guo Ren <guoren@linux.alibaba.com>
 
-The number and numbering of port nodes should be documented, but is not.
-Leave a FIXME here so others don't copy.
+Current riscv is still using baby spinlock implementation. It'll cause
+fairness and cache line bouncing problems. Many people are involved
+and pay the efforts to improve it:
 
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- .../devicetree/bindings/sound/socionext,uniphier-aio.yaml | 8 +++-----
- .../bindings/sound/socionext,uniphier-evea.yaml           | 8 +++-----
- 2 files changed, 6 insertions(+), 10 deletions(-)
+ - The first version of patch was made in 2019.1:
+   https://lore.kernel.org/linux-riscv/20190211043829.30096-1-michaeljclark@mac.com/#r
 
-diff --git a/Documentation/devicetree/bindings/sound/socionext,uniphier-aio.yaml b/Documentation/devicetree/bindings/sound/socionext,uniphier-aio.yaml
-index 4987eb91f2ab..55ae198220f4 100644
---- a/Documentation/devicetree/bindings/sound/socionext,uniphier-aio.yaml
-+++ b/Documentation/devicetree/bindings/sound/socionext,uniphier-aio.yaml
-@@ -46,11 +46,9 @@ properties:
- 
- patternProperties:
-   "^port@[0-9]$":
--    type: object
--    properties:
--      endpoint: true
--    required:
--      - endpoint
-+    description: FIXME, Need to define what each port is.
-+    $ref: audio-graph-port.yaml#
-+    unevaluatedProperties: false
- 
- additionalProperties: false
- 
-diff --git a/Documentation/devicetree/bindings/sound/socionext,uniphier-evea.yaml b/Documentation/devicetree/bindings/sound/socionext,uniphier-evea.yaml
-index 228168f685cf..48ddfcbbcbae 100644
---- a/Documentation/devicetree/bindings/sound/socionext,uniphier-evea.yaml
-+++ b/Documentation/devicetree/bindings/sound/socionext,uniphier-evea.yaml
-@@ -40,11 +40,9 @@ properties:
- 
- patternProperties:
-   "^port@[0-9]$":
--    type: object
--    properties:
--      endpoint: true
--    required:
--      - endpoint
-+    description: FIXME, Need to define what each port is.
-+    $ref: audio-graph-port.yaml#
-+    unevaluatedProperties: false
- 
- additionalProperties: false
- 
+ - The second version was made in 2020.11:
+   https://lore.kernel.org/linux-riscv/1606225437-22948-2-git-send-email-guoren@kernel.org/
+
+ - A good discussion at Platform HSC.2021-03-08:
+   https://drive.google.com/drive/folders/1ooqdnIsYx7XKor5O1XTtM6D1CHp4hc0p
+
+ - A good discussion on V4 in mailling list:
+   https://lore.kernel.org/linux-riscv/1616868399-82848-1-git-send-email-guoren@kernel.org/T/#t
+
+ - Openrisc's maintainer want to implement arch_cmpxchg infrastructure.
+   https://lore.kernel.org/linux-riscv/1616868399-82848-1-git-send-email-guoren@kernel.org/T/#m11b712fb6a4fda043811b1f4c3d61446951ed65a
+
+Hope your comments and Tested-by or Co-developed-by or Reviewed-by ...
+
+Let's kick the qspinlock into riscv right now (Also for the
+architecture which hasn't xchg16 atomic instruction.)
+
+Change V6:
+ - Add  ticket-lock for riscv, default is qspinlock
+ - Keep ticket-lock for csky,  default is ticketlock
+ - Using smp_cond_load for riscv ticket-lock
+ - Optimize csky ticketlock with smp_cond_load, store_release
+ - Add PPC_LBARX_LWARX for powerpc 
+
+Change V5:
+ - Fixup #endif comment typo by Waiman
+ - Remove cmpxchg coding convention patches which will get into a
+   separate patchset later by Arnd's advice
+ - Try to involve more architectures in the discussion
+
+Change V4:
+ - Remove custom sub-word xchg implementation
+ - Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32 in locking/qspinlock
+
+Change V3:
+ - Coding convention by Peter Zijlstra's advices
+
+Change V2:
+ - Coding convention in cmpxchg.h
+ - Re-implement short xchg
+ - Remove char & cmpxchg implementations
+
+Guo Ren (8):
+  locking/qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+  riscv: locks: Introduce ticket-based spinlock implementation
+  csky: locks: Optimize coding convention
+  csky: Convert custom spinlock/rwlock to generic qspinlock/qrwlock
+  openrisc: qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+  sparc: qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+  xtensa: qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+  powerpc/qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+
+Michael Clark (1):
+  riscv: Convert custom spinlock/rwlock to generic qspinlock/qrwlock
+
+ arch/csky/Kconfig                       |   8 ++
+ arch/csky/include/asm/Kbuild            |   2 +
+ arch/csky/include/asm/spinlock.h        |  15 +--
+ arch/csky/include/asm/spinlock_types.h  |   4 +
+ arch/openrisc/Kconfig                   |   1 +
+ arch/powerpc/Kconfig                    |   1 +
+ arch/riscv/Kconfig                      |   8 ++
+ arch/riscv/include/asm/Kbuild           |   3 +
+ arch/riscv/include/asm/spinlock.h       | 158 +++++++++---------------
+ arch/riscv/include/asm/spinlock_types.h |  26 ++--
+ arch/sparc/Kconfig                      |   1 +
+ arch/xtensa/Kconfig                     |   1 +
+ kernel/Kconfig.locks                    |   3 +
+ kernel/locking/qspinlock.c              |  46 +++----
+ 14 files changed, 142 insertions(+), 135 deletions(-)
+
 -- 
-2.27.0
+2.17.1
 
