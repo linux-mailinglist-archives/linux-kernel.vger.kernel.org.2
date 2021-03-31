@@ -2,121 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A67350130
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 15:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A83F350121
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 15:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235753AbhCaNYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 09:24:35 -0400
-Received: from mx1.tq-group.com ([93.104.207.81]:40963 "EHLO mx1.tq-group.com"
+        id S235781AbhCaNVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 09:21:24 -0400
+Received: from mga05.intel.com ([192.55.52.43]:41730 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235789AbhCaNYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 09:24:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1617197064; x=1648733064;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=HmgP3Yli7Tth3loHHid+iLrNhrFcOSrcV55jhKjEoKo=;
-  b=B55volFmUIV3dGoIUWsfsJwT+8oRgRzPNWyztKnB6Yk6SubJZFeb2Y8l
-   y/GlqPiEOyCWnWGoWAI2PpdQzvSbYDStDbugoe+TG0ZxByO4f3zZd3wS7
-   rblGdepy3Ddm+DEkjRa1otnn7f9Ira4sxBNZWKRE0ZBHI4wRYODYb7WUy
-   qyN28AQkyUudp38wBYcDXc4reaANIRtqNuqUdcF7ANoLjrvQSFtz88Ytp
-   b4K1QPpxonYSMEWvqB2FHqSPtaAO/UsuoLg0NfnBIPRL7nAj7X1djyJ3I
-   1ueeXjJZdydhRwBpTKdemImK9gYfjtZEQ4ScE4lPP3qtpehMtoY19HESq
-   g==;
-IronPort-SDR: Gvty9VKIQGeyXZgzeykyVahp8tOPvgqn7DtFanDSaX8uXPe2XXtxOHOzwYurdT7+kft+QMLsX4
- yPlO7pB75n/Bmf16GivXuz2Om3Dh/WX45SQVuvyirlHB8y9PhJN+NxEXvkfEtseEhDCu1yx7QA
- gwOsIgc93/bZ+CpnOHDgwQyjGpbYuMiFej8BuB4KeSwhoxImw1w9cyA+SmbESOwnAJrVdPr5Rg
- zaCRlHefQEKQ0WjJ3YC6bJ7T3/iGTTIDj6LDG5Az4DMj5ueKdfJ0YFjt9cyIoe1/Bz59mtYxU7
- 2DM=
-X-IronPort-AV: E=Sophos;i="5.81,293,1610406000"; 
-   d="scan'208";a="16745274"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 31 Mar 2021 15:24:23 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Wed, 31 Mar 2021 15:24:23 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Wed, 31 Mar 2021 15:24:23 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1617197063; x=1648733063;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=HmgP3Yli7Tth3loHHid+iLrNhrFcOSrcV55jhKjEoKo=;
-  b=IbUfjLJLrXT2pR/smtNDprtqxlZkTXrny0zmQizSU1Qxpwste4RaU7Je
-   e3oKw+9BWzhvcNeS/PmKPuKzx/udu2kS2AyCNiZkZNwVJolejjN/t5h9K
-   cis5nhZFK6NHIC+Vbun2cdIr3DPLFclf1Q+llEzeCc8xFhsDoHKlBOpLs
-   pXoa7HkXAZd9nBLGu0u5gxUNpEyqOaXcmUc/NDAk3jreRj92HpLaFr4N8
-   iJhNCG25fbiCkAXtWkOPOaCQanbNJYvWGvQEeG3ddvrriM7dZT4MCYf+N
-   2Gq6a9WlQr74NyTQoo8OwSQRtD3RNCTXPkPStePbYQDyXREvtSKMrbLjd
-   g==;
-IronPort-SDR: g+4TVZ2uDU92PjAG+UGLDVNGfOB1JfMoyzMvCbx10XuQvK1b0eDj4nFXeFUPzpsIG2Kv+VfVYb
- b+4mLhsOWvBP4zLYYh6CbGPVWLY3M6RxbWAKeDNP/D9gq1CFrgH2ALM7LKjgb99NHWaBoD3YDE
- bjCL9c6gauPbKj1Ch4qmTcNfbcJE8/36gk6b05lqsgVSxmxy+Csg4QDm61UZOI34J9ZbBrWKJd
- wEl5ml1UWIB5ZIeDACrb5vO0+a6dXDnOzoSuEwbiAMky9+nyts5vuIAldpsxHLSwj1FUsmThmL
- cSI=
-X-IronPort-AV: E=Sophos;i="5.81,293,1610406000"; 
-   d="scan'208";a="16745273"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 31 Mar 2021 15:24:23 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id C0043280070;
-        Wed, 31 Mar 2021 15:24:22 +0200 (CEST)
-X-CheckPoint: {60647806-F-C3D5825A-FBADBBC7}
-X-MAIL-CPID: 01143EE542A86B6CCBF2B55EA702DDFA_3
-X-Control-Analysis: str=0001.0A782F1A.60647807.000C,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0
-Message-ID: <5e80dc9aeddd46d837e1c317a008e237bf0b4f8f.camel@ew.tq-group.com>
-Subject: Re: [PATCH 2/3] mfd: tqmx86: clear GPIO IRQ resource when no IRQ is
- set
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Wed, 31 Mar 2021 15:24:22 +0200
-In-Reply-To: <CAHp75VeCGHUBtfZ7b+m7eA01KukWkL0n01kmv-Q00m9+6FTWQg@mail.gmail.com>
-References: <cover.1617189926.git.matthias.schiffer@ew.tq-group.com>
-         <f38e80b6b439e4a9cc349a090923207865b3d3ed.1617189926.git.matthias.schiffer@ew.tq-group.com>
-         <CAHp75VeCGHUBtfZ7b+m7eA01KukWkL0n01kmv-Q00m9+6FTWQg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S235347AbhCaNUw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 09:20:52 -0400
+IronPort-SDR: Co7vcJdY3iZW0HR4nse/aAmEQGH4Yb+2Q7Dm8VAKsqqbjL1ukE2i+UVAKZ5W0C+1iCXu3c22p6
+ 4VozuV6ii5Dg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="277184483"
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
+   d="scan'208";a="277184483"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 06:20:52 -0700
+IronPort-SDR: XPkYDsek3QTykAZNgPrvVhgFyXkyxZa0cVvA8VCGZQMQWBKGNP5JB5vxjT7c6NjuJGqCQIlVF+
+ kzSdoBGRd46A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
+   d="scan'208";a="455482204"
+Received: from glass.png.intel.com ([10.158.65.59])
+  by orsmga001.jf.intel.com with ESMTP; 31 Mar 2021 06:20:49 -0700
+From:   Ong Boon Leong <boon.leong.ong@intel.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Ong Boon Leong <boon.leong.ong@intel.com>
+Subject: [PATCH net v2 1/1] xdp: fix xdp_return_frame() kernel BUG throw for page_pool memory model
+Date:   Wed, 31 Mar 2021 21:25:03 +0800
+Message-Id: <20210331132503.15926-1-boon.leong.ong@intel.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-03-31 at 15:35 +0300, Andy Shevchenko wrote:
-> On Wed, Mar 31, 2021 at 2:39 PM Matthias Schiffer
-> <matthias.schiffer@ew.tq-group.com> wrote:
-> > 
-> > The driver was registering IRQ 0 when no IRQ was set. This leads to
-> > warnings with newer kernels.
-> > 
-> > Clear the resource flags, so no resource is registered at all in this
-> > case.
-> 
-> ...
-> 
-> >                 /* Assumes the IRQ resource is first. */
-> >                 tqmx_gpio_resources[0].start = gpio_irq;
-> > +       } else {
-> > +               tqmx_gpio_resources[0].flags = 0;
-> 
-> Please set IORESOURCE_DISABLED flag in the initial structure instead.
+xdp_return_frame() may be called outside of NAPI context to return
+xdpf back to page_pool. xdp_return_frame() calls __xdp_return() with
+napi_direct = false. For page_pool memory model, __xdp_return() calls
+xdp_return_frame_no_direct() unconditionally and below false negative
+kernel BUG throw happened under preempt-rt build:
 
-Is there any documentation for the correct usage of this flag? I think
-I tried IORESOURCE_DISABLED originally, but it didn't have any effect
-(platform_get_irq() ignored the flag and returned the resource
-anyways). I might misremember though, I originally wrote the series
-some time ago.
+[  430.450355] BUG: using smp_processor_id() in preemptible [00000000] code: modprobe/3884
+[  430.451678] caller is __xdp_return+0x1ff/0x2e0
+[  430.452111] CPU: 0 PID: 3884 Comm: modprobe Tainted: G     U      E     5.12.0-rc2+ #45
 
+Changes in v2:
+ - This patch fixes the issue by making xdp_return_frame_no_direct() is
+   only called if napi_direct = true, as recommended for better by
+   Jesper Dangaard Brouer. Thanks!
 
-> 
-> >         }
-> 
-> 
+Fixes: 2539650fadbf ("xdp: Helpers for disabling napi_direct of xdp_return_frame")
+Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
+---
+ net/core/xdp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index 05354976c1fc..858276e72c68 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -350,7 +350,8 @@ static void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi_direct,
+ 		/* mem->id is valid, checked in xdp_rxq_info_reg_mem_model() */
+ 		xa = rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
+ 		page = virt_to_head_page(data);
+-		napi_direct &= !xdp_return_frame_no_direct();
++		if (napi_direct && xdp_return_frame_no_direct())
++			napi_direct = false;
+ 		page_pool_put_full_page(xa->page_pool, page, napi_direct);
+ 		rcu_read_unlock();
+ 		break;
+-- 
+2.25.1
 
