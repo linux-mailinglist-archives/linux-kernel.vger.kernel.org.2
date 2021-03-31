@@ -2,75 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4908735074E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 21:19:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC42350718
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 21:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235225AbhCaTS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 15:18:57 -0400
-Received: from ms.lwn.net ([45.79.88.28]:47136 "EHLO ms.lwn.net"
+        id S235475AbhCaTCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 15:02:45 -0400
+Received: from mail.sch.bme.hu ([152.66.249.140]:62560 "EHLO mail.sch.bme.hu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235869AbhCaTSt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 15:18:49 -0400
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id A83D8867;
-        Wed, 31 Mar 2021 19:18:48 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net A83D8867
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1617218328; bh=uUdYN1HYmQG9GBnU+mLM9YIUYYzSXPB93zGZVl/NjLE=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=fIkXgpG4WzcfmE1YaIGP2731AVrvb7IiXur4KQrAzxWmKZbj0m6n8EghQiOhC35KZ
-         0LimCzphYHMwoMOpovcCUKzrnoMpyWcnjGqzK9oaFMZvvwTNoQ+HY5lzTI3FM7YjiT
-         2Ak6OEq/EQPf24ThtHUsC/N7RbCz6yZQ1wV4frT+L9Zts/jHpZvyjSXbOqIGjIIs0i
-         gx3quIRbxKmIIWwTVXR48a9DOg+m+F+B5QfBXNI/tJOxSOKy8SGsq2EDX2GtgU7TCx
-         9E/sk5MPc1hedfUzdM6Vofmr6QyiizAXx61xGYAnhdMKe3/XpTJKshFMnJqmoebkm7
-         D+j2hV2VzeQrg==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Federico Vaga <federico.vaga@vaga.pv.it>,
-        Harry Wei <harryxiyou@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH] docs: Remove make headers_check from checklist in
- translations
-In-Reply-To: <CAK7LNAQUHbBgJdAtfqzn=X5f_+Nram00VtMQfZwOQdYLCygChA@mail.gmail.com>
-References: <20210302141822.504773-1-masahiroy@kernel.org>
- <CAK7LNAQUHbBgJdAtfqzn=X5f_+Nram00VtMQfZwOQdYLCygChA@mail.gmail.com>
-Date:   Wed, 31 Mar 2021 13:18:38 -0600
-Message-ID: <87o8ezku7l.fsf@meer.lwn.net>
+        id S235282AbhCaTCO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 15:02:14 -0400
+Received: from Exchange2016-1.sch.bme.hu (152.66.249.140) by
+ Exchange2016-1.sch.bme.hu (152.66.249.140) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2176.2; Wed, 31 Mar 2021 21:02:12 +0200
+Received: from Cognitio.sch.bme.hu (152.66.211.220) by
+ Exchange2016-1.sch.bme.hu (152.66.249.140) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Wed, 31 Mar 2021 21:02:12 +0200
+From:   =?UTF-8?q?Bence=20Cs=C3=B3k=C3=A1s?= <bence98@sch.bme.hu>
+To:     <linux-i2c@vger.kernel.org>
+CC:     =?UTF-8?q?Bence=20Cs=C3=B3k=C3=A1s?= <bence98@sch.bme.hu>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4 0/2] Adding i2c-cp2615: i2c support for Silicon Labs' CP2615 Digital Audio
+Date:   Wed, 31 Mar 2021 19:19:19 +0000
+Message-ID: <20210331191921.1066172-1-bence98@sch.bme.hu>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Masahiro Yamada <masahiroy@kernel.org> writes:
+Changes since v3:
+* Add `cp2615_check_iop()`: check that IOP is functional, before use
+* Use kernel types __be16, u8 and s8
+* Add  __attribute__((packed)) to `struct`s
+* Make `cp2615_i2c_quirks` and `cp2615_check_iop()` static
+* Fix `strncpy` invocation
+* Add myself to MAINTAINERS
+* Misc formatting, warning fixing (ex. identicalConditionAfterEarlyExit) etc.
 
-> Hi Jon,
->
->
-> On Tue, Mar 2, 2021 at 11:19 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->>
->> Commit 1a63f9cce7b7 ("docs: Remove make headers_check from checklist")
->> fixed only the English version.
->>
->> Let's fix the translated variants too.
->>
->> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
->
-> ping?
+Bence Csókás (2):
+  i2c: Add I2C_AQ_NO_REP_START adapter quirk
+  Adding i2c-cp2615: i2c support for Silicon Labs' CP2615 Digital Audio
+    Bridge
 
-Hmm...somehow that went through the cracks..perhaps I thought it looked
-like one of the patches you tend to apply yourself.
+ MAINTAINERS                     |   5 +
+ drivers/i2c/busses/Kconfig      |  10 +
+ drivers/i2c/busses/Makefile     |   1 +
+ drivers/i2c/busses/i2c-cp2615.c | 336 ++++++++++++++++++++++++++++++++
+ include/linux/i2c.h             |   2 +
+ 5 files changed, 354 insertions(+)
+ create mode 100644 drivers/i2c/busses/i2c-cp2615.c
 
-Anyway, applied now, apologies for the delay.
+-- 
+2.31.0
 
-Thanks,
-
-jon
