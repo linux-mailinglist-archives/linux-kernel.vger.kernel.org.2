@@ -2,158 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9CAE34FF7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8710034FF85
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:36:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235182AbhCaLa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 07:30:57 -0400
-Received: from mail-mw2nam12on2066.outbound.protection.outlook.com ([40.107.244.66]:38393
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235199AbhCaLaW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 07:30:22 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oJGu6FYDVWgMHUioAkwvlhN+uGcGl3+tKtMprpPPFNqWbAz1AE5wbziNAi7ejYRDVmppNOqm56OgN/jNkl84XIdiUfW6L0CPBnd9ATjfhVWkLrjRE29Qk5rQT65o08Dv8xinW12p76TPcX1rIiO7eLF7UQ3Rpeb/KiYMh8C4EQNGzKIZr2LQq65d6WbXLFhsNkE3scZGG8sZqvB7DVWJGZ6dNMDwBAaBeT3OAMoYO3AxkGkR83g226YNTzpW7WJ5Oq5CNS5Uic/YGsdjK/XDIm6BS/hC1eVc4ERLn2YEQifA2WAoB+MmMtBUNy9ZWSNiAlc0FoBg3FPWfOM5yM6aGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/pK6DsKrPx2zdBZhSSixGjrFDwqBIY6E156+koF1jOE=;
- b=hCCdRLpZi1I4jth9S8Vpv5u+zhVBpTFQHoM6jdg8oE2WBQccwahFJdoEc5ONgd8CAExLhMstP2fjhIQonz3cKZjTmpnA1OkpekXomZCosmfOWc2ZQ4l2EVHy7g/9nAvZ9Oal+2OJIFuQceXJgfVV57ViQHKP0YWzTqDIClE6q4+XvgShXzJRaMcMkCSKHrdkKrmAAAGdPGfJzr7SfpI5Nv6632MLG7WQ/ZlBrCRo65m9F1L5CFwpbA6Q+2ZR0+gycS/BWb/5ZczbOK6xmiGbi8Vy6M6w3ESo7+sgyRQv7//dHu9D+ISZokFqx/jLjRrCtUkEeos541kKp/0/84/fvQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=st.com smtp.mailfrom=nvidia.com; dmarc=pass
- (p=none sp=none pct=100) action=none header.from=nvidia.com; dkim=none
- (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/pK6DsKrPx2zdBZhSSixGjrFDwqBIY6E156+koF1jOE=;
- b=k9Hj5Pw1SF5w8PJ+hApjJ8k6NkYj29QQEZwoheVAW36gSSXwXJQKQooO2PyIRv30/vDOdZBd9moPYmn/xJhsOPc7FkALGqyYHggDMVbcIDmuGSVBYb/tYNYSxfHISFAs2EPzqQ/ujIk8PmcuWO8qAb4KsZ890aOhQGHGyzr37W5OeRp+K/Up5JBqEr40m5DK/J32GepfbRlUPYMpfIsjJtG9K2SxyPMUQB3tLJc2LsKd6pR9sscXzIO0l/XKWQWFqJYEDkrySYhf8AY8hZy0ozCxV5MmuP2QbwhOM8HtfSQcTWK0n9a7U1G8smX+StkfR317QvXa4QT//C62sLwVug==
-Received: from MWHPR10CA0024.namprd10.prod.outlook.com (2603:10b6:301::34) by
- SN6PR12MB2686.namprd12.prod.outlook.com (2603:10b6:805:72::30) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3977.24; Wed, 31 Mar 2021 11:29:06 +0000
-Received: from CO1NAM11FT067.eop-nam11.prod.protection.outlook.com
- (2603:10b6:301:0:cafe::42) by MWHPR10CA0024.outlook.office365.com
- (2603:10b6:301::34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.26 via Frontend
- Transport; Wed, 31 Mar 2021 11:29:06 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; st.com; dkim=none (message not signed)
- header.d=none;st.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT067.mail.protection.outlook.com (10.13.174.212) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3955.18 via Frontend Transport; Wed, 31 Mar 2021 11:29:05 +0000
-Received: from [10.26.49.14] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 31 Mar
- 2021 11:29:03 +0000
-Subject: Re: Regression v5.12-rc3: net: stmmac: re-init rx buffers when mac
- resume back
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-References: <708edb92-a5df-ecc4-3126-5ab36707e275@nvidia.com>
- <DB8PR04MB679546EC2493ABC35414CCF9E6639@DB8PR04MB6795.eurprd04.prod.outlook.com>
- <0d0ddc16-dc74-e589-1e59-91121c1ad4e0@nvidia.com>
- <DB8PR04MB6795863753DAD71F1F64F81DE6629@DB8PR04MB6795.eurprd04.prod.outlook.com>
- <8e92b562-fa8f-0a2b-d8da-525ee52fc2d4@nvidia.com>
- <DB8PR04MB67959FC7AF5CFCF1A08D10B2E6629@DB8PR04MB6795.eurprd04.prod.outlook.com>
- <ac9f8a31-536e-ec75-c73f-14a0623c5d56@nvidia.com>
- <DB8PR04MB6795F4333BCA9CE83C288FEEE67C9@DB8PR04MB6795.eurprd04.prod.outlook.com>
- <DB8PR04MB6795D4C733DC4938B1D62EBDE67C9@DB8PR04MB6795.eurprd04.prod.outlook.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <85f02fbc-6956-2b19-1779-cd51b2e71e3d@nvidia.com>
-Date:   Wed, 31 Mar 2021 12:29:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S235209AbhCaLfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 07:35:23 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:29692 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235259AbhCaLe6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 07:34:58 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617190498; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=aLE2e54gqStA8Gea85ZN6DBrVkGCQq0RGwMhe1LwdI0=; b=eyPlpdErgWEKkop0AtNIHe6NQ/T5xI0gpXdjRj/0E3QJ0aHGUvlTO6wyG3sHCaUHLCeoupb2
+ nPeDIc8It3sQKLXLHtKG5vXTY2TJkc5piAJhz11rdIAYfwA73132vW/f9UpyXq8Pla7I+Ydj
+ enHqRpLhQovuNi0iaKZQ42BNlOo=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 60645e5f9a9ff96d95ba4837 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 31 Mar 2021 11:34:55
+ GMT
+Sender: clingutla=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 90847C43461; Wed, 31 Mar 2021 11:34:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.43.40] (unknown [223.185.99.217])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: clingutla)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 590E7C433CA;
+        Wed, 31 Mar 2021 11:34:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 590E7C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=clingutla@codeaurora.org
+Subject: Re: [PATCH v3 4/7] sched/fair: Introduce a CPU capacity comparison
+ helper
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Qais Yousef <qais.yousef@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Rik van Riel <riel@surriel.com>
+References: <20210311120527.167870-1-valentin.schneider@arm.com>
+ <20210311120527.167870-5-valentin.schneider@arm.com>
+From:   Chandra Sekhar Lingutla <clingutla@codeaurora.org>
+Message-ID: <c833d09c-d99f-7541-f8cb-5202dc5e7243@codeaurora.org>
+Date:   Wed, 31 Mar 2021 17:04:47 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <DB8PR04MB6795D4C733DC4938B1D62EBDE67C9@DB8PR04MB6795.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e6044614-290d-4fe0-2042-08d8f438313d
-X-MS-TrafficTypeDiagnostic: SN6PR12MB2686:
-X-Microsoft-Antispam-PRVS: <SN6PR12MB2686386BC9BC1F96DBB142EAD97C9@SN6PR12MB2686.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NF3CZ5Potxk9hCAbrbYBQdCbWJNspKZRQJ9Yr1sLCZZUkRRkczpKQDWS182QQA/b5h7u4szO52KkN0ywEiKtkL0KGJ/9ko2fB28I57qZyLqTv3Btv52yJ8tj4EcmAt2xmTrKFua8KElxOGBTjGq38wwohWkaoi9+D9CcbGbZOI0TV004ijKzph7IY8y4t291GHoCOKKfME8FvvLCe41A/4Vf1qYWBZpSHBxMuQekqFmBQnBCIilq0GuBeVUTrMrJHISikSmxB8Lqs3cjodPYY5ufq4yez3GRVsMqbfpaLV/2LZkfJ25CcIoHBbde/qRmrLyKnzfwOfRby/4BTWpxKOrcI1wcjfAqYYEI5unH0Epm87gE5NptNYL9Pay5HtYMIylE1FEioSnakyyHGPLGYaMSRqip674rb1yh4i2HbBv7Lrt7yRHD87pokehVQbJpNF1i79UmcOgQSVnhuYSS+CWLULDhlM0UKb5NIfg3zNskRoBtSKAmTaRtvNbanRGkcGYDeT7b85oklO6m0stqaUOG+WfbxhdYnQ8Kk5+Ggp+bD8t/O8N5T20t7gTbjlrqGkSb1ZNycGQCWSpSvQyerjep36AYxxV/MVzGBBe27G9pQuJ4mVgqangInWihFei9yTv8g6AztJ+FHhSM8vdjU4IgHLDGx3yLvsikn8XBTh+zBCdwxSKVNEgsyBgLrL9T
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(346002)(396003)(376002)(136003)(36840700001)(46966006)(8676002)(31696002)(36756003)(47076005)(7636003)(70206006)(2616005)(356005)(53546011)(70586007)(83380400001)(4326008)(82740400003)(426003)(82310400003)(16576012)(36860700001)(2906002)(186003)(110136005)(16526019)(26005)(336012)(5660300002)(54906003)(478600001)(86362001)(8936002)(31686004)(36906005)(316002)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Mar 2021 11:29:05.3281
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e6044614-290d-4fe0-2042-08d8f438313d
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT067.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2686
+In-Reply-To: <20210311120527.167870-5-valentin.schneider@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Valentin,
 
-On 31/03/2021 12:10, Joakim Zhang wrote:
+The reduced margin is helping our platforms, Please feel free to add my 
+tested-by tag:
 
-...
+Tested-by:  Lingutla Chandrasekhar <clingutla@codeaurora.org>
 
->>>>>>>> You mean one of your boards? Does other boards with STMMAC can
->>>>>>>> work
->>>>>>> fine?
->>>>>>>
->>>>>>> We have two devices with the STMMAC and one works OK and the
->>>>>>> other
->>>>> fails.
->>>>>>> They are different generation of device and so there could be
->>>>>>> some architectural differences which is causing this to only be
->>>>>>> seen on one
->>> device.
->>>>>> It's really strange, but I also don't know what architectural
->>>>>> differences could
->>>>> affect this. Sorry.
->>>
->>>
->>> I realised that for the board which fails after this change is made,
->>> it has the IOMMU enabled. The other board does not at the moment
->>> (although work is in progress to enable). If I add
->>> 'iommu.passthrough=1' to cmdline for the failing board, then it works
->>> again. So in my case, the problem is linked to the IOMMU being enabled.
->>>
->>> Does you platform enable the IOMMU?
->>
->> Hi Jon,
->>
->> There is no IOMMU hardware available on our boards. But why IOMMU would
->> affect it during suspend/resume, and no problem in normal mode?
-> 
-> One more add, I saw drivers/iommu/tegra-gart.c(not sure if is this) support suspend/resume, is it possible iommu resume back after stmmac?
-
-
-This board is the tegra186-p2771-0000 (Jetson TX2) and uses the
-arm,mmu-500 and not the above driver.
-
-In answer to your question, resuming from suspend does work on this
-board without your change. We have been testing suspend/resume now on
-this board since Linux v5.8 and so we have the ability to bisect such
-regressions. So it is clear to me that this is the change that caused
-this, but I am not sure why.
-
-Thanks
-Jon
-
--- 
-nvpublic
+On 3/11/2021 5:35 PM, Valentin Schneider wrote:
+> During load-balance, groups classified as group_misfit_task are filtered
+> out if they do not pass
+>
+>    group_smaller_max_cpu_capacity(<candidate group>, <local group>);
+>
+> which itself employs fits_capacity() to compare the sgc->max_capacity of
+> both groups.
+>
+> Due to the underlying margin, fits_capacity(X, 1024) will return false for
+> any X > 819. Tough luck, the capacity_orig's on e.g. the Pixel 4 are
+> {261, 871, 1024}. If a CPU-bound task ends up on one of those "medium"
+> CPUs, misfit migration will never intentionally upmigrate it to a CPU of
+> higher capacity due to the aforementioned margin.
+>
+> One may argue the 20% margin of fits_capacity() is excessive in the advent
+> of counter-enhanced load tracking (APERF/MPERF, AMUs), but one point here
+> is that fits_capacity() is meant to compare a utilization value to a
+> capacity value, whereas here it is being used to compare two capacity
+> values. As CPU capacity and task utilization have different dynamics, a
+> sensible approach here would be to add a new helper dedicated to comparing
+> CPU capacities.
+>
+> Reviewed-by: Qais Yousef <qais.yousef@arm.com>
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+> ---
+>   kernel/sched/fair.c | 7 +++++++
+>   1 file changed, 7 insertions(+)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index db892f6e222f..ddb2ab3edf6d 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -113,6 +113,13 @@ int __weak arch_asym_cpu_priority(int cpu)
+>    */
+>   #define fits_capacity(cap, max)	((cap) * 1280 < (max) * 1024)
+>   
+> +/*
+> + * The margin used when comparing CPU capacities.
+> + * is 'cap1' noticeably greater than 'cap2'
+> + *
+> + * (default: ~5%)
+> + */
+> +#define capacity_greater(cap1, cap2) ((cap1) * 1024 > (cap2) * 1078)
+>   #endif
+>   
+>   #ifdef CONFIG_CFS_BANDWIDTH
