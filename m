@@ -2,534 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50A02350209
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87043350207
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236040AbhCaOSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 10:18:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235758AbhCaOSI (ORCPT
+        id S236017AbhCaOSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 10:18:21 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:3170 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235114AbhCaOR7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 10:18:08 -0400
-X-Greylist: delayed 152 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 31 Mar 2021 07:18:07 PDT
-Received: from hs01.dk-develop.de (hs01.dk-develop.de [IPv6:2a02:c207:3002:6234::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3FEDC061574;
-        Wed, 31 Mar 2021 07:18:07 -0700 (PDT)
-From:   Danilo Krummrich <danilokrummrich@dk-develop.de>
-To:     linux@armlinux.org.uk, davem@davemloft.net, andrew@lunn.ch,
-        hkallweit1@gmail.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jeremy.linton@arm.com,
-        Danilo Krummrich <danilokrummrich@dk-develop.de>
-Subject: [PATCH 2/2] net: mdio: support c45 peripherals on c22 busses
-Date:   Wed, 31 Mar 2021 16:17:55 +0200
-Message-Id: <20210331141755.126178-3-danilokrummrich@dk-develop.de>
-In-Reply-To: <20210331141755.126178-1-danilokrummrich@dk-develop.de>
-References: <20210331141755.126178-1-danilokrummrich@dk-develop.de>
+        Wed, 31 Mar 2021 10:17:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1617200278; x=1648736278;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=XnvPxbBXboMXThG51DhkKacds/bACMwNyqUuT36GveY=;
+  b=MTbN/gQ19wHq/IAV259l8yoOY3vKrrkORtNqKcajr9eUNeUsUtaNGYUS
+   LgL6qNAf66mQ5WHDiOxVE68rMCXy6ElVN1+KWFguIR1rAmc2mwcJrhT9o
+   XngwZj2r7JtUkPsWDJsuVNP5ZLwhsZ07cesyxPcxpAREzjq2d7GhXxAzK
+   MQoVoCg+W2vNPYiAiMEFlNlLhEW+rMY27s5K4+E6713JffwQdGq/3P+6E
+   +0dRr98siEkaTmKDnXFVi7AGilPOVOg+NiiyeWGN1wWeUEdmzq5S70zW9
+   BqSZ7StFfesmOWKlCju8inIUEW3NQtLQU2H9gkbKAZkuzi9m2Pm/F+YPI
+   g==;
+IronPort-SDR: 35OTDcTHH1U0xAEAd8gWMXVOdFUs0uY1MpVK7upZjKtEKKPiSvPj94Gw3qwKXY23FN2efp4BqJ
+ 2/8hkzM+wK2nEkW4vJ/naVIzut/GnjB/Nl1tWUyTNFMUx0akSSTXrDM46Im8P5x3d2ZD+Ec51t
+ WFsP21J8sAKQVPS1Zr4ILsrJKwjGQhInwtvNr4VVX9BGs0Oag4Z6S8ZyPpTw833NqdJJ1ivzbY
+ EqiTAXJrhYcZ/3d1sHSP1J/U1Yf+cMgud4VVcsSwb08Ll+bXmdknaZMoFCAIkZTcbthvsFMhgc
+ MTs=
+X-IronPort-AV: E=Sophos;i="5.81,293,1610380800"; 
+   d="scan'208";a="167930898"
+Received: from mail-bn7nam10lp2102.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.102])
+  by ob1.hgst.iphmx.com with ESMTP; 31 Mar 2021 22:17:57 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nNT0Fke524gZlhiKqN9EO2+ClHyF2gA+V9GwXNbN0Y87NW4SkOUom0pxRBTqOtA5BfxDqptBnVejOETwYbaqL7kNLTJAQ8harFTjzWLkz0OtoNKybDVKc9Z4ctFpAZY040rKopb51f3ACHCEFeAVYGe1pvQEljIyOXX9DmESBgSmDVOMZs17ljf9h79tqmoslGHgnT8Os26Xc791AgkLWX0uAV6zSli/ql2iGXoxs9JQxBjEz/Dv10LJIN8xP2ZbOUVdfIbkRPlqc7rqyZIRXwFmT7bHcWGpKmdv2QqL9WYdWl7oDiLn/ZIobKvzLjNExrykYEhATqSO9mGEjT93Wg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=q0+2zV+mqkLXlcM2yr9VSGPjWJmAYaT+wp2gs17Pz/U=;
+ b=fZ03FJUz5YI8LBSNOs0JdnTR5ndfVTl03CDRDM5egfvNtRIe0fQuDygWE8+NI3WB87FiSU6hv1eMhUdtvGBhPIYXXtoPYvk1s+RtUVs73XFcF8+aRtwVShJzjQ6nsil3hhv83FidnbAboK+fZPfPeof1h5WOIcG6gSoY7xGvN74Hti3H8KvC5VwTqKWxuCHiiVMtadX4bgV8JHQ4/sOfP1ohFHo0Ruk2JnBA0LwCgcbeBdkf8+8UvTiKSFoq8sR8c5rGLqtwhgjhiNOk9WWl1z1vs/M0AQl4S1uJSt6h0qYjmnDh0KGv/WVx0kgICVPA+9FOiQdWjptWaV5c09TsSA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=q0+2zV+mqkLXlcM2yr9VSGPjWJmAYaT+wp2gs17Pz/U=;
+ b=fjwNVTz6yazGjgnNtqEjqkcZRDEQcWyD/ddEOO3Qr3eUiVufXfy3rRe6HRCVxs23KhELyNnLZTHatl2qbcuLWnz1QlCCiAxYZwzu2324gr69wVG+LyOhAQ9gGQYzaQWP6WIOMbAcrcNRzt5Tc4tL5/frto4XY8zSGq4Os90Gtwc=
+Received: from CY4PR04MB0678.namprd04.prod.outlook.com (2603:10b6:903:e2::7)
+ by CY4PR04MB0870.namprd04.prod.outlook.com (2603:10b6:910:53::38) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.31; Wed, 31 Mar
+ 2021 14:17:56 +0000
+Received: from CY4PR04MB0678.namprd04.prod.outlook.com
+ ([fe80::642f:22c6:66fc:24f2]) by CY4PR04MB0678.namprd04.prod.outlook.com
+ ([fe80::642f:22c6:66fc:24f2%7]) with mapi id 15.20.3977.033; Wed, 31 Mar 2021
+ 14:17:55 +0000
+From:   Niklas Cassel <Niklas.Cassel@wdc.com>
+To:     "javier@javigon.com" <javier@javigon.com>
+CC:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        "minwoo.im.dev@gmail.com" <minwoo.im.dev@gmail.com>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] nvme: allow NVME_IOCTL_IO_CMD on controller char dev
+ even when multiple ns
+Thread-Topic: [RFC PATCH] nvme: allow NVME_IOCTL_IO_CMD on controller char dev
+ even when multiple ns
+Thread-Index: AQHXIoL7j11tDXmjqEi1+b31xtgfo6qc4HYAgAFLyQA=
+Date:   Wed, 31 Mar 2021 14:17:55 +0000
+Message-ID: <YGR/9X2y1ci/m/1v@x1-carbon.lan>
+References: <20210326205943.431185-1-Niklas.Cassel@wdc.com>
+ <20210330183022.arjiqiufiuqkrvwc@mpHalley.local>
+In-Reply-To: <20210330183022.arjiqiufiuqkrvwc@mpHalley.local>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: javigon.com; dkim=none (message not signed)
+ header.d=none;javigon.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [85.226.244.4]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: c8fd705f-58b6-41dd-b089-08d8f44fc781
+x-ms-traffictypediagnostic: CY4PR04MB0870:
+x-microsoft-antispam-prvs: <CY4PR04MB087046081B194FE8EFE02E39F27C9@CY4PR04MB0870.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:4125;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /O0MKq+q3IzW4M3EWS0k5qE6whK8a+5N1teT2Id8iGVZsjhWGW1IjXzMeYdxAu9pV9mLLc5b9o5s1+GG5aC4Vx5dNRGyiwOQceHg9picQJZ9mu7kPgQ2AFA+GCY1fZ6VwxW10bihtsrJ20ElSjoHuPjc8nsqfMurIgg3LCOixOjoPLyKaBQwir33UYbtn0MDdHyvyZhMpmratnO3vXShDHkkMOYER5OiATUNgIaVlloDknVFAqmKIexhSzNJ+1MrBm1xXBhZolYAJGH9RQ2uUPkmW7GUm1jPXKLrOxE2UYGeRRmmFBCFdQ/zrKD9RMSBewljim4h/XgRKxPNwv+FSUMAJF6KGJjnbBEKZs7P/BZKrwbJNiwwEOwssoTTEjHtYixH8ffKUdAB4mB6quoEcmie9I4KcfGGqWW7QkdTulB53iZ6p/aN/C/GdVKixEc/yUkSHEms/T8bjY1Jk7CDfEavvadniUviwHlAfAqmEUjFofcRXh+JOUqCCVBk0SubhZ9m3q0IS6x3cFaGfC65u8s5C6kurF7lLgKLlB1D5yQpOPeIWoJMoyAhFgAiFfGYhc7L3SRaKBhZAl/aYg5v9Dlv6MRsyd76G3CKVJBV9yiu2et7BZ4EsyGlppRFtUGitOfNRu1WUqVp99C8Jbhd6X6ggY6b8oSWnhmn66U734o=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR04MB0678.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(136003)(366004)(396003)(478600001)(186003)(36756003)(71200400001)(66946007)(66476007)(9686003)(6506007)(8936002)(66446008)(66556008)(2906002)(76116006)(316002)(6512007)(64756008)(54906003)(5660300002)(6486002)(53546011)(38100700001)(91956017)(4326008)(86362001)(26005)(8676002)(6916009)(83380400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?BYNJj+f1UbIf1og7AmlAiA+qb+vh0v7S9+bdNqRpCh/mQu/8EIjHOEBr7Qh9?=
+ =?us-ascii?Q?wCatMVSyGLhd0tXiU4qkhszZgubwQ0tcLtlJ3KHwlka/3yPds6Hgqu2gML92?=
+ =?us-ascii?Q?yT1PiLqKU5ac5GE/3pCWDinEle/rP8ReZ+5t8Wkn0zizZMqqGj5y4q4kBxoI?=
+ =?us-ascii?Q?uMYDqDKZnzsy4W9s0y/qFvx6BqR/QQjZsBCB/Czo4KISuz3KTsZhBK2lzp6Q?=
+ =?us-ascii?Q?sl9y0icWIPzwMBjrYY+Yh4rFsye5PP7TEFFhPOUXbT0ojJDkDy46OGumERD5?=
+ =?us-ascii?Q?FDbMTLEw6ZK3lPQ6NH1qQQgMbB8T9xFpyI/0QgpIOLQNZeAdiT9ld7/VDo6Y?=
+ =?us-ascii?Q?C+TjiDSp7dWQ4MLgAGyp/UDBqJpAN0as6J9EvFY6j1YGySKy82MTl/6h4era?=
+ =?us-ascii?Q?S+CA97/NGB9HmWIQcWH27WgCIL+smBNZt03w0x2G7oqkmaLLpHUc+x7WK9Ht?=
+ =?us-ascii?Q?T1LgWp+jLgBVxq5GH40mavvI1gUuEodioGSzEKJtbSYfkgjE0A+zJ2m7cOHl?=
+ =?us-ascii?Q?BRy4NsAgsgT6bNaxhcfPfqh5+8AJECnRPa6sTFd7p+zEXkzb7ZcPsveuFclF?=
+ =?us-ascii?Q?UnHtrQyN3xwumz1aeoqCNTd0860kv4qqgS6k4SKcs57e2eiH2EVA2WsA6mIC?=
+ =?us-ascii?Q?g0CmozThnnvAkoDxCibCDHi37CPIDWVlmfrjHnpN4Q0XsAOXajBUAYm2g/34?=
+ =?us-ascii?Q?Jwr4hyMeW98q2HiWwHhkfiB9LqZ3eS3WRIgr4NMFlfXXht2SljZPtV/hevBu?=
+ =?us-ascii?Q?2jmIHGEcrf0+gK1GGNTLkimQP86TSNAmMAj2ww5OUIVQulsTSpKZtqC0BsxK?=
+ =?us-ascii?Q?CwO3TbDzr0FNeeVh2RXSIJAWAEhjCqdE0w1BpEM5ydF5+wt8rfrXWc6sq5vq?=
+ =?us-ascii?Q?qfIjJ3M39qfCGBDggEWLgIubTrq/ubgR3C8kTnG70vMXGYap4pl/qTD3f9gZ?=
+ =?us-ascii?Q?DwdMO3Z2Ey20VbzhH7IuCvyXCOnQg84ZtwX0xXMhCwx23heFABNMMWGo5/z7?=
+ =?us-ascii?Q?vJE0Yh9U1me+2bPtc9ht6X7MRrvVhJ3o3Oue6GThS9wsMARuVxYlW4lhduyp?=
+ =?us-ascii?Q?FdkccvbZ7lSHw7vNPUrKkyS5P9BahP8aOsZzdoa5V7xEoiraMV4CYJiNrRB6?=
+ =?us-ascii?Q?ujNCIdy2uVmXc9IfQS8/StssfZ99fsZvXtc8Cy7u0YHfGWJ9KGB+f/bFudyR?=
+ =?us-ascii?Q?uHUHG2xZmXG/Bsh+1SrZYinzabflAeEUrEf4qwZj1noMBfAVgr9+sYjhywHf?=
+ =?us-ascii?Q?FU6lLV9GnmhF2HBdJRvKjjtenWnuQCjyGkIzhxiZHp4gm3BKy/8deHuOvC8p?=
+ =?us-ascii?Q?zXZzBuJU4bBZKWJfPvFJjIZT?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <4B8B4E1667CA264B927CD9022EEB1585@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR04MB0678.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c8fd705f-58b6-41dd-b089-08d8f44fc781
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Mar 2021 14:17:55.8404
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: eJ8lNa6D68pVRrtnLWk5nq46nd7Jrh4CRekwnEmk86sGyXMdXSGnI6I+q65cqCKbqM+LmauQwtHaFgiLVrl3Jw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR04MB0870
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are still a lot of mdio controllers which don't support the clause
-45 frame format as well as drivers for mdio controllers which don't
-implement the cause 45 mode of the controller even if natively supported
-by the hardware. Therefore it makes sense to support clause 45 peripherals
-on busses that support clause 22 transfers only by indirect access.
+On Tue, Mar 30, 2021 at 08:30:22PM +0200, javier@javigon.com wrote:
+> On 26.03.2021 20:59, Niklas Cassel wrote:
+> > From: Niklas Cassel <niklas.cassel@wdc.com>
+> >=20
+> > Currently when doing NVME_IOCTL_IO_CMD on the controller character devi=
+ce,
+> > the command is rejected if there is more than one namespace in the
+> > ctrl->namespaces list.
+> >=20
+> > There is not really any reason for this restriction.
+> > Instead, check the nsid value specified in the passthru command, and tr=
+y
+> > to find the matching namespace in ctrl->namespaces list.
+> > If found, call nvme_user_cmd() on the namespace.
+> > If not found, reject the command.
+> >=20
+> > While at it, remove the warning that says that NVME_IOCTL_IO_CMD is
+> > deprecated on the controller character device.
+> > There is no comment saying why it is deprecated.
+> > It might be very unsafe to send a passthru command, but if that is
+> > the issue with this IOCTL, then we should add a warning about that
+> > instead.
+> >=20
+> > Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>
+>=20
+> I think the idea is OK, but I have 3 questions:
+>=20
+>   1. Wouldn't this break user-space when nsid is not specified?
 
-In order to do so we can use the capabilitiy field of the struct mii_bus
-to distinguish between busses that natively support clause 45 and those
-who don't. Based on that the mdiobus_c45_*() functions can either issue
-a MII_ADDR_C45 flagged request to the bus driver or perform an indirect
-access.
+Since this is an ioctl, the kernel will always read some value
+from cmd.nsid, so I assume you mean when specifying cmd.nsid =3D=3D 0.
 
-The indirect access is performed by the introduced mdiobus_*_mmd()
-functions. While performing the indirect access sequence in
-mdiobus_indirect_mmd() we check for potential errors occurring in the
-sequence, which was not done previously and just assumed to be
-successful.
+I don't think we have anything to worry about because:
 
-Signed-off-by: Danilo Krummrich <danilokrummrich@dk-develop.de>
----
- drivers/net/phy/mdio_bus.c | 265 ++++++++++++++++++++++++++++++++++++-
- drivers/net/phy/phy-core.c |  46 ++-----
- drivers/net/phy/phy.c      |  19 ++-
- include/linux/mdio.h       |  36 ++---
- 4 files changed, 298 insertions(+), 68 deletions(-)
+a)
+Like Keith said in the other thread:
+"There are no IO commands accepting a 0 NSID, so rejecting those from the
+driver should be okay."
 
-diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
-index d03e40a0fbae..c80ed65666ac 100644
---- a/drivers/net/phy/mdio_bus.c
-+++ b/drivers/net/phy/mdio_bus.c
-@@ -670,19 +670,21 @@ struct phy_device *mdiobus_scan(struct mii_bus *bus, int addr)
- 	struct phy_device *phydev = ERR_PTR(-ENODEV);
- 	int err;
- 
-+	/* In case of NO_CAP and C22 only, we still can try to scan for C45
-+	 * devices, since indirect access will be used for busses that are not
-+	 * capable of C45 frame format.
-+	 */
- 	switch (bus->capabilities) {
- 	case MDIOBUS_NO_CAP:
- 	case MDIOBUS_C22:
--		phydev = get_phy_device(bus, addr, false);
--		break;
--	case MDIOBUS_C45:
--		phydev = get_phy_device(bus, addr, true);
--		break;
- 	case MDIOBUS_C22_C45:
- 		phydev = get_phy_device(bus, addr, false);
- 		if (IS_ERR(phydev))
- 			phydev = get_phy_device(bus, addr, true);
- 		break;
-+	case MDIOBUS_C45:
-+		phydev = get_phy_device(bus, addr, true);
-+		break;
- 	}
- 
- 	if (IS_ERR(phydev))
-@@ -903,6 +905,259 @@ int mdiobus_write(struct mii_bus *bus, int addr, u32 regnum, u16 val)
- }
- EXPORT_SYMBOL(mdiobus_write);
- 
-+/**
-+ * mdiobus_indirect_mmd - Prepares MMD indirect access
-+ * @bus: the mii_bus struct
-+ * @addr: the phy address
-+ * @devad: the device address
-+ * @regnum: register number to read
-+ *
-+ * Prepares indirect MMD access, such that only the MII_MMD_DATA register is
-+ * left to be read or written. Caller must hold the mdio bus lock.
-+ *
-+ * NOTE: MUST NOT be called from interrupt context.
-+ */
-+static int mdiobus_indirect_mmd(struct mii_bus *bus, int addr, u16 devad, u32 regnum)
-+{
-+	int err;
-+
-+	/* Write the desired MMD Devad */
-+	err = __mdiobus_write(bus, addr, MII_MMD_CTRL, devad);
-+	if (err)
-+		goto out;
-+
-+	/* Write the desired MMD register address */
-+	err = __mdiobus_write(bus, addr, MII_MMD_DATA, regnum);
-+	if (err)
-+		goto out;
-+
-+	/* Select the Function : DATA with no post increment */
-+	err = __mdiobus_write(bus, addr, MII_MMD_CTRL,
-+			      devad | MII_MMD_CTRL_NOINCR);
-+
-+out:
-+	return err;
-+}
-+
-+/**
-+ * __mdiobus_read_mmd - Unlocked version of the mdiobus_read_mmd function
-+ * @bus: the mii_bus struct
-+ * @addr: the phy address
-+ * @devad: the device address
-+ * @regnum: register number to read
-+ *
-+ * Read a MDIO bus register. Caller must hold the mdio bus lock.
-+ *
-+ * NOTE: MUST NOT be called from interrupt context.
-+ */
-+int __mdiobus_read_mmd(struct mii_bus *bus, int addr, u16 devad, u32 regnum)
-+{
-+	int retval;
-+
-+	retval = mdiobus_indirect_mmd(bus, addr, devad, regnum);
-+	if (retval)
-+		goto out;
-+
-+	/* Read the content of the MMD's selected register */
-+	retval = __mdiobus_read(bus, addr, MII_MMD_DATA);
-+
-+out:
-+	return retval;
-+}
-+EXPORT_SYMBOL(__mdiobus_read_mmd);
-+
-+/**
-+ * __mdiobus_write_mmd - Unlocked version of the mdiobus_write_mmd function
-+ * @bus: the mii_bus struct
-+ * @addr: the phy address
-+ * @devad: the device address
-+ * @regnum: register number to write
-+ * @val: value to write to @regnum
-+ *
-+ * Write a MDIO bus register. Caller must hold the mdio bus lock.
-+ *
-+ * NOTE: MUST NOT be called from interrupt context.
-+ */
-+int __mdiobus_write_mmd(struct mii_bus *bus, int addr, u16 devad, u32 regnum,
-+			u16 val)
-+{
-+	int err;
-+
-+	err = mdiobus_indirect_mmd(bus, addr, devad, regnum);
-+	if (err)
-+		goto out;
-+
-+	/* Write the data into MMD's selected register */
-+	err = __mdiobus_write(bus, addr, MII_MMD_DATA, val);
-+
-+out:
-+	return err;
-+}
-+EXPORT_SYMBOL(__mdiobus_write_mmd);
-+
-+/**
-+ * mdiobus_read_mmd - Convenience function for indirect MMD reads
-+ * @bus: the mii_bus struct
-+ * @addr: the phy address
-+ * @devad: the device address
-+ * @regnum: register number to read
-+ *
-+ * NOTE: MUST NOT be called from interrupt context,
-+ * because the bus read/write functions may wait for an interrupt
-+ * to conclude the operation.
-+ */
-+int mdiobus_read_mmd(struct mii_bus *bus, int addr, u16 devad, u32 regnum)
-+{
-+	int retval;
-+
-+	mutex_lock(&bus->mdio_lock);
-+	retval = __mdiobus_read_mmd(bus, addr, devad, regnum);
-+	mutex_unlock(&bus->mdio_lock);
-+
-+	return retval;
-+}
-+EXPORT_SYMBOL(mdiobus_read_mmd);
-+
-+/**
-+ * mdiobus_write_mmd - Convenience function for indirect MMD writes
-+ * @bus: the mii_bus struct
-+ * @addr: the phy address
-+ * @devad: the device address
-+ * @regnum: register number to write
-+ * @val: value to write to @regnum
-+ *
-+ * NOTE: MUST NOT be called from interrupt context,
-+ * because the bus read/write functions may wait for an interrupt
-+ * to conclude the operation.
-+ */
-+int mdiobus_write_mmd(struct mii_bus *bus, int addr, u16 devad, u32 regnum,
-+		      u16 val)
-+{
-+	int err;
-+
-+	mutex_lock(&bus->mdio_lock);
-+	err = __mdiobus_write_mmd(bus, addr, devad, regnum, val);
-+	mutex_unlock(&bus->mdio_lock);
-+
-+	return err;
-+}
-+EXPORT_SYMBOL(mdiobus_write_mmd);
-+
-+/**
-+ * __mdiobus_c45_read - Unlocked version of the mdiobus_c45_read function
-+ * @bus: the mii_bus struct
-+ * @addr: the phy address
-+ * @devad: the device address
-+ * @regnum: register number to read
-+ *
-+ * Read a MDIO bus register. Caller must hold the mdio bus lock.
-+ *
-+ * NOTE: MUST NOT be called from interrupt context.
-+ */
-+int __mdiobus_c45_read(struct mii_bus *bus, int addr, int devad, u32 regnum)
-+{
-+	int ret = -EOPNOTSUPP;
-+
-+	switch (bus->capabilities) {
-+	case MDIOBUS_NO_CAP:
-+	case MDIOBUS_C22:
-+		ret =  __mdiobus_read_mmd(bus, addr, devad, regnum);
-+		break;
-+	case MDIOBUS_C45:
-+	case MDIOBUS_C22_C45:
-+		ret =  __mdiobus_read(bus, addr,
-+				      mdiobus_c45_addr(devad, regnum));
-+		break;
-+	}
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(__mdiobus_c45_read);
-+
-+/**
-+ * __mdiobus_c45_write - Unlocked version of the mdiobus_c45_write function
-+ * @bus: the mii_bus struct
-+ * @addr: the phy address
-+ * @devad: the device address
-+ * @regnum: register number to write
-+ * @val: value to write to @regnum
-+ *
-+ * Write a MDIO bus register. Caller must hold the mdio bus lock.
-+ *
-+ * NOTE: MUST NOT be called from interrupt context.
-+ */
-+int __mdiobus_c45_write(struct mii_bus *bus, int addr, int devad, u32 regnum,
-+			u16 val)
-+{
-+	int ret = -EOPNOTSUPP;
-+
-+	switch (bus->capabilities) {
-+	case MDIOBUS_NO_CAP:
-+	case MDIOBUS_C22:
-+		ret = __mdiobus_write_mmd(bus, addr, devad, regnum, val);
-+		break;
-+	case MDIOBUS_C45:
-+	case MDIOBUS_C22_C45:
-+		ret = __mdiobus_write(bus, addr,
-+				      mdiobus_c45_addr(devad, regnum), val);
-+		break;
-+	}
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(__mdiobus_c45_write);
-+
-+/**
-+ * mdiobus_c45_read - Convenience function for clause 45 reads
-+ * The read is either performed by clause 45 frame format or by an indirect
-+ * access, depending on the capabilities of the bus.
-+ * @bus: the mii_bus struct
-+ * @addr: the phy address
-+ * @devad: the device address
-+ * @regnum: register number to read
-+ *
-+ * NOTE: MUST NOT be called from interrupt context,
-+ * because the bus read/write functions may wait for an interrupt
-+ * to conclude the operation.
-+ */
-+int mdiobus_c45_read(struct mii_bus *bus, int addr, int devad, u32 regnum)
-+{
-+	int retval;
-+
-+	mutex_lock(&bus->mdio_lock);
-+	retval = __mdiobus_c45_read(bus, addr, devad, regnum);
-+	mutex_unlock(&bus->mdio_lock);
-+
-+	return retval;
-+}
-+EXPORT_SYMBOL(mdiobus_c45_read);
-+
-+/**
-+ * mdiobus_c45_write - Convenience function for clause 45 writes
-+ * The write is either performed by clause 45 frame format or by an indirect
-+ * access, depending on the capabilities of the bus.
-+ * @bus: the mii_bus struct
-+ * @addr: the phy address
-+ * @devad: the device address
-+ * @regnum: register number to read
-+ *
-+ * NOTE: MUST NOT be called from interrupt context,
-+ * because the bus read/write functions may wait for an interrupt
-+ * to conclude the operation.
-+ */
-+int mdiobus_c45_write(struct mii_bus *bus, int addr, int devad, u32 regnum,
-+		      u16 val)
-+{
-+	int err;
-+
-+	mutex_lock(&bus->mdio_lock);
-+	err = __mdiobus_c45_write(bus, addr, devad, regnum, val);
-+	mutex_unlock(&bus->mdio_lock);
-+
-+	return err;
-+}
-+EXPORT_SYMBOL(mdiobus_c45_write);
-+
- /**
-  * mdiobus_modify - Convenience function for modifying a given mdio device
-  *	register
-diff --git a/drivers/net/phy/phy-core.c b/drivers/net/phy/phy-core.c
-index 8d333d3084ed..5f1601e12162 100644
---- a/drivers/net/phy/phy-core.c
-+++ b/drivers/net/phy/phy-core.c
-@@ -442,20 +442,6 @@ int phy_speed_down_core(struct phy_device *phydev)
- 	return __set_linkmode_max_speed(min_common_speed, phydev->advertising);
- }
- 
--static void mmd_phy_indirect(struct mii_bus *bus, int phy_addr, int devad,
--			     u16 regnum)
--{
--	/* Write the desired MMD Devad */
--	__mdiobus_write(bus, phy_addr, MII_MMD_CTRL, devad);
--
--	/* Write the desired MMD register address */
--	__mdiobus_write(bus, phy_addr, MII_MMD_DATA, regnum);
--
--	/* Select the Function : DATA with no post increment */
--	__mdiobus_write(bus, phy_addr, MII_MMD_CTRL,
--			devad | MII_MMD_CTRL_NOINCR);
--}
--
- /**
-  * __phy_read_mmd - Convenience function for reading a register
-  * from an MMD on a given PHY.
-@@ -472,20 +458,15 @@ int __phy_read_mmd(struct phy_device *phydev, int devad, u32 regnum)
- 	if (regnum > (u16)~0 || devad > 32)
- 		return -EINVAL;
- 
--	if (phydev->drv && phydev->drv->read_mmd) {
-+	if (phydev->drv && phydev->drv->read_mmd)
- 		val = phydev->drv->read_mmd(phydev, devad, regnum);
--	} else if (phydev->is_c45) {
-+	else if (phydev->is_c45)
- 		val = __mdiobus_c45_read(phydev->mdio.bus, phydev->mdio.addr,
- 					 devad, regnum);
--	} else {
--		struct mii_bus *bus = phydev->mdio.bus;
--		int phy_addr = phydev->mdio.addr;
--
--		mmd_phy_indirect(bus, phy_addr, devad, regnum);
-+	else
-+		val = __mdiobus_read_mmd(phydev->mdio.bus, phydev->mdio.addr,
-+					 devad, regnum);
- 
--		/* Read the content of the MMD's selected register */
--		val = __mdiobus_read(bus, phy_addr, MII_MMD_DATA);
--	}
- 	return val;
- }
- EXPORT_SYMBOL(__phy_read_mmd);
-@@ -528,22 +509,15 @@ int __phy_write_mmd(struct phy_device *phydev, int devad, u32 regnum, u16 val)
- 	if (regnum > (u16)~0 || devad > 32)
- 		return -EINVAL;
- 
--	if (phydev->drv && phydev->drv->write_mmd) {
-+	if (phydev->drv && phydev->drv->write_mmd)
- 		ret = phydev->drv->write_mmd(phydev, devad, regnum, val);
--	} else if (phydev->is_c45) {
-+	else if (phydev->is_c45)
- 		ret = __mdiobus_c45_write(phydev->mdio.bus, phydev->mdio.addr,
- 					  devad, regnum, val);
--	} else {
--		struct mii_bus *bus = phydev->mdio.bus;
--		int phy_addr = phydev->mdio.addr;
--
--		mmd_phy_indirect(bus, phy_addr, devad, regnum);
--
--		/* Write the data into MMD's selected register */
--		__mdiobus_write(bus, phy_addr, MII_MMD_DATA, val);
-+	else
-+		ret = __mdiobus_write_mmd(phydev->mdio.bus, phydev->mdio.addr,
-+					  devad, regnum, val);
- 
--		ret = 0;
--	}
- 	return ret;
- }
- EXPORT_SYMBOL(__phy_write_mmd);
-diff --git a/drivers/net/phy/phy.c b/drivers/net/phy/phy.c
-index fc2e7cb5b2e5..fb07832f378a 100644
---- a/drivers/net/phy/phy.c
-+++ b/drivers/net/phy/phy.c
-@@ -346,20 +346,23 @@ int phy_mii_ioctl(struct phy_device *phydev, struct ifreq *ifr, int cmd)
- 		if (mdio_phy_id_is_c45(mii_data->phy_id)) {
- 			prtad = mdio_phy_id_prtad(mii_data->phy_id);
- 			devad = mdio_phy_id_devad(mii_data->phy_id);
--			devad = mdiobus_c45_addr(devad, mii_data->reg_num);
-+
-+			mii_data->val_out = mdiobus_c45_read(phydev->mdio.bus,
-+							     prtad, devad,
-+							     mii_data->reg_num);
- 		} else {
- 			prtad = mii_data->phy_id;
- 			devad = mii_data->reg_num;
-+
-+			mii_data->val_out = mdiobus_read(phydev->mdio.bus,
-+							 prtad, devad);
- 		}
--		mii_data->val_out = mdiobus_read(phydev->mdio.bus, prtad,
--						 devad);
- 		return 0;
- 
- 	case SIOCSMIIREG:
- 		if (mdio_phy_id_is_c45(mii_data->phy_id)) {
- 			prtad = mdio_phy_id_prtad(mii_data->phy_id);
- 			devad = mdio_phy_id_devad(mii_data->phy_id);
--			devad = mdiobus_c45_addr(devad, mii_data->reg_num);
- 		} else {
- 			prtad = mii_data->phy_id;
- 			devad = mii_data->reg_num;
-@@ -403,7 +406,13 @@ int phy_mii_ioctl(struct phy_device *phydev, struct ifreq *ifr, int cmd)
- 			}
- 		}
- 
--		mdiobus_write(phydev->mdio.bus, prtad, devad, val);
-+		if (mdio_phy_id_is_c45(mii_data->phy_id))
-+			mii_data->val_out = mdiobus_c45_write(phydev->mdio.bus,
-+							      prtad, devad,
-+							      mii_data->reg_num,
-+							      val);
-+		else
-+			mdiobus_write(phydev->mdio.bus, prtad, devad, val);
- 
- 		if (prtad == phydev->mdio.addr &&
- 		    devad == MII_BMCR &&
-diff --git a/include/linux/mdio.h b/include/linux/mdio.h
-index ffb787d5ebde..7bcd76914154 100644
---- a/include/linux/mdio.h
-+++ b/include/linux/mdio.h
-@@ -347,35 +347,27 @@ int mdiobus_write_nested(struct mii_bus *bus, int addr, u32 regnum, u16 val);
- int mdiobus_modify(struct mii_bus *bus, int addr, u32 regnum, u16 mask,
- 		   u16 set);
- 
-+int __mdiobus_read_mmd(struct mii_bus *bus, int addr, u16 devad, u32 regnum);
-+int __mdiobus_write_mmd(struct mii_bus *bus, int addr, u16 devad, u32 regnum,
-+			u16 val);
-+
-+int mdiobus_read_mmd(struct mii_bus *bus, int addr, u16 devad, u32 regnum);
-+int mdiobus_write_mmd(struct mii_bus *bus, int addr, u16 devad, u32 regnum,
-+		      u16 val);
-+
- static inline u32 mdiobus_c45_addr(int devad, u16 regnum)
- {
- 	return MII_ADDR_C45 | devad << MII_DEVADDR_C45_SHIFT | regnum;
- }
- 
--static inline int __mdiobus_c45_read(struct mii_bus *bus, int prtad, int devad,
--				     u16 regnum)
--{
--	return __mdiobus_read(bus, prtad, mdiobus_c45_addr(devad, regnum));
--}
-+int __mdiobus_c45_read(struct mii_bus *bus, int addr, int devad, u32 regnum);
-+int __mdiobus_c45_write(struct mii_bus *bus, int addr, int devad, u32 regnum,
-+			u16 val);
- 
--static inline int __mdiobus_c45_write(struct mii_bus *bus, int prtad, int devad,
--				      u16 regnum, u16 val)
--{
--	return __mdiobus_write(bus, prtad, mdiobus_c45_addr(devad, regnum),
--			       val);
--}
-+int mdiobus_c45_read(struct mii_bus *bus, int addr, int devad, u32 regnum);
- 
--static inline int mdiobus_c45_read(struct mii_bus *bus, int prtad, int devad,
--				   u16 regnum)
--{
--	return mdiobus_read(bus, prtad, mdiobus_c45_addr(devad, regnum));
--}
--
--static inline int mdiobus_c45_write(struct mii_bus *bus, int prtad, int devad,
--				    u16 regnum, u16 val)
--{
--	return mdiobus_write(bus, prtad, mdiobus_c45_addr(devad, regnum), val);
--}
-+int mdiobus_c45_write(struct mii_bus *bus, int addr, int devad, u32 regnum,
-+		      u16 val);
- 
- int mdiobus_register_device(struct mdio_device *mdiodev);
- int mdiobus_unregister_device(struct mdio_device *mdiodev);
--- 
-2.31.0
+Currently, when sending a NVME_IOCTL_IO_CMD on the ctrl char dev with
+cmd.nsid =3D=3D 0, we will take the first namespace in the list, use the
+request_queue of that namespace, and then send the command there.
 
+Since there are no I/O commands that accept a NSID =3D=3D 0, whatever you
+specified in cmd.opcode, you should get an "Invalid Namespace or Format"
+error back from the controller.
+
+I don't think that there is any harm in adding a check (which is essentiall=
+y
+what this RFC does), that will reject the command before sending it down to
+the controller.
+
+(A potential improvement in the future, on top of this patch, is to allow
+nsid.cmd =3D=3D broadcast address, but that is out of scope for this patch.
+And no, since the current behavior on master does reject any cmd when there
+is more than one namespace attached to the controller (more than one ns in
+ctrl->namespaces list), I wouldn't say that master handles this case.)
+
+
+b)
+If you use nvme-cli then all commands that calls nvme_submit_io_passthru()
+already does:
+
+        if (!cfg.namespace_id) {
+                err =3D cfg.namespace_id =3D nvme_get_nsid(fd);
+                if (err < 0) {
+                        perror("get-namespace-id");
+                        goto close_fd;
+                }
+        }
+
+So either if you do a:
+nvme write-zeroes -s 0 -c 0 --namespace-id=3D0 /dev/nvme0
+or if you completely omit --namespace-id:
+nvme write-zeroes -s 0 -c 0  /dev/nvme0
+
+nvme-cli will already reject it (since the controller char device does not
+(and can not) implement NVME_IOCTL_ID).
+
+Sure, nvme-cli is just a single user of this ioctl (there might be other
+users), but it is probably the most common one.
+
+If nvme-cli already rejects it in user space, and we concluded that the
+controller will reject it, I think it should be safe to reject it also
+at the kernel side.
+
+Without this patch, we are already rejecting any command, to any nsid,
+if the controller has more than one namespace attached, which I think
+makes less sense.
+
+>   2. What is the use case for this? As I understand it, this char device
+>   is primarily for admin commands sent to the controller. Do you see a
+>   use case for sending commands to the namespace using the controller
+>   char device?
+
+I don't have any use case for this, more than allowing to specify whatever
+nsid you want in the --namespace-id parameter for nvme, when opening
+/dev/nvme0, even when the controller has more than one namespace.
+
+Why allow NVME_IOCTL_IO_CMD on /dev/nvme0 when the controller has one
+namespace attached, but not when it has more than one namespace attached?
+
+Doesn't make sense to me.
+
+>   3. Following up on the above, if the use-case is I/O, don't you think
+>   it is cleaner to use the ongoing per-namespace char device effort? We
+>   would very much like to get your input there and eventually send a
+>   series together. When this is merged, we could wire that logic to the
+>   controller char device if there is an use-case for it.
+
+While I'm not against your per-namespace char device effort, I'm not sure
+if clean is the word I would use to decribe creating a bunch of extra
+character devices, that almost no one will use, in the root of /dev/ even
+(which is what the current proposal suggests.)
+
+Perhaps it would be better if you had to do a
+echo $nsid > /sys/class/nvme/nvme0/export_unsupported_namespace
+to actually create one of these suggested additional per namespace
+character devices. But I do realize that things such as udev rules might
+be harder to do, since not all devices would be there automatically.
+
+However, I do agree about using the existing per namespace block devices:
+e.g.:
+nvme write-zeroes -s 0 -c 0  /dev/nvme0n1
+is cleaner than
+nvme write-zeroes -s 0 -c 0 --namespace-id=3D1 /dev/nvme0
+
+And I also agree that if we manage to support IOCTLs on rejected
+namespaces, then it would be nice if we could do something like:
+nvme write-zeroes -s 0 -c 0 --namespace-id=3D4 /dev/nvme0
+if NSID was a namespace that was rejected/unsupported by the kernel.
+
+
+Kind regards,
+Niklas=
