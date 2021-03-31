@@ -2,130 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E04734FCC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A29E34FCCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234782AbhCaJ1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 05:27:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234724AbhCaJ0k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 05:26:40 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61FACC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 02:26:40 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d8so7596058plh.11
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 02:26:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=yP7PEulAPK6UHzRxTLeSHifkookZOtRjzWBAZ0O/gdc=;
-        b=LOw7EcVTffm/NjdpGaGKUcEGQ77gQ9JBGdonP44rzUgXmMgCpaNUUehuHZr1fxV1UH
-         3BBm56IlXAYsVcHNKpUz4rfO9dQS24nWfBTjUsvikelk59OREv70zUWGBbH2weoPqb1v
-         fe5f2NqgE0tBYaHEv53mPjfxC0q//a/k26g7ERe1p40gF7ZDAu55vDVITOsHtel4i7gk
-         t193rAIOVpfvOXumSpeM5SWmZTcuFe8Ui9c0OnT1wU6EWF4zKZPgVgDWc6s3/YmvsIVs
-         DSj7O3ADkHdwvuty7xC835x7GQzPyJUO+6tIJue0z3CAXUBR/aUoKr6JELz2lo+C+iNH
-         gfZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=yP7PEulAPK6UHzRxTLeSHifkookZOtRjzWBAZ0O/gdc=;
-        b=seKVTk9rHNtaRz7fI+aLCptjMZvG0uoG8K/elOyprZvaUt249UAXGxBoo0bIxFv6Po
-         yYEvxWcqsbSSssao77IkPlXmiUX05rZsukTXX8c3CNR5gLsjj0xqyUV0xqQogC9PHadO
-         oELbnZUuCq8uyJNf+cRLAJzIeOoc2QYQJA9IYA4eE3ZMr9Js1yBCfTRF5fwRb+yNMUhn
-         +mVigDaMlYSVn3aoPVnLUQywlF2+uzSpe2WCU/uIQpYvdKo8zi4v/zr4nYtt1c2PxDYV
-         dMM9yTDRhs0rr1ztdx2/k1g2StmbkTWmVUZkpzjRqjtvtOQLJ5uNmNXYItHGnzINzzCL
-         DpKA==
-X-Gm-Message-State: AOAM530Z32FV+G8nnOKZkvQzUt31E9lLVndfNCjX+eqZoHAVff9Dn756
-        nWy32oNBVbIjnIWsEaQEgK9mrA==
-X-Google-Smtp-Source: ABdhPJyOcOzTnUY5eHiAJ1S0x1EGTnxPs4BI8SbPuOMDe+Jv2va6wUKiS7UneRWEWjd/DWnW7Vlmhw==
-X-Received: by 2002:a17:90b:1987:: with SMTP id mv7mr2512728pjb.152.1617182799984;
-        Wed, 31 Mar 2021 02:26:39 -0700 (PDT)
-Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
-        by smtp.gmail.com with ESMTPSA id 143sm1726505pfx.144.2021.03.31.02.26.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 02:26:39 -0700 (PDT)
-From:   Greentime Hu <greentime.hu@sifive.com>
-To:     greentime.hu@sifive.com, paul.walmsley@sifive.com, hes@sifive.com,
-        erik.danie@sifive.com, zong.li@sifive.com, bhelgaas@google.com,
-        robh+dt@kernel.org, aou@eecs.berkeley.edu, mturquette@baylibre.com,
-        sboyd@kernel.org, lorenzo.pieralisi@arm.com,
-        p.zabel@pengutronix.de, alex.dewar90@gmail.com,
-        khilman@baylibre.com, hayashi.kunihiko@socionext.com,
-        vidyas@nvidia.com, jh80.chung@samsung.com,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, helgaas@kernel.org
-Subject: [PATCH v3 6/6] riscv: dts: Add PCIe support for the SiFive FU740-C000 SoC
-Date:   Wed, 31 Mar 2021 17:26:05 +0800
-Message-Id: <20210331092605.105909-7-greentime.hu@sifive.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210331092605.105909-1-greentime.hu@sifive.com>
-References: <20210331092605.105909-1-greentime.hu@sifive.com>
+        id S234612AbhCaJ3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 05:29:02 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:44880 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234597AbhCaJ2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 05:28:43 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617182922; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=4vN6orEVQb03fof+f7nc7emS5NS5O20RaoDcQu8ttdA=; b=XtozNFigH4lwAdM/H1ghrTMXZWKAAoPi2VRI3KS1PF7SrhSQtpIFA7ZmSe4ZghwU1iKftIXU
+ ++yDd8Er9c1yMJFTgYRUNHHW3hdV8l81HEZoYX8dhEf6xo7/hpjVXokUyIGHs7Qzamx+jXsR
+ VHn9pIRByDLAlx86Bjx49rSAsxs=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 606440c1197975f05ef4ebe3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 31 Mar 2021 09:28:33
+ GMT
+Sender: vgarodia=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E13BBC43462; Wed, 31 Mar 2021 09:28:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from vgarodia-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: vgarodia)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 666EBC433CA;
+        Wed, 31 Mar 2021 09:28:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 666EBC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vgarodia@codeaurora.org
+From:   Vikash Garodia <vgarodia@codeaurora.org>
+To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Vikash Garodia <vgarodia@codeaurora.org>
+Subject: [PATCH] venus: helpers: keep max bandwidth when mbps exceeds the supported range
+Date:   Wed, 31 Mar 2021 14:58:22 +0530
+Message-Id: <20210331092822.5729-1-vgarodia@codeaurora.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
----
- arch/riscv/boot/dts/sifive/fu740-c000.dtsi | 33 ++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+When the video usecase have macro blocks per sec which is  more than
+supported, keep the required bus bandwidth as the maximum supported.
 
-diff --git a/arch/riscv/boot/dts/sifive/fu740-c000.dtsi b/arch/riscv/boot/dts/sifive/fu740-c000.dtsi
-index d1bb22b11920..b2317c8e3a80 100644
---- a/arch/riscv/boot/dts/sifive/fu740-c000.dtsi
-+++ b/arch/riscv/boot/dts/sifive/fu740-c000.dtsi
-@@ -158,6 +158,7 @@ prci: clock-controller@10000000 {
- 			reg = <0x0 0x10000000 0x0 0x1000>;
- 			clocks = <&hfclk>, <&rtcclk>;
- 			#clock-cells = <1>;
-+			#reset-cells = <1>;
- 		};
- 		uart0: serial@10010000 {
- 			compatible = "sifive,fu740-c000-uart", "sifive,uart0";
-@@ -288,5 +289,37 @@ gpio: gpio@10060000 {
- 			clocks = <&prci PRCI_CLK_PCLK>;
- 			status = "disabled";
- 		};
-+		pcie@e00000000 {
-+			compatible = "sifive,fu740-pcie";
-+			#address-cells = <3>;
-+			#size-cells = <2>;
-+			#interrupt-cells = <1>;
-+			reg = <0xe 0x00000000 0x0 0x80000000>,
-+			      <0xd 0xf0000000 0x0 0x10000000>,
-+			      <0x0 0x100d0000 0x0 0x1000>;
-+			reg-names = "dbi", "config", "mgmt";
-+			device_type = "pci";
-+			dma-coherent;
-+			bus-range = <0x0 0xff>;
-+			ranges = <0x81000000  0x0 0x60080000  0x0 0x60080000 0x0 0x10000>,      /* I/O */
-+				 <0x82000000  0x0 0x60090000  0x0 0x60090000 0x0 0xff70000>,    /* mem */
-+				 <0x82000000  0x0 0x70000000  0x0 0x70000000 0x0 0x1000000>,    /* mem */
-+				 <0xc3000000 0x20 0x00000000 0x20 0x00000000 0x20 0x00000000>;  /* mem prefetchable */
-+			num-lanes = <0x8>;
-+			interrupts = <56>, <57>, <58>, <59>, <60>, <61>, <62>, <63>, <64>;
-+			interrupt-names = "msi", "inta", "intb", "intc", "intd";
-+			interrupt-parent = <&plic0>;
-+			interrupt-map-mask = <0x0 0x0 0x0 0x7>;
-+			interrupt-map = <0x0 0x0 0x0 0x1 &plic0 57>,
-+					<0x0 0x0 0x0 0x2 &plic0 58>,
-+					<0x0 0x0 0x0 0x3 &plic0 59>,
-+					<0x0 0x0 0x0 0x4 &plic0 60>;
-+			clock-names = "pcie_aux";
-+			clocks = <&prci PRCI_CLK_PCIE_AUX>;
-+			pwren-gpios = <&gpio 5 0>;
-+			reset-gpios = <&gpio 8 0>;
-+			resets = <&prci 4>;
-+			status = "okay";
-+		};
- 	};
- };
+Signed-off-by: Vikash Garodia <vgarodia@codeaurora.org>
+---
+ drivers/media/platform/qcom/venus/pm_helpers.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
+index e349d01422c5..ebd7e42e31c1 100644
+--- a/drivers/media/platform/qcom/venus/pm_helpers.c
++++ b/drivers/media/platform/qcom/venus/pm_helpers.c
+@@ -186,7 +186,7 @@ static void mbs_to_bw(struct venus_inst *inst, u32 mbs, u32 *avg, u32 *peak)
+ 		return;
+ 
+ 	for (i = 0; i < num_rows; i++) {
+-		if (mbs > bw_tbl[i].mbs_per_sec)
++		if (i != 0 && mbs > bw_tbl[i].mbs_per_sec)
+ 			break;
+ 
+ 		if (inst->dpb_fmt & HFI_COLOR_FORMAT_10_BIT_BASE) {
 -- 
-2.30.2
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
