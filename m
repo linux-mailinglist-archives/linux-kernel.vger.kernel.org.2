@@ -2,129 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 091E434FBF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:53:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC1C934FBF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234513AbhCaIwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 04:52:47 -0400
-Received: from outbound-smtp56.blacknight.com ([46.22.136.240]:38129 "EHLO
-        outbound-smtp56.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234502AbhCaIwP (ORCPT
+        id S234384AbhCaIxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 04:53:18 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3510 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231818AbhCaIxF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 04:52:15 -0400
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp56.blacknight.com (Postfix) with ESMTPS id 9DCB7FAD04
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:52:14 +0100 (IST)
-Received: (qmail 27995 invoked from network); 31 Mar 2021 08:52:14 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 31 Mar 2021 08:52:14 -0000
-Date:   Wed, 31 Mar 2021 09:52:13 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [RFC PATCH 0/6] Use local_lock for pcp protection and reduce
- stat overhead
-Message-ID: <20210331085213.GZ3697@techsingularity.net>
-References: <20210329120648.19040-1-mgorman@techsingularity.net>
+        Wed, 31 Mar 2021 04:53:05 -0400
+Received: from DGGEML402-HUB.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4F9KmD01rbzRSWg;
+        Wed, 31 Mar 2021 16:51:08 +0800 (CST)
+Received: from dggema774-chm.china.huawei.com (10.1.198.216) by
+ DGGEML402-HUB.china.huawei.com (10.3.17.38) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Wed, 31 Mar 2021 16:53:03 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggema774-chm.china.huawei.com (10.1.198.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Wed, 31 Mar 2021 16:53:02 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.013;
+ Wed, 31 Mar 2021 16:53:02 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     yangyicong <yangyicong@huawei.com>,
+        "wsa@kernel.org" <wsa@kernel.org>,
+        "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "Sergey.Semin@baikalelectronics.ru" 
+        <Sergey.Semin@baikalelectronics.ru>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "digetx@gmail.com" <digetx@gmail.com>,
+        "treding@nvidia.com" <treding@nvidia.com>,
+        "jarkko.nikula@linux.intel.com" <jarkko.nikula@linux.intel.com>,
+        "rmk+kernel@armlinux.org.uk" <rmk+kernel@armlinux.org.uk>,
+        John Garry <john.garry@huawei.com>,
+        "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: RE: [PATCH 5/5] i2c: designware: Switch over to
+ i2c_freq_mode_string()
+Thread-Topic: [PATCH 5/5] i2c: designware: Switch over to
+ i2c_freq_mode_string()
+Thread-Index: AQHXJXAQhX+a0hiUXkCpTQNzS4ZJoKqdC6Iw//+Ck4CAAITk4IAAAadwgAAQg4CAAKJI0A==
+Date:   Wed, 31 Mar 2021 08:53:02 +0000
+Message-ID: <793f587a5bc744b393cf677258bce50e@hisilicon.com>
+References: <1617113966-40498-1-git-send-email-yangyicong@hisilicon.com>
+ <1617113966-40498-6-git-send-email-yangyicong@hisilicon.com>
+ <baa1c622040745b0b13e99e3f7bf2cd3@hisilicon.com>
+ <CAHp75VdY58Tm0FDcoVDWuw0LBKUFWC_hBCb5t=4WX_MPzsLvZw@mail.gmail.com>
+ <7e82e13b245a4b11917a2e0191acdb1a@hisilicon.com>
+ <CAHp75VeTj-wk3WP2-Unoti0+Cajx33b8NOUbBiSBQLmJHn=YAg@mail.gmail.com>
+In-Reply-To: <CAHp75VeTj-wk3WP2-Unoti0+Cajx33b8NOUbBiSBQLmJHn=YAg@mail.gmail.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.202.63]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20210329120648.19040-1-mgorman@techsingularity.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ingo, Thomas or Peter, is there any chance one of you could take a look
-at patch "[PATCH 2/6] mm/page_alloc: Convert per-cpu list protection to
-local_lock" from this series? It's partially motivated by PREEMPT_RT. More
-details below.
-
-On Mon, Mar 29, 2021 at 01:06:42PM +0100, Mel Gorman wrote:
-> This series requires patches in Andrew's tree so the series is also
-> available at
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-percpu-local_lock-v1r15
-> 
-> The PCP (per-cpu page allocator in page_alloc.c) share locking requirements
-> with vmstat which is inconvenient and causes some issues. Possibly because
-> of that, the PCP list and vmstat share the same per-cpu space meaning that
-> it's possible that vmstat updates dirty cache lines holding per-cpu lists
-> across CPUs unless padding is used. The series splits that structure and
-> separates the locking.
-> 
-
-The bulk page allocation series that the local_lock work had an
-additional fix so I've rebased this onto
-
-git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-percpu-local_lock-v1r16
-
-> Second, PREEMPT_RT considers the following sequence to be unsafe
-> as documented in Documentation/locking/locktypes.rst
-> 
->    local_irq_disable();
->    spin_lock(&lock);
-> 
-> The pcp allocator has this sequence for rmqueue_pcplist (local_irq_save)
-> -> __rmqueue_pcplist -> rmqueue_bulk (spin_lock). This series explicitly
-> separates the locking requirements for the PCP list (local_lock) and stat
-> updates (irqs disabled). Once that is done, the length of time IRQs are
-> disabled can be reduced and in some cases, IRQ disabling can be replaced
-> with preempt_disable.
-> 
-
-It's this part I'm interested in even though it only partially addresses
-the preempt-rt tree concerns. More legwork is needed for preempt-rt which
-is outside the context of this series. At minimum, it involves
-
-1. Split locking of pcp and buddy allocator instead of using spin_lock()
-   when it's "known" that IRQs are disabled (not necessarily a valid
-   assumption on PREEMPT_RT)
-2. Split the zone lock into what protects the zone metadata and what
-   protects the free lists
-
-This looks straight-forward but it involves audit work and it may be
-difficult to avoid regressing non-PREEMPT_RT kernels by disabling/enabling
-IRQs when switching between the pcp allocator and the buddy allocator.
-
-> After that, it was very obvious that zone_statistics in particular has way
-> too much overhead and leaves IRQs disabled for longer than necessary. It
-> has perfectly accurate counters requiring IRQs be disabled for parallel
-> RMW sequences when inaccurate ones like vm_events would do. The series
-> makes the NUMA statistics (NUMA_HIT and friends) inaccurate counters that
-> only require preempt be disabled.
-> 
-> Finally the bulk page allocator can then do all the stat updates in bulk
-> with IRQs enabled which should improve the efficiency of the bulk page
-> allocator. Technically, this could have been done without the local_lock
-> and vmstat conversion work and the order simply reflects the timing of
-> when different series were implemented.
-> 
-> No performance data is included because despite the overhead of the
-> stats, it's within the noise for most workloads but Jesper and Chuck may
-> observe a significant different with the same tests used for the bulk
-> page allocator. The series is more likely to be interesting to the RT
-> folk in terms of slowing getting the PREEMPT tree into mainline.
-> 
->  drivers/base/node.c    |  18 +--
->  include/linux/mmzone.h |  29 +++--
->  include/linux/vmstat.h |  65 ++++++-----
->  mm/mempolicy.c         |   2 +-
->  mm/page_alloc.c        | 173 ++++++++++++++++------------
->  mm/vmstat.c            | 254 +++++++++++++++--------------------------
->  6 files changed, 254 insertions(+), 287 deletions(-)
-> 
-> -- 
-> 2.26.2
-> 
-
--- 
-Mel Gorman
-SUSE Labs
+DQo+IE5vLCBwbGVhc2UgcmVhZCB0aGUgY29kZSBjYXJlZnVsbHkuDQo+IFdlIGNhbiBkdXBsaWNh
+dGUgY29uZGl0aW9uYWwsIGJ1dCBpdCBicmluZ3MgYSBiaXQgb2YgaW5jb25zaXN0ZW5jeSB0byBo
+b3cgdGhlIGNvdW50ZXJzIGFyZSBwcmludGVkLg0KDQpUaGFua3MgZm9yIGNsYXJpZmljYXRpb24s
+IEkgYW0gc3RpbGwgY29uZnVzZWQgYXMgdGhlIG9yaWdpbmFsDQpjb2RlIHByaW50IHRoZSByZWFs
+IG1vZGUgYmFzZWQgb24gZGV2LT5tYXN0ZXJfY2ZnLCB0aGUgbmV3DQpjb2RlIGlzIHByaW50aW5n
+IG1vZGUgYmFzZWQgb24gZnJlcXVlbmN5Lg0KDQpNeSB1bmRlcnN0YW5kaW5nIGlzIHRoZSBvcmln
+aW5hbCBjb2RlIGNvdWxkIGZhbGwgYmFjayB0byBhIGxvd2VyDQpzcGVlZCB3aGVuIGhpZ2hlciBz
+cGVlZCBtb2RlcyB3ZXJlIG5vdCBzZXQgc3VjY2Vzc2Z1bGx5LiBGb3INCmV4YW1wbGUsIGhpZ2gg
+c3BlZWQgbW9kZSBmYWxscyBiYWNrIHRvIGZhc3QgbW9kZToNCg0KaWYgKChkZXYtPm1hc3Rlcl9j
+ZmcgJiBEV19JQ19DT05fU1BFRURfTUFTSykgPT0NCgkJRFdfSUNfQ09OX1NQRUVEX0hJR0gpIHsN
+CgkJaWYgKChjb21wX3BhcmFtMSAmIERXX0lDX0NPTVBfUEFSQU1fMV9TUEVFRF9NT0RFX01BU0sp
+DQoJCQkhPSBEV19JQ19DT01QX1BBUkFNXzFfU1BFRURfTU9ERV9ISUdIKSB7DQoJCQlkZXZfZXJy
+KGRldi0+ZGV2LCAiSGlnaCBTcGVlZCBub3Qgc3VwcG9ydGVkIVxuIik7DQoJCQlkZXYtPm1hc3Rl
+cl9jZmcgJj0gfkRXX0lDX0NPTl9TUEVFRF9NQVNLOw0KCQkJZGV2LT5tYXN0ZXJfY2ZnIHw9IERX
+X0lDX0NPTl9TUEVFRF9GQVNUOw0KCQkJZGV2LT5oc19oY250ID0gMDsNCgkJCWRldi0+aHNfbGNu
+dCA9IDA7DQoJCX0NCg0KdGhlIG9yaWdpbmFsIGNvZGUgd2FzIHByaW50aW5nIHRoZSBtb2RlIGJh
+c2VkIG9uIHRoZSBuZXcNCmZhbGxiYWNrIGRldi0+bWFzdGVyX2NmZyBidXQgbm90IHRoZSBtb2Rl
+IGNhbGN1bGF0ZWQgZnJvbQ0KZnJlcXVlbmN5Og0KDQoJc3dpdGNoIChkZXYtPm1hc3Rlcl9jZmcg
+JiBEV19JQ19DT05fU1BFRURfTUFTSykgew0KCWNhc2UgRFdfSUNfQ09OX1NQRUVEX1NURDoNCgkJ
+bW9kZV9zdHIgPSAiU3RhbmRhcmQgTW9kZSI7DQoJCWJyZWFrOw0KCWNhc2UgRFdfSUNfQ09OX1NQ
+RUVEX0hJR0g6DQoJCW1vZGVfc3RyID0gIkhpZ2ggU3BlZWQgTW9kZSI7DQoJCWJyZWFrOw0KCWRl
+ZmF1bHQ6DQoJCW1vZGVfc3RyID0gIkZhc3QgTW9kZSI7DQoJfQ0KDQo+ID4gK8KgIMKgIMKgcmV0
+dXJuIDA7DQo+ID7CoCB9DQo+ID4NCj4gPsKgIC8qKg0KPiA+IC0tDQo+ID4gMi44LjENCj4gDQo+
+IA0KPiAtLQ0KPiBXaXRoIEJlc3QgUmVnYXJkcywNCj4gQW5keSBTaGV2Y2hlbmtvDQoNCg0KLS0g
+DQpXaXRoIEJlc3QgUmVnYXJkcywNCkFuZHkgU2hldmNoZW5rbw0KDQo=
