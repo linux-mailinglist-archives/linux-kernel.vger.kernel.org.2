@@ -2,158 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 411FA34FFD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 912C735005D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 14:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235329AbhCaL6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 07:58:13 -0400
-Received: from mail-bn8nam11on2076.outbound.protection.outlook.com ([40.107.236.76]:18006
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235115AbhCaL5v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 07:57:51 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JduwZflemDtqMYso5IbtAuO20FX0KJM2ZfjEo/kietSN13X8MamUsElwHC4/Scgvsw2jOnd/8pKdxwT7wqwn3hm79JsmH/fDXRE6Fv97ijYHZuEdf7NaCc/LjzVDcRTEWoRNkOBsm1Qn2SKh9Vjtme6W/qz2C+giYoWoX31GDq3n4QsWxpmK9SCA0aBQFyj89ax2wNbphWuNRuqLpqTfEVeg/36jN6Lyyc6tj6D/b/R4Hx1bEylt5VoP8O6fDtSzM5bDojWrlZOdbgwSX5/49Jy5/PxXwPicL+hb5BcTAazxiVrPgj7LvMufVN7iG/n1nUNbPyGPjfQ/w6XF9tbCCw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=w8Kf0F+WB0x1rrOXSyglsj+C+MEf6Wmm5yul3iqvFyU=;
- b=JLJKWvTLAbCHQZaOOmQ5PoLCgSk8hejgvWaMijWIb+8IoHEgM9i7wxvwz1gE+eZCugnfnFj7UNMsMxufpWGz0/6BsOskArj3f7fn+hkqRTLKsOE6flJLfFrnuzd4gP5wbO/Jb48G1GJBnFFKvZQXUI47WncqV/c4ALJQdvlT2SdC9ZFYosnpkmWFylJ1pB/FAxgDCMqYJJ53F78ul25utsWR/Td7EikgenN9+KW5z3q+wYPo6yz3p9bqpQG3QWcqVck0M5nFjk052sMGnLl95n1GIujpHhCeq4RelNhtqxwkufkIhdiRNPkh1tFY7OGywg9uki2uk45Ek6WqgMSsbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=w8Kf0F+WB0x1rrOXSyglsj+C+MEf6Wmm5yul3iqvFyU=;
- b=bCmvlD9ZjoCSYf8O+s9hpg3rB7vQPnpVK7U1sLAFd9LNPEKGktkiREHEqwm7BLhv9EMG1wCNJ0IlfTHJllIeEHmUZI7XEjk2XraJWyegDY1ckIO+INphZ1h5gRxoKTevmuQDnbXny3cuJFllleUClYa6BoB5d3SuF9BxUTHb90Zqm//OdvOgpE18EpjpmWXn8lJaIW2Is23OPvtseLePhoK69hh9w9HBd/6QlqHoYS0eKafC8HtyAn4Mun8YwnaAYmeiIx8BqUJovI5VZsffLOISmlJ7bRo+YyU5Qsj50s7fMD1/6KlKehtsvp6Qtt1PIKGzro6bWzs7EBRUEYNHkA==
-Authentication-Results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3211.namprd12.prod.outlook.com (2603:10b6:5:15c::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.26; Wed, 31 Mar
- 2021 11:57:48 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3977.033; Wed, 31 Mar 2021
- 11:57:48 +0000
-Date:   Wed, 31 Mar 2021 08:57:46 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     John Hubbard <jhubbard@nvidia.com>, linux-mm@kvack.org,
-        nouveau@lists.freedesktop.org, bskeggs@redhat.com,
-        akpm@linux-foundation.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm-ppc@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, rcampbell@nvidia.com,
-        jglisse@redhat.com, hch@infradead.org, daniel@ffwll.ch,
-        willy@infradead.org, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v7 3/8] mm/rmap: Split try_to_munlock from try_to_unmap
-Message-ID: <20210331115746.GA1463678@nvidia.com>
-References: <20210326000805.2518-1-apopple@nvidia.com>
- <12636584.zsJ0Sx4KLp@nvdebian>
- <b4b11c59-975d-26c7-043a-6acddff78dfd@nvidia.com>
- <23784464.epyy5R1Yul@nvdebian>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <23784464.epyy5R1Yul@nvdebian>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: MN2PR20CA0048.namprd20.prod.outlook.com
- (2603:10b6:208:235::17) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S235353AbhCaMCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 08:02:03 -0400
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:52010 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235035AbhCaMBf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 08:01:35 -0400
+Date:   Wed, 31 Mar 2021 12:01:27 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1617192093; bh=z8CUaRMV+W1DdXAmNRPxHigof0va9uxxc3ghbazANQw=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=lZ9Y2+Rx9IMXJGyzGR1r8fCec6Hg5fzSGRUVXr+KqhJO2JmCyO/h1DrmLR0u3kV8E
+         8NbVOmjwBLwIxjYnWpeoSXgfZ8meMiqtFXZmSq4Sp9WeHtTG7uknH02cIha4dUxCEO
+         s5xMMYX9SFqoKZs/1n+t+DSs22IvE1dQrKRXpX45sUI7rLQ4To1kqPgaH0fcuKb77S
+         Ir/QdFpJRPFPW6RYkq4Hs+yLKhiUEEFGMkttnRr3kCTUQ6Tsi7Dn6xOuA5v+PH09yU
+         WFPNnfLn2C19CgASzQoNrNSLUdSq2k1vyduxgsvlM9mORR+llDW8xiTZpzlrXgABad
+         Uhfl9AhYp5zUw==
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH bpf-next 0/2] xsk: introduce generic almost-zerocopy xmit
+Message-ID: <20210331120116.2671-1-alobakin@pm.me>
+In-Reply-To: <CAJ8uoz2UNABjfpvHOopzvRfW4RJGSS2P=0MUZRkyg-e+S1OdHA@mail.gmail.com>
+References: <20210330231528.546284-1-alobakin@pm.me> <CAJ8uoz2UNABjfpvHOopzvRfW4RJGSS2P=0MUZRkyg-e+S1OdHA@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR20CA0048.namprd20.prod.outlook.com (2603:10b6:208:235::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend Transport; Wed, 31 Mar 2021 11:57:47 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lRZTm-006JMb-5u; Wed, 31 Mar 2021 08:57:46 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9c0dc4ed-e55a-4212-751c-08d8f43c33ca
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3211:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3211502192204632AE454BCCC27C9@DM6PR12MB3211.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PjuF3to13a4dFRBkY4PE79u+6Sxut23q2E12ir4KehklptPAfi1gMb8fK1WV/hzWDLgqElADvPVl76/pDTYc/ZNccQzfRWzNisM2Iay7ULh5AVXDjfkFvWoyOvwULAw3mmY2Vox9g8THdjy4ComRoZx0WeY7xpcziu9SLsDWTlBpql2A61C5FJfVY5LXvC8JPeVGUZUcoaEjdvhoC1ANZIsPnU7rcHZj0nYjs7aCoSazUreLRNb8Y0HOItOFarlXWOdPpwoLfFK/H7INNKAurwewYMIWf7l4Q0GQRrO+cXB1XAtvuKXfjFJoV/eE6rsCRoh2Pc59D25HJWu1Qw2VeDZ/uA5aCDwf+tzKf6jfxQL8OM2nWlN1MsC6tdyZPtID4RkcyZfcsqyRhTrManCIPCAYPemaGlV99EWETQDxDNs/e46K6rDV3KcQpIfaf9spnlZGIsg4d5IfuE6Z63EcZGkf3j31jhFqjNZC/yzeVyIt6pG1itY6QL5enDcitUJ5SPj7KzHXRpS1s/u90S+iQnzgr1anw5tMu/tECuUrJ/3WFfi4n6vY+503ot4JdE2brJ38PsO0KxWzD1v/nCRmhUzLa45723l6wtTFcSaF+Z7rsA09o4eY2oKtUsUmHtcurFmg9Z41i4rACnr3i5vTJoMMc+VwTxv85W7fzW3syPY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(39860400002)(396003)(136003)(53546011)(1076003)(4326008)(54906003)(6862004)(66946007)(9746002)(9786002)(37006003)(8676002)(86362001)(6636002)(316002)(8936002)(5660300002)(66476007)(66556008)(478600001)(7416002)(83380400001)(186003)(38100700001)(26005)(36756003)(33656002)(2616005)(2906002)(426003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?9BOHDX4iC2KvnP1daBdoCyapUrNakitY5Ruj3qVHiKR2aHEh/2ye/0a0g1VK?=
- =?us-ascii?Q?9UI5qeI+Na/8v7r4w4pe11kh/kwsPHt9nr6FJRsesChncXhpwPU45/bqM3iT?=
- =?us-ascii?Q?OIkBGk2APAjR2f0Rhs9MD3l5hoDc9RqRfHA9k1nkKW8D8NUDSzPxBEwdEdy2?=
- =?us-ascii?Q?4klDiMoBRckWZHt0e00Iz5qD4tajSVxE/AfpAxRqf4g+NIv2bM4qC/nuq44M?=
- =?us-ascii?Q?2Igrebsoe5l2Y/aR3hXlJzDmdATqsO+mg6iWmI4SBKrl/VeYI1aPklBCNqVW?=
- =?us-ascii?Q?/3dc2BS6EBxk2v7y0FejR3Wf2+qVBIOd8Fr4m4wnS0uIKf4Z2VArPanzoyPQ?=
- =?us-ascii?Q?IdVs34trj/XQ7+6mOrzAT20JCNWiv1uxgq+KanZnkrX5hPg3qKLyr/8rZmtj?=
- =?us-ascii?Q?aumvkVnic1zddjlHbuBw6E+/lvV0aXhFn3XZYS3BA4eBr1uku3jg5XQMfPiX?=
- =?us-ascii?Q?B9Y7/3nkd17RZug6jhmrqv3/3IpU7IH0yfhcANIBnCsmgzSSNsn2o/rnYbg1?=
- =?us-ascii?Q?NF7GdJwtDvTYptPwsrVJX18uehx4ZAQXIyA9qYYjaZMIVfzUKec5nd0U+dQp?=
- =?us-ascii?Q?i38a1hwmA/YUurxGTiFDRK91rt2r/F4YzaSfxMSVimdHh3hevEciemkOdtGO?=
- =?us-ascii?Q?N3QYCMk72vNrfduZLTFQfd0jgHsb2qKScyon1t2/JG0IqOfKdHWw3DsRKzOi?=
- =?us-ascii?Q?pBJpfWWj5/jXGPtEgf5Xl6Ky1leaShtEK9Gc96HoIQxncf5RoUJAqJvZVwjX?=
- =?us-ascii?Q?Hz2FT9Oon2NxntboTqB4+1mnHfuhEa4iTKlfyBMz0T56fAfqlQOavbVAilc2?=
- =?us-ascii?Q?PY85nutzdXW5M1Gihv2vuXCP8hE7IY+b89TWzrxLCSWHE5GN9W158vg5K3gb?=
- =?us-ascii?Q?3LJrzmpMa6aYOhMbA2AtRz4axh1frxacT3/PLR5NFAvmoXezsIlt8w9u2WHM?=
- =?us-ascii?Q?BKQ8yhf2OB+aKeYSOIMhB6QkRHkNREd5BdY1+1jrUuJ1zqdJIcWgFUcRrB/8?=
- =?us-ascii?Q?Iootlg5XEACcKsVOpRSkCKHbITVTTkrzXrSku8YsNRUlT+mfUwxpeINQDhnS?=
- =?us-ascii?Q?il9vvc24JBPkT6vUU6M0Mdl0Ben3FltYtAancH6iE5lcGTh0pLpsHE4BGnh4?=
- =?us-ascii?Q?PkbdNWclFAKnuC8QptBj9ffyJDZZX0nXQ7Twu3b/cN/ndUhrtDYzMyNXj/J5?=
- =?us-ascii?Q?yKW70iH+hZRDUuoCnnOw8Yw7sH6HqN5aTJo+hRJeJFSc+Yot+Bx/qIw4iUl1?=
- =?us-ascii?Q?H0gOcqWKEQ1+swXV141YyrmnYCiobO+AVPVgrf8N9eCE1KHmFR0NoUm4DcxV?=
- =?us-ascii?Q?awSWVkr+YMY5VBe1AGuzoToK?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9c0dc4ed-e55a-4212-751c-08d8f43c33ca
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Mar 2021 11:57:48.4352
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QIagtZ1C2tI5yrZKSVsBRnZqw9mRjSmPCXtaHQiFPzJhub6cjhNz9NqKObPYjHsD
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3211
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 03:15:47PM +1100, Alistair Popple wrote:
-> On Wednesday, 31 March 2021 2:56:38 PM AEDT John Hubbard wrote:
-> > On 3/30/21 3:56 PM, Alistair Popple wrote:
-> > ...
-> > >> +1 for renaming "munlock*" items to "mlock*", where applicable. good 
-> grief.
-> > > 
-> > > At least the situation was weird enough to prompt further investigation :)
-> > > 
-> > > Renaming to mlock* doesn't feel like the right solution to me either 
-> though. I
-> > > am not sure if you saw me responding to myself earlier but I am thinking
-> > > renaming try_to_munlock() -> page_mlocked() and try_to_munlock_one() ->
-> > > page_mlock_one() might be better. Thoughts?
-> > > 
-> > 
-> > Quite confused by this naming idea. Because: try_to_munlock() returns
-> > void, so a boolean-style name such as "page_mlocked()" is already not a
-> > good fit.
-> > 
-> > Even more important, though, is that try_to_munlock() is mlock-ing the
-> > page, right? Is there some subtle point I'm missing? It really is doing
-> > an mlock to the best of my knowledge here. Although the kerneldoc
-> > comment for try_to_munlock() seems questionable too:
-> 
-> It's mlocking the page if it turns out it still needs to be locked after 
-> unlocking it. But I don't think you're missing anything.
+From: Magnus Karlsson <magnus.karlsson@gmail.com>
+Date: Wed, 31 Mar 2021 11:44:45 +0200
 
-It is really searching all VMA's to see if the VMA flag is set and if
-any are found then it mlocks the page.
+> On Wed, Mar 31, 2021 at 1:17 AM Alexander Lobakin <alobakin@pm.me> wrote:
+> >
+> > This series is based on the exceptional generic zerocopy xmit logics
+> > initially introduced by Xuan Zhuo. It extends it the way that it
+> > could cover all the sane drivers, not only the ones that are capable
+> > of xmitting skbs with no linear space.
+> >
+> > The first patch is a random while-we-are-here improvement over
+> > full-copy path, and the second is the main course. See the individual
+> > commit messages for the details.
+> >
+> > The original (full-zerocopy) path is still here and still generally
+> > faster, but for now it seems like virtio_net will remain the only
+> > user of it, at least for a considerable period of time.
+> >
+> > Alexander Lobakin (2):
+> >   xsk: speed-up generic full-copy xmit
+> >   xsk: introduce generic almost-zerocopy xmit
+> >
+> >  net/xdp/xsk.c | 33 +++++++++++++++++++++++----------
+> >  1 file changed, 23 insertions(+), 10 deletions(-)
+> >
+> > --
+> > Well, this is untested. I currently don't have an access to my setup
+> > and is bound by moving to another country, but as I don't know for
+> > sure at the moment when I'll get back to work on the kernel next time,
+> > I found it worthy to publish this now -- if any further changes will
+> > be required when I already will be out-of-sight, maybe someone could
+> > carry on to make a another revision and so on (I'm still here for any
+> > questions, comments, reviews and improvements till the end of this
+> > week).
+> > But this *should* work with all the sane drivers. If a particular
+> > one won't handle this, it's likely ill.
+>
+> Thanks Alexander. I will take your patches for a spin on a couple of
+> NICs and get back to you, though it will be next week due to holidays
+> where I am based.
 
-But presenting this rountine in its simplified form raises lots of
-questions:
+Thanks a lot! Any tests will be much appreciated.
+I'll publish v2 in a moment though, want to drop a couple of
+micro-optimizations.
 
- - What locking is being used to read the VMA flag?
- - Why do we need to manipulate global struct page flags under the
-   page table locks of a single VMA?
- - Why do we need to check for huge pages inside the VMA loop, not
-   before going to the rmap? PageTransCompoundHead() is not sensitive to
-   the PTEs. (and what happens if the huge page breaks up concurrently?)
- - Why do we clear the mlock bit then run around to try and set it?
-   Feels racey.
+> > --
+> > 2.31.1
 
-Jason
+Al
+
