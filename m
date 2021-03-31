@@ -2,146 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5550350299
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8275C350295
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236160AbhCaOp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 10:45:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236030AbhCaOpu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 10:45:50 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CD70C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 07:45:50 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id c204so14734689pfc.4
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 07:45:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tuR3Hv076e26+xlhfVy+RVU9YGaEZoZ+Lpr3C0PuPj0=;
-        b=12oUV8qvnOtZlVRKX4+66fhJzTPpAlBAdDPmqnXbelpoS1psN2NsG6+yvWAXHkdfzR
-         pGr/aIhSbJpBDAUGUxG1w0MQRo+x0yfMZkhLkP2aKwQsUcg1jwmnt5lzNtlynqTpgMsu
-         +0txxi1AVE2pR1DYjnCJ1b52jDm6rGdpckh7Wa/wbDAcUVFdOQPXXxK3CflbZoG9OLAw
-         ZEImbz7L5c7G2zIV8JCj4Z0dsmUiO3t4SiobKVzIHzXC4XWRhpMu5Mmnkq5t2TQigD33
-         JFyYiqhLKgkYTPA/+k+Es7wroXG3oMIzwdTQRajYjOuiG+ffMc0nnsYbCnuDMOrC/hmy
-         U6ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tuR3Hv076e26+xlhfVy+RVU9YGaEZoZ+Lpr3C0PuPj0=;
-        b=rSOHwYVXFQcHiWbQKlFU9WSCvNj4VMK1Bwi1GC8KhtldfQ2OBzsaAQZVb0QVbY9ZZK
-         getmnirq/Nb5OgAwzyMKrmi0EleMTz+3mVN0V8aXtL1pIngO9qmBO9dCPKo3Uk1ROUcf
-         auMbtsyvOv/j9s1up9xtDVYHXVf/D8SZRnjJ0M+jbLNWM9fQCmWHU9YT7rCTgfjMyiNO
-         dNY3PicV1P4hO7w3A47sRGDHAPwfF2pZJo7pXRe6H5ENb1jWlrdKZOH8yDKwSAGy6Hp6
-         Luzv3eSGTtrQdfb135jo3BljFDknz1Xt0skeRFIyyO/jaYvuLGgy4jVoBHmxW6HZpmA0
-         e55g==
-X-Gm-Message-State: AOAM533lx7wCY0mbjg3ZLdNcvW0nXJhEU1yjPrpvVEmjfufgR/tMMLxd
-        vseTr/mnc1uQCjKD0LCGTDWusZJ2yLeEIPPBuBOZmQ==
-X-Google-Smtp-Source: ABdhPJxkhEmyeADfWNgTHDVOe1oy2q+K3PVRvPiuuzPcDmxT3WXsOIdVzQgiycPQd4b3/r0/NQfTuSY7wqkPQUDakhc=
-X-Received: by 2002:a05:6a00:8c7:b029:20f:1cf4:d02 with SMTP id
- s7-20020a056a0008c7b029020f1cf40d02mr3352305pfu.49.1617201949962; Wed, 31 Mar
- 2021 07:45:49 -0700 (PDT)
+        id S236165AbhCaOpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 10:45:31 -0400
+Received: from mga04.intel.com ([192.55.52.120]:14863 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236168AbhCaOpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 10:45:19 -0400
+IronPort-SDR: EEMnxTb3FTloF2C1TfN86SPBfYKl8EQRZEv8s27JrUYYJmZ/c6Kn+AEWq/VoYxvEIchuGQH7+b
+ OhwBxiBRtiFQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="189787302"
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
+   d="scan'208";a="189787302"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 07:45:18 -0700
+IronPort-SDR: q4cpvPvmrmVab77e4d/Vz2YZD5U6A/6TUSwBdXEil30+pbrLr3FXcEAvBXKrb1KIvPrIOswGQe
+ FaLSnDU2WgZQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
+   d="scan'208";a="377291801"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga003.jf.intel.com with ESMTP; 31 Mar 2021 07:45:16 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 6EE4B199; Wed, 31 Mar 2021 17:45:31 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
+        linux-kernel@vger.kernel.org
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Subject: [PATCH v1 1/1] driver core: platform: Make platform_get_irq_optional() optional
+Date:   Wed, 31 Mar 2021 17:45:26 +0300
+Message-Id: <20210331144526.19439-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210329205249.6b557510@canb.auug.org.au> <83263d0d-1f3f-8a3c-8a95-49e0cfa15051@de.ibm.com>
- <4419611b-3282-2197-884c-332025cdada8@de.ibm.com> <CAMZfGtUaTdmpcw1dr_rWQZTz3UTh9ZFavr0WBSa_obENPasgFw@mail.gmail.com>
- <7c27fc2e-5cea-5a17-6e30-8ae1cb291274@de.ibm.com> <CAMZfGtV9w24cJAwYsQuhvVpdLiYssjdfwfXApNK51zacr31c3w@mail.gmail.com>
- <179f84ad-7b98-4bc5-f895-c19faabbb311@de.ibm.com>
-In-Reply-To: <179f84ad-7b98-4bc5-f895-c19faabbb311@de.ibm.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 31 Mar 2021 22:45:12 +0800
-Message-ID: <CAMZfGtVhL14_mLKKcPA+QFbKUDBSwKRR_srrGODk0nhcVH6KoA@mail.gmail.com>
-Subject: Re: [External] RE: kernel warning percpu ref in obj_cgroup_release
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 2:22 PM Christian Borntraeger
-<borntraeger@de.ibm.com> wrote:
->
->
->
-> On 30.03.21 18:25, Muchun Song wrote:
-> > On Tue, Mar 30, 2021 at 11:10 PM Christian Borntraeger
-> > <borntraeger@de.ibm.com> wrote:
-> >>
-> >>
-> >> On 30.03.21 15:49, Muchun Song wrote:
-> >>> On Tue, Mar 30, 2021 at 9:27 PM Christian Borntraeger
-> >>> <borntraeger@de.ibm.com> wrote:
-> >>>>
-> >>>> So bisect shows this for belows warning:
-> >>>
-> >>> Thanks for your effort on this. Can you share your config?
-> >>
-> >> attached (but its s390x) for next-20210330
-> >
-> > Thanks. Can you apply the following patch and help me test?
-> > Very Thanks.
-> >
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index 7fdc92e1983e..579408e4d46f 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -793,6 +793,12 @@ static inline void obj_cgroup_get(struct obj_cgroup *objcg)
-> >          percpu_ref_get(&objcg->refcnt);
-> >   }
-> >
-> > +static inline void obj_cgroup_get_many(struct obj_cgroup *objcg,
-> > +                                      unsigned long nr)
-> > +{
-> > +       percpu_ref_get_many(&objcg->refcnt, nr);
-> > +}
-> > +
-> >   static inline void obj_cgroup_put(struct obj_cgroup *objcg)
-> >   {
-> >          percpu_ref_put(&objcg->refcnt);
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index c0b83a396299..1634dba1044c 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -3133,7 +3133,10 @@ void split_page_memcg(struct page *head, unsigned int nr)
-> >
-> >          for (i = 1; i < nr; i++)
-> >                  head[i].memcg_data = head->memcg_data;
-> > -       css_get_many(&memcg->css, nr - 1);
-> > +       if (PageMemcgKmem(head))
-> > +               obj_cgroup_get_many(__page_objcg(head), nr - 1);
-> > +       else
-> > +               css_get_many(&memcg->css, nr - 1);
-> >   }
-> >
-> >   #ifdef CONFIG_MEMCG_SWAP
+Currently the platform_get_irq_optional() returns an error code even
+if IRQ resource sumply has not been found. It prevents caller to be
+error code agnostic in their error handling.
 
-Hi Andrew,
+Now:
+	ret = platform_get_irq_optional(...);
+	if (ret != -ENXIO)
+		return ret; // respect deferred probe
+	if (ret > 0)
+		...we get an IRQ...
 
-Now we have two choices to fix this issue.
+After proposed change:
+	ret = platform_get_irq_optional(...);
+	if (ret < 0)
+		return ret;
+	if (ret > 0)
+		...we get an IRQ...
 
-1) Send a v6 patchset (Use obj_cgroup APIs to charge kmem pages)
-    to fix this issue.
-2) Send a separate fix patch (Just like above).
+Reported-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/base/platform.c | 55 +++++++++++++++++++++++++----------------
+ 1 file changed, 34 insertions(+), 21 deletions(-)
 
-Both ways are ok for me. But I want to know which one is more
-convenient for you.
+diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+index 6e1f8e0b661c..d82db3eabcd4 100644
+--- a/drivers/base/platform.c
++++ b/drivers/base/platform.c
+@@ -168,25 +168,7 @@ devm_platform_ioremap_resource_byname(struct platform_device *pdev,
+ EXPORT_SYMBOL_GPL(devm_platform_ioremap_resource_byname);
+ #endif /* CONFIG_HAS_IOMEM */
+ 
+-/**
+- * platform_get_irq_optional - get an optional IRQ for a device
+- * @dev: platform device
+- * @num: IRQ number index
+- *
+- * Gets an IRQ for a platform device. Device drivers should check the return
+- * value for errors so as to not pass a negative integer value to the
+- * request_irq() APIs. This is the same as platform_get_irq(), except that it
+- * does not print an error message if an IRQ can not be obtained.
+- *
+- * For example::
+- *
+- *		int irq = platform_get_irq_optional(pdev, 0);
+- *		if (irq < 0)
+- *			return irq;
+- *
+- * Return: non-zero IRQ number on success, negative error number on failure.
+- */
+-int platform_get_irq_optional(struct platform_device *dev, unsigned int num)
++static int platform_do_get_irq(struct platform_device *dev, unsigned int num)
+ {
+ 	int ret;
+ #ifdef CONFIG_SPARC
+@@ -255,6 +237,37 @@ int platform_get_irq_optional(struct platform_device *dev, unsigned int num)
+ 	WARN(ret == 0, "0 is an invalid IRQ number\n");
+ 	return ret;
+ }
++
++/**
++ * platform_get_irq_optional - get an optional IRQ for a device
++ * @dev: platform device
++ * @num: IRQ number index
++ *
++ * Gets an IRQ for a platform device. Device drivers should check the return
++ * value for errors so as to not pass a negative integer value to the
++ * request_irq() APIs. This is the same as platform_get_irq(), except that it
++ * does not print an error message if an IRQ can not be obtained and returns
++ * 0 when IRQ resource has not been found.
++ *
++ * For example::
++ *
++ *		int irq = platform_get_irq_optional(pdev, 0);
++ *		if (irq < 0)
++ *			return irq;
++ *		if (irq > 0)
++ *			...we have IRQ line defined...
++ *
++ * Return: non-zero IRQ number on success, negative error number on failure.
++ */
++int platform_get_irq_optional(struct platform_device *dev, unsigned int num)
++{
++	int ret;
++
++	ret = platform_do_get_irq(dev, num);
++	if (ret == -ENXIO)
++		return 0;
++	return ret;
++}
+ EXPORT_SYMBOL_GPL(platform_get_irq_optional);
+ 
+ /**
+@@ -278,7 +291,7 @@ int platform_get_irq(struct platform_device *dev, unsigned int num)
+ {
+ 	int ret;
+ 
+-	ret = platform_get_irq_optional(dev, num);
++	ret = platform_do_get_irq(dev, num);
+ 	if (ret < 0 && ret != -EPROBE_DEFER)
+ 		dev_err(&dev->dev, "IRQ index %u not found\n", num);
+ 
+@@ -296,7 +309,7 @@ int platform_irq_count(struct platform_device *dev)
+ {
+ 	int ret, nr = 0;
+ 
+-	while ((ret = platform_get_irq_optional(dev, nr)) >= 0)
++	while ((ret = platform_do_get_irq(dev, nr)) >= 0)
+ 		nr++;
+ 
+ 	if (ret == -EPROBE_DEFER)
+-- 
+2.30.2
 
-Thanks.
-
-> >
->
-> This one seems to do the trick, I can no longer see the warning.
