@@ -2,212 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4DC3509D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C76F23509E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232319AbhCaV6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 17:58:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbhCaV6Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 17:58:16 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4793C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:58:15 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id x27so92775qvd.2
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:58:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=PFMaPm0ZSKNHLe7uWDZGAg0DS2vqUyt9JRPEDLOP+MU=;
-        b=gPPf9GodbpejQiqyyWmjZBzoVUjf/cKgxfZTCeRQ7+0QXc9+O5xW0rNZpAYYi1EgUM
-         yOHzSMY3N7QY9Q33Jj2ktxeHP/HgxuSCaInqtDmsJkiYjaPpJJtsGC3XeUbJUf4Bs8Ze
-         SS/3o2J7tVzgNkj8PBghVrA9AIskldO/j5vbvEblbZCLZxeFMzO7eiIRu5GfTFUK8ROC
-         zoiYi5ls7SMKT4SIGYRr4gt86ahg6MBPG1TYFvuzPptUD46itr64I/9cP4C9hhRMmNy0
-         uposNkQoouRsSaetCJp/KcgzuPrgxQMHkjpPFvafYEaMw0G1bTxOdo7Xllgl7qK061Ng
-         3g4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=PFMaPm0ZSKNHLe7uWDZGAg0DS2vqUyt9JRPEDLOP+MU=;
-        b=cz6sDKot+ZTgVIQksd4SiKFa0GswrZVk8hkL96e/7ylgFpQWK0k9HohLQvRwuicfYD
-         o3r16se6s6p2DFu0m7hkc8NfD+D8E7hkhRZ9E6w+QLUcfsZP2lKQ8OfhpF1uGqDXRnjb
-         2UZ/qwZEm0g38IIJ7d4VZc3ZWUO1+/VfoxtLubHl4LO7Fsq6F/PdgxhVwdXIE7MLT0U7
-         tv/NjV8kbWIznLNKc8t7kytSA1IXb9GIGWUECUvs8MiYnwIJJtAqHZzw3AThS7ex16PU
-         /65I/9OASPXKASNnJ89zHtMMvZt8I9uJwwqU9uj5MpZbckPRUpaXGGdWPsznxEYegyiX
-         ExKQ==
-X-Gm-Message-State: AOAM530tQelMFAa+tudcIMLeBVKHSPqW6ndks1DA43WXqupW/8teV39I
-        7fNa4+PC7RzY4OkdyqHk83BGkA==
-X-Google-Smtp-Source: ABdhPJyMeWQk1SNAy+WGG9FZXOQlYhXupuR6DDyh4pyG64dL5jvkK68dDxCXdh/+SxT35eoCgqrhbA==
-X-Received: by 2002:ad4:4b0a:: with SMTP id r10mr5231949qvw.31.1617227894438;
-        Wed, 31 Mar 2021 14:58:14 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id s13sm2487446qkg.17.2021.03.31.14.58.13
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Wed, 31 Mar 2021 14:58:14 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 14:58:12 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Matthew Wilcox <willy@infradead.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: BUG_ON(!mapping_empty(&inode->i_data))
-In-Reply-To: <20210331024913.GS351017@casper.infradead.org>
-Message-ID: <alpine.LSU.2.11.2103311413560.1201@eggly.anvils>
-References: <alpine.LSU.2.11.2103301654520.2648@eggly.anvils> <20210331024913.GS351017@casper.infradead.org>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        id S232627AbhCaWBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 18:01:03 -0400
+Received: from mga11.intel.com ([192.55.52.93]:62506 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231676AbhCaWAf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 18:00:35 -0400
+IronPort-SDR: A07JH/gQpo9UZi/hPkczR/r6R1Iyipm+1Is21weluBZ88C2lpQeQBA9dP1joPmQV+uLcxCnmwd
+ elwLc8S3Aobw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="188840334"
+X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
+   d="scan'208";a="188840334"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 15:00:35 -0700
+IronPort-SDR: wrdoTYr/42ISLP0b4O6OBy0ToBLByXBnlURGfNgKPd6KE/jnwCxCP8U18dqg74PnMjXpp6Zqtw
+ VibEMx8FadLA==
+X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
+   d="scan'208";a="418873309"
+Received: from algolden-mobl1.amr.corp.intel.com (HELO [10.209.172.7]) ([10.209.172.7])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 15:00:34 -0700
+Subject: Re: [PATCH v4 1/1] x86/tdx: Handle MWAIT, MONITOR and WBINVD
+To:     Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
+References: <2FE32855-EA5D-44E4-AACC-25E9B1476547@amacapital.net>
+ <e62cfd0ae90de435e6819979d9027f76d835a22a.1617224710.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YGTvSvr2T2v3t3XA@google.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <5d961c25-3dee-4a5d-4bba-a97d157a5a49@intel.com>
+Date:   Wed, 31 Mar 2021 15:00:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <YGTvSvr2T2v3t3XA@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 31 Mar 2021, Matthew Wilcox wrote:
-> On Tue, Mar 30, 2021 at 06:30:22PM -0700, Hugh Dickins wrote:
-> > Running my usual tmpfs kernel builds swapping load, on Sunday's rc4-mm1
-> > mmotm (I never got to try rc3-mm1 but presume it behaved the same way),
-> > I hit clear_inode()'s BUG_ON(!mapping_empty(&inode->i_data)); on two
-> > machines, within an hour or few, repeatably though not to order.
-> > 
-> > The stack backtrace has always been clear_inode < ext4_clear_inode <
-> > ext4_evict_inode < evict < dispose_list < prune_icache_sb <
-> > super_cache_scan < do_shrink_slab < shrink_slab_memcg < shrink_slab <
-> > shrink_node_memgs < shrink_node < balance_pgdat < kswapd.
-> > 
-> > ext4 is the disk filesystem I read the source to build from, and also
-> > the filesystem I use on a loop device on a tmpfs file: I have not tried
-> > with other filesystems, nor checked whether perhaps it happens always on
-> > the loop one or always on the disk one.  I have not seen it happen with
-> > tmpfs - probably because its inodes cannot be evicted by the shrinker
-> > anyway; I have not seen it happen when "rm -rf" evicts ext4 or tmpfs
-> > inodes (but suspect that may be down to timing, or less pressure).
-> > I doubt it's a matter of filesystem: think it's an XArray thing.
-> > 
-> > Whenever I've looked at the XArray nodes involved, the root node
-> > (shift 6) contained one or three (adjacent) pointers to empty shift
-> > 0 nodes, which each had offset and parent and array correctly set.
-> > Is there some way in which empty nodes can get left behind, and so
-> > fail eviction's mapping_empty() check?
-> 
-> There isn't _supposed_ to be.  The XArray is supposed to delete nodes
-> whenever the ->count reaches zero.  It might give me a clue if you could
-> share a dump of the tree, if you still have that handy.
+On 3/31/21 2:53 PM, Sean Christopherson wrote:
+> On Wed, Mar 31, 2021, Kuppuswamy Sathyanarayanan wrote:
+>> Changes since v3:
+>>  * WARN user if SEAM does not disable MONITOR/MWAIT instruction.
+> Why bother?  There are a whole pile of features that are dictated by the TDX
+> module spec.  MONITOR/MWAIT is about as uninteresting as it gets, e.g. absolute
+> worst case scenario is the guest kernel crashes, whereas a lot of spec violations
+> would compromise the security of the guest.
 
-Very useful suggestion: the xa_dump() may not give you more of a clue,
-but just running again last night to gather that info has revealed more.
+So, what should we do?  In the #VE handler:
 
-> 
-> > I did wonder whether some might get left behind if xas_alloc() fails
-> > (though probably the tree here is too shallow to show that).  Printks
-> > showed that occasionally xas_alloc() did fail while testing (maybe at
-> > memcg limit), but there was no correlation with the BUG_ONs.
-> 
-> This is a problem inherited from the radix tree, and I really want to
-> justify fixing it ... I think I may have enough infrastructure in place
-> to do it now (as part of the xas_split() commit we can now allocate
-> multiple xa_nodes in xas->xa_alloc).  But you're right; if we allocated
-> all the way down to an order-0 node, then this isn't the bug.
-> 
-> Were you using the ALLOW_ERROR_INJECTION feature on
-> __add_to_page_cache_locked()?  I haven't looked into how that works,
-> and maybe that could leave us in an inconsistent state.
+	switch (exit_reason) {
+	case SOMETHING_WE_HANDLE:
+		blah();
+		break;
+		...
+	default:
+		pr_err("unhadled #VE, exit reason: %d\n", exit_reason);
+		BUG_ON(1);
+	}
 
-No, no error injection: not something I've ever looked at either.
+?
 
-> 
-> > I did wonder whether this is a long-standing issue, which your new
-> > BUG_ON is the first to detect: so tried 5.12-rc5 clear_inode() with
-> > a BUG_ON(!xa_empty(&inode->i_data.i_pages)) after its nrpages and
-> > nrexceptional BUG_ONs.  The result there surprised me: I expected
-> > it to behave the same way, but it hits that BUG_ON in a minute or
-> > so, instead of an hour or so.  Was there a fix you made somewhere,
-> > to avoid the BUG_ON(!mapping_empty) most of the time? but needs
-> > more work. I looked around a little, but didn't find any.
-> 
-> I didn't make a fix for this issue; indeed I haven't observed it myself.
+Is this the *ONLY* one of these, or are we going to have another twenty?
 
-That was interesting to me last night, but not so interesting now
-we have more info (below).
+If this is the only one, we might as well give a nice string error
+message.  If there are twenty more, let's just dump the exit reason,
+BUG() and move on with our lives.
 
-> It seems like cgroups are a good way to induce allocation failures, so
-> I should play around with that a bit.  The userspace test-suite has a
-> relatively malicious allocator that will fail every allocation not marked
-> as GFP_KERNEL, so it always exercises the fallback path for GFP_NOWAIT,
-> but then it will always succeed eventually.
-> 
-> > I had hoped to work this out myself, and save us both some writing:
-> > but better hand over to you, in the hope that you'll quickly guess
-> > what's up, then I can try patches. I do like the no-nrexceptionals
-> > series, but there's something still to be fixed.
-> 
-> Agreed.  It seems like it's unmasking a bug that already existed, so
-> it's not an argument for dropping the series, but we should fix the bug
-> so we don't crash people's machines.
-> 
-> Arguably, the condition being checked for is not serious enough for a
-> BUG_ON.  A WARN_ON, yes, and dump the tree for later perusal, but it's
-> just a memory leak, and not (I think?) likely to lead to later memory
-> corruption.  The nodes don't contain any pages, so there's nothing to
-> point to the mapping.
-
-Good suggestion, yes, use a WARN_ON instead of a BUG_ON.  And even when
-this immediate bug is fixed, will still be necessary for so long as the
-radix-tree -ENOMEM might leave intermediate nodes behind.  (An easy way
-to fix that might be just to add a cleanup pass when !mapping_empty().)
-
-I followed your suggestion and used WARN_ON instead of BUG_ON in last
-night's runs (when you make that change, do remember to do what I
-forgot at first - reset i_pages to NULL - otherwise anyone who inherits
-that struct inode thereafter inherits these nodes - I got lots of
-warnings on tiny files!).
-
-And also printed out s_dev i_ino i_size: in the hope that they might
-shed some more light.  Hope fulfilled: *every* instance, on every
-machine, has been /usr/bin/ld.bfd.
-
-My kernels are built with CONFIG_READ_ONLY_THP_FOR_FS=y.  And checking
-old /var/log/messages from last summer, when I was first playing around
-with that, I see the temporary debug messages I had added for it:
-"collapse_file(/usr/bin/ld.bfd, 0)" meaning that it was making a THP
-at offset 0.  (Other executables too, notably cc1; but maybe ld.bfd
-is the one most likely to get evicted.)
-
-I suspect there's a bug in the XArray handling in collapse_file(),
-which sometimes leaves empty nodes behind.
-
-Here's the xa_dump() info from one of the machines:
-
-[  348.026010] xarray: ffff88800f01eb98 head ffff88800855f2a2 flags 21 marks 0 0 0
-[  348.028101] 0-4095: node ffff88800855f2a0 max 0 parent 0000000000000000 shift 6 count 1 values 0 array ffff88800f01eb98 list ffff88800855f2b8 ffff88800855f2b8 marks 0 0 0
-[  348.030335] 960-1023: node ffff888023dbd890 offset 15 parent ffff88800855f2a0 shift 0 count 0 values 0 array ffff88800f01eb98 list ffff888023dbd8a8 ffff888023dbd8a8 marks 0 0 0
-[  348.032736] s_dev 259:5 i_ino 935588 i_size 9112288
-
-[ 4521.543662] xarray: ffff888003e8f898 head ffff88801256963a flags 21 marks 0 0 0
-[ 4521.545683] 0-4095: node ffff888012569638 max 0 parent 0000000000000000 shift 6 count 1 values 0 array ffff888003e8f898 list ffff888012569650 ffff888012569650 marks 0 0 0
-[ 4521.547889] 384-447: node ffff8880215b2088 offset 6 parent ffff888012569638 shift 0 count 0 values 0 array ffff888003e8f898 list ffff8880215b20a0 ffff8880215b20a0 marks 0 0 0
-[ 4521.550151] s_dev 259:5 i_ino 935588 i_size 9112288
-
-[17526.162821] xarray: ffff88800f09a998 head ffff88801610808a flags 21 marks 0 0 0
-[17526.163936] 0-4095: node ffff888016108088 max 0 parent 0000000000000000 shift 6 count 2 values 0 array ffff88800f09a998 list ffff8880161080a0 ffff8880161080a0 marks 0 0 0
-[17526.165176] 384-447: node ffff888022a5fc00 offset 6 parent ffff888016108088 shift 0 count 0 values 0 array ffff88800f09a998 list ffff888022a5fc18 ffff888022a5fc18 marks 0 0 0
-[17526.167012] 960-1023: node ffff888008656188 offset 15 parent ffff888016108088 shift 0 count 0 values 0 array ffff88800f09a998 list ffff8880086561a0 ffff8880086561a0 marks 0 0 0
-[17526.168225] s_dev 259:5 i_ino 935588 i_size 9112288
-
-[27201.416553] xarray: ffff888026638a98 head ffff8880241fd14a flags 21 marks 0 0 0
-[27201.418724] 0-4095: node ffff8880241fd148 max 0 parent 0000000000000000 shift 6 count 1 values 0 array ffff888026638a98 list ffff8880241fd160 ffff8880241fd160 marks 0 0 0
-[27201.421067] 384-447: node ffff888026471aa8 offset 6 parent ffff8880241fd148 shift 0 count 0 values 0 array ffff888026638a98 list ffff888026471ac0 ffff888026471ac0 marks 0 0 0
-[27201.423353] s_dev 259:5 i_ino 935588 i_size 9112288
-
-[28189.092410] xarray: ffff888022468858 head ffff888016358262 flags 21 marks 0 0 0
-[28189.094548] 0-4095: node ffff888016358260 max 0 parent 0000000000000000 shift 6 count 1 values 0 array ffff888022468858 list ffff888016358278 ffff888016358278 marks 0 0 0
-[28189.096821] 384-447: node ffff8880124455f8 offset 6 parent ffff888016358260 shift 0 count 0 values 0 array ffff888022468858 list ffff888012445610 ffff888012445610 marks 0 0 0
-[28189.099217] s_dev 259:5 i_ino 935588 i_size 9112288
-
-935588 -rwxr-xr-x 1 root root 9112288 Dec  7 14:28 /usr/bin/ld.bfd
-
-Hugh
