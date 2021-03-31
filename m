@@ -2,187 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7505C34FDD2
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 12:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E38434FDD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 12:13:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234916AbhCaKKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 06:10:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:37284 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234473AbhCaKJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 06:09:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5282A11B3;
-        Wed, 31 Mar 2021 03:09:54 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A6BEA3F792;
-        Wed, 31 Mar 2021 03:09:51 -0700 (PDT)
-Subject: Re: [PATCH v10 1/6] arm64: mte: Sync tags for pages where PTE is
- untagged
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-References: <20210312151902.17853-1-steven.price@arm.com>
- <20210312151902.17853-2-steven.price@arm.com> <20210326185653.GG5126@arm.com>
- <21842e4d-7935-077c-3d6f-fced89b7f2bb@arm.com>
- <20210330101314.GC18075@arm.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <98894641-8344-4d69-0c33-41eb73f5adf3@arm.com>
-Date:   Wed, 31 Mar 2021 11:09:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S234758AbhCaKM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 06:12:56 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:51432 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230032AbhCaKMk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 06:12:40 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210331101238euoutp01ee751618bc1044228ea3dd6c0450e1a3~xZbKTUcw22006020060euoutp01C
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 10:12:38 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210331101238euoutp01ee751618bc1044228ea3dd6c0450e1a3~xZbKTUcw22006020060euoutp01C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1617185558;
+        bh=IuD+yxbAFDnUrs1IElAd4pJHc//IKV7VHIBWdBNLg1A=;
+        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+        b=N9jpzoGNeql5KyEj+t2QnpGC2aWUke8ulhOEy4IOr4sj8HAyvrrW2of+7iNzqKupe
+         hx1ik9gjHifGe+k03l2jgQlHzwQrBcKDG+H9JS0R+FRRWo0l/HHuVM43uk/OOoaN5m
+         q4keX8fqtUHIKTqYohk8xsRT13iCC57Wszm/aARg=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210331101238eucas1p2057f863548fde34dbf2ba7bf546fafa9~xZbJyUt8m0678706787eucas1p2Y;
+        Wed, 31 Mar 2021 10:12:38 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 27.F6.09444.61B44606; Wed, 31
+        Mar 2021 11:12:38 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210331101237eucas1p1ae152c11cd6959fa949a181a84a0a2b1~xZbJDxxPn3077430774eucas1p1O;
+        Wed, 31 Mar 2021 10:12:37 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210331101237eusmtrp1ee2a22286b721365132450f8d4bf6c73~xZbJC2_rQ2878428784eusmtrp13;
+        Wed, 31 Mar 2021 10:12:37 +0000 (GMT)
+X-AuditID: cbfec7f4-dbdff700000024e4-4d-60644b163bfc
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 33.4A.08696.51B44606; Wed, 31
+        Mar 2021 11:12:37 +0100 (BST)
+Received: from localhost (unknown [106.210.131.79]) by eusmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210331101232eusmtip1bb0d13edb05953affdffa10885f15017~xZbEq2HeB1360313603eusmtip1K;
+        Wed, 31 Mar 2021 10:12:32 +0000 (GMT)
+Message-ID: <26d73f36-e150-57ec-d957-4b7bda6b366e@samsung.com>
+Date:   Wed, 31 Mar 2021 12:12:31 +0200
 MIME-Version: 1.0
-In-Reply-To: <20210330101314.GC18075@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0)
+        Gecko/20100101 Thunderbird/88.0
+Subject: Re: [PATCH v2 10/14] drm/bridge: ti-sn65dsi86: Stop caching the
+ EDID ourselves
 Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+To:     Douglas Anderson <dianders@chromium.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     robdclark@chromium.org, dri-devel@lists.freedesktop.org,
+        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
+        Steev Klimaszewski <steev@kali.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-kernel@vger.kernel.org
+From:   Andrzej Hajda <a.hajda@samsung.com>
+In-Reply-To: <20210329195255.v2.10.Ida6151df6bfc71df77afee1d72bb7eb0a443f327@changeid>
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrHKsWRmVeSWpSXmKPExsWy7djPc7pi3ikJBmdvcVj0njvJZHF6/zsW
+        i7PLDrJZXPn6ns3i6veXzBYn31xlseicuITdYuL+s+wWl3fNYbM41Bdtce3nY2aLT7MeMlus
+        +LmV0aK9y8bi5/U2Zovjd54yOQh4vL/Ryu4xu+Eii8fsjpmsHov3vGTymLPoBrPHiQmXmDzu
+        XNvD5rH92wNWj/vdx5k8lky7yuZxoHcyi8fnTXIBPFFcNimpOZllqUX6dglcGRN6j7IXXBCu
+        mNGzgrGBcRN/FyMnh4SAiURHxz7mLkYuDiGBFYwSU1qfsEM4XxglPh3dwAThfGaUuD2jlQWm
+        pWHuYaiq5YwS81duYoRwXjBKzNraywxSxStgJ3G5pxesg0VAVeLkjDusEHFBiZMzn4DFRQUS
+        JFbdWM4EYgsLREqsO/cCrIZZQFyi6ctKVpChIgL/GCVWT3wMdgezwGcmiU9TDoF1sAloSvzd
+        fJMNxOYUCJPYsegDM0S3vETz1tlgL0kIXOKUWLDoNzPE4S4SO5ZNh3pCWOLV8S3sELaMxOnJ
+        PVDxeon7K1qgmjsYJbZu2AnVbC1x59wvoG0cQBs0Jdbv0ocIO0q8aekEC0sI8EnceCsIcQOf
+        xKRt05khwrwSHW1CENWKEvfPboUaKC6x9MJXtgmMSrOQwmUWkv9nIflmFsLeBYwsqxjFU0uL
+        c9NTi43yUsv1ihNzi0vz0vWS83M3MQKT5Ol/x7/sYFz+6qPeIUYmDsZDjBIczEoivMIHEhOE
+        eFMSK6tSi/Lji0pzUosPMUpzsCiJ8yZtWRMvJJCeWJKanZpakFoEk2Xi4JRqYJpwguvRpv+f
+        GkJWxXed1//54iVPBN8MvaWtq2WS+AQur4nZlBNS3tF2PNaAxfph7sJrersDRByf8NzcMaHP
+        JftGMhdT3sW/u5wuL5/3I/4yp9xfNSfrRnVN4Y0/LYKWH4xPmmoX9eaAuFP+lW3CvnVWYibL
+        J52xWj7d85NznHp1wPRSF6G0ntRprlH2YnGHX7dNMm4OvClReCu3dsvMb7opqhsPaqQ/yuVa
+        a/Aub8X8f44J19wffjJUrzTbWGszZVU1x47b9mxn1KfNKZZZPn1ejqs609O+PF/bRPVg5ntL
+        Eksua09zmByQl98ktP+RTl6cp7qvZf41lz9bfNncQqJboz5f2PvEbePyruwWJZbijERDLeai
+        4kQAeqgr6QEEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgleLIzCtJLcpLzFFi42I5/e/4XV1R75QEg2c7JCx6z51ksji9/x2L
+        xdllB9ksrnx9z2Zx9ftLZouTb66yWHROXMJuMXH/WXaLy7vmsFkc6ou2uPbzMbPFp1kPmS1W
+        /NzKaNHeZWPx83obs8XxO0+ZHAQ83t9oZfeY3XCRxWN2x0xWj8V7XjJ5zFl0g9njxIRLTB53
+        ru1h89j+7QGrx/3u40weS6ZdZfM40DuZxePzJrkAnig9m6L80pJUhYz84hJbpWhDCyM9Q0sL
+        PSMTSz1DY/NYKyNTJX07m5TUnMyy1CJ9uwS9jAm9R9kLLghXzOhZwdjAuIm/i5GTQ0LARKJh
+        7mH2LkYuDiGBpYwSV7e0sEEkxCV2z3/LDGELS/y51gUWFxJ4xiix5moUiM0rYCdxuaeXBcRm
+        EVCVODnjDitEXFDi5MwnYHFRgQSJsx/mMYHYwgKREv3zroHFmYHmN31ZyQqyWESggUni0t3F
+        TCAOs8BXJomWV0uhTrrDKHFq/xSw1WwCmhJ/N98EszkFwiR2LPrADDHKTKJraxcjhC0v0bx1
+        NvMERqFZSC6ZhWTjLCQts5C0LGBkWcUoklpanJueW2ykV5yYW1yal66XnJ+7iRGYFLYd+7ll
+        B+PKVx/1DjEycTAeYpTgYFYS4RU+kJggxJuSWFmVWpQfX1Sak1p8iNEUGBwTmaVEk/OBaSmv
+        JN7QzMDU0MTM0sDU0sxYSZzX5MiaeCGB9MSS1OzU1ILUIpg+Jg5OqQYmq5DkrmrP2XWnZPvb
+        DuqlreGe8J3nrPnchxf9wjt7/ntHNNjbrmO/u/DxpZqPWg9ElvE4iF1ZaGieO7n6eUzYgwPt
+        bcH5+0XSHy+/1MP07c8Wo0PM77gjz1Y5RbxsEj7VHXswf8rSC5M3byjfej5HLKQsfuWhr+Hc
+        HOf4+X8Kr02YpXYmsSpO9PMBzulsMsXRS5geFD9Wcl13pWH1zHntzAabojxPpXLd2/Pl/Q/P
+        aTq6VzXP87+tiTk7rU+/M+lmTYbF2neGEfVGCf5xidVz/Ri2rZ1wauvRa2znvjBf9r6w60GU
+        6tSAZZsap9m2b/9uzjVH50kwj9syIameAyvvrNnfFq++hkWlwWj7zXORSizFGYmGWsxFxYkA
+        m6aZjZMDAAA=
+X-CMS-MailID: 20210331101237eucas1p1ae152c11cd6959fa949a181a84a0a2b1
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210330025443eucas1p1e53f4fb8623c3dc2ae8ce514e3009bc5
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210330025443eucas1p1e53f4fb8623c3dc2ae8ce514e3009bc5
+References: <20210330025345.3980086-1-dianders@chromium.org>
+        <CGME20210330025443eucas1p1e53f4fb8623c3dc2ae8ce514e3009bc5@eucas1p1.samsung.com>
+        <20210329195255.v2.10.Ida6151df6bfc71df77afee1d72bb7eb0a443f327@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/03/2021 11:13, Catalin Marinas wrote:
-> On Mon, Mar 29, 2021 at 04:55:29PM +0100, Steven Price wrote:
->> On 26/03/2021 18:56, Catalin Marinas wrote:
->>> On Fri, Mar 12, 2021 at 03:18:57PM +0000, Steven Price wrote:
->>>> A KVM guest could store tags in a page even if the VMM hasn't mapped
->>>> the page with PROT_MTE. So when restoring pages from swap we will
->>>> need to check to see if there are any saved tags even if !pte_tagged().
->>>>
->>>> However don't check pages which are !pte_valid_user() as these will
->>>> not have been swapped out.
->>>>
->>>> Signed-off-by: Steven Price <steven.price@arm.com>
->>>> ---
->>>>    arch/arm64/include/asm/pgtable.h |  2 +-
->>>>    arch/arm64/kernel/mte.c          | 16 ++++++++++++----
->>>>    2 files changed, 13 insertions(+), 5 deletions(-)
->>>>
->>>> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
->>>> index e17b96d0e4b5..84166625c989 100644
->>>> --- a/arch/arm64/include/asm/pgtable.h
->>>> +++ b/arch/arm64/include/asm/pgtable.h
->>>> @@ -312,7 +312,7 @@ static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
->>>>    		__sync_icache_dcache(pte);
->>>>    	if (system_supports_mte() &&
->>>> -	    pte_present(pte) && pte_tagged(pte) && !pte_special(pte))
->>>> +	    pte_present(pte) && pte_valid_user(pte) && !pte_special(pte))
->>>>    		mte_sync_tags(ptep, pte);
->>>
->>> With the EPAN patches queued in for-next/epan, pte_valid_user()
->>> disappeared as its semantics weren't very clear.
->>
->> Thanks for pointing that out.
->>
->>> So this relies on the set_pte_at() being done on the VMM address space.
->>> I wonder, if the VMM did an mprotect(PROT_NONE), can the VM still access
->>> it via stage 2? If yes, the pte_valid_user() test wouldn't work. We need
->>> something like pte_present() && addr <= user_addr_max().
->>
->> AFAIUI the stage 2 matches the VMM's address space (for the subset that has
->> memslots). So mprotect(PROT_NONE) would cause the stage 2 mapping to be
->> invalidated and a subsequent fault would exit to the VMM to sort out. This
->> sort of thing is done for the lazy migration use case (i.e. pages are
->> fetched as the VM tries to access them).
-> 
-> There's also the protected KVM case which IIUC wouldn't provide any
-> mapping of the guest memory to the host (or maybe the host still thinks
-> it's there but cannot access it without a Stage 2 fault). At least in
-> this case it wouldn't swap pages out and it would be the responsibility
-> of the EL2 code to clear the tags when giving pages to the guest
-> (user_mem_abort() must not touch the page).
-> 
-> So basically we either have a valid, accessible mapping in the VMM and
-> we can handle the tags via set_pte_at() or we leave it to whatever is
-> running at EL2 in the pKVM case.
 
-For the pKVM case it's up to the EL2 code to hand over suitably scrubbed 
-pages to the guest, and the host doesn't have access to the pages so we 
-(currently) don't have to worry about swap. If swap get implemented it 
-will presumably be up to the EL2 code to package up both the normal data 
-and the MTE tags into an encrypted bundle for the host to stash somewhere.
+W dniu 30.03.2021 o 04:53, Douglas Anderson pisze:
+> Now that we have the patch ("drm/edid: Use the cached EDID in
+> drm_get_edid() if eDP") we no longer need to maintain our own
+> cache. Drop this code.
+>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
 
-> I don't remember whether we had a clear conclusion in the past: have we
-> ruled out requiring the VMM to map the guest memory with PROT_MTE
-> entirely? IIRC a potential problem was the VMM using MTE itself and
-> having to disable it when accessing the guest memory.
-
-Yes, there are some ugly corner cases if we require the VMM to map with 
-PROT_MTE. Hence patch 5 - an ioctl to allow the VMM to access the tags 
-without having to maintain a PROT_MTE mapping.
-
-> Another potential issue (I haven't got my head around it yet) is a race
-> in mte_sync_tags() as we now defer the PG_mte_tagged bit setting until
-> after the tags had been restored. Can we have the same page mapped by
-> two ptes, each attempting to restore it from swap and one gets it first
-> and starts modifying it? Given that we set the actual pte after setting
-> PG_mte_tagged, it's probably alright but I think we miss some barriers.
-
-I'm not sure if I've got my head round this one yet either, but you 
-could be right there's a race. This exists without these patches:
-
-CPU 1                    |  CPU 2
--------------------------+-----------------
-set_pte_at()             |
---> mte_sync_tags()      |
---> test_and_set_bit()   |
---> mte_sync_page_tags() | set_pte_at()
-    [stalls/sleeps]       | --> mte_sync_tags()
-                          | --> test_and_set_bit()
-                          |     [already set by CPU 1]
-                          | set_pte()
-                          | [sees stale tags]
-    [eventually wakes up  |
-     and sets tags]       |
-
-What I'm struggling to get my head around is whether there's always a 
-sufficient lock held during the call to set_pte_at() to avoid the above. 
-I suspect not because the two calls could be in completely separate 
-processes.
-
-We potentially could stick a lock_page()/unlock_page() sequence in 
-mte_sync_tags(). I just ran a basic test and didn't hit problems with 
-that. Any thoughts?
-
-> Also, if a page is not a swap one, we currently clear the tags if mapped
-> as pte_tagged() (prior to this patch). We'd need something similar when
-> mapping it in the guest so that we don't leak tags but to avoid any page
-> ending up with PG_mte_tagged, I think you moved the tag clearing to
-> user_mem_abort() in the KVM code. I presume set_pte_at() in the VMM
-> would be called first and then set in Stage 2.
-
-Yes - KVM will perform the equivalent of get_user_pages() before setting 
-the entry in Stage 2, that should end up performing any set_pte_at() 
-calls to populate the VMM's page tables. So the VMM 'sees' the memory 
-before stage 2.
-
->>> BTW, ignoring virtualisation, can we ever bring a page in from swap on a
->>> PROT_NONE mapping (say fault-around)? It's not too bad if we keep the
->>> metadata around for when the pte becomes accessible but I suspect we
->>> remove it if the page is removed from swap.
->>
->> There are two stages of bringing data from swap. First is populating the
->> swap cache by doing the physical read from swap. The second is actually
->> restoring the page table entries.
-> 
-> When is the page metadata removed? I want to make sure we don't drop it
-> for some pte attributes.
-
-The tag metadata for swapped pages lives for the same length of time as 
-the swap metadata itself. The swap code already makes sure that the 
-metadata hangs around as long as there are any swap PTEs in existence, 
-so I think everything should be fine here. The 
-arch_swap_invalidate_xxx() calls match up with the frontswap calls as it 
-has the same lifetime requirements.
-
-Steve
+Regards
+Andrzej
+> ---
+>
+> (no changes since v1)
+>
+>   drivers/gpu/drm/bridge/ti-sn65dsi86.c | 22 +++++++++-------------
+>   1 file changed, 9 insertions(+), 13 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> index 9577ebd58c4c..c0398daaa4a6 100644
+> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> @@ -121,7 +121,6 @@
+>    * @debugfs:      Used for managing our debugfs.
+>    * @host_node:    Remote DSI node.
+>    * @dsi:          Our MIPI DSI source.
+> - * @edid:         Detected EDID of eDP panel.
+>    * @refclk:       Our reference clock.
+>    * @panel:        Our panel.
+>    * @enable_gpio:  The GPIO we toggle to enable the bridge.
+> @@ -147,7 +146,6 @@ struct ti_sn_bridge {
+>   	struct drm_bridge		bridge;
+>   	struct drm_connector		connector;
+>   	struct dentry			*debugfs;
+> -	struct edid			*edid;
+>   	struct device_node		*host_node;
+>   	struct mipi_dsi_device		*dsi;
+>   	struct clk			*refclk;
+> @@ -269,17 +267,17 @@ connector_to_ti_sn_bridge(struct drm_connector *connector)
+>   static int ti_sn_bridge_connector_get_modes(struct drm_connector *connector)
+>   {
+>   	struct ti_sn_bridge *pdata = connector_to_ti_sn_bridge(connector);
+> -	struct edid *edid = pdata->edid;
+> -	int num;
+> +	struct edid *edid;
+> +	int num = 0;
+>   
+> -	if (!edid) {
+> -		pm_runtime_get_sync(pdata->dev);
+> -		edid = pdata->edid = drm_get_edid(connector, &pdata->aux.ddc);
+> -		pm_runtime_put(pdata->dev);
+> -	}
+> +	pm_runtime_get_sync(pdata->dev);
+> +	edid = drm_get_edid(connector, &pdata->aux.ddc);
+> +	pm_runtime_put(pdata->dev);
+>   
+> -	if (edid && drm_edid_is_valid(edid)) {
+> -		num = drm_add_edid_modes(connector, edid);
+> +	if (edid) {
+> +		if (drm_edid_is_valid(edid))
+> +			num = drm_add_edid_modes(connector, edid);
+> +		kfree(edid);
+>   		if (num)
+>   			return num;
+>   	}
+> @@ -1308,8 +1306,6 @@ static int ti_sn_bridge_remove(struct i2c_client *client)
+>   	if (!pdata)
+>   		return -EINVAL;
+>   
+> -	kfree(pdata->edid);
+> -
+>   	ti_sn_debugfs_remove(pdata);
+>   
+>   	drm_bridge_remove(&pdata->bridge);
