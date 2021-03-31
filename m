@@ -2,127 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF13350A9B
+	by mail.lfdr.de (Postfix) with ESMTP id 9CC4C350A9C
 	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 01:14:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233034AbhCaXNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 19:13:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53506 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229497AbhCaXNO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 19:13:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CE2760FE8;
-        Wed, 31 Mar 2021 23:13:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617232393;
-        bh=8tenvRLSfJsN0kvZ2jkfZemaePWY+JI0zsmmOYXQJ0I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ooZGAaYjlPs4i61oFkp5lRQ7p2EcWL9MuI6+fbS3mdCSn91aYN9TYxlnLhKgFRONw
-         gXlbZdvE9p2vslGAV6LPXYtLcPJ8/Eyj//w5x1Lxa40EsAEenMdOibravm+RYN6dBU
-         766vdHhCPQBfz8sJcofKwA6HyrjRmmQ0buM2w98ndh4xFxp/mxsnS3B7v4W8UBSJEw
-         uec7ILJ/Qxp+V5/RUhA0LJWknZoMbhEN8cjq2AeqHWi2P77UBTjy0sQWeyzWQUA/en
-         Q4KlUk0cOmboOxEeRbc4cdTgRq6jWwPGtBXdxu9JyBnH/rE+C0DQWPk/21q+Ig7+vr
-         3aWAbkKYBE/Hw==
-Date:   Thu, 1 Apr 2021 02:13:11 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Varad Gautam <varad.gautam@suse.com>
-Cc:     linux-crypto@vger.kernel.org, David Howells <dhowells@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:SECURITY SUBSYSTEM" 
-        <linux-security-module@vger.kernel.org>
-Subject: Re: [PATCH 18/18] keyctl_pkey: Add pkey parameter slen to pass in
- PSS salt length
-Message-ID: <YGUCB1jKCPvn60n2@kernel.org>
-References: <20210330202829.4825-1-varad.gautam@suse.com>
- <20210330202829.4825-19-varad.gautam@suse.com>
+        id S233084AbhCaXNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 19:13:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232406AbhCaXN3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 19:13:29 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9619C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 16:13:28 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id q3so456780qkq.12
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 16:13:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LElCdf0KbUkyEvJs0p0IvZKV+wdmQvAnSKb7zsKMRmg=;
+        b=ZrUj57P4j3iT2bZyUGZXH+q99R315qVADdUvYGP3bBtluIJt4nmKdMib/Uqs/mIyGs
+         vZDSs0+bbbq2wo3FJQ8uyfnIkLcwgxvpwkQgtCNjfAAMxoOUi68ENAouCZBy5SHnDzyL
+         JX1T6hiVCC1hFUQS8z6gbPipWXEfvF5sBFekM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LElCdf0KbUkyEvJs0p0IvZKV+wdmQvAnSKb7zsKMRmg=;
+        b=IS7qnGxh1kv3wzrTsVWj8gBtNwx0yZPAAV3LWq8z6c1U3ht1Nr7+iSHZ27UunuR8oF
+         JLV6KBLFsN+dTnA1CvsdtT9KbbuZebx8htwtGEEd5y1vsg4wU1jWgtazCFyM00PwMm8T
+         18z3GRYjGYx5EDgcuD1QNkRIwIplcJOpqW8WESF/HqfLUbpHgxo3qJ5wjVhkYFO9OJEW
+         ktf4ymL3q9v9Yd2AtzTti/CYyHbCnHftgFskEv+dsT8RO72K/OVxBh77NEHhcRps/5Ec
+         pUkJB3W79wxrJE6LuLApzgqjfuRUNeyI+9cNwDZj+EdC7gPUuhJPxiljXkSqJY+CJGL1
+         muFw==
+X-Gm-Message-State: AOAM532/qlzmCvOBiY19pmrsEEHb8oa+uiR0pgUOh/nrgZV+U5vBW7pJ
+        n1ixltbvrJ9kvHxmWL6KDXLj3yMnLkGgOA==
+X-Google-Smtp-Source: ABdhPJxNbV//XNurPGGwzl61JIYP+GLOM6vVdmmr6RolhR4PyJexnm41UzxY4cb2cQ4pYrvE3JIAtg==
+X-Received: by 2002:a37:8905:: with SMTP id l5mr5721968qkd.321.1617232407203;
+        Wed, 31 Mar 2021 16:13:27 -0700 (PDT)
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
+        by smtp.gmail.com with ESMTPSA id a138sm2597971qkg.29.2021.03.31.16.13.25
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Mar 2021 16:13:26 -0700 (PDT)
+Received: by mail-yb1-f170.google.com with SMTP id a143so22947143ybg.7
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 16:13:25 -0700 (PDT)
+X-Received: by 2002:a25:e085:: with SMTP id x127mr1884118ybg.343.1617232405435;
+ Wed, 31 Mar 2021 16:13:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210330202829.4825-19-varad.gautam@suse.com>
+References: <20210331221630.488498-1-robdclark@gmail.com> <20210331221630.488498-4-robdclark@gmail.com>
+In-Reply-To: <20210331221630.488498-4-robdclark@gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 31 Mar 2021 16:13:13 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=UECYxLXQa_L572eLSVHq7pbxuA0zLvHzYHhCKy8K=9TA@mail.gmail.com>
+Message-ID: <CAD=FV=UECYxLXQa_L572eLSVHq7pbxuA0zLvHzYHhCKy8K=9TA@mail.gmail.com>
+Subject: Re: [PATCH 3/4] drm/msm: Fix debugfs deadlock
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        "Kristian H. Kristensen" <hoegsberg@google.com>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 10:28:29PM +0200, Varad Gautam wrote:
-> keyctl pkey_* operations accept enc and hash parameters at present.
-> RSASSA-PSS signatures also require passing in the signature salt
-> length.
-> 
-> Add another parameter 'slen' to feed in salt length of a PSS
-> signature.
-> 
-> Signed-off-by: Varad Gautam <varad.gautam@suse.com>
-> ---
+Hi,
+
+On Wed, Mar 31, 2021 at 3:14 PM Rob Clark <robdclark@gmail.com> wrote:
+>
+> @@ -111,23 +111,15 @@ static const struct file_operations msm_gpu_fops = {
+>  static int msm_gem_show(struct drm_device *dev, struct seq_file *m)
+>  {
+>         struct msm_drm_private *priv = dev->dev_private;
+> -       struct msm_gpu *gpu = priv->gpu;
+>         int ret;
+>
+> -       ret = mutex_lock_interruptible(&priv->mm_lock);
+> +       ret = mutex_lock_interruptible(&priv->obj_lock);
+>         if (ret)
+>                 return ret;
+>
+> -       if (gpu) {
+> -               seq_printf(m, "Active Objects (%s):\n", gpu->name);
+> -               msm_gem_describe_objects(&gpu->active_list, m);
+> -       }
+> -
+> -       seq_printf(m, "Inactive Objects:\n");
+> -       msm_gem_describe_objects(&priv->inactive_dontneed, m);
+> -       msm_gem_describe_objects(&priv->inactive_willneed, m);
+> +       msm_gem_describe_objects(&priv->objects, m);
+
+I guess we no longer sort the by Active and Inactive but that doesn't
+really matter?
 
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+> @@ -174,7 +174,13 @@ struct msm_drm_private {
+>         struct msm_rd_state *hangrd;   /* debugfs to dump hanging submits */
+>         struct msm_perf_state *perf;
+>
+> -       /*
+> +       /**
+> +        * List of all GEM objects (mainly for debugfs, protected by obj_lock
 
-/Jarkko
+It wouldn't hurt to talk about lock ordering here? Like: "If we need
+the "obj_lock" and a "gem_lock" at the same time we always grab the
+"obj_lock" first.
 
->  crypto/asymmetric_keys/asymmetric_type.c | 1 +
->  include/linux/keyctl.h                   | 1 +
->  security/keys/keyctl_pkey.c              | 6 ++++++
->  3 files changed, 8 insertions(+)
-> 
-> diff --git a/crypto/asymmetric_keys/asymmetric_type.c b/crypto/asymmetric_keys/asymmetric_type.c
-> index ad8af3d70ac0..eb2ef4a07f8e 100644
-> --- a/crypto/asymmetric_keys/asymmetric_type.c
-> +++ b/crypto/asymmetric_keys/asymmetric_type.c
-> @@ -571,6 +571,7 @@ static int asymmetric_key_verify_signature(struct kernel_pkey_params *params,
->  		.hash_algo	= params->hash_algo,
->  		.digest		= (void *)in,
->  		.s		= (void *)in2,
-> +		.salt_length	= params->slen,
->  	};
->  
->  	return verify_signature(params->key, &sig);
-> diff --git a/include/linux/keyctl.h b/include/linux/keyctl.h
-> index 5b79847207ef..970c7bed3082 100644
-> --- a/include/linux/keyctl.h
-> +++ b/include/linux/keyctl.h
-> @@ -37,6 +37,7 @@ struct kernel_pkey_params {
->  		__u32	in2_len;	/* 2nd input data size (verify) */
->  	};
->  	enum kernel_pkey_operation op : 8;
-> +	__u32		slen;
->  };
->  
->  #endif /* __LINUX_KEYCTL_H */
-> diff --git a/security/keys/keyctl_pkey.c b/security/keys/keyctl_pkey.c
-> index 5de0d599a274..b54a021e16b1 100644
-> --- a/security/keys/keyctl_pkey.c
-> +++ b/security/keys/keyctl_pkey.c
-> @@ -24,11 +24,13 @@ enum {
->  	Opt_err,
->  	Opt_enc,		/* "enc=<encoding>" eg. "enc=oaep" */
->  	Opt_hash,		/* "hash=<digest-name>" eg. "hash=sha1" */
-> +	Opt_slen,		/* "slen=<salt-length>" eg. "slen=32" */
->  };
->  
->  static const match_table_t param_keys = {
->  	{ Opt_enc,	"enc=%s" },
->  	{ Opt_hash,	"hash=%s" },
-> +	{ Opt_slen,	"slen=%u" },
->  	{ Opt_err,	NULL }
->  };
->  
-> @@ -63,6 +65,10 @@ static int keyctl_pkey_params_parse(struct kernel_pkey_params *params)
->  			params->hash_algo = q;
->  			break;
->  
-> +		case Opt_slen:
-> +			if (kstrtouint(q, 0, &params->slen))
-> +				return -EINVAL;
-> +			break;
->  		default:
->  			return -EINVAL;
->  		}
-> -- 
-> 2.30.2
-> 
-> 
+> @@ -60,13 +60,20 @@ struct msm_gem_object {
+>          */
+>         uint8_t vmap_count;
+>
+> -       /* And object is either:
+> -        *  inactive - on priv->inactive_list
+> +       /**
+> +        * Node in list of all objects (mainly for debugfs, protected by
+> +        * struct_mutex
+
+Not "struct_mutex" in comment, right? Maybe "obj_lock" I think?
+
+-Doug
