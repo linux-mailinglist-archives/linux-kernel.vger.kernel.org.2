@@ -2,100 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09BFB350032
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 14:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4D4350031
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 14:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235539AbhCaM0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 08:26:41 -0400
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:35988 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235427AbhCaM01 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 08:26:27 -0400
-Date:   Wed, 31 Mar 2021 12:26:14 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1617193578; bh=IJiIJLP9J3EbXGDv7FrrNHW4zk0L7+DgfXGI5q66nWw=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=ltGS1PR9i6yTJZSOPnOwObymChUFQ7ZmS3sE1OIB0ZrMOKq+vd6Qcn1do+C/ln7XK
-         VQDnu0bEqCI09K7hbmIQ450xokR5AYaun2ha7kCX4NCMz3GKc6+VsQzUM/hrgnTUwT
-         FugM39lzgFdOVrFCoK/vPT6ZbDanEesBwOC0la8YqnWulyTRO9o1WTCeTPvpeU/nRj
-         hSRvA8eIfGr+r82OsEfiR/HDEjTfZNO2930uf7yFYA3baQ4kHNjvta7dQsw8/1qNcP
-         jnS/ioUlSyjYpHM6XB96VM/4Zi8x2IO/tFwLxvqH8bPkeFOfLwT3s2xRUFPoRNb9hV
-         Zemyw5xn8fS1Q==
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v2 bpf-next 0/2] xsk: introduce generic almost-zerocopy xmit
-Message-ID: <20210331122602.6000-1-alobakin@pm.me>
+        id S235527AbhCaM0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 08:26:39 -0400
+Received: from mail.pqgruber.com ([52.59.78.55]:48578 "EHLO mail.pqgruber.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235014AbhCaM0S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 08:26:18 -0400
+Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
+        by mail.pqgruber.com (Postfix) with ESMTPSA id 1B329C72850;
+        Wed, 31 Mar 2021 14:26:16 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
+        s=mail; t=1617193576;
+        bh=/N45bWh9wWSwOsFwNMX3vAVPayA8dTBBVw674qdT9vk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yVIiswC1sRAr5S/9BbUD9NKq02ilpCsh/IZshCcMbJsDL51IqHY4n5q/fhmE55qLk
+         zq/ZhBeSLKtDx5Blp2fv8cx+ZX1tnVi7xwmhzou+4CSroT0S1q6Bhvp6AuYsimvAFS
+         iU19sHlAnVCKYBQUcQXoLDKxRNbenpiQb9aLfMsw=
+Date:   Wed, 31 Mar 2021 14:26:14 +0200
+From:   Clemens Gruber <clemens.gruber@pqgruber.com>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 4/7] pwm: pca9685: Support staggered output ON times
+Message-ID: <YGRqZsi4WApZcwIT@workstation.tuxnet>
+References: <20210329125707.182732-1-clemens.gruber@pqgruber.com>
+ <20210329125707.182732-4-clemens.gruber@pqgruber.com>
+ <20210329170357.par7c3izvtmtovlj@pengutronix.de>
+ <YGILdjZBCc2vVlRd@workstation.tuxnet>
+ <20210329180206.rejl32uajslpvbgi@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210329180206.rejl32uajslpvbgi@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series is based on the exceptional generic zerocopy xmit logics
-initially introduced by Xuan Zhuo. It extends it the way that it
-could cover all the sane drivers, not only the ones that are capable
-of xmitting skbs with no linear space.
+On Mon, Mar 29, 2021 at 08:02:06PM +0200, Uwe Kleine-König wrote:
+> On Mon, Mar 29, 2021 at 07:16:38PM +0200, Clemens Gruber wrote:
+> > On Mon, Mar 29, 2021 at 07:03:57PM +0200, Uwe Kleine-König wrote:
+> > > On Mon, Mar 29, 2021 at 02:57:04PM +0200, Clemens Gruber wrote:
+> > > > The PCA9685 supports staggered LED output ON times to minimize current
+> > > > surges and reduce EMI.
+> > > > When this new option is enabled, the ON times of each channel are
+> > > > delayed by channel number x counter range / 16, which avoids asserting
+> > > > all enabled outputs at the same counter value while still maintaining
+> > > > the configured duty cycle of each output.
+> > > > 
+> > > > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+> > > 
+> > > Is there a reason to not want this staggered output? If it never hurts I
+> > > suggest to always stagger and drop the dt property.
+> > 
+> > There might be applications where you want multiple outputs to assert at
+> > the same time / to be synchronized.
+> > With staggered outputs mode always enabled, this would no longer be
+> > possible as they are spread out according to their channel number.
+> > 
+> > Not sure how often that usecase is required, but just enforcing the
+> > staggered mode by default sounds risky to me.
+> 
+> There is no such guarantee in the PWM framework, so I don't think we
+> need to fear breaking setups. Thierry?
 
-The first patch is a random while-we-are-here improvement over
-full-copy path, and the second is the main course. See the individual
-commit messages for the details.
+Still, someone might rely on it? But let's wait for Thierry's opinion.
 
-The original (full-zerocopy) path is still here and still generally
-faster, but for now it seems like virtio_net will remain the only
-user of it, at least for a considerable period of time.
+> 
+> One reason we might not want staggering is if we have a consumer who
+> cares about config transitions. (This however is moot it the hardware
+> doesn't provide sane transitions even without staggering.)
+> 
+> Did I already ask about races in this driver? I assume there is a
+> free running counter and the ON and OFF registers just define where in
+> the period the transitions happen, right? Given that changing ON and OFF
+> needs two register writes probably all kind of strange things can
+> happen, right? (Example thought: for simplicity's sake I assume ON is
+> always 0. Then if you want to change from OFF = 0xaaa to OFF = 0xccc we
+> might see a period with 0xacc. Depending on how the hardware works we
+> might even see 4 edges in a single period then.)
 
-From v1 [0]:
- - don't add a whole SMP_CACHE_BYTES because of only two bytes
-   (NET_IP_ALIGN);
- - switch to zerocopy if the frame is 129 bytes or longer, not 128.
-   128 still fit to kmalloc-512, while a zerocopy skb is always
-   kmalloc-1024 -> can potentially be slower on this frame size.
+Yes, there is a free running counter from 0 to 4095.
+And it is probably true, that there can be short intermediate states
+with our two register writes.
 
-[0] https://lore.kernel.org/netdev/20210330231528.546284-1-alobakin@pm.me
+There is a separate mode "Update on ACK" (MODE2 register, bit 3 "OCH"),
+which is 0 by default (Outputs change on STOP command) but could be set
+to 1 (Outputs change on ACK):
+"Update on ACK requires all 4 PWM channel registers to be loaded before
+outputs will change on the last ACK."
 
-Alexander Lobakin (2):
-  xsk: speed-up generic full-copy xmit
-  xsk: introduce generic almost-zerocopy xmit
+The chip datasheet also states:
+"Because the loading of the LEDn_ON and LEDn_OFF registers is via the
+I2C-bus, and asynchronous to the internal oscillator, we want to ensure
+that we do not see any visual artifacts of changing the ON and OFF
+values. This is achieved by updating the changes at the end of the LOW
+cycle."
 
- net/xdp/xsk.c | 32 ++++++++++++++++++++++----------
- 1 file changed, 22 insertions(+), 10 deletions(-)
+We could look into this in a future patch series, however I would like
+to keep the register updating as-is for this series (otherwise I would
+have to do all the tests with the oscilloscope again and the transitions
+were like this since the driver was first implemented).
 
---
-Well, this is untested. I currently don't have an access to my setup
-and is bound by moving to another country, but as I don't know for
-sure at the moment when I'll get back to work on the kernel next time,
-I found it worthy to publish this now -- if any further changes will
-be required when I already will be out-of-sight, maybe someone could
-carry on to make a another revision and so on (I'm still here for any
-questions, comments, reviews and improvements till the end of this
-week).
-But this *should* work with all the sane drivers. If a particular
-one won't handle this, it's likely ill. Any tests are highly
-appreciated. Thanks!
---
-2.31.1
-
-
+Thanks,
+Clemens
