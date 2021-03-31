@@ -2,84 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C778234F999
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 956CF34FACD
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234078AbhCaHN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 03:13:26 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:15410 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234089AbhCaHNO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 03:13:14 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F9HYG0R9FzlWlB;
-        Wed, 31 Mar 2021 15:11:30 +0800 (CST)
-Received: from k03.huawei.com (10.67.174.111) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 31 Mar 2021 15:13:02 +0800
-From:   He Fengqing <hefengqing@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-CC:     <kpsingh@kernel.org>, <john.fastabend@gmail.com>, <yhs@fb.com>,
-        <songliubraving@fb.com>, <kafai@fb.com>, <andrii@kernel.org>,
-        <daniel@iogearbox.net>, <ast@kernel.org>
-Subject: [Patch bpf-next] bpf: remove unused parameter from ___bpf_prog_run
-Date:   Wed, 31 Mar 2021 07:51:35 +0000
-Message-ID: <20210331075135.3850782-1-hefengqing@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S234288AbhCaHwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 03:52:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52108 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234195AbhCaHv5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 03:51:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D619B6199A;
+        Wed, 31 Mar 2021 07:51:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617177117;
+        bh=xpy4kRm9bmyZuWQNI+P60oqyw77tUIHQsbLiSx+3E6Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=m1vIExeoNfsRWSEKqDgKLxDca9fAGPXwP+WwRfX3umPtFU1ZEGNvmFWuNHPnI4nVQ
+         Itto97Ddt4SjunUA8EcevSa0ABndqVugN4u4uziJ4MkXwabV460aiuNWrOi01VLrYX
+         IjgVgqb4FndFuKrhuQdsJe10X8GnN6D1iV76ze2n4LqycG26syTj5sMj5pV/tG7TOU
+         ptGHE//un83tEFMlLI5ffCOpgSfb0/QOY1O5m+3vkACJspTzmyDc48N5AroO1jXiDM
+         /vNr68cfDzYe7j7ZrcRE2xpK/S0Z5edvA+nIGwGl+4V0nvP/amM+7Zf58B2y9j0yYc
+         s9AWgCV/D15pA==
+From:   Wolfram Sang <wsa@kernel.org>
+To:     linux-i2c@vger.kernel.org
+Cc:     Wolfram Sang <wsa@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: [PATCH RFT 0/2] i2c: tegra-bpmp: cleanups
+Date:   Wed, 31 Mar 2021 09:51:39 +0200
+Message-Id: <20210331075141.22227-1-wsa@kernel.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.111]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'stack' parameter is not used in ___bpf_prog_run,
-the base address have been set to FP reg. So consequently remove it.
+While reviewing a patch for this driver, I noticed that we can remove
+quite some lines here. Not tested on HW, because I don't have it. Builds
+fine, though. I'd appreciate tests / reviews. Thanks!
 
-Signed-off-by: He Fengqing <hefengqing@huawei.com>
----
- kernel/bpf/core.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+Wolfram Sang (2):
+  i2c: tegra-bpmp: don't modify input variable in xlate_flags
+  i2c: tegra-bpmp: make some functions void
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index f5423251c118..5e31ee9f7512 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -1363,11 +1363,10 @@ u64 __weak bpf_probe_read_kernel(void *dst, u32 size, const void *unsafe_ptr)
-  *	__bpf_prog_run - run eBPF program on a given context
-  *	@regs: is the array of MAX_BPF_EXT_REG eBPF pseudo-registers
-  *	@insn: is the array of eBPF instructions
-- *	@stack: is the eBPF storage stack
-  *
-  * Decode and execute eBPF instructions.
-  */
--static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
-+static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
- {
- #define BPF_INSN_2_LBL(x, y)    [BPF_##x | BPF_##y] = &&x##_##y
- #define BPF_INSN_3_LBL(x, y, z) [BPF_##x | BPF_##y | BPF_##z] = &&x##_##y##_##z
-@@ -1701,7 +1700,7 @@ static unsigned int PROG_NAME(stack_size)(const void *ctx, const struct bpf_insn
- \
- 	FP = (u64) (unsigned long) &stack[ARRAY_SIZE(stack)]; \
- 	ARG1 = (u64) (unsigned long) ctx; \
--	return ___bpf_prog_run(regs, insn, stack); \
-+	return ___bpf_prog_run(regs, insn); \
- }
- 
- #define PROG_NAME_ARGS(stack_size) __bpf_prog_run_args##stack_size
-@@ -1718,7 +1717,7 @@ static u64 PROG_NAME_ARGS(stack_size)(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5, \
- 	BPF_R3 = r3; \
- 	BPF_R4 = r4; \
- 	BPF_R5 = r5; \
--	return ___bpf_prog_run(regs, insn, stack); \
-+	return ___bpf_prog_run(regs, insn); \
- }
- 
- #define EVAL1(FN, X) FN(X)
+ drivers/i2c/busses/i2c-tegra-bpmp.c | 52 +++++++----------------------
+ 1 file changed, 12 insertions(+), 40 deletions(-)
+
 -- 
-2.25.1
+2.30.0
 
