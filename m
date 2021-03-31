@@ -2,73 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50CE934FD9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8EC434FD9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234934AbhCaJ6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 05:58:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57804 "EHLO mail.kernel.org"
+        id S234776AbhCaJ7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 05:59:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:37006 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234800AbhCaJ6Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 05:58:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37B8D61962;
-        Wed, 31 Mar 2021 09:58:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617184703;
-        bh=8Q1AY7JdoH+Ccf14MEMA3ArldP3X6QQIw2Ci/bJX6aw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jkVipl8FKiITCLaNAo5tIYm56VPEtOMwUlt7hG8gOF3dvH7fimr5DIZmuP9marqj1
-         /mnjdUnlB9y3y55HwxPhPavT/H616N9jvOTv0QPYR1+KfXHkpmPX69flxznfs6Ms7Z
-         2oej7lUKG3GXH4CdWWl4nbLtg9cGeF+/ivj4In+fsPs/HXZluJtTsiTsOcWRsI09Bx
-         tgw2F6Ky47a56QPwR5i1/NNSAiNha2WiDSE21hkNHQwDCGWlQT9qHREG0twIzNGPNp
-         90YeQi9UCbkiMPC4ttUmzLEwBWGiYw1gE8+9eK5IDbXsYlb6wYKdt2ek853jQtkbTC
-         vqMQDKH/XDfMg==
-Date:   Wed, 31 Mar 2021 11:58:20 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Bence =?utf-8?B?Q3PDs2vDoXM=?= <bence98@sch.bme.hu>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] Adding i2c-cp2615: i2c support for Silicon Labs'
- CP2615 Digital Audio Bridge
-Message-ID: <20210331095820.GA29323@ninjato>
-References: <20210318115210.2014204-1-bence98@sch.bme.hu>
- <20210318115210.2014204-3-bence98@sch.bme.hu>
+        id S234908AbhCaJ6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 05:58:43 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9CB561042;
+        Wed, 31 Mar 2021 02:58:42 -0700 (PDT)
+Received: from [10.57.24.208] (unknown [10.57.24.208])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E5A3F3F792;
+        Wed, 31 Mar 2021 02:58:40 -0700 (PDT)
+Subject: Re: [PATCH 1/6] iommu: Move IOVA power-of-2 roundup into allocator
+To:     John Garry <john.garry@huawei.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>
+Cc:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+References: <1616160348-29451-1-git-send-email-john.garry@huawei.com>
+ <1616160348-29451-2-git-send-email-john.garry@huawei.com>
+ <ee935a6d-a94c-313e-f0ed-e14cc6dac055@arm.com>
+ <73d459de-b5cc-e2f5-bcd7-2ee23c8d5075@huawei.com>
+ <afc2fc05-a799-cb14-debd-d36afed8f456@arm.com>
+ <08c0f4b9-8713-fa97-3986-3cfb0d6b820b@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <e4b9146a-ca32-50f5-4fe0-42aa0b66d2d6@arm.com>
+Date:   Wed, 31 Mar 2021 10:58:36 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6c2NcOVqGQ03X4Wi"
-Content-Disposition: inline
-In-Reply-To: <20210318115210.2014204-3-bence98@sch.bme.hu>
+In-Reply-To: <08c0f4b9-8713-fa97-3986-3cfb0d6b820b@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-03-22 15:01, John Garry wrote:
+> On 19/03/2021 19:20, Robin Murphy wrote:
+> 
+> Hi Robin,
+> 
+>>> So then we have the issue of how to dynamically increase this rcache
+>>> threshold. The problem is that we may have many devices associated with
+>>> the same domain. So, in theory, we can't assume that when we increase
+>>> the threshold that some other device will try to fast free an IOVA which
+>>> was allocated prior to the increase and was not rounded up.
+>>>
+>>> I'm very open to better (or less bad) suggestions on how to do this ...
+>> ...but yes, regardless of exactly where it happens, rounding up or not
+>> is the problem for rcaches in general. I've said several times that my
+>> preferred approach is to not change it that dynamically at all, but
+>> instead treat it more like we treat the default domain type.
+>>
+> 
+> Can you remind me of that idea? I don't remember you mentioning using 
+> default domain handling as a reference in any context.
 
---6c2NcOVqGQ03X4Wi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Sorry if the phrasing was unclear there - the allusion to default 
+domains is new, it just occurred to me that what we do there is in fact 
+fairly close to what I've suggested previously for this. In that case, 
+we have a global policy set by the command line, which *can* be 
+overridden per-domain via sysfs at runtime, provided the user is willing 
+to tear the whole thing down. Using a similar approach here would give a 
+fair degree of flexibility but still mean that changes never have to be 
+made dynamically to a live domain.
 
-
-Oh, and are you willing to maintain the driver? If so, please add an
-entry to the MAINTAINERS file. Thanks!
-
-
---6c2NcOVqGQ03X4Wi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBkR7kACgkQFA3kzBSg
-KbYvxA//TVMuQ85JEg3VH6wHD5KLvwBecyQ5pOwMbUTo3Io+EIYkqYpxGuC44ovu
-r7OI1VfGuZJow4mI+z0XK3OHOZ/eXbVO7zSR3GN5j5rLegzTjoTiqDJEW7UObUN/
-DizBz/FJsB02ri1VyZSe/QtPMtk2YDtPRf4k35cXy45ZMwUBJUQssgA49yH/8Ew8
-wsOxiA6L0HdMZO2OSzNChnlWnXTl9sJI8nlM9cbvsugIJ3M4OgdL1Muym7K+fxV3
-xvOhFpmloRmH9A/VKg+CZ66RmdMgVyu+JYHyYXTtC4Lwc8gg/qb9iUlYEAw97lWK
-+ugTO984259osiah66k+diGnynZywuiNs4S0nNJzjb5AQm2crIxHI/LE8EccrI/T
-W470Tkk9iMQl3sKXLi9irlCTU1jzNLmdxZpu/UtHSps2SjmKd+bGbBemJduiz4j5
-Yq4ut/FZJttp/im9v0+hMtlbSi13Q2ewGhJQ9jrPcW1necetCmdr5oLcDadiIKwF
-7uxBJ6oZvzcvTLobjeXGq3nJnVA6UMEykLw/GqESyaAIrIAHPGoLwyfzTh7Po3l+
-zqOyYAgp6jmS/ji4orU/MbsNctmuQuRfNJB2LxoQOU4o+ZIp0LMd225lH/G1jm90
-faWZQSVgYV43lvQS+0FIeS6GvQWyqtkzc3tmrGAX2pcxraq3dm8=
-=4I3s
------END PGP SIGNATURE-----
-
---6c2NcOVqGQ03X4Wi--
+Robin.
