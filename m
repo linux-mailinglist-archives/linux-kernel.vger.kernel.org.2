@@ -2,269 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A4C34F766
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 05:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F31D034F76C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 05:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233067AbhCaDXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 23:23:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42992 "EHLO
+        id S233410AbhCaDYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 23:24:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233538AbhCaDWi (ORCPT
+        with ESMTP id S233288AbhCaDY2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 23:22:38 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35DB2C061574;
-        Tue, 30 Mar 2021 20:22:38 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id l1so7193178plg.12;
-        Tue, 30 Mar 2021 20:22:38 -0700 (PDT)
+        Tue, 30 Mar 2021 23:24:28 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279C2C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 20:24:28 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so520645pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 20:24:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jkm3P5RE80U8+woiHQI1EQe+BOt3uSMFxDJpxjcNUTA=;
-        b=LXNSnC/zeHOFL0gy9CmsCFdS+u43TkrZ4i4izXbo61O8g5SRFuRnra4b2bj8XtQUVH
-         +0AyeuA5crGcmObs0eKB/zthjlFy45Lk6973MSgNC3iYpjpvtyJ+SamGOWYt95arCx55
-         INIvzt/vw4qRotFT+KpkkBEW8uDdqC3bQKeYz4UxOkd48W/lDTT5VUDejLY59WuYK9WI
-         rDQlLQRhYQ6LH15STDTtn2/WqaDD53Dvp/xkl69yqgLDJ/z94uiZ0CyQGz2FHO4lOf3K
-         n3N99VGhpN82+8rayMhp640uRNUUlw8b3+ntvv4ix79GRLDryG+ifKy/I3ORkOJkH6+k
-         zrOQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FNFeV1THEx0YJSM2iKHTR5ELuwAnphzmvmgnTdnbeIU=;
+        b=mrlwgL3jkCGnWhDPLrfQu3CUgGf6iybj45FrMBrjXLrO5aR7NIKUuW/895SYkIK6fl
+         7csDYsdgLASvdzuAAl68UhrzAAPlYRZyUB5akfNTrp88ilPxGquve9zK+YgbOQ5mRybq
+         RDbKIkVFyrA7jfmLBSpPAh+2m5pLdWSsQWEGlZU4k3WM2yyOOtZ0AaOKRNU8MAYo2lKQ
+         mSjXhbCXanNU6bIFwidSqOACOqLS1z5avSe+o/V6/iIOGV3tgnsXDTCwd8zk1TF+Ghje
+         uYYNzo6p4NCr5gK/Izlx1Z44S+eKtCNL1K7AQHLrLiwFomfolR8pOZGj2qVoNSpGRRtW
+         ch0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jkm3P5RE80U8+woiHQI1EQe+BOt3uSMFxDJpxjcNUTA=;
-        b=V+kn3BDKChCeUcYsa84OGKdw86uDAqSsNq+omDM1mDBhcY/jlSk2iBVBXNVqJLqkhI
-         dv3iXpa8fJKg3KouKqJbijl73vAVjJRKD69C/RRZfWG4TgcnymkPAbOqozbVSC35NCIX
-         fiktE7wXKWsxNooyWzulxHe4G/ng5wjALTzXWy2VF6m5rkJ7mDS5lmo65DKf63z3l2fI
-         Cgh96vlWT0pP4hmg2FZAR6aY5TaEqlbXgLh8fWrvUwYQiXM3Gaii4AQL4INfP5SZn6c6
-         LGiBakQVbPsGhgjIvaLTXV42Y2E7oLjU2aJJ6rYkJGQacqWcmxvz9KmHkOhUTDWwpvOh
-         bkdA==
-X-Gm-Message-State: AOAM530ylqOgg5vMaSzNSIE5KMVWQVr4Zz9lsOVdZJ/8WYNwbSpEZ9AO
-        /Nol3xEimBOg06Ykuj6J75Q4nRvH1ZI=
-X-Google-Smtp-Source: ABdhPJzR37hbTkvRe9594EWtvrv9MYDoJ2XWwdls3VL9cdeDjWnDwuoQCc+Yka2SpxqdHWSn0AQygQ==
-X-Received: by 2002:a17:902:e752:b029:e6:822c:355c with SMTP id p18-20020a170902e752b02900e6822c355cmr1296179plf.69.1617160957232;
-        Tue, 30 Mar 2021 20:22:37 -0700 (PDT)
-Received: from localhost.localdomain (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id a13sm562053pgm.43.2021.03.30.20.22.35
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FNFeV1THEx0YJSM2iKHTR5ELuwAnphzmvmgnTdnbeIU=;
+        b=icuLOx20IwRQpEqDz6WF9R8j8s0jJIlXmx8DMoIv1StNpPz7fMpr1ceEDKNqER0Qjg
+         kcWvOj78LvI46rC6EfEaqmdMG8eU1Vt7SOhU6ERNTquHlEsUR0NBqWSTyUQLmVevLH3C
+         kqHkQNElerjbLLgXaA9z4YWk436VQgCe9rrEr8obyqqBiLIPBuyOuYb0Lp2qr+VHWf7d
+         sQOsJOt60xiXgzPLrfDKZvg0s4xN/TfkvtAvYtRnUKEyfLwVKLz26XVvSM4ZfONNK3kw
+         1OarKUggKg6JNfnm8uqzei/c/yqGf+EQFS7AvCtBDgpjwBxfCN4IM0fGElyQOLkRCNjM
+         hh/w==
+X-Gm-Message-State: AOAM532oAyb6KuOl0pJJ3iEGWS6ScUm79m24aUfrsKY90HEEB0v5IfHd
+        1AlkXUzNl12EkwnuyVQB+gjEcQ==
+X-Google-Smtp-Source: ABdhPJxnlLYH5Pd7r9Rg8gEW16dEzCmgMC7on9vPpf5djZTjGIukA0F8F9/86jVHj91rbgJ8ZqMc8A==
+X-Received: by 2002:a17:90a:5889:: with SMTP id j9mr1452688pji.69.1617161067504;
+        Tue, 30 Mar 2021 20:24:27 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id w22sm383359pfi.133.2021.03.30.20.24.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 20:22:36 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     linux-mips@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jinyang He <hejinyang@loongson.cn>,
-        Kees Cook <keescook@chromium.org>,
-        Liangliang Huang <huanglllzu@gmail.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Michel Lespinasse <walken@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v4] MIPS: Add support for CONFIG_DEBUG_VIRTUAL
-Date:   Tue, 30 Mar 2021 20:22:07 -0700
-Message-Id: <20210331032228.21251-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 30 Mar 2021 20:24:26 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 03:24:23 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] KVM: Account memory allocations for 'struct kvm_vcpu'
+Message-ID: <YGPrZyIutYQGldO2@google.com>
+References: <20210331023025.2485960-1-seanjc@google.com>
+ <20210331023025.2485960-2-seanjc@google.com>
+ <CANRm+CwowrYPSnFNc11j5aT2JNw_k+NOh1apoxc3raVD4RVaAg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANRm+CwowrYPSnFNc11j5aT2JNw_k+NOh1apoxc3raVD4RVaAg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide hooks to intercept bad usages of virt_to_phys() and
-__pa_symbol() throughout the kernel. To make this possible, we need to
-rename the current implement of virt_to_phys() into
-__virt_to_phys_nodebug() and wrap it around depending on
-CONFIG_DEBUG_VIRTUAL.
+On Wed, Mar 31, 2021, Wanpeng Li wrote:
+> On Wed, 31 Mar 2021 at 10:32, Sean Christopherson <seanjc@google.com> wrote:
+> >
+> > Use GFP_KERNEL_ACCOUNT for the vCPU allocations, the vCPUs are very much
+> > tied to a single task/VM.  For x86, the allocations were accounted up
+> > until the allocation code was moved to common KVM.  For all other
+> > architectures, vCPU allocations were never previously accounted, but only
+> > because most architectures lack accounting in general (for KVM).
+> >
+> > Fixes: e529ef66e6b5 ("KVM: Move vcpu alloc and init invocation to common code")
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > ---
+> >  virt/kvm/kvm_main.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> > index 383df23514b9..3884e9f30251 100644
+> > --- a/virt/kvm/kvm_main.c
+> > +++ b/virt/kvm/kvm_main.c
+> > @@ -3182,7 +3182,7 @@ static int kvm_vm_ioctl_create_vcpu(struct kvm *kvm, u32 id)
+> >         if (r)
+> >                 goto vcpu_decrement;
+> >
+> > -       vcpu = kmem_cache_zalloc(kvm_vcpu_cache, GFP_KERNEL);
+> > +       vcpu = kmem_cache_zalloc(kvm_vcpu_cache, GFP_KERNEL_ACCOUNT);
+> 
+> kvm_vcpu_cache is created with SLAB_ACCOUNT flag in kvm_init(), this
+> flag will guarantee further slab alloc will be charged to memcg.
+> Please refer to memcg_slab_pre_alloc_hook(). So the patch is
+> unnecessary.
 
-A similar thing is needed for __pa_symbol() which is now aliased to
-__phys_addr_symbol() whose implementation is either the direct return of
-RELOC_HIDE or goes through the debug version.
+Hmm, I missed that.  However, AFICT only SLAB/SLUB enforce SLAB_ACCOUNT, SLOB
+does not appear to honor the flag.   The caveat to SLOB is that the
+GFP_KERNEL_ACCOUNT will only come into play when allocating new pages, and so
+allocations smaller than a page will be accounted incorrectly (I think).
+But, a vcpu is larger than a page (on x86), which means the vcpu allocation will
+always be correctly accounted.
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
-Changes in v4:
+I've no idea if anyone actually uses KVM+SLOB, let alone cares about accounting
+in the that case.  But, it would be nice for KVM to be consistent with the other
+kmem_cache usage in KVM, all of which do double up on SLAB_ACCOUNT +
+GFP_KERNEL_ACCOUNT.
 
-- properly address sparse warning in arch/mips/kernel/vdso.c and
-  eliminate it entirely
-
-Changes in v3:
-
-- added missing SDPX license tag in physaddr.c
-
-Changes in v2:
-- fixed sparse warning in arch/mips/kernel/vdso.c
-
- arch/mips/Kconfig            |  1 +
- arch/mips/include/asm/io.h   | 14 ++++++++-
- arch/mips/include/asm/page.h |  9 +++++-
- arch/mips/kernel/vdso.c      |  5 ++--
- arch/mips/mm/Makefile        |  2 ++
- arch/mips/mm/physaddr.c      | 56 ++++++++++++++++++++++++++++++++++++
- 6 files changed, 83 insertions(+), 4 deletions(-)
- create mode 100644 arch/mips/mm/physaddr.c
-
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index d89efba3d8a4..0904d6351808 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -4,6 +4,7 @@ config MIPS
- 	default y
- 	select ARCH_32BIT_OFF_T if !64BIT
- 	select ARCH_BINFMT_ELF_STATE if MIPS_FP_SUPPORT
-+	select ARCH_HAS_DEBUG_VIRTUAL if !64BIT
- 	select ARCH_HAS_FORTIFY_SOURCE
- 	select ARCH_HAS_KCOV
- 	select ARCH_HAS_PTE_SPECIAL if !(32BIT && CPU_HAS_RIXI)
-diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
-index 78537aa23500..2c138450ad3b 100644
---- a/arch/mips/include/asm/io.h
-+++ b/arch/mips/include/asm/io.h
-@@ -100,11 +100,23 @@ static inline void set_io_port_base(unsigned long base)
-  *     almost all conceivable cases a device driver should not be using
-  *     this function
-  */
--static inline unsigned long virt_to_phys(volatile const void *address)
-+static inline unsigned long __virt_to_phys_nodebug(volatile const void *address)
- {
- 	return __pa(address);
- }
- 
-+#ifdef CONFIG_DEBUG_VIRTUAL
-+extern phys_addr_t __virt_to_phys(volatile const void *x);
-+#else
-+#define __virt_to_phys(x)	__virt_to_phys_nodebug(x)
-+#endif
-+
-+#define virt_to_phys virt_to_phys
-+static inline phys_addr_t virt_to_phys(const volatile void *x)
-+{
-+	return __virt_to_phys(x);
-+}
-+
- /*
-  *     phys_to_virt    -       map physical address to virtual
-  *     @address: address to remap
-diff --git a/arch/mips/include/asm/page.h b/arch/mips/include/asm/page.h
-index 65acab9c41f9..195ff4e9771f 100644
---- a/arch/mips/include/asm/page.h
-+++ b/arch/mips/include/asm/page.h
-@@ -210,9 +210,16 @@ static inline unsigned long ___pa(unsigned long x)
-  * also affect MIPS so we keep this one until GCC 3.x has been retired
-  * before we can apply https://patchwork.linux-mips.org/patch/1541/
-  */
-+#define __pa_symbol_nodebug(x)	__pa(RELOC_HIDE((unsigned long)(x), 0))
-+
-+#ifdef CONFIG_DEBUG_VIRTUAL
-+extern phys_addr_t __phys_addr_symbol(unsigned long x);
-+#else
-+#define __phys_addr_symbol(x)	__pa_symbol_nodebug(x)
-+#endif
- 
- #ifndef __pa_symbol
--#define __pa_symbol(x)	__pa(RELOC_HIDE((unsigned long)(x), 0))
-+#define __pa_symbol(x)		__phys_addr_symbol((unsigned long)(x))
- #endif
- 
- #define pfn_to_kaddr(pfn)	__va((pfn) << PAGE_SHIFT)
-diff --git a/arch/mips/kernel/vdso.c b/arch/mips/kernel/vdso.c
-index 7d0b91ad2581..3d0cf471f2fe 100644
---- a/arch/mips/kernel/vdso.c
-+++ b/arch/mips/kernel/vdso.c
-@@ -90,7 +90,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
- {
- 	struct mips_vdso_image *image = current->thread.abi->vdso;
- 	struct mm_struct *mm = current->mm;
--	unsigned long gic_size, vvar_size, size, base, data_addr, vdso_addr, gic_pfn;
-+	unsigned long gic_size, vvar_size, size, base, data_addr, vdso_addr, gic_pfn, gic_base;
- 	struct vm_area_struct *vma;
- 	int ret;
- 
-@@ -158,7 +158,8 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
- 
- 	/* Map GIC user page. */
- 	if (gic_size) {
--		gic_pfn = virt_to_phys(mips_gic_base + MIPS_GIC_USER_OFS) >> PAGE_SHIFT;
-+		gic_base = (unsigned long)mips_gic_base + MIPS_GIC_USER_OFS;
-+		gic_pfn = virt_to_phys((void *)gic_base) >> PAGE_SHIFT;
- 
- 		ret = io_remap_pfn_range(vma, base, gic_pfn, gic_size,
- 					 pgprot_noncached(vma->vm_page_prot));
-diff --git a/arch/mips/mm/Makefile b/arch/mips/mm/Makefile
-index 865926a37775..fa1f729e0700 100644
---- a/arch/mips/mm/Makefile
-+++ b/arch/mips/mm/Makefile
-@@ -40,3 +40,5 @@ obj-$(CONFIG_R5000_CPU_SCACHE)	+= sc-r5k.o
- obj-$(CONFIG_RM7000_CPU_SCACHE) += sc-rm7k.o
- obj-$(CONFIG_MIPS_CPU_SCACHE)	+= sc-mips.o
- obj-$(CONFIG_SCACHE_DEBUGFS)	+= sc-debugfs.o
-+
-+obj-$(CONFIG_DEBUG_VIRTUAL)	+= physaddr.o
-diff --git a/arch/mips/mm/physaddr.c b/arch/mips/mm/physaddr.c
-new file mode 100644
-index 000000000000..a1ced5e44951
---- /dev/null
-+++ b/arch/mips/mm/physaddr.c
-@@ -0,0 +1,56 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bug.h>
-+#include <linux/export.h>
-+#include <linux/types.h>
-+#include <linux/mmdebug.h>
-+#include <linux/mm.h>
-+
-+#include <asm/sections.h>
-+#include <asm/io.h>
-+#include <asm/page.h>
-+#include <asm/dma.h>
-+
-+static inline bool __debug_virt_addr_valid(unsigned long x)
-+{
-+	/* high_memory does not get immediately defined, and there
-+	 * are early callers of __pa() against PAGE_OFFSET
-+	 */
-+	if (!high_memory && x >= PAGE_OFFSET)
-+		return true;
-+
-+	if (high_memory && x >= PAGE_OFFSET && x < (unsigned long)high_memory)
-+		return true;
-+
-+	/*
-+	 * MAX_DMA_ADDRESS is a virtual address that may not correspond to an
-+	 * actual physical address. Enough code relies on
-+	 * virt_to_phys(MAX_DMA_ADDRESS) that we just need to work around it
-+	 * and always return true.
-+	 */
-+	if (x == MAX_DMA_ADDRESS)
-+		return true;
-+
-+	return false;
-+}
-+
-+phys_addr_t __virt_to_phys(volatile const void *x)
-+{
-+	WARN(!__debug_virt_addr_valid((unsigned long)x),
-+	     "virt_to_phys used for non-linear address: %pK (%pS)\n",
-+	     x, x);
-+
-+	return __virt_to_phys_nodebug(x);
-+}
-+EXPORT_SYMBOL(__virt_to_phys);
-+
-+phys_addr_t __phys_addr_symbol(unsigned long x)
-+{
-+	/* This is bounds checking against the kernel image only.
-+	 * __pa_symbol should only be used on kernel symbol addresses.
-+	 */
-+	VIRTUAL_BUG_ON(x < (unsigned long)_text ||
-+		       x > (unsigned long)_end);
-+
-+	return __pa_symbol_nodebug(x);
-+}
-+EXPORT_SYMBOL(__phys_addr_symbol);
--- 
-2.25.1
-
+Maybe rewrite the changelog and drop the Fixes?
