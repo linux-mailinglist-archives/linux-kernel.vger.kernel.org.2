@@ -2,111 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4A6934FF72
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:26:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E9134FF74
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235297AbhCaL01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 07:26:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235239AbhCaLZz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 07:25:55 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0912AC061574;
-        Wed, 31 Mar 2021 04:25:54 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id j9so17578389wrx.12;
-        Wed, 31 Mar 2021 04:25:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=XKemW9z1W9iahD8xhRWW3yf2hOBr43rJJBDBt1M2nFY=;
-        b=btDjiIRJcCIQsZ6Y8eRXXhmfdB2VsAVSAL3gf3HjIm9g8zreCGJgkJIcWmLA62blJv
-         urljdWP9VbXrhE0LUCPg+BEkayFtukdFbbKbWNCmqYLvMUhnn3Mx1NWOOj/EEc671NX0
-         IqUkVeOWGLUUyy/9yNz0VahjJogW92QwfnivDnSXFAT+9Nn6Q4iJ4uNIOA64NqHYV0vU
-         760t6zefFpmFyUtnNPaagI+qMm9pdgek0+FQ/r+qgp9ljml9913Q5N60rfI2RVZck90/
-         LQEaJFHPl9I9oFdDCcMwVbPfHxwYKQEMGkOWLrHkmzGcgHeLjqyjYm2SJskn+bXhArtA
-         PrEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=XKemW9z1W9iahD8xhRWW3yf2hOBr43rJJBDBt1M2nFY=;
-        b=lyQ2Ohw/WPHRueZP961JqDQEtEgDJ0l00w6libwKVBF+DNCTqHsMbJ31+Ve1iLjGA2
-         u8+aa7G1PuOFC5QqXUI2JJzKLMMpGnq8L01q+S1ibAMRoUSRmMPghIqK3BGd2YXibqm0
-         LpGdAqxPQV9SB2HwqlgaKxeMhy3z0BMU+fBRVLHNR8l3pvOujp1LJ/jrjpLEaMFsLfyB
-         oSh2jrQ36KKXimH8JPtjN+gKPSj5qrnJSC8oKT1nwHvKsE+Lp71ZuwK9mpqpS79D6nUZ
-         jTIa0CkwuzzBzLF3K+nADzN1+FV1easwCTAYczH2NB7RH6NAbkAcPfUzV8H7WrvVy12Z
-         /3Rg==
-X-Gm-Message-State: AOAM532VH0mwACoUR/C1afPtVq96KQOTOy+W2x0DaqbGFq0y5F+qKns0
-        MjV3G0kZHexi96+qsXTSW3o=
-X-Google-Smtp-Source: ABdhPJw/1/SEYE3fOUEOqFB/zEgCN6nAvixmM5sifER6k6+BoM2mwyGqEqg04/NiQ9HLu6BRDiEjBQ==
-X-Received: by 2002:a05:6000:3:: with SMTP id h3mr3107372wrx.91.1617189952852;
-        Wed, 31 Mar 2021 04:25:52 -0700 (PDT)
-Received: from [192.168.1.211] ([91.110.20.103])
-        by smtp.gmail.com with ESMTPSA id r11sm4025675wrm.26.2021.03.31.04.25.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Mar 2021 04:25:52 -0700 (PDT)
-Subject: Re: [PATCH v2 5/6] software node: Introduce SOFTWARE_NODE_REFERENCE()
- helper macro
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-References: <20210329151207.36619-1-andriy.shevchenko@linux.intel.com>
- <20210329151207.36619-5-andriy.shevchenko@linux.intel.com>
- <5e76c3b8-d154-e5ca-25d8-290376469e5a@gmail.com>
- <YGLuyKFbDgVLU2OW@smile.fi.intel.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <26a22d2a-fb71-1651-5ff0-8332d95e9196@gmail.com>
-Date:   Wed, 31 Mar 2021 12:25:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S235242AbhCaL0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 07:26:49 -0400
+Received: from ni.piap.pl ([195.187.100.5]:34374 "EHLO ni.piap.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234995AbhCaL0T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 07:26:19 -0400
+Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ni.piap.pl (Postfix) with ESMTPSA id BDEB7443A98;
+        Wed, 31 Mar 2021 13:26:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl BDEB7443A98
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
+        t=1617189972; bh=SNsJycYW6au4fkYqmxQwGi4yWYSKhVvDcjZGyufsCMY=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=hUo6uOFL2+LM2VVuRAeFIGJNyGfTTSfpSL3WS+lWd5xK5fjfHf9X0ETzWa4xQ1b7/
+         eQv/hp1AYHQowZtC+vmmcv+QktN7A9QleGIjCe0nVow7Npx4Kg8mo8+djeBAplfhvh
+         dP+ZwO+KikEzJtTAFJx5AxCU2vz2JwbDDAKeUzf8=
+From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] soc: ixp4xx: qmgr: Use DEFINE_SPINLOCK() for
+ spinlock
+References: <20210331095341.2175046-1-yangyingliang@huawei.com>
+Sender: khalasa@piap.pl
+Date:   Wed, 31 Mar 2021 13:26:09 +0200
+In-Reply-To: <20210331095341.2175046-1-yangyingliang@huawei.com> (Yang
+        Yingliang's message of "Wed, 31 Mar 2021 17:53:41 +0800")
+Message-ID: <m38s63muni.fsf@t19.piap.pl>
 MIME-Version: 1.0
-In-Reply-To: <YGLuyKFbDgVLU2OW@smile.fi.intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-KLMS-Rule-ID: 4
+X-KLMS-Message-Action: skipped
+X-KLMS-AntiSpam-Status: not scanned, whitelist
+X-KLMS-AntiPhishing: not scanned, whitelist
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy
+Yang Yingliang <yangyingliang@huawei.com> writes:
 
-On 30/03/2021 10:26, Andy Shevchenko wrote:
->>> +	{ .pointer = &SOFTWARE_NODE_REFERENCE(_ref_, ##__VA_ARGS__), },	\
->> What are the .args intended to be used for? I actually had it in mind to
->> replace this with a simple pointer to a struct software_node, because I
->> can't see any users of them and the fact that it's actually storing a
->> pointer to a new variable is something that confused me for a good long
->> time when I wrote the cio2-bridge (though that's mostly due to my
->> relative inexperience of course, but still)
-> It's to be in align with DT phandle references that can take arguments. While
-> for now, indeed, we have no users of this, it might be changed in the future
-> (I hadn't checked DesignWare DMA where I would like to transform the code to
->  use device properties eventually and there it might be the case).
+> spinlock can be initialized automatically with DEFINE_SPINLOCK()
+> rather than explicitly calling spin_lock_init().
 
+That's right.
 
-Ah yeah I see - haven't come across phandles before but having looked
-them up now I see what this is meant to emulate. Consistency is good; in
-that case, for this and 6/6:
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 
+Acked-by: Krzysztof Halasa <khalasa@piap.pl>
 
-Reviewed-by: Daniel Scally <djrscally@gmail.com>
-
-and
-
-Tested-by: Daniel Scally <djrscally@gmail.com>
-
-
-
+> ---
+>  drivers/soc/ixp4xx/ixp4xx-qmgr.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 >
+> diff --git a/drivers/soc/ixp4xx/ixp4xx-qmgr.c b/drivers/soc/ixp4xx/ixp4xx=
+-qmgr.c
+> index 8c968382cea7..dde3b668eb40 100644
+> --- a/drivers/soc/ixp4xx/ixp4xx-qmgr.c
+> +++ b/drivers/soc/ixp4xx/ixp4xx-qmgr.c
+> @@ -16,7 +16,7 @@
+>  static struct qmgr_regs __iomem *qmgr_regs;
+>  static int qmgr_irq_1;
+>  static int qmgr_irq_2;
+> -static spinlock_t qmgr_lock;
+> +static DEFINE_SPINLOCK(qmgr_lock);
+>  static u32 used_sram_bitmap[4]; /* 128 16-dword pages */
+>  static void (*irq_handlers[QUEUES])(void *pdev);
+>  static void *irq_pdevs[QUEUES];
+> @@ -434,7 +434,6 @@ static int ixp4xx_qmgr_probe(struct platform_device *=
+pdev)
+>  	}
+>=20=20
+>  	used_sram_bitmap[0] =3D 0xF; /* 4 first pages reserved for config */
+> -	spin_lock_init(&qmgr_lock);
+>=20=20
+>  	dev_info(dev, "IXP4xx Queue Manager initialized.\n");
+>  	return 0;
+
+--=20
+Krzysztof Ha=C5=82asa
+
+Sie=C4=87 Badawcza =C5=81ukasiewicz
+Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
+Al. Jerozolimskie 202, 02-486 Warszawa
