@@ -2,132 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 447583501AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 15:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF3ED3501AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 15:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235881AbhCaNqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 09:46:23 -0400
-Received: from mail-mw2nam12on2061.outbound.protection.outlook.com ([40.107.244.61]:61184
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235793AbhCaNqI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 09:46:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OORG9tZ3d0HtmXhGuuKzx1tPZAK3ci3dSrGD5yxggZQ92przGB1I8+McP3WtgquhBR703zlw6OxkqujPIMnBGryYpeCuRL24cuoAuVZalR+c2kI09Km5tbmbDh6Iu5dNcVW4Y8SrYgzCPYFiG4zKXyk+mhVcUL9ib/wJv6MlPPMZF4XJp5Vllt1x4BAFRoCDdtnhifIZY4BdFl0eqS+RY+RCJ+7MK+4xoqKZufeRfy6TsvxOgNnqAHXsK4SvDlK6txS8e7/GyDxRQj7ENI/Br2Qi5O0O82WHieZaAOR5Booq6j3aY5XQlQHiWEe5na56BbnTVMrJZSvbnBwBPruMFA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5TkDJd2X/C8+bAdlrTGnrbdd2Ga7H+R6q19g1qFkoKQ=;
- b=d5sbjAgb/1vvXRjgfAOBSO8mWrXbTcUgNYMG2VaKiiorXSNOMhPptaaIjspO+ra2eQGFyO499FrwagWJAJjdrysDlguZyPDh26b4xFTHfv1E26SW4OEjFUAKjfxMKHIffMT0kWs2VwQkJ/Y1R7yjoXvy80gMx9JLLpuaR4mZX9HYwayMw9Cn+VjvpK1N0Dj5S+QIcNSKdmz4XB3oRcisN0LL8QRQAyd4F2kDJS906UyHispCS6amVYlHATXWYgDyNJhwF6cqudLbssFmkSDjh9aaVzrLaEMhSs7bNTRmVp8mbjrn1CrYoa1omFNI7okItkWf6qup3peguND2oX54Kw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5TkDJd2X/C8+bAdlrTGnrbdd2Ga7H+R6q19g1qFkoKQ=;
- b=opPC5rTtwCR4n7ZQ7xpv4ajRhKMcDNcmP11XKeyPF3uvvfm3ciOrjH6AfcRgjf/fdcnUWIS0+Ax8l1niL6co+P0UHgeU3TcNGB+yeJtkICZh+im/8macbeHZeTTiyWSy0hEkmDRBUmNhvIKxf4epXRykfoJrf2DhOMfKtyziqCniGQX2VjhDpP5/ho5SY6u8lGCW/KPyaRGUDQD7qwvHferzBdFOZs6HhvahC/xBjb0xg+GrMuqGAbdvu4krTQfGD/AX9lx+cchnROxaxxcrOshQiS9jv8ItDHiPngubjJgA8jwF4hSspD2MJ35HNSkivYTSkwT1rByWfA3+n30roQ==
-Authentication-Results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BY5PR12MB3827.namprd12.prod.outlook.com (2603:10b6:a03:1ab::16)
- by BYAPR12MB2901.namprd12.prod.outlook.com (2603:10b6:a03:138::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.30; Wed, 31 Mar
- 2021 13:46:06 +0000
-Received: from BY5PR12MB3827.namprd12.prod.outlook.com
- ([fe80::4c46:77c0:7d7:7e43]) by BY5PR12MB3827.namprd12.prod.outlook.com
- ([fe80::4c46:77c0:7d7:7e43%6]) with mapi id 15.20.3977.033; Wed, 31 Mar 2021
- 13:46:06 +0000
-Date:   Wed, 31 Mar 2021 10:46:04 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     linux-mm@kvack.org, nouveau@lists.freedesktop.org,
-        bskeggs@redhat.com, akpm@linux-foundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        jhubbard@nvidia.com, rcampbell@nvidia.com, jglisse@redhat.com,
-        hch@infradead.org, daniel@ffwll.ch, willy@infradead.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v7 5/8] mm: Device exclusive memory access
-Message-ID: <20210331134604.GK1463678@nvidia.com>
-References: <20210326000805.2518-1-apopple@nvidia.com>
- <2521635.masqiumSp9@nvdebian>
- <20210331131854.GI1463678@nvidia.com>
- <2124945.3NMGunUBXV@nvdebian>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2124945.3NMGunUBXV@nvdebian>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: BL1PR13CA0183.namprd13.prod.outlook.com
- (2603:10b6:208:2be::8) To BY5PR12MB3827.namprd12.prod.outlook.com
- (2603:10b6:a03:1ab::16)
+        id S235793AbhCaNtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 09:49:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235630AbhCaNtM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 09:49:12 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A57C061574;
+        Wed, 31 Mar 2021 06:49:11 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id v24-20020a9d69d80000b02901b9aec33371so18971003oto.2;
+        Wed, 31 Mar 2021 06:49:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=90V6/8WcZ7wZDuZMIocWQ9L7DdYjn1t/LqSZtSrrOEE=;
+        b=G49tIdwjULMU2Cqeu4wjE9DJpNFdYzUzXvbGYDhfrshdU49qL96tuafW4r8WWOiXjy
+         IiABPvUy/fpQ5dkLiVs0IpHOr877FNBPI1r53vVzV8Jut/ZEXtbaoBcq01axwXVOYjMN
+         Y9Qhfn7nFPF9EfrrbFoIZDRXl91tBhgz+o6w2DYYd7krZO9Sv4fbKPfkKTmfLONgLiCb
+         XNo2VK3fdv2sCk9IMVBHdhiZB5MdC7ffdF2ThZEsEf4kvRlKHZUGXmqJFRTVicC3I8SS
+         AGu67yQjpKh3wJdc5SU27SshiS8c1BI2Gd/EdNLtqJUZreTDG9VQvEvbr5ho4F+wyh0Q
+         PCRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=90V6/8WcZ7wZDuZMIocWQ9L7DdYjn1t/LqSZtSrrOEE=;
+        b=AEMoQbADkyPfgDpJZ3wSeDuFRBcfNHq3+Ig1+nAP+yg5fmVpRXKokIVbEFT67ZWm4E
+         A32/YtQ5Rwsq++S93rpuIuqyGmobsGoPsjGEO6zeFvMc6ZN4QoqL1NdoSS5v3oxuJSLI
+         9bPJ0wxftfAdYV8mBzclPEWDORFC+L2V/LnI5DvixUKBP8KNpVXINeQPda3UCwDYF3+w
+         EsYkAKQUzzgSZhMCHCEg7Qht6m9oja+DGJKu0ZlzG8qrjMlrwOqglBpNFORvjoD/dCLs
+         5JpjrBUDl4+mS2fYVK5UBMxRJ8HjCtaNgWo51BAkJzDm2pvg9rIdRkBdm4tdWJ3v9puH
+         U2Kg==
+X-Gm-Message-State: AOAM532+6Fxjruq7YuYqPl+HzGL/GWrLvm1xgviRhQOsNVGuDFTZZNuN
+        2+qaPG+VwJh1y+qFFfirh2ocDz4wPYY=
+X-Google-Smtp-Source: ABdhPJyKZQ/7mfET1BKou4Gs8LrRSiG03Y5/DSZiL29qpaKeu49K/eOB9OGMET8jwk6Qnk8uNZ99+g==
+X-Received: by 2002:a9d:5e94:: with SMTP id f20mr2720526otl.150.1617198550279;
+        Wed, 31 Mar 2021 06:49:10 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id l81sm448719oif.31.2021.03.31.06.49.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 31 Mar 2021 06:49:09 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Hardware Monitoring <linux-hwmon@vger.kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Naveen Krishna Chatradhi <nchatrad@amd.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH] hwmon: (amd_energy) Restore visibility of energy counters
+Date:   Wed, 31 Mar 2021 06:49:02 -0700
+Message-Id: <20210331134902.94720-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0183.namprd13.prod.outlook.com (2603:10b6:208:2be::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.8 via Frontend Transport; Wed, 31 Mar 2021 13:46:06 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lRbAa-006Lc8-C2; Wed, 31 Mar 2021 10:46:04 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b667bd60-cbbf-48cc-d3ea-08d8f44b5569
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2901:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR12MB290100AC8F29D3DEAF31CCAFC27C9@BYAPR12MB2901.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3736OGcHm7QPzJovqMgbIiQ79J6T9XV2CIUIoNJgTyqEz3JIU5b731TM6AbJjfUhH6cUgUSwI28BCnWM63vNxiLOTX35Qqoh9x+x6Q85aptfMVdRio3+5Y80u9Ri5FXc1tI6UnxDaBSEIelrlDQt+fqHOYwEMr+de2iJhWAJtiP7drZToIwcAIIFvajHBJXnmDDjyXy6Zxd5z9PScsa6vmMWEZOEeoxllb88mzWgjRAHQW3Kg54Pxw1IbOAqRluQBT+hEGd+p+bwexLMZYGxvvqY8MZIwqAL5iD7gSjCvhgU2KvG27keuOCT4+44bTy88ycjGcdxinZsjdaHXHRDLkjj7hYrto30GYoXjVl51ZRzZq2ZT1GUyqQxEdqIEVk/yLSpEtbQsOW8+jfuW0KwmGE/xX+oRfRoJoSE36hdGITgt5AuJzLDAJJxa2RgqRucnOiH8RhuB01teKh6SQXT/zSEZ2/SSFEZlZe1nX1/gXir0xQrEPSZFpY2cik+VOM0Zk0OnlDep/f2x8Ln0O9tgLL7QUrBojwX2hxxAKgPh5N/lIxVS6KUju8m4dqU1vF7p+LUu0F2A83t/6tzOmsZSM2RneBgprdDrFM0mX1fnBauryl1G/rYYD0t7QG0c7lWkbz1mLhIcBNADnnL0rkx0/WnyQM0RsEWYgl0vpYlpqY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB3827.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(396003)(366004)(346002)(6862004)(2616005)(1076003)(186003)(9746002)(9786002)(33656002)(83380400001)(8936002)(66556008)(4744005)(38100700001)(4326008)(6636002)(86362001)(5660300002)(478600001)(2906002)(36756003)(37006003)(316002)(8676002)(66476007)(426003)(66946007)(26005)(7416002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ZZNzjHTa16Va3EZF854Ny6DLBpCpmVQ+g0q+dpS+OeuObxKlKp5m7mT8nipS?=
- =?us-ascii?Q?eyWOC1YCm6wJ4lVr4241hC1MRJiztFCmBShXThaSW8HlEnDPfscn27FRiEeS?=
- =?us-ascii?Q?5paNCq3GPG7mHMQMLlhTTlaXZ61gcJAu62+FLW7ZI8T2kXYik20iTbKcC2hu?=
- =?us-ascii?Q?PSG9HMvrylA5nJlNIItA1pBunVWmLJGJMMusZiDa8kypZhVQSadgrzsLm1rU?=
- =?us-ascii?Q?PbZBqrgONeNZab+X7jwnVN5xf+2XBDoMIOvx4voJImwDzEnWdY3McTbzWhp+?=
- =?us-ascii?Q?D2GFmFwYVa5O9g1smUmsKrhInra3yVBpQG33vhlBnHruRz9TZrXv5Bt0kBWI?=
- =?us-ascii?Q?sCJujdagfe7lTU9i9UDzINLzCMNgGv1EVX+PjZ2t7sn+fKd5ggrUyqCbSqn6?=
- =?us-ascii?Q?vAB0hVxuRM8ObDy7Uwt0YoUfnOrySKU4pk3sPankMMGLlBC9xHgwJ/9DFnol?=
- =?us-ascii?Q?gEfvI7Qx4Ydrqh4jCqMGVV/GicwH53p3URR/k3LNYV7k7kA0qDpdEBG5hDl0?=
- =?us-ascii?Q?f8EuF5hK8p5kv4s5kQE05n/brC0xzUWZFlLb5+9NywHly9Xgd+2HiBJNhV06?=
- =?us-ascii?Q?32aE+Mm+uIFIaCdL9qhwo1VhFLsvUhRFLtnaM/Daeq9UwwazGWLu3emxJonJ?=
- =?us-ascii?Q?QsiCwyC83oTfcdB51UYAxggPZ4nJ9fIp+pgbHwnbrsgXpcu7kNdyQNKLTdja?=
- =?us-ascii?Q?TahipukJ8Y1NeYKwjTgmENia3uK5VyvbQpkRXAJYUTX2uDLV40pM5V3w/x8C?=
- =?us-ascii?Q?pPhBgjKdRt4Uw1IQ0oCMwkGuDTFqQcOzTEBuvrwKxP93VL/y+9+sJgjTzw4E?=
- =?us-ascii?Q?BF52VW53GxJwDHPCg4uWdCjRJ5jZ42mZMuMVH0Pr7qB/tiNRFJ91pz90Z2ux?=
- =?us-ascii?Q?iDhb3zxvJeKAx8aUiLjsQH+Z0UvBheBwSPwAciwb/w6ksOZ4vVsOz6xEbvT7?=
- =?us-ascii?Q?7dDr/rETi1OX9S8UeuB7Xgk6AaYi+uDBAfscDO3fmXdMACihCjUIp58NZdTa?=
- =?us-ascii?Q?VMnzCnF4a3DDqHjmT0wRLujaUVcWMyVYPBA6cJJcwbjndvQjQtGpJmPf9b9d?=
- =?us-ascii?Q?1ObxMUVto44Zq7JuJGFG6meNBPWjLLbD+DILquqPDpWBE/A91Fw6WjC0oSrI?=
- =?us-ascii?Q?8T7zsU65MXFcl+Mjb7FVnRbH0KaMBUbT1GySvKvL1sOHOsl+Hmud3vJGzD4w?=
- =?us-ascii?Q?oyCGFNRSwghEZviGW8buOlnBrB6Cmt3RrJSHi8HlvkYNeXzD1qBcIH+a60vv?=
- =?us-ascii?Q?S4YaKGOj4NhkGvmyOP3kjwX8Fyc2/AgFmDOfK+WIesL6OZOyT1NH95mQK7cv?=
- =?us-ascii?Q?R4HXm5wraVzLf3bbxhV3m66J2J2NF/tAzEo8zorrSKm5Tw=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b667bd60-cbbf-48cc-d3ea-08d8f44b5569
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB3827.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Mar 2021 13:46:06.8407
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Auuf1ZyTbG7zHermtVtDrb/12zR8ElOjZGnEy38lE4CWllK1fvkCODKDoQ6yfDED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB2901
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 12:27:52AM +1100, Alistair Popple wrote:
-> On Thursday, 1 April 2021 12:18:54 AM AEDT Jason Gunthorpe wrote:
-> > On Wed, Mar 31, 2021 at 11:59:28PM +1100, Alistair Popple wrote:
-> > 
-> > > I guess that makes sense as the split could go either way at the
-> > > moment but I should add a check to make sure this isn't used with
-> > > pinned pages anyway.
-> > 
-> > Is it possible to have a pinned page under one of these things? If I
-> > pin it before you migrate it then it remains pinned but hidden under
-> > the swap entry?
-> 
-> At the moment yes. But I had planned (and this reminded me) to add a check to 
-> prevent marking pinned pages for exclusive access. 
+Commit 60268b0e8258 ("hwmon: (amd_energy) modify the visibility of
+the counters") restricted visibility of AMD energy counters to work
+around a side-channel attack. The attack is described in 'PLATYPUS:
+Software-based Power Side-Channel Attacks on x86'. It relies on quick
+and accurate power readings.
 
-How do you even do that without races with GUP fast?
+Limiting power readings to privileged users is annoying. A much better
+solution is to make power readings unusable for attacks by randomizing
+the time between updates. We can do that by caching energy values for
+a short and randomized period of time.
 
-Jason
+Cc: Naveen Krishna Chatradhi <nchatrad@amd.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 60268b0e8258 ("hwmon: (amd_energy) modify the visibility of the counters")
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+ drivers/hwmon/amd_energy.c | 28 +++++++++++++++++++---------
+ 1 file changed, 19 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/hwmon/amd_energy.c b/drivers/hwmon/amd_energy.c
+index a86cc8d6d93d..2ee6919eea57 100644
+--- a/drivers/hwmon/amd_energy.c
++++ b/drivers/hwmon/amd_energy.c
+@@ -18,6 +18,7 @@
+ #include <linux/mutex.h>
+ #include <linux/processor.h>
+ #include <linux/platform_device.h>
++#include <linux/random.h>
+ #include <linux/sched.h>
+ #include <linux/slab.h>
+ #include <linux/topology.h>
+@@ -35,6 +36,8 @@
+ struct sensor_accumulator {
+ 	u64 energy_ctr;
+ 	u64 prev_value;
++	u64 cached_value;
++	unsigned long cache_timeout;
+ };
+ 
+ struct amd_energy_data {
+@@ -93,6 +96,8 @@ static void accumulate_delta(struct amd_energy_data *data,
+ 			accum->prev_value + input;
+ 
+ 	accum->prev_value = input;
++	accum->cached_value = input;
++	accum->cache_timeout = jiffies + HZ + get_random_int() % HZ;
+ 	mutex_unlock(&data->lock);
+ }
+ 
+@@ -125,16 +130,21 @@ static void amd_add_delta(struct amd_energy_data *data, int ch,
+ 	u64 input;
+ 
+ 	mutex_lock(&data->lock);
+-	rdmsrl_safe_on_cpu(cpu, reg, &input);
+-	input &= AMD_ENERGY_MASK;
+ 
+ 	accum = &data->accums[ch];
+-	if (input >= accum->prev_value)
+-		input += accum->energy_ctr -
+-				accum->prev_value;
+-	else
+-		input += UINT_MAX - accum->prev_value +
+-				accum->energy_ctr;
++	if (!accum->cached_value || time_after(jiffies, accum->cache_timeout)) {
++		rdmsrl_safe_on_cpu(cpu, reg, &input);
++		input &= AMD_ENERGY_MASK;
++
++		if (input >= accum->prev_value)
++			input += accum->energy_ctr - accum->prev_value;
++		else
++			input += UINT_MAX - accum->prev_value + accum->energy_ctr;
++		accum->cached_value = input;
++		accum->cache_timeout = jiffies + HZ + get_random_int() % HZ;
++	} else {
++		input = accum->cached_value;
++	}
+ 
+ 	/* Energy consumed = (1/(2^ESU) * RAW * 1000000UL) μJoules */
+ 	*val = div64_ul(input * 1000000UL, BIT(data->energy_units));
+@@ -171,7 +181,7 @@ static umode_t amd_energy_is_visible(const void *_data,
+ 				     enum hwmon_sensor_types type,
+ 				     u32 attr, int channel)
+ {
+-	return 0440;
++	return 0444;
+ }
+ 
+ static int energy_accumulator(void *p)
+-- 
+2.17.1
+
