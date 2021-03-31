@@ -2,115 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B6D350A4E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3FE2350A50
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230401AbhCaWit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 18:38:49 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:54054 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232207AbhCaWid (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 18:38:33 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617230311;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MTAca8jamyiv4OQC/0ehNmkUzrYgK82+B2gnABlfuE4=;
-        b=wLJuSNRlSVF/PkDm3fuzha7lpECmwuVqtA03/nXyQDXDAWvBirH+/fYTNYqrnlItwtLK39
-        ueabTGEjWfDwJRWajmljjDlBBRKb1e4iWShFRNEaFV/o2ysNaExtYxnlKlAmRe3XZMJnKG
-        bNQvUoKtTg4fdrC48N52k6UMO9iR3DD92508uibjdl9Mmhw/WkzMQdF6Rjwqo7Q7jvmbj+
-        WxukKQ1OuTjvMmPRlRVQVfC0Htd3LczE5FTUIDbv/T8HXjwy0JEUrOjh1ErBC+f7z6rUNc
-        jP8Y+MbOuHb2pyR7nVtU21KL+1pc2hsRU+1ZQlaM5d6XOuJe6UKGsmHaYhzSQA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617230311;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MTAca8jamyiv4OQC/0ehNmkUzrYgK82+B2gnABlfuE4=;
-        b=yTpBUljzXJtrMhJ2lcQnuH9tBbKROS0ovJE/lzzYE7vrNqhZtLuA5E4XjbMAeCAsuBkJfi
-        LNLwWc3mHTWDTwBw==
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 3/6] stack: Optionally randomize kernel stack offset each syscall
-In-Reply-To: <202103311453.A840B7FC5@keescook>
-References: <20210330205750.428816-1-keescook@chromium.org> <20210330205750.428816-4-keescook@chromium.org> <87im5769op.ffs@nanos.tec.linutronix.de> <202103311453.A840B7FC5@keescook>
-Date:   Thu, 01 Apr 2021 00:38:31 +0200
-Message-ID: <87v9973q54.ffs@nanos.tec.linutronix.de>
+        id S232221AbhCaWk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 18:40:59 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:57122 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229497AbhCaWk1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 18:40:27 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lRjVX-00EFCD-S8; Thu, 01 Apr 2021 00:40:15 +0200
+Date:   Thu, 1 Apr 2021 00:40:15 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Grant Grundler <grundler@chromium.org>
+Cc:     Oliver Neukum <oneukum@suse.com>, Jakub Kicinski <kuba@kernel.org>,
+        Roland Dreier <roland@kernel.org>,
+        nic_swsd <nic_swsd@realtek.com>, netdev <netdev@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCHv4 1/4] usbnet: add _mii suffix to
+ usbnet_set/get_link_ksettings
+Message-ID: <YGT6TwSpW22o4nEf@lunn.ch>
+References: <20210330021651.30906-1-grundler@chromium.org>
+ <20210330021651.30906-2-grundler@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210330021651.30906-2-grundler@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31 2021 at 14:54, Kees Cook wrote:
-> On Wed, Mar 31, 2021 at 09:53:26AM +0200, Thomas Gleixner wrote:
->> On Tue, Mar 30 2021 at 13:57, Kees Cook wrote:
->> > +/*
->> > + * Do not use this anywhere else in the kernel. This is used here because
->> > + * it provides an arch-agnostic way to grow the stack with correct
->> > + * alignment. Also, since this use is being explicitly masked to a max of
->> > + * 10 bits, stack-clash style attacks are unlikely. For more details see
->> > + * "VLAs" in Documentation/process/deprecated.rst
->> > + * The asm statement is designed to convince the compiler to keep the
->> > + * allocation around even after "ptr" goes out of scope.
->> 
->> Nit. That explanation of "ptr" might be better placed right at the
->> add_random...() macro.
->
-> Ah, yes! Fixed in v9.
+On Mon, Mar 29, 2021 at 07:16:48PM -0700, Grant Grundler wrote:
+> From: Oliver Neukum <oneukum@suse.com>
+> 
+> The generic functions assumed devices provided an MDIO interface (accessed
+> via older mii code, not phylib). This is true only for genuine ethernet.
+> 
+> Devices with a higher level of abstraction or based on different
+> technologies do not have MDIO. To support this case, first rename
+> the existing functions with _mii suffix.
+> 
+> v2: rebased on changed upstream
+> v3: changed names to clearly say that this does NOT use phylib
+> v4: moved hunks to correct patch; reworded commmit messages
+> 
+> Signed-off-by : Oliver Neukum <oneukum@suse.com>
+> Tested-by: Roland Dreier <roland@kernel.org>
+> Reviewed-by: Grant Grundler <grundler@chromium.org>
+> Tested-by: Grant Grundler <grundler@chromium.org>
 
-Hmm, looking at V9 the "ptr" thing got lost ....
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-> +/*
-> + * Do not use this anywhere else in the kernel. This is used here because
-> + * it provides an arch-agnostic way to grow the stack with correct
-> + * alignment. Also, since this use is being explicitly masked to a max of
-> + * 10 bits, stack-clash style attacks are unlikely. For more details see
-> + * "VLAs" in Documentation/process/deprecated.rst
-> + */
-> +void *__builtin_alloca(size_t size);
-> +/*
-> + * Use, at most, 10 bits of entropy. We explicitly cap this to keep the
-> + * "VLA" from being unbounded (see above). 10 bits leaves enough room for
-> + * per-arch offset masks to reduce entropy (by removing higher bits, since
-> + * high entropy may overly constrain usable stack space), and for
-> + * compiler/arch-specific stack alignment to remove the lower bits.
-> + */
-> +#define KSTACK_OFFSET_MAX(x)	((x) & 0x3FF)
-> +
-> +/*
-> + * These macros must be used during syscall entry when interrupts and
-> + * preempt are disabled, and after user registers have been stored to
-> + * the stack.
-> + */
-> +#define add_random_kstack_offset() do {					\
-
-> Do you want to take this via -tip (and leave off the arm64 patch until
-> it is acked), or would you rather it go via arm64? (I've sent v9 now...)
-
-Either way is fine.
-
-Thanks,
-
-        tglx
+    Andrew
