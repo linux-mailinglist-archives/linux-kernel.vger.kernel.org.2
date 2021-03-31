@@ -2,80 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3311350192
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 15:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FFEA350196
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 15:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235983AbhCaNlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 09:41:35 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:40479 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235842AbhCaNlC (ORCPT
+        id S235923AbhCaNlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 09:41:45 -0400
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:36677 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235930AbhCaNlH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 09:41:02 -0400
-Received: by mail-ot1-f49.google.com with SMTP id w31-20020a9d36220000b02901f2cbfc9743so18926314otb.7;
-        Wed, 31 Mar 2021 06:41:02 -0700 (PDT)
+        Wed, 31 Mar 2021 09:41:07 -0400
+Received: by mail-ot1-f43.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso18957701otq.3;
+        Wed, 31 Mar 2021 06:41:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=jsgIdaqlH2C9MJUIwIFmOwXHosTK36DMQwbtDc67PdU=;
-        b=GlaMOk/EftBiN9LQOojhfQNTipiW4HdZpPp93eVlGY5wxRi5SVqVjg3BE7zWj5O36Y
-         CVRBXQHSvGv5hJdyZffayr2hnFGq8WDqji1s3SO6MePwtk8SRfakOwA1RaXr9eF80wUO
-         G+7FiK0gUW2ORuodrDKVwWtvTGs3TN1JBYDrd5jpYHFzozp7kpI66cc707eCmlEFH9It
-         TV1Pfu6FQRXfElF8oinDf7G2UGL6hylx7O43hwefm31jfRz/jgKxE44pQQOMGFcM80M7
-         CAz/b2r56S4XkqZtcAyExPzgfCpIqVrbOwg4LzQ25bvneT8ErQa7wqpQPylzZ+Eafrf3
-         QzZA==
-X-Gm-Message-State: AOAM530GfY6o8ZlaFbIiiO0rjeYuyxdmJ6JWIFMu9JSWnPxw8No9PIV7
-        uhRa5XhM6iDzy5GusT1vkw==
-X-Google-Smtp-Source: ABdhPJy9cZd8SNUZfNXUreF3fwUvIluuSS4fiqRj0Ql+EUHendHCquhblhKUmO6JrZ58igOXICq5Tg==
-X-Received: by 2002:a9d:4b8d:: with SMTP id k13mr2677027otf.354.1617198061936;
-        Wed, 31 Mar 2021 06:41:01 -0700 (PDT)
+        bh=XT+L6M3yZXaHCJkFyzkxUYEOZAnkSOv3iL67Pxa3CN8=;
+        b=RMK0sj3giZbVPEm7Y8HUUW98eeftJOzcQXG+j7iJAeeUzzHgyicSinMT3ffAbgBX9b
+         53q0jfdbmhEyUC4g/ttuRNXbxRlssX1cb3pGyBDdTC1b8Oa8ORIUPq1kaVQ7N1Ree7zi
+         YKH8QK9vT0y0c8+qmH3fQdeV0V1pmXMHtAqcyJavBs++DOQpQit7m0uvCf+gqxwldPtp
+         ig1cO1uEobJBP/xkz3ce31P8rPiGI6leKV/HI6L6LmsYh/chElkEX9NPUN4IaqX6OBfy
+         tlk/FHRpEdH6UpvuAls2RFSgHFSLFA0nGuLSCGqx0j2wz86WfowbOk/shtzg1J5Y+dvh
+         zZGg==
+X-Gm-Message-State: AOAM532kjsPBdX7AKPtTePzYG+eGkpZec9NDXZk7lutOsYv56W8RHJW5
+        oRvcNPZl5OYRBcy2ujM94g==
+X-Google-Smtp-Source: ABdhPJwlG5+iOdS7eulp0UiVkA2GsoNlz0PJcwBFZarnzGtyaFOTdI20ixb5eZ0D8IvfbBUZUz0/YA==
+X-Received: by 2002:a9d:7003:: with SMTP id k3mr2738659otj.351.1617198066161;
+        Wed, 31 Mar 2021 06:41:06 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id o6sm474874otj.81.2021.03.31.06.41.00
+        by smtp.gmail.com with ESMTPSA id d2sm479225otl.48.2021.03.31.06.41.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 06:41:01 -0700 (PDT)
-Received: (nullmailer pid 2074854 invoked by uid 1000);
+        Wed, 31 Mar 2021 06:41:05 -0700 (PDT)
+Received: (nullmailer pid 2074857 invoked by uid 1000);
         Wed, 31 Mar 2021 13:40:59 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        devicetree@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-phy@lists.infradead.org,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        dmaengine@vger.kernel.org, Benoit Parrot <bparrot@ti.com>,
-        Helen Koike <helen.koike@collabora.com>,
-        Peter Chen <peter.chen@nxp.com>,
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     devicetree@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Tretter <m.tretter@pengutronix.de>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-In-Reply-To: <20210330173348.30135-13-p.yadav@ti.com>
-References: <20210330173348.30135-1-p.yadav@ti.com> <20210330173348.30135-13-p.yadav@ti.com>
-Subject: Re: [PATCH 12/16] dt-bindings: media: Add DT bindings for TI CSI2RX driver
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210330230445.26619-6-digetx@gmail.com>
+References: <20210330230445.26619-1-digetx@gmail.com> <20210330230445.26619-6-digetx@gmail.com>
+Subject: Re: [PATCH v2 5/6] dt-bindings: memory: tegra20: emc: Convert to schema
 Date:   Wed, 31 Mar 2021 08:40:59 -0500
-Message-Id: <1617198059.574658.2074853.nullmailer@robh.at.kernel.org>
+Message-Id: <1617198059.590387.2074856.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 30 Mar 2021 23:03:44 +0530, Pratyush Yadav wrote:
-> TI's J721E uses the Cadence CSI2RX and DPHY peripherals to facilitate
-> capture over a CSI-2 bus. The TI CSI2RX platform driver glues all the
-> parts together.
+On Wed, 31 Mar 2021 02:04:44 +0300, Dmitry Osipenko wrote:
+> Convert Tegra20 External Memory Controller binding to schema.
 > 
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 > ---
->  .../devicetree/bindings/media/ti,csi2rx.yaml  | 70 +++++++++++++++++++
->  1 file changed, 70 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/ti,csi2rx.yaml
+>  .../memory-controllers/nvidia,tegra20-emc.txt | 130 --------
+>  .../nvidia,tegra20-emc.yaml                   | 294 ++++++++++++++++++
+>  2 files changed, 294 insertions(+), 130 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
+>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
@@ -83,9 +70,9 @@ My bot found errors running 'make dt_binding_check' on your patch:
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/media/ti,csi2rx.example.dts:21.30-29.11: Warning (unit_address_vs_reg): /example-0/ticsi2rx: node has a reg or ranges property, but no unit name
+Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.example.dts:33.26-55.15: Warning (unit_address_vs_reg): /example-0/external-memory-controller@7000f400/emc-tables@0: node has a unit name, but no reg or ranges property
 
-See https://patchwork.ozlabs.org/patch/1460166
+See https://patchwork.ozlabs.org/patch/1460288
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
