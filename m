@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EBF234FEE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB1134FEF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235358AbhCaLAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 07:00:06 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:43894 "EHLO
+        id S235294AbhCaLAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 07:00:14 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:40074 "EHLO
         esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235086AbhCaK72 (ORCPT
+        with ESMTP id S235100AbhCaK7b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 06:59:28 -0400
+        Wed, 31 Mar 2021 06:59:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1617188368; x=1648724368;
+  t=1617188370; x=1648724370;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=C7hxWt9DV3Pc9H4oOYS4u5rYRQhOWg1AJzI3K4Hdue4=;
-  b=wnjqqcPs9pvk2lSdpumR3fKV9uVtXzZPOQThFx/xqegraTeMHMCr0LkU
-   s/b4BQeZbZIZkIHsuVjDc+QGi06ob5VD2/9RnXUcXgl31QXNUglI0VRYG
-   JIAy3Ij3C+ZLf/M0dI1jukJqrhQX2/fIRR4M/x51w86CKlCEN7JSa6OPg
-   MBNT/fpwu6D97P9tJzea+hd3saNn4yxEJlOfqDsg5bGBZmv0ax5m4UoLd
-   Aly3ow8Gp9qBJ2UE2q2IPkCQWSXgWMGzvs9bOBD7JGr/1TbDBSj0NaaT4
-   4SbQ4BBXneUPtIbGtEXQuJS0sMkD4kx3VeIgmqWfNWnmGiVH/i5AcpWVR
-   A==;
-IronPort-SDR: L1/SHFAWK5iKH28yY22g9zFEYkSmf3Q51BSDKwyZ7clpHkOnd3opfLK4AtO5ueI8Vya7i0dAYn
- zyLnTveCFJCNC7lmouq5cYZSsxtcqMRb+SX+11C8TAWRb6FLDvTCuqjvcvCNhn9sXUf1km0dhm
- BdNodPMQsbdkLB0J5uYMyvq5b3CdiLedEpF8ejrKAWNu6yVT2WBIgC2JEjrQS12pRQKkSx31Uq
- lkz3n5Ax854XNgcHEy3cRbUbCuCrYu+EU3jG10aUQ1p58S+7XFYs5zMpYGG8ZythWW9U4FjBfh
- 3vo=
+  bh=fnc4ASYJ12M3XrHDxxTQRUw3OroYEpCDglmUhVWaVeM=;
+  b=WueGfeZ9+sIVS/vVzKRZFKzfJ3j4KdKYsu9ooe0hf/Wo7n8lSlIvQOAu
+   s1d/B9z58T6L3Kcm6R1ABbNNwLWYMYUl3U+DKWby7IQeUtvEjnbUCAz/7
+   CCx3FooJBXHMmCWNX2fitMf1+fp2KTJUqhNYrecKtnt0Gg/3YHvh6tjem
+   gIC51RrMKpDtgB3vM1yClqzQ+x8IYg+R1KoyTANnWivrTdxYP/pSzK4AX
+   +/MEPwlJbRErQXdAR2UkzrHK+5fq1/GnxMNaAviYXgeFTr4KXLtaOhCeh
+   i5Uft2ILH1GMajYlRvly34531+KxMGfyd1h3ScxxdQYIfLlWU7G7AHU1a
+   Q==;
+IronPort-SDR: QyV0j0ktZCh62ZM5GOSpOiT/eNmR3nc24enCl3Fv8/NHI5+4tIctRL0kB3yeXh9MZEkagkQUGC
+ exg4YAxidiUsWTtHmZ38qA/L/rJN5ccf2wPmd2/GMjf7pHqLck94prwwVJCVRg2D4FpK8RiKCV
+ 3JM2OIvbYt+nuyth/ukGWrMeKYX9i6skasamCNATpd3Z1LF3++vgvJCij52b3m9fN5LpAlkRnE
+ 3d+wXJund8pEsONjjet+bPmoT0HqSNnSM32VhVk42t3+L3CoF2j//hoq/AD/Y0qJ3TYguX7Ny+
+ LcE=
 X-IronPort-AV: E=Sophos;i="5.81,293,1610434800"; 
-   d="scan'208";a="121233918"
+   d="scan'208";a="115333307"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 31 Mar 2021 03:59:27 -0700
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 31 Mar 2021 03:59:30 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 31 Mar 2021 03:59:27 -0700
+ 15.1.2176.2; Wed, 31 Mar 2021 03:59:30 -0700
 Received: from rob-dk-mpu01.microchip.com (10.10.115.15) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Wed, 31 Mar 2021 03:59:25 -0700
+ 15.1.2176.2 via Frontend Transport; Wed, 31 Mar 2021 03:59:27 -0700
 From:   Claudiu Beznea <claudiu.beznea@microchip.com>
 To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
         <ludovic.desroches@microchip.com>, <robh+dt@kernel.org>,
@@ -48,9 +48,9 @@ To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
 CC:     <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH 06/24] ARM: at91: pm: use r7 instead of tmp1
-Date:   Wed, 31 Mar 2021 13:58:50 +0300
-Message-ID: <20210331105908.23027-7-claudiu.beznea@microchip.com>
+Subject: [PATCH 07/24] ARM: at91: pm: avoid push and pop on stack while memory is in self-refersh
+Date:   Wed, 31 Mar 2021 13:58:51 +0300
+Message-ID: <20210331105908.23027-8-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20210331105908.23027-1-claudiu.beznea@microchip.com>
 References: <20210331105908.23027-1-claudiu.beznea@microchip.com>
@@ -61,61 +61,467 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use r7 instead of tmp1 in macros. This prepares the filed for
-next commits.
+For the previous AT91 RAM controller and self-refresh procedure this
+had no side effects. However, for SAMA7G5 the self-refresh procedure
+doesn't allow this anymore as the RAM controller ports are closed
+before switching it to self-refresh. This commits prepares the code
+for the following ones adding self-refresh and PM support for SAMA7G5.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- arch/arm/mach-at91/pm_suspend.S | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+ arch/arm/mach-at91/pm_suspend.S | 397 +++++++++++++++++---------------
+ 1 file changed, 205 insertions(+), 192 deletions(-)
 
 diff --git a/arch/arm/mach-at91/pm_suspend.S b/arch/arm/mach-at91/pm_suspend.S
-index b683c2caa40b..3d20c9880fee 100644
+index 3d20c9880fee..960ad29cce51 100644
 --- a/arch/arm/mach-at91/pm_suspend.S
 +++ b/arch/arm/mach-at91/pm_suspend.S
-@@ -31,30 +31,36 @@ tmp3	.req	r6
+@@ -75,98 +75,147 @@ tmp3	.req	r6
  
- /*
-  * Wait until master oscillator has stabilized.
+ 	.arm
+ 
+-/*
+- * void at91_suspend_sram_fn(struct at91_pm_data*)
+- * @input param:
+- * 	@r0: base address of struct at91_pm_data
++/**
++ * Enable self-refresh
 + *
-+ * Side effects: overwrites r7
++ * register usage:
++ * 	@r1: memory type
++ *	@r2: base address of the sram controller
++ *	@r3: temporary
   */
- 	.macro wait_moscrdy
--1:	ldr	tmp1, [pmc, #AT91_PMC_SR]
--	tst	tmp1, #AT91_PMC_MOSCS
-+1:	ldr	r7, [pmc, #AT91_PMC_SR]
-+	tst	r7, #AT91_PMC_MOSCS
- 	beq	1b
- 	.endm
+-/* at91_pm_suspend_in_sram must be 8-byte aligned per the requirements of fncpy() */
+-	.align 3
+-ENTRY(at91_pm_suspend_in_sram)
+-	/* Save registers on stack */
+-	stmfd	sp!, {r4 - r12, lr}
++.macro at91_sramc_self_refresh_ena
++	ldr	r1, .memtype
++	ldr	r2, .sramc_base
  
- /*
-  * Wait for main oscillator selection is done
+-	/* Drain write buffer */
+-	mov	tmp1, #0
+-	mcr	p15, 0, tmp1, c7, c10, 4
++	cmp	r1, #AT91_MEMCTRL_MC
++	bne	sr_ena_ddrc_sf
+ 
+-	ldr	tmp1, [r0, #PM_DATA_PMC]
+-	str	tmp1, .pmc_base
+-	ldr	tmp1, [r0, #PM_DATA_RAMC0]
+-	str	tmp1, .sramc_base
+-	ldr	tmp1, [r0, #PM_DATA_RAMC1]
+-	str	tmp1, .sramc1_base
+-	ldr	tmp1, [r0, #PM_DATA_MEMCTRL]
+-	str	tmp1, .memtype
+-	ldr	tmp1, [r0, #PM_DATA_MODE]
+-	str	tmp1, .pm_mode
+-	ldr	tmp1, [r0, #PM_DATA_PMC_MCKR_OFFSET]
+-	str	tmp1, .mckr_offset
+-	ldr	tmp1, [r0, #PM_DATA_PMC_VERSION]
+-	str	tmp1, .pmc_version
+-	/* Both ldrne below are here to preload their address in the TLB */
+-	ldr	tmp1, [r0, #PM_DATA_SHDWC]
+-	str	tmp1, .shdwc
+-	cmp	tmp1, #0
+-	ldrne	tmp2, [tmp1, #0]
+-	ldr	tmp1, [r0, #PM_DATA_SFRBU]
+-	str	tmp1, .sfrbu
+-	cmp	tmp1, #0
+-	ldrne	tmp2, [tmp1, #0x10]
++	/* Active SDRAM self-refresh mode */
++	mov	r3, #1
++	str	r3, [r2, #AT91_MC_SDRAMC_SRR]
++	b	sr_ena_exit
+ 
+-	/* Active the self-refresh mode */
+-	mov	r0, #SRAMC_SELF_FRESH_ACTIVE
+-	bl	at91_sramc_self_refresh
++sr_ena_ddrc_sf:
++	cmp	r1, #AT91_MEMCTRL_DDRSDR
++	bne	sr_ena_sdramc_sf
+ 
+-	ldr	r0, .pm_mode
+-	cmp	r0, #AT91_PM_STANDBY
+-	beq	standby
+-	cmp	r0, #AT91_PM_BACKUP
+-	beq	backup_mode
++	/*
++	 * DDR Memory controller
++	 */
+ 
+-	bl	at91_ulp_mode
+-	b	exit_suspend
++	/* LPDDR1 --> force DDR2 mode during self-refresh */
++	ldr	r3, [r2, #AT91_DDRSDRC_MDR]
++	str	r3, .saved_sam9_mdr
++	bic	r3, r3, #~AT91_DDRSDRC_MD
++	cmp	r3, #AT91_DDRSDRC_MD_LOW_POWER_DDR
++	ldreq	r3, [r2, #AT91_DDRSDRC_MDR]
++	biceq	r3, r3, #AT91_DDRSDRC_MD
++	orreq	r3, r3, #AT91_DDRSDRC_MD_DDR2
++	streq	r3, [r2, #AT91_DDRSDRC_MDR]
+ 
+-standby:
+-	/* Wait for interrupt */
+-	ldr	pmc, .pmc_base
+-	at91_cpu_idle
+-	b	exit_suspend
++	/* Active DDRC self-refresh mode */
++	ldr	r3, [r2, #AT91_DDRSDRC_LPR]
++	str	r3, .saved_sam9_lpr
++	bic	r3, r3, #AT91_DDRSDRC_LPCB
++	orr	r3, r3, #AT91_DDRSDRC_LPCB_SELF_REFRESH
++	str	r3, [r2, #AT91_DDRSDRC_LPR]
+ 
+-backup_mode:
+-	bl	at91_backup_mode
+-	b	exit_suspend
++	/* If using the 2nd ddr controller */
++	ldr	r2, .sramc1_base
++	cmp	r2, #0
++	beq	sr_ena_no_2nd_ddrc
+ 
+-exit_suspend:
+-	/* Exit the self-refresh mode */
+-	mov	r0, #SRAMC_SELF_FRESH_EXIT
+-	bl	at91_sramc_self_refresh
++	ldr	r3, [r2, #AT91_DDRSDRC_MDR]
++	str	r3, .saved_sam9_mdr1
++	bic	r3, r3, #~AT91_DDRSDRC_MD
++	cmp	r3, #AT91_DDRSDRC_MD_LOW_POWER_DDR
++	ldreq	r3, [r2, #AT91_DDRSDRC_MDR]
++	biceq	r3, r3, #AT91_DDRSDRC_MD
++	orreq	r3, r3, #AT91_DDRSDRC_MD_DDR2
++	streq	r3, [r2, #AT91_DDRSDRC_MDR]
+ 
+-	/* Restore registers, and return */
+-	ldmfd	sp!, {r4 - r12, pc}
+-ENDPROC(at91_pm_suspend_in_sram)
++	/* Active DDRC self-refresh mode */
++	ldr	r3, [r2, #AT91_DDRSDRC_LPR]
++	str	r3, .saved_sam9_lpr1
++	bic	r3, r3, #AT91_DDRSDRC_LPCB
++	orr	r3, r3, #AT91_DDRSDRC_LPCB_SELF_REFRESH
++	str	r3, [r2, #AT91_DDRSDRC_LPR]
+ 
+-ENTRY(at91_backup_mode)
+-	/* Switch the master clock source to slow clock. */
+-	ldr	pmc, .pmc_base
+-	ldr	tmp2, .mckr_offset
+-	ldr	tmp1, [pmc, tmp2]
+-	bic	tmp1, tmp1, #AT91_PMC_CSS
+-	str	tmp1, [pmc, tmp2]
++sr_ena_no_2nd_ddrc:
++	b	sr_ena_exit
+ 
+-	wait_mckrdy
++	/*
++	 * SDRAMC Memory controller
++	 */
++sr_ena_sdramc_sf:
++	/* Active SDRAMC self-refresh mode */
++	ldr	r3, [r2, #AT91_SDRAMC_LPR]
++	str	r3, .saved_sam9_lpr
++	bic	r3, r3, #AT91_SDRAMC_LPCB
++	orr	r3, r3, #AT91_SDRAMC_LPCB_SELF_REFRESH
++	str	r3, [r2, #AT91_SDRAMC_LPR]
+ 
+-	/*BUMEN*/
+-	ldr	r0, .sfrbu
+-	mov	tmp1, #0x1
+-	str	tmp1, [r0, #0x10]
++	ldr	r3, .saved_sam9_lpr
++	str	r3, [r2, #AT91_SDRAMC_LPR]
+ 
+-	/* Shutdown */
+-	ldr	r0, .shdwc
+-	mov	tmp1, #0xA5000000
+-	add	tmp1, tmp1, #0x1
+-	str	tmp1, [r0, #0]
+-ENDPROC(at91_backup_mode)
++sr_ena_exit:
++.endm
++
++/**
++ * Disable self-refresh
 + *
-+ * Side effects: overwrites r7
-  */
- 	.macro wait_moscsels
--1:	ldr	tmp1, [pmc, #AT91_PMC_SR]
--	tst	tmp1, #AT91_PMC_MOSCSELS
-+1:	ldr	r7, [pmc, #AT91_PMC_SR]
-+	tst	r7, #AT91_PMC_MOSCSELS
- 	beq	1b
- 	.endm
++ * register usage:
++ * 	@r1: memory type
++ *	@r2: base address of the sram controller
++ *	@r3: temporary
++ */
++.macro at91_sramc_self_refresh_dis
++	ldr	r1, .memtype
++	ldr	r2, .sramc_base
++
++	cmp	r1, #AT91_MEMCTRL_MC
++	bne	sr_dis_ddrc_exit_sf
++
++	/*
++	 * at91rm9200 Memory controller
++	 */
++
++	 /*
++	  * For exiting the self-refresh mode, do nothing,
++	  * automatically exit the self-refresh mode.
++	  */
++	b	sr_dis_exit
++
++sr_dis_ddrc_exit_sf:
++	cmp	r1, #AT91_MEMCTRL_DDRSDR
++	bne	sdramc_exit_sf
++
++	/* DDR Memory controller */
++
++	/* Restore MDR in case of LPDDR1 */
++	ldr	r3, .saved_sam9_mdr
++	str	r3, [r2, #AT91_DDRSDRC_MDR]
++	/* Restore LPR on AT91 with DDRAM */
++	ldr	r3, .saved_sam9_lpr
++	str	r3, [r2, #AT91_DDRSDRC_LPR]
++
++	/* If using the 2nd ddr controller */
++	ldr	r2, .sramc1_base
++	cmp	r2, #0
++	ldrne	r3, .saved_sam9_mdr1
++	strne	r3, [r2, #AT91_DDRSDRC_MDR]
++	ldrne	r3, .saved_sam9_lpr1
++	strne	r3, [r2, #AT91_DDRSDRC_LPR]
++
++	b	sr_dis_exit
++
++sdramc_exit_sf:
++	/* SDRAMC Memory controller */
++	ldr	r3, .saved_sam9_lpr
++	str	r3, [r2, #AT91_SDRAMC_LPR]
++
++sr_dis_exit:
++.endm
  
- /*
-  * Put the processor to enter the idle state
-+ *
-+ * Side effects: overwrites r7
-  */
- 	.macro at91_cpu_idle
+ .macro at91_pm_ulp0_mode
+ 	ldr	pmc, .pmc_base
+@@ -503,7 +552,7 @@ ENDPROC(at91_backup_mode)
+ 2:
+ .endm
  
- #if defined(CONFIG_CPU_V7)
--	mov	tmp1, #AT91_PMC_PCK
--	str	tmp1, [pmc, #AT91_PMC_SCDR]
-+	mov	r7, #AT91_PMC_PCK
-+	str	r7, [pmc, #AT91_PMC_SCDR]
+-ENTRY(at91_ulp_mode)
++.macro at91_ulp_mode
+ 	ldr	pmc, .pmc_base
+ 	ldr	tmp2, .mckr_offset
+ 	ldr	tmp3, .pm_mode
+@@ -552,133 +601,97 @@ ulp_exit:
  
- 	dsb
+ 	wait_mckrdy
  
+-	mov	pc, lr
+-ENDPROC(at91_ulp_mode)
+-
+-/*
+- * void at91_sramc_self_refresh(unsigned int is_active)
+- *
+- * @input param:
+- *	@r0: 1 - active self-refresh mode
+- *	     0 - exit self-refresh mode
+- * register usage:
+- * 	@r1: memory type
+- *	@r2: base address of the sram controller
+- */
+-
+-ENTRY(at91_sramc_self_refresh)
+-	ldr	r1, .memtype
+-	ldr	r2, .sramc_base
+-
+-	cmp	r1, #AT91_MEMCTRL_MC
+-	bne	ddrc_sf
+-
+-	/*
+-	 * at91rm9200 Memory controller
+-	 */
+-
+-	 /*
+-	  * For exiting the self-refresh mode, do nothing,
+-	  * automatically exit the self-refresh mode.
+-	  */
+-	tst	r0, #SRAMC_SELF_FRESH_ACTIVE
+-	beq	exit_sramc_sf
+-
+-	/* Active SDRAM self-refresh mode */
+-	mov	r3, #1
+-	str	r3, [r2, #AT91_MC_SDRAMC_SRR]
+-	b	exit_sramc_sf
+-
+-ddrc_sf:
+-	cmp	r1, #AT91_MEMCTRL_DDRSDR
+-	bne	sdramc_sf
++.endm
+ 
+-	/*
+-	 * DDR Memory controller
+-	 */
+-	tst	r0, #SRAMC_SELF_FRESH_ACTIVE
+-	beq	ddrc_exit_sf
++.macro at91_backup_mode
++	/* Switch the master clock source to slow clock. */
++	ldr	pmc, .pmc_base
++	ldr	tmp2, .mckr_offset
++	ldr	tmp1, [pmc, tmp2]
++	bic	tmp1, tmp1, #AT91_PMC_CSS
++	str	tmp1, [pmc, tmp2]
+ 
+-	/* LPDDR1 --> force DDR2 mode during self-refresh */
+-	ldr	r3, [r2, #AT91_DDRSDRC_MDR]
+-	str	r3, .saved_sam9_mdr
+-	bic	r3, r3, #~AT91_DDRSDRC_MD
+-	cmp	r3, #AT91_DDRSDRC_MD_LOW_POWER_DDR
+-	ldreq	r3, [r2, #AT91_DDRSDRC_MDR]
+-	biceq	r3, r3, #AT91_DDRSDRC_MD
+-	orreq	r3, r3, #AT91_DDRSDRC_MD_DDR2
+-	streq	r3, [r2, #AT91_DDRSDRC_MDR]
++	wait_mckrdy
+ 
+-	/* Active DDRC self-refresh mode */
+-	ldr	r3, [r2, #AT91_DDRSDRC_LPR]
+-	str	r3, .saved_sam9_lpr
+-	bic	r3, r3, #AT91_DDRSDRC_LPCB
+-	orr	r3, r3, #AT91_DDRSDRC_LPCB_SELF_REFRESH
+-	str	r3, [r2, #AT91_DDRSDRC_LPR]
++	/*BUMEN*/
++	ldr	r0, .sfrbu
++	mov	tmp1, #0x1
++	str	tmp1, [r0, #0x10]
+ 
+-	/* If using the 2nd ddr controller */
+-	ldr	r2, .sramc1_base
+-	cmp	r2, #0
+-	beq	no_2nd_ddrc
++	/* Shutdown */
++	ldr	r0, .shdwc
++	mov	tmp1, #0xA5000000
++	add	tmp1, tmp1, #0x1
++	str	tmp1, [r0, #0]
++.endm
+ 
+-	ldr	r3, [r2, #AT91_DDRSDRC_MDR]
+-	str	r3, .saved_sam9_mdr1
+-	bic	r3, r3, #~AT91_DDRSDRC_MD
+-	cmp	r3, #AT91_DDRSDRC_MD_LOW_POWER_DDR
+-	ldreq	r3, [r2, #AT91_DDRSDRC_MDR]
+-	biceq	r3, r3, #AT91_DDRSDRC_MD
+-	orreq	r3, r3, #AT91_DDRSDRC_MD_DDR2
+-	streq	r3, [r2, #AT91_DDRSDRC_MDR]
++/*
++ * void at91_suspend_sram_fn(struct at91_pm_data*)
++ * @input param:
++ * 	@r0: base address of struct at91_pm_data
++ */
++/* at91_pm_suspend_in_sram must be 8-byte aligned per the requirements of fncpy() */
++	.align 3
++ENTRY(at91_pm_suspend_in_sram)
++	/* Save registers on stack */
++	stmfd	sp!, {r4 - r12, lr}
+ 
+-	/* Active DDRC self-refresh mode */
+-	ldr	r3, [r2, #AT91_DDRSDRC_LPR]
+-	str	r3, .saved_sam9_lpr1
+-	bic	r3, r3, #AT91_DDRSDRC_LPCB
+-	orr	r3, r3, #AT91_DDRSDRC_LPCB_SELF_REFRESH
+-	str	r3, [r2, #AT91_DDRSDRC_LPR]
++	/* Drain write buffer */
++	mov	tmp1, #0
++	mcr	p15, 0, tmp1, c7, c10, 4
+ 
+-no_2nd_ddrc:
+-	b	exit_sramc_sf
++	ldr	tmp1, [r0, #PM_DATA_PMC]
++	str	tmp1, .pmc_base
++	ldr	tmp1, [r0, #PM_DATA_RAMC0]
++	str	tmp1, .sramc_base
++	ldr	tmp1, [r0, #PM_DATA_RAMC1]
++	str	tmp1, .sramc1_base
++	ldr	tmp1, [r0, #PM_DATA_MEMCTRL]
++	str	tmp1, .memtype
++	ldr	tmp1, [r0, #PM_DATA_MODE]
++	str	tmp1, .pm_mode
++	ldr	tmp1, [r0, #PM_DATA_PMC_MCKR_OFFSET]
++	str	tmp1, .mckr_offset
++	ldr	tmp1, [r0, #PM_DATA_PMC_VERSION]
++	str	tmp1, .pmc_version
++	/* Both ldrne below are here to preload their address in the TLB */
++	ldr	tmp1, [r0, #PM_DATA_SHDWC]
++	str	tmp1, .shdwc
++	cmp	tmp1, #0
++	ldrne	tmp2, [tmp1, #0]
++	ldr	tmp1, [r0, #PM_DATA_SFRBU]
++	str	tmp1, .sfrbu
++	cmp	tmp1, #0
++	ldrne	tmp2, [tmp1, #0x10]
+ 
+-ddrc_exit_sf:
+-	/* Restore MDR in case of LPDDR1 */
+-	ldr	r3, .saved_sam9_mdr
+-	str	r3, [r2, #AT91_DDRSDRC_MDR]
+-	/* Restore LPR on AT91 with DDRAM */
+-	ldr	r3, .saved_sam9_lpr
+-	str	r3, [r2, #AT91_DDRSDRC_LPR]
++	/* Active the self-refresh mode */
++	at91_sramc_self_refresh_ena
+ 
+-	/* If using the 2nd ddr controller */
+-	ldr	r2, .sramc1_base
+-	cmp	r2, #0
+-	ldrne	r3, .saved_sam9_mdr1
+-	strne	r3, [r2, #AT91_DDRSDRC_MDR]
+-	ldrne	r3, .saved_sam9_lpr1
+-	strne	r3, [r2, #AT91_DDRSDRC_LPR]
++	ldr	r0, .pm_mode
++	cmp	r0, #AT91_PM_STANDBY
++	beq	standby
++	cmp	r0, #AT91_PM_BACKUP
++	beq	backup_mode
+ 
+-	b	exit_sramc_sf
++	at91_ulp_mode
++	b	exit_suspend
+ 
+-	/*
+-	 * SDRAMC Memory controller
+-	 */
+-sdramc_sf:
+-	tst	r0, #SRAMC_SELF_FRESH_ACTIVE
+-	beq	sdramc_exit_sf
++standby:
++	/* Wait for interrupt */
++	ldr	pmc, .pmc_base
++	at91_cpu_idle
++	b	exit_suspend
+ 
+-	/* Active SDRAMC self-refresh mode */
+-	ldr	r3, [r2, #AT91_SDRAMC_LPR]
+-	str	r3, .saved_sam9_lpr
+-	bic	r3, r3, #AT91_SDRAMC_LPCB
+-	orr	r3, r3, #AT91_SDRAMC_LPCB_SELF_REFRESH
+-	str	r3, [r2, #AT91_SDRAMC_LPR]
++backup_mode:
++	at91_backup_mode
+ 
+-sdramc_exit_sf:
+-	ldr	r3, .saved_sam9_lpr
+-	str	r3, [r2, #AT91_SDRAMC_LPR]
++exit_suspend:
++	/* Exit the self-refresh mode */
++	at91_sramc_self_refresh_dis
+ 
+-exit_sramc_sf:
+-	mov	pc, lr
+-ENDPROC(at91_sramc_self_refresh)
++	/* Restore registers, and return */
++	ldmfd	sp!, {r4 - r12, pc}
++ENDPROC(at91_pm_suspend_in_sram)
+ 
+ .pmc_base:
+ 	.word 0
 -- 
 2.25.1
 
