@@ -2,100 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9101350232
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02BCF350218
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236122AbhCaO2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 10:28:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235951AbhCaO2Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 10:28:16 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 50314C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 07:28:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
-        Content-Transfer-Encoding; bh=/USMBB5tdJb798E3Ew+mE5e8OfVTFhQ2z3
-        foDoJoUxw=; b=V03ymP6pvnQl1qX46eZ14aIGakYtv+5IJZNJFW6EIktV+S3RsY
-        VleDki0NiBju0UdGeqd3BUNwj1vMSZ8Gq0TkabCTbxr1jUaIbdASKkZOj/YxNUbp
-        eKBkCS8WNWB+xOEEHI+lg3cbEOuZ5/+JF6q4AXlovSfZq1OCftnYMSBXg=
-Received: from xhacker (unknown [101.86.19.180])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygCXOpnohmRg0xh6AA--.15607S2;
-        Wed, 31 Mar 2021 22:27:53 +0800 (CST)
-Date:   Wed, 31 Mar 2021 22:22:44 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        id S236032AbhCaOYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 10:24:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36172 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235452AbhCaOX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 10:23:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 725C060FED;
+        Wed, 31 Mar 2021 14:23:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617200639;
+        bh=MKND8RUjXo0TsNaafQ2pFvm3xr35TmSoHeHO5Oj9xjQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TAXb6eUsGCa4pdiVCqqKZnGfljZXt9haax8xWlFgCI3e0unvgRQx8xBTVeRrFGV/q
+         ifZGF5satsq3w54m9YLloJlD4yd2NX9uvO/KNJ8oESnJDgML/1NhMS+UOSZqrNVaVB
+         LOeHARVji+rKirnnqECw1FuhzLstxw2Vju9F73YHNEp4DrZmDImtmvzWpwBG3HHmkU
+         gyTLq73p2b/dG60fDAuaUlJ92XmMV6XhiJLMiNEc5a1fHlv3Qz8pkdKafJ7VR5xJgS
+         Ch6PZXwz4Jdc6b/Yk37ku10IPVem2+6nVLkRC8BEnQFfEbcLU9I3SOjITDFAaL1C8C
+         nZikeyOe+Fp1w==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] riscv: keep interrupts disabled for BREAKPOINT
- exception
-Message-ID: <20210331222244.45a5807c@xhacker>
-In-Reply-To: <20210330183316.942215efe8e6e8455ad14113@kernel.org>
-References: <20210330021624.2b776386@xhacker>
-        <20210330183316.942215efe8e6e8455ad14113@kernel.org>
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: [PATCH] memfd_secret: use unsigned int rather than long as syscall flags type
+Date:   Wed, 31 Mar 2021 17:23:45 +0300
+Message-Id: <20210331142345.27532-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygCXOpnohmRg0xh6AA--.15607S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrKFWrGryrJF1kAry8Aw1rCrg_yoWDWrg_Ww
-        1jvrZxG3yYyr4Ikan2qrn7ArZF9r17WFWxXw1fKFWDKa4Ut3yYqFsavFy5JrZ7tF4ftFZx
-        uFy7XrZ0qry7WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbrAYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCF
-        s4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r
-        1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWU
-        JVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r
-        W3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8
-        JbIYCTnIWIevJa73UjIFyTuYvjxU2rcTDUUUU
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 30 Mar 2021 18:33:16 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-> Hi Jisheng,
+Yuri Norov says:
 
-Hi Masami,
+  If parameter size is the same for native and compat ABIs, we may
+  wire a syscall made by compat client to native handler. This is
+  true for unsigned int, but not true for unsigned long or pointer.
 
-> 
-> On Tue, 30 Mar 2021 02:16:24 +0800
-> Jisheng Zhang <jszhang3@mail.ustc.edu.cn> wrote:
-> 
-> > From: Jisheng Zhang <jszhang@kernel.org>
-> > 
-> > Current riscv's kprobe handlers are run with both preemption and
-> > interrupt enabled, this violates kprobe requirements. Fix this issue
-> > by keeping interrupts disabled for BREAKPOINT exception.  
-> 
-> Not only while the breakpoint exception but also until the end of
-> the single step (maybe you are using __BUG_INSN_32 ??) need to be
-> disable interrupts. Can this do that?
-> 
+  That's why I suggest using unsigned int and so avoid creating compat
+  entry point.
 
-interrupt is disabled during "single step" by kprobes_save_local_irqflag()
-and kprobes_restore_local_irqflag(). The code flow looks like: 
+Use unsigned int as the type of the flags parameter in memfd_secret()
+system call.
 
-do_trap_break()   // for bp
-  kprobe_breakpoint_handler()
-    setup_singlestep()
-      kprobes_restore_local_irqflag()
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+---
 
-do_trap_break()  // for ss
-  kprobe_single_step_handler()
-    kprobes_restore_local_irqflag()
+@Andrew,
+The patch is vs v5.12-rc5-mmots-2021-03-30-23, I'd appreciate if it would
+be added as a fixup to the memfd_secret series.
 
-Thanks
+ include/linux/syscalls.h                  | 2 +-
+ mm/secretmem.c                            | 2 +-
+ tools/testing/selftests/vm/memfd_secret.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+index 49c93c906893..1a1b5d724497 100644
+--- a/include/linux/syscalls.h
++++ b/include/linux/syscalls.h
+@@ -1050,7 +1050,7 @@ asmlinkage long sys_landlock_create_ruleset(const struct landlock_ruleset_attr _
+ asmlinkage long sys_landlock_add_rule(int ruleset_fd, enum landlock_rule_type rule_type,
+ 		const void __user *rule_attr, __u32 flags);
+ asmlinkage long sys_landlock_restrict_self(int ruleset_fd, __u32 flags);
+-asmlinkage long sys_memfd_secret(unsigned long flags);
++asmlinkage long sys_memfd_secret(unsigned int flags);
+ 
+ /*
+  * Architecture-specific system calls
+diff --git a/mm/secretmem.c b/mm/secretmem.c
+index f2ae3f32a193..3b1ba3991964 100644
+--- a/mm/secretmem.c
++++ b/mm/secretmem.c
+@@ -199,7 +199,7 @@ static struct file *secretmem_file_create(unsigned long flags)
+ 	return file;
+ }
+ 
+-SYSCALL_DEFINE1(memfd_secret, unsigned long, flags)
++SYSCALL_DEFINE1(memfd_secret, unsigned int, flags)
+ {
+ 	struct file *file;
+ 	int fd, err;
+diff --git a/tools/testing/selftests/vm/memfd_secret.c b/tools/testing/selftests/vm/memfd_secret.c
+index c878c2b841fc..2462f52e9c96 100644
+--- a/tools/testing/selftests/vm/memfd_secret.c
++++ b/tools/testing/selftests/vm/memfd_secret.c
+@@ -38,7 +38,7 @@ static unsigned long page_size;
+ static unsigned long mlock_limit_cur;
+ static unsigned long mlock_limit_max;
+ 
+-static int memfd_secret(unsigned long flags)
++static int memfd_secret(unsigned int flags)
+ {
+ 	return syscall(__NR_memfd_secret, flags);
+ }
+-- 
+2.28.0
 
