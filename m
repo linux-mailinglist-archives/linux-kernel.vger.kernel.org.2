@@ -2,95 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70822350722
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 21:04:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3A8350727
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 21:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235945AbhCaTDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 15:03:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35392 "EHLO mail.kernel.org"
+        id S236063AbhCaTMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 15:12:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235869AbhCaTDR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 15:03:17 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA3B761073;
-        Wed, 31 Mar 2021 19:03:16 +0000 (UTC)
-Date:   Wed, 31 Mar 2021 15:03:15 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [GIT PULL] ftrace: Check if pages were allocated before calling
- free_pages()
-Message-ID: <20210331150315.6c38f333@gandalf.local.home>
-In-Reply-To: <CAHk-=whyMxheOqXAORt9a7JK9gc9eHTgCJ55Pgs4p=X3RrQubQ@mail.gmail.com>
-References: <20210331092711.2b23fcff@gandalf.local.home>
-        <CAHk-=wjt9b7kxQ2J=aDNKbR1QBMB3Hiqb_hYcZbKsxGRSEb+gQ@mail.gmail.com>
-        <CAHk-=whyMxheOqXAORt9a7JK9gc9eHTgCJ55Pgs4p=X3RrQubQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S236082AbhCaTLt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 15:11:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 60B976101E;
+        Wed, 31 Mar 2021 19:11:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617217909;
+        bh=Olfz4Koh1GX/7jYYda3mu/A+pOcDvP8Ry+jA1/HnMwk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BtpufNiCGaobQA0Ff0lGGp3iQUlEJVv7Z+SJImc0Kybcygy2adWMKGM8a00hozn2a
+         FMFqgDplPR3yYRVUhG3LFse0vk7idxOsDD/shh2TGEQKvjUei6lFJjqP09yLEN3CwY
+         fbScwcK28PFUrZH58PVjNlojRSMMh2AGpInOMFthFEJaRHpZhgxjqWqrO24VXDIsRn
+         B3yUBmEu50BdWX6lZnOq4FltYEk4CS99x/KOxaMeztMkKxfT/0RG77rUuTJD/gFbBL
+         B/Z0b30ED84qTizOm5iiFyNUfQ5jHfpgZQ8nDY4+QA32jBtgwFgbLxk8lwk+NCxMbY
+         2ObdQ/Bzz1QGQ==
+Date:   Wed, 31 Mar 2021 20:11:35 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Tero Kristo <kristo@kernel.org>, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH 4/4] dt-bindings: spi: Convert cadence-quadspi.txt to
+ cadence-quadspi.yaml
+Message-ID: <20210331191135.GF4758@sirena.org.uk>
+References: <20210326130034.15231-1-p.yadav@ti.com>
+ <20210326130034.15231-5-p.yadav@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3yNHWXBV/QO9xKNm"
+Content-Disposition: inline
+In-Reply-To: <20210326130034.15231-5-p.yadav@ti.com>
+X-Cookie: You can't take damsel here now.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 31 Mar 2021 11:03:21 -0700
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-> I found another bug in there, for example:
-> 
->                 ftrace_number_of_pages -= 1 << order;
-> 
-> is also wrong if order is negative.
+--3yNHWXBV/QO9xKNm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-True, but ftrace_number_of_pages is only used for accounting (used to
-display the number of pages at boot up and the number in
-/sys/kernel/tracing/dyn_ftrace_total_info). If order is negative, this
-value could be used to debug what went wrong ;-)
+On Fri, Mar 26, 2021 at 06:30:34PM +0530, Pratyush Yadav wrote:
+> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel=
+=2Ecom>
+>=20
+> There is no way as of now to have a parent or bus defining properties
+> for child nodes. For now, avoid it in the example to silence warnings on
+> dt_schema_check. We can figure out how to deal with actual dts files
+> later.
 
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
-> Doesn't this make the code now make SENSE? Instead of that
-> incomprehensible mess it was before?
+--3yNHWXBV/QO9xKNm
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I'll look into it. This code has been there since pretty much the beginning
-and slowly "grew". It suffered the thousand cuts, instead of going in and
-doing surgery on making it clean. It hasn't changed in a long time, so it's
-due for a clean up as I believe it's in a stable state now.
+-----BEGIN PGP SIGNATURE-----
 
-> 
-> I dunno. Maybe it's just my "pee in the snow" thing, but honestly, the
-> fact that I seem to have found another bug wrt the whole
-> 'ftrace_number_of_pages' handling really says that the code was
-> garbage.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBkyWcACgkQJNaLcl1U
+h9AXwAf/fRZBoTnVG0BfNgQ2befGLzGtWUX2O1T04d886Y2ch/gYfOUy8hgclpI9
+kT2H5uKYcYD3g+q8wzBadNgQ+CCi68QpIF0i0jaqynVHDwSfWLhWbUtI8c01u9UK
+QZAtCKIeOid+YbFrSXDwx7PJNPzpqderUIVtRJFf7NOD08YQLcXWdQMB475nemUE
+nHbZY3vVnFcc1BZVLleS6HqqFKaT6YmhYXWWSV985uf31myTIfxY1bmw9ZBj6Ejq
+VPLemuamF8samQj/FzWdOxNXLC0bNtg5EQ7B8fd/ZneSaIPD+o/jsR0jcNF8rGZV
+QY2AYvvRh5/cc9xvdMzZZU6kw12rAQ==
+=Qe4U
+-----END PGP SIGNATURE-----
 
-Again, that variable was just used to see what the page count was. It was
-never used for any logic.
-
-> 
-> And maybe it's just me who doesn't understand the subtle perfection of
-> the old code, and I'm being stupid. Feel free to educate me about it.
-> 
-> Final note: note the "TOTALLY UNTESTED" part of the patch. The patch
-> CompilesForMe(tm), but please consider it a "how about something like
-> this" rather than anything finished.
-> 
-> Also note that I did *not* change the initial "order" calculation
-> itself in ftrace_allocate_records() in this patch. I left that
-> particular oddity alone. Again, I *think* the math just ends up being
-> 
->         pages = DIV_ROUND_UP(count, ENTRIES_PER_PAGE);
->         order = fls(pages)-1;
-> 
-> but the attached patch is not about that, it's about the crazy "pg->size" games.
-> 
->             Linus
-> 
-> PS. TOTALLY UNTESTED!!
-
-Thanks, I'll look at it and see if it doesn't break anything, or if it can
-be easily modified to not break anything.
-
--- Steve
+--3yNHWXBV/QO9xKNm--
