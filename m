@@ -2,95 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22959350652
+	by mail.lfdr.de (Postfix) with ESMTP id 6E772350653
 	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234754AbhCaS3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 14:29:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234932AbhCaS3i (ORCPT
+        id S235068AbhCaS35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 14:29:57 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:48502 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234933AbhCaS3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 14:29:38 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62BC0C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 11:29:37 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id 8so22138229ybc.13
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 11:29:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/2jQTnecP2FoklA04onryTnkX7RD4TLimO6NvlAanGU=;
-        b=ErRuAAy/bx50uFBM/WS6oiOyBGx0gDr6lpV433S8QMDvg/bLPoMzuvx3J+nF2p3Ga9
-         asyKWy0fI0TnCsgVyVpeC+qYCi1G6HTC+cxex93z2u96IG7bOR1ofkBlKAgdCDHRxGMz
-         mePXajUbOYTCc4/Jl37HiW8O7gYRzLcfXb9EL5RjQrHbw6mG7Npa00smn5bZlsQe0IZB
-         8JN3RkYsIm0qUb5foxe2C6baZKj7+cthaEcHcGbeRNKb7HS00hO1dVeu3UQIkrG1YBwF
-         HsPWQAaoLhMlSWWFFx41hE0XD/Okes2Lmm0i+WQDPEAjRrxRATtMTlpiUnTb6YE8Vxto
-         zSRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/2jQTnecP2FoklA04onryTnkX7RD4TLimO6NvlAanGU=;
-        b=jhLIyHbAFRFqrqLSLklyi7QSVRUI0V8caiCH+aaXi6s2Ve0W1KcBDU8kDroGcGE7Av
-         byfPR6uBjv7y1OFTbjWY0b35Fb7AjJoPDwPP2691qUla1itp5acHUDc/v2L2hvKOpAEu
-         i8B8bXi/iPxEXwIBjG4t/5mFa593c8Wun12xTGXx54pL9f+xjFOobd1JWM6KWFXfQxKl
-         BoosY2oX1Zh3nUiLZKq9WKvwAMgRRqtf4YB+5HdyB2mM/2d/7EzKF9Hc4FxmTulk4tMv
-         NLUXh0EzOEskkpN2XBftRKii/uBL4CtVZFMGvQRv5DFlpZc1ieyrsyA0GbTuDXK32PgZ
-         RxoQ==
-X-Gm-Message-State: AOAM532iwFoJYc6rgeT5jFMetO7X7uDMYb1i6PY3OMvmSwzEW/piz98M
-        f9meYEvUQkMufUxGU257Tug/NrPnyoFlT50zhYkOnA==
-X-Google-Smtp-Source: ABdhPJyxdYFEdUCe0ghJ4LhNnigtSAp+W383ktXXxJT5l/nKeUbuBHMOnT9rzC5SjlDmopmGbDllxW21AEHaoqxFHsk=
-X-Received: by 2002:a25:d2d3:: with SMTP id j202mr6436313ybg.157.1617215376457;
- Wed, 31 Mar 2021 11:29:36 -0700 (PDT)
+        Wed, 31 Mar 2021 14:29:43 -0400
+Received: from us.es (unknown [90.77.255.23])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 8DFD763E34;
+        Wed, 31 Mar 2021 20:29:26 +0200 (CEST)
+Date:   Wed, 31 Mar 2021 20:29:38 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] netfilter: nf_log_bridge: Fix missing assignment
+ of ret on a call to nf_log_register
+Message-ID: <20210331182938.GA28208@salvia>
+References: <20210331142606.1422498-1-colin.king@canonical.com>
 MIME-Version: 1.0
-References: <cover.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
- <d1ec9f4cb6dd9afcfbeecfa717e863d75e18133b.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
- <CAMpxmJVKmBp06_2Hd4XF-eL4KfgZFy1o+xUvvs6H=TaAnkmYhA@mail.gmail.com> <CAHp75Vcsw8uQOL9RAxOU3jeq4mGAiK3cNMYbKyWGe7F8Dz2dZQ@mail.gmail.com>
-In-Reply-To: <CAHp75Vcsw8uQOL9RAxOU3jeq4mGAiK3cNMYbKyWGe7F8Dz2dZQ@mail.gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Wed, 31 Mar 2021 20:29:25 +0200
-Message-ID: <CAMpxmJXL=_8MBwb0Dy4d8vKM8SCbzyXJaE78azo1Es8hY7mN7w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] gpio: sysfs: Obey valid_mask
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Stephen Boyd <sboyd@codeaurora.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210331142606.1422498-1-colin.king@canonical.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 2:25 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Wed, Mar 31, 2021 at 10:58 AM Bartosz Golaszewski
-> <bgolaszewski@baylibre.com> wrote:
-> >
-> > On Mon, Mar 29, 2021 at 1:41 PM Matti Vaittinen
-> > <matti.vaittinen@fi.rohmeurope.com> wrote:
-> > >
-> > > Do not allow exporting GPIOs which are set invalid
-> > > by the driver's valid mask.
-> > >
-> > > Fixes: 726cb3ba49692bdae6caff457755e7cdb432efa4
->
-> I have just noticed that this is invalid format for the Fixes tag
-> (luckily, haha, due to a blank line it's not recognized as a tag!).
->
-> Matti, I highly recommend to add in your .gitconfig file an alias:
->         one = show -s --pretty='format:%h (\"%s\")'
->
-> Bart, there are real Fixes tag issues from another series. I will
-> comment there as well to let an author know.
->
-> --
+On Wed, Mar 31, 2021 at 03:26:06PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> Currently the call to nf_log_register is returning an error code that
+> is not being assigned to ret and yet ret is being checked. Fix this by
+> adding in the missing assignment.
 
-Eek, sorry I should have looked more carefully. I'll fix it in my tree.
-
-Bartosz
+Applied, thanks.
