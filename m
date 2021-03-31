@@ -2,120 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01EFC35069E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0785E3506A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235446AbhCaSoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 14:44:01 -0400
-Received: from mail-bn8nam12on2077.outbound.protection.outlook.com ([40.107.237.77]:47612
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235071AbhCaSnw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 14:43:52 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YnRuhdFR7f/VpfL/vEA5nXgK+F0FLpDklgVmJ4hmYnjA2m84+brCzQ95ouTH3HGzbofTI8AXivhVc09eLlCQO3djtgGHro8RJyW4yKBvyE/yyjZzyL4OD1CikE3eeXQi72gwXXPHGCad9deF3vVG1iT5MB/VxwYkIwRc+ZXLRQq82l6x6xhb+HlZZABc9BhDVK6W17hvvc+Kw9YvuME2zhU5d7AqLuExf0DhMMLHJJJFl3PdLhKmo9U3tCN5l3vhOri3sGewtj9zx2O1Ra3XgxQ1x4tcpR3zFlSrxV+vapU924OLAImyZHpBi1oeX7I3O4hnnX9Gy4nl9ALuREQJrQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sbSZzQ0lc+mP2W08JwF/QSe3qJGNw613OP0drMGdSPo=;
- b=JsHIkY5+R3zwQeIGAFPBiwXyfCo/9rkwnzKKyeK1Kgl3fLlh5H0zAK3z2Lh0kZPpWepB2Z2Ajb9hnRpB38SYOfomUJvwcQch0RggAaYyyLmJLJLo0bIyG8nJLyRxl1cvHHs/GHFfH9mOya6S36ZllJoF1L5+BoloTV4TYpfLJ85cpqEXRpmZy4WUK9yOJSwgdYVEU4B/IJeapJ7xuUs0OPVoCmJPeJhKY4Kgahxp/nCKa5FWyfE7tn9ZFjA8HZSf8ndxa1ltSSKqv/isM24NL0WgrlisJ/e6ui94b2OTN1x8kf/S9sAg0guQt0U0plokCu//BlwiJZNoprfXFA74Qg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sbSZzQ0lc+mP2W08JwF/QSe3qJGNw613OP0drMGdSPo=;
- b=q3r7fZ3SDlnmrtdKL1Fv/wq6s2d/yVC6Liewx9wTtyAavr8Ps2St0YB8PescG0z8eo5lOAGikNlLe1S0Di+u82ifNrvmRo4GBD2NatKEnhc7QgWcwyN9xgxchkPvKB0gOy3UYwlNphcltaqwFB99oitNsHoMItAII2D/8TY0s8wPaqIAQOVS2K6wQ7fqrD2aIjp12qlrlIU4oLMEYwg7IJtsbDrj0gFD1Czf9JVbqqORagA/bliRj3fgKVD/ednel5ErqyOO+MXobsU6XenLSjnPKyQ2/vClWog9nP1YNQMaAk0rsLkbg2i4sa/4Mmei823Wzb2bZH5PB55XimIRAA==
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BY5PR12MB3827.namprd12.prod.outlook.com (2603:10b6:a03:1ab::16)
- by BYAPR12MB2629.namprd12.prod.outlook.com (2603:10b6:a03:69::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.27; Wed, 31 Mar
- 2021 18:43:46 +0000
-Received: from BY5PR12MB3827.namprd12.prod.outlook.com
- ([fe80::4c46:77c0:7d7:7e43]) by BY5PR12MB3827.namprd12.prod.outlook.com
- ([fe80::4c46:77c0:7d7:7e43%6]) with mapi id 15.20.3977.033; Wed, 31 Mar 2021
- 18:43:46 +0000
-Date:   Wed, 31 Mar 2021 15:43:44 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Tang Yizhou <tangyizhou@huawei.com>
-Cc:     Potnuri Bharat Teja <bharat@chelsio.com>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH -next] RDMA/iw_cxgb4: Use DEFINE_SPINLOCK() for spinlock
-Message-ID: <20210331184344.GA1534472@nvidia.com>
-References: <20210331020105.4858-1-tangyizhou@huawei.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210331020105.4858-1-tangyizhou@huawei.com>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: BLAPR03CA0004.namprd03.prod.outlook.com
- (2603:10b6:208:32b::9) To BY5PR12MB3827.namprd12.prod.outlook.com
- (2603:10b6:a03:1ab::16)
+        id S235526AbhCaSoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 14:44:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234743AbhCaSoR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 14:44:17 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 570A3C061574;
+        Wed, 31 Mar 2021 11:44:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=foqFS80zPOxuSFemW+uOI8Rh0rNdKKPnoCESHBhVtec=; b=rLaTSHz/edMFCMAm0d8R9GS5dT
+        mzZd5Z683y2gSfufpO6MSi8aCCn+CslJugFCy+o2M2xLpjzsTc/iXp5FfrOq0vBLlmPi9PjXaIPZr
+        50eghi+2A+eM6gsSwEfkHDExnMVy8lt5/rqpyUDq2kqL60CZ2uG2VDv1HYJZl6qFyEPhOtGi1vYJU
+        LPDaRgLsffbfSHe+VCeOG+ZCDy51UefrT9MdH5imqG8+HlfOGJh76PvSHRgTZ/RNCw8oiVOQjtfyu
+        8oth72Zg/wbJvxIE5t9vRKwgIBMLDKjW8QfXralXKcJAWpXjbFfg6iglwgY0i6OagwCVwUULhyPJc
+        +H3vYPJw==;
+Received: from [2601:1c0:6280:3f0::e0e1]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lRfp0-007J0X-Gx; Wed, 31 Mar 2021 18:44:06 +0000
+Subject: Re: [RFC v2 01/43] mm: add PKRAM API stubs and Kconfig
+To:     Anthony Yznaga <anthony.yznaga@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     willy@infradead.org, corbet@lwn.net, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        rppt@kernel.org, akpm@linux-foundation.org, hughd@google.com,
+        ebiederm@xmission.com, keescook@chromium.org, ardb@kernel.org,
+        nivedita@alum.mit.edu, jroedel@suse.de, masahiroy@kernel.org,
+        nathan@kernel.org, terrelln@fb.com, vincenzo.frascino@arm.com,
+        martin.b.radev@gmail.com, andreyknvl@google.com,
+        daniel.kiper@oracle.com, rafael.j.wysocki@intel.com,
+        dan.j.williams@intel.com, Jonathan.Cameron@huawei.com,
+        bhe@redhat.com, rminnich@gmail.com, ashish.kalra@amd.com,
+        guro@fb.com, hannes@cmpxchg.org, mhocko@kernel.org,
+        iamjoonsoo.kim@lge.com, vbabka@suse.cz, alex.shi@linux.alibaba.com,
+        david@redhat.com, richard.weiyang@gmail.com,
+        vdavydov.dev@gmail.com, graf@amazon.com, jason.zeng@intel.com,
+        lei.l.li@intel.com, daniel.m.jordan@oracle.com,
+        steven.sistare@oracle.com, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kexec@lists.infradead.org
+References: <1617140178-8773-1-git-send-email-anthony.yznaga@oracle.com>
+ <1617140178-8773-2-git-send-email-anthony.yznaga@oracle.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <b7c635e2-e607-03bb-30f4-66bd00bff69e@infradead.org>
+Date:   Wed, 31 Mar 2021 11:43:52 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BLAPR03CA0004.namprd03.prod.outlook.com (2603:10b6:208:32b::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.29 via Frontend Transport; Wed, 31 Mar 2021 18:43:46 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lRfoe-006RMA-LJ; Wed, 31 Mar 2021 15:43:44 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1f66e272-7d61-4c69-02e7-08d8f474eac7
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2629:
-X-Microsoft-Antispam-PRVS: <BYAPR12MB2629FB6C2246CD20F25B4BCFC27C9@BYAPR12MB2629.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1850;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AvkQhFGoeifSVU1fPu8HES9NNLKqyfkicvfFbJxtD1VcRYECuCRfr7HUYlMtc4i3wpqVXkaUTxTklDS1EtH4WpHVxR754w/TbNUmc8Ceku43TKcSUwqaZcfe8hnVHzO3EFMBmfwHdUx3dMibxyLIzMZ3Ec7u8NRqt58r/InNyUXrN4vS0cFuxxc8ECGI9Nd7JkIL/crV2HWteM3NFAGjx6UbfnsVTKrnob8TjIihupSK7tX7YnoV22pU6OjrLfll5Y/JMaAvKB2hiwBMJWgYIeIXlaC0Ipgoa6X/uN/I4YsZWt6ome1pH1/gg+JvJlIDUh8b0qRhRc5B+YnCru1I3m/wXzCm3+8auxj+8rliser5O5wz4TiU6LjM+GSMUDcH2Ft1IxjqH1CJ3cun77fCa6ri2Kteh/tSy2AhZXxAVSSjmBs3bgmjtJTo86mtG4oNUKIIoiOdPDDiF1k7Xe/aUgCYKIgt9xkeMMD4FVcMXgltPZEy3/G9LaiJuHqIWzmos9fQS+FpFx0Ko0YxltFLvAUjxmKq957Uwc4l17aUrS8A0xvSW8ZvyKyVAb6L/OuCjPAXPG/TaFWAWCkIeZo73Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB3827.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(366004)(136003)(376002)(396003)(54906003)(2906002)(83380400001)(26005)(38100700001)(5660300002)(1076003)(478600001)(86362001)(9746002)(9786002)(66946007)(316002)(33656002)(66556008)(4744005)(2616005)(66476007)(36756003)(426003)(8936002)(4326008)(6916009)(186003)(8676002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?hLVao48vAYg2HdHgGhIJqkUJYDNRzARHYjxOWPZxCQijL5f+U0avkmFnLQhV?=
- =?us-ascii?Q?U0HB3+ZAn25p+c0AGx+AANeCrOOyJ56hTrq2oOt+lQPk9oLqBkSNpvi6kINH?=
- =?us-ascii?Q?y0kBLaziGX/QD/puCsjrLI5KOROGcAI7gxU6fUyAlQGUw3Ln+YcPoJ3C/x//?=
- =?us-ascii?Q?IvjwkVpGqp76aeXaRa3ppwAjEy/+0+7CVGjtMLA6dyMFOFpjX8VlKpIdE3Y2?=
- =?us-ascii?Q?+sq2I0Yje011W6o6cA3h8S+EsCqIU0Ha+1OVGhIl/V/rwlehSnwoSfuAtFtC?=
- =?us-ascii?Q?5HHz9GNhoj1qjGFQdZ8p4bwDOCexA+TAV3blJ9r3T/K7yhlw95p9OO7ifqUg?=
- =?us-ascii?Q?H0nEZT32ruY/7vU/dV5lhicSdeIV+afNQco6O0MgdhgDuAnTVBQ7H9T5VUUr?=
- =?us-ascii?Q?Vj3TX7bPdku4Li0sse61xymaNHOe2YTrmZ4Yx361zUMgTSnXYhvrjOlGD/Xs?=
- =?us-ascii?Q?j4OuGqMtrBiQyy/1LA/G6zHJINaCWFLi8DrwzQ0QLBxqj4gdII/J9dNj7+nq?=
- =?us-ascii?Q?zcmEOy5ZcpRu7B8xRwXDZlfPiIPRYLhZUIPWaa3+6xYiBCxej3byZixZvKln?=
- =?us-ascii?Q?mfsUxHivVcBV5gsfsV6AaRcl8+CaOvmiX060l4w7hu7h+/JK71slWk2+L5pE?=
- =?us-ascii?Q?URTb55o6y0/hczFSxZMtkqTUiJamt0eC8KX+q0gLmSlJTouvcsZmZu/XU0Sd?=
- =?us-ascii?Q?fsS+kYCo1GHtV5vjk8WtPjXukClFzwrfzuxwznXl0a2aEg7Up8NXJBjrIWmx?=
- =?us-ascii?Q?5BdJjohidyM+Odajgv5aC8BsJF8YeVp+aVa8INAR2tVNuyyaTr7wr/vIpZBM?=
- =?us-ascii?Q?aaDEITU5GFvfxicjx+58doLHmlPRoU7tZNFfVkpvgLDkOeL7gKvFq2o3whe+?=
- =?us-ascii?Q?eEZYtDPqAu/w7Z5WzhyQLNqay7mMREYzMu2yB2LDmWiWz11JaVsO4KqWs6sG?=
- =?us-ascii?Q?V+0usjvq0I9gVdOQlKO0A4R0udR2uxrOHf8CAMM603brOUbW8JnnELxkJwIv?=
- =?us-ascii?Q?3NAncZq5sppVZHQfrZMCp18jsVUR0u14VYolqDn3Fcb8OQYb76UNkZ/Ryeui?=
- =?us-ascii?Q?4wktCErgz/ecFtXA2V9zMFwYQGF9OIPoOOd9CbxY4JoHSMXlnbKlJYocd7/0?=
- =?us-ascii?Q?kkZvTeZRRR98yRSgXJtys0ZvYaq36/gAZTJ2S9U6zf/0CtHiBGZKRvR3uyWm?=
- =?us-ascii?Q?vKyHTPvNa0klYGhTh0JM/hsym7My6R0hKgFdzPigNKZfVEiNZDoPJtBPgdkx?=
- =?us-ascii?Q?ZQxK951crSsRMNe1RjiykqJwox3FVFCqJHpoUtdsTnYaWVUiToE6frIXjU0z?=
- =?us-ascii?Q?n9mHhY05pipx1196hU8QCaueNLq5G5/9B2sr4D+mBuTmwA=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f66e272-7d61-4c69-02e7-08d8f474eac7
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB3827.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Mar 2021 18:43:46.8347
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cG5CDdI2AsBth8RihMLFKMe7CpohlD/lUASv9UraRaH9V8S1B2F9PUoU2fOfszFI
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB2629
+In-Reply-To: <1617140178-8773-2-git-send-email-anthony.yznaga@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 10:01:05AM +0800, Tang Yizhou wrote:
-> spinlock can be initialized automatically with DEFINE_SPINLOCK()
-> rather than explicitly calling spin_lock_init().
+On 3/30/21 2:35 PM, Anthony Yznaga wrote:
+> Preserved-across-kexec memory or PKRAM is a method for saving memory
+> pages of the currently executing kernel and restoring them after kexec
+> boot into a new one. This can be utilized for preserving guest VM state,
+> large in-memory databases, process memory, etc. across reboot. While
+> DRAM-as-PMEM or actual persistent memory could be used to accomplish
+> these things, PKRAM provides the latency of DRAM with the flexibility
+> of dynamically determining the amount of memory to preserve.
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Tang Yizhou <tangyizhou@huawei.com>
+...
+
+> 
+> Originally-by: Vladimir Davydov <vdavydov.dev@gmail.com>
+> Signed-off-by: Anthony Yznaga <anthony.yznaga@oracle.com>
 > ---
->  drivers/infiniband/hw/cxgb4/cm.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+>  include/linux/pkram.h |  47 +++++++++++++
+>  mm/Kconfig            |   9 +++
+>  mm/Makefile           |   1 +
+>  mm/pkram.c            | 179 ++++++++++++++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 236 insertions(+)
+>  create mode 100644 include/linux/pkram.h
+>  create mode 100644 mm/pkram.c
+> 
+> diff --git a/mm/pkram.c b/mm/pkram.c
+> new file mode 100644
+> index 000000000000..59e4661b2fb7
+> --- /dev/null
+> +++ b/mm/pkram.c
+> @@ -0,0 +1,179 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <linux/err.h>
+> +#include <linux/gfp.h>
+> +#include <linux/kernel.h>
+> +#include <linux/mm.h>
+> +#include <linux/pkram.h>
+> +#include <linux/types.h>
+> +
 
-Applied to for-next, thanks
+Hi,
 
-Jason
+There are several doc blocks that begin with "/**" but that are not
+in kernel-doc format (/** means kernel-doc format when inside the kernel
+source tree).
+
+Please either change those to "/*" or convert them to kernel-doc format.
+The latter is preferable for exported interfaces.
+
+> +/**
+> + * Create a preserved memory node with name @name and initialize stream @ps
+> + * for saving data to it.
+> + *
+> + * @gfp_mask specifies the memory allocation mask to be used when saving data.
+> + *
+> + * Returns 0 on success, -errno on failure.
+> + *
+> + * After the save has finished, pkram_finish_save() (or pkram_discard_save() in
+> + * case of failure) is to be called.
+> + */
+
+
+b) from patch 00/43:
+
+ documentation/core-api/xarray.rst       |    8 +
+
+How did "documentation" become lower case (instead of Documentation)?
+
+
+thanks.
+-- 
+~Randy
+
