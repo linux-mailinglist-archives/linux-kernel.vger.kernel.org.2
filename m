@@ -2,107 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14BA735000F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 14:19:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7879935000C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 14:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235439AbhCaMTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 08:19:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235434AbhCaMSi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 08:18:38 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E59C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 05:18:38 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id h20so7812595plr.4
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 05:18:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=79puKFkuL0Ca/f8+jKl6RvO/Xz4GFGg0BJvWz+166ig=;
-        b=nWqJn20LNz7OtM4KwlpBbTprM5t5U6j1ix94M3zulz9xyIUlRakx3Efpi7pc2RgDl6
-         jp2NxBWQur6vwq/VVFNS9QqBqy3Jyc5EFEjogl/XvtrJP0AUoSD6PBKZX/vnk83AbrjC
-         3XLUC5zAHWy69ta++1VCvOGt8b/25tm1dZMp98TCz5BmFBmGmeRVx2qYHZUgp5uxG1fv
-         rJWTY5KOHBVlfqVrymd/LulkvdLRnnoEr1tEDPeLjcAQy+BqHv8JOw3K5DdtP7myiFmK
-         nUgFttPXkXU0niyFSVFBM13i+m9ODvM4tbMn8NrdjDmBdwY8DpAt2+M0VqOQogEQplar
-         AYQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=79puKFkuL0Ca/f8+jKl6RvO/Xz4GFGg0BJvWz+166ig=;
-        b=tX/gnXhhLdiXuN4Ru7FA6pTQ1qgLvzT7G310igSg1zHaHtylQ9wj6WhF+96Z6HEI20
-         h0ijV+WCoEtT7gR8GAMU/6vkb/V4yyvJEfgYpTHmq7q5llPrN8eJPVlCusCO38XHnRPP
-         7/KY4CF3/bgtUJVLzEGsvBSAJQGIRBE081FXWRBNPJnWze5mDXTlMTK5SnYKyViPA7Sw
-         l3mA9WKvsodR1M+jrQ8xdKwBVV4iDYtKSZicncwAtE5N/CeUZN16fY0yBA8mGoiqhUjU
-         zmvmTvOZgTTjT+WmDHzS30uTPVzlEKzqGA4CRdM/SyXXH3p/q7hwylyNK3hMnWvIpuBV
-         kdFA==
-X-Gm-Message-State: AOAM530dSrgTd7szj8+/IuwmaEP6VGLB5orQEAxJa+HdDLx6CYzDVxVT
-        BBpoUITIBPSDYiIzK1iFwaaFWUqHBsDb9sCZzvSUYw==
-X-Google-Smtp-Source: ABdhPJwWwXQ2UJQJDr3ZyFNOuVoXkPNN3+LsumCfAlhOj2ORYM9DqUS7FRdQlOR6At/aztdQHJVbL1I7y+stqCNf4Mg=
-X-Received: by 2002:a17:90a:d991:: with SMTP id d17mr3143629pjv.229.1617193118215;
- Wed, 31 Mar 2021 05:18:38 -0700 (PDT)
+        id S235423AbhCaMSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 08:18:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36000 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235119AbhCaMSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 08:18:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06C576192E;
+        Wed, 31 Mar 2021 12:18:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617193094;
+        bh=u7LpefF8xJjsWeVPdFEv6lIBIP7FmplpuMDa9sjTYK8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=k8yNaTqpJxrJtV3SADlwVqARidcyQJrRY+Oz6TqHn+dBzSF6Bvbs6cN7uIDJkB7SW
+         Hrb3p7yE31fNXL7SVAe1WOlSaj3zEEhjFwHxRMjDOXk8tX/lLVhpydfT0U6znETN+2
+         rJqENN/am41zliT37FPNdPS85IBelW+4zV9OsPDj7IdRluWnaNqmqoC4Vp6LkRsfLl
+         W5jXx9dGgxLbsZ9c7Y66OIu++5SG7dnRMdyZd5d0an5j9EJlVsLDHY9MtsR2/OIxHI
+         lUubUduT69svv9S98E/Ogu4N4edIEx1mkYOkrMsB+LgM36yQf/++uK2dZwqcnsTLA7
+         JiVtuWX3TSTHg==
+Date:   Wed, 31 Mar 2021 13:18:01 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>, rnayak@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org
+Subject: Re: [PATCH V3 4/5] dt-bindings: regulator: Convert RPMh regulator
+ bindings to YAML
+Message-ID: <20210331121801.GD4758@sirena.org.uk>
+References: <1617192339-3760-1-git-send-email-skakit@codeaurora.org>
+ <1617192339-3760-5-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
-References: <20210330092933.81311-1-songmuchun@bytedance.com> <20210330113447.GM351017@casper.infradead.org>
-In-Reply-To: <20210330113447.GM351017@casper.infradead.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 31 Mar 2021 20:18:01 +0800
-Message-ID: <CAMZfGtXmj+S+Y7s_7-6tvgSqzseT4K4E9t6xevsNajusVV0-ng@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] writeback: fix obtain a reference to a
- freeing memcg css
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Tejun Heo <tj@kernel.org>, axboe@fb.com,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="EP0wieDxd4TSJjHq"
+Content-Disposition: inline
+In-Reply-To: <1617192339-3760-5-git-send-email-skakit@codeaurora.org>
+X-Cookie: You can't take damsel here now.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 7:34 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Tue, Mar 30, 2021 at 05:29:33PM +0800, Muchun Song wrote:
-> > +++ b/fs/fs-writeback.c
-> > @@ -506,8 +506,10 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
-> >       /* find and pin the new wb */
-> >       rcu_read_lock();
-> >       memcg_css = css_from_id(new_wb_id, &memory_cgrp_subsys);
-> > -     if (memcg_css)
-> > +     if (memcg_css && css_tryget(memcg_css)) {
-> >               isw->new_wb = wb_get_create(bdi, memcg_css, GFP_ATOMIC);
-> > +             css_put(memcg_css);
-> > +     }
-> >       rcu_read_unlock();
-> >       if (!isw->new_wb)
-> >               goto out_free;
->
-> This seems like an unnecessary use of GFP_ATOMIC.  Why not:
->
->         rcu_read_lock();
->         memcg_css = css_from_id(new_wb_id, &memory_cgrp_subsys);
->         if (memcg_css && !css_tryget(memcg_css))
->                 memcg_css = NULL;
->         rcu_read_unlock();
->         if (!memcg_css)
->                 goto out_free;
->         isw->new_wb = wb_get_create(bdi, memcg_css, GFP_NOIO);
->         css_put(memcg_css);
->         if (!isw->new_wb)
->                 goto out_free;
 
-Thanks. I will reuse this.
+--EP0wieDxd4TSJjHq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
-> (inode_switch_wbs can't be called in interrupt context because it takes
-> inode->i_lock, which is not interrupt-safe.  it's not clear to me whether
-> it is allowed to start IO or do FS reclaim, given where it is in the
-> I/O path, so i went with GFP_NOIO rather than GFP_KERNEL)
->
-> (also there's another use of GFP_ATOMIC in that function, which is
-> probably wrong)
+On Wed, Mar 31, 2021 at 05:35:38PM +0530, satya priya wrote:
+> Convert RPMh regulator bindings from .txt to .yaml format.
+>=20
+> Signed-off-by: satya priya <skakit@codeaurora.org>
+> ---
+> Changes in V2:
+>  - As per Mark's comment moved this patch to the end of series.
 
-Do you mean the allocation of struct inode_switch_wbs_context in
-inode_switch_wbs?
+You've not done this, this is patch 4/5 and there's a subsequent patch 5
+which incrementally updates the binding.  This defeats the point, the
+series is still blocked on review of the conversion patch.  Please put
+the conversion as a separate patch at the end of the series as
+requested.
+
+--EP0wieDxd4TSJjHq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBkaHgACgkQJNaLcl1U
+h9Dt9wf/WTLtkDjXd7O2rAa4w3l5TsJnBiATuViDXibQVZM/ANUqqLoyOM0LQxxN
+549647AbXcoTLTDiUIaHRlRCsCQJwhufalc9T0MDtFf/2AbIqAfKvwI1rwfTxsWa
+XHZaqmUJz2sr8lwyC5311EJ5lkCJxo82usNQND+Yva7kufEgfpuvMO8Nd6GCdvQH
+pvDv0sMHRf8Nl5XXlRHApIZNC3iSjrJyaKYz1//hQ927DZa9xxehXo05wzK+bzBb
+IT6hDskHLrwLYom/hhxmmSuS8IUyrQjZ6QSngqc/I8u/wxmXtlxJ2Zri4p2iTz2M
+SwkHfyCjQgvKU+NhsgaQhVr2L82HOQ==
+=5uu/
+-----END PGP SIGNATURE-----
+
+--EP0wieDxd4TSJjHq--
