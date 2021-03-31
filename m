@@ -2,75 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C39E435015C
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 15:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2240D350165
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 15:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235832AbhCaNht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 09:37:49 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:53808 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235834AbhCaNhk (ORCPT
+        id S235873AbhCaNiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 09:38:54 -0400
+Received: from conuserg-12.nifty.com ([210.131.2.79]:38965 "EHLO
+        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235868AbhCaNid (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 09:37:40 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lRb2O-0004hj-MQ; Wed, 31 Mar 2021 13:37:36 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] drm/amd/display: remove redundant initialization of variable status
-Date:   Wed, 31 Mar 2021 14:37:36 +0100
-Message-Id: <20210331133736.1420943-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Wed, 31 Mar 2021 09:38:33 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-12.nifty.com with ESMTP id 12VDcFeY003995;
+        Wed, 31 Mar 2021 22:38:15 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 12VDcFeY003995
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1617197895;
+        bh=UiZEW3rqRh0SNwWW1rLOq+Aj6+EF0XXZrzvwTKkiG0o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=F2FQWDNVE46BIlcM//q0xQnBn0w/A9HWme5dVAo2auacIowfceVOD/xKzHKYtACqm
+         RO1Cc+BGpjWbJ5EeYhf41LfopHcBgtW190Fjp2Zvok5weOJTrYFtnUD1F0LbT2r6wx
+         hcQNTsKaplfpIGKT4QQXS526oJp3ZzF6Vz6quKPmd+C9dURTW1x99tYhAsJGhdvvt3
+         otNWiJdUtvoueJHGZEttX1POdcu/OjcKiA7DjGmRBRH3mmi69mHukf1F/TcvWw7HES
+         WLuY2AvgtvawCWB0wffsMY0sqMrN3WSZmyp2yiIVEsBCfFb2ZJzYWt6hP2dRIvmZXO
+         itaaS8G+s4E+w==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Subject: [PATCH 1/9] kbuild: remove unneeded mkdir for external modules_install
+Date:   Wed, 31 Mar 2021 22:38:02 +0900
+Message-Id: <20210331133811.3221540-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+scripts/Makefile.modinst creates directories as needed.
 
-The variable status is being initialized with a value that is
-never read and it is being updated later with a new value.
-The initialization is redundant and can be removed. Also clean
-up an indentation.
-
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-index b092627bd661..4c226db777dc 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-@@ -1729,12 +1729,11 @@ bool perform_link_training_with_retries(
- 			dc_link_dp_perform_link_training_skip_aux(link, link_setting);
- 			return true;
- 		} else {
--			enum link_training_result status = LINK_TRAINING_CR_FAIL_LANE0;
-+			enum link_training_result status;
+ Makefile | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index ed8bd815e8a3..0e06db5ed9d8 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1779,10 +1779,8 @@ $(MODORDER): descend
+ PHONY += modules_install
+ modules_install: _emodinst_ _emodinst_post
  
--				status = dc_link_dp_perform_link_training(
--										link,
--										link_setting,
--										skip_video_pattern);
-+			status = dc_link_dp_perform_link_training(link,
-+								  link_setting,
-+								  skip_video_pattern);
- 			if (status == LINK_TRAINING_SUCCESS)
- 				return true;
- 		}
+-install-dir := $(if $(INSTALL_MOD_DIR),$(INSTALL_MOD_DIR),extra)
+ PHONY += _emodinst_
+ _emodinst_:
+-	$(Q)mkdir -p $(MODLIB)/$(install-dir)
+ 	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modinst
+ 
+ PHONY += _emodinst_post
 -- 
-2.30.2
+2.27.0
 
