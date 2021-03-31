@@ -2,120 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F9034F835
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 07:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76FE634F838
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 07:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233664AbhCaE7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 00:59:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233629AbhCaE7a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 00:59:30 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98210C061574;
-        Tue, 30 Mar 2021 21:59:23 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so17840165otn.1;
-        Tue, 30 Mar 2021 21:59:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IuFbiB26Sb3dU7rtk02ZCczKB4Gc8hOz5qs5qATXub8=;
-        b=WWO7bmjzkeWN+EV+FTJNZ40JsxeXUFjaknr+X6i2DLvgsdvg5UF2OnYFNeHRBQIRCA
-         KgjqwTUS0d9Sl8ALq9rDb1wEzlAD9ZYLkOJK7/3GraRMsBcwpBjdCme0rZKmP82pgbHZ
-         ruxhbh6fIl85qoEW0QmonZloAnxtyM7VX8pV7Y4u4QrJSszfkKaBNpVGeNTZsekg7nm9
-         bSHY19ehHY/8r/6OyDDyzxbUwWYOSxvTFpyyxTepwf0ENWRGSgii45wc0WOXrLV+rwUN
-         qzRoHzF6VNJW4k86kPVNE9gUh8eT9j2BDN0yRMUNUgIQ7xApoTX0vmFfilEvqr/ZiPB4
-         BOJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IuFbiB26Sb3dU7rtk02ZCczKB4Gc8hOz5qs5qATXub8=;
-        b=AJyEAzfZedXYb8ZTcoRm8aFD15SjSMKxwNFw4IGqwaRAesGLIIvOa8yLxvQxZ31gRN
-         B5LpQDwtbi1Sajs/kg+a8ZM4LAwfpZ55SCiOIAyuxzpoXnK1HEGYuV1wXigP9qjNeOSI
-         GmFDtKuFmM639F02EJUpJiXGFkApp6jXBY12z08BjdjXjil3u9hrL80GmpP/KXThlr89
-         L1m/GbX2kK9II2vYcGCtVtDu3Q8pB8n82f102XEUjQabplGsWMziqxZlgAJ+umH5gx8e
-         I4d9Kb5YFMZdGXafF8JdNREjdcIcc8EAH3c71enPEEPtXXviQ15Y96pb+bCL6x4bgODv
-         /kGg==
-X-Gm-Message-State: AOAM530g3BXAfFV8z/lBnzlIzzRFzk8Mejp2gFSv97NoPhRz4LN08OIn
-        3debi3MaWCH5QdD5gVtOowe1vIhuUDLLaKOog3bSHRiQoRc=
-X-Google-Smtp-Source: ABdhPJyNUdNj7gtOw1A943gOBRthVUofJ7aBbkkqjoFB0AKv2WAv8kdYtex1JIOhWvpSQ3+mQ3hHpGfVdz6La5s+e2w=
-X-Received: by 2002:a05:6830:22c3:: with SMTP id q3mr1196612otc.56.1617166763033;
- Tue, 30 Mar 2021 21:59:23 -0700 (PDT)
+        id S233587AbhCaFPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 01:15:44 -0400
+Received: from mga14.intel.com ([192.55.52.115]:3763 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229852AbhCaFPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 01:15:37 -0400
+IronPort-SDR: NwakoFEH2q6+qXlTjbZvPi2xmIiwP5WtFwHOP5RiruU099XFWhctn7r5h2kJ9m3QXAMzKuOV88
+ tGBODOikmZEw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="191396986"
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="191396986"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 22:15:36 -0700
+IronPort-SDR: CE7LvdSO0SXxqTRBZGSsfgzCsT56LFYuid+Li6LXydSSksA7PKCJkqjQp9cDt42XHwua5wtER8
+ CwDaPJiYiQzA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="438620920"
+Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 30 Mar 2021 22:15:35 -0700
+Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lRTCY-0005fm-ND; Wed, 31 Mar 2021 05:15:34 +0000
+Date:   Wed, 31 Mar 2021 13:15:04 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:testing/wab/scsi-ufs] BUILD SUCCESS
+ 7dc98db8f2c28b0716d5c92b6f1046c9080ecb71
+Message-ID: <60640558.lsAxiK6otPwTo9rv%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20210331023025.2485960-1-seanjc@google.com> <20210331023025.2485960-2-seanjc@google.com>
- <CANRm+CwowrYPSnFNc11j5aT2JNw_k+NOh1apoxc3raVD4RVaAg@mail.gmail.com> <YGPrZyIutYQGldO2@google.com>
-In-Reply-To: <YGPrZyIutYQGldO2@google.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Wed, 31 Mar 2021 12:59:11 +0800
-Message-ID: <CANRm+Cxe0ygrFm=TWZP0_uVEyaCTfq2SoaXRotUGR-anAXOQpQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] KVM: Account memory allocations for 'struct kvm_vcpu'
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 31 Mar 2021 at 11:24, Sean Christopherson <seanjc@google.com> wrote:
->
-> On Wed, Mar 31, 2021, Wanpeng Li wrote:
-> > On Wed, 31 Mar 2021 at 10:32, Sean Christopherson <seanjc@google.com> wrote:
-> > >
-> > > Use GFP_KERNEL_ACCOUNT for the vCPU allocations, the vCPUs are very much
-> > > tied to a single task/VM.  For x86, the allocations were accounted up
-> > > until the allocation code was moved to common KVM.  For all other
-> > > architectures, vCPU allocations were never previously accounted, but only
-> > > because most architectures lack accounting in general (for KVM).
-> > >
-> > > Fixes: e529ef66e6b5 ("KVM: Move vcpu alloc and init invocation to common code")
-> > > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > > ---
-> > >  virt/kvm/kvm_main.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> > > index 383df23514b9..3884e9f30251 100644
-> > > --- a/virt/kvm/kvm_main.c
-> > > +++ b/virt/kvm/kvm_main.c
-> > > @@ -3182,7 +3182,7 @@ static int kvm_vm_ioctl_create_vcpu(struct kvm *kvm, u32 id)
-> > >         if (r)
-> > >                 goto vcpu_decrement;
-> > >
-> > > -       vcpu = kmem_cache_zalloc(kvm_vcpu_cache, GFP_KERNEL);
-> > > +       vcpu = kmem_cache_zalloc(kvm_vcpu_cache, GFP_KERNEL_ACCOUNT);
-> >
-> > kvm_vcpu_cache is created with SLAB_ACCOUNT flag in kvm_init(), this
-> > flag will guarantee further slab alloc will be charged to memcg.
-> > Please refer to memcg_slab_pre_alloc_hook(). So the patch is
-> > unnecessary.
->
-> Hmm, I missed that.  However, AFICT only SLAB/SLUB enforce SLAB_ACCOUNT, SLOB
-> does not appear to honor the flag.   The caveat to SLOB is that the
-> GFP_KERNEL_ACCOUNT will only come into play when allocating new pages, and so
-> allocations smaller than a page will be accounted incorrectly (I think).
-> But, a vcpu is larger than a page (on x86), which means the vcpu allocation will
-> always be correctly accounted.
->
-> I've no idea if anyone actually uses KVM+SLOB, let alone cares about accounting
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/wab/scsi-ufs
+branch HEAD: 7dc98db8f2c28b0716d5c92b6f1046c9080ecb71  scsi: ufs: Fix out-of-bounds warnings in ufshcd_exec_raw_upiu_cmd
 
-I asked maintainer Christoph in 2013, he told me "Well, I have never
-seen non experimental systems that use SLOB. Others have claimed they
-exist. It's mostly of academic interest."
+elapsed time: 730m
 
-> in the that case.  But, it would be nice for KVM to be consistent with the other
-> kmem_cache usage in KVM, all of which do double up on SLAB_ACCOUNT +
-> GFP_KERNEL_ACCOUNT.
->
-> Maybe rewrite the changelog and drop the Fixes?
+configs tested: 118
+configs skipped: 2
 
-Agreed.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-    Wanpeng
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                             allyesconfig
+nios2                         3c120_defconfig
+xtensa                    xip_kc705_defconfig
+openrisc                            defconfig
+mips                           rs90_defconfig
+arm                         s3c2410_defconfig
+sh                          rsk7203_defconfig
+powerpc                        warp_defconfig
+arm                          iop32x_defconfig
+um                            kunit_defconfig
+sh                        sh7757lcr_defconfig
+powerpc                 mpc836x_rdk_defconfig
+arm                          gemini_defconfig
+powerpc                 xes_mpc85xx_defconfig
+powerpc                        fsp2_defconfig
+arc                              alldefconfig
+ia64                      gensparse_defconfig
+sh                          sdk7780_defconfig
+m68k                          amiga_defconfig
+sh                               j2_defconfig
+arm                        magician_defconfig
+arm                          exynos_defconfig
+h8300                               defconfig
+arm                  colibri_pxa300_defconfig
+powerpc                      katmai_defconfig
+mips                             allmodconfig
+powerpc                      makalu_defconfig
+arm                        multi_v7_defconfig
+mips                      fuloong2e_defconfig
+arm                       netwinder_defconfig
+powerpc                      acadia_defconfig
+powerpc                     tqm8560_defconfig
+mips                            ar7_defconfig
+mips                     cu1000-neo_defconfig
+sparc                       sparc64_defconfig
+sh                           se7619_defconfig
+mips                         rt305x_defconfig
+powerpc                   motionpro_defconfig
+mips                          rm200_defconfig
+sparc64                          alldefconfig
+sh                            migor_defconfig
+mips                   sb1250_swarm_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210330
+x86_64               randconfig-a003-20210330
+x86_64               randconfig-a002-20210330
+x86_64               randconfig-a001-20210330
+x86_64               randconfig-a005-20210330
+x86_64               randconfig-a006-20210330
+i386                 randconfig-a004-20210330
+i386                 randconfig-a006-20210330
+i386                 randconfig-a003-20210330
+i386                 randconfig-a002-20210330
+i386                 randconfig-a001-20210330
+i386                 randconfig-a005-20210330
+i386                 randconfig-a015-20210330
+i386                 randconfig-a011-20210330
+i386                 randconfig-a014-20210330
+i386                 randconfig-a013-20210330
+i386                 randconfig-a016-20210330
+i386                 randconfig-a012-20210330
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a012-20210330
+x86_64               randconfig-a015-20210330
+x86_64               randconfig-a014-20210330
+x86_64               randconfig-a016-20210330
+x86_64               randconfig-a013-20210330
+x86_64               randconfig-a011-20210330
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
