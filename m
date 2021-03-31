@@ -2,92 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84CCF34FAC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:51:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C264634FAC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:52:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234141AbhCaHvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 03:51:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234032AbhCaHup (ORCPT
+        id S234183AbhCaHvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 03:51:45 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.171]:31419 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234146AbhCaHvP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 03:50:45 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 101BFC061574;
-        Wed, 31 Mar 2021 00:50:45 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id c4so18516901qkg.3;
-        Wed, 31 Mar 2021 00:50:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PvFE5J3FezlEE8pnDN5zAGS+SdlnCyime9vQnsZ9wkY=;
-        b=PTGFvl2RypZxM0OoGUctoQGNsTqmeQLWPd4faKZB3LNwJY5otlqSbQokWFD+XxB4cZ
-         k7JcAGMHpQ6KFSA1ShU4X+lxf2geDdc31fr0WaZmQY56ejVKYekOO2OgPZ+IUK3N0tjk
-         rXeVUBoRE+TKa8974Zv0HzFjrsw95+klEl990=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PvFE5J3FezlEE8pnDN5zAGS+SdlnCyime9vQnsZ9wkY=;
-        b=m8r5aiSO5rUpGB3pdak1r0kDB+UcAuqR+L51G8RtFU6oiISpNMIoTVD6SY9wQgHHj9
-         Dfj3GbTXQZM3edaetZevTVU6MfOiiwqCw5eo38bpnMR9P5P2cj1RZ7x+pQQW3wqGgSW3
-         whF3keRxgjf6Z3G4zTxYYcO5A87mJ0IwvtEulyuJNRN4oN4I6Qukq2HuohZim7jBRSEN
-         /5DTD+HWlsdhXkQLZJUxf3lhf5ogWW91+jtfYu1LYo2kDMFvGw2orde/u1JhhO+EcWxf
-         tPS3eM1TQW+aswufZeB1puuJ6FN8ypf63cHVDEb2Pk3lrzpv4AW9ML9u/UfCJQdHJQmQ
-         AV7w==
-X-Gm-Message-State: AOAM532BObE6OBum/xsSwpPbJ25nzXgERGxpNnNBJEpfGbPg4L5q1v72
-        znerAuRSQaJATo3UrdQ/YrKwAGDVuVYbGgeFSO1gE75gExTbhA==
-X-Google-Smtp-Source: ABdhPJyMt3JEgZQNa/c4w8WpbFN1v/ZWTRBHzplPfi6vA5v5QT21JEeEclDxFGpB1WMPbDt6DMynOc5coOB4FZ/iNj0=
-X-Received: by 2002:a37:d202:: with SMTP id f2mr1940297qkj.273.1617177044244;
- Wed, 31 Mar 2021 00:50:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210330002338.335-1-zev@bewilderbeest.net> <20210330002338.335-4-zev@bewilderbeest.net>
- <CACPK8XcwMYgc9R24KuGa0hqKQAxawDScHp1+y62aeEvcpvPiSw@mail.gmail.com>
-In-Reply-To: <CACPK8XcwMYgc9R24KuGa0hqKQAxawDScHp1+y62aeEvcpvPiSw@mail.gmail.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Wed, 31 Mar 2021 07:50:32 +0000
-Message-ID: <CACPK8XfBsq6H5qsSNgwqdRhHXTUYnNQKekSNMnxXoVaAzMc=MQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] ARM: dts: aspeed: add ASRock E3C246D4I BMC
-To:     Zev Weiss <zev@bewilderbeest.net>
-Cc:     OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>
+        Wed, 31 Mar 2021 03:51:15 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1617177068; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=TR0d/ZKvDNwN5gzG/lb80S/qpN9/7RWomMeP5atcaDSmHL51CsxmRWzS+iv49K1nSA
+    GI58AN/5Z0iCTFPRQvkLd8rwiWsb8x1Yz3Dbm/6SxBi9L6uGoO9n3pE7BtTEqdbnaU9m
+    ADbstgiVMHornq8EDlX1MVVAGjtP8oQMw2ractsMF7QI8BI1cAmxoe0MOG+1fryblDWb
+    hZb6XfXZaY2pMMgpTQLdpikzhddG7jZqmtiXMbDWKTI1Q6F+twuergcXgwU4p4fSMlw4
+    MF8KUQxo62PNc2b1A5RdapSaz+ow9/QbqECK9QSSxsP1rg1nBBh2Q4rqmDxVCg/0rbgc
+    6JSQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1617177068;
+    s=strato-dkim-0002; d=strato.com;
+    h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=eOZ4VZTdJ8pUyk2sIkEdXMWyRYgM3XjOzKwRBLoG7YA=;
+    b=EikoZYCvG+XSGOG4ekv/KgMgVYDCEyse8WuWslRsCoYupcOfnoEIfWnrryhxrMKArK
+    JxR0OnRONtF96SLNti9N24sNQEcsJKEngxvOziWYlO+16tf2zII4hAdDuDSyjl11R/1D
+    i3mfbnYXlfI5rWzkFyj18IBG8pgJbHWF8Wki0PZhjnYtsV8hGjY7gooSaxeRCB/3HYcv
+    SvAw2yXNdiSMxi3egkrmx18f3GZsbZMLU+ltL2+z7H4w3ehpbqf7RfFQBg4a7dEZOb81
+    PNPmq3EG5Ijfj5/vDvd2UPT04bj5FGm9uGOdjkK2D7CwcmQHMfFhCD1oEXWVr+oUHv8X
+    3KAQ==
+ARC-Authentication-Results: i=1; strato.com;
+    dkim=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1617177068;
+    s=strato-dkim-0002; d=chronox.de;
+    h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=eOZ4VZTdJ8pUyk2sIkEdXMWyRYgM3XjOzKwRBLoG7YA=;
+    b=O7mYg3tMvt/rPg+eKobQo5DBe3L15n/eF7PzT15g1E5Yn6sIFzjyFm2o4EUUljxqhN
+    ePuvn5y7Qw5HoyX2WVO8Bk7t12ebc07qmyIgLpHijfQfcMzrqgmRpJYX3hDgjdqJ90sb
+    sgl8px1NHJwG3s7swcelTXNTssjZCG0MMCYnfChrnwWNxSzTcvwzyluaLdP82vm5OFkg
+    GAmLYlIrvN4szd6ZWE9IkjugJHAxMYBexEfxYGIdDi4OHt5a2cIVkaWRnYaXPA5JGZOA
+    KyYDxWXBTejcSkp/bjSW01Ly9wu3Rssp/xEJrOnF9g+PPS9812ja1dBbsGZRVcGbcqvs
+    Wyxw==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNzyCzy1Sfr67uExK884EC0GFGHavJShEkMReN0E="
+X-RZG-CLASS-ID: mo00
+Received: from tauon.chronox.de
+    by smtp.strato.de (RZmta 47.23.1 DYNA|AUTH)
+    with ESMTPSA id e03072x2V7p7LPw
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Wed, 31 Mar 2021 09:51:07 +0200 (CEST)
+Message-ID: <7b29ae50e40a031fa145f12b5f5b31fb6578626e.camel@chronox.de>
+Subject: Re: crypto: FIPS 200 mode
+From:   Stephan Mueller <smueller@chronox.de>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        David Miller <davem@davemloft.net>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Date:   Wed, 31 Mar 2021 09:51:07 +0200
+In-Reply-To: <4e940d39-77c0-74d4-d282-216cc6030c11@infradead.org>
+References: <4e940d39-77c0-74d4-d282-216cc6030c11@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 31 Mar 2021 at 07:41, Joel Stanley <joel@jms.id.au> wrote:
->
-> On Tue, 30 Mar 2021 at 00:25, Zev Weiss <zev@bewilderbeest.net> wrote:
-> >
-> > This is a relatively low-cost AST2500-based Xeon E-2100/E-2200 series
-> > mini-ITX board that we hope can provide a decent platform for OpenBMC
-> > development.
-> >
-> > This initial device-tree provides the necessary configuration for
-> > basic BMC functionality such as host power control, serial console and
-> > KVM support, and POST code snooping.
-> >
-> > Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
->
-> Reviewed-by: Joel Stanley <joel@jms.id.au>
->
-> > ---
-> >  .../boot/dts/aspeed-bmc-asrock-e3c246d4i.dts  | 188 ++++++++++++++++++
-> >  1 file changed, 188 insertions(+)
-> >  create mode 100644 arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts
-> >
-> > diff --git a/arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts b/arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts
-> > new file mode 100644
-> > index 000000000000..27b34c3cf67a
-> > --- /dev/null
-> > +++ b/arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts
+Am Dienstag, dem 30.03.2021 um 15:26 -0700 schrieb Randy Dunlap:
+> 
+> The Kconfig help text for CRYPTO_FIPS says
+> 
+> config CRYPTO_FIPS
+>         bool "FIPS 200 compliance"
+> ...
+>         help
+>           This option enables the fips boot option which is
+>           required if you want the system to operate in a FIPS 200
+>           certification.  You should say no unless you know what
+>           this is.
+> 
+> This seems confusing to me since it says "compliance" in one place and
+> "certification" in another place. And AFAICT, those two words don't
+> mean the same thing as far as NIST & FIPS are concerned.
+> 
+> 
+> Should it say "compliance" in both places?  E.g.
+> 
+>         help
+>           This option enables the fips boot option which is
+>           required if you want the system to operate in FIPS 200
+>           compliance mode.  You should say no unless you know what
+>           this is.
 
-When adding the device tree please also add it to the makefile in
-arch/arm/boot/dts.
+Sounds good to me.
+
+Ciao
+Stephan
+> 
+> 
+> thanks.
+
+
