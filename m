@@ -2,170 +2,386 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9057734FBAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9791334FBB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:33:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234396AbhCaIcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 04:32:16 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:19024 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234332AbhCaIcD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 04:32:03 -0400
-X-UUID: 082ebe03721b44b59dfb447bb2d61442-20210331
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=Z8cKO/WcF7PLYhFwwPNdw2kPZV45yctXzOoScFXE6PY=;
-        b=jZnG5EefVonyfdNq4bjrH6Vnc7mZgliJcBlBSDIvtTXLAo4CeFRwgMvGrMOyymF2AdQcCUKwyIZSOs0UG3XZ2A5ulkuNqFurqzTCryngh2eylisLPXdW+7sKA6TK2bPWZws1nlTikaKWelDIbqqBuyK2sNAC6088rfoZWvclcY8=;
-X-UUID: 082ebe03721b44b59dfb447bb2d61442-20210331
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 517248462; Wed, 31 Mar 2021 16:31:58 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 31 Mar
- 2021 16:31:53 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 31 Mar 2021 16:31:52 +0800
-Message-ID: <1617179512.2752.2.camel@mhfsdcap03>
-Subject: Re: [PATCH 2/2] usb: xhci-mtk: relax periodic TT bandwidth checking
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Ikjoon Jang <ikjn@chromium.org>, Yaqii Wu <Yaqii.Wu@mediatek.com>
-CC:     <linux-usb@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>
-Date:   Wed, 31 Mar 2021 16:31:52 +0800
-In-Reply-To: <20210330160508.2.I75d28cfec05010524ccef5132c8e39adb1bf6651@changeid>
-References: <20210330080617.3746932-1-ikjn@chromium.org>
-         <20210330160508.2.I75d28cfec05010524ccef5132c8e39adb1bf6651@changeid>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S229759AbhCaIcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 04:32:51 -0400
+Received: from foss.arm.com ([217.140.110.172]:33970 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232984AbhCaIcc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 04:32:32 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 608CCD6E;
+        Wed, 31 Mar 2021 01:32:32 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2B9AA3F792;
+        Wed, 31 Mar 2021 01:32:30 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 09:32:19 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, f.fainelli@gmail.com,
+        etienne.carriere@linaro.org, thara.gopinath@linaro.org,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com,
+        Jyoti Bhayana <jbhayana@google.com>,
+        Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org
+Subject: Re: [PATCH v7 25/38] iio/scmi: port driver to the new
+ scmi_sensor_proto_ops interface
+Message-ID: <20210331083219.GE43717@e120937-lin>
+References: <20210316124903.35011-1-cristian.marussi@arm.com>
+ <20210316124903.35011-26-cristian.marussi@arm.com>
+ <20210330123325.00000456@Huawei.com>
+ <20210330125113.GD43717@e120937-lin>
+ <20210330183404.00001909@Huawei.com>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 87C59DA44ED50161B151CDE95BC281B41E769E971899507DEA0DC20294A75A162000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210330183404.00001909@Huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTAzLTMwIGF0IDE2OjA2ICswODAwLCBJa2pvb24gSmFuZyB3cm90ZToNCj4g
-U29mdHdhcmUgYmFuZHdpZHRoIGNoZWNraW5nIGxvZ2ljcyB1c2VkIGJ5IHhoY2ktbXRrIHB1dHMN
-Cj4gYSBxdWl0ZSBoZWF2eSBjb25zdHJhaW50cyB0byBUVCBwZXJpb2RpYyBlbmRwb2ludCBhbGxv
-Y2F0aW9ucy4NCj4gDQo+IFRoaXMgcGF0Y2ggcHJvdmlkZXMgYSByZWxheGVkIGJhbmR3aWR0aCBj
-YWxjdWxhdGlvbiBieQ0KPiAtIEFsbG93aW5nIG11bHRpcGxlIHBlcmlvZGljIHRyYW5zYWN0aW9u
-cyBpbiBhIHNhbWUgbWljcm9mcmFtZQ0KPiAgIGZvciBhIGRldmljZSB3aXRoIG11bHRpcGxlIGlu
-dGVycnVwdCBlbmRwb2ludHMuDQo+IC0gVXNpbmcgYmVzdCBjYXNlIGJ1ZGdldCBpbnN0ZWFkIG9m
-IG1heGltdW0gbnVtYmVyIG9mDQo+ICAgY29tcGxldGUtc3BsaXQgd2hlbiBjYWxjdWxhdGluZyBi
-eXRlIGJ1ZGdldHMgb24gbG93ZXIgc3BlZWQgYnVzDQo+IA0KPiBXaXRob3V0IHRoaXMgcGF0Y2gs
-IGEgdHlwaWNhbCBmdWxsIHNwZWVkIGF1ZGlvIGhlYWRzZXQgd2l0aA0KPiAzIHBlcmlvZGljIGVu
-ZHBvaW50cyAoYXVkaW8gaXNvYy1pbi9vdXQsIGlucHV0IGludC1pbikgY2Fubm90IGJlDQo+IGNv
-bmZpZ3VyZWQgd2l0aCB4aGNpLW10ay4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IElram9vbiBKYW5n
-IDxpa2puQGNocm9taXVtLm9yZz4NCj4gLS0tDQpjYyBZYXFpaSBXdSA8WWFxaWkuV3VAbWVkaWF0
-ZWsuY29tPg0KDQpJJ2xsIHRlc3QgaXQsIHRoYW5rcw0KDQo+IA0KPiAgZHJpdmVycy91c2IvaG9z
-dC94aGNpLW10ay1zY2guYyB8IDY4ICsrKysrKysrKystLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0K
-PiAgZHJpdmVycy91c2IvaG9zdC94aGNpLW10ay5oICAgICB8ICAyIC0NCj4gIDIgZmlsZXMgY2hh
-bmdlZCwgMjAgaW5zZXJ0aW9ucygrKSwgNTAgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0
-IGEvZHJpdmVycy91c2IvaG9zdC94aGNpLW10ay1zY2guYyBiL2RyaXZlcnMvdXNiL2hvc3QveGhj
-aS1tdGstc2NoLmMNCj4gaW5kZXggMGNiNDEwMDdlYzY1Li43NjgyN2U0ODA0OWEgMTAwNjQ0DQo+
-IC0tLSBhL2RyaXZlcnMvdXNiL2hvc3QveGhjaS1tdGstc2NoLmMNCj4gKysrIGIvZHJpdmVycy91
-c2IvaG9zdC94aGNpLW10ay1zY2guYw0KPiBAQCAtMzg4LDEzICszODgsMTcgQEAgc3RhdGljIHZv
-aWQgc2V0dXBfc2NoX2luZm8oc3RydWN0IHhoY2lfZXBfY3R4ICplcF9jdHgsDQo+ICAJCX0gZWxz
-ZSB7IC8qIElOVF9JTl9FUCBvciBJU09DX0lOX0VQICovDQo+ICAJCQlid2JfdGFibGVbMF0gPSAw
-OyAvKiBzdGFydCBzcGxpdCAqLw0KPiAgCQkJYndiX3RhYmxlWzFdID0gMDsgLyogaWRsZSAqLw0K
-PiArDQo+ICsJCQlzY2hfZXAtPm51bV9idWRnZXRfbWljcm9mcmFtZXMgKz0gMjsNCj4gKwkJCWlm
-IChzY2hfZXAtPm51bV9idWRnZXRfbWljcm9mcmFtZXMgPiBzY2hfZXAtPmVzaXQpDQo+ICsJCQkJ
-c2NoX2VwLT5udW1fYnVkZ2V0X21pY3JvZnJhbWVzID0gc2NoX2VwLT5lc2l0Ow0KPiAgCQkJLyoN
-Cj4gIAkJCSAqIGR1ZSB0byBjc19jb3VudCB3aWxsIGJlIHVwZGF0ZWQgYWNjb3JkaW5nIHRvIGNz
-DQo+ICAJCQkgKiBwb3NpdGlvbiwgYXNzaWduIGFsbCByZW1haW5kZXIgYnVkZ2V0IGFycmF5DQo+
-ICAJCQkgKiBlbGVtZW50cyBhcyBAYndfY29zdF9wZXJfbWljcm9mcmFtZSwgYnV0IG9ubHkgZmly
-c3QNCj4gIAkJCSAqIEBudW1fYnVkZ2V0X21pY3JvZnJhbWVzIGVsZW1lbnRzIHdpbGwgYmUgdXNl
-ZCBsYXRlcg0KPiAgCQkJICovDQo+IC0JCQlmb3IgKGkgPSAyOyBpIDwgVFRfTUlDUk9GUkFNRVNf
-TUFYOyBpKyspDQo+ICsJCQlmb3IgKGkgPSAyOyBpIDwgc2NoX2VwLT5udW1fYnVkZ2V0X21pY3Jv
-ZnJhbWVzOyBpKyspDQo+ICAJCQkJYndiX3RhYmxlW2ldID0Jc2NoX2VwLT5id19jb3N0X3Blcl9t
-aWNyb2ZyYW1lOw0KPiAgCQl9DQo+ICAJfQ0KPiBAQCAtNDQ5LDIwICs0NTMsMTcgQEAgc3RhdGlj
-IHZvaWQgdXBkYXRlX2J1c19idyhzdHJ1Y3QgbXUzaF9zY2hfYndfaW5mbyAqc2NoX2J3LA0KPiAg
-c3RhdGljIGludCBjaGVja19mc19idXNfYncoc3RydWN0IG11M2hfc2NoX2VwX2luZm8gKnNjaF9l
-cCwgaW50IG9mZnNldCkNCj4gIHsNCj4gIAlzdHJ1Y3QgbXUzaF9zY2hfdHQgKnR0ID0gc2NoX2Vw
-LT5zY2hfdHQ7DQo+IC0JdTMyIG51bV9lc2l0LCB0bXA7DQo+IC0JaW50IGJhc2U7DQo+ICAJaW50
-IGksIGo7DQo+ICsJY29uc3QgaW50IG5yX2xvd2VyX3VmcmFtZXMgPQ0KPiArCQlESVZfUk9VTkRf
-VVAoc2NoX2VwLT5tYXhwa3QsIEZTX1BBWUxPQURfTUFYKTsNCj4gIA0KPiAtCW51bV9lc2l0ID0g
-WEhDSV9NVEtfTUFYX0VTSVQgLyBzY2hfZXAtPmVzaXQ7DQo+IC0JZm9yIChpID0gMDsgaSA8IG51
-bV9lc2l0OyBpKyspIHsNCj4gLQkJYmFzZSA9IG9mZnNldCArIGkgKiBzY2hfZXAtPmVzaXQ7DQo+
-IC0NCj4gKwlmb3IgKGkgPSBvZmZzZXQ7IGkgPCBYSENJX01US19NQVhfRVNJVDsgaSArPSBzY2hf
-ZXAtPmVzaXQpIHsNCj4gIAkJLyoNCj4gIAkJICogQ29tcGFyZWQgd2l0aCBocyBidXMsIG5vIG1h
-dHRlciB3aGF0IGVwIHR5cGUsDQo+ICAJCSAqIHRoZSBodWIgd2lsbCBhbHdheXMgZGVsYXkgb25l
-IHVmcmFtZSB0byBzZW5kIGRhdGENCj4gIAkJICovDQo+IC0JCWZvciAoaiA9IDA7IGogPCBzY2hf
-ZXAtPmNzX2NvdW50OyBqKyspIHsNCj4gLQkJCXRtcCA9IHR0LT5mc19idXNfYndbYmFzZSArIGpd
-ICsgc2NoX2VwLT5id19jb3N0X3Blcl9taWNyb2ZyYW1lOw0KPiArCQlmb3IgKGogPSAwOyBqIDwg
-bnJfbG93ZXJfdWZyYW1lczsgaisrKSB7DQo+ICsJCQl1MzIgdG1wID0gdHQtPmZzX2J1c19id1tp
-ICsgaiArIDFdICsgc2NoX2VwLT5id19jb3N0X3Blcl9taWNyb2ZyYW1lOw0KPiAgCQkJaWYgKHRt
-cCA+IEZTX1BBWUxPQURfTUFYKQ0KPiAgCQkJCXJldHVybiAtRVNDSF9CV19PVkVSRkxPVzsNCj4g
-IAkJfQ0KPiBAQCAtNDczLDExICs0NzQsOSBAQCBzdGF0aWMgaW50IGNoZWNrX2ZzX2J1c19idyhz
-dHJ1Y3QgbXUzaF9zY2hfZXBfaW5mbyAqc2NoX2VwLCBpbnQgb2Zmc2V0KQ0KPiAgDQo+ICBzdGF0
-aWMgaW50IGNoZWNrX3NjaF90dChzdHJ1Y3QgbXUzaF9zY2hfZXBfaW5mbyAqc2NoX2VwLCB1MzIg
-b2Zmc2V0KQ0KPiAgew0KPiAtCXN0cnVjdCBtdTNoX3NjaF90dCAqdHQgPSBzY2hfZXAtPnNjaF90
-dDsNCj4gIAl1MzIgZXh0cmFfY3NfY291bnQ7DQo+ICAJdTMyIHN0YXJ0X3NzLCBsYXN0X3NzOw0K
-PiAgCXUzMiBzdGFydF9jcywgbGFzdF9jczsNCj4gLQlpbnQgaTsNCj4gIA0KPiAgCWlmICghc2No
-X2VwLT5zY2hfdHQpDQo+ICAJCXJldHVybiAwOw0KPiBAQCAtNDk0LDEwICs0OTMsNiBAQCBzdGF0
-aWMgaW50IGNoZWNrX3NjaF90dChzdHJ1Y3QgbXUzaF9zY2hfZXBfaW5mbyAqc2NoX2VwLCB1MzIg
-b2Zmc2V0KQ0KPiAgCQlpZiAoIShzdGFydF9zcyA9PSA3IHx8IGxhc3Rfc3MgPCA2KSkNCj4gIAkJ
-CXJldHVybiAtRVNDSF9TU19ZNjsNCj4gIA0KPiAtCQlmb3IgKGkgPSAwOyBpIDwgc2NoX2VwLT5j
-c19jb3VudDsgaSsrKQ0KPiAtCQkJaWYgKHRlc3RfYml0KG9mZnNldCArIGksIHR0LT5zc19iaXRf
-bWFwKSkNCj4gLQkJCQlyZXR1cm4gLUVTQ0hfU1NfT1ZFUkxBUDsNCj4gLQ0KPiAgCX0gZWxzZSB7
-DQo+ICAJCXUzMiBjc19jb3VudCA9IERJVl9ST1VORF9VUChzY2hfZXAtPm1heHBrdCwgRlNfUEFZ
-TE9BRF9NQVgpOw0KPiAgDQo+IEBAIC01MjQsMTkgKzUxOSw3IEBAIHN0YXRpYyBpbnQgY2hlY2tf
-c2NoX3R0KHN0cnVjdCBtdTNoX3NjaF9lcF9pbmZvICpzY2hfZXAsIHUzMiBvZmZzZXQpDQo+ICAJ
-CWlmIChjc19jb3VudCA+IDcpDQo+ICAJCQljc19jb3VudCA9IDc7IC8qIEhXIGxpbWl0ICovDQo+
-ICANCj4gLQkJaWYgKHRlc3RfYml0KG9mZnNldCwgdHQtPnNzX2JpdF9tYXApKQ0KPiAtCQkJcmV0
-dXJuIC1FU0NIX1NTX09WRVJMQVA7DQo+IC0NCj4gIAkJc2NoX2VwLT5jc19jb3VudCA9IGNzX2Nv
-dW50Ow0KPiAtCQkvKiBvbmUgZm9yIHNzLCB0aGUgb3RoZXIgZm9yIGlkbGUgKi8NCj4gLQkJc2No
-X2VwLT5udW1fYnVkZ2V0X21pY3JvZnJhbWVzID0gY3NfY291bnQgKyAyOw0KPiAtDQo+IC0JCS8q
-DQo+IC0JCSAqIGlmIGludGVydmFsPTEsIG1heHAgPjc1MiwgbnVtX2J1ZGdlX21pY29mcmFtZSBp
-cyBsYXJnZXINCj4gLQkJICogdGhhbiBzY2hfZXAtPmVzaXQsIHdpbGwgb3ZlcnN0ZXAgYm91bmRh
-cnkNCj4gLQkJICovDQo+IC0JCWlmIChzY2hfZXAtPm51bV9idWRnZXRfbWljcm9mcmFtZXMgPiBz
-Y2hfZXAtPmVzaXQpDQo+IC0JCQlzY2hfZXAtPm51bV9idWRnZXRfbWljcm9mcmFtZXMgPSBzY2hf
-ZXAtPmVzaXQ7DQo+ICAJfQ0KPiAgDQo+ICAJcmV0dXJuIGNoZWNrX2ZzX2J1c19idyhzY2hfZXAs
-IG9mZnNldCk7DQo+IEBAIC01NDUsMzEgKzUyOCwxOCBAQCBzdGF0aWMgaW50IGNoZWNrX3NjaF90
-dChzdHJ1Y3QgbXUzaF9zY2hfZXBfaW5mbyAqc2NoX2VwLCB1MzIgb2Zmc2V0KQ0KPiAgc3RhdGlj
-IHZvaWQgdXBkYXRlX3NjaF90dChzdHJ1Y3QgbXUzaF9zY2hfZXBfaW5mbyAqc2NoX2VwLCBib29s
-IHVzZWQpDQo+ICB7DQo+ICAJc3RydWN0IG11M2hfc2NoX3R0ICp0dCA9IHNjaF9lcC0+c2NoX3R0
-Ow0KPiAtCXUzMiBiYXNlLCBudW1fZXNpdDsNCj4gLQlpbnQgYndfdXBkYXRlZDsNCj4gLQlpbnQg
-Yml0czsNCj4gLQlpbnQgaSwgajsNCj4gLQ0KPiAtCW51bV9lc2l0ID0gWEhDSV9NVEtfTUFYX0VT
-SVQgLyBzY2hfZXAtPmVzaXQ7DQo+IC0JYml0cyA9IChzY2hfZXAtPmVwX3R5cGUgPT0gSVNPQ19P
-VVRfRVApID8gc2NoX2VwLT5jc19jb3VudCA6IDE7DQo+ICsJaW50IGksIGosIGJ3X3VwZGF0ZWQ7
-DQo+ICsJY29uc3QgaW50IG5yX2xvd2VyX3VmcmFtZXMgPQ0KPiArCQlESVZfUk9VTkRfVVAoc2No
-X2VwLT5tYXhwa3QsIEZTX1BBWUxPQURfTUFYKTsNCj4gIA0KPiAgCWlmICh1c2VkKQ0KPiAgCQli
-d191cGRhdGVkID0gc2NoX2VwLT5id19jb3N0X3Blcl9taWNyb2ZyYW1lOw0KPiAgCWVsc2UNCj4g
-IAkJYndfdXBkYXRlZCA9IC1zY2hfZXAtPmJ3X2Nvc3RfcGVyX21pY3JvZnJhbWU7DQo+ICANCj4g
-LQlmb3IgKGkgPSAwOyBpIDwgbnVtX2VzaXQ7IGkrKykgew0KPiAtCQliYXNlID0gc2NoX2VwLT5v
-ZmZzZXQgKyBpICogc2NoX2VwLT5lc2l0Ow0KPiAtDQo+IC0JCWZvciAoaiA9IDA7IGogPCBiaXRz
-OyBqKyspIHsNCj4gLQkJCWlmICh1c2VkKQ0KPiAtCQkJCXNldF9iaXQoYmFzZSArIGosIHR0LT5z
-c19iaXRfbWFwKTsNCj4gLQkJCWVsc2UNCj4gLQkJCQljbGVhcl9iaXQoYmFzZSArIGosIHR0LT5z
-c19iaXRfbWFwKTsNCj4gLQkJfQ0KPiAtDQo+IC0JCWZvciAoaiA9IDA7IGogPCBzY2hfZXAtPmNz
-X2NvdW50OyBqKyspDQo+IC0JCQl0dC0+ZnNfYnVzX2J3W2Jhc2UgKyBqXSArPSBid191cGRhdGVk
-Ow0KPiArCWZvciAoaSA9IHNjaF9lcC0+b2Zmc2V0OyBpIDwgWEhDSV9NVEtfTUFYX0VTSVQ7IGkg
-Kz0gc2NoX2VwLT5lc2l0KSB7DQo+ICsJCWZvciAoaiA9IDA7IGogPCBucl9sb3dlcl91ZnJhbWVz
-OyBqKyspDQo+ICsJCQl0dC0+ZnNfYnVzX2J3W2krIGogKyAxXSArPSBid191cGRhdGVkOw0KPiAg
-CX0NCj4gIA0KPiAgCWlmICh1c2VkKQ0KPiBAQCAtNjM0LDkgKzYwNCwxMSBAQCBzdGF0aWMgaW50
-IGNoZWNrX3NjaF9idyhzdHJ1Y3QgbXUzaF9zY2hfYndfaW5mbyAqc2NoX2J3LA0KPiAgCQlpZiAo
-bWluX2J3ID4gd29yc3RfYncpIHsNCj4gIAkJCW1pbl9idyA9IHdvcnN0X2J3Ow0KPiAgCQkJZm91
-bmQgPSBpOw0KPiArCQkJLyogZmFzdHBhdGg6IGJhbmR3aWR0aCBjb250cmlidXRpb25zIHRvIGhv
-c3QgaXMgbG93DQo+ICsJCQkgKiB3aGVuIGl0J3MgZnMvbHMgKi8NCj4gKwkJCWlmIChzY2hfZXAt
-PnNjaF90dCB8fCBtaW5fYncgPT0gMCkNCj4gKwkJCQlicmVhazsNCj4gIAkJfQ0KPiAtCQlpZiAo
-bWluX2J3ID09IDApDQo+IC0JCQlicmVhazsNCj4gIAl9DQo+ICANCj4gIAkvKiBjaGVjayBiYW5k
-d2lkdGggKi8NCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdXNiL2hvc3QveGhjaS1tdGsuaCBiL2Ry
-aXZlcnMvdXNiL2hvc3QveGhjaS1tdGsuaA0KPiBpbmRleCA2MjFlYzFhODUwMDkuLjhhODc5Zjk5
-YWUxYyAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy91c2IvaG9zdC94aGNpLW10ay5oDQo+ICsrKyBi
-L2RyaXZlcnMvdXNiL2hvc3QveGhjaS1tdGsuaA0KPiBAQCAtMjAsMTIgKzIwLDEwIEBADQo+ICAj
-ZGVmaW5lIFhIQ0lfTVRLX01BWF9FU0lUCTY0DQo+ICANCj4gIC8qKg0KPiAtICogQHNzX2JpdF9t
-YXA6IHVzZWQgdG8gYXZvaWQgc3RhcnQgc3BsaXQgbWljcm9mcmFtZXMgb3ZlcmxheQ0KPiAgICog
-QGZzX2J1c19idzogYXJyYXkgdG8ga2VlcCB0cmFjayBvZiBiYW5kd2lkdGggYWxyZWFkeSB1c2Vk
-IGZvciBGUw0KPiAgICogQGVwX2xpc3Q6IEVuZHBvaW50cyB1c2luZyB0aGlzIFRUDQo+ICAgKi8N
-Cj4gIHN0cnVjdCBtdTNoX3NjaF90dCB7DQo+IC0JREVDTEFSRV9CSVRNQVAoc3NfYml0X21hcCwg
-WEhDSV9NVEtfTUFYX0VTSVQpOw0KPiAgCXUzMiBmc19idXNfYndbWEhDSV9NVEtfTUFYX0VTSVRd
-Ow0KPiAgCXN0cnVjdCBsaXN0X2hlYWQgZXBfbGlzdDsNCj4gIH07DQoNCg==
+Hi Jonathan
 
+On Tue, Mar 30, 2021 at 06:34:04PM +0100, Jonathan Cameron wrote:
+> On Tue, 30 Mar 2021 13:51:13 +0100
+> Cristian Marussi <cristian.marussi@arm.com> wrote:
+> 
+> > Hi Jonathan,
+> > 
+> > On Tue, Mar 30, 2021 at 12:33:25PM +0100, Jonathan Cameron wrote:
+> > > On Tue, 16 Mar 2021 12:48:50 +0000
+> > > Cristian Marussi <cristian.marussi@arm.com> wrote:
+> > >   
+> > > > Port driver to the new SCMI Sensor interface based on protocol handles
+> > > > and common devm_get_ops().
+> > > > 
+> > > > Cc: Jyoti Bhayana <jbhayana@google.com>
+> > > > Cc: Jonathan Cameron <jic23@kernel.org>
+> > > > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>  
+> > > 
+> > > +CC linux-iio@vger.kernel.org
+> > > 
+> > > Rule of thumb if it doesn't go there it ends up in randomly location based
+> > > on other lists and I might not see it for a few weeks :(
+> > >   
+> > 
+> > Ah sorry, I thought the direct CC was enough.
+> 
+> No problem. Too much email :)
+> 
+> > 
+> > > > ---
+> > > >  drivers/iio/common/scmi_sensors/scmi_iio.c | 91 ++++++++++------------
+> > > >  1 file changed, 41 insertions(+), 50 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/iio/common/scmi_sensors/scmi_iio.c b/drivers/iio/common/scmi_sensors/scmi_iio.c
+> > > > index 872d87ca6256..b4bdc3f3a946 100644
+> > > > --- a/drivers/iio/common/scmi_sensors/scmi_iio.c
+> > > > +++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
+> > > > @@ -21,8 +21,10 @@
+> > > >  
+> > > >  #define SCMI_IIO_NUM_OF_AXIS 3
+> > > >  
+> > > > +static const struct scmi_sensor_proto_ops *sensor_ops;  
+> > > 
+> > > Hmm.   I'm not keen on globals when they really should not be necessary.
+> > > They just result in lifetimes being out of sync.  Here you are fine because
+> > > you set it to an appropriate value as the first thing you do in probe, and
+> > > I assume the function only ever returns on answer on repeated calls.
+> > > 
+> > > Why not put a copy of that pointer inside the struct scmi_iio_priv structures?
+> > >   
+> > 
+> > The reason for this, as I said to Jyoyi who made the same comment indeed,
+> > from my point of view (maybe wrong..) was that while the protocol_handle,
+> > and previously the handle, are 'per-instance data' (so that you get a
+> > different one each time this driver is possibly probed against a different
+> > platform-handle) and as such are stored in scmi_iio_priv, the _ops are
+> > just plain code pointers and are returned always the same for the same
+> > protocol no matter how many times you probe this driver:
+> 
+> As that's the case, I'm a little confused to why you have added the complexity
+> of a query interface in the first place?  Why not just export the ops and
+> have the various drivers access them directly?  If there is only
+> one set of scmi_sensor_ops etc, then let drivers at it directly, or
+> indeed export the functions that make up the ops structure directly.
+> 
+> This sounds like a bit of abstraction that only serves to make the
+> code harder to read.
+> 
+
+Thanks for your comments, let me explain a bit.
+
+While the ops are indeed per-protocol common code available to SCMI drivers,
+the protocol handle, which you also obtain with devm_protocol_get(), is
+instead an opaque reference bound to the specific protocol instance
+associated to the platform handle you're using, so that, in case there are
+multiple SCMI platforms defined on the system, you'll get, at each probe a
+specific and distinct protocol_handle to use with your ops: this way
+you'll act upon a completely distinct initialized protocol stack, using
+a distinct underlying transport layer toward your platform of choice.
+
+Since this series wanted to unify SCMI standard and custom protocol interfaces
+and enable modularization too, the get/put abstraction is there indeed to be
+able to track internally protocol users and do resource accounting so that an
+SCMI driver has to explicitly ask to use a protocol: the protocols instances are
+then initialized on demand only when the first user shows up and more importantly
+a hold is put on the protocol module refs avoiding its possible unloading
+while still in use (even though only custom protocol are allowed as loadable
+modules as of now...)
+
+Coming to the ops instead, the reason not to simply export them was...well...
+...not to export new symbols, and not just to stick to the old handle->ops()
+interface way of non-exporting ops, or because I'm pavid at exporting new symbols
+(I am :D), but because the idea was that in this way it would also have been
+easier for vendors writing custom protocol modules to be able to just use them
+in their own SCMI driver without the need to export also their new custom ops.
+(and same goes generally for any new possible future standard protocol
+ which will not require endlessly further exports)
+
+Just for these reasons I attached the ops retrieval the same protocol_get()
+interface already introduced to handle all of the above.
+
+> > you just end up
+> > calling them against the proper different saved protocol_handle; so it
+> > seemed to me an unneeded duplication to stick a copy of the same _ops
+> > inside each per-instance scmi_iio_priv, and at the same time it seemed
+> > also more straigthforward to access them without too many indirections
+> > from inside the scmi_iio_priv struct).
+> > 
+> > But if these are not valid points I can change this in IIO now, and in
+> > the future also in all the other SCMI drivers that currently use this
+> > same API and pattern of usage with global ops. (..at least because I'd
+> > have to collect again all the other ACks agains and it's a bit later for
+> > that now)
+> 
+> I'm fine with leaving it as is.  There's no fundamental issue, it's just
+> a little bit ugly and I'm fussy :)
+> 
+
+I'm not fullly liking it too, but it was the best I could come up to cope
+with the above reqs (and the limited amount of my grey-matter :D)
+
+But if in the future we can come up with something better, or some reqs
+are dropped/revisited I'll be happy to flood the list with another
+jumbo-series.
+
+Thanks
+
+Cristian
+
+> > 
+> > Thanks
+> > 
+> > Cristian
+> > 
+> > > Otherwise this all looks like straight forward refactoring so given the
+> > > above is more a 'bad smell' than a bug and I'm rather late to the game.
+> > > 
+> > > Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > > 
+> > >   
+> > > > +
+> > > >  struct scmi_iio_priv {
+> > > > -	struct scmi_handle *handle;
+> > > > +	struct scmi_protocol_handle *ph;
+> > > >  	const struct scmi_sensor_info *sensor_info;
+> > > >  	struct iio_dev *indio_dev;
+> > > >  	/* adding one additional channel for timestamp */
+> > > > @@ -82,7 +84,6 @@ static int scmi_iio_sensor_update_cb(struct notifier_block *nb,
+> > > >  static int scmi_iio_buffer_preenable(struct iio_dev *iio_dev)
+> > > >  {
+> > > >  	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> > > > -	u32 sensor_id = sensor->sensor_info->id;
+> > > >  	u32 sensor_config = 0;
+> > > >  	int err;
+> > > >  
+> > > > @@ -92,27 +93,11 @@ static int scmi_iio_buffer_preenable(struct iio_dev *iio_dev)
+> > > >  
+> > > >  	sensor_config |= FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+> > > >  				    SCMI_SENS_CFG_SENSOR_ENABLE);
+> > > > -
+> > > > -	err = sensor->handle->notify_ops->register_event_notifier(sensor->handle,
+> > > > -			SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
+> > > > -			&sensor_id, &sensor->sensor_update_nb);
+> > > > -	if (err) {
+> > > > -		dev_err(&iio_dev->dev,
+> > > > -			"Error in registering sensor update notifier for sensor %s err %d",
+> > > > -			sensor->sensor_info->name, err);
+> > > > -		return err;
+> > > > -	}
+> > > > -
+> > > > -	err = sensor->handle->sensor_ops->config_set(sensor->handle,
+> > > > -			sensor->sensor_info->id, sensor_config);
+> > > > -	if (err) {
+> > > > -		sensor->handle->notify_ops->unregister_event_notifier(sensor->handle,
+> > > > -				SCMI_PROTOCOL_SENSOR,
+> > > > -				SCMI_EVENT_SENSOR_UPDATE, &sensor_id,
+> > > > -				&sensor->sensor_update_nb);
+> > > > +	err = sensor_ops->config_set(sensor->ph, sensor->sensor_info->id,
+> > > > +				     sensor_config);
+> > > > +	if (err)
+> > > >  		dev_err(&iio_dev->dev, "Error in enabling sensor %s err %d",
+> > > >  			sensor->sensor_info->name, err);
+> > > > -	}
+> > > >  
+> > > >  	return err;
+> > > >  }
+> > > > @@ -120,25 +105,13 @@ static int scmi_iio_buffer_preenable(struct iio_dev *iio_dev)
+> > > >  static int scmi_iio_buffer_postdisable(struct iio_dev *iio_dev)
+> > > >  {
+> > > >  	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> > > > -	u32 sensor_id = sensor->sensor_info->id;
+> > > >  	u32 sensor_config = 0;
+> > > >  	int err;
+> > > >  
+> > > >  	sensor_config |= FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+> > > >  				    SCMI_SENS_CFG_SENSOR_DISABLE);
+> > > > -
+> > > > -	err = sensor->handle->notify_ops->unregister_event_notifier(sensor->handle,
+> > > > -			SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
+> > > > -			&sensor_id, &sensor->sensor_update_nb);
+> > > > -	if (err) {
+> > > > -		dev_err(&iio_dev->dev,
+> > > > -			"Error in unregistering sensor update notifier for sensor %s err %d",
+> > > > -			sensor->sensor_info->name, err);
+> > > > -		return err;
+> > > > -	}
+> > > > -
+> > > > -	err = sensor->handle->sensor_ops->config_set(sensor->handle, sensor_id,
+> > > > -						     sensor_config);
+> > > > +	err = sensor_ops->config_set(sensor->ph, sensor->sensor_info->id,
+> > > > +				     sensor_config);
+> > > >  	if (err) {
+> > > >  		dev_err(&iio_dev->dev,
+> > > >  			"Error in disabling sensor %s with err %d",
+> > > > @@ -161,8 +134,8 @@ static int scmi_iio_set_odr_val(struct iio_dev *iio_dev, int val, int val2)
+> > > >  	u32 sensor_config;
+> > > >  	char buf[32];
+> > > >  
+> > > > -	int err = sensor->handle->sensor_ops->config_get(sensor->handle,
+> > > > -			sensor->sensor_info->id, &sensor_config);
+> > > > +	int err = sensor_ops->config_get(sensor->ph, sensor->sensor_info->id,
+> > > > +					 &sensor_config);
+> > > >  	if (err) {
+> > > >  		dev_err(&iio_dev->dev,
+> > > >  			"Error in getting sensor config for sensor %s err %d",
+> > > > @@ -208,8 +181,8 @@ static int scmi_iio_set_odr_val(struct iio_dev *iio_dev, int val, int val2)
+> > > >  	sensor_config |=
+> > > >  		FIELD_PREP(SCMI_SENS_CFG_ROUND_MASK, SCMI_SENS_CFG_ROUND_AUTO);
+> > > >  
+> > > > -	err = sensor->handle->sensor_ops->config_set(sensor->handle,
+> > > > -			sensor->sensor_info->id, sensor_config);
+> > > > +	err = sensor_ops->config_set(sensor->ph, sensor->sensor_info->id,
+> > > > +				     sensor_config);
+> > > >  	if (err)
+> > > >  		dev_err(&iio_dev->dev,
+> > > >  			"Error in setting sensor update interval for sensor %s value %u err %d",
+> > > > @@ -274,8 +247,8 @@ static int scmi_iio_get_odr_val(struct iio_dev *iio_dev, int *val, int *val2)
+> > > >  	u32 sensor_config;
+> > > >  	int mult;
+> > > >  
+> > > > -	int err = sensor->handle->sensor_ops->config_get(sensor->handle,
+> > > > -			sensor->sensor_info->id, &sensor_config);
+> > > > +	int err = sensor_ops->config_get(sensor->ph, sensor->sensor_info->id,
+> > > > +					 &sensor_config);
+> > > >  	if (err) {
+> > > >  		dev_err(&iio_dev->dev,
+> > > >  			"Error in getting sensor config for sensor %s err %d",
+> > > > @@ -542,15 +515,17 @@ static int scmi_iio_buffers_setup(struct iio_dev *scmi_iiodev)
+> > > >  	return 0;
+> > > >  }
+> > > >  
+> > > > -static struct iio_dev *scmi_alloc_iiodev(struct device *dev,
+> > > > -					 struct scmi_handle *handle,
+> > > > -					 const struct scmi_sensor_info *sensor_info)
+> > > > +static struct iio_dev *
+> > > > +scmi_alloc_iiodev(struct scmi_device *sdev, struct scmi_protocol_handle *ph,
+> > > > +		  const struct scmi_sensor_info *sensor_info)
+> > > >  {
+> > > >  	struct iio_chan_spec *iio_channels;
+> > > >  	struct scmi_iio_priv *sensor;
+> > > >  	enum iio_modifier modifier;
+> > > >  	enum iio_chan_type type;
+> > > >  	struct iio_dev *iiodev;
+> > > > +	struct device *dev = &sdev->dev;
+> > > > +	const struct scmi_handle *handle = sdev->handle;
+> > > >  	int i, ret;
+> > > >  
+> > > >  	iiodev = devm_iio_device_alloc(dev, sizeof(*sensor));
+> > > > @@ -560,7 +535,7 @@ static struct iio_dev *scmi_alloc_iiodev(struct device *dev,
+> > > >  	iiodev->modes = INDIO_DIRECT_MODE;
+> > > >  	iiodev->dev.parent = dev;
+> > > >  	sensor = iio_priv(iiodev);
+> > > > -	sensor->handle = handle;
+> > > > +	sensor->ph = ph;
+> > > >  	sensor->sensor_info = sensor_info;
+> > > >  	sensor->sensor_update_nb.notifier_call = scmi_iio_sensor_update_cb;
+> > > >  	sensor->indio_dev = iiodev;
+> > > > @@ -595,6 +570,17 @@ static struct iio_dev *scmi_alloc_iiodev(struct device *dev,
+> > > >  					  sensor_info->axis[i].id);
+> > > >  	}
+> > > >  
+> > > > +	ret = handle->notify_ops->devm_event_notifier_register(sdev,
+> > > > +				SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
+> > > > +				&sensor->sensor_info->id,
+> > > > +				&sensor->sensor_update_nb);
+> > > > +	if (ret) {
+> > > > +		dev_err(&iiodev->dev,
+> > > > +			"Error in registering sensor update notifier for sensor %s err %d",
+> > > > +			sensor->sensor_info->name, ret);
+> > > > +		return ERR_PTR(ret);
+> > > > +	}
+> > > > +
+> > > >  	scmi_iio_set_timestamp_channel(&iio_channels[i], i);
+> > > >  	iiodev->channels = iio_channels;
+> > > >  	return iiodev;
+> > > > @@ -604,24 +590,29 @@ static int scmi_iio_dev_probe(struct scmi_device *sdev)
+> > > >  {
+> > > >  	const struct scmi_sensor_info *sensor_info;
+> > > >  	struct scmi_handle *handle = sdev->handle;
+> > > > +	struct scmi_protocol_handle *ph;
+> > > >  	struct device *dev = &sdev->dev;
+> > > >  	struct iio_dev *scmi_iio_dev;
+> > > >  	u16 nr_sensors;
+> > > >  	int err = -ENODEV, i;
+> > > >  
+> > > > -	if (!handle || !handle->sensor_ops) {
+> > > > +	if (!handle)
+> > > > +		return -ENODEV;
+> > > > +
+> > > > +	sensor_ops = handle->devm_protocol_get(sdev, SCMI_PROTOCOL_SENSOR, &ph);
+> > > > +	if (IS_ERR(sensor_ops)) {
+> > > >  		dev_err(dev, "SCMI device has no sensor interface\n");
+> > > > -		return -EINVAL;
+> > > > +		return PTR_ERR(sensor_ops);
+> > > >  	}
+> > > >  
+> > > > -	nr_sensors = handle->sensor_ops->count_get(handle);
+> > > > +	nr_sensors = sensor_ops->count_get(ph);
+> > > >  	if (!nr_sensors) {
+> > > >  		dev_dbg(dev, "0 sensors found via SCMI bus\n");
+> > > >  		return -ENODEV;
+> > > >  	}
+> > > >  
+> > > >  	for (i = 0; i < nr_sensors; i++) {
+> > > > -		sensor_info = handle->sensor_ops->info_get(handle, i);
+> > > > +		sensor_info = sensor_ops->info_get(ph, i);
+> > > >  		if (!sensor_info) {
+> > > >  			dev_err(dev, "SCMI sensor %d has missing info\n", i);
+> > > >  			return -EINVAL;
+> > > > @@ -636,7 +627,7 @@ static int scmi_iio_dev_probe(struct scmi_device *sdev)
+> > > >  		    sensor_info->axis[0].type != RADIANS_SEC)
+> > > >  			continue;
+> > > >  
+> > > > -		scmi_iio_dev = scmi_alloc_iiodev(dev, handle, sensor_info);
+> > > > +		scmi_iio_dev = scmi_alloc_iiodev(sdev, ph, sensor_info);
+> > > >  		if (IS_ERR(scmi_iio_dev)) {
+> > > >  			dev_err(dev,
+> > > >  				"failed to allocate IIO device for sensor %s: %ld\n",  
+> > >   
+> 
