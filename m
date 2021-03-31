@@ -2,174 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610D93505E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 19:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A75983505EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234557AbhCaR70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 13:59:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233867AbhCaR7M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 13:59:12 -0400
-Received: from hs01.dk-develop.de (hs01.dk-develop.de [IPv6:2a02:c207:3002:6234::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C4FC061574;
-        Wed, 31 Mar 2021 10:59:11 -0700 (PDT)
-Received: from mail.dk-develop.de (hs01.dk-develop.de [IPv6:::1])
-        by hs01.dk-develop.de (Postfix) with ESMTP id 7360A1DA396;
-        Wed, 31 Mar 2021 19:58:33 +0200 (CEST)
+        id S234699AbhCaSBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 14:01:04 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:40342 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233735AbhCaSAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 14:00:30 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617213630; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=mYdCYC/FPImOY3Dj4Qxijet1JbSBWQXVRBoquvOZPb8=; b=D33tjsWXEJUiAoeH8krsXF2Y9AMbnm2y+7o4i7DBPxB89GxM5z+o4c62RiQlrIwLBFXGEEaU
+ W8dhkFFfYUXnOsC5nF6s4OO2ClkaOjvTxy6/7kwPNAwV/ZxcOdzyMD2NN8ll6dubjrqzG+1g
+ P+XnJYBZ+Zu9WWOq/NzciTOWHTk=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 6064b8abfebcffa80fe61ba2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 31 Mar 2021 18:00:11
+ GMT
+Sender: asutoshd=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 09775C43466; Wed, 31 Mar 2021 18:00:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: asutoshd)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7C840C433ED;
+        Wed, 31 Mar 2021 18:00:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7C840C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
+Subject: Re: [PATCH V2 2/3] scsi: ufs: add a vops to configure VCC voltage
+ level
+To:     Nitin Rawat <nitirawa@codeaurora.org>, cang@codeaurora.org,
+        stummala@codeaurora.org, vbadigan@codeaurora.org,
+        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bjorn.andersson@linaro.org,
+        adrian.hunter@intel.com, bvanassche@acm.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1616363857-26760-1-git-send-email-nitirawa@codeaurora.org>
+ <1616363857-26760-3-git-send-email-nitirawa@codeaurora.org>
+From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
+Message-ID: <80f681a6-165f-0610-dfea-6b66ce4abddc@codeaurora.org>
+Date:   Wed, 31 Mar 2021 11:00:07 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Date:   Wed, 31 Mar 2021 19:58:33 +0200
-From:   danilokrummrich@dk-develop.de
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     linux@armlinux.org.uk, davem@davemloft.net, hkallweit1@gmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jeremy.linton@arm.com
-Subject: Re: [PATCH 2/2] net: mdio: support c45 peripherals on c22 busses
-In-Reply-To: <YGSi+b/r4zlq9rm8@lunn.ch>
-References: <20210331141755.126178-1-danilokrummrich@dk-develop.de>
- <20210331141755.126178-3-danilokrummrich@dk-develop.de>
- <YGSi+b/r4zlq9rm8@lunn.ch>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <6f1dfc28368d098ace9564e53ed92041@dk-develop.de>
-X-Sender: danilokrummrich@dk-develop.de
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <1616363857-26760-3-git-send-email-nitirawa@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+On 3/21/2021 2:57 PM, Nitin Rawat wrote:
+> Add a vops to configure VCC voltage VCC voltage level
+> for platform supporting both ufs2.x and ufs 3.x devices.
+> 
+> Suggested-by: Stanley Chu <stanley.chu@mediatek.com>
+> Suggested-by: Asutosh Das <asutoshd@codeaurora.org>
+> Suggested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Signed-off-by: Nitin Rawat <nitirawa@codeaurora.org>
+> Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+> ---
+>   drivers/scsi/ufs/ufshcd.c |  4 ++++
+>   drivers/scsi/ufs/ufshcd.h | 10 ++++++++++
+>   2 files changed, 14 insertions(+)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 633ca8e..5bfe987 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -7763,6 +7763,10 @@ static int ufshcd_add_lus(struct ufs_hba *hba)
+>   		goto out;
+> 
+>   	ufshcd_clear_ua_wluns(hba);
+> +	if (ufshcd_vops_setup_vcc_regulators(hba))
+This would be invoked even for platforms that don't support both 2.x and 
+3.x and don't need to set the voltages in the driver.
+I guess platforms that support both 2.x and 3.x and can't set the 
+regulator voltages from dts due to different voltage requirements of 2.x 
+and 3.x, should request the driver to set the voltages. And the driver 
+may do so after determining the device version.
 
-On 2021-03-31 18:27, Andrew Lunn wrote:
->> @@ -670,19 +670,21 @@ struct phy_device *mdiobus_scan(struct mii_bus 
->> *bus, int addr)
->>  	struct phy_device *phydev = ERR_PTR(-ENODEV);
->>  	int err;
->> 
->> +	/* In case of NO_CAP and C22 only, we still can try to scan for C45
->> +	 * devices, since indirect access will be used for busses that are 
->> not
->> +	 * capable of C45 frame format.
->> +	 */
->>  	switch (bus->capabilities) {
->>  	case MDIOBUS_NO_CAP:
->>  	case MDIOBUS_C22:
->> -		phydev = get_phy_device(bus, addr, false);
->> -		break;
->> -	case MDIOBUS_C45:
->> -		phydev = get_phy_device(bus, addr, true);
->> -		break;
->>  	case MDIOBUS_C22_C45:
->>  		phydev = get_phy_device(bus, addr, false);
->>  		if (IS_ERR(phydev))
->>  			phydev = get_phy_device(bus, addr, true);
->>  		break;
->> +	case MDIOBUS_C45:
->> +		phydev = get_phy_device(bus, addr, true);
->> +		break;
->>  	}
+> +		dev_err(hba->dev,
+> +			"%s: Failed to set the VCC regulator values, continue with 2.7v\n",
+> +			__func__);
 > 
-> I think this is going to cause problems.
-Please note that this patch does not change already existing behaviour, 
-it does
-only extend it with the option to drive C45 peripherals from a bus not 
-being
-capable of C45 framing.
+>   	/* Initialize devfreq after UFS device is detected */
+>   	if (ufshcd_is_clkscaling_supported(hba)) {
+> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+> index 0db796a..8f0945d 100644
+> --- a/drivers/scsi/ufs/ufshcd.h
+> +++ b/drivers/scsi/ufs/ufshcd.h
+> @@ -324,6 +324,7 @@ struct ufs_pwr_mode_info {
+>    * @device_reset: called to issue a reset pulse on the UFS device
+>    * @program_key: program or evict an inline encryption key
+>    * @event_notify: called to notify important events
+> + * @setup_vcc_regulators : update vcc regulator level
+>    */
+>   struct ufs_hba_variant_ops {
+>   	const char *name;
+> @@ -360,6 +361,7 @@ struct ufs_hba_variant_ops {
+>   			       const union ufs_crypto_cfg_entry *cfg, int slot);
+>   	void	(*event_notify)(struct ufs_hba *hba,
+>   				enum ufs_event_type evt, void *data);
+> +	int    (*setup_vcc_regulators)(struct ufs_hba *hba);
+>   };
+> 
+>   /* clock gating state  */
+> @@ -1269,6 +1271,14 @@ static inline void ufshcd_vops_config_scaling_param(struct ufs_hba *hba,
+>   		hba->vops->config_scaling_param(hba, profile, data);
+>   }
+> 
+> +static inline int ufshcd_vops_setup_vcc_regulators(struct ufs_hba *hba)
+> +{
+> +	if (hba->vops && hba->vops->setup_vcc_regulators)
+> +		return hba->vops->setup_vcc_regulators(hba);
+> +
+> +	return 0;
+> +}
+> +
+>   extern struct ufs_pm_lvl_states ufs_pm_lvl_states[];
+> 
+>   /*
+> --
+> 2.7.4
+> 
 
-For this cited change the only thing happening is that if 
-get_phy_device()
-already failed for probing with is_c45==false (C22 devices) it tries to 
-probe
-with is_c45==true (C45 devices) which then either results into actual 
-C45 frame
-transfers or indirect accesses by calling mdiobus_c45_*() functions.
 
-This is a valid approach, since we made sure that even if the MDIO 
-controller does
-not support C45 framing we can go with indirect accesses.
-> 
-> commit 0231b1a074c672f8c00da00a57144072890d816b
-> Author: Kevin Hao <haokexin@gmail.com>
-> Date:   Tue Mar 20 09:44:53 2018 +0800
-> 
->     net: phy: realtek: Use the dummy stubs for MMD register access for 
-> rtl8211b
-> 
->     The Ethernet on mpc8315erdb is broken since commit b6b5e8a69118
->     ("gianfar: Disable EEE autoneg by default"). The reason is that
->     even though the rtl8211b doesn't support the MMD extended registers
->     access, it does return some random values if we trying to access
->     the MMD register via indirect method. This makes it seem that the
->     EEE is supported by this phy device. And the subsequent writing to
->     the MMD registers does cause the phy malfunction. So use the dummy
->     stubs for the MMD register access to fix this issue.
-This is something different, here the issue is that an indirect access 
-does
-not work with a PHY being registered with is_c45==false. This is not 
-related
-to this change.
-> 
-> Indirect access to C45 via C22 is not a guaranteed part of C22. So
-> there are C22 only PHYs which return random junk when you try to use
-> this access method.
-For C22 only PHYs nothing will change. If there is not an indirect 
-access
-to a C22 PHY already, then there will not be one by applying this patch
-either.
-> 
-> I'm also a bit confused why this is actually needed. PHY drivers which
-> make use of C45 use the functions phy_read_mmd(), phy_write_mmd().
-I'm looking on it from the perspective of the MDIO controller. If the
-controller is not capable of C45 framing this doesn't help.
- From only the PHY's capability point of view this is fine, indeed.
-> 
-> int __phy_read_mmd(struct phy_device *phydev, int devad, u32 regnum)
-> {
-> 	int val;
-> 
-> 	if (regnum > (u16)~0 || devad > 32)
-> 		return -EINVAL;
-> 
-> 	if (phydev->drv && phydev->drv->read_mmd) {
-> 		val = phydev->drv->read_mmd(phydev, devad, regnum);
-> 	} else if (phydev->is_c45) {
-> 		val = __mdiobus_c45_read(phydev->mdio.bus, phydev->mdio.addr,
-> 					 devad, regnum);
-> 	} else {
-> 		struct mii_bus *bus = phydev->mdio.bus;
-> 		int phy_addr = phydev->mdio.addr;
-> 
-> 		mmd_phy_indirect(bus, phy_addr, devad, regnum);
-> 
-> 		/* Read the content of the MMD's selected register */
-> 		val = __mdiobus_read(bus, phy_addr, MII_MMD_DATA);
-> 	}
-> 	return val;
-> }
-> 
-> So if the device is a c45 device, C45 transfers are used, otherwise it
-That's the issue I'm addressing, if the device is a C45 device and the 
-MDIO
-controller is not capable of C45 framing, currently, the device won't be 
-probed
-as a C45 device, because mdiobus_c45_read() will fail. Instead with this 
-patch
-mdiobus_c45_read() can check the bus's capabilities and perform indirect 
-accesses
-in case the MDIO controller is not capable of C45 framing, and therefore 
-be able
-to probe C45 PHYs from a MDIO controller not being capable of C45 
-framing.
-> falls back to mmd_phy_indirect(), which is C45 over C22.
-Only if is_c45==false, that's not what I'm addressing. I'm addressing 
-the case that
-is_c45==true, but the MDIO controller does not support C45 framing.
-> 
-> Why does this not work for you?
-As explained inline above.
-> 
->     Andrew
-Kind regards,
-Danilo
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+Linux Foundation Collaborative Project
