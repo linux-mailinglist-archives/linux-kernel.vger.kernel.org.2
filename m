@@ -2,135 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3779C351B3A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:09:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E99351B23
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236132AbhDASG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:06:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22542 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234724AbhDARwT (ORCPT
+        id S237970AbhDASFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:05:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236050AbhDARtT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:52:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617299539;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=J59mviOinQtGL5knvSCm5IlcQ3vnWMamNF8NZHi8YX8=;
-        b=fZfXPLpbm8pCVZs85AGWkDFp7+IKLrVvw2MyQg/3Td62LPZWXIbquRwe0+QEr8ddJHbkcH
-        KNT2N3T+GpLR/jkug3yYVEA8GqT5VCYVGz1SDQYPOSJ0jPUGbrLuaFEyyZ7hM/r3MeN70/
-        IZIRMH9w70Ik/VTwV3sdBmRWAOAncDo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-271-1HT9BmJQP1SZUDCW7XGgkw-1; Thu, 01 Apr 2021 09:49:48 -0400
-X-MC-Unique: 1HT9BmJQP1SZUDCW7XGgkw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4348C1009E29;
-        Thu,  1 Apr 2021 13:49:45 +0000 (UTC)
-Received: from krava (unknown [10.40.193.98])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 3A6B35C237;
-        Thu,  1 Apr 2021 13:49:40 +0000 (UTC)
-Date:   Thu, 1 Apr 2021 15:49:40 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     will@kernel.org, mathieu.poirier@linaro.org, leo.yan@linaro.org,
-        peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        namhyung@kernel.org, irogers@google.com, linuxarm@huawei.com,
-        kjain@linux.ibm.com, kan.liang@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        zhangshaokun@hisilicon.com, pc@us.ibm.com
-Subject: Re: [PATCH v2 2/6] perf test: Handle metric reuse in pmu-events
- parsing test
-Message-ID: <YGXPdEAecos4iPVc@krava>
-References: <1616668398-144648-1-git-send-email-john.garry@huawei.com>
- <1616668398-144648-3-git-send-email-john.garry@huawei.com>
+        Thu, 1 Apr 2021 13:49:19 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45371C08EC72;
+        Thu,  1 Apr 2021 06:50:06 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id v25so1834842oic.5;
+        Thu, 01 Apr 2021 06:50:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=obPyz+e6xbd7We+KsT9T0ixM5UyYHDGjsKl1W8VAD1Q=;
+        b=Y9k5poOP2aOMcOVYyJPVznKH3uA/mv6KRYy9/7o9IOuHXs/S70YSMRN8YaCVA18RgO
+         M8jAKe/MCXxMqG9exZ6lEGmPiiV6euSGm8shFEeCVjLJCw2p+RmoUlb5nmGhcBy0bV9B
+         QtGJSCcv9Q/xtcwLTDXBIipVHZ5KE+5KThBbu5Ybs+9KZzY/kl+OMd1j2wLqOlt35ZNz
+         1JJ3UZhlIOXxHO6PoNW9cd6DB2CfCl147jhLLvxJ4/PG79CkzZo7Yj9uOp5w9Tn7CP+F
+         K1zmyRN1tUN93lXq4VWA+hTTRMr/WHKHTuRpN18nYEeh651fSyTbBcWlbBZQzakHrwxv
+         8uMw==
+X-Gm-Message-State: AOAM533OzpDdy1cg3P5X66oDfyLfpFs7zIBMLBRwFMML7w7WREVy5F6d
+        VEf2FF5QtymYQ9pCgzoBzeoz4+SrESrcvoeEX1M=
+X-Google-Smtp-Source: ABdhPJwyQVp4oAnnyAvoO1xmI2F+tkbmp4RWiyGqaSVTQUrfQWAgb31mo8zgnybKLFuYB5swwjP5Geu1Q8ZqMJofj5k=
+X-Received: by 2002:aca:5fc3:: with SMTP id t186mr5819440oib.69.1617285005595;
+ Thu, 01 Apr 2021 06:50:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1616668398-144648-3-git-send-email-john.garry@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <e0d626837e577e60f226b8bbf354bd8cbb1fe40a.camel@intel.com>
+ <20210331172210.GA1397554@bjorn-Precision-5520> <100f5a45dae14c77b341b7f1c5ea1db0@AcuMS.aculab.com>
+In-Reply-To: <100f5a45dae14c77b341b7f1c5ea1db0@AcuMS.aculab.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 1 Apr 2021 15:49:52 +0200
+Message-ID: <CAJZ5v0jJ2XDYSwqP3AyKuUvuxhwuNwvk3Z=xwtAL3hG5uYGG-Q@mail.gmail.com>
+Subject: Re: [PATCH v2 04/15] ACPI: table: replace __attribute__((packed)) by __packed
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Xiaofei Tan <tanxiaofei@huawei.com>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 06:33:14PM +0800, John Garry wrote:
+On Thu, Apr 1, 2021 at 11:00 AM David Laight <David.Laight@aculab.com> wrote:
+>
+> From: Bjorn Helgaas
+> > Sent: 31 March 2021 18:22
+> >
+> > On Wed, Mar 31, 2021 at 11:55:08PM +0800, Zhang Rui wrote:
+> > > ...
+> >
+> > > From e18c942855e2f51e814d057fff4dd951cd0d0907 Mon Sep 17 00:00:00 2001
+> > > From: Zhang Rui <rui.zhang@intel.com>
+> > > Date: Wed, 31 Mar 2021 20:34:13 +0800
+> > > Subject: [PATCH] ACPI: tables: FPDT: Fix 64bit alignment issue
+> > >
+> > > Some of the 64bit items in FPDT table may be 32bit aligned.
+> > > Using __attribute__((packed)) is not needed in this case, fixing it by
+> > > allowing 32bit alignment for these 64bit items.
+> >
+> > 1) Can you please add a spec reference for this?  I think it's ACPI
+> >    v6.3, sec 5.2.23.5, or something close to that.
+> >
+> > 2) The exact layout in memory is prescribed by the spec.  I think
+> >    that's basically what "packed" accomplishes.  I don't understand
+> >    why using "aligned" would be preferable.  Using "aligned" means
+> >    things can be at different offsets depending on the starting
+> >    address of the structure.  We always want the identical layout, no
+> >    matter what the starting address is.
+>
+> Both 'packed' and 'aligned(4)' remove any structure alignment
+> padding before 64bit items that aren't on an 8 byte boundary.
+> (Because everything else in the structures is naturally aligned.)
+>
+> The difference is significant on cpu that don't support misaligned
+> addresses.
+> Assuming that the structure is always on a 4n byte boundary
+> (which the ACPI spec probably requires) accesses to the 32-bit
+> fields are always ok.
+> It is only 64-bit fields that must be accessed as two 32-bit
+> memory cycles, not all the fields using multiple single byte
+> cycles.
 
-SNIP
-
-> +struct metric {
-> +	struct list_head list;
-> +	struct metric_ref metric_ref;
-> +};
-> +
-> +static int resolve_metric_simple(struct expr_parse_ctx *pctx,
-> +				 struct list_head *compound_list,
-> +				 struct pmu_events_map *map,
-> +				 const char *metric_name)
-> +{
-> +	struct hashmap_entry *cur, *cur_tmp;
-> +	struct metric *metric, *tmp;
-> +	size_t bkt;
-> +	bool all;
-> +	int rc;
-> +
-> +	do {
-> +		all = true;
-> +		hashmap__for_each_entry_safe((&pctx->ids), cur, cur_tmp, bkt) {
-> +			struct metric_ref *ref;
-> +			struct pmu_event *pe;
-> +
-> +			pe = metrcgroup_find_metric(cur->key, map);
-> +			if (!pe)
-> +				continue;
-> +
-> +			if (!strcmp(metric_name, (char *)cur->key)) {
-> +				pr_warning("Recursion detected for metric %s\n", metric_name);
-> +				rc = -1;
-> +				goto out_err;
-> +			}
-> +
-> +			all = false;
-> +
-> +			/* The metric key itself needs to go out.. */
-> +			expr__del_id(pctx, cur->key);
-> +
-> +			metric = malloc(sizeof(*metric));
-> +			if (!metric) {
-> +				rc = -ENOMEM;
-> +				goto out_err;
-> +			}
-> +
-> +			ref = &metric->metric_ref;
-> +			ref->metric_name = pe->metric_name;
-> +			ref->metric_expr = pe->metric_expr;
-> +			list_add_tail(&metric->list, compound_list);
-> +
-> +			rc = expr__find_other(pe->metric_expr, NULL, pctx, 0);
-
-so this might add new items to pctx->ids, I think you need
-to restart the iteration as we do it in __resolve_metric
-otherwise you could miss some new keys
-
-jirka
-
-> +			if (rc)
-> +				goto out_err;
-> +		}
-> +	} while (!all);
-> +
-> +	return 0;
-> +
-> +out_err:
-> +	list_for_each_entry_safe(metric, tmp, compound_list, list)
-> +		free(metric);
-> +
-> +	return rc;
-> +
-> +}
-
-SNIP
-
+So what exactly is wrong with using "packed"?  It is way easier to
+understand for a casual reader of the code.
