@@ -2,97 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B09B9351172
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:07:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C783A351173
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229459AbhDAJHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 05:07:14 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14665 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233496AbhDAJHI (ORCPT
+        id S233662AbhDAJHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 05:07:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232565AbhDAJH3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 05:07:08 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F9y116pjhznXBy;
-        Thu,  1 Apr 2021 17:04:21 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.117) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Thu, 1 Apr 2021
- 17:06:52 +0800
-Subject: Re: [PATCH] brd: fix integer overflow in brd_check_and_reset_par
-To:     lixiaokeng <lixiaokeng@huawei.com>, <axboe@kernel.dk>,
-        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     linfeilong <linfeilong@huawei.com>
-References: <99e9da32-9372-ada2-8197-26602fe242c8@huawei.com>
-From:   Zhiqiang Liu <liuzhiqiang26@huawei.com>
-Message-ID: <ce64c4a2-e90a-97f9-6334-74912dbcb958@huawei.com>
-Date:   Thu, 1 Apr 2021 17:06:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Thu, 1 Apr 2021 05:07:29 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 954C8C0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 02:07:26 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id x21so1115486eds.4
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 02:07:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hqKqZ9iRjRyPN9EH543S80Z7tugSlkFDhD8jKubgWUg=;
+        b=nhcWAEMQZyxjL9hmCvp2KiPL79BTZowgTDPY5mOzLS/XL7saV1FpBP4DR2CHMXRp6d
+         ujvaLn+yiTQZC3jjnX1PVCRFCrClZ55qh2GQbEuqtVnGfU2l0SZBpyjqKCGng1YpGm3D
+         7rj3K4S9f24JRDo5e9CUGMj6A/4FTwBpZwWXcS1oxb44N0uVaoCf2m3XpCEBDY2/xS3c
+         OGw1DhrOe5Zz2szMgvg1lrXJ68NiT9NGeLzCmgUo3zVY0ArKT9S/3dDJYrCSZl4DXbdN
+         Ay67zgPWbZkI+71Iq7/QKzt7wl6ncUyr2h07VKw7vcNVLGTkeyqx7p37wrYJXzg/1Im6
+         dKdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hqKqZ9iRjRyPN9EH543S80Z7tugSlkFDhD8jKubgWUg=;
+        b=D0AqKsxR1VfIXIhibNRiqB37BSv4s0UFtTpmdsPAXW+4yaPxpqlKK0SBPCOdfSt5Cv
+         amkZRi0RMiaLDyx+lq4CndjlyC8VYu9v20aVnplsp3jGzCEy2yjNMHlvHyO0aACv/uM7
+         8YaBL0XRd7wsG0uI5XZrStJGSn9LnrU5lZtw0BDjyIehpJcy7KPRnpqk8Y7+uYF8/F45
+         qNA/e3pQBiF7azhCaikRlpj2MkIJ6+5xf4scTh7rPAYO+liHDKW054k67R7G48E5Rp4/
+         jJGva4bmpXF66nqkAhW7XN9BXQlovQe//+ZXc9vcn8pkSdgFHXtGfr9SS1OrwxwIk1mY
+         kOLQ==
+X-Gm-Message-State: AOAM531/7r25j3N2Xno4fIHogQbgKg+mFvZWpMpkoLpPYsSxnNfQBqYE
+        dV8uiKCOHUFM1mAmfEZAQ9M=
+X-Google-Smtp-Source: ABdhPJzSSeVqMygi6cvv+ZRKLABJ79m178dLdquDaM0/vdzN98AWriWp06vwoafhOmKXu46DmtBT2g==
+X-Received: by 2002:a50:9ea7:: with SMTP id a36mr8846379edf.174.1617268045446;
+        Thu, 01 Apr 2021 02:07:25 -0700 (PDT)
+Received: from agape ([5.171.80.247])
+        by smtp.gmail.com with ESMTPSA id u14sm2444999ejx.60.2021.04.01.02.07.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 02:07:25 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     joe@perches.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Fabio Aiuto <fabioaiuto83@gmail.com>
+Subject: [PATCH v2 0/2] staging: rtl8723bs: replace private macro with print_hex_dump_debug
+Date:   Thu,  1 Apr 2021 11:07:20 +0200
+Message-Id: <cover.1617267827.git.fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <99e9da32-9372-ada2-8197-26602fe242c8@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.176.117]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-friendly ping.
+this patchset replaces RT_PRINT_DATA private macro for dump hex values
+with the kernel helper used for this pourpose.
 
-On 2021/3/25 19:45, lixiaokeng wrote:
-> The max_part may overflow. For example,
->
-> modprobe brd rd_nr=3 rd_size=102400 max_part=1073741824(2^30)
->
-> Expected result
-> NAME             MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
-> ram0               1:0    0   100M  0 disk
-> ram1               1:256  0   100M  0 disk
-> ram2               1:512  0   100M  0 disk
->
-> Actual result
-> NAME             MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
-> ram0             259:0    0   100M  0 disk
-> ram1             259:1    0   100M  0 disk
-> ram2             259:2    0   100M  0 disk
->
-> Fix it.
->
-> Signed-off-by: Lixiaokeng <lixiaokeng@huawei.com>
-> Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
-> ---
->  drivers/block/brd.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/block/brd.c b/drivers/block/brd.c
-> index c43a6ab4b1f3..c91831cd5d2a 100644
-> --- a/drivers/block/brd.c
-> +++ b/drivers/block/brd.c
-> @@ -457,21 +457,19 @@ static void brd_del_one(struct brd_device *brd)
->
->  static inline void brd_check_and_reset_par(void)
->  {
-> -	if (unlikely(!max_part))
-> +	if (unlikely(max_part <= 0))
->  		max_part = 1;
->
->  	/*
->  	 * make sure 'max_part' can be divided exactly by (1U << MINORBITS),
->  	 * otherwise, it is possiable to get same dev_t when adding partitions.
->  	 */
-> -	if ((1U << MINORBITS) % max_part != 0)
-> -		max_part = 1UL << fls(max_part);
-> -
->  	if (max_part > DISK_MAX_PARTS) {
->  		pr_info("brd: max_part can't be larger than %d, reset max_part = %d.\n",
->  			DISK_MAX_PARTS, DISK_MAX_PARTS);
->  		max_part = DISK_MAX_PARTS;
-> -	}
-> +	} else if ((1U << MINORBITS) % max_part != 0)
-> +		max_part = 1UL << fls(max_part);
->  }
->
->  static int __init brd_init(void)
+---------------------------------
+
+Changes in v2:
+	- removed the do-nothing macro declaration as well
+
+Fabio Aiuto (2):
+  staging: rtl8723bs: use print_hex_dump_debug instead of private
+    RT_PRINT_DATA
+  staging: rtl8723bs: remove unused macro RT_PRINT_DATA
+
+ drivers/staging/rtl8723bs/hal/hal_com.c       | 13 ++++-------
+ drivers/staging/rtl8723bs/hal/rtl8723b_cmd.c  | 22 ++++++++++++++-----
+ .../staging/rtl8723bs/hal/rtl8723b_hal_init.c |  3 ++-
+ drivers/staging/rtl8723bs/include/rtw_debug.h | 20 -----------------
+ 4 files changed, 22 insertions(+), 36 deletions(-)
+
+-- 
+2.20.1
 
