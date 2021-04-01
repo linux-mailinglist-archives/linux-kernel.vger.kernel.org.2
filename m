@@ -2,70 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AD97351FD3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78BF7351FD9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235217AbhDAT31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 15:29:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33384 "EHLO mail.kernel.org"
+        id S234822AbhDATad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 15:30:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:48166 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235069AbhDAT26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 15:28:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 45B616113B;
-        Thu,  1 Apr 2021 19:28:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617305337;
-        bh=ntCIykOg/5Ez6AiXNdgtg4xQAkA3l2TdvhgGfI7+DE0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Z/UA54VJOKJoIrJm211yLlAfJR2m7RHvr3YXgHMsmZ/71JPnoKheZZ6Ihxi0qxQLe
-         /VHHZ48Jq3FfR8a1s81dcY8xwamSrcFUVNkWrKuO2J3BnZRWUhOswyy4FNCcetjKEk
-         OygEf/vlsPO71v+6cQfmFZ84dSoXSk/HVJOLK1s0=
-Date:   Thu, 1 Apr 2021 21:28:54 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lukasz.luba@arm.com, rafael@kernel.org
-Subject: Re: [PATCH v6 2/7] powercap/drivers/dtpm: Create a registering system
-Message-ID: <YGYe9p3oyNpMnsBT@kroah.com>
-References: <20210401183654.27214-1-daniel.lezcano@linaro.org>
- <20210401183654.27214-2-daniel.lezcano@linaro.org>
+        id S231550AbhDATaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 15:30:24 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C40F0D6E;
+        Thu,  1 Apr 2021 12:30:24 -0700 (PDT)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 3B1943F719;
+        Thu,  1 Apr 2021 12:30:23 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Rik van Riel <riel@surriel.com>,
+        Lingutla Chandrasekhar <clingutla@codeaurora.org>
+Subject: [PATCH v4 0/3] sched/fair: load-balance vs capacity margins
+Date:   Thu,  1 Apr 2021 20:30:03 +0100
+Message-Id: <20210401193006.3392788-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401183654.27214-2-daniel.lezcano@linaro.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 08:36:49PM +0200, Daniel Lezcano wrote:
-> A SoC can be differently structured depending on the platform and the
-> kernel can not be aware of all the combinations, as well as the
-> specific tweaks for a particular board.
-> 
-> The creation of the hierarchy must be delegated to userspace.
+Hi folks,
 
-Why?  Isn't this what DT is for?
+I split up the extra misfit patches from v3 as I'm still playing around with
+those following Vincent's comments. In the meantime, I believe the first few
+patches of the series can still be considered as standalone.
 
-What "userspace tool" is going to be created to manage all of this?
-Pointers to that codebase?
+o Patch 1 prevents pcpu kworkers from causing group_imbalanced
+o Patch 2 is an independent active balance cleanup
+o Patch 3 introduces yet another margin for capacity to capacity
+  comparisons
 
-> These changes provide a registering mechanism where the different
-> subsystems will initialize their dtpm backends and register with a
-> name the dtpm node in a list.
-> 
-> The next changes will provide an userspace interface to create
-> hierarchically the different nodes. Those will be created by name and
-> found via the list filled by the different subsystem.
-> 
-> If a specified name is not found in the list, it is assumed to be a
-> virtual node which will have children and the default is to allocate
-> such node.
+The "important" one is patch 3, as it solves misfit migration issues on newer
+platforms.
+  
+This is based on top of today's tip/sched/core at:
 
-So userspace sets the name?
+  0a2b65c03e9b ("sched/topology: Remove redundant cpumask_and() in init_overlap_sched_group()")
 
-Why not use the name in the device itself?  I thought I asked that last
-time...
+Testing
+=======
 
-thanks,
+I ran my usual [1] misfit tests on
+o TC2
+o Juno
+o HiKey960
+o Dragonboard845C
+o RB5
 
-greg k-h
+RB5 has a similar topology to Pixel4 and highlights the problem of having
+two different CPU capacity values above 819 (in this case 871 and 1024):
+without these patches, CPU hogs (i.e. misfit tasks) running on the "medium"
+CPUs will never be upmigrated to a "big" via misfit balance.
+
+
+The 0day bot reported [3] the first patch causes a ~14% regression on its
+stress-ng.vm-segv testcase. I ran that testcase on: 
+
+o Ampere eMAG (arm64, 32 cores)
+o 2-socket Xeon E5-2690 (x86, 40 cores)
+
+and found at worse a -0.3% regression and at best a 2% improvement - I'm
+getting nowhere near -14%.
+  
+Revisions
+=========
+
+v3 -> v4
+--------
+o Tore out the extra misfit patches
+
+o Rewrote patch 1 changelog (Dietmar)
+o Reused LBF_ACTIVE_BALANCE to ditch LBF_DST_PINNED active balance logic
+  (Dietmar)
+o Collected Tested-by (Lingutla)  
+
+o Squashed capacity_greater() introduction and use (Vincent)
+o Removed sched_asym_cpucapacity() static key proliferation (Vincent)
+
+v2 -> v3
+--------
+
+o Rebased on top of latest tip/sched/core
+o Added test results vs stress-ng.vm-segv
+
+v1 -> v2
+--------
+
+o Collected Reviewed-by
+o Minor comment and code cleanups
+
+o Consolidated static key vs SD flag explanation (Dietmar)
+
+  Note to Vincent: I didn't measure the impact of adding said static key to
+  load_balance(); I do however believe it is a low hanging fruit. The
+  wrapper keeps things neat and tidy, and is also helpful for documenting
+  the intricacies of the static key status vs the presence of the SD flag
+  in a CPU's sched_domain hierarchy.
+  
+o Removed v1 patch 4 - root_domain.max_cpu_capacity is absolutely not what
+  I had convinced myself it was.
+o Squashed capacity margin usage with removal of
+  group_smaller_{min, max}_capacity() (Vincent)   
+o Replaced v1 patch 7 with Lingutla's can_migrate_task() patch [2]
+o Rewrote task_hot() modification changelog
+
+Links
+=====
+
+[1]: https://lisa-linux-integrated-system-analysis.readthedocs.io/en/master/kernel_tests.html#lisa.tests.scheduler.misfit.StaggeredFinishes
+[2]: http://lore.kernel.org/r/20210217120854.1280-1-clingutla@codeaurora.org
+[3]: http://lore.kernel.org/r/20210223023004.GB25487@xsang-OptiPlex-9020
+
+Cheers,
+Valentin
+
+Lingutla Chandrasekhar (1):
+  sched/fair: Ignore percpu threads for imbalance pulls
+
+Valentin Schneider (2):
+  sched/fair: Clean up active balance nr_balance_failed trickery
+  sched/fair: Introduce a CPU capacity comparison helper
+
+ kernel/sched/fair.c | 68 +++++++++++++++++++--------------------------
+ 1 file changed, 29 insertions(+), 39 deletions(-)
+
+--
+2.25.1
+
