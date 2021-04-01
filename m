@@ -2,109 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1E543519A7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C322351A4D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235180AbhDARzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:55:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234942AbhDARl1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:41:27 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB44AC0319DA;
-        Thu,  1 Apr 2021 10:29:50 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id t23-20020a0568301e37b02901b65ab30024so2807917otr.4;
-        Thu, 01 Apr 2021 10:29:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h/Y0TLuXldSxTdiqZd7pJGoS1WrwZ+szrP8juLbRVoE=;
-        b=hkd7Wgr66M1x3TUeOgNtvPYD41ItceMUGmm+DHR2TWouNeWTt67Cns2aAymq6g1XmO
-         n5V4nJoAEbaoimndwP7DHBygrmjKWwCb4mbPR1UYov3TV7o1naepBdQsZc+dkQYBgMRu
-         58TPsNL9QBkh1DJDdAZYCiPpCizXN1FUwJkSWJlHrFBriMCSEwfB4R3rCF37l1YKpeM5
-         rqkAywyqa1eekp5AphuzGVgc9p9/p9BwRliJX9NQXBiZTu0HdLgp4+hzWSICCYrCmQkK
-         w3+GwpFTOlkk5JD1pEdMP7LlyYrEp457kNnmPwX1wCDt2Xr/5d0jo5WOu8sHxUx3tHyP
-         4P7Q==
-X-Gm-Message-State: AOAM5303bpa38PgLut9l40K6wVo/yiQ02waGCsdaas0px6qgO35shlsP
-        roCFROnmnp7Didz9y/VaOl3p92wp8SSAgeGnqcs=
-X-Google-Smtp-Source: ABdhPJxB+a85xzGa1aBcrm1XeVIq1EGWAh8fIgqpKk8CzFKZH4xWv4cuKYRlQXuKB+REgIX3kbXuq7r8gsu4V4bQt6c=
-X-Received: by 2002:a05:6830:55b:: with SMTP id l27mr7147365otb.260.1617298188698;
- Thu, 01 Apr 2021 10:29:48 -0700 (PDT)
+        id S236126AbhDAR67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:58:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42954 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235598AbhDARnA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:43:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33C56613C1;
+        Thu,  1 Apr 2021 17:33:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617298417;
+        bh=VHhMllu2s4a5nXAlhfYG1ZhOBbqGAbBndSDATjQYUGA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=oEL6bQox1StEQh++WEwoIRz9Gt5Hv7vKcCQ0Yl7vd2JT+RNXHINdxsCAd2sEyVuvm
+         j0H4ouYVyltc7KuIOQlDaUZamJRJzcIrjFXY8rYmAThMbnudQ2aBN2ar15SzzkDGUs
+         1hVHYxl/DV/N7wBYERyG2TfPFG75XW92/Zfsug1qyr24/oj5hioPjsjkNRtCXT3Se7
+         ir7fuHuBJiqEBu7svXl8cN80Sfw1bDKPnQ9RcIqX8QxwwGo7XDXXdQ5lItJn+qFC49
+         XSjlvoD0cFjli4cwkOLlSTaCtQ8EOH8TFBbx85KEWKyBmqxQkKXVC6Rn0Lfwie+cQ2
+         mFp62oPHVoQhQ==
+From:   Will Deacon <will@kernel.org>
+To:     mark.rutland@arm.com, Qi Liu <liuqi115@huawei.com>
+Cc:     catalin.marinas@arm.com, kernel-team@android.com,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH] arm64: perf: Remove redundant initialization in perf_event.c
+Date:   Thu,  1 Apr 2021 18:33:31 +0100
+Message-Id: <161729673248.2265527.16326375852509765963.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <1617275801-1980-1-git-send-email-liuqi115@huawei.com>
+References: <1617275801-1980-1-git-send-email-liuqi115@huawei.com>
 MIME-Version: 1.0
-References: <e0d626837e577e60f226b8bbf354bd8cbb1fe40a.camel@intel.com>
- <20210331172210.GA1397554@bjorn-Precision-5520> <100f5a45dae14c77b341b7f1c5ea1db0@AcuMS.aculab.com>
- <CAJZ5v0jJ2XDYSwqP3AyKuUvuxhwuNwvk3Z=xwtAL3hG5uYGG-Q@mail.gmail.com> <a0ec3dbdffc145ac909089048e552eb6@AcuMS.aculab.com>
-In-Reply-To: <a0ec3dbdffc145ac909089048e552eb6@AcuMS.aculab.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 1 Apr 2021 19:29:37 +0200
-Message-ID: <CAJZ5v0h0XMkrYYyOLd8bDcngxnei7VbAh=cYWA4Sy3qm2b69iQ@mail.gmail.com>
-Subject: Re: [PATCH v2 04/15] ACPI: table: replace __attribute__((packed)) by __packed
-To:     David Laight <David.Laight@aculab.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Xiaofei Tan <tanxiaofei@huawei.com>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 4:23 PM David Laight <David.Laight@aculab.com> wrote:
->
-> From: Rafael J. Wysocki
-> > Sent: 01 April 2021 14:50
-> ...
-> > So what exactly is wrong with using "packed"?  It is way easier to
-> > understand for a casual reader of the code.
->
-> Because it is usually wrong!
->
-> If I have:
->         struct foo {
->                 u64 val;
->         } __packed;
->
-> And then have:
-> u64 bar(struct foo *foo)
-> {
->         return foo->val;
-> }
->
-> The on some cpu the compiler has to generate the equivalent of:
->         u8 *x = (void *)&foo->val;
->         return x[0] | x[1] << 8 | x[2] << 16 | x[3] << 24 | x[4] << 32 | x[5] << 40 | x[6] << 48 | x[7] << 56;
->
-> If you can guarantee that the structure is 32bit aligned
-> then it can generate the simpler:
->         u32 *x = (void *)&foo->val;
->         return x[0] | x[1] << 32;
->
-> (Yes I've missed out the 64-bit casts)
->
-> This is why you should almost never use __packed.
->
-> There are historic structures with 64 bit items on 4 byte boundaries
-> (and 32 bit values on 2 byte boundaries).
-> Typically most of the fields are shorter so can be read directly
-> (although they might need a byte-swapping load).
+On Thu, 1 Apr 2021 19:16:41 +0800, Qi Liu wrote:
+> The initialization of value in function armv8pmu_read_hw_counter()
+> and armv8pmu_read_counter() seem redundant, as they are soon updated.
+> So, We can remove them.
 
-The possible overhead impact is clear to me, but I really don't like
-the "local" typedef idea.
+Applied to will (for-next/perf), thanks!
 
-It at least would need to be accompanied by a comment explaining why
-it is there and why using it is better than using __packed and why
-this needs to be defined locally and not in some generic header file.
+[1/1] arm64: perf: Remove redundant initialization in perf_event.c
+      https://git.kernel.org/will/c/2c2e21e78a94
 
-Also, the FPDT code is just one function that parses the entire table
-and there is no object passing between functions in it etc, so is
-__packed still problematic in there?
+Cheers,
+-- 
+Will
+
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev
