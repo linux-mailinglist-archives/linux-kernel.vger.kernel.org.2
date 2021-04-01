@@ -2,130 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DCB7351A09
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF16D3519FD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234737AbhDAR5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:57:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58342 "EHLO
+        id S234574AbhDAR50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:57:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234900AbhDARmK (ORCPT
+        with ESMTP id S235080AbhDARmM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:42:10 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4F28C0045D9
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 07:25:49 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id o66so1958841ybg.10
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 07:25:49 -0700 (PDT)
+        Thu, 1 Apr 2021 13:42:12 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F9BC0045DB
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 07:27:13 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id ap14so3240057ejc.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 07:27:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        d=soleen.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WH+kAbagll9akxuUHqMFh3rNKMar4o3v6gTYdJcUIiE=;
-        b=1ypL8Wa8sUdG73EO99/NVS2TpkfsaRCNg8yduWkR4ElYHj8J8Veicor1vdONTuA43n
-         OJ2XHHopXV7W098Eo3dJsRU0SXAv2NMUywQSpWHPKw2RDZDGKUe707+8boGVlO8R4hTE
-         OcSGw7v8oQOoyhB+GQcoRumTPvBLcJRAIHWcBlY8JN/AXaFjjGShd+3NBaSJ4/CQ2CmH
-         HJoIl5WCTiDE7TglOXNvw5dmdGLa7oystpeEqIum56FPlPSwTVOkSAi59pE32FHVSc60
-         IZu4xxJOo6ZEXUup1WASLcIybVdw4j8naIvtiX3dmlVW+mrFVeCQCevrRyou8PKwWnYn
-         ynUw==
+         :cc:content-transfer-encoding;
+        bh=gnafp+WfprUSUoacKsjOwRBf+VXemWu2ScVTthleKlo=;
+        b=LR9XnNbOVyRPM9uKaP6OkP5ztLHdsLIUBWS4FM+sG9YdiylPaqUwHU2zcckCIWYAuC
+         pVQELYHpOXc3KbZv6GWHjkCEMK5JUnMCn6c2nyfkEEsEPD4uF26vTxlBcymQ+LwNhwSG
+         q9LPyUi6XNTevS25W7v8FHeNEflOdOKU2WNxKflu8yFGGsqfBvuTS+jgvVYP/Vzjxe4u
+         jNkzw7/KW9GUd/dbUc1vE+v0hN7VS3qIH7wv5H/fh6ISSHjvm4X1oBrzpSmgL5KYEsTj
+         bdY594j9g3m+Gu30WhwxJMnF82UW2g1c0sudNTMYGUqUmsN+pd9jox3SBQm7I//jKSlp
+         Q6Vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WH+kAbagll9akxuUHqMFh3rNKMar4o3v6gTYdJcUIiE=;
-        b=P/rijLlDE91p079uOtOvbKSC9Li5BVW2qPkYNqGcOrR3R8949XfvLexIhLu6LUQO/5
-         7MxPyVhIGTftxFpVdW4siWUT3gLsiTE6dSRDTJmCMCbev0igl5PaVjHdKNRdCYb/tkaD
-         86d0Y5VhmrY3RlI9qNW0cRscv3+/7xKC3n1sSIysOnVsNaXSbys3qP0lOQmRYwCfjyXL
-         4xyULnlLLSeCPEhU3RA84ZlB9zJCOUA+I2QwVGoo2X3Iz/zAbXPp+D26vXLRtcoBK+bs
-         pRksWmEryJIBFwqULvdnGClWaLsgOBcYG5TR5/Y9xriM+VEGQOeqrtfjgGOFTK707hF8
-         udlg==
-X-Gm-Message-State: AOAM530ZiiT9cYcYa2RTzkrXGYY8Vq9kOk+WHu7KUb9pH2iQNQQzducQ
-        C7wDCjam2NhYRUTpFc7xhAkv945fUn4q1e+zMgCcKw==
-X-Google-Smtp-Source: ABdhPJxupg8K9QOvfQqfplXb9385y7HzeRg1j4Fbtc/ryhIPKrlK5XiQrBgMkwdJ6XBrJHjAp/YvxoFroo98g+XW918=
-X-Received: by 2002:a25:c588:: with SMTP id v130mr12117757ybe.312.1617287149038;
- Thu, 01 Apr 2021 07:25:49 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=gnafp+WfprUSUoacKsjOwRBf+VXemWu2ScVTthleKlo=;
+        b=UmN/N6yYyOHbspDxUWWi2Kz8tuUTchjzNnxZtD/wfFi5oyscG0XuwrDFxmJCEZ1Hm5
+         QL1hYZr/J0B3aTvanD0FeC4d9ZdH2ulgXh21W0Wtszg9dPpNcCmt5vqBhRvpyykCreBf
+         YTHmzAmOqPKBXSZH3ks+I0ICd7BL8NET8D97q0jOokkjLEo35RsaPx6Y6HGz4tciysk3
+         WYmVh6DTfst8GzKCawpXvOcNSKoF/xdqBMr11ih4OV5DsrXHXwKLok22D7LVarZwZ7kZ
+         vDJerp/BLe3grBxIOAdtZ0Kco3EOLJTFi5MpO/LBOMr53nU7y11/ZaSlD1nUJEn5qoIt
+         lPww==
+X-Gm-Message-State: AOAM531jP7nMOXN5ZrBfXmcNjYTCj1IyECtwoLzU3ZEBVX9Dde/R114G
+        SqHZhgQVSyluzmWS3RPAmtNbTEEUkbfA6wRvF3Wf0A==
+X-Google-Smtp-Source: ABdhPJxskqrkU+/Bun8iluS9RzTTCb312PP/YzPq0j1Ynfozeu/uQ5PJ0jJtaZQhzko8nZjTMM9sCROJMFZvlGqDETY=
+X-Received: by 2002:a17:906:4ada:: with SMTP id u26mr9365566ejt.129.1617287232520;
+ Thu, 01 Apr 2021 07:27:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210330085655.12615-1-wsa+renesas@sang-engineering.com>
- <20210330085655.12615-2-wsa+renesas@sang-engineering.com> <CACRpkdbABbvxRLGhzmiQ8kTmwHsRqevvmDpfLKv-dUhEHVpF6g@mail.gmail.com>
-In-Reply-To: <CACRpkdbABbvxRLGhzmiQ8kTmwHsRqevvmDpfLKv-dUhEHVpF6g@mail.gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Thu, 1 Apr 2021 16:25:38 +0200
-Message-ID: <CAMpxmJWihGgdThmisvqjpvK6NsORg1+SOE7+wz4HZVkM5Xj77A@mail.gmail.com>
-Subject: Re: [PATCH RFC/RFT 1/1] misc: add simple logic analyzer using polling
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+References: <20210331163816.11517-1-rppt@kernel.org>
+In-Reply-To: <20210331163816.11517-1-rppt@kernel.org>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Thu, 1 Apr 2021 10:26:36 -0400
+Message-ID: <CA+CK2bB7FuPV5z+j+8HS+wHOmNXAANYPLwo64ebV71AWNCjPSw@mail.gmail.com>
+Subject: Re: [PATCH] mm/hugeltb: fix renaming of PF_MEMALLOC_NOCMA to PF_MEMALLOC_PIN
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 3:08 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+On Wed, Mar 31, 2021 at 12:38 PM Mike Rapoport <rppt@kernel.org> wrote:
 >
-> On Tue, Mar 30, 2021 at 10:58 AM Wolfram Sang
-> <wsa+renesas@sang-engineering.com> wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
 >
-> > This is a simple logic analyzer using GPIO polling. It comes with a
-> > script to isolate a CPU for polling. While this is definately not a
-> > production level analyzer, it can be a helpful first view when remote
-> > debugging. Read the documentation for details.
-> >
-> > Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> The renaming of PF_MEMALLOC_NOCMA to PF_MEMALLOC_PIN missed one occurrenc=
+e
+> in mm/hugetlb.c which causes build error:
 >
-> I am a great supporter of this idea.
+>   CC      mm/hugetlb.o
+> mm/hugetlb.c: In function =E2=80=98dequeue_huge_page_node_exact=E2=80=99:
+> mm/hugetlb.c:1081:33: error: =E2=80=98PF_MEMALLOC_NOCMA=E2=80=99 undeclar=
+ed (first use in this function); did you mean =E2=80=98PF_MEMALLOC_NOFS=E2=
+=80=99?
+>   bool pin =3D !!(current->flags & PF_MEMALLOC_NOCMA);
+>                                  ^~~~~~~~~~~~~~~~~
+>                                  PF_MEMALLOC_NOFS
+> mm/hugetlb.c:1081:33: note: each undeclared identifier is reported only o=
+nce for each function it appears in
+> scripts/Makefile.build:273: recipe for target 'mm/hugetlb.o' failed
+> make[2]: *** [mm/hugetlb.o] Error 1
 >
-> When we created gpiod_get_array_value() and friends, the idea
-> was exactly to be able to do things like this. It's a good way to
-> utilize the fact that several GPIO lines can often be read from a single
-> register read.
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> ---
+>  mm/hugetlb.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> > +    i2c-analyzer {
-> > +            compatible = "gpio-logic-analyzer";
-> > +            probe-gpios = <&gpio6 21 GPIO_OPEN_DRAIN>, <&gpio6 4 GPIO_OPEN_DRAIN>;
-> > +            probe-names = "SCL", "SDA";
-> > +    };
-> > +
-> > +The binding documentation is in the ``misc`` folder of the Kernel binding
-> > +documentation.
-> (...)
-> > +++ b/Documentation/devicetree/bindings/misc/gpio-logic-analyzer.yaml
->
-> When other debugging tools for GPIO got DT bindings it was concluded that
-> it is possible to create bindings like this for debugging without even
-> specifying
-> any formal bindings. They are just for debugging after all.
->
-> Personally I like the bindings anyway.
->
-> > diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
->
-> I would consider housing this tool under drivers/gpio actually.
-> We have other funky things like gpio-sim and gpio-aggregator
-> so why not.
->
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index a5236c2f7bb2..c22111f3da20 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1078,7 +1078,7 @@ static void enqueue_huge_page(struct hstate *h, str=
+uct page *page)
+>  static struct page *dequeue_huge_page_node_exact(struct hstate *h, int n=
+id)
+>  {
+>         struct page *page;
+> -       bool pin =3D !!(current->flags & PF_MEMALLOC_NOCMA);
+> +       bool pin =3D !!(current->flags & PF_MEMALLOC_PIN);
 
-We have actually created a sub-menu for "Virtual GPIO drivers".
+Thank you Mike!
 
-> I would create a Kconfig menu with "GPIO hardware hacking tools".
->
-> But Bartosz would need to agree on that idea.
->
+Andrew, since "mm cma: rename PF_MEMALLOC_NOCMA to PF_MEMALLOC_PIN" is
+not yet in the mainline, should I send a new version of this patch so
+we won't have bisecting problems in the future?
 
-It's perfect! If we ever get something like a generic bitbanging
-driver or something, it could go in there too.
-
-Bart
-
-> > +config GPIO_LOGIC_ANALYZER
-> > +       tristate "Simple GPIO logic analyzer"
-> > +       depends on GPIOLIB || COMPILE_TEST
-> > +       help
->
-> depends on EXPERT
->
-> I would say. Definitely not something for the average user.
->
-> Yours,
-> Linus Walleij
+Thank you,
+Pasha
