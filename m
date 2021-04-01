@@ -2,215 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61136351186
+	by mail.lfdr.de (Postfix) with ESMTP id B98A0351187
 	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233773AbhDAJJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 05:09:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233702AbhDAJI6 (ORCPT
+        id S233809AbhDAJJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 05:09:26 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:45280 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233777AbhDAJJV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 05:08:58 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9908AC0613E6;
-        Thu,  1 Apr 2021 02:08:57 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id j7so1062031wrd.1;
-        Thu, 01 Apr 2021 02:08:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=zfLEgiVPM1EK9I/Nt42wOScERsBlthcf9kfWnVgYF2Q=;
-        b=fHOJMypWJhhdilZSqgus776bitjj+6ECd25ljjjUUgd/L3W2gUzr1RaQFXaoNGZ8q/
-         08ohAbHbg28YHIs7dUH+nZRVhUwicJ96HqiSCMrWaFNAcfRpxgosz4BFrxMaU9Ml7WcG
-         PIPLOfMVcHONaoXT9lb8ME2dqqnJVgDjjAn4upV4/KtoDlCYG3kHrmQd/ax24n80hnId
-         dq0V9qXcp38humOfzkzGVDzRvxwTNVpeUaQhOvme9OilkTwP4OahpmQ2bDqgvEANnGGV
-         lZgqSYEeFbHvI7093cMKti9e87KDn/pBSPZP9u6UURbGnCu0MiHZ5B+pwQkUzSCnT4Fo
-         xPCw==
+        Thu, 1 Apr 2021 05:09:21 -0400
+Received: by mail-il1-f198.google.com with SMTP id x7so3396016ilp.12
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 02:09:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=zfLEgiVPM1EK9I/Nt42wOScERsBlthcf9kfWnVgYF2Q=;
-        b=rfVWl0j9EpOikp9H97MQ8dTmMrSZJMMOhOyuRWHYI+v8xGrDGIOztfM3dJ4MaLd/QJ
-         h/om0kGjd6VUdGL96kPFm19z1f4Q5DOQXI6yjHJmdqgfh1S80nQlKpz8P5/99zx4zhuz
-         sk15t2SxWUGKBa30It5HBbTdCAf7rxIw3Z5OFjiQEk7/6Ggqx8Gd+e7/RkDnrhRi5tXL
-         /yicvLKyFwwRKKFKh3aEVrUJmRWfmGeA2HAstCNMnVKFtMJLRkvY0+XQxoVookzJCU1d
-         FJ0v+AEb+KAB/rEKMKeH2AhrQeZil7n3sQ1AuaR/K3AgiBqCSjB55clcSMbkF+C7MawY
-         BA7Q==
-X-Gm-Message-State: AOAM532hPbkcgNjHnKPjVGsqH4nPd3AII7SBq8CjJBv5nKK0Thu5XXv2
-        hvdlWJsrEJO0vzQVeOapSw4=
-X-Google-Smtp-Source: ABdhPJy3wsTTqmFumyzlT5bNJa58quMPVPj3Zo4eKzUSD/gEAxlpRvKnIyhg5WvQqFSWW3otqvDeuw==
-X-Received: by 2002:adf:b1c9:: with SMTP id r9mr8594838wra.51.1617268136402;
-        Thu, 01 Apr 2021 02:08:56 -0700 (PDT)
-Received: from LEGION ([39.46.7.73])
-        by smtp.gmail.com with ESMTPSA id f16sm8880603wrt.21.2021.04.01.02.08.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 02:08:55 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 14:08:50 +0500
-From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
-To:     Namjae Jeon <namjae.jeon@samsung.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steve French <sfrench@samba.org>,
-        Hyunchul Lee <hyc.lee@gmail.com>,
-        "open list:COMMON INTERNET FILE SYSTEM SERVER (CIFSD)" 
-        <linux-cifs@vger.kernel.org>,
-        "open list:COMMON INTERNET FILE SYSTEM SERVER (CIFSD)" 
-        <linux-cifsd-devel@lists.sourceforge.net>,
-        open list <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org, colin.king@canonical.com,
-        dan.carpenter@oracle.com
-Cc:     musamaanjum@gmail.com
-Subject: [PATCH] cifsd: use kfree to free memory allocated by kmalloc or
- kzalloc
-Message-ID: <20210401090850.GA2779473@LEGION>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=lblrzUsrvnZeE7d7MAFI+fm3G5rXT2J0duSM9MznKBw=;
+        b=SAFPHBrFQgmHhlYZw5WJX8opQ4hxYvoO6jWlPgoztslkL0xfE4fv/6xWcNOK2gwOKo
+         5qFBm9m9NyQcN/9xCFDtWrpatIyFA39xQukw8jmL79Klv+dgjCDH/ofXw7OEhrt869B8
+         T1D+3cnnZ7ClEH9hw0Pbt0F4MS4uvYrlJWV9SFhNwRGI2GSkaDUQHnCfbRw/nSeLJy9e
+         r+hHfPp31h7L5armOTEwdbGhRdpVsbD/5EC0mxbDT6VFPbLuzRRIe/PInRmu26qCBF2R
+         8gSlpd0TTsYKG9Wd/uqPrLNkADs5nu/A1dUlqcG7oDDDJ1KlWcOEbZbJZGs+gaTtuj3T
+         d0Ew==
+X-Gm-Message-State: AOAM533HI3jO9CrIiUXn4C5Tq9z10fLTZPs3hilkQvUzHnzec4oT7Kn4
+        ++Qr7cdGJa1Dz7TVwfjXmadZP6/oRafDwsFiLXbCYiMw2+K3
+X-Google-Smtp-Source: ABdhPJw/EU4plDqg66CKGgDBKJkmoL4LqfzDWDi0iro96kig9lQTtCjaeeUiqP4t8r3l1/qm34BsRPkUFXUaCU4lF5s/2x2GTSb7
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-Received: by 2002:a02:971a:: with SMTP id x26mr6848162jai.61.1617268160745;
+ Thu, 01 Apr 2021 02:09:20 -0700 (PDT)
+Date:   Thu, 01 Apr 2021 02:09:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003a565e05bee596f2@google.com>
+Subject: [syzbot] WARNING in mntput_no_expire (2)
+From:   syzbot <syzbot+c88a7030da47945a3cc3@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kfree should be used to free memory allocated by kmalloc or kzalloc to
-avoid any overhead and for maintaining consistency.
+Hello,
 
-Fixes: 5dfeb6d945 ("cifsd: use kmalloc() for small allocations")
-Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+syzbot found the following issue on:
+
+HEAD commit:    d19cc4bf Merge tag 'trace-v5.12-rc5' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1018f281d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d1a3d65a48dbd1bc
+dashboard link: https://syzkaller.appspot.com/bug?extid=c88a7030da47945a3cc3
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12f50d11d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=137694a1d00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c88a7030da47945a3cc3@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 8409 at fs/namespace.c:1186 mntput_no_expire+0xaca/0xcb0 fs/namespace.c:1186
+Modules linked in:
+CPU: 1 PID: 8409 Comm: syz-executor035 Not tainted 5.12.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:mntput_no_expire+0xaca/0xcb0 fs/namespace.c:1186
+Code: ff 48 c7 c2 e0 cb 78 89 be c2 02 00 00 48 c7 c7 a0 cb 78 89 c6 05 e5 6d e5 0b 01 e8 ff e1 f6 06 e9 3f fd ff ff e8 c6 a5 a8 ff <0f> 0b e9 fc fc ff ff e8 ba a5 a8 ff e8 55 dc 94 ff 31 ff 89 c5 89
+RSP: 0018:ffffc9000165fc78 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff920002cbf95 RCX: 0000000000000000
+RDX: ffff88802072d4c0 RSI: ffffffff81cb4b8a RDI: 0000000000000003
+RBP: ffff888011656900 R08: 0000000000000000 R09: ffffffff8fa978af
+R10: ffffffff81cb4884 R11: 0000000000000000 R12: 0000000000000008
+R13: ffffc9000165fcc8 R14: dffffc0000000000 R15: 00000000ffffffff
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055a722053160 CR3: 000000000bc8e000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ mntput fs/namespace.c:1232 [inline]
+ cleanup_mnt+0x523/0x530 fs/namespace.c:1132
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:140
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xbfc/0x2a60 kernel/exit.c:825
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ __do_sys_exit_group kernel/exit.c:933 [inline]
+ __se_sys_exit_group kernel/exit.c:931 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x446af9
+Code: Unable to access opcode bytes at RIP 0x446acf.
+RSP: 002b:00000000005dfe48 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 00000000004ce450 RCX: 0000000000446af9
+RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000001
+RBP: 0000000000000001 R08: ffffffffffffffbc R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004ce450
+R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
+
+
 ---
- fs/cifsd/buffer_pool.c       | 4 ++--
- fs/cifsd/mgmt/share_config.c | 2 +-
- fs/cifsd/mgmt/user_config.c  | 8 ++++----
- fs/cifsd/mgmt/user_session.c | 6 +++---
- fs/cifsd/smb2pdu.c           | 4 ++--
- fs/cifsd/vfs_cache.c         | 2 +-
- 6 files changed, 13 insertions(+), 13 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/fs/cifsd/buffer_pool.c b/fs/cifsd/buffer_pool.c
-index ad2a2c885a2c..a9ef3e703232 100644
---- a/fs/cifsd/buffer_pool.c
-+++ b/fs/cifsd/buffer_pool.c
-@@ -78,7 +78,7 @@ static int register_wm_size_class(size_t sz)
- 	list_for_each_entry(l, &wm_lists, list) {
- 		if (l->sz == sz) {
- 			write_unlock(&wm_lists_lock);
--			kvfree(nl);
-+			kfree(nl);
- 			return 0;
- 		}
- 	}
-@@ -181,7 +181,7 @@ static void wm_list_free(struct wm_list *l)
- 		list_del(&wm->list);
- 		kvfree(wm);
- 	}
--	kvfree(l);
-+	kfree(l);
- }
- 
- static void wm_lists_destroy(void)
-diff --git a/fs/cifsd/mgmt/share_config.c b/fs/cifsd/mgmt/share_config.c
-index db780febd692..e3d459c4dbb2 100644
---- a/fs/cifsd/mgmt/share_config.c
-+++ b/fs/cifsd/mgmt/share_config.c
-@@ -102,7 +102,7 @@ static int parse_veto_list(struct ksmbd_share_config *share,
- 
- 		p->pattern = kstrdup(veto_list, GFP_KERNEL);
- 		if (!p->pattern) {
--			ksmbd_free(p);
-+			kfree(p);
- 			return -ENOMEM;
- 		}
- 
-diff --git a/fs/cifsd/mgmt/user_config.c b/fs/cifsd/mgmt/user_config.c
-index f0c2f8994a6b..c31e2c4d2d6f 100644
---- a/fs/cifsd/mgmt/user_config.c
-+++ b/fs/cifsd/mgmt/user_config.c
-@@ -46,8 +46,8 @@ struct ksmbd_user *ksmbd_alloc_user(struct ksmbd_login_response *resp)
- 
- 	if (!user->name || !user->passkey) {
- 		kfree(user->name);
--		ksmbd_free(user->passkey);
--		ksmbd_free(user);
-+		kfree(user->passkey);
-+		kfree(user);
- 		user = NULL;
- 	}
- 	return user;
-@@ -57,8 +57,8 @@ void ksmbd_free_user(struct ksmbd_user *user)
- {
- 	ksmbd_ipc_logout_request(user->name);
- 	kfree(user->name);
--	ksmbd_free(user->passkey);
--	ksmbd_free(user);
-+	kfree(user->passkey);
-+	kfree(user);
- }
- 
- int ksmbd_anonymous_user(struct ksmbd_user *user)
-diff --git a/fs/cifsd/mgmt/user_session.c b/fs/cifsd/mgmt/user_session.c
-index 5a2113bf18ef..fa2140d4755a 100644
---- a/fs/cifsd/mgmt/user_session.c
-+++ b/fs/cifsd/mgmt/user_session.c
-@@ -53,7 +53,7 @@ static void __session_rpc_close(struct ksmbd_session *sess,
- 
- 	ksmbd_free(resp);
- 	ksmbd_rpc_id_free(entry->id);
--	ksmbd_free(entry);
-+	kfree(entry);
- }
- 
- static void ksmbd_session_rpc_clear_list(struct ksmbd_session *sess)
-@@ -119,7 +119,7 @@ int ksmbd_session_rpc_open(struct ksmbd_session *sess, char *rpc_name)
- 	return entry->id;
- error:
- 	list_del(&entry->list);
--	ksmbd_free(entry);
-+	kfree(entry);
- 	return -EINVAL;
- }
- 
-@@ -174,7 +174,7 @@ void ksmbd_session_destroy(struct ksmbd_session *sess)
- 	ksmbd_release_id(session_ida, sess->id);
- 
- 	ksmbd_ida_free(sess->tree_conn_ida);
--	ksmbd_free(sess);
-+	kfree(sess);
- }
- 
- static struct ksmbd_session *__session_lookup(unsigned long long id)
-diff --git a/fs/cifsd/smb2pdu.c b/fs/cifsd/smb2pdu.c
-index 139041768f65..a4bcf6a85f02 100644
---- a/fs/cifsd/smb2pdu.c
-+++ b/fs/cifsd/smb2pdu.c
-@@ -1611,7 +1611,7 @@ int smb2_sess_setup(struct ksmbd_work *work)
- 
- 			ksmbd_conn_set_good(work);
- 			sess->state = SMB2_SESSION_VALID;
--			ksmbd_free(sess->Preauth_HashValue);
-+			kfree(sess->Preauth_HashValue);
- 			sess->Preauth_HashValue = NULL;
- 		} else if (conn->preferred_auth_mech == KSMBD_AUTH_NTLMSSP) {
- 			rc = generate_preauth_hash(work);
-@@ -1637,7 +1637,7 @@ int smb2_sess_setup(struct ksmbd_work *work)
- 
- 				ksmbd_conn_set_good(work);
- 				sess->state = SMB2_SESSION_VALID;
--				ksmbd_free(sess->Preauth_HashValue);
-+				kfree(sess->Preauth_HashValue);
- 				sess->Preauth_HashValue = NULL;
- 			}
- 		} else {
-diff --git a/fs/cifsd/vfs_cache.c b/fs/cifsd/vfs_cache.c
-index ec631dc6f1fb..f2a863542dc7 100644
---- a/fs/cifsd/vfs_cache.c
-+++ b/fs/cifsd/vfs_cache.c
-@@ -829,6 +829,6 @@ void ksmbd_destroy_file_table(struct ksmbd_file_table *ft)
- 
- 	__close_file_table_ids(ft, NULL, session_fd_check);
- 	idr_destroy(ft->idr);
--	ksmbd_free(ft->idr);
-+	kfree(ft->idr);
- 	ft->idr = NULL;
- }
--- 
-2.25.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
