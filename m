@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57841351333
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 12:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFBD7351339
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 12:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234116AbhDAKRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 06:17:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38896 "EHLO mail.kernel.org"
+        id S234143AbhDAKR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 06:17:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233650AbhDAKRS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 06:17:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 643446108B;
-        Thu,  1 Apr 2021 10:17:17 +0000 (UTC)
+        id S234071AbhDAKR1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 06:17:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FB92610A5;
+        Thu,  1 Apr 2021 10:17:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617272238;
-        bh=P6MNOdaWHxHkb23Ta5r2u+eFDKM+94LggzIXr7z73p8=;
+        s=k20201202; t=1617272247;
+        bh=AmB1o+YWSRbCC5rBIMr9eV2iGuWSsMgF97x7uR85EQo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bB3/q6L8wHVEBuWb4vrWXDawqc5HI321BuQs70r9pD5Pu42UnjT6pkIbR6IWVa/mD
-         vsF8pLjzApOgQsY3A0LV+dpgxaiKjF4kSwNLi47X9Wl5YSypl0yctlKKxpEJJ4ILX4
-         QMLUcTNRE18NB6aHIwa3/L2EJnvwMxtcsAP7vSfh863CF2Yi6Q2q7smLGs7Oc9bYWd
-         seRR/vMn2JsgIWWvJlwmGtXnaWZvMl4/qp4JfyO1qOhv7bVIK2wfRAMz4wzcXr4MF4
-         WHUE7W5JOnOCTtF9DUar7vCERshPb4292dTQ4+OWUcXwH8/0Sm08eydElEzmwv0iOP
-         6I2PQnpXcKrEw==
+        b=Dsoj+rrdJF9ppMxZKT5232A20cdMkd46EL2qtMSxBhdBw9NWPY9s8HSC2sifjxauR
+         uIKBdzztLdpFG40jz41n1xUoG0ZbwZbvMNlsijP8/fNio48c5LmHsQD9XLY+n7vSFZ
+         GNiJ8+xRnv8w9Gd6Mxd8l1yQn0eis1u+PqaIUu741DnJEXGqA0srKOH6qGFCgj+PZC
+         v/Jvv1moItfAPqWrPtvu/5C8nT33LdW3EtBXw5Wgl2A1tUoqilwlK4PmLs+0hVFY/+
+         OVO6909QoTdw+wIj8HbfBqZP4gXiOoLlicHo4OfpSF+I+t9tR36COiAqhj6iuh+UjB
+         /W+Fp/Gg0J/gg==
 From:   Mark Brown <broonie@kernel.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        cezary.rojewski@intel.com, perex@perex.cz,
-        pierre-louis.bossart@linux.intel.com, tiwai@suse.com,
-        liam.r.girdwood@linux.intel.com, linux-kernel@vger.kernel.org,
-        yang.jie@linux.intel.com, gustavoars@kernel.org,
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
         alsa-devel@alsa-project.org
-Cc:     Mark Brown <broonie@kernel.org>, rdunlap@infradead.org
-Subject: Re: [PATCH] ASoC: Intel: Fix a typo
-Date:   Thu,  1 Apr 2021 11:16:24 +0100
-Message-Id: <161726938995.2219.9727885151861979594.b4-ty@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>, tiwai@suse.de,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/2] ASoC: remove cppchecks warnings on lm49453 and da732x
+Date:   Thu,  1 Apr 2021 11:16:27 +0100
+Message-Id: <161726938995.2219.309801757681001460.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210322210105.1575758-1-unixbhaskar@gmail.com>
-References: <20210322210105.1575758-1-unixbhaskar@gmail.com>
+In-Reply-To: <20210326221619.949961-1-pierre-louis.bossart@linux.intel.com>
+References: <20210326221619.949961-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -44,8 +41,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Mar 2021 02:31:05 +0530, Bhaskar Chowdhury wrote:
-> s/defintions/definitions/
+On Fri, 26 Mar 2021 17:16:17 -0500, Pierre-Louis Bossart wrote:
+> There are the last two patches in the cleanups, this time I am not
+> sure what the code does and what the proper fix might be. Feedback
+> welcome.
+> 
+> Pierre-Louis Bossart (2):
+>   ASoC: lm49453: fix useless assignment before return
+>   ASoC: da732x: simplify code
+> 
+> [...]
 
 Applied to
 
@@ -53,8 +58,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: Fix a typo
-      commit: bb0f78e59777d55e0065d16d070b5d43ae80b769
+[1/2] ASoC: lm49453: fix useless assignment before return
+      commit: 458c23c509f66c5950da7e5496ea952ad15128f7
+[2/2] ASoC: da732x: simplify code
+      commit: 945b0b58c5d7c6640f9aad2096e4675bc7f5371c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
