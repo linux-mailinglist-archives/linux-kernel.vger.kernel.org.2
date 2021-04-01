@@ -2,238 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF1A351DA8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1002351C5F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240668AbhDASbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:31:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236127AbhDASIl (ORCPT
+        id S239777AbhDASQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:16:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31037 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235145AbhDAR7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:08:41 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56612C05BD40
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 05:51:48 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id k3so1671453ybh.4
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 05:51:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M1VB1ralBR7+e/H7JqA/6mMiYo3JOylCfFNbfyvT27M=;
-        b=C8Z1fGmD0ugXE9aGQpDEEcbJPwy2biu89w6Y8hjTLRV+uZ6Y+fa5ayeevztvzJk+dU
-         PX2Rwh+sIiRbjGzRPRKXUXZk7IfGSsgtMCvqlVkz2WF9P4XXjC9JtmvDJGd8cQp5iUEW
-         7h6YWHc3ZAchF/U59kTlgfc/r1dtfTFNnoFrMgOKzlAVOcb3zHPu9VtojLYbJwtLFk/6
-         +oKvoicUnGd7b8+54QGsxVhMEFiJZjn8JHAoY4jACV/jFQTp8R152wz4eg52V/LGZfJp
-         JojHcn5GNEp6DijbKwabno/N5j2/fkHlrKTeccFq0wC3lrmyC7nKB0xUN6+/ttzTnaXt
-         bEpA==
+        Thu, 1 Apr 2021 13:59:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617299944;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tB6J9Bg1LN9e67joE8P6cb1rpRW9jAPXApYd6V/ir4w=;
+        b=GuDYPC1tV8ktqtro6F5yuj/4PtBghHsnacrjWzZ5dKuH+TuPcI38+yne+e4vL3e9GsK8Qa
+        1C38XM6CD/6FFe3cBKMA+ZK6y8/9cIbvgs6Jwjx7wlk5+6pikzQQf4JYsMFisqc27TImPY
+        JVu/4SoactJBd+lJYoe5Y29CX1H1cPg=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-463-PZQIPihUMiuJutlqr5HqfA-1; Thu, 01 Apr 2021 08:51:49 -0400
+X-MC-Unique: PZQIPihUMiuJutlqr5HqfA-1
+Received: by mail-ed1-f72.google.com with SMTP id bm8so2788257edb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 05:51:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M1VB1ralBR7+e/H7JqA/6mMiYo3JOylCfFNbfyvT27M=;
-        b=WRVfvKC+vRP7VcyySe5q6ykmkEirBs+BT/C+IVPvCgyGU8T5uVwA8mpjnVC5ly9QdS
-         c8mFBI6VZlZRDWYoMByRm5xdnKRPndrDqShuVqTRYbQ3RPHr1MEH9CGXtpeG01kKUdPe
-         NaoTPvRYH/5uxXjDQJSoGJJMMi+smi6ECEkN1lL49dD3hD0Q4QShuGp77IrQNKcj/h6q
-         r05T7UCn4bEwCy/TKKAWP5z0j1VIV23lJWgkuQsdkw5HAVXPH45NUoM4PGC/wtI5dJM6
-         F+BjCDhT3ra8/l4P7Hck3pEEhzEmw3TljVdfeQa9qhwNW76xcggCtTzos34pNqhmUYlO
-         t0lg==
-X-Gm-Message-State: AOAM530jGqB20DKc0WVOIEjwM9Nl6qbz3AYyoEatRs+cOoHJiesviS+5
-        xlrHlowBeYaNaZ2VCaMQbTjOf55tR57J235VeFk/xA==
-X-Google-Smtp-Source: ABdhPJzvynb+mFT6Mi7hEx6IXLxnNBonNu1ObAo/1/4cv6eeRaXfFt+HU09XZQgNU5/AQabX6bp6nFyK8dybNvj64T8=
-X-Received: by 2002:a25:d2d3:: with SMTP id j202mr11341988ybg.157.1617281507590;
- Thu, 01 Apr 2021 05:51:47 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tB6J9Bg1LN9e67joE8P6cb1rpRW9jAPXApYd6V/ir4w=;
+        b=cS8dyicNt3f7WWW4aBW44VClAv/dtSbVoetjtNY5JRYClJra9+cLUwwph/WS+8zoyQ
+         joPlkxqwHgtya8RtLjtDCOK0MQLd7ASf0hAoneWs6lPDjbOZIsVcY1jDmghB4d57Nv7+
+         /JXdvdwOz4d40LWPgHsMCno8jOPcBb5otWQWtcE1iAMdSHH1c7ahM8D87K/QkM19Q8VE
+         FDmZxMqSThQ/200wLELFBS2+B7Kjz6U+esuvSElGM9T8SJx9imsX/HXnUkRqhCvnOK6v
+         de8eiSyOpAL489Gu5BdkYp2OSyh9TmT4PZxIs9uU3ATv97DV6c39w1BL3oF9BccPORXB
+         JbZA==
+X-Gm-Message-State: AOAM533QMNOja2Yl7I4KkRhr2YMHzUDVKmWxVSedZ5Ln86+VH7N+S+42
+        K0IqHo1ctKnIw+F33bD7cukwRCEQrCyx+pE4ja8P43IeNcar0NKzH4xMif7iycgZSF7yqpPzMcW
+        Iu8eW7Bz4xVWtER05BNLVFM+1
+X-Received: by 2002:aa7:d0cb:: with SMTP id u11mr9657126edo.163.1617281508223;
+        Thu, 01 Apr 2021 05:51:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwA4lfxUdSNn8+YAmnFxFvTxFUkkH/Qk5o21qSu282vEIncASsgENhDCq+hzeuiR8OkfduwnQ==
+X-Received: by 2002:aa7:d0cb:: with SMTP id u11mr9657113edo.163.1617281508086;
+        Thu, 01 Apr 2021 05:51:48 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id y2sm2697878ejf.30.2021.04.01.05.51.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Apr 2021 05:51:47 -0700 (PDT)
+Subject: Re: [PATCH v2 0/2] KVM: x86: nSVM: fixes for SYSENTER emulation
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <20210401111928.996871-1-mlevitsk@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <6acb7872-37ed-0b24-65a1-ddaa17bae6ef@redhat.com>
+Date:   Thu, 1 Apr 2021 14:51:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <cover.1615038553.git.syednwaris@gmail.com> <4c259d34b5943bf384fd3cb0d98eccf798a34f0f.1615038553.git.syednwaris@gmail.com>
- <36db7be3-73b6-c822-02e8-13e3864b0463@xilinx.com> <CAMpxmJUv0iU0Ntmks1f6ThDAG6x_eJLYYCaDSjy+1Syedzc5dQ@mail.gmail.com>
- <DM6PR02MB53863852A28F782B0942ECD8AF7C9@DM6PR02MB5386.namprd02.prod.outlook.com>
- <CACG_h5q6P5NiNByttQ-NZvq8x3GCTKfSU=Yyywk7PcO6_=i2Mw@mail.gmail.com>
-In-Reply-To: <CACG_h5q6P5NiNByttQ-NZvq8x3GCTKfSU=Yyywk7PcO6_=i2Mw@mail.gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Thu, 1 Apr 2021 14:51:36 +0200
-Message-ID: <CAMpxmJUO48Aor0zSofOPJgtKJPL-DKe01a=FOd-Aqz-OHYeZOg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] gpio: xilinx: Utilize generic bitmap_get_value and _set_value
-To:     Syed Nayyar Waris <syednwaris@gmail.com>
-Cc:     Michal Simek <michals@xilinx.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Robert Richter <rrichter@marvell.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amit.kucheria@verdurent.com>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        linux-pm <linux-pm@vger.kernel.org>,
-        Srinivas Goud <sgoud@xilinx.com>,
-        Srinivas Neeli <sneeli@xilinx.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210401111928.996871-1-mlevitsk@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 1:16 PM Syed Nayyar Waris <syednwaris@gmail.com> wrote:
->
-> On Wed, Mar 31, 2021 at 8:56 PM Srinivas Neeli <sneeli@xilinx.com> wrote:
-> >
-> > Hi,
-> >
-> > > -----Original Message-----
-> > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > > Sent: Friday, March 26, 2021 10:58 PM
-> > > To: Michal Simek <michals@xilinx.com>
-> > > Cc: Syed Nayyar Waris <syednwaris@gmail.com>; Srinivas Neeli
-> > > <sneeli@xilinx.com>; Andy Shevchenko
-> > > <andriy.shevchenko@linux.intel.com>; William Breathitt Gray
-> > > <vilhelm.gray@gmail.com>; Arnd Bergmann <arnd@arndb.de>; Robert
-> > > Richter <rrichter@marvell.com>; Linus Walleij <linus.walleij@linaro.org>;
-> > > Masahiro Yamada <yamada.masahiro@socionext.com>; Andrew Morton
-> > > <akpm@linux-foundation.org>; Zhang Rui <rui.zhang@intel.com>; Daniel
-> > > Lezcano <daniel.lezcano@linaro.org>; Amit Kucheria
-> > > <amit.kucheria@verdurent.com>; Linux-Arch <linux-arch@vger.kernel.org>;
-> > > linux-gpio <linux-gpio@vger.kernel.org>; LKML <linux-
-> > > kernel@vger.kernel.org>; arm-soc <linux-arm-kernel@lists.infradead.org>;
-> > > linux-pm <linux-pm@vger.kernel.org>; Srinivas Goud <sgoud@xilinx.com>
-> > > Subject: Re: [PATCH v3 3/3] gpio: xilinx: Utilize generic bitmap_get_value and
-> > > _set_value
-> > >
-> > > On Mon, Mar 8, 2021 at 8:13 AM Michal Simek <michal.simek@xilinx.com>
-> > > wrote:
-> > > >
-> > > >
-> > > >
-> > > > On 3/6/21 3:06 PM, Syed Nayyar Waris wrote:
-> > > > > This patch reimplements the xgpio_set_multiple() function in
-> > > > > drivers/gpio/gpio-xilinx.c to use the new generic functions:
-> > > > > bitmap_get_value() and bitmap_set_value(). The code is now simpler
-> > > > > to read and understand. Moreover, instead of looping for each bit in
-> > > > > xgpio_set_multiple() function, now we can check each channel at a
-> > > > > time and save cycles.
-> > > > >
-> > > > > Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > > > > Cc: Michal Simek <michal.simek@xilinx.com>
-> > > > > Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
-> > > > > Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> > > > > ---
-> > > > >  drivers/gpio/gpio-xilinx.c | 63
-> > > > > +++++++++++++++++++-------------------
-> > > > >  1 file changed, 32 insertions(+), 31 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/gpio/gpio-xilinx.c b/drivers/gpio/gpio-xilinx.c
-> > > > > index be539381fd82..8445e69cf37b 100644
-> > > > > --- a/drivers/gpio/gpio-xilinx.c
-> > > > > +++ b/drivers/gpio/gpio-xilinx.c
-> > > > > @@ -15,6 +15,7 @@
-> > > > >  #include <linux/of_device.h>
-> > > > >  #include <linux/of_platform.h>
-> > > > >  #include <linux/slab.h>
-> > > > > +#include "gpiolib.h"
-> > > > >
-> > > > >  /* Register Offset Definitions */
-> > > > >  #define XGPIO_DATA_OFFSET   (0x0)    /* Data register  */
-> > > > > @@ -141,37 +142,37 @@ static void xgpio_set_multiple(struct
-> > > > > gpio_chip *gc, unsigned long *mask,  {
-> > > > >       unsigned long flags;
-> > > > >       struct xgpio_instance *chip = gpiochip_get_data(gc);
-> > > > > -     int index = xgpio_index(chip, 0);
-> > > > > -     int offset, i;
-> > > > > -
-> > > > > -     spin_lock_irqsave(&chip->gpio_lock[index], flags);
-> > > > > -
-> > > > > -     /* Write to GPIO signals */
-> > > > > -     for (i = 0; i < gc->ngpio; i++) {
-> > > > > -             if (*mask == 0)
-> > > > > -                     break;
-> > > > > -             /* Once finished with an index write it out to the register */
-> > > > > -             if (index !=  xgpio_index(chip, i)) {
-> > > > > -                     xgpio_writereg(chip->regs + XGPIO_DATA_OFFSET +
-> > > > > -                                    index * XGPIO_CHANNEL_OFFSET,
-> > > > > -                                    chip->gpio_state[index]);
-> > > > > -                     spin_unlock_irqrestore(&chip->gpio_lock[index], flags);
-> > > > > -                     index =  xgpio_index(chip, i);
-> > > > > -                     spin_lock_irqsave(&chip->gpio_lock[index], flags);
-> > > > > -             }
-> > > > > -             if (__test_and_clear_bit(i, mask)) {
-> > > > > -                     offset =  xgpio_offset(chip, i);
-> > > > > -                     if (test_bit(i, bits))
-> > > > > -                             chip->gpio_state[index] |= BIT(offset);
-> > > > > -                     else
-> > > > > -                             chip->gpio_state[index] &= ~BIT(offset);
-> > > > > -             }
-> > > > > -     }
-> > > > > -
-> > > > > -     xgpio_writereg(chip->regs + XGPIO_DATA_OFFSET +
-> > > > > -                    index * XGPIO_CHANNEL_OFFSET, chip->gpio_state[index]);
-> > > > > -
-> > > > > -     spin_unlock_irqrestore(&chip->gpio_lock[index], flags);
-> > > > > +     u32 *const state = chip->gpio_state;
-> > > > > +     unsigned int *const width = chip->gpio_width;
-> > > > > +
-> > > > > +     DECLARE_BITMAP(old, 64);
-> > > > > +     DECLARE_BITMAP(new, 64);
-> > > > > +     DECLARE_BITMAP(changed, 64);
-> > > > > +
-> > > > > +     spin_lock_irqsave(&chip->gpio_lock[0], flags);
-> > > > > +     spin_lock(&chip->gpio_lock[1]);
-> > > > > +
-> > > > > +     bitmap_set_value(old, 64, state[0], width[0], 0);
-> > > > > +     bitmap_set_value(old, 64, state[1], width[1], width[0]);
-> > > > > +     bitmap_replace(new, old, bits, mask, gc->ngpio);
-> > > > > +
-> > > > > +     bitmap_set_value(old, 64, state[0], 32, 0);
-> > > > > +     bitmap_set_value(old, 64, state[1], 32, 32);
-> > > > > +     state[0] = bitmap_get_value(new, 0, width[0]);
-> > > > > +     state[1] = bitmap_get_value(new, width[0], width[1]);
-> > > > > +     bitmap_set_value(new, 64, state[0], 32, 0);
-> > > > > +     bitmap_set_value(new, 64, state[1], 32, 32);
-> > > > > +     bitmap_xor(changed, old, new, 64);
-> > > > > +
-> > > > > +     if (((u32 *)changed)[0])
-> > > > > +             xgpio_writereg(chip->regs + XGPIO_DATA_OFFSET,
-> > > > > +                             state[0]);
-> > > > > +     if (((u32 *)changed)[1])
-> > > > > +             xgpio_writereg(chip->regs + XGPIO_DATA_OFFSET +
-> > > > > +                             XGPIO_CHANNEL_OFFSET, state[1]);
-> > > > > +
-> > > > > +     spin_unlock(&chip->gpio_lock[1]);
-> > > > > +     spin_unlock_irqrestore(&chip->gpio_lock[0], flags);
-> > > > >  }
-> > > > >
-> > > > >  /**
-> > > > >
-> > > >
-> > > > Srinivas N: Can you please test this code?
-> > > >
-> > > > Thanks,
-> > > > Michal
-> > >
-> > > Hey, any chance of getting that Tested-by?
-> > I tested patches with few modifications in code (spin_lock handling and merge conflict).
-> > functionality wise it's working fine.
-> >
-> > >
-> > > Bart
->
-> Hi Bartosz,
->
-> May I please know the URL of the tree that you are using. I had been
-> using the tree below for submitting this patchset on GPIO to you.
-> https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-gpio.git
->
-> I think I am using the wrong tree. On which tree should I base my
-> patches on for my next  (v4) submission? Should I use the tree below?
-> :
-> https://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git
->
-> Regards
-> Syed Nayyar Waris
+On 01/04/21 13:19, Maxim Levitsky wrote:
+> This is a result of a deep rabbit hole dive in regard to why
+> currently the nested migration of 32 bit guests
+> is totally broken on AMD.
+> 
+> It turns out that due to slight differences between the original AMD64
+> implementation and the Intel's remake, SYSENTER instruction behaves a
+> bit differently on Intel, and to support migration from Intel to AMD we
+> try to emulate those differences away.
+> 
+> Sadly that collides with virtual vmload/vmsave feature that is used in nesting.
+> The problem was that when it is enabled,
+> on migration (and otherwise when userspace reads MSR_IA32_SYSENTER_{EIP|ESP},
+> wrong value were returned, which leads to #DF in the
+> nested guest when the wrong value is loaded back.
+> 
+> The patch I prepared carefully fixes this, by mostly disabling that
+> SYSCALL emulation when we don't spoof the Intel's vendor ID, and if we do,
+> and yet somehow SVM is enabled (this is a very rare edge case), then
+> virtual vmload/save is force disabled.
+> 
+> V2: incorporated review feedback from Paulo.
+> 
+> Best regards,
+>          Maxim Levitsky
+> 
+> Maxim Levitsky (2):
+>    KVM: x86: add guest_cpuid_is_intel
+>    KVM: nSVM: improve SYSENTER emulation on AMD
+> 
+>   arch/x86/kvm/cpuid.h   |  8 ++++
+>   arch/x86/kvm/svm/svm.c | 99 +++++++++++++++++++++++++++---------------
+>   arch/x86/kvm/svm/svm.h |  6 +--
+>   3 files changed, 76 insertions(+), 37 deletions(-)
+> 
 
-Yes this is the one. Please address new issues raised by reviewers.
+Queued, thanks.
 
-Bart
+Paolo
+
