@@ -2,105 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6D86351E67
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C8BA351D9D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239950AbhDASlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:41:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36948 "EHLO
+        id S240418AbhDASad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239552AbhDASQh (ORCPT
+        with ESMTP id S235761AbhDASHj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:16:37 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19782C08EC70
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 06:48:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ub+Ha4nXTmBsloPL+8igKYF5FjjF7AK2h2f/8UZReEc=; b=emBewg5mlmkm2K8JaUjKohgsd0
-        ByQKXNJzKisWdEIUgXpm6Ptab7VhviEW1Gypp+AWr6I33s3YIzZU6WblR8lUhPxLqDjtCobeaFlhC
-        5sehXNmgMFxSiiOg4+bxGlmop4f6IVqOrpQyNtf3eZsTaYP0SqyXJiT+m6s/ZuiP2MNayq+4PjQOU
-        Z9u6xK+m0xeAzNKtsc6zQSMmEIy0GgJUaPLz1pw2zspY68nvt8TjbUN5yaWLlTKNfRQpNaqnC51r3
-        tp6dqHPPy3iclgaU/plitAC3QLFvSdovzxsazwn7T2ZmrY9794bPd7Vo0oUnRhY+jWEmaxHMIqj57
-        KvodG4pg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lRxeo-006C8Z-VJ; Thu, 01 Apr 2021 13:46:50 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0043E303DA3;
-        Thu,  1 Apr 2021 15:46:44 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D4261235FA3BF; Thu,  1 Apr 2021 15:46:44 +0200 (CEST)
-Date:   Thu, 1 Apr 2021 15:46:44 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Don <joshdon@google.com>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, torvalds@linux-foundation.org,
-        fweisbec@gmail.com, Kees Cook <keescook@chromium.org>,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        Steven Rostedt <rostedt@goodmis.org>, benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        "Hyser,Chris" <chris.hyser@oracle.com>,
-        Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>, dhiatt@digitalocean.com
-Subject: Re: [PATCH resend 2/8] sched: core scheduling tagging infrastructure
-Message-ID: <YGXOxIZezDHYvmNK@hirez.programming.kicks-ass.net>
-References: <20210324214020.34142-1-joel@joelfernandes.org>
- <20210324214020.34142-3-joel@joelfernandes.org>
- <20210327000943.GQ4746@worktop.programming.kicks-ass.net>
- <CABk29NthG_W_GyBknf1rZ35xbkppdPwosR+6ka=kCs70teoEqA@mail.gmail.com>
- <YGGkDHWQkYLyrVJW@hirez.programming.kicks-ass.net>
- <CABk29NuHgtZdMb8usEk+ZELe8PaVejpJuhuR4DHaN-VmjJ=7eQ@mail.gmail.com>
- <YGQgng4Gbv7197hQ@hirez.programming.kicks-ass.net>
+        Thu, 1 Apr 2021 14:07:39 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF287C08EC69;
+        Thu,  1 Apr 2021 06:47:01 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id ap14so3039447ejc.0;
+        Thu, 01 Apr 2021 06:47:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3WPXZ6bW7Bs1p7bDkovKQl43bZaz87E8jPpqS1X/MJI=;
+        b=F+OxziOWjavOhpAc988WR3NNo+E5uyB3UQDS2bEc2oWenqWTNFBu0zROyMnjrMBz2Q
+         rMZPWE2AQcYJQ2I4vE0QGanzr48vWkUbAOSAh4kXF6eiNDY8QaWK4xj5HS3WqUYNZJhS
+         WoSJR8C+CSj3DDeuSbhWDpcOCtCgurBxsok9B66B5f6+k2Vo7eSHS+7+t62+tjQM/jtI
+         Sbe2eLoO4O8ZpIn7S1tPvH/o3sMxy1/tt8h6NMNckHG3Pi8ATGSykn/FC3bdk8QNMMrJ
+         7HxfjdgmUSgnOKidbvuEFWS/fk+/zYBAytHCK4V5cm1ZxAXdDwltH3ObeYFuYOu8mSuH
+         FpFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3WPXZ6bW7Bs1p7bDkovKQl43bZaz87E8jPpqS1X/MJI=;
+        b=LJrWJPue/O9MF5Yn0gZIXLdVLEDY5zGGcosELxkuLN+o5JkfIPs8WbTRSOFsusdc+i
+         WYDtuU26/22eKQaEs6InlEQFJatxbNxw9L2XmnXmIxEaGQr8Du2TZUxvvZkGMjo86HRo
+         MsaT5YxW/t6/PsoKwGRtiLa5Z5okh+If7O/0dZ4zhYNAdh0ZrhnR1qf/Km/9JL8/60u7
+         Rezb8Q10S7utuQBBEW9OPMnzAcswEOnTcvdtc97AbCcx3/owiVY6Y/jG7SBuX+QPvgap
+         yyfsRcO9Qw7+i0JGJd1fR0tKGQVBAm7Zrt0ZsI2KRo3GVwbepBInXf4da7a9ssKJ1XHQ
+         CNLA==
+X-Gm-Message-State: AOAM532E9IpsYOpbG+zOf1cAjuA0IsbR0sQsSI4nWGTM2sCvo62UFyJA
+        oCCCrqkT+lFq510HkZymve2r7DcQbmU=
+X-Google-Smtp-Source: ABdhPJy5KiR8yy7W4DRkIWo1/AoTaKfrfOOMF+GC1Mu8X3J4hzgXoVfKsqowrqrNqbeVCag84XYpkA==
+X-Received: by 2002:a17:906:3388:: with SMTP id v8mr9298092eja.278.1617284820361;
+        Thu, 01 Apr 2021 06:47:00 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id l12sm3441740edb.39.2021.04.01.06.46.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 06:46:58 -0700 (PDT)
+Date:   Thu, 1 Apr 2021 15:47:26 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-pwm@vger.kernel.org,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 4/7] pwm: pca9685: Support staggered output ON times
+Message-ID: <YGXO7oKWPjYYrVFy@orome.fritz.box>
+References: <20210329125707.182732-1-clemens.gruber@pqgruber.com>
+ <20210329125707.182732-4-clemens.gruber@pqgruber.com>
+ <20210329170357.par7c3izvtmtovlj@pengutronix.de>
+ <YGILdjZBCc2vVlRd@workstation.tuxnet>
+ <20210329180206.rejl32uajslpvbgi@pengutronix.de>
+ <YGRqZsi4WApZcwIT@workstation.tuxnet>
+ <YGShjDE8R31LwAbi@orome.fritz.box>
+ <YGV7VJ72nWDIjNbu@workstation.tuxnet>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="yAS+JO9jOlPONqYz"
 Content-Disposition: inline
-In-Reply-To: <YGQgng4Gbv7197hQ@hirez.programming.kicks-ass.net>
+In-Reply-To: <YGV7VJ72nWDIjNbu@workstation.tuxnet>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 09:11:27AM +0200, Peter Zijlstra wrote:
-> On Tue, Mar 30, 2021 at 02:29:06PM -0700, Josh Don wrote:
-> > On Mon, Mar 29, 2021 at 2:55 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> > >
-> > > OK, fixed the fails. My tired head made it unconditionally return the
-> > > cookie-id of 'current' instead of task. Pushed out an update.
-> > 
-> > I see you have the per-task and prctl stuff pulled into your tree. I
-> > can rebase the compound cookie and cgroup api patches on top if you'd
-> > like; not sure if you've already re-ordered it locally. Any other
-> > comments on the former?
-> 
-> Hold off on that for a little while; i've been grubbing through the
-> cgroup code as well, just haven't had anything that actually works yet.
-> I'll hopefully have something soon (I really want to quickly forget all
-> the cgroup details again).
 
-With a significantly trimmed Cc list:
+--yAS+JO9jOlPONqYz
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-https://lkml.kernel.org/r/20210401131012.395311786@infradead.org
+On Thu, Apr 01, 2021 at 09:50:44AM +0200, Clemens Gruber wrote:
+> Hi Thierry,
+>=20
+> On Wed, Mar 31, 2021 at 06:21:32PM +0200, Thierry Reding wrote:
+> > On Wed, Mar 31, 2021 at 02:26:14PM +0200, Clemens Gruber wrote:
+> > > On Mon, Mar 29, 2021 at 08:02:06PM +0200, Uwe Kleine-K=C3=B6nig wrote:
+> > > > On Mon, Mar 29, 2021 at 07:16:38PM +0200, Clemens Gruber wrote:
+> > > > > On Mon, Mar 29, 2021 at 07:03:57PM +0200, Uwe Kleine-K=C3=B6nig w=
+rote:
+> > > > > > On Mon, Mar 29, 2021 at 02:57:04PM +0200, Clemens Gruber wrote:
+> > > > > > > The PCA9685 supports staggered LED output ON times to minimiz=
+e current
+> > > > > > > surges and reduce EMI.
+> > > > > > > When this new option is enabled, the ON times of each channel=
+ are
+> > > > > > > delayed by channel number x counter range / 16, which avoids =
+asserting
+> > > > > > > all enabled outputs at the same counter value while still mai=
+ntaining
+> > > > > > > the configured duty cycle of each output.
+> > > > > > >=20
+> > > > > > > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+> > > > > >=20
+> > > > > > Is there a reason to not want this staggered output? If it neve=
+r hurts I
+> > > > > > suggest to always stagger and drop the dt property.
+> > > > >=20
+> > > > > There might be applications where you want multiple outputs to as=
+sert at
+> > > > > the same time / to be synchronized.
+> > > > > With staggered outputs mode always enabled, this would no longer =
+be
+> > > > > possible as they are spread out according to their channel number.
+> > > > >=20
+> > > > > Not sure how often that usecase is required, but just enforcing t=
+he
+> > > > > staggered mode by default sounds risky to me.
+> > > >=20
+> > > > There is no such guarantee in the PWM framework, so I don't think we
+> > > > need to fear breaking setups. Thierry?
+> > >=20
+> > > Still, someone might rely on it? But let's wait for Thierry's opinion.
+> >=20
+> > There's currently no way to synchronize two PWM channels in the PWM
+> > framework. And given that each PWM channel is handled separately the
+> > programming for two channels will never happen atomically or even
+> > concurrently, so I don't see how you could run two PWMs completely
+> > synchronized to one another.
+>=20
+> As the PCA9685 has only one prescaler and one counter per chip, by
+> default, all PWMs enabled will go high at the same time. If they also
+> have the same duty cycle configured, they also go low at the same time.
 
+What happens if you enable one of them, it then goes high and then you
+enable the next one? Is the second one going to get enabled on the next
+period? Or will it start in the middle of the period?
+
+To truly enable them atomically, you'd have to ensure they all get
+enabled in basically the same write, right? Because otherwise you can
+still end up with just a subset enabled and the rest getting enabled
+only after the first period.
+
+> > Or did I misunderstand and it's only the start time of the rising edge
+> > that's shifted, but the signal will remain high for a full duty cycle
+> > after that and then go down and remain low for period - duty - offset?
+>=20
+> Yes, that's how it works.
+
+That's less problematic because the signal will remain a standard PWM,
+it's just shifted by some amount. Technically pwm_apply_state() must
+only return when the signal has been enabled, so very strictly speaking
+you'd have to wait for a given amount of time to ensure that's correct.
+But again, I doubt that any use-case would require you to be that
+deterministic.
+
+> > That's slightly better than the above in that it likely won't trip up
+> > any consumers. But it might still be worth to make this configurable per
+> > PWM (perhaps by specifying a third specifier cell, in addition to the
+> > period and flags, that defines the offset/phase of the signal).
+> >=20
+> > In both cases, doing this on a per-PWM basis will allow the consumer to
+> > specify that they're okay with staggered mode and you won't actually
+> > force it onto anyone. This effectively makes this opt-in and there will
+> > be no change for existing consumers.
+>=20
+> I agree that it should be opt-in, but I am not sure about doing it
+> per-pwm:
+> The reason why you'd want staggered mode is to reduce EMI or current
+> spikes and it is most effective if it is enabled for all PWMs.
+>=20
+> If it is specified in the DT anyway and you have a consumer that does
+> not support staggered mode (probably rare but can happen), then I'd
+> suggest just disabling it globally by not specifying nxp,staggered-mode;
+>=20
+> Also it would make the configuration more complicated: You have to do
+> the "staggering" yourself and assign offsets per channel.
+> It's certainly easier to just enable or disable it.
+>=20
+> What do you think?
+
+Yeah, if you use an offset in the PWM specifier, users would have to
+manually specify the offset. An interesting "feature" of that would be
+that they could configure a subset of PWM channels to run synchronized
+(module the atomicity problems discussed above). Not sure if that's
+something anyone would ever want to do.
+
+Another option would be to add some new flag that specifies that a given
+PWM channel may use this mode. In that case users wouldn't have to care
+about specifying the exact offset and instead just use the flag and rely
+on the driver to pick some offset. Within the driver you could then just
+keep the same computation that offsets by channel index, or you could
+have any other mechanism that you want.
+
+Thierry
+
+--yAS+JO9jOlPONqYz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBlzusACgkQ3SOs138+
+s6HnzxAAowV8Q0Bn53+ge8GqpzgTc05Pq3rR1LhUSsg71TSJ0ZOXBJF/maGysOmQ
+35sBKNzo5hp1PoGEPLdp4Qy+8VE/QGkG5nvjJuiBueoi5PLSJrWA3uz3dW2FXGVb
+SmGpCpnGPQvdo7KM9laEHSNZaZeFTgbVZXoBRuOu6IdwDTKlkgPnzWGMN9oXw1j8
+z5xVAu6MxbQKJnzFUaR3kRckCEhoBfg4a8BdBAMxDtw7JSWYhk3Yp6+HyAhbfx33
+c5jlqGlzd9u9MbIyeBfv3qlZYMx4s2hUnBt0iYakSzJqU2/Dzqhbd6nV45vxKd24
+BTRtEbGrDlk9cxuy7Z2LfF4ZQeO9i1XDn3jAKbNmK7pgTJhfuq5LgJ6mEG8SgYuC
+VPioEU8e53iPK9mvaumCKBDbPppSTjT0kOP61ZcbXw5cpQq7rvvL8KNy+cF1p9AV
+STkOVqJhZg+TNEXmrdsriHywybAJZGf3uOK7TqFRl0Fw2IIoO0+kMXEPmhEOBn3p
+9/rDkzfqF89r3rxUnIVo3/KLuXGlggSkqQ14sH7Tqa/pPIJAAO/VsmhF3UgXF5m7
+DQrQM5NC9ZC0QMDxbclPXHre0tn2Zs/qDG1vYRllCszd+kVpVqYfX9O5dINXK9jc
+sdk6yyIYYoSoZDdjBvbDj6NyDe37GhvUJdC6tO8oSQ4+9i05mGk=
+=agkx
+-----END PGP SIGNATURE-----
+
+--yAS+JO9jOlPONqYz--
