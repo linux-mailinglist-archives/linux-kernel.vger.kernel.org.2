@@ -2,206 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 530F335227E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 00:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7E4352285
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 00:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236129AbhDAWNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 18:13:40 -0400
-Received: from mga11.intel.com ([192.55.52.93]:34672 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235720AbhDAWNB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 18:13:01 -0400
-IronPort-SDR: ya1UdtCVLfuEtbkrThascwWQ4LJWMi9wTobAl/peR9tn3rWr+DpuK7dBJAc4pIqDwwA/y5lFhU
- mOswWuMnBzqA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="189084671"
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="189084671"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 15:11:28 -0700
-IronPort-SDR: QR6gEczVw8KG/gwWxKRuWr6huL9EnN04/TSvEqwDTGtJu5IMQKB/GLpXOXkq2iyput4CmcW0cN
- llMbPY9qUbyQ==
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="517513975"
-Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 15:11:27 -0700
-From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
-To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCH v24 30/30] mm: Introduce PROT_SHSTK for shadow stack
-Date:   Thu,  1 Apr 2021 15:11:04 -0700
-Message-Id: <20210401221104.31584-31-yu-cheng.yu@intel.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210401221104.31584-1-yu-cheng.yu@intel.com>
-References: <20210401221104.31584-1-yu-cheng.yu@intel.com>
+        id S235943AbhDAWNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 18:13:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235760AbhDAWNb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 18:13:31 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA66C0617AB
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 15:13:30 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id f29so908888pgm.8
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 15:13:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qOIPmpuTpYu/DgWdR2yqBo3+vizrBGynByA8gUlCbew=;
+        b=cQExDcxo3OoK2mxwYeUFka8uI9xHUTKkU8RyEKfqZ1RZN/sSFJE+2N5pbNgm/YFQ61
+         6cj6rbkFPYePaSDv3GdRZpz3odVN2y73i4lw2JOJsdHtIlztHidaHZv+6srccig5fpHH
+         4h0d7C3pV7Jy4Hjoc3pPCqU98NbNAjzBuZDiY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qOIPmpuTpYu/DgWdR2yqBo3+vizrBGynByA8gUlCbew=;
+        b=I9QH34CynDWq2cCOLTnr8Yc+yUyYPICaY6Cr10VapBT/qK+9QBsgFZl7bmlQn73rGJ
+         uQxDXlXLiwWa0Q9uZaZRz7D2DpjnZY9bvwvzaIrHiLVPcegJw20lm4OZn4PqGD9a/bj3
+         dcWJ5EN5g3Pm9rkIPDTp0B56UiNaIeEA1CbVwTcjY+jhFakLfFDAOP6RGjcL7W+dX/ZS
+         g26HHqWvF5cvkJppKmSLC0PmDgIq6Xr3nNJOMbHMcPa1ryxpoj3OPwvit/WYplYFf+5e
+         cgDkn6Q0JJ2bjpVvcA7h88Ff5VCBtEuid3fovmc46jI33qox+ygPimLlUDUFLZFxuVHP
+         gNxg==
+X-Gm-Message-State: AOAM532iZfgRH90sKvAuwuYUPxnfzTmyZLGzXevkj1h1c6xH+OL6avaa
+        6DxKfvmcy6QmrXaWvYL7x55Pjw==
+X-Google-Smtp-Source: ABdhPJzqcC4ByIZFeQrIwo8KNlFb2Y/g6f2p3afwwogKHitzzyYi+ntwY6nHe5d5rZF1Se1DYCo+pw==
+X-Received: by 2002:a65:41c7:: with SMTP id b7mr9147045pgq.237.1617315209553;
+        Thu, 01 Apr 2021 15:13:29 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id b140sm6508328pfb.98.2021.04.01.15.13.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 15:13:28 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Kees Cook <keescook@chromium.org>, Christoph Hellwig <hch@lst.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        clang-built-linux@googlegroups.com, Michal Hocko <mhocko@suse.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
+        Adam Nichols <adam@grimm-co.com>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH v4 0/3] sysfs: Unconditionally use vmalloc for buffer
+Date:   Thu,  1 Apr 2021 15:13:17 -0700
+Message-Id: <20210401221320.2717732-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are three possible options to create a shadow stack allocation API:
-an arch_prctl, a new syscall, or adding PROT_SHSTK to mmap()/mprotect().
-Each has its advantages and compromises.
+This series improves the defensive posture of sysfs's use of seq_file
+to gain the vmap guard pages at the end of vmalloc buffers to stop a
+class of recurring flaw[1]. The long-term goal is to switch sysfs from
+a buffer to using seq_file directly, but this will take time to refactor.
 
-An arch_prctl() is the least intrusive.  However, the existing x86
-arch_prctl() takes only two parameters.  Multiple parameters must be
-passed in a memory buffer.  There is a proposal to pass more parameters in
-registers [1], but no active discussion on that.
+Included is also a Clang fix for NULL arithmetic and an LKDTM test to
+validate vmalloc guard pages.
 
-A new syscall minimizes compatibility issues and offers an extensible frame
-work to other architectures, but this will likely result in some overlap of
-mmap()/mprotect().
+v4:
+- fix NULL arithmetic (Arnd)
+- add lkdtm test
+- reword commit message
+v3: https://lore.kernel.org/lkml/20210401022145.2019422-1-keescook@chromium.org/
+v2: https://lore.kernel.org/lkml/20210315174851.622228-1-keescook@chromium.org/
+v1: https://lore.kernel.org/lkml/20210312205558.2947488-1-keescook@chromium.org/
 
-The introduction of PROT_SHSTK to mmap()/mprotect() takes advantage of
-existing APIs.  The x86-specific PROT_SHSTK is translated to
-VM_SHADOW_STACK and a shadow stack mapping is created without reinventing
-the wheel.  There are potential pitfalls though.  The most obvious one
-would be using this as a bypass to shadow stack protection.  However, the
-attacker would have to get to the syscall first.
+Thanks!
 
-[1] https://lore.kernel.org/lkml/20200828121624.108243-1-hjl.tools@gmail.com/
+-Kees
 
-Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
----
-v24:
-- Update arch_calc_vm_prot_bits(), leave PROT* checking to
-  arch_validate_prot().
-- Update arch_validate_prot(), leave vma flags checking to
-  arch_validate_flags().
-- Add arch_validate_flags().
+Arnd Bergmann (1):
+  seq_file: Fix clang warning for NULL pointer arithmetic
 
- arch/x86/include/asm/mman.h      | 59 +++++++++++++++++++++++++++++++-
- arch/x86/include/uapi/asm/mman.h |  1 +
- include/linux/mm.h               |  1 +
- 3 files changed, 60 insertions(+), 1 deletion(-)
+Kees Cook (2):
+  lkdtm/heap: Add vmalloc linear overflow test
+  sysfs: Unconditionally use vmalloc for buffer
 
-diff --git a/arch/x86/include/asm/mman.h b/arch/x86/include/asm/mman.h
-index 629f6c81263a..1821c179f35d 100644
---- a/arch/x86/include/asm/mman.h
-+++ b/arch/x86/include/asm/mman.h
-@@ -20,11 +20,68 @@
- 		((vm_flags) & VM_PKEY_BIT2 ? _PAGE_PKEY_BIT2 : 0) |	\
- 		((vm_flags) & VM_PKEY_BIT3 ? _PAGE_PKEY_BIT3 : 0))
- 
--#define arch_calc_vm_prot_bits(prot, key) (		\
-+#define pkey_vm_prot_bits(prot, key) (			\
- 		((key) & 0x1 ? VM_PKEY_BIT0 : 0) |      \
- 		((key) & 0x2 ? VM_PKEY_BIT1 : 0) |      \
- 		((key) & 0x4 ? VM_PKEY_BIT2 : 0) |      \
- 		((key) & 0x8 ? VM_PKEY_BIT3 : 0))
-+#else
-+#define pkey_vm_prot_bits(prot, key) (0)
- #endif
- 
-+static inline unsigned long arch_calc_vm_prot_bits(unsigned long prot,
-+						   unsigned long pkey)
-+{
-+	unsigned long vm_prot_bits = pkey_vm_prot_bits(prot, pkey);
-+
-+	if (prot & PROT_SHSTK)
-+		vm_prot_bits |= VM_SHADOW_STACK;
-+
-+	return vm_prot_bits;
-+}
-+
-+#define arch_calc_vm_prot_bits(prot, pkey) arch_calc_vm_prot_bits(prot, pkey)
-+
-+#ifdef CONFIG_X86_SHADOW_STACK
-+static inline bool arch_validate_prot(unsigned long prot, unsigned long addr)
-+{
-+	unsigned long valid = PROT_READ | PROT_WRITE | PROT_EXEC | PROT_SEM |
-+			      PROT_SHSTK;
-+
-+	if (prot & ~valid)
-+		return false;
-+
-+	if (prot & PROT_SHSTK) {
-+		if (!current->thread.cet.shstk_size)
-+			return false;
-+
-+		/*
-+		 * A shadow stack mapping is indirectly writable by only
-+		 * the CALL and WRUSS instructions, but not other write
-+		 * instructions).  PROT_SHSTK and PROT_WRITE are mutually
-+		 * exclusive.
-+		 */
-+		if (prot & PROT_WRITE)
-+			return false;
-+	}
-+
-+	return true;
-+}
-+
-+#define arch_validate_prot arch_validate_prot
-+
-+static inline bool arch_validate_flags(unsigned long vm_flags, bool is_anon)
-+{
-+	if (vm_flags & VM_SHADOW_STACK) {
-+		if ((vm_flags & VM_SHARED) || !is_anon)
-+			return false;
-+	}
-+
-+	return true;
-+}
-+
-+#define arch_validate_flags(vm_flags, is_anon) arch_validate_flags(vm_flags, is_anon)
-+
-+#endif /* CONFIG_X86_SHADOW_STACK */
-+
- #endif /* _ASM_X86_MMAN_H */
-diff --git a/arch/x86/include/uapi/asm/mman.h b/arch/x86/include/uapi/asm/mman.h
-index 3ce1923e6ed9..39bb7db344a6 100644
---- a/arch/x86/include/uapi/asm/mman.h
-+++ b/arch/x86/include/uapi/asm/mman.h
-@@ -4,6 +4,7 @@
- 
- #define MAP_32BIT	0x40		/* only give out 32bit addresses */
- 
-+#define PROT_SHSTK	0x10		/* shadow stack pages */
- 
- #include <asm-generic/mman.h>
- 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 1ccec5cc399b..9a7652eea207 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -342,6 +342,7 @@ extern unsigned int kobjsize(const void *objp);
- 
- #if defined(CONFIG_X86)
- # define VM_PAT		VM_ARCH_1	/* PAT reserves whole VMA at once (x86) */
-+# define VM_ARCH_CLEAR	VM_SHADOW_STACK
- #elif defined(CONFIG_PPC)
- # define VM_SAO		VM_ARCH_1	/* Strong Access Ordering (powerpc) */
- #elif defined(CONFIG_PARISC)
+ drivers/misc/lkdtm/core.c               |  3 ++-
+ drivers/misc/lkdtm/heap.c               | 21 +++++++++++++++++-
+ drivers/misc/lkdtm/lkdtm.h              |  3 ++-
+ fs/kernfs/file.c                        |  9 +++++---
+ fs/seq_file.c                           |  5 ++++-
+ fs/sysfs/file.c                         | 29 +++++++++++++++++++++++++
+ include/linux/seq_file.h                |  6 +++++
+ tools/testing/selftests/lkdtm/tests.txt |  3 ++-
+ 8 files changed, 71 insertions(+), 8 deletions(-)
+
 -- 
-2.21.0
+2.25.1
 
