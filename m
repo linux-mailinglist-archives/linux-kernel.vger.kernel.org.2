@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB7E4352285
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 00:14:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F3E352288
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 00:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235943AbhDAWNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 18:13:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32970 "EHLO
+        id S234083AbhDAWNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 18:13:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235760AbhDAWNb (ORCPT
+        with ESMTP id S234184AbhDAWNb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 1 Apr 2021 18:13:31 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA66C0617AB
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F15C0613AA
         for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 15:13:30 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id f29so908888pgm.8
+Received: by mail-pj1-x102c.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so3766570pjq.5
         for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 15:13:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qOIPmpuTpYu/DgWdR2yqBo3+vizrBGynByA8gUlCbew=;
-        b=cQExDcxo3OoK2mxwYeUFka8uI9xHUTKkU8RyEKfqZ1RZN/sSFJE+2N5pbNgm/YFQ61
-         6cj6rbkFPYePaSDv3GdRZpz3odVN2y73i4lw2JOJsdHtIlztHidaHZv+6srccig5fpHH
-         4h0d7C3pV7Jy4Hjoc3pPCqU98NbNAjzBuZDiY=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Gl97oxPIVXZYcwzInna88mJV+71EBUvsRwHZJgUDTHE=;
+        b=cjEHKO3ZTN3Ma1U7kUNTQIY3BEyXWR5Oiq3b1Ab399l4RaoR1D9Xfj7jh6gn8uHBc5
+         QKViE6iqhBpPP2P5EXXz7dFbfY3p8MmA7Jm5AlM8/D9y/MsBQcFarAjVOYPx0vfWbuj1
+         wk6jz/SWx7LmdwRz1IcgUz/6sRonpSFR7ttts=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qOIPmpuTpYu/DgWdR2yqBo3+vizrBGynByA8gUlCbew=;
-        b=I9QH34CynDWq2cCOLTnr8Yc+yUyYPICaY6Cr10VapBT/qK+9QBsgFZl7bmlQn73rGJ
-         uQxDXlXLiwWa0Q9uZaZRz7D2DpjnZY9bvwvzaIrHiLVPcegJw20lm4OZn4PqGD9a/bj3
-         dcWJ5EN5g3Pm9rkIPDTp0B56UiNaIeEA1CbVwTcjY+jhFakLfFDAOP6RGjcL7W+dX/ZS
-         g26HHqWvF5cvkJppKmSLC0PmDgIq6Xr3nNJOMbHMcPa1ryxpoj3OPwvit/WYplYFf+5e
-         cgDkn6Q0JJ2bjpVvcA7h88Ff5VCBtEuid3fovmc46jI33qox+ygPimLlUDUFLZFxuVHP
-         gNxg==
-X-Gm-Message-State: AOAM532iZfgRH90sKvAuwuYUPxnfzTmyZLGzXevkj1h1c6xH+OL6avaa
-        6DxKfvmcy6QmrXaWvYL7x55Pjw==
-X-Google-Smtp-Source: ABdhPJzqcC4ByIZFeQrIwo8KNlFb2Y/g6f2p3afwwogKHitzzyYi+ntwY6nHe5d5rZF1Se1DYCo+pw==
-X-Received: by 2002:a65:41c7:: with SMTP id b7mr9147045pgq.237.1617315209553;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Gl97oxPIVXZYcwzInna88mJV+71EBUvsRwHZJgUDTHE=;
+        b=SwOgOvz7wExieW7Q3hE4fUqTGeRIKKrlQX3KgDunr9+QOYsEiXo9X3vDp0HuV5h6x6
+         YGEizT2k72e3Z6gAMoCNfugKaPq+QLnGJ9W8TIfEI2qau4lJfca3iPUhzmyygA4Z+nzD
+         J1Y/MrYPO43BpjpZsrOLDHlZ/mOnMbKQUc2q3Tjd+Rx6NzlEEhWjLGzXPQMaly0/VqfQ
+         ltRpUR8kFZoaAD0EWvPaILFGehSliDqIVaCa0ZESc1K1lsqD9aPyysCc5axQjPOH7yoG
+         MBHG/VMgaFDx3olgY/ZeFAdw4F2K2ii37a8XePyLxjpIJI8/n5cGXl7IG/5FV+t6Vany
+         ODaA==
+X-Gm-Message-State: AOAM5312WDCTsfubNPjC4uvpWqHjI/Eucz7q98vXliSmGsiByHGCnahE
+        d4Jt2Mzn0mm57HzocCpgycI4Ug==
+X-Google-Smtp-Source: ABdhPJy9ADuU0excc/0DZGu3CanfDu/XK6zyd+laHOepTuQ25LQdKdnPsZqD7XioexndWEgyKYLoXw==
+X-Received: by 2002:a17:902:8f8d:b029:e7:4a2f:1950 with SMTP id z13-20020a1709028f8db02900e74a2f1950mr9634785plo.77.1617315209867;
         Thu, 01 Apr 2021 15:13:29 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id b140sm6508328pfb.98.2021.04.01.15.13.28
+        by smtp.gmail.com with ESMTPSA id y68sm7022290pgy.5.2021.04.01.15.13.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 01 Apr 2021 15:13:28 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
@@ -65,53 +65,116 @@ Cc:     Kees Cook <keescook@chromium.org>, Christoph Hellwig <hch@lst.de>,
         Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
         Adam Nichols <adam@grimm-co.com>,
         linux-hardening@vger.kernel.org
-Subject: [PATCH v4 0/3] sysfs: Unconditionally use vmalloc for buffer
-Date:   Thu,  1 Apr 2021 15:13:17 -0700
-Message-Id: <20210401221320.2717732-1-keescook@chromium.org>
+Subject: [PATCH v4 1/3] lkdtm/heap: Add vmalloc linear overflow test
+Date:   Thu,  1 Apr 2021 15:13:18 -0700
+Message-Id: <20210401221320.2717732-2-keescook@chromium.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210401221320.2717732-1-keescook@chromium.org>
+References: <20210401221320.2717732-1-keescook@chromium.org>
 MIME-Version: 1.0
+X-Patch-Hashes: v=1; h=sha256; g=970fea1dfc54675cf92960ed316cdea27f2a2b55; i=zAev4cjW2dHa2AXn2sZrbiZj58xWVMf9s1WNriwUPTo=; m=qJGeBnIdFmEfwvhoT9HcMsaZ+R0eVHz0QfuZfXAAVFA=; p=jblLmhd9kg9taPt5qJwEBeZbhf2U5OVB9wDFfWdvEwc=
+X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmBmRX4ACgkQiXL039xtwCZE+hAAnIT uar89s8tk5F3KllVHos+dD9cu+MxDd8FCSDc61glKeq3AnFikTxoWcqrMRrZ/9bWse2ECMyXcUr2G ysUtjKS1/0RP3B2HvYQGOIaO/wQlNkz+55Tmpg/LjiUClRc1uHo27W/0Eo+MeSq54RpUE068a/df/ KIfZpK5b2kv9CZaIk75ZoMiaZ7v+gXmHhijoDN1CrE0K9OfopKWNCLA3f1bkPoStdaA+NHn6PK9Mo mYXcaOEMWLEtcte1ycFNdGEbsSt5O0uMsWUJRI5/fH6NDdWAReHY4CVTImbMDE7S3a+WkYU/nl5wk //eufaod6uCp7vYgXHvnI1DvVOpP7S7uzvDjvx4rL7r7aAWU3vPdbdntw6NXEchs8JnjAZ4BTLXz4 rEC6x4CcxYx6qoT9wgAgHTWSfhMsjCI13Crr4RLZzGLw9oToL60IEoS/2mlwG/+8DgJpKpdwbZqS4 Ka1j23mSyZksyTlOHM6HifEw1QX9rlB41FXJsVAjQIL/lyx/YAW/sUDccJKR3wqmZuesnTD+RbFZ0 4hlR0Q3INkv8RBBg/+lPd8hb9QwftkOxkGMQV0xqsYC81lN3IS+kAxNdgurRWeQzsOTMML37DD60G P9zP81gb39t43FvyY/LDuT2RKBAHd3ffyG2pbPP3v95Y1LhDRICP60gpJ/j+FQ6I=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series improves the defensive posture of sysfs's use of seq_file
-to gain the vmap guard pages at the end of vmalloc buffers to stop a
-class of recurring flaw[1]. The long-term goal is to switch sysfs from
-a buffer to using seq_file directly, but this will take time to refactor.
+Similar to the existing slab overflow and stack exhaustion tests, add
+VMALLOC_LINEAR_OVERFLOW (and rename the slab test SLAB_LINEAR_OVERFLOW).
 
-Included is also a Clang fix for NULL arithmetic and an LKDTM test to
-validate vmalloc guard pages.
-
-v4:
-- fix NULL arithmetic (Arnd)
-- add lkdtm test
-- reword commit message
-v3: https://lore.kernel.org/lkml/20210401022145.2019422-1-keescook@chromium.org/
-v2: https://lore.kernel.org/lkml/20210315174851.622228-1-keescook@chromium.org/
-v1: https://lore.kernel.org/lkml/20210312205558.2947488-1-keescook@chromium.org/
-
-Thanks!
-
--Kees
-
-Arnd Bergmann (1):
-  seq_file: Fix clang warning for NULL pointer arithmetic
-
-Kees Cook (2):
-  lkdtm/heap: Add vmalloc linear overflow test
-  sysfs: Unconditionally use vmalloc for buffer
-
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
  drivers/misc/lkdtm/core.c               |  3 ++-
- drivers/misc/lkdtm/heap.c               | 21 +++++++++++++++++-
+ drivers/misc/lkdtm/heap.c               | 21 ++++++++++++++++++++-
  drivers/misc/lkdtm/lkdtm.h              |  3 ++-
- fs/kernfs/file.c                        |  9 +++++---
- fs/seq_file.c                           |  5 ++++-
- fs/sysfs/file.c                         | 29 +++++++++++++++++++++++++
- include/linux/seq_file.h                |  6 +++++
  tools/testing/selftests/lkdtm/tests.txt |  3 ++-
- 8 files changed, 71 insertions(+), 8 deletions(-)
+ 4 files changed, 26 insertions(+), 4 deletions(-)
 
+diff --git a/drivers/misc/lkdtm/core.c b/drivers/misc/lkdtm/core.c
+index b2aff4d87c01..c3a5ad21b3d2 100644
+--- a/drivers/misc/lkdtm/core.c
++++ b/drivers/misc/lkdtm/core.c
+@@ -119,7 +119,8 @@ static const struct crashtype crashtypes[] = {
+ 	CRASHTYPE(UNALIGNED_LOAD_STORE_WRITE),
+ 	CRASHTYPE(FORTIFY_OBJECT),
+ 	CRASHTYPE(FORTIFY_SUBOBJECT),
+-	CRASHTYPE(OVERWRITE_ALLOCATION),
++	CRASHTYPE(SLAB_LINEAR_OVERFLOW),
++	CRASHTYPE(VMALLOC_LINEAR_OVERFLOW),
+ 	CRASHTYPE(WRITE_AFTER_FREE),
+ 	CRASHTYPE(READ_AFTER_FREE),
+ 	CRASHTYPE(WRITE_BUDDY_AFTER_FREE),
+diff --git a/drivers/misc/lkdtm/heap.c b/drivers/misc/lkdtm/heap.c
+index 1323bc16f113..5d491c22e09a 100644
+--- a/drivers/misc/lkdtm/heap.c
++++ b/drivers/misc/lkdtm/heap.c
+@@ -5,18 +5,37 @@
+  */
+ #include "lkdtm.h"
+ #include <linux/slab.h>
++#include <linux/vmalloc.h>
+ #include <linux/sched.h>
+ 
+ static struct kmem_cache *double_free_cache;
+ static struct kmem_cache *a_cache;
+ static struct kmem_cache *b_cache;
+ 
++/*
++ * If there aren't guard pages, it's likely that a consecutive allocation will
++ * let us overflow into the second allocation without overwriting something real.
++ */
++void lkdtm_VMALLOC_LINEAR_OVERFLOW(void)
++{
++	char *one, *two;
++
++	one = vzalloc(PAGE_SIZE);
++	two = vzalloc(PAGE_SIZE);
++
++	pr_info("Attempting vmalloc linear overflow ...\n");
++	memset(one, 0xAA, PAGE_SIZE + 1);
++
++	vfree(two);
++	vfree(one);
++}
++
+ /*
+  * This tries to stay within the next largest power-of-2 kmalloc cache
+  * to avoid actually overwriting anything important if it's not detected
+  * correctly.
+  */
+-void lkdtm_OVERWRITE_ALLOCATION(void)
++void lkdtm_SLAB_LINEAR_OVERFLOW(void)
+ {
+ 	size_t len = 1020;
+ 	u32 *data = kmalloc(len, GFP_KERNEL);
+diff --git a/drivers/misc/lkdtm/lkdtm.h b/drivers/misc/lkdtm/lkdtm.h
+index 5ae48c64df24..5a852d0beee0 100644
+--- a/drivers/misc/lkdtm/lkdtm.h
++++ b/drivers/misc/lkdtm/lkdtm.h
+@@ -38,7 +38,8 @@ void lkdtm_FORTIFY_SUBOBJECT(void);
+ /* heap.c */
+ void __init lkdtm_heap_init(void);
+ void __exit lkdtm_heap_exit(void);
+-void lkdtm_OVERWRITE_ALLOCATION(void);
++void lkdtm_VMALLOC_LINEAR_OVERFLOW(void);
++void lkdtm_SLAB_LINEAR_OVERFLOW(void);
+ void lkdtm_WRITE_AFTER_FREE(void);
+ void lkdtm_READ_AFTER_FREE(void);
+ void lkdtm_WRITE_BUDDY_AFTER_FREE(void);
+diff --git a/tools/testing/selftests/lkdtm/tests.txt b/tools/testing/selftests/lkdtm/tests.txt
+index 11ef159be0fd..322a1d2439e3 100644
+--- a/tools/testing/selftests/lkdtm/tests.txt
++++ b/tools/testing/selftests/lkdtm/tests.txt
+@@ -15,7 +15,8 @@ UNSET_SMEP CR4 bits went missing
+ DOUBLE_FAULT
+ CORRUPT_PAC
+ UNALIGNED_LOAD_STORE_WRITE
+-#OVERWRITE_ALLOCATION Corrupts memory on failure
++VMALLOC_LINEAR_OVERFLOW
++SLAB_LINEAR_OVERFLOW
+ #WRITE_AFTER_FREE Corrupts memory on failure
+ READ_AFTER_FREE
+ #WRITE_BUDDY_AFTER_FREE Corrupts memory on failure
 -- 
 2.25.1
 
