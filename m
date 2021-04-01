@@ -2,152 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B933F352137
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB95E352188
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234236AbhDAU7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 16:59:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234047AbhDAU7l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 16:59:41 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE77DC0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 13:59:41 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lS4Pj-0003dT-Rp; Thu, 01 Apr 2021 22:59:39 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lS4Pj-0005nt-I2; Thu, 01 Apr 2021 22:59:39 +0200
-Date:   Thu, 1 Apr 2021 22:59:36 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 4/7] pwm: pca9685: Support staggered output ON times
-Message-ID: <20210401205936.nnraoeeyo5nx3elf@pengutronix.de>
-References: <20210329125707.182732-1-clemens.gruber@pqgruber.com>
- <20210329125707.182732-4-clemens.gruber@pqgruber.com>
- <20210329170357.par7c3izvtmtovlj@pengutronix.de>
- <YGILdjZBCc2vVlRd@workstation.tuxnet>
- <20210329180206.rejl32uajslpvbgi@pengutronix.de>
- <YGRqZsi4WApZcwIT@workstation.tuxnet>
- <YGR/ZYj+GZIonU/J@workstation.tuxnet>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jxpvtgzt3acwzsij"
-Content-Disposition: inline
-In-Reply-To: <YGR/ZYj+GZIonU/J@workstation.tuxnet>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        id S234906AbhDAVU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 17:20:27 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:42072 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234512AbhDAVUR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 17:20:17 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FB3wL4M4Rz9twjV;
+        Thu,  1 Apr 2021 15:30:42 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 6QXPlekH9PAh; Thu,  1 Apr 2021 15:30:42 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FB3wL0Y8pz9twjT;
+        Thu,  1 Apr 2021 15:30:42 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 115448B99F;
+        Thu,  1 Apr 2021 15:30:42 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 5LZA3QbEPpKi; Thu,  1 Apr 2021 15:30:41 +0200 (CEST)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8B8888B991;
+        Thu,  1 Apr 2021 15:30:41 +0200 (CEST)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 4954967646; Thu,  1 Apr 2021 13:30:41 +0000 (UTC)
+Message-Id: <0c3d5cb8a4dfdf6ca1b8aeb385c01470d6628d55.1617283827.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH 1/3] powerpc/modules: Load modules closer to kernel text
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, jniethe5@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Thu,  1 Apr 2021 13:30:41 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On book3s/32, when STRICT_KERNEL_RWX is selected, modules are
+allocated on the segment just before kernel text, ie on the
+0xb0000000-0xbfffffff when PAGE_OFFSET is 0xc0000000.
 
---jxpvtgzt3acwzsij
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On the 8xx, TASK_SIZE is 0x80000000. The space between TASK_SIZE and
+PAGE_OFFSET is not used and could be used for modules.
 
-On Wed, Mar 31, 2021 at 03:55:49PM +0200, Clemens Gruber wrote:
-> On Wed, Mar 31, 2021 at 02:26:14PM +0200, Clemens Gruber wrote:
-> > On Mon, Mar 29, 2021 at 08:02:06PM +0200, Uwe Kleine-K=F6nig wrote:
-> > > On Mon, Mar 29, 2021 at 07:16:38PM +0200, Clemens Gruber wrote:
-> > > > On Mon, Mar 29, 2021 at 07:03:57PM +0200, Uwe Kleine-K=F6nig wrote:
-> > > > > On Mon, Mar 29, 2021 at 02:57:04PM +0200, Clemens Gruber wrote:
-> > > > > > The PCA9685 supports staggered LED output ON times to minimize =
-current
-> > > > > > surges and reduce EMI.
-> > > > > > When this new option is enabled, the ON times of each channel a=
-re
-> > > > > > delayed by channel number x counter range / 16, which avoids as=
-serting
-> > > > > > all enabled outputs at the same counter value while still maint=
-aining
-> > > > > > the configured duty cycle of each output.
-> > > > > >=20
-> > > > > > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
-> > > > >=20
-> > > > > Is there a reason to not want this staggered output? If it never =
-hurts I
-> > > > > suggest to always stagger and drop the dt property.
-> > > >=20
-> > > > There might be applications where you want multiple outputs to asse=
-rt at
-> > > > the same time / to be synchronized.
-> > > > With staggered outputs mode always enabled, this would no longer be
-> > > > possible as they are spread out according to their channel number.
-> > > >=20
-> > > > Not sure how often that usecase is required, but just enforcing the
-> > > > staggered mode by default sounds risky to me.
-> > >=20
-> > > There is no such guarantee in the PWM framework, so I don't think we
-> > > need to fear breaking setups. Thierry?
-> >=20
-> > Still, someone might rely on it? But let's wait for Thierry's opinion.
-> >=20
-> > >=20
-> > > One reason we might not want staggering is if we have a consumer who
-> > > cares about config transitions. (This however is moot it the hardware
-> > > doesn't provide sane transitions even without staggering.)
-> > >=20
-> > > Did I already ask about races in this driver? I assume there is a
-> > > free running counter and the ON and OFF registers just define where in
-> > > the period the transitions happen, right? Given that changing ON and =
-OFF
-> > > needs two register writes probably all kind of strange things can
-> > > happen, right? (Example thought: for simplicity's sake I assume ON is
-> > > always 0. Then if you want to change from OFF =3D 0xaaa to OFF =3D 0x=
-ccc we
-> > > might see a period with 0xacc. Depending on how the hardware works we
-> > > might even see 4 edges in a single period then.)
-> >=20
-> > Yes, there is a free running counter from 0 to 4095.
-> > And it is probably true, that there can be short intermediate states
-> > with our two register writes.
-> >=20
-> > There is a separate mode "Update on ACK" (MODE2 register, bit 3 "OCH"),
-> > which is 0 by default (Outputs change on STOP command) but could be set
-> > to 1 (Outputs change on ACK):
-> > "Update on ACK requires all 4 PWM channel registers to be loaded before
-> > outputs will change on the last ACK."
->=20
-> This would require the auto-increment feature to be enabled, then
-> multiple registers could be written before the STOP condition:
-> LEDn_ON_L, LEDn_ON_H, LEDn_OFF_L & LEDn_OFF_H
-> (With OCH=3D0 in MODE2)
+The idea comes from ARM architecture.
 
-Maybe a continued START would work, too?!
+Having modules just below PAGE_OFFSET offers an opportunity to
+minimise the distance between kernel text and modules and avoid
+trampolines in modules to access kernel functions or other module
+functions.
 
-Best regards
-Uwe
+When MODULES_VADDR is defined, powerpc has it's own module_alloc()
+function. In that function, first try to allocate the module
+above the limit defined by '_etext - 32M'. Then if the allocation
+fails, fallback to the entire MODULES area.
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+DEBUG logs in module_32.c without the patch:
 
---jxpvtgzt3acwzsij
-Content-Type: application/pgp-signature; name="signature.asc"
+[ 1572.588822] module_32: Applying ADD relocate section 13 to 12
+[ 1572.588891] module_32: Doing plt for call to 0xc00671a4 at 0xcae04024
+[ 1572.588964] module_32: Initialized plt for 0xc00671a4 at cae04000
+[ 1572.589037] module_32: REL24 value = CAE04000. location = CAE04024
+[ 1572.589110] module_32: Location before: 48000001.
+[ 1572.589171] module_32: Location after: 4BFFFFDD.
+[ 1572.589231] module_32: ie. jump to 03FFFFDC+CAE04024 = CEE04000
+[ 1572.589317] module_32: Applying ADD relocate section 15 to 14
+[ 1572.589386] module_32: Doing plt for call to 0xc00671a4 at 0xcadfc018
+[ 1572.589457] module_32: Initialized plt for 0xc00671a4 at cadfc000
+[ 1572.589529] module_32: REL24 value = CADFC000. location = CADFC018
+[ 1572.589601] module_32: Location before: 48000000.
+[ 1572.589661] module_32: Location after: 4BFFFFE8.
+[ 1572.589723] module_32: ie. jump to 03FFFFE8+CADFC018 = CEDFC000
 
------BEGIN PGP SIGNATURE-----
+With the patch:
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBmNDUACgkQwfwUeK3K
-7Al66Qf9HYR7KeNN7bbqMAlmpuPRQyV+3WTT+TsYcd/7FfAZ5etZxAGpxuo3zmBL
-sZTqrJ/zQ7T6zFODF9ZV2B5457QpsxO1KxSQyF5B8eP+X1S8NwRxmfDBy3TkWtje
-IpcR3c/4K26rOk0/Nsb6ZIRc2MDvu4+FUPgC7e3s2+YR2R/MfSwaS7smejvfMP6V
-tjNOq1WceZ8PqGlTD4da7ghZgUJ2V5XZblxHeYQL+B83Ounoq2gLNSBVN6MRwYkb
-HAlXmHT61sgtL+LTntu7dnVMWzPiYqiEi/f5uINcwrxgKgvOtggHP/3L74x+dnrr
-HbJPN1bGRbbFkqOAagIt4ulGp78N4A==
-=+8JB
------END PGP SIGNATURE-----
+[  279.404671] module_32: Applying ADD relocate section 13 to 12
+[  279.404741] module_32: REL24 value = C00671B4. location = BF808024
+[  279.404814] module_32: Location before: 48000001.
+[  279.404874] module_32: Location after: 4885F191.
+[  279.404933] module_32: ie. jump to 0085F190+BF808024 = C00671B4
+[  279.405016] module_32: Applying ADD relocate section 15 to 14
+[  279.405085] module_32: REL24 value = C00671B4. location = BF800018
+[  279.405156] module_32: Location before: 48000000.
+[  279.405215] module_32: Location after: 4886719C.
+[  279.405275] module_32: ie. jump to 0086719C+BF800018 = C00671B4
 
---jxpvtgzt3acwzsij--
+We see that with the patch, no plt entries are set.
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/kernel/module.c | 23 ++++++++++++++++++++---
+ 1 file changed, 20 insertions(+), 3 deletions(-)
+
+diff --git a/arch/powerpc/kernel/module.c b/arch/powerpc/kernel/module.c
+index a211b0253cdb..fab84024650c 100644
+--- a/arch/powerpc/kernel/module.c
++++ b/arch/powerpc/kernel/module.c
+@@ -14,6 +14,7 @@
+ #include <asm/firmware.h>
+ #include <linux/sort.h>
+ #include <asm/setup.h>
++#include <asm/sections.h>
+ 
+ static LIST_HEAD(module_bug_list);
+ 
+@@ -88,12 +89,28 @@ int module_finalize(const Elf_Ehdr *hdr,
+ }
+ 
+ #ifdef MODULES_VADDR
++static __always_inline void *
++__module_alloc(unsigned long size, unsigned long start, unsigned long end)
++{
++	return __vmalloc_node_range(size, 1, start, end, GFP_KERNEL,
++				    PAGE_KERNEL_EXEC, VM_FLUSH_RESET_PERMS, NUMA_NO_NODE,
++				    __builtin_return_address(0));
++}
++
+ void *module_alloc(unsigned long size)
+ {
++	unsigned long limit = (unsigned long)_etext - SZ_32M;
++	void *ptr = NULL;
++
+ 	BUILD_BUG_ON(TASK_SIZE > MODULES_VADDR);
+ 
+-	return __vmalloc_node_range(size, 1, MODULES_VADDR, MODULES_END, GFP_KERNEL,
+-				    PAGE_KERNEL_EXEC, VM_FLUSH_RESET_PERMS, NUMA_NO_NODE,
+-				    __builtin_return_address(0));
++	/* First try within 32M limit from _etext to avoid branch trampolines */
++	if (MODULES_VADDR < PAGE_OFFSET && MODULES_END > limit)
++		ptr = __module_alloc(size, limit, MODULES_END);
++
++	if (!ptr)
++		ptr = __module_alloc(size, MODULES_VADDR, MODULES_END);
++
++	return ptr;
+ }
+ #endif
+-- 
+2.25.0
+
