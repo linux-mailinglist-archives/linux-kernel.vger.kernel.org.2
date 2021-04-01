@@ -2,55 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72765351E5B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:54:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45029351E60
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239153AbhDASjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:39:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45718 "EHLO mail.kernel.org"
+        id S239370AbhDASkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:40:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239673AbhDASQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239661AbhDASQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 1 Apr 2021 14:16:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D152561222;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 726AC611CA;
         Thu,  1 Apr 2021 12:17:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617279477;
-        bh=0AGwy6Tl68VsWBu68wDgwZ5CzpVE/d5ORNGmhEDws2g=;
+        s=k20201202; t=1617279476;
+        bh=BnEWnVkqMrbAWG8jRB7Ad1C4L7HMZywQ6hzq4TbT8UM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j9+6sIJKmL+XOmxe06aUOTq1k9rbWG1ko3gLDYYloZawQ+uPzb6HyLO0axwBtY/Ml
-         jEkUoJ6zUkX7bndJh8cFEKmiybNNqXDM2/N51fsLAcRv8KSFdfsOq6t2Lqw1c+7owx
-         JlUeuTdafy2N/TkneDHlThe1fAG/peHgxaKuZ5irClbtzrgNvwG8Cu6cjpJDu8Pyqw
-         VQJfPHNNFDlpcQ/t/ynxrYUdvt5ngXcTEQpbbm6CBM3/TsOtiSwbO6j9L3XnbMHcrh
-         42PaDgiDzIgzIOab1guPYd/uAMB7PqTriadjZY+MZAe3kyHidi2bMjqQMX6tN1Jeq0
-         7oNNkgvReRKmw==
+        b=LPnQs3u0SA4q5hbHfq4RzSQs+FvcWBNcfhCTKN6bcNlYj9sKG8msZVimUxSaFruSC
+         8f1cqbBCUwjkAGluou0uqBj+uvjPB8fqBsalkQmfIuD+D3wwo5qv8hiqVsQ59y9VCe
+         kbXqitfXDA+PXFQ7KGEcMYafOmZA6tKtx8Ill50H7BtHyJLojLog+YntFnsrwsTSa9
+         bT5TlGv2GcTzHNPMD7kXNU4DfRmzv7R5HmIeqHBXovFPOROhDgi4oEYGohT0HzVJtu
+         qflkxbJCbDg+Xx/5q6vRLu1FjoQlsj3yct872Nt8rh29A1TOt+ToVBfFbGzycP4PiK
+         hnOfig097Jhdg==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1lRwGo-001c3X-GL; Thu, 01 Apr 2021 14:17:54 +0200
+        id 1lRwGo-001c3a-HY; Thu, 01 Apr 2021 14:17:54 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Bin Liu <bin.liu@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Houlong Wei <houlong.wei@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rick Chang <rick.chang@mediatek.com>,
+        =?UTF-8?q?Przemys=C5=82aw=20Gaj?= <pgaj@cadence.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Will Deacon <will@kernel.org>, Yong Wu <yong.wu@mediatek.com>,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mediatek@lists.infradead.org
-Subject: [PATCH 26/32] dt-bindings: iommu: mediatek: update mediatek,iommu.yaml references
-Date:   Thu,  1 Apr 2021 14:17:46 +0200
-Message-Id: <f1a798e2d5ffa829d0324333a1af91f1b3a63dad.1617279356.git.mchehab+huawei@kernel.org>
+        Vitor Soares <vitor.soares@synopsys.com>,
+        devicetree@vger.kernel.org, linux-i3c@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 27/32] dt-bindings: i3c: update i3c.yaml references
+Date:   Thu,  1 Apr 2021 14:17:47 +0200
+Message-Id: <22b7b53af1907f7cae27e26be725470c04b84725.1617279356.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1617279355.git.mchehab+huawei@kernel.org>
 References: <cover.1617279355.git.mchehab+huawei@kernel.org>
@@ -61,87 +50,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset bca28426805d ("dt-bindings: iommu: mediatek: Convert IOMMU to DT schema")
-renamed: Documentation/devicetree/bindings/iommu/mediatek,iommu.txt
-to: Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml.
+Changeset 5e4cdca887fd ("dt-bindings: i3c: Convert the bus description to yaml")
+renamed: Documentation/devicetree/bindings/i3c/i3c.txt
+to: Documentation/devicetree/bindings/i3c/i3c.yaml.
 
 Update the cross-references accordingly.
 
-Fixes: bca28426805d ("dt-bindings: iommu: mediatek: Convert IOMMU to DT schema")
+Fixes: 5e4cdca887fd ("dt-bindings: i3c: Convert the bus description to yaml")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../devicetree/bindings/display/mediatek/mediatek,disp.txt      | 2 +-
- .../devicetree/bindings/media/mediatek-jpeg-decoder.txt         | 2 +-
- .../devicetree/bindings/media/mediatek-jpeg-encoder.txt         | 2 +-
- Documentation/devicetree/bindings/media/mediatek-mdp.txt        | 2 +-
- Documentation/devicetree/bindings/media/mediatek-vcodec.txt     | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+ Documentation/devicetree/bindings/i3c/cdns,i3c-master.txt   | 6 +++---
+ .../devicetree/bindings/i3c/snps,dw-i3c-master.txt          | 6 +++---
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
-index 93b160df3eec..fbb59c9ddda6 100644
---- a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
-+++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
-@@ -64,7 +64,7 @@ Required properties (DMA function blocks):
- - larb: Should contain a phandle pointing to the local arbiter device as defined
-   in Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
- - iommus: Should point to the respective IOMMU block with master port as
--  argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.txt
-+  argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml
-   for details.
+diff --git a/Documentation/devicetree/bindings/i3c/cdns,i3c-master.txt b/Documentation/devicetree/bindings/i3c/cdns,i3c-master.txt
+index 1cf6182f888c..3716589d6999 100644
+--- a/Documentation/devicetree/bindings/i3c/cdns,i3c-master.txt
++++ b/Documentation/devicetree/bindings/i3c/cdns,i3c-master.txt
+@@ -10,19 +10,19 @@ Required properties:
+ - reg: I3C master registers
  
- Optional properties (RDMA function blocks):
-diff --git a/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.txt b/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.txt
-index cf60c5acc0e4..39c1028b2dfb 100644
---- a/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.txt
-+++ b/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.txt
-@@ -19,7 +19,7 @@ Required properties:
-   Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
-   for details.
- - iommus: should point to the respective IOMMU block with master port as
--  argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.txt
-+  argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml
-   for details.
+ Mandatory properties defined by the generic binding (see
+-Documentation/devicetree/bindings/i3c/i3c.txt for more details):
++Documentation/devicetree/bindings/i3c/i3c.yaml for more details):
  
- Example:
-diff --git a/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.txt b/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.txt
-index acfb50375b8a..5e53c6ab52d0 100644
---- a/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.txt
-+++ b/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.txt
-@@ -17,7 +17,7 @@ Required properties:
-   Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
-   for details.
- - iommus: should point to the respective IOMMU block with master port as
--  argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.txt
-+  argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml
-   for details.
+ - #address-cells: shall be set to 1
+ - #size-cells: shall be set to 0
+ 
+ Optional properties defined by the generic binding (see
+-Documentation/devicetree/bindings/i3c/i3c.txt for more details):
++Documentation/devicetree/bindings/i3c/i3c.yaml for more details):
+ 
+ - i2c-scl-hz
+ - i3c-scl-hz
+ 
+ I3C device connected on the bus follow the generic description (see
+-Documentation/devicetree/bindings/i3c/i3c.txt for more details).
++Documentation/devicetree/bindings/i3c/i3c.yaml for more details).
  
  Example:
-diff --git a/Documentation/devicetree/bindings/media/mediatek-mdp.txt b/Documentation/devicetree/bindings/media/mediatek-mdp.txt
-index f4798d04e925..caa24943da33 100644
---- a/Documentation/devicetree/bindings/media/mediatek-mdp.txt
-+++ b/Documentation/devicetree/bindings/media/mediatek-mdp.txt
-@@ -25,7 +25,7 @@ Required properties (DMA function blocks, child node):
-         "mediatek,mt8173-mdp-wdma"
-         "mediatek,mt8173-mdp-wrot"
- - iommus: should point to the respective IOMMU block with master port as
--  argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.txt
-+  argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml
-   for details.
- - mediatek,larb: must contain the local arbiters in the current Socs, see
-   Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
-diff --git a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
-index 8217424fd4bd..a83ebc1a1c7f 100644
---- a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
-+++ b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
-@@ -18,7 +18,7 @@ Required properties:
-   "univpll_d2", "clk_cci400_sel", "vdec_sel", "vdecpll", "vencpll",
-   "venc_lt_sel", "vdec_bus_clk_src".
- - iommus : should point to the respective IOMMU block with master port as
--  argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.txt
-+  argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml
-   for details.
- One of the two following nodes:
- - mediatek,vpu : the node of the video processor unit, if using VPU.
+ 
+diff --git a/Documentation/devicetree/bindings/i3c/snps,dw-i3c-master.txt b/Documentation/devicetree/bindings/i3c/snps,dw-i3c-master.txt
+index 5020eb71eb8d..07f35f36085d 100644
+--- a/Documentation/devicetree/bindings/i3c/snps,dw-i3c-master.txt
++++ b/Documentation/devicetree/bindings/i3c/snps,dw-i3c-master.txt
+@@ -9,19 +9,19 @@ Required properties:
+ - reg: Offset and length of I3C master registers
+ 
+ Mandatory properties defined by the generic binding (see
+-Documentation/devicetree/bindings/i3c/i3c.txt for more details):
++Documentation/devicetree/bindings/i3c/i3c.yaml for more details):
+ 
+ - #address-cells: shall be set to 3
+ - #size-cells: shall be set to 0
+ 
+ Optional properties defined by the generic binding (see
+-Documentation/devicetree/bindings/i3c/i3c.txt for more details):
++Documentation/devicetree/bindings/i3c/i3c.yaml for more details):
+ 
+ - i2c-scl-hz
+ - i3c-scl-hz
+ 
+ I3C device connected on the bus follow the generic description (see
+-Documentation/devicetree/bindings/i3c/i3c.txt for more details).
++Documentation/devicetree/bindings/i3c/i3c.yaml for more details).
+ 
+ Example:
+ 
 -- 
 2.30.2
 
