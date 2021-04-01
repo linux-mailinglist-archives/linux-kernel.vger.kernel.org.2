@@ -2,131 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6419351847
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA28635180D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236428AbhDARoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:44:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57130 "EHLO
+        id S234653AbhDARnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:43:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234584AbhDARiM (ORCPT
+        with ESMTP id S234426AbhDARhT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:38:12 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C0DC031175;
-        Thu,  1 Apr 2021 10:07:10 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id n8so2431650oie.10;
-        Thu, 01 Apr 2021 10:07:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fIoD1sqZzx73JWXZ5LfoSVqAfKupbAVCJdJdm3CE5F8=;
-        b=dJ8OYQgakJVDr9rEMy2nBzQGcu7W7o0aHrEKClaSTia2FK4/4NqM+0AsrAeW+z201x
-         eyROb9x/m0CB5YoL/B+MT6FHvPu/PN0aX0JU6CHjohKqLzXZosVkAT3lmxCtNtjcFZC7
-         pitoDmSgBpZXmwvH/Mw0sviccvqLGVqaIwnLx9pKgXBgx8Wm4qAiciNlHyvCoLWzcrib
-         d1jriWFNVuJV/9mikUfkWnq0/TZAU8r3j8MqqVEyIYBCDJKMf04dt20xUQsby0baCGkj
-         8k98rRePjZtafldHkgvgj0cnwYT3m667MkRJ6BWG6tS3l2ylFQEEywzNEYSyDVssG+xj
-         SfMw==
-X-Gm-Message-State: AOAM5333Cpua+ucVT6YZNe6FkxHyVUvNJrWo034oA4MvR+zeFVIHboZH
-        Wo3xqELurWD6ct6XjXkIoQ==
-X-Google-Smtp-Source: ABdhPJw2tthmlm9qoNnSw4eeN8+rkSiRKaShVkLC0HF+AgZyqkVjnFYUU+osAFeTS6t5LGKOREzh5g==
-X-Received: by 2002:aca:b645:: with SMTP id g66mr6539604oif.64.1617296826773;
-        Thu, 01 Apr 2021 10:07:06 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id u2sm1147627oic.28.2021.04.01.10.07.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 10:07:05 -0700 (PDT)
-Received: (nullmailer pid 619798 invoked by uid 1000);
-        Thu, 01 Apr 2021 17:07:04 -0000
-Date:   Thu, 1 Apr 2021 12:07:04 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/6] dt-bindings: reserved-memory: Add Owl SoC serial
- number binding
-Message-ID: <20210401170704.GA610119@robh.at.kernel.org>
-References: <cover.1617110420.git.cristian.ciocaltea@gmail.com>
- <fb74862bec15f1e9e0c4d8b70ebd6c07c6eb1a40.1617110420.git.cristian.ciocaltea@gmail.com>
+        Thu, 1 Apr 2021 13:37:19 -0400
+Received: from smtp-8faf.mail.infomaniak.ch (smtp-8faf.mail.infomaniak.ch [IPv6:2001:1600:3:17::8faf])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9AC2C03117B
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 10:11:04 -0700 (PDT)
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4FB8pb136rzMqMD8;
+        Thu,  1 Apr 2021 19:11:03 +0200 (CEST)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4FB8pQ6Nzrzlh8TN;
+        Thu,  1 Apr 2021 19:10:54 +0200 (CEST)
+Subject: Re: [PATCH v31 07/12] landlock: Support filesystem access-control
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Jann Horn <jannh@google.com>, Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        David Howells <dhowells@redhat.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-security-module@vger.kernel.org, x86@kernel.org,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>
+References: <20210324191520.125779-1-mic@digikod.net>
+ <20210324191520.125779-8-mic@digikod.net>
+ <d2764451-8970-6cbd-e2bf-254a42244ffc@digikod.net>
+ <YGUslUPwp85Zrp4t@zeniv-ca.linux.org.uk>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <84e1cd29-0f09-1ed4-c680-65ca8c6988a3@digikod.net>
+Date:   Thu, 1 Apr 2021 19:12:05 +0200
+User-Agent: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fb74862bec15f1e9e0c4d8b70ebd6c07c6eb1a40.1617110420.git.cristian.ciocaltea@gmail.com>
+In-Reply-To: <YGUslUPwp85Zrp4t@zeniv-ca.linux.org.uk>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 04:48:16PM +0300, Cristian Ciocaltea wrote:
-> Add devicetree binding for the Actions Semi Owl SoC serial number
-> reserved-memory range.
-> 
-> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> ---
->  .../actions,owl-soc-serial.yaml               | 53 +++++++++++++++++++
->  1 file changed, 53 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/reserved-memory/actions,owl-soc-serial.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/reserved-memory/actions,owl-soc-serial.yaml b/Documentation/devicetree/bindings/reserved-memory/actions,owl-soc-serial.yaml
-> new file mode 100644
-> index 000000000000..41b71f47ee6c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/reserved-memory/actions,owl-soc-serial.yaml
-> @@ -0,0 +1,53 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/reserved-memory/actions,owl-soc-serial.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Actions Semi Owl reserved-memory for SoC serial number
-> +
-> +maintainers:
-> +  - Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> +
-> +description: |
-> +  Provide access to the memory region where the two parts of the Actions
-> +  Semi Owl SoC serial number (low & high) can be read from. This information
-> +  is provided by the bootloader, hence expose it under /reserved-memory node.
-> +
-> +  Please refer to reserved-memory.txt in this directory for common binding
-> +  part and usage.
-> +
-> +  This is currently supported only on the S500 SoC variant.
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - const: actions,owl-soc-serial
-> +      - items:
-> +          - enum:
-> +              - actions,s500-soc-serial
-> +          - const: actions,owl-soc-serial
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: true
-> +
-> +examples:
-> +  - |
-> +    reserved-memory {
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +        ranges;
-> +
-> +        soc_serial: soc-serial@800 {
-> +            compatible = "actions,s500-soc-serial", "actions,owl-soc-serial";
-> +            reg = <0x800 0x8>;
 
-You end up wasting a whole page of memory for 8 bytes. It may be better 
-to copy this to a DT property ('serial-number' is already a defined root 
-property).
+On 01/04/2021 04:14, Al Viro wrote:
+> On Wed, Mar 31, 2021 at 07:33:50PM +0200, Mickaël Salaün wrote:
+> 
+>>> +static inline u64 unmask_layers(
+>>> +		const struct landlock_ruleset *const domain,
+>>> +		const struct path *const path, const u32 access_request,
+>>> +		u64 layer_mask)
+>>> +{
+>>> +	const struct landlock_rule *rule;
+>>> +	const struct inode *inode;
+>>> +	size_t i;
+>>> +
+>>> +	if (d_is_negative(path->dentry))
+>>> +		/* Continues to walk while there is no mapped inode. */
+> 				     ^^^^^
+> Odd comment, that...
 
-Rob
+I'll replace that with something more appropriate, e.g. "Ignore
+nonexistent leafs".
+
+> 
+>>> +static int check_access_path(const struct landlock_ruleset *const domain,
+>>> +		const struct path *const path, u32 access_request)
+>>> +{
+> 
+>>> +	walker_path = *path;
+>>> +	path_get(&walker_path);
+> 
+>>> +	while (true) {
+>>> +		struct dentry *parent_dentry;
+>>> +
+>>> +		layer_mask = unmask_layers(domain, &walker_path,
+>>> +				access_request, layer_mask);
+>>> +		if (layer_mask == 0) {
+>>> +			/* Stops when a rule from each layer grants access. */
+>>> +			allowed = true;
+>>> +			break;
+>>> +		}
+>>> +
+>>> +jump_up:
+>>> +		if (walker_path.dentry == walker_path.mnt->mnt_root) {
+>>> +			if (follow_up(&walker_path)) {
+>>> +				/* Ignores hidden mount points. */
+>>> +				goto jump_up;
+>>> +			} else {
+>>> +				/*
+>>> +				 * Stops at the real root.  Denies access
+>>> +				 * because not all layers have granted access.
+>>> +				 */
+>>> +				allowed = false;
+>>> +				break;
+>>> +			}
+>>> +		}
+>>> +		if (unlikely(IS_ROOT(walker_path.dentry))) {
+>>> +			/*
+>>> +			 * Stops at disconnected root directories.  Only allows
+>>> +			 * access to internal filesystems (e.g. nsfs, which is
+>>> +			 * reachable through /proc/<pid>/ns/<namespace>).
+>>> +			 */
+>>> +			allowed = !!(walker_path.mnt->mnt_flags & MNT_INTERNAL);
+>>> +			break;
+>>> +		}
+>>> +		parent_dentry = dget_parent(walker_path.dentry);
+>>> +		dput(walker_path.dentry);
+>>> +		walker_path.dentry = parent_dentry;
+>>> +	}
+>>> +	path_put(&walker_path);
+>>> +	return allowed ? 0 : -EACCES;
+> 
+> That's a whole lot of grabbing/dropping references...  I realize that it's
+> an utterly tactless question, but... how costly it is?  IOW, do you have
+> profiling data?
+
+It looks like a legitimate question.
+
+First, Landlock may not be appropriate for every workloads. The
+check_access_path()'s complexity is now linear, which is a consequence
+of the "unprivileged" target (i.e. multiple layers of file hierarchies).
+Adding caching should help a lot to improve performance (i.e. limit the
+path walking), but it will come with future improvements.
+
+I profiled a "find" loop on the linux-5.12-rc3 source tree in a tmpfs
+(and with cached entries): openat(2) calls spend ~30% of their time in
+check_access_path() with a base directory of one parent (/linux) and
+~45% with a base directory of ten parents (/1/2/3/4/5/6/7/8/9/linux).
+Overall, the performance impact is between 3.0% (with a minimum depth of
+1) and 5.4% (with a minimum depth of 10) of the full execution time of
+these worse case scenarios, which are ~4800 openat(2) calls. This is not
+a surprise and doesn't seem so bad without optimization.
+
+
+> 
+>>> +/*
+>>> + * pivot_root(2), like mount(2), changes the current mount namespace.  It must
+>>> + * then be forbidden for a landlocked process.
+> 
+> ... and cross-directory rename(2) can change the tree topology.  Do you ban that
+> as well?
+> 
+> [snip]
+> 
+>>> +static int hook_path_rename(const struct path *const old_dir,
+>>> +		struct dentry *const old_dentry,
+>>> +		const struct path *const new_dir,
+>>> +		struct dentry *const new_dentry)
+>>> +{
+>>> +	const struct landlock_ruleset *const dom =
+>>> +		landlock_get_current_domain();
+>>> +
+>>> +	if (!dom)
+>>> +		return 0;
+>>> +	/* The mount points are the same for old and new paths, cf. EXDEV. */
+>>> +	if (old_dir->dentry != new_dir->dentry)
+>>> +		/* For now, forbids reparenting. */
+>>> +		return -EACCES;
+> 
+> You do, apparently, and not in a way that would have the userland fall
+> back to copy+unlink.  Lovely...  Does e.g. git survive such restriction?
+> Same question for your average package build...
+
+As explained in the documentation, there is some limitations that make
+this first step not appropriate for all use cases. I'll use EXDEV to
+gracefully forbid reparenting, which gives a chance to userspace to deal
+with that. It may not be enough for package management though. I plan to
+address such limitation with future evolutions.
+
+Thanks for these suggestions.
