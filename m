@@ -2,105 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ECD6351449
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 13:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF90351454
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 13:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234319AbhDALLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 07:11:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234035AbhDALLL (ORCPT
+        id S234387AbhDALL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 07:11:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39606 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234325AbhDALLt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 07:11:11 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA08DC061797;
-        Thu,  1 Apr 2021 04:11:10 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id b16so1491642eds.7;
-        Thu, 01 Apr 2021 04:11:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=s2HcVSCCLJRWL3IhED4YLi8u+pfQMoybfhbgzWH6HrA=;
-        b=ljQI1XsW+DquJSGEy0G7DK4/p6OaZwF181DDDMWlkdjbRwtvUBa0K/TT/MK1Qy9bES
-         l93FC7pgMId+NgeRUCyBeHpE0oIeJN/2dSOZ1AbXjJTHF5zIrOtu/l7GuH30cjT25xJI
-         3JqeUVr1T1DeZIGhbm0zZ4KXuxBZPLIN4X07iDg00yGb73xcy7Z17OeAHXceAOk0nB0Z
-         UZnGlksE2tYeUpCQAcV+Dd2P2eH/bTA87ZusI7WQ4vtF6/g4e5TgYE0sqstUM68KnrGI
-         jH6JvMCb+OpojpRxyXNISem8QmO3K39UGCLyEsVaTBp36jnXBYnkxcnefUniggq0aKR8
-         Kphw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=s2HcVSCCLJRWL3IhED4YLi8u+pfQMoybfhbgzWH6HrA=;
-        b=ZwicFt4vfORUAtrP54UmiUgCXWrK4zN9GzyXof9AvlQKnEaXDmULPgpGaSIm9/C9b2
-         L38E1LPmTucglRk4TtsLZbw/p+VftqQ1b3DjUmAte97AM3c0NcQR65+zOmhqg7Ug4LV5
-         hm6mTVl3H6iwDt9PobDp5K+vKJHM4kNaRZmZh8EThz/0u76csKJn2poOn1IImFXhNaUs
-         xmuOlUkyCnor7IokDGgT1Hz+awFXtdO1gCO/9l6v7NwyHidIfeeAEmFunHE/CeaiCnYk
-         vuFnk7QxdRNxiknkH5JVhKSRV6AXVawOUPiOam2dI9rE5mzrVxz6EWdWsvSejwmLqgeT
-         ZaTA==
-X-Gm-Message-State: AOAM533Fps+e+WqhISghAze+ufP9rERR3fw3IHwdGKeU/JdPsXhPK9xV
-        KDnx8x60bFRr92/z1Su8JDUHZBlbD4Q=
-X-Google-Smtp-Source: ABdhPJytPMshfe7m91EyPFJIynR8WWxD4OQSsiN4bJZBRzrMNzbdF3ZrppfRAh72Ru/RhRB+QsMKaw==
-X-Received: by 2002:a50:e882:: with SMTP id f2mr9340058edn.184.1617275469324;
-        Thu, 01 Apr 2021 04:11:09 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id ak20sm2581050ejc.72.2021.04.01.04.11.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 04:11:08 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 13:11:36 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     linux-i2c@vger.kernel.org, Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFT 2/2] i2c: tegra-bpmp: make some functions void
-Message-ID: <YGWqaOynDZvQ4q5u@orome.fritz.box>
-References: <20210331075141.22227-1-wsa@kernel.org>
- <20210331075141.22227-3-wsa@kernel.org>
+        Thu, 1 Apr 2021 07:11:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617275508;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wJkEd7cUvYTeRV/iEXpdtoXis6pieALRjw6SuJS8/i8=;
+        b=A1RbMyYg3Z/NB2zvaikMd3nQgYX6zQiKbuhbLxbT2aUt0MrOFTraZJ4DQXlf6uTgwogRhH
+        8kpslVCetd9LJh1iZb65t0ZINLpyoNmJY25yZ3XHDgah6S98QLWX1mdMxVsKSTIBCMVOH2
+        8LBUDjRR+UfE6uTkWRlqsmA3Fslr34M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-598-IzKQ3i9nNnm-EJNdcp740A-1; Thu, 01 Apr 2021 07:11:46 -0400
+X-MC-Unique: IzKQ3i9nNnm-EJNdcp740A-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 984C6107ACCA;
+        Thu,  1 Apr 2021 11:11:43 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-58.rdu2.redhat.com [10.10.112.58])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 39BBD5D9CA;
+        Thu,  1 Apr 2021 11:11:39 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <CAFLxGvwNomKOo3mQLMxYGDA8T8zN=Szpo2q5jrp4D1CaMHydWA@mail.gmail.com>
+References: <CAFLxGvwNomKOo3mQLMxYGDA8T8zN=Szpo2q5jrp4D1CaMHydWA@mail.gmail.com> <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de> <CAFLxGvzWLje+_HFeb+hKNch4U1f5uypVUOuP=QrEPn_JNM+scg@mail.gmail.com> <ca2a7c17-3ed0-e52f-2e2f-c0f8bbe10323@pengutronix.de>
+To:     Richard Weinberger <richard.weinberger@gmail.com>
+Cc:     dhowells@redhat.com, Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        James Bottomley <jejb@linux.ibm.com>, kernel@pengutronix.de,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        David Gstir <david@sigma-star.at>,
+        Franck LENORMAND <franck.lenormand@nxp.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        LSM <linux-security-module@vger.kernel.org>
+Subject: Re: [PATCH v1 0/3] KEYS: trusted: Introduce support for NXP CAAM-based trusted keys
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Tz59CajpPpnP8faV"
-Content-Disposition: inline
-In-Reply-To: <20210331075141.22227-3-wsa@kernel.org>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3714193.1617275498.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Thu, 01 Apr 2021 12:11:38 +0100
+Message-ID: <3714194.1617275498@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Richard Weinberger <richard.weinberger@gmail.com> wrote:
 
---Tz59CajpPpnP8faV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Wed, Mar 17, 2021 at 3:08 PM Ahmad Fatoum <a.fatoum@pengutronix.de> w=
+rote:
+> >     keyctl add trusted $KEYNAME "load $(cat ~/kmk.blob)" @s
+>
+> Is there a reason why we can't pass the desired backend name in the
+> trusted key parameters?
+> e.g.
+> keyctl add trusted $KEYNAME "backendtype caam load $(cat ~/kmk.blob)" @s
 
-On Wed, Mar 31, 2021 at 09:51:41AM +0200, Wolfram Sang wrote:
-> They return 0 always, so save some lines and code.
->=20
-> Signed-off-by: Wolfram Sang <wsa@kernel.org>
-> ---
->  drivers/i2c/busses/i2c-tegra-bpmp.c | 20 ++++----------------
->  1 file changed, 4 insertions(+), 16 deletions(-)
+I wonder...  Does it make sense to add a new variant of the add_key() and
+keyctl_instantiate() syscalls that takes an additional parameter string,
+separate from the payload blob?
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+       key_serial_t add_key2(const char *type, const char *description,
+			     const char *params,
+                             const void *payload, size_t plen,
+                             key_serial_t keyring);
 
---Tz59CajpPpnP8faV
-Content-Type: application/pgp-signature; name="signature.asc"
+which could then by used, say:
 
------BEGIN PGP SIGNATURE-----
+	keyctl add --payload=3D~/kmk.blob trusted $KEYNAME "backendtype caam load=
+" @s
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBlqmcACgkQ3SOs138+
-s6GObA//fgBvfAUilYNrbW31wPJOnNX0fX7Jt2XqeS27SJBuSnQ4lyeQ9GLg8DRs
-TJWuoHW/8fLZyEvy8CTM5foyotJg/hj2ygzZNZE9c3khIjIkfZCZsJhoDJ+z+fcX
-arvJ7sefXjVRgBUo5RwQ2bizG9mVeF6OsEWrC/OjGe+NLza8lYOYFv5/BoqtB5qa
-9SI2XSCATBWDWGcc5bjivbJ4UIE45cW8YK+LOFupy3IYAwRDlFqCw4Uw4tqa6zKT
-MIRDv/6VFbTOBAHOuRtCrsPiACovbep3bz5ryQ86PBakYzMIDNQd9UAMLSpZUUnW
-TCcH3u8GqtfsPlnbFr6774/B7klc+AoyHZTSXe+g+VDTRDuE5RiJhpPNYQp9p6QU
-OKAx+uzLyZkhjQTbhn3zAPuwTnqJOzGqlSB5jy4vx7cHepVf4LAOxJhnl3TGh5xL
-R5ImO+uZ3V9ETHFICtCrZchcddqXEhAWLjo0asGfDzuIgq5aNtd+3cCnP5Dbx2LQ
-h7X516FbAItFGtn3uRS2monwcvKeiK8c0sgocqHHRXViZP24ekXtgKZNX3dZQkzd
-M3q6cL1uX9KDBgSoYdZpEYLBWpkrFTU3zEwxZYliJE7XgaOEghDrmg4EwgKQOOUl
-YVUTgEG4Lr7RKuQDLOnv0ov1Z3+sC7ox4luJLW9ITJ0ZiAgv4h0=
-=Q+Bx
------END PGP SIGNATURE-----
+This would then appear in
 
---Tz59CajpPpnP8faV--
+	struct key_preparsed_payload {
+		const char	*orig_description;
+		char		*description;
+		char		*params;	<---
+		union key_payload payload;
+		const void	*data;
+		size_t		datalen;
+		size_t		quotalen;
+		time64_t	expiry;
+	};
+
+params would then be NULL for add_key().
+
+If add_key2() is not available, the --payload param gets concatenated to t=
+he
+parameters string.
+
+Might be too complicated, I guess.  Though it might make sense just to do =
+the
+concatenation inside the keyctl program.
+
+David
+
