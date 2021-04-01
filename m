@@ -2,127 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E97223522B0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 00:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A07753522B3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 00:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236239AbhDAWPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 18:15:00 -0400
-Received: from mga07.intel.com ([134.134.136.100]:20469 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233710AbhDAWOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 18:14:32 -0400
-IronPort-SDR: teoagGWmpeE3VXSLZSJ8A934q3GI2p+WFaIw0jvX45FbQ6A/HXvtEwge7uxjmeMxuiR66ucpRP
- i7+SrwHjaPlA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="256322613"
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="256322613"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 15:14:29 -0700
-IronPort-SDR: 4UZdjzxA+n9288G5UQT4CLuxI057gYd9lwhM+eVMUBVgkVYelhKG0aXgVHfl+NVtS1TJyk6T+C
- Nn7+Hf1MLtKg==
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="394700370"
-Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 15:14:26 -0700
-From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
-To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Subject: [PATCH v24 9/9] x86/vdso: Add ENDBR to __vdso_sgx_enter_enclave
-Date:   Thu,  1 Apr 2021 15:14:03 -0700
-Message-Id: <20210401221403.32253-10-yu-cheng.yu@intel.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210401221403.32253-1-yu-cheng.yu@intel.com>
-References: <20210401221403.32253-1-yu-cheng.yu@intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S234292AbhDAWQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 18:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231550AbhDAWQX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 18:16:23 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5897BC0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 15:16:23 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id j25so2439092pfe.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 15:16:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=jKf/bIRuPNdm99ftg+yWOdYdbkeJfbztmf6+BPi3ElY=;
+        b=X76vwLT0ntTAWOqsz8Btk1VEg5vPVNk1nmpwaxxyJIF09eN/IEPp6XA4T4ZI8ptzaT
+         hSZYH0ORceccsuZI3SHstGm+vUz3jALF7vsVgUjDxxQ+DVHEFVO2AWGiewl38t/dCDQ1
+         2bSGeikoQ6Wd51f6QWHVm9Teoh7rXDH6YR6XPgwyn2lrDSh07m9aW8/QLobKMN+hYHKB
+         i9hIj53hO3YLAgW+Fi8mHMLsV9nIYUFPVLhiNo243JP9DWwjWfbMKr8SjEBhfPEC3VUr
+         SqhKadcZ4++9/0pUePggaXY9fcd3hsqMvufm08Habk4J0SZgYEw9u0tCNsww0CbX5v2r
+         NEjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=jKf/bIRuPNdm99ftg+yWOdYdbkeJfbztmf6+BPi3ElY=;
+        b=o8pODQIx8jUScrmeYD6VsSsH09VKIneNlBDWx3ExaAphBb4kASPNgwkgnnhK0xZNbN
+         sTUGwDbCvDbay/R1wFBX8+fn2mCiKLUeV8FXIJJ4AulvqB4QH8MjrL0EJx/6WwVSpSXz
+         t5pRLCtiTXySUCvrGtr9aftbL+lErusSwK0Bi5PxXOPwncetmS+7yHciC84jrhSKwvsr
+         uvnEPrYDtSPEom5d1MHSnXaDMSv7txXrgUZUC2eVBrJsxE1GGNbqaYG86gG0Inu5fBU0
+         1rDSjcDvVzwhHGCQ8PfQHPHQ4OE+eAZgQTst1Lhtwvb8xVmK9Ki55ITUKxlJqdHtvCtM
+         lsYQ==
+X-Gm-Message-State: AOAM531DjTjFBcnFBW7vz5WJScDny93FrCLw9wLcAVCjM9G9DBOCU/4/
+        SNGQs4oAAgbpTYf2p1HaHJw=
+X-Google-Smtp-Source: ABdhPJwq98b+N3OmXaW1KI7KAXTj63JC2IIm3/JD4nBy0uhhR/VSx5K0dj+qF9ws4h1GNTJxnpQCqA==
+X-Received: by 2002:a65:4c43:: with SMTP id l3mr9284964pgr.327.1617315383009;
+        Thu, 01 Apr 2021 15:16:23 -0700 (PDT)
+Received: from djbComp.hitronhub.home (S0106ac202ecb0523.gv.shawcable.net. [70.67.120.89])
+        by smtp.gmail.com with ESMTPSA id d13sm6671494pgb.6.2021.04.01.15.16.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 15:16:22 -0700 (PDT)
+From:   Deborah Brouwer <deborahbrouwer3563@gmail.com>
+To:     gregkh@linuxfoundation.org, ross.schm.dev@gmail.com,
+        marcocesati@gmail.com, fabioaiuto83@gmail.com,
+        dan.carpenter@oracle.com, phil@philpotter.co.uk,
+        amarjargal16@gmail.com
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com,
+        Deborah Brouwer <deborahbrouwer3563@gmail.com>
+Subject: [PATCH v3 0/3] staging: rtl8723bs: core: block comment style changes
+Date:   Thu,  1 Apr 2021 15:15:39 -0700
+Message-Id: <cover.1617314121.git.deborahbrouwer3563@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ENDBR is a special new instruction for the Indirect Branch Tracking (IBT)
-component of CET.  IBT prevents attacks by ensuring that (most) indirect
-branches and function calls may only land at ENDBR instructions.  Branches
-that don't follow the rules will result in control flow (#CF) exceptions.
+Style changes to block comments.
 
-ENDBR is a noop when IBT is unsupported or disabled.  Most ENDBR
-instructions are inserted automatically by the compiler, but branch
-targets written in assembly must have ENDBR added manually.
+Changes since v2:
+	- add subsystem/driver prefix into 0/X email subject line
+Changes since v1:
+	- all commit messages more accurately describe changes
 
-Add ENDBR to __vdso_sgx_enter_enclave() branch targets.
+Deborah Brouwer (3):
+  staging: rtl8723bs: core: add comma within a comment
+  staging: rtl8723bs: core: add * to block comments
+  staging: rtl8723bs: core: remove empty comment
 
-Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Jarkko Sakkinen <jarkko@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
----
- arch/x86/entry/vdso/vsgx.S | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/staging/rtl8723bs/core/rtw_xmit.c | 61 +++++++++++------------
+ 1 file changed, 28 insertions(+), 33 deletions(-)
 
-diff --git a/arch/x86/entry/vdso/vsgx.S b/arch/x86/entry/vdso/vsgx.S
-index 86a0e94f68df..c63eafa54abd 100644
---- a/arch/x86/entry/vdso/vsgx.S
-+++ b/arch/x86/entry/vdso/vsgx.S
-@@ -4,6 +4,7 @@
- #include <asm/export.h>
- #include <asm/errno.h>
- #include <asm/enclu.h>
-+#include <asm/vdso.h>
- 
- #include "extable.h"
- 
-@@ -27,6 +28,7 @@
- SYM_FUNC_START(__vdso_sgx_enter_enclave)
- 	/* Prolog */
- 	.cfi_startproc
-+	ENDBR
- 	push	%rbp
- 	.cfi_adjust_cfa_offset	8
- 	.cfi_rel_offset		%rbp, 0
-@@ -62,6 +64,7 @@ SYM_FUNC_START(__vdso_sgx_enter_enclave)
- .Lasync_exit_pointer:
- .Lenclu_eenter_eresume:
- 	enclu
-+	ENDBR
- 
- 	/* EEXIT jumps here unless the enclave is doing something fancy. */
- 	mov	SGX_ENCLAVE_OFFSET_OF_RUN(%rbp), %rbx
-@@ -91,6 +94,7 @@ SYM_FUNC_START(__vdso_sgx_enter_enclave)
- 	jmp	.Lout
- 
- .Lhandle_exception:
-+	ENDBR
- 	mov	SGX_ENCLAVE_OFFSET_OF_RUN(%rbp), %rbx
- 
- 	/* Set the exception info. */
--- 
-2.21.0
+--
+2.17.1
 
