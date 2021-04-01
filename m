@@ -2,92 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 954CB351C64
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10980351DAB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234444AbhDASRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:17:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34008 "EHLO
+        id S240728AbhDASbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:31:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237136AbhDAR7g (ORCPT
+        with ESMTP id S238173AbhDASFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:59:36 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B79C02FE99
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 09:04:18 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id g38so2273589ybi.12
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 09:04:18 -0700 (PDT)
+        Thu, 1 Apr 2021 14:05:39 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD69CC02FE9A;
+        Thu,  1 Apr 2021 09:05:19 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id s17so2827084ljc.5;
+        Thu, 01 Apr 2021 09:05:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sUBBxIsh5MoadReGP/VqLbxohML6QjbcEagpy6zr2XU=;
-        b=kgGoI1mi73jJD6vU65ZjfSW989i3YggKxTExgsujUPG2obK52+EqLs3uOVTYfZIwvS
-         zIpdGcgqASulxt+rZ5WjRLODKT93fo5mJAsIYXfg7bKukY4PJNYKVVCG7WgoFiU+mwtj
-         hcoIxKw8pdNBbIvX7rerUuJEa5a0V20aWrMKo/IMqB5QW2n1+TRXL/6ClTWQabbYsytE
-         2s0MGIGrkq5F9P8qW40p/EKzwRoXNCh1+nYnSvM6YgvmJnM7s536PwfhYAPXmX+BEtiR
-         beJ66gKeaeuXmHOwilFjAUIN26vIU106ceWCK1wWhmUY0bdzn42lqhUkxnOZ1QJO//1R
-         mSCA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fqynJVVZ2cB44xaw315Sqcrb3lwmjqvG2iG56aPW2jw=;
+        b=jcg7fuvsYT6tVNiLrSOyZ7mifgwD1llEGtiG0RN040hAWbzxEOEXmNn/4OiUVLiyWR
+         JH4dmS0b4jw4r7bo2Y9SBET5mZRZcQh5l2tRdal/Y/7wkcEp9d2tsVAdbiLe8+c5SxeV
+         v9H1jb0XZynFnhoGWfXAuJw5mIoPY30lTBgTk60xyTo8CbyUdvTNY1ktwRx6kiIuyzqU
+         4PWYa2PavsJfJ3I5j26svNrsrdG+zikOg0x1J8EO/BIE94cBmLlt65o8KtSvxNpgZlsr
+         +9jyLTfd1XoUjay5tkK/2Rdhk5X7cyZlJyOMSdvZIv737VHXjgzRAZ9T8iZdiopAcrnq
+         oo1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sUBBxIsh5MoadReGP/VqLbxohML6QjbcEagpy6zr2XU=;
-        b=A9VfslQqXVSV3f9wqXJaKH0Sj1ixacSI8uuyKh8fnVHti6/gYH+tdzwiBDAPRmtxhv
-         Kii1KO43ZIGoZmdWiRBQyOtj+1slGwvpfng9uUbr0JLoC4KB7Ga84XdQWoATIzw2P5Lj
-         J7XEnNDVaQvD9wzamYKaf8fG9BuEC6VAgclApQzz1XZAr7S72jK0Cm85XIJw6EtvtExV
-         B0iYKuAQxSEc5ovglK2d2pf0X40H7O5OcJS653fL/qHsDV5ROmYq/8ddAJ6Ayzp0WF2D
-         z5o8nX5ktEiVTbZ+849ZWFSX3wkS8E9/WxLBIK1EVjFGcPBlGqMqgdau2f2+jVR/VKuB
-         i1lA==
-X-Gm-Message-State: AOAM531L9z3B39Ja5oBnkHvLzoSPAoReII3Ch7MbRs6+8dslbLuwlNBy
-        oymBG2uG0RA0iDilVDHCp5LoqHdZWpMWB4hjGAkpzA==
-X-Google-Smtp-Source: ABdhPJy9LhPezyvzgsg7ZroTaiT8wXFSCxJWKBWR93Vq5xwa7AbGV2rFFaql2dzdLKzB4TEZ2VQm4+2+1V7LIj71wDE=
-X-Received: by 2002:a25:3614:: with SMTP id d20mr12775432yba.452.1617293057194;
- Thu, 01 Apr 2021 09:04:17 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fqynJVVZ2cB44xaw315Sqcrb3lwmjqvG2iG56aPW2jw=;
+        b=P7+OEkz/ruG6GXZvFtGm8EcqyfEyXNQGo6Uu9KQMnIQWLPsVbZkPV2arxUUZN/4EV7
+         FJGeLtm9ku9KnBGpfcQWZ7a28J6/D8f3mZtunAz4grntkdyYlO9BDVqCZtQ6rWxLzefR
+         7ymURRxsVlOiNb/F/I45F9jgFviAEMOWBF9FgA7zBeQ5Q8ngzuCo2FNhIc1zzrKFFemT
+         EQoXiuTC7OinnI4nEpkCLCZ1JWknRltNjp9EOg/NHbtg1sGnkNDZD31DRxJISBWk0610
+         N1122wEw92uWaeyzAFI/7clL1hMWjdBFVeKmBiaWi+MWKnF85USMZ26NDgRUn7GE56Bd
+         il7g==
+X-Gm-Message-State: AOAM5310H105Bb9v6N2WDgYP2RkvniOL8fPoczm1icXoLjWCqMTgN4Hs
+        GB/SI4AkmM9C9eQ1/2hUqfg=
+X-Google-Smtp-Source: ABdhPJwa2eL2K1ph5ihS0er9vHmhhI76wYmFRO0aiNfMCkFSPr17ZtnJt89Hf1uUPJ3gOrSwW4RF8A==
+X-Received: by 2002:a2e:2a44:: with SMTP id q65mr6064094ljq.238.1617293118156;
+        Thu, 01 Apr 2021 09:05:18 -0700 (PDT)
+Received: from 192.168.1.8 ([212.59.242.58])
+        by smtp.gmail.com with ESMTPSA id f23sm582226lfc.283.2021.04.01.09.05.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 09:05:17 -0700 (PDT)
+From:   Maciej Falkowski <maciej.falkowski9@gmail.com>
+To:     aaro.koskinen@iki.fi, tony@atomide.com, linux@armlinux.org.uk
+Cc:     linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        maciej.falkowski9@gmail.com
+Subject: [PATCH] ARM: OMAP1: ams-delta: remove unused function ams_delta_camera_power
+Date:   Thu,  1 Apr 2021 18:04:34 +0200
+Message-Id: <20210401160434.7655-1-maciej.falkowski9@gmail.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-References: <20210401155704.35341-1-otto.hollmann@suse.com>
-In-Reply-To: <20210401155704.35341-1-otto.hollmann@suse.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 1 Apr 2021 18:04:05 +0200
-Message-ID: <CANn89iJvtuT4q-djaCzoGJTY68vE8wT+LVDkYGm=8_XzC9gchg@mail.gmail.com>
-Subject: Re: [PATCH net-next] net: document a side effect of ip_local_reserved_ports
-To:     Otto Hollmann <otto.hollmann@suse.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Ahern <dsahern@kernel.org>,
-        Michal Kubecek <mkubecek@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 5:58 PM Otto Hollmann <otto.hollmann@suse.com> wrote=
-:
->
->     If there is overlapp between ip_local_port_range and ip_local_reserve=
-d_ports with a huge reserved block, it will affect probability of selecting=
- ephemeral ports, see file net/ipv4/inet_hashtables.c:723
->
->     int __inet_hash_connect(
->     ...
->             for (i =3D 0; i < remaining; i +=3D 2, port +=3D 2) {
->                     if (unlikely(port >=3D high))
->                             port -=3D remaining;
->                     if (inet_is_local_reserved_port(net, port))
->                             continue;
->
->     E.g. if there is reserved block of 10000 ports, two ports right after=
- this block will be 5000 more likely selected than others.
->     If this was intended, we can/should add note into documentation as pr=
-oposed in this commit, otherwise we should think about different solution. =
-One option could be mapping table of continuous port ranges. Second option =
-could be letting user to modify step (port+=3D2) in above loop, e.g. using =
-new sysctl parameter.
->
-> Signed-off-by: Otto Hollmann <otto.hollmann@suse.com>
+The ams_delta_camera_power() function is unused as reports
+Clang compilation with omap1_defconfig on linux-next:
 
-I think we can view this as a security bug that needs a fix.
+arch/arm/mach-omap1/board-ams-delta.c:462:12: warning: unused function 'ams_delta_camera_power' [-Wunused-function]
+static int ams_delta_camera_power(struct device *dev, int power)
+           ^
+1 warning generated.
+
+The soc_camera support was dropped without removing
+ams_delta_camera_power() function, making it unused.
+
+Signed-off-by: Maciej Falkowski <maciej.falkowski9@gmail.com>
+Fixes: ce548396a433 ("media: mach-omap1: board-ams-delta.c: remove soc_camera dependencies")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1326
+---
+ arch/arm/mach-omap1/board-ams-delta.c | 14 --------------
+ 1 file changed, 14 deletions(-)
+
+diff --git a/arch/arm/mach-omap1/board-ams-delta.c b/arch/arm/mach-omap1/board-ams-delta.c
+index 2ee527c00284..1026a816dcc0 100644
+--- a/arch/arm/mach-omap1/board-ams-delta.c
++++ b/arch/arm/mach-omap1/board-ams-delta.c
+@@ -458,20 +458,6 @@ static struct gpiod_lookup_table leds_gpio_table = {
+ 
+ #ifdef CONFIG_LEDS_TRIGGERS
+ DEFINE_LED_TRIGGER(ams_delta_camera_led_trigger);
+-
+-static int ams_delta_camera_power(struct device *dev, int power)
+-{
+-	/*
+-	 * turn on camera LED
+-	 */
+-	if (power)
+-		led_trigger_event(ams_delta_camera_led_trigger, LED_FULL);
+-	else
+-		led_trigger_event(ams_delta_camera_led_trigger, LED_OFF);
+-	return 0;
+-}
+-#else
+-#define ams_delta_camera_power	NULL
+ #endif
+ 
+ static struct platform_device ams_delta_audio_device = {
+-- 
+2.26.3
+
