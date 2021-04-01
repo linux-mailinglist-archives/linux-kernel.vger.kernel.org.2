@@ -2,148 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE3B3521EC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D18B3521FB
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 00:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235169AbhDAV5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 17:57:22 -0400
-Received: from mail-bn8nam12on2080.outbound.protection.outlook.com ([40.107.237.80]:54144
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233974AbhDAV5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 17:57:21 -0400
+        id S233984AbhDAWHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 18:07:10 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:28496 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231179AbhDAWHJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 18:07:09 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 131Ll97B014357;
+        Thu, 1 Apr 2021 15:05:10 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : references
+ : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=1ETaSawiMa2aMcGAbnbqvkziWsGvAO8Rmh41ke91RCE=;
+ b=Pxz3ct5R4taVrqss8P5tcSkr2rhdPDe4haQ9jSK7w+BDPm4t4PHk9+VdTRHsWRnRzn9v
+ 2vQ2WDtRTkBsF6G/I7TDeviSlNKlja2uu9EUWucf+MfFMspjQYjCbZRTrWxEIXwtTEn2
+ vaABsTEcJVpbwGsUrFn5EJwxQtf5CKIoljY= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 37n29nekrw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 01 Apr 2021 15:05:09 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 1 Apr 2021 15:05:08 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Jp0jZ2pLJwqRDagQm61EFVTNwuiwmEt+iIz8WbHnjGf5UdbAezXVV/hRmdN7vd+lTNDfovJbHnvG+oTjnUJZfO1nBCIEp0V1Iw6Ttjc0csk4if/g9IAshilLfAchFv/6OQwe778OPN8DoJelA6Gjkmkxe2aYN3cpp7soSalyzAWglEKuHAVA86dMH5eYRl3t51GdNtTM5NQ1O2xkI4NA63zpuWAxIafgXLOL2VZCcjpJBrN2Jt4JmBhw5g6tNOVD5N4s8wpbIf1xfPPRF7dlHOHt4wh4CvS1gvPVMVJwOCNTZCglrN28tiL/zvZUpCh5cbEpa/mzMo+Clpma2vLHDw==
+ b=RuSdKxLAPCKa1gZN/mK6T/axNgFyNSxk1zC7VlCPIKqyYPjqvOUo/ibnRBr+N3dbK4wuK39ZyUBmmzmSKtyuy/T0G9K2PGNKB0uCn+oxaiIT+c1m9gry+aBsR9f2qzkkfdtUPu7Jhj/+rS6hduFjuqCnBDHFHt3+edDlnT6eNZhDH3V8435RftU6XT8hCeIcM86YZ+NdEI8K/FAFPJeaM6ULmagBWMjY5/Avw67b4DojDQi6FU63aw+Bdzw+tpxfsLIQhTWW47pRiTyPr7M1qw+65rYhzisgkDlDv/YUjhM7Gyh3RvEZ/dmg9CRTM786Idfa8FjlQylDOYG2HGuCqw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kiF+Ekaciqls+yFBaM3+dQvUKpVWCYwn5J82sDaQ6XI=;
- b=DQA+Cr0fLUAM0byNVFdArSyJL9hObF0iCCYtEB8PhuqXTmHE6GYvbZaJE25WtjvgqshGWjUcJ0qKgfnnnBQyhYj9fV1AHVa5INnHgaJkIZH6M8YvDDf8Ht0/Tbx0AKo3c+Qs3MsgL7gH4HsyfPB7/yJpATNRWQZVikV8sNPuK+MEDQtcBN3OWXKL8dlp6aVnX1rgEkJQjpu/BT9TPRsMzEAL6Pau12HNn/ruHuGvA3kTeSiWtJOO4POmxJIq/WgHbMrGry0d/04Wez/lZOk7s/mx6fivTl4ez6DBDaeZ3zVmgUzeRO6enGu25CDsuohdpePbHwsmrjXVpCfKaKEbTg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=lwn.net smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kiF+Ekaciqls+yFBaM3+dQvUKpVWCYwn5J82sDaQ6XI=;
- b=h4JL8USQqOv21wyJSTmDsUY3NVN5uSYmbgBVCNxNm+jQTpf0S1nV7xEP/IWojPVCyRXKOMV5DzKDfD6EOyFtubxq9KH26pAjSmixl9UI3rI+3aaDj6/6P/8SReBUXIxn6l1lIp1uv5L8dJn0z7xQGOgdU4GjSmn7ZYd2Zox9Kk9eStRRRLbWrO4DmYFxJzAck3KTWQqv9OwQQX0Bxwq/FtqLKQ4zv8TVPZAuQoV04JnhUKf4uIxke9pPQpqYTJoEe1ViSYyfWNVfHquIvm4QdGDOQmWgk2z6bnlEHjy6SdlrLLykqwQeEWGjnAeZX407lXcmguLutW+fYiUIjWnw1A==
-Received: from MWHPR04CA0039.namprd04.prod.outlook.com (2603:10b6:300:ee::25)
- by DM6PR12MB3435.namprd12.prod.outlook.com (2603:10b6:5:39::26) with
+ bh=1M4DfxESRASdXb6bG+ChtsLUHh7tzcHOKxccySz320s=;
+ b=Ch2ncFGjc26TPHnDdYdZJsd68d6LnCvltOcxlm39a9XwWOyVGwz1Oq6WrqkEVGyl2u51nCy4HzbPHT5lOSXBqzp88u46nYLnRQUCg+FGh+FplVdWhrIhjYEQ4TYhwhzRb5gkn7ni4EYiFdywH7wxDk0DySmDyLw2eqBvAK9dqwr/LzROePKj+h6zR0iNRQ4ewYVuYYopyOgs0jj7TYJ/laovx3iPFefL1HpKkLzuuA25obK/H/2DVaOlf+CZQRxjWrWpvLyUPcwox5730GBrfR9lrCo71BKpK7Tjjl1+fiDqOQ/rfjqZy5VASrB8WV1utN093ob8n2mDYWQPrlrHxg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SA1PR15MB4420.namprd15.prod.outlook.com (2603:10b6:806:197::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25; Thu, 1 Apr
- 2021 21:56:06 +0000
-Received: from CO1NAM11FT068.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:ee:cafe::b2) by MWHPR04CA0039.outlook.office365.com
- (2603:10b6:300:ee::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.26 via Frontend
- Transport; Thu, 1 Apr 2021 21:56:06 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; lwn.net; dkim=none (message not signed)
- header.d=none;lwn.net; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT068.mail.protection.outlook.com (10.13.175.142) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3999.28 via Frontend Transport; Thu, 1 Apr 2021 21:56:06 +0000
-Received: from [10.2.63.109] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 1 Apr
- 2021 21:56:06 +0000
-Subject: Re: [PATCH v2 7/7] ABI: sysfs-kernel-mm-cma: fix two cross-references
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        <linux-kernel@vger.kernel.org>
-References: <cover.1616668017.git.mchehab+huawei@kernel.org>
- <87907316390311c6b42e86c3ba9fb2f2903d9499.1616668017.git.mchehab+huawei@kernel.org>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <07220859-0a4e-34fb-9349-b3c7d011a108@nvidia.com>
-Date:   Thu, 1 Apr 2021 14:56:05 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-MIME-Version: 1.0
-In-Reply-To: <87907316390311c6b42e86c3ba9fb2f2903d9499.1616668017.git.mchehab+huawei@kernel.org>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27; Thu, 1 Apr
+ 2021 22:05:06 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::f433:fd99:f905:8912]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::f433:fd99:f905:8912%3]) with mapi id 15.20.3977.033; Thu, 1 Apr 2021
+ 22:05:06 +0000
+Subject: Re: [syzbot] WARNING in bpf_test_run
+To:     syzbot <syzbot+774c590240616eaa3423@syzkaller.appspotmail.com>,
+        <akpm@linux-foundation.org>, <andrii@kernel.org>, <ast@kernel.org>,
+        <bp@alien8.de>, <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
+        <davem@davemloft.net>, <hawk@kernel.org>, <hpa@zytor.com>,
+        <jmattson@google.com>, <john.fastabend@gmail.com>,
+        <joro@8bytes.org>, <kafai@fb.com>, <kpsingh@kernel.org>,
+        <kuba@kernel.org>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <mark.rutland@arm.com>,
+        <masahiroy@kernel.org>, <mingo@redhat.com>,
+        <netdev@vger.kernel.org>, <pbonzini@redhat.com>,
+        <peterz@infradead.org>, <rafael.j.wysocki@intel.com>,
+        <rostedt@goodmis.org>, <seanjc@google.com>,
+        <songliubraving@fb.com>, <syzkaller-bugs@googlegroups.com>,
+        <tglx@linutronix.de>, <vkuznets@redhat.com>,
+        <wanpengli@tencent.com>, <will@kernel.org>, <x86@kernel.org>
+References: <000000000000d9fefa05bee78afd@google.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <97b5573f-9fcc-c195-f765-5b1ed84a95bd@fb.com>
+Date:   Thu, 1 Apr 2021 15:05:00 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.0
+In-Reply-To: <000000000000d9fefa05bee78afd@google.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
+X-Originating-IP: [2620:10d:c090:400::5:fb66]
+X-ClientProxiedBy: MW4PR03CA0078.namprd03.prod.outlook.com
+ (2603:10b6:303:b6::23) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21cf::17eb] (2620:10d:c090:400::5:fb66) by MW4PR03CA0078.namprd03.prod.outlook.com (2603:10b6:303:b6::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.29 via Frontend Transport; Thu, 1 Apr 2021 22:05:03 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e16a42ed-78b3-4827-e090-08d8f558f376
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3435:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3435977505BB1A1CD31BE0F8A87B9@DM6PR12MB3435.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
+X-MS-Office365-Filtering-Correlation-Id: 832976d8-32b1-4c1b-b5a4-08d8f55a3551
+X-MS-TrafficTypeDiagnostic: SA1PR15MB4420:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA1PR15MB44205E373482855C00684B52D37B9@SA1PR15MB4420.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lJtMtndmQc4ORwkz1oCa/HeiEMOg7oQQ9A6VW8Z8EO0GdNCFy5Iekp/zVlskUdhN7sOASDIVU3QwLqZnPPTyYQfXEaTZ0pdFVhAWZez6uRD9yoU15PlfZb/399b2YjfIhF74oUjexxkaUy9R+NmpAbYpy6pRJxbQmL7jQSDJ8W/hR0rysmffYbfp1qQadgYLmkNUDtRkSFLtXfYOiG2IKM2pu/28/Jbgvu0NlK6zitwkkMOK0ljk2R8L1hs9HoEnOAIhsb+aJ1bK5V3BExrMlzYsh9kdvFIejnd9LANEX3tRt1LvS2wGqiEXnN89T4RuQnistBG8gVTNiLwAYNrH49yyltpVAFUQAF5oPmNwXKrs9rbAaLl4Y4wYcjJwlcgo0dAK0kKJuDRPc+Y0JPwnpFnb44UH+XQ0njdl1Y9XanaEwiMb1uQTss00wASshiZ4FvMdui2vqXI2byy9lx8KogVZtSls54iP+ffYvpL2YotobkSOhaLpouoentFNUZoIwKMIXQSMoe1ROxADVLMTa5tJJN6Ek8JGI+GDG/+3vd9xtTZ5Fw3kwkvNw2zasL8RqUhQtSMmDZscPzwAQWb3BvJ4ecTrln1PVrpOc928bZZ8s0EOJC8eI0/2rUkjW5jLGJZBs8RfJi31EoHA464yoAxIIUdKZnZE5Qaqki+vF61tkvAH/d1aMTZePYegb7tJ
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(376002)(346002)(396003)(136003)(36840700001)(46966006)(16526019)(31686004)(356005)(86362001)(82310400003)(316002)(336012)(70206006)(82740400003)(47076005)(26005)(8936002)(70586007)(4326008)(54906003)(36756003)(36906005)(16576012)(110136005)(83380400001)(7636003)(2906002)(186003)(31696002)(53546011)(5660300002)(426003)(2616005)(8676002)(478600001)(36860700001)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2021 21:56:06.2457
+X-Microsoft-Antispam-Message-Info: L7C/bxPIesd+7FaQxAlJNbXLOfpG0PbDan2vN+LEIcCsTRhJ64Qe1RRSIutTYMhkQGuqc/u4nbrGY60xth2KayjXWDSvkzzqMI+i5NIc5kFPBGo+PLOw7bOYutw+73Tr1NZgGoxwITRki1feHNLT+r3Vq0KpdZmPl6cvu6cJe2Mn8WM4l4Z3QjOZp4OduzU2GsTYXqbEjaY609iLieMa4DMYEPJJZpY/Eg6XUISDhHgR6oWoyPp+Zk2dwzkf/uFOJfgTK8mpeHCqnG2PThJcF8yesmDlKMEgyC+FtAleNiSoAS7BBcI2KdHwoYn3llBSadX+GTqXCn8V4crcDn5kv08V0V6k17tBdo7UsmGn+GeCpi6ohjn1rV976p4R5f9chEtTPfnaRaSXpggDy5B63u82Nmrzs1WvTzKUD9oHBhULvc+0hXTtv0nDS+3PoeIVqAhJVFyp7BejTCRbwnVfZORYQsIOVySztssLa6Rhl0zmEOYerftB3y6F0JtbF6LjPvKvpwxbJRgaqFKcEShB0lncV2RJBURtugEKcjU1Ev2pD8Q3iCe4POTs+5YVzdlIPSX1yopvGZjgMKYzNhmzgdVSJ5FY7dpHi90r0DfCIMFGTyfzTz20Fd4vcj6HJ0gk8ksrx+nOFvP9o6VTus05tI7v7z0KwaEIq2LkBedosiz9pgrBqvb4VF0DSAo37uINIGsk8ypOGTePg+9+DVm2g+M/sa8pmyWLvfuWJaL4iskKo5cPKYQYn/s1ePAIOEzJKSNRAeAK3aJPvixzzx7DTN+vO7OwrtRAHEJP5ihnXh8V2D+juqGPOI6wCgluWOFtTmi6YCpkAE+lHo9VmeP2ibYS95pJwrL2NB54HXl7804=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(136003)(366004)(39860400002)(396003)(966005)(8676002)(52116002)(921005)(5660300002)(36756003)(2906002)(7406005)(66556008)(66476007)(38100700001)(53546011)(45080400002)(31696002)(186003)(86362001)(2616005)(83380400001)(66946007)(6486002)(16526019)(31686004)(316002)(8936002)(7416002)(478600001)(99710200001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?WldSZWhTTk5LWVAvMStHSys5bjYzY2VSN2xHQm10SlFVT2pVZjhiNjQvczNB?=
+ =?utf-8?B?QkkyQlBEN29QeS9oR2dOWnA2VWNPRnpKMldWN2FFOHdJTTVDejdkWkhCVHVt?=
+ =?utf-8?B?b1dBZUdTZHpPeEV1V1ZKNUtvcm5VOVM3NkFMQ0VWT25ZamljcGUvSjhKN3gx?=
+ =?utf-8?B?Qzl1ZXVyQ3A4YXRMS2E0WTd1VkdKcXJkbHRnQk83WUpNQ1Mrdk42MFVwNCtE?=
+ =?utf-8?B?Sy9Eb2Q2YnRPV2crK3NTK1VlZk51ZU9neSt3NUMwUU1CMWxPRDBYcVZvQXAv?=
+ =?utf-8?B?d3Uvb2syZHdIemVEM3FZVHhoZm1uYjVSVFZOTFFyQ2JubVlSTUxVeTBib1ZR?=
+ =?utf-8?B?c3dUSWlaZDliUFdSQmlZUXUwdXJzb3pRSGZKRkFyMWM5ZGV0VXJIWkZSbWFw?=
+ =?utf-8?B?SldJRng0ejQwQ3lqSXJFRGZqcTljZkNnWVd2Qkg3bjFwLy9GZmJvMUptOFBr?=
+ =?utf-8?B?TVVWODA0c1NxTnNYdHpCenBZQmJEcUE4UVluTGVvWlpkSDliV2h4WlluYmEz?=
+ =?utf-8?B?cDFYSk5nZUU1d3ZpelRiYXB0K0I4NTlWOEVJOW9TcjdzTlZoUkYyRlhLcGwx?=
+ =?utf-8?B?K2FjZytnTUdsYWtmbjhXN1N0U2NGbHpzOXE1bVUrM3ZYWlNjYlVxS1NYN1RD?=
+ =?utf-8?B?akpxbHNiZ3pmcnNzSlJVNzJkbTFKRGFmUlJGMEVRYVBDMkhLeTVQeUtjV2NK?=
+ =?utf-8?B?SllEUWY3Q2l1R245VHRwZ041UWNuTTdZVllkM05TZEhId2U2Mkd3dEFvbjAr?=
+ =?utf-8?B?UTFZZFBkSFc1QmppODZVbmxTTjBxY2E0QWp2RkhmVkhGNkcxaHA5Y2xaTG1J?=
+ =?utf-8?B?bm1jZkF3RkdXdTU3K3ZhOHNsMjJ2QWwxSy85eG9IOEZkWWpMemVzRWp2SGRh?=
+ =?utf-8?B?Nml3SUs4ckd3UVlqZWZYalF0UlFCNXUvYVVoWkZCbW4wMGhXM0dlRmplakZq?=
+ =?utf-8?B?dlRmcTBydjNMZW9yc0gzcFpmcU1PMG9ySk5HOHpsVm1xcDJObUlaUjFmUXFw?=
+ =?utf-8?B?UnFFeXJaS24ybWd0ZVRQMDZrWW5VWHlXNFV1TnZHRmtzQVZ0ejVrTjQvSkNm?=
+ =?utf-8?B?QW1hWitDQk5JSm1NNkptNFYvWVhqV0tRK2xZSVZ3SXpNMGladnFRU0Q2eG0x?=
+ =?utf-8?B?RWduaWpoVjFsQVN3cVNmM3grTnN1cUM5OVdvTjJtWnZvNkdMYnVMMVY1OWxy?=
+ =?utf-8?B?WkM0UzhVb1ZydmF0S1NNczE1UmtrY1hObXArejNhd1dpakl4LzRRTGxGNlZX?=
+ =?utf-8?B?YklrOHN2VHFDc0lrWnhyRmdoc0VGNVBIK1g4UG12ZUFFVDJZY041aUIvR0Fa?=
+ =?utf-8?B?MENjNUJYOVVwMTJ0eWQ5WmZnU1JGVUtDa1AzbDN3c2JUUytmdE43KzZ2VFpV?=
+ =?utf-8?B?cGRtdDBPbWhta3RRMmpsU2JxUGhhczBTMFJ4QWdUeFB3TGRnV1VwTnprVlFa?=
+ =?utf-8?B?S3NTUDR1bVZOTldrdVpzcmZLc1dvczMwbmZvUmNLMGVXU2Rxc0F5U1lUWWVP?=
+ =?utf-8?B?cnI5b0VnUlBRWlV4c0FUWkt1ZGI0QlVhUUt6NnRIVVNlRkVFQ3A4NzdUbTZl?=
+ =?utf-8?B?K0pwRm5lbllSc1JWSXpCQ05zRHlTSmhXaE9ydmkxOXA2R0JnN05HTTA0R3BD?=
+ =?utf-8?B?dHRuUDR1K0RHalJYSVo0UjdvYlBYUEdTL0tIZ0FrUjk3Tnl4QUN3MmZJNjB1?=
+ =?utf-8?B?QlJ1a05kVjc1dGJiTDBaVUFzWWhqOExrcEcrMHoyeEFxU0JidGF1OU9LUW1K?=
+ =?utf-8?B?bC8wM3R0RjNQWHVsZWh2VGp0dmtQcE8reE5MemE4WmRGWE1scTNFMENiNktX?=
+ =?utf-8?Q?KmBBSftFhsrKX8pKcxcoAFWieODoYjjn9DqMk=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 832976d8-32b1-4c1b-b5a4-08d8f55a3551
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2021 22:05:06.5293
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e16a42ed-78b3-4827-e090-08d8f558f376
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT068.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3435
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7F+TWjYLzsLzl0skVN/cj+YQQExNvoDygsqqh+mNiQ7a7VQsuvzRw7r/krCrksEP
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4420
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: gLdeJW6vo6CAXN7pvhxvJdlnHC-GR_-8
+X-Proofpoint-ORIG-GUID: gLdeJW6vo6CAXN7pvhxvJdlnHC-GR_-8
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 12 URL's were un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-04-01_13:2021-04-01,2021-04-01 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ clxscore=1011 spamscore=0 impostorscore=0 bulkscore=0 lowpriorityscore=0
+ mlxscore=0 suspectscore=0 malwarescore=0 priorityscore=1501
+ mlxlogscore=999 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2103310000 definitions=main-2104010139
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/25/21 3:38 AM, Mauro Carvalho Chehab wrote:
-> Change the text in order to generate cross-references for
-> alloc_pages_success and alloc_pages_fail symbols.
+
+
+On 4/1/21 4:29 AM, syzbot wrote:
+> Hello,
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> syzbot found the following issue on:
+> 
+> HEAD commit:    36e79851 libbpf: Preserve empty DATASEC BTFs during static..
+> git tree:       bpf-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1569bb06d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=7eff0f22b8563a5f
+> dashboard link: https://syzkaller.appspot.com/bug?extid=774c590240616eaa3423
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17556b7cd00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1772be26d00000
+> 
+> The issue was bisected to:
+> 
+> commit 997acaf6b4b59c6a9c259740312a69ea549cc684
+> Author: Mark Rutland <mark.rutland@arm.com>
+> Date:   Mon Jan 11 15:37:07 2021 +0000
+> 
+>      lockdep: report broken irq restoration
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10197016d00000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=12197016d00000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=14197016d00000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+774c590240616eaa3423@syzkaller.appspotmail.com
+> Fixes: 997acaf6b4b5 ("lockdep: report broken irq restoration")
+> 
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 8725 at include/linux/bpf-cgroup.h:193 bpf_cgroup_storage_set include/linux/bpf-cgroup.h:193 [inline]
+> WARNING: CPU: 0 PID: 8725 at include/linux/bpf-cgroup.h:193 bpf_test_run+0x65e/0xaa0 net/bpf/test_run.c:109
+
+I will look at this issue. Thanks!
+
+> Modules linked in:
+> CPU: 0 PID: 8725 Comm: syz-executor927 Not tainted 5.12.0-rc4-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:bpf_cgroup_storage_set include/linux/bpf-cgroup.h:193 [inline]
+> RIP: 0010:bpf_test_run+0x65e/0xaa0 net/bpf/test_run.c:109
+> Code: e9 29 fe ff ff e8 b2 9d 3a fa 41 83 c6 01 bf 08 00 00 00 44 89 f6 e8 51 a5 3a fa 41 83 fe 08 0f 85 74 fc ff ff e8 92 9d 3a fa <0f> 0b bd f0 ff ff ff e9 5c fd ff ff e8 81 9d 3a fa 83 c5 01 bf 08
+> RSP: 0018:ffffc900017bfaf0 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: ffffc90000f29000 RCX: 0000000000000000
+> RDX: ffff88801bc68000 RSI: ffffffff8739543e RDI: 0000000000000003
+> RBP: 0000000000000007 R08: 0000000000000008 R09: 0000000000000001
+> R10: ffffffff8739542f R11: 0000000000000000 R12: dffffc0000000000
+> R13: ffff888021dd54c0 R14: 0000000000000008 R15: 0000000000000000
+> FS:  00007f00157d7700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f0015795718 CR3: 00000000157ae000 CR4: 00000000001506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>   bpf_prog_test_run_skb+0xabc/0x1c70 net/bpf/test_run.c:628
+>   bpf_prog_test_run kernel/bpf/syscall.c:3132 [inline]
+>   __do_sys_bpf+0x218b/0x4f40 kernel/bpf/syscall.c:4411
+>   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>   entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x446199
+> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 11 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f00157d72f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+> RAX: ffffffffffffffda RBX: 00000000004cb440 RCX: 0000000000446199
+> RDX: 0000000000000028 RSI: 0000000020000080 RDI: 000000000000000a
+> RBP: 000000000049b074 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: f9abde7200f522cd
+> R13: 3952ddf3af240c07 R14: 1631e0d82d3fa99d R15: 00000000004cb448
+> 
+> 
 > ---
->   Documentation/ABI/testing/sysfs-kernel-mm-cma | 8 +++-----
->   1 file changed, 3 insertions(+), 5 deletions(-)
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ  for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
 > 
-> diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-cma b/Documentation/ABI/testing/sysfs-kernel-mm-cma
-> index 02b2bb60c296..86e261185561 100644
-> --- a/Documentation/ABI/testing/sysfs-kernel-mm-cma
-> +++ b/Documentation/ABI/testing/sysfs-kernel-mm-cma
-> @@ -5,12 +5,10 @@ Description:
->   		/sys/kernel/mm/cma/ contains a subdirectory for each CMA
->   		heap name (also sometimes called CMA areas).
->   
-> -		Each CMA heap subdirectory (that is, each
-> -		/sys/kernel/mm/cma/<cma-heap-name> directory) contains the
-> -		following items:
-> +		Each CMA heap subdirectory contains the following items:
->   
-> -			alloc_pages_success
-> -			alloc_pages_fail
-> +			- /sys/kernel/mm/cma/<cma-heap-name>/alloc_pages_success
-> +			- /sys/kernel/mm/cma/<cma-heap-name>/alloc_pages_fail
->   
-
-I agree that this is clearer and easier on the reader, who can now see
-directly what the full path to each item is.
-
-As for calling it a "fix", that seems a bit much. It's an upgrade.
-I'm not sure how many people realize that this sort of change causes
-cross refs to magically start working. I certainly didn't until now.
-
-But either way, this improvement is nice to have, so:
-
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
-
-thanks,
--- 
-John Hubbard
-NVIDIA
-
->   What:		/sys/kernel/mm/cma/<cma-heap-name>/alloc_pages_success
->   Date:		Feb 2021
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status  for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> syzbot can test patches for this issue, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
 > 
-
