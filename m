@@ -2,103 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E964351B30
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A445351AA7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234827AbhDASGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:06:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59564 "EHLO
+        id S236444AbhDASC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:02:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237334AbhDARvb (ORCPT
+        with ESMTP id S236744AbhDARrT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:51:31 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 376CFC031159
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 09:49:49 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a7so3871800ejs.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 09:49:49 -0700 (PDT)
+        Thu, 1 Apr 2021 13:47:19 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C24C03115E
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 09:50:21 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id j16so2550531ilq.13
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 09:50:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZITJn9OwOFdWnyw6/5K8hXI6be2iHs737Z1KKpoKKTI=;
-        b=RBWZRmBRgVRFL5dFTOkdMQ1amg4cZOhsWLoORTkHUV3924VD5q/OAsOJes34QFkgXc
-         pCW2Ckhu1f+1u5WYI86oBJSnZBu6qxA64D4gQ19nMWvjafrJQvgWHB4D5rtdaLoWbRSE
-         2A6aiCrnSc69/8pwpVGjCRS7YPjkNP65/5VyD88Qh+Jwj1EX4Cp1730m43LughZTty46
-         1yzzGN0462AQTyj3rxtDzM4/6ZKKdBS2UQUhoPCEHDLwbYNC0q4Eo0JZw+FsqxgHwtNp
-         KFbRo7rRXfHjmRxOYWmj1ybPOPWfRTBrfKjoDOLktq2Tba3yeiQRlFSxvFk/GGsm4ilq
-         0h3w==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0w+zGLeMzdcB8Xl8lhep34DyBJozrhHS5e3zByXXsOs=;
+        b=kDL/vWg/Yf17Di0EMzIUc6FTgS3eEoyakAdcYbqSWhng1EWqEv0beBVyXtY4oMNxaT
+         N/Pybyl9KFbE5JHW15B9s2JAfmLpaETxhpwtABnrRLesdkJB2k/93y6hre3CvjPCLfUt
+         Tdkll+aURgcxmO+zKx5lfF1YibCZ/hWW/H1MVFume13yOjQqD3JfrTrsyDpw5S+z417O
+         B866pKBWyfTSwcB6LBN6YRPRzxQRne1JjhFvH372zxhUSmvNg4Vk4dPUgVGlyDIOvtP1
+         fMilIuY0gUCwtkcqWF2QTzpaF1YtaaJwLCxzN9lEB4gbAnjTIcmnWfWb5r/XL4GjXdPW
+         CxBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZITJn9OwOFdWnyw6/5K8hXI6be2iHs737Z1KKpoKKTI=;
-        b=HF1c5/y2VAdIO1zs/z67HCAm4KEK+uGKYKCshjLqJSDA0hlQD+/Y/De4py7v0mXrpO
-         aQ8lEEbDfpb28vEkjPK3z3y4naNPdsG1B1R+LZRp0YndwHK33/nOdOsBDJBZt6MPU1VZ
-         +nka1OiHmVi9oIDJnAeC0M3ZbSUEHVj1Jl0fQYF/SYrqbxUwmJYyqKa3bEiAL4Sc0e9P
-         cN05fxejgZEW25AzUCWj2Bn0kK9CiLPyshWd7qsU4dRDfICibUS2/zqAWzgG61kqFehw
-         fxwFJQpcnYatYn0J/rxT06hSvNJFzTSMFwM3ug8/3V/RvPwUTq9Z9V+sPYMMHOlUNMcp
-         H++Q==
-X-Gm-Message-State: AOAM532+rmkJqP9u/WIKumqy9j8Vlr8gXazUpXl+5ivaFPSnUu3HN5A2
-        W1tpBXBvSZkrXL3WjNqv21FJFA==
-X-Google-Smtp-Source: ABdhPJwX4MhXvSaIufRpbKrM41cxH8YiLeSdEhYocoua6E1USCwXSegShln1t3assMXdbLazajeadQ==
-X-Received: by 2002:a17:906:5383:: with SMTP id g3mr10148080ejo.185.1617295787833;
-        Thu, 01 Apr 2021 09:49:47 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id j25sm3800692edy.9.2021.04.01.09.49.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 01 Apr 2021 09:49:47 -0700 (PDT)
-Subject: Re: [PATCH v2] soundwire: qcom: wait for fifo space to be available
- before read/write
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        vkoul@kernel.org
-Cc:     robh@kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com
-References: <20210401090058.24041-1-srinivas.kandagatla@linaro.org>
- <e1bcc85d-b583-2c9a-18e5-634994cc2916@linux.intel.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <41911806-e4ce-44e2-d187-a1a27406ed34@linaro.org>
-Date:   Thu, 1 Apr 2021 17:49:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0w+zGLeMzdcB8Xl8lhep34DyBJozrhHS5e3zByXXsOs=;
+        b=D8sk4HbCgUSxlBAQcqIEf8GFGNXJ4SGpG+8qRCFMuPVzmIpGjLd9JjCw7Zq552Rql0
+         91W6t2PHFesz6NQa51dX2KsEoGC5gOZ69k6fxiYSc0j+6VDCohC61BuprhaIDUdc25NN
+         sVmueTwxDMbi/q+zK/26U2sM5CS76AkV2DBhLn8IqIXkRC7ICVFkFlTS9MYjgZK4XP8Y
+         czWStJ7gEpLG8/JHCldcHvt5Xqx3GDJJ38O8QLhpqRqiyjfTbtoKZehub4Dy8vqrPVJ9
+         n7nicCcMekGf5Q6hCoHwU35NGLVLx98DqHYWT6LmDjsu/QNPjBip7UmGm8IpIA67e703
+         JuYA==
+X-Gm-Message-State: AOAM530LF6GEeQmWHb9diCoyV4D5ZnKqZa0cqxK4+T3y6UF0Yg5Uo3yo
+        EiWiCkVdh3sQ82j9NaLOTEXROYLdDlqZsgzCh1SH+A==
+X-Google-Smtp-Source: ABdhPJzR7BDh9Ca3MkXwQf+bgt+Bza0FQYsPhBc+iMKM1VlGXSeWit3IupkcyE1arRrDDCtAOdPSXDonDgYOAeXAcKU=
+X-Received: by 2002:a92:8752:: with SMTP id d18mr7088426ilm.283.1617295820655;
+ Thu, 01 Apr 2021 09:50:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <e1bcc85d-b583-2c9a-18e5-634994cc2916@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210331210841.3996155-1-bgardon@google.com> <20210331210841.3996155-13-bgardon@google.com>
+ <YGT3UmSKVQFaY1Fd@google.com>
+In-Reply-To: <YGT3UmSKVQFaY1Fd@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Thu, 1 Apr 2021 09:50:09 -0700
+Message-ID: <CANgfPd8=2tcsgoBkMztMjhztGUN-ZMV_mbSb7JHe-sT1i3g+7Q@mail.gmail.com>
+Subject: Re: [PATCH 12/13] KVM: x86/mmu: Fast invalidation for TDP MMU
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Mar 31, 2021 at 3:27 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Wed, Mar 31, 2021, Ben Gardon wrote:
+> > Provide a real mechanism for fast invalidation by marking roots as
+> > invalid so that their reference count will quickly fall to zero
+> > and they will be torn down.
+> >
+> > One negative side affect of this approach is that a vCPU thread will
+> > likely drop the last reference to a root and be saddled with the work of
+> > tearing down an entire paging structure. This issue will be resolved in
+> > a later commit.
+> >
+> > Signed-off-by: Ben Gardon <bgardon@google.com>
+> > ---
+>
+> ...
+>
+> > +/*
+> > + * This function depends on running in the same MMU lock cirical section as
+> > + * kvm_reload_remote_mmus. Since this is in the same critical section, no new
+> > + * roots will be created between this function and the MMU reload signals
+> > + * being sent.
+>
+> Eww.  That goes beyond just adding a lockdep assertion here.  I know you want to
+> isolate the TDP MMU as much as possible, but this really feels like it should be
+> open coded in kvm_mmu_zap_all_fast().  And assuming this lands after as_id is
+> added to for_each_tdp_mmu_root(), it's probably easier to open code anyways, e.g.
+> use list_for_each_entry() directly instead of bouncing through an iterator.
+
+Yeah, that's fair. I'll open-code it here. I agree that it will remove
+confusion from the function, though it would be nice to be able to use
+for_each_tdp_mmu_root for the lockdep and rcu annotations.
 
 
-On 01/04/2021 15:36, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 4/1/21 4:00 AM, Srinivas Kandagatla wrote:
->> If we write registers very fast we can endup in a situation where some
->> of the writes will be dropped without any notice.
->>
->> So wait for the fifo space to be available before reading/writing the
->> soundwire registers.
-> 
-> Out of curiosity, do you actually need to do a check in the read case as 
-> well?
-
-Yes, This is just to make sure the read command is finished and fifo is 
-ready with data.
-
-If not we will be reading quickly an empty fifo!
-
-> 
-> The commit message talks about writes getting dropped, is the opposite 
-> also a problem?
-
-Its highly likely, for safety I have added support for both write and 
-read waits in this patch.
-
-
---srini
-> 
+>
+> > + */
+> > +void kvm_tdp_mmu_invalidate_roots(struct kvm *kvm)
+> > +{
+> > +     struct kvm_mmu_page *root;
+> > +
+> > +     for_each_tdp_mmu_root(kvm, root)
+> > +             root->role.invalid = true;
+> > +}
