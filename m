@@ -2,80 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB97351CE3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32236351DEA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237244AbhDASW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:22:58 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42006 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237281AbhDASDi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:03:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1617287871; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KUzII4YvGLqilZiM11SRwbCxM2ziLU4pNsp1rKZit3M=;
-        b=IVs2lvNi1WuQDQ6JJSAOu52XX1BZhMEocezAZMyYx7CgaaU+qToeGnAPctRsC9di1Xq64n
-        4KE3AoMmPmsdoJoHuXtUIdsXPc+yPJ4wK9YDbqK2DM+Or3GxFHnjfilD0HhKy0AfoxIQwi
-        hgf+CN1BV4AGbQRWBlnbumyw6Kp2pXw=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 11748B217;
-        Thu,  1 Apr 2021 14:37:51 +0000 (UTC)
-Date:   Thu, 1 Apr 2021 16:37:50 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Ingo Molnar <mingo@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Leonardo Bras <leobras.c@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Terrell <terrelln@fb.com>,
-        David Howells <dhowells@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH printk v2 3/5] printk: remove NMI tracking
-Message-ID: <YGXavg8+f9i1PZLn@alley>
-References: <20210330153512.1182-1-john.ogness@linutronix.de>
- <20210330153512.1182-4-john.ogness@linutronix.de>
+        id S237110AbhDAScx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:32:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234637AbhDASKo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:10:44 -0400
+Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC4AC0045E5;
+        Thu,  1 Apr 2021 07:40:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+         s=42; h=Date:Message-ID:Cc:To:From;
+        bh=JAhe/kVm5RlUfIXG3d28OFe9fHKwCAi5mQmsyoLxPQk=; b=prNxZCHuW5yBFgVGyBtP7FZl4l
+        /i+wo8cszkl1eQcXFS8t1iFq4e/yeYB0FlNrahfI0TurKnHnUchJL7hg9wfdtbG6FuepdJeXMM7D6
+        P+wGzfeHC+x02J86iR2X3CZBW20tKeXm9iqnz03yHppaXw9M4b0B40DEBpKzih3T9t0/vhHUSyriJ
+        J1Z3ldi794ZY0fVOq7Ng8XOHjDMt5HMO9stJ+lOVy45okLBR8wKNvfwYUThF79KJXONxnY+Vo3043
+        8TZseI1m+LKS/aTRjoe2rb7XSBwNWoSlRGDY0ihz4ZmezR6TCc/zhytUWr5xllkNYYpfM4cLJY7lc
+        qgFr6ikJu8UVp5biNZFOBrKk0AOIqjfFmaCNNJfaxyxWdBxl2u17aC4R+SNJZy0Fa+cj6XflOa9TD
+        VcBuXp1MBLleFc5ECSAjGyDf9GYRo1vX2K1GOMY9/JhWv5LcwRQRiotrnkItYwD1mo+5T1a1Az12v
+        nVd/7Zyy58F1QHU3RckVGznJ;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_RSA_CHACHA20_POLY1305:256)
+        (Exim)
+        id 1lRyUy-0007Kf-A6; Thu, 01 Apr 2021 14:40:40 +0000
+From:   Stefan Metzmacher <metze@samba.org>
+To:     Jens Axboe <axboe@kernel.dk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     io-uring <io-uring@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>
+References: <20210325164343.807498-1-axboe@kernel.dk>
+ <m1ft0j3u5k.fsf@fess.ebiederm.org>
+ <CAHk-=wjOXiEAjGLbn2mWRsxqpAYUPcwCj2x5WgEAh=gj+o0t4Q@mail.gmail.com>
+ <CAHk-=wg1XpX=iAv=1HCUReMbEgeN5UogZ4_tbi+ehaHZG6d==g@mail.gmail.com>
+ <CAHk-=wgUcVeaKhtBgJO3TfE69miJq-krtL8r_Wf_=LBTJw6WSg@mail.gmail.com>
+ <ad21da2b-01ea-e77c-70b2-0401059e322b@kernel.dk>
+ <f9bc0bac-2ad9-827e-7360-099e1e310df5@kernel.dk>
+ <5563d244-52c0-dafb-5839-e84990340765@samba.org>
+ <6a2c4fe3-a019-2744-2e17-34b6325967d7@kernel.dk>
+ <04b006fd-f3fa-bd92-9ab6-4e2341315cc2@samba.org>
+Subject: Re: [PATCH 0/2] Don't show PF_IO_WORKER in /proc/<pid>/task/
+Message-ID: <a6a3961b-19a9-2476-effa-33bee33dd57b@samba.org>
+Date:   Thu, 1 Apr 2021 16:40:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210330153512.1182-4-john.ogness@linutronix.de>
+In-Reply-To: <04b006fd-f3fa-bd92-9ab6-4e2341315cc2@samba.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-03-30 17:35:10, John Ogness wrote:
-> All NMI contexts are handled the same as the safe context: store the
-> message and defer printing. There is no need to have special NMI
-> context tracking for this. Using in_nmi() is enough.
+Hi Jens,
+
+>> I know you brought this one up as part of your series, not sure I get
+>> why you want it owned by root and read-only? cmdline and exe, yeah those
+>> could be hidden, but is there really any point?
+>>
+>> Maybe I'm missing something here, if so, do clue me in!
 > 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+> I looked through /proc and I think it's mostly similar to
+> the unshare() case, if userspace wants to do stupid things
+> like changing "comm" of iothreads, it gets what was asked for.
+> 
+> But the "cmdline" hiding would be very useful.
+> 
+> While most tools use "comm", by default.
+> 
+> ps -eLf or 'iotop' use "cmdline".
+> 
+> Some processes use setproctitle to change "cmdline" in order
+> to identify the process better, without the 15 chars comm restriction,
+> that's why I very often press 'c' in 'top' to see the cmdline,
+> in that case it would be very helpful to see '[iou-wrk-1234]'
+> instead of the seeing the cmdline.
+> 
+> So I'd very much prefer if this could be applied:
+> https://lore.kernel.org/io-uring/d4487f959c778d0b1d4c5738b75bcff17d21df5b.1616197787.git.metze@samba.org/T/#u
+> 
+> If you want I can add a comment and a more verbose commit message...
 
-This is another great win!
+I noticed that 'iotop' actually appends ' [iou-wrk-1234]' to the cmdline value,
+so that leaves us with 'ps -eLf' and 'top' (with 'c').
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+pstree -a -t -p is also fine:
+      │   └─io_uring-cp,1315 /root/kernel/linux-image-5.12.0-rc2+-dbg_5.12.0-rc2+-5_amd64.deb file
+      │       ├─{iou-mgr-1315},1316
+      │       ├─{iou-wrk-1315},1317
+      │       ├─{iou-wrk-1315},1318
+      │       ├─{iou-wrk-1315},1319
+      │       ├─{iou-wrk-1315},1320
 
-Best Regards,
-Petr
+
+In the spirit of "avoid special PF_IO_WORKER checks" I guess it's ok
+to leave of as is...
+
+metze
