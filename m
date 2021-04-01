@@ -2,72 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F565350D02
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 05:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73FAF350D06
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 05:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233356AbhDADP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 23:15:29 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:15423 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233139AbhDADO4 (ORCPT
+        id S232419AbhDADYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 23:24:07 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:15840 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhDADXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 23:14:56 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F9pCq5LmpzjXWd;
-        Thu,  1 Apr 2021 11:13:11 +0800 (CST)
-Received: from huawei.com (10.175.103.91) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.498.0; Thu, 1 Apr 2021
- 11:14:50 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-staging@lists.linux.dev>
-CC:     <johan@kernel.org>, <elder@kernel.org>,
-        <gregkh@linuxfoundation.org>
-Subject: [PATCH -next v2] staging: greybus: camera: Switch to memdup_user_nul()
-Date:   Thu, 1 Apr 2021 11:17:52 +0800
-Message-ID: <20210401031752.2861248-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 31 Mar 2021 23:23:43 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F9pPR1ZKZz93hB;
+        Thu,  1 Apr 2021 11:21:31 +0800 (CST)
+Received: from mdc.localdomain (10.175.104.57) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 1 Apr 2021 11:23:29 +0800
+From:   Xu Jia <xujia39@huawei.com>
+To:     <davem@davemloft.net>, <yoshfuji@linux-ipv6.org>,
+        <dsahern@kernel.org>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Xu Jia <xujia39@huawei.com>
+Subject: [PATCH net-next] net: ipv6: Refactor in rt6_age_examine_exception
+Date:   Thu, 1 Apr 2021 11:22:23 +0800
+Message-ID: <1617247343-48200-1-git-send-email-xujia39@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
+Content-Type: text/plain
+X-Originating-IP: [10.175.104.57]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use memdup_user_nul() helper instead of open-coding to
-simplify the code.
+The logic in rt6_age_examine_exception is confusing. The commit is
+to refactor the code.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Xu Jia <xujia39@huawei.com>
 ---
- drivers/staging/greybus/camera.c | 13 +++----------
- 1 file changed, 3 insertions(+), 10 deletions(-)
+ net/ipv6/route.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/staging/greybus/camera.c b/drivers/staging/greybus/camera.c
-index b570e13394ac..2ecdc1bc5092 100644
---- a/drivers/staging/greybus/camera.c
-+++ b/drivers/staging/greybus/camera.c
-@@ -1120,16 +1120,9 @@ static ssize_t gb_camera_debugfs_write(struct file *file,
- 	if (len > 1024)
- 		return -EINVAL;
+diff --git a/net/ipv6/route.c b/net/ipv6/route.c
+index ebb7519bec2a..f15c7605b11d 100644
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -2085,13 +2085,10 @@ static void rt6_age_examine_exception(struct rt6_exception_bucket *bucket,
  
--	kbuf = kmalloc(len + 1, GFP_KERNEL);
--	if (!kbuf)
--		return -ENOMEM;
--
--	if (copy_from_user(kbuf, buf, len)) {
--		ret = -EFAULT;
--		goto done;
--	}
--
--	kbuf[len] = '\0';
-+	kbuf = memdup_user_nul(buf, len);
-+	if (IS_ERR(kbuf))
-+		return PTR_ERR(kbuf);;
+ 	if (rt->rt6i_flags & RTF_GATEWAY) {
+ 		struct neighbour *neigh;
+-		__u8 neigh_flags = 0;
  
- 	ret = op->execute(gcam, kbuf, len);
+ 		neigh = __ipv6_neigh_lookup_noref(rt->dst.dev, &rt->rt6i_gateway);
+-		if (neigh)
+-			neigh_flags = neigh->flags;
  
+-		if (!(neigh_flags & NTF_ROUTER)) {
++		if (!(neigh && (neigh->flags & NTF_ROUTER))) {
+ 			RT6_TRACE("purging route %p via non-router but gateway\n",
+ 				  rt);
+ 			rt6_remove_exception(bucket, rt6_ex);
 -- 
 2.25.1
 
