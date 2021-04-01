@@ -2,59 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B33D351E66
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B73351E20
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239841AbhDASkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:40:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45700 "EHLO mail.kernel.org"
+        id S238907AbhDASf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:35:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239627AbhDASQn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:16:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0169F6113E;
+        id S238938AbhDASPC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:15:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3F4561103;
         Thu,  1 Apr 2021 12:17:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617279476;
-        bh=wRad7N84rWD9dSoio69a4lZ1e70YET8Y/U4ELbCnnho=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Q1xGCX8CjWBXtQC1pgo9/9vi4nDHYsR9ze0Q3GiyebU0GCkZVF2x7Dm68maSFFiUb
-         aYhFb4Mtsxe3dwyRk1InCmoNe+43BkSOmz3+yXmoJlqQon680CoD7Fu0OV/kMatoKB
-         POCl1bXAfQ85z4s39lkLH+3JCvV54zR+CeAxccTEvavGiJh0qGmRlyOcVNt9cvXxRq
-         kYRsUf12VYN3g12XZxM/SAQ9Jf1Po6QForEFkcVk/jW0b2lIFgc1wXKAcg30pF7BC8
-         U8xRKFjOp2o3cBdsuc5vEOD8ftGdy/B8MUbxDoRdCuirrnPb1300SCFtXBNU1EX6Km
-         N9eYgXDgwnnkA==
+        s=k20201202; t=1617279475;
+        bh=vW/LERpdsUzSzE7KQ13xROwk34nGxHd7fjfMMDyTTj0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=YTau8xEfkCCi/3DZwU9/26rwPDdpMOQoLgOmz/tAU88KWWnH3czj84vCBJI2zkiyp
+         lPmZ9j0MWLnBKctuFuYHo19uY8waPVkg0kQSwur4Dgq7MIfl2qDyh1MyEJicfsZkuK
+         y3OzATY41SnQwfr9OMMQ8Fr4EqozAoiKw22uG7TsjS2N+nDf9geGabTVcQ16s7odDX
+         IEZap/4HO48u2Yv1IIk2hQ4TMkPDyPQTSCF6Cc470OasB0oQrQaJsDV4gZlCZO8ghK
+         bSdT6t/MjQVP9pleuYGPBsxChdGjmsuiKj0bam2i2WvXQpGcLcQdqfriNRcqiVam7x
+         D5cKetAIlj5pw==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1lRwGn-001c2K-FQ; Thu, 01 Apr 2021 14:17:53 +0200
+        id 1lRwGn-001c2M-Gw; Thu, 01 Apr 2021 14:17:53 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?q?Przemys=C5=82aw=20Gaj?= <pgaj@cadence.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Joe Perches <joe@perches.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vitor Soares <vitor.soares@synopsys.com>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-i3c@lists.infradead.org, linux-iio@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-pm@vger.kernel.org, patches@opensource.cirrus.com
-Subject: [PATCH 00/32] Fix broken documentation file references
-Date:   Thu,  1 Apr 2021 14:17:20 +0200
-Message-Id: <cover.1617279355.git.mchehab+huawei@kernel.org>
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH 01/32] MAINTAINERS: update adi,ad5758.yaml reference
+Date:   Thu,  1 Apr 2021 14:17:21 +0200
+Message-Id: <ca35b929c098163cfda9682ce791572629b763e2.1617279355.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <cover.1617279355.git.mchehab+huawei@kernel.org>
+References: <cover.1617279355.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
@@ -62,68 +45,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Each patch on this series can be applied independently. They fix broken
-file references.
+Changeset 1e6536ee349b ("dt-bindings:iio:dac:adi,ad5758 yaml conversion")
+renamed: Documentation/devicetree/bindings/iio/dac/ad5758.txt
+to: Documentation/devicetree/bindings/iio/dac/adi,ad5758.yaml.
 
-Most of them are due to DT binding renames, but there are also other
-unrelated changes.
+Update its cross-reference accordingly.
 
-This series is based on next-20210401.
+Fixes: 1e6536ee349b ("dt-bindings:iio:dac:adi,ad5758 yaml conversion")
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Mauro Carvalho Chehab (32):
-  MAINTAINERS: update adi,ad5758.yaml reference
-  MAINTAINERS: update ste,mcde.yaml reference
-  MAINTAINERS: update brcm,bcm-v3d.yaml reference
-  MAINTAINERS: update fsl,dpaa2-console.yaml reference
-  MAINTAINERS: update st,hts221.yaml reference
-  MAINTAINERS: update dpot-dac.yaml reference
-  MAINTAINERS: update envelope-detector.yaml reference
-  MAINTAINERS: update current-sense-amplifier.yaml reference
-  MAINTAINERS: update current-sense-shunt.yaml reference
-  MAINTAINERS: update voltage-divider.yaml reference
-  MAINTAINERS: update invensense,mpu3050.yaml reference
-  MAINTAINERS: update lego,ev3-battery.yaml reference
-  MAINTAINERS: update marvell,armada-3700-utmi-phy.yaml reference
-  MAINTAINERS: update mtk-sd.yaml reference
-  MAINTAINERS: update atmel,sama5d2-adc.yaml reference
-  MAINTAINERS: update pni,rm3100.yaml reference
-  MAINTAINERS: update renesas,rcar-gyroadc.yaml reference
-  MAINTAINERS: update st,lsm6dsx.yaml reference
-  MAINTAINERS: update st,vl53l0x.yaml reference
-  MAINTAINERS: update snps,dw-axi-dmac.yaml reference
-  MAINTAINERS: update ti,dac7612.yaml reference
-  MAINTAINERS: update nxp,imx8-jpeg.yaml reference
-  MAINTAINERS: update ovti,ov2680.yaml reference
-  MAINTAINERS: update imi,rdacm2x-gmsl.yaml reference
-  dt-bindings:iio:dac: update microchip,mcp4725.yaml reference
-  dt-bindings: iommu: mediatek: update mediatek,iommu.yaml references
-  dt-bindings: i3c: update i3c.yaml references
-  dt-bindings: power: update battery.yaml reference
-  docs: dt: update writing-schema.rst references
-  Documentation: net: dsa: update configuration.rst reference
-  Documentation: update sysfs-platform_profile.rst reference
-  pinctrl: update pin-control.rst references
-
- .../display/mediatek/mediatek,disp.txt        |  2 +-
- .../bindings/i3c/cdns,i3c-master.txt          |  6 +--
- .../bindings/i3c/snps,dw-i3c-master.txt       |  6 +--
- .../bindings/media/mediatek-jpeg-decoder.txt  |  2 +-
- .../bindings/media/mediatek-jpeg-encoder.txt  |  2 +-
- .../bindings/media/mediatek-mdp.txt           |  2 +-
- .../bindings/media/mediatek-vcodec.txt        |  2 +-
- .../bindings/submitting-patches.rst           |  2 +-
- Documentation/filesystems/cifs/cifsd.rst      |  2 +-
- Documentation/power/power_supply_class.rst    |  2 +-
- MAINTAINERS                                   | 48 +++++++++----------
- include/linux/device.h                        |  2 +-
- include/linux/iio/dac/mcp4725.h               |  2 +-
- include/linux/mfd/madera/pdata.h              |  2 +-
- include/linux/pinctrl/pinconf-generic.h       |  2 +-
- include/linux/platform_profile.h              |  2 +-
- scripts/checkpatch.pl                         |  2 +-
- 17 files changed, 44 insertions(+), 44 deletions(-)
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 38d823d72e52..4c8a926ef201 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1141,7 +1141,7 @@ W:	http://ez.analog.com/community/linux-device-drivers
+ F:	Documentation/ABI/testing/sysfs-bus-iio-frequency-ad9523
+ F:	Documentation/ABI/testing/sysfs-bus-iio-frequency-adf4350
+ F:	Documentation/devicetree/bindings/iio/*/adi,*
+-F:	Documentation/devicetree/bindings/iio/dac/ad5758.txt
++F:	Documentation/devicetree/bindings/iio/dac/adi,ad5758.yaml
+ F:	drivers/iio/*/ad*
+ F:	drivers/iio/adc/ltc249*
+ F:	drivers/iio/amplifiers/hmc425a.c
 -- 
 2.30.2
-
 
