@@ -2,77 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 983A9350D3B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 05:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0126D350D3E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 05:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232885AbhDADjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 23:39:42 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:35444 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232887AbhDADjG (ORCPT
+        id S233168AbhDADjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 23:39:44 -0400
+Received: from mail-pf1-f172.google.com ([209.85.210.172]:39760 "EHLO
+        mail-pf1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230291AbhDADjb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 23:39:06 -0400
-Received: by mail-io1-f69.google.com with SMTP id v24so2997982ion.2
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 20:39:06 -0700 (PDT)
+        Wed, 31 Mar 2021 23:39:31 -0400
+Received: by mail-pf1-f172.google.com with SMTP id c17so458646pfn.6;
+        Wed, 31 Mar 2021 20:39:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=y0jAq5S9GiYMY36r36rGvrhgs2PgZlLJSzcOUpx10aI=;
-        b=OJuZ28xj+OoqifJaHn9CUvJoS4AdBOeIXD9z6bhkiFqa5Rib5m3sSElIvz7j2L+Cku
-         NTmh05bIpII2/zEOQ3qHkOwr+kpi0huVsEBrzl/Jy3AziGk58xDQmCnuuTh8KX/xD+OX
-         dIi4TmayuTzlfyxYQ4lfy7M+AaPzYubzAL/G8WdPVqTsbKQDRTqtiFbOwNQ4ASHr9poA
-         I4PWyBkXohJQVzFGe9q7IH6zHARCpiXLvq1sPtB+izTnUhsddEU4+wYb3CF1Tj4hLagu
-         CQsat1qSGQIq0VEzD02Sm/PnuLMm7w3lxQGttliKQHnvtxVHaXCNyYRIZBGF/bbleW+O
-         ROHA==
-X-Gm-Message-State: AOAM533gaWpxp/8xy/htaupPCvOw4hrs2i3vXvkoE3jX5bA5U7rQjXF5
-        iRilVeGMEPA/1cOPwRIzozqvkOaa53MmFWQk/6EKYmIh3Hae
-X-Google-Smtp-Source: ABdhPJwzE7eMfw19r1VuuSvTtkhe67TPWs/rerGhe9Jm/clMO1VZfFxpEvlHGpoSYRqwFXicx9bTkonPXQ0pNzLMdY1wAwRSdeeF
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZUzB2TfM1k6bbkpAhqsg/vqqGpQdkYUtRjbJgsJe7Uk=;
+        b=nZTvc8ZM5zpx7oP4FnkZ2tIWS0tBJdj0sKlrGB8DAU3XP0BMFX7z+Uha5sKg8Dtq0C
+         2p1Lxb1oYKIEI28pQQT0+oUmeUqraZweLOMQ29JniunaIfoFzX+4xaUMDF0kGO+Bt417
+         fLPuxg97Ma/dZmntSq0s0RslN3EmFsxA7TwYMIinDnM16xagcYeY1jEce00xdD5pxLyc
+         SH0QXQbTS88rC8tqsPSihkW5lCutK7dIvK2vMoxTZI3hCDUh0CpbngWYYTVB4NxHj9/p
+         N43/5gnkOA6gkOIxCWC5euVyMBwqGYlDs9pwlvhpkoOxes+mFLWX+q8YHNOd2T2TCm6C
+         gCEg==
+X-Gm-Message-State: AOAM531LDmknDrTsNx/wL7wcGLvsp+b9FbE7DemRyjny9EC69UjLTp7Z
+        vq+ZB8OzbbXVPnW18GRowXjy05KteZk=
+X-Google-Smtp-Source: ABdhPJzbUa5bstIPClaRRbGKOnyS1OuOyapcj0/01e7SKWIuLKAG1HdFxVfygwkCQnEPhFgENMUUTA==
+X-Received: by 2002:a63:fd45:: with SMTP id m5mr5860603pgj.264.1617248370879;
+        Wed, 31 Mar 2021 20:39:30 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:be87:d7bf:6a65:f00d? ([2601:647:4000:d7:be87:d7bf:6a65:f00d])
+        by smtp.gmail.com with ESMTPSA id g10sm3787013pgh.36.2021.03.31.20.39.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Mar 2021 20:39:29 -0700 (PDT)
+Subject: Re: [PATCH v4 1/2] scsi: ufs: Fix task management request completion
+ timeout
+To:     Avri Altman <Avri.Altman@wdc.com>, Can Guo <cang@codeaurora.org>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "nguyenb@codeaurora.org" <nguyenb@codeaurora.org>,
+        "hongwus@codeaurora.org" <hongwus@codeaurora.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "kernel-team@android.com" <kernel-team@android.com>
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1617166236-39908-1-git-send-email-cang@codeaurora.org>
+ <1617166236-39908-2-git-send-email-cang@codeaurora.org>
+ <BL0PR04MB656448E22577076A27F1EADAFC7C9@BL0PR04MB6564.namprd04.prod.outlook.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <3206bafd-6a5a-1e9b-7939-a1360b5c55fc@acm.org>
+Date:   Wed, 31 Mar 2021 20:39:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2603:: with SMTP id m3mr5782480jat.64.1617248345919;
- Wed, 31 Mar 2021 20:39:05 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 20:39:05 -0700
-In-Reply-To: <00000000000046e0e905afcff205@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002c193805bee0f97c@google.com>
-Subject: Re: [syzbot] KASAN: vmalloc-out-of-bounds Read in bpf_trace_run2
-From:   syzbot <syzbot+845923d2172947529b58@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, andriin@fb.com, ast@kernel.org,
-        bpf@vger.kernel.org, coreteam@netfilter.org, daniel@iogearbox.net,
-        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
-        kaber@trash.net, kadlec@blackhole.kfki.hu, kafai@fb.com,
-        kpsingh@chromium.org, kpsingh@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        mathieu.desnoyers@efficios.com, mchehab@kernel.org,
-        mchehab@s-opensource.com, mingo@kernel.org, mingo@redhat.com,
-        mmullins@mmlx.us, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-        peterz@infradead.org, rostedt@goodmis.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <BL0PR04MB656448E22577076A27F1EADAFC7C9@BL0PR04MB6564.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+On 3/31/21 9:45 AM, Avri Altman wrote:
+>> ufshcd_tmc_handler() calls blk_mq_tagset_busy_iter(fn =
+>> ufshcd_compl_tm()),
+>> but since blk_mq_tagset_busy_iter() only iterates over all reserved tags
+>> and requests which are not in IDLE state, ufshcd_compl_tm() never gets a
+>> chance to run. Thus, TMR always ends up with completion timeout. Fix it by
+>> calling blk_mq_start_request() in  __ufshcd_issue_tm_cmd().
+>>
+>> Fixes: 69a6c269c097 ("scsi: ufs: Use blk_{get,put}_request() to allocate and
+>> free TMFs")
+>>
+>> Signed-off-by: Can Guo <cang@codeaurora.org>
+>> ---
+>>  drivers/scsi/ufs/ufshcd.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> index b49555fa..d4f8cb2 100644
+>> --- a/drivers/scsi/ufs/ufshcd.c
+>> +++ b/drivers/scsi/ufs/ufshcd.c
+>> @@ -6464,6 +6464,7 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba
+>> *hba,
+>>
+>>         spin_lock_irqsave(host->host_lock, flags);
+>>         task_tag = hba->nutrs + free_slot;
+>> +       blk_mq_start_request(req);
+> Maybe just set req->state to MQ_RQ_IN_FLIGHT
+> Without all other irrelevant initializations such as add timeout etc.
 
-commit befe6d946551d65cddbd32b9cb0170b0249fd5ed
-Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Date:   Wed Nov 18 14:34:05 2020 +0000
+Hmm ... I'm not sure that any of the actions performed by
+blk_mq_start_request() are irrelevant in this context. Additionally, no
+other block or SCSI driver sets MQ_RQ_IN_FLIGHT directly.
 
-    tracepoint: Do not fail unregistering a probe due to memory failure
+Thanks,
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=123358a1d00000
-start commit:   70b97111 bpf: Use hlist_add_head_rcu when linking to local..
-git tree:       bpf-next
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7e0ca96a9b6ee858
-dashboard link: https://syzkaller.appspot.com/bug?extid=845923d2172947529b58
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10193f3b900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=168c729b900000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: tracepoint: Do not fail unregistering a probe due to memory failure
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Bart.
