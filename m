@@ -2,102 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89DE3351A57
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:04:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 577FB3519F6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237201AbhDAR7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:59:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58396 "EHLO
+        id S236038AbhDAR5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:57:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235900AbhDARnT (ORCPT
+        with ESMTP id S234474AbhDARmQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:43:19 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D167CC08EA3D
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 06:24:52 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id b14so2799763lfv.8
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 06:24:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SyQ6YHSJTCocB3NQ9p3k0kjyZQfF3RDBbodDQ3PiFKs=;
-        b=oQFWDPezRXYmSljEhNK7vaDXbjEFYI3M+O8S34WNrUrWwpDr9Eul/RvlVe1HvgIqPc
-         01XZyOIs8c4iAPmWSD0G57GbjL2ynXk1cXt4UvDcZN9tFIaN11MqUJQSCqNKjfa3p8Dj
-         6LpONXmzBHadDKBXbzTSzYt1Fzw+9oOjkGRrDXQ/Gn9lFFpw2GREW/xm5BUI2Kv7PHTJ
-         +aya6FCR/Q6VJ1J+wY9iJAzOm/lfgOZ9CQoWhconGgF5Y6jMoppHv/bySIQF20+Kgenu
-         m93cbVf9tVLijon6yyONxVw4eE++Ra5803A5KtmiixIqIm/6VI5I2H1DRHenhM5n+y0Y
-         EYcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SyQ6YHSJTCocB3NQ9p3k0kjyZQfF3RDBbodDQ3PiFKs=;
-        b=ValbyQYiRAjhpm34W0sfoHx+4PEMZprqGtYw0Bb26J20W+dm4qa7ZH23dLDsC805QG
-         GEGyhNT//jr/CMFI8b8eXQW3d6Qr/4bw1HmGhsGuADcaf8xWYpGsSLALATFvXu7zZvKM
-         mqPL8ggwDoc1FsHn4F+pGUoLnbU3/+tyGxwErM8MKYLljoM1DcJ4mI4PXGktpnSG3+Os
-         pWFeZjEAap9XYtE3dCiEP66nR3CQCmaWfFkJbS+V6THMCS+56ISepCD8Wtkbw4+rzufo
-         wmekHrzt1uWBdGUnBgtVU3DLJdXHWZ3q1viC4tYIxarj6pKif9WTO9jhlkeQlqdlaVUC
-         Zm9g==
-X-Gm-Message-State: AOAM531zBkfXBIJX0YqJzgpSAIzMHaCqLIxG8otO4fREAeuEnvyVW/oX
-        XfQxL3WUKBP/0w4R2346TlW0j21llSzGQiStnoSSFT78hEc=
-X-Google-Smtp-Source: ABdhPJw6yu1Dk/jHqd4pPD6Ij4l08dS0fzTdrC9xpai4ps/1uls7JvYLd2Y5+el37EX3LSF6TDnqQ5nKgLNuQLh6svU=
-X-Received: by 2002:ac2:52b9:: with SMTP id r25mr5587707lfm.25.1617283491330;
- Thu, 01 Apr 2021 06:24:51 -0700 (PDT)
+        Thu, 1 Apr 2021 13:42:16 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4186C08EA3C;
+        Thu,  1 Apr 2021 06:24:49 -0700 (PDT)
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1lRxJU-0001yJ-EH; Thu, 01 Apr 2021 15:24:44 +0200
+Date:   Thu, 1 Apr 2021 15:24:44 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Florian Westphal <fw@strlen.de>, twoerner@redhat.com,
+        tgraf@infradead.org, dan.carpenter@oracle.com,
+        Jones Desougi <jones.desougi+netfilter@gmail.com>
+Subject: Re: [PATCH v5] audit: log nftables configuration change events once
+ per table
+Message-ID: <20210401132444.GX3158@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        Richard Guy Briggs <rgb@redhat.com>,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>, Steve Grubb <sgrubb@redhat.com>,
+        Florian Westphal <fw@strlen.de>, twoerner@redhat.com,
+        tgraf@infradead.org, dan.carpenter@oracle.com,
+        Jones Desougi <jones.desougi+netfilter@gmail.com>
+References: <28de34275f58b45fd4626a92ccae96b6d2b4e287.1616702731.git.rgb@redhat.com>
 MIME-Version: 1.0
-References: <20210115121846.114528-1-anup.patel@wdc.com> <mhng-a4e92a0a-085d-4be0-863e-6af99dc27c18@palmerdabbelt-glaptop>
- <CAAhSdy0F7gisk=FZXN7jmqFLVB3456WunwVXhkrnvNuWtrhWWA@mail.gmail.com> <a49a7142-104e-fdaa-4a6a-619505695229@redhat.com>
-In-Reply-To: <a49a7142-104e-fdaa-4a6a-619505695229@redhat.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Thu, 1 Apr 2021 18:54:04 +0530
-Message-ID: <CAAhSdy1Lt1NSD7pKmm+Xqqz2b7A6r4KgAO7kRhdy-jwAHucVOg@mail.gmail.com>
-Subject: Re: [PATCH v16 00/17] KVM RISC-V Support
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
-        Anup Patel <Anup.Patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Graf <graf@amazon.com>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        KVM General <kvm@vger.kernel.org>,
-        kvm-riscv@lists.infradead.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <28de34275f58b45fd4626a92ccae96b6d2b4e287.1616702731.git.rgb@redhat.com>
+Sender:  <n0-1@orbyte.nwl.cc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 2:52 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 30/03/21 07:48, Anup Patel wrote:
-> >
-> > It seems Andrew does not want to freeze H-extension until we have virtualization
-> > aware interrupt controller (such as RISC-V AIA specification) and IOMMU. Lot
-> > of us feel that these things can be done independently because RISC-V
-> > H-extension already has provisions for external interrupt controller with
-> > virtualization support.
->
-> Yes, frankly that's pretty ridiculous as it's perfectly possible to
-> emulate the interrupt controller in software (and an IOMMU is not needed
-> at all if you are okay with emulated or paravirtualized devices---which
-> is almost always the case except for partitioning hypervisors).
->
-> Palmer, are you okay with merging RISC-V KVM?  Or should we place it in
-> drivers/staging/riscv/kvm?
->
-> Either way, the best way to do it would be like this:
->
-> 1) you apply patch 1 in a topic branch
->
-> 2) you merge the topic branch in the risc-v tree
->
-> 3) Anup merges the topic branch too and sends me a pull request.
+On Fri, Mar 26, 2021 at 01:38:59PM -0400, Richard Guy Briggs wrote:
+> Reduce logging of nftables events to a level similar to iptables.
+> Restore the table field to list the table, adding the generation.
+> 
+> Indicate the op as the most significant operation in the event.
+> 
+> A couple of sample events:
+> 
+> type=PROCTITLE msg=audit(2021-03-18 09:30:49.801:143) : proctitle=/usr/bin/python3 -s /usr/sbin/firewalld --nofork --nopid
+> type=SYSCALL msg=audit(2021-03-18 09:30:49.801:143) : arch=x86_64 syscall=sendmsg success=yes exit=172 a0=0x6 a1=0x7ffdcfcbe650 a2=0x0 a3=0x7ffdcfcbd52c items=0 ppid=1 pid=367 auid=unset uid=root gid=root euid=root suid=root fsuid=root egid=roo
+> t sgid=root fsgid=root tty=(none) ses=unset comm=firewalld exe=/usr/bin/python3.9 subj=system_u:system_r:firewalld_t:s0 key=(null)
+> type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.801:143) : table=firewalld:2 family=ipv6 entries=1 op=nft_register_table pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+> type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.801:143) : table=firewalld:2 family=ipv4 entries=1 op=nft_register_table pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+> type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.801:143) : table=firewalld:2 family=inet entries=1 op=nft_register_table pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+> 
+> type=PROCTITLE msg=audit(2021-03-18 09:30:49.839:144) : proctitle=/usr/bin/python3 -s /usr/sbin/firewalld --nofork --nopid
+> type=SYSCALL msg=audit(2021-03-18 09:30:49.839:144) : arch=x86_64 syscall=sendmsg success=yes exit=22792 a0=0x6 a1=0x7ffdcfcbe650 a2=0x0 a3=0x7ffdcfcbd52c items=0 ppid=1 pid=367 auid=unset uid=root gid=root euid=root suid=root fsuid=root egid=r
+> oot sgid=root fsgid=root tty=(none) ses=unset comm=firewalld exe=/usr/bin/python3.9 subj=system_u:system_r:firewalld_t:s0 key=(null)
+> type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.839:144) : table=firewalld:3 family=ipv6 entries=30 op=nft_register_chain pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+> type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.839:144) : table=firewalld:3 family=ipv4 entries=30 op=nft_register_chain pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+> type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.839:144) : table=firewalld:3 family=inet entries=165 op=nft_register_chain pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+> 
+> The issue was originally documented in
+> https://github.com/linux-audit/audit-kernel/issues/124
+> 
+> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
 
-In any case, I will send v17 based on Linux-5.12-rc5 so that people
-can at least try KVM RISC-V based on latest kernel.
+Tested this patch to make sure it eliminates the slowdown of
+iptables-nft when auditd is running. With this applied, neither
+iptables-nft-restore nor 'iptables-nft -F' show a significant
+difference in run-time between running or stopped auditd, at least for
+large rulesets. Individual calls suffer from added audit logging, but
+that's expected of course.
 
-Regards,
-Anup
+Tested-by: Phil Sutter <phil@nwl.cc>
+
+Thanks, Phil
