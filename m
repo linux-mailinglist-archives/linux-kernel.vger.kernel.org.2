@@ -2,220 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 977313521FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 00:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2674C352208
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 00:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234105AbhDAWIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 18:08:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231179AbhDAWIx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 18:08:53 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C00E6C0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 15:08:52 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id c8so3156555wrq.11
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 15:08:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LVnk/U0WbnlpUYYM+S6Qz/SpyHTLRPx/Vw8szN4QhO8=;
-        b=PiaEbRevd3uh1rN8q4RORO5cvT0HsbngzeNxHJOaAzO+Wlb1nWF75GMYtHAqYqBAsX
-         p2sYelIbCurnO3rzZLBw0RyYqPuG36qrjMlkz7EDqUpBz9Ynzk/9h0+Si/fPVZBw7Slk
-         oDJU5b76pPZpu3fpXeKSSG6f7SVrX10ubWayMfT9o4DUADypZxooCOlzFwNCzV/+5Im3
-         QZBJIebTU60DNkEz09WZtjId1xCk0skcwul1EqdxoEzm+bWA20LGeNg8GIIHXIeZ61M/
-         VM4L+yHcgZyIZ0e4WUcMi/T+HJOqw6pY04kVdlQICumegLSN9deReKYDStzYSz9yiOeP
-         pQkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LVnk/U0WbnlpUYYM+S6Qz/SpyHTLRPx/Vw8szN4QhO8=;
-        b=LgPH6HPf7bVZ3+HVKa4Xa7hP/u8D+uLMXnbUwREyqhIzSVzsywlG7CvrkR/xkWdEhx
-         snhz4UgIvnh9s1r1eDazReQoW+D4U8WE1sY0DR/1t94pejkP8E6fN15jwaRXAxvIdnaW
-         Y+XySVKzSfZkZYWBegDnoFNy2+2XY7P90o1RW1q36NzVKiQ6uKU3F6syuGtZ6uArKbqy
-         jUM86z8FF1MDPx4ZKai3qlZF++j+h4KimK/W85ZSXXPpTmSP0Rig3rR0scm+PglL+XIN
-         8xW2kKC4NPghCSz7k+NMx4NbAIKDOzLSPKjNSmd5JGMch86WCRCmE0dmwsT5PcOPdp0S
-         RIUg==
-X-Gm-Message-State: AOAM531BM33Evq0xQpWmFtCs34EbBYQmiSsRcYKpXLHhiMbm40eJJfGI
-        QS5zwD7joQiVi4keEa984em3aA==
-X-Google-Smtp-Source: ABdhPJxqjkJty6L9W+sQvodBiYlEfI8iN21rP1srtDp7aU4mqjZOQnrWVrWMUi+CZmEXLW9qt343wg==
-X-Received: by 2002:adf:82aa:: with SMTP id 39mr12325286wrc.114.1617314931237;
-        Thu, 01 Apr 2021 15:08:51 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:c9d5:e4dc:e7c5:5fcf? ([2a01:e34:ed2f:f020:c9d5:e4dc:e7c5:5fcf])
-        by smtp.googlemail.com with ESMTPSA id z66sm10490853wmc.4.2021.04.01.15.08.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Apr 2021 15:08:50 -0700 (PDT)
-Subject: Re: [PATCH v6 2/7] powercap/drivers/dtpm: Create a registering system
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lukasz.luba@arm.com, rafael@kernel.org,
-        Ram Chandrasekar <rkumbako@codeaurora.org>
-References: <20210401183654.27214-1-daniel.lezcano@linaro.org>
- <20210401183654.27214-2-daniel.lezcano@linaro.org>
- <YGYe9p3oyNpMnsBT@kroah.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <d0f818c7-3262-268b-bcc2-8036ce559d7b@linaro.org>
-Date:   Fri, 2 Apr 2021 00:08:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S234282AbhDAWLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 18:11:24 -0400
+Received: from mga11.intel.com ([192.55.52.93]:34672 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233816AbhDAWLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 18:11:19 -0400
+IronPort-SDR: uVRUUPbjgbFTKe9KqUsaOiwYsZ4iMkAKg7n+WKb1jNnL3g7wcAGVh7nDz8NdprMiUERIv1pE9d
+ 925A3zxz1MLA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="189084509"
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="189084509"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 15:11:19 -0700
+IronPort-SDR: CLJYmJfTc/21Pc/BayLqoTW3ht0ZjE8uZfmBGtHDSlKZVGESQgFaKT7x2SHPzLjpIKODqysA+E
+ 52WiiNpYK/6g==
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="517513838"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 15:11:19 -0700
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Subject: [PATCH v24 00/30] Control-flow Enforcement: Shadow Stack
+Date:   Thu,  1 Apr 2021 15:10:34 -0700
+Message-Id: <20210401221104.31584-1-yu-cheng.yu@intel.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <YGYe9p3oyNpMnsBT@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Control-flow Enforcement (CET) is a new Intel processor feature that blocks
+return/jump-oriented programming attacks.  Details are in "Intel 64 and
+IA-32 Architectures Software Developer's Manual" [1].
 
-Hi Greg,
+CET can protect applications and the kernel.  This series enables only
+application-level protection, and has three parts:
 
-On 01/04/2021 21:28, Greg KH wrote:
-> On Thu, Apr 01, 2021 at 08:36:49PM +0200, Daniel Lezcano wrote:
->> A SoC can be differently structured depending on the platform and the
->> kernel can not be aware of all the combinations, as well as the
->> specific tweaks for a particular board.
->>
->> The creation of the hierarchy must be delegated to userspace.
-> 
-> Why?  Isn't this what DT is for?
+  - Shadow stack [2],
+  - Indirect branch tracking [3], and
+  - Selftests [4].
 
-I've always been told the DT describes the hardware. Here we are more
-describing a configuration, that is the reason why I've let the
-userspace to handle that through configfs.
+I have run tests on these patches for quite some time, and they have been
+very stable.  Linux distributions with CET are available now, and Intel
+processors with CET are already on the market.  It would be nice if CET
+support can be accepted into the kernel.  I will be working to address any
+issues should they come up.
 
-> What "userspace tool" is going to be created to manage all of this?
-> Pointers to that codebase?
+Changes in v24:
+- Split shadow stack and IBT into separate Kconfig options and source
+  files, update related areas accordingly.  Specific changes are called out
+  in each patch's commit log.
+- Patch #15: Instead of arch_maybe_mkwrite(), create x86 versions of
+  maybe*_mkwrite().
+- Patch #17: Instead changing vm_*_gap(), create x86 versions.
+- Patch #24, #25: Split signal handling into two patches, update comments/
+  logs.
+- Patch #29, #30: Update arch_validate_flags() and use that for checking
+  PROT_SHSTK.
+- Rebase to Linus tree v5.12-rc5.
 
-You are certainly aware of most of it but let me give a bit more of context.
+[1] Intel 64 and IA-32 Architectures Software Developer's Manual:
 
-The thermal framework has cooling devices which export their 'state', a
-representation of their performance level, in sysfs. Unfortunately that
-gives access from the user space to act on the performance as a power
-limiter in total conflict with the in-kernel thermal governor decisions.
+    https://software.intel.com/en-us/download/intel-64-and-ia-32-
+    architectures-sdm-combined-volumes-1-2a-2b-2c-2d-3a-3b-3c-3d-and-4
 
-That is done from thermal daemon the different SoC vendors tweak for
-their platform. Depending on the application running and identified as a
-scenario, the daemon acts proactively on the different cooling devices
-to ensure a skin temperature which is far below the thermal limit of the
-components.
+[2] CET Shadow Stack patches v23:
 
-This usage of the cooling devices hijacked the real purpose of the
-thermal framework which is to protect the silicon. Nobody to blame,
-there is no alternative for userspace.
+    https://lore.kernel.org/r/20210316151054.5405-1-yu-cheng.yu@intel.com/
 
-The use case falls under the power limitation framework prerogative and
-that is the reason why we provided a new framework to limit the power
-based on the powercap framework. The thermal daemon can then use it and
-stop abusing the thermal framework.
+[3] Indirect Branch Tracking patches v23.
 
-This DTPM framework allows to read the power consumption and set a power
-limit to a device.
+    https://lore.kernel.org/r/20210316151320.6123-1-yu-cheng.yu@intel.com/
 
-While the powercap simple backend gives a single device entry, DTPM
-aggregates the different devices power by summing their power and their
-limits. The tree representation of the different DTPM nodes describe how
-their limits are set and how the power is computed along the different
-devices.
+[4] I am holding off the selftests changes and working to get Reviewed-by's.
+    The earlier version of the selftests patches:
 
-For more info, we did a presentation at ELC [1] and Linux PM
-microconference [2] and there is an article talking about it [3].
+    https://lkml.kernel.org/r/20200521211720.20236-1-yu-cheng.yu@intel.com/
 
+[5] The kernel ptrace patch is tested with an Intel-internal updated GDB.
+    I am holding off the kernel ptrace patch to re-test it with my earlier
+    patch for fixing regset holes.
 
-To answer your questions, there is a SoC vendor thermal daemon using
-DTPM and there is a tool created to watch the thermal framework and read
-the DTPM values, it is available at [4]. It is currently under
-development with the goal of doing power rebalancing / capping across
-the different nodes when there is a violation of the parent's power limit.
+Yu-cheng Yu (30):
+  Documentation/x86: Add CET description
+  x86/cet/shstk: Add Kconfig option for Shadow Stack
+  x86/cpufeatures: Add CET CPU feature flags for Control-flow
+    Enforcement Technology (CET)
+  x86/cpufeatures: Introduce X86_FEATURE_CET and setup functions
+  x86/fpu/xstate: Introduce CET MSR and XSAVES supervisor states
+  x86/cet: Add control-protection fault handler
+  x86/mm: Remove _PAGE_DIRTY from kernel RO pages
+  x86/mm: Move pmd_write(), pud_write() up in the file
+  x86/mm: Introduce _PAGE_COW
+  drm/i915/gvt: Change _PAGE_DIRTY to _PAGE_DIRTY_BITS
+  x86/mm: Update pte_modify for _PAGE_COW
+  x86/mm: Update ptep_set_wrprotect() and pmdp_set_wrprotect() for
+    transition from _PAGE_DIRTY to _PAGE_COW
+  mm: Introduce VM_SHADOW_STACK for shadow stack memory
+  x86/mm: Shadow Stack page fault error checking
+  x86/mm: Update maybe_mkwrite() for shadow stack
+  mm: Fixup places that call pte_mkwrite() directly
+  mm: Add guard pages around a shadow stack.
+  mm/mmap: Add shadow stack pages to memory accounting
+  mm: Update can_follow_write_pte() for shadow stack
+  mm/mprotect: Exclude shadow stack from preserve_write
+  mm: Re-introduce vm_flags to do_mmap()
+  x86/cet/shstk: Add user-mode shadow stack support
+  x86/cet/shstk: Handle thread shadow stack
+  x86/cet/shstk: Introduce shadow stack token setup/verify routines
+  x86/cet/shstk: Handle signals for shadow stack
+  ELF: Introduce arch_setup_elf_property()
+  x86/cet/shstk: Add arch_prctl functions for shadow stack
+  mm: Move arch_calc_vm_prot_bits() to arch/x86/include/asm/mman.h
+  mm: Update arch_validate_flags() to include vma anonymous
+  mm: Introduce PROT_SHSTK for shadow stack
 
-
-
-[1]
-https://ossna2020.sched.com/event/c3Wf/ideas-for-finer-grained-control-over-your-heat-budget-amit-kucheria-daniel-lezcano-linaro
-
-[2]
-https://www.linuxplumbersconf.org/event/7/page/80-accepted-microconferences#power-cr
-
-[3] https://www.linaro.org/blog/using-energy-model-to-stay-in-tdp-budget/
-
-[4] https://git.linaro.org/people/daniel.lezcano/dtpm.git
-
-
->> These changes provide a registering mechanism where the different
->> subsystems will initialize their dtpm backends and register with a
->> name the dtpm node in a list.
->>
->> The next changes will provide an userspace interface to create
->> hierarchically the different nodes. Those will be created by name and
->> found via the list filled by the different subsystem.
->>
->> If a specified name is not found in the list, it is assumed to be a
->> virtual node which will have children and the default is to allocate
->> such node.
-> 
-> So userspace sets the name?
-> 
-> Why not use the name in the device itself?  I thought I asked that last
-> time...
-
-I probably missed it, sorry for that.
-
-When the userspace creates the directory in the configfs, there is a
-lookup with the name in the device list name. If it is found, then the
-device is used, otherwise a virtual node is created instead, its power
-consumption is equal to the sum of the children.
-
-The different drivers register themselves with their name and the
-associated dtpm structure. The userspace pick in this list to create a
-hierarchy via configfs.
-
-For example, a big.Little system.
-
-- little CPUs power limiter will have the name cpu0-cpufreq
-- big CPUs will have the name cpu4-cpufreq
-- gpu will have the name ff9a0000.gpu-devfreq
-- charger will have the name power-supply-charge
-- DDR memory controller can have the name dmc-devfreq
-
-Userspace may want to create this hierarchy:
-
-soc
- - package
-   - cluster0
-     - cpu0-cpufreq
-   - cluster1
-     - ff9a0000.gpu-devfreq
-   - dmc-devfreq
- - battery
-   - power-supply-charge
-
-It will do:
-
-mkdir soc (virtual node)
-mkdir soc/cluster0 (virtual node)
-mkdir soc/cluster0/cpu0-cpufreq (real device)
-etc ...
-
-The configfs does not represent the layout of the sensors or the floor
-plan of the devices but only the constraints we want to tie together.
-
-That is the reason why I think using configfs instead of OF is more
-adequate and flexible as userspace deals with the power numbers.
-Moreover, we won't be facing issues with devices initialization priority
-when the daemon starts.
-
-I thought we can add OF later, when the framework has more users and
-more devices. The configfs and OF can certainly co-exist or be mutually
-exclusive via the Kconfig option.
-
+ .../admin-guide/kernel-parameters.txt         |   6 +
+ Documentation/filesystems/proc.rst            |   1 +
+ Documentation/x86/index.rst                   |   1 +
+ Documentation/x86/intel_cet.rst               | 136 ++++++++
+ arch/arm64/include/asm/elf.h                  |   5 +
+ arch/arm64/include/asm/mman.h                 |   4 +-
+ arch/sparc/include/asm/mman.h                 |   4 +-
+ arch/x86/Kconfig                              |  28 ++
+ arch/x86/Kconfig.assembler                    |   5 +
+ arch/x86/ia32/ia32_signal.c                   |  16 +
+ arch/x86/include/asm/cet.h                    |  52 +++
+ arch/x86/include/asm/cpufeatures.h            |   4 +-
+ arch/x86/include/asm/disabled-features.h      |  17 +-
+ arch/x86/include/asm/elf.h                    |  13 +
+ arch/x86/include/asm/fpu/internal.h           |   2 +
+ arch/x86/include/asm/fpu/types.h              |  23 +-
+ arch/x86/include/asm/fpu/xstate.h             |   6 +-
+ arch/x86/include/asm/idtentry.h               |   4 +
+ arch/x86/include/asm/mman.h                   |  87 +++++
+ arch/x86/include/asm/mmu_context.h            |   3 +
+ arch/x86/include/asm/msr-index.h              |  19 ++
+ arch/x86/include/asm/page_types.h             |  17 +
+ arch/x86/include/asm/pgtable.h                | 298 +++++++++++++++--
+ arch/x86/include/asm/pgtable_types.h          |  48 ++-
+ arch/x86/include/asm/processor.h              |   5 +
+ arch/x86/include/asm/special_insns.h          |  32 ++
+ arch/x86/include/asm/trap_pf.h                |   2 +
+ arch/x86/include/uapi/asm/mman.h              |  28 +-
+ arch/x86/include/uapi/asm/prctl.h             |   4 +
+ arch/x86/include/uapi/asm/processor-flags.h   |   2 +
+ arch/x86/include/uapi/asm/sigcontext.h        |   9 +
+ arch/x86/kernel/Makefile                      |   3 +
+ arch/x86/kernel/cet_prctl.c                   |  60 ++++
+ arch/x86/kernel/cpu/common.c                  |  14 +
+ arch/x86/kernel/cpu/cpuid-deps.c              |   2 +
+ arch/x86/kernel/cpu/intel.c                   |   3 +
+ arch/x86/kernel/fpu/signal.c                  | 143 ++++++++
+ arch/x86/kernel/fpu/xstate.c                  |  10 +-
+ arch/x86/kernel/idt.c                         |   4 +
+ arch/x86/kernel/process.c                     |  21 +-
+ arch/x86/kernel/process_64.c                  |  32 ++
+ arch/x86/kernel/shstk.c                       | 309 ++++++++++++++++++
+ arch/x86/kernel/signal.c                      |   9 +
+ arch/x86/kernel/signal_compat.c               |   2 +-
+ arch/x86/kernel/traps.c                       |  63 ++++
+ arch/x86/mm/fault.c                           |  19 ++
+ arch/x86/mm/mmap.c                            |  38 +++
+ arch/x86/mm/pat/set_memory.c                  |   2 +-
+ arch/x86/mm/pgtable.c                         |  27 ++
+ drivers/gpu/drm/i915/gvt/gtt.c                |   2 +-
+ fs/aio.c                                      |   2 +-
+ fs/binfmt_elf.c                               |   4 +
+ fs/proc/task_mmu.c                            |   3 +
+ include/linux/elf.h                           |   6 +
+ include/linux/mm.h                            |  18 +-
+ include/linux/mman.h                          |   2 +-
+ include/linux/pgtable.h                       |  11 +
+ include/uapi/asm-generic/siginfo.h            |   3 +-
+ include/uapi/linux/elf.h                      |   9 +
+ ipc/shm.c                                     |   2 +-
+ mm/gup.c                                      |   8 +-
+ mm/huge_memory.c                              |  17 +-
+ mm/memory.c                                   |   5 +-
+ mm/migrate.c                                  |   3 +-
+ mm/mmap.c                                     |  17 +-
+ mm/mprotect.c                                 |  13 +-
+ mm/nommu.c                                    |   4 +-
+ mm/util.c                                     |   2 +-
+ 68 files changed, 1664 insertions(+), 109 deletions(-)
+ create mode 100644 Documentation/x86/intel_cet.rst
+ create mode 100644 arch/x86/include/asm/cet.h
+ create mode 100644 arch/x86/include/asm/mman.h
+ create mode 100644 arch/x86/kernel/cet_prctl.c
+ create mode 100644 arch/x86/kernel/shstk.c
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.21.0
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
