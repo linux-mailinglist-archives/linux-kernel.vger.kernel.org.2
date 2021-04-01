@@ -2,86 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36DB8351DA1
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D70E9351EE3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240529AbhDASar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:30:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41128 "EHLO mail.kernel.org"
+        id S238255AbhDAStc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:49:32 -0400
+Received: from mga18.intel.com ([134.134.136.126]:38667 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237318AbhDASIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:08:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3367A6128D;
-        Thu,  1 Apr 2021 14:28:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617287292;
-        bh=JFXI2qgnmtA6r8bUMZZVX4N/87ZKt4iyLtk7U97B1mA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=e44YahgV/pu/QzxCZRD5kRVq1pm7DfpJ8cNgBXXdhSBjV2JLqG6Pl1jyJccu+GWoU
-         6qcFYsY+NjpeufBfEsp6ClTfQeqJSULxx+VCLPsHa6UpKG2kuh4s+nqlaRbOmwjwxX
-         rKR8qyaIloYa2lss0bTec2F8DVJN5Pbb9ZSigvmMRyLWdVriqn8RG1+6+qpoBLE79S
-         akT8KrCEztgiIgdMyD/bCd/92Gimi1FcJKh+3lgOifZMcGLk9yFaCXgJnK72cd9PXM
-         uX/C4306GX5OtzJQyqVvBA7sdsmS2VmLsNqruEjp1kPwNJ3XEQdCcrISq/IavflRPc
-         GZ7PasG9qcPag==
-Date:   Thu, 1 Apr 2021 15:27:59 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     madvenka@linux.microsoft.com
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1 3/4] arm64: Detect FTRACE cases that make the
- stack trace unreliable
-Message-ID: <20210401142759.GJ4758@sirena.org.uk>
-References: <77bd5edeea72d44533c769b1e8c0fea7a9d7eb3a>
- <20210330190955.13707-1-madvenka@linux.microsoft.com>
- <20210330190955.13707-4-madvenka@linux.microsoft.com>
+        id S240124AbhDAS3W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:29:22 -0400
+IronPort-SDR: U8juh3sFqI/MiMgcyvi6hlGlRlGSNh6q+Wj+GWvcnstVgwG1EM66L0dyAQv6q35PxO5g6UlD2c
+ zluZT2cp6C+g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="179810968"
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="179810968"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 09:03:16 -0700
+IronPort-SDR: cAR40v7d018XsTBUAdMQukLsb5kSh2+85FiTEUz4GVp+oAEcO4KTJuhBah1nX5eXJAzrL1GdHx
+ Ve/OjK3d+C0w==
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="439265744"
+Received: from mooreale-mobl.amr.corp.intel.com (HELO [10.255.229.43]) ([10.255.229.43])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 09:03:14 -0700
+Subject: Re: [PATCH 1/2] soundwire: add macro to selectively change error
+ levels
+To:     Vinod Koul <vkoul@kernel.org>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, hui.wang@canonical.com,
+        sanyog.r.kale@intel.com, rander.wang@linux.intel.com,
+        bard.liao@intel.com
+References: <20210331011355.14313-1-yung-chuan.liao@linux.intel.com>
+ <20210331011355.14313-2-yung-chuan.liao@linux.intel.com>
+ <YGV1HYL+XcVmxfQG@vkoul-mobl.Dlink>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <0834b9fc-9b3a-1184-fed2-6f9c7e66c6fb@linux.intel.com>
+Date:   Thu, 1 Apr 2021 09:30:27 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="+Hr//EUsa8//ouuB"
-Content-Disposition: inline
-In-Reply-To: <20210330190955.13707-4-madvenka@linux.microsoft.com>
-X-Cookie: You can't take damsel here now.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YGV1HYL+XcVmxfQG@vkoul-mobl.Dlink>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---+Hr//EUsa8//ouuB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, Mar 30, 2021 at 02:09:54PM -0500, madvenka@linux.microsoft.com wrote:
+On 4/1/21 2:24 AM, Vinod Koul wrote:
+> On 31-03-21, 09:13, Bard Liao wrote:
+>> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>>
+>> We sometimes discard -ENODATA when reporting errors and lose all
+>> traces of issues in the console log, add a macro to add use dev_dbg()
+>> in such cases.
+>>
+>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>> Reviewed-by: Rander Wang <rander.wang@intel.com>
+>> Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+>> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+>> ---
+>>   drivers/soundwire/bus.h | 8 ++++++++
+>>   1 file changed, 8 insertions(+)
+>>
+>> diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
+>> index 40354469860a..8370216f95d4 100644
+>> --- a/drivers/soundwire/bus.h
+>> +++ b/drivers/soundwire/bus.h
+>> @@ -227,4 +227,12 @@ int sdw_bwrite_no_pm_unlocked(struct sdw_bus *bus, u16 dev_num, u32 addr, u8 val
+>>   void sdw_clear_slave_status(struct sdw_bus *bus, u32 request);
+>>   int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size);
+>>   
+>> +#define sdw_dev_dbg_or_err(dev, is_err, fmt, ...)			\
+>> +	do {								\
+>> +		if (is_err)						\
+>> +			dev_err(dev, fmt, __VA_ARGS__);			\
+>> +		else							\
+>> +			dev_dbg(dev, fmt, __VA_ARGS__);			\
+>> +	} while (0)
+> 
+> I see a variant in sof code and now here, why not add in a
+> dev_dbg_or_err() and use everywhere?
 
-> +	 * FTRACE trampolines.
-> +	 */
-> +#ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
-> +	{ (unsigned long) &ftrace_graph_call, 0 },
-> +#ifdef CONFIG_FUNCTION_GRAPH_TRACER
-> +	{ (unsigned long) ftrace_graph_caller, 0 },
-> +	{ (unsigned long) return_to_handler, 0 },
-> +#endif
-> +#endif
+Good point, I hesitated back and forth on specific v. generic macro.
 
-It's weird that we take the address of ftrace_graph_call but not the
-other functions - we should be consistent or explain why.  It'd probably
-also look nicer to not nest the ifdefs, the dependencies in Kconfig will
-ensure we only get things when we should.
+The main reason why I added this macro for SoundWire is that quite a few 
+subsystems have their own debug functions (DRM, ACPI, etc), and I wasn't 
+sure if there was any appetite to add more options in 
+include/linux/dev_printk.h. SOF also uses a different format due to history.
 
---+Hr//EUsa8//ouuB
-Content-Type: application/pgp-signature; name="signature.asc"
+If at the end of the day SoundWire and SOF are the only users the value 
+of a common macro is limited.
 
------BEGIN PGP SIGNATURE-----
+But it's true that the macro could be used by others.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBl2G4ACgkQJNaLcl1U
-h9ABmwgAgAbbz3JBh1WdmU/r9m09iztnpUa9NC1TIa5viOMygEFVM6vdmqTldrbC
-ytq45f+kzx514+suKlEN2/1OP8eUMY+4Fr7gqbbbGlAiwVs4Bb+lhsubkCrNd2La
-8pvdwuj2l4moEzM3Yhz+DnC64XJGsDHWpqoRsSq3udh6AqD/jqfjfoZs4u5ZlrGC
-13+fC7Q1JlTvzfCNvUc/YCvp+r1qWDo0A7oXiS519MgqyXt00pYIQgWcyfYIua/i
-vXVQvO7P3x6Kfwj2aCGIG8Sxekiqupra+sFgHX3gQrmu6lwtOIBlbcqnpZ839t6q
-wNKbkMbAJF8qQ5XbpIXE5b+VDJW3tg==
-=i44Z
------END PGP SIGNATURE-----
-
---+Hr//EUsa8//ouuB--
+I really have no opinion here and will follow the consensus.
