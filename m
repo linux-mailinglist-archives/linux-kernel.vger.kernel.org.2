@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0C10351A10
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07FF1351981
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236473AbhDAR57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:57:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57170 "EHLO
+        id S236192AbhDARx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:53:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234453AbhDARlp (ORCPT
+        with ESMTP id S234898AbhDARlL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:41:45 -0400
+        Thu, 1 Apr 2021 13:41:11 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE503C00F7DD;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07706C00F7DE;
         Thu,  1 Apr 2021 08:08:58 -0700 (PDT)
-Date:   Thu, 01 Apr 2021 15:08:55 -0000
+Date:   Thu, 01 Apr 2021 15:08:56 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617289736;
+        s=2020; t=1617289737;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=07q5Zv6n+ClCM4VgUm68AYE7WpZ/SxJN4Zis1PoC5tw=;
-        b=2mR8UHosoqb7ttvbjzcCHJ/okJkRcVFHGLtXFioDa3zejsM3FFZqzazP2KlGq3miEBEjiS
-        7C5L48BcuS8OsIPDyTpf9THt/p9fgUKmWZ5yErdel18Hs/VB1hx6UWAYWm1DdhF6vxN6l4
-        JUDGuBfXIuZ5F2C0zWxqdj4iUVyrQcKr91tbAGqNjPQ7Vo/klrQoU/vM+2pdY7t1F9srIz
-        7JzEVzQti+PfHUV8Qove29aGFXGOuoTZc4cGykWYvENatRS0ipGbR1Ex19RJDeqrW95weM
-        i783SEi9a+rCzkN96quoPLmVDI0IGu1Q1e0Fl7FHSZtYsHSNNO5sQchMNw/JyQ==
+        bh=bPowV1Q286yGqVhrMm3j9Xoy2Bt6ffrciWe3adAFA9c=;
+        b=Dp5WDTqsRBvipKX8XEWuFzNvfdBegLaVUmvJGK45U6QkAWZtJBvxtp1hs1Db9Qeyx05hoF
+        A9GCogRSHFHCb3ryn07edtY/OEXCGs+p3vXKkeRYb4rLUZjYCXVcWgO93/3WpzYGSgMV2y
+        aF9a5hp+5AkF87B+/erNCa1jkwWYYtXe64fFpf+X5Ti0S06yn6uY8iLLUTqxXeGjuPRcR5
+        0LS+6lnrpR6AWp9fDss9l8+u/B9qbeCLBqRB7fQyA4TpuMQezKeRexW8qyK/MD1jOwbJh8
+        HRUqv0jzPG83KUbnzgf3STRse9UUVyqKWx2zam8ljvgkjdnXdPs85bNp1WKCpw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617289736;
+        s=2020e; t=1617289737;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=07q5Zv6n+ClCM4VgUm68AYE7WpZ/SxJN4Zis1PoC5tw=;
-        b=/zt1zzWl+85xmgJNSca8WaWYEVsDw40WXMBEb7gWkH+7SIvYfrWmPmwKJMFf8qg1+A+HKT
-        5/rpW3QBQyTCh+AQ==
+        bh=bPowV1Q286yGqVhrMm3j9Xoy2Bt6ffrciWe3adAFA9c=;
+        b=nmDlGVHKz55XohdOn37ZnYl1jE83Uyj9doamB6DGd686jYtxsQg4qk9hWan6x4t6ZD2oYk
+        4bXRjXXIa5KIZ4BQ==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/core] objtool: Extract elf_strtab_concat()
+Subject: [tip: x86/core] objtool: Add elf_create_reloc() helper
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Borislav Petkov <bp@suse.de>, Miroslav Benes <mbenes@suse.cz>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210326151259.941474004@infradead.org>
-References: <20210326151259.941474004@infradead.org>
+In-Reply-To: <20210326151259.817438847@infradead.org>
+References: <20210326151259.817438847@infradead.org>
 MIME-Version: 1.0
-Message-ID: <161728973595.29796.675571073397423036.tip-bot2@tip-bot2>
+Message-ID: <161728973661.29796.1185501796706718837.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,114 +61,367 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/core branch of tip:
 
-Commit-ID:     557c25be3588971caf21364b6fd240769e37c47c
-Gitweb:        https://git.kernel.org/tip/557c25be3588971caf21364b6fd240769e37c47c
+Commit-ID:     7508e2958a82675e75e34221c26ad4242d4ef283
+Gitweb:        https://git.kernel.org/tip/7508e2958a82675e75e34221c26ad4242d4ef283
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Fri, 26 Mar 2021 16:12:09 +01:00
+AuthorDate:    Fri, 26 Mar 2021 16:12:07 +01:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 01 Apr 2021 13:05:50 +02:00
+CommitterDate: Thu, 01 Apr 2021 12:55:55 +02:00
 
-objtool: Extract elf_strtab_concat()
+objtool: Add elf_create_reloc() helper
 
-Create a common helper to append strings to a strtab.
+We have 4 instances of adding a relocation. Create a common helper
+to avoid growing even more.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Borislav Petkov <bp@suse.de>
 Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-Link: https://lkml.kernel.org/r/20210326151259.941474004@infradead.org
+Link: https://lkml.kernel.org/r/20210326151259.817438847@infradead.org
 ---
- tools/objtool/elf.c | 60 +++++++++++++++++++++++++++-----------------
- 1 file changed, 38 insertions(+), 22 deletions(-)
+ tools/objtool/check.c               | 78 +++++--------------------
+ tools/objtool/elf.c                 | 86 ++++++++++++++++++----------
+ tools/objtool/include/objtool/elf.h | 10 ++-
+ tools/objtool/orc_gen.c             | 30 ++--------
+ 4 files changed, 85 insertions(+), 119 deletions(-)
 
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 1d0415b..61fe29a 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -433,8 +433,7 @@ reachable:
+ 
+ static int create_static_call_sections(struct objtool_file *file)
+ {
+-	struct section *sec, *reloc_sec;
+-	struct reloc *reloc;
++	struct section *sec;
+ 	struct static_call_site *site;
+ 	struct instruction *insn;
+ 	struct symbol *key_sym;
+@@ -460,8 +459,7 @@ static int create_static_call_sections(struct objtool_file *file)
+ 	if (!sec)
+ 		return -1;
+ 
+-	reloc_sec = elf_create_reloc_section(file->elf, sec, SHT_RELA);
+-	if (!reloc_sec)
++	if (!elf_create_reloc_section(file->elf, sec, SHT_RELA))
+ 		return -1;
+ 
+ 	idx = 0;
+@@ -471,25 +469,11 @@ static int create_static_call_sections(struct objtool_file *file)
+ 		memset(site, 0, sizeof(struct static_call_site));
+ 
+ 		/* populate reloc for 'addr' */
+-		reloc = malloc(sizeof(*reloc));
+-
+-		if (!reloc) {
+-			perror("malloc");
+-			return -1;
+-		}
+-		memset(reloc, 0, sizeof(*reloc));
+-
+-		insn_to_reloc_sym_addend(insn->sec, insn->offset, reloc);
+-		if (!reloc->sym) {
+-			WARN_FUNC("static call tramp: missing containing symbol",
+-				  insn->sec, insn->offset);
++		if (elf_add_reloc_to_insn(file->elf, sec,
++					  idx * sizeof(struct static_call_site),
++					  R_X86_64_PC32,
++					  insn->sec, insn->offset))
+ 			return -1;
+-		}
+-
+-		reloc->type = R_X86_64_PC32;
+-		reloc->offset = idx * sizeof(struct static_call_site);
+-		reloc->sec = reloc_sec;
+-		elf_add_reloc(file->elf, reloc);
+ 
+ 		/* find key symbol */
+ 		key_name = strdup(insn->call_dest->name);
+@@ -526,18 +510,11 @@ static int create_static_call_sections(struct objtool_file *file)
+ 		free(key_name);
+ 
+ 		/* populate reloc for 'key' */
+-		reloc = malloc(sizeof(*reloc));
+-		if (!reloc) {
+-			perror("malloc");
++		if (elf_add_reloc(file->elf, sec,
++				  idx * sizeof(struct static_call_site) + 4,
++				  R_X86_64_PC32, key_sym,
++				  is_sibling_call(insn) * STATIC_CALL_SITE_TAIL))
+ 			return -1;
+-		}
+-		memset(reloc, 0, sizeof(*reloc));
+-		reloc->sym = key_sym;
+-		reloc->addend = is_sibling_call(insn) ? STATIC_CALL_SITE_TAIL : 0;
+-		reloc->type = R_X86_64_PC32;
+-		reloc->offset = idx * sizeof(struct static_call_site) + 4;
+-		reloc->sec = reloc_sec;
+-		elf_add_reloc(file->elf, reloc);
+ 
+ 		idx++;
+ 	}
+@@ -547,8 +524,7 @@ static int create_static_call_sections(struct objtool_file *file)
+ 
+ static int create_mcount_loc_sections(struct objtool_file *file)
+ {
+-	struct section *sec, *reloc_sec;
+-	struct reloc *reloc;
++	struct section *sec;
+ 	unsigned long *loc;
+ 	struct instruction *insn;
+ 	int idx;
+@@ -571,8 +547,7 @@ static int create_mcount_loc_sections(struct objtool_file *file)
+ 	if (!sec)
+ 		return -1;
+ 
+-	reloc_sec = elf_create_reloc_section(file->elf, sec, SHT_RELA);
+-	if (!reloc_sec)
++	if (!elf_create_reloc_section(file->elf, sec, SHT_RELA))
+ 		return -1;
+ 
+ 	idx = 0;
+@@ -581,32 +556,11 @@ static int create_mcount_loc_sections(struct objtool_file *file)
+ 		loc = (unsigned long *)sec->data->d_buf + idx;
+ 		memset(loc, 0, sizeof(unsigned long));
+ 
+-		reloc = malloc(sizeof(*reloc));
+-		if (!reloc) {
+-			perror("malloc");
++		if (elf_add_reloc_to_insn(file->elf, sec,
++					  idx * sizeof(unsigned long),
++					  R_X86_64_64,
++					  insn->sec, insn->offset))
+ 			return -1;
+-		}
+-		memset(reloc, 0, sizeof(*reloc));
+-
+-		if (insn->sec->sym) {
+-			reloc->sym = insn->sec->sym;
+-			reloc->addend = insn->offset;
+-		} else {
+-			reloc->sym = find_symbol_containing(insn->sec, insn->offset);
+-
+-			if (!reloc->sym) {
+-				WARN("missing symbol for insn at offset 0x%lx\n",
+-				     insn->offset);
+-				return -1;
+-			}
+-
+-			reloc->addend = insn->offset - reloc->sym->offset;
+-		}
+-
+-		reloc->type = R_X86_64_64;
+-		reloc->offset = idx * sizeof(unsigned long);
+-		reloc->sec = reloc_sec;
+-		elf_add_reloc(file->elf, reloc);
+ 
+ 		idx++;
+ 	}
 diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
-index 7b65ae3..c278a04 100644
+index 374813e..0ab52ac 100644
 --- a/tools/objtool/elf.c
 +++ b/tools/objtool/elf.c
-@@ -673,13 +673,48 @@ err:
- 	return NULL;
+@@ -211,32 +211,6 @@ struct reloc *find_reloc_by_dest(const struct elf *elf, struct section *sec, uns
+ 	return find_reloc_by_dest_range(elf, sec, offset, 1);
  }
  
-+static int elf_add_string(struct elf *elf, struct section *strtab, char *str)
-+{
-+	Elf_Data *data;
-+	Elf_Scn *s;
-+	int len;
+-void insn_to_reloc_sym_addend(struct section *sec, unsigned long offset,
+-			      struct reloc *reloc)
+-{
+-	if (sec->sym) {
+-		reloc->sym = sec->sym;
+-		reloc->addend = offset;
+-		return;
+-	}
+-
+-	/*
+-	 * The Clang assembler strips section symbols, so we have to reference
+-	 * the function symbol instead:
+-	 */
+-	reloc->sym = find_symbol_containing(sec, offset);
+-	if (!reloc->sym) {
+-		/*
+-		 * Hack alert.  This happens when we need to reference the NOP
+-		 * pad insn immediately after the function.
+-		 */
+-		reloc->sym = find_symbol_containing(sec, offset - 1);
+-	}
+-
+-	if (reloc->sym)
+-		reloc->addend = offset - reloc->sym->offset;
+-}
+-
+ static int read_sections(struct elf *elf)
+ {
+ 	Elf_Scn *s = NULL;
+@@ -473,14 +447,66 @@ err:
+ 	return -1;
+ }
+ 
+-void elf_add_reloc(struct elf *elf, struct reloc *reloc)
++int elf_add_reloc(struct elf *elf, struct section *sec, unsigned long offset,
++		  unsigned int type, struct symbol *sym, int addend)
+ {
+-	struct section *sec = reloc->sec;
++	struct reloc *reloc;
 +
-+	if (!strtab)
-+		strtab = find_section_by_name(elf, ".strtab");
-+	if (!strtab) {
-+		WARN("can't find .strtab section");
++	reloc = malloc(sizeof(*reloc));
++	if (!reloc) {
++		perror("malloc");
 +		return -1;
 +	}
++	memset(reloc, 0, sizeof(*reloc));
+ 
+-	list_add_tail(&reloc->list, &sec->reloc_list);
++	reloc->sec = sec->reloc;
++	reloc->offset = offset;
++	reloc->type = type;
++	reloc->sym = sym;
++	reloc->addend = addend;
 +
-+	s = elf_getscn(elf->elf, strtab->idx);
-+	if (!s) {
-+		WARN_ELF("elf_getscn");
-+		return -1;
-+	}
++	list_add_tail(&reloc->list, &sec->reloc->reloc_list);
+ 	elf_hash_add(elf->reloc_hash, &reloc->hash, reloc_hash(reloc));
+ 
+-	sec->changed = true;
++	sec->reloc->changed = true;
 +
-+	data = elf_newdata(s);
-+	if (!data) {
-+		WARN_ELF("elf_newdata");
-+		return -1;
-+	}
-+
-+	data->d_buf = str;
-+	data->d_size = strlen(str) + 1;
-+	data->d_align = 1;
-+
-+	len = strtab->len;
-+	strtab->len += data->d_size;
-+	strtab->changed = true;
-+
-+	return len;
++	return 0;
 +}
 +
- struct section *elf_create_section(struct elf *elf, const char *name,
- 				   unsigned int sh_flags, size_t entsize, int nr)
++int elf_add_reloc_to_insn(struct elf *elf, struct section *sec,
++			  unsigned long offset, unsigned int type,
++			  struct section *insn_sec, unsigned long insn_off)
++{
++	struct symbol *sym;
++	int addend;
++
++	if (insn_sec->sym) {
++		sym = insn_sec->sym;
++		addend = insn_off;
++
++	} else {
++		/*
++		 * The Clang assembler strips section symbols, so we have to
++		 * reference the function symbol instead:
++		 */
++		sym = find_symbol_containing(insn_sec, insn_off);
++		if (!sym) {
++			/*
++			 * Hack alert.  This happens when we need to reference
++			 * the NOP pad insn immediately after the function.
++			 */
++			sym = find_symbol_containing(insn_sec, insn_off - 1);
++		}
++
++		if (!sym) {
++			WARN("can't find symbol containing %s+0x%lx", insn_sec->name, insn_off);
++			return -1;
++		}
++
++		addend = insn_off - sym->offset;
++	}
++
++	return elf_add_reloc(elf, sec, offset, type, sym, addend);
+ }
+ 
+ static int read_rel_reloc(struct section *sec, int i, struct reloc *reloc, unsigned int *symndx)
+diff --git a/tools/objtool/include/objtool/elf.h b/tools/objtool/include/objtool/elf.h
+index fc576ed..825ad32 100644
+--- a/tools/objtool/include/objtool/elf.h
++++ b/tools/objtool/include/objtool/elf.h
+@@ -123,7 +123,13 @@ static inline u32 reloc_hash(struct reloc *reloc)
+ struct elf *elf_open_read(const char *name, int flags);
+ struct section *elf_create_section(struct elf *elf, const char *name, unsigned int sh_flags, size_t entsize, int nr);
+ struct section *elf_create_reloc_section(struct elf *elf, struct section *base, int reltype);
+-void elf_add_reloc(struct elf *elf, struct reloc *reloc);
++
++int elf_add_reloc(struct elf *elf, struct section *sec, unsigned long offset,
++		  unsigned int type, struct symbol *sym, int addend);
++int elf_add_reloc_to_insn(struct elf *elf, struct section *sec,
++			  unsigned long offset, unsigned int type,
++			  struct section *insn_sec, unsigned long insn_off);
++
+ int elf_write_insn(struct elf *elf, struct section *sec,
+ 		   unsigned long offset, unsigned int len,
+ 		   const char *insn);
+@@ -140,8 +146,6 @@ struct reloc *find_reloc_by_dest(const struct elf *elf, struct section *sec, uns
+ struct reloc *find_reloc_by_dest_range(const struct elf *elf, struct section *sec,
+ 				     unsigned long offset, unsigned int len);
+ struct symbol *find_func_containing(struct section *sec, unsigned long offset);
+-void insn_to_reloc_sym_addend(struct section *sec, unsigned long offset,
+-			      struct reloc *reloc);
+ 
+ #define for_each_sec(file, sec)						\
+ 	list_for_each_entry(sec, &file->elf->sections, list)
+diff --git a/tools/objtool/orc_gen.c b/tools/objtool/orc_gen.c
+index f534708..1b57be6 100644
+--- a/tools/objtool/orc_gen.c
++++ b/tools/objtool/orc_gen.c
+@@ -82,12 +82,11 @@ static int init_orc_entry(struct orc_entry *orc, struct cfi_state *cfi)
+ }
+ 
+ static int write_orc_entry(struct elf *elf, struct section *orc_sec,
+-			   struct section *ip_rsec, unsigned int idx,
++			   struct section *ip_sec, unsigned int idx,
+ 			   struct section *insn_sec, unsigned long insn_off,
+ 			   struct orc_entry *o)
  {
- 	struct section *sec, *shstrtab;
- 	size_t size = entsize * nr;
- 	Elf_Scn *s;
--	Elf_Data *data;
+ 	struct orc_entry *orc;
+-	struct reloc *reloc;
  
- 	sec = malloc(sizeof(*sec));
- 	if (!sec) {
-@@ -736,7 +771,6 @@ struct section *elf_create_section(struct elf *elf, const char *name,
- 	sec->sh.sh_addralign = 1;
- 	sec->sh.sh_flags = SHF_ALLOC | sh_flags;
+ 	/* populate ORC data */
+ 	orc = (struct orc_entry *)orc_sec->data->d_buf + idx;
+@@ -96,25 +95,9 @@ static int write_orc_entry(struct elf *elf, struct section *orc_sec,
+ 	orc->bp_offset = bswap_if_needed(orc->bp_offset);
  
+ 	/* populate reloc for ip */
+-	reloc = malloc(sizeof(*reloc));
+-	if (!reloc) {
+-		perror("malloc");
++	if (elf_add_reloc_to_insn(elf, ip_sec, idx * sizeof(int), R_X86_64_PC32,
++				  insn_sec, insn_off))
+ 		return -1;
+-	}
+-	memset(reloc, 0, sizeof(*reloc));
 -
- 	/* Add section name to .shstrtab (or .strtab for Clang) */
- 	shstrtab = find_section_by_name(elf, ".shstrtab");
- 	if (!shstrtab)
-@@ -745,27 +779,9 @@ struct section *elf_create_section(struct elf *elf, const char *name,
- 		WARN("can't find .shstrtab or .strtab section");
- 		return NULL;
- 	}
--
--	s = elf_getscn(elf->elf, shstrtab->idx);
--	if (!s) {
--		WARN_ELF("elf_getscn");
-+	sec->sh.sh_name = elf_add_string(elf, shstrtab, sec->name);
-+	if (sec->sh.sh_name == -1)
- 		return NULL;
+-	insn_to_reloc_sym_addend(insn_sec, insn_off, reloc);
+-	if (!reloc->sym) {
+-		WARN("missing symbol for insn at offset 0x%lx",
+-		     insn_off);
+-		return -1;
 -	}
 -
--	data = elf_newdata(s);
--	if (!data) {
--		WARN_ELF("elf_newdata");
--		return NULL;
--	}
+-	reloc->type = R_X86_64_PC32;
+-	reloc->offset = idx * sizeof(int);
+-	reloc->sec = ip_rsec;
 -
--	data->d_buf = sec->name;
--	data->d_size = strlen(name) + 1;
--	data->d_align = 1;
--
--	sec->sh.sh_name = shstrtab->len;
--
--	shstrtab->len += strlen(name) + 1;
--	shstrtab->changed = true;
+-	elf_add_reloc(elf, reloc);
  
- 	list_add_tail(&sec->list, &elf->sections);
- 	elf_hash_add(elf->section_hash, &sec->hash, sec->idx);
+ 	return 0;
+ }
+@@ -153,7 +136,7 @@ static unsigned long alt_group_len(struct alt_group *alt_group)
+ 
+ int orc_create(struct objtool_file *file)
+ {
+-	struct section *sec, *ip_rsec, *orc_sec;
++	struct section *sec, *orc_sec;
+ 	unsigned int nr = 0, idx = 0;
+ 	struct orc_list_entry *entry;
+ 	struct list_head orc_list;
+@@ -242,13 +225,12 @@ int orc_create(struct objtool_file *file)
+ 	sec = elf_create_section(file->elf, ".orc_unwind_ip", 0, sizeof(int), nr);
+ 	if (!sec)
+ 		return -1;
+-	ip_rsec = elf_create_reloc_section(file->elf, sec, SHT_RELA);
+-	if (!ip_rsec)
++	if (!elf_create_reloc_section(file->elf, sec, SHT_RELA))
+ 		return -1;
+ 
+ 	/* Write ORC entries to sections: */
+ 	list_for_each_entry(entry, &orc_list, list) {
+-		if (write_orc_entry(file->elf, orc_sec, ip_rsec, idx++,
++		if (write_orc_entry(file->elf, orc_sec, sec, idx++,
+ 				    entry->insn_sec, entry->insn_off,
+ 				    &entry->orc))
+ 			return -1;
