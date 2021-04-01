@@ -2,94 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A950E351784
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67BE1351913
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234492AbhDARmU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 1 Apr 2021 13:42:20 -0400
-Received: from lithops.sigma-star.at ([195.201.40.130]:40430 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234180AbhDARgr (ORCPT
+        id S237036AbhDARuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:50:05 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15521 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234768AbhDARkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:36:47 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 81C17606BA2C;
-        Thu,  1 Apr 2021 15:59:27 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id zwE_aygEcMAG; Thu,  1 Apr 2021 15:59:27 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 1458D60A3592;
-        Thu,  1 Apr 2021 15:59:27 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id ETgRfEjK7WK1; Thu,  1 Apr 2021 15:59:26 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id D76FC6071A7C;
-        Thu,  1 Apr 2021 15:59:26 +0200 (CEST)
-Date:   Thu, 1 Apr 2021 15:59:26 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        horia geanta <horia.geanta@nxp.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        aymen sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        davem <davem@davemloft.net>,
-        James Bottomley <jejb@linux.ibm.com>,
-        kernel <kernel@pengutronix.de>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        david <david@sigma-star.at>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        "open list, ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        LSM <linux-security-module@vger.kernel.org>
-Message-ID: <1846277009.140163.1617285566823.JavaMail.zimbra@nod.at>
-In-Reply-To: <CAFA6WYODfsMTiCEyFA2aRGm+UQE0OTe-ui7mMSK-cqUR_YJFTA@mail.gmail.com>
-References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de> <CAFLxGvzWLje+_HFeb+hKNch4U1f5uypVUOuP=QrEPn_JNM+scg@mail.gmail.com> <ca2a7c17-3ed0-e52f-2e2f-c0f8bbe10323@pengutronix.de> <CAFLxGvwNomKOo3mQLMxYGDA8T8zN=Szpo2q5jrp4D1CaMHydWA@mail.gmail.com> <CAFA6WYO29o73nSg4ikU9cyaOr0kpaXFJpcGLGmFLgjKQWchcEg@mail.gmail.com> <1666035815.140054.1617283065549.JavaMail.zimbra@nod.at> <ea261e53-8f5d-ac52-f3b9-7f2db4532244@pengutronix.de> <CAFA6WYODfsMTiCEyFA2aRGm+UQE0OTe-ui7mMSK-cqUR_YJFTA@mail.gmail.com>
-Subject: Re: [PATCH v1 0/3] KEYS: trusted: Introduce support for NXP
- CAAM-based trusted keys
+        Thu, 1 Apr 2021 13:40:00 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FB4Wv5kvkzNrp3;
+        Thu,  1 Apr 2021 21:58:03 +0800 (CST)
+Received: from huawei.com (10.175.103.91) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Thu, 1 Apr 2021
+ 22:00:39 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>
+CC:     <broonie@kernel.org>
+Subject: [PATCH -next] spi: fsl: add missing iounmap() on error in of_fsl_spi_probe()
+Date:   Thu, 1 Apr 2021 22:03:50 +0800
+Message-ID: <20210401140350.1677925-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Topic: KEYS: trusted: Introduce support for NXP CAAM-based trusted keys
-Thread-Index: jPSCsanR7JeNVp3vlsHfcUPQzmg/6A==
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sumit,
+Add the missing iounmap() before return from of_fsl_spi_probe()
+in the error handling case.
 
------ Ursprüngliche Mail -----
-> Von: "Sumit Garg" <sumit.garg@linaro.org>
-> In this case why would one prefer to use CAAM when you have standards
-> compliant TPM-Chip which additionally offers sealing to specific PCR
-> (integrity measurement) values.
+Fixes: 0f0581b24bd0 ("spi: fsl: Convert to use CS GPIO descriptors")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ drivers/spi/spi-fsl-spi.c | 23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
 
-I don't think we can dictate what good/sane solutions are and which are not.
-Both CAAM and TPM have pros and cons, I don't see why supporting both is a bad idea.
+diff --git a/drivers/spi/spi-fsl-spi.c b/drivers/spi/spi-fsl-spi.c
+index e4a8d203f940..d0e5aa18b7ba 100644
+--- a/drivers/spi/spi-fsl-spi.c
++++ b/drivers/spi/spi-fsl-spi.c
+@@ -707,6 +707,11 @@ static int of_fsl_spi_probe(struct platform_device *ofdev)
+ 	struct resource mem;
+ 	int irq, type;
+ 	int ret;
++	bool spisel_boot = false;
++#if IS_ENABLED(CONFIG_FSL_SOC)
++	struct mpc8xxx_spi_probe_info *pinfo = NULL;
++#endif
++
+ 
+ 	ret = of_mpc8xxx_spi_probe(ofdev);
+ 	if (ret)
+@@ -715,9 +720,8 @@ static int of_fsl_spi_probe(struct platform_device *ofdev)
+ 	type = fsl_spi_get_type(&ofdev->dev);
+ 	if (type == TYPE_FSL) {
+ 		struct fsl_spi_platform_data *pdata = dev_get_platdata(dev);
+-		bool spisel_boot = false;
+ #if IS_ENABLED(CONFIG_FSL_SOC)
+-		struct mpc8xxx_spi_probe_info *pinfo = to_of_pinfo(pdata);
++		pinfo = to_of_pinfo(pdata);
+ 
+ 		spisel_boot = of_property_read_bool(np, "fsl,spisel_boot");
+ 		if (spisel_boot) {
+@@ -746,15 +750,24 @@ static int of_fsl_spi_probe(struct platform_device *ofdev)
+ 
+ 	ret = of_address_to_resource(np, 0, &mem);
+ 	if (ret)
+-		return ret;
++		goto unmap_out;
+ 
+ 	irq = platform_get_irq(ofdev, 0);
+-	if (irq < 0)
+-		return irq;
++	if (irq < 0) {
++		ret = irq;
++		goto unmap_out;
++	}
+ 
+ 	master = fsl_spi_probe(dev, &mem, irq);
+ 
+ 	return PTR_ERR_OR_ZERO(master);
++
++unmap_out:
++#if IS_ENABLED(CONFIG_FSL_SOC)
++	if (spisel_boot)
++		iounmap(pinfo->immr_spi_cs);
++#endif
++	return ret;
+ }
+ 
+ static int of_fsl_spi_remove(struct platform_device *ofdev)
+-- 
+2.25.1
 
->> > IMHO allowing only one backend at the same time is a little over simplified.
->>
->> It is, but I'd rather leave this until it's actually needed.
->> What can be done now is adopting a format for the exported keys that would
->> make this extension seamless in future.
->>
-> 
-> +1
-
-As long we don't make multiple backends at runtime impossible I'm
-fine and will happily add support for it when needed. :-)
-
-Thanks,
-//richard
