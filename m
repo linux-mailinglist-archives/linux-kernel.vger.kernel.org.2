@@ -2,137 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F3A83521B3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 766EC3521B9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234915AbhDAVhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 17:37:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53234 "EHLO
+        id S235282AbhDAVhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 17:37:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233981AbhDAVhC (ORCPT
+        with ESMTP id S234796AbhDAVhD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 17:37:02 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16D49C061788;
-        Thu,  1 Apr 2021 14:37:02 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id ap14so5019316ejc.0;
-        Thu, 01 Apr 2021 14:37:02 -0700 (PDT)
+        Thu, 1 Apr 2021 17:37:03 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA2B3C0613E6;
+        Thu,  1 Apr 2021 14:37:01 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id z1so3522145edb.8;
+        Thu, 01 Apr 2021 14:37:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=4Qm+59uCAR9vp39Y7VT6xDQzUUw6xyOHk+iDumVodlE=;
-        b=aZaO17+SGBUHuOxA6HLN3ByDQQNSRVM+chqYLrdJJ6PpeS1J1+jxWRRzwq1eadKtNz
-         1YqHBcrMTc6Lx/7dgAuPobooE6Q/GVFX20PgXkkqtvBB/lTkzoOAx0qx1CvP+F5NbXIP
-         TEvdr4ZNNIAD4+7zvp58r7Xvj7aA8RFKp0+9AbYYS/r02tl4lSrif1PnqGVXXisgRPf/
-         xr6/IrlgXxaG46icbzVZHY8ZlLyBb4GAihqV2GJzeWUaztMO4bDAghPmYzKEmF8VIyue
-         p6FGkubFp5GUOj1vc8WAtacOutyDcm4NM7Y3AKS0353XTA9NZHay1Bfflj2uzHRKpet3
-         KX3g==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=e74JBjvASSCexB4+iSEuob3u0eDtHVLnT5ys0O6XPH8=;
+        b=mpX/u4NEa6VMl+4sxiJrjdQPOoVilbJvMl23ZXbkewEFQ8lfgtH50OETUYW47QOLtg
+         locw/fZ6o0orfi0exx+yUZtZB7Jq2QOcNsEg5QBwxkFTKqwWuVJ5mJUDpwJGHAAvg8le
+         5tgcYyAf2k3b2j9WFNMi6h1EE0b/kMySmTSOlYuJjX6nq3HrdmbAI5r+XdfFjSnf8WFy
+         mgzz+8mxrwB34r0U3o5LQ7lWjE+9vLF1E9e+w9yVnjLTfWPt5aqpw9Lj6jg2P/17j1v2
+         MIqEphx3ik+ITXhIJi6r5Mtl2tpQO4ObRkAB6JjH3MnWjriMHIaA/GuSf/QcG48oIerU
+         JHdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=4Qm+59uCAR9vp39Y7VT6xDQzUUw6xyOHk+iDumVodlE=;
-        b=lsQwLciWNKrjiQHa40RP+uyt1JPDdDmkvWzrdRWQ9ZUw8JEQYfbYPt3alNgnWCbbAo
-         cFSA6wWJEOYn2QHQfjoFRdHVgvNaIvIh/yKg7ZxiipFYUF07WjKsahDlMSqFbHfcIyvl
-         2/zfjE/uBDYnto+1qaMfF7gXeHs9i3rOuZqeLzUCmnhDq8JR4d+LZTaIXAdeeZhAYnsl
-         ZQ5xyNepDlQ+w4Ph10LDyeYbRqgPEHQujXoEV3Y/1KL83rJfoBSwMYn1mVPOiBGPVD9m
-         6TE2mk0eJsybA1WyzshW9PSvscU4Zpxcmg1ofx8vVCpi+fFvg26GMB8u+4sqbKhZhaKM
-         SQ2Q==
-X-Gm-Message-State: AOAM533ZqN04HabMMgWcfgx+GKG/VaBRetpdpCz1+Eo5gWRgsP5qUJpK
-        T7W1KMtlfm11+JJH7VfHWH72F6JMCf+4Cw==
-X-Google-Smtp-Source: ABdhPJyaSXrftQ9tYxNcnNignEGJiUDe3HXyDFGr7eJTmFv4CQAPnKl7qADsjGYi/P/aUIgDskYPFA==
-X-Received: by 2002:a17:906:ae88:: with SMTP id md8mr10805611ejb.264.1617313019611;
-        Thu, 01 Apr 2021 14:36:59 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=e74JBjvASSCexB4+iSEuob3u0eDtHVLnT5ys0O6XPH8=;
+        b=Mv20p8Mwkd/N0UA2lL/u+Xsqnk9HFyJZwW9QQfGdcREqZ+Z0N4HqCsYvqjhOXEfEos
+         Yg/6WHG434o3dVcHXmkZQY+DifVpqqjLP++mDt1QeKYXguv0dFWP/G1xvVNAMTLqhrVM
+         q9VJ73hhT28XACcL1fMg9uTne+SUHPo9tZ53LmR4fS7Jrql+wqxNwleE3YUG3ZO6RYjO
+         eiSMyUrgc3/GknK6VtvnoBdXDW7hQ99OXkQEyxNp7ynIhHqU9V+1uVOAtEMONQtqECCT
+         fNt4HRbxAMOVP16herwg4h0tnYfTMs/Yz8X4/ltRb1WgMEGYcPemwTzTJ6O0MU+W0N6t
+         i9MQ==
+X-Gm-Message-State: AOAM531CWGiGtSLn1z+d+4dTMh0EJBnemyPKGMBkUQcC4R4sOPcotpyV
+        ZMftZp0VHv/d1KG+VSgU+ywR/XVBa9aZyQ==
+X-Google-Smtp-Source: ABdhPJwsCEvVUp7ijj2SJndO5yoENJgYJgXc63ygfjWn90TVlEa7ceZNB8VVE398SrF0IfD6AkIKqA==
+X-Received: by 2002:a05:6402:19a:: with SMTP id r26mr11991074edv.44.1617313020404;
+        Thu, 01 Apr 2021 14:37:00 -0700 (PDT)
 Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id f9sm4237006edq.43.2021.04.01.14.36.58
+        by smtp.gmail.com with ESMTPSA id f9sm4237006edq.43.2021.04.01.14.36.59
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 01 Apr 2021 14:36:59 -0700 (PDT)
+        Thu, 01 Apr 2021 14:37:00 -0700 (PDT)
 From:   Johan Jonker <jbx6244@gmail.com>
 To:     heiko@sntech.de
 Cc:     robh+dt@kernel.org, gregkh@linuxfoundation.org, balbi@kernel.org,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-usb@vger.kernel.org
-Subject: [PATCH v6 0/4] convert rockchip,dwc3.txt to yaml
-Date:   Thu,  1 Apr 2021 23:36:48 +0200
-Message-Id: <20210401213652.14676-1-jbx6244@gmail.com>
+Subject: [PATCH v6 1/4] usb: dwc3: of-simple: bail probe if no dwc3 child node
+Date:   Thu,  1 Apr 2021 23:36:49 +0200
+Message-Id: <20210401213652.14676-2-jbx6244@gmail.com>
 X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20210401213652.14676-1-jbx6244@gmail.com>
+References: <20210401213652.14676-1-jbx6244@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The conversion of rockchip,dwc3.txt to yaml was added to linux-next,
-but the necessary changes for rk3399 are still pending.
+For some of the dwc3-of-simple compatible SoCs we
+don't want to bind this driver to a dwc3 node,
+but bind that node to the 'snps,dwc3' driver instead.
+The kernel has no logic to decide which driver to bind
+to if there are 2 matching drivers, so bail probe if no
+dwc3 child node.
 
-For rk3399 dwc3 usb the wrapper node for only clocks makes no sense,
-so that was removed in the YAML example.
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+---
+ drivers/usb/dwc3/dwc3-of-simple.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Now dtbs_check still generates notifications for the compatibility string in
-the dts files that doesn't match, because it changed from
-"rockchip,rk3399-dwc3" to "rockchip,rk3399-dwc3", "snps,dwc3".
-
-The problem is to keep compatible with old device trees.
-I.e. a device running an older device tree should still work with newer
-kernels.
-
-Comment by Rob in version 3:
-Presumably you are getting lucky here (with link order). The kernel
-has no logic to decide which driver to bind to if there are 2 matching
-drivers. If we did, it would probably be the opposite of what you want
-here as we'd pick the most specific match. This driver should probably
-bail probe if no dwc3 child node.
-
-Please advise how to move forward with this serie.
-
-Changed V6:
-  rebase
-  remove accepted patches from serie
-
-Changed V5:
-  add select
-
-Changed V4:
-  removed patch "of-simple: add compatible for rk3328"
-  add patch "of-simple: bail probe if no dwc3 child node"
-
-Changed V3:
-  remove aclk_usb3_rksoc_axi_perf
-  remove aclk_usb3
-
-Changed V2:
-  remove node wrapper
-
-Johan Jonker (3):
-  usb: dwc3: of-simple: bail probe if no dwc3 child node
-  arm64: dts: rockchip: restyle rk3399 usbdrd3_0 node
-  arm64: dts: rockchip: restyle rk3399 usbdrd3_1 node
-
-Wu Liang feng (1):
-  arm64: dts: rockchip: optimize clks for rk3399 dwc3
-
- arch/arm64/boot/dts/rockchip/rk3399-ficus.dts      |  4 +-
- arch/arm64/boot/dts/rockchip/rk3399-firefly.dts    | 12 +--
- .../boot/dts/rockchip/rk3399-gru-chromebook.dtsi   |  6 +-
- arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi       |  6 +-
- arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts | 12 +--
- .../boot/dts/rockchip/rk3399-khadas-edge.dtsi      | 12 +--
- arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts  | 12 +--
- arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts |  2 +-
- arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi   |  8 --
- arch/arm64/boot/dts/rockchip/rk3399-orangepi.dts   | 12 +--
- .../boot/dts/rockchip/rk3399-pinebook-pro.dts      |  8 --
- .../arm64/boot/dts/rockchip/rk3399-puma-haikou.dts |  4 -
- arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi      |  6 +-
- arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi    | 10 +--
- arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi | 12 +--
- arch/arm64/boot/dts/rockchip/rk3399-rock960.dts    |  4 +-
- arch/arm64/boot/dts/rockchip/rk3399-rock960.dtsi   |  8 --
- arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi | 12 +--
- arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi  | 12 +--
- arch/arm64/boot/dts/rockchip/rk3399.dtsi           | 86 ++++++++--------------
- .../boot/dts/rockchip/rk3399pro-vmarc-som.dtsi     |  4 -
- drivers/usb/dwc3/dwc3-of-simple.c                  |  4 +
- 22 files changed, 59 insertions(+), 197 deletions(-)
-
+diff --git a/drivers/usb/dwc3/dwc3-of-simple.c b/drivers/usb/dwc3/dwc3-of-simple.c
+index 71fd620c5..8d3baa5df 100644
+--- a/drivers/usb/dwc3/dwc3-of-simple.c
++++ b/drivers/usb/dwc3/dwc3-of-simple.c
+@@ -38,6 +38,10 @@ static int dwc3_of_simple_probe(struct platform_device *pdev)
+ 
+ 	int			ret;
+ 
++	/* Bail probe if no dwc3 child node. */
++	if (!of_get_compatible_child(dev->of_node, "snps,dwc3"))
++		return -ENODEV;
++
+ 	simple = devm_kzalloc(dev, sizeof(*simple), GFP_KERNEL);
+ 	if (!simple)
+ 		return -ENOMEM;
 -- 
 2.11.0
 
