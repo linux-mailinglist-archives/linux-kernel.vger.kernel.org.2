@@ -2,85 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10041351A24
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36794351BA2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236607AbhDAR60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:58:26 -0400
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:20746 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234950AbhDARlj (ORCPT
+        id S238667AbhDASJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:09:51 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14674 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236492AbhDARyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:41:39 -0400
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 131CQciw030126;
-        Thu, 1 Apr 2021 07:40:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=ykBmYInzEvGFT1JMPiXc1lkaeT/jxWDhFNP9Q/A6/08=;
- b=JBN2pNqg6a9pM8wgveEEAANKekva129o80Za/JlxEa8yD9XTaahdQCrZWxWqWjBwfcYA
- 0XYzN9+i9q1Ss9rGlQnUB195BidXC4ru+YqBxESdQ4N7OZLyoJecSdcAkjJpuyEvnTvt
- FNJaZW69K+/zJ8SgI/MnMCZ50GOWsh0fhKFwGI5udmLIsQlczCRU/3VhYx97IEAzXf1k
- LYUXLt17d7ZQyRHP+iKYdWEtgulGMPeNxam5CdJ2GKWfv803Y1Sz7l19l4npFT2ajTIH
- 1saSDKNKacvdUPxwIl2wJKSfGee1JrZJWiO+bDuNW66PDn2kQr8QOI45ayj7ASVEpdWS JA== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 37n2948wfu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 01 Apr 2021 07:40:16 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 1 Apr 2021
- 13:40:14 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Thu, 1 Apr 2021 13:40:14 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7C81E11D6;
-        Thu,  1 Apr 2021 12:40:13 +0000 (UTC)
-Date:   Thu, 1 Apr 2021 12:40:13 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-CC:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Drew Fustini <drew@beagleboard.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        <alsa-devel@alsa-project.org>, <linux-gpio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
-Subject: Re: [PATCH 32/32] pinctrl: update pin-control.rst references
-Message-ID: <20210401124013.GT106851@ediswmail.ad.cirrus.com>
-References: <cover.1617279355.git.mchehab+huawei@kernel.org>
- <f056e1e16adff1df42416f0033fdb730169edf44.1617279356.git.mchehab+huawei@kernel.org>
+        Thu, 1 Apr 2021 13:54:40 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FB2tZ0L3Jzmcqm;
+        Thu,  1 Apr 2021 20:44:06 +0800 (CST)
+Received: from huawei.com (10.174.28.241) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.498.0; Thu, 1 Apr 2021
+ 20:46:37 +0800
+From:   Bixuan Cui <cuibixuan@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-s390@vger.kernel.org>
+CC:     <schnelle@linux.ibm.com>, <gor@linux.ibm.com>,
+        <borntraeger@de.ibm.com>, <john.wanghui@huawei.com>
+Subject: [PATCH] s390/pci: move ioremap/ioremap_prot/ioremap_wc/ioremap_wt/iounmap to arch/s390/mm/ioremap.c
+Date:   Thu, 1 Apr 2021 20:46:11 +0800
+Message-ID: <20210401124611.49917-1-cuibixuan@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <f056e1e16adff1df42416f0033fdb730169edf44.1617279356.git.mchehab+huawei@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: Io7iL6F3WDP7ZvGws1tN_zCpZy0zXWMf
-X-Proofpoint-ORIG-GUID: Io7iL6F3WDP7ZvGws1tN_zCpZy0zXWMf
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=979 phishscore=0
- bulkscore=0 mlxscore=0 lowpriorityscore=0 priorityscore=1501 spamscore=0
- malwarescore=0 clxscore=1011 adultscore=0 impostorscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
- definitions=main-2104010088
+Content-Type: text/plain
+X-Originating-IP: [10.174.28.241]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 02:17:52PM +0200, Mauro Carvalho Chehab wrote:
-> Changeset 5513b411ea5b ("Documentation: rename pinctl to pin-control")
-> renamed: Documentation/driver-api/pinctl.rst
-> to: Documentation/driver-api/pin-control.rst.
-> 
-> Update the cross-references accordingly.
-> 
-> Fixes: 5513b411ea5b ("Documentation: rename pinctl to pin-control")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
+The ioremap/iounmap is implemented in arch/s390/pci/pci.c.
+While CONFIG_PCI is disabled,the compilation error is reported:
+    s390x-linux-gnu-ld: drivers/pcmcia/cistpl.o: in function `set_cis_map':
+    cistpl.c:(.text+0x32a): undefined reference to `ioremap'
+    s390x-linux-gnu-ld: cistpl.c:(.text+0x360): undefined reference to `iounmap'
+    s390x-linux-gnu-ld: cistpl.c:(.text+0x384): undefined reference to `iounmap'
+    s390x-linux-gnu-ld: cistpl.c:(.text+0x396): undefined reference to `ioremap'
+    s390x-linux-gnu-ld: drivers/pcmcia/cistpl.o: in function `release_cis_mem':
+    cistpl.c:(.text+0xcb8): undefined reference to `iounmap'
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Add arch/s390/mm/ioremap.c file and move ioremap/ioremap_wc/ioremap_rt/iounmap
+to it to fix the error.
 
-Thanks,
-Charles
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+---
+ arch/s390/include/asm/io.h |  8 ++---
+ arch/s390/mm/Makefile      |  2 +-
+ arch/s390/mm/ioremap.c     | 64 +++++++++++++++++++++++++++++++++
+ arch/s390/pci/pci.c        | 73 ++++++--------------------------------
+ 4 files changed, 80 insertions(+), 67 deletions(-)
+ create mode 100644 arch/s390/mm/ioremap.c
+
+diff --git a/arch/s390/include/asm/io.h b/arch/s390/include/asm/io.h
+index e3882b012bfa..48a55644c34f 100644
+--- a/arch/s390/include/asm/io.h
++++ b/arch/s390/include/asm/io.h
+@@ -22,6 +22,10 @@ void unxlate_dev_mem_ptr(phys_addr_t phys, void *addr);
+ 
+ #define IO_SPACE_LIMIT 0
+ 
++#define ioremap ioremap
++#define ioremap_wt ioremap_wt
++#define ioremap_wc ioremap_wc
++
+ void __iomem *ioremap_prot(phys_addr_t addr, size_t size, unsigned long prot);
+ void __iomem *ioremap(phys_addr_t addr, size_t size);
+ void __iomem *ioremap_wc(phys_addr_t addr, size_t size);
+@@ -51,10 +55,6 @@ static inline void ioport_unmap(void __iomem *p)
+ #define pci_iomap_wc pci_iomap_wc
+ #define pci_iomap_wc_range pci_iomap_wc_range
+ 
+-#define ioremap ioremap
+-#define ioremap_wt ioremap_wt
+-#define ioremap_wc ioremap_wc
+-
+ #define memcpy_fromio(dst, src, count)	zpci_memcpy_fromio(dst, src, count)
+ #define memcpy_toio(dst, src, count)	zpci_memcpy_toio(dst, src, count)
+ #define memset_io(dst, val, count)	zpci_memset_io(dst, val, count)
+diff --git a/arch/s390/mm/Makefile b/arch/s390/mm/Makefile
+index cd67e94c16aa..74c22dfb131b 100644
+--- a/arch/s390/mm/Makefile
++++ b/arch/s390/mm/Makefile
+@@ -4,7 +4,7 @@
+ #
+ 
+ obj-y		:= init.o fault.o extmem.o mmap.o vmem.o maccess.o
+-obj-y		+= page-states.o pageattr.o pgtable.o pgalloc.o
++obj-y		+= page-states.o pageattr.o pgtable.o pgalloc.o ioremap.o
+ 
+ obj-$(CONFIG_CMM)		+= cmm.o
+ obj-$(CONFIG_HUGETLB_PAGE)	+= hugetlbpage.o
+diff --git a/arch/s390/mm/ioremap.c b/arch/s390/mm/ioremap.c
+new file mode 100644
+index 000000000000..132e6ddff36f
+--- /dev/null
++++ b/arch/s390/mm/ioremap.c
+@@ -0,0 +1,64 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (C) 2021 Huawei Ltd.
++ * Author: Bixuan Cui <cuibixuan@huawei.com>
++ */
++#include <linux/vmalloc.h>
++#include <linux/io.h>
++#include <linux/mm.h>
++#include <linux/jump_label.h>
++
++static void __iomem *__ioremap(phys_addr_t addr, size_t size, pgprot_t prot)
++{
++	unsigned long offset, vaddr;
++	struct vm_struct *area;
++	phys_addr_t last_addr;
++
++	last_addr = addr + size - 1;
++	if (!size || last_addr < addr)
++		return NULL;
++
++	offset = addr & ~PAGE_MASK;
++	addr &= PAGE_MASK;
++	size = PAGE_ALIGN(size + offset);
++	area = get_vm_area(size, VM_IOREMAP);
++	if (!area)
++		return NULL;
++
++	vaddr = (unsigned long) area->addr;
++	if (ioremap_page_range(vaddr, vaddr + size, addr, prot)) {
++		free_vm_area(area);
++		return NULL;
++	}
++	return (void __iomem *) ((unsigned long) area->addr + offset);
++}
++
++void __iomem *ioremap_prot(phys_addr_t addr, size_t size, unsigned long prot)
++{
++	return __ioremap(addr, size, __pgprot(prot));
++}
++EXPORT_SYMBOL(ioremap_prot);
++
++void __iomem *ioremap(phys_addr_t addr, size_t size)
++{
++	return __ioremap(addr, size, PAGE_KERNEL);
++}
++EXPORT_SYMBOL(ioremap);
++
++void __iomem *ioremap_wc(phys_addr_t addr, size_t size)
++{
++	return __ioremap(addr, size, pgprot_writecombine(PAGE_KERNEL));
++}
++EXPORT_SYMBOL(ioremap_wc);
++
++void __iomem *ioremap_wt(phys_addr_t addr, size_t size)
++{
++	return __ioremap(addr, size, pgprot_writethrough(PAGE_KERNEL));
++}
++EXPORT_SYMBOL(ioremap_wt);
++
++void iounmap(volatile void __iomem *addr)
++{
++	vunmap((__force void *) ((unsigned long) addr & PAGE_MASK));
++}
++EXPORT_SYMBOL(iounmap);
+diff --git a/arch/s390/pci/pci.c b/arch/s390/pci/pci.c
+index dd14641b2d20..be300850df9c 100644
+--- a/arch/s390/pci/pci.c
++++ b/arch/s390/pci/pci.c
+@@ -227,65 +227,6 @@ void __iowrite64_copy(void __iomem *to, const void *from, size_t count)
+        zpci_memcpy_toio(to, from, count);
+ }
+ 
+-static void __iomem *__ioremap(phys_addr_t addr, size_t size, pgprot_t prot)
+-{
+-	unsigned long offset, vaddr;
+-	struct vm_struct *area;
+-	phys_addr_t last_addr;
+-
+-	last_addr = addr + size - 1;
+-	if (!size || last_addr < addr)
+-		return NULL;
+-
+-	if (!static_branch_unlikely(&have_mio))
+-		return (void __iomem *) addr;
+-
+-	offset = addr & ~PAGE_MASK;
+-	addr &= PAGE_MASK;
+-	size = PAGE_ALIGN(size + offset);
+-	area = get_vm_area(size, VM_IOREMAP);
+-	if (!area)
+-		return NULL;
+-
+-	vaddr = (unsigned long) area->addr;
+-	if (ioremap_page_range(vaddr, vaddr + size, addr, prot)) {
+-		free_vm_area(area);
+-		return NULL;
+-	}
+-	return (void __iomem *) ((unsigned long) area->addr + offset);
+-}
+-
+-void __iomem *ioremap_prot(phys_addr_t addr, size_t size, unsigned long prot)
+-{
+-	return __ioremap(addr, size, __pgprot(prot));
+-}
+-EXPORT_SYMBOL(ioremap_prot);
+-
+-void __iomem *ioremap(phys_addr_t addr, size_t size)
+-{
+-	return __ioremap(addr, size, PAGE_KERNEL);
+-}
+-EXPORT_SYMBOL(ioremap);
+-
+-void __iomem *ioremap_wc(phys_addr_t addr, size_t size)
+-{
+-	return __ioremap(addr, size, pgprot_writecombine(PAGE_KERNEL));
+-}
+-EXPORT_SYMBOL(ioremap_wc);
+-
+-void __iomem *ioremap_wt(phys_addr_t addr, size_t size)
+-{
+-	return __ioremap(addr, size, pgprot_writethrough(PAGE_KERNEL));
+-}
+-EXPORT_SYMBOL(ioremap_wt);
+-
+-void iounmap(volatile void __iomem *addr)
+-{
+-	if (static_branch_likely(&have_mio))
+-		vunmap((__force void *) ((unsigned long) addr & PAGE_MASK));
+-}
+-EXPORT_SYMBOL(iounmap);
+-
+ /* Create a virtual mapping cookie for a PCI BAR */
+ static void __iomem *pci_iomap_range_fh(struct pci_dev *pdev, int bar,
+ 					unsigned long offset, unsigned long max)
+@@ -312,7 +253,10 @@ static void __iomem *pci_iomap_range_mio(struct pci_dev *pdev, int bar,
+ 	struct zpci_dev *zdev = to_zpci(pdev);
+ 	void __iomem *iova;
+ 
+-	iova = ioremap((unsigned long) zdev->bars[bar].mio_wt, barsize);
++	if (!static_branch_unlikely(&have_mio))
++		iova = (void __iomem *) zdev->bars[bar].mio_wt;
++	else
++		iova = ioremap((unsigned long) zdev->bars[bar].mio_wt, barsize);
+ 	return iova ? iova + offset : iova;
+ }
+ 
+@@ -342,7 +286,11 @@ static void __iomem *pci_iomap_wc_range_mio(struct pci_dev *pdev, int bar,
+ 	struct zpci_dev *zdev = to_zpci(pdev);
+ 	void __iomem *iova;
+ 
+-	iova = ioremap((unsigned long) zdev->bars[bar].mio_wb, barsize);
++	if (!static_branch_unlikely(&have_mio))
++		iova = (void __iomem *) zdev->bars[bar].mio_wb;
++	else
++		iova = ioremap((unsigned long) zdev->bars[bar].mio_wb, barsize);
++
+ 	return iova ? iova + offset : iova;
+ }
+ 
+@@ -381,7 +329,8 @@ static void pci_iounmap_fh(struct pci_dev *pdev, void __iomem *addr)
+ 
+ static void pci_iounmap_mio(struct pci_dev *pdev, void __iomem *addr)
+ {
+-	iounmap(addr);
++	if (static_branch_likely(&have_mio))
++		iounmap(addr);
+ }
+ 
+ void pci_iounmap(struct pci_dev *pdev, void __iomem *addr)
+-- 
+2.17.1
+
