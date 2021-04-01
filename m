@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 168DB351912
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8108351808
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237020AbhDARuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:50:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57222 "EHLO
+        id S235933AbhDARn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:43:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234767AbhDARjs (ORCPT
+        with ESMTP id S234417AbhDARhO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:39:48 -0400
+        Thu, 1 Apr 2021 13:37:14 -0400
 Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E6EC02FE8A;
-        Thu,  1 Apr 2021 09:00:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7766C02FE8E;
+        Thu,  1 Apr 2021 09:00:25 -0700 (PDT)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: benjamin.gaignard)
-        with ESMTPSA id AEAB11F46890
+        with ESMTPSA id C57AC1F46894
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
         robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
@@ -32,9 +32,9 @@ Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
         linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
         kernel@collabora.com,
         Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v8 04/13] media: hevc: Add fields and flags for hevc PPS
-Date:   Thu,  1 Apr 2021 17:59:54 +0200
-Message-Id: <20210401160003.88803-5-benjamin.gaignard@collabora.com>
+Subject: [PATCH v8 08/13] media: hantro: Only use postproc when post processed formats are defined
+Date:   Thu,  1 Apr 2021 17:59:58 +0200
+Message-Id: <20210401160003.88803-9-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210401160003.88803-1-benjamin.gaignard@collabora.com>
 References: <20210401160003.88803-1-benjamin.gaignard@collabora.com>
@@ -44,9 +44,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add fields and flags as they are defined in
-7.4.3.3.1 "General picture parameter set RBSP semantics of the
-H.265 ITU specification.
+If the variant doesn't offert postprocessed formats make sure it will
+be ok.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
@@ -54,61 +53,70 @@ Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
 version 8:
  - add Ezequiel review tag
 
- .../userspace-api/media/v4l/ext-ctrls-codec.rst    | 14 ++++++++++++++
- include/media/hevc-ctrls.h                         |  4 ++++
- 2 files changed, 18 insertions(+)
+ drivers/staging/media/hantro/hantro.h          |  8 ++------
+ drivers/staging/media/hantro/hantro_postproc.c | 14 ++++++++++++++
+ drivers/staging/media/hantro/hantro_v4l2.c     |  4 +++-
+ 3 files changed, 19 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-index 188aef8e40d0..92314aec655a 100644
---- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-@@ -2967,6 +2967,12 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
-     * - __u8
-       - ``num_extra_slice_header_bits``
-       -
-+    * - __u8
-+      - ``num_ref_idx_l0_default_active_minus1``
-+      - Specifies the inferred value of num_ref_idx_l0_active_minus1
-+    * - __u8
-+      - ``num_ref_idx_l1_default_active_minus1``
-+      - Specifies the inferred value of num_ref_idx_l1_active_minus1
-     * - __s8
-       - ``init_qp_minus26``
-       -
-@@ -3077,6 +3083,14 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
-     * - ``V4L2_HEVC_PPS_FLAG_SLICE_SEGMENT_HEADER_EXTENSION_PRESENT``
-       - 0x00040000
-       -
-+    * - ``V4L2_HEVC_PPS_FLAG_DEBLOCKING_FILTER_CONTROL_PRESENT``
-+      - 0x00080000
-+      - Specifies the presence of deblocking filter control syntax elements in
-+        the PPS
-+    * - ``V4L2_HEVC_PPS_FLAG_UNIFORM_SPACING``
-+      - 0x00100000
-+      - Specifies that tile column boundaries and likewise tile row boundaries
-+        are distributed uniformly across the picture
+diff --git a/drivers/staging/media/hantro/hantro.h b/drivers/staging/media/hantro/hantro.h
+index edb4561a6887..7a5ad93466c8 100644
+--- a/drivers/staging/media/hantro/hantro.h
++++ b/drivers/staging/media/hantro/hantro.h
+@@ -414,12 +414,8 @@ hantro_get_dst_buf(struct hantro_ctx *ctx)
+ 	return v4l2_m2m_next_dst_buf(ctx->fh.m2m_ctx);
+ }
  
- .. raw:: latex
+-static inline bool
+-hantro_needs_postproc(const struct hantro_ctx *ctx,
+-		      const struct hantro_fmt *fmt)
+-{
+-	return !ctx->is_encoder && fmt->fourcc != V4L2_PIX_FMT_NV12;
+-}
++bool hantro_needs_postproc(const struct hantro_ctx *ctx,
++			   const struct hantro_fmt *fmt);
  
-diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
-index b4cb2ef02f17..003f819ecb26 100644
---- a/include/media/hevc-ctrls.h
-+++ b/include/media/hevc-ctrls.h
-@@ -100,10 +100,14 @@ struct v4l2_ctrl_hevc_sps {
- #define V4L2_HEVC_PPS_FLAG_PPS_DISABLE_DEBLOCKING_FILTER	(1ULL << 16)
- #define V4L2_HEVC_PPS_FLAG_LISTS_MODIFICATION_PRESENT		(1ULL << 17)
- #define V4L2_HEVC_PPS_FLAG_SLICE_SEGMENT_HEADER_EXTENSION_PRESENT (1ULL << 18)
-+#define V4L2_HEVC_PPS_FLAG_DEBLOCKING_FILTER_CONTROL_PRESENT	(1ULL << 19)
-+#define V4L2_HEVC_PPS_FLAG_UNIFORM_SPACING			(1ULL << 20)
+ static inline dma_addr_t
+ hantro_get_dec_buf_addr(struct hantro_ctx *ctx, struct vb2_buffer *vb)
+diff --git a/drivers/staging/media/hantro/hantro_postproc.c b/drivers/staging/media/hantro/hantro_postproc.c
+index 6d2a8f2a8f0b..ed8916c950a4 100644
+--- a/drivers/staging/media/hantro/hantro_postproc.c
++++ b/drivers/staging/media/hantro/hantro_postproc.c
+@@ -50,6 +50,20 @@ const struct hantro_postproc_regs hantro_g1_postproc_regs = {
+ 	.display_width = {G1_REG_PP_DISPLAY_WIDTH, 0, 0xfff},
+ };
  
- struct v4l2_ctrl_hevc_pps {
- 	/* ISO/IEC 23008-2, ITU-T Rec. H.265: Picture parameter set */
- 	__u8	num_extra_slice_header_bits;
-+	__u8	num_ref_idx_l0_default_active_minus1;
-+	__u8	num_ref_idx_l1_default_active_minus1;
- 	__s8	init_qp_minus26;
- 	__u8	diff_cu_qp_delta_depth;
- 	__s8	pps_cb_qp_offset;
++bool hantro_needs_postproc(const struct hantro_ctx *ctx,
++			   const struct hantro_fmt *fmt)
++{
++	struct hantro_dev *vpu = ctx->dev;
++
++	if (ctx->is_encoder)
++		return false;
++
++	if (!vpu->variant->postproc_fmts)
++		return false;
++
++	return fmt->fourcc != V4L2_PIX_FMT_NV12;
++}
++
+ void hantro_postproc_enable(struct hantro_ctx *ctx)
+ {
+ 	struct hantro_dev *vpu = ctx->dev;
+diff --git a/drivers/staging/media/hantro/hantro_v4l2.c b/drivers/staging/media/hantro/hantro_v4l2.c
+index 1bc118e375a1..77d7fe62ce81 100644
+--- a/drivers/staging/media/hantro/hantro_v4l2.c
++++ b/drivers/staging/media/hantro/hantro_v4l2.c
+@@ -55,7 +55,9 @@ static const struct hantro_fmt *
+ hantro_get_postproc_formats(const struct hantro_ctx *ctx,
+ 			    unsigned int *num_fmts)
+ {
+-	if (ctx->is_encoder) {
++	struct hantro_dev *vpu = ctx->dev;
++
++	if (ctx->is_encoder || !vpu->variant->postproc_fmts) {
+ 		*num_fmts = 0;
+ 		return NULL;
+ 	}
 -- 
 2.25.1
 
