@@ -2,143 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29277352092
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:26:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3381735209B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235647AbhDAU0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 16:26:31 -0400
-Received: from mga14.intel.com ([192.55.52.115]:6556 "EHLO mga14.intel.com"
+        id S235021AbhDAUbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 16:31:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234488AbhDAU0Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 16:26:24 -0400
-IronPort-SDR: QKsUlsQMx1vEbIinXyW426j++O9MC1v4+t1O8A9TOibg+oqps/nZBEPo10PRcGrjDgxLMjikTx
- cvC1B0FMtDwQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="191805698"
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="191805698"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 13:26:24 -0700
-IronPort-SDR: 5g9zpTfbeyFQgjU6fp0reRyn2v+f92PCVEjaicefK4fIAXMMnwAWxf2kzaXL4Er2KZnmZGWACG
- AkqAb6+Hu+sQ==
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="611052873"
-Received: from pzlai-mobl.amr.corp.intel.com (HELO [10.213.169.242]) ([10.213.169.242])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 13:26:23 -0700
-Subject: Re: [RFC v1 23/26] x86/tdx: Make pages shared in ioremap()
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org
-References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <33ced467eae950bc3df9e1f01284036fd560d33c.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <17c692a8-72b3-526b-9190-8c41655fa13c@intel.com>
-Date:   Thu, 1 Apr 2021 13:26:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S234407AbhDAUbP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 16:31:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4B05610D0;
+        Thu,  1 Apr 2021 20:31:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617309075;
+        bh=hesAkTNQJud2zSBji7Xla+24h8mR3EHcOqfAeZrr1B0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TrGqF8xCn5JXauHa1Ww3ZJv8dcABJr6+qQTnvSQu27UOMk/E70Jl3/xtAPhOAoj8e
+         GB8WLDztAnLLGPhMBvAoLUyHG3Q9Uma27Z6ihQou1oMHt1IBcuZTAYDdiR4dX0mdJx
+         yba0gB6oLR1vIFbqD0S+ayt8FAaYe46YfhqdOMMF95lSeE+GxH5okZCoyskdozCXP+
+         KP9MVkh1s9hFnOYFa1tIoHqYi04lnJbYJRduZwBg/bCaP35Dv5/A7NTMH0NiGLkGTD
+         xcLSmNopvPKs/XYu1hYotEZJkq1PgBQPKZ/EsjeLwVPDNU9rG4J8IqBMePD+eACS2P
+         DQmU50u1b+g+g==
+Date:   Thu, 1 Apr 2021 22:31:12 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] torture: Correctly fetch CPUs for kvm-build.sh with all
+ native language
+Message-ID: <20210401203112.GA116405@lothringen>
+References: <20210401132602.116352-1-frederic@kernel.org>
+ <20210401185116.GH2696@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-In-Reply-To: <33ced467eae950bc3df9e1f01284036fd560d33c.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210401185116.GH2696@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/5/21 3:38 PM, Kuppuswamy Sathyanarayanan wrote:
-> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+On Thu, Apr 01, 2021 at 11:51:16AM -0700, Paul E. McKenney wrote:
+> On Thu, Apr 01, 2021 at 03:26:02PM +0200, Frederic Weisbecker wrote:
+> > Grepping for "CPU" on lscpu output isn't always successful, depending
+> > on the local language setting. As a result, the build can be aborted
+> > early with:
+> > 
+> > 	"make: the '-j' option requires a positive integer argument"
+> > 
+> > Prefer a more generic solution.
+> > 
+> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 > 
-> All ioremap()ed paged that are not backed by normal memory (NONE or
-> RESERVED) have to be mapped as shared.
+> Good catch, applied, thank you!
+> 
+> There is a similar construct in kvm-remote.sh, so I added a similar
+> fix to your patch.
+> 
+> But what about this in functions.sh?
+> 
+> nt="`lscpu | grep '^NUMA node0' | sed -e 's/^[^,]*,\([0-9]*\),.*$/\1/'`"
+> 
+> I am guessing that "node0" is human-language-independent, but is "NUMA"?
 
-s/paged/pages/
+I thought they wouldn't bother translating that, but they did...
 
+    NUMA node0 CPU(s):               0-7
 
-> +/* Make the page accesable by VMM */
-> +#define pgprot_tdx_shared(prot) __pgprot(pgprot_val(prot) | tdx_shared_mask())
-> +
->  #ifndef __ASSEMBLY__
->  #include <asm/x86_init.h>
->  #include <asm/fpu/xstate.h>
-> diff --git a/arch/x86/mm/ioremap.c b/arch/x86/mm/ioremap.c
-> index 9e5ccc56f8e0..a0ba760866d4 100644
-> --- a/arch/x86/mm/ioremap.c
-> +++ b/arch/x86/mm/ioremap.c
-> @@ -87,12 +87,12 @@ static unsigned int __ioremap_check_ram(struct resource *res)
->  }
->  
->  /*
-> - * In a SEV guest, NONE and RESERVED should not be mapped encrypted because
-> - * there the whole memory is already encrypted.
-> + * In a SEV or TDX guest, NONE and RESERVED should not be mapped encrypted (or
-> + * private in TDX case) because there the whole memory is already encrypted.
->   */
+becomes:
 
-But doesn't this mean that we can't ioremap() normal memory?  I was
-somehow expecting that we would need to do this for some host<->guest
-communication pages.
+    Nœud NUMA 0 de processeur(s) : 0-7
 
->  static unsigned int __ioremap_check_encrypted(struct resource *res)
->  {
-> -	if (!sev_active())
-> +	if (!sev_active() && !is_tdx_guest())
->  		return 0;
->  
->  	switch (res->desc) {
-> @@ -244,6 +244,8 @@ __ioremap_caller(resource_size_t phys_addr, unsigned long size,
->  	prot = PAGE_KERNEL_IO;
->  	if ((io_desc.flags & IORES_MAP_ENCRYPTED) || encrypted)
->  		prot = pgprot_encrypted(prot);
-> +	else if (is_tdx_guest())
-> +		prot = pgprot_tdx_shared(prot);
+Not sure about the best way to fix it.
 
+Thanks.
