@@ -2,71 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D24BD350C16
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 03:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A6C350C18
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 03:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232579AbhDABsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 21:48:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50182 "EHLO mail.kernel.org"
+        id S232884AbhDABss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 21:48:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229497AbhDABrw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 21:47:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E06006105A;
-        Thu,  1 Apr 2021 01:47:51 +0000 (UTC)
+        id S229497AbhDABsm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 21:48:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0872F6023F;
+        Thu,  1 Apr 2021 01:48:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617241672;
-        bh=G2yJZdijShzF6Eiq4JKJhqU3MQLiI4jRpJuwzIzshZ0=;
+        s=k20201202; t=1617241722;
+        bh=llB1PBxOwriT2KB88xNWqRmVzTqkcfQJvdyDOxSw/gc=;
         h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=AKswf+F8LN3LqcMldQgErtoNOnRl5HRmeuT6m5JJ2RlEejiC5x4NryC2d72ZSdNpW
-         WkqIgNFZq8QlEU++4L55a9FVfCBRRNpZ3P4dgb7LgIPZgMHx+HC39KJsGNcWLJfEAP
-         /50rDwXXy3MxlmVL0bwpwouIp9+H4wKvpLse2WmB2SbEw4cqOdxxaLmVFhQ1VoTCVO
-         GVrvGnEss/3CQ65qnkw9cDAwo56Xn/xvGUX0dNazHWp1z/5fM3kjgskEnR8DM3OSKG
-         rbIaE5ldq7kqQwtIqnWiK0SI1/mjRAvne9ep2pd0kcXdlN0AZaQa058z3fEbz2Fy/z
-         PFQe25hMcGSxA==
+        b=QgH7L8Rg2ojIqlubkguMFnNLyoWe6gmH/mYl4+TwFjSxEvv5r5Sygi1J+KYPwE4O8
+         Jx7OCtuCVSTIs4nvWxdIFGuNATht0+/Gl1Mnth0tcQ0A8UR7y66MGfJRgTbfCmt1yD
+         memC7ZB51SH0TgPFbWOmolaY8bDOmoyyt5wUJ/73xDqxWorLjpyKRqSxcplM1OComW
+         qnYY1zwnm/D4vumn9FpGWrNQfeQqErP9RpuF1Z0kTW9chcqrq2uoKJjqncICK/+Nx1
+         fdJCCSp9PZzpg0jSo9p8Kpr2gTVHPKSICBU1+d+PMtL914THs1TVMFk7xd9FQ/8tCr
+         uVMRvsSFqNAxg==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <YGQNyGDkAbUXRYtA@atomide.com>
-References: <20210329164222.26794-1-dariobin@libero.it> <161707108197.3012082.13148389244272034996@swboyd.mtv.corp.google.com> <YGQNyGDkAbUXRYtA@atomide.com>
-Subject: Re: [PATCH v3 0/4] clk: ti: add am33xx spread spectrum clock support
+In-Reply-To: <20210331090018.3464094-1-quanyang.wang@windriver.com>
+References: <20210331090018.3464094-1-quanyang.wang@windriver.com>
+Subject: Re: [PATCH] clk: zynqmp: move zynqmp_pll_set_mode out of round_rate callback
 From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Dario Binacchi <dariobin@libero.it>, linux-kernel@vger.kernel.org,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        =?utf-8?q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
-        Lee Jones <lee.jones@linaro.org>,
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jolly Shah <jolly.shah@xilinx.com>,
+        Rajan Vaja <rajan.vaja@xilinx.com>,
+        Quanyang Wang <quanyang.wang@windriver.com>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tero Kristo <kristo@kernel.org>, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-omap@vger.kernel.org
-To:     Tony Lindgren <tony@atomide.com>
-Date:   Wed, 31 Mar 2021 18:47:50 -0700
-Message-ID: <161724167065.2260335.15543151418752525635@swboyd.mtv.corp.google.com>
+        Michal Simek <michal.simek@xilinx.com>,
+        quanyang.wang@windriver.com
+Date:   Wed, 31 Mar 2021 18:48:40 -0700
+Message-ID: <161724172079.2260335.16388981768978108196@swboyd.mtv.corp.google.com>
 User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Tony Lindgren (2021-03-30 22:51:04)
-> * Stephen Boyd <sboyd@kernel.org> [210330 02:25]:
-> > Quoting Dario Binacchi (2021-03-29 09:42:17)
-> > >=20
-> > > As reported by the TI spruh73x RM, MPU and LCD modules support spread
-> > > spectrum clocking (SSC) on their output clocks. SSC is used to spread
-> > > the spectral peaking of the clock to reduce any electromagnetic
-> > > interference (EMI) that may be caused due to the clock=E2=80=99s fund=
-amental
-> > > or any of its harmonics.
-> > > The series allows you to enable and adjust the spread spectrum clocki=
-ng
-> > > for all am33xx PLLs for which it is supported.
-> > >=20
-> >=20
-> > What is your merge strategy? Should all the patches go through clk tree?
-> > Or you'll send via arm-soc?
+Quoting quanyang.wang@windriver.com (2021-03-31 02:00:18)
+> From: Quanyang Wang <quanyang.wang@windriver.com>
 >=20
-> Probably best to just merge all via the clk tree as that's where most of
-> the changes are.
+> The round_rate callback should only perform rate calculation and not
+> involve calling zynqmp_pll_set_mode to change the pll mode. So let's
+> move zynqmp_pll_set_mode out of round_rate and to set_rate callback.
 >=20
+> Reported-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+> ---
 
-Ok. If nobody reviews/acks the last patch in a few days I'll merge the
-pile through clk tree.
+Any Fixes tag?
