@@ -2,293 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B697A350E37
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 06:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2468350E3A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 06:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229480AbhDAEnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 00:43:16 -0400
-Received: from thorn.bewilderbeest.net ([71.19.156.171]:57197 "EHLO
-        thorn.bewilderbeest.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhDAEmu (ORCPT
+        id S232864AbhDAErN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 00:47:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhDAEqk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 00:42:50 -0400
-Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20::7c6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 5E02A6F;
-        Wed, 31 Mar 2021 21:42:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1617252170;
-        bh=Ay5WK54HZGhiIeFKN2gWw14BaktduKWzm6t4txNJPAk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=knepkPPZBus6BYQdLLFGxdXGruvS9SaNGeiS9NQI7gEmjsPwObm3JuUnoZ2/YNvok
-         qkyBGzIuHsA0r+FhNV04wzhhWGulPrJk2zDTIqzOfu065tigtfkhYON8h0nIh7Tuzi
-         3ca+vbko8vvMu22aTyK5CWFYkL1UHMnunO4ySrKw=
-From:   Zev Weiss <zev@bewilderbeest.net>
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Zev Weiss <zev@bewilderbeest.net>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: [PATCH v3] ARM: dts: aspeed: add ASRock E3C246D4I BMC
-Date:   Wed, 31 Mar 2021 23:42:31 -0500
-Message-Id: <20210401044232.9637-1-zev@bewilderbeest.net>
-X-Mailer: git-send-email 2.31.1
+        Thu, 1 Apr 2021 00:46:40 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 521A0C0613E6;
+        Wed, 31 Mar 2021 21:46:40 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id z8so763953ljm.12;
+        Wed, 31 Mar 2021 21:46:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zjqdiooQd5/01txoaSk7jE08J1uiZ+F+O8QxpLK+ei4=;
+        b=XnpEJG2HT1OMn2+AW9X47ZWsDL892/KS0v5ic9jdz4wRnh+vIMiqMLm9Es5Hw8x4Oc
+         0d2x5OQtKpp9iIWaGYSy/qT2/XopLkZ5f+PttxFU2c7SZxB2VJeRVbOg6iStAVY7s3fh
+         YaqNLYTgCAoUfpS6sEUj1KLUN25w8499BmKqcxyXW/b3O3NscwUxzM+CebuGykG09Gmy
+         9dBfybyE+jBVQhMHpesHzwOJDS0NttuNkAklHbujUltLDRqxBVjF1BAHkmdQ8nw0OqY9
+         oWp75R4dLQdMbsvPlLxPrd7+QzO3S4moqQMcAeFagW8p6hjIzEVCWT3NZYf/LpAa/yZF
+         c+sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zjqdiooQd5/01txoaSk7jE08J1uiZ+F+O8QxpLK+ei4=;
+        b=pMJm67BoLIiD08qvHYJd2M07L5t5qJiziLKcNP2TFv1SKDh7NHUde5az8QC1Io2iV1
+         4H1vXMqYXHOh/zOUBphMg+GTvSb677hx8L2mC/+IOJxoYsVe8gXLpNvV4Gl/rT6B4Gg+
+         FmfYT/x1KrPFMMLOO1pV/wYJMSxa+J7IUlnCFTeVimbqLO1ay5w0CsmOQZkv5d9Af7oZ
+         yX3ymeGDTp7Gbxzb75lHxe/WJmRPAnSHJxV7VhopZK/scEWLtCqDiWrVv0xdqYrx497S
+         euU3DlL7UCQas6sXQKJCY6IcxF0sDD49KusDKNyqYiDP4/1PW5nBcQFK+FcqmCfK4m8j
+         nAxw==
+X-Gm-Message-State: AOAM5315/84beJ9eUDn7JsV7ACzY34VHITw10UiH0QrtUK6AwSN4pCwv
+        SVWkmW93KfULbTJJE0lutaA=
+X-Google-Smtp-Source: ABdhPJyz3NEQm9Q8izBmRjhDMCSUIjXsftQO8zVzOyEVy91PGj04o6ewrh7dbAE90v/qJhdLaTcr5w==
+X-Received: by 2002:a2e:8159:: with SMTP id t25mr4263398ljg.437.1617252398843;
+        Wed, 31 Mar 2021 21:46:38 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.229.149])
+        by smtp.gmail.com with ESMTPSA id f8sm482754ljn.1.2021.03.31.21.46.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 21:46:38 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     stefan@datenfreihafen.org, alex.aring@gmail.com,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+28a246747e0a465127f3@syzkaller.appspotmail.com
+Subject: [PATCH] drivers: net: fix memory leak in atusb_probe
+Date:   Thu,  1 Apr 2021 07:46:24 +0300
+Message-Id: <20210401044624.19017-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a relatively low-cost AST2500-based Xeon E-2100/E-2200 series
-mini-ITX board that we hope can provide a decent platform for OpenBMC
-development.
+syzbot reported memory leak in atusb_probe()[1].
+The problem was in atusb_alloc_urbs().
+Since urb is anchored, we need to release the reference
+to correctly free the urb
 
-This initial device-tree provides the necessary configuration for
-basic BMC functionality such as host power control, serial console and
-KVM support, and POST code snooping.
+backtrace:
+    [<ffffffff82ba0466>] kmalloc include/linux/slab.h:559 [inline]
+    [<ffffffff82ba0466>] usb_alloc_urb+0x66/0xe0 drivers/usb/core/urb.c:74
+    [<ffffffff82ad3888>] atusb_alloc_urbs drivers/net/ieee802154/atusb.c:362 [inline][2]
+    [<ffffffff82ad3888>] atusb_probe+0x158/0x820 drivers/net/ieee802154/atusb.c:1038 [1]
 
-Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
-Reviewed-by: Joel Stanley <joel@jms.id.au>
+Reported-by: syzbot+28a246747e0a465127f3@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 ---
+ drivers/net/ieee802154/atusb.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Changes since v2:
- - un-bungled filename in dtb-$(CONFIG_ARCH_ASPEED)
-Changes since v1:
- - added entry to dtb-$(CONFIG_ARCH_ASPEED)
- - added board to compatible
- - added pinctrl properties to adc
- - split out of mostly-unrelated patch series
-
- arch/arm/boot/dts/Makefile                    |   1 +
- .../boot/dts/aspeed-bmc-asrock-e3c246d4i.dts  | 202 ++++++++++++++++++
- 2 files changed, 203 insertions(+)
- create mode 100644 arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts
-
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 8e5d4ab4e75e..c22151b50ddc 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -1406,6 +1406,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
- 	aspeed-bmc-ampere-mtjade.dtb \
- 	aspeed-bmc-arm-centriq2400-rep.dtb \
- 	aspeed-bmc-arm-stardragon4800-rep2.dtb \
-+	aspeed-bmc-asrock-e3c246d4i.dtb \
- 	aspeed-bmc-bytedance-g220a.dtb \
- 	aspeed-bmc-facebook-cmm.dtb \
- 	aspeed-bmc-facebook-galaxy100.dtb \
-diff --git a/arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts b/arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts
-new file mode 100644
-index 000000000000..dcab6e78dfa4
---- /dev/null
-+++ b/arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts
-@@ -0,0 +1,202 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/dts-v1/;
-+
-+#include "aspeed-g5.dtsi"
-+#include <dt-bindings/gpio/aspeed-gpio.h>
-+#include <dt-bindings/i2c/i2c.h>
-+
-+/{
-+	model = "ASRock E3C246D4I BMC";
-+	compatible = "asrock,e3c246d4i-bmc", "aspeed,ast2500";
-+
-+	aliases {
-+		serial4 = &uart5;
-+	};
-+
-+	chosen {
-+		stdout-path = &uart5;
-+		bootargs = "console=tty0 console=ttyS4,115200 earlyprintk";
-+	};
-+
-+	memory@80000000 {
-+		reg = <0x80000000 0x20000000>;
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		heartbeat {
-+			/* BMC_HB_LED_N */
-+			gpios = <&gpio ASPEED_GPIO(H, 6) GPIO_ACTIVE_LOW>;
-+			linux,default-trigger = "timer";
-+		};
-+
-+		system-fault {
-+			/* SYSTEM_FAULT_LED_N */
-+			gpios = <&gpio ASPEED_GPIO(Z, 2) GPIO_ACTIVE_LOW>;
-+			panic-indicator;
-+		};
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+
-+		uid-button {
-+			label = "uid-button";
-+			gpios = <&gpio ASPEED_GPIO(F, 1) GPIO_ACTIVE_LOW>;
-+			linux,code = <ASPEED_GPIO(F, 1)>;
-+		};
-+	};
-+
-+	iio-hwmon {
-+		compatible = "iio-hwmon";
-+		io-channels = <&adc 0>, <&adc 1>, <&adc 2>, <&adc 3>, <&adc 4>,
-+			<&adc 5>, <&adc 6>, <&adc 7>, <&adc 8>, <&adc 9>,
-+			<&adc 10>, <&adc 11>, <&adc 12>;
-+	};
-+};
-+
-+&fmc {
-+	status = "okay";
-+	flash@0 {
-+		status = "okay";
-+		m25p,fast-read;
-+		label = "bmc";
-+		spi-max-frequency = <100000000>; /* 100 MHz */
-+#include "openbmc-flash-layout.dtsi"
-+	};
-+};
-+
-+&uart5 {
-+	status = "okay";
-+};
-+
-+&vuart {
-+	status = "okay";
-+	aspeed,sirq-active-high;
-+};
-+
-+&mac0 {
-+	status = "okay";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_rgmii1_default &pinctrl_mdio1_default>;
-+};
-+
-+&i2c1 {
-+	status = "okay";
-+
-+	/* thermal sensor, one diode run to a disconnected header */
-+	w83773g@4c {
-+		compatible = "nuvoton,w83773g";
-+		reg = <0x4c>;
-+	};
-+};
-+
-+&i2c3 {
-+	status = "okay";
-+
-+	/* FRU EEPROM */
-+	eeprom@57 {
-+		compatible = "st,24c128", "atmel,24c128";
-+		reg = <0x57>;
-+		pagesize = <16>;
-+	};
-+};
-+
-+&video {
-+	status = "okay";
-+};
-+
-+&vhub {
-+	status = "okay";
-+};
-+
-+&lpc_ctrl {
-+	status = "okay";
-+};
-+
-+&lpc_snoop {
-+	status = "okay";
-+	snoop-ports = <0x80>;
-+};
-+
-+&gpio {
-+	status = "okay";
-+	gpio-line-names =
-+		/*  A */ "BMC_MAC1_INTB", "BMC_MAC2_INTB", "NMI_BTN_N", "BMC_NMI",
-+			"", "", "", "",
-+		/*  B */ "", "", "", "", "", "IRQ_BMC_PCH_SMI_LPC_N", "", "",
-+		/*  C */ "", "", "", "", "", "", "", "",
-+		/*  D */ "BMC_PSIN", "BMC_PSOUT", "BMC_RESETCON", "RESETCON",
-+			"", "", "", "",
-+		/*  E */ "", "", "", "", "", "", "", "",
-+		/*  F */ "LOCATORLED_STATUS_N", "LOCATORBTN", "", "",
-+			"", "", "BMC_PCH_SCI_LPC", "BMC_NCSI_MUX_CTL",
-+		/*  G */ "HWM_BAT_EN", "CHASSIS_ID0", "CHASSIS_ID1", "CHASSIS_ID2",
-+			"BMC_ALERT1_N_R", "BMC_ALERT2_N_R", "BMC_ALERT3_N", "SML0ALERT",
-+		/*  H */ "FM_ME_RCVR_N", "O_PWROK", "SKL_CNL_R", "D4_DIMM_EVENT_3V_N",
-+			"MFG_MODE_N", "BMC_RTCRST", "BMC_HB_LED_N", "BMC_CASEOPEN",
-+		/*  I */ "", "", "", "", "", "", "", "",
-+		/*  J */ "BMC_READY", "BMC_PCH_BIOS_CS_N", "BMC_SMI", "",
-+			"", "", "", "",
-+		/*  K */ "", "", "", "", "", "", "", "",
-+		/*  L */ "BMC_CTS1", "BMC_DCD1", "BMC_DSR1", "BMC_RI1",
-+			"BMC_DTR1", "BMC_RTS1", "BMC_TXD1", "BMC_RXD1",
-+		/*  M */ "BMC_LAN0_DIS_N", "BMC_LAN1_DIS_N", "", "",
-+			"", "", "", "",
-+		/*  N */ "", "", "", "", "", "", "", "",
-+		/*  O */ "", "", "", "", "", "", "", "",
-+		/*  P */ "", "", "", "", "", "", "", "",
-+		/*  Q */ "", "", "", "",
-+			"BMC_SBM_PRESENT_1_N", "BMC_SBM_PRESENT_2_N",
-+			"BMC_SBM_PRESENT_3_N", "BMC_PCIE_WAKE_N",
-+		/*  R */ "", "", "", "", "", "", "", "",
-+		/*  S */ "PCHHOT_BMC_N", "", "RSMRST",
-+			"", "", "", "", "",
-+		/*  T */ "", "", "", "", "", "", "", "",
-+		/*  U */ "", "", "", "", "", "", "", "",
-+		/*  V */ "", "", "", "", "", "", "", "",
-+		/*  W */ "PS_PWROK", /* dummy always-high signal */
-+			"", "", "", "", "", "", "",
-+		/*  X */ "", "", "", "", "", "", "", "",
-+		/*  Y */ "SLP_S3", "SLP_S5", "", "", "", "", "", "",
-+		/*  Z */ "CPU_CATERR_BMC_PCH_N", "", "SYSTEM_FAULT_LED_N", "BMC_THROTTLE_N",
-+			"", "", "", "",
-+		/* AA */ "CPU1_THERMTRIP_LATCH_N", "", "CPU1_PROCHOT_N", "",
-+			"", "", "IRQ_SMI_ACTIVE_N", "FM_BIOS_POST_CMPLT_N",
-+		/* AB */ "", "", "ME_OVERRIDE", "BMC_DMI_MODIFY",
-+			"", "", "", "",
-+		/* AC */ "LAD0", "LAD1", "LAD2", "LAD3",
-+			"CK_33M_BMC", "LFRAME", "SERIRQ", "S_PLTRST";
-+
-+	/* Assert BMC_READY so BIOS doesn't sit around waiting for it */
-+	bmc-ready {
-+		gpio-hog;
-+		gpios = <ASPEED_GPIO(J, 0) GPIO_ACTIVE_LOW>;
-+		output-high;
-+	};
-+};
-+
-+&adc {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_adc0_default
-+			&pinctrl_adc1_default
-+			&pinctrl_adc2_default
-+			&pinctrl_adc3_default
-+			&pinctrl_adc4_default
-+			&pinctrl_adc5_default
-+			&pinctrl_adc6_default
-+			&pinctrl_adc7_default
-+			&pinctrl_adc8_default
-+			&pinctrl_adc9_default
-+			&pinctrl_adc10_default
-+			&pinctrl_adc11_default
-+			&pinctrl_adc12_default>;
-+};
-+
-+&kcs3 {
-+	status = "okay";
-+	aspeed,lpc-io-reg = <0xca2>;
-+};
+diff --git a/drivers/net/ieee802154/atusb.c b/drivers/net/ieee802154/atusb.c
+index 0dd0ba915ab9..23ee0b14cbfa 100644
+--- a/drivers/net/ieee802154/atusb.c
++++ b/drivers/net/ieee802154/atusb.c
+@@ -365,6 +365,7 @@ static int atusb_alloc_urbs(struct atusb *atusb, int n)
+ 			return -ENOMEM;
+ 		}
+ 		usb_anchor_urb(urb, &atusb->idle_urbs);
++		usb_free_urb(urb);
+ 		n--;
+ 	}
+ 	return 0;
 -- 
-2.31.1
+2.30.2
 
