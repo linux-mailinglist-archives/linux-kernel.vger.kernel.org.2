@@ -2,182 +2,363 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D99352028
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EADD635202D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235406AbhDATwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 15:52:06 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:59060 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234062AbhDATwE (ORCPT
+        id S235405AbhDATyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 15:54:43 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:34996 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234062AbhDATym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 15:52:04 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 131JY47u057297;
-        Thu, 1 Apr 2021 19:51:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=corp-2020-01-29;
- bh=u2CBiOhBGly3kAwQNXmCmHyNix/LtTyhVCxqW+hoE5o=;
- b=iD/72yvMYHt5Cj4Eety16AmJPD3m8qdHZaNr4AX+QtbJ2IGoc9WqVh4/59XFIFPl59SE
- Dwr83DPOGvBTJuUFbeIuWeediGjDvr7f4tt4NA/a24nmyUnjdfxQxc0/07np4AGMRXWu
- akeFU2zrPI6H3K5UZQqg+W3XNq1YEZRMOrHjFuDtEZSHPr2EsmtkMWUoouCR+p9gCe7w
- YRAmQSKPjv0OuVQur93gwLyiFWUWK+mZY667y6tdFy0ZGSPGJtlHRJtJqWB3uMCzYzjb
- Vrz2JeZ8025nPFipn/Sx2vUPJLGCgCllF5Ds7HY7aszr1uOC1nejIOnDPDovnvfKY6x7 bQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 37n2akk225-1
+        Thu, 1 Apr 2021 15:54:42 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 131Ja0DF117344;
+        Thu, 1 Apr 2021 19:54:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ cc : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=Bu04mF2Iams8WUOFDmdgFzU6CR1qrKFZ75icqH6dpDU=;
+ b=HKjwp2+aiNZ73xOPttL84CqEZhhtiuw3830Nb2m/Cm8wp9bJG//7dQHeaG+cPA8mS+pc
+ aBwdhLkNpc5XBy2CWZO8whUsleWARAP8FeUmJlcc3f/RiRGj93BC56qV8Nbq5F5KG4Lh
+ 9Mxy30uYMJKuQEnF+t70/wk4m28DskW9odvLO6ChuYmoevd5/pnB9kdGSOeoMNfC5yZw
+ MJyuN3JOmqTtFfMT2nZSlD64RiTTAXVsV+R7md2tITVLIU77e+jVl2MiClE5IwkQl8cA
+ dUjmyI0xl52/jr7rrdBgJxTU8idly7gZ8DUDXeMJ0CX8E1rXhy9Qaeyui+v4S6lTZVMv vQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 37n30say7r-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 01 Apr 2021 19:51:51 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 131JZDY8094794;
-        Thu, 1 Apr 2021 19:51:51 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2106.outbound.protection.outlook.com [104.47.55.106])
-        by aserp3020.oracle.com with ESMTP id 37n2abpt1h-1
+        Thu, 01 Apr 2021 19:54:22 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 131JZwla038925;
+        Thu, 1 Apr 2021 19:54:22 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 37n2asq9bk-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 01 Apr 2021 19:51:51 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AC5fb7RV+J0IXAbEGo3dKwSfbZ9I/7maCNySCtP0+rwKr+4Vzs64xUNceZNGfOAMEwxjB7PumqbVHNyGjNdFRTeYYSLq4RBCWkSwA/nNGnSPseJDaSyKgEflEKaQUr1w3VVedhgvGCM0+ZlYY2Rqqd+A/pXjoayQ1HnbNNBVFoPfoyu60jieaSCgUnSRTw7pMNv/v4rUHNh1Me1tt2TMKfxHGxcK9mYEmgC9SqGt4TKANn1huVUivqcRHpvSPSqcqxobpbk7YmEvmsIIra/fbilfejeJGjVR8pDeZKmkoOBTbbaQY/xIJcdXUR+aGkU8GT5SWobMFtLW+q/PAD17/g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u2CBiOhBGly3kAwQNXmCmHyNix/LtTyhVCxqW+hoE5o=;
- b=dT9RIZh9FIIvY7V17kvtzXunDItnXno/aNUZmhSIeoFAj4wnXe7mRSC+KE0bPGuK8saW/5eFOgRjLoPG2TVJDuWl3KpDKrIT79y/C9Hlv6odBmP6sofkW/GbFJ/ChbZjhGs9Uj+gUysmZr7Y6glLRvQXFjAX7qjjMK1LQMK4h3QgHHk7/DwZpgoa4xWrJ4UGJDGqmJeoqDpdLMKTlyyFonUbCbd3kVBGcpoVb7sKloQ2EEpj5zR+H5QaHPf+6lVjlshs+CKMkBd8Fy2T4jlDUNCiO23K1XWT8gYTc470wZ63h+fi3dZacHonXToIARO52KNiVIb3JHcweYU6+zp6RQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u2CBiOhBGly3kAwQNXmCmHyNix/LtTyhVCxqW+hoE5o=;
- b=z6TiXC9vjLxq6jt7Mk3M1xD8u1LwcDEWR9Y1uo8d8rI9q6DmQ4Cso9c1XETHNaKqtL3kRhJBta2nRbcluWo+zMCtwIu//AxsrczfPyzfCa3h+LedZS6vAspSEfVYxRhIkYmYbrYzGPPip+LRGT+N3NA0nYfcn/JNURbAqsdhn/I=
-Received: from MWHPR10MB1582.namprd10.prod.outlook.com (2603:10b6:300:22::8)
- by MWHPR1001MB2143.namprd10.prod.outlook.com (2603:10b6:301:36::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.32; Thu, 1 Apr
- 2021 19:51:49 +0000
-Received: from MWHPR10MB1582.namprd10.prod.outlook.com
- ([fe80::1ce7:260b:b004:c82c]) by MWHPR10MB1582.namprd10.prod.outlook.com
- ([fe80::1ce7:260b:b004:c82c%11]) with mapi id 15.20.3999.028; Thu, 1 Apr 2021
- 19:51:49 +0000
-From:   Liam Howlett <liam.howlett@oracle.com>
-To:     Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
+        Thu, 01 Apr 2021 19:54:21 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 131JsGU1030268;
+        Thu, 1 Apr 2021 19:54:16 GMT
+Received: from [10.175.199.243] (/10.175.199.243)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 01 Apr 2021 12:54:15 -0700
+Subject: Re: [PATCH 3/3] mm/devmap: Remove pgmap accounting in the
+ get_user_pages_fast() path
+From:   Joao Martins <joao.m.martins@oracle.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Christoph Hellwig <hch@lst.de>,
+        Shiyang Ruan <ruansy.fnst@fujitsu.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     Dmitry Safonov <0x7f454c46@gmail.com>,
-        Michel Lespinasse <walken@google.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>
-Subject: [PATCH] alpha/kernel/traps: Use find_vma_intersection() in traps for
- setting si_code
-Thread-Topic: [PATCH] alpha/kernel/traps: Use find_vma_intersection() in traps
- for setting si_code
-Thread-Index: AQHXJzBzAo0LIIQ3IkiycclLKpCw2g==
-Date:   Thu, 1 Apr 2021 19:51:48 +0000
-Message-ID: <20210401195138.2895285-1-Liam.Howlett@Oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: git-send-email 2.30.0
-authentication-results: twiddle.net; dkim=none (message not signed)
- header.d=none;twiddle.net; dmarc=none action=none header.from=oracle.com;
-x-originating-ip: [23.233.25.87]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0c8ef5dd-0796-4a56-7a02-08d8f547968a
-x-ms-traffictypediagnostic: MWHPR1001MB2143:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR1001MB2143775A2FF368A6E8EE6F61FD7B9@MWHPR1001MB2143.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: OJuAyOdcMSgJyK54QAb/znj/FT/UZBHK0tSPuxjIQFglWLKsPBe7m+K7SXPioxsYEQTRulRLUzrbQ48o3tnE7LQGv8MLegYvpGgMpQsvUmKHfAdGHadGe/hurc/lBBBWYOiEE4a4PgFuLgyy7A4hoa/7+WRCxuuZ88eNS9IlAAtCzc5hcPKDdHB2TlnVjboQinn3BQis3S1QQPXMvXGEpKd8NJ7vKJrY6JchN05oLoxJnBHfNe1KGMDxg/GUn/1JU1nYHwhYiq0sUCeG32dFF1T+Vy+oyM602aB2Ugf805MEwpzcGZYMXwkqV60McD9+GlIxNx/a1wj8NIXaE0//lQYfjBPV6lQZ30rRfRC3h4BbsXvD/tnKS7tUQ5Oy1GpuaetLPJ/CuGRufTSrRinJIu3AYXaGDNmHuqO/RQT/Sngv35xFlY0rphSA2mP0Tln6HyZBgBF9h3n/FUbn4lku9ofr92g9DueeLevV5ug4HNZ0KkLYjSIFi69J6nPseO4KpIByAoTl8qrsRO5eHjsYgX1QeY/ZoPdWQeNxSVG3LRq7vJlZI7UCH7kIcu9oEy74ric8AcO10ozvfDKzFlocRuSVxX7lXhlT8HRWlzUSPsnf92qn/7T9OezhnK77PGrcXHYE+PIqPQF0rSl7xYzFOw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR10MB1582.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(346002)(136003)(376002)(39860400002)(6486002)(44832011)(71200400001)(2616005)(8676002)(64756008)(66446008)(66556008)(4326008)(86362001)(1076003)(91956017)(66476007)(6506007)(478600001)(6512007)(316002)(2906002)(36756003)(26005)(5660300002)(186003)(76116006)(38100700001)(4744005)(83380400001)(8936002)(110136005)(54906003)(66946007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?wMFurlvESmQAJEO4qDwwFDyUqZZdhQxBrOMD3eGFePW7qLx7KY9/QTzDHw?=
- =?iso-8859-1?Q?5a7BhY1EGMZ+3e4pU7w/AItGMpJYvojaI2jEBqe1RsjH2PVWkpQEJ5O8DD?=
- =?iso-8859-1?Q?ON8M7+XhZKbhLGHktVq1T/ILCGTVLux5EeAC6EZ1qNmcl9Mca7Qa4tgbvJ?=
- =?iso-8859-1?Q?kEcKqCNk5nWCdn+XMzYUHi681qY8miUnP8lty6Q5M3a98XEWzzOgdPEMfB?=
- =?iso-8859-1?Q?bzfA2Q9UhI2MWErXoMzXpJUgw67tMowP49mTbiNpnUCXsIPp6T1bZTKX4o?=
- =?iso-8859-1?Q?+lQdorrSugVKcezEpd8gunHf4/n9EPJGgWK+JlUk87awl48JuUvYU3ydCv?=
- =?iso-8859-1?Q?63R8YMs2d0QKrF10y7btKROUrgtJH40UJlRvo54M+X9L+imB83BlEZrbNY?=
- =?iso-8859-1?Q?aupLFDYsXJBhM7OwjGHeLxUu45yl33IjJMHxWjBFSZWvB2qfHvdyRycykv?=
- =?iso-8859-1?Q?rjg2jAXY47FS0hi4eTepC8kfTas6OdEbrBnFVMgLf6D5cjp1n1DeWjIc67?=
- =?iso-8859-1?Q?wsca+JNl+4HXZ8ujsoM4feDKUyq8izD30D01rrqhrF6w9TTmSIzud3FyJN?=
- =?iso-8859-1?Q?s5NiubEYXqSzd9D6ZkYH2qsj9GCufb9k7FNEs0Hi5BqspwXobJPpoEXMWn?=
- =?iso-8859-1?Q?lFUAGDrHSmyJ7qQEdRNnCu4o+67X/pDVfnfFxAjTG1vM+n7xp6EDTHFSk0?=
- =?iso-8859-1?Q?w8VTF7NKiTqRBVzdBDJRt2WQyTq5y9Cz2RC/OYniREujbq85onHFZ6P7bE?=
- =?iso-8859-1?Q?g2aJajF+RIOOL+NZp8ZFBddhXGcd/BQO3TFlKDj7+h09OoEQRi8IImfnEK?=
- =?iso-8859-1?Q?dvYqWv/NTbfJMChLYWtQz1JoatsVl4gqot0edu/zz0vLNdgIO9BnSm/J9m?=
- =?iso-8859-1?Q?L1zqcmvTHu20QMK69MFmDubhJgyLq/l0V9XCh1CdijQJRuok50XF/RgffF?=
- =?iso-8859-1?Q?seB98c7VePWiwdq5G1h2dtXs7CdwbG61Vj57uiCPAcgYsuFN0OYkB4y12m?=
- =?iso-8859-1?Q?hna6CuODp9Otba8J/FlT4HfkJMnLnq489r0xkGgPQ1+fLXQgSYxmMt/LdT?=
- =?iso-8859-1?Q?N6Aahs6ZwEwDUZKTXuJ2EaFArV4SXYUX/bOku8rnMY9kXiCY7d4wpEWI7p?=
- =?iso-8859-1?Q?DZ93UDCA5lobXOfUQ8eKTzWLKTTgkG5o9FrCLBV+q+EjGcQ5qu+Tni8v/W?=
- =?iso-8859-1?Q?X/3dZpa3VBbsPwxr45dMYFjkZTiqQOZTBr5ebE3JQK+eEpJxD6prVFYMBx?=
- =?iso-8859-1?Q?K0VMM2zqxXOKU3n4aJB/RHwigrsHsbBIii1qNRFS5ZYA4PkBILyN7/0iWe?=
- =?iso-8859-1?Q?jI2OMh84GHDqUohjMFlC+KihSV97n+rF8wHABGaHBcrX8GiQarWfSTUeBf?=
- =?iso-8859-1?Q?pYLKAqxaOh?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        david <david@fromorbit.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>
+References: <161604048257.1463742.1374527716381197629.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <161604050866.1463742.7759521510383551055.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <66514812-6a24-8e2e-7be5-c61e188fecc4@oracle.com>
+ <CAPcyv4jidaz=33oWFMB_aBPtYDLe-AA_NP-k_pfGADVt=w5Vng@mail.gmail.com>
+ <1c87dc74-335e-c9e2-2ae8-1ec7e0cb44c4@oracle.com>
+Message-ID: <a8c41028-c7f5-9b93-4721-b8ddcf2427da@oracle.com>
+Date:   Thu, 1 Apr 2021 20:54:10 +0100
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR10MB1582.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0c8ef5dd-0796-4a56-7a02-08d8f547968a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Apr 2021 19:51:48.8566
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: r/bq9fHtGtmni/5wy2TmbLAg8/ValxcK6naS7XDJnQhAcgU2Pi0lRPc1RfP7kbBjr6lMvNfawikFl6LS9QcR4Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1001MB2143
+In-Reply-To: <1c87dc74-335e-c9e2-2ae8-1ec7e0cb44c4@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9941 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 bulkscore=0
- suspectscore=0 phishscore=0 malwarescore=0 mlxlogscore=999 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
- definitions=main-2104010126
-X-Proofpoint-ORIG-GUID: oaUcnAHFJn_W9aWbMK-q1vNYc7m7hZOu
-X-Proofpoint-GUID: oaUcnAHFJn_W9aWbMK-q1vNYc7m7hZOu
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
+ suspectscore=0 bulkscore=0 mlxscore=0 adultscore=0 malwarescore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103310000 definitions=main-2104010126
+X-Proofpoint-GUID: bonOZ_DlGrElDbPILWMqcREQYzPYK6VB
+X-Proofpoint-ORIG-GUID: bonOZ_DlGrElDbPILWMqcREQYzPYK6VB
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9941 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0 phishscore=0
- bulkscore=0 adultscore=0 clxscore=1011 malwarescore=0 priorityscore=1501
- suspectscore=0 spamscore=0 mlxlogscore=999 lowpriorityscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
+ bulkscore=0 priorityscore=1501 suspectscore=0 mlxscore=0 spamscore=0
+ clxscore=1015 mlxlogscore=999 malwarescore=0 adultscore=0 phishscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
  definitions=main-2104010126
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-find_vma() will continue to search upwards until the end of the virtual
-memory space.  This means the si_code would almost never be set to
-SEGV_MAPERR even when the address falls outside of any VMA.
+On 3/24/21 7:00 PM, Joao Martins wrote:
+> On 3/24/21 5:45 PM, Dan Williams wrote:
+>> On Thu, Mar 18, 2021 at 3:02 AM Joao Martins <joao.m.martins@oracle.com> wrote:
+>>> On 3/18/21 4:08 AM, Dan Williams wrote:
+>>>> Now that device-dax and filesystem-dax are guaranteed to unmap all user
+>>>> mappings of devmap / DAX pages before tearing down the 'struct page'
+>>>> array, get_user_pages_fast() can rely on its traditional synchronization
+>>>> method "validate_pte(); get_page(); revalidate_pte()" to catch races with
+>>>> device shutdown. Specifically the unmap guarantee ensures that gup-fast
+>>>> either succeeds in taking a page reference (lock-less), or it detects a
+>>>> need to fall back to the slow path where the device presence can be
+>>>> revalidated with locks held.
+>>>
+>>> [...]
+>>>
+>>> So for allowing FOLL_LONGTERM[0] would it be OK if we used page->pgmap after
+>>> try_grab_page() for checking pgmap type to see if we are in a device-dax
+>>> longterm pin?
+>>
+>> So, there is an effort to add a new pte bit p{m,u}d_special to disable
+>> gup-fast for huge pages [1]. I'd like to investigate whether we could
+>> use devmap + special as an encoding for "no longterm" and never
+>> consult the pgmap in the gup-fast path.
+>>
+>> [1]: https://lore.kernel.org/linux-mm/a1fa7fa2-914b-366d-9902-e5b784e8428c@shipmail.org/
+>>
+> 
+> Oh, nice! That would be ideal indeed, as we would skip the pgmap lookup enterily.
+> 
+> I suppose device-dax would use pfn_t PFN_MAP while fs-dax memory device would set PFN_MAP
+> | PFN_DEV (provided vmf_insert_pfn_{pmd,pud} calls mkspecial on PFN_DEV).
+> 
+> I haven't been following that thread, but for PMD/PUD special in vmf_* these might be useful:
+> 
+> https://lore.kernel.org/linux-mm/20200110190313.17144-2-joao.m.martins@oracle.com/
+> https://lore.kernel.org/linux-mm/20200110190313.17144-4-joao.m.martins@oracle.com/
+> 
 
-Using find_vma_intersection() allows for what is intended by only
-returning a VMA if it falls within the range provided, in this case a
-window of 1.
+On a second thought, maybe it doesn't need to be that complicated for {fs,dev}dax if the
+added special bit is just a subcase of devmap pte/pmd/puds. See below scsissors mark as a
+rough estimation on the changes (nothing formal/proper as it isn't properly splitted).
+Running gup_test with devdax/fsdax FOLL_LONGTERM and without does the intended. (gup_test
+-m 16384 -r 10 -a -S -n 512 -w -f <file> [-F 0x10000]).
 
-Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
----
- arch/alpha/kernel/traps.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Unless this is about using special PMD/PUD bits without page structs (thus without devmap
+bits) as in the previous two links.
 
-diff --git a/arch/alpha/kernel/traps.c b/arch/alpha/kernel/traps.c
-index 921d4b6e4d95..7f51386c06d0 100644
---- a/arch/alpha/kernel/traps.c
-+++ b/arch/alpha/kernel/traps.c
-@@ -957,8 +957,10 @@ do_entUnaUser(void __user * va, unsigned long opcode,
- 		si_code =3D SEGV_ACCERR;
- 	else {
- 		struct mm_struct *mm =3D current->mm;
-+		unsigned long addr =3D (unsigned long)va;
+-- >8 --
+
+Subject: mm/gup, nvdimm: allow FOLL_LONGTERM for device-dax gup-fast
+
+Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
+
+diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+index 47027796c2f9..8b5d68d89cde 100644
+--- a/arch/arm64/include/asm/pgtable.h
++++ b/arch/arm64/include/asm/pgtable.h
+@@ -439,11 +439,16 @@ static inline pmd_t pmd_mkinvalid(pmd_t pmd)
+
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ #define pmd_devmap(pmd)		pte_devmap(pmd_pte(pmd))
++#define pmd_special(pmd)	pte_special(pmd_pte(pmd))
+ #endif
+ static inline pmd_t pmd_mkdevmap(pmd_t pmd)
+ {
+ 	return pte_pmd(set_pte_bit(pmd_pte(pmd), __pgprot(PTE_DEVMAP)));
+ }
++static inline pmd_t pmd_mkspecial(pmd_t pmd)
++{
++	return pte_pmd(set_pte_bit(pmd_pte(pmd), __pgprot(PTE_SPECIAL)));
++}
+
+ #define __pmd_to_phys(pmd)	__pte_to_phys(pmd_pte(pmd))
+ #define __phys_to_pmd_val(phys)	__phys_to_pte_val(phys)
+diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+index b1099f2d9800..45449ee86d4f 100644
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -259,13 +259,13 @@ static inline int pmd_large(pmd_t pte)
+ /* NOTE: when predicate huge page, consider also pmd_devmap, or use pmd_large */
+ static inline int pmd_trans_huge(pmd_t pmd)
+ {
+-	return (pmd_val(pmd) & (_PAGE_PSE|_PAGE_DEVMAP)) == _PAGE_PSE;
++	return (pmd_val(pmd) & (_PAGE_PSE|_PAGE_DEVMAP|_PAGE_SPECIAL)) == _PAGE_PSE;
+ }
+
+ #ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
+ static inline int pud_trans_huge(pud_t pud)
+ {
+-	return (pud_val(pud) & (_PAGE_PSE|_PAGE_DEVMAP)) == _PAGE_PSE;
++	return (pud_val(pud) & (_PAGE_PSE|_PAGE_DEVMAP|_PAGE_SPECIAL)) == _PAGE_PSE;
+ }
+ #endif
+
+@@ -297,6 +297,19 @@ static inline int pgd_devmap(pgd_t pgd)
+ {
+ 	return 0;
+ }
 +
- 		mmap_read_lock(mm);
--		if (find_vma(mm, (unsigned long)va))
-+		if (find_vma_intersection(mm, addr, addr + 1))
- 			si_code =3D SEGV_ACCERR;
- 		else
- 			si_code =3D SEGV_MAPERR;
---=20
-2.30.0
++static inline bool pmd_special(pmd_t pmd)
++{
++	return !!(pmd_flags(pmd) & _PAGE_SPECIAL);
++}
++
++#ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
++static inline bool pud_special(pud_t pud)
++{
++	return !!(pud_flags(pud) & _PAGE_SPECIAL);
++}
++#endif
++
+ #endif
+ #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+
+@@ -452,6 +465,11 @@ static inline pmd_t pmd_mkdevmap(pmd_t pmd)
+ 	return pmd_set_flags(pmd, _PAGE_DEVMAP);
+ }
+
++static inline pmd_t pmd_mkspecial(pmd_t pmd)
++{
++	return pmd_set_flags(pmd, _PAGE_SPECIAL);
++}
++
+ static inline pmd_t pmd_mkhuge(pmd_t pmd)
+ {
+ 	return pmd_set_flags(pmd, _PAGE_PSE);
+@@ -511,6 +529,11 @@ static inline pud_t pud_mkhuge(pud_t pud)
+ 	return pud_set_flags(pud, _PAGE_PSE);
+ }
+
++static inline pud_t pud_mkspecial(pud_t pud)
++{
++	return pud_set_flags(pud, _PAGE_SPECIAL);
++}
++
+ static inline pud_t pud_mkyoung(pud_t pud)
+ {
+ 	return pud_set_flags(pud, _PAGE_ACCESSED);
+diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
+index 16760b237229..156ceae33164 100644
+--- a/drivers/nvdimm/pmem.c
++++ b/drivers/nvdimm/pmem.c
+@@ -435,7 +435,7 @@ static int pmem_attach_disk(struct device *dev,
+ 		pmem->data_offset = le64_to_cpu(pfn_sb->dataoff);
+ 		pmem->pfn_pad = resource_size(res) -
+ 			range_len(&pmem->pgmap.range);
+-		pmem->pfn_flags |= PFN_MAP;
++		pmem->pfn_flags |= PFN_MAP | PFN_SPECIAL;
+ 		bb_range = pmem->pgmap.range;
+ 		bb_range.start += pmem->data_offset;
+ 	} else if (pmem_should_map_pages(dev)) {
+@@ -445,7 +445,7 @@ static int pmem_attach_disk(struct device *dev,
+ 		pmem->pgmap.type = MEMORY_DEVICE_FS_DAX;
+ 		pmem->pgmap.ops = &fsdax_pagemap_ops;
+ 		addr = devm_memremap_pages(dev, &pmem->pgmap);
+-		pmem->pfn_flags |= PFN_MAP;
++		pmem->pfn_flags |= PFN_MAP | PFN_SPECIAL;
+ 		bb_range = pmem->pgmap.range;
+ 	} else {
+ 		if (devm_add_action_or_reset(dev, pmem_release_queue,
+diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
+index 4ee6f734ba83..873c8e53c85d 100644
+--- a/fs/fuse/virtio_fs.c
++++ b/fs/fuse/virtio_fs.c
+@@ -748,7 +748,7 @@ static long virtio_fs_direct_access(struct dax_device *dax_dev,
+pgoff_t pgoff,
+ 		*kaddr = fs->window_kaddr + offset;
+ 	if (pfn)
+ 		*pfn = phys_to_pfn_t(fs->window_phys_addr + offset,
+-					PFN_DEV | PFN_MAP);
++					PFN_DEV | PFN_MAP | PFN_SPECIAL);
+ 	return nr_pages > max_nr_pages ? max_nr_pages : nr_pages;
+ }
+
+diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+index 7364e5a70228..ad7078e38ef2 100644
+--- a/include/linux/pgtable.h
++++ b/include/linux/pgtable.h
+@@ -1189,6 +1189,18 @@ static inline int pgd_devmap(pgd_t pgd)
+ }
+ #endif
+
++#if !defined(CONFIG_ARCH_HAS_PTE_SPECIAL) || !defined(CONFIG_TRANSPARENT_HUGEPAGE)
++static inline bool pmd_special(pmd_t pmd)
++{
++	return false;
++}
++
++static inline pmd_t pmd_mkspecial(pmd_t pmd)
++{
++	return pmd;
++}
++#endif
++
+ #if !defined(CONFIG_TRANSPARENT_HUGEPAGE) || \
+ 	(defined(CONFIG_TRANSPARENT_HUGEPAGE) && \
+ 	 !defined(CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD))
+@@ -1196,6 +1208,14 @@ static inline int pud_trans_huge(pud_t pud)
+ {
+ 	return 0;
+ }
++static inline bool pud_special(pud_t pud)
++{
++	return false;
++}
++static inline pud_t pud_mkspecial(pud_t pud)
++{
++	return pud;
++}
+ #endif
+
+ /* See pmd_none_or_trans_huge_or_clear_bad for discussion. */
+diff --git a/mm/gup.c b/mm/gup.c
+index b3e647c8b7ee..87aa229a9347 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -2086,7 +2086,7 @@ static int gup_pte_range(pmd_t pmd, unsigned long addr, unsigned
+long end,
+ 			goto pte_unmap;
+
+ 		if (pte_devmap(pte)) {
+-			if (unlikely(flags & FOLL_LONGTERM))
++			if (unlikely(flags & FOLL_LONGTERM) && pte_special(pte))
+ 				goto pte_unmap;
+
+ 			pgmap = get_dev_pagemap(pte_pfn(pte), pgmap);
+@@ -2338,7 +2338,7 @@ static int gup_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
+ 		return 0;
+
+ 	if (pmd_devmap(orig)) {
+-		if (unlikely(flags & FOLL_LONGTERM))
++		if (unlikely(flags & FOLL_LONGTERM) && pmd_special(orig))
+ 			return 0;
+ 		return __gup_device_huge_pmd(orig, pmdp, addr, end, flags,
+ 					     pages, nr);
+@@ -2372,7 +2372,7 @@ static int gup_huge_pud(pud_t orig, pud_t *pudp, unsigned long addr,
+ 		return 0;
+
+ 	if (pud_devmap(orig)) {
+-		if (unlikely(flags & FOLL_LONGTERM))
++		if (unlikely(flags & FOLL_LONGTERM) && pud_special(orig))
+ 			return 0;
+ 		return __gup_device_huge_pud(orig, pudp, addr, end, flags,
+ 					     pages, nr);
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index f6f70632fc29..9d5117711919 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -796,8 +796,11 @@ static void insert_pfn_pmd(struct vm_area_struct *vma, unsigned long
+addr,
+ 	}
+
+ 	entry = pmd_mkhuge(pfn_t_pmd(pfn, prot));
+-	if (pfn_t_devmap(pfn))
++	if (pfn_t_devmap(pfn)) {
+ 		entry = pmd_mkdevmap(entry);
++		if (pfn_t_special(pfn))
++			entry = pmd_mkspecial(entry);
++	}
+ 	if (write) {
+ 		entry = pmd_mkyoung(pmd_mkdirty(entry));
+ 		entry = maybe_pmd_mkwrite(entry, vma);
+@@ -896,8 +899,11 @@ static void insert_pfn_pud(struct vm_area_struct *vma, unsigned long
+addr,
+ 	}
+
+ 	entry = pud_mkhuge(pfn_t_pud(pfn, prot));
+-	if (pfn_t_devmap(pfn))
++	if (pfn_t_devmap(pfn)) {
+ 		entry = pud_mkdevmap(entry);
++		if (pfn_t_special(pfn))
++			entry = pud_mkspecial(entry);
++	}
+ 	if (write) {
+ 		entry = pud_mkyoung(pud_mkdirty(entry));
+ 		entry = maybe_pud_mkwrite(entry, vma);
