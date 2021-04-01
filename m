@@ -2,102 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D386E351CDA
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:47:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B27351C9D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235089AbhDASV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:21:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52808 "EHLO
+        id S236895AbhDASS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:18:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23268 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236890AbhDAR7C (ORCPT
+        by vger.kernel.org with ESMTP id S237519AbhDASAR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:59:02 -0400
+        Thu, 1 Apr 2021 14:00:17 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617299942;
+        s=mimecast20190719; t=1617300016;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=brX6QE7MjhEomBWAbXjkcHLjpu7FoC0JOK5oa38RZow=;
-        b=D67cJFB6ZY6iS03xATTYd97yObyFeEf8X9/nPc4jUFkBb5DMUO4ZE8B7LeHF8+z4BbJyIi
-        0U+wCBUn7o+VsvGWmEwpZMclzerPPSFx+S97A/N7vRwZ4WXB840JTk1CefXxGlHIIGCTvj
-        27X1QCb7F/RKA0gphULAtPLzm15q5Tw=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-415-qbfuWER9MtmOIPU4OA7x3Q-1; Thu, 01 Apr 2021 11:57:36 -0400
-X-MC-Unique: qbfuWER9MtmOIPU4OA7x3Q-1
-Received: by mail-ed1-f71.google.com with SMTP id f9so3048301edd.13
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 08:57:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=brX6QE7MjhEomBWAbXjkcHLjpu7FoC0JOK5oa38RZow=;
-        b=rJMNNErBvPb6ccaabmaTbBjRmm1vQURKXLIQbd3Lb21Z8l0DPFEavbKA8ZNO6ET6Az
-         6CwW57ayoqHOh0v642qk1rriqVwELjwkOAhwahal9Dqs8wQPT8kZfVnoxZcn58ZD3zWe
-         +JJaD+laY6p4JJw0FT7fhz4Lnp9SEuTulOecNgEWnKyDytZpSn95X93PZpLQ7lbxVm2I
-         Qm/VMFfbMMHA6PiywK5BFsxZ8L7P18EiO8547302cLPJFHB6oslN6MeKT9VCRv5FgFo5
-         6bG3BKjmTNyJtYXbktf1rhJr2zr/G+CIPphLHJVNp8La1hQRzBHCG39IT7M/sSpu7zwF
-         IGxA==
-X-Gm-Message-State: AOAM531OUkPxL4gCV1o2/dCRWrMYgTR6i41E0mdHsczj6MM066L90roU
-        SbPxCA5isw8Ib8iKKiqUvpc6hHtP/n5Vg6e617EXSIZ2wrC2ay3kRbnzZl/2gsbvivoAcGFIAvh
-        N0klHOPfq2lkCYCVD7ncoCU7I
-X-Received: by 2002:a17:906:3a94:: with SMTP id y20mr9608597ejd.35.1617292655268;
-        Thu, 01 Apr 2021 08:57:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzGPBwotTdYkotuMCSsl5dzzf7/fFbVRH67ssRnZNdW0bRpfE22hOEqP36Ibs2QHciTPGMSCQ==
-X-Received: by 2002:a17:906:3a94:: with SMTP id y20mr9608575ejd.35.1617292655051;
-        Thu, 01 Apr 2021 08:57:35 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id s13sm3841034edr.86.2021.04.01.08.57.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Apr 2021 08:57:34 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] KVM: nSVM: improve SYSENTER emulation on AMD
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <seanjc@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-References: <20210401111928.996871-1-mlevitsk@redhat.com>
- <20210401111928.996871-3-mlevitsk@redhat.com>
- <87h7kqrwb2.fsf@vitty.brq.redhat.com>
- <6f138606-d6c3-d332-9dc2-9ba4796fd4ce@redhat.com>
- <87zgyic984.fsf@vitty.brq.redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <b63e6c63-d781-3aef-a7b8-6b07d3c3568d@redhat.com>
-Date:   Thu, 1 Apr 2021 17:57:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        bh=DZ5o8xyhoYGjZMwbZbuoSG15PY6aGXxwCTwzusxwEpc=;
+        b=QGxIDx0wO+uOYhYaGHD1ebbtraUSs30PE3EzB+JeubT4+AxrqqiTzBvRuBhsLupMlbuxHm
+        oUHVJhZX71h+dKDyno7Ot2/FI+EYbdXRixh6mU4QbocMk9HvWIkwBTadJy77WL19bUPjea
+        2fu4PIQRC1j/uyXpmQKZM42PGxIU5Zw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-61-YVQssqzYNSmnqpfwZ9mZUA-1; Thu, 01 Apr 2021 11:58:19 -0400
+X-MC-Unique: YVQssqzYNSmnqpfwZ9mZUA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5909C1966324;
+        Thu,  1 Apr 2021 15:58:15 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-113-97.rdu2.redhat.com [10.10.113.97])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4687B5DDAD;
+        Thu,  1 Apr 2021 15:58:14 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id D9BD222054F; Thu,  1 Apr 2021 11:58:13 -0400 (EDT)
+Date:   Thu, 1 Apr 2021 11:58:13 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        Amir Goldstein <amir73il@gmail.com>, stable@vger.kernel.org,
+        syzbot <syzkaller@googlegroups.com>,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
+Subject: Re: [PATCH v1] ovl: Fix leaked dentry
+Message-ID: <20210401155813.GA801967@redhat.com>
+References: <20210329164907.2133175-1-mic@digikod.net>
 MIME-Version: 1.0
-In-Reply-To: <87zgyic984.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210329164907.2133175-1-mic@digikod.net>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/04/21 17:31, Vitaly Kuznetsov wrote:
->>>> +		svm->sysenter_eip_hi = guest_cpuid_is_intel(vcpu) ? (data >> 32) : 0;
->>> (Personal taste) I'd suggest we keep the whole 'sysenter_eip'/'sysenter_esp'
->>> even if we only use the upper 32 bits of it. That would reduce the code
->>> churn a little bit (no need to change 'struct vcpu_svm').
->> Would there really be less changes?  Consider that you'd have to look at
->> the VMCB anyway because svm_get_msr can be reached not just for guest
->> RDMSR but also for ioctls.
->>
-> I was thinking about the hunk in arch/x86/kvm/svm/svm.h tweaking
-> vcpu_svm. My opinion is not strong at all here)
+On Mon, Mar 29, 2021 at 06:49:07PM +0200, Mickaël Salaün wrote:
+> From: Mickaël Salaün <mic@linux.microsoft.com>
+> 
+> Since commit 6815f479ca90 ("ovl: use only uppermetacopy state in
+> ovl_lookup()"), overlayfs doesn't put temporary dentry when there is a
+> metacopy error, which leads to dentry leaks when shutting down the
+> related superblock:
+> 
 
-Ah okay, if it's just that I would consider the change a benefit, not a 
-problem with this patch.
+Hi,
 
-Paolo
+Thanks for finding and fixing this bug. Patch looks correct to me. We
+need to drop that reference to this.
+
+I am not able to trigger this warning on umount of overlayfs. I copied
+up a file with metacopy enabled and then remounted overlay again with
+metacopy disabled. That does hit this code and I see the warning.
+
+refusing to follow metacopy origin for (/foo.txt)
+
+This should have lead to leak of dentry pointed by "this".
+
+But after that I unmounted, overlay and that succeeds. Is there any
+additional step to be done to trigger this VFS warning.
+
+Vivek
+
+>   overlayfs: refusing to follow metacopy origin for (/file0)
+>   ...
+>   BUG: Dentry (____ptrval____){i=3f33,n=file3}  still in use (1) [unmount of overlay overlay]
+>   ...
+>   WARNING: CPU: 1 PID: 432 at umount_check.cold+0x107/0x14d
+>   CPU: 1 PID: 432 Comm: unmount-overlay Not tainted 5.12.0-rc5 #1
+>   ...
+>   RIP: 0010:umount_check.cold+0x107/0x14d
+>   ...
+>   Call Trace:
+>    d_walk+0x28c/0x950
+>    ? dentry_lru_isolate+0x2b0/0x2b0
+>    ? __kasan_slab_free+0x12/0x20
+>    do_one_tree+0x33/0x60
+>    shrink_dcache_for_umount+0x78/0x1d0
+>    generic_shutdown_super+0x70/0x440
+>    kill_anon_super+0x3e/0x70
+>    deactivate_locked_super+0xc4/0x160
+>    deactivate_super+0xfa/0x140
+>    cleanup_mnt+0x22e/0x370
+>    __cleanup_mnt+0x1a/0x30
+>    task_work_run+0x139/0x210
+>    do_exit+0xb0c/0x2820
+>    ? __kasan_check_read+0x1d/0x30
+>    ? find_held_lock+0x35/0x160
+>    ? lock_release+0x1b6/0x660
+>    ? mm_update_next_owner+0xa20/0xa20
+>    ? reacquire_held_locks+0x3f0/0x3f0
+>    ? __sanitizer_cov_trace_const_cmp4+0x22/0x30
+>    do_group_exit+0x135/0x380
+>    __do_sys_exit_group.isra.0+0x20/0x20
+>    __x64_sys_exit_group+0x3c/0x50
+>    do_syscall_64+0x45/0x70
+>    entry_SYSCALL_64_after_hwframe+0x44/0xae
+>   ...
+>   VFS: Busy inodes after unmount of overlay. Self-destruct in 5 seconds.  Have a nice day...
+> 
+> This fix has been tested with a syzkaller reproducer.
+> 
+> Cc: Amir Goldstein <amir73il@gmail.com>
+> Cc: Miklos Szeredi <miklos@szeredi.hu>
+> Cc: Vivek Goyal <vgoyal@redhat.com>
+> Cc: <stable@vger.kernel.org> # v5.7+
+> Reported-by: syzbot <syzkaller@googlegroups.com>
+> Fixes: 6815f479ca90 ("ovl: use only uppermetacopy state in ovl_lookup()")
+> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+> Link: https://lore.kernel.org/r/20210329164907.2133175-1-mic@digikod.net
+> ---
+>  fs/overlayfs/namei.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/fs/overlayfs/namei.c b/fs/overlayfs/namei.c
+> index 3fe05fb5d145..424c594afd79 100644
+> --- a/fs/overlayfs/namei.c
+> +++ b/fs/overlayfs/namei.c
+> @@ -921,6 +921,7 @@ struct dentry *ovl_lookup(struct inode *dir, struct dentry *dentry,
+>  		if ((uppermetacopy || d.metacopy) && !ofs->config.metacopy) {
+>  			err = -EPERM;
+>  			pr_warn_ratelimited("refusing to follow metacopy origin for (%pd2)\n", dentry);
+> +			dput(this);
+>  			goto out_put;
+>  		}
+>  
+> 
+> base-commit: a5e13c6df0e41702d2b2c77c8ad41677ebb065b3
+> -- 
+> 2.30.2
+> 
 
