@@ -2,53 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 156D8350EF2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:21:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B838350EF5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233252AbhDAGUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 02:20:50 -0400
-Received: from verein.lst.de ([213.95.11.211]:38287 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233227AbhDAGUf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 02:20:35 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 20EC268B05; Thu,  1 Apr 2021 08:20:32 +0200 (CEST)
-Date:   Thu, 1 Apr 2021 08:20:31 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Sagi Grimberg <sagi@grimberg.me>
-Cc:     "Ewan D. Milne" <emilne@redhat.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Keith Busch <kbusch@kernel.org>,
-        Daniel Wagner <dwagner@suse.de>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v2] nvme-tcp: Check if request has started before
- processing it
-Message-ID: <20210401062031.GA25424@lst.de>
-References: <20210301175601.116405-1-dwagner@suse.de> <6b51a989-5551-e243-abda-5872411ec3ff@grimberg.me> <20210311094345.ogm2lxqfuszktuhp@beryllium.lan> <70af5b02-10c1-ab0b-1dfc-5906216871b4@grimberg.me> <2fc7a320c86f75507584453dd2fbd744de5c170d.camel@redhat.com> <ed3ccac0-79ed-fe10-89eb-d403820b4c6a@grimberg.me> <20210330232813.GA1935968@dhcp-10-100-145-180.wdc.com> <e4bee13c-647a-55ff-2017-27ccfc314973@suse.de> <ad2fcbcd6707de4e219b39b012f6e42cb03dc92d.camel@redhat.com> <5715ef78-eaf1-dcb6-c2a2-f4725e1a01c4@grimberg.me>
+        id S233255AbhDAGWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 02:22:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233343AbhDAGWE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 02:22:04 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1BAC0613E6;
+        Wed, 31 Mar 2021 23:22:04 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id y1so976461ljm.10;
+        Wed, 31 Mar 2021 23:22:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=J4Zq0HjOinbfHP5aBY53rgZkCipWhKts2kh7ZSzk5ms=;
+        b=nNPmQoBz383rd79jRE8PX7JDh4GxKdLSr5KrqmQXgAH+JEHkkKVh+wcRLB3w3gqxhp
+         28YVmMzbcwbyWxNsh81zFdYCp8Mi4IPrrP4QRHqbVgsJIXssB/XGuhKKiLNoaTWimTF9
+         59E2s+ADMs6oibIMXI09iVb9oxOLD+UhcqK+368KZ+My8/sVdP7+LC6603ja66WWd3BD
+         MvNdHtPOElIXY08uoXD1HtRUgF0wIVWa1AEE5YlBO6wyuMI2FTRqONNuDqkNyrvw5RYz
+         6k3c8F7CCDUzP7OluS6uOypQtDIRo7qaoDTof32sFi1jitSLnXP7VHbvKsf8j7PGzzG2
+         gCjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=J4Zq0HjOinbfHP5aBY53rgZkCipWhKts2kh7ZSzk5ms=;
+        b=Naw1JsV7z1YOcgOQa1RbJbEJqg7J0om4Rz4/sZjDnlfaY55zsR2EToPWRik7IBvyZu
+         4KCJEGbVWfsg0lMzdfH7KPz1+/ytXrjkd6QeorQ5R4UfZqtb2YCuK4G79r1WSX2pa7Jy
+         V7ISULEpgKsCFWM458BuuUSL6d8sRBBwqFQHi5dZkajCmDdmwCMduCMtvnbI90/QeAFy
+         WHWbEHywiILhHV89eGzceRdtva4HqYeJZj7C8ZcfbRU0/Xwh5DPe1KJvRugDdxVcafyl
+         x99w570eudRjDhKoB76iMnRClpfx3fgxTo3zuz8xaEBrCKghGkctvk8UaO9h0/hbswNr
+         k6rg==
+X-Gm-Message-State: AOAM531vb4vGH1s7n7L+njafgfF18J7b/ZVCkuHxh+O3NpLpDISvmm9A
+        0x2Ss4krBWpn8E89Uux/j04=
+X-Google-Smtp-Source: ABdhPJxogPj7Otl1m3M2d2zKHtaf0HLq3zXFlpS4kjvFTAT4v1rDHDTNPvgGvOV5uDOSFCbkMD9wYA==
+X-Received: by 2002:a2e:89d4:: with SMTP id c20mr4477993ljk.169.1617258122518;
+        Wed, 31 Mar 2021 23:22:02 -0700 (PDT)
+Received: from gentoo (cable-hki-50dc2f-26.dhcp.inet.fi. [80.220.47.26])
+        by smtp.gmail.com with ESMTPSA id l6sm442160lfp.13.2021.03.31.23.22.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 23:22:02 -0700 (PDT)
+Date:   Thu, 1 Apr 2021 09:21:54 +0300
+From:   Hassan Shahbazi <h.shahbazi.git@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     daniel.vetter@ffwll.ch, jirislaby@kernel.org,
+        yepeilin.cs@gmail.com, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        h.shahbazi.git@gmail.com
+Subject: Re: [PATCH] fix NULL pointer deference crash
+Message-ID: <20210401062154.5evjajj64r4tjseh@gentoo>
+References: <20210331163425.8092-1-h.shahbazi.git@gmail.com>
+ <YGSyFgeNd7gfsbR6@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5715ef78-eaf1-dcb6-c2a2-f4725e1a01c4@grimberg.me>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <YGSyFgeNd7gfsbR6@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 03:24:49PM -0700, Sagi Grimberg wrote:
->
->>> What we can do, though, is checking the 'state' field in the tcp
->>> request, and only allow completions for commands which are in a state
->>> allowing for completions.
->>>
->>> Let's see if I can whip up a patch.
->>
->> That would be great.  BTW in the crash dump I am looking at now, it
->> looks like pdu->command_id was zero in nvme_tcp_recv_data(), and
->> blk_mq_tag_to_rq() returned a request struct that had not been used.
->> So I think we do need to check that the tag was actually allocated.
->
-> request tag can't be zero? I forget...
+On Wed, Mar 31, 2021 at 07:32:06PM +0200, Greg KH wrote:
+> On Wed, Mar 31, 2021 at 07:34:29PM +0300, Hassan Shahbazi wrote:
+> > The patch has fixed a NULL pointer deference crash in hiding the cursor. It 
+> > is verified by syzbot patch tester.
+> > 
+> > Reported by: syzbot
+> > https://syzkaller.appspot.com/bug?id=defb47bf56e1c14d5687280c7bb91ce7b608b94b
+> > 
+> > Signed-off-by: Hassan Shahbazi <h.shahbazi.git@gmail.com>
+> > ---
+> >  drivers/video/fbdev/core/fbcon.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
+> > index 44a5cd2f54cc..ee252d1c43c6 100644
+> > --- a/drivers/video/fbdev/core/fbcon.c
+> > +++ b/drivers/video/fbdev/core/fbcon.c
+> > @@ -1333,8 +1333,9 @@ static void fbcon_cursor(struct vc_data *vc, int mode)
+> >  
+> >  	ops->cursor_flash = (mode == CM_ERASE) ? 0 : 1;
+> >  
+> > -	ops->cursor(vc, info, mode, get_color(vc, info, c, 1),
+> > -		    get_color(vc, info, c, 0));
+> > +	if (ops && ops->cursor)
+> 
+> As ops obviously is not NULL here (you just used it on the line above),
+> why are you checking it again?
 
-Of course it can.  But the reserved tags are before the normal tags,
-so 0 would be a reserved tag for nvme.
+Yes, that's right. I will remove that check and will submit a new patch.
+
+
+> And what makes curser be NULL here?  How can that happen?
+
+Honestly, I don't know. I reproduced the crash on my local, followed the
+stack trace, and then changed the line to avoid the crash. If you think this
+patch is not the best solution, I can drop it and investigate more to find
+the root cause.
+
+
+> Also your subject line can use some work, please make it reflect the
+> driver subsystem you are looking at.
+ 
+This was a mistake, I did not intend to change the subject. I will ensure
+the next patch reflects the subsystem.
+
+> thanks,
+> 
+> greg k-h
+
+Best,
+Hassan Shahbazi
