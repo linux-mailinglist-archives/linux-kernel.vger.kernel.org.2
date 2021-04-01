@@ -2,133 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D7435182E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDAE7351800
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236258AbhDARoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:44:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57208 "EHLO
+        id S235811AbhDARnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:43:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234544AbhDARh6 (ORCPT
+        with ESMTP id S234414AbhDARhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:37:58 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8542FC0613BB
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 05:19:35 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id s2so1256072qtx.10
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 05:19:35 -0700 (PDT)
+        Thu, 1 Apr 2021 13:37:13 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F7EC0611A2
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 05:27:16 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id 19so1884456ilj.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 05:27:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Vgr/Zl3BDXRnrq2J6EE+e/3R7mQgt/D2Dsj5nuE2w0M=;
-        b=JpAs1vzPTjz4W8rdx9Lqz6nBqd13qCgN3+erq91mh4WGoo/LZS5fEquo+DACiJnKkX
-         QrRXi051hfgjTbJbWkb4DYzvsW7dd5nBrV1B7iZhANXyvf9JPdE2B/K8FL9e62txVK7G
-         0X/gpOxbofNzmLf0GAqzpX8sBfJtZmAM5AgY6NsA+fMjUnX+sBbt/uAKoHA8hXKR3thw
-         I4MqU09EK54ap9j94WYb6DERRr6dM1RBsJqJQLblOPlbmso1274vL9Xp0KegLKnMSTTI
-         OwoDTz18mnTz8i5OKZzE0CwVDjue/qX8moZSc4OPC55MzH1GtPpdWvMfTcPBykbbhtQ4
-         E5jg==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iWl62oGTxpsnb8MfsXXVQ5OE+zxxuQ8ZrjZT5mqhmk8=;
+        b=m3677M48tkn2V4ziKwwwBU2+rjUUc5Y3kj9IMK3hkZIsyEAd+wXLJPXp9d2zToyTZY
+         OtfzMXSxLpduWxLqZdB5iSGbld4WQ4wx09lwTchEkZim1b4qw598CREf3Cj8U5CrMJJZ
+         yWNUM3aYMlHDLxX9T6S0zoY30xB+V4HRp8h0996xITMmbP+CwG33gV5IGbnuSHwSFcNR
+         UpMROF7sOkhWtZZSrwV0YFKVy+2ta9KN79NWM+hB73LuOq3yVUbbkY1faeq8wh3RI8py
+         rEkjdFtpH6W3uwW45xeGv/oDcvlyw3ul7ACWkVz9KSVZeGxpK1Cy0RAvfonUTZqDCnxl
+         279g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Vgr/Zl3BDXRnrq2J6EE+e/3R7mQgt/D2Dsj5nuE2w0M=;
-        b=bOjlVzaokgnkC8bZbTb/y/amQK9l8WA0yG7CdZ9yuUS8MQw7DIe9V/uCs8Cn7E+eq3
-         K2x612EhopsaBifIT93SPdQYhvaj1hmOlDLj7QqK+2OBGV6nLrHVNbD/9tLbMSPyL/Fq
-         MM9JJPlsU7Ubu0t99O00SMQ+MniwY9Fei8Fmk/qIBxe6OAA1F8JdwWIJPS8yHX9Gz279
-         bdVTpVLYj+bbgICavdqFP3EjDFwsyGU4SvJ6p0jnL195aQr7d6gWxVUCur6i+Sz90VHi
-         Y3+Cxy56pQLECk+G7biSUK6qwIHHVkHhvRXEeDm3BFd2ILHcuJCjtWG3LDTL3ix5Wi/w
-         v3dw==
-X-Gm-Message-State: AOAM530zv3Uy0oml3Tiffr54BOjs2sWIb9WiZxL2POFGbn+Y4pUTo1Xk
-        zNcoF3ewQLjlbFgDXnYdmzqeRg==
-X-Google-Smtp-Source: ABdhPJz6ns0s4EMUeoQopcXj71hOMnL0XWBbKVYAuaGM2OabeF39OGOUzeq0Rc+BHh/xNK4055cz0A==
-X-Received: by 2002:ac8:7f52:: with SMTP id g18mr6906607qtk.250.1617279574765;
-        Thu, 01 Apr 2021 05:19:34 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id s28sm3807098qkj.73.2021.04.01.05.19.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 05:19:34 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lRwIP-006jdH-LT; Thu, 01 Apr 2021 09:19:33 -0300
-Date:   Thu, 1 Apr 2021 09:19:33 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        syzbot <syzbot+015dd7cdbbbc2c180c65@syzkaller.appspotmail.com>,
-        akpm@linux-foundation.org, bp@alien8.de, daniel.vetter@ffwll.ch,
-        daniel.vetter@intel.com, hpa@zytor.com, jmattson@google.com,
-        jmorris@namei.org, joro@8bytes.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
-        m.szyprowski@samsung.com, mchehab@kernel.org, mingo@redhat.com,
-        seanjc@google.com, serge@hallyn.com,
-        syzkaller-bugs@googlegroups.com, tfiga@chromium.org,
-        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
-        x86@kernel.org
-Subject: Re: [syzbot] WARNING in unsafe_follow_pfn
-Message-ID: <20210401121933.GA2710221@ziepe.ca>
-References: <000000000000ca9a6005bec29ebe@google.com>
- <2db3c803-6a94-9345-261a-a2bb74370c02@redhat.com>
- <20210331042922.GE2065@kadam>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iWl62oGTxpsnb8MfsXXVQ5OE+zxxuQ8ZrjZT5mqhmk8=;
+        b=cPk2qTvmCjNbPxa3TZYmzbrNwLQFZjC9nGkre+ewVzhtZ+y0DTRa8nV8+kZYxlCz+5
+         pd3y3rxmv75rGTgQ6pUE8SNT5gYp7U2LRKgHw9gq0zLqkbzAxz9S+PceALhOql41KXLQ
+         msJOlaEgOPgL+3W/o08wUI39oJrceLY7+NYG+ARtTnnsR7RC7bMdh5myozarfstGHaW1
+         eVlCvyRRkxG01AqIS6KZgNJhtDmp5s6GDU2e9tdthKicn9BAHsxoX7TB+gtw63fz2ZNC
+         45eS4z/k/brFQvrZ/ZfLvxSmJb4PTDhT0VoPIVgX9sQDEmY8EE6xCi1/M5tT2TKmFpfK
+         iHlw==
+X-Gm-Message-State: AOAM531HE9wVaujlLAL/pq8/4JnX6w+ygC9ikeRLIMVKLa8qwIRp48fI
+        wpYrUaTw1A3As2NnVlSWYYxPrrF6DbDswxLi
+X-Google-Smtp-Source: ABdhPJxz4i1NViOjDljoXKjIaTUxYrlyylEQ9VAbjNxwF2W8jdt1X3/G2E9h4ykpRvGW5oG6LbrB4Q==
+X-Received: by 2002:a05:6e02:1a45:: with SMTP id u5mr6717204ilv.4.1617280035922;
+        Thu, 01 Apr 2021 05:27:15 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id k4sm2846785iol.18.2021.04.01.05.27.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Apr 2021 05:27:15 -0700 (PDT)
+Subject: Re: [PATCH] interconnect: qcom: sm8350: Add missing link between
+ nodes
+To:     Georgi Djakov <georgi.djakov@linaro.org>, djakov@kernel.org,
+        vkoul@kernel.org
+Cc:     bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210401094435.28937-1-georgi.djakov@linaro.org>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <7ab2be33-9269-8c28-71d7-1611e60c72fe@linaro.org>
+Date:   Thu, 1 Apr 2021 07:27:14 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210331042922.GE2065@kadam>
+In-Reply-To: <20210401094435.28937-1-georgi.djakov@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 07:29:22AM +0300, Dan Carpenter wrote:
-> On Tue, Mar 30, 2021 at 07:04:30PM +0200, Paolo Bonzini wrote:
-> > On 30/03/21 17:26, syzbot wrote:
-> > > Hello,
-> > > 
-> > > syzbot found the following issue on:
-> > > 
-> > > HEAD commit:    93129492 Add linux-next specific files for 20210326
-> > > git tree:       linux-next
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=169ab21ad00000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=6f2f73285ea94c45
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=015dd7cdbbbc2c180c65
-> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=119b8d06d00000
-> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=112e978ad00000
-> > > 
-> > > The issue was bisected to:
-> > > 
-> > > commit d40b9fdee6dc819d8fc35f70c345cbe0394cde4c
-> > > Author: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > > Date:   Tue Mar 16 15:33:01 2021 +0000
-> > > 
-> > >      mm: Add unsafe_follow_pfn
-> > > 
-> > > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=122d2016d00000
-> > > final oops:     https://syzkaller.appspot.com/x/report.txt?x=112d2016d00000
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=162d2016d00000
-> > > 
-> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > Reported-by: syzbot+015dd7cdbbbc2c180c65@syzkaller.appspotmail.com
-> > > Fixes: d40b9fdee6dc ("mm: Add unsafe_follow_pfn")
-> > 
-> > This is basically intentional because get_vaddr_frames is broken, isn't it?
-> > I think it needs to be ignored in syzkaller.
+On 4/1/21 4:44 AM, Georgi Djakov wrote:
+> There is a link between the GEM NoC and C NoC nodes, which is currently
+> missing from the topology. Let's add it to allow consumers request paths
+> that use this link.
 > 
-> What?
+> Reported-by: Alex Elder <elder@linaro.org>
+> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+
+Thanks Georgi.
+
+Tested-by: Alex Elder <elder@linaro.org>
+
+> ---
+>   drivers/interconnect/qcom/sm8350.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> The bisect is wrong (because it's blaming the commit which added the
-> warning instead of the commit which added the buggy caller) but the
-> warning is correct.
+> diff --git a/drivers/interconnect/qcom/sm8350.c b/drivers/interconnect/qcom/sm8350.c
+> index 01202989a5b2..579b6ce8e046 100644
+> --- a/drivers/interconnect/qcom/sm8350.c
+> +++ b/drivers/interconnect/qcom/sm8350.c
+> @@ -139,7 +139,7 @@ DEFINE_QNODE(qhs_llcc, SM8350_SLAVE_LLCC_CFG, 1, 4);
+>   DEFINE_QNODE(qns_gemnoc, SM8350_SLAVE_GEM_NOC_CFG, 1, 4);
+>   DEFINE_QNODE(qhs_mdsp_ms_mpu_cfg, SM8350_SLAVE_MSS_PROC_MS_MPU_CFG, 1, 4);
+>   DEFINE_QNODE(qhs_modem_ms_mpu_cfg, SM8350_SLAVE_MCDMA_MS_MPU_CFG, 1, 4);
+> -DEFINE_QNODE(qns_gem_noc_cnoc, SM8350_SLAVE_GEM_NOC_CNOC, 1, 16);
+> +DEFINE_QNODE(qns_gem_noc_cnoc, SM8350_SLAVE_GEM_NOC_CNOC, 1, 16, SM8350_MASTER_GEM_NOC_CNOC);
+>   DEFINE_QNODE(qns_llcc, SM8350_SLAVE_LLCC, 4, 16, SM8350_MASTER_LLCC);
+>   DEFINE_QNODE(qns_pcie, SM8350_SLAVE_MEM_NOC_PCIE_SNOC, 1, 8);
+>   DEFINE_QNODE(srvc_even_gemnoc, SM8350_SLAVE_SERVICE_GEM_NOC_1, 1, 4);
 > 
-> Plus users are going to be seeing this as well.  According to the commit
-> message for 69bacee7f9ad ("mm: Add unsafe_follow_pfn") "Unfortunately
-> there's some users where this is not fixable (like v4l userptr of iomem
-> mappings)".  It sort of seems crazy to dump this giant splat and then
-> tell users to ignore it forever because it can't be fixed...  0_0
 
-I think the discussion conclusion was that this interface should not
-be used by userspace anymore, it is obsolete by some new interface?
-
-It should be protected by some kconfig and the kconfig should be
-turned off for syzkaller runs.
-
-Jason
