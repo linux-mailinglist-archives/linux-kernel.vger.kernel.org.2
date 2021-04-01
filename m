@@ -2,67 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B77E350F1C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91085350F19
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229514AbhDAGhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 02:37:09 -0400
-Received: from mail-m17637.qiye.163.com ([59.111.176.37]:44064 "EHLO
-        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233143AbhDAGgl (ORCPT
+        id S232672AbhDAGgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 02:36:03 -0400
+Received: from mail-wr1-f42.google.com ([209.85.221.42]:42686 "EHLO
+        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhDAGfw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 02:36:41 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id 9DD73980149;
-        Thu,  1 Apr 2021 14:36:38 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Anil Gurumurthy <anil.gurumurthy@qlogic.com>,
-        Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] scsi: bfa: Remove unnecessary struct declaration
-Date:   Thu,  1 Apr 2021 14:35:34 +0800
-Message-Id: <20210401063535.992487-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 1 Apr 2021 02:35:52 -0400
+Received: by mail-wr1-f42.google.com with SMTP id x13so619943wrs.9;
+        Wed, 31 Mar 2021 23:35:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4rL9IgiyziFhXFq9JhHe8MRiCspi+Fv8AChbH+YGoiU=;
+        b=Rj5XDwKRTS5/KBbtPpopcf5XDovGAoqH5lC3YJGlqXaJ0YssGzN3200uen4VpP3mM3
+         nuxZsVvbOtAwRFrgUb6t0MBX9306iBcfgvYq9xjUk9f3MSNgPwyYLhM8jlf/BV8VHIjF
+         PkCKGdIkJ4jEr+bp0Ct+TfuS2TRe+Hsd2r0HhkItB+K9RP212JFbHLUc+0D9QX8FG5fh
+         qxkK1npDe06eUExH/QkRLZPJILAI1yZtDgZXJWF66Un+8cakJITbaQ3KtwLwpCtYC2wZ
+         yRqIBhexWG9r/eUfQ6+qSlql6wO1waLAlD0Sz8x8RMNU3rv6qof49em6K8CEZRBrRgwF
+         sKRQ==
+X-Gm-Message-State: AOAM533EgJiax2A1+UafRvswvjLynK8RJtOKYQMFN5N83JI8DgvMqv1x
+        stijOfvs1zl4j38ezPS5rpw=
+X-Google-Smtp-Source: ABdhPJw/qtpkUX8J2ufQv5E/USmElRfcGrQQSfQnIFS25ZxrLYmTbD+T5qkceGS46q+4xdmea/1CTg==
+X-Received: by 2002:a5d:4d45:: with SMTP id a5mr7872790wru.396.1617258950754;
+        Wed, 31 Mar 2021 23:35:50 -0700 (PDT)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id k4sm11620091wrd.9.2021.03.31.23.35.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 23:35:50 -0700 (PDT)
+Date:   Thu, 1 Apr 2021 08:35:48 +0200
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Greentime Hu <greentime.hu@sifive.com>
+Cc:     paul.walmsley@sifive.com, hes@sifive.com, erik.danie@sifive.com,
+        zong.li@sifive.com, bhelgaas@google.com, robh+dt@kernel.org,
+        aou@eecs.berkeley.edu, mturquette@baylibre.com, sboyd@kernel.org,
+        lorenzo.pieralisi@arm.com, p.zabel@pengutronix.de,
+        alex.dewar90@gmail.com, khilman@baylibre.com,
+        hayashi.kunihiko@socionext.com, vidyas@nvidia.com,
+        jh80.chung@samsung.com, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        helgaas@kernel.org
+Subject: Re: [PATCH v4 5/6] PCI: fu740: Add SiFive FU740 PCIe host controller
+ driver
+Message-ID: <YGVpxHd/JhYPyaMQ@rocinante>
+References: <20210401060054.40788-1-greentime.hu@sifive.com>
+ <20210401060054.40788-6-greentime.hu@sifive.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGUIdGkgaGUgYGkhLVkpNSkxJTkNCQkJLSUxVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PBA6NTo4ED8KODRNTAgJAT4o
-        DBJPC0JVSlVKTUpMSU5DQkJCSEtPVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFKQ09NNwY+
-X-HM-Tid: 0a788c25eca3d992kuws9dd73980149
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210401060054.40788-6-greentime.hu@sifive.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct bfa_fcs_s is declared twice. One is declared
-at 50th line. Remove the duplicate.
-struct bfa_fcs_fabric_s is defined at 175th line.
-Remove unnecessary declaration.
+Hi Greentime,
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- drivers/scsi/bfa/bfa_fcs.h | 3 ---
- 1 file changed, 3 deletions(-)
+[...]
+> +	/* Wait for wait_idle */
+> +	ret = readl_poll_timeout(phy_cr_para_ack, val, val, 10, 5000);
+> +	if (ret)
+> +		dev_err(dev, "Wait for wait_ilde state failed!\n");
+> +
+> +	/* Clear */
+> +	writel_relaxed(0, phy_cr_para_wr_en);
+> +
+> +	/* Wait for ~wait_idle */
+> +	ret = readl_poll_timeout(phy_cr_para_ack, val, !val, 10, 5000);
+> +	if (ret)
+> +		dev_err(dev, "Wait for !wait_ilde state failed!\n");
+> +}
+[...]
+> +static int fu740_pcie_start_link(struct dw_pcie *pci)
+> +{
+> +	struct device *dev = pci->dev;
+> +
+> +	/* Start LTSSM. */
+> +	fu740_pcie_ltssm_enable(dev);
+> +	return 0;
+> +}
 
-diff --git a/drivers/scsi/bfa/bfa_fcs.h b/drivers/scsi/bfa/bfa_fcs.h
-index 3e117fed95c9..c1baf5cd0d3e 100644
---- a/drivers/scsi/bfa/bfa_fcs.h
-+++ b/drivers/scsi/bfa/bfa_fcs.h
-@@ -217,9 +217,6 @@ struct bfa_vf_event_s {
- 	u32        undefined;
- };
- 
--struct bfa_fcs_s;
--struct bfa_fcs_fabric_s;
--
- /*
-  * @todo : need to move to a global config file.
-  * Maximum Rports supported per port (physical/logical).
--- 
-2.25.1
+The typos etc., are still here.  See:
 
+  https://lore.kernel.org/linux-pci/YFQqpojmJyX0l6lx@rocinante/
+
+Krzysztof
