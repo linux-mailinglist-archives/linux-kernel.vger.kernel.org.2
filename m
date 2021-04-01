@@ -2,101 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87794351177
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61136351186
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233742AbhDAJIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 05:08:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34490 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233736AbhDAJIR (ORCPT
+        id S233773AbhDAJJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 05:09:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233702AbhDAJI6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 05:08:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617268097;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SH8q6v7mosb9ZWkhGf8eANcJIvuHX/dVnNgdkFE16jE=;
-        b=JyuCQVPFwIp/3uxqt6W7vC6AlxMS+8uw2UNA7rWHqxguau+l+0eazFFlNzbYH4llmylV4k
-        px3LV4973LiLlktBRLaZmI4uSansLUVeRB6Zt1DH2lxIVDRchJIqMpqjNk+pkoMd+fny94
-        cKGqt2iTSR/KCXwKZVIyxv3+JwWPeTE=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-352-uhKuSGaPM3abFDfgIEObTQ-1; Thu, 01 Apr 2021 05:08:16 -0400
-X-MC-Unique: uhKuSGaPM3abFDfgIEObTQ-1
-Received: by mail-ej1-f71.google.com with SMTP id li22so1958458ejb.18
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 02:08:15 -0700 (PDT)
+        Thu, 1 Apr 2021 05:08:58 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9908AC0613E6;
+        Thu,  1 Apr 2021 02:08:57 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id j7so1062031wrd.1;
+        Thu, 01 Apr 2021 02:08:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=zfLEgiVPM1EK9I/Nt42wOScERsBlthcf9kfWnVgYF2Q=;
+        b=fHOJMypWJhhdilZSqgus776bitjj+6ECd25ljjjUUgd/L3W2gUzr1RaQFXaoNGZ8q/
+         08ohAbHbg28YHIs7dUH+nZRVhUwicJ96HqiSCMrWaFNAcfRpxgosz4BFrxMaU9Ml7WcG
+         PIPLOfMVcHONaoXT9lb8ME2dqqnJVgDjjAn4upV4/KtoDlCYG3kHrmQd/ax24n80hnId
+         dq0V9qXcp38humOfzkzGVDzRvxwTNVpeUaQhOvme9OilkTwP4OahpmQ2bDqgvEANnGGV
+         lZgqSYEeFbHvI7093cMKti9e87KDn/pBSPZP9u6UURbGnCu0MiHZ5B+pwQkUzSCnT4Fo
+         xPCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=SH8q6v7mosb9ZWkhGf8eANcJIvuHX/dVnNgdkFE16jE=;
-        b=byqfzOk63qX4awgE8dzYT8vLQo96+nsG6bdaNRy76dpJ4+DHwDk7uT7ep6YTvor0rP
-         2mAns8gXzSUB4rO98vw3mBIokjUG/fca7NqScRqFgm7OMBhrdgTZ+sesM7/NB4KqTPf/
-         tkYiSbkO8Ko9LQaUOTxqS3zVsf2awWnB881Xv2kvmcqJkTEyUJp886FvjBHC56U0j0Iz
-         R+mEzPhFeFEtkUk5Fwt0gWxj8/NqAMMqJCIAtPPjNXaFuwwOHyxWHH+lFDfYmnltFnTy
-         TRRolz7VMMgTd7Z0Zs5JRv63H4PjbD30S9hjeKORGEDgHh903FweVgLrE0UG6jawIWHX
-         vERA==
-X-Gm-Message-State: AOAM530HTYqFBGmoo/8lL6VVSzyp3nLM6WdzScroCzvUcRVCLhB/MAJu
-        ubeSPkeOkir7y0HzJvWMSuUHXrq0eU4dDg3jhDBW5h+Oe4AYNPavTcKZNRSD9bdieq7nx7wNiPn
-        Et+XguMqgL9+CcVYgwt6Bnbnz09jY1wfKztIgvEHQIVQVMdDRc+/WMwJVeVXIJpEdXKT8LfEtXM
-        g/
-X-Received: by 2002:aa7:d296:: with SMTP id w22mr9132653edq.150.1617268094974;
-        Thu, 01 Apr 2021 02:08:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxkaDtD/zV8/+g4vA8exSjAqnDTdsDQz0T3HuSz8w49b9Wf/JUk9n3MB5ubq9QTsnrpDORKRg==
-X-Received: by 2002:aa7:d296:: with SMTP id w22mr9132630edq.150.1617268094789;
-        Thu, 01 Apr 2021 02:08:14 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id x4sm2967618edd.58.2021.04.01.02.08.13
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=zfLEgiVPM1EK9I/Nt42wOScERsBlthcf9kfWnVgYF2Q=;
+        b=rfVWl0j9EpOikp9H97MQ8dTmMrSZJMMOhOyuRWHYI+v8xGrDGIOztfM3dJ4MaLd/QJ
+         h/om0kGjd6VUdGL96kPFm19z1f4Q5DOQXI6yjHJmdqgfh1S80nQlKpz8P5/99zx4zhuz
+         sk15t2SxWUGKBa30It5HBbTdCAf7rxIw3Z5OFjiQEk7/6Ggqx8Gd+e7/RkDnrhRi5tXL
+         /yicvLKyFwwRKKFKh3aEVrUJmRWfmGeA2HAstCNMnVKFtMJLRkvY0+XQxoVookzJCU1d
+         FJ0v+AEb+KAB/rEKMKeH2AhrQeZil7n3sQ1AuaR/K3AgiBqCSjB55clcSMbkF+C7MawY
+         BA7Q==
+X-Gm-Message-State: AOAM532hPbkcgNjHnKPjVGsqH4nPd3AII7SBq8CjJBv5nKK0Thu5XXv2
+        hvdlWJsrEJO0vzQVeOapSw4=
+X-Google-Smtp-Source: ABdhPJy3wsTTqmFumyzlT5bNJa58quMPVPj3Zo4eKzUSD/gEAxlpRvKnIyhg5WvQqFSWW3otqvDeuw==
+X-Received: by 2002:adf:b1c9:: with SMTP id r9mr8594838wra.51.1617268136402;
+        Thu, 01 Apr 2021 02:08:56 -0700 (PDT)
+Received: from LEGION ([39.46.7.73])
+        by smtp.gmail.com with ESMTPSA id f16sm8880603wrt.21.2021.04.01.02.08.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 02:08:14 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Yang Li <yang.lee@linux.alibaba.com>
-Cc:     pbonzini@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: x86: Fix potential memory access error
-In-Reply-To: <YGS6XS87HYJdVPFQ@google.com>
-References: <1617182122-112315-1-git-send-email-yang.lee@linux.alibaba.com>
- <YGS6XS87HYJdVPFQ@google.com>
-Date:   Thu, 01 Apr 2021 11:08:13 +0200
-Message-ID: <87mtuis77m.fsf@vitty.brq.redhat.com>
+        Thu, 01 Apr 2021 02:08:55 -0700 (PDT)
+Date:   Thu, 1 Apr 2021 14:08:50 +0500
+From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
+To:     Namjae Jeon <namjae.jeon@samsung.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steve French <sfrench@samba.org>,
+        Hyunchul Lee <hyc.lee@gmail.com>,
+        "open list:COMMON INTERNET FILE SYSTEM SERVER (CIFSD)" 
+        <linux-cifs@vger.kernel.org>,
+        "open list:COMMON INTERNET FILE SYSTEM SERVER (CIFSD)" 
+        <linux-cifsd-devel@lists.sourceforge.net>,
+        open list <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org, colin.king@canonical.com,
+        dan.carpenter@oracle.com
+Cc:     musamaanjum@gmail.com
+Subject: [PATCH] cifsd: use kfree to free memory allocated by kmalloc or
+ kzalloc
+Message-ID: <20210401090850.GA2779473@LEGION>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
+kfree should be used to free memory allocated by kmalloc or kzalloc to
+avoid any overhead and for maintaining consistency.
 
-> On Wed, Mar 31, 2021, Yang Li wrote:
->> Using __set_bit() to set a bit in an integer is not a good idea, since
->> the function expects an unsigned long as argument, which can be 64bit wide.
->> Coverity reports this problem as
->> 
->> High:Out-of-bounds access(INCOMPATIBLE_CAST)
->> CWE119: Out-of-bounds access to a scalar
->> Pointer "&vcpu->arch.regs_avail" points to an object whose effective
->> type is "unsigned int" (32 bits, unsigned) but is dereferenced as a
->> wider "unsigned long" (64 bits, unsigned). This may lead to memory
->> corruption.
->> 
->> /home/heyuan.shy/git-repo/linux/arch/x86/kvm/kvm_cache_regs.h:
->> kvm_register_is_available
->> 
->> Just use BIT instead.
->
-> Meh, we're hosed either way.  Using BIT() will either result in undefined
-> behavior due to SHL shifting beyond the size of a u64, or setting random bits
-> if the truncated shift ends up being less than 63.
->
+Fixes: 5dfeb6d945 ("cifsd: use kmalloc() for small allocations")
+Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+---
+ fs/cifsd/buffer_pool.c       | 4 ++--
+ fs/cifsd/mgmt/share_config.c | 2 +-
+ fs/cifsd/mgmt/user_config.c  | 8 ++++----
+ fs/cifsd/mgmt/user_session.c | 6 +++---
+ fs/cifsd/smb2pdu.c           | 4 ++--
+ fs/cifsd/vfs_cache.c         | 2 +-
+ 6 files changed, 13 insertions(+), 13 deletions(-)
 
-A stupid question: why can't we just make 'regs_avail'/'regs_dirty'
-'unsigned long' and drop a bunch of '(unsigned long *)' casts? 
-
+diff --git a/fs/cifsd/buffer_pool.c b/fs/cifsd/buffer_pool.c
+index ad2a2c885a2c..a9ef3e703232 100644
+--- a/fs/cifsd/buffer_pool.c
++++ b/fs/cifsd/buffer_pool.c
+@@ -78,7 +78,7 @@ static int register_wm_size_class(size_t sz)
+ 	list_for_each_entry(l, &wm_lists, list) {
+ 		if (l->sz == sz) {
+ 			write_unlock(&wm_lists_lock);
+-			kvfree(nl);
++			kfree(nl);
+ 			return 0;
+ 		}
+ 	}
+@@ -181,7 +181,7 @@ static void wm_list_free(struct wm_list *l)
+ 		list_del(&wm->list);
+ 		kvfree(wm);
+ 	}
+-	kvfree(l);
++	kfree(l);
+ }
+ 
+ static void wm_lists_destroy(void)
+diff --git a/fs/cifsd/mgmt/share_config.c b/fs/cifsd/mgmt/share_config.c
+index db780febd692..e3d459c4dbb2 100644
+--- a/fs/cifsd/mgmt/share_config.c
++++ b/fs/cifsd/mgmt/share_config.c
+@@ -102,7 +102,7 @@ static int parse_veto_list(struct ksmbd_share_config *share,
+ 
+ 		p->pattern = kstrdup(veto_list, GFP_KERNEL);
+ 		if (!p->pattern) {
+-			ksmbd_free(p);
++			kfree(p);
+ 			return -ENOMEM;
+ 		}
+ 
+diff --git a/fs/cifsd/mgmt/user_config.c b/fs/cifsd/mgmt/user_config.c
+index f0c2f8994a6b..c31e2c4d2d6f 100644
+--- a/fs/cifsd/mgmt/user_config.c
++++ b/fs/cifsd/mgmt/user_config.c
+@@ -46,8 +46,8 @@ struct ksmbd_user *ksmbd_alloc_user(struct ksmbd_login_response *resp)
+ 
+ 	if (!user->name || !user->passkey) {
+ 		kfree(user->name);
+-		ksmbd_free(user->passkey);
+-		ksmbd_free(user);
++		kfree(user->passkey);
++		kfree(user);
+ 		user = NULL;
+ 	}
+ 	return user;
+@@ -57,8 +57,8 @@ void ksmbd_free_user(struct ksmbd_user *user)
+ {
+ 	ksmbd_ipc_logout_request(user->name);
+ 	kfree(user->name);
+-	ksmbd_free(user->passkey);
+-	ksmbd_free(user);
++	kfree(user->passkey);
++	kfree(user);
+ }
+ 
+ int ksmbd_anonymous_user(struct ksmbd_user *user)
+diff --git a/fs/cifsd/mgmt/user_session.c b/fs/cifsd/mgmt/user_session.c
+index 5a2113bf18ef..fa2140d4755a 100644
+--- a/fs/cifsd/mgmt/user_session.c
++++ b/fs/cifsd/mgmt/user_session.c
+@@ -53,7 +53,7 @@ static void __session_rpc_close(struct ksmbd_session *sess,
+ 
+ 	ksmbd_free(resp);
+ 	ksmbd_rpc_id_free(entry->id);
+-	ksmbd_free(entry);
++	kfree(entry);
+ }
+ 
+ static void ksmbd_session_rpc_clear_list(struct ksmbd_session *sess)
+@@ -119,7 +119,7 @@ int ksmbd_session_rpc_open(struct ksmbd_session *sess, char *rpc_name)
+ 	return entry->id;
+ error:
+ 	list_del(&entry->list);
+-	ksmbd_free(entry);
++	kfree(entry);
+ 	return -EINVAL;
+ }
+ 
+@@ -174,7 +174,7 @@ void ksmbd_session_destroy(struct ksmbd_session *sess)
+ 	ksmbd_release_id(session_ida, sess->id);
+ 
+ 	ksmbd_ida_free(sess->tree_conn_ida);
+-	ksmbd_free(sess);
++	kfree(sess);
+ }
+ 
+ static struct ksmbd_session *__session_lookup(unsigned long long id)
+diff --git a/fs/cifsd/smb2pdu.c b/fs/cifsd/smb2pdu.c
+index 139041768f65..a4bcf6a85f02 100644
+--- a/fs/cifsd/smb2pdu.c
++++ b/fs/cifsd/smb2pdu.c
+@@ -1611,7 +1611,7 @@ int smb2_sess_setup(struct ksmbd_work *work)
+ 
+ 			ksmbd_conn_set_good(work);
+ 			sess->state = SMB2_SESSION_VALID;
+-			ksmbd_free(sess->Preauth_HashValue);
++			kfree(sess->Preauth_HashValue);
+ 			sess->Preauth_HashValue = NULL;
+ 		} else if (conn->preferred_auth_mech == KSMBD_AUTH_NTLMSSP) {
+ 			rc = generate_preauth_hash(work);
+@@ -1637,7 +1637,7 @@ int smb2_sess_setup(struct ksmbd_work *work)
+ 
+ 				ksmbd_conn_set_good(work);
+ 				sess->state = SMB2_SESSION_VALID;
+-				ksmbd_free(sess->Preauth_HashValue);
++				kfree(sess->Preauth_HashValue);
+ 				sess->Preauth_HashValue = NULL;
+ 			}
+ 		} else {
+diff --git a/fs/cifsd/vfs_cache.c b/fs/cifsd/vfs_cache.c
+index ec631dc6f1fb..f2a863542dc7 100644
+--- a/fs/cifsd/vfs_cache.c
++++ b/fs/cifsd/vfs_cache.c
+@@ -829,6 +829,6 @@ void ksmbd_destroy_file_table(struct ksmbd_file_table *ft)
+ 
+ 	__close_file_table_ids(ft, NULL, session_fd_check);
+ 	idr_destroy(ft->idr);
+-	ksmbd_free(ft->idr);
++	kfree(ft->idr);
+ 	ft->idr = NULL;
+ }
 -- 
-Vitaly
+2.25.1
 
