@@ -2,724 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF01351926
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0186435180B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237228AbhDARvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:51:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27743 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234801AbhDARkQ (ORCPT
+        id S235995AbhDARnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:43:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234423AbhDARhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:40:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617298816;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1XiHNsvGFXmmRVmD21Ex022DO567amJajR26yw0JMmc=;
-        b=h0XyYj8rgAdxfY7Rj1WuM55PO6v1PNoPf3XT03PRWk3f+W/P1pmgaCjlaQGgfsM1IPPQ+4
-        p5vO7fbKiHocC1d5Yf4cYTd/zakuqbmiry5MTh5iYkZaChW7rBEmR8Ofk3B9S0NKNKDMsv
-        YuloO6/aM18CqkETpyBpVSd3xtWEnPM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-313-QXjyG--EO8ejpzJD8TYfHg-1; Thu, 01 Apr 2021 10:39:31 -0400
-X-MC-Unique: QXjyG--EO8ejpzJD8TYfHg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BE710884DA6;
-        Thu,  1 Apr 2021 14:38:29 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.35.206.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3DFF15D9CA;
-        Thu,  1 Apr 2021 14:38:26 +0000 (UTC)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
-        64-BIT)), Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        Sean Christopherson <seanjc@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH 2/4] KVM: x86: separate pending and injected exception
-Date:   Thu,  1 Apr 2021 17:38:15 +0300
-Message-Id: <20210401143817.1030695-3-mlevitsk@redhat.com>
-In-Reply-To: <20210401143817.1030695-1-mlevitsk@redhat.com>
-References: <20210401143817.1030695-1-mlevitsk@redhat.com>
+        Thu, 1 Apr 2021 13:37:18 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on20718.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e89::718])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1752C0D942D;
+        Thu,  1 Apr 2021 07:56:27 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nR/1Zm1mqvMEmc9Zy5xn/H9udIoG0s0OrMCg0ytO93O+azT75fOlrhFQXsq+wUaWlAXSmkjaL9Zawhue0FfzE9dCwEBAKC1coZjbHNc9bCwphihuzWBplJodonMFeCoo5bNcPMpAimVfWOpiVXe0UQpJKLFV/4q3eS+LpTYuCEnpBAsLzkx9oRemR77pa/xc56kl87oPPDs2lQ6OHIyD0F2XnxlQ0p9P0PySQqLHkPllp354eLxapQj/V+vp2MhHHtKTVU6TQCG/aWvOGqrVgP9HsgsPUxvX4e6npv7DNKptF8S3wbqnkhuy52w49v8KeJHTvy90D0lZLLnJRlpbjg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n6tmtdYJkQfR8RSikn/UHTb97wLC6soyI4Ne4C07Nwg=;
+ b=dYMrDeJ7p2n3woJUEGp1i+GULbfNVMbkEooPjQMSsHiOZt/M+85TlqshHZz/pteoHIIPe370iT2Z9UXz7yilSoADJvDDRhPGR2JqDBvV/Pd3yuEX3+wW+z20uyox/Z25syu5QNV2VHknWLfsYYFlkaUAGFNO6I6dSsKeDoPXgLyk/t8mGotzop+Lhf60HGiVa0teWObsQyzaA15QKWzO7mfK+5Z9GDeb/YNSFShXdbCGeEM2bROJ0v7Su30Z/xfQU3ZxfTO3hQoSJqM3sxhZUz7P5htiK/RmIK4Ur9FdspDOMlDvBqI7exGnavLuiGsOP01lh1Jl2eMh2UdwOfwORw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fortanix.com; dmarc=pass action=none header.from=fortanix.com;
+ dkim=pass header.d=fortanix.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fortanix.onmicrosoft.com; s=selector2-fortanix-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n6tmtdYJkQfR8RSikn/UHTb97wLC6soyI4Ne4C07Nwg=;
+ b=SnelF+cziSThYNbXnPs5IQ9xktLc2fx67rC0PrbXMO5f0p7RntCeBPmQAmv+m6OSRBqSZwlusAgk+8xw+ryZI/vDs1edXJxfWjMmwWD0uHzkcCY+5zN7XrnrH6WmiMtxOTy1E9a3Zczf6cKC7JQClSyMCmgLJRmgVSdZ6q7Ytmg=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=fortanix.com;
+Received: from MWHPR11MB1792.namprd11.prod.outlook.com (2603:10b6:300:10b::9)
+ by CO1PR11MB4978.namprd11.prod.outlook.com (2603:10b6:303:91::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28; Thu, 1 Apr
+ 2021 14:56:26 +0000
+Received: from MWHPR11MB1792.namprd11.prod.outlook.com
+ ([fe80::3cc5:3909:3985:3fab]) by MWHPR11MB1792.namprd11.prod.outlook.com
+ ([fe80::3cc5:3909:3985:3fab%8]) with mapi id 15.20.3999.027; Thu, 1 Apr 2021
+ 14:56:26 +0000
+Subject: Re: [PATCH RESEND 0/3] x86/sgx: eextend ioctl
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <9688abee-6ba7-e1d9-701e-a5cabac36269@fortanix.com>
+ <c7b19652-3b5a-e864-1e0e-3e3d26944398@intel.com>
+From:   Raoul Strackx <raoul.strackx@fortanix.com>
+Autocrypt: addr=raoul.strackx@fortanix.com; keydata=
+ LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCgptUUlOQkYyb2lmOEJFQURN
+ UkFMT1ZjRkYyTlQva1FsWTBtVnN3YlMrYi9WNzR1azZFcDdxenpoNHpHbEtSS1pzClplS0I4
+ WmpFT2h5Q2pZaExwdnJHTVh2cTV1bm5pWENIbG9BR1hZRm9rN0Q0SGd2Q0djYnlTYVRMQjds
+ NHc4MFIKOStYUkp2SnJpMEdPSmVubjRnNUpIQU5RN2h5YWl5RlRIYTVERU5CMjc2VG9kZUFQ
+ bnVidGl1VmRDT0lnQVJVbAp1dzJHemFsbmY0WmZ1TGdEaHg5YzIza2pjZTFBQkFWbWdxUEtN
+ TkVUSnhyZFdLQUt5QkVIWGJ0Snh6YnR4bFI1CnFUZU8yTExCU2V4TFBDbTRZOTZzRHlGK3JJ
+ a2FpRk5JQWk2b3RrTFBxYkROUlB4OTdLTTkzcmh5dVpIaWVQM1gKNWY5dG8vN0xEcGhqV0ds
+ L0ZBcldmT2U1QTgxTnhoTG5GNm9kakMrN2JwakdkNXdvM2E5TTkya2wyelJ1bEhSUAoreFFY
+ T2Z4NkNoNnBMSVkvbmRtSGZOVDA2ZTBCUkt1MlZxWEw4Y2Y1a2pkMW4waW1vU0FxOElGNmFq
+ UThBdHl0CkR1T3JpTk82WGFQRVlqaHVvTzF5YnBFeDJCWE95N3J4aUN5WFlkSldJVmY3T29a
+ c0xEM0wzTHBYM2Q4K1hZYXUKeWxab2dVaFErMHpoWlhBVnExSEkzc2duNnFIZ2RTT0J6aUJI
+ cnhycGFvUnRhQkREL0I5WFhyM0FOTDhZWG9BegpISzJ4bDhhQTg1eWt0THlBNVc5WU1GS2Jj
+ UXIrR1VuNStCNWRlOFN4SDgzTkR6TkljNnhtYUtKTU9xdGFiK2hHCmhRUEdtcDlmNDdGQmQ2
+ QkhLYzFBSHJ2OElteDAyNVdYc1lBakpZbkVlMzI1dW5MeXlUTlB5VFo0NFFBUkFRQUIKdENw
+ U1lXOTFiQ0JUZEhKaFkydDRJRHh5WVc5MWJDNXpkSEpoWTJ0NFFHWnZjblJoYm1sNExtTnZi
+ VDZKQWp3RQpFd0VJQUNjRkFsMm9pZjhDR3lNRkNRbG1BWUFGQ3drSUJ3SUdGUWdKQ2dzQ0JC
+ WUNBd0VDSGdFQ0Y0QUFDZ2tRCkFrY1ROU0RvS1ZoU1B3LzQ4T0FoUExHVndWSGtsSnE0QktK
+ ckUrc0xTMjY4RnIyeEg5SlNaN3B5YU83bm5aYXcKcjNHL0dEVmN6L0FWZVZCQXY1OW8xMW9y
+ TmFZdFAvUzdhOWFFbUl2bVZJZitvaW9ZaXh5eXlNZk9obFNmZnloagplWkg4ZC9OZDJTajJ3
+ SXJ5S1BxNm9rYWY1N2pVR1dlbEFaNUZaUWJQNzFlU2E2dzNtcmQ5L1NOTFdFVTNPNWloCjRs
+ em9HT1Fob2R6Qms2Yzh4UjZsQzJ3OHVyRkYrRnRhcmxwNkhxbWVBeHdXeHVQVDh4ZDhCMERl
+ ODFFbjZIMFYKNjA0ekdsa0dYS1VTdXZJVHltdzEzYTJqYXQzTTRFTjNRb0lsbG5hN3N3ckly
+ K3l4aTB3NzgvczZEU2dtVmFIZgozd0lncllMNDEwRnpCeVY1RzBDTlVuZ3lnL0d5ZWFiUVl0
+ ZU04NHMwRXdMRFFkWSsrYXBZN1FYVEE1d1J6bFJNClRyc0s0MDBndlF5d2lPandST2x3U1oy
+ L2QwSjBJdXNFdnpzQXIzbUNIQTRXWnNaeWpsT3Z1UXE4LzR0ekNKN1UKVTRvVUxMWll4ZkQ3
+ Y1BVQXRTanBnNTFiVGhoai9nZXJDN1p4Sk1nSDM1MWR6RlowS2xsVUpHRU5QSmJkRFZ3WgpW
+ c2lHRjdtcXVXVEwwQmpLYXl3ekgwZWdLVlh2ek56NXlrbjhJMDlTM3VvY09jSjU1bnNhR3pT
+ WXlnZ3k3eGRoCitTMjVEVjMzWXNobU0vcGdXWW5IL3BUQzRDQUpmaGVpU0Yyd2EyR1g1bUZF
+ QVBaQmh2Q0I2SzlXdkNKbEZXVzcKZTZ0dUpPRGdNUklQLzJ0SHJIMEFiMmFyVWJFWjhpaEdM
+ L1pXcUIyRHlkeTJDVjU2ZjdjWVZBSndJTGtDRFFSZApxSW4vQVJBQXVEbXlwU3U1K3BFdlRt
+ QzBBY2NUbVZnbm8xKzA0SllzckcvbVVuMG11cmFHM0xnZWtWMWVJWTVQCjVpYW05OEhiL2pI
+ MU9kVXM5R1VCNCtLU1d4SnJERmNXNkZOcjJiZ1V1Y24wZm1XRHdOWU5oWGxJd0ZHMGRaV3MK
+ SzNuRWlNSXJTTnhnSzBmS21jU2lpaTJhZlRMMkFTVm5JM09RcUN0RGhpU0VEWkJ3eW5BeDIx
+ Nk4ydklNRFJVMQpiS05oVzRvNnk2R3BHNUdVQ2VBZnZ6SE5lMUNEbzQyQm5CRXUrVmlZYUE0
+ cERrZ3hjaC8ydk5YQTBtc25rY1BiClJmcVlhOElpSVVTUG91WWVneHZ5dVJjbEhadFA3TW5n
+ V2ZRSmxwQVlIOHdJWExUSTlScUpmTTM1K0xZRTNQR3kKS0RYZmE3MWFFUjkxcUJWMDQzMkNn
+ KzFQN3pJUERTR0w2TEZJaFRBTE5TV05TRFU2NXpKWlNkY1NVQ21raytWZApqZkdGbk5LeEpW
+ OGl2ckN2TGZMY2VpQWFWK2RHaGc0WkFWWStscVdFSGxYNW03V1JXQ1Jjb3pDNUd1TlVIeW90
+ CngydVpHQys2TDVPTGVXeTZoUlhGSWdZWURLaWNnYTAzZjQ2WWorcDdKaTlWTGxvYWIyU0xO
+ YlJFOERpK0xUWmQKempBMjQ4cDNTMDJpM1h5K3cxeGs4Q1VzOHVtMjlYNTVEaGtDSXdDdk5i
+ Y3ZZcGtneTNjU3dZL2JmMm4xUnZ4aAo3MldxM2JBYXlVdC9yV0JFRTlTWkZ0cXRITUpCWVFX
+ eDh3S244TVl5MU54YmpWZ0J0cVVaakdycW5OV3lnRStNCmFJZ3RpcUM4Q1VaU1c3dThMVW5a
+ OUlaaGEzL2h1c0pJNXRmTHc5RmhTNXMvRzh6bWl3OEFFUUVBQVlrQ0pRUVkKQVFnQUR3VUNY
+ YWlKL3dJYkRBVUpDV1lCZ0FBS0NSQUNSeE0xSU9ncFdHMlpELzQ1dFpmOFlvUkUxcHRQd3ov
+ OQo5S3BIdFp5TUt5NFZLNmxXWDRCNnpHZ0hpcXpIQi9lekpwOEEzaitNc2FjM0hMZmtHdjVN
+ UWYwRnNYUnBCZWhJClYrU0FBUmw3SktzM3pUck13TDU4QXpnNk5nbG5DZDNaYXQxU2hlWkhQ
+ dVdXTUdCeERPMUg2UFI2NmRGWVJIM2MKODVaZHNHdWFobnJVSFBLemhZbWx4dUhDQ3FCZ3RK
+ am9wS2NWVGsxRnRLVGUyZHJ3Z25Bb1M2dkh4bTdRTWxJVwpaMTluS25GOFAyN0pFanU0ckdX
+ Z1h3NkgxSmFKMTF4YVVkZG9qdk53T1RKRVcvb3Jhd2tuUUF1ZW5EYnpBR1Z1CkdMV0w3T2ov
+ RGZyTFBBemNXV25GblV2VVc2NEFEWFNBOTh0SWNBY3lod05uY2lqYnNIUkFTQlJidkg5RFhJ
+ c2wKaEwxMDArdzZNTWNMeFpNVmJ4UHBTWWVHaGp4SjdNUysyeGp3eDB4MWlMNmszZk5UNHNT
+ Q3dZa0xRZjJlKzhxYwpFYjNTa0Q0VFR3RDQxUW85SFNuUlkwdnRqblNyZkwyQ3JhVmptOXhh
+ MXhmNlJDQ3kvaXpKNU5TQTZZMXduT0U3Ck1IOHorcVFUM1NxMld0a0NzU1M5K1U2VU9OWmFK
+ dFN5MWNvZ1ZhMDV1QWdRY0tHT3FvcHg3QWlmZUhIUFpqZnIKakVNaHJZQ3Q5WXgzR1VET0hs
+ MnRObDJIOStqZC9BVjByMDRKUTNxSHRWM1Z5UTNxN0N1UTlCTTdnQzVpK1JleQpHSU14Zm0v
+ a09GWTRLRUxOeVYrV01PK2lXRHpZS21tTUxnUkVXNitqZk5jMzhrYWhaQjI2RmJOZTh6QmxU
+ cVpPCmhxYmNZR1ZZNW9Ec004YSthbkwyZDhmaStnPT0KPW9ZT0QKLS0tLS1FTkQgUEdQIFBV
+ QkxJQyBLRVkgQkxPQ0stLS0tLQo=
+Message-ID: <ece49a38-c84d-dba7-6039-b409511e7303@fortanix.com>
+Date:   Thu, 1 Apr 2021 16:56:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <c7b19652-3b5a-e864-1e0e-3e3d26944398@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [81.164.43.210]
+X-ClientProxiedBy: AM4PR0101CA0074.eurprd01.prod.exchangelabs.com
+ (2603:10a6:200:41::42) To MWHPR11MB1792.namprd11.prod.outlook.com
+ (2603:10b6:300:10b::9)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.101] (81.164.43.210) by AM4PR0101CA0074.eurprd01.prod.exchangelabs.com (2603:10a6:200:41::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27 via Frontend Transport; Thu, 1 Apr 2021 14:56:23 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c4661510-3e73-44fc-cfa4-08d8f51e52cd
+X-MS-TrafficTypeDiagnostic: CO1PR11MB4978:
+X-Microsoft-Antispam-PRVS: <CO1PR11MB497814FFADB3903079DDEFD18B7B9@CO1PR11MB4978.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2p19IfAi4UvJG7DqNjjSviPypw13ZV3pG4QIfQ4CunClzmwS0A8LVyQEGl+rAYClLulH/MPcGIa56gEyU8hW/nEgqsRB3jbVXmoLsJeGLr0oIdBxIAsa2jfUFEfJawEgP+fjjKgcV+/d35RvvurTap2lwuQor6XKww68t69Z5F5TjEOq6P5wd2YVt9LFV7RfPEOC4SGf/lJJfMivROB0wpUosiiBveeU9m7/Lg/WHUKvisp6FvZELnwipylAm/h2MG0s3gyK3XK2O+ckr/W2nyreWcgjgTPrhA6Q0CLJWFWSthhzvnsXXP0GTXWN5OaK6W5iaeTuGHz1IPuLYd9+fWWpG8hBi6pHJ4HrWAnnhEZcwPnwFCpSGus2euBwv8vpSZ48zjExTxAveQTMJ95/Zyte0homQrEl4VHHPi22jLpqW+ziLZDyiCYs3VdgGgP53lDayzZ024fhqg5KLRNLs5DxqbSBgVqGBgeb0DgrdX0bZQuBBV9PcIPZOd82TZcjTr441rXU2wQE0W1kVQBOkmZZMx/HZ2tCPupLrsv0/oLzw2RaUOUGRRqupXeYWH4v3ps1LgVhfkEkjEsLNPkNybgzMv585ujoPAekQeU3XCZMXKEaVJiraLILsGE5Lz7KKa74qNLwmIZ3MDKZ6IkQLGULq1OCqhVQmdBW1GhFm/f3uvdft+ZK0KncW6lxPk7zsOpWqogOsCg0lUK7Mjx6IQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1792.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(366004)(39840400004)(346002)(376002)(478600001)(66556008)(52116002)(66476007)(31696002)(316002)(66946007)(16576012)(110136005)(7416002)(5660300002)(53546011)(31686004)(6486002)(44832011)(6666004)(2616005)(186003)(956004)(26005)(86362001)(83380400001)(8676002)(8936002)(36756003)(38100700001)(921005)(2906002)(16526019)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?YXBkSW41d1FhWndORmlhSmh0eFdzbis0eWU3R3lKT0VFbVk3THBodFpvUk05?=
+ =?utf-8?B?L0ZuMTd1YUs2anVjMDk0UzhoVThSOE9Mam1adU1QU2ZZUnhsOVpsdE1FTlRw?=
+ =?utf-8?B?bGswajVIOUFWYS9rVmFFRTV4SzF0QURaZkowakt2bDhYVENKUHl1RUNwRHg3?=
+ =?utf-8?B?N1JyWXZ2dWNQczRicStHSS93NzVTc2V3MklvblN5dFZqTmkvR0RjN2lBR3lZ?=
+ =?utf-8?B?bzZVYXBJSXFQTWMwVXR6NllGT2trMUY3L2Z5RVU4WmJBbmlJVk91UkVqVC9p?=
+ =?utf-8?B?bkdLMWJVN1BUb0hpc0J5TVFEelFrNWdLMEY1bGRJUXNuT0pxaDIrVUtZZHZu?=
+ =?utf-8?B?N1B6ZHhDUC9uOG9Uc2hpWVUrWlorNHFpdm1paU9oNmhpMzZycDRBT0xMeWV5?=
+ =?utf-8?B?cGttKzdKWXQxNzRhMWVlbG1KcXlOQXJXN2JDQlp1dU5KNkgzVmRBOWNyOExY?=
+ =?utf-8?B?U2J5dTV2Ni9wdlJzVm9wNi9jb2ZHMklreUxqZi9MRWJVZzlCaU9xOEVKQzA2?=
+ =?utf-8?B?dENqcW1kOVRpcUV3RnpGU3E4Y2kydjRpeG1MVDRoQjFzSFc4akhoRnNlQUsz?=
+ =?utf-8?B?VXhpbnNwM2E3YVJvMmVYNXJFTGVWUE10MVVQOXNvc1hOaFg5aHB6ckRmeSt3?=
+ =?utf-8?B?ZlQ3RGhwVEx2REIwWEVCSzVqU1l0RGtFQXpvbVNjUzBiVmhWeHYydnVSNjZv?=
+ =?utf-8?B?VWd5NEpwWTlNZ0w0KzR0RWhtSXRhdFVsOEU4aFg4T1Jrc1ZyK1RuUksxdExh?=
+ =?utf-8?B?UThUazkwNFJLK1d3RlF4MGRLWjBjbStHR0luVzg0Z2k4RUJDUVQyVVdCa3RD?=
+ =?utf-8?B?bVoxZHpzSGFuZWhFdEdhZEYwMldoZURXLzBGYTROT1JWZFpXek8vRFNHMUta?=
+ =?utf-8?B?ZnJDcHpvbTF5L2ErK1prRHdSZnBCQ2wwVWNJZzdNWEZ3eEpEMHQ4T2ZPdzNT?=
+ =?utf-8?B?OGovNFg0UEUxMXZMY0l4Q2grQ0hzcFphSGxtNkdvbVpROW1mRmpJczRQR2Fo?=
+ =?utf-8?B?RXl0U0VFYWt3eTFnVi9jUU5VN3JsTFFQalJnZWVmUHJzTUlOT3ZneVRoVkRr?=
+ =?utf-8?B?a09FWi90amgyb2NIRmlxZjYxYzRDZW00WWQrNzB6NXJjK1IxYmN6d0Fmc3hO?=
+ =?utf-8?B?dVMvczdLb09JeENvTW5JU2dyWk0yN0pvOUYrZmlyMERRelpJRFVWV2lSS1Ax?=
+ =?utf-8?B?OWxDcnZqbHl3L2U5MFY3R3hWWjZzU2lOeGNQUkNUQS94TG5POFR4TjFSMFZV?=
+ =?utf-8?B?M1FFbjhZTGlyZkVRVzVjQmNNTUNNMEluVmtmaEc2bHptcTVudDQ5bXhDREVs?=
+ =?utf-8?B?NmRRRGZ1UitqYnJmQTEwY3RzOUtmY1NDUXlwUWpmbzg2aE8yb1BLZDExUGpq?=
+ =?utf-8?B?MnFEbEIwaFp6bFBNenVUZ0FVQVBnZjRGUXJpQ05leEt6VjVKSS9LL2l3Ukha?=
+ =?utf-8?B?c0VSMndoK3hqck9nM2RBSUZxcTlqZGsrdWU3QlR1TUNWbUhURWwyRjVuTmxw?=
+ =?utf-8?B?Y2RpajgxVUs2dDBMUm1kRy9SMnpQVEdQTml0Y1o4TUdFSGdQek1OeGxjN0tu?=
+ =?utf-8?B?SEVMQWJXUEZjakQrMHNQQm1LaUUwSk53cEVRTEFSdThUNGZETkdkNURFclZZ?=
+ =?utf-8?B?VDlXQ3dPUGkrREFBWnhmQ0daNHlmVWh4azZvYVRFOGJ3dFgwWWc3TWx1anZn?=
+ =?utf-8?B?elNMc0NqZTBodXN6TWNXQkhrYmU3T25VY2VkRVVuRXFHbGYvcEE5VXFCK3lS?=
+ =?utf-8?Q?AdhAGYRaCi9eatys+kuTdgudESQo4IDxtI98bev?=
+X-OriginatorOrg: fortanix.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c4661510-3e73-44fc-cfa4-08d8f51e52cd
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1792.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2021 14:56:26.2757
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: de7becae-4883-43e8-82c7-7dbdbb988ae6
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1zj/sUxzR+PQBlqHWlL5Ml8Iys3UclUO74Xww2+uTu2WLGx1FbvgWr8+WP1990PGLA8ohSSiqLnnXdbonnlljtr0LpblYjdi09WTzOLpyNY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4978
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use 'pending_exception' and 'injected_exception' fields
-to store the pending and the injected exceptions.
+On 3/31/21 5:53 PM, Dave Hansen wrote:
+> On 3/31/21 5:50 AM, Raoul Strackx wrote:
+>> The sgx driver can only load enclaves whose pages are fully measured.
+>> This may exclude existing enclaves from running. This patch adds a
+>> new ioctl to measure 256 byte chunks at a time.
+> 
+> The changelogs here are pretty sparse.  Could you explain in a bit more
+> detail what's going on?
+> 
+> A review of the relevant pieces of the SGX architecture would be
+> appreciated.
+> 
 
-After this patch still only one is active, but
-in the next patch both could co-exist in some cases.
+Yes the explanation was very succinct. A more elaborate explanation:
 
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
----
- arch/x86/include/asm/kvm_host.h |  25 ++++--
- arch/x86/kvm/svm/nested.c       |  26 +++---
- arch/x86/kvm/svm/svm.c          |   6 +-
- arch/x86/kvm/vmx/nested.c       |  36 ++++----
- arch/x86/kvm/vmx/vmx.c          |  12 +--
- arch/x86/kvm/x86.c              | 145 ++++++++++++++++++--------------
- arch/x86/kvm/x86.h              |   6 +-
- 7 files changed, 143 insertions(+), 113 deletions(-)
+BACKGROUND
+Creation of an SGX enclave consists of three steps. First, a new enclave 
+environment is created by the ECREATE leaf function. Some enclave settings 
+are specified at this step by passing an SGX Enclave Control Structure 
+(SECS) that contains the enclave MRENCLAVE, MRSIGNER, etc. This 
+instruction also starts a cryptographic log of the enclave being built. 
+(This log should eventually result in the MRENCLAVE.)
+Second, pages are added to the enclave. The EADD leaf function copies 4KB 
+data to an empty EPC page. The cryptographic log records (among other 
+properties) the location and access rights of the page being added. It 
+_does not_ include a measurement of the page content. When the enclave 
+writer wishes to ensure the content of the enclave page as well, she must 
+use the EEXTEND leaf function. Extending the enclave cryptographic log can 
+only be done per 256 bytes. Extending the log with a full 4K page thus 
+requires 16 invocations of the EEXTEND leaf function.
+Finally, the enclave is finalized by the EINIT leaf function. Any new 
+invocations of the EADD or EEXTEND leaf functions will result in a fault. 
+With EINIT a number of checks are performed as well. A cryptographic hash 
+is computed over the final cryptographic log and compared to the MRENCLAVE 
+field of the SECS structure passed to the ECREATE leaf function (see step 
+one). The signature (MRSIGNER) over this MRENCLAVE is verified as well. 
+When all checks pass, the enclave enters an executable state.
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index a52f973bdff6..3b2fd276e8d5 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -547,6 +547,14 @@ struct kvm_vcpu_xen {
- 	u64 runstate_times[4];
- };
- 
-+struct kvm_queued_exception {
-+	bool valid;
-+	u8 nr;
-+	bool has_error_code;
-+	u32 error_code;
-+};
-+
-+
- struct kvm_vcpu_arch {
- 	/*
- 	 * rip and regs accesses must go through
-@@ -645,16 +653,15 @@ struct kvm_vcpu_arch {
- 
- 	u8 event_exit_inst_len;
- 
--	struct kvm_queued_exception {
--		bool pending;
--		bool injected;
--		bool has_error_code;
--		u8 nr;
--		u32 error_code;
--		unsigned long payload;
--		bool has_payload;
-+	struct kvm_queued_exception pending_exception;
-+
-+	struct kvm_exception_payload {
-+		bool valid;
-+		unsigned long value;
- 		u8 nested_apf;
--	} exception;
-+	} exception_payload;
-+
-+	struct kvm_queued_exception injected_exception;
- 
- 	struct kvm_queued_interrupt {
- 		bool injected;
-diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-index 34a37b2bd486..7adad9b6dcad 100644
---- a/arch/x86/kvm/svm/nested.c
-+++ b/arch/x86/kvm/svm/nested.c
-@@ -349,14 +349,14 @@ static void nested_save_pending_event_to_vmcb12(struct vcpu_svm *svm,
- 	u32 exit_int_info = 0;
- 	unsigned int nr;
- 
--	if (vcpu->arch.exception.injected) {
--		nr = vcpu->arch.exception.nr;
-+	if (vcpu->arch.injected_exception.valid) {
-+		nr = vcpu->arch.injected_exception.nr;
- 		exit_int_info = nr | SVM_EVTINJ_VALID | SVM_EVTINJ_TYPE_EXEPT;
- 
--		if (vcpu->arch.exception.has_error_code) {
-+		if (vcpu->arch.injected_exception.has_error_code) {
- 			exit_int_info |= SVM_EVTINJ_VALID_ERR;
- 			vmcb12->control.exit_int_info_err =
--				vcpu->arch.exception.error_code;
-+				vcpu->arch.injected_exception.error_code;
- 		}
- 
- 	} else if (vcpu->arch.nmi_injected) {
-@@ -1000,30 +1000,30 @@ int nested_svm_check_permissions(struct kvm_vcpu *vcpu)
- 
- static bool nested_exit_on_exception(struct vcpu_svm *svm)
- {
--	unsigned int nr = svm->vcpu.arch.exception.nr;
-+	unsigned int nr = svm->vcpu.arch.pending_exception.nr;
- 
- 	return (svm->nested.ctl.intercepts[INTERCEPT_EXCEPTION] & BIT(nr));
- }
- 
- static void nested_svm_inject_exception_vmexit(struct vcpu_svm *svm)
- {
--	unsigned int nr = svm->vcpu.arch.exception.nr;
-+	unsigned int nr = svm->vcpu.arch.pending_exception.nr;
- 
- 	svm->vmcb->control.exit_code = SVM_EXIT_EXCP_BASE + nr;
- 	svm->vmcb->control.exit_code_hi = 0;
- 
--	if (svm->vcpu.arch.exception.has_error_code)
--		svm->vmcb->control.exit_info_1 = svm->vcpu.arch.exception.error_code;
-+	if (svm->vcpu.arch.pending_exception.has_error_code)
-+		svm->vmcb->control.exit_info_1 = svm->vcpu.arch.pending_exception.error_code;
- 
- 	/*
- 	 * EXITINFO2 is undefined for all exception intercepts other
- 	 * than #PF.
- 	 */
- 	if (nr == PF_VECTOR) {
--		if (svm->vcpu.arch.exception.nested_apf)
-+		if (svm->vcpu.arch.exception_payload.nested_apf)
- 			svm->vmcb->control.exit_info_2 = svm->vcpu.arch.apf.nested_apf_token;
--		else if (svm->vcpu.arch.exception.has_payload)
--			svm->vmcb->control.exit_info_2 = svm->vcpu.arch.exception.payload;
-+		else if (svm->vcpu.arch.exception_payload.valid)
-+			svm->vmcb->control.exit_info_2 = svm->vcpu.arch.exception_payload.value;
- 		else
- 			svm->vmcb->control.exit_info_2 = svm->vcpu.arch.cr2;
- 	} else if (nr == DB_VECTOR) {
-@@ -1034,7 +1034,7 @@ static void nested_svm_inject_exception_vmexit(struct vcpu_svm *svm)
- 			kvm_update_dr7(&svm->vcpu);
- 		}
- 	} else
--		WARN_ON(svm->vcpu.arch.exception.has_payload);
-+		WARN_ON(svm->vcpu.arch.exception_payload.valid);
- 
- 	nested_svm_vmexit(svm);
- }
-@@ -1061,7 +1061,7 @@ static int svm_check_nested_events(struct kvm_vcpu *vcpu)
- 		return 0;
- 	}
- 
--	if (vcpu->arch.exception.pending) {
-+	if (vcpu->arch.pending_exception.valid) {
- 		/*
- 		 * Only a pending nested run can block a pending exception.
- 		 * Otherwise an injected NMI/interrupt should either be
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 271196400495..90b541138c5a 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -359,9 +359,9 @@ static int skip_emulated_instruction(struct kvm_vcpu *vcpu)
- static void svm_queue_exception(struct kvm_vcpu *vcpu)
- {
- 	struct vcpu_svm *svm = to_svm(vcpu);
--	unsigned nr = vcpu->arch.exception.nr;
--	bool has_error_code = vcpu->arch.exception.has_error_code;
--	u32 error_code = vcpu->arch.exception.error_code;
-+	unsigned int nr = vcpu->arch.injected_exception.nr;
-+	bool has_error_code = vcpu->arch.injected_exception.has_error_code;
-+	u32 error_code = vcpu->arch.injected_exception.error_code;
- 
- 	kvm_deliver_exception_payload(vcpu);
- 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index c3ba842fc07f..5d54fecff9a7 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -388,17 +388,17 @@ static bool nested_vmx_is_page_fault_vmexit(struct vmcs12 *vmcs12,
- static int nested_vmx_check_exception(struct kvm_vcpu *vcpu, unsigned long *exit_qual)
- {
- 	struct vmcs12 *vmcs12 = get_vmcs12(vcpu);
--	unsigned int nr = vcpu->arch.exception.nr;
--	bool has_payload = vcpu->arch.exception.has_payload;
--	unsigned long payload = vcpu->arch.exception.payload;
-+	unsigned int nr = vcpu->arch.pending_exception.nr;
-+	bool has_payload = vcpu->arch.exception_payload.valid;
-+	unsigned long payload = vcpu->arch.exception_payload.value;
- 
- 	if (nr == PF_VECTOR) {
--		if (vcpu->arch.exception.nested_apf) {
-+		if (vcpu->arch.exception_payload.nested_apf) {
- 			*exit_qual = vcpu->arch.apf.nested_apf_token;
- 			return 1;
- 		}
- 		if (nested_vmx_is_page_fault_vmexit(vmcs12,
--						    vcpu->arch.exception.error_code)) {
-+						    vcpu->arch.pending_exception.error_code)) {
- 			*exit_qual = has_payload ? payload : vcpu->arch.cr2;
- 			return 1;
- 		}
-@@ -3617,8 +3617,8 @@ static void vmcs12_save_pending_event(struct kvm_vcpu *vcpu,
- 	u32 idt_vectoring;
- 	unsigned int nr;
- 
--	if (vcpu->arch.exception.injected) {
--		nr = vcpu->arch.exception.nr;
-+	if (vcpu->arch.injected_exception.valid) {
-+		nr = vcpu->arch.injected_exception.nr;
- 		idt_vectoring = nr | VECTORING_INFO_VALID_MASK;
- 
- 		if (kvm_exception_is_soft(nr)) {
-@@ -3628,10 +3628,10 @@ static void vmcs12_save_pending_event(struct kvm_vcpu *vcpu,
- 		} else
- 			idt_vectoring |= INTR_TYPE_HARD_EXCEPTION;
- 
--		if (vcpu->arch.exception.has_error_code) {
-+		if (vcpu->arch.injected_exception.has_error_code) {
- 			idt_vectoring |= VECTORING_INFO_DELIVER_CODE_MASK;
- 			vmcs12->idt_vectoring_error_code =
--				vcpu->arch.exception.error_code;
-+				vcpu->arch.injected_exception.error_code;
- 		}
- 
- 		vmcs12->idt_vectoring_info_field = idt_vectoring;
-@@ -3712,11 +3712,11 @@ static void nested_vmx_inject_exception_vmexit(struct kvm_vcpu *vcpu,
- 					       unsigned long exit_qual)
- {
- 	struct vmcs12 *vmcs12 = get_vmcs12(vcpu);
--	unsigned int nr = vcpu->arch.exception.nr;
-+	unsigned int nr = vcpu->arch.pending_exception.nr;
- 	u32 intr_info = nr | INTR_INFO_VALID_MASK;
- 
--	if (vcpu->arch.exception.has_error_code) {
--		vmcs12->vm_exit_intr_error_code = vcpu->arch.exception.error_code;
-+	if (vcpu->arch.pending_exception.has_error_code) {
-+		vmcs12->vm_exit_intr_error_code = vcpu->arch.pending_exception.error_code;
- 		intr_info |= INTR_INFO_DELIVER_CODE_MASK;
- 	}
- 
-@@ -3740,9 +3740,9 @@ static void nested_vmx_inject_exception_vmexit(struct kvm_vcpu *vcpu,
-  */
- static inline bool vmx_pending_dbg_trap(struct kvm_vcpu *vcpu)
- {
--	return vcpu->arch.exception.pending &&
--			vcpu->arch.exception.nr == DB_VECTOR &&
--			vcpu->arch.exception.payload;
-+	return vcpu->arch.pending_exception.valid &&
-+			vcpu->arch.pending_exception.nr == DB_VECTOR &&
-+			vcpu->arch.exception_payload.value;
- }
- 
- /*
-@@ -3756,7 +3756,7 @@ static void nested_vmx_update_pending_dbg(struct kvm_vcpu *vcpu)
- {
- 	if (vmx_pending_dbg_trap(vcpu))
- 		vmcs_writel(GUEST_PENDING_DBG_EXCEPTIONS,
--			    vcpu->arch.exception.payload);
-+			    vcpu->arch.exception_payload.value);
- }
- 
- static bool nested_vmx_preemption_timer_pending(struct kvm_vcpu *vcpu)
-@@ -3813,7 +3813,7 @@ static int vmx_check_nested_events(struct kvm_vcpu *vcpu)
- 	 * while delivering the pending exception.
- 	 */
- 
--	if (vcpu->arch.exception.pending && !vmx_pending_dbg_trap(vcpu)) {
-+	if (vcpu->arch.pending_exception.valid && !vmx_pending_dbg_trap(vcpu)) {
- 		if (vmx->nested.nested_run_pending)
- 			return -EBUSY;
- 		if (!nested_vmx_check_exception(vcpu, &exit_qual))
-@@ -3830,7 +3830,7 @@ static int vmx_check_nested_events(struct kvm_vcpu *vcpu)
- 		return 0;
- 	}
- 
--	if (vcpu->arch.exception.pending) {
-+	if (vcpu->arch.pending_exception.valid) {
- 		if (vmx->nested.nested_run_pending)
- 			return -EBUSY;
- 		if (!nested_vmx_check_exception(vcpu, &exit_qual))
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index c8a4a548e96b..a9b241d2b271 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -1648,8 +1648,8 @@ static void vmx_update_emulated_instruction(struct kvm_vcpu *vcpu)
- 	 * vmx_check_nested_events().
- 	 */
- 	if (nested_cpu_has_mtf(vmcs12) &&
--	    (!vcpu->arch.exception.pending ||
--	     vcpu->arch.exception.nr == DB_VECTOR))
-+	    (!vcpu->arch.pending_exception.valid ||
-+	     vcpu->arch.pending_exception.nr == DB_VECTOR))
- 		vmx->nested.mtf_pending = true;
- 	else
- 		vmx->nested.mtf_pending = false;
-@@ -1677,9 +1677,9 @@ static void vmx_clear_hlt(struct kvm_vcpu *vcpu)
- static void vmx_queue_exception(struct kvm_vcpu *vcpu)
- {
- 	struct vcpu_vmx *vmx = to_vmx(vcpu);
--	unsigned nr = vcpu->arch.exception.nr;
--	bool has_error_code = vcpu->arch.exception.has_error_code;
--	u32 error_code = vcpu->arch.exception.error_code;
-+	unsigned int nr = vcpu->arch.injected_exception.nr;
-+	bool has_error_code = vcpu->arch.injected_exception.has_error_code;
-+	u32 error_code = vcpu->arch.injected_exception.error_code;
- 	u32 intr_info = nr | INTR_INFO_VALID_MASK;
- 
- 	kvm_deliver_exception_payload(vcpu);
-@@ -5397,7 +5397,7 @@ static int handle_invalid_guest_state(struct kvm_vcpu *vcpu)
- 			return 0;
- 
- 		if (vmx->emulation_required && !vmx->rmode.vm86_active &&
--		    vcpu->arch.exception.pending) {
-+		    vcpu->arch.pending_exception.valid) {
- 			vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
- 			vcpu->run->internal.suberror =
- 						KVM_INTERNAL_ERROR_EMULATION;
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index a9d95f90a048..493d87b0c2d5 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -481,9 +481,9 @@ static int exception_type(int vector)
- 
- void kvm_deliver_exception_payload(struct kvm_vcpu *vcpu)
- {
--	unsigned nr = vcpu->arch.exception.nr;
--	bool has_payload = vcpu->arch.exception.has_payload;
--	unsigned long payload = vcpu->arch.exception.payload;
-+	unsigned int nr = vcpu->arch.pending_exception.nr;
-+	bool has_payload = vcpu->arch.exception_payload.valid;
-+	unsigned long payload = vcpu->arch.exception_payload.value;
- 
- 	if (!has_payload)
- 		return;
-@@ -529,8 +529,8 @@ void kvm_deliver_exception_payload(struct kvm_vcpu *vcpu)
- 		break;
- 	}
- 
--	vcpu->arch.exception.has_payload = false;
--	vcpu->arch.exception.payload = 0;
-+	vcpu->arch.exception_payload.valid = false;
-+	vcpu->arch.exception_payload.value = 0;
- }
- EXPORT_SYMBOL_GPL(kvm_deliver_exception_payload);
- 
-@@ -543,7 +543,7 @@ static void kvm_multiple_exception(struct kvm_vcpu *vcpu,
- 
- 	kvm_make_request(KVM_REQ_EVENT, vcpu);
- 
--	if (!vcpu->arch.exception.pending && !vcpu->arch.exception.injected) {
-+	if (!vcpu->arch.pending_exception.valid && !vcpu->arch.injected_exception.valid) {
- 	queue:
- 		if (reinject) {
- 			/*
-@@ -554,8 +554,7 @@ static void kvm_multiple_exception(struct kvm_vcpu *vcpu,
- 			 * and the guest shouldn't proceed far enough to
- 			 * need reinjection.
- 			 */
--			WARN_ON_ONCE(vcpu->arch.exception.pending);
--			vcpu->arch.exception.injected = true;
-+			WARN_ON_ONCE(vcpu->arch.pending_exception.valid);
- 			if (WARN_ON_ONCE(has_payload)) {
- 				/*
- 				 * A reinjected event has already
-@@ -564,22 +563,29 @@ static void kvm_multiple_exception(struct kvm_vcpu *vcpu,
- 				has_payload = false;
- 				payload = 0;
- 			}
-+
-+			vcpu->arch.injected_exception.valid = true;
-+			vcpu->arch.injected_exception.has_error_code = has_error;
-+			vcpu->arch.injected_exception.nr = nr;
-+			vcpu->arch.injected_exception.error_code = error_code;
-+
- 		} else {
--			vcpu->arch.exception.pending = true;
--			vcpu->arch.exception.injected = false;
-+			vcpu->arch.pending_exception.valid = true;
-+			vcpu->arch.injected_exception.valid = false;
-+			vcpu->arch.pending_exception.has_error_code = has_error;
-+			vcpu->arch.pending_exception.nr = nr;
-+			vcpu->arch.pending_exception.error_code = error_code;
- 		}
--		vcpu->arch.exception.has_error_code = has_error;
--		vcpu->arch.exception.nr = nr;
--		vcpu->arch.exception.error_code = error_code;
--		vcpu->arch.exception.has_payload = has_payload;
--		vcpu->arch.exception.payload = payload;
-+
-+		vcpu->arch.exception_payload.valid = has_payload;
-+		vcpu->arch.exception_payload.value = payload;
- 		if (!is_guest_mode(vcpu))
- 			kvm_deliver_exception_payload(vcpu);
- 		return;
- 	}
- 
- 	/* to check exception */
--	prev_nr = vcpu->arch.exception.nr;
-+	prev_nr = vcpu->arch.injected_exception.nr;
- 	if (prev_nr == DF_VECTOR) {
- 		/* triple fault -> shutdown */
- 		kvm_make_request(KVM_REQ_TRIPLE_FAULT, vcpu);
-@@ -594,13 +600,14 @@ static void kvm_multiple_exception(struct kvm_vcpu *vcpu,
- 		 * exception.pending = true so that the double fault
- 		 * can trigger a nested vmexit.
- 		 */
--		vcpu->arch.exception.pending = true;
--		vcpu->arch.exception.injected = false;
--		vcpu->arch.exception.has_error_code = true;
--		vcpu->arch.exception.nr = DF_VECTOR;
--		vcpu->arch.exception.error_code = 0;
--		vcpu->arch.exception.has_payload = false;
--		vcpu->arch.exception.payload = 0;
-+		vcpu->arch.pending_exception.valid = true;
-+		vcpu->arch.injected_exception.valid = false;
-+		vcpu->arch.pending_exception.has_error_code = true;
-+		vcpu->arch.pending_exception.nr = DF_VECTOR;
-+		vcpu->arch.pending_exception.error_code = 0;
-+
-+		vcpu->arch.exception_payload.valid = false;
-+		vcpu->arch.exception_payload.value = 0;
- 	} else
- 		/* replace previous exception with a new one in a hope
- 		   that instruction re-execution will regenerate lost
-@@ -648,9 +655,9 @@ EXPORT_SYMBOL_GPL(kvm_complete_insn_gp);
- void kvm_inject_page_fault(struct kvm_vcpu *vcpu, struct x86_exception *fault)
- {
- 	++vcpu->stat.pf_guest;
--	vcpu->arch.exception.nested_apf =
-+	vcpu->arch.exception_payload.nested_apf =
- 		is_guest_mode(vcpu) && fault->async_page_fault;
--	if (vcpu->arch.exception.nested_apf) {
-+	if (vcpu->arch.exception_payload.nested_apf) {
- 		vcpu->arch.apf.nested_apf_token = fault->address;
- 		kvm_queue_exception_e(vcpu, PF_VECTOR, fault->error_code);
- 	} else {
-@@ -4269,6 +4276,7 @@ static int kvm_vcpu_ioctl_x86_set_mce(struct kvm_vcpu *vcpu,
- static void kvm_vcpu_ioctl_x86_get_vcpu_events(struct kvm_vcpu *vcpu,
- 					       struct kvm_vcpu_events *events)
- {
-+	struct kvm_queued_exception *exc;
- 	process_nmi(vcpu);
- 
- 	if (kvm_check_request(KVM_REQ_SMI, vcpu))
-@@ -4286,21 +4294,27 @@ static void kvm_vcpu_ioctl_x86_get_vcpu_events(struct kvm_vcpu *vcpu,
- 	 * KVM_GET_VCPU_EVENTS.
- 	 */
- 	if (!vcpu->kvm->arch.exception_payload_enabled &&
--	    vcpu->arch.exception.pending && vcpu->arch.exception.has_payload)
-+	    vcpu->arch.pending_exception.valid && vcpu->arch.exception_payload.valid)
- 		kvm_deliver_exception_payload(vcpu);
- 
-+	WARN_ON_ONCE(vcpu->arch.pending_exception.valid &&
-+		     vcpu->arch.injected_exception.valid);
-+
-+	exc = vcpu->arch.pending_exception.valid ? &vcpu->arch.pending_exception :
-+						   &vcpu->arch.injected_exception;
-+
- 	/*
- 	 * The API doesn't provide the instruction length for software
- 	 * exceptions, so don't report them. As long as the guest RIP
- 	 * isn't advanced, we should expect to encounter the exception
- 	 * again.
- 	 */
--	if (kvm_exception_is_soft(vcpu->arch.exception.nr)) {
-+	if (kvm_exception_is_soft(exc->nr)) {
- 		events->exception.injected = 0;
- 		events->exception.pending = 0;
- 	} else {
--		events->exception.injected = vcpu->arch.exception.injected;
--		events->exception.pending = vcpu->arch.exception.pending;
-+		events->exception.injected = vcpu->arch.injected_exception.valid;
-+		events->exception.pending = vcpu->arch.pending_exception.valid;
- 		/*
- 		 * For ABI compatibility, deliberately conflate
- 		 * pending and injected exceptions when
-@@ -4308,13 +4322,14 @@ static void kvm_vcpu_ioctl_x86_get_vcpu_events(struct kvm_vcpu *vcpu,
- 		 */
- 		if (!vcpu->kvm->arch.exception_payload_enabled)
- 			events->exception.injected |=
--				vcpu->arch.exception.pending;
-+				vcpu->arch.pending_exception.valid;
- 	}
--	events->exception.nr = vcpu->arch.exception.nr;
--	events->exception.has_error_code = vcpu->arch.exception.has_error_code;
--	events->exception.error_code = vcpu->arch.exception.error_code;
--	events->exception_has_payload = vcpu->arch.exception.has_payload;
--	events->exception_payload = vcpu->arch.exception.payload;
-+	events->exception.nr = exc->nr;
-+	events->exception.has_error_code = exc->has_error_code;
-+	events->exception.error_code = exc->error_code;
-+
-+	events->exception_has_payload = vcpu->arch.exception_payload.valid;
-+	events->exception_payload = vcpu->arch.exception_payload.value;
- 
- 	events->interrupt.injected =
- 		vcpu->arch.interrupt.injected && !vcpu->arch.interrupt.soft;
-@@ -4349,6 +4364,8 @@ static void kvm_smm_changed(struct kvm_vcpu *vcpu);
- static int kvm_vcpu_ioctl_x86_set_vcpu_events(struct kvm_vcpu *vcpu,
- 					      struct kvm_vcpu_events *events)
- {
-+	struct kvm_queued_exception *exc;
-+
- 	if (events->flags & ~(KVM_VCPUEVENT_VALID_NMI_PENDING
- 			      | KVM_VCPUEVENT_VALID_SIPI_VECTOR
- 			      | KVM_VCPUEVENT_VALID_SHADOW
-@@ -4368,6 +4385,12 @@ static int kvm_vcpu_ioctl_x86_set_vcpu_events(struct kvm_vcpu *vcpu,
- 		events->exception_has_payload = 0;
- 	}
- 
-+	exc = events->exception.pending ? &vcpu->arch.pending_exception :
-+					  &vcpu->arch.injected_exception;
-+
-+	vcpu->arch.pending_exception.valid = false;
-+	vcpu->arch.injected_exception.valid = false;
-+
- 	if ((events->exception.injected || events->exception.pending) &&
- 	    (events->exception.nr > 31 || events->exception.nr == NMI_VECTOR))
- 		return -EINVAL;
-@@ -4379,13 +4402,13 @@ static int kvm_vcpu_ioctl_x86_set_vcpu_events(struct kvm_vcpu *vcpu,
- 		return -EINVAL;
- 
- 	process_nmi(vcpu);
--	vcpu->arch.exception.injected = events->exception.injected;
--	vcpu->arch.exception.pending = events->exception.pending;
--	vcpu->arch.exception.nr = events->exception.nr;
--	vcpu->arch.exception.has_error_code = events->exception.has_error_code;
--	vcpu->arch.exception.error_code = events->exception.error_code;
--	vcpu->arch.exception.has_payload = events->exception_has_payload;
--	vcpu->arch.exception.payload = events->exception_payload;
-+
-+	exc->nr = events->exception.nr;
-+	exc->has_error_code = events->exception.has_error_code;
-+	exc->error_code = events->exception.error_code;
-+
-+	vcpu->arch.exception_payload.valid = events->exception_has_payload;
-+	vcpu->arch.exception_payload.value = events->exception_payload;
- 
- 	vcpu->arch.interrupt.injected = events->interrupt.injected;
- 	vcpu->arch.interrupt.nr = events->interrupt.nr;
-@@ -8378,8 +8401,8 @@ int kvm_check_nested_events(struct kvm_vcpu *vcpu)
- 
- static void kvm_inject_exception(struct kvm_vcpu *vcpu)
- {
--	if (vcpu->arch.exception.error_code && !is_protmode(vcpu))
--		vcpu->arch.exception.error_code = false;
-+	if (vcpu->arch.injected_exception.error_code && !is_protmode(vcpu))
-+		vcpu->arch.injected_exception.error_code = false;
- 	static_call(kvm_x86_queue_exception)(vcpu);
- }
- 
-@@ -8390,7 +8413,7 @@ static void inject_pending_event(struct kvm_vcpu *vcpu, bool *req_immediate_exit
- 
- 	/* try to reinject previous events if any */
- 
--	if (vcpu->arch.exception.injected) {
-+	if (vcpu->arch.injected_exception.valid) {
- 		kvm_inject_exception(vcpu);
- 		can_inject = false;
- 	}
-@@ -8408,7 +8431,7 @@ static void inject_pending_event(struct kvm_vcpu *vcpu, bool *req_immediate_exit
- 	 * serviced prior to recognizing any new events in order to
- 	 * fully complete the previous instruction.
- 	 */
--	else if (!vcpu->arch.exception.pending) {
-+	else if (!vcpu->arch.pending_exception.valid) {
- 		if (vcpu->arch.nmi_injected) {
- 			static_call(kvm_x86_set_nmi)(vcpu);
- 			can_inject = false;
-@@ -8418,8 +8441,8 @@ static void inject_pending_event(struct kvm_vcpu *vcpu, bool *req_immediate_exit
- 		}
- 	}
- 
--	WARN_ON_ONCE(vcpu->arch.exception.injected &&
--		     vcpu->arch.exception.pending);
-+	WARN_ON_ONCE(vcpu->arch.pending_exception.valid &&
-+		     vcpu->arch.injected_exception.valid);
- 
- 	/*
- 	 * Call check_nested_events() even if we reinjected a previous event
-@@ -8434,19 +8457,19 @@ static void inject_pending_event(struct kvm_vcpu *vcpu, bool *req_immediate_exit
- 	}
- 
- 	/* try to inject new event if pending */
--	if (vcpu->arch.exception.pending) {
--		trace_kvm_inj_exception(vcpu->arch.exception.nr,
--					vcpu->arch.exception.has_error_code,
--					vcpu->arch.exception.error_code);
-+	if (vcpu->arch.pending_exception.valid) {
-+		trace_kvm_inj_exception(vcpu->arch.pending_exception.nr,
-+					vcpu->arch.pending_exception.has_error_code,
-+					vcpu->arch.pending_exception.error_code);
- 
--		vcpu->arch.exception.pending = false;
--		vcpu->arch.exception.injected = true;
-+		vcpu->arch.injected_exception = vcpu->arch.pending_exception;
-+		vcpu->arch.pending_exception.valid = false;
- 
--		if (exception_type(vcpu->arch.exception.nr) == EXCPT_FAULT)
-+		if (exception_type(vcpu->arch.injected_exception.nr) == EXCPT_FAULT)
- 			__kvm_set_rflags(vcpu, kvm_get_rflags(vcpu) |
- 					     X86_EFLAGS_RF);
- 
--		if (vcpu->arch.exception.nr == DB_VECTOR) {
-+		if (vcpu->arch.injected_exception.nr == DB_VECTOR) {
- 			kvm_deliver_exception_payload(vcpu);
- 			if (vcpu->arch.dr7 & DR7_GD) {
- 				vcpu->arch.dr7 &= ~DR7_GD;
-@@ -8515,7 +8538,7 @@ static void inject_pending_event(struct kvm_vcpu *vcpu, bool *req_immediate_exit
- 	    kvm_x86_ops.nested_ops->hv_timer_pending(vcpu))
- 		*req_immediate_exit = true;
- 
--	WARN_ON(vcpu->arch.exception.pending);
-+	WARN_ON(vcpu->arch.pending_exception.valid);
- 	return;
- 
- busy:
-@@ -9624,7 +9647,7 @@ static void __set_regs(struct kvm_vcpu *vcpu, struct kvm_regs *regs)
- 	kvm_rip_write(vcpu, regs->rip);
- 	kvm_set_rflags(vcpu, regs->rflags | X86_EFLAGS_FIXED);
- 
--	vcpu->arch.exception.pending = false;
-+	vcpu->arch.pending_exception.valid = false;
- 
- 	kvm_make_request(KVM_REQ_EVENT, vcpu);
- }
-@@ -9910,7 +9933,7 @@ int kvm_arch_vcpu_ioctl_set_guest_debug(struct kvm_vcpu *vcpu,
- 
- 	if (dbg->control & (KVM_GUESTDBG_INJECT_DB | KVM_GUESTDBG_INJECT_BP)) {
- 		r = -EBUSY;
--		if (vcpu->arch.exception.pending)
-+		if (vcpu->arch.pending_exception.valid)
- 			goto out;
- 		if (dbg->control & KVM_GUESTDBG_INJECT_DB)
- 			kvm_queue_exception(vcpu, DB_VECTOR);
-@@ -10991,7 +11014,7 @@ static inline bool kvm_vcpu_has_events(struct kvm_vcpu *vcpu)
- 	if (vcpu->arch.pv.pv_unhalted)
- 		return true;
- 
--	if (vcpu->arch.exception.pending)
-+	if (vcpu->arch.pending_exception.valid)
- 		return true;
- 
- 	if (kvm_test_request(KVM_REQ_NMI, vcpu) ||
-@@ -11231,7 +11254,7 @@ bool kvm_can_do_async_pf(struct kvm_vcpu *vcpu)
- {
- 	if (unlikely(!lapic_in_kernel(vcpu) ||
- 		     kvm_event_needs_reinjection(vcpu) ||
--		     vcpu->arch.exception.pending))
-+		     vcpu->arch.pending_exception.valid))
- 		return false;
- 
- 	if (kvm_hlt_in_guest(vcpu->kvm) && !kvm_can_deliver_async_pf(vcpu))
-diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-index daccf20fbcd5..21d62387f5e6 100644
---- a/arch/x86/kvm/x86.h
-+++ b/arch/x86/kvm/x86.h
-@@ -60,8 +60,8 @@ int kvm_check_nested_events(struct kvm_vcpu *vcpu);
- 
- static inline void kvm_clear_exception_queue(struct kvm_vcpu *vcpu)
- {
--	vcpu->arch.exception.pending = false;
--	vcpu->arch.exception.injected = false;
-+	vcpu->arch.pending_exception.valid = false;
-+	vcpu->arch.injected_exception.valid = false;
- }
- 
- static inline void kvm_queue_interrupt(struct kvm_vcpu *vcpu, u8 vector,
-@@ -79,7 +79,7 @@ static inline void kvm_clear_interrupt_queue(struct kvm_vcpu *vcpu)
- 
- static inline bool kvm_event_needs_reinjection(struct kvm_vcpu *vcpu)
- {
--	return vcpu->arch.exception.injected || vcpu->arch.interrupt.injected ||
-+	return vcpu->arch.injected_exception.valid || vcpu->arch.interrupt.injected ||
- 		vcpu->arch.nmi_injected;
- }
- 
--- 
-2.26.2
+PROBLEM STATEMENT
+The SGX driver currently only supports extending the cryptographic log as 
+part of the EADD leaf function and _must_ measure full 4K pages. Not all 
+enclaves may have been constructed within these constraints. Such enclaves 
+currently cannot be build on the Linux platform. Trying to do so will 
+result in a different cryptographic log; the MRENCLAVE specified at 
+enclave creation time will not match the cryptographic log kept by the 
+processor and EINIT will fail.
+
+SOLUTION OF THIS PATCH
+This patch adds a new ioctl to enable userspace to execute EEXTEND leaf 
+functions per 256 bytes of enclave memory. This enables enclaves to be 
+build as specified by enclave providers.
+
+
+
+I'm still very new to how Linux kernel patches are handled. Where
+would such a more elaborate description usually go: the cover page, the
+commit that introduces the ioctl or both?
+
+Regards,
+Raoul
 
