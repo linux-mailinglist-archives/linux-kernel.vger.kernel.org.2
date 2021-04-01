@@ -2,124 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CA17351B26
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 787B7351B97
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238411AbhDASGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:06:18 -0400
-Received: from mail-bn7nam10on2047.outbound.protection.outlook.com ([40.107.92.47]:23320
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237217AbhDARvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:51:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QlV7IuVOb9CGGreZz9rDHOLMxSm2W6Zlwe41YbudvIE73Aog8yctxK3Jm0BAmTkdzRs23JKUw6E3ikdrIWkkX1R2KQV0tM08lIcvy07mirdiB8lDgoJ1iEMPwVnqEFOrqZbq47aAy1HG/FK0x7AGVPCWNcHtKNQzkAqfyl3R8RLAIvLNwmo3eOpVOXcrLi1cvLTM6FpVRV/bHKxj19XqI8OZ5X2u71tsEJDK0Jrfp61ObJQXHenlqQSs4PQHjnexIjS7AJvPZ9JTGrSQPEReh0w/bIIdJlDJhV1sT+IHZ1gfrJ2zsMIjJB6JHxEDhyvduFNKNzBOnGqpNclFfpIAXg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/zxA3tgx7Zqr4C+iNVANeBD/IDtrPViVf22qo4mWv2A=;
- b=EXbV5S8gF0SlmvMN/azpSYAinrqlixQZcokLnSECPxUuWIGg5irSc1xhXhTh6MnyQCVQPYkFlOOvWCKBNllHDl6WrCy8d7Jb2SGDQyw9f9tpWhJlHXwlRD6JM3TnMvqRLJPTmKtc4Msw8p5v4i+1bVQC5xR0/Ih/1ioYqwIGalHVimoFMyTRgCLgEvzL6IR/SCONwJObPTF+doHNTm5tuxxurbdDpqNGmnAaz2tzXaxkjLEjIkDEYCEpikB8xyUsW+oFENLJIzgPm3C6aCznROWyCVmYDlHzbuU08jbDNxXOY+ggNMESVW7h5raZoPIxh3sO5gYVsWp6sNUxYTOoCA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/zxA3tgx7Zqr4C+iNVANeBD/IDtrPViVf22qo4mWv2A=;
- b=cNC5GuoBJpLY7KJdLqT+rW8q+n/cSxGdna4TqnhIE4VgIT4+3cRMYQYNQEdxDmzOR0ah3LP3prfk9+b8qqACncy/nBNXnTQomfFtp7nUMHJRK+QJ360EDi+Z8uL5EsNVV/RVuZUBbGdbNRDVkLbTkFcF87i38EdT9aYSGZUySMsPXP8Dx0lgF+LQx+W5pPRdpdHZ797mGZE94FE4OpkQqTmo218XaUa4QwF7r89GoCE7k3xQuPxYe1SjjpuUR7ahCbPdVwD7Pc1h22kFyOG24mSVvCrb4PlFjPVDsGImCoZiZTJjNtksCSrPBIy2Sb1DLvD8Fik1g11ol4mINukLKA==
-Authentication-Results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB2487.namprd12.prod.outlook.com (2603:10b6:4:af::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27; Thu, 1 Apr
- 2021 17:51:08 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3999.028; Thu, 1 Apr 2021
- 17:51:07 +0000
-Date:   Thu, 1 Apr 2021 14:51:06 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Santosh Shilimkar <santosh.shilimkar@oracle.com>
-Cc:     Haakon Bugge <haakon.bugge@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Doug Ledford <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Parav Pandit <parav@nvidia.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
+        id S237779AbhDASI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:08:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33262 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235918AbhDARx3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:53:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617299609;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=l8/dySFN4v+yQFlMN3vPmAf3KiTWg3DM/WffjDS3ers=;
+        b=Jtg4ymg2wDz8uMA4VifHFI7nahAc9+cKEtY1lCFvLdCavT6UGIPhnClp9mW09jwDVokZ+P
+        vPDEgNrLR/x1HTiOK1frSYEnECnypwDDCwKK8oghPIPq0kQpT+z68YN1GzZAUTMGjx3TJj
+        UzgZbkpwaDc/8xwHCvy9rdyMljFdlzw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-462-BIqoePmMOaa190kVodQkqA-1; Thu, 01 Apr 2021 13:53:26 -0400
+X-MC-Unique: BIqoePmMOaa190kVodQkqA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B02D6501FF;
+        Thu,  1 Apr 2021 17:53:24 +0000 (UTC)
+Received: from ovpn-113-84.phx2.redhat.com (ovpn-113-84.phx2.redhat.com [10.3.113.84])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 01EE310023AF;
+        Thu,  1 Apr 2021 17:53:23 +0000 (UTC)
+Message-ID: <e136aba47e21e60735eac045f40add43e41ea8cb.camel@redhat.com>
+Subject: Re: Fix hibernation in FIPS mode?
+From:   Simo Sorce <simo@redhat.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "crecklin@redhat.com" <crecklin@redhat.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH for-next v3 0/2] Introduce rdma_set_min_rnr_timer() and
- use it in RDS
-Message-ID: <20210401175106.GA1627431@nvidia.com>
-References: <1617216194-12890-1-git-send-email-haakon.bugge@oracle.com>
- <BYAPR10MB3270D41D73EA9D9D4FCAF118937C9@BYAPR10MB3270.namprd10.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BYAPR10MB3270D41D73EA9D9D4FCAF118937C9@BYAPR10MB3270.namprd10.prod.outlook.com>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: MN2PR15CA0037.namprd15.prod.outlook.com
- (2603:10b6:208:237::6) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR15CA0037.namprd15.prod.outlook.com (2603:10b6:208:237::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28 via Frontend Transport; Thu, 1 Apr 2021 17:51:07 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lS1TG-006pOH-Em; Thu, 01 Apr 2021 14:51:06 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cde8bab3-0f9d-4c72-8ca8-08d8f536ba5a
-X-MS-TrafficTypeDiagnostic: DM5PR12MB2487:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR12MB248794042267877F0950CF35C27B9@DM5PR12MB2487.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2958;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6BJTrCkpuYowUejuDO3W6Ghf9SpJRV+LEYF4mbTP5kmU3OItruQUGWP1a/03JoXgOfcFfE9MSOpjG8Ef7Nn9iSl0RugsUdnLAr1+eZxyJ3CtdQ0n0e2A/P5Yyc4t3AlENre59X1S6FDHDHBicDjtTJYA34Lc6O0oTaHA2m0iBX/rhTal72w8IxjbgG6ssxsd0+MlnWvP2fBXPZavR38YWFzLLnHwSZMu4HMXLggzroVEp1zavud9OXiwtXfQd0Sp28HrYujcORF174E1cR1pHvEx9iNV5Rjn6GS24U9AHm9UD5h+xuk5l6XJp+HMUh3TbOoWmjv/VWQsYAOylhMC5spuSwDlPzi1aAhnb0ZRGqBbGYhuT1ieHsfjWWm8bNTvV8DdhON+z78tc7kMmloR4LItBwB8VH9eXcXBED2DkGpS5ARhWoEQjNhxmw0kehG74o3Yrtg7YdBKMpSQnHmnd+RtwLx2RTVY0PVaEMH6GN6L3wOIE5DBI0A2RlcNbrMl9JlJa6hDK9K41qNyG5ZBBRpqZEXKG8+ePW1OLAD7autk75dfto4wV5mm07s6HM9Tr/6/g4qDnGn2Wj1V+YpyxIPHR4qgvmZjn17iMCjCmt0qjeTDmI5tx30KuSXGLlSJpYOAg8+ceMY0RFtG346NCCPwDDpOmniSN1Tid0iyC3g=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(396003)(366004)(346002)(39860400002)(8676002)(54906003)(8936002)(5660300002)(26005)(9746002)(186003)(4326008)(86362001)(33656002)(38100700001)(66946007)(2616005)(9786002)(66556008)(426003)(66476007)(558084003)(6916009)(478600001)(2906002)(1076003)(316002)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?QPUaiR+7sutZEEMtjli9DHYsXYY6DzWrsaMwmGkh5aevWV27hkCIVGdquCYw?=
- =?us-ascii?Q?ykSoEHpd0XUYlKnR6Y4YTiuETWWBIjauMP+rqi6hSRppF6V5YIwhIBOsUvVb?=
- =?us-ascii?Q?scHyvN52isHx72KrGf1CaVojFT/wImByRgQ5YVrdjAtsWa0vL7iANoClQT3o?=
- =?us-ascii?Q?X55+nNugKCUjiZOI3GNVUEyt7k2YBQ5PTEZbyHOsBZY996zwS0Ms2+IgwVqX?=
- =?us-ascii?Q?+gis1+4yKMsiWFDB42CUumRy4/4SfuovaMEZIqGZblFx3nBc+0eQtLIrYSxO?=
- =?us-ascii?Q?EK8bn1U4sCBISbX06i21PUEPa/IlYgpPdYtO6s00+VKgEnr0XvTVdS9ij/lK?=
- =?us-ascii?Q?goGyl1YCoZDC/kAwzOf9IHiSBNVDgxr+3SieFt7brtp7WhdMNixLHyXCSqSk?=
- =?us-ascii?Q?3u/zvf1IDDUI/BZre1fOoHW5L9z9NNYLWcEYXvLTxQsDN3Fl+HbI7Xg5emRU?=
- =?us-ascii?Q?182WbHOe1+qWtRM6QQfmdr1Ox8alW40pM1JyThL01a4KP87+UecGiE5ba4ua?=
- =?us-ascii?Q?StGvp2nHdrhWCdQESR8EZ+4/1Fm6h5VfTXyXii6IY7BGR3I7oi11seLuLEVs?=
- =?us-ascii?Q?opZf6gCwsPtshhESb1Qxggyxhv0pyS6LQCSSz/ltxlRlCJLXq8xiqJR9FrdG?=
- =?us-ascii?Q?qLBgmhHPbF1xQE7DjYfQneDdtGzXSs3pohMJTZBUzPdWKnIkjSDc6iOK/Ekc?=
- =?us-ascii?Q?CZPsOkx/kNNS3bYj5L8ivI1gjZOFwYzMVRZtNaU8UcH4PPi0VkIolbyNjder?=
- =?us-ascii?Q?3yuAn2QQGnuDX7b/FWJaCQ3B9GLPqmOx9cy7jhY0dx8OUKWx8AU24YrHY/hM?=
- =?us-ascii?Q?e/REGdUOFBdW2LmMma3YAnBFqcn5FNDPmi45IPCHf1NB20phrewFAEAoqOzD?=
- =?us-ascii?Q?WrdQu5MqfmPdGs+oyMO8yxhI88leKwstUq3BPKDhXvmF1SQjzxU2DvaWcID+?=
- =?us-ascii?Q?OrB2wogUZKbMCGlUF4A5PjVkKhe1J7yL1OdBenU7ARLICUqnR9eeCnlNF0aa?=
- =?us-ascii?Q?aOQqqRID+YiCHfNz++kH8sDoQtITr8+E1tPjb9glOwFO/Wvo3Ic2ugft7Q2Z?=
- =?us-ascii?Q?69437nFIqstSN/5wKvRMrIP4BTJ8BqSTdeHOQfPwMoLJw01IAFIyfhx57NaG?=
- =?us-ascii?Q?jlJ/4PfJyHh+GgausvYxqrtnOUDO/u5yK4a6CCwjg6gdqYmiH6/kSOuMSong?=
- =?us-ascii?Q?Y7vfS2H1ZybhW2yFzlDMQkHxmEcOgNvnz6Y/kgA2ZvfOhY8YojK0MvIKRMV/?=
- =?us-ascii?Q?gJk9+FwzoN6ubmfAX8lQt55obmm8PCKrMXExlbqyCahCHl7tq9xm2bolrDxB?=
- =?us-ascii?Q?16fzgzzQ8KDr+3L7y7IE8R0kcGoaaZvJTQhKpovPz7VKgQ=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cde8bab3-0f9d-4c72-8ca8-08d8f536ba5a
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2021 17:51:07.7889
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5OcY/W25uleFw5GC/0sGx2/nXgfU4Xj8/OkmWSNaOjzuU/lmYuqcp/5RIiNoOY54
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB2487
+Date:   Thu, 01 Apr 2021 13:53:22 -0400
+In-Reply-To: <CAJZ5v0iHMvZuAifGGLA=Hn9Zb5iiLKfoyuKVyM0HFxzX3=Ht0Q@mail.gmail.com>
+References: <MW2PR2101MB08924CD74C6EB773C4D5FAFDBF7E9@MW2PR2101MB0892.namprd21.prod.outlook.com>
+         <CAJZ5v0g+=AnRAmAAn8NpHm8bmZ1WkwDpjb5rr_zPOVABW1PYug@mail.gmail.com>
+         <4e95307db43e2f7cc8516e645b81db7db0dd8ad4.camel@redhat.com>
+         <CAMj1kXHg2RDgwmOhJkaAPoWeHpxnd6tixp94Kha1-bzNvCaQUg@mail.gmail.com>
+         <504652e70f0a4e42e4927583b9ed47cd78590329.camel@redhat.com>
+         <CAMj1kXHRduBs0TJcLC4iMkyoGXyyrXPM_WpVVij33ki8THf9Kw@mail.gmail.com>
+         <CAJZ5v0hKPBtUzGKfGHD6KX-c2QEETfatCkNjCK8ukh-AhVfUhA@mail.gmail.com>
+         <CAMj1kXFrBGTitSNYZC58=UdmfgbbF2MvTcfLVRpkxJ-uYX3piw@mail.gmail.com>
+         <CAJZ5v0iPneWK69GTzWigdXjjb6VN6Hyd5=hLCdGasfnTxXCYNg@mail.gmail.com>
+         <44e4e4e62bff778d3b0b59235c793ec84794372b.camel@redhat.com>
+         <CAJZ5v0iHMvZuAifGGLA=Hn9Zb5iiLKfoyuKVyM0HFxzX3=Ht0Q@mail.gmail.com>
+Organization: Red Hat, Inc.
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 07:54:17PM +0000, Santosh Shilimkar wrote:
-> [...]
+On Thu, 2021-04-01 at 18:31 +0200, Rafael J. Wysocki wrote:
+> On Thu, Apr 1, 2021 at 6:22 PM Simo Sorce <simo@redhat.com> wrote:
+> > On Thu, 2021-04-01 at 18:02 +0200, Rafael J. Wysocki wrote:
+> > > On Thu, Apr 1, 2021 at 3:54 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+> > > > On Thu, 1 Apr 2021 at 15:38, Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > > > On Thu, Apr 1, 2021 at 10:47 AM Ard Biesheuvel <ardb@kernel.org> wrote:
+> > > > > > On Tue, 30 Mar 2021 at 21:56, Simo Sorce <simo@redhat.com> wrote:
+> > > > > > > On Tue, 2021-03-30 at 21:45 +0200, Ard Biesheuvel wrote:
+> > > > > > > > On Tue, 30 Mar 2021 at 20:05, Simo Sorce <simo@redhat.com> wrote:
+> > > > > > > > > On Tue, 2021-03-30 at 16:46 +0200, Rafael J. Wysocki wrote:
+> > > > > > > > > > On Tue, Mar 30, 2021 at 12:14 AM Dexuan Cui <decui@microsoft.com> wrote:
+> > > > > > > > > > > Hi,
+> > > > > > > > > > > MD5 was marked incompliant with FIPS in 2009:
+> > > > > > > > > > > a3bef3a31a19 ("crypto: testmgr - Skip algs not flagged fips_allowed in fips mode")
+> > > > > > > > > > > a1915d51e8e7 ("crypto: testmgr - Mark algs allowed in fips mode")
+> > > > > > > > > > > 
+> > > > > > > > > > > But hibernation_e820_save() is still using MD5, and fails in FIPS mode
+> > > > > > > > > > > due to the 2018 patch:
+> > > > > > > > > > > 749fa17093ff ("PM / hibernate: Check the success of generating md5 digest before hibernation")
+> > > > > > > > > > > 
+> > > > > > > > > > > As a result, hibernation doesn't work when FIPS is on.
+> > > > > > > > > > > 
+> > > > > > > > > > > Do you think if hibernation_e820_save() should be changed to use a
+> > > > > > > > > > > FIPS-compliant algorithm like SHA-1?
+> > > > > > > > > > 
+> > > > > > > > > > I would say yes, it should.
+> > > > > > > > > > 
+> > > > > > > > > > > PS, currently it looks like FIPS mode is broken in the mainline:
+> > > > > > > > > > > https://www.mail-archive.com/linux-crypto@vger.kernel.org/msg49414.html
+> > > > > > > > > 
+> > > > > > > > > FYI, SHA-1 is not a good choice, it is only permitted in HMAC
+> > > > > > > > > constructions and only for specified uses. If you need to change
+> > > > > > > > > algorithm you should go straight to SHA-2 or SHA-3 based hashes.
+> > > > > > > > > 
+> > > > > > > > 
+> > > > > > > > What is the reason for using a [broken] cryptographic hash here? if
+> > > > > > > > this is just an integrity check, better use CRC32
+> > > > > 
+> > > > > Not really.
+> > > > > 
+> > > > > CRC32 is not really sufficient for integrity checking here AFAICS.  It
+> > > > > might be made a fallback option if MD5 is not available, but making it
+> > > > > the default would be somewhat over the top IMO.
+> > > > > 
+> > > > > > > If the integrity check is used exclusively to verify there were no
+> > > > > > > accidental changes and is not used as a security measure, by all means
+> > > > > > > I agree that using crc32 is a better idea.
+> > > > > > > 
+> > > > > > 
+> > > > > > Looking at 62a03defeabd58f74e07ca030d6c21e069d4d88e which introduced
+> > > > > > this, it is only a best effort check which is simply omitted if md5
+> > > > > > happens to be unavailable, so there is definitely no need for crypto
+> > > > > > here.
+> > > > > 
+> > > > > Yes, it is about integrity checking only.  No, CRC32 is not equivalent
+> > > > > to MD5 in that respect AFAICS.
+> > > > > 
+> > > > 
+> > > > There are two possibilities:
+> > > > - we care about an adversary attempting to forge a collision, in which
+> > > > case you need a cryptographic hash which is not broken;
+> > > > - we only care about integrity, in which case crypto is overkill, and
+> > > > CRC32 is sufficient. (Note that the likelihood of an honest,
+> > > > inadvertent modification not being caught by CRC32 is 1 in 4 billion)
+> > > 
+> > > That depends on how you count.
+> > > 
+> > > Surely, there are modifications caught by MD5 that will not be caught by CRC32.
+> > 
+> > This is a technically correct statement, but does it matter in this
+> > context? (Hint, probably not)
+> > 
+> > > > MD5 does not meet either requirement, given that it is known to be
+> > > > broken, and overkill for simple integrity checks. MD5 should be phased
+> > > > out and removed, and moving this code onto the correct abstraction
+> > > > would be a reasonable step towards that goal.
+> > > 
+> > > This clearly is a matter of opinion.
+> > 
+> > Sorry, but this is not a matter of opinion.
+> > The only reason to use a cryptographic hash is that you want to protect
+> > from active tampering, rather than from accidental changes. And if you
+> > need to protect from active tampering then you cannot use a known
+> > broken hash, there is no point.
+> > 
+> > OTOH if you do not care for active tampering but only to catch
+> > transmission/storage errors then all you care for is error checking. In
+> > that case a cryptographic hash is overkill because it entails a lot
+> > more computation than is needed.
 > 
-> Thanks Haakon. Patchset looks fine by me.
-> Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
+> But the amount of data in question is not huge in this case.
+> 
+> > > I'm not religious about it though.  If there is a general consensus
+> > > that CRC32 is sufficient for error detection in hibernation files,
+> > > then it can be used.  So is there such a consensus and if so, can you
+> > > give me a pointer to some research that it is based on?
+> > 
+> > CRC32 is an industry standard to check for accidental modifications of
+> > a bit stream. The chances of missing an accidental change are 1 in 4
+> > billion.
+> 
+> This is not about accidental change which basically is my point.
+> 
+> The BIOSes in question change the memory map over hibernation/resume,
+> because they think that the memory layout is now different, so this is
+> about detecting a sort of intentional change.  Definitely not random,
+> though.
 
-Jakub/Dave are you OK if I take this RDS patch rdma to rdma's tree?
+Ok, not random, but also not intentional, it is just "accidental".
 
-Thanks,
-Jason
+> But as stated elsewhere, it is just about failing more gracefully at
+> least in some cases, so let's just go ahead with using CRC32 here
+> (worst case, it will not fail more gracefully in super-corner cases).
+
+Sounds good.
+
+Simo.
+
+-- 
+Simo Sorce
+RHEL Crypto Team
+Red Hat, Inc
+
+
+
+
