@@ -2,57 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 399CB351E1B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A6D351C54
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238671AbhDASfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:35:01 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15523 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238783AbhDASO6 (ORCPT
+        id S239499AbhDASQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:16:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235230AbhDAR6e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:14:58 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FB4xS58h3zNrpn;
-        Thu,  1 Apr 2021 22:16:44 +0800 (CST)
-Received: from localhost (10.174.179.96) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Thu, 1 Apr 2021
- 22:19:17 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <lee.jones@linaro.org>, <yuehaibing@huawei.com>
-CC:     <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] mfd: twl: Remove unused inline function twl4030charger_usb_en()
-Date:   Thu, 1 Apr 2021 22:18:40 +0800
-Message-ID: <20210401141840.25996-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        Thu, 1 Apr 2021 13:58:34 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78EE9C004985
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 07:20:16 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id v186so1611471pgv.7
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 07:20:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=arLJjw4ajAn6LC2XU3pN5oUvvehh5rZnK18PYWOQ1S8=;
+        b=nkdfGtVhMjlzAB0EIpfcmNGJJ696OllsdsRfOozLzy0eLJLCoATRzaf/Xq5yvlueL3
+         rNqHpuplOXHyg3OBheLDVzX37E1v/eDmmA3GF8HRX2QTCH10p8xAZJ1zUsbXlgNVDNGC
+         Q0XEPQ4JSP2wFLlzBJnH8/uXLALYELVO5BWF/EPVX77mZqBNgoqeHAa05z05nibVRfUc
+         vtIbjt8AJl7Fd5ZLVdeUx/SdjzCTRjR7rHdZEjO7opX03sJLyyQeZD/3DIqq7S9SGmtL
+         quDp0XQEYlQnDJ8tHkHC15Ztu4HpJcEA+3qTfVe7CsPQnC+a7Mud0pfKwC050wc1eGXy
+         VYFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=arLJjw4ajAn6LC2XU3pN5oUvvehh5rZnK18PYWOQ1S8=;
+        b=pYYWKvieM3qi21Tg2eOi48w2SpJBrCvx6OPMcFEemJuHDhPWdsZJtIyX9wG4kyIMeq
+         Gz2vDNAnUnwiaMHZFH36JrkHTq30m6dAKTwpaE1TpGadPmLwvqUcj0r44/cG3hZ+AA9p
+         46VoT8WGeplR3rDNic1FwK3nDv52BXiinj39QukLYHMQFxgLiM+jIkrR8SQ4FAtOv5Hl
+         d2O4e2u2oviLCN0I082D65g9bhcCj/xqOjGXcVVi33oHCSsitcq3RbpY3nuv1lNKWEwg
+         18DwosqpicoaFwxs/AgCCF/ysIb+Ae8qrUItaCJW1FIYfh0E33hWtsOwC3q0lyF6hxGG
+         a4jg==
+X-Gm-Message-State: AOAM5314HjqxZ2vWcvko8oHwsnhq2ZnfaSRFS2IPofeKCdyf8Ls7tDmQ
+        hQVWvbrklamoyzslz1Nx4zVtxCiTaZULBVz6yjN2sh4NegDjow==
+X-Google-Smtp-Source: ABdhPJx8Ggwt2TYEdPil3I1GR2SjgbK6JKlPxgCO9tnx1FYBi+4eSi2KGQpQOJk/EvUnzsWRA0xy9FcDM9dhj0/ZGb0=
+X-Received: by 2002:a05:6e02:1522:: with SMTP id i2mr6773778ilu.252.1617286804652;
+ Thu, 01 Apr 2021 07:20:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.96]
-X-CFilter-Loop: Reflected
+Received: by 2002:a02:1d42:0:0:0:0:0 with HTTP; Thu, 1 Apr 2021 07:20:03 -0700 (PDT)
+Reply-To: elizabethelizabethedward@gmail.com
+From:   Elizabeth Edward <alimanibrahim4@gmail.com>
+Date:   Thu, 1 Apr 2021 15:20:03 +0100
+Message-ID: <CAAQ2OVxR5rHebJv9a=oBhoZ9usWk+Tn5=c3=TshHi1pEfBibPA@mail.gmail.com>
+Subject: REPLY ME URGENTLY
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no caller in tree, so can remove it.
+Greeting
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- include/linux/mfd/twl.h | 2 --
- 1 file changed, 2 deletions(-)
+Please forgive me for stressing you with my predicaments and I sorry
+to approach you through this media it is because it serves the fastest
+means of communication. I came across your E-mail from my personal
+search and I decided to contact you believing you will be honest to
+fulfill my final wish before I die.
 
-diff --git a/include/linux/mfd/twl.h b/include/linux/mfd/twl.h
-index 089e8942223a..8871cc5188a0 100644
---- a/include/linux/mfd/twl.h
-+++ b/include/linux/mfd/twl.h
-@@ -781,8 +781,6 @@ int twl4030_sih_setup(struct device *dev, int module, int irq_base);
- #define TWL4030_VAUX3_DEV_GRP		0x1F
- #define TWL4030_VAUX3_DEDICATED		0x22
- 
--static inline int twl4030charger_usb_en(int enable) { return 0; }
--
- /*----------------------------------------------------------------------*/
- 
- /* Linux-specific regulator identifiers ... for now, we only support
--- 
-2.17.1
+I am Mrs. Elizabeth Edward, 63 years, from USA, I am childless and I
+am suffering from a pro-long critical cancer, my doctors confirmed I
+may not live beyond two months from now as my ill health has defiled
+all forms of medical treatment.
 
+Since my days are numbered, I=E2=80=99ve decided willingly to fulfill my
+long-time promise to donate you the sum ($5.000.000.00) million
+dollars I inherited from my late husband Mr. Edward Herbart, foreign
+bank account over years. I need a very honest person who can assist in
+transfer of this money to his or her account and use the funds for
+charities work of God while you use 50% for yourself. I want you to
+know there are no risk involved, it is 100% hitch free & safe. If you
+will be interesting to assist in getting this fund into your account
+for charity project to fulfill my promise before I die please let me
+know immediately. I will appreciate your utmost confidentiality as I
+wait for your reply.
+
+Best Regards
+
+Mrs. Elizabeth Edward
