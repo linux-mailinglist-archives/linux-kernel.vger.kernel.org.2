@@ -2,100 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF96351A68
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E749351BA8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237643AbhDASAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:00:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58298 "EHLO
+        id S238913AbhDASKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:10:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234527AbhDARq1 (ORCPT
+        with ESMTP id S236666AbhDARzF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:46:27 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A5D5C0045E1
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 07:39:23 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id f17so1148332plr.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 07:39:23 -0700 (PDT)
+        Thu, 1 Apr 2021 13:55:05 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 680BFC0045E3
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 07:40:36 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id g10so1118076plt.8
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 07:40:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=VJd+MUFo0XX0bZ87nAzur9O3CX6wH0hMl9szGovIO+U=;
-        b=lT8rLoA46GAsqanEivZwqwGf8FFfuPDGksXMy8dE1ySACchbIqAtpInKtAyJ5Yqe9k
-         GzsqRT4MRlwH4ev0c46sD16C2EaZsJ/87dxJ7+FFNKu77qJwACz5JF/bzLCymjmyvRN/
-         LDm/EiPP1kwy8nckigs4rv4bEV/e0Y2iRMMQGt0KldiN+C813ng5sRuB4ND1ZdUqlJc0
-         nUMWRadeX1yrZ4kCF3vYWwcRtZuP46Dw95sEGcBSwhgtMAzTBu+rSTnLf4K9p2jwvg5A
-         VYwpulwlpikyBGlMD1XMbyeomiajTx5AsFgoSmcc7IUS8Ivon4jhXB6SM9pUeyhmKoA5
-         Avyg==
+        bh=84VhsIYUGXjP4bvTSVVhtBz5aOdDg4WLVMSSjupzcrQ=;
+        b=n3/SBRMGVrQAHPKH8CBspegdctivbT4oLgx4A6JGVo06EHnU5N7hrWFWW0Km0ZoYpb
+         QIV4pKNKQS+/lR4qQSAdkN0jYIAZXZGXgvrA8BuVBUpgV0JL1lVh8aZS/mD9nHv4iXXO
+         LrJPvEyhoI+/msRLROnUYdKWX3W4YENmzJrkSQEwYbOwW+oQacQDDsk1A7YLE7K+Y8IT
+         MZhqMUbPG+5d32JiozdF9HDqJVIcaHat4vEVmD6JgkQFDhSwrjzBOsNxrTrSCG061Uwc
+         o1TNx0byNAcR9z2UyxaeZ6j+54jhYf4uLOmc3dEQvRdDmsiEzMzeCGYwvw9Rs03l+/cg
+         SqrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=VJd+MUFo0XX0bZ87nAzur9O3CX6wH0hMl9szGovIO+U=;
-        b=oJm97xzZWD8/jjmbtEwjvCCe7BW3eVXZmNkgD+UEgj88SGJzMnU//9Pe0V2HlWUmhw
-         ffdK9YO7WPsH9POV9vSAtINLTRIvGbqagmH8sqLJ8kulgKYDByOsyvrOeTgslnn0BVaV
-         fm0xK5+ftxfdXJWFqWXKgWGOr7nbxOVirBXYmcf3VVbs1+NFrfpWRASEdFHL1o6w1i7u
-         sNYouiMrxWuKSgV/vTbXpLar3hEb+ShTFqQfDS/kGwRnlLl8Ng9aZDqcpNGtKrXub/RV
-         hGqdY/9cIyyuCpZqLyUanEGvl2opaJlcEXW84TRC2ImH7+60PkNIOIzSAww4kOr94UZo
-         TqPg==
-X-Gm-Message-State: AOAM533vp8ewKfCeRhhIBnQvhD2BQc9ZqgRMCXLbnMoQcYFfUP5DEqv+
-        Ej8pYWPRDB0blLU3Qy2yj6s1nWVpgHf3FGmB3ottyA==
-X-Google-Smtp-Source: ABdhPJx5J2TMYKbVuGkqz4CgIBmuDV05Jucwa3rkV95Iqq7+kFDcfqmogyShve1r3BsgBXZyMLNsn0GDbOWgYFavOpQ=
-X-Received: by 2002:a17:90a:be07:: with SMTP id a7mr9381570pjs.75.1617287962645;
- Thu, 01 Apr 2021 07:39:22 -0700 (PDT)
+        bh=84VhsIYUGXjP4bvTSVVhtBz5aOdDg4WLVMSSjupzcrQ=;
+        b=mSzbAjZmZIoOniJmPHnqrXI3+3YKsJH6/aY85a55P8RFhD/EsvsfzNlwAVLBK40uUd
+         2UQgEe084ne8ruhBg2dDw1pnt0u/x/mFdY+4M/ssRohMuHa+kj7E0+y2HiiiuPje64iY
+         G/XHvDfwcdUmrzPIazf+iQSsOmBvbM/4GsYzmDMbB8pb3USsZqs4jw/WloyOQUP944/U
+         UmhC2nNkulMYJFNLpm0Lz+7GRAkkYy7nWCGQBoFEdR9e1V40hzYDP7NH3XPYSdLylYvA
+         vefBGzTIhsnOt9rfxcoh4ca9YCgGzIcbEKwTv0hqSY2Hn7S7y526x0tLkyywL7nzZ07N
+         +g1A==
+X-Gm-Message-State: AOAM532xFn2NiMqsBEelWfO9HBlU0JCG5Ezn3cNI33kWS/DtnEpAFDaP
+        p0PIKXqy1TGczwZelknTvoW7bphQT3Nl3mkIyMghwA==
+X-Google-Smtp-Source: ABdhPJxZ6vHJhYB8lWLeKnCmXrKCfcNJ8m/exOcGQnwLMAEZhsAo8xFwga7hZwxyYL5U6ax6PgkGcuZz4MgjyJJC+jo=
+X-Received: by 2002:a17:90a:d991:: with SMTP id d17mr9034123pjv.229.1617288035983;
+ Thu, 01 Apr 2021 07:40:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210222215502.24487-1-julianbraha@gmail.com>
-In-Reply-To: <20210222215502.24487-1-julianbraha@gmail.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Thu, 1 Apr 2021 16:39:11 +0200
-Message-ID: <CAG3jFysbOHbDGDWNnyOUH5tyLAxAWutp6HHnO-97BagnLqA8Yg@mail.gmail.com>
-Subject: Re: [PATCH] drivers: gpu: drm: bridge: fix kconfig dependency on DRM_KMS_HELPER
-To:     Julian Braha <julianbraha@gmail.com>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210401093343.51299-1-songmuchun@bytedance.com>
+ <YGWf1C/gIZgs0AhR@dhcp22.suse.cz> <CAMZfGtX9V898aezb-huMEYU_-NjqfL6HbXeaZr2Q2MUa+VG3qQ@mail.gmail.com>
+ <YGXaqcLOHjlCkNkt@dhcp22.suse.cz>
+In-Reply-To: <YGXaqcLOHjlCkNkt@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 1 Apr 2021 22:39:59 +0800
+Message-ID: <CAMZfGtW4W3KUwXOSV-YK3cdc_b09mZF75=Gq1jvR43kcxURxqA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2] writeback: fix obtain a reference to a
+ freeing memcg css
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Tejun Heo <tj@kernel.org>, axboe@fb.com,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Julian,
+On Thu, Apr 1, 2021 at 10:37 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Thu 01-04-21 21:59:13, Muchun Song wrote:
+> > On Thu, Apr 1, 2021 at 6:26 PM Michal Hocko <mhocko@suse.com> wrote:
+> [...]
+> > > Even if the css ref count is not really necessary it shouldn't cause any
+> > > harm and it makes the code easier to understand. At least a comment
+> > > explaining why that is not necessary would be required without it
+> >
+> > OK. I will add a comment here to explain why we need to hold a
+> > ref.
+>
+> I do not think this is necessary. Taking the reference is a standard
+> way and I am not sure it requires a comment. I meant to say that not
+> having a reference should really have a comment explaining why.
 
-Nice catch, this patch looks good to me. I've pushed it to drm-misc-next.
+Very Sorry. I got it wrong, thank you for further explanation.
 
-https://cgit.freedesktop.org/drm/drm-misc/commit/?id=62066d3164467167fc27b2383f67d097e39bf176
-
-On Mon, 22 Feb 2021 at 22:56, Julian Braha <julianbraha@gmail.com> wrote:
 >
-> When DRM_TOSHIBA_TC358762 is enabled and DRM_KMS_HELPER is disabled,
-> Kbuild gives the following warning:
->
-> WARNING: unmet direct dependencies detected for DRM_PANEL_BRIDGE
->   Depends on [n]: HAS_IOMEM [=y] && DRM_BRIDGE [=y] && DRM_KMS_HELPER [=n]
->   Selected by [y]:
->   - DRM_TOSHIBA_TC358762 [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && OF [=y]
->
-> This is because DRM_TOSHIBA_TC358762 selects DRM_PANEL_BRIDGE,
-> without depending on or selecting DRM_KMS_HELPER,
-> despite that config option depending on DRM_KMS_HELPER.
->
-> Signed-off-by: Julian Braha <julianbraha@gmail.com>
-> ---
->  drivers/gpu/drm/bridge/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
-> index e4110d6ca7b3..909d0a5643c2 100644
-> --- a/drivers/gpu/drm/bridge/Kconfig
-> +++ b/drivers/gpu/drm/bridge/Kconfig
-> @@ -183,6 +183,7 @@ config DRM_TOSHIBA_TC358762
->         tristate "TC358762 DSI/DPI bridge"
->         depends on OF
->         select DRM_MIPI_DSI
-> +       select DRM_KMS_HELPER
->         select DRM_PANEL_BRIDGE
->         help
->           Toshiba TC358762 DSI/DPI bridge driver.
+> Thanks!
 > --
-> 2.27.0
+> Michal Hocko
+> SUSE Labs
