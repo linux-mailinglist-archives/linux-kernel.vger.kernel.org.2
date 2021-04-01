@@ -2,118 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1259D35208E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29277352092
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234980AbhDAUZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 16:25:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234783AbhDAUZi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 16:25:38 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DE6DC061788
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 13:25:39 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id 19so3133391ilj.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 13:25:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D9pPnGfDemhcam0jMg7ahtrXvDDeJXDuIzJjdn/CBqY=;
-        b=Tp8Ke9BKCULw6yltQvnYkmv2QThjBCXVafzs+Ia/6Q7krHR99BCm3bYyic2o5YkFbr
-         3gfeB9enL3wwTt5B4J9fhsXdX8nfTvZGH241U4QQP53Hg6K4hbIYltcy1mTpFRkMmuJD
-         7ELOAE5nxnxE1SLwr7zP5G1tTZVjYr0ZqmJtz4gkecRkxoFvJ6dmyh7l5L5gc7AHFt9n
-         ShDDLDBN+DUpzgVgN9NSPmt1l291rdHgEY3lp/PqTsPuAHQGy0tlQs5PYZ+BtUYmlJFC
-         sZea3AoEklBUGQ+0G+Ttag4mGF/k5xDmMmgM7X9T4zBMbaDc/o0XhC2ax3pjgFi9uLuY
-         Zz8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D9pPnGfDemhcam0jMg7ahtrXvDDeJXDuIzJjdn/CBqY=;
-        b=UTvZ6lM/biVMJWmkVlRYZlYzpegiU0HlLa7Y+dcTuErUkxcBFAyf1jLx+fRD6qP6mX
-         oUR9ZhURvjxIN/FnqA0PB4ZXTEWh17sbqHdzP6zNfuI4W08nZ1y7ED4Ch6brG/qMfgR7
-         WwM4KzpBvf9ziAiNBuuCG4gSKjgdL7Ov5eiyQCu8B5wRLBTcO6hFQ+67saIkr8hkDtL5
-         hbXXAb6BKhs1B877PwEm0Tp6fWtY+LMj149yFpkKThriaax9AnUobS9bEeIAZQsqsnz9
-         Q9p/y85mVu2UeRdDVhyC+2H5LNdC4PsV6OZ4OTTpoRo3Iqe5rd0aLKOXsk4rCWx5EcUo
-         Xcsg==
-X-Gm-Message-State: AOAM5326bS8w3eoJ2dba3FeUl9jKrUAI00H8i0b5L+m751qRQmf48oe9
-        Pem6V10j1HVoLLkC3DqqofQkQLEUnPd7Lh0RC28Reg==
-X-Google-Smtp-Source: ABdhPJwKCwpFpaPYJxlfBmivkc/q3NFjpBTnb5GuLFN7BcQzQw74+BE64fUhtv7H9GsRHzF7Kvm5zS7b661zLifjQFs=
-X-Received: by 2002:a92:d68e:: with SMTP id p14mr7912916iln.0.1617308738313;
- Thu, 01 Apr 2021 13:25:38 -0700 (PDT)
+        id S235647AbhDAU0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 16:26:31 -0400
+Received: from mga14.intel.com ([192.55.52.115]:6556 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234488AbhDAU0Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 16:26:24 -0400
+IronPort-SDR: QKsUlsQMx1vEbIinXyW426j++O9MC1v4+t1O8A9TOibg+oqps/nZBEPo10PRcGrjDgxLMjikTx
+ cvC1B0FMtDwQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="191805698"
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="191805698"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 13:26:24 -0700
+IronPort-SDR: 5g9zpTfbeyFQgjU6fp0reRyn2v+f92PCVEjaicefK4fIAXMMnwAWxf2kzaXL4Er2KZnmZGWACG
+ AkqAb6+Hu+sQ==
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="611052873"
+Received: from pzlai-mobl.amr.corp.intel.com (HELO [10.213.169.242]) ([10.213.169.242])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 13:26:23 -0700
+Subject: Re: [RFC v1 23/26] x86/tdx: Make pages shared in ioremap()
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <33ced467eae950bc3df9e1f01284036fd560d33c.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <17c692a8-72b3-526b-9190-8c41655fa13c@intel.com>
+Date:   Thu, 1 Apr 2021 13:26:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210401195138.2895285-1-Liam.Howlett@Oracle.com>
-In-Reply-To: <20210401195138.2895285-1-Liam.Howlett@Oracle.com>
-From:   Michel Lespinasse <walken@google.com>
-Date:   Thu, 1 Apr 2021 13:25:25 -0700
-Message-ID: <CANN689GC8jXbzFb_HL-vpoBxuD4-By029=PMsi4Vs9ufik4RhQ@mail.gmail.com>
-Subject: Re: [PATCH] alpha/kernel/traps: Use find_vma_intersection() in traps
- for setting si_code
-To:     Liam Howlett <liam.howlett@oracle.com>
-Cc:     Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <33ced467eae950bc3df9e1f01284036fd560d33c.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-You are correct that find_vma is insufficient for what's intended
-here, and that find_vma_intersection fixes it.
+On 2/5/21 3:38 PM, Kuppuswamy Sathyanarayanan wrote:
+> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+> 
+> All ioremap()ed paged that are not backed by normal memory (NONE or
+> RESERVED) have to be mapped as shared.
 
-I'll let the arch maintainers speak of what the consequences of the
-changed si_code would be - the bug has been here so long, that I would
-worry some userspace might have come to depend on it (the old "common
-law feature" issue).
- Just a concern I have, with 0 evidence behind it, so I hope it turns
-out not to be an actual issue.
+s/paged/pages/
 
-Acked-by: Michel Lespinasse <walken@google.com>
 
-On Thu, Apr 1, 2021 at 12:51 PM Liam Howlett <liam.howlett@oracle.com> wrote:
->
-> find_vma() will continue to search upwards until the end of the virtual
-> memory space.  This means the si_code would almost never be set to
-> SEGV_MAPERR even when the address falls outside of any VMA.
->
-> Using find_vma_intersection() allows for what is intended by only
-> returning a VMA if it falls within the range provided, in this case a
-> window of 1.
->
-> Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
-> ---
->  arch/alpha/kernel/traps.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/alpha/kernel/traps.c b/arch/alpha/kernel/traps.c
-> index 921d4b6e4d95..7f51386c06d0 100644
-> --- a/arch/alpha/kernel/traps.c
-> +++ b/arch/alpha/kernel/traps.c
-> @@ -957,8 +957,10 @@ do_entUnaUser(void __user * va, unsigned long opcode,
->                 si_code = SEGV_ACCERR;
->         else {
->                 struct mm_struct *mm = current->mm;
-> +               unsigned long addr = (unsigned long)va;
+> +/* Make the page accesable by VMM */
+> +#define pgprot_tdx_shared(prot) __pgprot(pgprot_val(prot) | tdx_shared_mask())
 > +
->                 mmap_read_lock(mm);
-> -               if (find_vma(mm, (unsigned long)va))
-> +               if (find_vma_intersection(mm, addr, addr + 1))
->                         si_code = SEGV_ACCERR;
->                 else
->                         si_code = SEGV_MAPERR;
-> --
-> 2.30.0
+>  #ifndef __ASSEMBLY__
+>  #include <asm/x86_init.h>
+>  #include <asm/fpu/xstate.h>
+> diff --git a/arch/x86/mm/ioremap.c b/arch/x86/mm/ioremap.c
+> index 9e5ccc56f8e0..a0ba760866d4 100644
+> --- a/arch/x86/mm/ioremap.c
+> +++ b/arch/x86/mm/ioremap.c
+> @@ -87,12 +87,12 @@ static unsigned int __ioremap_check_ram(struct resource *res)
+>  }
+>  
+>  /*
+> - * In a SEV guest, NONE and RESERVED should not be mapped encrypted because
+> - * there the whole memory is already encrypted.
+> + * In a SEV or TDX guest, NONE and RESERVED should not be mapped encrypted (or
+> + * private in TDX case) because there the whole memory is already encrypted.
+>   */
 
+But doesn't this mean that we can't ioremap() normal memory?  I was
+somehow expecting that we would need to do this for some host<->guest
+communication pages.
 
+>  static unsigned int __ioremap_check_encrypted(struct resource *res)
+>  {
+> -	if (!sev_active())
+> +	if (!sev_active() && !is_tdx_guest())
+>  		return 0;
+>  
+>  	switch (res->desc) {
+> @@ -244,6 +244,8 @@ __ioremap_caller(resource_size_t phys_addr, unsigned long size,
+>  	prot = PAGE_KERNEL_IO;
+>  	if ((io_desc.flags & IORES_MAP_ENCRYPTED) || encrypted)
+>  		prot = pgprot_encrypted(prot);
+> +	else if (is_tdx_guest())
+> +		prot = pgprot_tdx_shared(prot);
 
--- 
-Michel "Walken" Lespinasse
-A program is never fully debugged until the last user dies.
