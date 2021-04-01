@@ -2,83 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B1AB351397
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 12:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7858335139B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 12:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234064AbhDAK2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 06:28:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45142 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234239AbhDAK1w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 06:27:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E779610EA;
-        Thu,  1 Apr 2021 10:27:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617272843;
-        bh=HQG16RWBrcoedAiIdR5UENpMwcX+yPeQNqIyyoyNUuY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BTInuR9nePUquz2VTIc45uqzI1An1RggwZuVpd3dYxSCD9TpLH5E2yoCwFICX2go5
-         jsIcScts5zJHO+8RXJbStT3BN60p2r8QyhdefkqYYfmzXYd9QBHzp8tZZfH7Fq04PU
-         YMHbEm4NLTQvHaB5Fnfr+qOQG+n5Q5g322jl4JrVJFyjzRlKBZwcyt1euNA6Waf+Df
-         MBUSS6JdXAyQZuGbCVEkHwAII0UgbbYyMUZbdtW9hG2WulSdgsM/fpbvH+JWJQ6K4I
-         n2OWSVzL1mGaeWxSCJ7AlHxoc4aXXXfwHDjB4DyM0L+2XfgOLeQFFlxT8tNktjdj0T
-         IlLZRR1SDi94A==
-Date:   Thu, 1 Apr 2021 15:57:17 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/6] Add support for Actions Semi Owl socinfo
-Message-ID: <20210401102717.GF14052@work>
-References: <cover.1617110420.git.cristian.ciocaltea@gmail.com>
- <20210401052438.GB14052@work>
- <20210401094041.GA1993499@BV030612LT>
+        id S234431AbhDAK2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 06:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234380AbhDAK2N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 06:28:13 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD6EC061788
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 03:28:13 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1lRuYc-0003tP-E8; Thu, 01 Apr 2021 12:28:10 +0200
+Subject: Re: [PATCH v1 0/3] KEYS: trusted: Introduce support for NXP
+ CAAM-based trusted keys
+To:     Richard Weinberger <richard@nod.at>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        horia geanta <horia.geanta@nxp.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        aymen sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        davem <davem@davemloft.net>,
+        James Bottomley <jejb@linux.ibm.com>,
+        kernel <kernel@pengutronix.de>,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        david <david@sigma-star.at>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        "open list, ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        LSM <linux-security-module@vger.kernel.org>
+References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
+ <CAFLxGvzWLje+_HFeb+hKNch4U1f5uypVUOuP=QrEPn_JNM+scg@mail.gmail.com>
+ <ca2a7c17-3ed0-e52f-2e2f-c0f8bbe10323@pengutronix.de>
+ <CAFLxGvyj1aZ_3MuxJC6onejchV_6A8WbNR1vTLpSBF5QTxvLyQ@mail.gmail.com>
+ <897df7dd-83a1-3e3e-1d9f-5a1adfd5b2fb@pengutronix.de>
+ <1263763932.139584.1617272457698.JavaMail.zimbra@nod.at>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <27d7d3fa-5df8-1880-df21-200de31cc629@pengutronix.de>
+Date:   Thu, 1 Apr 2021 12:28:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401094041.GA1993499@BV030612LT>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1263763932.139584.1617272457698.JavaMail.zimbra@nod.at>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 12:40:41PM +0300, Cristian Ciocaltea wrote:
-> Hi Mani,
-> 
-> On Thu, Apr 01, 2021 at 10:54:38AM +0530, Manivannan Sadhasivam wrote:
-> > On Tue, Mar 30, 2021 at 04:48:15PM +0300, Cristian Ciocaltea wrote:
-> > > This patchset adds a socinfo driver which provides information about
-> > > Actions Semi Owl SoCs to user space via sysfs: machine, family, soc_id,
-> > > serial_number.
-> > > 
-> > > Please note the serial number is currently available only for the S500
-> > > SoC variant.
-> > > 
-> > > This has been tested on the S500 SoC based RoseapplePi SBC.
-> > > 
-> > 
-> > Is this the soc_id provided by the vendor bootloader (uboot)? If so, under
-> > what basis it provides? I don't think the SoC has the provision for
-> > soc_id based on HW parameters.
-> 
-> No, the soc_id is not provided by the bootloader, or at least I couldn't
-> identify any related implementation. Instead, I provided this via the
-> driver itself, since I've encountered this approach in some other soc
-> drivers as well (e.g. imx/soc-imx.c, versatile/soc-integrator.c). 
-> 
+Hello,
 
-Sorry, I was referring to serial_number. Since your comment says so, can
-you point to the corresponding code?
+On 01.04.21 12:20, Richard Weinberger wrote:
+> Ahmad,
+> 
+> ----- Ursprüngliche Mail -----
+>> Von: "Ahmad Fatoum" <a.fatoum@pengutronix.de>
+>>> I'm pretty sure with minimal changes it will work with your recent approach too.
+>>
+>> I am using dmsetup directly in my project. I am not familiar with cryptsetup
+>> plain. What benefits do you see with this over direct dmsetup?
+> 
+> cryptsetup is the de-facto standard to setup encrypted block devices.
+> There is a lot of existing tooling around cryptsetup already (systemd, etc..),
 
-Thanks,
-Mani
+Do you mean systemd-cryptsetup? It looks to me like it's just a way to supply
+the keyphrase. With trusted keys and a keyphrase unknown to userspace, this
+won't work.
 
+> so being able to use CAAM keys for dm-crypt with cryptsetup seems natural to me.
+> Plain mode allows setting up dm-crypt without LUKS.
+
+I don't (yet) see the utility of it without LUKS. Perhaps a command dump on how
+to do the same I did with dmsetup, but with cryptsetup plain instead could
+help me to see the benefits?
+
+Cheers,
+Ahmad
+
+> 
 > Thanks,
-> Cristi
+> //richard
 > 
-> > Thanks,
-> > Mani
->  
-> [...]
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
