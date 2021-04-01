@@ -2,67 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4C10350EFB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20C6C350EFC
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233193AbhDAGZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 02:25:37 -0400
-Received: from mail-m17637.qiye.163.com ([59.111.176.37]:48860 "EHLO
-        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233102AbhDAGZP (ORCPT
+        id S233343AbhDAG0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 02:26:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233102AbhDAGZ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 02:25:15 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id 3C2A498021C;
-        Thu,  1 Apr 2021 14:25:12 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] tools: perf: util: Remove duplicate struct declaration
-Date:   Thu,  1 Apr 2021 14:23:54 +0800
-Message-Id: <20210401062424.991737-1-wanjiabing@vivo.com>
+        Thu, 1 Apr 2021 02:25:56 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75EC5C0613E6;
+        Wed, 31 Mar 2021 23:25:56 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id k23-20020a17090a5917b02901043e35ad4aso2525564pji.3;
+        Wed, 31 Mar 2021 23:25:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LXnLdVNgyUimdPfL+v5GFIuyPBZ6lA/hlpHGp24V/bk=;
+        b=KVo7mQYW1fGm/1RDQuou3EKnitEFnv+ZUo7CJdDAMt+YrRIMG08OavCbVAIPcJMf2E
+         dLStXZ4J6EJ0Y6GVF+WxbtYcap9xiurjUW/7sdP8ySg+cL0cXd7O+3bUS9cdTZDAmsGR
+         dFn1s0SUa4/GE9ndbltNn5U2KQtilEUJpr/tnYsaO30Ngkb/HL+nM7+0Od9khC8HLZv6
+         KbwkIEmJwhnyRqDei3GwOCMkSfwVT5++Kcy05+qJ1NsXywkFZZ770p6jZea8Exj4JEpY
+         zd0b79fH6eBsk2O0jG8ojHKDye755toxBPRdi5hBvvQzfQe9rKJ948WNKHEuMORD78cE
+         80MQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LXnLdVNgyUimdPfL+v5GFIuyPBZ6lA/hlpHGp24V/bk=;
+        b=tYVueuK2ky2pegzPKsAA6Y1/14yDb1GnBz2zo9OkSY3OhygijL5388PL4whi0Pigld
+         nG9+V3ngNQfAbtpGQiWl4fK4PlN4PVjY6FodnusAlST8hZTdDG7pWjXtjZXM1loSptJW
+         Ae3u6MlvnfoPz34eerdlKHnQsXh7U36NyXMVHYgpC+op4Qstwd4hmGtsrPYb/GMNw0TX
+         UlNkwj+Cnb7NIRaj+bguGzSFWHlj2Kn5TjKl8xeBHSY8dFX9AcoBd0l+IClDipF1YywK
+         xmMaZD5E1d/+vv43pK4Yn4HkYkRGzlj0xFEPF74n757ZZ70qbT8ZiRetr3Ky4jZD543b
+         IIIA==
+X-Gm-Message-State: AOAM530ztDOPC7P+myP78yw0pTIfsZZuF5IJ663grae/k9pXAAPGEoao
+        iwLzqUCIMltE3TQ9amVw4to=
+X-Google-Smtp-Source: ABdhPJxxRRk0Kz8yGHIwAIfry8GyT5A4KQRcQQkGhaZqDW/dNneq0Xw64nnvhaAdzlpb5uYM5sH/9w==
+X-Received: by 2002:a17:90a:5b0b:: with SMTP id o11mr7347687pji.18.1617258355805;
+        Wed, 31 Mar 2021 23:25:55 -0700 (PDT)
+Received: from localhost.localdomain ([2409:4072:6307:8389:1a0d:8ccb:e643:1f59])
+        by smtp.googlemail.com with ESMTPSA id b3sm4231857pjg.41.2021.03.31.23.25.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 23:25:55 -0700 (PDT)
+From:   Mugilraj Dhavachelvan <dmugil2000@gmail.com>
+Cc:     Mugilraj Dhavachelvan <dmugil2000@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-iio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] iio: adc: bcm_iproc_adc: Use %s and __func__
+Date:   Thu,  1 Apr 2021 11:55:17 +0530
+Message-Id: <20210401062517.28832-1-dmugil2000@gmail.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZS00ZHUJIHUJOSx5JVkpNSkxJTkNISklOT0tVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6M1E6Pio5Hj8JGjQjNTYOLggS
-        FS0aCz5VSlVKTUpMSU5DSEpJQ05DVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFKQkpNNwY+
-X-HM-Tid: 0a788c1b7309d992kuws3c2a498021c
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct target is declared twice. One has been declared
-at 21st line. Remove the duplicate.
+Change function's name to %s and __func__ to fix checkpatch.pl errors.
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+Signed-off-by: Mugilraj Dhavachelvan <dmugil2000@gmail.com>
 ---
- tools/perf/util/evsel.h | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/iio/adc/bcm_iproc_adc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-index 6026487353dd..998e5b806696 100644
---- a/tools/perf/util/evsel.h
-+++ b/tools/perf/util/evsel.h
-@@ -157,7 +157,6 @@ struct perf_missing_features {
- extern struct perf_missing_features perf_missing_features;
+diff --git a/drivers/iio/adc/bcm_iproc_adc.c b/drivers/iio/adc/bcm_iproc_adc.c
+index 5e396104ac86..6bffda1082a2 100644
+--- a/drivers/iio/adc/bcm_iproc_adc.c
++++ b/drivers/iio/adc/bcm_iproc_adc.c
+@@ -170,8 +170,7 @@ static irqreturn_t iproc_adc_interrupt_handler(int irq, void *data)
+ 	adc_priv = iio_priv(indio_dev);
  
- struct perf_cpu_map;
--struct target;
- struct thread_map;
- struct record_opts;
+ 	regmap_read(adc_priv->regmap, IPROC_INTERRUPT_STATUS, &intr_status);
+-	dev_dbg(&indio_dev->dev, "iproc_adc_interrupt_handler(),INTRPT_STS:%x\n",
+-			intr_status);
++	dev_dbg(&indio_dev->dev, "%s,INTRPT_STS:%x\n", __func__, intr_status);
  
+ 	intr_channels = (intr_status & IPROC_ADC_INTR_MASK) >> IPROC_ADC_INTR;
+ 	if (intr_channels) {
 -- 
 2.25.1
 
