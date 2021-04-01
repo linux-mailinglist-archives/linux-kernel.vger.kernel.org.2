@@ -2,77 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED31D35234F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 01:18:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6884352367
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 01:22:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235312AbhDAXR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 19:17:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37632 "EHLO mail.kernel.org"
+        id S236273AbhDAXUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 19:20:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38880 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233677AbhDAXR4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 19:17:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B29C61104;
-        Thu,  1 Apr 2021 23:17:56 +0000 (UTC)
+        id S235909AbhDAXUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 19:20:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id D3D3861152;
+        Thu,  1 Apr 2021 23:20:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617319076;
-        bh=ymiY8ZTzmhOuR3loDD2Rxst61HGOdmFWPlL6kzcgJes=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=F5b9czjGxoWcTVYm9K81Z7AbRg+iHFONt3L7rIdIqu70KIq7Hq2Ugdi4GoVCvhPU7
-         V2nmHs/JqM1xxglvZSswsdT+FNL9FNXUI/OgcwugKkM6bDOYXtWIqZpqlUk8HC23e1
-         vE+xxCIfYqLfcSS76j2fwj6NBHPW92rZtreXPwed7Q36N+wZ9pcV7e0PKEbVSiF55x
-         VBp6zrb8ige7PjdXRoxcarKYF0rrOzXWZIrs55bzX5LmQLwMxOCmTouhbl2im0kl45
-         oo2HhODHHSvG19pJiX8xfgQZb7lu7nT4iJe7gu3DN820NmvLbSqexMngGYubJ5jbRA
-         O2u6ETTLwLJlA==
-Received: by mail-lj1-f176.google.com with SMTP id a1so3963803ljp.2;
-        Thu, 01 Apr 2021 16:17:56 -0700 (PDT)
-X-Gm-Message-State: AOAM532NA5Z1NVm3SbmOJCoXVYxveoq+vaWUqDctZfd24/406hBKBUCr
-        3UL2xK23eyY12PGN+WnnvGDCm/cSmEtO0d+ACY4=
-X-Google-Smtp-Source: ABdhPJzKeVQTL3CELzeA2yV1t99oNC3zlANJ1CjJTEA05FRxs4UxvsKoOzmgSd05y2P3yi52l8aaJ+gH+AKpAHMW4Lg=
-X-Received: by 2002:a05:651c:200b:: with SMTP id s11mr6382133ljo.177.1617319074579;
- Thu, 01 Apr 2021 16:17:54 -0700 (PDT)
+        s=k20201202; t=1617319209;
+        bh=a4J8hSWn61N2uanLnkkW2W+XHIHI96a+n0os9TlOm8w=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=O7B4FQ9zLxHsKWBCGBoXUrWRvbETAoWq1BVcze/eEi78rujoiJzrqcwVwiAJZ1U2Q
+         U+93+eBJeIjgFpDByOPxfwzAWU6omLQIekurDctYbdtUS0B4D/OfKi2y0KPlGMvHmj
+         ob3KtjsO6rdu/XYTe/aQq2PMBa7rbR439iEuOa3UV8FxE6+U1K/jbXTHUX1TF84NET
+         gqrMB++qa16uzFryWUhoQkbKQRmnRf6wwA3XELdXb87O6bJdVQ7v01EnS9sJlTpLst
+         z8xc6hYcd89LT8OiEIRQhJGrAdEb9lR/e1K2LRJXRBfy5mCMO+szO9fThd+HVKC6cu
+         SlXzaV2P1W7gQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C409D609D2;
+        Thu,  1 Apr 2021 23:20:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210401142301.1686904-1-yangyingliang@huawei.com>
-In-Reply-To: <20210401142301.1686904-1-yangyingliang@huawei.com>
-From:   Song Liu <song@kernel.org>
-Date:   Thu, 1 Apr 2021 16:17:43 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6H6z5-35ja37fzC9JNYcG+P2zV3y6SCFqPwfaMVSp9tw@mail.gmail.com>
-Message-ID: <CAPhsuW6H6z5-35ja37fzC9JNYcG+P2zV3y6SCFqPwfaMVSp9tw@mail.gmail.com>
-Subject: Re: [PATCH -next] libbpf: remove redundant semi-colon
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] include: net: Remove repeated struct declaration
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161731920979.16404.5049234780996551334.git-patchwork-notify@kernel.org>
+Date:   Thu, 01 Apr 2021 23:20:09 +0000
+References: <20210401070823.994760-1-wanjiabing@vivo.com>
+In-Reply-To: <20210401070823.994760-1-wanjiabing@vivo.com>
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kael_w@yeah.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 10:58 AM Yang Yingliang <yangyingliang@huawei.com> wrote:
->
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Hello:
 
-Please add a short commit log.
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-Thanks,
-Song
-
+On Thu,  1 Apr 2021 15:08:22 +0800 you wrote:
+> struct ctl_table_header is declared twice. One is declared
+> at 46th line. The blew one is not needed. Remove the duplicate.
+> 
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 > ---
->  tools/lib/bpf/linker.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
-> index 46b16cbdcda3..4e08bc07e635 100644
-> --- a/tools/lib/bpf/linker.c
-> +++ b/tools/lib/bpf/linker.c
-> @@ -1895,7 +1895,7 @@ static int finalize_btf_ext(struct bpf_linker *linker)
->         hdr->func_info_len = funcs_sz;
->         hdr->line_info_off = funcs_sz;
->         hdr->line_info_len = lines_sz;
-> -       hdr->core_relo_off = funcs_sz + lines_sz;;
-> +       hdr->core_relo_off = funcs_sz + lines_sz;
->         hdr->core_relo_len = core_relos_sz;
->
->         if (funcs_sz) {
-> --
-> 2.25.1
->
+>  include/net/net_namespace.h | 1 -
+>  1 file changed, 1 deletion(-)
+
+Here is the summary with links:
+  - include: net: Remove repeated struct declaration
+    https://git.kernel.org/netdev/net-next/c/9fadafa46f48
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
