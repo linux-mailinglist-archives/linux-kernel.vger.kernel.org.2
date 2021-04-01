@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 757D6351815
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4110A35186E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236179AbhDARny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:43:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57162 "EHLO
+        id S235082AbhDARpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:45:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234443AbhDARhg (ORCPT
+        with ESMTP id S234627AbhDARi3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:37:36 -0400
+        Thu, 1 Apr 2021 13:38:29 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E57DEC00F7DB;
-        Thu,  1 Apr 2021 08:08:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F42C00F7E8;
+        Thu,  1 Apr 2021 08:09:02 -0700 (PDT)
 Date:   Thu, 01 Apr 2021 15:08:55 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1617289735;
@@ -23,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4rdu1LkXVj5GFqckOGCu5le6JItyBLWu9hMH2stGX1A=;
-        b=ogXyF7soUXdsCbeXPPQkkTxkJS+ZeyjHzoRUJQAcbI839BxFhoGk7NgXAsJ09dHA8K+/Ua
-        U2ZwVgfYvAPkGrzLJO3TWNOxmWHBVS0RJtE+u/H/M7Z/keVgPJTRxGWPVqteiUJoeW06Rw
-        rBHeqBBEyPrsq5AjCJpGZpscHyHOwjTzbRGp+iZFFyou6O7Qqkxo87XO1Dy/UxdlA8eZcm
-        sbs6QeiyL1054F5H3IIwbF/J/n4iSn0qIyK35cUKy2K0qtHjCLOnXbu85B2BTehxGF+3aa
-        MrLaIUj1S37P3A1IS0TpnBv4DlXp2dMz2uceZsK9H+XiE0IhNDJNuRuhKTNLzA==
+        bh=ewilDfX8xZ5f96JbSoLPDUYRIp3UVVGWZNdgrnNzb74=;
+        b=yydnilu1TpUapeFcGJaY7x5iJhHt0S/Z2lZaxRTx3qHqJfnx6cJcTJJhboXUlA/16CLdD4
+        SWin7PB6NEBJ3vGqQMK094WL8Au/936Hb9nwZVE5c2He+zUJgPurJNNjmQHOdyRpvDtb6l
+        9/rL69jPXDAVxkF5WvklQ0lsaVH7ZPptIERYI56J3mnpKZyVDaBlM7UvJCEqO8n1/GUgM/
+        zzz9JuRoq3vdNudJu8OrtJfcVqBHyw0xqCSSy9NKuE43+36C2+SIeDpf2mHfgU4gIW+zvD
+        XE6xWq6mUAf+9kAJmdXuDDAMJIlS8UCq68M3j6jPzg84joOOK/kX/HS6O+pLCw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1617289735;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,21 +36,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4rdu1LkXVj5GFqckOGCu5le6JItyBLWu9hMH2stGX1A=;
-        b=LejbyA7ChQ/IIasdgGz3p0TX9jgCN8sFx24KQQM1KoiZCPjQIMK3fEAKRx/6gQSmnkbMus
-        3VzBJQywiMZfYuAw==
+        bh=ewilDfX8xZ5f96JbSoLPDUYRIp3UVVGWZNdgrnNzb74=;
+        b=u0/VxmpA+RTBbsNbr8iiKT/REjiXT4T62+q2WH8DcYISpd9ToYya+IbZyvriNuspPhuIDY
+        JH2ZSj/Yld6tSDAg==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/core] objtool: Keep track of retpoline call sites
+Subject: [tip: x86/core] objtool: Add elf_create_undef_symbol()
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Borislav Petkov <bp@suse.de>, Miroslav Benes <mbenes@suse.cz>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210326151300.130805730@infradead.org>
-References: <20210326151300.130805730@infradead.org>
+In-Reply-To: <20210326151300.064743095@infradead.org>
+References: <20210326151300.064743095@infradead.org>
 MIME-Version: 1.0
-Message-ID: <161728973500.29796.7148615703905180273.tip-bot2@tip-bot2>
+Message-ID: <161728973533.29796.18219156552513333991.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,186 +61,107 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/core branch of tip:
 
-Commit-ID:     7e57a6bc5a22145429d3a232619b0637c312397a
-Gitweb:        https://git.kernel.org/tip/7e57a6bc5a22145429d3a232619b0637c312397a
+Commit-ID:     993b477acdb652c6134e5faae05e8a378911cbb3
+Gitweb:        https://git.kernel.org/tip/993b477acdb652c6134e5faae05e8a378911cbb3
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Fri, 26 Mar 2021 16:12:12 +01:00
+AuthorDate:    Fri, 26 Mar 2021 16:12:11 +01:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 01 Apr 2021 13:20:21 +02:00
+CommitterDate: Thu, 01 Apr 2021 13:12:48 +02:00
 
-objtool: Keep track of retpoline call sites
+objtool: Add elf_create_undef_symbol()
 
-Provide infrastructure for architectures to rewrite/augment compiler
-generated retpoline calls. Similar to what we do for static_call()s,
-keep track of the instructions that are retpoline calls.
-
-Use the same list_head, since a retpoline call cannot also be a
-static_call.
+Allow objtool to create undefined symbols; this allows creating
+relocations to symbols not currently in the symbol table.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Borislav Petkov <bp@suse.de>
 Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-Link: https://lkml.kernel.org/r/20210326151300.130805730@infradead.org
+Link: https://lkml.kernel.org/r/20210326151300.064743095@infradead.org
 ---
- tools/objtool/check.c                   | 34 ++++++++++++++++++++----
- tools/objtool/include/objtool/arch.h    |  2 +-
- tools/objtool/include/objtool/check.h   |  2 +-
- tools/objtool/include/objtool/objtool.h |  1 +-
- tools/objtool/objtool.c                 |  1 +-
- 5 files changed, 34 insertions(+), 6 deletions(-)
+ tools/objtool/elf.c                 | 60 ++++++++++++++++++++++++++++-
+ tools/objtool/include/objtool/elf.h |  1 +-
+ 2 files changed, 61 insertions(+)
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 600fa67..77074db 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -451,7 +451,7 @@ static int create_static_call_sections(struct objtool_file *file)
- 		return 0;
- 
- 	idx = 0;
--	list_for_each_entry(insn, &file->static_call_list, static_call_node)
-+	list_for_each_entry(insn, &file->static_call_list, call_node)
- 		idx++;
- 
- 	sec = elf_create_section(file->elf, ".static_call_sites", SHF_WRITE,
-@@ -460,7 +460,7 @@ static int create_static_call_sections(struct objtool_file *file)
- 		return -1;
- 
- 	idx = 0;
--	list_for_each_entry(insn, &file->static_call_list, static_call_node) {
-+	list_for_each_entry(insn, &file->static_call_list, call_node) {
- 
- 		site = (struct static_call_site *)sec->data->d_buf + idx;
- 		memset(site, 0, sizeof(struct static_call_site));
-@@ -829,13 +829,16 @@ static int add_jump_destinations(struct objtool_file *file)
- 			else
- 				insn->type = INSN_JUMP_DYNAMIC_CONDITIONAL;
- 
-+			list_add_tail(&insn->call_node,
-+				      &file->retpoline_call_list);
-+
- 			insn->retpoline_safe = true;
- 			continue;
- 		} else if (insn->func) {
- 			/* internal or external sibling call (with reloc) */
- 			insn->call_dest = reloc->sym;
- 			if (insn->call_dest->static_call_tramp) {
--				list_add_tail(&insn->static_call_node,
-+				list_add_tail(&insn->call_node,
- 					      &file->static_call_list);
- 			}
- 			continue;
-@@ -897,7 +900,7 @@ static int add_jump_destinations(struct objtool_file *file)
- 				/* internal sibling call (without reloc) */
- 				insn->call_dest = insn->jump_dest->func;
- 				if (insn->call_dest->static_call_tramp) {
--					list_add_tail(&insn->static_call_node,
-+					list_add_tail(&insn->call_node,
- 						      &file->static_call_list);
- 				}
- 			}
-@@ -981,6 +984,9 @@ static int add_call_destinations(struct objtool_file *file)
- 			insn->type = INSN_CALL_DYNAMIC;
- 			insn->retpoline_safe = true;
- 
-+			list_add_tail(&insn->call_node,
-+				      &file->retpoline_call_list);
-+
- 			remove_insn_ops(insn);
- 			continue;
- 
-@@ -988,7 +994,7 @@ static int add_call_destinations(struct objtool_file *file)
- 			insn->call_dest = reloc->sym;
- 
- 		if (insn->call_dest && insn->call_dest->static_call_tramp) {
--			list_add_tail(&insn->static_call_node,
-+			list_add_tail(&insn->call_node,
- 				      &file->static_call_list);
- 		}
- 
-@@ -1714,6 +1720,11 @@ static void mark_rodata(struct objtool_file *file)
- 	file->rodata = found;
+diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
+index 8457218..d08f5f3 100644
+--- a/tools/objtool/elf.c
++++ b/tools/objtool/elf.c
+@@ -715,6 +715,66 @@ static int elf_add_string(struct elf *elf, struct section *strtab, char *str)
+ 	return len;
  }
  
-+__weak int arch_rewrite_retpolines(struct objtool_file *file)
++struct symbol *elf_create_undef_symbol(struct elf *elf, const char *name)
 +{
-+	return 0;
++	struct section *symtab;
++	struct symbol *sym;
++	Elf_Data *data;
++	Elf_Scn *s;
++
++	sym = malloc(sizeof(*sym));
++	if (!sym) {
++		perror("malloc");
++		return NULL;
++	}
++	memset(sym, 0, sizeof(*sym));
++
++	sym->name = strdup(name);
++
++	sym->sym.st_name = elf_add_string(elf, NULL, sym->name);
++	if (sym->sym.st_name == -1)
++		return NULL;
++
++	sym->sym.st_info = GELF_ST_INFO(STB_GLOBAL, STT_NOTYPE);
++	// st_other 0
++	// st_shndx 0
++	// st_value 0
++	// st_size 0
++
++	symtab = find_section_by_name(elf, ".symtab");
++	if (!symtab) {
++		WARN("can't find .symtab");
++		return NULL;
++	}
++
++	s = elf_getscn(elf->elf, symtab->idx);
++	if (!s) {
++		WARN_ELF("elf_getscn");
++		return NULL;
++	}
++
++	data = elf_newdata(s);
++	if (!data) {
++		WARN_ELF("elf_newdata");
++		return NULL;
++	}
++
++	data->d_buf = &sym->sym;
++	data->d_size = sizeof(sym->sym);
++	data->d_align = 1;
++
++	sym->idx = symtab->len / sizeof(sym->sym);
++
++	symtab->len += data->d_size;
++	symtab->changed = true;
++
++	sym->sec = find_section_by_index(elf, 0);
++
++	elf_add_symbol(elf, sym);
++
++	return sym;
 +}
 +
- static int decode_sections(struct objtool_file *file)
+ struct section *elf_create_section(struct elf *elf, const char *name,
+ 				   unsigned int sh_flags, size_t entsize, int nr)
  {
- 	int ret;
-@@ -1742,6 +1753,10 @@ static int decode_sections(struct objtool_file *file)
- 	if (ret)
- 		return ret;
+diff --git a/tools/objtool/include/objtool/elf.h b/tools/objtool/include/objtool/elf.h
+index 463f329..45e5ede 100644
+--- a/tools/objtool/include/objtool/elf.h
++++ b/tools/objtool/include/objtool/elf.h
+@@ -133,6 +133,7 @@ int elf_write_insn(struct elf *elf, struct section *sec,
+ 		   unsigned long offset, unsigned int len,
+ 		   const char *insn);
+ int elf_write_reloc(struct elf *elf, struct reloc *reloc);
++struct symbol *elf_create_undef_symbol(struct elf *elf, const char *name);
+ int elf_write(struct elf *elf);
+ void elf_close(struct elf *elf);
  
-+	/*
-+	 * Must be before add_special_section_alts() as that depends on
-+	 * jump_dest being set.
-+	 */
- 	ret = add_jump_destinations(file);
- 	if (ret)
- 		return ret;
-@@ -1778,6 +1793,15 @@ static int decode_sections(struct objtool_file *file)
- 	if (ret)
- 		return ret;
- 
-+	/*
-+	 * Must be after add_special_section_alts(), since this will emit
-+	 * alternatives. Must be after add_{jump,call}_destination(), since
-+	 * those create the call insn lists.
-+	 */
-+	ret = arch_rewrite_retpolines(file);
-+	if (ret)
-+		return ret;
-+
- 	return 0;
- }
- 
-diff --git a/tools/objtool/include/objtool/arch.h b/tools/objtool/include/objtool/arch.h
-index bb30993..48b540a 100644
---- a/tools/objtool/include/objtool/arch.h
-+++ b/tools/objtool/include/objtool/arch.h
-@@ -88,4 +88,6 @@ int arch_decode_hint_reg(struct instruction *insn, u8 sp_reg);
- 
- bool arch_is_retpoline(struct symbol *sym);
- 
-+int arch_rewrite_retpolines(struct objtool_file *file);
-+
- #endif /* _ARCH_H */
-diff --git a/tools/objtool/include/objtool/check.h b/tools/objtool/include/objtool/check.h
-index f5be798..e5528ce 100644
---- a/tools/objtool/include/objtool/check.h
-+++ b/tools/objtool/include/objtool/check.h
-@@ -39,7 +39,7 @@ struct alt_group {
- struct instruction {
- 	struct list_head list;
- 	struct hlist_node hash;
--	struct list_head static_call_node;
-+	struct list_head call_node;
- 	struct list_head mcount_loc_node;
- 	struct section *sec;
- 	unsigned long offset;
-diff --git a/tools/objtool/include/objtool/objtool.h b/tools/objtool/include/objtool/objtool.h
-index e68e374..e4084af 100644
---- a/tools/objtool/include/objtool/objtool.h
-+++ b/tools/objtool/include/objtool/objtool.h
-@@ -18,6 +18,7 @@ struct objtool_file {
- 	struct elf *elf;
- 	struct list_head insn_list;
- 	DECLARE_HASHTABLE(insn_hash, 20);
-+	struct list_head retpoline_call_list;
- 	struct list_head static_call_list;
- 	struct list_head mcount_loc_list;
- 	bool ignore_unreachables, c_file, hints, rodata;
-diff --git a/tools/objtool/objtool.c b/tools/objtool/objtool.c
-index 7b97ce4..3a3ea1b 100644
---- a/tools/objtool/objtool.c
-+++ b/tools/objtool/objtool.c
-@@ -61,6 +61,7 @@ struct objtool_file *objtool_open_read(const char *_objname)
- 
- 	INIT_LIST_HEAD(&file.insn_list);
- 	hash_init(file.insn_hash);
-+	INIT_LIST_HEAD(&file.retpoline_call_list);
- 	INIT_LIST_HEAD(&file.static_call_list);
- 	INIT_LIST_HEAD(&file.mcount_loc_list);
- 	file.c_file = !vmlinux && find_section_by_name(file.elf, ".comment");
