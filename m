@@ -2,74 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8CB3351CA7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB08351DF0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237700AbhDASTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:19:48 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:44085 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234491AbhDASBJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:01:09 -0400
-Received: by mail-io1-f70.google.com with SMTP id e11so4544340ioh.11
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 11:01:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=t1PSBwAKPIxSsjyHhjvOvydGcJv2nwxNeNnnB0pN5z4=;
-        b=G8JQsq08CjXPw64tP10Fg54r8t0Sv+QZ/ypBHIczDqn5zdGBTDLqubp+O5BEsmu/r+
-         hOcz5weig2t9+QD2Nv6w0oiVGo+llDeedg9wJwZgrlwicFOJNy7SqMbwOOG+Kzkj1HgE
-         3evQfp364LH0+CJhJFHNiWQBxkP2KyGVlW4uA9GgBQYlKVJOyQAuuOYl65qpicot5SeK
-         zUYriAaxwoLG2N6rliJY+tw1RTGmAJG47xpMtpGjXu081xt0TYGCHOdrJAmSKgAunh9H
-         Iid4G+3TgOvmIAr9AZHxTY3iCt4Z0D6pn5IcIk6Gtqmhejzb09yymrstyu0ALBftMSmI
-         1tCg==
-X-Gm-Message-State: AOAM531tSWzxdimT6nq5QQU/a6ye+VTGa/3pdrZ2CmgHaOY7J/k6eWxE
-        HsbrcsprgZuwgEtC+VXFobBtq/rqPWfzp+pG9+ykStXZUL3Z
-X-Google-Smtp-Source: ABdhPJyvO0s22tKhZ9WnikY25h0lMQFGQxk3fm8YQuGAfS4QejjBrmdhMtUZGFynSyNRa1nHaVnvvFGyw+hSTQlenTkj1ltd289T
+        id S235868AbhDASdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:33:09 -0400
+Received: from mga14.intel.com ([192.55.52.115]:59020 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237333AbhDASLw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:11:52 -0400
+IronPort-SDR: DMIfi0CH7UekL36xFEXsfGtGA9OWVePn0H7AGa7SkFBlmdDoip8LTAdBUZ15LC22tueHE4RYjr
+ QE7stDsM7ysQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="191782557"
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="191782557"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 11:06:25 -0700
+IronPort-SDR: Df3vkX/tq6o0sqSF+irExac4U+Rd9OJWaLRfQ2UN0Xykv6vY8SXvrrd4riQP3vx/Gp2eXaVjRh
+ PCTCNTbTl3ew==
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="517438729"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 11:06:20 -0700
+Received: by lahna (sSMTP sendmail emulation); Thu, 01 Apr 2021 21:06:17 +0300
+Date:   Thu, 1 Apr 2021 21:06:17 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Henning Schild <henning.schild@siemens.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Jean Delvare <jdelvare@suse.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Tan Jui Nee <jui.nee.tan@intel.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Jonathan Yong <jonathan.yong@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pci@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Peter Tyser <ptyser@xes-inc.com>, hdegoede@redhat.com
+Subject: Re: [PATCH v1 3/7] PCI: New Primary to Sideband (P2SB) bridge
+ support library
+Message-ID: <20210401180617.GL2542@lahna.fi.intel.com>
+References: <20210308122020.57071-1-andriy.shevchenko@linux.intel.com>
+ <20210308122020.57071-4-andriy.shevchenko@linux.intel.com>
+ <20210313104557.321de08e@md1za8fc.ad001.siemens.net>
+ <YGXqDxSJhCO9bD1X@smile.fi.intel.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:170c:: with SMTP id u12mr7856308ill.100.1617300067465;
- Thu, 01 Apr 2021 11:01:07 -0700 (PDT)
-Date:   Thu, 01 Apr 2021 11:01:07 -0700
-In-Reply-To: <000000000000680f2905afd0649c@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000043f2c05beed04d8@google.com>
-Subject: Re: [syzbot] BUG: unable to handle kernel paging request in bpf_trace_run2
-From:   syzbot <syzbot+cc36fd07553c0512f5f7@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, andriin@fb.com, ast@kernel.org,
-        bpf@vger.kernel.org, corbet@lwn.net, daniel@iogearbox.net,
-        davem@davemloft.net, dsahern@gmail.com, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
-        kpsingh@kernel.org, kuba@kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
-        mingo@kernel.org, mingo@redhat.com, mmullins@mmlx.us,
-        netdev@vger.kernel.org, peterz@infradead.org, rostedt@goodmis.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YGXqDxSJhCO9bD1X@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+On Thu, Apr 01, 2021 at 06:43:11PM +0300, Andy Shevchenko wrote:
+> On Sat, Mar 13, 2021 at 10:45:57AM +0100, Henning Schild wrote:
+> > Am Mon, 8 Mar 2021 14:20:16 +0200
+> > schrieb Andy Shevchenko <andriy.shevchenko@linux.intel.com>:
+> 
+> ...
+> 
+> > > + * pci_p2sb_bar - Get Primary to Sideband bridge (P2SB) device BAR
+> > > + * @pdev:	PCI device to get a PCI bus to communicate with
+> > > + * @devfn:	PCI slot and function to communicate with
+> > > + * @mem:	memory resource to be filled in
+> > 
+> > Do we really need that many arguments to it?
+> > 
+> > Before i had, in a platform driver that never had its own pci_dev or bus
+> > 
+> >   res->start = simatic_ipc_get_membase0(PCI_DEVFN(13, 0));
+> >   if (res-start == 0)
+> >     return -ENODEV;
+> > 
+> > So helper only asked for the devfn, returned base and no dedicated
+> > error code.
+> > 
+> > With this i need
+> > 
+> >   struct pci_bus *bus = pci_find_bus(0, 0);
+> >   struct pci_dev *pci_dev = bus->self;
+> >   unsigned int magic_i_do_not_want =  PCI_DEVFN(13, 0);
+> 
+> What confuses me is the use for SPI NOR controller on Broxton. And I think
+> we actually can indeed hide all this under the hood by exposing P2SB to the OS.
+> 
+> Mika, what do you think?
 
-commit befe6d946551d65cddbd32b9cb0170b0249fd5ed
-Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Date:   Wed Nov 18 14:34:05 2020 +0000
-
-    tracepoint: Do not fail unregistering a probe due to memory failure
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14f0260ed00000
-start commit:   12450081 libbpf: Fix native endian assumption when parsing..
-git tree:       bpf
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5ac0d21536db480b
-dashboard link: https://syzkaller.appspot.com/bug?extid=cc36fd07553c0512f5f7
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1365d2c3900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16d5f08d900000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: tracepoint: Do not fail unregistering a probe due to memory failure
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Not sure I follow. Do you mean we force unhide P2SB and then bind (MFD)
+driver to that?
