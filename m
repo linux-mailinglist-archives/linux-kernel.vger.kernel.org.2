@@ -2,130 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A083512D6
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 869C33512D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234020AbhDAJzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 05:55:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26404 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233938AbhDAJy4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 05:54:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617270896;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fAdGMUfthRpMVWvxY4RMBaKTOwqFcFl3/AUFTNmxbfg=;
-        b=GW2Jul/hOJeFNYl8SuSH4kpTLIylBD0tttUWtN01cIsMWUDi++OTjCY78Q1x/tW0qvYky5
-        6ByAZqSNcLD32RWnlOblhGKLP0HZbYCS9b8rkupOzpEU9KTGK55495bOa6PwSczzQ0tD9A
-        v2EOEDFRxFzSlk5H75c/3Ph2BisxgJ4=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-2-SSvp_jo2Ml-swJzt9d3IBw-1; Thu, 01 Apr 2021 05:54:52 -0400
-X-MC-Unique: SSvp_jo2Ml-swJzt9d3IBw-1
-Received: by mail-ed1-f70.google.com with SMTP id q25so2555192eds.16
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 02:54:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fAdGMUfthRpMVWvxY4RMBaKTOwqFcFl3/AUFTNmxbfg=;
-        b=k69f+DQuWvzPsSrtu6VThp94MNE3I08NHXT1xBirwCdggYvdaHOAFIGBbriEfNqX0n
-         jGS9SnmHCNS/waWZ0Gm03YnYSeJX+ABdoa652yfOR0ut+Jg5AwOHhCn4lAuQ5vPqrYkp
-         q/K4X58cq2lhZUwSr9hSHVhrx0n27mF8BY/YsLn8nYOIdNk6GGjHQmnGP6vaRJU4IyQC
-         88z56V8eRoU6Z4QpDvC3moGV8LXKImL7bhhLcKb64hhfxUFNSQep92MmdEQcCGwI/x7e
-         QCn9XEIWEan66W2duIfoLYCN78ODw6ga1JlC2a49xVLfmEaWW0mtQPQDQNriUkqn5yn4
-         C6TA==
-X-Gm-Message-State: AOAM533fr6+Qr5W+4fV52G5awn6B/NmgI5T6mDF3DtGolPMAlgOJOqCX
-        +1SKPHy1M4FXoDAcWO9qktykVCj5a3l8cjBqUV0/k1aF4LzhvNG3b5aPx9nB/NCTRKQj3PQi8XP
-        ZICEKMmXAS5bJh7OI2NJmTodW
-X-Received: by 2002:aa7:d448:: with SMTP id q8mr8881497edr.345.1617270891468;
-        Thu, 01 Apr 2021 02:54:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwcJn03CNAPp/Sc8OCcDq5D5Q0Jg/yleVzKc9A/ZpGvLXsjmE9GpW+q69DSUVA81YUWRWkDGw==
-X-Received: by 2002:aa7:d448:: with SMTP id q8mr8881482edr.345.1617270891357;
-        Thu, 01 Apr 2021 02:54:51 -0700 (PDT)
-Received: from localhost.localdomain ([194.230.155.195])
-        by smtp.gmail.com with ESMTPSA id rs24sm2507513ejb.75.2021.04.01.02.54.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Apr 2021 02:54:50 -0700 (PDT)
-Subject: Re: [PATCH 4/4] selftests: kvm: add get_emulated_cpuid test
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
-        Alexander Graf <graf@amazon.com>,
-        Andrew Jones <drjones@redhat.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20210330185841.44792-1-eesposit@redhat.com>
- <20210330185841.44792-5-eesposit@redhat.com>
- <87k0pms6no.fsf@vitty.brq.redhat.com>
-From:   Emanuele Giuseppe Esposito <eesposit@redhat.com>
-Message-ID: <1b274a70-e98a-41b2-93ec-537a2315619e@redhat.com>
-Date:   Thu, 1 Apr 2021 11:54:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234059AbhDAJ4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 05:56:05 -0400
+Received: from mga05.intel.com ([192.55.52.43]:4985 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233780AbhDAJzl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 05:55:41 -0400
+IronPort-SDR: 62veesw9jF5pR/LupZGLkI3WJWhfsGzZ15DGGjtcxBxpb9nw4V9SEvXYQBqNXSIIWtF0+65reV
+ 5owlMWt4plYQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="277395666"
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="277395666"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 02:55:39 -0700
+IronPort-SDR: KHtNyQsJHnrWk3qSk+slxb/piq3ZtbVk1Mq3lpC0uGG51Z8Y1Y5uoRWSFKah3AmMjLhVn/g4k4
+ AMfBlTTrYYcg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="455912332"
+Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 01 Apr 2021 02:55:37 -0700
+Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lRu36-0006QY-LD; Thu, 01 Apr 2021 09:55:36 +0000
+Date:   Thu, 01 Apr 2021 17:55:21 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:testing/wab/scsi-mpt3sas] BUILD SUCCESS
+ 63989acb44df37062aef784ba4ea4da82a3ec78b
+Message-ID: <60659889.bJJILx2THu3hlpxW%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <87k0pms6no.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/wab/scsi-mpt3sas
+branch HEAD: 63989acb44df37062aef784ba4ea4da82a3ec78b  scsi: mpt3sas: Fix out-of-bounds warnings in _ctl_addnl_diag_query
 
->> +static void check_cpuid(struct kvm_cpuid2 *cpuid, struct kvm_cpuid_entry2 *entrie)
->> +{
->> +	int i;
->> +
->> +	for (i = 0; i < cpuid->nent; i++) {
->> +		if (cpuid->entries[i].function == entrie->function &&
->> +		    cpuid->entries[i].index == entrie->index) {
->> +			if (is_cpuid_mangled(entrie))
->> +				return;
->> +
->> +			TEST_ASSERT(cpuid->entries[i].eax == entrie->eax &&
->> +				    cpuid->entries[i].ebx == entrie->ebx &&
->> +				    cpuid->entries[i].ecx == entrie->ecx &&
->> +				    cpuid->entries[i].edx == entrie->edx,
->> +				    "CPUID 0x%x.%x differ: 0x%x:0x%x:0x%x:0x%x vs 0x%x:0x%x:0x%x:0x%x",
->> +				    entrie->function, entrie->index,
->> +				    cpuid->entries[i].eax, cpuid->entries[i].ebx,
->> +				    cpuid->entries[i].ecx, cpuid->entries[i].edx,
->> +				    entrie->eax, entrie->ebx, entrie->ecx, entrie->edx);
->> +			return;
->> +		}
->> +	}
->> +
->> +	TEST_ASSERT(false, "CPUID 0x%x.%x not found", entrie->function, entrie->index);
->> +}
->> +
->> +static void compare_cpuids(struct kvm_cpuid2 *cpuid1,
->> +						   struct kvm_cpuid2 *cpuid2)
->> +{
->> +	int i;
->> +
->> +	for (i = 0; i < cpuid1->nent; i++)
->> +		check_cpuid(cpuid2, &cpuid1->entries[i]);
->> +
->> +	for (i = 0; i < cpuid2->nent; i++)
->> +		check_cpuid(cpuid1, &cpuid2->entries[i]);
->> +}
-> 
-> CPUID comparison here seems to be borrowed from get_cpuid_test.c, I
-> think we can either put it to a library or (my preference) just merge
-> these two selftests together. 'get_cpuid_test' name is generic enough to
-> be used for KVM_GET_EMULATED_CPUID too.
+elapsed time: 722m
 
-Yes it is identical. I agree with you, I will merge the test in 
-get_cpuid_test.c
+configs tested: 95
+configs skipped: 2
 
-Emanuele
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+gcc tested configs:
+arm64                               defconfig
+arm                                 defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+h8300                            allyesconfig
+powerpc                   bluestone_defconfig
+sh                         microdev_defconfig
+m68k                        stmark2_defconfig
+powerpc                      cm5200_defconfig
+arc                            hsdk_defconfig
+openrisc                 simple_smp_defconfig
+powerpc                        icon_defconfig
+powerpc                 mpc85xx_cds_defconfig
+sh                ecovec24-romimage_defconfig
+arm                          pcm027_defconfig
+sh                            shmin_defconfig
+mips                          ath25_defconfig
+powerpc                     ppa8548_defconfig
+um                               allmodconfig
+powerpc                     powernv_defconfig
+powerpc                 mpc8315_rdb_defconfig
+m68k                          hp300_defconfig
+powerpc                   currituck_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20210331
+i386                 randconfig-a006-20210331
+i386                 randconfig-a003-20210331
+i386                 randconfig-a002-20210331
+i386                 randconfig-a001-20210331
+i386                 randconfig-a005-20210331
+i386                 randconfig-a015-20210330
+i386                 randconfig-a011-20210330
+i386                 randconfig-a014-20210330
+i386                 randconfig-a013-20210330
+i386                 randconfig-a016-20210330
+i386                 randconfig-a012-20210330
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a012-20210330
+x86_64               randconfig-a015-20210330
+x86_64               randconfig-a014-20210330
+x86_64               randconfig-a016-20210330
+x86_64               randconfig-a013-20210330
+x86_64               randconfig-a011-20210330
+x86_64               randconfig-a004-20210401
+x86_64               randconfig-a005-20210401
+x86_64               randconfig-a003-20210401
+x86_64               randconfig-a001-20210401
+x86_64               randconfig-a002-20210401
+x86_64               randconfig-a006-20210401
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
