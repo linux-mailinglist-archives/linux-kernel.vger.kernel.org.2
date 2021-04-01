@@ -2,187 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CAF5351B75
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F6BF3519AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234658AbhDASIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:08:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59942 "EHLO
+        id S235920AbhDARz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:55:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234562AbhDARxQ (ORCPT
+        with ESMTP id S235379AbhDARml (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:53:16 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED2BC00F7E5;
-        Thu,  1 Apr 2021 08:09:01 -0700 (PDT)
-Date:   Thu, 01 Apr 2021 15:08:59 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617289739;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qjRFEWz5jlKzHFAwL9EZIVomiKiocU9NSXbM4K7hlx4=;
-        b=giz6qPpYLdbLdveNYdDifusuwujUoXE7bif7IeWkxpD7/t/kR6Y3KhqxRkwiyRfRcdyHpL
-        nIYXugQYWXUTR7Z9t4JEAsf0A93dzZyKCthPsGAgWwLFL5Vv2HLdXCxoyEt6dStn/Fthxk
-        iRnFGwkK8C5CsrgX7Bhacx66UqIPIGsaeQtk7tZdTUgQ9WTbmPU2qncG3X9ykzMe/DdahG
-        R0WqHchZunDbDnjT5Y9ffdvAdCpyEHNrCK7eK4bTCwkWoyDREIs/6UI3oXmz7m26mgyDrL
-        aBSvMa/qZHN89aqQY5kr3JRuwvy1Oo7QuolMTuzRyNr6IQM8fXVgJOzGqZDY+g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617289739;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qjRFEWz5jlKzHFAwL9EZIVomiKiocU9NSXbM4K7hlx4=;
-        b=rCeheSiSNBPpEpOitW/pZejRj2O/xFvCJbMy9L+8JIWGSHFwuEw+uG4+1gaeabM2k+bO4P
-        bPwJAUDKxa9uPoBw==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/core] x86: Add insn_decode_kernel()
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210326151259.379242587@infradead.org>
-References: <20210326151259.379242587@infradead.org>
+        Thu, 1 Apr 2021 13:42:41 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD43EC00F7F1
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 08:12:37 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso2430024otq.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 08:12:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tTqE/Ky1fv1LrXz3ESekIhjrImO3lS/9eDpjSCLV/dA=;
+        b=mkD39DIBsHo55o2F+OMgcNeGzO1SocdX0efVdLUhsmO/H7f7DvVZT4fevmeDXaGfxx
+         wfVADYNspNFNjDWj/3kPl81dfmJ0ft2710v408/acG6s2GyPFmk3mY5uw0beiWIfnh1O
+         s00QIQOJTX6eK+vwRlpOr1bq3lHpIEkfLh2BrhD5f2Oon/ummCloMdzaYh/Drhtc6CCj
+         AmlOabVry5mY0aQxit3q+ExLTRQ+SOqmw1vKS10w1of5yUjlJ4LColNC5v7oX+F370v5
+         R8ez4vS5uQ2plC6G3dauS3yUPMgAk8c9D/MFdF398FB0KMOAeaSnoh1LOzSWDgTQVI5y
+         03rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tTqE/Ky1fv1LrXz3ESekIhjrImO3lS/9eDpjSCLV/dA=;
+        b=cG2xKdhRjytn71l5sLqUXWjDotHOO8SX1dYKHSTuyj6JuxGzBnNphtzIPY9hukXlKk
+         JQK7gZ2q3YIu1/SxVcF2VXW9RRd+6/qYlXUHPs30qmmz2SsqyQ/KHsbKdQqR6/JSLjHl
+         WwR2T8boJNk/PLhohUXLuqX8ZbmCxvxPGvFyy0xaNVqzQ2aEy8uZphpJyH8pEDzQhoLb
+         PHw3PsAI0K56H4i1v/ve0AxmK+ZjHwuy1vLxY3rORkZ3zgjwI7OU8l5N/grmpUmmYVIk
+         Si/mkuNoLgNe/mbzeA9gqAAODy538y4QV9iA3/4dJ7ASRgTuD96p6ZP4wWKRMM/EAa+M
+         C7DQ==
+X-Gm-Message-State: AOAM530UwnMu2yuMSUJdmHd8pHz5jU/WVFHZQa1RscvHFLLJLJq8kPps
+        10M5sgC2dE9tJ4JN1j9ff5L9ig==
+X-Google-Smtp-Source: ABdhPJzZ92r+oustT9ea2xEnOJETO5WzvjglrudhBJeBGatZI0w5tCU8L3w+OGWI0EVpeoxbDWgBBQ==
+X-Received: by 2002:a05:6830:4121:: with SMTP id w33mr7104656ott.153.1617289957105;
+        Thu, 01 Apr 2021 08:12:37 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id c26sm1230830otm.51.2021.04.01.08.12.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 08:12:36 -0700 (PDT)
+Date:   Thu, 1 Apr 2021 10:12:34 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     nitirawa@codeaurora.org
+Cc:     asutoshd@codeaurora.org, cang@codeaurora.org,
+        stummala@codeaurora.org, vbadigan@codeaurora.org,
+        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, adrian.hunter@intel.com, bvanassche@acm.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 3/3] scsi: ufs-qcom: configure VCC voltage level in
+ vendor file
+Message-ID: <20210401151234.GO904837@yoga>
+References: <1616363857-26760-1-git-send-email-nitirawa@codeaurora.org>
+ <1616363857-26760-4-git-send-email-nitirawa@codeaurora.org>
+ <20210323152834.GH5254@yoga>
+ <f27b4fde8092088ec5dc6232cc4b2318@codeaurora.org>
+ <20210331181959.GL904837@yoga>
+ <d9d7d6fb9241bbe48b3f8df5d2c0bc4e@codeaurora.org>
 MIME-Version: 1.0
-Message-ID: <161728973932.29796.17464770652549935291.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d9d7d6fb9241bbe48b3f8df5d2c0bc4e@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/core branch of tip:
+On Thu 01 Apr 09:58 CDT 2021, nitirawa@codeaurora.org wrote:
 
-Commit-ID:     52fa82c21f64e900a72437269a5cc9e0034b424e
-Gitweb:        https://git.kernel.org/tip/52fa82c21f64e900a72437269a5cc9e0034b424e
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Fri, 26 Mar 2021 16:12:00 +01:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 31 Mar 2021 16:20:22 +02:00
+> On 2021-03-31 23:49, Bjorn Andersson wrote:
+> > On Wed 24 Mar 16:55 CDT 2021, nitirawa@codeaurora.org wrote:
+> > 
+> > > On 2021-03-23 20:58, Bjorn Andersson wrote:
+> > > > On Sun 21 Mar 16:57 CDT 2021, Nitin Rawat wrote:
+> > > >
+> > > > > As a part of vops handler, VCC voltage is updated
+> > > > > as per the ufs device probed after reading the device
+> > > > > descriptor. We follow below steps to configure voltage
+> > > > > level.
+> > > > >
+> > > > > 1. Set the device to SLEEP state.
+> > > > > 2. Disable the Vcc Regulator.
+> > > > > 3. Set the vcc voltage according to the device type and reenable
+> > > > >    the regulator.
+> > > > > 4. Set the device mode back to ACTIVE.
+> > > > >
+> > > >
+> > > > When we discussed this a while back this was described as a requirement
+> > > > from the device specification, you only operate on objects "owned" by
+> > > > ufshcd and you invoke ufshcd operations to perform the actions.
+> > > >
+> > > > So why is this a ufs-qcom patch and not something in ufshcd?
+> > > >
+> > > > Regards,
+> > > > Bjorn
+> > > >
+> > > > > Signed-off-by: Nitin Rawat <nitirawa@codeaurora.org>
+> > > > > Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+> > > > > ---
+> > > > >  drivers/scsi/ufs/ufs-qcom.c | 51
+> > > > > +++++++++++++++++++++++++++++++++++++++++++++
+> > > > >  1 file changed, 51 insertions(+)
+> > > > >
+> > > > > diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
+> > > > > index f97d7b0..ca35f5c 100644
+> > > > > --- a/drivers/scsi/ufs/ufs-qcom.c
+> > > > > +++ b/drivers/scsi/ufs/ufs-qcom.c
+> > > > > @@ -21,6 +21,17 @@
+> > > > >  #define UFS_QCOM_DEFAULT_DBG_PRINT_EN	\
+> > > > >  	(UFS_QCOM_DBG_PRINT_REGS_EN | UFS_QCOM_DBG_PRINT_TEST_BUS_EN)
+> > > > >
+> > > > > +#define	ANDROID_BOOT_DEV_MAX	30
+> > > > > +static char android_boot_dev[ANDROID_BOOT_DEV_MAX];
+> > > > > +
+> > > > > +/* Min and Max VCC voltage values for ufs 2.x and
+> > > > > + * ufs 3.x devices
+> > > > > + */
+> > > > > +#define UFS_3X_VREG_VCC_MIN_UV	2540000 /* uV */
+> > > > > +#define UFS_3X_VREG_VCC_MAX_UV	2700000 /* uV */
+> > > > > +#define UFS_2X_VREG_VCC_MIN_UV	2950000 /* uV */
+> > > > > +#define UFS_2X_VREG_VCC_MAX_UV	2960000 /* uV */
+> > > > > +
+> > > > >  enum {
+> > > > >  	TSTBUS_UAWM,
+> > > > >  	TSTBUS_UARM,
+> > > > > @@ -1293,6 +1304,45 @@ static void
+> > > > > ufs_qcom_print_hw_debug_reg_all(struct ufs_hba *hba,
+> > > > >  	print_fn(hba, reg, 9, "UFS_DBG_RD_REG_TMRLUT ", priv);
+> > > > >  }
+> > > > >
+> > > > > +  /**
+> > > > > +   * ufs_qcom_setup_vcc_regulators - Update VCC voltage
+> > > > > +   * @hba: host controller instance
+> > > > > +   * Update VCC voltage based on UFS device(ufs 2.x or
+> > > > > +   * ufs 3.x probed)
+> > > > > +   */
+> > > > > +static int ufs_qcom_setup_vcc_regulators(struct ufs_hba *hba)
+> > > > > +{
+> > > > > +	struct ufs_dev_info *dev_info = &hba->dev_info;
+> > > > > +	struct ufs_vreg *vreg = hba->vreg_info.vcc;
+> > > > > +	int ret;
+> > > > > +
+> > > > > +	/* Put the device in sleep before lowering VCC level */
+> > > > > +	ret = ufshcd_set_dev_pwr_mode(hba, UFS_SLEEP_PWR_MODE);
+> > > > > +
+> > > > > +	/* Switch off VCC before switching it ON at 2.5v or 2.96v */
+> > > > > +	ret = ufshcd_disable_vreg(hba->dev, vreg);
+> > > > > +
+> > > > > +	/* add ~2ms delay before renabling VCC at lower voltage */
+> > > > > +	usleep_range(2000, 2100);
+> > > > > +
+> > > > > +	/* set VCC min and max voltage according to ufs device type */
+> > > > > +	if (dev_info->wspecversion >= 0x300) {
+> > > > > +		vreg->min_uV = UFS_3X_VREG_VCC_MIN_UV;
+> > > > > +		vreg->max_uV = UFS_3X_VREG_VCC_MAX_UV;
+> > > > > +	}
+> > > > > +
+> > > > > +	else {
+> > > > > +		vreg->min_uV = UFS_2X_VREG_VCC_MIN_UV;
+> > > > > +		vreg->max_uV = UFS_2X_VREG_VCC_MAX_UV;
+> > > > > +	}
+> > > > > +
+> > > > > +	ret = ufshcd_enable_vreg(hba->dev, vreg);
+> > > > > +
+> > > > > +	/* Bring the device in active now */
+> > > > > +	ret = ufshcd_set_dev_pwr_mode(hba, UFS_ACTIVE_PWR_MODE);
+> > > > > +	return ret;
+> > > > > +}
+> > > > > +
+> > > > >  static void ufs_qcom_enable_test_bus(struct ufs_qcom_host *host)
+> > > > >  {
+> > > > >  	if (host->dbg_print_en & UFS_QCOM_DBG_PRINT_TEST_BUS_EN) {
+> > > > > @@ -1490,6 +1540,7 @@ static const struct ufs_hba_variant_ops
+> > > > > ufs_hba_qcom_vops = {
+> > > > >  	.device_reset		= ufs_qcom_device_reset,
+> > > > >  	.config_scaling_param = ufs_qcom_config_scaling_param,
+> > > > >  	.program_key		= ufs_qcom_ice_program_key,
+> > > > > +	.setup_vcc_regulators	= ufs_qcom_setup_vcc_regulators,
+> > > > >  };
+> > > > >
+> > > > >  /**
+> > > > > --
+> > > > > 2.7.4
+> > > > >
+> > > 
+> > > Hi Bjorn,
+> > > Thanks for your review.
+> > > But As per the earlier discussion regarding handling of vcc voltage
+> > > for platform supporting both ufs 2.x and ufs 3.x , it was finally
+> > > concluded
+> > > to
+> > > use "vops and let vendors handle it, until specs or someone
+> > > has a better suggestion". Please correct me in case i am wrong.
+> > > 
+> > 
+> > I was under the impression that this would result in something custom
+> > per platform, but what I'm objecting to now that I see the code is that
+> > this is completely generic.
+> > 
+> > And the concerns we discussed regarding these regulators being shared
+> > with other devices is not considered in this implementation. But in
+> > practice I don't see how you could support 2.x, 3.x and rail sharing at
+> > the same time.
+> > 
+> > Regards,
+> > Bjorn
+> > 
+> > > https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2399116.html
+> > > 
+> > > Regards,
+> > > Nitin
+> 
+> Hi Bjorn,
+> Thanks for your feedback.
+> Regarding your query for regulator being shared with other device,
+> Imho, the soc/pmic designer should share only those device
+> with ufs regulator which has the same voltage range (2.4-3.6v).
+> If that is not considered by the pmic designer,
+> wouldn't that would be a board design issue ???
+> 
 
-x86: Add insn_decode_kernel()
+It's not only that the rail needs to stay within 2.4-3.6V, depending on
+operating mode of this device it either need to be at 2.54-2.7V or
+2.95-2.96V depending on wspecversion for this instance.
 
-Add a helper to decode kernel instructions; there's no point in
-endlessly repeating those last two arguments.
+So either that other device need to be completely flexible in that range
+and support the voltage jumping between them without notice, or such
+design isn't possible.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210326151259.379242587@infradead.org
----
- arch/x86/include/asm/insn.h        | 2 ++
- arch/x86/kernel/alternative.c      | 2 +-
- arch/x86/kernel/cpu/mce/severity.c | 2 +-
- arch/x86/kernel/kprobes/core.c     | 4 ++--
- arch/x86/kernel/kprobes/opt.c      | 2 +-
- arch/x86/kernel/traps.c            | 2 +-
- tools/arch/x86/include/asm/insn.h  | 2 ++
- 7 files changed, 10 insertions(+), 6 deletions(-)
+And as you say, that would be something that the hardware designers
+would need to handle for us.
 
-diff --git a/arch/x86/include/asm/insn.h b/arch/x86/include/asm/insn.h
-index f03b6ca..05a6ab9 100644
---- a/arch/x86/include/asm/insn.h
-+++ b/arch/x86/include/asm/insn.h
-@@ -150,6 +150,8 @@ enum insn_mode {
- 
- extern int insn_decode(struct insn *insn, const void *kaddr, int buf_len, enum insn_mode m);
- 
-+#define insn_decode_kernel(_insn, _ptr) insn_decode((_insn), (_ptr), MAX_INSN_SIZE, INSN_MODE_KERN)
-+
- /* Attribute will be determined after getting ModRM (for opcode groups) */
- static inline void insn_get_attribute(struct insn *insn)
- {
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index ce28c5c..ff359b3 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -1280,7 +1280,7 @@ static void text_poke_loc_init(struct text_poke_loc *tp, void *addr,
- 	if (!emulate)
- 		emulate = opcode;
- 
--	ret = insn_decode(&insn, emulate, MAX_INSN_SIZE, INSN_MODE_KERN);
-+	ret = insn_decode_kernel(&insn, emulate);
- 
- 	BUG_ON(ret < 0);
- 	BUG_ON(len != insn.length);
-diff --git a/arch/x86/kernel/cpu/mce/severity.c b/arch/x86/kernel/cpu/mce/severity.c
-index a2136ce..abdd2e4 100644
---- a/arch/x86/kernel/cpu/mce/severity.c
-+++ b/arch/x86/kernel/cpu/mce/severity.c
-@@ -225,7 +225,7 @@ static bool is_copy_from_user(struct pt_regs *regs)
- 	if (copy_from_kernel_nofault(insn_buf, (void *)regs->ip, MAX_INSN_SIZE))
- 		return false;
- 
--	ret = insn_decode(&insn, insn_buf, MAX_INSN_SIZE, INSN_MODE_KERN);
-+	ret = insn_decode_kernel(&insn, insn_buf);
- 	if (ret < 0)
- 		return false;
- 
-diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-index dd09021..1319ff4 100644
---- a/arch/x86/kernel/kprobes/core.c
-+++ b/arch/x86/kernel/kprobes/core.c
-@@ -285,7 +285,7 @@ static int can_probe(unsigned long paddr)
- 		if (!__addr)
- 			return 0;
- 
--		ret = insn_decode(&insn, (void *)__addr, MAX_INSN_SIZE, INSN_MODE_KERN);
-+		ret = insn_decode_kernel(&insn, (void *)__addr);
- 		if (ret < 0)
- 			return 0;
- 
-@@ -322,7 +322,7 @@ int __copy_instruction(u8 *dest, u8 *src, u8 *real, struct insn *insn)
- 			MAX_INSN_SIZE))
- 		return 0;
- 
--	ret = insn_decode(insn, dest, MAX_INSN_SIZE, INSN_MODE_KERN);
-+	ret = insn_decode_kernel(insn, dest);
- 	if (ret < 0)
- 		return 0;
- 
-diff --git a/arch/x86/kernel/kprobes/opt.c b/arch/x86/kernel/kprobes/opt.c
-index 4299fc8..71425eb 100644
---- a/arch/x86/kernel/kprobes/opt.c
-+++ b/arch/x86/kernel/kprobes/opt.c
-@@ -324,7 +324,7 @@ static int can_optimize(unsigned long paddr)
- 		if (!recovered_insn)
- 			return 0;
- 
--		ret = insn_decode(&insn, (void *)recovered_insn, MAX_INSN_SIZE, INSN_MODE_KERN);
-+		ret = insn_decode_kernel(&insn, (void *)recovered_insn);
- 		if (ret < 0)
- 			return 0;
- 
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index a5d2540..034f27f 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -504,7 +504,7 @@ static enum kernel_gp_hint get_kernel_gp_address(struct pt_regs *regs,
- 			MAX_INSN_SIZE))
- 		return GP_NO_HINT;
- 
--	ret = insn_decode(&insn, insn_buf, MAX_INSN_SIZE, INSN_MODE_KERN);
-+	ret = insn_decode_kernel(&insn, insn_buf);
- 	if (ret < 0)
- 		return GP_NO_HINT;
- 
-diff --git a/tools/arch/x86/include/asm/insn.h b/tools/arch/x86/include/asm/insn.h
-index c9f3eee..dc632b4 100644
---- a/tools/arch/x86/include/asm/insn.h
-+++ b/tools/arch/x86/include/asm/insn.h
-@@ -150,6 +150,8 @@ enum insn_mode {
- 
- extern int insn_decode(struct insn *insn, const void *kaddr, int buf_len, enum insn_mode m);
- 
-+#define insn_decode_kernel(_insn, _ptr) insn_decode((_insn), (_ptr), MAX_INSN_SIZE, INSN_MODE_KERN)
-+
- /* Attribute will be determined after getting ModRM (for opcode groups) */
- static inline void insn_get_attribute(struct insn *insn)
- {
+> And I agree with you that - the code looks generic but
+> since the below steps is not part of the specs,
+> I had to keep it in vendor specific file for which I
+> had to export few api from ufshcd.c to use in vendor
+> specific files.
+> 
+> 1. Set the device to SLEEP state.
+> 2. Disable the Vcc Regulator.
+> 3. Set the vcc voltage according to the device type and reenable
+>    the regulator.
+> 4. Set the device mode back to ACTIVE.
+> 
+> Please correct me if my understanding is not correct.
+> 
+
+Are you saying that steps 1 to 4 here are not defined in the
+specification and therefor Qualcomm specific? Do we expect other vendors
+to not follow this sequence, or do they simply not have these voltage
+constraints?
+
+And again, isn't this the voltage for the attached UFS device? (Rather
+than a Qualcomm thing)
+
+Regards,
+Bjorn
