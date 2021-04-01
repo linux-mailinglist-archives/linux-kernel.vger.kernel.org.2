@@ -2,160 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FD64351C75
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B9E351E18
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234503AbhDASRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:17:45 -0400
-Received: from comms.puri.sm ([159.203.221.185]:57236 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237028AbhDAR7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:59:21 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id B934CDF33F;
-        Thu,  1 Apr 2021 06:11:26 -0700 (PDT)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id DHkhq2-1mdZF; Thu,  1 Apr 2021 06:11:24 -0700 (PDT)
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     gregkh@linuxfoundation.org, balbi@kernel.org
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linux-usb@vger.kernel.org, wcheng@codeaurora.org,
-        Martin Kepplinger <martin.kepplinger@puri.sm>
-Subject: [PATCH v2] Revert "usb: dwc3: gadget: Prevent EP queuing while stopping transfers"
-Date:   Thu,  1 Apr 2021 15:11:08 +0200
-Message-Id: <20210401131108.2149766-1-martin.kepplinger@puri.sm>
-In-Reply-To: <YGXE0gQoj8HOzpuw@kroah.com>
-References: <YGXE0gQoj8HOzpuw@kroah.com>
-Content-Transfer-Encoding: 8bit
+        id S238537AbhDASet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:34:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234867AbhDASNs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:13:48 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on20600.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eae::600])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B9A6C05BD3D;
+        Thu,  1 Apr 2021 06:15:37 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZSiOxOmWdaaBT8v8QQmZ2Up8XwlM1MPBEwJ8zbU5qkBARiceM4mozKBTqpM/UT0s9Sc47UD95tXU3QZCDA+G15+DovYnO/Ft2xsz1z18tWeVgcf1YhPaUmX/H7UVZdTab8NvBYsWeDGuwhVD1z/CHOhBt+394S+VzGm7Qjlnd3x7STiS0aV+3ozQXofxDdvMPRzzSaObTferaoM19ECfl6N/IMkiIexYg2tJ5UxamJuygGwGdoOTfngi4NsJqzvgRB7WH1ulgPfPsE0Yyu4mFXq4RMBOkMhXfso1O9bnEX7jvh6gzFHSjJo9Kb1cZR7X43umvSUCB41jfo7iwRTuxQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zTePrFjo+hnvFWhbhxOpSCw1Wyy/aCiDz8Wsh4y/Zfo=;
+ b=ZMarxmBozQq61dWuOkP/upfN1eG1JJtuxciDiwdFLQlyZ1lQvlP73phQ9g2WTFCMiQv6DU+rzOsg9LIS3WakUQ22dfDI4s8KknKySOUPIDuzaNRCTT54mqsWH/xjusIIyrZGToZoRCC0cqVBa35Y4lACxCphbLZQAf6Dbw3M7K0rSPd5Grqi4mkjjNcHdRPdscZSuZ5osTCzfspjIzfH/lfqEic5fGpAMKGKeNWY97lB6i35JmV1oSI6xy7v8ORqDZy/Moj9VLw1nWdRMOZWfn+SIWDj8yCJWjrTmZJyS9YTl+57rdy/Zpo+sK3hJPOwmkSG8Fp9nue5lAhW7LZMOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zTePrFjo+hnvFWhbhxOpSCw1Wyy/aCiDz8Wsh4y/Zfo=;
+ b=qDLG9IShNI4x4anKv4nPoRYigkOuei1OsTIg3i0FH4ltnvmUEWmnpImwFSgoaY0AN2oHJpUvJTsqhyJn1eNAtNufJ9rW3ubNn94UkpeQXUVwVE9uyaZbd+AESba7MCk7EUaQmND94Yxokd/ua+mb4SseuBi4eBlikfrRvQEptWh9dgnrObf0/wxzScVSLjJ4OtzUQo27H30I1pu21iOhTFAgTfapjr5YGSVoRHHEqmi0SK8Jpj0jprSXJAlrorZEtp69LvqLjEFGSnEQmbYuewZtIYBCLoB6MjiDUuAqpjV3KXVUTt5w6JCWQIlneqmnDM9P6Wy9Ca92gja3F/E5CA==
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1881.namprd12.prod.outlook.com (2603:10b6:3:10f::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27; Thu, 1 Apr
+ 2021 13:15:34 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3999.028; Thu, 1 Apr 2021
+ 13:15:34 +0000
+Date:   Thu, 1 Apr 2021 10:15:33 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Liu, Yi L" <yi.l.liu@intel.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210401131533.GD1463678@nvidia.com>
+References: <20210322120300.GU2356281@nvidia.com>
+ <20210324120528.24d82dbd@jacob-builder>
+ <20210329163147.GG2356281@nvidia.com>
+ <MWHPR11MB188639EE54B48B0E1321C8198C7D9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210330132830.GO2356281@nvidia.com>
+ <BN6PR11MB40688F5AA2323AB8CC8E65E7C37C9@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <20210331124038.GE1463678@nvidia.com>
+ <BN6PR11MB406854CAE9D7CE86BEAB3E23C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <20210401114648.GX1463678@nvidia.com>
+ <BN6PR11MB406858FAC3821B84CCC4D30DC37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BN6PR11MB406858FAC3821B84CCC4D30DC37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+X-Originating-IP: [142.162.115.133]
+X-ClientProxiedBy: MN2PR16CA0040.namprd16.prod.outlook.com
+ (2603:10b6:208:234::9) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR16CA0040.namprd16.prod.outlook.com (2603:10b6:208:234::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28 via Frontend Transport; Thu, 1 Apr 2021 13:15:34 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lRxAb-006kZq-6x; Thu, 01 Apr 2021 10:15:33 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 943905cd-e400-4738-d10a-08d8f5103bc7
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1881:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB1881709B95562AD7C5D6A0F9C27B9@DM5PR12MB1881.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: FsuqMaH1rgQT8Rwm7pLdhn6EHqsy0izc/DTZ8F7n48aTBNgZwGH/A84dXM4NhPBuhjb9xpo8/36MDf8cNXrhFPPt6M+1fsy+rtpCoQBkw/TbfTqzOAYfm5PU4NH4nN+VRz+ie8+brl+stIrjQKwMHx4vJoY/xnkcKbpkPCyS0vQWkB37dO9mgj0V+nKqMHbSUL2JK5pH7+sIWwFgSmP8c2O2fVIHnA7FSRyZ8ld4geb3622nhOTc3e2gY2nUnkx5E4yBDw2+rqa/463osoQszzr3SGknMFqEXlrO7ZUnU3sepq7t2THFffX4OSLlv1HrHWJX7XkjGEVY9vvo2AFYXdXPrZYfDV40h6fMrZC/A6yJ55YwosVj/7ybSXe/ONyLAhwXT0C6/PktFnqrlON7muI5+SvfOwAddkm0eW2NlB2xoPaalCWbnBMIQ5+w/y4nEGjfCXe08QnxMp4KzP+wSRLbBl/sL5EmxADpjEmo0sOhHXvX0Tr9NannvwFTbmph5h1G6cAIZkHy51csc21wpqyeMyzuKSmXUtvSfF32FWwNbDv0tZfwt8NvSrXFFyyooAXg1txkMBr9dXO/6KN7aRvzunupanQOUrRllebEBE3ewqUUbhCxWx40CoZtdr1HGtEhDqie9JMUDlAf+rECPfBJYKxkV52BNnHJ9IF0fu8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(39860400002)(396003)(136003)(376002)(36756003)(66476007)(66556008)(7416002)(9786002)(9746002)(6916009)(4326008)(38100700001)(26005)(426003)(33656002)(186003)(66946007)(1076003)(86362001)(2906002)(54906003)(5660300002)(2616005)(316002)(478600001)(8936002)(8676002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?eCXeXaStzjRD0cHPVnjIWm5ZI1/IIUDLYMmqICXV3AL72g4ZDTfI7315XkfC?=
+ =?us-ascii?Q?d4idI96igYsS+0iPgqeBT9lHnsiqyj1S8EnRJRQOszi9VL9ohIDyjsp3Zkm0?=
+ =?us-ascii?Q?jQh0RY1lLx2NLdQnkD1t+CLnFApr8zecjuggNkNnT7ckwPYuBjJKKBvtIfN4?=
+ =?us-ascii?Q?MHpUtkBdHo6c5X3sknLds5DrUX4aMLuRWoMHG2OG2YE/QrCFKHs4/Ncx1lhR?=
+ =?us-ascii?Q?bAeH4LjGzkq+ztd3ISMvx8Piw8syW1HNsIGHgJIHeUagvHHE9qa814z6XV1a?=
+ =?us-ascii?Q?ye5z7jo2M6OGvNyMb+sXNI3j+rypCWOlw71d+525JTFQmChuji0/JsdYHLyB?=
+ =?us-ascii?Q?Jsd/kEwmL6XQ7PrETRPkv708JKZ5L//EWUyUJiajgWrRMQwbzl/5RvilHFHv?=
+ =?us-ascii?Q?Qq/Udejn7r0ZkKxjST2D8uN2dB2G8Te5Jq1phqHrtsGtiHydmCH9tI3kZTHH?=
+ =?us-ascii?Q?qToytomtbw+VRhBMFZ4gQj5U2h/u9kaufmiUeXkFPYThV54ZMWQLvAYoy69g?=
+ =?us-ascii?Q?FtX/rm9/SNMRHGIMHBoE+AMcgoDZxrvdERBSToqEaQmLro/k7x5deic6/x1n?=
+ =?us-ascii?Q?kaTKM2zQW6peUTKNoAwJYQpwBwqsMu2J2DhwkLwvdf7hdQF67kGHjyLNgZSt?=
+ =?us-ascii?Q?SWwIcvvcI5YpjFEuD/nVYp25ia1W6gVl08OkNoU2clokmWgK+q145i+SVnNY?=
+ =?us-ascii?Q?jWntaHXx1yYUBWfellLvY+NRk/v17QrXKQ7GOdVOidglEW9sWra3zoSOn3G1?=
+ =?us-ascii?Q?ntELp2lEGadpYe3rFb48TtpSQSczoaQ8k4k3iD7jsZF3KiHpPi7HuxVfq+el?=
+ =?us-ascii?Q?oTC6xERPExRf+KboZe6Wu9bluoRypkpJzqJ27N5uOOVYJkabsKxF3jNkjonP?=
+ =?us-ascii?Q?IV2rllzunnj7OE+ak6OLsE0T1R2+F67rQAfSSI22XzL332Pdm25f5lRAz8X+?=
+ =?us-ascii?Q?0L4yd3M2ok+8rcWWezAZ8IN9BLD9lv55muSXa2oQMmbJnyeZkWRfDfHqP4j2?=
+ =?us-ascii?Q?k+1mZFfBQfv5LXQMLkFYgSxJJsn9Ou9wemA1pd5mpJvg1bc89k7nGHuSX67b?=
+ =?us-ascii?Q?im1svsRWfpjSAWoIrTx+PePGc7VYjyAkQggPxlkfrXaFeOJXDjMZ/y4LWvA3?=
+ =?us-ascii?Q?93OV2sTZ9bu7BkD4pj0b7kN42Ta2zT/UeT7UURTIzLc+R0d/DOuH6bchMwqs?=
+ =?us-ascii?Q?Bw5eHhGG5r1U/LGq4x7dtu4M0vhNmG2DYeS5ciz4YnXiFKf6VXrjQ0GgsnXu?=
+ =?us-ascii?Q?fZRi7tSJp4VvfM5+eZ9zEP13CnPWtM7ZkpioVQq6NEugwHAspfDhB0cDBXa1?=
+ =?us-ascii?Q?2sqWSEFBlWKODo9pjrsjmkkukoUO6uIhWsenfMvJ2Iyqxw=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 943905cd-e400-4738-d10a-08d8f5103bc7
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2021 13:15:34.7416
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sSKNKnvB0u0/tAmHhqixBH1oDsJ87KbwK4N8YzUXjcQjveyYAmHZN27ong18TBKA
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1881
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 9de499997c ("usb: dwc3: gadget: Prevent EP queuing while stopping
-transfers") results in the below error every time I connect the type-c
-connector to the dwc3, configured with serial and ethernet gadgets.
-I also apply the following to dwc3 on this port:
+On Thu, Apr 01, 2021 at 01:10:48PM +0000, Liu, Yi L wrote:
+> > From: Jason Gunthorpe <jgg@nvidia.com>
+> > Sent: Thursday, April 1, 2021 7:47 PM
+> [...]
+> > I'm worried Intel views the only use of PASID in a guest is with
+> > ENQCMD, but that is not consistent with the industry. We need to see
+> > normal nested PASID support with assigned PCI VFs.
+> 
+> I'm not quire flow here. Intel also allows PASID usage in guest without
+> ENQCMD. e.g. Passthru a PF to guest, and use PASID on it without ENQCMD.
 
-dr_mode = "otg";                                                        
-snps,dis_u3_susphy_quirk;                                               
-hnp-disable;                                                            
-srp-disable;                                                            
-adp-disable;                                                            
-usb-role-switch;
+Then you need all the parts, the hypervisor calls from the vIOMMU, and
+you can't really use a vPASID.
 
-[   51.148220] ------------[ cut here ]------------
-[   51.148241] dwc3 38100000.usb: No resource for ep2in
-[   51.148376] WARNING: CPU: 0 PID: 299 at drivers/usb/dwc3/gadget.c:360 dwc3_send_gadget_ep_cmd+0x570/0x740 [dwc3]
-[   51.148837] CPU: 0 PID: 299 Comm: irq/64-dwc3 Not tainted 5.11.11-librem5-00334-ge4c4ff3624e9 #218
-[   51.148848] Hardware name: Purism Librem 5r4 (DT)
-[   51.148854] pstate: 60000085 (nZCv daIf -PAN -UAO -TCO BTYPE=--)
-[   51.148863] pc : dwc3_send_gadget_ep_cmd+0x570/0x740 [dwc3]
-[   51.148894] lr : dwc3_send_gadget_ep_cmd+0x570/0x740 [dwc3]
-[   51.148924] sp : ffff800011cb3ac0
-[   51.148929] x29: ffff800011cb3ac0 x28: ffff0000032a7b00 
-[   51.148942] x27: ffff00000327da00 x26: 0000000000000000 
-[   51.148954] x25: 00000000ffffffea x24: 0000000000000006 
-[   51.148967] x23: ffff0000bee1c080 x22: ffff800011cb3b7c 
-[   51.148979] x21: 0000000000000406 x20: ffff0000bf170000 
-[   51.148992] x19: 0000000000000001 x18: 0000000000000000 
-[   51.149004] x17: 0000000000000000 x16: 0000000000000000 
-[   51.149016] x15: 0000000000000000 x14: ffff8000114512c0 
-[   51.149028] x13: 0000000000001698 x12: 0000000000000040 
-[   51.149040] x11: ffff80001151a6f8 x10: 00000000ffffe000 
-[   51.149052] x9 : ffff8000100b2b7c x8 : ffff80001146a6f8 
-[   51.149065] x7 : ffff80001151a6f8 x6 : 0000000000000000 
-[   51.149077] x5 : ffff0000bf939948 x4 : 0000000000000000 
-[   51.149089] x3 : 0000000000000027 x2 : 0000000000000000 
-[   51.149101] x1 : 0000000000000000 x0 : ffff0000049ae040 
-[   51.149114] Call trace:
-[   51.149120]  dwc3_send_gadget_ep_cmd+0x570/0x740 [dwc3]
-[   51.149150]  __dwc3_gadget_ep_enable+0x288/0x4fc [dwc3]
-[   51.149179]  dwc3_gadget_ep_enable+0x6c/0x15c [dwc3]
-[   51.149209]  usb_ep_enable+0x48/0x110 [udc_core]
-[   51.149251]  rndis_set_alt+0x138/0x1c0 [usb_f_rndis]
-[   51.149276]  composite_setup+0x674/0x194c [libcomposite]
-[   51.149314]  dwc3_ep0_interrupt+0x9c4/0xb9c [dwc3]
-[   51.149344]  dwc3_thread_interrupt+0x8bc/0xe74 [dwc3]
-[   51.149374]  irq_thread_fn+0x38/0xb0
-[   51.149388]  irq_thread+0x170/0x294
-[   51.149397]  kthread+0x164/0x16c
-[   51.149407]  ret_from_fork+0x10/0x34
-[   51.149419] ---[ end trace 62c6cc2ebfb18047 ]---
+I'm not sure how Intel intends to resolve all of this.
 
-Linus' tree isn't affected. Revert the change.
+> > > - this per-ioasid SVA operations is not aligned with the native SVA usage
+> > >   model. Native SVA bind is per-device.
+> > 
+> > Seems like that is an error in native SVA.
+> > 
+> > SVA is a particular mode of the PASID's memory mapping table, it has
+> > nothing to do with a device.
+> 
+> I think it still has relationship with device. This is determined by the
+> DMA remapping hierarchy in hardware. e.g. Intel VT-d, the DMA isolation is
+> enforced first in device granularity and then PASID granularity. SVA makes
+> usage of both PASID and device granularity isolation.
 
-Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+When the device driver authorizes a PASID the VT-d stuff should setup
+the isolation parameters for the give pci_device and PASID.
 
----
+Do not leak implementation details like this as uAPI. Authorization
+and memory map are distinct ideas with distinct interfaces. Do not mix
+them.
 
- drivers/usb/dwc3/gadget.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index 2a86ad4b12b3..ef8ecaf8655a 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -783,6 +783,8 @@ static int __dwc3_gadget_ep_disable(struct dwc3_ep *dep)
- 
- 	trace_dwc3_gadget_ep_disable(dep);
- 
-+	dwc3_remove_requests(dwc, dep);
-+
- 	/* make sure HW endpoint isn't stalled */
- 	if (dep->flags & DWC3_EP_STALL)
- 		__dwc3_gadget_ep_set_halt(dep, 0, false);
-@@ -801,8 +803,6 @@ static int __dwc3_gadget_ep_disable(struct dwc3_ep *dep)
- 		dep->endpoint.desc = NULL;
- 	}
- 
--	dwc3_remove_requests(dwc, dep);
--
- 	return 0;
- }
- 
-@@ -1617,7 +1617,7 @@ static int __dwc3_gadget_ep_queue(struct dwc3_ep *dep, struct dwc3_request *req)
- {
- 	struct dwc3		*dwc = dep->dwc;
- 
--	if (!dep->endpoint.desc || !dwc->pullups_connected || !dwc->connected) {
-+	if (!dep->endpoint.desc || !dwc->pullups_connected) {
- 		dev_err(dwc->dev, "%s: can't queue to disabled endpoint\n",
- 				dep->name);
- 		return -ESHUTDOWN;
-@@ -2150,7 +2150,6 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
- 	if (!is_on) {
- 		u32 count;
- 
--		dwc->connected = false;
- 		/*
- 		 * In the Synopsis DesignWare Cores USB3 Databook Rev. 3.30a
- 		 * Section 4.1.8 Table 4-7, it states that for a device-initiated
-@@ -2175,6 +2174,7 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
- 			dwc->ev_buf->lpos = (dwc->ev_buf->lpos + count) %
- 						dwc->ev_buf->length;
- 		}
-+		dwc->connected = false;
- 	} else {
- 		__dwc3_gadget_start(dwc);
- 	}
-@@ -3267,6 +3267,8 @@ static void dwc3_gadget_reset_interrupt(struct dwc3 *dwc)
- {
- 	u32			reg;
- 
-+	dwc->connected = true;
-+
- 	/*
- 	 * WORKAROUND: DWC3 revisions <1.88a have an issue which
- 	 * would cause a missing Disconnect Event if there's a
-@@ -3306,7 +3308,6 @@ static void dwc3_gadget_reset_interrupt(struct dwc3 *dwc)
- 	 * transfers."
- 	 */
- 	dwc3_stop_active_transfers(dwc);
--	dwc->connected = true;
- 
- 	reg = dwc3_readl(dwc->regs, DWC3_DCTL);
- 	reg &= ~DWC3_DCTL_TSTCTRL_MASK;
--- 
-2.30.2
-
+Jason
