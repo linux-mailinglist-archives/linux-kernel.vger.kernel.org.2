@@ -2,141 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6D69352033
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8049D352035
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234956AbhDAT42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 15:56:28 -0400
-Received: from mga04.intel.com ([192.55.52.120]:62757 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235528AbhDAT4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 15:56:25 -0400
-IronPort-SDR: LOIz7/5vZOiJjvl3M8c9Y0bbYQpolzeUydXXI16fcl4waZfsin58wqaXKk+bA7BUGh9gufWd0i
- ZlYhO7e2Yj6g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="190090505"
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="190090505"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 12:56:26 -0700
-IronPort-SDR: ymOuhrp/XhPgn1c+DeOfrSwUJ9GkN69f1jbfiw4Vm/WNCcSZR0qI1NVMm+qSE26ca+XxrL9mJR
- qku2lJdaqC0w==
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="611044183"
-Received: from pzlai-mobl.amr.corp.intel.com (HELO [10.213.169.242]) ([10.213.169.242])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 12:56:25 -0700
-Subject: Re: [RFC v1 12/26] x86/tdx: Handle in-kernel MMIO
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org
-References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <94a9847072098e554146ca4fa3c6f28fc1ac5b22.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <3e43ff6b-2f19-69f1-3017-d8d67abcfd9f@intel.com>
-Date:   Thu, 1 Apr 2021 12:56:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S235543AbhDAT46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 15:56:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56054 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234791AbhDAT45 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 15:56:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617307017;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4B8rrR2ZlPDVkEWIjOjrV74gMnzPRF/GWjn8bfBWXkA=;
+        b=BJiF6RErYoRYl693n9FXnibwr4HLUboeKDPtKTep+DOtkHTDEmB8S2knKcvedrRDlbTY21
+        4yyM4FVIyCTiSu+eUJgND1bTYt9hBeZhIIpQ+YODZiwhwlpWw+1usLgkABKeOGExq1XISx
+        h2sMbIxiS4yRajwlh+m9CFeLQVBMCGQ=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-14-Ql13CgjLO1KCUHouAU5m6A-1; Thu, 01 Apr 2021 15:56:55 -0400
+X-MC-Unique: Ql13CgjLO1KCUHouAU5m6A-1
+Received: by mail-wm1-f70.google.com with SMTP id o9-20020a05600c4fc9b029010cea48b602so3496006wmq.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 12:56:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4B8rrR2ZlPDVkEWIjOjrV74gMnzPRF/GWjn8bfBWXkA=;
+        b=hSGBLPCVp+l77EItYVOVmf5Xsy/5W4TB7B8Itfvei638VJYrjfCqWynXFpiNfYhWTK
+         3FuTO63VolRnRTVvN+hfWVHpUcGgqMr0zNvcutlIEiB8Tmwce1zOFZXDhvmGcIllj6F5
+         9eoUGhOn7Bbpb7V27di874UQRCPLI9wjRCSvjKw/DrLmmZtpElGpobrtMGPKUKnvVbFe
+         OM9PZz0yAczDC0mB66wcmr1hcSQtr2KULxiViUtnWJxUTNedgMW1cMhyKTBJ2WXVJ0vA
+         06R4AnXwxN6zeaKgRTXqs8uIt2weECpQn3dM0I1m/MJSjQSESOWRTdDTiY67yS5vmX6o
+         +Q+A==
+X-Gm-Message-State: AOAM530jt6cfVbqyLfI3N1Dxs+mnefSYKMUxLgGccf9nUrpFHK+t/cPr
+        Ik4bBXuwVWJ22W7mlakaHlPGQbw860b+do/C2hFIvpgpJBpSxjXMOxRZ9rDnM+/aHgdD2qa/FLZ
+        rvs+gfivc34RX47uO6bnT9+T0
+X-Received: by 2002:a05:6000:221:: with SMTP id l1mr11561496wrz.370.1617307014544;
+        Thu, 01 Apr 2021 12:56:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyiZ2uzEHFPKu2AQ2TtBFKkRmD/mD6mhiDw22xCxwVoWlYuBzyOZfFCCd4sEmt6QQkM2FUR/g==
+X-Received: by 2002:a05:6000:221:: with SMTP id l1mr11561454wrz.370.1617307014001;
+        Thu, 01 Apr 2021 12:56:54 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id b12sm11950894wrf.39.2021.04.01.12.56.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Apr 2021 12:56:53 -0700 (PDT)
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Jim Mattson <jmattson@google.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Sean Christopherson <seanjc@google.com>
+References: <20210401143817.1030695-1-mlevitsk@redhat.com>
+ <20210401143817.1030695-4-mlevitsk@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH 3/4] KVM: x86: correctly merge pending and injected
+ exception
+Message-ID: <c4f06a75-412c-d546-9ce7-4bf4cc49d102@redhat.com>
+Date:   Thu, 1 Apr 2021 21:56:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <94a9847072098e554146ca4fa3c6f28fc1ac5b22.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210401143817.1030695-4-mlevitsk@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/5/21 3:38 PM, Kuppuswamy Sathyanarayanan wrote:
-> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+On 01/04/21 16:38, Maxim Levitsky wrote:
+> +static int kvm_do_deliver_pending_exception(struct kvm_vcpu *vcpu)
+> +{
+> +	int class1, class2, ret;
+> +
+> +	/* try to deliver current pending exception as VM exit */
+> +	if (is_guest_mode(vcpu)) {
+> +		ret = kvm_x86_ops.nested_ops->deliver_exception_as_vmexit(vcpu);
+> +		if (ret || !vcpu->arch.pending_exception.valid)
+> +			return ret;
+> +	}
+> +
+> +	/* No injected exception, so just deliver the payload and inject it */
+> +	if (!vcpu->arch.injected_exception.valid) {
+> +		trace_kvm_inj_exception(vcpu->arch.pending_exception.nr,
+> +					vcpu->arch.pending_exception.has_error_code,
+> +					vcpu->arch.pending_exception.error_code);
+> +queue:
+
+If you move the queue label to the top of the function, you can "goto queue" for #DF as well and you don't need to call kvm_do_deliver_pending_exception again.  In fact you can merge this function and kvm_deliver_pending_exception completely:
+
+
+static int kvm_deliver_pending_exception_as_vmexit(struct kvm_vcpu *vcpu)
+{
+	WARN_ON(!vcpu->arch.pending_exception.valid);
+	if (is_guest_mode(vcpu))
+		return kvm_x86_ops.nested_ops->deliver_exception_as_vmexit(vcpu);
+	else
+		return 0;
+}
+
+static int kvm_merge_injected_exception(struct kvm_vcpu *vcpu)
+{
+	/*
+	 * First check if the pending exception takes precedence
+	 * over the injected one, which will be reported in the
+	 * vmexit info.
+	 */
+	ret = kvm_deliver_pending_exception_as_vmexit(vcpu);
+	if (ret || !vcpu->arch.pending_exception.valid)
+		return ret;
+
+	if (vcpu->arch.injected_exception.nr == DF_VECTOR) {
+		...
+		return 0;
+	}
+	...
+	if ((class1 == EXCPT_CONTRIBUTORY && class2 == EXCPT_CONTRIBUTORY)
+	    || (class1 == EXCPT_PF && class2 != EXCPT_BENIGN)) {
+		...
+	}
+	vcpu->arch.injected_exception.valid = false;
+}
+
+static int kvm_deliver_pending_exception(struct kvm_vcpu *vcpu)
+{
+	if (!vcpu->arch.pending_exception.valid)
+		return 0;
+
+	if (vcpu->arch.injected_exception.valid)
+		kvm_merge_injected_exception(vcpu);
+
+	ret = kvm_deliver_pending_exception_as_vmexit(vcpu));
+	if (ret || !vcpu->arch.pending_exception.valid)
+		return ret;
+
+	trace_kvm_inj_exception(vcpu->arch.pending_exception.nr,
+				vcpu->arch.pending_exception.has_error_code,
+				vcpu->arch.pending_exception.error_code);
+	...
+}
+
+Note that if the pending exception is a page fault, its payload
+must be delivered to CR2 before converting it to a double fault.
+
+Going forward to vmx.c:
+
 > 
-> Handle #VE due to MMIO operations. MMIO triggers #VE with EPT_VIOLATION
-> exit reason.
+>  	if (mtf_pending) {
+>  		if (block_nested_events)
+>  			return -EBUSY;
+> +
+>  		nested_vmx_update_pending_dbg(vcpu);
+
+Should this instead "WARN_ON(vmx_pending_dbg_trap(vcpu));" since
+the pending-#DB-plus-MTF combination is handled in
+vmx_deliver_exception_as_vmexit?...
+
 > 
-> For now we only handle subset of instruction that kernel uses for MMIO
-> oerations. User-space access triggers SIGBUS.
-..
-> +	case EXIT_REASON_EPT_VIOLATION:
-> +		ve->instr_len = tdx_handle_mmio(regs, ve);
-> +		break;
+> +
+> +	if (vmx->nested.mtf_pending && vmx_pending_dbg_trap(vcpu)) {
+> +		/*
+> +		 * A pending monitor trap takes precedence over pending
+> +		 * debug exception which is 'stashed' into
+> +		 * 'GUEST_PENDING_DBG_EXCEPTIONS'
+> +		 */
+> +
+> +		nested_vmx_update_pending_dbg(vcpu);
+> +		vmx->nested.mtf_pending = false;
+> +		nested_vmx_vmexit(vcpu, EXIT_REASON_MONITOR_TRAP_FLAG, 0, 0);
+> +		return 0;
+> +	}
 
-Is MMIO literally the only thing that can cause an EPT violation for TDX
-guests?
+... though this is quite ugly, even more so if you add the case of an
+INIT with a pending #DB.  The problem is that INIT and MTF have higher
+priority than debug exceptions.
 
-Forget userspace for a minute.  #VE's from userspace are annoying, but
-fine.  We can't control what userspace does.  If an action it takes
-causes a #VE in the TDX architecture, tough cookies, the kernel must
-handle it and try to recover or kill the app.
+The good thing is that an INIT or MTF plus #DB cannot happen with
+nested_run_pending == 1, so it will always be inject right away.
 
-The kernel is very different.  We know in advance (must know,
-actually...) which instructions might cause exceptions of any kind.
-That's why we have exception tables and copy_to/from_user().  That's why
-we can handle kernel page faults on userspace, but not inside spinlocks.
+There is precedent with KVM_GET_* modifying the CPU state; in
+particular, KVM_GET_MPSTATE can modify CS and RIP and even cause a
+vmexit via kvm_apic_accept_events.  And in fact, because
+kvm_apic_accept_events calls kvm_check_nested_events, calling it
+from KVM_GET_VCPU_EVENTS would fix the problem: the injected exception
+would go into the IDT-vectored exit field, while the pending exception
+would go into GUEST_PENDING_DBG_EXCEPTION and disappear.
 
-Binary-dependent OSes are also very different.  It's going to be natural
-for them to want to take existing, signed drivers and use them in TDX
-guests.  They might want to do something like this.
+However, you cannot do kvm_apic_accept_events twice because there would
+be a race with INIT: a #DB exception could be first stored by
+KVM_GET_VCPU_EVENTS, then disappear when kvm_apic_accept_events
+KVM_GET_MPSTATE is called.
 
-But for an OS where we have source for the *ENTIRE* thing, and where we
-have a chokepoint for MMIO accesses (arch/x86/include/asm/io.h), it
-seems like an *AWFUL* idea to:
-1. Have the kernel set up special mappings for I/O memory
-2. Kernel generates special instructions to access that memory
-3. Kernel faults on that memory
-4. Kernel cracks its own special instructions to see what they were
-   doing
-5. Kernel calls up to host to do the MMIO
+Fortunately, the correct order for KVM_GET_* events is first
+KVM_GET_VCPU_EVENTS and then KVM_GET_MPSTATE.  So perhaps
+instead of calling kvm_deliver_pending_exception on vmexit,
+KVM_GET_VCPU_EVENTS could call kvm_apic_accept_events (and thus
+kvm_check_nested_events) instead of KVM_GET_MPSTATE.  In addition:
+nested_ops.check_events would be split in two, with high-priority
+events (triple fault, now in kvm_check_nested_events; INIT; MTF)
+remaining in the first and interrupts in the second, tentatively
+named check_interrupts).
 
-Instead of doing 2/3/4, why not just have #2 call up to the host
-directly?  This patch seems a very slow, roundabout way to do
-paravirtualized MMIO.
+I'll take a look at cleaning up the current mess we have around
+kvm_apic_accept_events, where most of the calls do not have to
+handle guest mode at all.
 
-BTW, there's already some SEV special-casing in io.h.
+Thanks for this work and for showing that it's possible to fix the
+underlying mess with exception vmexit.  It may be a bit more
+complicated than this, but it's a great start.
+
+Paolo
+
