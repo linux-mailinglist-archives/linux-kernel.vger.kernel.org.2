@@ -2,145 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B77F4351D91
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F25D351CB7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240103AbhDAS3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:29:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35396 "EHLO
+        id S235560AbhDASVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:21:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238212AbhDASFn (ORCPT
+        with ESMTP id S234914AbhDASBg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:05:43 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2AADC03116A
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 09:53:56 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id ha17so1476879pjb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 09:53:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=opZpqvsKBsI6VYq138fXrWfaN6YGeUQyxcS+8w6v06c=;
-        b=zyQRNsvsA9LyQidoA1ch2aMxTysyo4s72aUu6/nXPD6YOT0doXN4COWofYcRSdBXLK
-         fxF7ePO8YBbA1bIPzpxIL0mmgajnn9eT1XlKIN97lsNhc3y0oYb2Lc7icx3Pf1aDnzr/
-         +sx6AW/ZGNo25YgzOQIuE2/r1Xa7zEAVi42VDyPxtHWv/I6nbOnZkFcsjCerQny1sT2m
-         0mqdRRXI9xNjCtMgAyv3B0b9OjMphUbiH66QnOihnMF49qQi7b+6pOyrz3GpriebnP6o
-         BxZ22EI/QELKYnvdueqv8l3eg41xRX6W6NRgn3R7SNZLJEFcJ1sg2FO9uaocJwzuouqG
-         n02Q==
+        Thu, 1 Apr 2021 14:01:36 -0400
+Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7977DC03116B;
+        Thu,  1 Apr 2021 09:54:16 -0700 (PDT)
+Received: by mail-oo1-xc35.google.com with SMTP id r17-20020a4acb110000b02901b657f28cdcso703126ooq.6;
+        Thu, 01 Apr 2021 09:54:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=opZpqvsKBsI6VYq138fXrWfaN6YGeUQyxcS+8w6v06c=;
-        b=ILDqsfZk2fS433i/bExcxSb6f2n6xKnF/BH870ks8OFgeBHweRz6tzaNWfuxsx0McS
-         fBXQ+3nBzki8xEPfO6/SghyZFK8rk0GlJu/HwmK2FiZWBENfknrBgoz5H2c2xedVdiO6
-         CLuQebcn9RzDW2A+xUyyvLVo2XHNftLYI07GCPHVjk9LAwQZH0LyAxE2plC8LVfCNHuv
-         CYprNIMWmDCBuIwtc781ZEnJzQ6cLxXbwbcNz0ApAwj6fCvzmHrpMjTQYqk20AO00bxL
-         pXicipC8ajG5ZJ4QNcHE3N+D+FesLVjCCQGh1XoUfvAre6ilocs2GtcGHce2bHs1v+BG
-         bb3A==
-X-Gm-Message-State: AOAM531j5hqj39jQqKM92enENQmUXF2H1M3vOKGqiLquKGMQwPZPtSaL
-        RnziX5fMG0AwamR/TGe6Hbft+g==
-X-Google-Smtp-Source: ABdhPJzebmFG08KQlbsAdWpiNfw7N9cydtdTFMIvPyPRVFw/mXPRQEzgELZQ7HN3vPDPmXw8q9kobQ==
-X-Received: by 2002:a17:902:7d95:b029:e7:3780:3c5f with SMTP id a21-20020a1709027d95b02900e737803c5fmr8793961plm.59.1617296036123;
-        Thu, 01 Apr 2021 09:53:56 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id j10sm5817403pjs.11.2021.04.01.09.53.54
+        bh=CL6cxNJtKIKQmvSTfzksNAMYKqjon+6PChUUz9zmOJ4=;
+        b=WTlh/ItSs7haofddu0vSTF4AYv7kJ2T13HGo4CjcrJO4KSIxEeWC95FL/SCpnAAfdS
+         0vR9yUMA3Ot3f9iO3Rn7L1KYBdw6yexBoQnPWjd9zV0vdzSjbhZXA1xztKAclrWyCOBI
+         Du+ieCSnSx1vMJlVR2P05s36JkwRRQVaJPJVa7y8zC5XpKMKuXA6ymwIznhi/2LTMqes
+         HhXSwyXF15eHB0RaqRUoXz9o/V/9yvxHLpfYHWDVRENwjMnn9YmKtopV6Wya1d8aOX98
+         AQurodFZSbwF4/LJcVf8unyEDwkarACJPLCKeM0BkjhNL7RM+KOh46I6h7pYOWuDdcjC
+         MIJg==
+X-Gm-Message-State: AOAM530uc2tNrHGVfCOEoCVSM3x3UJSqi9J+DuNzCsxNQQJeL1uKUkXS
+        oEucHEQphTcUIT5UChBpRg==
+X-Google-Smtp-Source: ABdhPJw+gejICHezMAuNryQdqWA8Zve/kSvWD62nMm2wCCAlpKJgdKHwi2th5zEK21YRRtHo5Tw8jA==
+X-Received: by 2002:a4a:e615:: with SMTP id f21mr7883695oot.91.1617296055414;
+        Thu, 01 Apr 2021 09:54:15 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id h17sm1241240otj.38.2021.04.01.09.54.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 09:53:55 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 10:53:53 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Mike Leach <mike.leach@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        linux-doc@vger.kernel.org, suzuki.poulose@arm.com,
-        yabinc@google.com, corbet@lwn.net, leo.yan@linaro.org,
-        alexander.shishkin@linux.intel.com, tingwei@codeaurora.org,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 06/10] coresight: etm-perf: Update to activate
- selected configuration
-Message-ID: <20210401165353.GB145043@xps15>
-References: <20210316180400.7184-1-mike.leach@linaro.org>
- <20210316180400.7184-7-mike.leach@linaro.org>
+        Thu, 01 Apr 2021 09:54:13 -0700 (PDT)
+Received: (nullmailer pid 597920 invoked by uid 1000);
+        Thu, 01 Apr 2021 16:54:12 -0000
+Date:   Thu, 1 Apr 2021 11:54:12 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Greentime Hu <greentime.hu@sifive.com>
+Cc:     paul.walmsley@sifive.com, hes@sifive.com, erik.danie@sifive.com,
+        zong.li@sifive.com, bhelgaas@google.com, aou@eecs.berkeley.edu,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        lorenzo.pieralisi@arm.com, p.zabel@pengutronix.de,
+        alex.dewar90@gmail.com, khilman@baylibre.com,
+        hayashi.kunihiko@socionext.com, vidyas@nvidia.com,
+        jh80.chung@samsung.com, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        helgaas@kernel.org
+Subject: Re: [PATCH v4 4/6] dt-bindings: PCI: Add SiFive FU740 PCIe host
+ controller
+Message-ID: <20210401165412.GB573380@robh.at.kernel.org>
+References: <20210401060054.40788-1-greentime.hu@sifive.com>
+ <20210401060054.40788-5-greentime.hu@sifive.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210316180400.7184-7-mike.leach@linaro.org>
+In-Reply-To: <20210401060054.40788-5-greentime.hu@sifive.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 06:03:56PM +0000, Mike Leach wrote:
-> Add calls to activate the selected configuration as perf starts
-> and stops the tracing session.
+On Thu, Apr 01, 2021 at 02:00:52PM +0800, Greentime Hu wrote:
+> Add PCIe host controller DT bindings of SiFive FU740.
 > 
-> Signed-off-by: Mike Leach <mike.leach@linaro.org>
-> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-
+> Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
 > ---
->  drivers/hwtracing/coresight/coresight-etm-perf.c | 14 +++++++++++++-
->  drivers/hwtracing/coresight/coresight-etm-perf.h |  2 ++
->  2 files changed, 15 insertions(+), 1 deletion(-)
+>  .../bindings/pci/sifive,fu740-pcie.yaml       | 109 ++++++++++++++++++
+>  1 file changed, 109 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pci/sifive,fu740-pcie.yaml
 > 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
-> index 66bda452a2f4..9128f59864a8 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
-> @@ -196,6 +196,10 @@ static void free_event_data(struct work_struct *work)
->  	/* Free the sink buffers, if there are any */
->  	free_sink_buffer(event_data);
->  
-> +	/* clear any configuration we were using */
-> +	if (event_data->cfg_hash)
-> +		cscfg_deactivate_config(event_data->cfg_hash);
+> diff --git a/Documentation/devicetree/bindings/pci/sifive,fu740-pcie.yaml b/Documentation/devicetree/bindings/pci/sifive,fu740-pcie.yaml
+> new file mode 100644
+> index 000000000000..ccb58e5f06d4
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pci/sifive,fu740-pcie.yaml
+> @@ -0,0 +1,109 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pci/sifive,fu740-pcie.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
->  	for_each_cpu(cpu, mask) {
->  		struct list_head **ppath;
->  
-> @@ -254,7 +258,7 @@ static void etm_free_aux(void *data)
->  static void *etm_setup_aux(struct perf_event *event, void **pages,
->  			   int nr_pages, bool overwrite)
->  {
-> -	u32 id;
-> +	u32 id, cfg_hash;
->  	int cpu = event->cpu;
->  	cpumask_t *mask;
->  	struct coresight_device *sink = NULL;
-> @@ -271,6 +275,14 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
->  		sink = coresight_get_sink_by_id(id);
->  	}
->  
-> +	/* check if user wants a coresight configuration selected */
-> +	cfg_hash = (u32)((event->attr.config2 & GENMASK_ULL(63, 32)) >> 32);
-> +	if (cfg_hash) {
-> +		if (cscfg_activate_config(cfg_hash))
-> +			goto err;
-> +		event_data->cfg_hash = cfg_hash;
-> +	}
+> +title: SiFive FU740 PCIe host controller
 > +
->  	mask = &event_data->mask;
->  
->  	/*
-> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.h b/drivers/hwtracing/coresight/coresight-etm-perf.h
-> index ba617fe2217e..468f7799ab4f 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm-perf.h
-> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.h
-> @@ -49,12 +49,14 @@ struct etm_filters {
->   * @work:		Handle to free allocated memory outside IRQ context.
->   * @mask:		Hold the CPU(s) this event was set for.
->   * @snk_config:		The sink configuration.
-> + * @cfg_hash:		The hash id of any coresight config selected.
->   * @path:		An array of path, each slot for one CPU.
->   */
->  struct etm_event_data {
->  	struct work_struct work;
->  	cpumask_t mask;
->  	void *snk_config;
-> +	u32 cfg_hash;
->  	struct list_head * __percpu *path;
->  };
->  
+> +description: |+
+> +  SiFive FU740 PCIe host controller is based on the Synopsys DesignWare
+> +  PCI core. It shares common features with the PCIe DesignWare core and
+> +  inherits common properties defined in
+> +  Documentation/devicetree/bindings/pci/designware-pcie.txt.
+> +
+> +maintainers:
+> +  - Paul Walmsley <paul.walmsley@sifive.com>
+> +  - Greentime Hu <greentime.hu@sifive.com>
+> +
+> +allOf:
+> +  - $ref: /schemas/pci/pci-bus.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: sifive,fu740-pcie
+> +
+> +  reg:
+> +    maxItems: 3
+> +
+> +  reg-names:
+> +    items:
+> +      - const: dbi
+> +      - const: config
+> +      - const: mgmt
+> +
+> +  num-lanes:
+> +    const: 8
+> +
+> +  msi-parent: true
+> +
+> +  interrupt-names:
+> +    items:
+> +      - const: msi
+> +      - const: inta
+> +      - const: intb
+> +      - const: intc
+> +      - const: intd
+> +
+> +  resets:
+> +    description: A phandle to the PCIe power up reset line.
+
+How many (maxItems)?
+
+> +
+> +  pwren-gpios:
+> +    description: Should specify the GPIO for controlling the PCI bus device power on.
+> +    maxItems: 1
+
+Still need to list 'reset-gpios' here.
+
+> +
+> +required:
+> +  - dma-coherent
+> +  - num-lanes
+> +  - interrupts
+> +  - interrupt-names
+> +  - interrupt-parent
+> +  - interrupt-map-mask
+> +  - interrupt-map
+> +  - clock-names
+> +  - clocks
+> +  - resets
+> +  - pwren-gpios
+> +  - reset-gpios
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    bus {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +        #include <dt-bindings/clock/sifive-fu740-prci.h>
+> +
+> +        pcie@e00000000 {
+> +            compatible = "sifive,fu740-pcie";
+> +            #address-cells = <3>;
+> +            #size-cells = <2>;
+> +            #interrupt-cells = <1>;
+> +            reg = <0xe 0x00000000 0x0 0x80000000>,
+> +                  <0xd 0xf0000000 0x0 0x10000000>,
+> +                  <0x0 0x100d0000 0x0 0x1000>;
+> +            reg-names = "dbi", "config", "mgmt";
+> +            device_type = "pci";
+> +            dma-coherent;
+> +            bus-range = <0x0 0xff>;
+> +            ranges = <0x81000000  0x0 0x60080000  0x0 0x60080000 0x0 0x10000>,      /* I/O */
+> +                     <0x82000000  0x0 0x60090000  0x0 0x60090000 0x0 0xff70000>,    /* mem */
+> +                     <0x82000000  0x0 0x70000000  0x0 0x70000000 0x0 0x1000000>,    /* mem */
+> +                     <0xc3000000 0x20 0x00000000 0x20 0x00000000 0x20 0x00000000>;  /* mem prefetchable */
+> +            num-lanes = <0x8>;
+> +            interrupts = <56>, <57>, <58>, <59>, <60>, <61>, <62>, <63>, <64>;
+> +            interrupt-names = "msi", "inta", "intb", "intc", "intd";
+> +            interrupt-parent = <&plic0>;
+> +            interrupt-map-mask = <0x0 0x0 0x0 0x7>;
+> +            interrupt-map = <0x0 0x0 0x0 0x1 &plic0 57>,
+> +                            <0x0 0x0 0x0 0x2 &plic0 58>,
+> +                            <0x0 0x0 0x0 0x3 &plic0 59>,
+> +                            <0x0 0x0 0x0 0x4 &plic0 60>;
+> +            clock-names = "pcie_aux";
+> +            clocks = <&prci PRCI_CLK_PCIE_AUX>;
+> +            resets = <&prci 4>;
+> +            pwren-gpios = <&gpio 5 0>;
+> +            reset-gpios = <&gpio 8 0>;
+> +        };
+> +    };
 > -- 
-> 2.17.1
+> 2.30.2
 > 
