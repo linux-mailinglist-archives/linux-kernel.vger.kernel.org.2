@@ -2,125 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A527351958
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D840A351AEC
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:07:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235274AbhDARw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:52:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57186 "EHLO
+        id S237304AbhDASDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:03:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234889AbhDARlC (ORCPT
+        with ESMTP id S235246AbhDARs1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:41:02 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 06FD5C022584;
-        Thu,  1 Apr 2021 08:17:34 -0700 (PDT)
+        Thu, 1 Apr 2021 13:48:27 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 428EEC022587
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 08:20:05 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so3259702pjh.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 08:20:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-ID; bh=wmXPJkyyre8yO1CKTCpRZz7wLSxkpPRR5WXx
-        /hPtxME=; b=O6wPq+OUGRCgMtesXvQuGSmHShhvPTLjDIyX5nTgJUupZw3E8LGR
-        gTxfyFFCtH5BAVhDK9tHdGKkgcpsTKvuBuf1YB8Pkz6KmeQHu3/926K5wQHszJhQ
-        Cg2E7yRLhostKVH6pb06B7B4KmZ5Z2y4vqVPTCvqvjV1tnLx1Zd0G0U=
-Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Thu, 1 Apr
- 2021 23:17:27 +0800 (GMT+08:00)
-X-Originating-IP: [202.38.69.14]
-Date:   Thu, 1 Apr 2021 23:17:27 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   lyl2019@mail.ustc.edu.cn
-To:     lyl2019@mail.ustc.edu.cn
-Cc:     =?UTF-8?Q?Christoph_B=C3=B6hmwalder?= 
-        <christoph.boehmwalder@linbit.com>, philipp.reisner@linbit.com,
-        lars.ellenberg@linbit.com, axboe@kernel.dk,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        drbd-dev@lists.linbit.com
-Subject: Re: Re: Re: [Drbd-dev] [PATCH] drbd: Fix a use after free in
- get_initial_state
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
- 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
-In-Reply-To: <5b14fa53.26b7e.1788dff8d13.Coremail.lyl2019@mail.ustc.edu.cn>
-References: <20210401115753.3684-1-lyl2019@mail.ustc.edu.cn>
- <cb0f43e4-bfde-ac77-5153-f2f3cbed0172@linbit.com>
- <5b14fa53.26b7e.1788dff8d13.Coremail.lyl2019@mail.ustc.edu.cn>
-X-SendMailWithSms: false
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CbD76d1dqB6q8MXTffec9yNB90qyRTdmg3kpNe3oDsE=;
+        b=k2pOlXXTM8fN/cGpPVsybsAWGnSRAxRRm3W4WVLToLIMzwK3lbEwCM3TqPfxodbE2J
+         r3yY+owOLk5EKoeGbmrxxDhUfzBbuf4Dyqk8lW32hi1asrJHmsaLzF3A9fCIg6kaFsiW
+         UgKWaBS38yhD1nMukXSa8ISpqQPu1OuFjigUcw3DwYUDyUSVm5JoD8Sk/RPpwQ+PD1o4
+         5F5/Xk6u5S+kvieTgpnAQVD0mSaVpAcRxwy80OmiP1q9gSVKNhPG4ohY/YOwpScuGq3h
+         LhFbNBilA+bftoqCAsuB8Vw+YFdVt9fEkxF1+2fzpZnuPnd4kJDYC9U5PgS5ftL2u3ZK
+         pVrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CbD76d1dqB6q8MXTffec9yNB90qyRTdmg3kpNe3oDsE=;
+        b=sGkrAXcn4iTas5JbeL6g6tPfM1WiKldPC2FYhirXmGFhlEM0QVkRF7jBg4CMKg9n6u
+         fdmLj71jEEiTunGe5+2Yo+gns+0Pz2JGviv0ia689UjBDWEfX40mPXPAJ3fFqmpK0IHA
+         Yuv6Ky+WB1K2ycE7qlXXCFLClpzTSJOih438+X8LiPuakT9egvnDlrOIDvAd39t7Cs4B
+         Qc523Ja/WJmAwX5fE9AesZrK672b0kr/mubW83DNl20QwU+YIpSzV2JoUNszCz+7AaHb
+         Fr3I1jUYncWC1TfaUjPcXZ0w3Hre1lScsBxDIxDoBoPqWtef0x9DU4yVU+vyKKH9FXYJ
+         nxdg==
+X-Gm-Message-State: AOAM533ca/I1gD7oMKgRJ2xnNtQL7TdcQd5alFqTNPd8uAxcJRJpBxgf
+        MC59R6sfH1QuPq+6B5/J6Li0
+X-Google-Smtp-Source: ABdhPJzfS/Kx1OAi9bjnKkHmQhTNDY6Cc4WwA375CsZZiIXoudnNb14Aqnx3JfGBo5ydSI+5HBVZHg==
+X-Received: by 2002:a17:902:ec84:b029:e5:bd05:4a98 with SMTP id x4-20020a170902ec84b02900e5bd054a98mr8340208plg.76.1617290404772;
+        Thu, 01 Apr 2021 08:20:04 -0700 (PDT)
+Received: from localhost.localdomain ([103.77.37.138])
+        by smtp.gmail.com with ESMTPSA id l22sm6500919pjl.14.2021.04.01.08.19.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 08:20:03 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        boris.brezillon@collabora.com, Daniele.Palmas@telit.com,
+        bjorn.andersson@linaro.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v10 0/4] Add support for secure regions in NAND
+Date:   Thu,  1 Apr 2021 20:49:51 +0530
+Message-Id: <20210401151955.143817-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Message-ID: <17336352.26b99.1788e02bf3d.Coremail.lyl2019@mail.ustc.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: LkAmygBnbkII5GVgfdWCAA--.3W
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQoSBlQhn5pzrwABsy
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCg0KPiAtLS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+IOWPkeS7tuS6ujogbHlsMjAxOUBtYWls
-LnVzdGMuZWR1LmNuDQo+IOWPkemAgeaXtumXtDogMjAyMS0wNC0wMSAyMzoxMzo1OCAo5pif5pyf
-5ZubKQ0KPiDmlLbku7bkuro6ICJDaHJpc3RvcGggQsO2aG13YWxkZXIiIDxjaHJpc3RvcGguYm9l
-aG13YWxkZXJAbGluYml0LmNvbT4NCj4g5oqE6YCBOiBwaGlsaXBwLnJlaXNuZXJAbGluYml0LmNv
-bSwgbGFycy5lbGxlbmJlcmdAbGluYml0LmNvbSwgYXhib2VAa2VybmVsLmRrLCBsaW51eC1ibG9j
-a0B2Z2VyLmtlcm5lbC5vcmcsIGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcsIGRyYmQtZGV2
-QGxpc3RzLmxpbmJpdC5jb20NCj4g5Li76aKYOiBSZTogUmU6IFtEcmJkLWRldl0gW1BBVENIXSBk
-cmJkOiBGaXggYSB1c2UgYWZ0ZXIgZnJlZSBpbiBnZXRfaW5pdGlhbF9zdGF0ZQ0KPiANCj4gDQo+
-IA0KPiANCj4gPiAtLS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+ID4g5Y+R5Lu25Lq6OiAiQ2hyaXN0
-b3BoIELDtmhtd2FsZGVyIiA8Y2hyaXN0b3BoLmJvZWhtd2FsZGVyQGxpbmJpdC5jb20+DQo+ID4g
-5Y+R6YCB5pe26Ze0OiAyMDIxLTA0LTAxIDIxOjAxOjIwICjmmJ/mnJ/lm5spDQo+ID4g5pS25Lu2
-5Lq6OiAiTHYgWXVubG9uZyIgPGx5bDIwMTlAbWFpbC51c3RjLmVkdS5jbj4NCj4gPiDmioTpgIE6
-IHBoaWxpcHAucmVpc25lckBsaW5iaXQuY29tLCBsYXJzLmVsbGVuYmVyZ0BsaW5iaXQuY29tLCBh
-eGJvZUBrZXJuZWwuZGssIGxpbnV4LWJsb2NrQHZnZXIua2VybmVsLm9yZywgbGludXgta2VybmVs
-QHZnZXIua2VybmVsLm9yZywgZHJiZC1kZXZAbGlzdHMubGluYml0LmNvbQ0KPiA+IOS4u+mimDog
-UmU6IFtEcmJkLWRldl0gW1BBVENIXSBkcmJkOiBGaXggYSB1c2UgYWZ0ZXIgZnJlZSBpbiBnZXRf
-aW5pdGlhbF9zdGF0ZQ0KPiA+IA0KPiA+IE9uIDQvMS8yMSAxOjU3IFBNLCBMdiBZdW5sb25nIHdy
-b3RlOg0KPiA+ID4gSW4gZ2V0X2luaXRpYWxfc3RhdGUsIGl0IGNhbGxzIG5vdGlmeV9pbml0aWFs
-X3N0YXRlX2RvbmUoc2tiLC4uKSBpZg0KPiA+ID4gY2ItPmFyZ3NbNV09PTEuIEkgc2VlIHRoYXQg
-aWYgZ2VubG1zZ19wdXQoKSBmYWlsZWQgaW4NCj4gPiA+IG5vdGlmeV9pbml0aWFsX3N0YXRlX2Rv
-bmUoKSwgdGhlIHNrYiB3aWxsIGJlIGZyZWVkIGJ5IG5sbXNnX2ZyZWUoc2tiKS4NCj4gPiA+IFRo
-ZW4gZ2V0X2luaXRpYWxfc3RhdGUgd2lsbCBnb3RvIG91dCBhbmQgdGhlIGZyZWVkIHNrYiB3aWxs
-IGJlIHVzZWQgYnkNCj4gPiA+IHJldHVybiB2YWx1ZSBza2ItPmxlbi4NCj4gPiA+IA0KPiA+ID4g
-TXkgcGF0Y2ggbGV0cyBza2JfbGVuID0gc2tiLT5sZW4gYW5kIHJldHVybiB0aGUgc2tiX2xlbiB0
-byBhdm9pZCB0aGUgdWFmLg0KPiA+ID4gDQo+ID4gPiBGaXhlczogYTI5NzI4NDYzYjI1NCAoImRy
-YmQ6IEJhY2twb3J0IHRoZSAiZXZlbnRzMiIgY29tbWFuZCIpDQo+ID4gPiBTaWduZWQtb2ZmLWJ5
-OiBMdiBZdW5sb25nIDxseWwyMDE5QG1haWwudXN0Yy5lZHUuY24+DQo+ID4gPiAtLS0NCj4gPiA+
-ICAgZHJpdmVycy9ibG9jay9kcmJkL2RyYmRfbmwuYyB8IDMgKystDQo+ID4gPiAgIDEgZmlsZSBj
-aGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkNCj4gPiA+IA0KPiA+ID4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvYmxvY2svZHJiZC9kcmJkX25sLmMgYi9kcml2ZXJzL2Jsb2NrL2Ry
-YmQvZHJiZF9ubC5jDQo+ID4gPiBpbmRleCBiZjdkZTRjN2I5NmMuLjQ3NGY4NDY3NWQwYSAxMDA2
-NDQNCj4gPiA+IC0tLSBhL2RyaXZlcnMvYmxvY2svZHJiZC9kcmJkX25sLmMNCj4gPiA+ICsrKyBi
-L2RyaXZlcnMvYmxvY2svZHJiZC9kcmJkX25sLmMNCj4gPiA+IEBAIC00OTA1LDYgKzQ5MDUsNyBA
-QCBzdGF0aWMgaW50IGdldF9pbml0aWFsX3N0YXRlKHN0cnVjdCBza19idWZmICpza2IsIHN0cnVj
-dCBuZXRsaW5rX2NhbGxiYWNrICpjYikNCj4gPiA+ICAgCXN0cnVjdCBkcmJkX3N0YXRlX2NoYW5n
-ZSAqc3RhdGVfY2hhbmdlID0gKHN0cnVjdCBkcmJkX3N0YXRlX2NoYW5nZSAqKWNiLT5hcmdzWzBd
-Ow0KPiA+ID4gICAJdW5zaWduZWQgaW50IHNlcSA9IGNiLT5hcmdzWzJdOw0KPiA+ID4gICAJdW5z
-aWduZWQgaW50IG47DQo+ID4gPiArCXVuc2lnbmVkIGludCBza2JfbGVuID0gc2tiLT5sZW47DQo+
-ID4gPiAgIAllbnVtIGRyYmRfbm90aWZpY2F0aW9uX3R5cGUgZmxhZ3MgPSAwOw0KPiA+ID4gICAN
-Cj4gPiA+ICAgCS8qIFRoZXJlIGlzIG5vIG5lZWQgZm9yIHRha2luZyBub3RpZmljYXRpb25fbXV0
-ZXggaGVyZTogaXQgZG9lc24ndA0KPiA+ID4gQEAgLTQ5MTUsNyArNDkxNiw3IEBAIHN0YXRpYyBp
-bnQgZ2V0X2luaXRpYWxfc3RhdGUoc3RydWN0IHNrX2J1ZmYgKnNrYiwgc3RydWN0IG5ldGxpbmtf
-Y2FsbGJhY2sgKmNiKQ0KPiA+ID4gICAJY2ItPmFyZ3NbNV0tLTsNCj4gPiA+ICAgCWlmIChjYi0+
-YXJnc1s1XSA9PSAxKSB7DQo+ID4gPiAgIAkJbm90aWZ5X2luaXRpYWxfc3RhdGVfZG9uZShza2Is
-IHNlcSk7DQo+ID4gPiAtCQlnb3RvIG91dDsNCj4gPiA+ICsJCXJldHVybiBza2JfbGVuOw0KPiA+
-ID4gICAJfQ0KPiA+ID4gICAJbiA9IGNiLT5hcmdzWzRdKys7DQo+ID4gPiAgIAlpZiAoY2ItPmFy
-Z3NbNF0gPCBjYi0+YXJnc1szXSkNCj4gPiA+IA0KPiA+IA0KPiA+IFRoYW5rcyBmb3IgdGhlIHBh
-dGNoIQ0KPiA+IA0KPiA+IEkgdGhpbmsgdGhlIHByb2JsZW0gZ29lcyBldmVuIGZ1cnRoZXI6IHNr
-YiBjYW4gYWxzbyBiZSBmcmVlZCBpbiB0aGUgDQo+ID4gbm90aWZ5Xypfc3RhdGVfY2hhbmdlIC0+
-IG5vdGlmeV8qX3N0YXRlIGNhbGxzIGJlbG93Lg0KPiA+IA0KPiA+IEFsc28sIGF0IHRoZSBwb2lu
-dCB3aGVyZSB3ZSBzYXZlIHNrYi0+bGVuIGludG8gc2tiX2xlbiwgc2tiIGlzIG5vdCANCj4gPiBp
-bml0aWFsaXplZCB5ZXQuIE1heWJlIGl0IG1ha2VzIG1vcmUgc2Vuc2UgdG8gbm90IHJldHVybiBh
-IGxlbmd0aCBpbiB0aGUgDQo+ID4gZmlyc3QgcGxhY2UgaGVyZSwgYnV0IGFuIGVycm9yIGNvZGUg
-aW5zdGVhZC4NCj4gPiANCj4gPiAtLSANCj4gPiBDaHJpc3RvcGggQsO2aG13YWxkZXINCj4gPiBM
-SU5CSVQgfCBLZWVwaW5nIHRoZSBEaWdpdGFsIFdvcmxkIFJ1bm5pbmcNCj4gPiBEUkJEIEhBIOKA
-lCAgRGlzYXN0ZXIgUmVjb3Zlcnkg4oCUIFNvZnR3YXJlIGRlZmluZWQgU3RvcmFnZQ0KPiANCj4g
-T2ssIEkgc2VlLg0KPiBJIGZvdW5kIHRoYXQgZHJiZF9hZG1fZ2V0X2luaXRpYWxfc3RhdGUoKSBo
-YXMgY2FsbGVkIHRoZSBnZXRfaW5pdGlhbF9zdGF0ZSgpLA0KPiBhbmQgcmV0dXJuIC1FTk9NRU0g
-aWYgaXQgY2FsbHMgcmVtZW1iZXJfb2xkX3N0YXRlKCkgZmFpbGVkLg0KPiANCj4gU28sIGkgdGhp
-bmsgdGhhdCBtZWFucyBpZiBnZXRfaW5pdGlhbF9zdGF0ZSgpIGZhaWxlZCBvbiB0aGUgbm90aWZ5
-X2luaXRpYWxfc3RhdGVfZG9uZSgpLA0KPiBpdCBzaG91bGQgcmV0dXJuIC1FTk9NRU0gdG9vLg0K
-PiANCj4gSSB3aWxsIHN1Ym1pdCB0aGUgUEFUQ0ggdjIgdG8gZml4IHRoZSBmaXJzdCBwbGFjZS4g
-VGhlIGZpeGVzIG9mIHRoZSBmdXJ0aGVyIHByb2JsZW0gaXMgDQo+IGhhcmQgZm9yIG1lLg0KPiAN
-Cj4gVGhhbmtzLg0KDQpJIGZvdW5kIHRoYXQgbm90aWZ5X2luaXRpYWxfc3RhdGVfZG9uZSgpIHVz
-ZXMgZXJyID0gLUVNU0dTSVpFLCBzbyB0aGUgZmlyc3QgcGxhY2Ugc2hvdWxkDQpyZXR1cm4gLUVN
-U0dTSVpFIG5vdCAtRU5PTUVNLiBTb3JyeS4NCg==
+On a typical end product, a vendor may choose to secure some regions in
+the NAND memory which are supposed to stay intact between FW upgrades.
+The access to those regions will be blocked by a secure element like
+Trustzone. So the normal world software like Linux kernel should not
+touch these regions (including reading).
+
+So this series adds a property for declaring such secure regions in DT
+so that the driver can skip touching them. While at it, the Qcom NANDc
+DT binding is also converted to YAML format.
+
+Thanks,
+Mani
+
+Changes in v10:
+
+* Added Rob's review tag for binding
+
+Changes in v9:
+
+Based on review comments from Miquel:
+
+* Fixed the secure-regions check
+* Renamed the function to nand_region_is_secured() and used bool return
+* Moved the parsing function to nand_scan()
+
+* Added a patch to fix nand_cleanup in qcom driver
+
+Changes in v8:
+
+* Reworked the secure region check logic based on input from Boris
+* Removed the check where unnecessary in rawnand core.
+
+Changes in v7:
+
+* Made "size" u64 and fixed a warning reported by Kernel test bot
+
+Changes in v6:
+
+* Made use of "size" of the regions for comparision
+* Used "secure" instead of "sec"
+* Fixed the sizeof parameter in of_get_nand_secure_regions()
+
+Changes in v5:
+
+* Switched to "uint64-matrix" as suggested by Rob
+* Moved the whole logic from qcom driver to nand core as suggested by Boris
+
+Changes in v4:
+
+* Used "uint32-matrix" instead of "uint32-array" as per Rob's review.
+* Collected Rob's review tag for binding conversion patch
+
+Changes in v3:
+
+* Removed the nand prefix from DT property and moved the property parsing
+  logic before nand_scan() in driver.
+
+Changes in v2:
+
+* Moved the secure-regions property to generic NAND binding as a NAND
+  chip property and renamed it as "nand-secure-regions".
+
+Manivannan Sadhasivam (4):
+  dt-bindings: mtd: Convert Qcom NANDc binding to YAML
+  dt-bindings: mtd: Add a property to declare secure regions in NAND
+    chips
+  mtd: rawnand: Add support for secure regions in NAND memory
+  mtd: rawnand: qcom: Add missing nand_cleanup() in error path
+
+ .../bindings/mtd/nand-controller.yaml         |   7 +
+ .../devicetree/bindings/mtd/qcom,nandc.yaml   | 196 ++++++++++++++++++
+ .../devicetree/bindings/mtd/qcom_nandc.txt    | 142 -------------
+ drivers/mtd/nand/raw/nand_base.c              | 107 +++++++++-
+ drivers/mtd/nand/raw/qcom_nandc.c             |   1 +
+ include/linux/mtd/rawnand.h                   |  14 ++
+ 6 files changed, 324 insertions(+), 143 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+
+-- 
+2.25.1
+
