@@ -2,214 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3D54351E8D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D64351DAD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236996AbhDASnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:43:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37852 "EHLO
+        id S240781AbhDASb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:31:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234651AbhDASVF (ORCPT
+        with ESMTP id S238593AbhDASJk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:21:05 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7774C02259A;
-        Thu,  1 Apr 2021 08:23:32 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id b10so2585657iot.4;
-        Thu, 01 Apr 2021 08:23:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vx2Zm40GpoQXIGWSyhXgEsbGdSJ2UlNy5Co5SqD5faA=;
-        b=cPACo/4g9NO8OMR7+5BrAd5ie57tOrjM7cwUv7G6r12qP6IK3RyjsYVegXy5ekvk2D
-         GPpLT+REh/4iKj0swU9PpgBkWlaUla2ZBVNri/8N8v6Y3RqCXSlrWJQ+MAIqKfr5oubv
-         38y6+mrNoY527f+1Goub7+MaF+DqLgNIo4XSquc97l7dahtFTR1s3myaTkrn292Ju7PE
-         lS/b7ukSmNa1y+XqY27eiY8E0D0ZcEes5GG1vb3ufwq4GjozuyvWazdlwWUQdwR2HXAz
-         svJsfHahHNBbIwgMyyDzOOoLiwIxWMOwUkTYdAQkbOf8xm79M9DeU3AtomQzSuW7ET0d
-         d2zA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vx2Zm40GpoQXIGWSyhXgEsbGdSJ2UlNy5Co5SqD5faA=;
-        b=LnJXJ0zAAmLIyyfgDktM63TfuYKVdAX2LZE+dYNLxQCGEszQC9z1LurjHPvOOJkh2U
-         5HGO3rOQ0gSp0kEFELpQ4gfTSfk9+CCARdzYDkSrJlIPxpOMjjTHpfbPBN4amrJUMjIc
-         wcxatLHG0R8kSsbwZz41sFo6n+atdDQ+h3TrV+da7kY8cJAPm9CojNmzpHgbSO8N9YF3
-         ALKMgHULLG3+jW8BWC19mxEmHnWViHC6YDXW5cxMGAG7CWhjjDOGs+z3ui6NKa9Icsf7
-         EBVVa9reUdHWUt1EOauKlga7c+qP7GwM3OMDRPNxutVdt6xfH/sVKvWB0MhzXw5fTbZm
-         cZPA==
-X-Gm-Message-State: AOAM532ydVZYvmhZ2Jb6NlxXtIm6y51GwXxkmFVALq9gaPrlF68TEaKE
-        si8rRiwTn5KLIvsp5nRpaol2eg2fTmkpMacNiq8=
-X-Google-Smtp-Source: ABdhPJwZpj7cQXPzU+FufA5B4amLrzxDD62b8BAP9GW38X1JPaYKGXOU0i40Mj7ZBNv3Y5B3gUSqFvh+tBSfbCr5akM=
-X-Received: by 2002:a5d:9d01:: with SMTP id j1mr7105410ioj.195.1617290612006;
- Thu, 01 Apr 2021 08:23:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210322185816.27582-1-nsaenz@kernel.org> <20210322185816.27582-5-nsaenz@kernel.org>
- <401100ea-90ad-57b1-50da-967118a090da@i2se.com> <78dec30c052e9bb76e52c38f3da5af371e5d65f5.camel@suse.de>
- <2d2a2638-8213-5d6e-0a3a-927ed5bb2ed7@i2se.com> <c7c8e20d3d11c7d6cd203797c5faffa8a4d202a6.camel@suse.de>
-In-Reply-To: <c7c8e20d3d11c7d6cd203797c5faffa8a4d202a6.camel@suse.de>
-From:   Alan Cooper <alcooperx@gmail.com>
-Date:   Thu, 1 Apr 2021 11:23:20 -0400
-Message-ID: <CAOGqxeUxOA_s6=KUh_XWFtRF_EWZgQH_y2MEdxUeDQTYMeb+3A@mail.gmail.com>
-Subject: Re: [PATCH 4/4] ARM: dts: Fix-up EMMC2 controller's frequency
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Stefan Wahren <stefan.wahren@i2se.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        linux-rpi-kernel@lists.infradead.org,
-        Florian Fainelli <f.fainelli@gmail.com>, phil@raspberrypi.com,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        ": Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 1 Apr 2021 14:09:40 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C0CFC0225A6;
+        Thu,  1 Apr 2021 08:27:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Mime-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0Rh/o3WGiI9T1gSDcX8qs2RqGvoMWR3ll+0rzFebk0M=; b=UPcRZXu87DG7BqpzN1f44UaSb2
+        Y6bGfpXgdxcWPG/2suvme6+kyRwVfhKHaVtrKTLYOoFYxfuv9ha/JXTM8DjRfMxisz2+zsTB0hMU1
+        OI8d+1BBMWmiFcU3A8xPC7xAE4E0giXUC/vnoN2SN+/WaBY58G8OKzTRUis/UBYf5v9FtaH0CqnZo
+        jivB2HleTY6JJjTzTRGUlfd8sE545gvw1PlYcPSgLt393bLysW9ZPKnz5LKOYD5Iq25Zdbq4ECMyn
+        TQpUj/PGUHvBG6SHWlDmCbXcQRyjb3OZ8OJlMsEs2PIQxXPrYmDUOXUB/uR/VrQN5iT/5OYa1DtBg
+        hU4EzkJQ==;
+Received: from dyn-234.woodhou.se ([90.155.92.234])
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lRzEI-00A1K8-6V; Thu, 01 Apr 2021 15:27:31 +0000
+Message-ID: <1b37ba872b4d2e6186f8e172b95c36d92153d952.camel@infradead.org>
+Subject: Re: [EXTERNAL] [PATCH 2/2] KVM: x86: disable interrupts while
+ pvclock_gtod_sync_lock is taken
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     mtosatti@redhat.com, vkuznets@redhat.com,
+        syzbot+b282b65c2c68492df769@syzkaller.appspotmail.com
+Date:   Thu, 01 Apr 2021 16:27:29 +0100
+In-Reply-To: <20210330165958.3094759-3-pbonzini@redhat.com>
+References: <20210330165958.3094759-1-pbonzini@redhat.com>
+         <20210330165958.3094759-3-pbonzini@redhat.com>
+Content-Type: multipart/signed; micalg="sha-256";
+        protocol="application/x-pkcs7-signature";
+        boundary="=-py4ZqdinrzMRuQwZTg/A"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nicolas,
 
-Sorry, I just noticed this thread.
-This is a known bug in some newer Arasan cores.
-The problem happens when the difference between the core clock and the
-bus clock is too great.
-Limiting the clock to 200KHz minimum should be a good fix.
-In my experience, it's only eMMC that needs the clock to be retried
-below 400KHz and not SD or SDIO. That's because the CMD signal for
-eMMC starts out as open-drain during identification and the size of
-the pull-up on the CMD signal can require the <400KHz clock. Once eMMC
-is out of identification mode the CMD signal is switched to push-pull
-and can run at much higher clock rates.
-I don't think that SD and SDIO have any open-drain signals, so they
-shouldn't need to retry at slower clock speeds.
-I'm trying to get more detail on the bug, like the exact ratio of core
-clock to bus clock that causes the problem. When I first found this
-bug I was told that the failure would not happen at 200KHz, but we
-were using a 405MHz core clock.
+--=-py4ZqdinrzMRuQwZTg/A
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-One other question. Why are you using polling for the SD card, this
-newer controller supports the interrupt driven "Card Inserted" signal
-and avoids wasting time polling?
+On Tue, 2021-03-30 at 12:59 -0400, Paolo Bonzini wrote:
+> @@ -2686,13 +2688,13 @@ static int kvm_guest_time_update(struct
+> kvm_vcpu *v)
+>          * If the host uses TSC clock, then passthrough TSC as stable
+>          * to the guest.
+>          */
+> -       spin_lock(&ka->pvclock_gtod_sync_lock);
+> +       spin_lock_irqsave(&ka->pvclock_gtod_sync_lock, flags);
+>         use_master_clock =3D ka->use_master_clock;
+>         if (use_master_clock) {
+>                 host_tsc =3D ka->master_cycle_now;
+>                 kernel_ns =3D ka->master_kernel_ns;
+>         }
+> -       spin_unlock(&ka->pvclock_gtod_sync_lock);
+> +       spin_unlock_irqrestore(&ka->pvclock_gtod_sync_lock, flags);
+>=20
+>         /* Keep irq disabled to prevent changes to the clock */
+>         local_irq_save(flags);
 
-Al
+That seems a little gratuitous at the end; restoring the flags as part
+of the spin_unlock_irqrestore() and then immediately calling
+local_irq_save().
+
+Is something going to complain if we just use spin_unlock() there and
+then later restore the flags with the existing local_irq_restore()?
+
+Or should we move the local_irq_save() up above the existing
+spin_lock() and leave the spin lock/unlock as they are?
+
+--=-py4ZqdinrzMRuQwZTg/A
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
+ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
+OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
+AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
+RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
+cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
+uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
+Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
+Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
+xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
+BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
+dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
+LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
+Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
+Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
+KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
+YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
+nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
+PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
+7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
+Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
+MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
+NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
+/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
+0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
+vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
+ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
+ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
+CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
+BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
+aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
+bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
+bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
+LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
+CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
+W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
+vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
+gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
+RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
+jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
+b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
+AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
+BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
++bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
+WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
+aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
+CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
+u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
+RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
+QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
+b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
+cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
+SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
+0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
+KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
+E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
+M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
+jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
+yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
+gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
+R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
+ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEw
+NDAxMTUyNzI5WjAvBgkqhkiG9w0BCQQxIgQgTJVinczhpmJkBGTSot9dQCMGbwqmfbgyY+xlJzA3
+U4Ywgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
+TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
+PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
+aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
+DQEBAQUABIIBAB3jF3FmJMvMAH1aRGwBJF3mWY/scHhoBjRz7nSjzXmYnhY83mewy5GVhNOOZPUv
+XTvId5CiResozLrTEoiz3bJzqdFgoMQPFLvCOEGLKVA94QjctJTQDE2+cRZmRHiocD51rktm3RaH
+/fbP0+FMtr6fuP5eHswH8/AePez6DngkiNRrOhpWUEujpaXjl72PpEHUg8fNQxBp7mIMuzuaf9e2
+vUVbtY4wS1GFwCxAr4QulFyp15kVIJOt/SZD+KwC4fe17mmNZomLseoviX6Z5faM7P225iwujkt9
+8K0td2luG0FynXZvCtetFBgtemr/ZeBxJzM3OfJJdQZ3+tWady8AAAAAAAA=
 
 
-On Fri, Mar 26, 2021 at 12:17 PM Nicolas Saenz Julienne
-<nsaenzjulienne@suse.de> wrote:
->
-> On Thu, 2021-03-25 at 20:11 +0100, Stefan Wahren wrote:
-> > Am 24.03.21 um 16:34 schrieb Nicolas Saenz Julienne:
-> > > Hi Stefan,
-> > >
-> > > On Wed, 2021-03-24 at 16:16 +0100, Stefan Wahren wrote:
-> > > > Hi Nicolas,
-> > > >
-> > > > Am 22.03.21 um 19:58 schrieb Nicolas Saenz Julienne:
-> > > > > From: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> > > > >
-> > > > > Force emmc2's frequency to 150MHz as the default 100MHz (set by FW)
-> > > > > seems to interfere with the VPU clock when setup at frequencies bigger
-> > > > > than 500MHz (a pretty common case). This ends up causing unwarranted
-> > > > > SDHCI CMD hangs  when no SD card is present.
-> > > > >
-> > > > > Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
-> > > > > ---
-> > > > >  arch/arm/boot/dts/bcm2711-rpi-4-b.dts | 6 ++++++
-> > > > >  1 file changed, 6 insertions(+)
-> > > > >
-> > > > > diff --git a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts b/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-> > > > > index 3b4ab947492a..9aa8408d9960 100644
-> > > > > --- a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-> > > > > +++ b/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-> > > > > @@ -257,6 +257,12 @@ &emmc2 {
-> > > > >         vqmmc-supply = <&sd_io_1v8_reg>;
-> > > > >         vmmc-supply = <&sd_vcc_reg>;
-> > > > >         broken-cd;
-> > > > > +       /*
-> > > > > +        * Force the frequency to 150MHz as the default 100MHz seems to
-> > > > > +        * interfere with the VPU clock when setup at frequencies bigger than
-> > > > > +        * 500MHz, causing unwarranted CMD hangs.
-> > > > > +        */
-> > > > > +       clock-frequency = <150000000>;
-> > > > i don't want to bike-shed here, but is there any chance to solve this in
-> > > > clk-bcm2835 in a less hacky way?
-> > > What do you have in mind?
-> > Sorry, nothing specific.
-> > >
-> > > All I can think of is adding some kind of heuristic to the clock's prepare()
-> > > callback. That said, I don't feel it would be a better solution than this.
-> >
-> > Based on my limited knowledge and an old SD card specification, all
-> > possibly connected devices could have different frequencies. So my
-> > concern here is, that in case we limit the frequency to a specific value
-> > we could break things just to suppress a warning.
->
-> SDHCI should be able to handle up to 233MHz IIRC, and there are divisors
-> available, it depends on the implementation but the worst kind provide /2^n.
-> Not perfect, but good enough for things to work.
->
-> Now, I've been having a deeper look into how clocks are handled, and found two
-> new clues:
->
->  - First of all RPi4's sdhci-iproc needs SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN,
->    that is, the controller isn't properly identifying the clock frequency fed
->    into it, and defaults to saying it's configured at 100MHz. I'm not an SDHCI
->    expert, so it's possible changing frequencies also needs a special operation
->    to recalculate this variable. But this was making all internal calculations
->    wrong when paired with this series.
->
->  - With this flag set SDHCI's core now properly calculates divisor values based
->    on whatever clock frequency I set in DT. And guess what, the issue reappears
->    even when running on 150MHz. It turns out, as I had some debugging enabled,
->    the issue only happens when the controller is configured at 100KHz (that
->    only happens while running the card detect thread).
->
-> So, I can now do this (note that for card detection try to communicate with the
-> card starting at 400KHz down to 100KHz in 100KHz steps):
->
-> ----->8-----
->
-> diff --git a/drivers/mmc/host/sdhci-iproc.c b/drivers/mmc/host/sdhci-iproc.c
-> index 536c382e2486..e5a5de63f347 100644
-> --- a/drivers/mmc/host/sdhci-iproc.c
-> +++ b/drivers/mmc/host/sdhci-iproc.c
-> @@ -173,6 +173,11 @@ static unsigned int sdhci_iproc_get_max_clock(struct sdhci_host *host)
->                 return pltfm_host->clock;
->  }
->
-> +static unsigned int sdhci_iproc_bcm2711_get_min_clock(struct sdhci_host *host)
-> +{
-> +       return 200000;
-> +}
-> +
->  static const struct sdhci_ops sdhci_iproc_ops = {
->         .set_clock = sdhci_set_clock,
->         .get_max_clock = sdhci_iproc_get_max_clock,
-> @@ -271,13 +276,15 @@ static const struct sdhci_ops sdhci_iproc_bcm2711_ops = {
->         .set_clock = sdhci_set_clock,
->         .set_power = sdhci_set_power_and_bus_voltage,
->         .get_max_clock = sdhci_iproc_get_max_clock,
-> +       .get_min_clock = sdhci_iproc_bcm2711_get_min_clock,
->         .set_bus_width = sdhci_set_bus_width,
->         .reset = sdhci_reset,
->         .set_uhs_signaling = sdhci_set_uhs_signaling,
->  };
->
-> ----->8-----
->
->  Which is rather nicer than what this series introduces. But I can't still
->  explain why configuring the controller at 100KHz is causing the hangs (while
->  having the core clock setup at 500MHz), and I'm not sure if excluding 100KHz
->  from the polling frequency list is going to break support for older SD cards.
->
->  Regards,
->  Nicolas
->
->
+--=-py4ZqdinrzMRuQwZTg/A--
+
