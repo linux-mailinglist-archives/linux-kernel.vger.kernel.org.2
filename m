@@ -2,111 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9235351092
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 10:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D21351095
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 10:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233348AbhDAIGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 04:06:37 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:28657 "EHLO m43-7.mailgun.net"
+        id S233514AbhDAIHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 04:07:12 -0400
+Received: from mx1.tq-group.com ([93.104.207.81]:12465 "EHLO mx1.tq-group.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232565AbhDAIGF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 04:06:05 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617264365; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=IfL9i5EThcXAVj5yr7daU1/owcdLSXTZKtg98zUYSuM=; b=XDibQnTdbi6r9QDDrUts1JnXqivsEqn5SBfB+YG7shpT2pwddeEAJnsYxCfL2mfzUSE6p1qv
- Ryj7CnI4mnYW1tHztQZGqUqYtrIo790/D7M3lYKbD2TB6zqzSQRBAaqKUc7K8MOoshQqlpbG
- 3RteLn+3J6EL42u9FZwijN89lWQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 60657ee22cc44d3aeaf43840 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 01 Apr 2021 08:05:54
- GMT
-Sender: hangl=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B44DDC43461; Thu,  1 Apr 2021 08:05:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.239.97.70] (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hangl)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A6702C433C6;
-        Thu,  1 Apr 2021 08:05:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A6702C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hangl@codeaurora.org
-Subject: Re: [PATCH] binder: tell userspace to dump current backtrace when
- detecting oneway spamming
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     tkjos@android.com, maco@android.com, arve@android.com,
-        joel@joelfernandes.org, christian@brauner.io, hridya@google.com,
-        surenb@google.com, rdunlap@infradead.org,
-        linux-kernel@vger.kernel.org
-References: <1617176056-1440-1-git-send-email-hangl@codeaurora.org>
- <YGQoTPnndiJ5+mk3@kroah.com>
-From:   Hang Lu <hangl@codeaurora.org>
-Message-ID: <5035e2d0-8093-5570-88e0-01c81b9ae6ed@codeaurora.org>
-Date:   Thu, 1 Apr 2021 16:05:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-MIME-Version: 1.0
-In-Reply-To: <YGQoTPnndiJ5+mk3@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S230291AbhDAIGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 04:06:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1617264415; x=1648800415;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=JvK38X2egqiefDWRwDTzm+i6MajAYS5riqwtUmLVTBQ=;
+  b=AJEFl7Sn0ZYlklsNW1UEDFlswI9GpYwmPuVYtocwGEH/X1vfK9honvZU
+   nz5CjGjJXQfMee9ojWJ37zSEC8XfyEPaL5fJBq5mi+Robd9HTNo89x90w
+   Qu3t14C2hL8eG+ciM5xOnhdDZE9gsztCXlBcftW6hLZHswxSkGPA4BJ+S
+   83wGnA63LE9Eo8LXj9wzJ9IuW91HOAFsBMRwYjWcHSqmYCdrBVY8+giRY
+   dNrhSXfQmYZgLIMEWCO6Km3lqMQQrcXEdUQ9kq8lfSK+xo76N2oUIhKuu
+   CmwmaxMgpSDe5p9yOnQ7dQlB6p5mAcm+UtVXUBF1pC7Fb6g/ktIAkpNtC
+   w==;
+IronPort-SDR: Kx60w8r8TnJMRw+yDMmJZFd11On0RZCLb4LPX7V7kP320tUgcKrrmzJdVmInHxMuG9v8KKBBmu
+ EgFPaUftGi0s6nHx0OxOPWRXiYp2KT1pua8CCoMMjmfFGCUe1YsT8lewD3PcZWtNCGSPK+aMmN
+ z5WrO/+iUkP6BhiI0Ii5QbU8wc6iiGe7xeo4Gv86vkwRmYUd7cnoNRqkOWM3vcT3RxWiXi6YHC
+ JMQ7TraGS1Ht1x+jgIjzzG61OMxOyIqBUUu5nPtvvxa0AHsAfsOwPotRgJ8vRuKbPYzBpk4IHl
+ S8E=
+X-IronPort-AV: E=Sophos;i="5.81,296,1610406000"; 
+   d="scan'208";a="16758882"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 01 Apr 2021 10:06:50 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Thu, 01 Apr 2021 10:06:50 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Thu, 01 Apr 2021 10:06:50 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1617264410; x=1648800410;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=JvK38X2egqiefDWRwDTzm+i6MajAYS5riqwtUmLVTBQ=;
+  b=EgZES/zMRuCIf/LSH5FFipGT7TSAQ1I3e0+V+wzbR80m4qFf50XM1JZl
+   YTFRdVtM8cHiNvXy24WcgSsBrmYx7zYlEOmcAfNCLQ6bv6FkJVQJWkmyF
+   SHWqA6lSX/d7ynFb4CLZWljyCfhqvmCEl85sVWpZ6vsa+BKX05GwC1ubt
+   tymI0Iy4emx23g/3cl7gkm6g/z9YP6kmgQEicMGBi2aMpEBihw08J6t+m
+   SAw2E2SuAaO+ZykSU2XDfiK1442qh52mefcYJS65lrfTWrCiLM2B6l5v+
+   QVEl7hkTSVS0VSII1qntPjBzTRciDQv67fF3M1tLffTkWR+bJfQ8kRnm8
+   g==;
+IronPort-SDR: GNwTxHPp0HjhOq+w7b8gURPaEtsTZa/Wv2HW63XfMaiLRZgOk6pZQAjh91FKGnw9CFawcsadol
+ L8HJ4jEYT1liO7BLgcomj/wxOavrGqsE8A/ciKJkMHYqACbn1AhWZnEBbE4PJLvaoH0DIWv4+E
+ GL6pT0UL2cUqjJZsuV5xfD8o1dXrGEHaqcnAY8caK8X4L2Q/bWKfRXTktJXGbViOA0QBSJ6vIS
+ mea6CY2tpzMqvE0X5UMN738CsRJ/4RuptWh2nqdOaaWL6U5rtKEsAKCr6/LPnWks93Itz0YAD1
+ 5g0=
+X-IronPort-AV: E=Sophos;i="5.81,296,1610406000"; 
+   d="scan'208";a="16758881"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 01 Apr 2021 10:06:50 +0200
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 26F8D280070;
+        Thu,  1 Apr 2021 10:06:50 +0200 (CEST)
+X-CheckPoint: {60657F17-10-B70C521D-D627A946}
+X-MAIL-CPID: 7A1E7E5013B3DDF7CDC4AAEFACC49D7A_0
+X-Control-Analysis: str=0001.0A782F27.60657F1A.0056,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0
+Message-ID: <35e8c3ce5d4265b4e7294b4296c60484aab6adbc.camel@ew.tq-group.com>
+Subject: Re: [PATCH 3/3] mfd: tqmx86: add support for TQMxE40M
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Lee Jones <lee.jones@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Thu, 01 Apr 2021 10:06:47 +0200
+In-Reply-To: <20210401080437.GM2916463@dell>
+References: <cover.1617189926.git.matthias.schiffer@ew.tq-group.com>
+         <3c19d714645f788913956223097adc360ceb6203.1617189926.git.matthias.schiffer@ew.tq-group.com>
+         <CAHp75Vdk4rxiD_nm8Cb53oTYNvMqkAOM4U5zEn5tchtptQZEBw@mail.gmail.com>
+         <83d7ea27b27225727fec7b077efe1a67ba1184a9.camel@ew.tq-group.com>
+         <CAHp75Vc5Nw+GJ4tFeciYZQhJ_NbRZMJjJNcWeFq7nOuAOe0=jQ@mail.gmail.com>
+         <20210401080437.GM2916463@dell>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/31/2021 3:44 PM, Greg KH wrote:
-> On Wed, Mar 31, 2021 at 03:34:16PM +0800, Hang Lu wrote:
->> When async binder buffer got exhausted, some normal oneway transaction
->> will also be discarded and finally caused system/app stop. By that time,
->> the binder debug information we dump may not relevant to the root cause.
->> And this issue is difficult to debug if without the backtrace of thread
->> sending spam.
->>
->> This change will send BR_ONEWAY_SPAM_SUSPECT to userspace when detecting
->> oneway spamming, request to dump current backtrace. The detection will
->> happened only once when exceeding the threshold (target process dips
->> below 80% of its oneway space, and current process is responsible for
->> either more than 50 transactions, or more than 50% of the oneway space).
->> And the detection will restart when the async buffer has returned to a
->> healthy state.
->>
->> Signed-off-by: Hang Lu <hangl@codeaurora.org>
->> ---
->>  drivers/android/binder.c            | 25 ++++++++++++++++++++++---
->>  drivers/android/binder_alloc.c      | 15 ++++++++++++---
->>  drivers/android/binder_alloc.h      |  8 +++++++-
->>  drivers/android/binder_internal.h   |  1 +
->>  include/uapi/linux/android/binder.h |  8 ++++++++
->>  5 files changed, 50 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
->> index c119736..28ceaf9 100644
->> --- a/drivers/android/binder.c
->> +++ b/drivers/android/binder.c
->> @@ -87,6 +87,7 @@ static DEFINE_SPINLOCK(binder_dead_nodes_lock);
->>  static struct dentry *binder_debugfs_dir_entry_root;
->>  static struct dentry *binder_debugfs_dir_entry_proc;
->>  static atomic_t binder_last_id;
->> +static bool oneway_spam_detection_enabled;
+On Thu, 2021-04-01 at 09:04 +0100, Lee Jones wrote:
+> On Wed, 31 Mar 2021, Andy Shevchenko wrote:
 > 
-> Why is this a "whole system" value and not a "per binder instance"
-> value?  You just allowed one binder instance to affect another one,
-> which does not seem like a good idea to me :(
+> > On Wed, Mar 31, 2021 at 4:33 PM Matthias Schiffer
+> > <matthias.schiffer@ew.tq-group.com> wrote:
+> > > On Wed, 2021-03-31 at 15:37 +0300, Andy Shevchenko wrote:
+> > > > On Wed, Mar 31, 2021 at 2:38 PM Matthias Schiffer
+> > > > <matthias.schiffer@ew.tq-group.com> wrote:
+> > 
+> > ...
+> > 
+> > > > > +               return 24000;
+> > > > 
+> > > > AFAICS it will return 24 MHz for "Unknown" board. Is it okay to be so brave?
+> > > 
+> > > As noted in the commit message, our hardware developers intend to use
+> > > 24 MHz for all future x86 SoMs.
+> > 
+> > What may go wrong in the future?.. (rhetorical question, obviously)
+> 
+> My preference would be to be explicit.
+> 
+> Rather than support boards implicitly i.e. by accident.
+> 
 
-Sorry for the late reply. Actually I add this as it needs to be enabled to protect against user-space that doesn't understand the new command, so I make it a global setting. But making this flag per-proc will gain a finer control granularity, so I'll follow your suggestion and submit a v2 patch, thanks!
-
-Regards,
-Hang Lu
+How about logging a warning for unknown boards, but still returning
+24 MHz?
 
