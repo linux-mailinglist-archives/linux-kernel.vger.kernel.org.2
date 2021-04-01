@@ -2,119 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E14351B19
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3779C351B3A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238476AbhDASG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:06:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26940 "EHLO
+        id S236132AbhDASG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:06:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22542 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237309AbhDARvU (ORCPT
+        by vger.kernel.org with ESMTP id S234724AbhDARwT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:51:20 -0400
+        Thu, 1 Apr 2021 13:52:19 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617299480;
+        s=mimecast20190719; t=1617299539;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6Di0BWBiR9j8X6GwMiIH6dAiJ9FfCbmkOlLWEvf+m8I=;
-        b=jQOthO5RBuy8EAUGTdzAx9QbusbJQKsbUwktEdu4AdI/fqq+LZa2U4L+BoP52TKsyCTx1M
-        9VlVMl08S2xzU65a6YSHf3PcvPGi1Qu47GRlA3vM0cKuICVRjVU8cmCUW1JK1F2KykoXRa
-        rg/vhAHeINh2d2mSJxdfew9xz72f7vA=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-483-W5brmruLNO-UO12uvdFh7A-1; Thu, 01 Apr 2021 09:49:19 -0400
-X-MC-Unique: W5brmruLNO-UO12uvdFh7A-1
-Received: by mail-ej1-f69.google.com with SMTP id p11so2241711eju.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 06:49:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6Di0BWBiR9j8X6GwMiIH6dAiJ9FfCbmkOlLWEvf+m8I=;
-        b=NqqLrlH8QjgJb+s+/OoP0FQPTljbfJPFfU3t+v6Ncus+mRQEOcmiGE2Jw3L3188srt
-         Ayo3S5sGBPl9z+m/KuywrxuoiqwfO+eRppN1wN/6EryMImCTVfH9NTd6tngmb0oR+emW
-         N/oxI+RniaTS/ExQb2S3PaTivOlQ3D3O63pmOJqclVkR4z15fpEeGAYX9XKiWE0htJTf
-         edpEx0OhgFtfofPkSfjpvC15wCMHryXuoLoN4oljaaR4sq5TTr/ktAtsMbFy7NoyiYM3
-         /mprYOveRw9P7h8ipn0Noot/L/MPo9HEkDLGTzVlCPgJ1fA1mchyLw2ijpGqyiipZWrl
-         z5cA==
-X-Gm-Message-State: AOAM530sIO4ntZw7xnCLbCAqieRQ43MhBO/H0qxeudgq8+vKK7lswYh7
-        mq4AiT93TOln6hy0MBwYrspQS4x3kgqtZjjFUUCJ9nhp4LGaQemTbL/RNJ4c0e3tsux1/fTiihT
-        uhQ+YEjZc7gcxxwLXP0a1CEm7GTTphZPlMDW22GkGSrfF88p+q7uBdRHuQctYXOXfzx+oFf6gVw
-        mc
-X-Received: by 2002:a17:906:e48:: with SMTP id q8mr9366891eji.84.1617284957357;
-        Thu, 01 Apr 2021 06:49:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzQCqTJPlf5xHvtZrdLYGwFx8VHwJr7Nn508W2djrIkVNqJD9RRZhr4LvfkPbi+pedlY2rRgA==
-X-Received: by 2002:a17:906:e48:: with SMTP id q8mr9366872eji.84.1617284957182;
-        Thu, 01 Apr 2021 06:49:17 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id g21sm2822186ejd.6.2021.04.01.06.49.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Apr 2021 06:49:16 -0700 (PDT)
-Subject: Re: [PATCH 31/32] Documentation: update sysfs-platform_profile.rst
- reference
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Mark Pearson <markpearson@lenovo.com>,
-        linux-kernel@vger.kernel.org
-References: <cover.1617279355.git.mchehab+huawei@kernel.org>
- <828434d891e40234255e3f06c13827b7996b1ad1.1617279356.git.mchehab+huawei@kernel.org>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <e042f8f8-0ba1-098d-2503-8c319c3c2bf9@redhat.com>
-Date:   Thu, 1 Apr 2021 15:49:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        bh=J59mviOinQtGL5knvSCm5IlcQ3vnWMamNF8NZHi8YX8=;
+        b=fZfXPLpbm8pCVZs85AGWkDFp7+IKLrVvw2MyQg/3Td62LPZWXIbquRwe0+QEr8ddJHbkcH
+        KNT2N3T+GpLR/jkug3yYVEA8GqT5VCYVGz1SDQYPOSJ0jPUGbrLuaFEyyZ7hM/r3MeN70/
+        IZIRMH9w70Ik/VTwV3sdBmRWAOAncDo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-271-1HT9BmJQP1SZUDCW7XGgkw-1; Thu, 01 Apr 2021 09:49:48 -0400
+X-MC-Unique: 1HT9BmJQP1SZUDCW7XGgkw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4348C1009E29;
+        Thu,  1 Apr 2021 13:49:45 +0000 (UTC)
+Received: from krava (unknown [10.40.193.98])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 3A6B35C237;
+        Thu,  1 Apr 2021 13:49:40 +0000 (UTC)
+Date:   Thu, 1 Apr 2021 15:49:40 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     will@kernel.org, mathieu.poirier@linaro.org, leo.yan@linaro.org,
+        peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        namhyung@kernel.org, irogers@google.com, linuxarm@huawei.com,
+        kjain@linux.ibm.com, kan.liang@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        zhangshaokun@hisilicon.com, pc@us.ibm.com
+Subject: Re: [PATCH v2 2/6] perf test: Handle metric reuse in pmu-events
+ parsing test
+Message-ID: <YGXPdEAecos4iPVc@krava>
+References: <1616668398-144648-1-git-send-email-john.garry@huawei.com>
+ <1616668398-144648-3-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <828434d891e40234255e3f06c13827b7996b1ad1.1617279356.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1616668398-144648-3-git-send-email-john.garry@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Mar 25, 2021 at 06:33:14PM +0800, John Garry wrote:
 
-On 4/1/21 2:17 PM, Mauro Carvalho Chehab wrote:
-> The file name: Documentation/ABI/testing/sysfs-platform_profile.rst
-> should be, instead: Documentation/userspace-api/sysfs-platform_profile.rst.
-> 
-> Update its cross-reference accordingly.
-> 
-> Fixes: a2ff95e018f1 ("ACPI: platform: Add platform profile support")
-> Fixes: 8e0cbf356377 ("Documentation: Add documentation for new platform_profile sysfs attribute")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+SNIP
 
-Thanks, patch looks good to me:
+> +struct metric {
+> +	struct list_head list;
+> +	struct metric_ref metric_ref;
+> +};
+> +
+> +static int resolve_metric_simple(struct expr_parse_ctx *pctx,
+> +				 struct list_head *compound_list,
+> +				 struct pmu_events_map *map,
+> +				 const char *metric_name)
+> +{
+> +	struct hashmap_entry *cur, *cur_tmp;
+> +	struct metric *metric, *tmp;
+> +	size_t bkt;
+> +	bool all;
+> +	int rc;
+> +
+> +	do {
+> +		all = true;
+> +		hashmap__for_each_entry_safe((&pctx->ids), cur, cur_tmp, bkt) {
+> +			struct metric_ref *ref;
+> +			struct pmu_event *pe;
+> +
+> +			pe = metrcgroup_find_metric(cur->key, map);
+> +			if (!pe)
+> +				continue;
+> +
+> +			if (!strcmp(metric_name, (char *)cur->key)) {
+> +				pr_warning("Recursion detected for metric %s\n", metric_name);
+> +				rc = -1;
+> +				goto out_err;
+> +			}
+> +
+> +			all = false;
+> +
+> +			/* The metric key itself needs to go out.. */
+> +			expr__del_id(pctx, cur->key);
+> +
+> +			metric = malloc(sizeof(*metric));
+> +			if (!metric) {
+> +				rc = -ENOMEM;
+> +				goto out_err;
+> +			}
+> +
+> +			ref = &metric->metric_ref;
+> +			ref->metric_name = pe->metric_name;
+> +			ref->metric_expr = pe->metric_expr;
+> +			list_add_tail(&metric->list, compound_list);
+> +
+> +			rc = expr__find_other(pe->metric_expr, NULL, pctx, 0);
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+so this might add new items to pctx->ids, I think you need
+to restart the iteration as we do it in __resolve_metric
+otherwise you could miss some new keys
 
-Rafael, I assume you will merge this through your tree?
+jirka
 
-Regards,
+> +			if (rc)
+> +				goto out_err;
+> +		}
+> +	} while (!all);
+> +
+> +	return 0;
+> +
+> +out_err:
+> +	list_for_each_entry_safe(metric, tmp, compound_list, list)
+> +		free(metric);
+> +
+> +	return rc;
+> +
+> +}
 
-Hans
-
-> ---
->  include/linux/platform_profile.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/platform_profile.h b/include/linux/platform_profile.h
-> index a6329003aee7..e5cbb6841f3a 100644
-> --- a/include/linux/platform_profile.h
-> +++ b/include/linux/platform_profile.h
-> @@ -2,7 +2,7 @@
->  /*
->   * Platform profile sysfs interface
->   *
-> - * See Documentation/ABI/testing/sysfs-platform_profile.rst for more
-> + * See Documentation/userspace-api/sysfs-platform_profile.rst for more
->   * information.
->   */
->  
-> 
+SNIP
 
