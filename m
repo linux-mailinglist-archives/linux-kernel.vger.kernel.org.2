@@ -2,182 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A51E6351E17
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBDBC351C57
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238489AbhDASer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:34:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237207AbhDASNs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:13:48 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF08C0610E0;
-        Thu,  1 Apr 2021 05:43:55 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id u9so2665115ejj.7;
-        Thu, 01 Apr 2021 05:43:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lcEuUjal7BUJYrQNsQV7J457GVK5iZ7rvTt0MXCe5+Q=;
-        b=rlZS0vfzuisrsC0sE4xGWumAmDHrQ6etsWS90ZaIJslYpZfo6nFbCEdDy9xtu6eESC
-         6M+oqk1CgMA7FVQVZbemeodBX4f9+NVQLE4a2mIpJ34PXtej7Dsinby2fUGJAxfe46R5
-         LmPjgj4N27/YA+3buMUAh34HKh1UXr3gBBA5f8ECdJavkk2QFkQQjs8s3oxzTJeUPUxh
-         6Z9cpupZf55VP/Mzgxu3Z3mIGPmjyslUu8F95cbtdlAf5rBvG001MWNA9q+oLfZZlik4
-         zKnERHRC5m/jzQijpIg4APaPjFT6Udjrx89Pk7+UCXn40ygCQqMAA4/HIAs/Kt6h7PTO
-         ZQJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lcEuUjal7BUJYrQNsQV7J457GVK5iZ7rvTt0MXCe5+Q=;
-        b=tXJDJbNT12Onmscoyl+wdx/FXRONAhQzZihk9G62QsPgOUMO/tRDqr4fCfNg8BrDQ6
-         L2r+etA3co/DIE/4hM6l7S5W8sQjXb4qeujfgplM/eWwf56UFl9daQ0n6Ev+obEBpLrm
-         609032QvHnnthYQ7ZsAb0SSb8bvbGN5PLO9fZrP5cwpOX6pO/xMoaBVWmtUqNIINzyq8
-         whF89NtakB5hZR0ltGslFcraa/FnMPFV5UZ8aGhdz/+JFd5XvBbnyOGEWi8+bqY2zKB4
-         RXGV43vmnHCQffCBjzgNrmjru9wy8edB6rUhva01GnmnE4N2OMH05xFvJGL3D/VmW6w4
-         +kGQ==
-X-Gm-Message-State: AOAM532VcUO9jAcRem1Ly8XtptecXrJHNFwV9v4O8tFyeYl/EA5RFBg4
-        EHf9YJ2FHtIZpbXqA+e5ry8=
-X-Google-Smtp-Source: ABdhPJzh2FdSgrW53c8lzHBZm4eQi/j46u2X1Xif3YbuJrWU72pOfoKnRuzgE/PwPK6Yvy8jZt38Ow==
-X-Received: by 2002:a17:906:7c57:: with SMTP id g23mr8694125ejp.195.1617281034028;
-        Thu, 01 Apr 2021 05:43:54 -0700 (PDT)
-Received: from localhost.localdomain (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
-        by smtp.gmail.com with ESMTPSA id v8sm3469939edq.76.2021.04.01.05.43.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 05:43:53 -0700 (PDT)
-From:   Bean Huo <huobean@gmail.com>
-To:     ulf.hansson@linaro.org, yoshihiro.shimoda.uh@renesas.com,
-        wsa+renesas@sang-engineering.com, adrian.hunter@intel.com
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bean Huo <beanhuo@micron.com>
-Subject: [PATCH v1 1/2] mmc: core: Let sanitize timeout readable/writable via sysfs
-Date:   Thu,  1 Apr 2021 14:43:42 +0200
-Message-Id: <20210401124343.102915-2-huobean@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210401124343.102915-1-huobean@gmail.com>
-References: <20210401124343.102915-1-huobean@gmail.com>
+        id S239575AbhDASQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:16:38 -0400
+Received: from elvis.franken.de ([193.175.24.41]:44820 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236822AbhDAR6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:58:46 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lRx0R-0006B4-00; Thu, 01 Apr 2021 15:05:03 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 0A5EDC2095; Thu,  1 Apr 2021 14:51:00 +0200 (CEST)
+Date:   Thu, 1 Apr 2021 14:51:00 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] MIPS: uaccess: Remove get_fs/set_fs call sites
+Message-ID: <20210401125100.GA9556@alpha.franken.de>
+References: <20210331115603.146159-1-tsbogend@alpha.franken.de>
+ <20210331115603.146159-4-tsbogend@alpha.franken.de>
+ <20210401063055.GB25514@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401063055.GB25514@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+On Thu, Apr 01, 2021 at 08:30:55AM +0200, Christoph Hellwig wrote:
+> On Wed, Mar 31, 2021 at 01:56:00PM +0200, Thomas Bogendoerfer wrote:
+> > +#define __get_user_nofault(dst, src, type, err_label)			\
+> > +do {									\
+> > +	int __gu_err;							\
+> > +									\
+> > +	__get_user_common(*((type *)(dst)), sizeof(type),		\
+> > +			  (__force type *)(src));			\
+> > +	if (unlikely(__gu_err))						\
+> > +		goto err_label;						\
+> > +} while (0)
+> > +
+> > +
+> > +static inline int __get_addr(unsigned long *a, unsigned long *p, bool user)
+> > +{
+> > +	if (user)
+> > +		__get_user_nofault(a, p, unsigned long, fault);
+> > +	else
+> > +		__get_kernel_nofault(a, p, unsigned long, fault);
+> > +
+> > +	return 0;
+> > +
+> > +fault:
+> > +	return -EFAULT;
+> > +}
+> 
+> Why can't these use plain old get_user and get_kernel_nofault?
+> You "optimize" away the access_ok / get_kernel_nofaul_allowed checks
+> here, but now use totally non-standard and possibly dangerous APIs.
 
-As the density increases, the 4-minute timeout value for
-disinfection is no longer feasible. At the same time, devices
-of different densities have different timeout values, and it is
-difficult to obtain a unified standard timeout value. Therefore,
-it is better to let the user controls its cleaning timeout value.
+thanks, I was too deep into the macro wormhole... using standard API
+makes this even look nicer. Posting v3 in a few minutes.
 
-Signed-off-by: Bean Huo <beanhuo@micron.com>
----
- drivers/mmc/core/mmc.c     | 33 +++++++++++++++++++++++++++++++++
- drivers/mmc/core/mmc_ops.c |  3 +--
- include/linux/mmc/card.h   |  1 +
- 3 files changed, 35 insertions(+), 2 deletions(-)
+Thomas.
 
-diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-index 8741271d3971..4e4b3592d3d6 100644
---- a/drivers/mmc/core/mmc.c
-+++ b/drivers/mmc/core/mmc.c
-@@ -28,6 +28,7 @@
- 
- #define DEFAULT_CMD6_TIMEOUT_MS	500
- #define MIN_CACHE_EN_TIMEOUT_MS 1600
-+#define MMC_SANITIZE_TIMEOUT_MS	(240 * 1000) /* 240s */
- 
- static const unsigned int tran_exp[] = {
- 	10000,		100000,		1000000,	10000000,
-@@ -835,6 +836,36 @@ static ssize_t mmc_dsr_show(struct device *dev,
- 
- static DEVICE_ATTR(dsr, S_IRUGO, mmc_dsr_show, NULL);
- 
-+static ssize_t sanitize_timeout_ms_show(struct device *dev,
-+					struct device_attribute *attr,
-+					char *buf)
-+{
-+	struct mmc_card *card = mmc_dev_to_card(dev);
-+	return sysfs_emit(buf, "%d\n", card->sanitize_timeout_ms);
-+}
-+
-+static ssize_t sanitize_timeout_ms_store(struct device *dev,
-+					 struct device_attribute *attr,
-+					 const char *buf, size_t len)
-+{
-+	struct mmc_card *card = mmc_dev_to_card(dev);
-+	unsigned int new;
-+	int ret;
-+
-+	ret = kstrtouint(buf, 0, &new);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (new == 0)
-+		return -EINVAL;
-+
-+	card->sanitize_timeout_ms = new;
-+
-+	return len;
-+}
-+static DEVICE_ATTR_RW(sanitize_timeout_ms);
-+
-+
- static struct attribute *mmc_std_attrs[] = {
- 	&dev_attr_cid.attr,
- 	&dev_attr_csd.attr,
-@@ -861,6 +892,7 @@ static struct attribute *mmc_std_attrs[] = {
- 	&dev_attr_rca.attr,
- 	&dev_attr_dsr.attr,
- 	&dev_attr_cmdq_en.attr,
-+	&dev_attr_sanitize_timeout_ms.attr,
- 	NULL,
- };
- ATTRIBUTE_GROUPS(mmc_std);
-@@ -1623,6 +1655,7 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
- 		card->ocr = ocr;
- 		card->type = MMC_TYPE_MMC;
- 		card->rca = 1;
-+		card->sanitize_timeout_ms = MMC_SANITIZE_TIMEOUT_MS;
- 		memcpy(card->raw_cid, cid, sizeof(card->raw_cid));
- 	}
- 
-diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
-index f413474f0f80..40a4f9e22d30 100644
---- a/drivers/mmc/core/mmc_ops.c
-+++ b/drivers/mmc/core/mmc_ops.c
-@@ -21,7 +21,6 @@
- 
- #define MMC_BKOPS_TIMEOUT_MS		(120 * 1000) /* 120s */
- #define MMC_CACHE_FLUSH_TIMEOUT_MS	(30 * 1000) /* 30s */
--#define MMC_SANITIZE_TIMEOUT_MS		(240 * 1000) /* 240s */
- 
- static const u8 tuning_blk_pattern_4bit[] = {
- 	0xff, 0x0f, 0xff, 0x00, 0xff, 0xcc, 0xc3, 0xcc,
-@@ -1025,7 +1024,7 @@ int mmc_sanitize(struct mmc_card *card)
- 	mmc_retune_hold(host);
- 
- 	err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL, EXT_CSD_SANITIZE_START,
--			 1, MMC_SANITIZE_TIMEOUT_MS);
-+			 1, card->sanitize_timeout_ms);
- 	if (err)
- 		pr_err("%s: Sanitize failed err=%d\n", mmc_hostname(host), err);
- 
-diff --git a/include/linux/mmc/card.h b/include/linux/mmc/card.h
-index f9ad35dd6012..9db0dcd9661e 100644
---- a/include/linux/mmc/card.h
-+++ b/include/linux/mmc/card.h
-@@ -273,6 +273,7 @@ struct mmc_card {
- 
- 	bool			reenable_cmdq;	/* Re-enable Command Queue */
- 
-+	unsigned int            sanitize_timeout_ms;
- 	unsigned int		erase_size;	/* erase size in sectors */
-  	unsigned int		erase_shift;	/* if erase unit is power 2 */
-  	unsigned int		pref_erase;	/* in sectors */
 -- 
-2.25.1
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
