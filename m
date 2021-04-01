@@ -2,282 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08D253510FE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 10:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C8B43510FB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 10:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233676AbhDAIic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 04:38:32 -0400
-Received: from mail-eopbgr130078.outbound.protection.outlook.com ([40.107.13.78]:34894
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233195AbhDAIiS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 04:38:18 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Pc675tHkb+z7knXXUS85FnXRSeSVLZf8LIhBp3xc+wSxSOLq8PRB2f8lu17EPz/Pi/DPcAdf6G0ba4wHzAavdGPu5aK9kWlg/lpGJwm8GkHKVt5VzhYCZ2rqlZLIhItBvR76aeTBj/btPuIWPRC2L66Qw58TVzkVHs87Su0VRg1YcoreyfAwM2T4Bb068SgcgDPXBAOq54rfszZfIpOsxh5nv6OT5+AraX2dQbZIn23fwH027I1OBspxvn2afBbvFQfJUuRUvy/TFZfNeFsI3XNFL1vVL7684P6QJanMLPurGHcxvEmMXAFBcXxfS4T94zZ/8DsRkjvr2DFF548KhA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qx7/f5KilkhTswljjwpfTP1FvazxmUqZQ0IOY54qz2M=;
- b=gad6fk8MENzOxpwL91D0jnGH8g/f4OAuDlsK5xP5BpQIXaKaJdQhT+vyb36wFDfphU4v1z3NlWmNbGaAhBXO0wcbbsjoBi68LMV7JC6g/SMrnMKco8WGcG4f+sqYlAYFpUG36ZVJtQYlTPWhID1ELNAUt4/NnaqQzfWEuUIAgJ7znZJdBpPeApN9JTixES7cRtfqMGvfA3hD1dQvTaU+bI5C6+2ukcgcUmnsqFgNKt1gXBOxezohx4fxjdZC9KOA2klIWNgT7CtcD6j/m2XkNkndZLF2u+y1SADuxKYkX/0ik3hQH1OW111ffq+6wdgAMWL0bZp2bXEqa5tC0AvHUA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qx7/f5KilkhTswljjwpfTP1FvazxmUqZQ0IOY54qz2M=;
- b=k8/hwogQVnznEkv+QVXgzqSooqBUiVz8Tg5P0rYAPdrhDKBnyL7PRkAYb41c2FXK53cEOAfuiu3WNp4PhFPBgMGKkVu1QlkeItL/AjLylnY9jm/8PX8IkHfyurQn/0vOnVOyrjVFz/5Y8vgxQ7tOxlSazvHGQ8wuWg449aM4C7w=
-Authentication-Results: ti.com; dkim=none (message not signed)
- header.d=none;ti.com; dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB3974.eurprd04.prod.outlook.com (2603:10a6:209:50::12)
- by AM7PR04MB7046.eurprd04.prod.outlook.com (2603:10a6:20b:113::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28; Thu, 1 Apr
- 2021 08:38:13 +0000
-Received: from AM6PR04MB3974.eurprd04.prod.outlook.com
- ([fe80::d5b8:9b56:794b:21ce]) by AM6PR04MB3974.eurprd04.prod.outlook.com
- ([fe80::d5b8:9b56:794b:21ce%7]) with mapi id 15.20.3999.027; Thu, 1 Apr 2021
- 08:38:13 +0000
-Message-ID: <1619db59285c707c60e3738c4fc287ebb7a6487a.camel@nxp.com>
-Subject: Re: [PATCH v5 2/5] phy: Add LVDS configuration options
-From:   Liu Ying <victor.liu@nxp.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     vkoul@kernel.org, robh+dt@kernel.org, a.hajda@samsung.com,
-        narmstrong@baylibre.com, Laurent.pinchart@ideasonboard.com,
-        jonas@kwiboo.se, jernej.skrabec@siol.net, airlied@linux.ie,
-        daniel@ffwll.ch, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        agx@sigxcpu.org, robert.chiras@nxp.com, martin.kepplinger@puri.sm,
-        robert.foss@linaro.org
-Date:   Thu, 01 Apr 2021 16:36:37 +0800
-In-Reply-To: <f078a133-de32-0e08-2d87-f2dde7c240ec@ti.com>
-References: <1616662832-27048-1-git-send-email-victor.liu@nxp.com>
-         <1616662832-27048-3-git-send-email-victor.liu@nxp.com>
-         <f078a133-de32-0e08-2d87-f2dde7c240ec@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: HKAPR03CA0019.apcprd03.prod.outlook.com
- (2603:1096:203:c9::6) To AM6PR04MB3974.eurprd04.prod.outlook.com
- (2603:10a6:209:50::12)
+        id S233615AbhDAIi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 04:38:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230284AbhDAIiD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 04:38:03 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE70C0613E6;
+        Thu,  1 Apr 2021 01:38:02 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id ay2so671356plb.3;
+        Thu, 01 Apr 2021 01:38:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/DR/oCvdUrivLyxVjX0k5t5viZTaG5ynlKBdZ6XK8yw=;
+        b=DigLtN+n47ZECxKDEDBm0jjd/+WlZN7IgCN/xHvrAdNSYQtIkAUW7+ofQ8xfZBpj2v
+         hmu7oy9Q0/dYIW1+mJC79XH/yRwwVSAijMsqN6nxFEx55vyZCATNO3bKTGcnPOQ92OpF
+         avWVuZYCWQQsrb7Z3+bsLGdB9n+BtHsWybs+dTsBRe2R7OtuIeRN2do5Xv1kFy9IOo1o
+         3M1WJ2deKgSDCVyjsYhBwiktQSDSPoHPYqSXrXXe/zpK7JrFQZyR6CGtXDDS688lA/Rs
+         ud7Kt39BPY2iBXYCKV9BDh9IztDOXF6QX+6z20PMjCOPnfvL3SPE9bAQ5bTrOwzuxzWp
+         O89g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/DR/oCvdUrivLyxVjX0k5t5viZTaG5ynlKBdZ6XK8yw=;
+        b=nKM16HZBC+gw2R3KGmnLxtFPzZ31jQpZeBcXaQrgazLFooO6NKU22lf5lLdEIp/64n
+         Mbpk6iWd5LTqvLm8aYQWYDql/Jp4T070QuQvh3TyYeTO4DaJ0tcrBhgTSTae4QgPWP3e
+         XXhK/y/FcQOA9AqZxUZiJZttzW05N6wM/A/LA8ZJY4TtKGC29YH1zydl2QxrSoiOIFkn
+         DrO8FUZ0n2Iia37fUkdySOD8+Ponbdfo/DbO9SWKx12+elVwJgpolq+uQmor3eYCEPr4
+         IR08y3yV/baslcO910LDXlp+zXAD24TwteiOMFwb+RIGkte9JZABqzkaJASBlGnuzQFM
+         1OLg==
+X-Gm-Message-State: AOAM5335PgpiodNpsyYCGX5KMLM9YXlWhreXDEhMqC8I/c9M6/k2iDpM
+        7vqJD7bJO4tjqNTZ7IAq3grXCIx0Zgirl+/jMoE=
+X-Google-Smtp-Source: ABdhPJy9tIhXmtaO9mcQAPSIZ87x41BYVA/mQb8L8/H9DJeVdXaSW5XcFHUXzVTFLyWkxfeZt9vTK3wDR8r9BtKHZpg=
+X-Received: by 2002:a17:902:ee02:b029:e6:5397:d79c with SMTP id
+ z2-20020a170902ee02b02900e65397d79cmr7139694plb.21.1617266282119; Thu, 01 Apr
+ 2021 01:38:02 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from blueberry (119.31.174.66) by HKAPR03CA0019.apcprd03.prod.outlook.com (2603:1096:203:c9::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.8 via Frontend Transport; Thu, 1 Apr 2021 08:38:07 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b4a4fb79-eadf-4b44-eaac-08d8f4e97cd9
-X-MS-TrafficTypeDiagnostic: AM7PR04MB7046:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM7PR04MB704653ED7A818FA19485C1F4987B9@AM7PR04MB7046.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FXL4LdNF683bx5+Ayosj+7tMV+7sOuEnbC1zFKgo4iUIBrmCVec5mADxSw9azhAeCOjQepLVD9QuppW3dUyd/8NNkejKxnVzjUAogJsLBflXwURENOaFY5mWOPBtZ5uu+51QdUozkDMIxesumWp/HM3XHEjPP2nJWrXZzfehPJRi9pA9kYka/tmlQDBaurFB+UUpyAbYiZa69HBPMbb0djy1zXqbZ7+LTqRKvicrhnAPIvIEvscktdNANJuJMEMx7O3gBikytrviTXr+aZ44F1ZnJ0h9rDJxbTRgMIc6v5i8PNn8kjaYsZOZxSsqRP0kP+QYgI3QoRTJqWvC+/DNn/GuMyers0C4MSNlR1cljKJWv+QlupNk8ZZt4tqYqoNgo7Js6BWMj8KzwUht2p/gnzh3Ey1X3NbcjeXFBSFJkk3Y0+caql/ApET6GQZ2aYj1ZkO+jTB94UoD0YIRGEegoOnn1gCqquBPTpUmwWcnMBI5SzBdUP3iGBFXozbVkTH5p8lAOjABYSodSNWjXqvqQNZCsznM/V53Kvl7yk/nzG03ecQJRwgNU2W6P7ZPlvWCD8f9gHU5+Ly57b6f0Df44ruT8gbX3Xa1YGhVevxFtFLbYWe2JoB5f2TEG15+364ZNnW6t5vY9z9b2xax8MgvpkaggBOgoc7W4AQTmEfaheY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB3974.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(366004)(396003)(39860400002)(346002)(2616005)(6496006)(956004)(53546011)(52116002)(8936002)(4326008)(478600001)(316002)(8676002)(38100700001)(7416002)(2906002)(83380400001)(6666004)(26005)(36756003)(66476007)(16526019)(186003)(6486002)(66556008)(66946007)(86362001)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?bnhLYVNRUkhlWFF0WFB1WTJ6ZHhpZ3dnTFNaOUxtb1ZURk4zVW13TzhkSEwy?=
- =?utf-8?B?Vko5bG1vWENtQ1A5Y2pMOHgyQ0Nsdm41bm9sd3UxUFRsRUZoVndYZlNpWHdE?=
- =?utf-8?B?QU1IK3RETkZseHBZdGVIbENxQnlqVFB2UVJJK21GaDZ4SW41VERDc0dIQWRW?=
- =?utf-8?B?a2d0eFp0dFFUOTRnd251bENEMWRKZjludWpJSmJQWSs2cWE4b3ltYTJ3NkhF?=
- =?utf-8?B?V3M4eXlkM3lLRHVJdDdvYkxQekZobnRLek1aUXhZVTYwTjVjbUQyRUc4VzhN?=
- =?utf-8?B?NjV4T2tnMXQ0TW5oNEo5amRtQVplbW9Yd1c2cXVWdVdvaWd1QzNvQm5QN1lU?=
- =?utf-8?B?OEJIckNZSWV5MERJeGM1Zy94NU1rSGFZSVBpcERYU1hzVXhkaXBhRm03eEpV?=
- =?utf-8?B?RDgwQW5nNDZPblNTYk52eEc4Q29nVjA0WDEyTkNFSjBRM2NYRWI5RzJNS1dq?=
- =?utf-8?B?OVhJQVlJcW1JT0pXQ2ZjZ2E5Nk9zb0ZZeFc1Z1JDQkhmMFZaMzN4aTRXMlF1?=
- =?utf-8?B?V3R2blhsWVhlU204YXFVeVoveDMwTUJzcmJDcDl1ZUVCY1JqUVF5WS9Bd1F5?=
- =?utf-8?B?cVZycGFRaGowVHZ1bjEzQVZVd0wwY0xqczVjMEovUjBwU3licUwwNkx4S1FX?=
- =?utf-8?B?Wm1CZ2FWMVdiaTdrdzZsSWVlZkNHckRjZzNML1FyWk1BcWlhMENTWkFJK0VU?=
- =?utf-8?B?WnFDeWlJV1lkRDBIZHFMWWN0YVZKM0x1YlRNakU2VElQcDdiTWVKMnM0d2Nj?=
- =?utf-8?B?N0h5ZzJkTTFqK0ErQkxwTS9NdVk5QXBTU2Ria1l1bE5HWVdFa0t6R1oxV3Iy?=
- =?utf-8?B?TWsxVjhhdkZxU1V3am8wMTlKb2d2elBucitFTW9WL2d4QW1aVDZucjJhc1NU?=
- =?utf-8?B?TWljREF1WlBtbjh4dEtnU2ttd2dEOHZRZWR3UW5EVnQwQ0Q5VXNHVXRJUDhW?=
- =?utf-8?B?ZjVqdkJlZXlqMkZVNVlpZVUrcmdDTXlpUjlQSXlZVUdHejFlQU5OSFh4c1R2?=
- =?utf-8?B?WldBZU1xdUdhSGE4RUkyRnNnNktXQzV2QlpQZ01hQ0lFUGNaZjFna2pPaGVL?=
- =?utf-8?B?azNidGV0ZGx3cm02RXZmK0FKbjd3ekUvQUVQMi9palZZVU5ra0RBc28vYVMv?=
- =?utf-8?B?MkJpU0hOQzcwSks0WFIxU01nelRtbTMvd29lakxBaTlzMXlNRDQ5dnNXc2wz?=
- =?utf-8?B?THl0c0oyR2pIa2hHTEZUYnJoOGMwN0EzeFAxNnQ3cmZJVC9oRXpvYjR4U0Ni?=
- =?utf-8?B?anZBVWxZS2lMa1dSRHNCbHU0cWxZUlJXVzNDM0tNbUVzSGJlUnNZSUlVeG8v?=
- =?utf-8?B?WUNmNlFLVEhPSjRQVzUxSE1IYU9LeHI3UGFadnNtSFg2ajM4L012b2c5Z1Vu?=
- =?utf-8?B?UUQ2RW5aZVNsa0kwSEFXOVpwbGxGaTlaUjMzM2ZBakVPNng4ZWp6L2dJTTNt?=
- =?utf-8?B?dXBSb05RS1JIUGdOK2FpTnF4bE9ORHR1NVIyUmhIeDU0ZEFvVnNnaUtjZXRz?=
- =?utf-8?B?ZXZXVE44VXI2TzN1K2dKbWxGcDJ6ZFB6cTNFZ3pOckhiOE0zVFJJNHFTZ1R3?=
- =?utf-8?B?aGJaRjhXdFlLZ1owZVFaV1VVZHdrUXI3UTJMVkE3bXBXRS94U3dGb2s4eGlH?=
- =?utf-8?B?ZGdBUGR4MC9PeDVqeGIyMXdOdTRDa0J2aXBybjNISHFLd0U5cFNwQ0h4Szd2?=
- =?utf-8?B?TXdZWUNrdHlhdHIyNWpTcGJ5WHpVYkN2UkdSY0VJdkE0aUYwUlZkUjVJS3U2?=
- =?utf-8?Q?jW1mNHyrmS0+eBrqUDgcwvFjatGJtcZR29B8eog?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b4a4fb79-eadf-4b44-eaac-08d8f4e97cd9
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB3974.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2021 08:38:13.5926
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DzYoT0Kkyu2zDFKFucIEWGx7LLyZ2/JG5YmuvUAOpRSN78TKH9v/l6pKo3PrLe7Gcku2NWfjrwWBNd6ehagHMw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB7046
+References: <20210401003153.97325-1-yury.norov@gmail.com> <20210401003153.97325-8-yury.norov@gmail.com>
+In-Reply-To: <20210401003153.97325-8-yury.norov@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 1 Apr 2021 11:37:45 +0300
+Message-ID: <CAHp75VdSgTC7JaNeWY66evEW1FaX+aKG33oO87ESSJQBC0qLHA@mail.gmail.com>
+Subject: Re: [PATCH 07/12] lib: inline _find_next_bit() wrappers
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux-SH <linux-sh@vger.kernel.org>,
+        Alexey Klimov <aklimov@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kishon,
+On Thu, Apr 1, 2021 at 3:42 AM Yury Norov <yury.norov@gmail.com> wrote:
+>
+> lib/find_bit.c declares five single-line wrappers for _find_next_bit().
+> We may turn those wrappers to inline functions. It eliminates unneeded
+> function calls and opens room for compile-time optimizations.
 
-First of all, thanks for your review.
+Acked-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-On Wed, 2021-03-31 at 19:02 +0530, Kishon Vijay Abraham I wrote:
-> Hi,
-> 
-> On 25/03/21 2:30 pm, Liu Ying wrote:
-> > This patch allows LVDS PHYs to be configured through
-> > the generic functions and through a custom structure
-> > added to the generic union.
-> > 
-> > The parameters added here are based on common LVDS PHY
-> > implementation practices.  The set of parameters
-> > should cover all potential users.
-> > 
-> > Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> > Cc: Vinod Koul <vkoul@kernel.org>
-> > Cc: NXP Linux Team <linux-imx@nxp.com>
-> > Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> > ---
-> > v4->v5:
-> > * Align kernel-doc style to include/linux/phy/phy.h. (Vinod)
-> > * Trivial tweaks.
-> > * Drop Robert's R-b tag.
-> > 
-> > v3->v4:
-> > * Add Robert's R-b tag.
-> > 
-> > v2->v3:
-> > * No change.
-> > 
-> > v1->v2:
-> > * No change.
-> > 
-> >  include/linux/phy/phy-lvds.h | 32 ++++++++++++++++++++++++++++++++
-> >  include/linux/phy/phy.h      |  4 ++++
-> >  2 files changed, 36 insertions(+)
-> >  create mode 100644 include/linux/phy/phy-lvds.h
-> > 
-> > diff --git a/include/linux/phy/phy-lvds.h b/include/linux/phy/phy-lvds.h
-> > new file mode 100644
-> > index 00000000..7a2f474
-> > --- /dev/null
-> > +++ b/include/linux/phy/phy-lvds.h
-> > @@ -0,0 +1,32 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Copyright 2020 NXP
-> > + */
-> > +
-> > +#ifndef __PHY_LVDS_H_
-> > +#define __PHY_LVDS_H_
-> > +
-> > +/**
-> > + * struct phy_configure_opts_lvds - LVDS configuration set
-> > + * @bits_per_lane_and_dclk_cycle:	Number of bits per data lane and
-> > + *					differential clock cycle.
-> 
-> phy_set_bus_width() instead?
+> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> ---
+>  include/asm-generic/bitops/find.h | 28 ++++++++++++----
+>  include/asm-generic/bitops/le.h   | 17 +++++++---
+>  lib/find_bit.c                    | 56 ++-----------------------------
+>  3 files changed, 37 insertions(+), 64 deletions(-)
+>
+> diff --git a/include/asm-generic/bitops/find.h b/include/asm-generic/bitops/find.h
+> index 9fdf21302fdf..7ad70dab8e93 100644
+> --- a/include/asm-generic/bitops/find.h
+> +++ b/include/asm-generic/bitops/find.h
+> @@ -2,6 +2,10 @@
+>  #ifndef _ASM_GENERIC_BITOPS_FIND_H_
+>  #define _ASM_GENERIC_BITOPS_FIND_H_
+>
+> +extern unsigned long _find_next_bit(const unsigned long *addr1,
+> +               const unsigned long *addr2, unsigned long nbits,
+> +               unsigned long start, unsigned long invert, unsigned long le);
+> +
+>  #ifndef find_next_bit
+>  /**
+>   * find_next_bit - find the next set bit in a memory region
+> @@ -12,8 +16,12 @@
+>   * Returns the bit number for the next set bit
+>   * If no bits are set, returns @size.
+>   */
+> -extern unsigned long find_next_bit(const unsigned long *addr, unsigned long
+> -               size, unsigned long offset);
+> +static inline
+> +unsigned long find_next_bit(const unsigned long *addr, unsigned long size,
+> +                           unsigned long offset)
+> +{
+> +       return _find_next_bit(addr, NULL, size, offset, 0UL, 0);
+> +}
+>  #endif
+>
+>  #ifndef find_next_and_bit
+> @@ -27,9 +35,13 @@ extern unsigned long find_next_bit(const unsigned long *addr, unsigned long
+>   * Returns the bit number for the next set bit
+>   * If no bits are set, returns @size.
+>   */
+> -extern unsigned long find_next_and_bit(const unsigned long *addr1,
+> +static inline
+> +unsigned long find_next_and_bit(const unsigned long *addr1,
+>                 const unsigned long *addr2, unsigned long size,
+> -               unsigned long offset);
+> +               unsigned long offset)
+> +{
+> +       return _find_next_bit(addr1, addr2, size, offset, 0UL, 0);
+> +}
+>  #endif
+>
+>  #ifndef find_next_zero_bit
+> @@ -42,8 +54,12 @@ extern unsigned long find_next_and_bit(const unsigned long *addr1,
+>   * Returns the bit number of the next zero bit
+>   * If no bits are zero, returns @size.
+>   */
+> -extern unsigned long find_next_zero_bit(const unsigned long *addr, unsigned
+> -               long size, unsigned long offset);
+> +static inline
+> +unsigned long find_next_zero_bit(const unsigned long *addr, unsigned long size,
+> +                                unsigned long offset)
+> +{
+> +       return _find_next_bit(addr, NULL, size, offset, ~0UL, 0);
+> +}
+>  #endif
+>
+>  #ifdef CONFIG_GENERIC_FIND_FIRST_BIT
+> diff --git a/include/asm-generic/bitops/le.h b/include/asm-generic/bitops/le.h
+> index 188d3eba3ace..21305f6cea0b 100644
+> --- a/include/asm-generic/bitops/le.h
+> +++ b/include/asm-generic/bitops/le.h
+> @@ -2,6 +2,7 @@
+>  #ifndef _ASM_GENERIC_BITOPS_LE_H_
+>  #define _ASM_GENERIC_BITOPS_LE_H_
+>
+> +#include <asm-generic/bitops/find.h>
+>  #include <asm/types.h>
+>  #include <asm/byteorder.h>
+>
+> @@ -32,13 +33,21 @@ static inline unsigned long find_first_zero_bit_le(const void *addr,
+>  #define BITOP_LE_SWIZZLE       ((BITS_PER_LONG-1) & ~0x7)
+>
+>  #ifndef find_next_zero_bit_le
+> -extern unsigned long find_next_zero_bit_le(const void *addr,
+> -               unsigned long size, unsigned long offset);
+> +static inline
+> +unsigned long find_next_zero_bit_le(const void *addr, unsigned
+> +               long size, unsigned long offset)
+> +{
+> +       return _find_next_bit(addr, NULL, size, offset, ~0UL, 1);
+> +}
+>  #endif
+>
+>  #ifndef find_next_bit_le
+> -extern unsigned long find_next_bit_le(const void *addr,
+> -               unsigned long size, unsigned long offset);
+> +static inline
+> +unsigned long find_next_bit_le(const void *addr, unsigned
+> +               long size, unsigned long offset)
+> +{
+> +       return _find_next_bit(addr, NULL, size, offset, 0UL, 1);
+> +}
+>  #endif
+>
+>  #ifndef find_first_zero_bit_le
+> diff --git a/lib/find_bit.c b/lib/find_bit.c
+> index f67f86fd2f62..b03a101367f8 100644
+> --- a/lib/find_bit.c
+> +++ b/lib/find_bit.c
+> @@ -29,7 +29,7 @@
+>   *    searching it for one bits.
+>   *  - The optional "addr2", which is anded with "addr1" if present.
+>   */
+> -static unsigned long _find_next_bit(const unsigned long *addr1,
+> +unsigned long _find_next_bit(const unsigned long *addr1,
+>                 const unsigned long *addr2, unsigned long nbits,
+>                 unsigned long start, unsigned long invert, unsigned long le)
+>  {
+> @@ -68,37 +68,7 @@ static unsigned long _find_next_bit(const unsigned long *addr1,
+>
+>         return min(start + __ffs(tmp), nbits);
+>  }
+> -#endif
+> -
+> -#ifndef find_next_bit
+> -/*
+> - * Find the next set bit in a memory region.
+> - */
+> -unsigned long find_next_bit(const unsigned long *addr, unsigned long size,
+> -                           unsigned long offset)
+> -{
+> -       return _find_next_bit(addr, NULL, size, offset, 0UL, 0);
+> -}
+> -EXPORT_SYMBOL(find_next_bit);
+> -#endif
+> -
+> -#ifndef find_next_zero_bit
+> -unsigned long find_next_zero_bit(const unsigned long *addr, unsigned long size,
+> -                                unsigned long offset)
+> -{
+> -       return _find_next_bit(addr, NULL, size, offset, ~0UL, 0);
+> -}
+> -EXPORT_SYMBOL(find_next_zero_bit);
+> -#endif
+> -
+> -#if !defined(find_next_and_bit)
+> -unsigned long find_next_and_bit(const unsigned long *addr1,
+> -               const unsigned long *addr2, unsigned long size,
+> -               unsigned long offset)
+> -{
+> -       return _find_next_bit(addr1, addr2, size, offset, 0UL, 0);
+> -}
+> -EXPORT_SYMBOL(find_next_and_bit);
+> +EXPORT_SYMBOL(_find_next_bit);
+>  #endif
+>
+>  #ifndef find_first_bit
+> @@ -157,28 +127,6 @@ unsigned long find_last_bit(const unsigned long *addr, unsigned long size)
+>  EXPORT_SYMBOL(find_last_bit);
+>  #endif
+>
+> -#ifdef __BIG_ENDIAN
+> -
+> -#ifndef find_next_zero_bit_le
+> -unsigned long find_next_zero_bit_le(const void *addr, unsigned
+> -               long size, unsigned long offset)
+> -{
+> -       return _find_next_bit(addr, NULL, size, offset, ~0UL, 1);
+> -}
+> -EXPORT_SYMBOL(find_next_zero_bit_le);
+> -#endif
+> -
+> -#ifndef find_next_bit_le
+> -unsigned long find_next_bit_le(const void *addr, unsigned
+> -               long size, unsigned long offset)
+> -{
+> -       return _find_next_bit(addr, NULL, size, offset, 0UL, 1);
+> -}
+> -EXPORT_SYMBOL(find_next_bit_le);
+> -#endif
+> -
+> -#endif /* __BIG_ENDIAN */
+> -
+>  unsigned long find_next_clump8(unsigned long *clump, const unsigned long *addr,
+>                                unsigned long size, unsigned long offset)
+>  {
+> --
+> 2.25.1
+>
 
-This member aims to configure the number of bits transmitted during a
-period of time(a clock cycle). It doesn't sound like a concept of 'bus
-width'?
 
-> > + * @differential_clk_rate:		Clock rate, in Hertz, of the LVDS
-> > + *					differential clock.
-> 
-> Please use clk API's to get rate.
-
-I like your idea. But, this rate is likely runtime-configurable, e.g.,
-a LVDS to HDMI chip is connected. It seems that there is no appropriate
-driver to set the rate by calling clk_set_rate() then?
-
-> > + * @lanes:				Number of active, consecutive,
-> > + *					data lanes, starting from lane 0,
-> > + *					used for the transmissions.
-> > + * @is_slave:				Boolean, true if the phy is a slave
-> > + *					which works together with a master
-> > + *					phy to support dual link transmission,
-> > + *					otherwise a regular phy or a master phy.
-> 
-> For parameters that are known at design time, it doesn't have to be
-> passed from consumer driver. So all these parameters do they really have
-> to be passed at runtime?
-
-Yes for all, perhaps. Details below:
-
-1) bits_per_lane_and_dclk_cycle
-i.MX8qxp LVDS phy can only do 7, while i.MX8qm LVDS phy(a different IP)
-can do either 7 or 10(configurable by setting a phy register).
-
-2) differential_clk_rate
-It's likely runtime-configurable, as I mentioned above.
-
-3) lanes
-The higher color depth is, the more lanes are used:
-RGB666 - 3 lanes
-RGB888 - 4 lanes
-RGB101010 - 5 lanes
-
-That means a phy with 5 lanes(like i.MX8qm LVDS phy) support up to the
-3 types of RGB pixels.
-
-Though the i.MX LVDS phys don't have any register to configure the
-lanes to be used, it would be good to define it for phy_validate() or
-other potential phys?
-
-4) is_slave
-Any i.MX8qxp LVDS phy instance can act as a regular phy or a master phy
-or a slave phy. Changing mode at runtime is probably unneeded. But,
-it's difficult for the phy driver to get the mode from device tree(see
-drm_of_lvds_get_port_pixels_type()), I think. Export an i.MX8qxp LVDS
-phy specific function to set this instead?
-
-Regards,
-Liu Ying
-
-> 
-> Thanks
-> Kishon
-> > + *
-> > + * This structure is used to represent the configuration state of a LVDS phy.
-> > + */
-> > +struct phy_configure_opts_lvds {
-> > +	unsigned int	bits_per_lane_and_dclk_cycle;
-> > +	unsigned long	differential_clk_rate;
-> > +	unsigned int	lanes;
-> > +	bool		is_slave;
-> > +};
-> > +
-> > +#endif /* __PHY_LVDS_H_ */
-> > diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
-> > index e435bdb..d450b44 100644
-> > --- a/include/linux/phy/phy.h
-> > +++ b/include/linux/phy/phy.h
-> > @@ -17,6 +17,7 @@
-> >  #include <linux/regulator/consumer.h>
-> >  
-> >  #include <linux/phy/phy-dp.h>
-> > +#include <linux/phy/phy-lvds.h>
-> >  #include <linux/phy/phy-mipi-dphy.h>
-> >  
-> >  struct phy;
-> > @@ -51,10 +52,13 @@ enum phy_mode {
-> >   *		the MIPI_DPHY phy mode.
-> >   * @dp:		Configuration set applicable for phys supporting
-> >   *		the DisplayPort protocol.
-> > + * @lvds:	Configuration set applicable for phys supporting
-> > + *		the LVDS phy mode.
-> >   */
-> >  union phy_configure_opts {
-> >  	struct phy_configure_opts_mipi_dphy	mipi_dphy;
-> >  	struct phy_configure_opts_dp		dp;
-> > +	struct phy_configure_opts_lvds		lvds;
-> >  };
-> >  
-> >  /**
-> > 
-
+-- 
+With Best Regards,
+Andy Shevchenko
