@@ -2,153 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2DCA350C71
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 04:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB3A350C79
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 04:16:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232953AbhDACOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 22:14:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56972 "EHLO
+        id S233112AbhDACPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 22:15:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhDACN4 (ORCPT
+        with ESMTP id S232994AbhDACPV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 22:13:56 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 839FCC061574;
-        Wed, 31 Mar 2021 19:13:54 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F9mvJ6zshz9sVt;
-        Thu,  1 Apr 2021 13:13:48 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1617243231;
-        bh=DN2c7zg0o8Dw4cOnwZThU1cjsLPDtkhUjdXr14ceT8A=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Kdz8/Hu1tGHDnb+crfrKLuuXUO/p0OsiD33YJAQHictxKtB6kw3BTmvanOLsTouW6
-         3rZ+1HS9JPTHJYzDs2tkGnNE8YzvAGJ6ZcSp+H2LXEqGT4A4qQ/oFgEpq/88dCuSJU
-         7nH8Q6Y7uf8AvpxzgAW59zJy+upp6zreSrXqvjcbKkZU7Lls5j7CkFM1MGEUHIyfMa
-         q9p8iFUT1wmS9f5C9w4J7+oWLquKIAkO4mosyCGJi7PqtDlPTbb+r2osk3vp4CB9sp
-         xFJXW1Yt5nxJNIcfk8TaFH+HnEA7zDnlnTfVK0k3fx6Gi1a/H5AmFaA8RpA5ns1t2f
-         Y10m64O6hC07A==
-Date:   Thu, 1 Apr 2021 13:13:46 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Imre Deak <imre.deak@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Subject: linux-next: manual merge of the drm-intel tree with the drm tree
-Message-ID: <20210401131346.0d522e75@canb.auug.org.au>
+        Wed, 31 Mar 2021 22:15:21 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AD14C061574;
+        Wed, 31 Mar 2021 19:15:19 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lRmr7-001X2U-Bm; Thu, 01 Apr 2021 02:14:45 +0000
+Date:   Thu, 1 Apr 2021 02:14:45 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc:     Jann Horn <jannh@google.com>, Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        David Howells <dhowells@redhat.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-security-module@vger.kernel.org, x86@kernel.org,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>
+Subject: Re: [PATCH v31 07/12] landlock: Support filesystem access-control
+Message-ID: <YGUslUPwp85Zrp4t@zeniv-ca.linux.org.uk>
+References: <20210324191520.125779-1-mic@digikod.net>
+ <20210324191520.125779-8-mic@digikod.net>
+ <d2764451-8970-6cbd-e2bf-254a42244ffc@digikod.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/di/G_V1lKbpO20F+h0lKXEe";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d2764451-8970-6cbd-e2bf-254a42244ffc@digikod.net>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/di/G_V1lKbpO20F+h0lKXEe
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Mar 31, 2021 at 07:33:50PM +0200, Mickaël Salaün wrote:
 
-Hi all,
+> > +static inline u64 unmask_layers(
+> > +		const struct landlock_ruleset *const domain,
+> > +		const struct path *const path, const u32 access_request,
+> > +		u64 layer_mask)
+> > +{
+> > +	const struct landlock_rule *rule;
+> > +	const struct inode *inode;
+> > +	size_t i;
+> > +
+> > +	if (d_is_negative(path->dentry))
+> > +		/* Continues to walk while there is no mapped inode. */
+				     ^^^^^
+Odd comment, that...
 
-Today's linux-next merge of the drm-intel tree got a conflict in:
+> > +static int check_access_path(const struct landlock_ruleset *const domain,
+> > +		const struct path *const path, u32 access_request)
+> > +{
 
-  drivers/gpu/drm/i915/display/intel_display.c
+> > +	walker_path = *path;
+> > +	path_get(&walker_path);
 
-between commit:
+> > +	while (true) {
+> > +		struct dentry *parent_dentry;
+> > +
+> > +		layer_mask = unmask_layers(domain, &walker_path,
+> > +				access_request, layer_mask);
+> > +		if (layer_mask == 0) {
+> > +			/* Stops when a rule from each layer grants access. */
+> > +			allowed = true;
+> > +			break;
+> > +		}
+> > +
+> > +jump_up:
+> > +		if (walker_path.dentry == walker_path.mnt->mnt_root) {
+> > +			if (follow_up(&walker_path)) {
+> > +				/* Ignores hidden mount points. */
+> > +				goto jump_up;
+> > +			} else {
+> > +				/*
+> > +				 * Stops at the real root.  Denies access
+> > +				 * because not all layers have granted access.
+> > +				 */
+> > +				allowed = false;
+> > +				break;
+> > +			}
+> > +		}
+> > +		if (unlikely(IS_ROOT(walker_path.dentry))) {
+> > +			/*
+> > +			 * Stops at disconnected root directories.  Only allows
+> > +			 * access to internal filesystems (e.g. nsfs, which is
+> > +			 * reachable through /proc/<pid>/ns/<namespace>).
+> > +			 */
+> > +			allowed = !!(walker_path.mnt->mnt_flags & MNT_INTERNAL);
+> > +			break;
+> > +		}
+> > +		parent_dentry = dget_parent(walker_path.dentry);
+> > +		dput(walker_path.dentry);
+> > +		walker_path.dentry = parent_dentry;
+> > +	}
+> > +	path_put(&walker_path);
+> > +	return allowed ? 0 : -EACCES;
 
-  1b321026e213 ("drm/i915: Pass ww ctx to intel_pin_to_display_plane")
+That's a whole lot of grabbing/dropping references...  I realize that it's
+an utterly tactless question, but... how costly it is?  IOW, do you have
+profiling data?
 
-from the drm tree and commit:
+> > +/*
+> > + * pivot_root(2), like mount(2), changes the current mount namespace.  It must
+> > + * then be forbidden for a landlocked process.
 
-  61169987c4d9 ("drm/i915: Unify the FB and plane state view information in=
-to one struct")
+... and cross-directory rename(2) can change the tree topology.  Do you ban that
+as well?
 
-from the drm-intel tree.
+[snip]
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+> > +static int hook_path_rename(const struct path *const old_dir,
+> > +		struct dentry *const old_dentry,
+> > +		const struct path *const new_dir,
+> > +		struct dentry *const new_dentry)
+> > +{
+> > +	const struct landlock_ruleset *const dom =
+> > +		landlock_get_current_domain();
+> > +
+> > +	if (!dom)
+> > +		return 0;
+> > +	/* The mount points are the same for old and new paths, cf. EXDEV. */
+> > +	if (old_dir->dentry != new_dir->dentry)
+> > +		/* For now, forbids reparenting. */
+> > +		return -EACCES;
 
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/gpu/drm/i915/display/intel_display.c
-index aa524eff20e1,bdb2adb4d748..000000000000
---- a/drivers/gpu/drm/i915/display/intel_display.c
-+++ b/drivers/gpu/drm/i915/display/intel_display.c
-@@@ -1185,13 -1094,13 +1112,13 @@@ retry
-  		 * mode that matches the user configuration.
-  		 */
-  		ret =3D i915_vma_pin_fence(vma);
-- 		if (ret !=3D 0 && INTEL_GEN(dev_priv) < 4) {
-+ 		if (ret !=3D 0 && DISPLAY_VER(dev_priv) < 4) {
-  			i915_vma_unpin(vma);
- -			vma =3D ERR_PTR(ret);
- -			goto err;
- +			goto err_unpin;
-  		}
- +		ret =3D 0;
- =20
- -		if (ret =3D=3D 0 && vma->fence)
- +		if (vma->fence)
-  			*out_flags |=3D PLANE_HAS_FENCE;
-  	}
- =20
-@@@ -11363,12 -10508,20 +10536,12 @@@ int intel_plane_pin_fb(struct intel_p=
-la
-  	struct drm_i915_private *dev_priv =3D to_i915(plane->base.dev);
-  	struct drm_framebuffer *fb =3D plane_state->hw.fb;
-  	struct i915_vma *vma;
- +	bool phys_cursor =3D
- +		plane->id =3D=3D PLANE_CURSOR &&
- +		INTEL_INFO(dev_priv)->display.cursor_needs_physical;
- =20
- -	if (plane->id =3D=3D PLANE_CURSOR &&
- -	    INTEL_INFO(dev_priv)->display.cursor_needs_physical) {
- -		struct drm_i915_gem_object *obj =3D intel_fb_obj(fb);
- -		const int align =3D intel_cursor_alignment(dev_priv);
- -		int err;
- -
- -		err =3D i915_gem_object_attach_phys(obj, align);
- -		if (err)
- -			return err;
- -	}
- -
- -	vma =3D intel_pin_and_fence_fb_obj(fb,
- +	vma =3D intel_pin_and_fence_fb_obj(fb, phys_cursor,
-- 					 &plane_state->view,
-+ 					 &plane_state->view.gtt,
-  					 intel_plane_uses_fence(plane_state),
-  					 &plane_state->flags);
-  	if (IS_ERR(vma))
-
---Sig_/di/G_V1lKbpO20F+h0lKXEe
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBlLFoACgkQAVBC80lX
-0GzJDQf/Zj2FxULHG8tLJnXTPDYUnx2GHpvyaZX+FJqoUX+NEAiGA/ezJg6+kg96
-Fq2tsRU0iIMQPS5T5yO48zSQGFgZBII7Za4ldWpylthI51WY+Fd8kTsyrr8+qQbL
-dDIljAzrpG/YpLxrf1GmUUKkvs1lYk/TBlKPy9jDijIv45zKZUoIcXjAG8whjCUw
-X+SCxtVRhpVihgskd4hk96hgNnZsVMf3DH7sLhOhjZjStk2kU9S3JtUhd/ltphFy
-8vqhKEBr8kkjldyxLhjK/sPlmz9TWJHAX7hNUDSmt0XWiFS2L8DKFkZLG8Fc4Sph
-wKyJ6Wx1Vn7WXg+ANstDlSNc9nNhDg==
-=S/li
------END PGP SIGNATURE-----
-
---Sig_/di/G_V1lKbpO20F+h0lKXEe--
+You do, apparently, and not in a way that would have the userland fall
+back to copy+unlink.  Lovely...  Does e.g. git survive such restriction?
+Same question for your average package build...
