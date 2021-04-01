@@ -2,130 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39001351E69
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF803351F07
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240086AbhDASlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:41:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239874AbhDASRE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:17:04 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE9E9C0225AE
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 08:34:57 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id x27so1190045qvd.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 08:34:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aqivty0kItBvYGGyEFQ/9HO+WPoP9jtfr5ycsGY+FF8=;
-        b=ZvyGgtwhp/yzmDXIwQF7Mt/dKYhpq9jqpN/Cnmkg9DRciJnRa2ALWpEAjRCLwe8lAV
-         qWl8byzgnWQYAr1MqjqlLVnhlKVj0c5hXxssMCPFLTRoDUoUJsH0XGI8aV4bagRB5Z7H
-         WEBfBzo8GfeHg/lOq0EeaNJssHGA3k8vD/1Og=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aqivty0kItBvYGGyEFQ/9HO+WPoP9jtfr5ycsGY+FF8=;
-        b=Rs3K1po+/huyKkS/E7L1TPVkBkEpZI40F62EqUyusFZ2vk8rXRnRb0pnmktZow4+8Q
-         yG8TedYZNsOZRWk6OmerdgVN3CFgDoPCxkIQry5q4EolvfrZsc5nffZTh81MZUTeUZN3
-         LdzYmWz4rWgZxAo5qFnRdNhIVlOIuXxxRCFi/2EdM+oDSv9XWm3417Lbq/AfqEl9y8fu
-         U9Ju6vE/5WrhQ/ULaxF1mdmTfIuMGpVXJKOaC7GAdnfALGRC0LmC1Hjxmoltry9vW5kk
-         A0WMhhpuNxwnCqFrLhXToD4TJtS8ZS5sdML/LMyg0uTYjIH8X+z2oMj6GypTW4zOV8pD
-         YZPg==
-X-Gm-Message-State: AOAM531qFfw5oUEncIJxw/eXOl2XSIcS2bHxuoGiYBZEcX2nvnn2aM1R
-        VpeW5ATqjGEDQf5CyUSHwmRwqju7fhjjDQ==
-X-Google-Smtp-Source: ABdhPJyLR/ELKfIMpGQ7OAPg6oPqqZtelNfqCsSHhyMIdjYteKzxlcKj5uzbm3gSGdGvidP5p8f/iA==
-X-Received: by 2002:ad4:472d:: with SMTP id l13mr8713028qvz.17.1617291296578;
-        Thu, 01 Apr 2021 08:34:56 -0700 (PDT)
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
-        by smtp.gmail.com with ESMTPSA id m13sm4059058qkm.103.2021.04.01.08.34.55
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Apr 2021 08:34:56 -0700 (PDT)
-Received: by mail-yb1-f172.google.com with SMTP id l15so2251407ybm.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 08:34:55 -0700 (PDT)
-X-Received: by 2002:a25:69c1:: with SMTP id e184mr12540453ybc.345.1617291294869;
- Thu, 01 Apr 2021 08:34:54 -0700 (PDT)
+        id S234497AbhDASwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:52:08 -0400
+Received: from mga05.intel.com ([192.55.52.43]:63637 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237593AbhDASho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:37:44 -0400
+IronPort-SDR: DBRHA8ad8cfXh7D8L2eIVs4X6MpbWGm8fln6prJF3nNbWB2ljPZQ8VzC3i7kkCvrkRe/xIzLh3
+ u/r9L/6m8kaQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="277457339"
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="277457339"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 08:43:18 -0700
+IronPort-SDR: 2pgC/2XvpsQ6arvCckvZv4G5JVCsE5cF0RoD2BuJXuxZuisHgV7En4ZsKMzypSTd1o8j+9m2q3
+ +K0odndjwu2w==
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="446315995"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 08:43:14 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lRzTT-000ID7-8B; Thu, 01 Apr 2021 18:43:11 +0300
+Date:   Thu, 1 Apr 2021 18:43:11 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Henning Schild <henning.schild@siemens.com>
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Jean Delvare <jdelvare@suse.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Tan Jui Nee <jui.nee.tan@intel.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Jonathan Yong <jonathan.yong@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pci@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Peter Tyser <ptyser@xes-inc.com>, hdegoede@redhat.com,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: Re: [PATCH v1 3/7] PCI: New Primary to Sideband (P2SB) bridge
+ support library
+Message-ID: <YGXqDxSJhCO9bD1X@smile.fi.intel.com>
+References: <20210308122020.57071-1-andriy.shevchenko@linux.intel.com>
+ <20210308122020.57071-4-andriy.shevchenko@linux.intel.com>
+ <20210313104557.321de08e@md1za8fc.ad001.siemens.net>
 MIME-Version: 1.0
-References: <20210331221630.488498-1-robdclark@gmail.com> <20210401012722.527712-1-robdclark@gmail.com>
- <20210401012722.527712-3-robdclark@gmail.com>
-In-Reply-To: <20210401012722.527712-3-robdclark@gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 1 Apr 2021 08:34:43 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XexfG9oQa8JndOgQ9JSNRmO4-xjmQdiA_9Rn9dJWxsow@mail.gmail.com>
-Message-ID: <CAD=FV=XexfG9oQa8JndOgQ9JSNRmO4-xjmQdiA_9Rn9dJWxsow@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] drm/msm: Avoid mutex in shrinker_count()
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210313104557.321de08e@md1za8fc.ad001.siemens.net>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sat, Mar 13, 2021 at 10:45:57AM +0100, Henning Schild wrote:
+> Am Mon, 8 Mar 2021 14:20:16 +0200
+> schrieb Andy Shevchenko <andriy.shevchenko@linux.intel.com>:
 
-On Wed, Mar 31, 2021 at 6:24 PM Rob Clark <robdclark@gmail.com> wrote:
->
-> @@ -45,6 +30,9 @@ msm_gem_shrinker_scan(struct shrinker *shrinker, struct shrink_control *sc)
->         list_for_each_entry(msm_obj, &priv->inactive_dontneed, mm_list) {
->                 if (freed >= sc->nr_to_scan)
->                         break;
-> +               /* Use trylock, because we cannot block on a obj that
-> +                * might be trying to acquire mm_lock
-> +                */
+...
 
-nit: I thought the above multi-line commenting style was only for
-"net" subsystem?
+> > + * pci_p2sb_bar - Get Primary to Sideband bridge (P2SB) device BAR
+> > + * @pdev:	PCI device to get a PCI bus to communicate with
+> > + * @devfn:	PCI slot and function to communicate with
+> > + * @mem:	memory resource to be filled in
+> 
+> Do we really need that many arguments to it?
+> 
+> Before i had, in a platform driver that never had its own pci_dev or bus
+> 
+>   res->start = simatic_ipc_get_membase0(PCI_DEVFN(13, 0));
+>   if (res-start == 0)
+>     return -ENODEV;
+> 
+> So helper only asked for the devfn, returned base and no dedicated
+> error code.
+> 
+> With this i need
+> 
+>   struct pci_bus *bus = pci_find_bus(0, 0);
+>   struct pci_dev *pci_dev = bus->self;
+>   unsigned int magic_i_do_not_want =  PCI_DEVFN(13, 0);
 
->                 if (!msm_gem_trylock(&msm_obj->base))
->                         continue;
->                 if (is_purgeable(msm_obj)) {
-> @@ -56,8 +44,11 @@ msm_gem_shrinker_scan(struct shrinker *shrinker, struct shrink_control *sc)
->
->         mutex_unlock(&priv->mm_lock);
->
-> -       if (freed > 0)
-> +       if (freed > 0) {
->                 trace_msm_gem_purge(freed << PAGE_SHIFT);
-> +       } else {
-> +               return SHRINK_STOP;
-> +       }
+What confuses me is the use for SPI NOR controller on Broxton. And I think
+we actually can indeed hide all this under the hood by exposing P2SB to the OS.
 
-It probably doesn't matter, but I wonder if we should still be
-returning SHRINK_STOP if we got any trylock failures. It could
-possibly be worth returning 0 in that case?
+Mika, what do you think?
+
+> I guess that second devfn is for devices behind that bridge. So
+> unhiding it might reveal several devices?
+
+Good question. I need a device where actually this happens (hidden P2SB stuff
+with let's say SPI NOR there) to see how it looks like in such case. I only
+understood the GPIO part. But I'm not so sure anymore.
+
+> But when caring about that
+> p2sb do i really need to know its devfn. If so i would like to get
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-> @@ -75,6 +66,9 @@ vmap_shrink(struct list_head *mm_list)
->         unsigned unmapped = 0;
->
->         list_for_each_entry(msm_obj, mm_list, mm_list) {
-> +               /* Use trylock, because we cannot block on a obj that
-> +                * might be trying to acquire mm_lock
-> +                */
-
-If you end up changing the commenting style above, should also be here.
-
-At this point this seems fine to land to me. Though I'm not an expert
-on every interaction in this code, I've spent enough time starting at
-it that I'm comfortable with:
-
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
