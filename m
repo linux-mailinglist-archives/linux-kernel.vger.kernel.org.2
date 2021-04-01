@@ -2,94 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C4C350D4F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 05:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D92F350D58
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 05:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232903AbhDADyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 23:54:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhDADxe (ORCPT
+        id S232958AbhDAD5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 23:57:40 -0400
+Received: from mail-lf1-f43.google.com ([209.85.167.43]:46765 "EHLO
+        mail-lf1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhDAD5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 23:53:34 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D611C0613E6;
-        Wed, 31 Mar 2021 20:53:34 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id x14so975857qki.10;
-        Wed, 31 Mar 2021 20:53:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ynRSJXMe9xUcg10OAWzr/tvimnliI6ylqTuryl124LU=;
-        b=k28dPf9+9ZWLitCLxO/Y4duFpo/NPIr6ux8Dj0VU+cTkuGaDXgSxKXEb8ulHzl2EJ1
-         iLkBIsSjajBqW2NXH6miRAsqy9P1X7NoEzMih5e070JakakYXniZ9B2dpQoZdwdyvhal
-         XsiJliB4xNFudomEk0/ZpwJBn1t2mAMG2CD+I=
+        Wed, 31 Mar 2021 23:57:08 -0400
+Received: by mail-lf1-f43.google.com with SMTP id 12so718921lfq.13;
+        Wed, 31 Mar 2021 20:57:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ynRSJXMe9xUcg10OAWzr/tvimnliI6ylqTuryl124LU=;
-        b=AnEBPNhBNquYgGPPoKo38CzGxpU8wBpu8/byVOF6W2Cll7Ba9CG4ruZfQVf48a6oxb
-         hYaA0aRe/gHUM/IiCi6rbfZ08zMR5lOm8Suw0fJ3cD/NSfz1JD6aCMApxU9LRCgKGOTA
-         vAAaaEVyGd3D+bV8DDRx5j6FEJZRYnI6WaVRp9FnZs0sIVeC11P10Z+mVDhMZfCKUHp1
-         Pg7cpqtDnW5yTRPFU84ln3C2vOeSnOTwronkyAQ/DInAqxnTMd0KykqvAS/JHrWi2qzA
-         JWUa9djolpduWk/iY5vtrYDlM4B2J0fPRwMcDc3wngUkKPLbOHK2KqQLKN/3yPvxXwEm
-         jFXg==
-X-Gm-Message-State: AOAM5316Z136+RbX8dVKwsr/1O5t8BuzYSMWHhovwp83Kii5zq0NC3Px
-        pe43axPaqI9zcp+IVTwJ8hu8CI2gBTtNFLhGiWA=
-X-Google-Smtp-Source: ABdhPJxaNMdmBWCwd9YGCoGxx/iaWHZVuxoWEevTeG6nQZ2AfTjZP0zBKZX/ucE2hwmt118D2hD7FjWOTGdDe6iREL8=
-X-Received: by 2002:a05:620a:1410:: with SMTP id d16mr6462091qkj.465.1617249213346;
- Wed, 31 Mar 2021 20:53:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <YGOuhjD19SmjmQou@hatter.bewilderbeest.net> <20210401005702.28271-1-zev@bewilderbeest.net>
- <20210401005702.28271-2-zev@bewilderbeest.net>
-In-Reply-To: <20210401005702.28271-2-zev@bewilderbeest.net>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Thu, 1 Apr 2021 03:53:21 +0000
-Message-ID: <CACPK8Xeqrvtb4Qku545QcbLeqgbHOZHkpgMp3G332c0aMdMCvA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: serial: 8250: deprecate aspeed,sirq-polarity-sense
-To:     Zev Weiss <zev@bewilderbeest.net>
-Cc:     OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        - <devicetree@vger.kernel.org>, linux-serial@vger.kernel.org
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
+         :in-reply-to:references:mime-version:date:user-agent
+         :content-transfer-encoding;
+        bh=MwONN4d6rrT80wZ3Iz7r/IZaJzF+PvdbGzECpd/Wl7I=;
+        b=Dij3ivapn+8VnJmd5rjp/bPE5XYleHGYLAFeEg3rYfOAscgEY5P5bYuBmoq53nBwXi
+         gh2cuplRkfgmNDLnLqGzUGR8IznlVLHiEtAZbkYUamtMzM2JyOtgMrTo4GvBLeosqOMx
+         lRqwzUHD5aGhxr7Xa+SrQacUXmwh+X4ahiYUczXDbijP3im7PDOx0MKbQSN1leHwtoN+
+         JhnuoKaOsFsQUFxfKkEzp0kFLr14C9ZT6qaBv65TjeQhcyRL77ikAqrHRVbsbGjsibim
+         +OkmKK5sjlltzwewIX3BiO/Shm6bF5mO7rqB/ESl5ialTWDHtgoqeR/iyuvn6IEQJcSq
+         1S5w==
+X-Gm-Message-State: AOAM532G1lFUcxYtjPc9q4BJxyP4ovbs3CHqy8g+FUdRDLVpnoU96RvU
+        cqhUGnLe2RaN9nFna4nUPDKxiBIgMn5+Kw==
+X-Google-Smtp-Source: ABdhPJwF85vDNANqevWvVd2s+5bSTGz5C94VM1WKq4RE53hXjUCkOjG66ZPNtrJuSfJFfTBAPe/ryA==
+X-Received: by 2002:a05:6512:348c:: with SMTP id v12mr3993548lfr.271.1617249427460;
+        Wed, 31 Mar 2021 20:57:07 -0700 (PDT)
+Received: from dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi (dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::2])
+        by smtp.gmail.com with ESMTPSA id e11sm470945ljj.59.2021.03.31.20.57.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 20:57:06 -0700 (PDT)
+Message-ID: <a91d2eba2a01a060fdf25a5665fee0f0f15b034c.camel@fi.rohmeurope.com>
+Subject: Re: [PATCH 1/2] gpio: sysfs: Obey valid_mask
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Reply-To: matti.vaittinen@fi.rohmeurope.com
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Stephen Boyd <sboyd@codeaurora.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <CAMpxmJXL=_8MBwb0Dy4d8vKM8SCbzyXJaE78azo1Es8hY7mN7w@mail.gmail.com>
+References: <cover.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
+         <d1ec9f4cb6dd9afcfbeecfa717e863d75e18133b.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
+         <CAMpxmJVKmBp06_2Hd4XF-eL4KfgZFy1o+xUvvs6H=TaAnkmYhA@mail.gmail.com>
+         <CAHp75Vcsw8uQOL9RAxOU3jeq4mGAiK3cNMYbKyWGe7F8Dz2dZQ@mail.gmail.com>
+         <CAMpxmJXL=_8MBwb0Dy4d8vKM8SCbzyXJaE78azo1Es8hY7mN7w@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Date:   Thu, 01 Apr 2021 06:56:56 +0300
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 1 Apr 2021 at 00:57, Zev Weiss <zev@bewilderbeest.net> wrote:
->
-> This property ties SIRQ polarity to SCU register bits that don't
-> necessarily have any direct relationship to it; the only use of it
-> was removed in commit c82bf6e133d30e0f9172a20807814fa28aef0f67.
->
-> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
 
-Reviewed-by: Joel Stanley <joel@jms.id.au>
+On Wed, 2021-03-31 at 20:29 +0200, Bartosz Golaszewski wrote:
+> On Wed, Mar 31, 2021 at 2:25 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Wed, Mar 31, 2021 at 10:58 AM Bartosz Golaszewski
+> > <bgolaszewski@baylibre.com> wrote:
+> > > On Mon, Mar 29, 2021 at 1:41 PM Matti Vaittinen
+> > > <matti.vaittinen@fi.rohmeurope.com> wrote:
+> > > > Do not allow exporting GPIOs which are set invalid
+> > > > by the driver's valid mask.
+> > > > 
+> > > > Fixes: 726cb3ba49692bdae6caff457755e7cdb432efa4
+> > 
+> > I have just noticed that this is invalid format for the Fixes tag
+> > (luckily, haha, due to a blank line it's not recognized as a tag!).
+> > 
+> > Matti, I highly recommend to add in your .gitconfig file an alias:
+> >         one = show -s --pretty='format:%h (\"%s\")'
+> > 
+> > Bart, there are real Fixes tag issues from another series. I will
+> > comment there as well to let an author know.
+> > 
+> > --
+> 
+> Eek, sorry I should have looked more carefully. I'll fix it in my
+> tree.
 
-> ---
->  Documentation/devicetree/bindings/serial/8250.yaml | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/Documentation/devicetree/bindings/serial/8250.yaml b/Documentation/devicetree/bindings/serial/8250.yaml
-> index f54cae9ff7b2..491b9297432d 100644
-> --- a/Documentation/devicetree/bindings/serial/8250.yaml
-> +++ b/Documentation/devicetree/bindings/serial/8250.yaml
-> @@ -188,6 +188,7 @@ properties:
->        offset and bit number to identify how the SIRQ polarity should be
->        configured. One possible data source is the LPC/eSPI mode bit. Only
->        applicable to aspeed,ast2500-vuart.
-> +    deprecated: true
->
->  required:
->    - reg
-> --
-> 2.31.1
->
+Thanks for fixing this Bartosz.
+Andy - well spotted. And the alias you pointed is something I've missed
+:)
+
+Sorry for the trouble! I should have used the correct tag format.
+
+Thanks again!
+
+Best Regards
+	Matti Vaittinen
+
+
