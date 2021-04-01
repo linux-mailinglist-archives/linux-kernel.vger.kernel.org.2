@@ -2,147 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 197E4351038
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 09:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4BF335103B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 09:41:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233557AbhDAHjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 03:39:25 -0400
-Received: from labrats.qualcomm.com ([199.106.110.90]:49605 "EHLO
-        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233333AbhDAHjT (ORCPT
+        id S233433AbhDAHkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 03:40:46 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:38854 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233151AbhDAHjx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 03:39:19 -0400
-IronPort-SDR: 8c/4DlzNUVTVW++bi9+7zr/C0IjCn2JApRFb+d5p6C4rxVECcHAhIsqPaykgbKrbojIKSSAQYK
- yabaRsM8KRt0XNZmCuE52BB5XD2+95QQU69JS8GYVFH9/tqfbRkSmGe5tKc4T3epQOvp/WRvw7
- ePDhr03Ze2l5TnYSwHG9an5GrNfYZXz3nivV6IKJY/2Y2uHW73lDNF/Ez8L82AZJ90eLWnk6Z5
- swmwDVr8RLLLbbFBVQMX5ASLrh+mlIEWnwRigUOEyUR4uLSk62Ut/iEYiIfoI3IG5WeKEnE8wP
- Meg=
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="29736677"
-Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
-  by labrats.qualcomm.com with ESMTP; 01 Apr 2021 00:39:19 -0700
-X-QCInternal: smtphost
-Received: from stor-presley.qualcomm.com ([192.168.140.85])
-  by ironmsg-SD-alpha.qualcomm.com with ESMTP; 01 Apr 2021 00:39:18 -0700
-Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
-        id 73F5C210A9; Thu,  1 Apr 2021 00:39:18 -0700 (PDT)
-From:   Can Guo <cang@codeaurora.org>
-To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, cang@codeaurora.org
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Sujit Reddy Thumma <sthumma@codeaurora.org>,
-        Vinayak Holikatti <vinholikatti@gmail.com>,
-        Yaniv Gardi <ygardi@codeaurora.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v5 2/2] scsi: ufs: Fix wrong Task Tag used in task management request UPIUs
-Date:   Thu,  1 Apr 2021 00:39:09 -0700
-Message-Id: <1617262750-4864-3-git-send-email-cang@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1617262750-4864-1-git-send-email-cang@codeaurora.org>
-References: <1617262750-4864-1-git-send-email-cang@codeaurora.org>
+        Thu, 1 Apr 2021 03:39:53 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1317db29023664;
+        Thu, 1 Apr 2021 02:39:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1617262777;
+        bh=9fskxeDKcFwVRSaKpjEcEev7N/dbj8ubzqBdyCt3hDI=;
+        h=Subject:From:To:References:Date:In-Reply-To;
+        b=v+bYs0YG4R2cmwX/Ti7eIlny+UGUEFj8cIoItLPvg4UUiYwj+O1xOEgont4eFNydD
+         M8q9szqkcQHKttasOS6Ol3TpFE7RhIr0Dk0HhMGLvRkE9AKlXsinjAFtOAFvMyh3ZH
+         f+mR+PoyQD46CFpxHXiA041AgwmYGelzEN3VgQN0=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1317dbAi056025
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 1 Apr 2021 02:39:37 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 1 Apr
+ 2021 02:39:37 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 1 Apr 2021 02:39:37 -0500
+Received: from [10.250.234.178] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1317dYvP009919;
+        Thu, 1 Apr 2021 02:39:35 -0500
+Subject: Re: [Discussion] Uninitialized variable in wiz_mode_select()
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Muhammad Usama Anjum <musamaanjum@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        "open list:GENERIC PHY FRAMEWORK" <linux-phy@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>, <colin.king@canonical.com>,
+        <dan.carpenter@oracle.com>
+References: <943b92c6ac291726cf0e6bd92e88f2110c14b74c.camel@gmail.com>
+ <aaa035d2-95a7-00b3-ef76-1aa61c7f8da9@ti.com>
+Message-ID: <0ac860d1-15b5-b314-c694-750db6274aa5@ti.com>
+Date:   Thu, 1 Apr 2021 13:09:34 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <aaa035d2-95a7-00b3-ef76-1aa61c7f8da9@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In __ufshcd_issue_tm_cmd(), it is not right to use hba->nutrs + req->tag as
-the Task Tag in one TMR UPIU. Directly use req->tag as the Task Tag.
+Hi,
 
-Fixes: e293313262d3 ("scsi: ufs: Fix broken task management command implementation")
+On 01/04/21 1:08 pm, Kishon Vijay Abraham I wrote:
+> Hi Usama,
+> 
+> On 01/04/21 1:03 pm, Muhammad Usama Anjum wrote:
+>> Hi,
+>>
+>> `mode` remains uninitialized when `lane_phy_type` isn't PHY_TYPE_DP
+>> or 
+>> PHY_TYPE_QSGMII. I've checked the dtsi (k3-j721e-common-proc-
+>> board.dts) 
+>> and possible values of `lane_phy_type` are justPHY_TYPE_USB3 and 
+>> PHY_TYPE_PCIE. If this is correct, the mode will remain uninitialized with
+>> garbage value. `mode` should be initialized to what? It seems like it is highly 
+>> implementation dependent.
+>>
+>> /drivers/phy/ti/phy-j721e-wiz.c: 344 in wiz_mode_select()
+>> 338             for (i = 0; i < num_lanes; i++) {
+>> 339                     if (wiz->lane_phy_type[i] == PHY_TYPE_DP)
+>> 340                             mode = LANE_MODE_GEN1;
+>> 341                     else if (wiz->lane_phy_type[i] == PHY_TYPE_QSGMII)
+>> 342                             mode = LANE_MODE_GEN2;
+>> 343     
+>>>>>     CID 1503592:  Uninitialized variables  (UNINIT)
+>>>>>     Using uninitialized value "mode" when calling "regmap_field_write".
+>> 344                     ret = regmap_field_write(wiz->p_standard_mode[i], mode);
+>> 345                     if (ret)
+>> 346                             return ret;
+>> 347             }
+>> 348     
+>> 349             return 0;
+> 
+> I've sent a follow-up patch fixing this.
+> http://lor.kernel.org/r/20210331131417.15596-1-kishon@ti.com
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Can Guo <cang@codeaurora.org>
----
- drivers/scsi/ufs/ufshcd.c | 30 +++++++++++++-----------------
- 1 file changed, 13 insertions(+), 17 deletions(-)
+Fixed a typo in the link
+https://lore.kernel.org/linux-phy/20210331131417.15596-1-kishon@ti.com/
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index d4f8cb2..ce5f3fea 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -6446,38 +6446,34 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba *hba,
- 	DECLARE_COMPLETION_ONSTACK(wait);
- 	struct request *req;
- 	unsigned long flags;
--	int free_slot, task_tag, err;
-+	int task_tag, err;
- 
- 	/*
--	 * Get free slot, sleep if slots are unavailable.
--	 * Even though we use wait_event() which sleeps indefinitely,
--	 * the maximum wait time is bounded by %TM_CMD_TIMEOUT.
-+	 * blk_get_request() is used here only to get a free tag.
- 	 */
- 	req = blk_get_request(q, REQ_OP_DRV_OUT, 0);
- 	if (IS_ERR(req))
- 		return PTR_ERR(req);
- 
- 	req->end_io_data = &wait;
--	free_slot = req->tag;
--	WARN_ON_ONCE(free_slot < 0 || free_slot >= hba->nutmrs);
- 	ufshcd_hold(hba, false);
- 
- 	spin_lock_irqsave(host->host_lock, flags);
--	task_tag = hba->nutrs + free_slot;
- 	blk_mq_start_request(req);
- 
-+	task_tag = req->tag;
- 	treq->req_header.dword_0 |= cpu_to_be32(task_tag);
- 
--	memcpy(hba->utmrdl_base_addr + free_slot, treq, sizeof(*treq));
--	ufshcd_vops_setup_task_mgmt(hba, free_slot, tm_function);
-+	memcpy(hba->utmrdl_base_addr + task_tag, treq, sizeof(*treq));
-+	ufshcd_vops_setup_task_mgmt(hba, task_tag, tm_function);
- 
- 	/* send command to the controller */
--	__set_bit(free_slot, &hba->outstanding_tasks);
-+	__set_bit(task_tag, &hba->outstanding_tasks);
- 
- 	/* Make sure descriptors are ready before ringing the task doorbell */
- 	wmb();
- 
--	ufshcd_writel(hba, 1 << free_slot, REG_UTP_TASK_REQ_DOOR_BELL);
-+	ufshcd_writel(hba, 1 << task_tag, REG_UTP_TASK_REQ_DOOR_BELL);
- 	/* Make sure that doorbell is committed immediately */
- 	wmb();
- 
-@@ -6497,24 +6493,24 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba *hba,
- 		ufshcd_add_tm_upiu_trace(hba, task_tag, UFS_TM_ERR);
- 		dev_err(hba->dev, "%s: task management cmd 0x%.2x timed-out\n",
- 				__func__, tm_function);
--		if (ufshcd_clear_tm_cmd(hba, free_slot))
--			dev_WARN(hba->dev, "%s: unable clear tm cmd (slot %d) after timeout\n",
--					__func__, free_slot);
-+		if (ufshcd_clear_tm_cmd(hba, task_tag))
-+			dev_WARN(hba->dev, "%s: unable to clear tm cmd (slot %d) after timeout\n",
-+					__func__, task_tag);
- 		err = -ETIMEDOUT;
- 	} else {
- 		err = 0;
--		memcpy(treq, hba->utmrdl_base_addr + free_slot, sizeof(*treq));
-+		memcpy(treq, hba->utmrdl_base_addr + task_tag, sizeof(*treq));
- 
- 		ufshcd_add_tm_upiu_trace(hba, task_tag, UFS_TM_COMP);
- 	}
- 
- 	spin_lock_irqsave(hba->host->host_lock, flags);
--	__clear_bit(free_slot, &hba->outstanding_tasks);
-+	__clear_bit(task_tag, &hba->outstanding_tasks);
- 	spin_unlock_irqrestore(hba->host->host_lock, flags);
- 
-+	ufshcd_release(hba);
- 	blk_put_request(req);
- 
--	ufshcd_release(hba);
- 	return err;
- }
- 
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+Thanks
+Kishon
