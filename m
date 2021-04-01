@@ -2,89 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B48A9351CA9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 824FC351E78
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237801AbhDASTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:19:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34008 "EHLO
+        id S241010AbhDASmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:42:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235093AbhDASBg (ORCPT
+        with ESMTP id S237290AbhDASTE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:01:36 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C9AAC02FE95;
-        Thu,  1 Apr 2021 09:01:45 -0700 (PDT)
-Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D94A589B;
-        Thu,  1 Apr 2021 18:01:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1617292901;
-        bh=9PpGK5DYSDHyjsBaiZozxLkq3MRlWpOKUyVcUk0phsM=;
-        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Uiw4WeVEXPnxxHr7LLQidTggt4sWeyauxEFAhUcE0FUK7yFqCD2KdFq8rV2lw76U+
-         gkiQAf9iyDxgO+JlkvUSWu9vQgIxmbPZXOwy0enYuP9Xrh4qz4q8Vgxrc2Yoag0hry
-         2siBoSR0PL/6S54FPzmolSfRMU2WcluNHE9owqUg=
-Reply-To: kieran.bingham+renesas@ideasonboard.com
-Subject: Re: [PATCH 24/32] MAINTAINERS: update imi,rdacm2x-gmsl.yaml reference
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Rob Herring <robh@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-References: <cover.1617279355.git.mchehab+huawei@kernel.org>
- <b03a41b5051b6cb115b2aa9c3d610e75d84dcfea.1617279356.git.mchehab+huawei@kernel.org>
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Organization: Ideas on Board
-Message-ID: <aee4c49c-04f8-c553-63ce-868c46ade0e8@ideasonboard.com>
-Date:   Thu, 1 Apr 2021 17:01:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 1 Apr 2021 14:19:04 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B855BC02FE96;
+        Thu,  1 Apr 2021 09:02:24 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id w70so2300029oie.0;
+        Thu, 01 Apr 2021 09:02:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NceWVRPYS7nNidFPd8tJDQfG9QQ6Am5einMv70McUlY=;
+        b=qAiDjUgsiJhKQpQgHxcvrxqSzpnXMiIzfeINJLQa0z5FzehGNhAQOCvLGixbfq0gki
+         yfXOBWwVei8e5M9Y1fd31JpTbNbYyFKNVwKNW9+yCCqzyQSzuj0hzsWAgOHWujneTWJ1
+         vwd9u5KZlejXJ4yzsGeUMz8Z0CbR5v46OhHtllrbAGxLO1rPF/SL3SgWWISk3QtsklR/
+         QBG0uD7FBX8pj60hwncr/fiFmkNnDk5dZxxi3RBtZBCwkCURbB1rRLxOcuBEMb9PEkZO
+         q/56Y5Ef3Us7uju3SISEMnhB6KOWBErcQ1jY476lnyO4PxG4ENLXO2/tkuc6GoHPal+b
+         3pqw==
+X-Gm-Message-State: AOAM531EAPngxAHFzPBYWOo95u5s28TfiD8POXWlzRfch/u8oyNJSkk8
+        L2naWJ7+hLFEeOvNMdNozKrMYrRFavHKajqBwP8=
+X-Google-Smtp-Source: ABdhPJzd0pdsMy9851vuDBDqnWIPtooI4jg6cdkcFhkWb4gghJPio4WVgXsX3ocLeVWwHrgLXiWvwYl/wMQ9HtItZ6M=
+X-Received: by 2002:aca:c4c5:: with SMTP id u188mr6514855oif.71.1617292943979;
+ Thu, 01 Apr 2021 09:02:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <b03a41b5051b6cb115b2aa9c3d610e75d84dcfea.1617279356.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+References: <MW2PR2101MB08924CD74C6EB773C4D5FAFDBF7E9@MW2PR2101MB0892.namprd21.prod.outlook.com>
+ <CAJZ5v0g+=AnRAmAAn8NpHm8bmZ1WkwDpjb5rr_zPOVABW1PYug@mail.gmail.com>
+ <4e95307db43e2f7cc8516e645b81db7db0dd8ad4.camel@redhat.com>
+ <CAMj1kXHg2RDgwmOhJkaAPoWeHpxnd6tixp94Kha1-bzNvCaQUg@mail.gmail.com>
+ <504652e70f0a4e42e4927583b9ed47cd78590329.camel@redhat.com>
+ <CAMj1kXHRduBs0TJcLC4iMkyoGXyyrXPM_WpVVij33ki8THf9Kw@mail.gmail.com>
+ <CAJZ5v0hKPBtUzGKfGHD6KX-c2QEETfatCkNjCK8ukh-AhVfUhA@mail.gmail.com> <CAMj1kXFrBGTitSNYZC58=UdmfgbbF2MvTcfLVRpkxJ-uYX3piw@mail.gmail.com>
+In-Reply-To: <CAMj1kXFrBGTitSNYZC58=UdmfgbbF2MvTcfLVRpkxJ-uYX3piw@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 1 Apr 2021 18:02:12 +0200
+Message-ID: <CAJZ5v0iPneWK69GTzWigdXjjb6VN6Hyd5=hLCdGasfnTxXCYNg@mail.gmail.com>
+Subject: Re: Fix hibernation in FIPS mode?
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Simo Sorce <simo@redhat.com>, Dexuan Cui <decui@microsoft.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "crecklin@redhat.com" <crecklin@redhat.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
+On Thu, Apr 1, 2021 at 3:54 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Thu, 1 Apr 2021 at 15:38, Rafael J. Wysocki <rafael@kernel.org> wrote:
+> >
+> > On Thu, Apr 1, 2021 at 10:47 AM Ard Biesheuvel <ardb@kernel.org> wrote:
+> > >
+> > > On Tue, 30 Mar 2021 at 21:56, Simo Sorce <simo@redhat.com> wrote:
+> > > >
+> > > > On Tue, 2021-03-30 at 21:45 +0200, Ard Biesheuvel wrote:
+> > > > > On Tue, 30 Mar 2021 at 20:05, Simo Sorce <simo@redhat.com> wrote:
+> > > > > > On Tue, 2021-03-30 at 16:46 +0200, Rafael J. Wysocki wrote:
+> > > > > > > On Tue, Mar 30, 2021 at 12:14 AM Dexuan Cui <decui@microsoft.com> wrote:
+> > > > > > > > Hi,
+> > > > > > > > MD5 was marked incompliant with FIPS in 2009:
+> > > > > > > > a3bef3a31a19 ("crypto: testmgr - Skip algs not flagged fips_allowed in fips mode")
+> > > > > > > > a1915d51e8e7 ("crypto: testmgr - Mark algs allowed in fips mode")
+> > > > > > > >
+> > > > > > > > But hibernation_e820_save() is still using MD5, and fails in FIPS mode
+> > > > > > > > due to the 2018 patch:
+> > > > > > > > 749fa17093ff ("PM / hibernate: Check the success of generating md5 digest before hibernation")
+> > > > > > > >
+> > > > > > > > As a result, hibernation doesn't work when FIPS is on.
+> > > > > > > >
+> > > > > > > > Do you think if hibernation_e820_save() should be changed to use a
+> > > > > > > > FIPS-compliant algorithm like SHA-1?
+> > > > > > >
+> > > > > > > I would say yes, it should.
+> > > > > > >
+> > > > > > > > PS, currently it looks like FIPS mode is broken in the mainline:
+> > > > > > > > https://www.mail-archive.com/linux-crypto@vger.kernel.org/msg49414.html
+> > > > > >
+> > > > > > FYI, SHA-1 is not a good choice, it is only permitted in HMAC
+> > > > > > constructions and only for specified uses. If you need to change
+> > > > > > algorithm you should go straight to SHA-2 or SHA-3 based hashes.
+> > > > > >
+> > > > >
+> > > > > What is the reason for using a [broken] cryptographic hash here? if
+> > > > > this is just an integrity check, better use CRC32
+> >
+> > Not really.
+> >
+> > CRC32 is not really sufficient for integrity checking here AFAICS.  It
+> > might be made a fallback option if MD5 is not available, but making it
+> > the default would be somewhat over the top IMO.
+> >
+> > > > If the integrity check is used exclusively to verify there were no
+> > > > accidental changes and is not used as a security measure, by all means
+> > > > I agree that using crc32 is a better idea.
+> > > >
+> > >
+> > > Looking at 62a03defeabd58f74e07ca030d6c21e069d4d88e which introduced
+> > > this, it is only a best effort check which is simply omitted if md5
+> > > happens to be unavailable, so there is definitely no need for crypto
+> > > here.
+> >
+> > Yes, it is about integrity checking only.  No, CRC32 is not equivalent
+> > to MD5 in that respect AFAICS.
+> >
+>
+> There are two possibilities:
+> - we care about an adversary attempting to forge a collision, in which
+> case you need a cryptographic hash which is not broken;
+> - we only care about integrity, in which case crypto is overkill, and
+> CRC32 is sufficient. (Note that the likelihood of an honest,
+> inadvertent modification not being caught by CRC32 is 1 in 4 billion)
 
-On 01/04/2021 13:17, Mauro Carvalho Chehab wrote:
-> The file name: Documentation/devicetree/bindings/media/i2c/rdacm2x-gmsl.yaml
-> should be, instead: Documentation/devicetree/bindings/media/i2c/imi,rdacm2x-gmsl.yaml.
-> 
-> Update its cross-reference accordingly.
-> 
-> Fixes: 34009bffc1c6 ("media: i2c: Add RDACM20 driver")
-> Fixes: e9f817689789 ("media: dt-bindings: media: i2c: Add bindings for IMI RDACM2x")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+That depends on how you count.
 
-Indeed, confirmed,
+Surely, there are modifications caught by MD5 that will not be caught by CRC32.
 
-Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> MD5 does not meet either requirement, given that it is known to be
+> broken, and overkill for simple integrity checks. MD5 should be phased
+> out and removed, and moving this code onto the correct abstraction
+> would be a reasonable step towards that goal.
 
+This clearly is a matter of opinion.
 
-> ---
->  MAINTAINERS | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 1644b6e9697c..b405ee71f730 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -15258,7 +15258,7 @@ M:	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
->  M:	Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
->  L:	linux-media@vger.kernel.org
->  S:	Maintained
-> -F:	Documentation/devicetree/bindings/media/i2c/rdacm2x-gmsl.yaml
-> +F:	Documentation/devicetree/bindings/media/i2c/imi,rdacm2x-gmsl.yaml
->  F:	drivers/media/i2c/max9271.c
->  F:	drivers/media/i2c/max9271.h
->  F:	drivers/media/i2c/rdacm21.c
-> 
-
+I'm not religious about it though.  If there is a general consensus
+that CRC32 is sufficient for error detection in hibernation files,
+then it can be used.  So is there such a consensus and if so, can you
+give me a pointer to some research that it is based on?
