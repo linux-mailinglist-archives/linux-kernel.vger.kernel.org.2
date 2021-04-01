@@ -2,84 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5FB1350C27
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 03:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16797350C24
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 03:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233297AbhDABxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 21:53:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51422 "EHLO mail.kernel.org"
+        id S232915AbhDAByq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 21:54:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232782AbhDABxI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 21:53:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11F8C60FE9;
-        Thu,  1 Apr 2021 01:53:08 +0000 (UTC)
+        id S230284AbhDABy1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 21:54:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FD9960FE9;
+        Thu,  1 Apr 2021 01:54:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617241988;
-        bh=37JUz0qhV8xVpWHS2xEgP03SB1g4t2FHZ8M3ahU6ZJk=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=pP+VeSi1ETwMrbpxwFEphhwBv/QMNSPnQbk8sA2WsKpdqKeOrFu3eY0C7xGVMfW2L
-         Nlcoeo+kFVNsrPs2aDLEfF2bQGie57qkEFaQCMTS70tAbPO1nTwSED/aHQvnHpciSX
-         npRR6O5WS37v5hv2YrkJwM+LCLqpHKBTI1hwYM66DzsN+DZC0/6VgbRuE8UECcgPJZ
-         R7xwJK9iGdH3gl4pgrDmECUreu6WolrTzY9hVeJJYA53ZKIPsUyInP+A9Z0deJOTqz
-         gUxdPZnwkZ/pFBjbS+HkPv6P2c8l0ZEbCQlL9zEHNzFzALvzacu1dLGi2EOSkhioQl
-         7LmR1/XGthjKw==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <3917fba4-e5b0-911f-9220-f401a90aac38@somainline.org>
-References: <20210220155618.176559-1-konrad.dybcio@somainline.org> <20210220155618.176559-5-konrad.dybcio@somainline.org> <161404077336.1254594.15002572465360321874@swboyd.mtv.corp.google.com> <3917fba4-e5b0-911f-9220-f401a90aac38@somainline.org>
-Subject: Re: [PATCH 5/6] clk: qcom: gcc-sdm660: Account for needed adjustments in probe function
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Craig Tatlor <ctatlor97@gmail.com>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        phone-devel@vger.kernel.org
-Date:   Wed, 31 Mar 2021 18:53:06 -0700
-Message-ID: <161724198675.2260335.14358880292682931985@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+        s=k20201202; t=1617242067;
+        bh=I1Vutxd2fotaDN7XIHIAgeH4hifd8ayloeGtrgZkmYA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SR0DLDz8rzxeAm6JtFEUCiI7DD/4GT105sl02Mca6xlyT0K2U8VPNqZsol4Bxs97I
+         S5nxB805BmRc/5fzQDrwxoFqc0TO+Q9n3pRAuMn2acus98Tb3mZwyqct21bo3obZUK
+         dZ4CjzvSsjyTUINQjCe0hD/6QA9HZrSu+6ku9KaOoMrmR8wDJIK/XHTDHpQxvwa8Ik
+         a4L8qAqwjDg1747HFbW8qSdDr/aAeUswb9spPTYOna2HSt4oNcjk6oOAVn+LbRgomC
+         sNBs6WHIJAzj9cU+hXuvNJwtHI+urYJvJVvdQHrdi+AjWq3/Yp8+6wGFqFBY+AuT7G
+         enOv3lhHiQpnA==
+Date:   Thu, 1 Apr 2021 10:54:22 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [RFC PATCH -tip 3/3] x86/kprobes,orc: Unwind optprobe
+ trampoline correctly
+Message-Id: <20210401105422.bc7953889a2e0aaf03201b92@kernel.org>
+In-Reply-To: <161716949640.721514.14252504351086671126.stgit@devnote2>
+References: <161716946413.721514.4057380464113663840.stgit@devnote2>
+        <161716949640.721514.14252504351086671126.stgit@devnote2>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Konrad Dybcio (2021-02-25 11:09:14)
-> Hi and sorry for the late reply,
->=20
+On Wed, 31 Mar 2021 14:44:56 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-I'm sorry too. This fell off my review queue for some time.
 
->=20
-> >> +
-> >> +       /* Keep bimc gfx clock port on all the time */
-> >> +       clk_prepare_enable(gcc_bimc_gfx_clk.clkr.hw.clk);
-> >> +
-> > Preferably just set these various bits with regmap_update_bits() during
-> > probe. Also, please do it before regsitering the clks, not after.
->=20
-> To be fair, now I think that simply adding CLK_IS_CRITICAL flag to the cl=
-ocks in question is the smartest thing to do. Magic writes don't tell a who=
-le lot.
+> +#ifdef CONFIG_UNWINDER_ORC
+> +unsigned long recover_optprobe_trampoline(unsigned long addr, unsigned long *sp)
+> +{
+> +	unsigned long offset, entry, probe_addr;
+> +	struct optimized_kprobe *op;
+> +	struct orc_entry *orc;
+> +
+> +	entry = find_kprobe_optinsn_slot_entry(addr);
+> +	if (!entry)
+> +		return addr;
+> +
+> +	offset = addr - entry;
+> +
+> +	/* Decode arg1 and get the optprobe */
+> +	op = (void *)extract_set_arg1((void *)(entry + TMPL_MOVE_IDX));
+> +	if (!op)
+> +		return addr;
+> +
+> +	probe_addr = (unsigned long)op->kp.addr;
+> +
+> +	if (offset < TMPL_END_IDX) {
 
-This is how it's been done in various other qcom clk drivers. Usually
-there is a comment about what is enabled, but really it's just setting
-random bits that sadly aren't already set by default.
+Maybe I should add a comment here.
 
->=20
->=20
-> >> +       /* Set the HMSS_GPLL0_SRC for 300MHz to CPU subsystem */
-> >> +       clk_set_rate(hmss_gpll0_clk_src.clkr.hw.clk, 300000000);
-> > Is this not already the case?
->=20
->=20
-> This is a mission-critical clock and we cannot trust the bootloader with =
-setting it. Otherwise dragons might appear.
->=20
+/*
+ * Since this is on the trampoline code based on the template code,
+ * ORC information on the template code can be used for adjusting
+ * stack pointer. The template code may change the stack pointer to
+ * store pt_regs.
+ */
 
-What does the bootloader set it to?
+> +		orc = orc_find((unsigned long)optprobe_template_func + offset);
+> +		if (!orc || orc->sp_reg != ORC_REG_SP)
+> +			return addr;
+> +		/*
+> +		 * Since optprobe trampoline doesn't push caller on the stack,
+> +		 * need to decrement 1 stack entry size
+> +		 */
+> +		*sp += orc->sp_offset - sizeof(long);
+> +		return probe_addr;
+> +	} else {
+
+/*
+ * In this case, the address is on the instruction copied from probed
+ * address, and jump instruction. Here the stack pointer is exactly
+ * the same as the value where it was copied by the kprobes.
+ */
+
+> +		return probe_addr + offset - TMPL_END_IDX;
+> +	}
+> +}
+> +#endif
+> +
+
+
+Thank you,
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
