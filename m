@@ -2,109 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28B613518EE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0AF63518C4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235698AbhDARsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:48:12 -0400
-Received: from condef-10.nifty.com ([202.248.20.75]:44978 "EHLO
-        condef-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234692AbhDARjM (ORCPT
+        id S236757AbhDARrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234652AbhDARi6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:39:12 -0400
-Received: from conssluserg-05.nifty.com ([10.126.8.84])by condef-10.nifty.com with ESMTP id 131GRVSH004859
-        for <linux-kernel@vger.kernel.org>; Fri, 2 Apr 2021 01:27:31 +0900
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 131GRFvs001514
-        for <linux-kernel@vger.kernel.org>; Fri, 2 Apr 2021 01:27:16 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 131GRFvs001514
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1617294436;
-        bh=az0WDP5Hb3e5bZjQn72crx3TkUPqqKGWwcCXVDzFsC0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ucx22InScTdWk9dSVP6OgZX5Zn9LaSliqzos4dlyC6Hnboo+Cg9mO5tvoBnucCv3v
-         VB0xQKSeQJYnFkIiQWyAgdeMgyvAtz4wGm5ESUPIvD/f4+7lnG8fJL8J9oBTxii4Wx
-         faSWYXANXS8cbqTwifRxWbOyzxhYaZQUWSRnrWzA0OJmGJjEx59SWO6GO/yYq9vygG
-         nqA+3noKxVN5/0ZsC+2jcpS4MDfzDQVl7hrnPuDiOS313RJejZku/TewAaiNBBLMW1
-         yy3RRYWWFveRmSCUYjIGG4/alYsgjsy/rheo4SWzvJvd8/hTX/9lDqRj6OSmRXIHxS
-         0oMgA01kAcelg==
-X-Nifty-SrcIP: [209.85.210.178]
-Received: by mail-pf1-f178.google.com with SMTP id x126so1808873pfc.13
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 09:27:16 -0700 (PDT)
-X-Gm-Message-State: AOAM531JiJZqGOi9Zoxwy8elGOHhv3Z9c0puLuNOZCXGP/4yfzCQKrSU
-        wOdH/w9Ad3bDR2+S2ebIVK/lkz0KifJPc+Q3u0Y=
-X-Google-Smtp-Source: ABdhPJyiJUPgNyeul8sm7rrkPe52zxBrzeKUV+U3CWGwtcSB1uTWGlIEFXywP43lIm71riNLNn7aiV3QEYFp5U17lw0=
-X-Received: by 2002:aa7:8d84:0:b029:1f8:3449:1bc6 with SMTP id
- i4-20020aa78d840000b02901f834491bc6mr8081418pfr.76.1617294435339; Thu, 01 Apr
- 2021 09:27:15 -0700 (PDT)
+        Thu, 1 Apr 2021 13:38:58 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9055AC02FEB6;
+        Thu,  1 Apr 2021 09:29:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=/sqwMRuO/Lyty4C5nMLg9Ty/SDjhPOzpiUZZqAcCB4k=; b=Dsm4NcHPU28c7Gz7pL3zZFCfiN
+        +ESznWZW0moMrc+HAkbhbZvk4FL8nXXXviCKb5jvXGnbMwFDkiZfl/UWN5IUh54kyPavFjdHYBG/V
+        b72yS20xmpHG17IU9JaIZmSufKVJ09GyASpfHBfit+fGdyqbdwL/nE5I9TUHQQcJ5e1rz390RcjV9
+        45+6bo+vDtgNO8gIXaRHWuNCFtgi2FSiXtfc0O0DyQcKxEosjBzsY/h0zxOP+B12ruLuAwflbPZNF
+        X8meml66J6zcQ3FhPQ4CfoOwsKoPRGrA4nYL6Gow91HtxR+xVHvje8zoZm+G5rcjHiSLxM6sY/n/v
+        JnqqOR/g==;
+Received: from [2601:1c0:6280:3f0::e0e1]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lS0Bz-006M3N-9a; Thu, 01 Apr 2021 16:29:13 +0000
+Subject: Re: linux-next: Tree for Mar 31
+ (drivers/phy/marvell/phy-mvebu-cp110-utmi.o)
+To:     Kostya Porotchkin <kostap@marvell.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+References: <CO6PR18MB4417A9BE44A8879928B0D0A7CA7B9@CO6PR18MB4417.namprd18.prod.outlook.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <b567ac02-c5b1-188e-1431-a903a2a00a34@infradead.org>
+Date:   Thu, 1 Apr 2021 09:29:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210401123944.GJ15381@kitsune.suse.cz>
-In-Reply-To: <20210401123944.GJ15381@kitsune.suse.cz>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 2 Apr 2021 01:26:38 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQwi=Nd+OfHrXBMJtC=f262K+=XFqeYBUz=Qx2Bjbg+yg@mail.gmail.com>
-Message-ID: <CAK7LNAQwi=Nd+OfHrXBMJtC=f262K+=XFqeYBUz=Qx2Bjbg+yg@mail.gmail.com>
-Subject: Re: allmodconfig not working with dummy-tools
-To:     =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
-Cc:     Philipp Rudo <prudo@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CO6PR18MB4417A9BE44A8879928B0D0A7CA7B9@CO6PR18MB4417.namprd18.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 9:39 PM Michal Such=C3=A1nek <msuchanek@suse.de> wro=
-te:
->
-> Hello,
->
-> running allmodconfig with dumy-tools I get:
->
-> which: no elfedit in (./scripts/dummy-tools)
-> scripts/dummy-tools/gcc: unknown assembler invoked
-> scripts/Kconfig.include:50: Sorry, this assembler is not supported.
-> scripts/kconfig/Makefile:77: recipe for target 'allmodconfig' failed
-> make[1]: *** [allmodconfig] Error 1
-> Makefile:648: recipe for target 'allmodconfig' failed
-> make: *** [allmodconfig] Error 2
->
-> I use allmodconfig to enable any unknown options on new kernel version
-> automaticallly so it can be build-tested.
->
-> Can this be fixed or is there some other way of automatically udating
-> the config after new options are added?
->
-> Thanks
->
-> Michal
+On 4/1/21 5:33 AM, Kostya Porotchkin wrote:
+> Hi, Randy,
+> 
+>> -----Original Message-----
+>> From: Randy Dunlap <rdunlap@infradead.org>
+>> Sent: Wednesday, March 31, 2021 18:28
+>> To: Stephen Rothwell <sfr@canb.auug.org.au>; Linux Next Mailing List <linux-
+>> next@vger.kernel.org>
+>> Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>; Kostya
+>> Porotchkin <kostap@marvell.com>; netdev@vger.kernel.org
+>> Subject: [EXT] Re: linux-next: Tree for Mar 31 (drivers/phy/marvell/phy-mvebu-
+>> cp110-utmi.o)
+>>
+> 
+> 
+>>
+>> on i386:
+>>
+>> ld: drivers/phy/marvell/phy-mvebu-cp110-utmi.o: in function
+>> `mvebu_cp110_utmi_phy_probe':
+>> phy-mvebu-cp110-utmi.c:(.text+0x152): undefined reference to
+>> `of_usb_get_dr_mode_by_phy'
+>>
+> [KP] This driver depends on ARCH_MVEBU (arm64).
+> How it happens that it is included in i386 builds?
+
+Due to COMPILE_TEST:
+
+config PHY_MVEBU_CP110_UTMI
+	tristate "Marvell CP110 UTMI driver"
+	depends on ARCH_MVEBU || COMPILE_TEST
+	depends on OF
+	select GENERIC_PHY
 
 
-Thanks for the report.
-I squashed the following. Please wait for tomorrow's linux-next.
+> 
+> Regards
+> Kosta
+>>
+>> Full randconfig file is attached.
+>>
+>> --
 
 
+-- 
+~Randy
 
-diff --git a/scripts/dummy-tools/gcc b/scripts/dummy-tools/gcc
-index 39e65fee59bd..f6d543725f1e 100755
---- a/scripts/dummy-tools/gcc
-+++ b/scripts/dummy-tools/gcc
-@@ -67,6 +67,12 @@ if arg_contain -E "$@"; then
-  fi
- fi
-
-+# To set CONFIG_AS_IS_GNU
-+if arg_contain -Wa,--version "$@"; then
-+ echo "GNU assembler (scripts/dummy-tools) 2.50"
-+ exit 0
-+fi
-+
- if arg_contain -S "$@"; then
-  # For scripts/gcc-x86-*-has-stack-protector.sh
-  if arg_contain -fstack-protector "$@"; then
-
-
-
---=20
-Best Regards
-Masahiro Yamada
