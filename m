@@ -2,65 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A8B335137B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 12:29:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06478351391
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 12:29:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233504AbhDAK2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 06:28:07 -0400
-Received: from mga09.intel.com ([134.134.136.24]:23074 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233985AbhDAKUW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 06:20:22 -0400
-IronPort-SDR: n27evUeVa9ikOqkYsKHdg1seF0T6VVWRJ7QwgaYBrYklCiXAVTcf6/QQiYdZ68xsUGE/i0oDlC
- SX6rZlTUxDXA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="192314880"
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="192314880"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 03:20:21 -0700
-IronPort-SDR: WqOawMIMeiqpoTx+iitqHhEl43Oqq8lsbKjMPkMdr6i2Hb07m1HpujGAhSct7qQC3dLPutEOnJ
- u86ImlpnMnig==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="517286034"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 01 Apr 2021 03:20:04 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 01 Apr 2021 13:20:04 +0300
-Date:   Thu, 1 Apr 2021 13:20:04 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Guenter Roeck <linux@roeck-us.net>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/6] usb: Linking ports to their Type-C connectors
-Message-ID: <YGWeVLnYJw7RKuj7@kuha.fi.intel.com>
-References: <20210401065347.4010-1-heikki.krogerus@linux.intel.com>
+        id S234421AbhDAK21 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 1 Apr 2021 06:28:27 -0400
+Received: from lithops.sigma-star.at ([195.201.40.130]:60168 "EHLO
+        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234161AbhDAK1z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 06:27:55 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 6C52E606BA25;
+        Thu,  1 Apr 2021 12:20:58 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id Si3ccR2XFNkt; Thu,  1 Apr 2021 12:20:58 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 0711E606BA27;
+        Thu,  1 Apr 2021 12:20:58 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id MFdJ5jY0cUlX; Thu,  1 Apr 2021 12:20:57 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id C428E606BA25;
+        Thu,  1 Apr 2021 12:20:57 +0200 (CEST)
+Date:   Thu, 1 Apr 2021 12:20:57 +0200 (CEST)
+From:   Richard Weinberger <richard@nod.at>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        horia geanta <horia.geanta@nxp.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        aymen sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        davem <davem@davemloft.net>,
+        James Bottomley <jejb@linux.ibm.com>,
+        kernel <kernel@pengutronix.de>,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        david <david@sigma-star.at>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        "open list, ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        LSM <linux-security-module@vger.kernel.org>
+Message-ID: <1263763932.139584.1617272457698.JavaMail.zimbra@nod.at>
+In-Reply-To: <897df7dd-83a1-3e3e-1d9f-5a1adfd5b2fb@pengutronix.de>
+References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de> <CAFLxGvzWLje+_HFeb+hKNch4U1f5uypVUOuP=QrEPn_JNM+scg@mail.gmail.com> <ca2a7c17-3ed0-e52f-2e2f-c0f8bbe10323@pengutronix.de> <CAFLxGvyj1aZ_3MuxJC6onejchV_6A8WbNR1vTLpSBF5QTxvLyQ@mail.gmail.com> <897df7dd-83a1-3e3e-1d9f-5a1adfd5b2fb@pengutronix.de>
+Subject: Re: [PATCH v1 0/3] KEYS: trusted: Introduce support for NXP
+ CAAM-based trusted keys
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401065347.4010-1-heikki.krogerus@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
+Thread-Topic: KEYS: trusted: Introduce support for NXP CAAM-based trusted keys
+Thread-Index: +Kg0jkvxiPr6cjcaexmg+qI/E7bbOw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 09:53:41AM +0300, Heikki Krogerus wrote:
-> Hi,
+Ahmad,
+
+----- Ursprüngliche Mail -----
+> Von: "Ahmad Fatoum" <a.fatoum@pengutronix.de>
+>> I'm pretty sure with minimal changes it will work with your recent approach too.
 > 
-> One more version. I used #ifdef when I should have used #if
-> IS_DEFINED(). Thanks Guenter for pointing that out.
-> 
-> I'm sending this version right away because of the holidays. I'm not
-> changing anything else except that one fix.
+> I am using dmsetup directly in my project. I am not familiar with cryptsetup
+> plain. What benefits do you see with this over direct dmsetup?
 
-I have to prepare one more version.
+cryptsetup is the de-facto standard to setup encrypted block devices.
+There is a lot of existing tooling around cryptsetup already (systemd, etc..),
+so being able to use CAAM keys for dm-crypt with cryptsetup seems natural to me.
+Plain mode allows setting up dm-crypt without LUKS.
 
-Unfortunately we can not use IS_DEFINED() either. I have to use
-IS_REACHABLE() instead.
-
-I'm sorry about this.
-
-
-thanks,
-
--- 
-heikki
+Thanks,
+//richard
