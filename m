@@ -2,167 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D5DD35184C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B613518EE
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236551AbhDARp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:45:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40710 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234611AbhDARiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:38:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 33371613CD;
-        Thu,  1 Apr 2021 17:20:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617297649;
-        bh=vvuJdzxokTaxuYnDd9Lr/maD/CXJhrGhm8gULeHd2GU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=kqKdmkdvHLZAPshcw/MqgFez0gtfecFkLB42Uv9NV+sN7FxzzC2pwE27yorA1s18K
-         Z/vH+2x+otungsAgYRQanbKCF8BrmgC4b41LNigzHKooMBj+GrVQlaYwkevCrf/nbG
-         mgI8JyJda/d6AelhFqoNHg+Lnv9bKS/1vFdQijmd4go0qibSzMh/Xa+7hc6Lnki4BX
-         ITJSeHPApwN1RKEgaDfXTggBVr+BJq9K7xYnQsMKjaKfwGefg20fSZeBK+NT1JCA8O
-         zLkrN6xyndbMTDo51I/DA2kQNPqJp/75FcB22o+WqJQXCE/pcudruJFGU5GuaGEcdq
-         vNQ3U0dysPiNw==
-Date:   Thu, 1 Apr 2021 11:20:54 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] scsi: mpt3sas: Fix out-of-bounds warnings in
- _ctl_addnl_diag_query
-Message-ID: <20210401162054.GA397186@embeddedor>
+        id S235698AbhDARsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:48:12 -0400
+Received: from condef-10.nifty.com ([202.248.20.75]:44978 "EHLO
+        condef-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234692AbhDARjM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:39:12 -0400
+Received: from conssluserg-05.nifty.com ([10.126.8.84])by condef-10.nifty.com with ESMTP id 131GRVSH004859
+        for <linux-kernel@vger.kernel.org>; Fri, 2 Apr 2021 01:27:31 +0900
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 131GRFvs001514
+        for <linux-kernel@vger.kernel.org>; Fri, 2 Apr 2021 01:27:16 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 131GRFvs001514
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1617294436;
+        bh=az0WDP5Hb3e5bZjQn72crx3TkUPqqKGWwcCXVDzFsC0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ucx22InScTdWk9dSVP6OgZX5Zn9LaSliqzos4dlyC6Hnboo+Cg9mO5tvoBnucCv3v
+         VB0xQKSeQJYnFkIiQWyAgdeMgyvAtz4wGm5ESUPIvD/f4+7lnG8fJL8J9oBTxii4Wx
+         faSWYXANXS8cbqTwifRxWbOyzxhYaZQUWSRnrWzA0OJmGJjEx59SWO6GO/yYq9vygG
+         nqA+3noKxVN5/0ZsC+2jcpS4MDfzDQVl7hrnPuDiOS313RJejZku/TewAaiNBBLMW1
+         yy3RRYWWFveRmSCUYjIGG4/alYsgjsy/rheo4SWzvJvd8/hTX/9lDqRj6OSmRXIHxS
+         0oMgA01kAcelg==
+X-Nifty-SrcIP: [209.85.210.178]
+Received: by mail-pf1-f178.google.com with SMTP id x126so1808873pfc.13
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 09:27:16 -0700 (PDT)
+X-Gm-Message-State: AOAM531JiJZqGOi9Zoxwy8elGOHhv3Z9c0puLuNOZCXGP/4yfzCQKrSU
+        wOdH/w9Ad3bDR2+S2ebIVK/lkz0KifJPc+Q3u0Y=
+X-Google-Smtp-Source: ABdhPJyiJUPgNyeul8sm7rrkPe52zxBrzeKUV+U3CWGwtcSB1uTWGlIEFXywP43lIm71riNLNn7aiV3QEYFp5U17lw0=
+X-Received: by 2002:aa7:8d84:0:b029:1f8:3449:1bc6 with SMTP id
+ i4-20020aa78d840000b02901f834491bc6mr8081418pfr.76.1617294435339; Thu, 01 Apr
+ 2021 09:27:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210401123944.GJ15381@kitsune.suse.cz>
+In-Reply-To: <20210401123944.GJ15381@kitsune.suse.cz>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 2 Apr 2021 01:26:38 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQwi=Nd+OfHrXBMJtC=f262K+=XFqeYBUz=Qx2Bjbg+yg@mail.gmail.com>
+Message-ID: <CAK7LNAQwi=Nd+OfHrXBMJtC=f262K+=XFqeYBUz=Qx2Bjbg+yg@mail.gmail.com>
+Subject: Re: allmodconfig not working with dummy-tools
+To:     =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
+Cc:     Philipp Rudo <prudo@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following out-of-bounds warnings by embedding existing
-struct htb_rel_query into struct mpt3_addnl_diag_query, instead
-of duplicating its members:
+On Thu, Apr 1, 2021 at 9:39 PM Michal Such=C3=A1nek <msuchanek@suse.de> wro=
+te:
+>
+> Hello,
+>
+> running allmodconfig with dumy-tools I get:
+>
+> which: no elfedit in (./scripts/dummy-tools)
+> scripts/dummy-tools/gcc: unknown assembler invoked
+> scripts/Kconfig.include:50: Sorry, this assembler is not supported.
+> scripts/kconfig/Makefile:77: recipe for target 'allmodconfig' failed
+> make[1]: *** [allmodconfig] Error 1
+> Makefile:648: recipe for target 'allmodconfig' failed
+> make: *** [allmodconfig] Error 2
+>
+> I use allmodconfig to enable any unknown options on new kernel version
+> automaticallly so it can be build-tested.
+>
+> Can this be fixed or is there some other way of automatically udating
+> the config after new options are added?
+>
+> Thanks
+>
+> Michal
 
-include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [19, 32] from the object at 'karg' is out of the bounds of referenced subobject 'buffer_rel_condition' with type 'short unsigned int' at offset 16 [-Warray-bounds]
-include/linux/fortify-string.h:22:29: warning: '__builtin_memset' offset [19, 32] from the object at 'karg' is out of the bounds of referenced subobject 'buffer_rel_condition' with type 'short unsigned int' at offset 16 [-Warray-bounds]
 
-The problem is that the original code is trying to copy data into a
-bunch of struct members adjacent to each other in a single call to
-memcpy(). All those members are exactly the same contained in struct
-htb_rel_query, so instead of duplicating them into struct
-mpt3_addnl_diag_query, replace them with new member rel_query of
-type struct htb_rel_query. So, now that this new object is introduced,
-memcpy() doesn't overrun the length of &karg.buffer_rel_condition,
-because the address of the new struct object _rel_query_ is used as
-destination, instead. The same issue is present when calling memset(),
-and it is fixed with this same approach.
+Thanks for the report.
+I squashed the following. Please wait for tomorrow's linux-next.
 
-Below is a comparison of struct mpt3_addnl_diag_query, before and after
-this change (the size and cachelines remain the same):
 
-$ pahole -C mpt3_addnl_diag_query drivers/scsi/mpt3sas/mpt3sas_ctl.o
-struct mpt3_addnl_diag_query {
-	struct mpt3_ioctl_header   hdr;                  /*     0    12 */
-	uint32_t                   unique_id;            /*    12     4 */
-	uint16_t                   buffer_rel_condition; /*    16     2 */
-	uint16_t                   reserved1;            /*    18     2 */
-	uint32_t                   trigger_type;         /*    20     4 */
-	uint32_t                   trigger_info_dwords[2]; /*    24     8 */
-	uint32_t                   reserved2[2];         /*    32     8 */
 
-	/* size: 40, cachelines: 1, members: 7 */
-	/* last cacheline: 40 bytes */
-};
+diff --git a/scripts/dummy-tools/gcc b/scripts/dummy-tools/gcc
+index 39e65fee59bd..f6d543725f1e 100755
+--- a/scripts/dummy-tools/gcc
++++ b/scripts/dummy-tools/gcc
+@@ -67,6 +67,12 @@ if arg_contain -E "$@"; then
+  fi
+ fi
 
-$ pahole -C mpt3_addnl_diag_query drivers/scsi/mpt3sas/mpt3sas_ctl.o
-struct mpt3_addnl_diag_query {
-	struct mpt3_ioctl_header   hdr;                  /*     0    12 */
-	uint32_t                   unique_id;            /*    12     4 */
-	struct htb_rel_query       rel_query;            /*    16    16 */
-	uint32_t                   reserved2[2];         /*    32     8 */
-
-	/* size: 40, cachelines: 1, members: 4 */
-	/* last cacheline: 40 bytes */
-};
-
-Also, this helps with the ongoing efforts to globally enable
--Warray-bounds and get us closer to being able to tighten the
-FORTIFY_SOURCE routines on memcpy().
-
-Link: https://github.com/KSPP/linux/issues/109
-Reported-by: kernel test robot <lkp@intel.com>
-Build-tested-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/lkml/60659889.bJJILx2THu3hlpxW%25lkp@intel.com/
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/scsi/mpt3sas/mpt3sas_ctl.c |  5 ++---
- drivers/scsi/mpt3sas/mpt3sas_ctl.h | 12 ++++--------
- 2 files changed, 6 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_ctl.c b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
-index e7582fb8a93f..b66140e4c370 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_ctl.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
-@@ -2507,7 +2507,7 @@ _ctl_addnl_diag_query(struct MPT3SAS_ADAPTER *ioc, void __user *arg)
- 		    __func__, karg.unique_id);
- 		return -EPERM;
- 	}
--	memset(&karg.buffer_rel_condition, 0, sizeof(struct htb_rel_query));
-+	memset(&karg.rel_query, 0, sizeof(karg.rel_query));
- 	if ((ioc->diag_buffer_status[buffer_type] &
- 	    MPT3_DIAG_BUFFER_IS_REGISTERED) == 0) {
- 		ioc_info(ioc, "%s: buffer_type(0x%02x) is not registered\n",
-@@ -2520,8 +2520,7 @@ _ctl_addnl_diag_query(struct MPT3SAS_ADAPTER *ioc, void __user *arg)
- 		    __func__, buffer_type);
- 		return -EPERM;
- 	}
--	memcpy(&karg.buffer_rel_condition, &ioc->htb_rel,
--	    sizeof(struct  htb_rel_query));
-+	memcpy(&karg.rel_query, &ioc->htb_rel, sizeof(karg.rel_query));
- out:
- 	if (copy_to_user(arg, &karg, sizeof(struct mpt3_addnl_diag_query))) {
- 		ioc_err(ioc, "%s: unable to write mpt3_addnl_diag_query data @ %p\n",
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_ctl.h b/drivers/scsi/mpt3sas/mpt3sas_ctl.h
-index d2ccdafb8df2..8f6ffb40261c 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_ctl.h
-+++ b/drivers/scsi/mpt3sas/mpt3sas_ctl.h
-@@ -50,6 +50,8 @@
- #include <linux/miscdevice.h>
- #endif
- 
-+#include "mpt3sas_base.h"
++# To set CONFIG_AS_IS_GNU
++if arg_contain -Wa,--version "$@"; then
++ echo "GNU assembler (scripts/dummy-tools) 2.50"
++ exit 0
++fi
 +
- #ifndef MPT2SAS_MINOR
- #define MPT2SAS_MINOR		(MPT_MINOR + 1)
- #endif
-@@ -436,19 +438,13 @@ struct mpt3_diag_read_buffer {
-  * struct mpt3_addnl_diag_query - diagnostic buffer release reason
-  * @hdr - generic header
-  * @unique_id - unique id associated with this buffer.
-- * @buffer_rel_condition - Release condition ioctl/sysfs/reset
-- * @reserved1
-- * @trigger_type - Master/Event/scsi/MPI
-- * @trigger_info_dwords - Data Correspondig to trigger type
-+ * @rel_query - release query.
-  * @reserved2
-  */
- struct mpt3_addnl_diag_query {
- 	struct mpt3_ioctl_header hdr;
- 	uint32_t unique_id;
--	uint16_t buffer_rel_condition;
--	uint16_t reserved1;
--	uint32_t trigger_type;
--	uint32_t trigger_info_dwords[2];
-+	struct htb_rel_query rel_query;
- 	uint32_t reserved2[2];
- };
- 
--- 
-2.27.0
+ if arg_contain -S "$@"; then
+  # For scripts/gcc-x86-*-has-stack-protector.sh
+  if arg_contain -fstack-protector "$@"; then
 
+
+
+--=20
+Best Regards
+Masahiro Yamada
