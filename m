@@ -2,158 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9D7350BD8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 03:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC8EB350BF2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 03:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232718AbhDABXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 21:23:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46024 "EHLO
+        id S232429AbhDAB0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 21:26:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbhDABXM (ORCPT
+        with ESMTP id S232491AbhDAB0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 21:23:12 -0400
-Received: from hs01.dk-develop.de (hs01.dk-develop.de [IPv6:2a02:c207:3002:6234::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2BD4C061574;
-        Wed, 31 Mar 2021 18:23:11 -0700 (PDT)
-Received: from mail.dk-develop.de (hs01.dk-develop.de [IPv6:::1])
-        by hs01.dk-develop.de (Postfix) with ESMTP id 43E66240605;
-        Thu,  1 Apr 2021 03:23:05 +0200 (CEST)
+        Wed, 31 Mar 2021 21:26:35 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29D39C061761
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 18:26:35 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id y32so512612pga.11
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 18:26:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=tDlj4kgFlWpxX5ZVv654Fo3s6ByCdkV+7+iH8bJxbWo=;
+        b=Y2bmJAAZ1L88j7Fq7ETNfSc1to4OpfmoSZzKcgtF3LX6Qv/4ZQxGHV5Brgca8Q4bmD
+         QoG61xEhEN/axcAyAxDNTkfBopbDEKi0F6P8mcakoqvupLUaFdG3wZkF/iBhSUy5rBqX
+         Xt6RyTt7eMAcM5xKTeBdpbRR3gR3jn/dILd6U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=tDlj4kgFlWpxX5ZVv654Fo3s6ByCdkV+7+iH8bJxbWo=;
+        b=OeSetfC4V1RWv1rKh7iOe00c5FGASbnryKCEGXY6zO3LJElmEibqWSRf56QWRX6k9v
+         oeMz5PMI3ae7mu6k9w2iSYFmVOQAEo4b7R94jYpsgWpdJpH0pN5HSsz9fq3Xb7/2EMKc
+         UOd3epAJpufw3lyPExOqeJ+oL8E47h7qQOyiGTlvY0CbJTnR7KDul7u3YuwlcbFoPeEI
+         Xp24WDc0/zIQZsox1ayaAaYkdwC8gnEfBoaFE5irc5LCjKiWF2aIhKGdCK5LOoe8cXns
+         ctt8l5F/L+wO7nQ+oEKDjNXUhsRGFQ2RDds+F3AlHZ92eMaFfZB7KNO7ksJJxq4bUP5z
+         Q64A==
+X-Gm-Message-State: AOAM533jabpviOhSifwpBndRRW/JaADpThl3kyQInrUcaZs/7IM4Oci8
+        v04cTvlowwMEOVn5lKazkvljEB+yir/3xA==
+X-Google-Smtp-Source: ABdhPJwwTfEtXQITV+pDCnPPnBNonxYSo2tHMGeDp5oEqD13BD1KaVkiynE0bLTQCFc6nEaEkhpONA==
+X-Received: by 2002:a63:4502:: with SMTP id s2mr5745137pga.94.1617240394404;
+        Wed, 31 Mar 2021 18:26:34 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:201:7515:8c2e:1867:2767])
+        by smtp.gmail.com with ESMTPSA id o1sm3426212pjp.4.2021.03.31.18.26.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 18:26:33 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Date:   Thu, 01 Apr 2021 03:23:05 +0200
-From:   danilokrummrich@dk-develop.de
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
-        hkallweit1@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jeremy.linton@arm.com
-Subject: Re: [PATCH 2/2] net: mdio: support c45 peripherals on c22 busses
-In-Reply-To: <20210331183524.GV1463@shell.armlinux.org.uk>
-References: <20210331141755.126178-1-danilokrummrich@dk-develop.de>
- <20210331141755.126178-3-danilokrummrich@dk-develop.de>
- <YGSi+b/r4zlq9rm8@lunn.ch> <6f1dfc28368d098ace9564e53ed92041@dk-develop.de>
- <20210331183524.GV1463@shell.armlinux.org.uk>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <2f0ea3c3076466e197ca2977753b07f3@dk-develop.de>
-X-Sender: danilokrummrich@dk-develop.de
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210323224336.1311783-1-swboyd@chromium.org>
+References: <20210323224336.1311783-1-swboyd@chromium.org>
+Subject: Re: [PATCH v2] firmware: qcom_scm: Only compile legacy calls on ARM
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Elliot Berman <eberman@codeaurora.org>,
+        Brian Masney <masneyb@onstation.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Date:   Wed, 31 Mar 2021 18:26:32 -0700
+Message-ID: <161724039222.2260335.7485766796063332304@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-31 20:35, Russell King - ARM Linux admin wrote:
-> On Wed, Mar 31, 2021 at 07:58:33PM +0200, danilokrummrich@dk-develop.de 
-> wrote:
->> For this cited change the only thing happening is that if 
->> get_phy_device()
->> already failed for probing with is_c45==false (C22 devices) it tries 
->> to
->> probe with is_c45==true (C45 devices) which then either results into 
->> actual
->> C45 frame transfers or indirect accesses by calling mdiobus_c45_*() 
->> functions.
-> 
-> Please explain why and how a PHY may not appear to be present using
-> C22 frames to read the ID registers, but does appear to be present
-> when using C22 frames to the C45 indirect registers - and summarise
-> which PHYs have this behaviour.
-> 
-> It seems very odd that any PHY would only implement C45 indirect
-> registers in the C22 register space.
-Honestly, I can't list examples of that case (at least none that have an
-upstream driver already). This part of my patch, to fall back to c45 bus
-probing when c22 probing does not succeed, is also motivated by the fact
-that this behaviour was already introduced with this patch:
+Quoting Stephen Boyd (2021-03-23 15:43:36)
+> These scm calls are never used outside of legacy ARMv7 based platforms.
+> That's because PSCI, mandated on arm64, implements them for modern SoCs
+> via the PSCI spec. Let's move them to the legacy file and only compile
+> the legacy file into the kernel when CONFIG_ARM=3Dy. Otherwise provide
+> stubs and fail the calls. This saves a little bit of space in an
+> arm64 allmodconfig.
+>=20
+>  $ ./scripts/bloat-o-meter vmlinux.before vmlinux.after
+>  add/remove: 0/8 grow/shrink: 5/6 up/down: 509/-4401 (-3892)
+>  Function                                     old     new   delta
+>  __qcom_scm_set_dload_mode.constprop          312     452    +140
+>  qcom_scm_qsmmu500_wait_safe_toggle           288     416    +128
+>  qcom_scm_io_writel                           288     408    +120
+>  qcom_scm_io_readl                            376     492    +116
+>  __param_str_download_mode                     23      28      +5
+>  __warned                                    4327    4326      -1
+>  e843419@0b3f_00010432_324                      8       -      -8
+>  qcom_scm_call                                228     208     -20
+>  CSWTCH                                      5925    5877     -48
+>  _sub_I_65535_1                            163100  163040     -60
+>  _sub_D_65535_0                            163100  163040     -60
+>  qcom_scm_wb                                   64       -     -64
+>  qcom_scm_lock                                320     160    -160
+>  qcom_scm_call_atomic                         212       -    -212
+>  qcom_scm_cpu_power_down                      308       -    -308
+>  scm_legacy_call_atomic                       520       -    -520
+>  qcom_scm_set_warm_boot_addr                  720       -    -720
+>  qcom_scm_set_cold_boot_addr                  728       -    -728
+>  scm_legacy_call                             1492       -   -1492
+>  Total: Before=3D66737606, After=3D66733714, chg -0.01%
+>=20
+> Commit 9a434cee773a ("firmware: qcom_scm: Dynamically support SMCCC and
+> legacy conventions") didn't mention any motivating factors for keeping
+> the legacy code around on arm64 kernels, i.e. presumably that commit
+> wasn't trying to support these legacy APIs on arm64 kernels.
+>=20
+> Cc: Elliot Berman <eberman@codeaurora.org>
+> Cc: Brian Masney <masneyb@onstation.org>
+> Cc: Stephan Gerhold <stephan@gerhold.net>
+> Cc: Jeffrey Hugo <jhugo@codeaurora.org>
+> Cc: Douglas Anderson <dianders@chromium.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>=20
 
-commit 0cc8fecf041d3e5285380da62cc6662bdc942d8c
-Author: Jeremy Linton <jeremy.linton@arm.com>
-Date:   Mon Jun 22 20:35:32 2020 +0530
+Elliot, can you ack/review this?
 
-     net: phy: Allow mdio buses to auto-probe c45 devices
-
-     The mdiobus_scan logic is currently hardcoded to only
-     work with c22 devices. This works fairly well in most
-     cases, but its possible that a c45 device doesn't respond
-     despite being a standard phy. If the parent hardware
-     is capable, it makes sense to scan for c22 devices before
-     falling back to c45.
-
-     As we want this to reflect the capabilities of the STA,
-     lets add a field to the mii_bus structure to represent
-     the capability. That way devices can opt into the extended
-     scanning. Existing users should continue to default to c22
-     only scanning as long as they are zero'ing the structure
-     before use.
-
-     Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
-     Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
-     Signed-off-by: David S. Miller <davem@davemloft.net>
-
-In this patch i.a. the following lines were added.
-
-+       case MDIOBUS_C22_C45:
-+               phydev = get_phy_device(bus, addr, false);
-+               if (IS_ERR(phydev))
-+                       phydev = get_phy_device(bus, addr, true);
-+               break;
-
-I'm applying the same logic for MDIOBUS_NO_CAP and MDIOBUS_C22, since
-with my patch MDIO controllers with those capabilities can handle c45 
-bus
-probing with indirect accesses.
-
-[By the way, I'm unsure if this order for MDIO bus controllers with the
-capability MDIOBUS_C22_C45 makes sense, because if we assume that the
-majority of c45 PHYs responds well to c22 probing (which I'm convinced 
-of)
-the PHY would still be registered as is_c45==false, which results in the 
-fact
-that even though the underlying bus is capable of real c45 framing only
-indirect accessing would be performed. But this is another topic and
-unrelated to the patch.]
-
-However, this is not the main motivation of my patch. The main driver is
-of_mdiobus_register_phy():
-
-	is_c45 = of_device_is_compatible(child,
-					 "ethernet-phy-ieee802.3-c45");
-
-	if (!is_c45 && !of_get_phy_id(child, &phy_id))
-		phy = phy_device_create(mdio, addr, phy_id, 0, NULL);
-	else
-		phy = get_phy_device(mdio, addr, is_c45);
-
-In the case a PHY is registered as a c45 compatible PHY in the device 
-tree,
-it is probed in c45 mode and therefore finally  mdiobus_c45_read() is 
-called,
-which as by now just expects the underlying MDIO bus controller to be 
-capable
-to do c45 framing and therefore the operation would fail in case it is 
-not.
-Hence, in my opinion it is useful to fall back to indirect accesses in 
-such a
-case to be able to support those PHYs.
-
-There is a similar issue in phy_mii_ioctl(). Let's assume a c45 capable 
-PHY is
-connected to a MDIO bus controller that is not capable of c45 framing. 
-We can
-also assume that it was probed with c22 bus probing, since without this 
-patch
-nothing else is possible.
-Now, there might be an ioctl() asking for a c45 transfer by specifying
-MDIO_PHY_ID_C45_MASK e.g. in order to access a different MMD's register,
-since the PHY is actually capable of c45. Currently, this would result 
-in
-
-devad = mdiobus_c45_addr(devad, mii_data->reg_num);
-mii_data->val_out = mdiobus_read(phydev->mdio.bus, prtad, devad);
-
-calls, which would fail, since the bus doesn't support it. Instead 
-falling back
-to indirect access might be the better option. Surely, the userspace 
-program
-could implement the indirect access as well, but I think this way it's 
-just more
-convenient, e.g. "phytool read iface/addr:devad/reg".
+> Followup to v1 (https://lore.kernel.org/r/20210223214539.1336155-7-swboyd=
+@chromium.org):
+>  * Don't change the legacy file to use legacy calls only
+>  * Wrap more things in CONFIG_ARM checks
+>
