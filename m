@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A677E351A0B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B23351A1E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236123AbhDAR5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:57:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57130 "EHLO
+        id S235347AbhDAR6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:58:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234578AbhDARlp (ORCPT
+        with ESMTP id S234311AbhDARln (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:41:45 -0400
+        Thu, 1 Apr 2021 13:41:43 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE99AC00F7DA;
-        Thu,  1 Apr 2021 08:08:56 -0700 (PDT)
-Date:   Thu, 01 Apr 2021 15:08:53 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD0AC00F7DC;
+        Thu,  1 Apr 2021 08:08:58 -0700 (PDT)
+Date:   Thu, 01 Apr 2021 15:08:55 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617289734;
+        s=2020; t=1617289736;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1kQpLj9OOa6mEj53pqc+17px6T7ZFNkd9qc98SDa4RM=;
-        b=PXoUnjCtfjjLdihtYkPkoXhow7zFSWElN7c1lfCFmAm8dXBKOFBY69sjdj2nmHZMme5Ode
-        9RtwU1/NoTt2zD0mH4ZST8J7265n/J8vH51Sf4SGff5AO03MhvpkfMLuFsXO1SNNeROAxx
-        A88xomp0VFf8SHfAwiPeVOrRVMe4W7Rx+zr2epocQ3rm5kq/O1eARpj4ODmH4r+1DAZJN1
-        wDe79FkNF/j+/Jm9Ojea3Q2bulVzNLQ7TLQBXWZ6keQ4Vcmko3A0FJAnLEjMNzSXKnh6lU
-        w8tN/qm4g32xBOMj7642OG/Q7ScOGlWKXjZd/EwlCVRmJVlu/bn+aW9V6LjpMA==
+        bh=SeTtPszGDJ59S+qO3YRjuhGF2E//RijgKqeT+FMvtGU=;
+        b=RbBP5t5CMGs+U7EKbX0sBbTYCZhviTmEW1A0qdf0bQP91V1JHerFh4EGY4KjCzHeFIP5Am
+        s+SkGZYBKGNxyTY28oC3p8mxd+hcP7VbfrK9oC9E4jYmDraNP6Wc8J1B3O44R3rw4PKXxw
+        /Ef8aIjluvl2WaX0amHKU3pcT0R0t2dRh7LvH/m9Ra8R3LwBA+xeYyz54OE6wn+QL5RcfC
+        +24uat3Y+EkyLv/v7mIkEX5/Bb3FQrBmuKPmKcxNmK/7quuy7qSsFK4g4iqp/+99C7z39C
+        kxPaAooo0GSc/P5l4koUOxctFYX5AoHxq+LPcUPDjYE/+Uw7Af98T7QkBjboDQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617289734;
+        s=2020e; t=1617289736;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1kQpLj9OOa6mEj53pqc+17px6T7ZFNkd9qc98SDa4RM=;
-        b=aYldOfvO4Dbc8fziug6QSkMUfI40HEMy80PDWpB6ebxKVoMjzLeBxu+gVhV/0bO8kdhqRr
-        +YlwE9KOi3FA1wDQ==
+        bh=SeTtPszGDJ59S+qO3YRjuhGF2E//RijgKqeT+FMvtGU=;
+        b=LX7FLZzOT31cLCpkIhjdp8HiwUi5PcQmxAWB9SCQwsHRWHgKWq89TYjhldSGkCK97qUlrx
+        jp4OvTvoN3dQkzDw==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/core] objtool/x86: Rewrite retpoline thunk calls
+Subject: [tip: x86/core] objtool: Extract elf_symbol_add()
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Borislav Petkov <bp@suse.de>, Miroslav Benes <mbenes@suse.cz>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210326151300.320177914@infradead.org>
-References: <20210326151300.320177914@infradead.org>
+In-Reply-To: <20210326151300.003468981@infradead.org>
+References: <20210326151300.003468981@infradead.org>
 MIME-Version: 1.0
-Message-ID: <161728973397.29796.9283971977578914711.tip-bot2@tip-bot2>
+Message-ID: <161728973564.29796.17344493642659515112.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,267 +61,113 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/core branch of tip:
 
-Commit-ID:     f31390437ce984118215169d75570e365457ec23
-Gitweb:        https://git.kernel.org/tip/f31390437ce984118215169d75570e365457ec23
+Commit-ID:     d56a3568827ec4b8efcbcfc46fdc944995b6dcf1
+Gitweb:        https://git.kernel.org/tip/d56a3568827ec4b8efcbcfc46fdc944995b6dcf1
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Fri, 26 Mar 2021 16:12:15 +01:00
+AuthorDate:    Fri, 26 Mar 2021 16:12:10 +01:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 01 Apr 2021 14:30:45 +02:00
+CommitterDate: Thu, 01 Apr 2021 13:08:52 +02:00
 
-objtool/x86: Rewrite retpoline thunk calls
+objtool: Extract elf_symbol_add()
 
-When the compiler emits: "CALL __x86_indirect_thunk_\reg" for an
-indirect call, have objtool rewrite it to:
-
-	ALTERNATIVE "call __x86_indirect_thunk_\reg",
-		    "call *%reg", ALT_NOT(X86_FEATURE_RETPOLINE)
-
-Additionally, in order to not emit endless identical
-.altinst_replacement chunks, use a global symbol for them, see
-__x86_indirect_alt_*.
-
-This also avoids objtool from having to do code generation.
+Create a common helper to add symbols.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Borislav Petkov <bp@suse.de>
 Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-Link: https://lkml.kernel.org/r/20210326151300.320177914@infradead.org
+Link: https://lkml.kernel.org/r/20210326151300.003468981@infradead.org
 ---
- arch/x86/include/asm/asm-prototypes.h |  12 ++-
- arch/x86/lib/retpoline.S              |  41 ++++++++-
- tools/objtool/arch/x86/decode.c       | 117 +++++++++++++++++++++++++-
- 3 files changed, 167 insertions(+), 3 deletions(-)
+ tools/objtool/elf.c | 56 ++++++++++++++++++++++++--------------------
+ 1 file changed, 31 insertions(+), 25 deletions(-)
 
-diff --git a/arch/x86/include/asm/asm-prototypes.h b/arch/x86/include/asm/asm-prototypes.h
-index 0545b07..4cb726c 100644
---- a/arch/x86/include/asm/asm-prototypes.h
-+++ b/arch/x86/include/asm/asm-prototypes.h
-@@ -19,11 +19,19 @@ extern void cmpxchg8b_emu(void);
- 
- #ifdef CONFIG_RETPOLINE
- 
--#define DECL_INDIRECT_THUNK(reg) \
-+#undef GEN
-+#define GEN(reg) \
- 	extern asmlinkage void __x86_indirect_thunk_ ## reg (void);
-+#include <asm/GEN-for-each-reg.h>
-+
-+#undef GEN
-+#define GEN(reg) \
-+	extern asmlinkage void __x86_indirect_alt_call_ ## reg (void);
-+#include <asm/GEN-for-each-reg.h>
- 
- #undef GEN
--#define GEN(reg) DECL_INDIRECT_THUNK(reg)
-+#define GEN(reg) \
-+	extern asmlinkage void __x86_indirect_alt_jmp_ ## reg (void);
- #include <asm/GEN-for-each-reg.h>
- 
- #endif /* CONFIG_RETPOLINE */
-diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
-index d2c0d14..4d32cb0 100644
---- a/arch/x86/lib/retpoline.S
-+++ b/arch/x86/lib/retpoline.S
-@@ -10,6 +10,8 @@
- #include <asm/unwind_hints.h>
- #include <asm/frame.h>
- 
-+	.section .text.__x86.indirect_thunk
-+
- .macro RETPOLINE reg
- 	ANNOTATE_INTRA_FUNCTION_CALL
- 	call    .Ldo_rop_\@
-@@ -25,9 +27,9 @@
- .endm
- 
- .macro THUNK reg
--	.section .text.__x86.indirect_thunk
- 
- 	.align 32
-+
- SYM_FUNC_START(__x86_indirect_thunk_\reg)
- 
- 	ALTERNATIVE_2 __stringify(ANNOTATE_RETPOLINE_SAFE; jmp *%\reg), \
-@@ -39,6 +41,32 @@ SYM_FUNC_END(__x86_indirect_thunk_\reg)
- .endm
- 
- /*
-+ * This generates .altinstr_replacement symbols for use by objtool. They,
-+ * however, must not actually live in .altinstr_replacement since that will be
-+ * discarded after init, but module alternatives will also reference these
-+ * symbols.
-+ *
-+ * Their names matches the "__x86_indirect_" prefix to mark them as retpolines.
-+ */
-+.macro ALT_THUNK reg
-+
-+	.align 1
-+
-+SYM_FUNC_START_NOALIGN(__x86_indirect_alt_call_\reg)
-+	ANNOTATE_RETPOLINE_SAFE
-+1:	call	*%\reg
-+2:	.skip	5-(2b-1b), 0x90
-+SYM_FUNC_END(__x86_indirect_alt_call_\reg)
-+
-+SYM_FUNC_START_NOALIGN(__x86_indirect_alt_jmp_\reg)
-+	ANNOTATE_RETPOLINE_SAFE
-+1:	jmp	*%\reg
-+2:	.skip	5-(2b-1b), 0x90
-+SYM_FUNC_END(__x86_indirect_alt_jmp_\reg)
-+
-+.endm
-+
-+/*
-  * Despite being an assembler file we can't just use .irp here
-  * because __KSYM_DEPS__ only uses the C preprocessor and would
-  * only see one instance of "__x86_indirect_thunk_\reg" rather
-@@ -61,3 +89,14 @@ SYM_FUNC_END(__x86_indirect_thunk_\reg)
- #define GEN(reg) EXPORT_THUNK(reg)
- #include <asm/GEN-for-each-reg.h>
- 
-+#undef GEN
-+#define GEN(reg) ALT_THUNK reg
-+#include <asm/GEN-for-each-reg.h>
-+
-+#undef GEN
-+#define GEN(reg) __EXPORT_THUNK(__x86_indirect_alt_call_ ## reg)
-+#include <asm/GEN-for-each-reg.h>
-+
-+#undef GEN
-+#define GEN(reg) __EXPORT_THUNK(__x86_indirect_alt_jmp_ ## reg)
-+#include <asm/GEN-for-each-reg.h>
-diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
-index e5fa3a5..44375fa 100644
---- a/tools/objtool/arch/x86/decode.c
-+++ b/tools/objtool/arch/x86/decode.c
-@@ -16,6 +16,7 @@
- #include <objtool/elf.h>
- #include <objtool/arch.h>
- #include <objtool/warn.h>
-+#include <arch/elf.h>
- 
- static unsigned char op_to_cfi_reg[][2] = {
- 	{CFI_AX, CFI_R8},
-@@ -610,6 +611,122 @@ const char *arch_nop_insn(int len)
- 	return nops[len-1];
+diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
+index c278a04..8457218 100644
+--- a/tools/objtool/elf.c
++++ b/tools/objtool/elf.c
+@@ -290,12 +290,39 @@ static int read_sections(struct elf *elf)
+ 	return 0;
  }
  
-+/* asm/alternative.h ? */
-+
-+#define ALTINSTR_FLAG_INV	(1 << 15)
-+#define ALT_NOT(feat)		((feat) | ALTINSTR_FLAG_INV)
-+
-+struct alt_instr {
-+	s32 instr_offset;	/* original instruction */
-+	s32 repl_offset;	/* offset to replacement instruction */
-+	u16 cpuid;		/* cpuid bit set for replacement */
-+	u8  instrlen;		/* length of original instruction */
-+	u8  replacementlen;	/* length of new instruction */
-+} __packed;
-+
-+static int elf_add_alternative(struct elf *elf,
-+			       struct instruction *orig, struct symbol *sym,
-+			       int cpuid, u8 orig_len, u8 repl_len)
++static void elf_add_symbol(struct elf *elf, struct symbol *sym)
 +{
-+	const int size = sizeof(struct alt_instr);
-+	struct alt_instr *alt;
-+	struct section *sec;
-+	Elf_Scn *s;
++	struct list_head *entry;
++	struct rb_node *pnode;
 +
-+	sec = find_section_by_name(elf, ".altinstructions");
-+	if (!sec) {
-+		sec = elf_create_section(elf, ".altinstructions",
-+					 SHF_WRITE, size, 0);
++	sym->type = GELF_ST_TYPE(sym->sym.st_info);
++	sym->bind = GELF_ST_BIND(sym->sym.st_info);
 +
-+		if (!sec) {
-+			WARN_ELF("elf_create_section");
-+			return -1;
-+		}
-+	}
++	sym->offset = sym->sym.st_value;
++	sym->len = sym->sym.st_size;
 +
-+	s = elf_getscn(elf->elf, sec->idx);
-+	if (!s) {
-+		WARN_ELF("elf_getscn");
-+		return -1;
-+	}
++	rb_add(&sym->node, &sym->sec->symbol_tree, symbol_to_offset);
++	pnode = rb_prev(&sym->node);
++	if (pnode)
++		entry = &rb_entry(pnode, struct symbol, node)->list;
++	else
++		entry = &sym->sec->symbol_list;
++	list_add(&sym->list, entry);
++	elf_hash_add(elf->symbol_hash, &sym->hash, sym->idx);
++	elf_hash_add(elf->symbol_name_hash, &sym->name_hash, str_hash(sym->name));
 +
-+	sec->data = elf_newdata(s);
-+	if (!sec->data) {
-+		WARN_ELF("elf_newdata");
-+		return -1;
-+	}
-+
-+	sec->data->d_size = size;
-+	sec->data->d_align = 1;
-+
-+	alt = sec->data->d_buf = malloc(size);
-+	if (!sec->data->d_buf) {
-+		perror("malloc");
-+		return -1;
-+	}
-+	memset(sec->data->d_buf, 0, size);
-+
-+	if (elf_add_reloc_to_insn(elf, sec, sec->sh.sh_size,
-+				  R_X86_64_PC32, orig->sec, orig->offset)) {
-+		WARN("elf_create_reloc: alt_instr::instr_offset");
-+		return -1;
-+	}
-+
-+	if (elf_add_reloc(elf, sec, sec->sh.sh_size + 4,
-+			  R_X86_64_PC32, sym, 0)) {
-+		WARN("elf_create_reloc: alt_instr::repl_offset");
-+		return -1;
-+	}
-+
-+	alt->cpuid = cpuid;
-+	alt->instrlen = orig_len;
-+	alt->replacementlen = repl_len;
-+
-+	sec->sh.sh_size += size;
-+	sec->changed = true;
-+
-+	return 0;
++	/*
++	 * Don't store empty STT_NOTYPE symbols in the rbtree.  They
++	 * can exist within a function, confusing the sorting.
++	 */
++	if (!sym->len)
++		rb_erase(&sym->node, &sym->sec->symbol_tree);
 +}
 +
-+#define X86_FEATURE_RETPOLINE                ( 7*32+12)
-+
-+int arch_rewrite_retpolines(struct objtool_file *file)
-+{
-+	struct instruction *insn;
-+	struct reloc *reloc;
-+	struct symbol *sym;
-+	char name[32] = "";
-+
-+	list_for_each_entry(insn, &file->retpoline_call_list, call_node) {
-+
-+		if (!strcmp(insn->sec->name, ".text.__x86.indirect_thunk"))
-+			continue;
-+
-+		reloc = insn->reloc;
-+
-+		sprintf(name, "__x86_indirect_alt_%s_%s",
-+			insn->type == INSN_JUMP_DYNAMIC ? "jmp" : "call",
-+			reloc->sym->name + 21);
-+
-+		sym = find_symbol_by_name(file->elf, name);
-+		if (!sym) {
-+			sym = elf_create_undef_symbol(file->elf, name);
-+			if (!sym) {
-+				WARN("elf_create_undef_symbol");
-+				return -1;
-+			}
-+		}
-+
-+		if (elf_add_alternative(file->elf, insn, sym,
-+					ALT_NOT(X86_FEATURE_RETPOLINE), 5, 5)) {
-+			WARN("elf_add_alternative");
-+			return -1;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- int arch_decode_hint_reg(struct instruction *insn, u8 sp_reg)
+ static int read_symbols(struct elf *elf)
  {
- 	struct cfi_reg *cfa = &insn->cfi.cfa;
+ 	struct section *symtab, *symtab_shndx, *sec;
+ 	struct symbol *sym, *pfunc;
+-	struct list_head *entry;
+-	struct rb_node *pnode;
+ 	int symbols_nr, i;
+ 	char *coldstr;
+ 	Elf_Data *shndx_data = NULL;
+@@ -340,9 +367,6 @@ static int read_symbols(struct elf *elf)
+ 			goto err;
+ 		}
+ 
+-		sym->type = GELF_ST_TYPE(sym->sym.st_info);
+-		sym->bind = GELF_ST_BIND(sym->sym.st_info);
+-
+ 		if ((sym->sym.st_shndx > SHN_UNDEF &&
+ 		     sym->sym.st_shndx < SHN_LORESERVE) ||
+ 		    (shndx_data && sym->sym.st_shndx == SHN_XINDEX)) {
+@@ -355,32 +379,14 @@ static int read_symbols(struct elf *elf)
+ 				     sym->name);
+ 				goto err;
+ 			}
+-			if (sym->type == STT_SECTION) {
++			if (GELF_ST_TYPE(sym->sym.st_info) == STT_SECTION) {
+ 				sym->name = sym->sec->name;
+ 				sym->sec->sym = sym;
+ 			}
+ 		} else
+ 			sym->sec = find_section_by_index(elf, 0);
+ 
+-		sym->offset = sym->sym.st_value;
+-		sym->len = sym->sym.st_size;
+-
+-		rb_add(&sym->node, &sym->sec->symbol_tree, symbol_to_offset);
+-		pnode = rb_prev(&sym->node);
+-		if (pnode)
+-			entry = &rb_entry(pnode, struct symbol, node)->list;
+-		else
+-			entry = &sym->sec->symbol_list;
+-		list_add(&sym->list, entry);
+-		elf_hash_add(elf->symbol_hash, &sym->hash, sym->idx);
+-		elf_hash_add(elf->symbol_name_hash, &sym->name_hash, str_hash(sym->name));
+-
+-		/*
+-		 * Don't store empty STT_NOTYPE symbols in the rbtree.  They
+-		 * can exist within a function, confusing the sorting.
+-		 */
+-		if (!sym->len)
+-			rb_erase(&sym->node, &sym->sec->symbol_tree);
++		elf_add_symbol(elf, sym);
+ 	}
+ 
+ 	if (stats)
