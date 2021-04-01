@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C9B935240D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 01:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2BAE352410
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 01:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236371AbhDAXiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 19:38:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51432 "EHLO
+        id S236404AbhDAXiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 19:38:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236250AbhDAXiF (ORCPT
+        with ESMTP id S236091AbhDAXiH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 19:38:05 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8AB5C06178C
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 16:38:03 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id v22so4081945pgk.16
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 16:38:03 -0700 (PDT)
+        Thu, 1 Apr 2021 19:38:07 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 711C6C061788
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 16:38:06 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id b127so4785076qkf.19
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 16:38:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=iHsZD1Lw/LYYJ1Cq7wJwg1c9znwl+9Llm4slEnqhNMg=;
-        b=TLLfxyHvRZMZRUdTOBH5X1eioAHEYmST6Z/ZP9D6zOmysFLlqLCwA/I7Ckd3N7U6Vf
-         W76tfUFxKPjrO/RqVV7qcj/Q2peP2CFbp+TsX5dFdY+pv7/TFCr6F814tGix40vLDjyv
-         UlnacuyvG0y4FjDcf6PP/2wnhcjIMAtGXo+IGsCIMntnyWEcLoM4OUgXQnU7UtFUZv8y
-         XwXA2YOGCMt4vj0yBBbW+MO0toOTGJ2Vum344eri7se7uoQCo7cnWsBI8jqg/512jtJy
-         Ufpk+Y1tUCqP3LJQJSHHb7utFAyu7F3w0saQZM05wwaOI2H+mBlbDRnAe+sLGPssyI4d
-         n/4A==
+        bh=0dwngUXBbpNYdBGZmaahkuuLQicfagFyPtrLrIpcGNI=;
+        b=ZyI4hyQ+b/oIUOQGA8X1zeZIoh9iei6J9OWFlxTEv22VBAKFQ2rPEEJm0GucTShl1J
+         aqFShn/pQBsCDXWzd2uwopUWxmCKKVQbKImeh1/+o5tHULcX0RkSzu2GE1yR9mzrUZjR
+         5aQyS9e+ig68TeGTEglG+nFPGedaLxLwLVYKL1OUAV0CIPvToLVVIJmNIMCC4pT5fCUL
+         m90ad0wT/pC2pk+OC7wgNbuq/5XpsneQrRFOUsMiUyybNe9Lsb5CEfPYmssL2Yx1Lu/I
+         ecyVd/VYMacLo6BIKAkMqeZK16MgotJtJmejYBCgzVSEBr+Qnnp9OxNlmhrdkeZDpMlo
+         Zuyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=iHsZD1Lw/LYYJ1Cq7wJwg1c9znwl+9Llm4slEnqhNMg=;
-        b=PZamaYBT15w9bcotbsoIOZT3wtXaUSPBFiC6D8ivzd4qMh0oVNxZyrYzIvZXhIWrEH
-         LQIselYbBeM35LQJZbp5SBeleikRAEfixQp5OnXp+r3WLrvYimm1IMUp8BMZsdaQUyoq
-         gMzUUdj8mBll6hbwQTMo6vJpm0XcDsrodV0P2asBbNbRF9rSR3GrQtSTsnrilDdFPiul
-         DlCFvNeNa0bQ4YnUJEN40fJ3gmtS8lTQBCHaXqsXcKx8TZdhlBHZTFA9aUbEkFgn+ARL
-         mYyjPdkOPOKTG1rPBBUM+kjRzkZKdK9DGOWAs3faRjVO+AbeoQp5rSggUoHzqumXIwPN
-         CK/w==
-X-Gm-Message-State: AOAM530ZFM2BSMswmAQKg7syIeFxTNPQ91+N01GeAWmo82rkpdtRNXdg
-        rfvAW5/M1meA1Ls85oGgu+yI8lJOw4n/N11W5h3gv6mG8pi8QqLFNk9+Glz6XCI/zGrtBMlR41g
-        h0SKQ/mxBb0Wp1uul7U3luCf4RwUyqUy+om6Wbp809fjCkBJYqFP7FPTo/h6rPkFWMwSrn6ga
-X-Google-Smtp-Source: ABdhPJyWQYnn2lTNN6Z9lJ2FS4dT9s5uqzUqePGXz7SepbC16J49IowLYDblzKE6p8fyP6qs6e7EZN/VJOm3
+        bh=0dwngUXBbpNYdBGZmaahkuuLQicfagFyPtrLrIpcGNI=;
+        b=eGxh9SqCtTRahLoZbZsRJai0pzcq0/w11dTFlqUDUWl9tJPOYZpf4EBNwq7vhUB6xY
+         4gylX2rMr1mj2QOqLUJjQa2oMtTRHZkKyWACMH70cyBgs14GURfVf50RrkHBFx5LthSj
+         hWLKu8k0ypcBbyGwNa0eeiMvdJojTeGeW/U+X6FkIGpqPpWPfwH4XE0NtretsA5zsYdk
+         c8rQy08k4BAvo2N9EbvIZgg2OZ+jNAk/bm7t7GDkNUp0PXEtgvbKTTIzC/Gh/0IV4W2p
+         R/e+XaoGmTWI0B0fwBS2euIr9awYyJfm4WXAvmJkVcxFPU/qd8whFEU2oMhvrtSLNhH8
+         TwcQ==
+X-Gm-Message-State: AOAM533ijXrAdFeRlZPJqKe0BetWRG/XwbJUetUpqm5S28z3l0/uWkeO
+        Km5Ngd+0X1V83Xjy70Ju+4qB1brrHZ3bpapZSt6/OeUPmsI2pVRNcvfpA6AHuS49z1X++M8nUWG
+        TuN5SpCMKgkDA+3aNOqL8wbWQJm27KerIMeTaSftAPKBLMS8X6Itw64uKAJspeSoUVHWxH3oe
+X-Google-Smtp-Source: ABdhPJxXSjUK3L9h9P5QDsbeIBPmKZwO4QV541IA7dWzZ/ZcLTD38mNenZX5HCyjGjkVqXqlgWJ4QSM8iLL9
 X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:e088:88b8:ea4a:22b6])
- (user=bgardon job=sendgmr) by 2002:a17:90b:fcb:: with SMTP id
- gd11mr586927pjb.0.1617320282777; Thu, 01 Apr 2021 16:38:02 -0700 (PDT)
-Date:   Thu,  1 Apr 2021 16:37:27 -0700
+ (user=bgardon job=sendgmr) by 2002:a0c:a99a:: with SMTP id
+ a26mr10750947qvb.2.1617320285604; Thu, 01 Apr 2021 16:38:05 -0700 (PDT)
+Date:   Thu,  1 Apr 2021 16:37:28 -0700
 In-Reply-To: <20210401233736.638171-1-bgardon@google.com>
-Message-Id: <20210401233736.638171-5-bgardon@google.com>
+Message-Id: <20210401233736.638171-6-bgardon@google.com>
 Mime-Version: 1.0
 References: <20210401233736.638171-1-bgardon@google.com>
 X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
-Subject: [PATCH v2 04/13] KVM: x86/mmu: Merge TDP MMU put and free root
+Subject: [PATCH v2 05/13] KVM: x86/mmu: Refactor yield safe root iterator
 From:   Ben Gardon <bgardon@google.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
@@ -71,140 +71,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kvm_tdp_mmu_put_root and kvm_tdp_mmu_free_root are always called
-together, so merge the functions to simplify TDP MMU root refcounting /
-freeing.
+Refactor the yield safe TDP MMU root iterator to be more amenable to
+changes in future commits which will allow it to be used under the MMU
+lock in read mode. Currently the iterator requires a complicated dance
+between the helper functions and different parts of the for loop which
+makes it hard to reason about. Moving all the logic into a single function
+simplifies the iterator substantially.
 
 Signed-off-by: Ben Gardon <bgardon@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c     |  4 +--
- arch/x86/kvm/mmu/tdp_mmu.c | 54 ++++++++++++++++++--------------------
- arch/x86/kvm/mmu/tdp_mmu.h | 10 +------
- 3 files changed, 28 insertions(+), 40 deletions(-)
+ arch/x86/kvm/mmu/tdp_mmu.c | 45 ++++++++++++++++++++++----------------
+ 1 file changed, 26 insertions(+), 19 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 9c7ef7ca8bf6..47d996a8074f 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -3153,8 +3153,8 @@ static void mmu_free_root_page(struct kvm *kvm, hpa_t *root_hpa,
- 
- 	sp = to_shadow_page(*root_hpa & PT64_BASE_ADDR_MASK);
- 
--	if (is_tdp_mmu_page(sp) && kvm_tdp_mmu_put_root(kvm, sp))
--		kvm_tdp_mmu_free_root(kvm, sp);
-+	if (is_tdp_mmu_page(sp))
-+		kvm_tdp_mmu_put_root(kvm, sp);
- 	else if (!--sp->root_count && sp->role.invalid)
- 		kvm_mmu_prepare_zap_page(kvm, sp, invalid_list);
- 
 diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 320cc4454737..279a725061f7 100644
+index 279a725061f7..670c5e3ad80e 100644
 --- a/arch/x86/kvm/mmu/tdp_mmu.c
 +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -41,10 +41,31 @@ void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm)
- 	rcu_barrier();
+@@ -68,26 +68,34 @@ void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root)
+ 	tdp_mmu_free_sp(root);
  }
  
--static void tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root)
-+static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
-+			  gfn_t start, gfn_t end, bool can_yield, bool flush);
-+
-+static void tdp_mmu_free_sp(struct kvm_mmu_page *sp)
+-static inline bool tdp_mmu_next_root_valid(struct kvm *kvm,
+-					   struct kvm_mmu_page *root)
++/*
++ * Finds the next valid root after root (or the first valid root if root
++ * is NULL), takes a reference on it, and returns that next root. If root
++ * is not NULL, this thread should have already taken a reference on it, and
++ * that reference will be dropped. If no valid root is found, this
++ * function will return NULL.
++ */
++static struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
++					      struct kvm_mmu_page *prev_root)
  {
--	if (kvm_tdp_mmu_put_root(kvm, root))
--		kvm_tdp_mmu_free_root(kvm, root);
-+	free_page((unsigned long)sp->spt);
-+	kmem_cache_free(mmu_page_header_cache, sp);
-+}
-+
-+void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root)
-+{
-+	gfn_t max_gfn = 1ULL << (shadow_phys_bits - PAGE_SHIFT);
-+
+-	lockdep_assert_held_write(&kvm->mmu_lock);
++	struct kvm_mmu_page *next_root;
+ 
+-	if (list_entry_is_head(root, &kvm->arch.tdp_mmu_roots, link))
+-		return false;
 +	lockdep_assert_held_write(&kvm->mmu_lock);
-+
-+	if (--root->root_count)
-+		return;
-+
-+	WARN_ON(!root->tdp_mmu_page);
-+
-+	list_del(&root->link);
-+
-+	zap_gfn_range(kvm, root, 0, max_gfn, false, false);
-+
-+	tdp_mmu_free_sp(root);
- }
  
- static inline bool tdp_mmu_next_root_valid(struct kvm *kvm,
-@@ -66,7 +87,7 @@ static inline struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
- 	struct kvm_mmu_page *next_root;
+-	kvm_tdp_mmu_get_root(kvm, root);
+-	return true;
++	if (prev_root)
++		next_root = list_next_entry(prev_root, link);
++	else
++		next_root = list_first_entry(&kvm->arch.tdp_mmu_roots,
++					     typeof(*next_root), link);
  
- 	next_root = list_next_entry(root, link);
--	tdp_mmu_put_root(kvm, root);
-+	kvm_tdp_mmu_put_root(kvm, root);
+-}
++	if (list_entry_is_head(next_root, &kvm->arch.tdp_mmu_roots, link))
++		next_root = NULL;
++	else
++		kvm_tdp_mmu_get_root(kvm, next_root);
+ 
+-static inline struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
+-						     struct kvm_mmu_page *root)
+-{
+-	struct kvm_mmu_page *next_root;
++	if (prev_root)
++		kvm_tdp_mmu_put_root(kvm, prev_root);
+ 
+-	next_root = list_next_entry(root, link);
+-	kvm_tdp_mmu_put_root(kvm, root);
  	return next_root;
  }
  
-@@ -89,31 +110,6 @@ static inline struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
- 		if (kvm_mmu_page_as_id(_root) != _as_id) {		\
+@@ -98,11 +106,10 @@ static inline struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
+  * recent root. (Unless keeping a live reference is desirable.)
+  */
+ #define for_each_tdp_mmu_root_yield_safe(_kvm, _root, _as_id)		\
+-	for (_root = list_first_entry(&_kvm->arch.tdp_mmu_roots,	\
+-				      typeof(*_root), link);		\
+-	     tdp_mmu_next_root_valid(_kvm, _root);			\
+-	     _root = tdp_mmu_next_root(_kvm, _root))			\
+-		if (kvm_mmu_page_as_id(_root) != _as_id) {		\
++	for (_root = tdp_mmu_next_root(_kvm, NULL);		\
++	     _root;						\
++	     _root = tdp_mmu_next_root(_kvm, _root))		\
++		if (kvm_mmu_page_as_id(_root) != _as_id) {	\
  		} else
  
--static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
--			  gfn_t start, gfn_t end, bool can_yield, bool flush);
--
--static void tdp_mmu_free_sp(struct kvm_mmu_page *sp)
--{
--	free_page((unsigned long)sp->spt);
--	kmem_cache_free(mmu_page_header_cache, sp);
--}
--
--void kvm_tdp_mmu_free_root(struct kvm *kvm, struct kvm_mmu_page *root)
--{
--	gfn_t max_gfn = 1ULL << (shadow_phys_bits - PAGE_SHIFT);
--
--	lockdep_assert_held_write(&kvm->mmu_lock);
--
--	WARN_ON(root->root_count);
--	WARN_ON(!root->tdp_mmu_page);
--
--	list_del(&root->link);
--
--	zap_gfn_range(kvm, root, 0, max_gfn, false, false);
--
--	tdp_mmu_free_sp(root);
--}
--
- static union kvm_mmu_page_role page_role_for_level(struct kvm_vcpu *vcpu,
- 						   int level)
- {
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-index c9a081c786a5..d4e32ac5f4c9 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.h
-+++ b/arch/x86/kvm/mmu/tdp_mmu.h
-@@ -6,7 +6,6 @@
- #include <linux/kvm_host.h>
- 
- hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu);
--void kvm_tdp_mmu_free_root(struct kvm *kvm, struct kvm_mmu_page *root);
- 
- static inline void kvm_tdp_mmu_get_root(struct kvm *kvm,
- 					struct kvm_mmu_page *root)
-@@ -17,14 +16,7 @@ static inline void kvm_tdp_mmu_get_root(struct kvm *kvm,
- 	++root->root_count;
- }
- 
--static inline bool kvm_tdp_mmu_put_root(struct kvm *kvm,
--					struct kvm_mmu_page *root)
--{
--	lockdep_assert_held(&kvm->mmu_lock);
--	--root->root_count;
--
--	return !root->root_count;
--}
-+void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root);
- 
- bool __kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, int as_id, gfn_t start,
- 				 gfn_t end, bool can_yield, bool flush);
+ #define for_each_tdp_mmu_root(_kvm, _root, _as_id)			\
 -- 
 2.31.0.208.g409f899ff0-goog
 
