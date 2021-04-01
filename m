@@ -2,145 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A74350FEE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 09:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39433350FF4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 09:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233472AbhDAHOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 03:14:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35080 "EHLO mx2.suse.de"
+        id S229539AbhDAHSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 03:18:17 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:64067 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233179AbhDAHO1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 03:14:27 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1617261266; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EdG19ICQsbKOwlsiDe5wakN2BrS2LIAGNa7VKGcjnVQ=;
-        b=fv8kcptpBLAQc0tJiNubXbf0ugKJ2hvWgVLLMJZ/0LAHZ/H7hmdcW6UwavgsRRuc8UxgRK
-        uVOojLtyIhxNKuBsOGYqMKNXgag1BwBpmIwahMUC+Gy8wFkQmmFCaBhr0G2p/Uf6VRWUZI
-        jXwMtTfR7cz/IFgxCLmpSKRX8t+hfs8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 61E08AF4F;
-        Thu,  1 Apr 2021 07:14:26 +0000 (UTC)
-Date:   Thu, 1 Apr 2021 09:14:25 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
-        Adam Nichols <adam@grimm-co.com>,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] sysfs: Unconditionally use vmalloc for buffer
-Message-ID: <YGVy0WUG1OEFfjhx@dhcp22.suse.cz>
-References: <20210401022145.2019422-1-keescook@chromium.org>
+        id S229459AbhDAHSA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 03:18:00 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617261480; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=vlZ+vMQlZRuL8LM8chZeMjq7xPyflEjD//VALE5QuZ8=;
+ b=WFS/SqLjGOWmc71G7q+jewe6FZGw/68RVRt8f/4/m7clhb+OI3/+ZsjPQBSU8P2givmi9Um4
+ EawY7j925U9eIMQW0EymztU1nR7W/ZSB54Pnu8waKSCVURHuYARncqLpoC/wpAp5xoB7OanE
+ gUGDYSFNgVpq/QpGmlNkzUoY9kM=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 6065739c0a4a07ffda8cb160 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 01 Apr 2021 07:17:48
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AA19FC43462; Thu,  1 Apr 2021 07:17:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 170D0C433CA;
+        Thu,  1 Apr 2021 07:17:47 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401022145.2019422-1-keescook@chromium.org>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 01 Apr 2021 15:17:46 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     daejun7.park@samsung.com
+Cc:     ALIM AKHTAR <alim.akhtar@samsung.com>, asutoshd@codeaurora.org,
+        avri.altman@wdc.com, beanhuo@micron.com, hongwus@codeaurora.org,
+        jaegeuk@kernel.org, jejb@linux.ibm.com, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, nguyenb@codeaurora.org,
+        stanley.chu@mediatek.com, sthumma@codeaurora.org,
+        vinholikatti@gmail.com, ygardi@codeaurora.org
+Subject: Re: [PATCH v4 2/2] scsi: ufs: Fix wrong Task Tag used in task
+ management request UPIUs
+In-Reply-To: <1891546521.01617260402234.JavaMail.epsvc@epcpadp3>
+References: <CGME20210401064419epcms2p6b289c9ba573d15883e3e92ddcd233e11@epcms2p6>
+ <1891546521.01617260402234.JavaMail.epsvc@epcpadp3>
+Message-ID: <f49aadb6083a0e4623e06dcc4b07acde@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 31-03-21 19:21:45, Kees Cook wrote:
-> The sysfs interface to seq_file continues to be rather fragile
-> (seq_get_buf() should not be used outside of seq_file), as seen with
-> some recent exploits[1]. Move the seq_file buffer to the vmap area
-> (while retaining the accounting flag), since it has guard pages that
-> will catch and stop linear overflows.
-
-I thought the previous discussion has led to a conclusion that the
-preferred way is to disallow direct seq_file buffer usage. But this is
-obviously up to sysfs maintainers. I am happy you do not want to spread
-this out to all seq_file users anymore.
-
-> This seems justified given that
-> sysfs's use of seq_file already uses kvmalloc(), is almost always using
-> a PAGE_SIZE or larger allocation, has normally short-lived allocations,
-> and is not normally on a performance critical path.
-
-Let me clarify on this, because this is not quite right. kvmalloc vs
-vmalloc (both with GFP_KERNEL) on PAGE_SIZE are two different beasts.
-The first one is almost always going to use kmalloc because the page
-allocator almost never fails those requests.
-
-> Once seq_get_buf() has been removed (and all sysfs callbacks using
-> seq_file directly), this change can also be removed.
+On 2021-04-01 14:44, Daejun Park wrote:
+> Hi, Can Guo
 > 
-> [1] https://blog.grimm-co.com/2021/03/new-old-bugs-in-linux-kernel.html
+>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> ...
+>> 
+>>  	req->end_io_data = &wait;
+>> -	free_slot = req->tag;
+>>  	WARN_ON_ONCE(free_slot < 0 || free_slot >= hba->nutmrs);
+> I think this line should be removed.
 > 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
-> v3:
-> - Limit to only sysfs (instead of all of seq_file).
-> v2: https://lore.kernel.org/lkml/20210315174851.622228-1-keescook@chromium.org/
-> v1: https://lore.kernel.org/lkml/20210312205558.2947488-1-keescook@chromium.org/
-> ---
->  fs/sysfs/file.c | 23 +++++++++++++++++++++++
->  1 file changed, 23 insertions(+)
-> 
-> diff --git a/fs/sysfs/file.c b/fs/sysfs/file.c
-> index 9aefa7779b29..70e7a450e5d1 100644
-> --- a/fs/sysfs/file.c
-> +++ b/fs/sysfs/file.c
-> @@ -16,6 +16,7 @@
->  #include <linux/mutex.h>
->  #include <linux/seq_file.h>
->  #include <linux/mm.h>
-> +#include <linux/vmalloc.h>
->  
->  #include "sysfs.h"
->  
-> @@ -32,6 +33,25 @@ static const struct sysfs_ops *sysfs_file_ops(struct kernfs_node *kn)
->  	return kobj->ktype ? kobj->ktype->sysfs_ops : NULL;
->  }
->  
-> +/*
-> + * To be proactively defensive against sysfs show() handlers that do not
-> + * correctly stay within their PAGE_SIZE buffer, use the vmap area to gain
-> + * the trailing guard page which will stop linear buffer overflows.
-> + */
-> +static void *sysfs_kf_seq_start(struct seq_file *sf, loff_t *ppos)
-> +{
-> +	struct kernfs_open_file *of = sf->private;
-> +	struct kernfs_node *kn = of->kn;
-> +
-> +	WARN_ON_ONCE(sf->buf);
-> +	sf->buf = __vmalloc(kn->attr.size, GFP_KERNEL_ACCOUNT);
-> +	if (!sf->buf)
-> +		return ERR_PTR(-ENOMEM);
-> +	sf->size = kn->attr.size;
-> +
-> +	return NULL + !*ppos;
-> +}
-> +
->  /*
->   * Reads on sysfs are handled through seq_file, which takes care of hairy
->   * details like buffering and seeking.  The following function pipes
-> @@ -206,14 +226,17 @@ static const struct kernfs_ops sysfs_file_kfops_empty = {
->  };
->  
->  static const struct kernfs_ops sysfs_file_kfops_ro = {
-> +	.seq_start	= sysfs_kf_seq_start,
->  	.seq_show	= sysfs_kf_seq_show,
->  };
->  
->  static const struct kernfs_ops sysfs_file_kfops_wo = {
-> +	.seq_start	= sysfs_kf_seq_start,
->  	.write		= sysfs_kf_write,
->  };
->  
->  static const struct kernfs_ops sysfs_file_kfops_rw = {
-> +	.seq_start	= sysfs_kf_seq_start,
->  	.seq_show	= sysfs_kf_seq_show,
->  	.write		= sysfs_kf_write,
->  };
-> -- 
-> 2.25.1
 
--- 
-Michal Hocko
-SUSE Labs
+Oh, yes, will remove it in next version.
+
+Thanks,
+Can Guo.
+
+> Thanks,
+> Daejun
