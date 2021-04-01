@@ -2,134 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E89F3522B9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 00:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E5C3522BD
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 00:25:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235372AbhDAWSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 18:18:25 -0400
-Received: from sibelius.xs4all.nl ([83.163.83.176]:63918 "EHLO
-        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234047AbhDAWSY (ORCPT
+        id S234416AbhDAWY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 18:24:56 -0400
+Received: from mail.micronovasrl.com ([212.103.203.10]:53892 "EHLO
+        mail.micronovasrl.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233789AbhDAWYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 18:18:24 -0400
-Received: from localhost (bloch.sibelius.xs4all.nl [local])
-        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 1523916e;
-        Fri, 2 Apr 2021 00:18:21 +0200 (CEST)
-Date:   Fri, 2 Apr 2021 00:18:21 +0200 (CEST)
-From:   Mark Kettenis <mark.kettenis@xs4all.nl>
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     heiko@sntech.de, robh+dt@kernel.org, gregkh@linuxfoundation.org,
-        balbi@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-In-Reply-To: <20210401213652.14676-1-jbx6244@gmail.com> (message from Johan
-        Jonker on Thu, 1 Apr 2021 23:36:48 +0200)
-Subject: Re: [PATCH v6 0/4] convert rockchip,dwc3.txt to yaml
-References: <20210401213652.14676-1-jbx6244@gmail.com>
-Message-ID: <c1bced42d7388f34@bloch.sibelius.xs4all.nl>
+        Thu, 1 Apr 2021 18:24:55 -0400
+Received: from mail.micronovasrl.com (mail.micronovasrl.com [127.0.0.1])
+        by mail.micronovasrl.com (Postfix) with ESMTP id 59EBAB04C46
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 00:24:54 +0200 (CEST)
+Authentication-Results: mail.micronovasrl.com (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=micronovasrl.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=micronovasrl.com;
+         h=content-transfer-encoding:content-language:content-type
+        :content-type:in-reply-to:mime-version:user-agent:date:date
+        :message-id:references:to:from:from:subject:subject; s=dkim; t=
+        1617315893; x=1618179894; bh=eUNH9JCigSWjXMgzJBifLYckuPQkEREt8nx
+        Fxxvn8OA=; b=czphOzgSDiiFiZA74gnuvGetKdwnikJ0F76gD4+2E1Qzoxk9GB6
+        Kp5sOok+YgplLteCmaohFhutF8XOw+emy8DkqG/kr78v9qIiIwtGxGVFkxJ4O7qH
+        cDhYI08xTUUugq3Kn6q2brnxWM9eFjw9Y5CehxEJLWKzpgZhOvq3377Y=
+X-Virus-Scanned: Debian amavisd-new at mail.micronovasrl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.442
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.442 tagged_above=-10 required=4.5
+        tests=[ALL_TRUSTED=-1, BAYES_00=-1.9, LOTS_OF_MONEY=0.001,
+        MONEY_NOHTML=0.458, NICE_REPLY_A=-0.001]
+        autolearn=no autolearn_force=no
+Received: from mail.micronovasrl.com ([127.0.0.1])
+        by mail.micronovasrl.com (mail.micronovasrl.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id hJ07Q5S9AL12 for <linux-kernel@vger.kernel.org>;
+        Fri,  2 Apr 2021 00:24:53 +0200 (CEST)
+Received: from [192.168.50.18] (146-241-168-220.dyn.eolo.it [146.241.168.220])
+        by mail.micronovasrl.com (Postfix) with ESMTPSA id 1F879B04A49;
+        Fri,  2 Apr 2021 00:24:53 +0200 (CEST)
+Subject: Re: [PATCH 2/3] dt-bindings: touchscreen: Add HY46XX bindings
+From:   Giulio Benetti <giulio.benetti@micronovasrl.com>
+To:     Rob Herring <robh@kernel.org>,
+        Giulio Benetti <giulio.benetti@benettiengineering.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210305163834.70924-1-giulio.benetti@benettiengineering.com>
+ <20210305163834.70924-3-giulio.benetti@benettiengineering.com>
+ <20210306194120.GA1075725@robh.at.kernel.org>
+ <9cd14c69-9c30-a68c-dfd1-396613b5185a@micronovasrl.com>
+Message-ID: <e60aa57b-1641-105a-fb57-9b5803054f3a@micronovasrl.com>
+Date:   Fri, 2 Apr 2021 00:24:53 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+MIME-Version: 1.0
+In-Reply-To: <9cd14c69-9c30-a68c-dfd1-396613b5185a@micronovasrl.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: it
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Johan Jonker <jbx6244@gmail.com>
-> Date: Thu,  1 Apr 2021 23:36:48 +0200
+Il 01/04/2021 20:37, Giulio Benetti ha scritto:
+>>
+>> Needs a vendor prefix here and all the custom properties.
 > 
-> The conversion of rockchip,dwc3.txt to yaml was added to linux-next,
-> but the necessary changes for rk3399 are still pending.
+> Sorry but I can't understand this ^^^, I've checked a lot of other yaml
+> files but couldn't find something related to this. Can you help me by
+> pointing me an example?
 > 
-> For rk3399 dwc3 usb the wrapper node for only clocks makes no sense,
-> so that was removed in the YAML example.
-> 
-> Now dtbs_check still generates notifications for the compatibility string in
-> the dts files that doesn't match, because it changed from
-> "rockchip,rk3399-dwc3" to "rockchip,rk3399-dwc3", "snps,dwc3".
-> 
-> The problem is to keep compatible with old device trees.
-> I.e. a device running an older device tree should still work with newer
-> kernels.
-> 
-> Comment by Rob in version 3:
-> Presumably you are getting lucky here (with link order). The kernel
-> has no logic to decide which driver to bind to if there are 2 matching
-> drivers. If we did, it would probably be the opposite of what you want
-> here as we'd pick the most specific match. This driver should probably
-> bail probe if no dwc3 child node.
-> 
-> Please advise how to move forward with this serie.
 
-As I tried to point out earlier, this kind of binding change is
-unhelpful.  Yes, you now have extra code in future Linux kernels that
-works around the problem.  But other consumers of device trees
-(U-Boot, other OSes) will have to add similar code or keep using older
-device trees.  And even then it will still cause frustration for users
-that want to run older kernels.
+Found in example-schema.yaml, sorry for the noise
 
-I do understand that it is sometimes necessary to change device tree
-bindings.  But changes like this one just cause a lot of pain without
-a significant technical benefit.
+-- 
+Giulio Benetti
+CTO
 
-Cheers,
-
-Mark
-
-
-> Changed V6:
->   rebase
->   remove accepted patches from serie
-> 
-> Changed V5:
->   add select
-> 
-> Changed V4:
->   removed patch "of-simple: add compatible for rk3328"
->   add patch "of-simple: bail probe if no dwc3 child node"
-> 
-> Changed V3:
->   remove aclk_usb3_rksoc_axi_perf
->   remove aclk_usb3
-> 
-> Changed V2:
->   remove node wrapper
-> 
-> Johan Jonker (3):
->   usb: dwc3: of-simple: bail probe if no dwc3 child node
->   arm64: dts: rockchip: restyle rk3399 usbdrd3_0 node
->   arm64: dts: rockchip: restyle rk3399 usbdrd3_1 node
-> 
-> Wu Liang feng (1):
->   arm64: dts: rockchip: optimize clks for rk3399 dwc3
-> 
->  arch/arm64/boot/dts/rockchip/rk3399-ficus.dts      |  4 +-
->  arch/arm64/boot/dts/rockchip/rk3399-firefly.dts    | 12 +--
->  .../boot/dts/rockchip/rk3399-gru-chromebook.dtsi   |  6 +-
->  arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi       |  6 +-
->  arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts | 12 +--
->  .../boot/dts/rockchip/rk3399-khadas-edge.dtsi      | 12 +--
->  arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts  | 12 +--
->  arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts |  2 +-
->  arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi   |  8 --
->  arch/arm64/boot/dts/rockchip/rk3399-orangepi.dts   | 12 +--
->  .../boot/dts/rockchip/rk3399-pinebook-pro.dts      |  8 --
->  .../arm64/boot/dts/rockchip/rk3399-puma-haikou.dts |  4 -
->  arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi      |  6 +-
->  arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi    | 10 +--
->  arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi | 12 +--
->  arch/arm64/boot/dts/rockchip/rk3399-rock960.dts    |  4 +-
->  arch/arm64/boot/dts/rockchip/rk3399-rock960.dtsi   |  8 --
->  arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi | 12 +--
->  arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi  | 12 +--
->  arch/arm64/boot/dts/rockchip/rk3399.dtsi           | 86 ++++++++--------------
->  .../boot/dts/rockchip/rk3399pro-vmarc-som.dtsi     |  4 -
->  drivers/usb/dwc3/dwc3-of-simple.c                  |  4 +
->  22 files changed, 59 insertions(+), 197 deletions(-)
-> 
-> -- 
-> 2.11.0
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
+MICRONOVA SRL
+Sede: Via A. Niedda 3 - 35010 Vigonza (PD)
+Tel. 049/8931563 - Fax 049/8931346
+Cod.Fiscale - P.IVA 02663420285
+Capitale Sociale ¤ 26.000 i.v.
+Iscritta al Reg. Imprese di Padova N. 02663420285
+Numero R.E.A. 258642
