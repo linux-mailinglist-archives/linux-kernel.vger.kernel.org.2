@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A86E8351F26
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2DC351F1E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239324AbhDASyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:54:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38166 "EHLO mail.kernel.org"
+        id S236451AbhDASxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:53:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238593AbhDASpA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:45:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8AD361184;
-        Thu,  1 Apr 2021 16:16:01 +0000 (UTC)
+        id S235598AbhDASnC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:43:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B32FA61378;
+        Thu,  1 Apr 2021 16:16:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617293762;
-        bh=9mXHLLqBBxMNhCZn7ktuoeDjGYnyOHv6qaqbCKJFjoA=;
+        s=k20201202; t=1617293765;
+        bh=zp3Tpu+kUph5azbHKo/cVTxK4hhcTlET7aKDSzeCMns=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u9/vii/UoXb0uxDdG74x9V0lQghXcLTLlWDb35ensNRZ6BPx0t/aEl2JdYC8seB5x
-         DafKxVIVQDvzGxxC3ZFM7vZv9sbGdrLNVpRWXxwS1I9CnHgD5zsaO1fHFE2qMjTUNn
-         FBb1z9NduKM7PEBei6T6Vx4VVPMkzWS/98A/0vJlMkqGw8cYUjXcmzVVXnueoaAdMn
-         QpsRv9r3IngTFkwSdLn2cwiGlSqimP6B2Ykw0FLFMrpbFz80yi7zZV63e6J4gYfwiI
-         2dBPU+JaCUMKJGwtEAnwXCBYpl8/Sxt/8OYAhXaRHomUa2WtCuK+IET4dN5/IkF+GM
-         IO9+YPYdJgRRQ==
+        b=lNvRf4e1Nfc9GKuGcUaN0ir9vETDIpMi2U79MnBc+Q9xG1hMQob7fpW60rM/cjylH
+         szalDlN1ciZWkh+Q0ZIo0gqLQ7OxmpIynxKR16ev4hbo/5inHWcwz8upmKy1HuQwZU
+         HjHqQ9+9qXmHBfCjTTKgqEOn47JAou1pLETdRxbPJNpUdZQZgETOBtAfPdWJWeeOMq
+         kMBrc7EO7Wf/OEiVc/6ekKGT/7wgFOa5N5jAtmF3LXIKrl5NWhnZBNo8nZv6SAU4Vk
+         e249Fxae46RERG1LghVZl5E6vGnxmP7qA6zVMtM7tHaZDORrgl9PGffEuuwEwRwpNv
+         m3Q8Gd1ZH88gA==
 From:   Mark Brown <broonie@kernel.org>
-To:     Wan Jiabing <wanjiabing@vivo.com>, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>, kael_w@yeah.net
-Subject: Re: [PATCH] linux/spi: Remove repeated struct declaration
-Date:   Thu,  1 Apr 2021 17:15:46 +0100
-Message-Id: <161729347262.31861.6906734696742982702.b4-ty@kernel.org>
+To:     devicetree <devicetree@vger.kernel.org>,
+        alsa-devel <alsa-devel@alsa-project.org>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/1] ASoC: intel, keembay-i2s: Fix a dt_binding_check warning
+Date:   Thu,  1 Apr 2021 17:15:47 +0100
+Message-Id: <161729333651.31618.6325079972879808660.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210401065904.994121-1-wanjiabing@vivo.com>
-References: <20210401065904.994121-1-wanjiabing@vivo.com>
+In-Reply-To: <20210329081435.2200-1-thunder.leizhen@huawei.com>
+References: <20210329081435.2200-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -40,18 +44,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 1 Apr 2021 14:59:04 +0800, Wan Jiabing wrote:
-> struct spi_transfer is declared twice. One is declared at 24th line.
-> The blew one is not needed though. Remove the duplicate.
+On Mon, 29 Mar 2021 16:14:35 +0800, Zhen Lei wrote:
+> The property "dmas" contains two items: DMA "TX" and "RX" channel,
+> Therefore, its value also needs to be written in two parts.
+> 
+> Otherwise, below YAML check warning is reported:
+> Documentation/devicetree/bindings/sound/intel,keembay-i2s.example.dt.yaml:\
+> i2s@20140000: dmas: [[4294967295, 29, 4294967295, 33]] is too short
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/1] linux/spi: Remove repeated struct declaration
-      commit: d6644a1c2e17febf261fd692bb32271e5779bbd2
+[1/1] ASoC: intel, keembay-i2s: Fix a dt_binding_check warning
+      commit: 52cad756b777e82fabe05c728cc62b63b3c61fd3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
