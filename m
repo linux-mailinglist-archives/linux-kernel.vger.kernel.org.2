@@ -2,110 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9289A351B0E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E964351B30
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238136AbhDASF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:05:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58396 "EHLO
+        id S234827AbhDASGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:06:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236507AbhDARpT (ORCPT
+        with ESMTP id S237334AbhDARvb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:45:19 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBF9EC031155
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 09:48:48 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id f1so2547332ilk.11
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 09:48:48 -0700 (PDT)
+        Thu, 1 Apr 2021 13:51:31 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 376CFC031159
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 09:49:49 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a7so3871800ejs.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 09:49:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LX7TTVacyu/SInUXeH7qzWi/YSD8f9C42RXcS3AUsk4=;
-        b=nH/i/l/EVo2o/yF2p0uLVlOODn7z8Rqx1FgfFLqMWiil3e0T3lr2aezMDzwUkQagKW
-         3zQ/tntQwYxMxrEelRBFoVLKpQSRZk/TBG1Z0AA8XM2z9AEhdnGWm+f+a2J5gpmjvsAt
-         bFlAkTNprn1amjpUp3Laa/KRjz6cXbfTA0rGEvZNYujs6sUrA+DrqyICL9LQrpQ1O6A9
-         ZaWO1pC69zpk3AOVocFivGbzVryLEDNC75A5EfuFRoWjq2BSgIaTZ674ah3Y3IlUbuKS
-         fzfYibYEmW8JteKRBr9BkcEYEnZvVToDiMDs2wVb5vKZ2JpU+b9pNUx4e4NQZp7Wr58p
-         c1Qg==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZITJn9OwOFdWnyw6/5K8hXI6be2iHs737Z1KKpoKKTI=;
+        b=RBWZRmBRgVRFL5dFTOkdMQ1amg4cZOhsWLoORTkHUV3924VD5q/OAsOJes34QFkgXc
+         pCW2Ckhu1f+1u5WYI86oBJSnZBu6qxA64D4gQ19nMWvjafrJQvgWHB4D5rtdaLoWbRSE
+         2A6aiCrnSc69/8pwpVGjCRS7YPjkNP65/5VyD88Qh+Jwj1EX4Cp1730m43LughZTty46
+         1yzzGN0462AQTyj3rxtDzM4/6ZKKdBS2UQUhoPCEHDLwbYNC0q4Eo0JZw+FsqxgHwtNp
+         KFbRo7rRXfHjmRxOYWmj1ybPOPWfRTBrfKjoDOLktq2Tba3yeiQRlFSxvFk/GGsm4ilq
+         0h3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LX7TTVacyu/SInUXeH7qzWi/YSD8f9C42RXcS3AUsk4=;
-        b=OA8iIiDxPpEMqLV36+sFi4rwEMi11FQBpI0gaGacTZiOPOGNTWoZ5DtM0JLznXiItQ
-         eF3P8buUzjKwgfEpz3ZMs0bveZJclP8vCgaQ8P5jgftmbesIB5cuVi//nKXFb4qpLvzG
-         0fAJxC3H52C3ckm0dMrB0VLjjJY+unTBmnquLvss4K7C7GWb8nSSVEWVFVdPVpHJXMlz
-         eBoz5Bsmq1dBDCId+k1X7h8REOVJaIcBXkxn+XdC9VIffphFO7jpkuaS0Lla0Xa+O1Sc
-         lCKXU5AWKI59n6AkxUryZuSlsQk0npkOjfZW/cFeAtlbGn8ZDWm4HOERAjDSBHlxgsbV
-         k39g==
-X-Gm-Message-State: AOAM532ORi7u2K3t+z613RuHajBXva9ejIntSQ96uI7hc+osRBz1guQD
-        gqo61DtfZgzSFi3orLyp+Fc5Z5STMxJiMPwsKnzYjA==
-X-Google-Smtp-Source: ABdhPJxn4MslQACG762qQXLuE+98Zx9vDaVa6WzFSlWG7o0gS55sNNFPnobyOdw0Pixw5xfJwCRy9GEAafIbY9N5JkY=
-X-Received: by 2002:a92:7f03:: with SMTP id a3mr7335685ild.203.1617295728089;
- Thu, 01 Apr 2021 09:48:48 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZITJn9OwOFdWnyw6/5K8hXI6be2iHs737Z1KKpoKKTI=;
+        b=HF1c5/y2VAdIO1zs/z67HCAm4KEK+uGKYKCshjLqJSDA0hlQD+/Y/De4py7v0mXrpO
+         aQ8lEEbDfpb28vEkjPK3z3y4naNPdsG1B1R+LZRp0YndwHK33/nOdOsBDJBZt6MPU1VZ
+         +nka1OiHmVi9oIDJnAeC0M3ZbSUEHVj1Jl0fQYF/SYrqbxUwmJYyqKa3bEiAL4Sc0e9P
+         cN05fxejgZEW25AzUCWj2Bn0kK9CiLPyshWd7qsU4dRDfICibUS2/zqAWzgG61kqFehw
+         fxwFJQpcnYatYn0J/rxT06hSvNJFzTSMFwM3ug8/3V/RvPwUTq9Z9V+sPYMMHOlUNMcp
+         H++Q==
+X-Gm-Message-State: AOAM532+rmkJqP9u/WIKumqy9j8Vlr8gXazUpXl+5ivaFPSnUu3HN5A2
+        W1tpBXBvSZkrXL3WjNqv21FJFA==
+X-Google-Smtp-Source: ABdhPJwX4MhXvSaIufRpbKrM41cxH8YiLeSdEhYocoua6E1USCwXSegShln1t3assMXdbLazajeadQ==
+X-Received: by 2002:a17:906:5383:: with SMTP id g3mr10148080ejo.185.1617295787833;
+        Thu, 01 Apr 2021 09:49:47 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id j25sm3800692edy.9.2021.04.01.09.49.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 01 Apr 2021 09:49:47 -0700 (PDT)
+Subject: Re: [PATCH v2] soundwire: qcom: wait for fifo space to be available
+ before read/write
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        vkoul@kernel.org
+Cc:     robh@kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com
+References: <20210401090058.24041-1-srinivas.kandagatla@linaro.org>
+ <e1bcc85d-b583-2c9a-18e5-634994cc2916@linux.intel.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <41911806-e4ce-44e2-d187-a1a27406ed34@linaro.org>
+Date:   Thu, 1 Apr 2021 17:49:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20210331210841.3996155-1-bgardon@google.com> <20210331210841.3996155-9-bgardon@google.com>
- <a030f6a6-4092-7c70-af4e-148debb801cc@redhat.com>
-In-Reply-To: <a030f6a6-4092-7c70-af4e-148debb801cc@redhat.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Thu, 1 Apr 2021 09:48:37 -0700
-Message-ID: <CANgfPd87mz5Gqod6iRsqbdbUKxhETTrMp1R6ZqSerjvB0+mO8w@mail.gmail.com>
-Subject: Re: [PATCH 08/13] KVM: x86/mmu: Protect the tdp_mmu_roots list with RCU
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <e1bcc85d-b583-2c9a-18e5-634994cc2916@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 2:37 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 31/03/21 23:08, Ben Gardon wrote:
-> > Protect the contents of the TDP MMU roots list with RCU in preparation
-> > for a future patch which will allow the iterator macro to be used under
-> > the MMU lock in read mode.
-> >
-> > Signed-off-by: Ben Gardon<bgardon@google.com>
-> > ---
-> >   arch/x86/kvm/mmu/tdp_mmu.c | 64 +++++++++++++++++++++-----------------
-> >   1 file changed, 36 insertions(+), 28 deletions(-)
-> >
-> > diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> > +     spin_lock(&kvm->arch.tdp_mmu_pages_lock);
-> > +     list_del_rcu(&root->link);
-> > +     spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
->
->
-> Please update the comment above tdp_mmu_pages_lock in
-> arch/x86/include/asm/kvm_host.h as well.
 
-Ah yes, thank you for catching that. Will do.
 
->
-> >  /* Only safe under the MMU lock in write mode, without yielding. */
-> >  #define for_each_tdp_mmu_root(_kvm, _root)                           \
-> > -     list_for_each_entry(_root, &_kvm->arch.tdp_mmu_roots, link)
-> > +     list_for_each_entry_rcu(_root, &_kvm->arch.tdp_mmu_roots, link, \
-> > +                             lockdep_is_held_write(&kvm->mmu_lock))
->
-> This should also add "... ||
-> lockdep_is_help(&kvm->arch.tdp_mmu_pages_lock)", if only for
-> documentation purposes.
+On 01/04/2021 15:36, Pierre-Louis Bossart wrote:
+> 
+> 
+> On 4/1/21 4:00 AM, Srinivas Kandagatla wrote:
+>> If we write registers very fast we can endup in a situation where some
+>> of the writes will be dropped without any notice.
+>>
+>> So wait for the fifo space to be available before reading/writing the
+>> soundwire registers.
+> 
+> Out of curiosity, do you actually need to do a check in the read case as 
+> well?
 
-Good idea. I hope we never have a function try to protect its loop
-over the roots with that lock, but it would be correct.
+Yes, This is just to make sure the read command is finished and fifo is 
+ready with data.
 
->
-> Paolo
->
+If not we will be reading quickly an empty fifo!
+
+> 
+> The commit message talks about writes getting dropped, is the opposite 
+> also a problem?
+
+Its highly likely, for safety I have added support for both write and 
+read waits in this patch.
+
+
+--srini
+> 
