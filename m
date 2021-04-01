@@ -2,73 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBDBC351C57
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF1A351DA8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239575AbhDASQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:16:38 -0400
-Received: from elvis.franken.de ([193.175.24.41]:44820 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236822AbhDAR6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:58:46 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lRx0R-0006B4-00; Thu, 01 Apr 2021 15:05:03 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 0A5EDC2095; Thu,  1 Apr 2021 14:51:00 +0200 (CEST)
-Date:   Thu, 1 Apr 2021 14:51:00 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] MIPS: uaccess: Remove get_fs/set_fs call sites
-Message-ID: <20210401125100.GA9556@alpha.franken.de>
-References: <20210331115603.146159-1-tsbogend@alpha.franken.de>
- <20210331115603.146159-4-tsbogend@alpha.franken.de>
- <20210401063055.GB25514@lst.de>
+        id S240668AbhDASbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:31:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236127AbhDASIl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:08:41 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56612C05BD40
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 05:51:48 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id k3so1671453ybh.4
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 05:51:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M1VB1ralBR7+e/H7JqA/6mMiYo3JOylCfFNbfyvT27M=;
+        b=C8Z1fGmD0ugXE9aGQpDEEcbJPwy2biu89w6Y8hjTLRV+uZ6Y+fa5ayeevztvzJk+dU
+         PX2Rwh+sIiRbjGzRPRKXUXZk7IfGSsgtMCvqlVkz2WF9P4XXjC9JtmvDJGd8cQp5iUEW
+         7h6YWHc3ZAchF/U59kTlgfc/r1dtfTFNnoFrMgOKzlAVOcb3zHPu9VtojLYbJwtLFk/6
+         +oKvoicUnGd7b8+54QGsxVhMEFiJZjn8JHAoY4jACV/jFQTp8R152wz4eg52V/LGZfJp
+         JojHcn5GNEp6DijbKwabno/N5j2/fkHlrKTeccFq0wC3lrmyC7nKB0xUN6+/ttzTnaXt
+         bEpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M1VB1ralBR7+e/H7JqA/6mMiYo3JOylCfFNbfyvT27M=;
+        b=WRVfvKC+vRP7VcyySe5q6ykmkEirBs+BT/C+IVPvCgyGU8T5uVwA8mpjnVC5ly9QdS
+         c8mFBI6VZlZRDWYoMByRm5xdnKRPndrDqShuVqTRYbQ3RPHr1MEH9CGXtpeG01kKUdPe
+         NaoTPvRYH/5uxXjDQJSoGJJMMi+smi6ECEkN1lL49dD3hD0Q4QShuGp77IrQNKcj/h6q
+         r05T7UCn4bEwCy/TKKAWP5z0j1VIV23lJWgkuQsdkw5HAVXPH45NUoM4PGC/wtI5dJM6
+         F+BjCDhT3ra8/l4P7Hck3pEEhzEmw3TljVdfeQa9qhwNW76xcggCtTzos34pNqhmUYlO
+         t0lg==
+X-Gm-Message-State: AOAM530jGqB20DKc0WVOIEjwM9Nl6qbz3AYyoEatRs+cOoHJiesviS+5
+        xlrHlowBeYaNaZ2VCaMQbTjOf55tR57J235VeFk/xA==
+X-Google-Smtp-Source: ABdhPJzvynb+mFT6Mi7hEx6IXLxnNBonNu1ObAo/1/4cv6eeRaXfFt+HU09XZQgNU5/AQabX6bp6nFyK8dybNvj64T8=
+X-Received: by 2002:a25:d2d3:: with SMTP id j202mr11341988ybg.157.1617281507590;
+ Thu, 01 Apr 2021 05:51:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401063055.GB25514@lst.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <cover.1615038553.git.syednwaris@gmail.com> <4c259d34b5943bf384fd3cb0d98eccf798a34f0f.1615038553.git.syednwaris@gmail.com>
+ <36db7be3-73b6-c822-02e8-13e3864b0463@xilinx.com> <CAMpxmJUv0iU0Ntmks1f6ThDAG6x_eJLYYCaDSjy+1Syedzc5dQ@mail.gmail.com>
+ <DM6PR02MB53863852A28F782B0942ECD8AF7C9@DM6PR02MB5386.namprd02.prod.outlook.com>
+ <CACG_h5q6P5NiNByttQ-NZvq8x3GCTKfSU=Yyywk7PcO6_=i2Mw@mail.gmail.com>
+In-Reply-To: <CACG_h5q6P5NiNByttQ-NZvq8x3GCTKfSU=Yyywk7PcO6_=i2Mw@mail.gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Thu, 1 Apr 2021 14:51:36 +0200
+Message-ID: <CAMpxmJUO48Aor0zSofOPJgtKJPL-DKe01a=FOd-Aqz-OHYeZOg@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] gpio: xilinx: Utilize generic bitmap_get_value and _set_value
+To:     Syed Nayyar Waris <syednwaris@gmail.com>
+Cc:     Michal Simek <michals@xilinx.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Robert Richter <rrichter@marvell.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        linux-pm <linux-pm@vger.kernel.org>,
+        Srinivas Goud <sgoud@xilinx.com>,
+        Srinivas Neeli <sneeli@xilinx.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 08:30:55AM +0200, Christoph Hellwig wrote:
-> On Wed, Mar 31, 2021 at 01:56:00PM +0200, Thomas Bogendoerfer wrote:
-> > +#define __get_user_nofault(dst, src, type, err_label)			\
-> > +do {									\
-> > +	int __gu_err;							\
-> > +									\
-> > +	__get_user_common(*((type *)(dst)), sizeof(type),		\
-> > +			  (__force type *)(src));			\
-> > +	if (unlikely(__gu_err))						\
-> > +		goto err_label;						\
-> > +} while (0)
-> > +
-> > +
-> > +static inline int __get_addr(unsigned long *a, unsigned long *p, bool user)
-> > +{
-> > +	if (user)
-> > +		__get_user_nofault(a, p, unsigned long, fault);
-> > +	else
-> > +		__get_kernel_nofault(a, p, unsigned long, fault);
-> > +
-> > +	return 0;
-> > +
-> > +fault:
-> > +	return -EFAULT;
-> > +}
-> 
-> Why can't these use plain old get_user and get_kernel_nofault?
-> You "optimize" away the access_ok / get_kernel_nofaul_allowed checks
-> here, but now use totally non-standard and possibly dangerous APIs.
+On Thu, Apr 1, 2021 at 1:16 PM Syed Nayyar Waris <syednwaris@gmail.com> wrote:
+>
+> On Wed, Mar 31, 2021 at 8:56 PM Srinivas Neeli <sneeli@xilinx.com> wrote:
+> >
+> > Hi,
+> >
+> > > -----Original Message-----
+> > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > > Sent: Friday, March 26, 2021 10:58 PM
+> > > To: Michal Simek <michals@xilinx.com>
+> > > Cc: Syed Nayyar Waris <syednwaris@gmail.com>; Srinivas Neeli
+> > > <sneeli@xilinx.com>; Andy Shevchenko
+> > > <andriy.shevchenko@linux.intel.com>; William Breathitt Gray
+> > > <vilhelm.gray@gmail.com>; Arnd Bergmann <arnd@arndb.de>; Robert
+> > > Richter <rrichter@marvell.com>; Linus Walleij <linus.walleij@linaro.org>;
+> > > Masahiro Yamada <yamada.masahiro@socionext.com>; Andrew Morton
+> > > <akpm@linux-foundation.org>; Zhang Rui <rui.zhang@intel.com>; Daniel
+> > > Lezcano <daniel.lezcano@linaro.org>; Amit Kucheria
+> > > <amit.kucheria@verdurent.com>; Linux-Arch <linux-arch@vger.kernel.org>;
+> > > linux-gpio <linux-gpio@vger.kernel.org>; LKML <linux-
+> > > kernel@vger.kernel.org>; arm-soc <linux-arm-kernel@lists.infradead.org>;
+> > > linux-pm <linux-pm@vger.kernel.org>; Srinivas Goud <sgoud@xilinx.com>
+> > > Subject: Re: [PATCH v3 3/3] gpio: xilinx: Utilize generic bitmap_get_value and
+> > > _set_value
+> > >
+> > > On Mon, Mar 8, 2021 at 8:13 AM Michal Simek <michal.simek@xilinx.com>
+> > > wrote:
+> > > >
+> > > >
+> > > >
+> > > > On 3/6/21 3:06 PM, Syed Nayyar Waris wrote:
+> > > > > This patch reimplements the xgpio_set_multiple() function in
+> > > > > drivers/gpio/gpio-xilinx.c to use the new generic functions:
+> > > > > bitmap_get_value() and bitmap_set_value(). The code is now simpler
+> > > > > to read and understand. Moreover, instead of looping for each bit in
+> > > > > xgpio_set_multiple() function, now we can check each channel at a
+> > > > > time and save cycles.
+> > > > >
+> > > > > Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > > > > Cc: Michal Simek <michal.simek@xilinx.com>
+> > > > > Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
+> > > > > Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> > > > > ---
+> > > > >  drivers/gpio/gpio-xilinx.c | 63
+> > > > > +++++++++++++++++++-------------------
+> > > > >  1 file changed, 32 insertions(+), 31 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/gpio/gpio-xilinx.c b/drivers/gpio/gpio-xilinx.c
+> > > > > index be539381fd82..8445e69cf37b 100644
+> > > > > --- a/drivers/gpio/gpio-xilinx.c
+> > > > > +++ b/drivers/gpio/gpio-xilinx.c
+> > > > > @@ -15,6 +15,7 @@
+> > > > >  #include <linux/of_device.h>
+> > > > >  #include <linux/of_platform.h>
+> > > > >  #include <linux/slab.h>
+> > > > > +#include "gpiolib.h"
+> > > > >
+> > > > >  /* Register Offset Definitions */
+> > > > >  #define XGPIO_DATA_OFFSET   (0x0)    /* Data register  */
+> > > > > @@ -141,37 +142,37 @@ static void xgpio_set_multiple(struct
+> > > > > gpio_chip *gc, unsigned long *mask,  {
+> > > > >       unsigned long flags;
+> > > > >       struct xgpio_instance *chip = gpiochip_get_data(gc);
+> > > > > -     int index = xgpio_index(chip, 0);
+> > > > > -     int offset, i;
+> > > > > -
+> > > > > -     spin_lock_irqsave(&chip->gpio_lock[index], flags);
+> > > > > -
+> > > > > -     /* Write to GPIO signals */
+> > > > > -     for (i = 0; i < gc->ngpio; i++) {
+> > > > > -             if (*mask == 0)
+> > > > > -                     break;
+> > > > > -             /* Once finished with an index write it out to the register */
+> > > > > -             if (index !=  xgpio_index(chip, i)) {
+> > > > > -                     xgpio_writereg(chip->regs + XGPIO_DATA_OFFSET +
+> > > > > -                                    index * XGPIO_CHANNEL_OFFSET,
+> > > > > -                                    chip->gpio_state[index]);
+> > > > > -                     spin_unlock_irqrestore(&chip->gpio_lock[index], flags);
+> > > > > -                     index =  xgpio_index(chip, i);
+> > > > > -                     spin_lock_irqsave(&chip->gpio_lock[index], flags);
+> > > > > -             }
+> > > > > -             if (__test_and_clear_bit(i, mask)) {
+> > > > > -                     offset =  xgpio_offset(chip, i);
+> > > > > -                     if (test_bit(i, bits))
+> > > > > -                             chip->gpio_state[index] |= BIT(offset);
+> > > > > -                     else
+> > > > > -                             chip->gpio_state[index] &= ~BIT(offset);
+> > > > > -             }
+> > > > > -     }
+> > > > > -
+> > > > > -     xgpio_writereg(chip->regs + XGPIO_DATA_OFFSET +
+> > > > > -                    index * XGPIO_CHANNEL_OFFSET, chip->gpio_state[index]);
+> > > > > -
+> > > > > -     spin_unlock_irqrestore(&chip->gpio_lock[index], flags);
+> > > > > +     u32 *const state = chip->gpio_state;
+> > > > > +     unsigned int *const width = chip->gpio_width;
+> > > > > +
+> > > > > +     DECLARE_BITMAP(old, 64);
+> > > > > +     DECLARE_BITMAP(new, 64);
+> > > > > +     DECLARE_BITMAP(changed, 64);
+> > > > > +
+> > > > > +     spin_lock_irqsave(&chip->gpio_lock[0], flags);
+> > > > > +     spin_lock(&chip->gpio_lock[1]);
+> > > > > +
+> > > > > +     bitmap_set_value(old, 64, state[0], width[0], 0);
+> > > > > +     bitmap_set_value(old, 64, state[1], width[1], width[0]);
+> > > > > +     bitmap_replace(new, old, bits, mask, gc->ngpio);
+> > > > > +
+> > > > > +     bitmap_set_value(old, 64, state[0], 32, 0);
+> > > > > +     bitmap_set_value(old, 64, state[1], 32, 32);
+> > > > > +     state[0] = bitmap_get_value(new, 0, width[0]);
+> > > > > +     state[1] = bitmap_get_value(new, width[0], width[1]);
+> > > > > +     bitmap_set_value(new, 64, state[0], 32, 0);
+> > > > > +     bitmap_set_value(new, 64, state[1], 32, 32);
+> > > > > +     bitmap_xor(changed, old, new, 64);
+> > > > > +
+> > > > > +     if (((u32 *)changed)[0])
+> > > > > +             xgpio_writereg(chip->regs + XGPIO_DATA_OFFSET,
+> > > > > +                             state[0]);
+> > > > > +     if (((u32 *)changed)[1])
+> > > > > +             xgpio_writereg(chip->regs + XGPIO_DATA_OFFSET +
+> > > > > +                             XGPIO_CHANNEL_OFFSET, state[1]);
+> > > > > +
+> > > > > +     spin_unlock(&chip->gpio_lock[1]);
+> > > > > +     spin_unlock_irqrestore(&chip->gpio_lock[0], flags);
+> > > > >  }
+> > > > >
+> > > > >  /**
+> > > > >
+> > > >
+> > > > Srinivas N: Can you please test this code?
+> > > >
+> > > > Thanks,
+> > > > Michal
+> > >
+> > > Hey, any chance of getting that Tested-by?
+> > I tested patches with few modifications in code (spin_lock handling and merge conflict).
+> > functionality wise it's working fine.
+> >
+> > >
+> > > Bart
+>
+> Hi Bartosz,
+>
+> May I please know the URL of the tree that you are using. I had been
+> using the tree below for submitting this patchset on GPIO to you.
+> https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-gpio.git
+>
+> I think I am using the wrong tree. On which tree should I base my
+> patches on for my next  (v4) submission? Should I use the tree below?
+> :
+> https://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git
+>
+> Regards
+> Syed Nayyar Waris
 
-thanks, I was too deep into the macro wormhole... using standard API
-makes this even look nicer. Posting v3 in a few minutes.
+Yes this is the one. Please address new issues raised by reviewers.
 
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Bart
