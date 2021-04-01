@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B5A350F83
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCDD5350F8A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233600AbhDAGx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 02:53:56 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:15425 "EHLO
+        id S233658AbhDAGyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 02:54:04 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:15426 "EHLO
         szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233283AbhDAGx0 (ORCPT
+        with ESMTP id S233227AbhDAGx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 02:53:26 -0400
+        Thu, 1 Apr 2021 02:53:27 -0400
 Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F9v3s44KnzjXhh;
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F9v3s4GbQzjXhm;
         Thu,  1 Apr 2021 14:51:37 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 1 Apr 2021 14:53:13 +0800
+ 14.3.498.0; Thu, 1 Apr 2021 14:53:14 +0800
 From:   Meng Yu <yumeng18@huawei.com>
 To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>,
         <luiz.dentz@gmail.com>
 CC:     <linux-bluetooth@vger.kernel.org>, <wangzhou1@hisilicon.com>,
         <yumeng18@huawei.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 1/2] Bluetooth: Remove 'return' in void function
-Date:   Thu, 1 Apr 2021 14:50:38 +0800
-Message-ID: <1617259839-31383-2-git-send-email-yumeng18@huawei.com>
+Subject: [PATCH 2/2] Bluetooth: Coding style fix
+Date:   Thu, 1 Apr 2021 14:50:39 +0800
+Message-ID: <1617259839-31383-3-git-send-email-yumeng18@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1617259839-31383-1-git-send-email-yumeng18@huawei.com>
 References: <1617259839-31383-1-git-send-email-yumeng18@huawei.com>
@@ -37,39 +37,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-void function return statements are not generally useful.
+1. Add space when needed;
+2. Block comments style fix;
+3. Move open brace '{' following function definitions to the next line;
+4. Remove unnecessary braces '{}' for single statement blocks.
 
 Signed-off-by: Meng Yu <yumeng18@huawei.com>
 ---
- net/bluetooth/6lowpan.c    | 2 --
- net/bluetooth/l2cap_core.c | 2 --
- 2 files changed, 4 deletions(-)
+ net/bluetooth/6lowpan.c     | 3 +--
+ net/bluetooth/hci_debugfs.c | 8 ++++----
+ net/bluetooth/hci_event.c   | 2 +-
+ net/bluetooth/hci_request.c | 6 ++----
+ net/bluetooth/l2cap_core.c  | 5 +++--
+ 5 files changed, 11 insertions(+), 13 deletions(-)
 
 diff --git a/net/bluetooth/6lowpan.c b/net/bluetooth/6lowpan.c
-index cff4944..19f7e42 100644
+index 19f7e42..97617d0 100644
 --- a/net/bluetooth/6lowpan.c
 +++ b/net/bluetooth/6lowpan.c
-@@ -841,8 +841,6 @@ static void chan_close_cb(struct l2cap_chan *chan)
- 	} else {
- 		spin_unlock(&devices_lock);
+@@ -205,8 +205,7 @@ static inline struct lowpan_peer *peer_lookup_dst(struct lowpan_btle_dev *dev,
+ 		}
  	}
--
--	return;
- }
  
- static void chan_state_change_cb(struct l2cap_chan *chan, int state, int err)
+-	/* use the neighbour cache for matching addresses assigned by SLAAC
+-	*/
++	/* use the neighbour cache for matching addresses assigned by SLAAC */
+ 	neigh = __ipv6_neigh_lookup(dev->netdev, nexthop);
+ 	if (neigh) {
+ 		list_for_each_entry_rcu(peer, &dev->peers, list) {
+diff --git a/net/bluetooth/hci_debugfs.c b/net/bluetooth/hci_debugfs.c
+index 1a0ab58..47f4f21 100644
+--- a/net/bluetooth/hci_debugfs.c
++++ b/net/bluetooth/hci_debugfs.c
+@@ -274,7 +274,7 @@ static ssize_t use_debug_keys_read(struct file *file, char __user *user_buf,
+ 	struct hci_dev *hdev = file->private_data;
+ 	char buf[3];
+ 
+-	buf[0] = hci_dev_test_flag(hdev, HCI_USE_DEBUG_KEYS) ? 'Y': 'N';
++	buf[0] = hci_dev_test_flag(hdev, HCI_USE_DEBUG_KEYS) ? 'Y' : 'N';
+ 	buf[1] = '\n';
+ 	buf[2] = '\0';
+ 	return simple_read_from_buffer(user_buf, count, ppos, buf, 2);
+@@ -292,7 +292,7 @@ static ssize_t sc_only_mode_read(struct file *file, char __user *user_buf,
+ 	struct hci_dev *hdev = file->private_data;
+ 	char buf[3];
+ 
+-	buf[0] = hci_dev_test_flag(hdev, HCI_SC_ONLY) ? 'Y': 'N';
++	buf[0] = hci_dev_test_flag(hdev, HCI_SC_ONLY) ? 'Y' : 'N';
+ 	buf[1] = '\n';
+ 	buf[2] = '\0';
+ 	return simple_read_from_buffer(user_buf, count, ppos, buf, 2);
+@@ -428,7 +428,7 @@ static ssize_t ssp_debug_mode_read(struct file *file, char __user *user_buf,
+ 	struct hci_dev *hdev = file->private_data;
+ 	char buf[3];
+ 
+-	buf[0] = hdev->ssp_debug_mode ? 'Y': 'N';
++	buf[0] = hdev->ssp_debug_mode ? 'Y' : 'N';
+ 	buf[1] = '\n';
+ 	buf[2] = '\0';
+ 	return simple_read_from_buffer(user_buf, count, ppos, buf, 2);
+@@ -742,7 +742,7 @@ static ssize_t force_static_address_read(struct file *file,
+ 	struct hci_dev *hdev = file->private_data;
+ 	char buf[3];
+ 
+-	buf[0] = hci_dev_test_flag(hdev, HCI_FORCE_STATIC_ADDR) ? 'Y': 'N';
++	buf[0] = hci_dev_test_flag(hdev, HCI_FORCE_STATIC_ADDR) ? 'Y' : 'N';
+ 	buf[1] = '\n';
+ 	buf[2] = '\0';
+ 	return simple_read_from_buffer(user_buf, count, ppos, buf, 2);
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index 341c8ce..593eafa 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -5891,7 +5891,7 @@ static void hci_le_remote_conn_param_req_evt(struct hci_dev *hdev,
+ 			params->conn_latency = latency;
+ 			params->supervision_timeout = timeout;
+ 			store_hint = 0x01;
+-		} else{
++		} else {
+ 			store_hint = 0x00;
+ 		}
+ 
+diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
+index 8ace5d3..6cd9d41 100644
+--- a/net/bluetooth/hci_request.c
++++ b/net/bluetooth/hci_request.c
+@@ -1647,9 +1647,8 @@ static u8 create_default_scan_rsp_data(struct hci_dev *hdev, u8 *ptr)
+ {
+ 	u8 scan_rsp_len = 0;
+ 
+-	if (hdev->appearance) {
++	if (hdev->appearance)
+ 		scan_rsp_len = append_appearance(hdev, ptr, scan_rsp_len);
+-	}
+ 
+ 	return append_local_name(hdev, ptr, scan_rsp_len);
+ }
+@@ -1667,9 +1666,8 @@ static u8 create_instance_scan_rsp_data(struct hci_dev *hdev, u8 instance,
+ 
+ 	instance_flags = adv_instance->flags;
+ 
+-	if ((instance_flags & MGMT_ADV_FLAG_APPEARANCE) && hdev->appearance) {
++	if ((instance_flags & MGMT_ADV_FLAG_APPEARANCE) && hdev->appearance)
+ 		scan_rsp_len = append_appearance(hdev, ptr, scan_rsp_len);
+-	}
+ 
+ 	memcpy(&ptr[scan_rsp_len], adv_instance->scan_rsp_data,
+ 	       adv_instance->scan_rsp_len);
 diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
-index 56e1975..ccfe8ad 100644
+index ccfe8ad..6e10cb8 100644
 --- a/net/bluetooth/l2cap_core.c
 +++ b/net/bluetooth/l2cap_core.c
-@@ -676,8 +676,6 @@ void l2cap_chan_del(struct l2cap_chan *chan, int err)
- 		skb_queue_purge(&chan->tx_q);
+@@ -652,7 +652,7 @@ void l2cap_chan_del(struct l2cap_chan *chan, int err)
+ 	if (test_bit(CONF_NOT_COMPLETE, &chan->conf_state))
+ 		return;
+ 
+-	switch(chan->mode) {
++	switch (chan->mode) {
+ 	case L2CAP_MODE_BASIC:
  		break;
- 	}
--
--	return;
+ 
+@@ -7770,7 +7770,8 @@ static struct l2cap_conn *l2cap_conn_add(struct hci_conn *hcon)
+ 	return conn;
  }
- EXPORT_SYMBOL_GPL(l2cap_chan_del);
+ 
+-static bool is_valid_psm(u16 psm, u8 dst_type) {
++static bool is_valid_psm(u16 psm, u8 dst_type)
++{
+ 	if (!psm)
+ 		return false;
  
 -- 
 2.8.1
