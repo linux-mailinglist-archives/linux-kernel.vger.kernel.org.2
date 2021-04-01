@@ -2,102 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB7C435191C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0B87351816
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237294AbhDARvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:51:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57240 "EHLO
+        id S236208AbhDARn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:43:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234810AbhDARkV (ORCPT
+        with ESMTP id S234452AbhDARhn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:40:21 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A82FC08EA76
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 06:30:34 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1lRxP6-0007mM-Fy; Thu, 01 Apr 2021 15:30:32 +0200
-Subject: Re: [PATCH v1 0/3] KEYS: trusted: Introduce support for NXP
- CAAM-based trusted keys
-To:     Richard Weinberger <richard@nod.at>,
-        Sumit Garg <sumit.garg@linaro.org>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        horia geanta <horia.geanta@nxp.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        aymen sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        davem <davem@davemloft.net>,
-        James Bottomley <jejb@linux.ibm.com>,
-        kernel <kernel@pengutronix.de>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        david <david@sigma-star.at>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        "open list, ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        LSM <linux-security-module@vger.kernel.org>
-References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
- <CAFLxGvzWLje+_HFeb+hKNch4U1f5uypVUOuP=QrEPn_JNM+scg@mail.gmail.com>
- <ca2a7c17-3ed0-e52f-2e2f-c0f8bbe10323@pengutronix.de>
- <CAFLxGvwNomKOo3mQLMxYGDA8T8zN=Szpo2q5jrp4D1CaMHydWA@mail.gmail.com>
- <CAFA6WYO29o73nSg4ikU9cyaOr0kpaXFJpcGLGmFLgjKQWchcEg@mail.gmail.com>
- <1666035815.140054.1617283065549.JavaMail.zimbra@nod.at>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <ea261e53-8f5d-ac52-f3b9-7f2db4532244@pengutronix.de>
-Date:   Thu, 1 Apr 2021 15:30:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Thu, 1 Apr 2021 13:37:43 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E43B0C08EA7B
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 06:30:36 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id c4so2153581qkg.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 06:30:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=w/7ssEDMUVD4QlYKgBNJoPZ/Vwpdfp7p9SjtiE2HkVw=;
+        b=W+UTAUw+g6a1Plj/cURzd01NfugXhFMhp/aCzakOwDQduKQDrdrhO2WSp8U7ct03if
+         nRXnd8lqUvyKe1lFdnCSFrZD/96GhrkvfZ645xfS0tBX8UpkhDrof5joth6ixU7iOuA2
+         Is/+RK5tJ0Cu42vcARGXUviWPFWGZ+er26s5Y+KqB78x34n9WlbicjIYb6NKvgsrDrsS
+         sc9T+Pxq12aRj0wO6xcnrWIi1JmEssEg6MipVRx/NVsPe7v9dbG8NeNNLqrpmkxLuV80
+         ZCELs+XTBlo/7PyqylMHVXLf15wzvCqurfYGKuyl4vuoolxyGSNLdPfNt2BZge/u1tH0
+         RSgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=w/7ssEDMUVD4QlYKgBNJoPZ/Vwpdfp7p9SjtiE2HkVw=;
+        b=FJ3UNCxNYsR0B9KBTvn7AFJey2thJGypHsmxkNWEb6OkaN3YQgjJLijLhexSaIOmv3
+         jEUmLuUyaOs2ycr4kiVst1RMGPzIfvszJKBJnLAyPZKgsorxVrQmSfSGTdcBzSxjEhg/
+         V2uOhcMl3wca4lAAxwnSghn8gt6H6VYLQjr0a+lGCy6ace0Qb/1MRBC0F++6S7uJ1arc
+         GXIUGVl1MY6RLOWzN6oKHM+SlNkvNJeSSaMPSZjnihD0dinV1DCrznksF1BAeGdaXqrH
+         gmbrgStz10Vd+TAs8VD78gim4cgEXLtabB0l/hBUwrmLhINUtN7RCdDO5r7sv+XjT/N1
+         nzsg==
+X-Gm-Message-State: AOAM530HFBVw25WpofCqDgK/tB3e+lSPS5Wz5+kQgBDfjIahsp1uLw38
+        FyTYCPIr7bwKJo5AQGjsISXPVg==
+X-Google-Smtp-Source: ABdhPJwY/Erz6f9mFV6feM+OIMmzbcrd0Oem+ltCCxeD8d8BAt0sMjxB8TtGsmIhiYyPHtNa/an8xQ==
+X-Received: by 2002:a37:596:: with SMTP id 144mr8617287qkf.387.1617283836177;
+        Thu, 01 Apr 2021 06:30:36 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id x7sm3413511qtp.10.2021.04.01.06.30.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 06:30:35 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lRxP8-006knq-LW; Thu, 01 Apr 2021 10:30:34 -0300
+Date:   Thu, 1 Apr 2021 10:30:34 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christoph Hellwig <hch@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org
+Subject: Re: [PATCH v6 00/27] Memory Folios
+Message-ID: <20210401133034.GF2710221@ziepe.ca>
+References: <20210331184728.1188084-1-willy@infradead.org>
+ <20210401070537.GB1363493@infradead.org>
+ <20210401112656.GA351017@casper.infradead.org>
+ <20210401122803.GB2710221@ziepe.ca>
+ <20210401125201.GD351017@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <1666035815.140054.1617283065549.JavaMail.zimbra@nod.at>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401125201.GD351017@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Richard, Sumit,
-
-On 01.04.21 15:17, Richard Weinberger wrote:
-> Sumit,
+On Thu, Apr 01, 2021 at 01:52:01PM +0100, Matthew Wilcox wrote:
+> On Thu, Apr 01, 2021 at 09:28:03AM -0300, Jason Gunthorpe wrote:
+> > On Thu, Apr 01, 2021 at 12:26:56PM +0100, Matthew Wilcox wrote:
+> > > On Thu, Apr 01, 2021 at 08:05:37AM +0100, Christoph Hellwig wrote:
+> > > > On Wed, Mar 31, 2021 at 07:47:01PM +0100, Matthew Wilcox (Oracle) wrote:
+> > > > >  - Mirror members of struct page (for pagecache / anon) into struct folio,
+> > > > >    so (eg) you can use folio->mapping instead of folio->page.mapping
+> > > > 
+> > > > Eww, why?
+> > > 
+> > > So that eventually we can rename page->mapping to page->_mapping and
+> > > prevent the bugs from people doing page->mapping on a tail page.  eg
+> > > https://lore.kernel.org/linux-mm/alpine.LSU.2.11.2103102214170.7159@eggly.anvils/
+> > 
+> > Is that gcc structure layout randomization stuff going to be a problem
+> > here?
+> > 
+> > Add some 
+> >   static_assert(offsetof(struct folio,..) == offsetof(struct page,..))
+> > 
+> > tests to force it?
 > 
-> ----- Ursprüngliche Mail -----
->> Von: "Sumit Garg" <sumit.garg@linaro.org>
->> IIUC, this would require support for multiple trusted keys backends at
->> runtime but currently the trusted keys subsystem only supports a
->> single backend which is selected via kernel module parameter during
->> boot.
->>
->> So the trusted keys framework needs to evolve to support multiple
->> trust sources at runtime but I would like to understand the use-cases
->> first. IMO, selecting the best trust source available on a platform
->> for trusted keys should be a one time operation, so why do we need to
->> have other backends available at runtime as well?
-> 
-> I thought about devices with a TPM-Chip and CAAM.
-> IMHO allowing only one backend at the same time is a little over simplified. 
+> You sound like the kind of person who hasn't read patch 1.
 
-It is, but I'd rather leave this until it's actually needed.
-What can be done now is adopting a format for the exported keys that would
-make this extension seamless in future.
+Yes, I missed this hunk :)
 
-Cheers,
-Ahmad
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Jason
