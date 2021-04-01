@@ -2,80 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E87913511A9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E4A13511B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233782AbhDAJOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 05:14:24 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:63675 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233080AbhDAJOB (ORCPT
+        id S233854AbhDAJO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 05:14:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233830AbhDAJOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 05:14:01 -0400
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 01 Apr 2021 02:14:01 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 01 Apr 2021 02:13:59 -0700
-X-QCInternal: smtphost
-Received: from c-skakit-linux.ap.qualcomm.com (HELO c-skakit-linux.qualcomm.com) ([10.242.51.242])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 01 Apr 2021 14:43:36 +0530
-Received: by c-skakit-linux.qualcomm.com (Postfix, from userid 2344709)
-        id E86784A4C; Thu,  1 Apr 2021 14:43:34 +0530 (IST)
-From:   satya priya <skakit@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, kgunda@codeaurora.org,
-        satya priya <skakit@codeaurora.org>
-Subject: [PATCH V2 5/5] arm64: dts: sc7280: Include PMIC DT files for sc7280
-Date:   Thu,  1 Apr 2021 14:43:16 +0530
-Message-Id: <1617268396-1837-6-git-send-email-skakit@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1617268396-1837-1-git-send-email-skakit@codeaurora.org>
-References: <1617268396-1837-1-git-send-email-skakit@codeaurora.org>
+        Thu, 1 Apr 2021 05:14:30 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BED7EC061788;
+        Thu,  1 Apr 2021 02:14:29 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id y32so1158119pga.11;
+        Thu, 01 Apr 2021 02:14:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bE+3StyieI+JnnmidrTP6v/tlTUOVerVAIsvH6KU4Fo=;
+        b=tsaEXYOZNKbUuCLjcv6dTYHbFF8L64sGeLkKR/qXoCwopd4JIm6/oxbtyG02U6MLQc
+         oTRSCtiJwK5ZiAqLV1Vicebu9tI4GmAf6Yqb0u37N1PYVOIJtauJEIzwbPNrKCvmH9SX
+         4CQx6UtAOsq6nP+J2Q6vmEn0gVASQ+mSGJ9WIgYU/RMIoNIRQyLsEglSYCEZRF3P6+9/
+         KlMpXkMzmHV4zcyJOJ5J5+ciVZ5+Uv1pyVoLF8/AxBvsFXNje0iNjmJDcHeKhn/onjxp
+         jKsOEkdAZzfhOvSxS3T6pHNqJfm5RhWn6iP1jC6DiKJu+TbEuWBTVatGviaYdV8Lawd7
+         /Fgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bE+3StyieI+JnnmidrTP6v/tlTUOVerVAIsvH6KU4Fo=;
+        b=PS2pvtNn6+MWsSzJ+HZaBcIxcN7oWj08x2WFQn1oBSyTg2lsrz8ilv6/KozAHOqJlv
+         ASQiNht/F0a5h+aFlnwpYtytSNLUZ/HlbCfX3rX28HKDcI3SAQKEiKU0Tuy15uAQB5Nr
+         8sef+7oGIaM6C9rMYApav5QdMZqtzhHo/usenyxOiYZuecHQHTNOAch9WYmcYOFBJtoa
+         aZq95BIjARXnrnJxPilNZbx966Wxa2GFnRgr3mbj+3V2xxZ0/ZTSW3GeYKa3HeBI1w8u
+         soNZxBpbBs2NCjBB4CdOYFbGhPQjO1L7VoTFEeg1UhiQzIZ7E4IdAKvVZKwr21qqLK6G
+         uy6A==
+X-Gm-Message-State: AOAM5328uVYB6AutDKrmXlVh1TnIuoW/y5RTlPUKiLu1eYS1Avf5iqNE
+        g2kUOMRPw5HnTivetX8F/OWUjtCP0l8+iYWXnTI4SikgXcE=
+X-Google-Smtp-Source: ABdhPJybehL8R1uULhOes3o60kx0G6pc+GWY3/3tKxi4VnLNBbrCgIvHyDBkgSsRRYQKjZMXfDuUiB73snt/DkEHpjc=
+X-Received: by 2002:a63:3e4b:: with SMTP id l72mr6538577pga.203.1617268468685;
+ Thu, 01 Apr 2021 02:14:28 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210401003153.97325-1-yury.norov@gmail.com>
+In-Reply-To: <20210401003153.97325-1-yury.norov@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 1 Apr 2021 12:14:12 +0300
+Message-ID: <CAHp75VdzRXPsQ7Jvivm5UU+mfkgQ_0rmnegp04v-v9fwrjdrqg@mail.gmail.com>
+Subject: Re: [PATCH v6 00/12] lib/find_bit: fast path for small bitmaps
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux-SH <linux-sh@vger.kernel.org>,
+        Alexey Klimov <aklimov@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Include pm7325, pm8350c, pmk8350 and pmr735a DT files. Also
-add thermal-zones node.
+On Thu, Apr 1, 2021 at 3:36 AM Yury Norov <yury.norov@gmail.com> wrote:
+>
+> Bitmap operations are much simpler and faster in case of small bitmaps
+> which fit into a single word. In linux/bitmap.c we have a machinery that
+> allows compiler to replace actual function call with a few instructions
+> if bitmaps passed into the function are small and their size is known at
+> compile time.
+>
+> find_*_bit() API lacks this functionality; but users will benefit from it
+> a lot. One important example is cpumask subsystem when
+> NR_CPUS <= BITS_PER_LONG.
 
-Signed-off-by: satya priya <skakit@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7280-idp.dts | 4 ++++
- arch/arm64/boot/dts/qcom/sc7280.dtsi    | 3 +++
- 2 files changed, 7 insertions(+)
+Cool, thanks!
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-index 950ecb2..01cadd1 100644
---- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-@@ -8,6 +8,10 @@
- /dts-v1/;
- 
- #include "sc7280.dtsi"
-+#include "pm7325.dtsi"
-+#include "pm8350c.dtsi"
-+#include "pmk8350.dtsi"
-+#include "pmr735a.dtsi"
- 
- / {
- 	model = "Qualcomm Technologies, Inc. sc7280 IDP platform";
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 39cf0be..0f4fd33 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -605,4 +605,7 @@
- 			     <GIC_PPI 11 IRQ_TYPE_LEVEL_LOW>,
- 			     <GIC_PPI 10 IRQ_TYPE_LEVEL_LOW>;
- 	};
-+
-+	thermal_zones: thermal-zones {
-+	};
- };
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
+I guess it's assumed to go via Andrew's tree.
 
+But after that since you are about to be a maintainer of this, I think
+it would make sense to send PRs directly to Linus. I would recommend
+creating an official tree (followed by an update in the MAINTAINERS)
+and connecting it to Linux next (usually done by email to Stephen).
+
+
+> v6 is mostly a resend. The only change comparing to v5 is a fix of
+> small_const_nbits() synchronization patch.
+>
+> v1: https://www.spinics.net/lists/kernel/msg3804727.html
+> v2: https://www.spinics.net/lists/linux-m68k/msg16945.html
+> v3: https://www.spinics.net/lists/kernel/msg3837020.html
+> v4: https://patchwork.kernel.org/project/linux-sh/cover/20210316015424.1999082-1-yury.norov@gmail.com/
+> v5: https://lore.kernel.org/linux-arch/20210321215457.588554-1-yury.norov@gmail.com/T/
+> v6: - sync small_const_nbits() properly (patch 6).
+>     - Rasmus' ack added.
+>
+> Yury Norov (12):
+>   tools: disable -Wno-type-limits
+>   tools: bitmap: sync function declarations with the kernel
+>   tools: sync BITMAP_LAST_WORD_MASK() macro with the kernel
+>   arch: rearrange headers inclusion order in asm/bitops for m68k and sh
+>   lib: extend the scope of small_const_nbits() macro
+>   tools: sync small_const_nbits() macro with the kernel
+>   lib: inline _find_next_bit() wrappers
+>   tools: sync find_next_bit implementation
+>   lib: add fast path for find_next_*_bit()
+>   lib: add fast path for find_first_*_bit() and find_last_bit()
+>   tools: sync lib/find_bit implementation
+>   MAINTAINERS: Add entry for the bitmap API
+>
+>  MAINTAINERS                             |  16 ++++
+>  arch/m68k/include/asm/bitops.h          |   6 +-
+>  arch/sh/include/asm/bitops.h            |   5 +-
+>  include/asm-generic/bitops/find.h       | 108 +++++++++++++++++++++---
+>  include/asm-generic/bitops/le.h         |  38 ++++++++-
+>  include/asm-generic/bitsperlong.h       |  12 +++
+>  include/linux/bitmap.h                  |   8 --
+>  include/linux/bitops.h                  |  12 ---
+>  lib/find_bit.c                          |  68 ++-------------
+>  tools/include/asm-generic/bitops/find.h |  85 +++++++++++++++++--
+>  tools/include/asm-generic/bitsperlong.h |   3 +
+>  tools/include/linux/bitmap.h            |  18 ++--
+>  tools/lib/bitmap.c                      |   4 +-
+>  tools/lib/find_bit.c                    |  56 +++++-------
+>  tools/scripts/Makefile.include          |   1 +
+>  15 files changed, 284 insertions(+), 156 deletions(-)
+>
+> --
+> 2.25.1
+>
+
+
+--
+With Best Regards,
+Andy Shevchenko
