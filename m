@@ -2,190 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F9C5350F92
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82B4A350F99
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233757AbhDAGyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 02:54:23 -0400
-Received: from mga11.intel.com ([192.55.52.93]:28103 "EHLO mga11.intel.com"
+        id S233779AbhDAGzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 02:55:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233541AbhDAGxs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 02:53:48 -0400
-IronPort-SDR: gQ8hhkUcOeuzsAeiZdY/npEBmIJ3HUYdD6MUaHNTWKbmWjmu6sIolf1NDXFX2LX0XZPKkynNno
- 2dNJwK9Fg8fw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="188910843"
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="188910843"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 23:53:48 -0700
-IronPort-SDR: Yj/Au5qPCiWlxsR9nbljXtkFOS9V/BD39BckyMZTZZLuDUQVbeptjJyvWOK4uy2mfnrPtSF+vp
- HCJZywlQhuvQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="517218725"
-Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 31 Mar 2021 23:53:46 -0700
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Guenter Roeck <linux@roeck-us.net>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 6/6] usb: typec: Link all ports during connector registration
-Date:   Thu,  1 Apr 2021 09:53:47 +0300
-Message-Id: <20210401065347.4010-7-heikki.krogerus@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210401065347.4010-1-heikki.krogerus@linux.intel.com>
-References: <20210401065347.4010-1-heikki.krogerus@linux.intel.com>
+        id S233774AbhDAGye (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 02:54:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 038B661057;
+        Thu,  1 Apr 2021 06:54:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617260074;
+        bh=olBbX+eEb1nBYZbDd0ck5A12mgL8uVtqeDAVawW24dQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Sc1VRMiQyANJhKGyqJErYjYUOSRK1lkiI9lw0K9FTavjnfuy1uzHTRrEVy9ULzQ8s
+         nWSBhJvWwfa2oAH8glI+AxZ7UtgSS5n+aHny8NhuSW4QQ0iaoycw+OvekaV6K3+KFA
+         Zpag93h+B/WpiFCFRzWt8RXH9IrGJTEFUWbsbjB4=
+Date:   Thu, 1 Apr 2021 08:54:31 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Hassan Shahbazi <h.shahbazi.git@gmail.com>
+Cc:     daniel.vetter@ffwll.ch, jirislaby@kernel.org,
+        yepeilin.cs@gmail.com, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fix NULL pointer deference crash
+Message-ID: <YGVuJ1R02GdYdM5p@kroah.com>
+References: <20210331163425.8092-1-h.shahbazi.git@gmail.com>
+ <YGSyFgeNd7gfsbR6@kroah.com>
+ <20210401062154.5evjajj64r4tjseh@gentoo>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401062154.5evjajj64r4tjseh@gentoo>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The connectors may be registered after the ports, so the
-"connector" links need to be created for the ports also when
-ever a new connector gets registered.
+On Thu, Apr 01, 2021 at 09:21:54AM +0300, Hassan Shahbazi wrote:
+> On Wed, Mar 31, 2021 at 07:32:06PM +0200, Greg KH wrote:
+> > On Wed, Mar 31, 2021 at 07:34:29PM +0300, Hassan Shahbazi wrote:
+> > > The patch has fixed a NULL pointer deference crash in hiding the cursor. It 
+> > > is verified by syzbot patch tester.
+> > > 
+> > > Reported by: syzbot
+> > > https://syzkaller.appspot.com/bug?id=defb47bf56e1c14d5687280c7bb91ce7b608b94b
+> > > 
+> > > Signed-off-by: Hassan Shahbazi <h.shahbazi.git@gmail.com>
+> > > ---
+> > >  drivers/video/fbdev/core/fbcon.c | 5 +++--
+> > >  1 file changed, 3 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
+> > > index 44a5cd2f54cc..ee252d1c43c6 100644
+> > > --- a/drivers/video/fbdev/core/fbcon.c
+> > > +++ b/drivers/video/fbdev/core/fbcon.c
+> > > @@ -1333,8 +1333,9 @@ static void fbcon_cursor(struct vc_data *vc, int mode)
+> > >  
+> > >  	ops->cursor_flash = (mode == CM_ERASE) ? 0 : 1;
+> > >  
+> > > -	ops->cursor(vc, info, mode, get_color(vc, info, c, 1),
+> > > -		    get_color(vc, info, c, 0));
+> > > +	if (ops && ops->cursor)
+> > 
+> > As ops obviously is not NULL here (you just used it on the line above),
+> > why are you checking it again?
+> 
+> Yes, that's right. I will remove that check and will submit a new patch.
+> 
+> 
+> > And what makes curser be NULL here?  How can that happen?
+> 
+> Honestly, I don't know. I reproduced the crash on my local, followed the
+> stack trace, and then changed the line to avoid the crash. If you think this
+> patch is not the best solution, I can drop it and investigate more to find
+> the root cause.
 
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
----
- drivers/usb/typec/class.c       |  9 +++--
- drivers/usb/typec/class.h       |  4 +--
- drivers/usb/typec/port-mapper.c | 62 +++++++++++++++++++++++++++++++--
- 3 files changed, 68 insertions(+), 7 deletions(-)
+Finding the root cause would be good to do here, so that we can
+potentially fix that if it is needed.
 
-diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
-index ff199e2d26c7b..f1c2d823c6509 100644
---- a/drivers/usb/typec/class.c
-+++ b/drivers/usb/typec/class.c
-@@ -1601,7 +1601,6 @@ static void typec_release(struct device *dev)
- 	ida_destroy(&port->mode_ids);
- 	typec_switch_put(port->sw);
- 	typec_mux_put(port->mux);
--	free_pld(port->pld);
- 	kfree(port->cap);
- 	kfree(port);
- }
-@@ -2027,7 +2026,9 @@ struct typec_port *typec_register_port(struct device *parent,
- 		return ERR_PTR(ret);
- 	}
- 
--	port->pld = get_pld(&port->dev);
-+	ret = typec_link_ports(port);
-+	if (ret)
-+		dev_warn(&port->dev, "failed to create symlinks (%d)\n", ret);
- 
- 	return port;
- }
-@@ -2041,8 +2042,10 @@ EXPORT_SYMBOL_GPL(typec_register_port);
-  */
- void typec_unregister_port(struct typec_port *port)
- {
--	if (!IS_ERR_OR_NULL(port))
-+	if (!IS_ERR_OR_NULL(port)) {
-+		typec_unlink_ports(port);
- 		device_unregister(&port->dev);
-+	}
- }
- EXPORT_SYMBOL_GPL(typec_unregister_port);
- 
-diff --git a/drivers/usb/typec/class.h b/drivers/usb/typec/class.h
-index 52294f7020a8b..aef03eb7e1523 100644
---- a/drivers/usb/typec/class.h
-+++ b/drivers/usb/typec/class.h
-@@ -79,7 +79,7 @@ extern const struct device_type typec_port_dev_type;
- extern struct class typec_mux_class;
- extern struct class typec_class;
- 
--void *get_pld(struct device *dev);
--void free_pld(void *pld);
-+int typec_link_ports(struct typec_port *connector);
-+void typec_unlink_ports(struct typec_port *connector);
- 
- #endif /* __USB_TYPEC_CLASS__ */
-diff --git a/drivers/usb/typec/port-mapper.c b/drivers/usb/typec/port-mapper.c
-index 5bee7a97242fe..fae736eb0601e 100644
---- a/drivers/usb/typec/port-mapper.c
-+++ b/drivers/usb/typec/port-mapper.c
-@@ -34,7 +34,7 @@ static int acpi_pld_match(const struct acpi_pld_info *pld1,
- 	return 0;
- }
- 
--void *get_pld(struct device *dev)
-+static void *get_pld(struct device *dev)
- {
- #ifdef CONFIG_ACPI
- 	struct acpi_pld_info *pld;
-@@ -53,7 +53,7 @@ void *get_pld(struct device *dev)
- #endif
- }
- 
--void free_pld(void *pld)
-+static void free_pld(void *pld)
- {
- #ifdef CONFIG_ACPI
- 	ACPI_FREE(pld);
-@@ -217,3 +217,61 @@ void typec_unlink_port(struct device *port)
- 	class_for_each_device(&typec_class, NULL, port, port_match_and_unlink);
- }
- EXPORT_SYMBOL_GPL(typec_unlink_port);
-+
-+static int each_port(struct device *port, void *connector)
-+{
-+	struct port_node *node;
-+	int ret;
-+
-+	node = create_port_node(port);
-+	if (IS_ERR(node))
-+		return PTR_ERR(node);
-+
-+	if (!connector_match(connector, node)) {
-+		remove_port_node(node);
-+		return 0;
-+	}
-+
-+	ret = link_port(to_typec_port(connector), node);
-+	if (ret) {
-+		remove_port_node(node->pld);
-+		return ret;
-+	}
-+
-+	get_device(connector);
-+
-+	return 0;
-+}
-+
-+int typec_link_ports(struct typec_port *con)
-+{
-+	int ret = 0;
-+
-+	con->pld = get_pld(&con->dev);
-+	if (!con->pld)
-+		return 0;
-+
-+	ret = usb_for_each_port(&con->dev, each_port);
-+	if (ret)
-+		typec_unlink_ports(con);
-+
-+	return ret;
-+}
-+
-+void typec_unlink_ports(struct typec_port *con)
-+{
-+	struct port_node *node;
-+	struct port_node *tmp;
-+
-+	mutex_lock(&con->port_list_lock);
-+
-+	list_for_each_entry_safe(node, tmp, &con->port_list, list) {
-+		__unlink_port(con, node);
-+		remove_port_node(node);
-+		put_device(&con->dev);
-+	}
-+
-+	mutex_unlock(&con->port_list_lock);
-+
-+	free_pld(con->pld);
-+}
--- 
-2.30.2
+thanks,
 
+greg k-h
