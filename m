@@ -2,98 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2468350E3A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 06:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93256350E41
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 06:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232864AbhDAErN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 00:47:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhDAEqk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 00:46:40 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 521A0C0613E6;
-        Wed, 31 Mar 2021 21:46:40 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id z8so763953ljm.12;
-        Wed, 31 Mar 2021 21:46:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zjqdiooQd5/01txoaSk7jE08J1uiZ+F+O8QxpLK+ei4=;
-        b=XnpEJG2HT1OMn2+AW9X47ZWsDL892/KS0v5ic9jdz4wRnh+vIMiqMLm9Es5Hw8x4Oc
-         0d2x5OQtKpp9iIWaGYSy/qT2/XopLkZ5f+PttxFU2c7SZxB2VJeRVbOg6iStAVY7s3fh
-         YaqNLYTgCAoUfpS6sEUj1KLUN25w8499BmKqcxyXW/b3O3NscwUxzM+CebuGykG09Gmy
-         9dBfybyE+jBVQhMHpesHzwOJDS0NttuNkAklHbujUltLDRqxBVjF1BAHkmdQ8nw0OqY9
-         oWp75R4dLQdMbsvPlLxPrd7+QzO3S4moqQMcAeFagW8p6hjIzEVCWT3NZYf/LpAa/yZF
-         c+sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zjqdiooQd5/01txoaSk7jE08J1uiZ+F+O8QxpLK+ei4=;
-        b=pMJm67BoLIiD08qvHYJd2M07L5t5qJiziLKcNP2TFv1SKDh7NHUde5az8QC1Io2iV1
-         4H1vXMqYXHOh/zOUBphMg+GTvSb677hx8L2mC/+IOJxoYsVe8gXLpNvV4Gl/rT6B4Gg+
-         FmfYT/x1KrPFMMLOO1pV/wYJMSxa+J7IUlnCFTeVimbqLO1ay5w0CsmOQZkv5d9Af7oZ
-         yX3ymeGDTp7Gbxzb75lHxe/WJmRPAnSHJxV7VhopZK/scEWLtCqDiWrVv0xdqYrx497S
-         euU3DlL7UCQas6sXQKJCY6IcxF0sDD49KusDKNyqYiDP4/1PW5nBcQFK+FcqmCfK4m8j
-         nAxw==
-X-Gm-Message-State: AOAM5315/84beJ9eUDn7JsV7ACzY34VHITw10UiH0QrtUK6AwSN4pCwv
-        SVWkmW93KfULbTJJE0lutaA=
-X-Google-Smtp-Source: ABdhPJyz3NEQm9Q8izBmRjhDMCSUIjXsftQO8zVzOyEVy91PGj04o6ewrh7dbAE90v/qJhdLaTcr5w==
-X-Received: by 2002:a2e:8159:: with SMTP id t25mr4263398ljg.437.1617252398843;
-        Wed, 31 Mar 2021 21:46:38 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.229.149])
-        by smtp.gmail.com with ESMTPSA id f8sm482754ljn.1.2021.03.31.21.46.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 21:46:38 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     stefan@datenfreihafen.org, alex.aring@gmail.com,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
+        id S229819AbhDAEwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 00:52:41 -0400
+Received: from mga09.intel.com ([134.134.136.24]:58121 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229850AbhDAEwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 00:52:38 -0400
+IronPort-SDR: Q82hAnI764AJRElUUeHeqvKbM4X4D50f2MNnWXaarukMH0fP3bLtqQoBEls/w+EdR78T909Y9P
+ jVpGAOP6hhHw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="192251908"
+X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
+   d="scan'208";a="192251908"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 21:52:02 -0700
+IronPort-SDR: C2gODEKp7lo2dhuKBo4fiJCVkdGAOB+LzvNwkC7FGJCP6KK/LJ2ef4DrNtSudevkcLfTkqAhd+
+ pg3XBfO4UfkA==
+X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
+   d="scan'208";a="412496407"
+Received: from sjard-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.174.17])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 21:52:01 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
         linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+28a246747e0a465127f3@syzkaller.appspotmail.com
-Subject: [PATCH] drivers: net: fix memory leak in atusb_probe
-Date:   Thu,  1 Apr 2021 07:46:24 +0300
-Message-Id: <20210401044624.19017-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [PATCH v5 1/1] x86/tdx: Handle MWAIT, MONITOR and WBINVD
+Date:   Wed, 31 Mar 2021 21:51:30 -0700
+Message-Id: <2d097239a74ff1eb80653cfff1f1e16b0211e60e.1617252428.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210401042436.GJ1285835@tassilo.jf.intel.com>
+References: <20210401042436.GJ1285835@tassilo.jf.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot reported memory leak in atusb_probe()[1].
-The problem was in atusb_alloc_urbs().
-Since urb is anchored, we need to release the reference
-to correctly free the urb
+When running as a TDX guest, there are a number of existing,
+privileged instructions that do not work. If the guest kernel
+uses these instructions, the hardware generates a #VE.
 
-backtrace:
-    [<ffffffff82ba0466>] kmalloc include/linux/slab.h:559 [inline]
-    [<ffffffff82ba0466>] usb_alloc_urb+0x66/0xe0 drivers/usb/core/urb.c:74
-    [<ffffffff82ad3888>] atusb_alloc_urbs drivers/net/ieee802154/atusb.c:362 [inline][2]
-    [<ffffffff82ad3888>] atusb_probe+0x158/0x820 drivers/net/ieee802154/atusb.c:1038 [1]
+You can find the list of unsupported instructions in Intel
+Trust Domain Extensions (Intel® TDX) Module specification,
+sec 9.2.2 and in Guest-Host Communication Interface (GHCI)
+Specification for Intel TDX, sec 2.4.1.
+   
+To prevent TD guest from using these unsupported instructions,
+following measures are adapted:
+   
+1. For MWAIT/MONITOR instructions, support for these
+instructions are already disabled by TDX module (SEAM).
+So CPUID flags for these instructions should be in disabled
+state. Also, just to be sure that these instructions are
+disabled, forcefully unset X86_FEATURE_MWAIT CPU cap in OS.
+       
+2. For WBINVD instruction, we use audit to find the code that
+uses this instruction and disable them for TD.
 
-Reported-by: syzbot+28a246747e0a465127f3@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+After the above mentioned preventive measures, if TD guests still
+execute these instructions, add appropriate warning messages in #VE
+handler.
+
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
 ---
- drivers/net/ieee802154/atusb.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ieee802154/atusb.c b/drivers/net/ieee802154/atusb.c
-index 0dd0ba915ab9..23ee0b14cbfa 100644
---- a/drivers/net/ieee802154/atusb.c
-+++ b/drivers/net/ieee802154/atusb.c
-@@ -365,6 +365,7 @@ static int atusb_alloc_urbs(struct atusb *atusb, int n)
- 			return -ENOMEM;
- 		}
- 		usb_anchor_urb(urb, &atusb->idle_urbs);
-+		usb_free_urb(urb);
- 		n--;
- 	}
- 	return 0;
+Changes since v4:
+ * Fixed commit log and comments as per Dave's comments
+ * Used WARN_ONCE for MWAIT/MONITOR #VE.
+ * Removed X86_FEATURE_MWAIT suppression code.
+
+Changes since v3:
+ * WARN user if SEAM does not disable MONITOR/MWAIT instruction.
+ * Fix the commit log and comments to address review comments from
+   from Dave & Sean.
+
+Changes since v2:
+ * Added BUG() for WBINVD, WARN for MONITOR instructions.
+ * Fixed comments as per Dave's review.
+
+Changes since v1:
+ * Added WARN() for MWAIT #VE exception.
+
+Changes since previous series:
+ * Suppressed MWAIT feature as per Andi's comment.
+ * Added warning debug log for MWAIT #VE exception.
+
+ arch/x86/kernel/tdx.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+index e936b2f88bf6..9bc84caf4096 100644
+--- a/arch/x86/kernel/tdx.c
++++ b/arch/x86/kernel/tdx.c
+@@ -362,6 +362,22 @@ int tdg_handle_virtualization_exception(struct pt_regs *regs,
+ 	case EXIT_REASON_EPT_VIOLATION:
+ 		ve->instr_len = tdg_handle_mmio(regs, ve);
+ 		break;
++	case EXIT_REASON_WBINVD:
++		/*
++		 * WBINVD is not supported inside TDX guests. All in-
++		 * kernel uses should have been disabled.
++		 */
++		pr_err("TD Guest used unsupported WBINVD instruction\n");
++		BUG();
++		break;
++	case EXIT_REASON_MONITOR_INSTRUCTION:
++	case EXIT_REASON_MWAIT_INSTRUCTION:
++		/*
++		 * Something in the kernel used MONITOR or MWAIT despite
++		 * X86_FEATURE_MWAIT being cleared for TDX guests.
++		 */
++		WARN_ONCE(1, "TD Guest used unsupported MWAIT/MONITOR instruction\n");
++		break;
+ 	default:
+ 		pr_warn("Unexpected #VE: %d\n", ve->exit_reason);
+ 		return -EFAULT;
 -- 
-2.30.2
+2.25.1
 
