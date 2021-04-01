@@ -2,121 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 491DD351422
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 13:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 194CF351425
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 13:04:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233925AbhDALDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 07:03:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:36788 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229612AbhDALDL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 07:03:11 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A88BD6E;
-        Thu,  1 Apr 2021 04:03:10 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A619F3F694;
-        Thu,  1 Apr 2021 04:03:06 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 12:03:01 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Thierry Reding <treding@nvidia.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh@kernel.org>, Will Deacon <will@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Bharat Kumar Gogada <bharatku@xilinx.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH v3 03/14] PCI: rcar: Convert to MSI domains
-Message-ID: <20210401110301.GA31407@lpieralisi>
-References: <20210330151145.997953-1-maz@kernel.org>
- <20210330151145.997953-4-maz@kernel.org>
- <20210401101957.GA30653@lpieralisi>
- <87y2e2p9wk.wl-maz@kernel.org>
+        id S233834AbhDALEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 07:04:14 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:52181 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234000AbhDALEC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 07:04:02 -0400
+Received: from mail-ot1-f42.google.com ([209.85.210.42]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1M5PVb-1lQYCr46bN-001UKe; Thu, 01 Apr 2021 13:04:01 +0200
+Received: by mail-ot1-f42.google.com with SMTP id h6-20020a0568300346b02901b71a850ab4so1742097ote.6;
+        Thu, 01 Apr 2021 04:04:00 -0700 (PDT)
+X-Gm-Message-State: AOAM5332uRNNpVLBqeGcHCgl4CPMAH6cKgNq5iUjXyhyAEPDMO8sJOEH
+        PBaeAPI0mpMSyVL6ShLUwCgp9ZUlzlMT1GTitUg=
+X-Google-Smtp-Source: ABdhPJzv7NfJJM5P4rtmBV6imKoE6SXOGcuNPsyG7xm5vTrhAebddjzZDciuJMsX9IJPq79khP0o2GXRH+qVT+juje4=
+X-Received: by 2002:a05:6830:148c:: with SMTP id s12mr6614473otq.251.1617275039517;
+ Thu, 01 Apr 2021 04:03:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87y2e2p9wk.wl-maz@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210223061830.1913700-1-daniel@0x0f.com> <20210223061830.1913700-2-daniel@0x0f.com>
+ <1614108850.540354.4116103.nullmailer@robh.at.kernel.org> <CAFr9PX=h2JPdAwjYS2849ufH=wnxSti2Dj60fbq4bg8b8=xy_g@mail.gmail.com>
+In-Reply-To: <CAFr9PX=h2JPdAwjYS2849ufH=wnxSti2Dj60fbq4bg8b8=xy_g@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 1 Apr 2021 13:03:42 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1L62YT1WUxmmfLNmvERo7DbeVwfCHCxuKvxs7Uap+iXg@mail.gmail.com>
+Message-ID: <CAK8P3a1L62YT1WUxmmfLNmvERo7DbeVwfCHCxuKvxs7Uap+iXg@mail.gmail.com>
+Subject: Re: [PATCH 1/8] dt-bindings: clk: mstar msc313 cpupll binding description
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     Rob Herring <robh@kernel.org>, SoC Team <soc@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Willy Tarreau <w@1wt.eu>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:VYITO51LBE9r9PCcrCD8PAJtMuvCJtiQ2yotVDhuUgxbaS6ogPD
+ K+omwmuiJtgYAxermfB5znfB+aAlZeqDNkeY/rqSfRjcjMJs5bXk+yRyxpgut1FgCpQnTIo
+ R4+4zD9cmOC4CAa0CVtnvha17jS5efA58K1S9tqXxRwKdjXvKabcXMGC/QkWo5zTVvAxjN0
+ tExHTxZbz9BIMtSJm2erQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:zRn54HoKq6I=:v79/lefLgMBPzWuAVUpQqi
+ SkB5xaungZs1NOZECnXq0moEiHqVwPLvcaiNfLxkhqns3VhD26eggo4R1PjgypbjdIYWsgzDq
+ yHepV8HuZHFzBvQ1ujDIqgelCqAx4dEfbnSU2VTb2+ZBasv/PfoW1amqL+p4UIgxEfKyvleL8
+ Vlh7lgIjOtjuZuoncu3laK0sCSApsxcpW56Oq4B9K5m8w1tZafLyt/sTMKUwy9h83XnnbQ8yR
+ 6U+r20DselenS63vh3efm0Z25EYKZKhsOykIvoCQ7UBsgUX5kz0NYV2vEZaxdKnLVrpVjbwj/
+ a1NhAbP9L1o+lFXUwTorOMEjXYpjZ+ClH8vwWxT4ecsfFXKjWbxFK5uZN+3vkUgCYyt8utQQ6
+ Bj1+BHMVs9gbKDa9znS3pPGuRo/cnZZ/ltljZ14DfOQRcdVDjVeXyV6xVJ04vmLHPmMoRak4t
+ /4HP919OpB3hm31LRraIvZgDIsJ7a0M=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 11:38:19AM +0100, Marc Zyngier wrote:
-> On Thu, 01 Apr 2021 11:19:57 +0100,
-> Lorenzo Pieralisi <lorenzo.pieralisi@arm.com> wrote:
-> > 
-> > On Tue, Mar 30, 2021 at 04:11:34PM +0100, Marc Zyngier wrote:
-> > 
-> > [...]
-> > 
-> > > +static void rcar_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
-> > > +{
-> > > +	struct rcar_msi *msi = irq_data_get_irq_chip_data(data);
-> > > +	unsigned long pa = virt_to_phys(msi);
-> > >  
-> > > -	hwirq = rcar_msi_alloc_region(msi, nvec);
-> > > -	if (hwirq < 0)
-> > > -		return -ENOSPC;
-> > > +	/* Use the msi structure as the PA for the MSI doorbell */
-> > > +	msg->address_lo = lower_32_bits(pa);
-> > > +	msg->address_hi = upper_32_bits(pa);
-> > 
-> > I don't think this change is aligned with the previous patch (is it ?),
-> > the PA address we are using here is different from the one programmed
-> > into the controller registers - either that or I am missing something,
-> > please let me know.
-> 
-> Err. You are right. This looks like a bad case of broken conflict
-> resolution on my part.
-> 
-> The following snippet should fix it. Let me know if you want me to
-> resend the whole thing or whether you are OK with applying this by
-> hand.
+On Fri, Feb 26, 2021 at 12:31 PM Daniel Palmer <daniel@0x0f.com> wrote:
+>
+> Hi Rob's bot
+>
+> On Wed, 24 Feb 2021 at 04:34, Rob Herring <robh@kernel.org> wrote:
+> > dtschema/dtc warnings/errors:
+> > Documentation/devicetree/bindings/clock/mstar,msc313-cpupll.example.dts:19:18: fatal error: dt-bindings/clock/mstar-msc313-mpll.h: No such file or directory
+> >    19 |         #include <dt-bindings/clock/mstar-msc313-mpll.h>
+> >       |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > compilation terminated.
+> > make[1]: *** [scripts/Makefile.lib:344: Documentation/devicetree/bindings/clock/mstar,msc313-cpupll.example.dt.yaml] Error 1
+> > make[1]: *** Waiting for unfinished jobs....
+> > make: *** [Makefile:1370: dt_binding_check] Error 2
+>
+> Looks like I sent this too early. I will try again later.
 
-I will apply it and merge the whole series into -next, thanks for
-implementing it !
+I found this is still in patchwork as not merged, and I have not
+seen a replacement. Marking all eight patches as 'changes requested' now,
+please resend.
 
-Lorenzo
-
-> Thanks,
-> 
-> 	M.
-> 
-> diff --git a/drivers/pci/controller/pcie-rcar-host.c b/drivers/pci/controller/pcie-rcar-host.c
-> index f7331ad0d6dc..765cf2b45e24 100644
-> --- a/drivers/pci/controller/pcie-rcar-host.c
-> +++ b/drivers/pci/controller/pcie-rcar-host.c
-> @@ -573,11 +573,10 @@ static int rcar_msi_set_affinity(struct irq_data *d, const struct cpumask *mask,
->  static void rcar_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
->  {
->  	struct rcar_msi *msi = irq_data_get_irq_chip_data(data);
-> -	unsigned long pa = virt_to_phys(msi);
-> +	struct rcar_pcie *pcie = &msi_to_host(msi)->pcie;
->  
-> -	/* Use the msi structure as the PA for the MSI doorbell */
-> -	msg->address_lo = lower_32_bits(pa);
-> -	msg->address_hi = upper_32_bits(pa);
-> +	msg->address_lo = rcar_pci_read_reg(pcie, PCIEMSIALR) & ~MSIFE;
-> +	msg->address_hi = rcar_pci_read_reg(pcie, PCIEMSIAUR);
->  	msg->data = data->hwirq;
->  }
->  
-> 
-> -- 
-> Without deviation from the norm, progress is not possible.
+         Arnd
