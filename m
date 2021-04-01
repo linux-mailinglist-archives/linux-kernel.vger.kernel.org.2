@@ -2,116 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FF5E350E5E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 07:17:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED17E350E63
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 07:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232874AbhDAFRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 01:17:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60856 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230291AbhDAFRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 01:17:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C54160698;
-        Thu,  1 Apr 2021 05:16:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617254220;
-        bh=2mRDIp06P0j/bB8232tnYtSW3E01K7ZZc1Nw02ZWyvY=;
+        id S233036AbhDAFTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 01:19:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230291AbhDAFSy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 01:18:54 -0400
+Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D1AC0613E6;
+        Wed, 31 Mar 2021 22:18:54 -0700 (PDT)
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20::7c6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id EFF316F;
+        Wed, 31 Mar 2021 22:18:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1617254333;
+        bh=fzknu6DQH+qziW2FyNdVu9seQuTeZSZKGJbOYsjJd1Y=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eANJakmGRxZDb+Xkpg421mz30JzRtYNFWUnykPf8kp/sZKoEOtEErPBGB2HpWyXqx
-         t92s4r9KhaYXa6eTo3TIyafa1BXwR1XenEht3RXQlSQf3csya55JuOiqJclmYP1KVg
-         v/buf82YL6FnQpARpGkTeDBAO96lXob+GzD9MA0Y=
-Date:   Thu, 1 Apr 2021 07:16:56 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
-        Adam Nichols <adam@grimm-co.com>,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] sysfs: Unconditionally use vmalloc for buffer
-Message-ID: <YGVXSFMlvX4RQI8n@kroah.com>
-References: <20210401022145.2019422-1-keescook@chromium.org>
+        b=ILgz/PYefVLlO5ToxdjPA90uL4x7NGH8HYCX4cbRw9WuUzfxcwsk/us21w/YGCTcc
+         qTbDTzihV8oxLE/XzKydxbiMEFLcH3EBHawzjx1ih63tMdolMjxe7bPGKTwBWHp3G7
+         d9Rp2wyzm8b6rTyOf2APU3/e8by/XqMimHs9w350=
+Date:   Thu, 1 Apr 2021 00:18:51 -0500
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Jeremy Kerr <jk@ozlabs.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] drivers/tty/serial/8250: add DT property for
+ aspeed vuart sirq polarity
+Message-ID: <YGVXuyqOyxc8kcQz@hatter.bewilderbeest.net>
+References: <YGOuhjD19SmjmQou@hatter.bewilderbeest.net>
+ <20210401005702.28271-1-zev@bewilderbeest.net>
+ <20210401005702.28271-3-zev@bewilderbeest.net>
+ <CACPK8XdPVf1WMmo8C8RJtd-1cH5qV9odEDhDUHWRiMOk=dQNtg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20210401022145.2019422-1-keescook@chromium.org>
+In-Reply-To: <CACPK8XdPVf1WMmo8C8RJtd-1cH5qV9odEDhDUHWRiMOk=dQNtg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 07:21:45PM -0700, Kees Cook wrote:
-> The sysfs interface to seq_file continues to be rather fragile
-> (seq_get_buf() should not be used outside of seq_file), as seen with
-> some recent exploits[1]. Move the seq_file buffer to the vmap area
-> (while retaining the accounting flag), since it has guard pages that
-> will catch and stop linear overflows. This seems justified given that
-> sysfs's use of seq_file already uses kvmalloc(), is almost always using
-> a PAGE_SIZE or larger allocation, has normally short-lived allocations,
-> and is not normally on a performance critical path.
-> 
-> Once seq_get_buf() has been removed (and all sysfs callbacks using
-> seq_file directly), this change can also be removed.
-> 
-> [1] https://blog.grimm-co.com/2021/03/new-old-bugs-in-linux-kernel.html
-> 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
-> v3:
-> - Limit to only sysfs (instead of all of seq_file).
-> v2: https://lore.kernel.org/lkml/20210315174851.622228-1-keescook@chromium.org/
-> v1: https://lore.kernel.org/lkml/20210312205558.2947488-1-keescook@chromium.org/
-> ---
->  fs/sysfs/file.c | 23 +++++++++++++++++++++++
->  1 file changed, 23 insertions(+)
-> 
-> diff --git a/fs/sysfs/file.c b/fs/sysfs/file.c
-> index 9aefa7779b29..70e7a450e5d1 100644
-> --- a/fs/sysfs/file.c
-> +++ b/fs/sysfs/file.c
-> @@ -16,6 +16,7 @@
->  #include <linux/mutex.h>
->  #include <linux/seq_file.h>
->  #include <linux/mm.h>
-> +#include <linux/vmalloc.h>
->  
->  #include "sysfs.h"
->  
-> @@ -32,6 +33,25 @@ static const struct sysfs_ops *sysfs_file_ops(struct kernfs_node *kn)
->  	return kobj->ktype ? kobj->ktype->sysfs_ops : NULL;
->  }
->  
-> +/*
-> + * To be proactively defensive against sysfs show() handlers that do not
-> + * correctly stay within their PAGE_SIZE buffer, use the vmap area to gain
-> + * the trailing guard page which will stop linear buffer overflows.
-> + */
-> +static void *sysfs_kf_seq_start(struct seq_file *sf, loff_t *ppos)
-> +{
-> +	struct kernfs_open_file *of = sf->private;
-> +	struct kernfs_node *kn = of->kn;
-> +
-> +	WARN_ON_ONCE(sf->buf);
+On Wed, Mar 31, 2021 at 11:15:44PM CDT, Joel Stanley wrote:
+>On Thu, 1 Apr 2021 at 00:57, Zev Weiss <zev@bewilderbeest.net> wrote:
+>>
+>> This provides a simple boolean to use instead of the deprecated
+>> aspeed,sirq-polarity-sense property.
+>>
+>> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+>> ---
+>>  drivers/tty/serial/8250/8250_aspeed_vuart.c | 3 +++
+>>  1 file changed, 3 insertions(+)
+>>
+>> diff --git a/drivers/tty/serial/8250/8250_aspeed_vuart.c b/drivers/tty/serial/8250/8250_aspeed_vuart.c
+>> index c33e02cbde93..e5ef9f957f9a 100644
+>> --- a/drivers/tty/serial/8250/8250_aspeed_vuart.c
+>> +++ b/drivers/tty/serial/8250/8250_aspeed_vuart.c
+>> @@ -482,6 +482,9 @@ static int aspeed_vuart_probe(struct platform_device *pdev)
+>>                 of_node_put(sirq_polarity_sense_args.np);
+>>         }
+>>
+>> +       if (of_property_read_bool(np, "aspeed,sirq-active-high"))
+>> +               aspeed_vuart_set_sirq_polarity(vuart, 1);
+>
+>This assumes the default is always low, so we don't need a property to
+>set it to that state?
+>
+>Would it make more sense to have the property describe if it's high or
+>low? (I'm happy for the answer to be "no", as we've gotten by for the
+>past few years without it).
+>
 
-How can buf ever not be NULL?  And if it is, we will leak memory in the
-next line so we shouldn't have _ONCE, we should always know, but not
-rebooting the machine would be nice.
+Yeah, that sounds like better way to approach it -- I think I'll 
+rearrange as Andrew suggested in 
+https://lore.kernel.org/openbmc/d66753ee-7db2-41e5-9fe5-762b1ab678bc@www.fastmail.com/
 
-> +	sf->buf = __vmalloc(kn->attr.size, GFP_KERNEL_ACCOUNT);
-> +	if (!sf->buf)
-> +		return ERR_PTR(-ENOMEM);
-> +	sf->size = kn->attr.size;
-> +
-> +	return NULL + !*ppos;
-> +}
+>This brings up another point. We already have the sysfs file for
+>setting the lpc address, from userspace. In OpenBMC land this can be
+>set with obmc-console-client (/etc/obmc-console.conf). Should we add
+>support to that application for setting the irq polarity too, and do
+>away with device tree descriptions?
+>
 
-Will this also cause the vmalloc fragmentation/abuse that others have
-mentioned as userspace can trigger this?
+I guess I might lean slightly toward keeping the DT description so that 
+if for whatever reason obmc-console-server flakes out and doesn't start 
+you're better positioned to try banging on /dev/ttyS* manually if you're 
+desperate.  Though I suppose that in turn might imply that I'm arguing 
+for adding DT properties for lpc_address and sirq too, and if you're 
+really that desperate you can just fiddle with sysfs anyway, so...shrug?  
+I could be convinced either way fairly easily.
 
-And what code frees it?
 
-thanks,
+Zev
 
-greg k-h
