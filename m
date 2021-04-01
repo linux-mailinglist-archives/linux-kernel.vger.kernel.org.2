@@ -2,89 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 577FB3519F6
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C26C351A84
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236038AbhDAR5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:57:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234474AbhDARmQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:42:16 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4186C08EA3C;
-        Thu,  1 Apr 2021 06:24:49 -0700 (PDT)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1lRxJU-0001yJ-EH; Thu, 01 Apr 2021 15:24:44 +0200
-Date:   Thu, 1 Apr 2021 15:24:44 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Richard Guy Briggs <rgb@redhat.com>
-Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Florian Westphal <fw@strlen.de>, twoerner@redhat.com,
-        tgraf@infradead.org, dan.carpenter@oracle.com,
-        Jones Desougi <jones.desougi+netfilter@gmail.com>
-Subject: Re: [PATCH v5] audit: log nftables configuration change events once
- per table
-Message-ID: <20210401132444.GX3158@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Richard Guy Briggs <rgb@redhat.com>,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@parisplace.org>, Steve Grubb <sgrubb@redhat.com>,
-        Florian Westphal <fw@strlen.de>, twoerner@redhat.com,
-        tgraf@infradead.org, dan.carpenter@oracle.com,
-        Jones Desougi <jones.desougi+netfilter@gmail.com>
-References: <28de34275f58b45fd4626a92ccae96b6d2b4e287.1616702731.git.rgb@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <28de34275f58b45fd4626a92ccae96b6d2b4e287.1616702731.git.rgb@redhat.com>
-Sender:  <n0-1@orbyte.nwl.cc>
+        id S235580AbhDASBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:01:46 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:43914 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234959AbhDARq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:46:56 -0400
+Received: from loongson.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxX8s0ymVgtFkDAA--.7389S2;
+        Thu, 01 Apr 2021 21:27:16 +0800 (CST)
+From:   Jinyang He <hejinyang@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH RFC 0/3] Some update for relocate
+Date:   Thu,  1 Apr 2021 21:27:10 +0800
+Message-Id: <1617283633-18598-1-git-send-email-hejinyang@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxX8s0ymVgtFkDAA--.7389S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxCF4kZw4DCr4ftr48Kw4Durg_yoWrAw48pw
+        s7Cw1xtw4vgrW8tw4fJryj9w13Jr95J3yYgFnrKryrJ3WagFn7Xr1SkrnxWrWUJryFqa9Y
+        934qgrWxCr4SyaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkYb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVW8JVWxJw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6ry8MxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
+        IY6xAIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+        jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IUY8nY7UUUUU==
+X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 01:38:59PM -0400, Richard Guy Briggs wrote:
-> Reduce logging of nftables events to a level similar to iptables.
-> Restore the table field to list the table, adding the generation.
-> 
-> Indicate the op as the most significant operation in the event.
-> 
-> A couple of sample events:
-> 
-> type=PROCTITLE msg=audit(2021-03-18 09:30:49.801:143) : proctitle=/usr/bin/python3 -s /usr/sbin/firewalld --nofork --nopid
-> type=SYSCALL msg=audit(2021-03-18 09:30:49.801:143) : arch=x86_64 syscall=sendmsg success=yes exit=172 a0=0x6 a1=0x7ffdcfcbe650 a2=0x0 a3=0x7ffdcfcbd52c items=0 ppid=1 pid=367 auid=unset uid=root gid=root euid=root suid=root fsuid=root egid=roo
-> t sgid=root fsgid=root tty=(none) ses=unset comm=firewalld exe=/usr/bin/python3.9 subj=system_u:system_r:firewalld_t:s0 key=(null)
-> type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.801:143) : table=firewalld:2 family=ipv6 entries=1 op=nft_register_table pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
-> type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.801:143) : table=firewalld:2 family=ipv4 entries=1 op=nft_register_table pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
-> type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.801:143) : table=firewalld:2 family=inet entries=1 op=nft_register_table pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
-> 
-> type=PROCTITLE msg=audit(2021-03-18 09:30:49.839:144) : proctitle=/usr/bin/python3 -s /usr/sbin/firewalld --nofork --nopid
-> type=SYSCALL msg=audit(2021-03-18 09:30:49.839:144) : arch=x86_64 syscall=sendmsg success=yes exit=22792 a0=0x6 a1=0x7ffdcfcbe650 a2=0x0 a3=0x7ffdcfcbd52c items=0 ppid=1 pid=367 auid=unset uid=root gid=root euid=root suid=root fsuid=root egid=r
-> oot sgid=root fsgid=root tty=(none) ses=unset comm=firewalld exe=/usr/bin/python3.9 subj=system_u:system_r:firewalld_t:s0 key=(null)
-> type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.839:144) : table=firewalld:3 family=ipv6 entries=30 op=nft_register_chain pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
-> type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.839:144) : table=firewalld:3 family=ipv4 entries=30 op=nft_register_chain pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
-> type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.839:144) : table=firewalld:3 family=inet entries=165 op=nft_register_chain pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
-> 
-> The issue was originally documented in
-> https://github.com/linux-audit/audit-kernel/issues/124
-> 
-> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+Two questions at least here,
 
-Tested this patch to make sure it eliminates the slowdown of
-iptables-nft when auditd is running. With this applied, neither
-iptables-nft-restore nor 'iptables-nft -F' show a significant
-difference in run-time between running or stopped auditd, at least for
-large rulesets. Individual calls suffer from added audit logging, but
-that's expected of course.
+1. cavium-octeon platform seems start with smp cpus, it may broke this function
+2. Commit 15ad838d281b ("[MIPS] Always do the ARC64_TWIDDLE_PC thing."), I don't
+   know whether broken it.
 
-Tested-by: Phil Sutter <phil@nwl.cc>
+So RFC to get helps. Thanks!
 
-Thanks, Phil
+And Patch3 can be tested by vmlinuz. e.g. Use the follow patch,
+
+diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
+index f93f72b..499b38d 100644
+--- a/arch/mips/boot/compressed/Makefile
++++ b/arch/mips/boot/compressed/Makefile
+@@ -28,12 +28,11 @@ KBUILD_CFLAGS := $(filter-out -march=loongson3a, $(KBUILD_CFLAGS)) -march=mips64
+ endif
+ 
+ KBUILD_CFLAGS := $(KBUILD_CFLAGS) -D__KERNEL__ -D__DISABLE_EXPORTS \
+-	-DBOOT_HEAP_SIZE=$(BOOT_HEAP_SIZE) -D"VMLINUX_LOAD_ADDRESS_ULL=$(VMLINUX_LOAD_ADDRESS)ull"
+-
+-KBUILD_AFLAGS := $(KBUILD_AFLAGS) -D__ASSEMBLY__ \
+-	-DBOOT_HEAP_SIZE=$(BOOT_HEAP_SIZE) \
++	-DBOOT_HEAP_SIZE=$(BOOT_HEAP_SIZE) -D"VMLINUX_LOAD_ADDRESS_ULL=$(VMLINUX_LOAD_ADDRESS)ull"	\
+ 	-DKERNEL_ENTRY=$(VMLINUX_ENTRY_ADDRESS)
+ 
++KBUILD_AFLAGS := $(KBUILD_AFLAGS) -D__ASSEMBLY__ -DBOOT_HEAP_SIZE=$(BOOT_HEAP_SIZE)
++
+ # Prevents link failures: __sanitizer_cov_trace_pc() is not linked in.
+ KCOV_INSTRUMENT		:= n
+ GCOV_PROFILE := n
+diff --git a/arch/mips/boot/compressed/decompress.c b/arch/mips/boot/compressed/decompress.c
+index 3d70d15..3f5cac9 100644
+--- a/arch/mips/boot/compressed/decompress.c
++++ b/arch/mips/boot/compressed/decompress.c
+@@ -85,9 +85,11 @@ void __stack_chk_fail(void)
+ 	error("stack-protector: Kernel stack is corrupted\n");
+ }
+ 
+-void decompress_kernel(unsigned long boot_heap_start)
++unsigned long decompress_kernel(unsigned long boot_heap_start)
+ {
+ 	unsigned long zimage_start, zimage_size;
++	unsigned long offset = 0x8000000;
++	unsigned long long load_address = VMLINUX_LOAD_ADDRESS_ULL + offset;
+ 
+ 	zimage_start = (unsigned long)(&__image_begin);
+ 	zimage_size = (unsigned long)(&__image_end) -
+@@ -105,12 +107,12 @@ void decompress_kernel(unsigned long boot_heap_start)
+ 
+ 	/* Display standard Linux/MIPS boot prompt */
+ 	puts("Uncompressing Linux at load address ");
+-	puthex(VMLINUX_LOAD_ADDRESS_ULL);
++	puthex(load_address);
+ 	puts("\n");
+ 
+ 	/* Decompress the kernel with according algorithm */
+ 	__decompress((char *)zimage_start, zimage_size, 0, 0,
+-		   (void *)VMLINUX_LOAD_ADDRESS_ULL, 0, 0, error);
++		   (void *)load_address, 0, 0, error);
+ 
+ 	if (IS_ENABLED(CONFIG_MIPS_RAW_APPENDED_DTB) &&
+ 	    fdt_magic((void *)&__appended_dtb) == FDT_MAGIC) {
+@@ -125,14 +127,16 @@ void decompress_kernel(unsigned long boot_heap_start)
+ 		image_size = ALIGN(image_size, STRUCT_ALIGNMENT);
+ 
+ 		puts("Copy device tree to address  ");
+-		puthex(VMLINUX_LOAD_ADDRESS_ULL + image_size);
++		puthex(load_address + image_size);
+ 		puts("\n");
+ 
+ 		/* copy dtb to where the booted kernel will expect it */
+-		memcpy((void *)VMLINUX_LOAD_ADDRESS_ULL + image_size,
++		memcpy((void *)load_address + image_size,
+ 		       __appended_dtb, dtb_size);
+ 	}
+ 
+ 	/* FIXME: should we flush cache here? */
+ 	puts("Now, booting the kernel...\n");
++
++	return (KERNEL_ENTRY + offset);
+ }
+diff --git a/arch/mips/boot/compressed/head.S b/arch/mips/boot/compressed/head.S
+index 5795d0a..36c5809 100644
+--- a/arch/mips/boot/compressed/head.S
++++ b/arch/mips/boot/compressed/head.S
+@@ -40,8 +40,7 @@
+ 	move	a1, s1
+ 	move	a2, s2
+ 	move	a3, s3
+-	PTR_LI	t9, KERNEL_ENTRY
+-	jalr	t9
++	jalr	v0
+ 
+ 3:
+ 	b	3b
+
+Jinyang He (3):
+  MIPS: relocate: Only compile relocs when CONFIG_RELOCATABLE is enabled
+  MIPS: relocate: Use CONFIG_RANDOMIZE_BASE to configure kaslr
+  MIPS: relocate: Add support to relocate kernel auto
+
+ arch/mips/Makefile                                 |   2 +
+ arch/mips/cavium-octeon/smp.c                      |   8 +-
+ arch/mips/generic/init.c                           |   4 +-
+ arch/mips/include/asm/bootinfo.h                   |   4 +-
+ .../asm/mach-cavium-octeon/kernel-entry-init.h     |   4 +-
+ arch/mips/kernel/Makefile                          |   2 +-
+ arch/mips/kernel/head.S                            | 155 ++++++++++++++++++++-
+ arch/mips/kernel/{relocate.c => kaslr.c}           |  15 --
+ 8 files changed, 165 insertions(+), 29 deletions(-)
+ rename arch/mips/kernel/{relocate.c => kaslr.c} (97%)
+
+-- 
+2.1.0
+
