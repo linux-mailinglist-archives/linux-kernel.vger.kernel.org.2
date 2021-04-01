@@ -2,75 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F6DC351F2D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA304351F33
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239925AbhDASzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:55:03 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:56662 "EHLO pegase1.c-s.fr"
+        id S236107AbhDASzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:55:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238157AbhDASrt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:47:49 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FBByB0VdQz9v3xx;
-        Thu,  1 Apr 2021 20:47:46 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 7t9lNGv2CQzp; Thu,  1 Apr 2021 20:47:46 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FBBy969xyz9v3xw;
-        Thu,  1 Apr 2021 20:47:45 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 29ADA8BB43;
-        Thu,  1 Apr 2021 20:47:46 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id zesb-6aN77SL; Thu,  1 Apr 2021 20:47:46 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9B5F58BB28;
-        Thu,  1 Apr 2021 20:47:45 +0200 (CEST)
-Subject: Re: [PATCH 0/1] use crc32 instead of md5 for hibernation e820
- integrity check
-To:     Chris von Recklinghausen <crecklin@redhat.com>, ardb@kernel.org,
-        simo@redhat.com, rafael@kernel.org, decui@microsoft.com,
-        linux-pm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210401122458.12663-1-crecklin@redhat.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <22595ae7-2ab5-2e6b-01d7-6b284dc8b0c2@csgroup.eu>
-Date:   Thu, 1 Apr 2021 20:47:21 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S239965AbhDASvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:51:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8966961002;
+        Thu,  1 Apr 2021 18:51:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617303076;
+        bh=fFtkA8Dsy21JzQGQdsJ49vAOC5IF+5fHEEy7tdMz18s=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=hO0tiQLT6zQHoO8yt3oDHF6RODIRLkKmOfR3NQnk89tfcn+Kyx7YjBLRKKNYrjSyX
+         kNpdTqVOJ+C8Y39CeiD4P07p0Ss5GOhRnvf9ighXAubwzhYJi6F9wMzwQNCnSegoCW
+         C1LLwWKnFYiHDJZl/h83eDij7kibUmGymeRDe4vkS6Z4YttIURTXJcOt/Ab3ZTk3aF
+         K4u256JP/EXPQ3B4hi563tELvv/ngwGD9zSJJo7dht8nnqqFNg2x+X4BodsSbvr+CR
+         iirGtgeP708FMngXg1SQJtPUi9XDuux2zyQtzhU/noUhxO6bXELygYwQynqdt4+sk1
+         KU28An0GrwDvQ==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 3F3C935237B2; Thu,  1 Apr 2021 11:51:16 -0700 (PDT)
+Date:   Thu, 1 Apr 2021 11:51:16 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] torture: Correctly fetch CPUs for kvm-build.sh with all
+ native language
+Message-ID: <20210401185116.GH2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210401132602.116352-1-frederic@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210401122458.12663-1-crecklin@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401132602.116352-1-frederic@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 01/04/2021 à 14:24, Chris von Recklinghausen a écrit :
-> Currently, suspend on x86_64 fails when FIPS mode is enabled because it uses md5
-> to generate a digest of the e820 region. MD5 is not FIPS compliant so an error
-> is reported and the suspend fails.
+On Thu, Apr 01, 2021 at 03:26:02PM +0200, Frederic Weisbecker wrote:
+> Grepping for "CPU" on lscpu output isn't always successful, depending
+> on the local language setting. As a result, the build can be aborted
+> early with:
 > 
-> MD5 is used only to create a digest to ensure integrity of the region, no actual
-> encryption is done. This patch set changes the integrity check to use crc32
-> instead of md5 since crc32 is available in both FIPS and non-FIPS modes.
-
-Why not put all those explanations in the patch itself ?
-
-Because text in the cover is lost, so a cover is not really usefull for a single patch.
-
+> 	"make: the '-j' option requires a positive integer argument"
 > 
-> Chris von Recklinghausen (1):
->    use crc32 instead of md5 for hibernation image integrity check
+> Prefer a more generic solution.
 > 
->   arch/x86/power/hibernate.c | 31 +++++++++++++++++--------------
->   1 file changed, 17 insertions(+), 14 deletions(-)
-> 
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+
+Good catch, applied, thank you!
+
+There is a similar construct in kvm-remote.sh, so I added a similar
+fix to your patch.
+
+But what about this in functions.sh?
+
+nt="`lscpu | grep '^NUMA node0' | sed -e 's/^[^,]*,\([0-9]*\),.*$/\1/'`"
+
+I am guessing that "node0" is human-language-independent, but is "NUMA"?
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit cf519a9b736cf7dcd47920065e4de8c1855b5532
+Author: Frederic Weisbecker <frederic@kernel.org>
+Date:   Thu Apr 1 15:26:02 2021 +0200
+
+    torture: Correctly fetch number of CPUs for non-English languages
+    
+    Grepping for "CPU" on lscpu output isn't always successful, depending
+    on the local language setting.  As a result, the build can be aborted
+    early with:
+    
+            "make: the '-j' option requires a positive integer argument"
+    
+    This commit therefore uses the human-language-independent approach
+    available via the getconf command, both in kvm-build.sh and in
+    kvm-remote.sh.
+    
+    Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-build.sh b/tools/testing/selftests/rcutorture/bin/kvm-build.sh
+index 55f4fc1..5ad973d 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-build.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-build.sh
+@@ -42,7 +42,7 @@ then
+ fi
+ 
+ # Tell "make" to use double the number of real CPUs on the build system.
+-ncpus="`lscpu | grep '^CPU(' | awk '{ print $2 }'`"
++ncpus="`getconf _NPROCESSORS_ONLN`"
+ make -j$((2 * ncpus)) $TORTURE_KMAKE_ARG > $resdir/Make.out 2>&1
+ retval=$?
+ if test $retval -ne 0 || grep "rcu[^/]*": < $resdir/Make.out | egrep -q "Stop|Error|error:|warning:" || egrep -q "Stop|Error|error:" < $resdir/Make.out
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-remote.sh b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
+index 0adaf26..92dd1a3 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
+@@ -136,7 +136,7 @@ chmod +x $T/bin/kvm-remote-*.sh
+ # Check first to avoid the need for cleanup for system-name typos
+ for i in $systems
+ do
+-	ncpus="`ssh $i lscpu | grep '^CPU(' | awk '{ print $2 }'`"
++	ncpus="`ssh $i getconf _NPROCESSORS_ONLN 2> /dev/null`"
+ 	echo $i: $ncpus CPUs " " `date` | tee -a "$oldrun/remote-log"
+ 	ret=$?
+ 	if test "$ret" -ne 0
