@@ -2,160 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D09E0351F37
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02ADB351F05
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236874AbhDAS4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:56:38 -0400
-Received: from mga05.intel.com ([192.55.52.43]:64255 "EHLO mga05.intel.com"
+        id S241241AbhDASv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:51:59 -0400
+Received: from mga14.intel.com ([192.55.52.115]:62290 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239226AbhDASy2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:54:28 -0400
-IronPort-SDR: FuP25OydwmxOHt5ft04yNJY8h19VCZz8PTpeNfPDIrhA6LSVNCjdPAbmnb6ekjJ7Tapyl2bhQX
- E84hPznSdtPw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="277494267"
+        id S237955AbhDASg3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:36:29 -0400
+IronPort-SDR: W3uH6gIrD5aKbYdCQCCesuz/PJLuYPYEuUfabTdzgLiO922GHWrP6YYa+kxTkjiGe66wR2pDv7
+ xorKR7GiB4Lg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="191788507"
 X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="277494267"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 11:34:57 -0700
-IronPort-SDR: KwSwaWBSIhCOyuwnE9NGHX67rxb1NL7OZFkpD94w6Ry8dIAVGJ5AiUXtNZe+AEmNc4VbdxfORX
- Ys646TBphLDg==
+   d="scan'208";a="191788507"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 11:34:59 -0700
+IronPort-SDR: JioM0Sj4VyscMKESqMCXUZ967wamiVnr5qKHzeazQa098ewbw65ZWDvck0Ud2p9YnZwZE1uz2l
+ KP6i84s581TA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="446192246"
+   d="scan'208";a="379420456"
 Received: from viggo.jf.intel.com (HELO localhost.localdomain) ([10.54.77.144])
-  by FMSMGA003.fm.intel.com with ESMTP; 01 Apr 2021 11:34:57 -0700
-Subject: [PATCH 00/10] [v7][RESEND] Migrate Pages in lieu of discard
+  by orsmga006.jf.intel.com with ESMTP; 01 Apr 2021 11:34:59 -0700
+Subject: [PATCH 01/10] mm/numa: node demotion data structure and lookup
 To:     linux-mm@kvack.org
 Cc:     linux-kernel@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        yang.shi@linux.alibaba.com, rientjes@google.com,
-        ying.huang@intel.com, dan.j.williams@intel.com, david@redhat.com,
-        osalvador@suse.de, weixugc@google.com
+        Dave Hansen <dave.hansen@linux.intel.com>, shy828301@gmail.com,
+        weixugc@google.com, rientjes@google.com, ying.huang@intel.com,
+        dan.j.williams@intel.com, david@redhat.com, osalvador@suse.de
 From:   Dave Hansen <dave.hansen@linux.intel.com>
-Date:   Thu, 01 Apr 2021 11:32:16 -0700
-Message-Id: <20210401183216.443C4443@viggo.jf.intel.com>
+Date:   Thu, 01 Apr 2021 11:32:18 -0700
+References: <20210401183216.443C4443@viggo.jf.intel.com>
+In-Reply-To: <20210401183216.443C4443@viggo.jf.intel.com>
+Message-Id: <20210401183218.E7C9CE24@viggo.jf.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm resending this because I forgot to cc the mailing lists on the
-post yesterday.  Sorry for the noise.  Please reply to this series.
 
-The full series is also available here:
+From: Dave Hansen <dave.hansen@linux.intel.com>
 
-	https://github.com/hansendc/linux/tree/automigrate-20210331
+Prepare for the kernel to auto-migrate pages to other memory nodes
+with a user defined node migration table. This allows creating single
+migration target for each NUMA node to enable the kernel to do NUMA
+page migrations instead of simply reclaiming colder pages. A node
+with no target is a "terminal node", so reclaim acts normally there.
+The migration target does not fundamentally _need_ to be a single node,
+but this implementation starts there to limit complexity.
 
-which also inclues some vm.zone_reclaim_mode sysctl ABI fixup
-prerequisites:
+If you consider the migration path as a graph, cycles (loops) in the
+graph are disallowed.  This avoids wasting resources by constantly
+migrating (A->B, B->A, A->B ...).  The expectation is that cycles will
+never be allowed.
 
-	https://github.com/hansendc/linux/commit/18daad8f0181a2da57cb43e595303c2ef5bd7b6e
-	https://github.com/hansendc/linux/commit/a873f3b6f250581072ab36f2735a3aa341e36705
-
-There are no major changes since the last post.
-
---
-
-We're starting to see systems with more and more kinds of memory such
-as Intel's implementation of persistent memory.
-
-Let's say you have a system with some DRAM and some persistent memory.
-Today, once DRAM fills up, reclaim will start and some of the DRAM
-contents will be thrown out.  Allocations will, at some point, start
-falling over to the slower persistent memory.
-
-That has two nasty properties.  First, the newer allocations can end
-up in the slower persistent memory.  Second, reclaimed data in DRAM
-are just discarded even if there are gobs of space in persistent
-memory that could be used.
-
-This set implements a solution to these problems.  At the end of the
-reclaim process in shrink_page_list() just before the last page
-refcount is dropped, the page is migrated to persistent memory instead
-of being dropped.
-
-While I've talked about a DRAM/PMEM pairing, this approach would
-function in any environment where memory tiers exist.
-
-This is not perfect.  It "strands" pages in slower memory and never
-brings them back to fast DRAM.  Huang Ying has follow-on work which
-repurposes autonuma to promote hot pages back to DRAM.
-
-This is also all based on an upstream mechanism that allows
-persistent memory to be onlined and used as if it were volatile:
-
-	http://lkml.kernel.org/r/20190124231441.37A4A305@viggo.jf.intel.com
-
-== Open Issues ==
-
- * Memory policies and cpusets that, for instance, restrict allocations
-   to DRAM can be demoted to PMEM whenever they opt in to this
-   new mechanism.  A cgroup-level API to opt-in or opt-out of
-   these migrations will likely be required as a follow-on.
- * Could be more aggressive about where anon LRU scanning occurs
-   since it no longer necessarily involves I/O.  get_scan_count()
-   for instance says: "If we have no swap space, do not bother
-   scanning anon pages"
-
---
-
- Documentation/admin-guide/sysctl/vm.rst |  12 +
- include/linux/migrate.h                 |  14 +-
- include/linux/swap.h                    |   3 +-
- include/linux/vm_event_item.h           |   2 +
- include/trace/events/migrate.h          |   3 +-
- include/uapi/linux/mempolicy.h          |   1 +
- mm/compaction.c                         |   3 +-
- mm/gup.c                                |   3 +-
- mm/internal.h                           |   5 +
- mm/memory-failure.c                     |   4 +-
- mm/memory_hotplug.c                     |   4 +-
- mm/mempolicy.c                          |   8 +-
- mm/migrate.c                            | 315 +++++++++++++++++++++++-
- mm/page_alloc.c                         |  11 +-
- mm/vmscan.c                             | 158 +++++++++++-
- mm/vmstat.c                             |   2 +
- 16 files changed, 520 insertions(+), 28 deletions(-)
-
---
-
-Changes since (automigrate-20210304):
- * Add ack/review tags
- * Remove duplicate synchronize_rcu() call
-
-Changes since (automigrate-20210122):
- * move from GFP_HIGHUSER -> GFP_HIGHUSER_MOVABLE since pages *are*
-   movable.
- * Separate out helpers that check for being able to relaim anonymous
-   pages versus being able to meaningfully scan the anon LRU.
-
-Changes since (automigrate-20200818):
- * Fall back to normal reclaim when demotion fails
- * Fix some compile issues, when page migration and NUMA are off
-
-Changes since (automigrate-20201007):
- * separate out checks for "can scan anon LRU" from "can actually
-   swap anon pages right now".  Previous series conflated them
-   and may have been overly aggressive scanning LRU
- * add MR_DEMOTION to tracepoint header
- * remove unnecessary hugetlb page check
-
-Changes since (https://lwn.net/Articles/824830/):
- * Use higher-level migrate_pages() API approach from Yang Shi's
-   earlier patches.
- * made sure to actually check node_reclaim_mode's new bit
- * disabled migration entirely before introducing RECLAIM_MIGRATE
- * Replace GFP_NOWAIT with explicit __GFP_KSWAPD_RECLAIM and
-   comment why we want that.
- * Comment on effects of that keep multiple source nodes from
-   sharing target nodes
-
-Cc: Yang Shi <yang.shi@linux.alibaba.com>
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Reviewed-by: Yang Shi <shy828301@gmail.com>
+Cc: Wei Xu <weixugc@google.com>
 Cc: David Rientjes <rientjes@google.com>
 Cc: Huang Ying <ying.huang@intel.com>
 Cc: Dan Williams <dan.j.williams@intel.com>
 Cc: David Hildenbrand <david@redhat.com>
 Cc: osalvador <osalvador@suse.de>
-Cc: Huang Ying <ying.huang@intel.com>
-Cc: Wei Xu <weixugc@google.com>
 
+--
+
+changes since 20200122:
+ * Make node_demotion[] __read_mostly
+
+changes in July 2020:
+ - Remove loop from next_demotion_node() and get_online_mems().
+   This means that the node returned by next_demotion_node()
+   might now be offline, but the worst case is that the
+   allocation fails.  That's fine since it is transient.
+---
+
+ b/mm/migrate.c |   17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+
+diff -puN mm/migrate.c~0006-node-Define-and-export-memory-migration-path mm/migrate.c
+--- a/mm/migrate.c~0006-node-Define-and-export-memory-migration-path	2021-03-31 15:17:10.734000264 -0700
++++ b/mm/migrate.c	2021-03-31 15:17:10.742000264 -0700
+@@ -1163,6 +1163,23 @@ out:
+ 	return rc;
+ }
+ 
++static int node_demotion[MAX_NUMNODES] __read_mostly =
++	{[0 ...  MAX_NUMNODES - 1] = NUMA_NO_NODE};
++
++/**
++ * next_demotion_node() - Get the next node in the demotion path
++ * @node: The starting node to lookup the next node
++ *
++ * @returns: node id for next memory node in the demotion path hierarchy
++ * from @node; NUMA_NO_NODE if @node is terminal.  This does not keep
++ * @node online or guarantee that it *continues* to be the next demotion
++ * target.
++ */
++int next_demotion_node(int node)
++{
++	return node_demotion[node];
++}
++
+ /*
+  * Obtain the lock on page, remove all ptes and migrate the page
+  * to the newly allocated page in newpage.
+_
