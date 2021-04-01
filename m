@@ -2,175 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5707B351EA1
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A1B351E19
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238007AbhDASoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:44:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37958 "EHLO
+        id S238578AbhDASeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:34:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236481AbhDASVf (ORCPT
+        with ESMTP id S238542AbhDASOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:21:35 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3651C02FEAE;
-        Thu,  1 Apr 2021 09:22:55 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id i81so2321000oif.6;
-        Thu, 01 Apr 2021 09:22:55 -0700 (PDT)
+        Thu, 1 Apr 2021 14:14:45 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19751C02FEAF
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 09:23:04 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so4959393pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 09:23:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tD+X9BuSKumVuODrS7ew+s56RfGVj55Vw8zUed5E1dQ=;
+        b=b0yftv4xYST/PHsMhQ7VQUcEa/nNBbEpF+RJLTdGj1yGdsIIOhVvznJPXhAKOgcgrx
+         HAGvwGO2hi88fQRtPCWLs1BpGDqSQ0qcLXjLzO8MlBG4jHriu3rrZlvA42wE8LNuX/Fr
+         4xdWlPmu2lcnYh2YC1ciLz4MPciden90dX/kioMhjaC/j8B/Dk7gjgOAzVq6bFsrKOvA
+         Rw45Ihhg7JDLF03Vng8Sk5QgEspPdJUA5DyyG67THT7pHBSQ46icHHGjcqhSzxPetv6O
+         3aXmunw+MHJIZS4VOWhQtBE9wh/bHozCc3KsuxBOZuV+qaR12u7c0dntFbqU1PF18eKr
+         WgpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VyiK3ga+MjpNx3ROsvcuMTu8ZgQYqAmDYD3HeeCO9E8=;
-        b=uQClKYOH5szUATdP/CSDB9c3xJsfgRrcieOVUg3c3Z/1xlyidFHkgVzowu2cf/Gufy
-         gw7GzjHFgtYkaVnjdJ7NSnKYYaGFWU1TuI2RnEdgt871nsN/JfrwQVqMlWQ6Fbian0D8
-         BKrdYI8TXBTXMxGR89FIAmxs/dadVUtc1JhK1QIHKNXVzTfjkiwsku5QTpUapRRmRTnQ
-         C1oAYTIpEJ9Gq1stbqANEuYT6j6xBr1fdr6qqHV8/QuA0X0d5mh/HoaHEHZQQ70z6ZeV
-         OSfODwliHI8cE4w4TQ0QhYZNCFS5N3YmGlWFsY1qZ+ff/5Pr9fUPww9cPZbGNkUBywEA
-         tDLA==
-X-Gm-Message-State: AOAM530Wour3fi0nIHeIBEDk6cGQ0NLN/8/78WO/C+WLI3FjSQ6+lQkw
-        wzAPBZUeipz2OiJygzWGiT8ikcAiAX/a1pZhMew=
-X-Google-Smtp-Source: ABdhPJytJr7gZPGY5G1tj1N5bsPNGF/1NWZnXDUz8yajq4Ho2WuQPTQSPZvFqMq2Onp+MZu3YOOOjEkWVGwB1kurl6s=
-X-Received: by 2002:aca:c4c5:: with SMTP id u188mr6587947oif.71.1617294175221;
- Thu, 01 Apr 2021 09:22:55 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tD+X9BuSKumVuODrS7ew+s56RfGVj55Vw8zUed5E1dQ=;
+        b=QNWIuK6CoWPBPQIhO7IpUdfwu9FOG05d6A6S2LarsOgcnF52I9sz4r33azEsdnQHkO
+         iK2IuXfXprsfngI75unvRJhugHbxl8cZTTAlFZVOnZFarxlE5OWTbcGx0aLXT7936CKk
+         Q57LVsB+mU6cbBT1vmHBpSvp/ziwEUk2Hz/hkqfV+aB0tsEtZqTEEYVqNchk/Bk4u6VL
+         7KvGwHxSYaluYauzwdSXDHvE5aOl6R+id/O7aHe2JKk+VhY6fnwFBpw+fm1C/Z08MEna
+         xF+O9AaTFh/tLfgkpSukchKnMJj2gey/3/s7b6WsnICnw+2M7Q/v2vk6IaPfrPA1lhzn
+         5jCg==
+X-Gm-Message-State: AOAM533y+82XKudLhdgEJ8BBlkGSwp8QUyYmawnAJ1/4lMZUgFFvJ4o4
+        fRl7ycYLHNCsnAmj94nVoN+dGA==
+X-Google-Smtp-Source: ABdhPJxA+80V8X8+S9LBr6ks6kcnWa3Io5Z5gpYddSyqtvTMFfjHXGTv/ayoHfoc+ROuWFYuNUqIUg==
+X-Received: by 2002:a17:90a:4005:: with SMTP id u5mr9648330pjc.6.1617294183436;
+        Thu, 01 Apr 2021 09:23:03 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id x3sm5781480pfn.181.2021.04.01.09.23.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 09:23:02 -0700 (PDT)
+Date:   Thu, 1 Apr 2021 16:22:59 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Yang Li <yang.lee@linux.alibaba.com>, pbonzini@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: x86: Fix potential memory access error
+Message-ID: <YGXzY5h1eCQj6aU0@google.com>
+References: <1617182122-112315-1-git-send-email-yang.lee@linux.alibaba.com>
+ <YGS6XS87HYJdVPFQ@google.com>
+ <87mtuis77m.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-References: <20210401122458.12663-1-crecklin@redhat.com> <20210401122458.12663-2-crecklin@redhat.com>
- <CAJZ5v0gCkhoKC_81WP6wdehZBYpEpmNhHwDygYawFdrWk3K6vg@mail.gmail.com>
-In-Reply-To: <CAJZ5v0gCkhoKC_81WP6wdehZBYpEpmNhHwDygYawFdrWk3K6vg@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 1 Apr 2021 18:22:43 +0200
-Message-ID: <CAJZ5v0gaawSNnB5V1WPR7Bj6HurGB9RmkgNN20uxF+iV+zikkA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] use crc32 instead of md5 for hibernation e820
- integrity check
-To:     Chris von Recklinghausen <crecklin@redhat.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>, simo@redhat.com,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87mtuis77m.fsf@vitty.brq.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 3:34 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Thu, Apr 1, 2021 at 2:25 PM Chris von Recklinghausen
-> <crecklin@redhat.com> wrote:
+On Thu, Apr 01, 2021, Vitaly Kuznetsov wrote:
+> Sean Christopherson <seanjc@google.com> writes:
+> 
+> > On Wed, Mar 31, 2021, Yang Li wrote:
+> >> Using __set_bit() to set a bit in an integer is not a good idea, since
+> >> the function expects an unsigned long as argument, which can be 64bit wide.
+> >> Coverity reports this problem as
+> >> 
+> >> High:Out-of-bounds access(INCOMPATIBLE_CAST)
+> >> CWE119: Out-of-bounds access to a scalar
+> >> Pointer "&vcpu->arch.regs_avail" points to an object whose effective
+> >> type is "unsigned int" (32 bits, unsigned) but is dereferenced as a
+> >> wider "unsigned long" (64 bits, unsigned). This may lead to memory
+> >> corruption.
+> >> 
+> >> /home/heyuan.shy/git-repo/linux/arch/x86/kvm/kvm_cache_regs.h:
+> >> kvm_register_is_available
+> >> 
+> >> Just use BIT instead.
 > >
-> > Suspend fails on a system in fips mode because md5 is used for the e820
-> > integrity check and is not available. Use crc32 instead.
+> > Meh, we're hosed either way.  Using BIT() will either result in undefined
+> > behavior due to SHL shifting beyond the size of a u64, or setting random bits
+> > if the truncated shift ends up being less than 63.
 > >
-> > Fixes: 62a03defeabd ("PM / hibernate: Verify the consistent of e820 memory map
-> >        by md5 digest")
-> > Signed-off-by: Chris von Recklinghausen <crecklin@redhat.com>
-> > ---
-> >  arch/x86/power/hibernate.c | 31 +++++++++++++++++--------------
-> >  1 file changed, 17 insertions(+), 14 deletions(-)
-> >
-> > diff --git a/arch/x86/power/hibernate.c b/arch/x86/power/hibernate.c
-> > index cd3914fc9f3d..6a3f4e32e49c 100644
-> > --- a/arch/x86/power/hibernate.c
-> > +++ b/arch/x86/power/hibernate.c
-> > @@ -55,31 +55,31 @@ int pfn_is_nosave(unsigned long pfn)
-> >  }
-> >
-> >
-> > -#define MD5_DIGEST_SIZE 16
-> > +#define CRC32_DIGEST_SIZE 16
-> >
-> >  struct restore_data_record {
-> >         unsigned long jump_address;
-> >         unsigned long jump_address_phys;
-> >         unsigned long cr3;
-> >         unsigned long magic;
-> > -       u8 e820_digest[MD5_DIGEST_SIZE];
-> > +       u8 e820_digest[CRC32_DIGEST_SIZE];
-> >  };
->
-> No.
->
-> CRC32 was used here before and it was deemed insufficient.
->
-> Please find a different way to address this issue.
+> 
+> A stupid question: why can't we just make 'regs_avail'/'regs_dirty'
+> 'unsigned long' and drop a bunch of '(unsigned long *)' casts? 
 
-Well, I guess I'm going to change my mind on this, so we can go with
-this patch, but please bump up RESTORE_MAGIC too.
+It wouldn't break anything, but it would create a weird situation where x86-64
+has more bits for tracking registers than i386.  Obviously not the end of the
+world, but it's also not clearly an improvement across the board.
 
-> > -#if IS_BUILTIN(CONFIG_CRYPTO_MD5)
-> > +#if IS_BUILTIN(CONFIG_CRYPTO_CRC32)
-> >  /**
-> > - * get_e820_md5 - calculate md5 according to given e820 table
-> > + * get_e820_crc32 - calculate crc32 according to given e820 table
-> >   *
-> >   * @table: the e820 table to be calculated
-> > - * @buf: the md5 result to be stored to
-> > + * @buf: the crc32 result to be stored to
-> >   */
-> > -static int get_e820_md5(struct e820_table *table, void *buf)
-> > +static int get_e820_crc32(struct e820_table *table, void *buf)
-> >  {
-> >         struct crypto_shash *tfm;
-> >         struct shash_desc *desc;
-> >         int size;
-> >         int ret = 0;
-> >
-> > -       tfm = crypto_alloc_shash("md5", 0, 0);
-> > +       tfm = crypto_alloc_shash("crc32", 0, 0);
-> >         if (IS_ERR(tfm))
-> >                 return -ENOMEM;
-> >
-> > @@ -107,24 +107,24 @@ static int get_e820_md5(struct e820_table *table, void *buf)
-> >
-> >  static int hibernation_e820_save(void *buf)
-> >  {
-> > -       return get_e820_md5(e820_table_firmware, buf);
-> > +       return get_e820_crc32(e820_table_firmware, buf);
-> >  }
-> >
-> >  static bool hibernation_e820_mismatch(void *buf)
-> >  {
-> >         int ret;
-> > -       u8 result[MD5_DIGEST_SIZE];
-> > +       u8 result[CRC32_DIGEST_SIZE];
-> >
-> > -       memset(result, 0, MD5_DIGEST_SIZE);
-> > +       memset(result, 0, CRC32_DIGEST_SIZE);
-> >         /* If there is no digest in suspend kernel, let it go. */
-> > -       if (!memcmp(result, buf, MD5_DIGEST_SIZE))
-> > +       if (!memcmp(result, buf, CRC32_DIGEST_SIZE))
-> >                 return false;
-> >
-> > -       ret = get_e820_md5(e820_table_firmware, result);
-> > +       ret = get_e820_crc32(e820_table_firmware, result);
-> >         if (ret)
-> >                 return true;
-> >
-> > -       return memcmp(result, buf, MD5_DIGEST_SIZE) ? true : false;
-> > +       return memcmp(result, buf, CRC32_DIGEST_SIZE) ? true : false;
-> >  }
-> >  #else
-> >  static int hibernation_e820_save(void *buf)
-> > @@ -134,7 +134,7 @@ static int hibernation_e820_save(void *buf)
-> >
-> >  static bool hibernation_e820_mismatch(void *buf)
-> >  {
-> > -       /* If md5 is not builtin for restore kernel, let it go. */
-> > +       /* If crc32 is not builtin for restore kernel, let it go. */
-> >         return false;
-> >  }
-> >  #endif
-> > @@ -160,6 +160,9 @@ int arch_hibernation_header_save(void *addr, unsigned int max_size)
-> >         rdr->jump_address = (unsigned long)restore_registers;
-> >         rdr->jump_address_phys = __pa_symbol(restore_registers);
-> >
-> > +       /* crc32 digest size is 4 but digest buffer size is 16 so zero it all */
-> > +       memset(rdr->e820_digest, 0, CRC32_DIGEST_SIZE);
-> > +
-> >         /*
-> >          * The restore code fixes up CR3 and CR4 in the following sequence:
-> >          *
-> > --
-> > 2.18.1
-> >
+We could do something like:
+
+  	DECLARE_BITMAP(regs_avail, NR_VCPU_TRACKED_REGS);
+	DECLARE_BITMAP(regs_dirty, NR_VCPU_TRACKED_REGS);
+
+but that would complicate the vendor code, e.g. vmx_register_cache_reset().
+
+The casting crud is quite contained, and likely isn't going to expand anytime
+soon.  So, at least for me, this is one of the few cases where I'm content to
+let sleeping dogs lie. :-)
