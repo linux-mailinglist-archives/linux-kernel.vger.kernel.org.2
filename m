@@ -2,116 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C2435192F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17F02351811
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234398AbhDARwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:52:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234857AbhDARkz (ORCPT
+        id S236051AbhDARnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:43:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43846 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234428AbhDARhW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:40:55 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C0DC0613B7;
-        Thu,  1 Apr 2021 05:07:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=va8qn5g4PgTK88LQPiudtRQop1hpvFRhQHbtOQww9PI=; b=pc69UnNrx8lT1fXY3IIJHGLjw9
-        q93oM03GXUqBzcTaPfdYZhCOlexLLekFjKV20iJgC2kpZ3X/EMoQT2BkQznw1mftNPHvZL+nT9S8N
-        JV0yQQULvZ/p1kdNmupujYDYg++7rEJ5/6TDBdzIxmLlfqeKAdiIKLq9WPhq5Ahr21SKuLvbu90PO
-        rIIg17XTaOT4Mpw2mAVD9iOrEod/ZmxexixoSZUcCfU5nXuN1S8B0JxPesH8jLS5Drxzq82mtKjlb
-        uDRep989/fepB+rbmYZtykGVXtL4knJKcE8bk5xGFYu3xReNDHJbnuQp3jvrWjuGayfswf01m1DKJ
-        oGagJI4w==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lRw6I-00669P-7s; Thu, 01 Apr 2021 12:07:04 +0000
-Date:   Thu, 1 Apr 2021 13:07:02 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org
-Subject: Re: [PATCH v5 00/27] Memory Folios
-Message-ID: <20210401120702.GB351017@casper.infradead.org>
-References: <20210320054104.1300774-1-willy@infradead.org>
- <YFja/LRC1NI6quL6@cmpxchg.org>
- <20210322184744.GU1719932@casper.infradead.org>
- <YFqH3B80Gn8pcPqB@cmpxchg.org>
- <20210324062421.GQ1719932@casper.infradead.org>
- <YF4eX/VBPLmontA+@cmpxchg.org>
- <20210329165832.GG351017@casper.infradead.org>
- <YGN8biqigvPP0SGN@cmpxchg.org>
- <20210330210929.GR351017@casper.infradead.org>
- <YGVUobKUMUtEy1PS@zeniv-ca.linux.org.uk>
+        Thu, 1 Apr 2021 13:37:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617298641;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aTM0m+T7HagwUJawH1QxhZKr0xo014VG1/6PrsDZwlc=;
+        b=O+hg/rXDUjXDxSVRw3+v8QYHeZYyqpJXTqmbxU3jjbnLEvnUd1pTvAY7O++DLkrlvzTDiq
+        1g2zGZoeYFp6iRzLDWpofNQo04xdufTcqe1jolwiryjcUM6nzek9rCx8kk6K4HZFnDa2v+
+        jwo07R9tNmqsNDBQdIGqL5cm1lv/fFc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-421-9D5ybMm_PiSVmnVMGRqGvQ-1; Thu, 01 Apr 2021 08:15:21 -0400
+X-MC-Unique: 9D5ybMm_PiSVmnVMGRqGvQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B0649801814;
+        Thu,  1 Apr 2021 12:15:19 +0000 (UTC)
+Received: from krava (unknown [10.40.193.98])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 0BA0B5C233;
+        Thu,  1 Apr 2021 12:15:16 +0000 (UTC)
+Date:   Thu, 1 Apr 2021 14:15:16 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Nicholas Fraser <nfraser@codeweavers.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Tan Xiaojun <tanxiaojun@huawei.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf data: export to JSON
+Message-ID: <YGW5VLOL4UVfNYUT@krava>
+References: <4687bbe5-4ff3-af3a-fcec-06d8bfe5591c@codeweavers.com>
+ <YFuC5ONRvAPKwtKX@krava>
+ <2d78b018-df5a-36cb-2f78-d3ca11bf9513@codeweavers.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YGVUobKUMUtEy1PS@zeniv-ca.linux.org.uk>
+In-Reply-To: <2d78b018-df5a-36cb-2f78-d3ca11bf9513@codeweavers.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 05:05:37AM +0000, Al Viro wrote:
-> On Tue, Mar 30, 2021 at 10:09:29PM +0100, Matthew Wilcox wrote:
+On Wed, Mar 31, 2021 at 06:38:16AM -0400, Nicholas Fraser wrote:
+> Hi Jiri,
 > 
-> > That's a very Intel-centric way of looking at it.  Other architectures
-> > support a multitude of page sizes, from the insane ia64 (4k, 8k, 16k, then
-> > every power of four up to 4GB) to more reasonable options like (4k, 32k,
-> > 256k, 2M, 16M, 128M).  But we (in software) shouldn't constrain ourselves
-> > to thinking in terms of what the hardware currently supports.  Google
-> > have data showing that for their workloads, 32kB is the goldilocks size.
-> > I'm sure for some workloads, it's much higher and for others it's lower.
-> > But for almost no workload is 4kB the right choice any more, and probably
-> > hasn't been since the late 90s.
+> Thanks for the review. I've addressed your suggestions; some notes are
+> below. I'll send a new patch.
 > 
-> Out of curiosity I looked at the distribution of file sizes in the
-> kernel tree:
-> 71455 files total
-> 0--4Kb		36702
-> 4--8Kb		11820
-> 8--16Kb		10066
-> 16--32Kb	6984
-> 32--64Kb	3804
-> 64--128Kb	1498
-> 128--256Kb	393
-> 256--512Kb	108
-> 512Kb--1Mb	35
-> 1--2Mb		25
-> 2--4Mb		5
-> 4--6Mb		7
-> 6--8Mb		4
-> 12Mb		2 
-> 14Mb		1
-> 16Mb		1
 > 
-> ... incidentally, everything bigger than 1.2Mb lives^Wshambles under
-> drivers/gpu/drm/amd/include/asic_reg/
-
-I'm just going to edit this table to add a column indicating ratio
-to previous size:
-
-> Page size	Footprint
-> 4Kb		1128Mb
-> 8Kb		1324Mb		1.17
-> 16Kb		1764Mb		1.33
-> 32Kb		2739Mb		1.55
-> 64Kb		4832Mb		1.76
-> 128Kb		9191Mb		1.90
-> 256Kb		18062Mb		1.96
-> 512Kb		35883Mb		1.98
-> 1Mb		71570Mb		1.994
-> 2Mb		142958Mb	1.997
+> On 2021-03-24 2:20 p.m., Jiri Olsa wrote:
+> > On Wed, Mar 24, 2021 at 09:06:50AM -0400, Nicholas Fraser wrote:
+> >> [...] We use this to import the data into a tool on Windows
+> >> where integrating perf or libbabeltrace is impractical.
+> > 
+> > hi,
+> > exciting ;-) and curious, which tool is that?
+> > 
 > 
-> So for kernel builds (as well as grep over the tree, etc.) uniform 2Mb pages
-> would be... interesting.
+> The tool is called gpuvis. The perf JSON parsing support is here:
+> 
+> https://github.com/ludocode/gpuvis
+> 
+> The idea is to be able to line up samples from perf with GPU trace events, so
+> you can do things like timebox all perf samples in a particular frame of
+> rendering.
 
-Yep, that's why I opted for a "start out slowly and let readahead tell me
-when to increase the page size" approach.
+I recall you did not add support for walltime clock,
+don't you need it to sync with other events?
 
-I think Johannes' real problem is that slab and page cache / anon pages
-are getting intermingled.  We could solve this by having slab allocate
-2MB pages from the page allocator and then split them up internally
-(so not all of that 2MB necessarily goes to a single slab cache, but all
-of that 2MB goes to some slab cache).
+> 
+> 
+> > we already have zstd support compiled in for compressing samples,
+> > should be easy to use it for compressing the output of this right
+> > away
+> 
+> This would require that apps that consume this integrate zstd as well. It's
+> simpler (both conceptually and from an integration standpoint) to just compress
+> on command-line if you need with whatever compressor you want. You can even do
+> this inline by writing to /dev/stdout, e.g.:
+> 
+>     perf data convert --to-json /dev/stdout --force | zstd > out.json.zstd
+> 
+> Since we're transferring to Windows, more likely we'd output the JSON and then
+> put it in a .zip container.
+> 
+> 
+
+ok
+
+> > I understand not supporting opts.all or opts.tod, but 'force'
+> > support means just assigning 'force' to struct perf_data
+> 
+> It's not clear to me what 'force' does on 'struct perf_data' since we're only
+> reading it. I assumed for data export it meant the output file should be
+> overwritten. I've made it do both in the replacement patch.
+> 
+
+it tells perf to skip ownership validation, perf will not
+open other user data file if it's not forced
+
+jirka
+
