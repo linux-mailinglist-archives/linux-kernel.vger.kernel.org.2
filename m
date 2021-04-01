@@ -2,112 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E496352084
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C9D6352089
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235570AbhDAUTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 16:19:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234496AbhDAUTT (ORCPT
+        id S235579AbhDAUVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 16:21:00 -0400
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:34678 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234496AbhDAUU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 16:19:19 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0276DC0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 13:19:19 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id u10so3550359lju.7
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 13:19:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EMacy08brvFfRUpYLeP+H4MOScmZa9E7wv4MmR/VBGg=;
-        b=eXfFVEjjROP1Q+nQ3NkaYjzuM9Uy4rJLC3deMgud30BeozKDTSpL6nRamRM0PHVQfY
-         Kpu+X9dwlQeGcGulc+bo8E/mzC/TYLCLXm68cUGY23E5PGb20HJJFdGYLzqi095Q3Wqs
-         wCc6FcPf5f5nXZg9IZ+LgxYIhmVuTgHFeRli0=
+        Thu, 1 Apr 2021 16:20:59 -0400
+Received: by mail-oi1-f174.google.com with SMTP id x207so3013663oif.1;
+        Thu, 01 Apr 2021 13:20:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EMacy08brvFfRUpYLeP+H4MOScmZa9E7wv4MmR/VBGg=;
-        b=U6mbTHWKfUTuXvRz6wW8NadLc5NrR/kTpwKC5+4SvvWa2Iyi9KoojEDQ/3EhlNLxSQ
-         bFxK7AdxRjz3QcCpQIgjhdNG2Y/lWLFcm6tGf2jv9VPjWgA/JryHoxZQ1/ZBoykbHDcj
-         813UuiAqGpjgMXbhEf7JfQ5Ojy+jWARZbBWXUxqtTVP9BKyXof4BY/u0EVjOy4j6Nfst
-         ZAZaVgp5tTEnqI0cWf3c07g/A+fNmL3cVfLUnRFVXHU44wgoS0KM/OtlowoVUz3HJ32D
-         zxok6VxFqs8udAZ7c3Uftnz9I6dDTQkFjyaPdtH35RPbZpVtza8Bj0V9PG2igJH4WiNX
-         1W0A==
-X-Gm-Message-State: AOAM532Cp9BRtF60MXhdCgu1MyGxqutAmwVXQGvcv5pfbgC9cQZ4K371
-        RAJfe+sR/xDHsmxmyDCbDtSk3CIhuqwX5A==
-X-Google-Smtp-Source: ABdhPJxK0W8Y993c8qKUTjkSpfwoKEn/QRd48/yXsIpqkKordBowAUW+yHB3CnPbfax3YwLn/cZJfA==
-X-Received: by 2002:a2e:b55a:: with SMTP id a26mr6271230ljn.297.1617308356974;
-        Thu, 01 Apr 2021 13:19:16 -0700 (PDT)
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
-        by smtp.gmail.com with ESMTPSA id d22sm657966lfg.160.2021.04.01.13.19.16
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Apr 2021 13:19:16 -0700 (PDT)
-Received: by mail-lf1-f54.google.com with SMTP id n138so4665935lfa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 13:19:16 -0700 (PDT)
-X-Received: by 2002:a19:ed03:: with SMTP id y3mr6332540lfy.377.1617308356006;
- Thu, 01 Apr 2021 13:19:16 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wcspT1L4njOmUk3kNinDGLJJyQmYO9IfUXHMGjOmchc=;
+        b=t80aklyFzMwRAdSRdindYeLkiQIo51JVrxWZilSVmU45Lcm//gmMnwDZgQqZYUq2PO
+         sa6RAVBFPpKPI68tizUe5fMi4LpmYfc37RShgoiWI1bbfQraXC9gJwLeiGqWw0aYtah/
+         LpKZzzWMvLH4FrJXZElWCG7aTkNldmURdXO9AYk5N/tJcrlhnC0N1kikezq30q1ZREsC
+         4epNkXBatrzBvScLzIPCTgKydW+NFONqZrRT5Xy75L00dba8BatVRNcjE6pKtcV2yZX0
+         cO65n5qh7v5f6cWY5Dwn8FUY0R6Pm9Sk9AjmHwuLBwRHW4P0MOf+lDn0S+8Cc2GJT9bW
+         RZcg==
+X-Gm-Message-State: AOAM530PPecGf60zRmwxMO9uYHUObW2eyM5HjcAkosttZYDd4fPjHtY4
+        EdjklED8EGdXOAOPNc+rle/3xfQtOw==
+X-Google-Smtp-Source: ABdhPJxSgHbdxE/ixaJPEKHjh0MqUdSxB7PgHMrhXuDd6DeB4sLEIkUcP/euJUM8nA8IUQBBb058zA==
+X-Received: by 2002:a54:4806:: with SMTP id j6mr7649267oij.15.1617308458832;
+        Thu, 01 Apr 2021 13:20:58 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id w23sm1306812oow.25.2021.04.01.13.20.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 13:20:58 -0700 (PDT)
+Received: (nullmailer pid 955677 invoked by uid 1000);
+        Thu, 01 Apr 2021 20:20:56 -0000
+Date:   Thu, 1 Apr 2021 15:20:56 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        alsa-devel <alsa-devel@alsa-project.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH v2 2/2] ASoC: dt-bindings: renesas, rsnd: Clear warning
+ 'ports' does not match any of the regexes
+Message-ID: <20210401202056.GA947212@robh.at.kernel.org>
+References: <20210331091616.2306-1-thunder.leizhen@huawei.com>
+ <20210331091616.2306-3-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-References: <20210331092711.2b23fcff@gandalf.local.home> <CAHk-=wjt9b7kxQ2J=aDNKbR1QBMB3Hiqb_hYcZbKsxGRSEb+gQ@mail.gmail.com>
- <CAHk-=whyMxheOqXAORt9a7JK9gc9eHTgCJ55Pgs4p=X3RrQubQ@mail.gmail.com> <20210401160710.45a7a9b8@gandalf.local.home>
-In-Reply-To: <20210401160710.45a7a9b8@gandalf.local.home>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 1 Apr 2021 13:18:59 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg_6JBGSiKtQp7CT99kFt2L5b1sbvs6YBTXJAWdPc8Hig@mail.gmail.com>
-Message-ID: <CAHk-=wg_6JBGSiKtQp7CT99kFt2L5b1sbvs6YBTXJAWdPc8Hig@mail.gmail.com>
-Subject: Re: [GIT PULL] ftrace: Check if pages were allocated before calling free_pages()
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210331091616.2306-3-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 1:07 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Wed, 31 Mar 2021 11:03:21 -0700
-> Linus Torvalds <torvalds@linux-foundation.org> wrote:
->
-> > @@ -6231,7 +6231,8 @@ static int ftrace_process_locs(struct module *mod,
-> >               if (!addr)
-> >                       continue;
-> >
-> > -             if (pg->index == pg->size) {
-> > +             end_offset = (pg->index+1) * sizeof(pg->records[0]);
-> > +             if (end_offset < PAGE_SIZE << pg->order) {
->
-> I believe that needs to be:
->
->         if (end_offset >= PAGE_SIZE << pg->order) {
+On Wed, Mar 31, 2021 at 05:16:16PM +0800, Zhen Lei wrote:
+> Currently, if there are more than two ports, or if there is only one port
+> but other properties(such as "#address-cells") is required, these ports
+> are placed under the "ports" node. So add the schema of property "ports".
 
-No, but the "<" should be ">". That was just a typo.
+A given binding should just use 'ports' or 'port' depending on it's 
+need. Supporting both forms is needless complexity.
 
-It's ok for end_offset to be at the edge. That's the "we filled the
-pages completely".
+> Otherwise, warnings similar to the following will be reported:
+> arch/arm64/boot/dts/renesas/r8a774a1-beacon-rzg2m-kit.dt.yaml: \
+> sound@ec500000: 'ports' does not match any of the regexes: \
+> '^rcar_sound,ctu$', '^rcar_sound,dai$', '^rcar_sound,dvc$', ...
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  Documentation/devicetree/bindings/sound/renesas,rsnd.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
+> index 384191ee497f534..a42992fa687d3f3 100644
+> --- a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
+> +++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
+> @@ -115,6 +115,11 @@ properties:
+>      $ref: audio-graph-port.yaml#
+>      unevaluatedProperties: false
+>  
+> +  ports:
 
-I'm not sure that can actually happen (it depends on the size of the
-structure, and whether the size of the allocation is divisible by it),
-but it's not wrong if it does.
+       $ref: /schemas/graph.yaml#/properties/ports
 
-Think of it this way: imagine that we have one 4kB page, and the size
-of the structure is 1kB in size. You can fit 4 structures in it, and
-end_offset for the last one will be index=3, so that you'll have:
+> +    patternProperties:
+> +      '^port@[0-9]':
+> +        $ref: "#/properties/port"
 
-        end_offset = (pg->index+1) * sizeof(pg->records[0]);
+Then this should be: $ref: audio-graph-port.yaml#
 
-which will be
+Also, what each port is should be defined, but that's a separate 
+problem.
 
-        end_offset = (3+1) * 1024;
-
-ie 4096. That just means that the struct fill fill things _up_to_ the
-end of the page.
-
-So only when the end_offset is strictly larger than the page would it
-have overflowed the allocation.
-
-             Linus
+> +
+>  # use patternProperties to avoid naming "xxx,yyy" issue
+>  patternProperties:
+>    "^rcar_sound,dvc$":
+> -- 
+> 1.8.3
+> 
+> 
