@@ -2,479 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E662B351FA8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72B1C351F3B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234922AbhDATYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 15:24:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234702AbhDATX6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 15:23:58 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB921C08EC8A;
-        Thu,  1 Apr 2021 11:32:00 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0887008b9ed797a9a7b7e1.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:8700:8b9e:d797:a9a7:b7e1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 060841EC050F;
-        Thu,  1 Apr 2021 20:31:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1617301919;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Z+AZHR2xY01OQysKb5tjqq1wDfFvfRj53C9yBpdSXmg=;
-        b=NRmyO7nnFl/BbSYjI1TDXOT82zZ3KqRVDYJSdUzyzP4PSf5ZrBB4OXf7XN+n5YlbDbP/eI
-        FhKB2rI7icxYUbnhjlFuBIIzlwAspBxZe/W8WEJMqceDYufg+asheNpKoDYBiJsO11Jfk4
-        N4dv0L+iO/5aDmc87BXv+b6xQ0y3JuI=
-Date:   Thu, 1 Apr 2021 20:31:59 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     seanjc@google.com, kvm@vger.kernel.org, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jarkko@kernel.org, luto@kernel.org, dave.hansen@intel.com,
-        rick.p.edgecombe@intel.com, haitao.huang@intel.com,
-        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com
-Subject: Re: [PATCH v3 05/25] x86/sgx: Introduce virtual EPC for use by KVM
- guests
-Message-ID: <20210401183159.GD28954@zn.tnic>
-References: <cover.1616136307.git.kai.huang@intel.com>
- <0c38ced8c8e5a69872db4d6a1c0dabd01e07cad7.1616136308.git.kai.huang@intel.com>
- <20210326150320.GF25229@zn.tnic>
- <20210331141032.db59586da8ba2cccf7b46f77@intel.com>
- <D4ECF8D3-C483-4E75-AD41-2CEFDF56B12D@alien8.de>
- <20210331195138.2af97ec1bb4b5e4202f2600d@intel.com>
- <3889C4C6-48E2-4C97-A074-180EB18BDA29@alien8.de>
- <20210331215345.cad098cfcfcaabf489243807@intel.com>
- <20210401012039.c78f02ea2ba9f1e5fd504621@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210401012039.c78f02ea2ba9f1e5fd504621@intel.com>
+        id S237026AbhDAS4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:56:52 -0400
+Received: from mga05.intel.com ([192.55.52.43]:63825 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239313AbhDASyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:54:33 -0400
+IronPort-SDR: PWUZ5tsaRf5MQrrUi5WNB++pLSIyfXx0V64TlDpSW86VlY+WVFmrQamvPvrZHV2dWIKnXkgBj5
+ fqFLFo1OQYeg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="277494274"
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="277494274"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 11:35:01 -0700
+IronPort-SDR: GvF8PqgzgGMeXNbV8u96S0sPLsm/HU8x3emf/wvnYzKioYTanGTexhjuAs9S9hIWpstVo/g4S0
+ mIJj+mtMfY/w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="416770156"
+Received: from viggo.jf.intel.com (HELO localhost.localdomain) ([10.54.77.144])
+  by orsmga007.jf.intel.com with ESMTP; 01 Apr 2021 11:35:01 -0700
+Subject: [PATCH 02/10] mm/numa: automatically generate node migration order
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>, shy828301@gmail.com,
+        weixugc@google.com, rientjes@google.com, ying.huang@intel.com,
+        dan.j.williams@intel.com, david@redhat.com, osalvador@suse.de
+From:   Dave Hansen <dave.hansen@linux.intel.com>
+Date:   Thu, 01 Apr 2021 11:32:19 -0700
+References: <20210401183216.443C4443@viggo.jf.intel.com>
+In-Reply-To: <20210401183216.443C4443@viggo.jf.intel.com>
+Message-Id: <20210401183219.DC1928FA@viggo.jf.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 01:20:39AM +1300, Kai Huang wrote:
-> Could you help to review whether below change is OK?
 
-I ended up applying this:
+From: Dave Hansen <dave.hansen@linux.intel.com>
 
+When memory fills up on a node, memory contents can be
+automatically migrated to another node.  The biggest problems are
+knowing when to migrate and to where the migration should be
+targeted.
+
+The most straightforward way to generate the "to where" list would
+be to follow the page allocator fallback lists.  Those lists
+already tell us if memory is full where to look next.  It would
+also be logical to move memory in that order.
+
+But, the allocator fallback lists have a fatal flaw: most nodes
+appear in all the lists.  This would potentially lead to migration
+cycles (A->B, B->A, A->B, ...).
+
+Instead of using the allocator fallback lists directly, keep a
+separate node migration ordering.  But, reuse the same data used
+to generate page allocator fallback in the first place:
+find_next_best_node().
+
+This means that the firmware data used to populate node distances
+essentially dictates the ordering for now.  It should also be
+architecture-neutral since all NUMA architectures have a working
+find_next_best_node().
+
+The protocol for node_demotion[] access and writing is not
+standard.  It has no specific locking and is intended to be read
+locklessly.  Readers must take care to avoid observing changes
+that appear incoherent.  This was done so that node_demotion[]
+locking has no chance of becoming a bottleneck on large systems
+with lots of CPUs in direct reclaim.
+
+This code is unused for now.  It will be called later in the
+series.
+
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Reviewed-by: Yang Shi <shy828301@gmail.com>
+Cc: Wei Xu <weixugc@google.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Huang Ying <ying.huang@intel.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: osalvador <osalvador@suse.de>
+
+--
+
+Changes from 20200122:
+ * Add big node_demotion[] comment
+Changes from 20210302:
+ * Fix typo in node_demotion[] comment
 ---
-From: Sean Christopherson <sean.j.christopherson@intel.com>
-Date: Fri, 19 Mar 2021 20:22:21 +1300
-Subject: [PATCH] x86/sgx: Introduce virtual EPC for use by KVM guests
 
-Add a misc device /dev/sgx_vepc to allow userspace to allocate "raw"
-Enclave Page Cache (EPC) without an associated enclave. The intended
-and only known use case for raw EPC allocation is to expose EPC to a
-KVM guest, hence the 'vepc' moniker, virt.{c,h} files and X86_SGX_KVM
-Kconfig.
+ b/mm/internal.h   |    5 +
+ b/mm/migrate.c    |  175 +++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ b/mm/page_alloc.c |    2 
+ 3 files changed, 180 insertions(+), 2 deletions(-)
 
-The SGX driver uses the misc device /dev/sgx_enclave to support
-userspace in creating an enclave. Each file descriptor returned from
-opening /dev/sgx_enclave represents an enclave. Unlike the SGX driver,
-KVM doesn't control how the guest uses the EPC, therefore EPC allocated
-to a KVM guest is not associated with an enclave, and /dev/sgx_enclave
-is not suitable for allocating EPC for a KVM guest.
-
-Having separate device nodes for the SGX driver and KVM virtual EPC also
-allows separate permission control for running host SGX enclaves and KVM
-SGX guests.
-
-To use /dev/sgx_vepc to allocate a virtual EPC instance with particular
-size, the hypervisor opens /dev/sgx_vepc, and uses mmap() with the
-intended size to get an address range of virtual EPC. Then it may use
-the address range to create one KVM memory slot as virtual EPC for
-a guest.
-
-Implement the "raw" EPC allocation in the x86 core-SGX subsystem via
-/dev/sgx_vepc rather than in KVM. Doing so has two major advantages:
-
-  - Does not require changes to KVM's uAPI, e.g. EPC gets handled as
-    just another memory backend for guests.
-
-  - EPC management is wholly contained in the SGX subsystem, e.g. SGX
-    does not have to export any symbols, changes to reclaim flows don't
-    need to be routed through KVM, SGX's dirty laundry doesn't have to
-    get aired out for the world to see, and so on and so forth.
-
-The virtual EPC pages allocated to guests are currently not reclaimable.
-Reclaiming an EPC page used by enclave requires a special reclaim
-mechanism separate from normal page reclaim, and that mechanism is not
-supported for virutal EPC pages. Due to the complications of handling
-reclaim conflicts between guest and host, reclaiming virtual EPC pages
-is significantly more complex than basic support for SGX virtualization.
-
- [ bp:
-   - Massage commit message and comments
-   - use cpu_feature_enabled()
-   - vertically align struct members init
-   - massage Virtual EPC clarification text ]
-
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Co-developed-by: Kai Huang <kai.huang@intel.com>
-Signed-off-by: Kai Huang <kai.huang@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Dave Hansen <dave.hansen@intel.com>
-Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
-Link: https://lkml.kernel.org/r/0c38ced8c8e5a69872db4d6a1c0dabd01e07cad7.1616136308.git.kai.huang@intel.com
----
- Documentation/x86/sgx.rst        |  16 ++
- arch/x86/Kconfig                 |  12 ++
- arch/x86/kernel/cpu/sgx/Makefile |   1 +
- arch/x86/kernel/cpu/sgx/sgx.h    |   9 ++
- arch/x86/kernel/cpu/sgx/virt.c   | 259 +++++++++++++++++++++++++++++++
- 5 files changed, 297 insertions(+)
- create mode 100644 arch/x86/kernel/cpu/sgx/virt.c
-
-diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
-index f90076e67cde..dd0ac96ff9ef 100644
---- a/Documentation/x86/sgx.rst
-+++ b/Documentation/x86/sgx.rst
-@@ -234,3 +234,19 @@ As a result, when this happpens, user should stop running any new
- SGX workloads, (or just any new workloads), and migrate all valuable
- workloads. Although a machine reboot can recover all EPC memory, the bug
- should be reported to Linux developers.
-+
-+
-+Virtual EPC
-+===========
-+
-+The implementation has also a virtual EPC driver to support SGX enclaves
-+in guests. Unlike the SGX driver, an EPC page allocated by the virtual
-+EPC driver doesn't have a specific enclave associated with it. This is
-+because KVM doesn't track how a guest uses EPC pages.
-+
-+As a result, the SGX core page reclaimer doesn't support reclaiming EPC
-+pages allocated to KVM guests through the virtual EPC driver. If the
-+user wants to deploy SGX applications both on the host and in guests
-+on the same machine, the user should reserve enough EPC (by taking out
-+total virtual EPC size of all SGX VMs from the physical EPC size) for
-+host SGX applications so they can run with acceptable performance.
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 35391e94bd22..007912f67a06 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -1942,6 +1942,18 @@ config X86_SGX
+diff -puN mm/internal.h~auto-setup-default-migration-path-from-firmware mm/internal.h
+--- a/mm/internal.h~auto-setup-default-migration-path-from-firmware	2021-03-31 15:17:11.794000261 -0700
++++ b/mm/internal.h	2021-03-31 15:17:11.816000261 -0700
+@@ -515,12 +515,17 @@ static inline void mminit_validate_memmo
  
- 	  If unsure, say N.
- 
-+config X86_SGX_KVM
-+	bool "Software Guard eXtensions (SGX) Virtualization"
-+	depends on X86_SGX && KVM_INTEL
-+	help
-+
-+	  Enables KVM guests to create SGX enclaves.
-+
-+	  This includes support to expose "raw" unreclaimable enclave memory to
-+	  guests via a device node, e.g. /dev/sgx_vepc.
-+
-+	  If unsure, say N.
-+
- config EFI
- 	bool "EFI runtime service support"
- 	depends on ACPI
-diff --git a/arch/x86/kernel/cpu/sgx/Makefile b/arch/x86/kernel/cpu/sgx/Makefile
-index 91d3dc784a29..9c1656779b2a 100644
---- a/arch/x86/kernel/cpu/sgx/Makefile
-+++ b/arch/x86/kernel/cpu/sgx/Makefile
-@@ -3,3 +3,4 @@ obj-y += \
- 	encl.o \
- 	ioctl.o \
- 	main.o
-+obj-$(CONFIG_X86_SGX_KVM)	+= virt.o
-diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
-index 4aa40c627819..4854f3980edd 100644
---- a/arch/x86/kernel/cpu/sgx/sgx.h
-+++ b/arch/x86/kernel/cpu/sgx/sgx.h
-@@ -84,4 +84,13 @@ void sgx_mark_page_reclaimable(struct sgx_epc_page *page);
- int sgx_unmark_page_reclaimable(struct sgx_epc_page *page);
- struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim);
- 
-+#ifdef CONFIG_X86_SGX_KVM
-+int __init sgx_vepc_init(void);
-+#else
-+static inline int __init sgx_vepc_init(void)
+ #ifdef CONFIG_NUMA
+ extern int node_reclaim(struct pglist_data *, gfp_t, unsigned int);
++extern int find_next_best_node(int node, nodemask_t *used_node_mask);
+ #else
+ static inline int node_reclaim(struct pglist_data *pgdat, gfp_t mask,
+ 				unsigned int order)
+ {
+ 	return NODE_RECLAIM_NOSCAN;
+ }
++static inline int find_next_best_node(int node, nodemask_t *used_node_mask)
 +{
-+	return -ENODEV;
++	return NUMA_NO_NODE;
 +}
-+#endif
+ #endif
+ 
+ extern int hwpoison_filter(struct page *p);
+diff -puN mm/migrate.c~auto-setup-default-migration-path-from-firmware mm/migrate.c
+--- a/mm/migrate.c~auto-setup-default-migration-path-from-firmware	2021-03-31 15:17:11.798000261 -0700
++++ b/mm/migrate.c	2021-03-31 15:17:11.821000261 -0700
+@@ -1163,6 +1163,44 @@ out:
+ 	return rc;
+ }
+ 
 +
- #endif /* _X86_SGX_H */
-diff --git a/arch/x86/kernel/cpu/sgx/virt.c b/arch/x86/kernel/cpu/sgx/virt.c
-new file mode 100644
-index 000000000000..259cc46ad78c
---- /dev/null
-+++ b/arch/x86/kernel/cpu/sgx/virt.c
-@@ -0,0 +1,259 @@
-+// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * Device driver to expose SGX enclave memory to KVM guests.
++ * node_demotion[] example:
 + *
-+ * Copyright(c) 2021 Intel Corporation.
++ * Consider a system with two sockets.  Each socket has
++ * three classes of memory attached: fast, medium and slow.
++ * Each memory class is placed in its own NUMA node.  The
++ * CPUs are placed in the node with the "fast" memory.  The
++ * 6 NUMA nodes (0-5) might be split among the sockets like
++ * this:
++ *
++ *	Socket A: 0, 1, 2
++ *	Socket B: 3, 4, 5
++ *
++ * When Node 0 fills up, its memory should be migrated to
++ * Node 1.  When Node 1 fills up, it should be migrated to
++ * Node 2.  The migration path start on the nodes with the
++ * processors (since allocations default to this node) and
++ * fast memory, progress through medium and end with the
++ * slow memory:
++ *
++ *	0 -> 1 -> 2 -> stop
++ *	3 -> 4 -> 5 -> stop
++ *
++ * This is represented in the node_demotion[] like this:
++ *
++ *	{  1, // Node 0 migrates to 1
++ *	   2, // Node 1 migrates to 2
++ *	  -1, // Node 2 does not migrate
++ *	   4, // Node 3 migrates to 4
++ *	   5, // Node 4 migrates to 5
++ *	  -1} // Node 5 does not migrate
 + */
-+
-+#include <linux/miscdevice.h>
-+#include <linux/mm.h>
-+#include <linux/mman.h>
-+#include <linux/sched/mm.h>
-+#include <linux/sched/signal.h>
-+#include <linux/slab.h>
-+#include <linux/xarray.h>
-+#include <asm/sgx.h>
-+#include <uapi/asm/sgx.h>
-+
-+#include "encls.h"
-+#include "sgx.h"
-+
-+struct sgx_vepc {
-+	struct xarray page_array;
-+	struct mutex lock;
-+};
 +
 +/*
-+ * Temporary SECS pages that cannot be EREMOVE'd due to having child in other
-+ * virtual EPC instances, and the lock to protect it.
++ * Writes to this array occur without locking.  READ_ONCE()
++ * is recommended for readers to ensure consistent reads.
 + */
-+static struct mutex zombie_secs_pages_lock;
-+static struct list_head zombie_secs_pages;
+ static int node_demotion[MAX_NUMNODES] __read_mostly =
+ 	{[0 ...  MAX_NUMNODES - 1] = NUMA_NO_NODE};
+ 
+@@ -1177,7 +1215,13 @@ static int node_demotion[MAX_NUMNODES] _
+  */
+ int next_demotion_node(int node)
+ {
+-	return node_demotion[node];
++	/*
++	 * node_demotion[] is updated without excluding
++	 * this function from running.  READ_ONCE() avoids
++	 * reading multiple, inconsistent 'node' values
++	 * during an update.
++	 */
++	return READ_ONCE(node_demotion[node]);
+ }
+ 
+ /*
+@@ -3181,3 +3225,132 @@ void migrate_vma_finalize(struct migrate
+ }
+ EXPORT_SYMBOL(migrate_vma_finalize);
+ #endif /* CONFIG_DEVICE_PRIVATE */
 +
-+static int __sgx_vepc_fault(struct sgx_vepc *vepc,
-+			    struct vm_area_struct *vma, unsigned long addr)
++/* Disable reclaim-based migration. */
++static void disable_all_migrate_targets(void)
 +{
-+	struct sgx_epc_page *epc_page;
-+	unsigned long index, pfn;
-+	int ret;
++	int node;
 +
-+	WARN_ON(!mutex_is_locked(&vepc->lock));
-+
-+	/* Calculate index of EPC page in virtual EPC's page_array */
-+	index = vma->vm_pgoff + PFN_DOWN(addr - vma->vm_start);
-+
-+	epc_page = xa_load(&vepc->page_array, index);
-+	if (epc_page)
-+		return 0;
-+
-+	epc_page = sgx_alloc_epc_page(vepc, false);
-+	if (IS_ERR(epc_page))
-+		return PTR_ERR(epc_page);
-+
-+	ret = xa_err(xa_store(&vepc->page_array, index, epc_page, GFP_KERNEL));
-+	if (ret)
-+		goto err_free;
-+
-+	pfn = PFN_DOWN(sgx_get_epc_phys_addr(epc_page));
-+
-+	ret = vmf_insert_pfn(vma, addr, pfn);
-+	if (ret != VM_FAULT_NOPAGE) {
-+		ret = -EFAULT;
-+		goto err_delete;
-+	}
-+
-+	return 0;
-+
-+err_delete:
-+	xa_erase(&vepc->page_array, index);
-+err_free:
-+	sgx_free_epc_page(epc_page);
-+	return ret;
++	for_each_online_node(node)
++		node_demotion[node] = NUMA_NO_NODE;
 +}
 +
-+static vm_fault_t sgx_vepc_fault(struct vm_fault *vmf)
++/*
++ * Find an automatic demotion target for 'node'.
++ * Failing here is OK.  It might just indicate
++ * being at the end of a chain.
++ */
++static int establish_migrate_target(int node, nodemask_t *used)
 +{
-+	struct vm_area_struct *vma = vmf->vma;
-+	struct sgx_vepc *vepc = vma->vm_private_data;
-+	int ret;
-+
-+	mutex_lock(&vepc->lock);
-+	ret = __sgx_vepc_fault(vepc, vma, vmf->address);
-+	mutex_unlock(&vepc->lock);
-+
-+	if (!ret)
-+		return VM_FAULT_NOPAGE;
-+
-+	if (ret == -EBUSY && (vmf->flags & FAULT_FLAG_ALLOW_RETRY)) {
-+		mmap_read_unlock(vma->vm_mm);
-+		return VM_FAULT_RETRY;
-+	}
-+
-+	return VM_FAULT_SIGBUS;
-+}
-+
-+const struct vm_operations_struct sgx_vepc_vm_ops = {
-+	.fault = sgx_vepc_fault,
-+};
-+
-+static int sgx_vepc_mmap(struct file *file, struct vm_area_struct *vma)
-+{
-+	struct sgx_vepc *vepc = file->private_data;
-+
-+	if (!(vma->vm_flags & VM_SHARED))
-+		return -EINVAL;
-+
-+	vma->vm_ops = &sgx_vepc_vm_ops;
-+	/* Don't copy VMA in fork() */
-+	vma->vm_flags |= VM_PFNMAP | VM_IO | VM_DONTDUMP | VM_DONTCOPY;
-+	vma->vm_private_data = vepc;
-+
-+	return 0;
-+}
-+
-+static int sgx_vepc_free_page(struct sgx_epc_page *epc_page)
-+{
-+	int ret;
++	int migration_target;
 +
 +	/*
-+	 * Take a previously guest-owned EPC page and return it to the
-+	 * general EPC page pool.
++	 * Can not set a migration target on a
++	 * node with it already set.
 +	 *
-+	 * Guests can not be trusted to have left this page in a good
-+	 * state, so run EREMOVE on the page unconditionally.  In the
-+	 * case that a guest properly EREMOVE'd this page, a superfluous
-+	 * EREMOVE is harmless.
++	 * No need for READ_ONCE() here since this
++	 * in the write path for node_demotion[].
++	 * This should be the only thread writing.
 +	 */
-+	ret = __eremove(sgx_get_epc_virt_addr(epc_page));
-+	if (ret) {
-+		/*
-+		 * Only SGX_CHILD_PRESENT is expected, which is because of
-+		 * EREMOVE'ing an SECS still with child, in which case it can
-+		 * be handled by EREMOVE'ing the SECS again after all pages in
-+		 * virtual EPC have been EREMOVE'd. See comments in below in
-+		 * sgx_vepc_release().
-+		 *
-+		 * The user of virtual EPC (KVM) needs to guarantee there's no
-+		 * logical processor is still running in the enclave in guest,
-+		 * otherwise EREMOVE will get SGX_ENCLAVE_ACT which cannot be
-+		 * handled here.
-+		 */
-+		WARN_ONCE(ret != SGX_CHILD_PRESENT, EREMOVE_ERROR_MESSAGE,
-+			  ret, ret);
-+		return ret;
-+	}
++	if (node_demotion[node] != NUMA_NO_NODE)
++		return NUMA_NO_NODE;
 +
-+	sgx_free_epc_page(epc_page);
++	migration_target = find_next_best_node(node, used);
++	if (migration_target == NUMA_NO_NODE)
++		return NUMA_NO_NODE;
 +
-+	return 0;
++	node_demotion[node] = migration_target;
++
++	return migration_target;
 +}
 +
-+static int sgx_vepc_release(struct inode *inode, struct file *file)
++/*
++ * When memory fills up on a node, memory contents can be
++ * automatically migrated to another node instead of
++ * discarded at reclaim.
++ *
++ * Establish a "migration path" which will start at nodes
++ * with CPUs and will follow the priorities used to build the
++ * page allocator zonelists.
++ *
++ * The difference here is that cycles must be avoided.  If
++ * node0 migrates to node1, then neither node1, nor anything
++ * node1 migrates to can migrate to node0.
++ *
++ * This function can run simultaneously with readers of
++ * node_demotion[].  However, it can not run simultaneously
++ * with itself.  Exclusion is provided by memory hotplug events
++ * being single-threaded.
++ */
++static void __set_migration_target_nodes(void)
 +{
-+	struct sgx_vepc *vepc = file->private_data;
-+	struct sgx_epc_page *epc_page, *tmp, *entry;
-+	unsigned long index;
++	nodemask_t next_pass	= NODE_MASK_NONE;
++	nodemask_t this_pass	= NODE_MASK_NONE;
++	nodemask_t used_targets = NODE_MASK_NONE;
++	int node;
 +
-+	LIST_HEAD(secs_pages);
++	/*
++	 * Avoid any oddities like cycles that could occur
++	 * from changes in the topology.  This will leave
++	 * a momentary gap when migration is disabled.
++	 */
++	disable_all_migrate_targets();
 +
-+	xa_for_each(&vepc->page_array, index, entry) {
-+		/*
-+		 * Remove all normal, child pages.  sgx_vepc_free_page()
-+		 * will fail if EREMOVE fails, but this is OK and expected on
-+		 * SECS pages.  Those can only be EREMOVE'd *after* all their
-+		 * child pages. Retries below will clean them up.
-+		 */
-+		if (sgx_vepc_free_page(entry))
++	/*
++	 * Ensure that the "disable" is visible across the system.
++	 * Readers will see either a combination of before+disable
++	 * state or disable+after.  They will never see before and
++	 * after state together.
++	 *
++	 * The before+after state together might have cycles and
++	 * could cause readers to do things like loop until this
++	 * function finishes.  This ensures they can only see a
++	 * single "bad" read and would, for instance, only loop
++	 * once.
++	 */
++	smp_wmb();
++
++	/*
++	 * Allocations go close to CPUs, first.  Assume that
++	 * the migration path starts at the nodes with CPUs.
++	 */
++	next_pass = node_states[N_CPU];
++again:
++	this_pass = next_pass;
++	next_pass = NODE_MASK_NONE;
++	/*
++	 * To avoid cycles in the migration "graph", ensure
++	 * that migration sources are not future targets by
++	 * setting them in 'used_targets'.  Do this only
++	 * once per pass so that multiple source nodes can
++	 * share a target node.
++	 *
++	 * 'used_targets' will become unavailable in future
++	 * passes.  This limits some opportunities for
++	 * multiple source nodes to share a destination.
++	 */
++	nodes_or(used_targets, used_targets, this_pass);
++	for_each_node_mask(node, this_pass) {
++		int target_node = establish_migrate_target(node, &used_targets);
++
++		if (target_node == NUMA_NO_NODE)
 +			continue;
 +
-+		xa_erase(&vepc->page_array, index);
++		/* Visit targets from this pass in the next pass: */
++		node_set(target_node, next_pass);
 +	}
-+
-+	/*
-+	 * Retry EREMOVE'ing pages.  This will clean up any SECS pages that
-+	 * only had children in this 'epc' area.
-+	 */
-+	xa_for_each(&vepc->page_array, index, entry) {
-+		epc_page = entry;
-+		/*
-+		 * An EREMOVE failure here means that the SECS page still
-+		 * has children.  But, since all children in this 'sgx_vepc'
-+		 * have been removed, the SECS page must have a child on
-+		 * another instance.
-+		 */
-+		if (sgx_vepc_free_page(epc_page))
-+			list_add_tail(&epc_page->list, &secs_pages);
-+
-+		xa_erase(&vepc->page_array, index);
-+	}
-+
-+	/*
-+	 * SECS pages are "pinned" by child pages, and "unpinned" once all
-+	 * children have been EREMOVE'd.  A child page in this instance
-+	 * may have pinned an SECS page encountered in an earlier release(),
-+	 * creating a zombie.  Since some children were EREMOVE'd above,
-+	 * try to EREMOVE all zombies in the hopes that one was unpinned.
-+	 */
-+	mutex_lock(&zombie_secs_pages_lock);
-+	list_for_each_entry_safe(epc_page, tmp, &zombie_secs_pages, list) {
-+		/*
-+		 * Speculatively remove the page from the list of zombies,
-+		 * if the page is successfully EREMOVE'd it will be added to
-+		 * the list of free pages.  If EREMOVE fails, throw the page
-+		 * on the local list, which will be spliced on at the end.
-+		 */
-+		list_del(&epc_page->list);
-+
-+		if (sgx_vepc_free_page(epc_page))
-+			list_add_tail(&epc_page->list, &secs_pages);
-+	}
-+
-+	if (!list_empty(&secs_pages))
-+		list_splice_tail(&secs_pages, &zombie_secs_pages);
-+	mutex_unlock(&zombie_secs_pages_lock);
-+
-+	kfree(vepc);
-+
-+	return 0;
++	/* Is another pass necessary? */
++	if (!nodes_empty(next_pass))
++		goto again;
 +}
 +
-+static int sgx_vepc_open(struct inode *inode, struct file *file)
++/*
++ * For callers that do not hold get_online_mems() already.
++ */
++__maybe_unused // <- temporay to prevent warnings during bisects
++static void set_migration_target_nodes(void)
 +{
-+	struct sgx_vepc *vepc;
-+
-+	vepc = kzalloc(sizeof(struct sgx_vepc), GFP_KERNEL);
-+	if (!vepc)
-+		return -ENOMEM;
-+	mutex_init(&vepc->lock);
-+	xa_init(&vepc->page_array);
-+
-+	file->private_data = vepc;
-+
-+	return 0;
++	get_online_mems();
++	__set_migration_target_nodes();
++	put_online_mems();
 +}
-+
-+static const struct file_operations sgx_vepc_fops = {
-+	.owner		= THIS_MODULE,
-+	.open		= sgx_vepc_open,
-+	.release	= sgx_vepc_release,
-+	.mmap		= sgx_vepc_mmap,
-+};
-+
-+static struct miscdevice sgx_vepc_dev = {
-+	.minor		= MISC_DYNAMIC_MINOR,
-+	.name		= "sgx_vepc",
-+	.nodename	= "sgx_vepc",
-+	.fops		= &sgx_vepc_fops,
-+};
-+
-+int __init sgx_vepc_init(void)
-+{
-+	/* SGX virtualization requires KVM to work */
-+	if (!cpu_feature_enabled(X86_FEATURE_VMX))
-+		return -ENODEV;
-+
-+	INIT_LIST_HEAD(&zombie_secs_pages);
-+	mutex_init(&zombie_secs_pages_lock);
-+
-+	return misc_register(&sgx_vepc_dev);
-+}
--- 
-2.29.2
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+diff -puN mm/page_alloc.c~auto-setup-default-migration-path-from-firmware mm/page_alloc.c
+--- a/mm/page_alloc.c~auto-setup-default-migration-path-from-firmware	2021-03-31 15:17:11.811000261 -0700
++++ b/mm/page_alloc.c	2021-03-31 15:17:11.826000261 -0700
+@@ -5780,7 +5780,7 @@ static int node_load[MAX_NUMNODES];
+  *
+  * Return: node id of the found node or %NUMA_NO_NODE if no node is found.
+  */
+-static int find_next_best_node(int node, nodemask_t *used_node_mask)
++int find_next_best_node(int node, nodemask_t *used_node_mask)
+ {
+ 	int n, val;
+ 	int min_val = INT_MAX;
+_
