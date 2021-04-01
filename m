@@ -2,53 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03A85352405
+	by mail.lfdr.de (Postfix) with ESMTP id 995DD352407
 	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 01:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236008AbhDAXhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 19:37:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51324 "EHLO
+        id S235061AbhDAXhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 19:37:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233677AbhDAXho (ORCPT
+        with ESMTP id S235912AbhDAXhp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 19:37:44 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6021C061788
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 16:37:42 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id p133so4772223qka.17
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 16:37:42 -0700 (PDT)
+        Thu, 1 Apr 2021 19:37:45 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D2B7C061788
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 16:37:45 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id v5so3592429pgj.7
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 16:37:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=vJ782tPIwg5HrJEEBMGpQmwNZsk9pDTuVerO6dJHWsw=;
-        b=vTJwbEAu/t/5wjVhuKeAyWFRl/XKhnrScZ8p3fG7OVHAXGKID0UIxVoi3bwPA1Sa3z
-         my7FswdYJWVOzOXsMwWMytT299p+3GmTzjBLfeTdg/IOiEhlCljIrAnmilsr5kCXRkcQ
-         C9IiLRGlN2QDwVhACUN3SrDAmIiAQ7vc2E/YKySqepqxLCMrUGZYG+DnufFUJDWcfneZ
-         L1R6Ybn7nUc0YA13CaKBcfj1q3FLfdISK9pc+q6bZ4FEkT1t6oit+5jjUDUz1cU3z+Re
-         LurQ/wYnapokxkghUBE1y7e2c0fM5oHYTpP4ZVUqgWg2eRakJXUtvvMxCcgRlRXw5yhO
-         FUhQ==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=lUEmlvSjoIjUDkzyKzDbWns/XKvNm6OB5Sf7W1fM46I=;
+        b=s7Io1QiTYK0QbMiTZ55cbB+/B+qinLsqNuX3/tqbgeSZe8QeFsqSfiIFbsNTl7yq4W
+         YhASmXagbFieAGrP8VSUl2fpI9+nsbbRA83TJihDnOX4lKDPVzzqChKYWulKxQIOo8ag
+         eRz5suN/fde9KsRWE7245tfrGJepveSJpX4DIskCaXVxXuNmmTLBEYsVODNQDlyjEodq
+         Y2WevF9p82uTkhhnB46frTmPrCyTqSL8qFQHHdjs9M7kb/zKSLsVumgRCMlyP/fQGPCA
+         1wizJFrOUmCq0nvg0mAnMDChUguVpUnmB843BYB7yKqBr5royFl4sO7ohpuca7nfykZz
+         JxKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=vJ782tPIwg5HrJEEBMGpQmwNZsk9pDTuVerO6dJHWsw=;
-        b=rhYsUvn1D9nl8GayLul8XFxMIdb8sIhEsnGQQf1EGucdwUr+Lrhf0S/BcV3vVQAXGO
-         BcNxrgM/NzKRMks4eCNOKqG1irgIwnSHL+ddqk+94/Ugp36dL5Mthp5qE3he/22qO54i
-         5TUmhdfH5vaaai7YNHsDDOVrkcvpwQU1SlrBbH7PKa4i8XTFNW6LxKMLU5I6kKuDzoDS
-         LIzEKH1SY0yA9Y2ugfHP/jBqqr7taJIptuSOQ4d/z9jvAEVBOz0Sl7HYugt380uhSqzs
-         LYsAoq8J8HYuKZfhiF+i9jtEjn9FO4vK5Du52bmm8jW0t6d2lywmh6lz9s7jjt3ZLBD7
-         l+wg==
-X-Gm-Message-State: AOAM530uq2RWJr+3szZVDKANM+YwRzk6CxHLn5hPeDSNcUtBqA+3/u7b
-        3vgBXh9O0F18v5GwlQqBaMr1yvRBpN9BSmAxqG/vM08VDYJFujklln+WxhYGmPQNiq+lLtdCedg
-        Mda99LuWrdxv4ayNPr1Rj1B1Gvp+4slGuXyrM5X7DhzLrvZsPnVDyKtD1sJ07AT4fkFioZLPE
-X-Google-Smtp-Source: ABdhPJwb6aFvxKbxcOeSkUQALt7XSlnEE2UVCGTOZMkY0L/y0eaBNHoMr25u4faIyyH6LpVmwDAbLT9I5Vyg
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=lUEmlvSjoIjUDkzyKzDbWns/XKvNm6OB5Sf7W1fM46I=;
+        b=Mxa7Fdp7HlV9tcJ9PVg9SZjOSRX5jDRuI2AHO86ONanRF4vCOkYjbNfr+kIs0E5l4t
+         JH3JbGMOsjDQcFabmaviQ+QmTtWpmfb2NrfEnRg1u6YVDHRdObxAYSHO3awOY5Ua+woO
+         lQ8vWWX41pJ/GXimxplzcNBGxSmNM4AS8H4QuixipEWNDB2BR4c+BKo0R09R2o16uba6
+         hvkTpNGUTZqDX1gZG/os3Q3Hvsdu8pcRahNXS/1eJNZ6NT5V6CEzUgMPPLjjynUK2emZ
+         U1FIc7d+CvMZgDd9f24wRWn0caq/z9lETp+RdbM4wrh1bFKbcx60XLfOw/fZ34N6PtIW
+         n9GQ==
+X-Gm-Message-State: AOAM533RRoCXO316EsmHxh/Kp7NQw/ZIRwbhqjW+X9Xb41vlW6OF6l0t
+        BQc9g18EiVYObtkqS9TPL+RZcfEoABWiwTboe6CkOQPYClL6AC9QNBJ5/M00OgXk3kS1VOBSa1m
+        erxQ4IK4ViV458xqBytvI3dsJwtxK8bgF2bA8twod+10b1f2G/jj1Hs2dcTQLQuLbJ1IOevsi
+X-Google-Smtp-Source: ABdhPJyOYn2mWXgiqJoC59ZluPIIISD2xUXTKX/6/h6IrQUAY5FhFt/dv1gh1ZOi/lGBZq54r3sYzN4kVPe6
 X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:e088:88b8:ea4a:22b6])
- (user=bgardon job=sendgmr) by 2002:a0c:fd62:: with SMTP id
- k2mr10563221qvs.51.1617320261994; Thu, 01 Apr 2021 16:37:41 -0700 (PDT)
-Date:   Thu,  1 Apr 2021 16:37:23 -0700
-Message-Id: <20210401233736.638171-1-bgardon@google.com>
+ (user=bgardon job=sendgmr) by 2002:a17:90a:5413:: with SMTP id
+ z19mr10951048pjh.137.1617320264459; Thu, 01 Apr 2021 16:37:44 -0700 (PDT)
+Date:   Thu,  1 Apr 2021 16:37:24 -0700
+In-Reply-To: <20210401233736.638171-1-bgardon@google.com>
+Message-Id: <20210401233736.638171-2-bgardon@google.com>
 Mime-Version: 1.0
+References: <20210401233736.638171-1-bgardon@google.com>
 X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
-Subject: [PATCH v2 00/13] More parallel operations for the TDP MMU
+Subject: [PATCH v2 01/13] KVM: x86/mmu: Re-add const qualifier in kvm_tdp_mmu_zap_collapsible_sptes
 From:   Ben Gardon <bgardon@google.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
@@ -67,58 +71,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the TDP MMU is able to handle page faults in parallel, it's a
-relatively small change to expand to other operations. This series allows
-zapping a range of GFNs, reclaiming collapsible SPTEs (when disabling
-dirty logging), and enabling dirty logging to all happen under the MMU
-lock in read mode.
+kvm_tdp_mmu_zap_collapsible_sptes unnecessarily removes the const
+qualifier from its memlsot argument, leading to a compiler warning. Add
+the const annotation and pass it to subsequent functions.
 
-This is partly a cleanup + rewrite of the last few patches of the parallel
-page faults series. I've incorporated feedback from Sean and Paolo, but
-the patches have changed so much that I'm sending this as a separate
-series.
+Signed-off-by: Ben Gardon <bgardon@google.com>
+---
+ arch/x86/kvm/mmu/mmu.c          | 10 +++++-----
+ arch/x86/kvm/mmu/mmu_internal.h |  5 +++--
+ arch/x86/kvm/mmu/tdp_mmu.c      |  5 +++--
+ arch/x86/kvm/mmu/tdp_mmu.h      |  3 ++-
+ include/linux/kvm_host.h        |  2 +-
+ 5 files changed, 14 insertions(+), 11 deletions(-)
 
-Ran kvm-unit-tests + selftests on an SMP kernel + Intel Skylake, with the
-TDP MMU enabled and disabled. This series introduces no new failures or
-warnings.
-
-I know this will conflict horribly with the patches from Sean's series
-which were just queued, and I'll send a v2 to fix those conflicts +
-address any feedback on this v1.
-
-Changelog
-v2:
---	Rebased patches on top of kvm/queue to incorporate Sean's recent
-	TLB flushing changes
---	Dropped patch 5: "KVM: x86/mmu: comment for_each_tdp_mmu_root
-	requires MMU write lock" as the following patch to protect the roots
-	list with RCU adds lockdep which makes the comment somewhat redundant.
-
-Ben Gardon (13):
-  KVM: x86/mmu: Re-add const qualifier in
-    kvm_tdp_mmu_zap_collapsible_sptes
-  KVM: x86/mmu: Move kvm_mmu_(get|put)_root to TDP MMU
-  KVM: x86/mmu: use tdp_mmu_free_sp to free roots
-  KVM: x86/mmu: Merge TDP MMU put and free root
-  KVM: x86/mmu: Refactor yield safe root iterator
-  KVM: x86/mmu: Make TDP MMU root refcount atomic
-  KVM: x86/mmu: handle cmpxchg failure in kvm_tdp_mmu_get_root
-  KVM: x86/mmu: Protect the tdp_mmu_roots list with RCU
-  KVM: x86/mmu: Allow zap gfn range to operate under the mmu read lock
-  KVM: x86/mmu: Allow zapping collapsible SPTEs to use MMU read lock
-  KVM: x86/mmu: Allow enabling / disabling dirty logging under MMU read
-    lock
-  KVM: x86/mmu: Fast invalidation for TDP MMU
-  KVM: x86/mmu: Tear down roots in fast invalidation thread
-
- arch/x86/include/asm/kvm_host.h |  21 +-
- arch/x86/kvm/mmu/mmu.c          | 115 +++++++---
- arch/x86/kvm/mmu/mmu_internal.h |  27 +--
- arch/x86/kvm/mmu/tdp_mmu.c      | 375 +++++++++++++++++++++++---------
- arch/x86/kvm/mmu/tdp_mmu.h      |  28 ++-
- include/linux/kvm_host.h        |   2 +-
- 6 files changed, 407 insertions(+), 161 deletions(-)
-
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index efb41f31e80a..617809529987 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -715,8 +715,7 @@ static void kvm_mmu_page_set_gfn(struct kvm_mmu_page *sp, int index, gfn_t gfn)
+  * handling slots that are not large page aligned.
+  */
+ static struct kvm_lpage_info *lpage_info_slot(gfn_t gfn,
+-					      struct kvm_memory_slot *slot,
+-					      int level)
++		const struct kvm_memory_slot *slot, int level)
+ {
+ 	unsigned long idx;
+ 
+@@ -2735,7 +2734,7 @@ static void direct_pte_prefetch(struct kvm_vcpu *vcpu, u64 *sptep)
+ }
+ 
+ static int host_pfn_mapping_level(struct kvm *kvm, gfn_t gfn, kvm_pfn_t pfn,
+-				  struct kvm_memory_slot *slot)
++				  const struct kvm_memory_slot *slot)
+ {
+ 	unsigned long hva;
+ 	pte_t *pte;
+@@ -2761,8 +2760,9 @@ static int host_pfn_mapping_level(struct kvm *kvm, gfn_t gfn, kvm_pfn_t pfn,
+ 	return level;
+ }
+ 
+-int kvm_mmu_max_mapping_level(struct kvm *kvm, struct kvm_memory_slot *slot,
+-			      gfn_t gfn, kvm_pfn_t pfn, int max_level)
++int kvm_mmu_max_mapping_level(struct kvm *kvm,
++			      const struct kvm_memory_slot *slot, gfn_t gfn,
++			      kvm_pfn_t pfn, int max_level)
+ {
+ 	struct kvm_lpage_info *linfo;
+ 
+diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
+index cead1d81e663..d44fe8a43a19 100644
+--- a/arch/x86/kvm/mmu/mmu_internal.h
++++ b/arch/x86/kvm/mmu/mmu_internal.h
+@@ -161,8 +161,9 @@ enum {
+ #define SET_SPTE_NEED_REMOTE_TLB_FLUSH	BIT(1)
+ #define SET_SPTE_SPURIOUS		BIT(2)
+ 
+-int kvm_mmu_max_mapping_level(struct kvm *kvm, struct kvm_memory_slot *slot,
+-			      gfn_t gfn, kvm_pfn_t pfn, int max_level);
++int kvm_mmu_max_mapping_level(struct kvm *kvm,
++			      const struct kvm_memory_slot *slot, gfn_t gfn,
++			      kvm_pfn_t pfn, int max_level);
+ int kvm_mmu_hugepage_adjust(struct kvm_vcpu *vcpu, gfn_t gfn,
+ 			    int max_level, kvm_pfn_t *pfnp,
+ 			    bool huge_page_disallowed, int *req_level);
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index ccf0d774a181..d5210a212c59 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -1255,7 +1255,7 @@ void kvm_tdp_mmu_clear_dirty_pt_masked(struct kvm *kvm,
+  */
+ static bool zap_collapsible_spte_range(struct kvm *kvm,
+ 				       struct kvm_mmu_page *root,
+-				       struct kvm_memory_slot *slot,
++				       const struct kvm_memory_slot *slot,
+ 				       bool flush)
+ {
+ 	gfn_t start = slot->base_gfn;
+@@ -1296,7 +1296,8 @@ static bool zap_collapsible_spte_range(struct kvm *kvm,
+  * be replaced by large mappings, for GFNs within the slot.
+  */
+ bool kvm_tdp_mmu_zap_collapsible_sptes(struct kvm *kvm,
+-				       struct kvm_memory_slot *slot, bool flush)
++				       const struct kvm_memory_slot *slot,
++				       bool flush)
+ {
+ 	struct kvm_mmu_page *root;
+ 
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
+index bf3ce169122e..d7007480b3d2 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.h
++++ b/arch/x86/kvm/mmu/tdp_mmu.h
+@@ -57,7 +57,8 @@ void kvm_tdp_mmu_clear_dirty_pt_masked(struct kvm *kvm,
+ 				       gfn_t gfn, unsigned long mask,
+ 				       bool wrprot);
+ bool kvm_tdp_mmu_zap_collapsible_sptes(struct kvm *kvm,
+-				       struct kvm_memory_slot *slot, bool flush);
++				       const struct kvm_memory_slot *slot,
++				       bool flush);
+ 
+ bool kvm_tdp_mmu_write_protect_gfn(struct kvm *kvm,
+ 				   struct kvm_memory_slot *slot, gfn_t gfn);
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index e6d77353025c..5e0d17b1ac2b 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -1124,7 +1124,7 @@ __gfn_to_memslot(struct kvm_memslots *slots, gfn_t gfn)
+ }
+ 
+ static inline unsigned long
+-__gfn_to_hva_memslot(struct kvm_memory_slot *slot, gfn_t gfn)
++__gfn_to_hva_memslot(const struct kvm_memory_slot *slot, gfn_t gfn)
+ {
+ 	return slot->userspace_addr + (gfn - slot->base_gfn) * PAGE_SIZE;
+ }
 -- 
 2.31.0.208.g409f899ff0-goog
 
