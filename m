@@ -2,158 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F6335242E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 01:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE016352430
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 01:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236333AbhDAXr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 19:47:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40084 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236295AbhDAXr0 (ORCPT
+        id S235884AbhDAXwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 19:52:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233789AbhDAXwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 19:47:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617320846;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SVpc0rUTxDYUGUYBGrEzWNw2vv+lb7XY8N2qOdklVV0=;
-        b=FlH/vI0HGjraIze0WRHtVRdp9oQGQ2BnHX2F34SHw0+FnRhdEfiD0NDUwOSnuF/spuEBxh
-        Fn1ajDO+3lLEd5r65w66e9BB03vhmHMI8kXOnx+Xc238E5pmfloapNnOSj1GxBjefw4Ydu
-        Ma7J3oxKsn7RWXzUlZomMVOJKAbREHU=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-318-mRrn-P46P9ytOmptn0_Wdw-1; Thu, 01 Apr 2021 19:47:22 -0400
-X-MC-Unique: mRrn-P46P9ytOmptn0_Wdw-1
-Received: by mail-qv1-f69.google.com with SMTP id p18so48358qvn.19
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 16:47:22 -0700 (PDT)
+        Thu, 1 Apr 2021 19:52:37 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88265C0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 16:52:36 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id v23so1765424ple.9
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 16:52:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=SEHNUE5bPreCk0YNPUlKmfUdSYB5CVpf+CCeqNykU10=;
+        b=J7xW51CzYpZjYXmWQCq34hmEsImnvM5EBx2wI1bgXtbsw6s2Oamp64yTcGoDbiOvis
+         V1YvW3rn/1DOyHFJn3DfArOwMa00YQbA+nIMr+CY31DoO4xniAPSGfG4DWhgf15qdtfW
+         dQ3Cc2fTIFX+grA2YRgCoJvCMQfAx8hFhvvkqBbBOyscRyGPNJu8w0/q+G2SEc9iIBEa
+         47L3zguwbA/shghY9ja8ylRWn6yRKZPIC64KQnbGdBXWHZjzEbF4vnjKKYpFAqQhpHIg
+         WbX9i6VAFejIDGzrFQC3Dj877LrFcCInLTPRU/nUAdIjvEaxCRefigmg/3vURoU8wDIH
+         5f+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SVpc0rUTxDYUGUYBGrEzWNw2vv+lb7XY8N2qOdklVV0=;
-        b=WhikByakbhDvxTKMzzS2Z+vkaSwed1R1Q5MYb6ed+OmPtt5MR/f1vsnQKE4ETrGPGO
-         Q0f3r4x7F0OX7v2TQ3SXoOoE78GyQ20NTO9ifRaHaA84OTwJa4Fpb7ShUtzbyEN1Fdua
-         H1iLsLEtsN11h+fX8U8yTtQp8TFtFFAvc7hFU3eB33b0D3UulvEqITwBpbxHVy5rZvBq
-         XPXE6aIu0Fyqqxza6l4keaI6jbtyEGjyu8OVpZ5vJpcBJs03RllEtTC90gEPZk2b/9T5
-         XxNSG493fhCV1DhRtQjcAj3hENlPYbez9tX7OhPL20So3ziDa/r87YnIjnW8VzmHkB04
-         r33w==
-X-Gm-Message-State: AOAM531wJO983+/wLIq4c60IQKLnjV18PP6ntqaTOfOxD6lsHMAvlXJa
-        Vjcw79NZ3WMpXweE32Px7Wp1ksABvw2qFQoD5IjBM/agn81+1ZG5YjhYmBruWglMG9QzpIRtk1v
-        9xraCqeRMYqSvUpLvl5j5eLC/
-X-Received: by 2002:ac8:a4c:: with SMTP id f12mr9650662qti.329.1617320842483;
-        Thu, 01 Apr 2021 16:47:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxImG7qpo37qw37G+WISCdBMKNa6HQGppU3YSusHUWwxfGEF8pBIidclFCLT7Qtsk+GX+13Cw==
-X-Received: by 2002:ac8:a4c:: with SMTP id f12mr9650651qti.329.1617320842231;
-        Thu, 01 Apr 2021 16:47:22 -0700 (PDT)
-Received: from xz-x1 (bras-base-toroon474qw-grc-82-174-91-135-175.dsl.bell.ca. [174.91.135.175])
-        by smtp.gmail.com with ESMTPSA id 73sm5398788qkk.131.2021.04.01.16.47.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 16:47:21 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 19:47:20 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        stable <stable@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jann Horn <jannh@google.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>, Shaohua Li <shli@fb.com>,
-        Nadav Amit <namit@vmware.com>, Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-Subject: Re: [PATCH 0/5] 4.14 backports of fixes for "CoW after fork() issue"
-Message-ID: <20210401234720.GB628002@xz-x1>
-References: <20210401181741.168763-1-surenb@google.com>
- <CAHk-=wg8MDMLi8x+u-dee-ai0KiAavm6+JceV00gRXQRFG=Cgw@mail.gmail.com>
- <CAJuCfpE48zkcM_2GABBpXssjmivKLt+r8+CEeXafqK3VNMMjDw@mail.gmail.com>
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SEHNUE5bPreCk0YNPUlKmfUdSYB5CVpf+CCeqNykU10=;
+        b=AGh0vUBtvzK5jhllEoXcWtHZcX5j1lOdSznJC05+Bb74xvrozRZOMbvhK3kPI4JBlm
+         DJ9zXLoBTtAPzKbfoifqSOQRU8ja9/4Uo1sZJfQjdA7JDY1qcPRNffcz7AJPwjwONEhe
+         zRNn3pnxb73LE12G5d01368j/1iBiRZWnnqPIoh/DaAZ/b8/nu+emdbFAwVmbKauH+hG
+         gLSy6i+GM+3P1/COj1e54gs9KJYpvOegSVukT5SyU+rLsYF0sqpOmcqlZHHts+dPoZKg
+         sGAe9s8i8kz532fDhD6eqCJhMvD3lxAZ6G746BPRG5oQ0z9nmME6YmHxcKfZWp2p1WIV
+         shBw==
+X-Gm-Message-State: AOAM532lnWr7GvJTPzmS3jcMUFTtxw5YrkztTrB7xiWkuqnMfUEqXC1L
+        ZCw70IbNqqDkjGJMDBUGTxI=
+X-Google-Smtp-Source: ABdhPJzNiOp2cAnGCHyj7/uXJ9wcoFfJleqTzORqEIdPeCI6Bx6CnXw9OJErXWedP6MSwRmt7Lbcpg==
+X-Received: by 2002:a17:902:7d8d:b029:e6:4061:b767 with SMTP id a13-20020a1709027d8db02900e64061b767mr10150510plm.32.1617321155872;
+        Thu, 01 Apr 2021 16:52:35 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id d2sm6237968pjx.42.2021.04.01.16.52.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Apr 2021 16:52:35 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [PATCH v8 0/3] ARM: Implement MODULE_PLT support in FTRACE
+To:     Alexander A Sverdlin <alexander.sverdlin@nokia.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Qais Yousef <qais.yousef@arm.com>
+References: <20210330114035.18575-1-alexander.sverdlin@nokia.com>
+Message-ID: <a8b8dabd-6637-335d-5abc-5a88d21b4db0@gmail.com>
+Date:   Thu, 1 Apr 2021 16:52:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <20210330114035.18575-1-alexander.sverdlin@nokia.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAJuCfpE48zkcM_2GABBpXssjmivKLt+r8+CEeXafqK3VNMMjDw@mail.gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Suren,
-
-On Thu, Apr 01, 2021 at 12:43:51PM -0700, Suren Baghdasaryan wrote:
-> On Thu, Apr 1, 2021 at 11:59 AM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > On Thu, Apr 1, 2021 at 11:17 AM Suren Baghdasaryan <surenb@google.com> wrote:
-> > >
-> > > We received a report that the copy-on-write issue repored by Jann Horn in
-> > > https://bugs.chromium.org/p/project-zero/issues/detail?id=2045 is still
-> > > reproducible on 4.14 and 4.19 kernels (the first issue with the reproducer
-> > > coded in vmsplice.c).
-> >
-> > Gaah.
-> >
-> > > I confirmed this and also that the issue was not
-> > > reproducible with 5.10 kernel. I tracked the fix to the following patch
-> > > introduced in 5.9 which changes the do_wp_page() logic:
-> > >
-> > > 09854ba94c6a 'mm: do_wp_page() simplification'
-> >
-> > The problem here is that there's a _lot_ more patches than the few you
-> > found that fixed various other cases (THP etc).
-> >
-> > > I backported this patch (#2 in the series) along with 2 prerequisite patches
-> > > (#1 and #4) that keep the backports clean and two followup fixes to the main
-> > > patch (#3 and #5). I had to skip the following fix:
-> > >
-> > > feb889fb40fa 'mm: don't put pinned pages into the swap cache'
-> > >
-> > > because it uses page_maybe_dma_pinned() which does not exists in earlier
-> > > kernels. Because pin_user_pages() does not exist there as well, I *think*
-> > > we can safely skip this fix on older kernels, but I would appreciate if
-> > > someone could confirm that claim.
-> >
-> > Hmm. I think this means that swap activity can now break the
-> > connection to a GUP page (the whole pre-pinning model), but it
-> > probably isn't a new problem for 4.9/4.19.
-> >
-> > I suspect the test there should be something like
-> >
-> >         /* Single mapper, more references than us and the map? */
-> >         if (page_mapcount(page) == 1 && page_count(page) > 2)
-> >                 goto keep_locked;
-> >
-> > in the pre-pinning days.
-> >
-> > But I really think that there are a number of other commits you're
-> > missing too, because we had a whole series for THP fixes for the same
-> > exact issue.
-> >
-> > Added Peter Xu to the cc, because he probably tracked those issues
-> > better than I did.
-> >
-> > So NAK on this for now, I think this limited patch-set likely
-> > introduces more problems than it fixes.
+On 3/30/21 4:40 AM, Alexander A Sverdlin wrote:
+> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 > 
-> Thanks for confirming my worries. I'll be happy to add additional
-> backports if Peter can point me to them.
+> FTRACE's function tracer currently doesn't always work on ARM with
+> MODULE_PLT option enabled. If the module is loaded too far, FTRACE's
+> code modifier cannot cope with introduced veneers and turns the
+> function tracer off globally.
+> 
+> ARM64 already has a solution for the problem, refer to the following
+> patches:
+> 
+> arm64: ftrace: emit ftrace-mod.o contents through code
+> arm64: module-plts: factor out PLT generation code for ftrace
+> arm64: ftrace: fix !CONFIG_ARM64_MODULE_PLTS kernels
+> arm64: ftrace: fix building without CONFIG_MODULES
+> arm64: ftrace: add support for far branches to dynamic ftrace
+> arm64: ftrace: don't validate branch via PLT in ftrace_make_nop()
+> 
+> But the presented ARM variant has just a half of the footprint in terms of
+> the changed LoCs. It also retains the code validation-before-modification
+> instead of switching it off.
+> 
+> Changelog:
+> v8:
+> * Add warn suppress parameter to arm_gen_branch_link()
+> v7:
+> * rebased
+> v6:
+> * rebased
+> v5:
+> * BUILD_BUG_ON() ensures fixed_plts[] always fits one PLT block
+> * use "for" loop instead of "while"
+> * scripts/recordmcount is filtering reloc types
+> v4:
+> * Fixed build without CONFIG_FUNCTION_TRACER
+> * Reorganized pre-allocated PLTs handling in get_module_plt(),
+>   now compiler eliminates the whole FTRACE-related handling code
+>     if ARRAY_SIZE(fixed_plts) == 0
+>     v3:
+>     * Only extend struct dyn_arch_ftrace when ARM_MODULE_PLTS is enabled
+>     v2:
+>     * As suggested by Steven Rostedt, refrain from tree-wide API modification,
+>       save module pointer in struct dyn_arch_ftrace instead (PowerPC way)
 
-If for a full-alignment with current upstream, I can at least think of below
-series:
-
-Early cow for general pages:
-https://lore.kernel.org/lkml/20200925222600.6832-1-peterx@redhat.com/
-
-A race fix for copy_page and gup-fast:
-https://lore.kernel.org/linux-mm/0-v4-908497cf359a+4782-gup_fork_jgg@nvidia.com/
-
-Early cow for hugetlbfs (which is very recently):
-https://lore.kernel.org/lkml/20210217233547.93892-1-peterx@redhat.com/
-
-But I believe they'll bring a number of dependencies too like the page pinned
-work; so seems not easy.
-
-Btw, AFAICT you don't need patch 4/5 in this series for 4.14/4.19, since
-those're only for uffd-wp and it doesn't exist until 5.7.
-
-Thanks,
-
+FWIW, ftracetest did not pick up new failures (nor were new tests fixed)
+with this patch series.
 -- 
-Peter Xu
-
+Florian
