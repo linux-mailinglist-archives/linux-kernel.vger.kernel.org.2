@@ -2,93 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D66351166
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA585351169
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233404AbhDAJC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 05:02:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233622AbhDAJBs (ORCPT
+        id S233622AbhDAJEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 05:04:00 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:57868 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232565AbhDAJDq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 05:01:48 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67C23C0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 02:01:48 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id l18so1078303edc.9
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 02:01:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=s/KI0MJgK9QofyThEgPplyvQu0DKV1gNDZdKcA9WQyI=;
-        b=J/kl1FAlhHjoQasXIFGD7dlz77iXZ2V/vmGwj+NcHuXR0qjRBbigEisn2b6x8dz60j
-         j7O7OuQI1/gyBctQrWamL8kVGuip7e28UQ1uS7Tfz3awhbhTNDwvOBxIBfJJguh3zQDv
-         uzaMf953kXgPABN6GcLXxBUVYIO7ePGdrMoKueAJRAdITLMZkaXQZt7Wku5fKSDJhfaC
-         5ZA35tUp5GRptmuS2q5hMFAdmqBu8jOHqLXkvDmgLjDCb16EqYISEm7OuTBScJ3HXWIN
-         XJ4OVMP76IKN0cutJdcLUZEIu/wl95S1XcLz9DwliKqOd2PldLGYHbmScJy2djLmYhdC
-         MvJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=s/KI0MJgK9QofyThEgPplyvQu0DKV1gNDZdKcA9WQyI=;
-        b=aBVNMKq8usfBbPsMo8ucOfX8JoD/LsqqljuCUNr0++amHpgAwnJ/OPb1Ac0o6j7M2Q
-         tJy9efBu5XWR97ktoiW1OJ3QpjLAKFZUTkq5lQSY2Wi6c3bZjNZIzhQvcAlW1/YwD/V3
-         I6seIWlHfDsoU4ntc2IKWF7J/nyBwFfcTT/GTXuff7/TBBYDNk3KNcPrKuc3XOT7p+h/
-         wvy2xQsq4tNHy/3mdk4QdUicATkswBtlfLZcgCx+iBxjTyCg/DWqivLUDhL0pQbTRlD2
-         ahgVHFAnOpDwBVa0IJKntp/1j+1Iuh7OsNz3rjBpS0AI51xKrcee6TxhLSmrkKQNsDAN
-         eCOA==
-X-Gm-Message-State: AOAM531nsxoE38+8NdRHrMgezEiFIZpHtMwnCncaBfnT5bw54BggbJjt
-        Bt1WZQ/J5sbOSYSKVbU7qRAs2rgIoJILgQ==
-X-Google-Smtp-Source: ABdhPJw5CPPctarOql+rS2x1uLAr1a+Mp8+uwazHWoqo/j95L0cOZH6WvM0FAien2sFFgysAZTvJow==
-X-Received: by 2002:a05:6402:5203:: with SMTP id s3mr8769668edd.79.1617267705931;
-        Thu, 01 Apr 2021 02:01:45 -0700 (PDT)
-Received: from agape.jhs ([5.171.80.247])
-        by smtp.gmail.com with ESMTPSA id r24sm3118586edw.11.2021.04.01.02.01.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 02:01:45 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 11:01:42 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     joe@perches.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] staging: rtl8723bs: replace private macro with
- print_hex_dump_debug
-Message-ID: <20210401090141.GA1442@agape.jhs>
-References: <cover.1617183040.git.fabioaiuto83@gmail.com>
+        Thu, 1 Apr 2021 05:03:46 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UU5S6MB_1617267817;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UU5S6MB_1617267817)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 01 Apr 2021 17:03:44 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     bskeggs@redhat.com
+Cc:     airlied@linux.ie, daniel@ffwll.ch, sumit.semwal@linaro.org,
+        christian.koenig@amd.com, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] drm/nouveau: remove unused code
+Date:   Thu,  1 Apr 2021 17:03:35 +0800
+Message-Id: <1617267815-110014-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1617183040.git.fabioaiuto83@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 11:34:05AM +0200, Fabio Aiuto wrote:
-> this patchset replaces RT_PRINT_DATA private macro for dump hex values
-> with the kernel helper used for this pourpose.
-> 
-> Fabio Aiuto (2):
->   staging: rtl8723bs: use print_hex_dump_debug instead of private
->     RT_PRINT_DATA
->   staging: rtl8723bs: remove unused macro RT_PRINT_DATA
-> 
->  drivers/staging/rtl8723bs/hal/hal_com.c       | 13 ++++-------
->  drivers/staging/rtl8723bs/hal/rtl8723b_cmd.c  | 22 ++++++++++++++-----
->  .../staging/rtl8723bs/hal/rtl8723b_hal_init.c |  3 ++-
->  drivers/staging/rtl8723bs/include/rtw_debug.h | 19 ----------------
->  4 files changed, 22 insertions(+), 35 deletions(-)
-> 
-> -- 
-> 2.20.1
-> 
+Fix the following whitescan warning:
 
-Hi Greg,
+drivers/gpu/drm/nouveau/nouveau_bo.c:1287:17: warning: variable ‘dev’
+set but not used [-Wunused-but-set-variable].
 
-please drop this, I will send you a v2 soon.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/gpu/drm/nouveau/nouveau_bo.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Thank you,
+diff --git a/drivers/gpu/drm/nouveau/nouveau_bo.c b/drivers/gpu/drm/nouveau/nouveau_bo.c
+index f2720a0..b661d0d 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_bo.c
++++ b/drivers/gpu/drm/nouveau/nouveau_bo.c
+@@ -1284,14 +1284,12 @@ vm_fault_t nouveau_ttm_fault_reserve_notify(struct ttm_buffer_object *bo)
+ 			  struct ttm_tt *ttm)
+ {
+ 	struct nouveau_drm *drm;
+-	struct device *dev;
+ 	bool slave = !!(ttm->page_flags & TTM_PAGE_FLAG_SG);
+ 
+ 	if (slave)
+ 		return;
+ 
+ 	drm = nouveau_bdev(bdev);
+-	dev = drm->dev->dev;
+ 
+ 	return ttm_pool_free(&drm->ttm.bdev.pool, ttm);
+ }
+-- 
+1.8.3.1
 
-fabio
