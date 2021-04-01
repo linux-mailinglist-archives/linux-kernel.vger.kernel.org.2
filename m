@@ -2,86 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 901BA351AF6
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4C90351B8D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:11:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235574AbhDASD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:03:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236416AbhDARs0 (ORCPT
+        id S235929AbhDASIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:08:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36364 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235821AbhDARxW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:48:26 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40D2BC061794;
-        Thu,  1 Apr 2021 04:20:04 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso845860pjb.3;
-        Thu, 01 Apr 2021 04:20:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zXfV8oRhx+bc0ds8pc35Wa8gp6VUw0JHGi/VZK5I26w=;
-        b=rrr96NT5yosU4KhE5Je52XVfBf8huDRcdQXTh4h5tKyZncZumIBcC5NOaQ/f6I/Sq5
-         b+xCeEC86OaFbZbpZz12UXBRJBrm4Dxit/LnrcsR4cwL4WlmrEu6kfVsBNQf9nCZoU7C
-         ujEaoS5577c3HEr2VgbmsL/GRbrwMz//JXkipxq+INzLYXucWnRe4Kug4EEs/HiFLgoN
-         0ENCbsFyEa+F6ubYzdmEKA4fgayZOKt19ZGuY8KnaTtJUouLTgVvati73E15IOiaJlEl
-         8//95HMOCdV4HwHJiP1t4X3/eHqYqXxbQRBBdRvBbEXOKX+JNP5EqWvT8H+FhASt+3uH
-         JJNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zXfV8oRhx+bc0ds8pc35Wa8gp6VUw0JHGi/VZK5I26w=;
-        b=a+69NGi9g6/onYdWjvDCVMXxeziHlyM3lzq3dDyJuX6NN7uyxXnGHeGxmtR86fyG2A
-         TwjJKWVrlfD4szXDYZEctZ+6Qt7laSA2458z/8Gg/8lLBNU8JeKVYUfKD7/V2U6c1KEb
-         rRm2KRORYPC/JHciWeJlNAasuuOfozZeqrKQiiAk0bG9LQPYTUiMeBVO41QBJvINktUv
-         kBltCn8OkeHHXbG4Vdsw7oVySvZ1dPp+4mPTltXiXVjVz6lHWFA8bO7UM9rxX8kXRSxL
-         n3/8AClwtIsNsWF3qUHEjotddoJ0IG5L1TKuvXGRsksM5KOqSXzfQyYbdXrqCYcEiVaV
-         OJSw==
-X-Gm-Message-State: AOAM532s2PmvxtGIIx0LEQWiwPHnPRgdXjcJqF9VgX2R67eFgULmEATi
-        ksp2JaMJTKO846mAM3PjW7I=
-X-Google-Smtp-Source: ABdhPJz0dSfw5SvKtvD/uBISNA9vNtgipmBOmmaG18gV3KIdTpHQu1JHKEZJAAXh10th80qWYy/fAA==
-X-Received: by 2002:a17:90a:d90a:: with SMTP id c10mr8481837pjv.13.1617276003735;
-        Thu, 01 Apr 2021 04:20:03 -0700 (PDT)
-Received: from localhost ([122.182.250.63])
-        by smtp.gmail.com with ESMTPSA id s17sm5180631pjn.44.2021.04.01.04.20.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 04:20:03 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 16:50:01 +0530
-From:   Ritesh Harjani <ritesh.list@gmail.com>
-To:     Shaokun Zhang <zhangshaokun@hisilicon.com>
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Guo <guoyang2@huawei.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ritesh Harjani <ritesh.list@gmail.com>
-Subject: Re: [PATCH] ext4: Delete redundant uptodate check for buffer
-Message-ID: <20210401112001.tjwjfrno4ygwwzh2@riteshh-domain>
-References: <1617260610-29770-1-git-send-email-zhangshaokun@hisilicon.com>
+        Thu, 1 Apr 2021 13:53:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617299602;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=86yUsgQjiqkoygVn0PivbCanpSWHlnKkBTF8/03d7ag=;
+        b=bhWHhzEh92iDHf7xKSyeuvqO6lmUJZT6+idwQGg+bcOAx859geOyxP6cqfat+2CmuNlW19
+        sHQNVMtEKxJ0V9P0Zl3p+4lG6Z9RlqSWdY+CFpljeqBPAxTgFvDE8oElfiwIVeyB6L0Vyo
+        5GpuikO8GbGOSDzgz2AfZFaOjcA8L3Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-570-eA3kwBiuNSm9oH95AoFUYg-1; Thu, 01 Apr 2021 07:20:34 -0400
+X-MC-Unique: eA3kwBiuNSm9oH95AoFUYg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ED2F0800D53;
+        Thu,  1 Apr 2021 11:20:32 +0000 (UTC)
+Received: from starship (unknown [10.35.206.58])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BF65A6F44D;
+        Thu,  1 Apr 2021 11:20:29 +0000 (UTC)
+Message-ID: <526d400a09fea6037e9903c67fc4eaec18c04d24.camel@redhat.com>
+Subject: Re: [PATCH 0/2] KVM: x86: nSVM: fixes for SYSENTER emulation
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Jim Mattson <jmattson@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Borislav Petkov <bp@alien8.de>
+Date:   Thu, 01 Apr 2021 14:20:28 +0300
+In-Reply-To: <20210401111614.996018-1-mlevitsk@redhat.com>
+References: <20210401111614.996018-1-mlevitsk@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617260610-29770-1-git-send-email-zhangshaokun@hisilicon.com>
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/04/01 03:03PM, Shaokun Zhang wrote:
-> From: Yang Guo <guoyang2@huawei.com>
->
-> The buffer uptodate state has been checked in function set_buffer_uptodate,
-> there is no need use buffer_uptodate before calling set_buffer_uptodate and
-> delete it.
->
-> Cc: "Theodore Ts'o" <tytso@mit.edu>
-> Cc: Andreas Dilger <adilger.kernel@dilger.ca>
-> Signed-off-by: Yang Guo <guoyang2@huawei.com>
-> Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
-> ---
->  fs/ext4/inode.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
+On Thu, 2021-04-01 at 14:16 +0300, Maxim Levitsky wrote:
+> This is a result of a deep rabbit hole dive in regard to why
+> currently the nested migration of 32 bit guests
+> is totally broken on AMD.
 
-Thanks for the patch. Changes looks good and trivial.
+Please ignore this patch series, I didn't update the patch version.
 
-Feel free to add -
-Reviewed-by: Ritesh Harjani <ritesh.list@gmail.com>
+Best regards,
+	Maxim Levitsky
+
+> 
+> It turns out that due to slight differences between the original AMD64
+> implementation and the Intel's remake, SYSENTER instruction behaves a
+> bit differently on Intel, and to support migration from Intel to AMD we
+> try to emulate those differences away.
+> 
+> Sadly that collides with virtual vmload/vmsave feature that is used in nesting.
+> The problem was that when it is enabled,
+> on migration (and otherwise when userspace reads MSR_IA32_SYSENTER_{EIP|ESP},
+> wrong value were returned, which leads to #DF in the
+> nested guest when the wrong value is loaded back.
+> 
+> The patch I prepared carefully fixes this, by mostly disabling that
+> SYSCALL emulation when we don't spoof the Intel's vendor ID, and if we do,
+> and yet somehow SVM is enabled (this is a very rare edge case), then
+> virtual vmload/save is force disabled.
+> 
+> V2: incorporated review feedback from Paulo.
+> 
+> Best regards,
+>         Maxim Levitsky
+> 
+> Maxim Levitsky (2):
+>   KVM: x86: add guest_cpuid_is_intel
+>   KVM: nSVM: improve SYSENTER emulation on AMD
+> 
+>  arch/x86/kvm/cpuid.h   |  8 ++++
+>  arch/x86/kvm/svm/svm.c | 99 +++++++++++++++++++++++++++---------------
+>  arch/x86/kvm/svm/svm.h |  6 +--
+>  3 files changed, 76 insertions(+), 37 deletions(-)
+> 
+> -- 
+> 2.26.2
+> 
+
+
