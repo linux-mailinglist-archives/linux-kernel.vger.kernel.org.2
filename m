@@ -2,76 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33706351C43
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5692351C42
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239057AbhDASPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:15:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33036 "EHLO
+        id S239011AbhDASPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:15:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236043AbhDAR5R (ORCPT
+        with ESMTP id S236065AbhDAR5R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 1 Apr 2021 13:57:17 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE56C0D9424;
-        Thu,  1 Apr 2021 07:53:03 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id v10so1654569pfn.5;
-        Thu, 01 Apr 2021 07:53:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=S8v12+xvw38bIlezrR3XZMbu9iWBOqwBPhWL+2JH5Uc=;
-        b=Dyqaw1+fyqUfg5bx0s7dFljkCV8PaVIz36dJtCnis6d0JE98H+gWGEiJkpxzAu72t5
-         7wx0QmLOv6AMm0/1H50UY2mhotoAXpVBh6TjlUbhRDghDYIvd4Na88BsYOU/MfjiG/Ek
-         5L9NUBnbr0HDgBFpjCwPCjneRQQqWMFxfdBdAOUbbkWGh50YlaxYeyrpcBppDZxPfLju
-         7W5/5wDngGZi9dfnVSeMQtKWEkaIJVTGbtbo9z+RiPBI2tP2AG9Lmg2iFXLV7/mlHJpP
-         BdQnus19uPbIqKC78aExwLAg091o5q+nisiOXbINw42FSWQE+dz2viABp1CuUiFcQbbV
-         QNRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=S8v12+xvw38bIlezrR3XZMbu9iWBOqwBPhWL+2JH5Uc=;
-        b=Z2EEFRlRaxyJjpEDPgbwcpPGf79rKZ+dkUxR09P7igo4/zPaRSZ8ZE7DkTnnW+xoyn
-         nT9TSiVra1gutF6KT2paqnplhpdCB3t4nqSQfU1nUvyPKcIj6D0/Bb2BePIgyYWG+25R
-         3oTtIBniU7qSdN6/iFyukMHbqk5FD5nme49uf2QoTbz0l2KTjmkkSC44sDh46wd42n4v
-         a0qLR+eh6HL9XiJKfxrXQlt8oDSgUeJe1gq3Gxm46NADfPqC32pirK8Jhkn1w/7auoVz
-         7gbPEfRJTH4wBgTKkor29QVPOu/STCaipTrgq3C47R/4vHN7mrtwp4YLNVsUHf+L/WSd
-         CCrg==
-X-Gm-Message-State: AOAM533CrZt/KvlcNgh369tUdh25Wk8PAve6Q0GGDBLZS45PHSr0gy+b
-        BbMOnf1PyABJO9M23bDF7M67wJHxUjEWh1xF
-X-Google-Smtp-Source: ABdhPJzu44h9Fj7Ot3tFgyse9/w8XDAsDQQFWBiJsD/anxTnTfRamR8LuuoBNBHgcCRNKdUOVvGHZw==
-X-Received: by 2002:a63:1a47:: with SMTP id a7mr7729388pgm.437.1617288782443;
-        Thu, 01 Apr 2021 07:53:02 -0700 (PDT)
-Received: from ?IPv6:2409:4072:6307:8389:a773:d07f:cd55:994a? ([2409:4072:6307:8389:a773:d07f:cd55:994a])
-        by smtp.gmail.com with ESMTPSA id s19sm5825401pfh.168.2021.04.01.07.52.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Apr 2021 07:53:01 -0700 (PDT)
-Subject: Re: [PATCH] iio: adc: bcm_iproc_adc: Use %s and __func__
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210401062517.28832-1-dmugil2000@gmail.com>
- <CAHp75VfgL0KW0fetgE3NuBb4itMK1oY+yLmr1xDYkn390hCscg@mail.gmail.com>
- <20210401113015.00006b70@Huawei.com>
-From:   Mugilraj D <dmugil2000@gmail.com>
-Message-ID: <a2ac91a9-54e3-2525-1e7e-00a26d3393e3@gmail.com>
-Date:   Thu, 1 Apr 2021 20:22:47 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60FFBC0D9426;
+        Thu,  1 Apr 2021 07:53:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+         s=42; h=Date:Message-ID:Cc:To:From;
+        bh=8jYVTSHcDUfHY7lSnRvxzqvV+XEOiioVeMCNkU5pL/U=; b=gmeqKFSfEmZMR4ikxGpeC9sR6z
+        HstPDGcPczEeSWVvfeQryWdLv5R0S8Lvi/AS+peqlhACr6i8pQZvrjTYs8gXY5UGXcNAh11PcNS9h
+        L4rOw1MMvCOPtEg7gPMyfgcuEIKpI+SsdA1FnVDympI0txP4z1iGSHrA3YpHoJjq1YCuDNAu04YSN
+        GQ2RP1MO7lwug85uFQi7RCikLv5eL9DW8VmzFnPV9DVPXKQnQ68TODydm0GPBcNefySbrIi6JVebG
+        dXpnluVTE8W71WJ5ORgMnuBsJlp3ot2ldpSPuXaP93I+7leTSMfTBM6j4kFtCrrlSJXRUyOiHxedD
+        qhfjLZo0vOT54tB7E4WWwA/g60y9moxBetQSLwZklwq3ny8AgUd95GtqLA39O29qHkdA3J949aHsx
+        TvowkICdfdpaqLCdV/7V2UtVaXPzLpt+qjNcX/xRDAcRPZBxJFt/tVQ3bK8XevOdoCql1pTR3Tpoy
+        ArP01jTDNK8Xbe9/GkJ5X9Ae;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_RSA_CHACHA20_POLY1305:256)
+        (Exim)
+        id 1lRyhE-0007Rp-QU; Thu, 01 Apr 2021 14:53:20 +0000
+Subject: Re: [PATCH 2/8] kernel: unmask SIGSTOP for IO threads
+From:   Stefan Metzmacher <metze@samba.org>
+To:     Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>
+Cc:     io-uring@vger.kernel.org, torvalds@linux-foundation.org,
+        ebiederm@xmission.com, linux-kernel@vger.kernel.org
+References: <20210326003928.978750-1-axboe@kernel.dk>
+ <20210326003928.978750-3-axboe@kernel.dk> <20210326134840.GA1290@redhat.com>
+ <a179ad33-5656-b644-0d92-e74a6bd26cc8@kernel.dk>
+ <8f2a4b48-77c9-393f-5194-100ed63c05fc@samba.org>
+ <58f67a8b-166e-f19c-ccac-157153e4f17c@kernel.dk>
+ <c61fc5eb-c997-738b-1a60-5e3db2754f49@samba.org>
+Message-ID: <a891f9b7-81fb-5534-891c-306593961156@samba.org>
+Date:   Thu, 1 Apr 2021 16:53:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210401113015.00006b70@Huawei.com>
+In-Reply-To: <c61fc5eb-c997-738b-1a60-5e3db2754f49@samba.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -79,38 +53,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jens,
 
-
-On 01/04/21 4:00 pm, Jonathan Cameron wrote:
-> On Thu, 1 Apr 2021 12:24:50 +0300
-> Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> 
->> On Thu, Apr 1, 2021 at 9:27 AM Mugilraj Dhavachelvan
->> <dmugil2000@gmail.com> wrote:
->>>
->>> Change function's name to %s and __func__ to fix checkpatch.pl errors.  
+>>> I don't assume signals wanted by userspace should potentially handled in an io_thread...
+>>> e.g. things set with fcntl(fd, F_SETSIG,) used together with F_SETLEASE?
 >>
->> No, just drop the __func__ completely. First of all, we have a device
->> name, and uniqueness of the messages in the driver should guarantee
->> easy findings. Second, specific to _dbg() variants, with enabled
->> Dynamic Debug it can be chosen at run time!
->>
->> I recommend going through all drivers and drop __func__ near to
->> dev_dbg() and pr_debug().
->>
+>> I guess we do actually need it, if we're not fiddling with
+>> wants_signal() for them. To quell Oleg's concerns, we can just move it
+>> to post dup_task_struct(), that should eliminate any race concerns
+>> there.
 > 
-> Agreed.  Though beware that some maintainers will count this
-> as noise and get grumpy.
+> If that one is racy, don' we better also want this one?
+> https://lore.kernel.org/io-uring/438b738c1e4827a7fdfe43087da88bbe17eedc72.1616197787.git.metze@samba.org/T/#u
 > 
-> I'm fine with such patches for IIO.
+> And clear tsk->pf_io_worker ?
 
-Sorry for the noise. I just seen the docs about dynamic debug.
-So, if we use dev_dbg("log_msg") it will print statement like
-filename:lineno [module]func flag log_msg, If I get it correctly.
-And no need of specifying __func__ in dev_dbg() and dp_dbg() right!!
+As the workers don't clone other workers I guess it's fine to defer this to 5.13.
 
-Jonathan do you have any TODO's?
+metze
 
-> 
-> Jonathan
-> 
