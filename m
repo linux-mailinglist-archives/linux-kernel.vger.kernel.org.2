@@ -2,93 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62EB4350C1D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 03:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2814A350C1F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 03:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233311AbhDABvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 21:51:35 -0400
-Received: from smtp1.axis.com ([195.60.68.17]:10247 "EHLO smtp1.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233436AbhDABva (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 21:51:30 -0400
+        id S232634AbhDABwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 21:52:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232782AbhDABw2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 21:52:28 -0400
+Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B70C061761
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 18:52:28 -0700 (PDT)
+Received: by mail-oo1-xc2f.google.com with SMTP id p2-20020a4aa8420000b02901bc7a7148c4so177117oom.11
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 18:52:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1617241890;
-  x=1648777890;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=gl7EPpSLtrZnTMgtDD5JsRTYmYoIH6RbC6yuiOic6Vw=;
-  b=Awh9KGXUH5lGdGuO1Z+DgdBqiy/lXGzp6ADd2qU7j+eOZZw+HD/Rx9vY
-   FmcCKacyyF9eIJDtCR2JM14zaKKSkqCRxuR/rz8z78s17YDL2RazAiva9
-   oL/PIU7uqvtXhIVhENAdGsRkhqYnNZsDIya6puzXNBWAEMHI75OO+Ljp7
-   KAQdL8bTGKjQ4I68AgeDGl9KgUCF+oC26GLDXgf7m9s3Fv++2Q7CYShNC
-   wUrpy49lTARYe8mq+ff7iAgBhaRm8UPu8IozZ6I7DRP2VrU4K1hZ6/ZiW
-   JCbf8CLBQpr0E77M8J9hfn5P08svhAPJwwEAim0HB+guYkDvNX/Yw1bYS
-   g==;
-From:   Hermes Zhang <Hermes.Zhang@axis.com>
-To:     =?iso-8859-1?Q?Pali_Roh=E1r?= <pali@kernel.org>,
-        Hermes Zhang <Hermes.Zhang@axis.com>
-CC:     "lars@metafoo.de" <lars@metafoo.de>,
-        Sebastian Reichel <sre@kernel.org>, kernel <kernel@axis.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] power: supply: bq27xxx: Return the value instead of
- -ENODATA
-Thread-Topic: [PATCH] power: supply: bq27xxx: Return the value instead of
- -ENODATA
-Thread-Index: AQHXJjT9YXVQp+YZmUqmV5QFL6HFrQ==
-Date:   Thu, 1 Apr 2021 01:51:28 +0000
-Message-ID: <3acaabf2ec63418891e3f698c16b9a21@XBOX01.axis.com>
-References: <20210331135141.8063-1-chenhui.zhang@axis.com>
- <20210331140238.jl3qprpqhqave4bf@pali>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.0.5.60]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=c/Y3/RrdKRF2pSQN48a71SC6xyfKzLopuTABSPBanXQ=;
+        b=j4LTbOmRj9EMYWw8KpvigUS73EGOCx8SfS72bawUZIDGJDzEPrmkEph8XnR0YHhDNV
+         neeVwyAb7rUFMRWu8oI6Y80gdqnyzT0PADMm0krPE0zC7ExsJpT5A/dtbCavPchPgf0o
+         Bg/Ch/vH2lZ1zdrN+jeGWiS6g0PgFR5KNAcS1vSeFu/uSW0UhP8RIO5KhR+h2yST3fxP
+         eAx6PZJxVFwC/b9PwyXdVfYu6cNE4Yoq2goFEwGAPwDxfX/dmvlI0sD8Z5MkbcJ1wXpB
+         3ifdp4e0MBP0mra1l+PgKUdJzbjJOikavFaqpxKoUk6lHEkk/L21KRqE762+qgufWw4q
+         r1gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=c/Y3/RrdKRF2pSQN48a71SC6xyfKzLopuTABSPBanXQ=;
+        b=sLRh0TDTEy/FPUz81QW3jvGGGq9JRF9erN3D00xukRksxdc7IY2OZeX3xts5jcKkTv
+         p9p5+7x8P5zKIEzEhj3t/p+3FFHgw7hrIhu52MGzo+k7L/9m2csHz2bCzC2CaDs6vyr+
+         MooXBswRss6Er8UkQgqv7I9a0h28YAr/7nbeR3d2PvObaLPOaPsRcXbpQn1A0Bexa1Tt
+         FmIa+tb2Ul3863ioTdxrJBW9fvjKDLnaFlhGGt+NAiREqKpI8uummUUdWT0BkYb2Ds4j
+         vIWqLfWlkhaE1MIDzhjeYwHT1ssZDUi7LcXCQa0w0+2T9MalkKfoNZstQ5S1ZO6kMOFR
+         daFg==
+X-Gm-Message-State: AOAM530DFkfSAnDOJBltYTQied52w1Yl04C4erUV3q6rv/vxRUrMeF4c
+        DS6yW1hNixjEr/QpZxHneTAt1g==
+X-Google-Smtp-Source: ABdhPJzUxQQL9Us3Nkdf/7Saxa3suTOsX8M3dNg8I4UEW+DWRhc//XVtxnzbS0/KFBzPHxK2a7R+uA==
+X-Received: by 2002:a4a:e2c6:: with SMTP id l6mr5011251oot.31.1617241947855;
+        Wed, 31 Mar 2021 18:52:27 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id w199sm781456oif.41.2021.03.31.18.52.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 18:52:27 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 20:52:25 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Elliot Berman <eberman@codeaurora.org>,
+        Brian Masney <masneyb@onstation.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>
+Subject: Re: [PATCH v2] firmware: qcom_scm: Only compile legacy calls on ARM
+Message-ID: <20210401015225.GN904837@yoga>
+References: <20210323224336.1311783-1-swboyd@chromium.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210323224336.1311783-1-swboyd@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/31/21 10:02 PM, Pali Roh=E1r wrote:=0A=
-> @@ -1655,9 +1655,6 @@ static int bq27xxx_battery_read_time(struct bq27xxx=
-_device_info *di, u8 reg)=0A=
->  		return tval;=0A=
->  	}=0A=
->  =0A=
-> -	if (tval =3D=3D 65535)=0A=
-> -		return -ENODATA;=0A=
-> -=0A=
->  	return tval * 60;=0A=
-> I'm not sure if this is correct change. If value 65535 is special which=
-=0A=
-> indicates that data are not available then driver should not return=0A=
-> (converted) value 65535*60. If -ENODATA is there to indicate that data=0A=
-> are not available then -ENODATA should not be used.=0A=
->=0A=
-> And if there is application which does not handle -ENODATA for state=0A=
-> when data are not available then it is a bug in application.=0A=
-=0A=
-Yeah, I just have a feeling return -ENODATA for time_to_full/empty is=0A=
-not good here. Because:=0A=
-=0A=
-1. From chip datasheet, it mentioned return 65535 when it's not=0A=
-available (e.g. read time_to_full when discharging), but the driver=0A=
-changes behavior here.=0A=
-=0A=
-2. There is other case will return -ENODATA (e.g. the gauge not=0A=
-calibrated), so it will confuse application which is real failure.=0A=
-=0A=
-Could we change the value in minute instead of seconds in=0A=
-bq27xxx_battery_read_time(), so that means driver do nothing but only=0A=
-pass the value from the chip?=0A=
-=0A=
-=0A=
-Best Regards,=0A=
-=0A=
-Hermes=0A=
-=0A=
-=0A=
+On Tue 23 Mar 17:43 CDT 2021, Stephen Boyd wrote:
+
+> These scm calls are never used outside of legacy ARMv7 based platforms.
+> That's because PSCI, mandated on arm64, implements them for modern SoCs
+> via the PSCI spec. Let's move them to the legacy file and only compile
+> the legacy file into the kernel when CONFIG_ARM=y. Otherwise provide
+> stubs and fail the calls. This saves a little bit of space in an
+> arm64 allmodconfig.
+> 
+>  $ ./scripts/bloat-o-meter vmlinux.before vmlinux.after
+>  add/remove: 0/8 grow/shrink: 5/6 up/down: 509/-4401 (-3892)
+>  Function                                     old     new   delta
+>  __qcom_scm_set_dload_mode.constprop          312     452    +140
+>  qcom_scm_qsmmu500_wait_safe_toggle           288     416    +128
+>  qcom_scm_io_writel                           288     408    +120
+>  qcom_scm_io_readl                            376     492    +116
+>  __param_str_download_mode                     23      28      +5
+>  __warned                                    4327    4326      -1
+>  e843419@0b3f_00010432_324                      8       -      -8
+>  qcom_scm_call                                228     208     -20
+>  CSWTCH                                      5925    5877     -48
+>  _sub_I_65535_1                            163100  163040     -60
+>  _sub_D_65535_0                            163100  163040     -60
+>  qcom_scm_wb                                   64       -     -64
+>  qcom_scm_lock                                320     160    -160
+>  qcom_scm_call_atomic                         212       -    -212
+>  qcom_scm_cpu_power_down                      308       -    -308
+>  scm_legacy_call_atomic                       520       -    -520
+>  qcom_scm_set_warm_boot_addr                  720       -    -720
+>  qcom_scm_set_cold_boot_addr                  728       -    -728
+>  scm_legacy_call                             1492       -   -1492
+>  Total: Before=66737606, After=66733714, chg -0.01%
+> 
+> Commit 9a434cee773a ("firmware: qcom_scm: Dynamically support SMCCC and
+> legacy conventions") didn't mention any motivating factors for keeping
+> the legacy code around on arm64 kernels, i.e. presumably that commit
+> wasn't trying to support these legacy APIs on arm64 kernels.
+> 
+> Cc: Elliot Berman <eberman@codeaurora.org>
+> Cc: Brian Masney <masneyb@onstation.org>
+> Cc: Stephan Gerhold <stephan@gerhold.net>
+> Cc: Jeffrey Hugo <jhugo@codeaurora.org>
+> Cc: Douglas Anderson <dianders@chromium.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Regards,
+Bjorn
+
+> ---
+> 
+> Followup to v1 (https://lore.kernel.org/r/20210223214539.1336155-7-swboyd@chromium.org):
+>  * Don't change the legacy file to use legacy calls only
+>  * Wrap more things in CONFIG_ARM checks
+> 
+>  drivers/firmware/Makefile   |  4 +++-
+>  drivers/firmware/qcom_scm.c | 47 ++++++++++++++++++++-----------------
+>  drivers/firmware/qcom_scm.h | 15 ++++++++++++
+>  include/linux/qcom_scm.h    | 21 ++++++++++-------
+>  4 files changed, 56 insertions(+), 31 deletions(-)
+> 
+> diff --git a/drivers/firmware/Makefile b/drivers/firmware/Makefile
+> index 5e013b6a3692..0b7b35555a6c 100644
+> --- a/drivers/firmware/Makefile
+> +++ b/drivers/firmware/Makefile
+> @@ -17,7 +17,9 @@ obj-$(CONFIG_ISCSI_IBFT)	+= iscsi_ibft.o
+>  obj-$(CONFIG_FIRMWARE_MEMMAP)	+= memmap.o
+>  obj-$(CONFIG_RASPBERRYPI_FIRMWARE) += raspberrypi.o
+>  obj-$(CONFIG_FW_CFG_SYSFS)	+= qemu_fw_cfg.o
+> -obj-$(CONFIG_QCOM_SCM)		+= qcom_scm.o qcom_scm-smc.o qcom_scm-legacy.o
+> +obj-$(CONFIG_QCOM_SCM)		+= qcom_scm_objs.o
+> +qcom_scm_objs-$(CONFIG_ARM)	+= qcom_scm-legacy.o
+> +qcom_scm_objs-$(CONFIG_QCOM_SCM) += qcom_scm.o qcom_scm-smc.o
+>  obj-$(CONFIG_TI_SCI_PROTOCOL)	+= ti_sci.o
+>  obj-$(CONFIG_TRUSTED_FOUNDATIONS) += trusted_foundations.o
+>  obj-$(CONFIG_TURRIS_MOX_RWTM)	+= turris-mox-rwtm.o
+> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
+> index ee9cb545e73b..747808a8ddf4 100644
+> --- a/drivers/firmware/qcom_scm.c
+> +++ b/drivers/firmware/qcom_scm.c
+> @@ -49,28 +49,6 @@ struct qcom_scm_mem_map_info {
+>  	__le64 mem_size;
+>  };
+>  
+> -#define QCOM_SCM_FLAG_COLDBOOT_CPU0	0x00
+> -#define QCOM_SCM_FLAG_COLDBOOT_CPU1	0x01
+> -#define QCOM_SCM_FLAG_COLDBOOT_CPU2	0x08
+> -#define QCOM_SCM_FLAG_COLDBOOT_CPU3	0x20
+> -
+> -#define QCOM_SCM_FLAG_WARMBOOT_CPU0	0x04
+> -#define QCOM_SCM_FLAG_WARMBOOT_CPU1	0x02
+> -#define QCOM_SCM_FLAG_WARMBOOT_CPU2	0x10
+> -#define QCOM_SCM_FLAG_WARMBOOT_CPU3	0x40
+> -
+> -struct qcom_scm_wb_entry {
+> -	int flag;
+> -	void *entry;
+> -};
+> -
+> -static struct qcom_scm_wb_entry qcom_scm_wb[] = {
+> -	{ .flag = QCOM_SCM_FLAG_WARMBOOT_CPU0 },
+> -	{ .flag = QCOM_SCM_FLAG_WARMBOOT_CPU1 },
+> -	{ .flag = QCOM_SCM_FLAG_WARMBOOT_CPU2 },
+> -	{ .flag = QCOM_SCM_FLAG_WARMBOOT_CPU3 },
+> -};
+> -
+>  static const char *qcom_scm_convention_names[] = {
+>  	[SMC_CONVENTION_UNKNOWN] = "unknown",
+>  	[SMC_CONVENTION_ARM_32] = "smc arm 32",
+> @@ -260,6 +238,30 @@ static bool __qcom_scm_is_call_available(struct device *dev, u32 svc_id,
+>  	return ret ? false : !!res.result[0];
+>  }
+>  
+> +#if IS_ENABLED(CONFIG_ARM)
+> +
+> +#define QCOM_SCM_FLAG_COLDBOOT_CPU0	0x00
+> +#define QCOM_SCM_FLAG_COLDBOOT_CPU1	0x01
+> +#define QCOM_SCM_FLAG_COLDBOOT_CPU2	0x08
+> +#define QCOM_SCM_FLAG_COLDBOOT_CPU3	0x20
+> +
+> +#define QCOM_SCM_FLAG_WARMBOOT_CPU0	0x04
+> +#define QCOM_SCM_FLAG_WARMBOOT_CPU1	0x02
+> +#define QCOM_SCM_FLAG_WARMBOOT_CPU2	0x10
+> +#define QCOM_SCM_FLAG_WARMBOOT_CPU3	0x40
+> +
+> +struct qcom_scm_wb_entry {
+> +	int flag;
+> +	void *entry;
+> +};
+> +
+> +static struct qcom_scm_wb_entry qcom_scm_wb[] = {
+> +	{ .flag = QCOM_SCM_FLAG_WARMBOOT_CPU0 },
+> +	{ .flag = QCOM_SCM_FLAG_WARMBOOT_CPU1 },
+> +	{ .flag = QCOM_SCM_FLAG_WARMBOOT_CPU2 },
+> +	{ .flag = QCOM_SCM_FLAG_WARMBOOT_CPU3 },
+> +};
+> +
+>  /**
+>   * qcom_scm_set_warm_boot_addr() - Set the warm boot address for cpus
+>   * @entry: Entry point function for the cpus
+> @@ -369,6 +371,7 @@ void qcom_scm_cpu_power_down(u32 flags)
+>  	qcom_scm_call_atomic(__scm ? __scm->dev : NULL, &desc, NULL);
+>  }
+>  EXPORT_SYMBOL(qcom_scm_cpu_power_down);
+> +#endif
+>  
+>  int qcom_scm_set_remote_state(u32 state, u32 id)
+>  {
+> diff --git a/drivers/firmware/qcom_scm.h b/drivers/firmware/qcom_scm.h
+> index 632fe3142462..735e975320e4 100644
+> --- a/drivers/firmware/qcom_scm.h
+> +++ b/drivers/firmware/qcom_scm.h
+> @@ -68,11 +68,26 @@ extern int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
+>  	__scm_smc_call((dev), (desc), qcom_scm_convention, (res), (atomic))
+>  
+>  #define SCM_LEGACY_FNID(s, c)	(((s) << 10) | ((c) & 0x3ff))
+> +#if IS_ENABLED(CONFIG_ARM)
+>  extern int scm_legacy_call_atomic(struct device *dev,
+>  				  const struct qcom_scm_desc *desc,
+>  				  struct qcom_scm_res *res);
+>  extern int scm_legacy_call(struct device *dev, const struct qcom_scm_desc *desc,
+>  			   struct qcom_scm_res *res);
+> +#else
+> +static inline int scm_legacy_call_atomic(struct device *dev,
+> +					 const struct qcom_scm_desc *desc,
+> +					 struct qcom_scm_res *res)
+> +{
+> +	return -EINVAL;
+> +}
+> +
+> +static inline int scm_legacy_call(struct device *dev, const struct qcom_scm_desc *desc,
+> +				  struct qcom_scm_res *res)
+> +{
+> +	return -EINVAL;
+> +}
+> +#endif
+>  
+>  #define QCOM_SCM_SVC_BOOT		0x01
+>  #define QCOM_SCM_BOOT_SET_ADDR		0x01
+> diff --git a/include/linux/qcom_scm.h b/include/linux/qcom_scm.h
+> index 0165824c5128..0ec905d56e1a 100644
+> --- a/include/linux/qcom_scm.h
+> +++ b/include/linux/qcom_scm.h
+> @@ -64,9 +64,6 @@ enum qcom_scm_ice_cipher {
+>  #if IS_ENABLED(CONFIG_QCOM_SCM)
+>  extern bool qcom_scm_is_available(void);
+>  
+> -extern int qcom_scm_set_cold_boot_addr(void *entry, const cpumask_t *cpus);
+> -extern int qcom_scm_set_warm_boot_addr(void *entry, const cpumask_t *cpus);
+> -extern void qcom_scm_cpu_power_down(u32 flags);
+>  extern int qcom_scm_set_remote_state(u32 state, u32 id);
+>  
+>  extern int qcom_scm_pas_init_image(u32 peripheral, const void *metadata,
+> @@ -115,11 +112,6 @@ extern int qcom_scm_qsmmu500_wait_safe_toggle(bool en);
+>  
+>  static inline bool qcom_scm_is_available(void) { return false; }
+>  
+> -static inline int qcom_scm_set_cold_boot_addr(void *entry,
+> -		const cpumask_t *cpus) { return -ENODEV; }
+> -static inline int qcom_scm_set_warm_boot_addr(void *entry,
+> -		const cpumask_t *cpus) { return -ENODEV; }
+> -static inline void qcom_scm_cpu_power_down(u32 flags) {}
+>  static inline u32 qcom_scm_set_remote_state(u32 state,u32 id)
+>  		{ return -ENODEV; }
+>  
+> @@ -171,4 +163,17 @@ static inline int qcom_scm_hdcp_req(struct qcom_scm_hdcp_req *req, u32 req_cnt,
+>  static inline int qcom_scm_qsmmu500_wait_safe_toggle(bool en)
+>  		{ return -ENODEV; }
+>  #endif
+> +
+> +#if IS_ENABLED(CONFIG_ARM) && IS_ENABLED(CONFIG_QCOM_SCM)
+> +extern int qcom_scm_set_cold_boot_addr(void *entry, const cpumask_t *cpus);
+> +extern int qcom_scm_set_warm_boot_addr(void *entry, const cpumask_t *cpus);
+> +extern void qcom_scm_cpu_power_down(u32 flags);
+> +#else
+> +static inline int qcom_scm_set_cold_boot_addr(void *entry,
+> +		const cpumask_t *cpus) { return -ENODEV; }
+> +static inline int qcom_scm_set_warm_boot_addr(void *entry,
+> +		const cpumask_t *cpus) { return -ENODEV; }
+> +static inline void qcom_scm_cpu_power_down(u32 flags) {}
+> +#endif
+> +
+>  #endif
+> 
+> base-commit: 3b9cdafb5358eb9f3790de2f728f765fef100731
+> prerequisite-patch-id: 77da2cfd7591b1d7c35e879dca67d4f037f40e48
+> prerequisite-patch-id: 021337034973fa8ce52fc8c84787f40dabb33df6
+> prerequisite-patch-id: 5d374e97d8f0d384098a46e91006811ab89c84b0
+> prerequisite-patch-id: 892de894cc937f7fe6ddb8f95ec9e2e3557830c7
+> prerequisite-patch-id: 33b2442181aeb8adfa1c08d9a167d3bcbd1660fe
+> -- 
+> https://chromeos.dev
+> 
