@@ -2,81 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05BCC350BC3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 03:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 026E8350BC6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 03:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233192AbhDABMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 21:12:46 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:37150 "EHLO fornost.hmeau.com"
+        id S232839AbhDABQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 21:16:12 -0400
+Received: from mga06.intel.com ([134.134.136.31]:54039 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230284AbhDABMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 21:12:12 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1lRlrx-0007Nz-AT; Thu, 01 Apr 2021 12:11:34 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 01 Apr 2021 12:11:32 +1100
-Date:   Thu, 1 Apr 2021 12:11:32 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        David Gstir <david@sigma-star.at>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Howells <dhowells@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-Subject: Re: [PATCH v1 3/3] KEYS: trusted: Introduce support for NXP
- CAAM-based trusted keys
-Message-ID: <20210401011132.GB4349@gondor.apana.org.au>
-References: <f9c0087d299be1b9b91b242f41ac6ef7b9ee3ef7.camel@linux.ibm.com>
- <63dd7d4b-4729-9e03-cd8f-956b94eab0d9@pengutronix.de>
- <CAFA6WYOw_mQwOUN=onhzb7zCTyYDBrcx0E7C3LRk6nPLAVCWEQ@mail.gmail.com>
- <557b92d2-f3b8-d136-7431-419429f0e059@pengutronix.de>
- <CAFA6WYNE44=Y7Erfc-xNtOrf7TkJjh+odmYH5vzhEHR6KqBfeQ@mail.gmail.com>
- <6F812C20-7585-4718-997E-0306C4118468@sigma-star.at>
- <YGDpA4yPWmTWEyx+@kernel.org>
- <YGOcZtkw3ZM5kvl6@gmail.com>
- <YGUGYi4Q3Uxyol6r@kernel.org>
- <YGUHBelwhvJDhKoo@gmail.com>
+        id S229959AbhDABPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 21:15:41 -0400
+IronPort-SDR: J+amwlH/HUZNX2Mb1pdkbMJ7pQU1UN0Aed8+3vZrnt6gS0cmA6r9JqI+d1rzCT8wdWVNCfb8nT
+ jyi1HlYPGKdg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="253462895"
+X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
+   d="scan'208";a="253462895"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 18:15:40 -0700
+IronPort-SDR: q84Mbr6GTdcqrEw1OcK8lUatWI/ngVamlhNwOzmHE5VQlQZnfhRDRwcd6YNeZKNJF1V/wnQcuL
+ D5mtcElaznLg==
+X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
+   d="scan'208";a="455748644"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 18:15:40 -0700
+Date:   Wed, 31 Mar 2021 18:15:40 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH V5 08/10] x86/entry: Preserve PKRS MSR across exceptions
+Message-ID: <20210401011540.GG3014244@iweiny-DESK2.sc.intel.com>
+References: <20210331191405.341999-1-ira.weiny@intel.com>
+ <20210331191405.341999-9-ira.weiny@intel.com>
+ <dcd6a103-5220-d624-0655-b9c7146f9de5@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YGUHBelwhvJDhKoo@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <dcd6a103-5220-d624-0655-b9c7146f9de5@intel.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 04:34:29PM -0700, Eric Biggers wrote:
-> On Thu, Apr 01, 2021 at 02:31:46AM +0300, Jarkko Sakkinen wrote:
-> > 
-> > It's a bummer but uapi is the god in the end. Since TPM does not do it
-> > today, that behaviour must be supported forever. That's why a boot option
-> > AND a warning would be the best compromise.
+On Wed, Mar 31, 2021 at 12:31:56PM -0700, Dave Hansen wrote:
+> On 3/31/21 12:14 PM, ira.weiny@intel.com wrote:
+> > + * To protect against exceptions having access to this memory we save the
+> > + * current running value and sets the PKRS value to be used during the
+> > + * exception.
 > 
-> It's not UAPI if there is no way for userspace to tell if it changed.
+> This series seems to have grown some "we's".
 
-Exactly.  UAPI is only an issue if something *breaks*.
+I suppose it has...
 
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+> 
+> The preexisting pkey code was not innocent in this regard, either.  But,
+> please fix this up across the series in the next submission.  Literally
+> removing "we" from this sentence doesn't change the meaning at all.
+
+Sure I can audit the series for this...  Waiting a day for other comments.
+
+Thanks,
+Ira
+
