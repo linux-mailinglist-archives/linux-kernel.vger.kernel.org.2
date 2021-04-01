@@ -2,157 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC1435174E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:42:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1633517D0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234992AbhDARlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:41:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45164 "EHLO
+        id S235454AbhDARmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:42:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57272 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234122AbhDARgT (ORCPT
+        by vger.kernel.org with ESMTP id S234358AbhDARhB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:36:19 -0400
+        Thu, 1 Apr 2021 13:37:01 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617298579;
+        s=mimecast20190719; t=1617298621;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+gDC7i2lcnIpwprv2MM7sCVCIYProJ2chwug+EO7t94=;
-        b=DHBh22mD4nl2huS+f6tTdqDv4QKfDCu5jFg/hT8XjbuclBQiP8rq1bhKdJxTmAc/AJiWvz
-        PWJscbaTVV6ampfQDC1+IAXkX66kzTdR36wLOgRWz0NhAeDv7I59Q1+hEKseQeITwI8AOV
-        HZgFy+G44XaU58QYDmTofpcWGRa30ts=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-417-gauNf7jINFau6sPTYRwdWQ-1; Thu, 01 Apr 2021 13:05:41 -0400
-X-MC-Unique: gauNf7jINFau6sPTYRwdWQ-1
-Received: by mail-wr1-f69.google.com with SMTP id e9so3056851wrg.6
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 10:05:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+gDC7i2lcnIpwprv2MM7sCVCIYProJ2chwug+EO7t94=;
-        b=Ul7kbnJA4jBBMUXlpaOsKNHlc0hYpwPWdc6OnRb1+Il+xFDrDbd0nbxkllVapqswhR
-         1Q4+lUqlUTDrJJ3w+yNPd8oMyOE24GK0VSDU/Z9uCzUL9y4wIJtSs7uTx0MNspTYGzSl
-         x5RcU2KA/QUsQwFwY87rqSEn4edS4nT/QV8FNdmMbeyB+mDRRaF8rzAnHPWmelZQbLTp
-         SLQky4PW45JKVPOdG7F2Pc16/VpcK46YCFJIagn9Ot2x5u15X45R099nQ1FVXjyI4GFf
-         h2lW8AEte1dxaUj+MLralDfDpmf373A/ksmPqofHdzV+ciRzFQJtb9GAe/Irkty84Y+Z
-         Pwiw==
-X-Gm-Message-State: AOAM532L0h8Pc6jg/mGorUpOSuVyffKqhFbylD6k89ZVybJGygqt3Db8
-        m2+hdLHKDuoFNI2jcyfhJVKCmczoHnjd4Mj792ZrphsmiVnn4vUzHrIuaTr98HC+iSU2ZK7iLwS
-        Z+ISBa2CB+cvmS2qVPBTKfhj4
-X-Received: by 2002:adf:9bca:: with SMTP id e10mr10978481wrc.364.1617296739819;
-        Thu, 01 Apr 2021 10:05:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz6bRxgGaxi7gnz4A0LwmjIJAReTDTvc/N5Vp/zCZDK8+BU80MaKkHtU7SekOftZhg+CIIg6w==
-X-Received: by 2002:adf:9bca:: with SMTP id e10mr10978455wrc.364.1617296739580;
-        Thu, 01 Apr 2021 10:05:39 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id f4sm11056839wrz.4.2021.04.01.10.05.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Apr 2021 10:05:38 -0700 (PDT)
-Subject: Re: [PATCH 1/4] KVM: x86: pending exceptions must not be blocked by
- an injected event
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>,
+        bh=ymqWAzLAr6YjRLZWB43VnMgVtF641FdmA2DlyPy0Tsc=;
+        b=bzD0rAsv58wJqaiQMMgu5g2BkjKSOK3Zb+w6Va/HNp7a5kH81Ih5KZwjVJQFMKVYaVSfZF
+        /2X2FD4/SAVhtnMG/uNVpKDKjj2T5tXizEgpFIPK+KevzI2vttuTU3A94fHI5H8dJwNPnh
+        JHAsPRr2cRICBMIES4uH9ljur36uNHM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-177-eCMNvA66Px6meC_TdNIwIQ-1; Thu, 01 Apr 2021 13:06:04 -0400
+X-MC-Unique: eCMNvA66Px6meC_TdNIwIQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E0ED618C8C00;
+        Thu,  1 Apr 2021 17:06:02 +0000 (UTC)
+Received: from starship (unknown [10.35.206.58])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 81F3076BF6;
+        Thu,  1 Apr 2021 17:05:52 +0000 (UTC)
+Message-ID: <0db95e08290267a6cc808f4ed795551c0ca6d946.camel@redhat.com>
+Subject: Re: [PATCH v2 2/2] KVM: nSVM: improve SYSENTER emulation on AMD
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
+Cc:     Wanpeng Li <wanpengli@tencent.com>,
         Jim Mattson <jmattson@google.com>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
         Ingo Molnar <mingo@redhat.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
         "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Sean Christopherson <seanjc@google.com>
-References: <20210401143817.1030695-1-mlevitsk@redhat.com>
- <20210401143817.1030695-2-mlevitsk@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <4f6a321a-bc44-fe2f-37f5-6b22bc7fae1c@redhat.com>
-Date:   Thu, 1 Apr 2021 19:05:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Date:   Thu, 01 Apr 2021 20:05:51 +0300
+In-Reply-To: <87h7kqrwb2.fsf@vitty.brq.redhat.com>
+References: <20210401111928.996871-1-mlevitsk@redhat.com>
+         <20210401111928.996871-3-mlevitsk@redhat.com>
+         <87h7kqrwb2.fsf@vitty.brq.redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <20210401143817.1030695-2-mlevitsk@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/04/21 16:38, Maxim Levitsky wrote:
-> Injected interrupts/nmi should not block a pending exception,
-> but rather be either lost if nested hypervisor doesn't
-> intercept the pending exception (as in stock x86), or be delivered
-> in exitintinfo/IDT_VECTORING_INFO field, as a part of a VMexit
-> that corresponds to the pending exception.
+On Thu, 2021-04-01 at 15:03 +0200, Vitaly Kuznetsov wrote:
+> Maxim Levitsky <mlevitsk@redhat.com> writes:
 > 
-> The only reason for an exception to be blocked is when nested run
-> is pending (and that can't really happen currently
-> but still worth checking for).
+> > Currently to support Intel->AMD migration, if CPU vendor is GenuineIntel,
+> > we emulate the full 64 value for MSR_IA32_SYSENTER_{EIP|ESP}
+> > msrs, and we also emulate the sysenter/sysexit instruction in long mode.
+> > 
+> > (Emulator does still refuse to emulate sysenter in 64 bit mode, on the
+> > ground that the code for that wasn't tested and likely has no users)
+> > 
+> > However when virtual vmload/vmsave is enabled, the vmload instruction will
+> > update these 32 bit msrs without triggering their msr intercept,
+> > which will lead to having stale values in kvm's shadow copy of these msrs,
+> > which relies on the intercept to be up to date.
+> > 
+> > Fix/optimize this by doing the following:
+> > 
+> > 1. Enable the MSR intercepts for SYSENTER MSRs iff vendor=GenuineIntel
+> >    (This is both a tiny optimization and also ensures that in case
+> >    the guest cpu vendor is AMD, the msrs will be 32 bit wide as
+> >    AMD defined).
+> > 
+> > 2. Store only high 32 bit part of these msrs on interception and combine
+> >    it with hardware msr value on intercepted read/writes
+> >    iff vendor=GenuineIntel.
+> > 
+> > 3. Disable vmload/vmsave virtualization if vendor=GenuineIntel.
+> >    (It is somewhat insane to set vendor=GenuineIntel and still enable
+> >    SVM for the guest but well whatever).
+> >    Then zero the high 32 bit parts when kvm intercepts and emulates vmload.
+> > 
+> > Thanks a lot to Paulo Bonzini for helping me with fixing this in the most
 > 
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> s/Paulo/Paolo/ :-)
+Sorry about that!
 
-This patch would be an almost separate bugfix, right?  I am going to 
-queue this, but a confirmation would be helpful.
-
-Paolo
-
-> ---
->   arch/x86/kvm/svm/nested.c |  8 +++++++-
->   arch/x86/kvm/vmx/nested.c | 10 ++++++++--
->   2 files changed, 15 insertions(+), 3 deletions(-)
 > 
-> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-> index 8523f60adb92..34a37b2bd486 100644
-> --- a/arch/x86/kvm/svm/nested.c
-> +++ b/arch/x86/kvm/svm/nested.c
-> @@ -1062,7 +1062,13 @@ static int svm_check_nested_events(struct kvm_vcpu *vcpu)
->   	}
->   
->   	if (vcpu->arch.exception.pending) {
-> -		if (block_nested_events)
-> +		/*
-> +		 * Only a pending nested run can block a pending exception.
-> +		 * Otherwise an injected NMI/interrupt should either be
-> +		 * lost or delivered to the nested hypervisor in the EXITINTINFO
-> +		 * vmcb field, while delivering the pending exception.
-> +		 */
-> +		if (svm->nested.nested_run_pending)
->                           return -EBUSY;
->   		if (!nested_exit_on_exception(svm))
->   			return 0;
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index fd334e4aa6db..c3ba842fc07f 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -3806,9 +3806,15 @@ static int vmx_check_nested_events(struct kvm_vcpu *vcpu)
->   
->   	/*
->   	 * Process any exceptions that are not debug traps before MTF.
-> +	 *
-> +	 * Note that only a pending nested run can block a pending exception.
-> +	 * Otherwise an injected NMI/interrupt should either be
-> +	 * lost or delivered to the nested hypervisor in the IDT_VECTORING_INFO,
-> +	 * while delivering the pending exception.
->   	 */
-> +
->   	if (vcpu->arch.exception.pending && !vmx_pending_dbg_trap(vcpu)) {
-> -		if (block_nested_events)
-> +		if (vmx->nested.nested_run_pending)
->   			return -EBUSY;
->   		if (!nested_vmx_check_exception(vcpu, &exit_qual))
->   			goto no_vmexit;
-> @@ -3825,7 +3831,7 @@ static int vmx_check_nested_events(struct kvm_vcpu *vcpu)
->   	}
->   
->   	if (vcpu->arch.exception.pending) {
-> -		if (block_nested_events)
-> +		if (vmx->nested.nested_run_pending)
->   			return -EBUSY;
->   		if (!nested_vmx_check_exception(vcpu, &exit_qual))
->   			goto no_vmexit;
+> > correct way.
+> > 
+> > This patch fixes nested migration of 32 bit nested guests, that was
+> > broken because incorrect cached values of SYSENTER msrs were stored in
+> > the migration stream if L1 changed these msrs with
+> > vmload prior to L2 entry.
+> > 
+> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> > ---
+> >  arch/x86/kvm/svm/svm.c | 99 +++++++++++++++++++++++++++---------------
+> >  arch/x86/kvm/svm/svm.h |  6 +--
+> >  2 files changed, 68 insertions(+), 37 deletions(-)
+> > 
+> > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> > index 271196400495..6c39b0cd6ec6 100644
+> > --- a/arch/x86/kvm/svm/svm.c
+> > +++ b/arch/x86/kvm/svm/svm.c
+> > @@ -95,6 +95,8 @@ static const struct svm_direct_access_msrs {
+> >  } direct_access_msrs[MAX_DIRECT_ACCESS_MSRS] = {
+> >  	{ .index = MSR_STAR,				.always = true  },
+> >  	{ .index = MSR_IA32_SYSENTER_CS,		.always = true  },
+> > +	{ .index = MSR_IA32_SYSENTER_EIP,		.always = false },
+> > +	{ .index = MSR_IA32_SYSENTER_ESP,		.always = false },
+> >  #ifdef CONFIG_X86_64
+> >  	{ .index = MSR_GS_BASE,				.always = true  },
+> >  	{ .index = MSR_FS_BASE,				.always = true  },
+> > @@ -1258,16 +1260,6 @@ static void init_vmcb(struct kvm_vcpu *vcpu)
+> >  	if (kvm_vcpu_apicv_active(vcpu))
+> >  		avic_init_vmcb(svm);
+> >  
+> > -	/*
+> > -	 * If hardware supports Virtual VMLOAD VMSAVE then enable it
+> > -	 * in VMCB and clear intercepts to avoid #VMEXIT.
+> > -	 */
+> > -	if (vls) {
+> > -		svm_clr_intercept(svm, INTERCEPT_VMLOAD);
+> > -		svm_clr_intercept(svm, INTERCEPT_VMSAVE);
+> > -		svm->vmcb->control.virt_ext |= VIRTUAL_VMLOAD_VMSAVE_ENABLE_MASK;
+> > -	}
+> > -
+> >  	if (vgif) {
+> >  		svm_clr_intercept(svm, INTERCEPT_STGI);
+> >  		svm_clr_intercept(svm, INTERCEPT_CLGI);
+> > @@ -2133,9 +2125,11 @@ static int vmload_vmsave_interception(struct kvm_vcpu *vcpu, bool vmload)
+> >  
+> >  	ret = kvm_skip_emulated_instruction(vcpu);
+> >  
+> > -	if (vmload)
+> > +	if (vmload) {
+> >  		nested_svm_vmloadsave(vmcb12, svm->vmcb);
+> > -	else
+> > +		svm->sysenter_eip_hi = 0;
+> > +		svm->sysenter_esp_hi = 0;
+> > +	} else
+> >  		nested_svm_vmloadsave(svm->vmcb, vmcb12);
 > 
+> Nitpicking: {} are now needed for both branches here.
+I didn't knew about this rule, and I'll take this into
+account next time. Thanks!
+
+
+Best regards,
+	Maxim Levitsky
+
 
