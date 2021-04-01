@@ -2,109 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B08351EF0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F7D351C55
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239668AbhDASvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:51:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57606 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237180AbhDASdC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:33:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B143A61365;
-        Thu,  1 Apr 2021 15:27:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617290875;
-        bh=6OyN9qDE9W6bki0U8Z4PuTzkFQGhqo+Vs3sw4cGUYWk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nKaF72NUeleGdNu0kKTVFRNk2MtPL/Ll8VRJjNCyJNTndvhTiuzsn5n81GUvaTwJT
-         /5pI6YSDz4UTt1k/i+Bys6f73DM6ZnHszfmzjWATodd1GCZ9CaYUD6d6uhwqCkQqpc
-         5nCl6HVjJgndYKdJDZXD0MBJivD93+q0cFuhVRQNylYJTzkGwVPhJyGrEUFeYqLnT+
-         rIsGW9kB+ivAhhohQUCoVPMO3efByGG4PLeI0u23IitcVFHAUwWvXKyiBgJnhKgMv0
-         2EYXufbsnlJBdjp7kjZYcp+a9eQnOfs75V/wt2NbPfnNq9oO3p7dMh/koSIJaVs2d+
-         oH4OblOL2fsKQ==
-Date:   Thu, 1 Apr 2021 16:27:41 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     madvenka@linux.microsoft.com
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1 1/4] arm64: Implement infrastructure for stack
- trace reliability checks
-Message-ID: <20210401152741.GK4758@sirena.org.uk>
-References: <77bd5edeea72d44533c769b1e8c0fea7a9d7eb3a>
- <20210330190955.13707-1-madvenka@linux.microsoft.com>
- <20210330190955.13707-2-madvenka@linux.microsoft.com>
+        id S239531AbhDASQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:16:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236793AbhDAR6k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:58:40 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC77C0225A8;
+        Thu,  1 Apr 2021 08:29:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Kha/E3uhoOiUrD0C/aeRnYYOJ8L7PhbQTFEePWXTQ9o=; b=GiF2UwUHIZnHkEkOlcxLLgluR7
+        syNox8h+RaBbuIUiOBghBF3CDGQNuaIbRzy7mWDoxwenL11iVarDDi6MmiRxTFuHb4kP13LZvn2f6
+        35thsXdGlyCG8MGNauINAug1BzBEFT4pbD4wIwaSunIPgfbfA8chATkAqldy2DO/PybrFImdLg0wO
+        mNCslbxOAuh01cjc+scg0jSBhcVB/IKtD58/f7a4sI5WIyiXdtrZHuStvqjyjgZ+eAffpU+zYNZVS
+        Hu1zZPxQtOxOmhNtAXhJ8AFMfHi/hVJ78H7v36FIrf0oQO/kkb9wcbdYgR1IsDDx2zA9fDFxDwcsV
+        kRF2tr4g==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lRzFU-006IH7-5h; Thu, 01 Apr 2021 15:28:46 +0000
+Date:   Thu, 1 Apr 2021 16:28:44 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
+Cc:     laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
+        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com
+Subject: Re: [Outreachy kernel] [PATCH 1/2] staging: media: omap4iss: Ending
+ line with argument
+Message-ID: <20210401152844.GF351017@casper.infradead.org>
+References: <cover.1617287509.git.martinsdecarvalhobeatriz@gmail.com>
+ <441d27060ff6477d0ad418f41e194b96373c1f7f.1617287509.git.martinsdecarvalhobeatriz@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="NhBACjNc9vV+/oop"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210330190955.13707-2-madvenka@linux.microsoft.com>
-X-Cookie: You can't take damsel here now.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <441d27060ff6477d0ad418f41e194b96373c1f7f.1617287509.git.martinsdecarvalhobeatriz@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 01, 2021 at 04:07:38PM +0100, Beatriz Martins de Carvalho wrote:
+> diff --git a/drivers/staging/media/omap4iss/iss.c b/drivers/staging/media/omap4iss/iss.c
+> index dae9073e7d3c..e8f724dbf810 100644
+> --- a/drivers/staging/media/omap4iss/iss.c
+> +++ b/drivers/staging/media/omap4iss/iss.c
+> @@ -559,9 +559,10 @@ static int iss_reset(struct iss_device *iss)
+>  	iss_reg_set(iss, OMAP4_ISS_MEM_TOP, ISS_HL_SYSCONFIG,
+>  		    ISS_HL_SYSCONFIG_SOFTRESET);
+>  
+> -	timeout = iss_poll_condition_timeout(
+> -		!(iss_reg_read(iss, OMAP4_ISS_MEM_TOP, ISS_HL_SYSCONFIG) &
+> -		ISS_HL_SYSCONFIG_SOFTRESET), 1000, 10, 100);
+> +	timeout = iss_poll_condition_timeout(!(iss_reg_read(iss,
+> +							    OMAP4_ISS_MEM_TOP, ISS_HL_SYSCONFIG)
+> +							    & ISS_HL_SYSCONFIG_SOFTRESET),
+> +							    1000, 10, 100);
 
---NhBACjNc9vV+/oop
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This is not a readability improvment.  I would factor it out into its
+own function.
 
-On Tue, Mar 30, 2021 at 02:09:52PM -0500, madvenka@linux.microsoft.com wrot=
-e:
-> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
->=20
-> Implement a check_reliability() function that will contain checks for the
-> presence of various features and conditions that can render the stack tra=
-ce
-> unreliable.
-
-This looks good to me with one minor stylistic thing:
-
-> +/*
-> + * Special functions where the stack trace is unreliable.
-> + */
-> +static struct function_range	special_functions[] =3D {
-> +	{ 0, 0 }
-> +};
-
-Might be good to put a comment here saying that this is terminating the
-list rather than detecting a NULL function pointer:
-
-	{ /* sentinel */ }
-
-is a common idiom for that.
-
-Given that it's a fixed array we could also...
-
-> +	for (func =3D special_functions; func->start; func++) {
-> +		if (pc >=3D func->start && pc < func->end)
-
-=2E..do these as
-
-	for (i =3D 0; i < ARRAY_SIZE(special_functions); i++)=20
-
-so you don't need something like that, though that gets awkward when you
-have to write out special_functions[i].field a lot.
-
-So many different potential colours for the bikeshed!
-
---NhBACjNc9vV+/oop
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBl5mwACgkQJNaLcl1U
-h9C7XAf8CStzmgOUDBXGUY/gd9BnKtuzEP7qyRDJ/4Qn521DOcsK5ga4CG1FGT9U
-2BEaooZ5dqyee1IgpO3p4yTDQgLTARXeWK0No6mfiPoXTnR0NnODCclBW5jiYAkI
-yMB4KzOexgmUnuYToDl0p3SDtKzHLtpo+bjgnfEom1sQlHfFursZhBVC9ERJnhF3
-yw2Oe0yRTmKbkT7pKzSKspqOxlfRii9L8G/2phIDaQiTdDL/ul/1hPeLJmh/peiO
-j4WM5WnXdCrHYwje1U3deGU5zx9eEBPQF6S32t6AuwTis5SfuNQ53bOaRda+GeZL
-/MBvmhuX0TRqL5IzkAktpUtPPcZmFA==
-=Wi9w
------END PGP SIGNATURE-----
-
---NhBACjNc9vV+/oop--
