@@ -2,95 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7266B35103E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 09:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B03351042
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 09:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233518AbhDAHlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 03:41:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42544 "EHLO
+        id S233608AbhDAHlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 03:41:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233050AbhDAHlF (ORCPT
+        with ESMTP id S229850AbhDAHle (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 03:41:05 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD6BC0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 00:41:04 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so1354391otn.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 00:41:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D/ulkwguw7+8k5/tAEJnWieZv2I5VNSiJKBdc0AK5cQ=;
-        b=QXMzJnX9o7ltI8gwhP/juDSXcuSSWP8jUVZ+4XCWXpU11sD04A/iqibPLpXZGCjigH
-         jGcIpduX80123m3QFZ4yKzMtIyy+rc8Ywp6mmgd/umoBQf2A+Kqak55shjtB7S4hEBrC
-         4abCMSSb5OwbT9LulAymHbL2MLDMVQuc3juL8fnjzGK3cR+QwWlxk8qqJFPX2BCeJIRu
-         9wJ/F9BPiMSDVlYcCBsgnHnmra9k7Iy9Zl5jmfUSHAOttJeQGDs1ncdqKskSO+9QtYlq
-         A704XoWYMrxr8s4gRZn+up8yrMsShSSG1cIlmZJCntj31dWtpSxb+69MbwUJMW90NcbS
-         9mNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D/ulkwguw7+8k5/tAEJnWieZv2I5VNSiJKBdc0AK5cQ=;
-        b=NSKKcH7HrI/EeEAFLiz3puPhvMSM7B7MWbhcNCP1tNGG3toL2VjSxAV3c7D6elcWnu
-         +xImaSjQr7qn2z3PKUFrnCUbCzV4yT5vmYVY6F+RHSubPn9j6xKvf0Kz1Su36KL9I4Y9
-         Pr4kPApN5FaN0r47RNF+095VouwCtIYnZf3ldJAB4JIkMbGMkvf+NmcOzrgd7FOjLfn9
-         29AlPpiQ/5axmJCgecxk2ILiiBFCVOuSBhU7r3WrL16bARuTnnsqY3WYGDr5hzCfZRVJ
-         2QYXzHE8GgXhjQd7+wo/LasjDz1n6vt8gkr+JdaIVQ+VR8ROFVDDoHmwG2C++m7OyrSs
-         8plQ==
-X-Gm-Message-State: AOAM533PUP3AeLsJsiptoF+a1yfjFC5OEk+U8xwiZ9ZmJlau1G+vAZU4
-        XFnjWT7PLRpdauw7cxA85tYOLoDmrtdUpOc6D5wy2g==
-X-Google-Smtp-Source: ABdhPJyzEPbGKYrpWTzMGCrp+pxhaMUghQXcT/ersJ9IEUY4peFT3S2PF5HnHEWT0SEIElMaN88hIDOGqKyjAAalAv4=
-X-Received: by 2002:a05:6830:1b7a:: with SMTP id d26mr5850595ote.324.1617262863644;
- Thu, 01 Apr 2021 00:41:03 -0700 (PDT)
+        Thu, 1 Apr 2021 03:41:34 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44074C061788
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 00:41:34 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1lRrxG-0001Ls-LA; Thu, 01 Apr 2021 09:41:26 +0200
+Subject: Re: [PATCH v1 3/3] KEYS: trusted: Introduce support for NXP
+ CAAM-based trusted keys
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Sumit Garg <sumit.garg@linaro.org>
+Cc:     David Gstir <david@sigma-star.at>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Howells <dhowells@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+References: <01e6e13d-2968-0aa5-c4c8-7458b7bde462@nxp.com>
+ <45a9e159-2dcb-85bf-02bd-2993d50b5748@pengutronix.de>
+ <f9c0087d299be1b9b91b242f41ac6ef7b9ee3ef7.camel@linux.ibm.com>
+ <63dd7d4b-4729-9e03-cd8f-956b94eab0d9@pengutronix.de>
+ <CAFA6WYOw_mQwOUN=onhzb7zCTyYDBrcx0E7C3LRk6nPLAVCWEQ@mail.gmail.com>
+ <557b92d2-f3b8-d136-7431-419429f0e059@pengutronix.de>
+ <CAFA6WYNE44=Y7Erfc-xNtOrf7TkJjh+odmYH5vzhEHR6KqBfeQ@mail.gmail.com>
+ <6F812C20-7585-4718-997E-0306C4118468@sigma-star.at>
+ <YGDpA4yPWmTWEyx+@kernel.org>
+ <CAFA6WYPGuyg+OEYU2+FS-uom29yj4AyN5VLwm6MYpX97D0Uy0w@mail.gmail.com>
+ <YGUGGH8IzK/BwMIT@kernel.org>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <47e3f434-5b22-67e6-82ba-9322cdd9ae5c@pengutronix.de>
+Date:   Thu, 1 Apr 2021 09:41:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <cover.1616409291.git.jerome@forissier.org> <010001785986e9be-63aa88ce-3cf8-425f-87da-b2e3f84f6ef5-000000@email.amazonses.com>
- <CAFA6WYPryB+9W6EGXvea07=JH8_cfHKF8a4BDEyPeqPVkzvutw@mail.gmail.com>
-In-Reply-To: <CAFA6WYPryB+9W6EGXvea07=JH8_cfHKF8a4BDEyPeqPVkzvutw@mail.gmail.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Thu, 1 Apr 2021 09:40:52 +0200
-Message-ID: <CAHUa44HYkxMZpGx=iVKPqTSyTVhLm9L+_OkcNoAqGMmVjU7gxA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] tee: optee: do not check memref size on return from
- Secure World
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Jerome Forissier <jerome@forissier.org>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YGUGGH8IzK/BwMIT@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 3:18 PM Sumit Garg <sumit.garg@linaro.org> wrote:
->
-> On Mon, 22 Mar 2021 at 16:11, Jerome Forissier via OP-TEE
-> <op-tee@lists.trustedfirmware.org> wrote:
-> >
-> > When Secure World returns, it may have changed the size attribute of the
-> > memory references passed as [in/out] parameters. The GlobalPlatform TEE
-> > Internal Core API specification does not restrict the values that this
-> > size can take. In particular, Secure World may increase the value to be
-> > larger than the size of the input buffer to indicate that it needs more.
-> >
-> > Therefore, the size check in optee_from_msg_param() is incorrect and
-> > needs to be removed. This fixes a number of failed test cases in the
-> > GlobalPlatform TEE Initial Configuratiom Test Suite v2_0_0_0-2017_06_09
-> > when OP-TEE is compiled without dynamic shared memory support
-> > (CFG_CORE_DYN_SHM=n).
-> >
-> > Suggested-by: Jens Wiklander <jens.wiklander@linaro.org>
-> > Signed-off-by: Jerome Forissier <jerome@forissier.org>
-> > ---
-> >  drivers/tee/optee/core.c | 10 ----------
-> >  1 file changed, 10 deletions(-)
-> >
->
-> Looks good to me.
->
-> Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+Hello Jarkko,
 
-Thanks, I'm picking this up.
+On 01.04.21 01:30, Jarkko Sakkinen wrote:
+>> Option (C) sounds reasonable to me but I would rather prefer an info
+>> message rather than warning as otherwise it would reflect that we are
+>> enforcing kernel RNG choice for a user to trust upon.
+> 
+> I gave some though on this.
+> 
+> I take TEE as it is but I'd expect the CAAM patch set sort out this option
+> with some patch.
+
+Is it ok to warn if a user requests vendor RNG with CAAM and default
+to the kernel RNG? 
 
 Cheers,
-Jens
+Ahmad
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
