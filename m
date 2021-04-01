@@ -2,68 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63C37350CF9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 05:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4027350CFD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 05:12:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233507AbhDADG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 23:06:58 -0400
-Received: from mga04.intel.com ([192.55.52.120]:30473 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233102AbhDADGV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 23:06:21 -0400
-IronPort-SDR: bdKSmIFvMUBtMnSY9IqMZKazsVI4HBmZbrfH0reVZqjXxNKkYJS3TF+F0MRd1l5d6XeyafzlFk
- 5GxQKeQHzjrg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="189908483"
-X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="189908483"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 20:06:19 -0700
-IronPort-SDR: DQM4+9u5CMEIsbKnvEmTq0gQgsszjI/ptHXcKJkwKcGa+QgPkp+LHrRGC8C9TyoWR9anATMzqD
- wthiO2etvG2w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="445905802"
-Received: from linux.intel.com ([10.54.29.200])
-  by FMSMGA003.fm.intel.com with ESMTP; 31 Mar 2021 20:06:18 -0700
-Received: from debox1-desk2.jf.intel.com (debox1-desk2.jf.intel.com [10.54.75.16])
-        by linux.intel.com (Postfix) with ESMTP id EFF2D580A61;
-        Wed, 31 Mar 2021 20:06:16 -0700 (PDT)
-From:   "David E. Box" <david.e.box@linux.intel.com>
-To:     irenic.rajneesh@gmail.com, hdegoede@redhat.com,
-        david.e.box@linux.intel.com, mgross@linux.intel.com,
-        gayatri.kammela@intel.com
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 9/9] platform/x86: intel_pmc_core: Add support for Alder Lake PCH-P
-Date:   Wed, 31 Mar 2021 20:05:58 -0700
-Message-Id: <20210401030558.2301621-10-david.e.box@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210401030558.2301621-1-david.e.box@linux.intel.com>
-References: <20210401030558.2301621-1-david.e.box@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S232492AbhDADMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 23:12:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhDADLp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 23:11:45 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EAF8C0613E6
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 20:11:45 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 71so1365059ybl.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 20:11:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=RmMaazUpNv9dO0QVdc1//Lz/b+2IP+ReIbSX7312Y+8=;
+        b=DWp72/rU729D+hNGxjG+KVccftla4VD7a3chImMlNuJh5r4/oHs86378r5+At3wKLo
+         UDRk7mV/mRTupfLSxZQh8dvayAwuZkOC+SZfTycsU3Luq1SSbqOdTR1E4jYXoRVqjS4r
+         MGa5uEmiTAMyuxuvuiSGKiO7CnH/t2stpHq3pC3yjU7xYSQ9Z3UlvkyMpdeJQ8DpQ0eG
+         UXE9sNvQeJ4dBiERcJFZ/AUPSz0u1accV6fojG++W4IQmF8AKaL6P0tpiX1Um49NTsoe
+         jNWusKX65n5RCovDUKJJr1zF6p+4+ODgVsX2rtjh6kFsQys9GH8wARX9sftz3WlroL9G
+         VOIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=RmMaazUpNv9dO0QVdc1//Lz/b+2IP+ReIbSX7312Y+8=;
+        b=SAeDQKruDnP+Fn/YTHL/D4cQ+1D1Zw+VG/pYhGXcDCwe2PpK5RPx23yE5Uq8q05x4r
+         K67oMMpyK97fJDc5e+UvaleRjk2ffdT4ymzQkMbj7+9yecHg5sLsNuqR2OLmeyECVIvD
+         IXC/IlCg4gjDavlXQaRbSaG1x2iQxQjqqi6+Gzt17ladIf33y6oUlggCpDeljRRS1dos
+         +B53tiL3BPuFfl1ZIF7gpuDI+c+Z8tHd9w3q41wxXECxOMnR4E+LITjhuzhPDHv/sdtX
+         sjuE41WAFphjwJg+xK7W6W1N+pHxqmGYev/z+d5Sc8hxMlY8TrZJBJ254WiHs6WPXiOA
+         qZFA==
+X-Gm-Message-State: AOAM532gTsUEljylHf5DzbucdjXMSJtsMJQ4JWdRpO0+bRN8gJzPm6sr
+        G2nRQupv7Bgq4fUdZn1NLDINllLnKcLk
+X-Google-Smtp-Source: ABdhPJzlfwkJIYqwcBVjfLPx8f6dUBnhcDwwnnv822xSCx5WdAOodoBa9nWHxL/IAIe/c2LX4cmnxKqqjF3O
+X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:b:7d3f:ea49:2c08:677b])
+ (user=apusaka job=sendgmr) by 2002:a5b:98d:: with SMTP id c13mr8478703ybq.463.1617246704286;
+ Wed, 31 Mar 2021 20:11:44 -0700 (PDT)
+Date:   Thu,  1 Apr 2021 11:11:33 +0800
+Message-Id: <20210401111036.1.I26d172ded4e4ac8ad334516a8d196539777fba2a@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+Subject: [PATCH] Bluetooth: Check inquiry status before sending one
+From:   Archie Pusaka <apusaka@google.com>
+To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>
+Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Sonny Sasaka <sonnysasaka@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alder PCH-P is based on Tiger Lake PCH.
+From: Archie Pusaka <apusaka@chromium.org>
 
-Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+There is a possibility where HCI_INQUIRY flag is set but we still
+send HCI_OP_INQUIRY anyway.
+
+Such a case can be reproduced by connecting to an LE device while
+active scanning. When the device is discovered, we initiate a
+connection, stop LE Scan, and send Discovery MGMT with status
+disabled, but we don't cancel the inquiry.
+
+Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+Reviewed-by: Sonny Sasaka <sonnysasaka@chromium.org>
 ---
- drivers/platform/x86/intel_pmc_core.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
-index 9168062c927e..88d582df829f 100644
---- a/drivers/platform/x86/intel_pmc_core.c
-+++ b/drivers/platform/x86/intel_pmc_core.c
-@@ -1440,6 +1440,7 @@ static const struct x86_cpu_id intel_pmc_core_ids[] = {
- 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT,	&tgl_reg_map),
- 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT_L,	&icl_reg_map),
- 	X86_MATCH_INTEL_FAM6_MODEL(ROCKETLAKE,		&tgl_reg_map),
-+	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE_L,		&tgl_reg_map),
- 	{}
- };
+ net/bluetooth/hci_request.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
+index 8ace5d34b01e..5a5ec7ed15ea 100644
+--- a/net/bluetooth/hci_request.c
++++ b/net/bluetooth/hci_request.c
+@@ -2952,6 +2952,9 @@ static int bredr_inquiry(struct hci_request *req, unsigned long opt)
+ 	const u8 liac[3] = { 0x00, 0x8b, 0x9e };
+ 	struct hci_cp_inquiry cp;
  
++	if (test_bit(HCI_INQUIRY, &req->hdev->flags))
++		return 0;
++
+ 	bt_dev_dbg(req->hdev, "");
+ 
+ 	hci_dev_lock(req->hdev);
 -- 
-2.25.1
+2.31.0.291.g576ba9dcdaf-goog
 
