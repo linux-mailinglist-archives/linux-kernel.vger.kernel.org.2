@@ -2,115 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E526351CD7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A99E351D98
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234773AbhDASVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:21:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236001AbhDASCn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:02:43 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A707C031163
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 09:50:30 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id j26so2818413iog.13
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 09:50:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IG7cdbLRsOLTbhVp6m/owdeIVeLrnBuTq0FcSaPNyZw=;
-        b=WiqnXET2Wyh6a/KNqhbTDbwtl5AFiRrt/+LfiMOh7TTtIRClDGRZLFAbOAEzHOfj38
-         g+u2iuzor0m3lFaxlHAHmheTzqleb2OiorqmpzUbln1BZahXfLPr4bO3PhnPwrloRihP
-         Z/hPBOBThO2XZeVXF4s9rTtdjVd/mr18YJrKnbK+TPVlxDPl7hp9MJOcUTswxkHabCOt
-         D62IiG8Xec3NSPYtjq+3F6Rf6ShFjJWXZjrEItcpLiGpqC3B9iddI4ZRjudfbvJgFghB
-         KQFqiqvJj78G0gM+Mm9mCfH5YPATce3qIPiE0o/tSEclRHYWXsyfLzmb5AQNIvkbJzWm
-         Tnrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IG7cdbLRsOLTbhVp6m/owdeIVeLrnBuTq0FcSaPNyZw=;
-        b=ocCNLA+fb+P4h/w7U2yvpOR14F3g+aVZ8FF/fw+ZkZSHYQFF4FDHCOl1DGZIgIK75b
-         DjN3wSgeru9LC+RVyOvxHvj/fPRP7av+uOHlTONEz4sPanH8FODn+OuToBCyTWR1N+Xy
-         ++cvgCB9j5Hgy719eCjbtYVIWcSR8Bar/cyv+X01zQNJegwp1+k4CrHzN7G7PHsK1TB4
-         tWnlVH/YLMoZSShwv4mBE1p8wjBWnn3oCboQVdHhupPdKKHgKpeOAwiUIik+CRsYONTZ
-         fy3ZwjrYDHZDT/9VRaVH61zNTJrI55p8pQhmQrPrDikjxD6VqiZxQvrnIryRnCbY7GSQ
-         iaRg==
-X-Gm-Message-State: AOAM532AF1ozMmjUc3wLDZkNa5paG99MLbTVGyvlRtBv6QUw3yQpwegu
-        NovgIokgo5tSI85T6k9JYXZdrVxGEQAmJtFHHgFIOA==
-X-Google-Smtp-Source: ABdhPJyPlwt9XdTnKknqCS9GCyhQzgpJT8fGdYWzLyPqKD2HPehd+NAE+G6GyDOBmr8McThi8oBTiqkzgeYU4zaq1DI=
-X-Received: by 2002:a05:6638:371e:: with SMTP id k30mr8718364jav.4.1617295829847;
- Thu, 01 Apr 2021 09:50:29 -0700 (PDT)
+        id S240266AbhDAS35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:29:57 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:58858 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234723AbhDASGv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:06:51 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lS0ZU-00EMeP-V0; Thu, 01 Apr 2021 18:53:28 +0200
+Date:   Thu, 1 Apr 2021 18:53:28 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     netdev@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list:BROADCOM ETHERNET PHY DRIVERS" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] net: phy: broadcom: Add statistics for all
+ Gigabit PHYs
+Message-ID: <YGX6iNr+OF9k1ton@lunn.ch>
+References: <20210401164233.1672002-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
-References: <20210331210841.3996155-1-bgardon@google.com> <20210331210841.3996155-8-bgardon@google.com>
- <YGT2AV6lhDG5yLkW@google.com>
-In-Reply-To: <YGT2AV6lhDG5yLkW@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Thu, 1 Apr 2021 09:50:19 -0700
-Message-ID: <CANgfPd8bjO3sNAf2N0mnmSLfw57BG027eRZw4BoNN8G23BfP5Q@mail.gmail.com>
-Subject: Re: [PATCH 07/13] KVM: x86/mmu: Make TDP MMU root refcount atomic
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401164233.1672002-1-f.fainelli@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 3:22 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Wed, Mar 31, 2021, Ben Gardon wrote:
-> > In order to parallelize more operations for the TDP MMU, make the
-> > refcount on TDP MMU roots atomic, so that a future patch can allow
-> > multiple threads to take a reference on the root concurrently, while
-> > holding the MMU lock in read mode.
-> >
-> > Signed-off-by: Ben Gardon <bgardon@google.com>
-> > ---
->
-> ...
->
-> > @@ -88,10 +88,12 @@ static struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
-> >               next_root = list_first_entry(&kvm->arch.tdp_mmu_roots,
-> >                                            typeof(*next_root), link);
-> >
-> > +     while (!list_entry_is_head(next_root, &kvm->arch.tdp_mmu_roots, link) &&
-> > +            !kvm_tdp_mmu_get_root(kvm, next_root))
-> > +             next_root = list_next_entry(next_root, link);
-> > +
-> >       if (list_entry_is_head(next_root, &kvm->arch.tdp_mmu_roots, link))
-> >               next_root = NULL;
-> > -     else
-> > -             kvm_tdp_mmu_get_root(kvm, next_root);
-> >
-> >       if (prev_root)
-> >               kvm_tdp_mmu_put_root(kvm, prev_root);
-> > @@ -158,14 +160,13 @@ hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu)
-> >
-> >       /* Check for an existing root before allocating a new one. */
-> >       for_each_tdp_mmu_root(kvm, root) {
-> > -             if (root->role.word == role.word) {
-> > -                     kvm_tdp_mmu_get_root(kvm, root);
-> > +             if (root->role.word == role.word &&
-> > +                 kvm_tdp_mmu_get_root(kvm, root))
->
-> I'm not opposed to changing this logic while making the refcount atomic, but it
-> needs to be explained in the changelog.  As is, the changelog makes it sound
-> like the patch is a pure refactoring of the type.
+On Thu, Apr 01, 2021 at 09:42:33AM -0700, Florian Fainelli wrote:
+> All Gigabit PHYs use the same register layout as far as fetching
+> statistics goes. Fast Ethernet PHYs do not all support statistics, and
+> the BCM54616S would require some switching between the coper and fiber
+> modes to fetch the appropriate statistics which is not supported yet.
+> 
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 
-Thanks for pointing that out. I'll add a note in the description in
-v2. Those felt like natural changes since the introduction of the
-atomic requires additional failure handling. I don't think there's any
-way to add it as a separate commit without just introducing dead code,
-but that would certainly be preferable.
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+
+    Andrew
