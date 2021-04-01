@@ -2,61 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2A6352153
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8227B35215A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234412AbhDAVKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 17:10:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47508 "EHLO
+        id S234462AbhDAVL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 17:11:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233710AbhDAVKo (ORCPT
+        with ESMTP id S234122AbhDAVLz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 17:10:44 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C3DC0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 14:10:44 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id 68-20020a9d0f4a0000b02901b663e6258dso3275912ott.13
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 14:10:44 -0700 (PDT)
+        Thu, 1 Apr 2021 17:11:55 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EE8BC0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 14:11:55 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id n140so3098524oig.9
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 14:11:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=dn6QNqzedYyCxFSxmCymnqkmYNnWvvinHAK+WCVgT1o=;
-        b=eD3LuB/1TLZ6RQvi2aXVuaq7Mu/BK6RTGFlbZgj9QzZS0B9/VaYkn2iiKXGC/LxVMR
-         7LBtF9L40qMkvafrx+OTjPicPY0KLHHJQ7kPaD1wYoS38jrWLlXvNRC9ZOpJ/MbzXh5l
-         7tEyKyJ88E7M3OsTW7tyiybe16wMxuIYQ8Mk5AfOOIx2YFRYYvSs0ti0lh5YXyhagEya
-         7HZHrzp/7rxyNRkCsJJC1FIKA5wb6AiSACbjkt8ykoA+Qr2nIw/0uM/IMOkdzEZhhOZD
-         k4HA8lB+luvtGDoE0CYZdQjn1mEOCLUnXIUuWhjoSh02BymInuzaMVWzevml3jolBs/q
-         P+nA==
+        bh=M3O3ezYK4tjrRScd1RwWw7v+Stoxl6m+PGnpI8CPjlE=;
+        b=DofhZBNC+BMajMH6Ihx31LeKFM6jRi6/ZtImsQ18V1w4naw4NzgjchsOgXd+iXKMPP
+         /xqGIbyuTAvepsfMXVubdEw9/p1OJOpfG+LbXwzbZs83Ocf2J6TOsBlvWEDgp15aKkN9
+         ngoxoETJBUekW/VQp3Mf5i9RHwZWb0zlIbgeYIjXfybm8Ol2a9zEJo8MEaXrCLEbi5XM
+         nGFB4YHqv/190W4JWrcovVhG64otW8yaWxx6IN/tzmOyJogNVwa6COUkujm3vofv0FUK
+         16z/pJEM3Whl/sgk85e1F4eTSjEhzLQEX4QLxn1JTPg2GqosG9DbOxPtz+/fR6kpstyS
+         rMDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=dn6QNqzedYyCxFSxmCymnqkmYNnWvvinHAK+WCVgT1o=;
-        b=gEjA6lvF+6E8whxvIrucdQyPVMrxDtOjpl+Y6zxwY2pLNlnr7v6CxkmYtBsdYWDbI8
-         M9RXz1AESNQYIE5vz7Cu9UxeTW1RFR2a0w6P2Rancl1povOWn3pLO2/NY+TXWxVLCKIF
-         lCDcJu7TuQ+wwmdrcWHwFg8YPUkf138Bji+qYfd19HVO0Aexxwvg6HVeQd8K6C2FDICO
-         2X17UrzJAwL0jFiEHFr47S36kn5sQG2+oH5XsNLMs2N4rSXxeYxtS9U7/4ORFfTAma+9
-         b8Uf3ok67UFqWMlSK/PbIllo0NngfV0izg2YAI4iwQtZbPygG8IMHBqCFm2JD7efjp2I
-         ALSA==
-X-Gm-Message-State: AOAM531IsksMHWVVoYpF9VujSR9TjG5sUnQmcyNUpWWE4zjS9MiKwpuM
-        6L0l+ULQ1w4+QhyWBofzZ75INXdXoy/uON1lXL0=
-X-Google-Smtp-Source: ABdhPJwrD9U1EuoDIcewRKSx9Axm1yuo3/l3feLiLMVJfjlNhkKopbZgudfF0DMMZz8wuNUo7fNvoSvHi9mEKNnGQZM=
-X-Received: by 2002:a9d:7288:: with SMTP id t8mr8955661otj.132.1617311443744;
- Thu, 01 Apr 2021 14:10:43 -0700 (PDT)
+        bh=M3O3ezYK4tjrRScd1RwWw7v+Stoxl6m+PGnpI8CPjlE=;
+        b=Lf206OaLmv8g5nErjPdsXs5NopovHl0Dip1pkaTdH1G614SzbDiTKiZbeyepL5lDJN
+         HBpeuf60T4eaqppBd8AtCnUym58x9MQWvsGW7oyjhloD+DFl9RgtGARaP4cYapYx8icq
+         PuhsnZbFoDNSDz9oNUyFNzRHmP64Vv03YZYcfdNxHeI8w3kz9/Mv4gxySRO//r3e2qlT
+         4PA5gAcfOrvU3HkJwKPbJ2dl7YY7eToL4MqIpv2DH/mYG8I8TVg2bZNjdjb0wj8rWbyN
+         EQnAuusBfjSVA0kXT7i47I5Bm/79+zWoZv+TB2VWOojl/fKzfeXS7Gg41sYhzdkLqLlr
+         AZpA==
+X-Gm-Message-State: AOAM531FITJ9bxbp7D+a4YJFgjWJ1aPsakuA2cd/gVjYA4jynmtuL5wq
+        R3slROL124nPm6bL6Cdg+zG2a/zEzAmxXO8R/48=
+X-Google-Smtp-Source: ABdhPJxehEErIgFKLEhysJ3MRBbpDbe4PiVid4S27ndYhqpWgh7rnSg+6pua5YkQyIVVJ70BZun3GE+BkeGJgKYJi4Q=
+X-Received: by 2002:aca:4748:: with SMTP id u69mr7133639oia.5.1617311514752;
+ Thu, 01 Apr 2021 14:11:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210331131218.60768-1-bernard@vivo.com>
-In-Reply-To: <20210331131218.60768-1-bernard@vivo.com>
+References: <20210331131205.60710-1-bernard@vivo.com>
+In-Reply-To: <20210331131205.60710-1-bernard@vivo.com>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 1 Apr 2021 17:10:32 -0400
-Message-ID: <CADnq5_MR1_LaTfhAym=dbORhaBLLZxxgO13CyB4j3QA1D1RC1Q@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd: use kmalloc_array over kmalloc with multiply
+Date:   Thu, 1 Apr 2021 17:11:43 -0400
+Message-ID: <CADnq5_NkSUcYYZQnobUDZS8+-a2D32-DwO3JqRDkSh37OCPsXA@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd: cleanup coding style a bit
 To:     Bernard Zhao <bernard@vivo.com>
-Cc:     Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
         =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
+        Guchun Chen <guchun.chen@amd.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Dennis Li <Dennis.Li@amd.com>,
+        John Clements <john.clements@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Stanley.Yang" <Stanley.Yang@amd.com>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
         Maling list - DRI developers 
         <dri-devel@lists.freedesktop.org>,
@@ -68,30 +73,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Applied.  Thanks!
 
+Alex
+
 On Wed, Mar 31, 2021 at 9:36 AM Bernard Zhao <bernard@vivo.com> wrote:
 >
 > Fix patch check warning:
-> WARNING: Prefer kmalloc_array over kmalloc with multiply
-> +       buf = kmalloc(MAX_KFIFO_SIZE * sizeof(*buf), GFP_KERNEL);
+> WARNING: suspect code indent for conditional statements (8, 17)
+> +       if (obj && obj->use < 0) {
+> +                DRM_ERROR("RAS ERROR: Unbalance obj(%s) use\n", obj->head.name);
+>
+> WARNING: braces {} are not necessary for single statement blocks
+> +       if (obj && obj->use < 0) {
+> +                DRM_ERROR("RAS ERROR: Unbalance obj(%s) use\n", obj->head.name);
+> +       }
 >
 > Signed-off-by: Bernard Zhao <bernard@vivo.com>
 > ---
->  drivers/gpu/drm/amd/amdkfd/kfd_smi_events.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_smi_events.c b/drivers/gpu/drm/amd/amdkfd/kfd_smi_events.c
-> index 17d1736367ea..246522423559 100644
-> --- a/drivers/gpu/drm/amd/amdkfd/kfd_smi_events.c
-> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_smi_events.c
-> @@ -81,7 +81,7 @@ static ssize_t kfd_smi_ev_read(struct file *filep, char __user *user,
->         struct kfd_smi_client *client = filep->private_data;
->         unsigned char *buf;
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
+> index 1fb2a91ad30a..43d17b72c265 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
+> @@ -449,11 +449,10 @@ static ssize_t amdgpu_ras_sysfs_read(struct device *dev,
 >
-> -       buf = kmalloc(MAX_KFIFO_SIZE * sizeof(*buf), GFP_KERNEL);
-> +       buf = kmalloc_array(MAX_KFIFO_SIZE, sizeof(*buf), GFP_KERNEL);
->         if (!buf)
->                 return -ENOMEM;
+>  static inline void put_obj(struct ras_manager *obj)
+>  {
+> -       if (obj && --obj->use == 0)
+> +       if (obj && (--obj->use == 0))
+>                 list_del(&obj->node);
+> -       if (obj && obj->use < 0) {
+> -                DRM_ERROR("RAS ERROR: Unbalance obj(%s) use\n", obj->head.name);
+> -       }
+> +       if (obj && (obj->use < 0))
+> +               DRM_ERROR("RAS ERROR: Unbalance obj(%s) use\n", obj->head.name);
+>  }
 >
+>  /* make one obj and return it. */
 > --
 > 2.31.0
 >
