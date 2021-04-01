@@ -2,431 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8524935197B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8E3635198A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236103AbhDARxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:53:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57212 "EHLO
+        id S236261AbhDARyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:54:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234844AbhDARlI (ORCPT
+        with ESMTP id S234899AbhDARlL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:41:08 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 085E6C08EA73;
-        Thu,  1 Apr 2021 06:29:06 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id w3so2899114ejc.4;
-        Thu, 01 Apr 2021 06:29:05 -0700 (PDT)
+        Thu, 1 Apr 2021 13:41:11 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06645C08EA7D;
+        Thu,  1 Apr 2021 06:30:54 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id n11-20020a05600c4f8bb029010e5cf86347so3867290wmq.1;
+        Thu, 01 Apr 2021 06:30:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3C/8w0Oq23IlaDr+0olxaSwiV+3StuYv3XHg10ymev4=;
-        b=RP1PAnEzs3I1gIv4VtVwrIL4OQbh03W5MMpW/kq7vtKg9rvRJVhUXdtcXf7MR1V3Yy
-         HmJZ+oWUmWk1shbnkMbS4jm82TGis98IVx+6CpiIcKt8Wa/HNozMWePmGBszgMWR1GNP
-         1V3ONyvrqYkBxB+RNbGI4nKFORKbmQ42I70FBcKZbNFAyUNtAGx+L+3XdrccNG7bkXTS
-         ldCc2zToTSsh5GYwpCym+3n9j8Jm5FcMhLHYhsmect3KfFbLJzT/j+Ku6MiqkVVwR5yP
-         OY9498xQJi1PzeOQB8Ip6cSEAyIBagMEYpS7stT2JhXL1j7KFwpLge9jFnj5ugaZIS/v
-         HRWA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xkmJRNyHZF6zO/+Ccr4Et1V1ZjM78NEZ05svjz/naMI=;
+        b=lILFftuC0IPr3uLEncMP2OrLr9zLpsfw4zdDDm7j/WvMTg4Db4ko0/YIULamJlFGkE
+         y+BZXopV/bNZnncS7HNQPDTUOcOum/4KbED+UvkANuDAxpcXKe1e12G1o/jmxWbwYMcf
+         eP6vU4RDt7W3qNd3u/u0T7m/mqjicz6H+sJ58bgAcl4H5txfKWEJf9eErSX7BbyyKRMs
+         2CAvYaa4b98Yw8cKEgUd2FqQpG0gEaeYsU8BsEM1sn9BkuogXAe5uqI4Hotknm5m8tBl
+         /m9NP93JunHEhR+8kzHXvkKsypa3MSEyYzvQNPY+xsxzIu26e0+NXxJZ/DohMz19MwNu
+         lj7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3C/8w0Oq23IlaDr+0olxaSwiV+3StuYv3XHg10ymev4=;
-        b=hexl4Uj3j1Ht6GjprKQkwr/rdeST38iqwH8Jt/95sCSZ9e407q5oqZtguY7tmVZbyC
-         4VeH6V/z0hXgC/M0m1DJGD4ls1VmLUS8qkRZGtjVIUIKq3WhakIoD+2lv7KtxEfHfOYp
-         42HPl6pDGYkseLvBLP7q9jkx5qtwvN2eYKUNCTSpAkhyfFsRogf3vwu9ksfwSk7FJwJV
-         m2952imU21TKAu1N/+GYWPesWSiSTfpgCYSKmP67bdUMaDHr8w4i8Oj5ljHBHFiaqjkp
-         Er91hUO+wjUocvpKrd64N/ySkPCbO3pbYu76jIAqcEOAW/MMTZGBPNSWcNuSjOIuRe0M
-         Qoiw==
-X-Gm-Message-State: AOAM530AqHDoAf+bVFIjzcQsuUkbMKsHsGh1BcD4F34wCvhQ16K8kI2n
-        HAcsEjgA0QzlD9hEP3TBvyU=
-X-Google-Smtp-Source: ABdhPJww5vZj916OtK5+KOAeNxWqr8Jg1m5uOz8H9Vo+c/fR/UzLdpkfT/IkvCSsBfvT1Erx/zf7CQ==
-X-Received: by 2002:a17:906:ae88:: with SMTP id md8mr8775042ejb.264.1617283744717;
-        Thu, 01 Apr 2021 06:29:04 -0700 (PDT)
-Received: from localhost.localdomain (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
-        by smtp.gmail.com with ESMTPSA id cf4sm3488399edb.19.2021.04.01.06.29.04
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xkmJRNyHZF6zO/+Ccr4Et1V1ZjM78NEZ05svjz/naMI=;
+        b=NQ5R8gTfd/bkXQFSCcNwDEjku+FZGamUrcAVZot9ZyY1COXp5dlzVnZtd52sRo/mvn
+         Y/SHTSCwqpHvZ3cobey2kWOApr717MVxTqBQE/pQ8O1Wk24DAHE3OAY1toQitMipXADw
+         CxcpyBxg5TzChsP5W9VgxtWnO2TpJKwdZk0hhHIbKUTeIy04p5BgIzgUU+hM9BS+A67x
+         ZbS9nG1WSxavBAwTZ2ElnzJ+FMzoDXklA0L1HVxykhW2xpl6imeuHQdeDDmNmgkCGsJz
+         JQ/cdqYJsDjGiZLZik7oqYDI0dbwFW62VZELJeGCB8UQiKKava1biurf7mkldwx/YSoV
+         FwSA==
+X-Gm-Message-State: AOAM531+nmydr0w0abGqDaYPp6asYyzWt1YITxhN4Pb6y6l94HtLt/VR
+        1MWGfC58Vcx0q5RK59alLsg=
+X-Google-Smtp-Source: ABdhPJyCyaREQFPgcDkUYPNV4ggRYGiB0YNKqwnW2+WJUTFQMJ4jUJs75EA85o1xxpFIvrmPyn/t4g==
+X-Received: by 2002:a1c:b006:: with SMTP id z6mr7775346wme.19.1617283852803;
+        Thu, 01 Apr 2021 06:30:52 -0700 (PDT)
+Received: from arch-thunder.localdomain (a109-49-46-234.cpe.netcabo.pt. [109.49.46.234])
+        by smtp.gmail.com with ESMTPSA id l15sm8215400wme.43.2021.04.01.06.30.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 06:29:04 -0700 (PDT)
-From:   Bean Huo <huobean@gmail.com>
-To:     ulf.hansson@linaro.org, yoshihiro.shimoda.uh@renesas.com,
-        wsa+renesas@sang-engineering.com, adrian.hunter@intel.com
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bean Huo <beanhuo@micron.com>
-Subject: [PATCH v2 2/2] mmc: core: Let sanitize not retry in case timeout
-Date:   Thu,  1 Apr 2021 15:28:53 +0200
-Message-Id: <20210401132853.105448-3-huobean@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210401132853.105448-1-huobean@gmail.com>
-References: <20210401132853.105448-1-huobean@gmail.com>
+        Thu, 01 Apr 2021 06:30:52 -0700 (PDT)
+Date:   Thu, 1 Apr 2021 14:30:50 +0100
+From:   Rui Miguel Silva <rmfrfs@gmail.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Rob Herring <robh@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 23/32] MAINTAINERS: update ovti,ov2680.yaml reference
+Message-ID: <20210401133050.dmnteppqmtst37f5@arch-thunder.localdomain>
+References: <cover.1617279355.git.mchehab+huawei@kernel.org>
+ <f6474fa072117ec42bef82379abb5df958fab426.1617279355.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f6474fa072117ec42bef82379abb5df958fab426.1617279355.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+Hi Mauro,
+Thanks for fixing this.
 
-Not any commands need to retry in case of timeout/failure.
-Currently, the sanitize command is issued by the IOCTL interface,
-and once its timeouts, the user normally decides to retry or not .
-Just blindly retry three times sanitize in the driver, it doesn't
-help sanitize retry succeed in the end, on the contrary, it only
-makes the user feel sanitize timeouts after 12 minutes.
+On Thu, Apr 01, 2021 at 02:17:43PM +0200, Mauro Carvalho Chehab wrote:
+> The file name: Documentation/devicetree/bindings/media/i2c/ov2680.yaml
+> should be, instead: Documentation/devicetree/bindings/media/i2c/ovti,ov2680.yaml.
+> 
+> Update its cross-reference accordingly.
+> 
+> Fixes: 57226cd8c8bf ("media: dt-bindings: ov2680: convert bindings to yaml")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Signed-off-by: Bean Huo <beanhuo@micron.com>
----
- drivers/mmc/core/block.c   | 13 +++++++----
- drivers/mmc/core/mmc.c     | 47 ++++++++++++++++++++++----------------
- drivers/mmc/core/mmc_ops.c | 19 +++++++--------
- drivers/mmc/core/mmc_ops.h |  4 ++--
- 4 files changed, 47 insertions(+), 36 deletions(-)
+Reviewed-by: Rui Miguel Silva <rmfrfs@gmail.com>
 
-diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-index fe5892d30778..e123be6c6a0f 100644
---- a/drivers/mmc/core/block.c
-+++ b/drivers/mmc/core/block.c
-@@ -836,7 +836,7 @@ static inline int mmc_blk_part_switch(struct mmc_card *card,
- 
- 		ret = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
- 				 EXT_CSD_PART_CONFIG, part_config,
--				 card->ext_csd.part_time);
-+				 card->ext_csd.part_time, MMC_CMD_RETRIES);
- 		if (ret) {
- 			mmc_blk_part_switch_post(card, part_type);
- 			return ret;
-@@ -1007,7 +1007,7 @@ static void mmc_blk_issue_drv_op(struct mmc_queue *mq, struct request *req)
- 		ret = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL, EXT_CSD_BOOT_WP,
- 				 card->ext_csd.boot_ro_lock |
- 				 EXT_CSD_BOOT_WP_B_PWR_WP_EN,
--				 card->ext_csd.part_time);
-+				 card->ext_csd.part_time, MMC_CMD_RETRIES);
- 		if (ret)
- 			pr_err("%s: Locking boot partition ro until next power on failed: %d\n",
- 			       md->disk->disk_name, ret);
-@@ -1058,7 +1058,8 @@ static void mmc_blk_issue_discard_rq(struct mmc_queue *mq, struct request *req)
- 					 card->erase_arg == MMC_TRIM_ARG ?
- 					 INAND_CMD38_ARG_TRIM :
- 					 INAND_CMD38_ARG_ERASE,
--					 card->ext_csd.generic_cmd6_time);
-+					 card->ext_csd.generic_cmd6_time,
-+					 MMC_CMD_RETRIES);
- 		}
- 		if (!err)
- 			err = mmc_erase(card, from, nr, card->erase_arg);
-@@ -1100,7 +1101,8 @@ static void mmc_blk_issue_secdiscard_rq(struct mmc_queue *mq,
- 				 arg == MMC_SECURE_TRIM1_ARG ?
- 				 INAND_CMD38_ARG_SECTRIM1 :
- 				 INAND_CMD38_ARG_SECERASE,
--				 card->ext_csd.generic_cmd6_time);
-+				 card->ext_csd.generic_cmd6_time,
-+				 MMC_CMD_RETRIES);
- 		if (err)
- 			goto out_retry;
- 	}
-@@ -1118,7 +1120,8 @@ static void mmc_blk_issue_secdiscard_rq(struct mmc_queue *mq,
- 			err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
- 					 INAND_CMD38_ARG_EXT_CSD,
- 					 INAND_CMD38_ARG_SECTRIM2,
--					 card->ext_csd.generic_cmd6_time);
-+					 card->ext_csd.generic_cmd6_time,
-+					 MMC_CMD_RETRIES);
- 			if (err)
- 				goto out_retry;
- 		}
-diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-index 3885cc1780ac..26d9b904dfae 100644
---- a/drivers/mmc/core/mmc.c
-+++ b/drivers/mmc/core/mmc.c
-@@ -965,7 +965,8 @@ static int __mmc_select_powerclass(struct mmc_card *card,
- 		err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
- 				 EXT_CSD_POWER_CLASS,
- 				 pwrclass_val,
--				 card->ext_csd.generic_cmd6_time);
-+				 card->ext_csd.generic_cmd6_time,
-+				 MMC_CMD_RETRIES);
- 	}
- 
- 	return err;
-@@ -1062,7 +1063,8 @@ static int mmc_select_bus_width(struct mmc_card *card)
- 		err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
- 				 EXT_CSD_BUS_WIDTH,
- 				 ext_csd_bits[idx],
--				 card->ext_csd.generic_cmd6_time);
-+				 card->ext_csd.generic_cmd6_time,
-+				 MMC_CMD_RETRIES);
- 		if (err)
- 			continue;
- 
-@@ -1101,7 +1103,7 @@ static int mmc_select_hs(struct mmc_card *card)
- 	err = __mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
- 			   EXT_CSD_HS_TIMING, EXT_CSD_TIMING_HS,
- 			   card->ext_csd.generic_cmd6_time, MMC_TIMING_MMC_HS,
--			   true, true);
-+			   true, true, MMC_CMD_RETRIES);
- 	if (err)
- 		pr_warn("%s: switch to high-speed failed, err:%d\n",
- 			mmc_hostname(card->host), err);
-@@ -1133,7 +1135,7 @@ static int mmc_select_hs_ddr(struct mmc_card *card)
- 			   ext_csd_bits,
- 			   card->ext_csd.generic_cmd6_time,
- 			   MMC_TIMING_MMC_DDR52,
--			   true, true);
-+			   true, true, MMC_CMD_RETRIES);
- 	if (err) {
- 		pr_err("%s: switch to bus width %d ddr failed\n",
- 			mmc_hostname(host), 1 << bus_width);
-@@ -1201,7 +1203,7 @@ static int mmc_select_hs400(struct mmc_card *card)
- 	err = __mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
- 			   EXT_CSD_HS_TIMING, val,
- 			   card->ext_csd.generic_cmd6_time, 0,
--			   false, true);
-+			   false, true, MMC_CMD_RETRIES);
- 	if (err) {
- 		pr_err("%s: switch to high-speed from hs200 failed, err:%d\n",
- 			mmc_hostname(host), err);
-@@ -1230,7 +1232,8 @@ static int mmc_select_hs400(struct mmc_card *card)
- 	err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
- 			 EXT_CSD_BUS_WIDTH,
- 			 EXT_CSD_DDR_BUS_WIDTH_8,
--			 card->ext_csd.generic_cmd6_time);
-+			 card->ext_csd.generic_cmd6_time,
-+			 MMC_CMD_RETRIES);
- 	if (err) {
- 		pr_err("%s: switch to bus width for hs400 failed, err:%d\n",
- 			mmc_hostname(host), err);
-@@ -1243,7 +1246,7 @@ static int mmc_select_hs400(struct mmc_card *card)
- 	err = __mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
- 			   EXT_CSD_HS_TIMING, val,
- 			   card->ext_csd.generic_cmd6_time, 0,
--			   false, true);
-+			   false, true, MMC_CMD_RETRIES);
- 	if (err) {
- 		pr_err("%s: switch to hs400 failed, err:%d\n",
- 			 mmc_hostname(host), err);
-@@ -1289,7 +1292,7 @@ int mmc_hs400_to_hs200(struct mmc_card *card)
- 	val = EXT_CSD_TIMING_HS;
- 	err = __mmc_switch(card, EXT_CSD_CMD_SET_NORMAL, EXT_CSD_HS_TIMING,
- 			   val, card->ext_csd.generic_cmd6_time, 0,
--			   false, true);
-+			   false, true, MMC_CMD_RETRIES);
- 	if (err)
- 		goto out_err;
- 
-@@ -1305,7 +1308,7 @@ int mmc_hs400_to_hs200(struct mmc_card *card)
- 	/* Switch HS DDR to HS */
- 	err = __mmc_switch(card, EXT_CSD_CMD_SET_NORMAL, EXT_CSD_BUS_WIDTH,
- 			   EXT_CSD_BUS_WIDTH_8, card->ext_csd.generic_cmd6_time,
--			   0, false, true);
-+			   0, false, true, MMC_CMD_RETRIES);
- 	if (err)
- 		goto out_err;
- 
-@@ -1320,7 +1323,7 @@ int mmc_hs400_to_hs200(struct mmc_card *card)
- 	      card->drive_strength << EXT_CSD_DRV_STR_SHIFT;
- 	err = __mmc_switch(card, EXT_CSD_CMD_SET_NORMAL, EXT_CSD_HS_TIMING,
- 			   val, card->ext_csd.generic_cmd6_time, 0,
--			   false, true);
-+			   false, true, MMC_CMD_RETRIES);
- 	if (err)
- 		goto out_err;
- 
-@@ -1404,7 +1407,7 @@ static int mmc_select_hs400es(struct mmc_card *card)
- 	err = __mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
- 			   EXT_CSD_HS_TIMING, EXT_CSD_TIMING_HS,
- 			   card->ext_csd.generic_cmd6_time, 0,
--			   false, true);
-+			   false, true, MMC_CMD_RETRIES);
- 	if (err) {
- 		pr_err("%s: switch to hs for hs400es failed, err:%d\n",
- 			mmc_hostname(host), err);
-@@ -1423,7 +1426,7 @@ static int mmc_select_hs400es(struct mmc_card *card)
- 	err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
- 			 EXT_CSD_BUS_WIDTH,
- 			 val,
--			 card->ext_csd.generic_cmd6_time);
-+			 card->ext_csd.generic_cmd6_time, MMC_CMD_RETRIES);
- 	if (err) {
- 		pr_err("%s: switch to bus width for hs400es failed, err:%d\n",
- 			mmc_hostname(host), err);
-@@ -1438,7 +1441,7 @@ static int mmc_select_hs400es(struct mmc_card *card)
- 	err = __mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
- 			   EXT_CSD_HS_TIMING, val,
- 			   card->ext_csd.generic_cmd6_time, 0,
--			   false, true);
-+			   false, true, MMC_CMD_RETRIES);
- 	if (err) {
- 		pr_err("%s: switch to hs400es failed, err:%d\n",
- 			mmc_hostname(host), err);
-@@ -1503,7 +1506,7 @@ static int mmc_select_hs200(struct mmc_card *card)
- 		err = __mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
- 				   EXT_CSD_HS_TIMING, val,
- 				   card->ext_csd.generic_cmd6_time, 0,
--				   false, true);
-+				   false, true, MMC_CMD_RETRIES);
- 		if (err)
- 			goto err;
- 		old_timing = host->ios.timing;
-@@ -1732,7 +1735,8 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
- 	if (card->ext_csd.rev >= 3) {
- 		err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
- 				 EXT_CSD_ERASE_GROUP_DEF, 1,
--				 card->ext_csd.generic_cmd6_time);
-+				 card->ext_csd.generic_cmd6_time,
-+				 MMC_CMD_RETRIES);
- 
- 		if (err && err != -EBADMSG)
- 			goto free_card;
-@@ -1763,7 +1767,7 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
- 		card->ext_csd.part_config &= ~EXT_CSD_PART_CONFIG_ACC_MASK;
- 		err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL, EXT_CSD_PART_CONFIG,
- 				 card->ext_csd.part_config,
--				 card->ext_csd.part_time);
-+				 card->ext_csd.part_time, MMC_CMD_RETRIES);
- 		if (err && err != -EBADMSG)
- 			goto free_card;
- 	}
-@@ -1775,7 +1779,8 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
- 		err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
- 				 EXT_CSD_POWER_OFF_NOTIFICATION,
- 				 EXT_CSD_POWER_ON,
--				 card->ext_csd.generic_cmd6_time);
-+				 card->ext_csd.generic_cmd6_time,
-+				 MMC_CMD_RETRIES);
- 		if (err && err != -EBADMSG)
- 			goto free_card;
- 
-@@ -1835,7 +1840,8 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
- 	if (card->ext_csd.hpi) {
- 		err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
- 				EXT_CSD_HPI_MGMT, 1,
--				card->ext_csd.generic_cmd6_time);
-+				card->ext_csd.generic_cmd6_time,
-+				MMC_CMD_RETRIES);
- 		if (err && err != -EBADMSG)
- 			goto free_card;
- 		if (err) {
-@@ -1859,7 +1865,8 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
- 
- 		timeout_ms = max(card->ext_csd.generic_cmd6_time, timeout_ms);
- 		err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
--				EXT_CSD_CACHE_CTRL, 1, timeout_ms);
-+				EXT_CSD_CACHE_CTRL, 1, timeout_ms,
-+				MMC_CMD_RETRIES);
- 		if (err && err != -EBADMSG)
- 			goto free_card;
- 
-@@ -2009,7 +2016,7 @@ static int mmc_poweroff_notify(struct mmc_card *card, unsigned int notify_type)
- 
- 	err = __mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
- 			EXT_CSD_POWER_OFF_NOTIFICATION,
--			notify_type, timeout, 0, false, false);
-+			notify_type, timeout, 0, false, false, MMC_CMD_RETRIES);
- 	if (err)
- 		pr_err("%s: Power Off Notification timed out, %u\n",
- 		       mmc_hostname(card->host), timeout);
-diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
-index 40a4f9e22d30..857f5b48ecdc 100644
---- a/drivers/mmc/core/mmc_ops.c
-+++ b/drivers/mmc/core/mmc_ops.c
-@@ -531,12 +531,13 @@ int mmc_poll_for_busy(struct mmc_card *card, unsigned int timeout_ms,
-  *	@timing: new timing to change to
-  *	@send_status: send status cmd to poll for busy
-  *	@retry_crc_err: retry when CRC errors when polling with CMD13 for busy
-+ *	@retries: number of retries
-  *
-  *	Modifies the EXT_CSD register for selected card.
-  */
- int __mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
- 		unsigned int timeout_ms, unsigned char timing,
--		bool send_status, bool retry_crc_err)
-+		bool send_status, bool retry_crc_err, unsigned int retries)
- {
- 	struct mmc_host *host = card->host;
- 	int err;
-@@ -562,7 +563,6 @@ int __mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
- 	if (!(host->caps & MMC_CAP_NEED_RSP_BUSY) && host->max_busy_timeout &&
- 	    (timeout_ms > host->max_busy_timeout))
- 		use_r1b_resp = false;
--
- 	cmd.opcode = MMC_SWITCH;
- 	cmd.arg = (MMC_SWITCH_MODE_WRITE_BYTE << 24) |
- 		  (index << 16) |
-@@ -576,7 +576,7 @@ int __mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
- 		cmd.flags |= MMC_RSP_SPI_R1 | MMC_RSP_R1;
- 	}
- 
--	err = mmc_wait_for_cmd(host, &cmd, MMC_CMD_RETRIES);
-+	err = mmc_wait_for_cmd(host, &cmd, retries);
- 	if (err)
- 		goto out;
- 
-@@ -608,10 +608,10 @@ int __mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
- }
- 
- int mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
--		unsigned int timeout_ms)
-+		unsigned int timeout_ms, unsigned int retries)
- {
- 	return __mmc_switch(card, set, index, value, timeout_ms, 0,
--			    true, false);
-+			    true, false, retries);
- }
- EXPORT_SYMBOL_GPL(mmc_switch);
- 
-@@ -950,7 +950,8 @@ void mmc_run_bkops(struct mmc_card *card)
- 	 * urgent levels by using an asynchronous background task, when idle.
- 	 */
- 	err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
--			 EXT_CSD_BKOPS_START, 1, MMC_BKOPS_TIMEOUT_MS);
-+			 EXT_CSD_BKOPS_START, 1, MMC_BKOPS_TIMEOUT_MS,
-+			 MMC_CMD_RETRIES);
- 	if (err)
- 		pr_warn("%s: Error %d starting bkops\n",
- 			mmc_hostname(card->host), err);
-@@ -971,7 +972,7 @@ int mmc_flush_cache(struct mmc_card *card)
- 			(card->ext_csd.cache_ctrl & 1)) {
- 		err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
- 				 EXT_CSD_FLUSH_CACHE, 1,
--				 MMC_CACHE_FLUSH_TIMEOUT_MS);
-+				 MMC_CACHE_FLUSH_TIMEOUT_MS, MMC_CMD_RETRIES);
- 		if (err)
- 			pr_err("%s: cache flush error %d\n",
- 					mmc_hostname(card->host), err);
-@@ -990,7 +991,7 @@ static int mmc_cmdq_switch(struct mmc_card *card, bool enable)
- 		return -EOPNOTSUPP;
- 
- 	err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL, EXT_CSD_CMDQ_MODE_EN,
--			 val, card->ext_csd.generic_cmd6_time);
-+			 val, card->ext_csd.generic_cmd6_time, MMC_CMD_RETRIES);
- 	if (!err)
- 		card->ext_csd.cmdq_en = enable;
- 
-@@ -1024,7 +1025,7 @@ int mmc_sanitize(struct mmc_card *card)
- 	mmc_retune_hold(host);
- 
- 	err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL, EXT_CSD_SANITIZE_START,
--			 1, card->sanitize_timeout_ms);
-+			 1, card->sanitize_timeout_ms, 0);
- 	if (err)
- 		pr_err("%s: Sanitize failed err=%d\n", mmc_hostname(host), err);
- 
-diff --git a/drivers/mmc/core/mmc_ops.h b/drivers/mmc/core/mmc_ops.h
-index 632009260e51..ccf9ea70c8f3 100644
---- a/drivers/mmc/core/mmc_ops.h
-+++ b/drivers/mmc/core/mmc_ops.h
-@@ -39,9 +39,9 @@ int mmc_poll_for_busy(struct mmc_card *card, unsigned int timeout_ms,
- 		      enum mmc_busy_cmd busy_cmd);
- int __mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
- 		unsigned int timeout_ms, unsigned char timing,
--		bool send_status, bool retry_crc_err);
-+		bool send_status, bool retry_crc_err, unsigned int retries);
- int mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
--		unsigned int timeout_ms);
-+		unsigned int timeout_ms, unsigned int retries);
- void mmc_run_bkops(struct mmc_card *card);
- int mmc_flush_cache(struct mmc_card *card);
- int mmc_cmdq_enable(struct mmc_card *card);
--- 
-2.25.1
-
+------
+Cheers,
+     Rui
+> ---
+>  MAINTAINERS | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 0ee42d68a269..1644b6e9697c 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -13351,7 +13351,7 @@ M:	Rui Miguel Silva <rmfrfs@gmail.com>
+>  L:	linux-media@vger.kernel.org
+>  S:	Maintained
+>  T:	git git://linuxtv.org/media_tree.git
+> -F:	Documentation/devicetree/bindings/media/i2c/ov2680.yaml
+> +F:	Documentation/devicetree/bindings/media/i2c/ovti,ov2680.yaml
+>  F:	drivers/media/i2c/ov2680.c
+>  
+>  OMNIVISION OV2685 SENSOR DRIVER
+> -- 
+> 2.30.2
+> 
