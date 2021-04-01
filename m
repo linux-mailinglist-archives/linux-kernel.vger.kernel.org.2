@@ -2,166 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1633517D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6419351847
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235454AbhDARmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:42:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57272 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234358AbhDARhB (ORCPT
+        id S236428AbhDARoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:44:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234584AbhDARiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:37:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617298621;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ymqWAzLAr6YjRLZWB43VnMgVtF641FdmA2DlyPy0Tsc=;
-        b=bzD0rAsv58wJqaiQMMgu5g2BkjKSOK3Zb+w6Va/HNp7a5kH81Ih5KZwjVJQFMKVYaVSfZF
-        /2X2FD4/SAVhtnMG/uNVpKDKjj2T5tXizEgpFIPK+KevzI2vttuTU3A94fHI5H8dJwNPnh
-        JHAsPRr2cRICBMIES4uH9ljur36uNHM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-177-eCMNvA66Px6meC_TdNIwIQ-1; Thu, 01 Apr 2021 13:06:04 -0400
-X-MC-Unique: eCMNvA66Px6meC_TdNIwIQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E0ED618C8C00;
-        Thu,  1 Apr 2021 17:06:02 +0000 (UTC)
-Received: from starship (unknown [10.35.206.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 81F3076BF6;
-        Thu,  1 Apr 2021 17:05:52 +0000 (UTC)
-Message-ID: <0db95e08290267a6cc808f4ed795551c0ca6d946.camel@redhat.com>
-Subject: Re: [PATCH v2 2/2] KVM: nSVM: improve SYSENTER emulation on AMD
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
-Cc:     Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <seanjc@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Date:   Thu, 01 Apr 2021 20:05:51 +0300
-In-Reply-To: <87h7kqrwb2.fsf@vitty.brq.redhat.com>
-References: <20210401111928.996871-1-mlevitsk@redhat.com>
-         <20210401111928.996871-3-mlevitsk@redhat.com>
-         <87h7kqrwb2.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Thu, 1 Apr 2021 13:38:12 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C0DC031175;
+        Thu,  1 Apr 2021 10:07:10 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id n8so2431650oie.10;
+        Thu, 01 Apr 2021 10:07:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fIoD1sqZzx73JWXZ5LfoSVqAfKupbAVCJdJdm3CE5F8=;
+        b=dJ8OYQgakJVDr9rEMy2nBzQGcu7W7o0aHrEKClaSTia2FK4/4NqM+0AsrAeW+z201x
+         eyROb9x/m0CB5YoL/B+MT6FHvPu/PN0aX0JU6CHjohKqLzXZosVkAT3lmxCtNtjcFZC7
+         pitoDmSgBpZXmwvH/Mw0sviccvqLGVqaIwnLx9pKgXBgx8Wm4qAiciNlHyvCoLWzcrib
+         d1jriWFNVuJV/9mikUfkWnq0/TZAU8r3j8MqqVEyIYBCDJKMf04dt20xUQsby0baCGkj
+         8k98rRePjZtafldHkgvgj0cnwYT3m667MkRJ6BWG6tS3l2ylFQEEywzNEYSyDVssG+xj
+         SfMw==
+X-Gm-Message-State: AOAM5333Cpua+ucVT6YZNe6FkxHyVUvNJrWo034oA4MvR+zeFVIHboZH
+        Wo3xqELurWD6ct6XjXkIoQ==
+X-Google-Smtp-Source: ABdhPJw2tthmlm9qoNnSw4eeN8+rkSiRKaShVkLC0HF+AgZyqkVjnFYUU+osAFeTS6t5LGKOREzh5g==
+X-Received: by 2002:aca:b645:: with SMTP id g66mr6539604oif.64.1617296826773;
+        Thu, 01 Apr 2021 10:07:06 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id u2sm1147627oic.28.2021.04.01.10.07.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 10:07:05 -0700 (PDT)
+Received: (nullmailer pid 619798 invoked by uid 1000);
+        Thu, 01 Apr 2021 17:07:04 -0000
+Date:   Thu, 1 Apr 2021 12:07:04 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/6] dt-bindings: reserved-memory: Add Owl SoC serial
+ number binding
+Message-ID: <20210401170704.GA610119@robh.at.kernel.org>
+References: <cover.1617110420.git.cristian.ciocaltea@gmail.com>
+ <fb74862bec15f1e9e0c4d8b70ebd6c07c6eb1a40.1617110420.git.cristian.ciocaltea@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fb74862bec15f1e9e0c4d8b70ebd6c07c6eb1a40.1617110420.git.cristian.ciocaltea@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-04-01 at 15:03 +0200, Vitaly Kuznetsov wrote:
-> Maxim Levitsky <mlevitsk@redhat.com> writes:
+On Tue, Mar 30, 2021 at 04:48:16PM +0300, Cristian Ciocaltea wrote:
+> Add devicetree binding for the Actions Semi Owl SoC serial number
+> reserved-memory range.
 > 
-> > Currently to support Intel->AMD migration, if CPU vendor is GenuineIntel,
-> > we emulate the full 64 value for MSR_IA32_SYSENTER_{EIP|ESP}
-> > msrs, and we also emulate the sysenter/sysexit instruction in long mode.
-> > 
-> > (Emulator does still refuse to emulate sysenter in 64 bit mode, on the
-> > ground that the code for that wasn't tested and likely has no users)
-> > 
-> > However when virtual vmload/vmsave is enabled, the vmload instruction will
-> > update these 32 bit msrs without triggering their msr intercept,
-> > which will lead to having stale values in kvm's shadow copy of these msrs,
-> > which relies on the intercept to be up to date.
-> > 
-> > Fix/optimize this by doing the following:
-> > 
-> > 1. Enable the MSR intercepts for SYSENTER MSRs iff vendor=GenuineIntel
-> >    (This is both a tiny optimization and also ensures that in case
-> >    the guest cpu vendor is AMD, the msrs will be 32 bit wide as
-> >    AMD defined).
-> > 
-> > 2. Store only high 32 bit part of these msrs on interception and combine
-> >    it with hardware msr value on intercepted read/writes
-> >    iff vendor=GenuineIntel.
-> > 
-> > 3. Disable vmload/vmsave virtualization if vendor=GenuineIntel.
-> >    (It is somewhat insane to set vendor=GenuineIntel and still enable
-> >    SVM for the guest but well whatever).
-> >    Then zero the high 32 bit parts when kvm intercepts and emulates vmload.
-> > 
-> > Thanks a lot to Paulo Bonzini for helping me with fixing this in the most
+> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> ---
+>  .../actions,owl-soc-serial.yaml               | 53 +++++++++++++++++++
+>  1 file changed, 53 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/reserved-memory/actions,owl-soc-serial.yaml
 > 
-> s/Paulo/Paolo/ :-)
-Sorry about that!
+> diff --git a/Documentation/devicetree/bindings/reserved-memory/actions,owl-soc-serial.yaml b/Documentation/devicetree/bindings/reserved-memory/actions,owl-soc-serial.yaml
+> new file mode 100644
+> index 000000000000..41b71f47ee6c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/reserved-memory/actions,owl-soc-serial.yaml
+> @@ -0,0 +1,53 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/reserved-memory/actions,owl-soc-serial.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Actions Semi Owl reserved-memory for SoC serial number
+> +
+> +maintainers:
+> +  - Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> +
+> +description: |
+> +  Provide access to the memory region where the two parts of the Actions
+> +  Semi Owl SoC serial number (low & high) can be read from. This information
+> +  is provided by the bootloader, hence expose it under /reserved-memory node.
+> +
+> +  Please refer to reserved-memory.txt in this directory for common binding
+> +  part and usage.
+> +
+> +  This is currently supported only on the S500 SoC variant.
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - const: actions,owl-soc-serial
+> +      - items:
+> +          - enum:
+> +              - actions,s500-soc-serial
+> +          - const: actions,owl-soc-serial
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: true
+> +
+> +examples:
+> +  - |
+> +    reserved-memory {
+> +        #address-cells = <1>;
+> +        #size-cells = <1>;
+> +        ranges;
+> +
+> +        soc_serial: soc-serial@800 {
+> +            compatible = "actions,s500-soc-serial", "actions,owl-soc-serial";
+> +            reg = <0x800 0x8>;
 
-> 
-> > correct way.
-> > 
-> > This patch fixes nested migration of 32 bit nested guests, that was
-> > broken because incorrect cached values of SYSENTER msrs were stored in
-> > the migration stream if L1 changed these msrs with
-> > vmload prior to L2 entry.
-> > 
-> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> > ---
-> >  arch/x86/kvm/svm/svm.c | 99 +++++++++++++++++++++++++++---------------
-> >  arch/x86/kvm/svm/svm.h |  6 +--
-> >  2 files changed, 68 insertions(+), 37 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> > index 271196400495..6c39b0cd6ec6 100644
-> > --- a/arch/x86/kvm/svm/svm.c
-> > +++ b/arch/x86/kvm/svm/svm.c
-> > @@ -95,6 +95,8 @@ static const struct svm_direct_access_msrs {
-> >  } direct_access_msrs[MAX_DIRECT_ACCESS_MSRS] = {
-> >  	{ .index = MSR_STAR,				.always = true  },
-> >  	{ .index = MSR_IA32_SYSENTER_CS,		.always = true  },
-> > +	{ .index = MSR_IA32_SYSENTER_EIP,		.always = false },
-> > +	{ .index = MSR_IA32_SYSENTER_ESP,		.always = false },
-> >  #ifdef CONFIG_X86_64
-> >  	{ .index = MSR_GS_BASE,				.always = true  },
-> >  	{ .index = MSR_FS_BASE,				.always = true  },
-> > @@ -1258,16 +1260,6 @@ static void init_vmcb(struct kvm_vcpu *vcpu)
-> >  	if (kvm_vcpu_apicv_active(vcpu))
-> >  		avic_init_vmcb(svm);
-> >  
-> > -	/*
-> > -	 * If hardware supports Virtual VMLOAD VMSAVE then enable it
-> > -	 * in VMCB and clear intercepts to avoid #VMEXIT.
-> > -	 */
-> > -	if (vls) {
-> > -		svm_clr_intercept(svm, INTERCEPT_VMLOAD);
-> > -		svm_clr_intercept(svm, INTERCEPT_VMSAVE);
-> > -		svm->vmcb->control.virt_ext |= VIRTUAL_VMLOAD_VMSAVE_ENABLE_MASK;
-> > -	}
-> > -
-> >  	if (vgif) {
-> >  		svm_clr_intercept(svm, INTERCEPT_STGI);
-> >  		svm_clr_intercept(svm, INTERCEPT_CLGI);
-> > @@ -2133,9 +2125,11 @@ static int vmload_vmsave_interception(struct kvm_vcpu *vcpu, bool vmload)
-> >  
-> >  	ret = kvm_skip_emulated_instruction(vcpu);
-> >  
-> > -	if (vmload)
-> > +	if (vmload) {
-> >  		nested_svm_vmloadsave(vmcb12, svm->vmcb);
-> > -	else
-> > +		svm->sysenter_eip_hi = 0;
-> > +		svm->sysenter_esp_hi = 0;
-> > +	} else
-> >  		nested_svm_vmloadsave(svm->vmcb, vmcb12);
-> 
-> Nitpicking: {} are now needed for both branches here.
-I didn't knew about this rule, and I'll take this into
-account next time. Thanks!
+You end up wasting a whole page of memory for 8 bytes. It may be better 
+to copy this to a DT property ('serial-number' is already a defined root 
+property).
 
-
-Best regards,
-	Maxim Levitsky
-
-
+Rob
