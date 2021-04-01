@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B73351E20
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC8B8351E70
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:54:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238907AbhDASf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:35:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45704 "EHLO mail.kernel.org"
+        id S240835AbhDASlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:41:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238938AbhDASPC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:15:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3F4561103;
+        id S237022AbhDASSp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:18:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8FF2610F9;
         Thu,  1 Apr 2021 12:17:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1617279475;
-        bh=vW/LERpdsUzSzE7KQ13xROwk34nGxHd7fjfMMDyTTj0=;
+        bh=NdeTd6q6PkZJqKLM05Vg9LkVZEBc49fko76Eywoja8A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YTau8xEfkCCi/3DZwU9/26rwPDdpMOQoLgOmz/tAU88KWWnH3czj84vCBJI2zkiyp
-         lPmZ9j0MWLnBKctuFuYHo19uY8waPVkg0kQSwur4Dgq7MIfl2qDyh1MyEJicfsZkuK
-         y3OzATY41SnQwfr9OMMQ8Fr4EqozAoiKw22uG7TsjS2N+nDf9geGabTVcQ16s7odDX
-         IEZap/4HO48u2Yv1IIk2hQ4TMkPDyPQTSCF6Cc470OasB0oQrQaJsDV4gZlCZO8ghK
-         bSdT6t/MjQVP9pleuYGPBsxChdGjmsuiKj0bam2i2WvXQpGcLcQdqfriNRcqiVam7x
-         D5cKetAIlj5pw==
+        b=kjcBIsT8hj+p5ZuWUPs49kni+mETOGt745FCzZzqPTo1p+Y+fnlSEo3zcqqxHSRao
+         Zd+WPyfkbxoG3uvTMXPsX4S/Vi24JWD7YiPddotb/nEnGSrw9kDSfzD6BcziF7AWVu
+         HbgSnz7i0p+L3/3Rwy5+oj+yZNDIlSa4ctANBp7Cj42D+Ep3m53K2EVbmL+UQO/+tW
+         6l7hsiBHdwJeEwLb5xOEUDrE6ghEN5GTZ2jCsAalPTIg7WC+ryap6z3Zguo9VibXJ1
+         sMbN8KoArPKoVCaRkTGvpNhF5JtI+NI6QF8stP7rnKW+ra4hR2x7ksiH6VTEJ6HzRr
+         +jW4hu0TVt6/w==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1lRwGn-001c2M-Gw; Thu, 01 Apr 2021 14:17:53 +0200
+        id 1lRwGn-001c2O-I8; Thu, 01 Apr 2021 14:17:53 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH 01/32] MAINTAINERS: update adi,ad5758.yaml reference
-Date:   Thu,  1 Apr 2021 14:17:21 +0200
-Message-Id: <ca35b929c098163cfda9682ce791572629b763e2.1617279355.git.mchehab+huawei@kernel.org>
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh@kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 02/32] MAINTAINERS: update ste,mcde.yaml reference
+Date:   Thu,  1 Apr 2021 14:17:22 +0200
+Message-Id: <d7d064ecdc014266479fc1455c4566dd9c11798e.1617279355.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1617279355.git.mchehab+huawei@kernel.org>
 References: <cover.1617279355.git.mchehab+huawei@kernel.org>
@@ -45,31 +46,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset 1e6536ee349b ("dt-bindings:iio:dac:adi,ad5758 yaml conversion")
-renamed: Documentation/devicetree/bindings/iio/dac/ad5758.txt
-to: Documentation/devicetree/bindings/iio/dac/adi,ad5758.yaml.
+Changeset 2abb0b994db5 ("dt-bindings: display: mcde: Convert to YAML schema")
+renamed: Documentation/devicetree/bindings/display/ste,mcde.txt
+to: Documentation/devicetree/bindings/display/ste,mcde.yaml.
 
 Update its cross-reference accordingly.
 
-Fixes: 1e6536ee349b ("dt-bindings:iio:dac:adi,ad5758 yaml conversion")
+Fixes: 2abb0b994db5 ("dt-bindings: display: mcde: Convert to YAML schema")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
  MAINTAINERS | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 38d823d72e52..4c8a926ef201 100644
+index 4c8a926ef201..069cbf59da86 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -1141,7 +1141,7 @@ W:	http://ez.analog.com/community/linux-device-drivers
- F:	Documentation/ABI/testing/sysfs-bus-iio-frequency-ad9523
- F:	Documentation/ABI/testing/sysfs-bus-iio-frequency-adf4350
- F:	Documentation/devicetree/bindings/iio/*/adi,*
--F:	Documentation/devicetree/bindings/iio/dac/ad5758.txt
-+F:	Documentation/devicetree/bindings/iio/dac/adi,ad5758.yaml
- F:	drivers/iio/*/ad*
- F:	drivers/iio/adc/ltc249*
- F:	drivers/iio/amplifiers/hmc425a.c
+@@ -5857,7 +5857,7 @@ DRM DRIVER FOR ST-ERICSSON MCDE
+ M:	Linus Walleij <linus.walleij@linaro.org>
+ S:	Maintained
+ T:	git git://anongit.freedesktop.org/drm/drm-misc
+-F:	Documentation/devicetree/bindings/display/ste,mcde.txt
++F:	Documentation/devicetree/bindings/display/ste,mcde.yaml
+ F:	drivers/gpu/drm/mcde/
+ 
+ DRM DRIVER FOR TDFX VIDEO CARDS
 -- 
 2.30.2
 
