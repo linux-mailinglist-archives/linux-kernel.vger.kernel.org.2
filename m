@@ -2,309 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 072DB351922
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:52:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D08D0351927
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237393AbhDARvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:51:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57142 "EHLO
+        id S234358AbhDARvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:51:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234830AbhDARkg (ORCPT
+        with ESMTP id S234834AbhDARkj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:40:36 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00525C031146
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 09:43:16 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so3369572pjq.5
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 09:43:16 -0700 (PDT)
+        Thu, 1 Apr 2021 13:40:39 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B364C03115A
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 09:50:12 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id d2so2558948ilm.10
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 09:50:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9kXrOvZONIFORzF1gr1KYSrBPGnVSir3zJQM6INvU0c=;
-        b=UYTI2Z+XERu2McjjUV04jXIH/tJEVfD74dnF479gOXCxIwNj89UzCQfJANLtUcSMCo
-         ZfVtPNhQGVPNLtH1nHjnkfyVjL3Vr6yUtivC7fqVxbmgas5Xqr5uZyUX1SR099gSnUBL
-         186fg3T8c1jJwHEcwtzwkFjYTZRfcu4WZ+fg+yZqTqxMTX+Zp9KFJ5yWxeA2JB3Xa/8s
-         Z+Bj3/sfrmlT7mKQN7b0qD7Ec+hBdi0GuKr5+z4IiqQLk9J+V6tKeEHxzElp0hjBBg/i
-         4WjOOi+LW9oLjIt7Ck5/pEcg0Mg9/nLjULJUrvqWwN/Lu8lZVFJ34pDJefqfiRj0Plr/
-         f9DA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uVJlz7EBFUJTVJxoNelXauAVdIkkrJxCY7MPgIbB9eA=;
+        b=HnT6yrUdSlZ/rXVnoydEGJNeSCzPLozNWzBZYqwlIduHxEll05y2hoskd8WkvoSpgV
+         JWOQQ5mn5UH16lEKPBBRlgluAlq0oaeaWHZfqEthrSYrM5E0ExJtpU8ljphBhEEcFVix
+         jmWg4SmU5pFjrhrpRpK8yUBBb6DRUA5+MZOyDICqKxjLvWM3mKkuhRH5AFJuVSZwWTc1
+         MCAQfmIiJ2XVPpt01aihVg7DHpTYuVdeS9ZV5Fhe9HWFngMAK6owumWPw5nUVMNfuM6j
+         /zerO0OjlV7Pk3EmkWkNAYDkMDvPnSV5YN+TqGxjec8vdjv1u5BbSjJOBk2lvCs1uT8+
+         LrQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9kXrOvZONIFORzF1gr1KYSrBPGnVSir3zJQM6INvU0c=;
-        b=Qim/kRpiNxMgpAc8+WysfZbRZsvjDOH/bosAS2iiE0B9RAxUh0kGirW+qNKRwH8bkf
-         EkLMB6v7y9vwmx3T+MxOqc/Ltc1yJ7eH3l7dnxti86cdBZgSUUMH4z3dwkL7TVFUv/Gj
-         prYaVParklvwbItWbBDpENmDrGO6MxnimDMa4oLmNGf59wP++Z6UQVsOwC4cMKZPHYnS
-         e32KLW100HNAwLagp/scVz6hlMwxAb6eYbPnijaoCAiIDxR0zV6qN3FgaBYKUq1Odn/2
-         CRIG/y37XaADnSS9cyOvdHbCEViUtbEmh1mFV0PBsfbR6fsFdofVGchhUl10kVX9s/VE
-         pw9A==
-X-Gm-Message-State: AOAM531DrCVLVifBqlmS4ntp15u/38hfM8pyCK1SBpYWEV7ORrXdekME
-        la6DX2SX6b2YkDdAJD10DBH1Mw==
-X-Google-Smtp-Source: ABdhPJzlWF9LMWoYEoTpbDoszDeb2D+rJZVO0dKqePivBWRYnod6rpVFi8kvTiB4De7ZF6XMuAsrEw==
-X-Received: by 2002:a17:90a:f403:: with SMTP id ch3mr9741454pjb.126.1617295396385;
-        Thu, 01 Apr 2021 09:43:16 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id 205sm6204905pfc.201.2021.04.01.09.43.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 09:43:15 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 10:43:13 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Mike Leach <mike.leach@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        linux-doc@vger.kernel.org, suzuki.poulose@arm.com,
-        yabinc@google.com, corbet@lwn.net, leo.yan@linaro.org,
-        alexander.shishkin@linux.intel.com, tingwei@codeaurora.org,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 05/10] coresight: syscfg: Add API to activate and
- enable configurations
-Message-ID: <20210401164313.GA145043@xps15>
-References: <20210316180400.7184-1-mike.leach@linaro.org>
- <20210316180400.7184-6-mike.leach@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uVJlz7EBFUJTVJxoNelXauAVdIkkrJxCY7MPgIbB9eA=;
+        b=W0mYcluuuhnkm2KYEorBnBDmxQjUJdu/D0IEmlPzNUpfoWZXZLjkl83qd8N+DWHY9Z
+         5RvvO0HNWHHCLOYE8iefqiII2bJiaZqI/CFAk3iBhF1tBxSK9Y9HSw3KFdux5MRNUcXP
+         OJHF1aR/oHbbVsn8Vn1ymp3vRHJmSjYKHuvlXtobdEdXM16sf08G8JXWdCaJPt+0kyyc
+         OgK9gCY0zg6w/XA/mr4hkt11/WlIxSpQ3j2kGhhcWLoWJYmeiwwOqvS2n0NOM9C/3dyF
+         QcrR7Ikz9Zz2OmN2x7rkArKagXyU1IGvp7iUDrEqc++9q/vLTR+yiMN3mYQJThYxfHkO
+         Fv0A==
+X-Gm-Message-State: AOAM531vbplrhB7kBxo4d8Y45raGlz6sdQju+mNCfJdnaR5xxxdsa/bI
+        RtLrLsWnxWrgwkgN5XWVjjBmne+xRxtYXw/hThqvHoW7BYw=
+X-Google-Smtp-Source: ABdhPJybXOA1eXtNH5cMvnR9/6T4oBIJW9f/CwtYVh3dyIM318COLUmgmqQA1YIg9p5GAbxYkWqaNL/9TNHn0oSRNQw=
+X-Received: by 2002:a92:340e:: with SMTP id b14mr927052ila.285.1617295811243;
+ Thu, 01 Apr 2021 09:50:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210316180400.7184-6-mike.leach@linaro.org>
+References: <20210331210841.3996155-9-bgardon@google.com> <202104012131.qcIIr4tP-lkp@intel.com>
+In-Reply-To: <202104012131.qcIIr4tP-lkp@intel.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Thu, 1 Apr 2021 09:50:00 -0700
+Message-ID: <CANgfPd9OYoAk5k8nDZmsMEVU_PKTg4zcJJtnBtDPy1CNwXeEGg@mail.gmail.com>
+Subject: Re: [PATCH 08/13] KVM: x86/mmu: Protect the tdp_mmu_roots list with RCU
+To:     kernel test robot <lkp@intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        kbuild-all@lists.01.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 06:03:55PM +0000, Mike Leach wrote:
-> Configurations are first activated, then when any coresight device is
-> enabled, the active configurations are checked and any matching
-> one is enabled.
-> 
-> This patch provides the activation / enable API.
-> 
-> Signed-off-by: Mike Leach <mike.leach@linaro.org>
-> ---
->  .../hwtracing/coresight/coresight-config.h    |   2 +
->  .../hwtracing/coresight/coresight-syscfg.c    | 122 ++++++++++++++++++
->  .../hwtracing/coresight/coresight-syscfg.h    |   8 ++
->  include/linux/coresight.h                     |   2 +
->  4 files changed, 134 insertions(+)
+On Thu, Apr 1, 2021 at 6:17 AM kernel test robot <lkp@intel.com> wrote:
 >
+> Hi Ben,
+>
+> Thank you for the patch! Yet something to improve:
+>
+> [auto build test ERROR on next-20210331]
+> [cannot apply to kvm/queue tip/master linux/master linus/master v5.12-rc5 v5.12-rc4 v5.12-rc3 v5.12-rc5]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+>
+> url:    https://github.com/0day-ci/linux/commits/Ben-Gardon/More-parallel-operations-for-the-TDP-MMU/20210401-051137
+> base:    7a43c78d0573e0bbbb0456b033e2b9a895b89464
+> config: x86_64-allyesconfig (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> reproduce (this is a W=1 build):
+>         # https://github.com/0day-ci/linux/commit/2b2c6d3bdc35269df5f9293a02da5b71c74095f3
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Ben-Gardon/More-parallel-operations-for-the-TDP-MMU/20210401-051137
+>         git checkout 2b2c6d3bdc35269df5f9293a02da5b71c74095f3
+>         # save the attached .config to linux build tree
+>         make W=1 ARCH=x86_64
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>    In file included from include/linux/rculist.h:11,
+>                     from include/linux/pid.h:5,
+>                     from include/linux/sched.h:14,
+>                     from include/linux/hardirq.h:9,
+>                     from include/linux/kvm_host.h:7,
+>                     from arch/x86/kvm/mmu.h:5,
+>                     from arch/x86/kvm/mmu/tdp_mmu.c:3:
+>    arch/x86/kvm/mmu/tdp_mmu.c: In function 'kvm_tdp_mmu_get_vcpu_root_hpa':
+> >> arch/x86/kvm/mmu/tdp_mmu.c:139:5: error: implicit declaration of function 'lockdep_is_held_write'; did you mean 'lockdep_is_held_type'? [-Werror=implicit-function-declaration]
+>      139 |     lockdep_is_held_write(&kvm->mmu_lock))
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
- 
-> diff --git a/drivers/hwtracing/coresight/coresight-config.h b/drivers/hwtracing/coresight/coresight-config.h
-> index 38fd1c71eb05..f1a5957a25c9 100644
-> --- a/drivers/hwtracing/coresight/coresight-config.h
-> +++ b/drivers/hwtracing/coresight/coresight-config.h
-> @@ -127,6 +127,7 @@ struct cscfg_feature_desc {
->   * @nr_total_params:	Sum of all parameters declared by used features
->   * @presets:		Array of preset values.
->   * @event_ea:		Extended attribute for perf event value
-> + * @active_cnt:		ref count for activate on this configuration.
->   *
->   */
->  struct cscfg_config_desc {
-> @@ -139,6 +140,7 @@ struct cscfg_config_desc {
->  	int nr_total_params;
->  	const u64 *presets; /* nr_presets * nr_total_params */
->  	struct dev_ext_attribute *event_ea;
-> +	atomic_t active_cnt;
->  };
->  
->  /**
-> diff --git a/drivers/hwtracing/coresight/coresight-syscfg.c b/drivers/hwtracing/coresight/coresight-syscfg.c
-> index 03014a2142c1..c44746d6cd6d 100644
-> --- a/drivers/hwtracing/coresight/coresight-syscfg.c
-> +++ b/drivers/hwtracing/coresight/coresight-syscfg.c
-> @@ -284,6 +284,7 @@ static int cscfg_load_config(struct cscfg_config_desc *config_desc)
->  		return err;
->  
->  	list_add(&config_desc->item, &cscfg_mgr->config_desc_list);
-> +	atomic_set(&config_desc->active_cnt, 0);
->  	return 0;
->  }
->  
-> @@ -451,6 +452,126 @@ void cscfg_unregister_csdev(struct coresight_device *csdev)
->  }
->  EXPORT_SYMBOL_GPL(cscfg_unregister_csdev);
->  
-> +void cscfg_csdev_reset_feats(struct coresight_device *csdev)
-> +{
-> +	struct cscfg_feature_csdev *feat_csdev;
-> +
-> +	mutex_lock(&cscfg_csdev_mutex);
-> +	if (list_empty(&csdev->feature_csdev_list))
-> +		goto unlock_exit;
-> +
-> +	list_for_each_entry(feat_csdev, &csdev->feature_csdev_list, node)
-> +		cscfg_reset_feat(feat_csdev);
-> +
-> +unlock_exit:
-> +	mutex_unlock(&cscfg_csdev_mutex);
-> +}
-> +EXPORT_SYMBOL_GPL(cscfg_csdev_reset_feats);
-> +
-> +/**
-> + * Mark a config descriptor as active.
-> + * This will be seen when csdev devices are activated in the system.
-> + *
-> + * Selection by hash value - generated from the configuration name when it
-> + * was loaded and added to the cs_etm/configurations file system for selection
-> + * by perf.
-> + *
-> + * @cfg_hash: Hash value of the selected configuration name.
-> + */
-> +int cscfg_activate_config(unsigned long cfg_hash)
-> +{
-> +	struct cscfg_config_desc *config_desc;
-> +	int err = -EINVAL;
-> +
-> +	mutex_lock(&cscfg_mutex);
-> +
-> +	list_for_each_entry(config_desc, &cscfg_mgr->config_desc_list, item) {
-> +		if ((unsigned long)config_desc->event_ea->var == cfg_hash) {
-> +			/*
-> +			 * increment the global active count - control changes to
-> +			 * active configurations
-> +			 */
-> +			atomic_inc(&cscfg_mgr->sys_active_cnt);
-> +
-> +			/*
-> +			 * mark the descriptor as active so enable config on a
-> +			 * device instance will use it
-> +			 */
-> +			atomic_inc(&config_desc->active_cnt);
-> +
-> +			err = 0;
-> +			dev_dbg(cscfg_device(), "Activate config %s.\n", config_desc->name);
-> +			break;
-> +		}
-> +	}
-> +	mutex_unlock(&cscfg_mutex);
-> +
-> +	return err;
-> +}
-> +EXPORT_SYMBOL_GPL(cscfg_activate_config);
-> +
-> +void cscfg_deactivate_config(unsigned long cfg_hash)
-> +{
-> +	struct cscfg_config_desc *config_desc;
-> +
-> +	mutex_lock(&cscfg_mutex);
-> +
-> +	list_for_each_entry(config_desc, &cscfg_mgr->config_desc_list, item) {
-> +		if ((unsigned long)config_desc->event_ea->var == cfg_hash) {
-> +			atomic_dec(&config_desc->active_cnt);
-> +			atomic_dec(&cscfg_mgr->sys_active_cnt);
-> +			dev_dbg(cscfg_device(), "Deactivate config %s.\n", config_desc->name);
-> +			break;
-> +		}
-> +	}
-> +	mutex_unlock(&cscfg_mutex);
-> +}
-> +EXPORT_SYMBOL_GPL(cscfg_deactivate_config);
-> +
-> +/* Find and program any active config for the supplied device.*/
-> +int cscfg_csdev_enable_active_config(struct coresight_device *csdev,
-> +				     unsigned long cfg_hash, int preset)
-> +{
-> +	struct cscfg_config_csdev *config_csdev_active = NULL, *config_csdev_item;
-> +	const struct cscfg_config_desc *config_desc;
-> +	int err = 0;
-> +
-> +	/* quickly check global count */
-> +	if (!atomic_read(&cscfg_mgr->sys_active_cnt))
-> +		return 0;
-> +
-> +	mutex_lock(&cscfg_csdev_mutex);
-> +	list_for_each_entry(config_csdev_item, &csdev->config_csdev_list, node) {
-> +		config_desc = config_csdev_item->config_desc;
-> +		if ((atomic_read(&config_desc->active_cnt)) &&
-> +		    ((unsigned long)config_desc->event_ea->var == cfg_hash)) {
-> +			config_csdev_active = config_csdev_item;
-> +			break;
-> +		}
-> +	}
-> +	if (config_csdev_active) {
-> +		err = cscfg_csdev_enable_config(config_csdev_active, preset);
-> +		if (!err)
-> +			csdev->active_cscfg_ctxt = (void *)config_csdev_active;
-> +	}
-> +	mutex_unlock(&cscfg_csdev_mutex);
-> +	return err;
-> +}
-> +EXPORT_SYMBOL_GPL(cscfg_csdev_enable_active_config);
-> +
-> +/* save and disable the active config for the device */
-> +void cscfg_csdev_disable_active_config(struct coresight_device *csdev)
-> +{
-> +	struct cscfg_config_csdev *config_csdev;
-> +
-> +	mutex_lock(&cscfg_csdev_mutex);
-> +	config_csdev = (struct cscfg_config_csdev *)csdev->active_cscfg_ctxt;
-> +	if (config_csdev)
-> +		cscfg_csdev_disable_config(config_csdev);
-> +	mutex_unlock(&cscfg_csdev_mutex);
-> +}
-> +EXPORT_SYMBOL_GPL(cscfg_csdev_disable_active_config);
-> +
->  /* Initialise system configuration management device. */
->  
->  struct device *cscfg_device(void)
-> @@ -519,6 +640,7 @@ int __init cscfg_init(void)
->  	INIT_LIST_HEAD(&cscfg_mgr->csdev_desc_list);
->  	INIT_LIST_HEAD(&cscfg_mgr->feat_desc_list);
->  	INIT_LIST_HEAD(&cscfg_mgr->config_desc_list);
-> +	atomic_set(&cscfg_mgr->sys_active_cnt, 0);
->  
->  	dev_info(cscfg_device(), "CoreSight Configuration manager initialised");
->  	return 0;
-> diff --git a/drivers/hwtracing/coresight/coresight-syscfg.h b/drivers/hwtracing/coresight/coresight-syscfg.h
-> index 5bcae3b374c6..a52775890670 100644
-> --- a/drivers/hwtracing/coresight/coresight-syscfg.h
-> +++ b/drivers/hwtracing/coresight/coresight-syscfg.h
-> @@ -24,12 +24,14 @@
->   * @csdev_desc_list:	List of coresight devices registered with the configuration manager.
->   * @feat_desc_list:	List of feature descriptors to load into registered devices.
->   * @config_desc_list:	List of system configuration descriptors to load into registered devices.
-> + * @sys_active_cnt:	Total number of active config descriptor references.
->   */
->  struct cscfg_manager {
->  	struct device dev;
->  	struct list_head csdev_desc_list;
->  	struct list_head feat_desc_list;
->  	struct list_head config_desc_list;
-> +	atomic_t sys_active_cnt;
->  };
->  
->  /* get reference to dev in cscfg_manager */
-> @@ -61,5 +63,11 @@ int cscfg_load_config_sets(struct cscfg_config_desc **cfg_descs,
->  int cscfg_register_csdev(struct coresight_device *csdev, u32 match_flags,
->  			 struct cscfg_csdev_feat_ops *ops);
->  void cscfg_unregister_csdev(struct coresight_device *csdev);
-> +int cscfg_activate_config(unsigned long cfg_hash);
-> +void cscfg_deactivate_config(unsigned long cfg_hash);
-> +void cscfg_csdev_reset_feats(struct coresight_device *csdev);
-> +int cscfg_csdev_enable_active_config(struct coresight_device *csdev,
-> +				     unsigned long cfg_hash, int preset);
-> +void cscfg_csdev_disable_active_config(struct coresight_device *csdev);
->  
->  #endif /* CORESIGHT_SYSCFG_H */
-> diff --git a/include/linux/coresight.h b/include/linux/coresight.h
-> index d0126ed326a6..a3b39ce2d6ef 100644
-> --- a/include/linux/coresight.h
-> +++ b/include/linux/coresight.h
-> @@ -221,6 +221,7 @@ struct coresight_sysfs_link {
->   * @has_conns_grp: Have added a "connections" group for sysfs links.
->   * @feature_csdev_list: List of complex feature programming added to the device.
->   * @config_csdev_list:  List of system configurations added to the device.
-> + * @active_cscfg_ctxt:  Context information for current active system configuration.
->   */
->  struct coresight_device {
->  	struct coresight_platform_data *pdata;
-> @@ -245,6 +246,7 @@ struct coresight_device {
->  	/* system configuration and feature lists */
->  	struct list_head feature_csdev_list;
->  	struct list_head config_csdev_list;
-> +	void *active_cscfg_ctxt;
->  };
->  
->  /*
-> -- 
-> 2.17.1
-> 
+Huh, I wonder why this isn't exported in some configuration. I'll fix
+this in v2 as well.
+
+>          |     ^~~~~~~~~~~~~~~~~~~~~
+>    include/linux/rcupdate.h:318:52: note: in definition of macro 'RCU_LOCKDEP_WARN'
+>      318 |   if (debug_lockdep_rcu_enabled() && !__warned && (c)) { \
+>          |                                                    ^
+>    include/linux/rculist.h:391:7: note: in expansion of macro '__list_check_rcu'
+>      391 |  for (__list_check_rcu(dummy, ## cond, 0),   \
+>          |       ^~~~~~~~~~~~~~~~
+>    arch/x86/kvm/mmu/tdp_mmu.c:138:2: note: in expansion of macro 'list_for_each_entry_rcu'
+>      138 |  list_for_each_entry_rcu(_root, &_kvm->arch.tdp_mmu_roots, link, \
+>          |  ^~~~~~~~~~~~~~~~~~~~~~~
+>    arch/x86/kvm/mmu/tdp_mmu.c:184:2: note: in expansion of macro 'for_each_tdp_mmu_root'
+>      184 |  for_each_tdp_mmu_root(kvm, root) {
+>          |  ^~~~~~~~~~~~~~~~~~~~~
+>    cc1: some warnings being treated as errors
+>
+>
+> vim +139 arch/x86/kvm/mmu/tdp_mmu.c
+>
+>      2
+>    > 3  #include "mmu.h"
+>      4  #include "mmu_internal.h"
+>      5  #include "mmutrace.h"
+>      6  #include "tdp_iter.h"
+>      7  #include "tdp_mmu.h"
+>      8  #include "spte.h"
+>      9
+>     10  #include <asm/cmpxchg.h>
+>     11  #include <trace/events/kvm.h>
+>     12
+>     13  static bool __read_mostly tdp_mmu_enabled = false;
+>     14  module_param_named(tdp_mmu, tdp_mmu_enabled, bool, 0644);
+>     15
+>     16  /* Initializes the TDP MMU for the VM, if enabled. */
+>     17  void kvm_mmu_init_tdp_mmu(struct kvm *kvm)
+>     18  {
+>     19          if (!tdp_enabled || !READ_ONCE(tdp_mmu_enabled))
+>     20                  return;
+>     21
+>     22          /* This should not be changed for the lifetime of the VM. */
+>     23          kvm->arch.tdp_mmu_enabled = true;
+>     24
+>     25          INIT_LIST_HEAD(&kvm->arch.tdp_mmu_roots);
+>     26          spin_lock_init(&kvm->arch.tdp_mmu_pages_lock);
+>     27          INIT_LIST_HEAD(&kvm->arch.tdp_mmu_pages);
+>     28  }
+>     29
+>     30  void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm)
+>     31  {
+>     32          if (!kvm->arch.tdp_mmu_enabled)
+>     33                  return;
+>     34
+>     35          WARN_ON(!list_empty(&kvm->arch.tdp_mmu_roots));
+>     36
+>     37          /*
+>     38           * Ensure that all the outstanding RCU callbacks to free shadow pages
+>     39           * can run before the VM is torn down.
+>     40           */
+>     41          rcu_barrier();
+>     42  }
+>     43
+>     44  static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+>     45                            gfn_t start, gfn_t end, bool can_yield);
+>     46
+>     47  static void tdp_mmu_free_sp(struct kvm_mmu_page *sp)
+>     48  {
+>     49          free_page((unsigned long)sp->spt);
+>     50          kmem_cache_free(mmu_page_header_cache, sp);
+>     51  }
+>     52
+>     53  /*
+>     54   * This is called through call_rcu in order to free TDP page table memory
+>     55   * safely with respect to other kernel threads that may be operating on
+>     56   * the memory.
+>     57   * By only accessing TDP MMU page table memory in an RCU read critical
+>     58   * section, and freeing it after a grace period, lockless access to that
+>     59   * memory won't use it after it is freed.
+>     60   */
+>     61  static void tdp_mmu_free_sp_rcu_callback(struct rcu_head *head)
+>     62  {
+>     63          struct kvm_mmu_page *sp = container_of(head, struct kvm_mmu_page,
+>     64                                                 rcu_head);
+>     65
+>     66          tdp_mmu_free_sp(sp);
+>     67  }
+>     68
+>     69  void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root)
+>     70  {
+>     71          gfn_t max_gfn = 1ULL << (shadow_phys_bits - PAGE_SHIFT);
+>     72
+>     73          lockdep_assert_held_write(&kvm->mmu_lock);
+>     74
+>     75          if (!refcount_dec_and_test(&root->tdp_mmu_root_count))
+>     76                  return;
+>     77
+>     78          WARN_ON(!root->tdp_mmu_page);
+>     79
+>     80          spin_lock(&kvm->arch.tdp_mmu_pages_lock);
+>     81          list_del_rcu(&root->link);
+>     82          spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
+>     83
+>     84          zap_gfn_range(kvm, root, 0, max_gfn, false);
+>     85
+>     86          call_rcu(&root->rcu_head, tdp_mmu_free_sp_rcu_callback);
+>     87  }
+>     88
+>     89  /*
+>     90   * Finds the next valid root after root (or the first valid root if root
+>     91   * is NULL), takes a reference on it, and returns that next root. If root
+>     92   * is not NULL, this thread should have already taken a reference on it, and
+>     93   * that reference will be dropped. If no valid root is found, this
+>     94   * function will return NULL.
+>     95   */
+>     96  static struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
+>     97                                                struct kvm_mmu_page *prev_root)
+>     98  {
+>     99          struct kvm_mmu_page *next_root;
+>    100
+>    101          lockdep_assert_held_write(&kvm->mmu_lock);
+>    102
+>    103          rcu_read_lock();
+>    104
+>    105          if (prev_root)
+>    106                  next_root = list_next_or_null_rcu(&kvm->arch.tdp_mmu_roots,
+>    107                                                    &prev_root->link,
+>    108                                                    typeof(*prev_root), link);
+>    109          else
+>    110                  next_root = list_first_or_null_rcu(&kvm->arch.tdp_mmu_roots,
+>    111                                                     typeof(*next_root), link);
+>    112
+>    113          while (next_root && !kvm_tdp_mmu_get_root(kvm, next_root))
+>    114                  next_root = list_next_or_null_rcu(&kvm->arch.tdp_mmu_roots,
+>    115                                  &next_root->link, typeof(*next_root), link);
+>    116
+>    117          rcu_read_unlock();
+>    118
+>    119          if (prev_root)
+>    120                  kvm_tdp_mmu_put_root(kvm, prev_root);
+>    121
+>    122          return next_root;
+>    123  }
+>    124
+>    125  /*
+>    126   * Note: this iterator gets and puts references to the roots it iterates over.
+>    127   * This makes it safe to release the MMU lock and yield within the loop, but
+>    128   * if exiting the loop early, the caller must drop the reference to the most
+>    129   * recent root. (Unless keeping a live reference is desirable.)
+>    130   */
+>    131  #define for_each_tdp_mmu_root_yield_safe(_kvm, _root)   \
+>    132          for (_root = tdp_mmu_next_root(_kvm, NULL);     \
+>    133               _root;                                     \
+>    134               _root = tdp_mmu_next_root(_kvm, _root))
+>    135
+>    136  /* Only safe under the MMU lock in write mode, without yielding. */
+>    137  #define for_each_tdp_mmu_root(_kvm, _root)                              \
+>    138          list_for_each_entry_rcu(_root, &_kvm->arch.tdp_mmu_roots, link, \
+>  > 139                                  lockdep_is_held_write(&kvm->mmu_lock))
+>    140
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
