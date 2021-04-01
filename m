@@ -2,183 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 713B6351DAF
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E56351E8B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240820AbhDASbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:31:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35368 "EHLO
+        id S237145AbhDASnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:43:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238586AbhDASJj (ORCPT
+        with ESMTP id S234525AbhDASVF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:09:39 -0400
-Received: from mail.pqgruber.com (mail.pqgruber.com [IPv6:2a05:d014:575:f70b:4f2c:8f1d:40c4:b13e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 557BBC022586;
-        Thu,  1 Apr 2021 08:19:50 -0700 (PDT)
-Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
-        by mail.pqgruber.com (Postfix) with ESMTPSA id 7EF5EC72850;
-        Thu,  1 Apr 2021 17:19:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
-        s=mail; t=1617290382;
-        bh=tT0FEIHy1AZG5V42yfNXqku3bOLvq1PgHkhzVzYTvoM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N1dkgjXALuojsa/8H3J4tpOlwOsclnmnNwYW4IqBA+2nUaoWknHXtj4UheHJBG0kb
-         obZ4FSYK1lhhuc4DfU0rUy/U+dOZ8yoi2qj2TVyq0yJWGcv6QDahJm5Wg7koSHvOXJ
-         CdpC7TBrm87nec9q3KTXv25F3l0+VxTDMZOHpu00=
-Date:   Thu, 1 Apr 2021 17:19:40 +0200
-From:   Clemens Gruber <clemens.gruber@pqgruber.com>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-pwm@vger.kernel.org,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 4/7] pwm: pca9685: Support staggered output ON times
-Message-ID: <YGXkjLDl/A0LpjXg@workstation.tuxnet>
-References: <20210329125707.182732-1-clemens.gruber@pqgruber.com>
- <20210329125707.182732-4-clemens.gruber@pqgruber.com>
- <20210329170357.par7c3izvtmtovlj@pengutronix.de>
- <YGILdjZBCc2vVlRd@workstation.tuxnet>
- <20210329180206.rejl32uajslpvbgi@pengutronix.de>
- <YGRqZsi4WApZcwIT@workstation.tuxnet>
- <YGShjDE8R31LwAbi@orome.fritz.box>
- <YGV7VJ72nWDIjNbu@workstation.tuxnet>
- <YGXO7oKWPjYYrVFy@orome.fritz.box>
+        Thu, 1 Apr 2021 14:21:05 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD07AC022596
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 08:20:26 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id x21-20020a17090a5315b029012c4a622e4aso1198690pjh.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 08:20:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Ww076wtEw/l52B1eQC1HZmnMQQ8Ebtr9JfK+3ViX3so=;
+        b=KiGvVnSH66DmF8HdRytw6CJzuJoS03Rgw4NS/QOUBG/qyDfowjfjPJb4Uk9rl3tzSl
+         FrtcqDfXNAt03yv2ZbMWSkUtZVxgRqCp/FxjadzOmk0LdPRI0xK8SS0cmsm50tBLUV8D
+         LT2bSRIZNrc7c9mY8GZxdhUIy6Sv/F6+JsIxaTreMmGzoIVgcnJMnqibzvnhl7vEeCSS
+         l+h74kxjQjZ+K2aItGMz6rzYzSTuvOU31WEx5Tonk1xxdAIDZpUuj/fNFiz29q66gypd
+         vbgOy/k/jbxvAJwSS59FAbQ0k7tPzSO6eZoOEiGcRgHuJj++WFr95/LbkGkaTmvTBXB+
+         F9IQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Ww076wtEw/l52B1eQC1HZmnMQQ8Ebtr9JfK+3ViX3so=;
+        b=c/LP953BNNsXKP+3wTBRPYGyXixnEvbTOb696BCCjVrwf5RT//kecNc20pEkiZ0/9C
+         DLObCMJeJU3T8/go7y5kMl8rOlB0GDlhTn0p1/H4f0XITtwksTwZhZQI6UJ/pePoUQFa
+         DTv2ccfDfwnWv0fQ15LM3IlVU54VcRkr4LGGUq8w7M0GIJSfpw+h76PhS6yqHqafPDVd
+         0ag+b5p08MmLMv/WPaFc3XpiBJKQGBRatDokAwIT55vz7zmsRE4XcSvKBQe7eMrdpaUx
+         yUiav7Uj40uaLOyJcnhDoIaCr9lY5Eufg5zJ2IJAWFL9vPIJN9YwWL8KtqDthgurpTa6
+         IZ/g==
+X-Gm-Message-State: AOAM531SCmHp2f9T2SdkNOpzOSZu9nBNteC0kxEpAh1uiiqLzK7AmG0/
+        pYTkgTQ8Q8auttEI3ImUkYix
+X-Google-Smtp-Source: ABdhPJxAqh+RohpPAzLbk35v/zOJ3CC1I1F2tWRwN3E0X6lfjAeYaDbNp7Smee2wXabf5ZYkF4rWoQ==
+X-Received: by 2002:a17:902:c14c:b029:e5:cd82:a0b with SMTP id 12-20020a170902c14cb02900e5cd820a0bmr8410255plj.34.1617290426225;
+        Thu, 01 Apr 2021 08:20:26 -0700 (PDT)
+Received: from localhost.localdomain ([103.77.37.138])
+        by smtp.gmail.com with ESMTPSA id l22sm6500919pjl.14.2021.04.01.08.20.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 08:20:25 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        boris.brezillon@collabora.com, Daniele.Palmas@telit.com,
+        bjorn.andersson@linaro.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v10 4/4] mtd: rawnand: qcom: Add missing nand_cleanup() in error path
+Date:   Thu,  1 Apr 2021 20:49:55 +0530
+Message-Id: <20210401151955.143817-5-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210401151955.143817-1-manivannan.sadhasivam@linaro.org>
+References: <20210401151955.143817-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YGXO7oKWPjYYrVFy@orome.fritz.box>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 03:47:26PM +0200, Thierry Reding wrote:
-> On Thu, Apr 01, 2021 at 09:50:44AM +0200, Clemens Gruber wrote:
-> > Hi Thierry,
-> > 
-> > On Wed, Mar 31, 2021 at 06:21:32PM +0200, Thierry Reding wrote:
-> > > On Wed, Mar 31, 2021 at 02:26:14PM +0200, Clemens Gruber wrote:
-> > > > On Mon, Mar 29, 2021 at 08:02:06PM +0200, Uwe Kleine-König wrote:
-> > > > > On Mon, Mar 29, 2021 at 07:16:38PM +0200, Clemens Gruber wrote:
-> > > > > > On Mon, Mar 29, 2021 at 07:03:57PM +0200, Uwe Kleine-König wrote:
-> > > > > > > On Mon, Mar 29, 2021 at 02:57:04PM +0200, Clemens Gruber wrote:
-> > > > > > > > The PCA9685 supports staggered LED output ON times to minimize current
-> > > > > > > > surges and reduce EMI.
-> > > > > > > > When this new option is enabled, the ON times of each channel are
-> > > > > > > > delayed by channel number x counter range / 16, which avoids asserting
-> > > > > > > > all enabled outputs at the same counter value while still maintaining
-> > > > > > > > the configured duty cycle of each output.
-> > > > > > > > 
-> > > > > > > > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
-> > > > > > > 
-> > > > > > > Is there a reason to not want this staggered output? If it never hurts I
-> > > > > > > suggest to always stagger and drop the dt property.
-> > > > > > 
-> > > > > > There might be applications where you want multiple outputs to assert at
-> > > > > > the same time / to be synchronized.
-> > > > > > With staggered outputs mode always enabled, this would no longer be
-> > > > > > possible as they are spread out according to their channel number.
-> > > > > > 
-> > > > > > Not sure how often that usecase is required, but just enforcing the
-> > > > > > staggered mode by default sounds risky to me.
-> > > > > 
-> > > > > There is no such guarantee in the PWM framework, so I don't think we
-> > > > > need to fear breaking setups. Thierry?
-> > > > 
-> > > > Still, someone might rely on it? But let's wait for Thierry's opinion.
-> > > 
-> > > There's currently no way to synchronize two PWM channels in the PWM
-> > > framework. And given that each PWM channel is handled separately the
-> > > programming for two channels will never happen atomically or even
-> > > concurrently, so I don't see how you could run two PWMs completely
-> > > synchronized to one another.
-> > 
-> > As the PCA9685 has only one prescaler and one counter per chip, by
-> > default, all PWMs enabled will go high at the same time. If they also
-> > have the same duty cycle configured, they also go low at the same time.
-> 
-> What happens if you enable one of them, it then goes high and then you
-> enable the next one? Is the second one going to get enabled on the next
-> period? Or will it start in the middle of the period?
+Add missing nand_cleanup() in the alloc_bam_transaction() error path
+to cleanup the resources properly.
 
-The channel configuration is updated at the end of the low cycle of the
-channel in question and if the counter is already past the ON time, it
-will start with the next period. So the second one should never start
-while the first one is high (unless staggering mode is enabled).
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ drivers/mtd/nand/raw/qcom_nandc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> To truly enable them atomically, you'd have to ensure they all get
-> enabled in basically the same write, right? Because otherwise you can
-> still end up with just a subset enabled and the rest getting enabled
-> only after the first period.
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index 87c23bb320bf..fe74cf3aece5 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -2882,6 +2882,7 @@ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
+ 		if (!nandc->bam_txn) {
+ 			dev_err(nandc->dev,
+ 				"failed to allocate bam transaction\n");
++			nand_cleanup(chip);
+ 			return -ENOMEM;
+ 		}
+ 	}
+-- 
+2.25.1
 
-Yes. This could probably be achieved with auto-increment for consecutive
-channels or with the special ALL channel for all channels.
-
-In our usecases this is not required. I'd still like to send a follow up
-patch in the future that at least implements the register writes per
-channel with auto increment to not have intermediate states (due to high
-and low byte being written separately)
-
-> > > Or did I misunderstand and it's only the start time of the rising edge
-> > > that's shifted, but the signal will remain high for a full duty cycle
-> > > after that and then go down and remain low for period - duty - offset?
-> > 
-> > Yes, that's how it works.
-> 
-> That's less problematic because the signal will remain a standard PWM,
-> it's just shifted by some amount. Technically pwm_apply_state() must
-> only return when the signal has been enabled, so very strictly speaking
-> you'd have to wait for a given amount of time to ensure that's correct.
-> But again, I doubt that any use-case would require you to be that
-> deterministic.
-
-Yes, probably not and if we make it opt-in, it shouldn't be a problem.
-
-> 
-> > > That's slightly better than the above in that it likely won't trip up
-> > > any consumers. But it might still be worth to make this configurable per
-> > > PWM (perhaps by specifying a third specifier cell, in addition to the
-> > > period and flags, that defines the offset/phase of the signal).
-> > > 
-> > > In both cases, doing this on a per-PWM basis will allow the consumer to
-> > > specify that they're okay with staggered mode and you won't actually
-> > > force it onto anyone. This effectively makes this opt-in and there will
-> > > be no change for existing consumers.
-> > 
-> > I agree that it should be opt-in, but I am not sure about doing it
-> > per-pwm:
-> > The reason why you'd want staggered mode is to reduce EMI or current
-> > spikes and it is most effective if it is enabled for all PWMs.
-> > 
-> > If it is specified in the DT anyway and you have a consumer that does
-> > not support staggered mode (probably rare but can happen), then I'd
-> > suggest just disabling it globally by not specifying nxp,staggered-mode;
-> > 
-> > Also it would make the configuration more complicated: You have to do
-> > the "staggering" yourself and assign offsets per channel.
-> > It's certainly easier to just enable or disable it.
-> > 
-> > What do you think?
-> 
-> Yeah, if you use an offset in the PWM specifier, users would have to
-> manually specify the offset. An interesting "feature" of that would be
-> that they could configure a subset of PWM channels to run synchronized
-> (module the atomicity problems discussed above). Not sure if that's
-> something anyone would ever want to do.
-
-Yes and for the common case where you don't care it would be more work
-for the user.
-
-> 
-> Another option would be to add some new flag that specifies that a given
-> PWM channel may use this mode. In that case users wouldn't have to care
-> about specifying the exact offset and instead just use the flag and rely
-> on the driver to pick some offset. Within the driver you could then just
-> keep the same computation that offsets by channel index, or you could
-> have any other mechanism that you want.
-
-OK, so maybe a PWM_STAGGERING_ALLOWED flag in dt-bindings/pwm/pwm.h,
-pass it through via a new bool staggering_allowed in struct pwm_args?
-
-Thanks,
-Clemens
