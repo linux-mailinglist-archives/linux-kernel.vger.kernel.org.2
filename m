@@ -2,95 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A906B35111D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 10:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EEB0351120
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 10:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233684AbhDAIt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 04:49:27 -0400
-Received: from ozlabs.org ([203.11.71.1]:56083 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233626AbhDAItC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 04:49:02 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F9xgH71P6z9sPf;
-        Thu,  1 Apr 2021 19:48:59 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1617266940;
-        bh=wsBnL8set27d486n9ewIF/v885n8kFFSw1lbWyFLl3M=;
-        h=Date:From:To:Cc:Subject:From;
-        b=myEATeNz6M0avZTnmqwvBkJlpYOAb0n6ScHATarvkXc/4LEWb0U3kwFny8MPvDUML
-         4a/fhyPcAyCOLp+rL+7Gi34h+9Flq2dA5KpB+b0Igx45tiD1dt09K/SkcySPSogFzM
-         snbqPA6/UEflViMIAxI3HMhzcLyz1WRfDZNtSA9eAz9MjLJl5yCDZdZkrDTbwakOoz
-         F3lWYliJoYYJk8aLeT/GQWeh6CrasDpHHmKK7rc+E+NbbhTs98vYzvwO4nPTyoV3tf
-         tjxUtB+uT9YHGG2Z9HpBI9BaLhKWllX5DOcn2TWJIs/Y+8T+dKHW/5OI19L9viHuHd
-         tIwuqc8EQ3a2Q==
-Date:   Thu, 1 Apr 2021 19:48:59 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Rander Wang <rander.wang@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the soundwire tree
-Message-ID: <20210401194859.096aab67@canb.auug.org.au>
+        id S233721AbhDAIuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 04:50:01 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14986 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233714AbhDAItz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 04:49:55 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F9xdv3jXCzyNpb;
+        Thu,  1 Apr 2021 16:47:47 +0800 (CST)
+Received: from [10.67.110.108] (10.67.110.108) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 1 Apr 2021 16:49:47 +0800
+Subject: Re: [PATCH] riscv: keep interrupts disabled for BREAKPOINT exception
+To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+References: <20210330021624.2b776386@xhacker>
+ <20210330183316.942215efe8e6e8455ad14113@kernel.org>
+ <20210331222244.45a5807c@xhacker>
+From:   "liaochang (A)" <liaochang1@huawei.com>
+CC:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Message-ID: <096752a7-21f9-8339-2e76-8c65859fa1d7@huawei.com>
+Date:   Thu, 1 Apr 2021 16:49:47 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/R2o03fqLvUFxiZ1kKi6Z_Kd";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20210331222244.45a5807c@xhacker>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.110.108]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/R2o03fqLvUFxiZ1kKi6Z_Kd
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Jisheng,
 
-Hi all,
+ÔÚ 2021/3/31 22:22, Jisheng Zhang Ð´µÀ:
+> On Tue, 30 Mar 2021 18:33:16 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> 
+>> Hi Jisheng,
+> 
+> Hi Masami,
+> 
+>>
+>> On Tue, 30 Mar 2021 02:16:24 +0800
+>> Jisheng Zhang <jszhang3@mail.ustc.edu.cn> wrote:
+>>
+>>> From: Jisheng Zhang <jszhang@kernel.org>
+>>>
+>>> Current riscv's kprobe handlers are run with both preemption and
+>>> interrupt enabled, this violates kprobe requirements. Fix this issue
+>>> by keeping interrupts disabled for BREAKPOINT exception.  
+>>
+>> Not only while the breakpoint exception but also until the end of
+>> the single step (maybe you are using __BUG_INSN_32 ??) need to be
+>> disable interrupts. Can this do that?
+>>
+> 
+> interrupt is disabled during "single step" by kprobes_save_local_irqflag()
+> and kprobes_restore_local_irqflag(). The code flow looks like: 
+> 
+> do_trap_break()   // for bp
+>   kprobe_breakpoint_handler()
+>     setup_singlestep()
+>       kprobes_restore_local_irqflag()
+> 
+> do_trap_break()  // for ss
+>   kprobe_single_step_handler()
+>     kprobes_restore_local_irqflag()
 
-In commit
+Recently, kernel hit BUG_ON() on QEMU after I install a probe at "sys_read" via kprobe,
+accoriding to my debugging and analysis it looks like caused by the "irq disable" operation for single-stepping.
 
-  187c59cdcfe9 ("soundwire: stream: fix memory leak in stream config error =
-path")
+I present a detailed description about this problem in the mail with title "[PATCH] riscv/kprobe: fix kernel panic when invoking sys_read traced by kprobe".
+Looking forward to some feedback,Thanks.
 
-Fixes tag
-
-  Fixes: bbe7379d8040a ("soundwire: Add support for SoundWire stream manage=
-ment")
-
-has these problem(s):
-
-  - Subject does not match target commit subject
-    Just use
-	git log -1 --format=3D'Fixes: %h ("%s")'
-
-Did you mean
-
-Fixes: bbe7379d8040 ("soundwire: Add support for port management")
-
-or
-
-Fixes: 89e590535f32 ("soundwire: Add support for SoundWire stream managemen=
-t")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/R2o03fqLvUFxiZ1kKi6Z_Kd
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBliPsACgkQAVBC80lX
-0Gw/BAf/eZZS4SDos0ztMwNYWszdbJSFGbG4+cfWpbLUKD2UCoKAZZ5KXdweBvNA
-gBzROe8L2iYJScbNirHriWPHhtoZQlZaayjkVEx79eRP9lRkLZMQ8bGRErI4csO2
-FhwVzZuozSXcuPyfkL8Q18GAoDCNlh7cxhBO81IJmvTx0f59Ylidl6/V2CIq9ZZJ
-TIosuwry/CZ7H2RdTlbq1km3sO65c0ziWeKFpO0RbWDx4lslEPfGuI5vuUJTB2qo
-UOXV2SoOQQNxygOAvZET5EY+ylWniIR7fdhXijzAn3H7EORmN+h6B5OSmwxb52nw
-X6qgFdiVpC9XcQVRXx4/eRgQohd7eg==
-=QrYE
------END PGP SIGNATURE-----
-
---Sig_/R2o03fqLvUFxiZ1kKi6Z_Kd--
+BR,
+Liao Chang
+> 
+> Thanks
+> 
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> .
+> 
