@@ -2,96 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1990351F21
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F92351EEB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237342AbhDASxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:53:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35182 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235778AbhDASnC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:43:02 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S239115AbhDASur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:50:47 -0400
+Received: from mail1.bemta24.messagelabs.com ([67.219.250.112]:29628 "EHLO
+        mail1.bemta24.messagelabs.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240344AbhDASaJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:30:09 -0400
+Received: from [100.112.134.153] (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256 bits))
+        by server-1.bemta.az-b.us-west-2.aws.symcld.net id 2C/76-17150-FC1E5606; Thu, 01 Apr 2021 15:07:59 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupkleJIrShJLcpLzFFi42JJl3vFpnvuYWq
+  CQfM5RYsnB9oZLd4cn85ksbBtCYvF5V1z2Cwezr7KaPF4xVt2BzaPxXteMnlsWtUJZPVNZvV4
+  v+8qm8fnTXIBrFGsmXlJ+RUJrBnHnl9lLLjKU3HweRNTA+M9ri5GLg4hgf+MEh9Xb2eBcJ4zS
+  vw93MHaxcjJISyQKnHgwlywhIjABEaJV90nwBLMAuUSW1ffgOo4wijxZupWNpAEm4C2xJYtv4
+  BsDg5eAVuJS584QEwWARWJAyviQCpEBcIleq/cBhvDKyAocXLmExYQm1PATmLK1DNMIOXMApo
+  S63fpQ2wSl7j1ZD4ThC0vsf3tHGaQEgkBBYm1P8B2SggkSPT8e8Q2gVFwFpKhsxAGzUIyaBaS
+  QQsYWVYxWiQVZaZnlOQmZuboGhoY6BoaGukaGhvpGhlY6CVW6SbplRbrlqcWl+ga6SWWF+sVV
+  +Ym56To5aWWbGIExlBKQcuFHYzr3nzQO8QoycGkJMo7ZVpKghBfUn5KZUZicUZ8UWlOavEhRh
+  kODiUJ3jX3UhOEBItS01Mr0jJzgPEMk5bg4FES4Y19AJTmLS5IzC3OTIdInWJUlBLnXQOSEAB
+  JZJTmwbXBUsglRlkpYV5GBgYGIZ6C1KLczBJU+VeM4hyMSsK8LMCEJMSTmVcCN/0V0GImoMWu
+  N8AWlyQipKQamC69nzh3WUW7Qsa31upWwRVrexfqJZ5R27j40Y97G1cltb4VWrDnpArPh+dyw
+  d2ldq4KbPcNmlub92d1/djYvPr8MRO7eSFP9N/+TsvZr/B2ifmixdza3CdzlFrPqulXCet/YJ
+  0UvcfTWXDiil06Vv8DbwQe89DzKGcsYStbdkTR2nqRlfyWY192rGR899HRQ32f9EXvHmP3uyw
+  NutPYEvf0M82vmjrZTm2j6lktzYqJO+9GP+jdrybQ+jX55Msll8x9BbbNzKrYJbB2Z+YivVy5
+  s381lpe3PuAWLZaea/34XaTr541u8gf7cz64zQzT5Lj8+16AwPmvux9/WOgw8dzdFNenzx3KF
+  UT42+7X9yixFGckGmoxFxUnAgDnzIpOnAMAAA==
+X-Env-Sender: markpearson@lenovo.com
+X-Msg-Ref: server-27.tower-356.messagelabs.com!1617289676!60248!1
+X-Originating-IP: [103.30.234.6]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.60.3; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 17845 invoked from network); 1 Apr 2021 15:07:58 -0000
+Received: from unknown (HELO lenovo.com) (103.30.234.6)
+  by server-27.tower-356.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 1 Apr 2021 15:07:58 -0000
+Received: from reswpmail01.lenovo.com (unknown [10.62.32.20])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8C22761364;
-        Thu,  1 Apr 2021 15:05:47 +0000 (UTC)
-Date:   Thu, 1 Apr 2021 16:05:57 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Mugilraj D <dmugil2000@gmail.com>
-Cc:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] iio: adc: bcm_iproc_adc: Use %s and __func__
-Message-ID: <20210401160557.533bae90@jic23-huawei>
-In-Reply-To: <a2ac91a9-54e3-2525-1e7e-00a26d3393e3@gmail.com>
-References: <20210401062517.28832-1-dmugil2000@gmail.com>
-        <CAHp75VfgL0KW0fetgE3NuBb4itMK1oY+yLmr1xDYkn390hCscg@mail.gmail.com>
-        <20210401113015.00006b70@Huawei.com>
-        <a2ac91a9-54e3-2525-1e7e-00a26d3393e3@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by Forcepoint Email with ESMTPS id 3305AC9AC3AC72103416;
+        Thu,  1 Apr 2021 23:07:55 +0800 (CST)
+Received: from localhost.localdomain (10.38.99.122) by reswpmail01.lenovo.com
+ (10.62.32.20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2106.2; Thu, 1 Apr 2021
+ 11:07:52 -0400
+Subject: Re: [External] Re: [PATCH 31/32] Documentation: update
+ sysfs-platform_profile.rst reference
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+CC:     Jonathan Corbet <corbet@lwn.net>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        <linux-kernel@vger.kernel.org>
+References: <cover.1617279355.git.mchehab+huawei@kernel.org>
+ <828434d891e40234255e3f06c13827b7996b1ad1.1617279356.git.mchehab+huawei@kernel.org>
+ <e042f8f8-0ba1-098d-2503-8c319c3c2bf9@redhat.com>
+From:   Mark Pearson <markpearson@lenovo.com>
+Message-ID: <79ad4a98-a70c-2f7d-3ce6-8202fcc83857@lenovo.com>
+Date:   Thu, 1 Apr 2021 11:07:52 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <e042f8f8-0ba1-098d-2503-8c319c3c2bf9@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.38.99.122]
+X-ClientProxiedBy: reswpmail04.lenovo.com (10.62.32.23) To
+ reswpmail01.lenovo.com (10.62.32.20)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 1 Apr 2021 20:22:47 +0530
-Mugilraj D <dmugil2000@gmail.com> wrote:
 
-> On 01/04/21 4:00 pm, Jonathan Cameron wrote:
-> > On Thu, 1 Apr 2021 12:24:50 +0300
-> > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> >   
-> >> On Thu, Apr 1, 2021 at 9:27 AM Mugilraj Dhavachelvan
-> >> <dmugil2000@gmail.com> wrote:  
-> >>>
-> >>> Change function's name to %s and __func__ to fix checkpatch.pl errors.    
-> >>
-> >> No, just drop the __func__ completely. First of all, we have a device
-> >> name, and uniqueness of the messages in the driver should guarantee
-> >> easy findings. Second, specific to _dbg() variants, with enabled
-> >> Dynamic Debug it can be chosen at run time!
-> >>
-> >> I recommend going through all drivers and drop __func__ near to
-> >> dev_dbg() and pr_debug().
-> >>  
-> > 
-> > Agreed.  Though beware that some maintainers will count this
-> > as noise and get grumpy.
-> > 
-> > I'm fine with such patches for IIO.  
+
+On 01/04/2021 09:49, Hans de Goede wrote:
+> Hi,
 > 
-> Sorry for the noise. I just seen the docs about dynamic debug.
-> So, if we use dev_dbg("log_msg") it will print statement like
-> filename:lineno [module]func flag log_msg, If I get it correctly.
-> And no need of specifying __func__ in dev_dbg() and dp_dbg() right!!
+> On 4/1/21 2:17 PM, Mauro Carvalho Chehab wrote:
+>> The file name: Documentation/ABI/testing/sysfs-platform_profile.rst
+>> should be, instead: Documentation/userspace-api/sysfs-platform_profile.rst.
+>>
+>> Update its cross-reference accordingly.
+>>
+>> Fixes: a2ff95e018f1 ("ACPI: platform: Add platform profile support")
+>> Fixes: 8e0cbf356377 ("Documentation: Add documentation for new platform_profile sysfs attribute")
+>> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > 
-> Jonathan do you have any TODO's?
-
-I tend not to mind cleanup patches (within reason)in IIO so I'm absolutely
-fine with a series removing any __func__ items like this.  One patch per
-driver preferred because it avoids issues with this interfering with backports
-etc. There will end up being about 18 patches from a quick grep.  Perhaps send
-a small number first though to avoid having to put in too much effort as
-any issues likely to affect the whole set.
-
-Just be careful with other maintainers, they sometimes strike a different
-balance for what they consider noise vs useful.  
-
-Jonathan
-
+> Thanks, patch looks good to me:
 > 
-> > 
-> > Jonathan
-> >   
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> 
+> Rafael, I assume you will merge this through your tree?
+> 
+> Regards,
+> 
+> Hans
+> 
+Looks good to me too - though I'd missed the fact the file had moved
+somehow :)
 
+Not sure if my reviewed tag has any value but if it's useful:
+Reviewed-by: Mark Pearson <markpearson@lenovo.com>
+
+Just for my education - how do things get moved from testing to
+somewhere else, is there a decision process etc?
+
+Thank you!
+Mark
+
+>> ---
+>>  include/linux/platform_profile.h | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/include/linux/platform_profile.h b/include/linux/platform_profile.h
+>> index a6329003aee7..e5cbb6841f3a 100644
+>> --- a/include/linux/platform_profile.h
+>> +++ b/include/linux/platform_profile.h
+>> @@ -2,7 +2,7 @@
+>>  /*
+>>   * Platform profile sysfs interface
+>>   *
+>> - * See Documentation/ABI/testing/sysfs-platform_profile.rst for more
+>> + * See Documentation/userspace-api/sysfs-platform_profile.rst for more
+>>   * information.
+>>   */
+>>  
+>>
+> 
