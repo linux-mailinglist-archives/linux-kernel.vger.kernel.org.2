@@ -2,86 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06DB9352152
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2A6352153
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:10:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234300AbhDAVKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 17:10:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47368 "EHLO
+        id S234412AbhDAVKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 17:10:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233710AbhDAVKJ (ORCPT
+        with ESMTP id S233710AbhDAVKo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 17:10:09 -0400
-Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A510C0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 14:10:09 -0700 (PDT)
-Received: from [192.168.1.101] (abae153.neoplus.adsl.tpnet.pl [83.6.168.153])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 035EE3F5D2;
-        Thu,  1 Apr 2021 23:10:06 +0200 (CEST)
-Subject: Re: [PATCH 5/6] clk: qcom: gcc-sdm660: Account for needed adjustments
- in probe function
-To:     Stephen Boyd <sboyd@kernel.org>, phone-devel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Craig Tatlor <ctatlor97@gmail.com>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20210220155618.176559-1-konrad.dybcio@somainline.org>
- <20210220155618.176559-5-konrad.dybcio@somainline.org>
- <161404077336.1254594.15002572465360321874@swboyd.mtv.corp.google.com>
- <3917fba4-e5b0-911f-9220-f401a90aac38@somainline.org>
- <161724198675.2260335.14358880292682931985@swboyd.mtv.corp.google.com>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <abc821cc-ef43-3241-793a-cc4c85b72563@somainline.org>
-Date:   Thu, 1 Apr 2021 23:10:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Thu, 1 Apr 2021 17:10:44 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C3DC0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 14:10:44 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id 68-20020a9d0f4a0000b02901b663e6258dso3275912ott.13
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 14:10:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dn6QNqzedYyCxFSxmCymnqkmYNnWvvinHAK+WCVgT1o=;
+        b=eD3LuB/1TLZ6RQvi2aXVuaq7Mu/BK6RTGFlbZgj9QzZS0B9/VaYkn2iiKXGC/LxVMR
+         7LBtF9L40qMkvafrx+OTjPicPY0KLHHJQ7kPaD1wYoS38jrWLlXvNRC9ZOpJ/MbzXh5l
+         7tEyKyJ88E7M3OsTW7tyiybe16wMxuIYQ8Mk5AfOOIx2YFRYYvSs0ti0lh5YXyhagEya
+         7HZHrzp/7rxyNRkCsJJC1FIKA5wb6AiSACbjkt8ykoA+Qr2nIw/0uM/IMOkdzEZhhOZD
+         k4HA8lB+luvtGDoE0CYZdQjn1mEOCLUnXIUuWhjoSh02BymInuzaMVWzevml3jolBs/q
+         P+nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dn6QNqzedYyCxFSxmCymnqkmYNnWvvinHAK+WCVgT1o=;
+        b=gEjA6lvF+6E8whxvIrucdQyPVMrxDtOjpl+Y6zxwY2pLNlnr7v6CxkmYtBsdYWDbI8
+         M9RXz1AESNQYIE5vz7Cu9UxeTW1RFR2a0w6P2Rancl1povOWn3pLO2/NY+TXWxVLCKIF
+         lCDcJu7TuQ+wwmdrcWHwFg8YPUkf138Bji+qYfd19HVO0Aexxwvg6HVeQd8K6C2FDICO
+         2X17UrzJAwL0jFiEHFr47S36kn5sQG2+oH5XsNLMs2N4rSXxeYxtS9U7/4ORFfTAma+9
+         b8Uf3ok67UFqWMlSK/PbIllo0NngfV0izg2YAI4iwQtZbPygG8IMHBqCFm2JD7efjp2I
+         ALSA==
+X-Gm-Message-State: AOAM531IsksMHWVVoYpF9VujSR9TjG5sUnQmcyNUpWWE4zjS9MiKwpuM
+        6L0l+ULQ1w4+QhyWBofzZ75INXdXoy/uON1lXL0=
+X-Google-Smtp-Source: ABdhPJwrD9U1EuoDIcewRKSx9Axm1yuo3/l3feLiLMVJfjlNhkKopbZgudfF0DMMZz8wuNUo7fNvoSvHi9mEKNnGQZM=
+X-Received: by 2002:a9d:7288:: with SMTP id t8mr8955661otj.132.1617311443744;
+ Thu, 01 Apr 2021 14:10:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <161724198675.2260335.14358880292682931985@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210331131218.60768-1-bernard@vivo.com>
+In-Reply-To: <20210331131218.60768-1-bernard@vivo.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 1 Apr 2021 17:10:32 -0400
+Message-ID: <CADnq5_MR1_LaTfhAym=dbORhaBLLZxxgO13CyB4j3QA1D1RC1Q@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd: use kmalloc_array over kmalloc with multiply
+To:     Bernard Zhao <bernard@vivo.com>
+Cc:     Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, opensource.kernel@vivo.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Applied.  Thanks!
 
->>>> +
->>>> +       /* Keep bimc gfx clock port on all the time */
->>>> +       clk_prepare_enable(gcc_bimc_gfx_clk.clkr.hw.clk);
->>>> +
->>> Preferably just set these various bits with regmap_update_bits() during
->>> probe. Also, please do it before regsitering the clks, not after.
->> To be fair, now I think that simply adding CLK_IS_CRITICAL flag to the clocks in question is the smartest thing to do. Magic writes don't tell a whole lot.
-> This is how it's been done in various other qcom clk drivers. Usually
-> there is a comment about what is enabled, but really it's just setting
-> random bits that sadly aren't already set by default.
-
-But why.. why should we give Linux less information about the hardware it's running on? It's a kernel after all, I know some parties would prefer to keep the hardware away from its users, but cmon, it's OSSLand out there!
-
-Allocating a few bytes more in memory is proooobably a good trade-off for keeping an eye on the state of various clocks instead of simply setting some seemingly random bits and hoping nothing bad happens under the hood.. This isn't only a case for this clock, but for all ones that are effectively pinky-promise-trusted to function properly with no way of checking if they're even still alive other than poking the registers manually.. As of v5.12-rc2, there are *46* such trust credits..
-
-It's NOT easy to track down issues in big monolithic kernels, especially when people submitting changes to common code seem to think that only their hardware uses it (no hard feelings, but drm/msm broke on !a6xx *at least* two times within the last year) and since making sure the clocks are ticking properly is one of the most crucial things when looking into more complex issues, which may or may not randomly happen on a platform that is just being brought up for various reasons (e.g. half of mdm9607 hardware doesn't wanna play along without a ICC driver), I *really* think we should use CLK_IS_CRITICAL instead and give developers a way to check if everything's in tact with the clock, while still keeping the "never turn it off, don't touch it!" aspect.
-
-
->>>> +       /* Set the HMSS_GPLL0_SRC for 300MHz to CPU subsystem */
->>>> +       clk_set_rate(hmss_gpll0_clk_src.clkr.hw.clk, 300000000);
->>> Is this not already the case?
->>
->> This is a mission-critical clock and we cannot trust the bootloader with setting it. Otherwise dragons might appear.
->>
-> What does the bootloader set it to?
-
-Sorry but I can't check, nor do I remember right now. But we still shouldn't add a variable that might come from a lazy OEM not incorporating the fix into their release, especially since this one is used for clocking the AP.
-
-
-Konrad
-
+On Wed, Mar 31, 2021 at 9:36 AM Bernard Zhao <bernard@vivo.com> wrote:
+>
+> Fix patch check warning:
+> WARNING: Prefer kmalloc_array over kmalloc with multiply
+> +       buf = kmalloc(MAX_KFIFO_SIZE * sizeof(*buf), GFP_KERNEL);
+>
+> Signed-off-by: Bernard Zhao <bernard@vivo.com>
+> ---
+>  drivers/gpu/drm/amd/amdkfd/kfd_smi_events.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_smi_events.c b/drivers/gpu/drm/amd/amdkfd/kfd_smi_events.c
+> index 17d1736367ea..246522423559 100644
+> --- a/drivers/gpu/drm/amd/amdkfd/kfd_smi_events.c
+> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_smi_events.c
+> @@ -81,7 +81,7 @@ static ssize_t kfd_smi_ev_read(struct file *filep, char __user *user,
+>         struct kfd_smi_client *client = filep->private_data;
+>         unsigned char *buf;
+>
+> -       buf = kmalloc(MAX_KFIFO_SIZE * sizeof(*buf), GFP_KERNEL);
+> +       buf = kmalloc_array(MAX_KFIFO_SIZE, sizeof(*buf), GFP_KERNEL);
+>         if (!buf)
+>                 return -ENOMEM;
+>
+> --
+> 2.31.0
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
