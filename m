@@ -2,83 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A654A352157
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C37BC352148
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234443AbhDAVLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 17:11:37 -0400
-Received: from p3plsmtpa11-08.prod.phx3.secureserver.net ([68.178.252.109]:39010
-        "EHLO p3plsmtpa11-08.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234132AbhDAVLf (ORCPT
+        id S234160AbhDAVEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 17:04:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233710AbhDAVEr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 17:11:35 -0400
-Received: from [192.168.0.116] ([71.184.94.153])
-        by :SMTPAUTH: with ESMTPSA
-        id S4U2lEyTI8I0QS4U4l1juh; Thu, 01 Apr 2021 14:04:14 -0700
-X-CMAE-Analysis: v=2.4 cv=SeEyytdu c=1 sm=1 tr=0 ts=6066354e
- a=vbvdVb1zh1xTTaY8rfQfKQ==:117 a=vbvdVb1zh1xTTaY8rfQfKQ==:17
- a=IkcTkHD0fZMA:10 a=hGzw-44bAAAA:8 a=DWtuyDPq4Y-VP7XYPBwA:9 a=QEXdDO2ut3YA:10
- a=HvKuF1_PTVFglORKqfwH:22
-X-SECURESERVER-ACCT: tom@talpey.com
-Subject: Re: [Linux-cifsd-devel] [PATCH] cifsd: use kfree to free memory
- allocated by kzalloc
-To:     Namjae Jeon <linkinjeon@kernel.org>, Ralph Boehme <slow@samba.org>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        COMMON INTERNET FILE SYSTEM SERVER 
-        <linux-cifs@vger.kernel.org>,
-        COMMON INTERNET FILE SYSTEM SERVER 
-        <linux-cifsd-devel@lists.sourceforge.net>,
-        kernel-janitors@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Steve French <sfrench@samba.org>, colin.king@canonical.com,
-        Muhammad Usama Anjum <musamaanjum@gmail.com>
-References: <20210401113933.GA2828895@LEGION> <20210401115008.GS2088@kadam>
- <CAKYAXd-ou4-jf7_8xa4jDQ_otyQ9ffKhwD7WZrmrna1P3b_W8Q@mail.gmail.com>
- <ca1b9b0c-55f9-025d-558b-1b2b6c866d12@samba.org>
- <CAKYAXd-ScM9i9Ln_FL8pWyEnPO_0n8t1BLH8MJ=b4NkqEbhZ=Q@mail.gmail.com>
- <2b758812-f00b-9465-c24e-763912748809@samba.org>
- <CAKYAXd_p1MrB2G25_p52OfppfSUcEWQEVxgJbBikAe3GZrJFhw@mail.gmail.com>
-From:   Tom Talpey <tom@talpey.com>
-Message-ID: <46e67316-58f3-435d-458c-11968499d4ee@talpey.com>
-Date:   Thu, 1 Apr 2021 17:04:07 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Thu, 1 Apr 2021 17:04:47 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ABC6C0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 14:04:46 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id il9-20020a17090b1649b0290114bcb0d6c2so3728329pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 14:04:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rS1LPIsezpCfocYIASL2NtIlww+sNkf6cjcT4RJnaow=;
+        b=fwh3+pD5yDTbAvFnHw+DPPjbmI6jhKr1a2h5FwBZuCtmYefNWziRgemcSVNnPTJ0He
+         zcu31whNStsYbAhTrWIP+L/bdiMzcTF+Fp/8dS1f0TDFWHohIIFonTjAXwGAXbjwa+HJ
+         I7zvP/F3lnV1dJLOPH43Y3Pm6QqyBlydZzfp8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rS1LPIsezpCfocYIASL2NtIlww+sNkf6cjcT4RJnaow=;
+        b=VGJ661MbSxojnOheCAtMJ9SkJw8TkBCqFASjlRg/xhIwR51wZJ8R0bb+G0H1yOvXpc
+         9FKls4uavMN32PxjFf5Ddyqm8ZM7U89MNNyQF1aVcMAvtPLR9J3jdH47RCrosv3EVx73
+         hHz+tmp+G7QVBEOpZBW3B4lMPuBbUexg0Iy+5l4jb7pH3ElGVSZ2LjVEYvZ9xLy8MCM0
+         7OA1jyaQvgdXCpIvSevP6yLUSEiTp+UhwWOyYu1MN73HPDaDC9Op+TiT7+Qli741CR8N
+         3TfmNPcWp/38VoWOfifBb4hMioupdGtTDKkpwE19zZuHdYZkLjlcWjhS93ySbweymibN
+         CENw==
+X-Gm-Message-State: AOAM5310DaeLDD2dB6c8jGQ1WT5GHAMzMq3liT2dejDwW4I/331HJdka
+        k2AaFNyNc1pvGcq9Z56fOqrYUQ==
+X-Google-Smtp-Source: ABdhPJzkuyTHdQb/knNIIqB3C0DeN2XN+Vg4Xtzz3s7QdKB2fG8O1l+f1uvrtei5Q2dfF394h9dijw==
+X-Received: by 2002:a17:90a:174c:: with SMTP id 12mr10470133pjm.40.1617311085643;
+        Thu, 01 Apr 2021 14:04:45 -0700 (PDT)
+Received: from evgreen-glaptop.lan ([2601:646:c780:5ba8:208f:468e:f20:f4a])
+        by smtp.gmail.com with ESMTPSA id j3sm6177873pfi.74.2021.04.01.14.04.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 14:04:45 -0700 (PDT)
+From:   Evan Green <evgreen@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Arthur Heymans <arthur@aheymans.xyz>,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        Furquan Shaikh <furquan@google.com>,
+        Evan Green <evgreen@chromium.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH] firmware: google: Enable s0ix logging by default
+Date:   Thu,  1 Apr 2021 14:04:36 -0700
+Message-Id: <20210401140430.1.Ie141e6044d9b0d5aba72cb08857fdb43660c54d3@changeid>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <CAKYAXd_p1MrB2G25_p52OfppfSUcEWQEVxgJbBikAe3GZrJFhw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfCTebwSLG0O7CVyJx0MSZc8RdyOjwuZI/CluYpCmzCTBYDnswFAGGwB2pTKJ74GlIi9KJC0EnCvFsKN4kKsYIpgzKsfp3ssVCbRCmPFTnQUChE5x7Grk
- 8HoUqTXT9frKqAA8BFTBaji1CzdTk/oAxgjAn9ZGDSrPECP+BmxbUaWoD/p5nkIcVHhp4zYWe8lU/pnMenMRn3h4GpQuHA36qrpU22xo6N9KuU2HxXgiQG+w
- LUwvWCnYnh9lOSR2KJJMPUlxU7X1HB+MZ/vOdijkMkRwO9vpmeJ7cpqdza0x4Ou6Lvm+mYpiLQVgwJ/VW33kYq/sz59vkeV0O/E8aIS8bjTRd9Km4YyD+m50
- 5Sav0aGJ5VNH3ubwid3KMjoQQ7NUn7/4s9uUPIhY7n1VE0VjDhjA3oKN4OC+LYxiFqp26/uy3BGY1+oqfyQ4AQCZtvOV7ga3Kuou6nltOYR7wrRR624SBJnM
- RatNJKN2AOAGE8k43+EeqYasuGAAHQJpuSbZqdYHpRUDIb+vem7eLgF7UGk=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/1/2021 9:36 AM, Namjae Jeon wrote:
-> 2021-04-01 22:14 GMT+09:00, Ralph Boehme <slow@samba.org>:
->> Am 4/1/21 um 2:59 PM schrieb Namjae Jeon:
->>> 2021-04-01 21:50 GMT+09:00, Ralph Boehme <slow@samba.org>:
->>>> fwiw, while at it what about renaming everything that still references
->>>> "cifs" to "smb" ? This is not the 90's... :)
->>> It is also used with the name "ksmbd". So function and variable prefix
->>> are used with ksmbd.
->>
->> well, I was thinking of this:
->>
->>   > +++ b/fs/cifsd/...
->>
->> We should really stop using the name cifs for modern implementation of
->> SMB{23} and the code should not be added as fs/cifsd/ to the kernel.
-> As I know, currently "cifs" is being used for the subdirectory name
-> for historical reasons and to avoid confusions, even though the CIFS
-> (SMB1) dialect is no longer recommended.
+Many moons ago, support was added to the SMI handlers to log s0ix entry
+and exit. Early iterations of firmware on Apollo Lake correctly returned
+"unsupported" for this new command they did not recognize, but
+unfortunately also contained a quirk where this command would cause them
+to power down rather than resume from s0ix.
 
-I'm with Ralph. CIFS is history that we need to relegate to the past.
+Fixes for this quirk were pushed out long ago, so all APL devices still
+in the field should have updated firmware. As such, we no longer need to
+have the s0ix_logging_enable be opt-in, where every new platform has to
+add this to their kernel commandline parameters. Change it to be on by
+default.
 
-I also agree that wrappers around core memory allocators are to
-be avoided.
+In theory we could remove the parameter altogether: updated versions of
+Chrome OS containing a kernel with this change would also be coupled
+with firmware that behaves properly with these commands. Eventually we
+should probably do that. For now, convert this to an opt-out parameter
+so there's an emergency valve for people who are deliberately running
+old firmware, or as an escape hatch in case of unforeseen regressions.
 
-Tom.
+Signed-off-by: Evan Green <evgreen@chromium.org>
+---
+
+ drivers/firmware/google/gsmi.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/firmware/google/gsmi.c b/drivers/firmware/google/gsmi.c
+index 3d77f26c1e8c93..bb6e77ee3898c1 100644
+--- a/drivers/firmware/google/gsmi.c
++++ b/drivers/firmware/google/gsmi.c
+@@ -136,12 +136,16 @@ MODULE_PARM_DESC(spincount,
+ 	"The number of loop iterations to use when using the spin handshake.");
+ 
+ /*
+- * Platforms might not support S0ix logging in their GSMI handlers. In order to
+- * avoid any side-effects of generating an SMI for S0ix logging, use the S0ix
+- * related GSMI commands only for those platforms that explicitly enable this
+- * option.
++ * Some older platforms with Apollo Lake chipsets do not support S0ix logging
++ * in their GSMI handlers, and behaved poorly when resuming via power button
++ * press if the logging was attempted. Updated firmware with proper behavior
++ * has long since shipped, removing the need for this opt-in parameter. It
++ * now exists as an opt-out parameter for folks defiantly running old
++ * firmware, or unforeseen circumstances. After the change from opt-in to
++ * opt-out has baked sufficiently, this parameter should probably be removed
++ * entirely.
+  */
+-static bool s0ix_logging_enable;
++static bool s0ix_logging_enable = true;
+ module_param(s0ix_logging_enable, bool, 0600);
+ 
+ static struct gsmi_buf *gsmi_buf_alloc(void)
+-- 
+2.29.2
+
