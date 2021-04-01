@@ -2,86 +2,388 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D56C351E01
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A836351EE0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237345AbhDASdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:33:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236817AbhDASLl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:11:41 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B64C08EBB1;
-        Thu,  1 Apr 2021 06:41:10 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id t23-20020a0568301e37b02901b65ab30024so2149284otr.4;
-        Thu, 01 Apr 2021 06:41:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2NoJkPq4zQdTHoZTxopL+2N6VYZj6FaKcFy4WNq08MA=;
-        b=FWVtKf+liiT1xYjii+/BELjuBQrfQxy7+GEvGeEqJ/AsdRSIYyx71kHxUgJurph5h5
-         o6YoeUlZXwyqLyKBSPLXeio9Al+ojaYvVN53ovCkP3ivzSZEHiUg6yUc971Iaw1xFriR
-         XuzFQA2YLa2q/K7WSddvTs8ZONwcVbb7dtuKgnJwzE8iCthvnM4EEXqTkDd+r3LhYMdS
-         A46LhXrFn1Sjfdoj15hOc6wRPRfBFQN5Qj9sTBjk5qDbpYpKX90QEzSXCtyTUkQLnTL2
-         J8195UtAGXueC5LidtyISq6D9Utx4/h3UGIEUfL7lflvPfy+z/1JCRZpvNJ+GKYbVQOq
-         JUiw==
-X-Gm-Message-State: AOAM531AqJqwjW4qM/ENjdox2FJqPov5rLMiV0vtIBqYpC1D8PHy8wJE
-        9aaQDXuseHMTkGW4td0PeHQB19m26OcXJpqRVZQ=
-X-Google-Smtp-Source: ABdhPJwc0WXpqYznTofwrvExvKI+jDR9Wu3nkiFl6RKeYLFaRFDzM7rj4ga9EyBvNGejAY4PRuA0a7tO0EbvLV6WN1A=
-X-Received: by 2002:a9d:4811:: with SMTP id c17mr7183919otf.206.1617284469641;
- Thu, 01 Apr 2021 06:41:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210331232614.304591-1-pierre-louis.bossart@linux.intel.com> <20210331232614.304591-4-pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20210331232614.304591-4-pierre-louis.bossart@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 1 Apr 2021 15:40:56 +0200
-Message-ID: <CAJZ5v0jS0Wfzq0M45ZbP2vNX4y=e+tvZjrmn4AiE+ycxij+CWg@mail.gmail.com>
-Subject: Re: [PATCH 3/7] PM: runtime: remove kernel-doc warnings
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        "open list:SUSPEND TO RAM" <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S237019AbhDASsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:48:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54028 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237836AbhDAS2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:28:01 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B5AEB61242;
+        Thu,  1 Apr 2021 13:42:23 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lRxaX-0056dn-PY; Thu, 01 Apr 2021 14:42:22 +0100
+Date:   Thu, 01 Apr 2021 14:42:21 +0100
+Message-ID: <87tuoqp1du.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Eric Auger <eric.auger@redhat.com>
+Cc:     eric.auger.pro@gmail.com, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
+        drjones@redhat.com, alexandru.elisei@arm.com, james.morse@arm.com,
+        suzuki.poulose@arm.com, shuah@kernel.org, pbonzini@redhat.com
+Subject: Re: [PATCH v4 7/8] KVM: arm64: vgic-v3: Expose GICR_TYPER.Last for userspace
+In-Reply-To: <20210401085238.477270-8-eric.auger@redhat.com>
+References: <20210401085238.477270-1-eric.auger@redhat.com>
+        <20210401085238.477270-8-eric.auger@redhat.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: eric.auger@redhat.com, eric.auger.pro@gmail.com, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, drjones@redhat.com, alexandru.elisei@arm.com, james.morse@arm.com, suzuki.poulose@arm.com, shuah@kernel.org, pbonzini@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 1:26 AM Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
->
-> remove make W=1 warnings
->
-> drivers/base/power/runtime.c:926: warning: Function parameter or
-> member 'timer' not described in 'pm_suspend_timer_fn'
->
-> drivers/base/power/runtime.c:926: warning: Excess function parameter
-> 'data' description in 'pm_suspend_timer_fn'
->
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
->  drivers/base/power/runtime.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
-> index fe1dad68aee4..1fc1a992f90c 100644
-> --- a/drivers/base/power/runtime.c
-> +++ b/drivers/base/power/runtime.c
-> @@ -951,7 +951,7 @@ static void pm_runtime_work(struct work_struct *work)
->
->  /**
->   * pm_suspend_timer_fn - Timer function for pm_schedule_suspend().
-> - * @data: Device pointer passed by pm_schedule_suspend().
-> + * @timer: hrtimer used by pm_schedule_suspend().
->   *
->   * Check if the time is right and queue a suspend request.
->   */
-> --
+Hi Eric,
 
-I can apply this along with the [4-5/7].  Do you want me to do that?
+On Thu, 01 Apr 2021 09:52:37 +0100,
+Eric Auger <eric.auger@redhat.com> wrote:
+> 
+> Commit 23bde34771f1 ("KVM: arm64: vgic-v3: Drop the
+> reporting of GICR_TYPER.Last for userspace") temporarily fixed
+> a bug identified when attempting to access the GICR_TYPER
+> register before the redistributor region setting, but dropped
+> the support of the LAST bit.
+> 
+> Emulating the GICR_TYPER.Last bit still makes sense for
+> architecture compliance though. This patch restores its support
+> (if the redistributor region was set) while keeping the code safe.
+> 
+> We introduce a new helper, vgic_mmio_vcpu_rdist_is_last() which
+> computes whether a redistributor is the highest one of a series
+> of redistributor contributor pages.
+> 
+> The spec says "Indicates whether this Redistributor is the
+> highest-numbered Redistributor in a series of contiguous
+> Redistributor pages."
+> 
+> The code is a bit convulated since there is no guarantee
+
+nit: convoluted
+
+> redistributors are added in a given reditributor region in
+> ascending order. In that case the current implementation was
+> wrong. Also redistributor regions can be contiguous
+> and registered in non increasing base address order.
+> 
+> So the index of redistributors are stored in an array within
+> the redistributor region structure.
+> 
+> With this new implementation we do not need to have a uaccess
+> read accessor anymore.
+> 
+> Signed-off-by: Eric Auger <eric.auger@redhat.com>
+
+This patch also hurt my head, a lot more than the first one.  See
+below.
+
+> ---
+>  arch/arm64/kvm/vgic/vgic-init.c    |  7 +--
+>  arch/arm64/kvm/vgic/vgic-mmio-v3.c | 97 ++++++++++++++++++++----------
+>  arch/arm64/kvm/vgic/vgic.h         |  1 +
+>  include/kvm/arm_vgic.h             |  3 +
+>  4 files changed, 73 insertions(+), 35 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/vgic/vgic-init.c b/arch/arm64/kvm/vgic/vgic-init.c
+> index cf6faa0aeddb2..61150c34c268c 100644
+> --- a/arch/arm64/kvm/vgic/vgic-init.c
+> +++ b/arch/arm64/kvm/vgic/vgic-init.c
+> @@ -190,6 +190,7 @@ int kvm_vgic_vcpu_init(struct kvm_vcpu *vcpu)
+>  	int i;
+>  
+>  	vgic_cpu->rd_iodev.base_addr = VGIC_ADDR_UNDEF;
+> +	vgic_cpu->index = vcpu->vcpu_id;
+
+Is it so that vgic_cpu->index is always equal to vcpu_id? If so, why
+do we need another field? We can always get to the vcpu using a
+container_of().
+
+>  
+>  	INIT_LIST_HEAD(&vgic_cpu->ap_list_head);
+>  	raw_spin_lock_init(&vgic_cpu->ap_list_lock);
+> @@ -338,10 +339,8 @@ static void kvm_vgic_dist_destroy(struct kvm *kvm)
+>  	dist->vgic_dist_base = VGIC_ADDR_UNDEF;
+>  
+>  	if (dist->vgic_model == KVM_DEV_TYPE_ARM_VGIC_V3) {
+> -		list_for_each_entry_safe(rdreg, next, &dist->rd_regions, list) {
+> -			list_del(&rdreg->list);
+> -			kfree(rdreg);
+> -		}
+> +		list_for_each_entry_safe(rdreg, next, &dist->rd_regions, list)
+> +			vgic_v3_free_redist_region(rdreg);
+
+Consider moving the introduction of vgic_v3_free_redist_region() into
+a separate patch. On its own, that's a good readability improvement.
+
+>  		INIT_LIST_HEAD(&dist->rd_regions);
+>  	} else {
+>  		dist->vgic_cpu_base = VGIC_ADDR_UNDEF;
+> diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> index 987e366c80008..f6a7eed1d6adb 100644
+> --- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> +++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> @@ -251,45 +251,57 @@ static void vgic_mmio_write_v3r_ctlr(struct kvm_vcpu *vcpu,
+>  		vgic_enable_lpis(vcpu);
+>  }
+>  
+> +static bool vgic_mmio_vcpu_rdist_is_last(struct kvm_vcpu *vcpu)
+> +{
+> +	struct vgic_dist *vgic = &vcpu->kvm->arch.vgic;
+> +	struct vgic_cpu *vgic_cpu = &vcpu->arch.vgic_cpu;
+> +	struct vgic_redist_region *rdreg = vgic_cpu->rdreg;
+> +
+> +	if (!rdreg)
+> +		return false;
+> +
+> +	if (rdreg->count && vgic_cpu->rdreg_index == (rdreg->count - 1)) {
+> +		/* check whether there is no other contiguous rdist region */
+> +		struct list_head *rd_regions = &vgic->rd_regions;
+> +		struct vgic_redist_region *iter;
+> +
+> +		list_for_each_entry(iter, rd_regions, list) {
+> +			if (iter->base == rdreg->base + rdreg->count * KVM_VGIC_V3_REDIST_SIZE &&
+> +				iter->free_index > 0) {
+> +			/* check the first rdist index of this region, if any */
+> +				if (vgic_cpu->index < iter->rdist_indices[0])
+> +					return false;
+
+rdist_indices[] contains the vcpu_id of the vcpu associated with a
+given RD in the region. At this stage, you have established that there
+is another region that is contiguous with the one associated with our
+vcpu. You also know that this adjacent region has a vcpu mapped in
+(free_index isn't 0). Isn't that enough to declare that our vcpu isn't
+last?  I definitely don't understand what the index comparison does
+here.
+
+It also seem to me that some of the complexity could be eliminated if
+the regions were kept ordered at list insertion time.
+
+> +			}
+> +		}
+> +	} else if (vgic_cpu->rdreg_index < rdreg->free_index - 1) {
+> +		/* look at the index of next rdist */
+> +		int next_rdist_index = rdreg->rdist_indices[vgic_cpu->rdreg_index + 1];
+> +
+> +		if (vgic_cpu->index < next_rdist_index)
+> +			return false;
+
+Same thing here. We are in the middle of the allocated part of a
+region, which means we cannot be last. I still don't get the index
+check.
+
+> +	}
+> +	return true;
+> +}
+> +
+>  static unsigned long vgic_mmio_read_v3r_typer(struct kvm_vcpu *vcpu,
+>  					      gpa_t addr, unsigned int len)
+>  {
+>  	unsigned long mpidr = kvm_vcpu_get_mpidr_aff(vcpu);
+> -	struct vgic_cpu *vgic_cpu = &vcpu->arch.vgic_cpu;
+> -	struct vgic_redist_region *rdreg = vgic_cpu->rdreg;
+>  	int target_vcpu_id = vcpu->vcpu_id;
+> -	gpa_t last_rdist_typer = rdreg->base + GICR_TYPER +
+> -			(rdreg->free_index - 1) * KVM_VGIC_V3_REDIST_SIZE;
+>  	u64 value;
+>  
+>  	value = (u64)(mpidr & GENMASK(23, 0)) << 32;
+>  	value |= ((target_vcpu_id & 0xffff) << 8);
+>  
+> -	if (addr == last_rdist_typer)
+> +	if (vgic_has_its(vcpu->kvm))
+> +		value |= GICR_TYPER_PLPIS;
+> +
+> +	if (vgic_mmio_vcpu_rdist_is_last(vcpu))
+>  		value |= GICR_TYPER_LAST;
+> -	if (vgic_has_its(vcpu->kvm))
+> -		value |= GICR_TYPER_PLPIS;
+>  
+>  	return extract_bytes(value, addr & 7, len);
+>  }
+>  
+> -static unsigned long vgic_uaccess_read_v3r_typer(struct kvm_vcpu *vcpu,
+> -						 gpa_t addr, unsigned int len)
+> -{
+> -	unsigned long mpidr = kvm_vcpu_get_mpidr_aff(vcpu);
+> -	int target_vcpu_id = vcpu->vcpu_id;
+> -	u64 value;
+> -
+> -	value = (u64)(mpidr & GENMASK(23, 0)) << 32;
+> -	value |= ((target_vcpu_id & 0xffff) << 8);
+> -
+> -	if (vgic_has_its(vcpu->kvm))
+> -		value |= GICR_TYPER_PLPIS;
+> -
+> -	/* reporting of the Last bit is not supported for userspace */
+> -	return extract_bytes(value, addr & 7, len);
+> -}
+> -
+>  static unsigned long vgic_mmio_read_v3r_iidr(struct kvm_vcpu *vcpu,
+>  					     gpa_t addr, unsigned int len)
+>  {
+> @@ -612,7 +624,7 @@ static const struct vgic_register_region vgic_v3_rd_registers[] = {
+>  		VGIC_ACCESS_32bit),
+>  	REGISTER_DESC_WITH_LENGTH_UACCESS(GICR_TYPER,
+>  		vgic_mmio_read_v3r_typer, vgic_mmio_write_wi,
+> -		vgic_uaccess_read_v3r_typer, vgic_mmio_uaccess_write_wi, 8,
+> +		NULL, vgic_mmio_uaccess_write_wi, 8,
+>  		VGIC_ACCESS_64bit | VGIC_ACCESS_32bit),
+>  	REGISTER_DESC_WITH_LENGTH(GICR_WAKER,
+>  		vgic_mmio_read_raz, vgic_mmio_write_wi, 4,
+> @@ -714,6 +726,16 @@ int vgic_register_redist_iodev(struct kvm_vcpu *vcpu)
+>  		return -EINVAL;
+>  
+>  	vgic_cpu->rdreg = rdreg;
+> +	vgic_cpu->rdreg_index = rdreg->free_index;
+> +	if (!rdreg->count) {
+> +		void *p = krealloc(rdreg->rdist_indices,
+> +				   (vgic_cpu->rdreg_index + 1) * sizeof(u32),
+> +				   GFP_KERNEL);
+> +		if (!p)
+> +			return -ENOMEM;
+> +		rdreg->rdist_indices = p;
+> +	}
+> +	rdreg->rdist_indices[vgic_cpu->rdreg_index] = vgic_cpu->index;
+
+I think I really have a problem with this array, which comes from me
+not understanding the two checks I previously commented on.
+
+If we stick to the definition of 'Last', all that matters is the
+position of the RD in a region (rdreg_index) and potentially the
+presence of another contiguous region with allocated RDs in it.
+
+IIUC, the checks should read like this:
+
+if (vcpu->rdreg_index < (vcpu->rdreg->free_index - 1))
+	last = false;
+else if (vcpu->rdreg_index == (vcpu->rdreg->free_index - 1) &&
+	 adjacent_region(vcpu->rdreg)->free_index > 0)
+	last = false;
+else
+	last = true;
+
+So why do we need to track the vcpu_id associated to a region?
+
+>
+>  	rd_base = rdreg->base + rdreg->free_index * KVM_VGIC_V3_REDIST_SIZE;
+>  
+> @@ -768,7 +790,7 @@ static int vgic_register_all_redist_iodevs(struct kvm *kvm)
+>  }
+>  
+>  /**
+> - * vgic_v3_insert_redist_region - Insert a new redistributor region
+> + * vgic_v3_alloc_redist_region - Allocate a new redistributor region
+>   *
+>   * Performs various checks before inserting the rdist region in the list.
+>   * Those tests depend on whether the size of the rdist region is known
+> @@ -782,8 +804,8 @@ static int vgic_register_all_redist_iodevs(struct kvm *kvm)
+>   *
+>   * Return 0 on success, < 0 otherwise
+>   */
+> -static int vgic_v3_insert_redist_region(struct kvm *kvm, uint32_t index,
+> -					gpa_t base, uint32_t count)
+> +static int vgic_v3_alloc_redist_region(struct kvm *kvm, uint32_t index,
+> +				       gpa_t base, uint32_t count)
+>  {
+>  	struct vgic_dist *d = &kvm->arch.vgic;
+>  	struct vgic_redist_region *rdreg;
+> @@ -839,6 +861,13 @@ static int vgic_v3_insert_redist_region(struct kvm *kvm, uint32_t index,
+>  	rdreg->count = count;
+>  	rdreg->free_index = 0;
+>  	rdreg->index = index;
+> +	if (count) {
+> +		rdreg->rdist_indices = kcalloc(count, sizeof(u32), GFP_KERNEL);
+> +		if (!rdreg->rdist_indices) {
+> +			ret = -ENOMEM;
+> +			goto free;
+> +		}
+> +	}
+>  
+>  	list_add_tail(&rdreg->list, rd_regions);
+>  	return 0;
+> @@ -847,11 +876,18 @@ static int vgic_v3_insert_redist_region(struct kvm *kvm, uint32_t index,
+>  	return ret;
+>  }
+>  
+> +void vgic_v3_free_redist_region(struct vgic_redist_region *rdreg)
+> +{
+> +	list_del(&rdreg->list);
+> +	kfree(rdreg->rdist_indices);
+> +	kfree(rdreg);
+> +}
+> +
+>  int vgic_v3_set_redist_base(struct kvm *kvm, u32 index, u64 addr, u32 count)
+>  {
+>  	int ret;
+>  
+> -	ret = vgic_v3_insert_redist_region(kvm, index, addr, count);
+> +	ret = vgic_v3_alloc_redist_region(kvm, index, addr, count);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -864,8 +900,7 @@ int vgic_v3_set_redist_base(struct kvm *kvm, u32 index, u64 addr, u32 count)
+>  		struct vgic_redist_region *rdreg;
+>  
+>  		rdreg = vgic_v3_rdist_region_from_index(kvm, index);
+> -		list_del(&rdreg->list);
+> -		kfree(rdreg);
+> +		vgic_v3_free_redist_region(rdreg);
+>  		return ret;
+>  	}
+>  
+> diff --git a/arch/arm64/kvm/vgic/vgic.h b/arch/arm64/kvm/vgic/vgic.h
+> index 64fcd75111108..bc418c2c12141 100644
+> --- a/arch/arm64/kvm/vgic/vgic.h
+> +++ b/arch/arm64/kvm/vgic/vgic.h
+> @@ -293,6 +293,7 @@ vgic_v3_rd_region_size(struct kvm *kvm, struct vgic_redist_region *rdreg)
+>  
+>  struct vgic_redist_region *vgic_v3_rdist_region_from_index(struct kvm *kvm,
+>  							   u32 index);
+> +void vgic_v3_free_redist_region(struct vgic_redist_region *rdreg);
+>  
+>  bool vgic_v3_rdist_overlap(struct kvm *kvm, gpa_t base, size_t size);
+>  
+> diff --git a/include/kvm/arm_vgic.h b/include/kvm/arm_vgic.h
+> index 3d74f1060bd18..9a3f060ac3547 100644
+> --- a/include/kvm/arm_vgic.h
+> +++ b/include/kvm/arm_vgic.h
+> @@ -197,6 +197,7 @@ struct vgic_redist_region {
+>  	gpa_t base;
+>  	u32 count; /* number of redistributors or 0 if single region */
+>  	u32 free_index; /* index of the next free redistributor */
+> +	int *rdist_indices; /* indices of the redistributors */
+
+You are treating it as an array of u32 when allocating it. Please
+choose one type or the other.
+
+>  	struct list_head list;
+>  };
+>  
+> @@ -322,6 +323,8 @@ struct vgic_cpu {
+>  	 */
+>  	struct vgic_io_device	rd_iodev;
+>  	struct vgic_redist_region *rdreg;
+> +	u32 rdreg_index;
+> +	int index; /* vcpu index */
+>  
+>  	/* Contains the attributes and gpa of the LPI pending tables. */
+>  	u64 pendbaser;
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
