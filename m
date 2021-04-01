@@ -2,134 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44BF8351DDD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB543351E15
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236749AbhDASch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:32:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42742 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238815AbhDASKM (ORCPT
+        id S238301AbhDASei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:34:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237019AbhDASNl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:10:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617300611;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cc3k8MO13oibHy+9e3XEGxkpJb9ZoYiN6eARau7Wqk8=;
-        b=hvFDMM8ADLPRBWUVVE1dWk9MDHiOZVMe/ruPLYDia/S22msT57XSGrESVaf94VnSNlXWwK
-        trFX5B84CxEikEFtpxuh8Z0C/MgdKE6h2xZLP46nmZipkT5071v+txLdqBpwgNMBSx0Wyc
-        sLADgfNLSsEAa3iSiTtUG6YS/YJEGOQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-529-7sofkHCGOwurHwhGCrWEYQ-1; Thu, 01 Apr 2021 07:43:52 -0400
-X-MC-Unique: 7sofkHCGOwurHwhGCrWEYQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 93E7B801814;
-        Thu,  1 Apr 2021 11:43:50 +0000 (UTC)
-Received: from [10.36.112.13] (ovpn-112-13.ams2.redhat.com [10.36.112.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E04B716917;
-        Thu,  1 Apr 2021 11:43:47 +0000 (UTC)
-Subject: Re: [PATCH v4 1/8] KVM: arm64: vgic-v3: Fix some error codes when
- setting RDIST base
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     eric.auger.pro@gmail.com, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
-        drjones@redhat.com, alexandru.elisei@arm.com, james.morse@arm.com,
-        suzuki.poulose@arm.com, shuah@kernel.org, pbonzini@redhat.com
-References: <20210401085238.477270-1-eric.auger@redhat.com>
- <20210401085238.477270-2-eric.auger@redhat.com>
- <87wntmp99c.wl-maz@kernel.org>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <419be8ac-6fbb-a712-a398-311ca68d52f9@redhat.com>
-Date:   Thu, 1 Apr 2021 13:43:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 1 Apr 2021 14:13:41 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10A11C0613AC
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 04:44:28 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id k23-20020a17090a5917b02901043e35ad4aso2936271pji.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 04:44:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=U32Xl3i+DvBGu9DIngpNbbKksxWeEgvCfpwavzhzq+M=;
+        b=U6k0aRtyT/YAqwZ9LCwDNUsQlw+SFxWmQ9bh45GG1kmLh9rU4+q0zApmYH+7u0K037
+         dgE/ybzBNXvCrXQRW1wQPS/ECzvh8JmmeKGrYDL3BA1tbx+kaHflL9TOlFgRJRr7JTzq
+         x7AL/rKBEaoxV4vUnCTHVFRlQTqUqCd2pAgTMd+rUvf5zK1gTZmTJ7xWKdzQ8dtjwFs/
+         bPXymJ5zhMO0yBSoj+IJCjC8+2Uy8yH/pc+jlNG0v3NjwVA/xP1QsczpLi3+L2VEenUD
+         PVnrPikzvh6JXVNZi7JGkVHMmU1YK1mEUyQmJxo/EDaW3br+1tWvrWHSOUEMp3LY336b
+         LAvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U32Xl3i+DvBGu9DIngpNbbKksxWeEgvCfpwavzhzq+M=;
+        b=g7iqaunLU3k/MSOAcMFDP/qUzDfqBsIKm61ns59gVeRdXB+c4ce7P65oN1ON0Eums6
+         h1KUvsceTF76T9mYVleid/2t4u0ZPTD8kPNSNiR/V8iJRvKWr5lvRPupYy+GAYLE2U3S
+         XmNnPIL6h2ILQrMp5psUuzPy+z6yww58McJlqAn7wfdNQMewGTZtyDDqUzjgFCE+Wsw0
+         cP41iHvmnCR+i50hIeL0RdutfussQ0KRvkozl//T7otUTciuQUuwuEDsfWUR6Y1pqmYy
+         NV4P/P1NFt/TZzgOQXEjS1waWdTnshTbwFcOGxUHy63kG+Wfd7FamLlJYzpZLKIWqrvz
+         mbvw==
+X-Gm-Message-State: AOAM530TdPXjZkz7qPGDjpUTtrPYa0c4eoGdNA1SEz9M8JwqAbqh/Oeo
+        gY0QbOoP5LqYFS77/n7LLAQKvQBmM8ir83/kRKGXbvhY8Fg=
+X-Google-Smtp-Source: ABdhPJwbu1LZT4NHxa6D/4UADQAFr2uPFpDu6MUnRoVyM5I3njWKwU7En/mUJvtnAV19sz3G1xPHaNXgEINtnmo/3Nw=
+X-Received: by 2002:a17:902:f68a:b029:e5:b17f:9154 with SMTP id
+ l10-20020a170902f68ab02900e5b17f9154mr7458337plg.28.1617277467431; Thu, 01
+ Apr 2021 04:44:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87wntmp99c.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20210401103500.1558058-1-yangyingliang@huawei.com>
+In-Reply-To: <20210401103500.1558058-1-yangyingliang@huawei.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Thu, 1 Apr 2021 13:44:15 +0200
+Message-ID: <CAG3jFyupb==xBb19wdv=TKheKuS_TEojhsvzmAATJsh1VUrdzg@mail.gmail.com>
+Subject: Re: [PATCH -next] media: camss: csiphy: Remove redundant dev_err call
+ in msm_csiphy_subdev_init()
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Todor Tomov <todor.too@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+Hey Yang,
 
-On 4/1/21 12:52 PM, Marc Zyngier wrote:
-> Hi Eric,
-> 
-> On Thu, 01 Apr 2021 09:52:31 +0100,
-> Eric Auger <eric.auger@redhat.com> wrote:
->>
->> KVM_DEV_ARM_VGIC_GRP_ADDR group doc says we should return
->> -EEXIST in case the base address of the redist is already set.
->> We currently return -EINVAL.
->>
->> However we need to return -EINVAL in case a legacy REDIST address
->> is attempted to be set while REDIST_REGIONS were set. This case
->> is discriminated by looking at the count field.
->>
->> Signed-off-by: Eric Auger <eric.auger@redhat.com>
->>
->> ---
->>
->> v1 -> v2:
->> - simplify the check sequence
->> ---
->>  arch/arm64/kvm/vgic/vgic-mmio-v3.c | 15 +++++++--------
->>  1 file changed, 7 insertions(+), 8 deletions(-)
->>
->> diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
->> index 15a6c98ee92f0..013b737b658f8 100644
->> --- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
->> +++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
->> @@ -791,10 +791,6 @@ static int vgic_v3_insert_redist_region(struct kvm *kvm, uint32_t index,
->>  	size_t size = count * KVM_VGIC_V3_REDIST_SIZE;
->>  	int ret;
->>  
->> -	/* single rdist region already set ?*/
->> -	if (!count && !list_empty(rd_regions))
->> -		return -EINVAL;
->> -
->>  	/* cross the end of memory ? */
->>  	if (base + size < base)
->>  		return -EINVAL;
->> @@ -805,11 +801,14 @@ static int vgic_v3_insert_redist_region(struct kvm *kvm, uint32_t index,
->>  	} else {
->>  		rdreg = list_last_entry(rd_regions,
->>  					struct vgic_redist_region, list);
->> -		if (index != rdreg->index + 1)
->> -			return -EINVAL;
->>  
->> -		/* Cannot add an explicitly sized regions after legacy region */
->> -		if (!rdreg->count)
->> +		if ((!count) != (!rdreg->count))
->> +			return -EINVAL; /* Mix REDIST and REDIST_REGION */
-> 
-> Urgh... The triple negation killed me. Can we come up with a more
-> intuitive expression? Something like:
+Thanks for the patch, feel free to add my r-b.
 
-Yes sometimes I can be "different" ;-)
-> 
-> 		/* Don't mix single region and discrete redist regions */
-> 		if (!count && rdreg->count)
-> 			return -EINVAL;>
-> Does it capture what you want to express?
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
 
-yes it does!
-
-Thanks
-
-Eric
-> 
-> Thanks,
-> 
-> 	M.
-> 
-
+On Thu, 1 Apr 2021 at 12:33, Yang Yingliang <yangyingliang@huawei.com> wrote:
+>
+> There is an error message within devm_ioremap_resource
+> already, so remove the dev_err call to avoid redundant
+> error message.
+>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>  drivers/media/platform/qcom/camss/camss-csiphy.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.c b/drivers/media/platform/qcom/camss/camss-csiphy.c
+> index 6ceb6d7d53d1..b3c3bf19e522 100644
+> --- a/drivers/media/platform/qcom/camss/camss-csiphy.c
+> +++ b/drivers/media/platform/qcom/camss/camss-csiphy.c
+> @@ -593,20 +593,16 @@ int msm_csiphy_subdev_init(struct camss *camss,
+>
+>         r = platform_get_resource_byname(pdev, IORESOURCE_MEM, res->reg[0]);
+>         csiphy->base = devm_ioremap_resource(dev, r);
+> -       if (IS_ERR(csiphy->base)) {
+> -               dev_err(dev, "could not map memory\n");
+> +       if (IS_ERR(csiphy->base))
+>                 return PTR_ERR(csiphy->base);
+> -       }
+>
+>         if (camss->version == CAMSS_8x16 ||
+>             camss->version == CAMSS_8x96) {
+>                 r = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+>                                                  res->reg[1]);
+>                 csiphy->base_clk_mux = devm_ioremap_resource(dev, r);
+> -               if (IS_ERR(csiphy->base_clk_mux)) {
+> -                       dev_err(dev, "could not map memory\n");
+> +               if (IS_ERR(csiphy->base_clk_mux))
+>                         return PTR_ERR(csiphy->base_clk_mux);
+> -               }
+>         } else {
+>                 csiphy->base_clk_mux = NULL;
+>         }
+> --
+> 2.25.1
+>
