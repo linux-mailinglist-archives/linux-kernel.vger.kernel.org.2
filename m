@@ -2,160 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85A87351893
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD3D73518C8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:49:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236637AbhDARqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:46:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57172 "EHLO
+        id S236722AbhDARrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:47:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234638AbhDARii (ORCPT
+        with ESMTP id S234645AbhDARiv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:38:38 -0400
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B8AAC035470;
-        Thu,  1 Apr 2021 06:16:42 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id D249442715;
-        Thu,  1 Apr 2021 13:16:32 +0000 (UTC)
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210304213902.83903-1-marcan@marcan.st>
- <20210304213902.83903-17-marcan@marcan.st>
- <20210324195742.GA13474@willie-the-truck>
- <3564ed98-6ad6-7ddd-01d2-36d7f5af90e0@marcan.st>
- <20210329120442.GA3636@willie-the-truck>
-From:   Hector Martin <marcan@marcan.st>
-Subject: Re: [RFT PATCH v3 16/27] irqchip/apple-aic: Add support for the Apple
- Interrupt Controller
-Message-ID: <5ff8eef3-6943-d3c8-cd6f-3dcb44158fab@marcan.st>
-Date:   Thu, 1 Apr 2021 22:16:30 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 1 Apr 2021 13:38:51 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92CD1C08E8AE
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 06:20:15 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id u20so2188424lja.13
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 06:20:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Wc8br82rdSUXocjUVRdeobzbTuG/H9DWpf5YwUpebsM=;
+        b=TIxRpaOOIxphi2ILfb/UobjRISoGFs2T1tAJaBLLjQzu+AbbD0FecdbT54DYSLngFe
+         3+EADpzGqP2gMrqDdA3TeB2uhst595q7AbwPmYAQuRON+ML+DZ4N/TYyB7yf4c3+jzMq
+         Sljkl13NM/ND2qkrqfOqBAtZDnTu2VdmUiTRspBDqq7UK7QsYopO2+k/3807SVFcBQ0j
+         9f6es/Xyfesjx8pUTIuP7o7rn/SqrA92pF5tfufSgEsY0BYJvz+WjDMUBKvs1upZIhn9
+         zFXi9wHlKfWvZWg/VlcENdoZpwr0a3HJf7h+k9kSC1fzQnF8Ly6Bh161piCYqG1Hb3sk
+         AZDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Wc8br82rdSUXocjUVRdeobzbTuG/H9DWpf5YwUpebsM=;
+        b=QFWWa64wF6sO7kbTyYEAfIF9YSeUAbsNDLGNTxJSFiQjHfVFOzSSX/tOl4BLscB4hX
+         mSVz8R8IvznWl6XQXW1rKGVAv/kow29nEG2Mck/S163TiMKr1E09fIo8OulDDrBMRNNM
+         JGOtv/t7NTKbYzAap5SYZfdlK1K/Iscpgn7FBNK11UgzlbIZF+luzp0gzUkocxQnck0J
+         Kx81/qcRO/RV1pRB0FCHKY/7Nv7FHWt0+9iN958p98F+Qvqm7Y+xYjAdYSmhfNDoS4qD
+         mNoibcRXlPyuJKz6DWFBEXEhHMGm169SBGyOU/jAJlzg6N6GTc2/EMbUmg7n1vSKP0/G
+         LjbQ==
+X-Gm-Message-State: AOAM533cVau2vFdwd3l5hxGOaDS7DDb9VfL0WN3dicRNXFKqjQaJ2Sqo
+        AHeSnnoYUIQtlDf1BxPUdc8MzfAGZqxTzNcYuj3TrA==
+X-Google-Smtp-Source: ABdhPJzxpxJUHPy/rHadVQcvjnq3ze8Sdx2IjZshc/3dTdswe4RjMnfdGfW2KoJLH94WfM7eO5OZIzl8xYSArYs4cXU=
+X-Received: by 2002:a2e:9acc:: with SMTP id p12mr5271081ljj.442.1617283213842;
+ Thu, 01 Apr 2021 06:20:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210329120442.GA3636@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 8bit
+References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
+ <CAFLxGvzWLje+_HFeb+hKNch4U1f5uypVUOuP=QrEPn_JNM+scg@mail.gmail.com>
+ <ca2a7c17-3ed0-e52f-2e2f-c0f8bbe10323@pengutronix.de> <CAFLxGvwNomKOo3mQLMxYGDA8T8zN=Szpo2q5jrp4D1CaMHydWA@mail.gmail.com>
+ <f01c80a0da7cffd3115ce4e16a793a2db5cbe2ed.camel@linux.ibm.com>
+ <1777909690.136833.1617215767704.JavaMail.zimbra@nod.at> <a57192d9d9a5a9a66d11b38d054a5a3a70466a4b.camel@linux.ibm.com>
+ <2034693332.137003.1617219379831.JavaMail.zimbra@nod.at> <f3399480-020e-e3ca-7e7c-eec641fe5afc@pengutronix.de>
+In-Reply-To: <f3399480-020e-e3ca-7e7c-eec641fe5afc@pengutronix.de>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Thu, 1 Apr 2021 18:50:02 +0530
+Message-ID: <CAFA6WYNd7PEcZheSYPbEmFbkkMx4dmafeYcSpMBSdNZgqz=TyQ@mail.gmail.com>
+Subject: Re: [PATCH v1 0/3] KEYS: trusted: Introduce support for NXP
+ CAAM-based trusted keys
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        James Bottomley <jejb@linux.ibm.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        horia geanta <horia.geanta@nxp.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        aymen sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        davem <davem@davemloft.net>, kernel <kernel@pengutronix.de>,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        david <david@sigma-star.at>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        "open list, ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        LSM <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will,
+On Thu, 1 Apr 2021 at 15:36, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+>
+> Hello Richard,
+>
+> On 31.03.21 21:36, Richard Weinberger wrote:
+> > James,
+> >
+> > ----- Urspr=C3=BCngliche Mail -----
+> >> Von: "James Bottomley" <jejb@linux.ibm.com>
+> >> Well, yes.  For the TPM, there's a defined ASN.1 format for the keys:
+> >>
+> >> https://git.kernel.org/pub/scm/linux/kernel/git/jejb/openssl_tpm2_engi=
+ne.git/tree/tpm2-asn.h
+> >>
+> >> and part of the design of the file is that it's distinguishable either
+> >> in DER or PEM (by the guards) format so any crypto application can kno=
+w
+> >> it's dealing with a TPM key simply by inspecting the file.  I think yo=
+u
+> >> need the same thing for CAAM and any other format.
+> >>
+> >> We're encouraging new ASN.1 formats to be of the form
+> >>
+> >> SEQUENCE {
+> >>    type   OBJECT IDENTIFIER
+> >>    ... key specific fields ...
+> >> }
+> >>
+> >> Where you choose a defined OID to represent the key and that means
+> >> every key even in DER form begins with a unique binary signature.
+> >
+> > I like this idea.
+> > Ahmad, what do you think?
+> >
+> > That way we could also get rid off the kernel parameter and all the fal=
+l back logic,
+> > given that we find a way to reliable detect TEE blobs too...
+>
+> Sounds good to me. Sumit, your thoughts on doing this for TEE as well?
+>
 
-On 29/03/2021 21.04, Will Deacon wrote:
->> One CPU still needs to be able to mutate the flags of another CPU to fire an
->> IPI; AIUI the per-cpu ops are *not* atomic for concurrent access by multiple
->> CPUs, and in fact there is no API for that, only for "this CPU".
-> 
-> Huh, I really thought we had an API for that, but you're right. Oh well! But
-> I'd still suggest a per-cpu atomic_t in that case, rather than the array.
+AFAIU, ASN.1 formating should be independent of trusted keys backends
+which could be abstracted to trusted keys core layer so that every
+backend could be plugged in seamlessly.
 
-Yeah, after digging into the per-cpu stuff earlier and understanding how 
-it works, I agree that a per-cpu atomic makes sense here. Switched it to 
-that (which simplified out a bunch of smp_processor_id() calls too). Thanks!
+James,
 
->>> I think a more idiomatic (and portable) way to do this would be to use
->>> the relaxed accessors, but with smp_mb__after_atomic() between them. Do you
->>> have a good reason for _not_ doing it like that?
->>
->> Not particularly, other than symmetry with the case below.
-> 
-> I think it would be better not to rely on arm64-specific ordering unless
-> there's a good reason to.
+Would it be possible to achieve this?
 
-Sounds reasonable, I'll switch to the barrier version.
+-Sumit
 
->> We do need the return data here, and the release semantics (or another
->> barrier before it). But the read below can be made relaxed and a barrier
->> used instead, and then the same patern above except with a plain
->> atomic_or().
-> 
-> Yes, I think using atomic_fetch_or() followed by atomic_read() would be
-> best (obviously with the relevant comments!)
-
-atomic_fetch_or_release is sufficient here (atomic_fetch_or is stronger; 
-atomic_fetch_or_relaxed would not be strong enough as this needs to be 
-ordered after any writes prior to sending the IPI; in this case release 
-semantics also make logical sense).
-
->> It is ordered, right? As the comment says, it "needs to be ordered after the
->> aic_ic_write() above". atomic_fetch_andnot() is *supposed* to be fully
->> ordered and that should include against the writel_relaxed() on
->> AIC_IPI_FLAG. On ARM it turns out it's not quite fully ordered, but the
->> acquire semantics of the read half are sufficient for this case, as they
->> guarantee the flags are always read after the FIQ has been ACKed.
-> 
-> Sorry, I missed that the answer to my question was already written in the
-> comment. However, I'm still a bit unsure about whether the memory barriers
-> give you what you need here. The barrier in atomic_fetch_andnot() will
-> order the previous aic_ic_write(AIC_IPI_ACK) for the purposes of other
-> CPUs reading those locations, but it doesn't say anything about when the
-> interrupt controller actually changes state after the Ack.
-> 
-> Given that the AIC is mapped Device-nGnRnE, the Arm ARM offers:
-> 
->    | Additionally, for Device-nGnRnE memory, a read or write of a Location
->    | in a Memory-mapped peripheral that exhibits side-effects is complete
->    | only when the read or write both:
->    |
->    | * Can begin to affect the state of the Memory-mapped peripheral.
->    | * Can trigger all associated side-effects, whether they affect other
->    |   peripheral devices, PEs, or memory.
-> 
-> so without AIC documentation I can't tell whether completion of the Ack write
-> just begins the process of an Ack (in which case we might need something like
-> a read-back), or whether the write response back from the AIC only occurs once
-> the Ack has taken effect. Any ideas?
-
-Ahh, you're talking about latency within AIC itself... I obviously don't 
-have an authoritative answer to this, though the hardware designer in me 
-wants to say this really ought to be single-cycle type stuff that isn't 
-internally pipelined in a way that would create races.
-
-I tried to set up an SMP test case for the atomic-to-AIC sequence in 
-m1n1, but unfortunately I couldn't hit the race window in deliberately 
-racy code (i.e. ack after clearing flags) without widening it even 
-further with at least one dummy load in between, and of course I didn't 
-experience any races with the proper code either.
-
-What I can say is that a simple set IPI; ack IPI (in adjacent str 
-instructions) sequence always yields a cleared IPI, and the converse 
-always yields a set IPI. So if there is latency to the operations it 
-seems it would at least be the same for sets and acks and would imply 
-readbacks block, which should still yield equivalently correct results. 
-But of course this is a single-CPU test, so it is not fully 
-representative of what could happen in an SMP scenario.
-
-At this point all I can say is I'm inclined to shrug and say we have no 
-evidence of this being something that can happen, and it shouldn't in 
-sane hardware, and hope for the best :-)
-
-Thanks,
--- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+> >
+> > Thanks,
+> > //richard
+> >
+>
+> --
+> Pengutronix e.K.                           |                             =
+|
+> Steuerwalder Str. 21                       | http://www.pengutronix.de/  =
+|
+> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    =
+|
+> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 =
+|
