@@ -2,100 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1DB6351D99
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57394351E14
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240293AbhDASaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:30:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:45900 "EHLO foss.arm.com"
+        id S238231AbhDASed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:34:33 -0400
+Received: from mga14.intel.com ([192.55.52.115]:59283 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236931AbhDASHu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:07:50 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 33A1F1424;
-        Thu,  1 Apr 2021 11:07:43 -0700 (PDT)
-Received: from [192.168.1.22] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9406F3F719;
-        Thu,  1 Apr 2021 11:07:40 -0700 (PDT)
-Subject: Re: [PATCH] sched/fair: use signed long when compute energy delta in
- eas
-To:     Quentin Perret <qperret@google.com>,
-        Xuewen Yan <xuewen.yan94@gmail.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, rostedt@goodmis.org,
-        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
-        linux-kernel@vger.kernel.org, quentin.perret@arm.com,
-        zhang.lyra@gmail.com, xuewyan@foxmail.com,
-        Pierre Gondois <pierre.gondois@arm.com>
-References: <20210330052154.26861-1-xuewen.yan94@gmail.com>
- <YGLzQAvVqlrKb8AB@google.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <34ce11ad-9c20-7ba7-90d8-4830725bf38a@arm.com>
-Date:   Thu, 1 Apr 2021 20:07:34 +0200
+        id S237572AbhDASNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:13:10 -0400
+IronPort-SDR: KsjD3msCVTv4jhYn1X3/ZGzyyPDoCf8Kp62qx/CA0KDR7+rbspDZunmY6MDtYQLsdesdQKgKjj
+ oZnOBrixhsIg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="191782911"
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="191782911"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 11:07:53 -0700
+IronPort-SDR: hUv0QhRJR3t6yfi6jtJlSG5VCcsu/iRVnVk3Au/B+buJVyvvTkXfW/+6kHGR7P2kCaOwB2ItTw
+ Kuhyy/IAV1eA==
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="439311460"
+Received: from vhsalasl-mobl.amr.corp.intel.com (HELO [10.255.229.235]) ([10.255.229.235])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 11:07:51 -0700
+Subject: Re: [PATCH 1/2] soundwire: add macro to selectively change error
+ levels
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        hui.wang@canonical.com, sanyog.r.kale@intel.com,
+        rander.wang@linux.intel.com, bard.liao@intel.com
+References: <20210331011355.14313-1-yung-chuan.liao@linux.intel.com>
+ <20210331011355.14313-2-yung-chuan.liao@linux.intel.com>
+ <YGV1HYL+XcVmxfQG@vkoul-mobl.Dlink>
+ <0834b9fc-9b3a-1184-fed2-6f9c7e66c6fb@linux.intel.com>
+ <YGX5AUQi41z52xk8@kroah.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <81c6b53b-e3fb-32d0-1e99-365d87ab6524@linux.intel.com>
+Date:   Thu, 1 Apr 2021 13:07:49 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <YGLzQAvVqlrKb8AB@google.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YGX5AUQi41z52xk8@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+cc: Pierre Gondois <pierre.gondois@arm.com>
 
-On 30/03/2021 11:45, Quentin Perret wrote:
-> Hi,
-> 
-> On Tuesday 30 Mar 2021 at 13:21:54 (+0800), Xuewen Yan wrote:
->> From: Xuewen Yan <xuewen.yan@unisoc.com>
+>>>> +#define sdw_dev_dbg_or_err(dev, is_err, fmt, ...)			\
+>>>> +	do {								\
+>>>> +		if (is_err)						\
+>>>> +			dev_err(dev, fmt, __VA_ARGS__);			\
+>>>> +		else							\
+>>>> +			dev_dbg(dev, fmt, __VA_ARGS__);			\
+>>>> +	} while (0)
+>>>
+>>> I see a variant in sof code and now here, why not add in a
+>>> dev_dbg_or_err() and use everywhere?
 >>
->> now the energy delta compute as follow:
+>> Good point, I hesitated back and forth on specific v. generic macro.
 >>
->> base_energy_pd = compute_energy(p, -1, pd);
->> 	--->Traverse all CPUs in pd
->> 	--->em_pd_energy()
->> ----------------------------------------------------- \
->> search for the max_sapre_cap_cpu                       \
->> ---------------------------------                       search time
->> cur_delta = compute_energy(p, max_spare_cap_cpu, pd);  /
->> 	--->Traverse all CPUs in pd                   /
->> ---------------------------------------------------- /
->> 	--->em_pd_energy()
->> cur_delta -= base_energy_pd;
->>
->> During the search_time, or when calculate the cpu_util in
->> compute_energy(), there may occurred task dequeue or cpu_util change,
->> it may cause the cur_energy < base_energy_pd, so the cur_delta
->> would be negative. But the cur_delta is unsigned long, at this time,
->> the cur_delta would always bigger than best_delta of last pd.
->>
->> Change the vars to signed long.
+>> The main reason why I added this macro for SoundWire is that quite a few
+>> subsystems have their own debug functions (DRM, ACPI, etc), and I wasn't
+>> sure if there was any appetite to add more options in
+>> include/linux/dev_printk.h. SOF also uses a different format due to history.
 > 
-> Is that really helping though?
+> It is better if those other subsystems move to using the common kernel
+> debug functions.  Historically they were all separate, there is no good
+> reason for them to be that way today.
 > 
-> Yes you will not overflow, but the decision is still 'wrong' if the util
-> values are not stable for the entire wake-up. I think folks on the Arm
-> side had patches to try and cache the util values upfront, and then use
-> them throughout feec() and compute_energy(), which I think would be a
-> better fix.
+> So please do not create custom subsystem debug macros like this just for
+> this tiny set of drivers.
 > 
-> Dietmar, wdyt?
+> My bigger issue with this is that this macro is crazy.  Why do you need
+> debugging here at all for this type of thing?  That's what ftrace is
+> for, do not sprinkle code with "we got this return value from here!" all
+> over the place like what this does.
 
-Yes, we have some patches from Pierre Gondois which introduce a pd cache
-to store the CPU utilization values so they can be reused for 'cpu !=
-dst_cpu' calculations within find_energy_efficient_cpu() (feec()).
+We are not sprinkling the code all over the place with any new logs, 
+they exist already in the SoundWire code and this patch helps filter 
+them out. See e.g. patch 2/2
 
-We did run them in our Jan 2021 EAS integration:
+-			dev_err(&slave->dev,
+-				"Clk Stop type =%d failed: %d\n", type, ret);
++			sdw_dev_dbg_or_err(&slave->dev, ret != -ENODATA,
++					   "Clk Stop mode %d type =%d failed: %d\n",
++					   mode, type, ret);
 
-https://gitlab.arm.com/linux-arm/linux-power/-/commits/eas/next/integration-20210129
+If you see all my recent patches they were precisely trying to avoid 
+polluting the console logs with too much information that is irrelevant 
+from most users, and making sure that when a log is provided it's 
+uniquely identifiable.
 
-  sched: Allocate pd_cache when EAS is enabled
-  sched/fair: Use pd_cache to speed up find_energy_efficient_cpu()
+There are similar macros where -EPROBE_DEFER is ignored.
 
-We haven't posted them since we're still looking for a story to justify
-the extra complexity. The experiments on Arm64 Juno (2 big, 4 little
-CPUs) showed 1-2% failure due to changes of CPU utilization values
-during feec(). There was a 5% (big CPU)-10% (little CPU) runtime
-reduction for feec() with the patches.
+This addresses a very SoundWire-specific case where if we see a -ENODATA 
+error code (Command Ignored), we ignore it and don't report it by 
+default. We still have a rare set of cases where this -ENODATA code 
+shows up unexpectedly, possibly due to problematic reset sequences, and 
+we want developers to help track them down what causes this sequence 
+using dynamic debug.
+
+I am not arguing about ftrace v. dynamic debug, and that's also partly 
+why I didn't feel comfortable expanding the generic set of debug functions.
+
+
