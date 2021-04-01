@@ -2,119 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E04F351E96
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3627351C5A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237335AbhDASny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:43:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52746 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235538AbhDASVV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:21:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617301280;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WlBzUmQIaLiHOw5/yjj3BVYLHvfo1ik70BDKHEskwu8=;
-        b=UdWKTfC9Dzrb7vKR8T4FVKF2LzV9hr4C9AIE5ZgV4kLz5ZbTSvS1fnUSdNS23yMze/ukTF
-        eF95e2/tV3QpxrX+4Tv40J9aqzzKnojoTXXeOYHqAYL+wS5xy0HZvuLVrURN6D1D3reaZe
-        JfYSZL7vu4pAQbszkFz/ZG6rGnRUmKc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-232-ImBqt0amPAeNy_P23ZThQQ-1; Thu, 01 Apr 2021 10:18:52 -0400
-X-MC-Unique: ImBqt0amPAeNy_P23ZThQQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 93372100A67B;
-        Thu,  1 Apr 2021 14:18:47 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.35.206.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D42E659464;
-        Thu,  1 Apr 2021 14:18:43 +0000 (UTC)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        Jim Mattson <jmattson@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
-        64-BIT)), Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH 6/6] KVM: nVMX: avoid loading PDPTRs after migration when possible
-Date:   Thu,  1 Apr 2021 17:18:14 +0300
-Message-Id: <20210401141814.1029036-7-mlevitsk@redhat.com>
-In-Reply-To: <20210401141814.1029036-1-mlevitsk@redhat.com>
-References: <20210401141814.1029036-1-mlevitsk@redhat.com>
+        id S239643AbhDASQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:16:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60760 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236538AbhDAR57 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:57:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C05A16134F;
+        Thu,  1 Apr 2021 14:18:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617286708;
+        bh=jqdufY/UuwXUmWUGoi4vXUl54h/XWTzkg20ypWSlnEE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mOe9Wnt/HdL57OPLZn7Vl7d3z+FIOE5QP+7XbvhU2Gll60lxJojxr0lzGJ+TLCK95
+         eGcWeuHPUHA6ZEt5/xjsyOuvHPUNlbliSQt07nI7VhdnfQ9DfvYGXzfhbhtmEef7wc
+         +nHtgQUV9XaHOvilBx7EJpeQjHkBYj4+w7hCZLz4pVSVPtI8MmN11oaeYN818B3/u1
+         Z6BxY2zxU803zL8XqHgK+69rhtg/nA1XgL1quiCtObtTspqyMQ0F+m90zrbv7zEJX/
+         zz9H6RgGodQHf3tZmi0NoYFab/zNctEtq9wcmDNLK0lTmInwJJFqBodCHo4XguoTnd
+         hjh/6FJgbsowA==
+Date:   Thu, 1 Apr 2021 15:18:15 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH v5 (RESEND) 5/7] regulator: hi6421v600-regulator: move it
+ from staging
+Message-ID: <20210401141815.GI4758@sirena.org.uk>
+References: <cover.1616695231.git.mchehab+huawei@kernel.org>
+ <815b79a4e93f133478d9a5b2dd429526dcfe1dde.1616695231.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="DwoPkXS38qd3dnhB"
+Content-Disposition: inline
+In-Reply-To: <815b79a4e93f133478d9a5b2dd429526dcfe1dde.1616695231.git.mchehab+huawei@kernel.org>
+X-Cookie: You can't take damsel here now.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-if new KVM_*_SREGS2 ioctls are used, the PDPTRs are
-part of the migration state and thus are loaded
-by those ioctls.
 
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
----
- arch/x86/kvm/vmx/nested.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+--DwoPkXS38qd3dnhB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index b44f1f6b68db..f2291165995e 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -1115,7 +1115,7 @@ static int nested_vmx_load_cr3(struct kvm_vcpu *vcpu, unsigned long cr3, bool ne
- 	 * must not be dereferenced.
- 	 */
- 	if (!nested_ept && is_pae_paging(vcpu) &&
--	    (cr3 != kvm_read_cr3(vcpu) || pdptrs_changed(vcpu))) {
-+	    (cr3 != kvm_read_cr3(vcpu) || !kvm_register_is_available(vcpu, VCPU_EXREG_PDPTR))) {
- 		if (CC(!load_pdptrs(vcpu, vcpu->arch.walk_mmu, cr3))) {
- 			*entry_failure_code = ENTRY_FAIL_PDPTE;
- 			return -EINVAL;
-@@ -3110,6 +3110,14 @@ static bool nested_get_vmcs12_pages(struct kvm_vcpu *vcpu)
- 	struct page *page;
- 	u64 hpa;
- 
-+	if (vcpu->arch.reload_pdptrs_on_nested_entry) {
-+		/* if legacy KVM_SET_SREGS API was used, it might have loaded
-+		 * wrong PDPTRs from memory so we have to reload them here
-+		 * (which is against x86 spec)
-+		 */
-+		kvm_register_clear_available(vcpu, VCPU_EXREG_PDPTR);
-+	}
-+
- 	if (nested_vmx_load_cr3(vcpu, vmcs12->guest_cr3, nested_cpu_has_ept(vmcs12),
- 				&entry_failure_code))
- 		return false;
-@@ -3357,6 +3365,7 @@ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
- 	}
- 
- 	if (from_vmentry) {
-+		kvm_register_clear_available(vcpu, VCPU_EXREG_PDPTR);
- 		if (nested_vmx_load_cr3(vcpu, vmcs12->guest_cr3,
- 		    nested_cpu_has_ept(vmcs12), &entry_failure_code))
- 			goto vmentry_fail_vmexit_guest_mode;
-@@ -4195,6 +4204,7 @@ static void load_vmcs12_host_state(struct kvm_vcpu *vcpu,
- 	 * Only PDPTE load can fail as the value of cr3 was checked on entry and
- 	 * couldn't have changed.
- 	 */
-+	kvm_register_clear_available(vcpu, VCPU_EXREG_PDPTR);
- 	if (nested_vmx_load_cr3(vcpu, vmcs12->host_cr3, false, &ignored))
- 		nested_vmx_abort(vcpu, VMX_ABORT_LOAD_HOST_PDPTE_FAIL);
- 
--- 
-2.26.2
+On Thu, Mar 25, 2021 at 07:05:37PM +0100, Mauro Carvalho Chehab wrote:
+> This driver is ready for mainstream. Move it out of staging.
 
+Acked-by: Mark Brown <broonie@kernel.org>
+
+--DwoPkXS38qd3dnhB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBl1iYACgkQJNaLcl1U
+h9BZgAf+I3kP+Jp+r1dHAW0AXf0Fhk9DNl9QGn4g0+vlgHOjCqgxYuXljGZ+c1+t
+UNh10OpAs47RM2JZTM3RVyEfu3sTgeEqhlaZncY1gjSL5jUzM00kAwmWvrrtK4Ex
+Lrverxk3+cCfM/0JapuKNtVzDMmyvO0MFO1WbE4TYj4YnLnVC7Nb11x8azaih+LN
+0en2a5zoGpqc+4tdXLzKnGNZd5a7iTbdVP7qQ/qogDLmvKOuPwn/DzbMfPsML1y+
+HEf9yyZyDmJAVa3WfHuaBVyX7B4VV67W5EwN7lBlwj41G0qjHCSCeiPrX5BG2AMR
+CyV+1wkmabJGmmmaxbGiUBKLrsrMaQ==
+=TTgB
+-----END PGP SIGNATURE-----
+
+--DwoPkXS38qd3dnhB--
