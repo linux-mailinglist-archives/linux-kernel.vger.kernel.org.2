@@ -2,61 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C07350CA9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 04:24:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D5D350CAF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 04:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233170AbhDACXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 22:23:47 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14980 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233139AbhDACXn (ORCPT
+        id S233002AbhDAC2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 22:28:43 -0400
+Received: from lucky1.263xmail.com ([211.157.147.135]:42908 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhDAC2P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 22:23:43 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F9n4J4350zyNmV;
-        Thu,  1 Apr 2021 10:21:36 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Thu, 1 Apr 2021
- 10:23:33 +0800
-From:   Shixin Liu <liushixin2@huawei.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Shixin Liu <liushixin2@huawei.com>
-Subject: [PATCH -next 3/3] mm/debug_vm_pgtable: Remove useless pfn_pmd()
-Date:   Thu, 1 Apr 2021 10:23:15 +0800
-Message-ID: <20210401022315.2911967-3-liushixin2@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210401022315.2911967-1-liushixin2@huawei.com>
-References: <20210401022315.2911967-1-liushixin2@huawei.com>
+        Wed, 31 Mar 2021 22:28:15 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 46970A83FE;
+        Thu,  1 Apr 2021 10:28:04 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [113.57.152.160])
+        by smtp.263.net (postfix) whith ESMTP id P22964T140517102843648S1617244084217314_;
+        Thu, 01 Apr 2021 10:28:04 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <4c726a1803186917ae5afbae6c64bdb7>
+X-RL-SENDER: huxiang@uniontech.com
+X-SENDER: huxiang@uniontech.com
+X-LOGIN-NAME: huxiang@uniontech.com
+X-FST-TO: akpm@linux-foundation.org
+X-SENDER-IP: 113.57.152.160
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   huxiang <huxiang@uniontech.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        huxiang <huxiang@uniontech.com>
+Subject: [PATCH] mm/page_alloc: redundant definition variables of pfn in for loop
+Date:   Thu,  1 Apr 2021 10:28:02 +0800
+Message-Id: <20210401022802.10358-1-huxiang@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.32]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The call to pfn_pmd() here is redundant.
+This variable pfn is defined repeatedly, so it can be deleted.
 
-Signed-off-by: Shixin Liu <liushixin2@huawei.com>
+Signed-off-by: huxiang <huxiang@uniontech.com>
 ---
- mm/debug_vm_pgtable.c | 1 -
- 1 file changed, 1 deletion(-)
+ mm/page_alloc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-index c379bbe42c2a..9f4c4a114229 100644
---- a/mm/debug_vm_pgtable.c
-+++ b/mm/debug_vm_pgtable.c
-@@ -196,7 +196,6 @@ static void __init pmd_advanced_tests(struct mm_struct *mm,
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index cfc728739..740224232 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -3277,7 +3277,7 @@ void free_unref_page_list(struct list_head *list)
  
- 	pgtable_trans_huge_deposit(mm, pmdp, pgtable);
+ 	local_irq_save(flags);
+ 	list_for_each_entry_safe(page, next, list, lru) {
+-		unsigned long pfn = page_private(page);
++		pfn = page_private(page);
  
--	pmd = pfn_pmd(pfn, prot);
- 	set_pmd_at(mm, vaddr, pmdp, pmd);
- 	pmdp_set_wrprotect(mm, vaddr, pmdp);
- 	pmd = READ_ONCE(*pmdp);
+ 		set_page_private(page, 0);
+ 		trace_mm_page_free_batched(page);
 -- 
-2.25.1
+2.20.1
+
+
 
