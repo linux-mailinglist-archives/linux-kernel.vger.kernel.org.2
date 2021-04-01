@@ -2,78 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 639F43510FC
+	by mail.lfdr.de (Postfix) with ESMTP id B0AB43510FD
 	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 10:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233630AbhDAIi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 04:38:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33690 "EHLO mail.kernel.org"
+        id S233651AbhDAIib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 04:38:31 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48198 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233024AbhDAIiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 04:38:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C6D0B61041;
-        Thu,  1 Apr 2021 08:38:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617266286;
-        bh=pL7zEm/CJ6Uq13TbvMopTgicNXFZzItUs41gFNFs0bo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A3X3lduCFkIuAeuQcqpzhul7wvKwDj5UjZ40gX0BhH6coMkam04N1fMhBXiO1k9fr
-         Qx/8Cp+zmkSw5yt/9WD3OWEBwEdVVUiTgmrKXPktPG5MJhpkzp1IqJLPCbqq2ePs32
-         NzwqEkscV/FJQFSYJe0Z+pA7s1+1j2kz8cRLj9B2ZGRPbxRir0oMbkz4NORBnn08Qw
-         zpEovn8ARnysgKDkNQpa5nWT4UqQLnGUIgZL92lSn8A0CTU6eFdvu51VF/lz3gas5G
-         NbEBSMnsjL1na3BP/51tBCx3wTgdCqXYFtiXlE20KJqh/YGMRt2tzdaxvdOsy5SBYF
-         Da/Tpgqva8b+A==
-Date:   Thu, 1 Apr 2021 09:37:59 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Potapenko <glider@google.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
+        id S233050AbhDAIiN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 04:38:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CA413AE92;
+        Thu,  1 Apr 2021 08:38:11 +0000 (UTC)
+Date:   Thu, 1 Apr 2021 09:38:09 +0100
+From:   Mel Gorman <mgorman@suse.de>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     "Huang, Ying" <ying.huang@intel.com>,
+        Linux-MM <linux-mm@kvack.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 0/6] Optionally randomize kernel stack offset each
- syscall
-Message-ID: <20210401083758.GA8745@willie-the-truck>
-References: <20210331205458.1871746-1-keescook@chromium.org>
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Peter Xu <peterx@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Arjun Roy <arjunroy@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [RFC] NUMA balancing: reduce TLB flush via delaying mapping on
+ hint page fault
+Message-ID: <20210401083809.GX15768@suse.de>
+References: <20210329062651.2487905-1-ying.huang@intel.com>
+ <20210330133310.GT15768@suse.de>
+ <87a6qj8t92.fsf@yhuang6-desk1.ccr.corp.intel.com>
+ <20210331131658.GV15768@suse.de>
+ <C42F16F8-646B-448D-A098-E1A98637E28D@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="8GpibOaaTibBMecb"
 Content-Disposition: inline
-In-Reply-To: <20210331205458.1871746-1-keescook@chromium.org>
+In-Reply-To: <C42F16F8-646B-448D-A098-E1A98637E28D@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kees,
 
-On Wed, Mar 31, 2021 at 01:54:52PM -0700, Kees Cook wrote:
-> Hi Will (and Mark and Catalin),
-> 
-> Can you take this via the arm64 tree for v5.13 please? Thomas has added
-> his Reviewed-by, so it only leaves arm64's. :)
+--8GpibOaaTibBMecb
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Sorry, these got mixed up in my inbox so I just replied to v7 and v8 and
-then noticed v9. Argh!
+On Wed, Mar 31, 2021 at 09:36:04AM -0700, Nadav Amit wrote:
+>=20
+>=20
+> > On Mar 31, 2021, at 6:16 AM, Mel Gorman <mgorman@suse.de> wrote:
+> >=20
+> > On Wed, Mar 31, 2021 at 07:20:09PM +0800, Huang, Ying wrote:
+> >> Mel Gorman <mgorman@suse.de> writes:
+> >>=20
+> >>> On Mon, Mar 29, 2021 at 02:26:51PM +0800, Huang Ying wrote:
+> >>>> For NUMA balancing, in hint page fault handler, the faulting page wi=
+ll
+> >>>> be migrated to the accessing node if necessary.  During the migratio=
+n,
+> >>>> TLB will be shot down on all CPUs that the process has run on
+> >>>> recently.  Because in the hint page fault handler, the PTE will be
+> >>>> made accessible before the migration is tried.  The overhead of TLB
+> >>>> shooting down is high, so it's better to be avoided if possible.  In
+> >>>> fact, if we delay mapping the page in PTE until migration, that can =
+be
+> >>>> avoided.  This is what this patch doing.
+> >>>>=20
+> >>>=20
+> >>> Why would the overhead be high? It was previously inaccessibly so it's
+> >>> only parallel accesses making forward progress that trigger the need
+> >>> for a flush.
+> >>=20
+> >> Sorry, I don't understand this.  Although the page is inaccessible, the
+> >> threads may access other pages, so TLB flushing is still necessary.
+> >>=20
+> >=20
+> > You assert the overhead of TLB shootdown is high and yes, it can be
+> > very high but you also said "the benchmark score has no visible changes"
+> > indicating the TLB shootdown cost is not a major problem for the worklo=
+ad.
+> > It does not mean we should ignore it though.
+>=20
+> If you are looking for a benchmark that is negatively affected by NUMA
+> balancing, then IIRC Parsec???s dedup is such a workload. [1]
+>=20
 
-However, I think the comments still apply: namely that the dummy "=m" looks
-dangerous to me and I think you're accessing pcpu variables with preemption
-enabled for the arm64 part:
+Few questions;
 
-https://lore.kernel.org/r/20210401083034.GA8554@willie-the-truck
-https://lore.kernel.org/r/20210401083430.GB8554@willie-the-truck
+Is Parsec imparied due to NUMA balancing in general or due to TLB
+shootdowns specifically?
 
-Will
+Are you using "gcc-pthreads" for parallelisation and the "native" size
+for Parsec?
+
+Is there any specific thread count that matters either in
+absolute terms or as a precentage of online CPUs?
+
+--=20
+Mel Gorman
+SUSE Labs
+
+--8GpibOaaTibBMecb
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEElcbIJ2qkxLDKryriKjSY26pIcMkFAmBlhnEACgkQKjSY26pI
+cMkZqwf/eRNLVsSneirGm6M0609dSk2Vg3k6VeqVCLyJCJu4kVFS3HRiG61MyUsv
+S0edPNITHFcJFpql9Tf7U7Z1tjQQ8oUZR2KJjIw/lrPBqJu+rW4hu1F1VYfeJHqG
+Q6zMR2rsFBNe6kR0hW64e3I8A1rUFVzLrc+HyPQN33UkOjuLZzptUOhXOgVC+80s
+KBIPdyAhmDpk80MHy0hwKufbyCH3PcJa1pQ6XIKDQ/na+eTPOgliZayQtKGPs4iV
+yghAaPdSNeYftM0NJ4M3WaizOgRTQGQFA6mTaOC+MMuN5h4fEPTcQgwxWbEhQBh4
+4mOTvXRbxvhpkcirFa7DuOhsEO+mMw==
+=gTdL
+-----END PGP SIGNATURE-----
+
+--8GpibOaaTibBMecb--
