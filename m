@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41EEF351E6C
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8E9351E6D
 	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240536AbhDASlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:41:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45700 "EHLO mail.kernel.org"
+        id S240616AbhDASl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:41:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46018 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236986AbhDASSo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236988AbhDASSo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 1 Apr 2021 14:18:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A41D4610F7;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB4F9610FA;
         Thu,  1 Apr 2021 12:17:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1617279475;
-        bh=iqEkzOwfz35mssL71H++7gGTRC+bi3L+mvzkZz9ceyA=;
+        bh=Yac+gq42EgnvO+acWY11r9xJy+v6ovzObs2Bl3xQFMA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hlxb/2DC/BLzpzjxnwk9uwYPsGo3eRl4yUxy/aYWMI6M26Q+gxOwPH5rdaRFhc9Pb
-         yMvOjiAfjIHnOUTzvYB0RNxUObBvQ7Lltc8iq3N4G0ZpZhjm92TZDt83BSXr1tmhae
-         bm1eWhbtr1jKDI7wG9LQqb6axjoYoxkEqCpdFW3//nGcjN+tzI10NrWBcKAbcrgm6m
-         uEIfxySMaE6A+BLVGbWFGjMdhmC5h8riuLE46Q6AxZ/mY4po1ny58SoYCth2PSckfy
-         2s8pI6zLI72fzqUu+NlWK96JKOTPorKz5i+Yg+RLPszfzj7u+GWDsPCE6SfXp6ddLm
-         DH3Qsug0CgrzQ==
+        b=jaQ6rqAbTXVAZdbcor5siu+sYuEMKc+D1Oc6fgZZdCEH/uMe/XN3VZZbBv7SkQBlc
+         C79ZK+R4kcOkPznPcnG77lGnTwDN1Wra/YrSEUVxPihxmv7p+k98f6Zmc7T+1oSv7Z
+         yNKYj9H7BV7KIv3vB2qVSUUUccREsJttIxMdqW0qXE8D9M1ZrwjcW4O5iOJAJJho8H
+         dLeOg0rAcqKvIGsZM8ps3IPH7/d45Mad0YEZK14W7R1Bt/1IP5ZYljP5h3rUOshP4w
+         3+lyOEV5AqgqOM+0/Z04AexxaHFv7BZsCrb8puYkzNAr5B5rFr6lZia047XH+3GArP
+         B4guOwN5D3F7w==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1lRwGn-001c2S-KF; Thu, 01 Apr 2021 14:17:53 +0200
+        id 1lRwGn-001c2V-Lj; Thu, 01 Apr 2021 14:17:53 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        Ionut-robert Aron <ionut-robert.aron@nxp.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH 04/32] MAINTAINERS: update fsl,dpaa2-console.yaml reference
-Date:   Thu,  1 Apr 2021 14:17:24 +0200
-Message-Id: <188e930100ecb7d4bd476681f3cc29fa536bdcde.1617279355.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 05/32] MAINTAINERS: update st,hts221.yaml reference
+Date:   Thu,  1 Apr 2021 14:17:25 +0200
+Message-Id: <a83cf29bbd27b26eb22e0046c41efebf488e7e4d.1617279355.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1617279355.git.mchehab+huawei@kernel.org>
 References: <cover.1617279355.git.mchehab+huawei@kernel.org>
@@ -46,31 +45,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset 616fde2dd60f ("dt-bindings: misc: convert fsl,dpaa2-console from txt to YAML")
-renamed: Documentation/devicetree/bindings/misc/fsl,dpaa2-console.txt
-to: Documentation/devicetree/bindings/misc/fsl,dpaa2-console.yaml.
+Changeset 9a6ac3138258 ("dt-bindings:iio:humidity:st,hts221 yaml conversion.")
+renamed: Documentation/devicetree/bindings/iio/humidity/hts221.txt
+to: Documentation/devicetree/bindings/iio/humidity/st,hts221.yaml.
 
 Update its cross-reference accordingly.
 
-Fixes: 616fde2dd60f ("dt-bindings: misc: convert fsl,dpaa2-console from txt to YAML")
+Fixes: 9a6ac3138258 ("dt-bindings:iio:humidity:st,hts221 yaml conversion.")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
  MAINTAINERS | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 53c66a6908b7..de9637196526 100644
+index de9637196526..1985d75d59c7 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -7274,7 +7274,7 @@ M:	Li Yang <leoyang.li@nxp.com>
- L:	linuxppc-dev@lists.ozlabs.org
- L:	linux-arm-kernel@lists.infradead.org
+@@ -8287,7 +8287,7 @@ M:	Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>
+ L:	linux-iio@vger.kernel.org
  S:	Maintained
--F:	Documentation/devicetree/bindings/misc/fsl,dpaa2-console.txt
-+F:	Documentation/devicetree/bindings/misc/fsl,dpaa2-console.yaml
- F:	Documentation/devicetree/bindings/soc/fsl/
- F:	drivers/soc/fsl/
- F:	include/linux/fsl/
+ W:	http://www.st.com/
+-F:	Documentation/devicetree/bindings/iio/humidity/hts221.txt
++F:	Documentation/devicetree/bindings/iio/humidity/st,hts221.yaml
+ F:	drivers/iio/humidity/hts221*
+ 
+ HUAWEI ETHERNET DRIVER
 -- 
 2.30.2
 
