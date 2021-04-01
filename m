@@ -2,105 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B8E35191A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D5DD35184C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237249AbhDARvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:51:10 -0400
-Received: from mga01.intel.com ([192.55.52.88]:46951 "EHLO mga01.intel.com"
+        id S236551AbhDARp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:45:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234804AbhDARkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:40:17 -0400
-IronPort-SDR: qElBdSfBz4tstpC31br4GLe7YuCMwZ+t7Slrwp0aJB7n0YrT0umZQ8XV3Cw3ZzABZtO+taI1GO
- ZhFJdRDScNRQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="212537433"
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="212537433"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 09:11:26 -0700
-IronPort-SDR: cGhAoXgsIPfzeaL1agIBge/bMU19BeTQkpUsFKtqs37mmc/NihAuLKzOWW1Qove5lmWIBrJYi/
- 9Lm70d6tiQ8A==
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="610977785"
-Received: from pzlai-mobl.amr.corp.intel.com (HELO [10.213.169.242]) ([10.213.169.242])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 09:11:25 -0700
-Subject: Re: [PATCH RESEND 0/3] x86/sgx: eextend ioctl
-To:     Raoul Strackx <raoul.strackx@fortanix.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <9688abee-6ba7-e1d9-701e-a5cabac36269@fortanix.com>
- <c7b19652-3b5a-e864-1e0e-3e3d26944398@intel.com>
- <ece49a38-c84d-dba7-6039-b409511e7303@fortanix.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <0498080e-6fdc-ed6d-8efa-d9c3265fe7e5@intel.com>
-Date:   Thu, 1 Apr 2021 09:11:25 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S234611AbhDARiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:38:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33371613CD;
+        Thu,  1 Apr 2021 17:20:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617297649;
+        bh=vvuJdzxokTaxuYnDd9Lr/maD/CXJhrGhm8gULeHd2GU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=kqKdmkdvHLZAPshcw/MqgFez0gtfecFkLB42Uv9NV+sN7FxzzC2pwE27yorA1s18K
+         Z/vH+2x+otungsAgYRQanbKCF8BrmgC4b41LNigzHKooMBj+GrVQlaYwkevCrf/nbG
+         mgI8JyJda/d6AelhFqoNHg+Lnv9bKS/1vFdQijmd4go0qibSzMh/Xa+7hc6Lnki4BX
+         ITJSeHPApwN1RKEgaDfXTggBVr+BJq9K7xYnQsMKjaKfwGefg20fSZeBK+NT1JCA8O
+         zLkrN6xyndbMTDo51I/DA2kQNPqJp/75FcB22o+WqJQXCE/pcudruJFGU5GuaGEcdq
+         vNQ3U0dysPiNw==
+Date:   Thu, 1 Apr 2021 11:20:54 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] scsi: mpt3sas: Fix out-of-bounds warnings in
+ _ctl_addnl_diag_query
+Message-ID: <20210401162054.GA397186@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <ece49a38-c84d-dba7-6039-b409511e7303@fortanix.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/1/21 7:56 AM, Raoul Strackx wrote:
-> 
-> SOLUTION OF THIS PATCH
-> This patch adds a new ioctl to enable userspace to execute EEXTEND leaf 
-> functions per 256 bytes of enclave memory. This enables enclaves to be 
-> build as specified by enclave providers.
+Fix the following out-of-bounds warnings by embedding existing
+struct htb_rel_query into struct mpt3_addnl_diag_query, instead
+of duplicating its members:
 
-I think tying the user ABI to the SGX architecture this closely is a
-mistake.
+include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [19, 32] from the object at 'karg' is out of the bounds of referenced subobject 'buffer_rel_condition' with type 'short unsigned int' at offset 16 [-Warray-bounds]
+include/linux/fortify-string.h:22:29: warning: '__builtin_memset' offset [19, 32] from the object at 'karg' is out of the bounds of referenced subobject 'buffer_rel_condition' with type 'short unsigned int' at offset 16 [-Warray-bounds]
 
-Do we need another ioctl() or can we just relax the existing add_pages
-ioctl() to allow unaligned addresses?
+The problem is that the original code is trying to copy data into a
+bunch of struct members adjacent to each other in a single call to
+memcpy(). All those members are exactly the same contained in struct
+htb_rel_query, so instead of duplicating them into struct
+mpt3_addnl_diag_query, replace them with new member rel_query of
+type struct htb_rel_query. So, now that this new object is introduced,
+memcpy() doesn't overrun the length of &karg.buffer_rel_condition,
+because the address of the new struct object _rel_query_ is used as
+destination, instead. The same issue is present when calling memset(),
+and it is fixed with this same approach.
+
+Below is a comparison of struct mpt3_addnl_diag_query, before and after
+this change (the size and cachelines remain the same):
+
+$ pahole -C mpt3_addnl_diag_query drivers/scsi/mpt3sas/mpt3sas_ctl.o
+struct mpt3_addnl_diag_query {
+	struct mpt3_ioctl_header   hdr;                  /*     0    12 */
+	uint32_t                   unique_id;            /*    12     4 */
+	uint16_t                   buffer_rel_condition; /*    16     2 */
+	uint16_t                   reserved1;            /*    18     2 */
+	uint32_t                   trigger_type;         /*    20     4 */
+	uint32_t                   trigger_info_dwords[2]; /*    24     8 */
+	uint32_t                   reserved2[2];         /*    32     8 */
+
+	/* size: 40, cachelines: 1, members: 7 */
+	/* last cacheline: 40 bytes */
+};
+
+$ pahole -C mpt3_addnl_diag_query drivers/scsi/mpt3sas/mpt3sas_ctl.o
+struct mpt3_addnl_diag_query {
+	struct mpt3_ioctl_header   hdr;                  /*     0    12 */
+	uint32_t                   unique_id;            /*    12     4 */
+	struct htb_rel_query       rel_query;            /*    16    16 */
+	uint32_t                   reserved2[2];         /*    32     8 */
+
+	/* size: 40, cachelines: 1, members: 4 */
+	/* last cacheline: 40 bytes */
+};
+
+Also, this helps with the ongoing efforts to globally enable
+-Warray-bounds and get us closer to being able to tighten the
+FORTIFY_SOURCE routines on memcpy().
+
+Link: https://github.com/KSPP/linux/issues/109
+Reported-by: kernel test robot <lkp@intel.com>
+Build-tested-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/lkml/60659889.bJJILx2THu3hlpxW%25lkp@intel.com/
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/scsi/mpt3sas/mpt3sas_ctl.c |  5 ++---
+ drivers/scsi/mpt3sas/mpt3sas_ctl.h | 12 ++++--------
+ 2 files changed, 6 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/scsi/mpt3sas/mpt3sas_ctl.c b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
+index e7582fb8a93f..b66140e4c370 100644
+--- a/drivers/scsi/mpt3sas/mpt3sas_ctl.c
++++ b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
+@@ -2507,7 +2507,7 @@ _ctl_addnl_diag_query(struct MPT3SAS_ADAPTER *ioc, void __user *arg)
+ 		    __func__, karg.unique_id);
+ 		return -EPERM;
+ 	}
+-	memset(&karg.buffer_rel_condition, 0, sizeof(struct htb_rel_query));
++	memset(&karg.rel_query, 0, sizeof(karg.rel_query));
+ 	if ((ioc->diag_buffer_status[buffer_type] &
+ 	    MPT3_DIAG_BUFFER_IS_REGISTERED) == 0) {
+ 		ioc_info(ioc, "%s: buffer_type(0x%02x) is not registered\n",
+@@ -2520,8 +2520,7 @@ _ctl_addnl_diag_query(struct MPT3SAS_ADAPTER *ioc, void __user *arg)
+ 		    __func__, buffer_type);
+ 		return -EPERM;
+ 	}
+-	memcpy(&karg.buffer_rel_condition, &ioc->htb_rel,
+-	    sizeof(struct  htb_rel_query));
++	memcpy(&karg.rel_query, &ioc->htb_rel, sizeof(karg.rel_query));
+ out:
+ 	if (copy_to_user(arg, &karg, sizeof(struct mpt3_addnl_diag_query))) {
+ 		ioc_err(ioc, "%s: unable to write mpt3_addnl_diag_query data @ %p\n",
+diff --git a/drivers/scsi/mpt3sas/mpt3sas_ctl.h b/drivers/scsi/mpt3sas/mpt3sas_ctl.h
+index d2ccdafb8df2..8f6ffb40261c 100644
+--- a/drivers/scsi/mpt3sas/mpt3sas_ctl.h
++++ b/drivers/scsi/mpt3sas/mpt3sas_ctl.h
+@@ -50,6 +50,8 @@
+ #include <linux/miscdevice.h>
+ #endif
+ 
++#include "mpt3sas_base.h"
++
+ #ifndef MPT2SAS_MINOR
+ #define MPT2SAS_MINOR		(MPT_MINOR + 1)
+ #endif
+@@ -436,19 +438,13 @@ struct mpt3_diag_read_buffer {
+  * struct mpt3_addnl_diag_query - diagnostic buffer release reason
+  * @hdr - generic header
+  * @unique_id - unique id associated with this buffer.
+- * @buffer_rel_condition - Release condition ioctl/sysfs/reset
+- * @reserved1
+- * @trigger_type - Master/Event/scsi/MPI
+- * @trigger_info_dwords - Data Correspondig to trigger type
++ * @rel_query - release query.
+  * @reserved2
+  */
+ struct mpt3_addnl_diag_query {
+ 	struct mpt3_ioctl_header hdr;
+ 	uint32_t unique_id;
+-	uint16_t buffer_rel_condition;
+-	uint16_t reserved1;
+-	uint32_t trigger_type;
+-	uint32_t trigger_info_dwords[2];
++	struct htb_rel_query rel_query;
+ 	uint32_t reserved2[2];
+ };
+ 
+-- 
+2.27.0
+
