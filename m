@@ -2,72 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A80350B6E
+	by mail.lfdr.de (Postfix) with ESMTP id F1DB6350B6F
 	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 02:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232868AbhDAA5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 20:57:47 -0400
-Received: from thorn.bewilderbeest.net ([71.19.156.171]:39821 "EHLO
-        thorn.bewilderbeest.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230385AbhDAA5c (ORCPT
+        id S232923AbhDAA5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 20:57:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232419AbhDAA5l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 20:57:32 -0400
+        Wed, 31 Mar 2021 20:57:41 -0400
+Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D432DC061574;
+        Wed, 31 Mar 2021 17:57:40 -0700 (PDT)
 Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20::7c6])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 9A5FB18F;
-        Wed, 31 Mar 2021 17:57:31 -0700 (PDT)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 61CA318F;
+        Wed, 31 Mar 2021 17:57:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1617238652;
-        bh=zQ7dyCLRGoMHs6Z0SXf2aeU6m0dmbYN41Vv7fdqBw0Y=;
+        s=thorn; t=1617238660;
+        bh=mRouH1pDCr7SzC4G2QJanz8knNuUSwSnGNHS1Ih1lpM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HLlSpUNJp6r34QbrAtGTIHJcmJydk+CziV6zzI0Y+qsMD/4h5R5fDB26RHqgJ4RQ0
-         UaSfv6lgln0UzkzXb1Ay19bfWbfqI/cfP8tqi0tnTs76ky0R4uHI7AqDKnAcQgL5Pc
-         4WZkqmmluwT7C4o8ZAB1RkAKQseqOZuRswLgJBi4=
+        b=HUdGDWC6v9F/hRKZXNV/JL1xlHoBPRFsDfz1KgHQ383/+WVFGBBTXdhc9pU4qgKYJ
+         9tc2oVe2sa6VLCwP/HRhcVc6+m+ZKZN7el9w83TDtpuuVD7gDcCKM4zlIyDg7vQVec
+         nwb48YZuX7DQAJ1RKYVjFQtdzzkzQzBSz1tM5ROI=
 From:   Zev Weiss <zev@bewilderbeest.net>
 To:     Joel Stanley <joel@jms.id.au>
 Cc:     openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
         linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
         Andrew Jeffery <andrew@aj.id.au>,
-        Zev Weiss <zev@bewilderbeest.net>
-Subject: [PATCH v2 0/3] simplify Aspeed VUART SIRQ polarity DT config
-Date:   Wed, 31 Mar 2021 19:56:59 -0500
-Message-Id: <20210401005702.28271-1-zev@bewilderbeest.net>
+        Zev Weiss <zev@bewilderbeest.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        - <devicetree@vger.kernel.org>, linux-serial@vger.kernel.org
+Subject: [PATCH v2 1/3] dt-bindings: serial: 8250: deprecate aspeed,sirq-polarity-sense
+Date:   Wed, 31 Mar 2021 19:57:00 -0500
+Message-Id: <20210401005702.28271-2-zev@bewilderbeest.net>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <YGOuhjD19SmjmQou@hatter.bewilderbeest.net>
+In-Reply-To: <20210401005702.28271-1-zev@bewilderbeest.net>
 References: <YGOuhjD19SmjmQou@hatter.bewilderbeest.net>
+ <20210401005702.28271-1-zev@bewilderbeest.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The aspeed,sirq-polarity-sense property was a bit of a design mistake
-in that it ties Aspeed VUART SIRQ polarity to SCU register bits that
-aren't really inherently related to it.
+This property ties SIRQ polarity to SCU register bits that don't
+necessarily have any direct relationship to it; the only use of it
+was removed in commit c82bf6e133d30e0f9172a20807814fa28aef0f67.
 
-This patch series deprecates that property (though we hope to
-eventually remove it) and adds a simple boolean property
-(aspeed,sirq-active-high) to use instead.
+Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+---
+ Documentation/devicetree/bindings/serial/8250.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-
-Changes since v1:
- - deprecate and retain aspeed,sirq-polarity-sense instead of removing it
- - drop e3c246d4i dts addition from this series
-
-
-Zev Weiss (3):
-  dt-bindings: serial: 8250: deprecate aspeed,sirq-polarity-sense
-  drivers/tty/serial/8250: add DT property for aspeed vuart sirq
-    polarity
-  dt-bindings: serial: 8250: add aspeed,sirq-active-high
-
- Documentation/devicetree/bindings/serial/8250.yaml | 14 +++++++++++---
- drivers/tty/serial/8250/8250_aspeed_vuart.c        |  3 +++
- 2 files changed, 14 insertions(+), 3 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/serial/8250.yaml b/Documentation/devicetree/bindings/serial/8250.yaml
+index f54cae9ff7b2..491b9297432d 100644
+--- a/Documentation/devicetree/bindings/serial/8250.yaml
++++ b/Documentation/devicetree/bindings/serial/8250.yaml
+@@ -188,6 +188,7 @@ properties:
+       offset and bit number to identify how the SIRQ polarity should be
+       configured. One possible data source is the LPC/eSPI mode bit. Only
+       applicable to aspeed,ast2500-vuart.
++    deprecated: true
+ 
+ required:
+   - reg
 -- 
 2.31.1
 
