@@ -2,133 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B51C13518A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28199351845
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234771AbhDARq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:46:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57128 "EHLO
+        id S236381AbhDARo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:44:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234640AbhDARik (ORCPT
+        with ESMTP id S234574AbhDARiF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:38:40 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85F1CC02FE93;
-        Thu,  1 Apr 2021 09:00:38 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: benjamin.gaignard)
-        with ESMTPSA id 8220F1F46899
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-To:     ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
-        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        festevam@gmail.com, lee.jones@linaro.org,
-        gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
-        emil.l.velikov@gmail.com
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        kernel@collabora.com,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v8 13/13] arm64: dts: imx8mq: Add node to G2 hardware
-Date:   Thu,  1 Apr 2021 18:00:03 +0200
-Message-Id: <20210401160003.88803-14-benjamin.gaignard@collabora.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210401160003.88803-1-benjamin.gaignard@collabora.com>
-References: <20210401160003.88803-1-benjamin.gaignard@collabora.com>
+        Thu, 1 Apr 2021 13:38:05 -0400
+Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BB4CC02FE94;
+        Thu,  1 Apr 2021 09:00:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+         s=42; h=Date:Message-ID:From:Cc:To;
+        bh=m/fhQBoIS2Ry4FN35jTMDrpVXQElvBfJuR2zw8YjBR8=; b=rjM/JiaSCTDtwzRn1bvABQ1ETe
+        ESRd9Axo3R60B+iHazD05eaRpyJagq1NfzDf1+A3kZJBP7tDY33G9L0KtQz78lnyfCeVWizBZk0Y+
+        L1GPrVCHtHWPRJOi6+7pGZdCQhlBgYdDq9Z7BuVwIBOMK7GkLZiznxtR2G4aPPCwHzrhTmRrxujWO
+        XMhmTpPC2LKD8FnU8Q1jn6BkU8qjTyYqdNFLLk0fD7nwXUdDQ8qTZrfBpKVxXaRY7fSRJiNAUFA0S
+        eSJCmLldPegdfFcRVYBQYOYmH9n0khNekPsLqstFxpxohWyj+hEGDBm6QQ10JGCtAtZ/opQGojC5N
+        UXssgbHlMBR4T7I7fy68avXlhlHnyArnMuOee3LQKmjCo6SSDnHvoogfVCjxXY/+1stFrcN/dvBb6
+        TGhq6M9viPslWohIqtZpsEnu9zUaI2/wX6IpDa95Q9quzetuDIgNL1o22rC6iz1+mzu1UmxoUEBqj
+        o7I+cLYX+oSeRdjLQmV3LSdU;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_RSA_CHACHA20_POLY1305:256)
+        (Exim)
+        id 1lRzkW-00080B-18; Thu, 01 Apr 2021 16:00:48 +0000
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, io-uring <io-uring@vger.kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210326003928.978750-1-axboe@kernel.dk>
+ <e6de934a-a794-f173-088d-a140d0645188@samba.org>
+ <f2c93b75-a18b-fc2c-7941-9208c19869c1@kernel.dk>
+ <8efd9977-003b-be65-8ae2-4b04d8dd1224@samba.org>
+ <358c5225-c23f-de08-65cb-ca3349793c0e@samba.org>
+ <5bb47c3a-2990-e4c4-69c6-1b5d1749a241@samba.org>
+ <CAHk-=whEObPkZBe4766DmR46-=5QTUiatWbSOaD468eTgYc1tg@mail.gmail.com>
+From:   Stefan Metzmacher <metze@samba.org>
+Subject: Re: [PATCH 0/6] Allow signals for IO threads
+Message-ID: <2d8a73ef-2f18-6872-bad1-a34deb20f641@samba.org>
+Date:   Thu, 1 Apr 2021 18:00:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <CAHk-=whEObPkZBe4766DmR46-=5QTUiatWbSOaD468eTgYc1tg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Split VPU node in two: one for G1 and one for G2 since they are
-different hardware blocks.
-Add syscon for hardware control block.
-Remove reg-names property that is useless.
-Each VPU node only need one interrupt.
-Change G2 assigned clock to match to the specifications.
-In the both nodes all the clocks need to assigned to make
-sure that control block will be correctly clocked even if
-only one device node is enabled.
 
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
----
-version 7:
- - use nxp,imx8m-vpu-ctrl as phandle syscon property name
+Am 01.04.21 um 17:39 schrieb Linus Torvalds:
+> On Thu, Apr 1, 2021 at 7:58 AM Stefan Metzmacher <metze@samba.org> wrote:
+>>
+>>>
+>>> Ok, the following makes gdb happy again:
+>>>
+>>> --- a/arch/x86/kernel/process.c
+>>> +++ b/arch/x86/kernel/process.c
+>>> @@ -163,6 +163,8 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
+>>>         /* Kernel thread ? */
+>>>         if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
+>>>                 memset(childregs, 0, sizeof(struct pt_regs));
+>>> +               if (p->flags & PF_IO_WORKER)
+>>> +                       childregs->cs = current_pt_regs()->cs;
+>>>                 kthread_frame_init(frame, sp, arg);
+>>>                 return 0;
+>>>         }
+>>
+>> Would it be possible to fix this remaining problem before 5.12 final?
+> 
+> Please not that way.
+> 
+> But doing something like
+> 
+>         childregs->cs = __USER_CS;
+>         childregs->ss = __USER_DS;
+>         childregs->ds = __USER_DS;
+>         childregs->es = __USER_DS;
+> 
+> might make sense (just do it unconditionally, rather than making it
+> special to PF_IO_WORKER).
+> 
+> Does that make gdb happy too?
 
-version 5:
- - use syscon instead of VPU reset
+I haven't tried it, but it seems gdb tries to use PTRACE_PEEKUSR
+against the last thread tid listed under /proc/<pid>/tasks/ in order to
+get the architecture for the userspace application, so my naive assumption
+would be that it wouldn't allow the detection of a 32-bit application
+using a 64-bit kernel.
 
- arch/arm64/boot/dts/freescale/imx8mq.dtsi | 43 ++++++++++++++++++-----
- 1 file changed, 34 insertions(+), 9 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-index 17c449e12c2e..65158414d255 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-@@ -1329,15 +1329,16 @@ usb3_phy1: usb-phy@382f0040 {
- 			status = "disabled";
- 		};
- 
--		vpu: video-codec@38300000 {
-+		vpu_ctrl: syscon@38320000 {
-+			compatible = "nxp,imx8mq-vpu-ctrl", "syscon";
-+			reg = <0x38320000 0x10000>;
-+		};
-+
-+		vpu_g1: video-codec@38300000 {
- 			compatible = "nxp,imx8mq-vpu";
--			reg = <0x38300000 0x10000>,
--			      <0x38310000 0x10000>,
--			      <0x38320000 0x10000>;
--			reg-names = "g1", "g2", "ctrl";
--			interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
--				     <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
--			interrupt-names = "g1", "g2";
-+			reg = <0x38300000 0x10000>;
-+			interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "g1";
- 			clocks = <&clk IMX8MQ_CLK_VPU_G1_ROOT>,
- 				 <&clk IMX8MQ_CLK_VPU_G2_ROOT>,
- 				 <&clk IMX8MQ_CLK_VPU_DEC_ROOT>;
-@@ -1350,9 +1351,33 @@ vpu: video-codec@38300000 {
- 						 <&clk IMX8MQ_VPU_PLL_OUT>,
- 						 <&clk IMX8MQ_SYS1_PLL_800M>,
- 						 <&clk IMX8MQ_VPU_PLL>;
--			assigned-clock-rates = <600000000>, <600000000>,
-+			assigned-clock-rates = <600000000>, <300000000>,
-+					       <800000000>, <0>;
-+			power-domains = <&pgc_vpu>;
-+			nxp,imx8m-vpu-ctrl = <&vpu_ctrl>;
-+		};
-+
-+		vpu_g2: video-codec@38310000 {
-+			compatible = "nxp,imx8mq-vpu-g2";
-+			reg = <0x38310000 0x10000>;
-+			interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "g2";
-+			clocks = <&clk IMX8MQ_CLK_VPU_G1_ROOT>,
-+				 <&clk IMX8MQ_CLK_VPU_G2_ROOT>,
-+				 <&clk IMX8MQ_CLK_VPU_DEC_ROOT>;
-+			clock-names = "g1", "g2",  "bus";
-+			assigned-clocks = <&clk IMX8MQ_CLK_VPU_G1>,
-+					  <&clk IMX8MQ_CLK_VPU_G2>,
-+					  <&clk IMX8MQ_CLK_VPU_BUS>,
-+					  <&clk IMX8MQ_VPU_PLL_BYPASS>;
-+			assigned-clock-parents = <&clk IMX8MQ_VPU_PLL_OUT>,
-+						 <&clk IMX8MQ_VPU_PLL_OUT>,
-+						 <&clk IMX8MQ_SYS1_PLL_800M>,
-+						 <&clk IMX8MQ_VPU_PLL>;
-+			assigned-clock-rates = <600000000>, <300000000>,
- 					       <800000000>, <0>;
- 			power-domains = <&pgc_vpu>;
-+			nxp,imx8m-vpu-ctrl = <&vpu_ctrl>;
- 		};
- 
- 		pcie0: pcie@33800000 {
--- 
-2.25.1
-
+metze
