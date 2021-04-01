@@ -2,94 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD553351BA4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B16D351B06
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238799AbhDASKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:10:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57202 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236630AbhDARzA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:55:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BD3861381;
-        Thu,  1 Apr 2021 16:37:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617295057;
-        bh=mSocOIXGvAFKcL19Ce6fU683sMoxx6GOB2FI63UFFps=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pfG4Ny5Naj2xO9xJs/GhyfkzUzVPEQeW7HePHaZfQpEBvHsMoE1lwGJBb/BJJTaxu
-         LUTinilDjFtooZMZrmOLb/hUKZBguT8qdlqESp7Is4n7dJZVoo00lOu+jqlZFuehBv
-         xFVWQB5fH6jYeAqP1RSl77oan6W2dBgFrNW/7Bbw5CaRaedgR8kecWxdJ+9v4+6kKX
-         Vu0AG3AcvLjiGo6cASKJTWUltZn2tikCt7qkRAD6CxQSq5OynMTpNQNRDpoHoKuPlo
-         Ey4SipMN6Cv/6ZK//nVQA7KzYcBsJJaHRBGp9lrar9wH/NdJxw/UUq5x7MiVzUIahF
-         WAHIpad4zTH0w==
-Date:   Thu, 1 Apr 2021 09:37:32 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Maciej Falkowski <maciej.falkowski9@gmail.com>
-Cc:     aaro.koskinen@iki.fi, tony@atomide.com, linux@armlinux.org.uk,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] ARM: OMAP1: ams-delta: remove unused function
- ams_delta_camera_power
-Message-ID: <20210401163732.gl63gs2dpi6pickt@archlinux-ax161>
-References: <20210401160434.7655-1-maciej.falkowski9@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401160434.7655-1-maciej.falkowski9@gmail.com>
+        id S237901AbhDASEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:04:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21968 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234256AbhDARoC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:44:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617299041;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc; bh=PuFHoI6wZ2vqFN8F+7P4hon8RWN2+MjgjmIvpt1EN7A=;
+        b=HOc1hJKFzmXCdJU6jeBCcfXNSwbW1LCM9p1C74qk3cIdndcLN1xvVAsSglpicy4xk++cUJ
+        SJRJbi+7juHrYieeGBsPW/0aflBLEvjjgqrXCsEic1nvM4ntmf2Vje08/hN8o0snerYiJS
+        luG6ZHcnTR9MujAh2jaJDyr3oXl4k64=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-187-lgkESsc8PAKfec_O1C3O2g-1; Thu, 01 Apr 2021 12:42:57 -0400
+X-MC-Unique: lgkESsc8PAKfec_O1C3O2g-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 767721005D61;
+        Thu,  1 Apr 2021 16:42:49 +0000 (UTC)
+Received: from crecklin.bos.com (unknown [10.22.8.39])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7C88C5D9CC;
+        Thu,  1 Apr 2021 16:42:43 +0000 (UTC)
+From:   Chris von Recklinghausen <crecklin@redhat.com>
+To:     ardb@kernel.org, simo@redhat.com, rafael@kernel.org,
+        decui@microsoft.com, linux-pm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/1] use crc32 instead of md5 for hibernation e820 integrity check
+Date:   Thu,  1 Apr 2021 12:41:44 -0400
+Message-Id: <20210401164145.8051-1-crecklin@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 06:04:34PM +0200, Maciej Falkowski wrote:
-> The ams_delta_camera_power() function is unused as reports
-> Clang compilation with omap1_defconfig on linux-next:
-> 
-> arch/arm/mach-omap1/board-ams-delta.c:462:12: warning: unused function 'ams_delta_camera_power' [-Wunused-function]
-> static int ams_delta_camera_power(struct device *dev, int power)
->            ^
-> 1 warning generated.
-> 
-> The soc_camera support was dropped without removing
-> ams_delta_camera_power() function, making it unused.
-> 
-> Signed-off-by: Maciej Falkowski <maciej.falkowski9@gmail.com>
-> Fixes: ce548396a433 ("media: mach-omap1: board-ams-delta.c: remove soc_camera dependencies")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1326
+Currently, suspend on x86_64 fails when FIPS mode is enabled because it uses md5
+to generate a digest of the e820 region. MD5 is not FIPS compliant so an error
+is reported and the suspend fails.
 
-Thanks for the patch!
+MD5 is used only to create a digest to ensure integrity of the region, no actual
+encryption is done. This patch set changes the integrity check to use crc32
+instead of md5 since crc32 is available in both FIPS and non-FIPS modes.
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Chris von Recklinghausen (1):
+  use crc32 instead of md5 for hibernation e820 integrity check
 
-> ---
->  arch/arm/mach-omap1/board-ams-delta.c | 14 --------------
->  1 file changed, 14 deletions(-)
-> 
-> diff --git a/arch/arm/mach-omap1/board-ams-delta.c b/arch/arm/mach-omap1/board-ams-delta.c
-> index 2ee527c00284..1026a816dcc0 100644
-> --- a/arch/arm/mach-omap1/board-ams-delta.c
-> +++ b/arch/arm/mach-omap1/board-ams-delta.c
-> @@ -458,20 +458,6 @@ static struct gpiod_lookup_table leds_gpio_table = {
->  
->  #ifdef CONFIG_LEDS_TRIGGERS
->  DEFINE_LED_TRIGGER(ams_delta_camera_led_trigger);
-> -
-> -static int ams_delta_camera_power(struct device *dev, int power)
-> -{
-> -	/*
-> -	 * turn on camera LED
-> -	 */
-> -	if (power)
-> -		led_trigger_event(ams_delta_camera_led_trigger, LED_FULL);
-> -	else
-> -		led_trigger_event(ams_delta_camera_led_trigger, LED_OFF);
-> -	return 0;
-> -}
-> -#else
-> -#define ams_delta_camera_power	NULL
->  #endif
->  
->  static struct platform_device ams_delta_audio_device = {
-> -- 
-> 2.26.3
-> 
+ arch/x86/power/hibernate.c | 35 +++++++++++++++++++----------------
+ 1 file changed, 19 insertions(+), 16 deletions(-)
+
+-- 
+v1 -> v2
+   bump up RESTORE_MAGIC
+2.18.1
+
