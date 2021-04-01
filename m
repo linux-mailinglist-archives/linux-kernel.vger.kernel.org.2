@@ -2,99 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AC74351EC9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CBF2351F25
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237622AbhDASq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:46:57 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:46406 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238662AbhDASZF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:25:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1617301505; x=1648837505;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=KRDSPtavXfZSEi1+DG38az9zzkfxEOJUbAop1plVBhM=;
-  b=HZjWUsWndiJAazBCAseHDH0KbBQTX5P5JcRqr5HMU1swcgJTY3yFRZtR
-   KRH5gOJwW9E3EvYK6NvEHpnMTl1bYfD/zv7jvArjm5RGgAhOy+C8S4P6Z
-   kb2Ec22wr37iU2Y38foSgMV0Gtn3czXVkkXEi59ryD9ook+GXFiJeMrDO
-   v/ZFzfNgyOEUWhbqmKTTj3sEbPWWZX/788cgZw+G4w22H9YA6U7m0Svq5
-   TPkZ7Hp/TEG8xYiXfSgY3ESfca0UxG/0FNb9MBGfus7Xmwbuknj1kLZsY
-   8fXgwGZDrUwxyQHKANdc/VZ3onQ2y/y0RzKmFlMSafEkpuE3/mLTi8SiB
-   w==;
-IronPort-SDR: 5Et8IH4FOOYfLYdPYoOjzkwVKY8Z8s4mpVOr/g9tTquE7lNJ8991aHseAbTA1pvRszspoGqa2t
- aua3UO0OnaYPW+xHUnbdAGSV7xiILxbKVBBbj+oa30K/ziPaxfn4L/LdmkOf3aTQGmFVS3EnOh
- bvXPJb89qKgyW+qaVhyw8NILQYQsLy2XupyOGaah8gqPbXl7Oro3gu5KTOf8MwwPJ+4DILnyRU
- 099brdqf0MevpbN57+NHJdl7VqTkUWL1W9F10Af7lbs/ztmHRnx6TPLiqRqCz8cebWieb9T3LO
- Aqo=
-X-IronPort-AV: E=Sophos;i="5.81,296,1610434800"; 
-   d="scan'208";a="121406278"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Apr 2021 05:27:48 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 1 Apr 2021 05:27:48 -0700
-Received: from rob-dk-mpu01.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Thu, 1 Apr 2021 05:27:45 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>
-CC:     <viresh.kumar@linaro.org>, <linux-clk@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH v2 6/6] clk: at91: clk-master: improve readability by using local variables
-Date:   Thu, 1 Apr 2021 15:27:26 +0300
-Message-ID: <20210401122726.28528-7-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20210401122726.28528-1-claudiu.beznea@microchip.com>
-References: <20210401122726.28528-1-claudiu.beznea@microchip.com>
+        id S239100AbhDASyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:54:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38154 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238558AbhDASo7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:44:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 769D66112D;
+        Thu,  1 Apr 2021 12:27:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617280061;
+        bh=6hbeoJ4IU0VAYkOxOutAUGEasgxae6JptOzfhG1Kkfc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IKEIEtKNXNCtYYmT5WvsSYESDz2+fglABxfVImzWJebuOYggWp+qEKUuAmnddpoxN
+         CFqyOL18PjAK9dpeO7E8cAIVdZ+IJAHRlguVex37xyKPUy2hVzlAhlZf7MEznyHHat
+         Iz0ZwzkKf7A6GQCjN4B+jA4DOO93J00hO8M5C1FCS+TJJ3J1JPVw1mxiOx9Gmko9Rm
+         O2BZaVrujhcTB3Eqi5BnyymxM6xT0rxZRU5weGSr9end4PIMoT5PY45cblzSgICzpy
+         ZQLD0EGUcnn0ZaCH5Uw5TbRzK/zU0peIX8X9WxZ7Lm/8JTY72iHpcccyx5+//3hAUI
+         RFIqe9HkabqEQ==
+Date:   Thu, 1 Apr 2021 15:27:37 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Raphael Norwitz <raphael.norwitz@nutanix.com>
+Cc:     "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "ameynarkhede03@gmail.com" <ameynarkhede03@gmail.com>
+Subject: Re: [PATCH] PCI: merge slot and bus reset implementations
+Message-ID: <YGW8Oe9jn+n9sVsw@unreal>
+References: <20210401053656.16065-1-raphael.norwitz@nutanix.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401053656.16065-1-raphael.norwitz@nutanix.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Improve readability in clk_sama7g5_master_set() by using local
-variables.
+On Thu, Apr 01, 2021 at 05:37:16AM +0000, Raphael Norwitz wrote:
+> Slot resets are bus resets with additional logic to prevent a device
+> from being removed during the reset. Currently slot and bus resets have
+> separate implementations in pci.c, complicating higher level logic. As
+> discussed on the mailing list, they should be combined into a generic
+> function which performs an SBR. This change adds a function,
+> pci_reset_bus_function(), which first attempts a slot reset and then
+> attempts a bus reset if -ENOTTY is returned, such that there is now a
+> single device agnostic function to perform an SBR.
+> 
+> This new function is also needed to add SBR reset quirks and therefore
+> is exposed in pci.h.
+> 
+> Link: https://lkml.org/lkml/2021/3/23/911
+> 
+> Suggested-by: Alex Williamson <alex.williamson@redhat.com>
+> Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> Signed-off-by: Raphael Norwitz <raphael.norwitz@nutanix.com>
+> ---
+>  drivers/pci/pci.c   | 17 +++++++++--------
+>  include/linux/pci.h |  1 +
+>  2 files changed, 10 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 16a17215f633..12a91af2ade4 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -4982,6 +4982,13 @@ static int pci_dev_reset_slot_function(struct pci_dev *dev, int probe)
+>  	return pci_reset_hotplug_slot(dev->slot->hotplug, probe);
+>  }
+>  
+> +int pci_reset_bus_function(struct pci_dev *dev, int probe)
+> +{
+> +	int rc = pci_dev_reset_slot_function(dev, probe);
+> +
+> +	return (rc == -ENOTTY) ? pci_parent_bus_reset(dev, probe) : rc;
 
-Suggested-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
- drivers/clk/at91/clk-master.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+The previous coding style is preferable one in the Linux kernel.
+int rc = pci_dev_reset_slot_function(dev, probe);
+if (rc != -ENOTTY)
+  return rc;
+return pci_parent_bus_reset(dev, probe);
 
-diff --git a/drivers/clk/at91/clk-master.c b/drivers/clk/at91/clk-master.c
-index 1b2962289629..76b2467b32dc 100644
---- a/drivers/clk/at91/clk-master.c
-+++ b/drivers/clk/at91/clk-master.c
-@@ -720,6 +720,8 @@ static void clk_sama7g5_master_set(struct clk_master *master,
- 	unsigned long flags;
- 	unsigned int val, cparent;
- 	unsigned int enable = status ? AT91_PMC_MCR_V2_EN : 0;
-+	unsigned int parent = master->parent << PMC_MCR_CSS_SHIFT;
-+	unsigned int div = master->div << MASTER_DIV_SHIFT;
- 
- 	spin_lock_irqsave(master->lock, flags);
- 
-@@ -729,9 +731,7 @@ static void clk_sama7g5_master_set(struct clk_master *master,
- 	regmap_update_bits(master->regmap, AT91_PMC_MCR_V2,
- 			   enable | AT91_PMC_MCR_V2_CSS | AT91_PMC_MCR_V2_DIV |
- 			   AT91_PMC_MCR_V2_CMD | AT91_PMC_MCR_V2_ID_MSK,
--			   enable | (master->parent << PMC_MCR_CSS_SHIFT) |
--			   (master->div << MASTER_DIV_SHIFT) |
--			   AT91_PMC_MCR_V2_CMD |
-+			   enable | parent | div | AT91_PMC_MCR_V2_CMD |
- 			   AT91_PMC_MCR_V2_ID(master->id));
- 
- 	cparent = (val & AT91_PMC_MCR_V2_CSS) >> PMC_MCR_CSS_SHIFT;
--- 
-2.25.1
 
+> +}
+> +
+>  static void pci_dev_lock(struct pci_dev *dev)
+>  {
+>  	pci_cfg_access_lock(dev);
+> @@ -5102,10 +5109,7 @@ int __pci_reset_function_locked(struct pci_dev *dev)
+>  	rc = pci_pm_reset(dev, 0);
+>  	if (rc != -ENOTTY)
+>  		return rc;
+> -	rc = pci_dev_reset_slot_function(dev, 0);
+> -	if (rc != -ENOTTY)
+> -		return rc;
+> -	return pci_parent_bus_reset(dev, 0);
+> +	return pci_reset_bus_function(dev, 0);
+>  }
+>  EXPORT_SYMBOL_GPL(__pci_reset_function_locked);
+>  
+> @@ -5135,13 +5139,10 @@ int pci_probe_reset_function(struct pci_dev *dev)
+>  	if (rc != -ENOTTY)
+>  		return rc;
+>  	rc = pci_pm_reset(dev, 1);
+> -	if (rc != -ENOTTY)
+> -		return rc;
+> -	rc = pci_dev_reset_slot_function(dev, 1);
+>  	if (rc != -ENOTTY)
+>  		return rc;
+>  
+> -	return pci_parent_bus_reset(dev, 1);
+> +	return pci_reset_bus_function(dev, 1);
+>  }
+>  
+>  /**
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index 86c799c97b77..979d54335ac1 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -1228,6 +1228,7 @@ int pci_probe_reset_bus(struct pci_bus *bus);
+>  int pci_reset_bus(struct pci_dev *dev);
+>  void pci_reset_secondary_bus(struct pci_dev *dev);
+>  void pcibios_reset_secondary_bus(struct pci_dev *dev);
+> +int pci_reset_bus_function(struct pci_dev *dev, int probe);
+>  void pci_update_resource(struct pci_dev *dev, int resno);
+>  int __must_check pci_assign_resource(struct pci_dev *dev, int i);
+>  int __must_check pci_reassign_resource(struct pci_dev *dev, int i, resource_size_t add_size, resource_size_t align);
+> -- 
+> 2.20.1
