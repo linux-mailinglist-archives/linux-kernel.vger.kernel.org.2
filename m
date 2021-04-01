@@ -2,76 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31381350F9B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:57:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE22350FAC
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 09:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233167AbhDAG5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 02:57:05 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15062 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232565AbhDAG4t (ORCPT
+        id S232596AbhDAG7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 02:59:46 -0400
+Received: from mail-m17637.qiye.163.com ([59.111.176.37]:33238 "EHLO
+        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229850AbhDAG7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 02:56:49 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F9v6m2flYzPnNb;
-        Thu,  1 Apr 2021 14:54:08 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 1 Apr 2021 14:56:38 +0800
-From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
-To:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Yang Guo <guoyang2@huawei.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shaokun Zhang <zhangshaokun@hisilicon.com>
-Subject: [PATCH] fs/buffer.c: Delete redundant uptodate check for buffer
-Date:   Thu, 1 Apr 2021 14:57:02 +0800
-Message-ID: <1617260222-13797-1-git-send-email-zhangshaokun@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+        Thu, 1 Apr 2021 02:59:22 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id 3805A980063;
+        Thu,  1 Apr 2021 14:59:20 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] linux/spi: Remove repeated struct declaration
+Date:   Thu,  1 Apr 2021 14:59:04 +0800
+Message-Id: <20210401065904.994121-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZTE5NTUIeTB8eQkMeVkpNSkxJTUtITUtPSUpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PCI6Axw*HD8KEjQeHhI2GB9L
+        URQaCRFVSlVKTUpMSU1LSE1LTEhJVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFKT0tJNwY+
+X-HM-Tid: 0a788c3ab294d992kuws3805a980063
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Guo <guoyang2@huawei.com>
+struct spi_transfer is declared twice. One is declared at 24th line.
+The blew one is not needed though. Remove the duplicate.
 
-The buffer uptodate state has been checked in function set_buffer_uptodate,
-there is no need use buffer_uptodate before calling set_buffer_uptodate and
-delete it.
-
-Cc: Alexander Viro <viro@zeniv.linux.org.uk> 
-Signed-off-by: Yang Guo <guoyang2@huawei.com>
-Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 ---
- fs/buffer.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ include/linux/spi/spi.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/fs/buffer.c b/fs/buffer.c
-index 673cfbef9eec..2c0d0b3f3203 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -2055,8 +2055,7 @@ int __block_write_begin_int(struct page *page, loff_t pos, unsigned len,
- 		block_end = block_start + blocksize;
- 		if (block_end <= from || block_start >= to) {
- 			if (PageUptodate(page)) {
--				if (!buffer_uptodate(bh))
--					set_buffer_uptodate(bh);
-+				set_buffer_uptodate(bh);
- 			}
- 			continue;
- 		}
-@@ -2088,8 +2087,7 @@ int __block_write_begin_int(struct page *page, loff_t pos, unsigned len,
- 			}
- 		}
- 		if (PageUptodate(page)) {
--			if (!buffer_uptodate(bh))
--				set_buffer_uptodate(bh);
-+			set_buffer_uptodate(bh);
- 			continue; 
- 		}
- 		if (!buffer_uptodate(bh) && !buffer_delay(bh) &&
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 592897fa4f03..c345392a11ee 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -247,7 +247,6 @@ static inline void *spi_get_drvdata(struct spi_device *spi)
+ }
+ 
+ struct spi_message;
+-struct spi_transfer;
+ 
+ /**
+  * struct spi_driver - Host side "protocol" driver
 -- 
-2.7.4
+2.25.1
 
