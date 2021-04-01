@@ -2,102 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDAE7351800
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:48:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1293517F8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235811AbhDARnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:43:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57240 "EHLO
+        id S235742AbhDARnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:43:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234414AbhDARhN (ORCPT
+        with ESMTP id S234410AbhDARhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 1 Apr 2021 13:37:13 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F7EC0611A2
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 05:27:16 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id 19so1884456ilj.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 05:27:16 -0700 (PDT)
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA02C0611A3
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 05:28:05 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id y5so1919738qkl.9
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 05:28:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=iWl62oGTxpsnb8MfsXXVQ5OE+zxxuQ8ZrjZT5mqhmk8=;
-        b=m3677M48tkn2V4ziKwwwBU2+rjUUc5Y3kj9IMK3hkZIsyEAd+wXLJPXp9d2zToyTZY
-         OtfzMXSxLpduWxLqZdB5iSGbld4WQ4wx09lwTchEkZim1b4qw598CREf3Cj8U5CrMJJZ
-         yWNUM3aYMlHDLxX9T6S0zoY30xB+V4HRp8h0996xITMmbP+CwG33gV5IGbnuSHwSFcNR
-         UpMROF7sOkhWtZZSrwV0YFKVy+2ta9KN79NWM+hB73LuOq3yVUbbkY1faeq8wh3RI8py
-         rEkjdFtpH6W3uwW45xeGv/oDcvlyw3ul7ACWkVz9KSVZeGxpK1Cy0RAvfonUTZqDCnxl
-         279g==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=S2lOqshgmzLNhO0Nubkd7SMctWNe6/PwkffE1ihM8go=;
+        b=kIlF+XJbynAyetha4A1edQvJgEusSzGIDoeh8rqyepY4GP/NGsMBFAuQkd8VVtOccr
+         9mo47pjAa25TPr402EsVDpi1+/4D65p1tc4UcbrGVBwdr/l6gE6ZtXONfvsafPzpvSAZ
+         nJQTKO61IIQdRefBwpBYnWiZcVVTc71it2QBYbVaFL40/vRw78ls4Tlg4DcKvrYuQfbA
+         vKwinW4j+oblL8MQH2CcEo0LFLL8CQIUCZ+bNwsJvsuMLvpfrMKJHEQp8TKx2dch/zbT
+         CpHMQoWokFTfDRvkrInFNGfiZC8MTWXB0RCpNtoheILZAKL4j6KicOin4+M9aN663vU7
+         nPlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=iWl62oGTxpsnb8MfsXXVQ5OE+zxxuQ8ZrjZT5mqhmk8=;
-        b=cPk2qTvmCjNbPxa3TZYmzbrNwLQFZjC9nGkre+ewVzhtZ+y0DTRa8nV8+kZYxlCz+5
-         pd3y3rxmv75rGTgQ6pUE8SNT5gYp7U2LRKgHw9gq0zLqkbzAxz9S+PceALhOql41KXLQ
-         msJOlaEgOPgL+3W/o08wUI39oJrceLY7+NYG+ARtTnnsR7RC7bMdh5myozarfstGHaW1
-         eVlCvyRRkxG01AqIS6KZgNJhtDmp5s6GDU2e9tdthKicn9BAHsxoX7TB+gtw63fz2ZNC
-         45eS4z/k/brFQvrZ/ZfLvxSmJb4PTDhT0VoPIVgX9sQDEmY8EE6xCi1/M5tT2TKmFpfK
-         iHlw==
-X-Gm-Message-State: AOAM531HE9wVaujlLAL/pq8/4JnX6w+ygC9ikeRLIMVKLa8qwIRp48fI
-        wpYrUaTw1A3As2NnVlSWYYxPrrF6DbDswxLi
-X-Google-Smtp-Source: ABdhPJxz4i1NViOjDljoXKjIaTUxYrlyylEQ9VAbjNxwF2W8jdt1X3/G2E9h4ykpRvGW5oG6LbrB4Q==
-X-Received: by 2002:a05:6e02:1a45:: with SMTP id u5mr6717204ilv.4.1617280035922;
-        Thu, 01 Apr 2021 05:27:15 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id k4sm2846785iol.18.2021.04.01.05.27.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Apr 2021 05:27:15 -0700 (PDT)
-Subject: Re: [PATCH] interconnect: qcom: sm8350: Add missing link between
- nodes
-To:     Georgi Djakov <georgi.djakov@linaro.org>, djakov@kernel.org,
-        vkoul@kernel.org
-Cc:     bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210401094435.28937-1-georgi.djakov@linaro.org>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <7ab2be33-9269-8c28-71d7-1611e60c72fe@linaro.org>
-Date:   Thu, 1 Apr 2021 07:27:14 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=S2lOqshgmzLNhO0Nubkd7SMctWNe6/PwkffE1ihM8go=;
+        b=J8CQEJySknC1eIxKh8exQem7dEB2yUjyoHvECSXGt+gjro1yyuAXT06M+hHE4nzqhK
+         E5lDR/hDo0fUA6yuTodO1s+FRSERRI9LU3NKdWF2pHeYUbObKbcvkf8ohhmoFICeslpX
+         XlRDy+q7eij3NvFk7nHwOGsozGWnifEMR734if8xpP07Zp5JSk3FroLsDLlegOb2vXFR
+         q8NsoUBBdJ3J00Gt13nz5xpnCqRaqfQ4/XyvUvgbHw7l42V3Q6McS6w4H6exRSfOCD+t
+         L/47LIqpfBiuwsFeaSEYNeYuU6yWW6zdkVkLEpsQQEcod76E0kxEkp6YUyP3upInyj96
+         TApw==
+X-Gm-Message-State: AOAM533duv0LkQbN6zRznRF+2cgndfygFQyAauGfo5BZSDfSpxRuDsDh
+        9ISvXGhSw3JeCiKI22gWU+p6dA==
+X-Google-Smtp-Source: ABdhPJx0uj4bLqv9+WIZDVq4iNjdBcpawuNSS1qIonBNVvkFxbwfdgcwwyy4CiyIWV1Llh5w+umxiQ==
+X-Received: by 2002:a05:620a:16d3:: with SMTP id a19mr7877674qkn.88.1617280085277;
+        Thu, 01 Apr 2021 05:28:05 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id d2sm3218920qte.84.2021.04.01.05.28.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 05:28:04 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lRwQd-006jmF-Tc; Thu, 01 Apr 2021 09:28:03 -0300
+Date:   Thu, 1 Apr 2021 09:28:03 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christoph Hellwig <hch@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org
+Subject: Re: [PATCH v6 00/27] Memory Folios
+Message-ID: <20210401122803.GB2710221@ziepe.ca>
+References: <20210331184728.1188084-1-willy@infradead.org>
+ <20210401070537.GB1363493@infradead.org>
+ <20210401112656.GA351017@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210401094435.28937-1-georgi.djakov@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401112656.GA351017@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/1/21 4:44 AM, Georgi Djakov wrote:
-> There is a link between the GEM NoC and C NoC nodes, which is currently
-> missing from the topology. Let's add it to allow consumers request paths
-> that use this link.
+On Thu, Apr 01, 2021 at 12:26:56PM +0100, Matthew Wilcox wrote:
+> On Thu, Apr 01, 2021 at 08:05:37AM +0100, Christoph Hellwig wrote:
+> > On Wed, Mar 31, 2021 at 07:47:01PM +0100, Matthew Wilcox (Oracle) wrote:
+> > >  - Mirror members of struct page (for pagecache / anon) into struct folio,
+> > >    so (eg) you can use folio->mapping instead of folio->page.mapping
+> > 
+> > Eww, why?
 > 
-> Reported-by: Alex Elder <elder@linaro.org>
-> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+> So that eventually we can rename page->mapping to page->_mapping and
+> prevent the bugs from people doing page->mapping on a tail page.  eg
+> https://lore.kernel.org/linux-mm/alpine.LSU.2.11.2103102214170.7159@eggly.anvils/
 
-Thanks Georgi.
+Is that gcc structure layout randomization stuff going to be a problem
+here?
 
-Tested-by: Alex Elder <elder@linaro.org>
+Add some 
+  static_assert(offsetof(struct folio,..) == offsetof(struct page,..))
 
-> ---
->   drivers/interconnect/qcom/sm8350.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/interconnect/qcom/sm8350.c b/drivers/interconnect/qcom/sm8350.c
-> index 01202989a5b2..579b6ce8e046 100644
-> --- a/drivers/interconnect/qcom/sm8350.c
-> +++ b/drivers/interconnect/qcom/sm8350.c
-> @@ -139,7 +139,7 @@ DEFINE_QNODE(qhs_llcc, SM8350_SLAVE_LLCC_CFG, 1, 4);
->   DEFINE_QNODE(qns_gemnoc, SM8350_SLAVE_GEM_NOC_CFG, 1, 4);
->   DEFINE_QNODE(qhs_mdsp_ms_mpu_cfg, SM8350_SLAVE_MSS_PROC_MS_MPU_CFG, 1, 4);
->   DEFINE_QNODE(qhs_modem_ms_mpu_cfg, SM8350_SLAVE_MCDMA_MS_MPU_CFG, 1, 4);
-> -DEFINE_QNODE(qns_gem_noc_cnoc, SM8350_SLAVE_GEM_NOC_CNOC, 1, 16);
-> +DEFINE_QNODE(qns_gem_noc_cnoc, SM8350_SLAVE_GEM_NOC_CNOC, 1, 16, SM8350_MASTER_GEM_NOC_CNOC);
->   DEFINE_QNODE(qns_llcc, SM8350_SLAVE_LLCC, 4, 16, SM8350_MASTER_LLCC);
->   DEFINE_QNODE(qns_pcie, SM8350_SLAVE_MEM_NOC_PCIE_SNOC, 1, 8);
->   DEFINE_QNODE(srvc_even_gemnoc, SM8350_SLAVE_SERVICE_GEM_NOC_1, 1, 4);
-> 
+tests to force it?
 
+Jason
