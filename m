@@ -2,214 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F4DC352382
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 01:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45D34352388
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 01:28:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236233AbhDAXYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 19:24:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48270 "EHLO
+        id S235577AbhDAX1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 19:27:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235847AbhDAXXz (ORCPT
+        with ESMTP id S234043AbhDAX1O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 19:23:55 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3273C0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 16:23:55 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id gv19-20020a17090b11d3b029014c516f4eb5so8450pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 16:23:55 -0700 (PDT)
+        Thu, 1 Apr 2021 19:27:14 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E6CAC0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 16:27:14 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id j26so3795687iog.13
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 16:27:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=LvZQ1bPDTn+jfy4ZjpxxRS3b5GxvPPmzyAjth6NaQ44=;
-        b=F42wJOLiSpeN/4fzwW/N9mYN1ryaPRGoZdaLqlVuodcAvGQ/ABIjgVX+b+at7lWvdh
-         jETxFZAabFX4f9lDzotk6Kj0Lg2Y/9s9xOtR4bTEFmgSRaHosFkbLoH8wmrTPZ0KycU5
-         e2szNTHZWHmNtWCzVWeIu3x9aVYmZd9gsKNMQ=
+        d=telus.net; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=n/Cy9GFSSG292kbWWXXjaNyNH/4apg+3HJDMSJ6lS/0=;
+        b=cnGPeiI0reWFraLFVR4ze+oO/uopDQHdjCCjQGr7HYMB3+g/7D7+MyXjBwAxVqqAcg
+         Z8gbSe19fHzXp+1tRlQB/wNt++TDIlccEIj7DzgssBOoHWqg75WcMQgHetZEA9vQ0dHS
+         puqYQ22lO5Y3r6baZBtXdEkpznip1fHW1wVA4YeOAe7hqwQG7NsMkRxDy5ISkk6VicP3
+         1YUxLe90IYzaODAl/7qi/l5c8aJZVpFzu4nvs4zzw8zcadsqPrjCtailwDOurWHsK7Pq
+         TAQ9MNeZ8X4tgyvF9z7uXQ7rQgaoAf/R/qSlyHDc41d9/ou94mxwOVG4pGPJVC2W7w1b
+         n6eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LvZQ1bPDTn+jfy4ZjpxxRS3b5GxvPPmzyAjth6NaQ44=;
-        b=hyYfFcLKqn2ZyFvD9EDUrdHADtHWR+pOtt4h2xNsSbuY7Y+7q6jf05lGByMBK7KJl/
-         VKtiQAfVSalB5LnnfsPLUwteGs0E8CmpKtXUOE5USE6QCf4nlC2DHEiFtIItsE7mlOi0
-         M7hKa96rP4IcO6jz/p0fjO+MQTX6N/9aJUg0Tymddr3zZsjG36fUZyZ/w1FKVlJ5nOMe
-         ibilEa63xB8iVudT/UulxrrSsZbtROd7eiwaRKVSDD2AX4Md22kllYRE+VWLq1fIbAVM
-         5nvYwpwRhCzM9YH9d/OYcnHrlGlaoqDb7+lEBHSg0QotV0ZzEysV1GzEwDOPQVIU60b7
-         0gwQ==
-X-Gm-Message-State: AOAM533Y3wwRLNdkMdLOGODsLAw8EjFXK7zSiChKEfd3vL1ezZuRZN5E
-        2PyTEZIPTLK5uJQw1bYRSyM4Tg==
-X-Google-Smtp-Source: ABdhPJyJvuTUIP8/7JclWdgrMtrP8e/Mxf3nuL8lBiVp7B+1ZeXl9ez94SqDJnG3QluQM6UrJWyP4Q==
-X-Received: by 2002:a17:90b:100e:: with SMTP id gm14mr11159194pjb.217.1617319435264;
-        Thu, 01 Apr 2021 16:23:55 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id co20sm6203964pjb.32.2021.04.01.16.23.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 16:23:54 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v10 6/6] lkdtm: Add REPORT_STACK for checking stack offsets
-Date:   Thu,  1 Apr 2021 16:23:47 -0700
-Message-Id: <20210401232347.2791257-7-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210401232347.2791257-1-keescook@chromium.org>
-References: <20210401232347.2791257-1-keescook@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=n/Cy9GFSSG292kbWWXXjaNyNH/4apg+3HJDMSJ6lS/0=;
+        b=Vf/V9r5XF8s/DEu8XIlL0MNuWZ8EGH2N06ZI3Kt9l4qn4bEpQR8tqQiVRzH/Fx+D6D
+         GnZXeFDKfOQMXHFSmNhQiWcOAn/T5QZL3/HKthjAtqLYMixZNkupb1sXVybworgZKtHc
+         AJe+QBF9gsVWvXSgcYDSReFHSe7twH80vKd/XvskbqxNTR2CB+ZeO+vzGGtiznp6ys3y
+         0wGJ2CuWDxx9Mgaqfz0Ttn9S7HAnq+T0olDpmD6O5+KlFj8MORTQOb+90uSThRTh5+95
+         ljivRFt8rBW9qetetkwj5PPnVYP+HzFueTK5mS6lMvejMuP9y0r/8Q9dk1udbgUlPIUg
+         x0HQ==
+X-Gm-Message-State: AOAM530i4W5AW3wq4NGy6EJlqqKlxqg0lDAneLO+2yTpRnjsNaxy7RqH
+        IrC3/uZ9xTcAuk8xdXp0Tuo45FHm2l9xPT+w/9v50x41y9qZ5D0c
+X-Google-Smtp-Source: ABdhPJy5WrUR32ElfKa80MigZbS1m8oMj+ZQkP4ozZ9oygO7G1Z+PTnvQcBiDCoRD/ZUi/2BaLZkWoRmbEi3OD8LhqQ=
+X-Received: by 2002:a5d:8453:: with SMTP id w19mr8595652ior.25.1617319633765;
+ Thu, 01 Apr 2021 16:27:13 -0700 (PDT)
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; g=04ba1fd2cf94c15b6c425d21eadf26c7b5b595c9; i=b69wRsxT78r/3tM1mGa7N6ME6+rlXyFg15giRWRwPAQ=; m=XEkb9gtEVwIXoR3CRFWDIQGhFt30zOfIashAyp1d4uo=; p=d33GDHyvnRxlVkBNxjBj+O38zle2N7FWLUDCSfaX1O0=
-X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmBmVgMACgkQiXL039xtwCaFWBAAnoV bf3FCj1tsOpxawVbSq+bVH2eLNWxW93P/OuD2SZViYnIltHwsMQb5O5JgjncW8xaOmaxRSKlAHAun c8QcJmj4OtK9gw6w9RGgvv/IFpIerKQ9rmBX1g3E9pYYL9w3c9VPWCCEy/n7JmUxYQRdueDWTFxbM DJcbI5C+2IcnzFrLA9H+wols1KqBnYq+b4dXGbk5komriRvkgReB+BDYk0Xk+CETCOSiHLluDFQBB o4m/PZXGsdWMD8Te1U+mf9I5VkhN/tQx3X4hchBhH1+Nmia+fhRki75vFi4V+nSg9uUwxBrnbvy0e wb+gePWPXj9YaEOUMwEy+OS6/ZvEFF4iXdsIokIGW7FylzIQnFltv1/iqj88+OPI+ptCESfD+jqyo h4VlZj/uVKKzJVktDMm8BrXCZTYeRD8ZvvxcTZRpdpSwPPH/p04bvjvs95CmBvn49r+7IpnVrUsH6 Q5EEB2mMj3/08pFtDtKkLRJi0b103YakkJghevfP1cQS6TlRL/XsKiM3v5UVjaH+OToPHUDfUCxSt ZzVucB9RlDb5QHXAW/55qYH2YKkEVAZt0B72UH+tH1XCxNucHUz84/Da5+eVTToByC7in/7nXdNU0 QHf1hWPssVLB1w4iS8kzT09u4F86a4AlFf/lxJmVXI1e4coBbEsRlccoJFqqRc7s=
-Content-Transfer-Encoding: 8bit
+References: <20210401114504.13466-1-psampat@linux.ibm.com> <20210401114504.13466-3-psampat@linux.ibm.com>
+In-Reply-To: <20210401114504.13466-3-psampat@linux.ibm.com>
+From:   Doug Smythies <dsmythies@telus.net>
+Date:   Thu, 1 Apr 2021 16:27:04 -0700
+Message-ID: <CAAYoRsWKw2eXXoXGhdaM2pqhvDGXz8o=hV5K5HmYaZvetxv96w@mail.gmail.com>
+Subject: Re: [RFC v2 2/2] selftest/cpuidle: Add support for cpuidle latency measurement
+To:     Pratik Rajesh Sampat <psampat@linux.ibm.com>
+Cc:     rjw@rjwysocki.net, Daniel Lezcano <daniel.lezcano@linaro.org>,
+        shuah@kernel.org, ego@linux.vnet.ibm.com, svaidy@linux.ibm.com,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org, pratik.r.sampat@gmail.com,
+        dsmythies <dsmythies@telus.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For validating the stack offset behavior, report the offset from a given
-process's first seen stack address. Add script to calculate the results
-to the LKDTM kselftests.
+Hi Pratik,
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/misc/lkdtm/bugs.c                     | 17 +++++++++
- drivers/misc/lkdtm/core.c                     |  1 +
- drivers/misc/lkdtm/lkdtm.h                    |  1 +
- tools/testing/selftests/lkdtm/.gitignore      |  1 +
- tools/testing/selftests/lkdtm/Makefile        |  1 +
- .../testing/selftests/lkdtm/stack-entropy.sh  | 36 +++++++++++++++++++
- 6 files changed, 57 insertions(+)
- create mode 100755 tools/testing/selftests/lkdtm/stack-entropy.sh
+On Thu, Apr 1, 2021 at 4:45 AM Pratik Rajesh Sampat
+<psampat@linux.ibm.com> wrote:
+>
+...
 
-diff --git a/drivers/misc/lkdtm/bugs.c b/drivers/misc/lkdtm/bugs.c
-index 110f5a8538e9..0e8254d0cf0b 100644
---- a/drivers/misc/lkdtm/bugs.c
-+++ b/drivers/misc/lkdtm/bugs.c
-@@ -134,6 +134,23 @@ noinline void lkdtm_CORRUPT_STACK_STRONG(void)
- 	__lkdtm_CORRUPT_STACK((void *)&data);
- }
- 
-+static pid_t stack_pid;
-+static unsigned long stack_addr;
-+
-+void lkdtm_REPORT_STACK(void)
-+{
-+	volatile uintptr_t magic;
-+	pid_t pid = task_pid_nr(current);
-+
-+	if (pid != stack_pid) {
-+		pr_info("Starting stack offset tracking for pid %d\n", pid);
-+		stack_pid = pid;
-+		stack_addr = (uintptr_t)&magic;
-+	}
-+
-+	pr_info("Stack offset: %d\n", (int)(stack_addr - (uintptr_t)&magic));
-+}
-+
- void lkdtm_UNALIGNED_LOAD_STORE_WRITE(void)
- {
- 	static u8 data[5] __attribute__((aligned(4))) = {1, 2, 3, 4, 5};
-diff --git a/drivers/misc/lkdtm/core.c b/drivers/misc/lkdtm/core.c
-index b2aff4d87c01..8024b6a5cc7f 100644
---- a/drivers/misc/lkdtm/core.c
-+++ b/drivers/misc/lkdtm/core.c
-@@ -110,6 +110,7 @@ static const struct crashtype crashtypes[] = {
- 	CRASHTYPE(EXHAUST_STACK),
- 	CRASHTYPE(CORRUPT_STACK),
- 	CRASHTYPE(CORRUPT_STACK_STRONG),
-+	CRASHTYPE(REPORT_STACK),
- 	CRASHTYPE(CORRUPT_LIST_ADD),
- 	CRASHTYPE(CORRUPT_LIST_DEL),
- 	CRASHTYPE(STACK_GUARD_PAGE_LEADING),
-diff --git a/drivers/misc/lkdtm/lkdtm.h b/drivers/misc/lkdtm/lkdtm.h
-index 5ae48c64df24..99f90d3e5e9c 100644
---- a/drivers/misc/lkdtm/lkdtm.h
-+++ b/drivers/misc/lkdtm/lkdtm.h
-@@ -17,6 +17,7 @@ void lkdtm_LOOP(void);
- void lkdtm_EXHAUST_STACK(void);
- void lkdtm_CORRUPT_STACK(void);
- void lkdtm_CORRUPT_STACK_STRONG(void);
-+void lkdtm_REPORT_STACK(void);
- void lkdtm_UNALIGNED_LOAD_STORE_WRITE(void);
- void lkdtm_SOFTLOCKUP(void);
- void lkdtm_HARDLOCKUP(void);
-diff --git a/tools/testing/selftests/lkdtm/.gitignore b/tools/testing/selftests/lkdtm/.gitignore
-index f26212605b6b..d4b0be857deb 100644
---- a/tools/testing/selftests/lkdtm/.gitignore
-+++ b/tools/testing/selftests/lkdtm/.gitignore
-@@ -1,2 +1,3 @@
- *.sh
- !run.sh
-+!stack-entropy.sh
-diff --git a/tools/testing/selftests/lkdtm/Makefile b/tools/testing/selftests/lkdtm/Makefile
-index 1bcc9ee990eb..c71109ceeb2d 100644
---- a/tools/testing/selftests/lkdtm/Makefile
-+++ b/tools/testing/selftests/lkdtm/Makefile
-@@ -5,6 +5,7 @@ include ../lib.mk
- 
- # NOTE: $(OUTPUT) won't get default value if used before lib.mk
- TEST_FILES := tests.txt
-+TEST_PROGS := stack-entropy.sh
- TEST_GEN_PROGS = $(patsubst %,$(OUTPUT)/%.sh,$(shell awk '{print $$1}' tests.txt | sed -e 's/\#//'))
- all: $(TEST_GEN_PROGS)
- 
-diff --git a/tools/testing/selftests/lkdtm/stack-entropy.sh b/tools/testing/selftests/lkdtm/stack-entropy.sh
-new file mode 100755
-index 000000000000..b1b8a5097cbb
---- /dev/null
-+++ b/tools/testing/selftests/lkdtm/stack-entropy.sh
-@@ -0,0 +1,36 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Measure kernel stack entropy by sampling via LKDTM's REPORT_STACK test.
-+set -e
-+samples="${1:-1000}"
-+
-+# Capture dmesg continuously since it may fill up depending on sample size.
-+log=$(mktemp -t stack-entropy-XXXXXX)
-+dmesg --follow >"$log" & pid=$!
-+report=-1
-+for i in $(seq 1 $samples); do
-+        echo "REPORT_STACK" >/sys/kernel/debug/provoke-crash/DIRECT
-+	if [ -t 1 ]; then
-+		percent=$(( 100 * $i / $samples ))
-+		if [ "$percent" -ne "$report" ]; then
-+			/bin/echo -en "$percent%\r"
-+			report="$percent"
-+		fi
-+	fi
-+done
-+kill "$pid"
-+
-+# Count unique offsets since last run.
-+seen=$(tac "$log" | grep -m1 -B"$samples"0 'Starting stack offset' | \
-+	grep 'Stack offset' | awk '{print $NF}' | sort | uniq -c | wc -l)
-+bits=$(echo "obase=2; $seen" | bc | wc -L)
-+echo "Bits of stack entropy: $bits"
-+rm -f "$log"
-+
-+# We would expect any functional stack randomization to be at least 5 bits.
-+if [ "$bits" -lt 5 ]; then
-+	exit 1
-+else
-+	exit 0
-+fi
--- 
-2.25.1
+> To run this test specifically:
+> $ make -C tools/testing/selftests TARGETS="cpuidle" run_tests
 
+I have not become any smarter than I was with version 1,
+and still assumed that the "$" meant regular user.
+Please put it as "#" or separate the two steps, compile and run.
+
+>
+> There are a few optinal arguments too that the script can take
+
+optional
+
+Suggest to also specifically mention how to run without re-compile,
+
+# ./cpuidle.sh -v
+
+Note also that the test still leaves all idle states disabled when done.
+
+>         [-h <help>]
+>         [-i <run timer tests>]
+>         [-m <location of the module>]
+>         [-o <location of the output>]
+>         [-v <verbose> (run on all cpus)]
+> Default Output location in: tools/testing/selftest/cpuidle/cpuidle.log
+
+...
+
+> +cpu_is_online()
+> +{
+> +       cpu=$1
+> +       if [ ! -f "/sys/devices/system/cpu/cpu$cpu/online" ]; then
+> +               echo 0
+
+incorrect. should be:
+
+> +               echo 1
+
+... Doug
