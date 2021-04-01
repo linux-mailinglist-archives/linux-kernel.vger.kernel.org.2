@@ -2,105 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 578EE350D84
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 06:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2B3A350DF5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 06:25:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229837AbhDAEQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 00:16:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbhDAEP7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 00:15:59 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DEDAC0613E6;
-        Wed, 31 Mar 2021 21:15:58 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id c6so643506qtc.1;
-        Wed, 31 Mar 2021 21:15:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DnLOo/zKFvvfvZUcx+JWPM+sG45h5ZMlE6pfJth5bZA=;
-        b=FSY9bK6EqVMbAvbJjmaAGvWT2YTq6+22I+ohI8uL+Jxqutw0a+tqk250xv6oUWfebr
-         iFDBj2m6RXqdKKIZUF/n11GKeruzHnFE3MO6xrVts8a6ok9yoI1b4nQhrQDqOLBkXTsT
-         tCrCGmieznBTNltFiXw3Tg+lgg7a57GYS1SkE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DnLOo/zKFvvfvZUcx+JWPM+sG45h5ZMlE6pfJth5bZA=;
-        b=rhr5TFtpJKBt+YCMGlCmPFwc2yiev7EdluRVxe/tieZGsOn37X671/anFQGt2Wsrl/
-         Em5b4sHlJwY+TXSMwSrftNUwkbIIdW7MZ3D27y8BwCukJpkdAvBrByhpph1TsS6pizbk
-         gMZ2Ta/8sena+1SR7MDJGx8VVAaWEbPrqKSoyc1oYPS3tvXoQBRbtINWeih6qii/Xc/o
-         uBS2hkYu0fRe5CMNd8I/TSzLLrIlc6xWcAxoR8YJ2yZGtWgf6p6VAAIIICq1ilg1NgeW
-         SOV4IE3TVdin7Md3e3v5nKMK4GPJLBi8hk5ywpAmXHtNlnSJOOOXI9m+YTIZ0X4jgPew
-         ql5Q==
-X-Gm-Message-State: AOAM533UEHX6QrSE6G4J3hnwxOOIsX8TFaAFjqDoLCYG4R+fTIpXb7mk
-        j+PjXtsaNxYnTF7xjOctJG+wxe9ws89bRV0ZS4Q=
-X-Google-Smtp-Source: ABdhPJypEX2gUYtGWHMsAT0fUIon/Gl9d1HFtws1V67C6FeeuxcqVZPapwQ22BWZprgSEoafxfPm3vIDhv8+xFHtLcQ=
-X-Received: by 2002:ac8:7547:: with SMTP id b7mr5684873qtr.176.1617250557473;
- Wed, 31 Mar 2021 21:15:57 -0700 (PDT)
+        id S230234AbhDAEZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 00:25:07 -0400
+Received: from mga05.intel.com ([192.55.52.43]:14565 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229459AbhDAEYj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 00:24:39 -0400
+IronPort-SDR: Be5rAwfZzng45LHYaeKZmViLYFkxWv+tm3lzh0C5gZTis3f986tMwXpRasdzsuJP4GxTJ0AW2Q
+ q2/erPYDG71w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="277335108"
+X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
+   d="scan'208";a="277335108"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 21:24:38 -0700
+IronPort-SDR: TSo3nltnwRKujxL/XTvtnwrikFqTHFy42I2GykZpMQSBoqvSwAL/DhlNsBVvc0VzrzCVBSU5uw
+ MmlwARbBX6sg==
+X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
+   d="scan'208";a="439061545"
+Received: from tassilo.jf.intel.com ([10.54.74.11])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 21:24:37 -0700
+Date:   Wed, 31 Mar 2021 21:24:36 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/1] x86/tdx: Handle MWAIT, MONITOR and WBINVD
+Message-ID: <20210401042436.GJ1285835@tassilo.jf.intel.com>
+References: <2FE32855-EA5D-44E4-AACC-25E9B1476547@amacapital.net>
+ <e62cfd0ae90de435e6819979d9027f76d835a22a.1617224710.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YGTvSvr2T2v3t3XA@google.com>
+ <5d961c25-3dee-4a5d-4bba-a97d157a5a49@intel.com>
+ <YGTyWUQbxVZeeko+@google.com>
+ <d8078f5d-735c-2b0f-98eb-663be2118762@intel.com>
+ <ef49222a-8ffc-dacc-4f21-3bd1ef13a2ac@linux.intel.com>
+ <b175f08d-2930-158d-8543-fe6a7f6aaf12@intel.com>
+ <20210401032827.GI1285835@tassilo.jf.intel.com>
+ <92688a68-f4b8-9518-424b-7d967c4c728a@intel.com>
 MIME-Version: 1.0
-References: <YGOuhjD19SmjmQou@hatter.bewilderbeest.net> <20210401005702.28271-1-zev@bewilderbeest.net>
- <20210401005702.28271-3-zev@bewilderbeest.net>
-In-Reply-To: <20210401005702.28271-3-zev@bewilderbeest.net>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Thu, 1 Apr 2021 04:15:44 +0000
-Message-ID: <CACPK8XdPVf1WMmo8C8RJtd-1cH5qV9odEDhDUHWRiMOk=dQNtg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] drivers/tty/serial/8250: add DT property for
- aspeed vuart sirq polarity
-To:     Zev Weiss <zev@bewilderbeest.net>, Jeremy Kerr <jk@ozlabs.org>
-Cc:     OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <92688a68-f4b8-9518-424b-7d967c4c728a@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 1 Apr 2021 at 00:57, Zev Weiss <zev@bewilderbeest.net> wrote:
->
-> This provides a simple boolean to use instead of the deprecated
-> aspeed,sirq-polarity-sense property.
->
-> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
-> ---
->  drivers/tty/serial/8250/8250_aspeed_vuart.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/tty/serial/8250/8250_aspeed_vuart.c b/drivers/tty/serial/8250/8250_aspeed_vuart.c
-> index c33e02cbde93..e5ef9f957f9a 100644
-> --- a/drivers/tty/serial/8250/8250_aspeed_vuart.c
-> +++ b/drivers/tty/serial/8250/8250_aspeed_vuart.c
-> @@ -482,6 +482,9 @@ static int aspeed_vuart_probe(struct platform_device *pdev)
->                 of_node_put(sirq_polarity_sense_args.np);
->         }
->
-> +       if (of_property_read_bool(np, "aspeed,sirq-active-high"))
-> +               aspeed_vuart_set_sirq_polarity(vuart, 1);
+On Wed, Mar 31, 2021 at 08:46:18PM -0700, Dave Hansen wrote:
+> On 3/31/21 8:28 PM, Andi Kleen wrote:
+> >> The hardware (and VMMs and SEAM) have ways of telling the guest kernel
+> >> what is supported: CPUID.  If it screws up, and the guest gets an
+> >> unexpected #VE, so be it.
+> > The main reason for disabling stuff is actually that we don't need
+> > to harden it. All these things are potential attack paths.
+> 
+> Wait, MWAIT is an attack path?  If it were an attack path, wouldn't it
 
-This assumes the default is always low, so we don't need a property to
-set it to that state?
+No MWAIT is not, but lots of other things that can be controlled by the
+host are. And that will be a motivation to disable things.
 
-Would it make more sense to have the property describe if it's high or
-low? (I'm happy for the answer to be "no", as we've gotten by for the
-past few years without it).
+> >> We don't have all kinds of crazy handling in the kernel's #UD handler
+> >> just in case a CPU mis-enumerates a feature and we get a #UD.  We have
+> >> to trust the underlying hardware to be sane.  If it isn't, we die a
+> >> horrible death as fast as possible.  Why should TDX be any different?
+> > That's what the original patch did -- no unnecessary checks -- but reviewers
+> > keep asking for the extra checks, so Sathya added more. We have the not
+> > unusual problem here that reviewers don't agree among themselves.
+> 
+> Getting consensus is a pain in the neck, eh?
 
-This brings up another point. We already have the sysfs file for
-setting the lpc address, from userspace. In OpenBMC land this can be
-set with obmc-console-client (/etc/obmc-console.conf). Should we add
-support to that application for setting the irq polarity too, and do
-away with device tree descriptions?
+Tt seems more like a circular argument currently.
+> 
+> It's too bad all the reviewers in the community aren't like all of the
+> engineers at big companies where everyone always agrees. :)
 
-> +
->         aspeed_vuart_set_enabled(vuart, true);
->         aspeed_vuart_set_host_tx_discard(vuart, true);
->         platform_set_drvdata(pdev, vuart);
-> --
-> 2.31.1
->
+I would propose to go back to the original patch without all the extra
+checks. I think that's what you're arguing too. IIRC the person
+who originally requested extra checks was Andy, if he's ok with 
+that too we can do it, so that you guys can finally move on
+to the other patches that actually do more than just trivial things.
+
+-Andi
