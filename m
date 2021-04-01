@@ -2,264 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD372351F71
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9315E351FCF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:29:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234544AbhDATSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 15:18:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34750 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234627AbhDATRJ (ORCPT
+        id S235234AbhDAT3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 15:29:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234847AbhDAT2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 15:17:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617304629;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0sXsEpyuLPqPsJXizrEkDnBgF4FIEnwsiOddG5WaZg4=;
-        b=IZbFUxusdNVmfD5o0JX9WKc2QoF7fds3Nj4R+eG5FfhUgCUMx8eBFeNhMJhJH0/iSwL6MM
-        KHOlZ4Fc6q+N1fKTiuTcphZM/ku9Xez96xIdQmu4pTRLrT8Y1bSM+WwVTW+M8K4k9Ol7is
-        caHslEmLcJ06+yKE/onsPP540+UqmcI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-448-xlEWW-Z2PBmzqhsqwv00_g-1; Thu, 01 Apr 2021 15:16:59 -0400
-X-MC-Unique: xlEWW-Z2PBmzqhsqwv00_g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 427361018F70;
-        Thu,  1 Apr 2021 19:16:58 +0000 (UTC)
-Received: from [10.36.112.13] (ovpn-112-13.ams2.redhat.com [10.36.112.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 73F266F130;
-        Thu,  1 Apr 2021 19:16:55 +0000 (UTC)
-Subject: Re: [PATCH v4 7/8] KVM: arm64: vgic-v3: Expose GICR_TYPER.Last for
- userspace
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     eric.auger.pro@gmail.com, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
-        drjones@redhat.com, alexandru.elisei@arm.com, james.morse@arm.com,
-        suzuki.poulose@arm.com, shuah@kernel.org, pbonzini@redhat.com
-References: <20210401085238.477270-1-eric.auger@redhat.com>
- <20210401085238.477270-8-eric.auger@redhat.com>
- <87tuoqp1du.wl-maz@kernel.org>
- <b2458147-cd53-8712-9120-7ee9b84152aa@redhat.com>
- <87ft09gbeo.wl-maz@kernel.org>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <b913bde9-9f63-919f-3895-973c62452653@redhat.com>
-Date:   Thu, 1 Apr 2021 21:16:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 1 Apr 2021 15:28:46 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C02BCC041B35
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 12:17:20 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id j18so2845472wra.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 12:17:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=T/m4lKUAziO6UFKbfesqmH3d9/aSuNasUhAOfkJpO8Q=;
+        b=saxzqydCuD3aqJ+43IK8URq45YFeSOluDsZSS2mlKWPcw5qfmAYBgU+wR44Iz4RvHP
+         Bn3+MtAc6vJHf4cE/Oem1305wZfMrRpJQWITbuL3zt+F9fFBxe8ry5YtMgZnhPIzu7tY
+         cgQddlmfoIHUWcd+oW3R8ErpPKu0f/r5+NicEjajTCKAvKys7hLVEc9DeNGJpZkjd43x
+         tOOC6YrgGJYtglRy2JpTz//6GW6dSMt+hFKtzJD0vuGo7xq7f1LzVfg0Z4TYMDjEWa3I
+         +MA5kzX3WiyOUOC9untxEb/yMG0d/Nb8zoEOjvrym/i/kuKndPgRHgBwkiTnAk2+4hD3
+         DEWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=T/m4lKUAziO6UFKbfesqmH3d9/aSuNasUhAOfkJpO8Q=;
+        b=APr2BTxoG2Uh9l2QQjXrg3cBcjq9Y53Q9rmQPIbY/OJYJaVDsVyFOyJswTgqygfunK
+         2e+kAO0jVDanKbpJlk6K8opyrxPj7nRrx/IR4iPYPr2sBhyMQSafw4EJIawYBPRkvmoR
+         RfQSd4rMXrN3nBwYe0H/TAJFsrBHsir02mP2uxKXBXebPDI62IOArvegSSzpQZ9ZWQWR
+         3orn2S5wIvrAPcIDUPQB5PEIGTzy5DGKXZGFz/NZk+HxqIBt89N/nvA5uDC+o5GApJIk
+         VZCaCVk5RvGPx1CR/XclqAavpLsWl+dPsYNWKmLC+S7f8GaMb8v65REQPCaXCls2I3aS
+         msng==
+X-Gm-Message-State: AOAM533ILLngWaTA2X6mhUDNPhfvnSTkdi2po6s8jQd1+1Ch5tRBa5gY
+        xvi45eAdGoF6OR3nDziAgM4ZAKEcvnVYC6JvaWa/2ynkHb4=
+X-Google-Smtp-Source: ABdhPJxt8dStSHCHJlQD16rHwAORI2dmIgMlWsQFNDCTla2edhNZIvhMZpd6ied9uKU8Fe3XQvS85vw6pEe0XpWNQRU=
+X-Received: by 2002:a5d:6a4c:: with SMTP id t12mr11253245wrw.289.1617304639409;
+ Thu, 01 Apr 2021 12:17:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87ft09gbeo.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 2 Apr 2021 05:17:07 +1000
+Message-ID: <CAPM=9tzgCsiCMpLy2g3dZCg97PZ-4HKgLWtfj2ZRk8o5LhqLyg@mail.gmail.com>
+Subject: [git pull] drm fixes for 5.12-rc6
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+Hi Linus,
 
-On 4/1/21 7:30 PM, Marc Zyngier wrote:
-> On Thu, 01 Apr 2021 18:03:25 +0100,
-> Auger Eric <eric.auger@redhat.com> wrote:
->>
->> Hi Marc,
->>
->> On 4/1/21 3:42 PM, Marc Zyngier wrote:
->>> Hi Eric,
->>>
->>> On Thu, 01 Apr 2021 09:52:37 +0100,
->>> Eric Auger <eric.auger@redhat.com> wrote:
->>>>
->>>> Commit 23bde34771f1 ("KVM: arm64: vgic-v3: Drop the
->>>> reporting of GICR_TYPER.Last for userspace") temporarily fixed
->>>> a bug identified when attempting to access the GICR_TYPER
->>>> register before the redistributor region setting, but dropped
->>>> the support of the LAST bit.
->>>>
->>>> Emulating the GICR_TYPER.Last bit still makes sense for
->>>> architecture compliance though. This patch restores its support
->>>> (if the redistributor region was set) while keeping the code safe.
->>>>
->>>> We introduce a new helper, vgic_mmio_vcpu_rdist_is_last() which
->>>> computes whether a redistributor is the highest one of a series
->>>> of redistributor contributor pages.
->>>>
->>>> The spec says "Indicates whether this Redistributor is the
->>>> highest-numbered Redistributor in a series of contiguous
->>>> Redistributor pages."
->>>>
->>>> The code is a bit convulated since there is no guarantee
->>>
->>> nit: convoluted
->>>
->>>> redistributors are added in a given reditributor region in
->>>> ascending order. In that case the current implementation was
->>>> wrong. Also redistributor regions can be contiguous
->>>> and registered in non increasing base address order.
->>>>
->>>> So the index of redistributors are stored in an array within
->>>> the redistributor region structure.
->>>>
->>>> With this new implementation we do not need to have a uaccess
->>>> read accessor anymore.
->>>>
->>>> Signed-off-by: Eric Auger <eric.auger@redhat.com>
->>>
->>> This patch also hurt my head, a lot more than the first one.  See
->>> below.
->>>
->>>> ---
->>>>  arch/arm64/kvm/vgic/vgic-init.c    |  7 +--
->>>>  arch/arm64/kvm/vgic/vgic-mmio-v3.c | 97 ++++++++++++++++++++----------
->>>>  arch/arm64/kvm/vgic/vgic.h         |  1 +
->>>>  include/kvm/arm_vgic.h             |  3 +
->>>>  4 files changed, 73 insertions(+), 35 deletions(-)
->>>>
->>>> diff --git a/arch/arm64/kvm/vgic/vgic-init.c b/arch/arm64/kvm/vgic/vgic-init.c
->>>> index cf6faa0aeddb2..61150c34c268c 100644
->>>> --- a/arch/arm64/kvm/vgic/vgic-init.c
->>>> +++ b/arch/arm64/kvm/vgic/vgic-init.c
->>>> @@ -190,6 +190,7 @@ int kvm_vgic_vcpu_init(struct kvm_vcpu *vcpu)
->>>>  	int i;
->>>>  
->>>>  	vgic_cpu->rd_iodev.base_addr = VGIC_ADDR_UNDEF;
->>>> +	vgic_cpu->index = vcpu->vcpu_id;
->>>
->>> Is it so that vgic_cpu->index is always equal to vcpu_id? If so, why
->>> do we need another field? We can always get to the vcpu using a
->>> container_of().
->>>
->>>>  
->>>>  	INIT_LIST_HEAD(&vgic_cpu->ap_list_head);
->>>>  	raw_spin_lock_init(&vgic_cpu->ap_list_lock);
->>>> @@ -338,10 +339,8 @@ static void kvm_vgic_dist_destroy(struct kvm *kvm)
->>>>  	dist->vgic_dist_base = VGIC_ADDR_UNDEF;
->>>>  
->>>>  	if (dist->vgic_model == KVM_DEV_TYPE_ARM_VGIC_V3) {
->>>> -		list_for_each_entry_safe(rdreg, next, &dist->rd_regions, list) {
->>>> -			list_del(&rdreg->list);
->>>> -			kfree(rdreg);
->>>> -		}
->>>> +		list_for_each_entry_safe(rdreg, next, &dist->rd_regions, list)
->>>> +			vgic_v3_free_redist_region(rdreg);
->>>
->>> Consider moving the introduction of vgic_v3_free_redist_region() into
->>> a separate patch. On its own, that's a good readability improvement.
->>>
->>>>  		INIT_LIST_HEAD(&dist->rd_regions);
->>>>  	} else {
->>>>  		dist->vgic_cpu_base = VGIC_ADDR_UNDEF;
->>>> diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
->>>> index 987e366c80008..f6a7eed1d6adb 100644
->>>> --- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
->>>> +++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
->>>> @@ -251,45 +251,57 @@ static void vgic_mmio_write_v3r_ctlr(struct kvm_vcpu *vcpu,
->>>>  		vgic_enable_lpis(vcpu);
->>>>  }
->>>>  
->>>> +static bool vgic_mmio_vcpu_rdist_is_last(struct kvm_vcpu *vcpu)
->>>> +{
->>>> +	struct vgic_dist *vgic = &vcpu->kvm->arch.vgic;
->>>> +	struct vgic_cpu *vgic_cpu = &vcpu->arch.vgic_cpu;
->>>> +	struct vgic_redist_region *rdreg = vgic_cpu->rdreg;
->>>> +
->>>> +	if (!rdreg)
->>>> +		return false;
->>>> +
->>>> +	if (rdreg->count && vgic_cpu->rdreg_index == (rdreg->count - 1)) {
->>>> +		/* check whether there is no other contiguous rdist region */
->>>> +		struct list_head *rd_regions = &vgic->rd_regions;
->>>> +		struct vgic_redist_region *iter;
->>>> +
->>>> +		list_for_each_entry(iter, rd_regions, list) {
->>>> +			if (iter->base == rdreg->base + rdreg->count * KVM_VGIC_V3_REDIST_SIZE &&
->>>> +				iter->free_index > 0) {
->>>> +			/* check the first rdist index of this region, if any */
->>>> +				if (vgic_cpu->index < iter->rdist_indices[0])
->>>> +					return false;
->>>
->>> rdist_indices[] contains the vcpu_id of the vcpu associated with a
->>> given RD in the region. At this stage, you have established that there
->>> is another region that is contiguous with the one associated with our
->>> vcpu. You also know that this adjacent region has a vcpu mapped in
->>> (free_index isn't 0). Isn't that enough to declare that our vcpu isn't
->>> last?  I definitely don't understand what the index comparison does
->>> here.
->> Assume the following case:
->> 2 RDIST region
->> region #0 contains rdist 1, 2, 4
->> region #1, adjacent to #0 contains rdist 3
->>
->> Spec days:
->> "Indicates whether this Redistributor is the
->> highest-numbered Redistributor in a series of contiguous
->> Redistributor pages."
->>
->> To me 4 is last and 3 is last too.
-> 
-> No, only 3 is last, assuming that region 0 is full. I think the
-> phrasing in the spec is just really bad. What this describes is that
-> at the end of a set of contiguous set of RDs, that last RD has Last
-> set. If two regions are contiguous, that's undistinguishable from a
-> single, larger region.
-> 
-> There is no such thing as a "redistributor number" anyway. The closest
-> thing there is would be "processor number", but that has nothing to do
-> with the RD itself.
+Things have settled down in time for Easter, a random smattering of
+small fixes across a few drivers. I'm guessing though there might be
+some i915 and misc fixes out there I haven't gotten yet, but since
+today is a public holiday here, I'm sending this early so I can have
+the day off, I'll see if more requests come in and decide what to do
+with them later.
 
-Hum OK. That's a different understanding of the spec wording indeed. For
-me redistributor number was the index of the vcpu.
+Dave.
 
-But well, you're understanding is definitively simpler to implement and
-also matches what was implemented for single RDIST region.
+drm-fixes-2021-04-02:
+drm fixes for 5.12-rc6
 
-> 
->>
->>
->>>
->>> It also seem to me that some of the complexity could be eliminated if
->>> the regions were kept ordered at list insertion time.
->> yes
->>>
->>>> +			}
->>>> +		}
->>>> +	} else if (vgic_cpu->rdreg_index < rdreg->free_index - 1) {
->>>> +		/* look at the index of next rdist */
->>>> +		int next_rdist_index = rdreg->rdist_indices[vgic_cpu->rdreg_index + 1];
->>>> +
->>>> +		if (vgic_cpu->index < next_rdist_index)
->>>> +			return false;
->>>
->>> Same thing here. We are in the middle of the allocated part of a
->>> region, which means we cannot be last. I still don't get the index
->>> check.
->> Because within a region, nothing hinders rdist from being allocated in
->> non ascending order. I exercise those cases in the kvmselftests
->>
->> one single RDIST region with the following rdists allocated there:
->> 1, 3, 2
->>
->> 3 and 2 are "last", right? Or did I miss something. Yes that's totally
->> not natural to do that kind of allocation but the API allows to do that.
-> 
-> No, only 2 is last. I think you got tripped by the bizarre language in
-> the spec, and the behaviour of this Last bit is much simpler than what
-> you ended up with.
+amdgpu:
+- Polaris idle power fix
+- VM fix
+- Vangogh S3 fix
+- Fixes for non-4K page sizes
 
+amdkfd:
+- dqm fence memory corruption fix
 
-OK, I will respin according to your suggestion then.
+tegra:
+- lockdep warning fix
+- runtine PM reference fix
+- display controller fix
+- PLL Fix
 
-Thanks
+imx:
+- memory leak in error path fix
+- LDB driver channel registration fix
+- oob array warning in LDB driver
 
-Eric
-> 
-> Thanks,
-> 
-> 	M.
-> 
+exynos
+- unused header file removal
+The following changes since commit a5e13c6df0e41702d2b2c77c8ad41677ebb065b3=
+:
 
+  Linux 5.12-rc5 (2021-03-28 15:48:16 -0700)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-04-02
+
+for you to fetch changes up to 6fdb8e5aba6a33fe5f1a0bd1bcf0cf2884437ead:
+
+  Merge tag 'imx-drm-fixes-2021-04-01' of
+git://git.pengutronix.de/git/pza/linux into drm-fixes (2021-04-02
+04:53:16 +1000)
+
+----------------------------------------------------------------
+drm fixes for 5.12-rc6
+
+amdgpu:
+- Polaris idle power fix
+- VM fix
+- Vangogh S3 fix
+- Fixes for non-4K page sizes
+
+amdkfd:
+- dqm fence memory corruption fix
+
+tegra:
+- lockdep warning fix
+- runtine PM reference fix
+- display controller fix
+- PLL Fix
+
+imx:
+- memory leak in error path fix
+- LDB driver channel registration fix
+- oob array warning in LDB driver
+
+exynos
+- unused header file removal
+
+----------------------------------------------------------------
+Alex Deucher (1):
+      drm/amdgpu/vangogh: don't check for dpm in is_dpm_running when in sus=
+pend
+
+Arnd Bergmann (1):
+      drm/imx: imx-ldb: fix out of bounds array access warning
+
+Dave Airlie (4):
+      Merge tag 'exynos-drm-fixes-for-v5.12-rc6' of
+git://git.kernel.org/pub/scm/linux/kernel/git/daeinki/drm-exynos into
+drm-fixes
+      Merge tag 'amd-drm-fixes-5.12-2021-03-31' of
+https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
+      Merge tag 'drm/tegra/for-5.12-rc6' of
+ssh://git.freedesktop.org/git/tegra/linux into drm-fixes
+      Merge tag 'imx-drm-fixes-2021-04-01' of
+git://git.pengutronix.de/git/pza/linux into drm-fixes
+
+Dmitry Osipenko (1):
+      drm/tegra: dc: Don't set PLL clock to 0Hz
+
+Evan Quan (1):
+      drm/amd/pm: no need to force MCLK to highest when no display connecte=
+d
+
+Huacai Chen (1):
+      drm/amdgpu: Set a suitable dev_info.gart_page_size
+
+Liu Ying (1):
+      drm/imx: imx-ldb: Register LDB channel1 when it is the only
+channel to be used
+
+Mikko Perttunen (1):
+      gpu: host1x: Use different lock classes for each client
+
+Nirmoy Das (1):
+      drm/amdgpu: fix offset calculation in amdgpu_vm_bo_clear_mappings()
+
+Pan Bian (1):
+      drm/imx: fix memory leak when fails to init
+
+Qu Huang (1):
+      drm/amdkfd: dqm fence memory corruption
+
+Thierry Reding (2):
+      drm/tegra: dc: Restore coupling of display controllers
+      drm/tegra: sor: Grab runtime PM reference across reset
+
+Tian Tao (1):
+      drm/exynos/decon5433: Remove the unused include statements
+
+X=E2=84=B9 Ruoyao (1):
+      drm/amdgpu: check alignment on CPU page for bo map
+
+ drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c            |  4 +--
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c             | 10 ++++----
+ drivers/gpu/drm/amd/amdkfd/kfd_dbgdev.c            |  2 +-
+ .../gpu/drm/amd/amdkfd/kfd_device_queue_manager.c  |  6 ++---
+ .../gpu/drm/amd/amdkfd/kfd_device_queue_manager.h  |  2 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_packet_manager.c    |  2 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_packet_manager_v9.c |  2 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_packet_manager_vi.c |  2 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_priv.h              |  8 +++---
+ .../gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c    |  3 ++-
+ drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c   |  5 ++++
+ drivers/gpu/drm/exynos/exynos5433_drm_decon.c      |  1 -
+ drivers/gpu/drm/imx/imx-drm-core.c                 |  2 +-
+ drivers/gpu/drm/imx/imx-ldb.c                      | 12 ++++++++-
+ drivers/gpu/drm/tegra/dc.c                         | 30 ++++++++++--------=
+----
+ drivers/gpu/drm/tegra/sor.c                        |  7 +++++
+ drivers/gpu/host1x/bus.c                           | 10 +++++---
+ include/linux/host1x.h                             |  9 ++++++-
+ 18 files changed, 72 insertions(+), 45 deletions(-)
