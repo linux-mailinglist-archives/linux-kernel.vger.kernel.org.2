@@ -2,69 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A87DA350D0A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 05:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE269350D1D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 05:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233129AbhDAD2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 23:28:22 -0400
-Received: from mga09.intel.com ([134.134.136.24]:17485 "EHLO mga09.intel.com"
+        id S233471AbhDADar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 23:30:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229497AbhDAD1w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 23:27:52 -0400
-IronPort-SDR: VhZU4aW11Lr1B5MR52mc+8OZDS0agSN+LHyMgn6h+4Nboy1hy5H94fGXF6VLKak8I8DqSAYZWF
- hI/1n0xr2yQg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="192243119"
-X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="192243119"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 20:27:50 -0700
-IronPort-SDR: 8jFRhq8W+mfpk4hHL63zW3fuMylS46MdXbFz3Q+kJRNG7ONuSbR+9QqiOK8ZdwEGJUOOKgwxIJ
- E/+C0SphslYA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="439050840"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga004.fm.intel.com with ESMTP; 31 Mar 2021 20:27:49 -0700
-Received: from glass.png.intel.com (glass.png.intel.com [10.158.65.59])
-        by linux.intel.com (Postfix) with ESMTP id B91985808ED;
-        Wed, 31 Mar 2021 20:27:47 -0700 (PDT)
-From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wong Vee Khee <vee.khee.wong@intel.com>,
-        Vijayakannan Ayyathurai <vijayakannan.ayyathurai@intel.com>
-Subject: [PATCH 1/1] watchdog: Fix a typo in Kconfig
-Date:   Thu,  1 Apr 2021 11:32:09 +0800
-Message-Id: <20210401033209.9929-1-vee.khee.wong@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S233151AbhDADaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 23:30:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 006A661057;
+        Thu,  1 Apr 2021 03:30:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617247810;
+        bh=/vQCieIrXYf5JV3JhH2VEYQnbptP3BXFE+txfjDIrIE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=UhSzNk6veOeD3Tf3r4gxlUM3sUYpY2cAyiQcUt4Xby1GkbauojWBfyYY/gzyhsr9f
+         w8M+kGjC06B3+SUKndOskse4VzZmkHaxP8rE7MdB0Td43V9kzwM2kCaJp4w+Flyulb
+         Kgcd/VDWD6P6qHIL1H4YnBmP1k+rl187VFQ65pUOm8wtf2EgA4TA71INJRsGOjH+ua
+         j8RNXgWH9H/R94hplCx3E6BBjXeJV8zmS5kCp2/fb1JYOmMVuNLqpNHBW5EHHFq9oC
+         3xlxLZFx/e2Z9CbByXiG8sqkPhrWolJMHhM7SRukwBzHypttbCXB8nuS3iijEEoSZh
+         XEnf2zBtzb78A==
+From:   Gao Xiang <xiang@kernel.org>
+To:     linux-erofs@lists.ozlabs.org, Chao Yu <yuchao0@huawei.com>,
+        Chao Yu <chao@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Gao Xiang <hsiangkao@redhat.com>
+Subject: [PATCH v2 04/10] erofs: fix up inplace I/O pointer for big pcluster
+Date:   Thu,  1 Apr 2021 11:29:48 +0800
+Message-Id: <20210401032954.20555-5-xiang@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210401032954.20555-1-xiang@kernel.org>
+References: <20210401032954.20555-1-xiang@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/thershold/threshold
+From: Gao Xiang <hsiangkao@redhat.com>
 
-Cc: Vijayakannan Ayyathurai <vijayakannan.ayyathurai@intel.com>
-Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+When picking up inplace I/O pages, it should be traversed in reverse
+order in aligned with the traversal order of file-backed online pages.
+Also, index should be updated together when preloading compressed pages.
+
+Previously, only page-sized pclustersize was supported so no problem
+at all. Also rename `compressedpages' to `icpage_ptr' to reflect its
+functionality.
+
+Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
 ---
- drivers/watchdog/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/erofs/zdata.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-index 0470dc15c085..aa382e5edfef 100644
---- a/drivers/watchdog/Kconfig
-+++ b/drivers/watchdog/Kconfig
-@@ -2111,7 +2111,7 @@ config KEEMBAY_WATCHDOG
- 	 This option enable support for an In-secure watchdog timer driver for
- 	 Intel Keem Bay SoC. This WDT has a 32 bit timer and decrements in every
- 	 count unit. An interrupt will be triggered, when the count crosses
--	 the thershold configured in the register.
-+	 the threshold configured in the register.
+diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+index 7f572086b4e3..03f106ead8d2 100644
+--- a/fs/erofs/zdata.c
++++ b/fs/erofs/zdata.c
+@@ -204,7 +204,8 @@ struct z_erofs_collector {
  
- 	 To compile this driver as a module, choose M here: the
- 	 module will be called keembay_wdt.
+ 	struct z_erofs_pcluster *pcl, *tailpcl;
+ 	struct z_erofs_collection *cl;
+-	struct page **compressedpages;
++	/* a pointer used to pick up inplace I/O pages */
++	struct page **icpage_ptr;
+ 	z_erofs_next_pcluster_t owned_head;
+ 
+ 	enum z_erofs_collectmode mode;
+@@ -238,17 +239,19 @@ static void preload_compressed_pages(struct z_erofs_collector *clt,
+ 				     enum z_erofs_cache_alloctype type,
+ 				     struct list_head *pagepool)
+ {
+-	const struct z_erofs_pcluster *pcl = clt->pcl;
+-	struct page **pages = clt->compressedpages;
+-	pgoff_t index = pcl->obj.index + (pages - pcl->compressed_pages);
++	struct z_erofs_pcluster *pcl = clt->pcl;
+ 	bool standalone = true;
+ 	gfp_t gfp = (mapping_gfp_mask(mc) & ~__GFP_DIRECT_RECLAIM) |
+ 			__GFP_NOMEMALLOC | __GFP_NORETRY | __GFP_NOWARN;
++	struct page **pages;
++	pgoff_t index;
+ 
+ 	if (clt->mode < COLLECT_PRIMARY_FOLLOWED)
+ 		return;
+ 
+-	for (; pages < pcl->compressed_pages + pcl->pclusterpages; ++pages) {
++	pages = pcl->compressed_pages;
++	index = pcl->obj.index;
++	for (; index < pcl->obj.index + pcl->pclusterpages; ++index, ++pages) {
+ 		struct page *page;
+ 		compressed_page_t t;
+ 		struct page *newpage = NULL;
+@@ -360,16 +363,14 @@ int erofs_try_to_free_cached_page(struct address_space *mapping,
+ }
+ 
+ /* page_type must be Z_EROFS_PAGE_TYPE_EXCLUSIVE */
+-static inline bool z_erofs_try_inplace_io(struct z_erofs_collector *clt,
+-					  struct page *page)
++static bool z_erofs_try_inplace_io(struct z_erofs_collector *clt,
++				   struct page *page)
+ {
+ 	struct z_erofs_pcluster *const pcl = clt->pcl;
+ 
+-	while (clt->compressedpages <
+-	       pcl->compressed_pages + pcl->pclusterpages) {
+-		if (!cmpxchg(clt->compressedpages++, NULL, page))
++	while (clt->icpage_ptr > pcl->compressed_pages)
++		if (!cmpxchg(--clt->icpage_ptr, NULL, page))
+ 			return true;
+-	}
+ 	return false;
+ }
+ 
+@@ -576,9 +577,8 @@ static int z_erofs_collector_begin(struct z_erofs_collector *clt,
+ 	z_erofs_pagevec_ctor_init(&clt->vector, Z_EROFS_NR_INLINE_PAGEVECS,
+ 				  clt->cl->pagevec, clt->cl->vcnt);
+ 
+-	clt->compressedpages = clt->pcl->compressed_pages;
+-	if (clt->mode <= COLLECT_PRIMARY) /* cannot do in-place I/O */
+-		clt->compressedpages += clt->pcl->pclusterpages;
++	/* since file-backed online pages are traversed in reverse order */
++	clt->icpage_ptr = clt->pcl->compressed_pages + clt->pcl->pclusterpages;
+ 	return 0;
+ }
+ 
 -- 
-2.25.1
+2.20.1
 
