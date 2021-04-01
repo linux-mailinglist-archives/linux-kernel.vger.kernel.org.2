@@ -2,101 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F645351D20
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AD4F351F30
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238205AbhDASY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:24:27 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:62179 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237778AbhDASEY (ORCPT
+        id S239959AbhDASzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:55:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236560AbhDASqn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:04:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1617300265; x=1648836265;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=t+Damo6lBLTec0MqdYsAZG21XEfwTrUjDwnQIVPgrfg=;
-  b=y4wmYYSboVKZsXGNac69x72cISxvrjOB4bQdyjorWjWAPos6c7+5QCti
-   lapoCTc4ffzAUd/tiKtJcaiGaXWQtwibbFJiseRZ0vlyBndgAS8fnPQm/
-   GQogQShNOIWgqaCSyKBx36Y5NQK1LNBxECg/P3F25WXnA4SYCb7ASiOYi
-   D64JNMHbPfmKM8HgDHc0B4OIWmc1svkgNwaD7JxNmXPzTq5Xav+ON6WdM
-   RdfXLZwyMPWpUilwj4/m+oZmY+ERgy/fQvqUNCEXfJZGo+WgVgXaBL6bK
-   erGDEJYt/PMxIcCSa9lcJ/Y6te9PM2+Uxsr2HCioz6QIFFvpg2TUpH9UZ
-   A==;
-IronPort-SDR: 5Ng5NM1EzbpwR/HTQNvjcYL+q3V6cpSEYUklwZ7HK057B398VMKy7ww3FQCX3PxiL+u3xAMd55
- MXUshv32BekJnKyET4D489sAzSpIGtg6eqmR/LYgGcT6AHFfvCai4HxPcgvH9jkVRiHUF/VIkt
- dapG1mATxs46C4ElHH7FoXFGb2vgTzPrbx4ZDVrZFsWtf9Rl2B7ZyXbTLXgeDXK/GIiVarPOXS
- 7aLrbtkGK+ZQOXfye16SXvY8kG+hwYf9n6Pv9gbrVw9Db3edYDVLcvqt7Z6pcSNs0fjKoo+ZT+
- eQ4=
-X-IronPort-AV: E=Sophos;i="5.81,296,1610434800"; 
-   d="scan'208";a="112171420"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Apr 2021 10:49:54 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 1 Apr 2021 10:49:54 -0700
-Received: from localhost.localdomain (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Thu, 1 Apr 2021 10:49:52 -0700
-From:   <nicolas.ferre@microchip.com>
-To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        <arm@kernel.org>, <soc@kernel.org>
-CC:     Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Linux Kernel list <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-Subject: [GIT PULL] ARM: at91: soc for 5.13
-Date:   Thu, 1 Apr 2021 19:45:44 +0200
-Message-ID: <20210401174544.32193-1-nicolas.ferre@microchip.com>
-X-Mailer: git-send-email 2.31.1
+        Thu, 1 Apr 2021 14:46:43 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2CCDC03117E;
+        Thu,  1 Apr 2021 10:47:26 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id r193so83139ior.9;
+        Thu, 01 Apr 2021 10:47:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3ABGeqwVjSflF2v2NwkfGGEvt0FHlPNp2jDD7Wn08AU=;
+        b=dbI+llyCF1qsXCU+57jJILTQijq3LOuUqHcBa+PDsJZd+qYeLYTTrxhGY6p/hL6FS9
+         wAJbCLjYGbywRHj93PpB4vFmO+m5MtJRbkLixlRiIF+GJFoT8DOzAUMnhjB9PD4sKCXc
+         s0TXQ4V052qyHV9jW8fqVjxsCpESkWxaV/4bHZdtuPi5sH7i2s7q1qWvS6T9+oRlXDEU
+         dzx7L1iiHq1TQGJzzO/cUXcOAYWh+tNNocM46kBm3uBWldpm2KKOlGOqM/iQ3yKMAqJH
+         oTNyJVPgFuvSz2K5pLp5cRqdr4eQ4AChyDiR/J92aOEoJ8OKbqahX9atC34oh+XoDhT1
+         7J+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3ABGeqwVjSflF2v2NwkfGGEvt0FHlPNp2jDD7Wn08AU=;
+        b=Nd/8EpV3kHK/YrFjULvnc4XYxnHtYdqs8Y6LT66j+gk5hgcJHK/00FwlWKaQT8besN
+         gekkQSY8gqkE13mceOetcJbzjqZfTLr9S4yVZMGmCRv/vi2JlX+iFNo/3k/2nz+V32yM
+         BDNZhzl//+w0Q6Y9l9T4jpRE6sEDpO+unCV4xVP7SVY4kqjnxhwsMqPk/1G8+kBDd2zo
+         aoSxxL2bXEe/x6kPnQ0eArDCNFD7xgYMGVim49NAHIobjHWnvF/989gN3V8OxtRwPxv8
+         AHP1HHkamDC4vOzsCJiUEwstEQEPqzEljmbWl56xlclRzzVV2MVnbmbwYRbcl9pgs2hs
+         mcfA==
+X-Gm-Message-State: AOAM531CT3hpTnIz+wS6Hso2/SH4YM6ic8edcX2hI0XbMfgssom+znLd
+        lxuLl2IY2tLW7J94iw3Lm2n3VV0KjRGzav41q00=
+X-Google-Smtp-Source: ABdhPJygL2fEG9ynxvRZd0xI2Sl72GRxKCKZUvZoJJ82A3PudPrn5eaoXRizLdc40BLb9nIB+DYon8bznwjnQa0X3Ew=
+X-Received: by 2002:a05:6602:21cd:: with SMTP id c13mr7436621ioc.44.1617299246197;
+ Thu, 01 Apr 2021 10:47:26 -0700 (PDT)
 MIME-Version: 1.0
-Organization: microchip
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <cover.1615038553.git.syednwaris@gmail.com> <4c259d34b5943bf384fd3cb0d98eccf798a34f0f.1615038553.git.syednwaris@gmail.com>
+ <YGHxNFXAjcg4PfnE@smile.fi.intel.com>
+In-Reply-To: <YGHxNFXAjcg4PfnE@smile.fi.intel.com>
+From:   Syed Nayyar Waris <syednwaris@gmail.com>
+Date:   Thu, 1 Apr 2021 23:17:14 +0530
+Message-ID: <CACG_h5pOJKUQd6h+75_Tiv_VVaUn9Dg9O5UBvQBu_2QWE0E9iw@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] gpio: xilinx: Utilize generic bitmap_get_value and _set_value
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     bgolaszewski@baylibre.com, vilhelm.gray@gmail.com,
+        michal.simek@xilinx.com, arnd@arndb.de, rrichter@marvell.com,
+        linus.walleij@linaro.org, yamada.masahiro@socionext.com,
+        akpm@linux-foundation.org, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, amit.kucheria@verdurent.com,
+        linux-arch@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
+On Mon, Mar 29, 2021 at 8:54 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Sat, Mar 06, 2021 at 07:36:30PM +0530, Syed Nayyar Waris wrote:
+> > This patch reimplements the xgpio_set_multiple() function in
+> > drivers/gpio/gpio-xilinx.c to use the new generic functions:
+> > bitmap_get_value() and bitmap_set_value(). The code is now simpler
+> > to read and understand. Moreover, instead of looping for each bit
+> > in xgpio_set_multiple() function, now we can check each channel at
+> > a time and save cycles.
+>
+> ...
+>
+> > +     u32 *const state = chip->gpio_state;
+>
+> Looking at this... What's the point of the const here?
+>
+> Am I right that this tells: pointer is a const, while the data underneath
+> can be modified?
+>
+> > +     unsigned int *const width = chip->gpio_width;
+>
+> Ditto.
+>
+> Putting const:s here and there for sake of the const is not good practice.
+> It makes code harder to read.
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+Okay. I will incorporate your comments in my next submission. Thank You.
 
-Arnd, Olof,
-
-One single patch for now on our SoC branch. Stakeholders agreed to make it
-travel with at91 -> arm-soc.
-
-Thanks, best regards,
-  Nicolas
-
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
-
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/at91/linux.git tags/at91-soc-5.13
-
-for you to fetch changes up to 41dbf4a146a06443d1cbf39e238f02fa1ca9d626:
-
-  ARM: at91: pm: Move prototypes to mutually included header (2021-03-26 18:20:49 +0100)
-
-----------------------------------------------------------------
-AT91 soc for 5.13:
-
-- Fixing a W=1 warning
-
-----------------------------------------------------------------
-Lee Jones (1):
-      ARM: at91: pm: Move prototypes to mutually included header
-
- arch/arm/mach-at91/pm.c        | 19 ++++++++-----------
- drivers/pinctrl/pinctrl-at91.c |  2 ++
- include/soc/at91/pm.h          | 16 ++++++++++++++++
- 3 files changed, 26 insertions(+), 11 deletions(-)
- create mode 100644 include/soc/at91/pm.h
-
--- 
-Nicolas Ferre
+Regards
+Syed Nayyar Waris
