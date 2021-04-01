@@ -2,105 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58ECB351B34
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89DE3351A57
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235610AbhDASGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:06:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59884 "EHLO
+        id S237201AbhDAR7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:59:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237193AbhDARvB (ORCPT
+        with ESMTP id S235900AbhDARnT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:51:01 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D472C08EA3B;
-        Thu,  1 Apr 2021 06:23:22 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id ap14so2924307ejc.0;
-        Thu, 01 Apr 2021 06:23:22 -0700 (PDT)
+        Thu, 1 Apr 2021 13:43:19 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D167CC08EA3D
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 06:24:52 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id b14so2799763lfv.8
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 06:24:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=TLYZzYC7kune3zSfVVdBcQLOfp865ju5ItSB96/oYR8=;
-        b=F0RkON/ZHnb/EPNaq/7KFYBOhpTGGhmebZzMBLB1CcCsPGdlDFuE60mVwTDb1ebLul
-         i3uuA02RhRlL3exJ0mMhKLIEFry3Kz3TrG+WjxJR/aGZ9leQaSNNxAuysvYrbFtsv6yP
-         Ha+bEX7lVgQdUbm6qP8oSjAxP6bO9y83MPLuZmj+vy7AAZpPhbCKlHnUyx8IzkMS77ai
-         aG6lmGBjNrCbu4SFymoPYBTVqQ2tHh6v2uUDrk8H0DHi1Zk9JHvYdgNhvJyhdZwb0yFc
-         rHU5KHyZJpH/7O2c58pPDNlYvtEYSU2zsfJ2UJmpeEzsd+nhcxXwniIVuNbJucWb/pvB
-         3PYw==
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SyQ6YHSJTCocB3NQ9p3k0kjyZQfF3RDBbodDQ3PiFKs=;
+        b=oQFWDPezRXYmSljEhNK7vaDXbjEFYI3M+O8S34WNrUrWwpDr9Eul/RvlVe1HvgIqPc
+         01XZyOIs8c4iAPmWSD0G57GbjL2ynXk1cXt4UvDcZN9tFIaN11MqUJQSCqNKjfa3p8Dj
+         6LpONXmzBHadDKBXbzTSzYt1Fzw+9oOjkGRrDXQ/Gn9lFFpw2GREW/xm5BUI2Kv7PHTJ
+         +aya6FCR/Q6VJ1J+wY9iJAzOm/lfgOZ9CQoWhconGgF5Y6jMoppHv/bySIQF20+Kgenu
+         m93cbVf9tVLijon6yyONxVw4eE++Ra5803A5KtmiixIqIm/6VI5I2H1DRHenhM5n+y0Y
+         EYcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=TLYZzYC7kune3zSfVVdBcQLOfp865ju5ItSB96/oYR8=;
-        b=guLY8MHUD6IXtlQYyBXlzi+fUh0E3SrkETJeAagrXRolYeVHJX6rP/fYrXoSOB5h4o
-         RGNf5zhHwSoWEfkMTLklCH0Oi8UFjPmrb8dO+Fw4HzsYfuisQDVu/aEzKZDvoIcrpX+C
-         TZRaogKE0BAM6vZhOjNFL1VG5X0XNkSJhfOySb4pEa1CyeDV7qQWmrGosIxnaomyuExb
-         OkFlNwZCYnsD00OCeB2X9z73D7p5uMNjmlsX5eDLP8GIiPrzgJuxiCDYGWohXVtlefZh
-         OPbvxE8W10ywQP4GOja8jxE11mRk7b6APzMEjilfuG75Xw5IlTTN3F3kz103JfSdpZhE
-         55cw==
-X-Gm-Message-State: AOAM532xreRCpY3qLRD9kN/hDSxooNT5BRj4VngpkR5dP67wTxvZss7c
-        z1vUeuT6m/h2jKiAUWT3GvNWi1jEnNs=
-X-Google-Smtp-Source: ABdhPJyBznMqCW/x1FurFDOu4scrUFIfE/XmC/zTKwBktKJoDSyl/UtzPFVugI9of5VNQ9YuSj3Z3w==
-X-Received: by 2002:a17:907:3d8d:: with SMTP id he13mr9274707ejc.530.1617283401002;
-        Thu, 01 Apr 2021 06:23:21 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id r24sm3492722edw.11.2021.04.01.06.23.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 06:23:17 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 15:23:45 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     linux-i2c@vger.kernel.org, Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFT 2/2] i2c: tegra-bpmp: make some functions void
-Message-ID: <YGXJYUGVFa5EaQR0@orome.fritz.box>
-References: <20210331075141.22227-1-wsa@kernel.org>
- <20210331075141.22227-3-wsa@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SyQ6YHSJTCocB3NQ9p3k0kjyZQfF3RDBbodDQ3PiFKs=;
+        b=ValbyQYiRAjhpm34W0sfoHx+4PEMZprqGtYw0Bb26J20W+dm4qa7ZH23dLDsC805QG
+         GEGyhNT//jr/CMFI8b8eXQW3d6Qr/4bw1HmGhsGuADcaf8xWYpGsSLALATFvXu7zZvKM
+         mqPL8ggwDoc1FsHn4F+pGUoLnbU3/+tyGxwErM8MKYLljoM1DcJ4mI4PXGktpnSG3+Os
+         pWFeZjEAap9XYtE3dCiEP66nR3CQCmaWfFkJbS+V6THMCS+56ISepCD8Wtkbw4+rzufo
+         wmekHrzt1uWBdGUnBgtVU3DLJdXHWZ3q1viC4tYIxarj6pKif9WTO9jhlkeQlqdlaVUC
+         Zm9g==
+X-Gm-Message-State: AOAM531zBkfXBIJX0YqJzgpSAIzMHaCqLIxG8otO4fREAeuEnvyVW/oX
+        XfQxL3WUKBP/0w4R2346TlW0j21llSzGQiStnoSSFT78hEc=
+X-Google-Smtp-Source: ABdhPJw6yu1Dk/jHqd4pPD6Ij4l08dS0fzTdrC9xpai4ps/1uls7JvYLd2Y5+el37EX3LSF6TDnqQ5nKgLNuQLh6svU=
+X-Received: by 2002:ac2:52b9:: with SMTP id r25mr5587707lfm.25.1617283491330;
+ Thu, 01 Apr 2021 06:24:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="fKfBd+NSkD+Qw2c1"
-Content-Disposition: inline
-In-Reply-To: <20210331075141.22227-3-wsa@kernel.org>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+References: <20210115121846.114528-1-anup.patel@wdc.com> <mhng-a4e92a0a-085d-4be0-863e-6af99dc27c18@palmerdabbelt-glaptop>
+ <CAAhSdy0F7gisk=FZXN7jmqFLVB3456WunwVXhkrnvNuWtrhWWA@mail.gmail.com> <a49a7142-104e-fdaa-4a6a-619505695229@redhat.com>
+In-Reply-To: <a49a7142-104e-fdaa-4a6a-619505695229@redhat.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Thu, 1 Apr 2021 18:54:04 +0530
+Message-ID: <CAAhSdy1Lt1NSD7pKmm+Xqqz2b7A6r4KgAO7kRhdy-jwAHucVOg@mail.gmail.com>
+Subject: Re: [PATCH v16 00/17] KVM RISC-V Support
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
+        Anup Patel <Anup.Patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Graf <graf@amazon.com>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        KVM General <kvm@vger.kernel.org>,
+        kvm-riscv@lists.infradead.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Mar 31, 2021 at 2:52 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 30/03/21 07:48, Anup Patel wrote:
+> >
+> > It seems Andrew does not want to freeze H-extension until we have virtualization
+> > aware interrupt controller (such as RISC-V AIA specification) and IOMMU. Lot
+> > of us feel that these things can be done independently because RISC-V
+> > H-extension already has provisions for external interrupt controller with
+> > virtualization support.
+>
+> Yes, frankly that's pretty ridiculous as it's perfectly possible to
+> emulate the interrupt controller in software (and an IOMMU is not needed
+> at all if you are okay with emulated or paravirtualized devices---which
+> is almost always the case except for partitioning hypervisors).
+>
+> Palmer, are you okay with merging RISC-V KVM?  Or should we place it in
+> drivers/staging/riscv/kvm?
+>
+> Either way, the best way to do it would be like this:
+>
+> 1) you apply patch 1 in a topic branch
+>
+> 2) you merge the topic branch in the risc-v tree
+>
+> 3) Anup merges the topic branch too and sends me a pull request.
 
---fKfBd+NSkD+Qw2c1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In any case, I will send v17 based on Linux-5.12-rc5 so that people
+can at least try KVM RISC-V based on latest kernel.
 
-On Wed, Mar 31, 2021 at 09:51:41AM +0200, Wolfram Sang wrote:
-> They return 0 always, so save some lines and code.
->=20
-> Signed-off-by: Wolfram Sang <wsa@kernel.org>
-> ---
->  drivers/i2c/busses/i2c-tegra-bpmp.c | 20 ++++----------------
->  1 file changed, 4 insertions(+), 16 deletions(-)
-
-Tested-by: Thierry Reding <treding@nvidia.com>
-
---fKfBd+NSkD+Qw2c1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBlyWEACgkQ3SOs138+
-s6Fr+w/8Cde29MsDOpSRJDI8gGeaJ7W0dB+GLmGeTHzpQ5RcuFtVB1QCKxqdxLwx
-2iOMk0pRlDWGyBu/qu0KVtlMkyyM4z8O5iKrATmQJ1rxWavni30DmIt061lrtz2P
-RADljdIPlX+MCkhuRJillY6HgzzGxI+R+0aMhXR2xr01jcS0cUeMwhXT9iVHnS2M
-oGR3PKADJpmGd5lVqcfI+tyta0wgX/jmhzINGl4b4rFwICVu7hJhhktzaG3Ya6+H
-TPCGg+zKw4QH2iuEGmU170j7Yppwacv3eo6qAI96umhf7UpWbeZ//pODEMNRuEUi
-HryDiM2U/HbqBW6FglJ57x9JX0kVa7zKqBMYFHlzTdkPDsEQnbPJ3Z1DNtkEzYLs
-asOM0bxplZ7RW7cP92C1RcuTdqGy2pz7bjr/JrgwVuMSAynYLBpKkoorfn9NzskT
-siSUjHqJKiX5FuOSu5I/jDL2qOkcoz74LLshISNS1QOnoF7dDGc0p8OQCsUF4HCp
-12FiOggiymwXQ9LATcHp+o4R1b4suSdHuKwtxOWVf6JFUdnezuva15I7upiSrV6l
-gKDPpvYHYifogF2hwMbp77Aw9V7gTsW6rdHcXvX4lvbmBPy12V1EOpgEsSvlqPMF
-5eeFS19cNeECRsgxmCG+kJKV3Iy9SJ0Yre41Lo3c4w4uEgsNHFY=
-=N6Kb
------END PGP SIGNATURE-----
-
---fKfBd+NSkD+Qw2c1--
+Regards,
+Anup
