@@ -2,112 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01391351BE8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62546351B45
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:09:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237463AbhDASL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:11:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60884 "EHLO
+        id S235773AbhDASHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:07:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236883AbhDARzg (ORCPT
+        with ESMTP id S234855AbhDARwb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:55:36 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F03C02FEA8;
-        Thu,  1 Apr 2021 09:12:42 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f08870070b45f06e9fedc1b.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:8700:70b4:5f06:e9fe:dc1b])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AB3DC1EC0516;
-        Thu,  1 Apr 2021 18:12:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1617293560;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=D5AcjEpLI6NGptAOcU3s8MiJCsw0QoCR1oFeiyhm3WI=;
-        b=ICGT7NtqfpvmcbkOCvNVXfUSW4DiRDjsdi0Vfd1AnVEq9yQ03QGiNrhU8M9mztVs53ktGI
-        QvcFxQNBAszJ08e0c4IkAcajOFOUfOHHuPSEYOnp4dtBxuBzBzxCnJfHyrjYZwSwZLtk5V
-        sb7NQpWtiZStw5rQZ37/DaMnXqZQryA=
-Date:   Thu, 1 Apr 2021 18:12:37 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     William Roche <william.roche@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
-        linux-edac@vger.kernel.org
-Subject: Re: [PATCH v1] RAS/CEC: Memory Corrected Errors consistent event
- filtering
-Message-ID: <20210401161237.GC28954@zn.tnic>
-References: <1616783429-6793-1-git-send-email-william.roche@oracle.com>
- <20210326190242.GI25229@zn.tnic>
- <fac89612-e15c-2940-9d6d-70a812dbe99c@oracle.com>
- <20210326224310.GL25229@zn.tnic>
- <3ee5551c-d311-1939-315f-a4712e3821ff@oracle.com>
+        Thu, 1 Apr 2021 13:52:31 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED7AC02FEA9
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 09:16:28 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id 11so105423pfn.9
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 09:16:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=T0rYie3R/Ll/Af9JkBaLcz+s5C8Xgvssk29GDuQKtVo=;
+        b=hZTs4t39HPYJt8nFN3+uw+fFkJwWZQ+USL2SvOKmRHoMWJYlqMgchLE/jdrKEQcQm7
+         gG67zb/7GhmqoLrWGHg/Yppb1uBDzTF4+FiwMtt71zoxlxDEOpkE6h66XxFp9l4QDcdE
+         pOik5kwxa6cfUCHP7d0vnJwUPTSuG6/ydSUHmYcQwMtYti/RPWW9m9F1HQ+cvqZO7y6g
+         vcsd0I9j/k/SQfuOIP2v5L4FHaNZcKbdeDIEDHbOc22oisyz2nLQzXyvKa9bg65dG5Ar
+         m2g128D1RWoAMw08JIBItzjtBpzSKa6iZmzUxG1MYB410HY9xC1t9vYZnw8gRJJ3KZju
+         BFiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=T0rYie3R/Ll/Af9JkBaLcz+s5C8Xgvssk29GDuQKtVo=;
+        b=qEg2TYLh0HCsOGbnA3AcAbnk3gXHQE2bHrnT+dtFr5De267Gsao/H+CYNcqw3KmGcx
+         qcgJ1WCv7AQHcsItTajVg3wk4JwrYwp3psmgtGErq59mntPnZvGdjr7u0s9TJWsTI/ar
+         XHNI+GBE1M7sIufyrHkVgKmoHbgGYdrC8kfT1UQrI+H46zsrn8ZTPOYA2jCrsDK2lk0N
+         cnIlf4iFaIqtCBAD5BZFlTXT8ICDHjhYQ7x5yInAufTlzY1Mn9Ds1/A2x3lW2Whk9kpz
+         fUhwQ3JHJ6IUfLrA+iZaqsK54hmm+41WvesRVD7I2xmkIy+dkNkWH9e+1x9DL1RGbq2t
+         6iOg==
+X-Gm-Message-State: AOAM533AdfA0JMMSJxlzEUeuqL/U0mqCGZmXs5tRf19OP+J+qL+iduv0
+        0N5Akt7x7gZy8sB36XDwh6cX
+X-Google-Smtp-Source: ABdhPJzRfPJ4ww9afESIc0EdZwAUVJbhKldoXwCOD5bB0LhtoJSQ3txH5Jvp0nJUZlBjYBX4u6rxEg==
+X-Received: by 2002:a63:c741:: with SMTP id v1mr8045403pgg.207.1617293787509;
+        Thu, 01 Apr 2021 09:16:27 -0700 (PDT)
+Received: from work ([103.77.37.138])
+        by smtp.gmail.com with ESMTPSA id t18sm6174736pfq.147.2021.04.01.09.16.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 01 Apr 2021 09:16:26 -0700 (PDT)
+Date:   Thu, 1 Apr 2021 21:46:22 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Daniele.Palmas@telit.com,
+        bjorn.andersson@linaro.org
+Subject: Re: [PATCH v10 3/4] mtd: rawnand: Add support for secure regions in
+ NAND memory
+Message-ID: <20210401161622.GH14052@work>
+References: <20210401151955.143817-1-manivannan.sadhasivam@linaro.org>
+ <20210401151955.143817-4-manivannan.sadhasivam@linaro.org>
+ <20210401175421.65db63bf@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3ee5551c-d311-1939-315f-a4712e3821ff@oracle.com>
+In-Reply-To: <20210401175421.65db63bf@collabora.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 11:44:05AM +0200, William Roche wrote:
-> I totally agree with you, and in order to schedule a replacement, MCEs
-> information (enriched by the notifiers chain) are more meaningful than
-> only PFN values.
-
-Well, if you want to collect errors and analyze patterns in order to
-detect hw going bad, you're probably better off disabling the CEC
-altogether - either disable it in Kconfig or boot with ras=cec_disable.
-
-> 1/ Giving back ras_cec a consistent behavior where the first occurrence
-> of a CE doesn't generate an MCE message from the MCE_HANDLED_CEC
-> notifiers, and a consistent behavior between the slot 0 and the other
-> pfn slots.
-
-If by this you mean the issue with the return value, then sure.
-
-If you mean something else, you'd have to be more specific.
-
-> 2/ Give the CE MCE information when the action threshold is reached to
-> help the administrator identify what generated the PFN "Soft-offlining"
-> or "Invalid pfn" message.
+On Thu, Apr 01, 2021 at 05:54:21PM +0200, Boris Brezillon wrote:
+> On Thu,  1 Apr 2021 20:49:54 +0530
+> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
 > 
-> When ras_cec is enabled it hides most of the CE errors, but when the
-> action threshold is reached all notifiers can generate their indication
-> about the error that appeared too often.
+> > @@ -565,6 +608,11 @@ static int nand_block_isreserved(struct mtd_info *mtd, loff_t ofs)
+> >  
+> >  	if (!chip->bbt)
+> >  		return 0;
+> > +
+> > +	/* Check if the region is secured */
+> > +	if (nand_region_is_secured(chip, ofs, 0))
+> > +		return -EIO;
 > 
-> An administrator getting too many action threshold CE errors can
-> schedule a replacement based on the indications provided by his EDAC
-> module etc...
+> That would is still wrong, you should never pass a 0 size to
+> nand_region_is_secured().
+> 
 
-Well, this works probably only in theory.
+Size doesn't matter here, that's why I passed 0. Maybe 1 would be
+appropriate?
 
-First of all, the CEC sees the error first, before the EDAC drivers.
+Thanks,
+Mani
 
-But, in order to map from the virtual address to the actual DIMM, you
-need the EDAC drivers to have a go at the error. In many cases not even
-the EDAC drivers can give you that mapping because, well, hw/fw does its
-own stuff underneath, predictive fault bla, added value crap, whatever,
-so that we can't even get a "DIMM X on processor Y caused the error."
-
-I know, your assumption is that if a page gets offlined by the CEC, then
-all the errors' addresses are coming from the same physical DIMM. And
-that is probably correct in most cases but I'm not convinced for all.
-
-In any case, what we could do - which is pretty easy and cheap - is to
-fix the retval of cec_add_elem() to communicate to the caller that it
-offlined a page and this way tell the notifier chain that the error
-needs to be printed into dmesg with a statement sayin that DIMM Y got
-just one more page offlined.
-
-Over time, if a DIMM is going bad, one should be able to grep dmesg and
-correlate all those offlined pages to DIMMs and then maybe see a pattern
-and eventually schedule a downtime.
-
-A lot of ifs, I know. :-\
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
