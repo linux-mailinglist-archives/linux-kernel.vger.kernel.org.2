@@ -2,107 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E0C351178
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87794351177
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233746AbhDAJIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 05:08:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233588AbhDAJIc (ORCPT
+        id S233742AbhDAJIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 05:08:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34490 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233736AbhDAJIR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 05:08:32 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 778E3C0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 02:08:32 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id j9so1028354wrx.12
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 02:08:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wUJdzQc6vGqaF/tH9fjrVo5h9ptifyriz2mlBFMVazk=;
-        b=MRR4QO5AiRIwwXG4y8t9iiQv4w64a7HkwnanCJD7qbLzg9B388whJgj8We6h0L6J0J
-         yV7oEcEd23/V6iu9M5EA3bMUuydsVIYord96BohBOFT/u90NgQhFVLBiO81I5QbYLBtb
-         WYftikXIomG3z5w16KyreWl5XZGTzt4lt7sgCbHlsrlpPouiFzGUgAp0gEQiK8mmtHB7
-         TZdg/FHHHfGlOqnQ/yVGnilWnXwb47xhilA5FUehQS4v0c237hGgJQlwhIzAEZN18tOX
-         sEyxPPm7b0TJ6p29EIWC28y55Lt0wyTr4tBXPaS989eRa8ycmJMykgPefijW1SQkApSR
-         cH4g==
+        Thu, 1 Apr 2021 05:08:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617268097;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SH8q6v7mosb9ZWkhGf8eANcJIvuHX/dVnNgdkFE16jE=;
+        b=JyuCQVPFwIp/3uxqt6W7vC6AlxMS+8uw2UNA7rWHqxguau+l+0eazFFlNzbYH4llmylV4k
+        px3LV4973LiLlktBRLaZmI4uSansLUVeRB6Zt1DH2lxIVDRchJIqMpqjNk+pkoMd+fny94
+        cKGqt2iTSR/KCXwKZVIyxv3+JwWPeTE=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-352-uhKuSGaPM3abFDfgIEObTQ-1; Thu, 01 Apr 2021 05:08:16 -0400
+X-MC-Unique: uhKuSGaPM3abFDfgIEObTQ-1
+Received: by mail-ej1-f71.google.com with SMTP id li22so1958458ejb.18
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 02:08:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wUJdzQc6vGqaF/tH9fjrVo5h9ptifyriz2mlBFMVazk=;
-        b=VYCQoxMuB3g771W50D51fT3OGgHj7lS7s7GMjE50Wbo6N/+DUns+rfhcfHBqxYKJkm
-         g24Dhx38CuAy1l1O67/DRQIBSELWsh2M0Ti5Oq5tmmZVgfVQjmvOUWovhFFJpQk/OpYg
-         hCoLZgA5hSisCPQspN13FIn1wzOiD+77rfoOdib6/+A31paDCBgYnDmH99ZNF9XukOlp
-         GDOkzxWaf4jVEPCAl8DiAlpQhRAY4IKGETjoGlo23ADZhf1NM2G9nYw6lIcenjPoeb3N
-         R44ziiXu9WQZ/BoA8WmCqdYDSjB5F28lSLfwaG4D9aNf+4l+do/v9BgPrC2L5aeM5rzc
-         fWfw==
-X-Gm-Message-State: AOAM533vOcf+sRqilGejpj1GeFvKA9nQzKcZanP5pa7Y82Bh2Z7Q1QZx
-        mET3g4JgJd6xeYy8oFgyjok=
-X-Google-Smtp-Source: ABdhPJxdgy8DJO+g1gU1IIdvU1b1sjuvWBitFUneRSVeAtmNRykqv/kB6WPB5qc8GdpOe/0yZeuIhg==
-X-Received: by 2002:adf:d1cd:: with SMTP id b13mr8370069wrd.47.1617268111249;
-        Thu, 01 Apr 2021 02:08:31 -0700 (PDT)
-Received: from bcarvalho-Ubuntu.lan ([2001:818:de85:7e00:87e9:fdd6:2b7a:c720])
-        by smtp.gmail.com with ESMTPSA id 135sm8193856wma.44.2021.04.01.02.08.30
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=SH8q6v7mosb9ZWkhGf8eANcJIvuHX/dVnNgdkFE16jE=;
+        b=byqfzOk63qX4awgE8dzYT8vLQo96+nsG6bdaNRy76dpJ4+DHwDk7uT7ep6YTvor0rP
+         2mAns8gXzSUB4rO98vw3mBIokjUG/fca7NqScRqFgm7OMBhrdgTZ+sesM7/NB4KqTPf/
+         tkYiSbkO8Ko9LQaUOTxqS3zVsf2awWnB881Xv2kvmcqJkTEyUJp886FvjBHC56U0j0Iz
+         R+mEzPhFeFEtkUk5Fwt0gWxj8/NqAMMqJCIAtPPjNXaFuwwOHyxWHH+lFDfYmnltFnTy
+         TRRolz7VMMgTd7Z0Zs5JRv63H4PjbD30S9hjeKORGEDgHh903FweVgLrE0UG6jawIWHX
+         vERA==
+X-Gm-Message-State: AOAM530HTYqFBGmoo/8lL6VVSzyp3nLM6WdzScroCzvUcRVCLhB/MAJu
+        ubeSPkeOkir7y0HzJvWMSuUHXrq0eU4dDg3jhDBW5h+Oe4AYNPavTcKZNRSD9bdieq7nx7wNiPn
+        Et+XguMqgL9+CcVYgwt6Bnbnz09jY1wfKztIgvEHQIVQVMdDRc+/WMwJVeVXIJpEdXKT8LfEtXM
+        g/
+X-Received: by 2002:aa7:d296:: with SMTP id w22mr9132653edq.150.1617268094974;
+        Thu, 01 Apr 2021 02:08:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxkaDtD/zV8/+g4vA8exSjAqnDTdsDQz0T3HuSz8w49b9Wf/JUk9n3MB5ubq9QTsnrpDORKRg==
+X-Received: by 2002:aa7:d296:: with SMTP id w22mr9132630edq.150.1617268094789;
+        Thu, 01 Apr 2021 02:08:14 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id x4sm2967618edd.58.2021.04.01.02.08.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 02:08:30 -0700 (PDT)
-From:   Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
-To:     hvaibhav.linux@gmail.com, johan@kernel.org, elder@kernel.org,
-        gregkh@linuxfoundation.org, greybus-dev@lists.linaro.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com
-Subject: [PATCH v2] staging: greybus: arche-platform: Ending line with argument
-Date:   Thu,  1 Apr 2021 10:07:54 +0100
-Message-Id: <20210401090754.116522-1-martinsdecarvalhobeatriz@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 01 Apr 2021 02:08:14 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Yang Li <yang.lee@linux.alibaba.com>
+Cc:     pbonzini@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: x86: Fix potential memory access error
+In-Reply-To: <YGS6XS87HYJdVPFQ@google.com>
+References: <1617182122-112315-1-git-send-email-yang.lee@linux.alibaba.com>
+ <YGS6XS87HYJdVPFQ@google.com>
+Date:   Thu, 01 Apr 2021 11:08:13 +0200
+Message-ID: <87mtuis77m.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove checkpatch check "CHECK: Lines should not end with a '('"
-with argument present in next line.
+Sean Christopherson <seanjc@google.com> writes:
 
-Signed-off-by: Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
----
-Changes in v2:
-	- correction commit title
-	- correction commit message
----
- drivers/staging/greybus/arche-platform.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+> On Wed, Mar 31, 2021, Yang Li wrote:
+>> Using __set_bit() to set a bit in an integer is not a good idea, since
+>> the function expects an unsigned long as argument, which can be 64bit wide.
+>> Coverity reports this problem as
+>> 
+>> High:Out-of-bounds access(INCOMPATIBLE_CAST)
+>> CWE119: Out-of-bounds access to a scalar
+>> Pointer "&vcpu->arch.regs_avail" points to an object whose effective
+>> type is "unsigned int" (32 bits, unsigned) but is dereferenced as a
+>> wider "unsigned long" (64 bits, unsigned). This may lead to memory
+>> corruption.
+>> 
+>> /home/heyuan.shy/git-repo/linux/arch/x86/kvm/kvm_cache_regs.h:
+>> kvm_register_is_available
+>> 
+>> Just use BIT instead.
+>
+> Meh, we're hosed either way.  Using BIT() will either result in undefined
+> behavior due to SHL shifting beyond the size of a u64, or setting random bits
+> if the truncated shift ends up being less than 63.
+>
 
-diff --git a/drivers/staging/greybus/arche-platform.c b/drivers/staging/greybus/arche-platform.c
-index eebf0deb39f5..e374dfc0c92f 100644
---- a/drivers/staging/greybus/arche-platform.c
-+++ b/drivers/staging/greybus/arche-platform.c
-@@ -77,9 +77,8 @@ static void arche_platform_set_state(struct arche_platform_drvdata *arche_pdata,
- }
- 
- /* Requires arche_pdata->wake_lock is held by calling context */
--static void arche_platform_set_wake_detect_state(
--				struct arche_platform_drvdata *arche_pdata,
--				enum svc_wakedetect_state state)
-+static void arche_platform_set_wake_detect_state(struct arche_platform_drvdata *arche_pdata,
-+						 enum svc_wakedetect_state state)
- {
- 	arche_pdata->wake_detect_state = state;
- }
-@@ -181,9 +180,8 @@ static irqreturn_t arche_platform_wd_irq(int irq, void *devid)
- 						WD_STATE_COLDBOOT_START) {
- 					arche_platform_set_wake_detect_state(arche_pdata,
- 									     WD_STATE_COLDBOOT_TRIG);
--					spin_unlock_irqrestore(
--						&arche_pdata->wake_lock,
--						flags);
-+					spin_unlock_irqrestore(&arche_pdata->wake_lock,
-+							       flags);
- 					return IRQ_WAKE_THREAD;
- 				}
- 			}
+A stupid question: why can't we just make 'regs_avail'/'regs_dirty'
+'unsigned long' and drop a bunch of '(unsigned long *)' casts? 
+
 -- 
-2.25.1
+Vitaly
 
