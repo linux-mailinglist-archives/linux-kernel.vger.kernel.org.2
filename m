@@ -2,176 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13D36351B0F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B840B351B07
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238153AbhDASFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:05:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58392 "EHLO
+        id S237922AbhDASE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:04:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236505AbhDARpS (ORCPT
+        with ESMTP id S235783AbhDARtN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:45:18 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2062c.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eae::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3EA1C02FE97;
-        Thu,  1 Apr 2021 09:03:41 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JwLhemHguv3xJPF/O+v3lgOVvdKjDgY/kmk5nU7lPRsAQIF5GQGtW01uDu4L+KvWBbR9jPNeBZAx4HvXMgCN1S5qao2eEDpa685nzfQeQ/qdKCWTuj/6/XUbATjIzRxXworQCRcDbGbICSROfrmesNmiufIgWIZuAXQ0IKH9+oFJRtd7nl52IDFrCFo7PfMZQPJnCCB9H9GdL4lrjhGrzirO3yDC2ycQl271HrK5gPn9BXP+3Hpnk6FML+zm0sBTFq63QCgElex3lhtzatG3/wpgxzUBWnh1x03KqPbW2tbOS+zLIe4ozW1S8zlzGMkO2zDi77fkoqaUYY2nh22tGA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FzW2BYP3ezifTSicTa4DSrM25NdyzyyIuxKnyri/X1I=;
- b=YDzV0Uccf6e1ZqNNxqbK1EIhBPMbbibDQVj+UiaI3M4gnXyy6saTrZ7RsGsb9vre8RBBxtwJvlBIKVXSXuTqUsd+NOf447IfZ9ceusz6iVVB4toSxeA2OhVTzuXsjmp94lswXF35+7A8f/eJk3f1fMaWRgDkuwXR2Fc/f6vmdRmPys1trddKAtrtBY97j0HT3SEdK/YUL/C53+GLq9GyuT2PMjijZZtwQcw5ek9tw+Wq979RcVhWmHPPUcEBTudUvXR/7ueNYl0KphEUCZAAV0S9PS5nNcOB7iKDORIKSDA+HAlrXAgldnq6H+D+5JXXi5EJ8tjEQac2ZdM6DWh8zA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FzW2BYP3ezifTSicTa4DSrM25NdyzyyIuxKnyri/X1I=;
- b=cfICuL1ll+qfpY/WKb7rUzig5uRYwC+DwFsMrEWm4UJaN75y6zvmmDzAlLtz55gDlHWu4dYpyv1bezVSERorqn/JhLQs9rnnHd7QXY0bjLOD8r/HDBuLSsY4TpxvtrzgNKg5eG2QBcPcwIZgjzLv7mLH3zzazBxs9B8GOacSsrBDHxJQ2YiQTY6JYBAuN+9BHN1GwccQLJyolxFvTzojDCHzD43Dx/YFaJHRP29PkDZKv5ovmoYAC7LYVpyI+s4KBefZzUoGjIn6bO2Ru7P0S9QmZYRkq6+1Jx6FoJsR0EvGwrdblUqDMseaeNl6bIV6FmiQ4PzwYjqoLZQ3N/F6Fg==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1338.namprd12.prod.outlook.com (2603:10b6:3:71::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28; Thu, 1 Apr
- 2021 16:03:39 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3999.028; Thu, 1 Apr 2021
- 16:03:39 +0000
-Date:   Thu, 1 Apr 2021 13:03:37 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Liu, Yi L" <yi.l.liu@intel.com>
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210401160337.GJ1463678@nvidia.com>
-References: <MWHPR11MB188639EE54B48B0E1321C8198C7D9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210330132830.GO2356281@nvidia.com>
- <BN6PR11MB40688F5AA2323AB8CC8E65E7C37C9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <20210331124038.GE1463678@nvidia.com>
- <BN6PR11MB406854CAE9D7CE86BEAB3E23C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <BN6PR11MB40687428F0D0F3B5F13EA3E0C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <YGW27KFt9eQB9X2z@myrica>
- <BN6PR11MB4068171CD1D4B823515F7EFBC37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <20210401134236.GF1463678@nvidia.com>
- <BN6PR11MB4068C4DE7AF43D44DE70F4C1C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN6PR11MB4068C4DE7AF43D44DE70F4C1C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: MN2PR01CA0057.prod.exchangelabs.com (2603:10b6:208:23f::26)
- To DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+        Thu, 1 Apr 2021 13:49:13 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48FCEC02FEA1
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 09:09:20 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id k25so2724863iob.6
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 09:09:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=48dyaiUyVqMwLE0OwYdfA5ySCjDx5Xf12eY4xzzdxXs=;
+        b=Q/SR523Ar1LWM4oiRWdcYVGDmBiu+zeFT7gA4UE9r2y+wh90OYXx0JJGDPcwMu5adH
+         uaxbD0Pu9f5900tZeP3hEe5v2db7lKqxdaDTGAE/r7ppii0REDgnpsq6WNA0PbdjmASs
+         de+PdzOIIxIaRBSOh6zS9hLprKOaCN962rHWHBbcMLKOPqJaWZnw7i9AAS1x73820wX4
+         8sdjPlS3OXDG74thkV/VB4/we1prlMFDH0VAhEh7RXO01Mzf/ywd8gl8j+WVw6mGPw+B
+         rI1wrqE5kG1B24gee8UOlunMIzDWGoXzeN2be49I1Kr/MgV80/4Up2UOB+FRq0EsQwSm
+         ieQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=48dyaiUyVqMwLE0OwYdfA5ySCjDx5Xf12eY4xzzdxXs=;
+        b=e4o2vHlhDn/DLg64SWfFg47bGU9FjZBE6imvMohbMIBJA5iFvB0vUurP+1ZiElLj+g
+         1GqsLwRCMvvZPblNej81dXfxwUukTv2Bp8SV29Bf2tkd8C8FwNGcXLZVbMNan7fBiXEE
+         V21WXRRw6Hl79+EFj/jy3c52WuZpjGFsQLrL6O1ce3KkZjRaGuW74WX9BUvu95NMpTzR
+         dnx6gYsGcR9xx/Pwl2pN9lp+7MgSjugaRZYYF9AYTAmpNY06W98a30rDdz1vZ0n8c/C9
+         kkGgTJIBy/dIJLmdN+gecxILkhOcLVtSbL0jixX63DM117vANcVklip0evLZWjrNQLxj
+         c9AQ==
+X-Gm-Message-State: AOAM531I7d1bYRqK9dLJn7vfnuTgmwgK0JH6W3eLxfI1Fh+03+GJgZ0z
+        nCY1LXCwqrTtpUc4beRi/0CzGQ==
+X-Google-Smtp-Source: ABdhPJx71PWvRQl21JSc09Uw5jU8+9y4mYpLpsKeo9v5KDSxkuD5Ozc7hcvTXmb/nzJ5eqed0eNeZw==
+X-Received: by 2002:a5e:c102:: with SMTP id v2mr7178492iol.137.1617293359632;
+        Thu, 01 Apr 2021 09:09:19 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id b4sm2637045ilj.11.2021.04.01.09.09.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Apr 2021 09:09:19 -0700 (PDT)
+Subject: Re: [syzbot] WARNING in mntput_no_expire (2)
+To:     Christian Brauner <christian.brauner@ubuntu.com>,
+        syzbot <syzbot+c88a7030da47945a3cc3@syzkaller.appspotmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+        io-uring@vger.kernel.org
+References: <0000000000003a565e05bee596f2@google.com>
+ <20210401154515.k24qdd2lzhtneu47@wittgenstein>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <90e7e339-eaec-adb2-cfed-6dc058a117a3@kernel.dk>
+Date:   Thu, 1 Apr 2021 10:09:18 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR01CA0057.prod.exchangelabs.com (2603:10b6:208:23f::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27 via Frontend Transport; Thu, 1 Apr 2021 16:03:38 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lRznF-006nAk-N2; Thu, 01 Apr 2021 13:03:37 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 31b478fc-dd09-47ef-2012-08d8f527b69e
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1338:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB133804E2900ECE6D566011B0C27B9@DM5PR12MB1338.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nY17ppZo/Em1VwqheQOfo+QJ90Q1vvnGJkNzFCWXNWYO4cGVu+3nRtGVOuYE/Hd5fUqUXCt52Q8YcQMyFXvg7LnydDPXujeJQxdHcU0cD3/AQG3Sfsd7IHQHQWKQoJi40UQ3zCDp75FO7t19g9w5cJx2bUgPNASOJBHfTt2oxfoGPqYRMSh2i4AmGqAx5d9NhWCeuf8IehsB20u1jyncRtPLMBs7lI08V2rRAVAiu3SVU9KaTSnjcvqyYepbIrFj3SBiX7/FSv1niWY9pg/1Aktkhsj2aoqXXoTrw9CNOPif8j1rmpIz0mzjqV3zOjuNRoOMaCefv8sUdmMdWxsbzyfHCATaSetmlze3Yyao0NeXPiqzC9FNPJmUgInMkUyeeAOknzV2gZSpZ8bSCm4cOwMwB35Yn4BbfGTnNI29g9DJUZbuwSXmAWNyF7RxR+YBiKEStCJe1mBRGhLbMqfHL7OPiHcA8Q65nOwpDvpnaml8DUhTIFsdcZdJWxL1sjgE0d5Gqj7Y8CTjEt2Ik5VPAyLVx1Jp/7F2vKDveEq8P83kIbrK4hu7kIBDb1yX6LhBD/EhB91PLugytZpwS/5c/D2hVWOxVe/T6RU+7QvtgMHDNaoWFIEsKvKbV3mrK94THAKF/13TEX3wEuOFrd4DlKwXZQlzqBltlo25qVHGDRKJnJ9JuwIVU2isTOmyW16urgdcqKBy/huQyXgA1wftd0I4Xl1GXWOYq0Weizsqe4s=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(366004)(376002)(39860400002)(136003)(54906003)(26005)(83380400001)(186003)(33656002)(316002)(8676002)(6916009)(86362001)(9786002)(4326008)(9746002)(1076003)(2616005)(66946007)(7416002)(66476007)(5660300002)(66556008)(38100700001)(2906002)(966005)(478600001)(8936002)(36756003)(426003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?MKW6chrYMNvv1z2ay718cuvELSz+nq6GyIRq1zzBETILz82uUshkOLGQYEfW?=
- =?us-ascii?Q?0Pt+PsG2piJG+lrkSJQ4zH9H/LIihQ7Nl35RpVPl/3tCpGsIEtYEnQQs3/QG?=
- =?us-ascii?Q?xnbBbUsYlQ4XzbCnoj+3RG24rcd0qW65HabKelWPFSHwtfVX9AdwdJZxwWg5?=
- =?us-ascii?Q?KYK/MO0EsA1rbPsa/5K7yt8b4Ou81QOuQ2/qb+j/kRw38jC5nklq/G1+aLdK?=
- =?us-ascii?Q?sMwpfMxLQYRn9nr7zl0gpLk8naCihR00hDCUPe8kH8FS5L5j6O50mwYfyGhW?=
- =?us-ascii?Q?6mZcX2Tl0VdSN1NnWI5MB1Y9No+yoPTT3AVZaeZe5s0dfplDAmqI+ZP7oreY?=
- =?us-ascii?Q?yqVnm+2cIlvoSwCIwNTCsqB2llt7rjiTI85iJMVl3k8DEXAcUZGwsah2/v9y?=
- =?us-ascii?Q?t2vDxw5F8iOzgN/6B9vigjN9Ld02eaHhx4RRyovrTQN29ynPar+Lw7a0G/9m?=
- =?us-ascii?Q?hVvqL0hecZ9WqpjUpNUY52gymDt42lb5tysB9yXGGBsgWfGYTTBldydcUJDz?=
- =?us-ascii?Q?rcncMFS9rjQP5vtyngEwJseFyCAE97EAG/DHUpRcaleabr2N7cO1B1f0YQmc?=
- =?us-ascii?Q?uFDYxBnPhdqWMA5aH0iTvnQk4b8uUtmxTyYQkrXx3NcVSX3aGrMdwbRg+CpZ?=
- =?us-ascii?Q?EQJbNJdnO4PzL3KPMt6kUBr3/I0ELWsFQmN9+8plu6EBS8n563xCqioJsUlH?=
- =?us-ascii?Q?7hanSd+VeQv+YTrCu3lx8ts1K8ZoXGRDqm+me0gixOxd+yVz2nQ91WapjE6p?=
- =?us-ascii?Q?k6kwS7kpUaJ05Jw1RuICFeOdJ1TlfpZfQgq9EPc7PKlTGhsmklthd+RQUn1h?=
- =?us-ascii?Q?dj5zVWj8FiBEFBNT1JU5gUFWGQGoSNYjBUB/XjzZtUGOWkrX+Y49eqiMVrs7?=
- =?us-ascii?Q?qVbWeP4woHdg13s4G5yhLh9UWvofHXIRCn0zH7/0kcBmADuP2hIdBcdZeOrb?=
- =?us-ascii?Q?daFyhUXG0xvGIkb2kA+1Gz0o3dhhQC4tVtzoslYWpxxo+JGDcIaDXc8IVnPg?=
- =?us-ascii?Q?VwzsVbMZ/qsQaiYH/VwihV/paIjJeLeW7SYLvLsh0yPTACWwxeVxVz9o0iAM?=
- =?us-ascii?Q?N1i5Wx3zAkZVteTAsRrWgUI6gs6UtBHG88+N/NNii4gHqLWtm3u5BYn0Aem9?=
- =?us-ascii?Q?9ywGAXz9zDdG+isjFX0n2/OLbwVJE73khJ0WYl/9yWiOFbuU50QiTWgsT+OE?=
- =?us-ascii?Q?b6QWfUtromBNr4NujTNcEqCLfFGIUNSL1X2P85frTC3SJR0kSHsrVZjrarN2?=
- =?us-ascii?Q?JGtJSx+9Um1gFSz3Q3le4bb/T4DMCiwtJ8jYIdyEwWM5fTkLDFWjciPuF3B9?=
- =?us-ascii?Q?Q9f5SrjFCVb4RjdgtEwW1yR6r48tluck8M8dt1lFGdnk6A=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 31b478fc-dd09-47ef-2012-08d8f527b69e
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2021 16:03:39.2579
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zw1m+LtYdkcUyLj5wUogDPZJjfecLHsyjdi4FtslBi/vyano6gwtrIDYR+0/fT4Z
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1338
+In-Reply-To: <20210401154515.k24qdd2lzhtneu47@wittgenstein>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 02:08:17PM +0000, Liu, Yi L wrote:
-
-> DMA page faults are delivered to root-complex via page request message and
-> it is per-device according to PCIe spec. Page request handling flow is:
+On 4/1/21 9:45 AM, Christian Brauner wrote:
+> On Thu, Apr 01, 2021 at 02:09:20AM -0700, syzbot wrote:
+>> Hello,
+>>
+>> syzbot found the following issue on:
+>>
+>> HEAD commit:    d19cc4bf Merge tag 'trace-v5.12-rc5' of git://git.kernel.o..
+>> git tree:       upstream
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=1018f281d00000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=d1a3d65a48dbd1bc
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=c88a7030da47945a3cc3
+>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12f50d11d00000
+>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=137694a1d00000
+>>
+>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>> Reported-by: syzbot+c88a7030da47945a3cc3@syzkaller.appspotmail.com
+>>
+>> ------------[ cut here ]------------
+>> WARNING: CPU: 1 PID: 8409 at fs/namespace.c:1186 mntput_no_expire+0xaca/0xcb0 fs/namespace.c:1186
+>> Modules linked in:
+>> CPU: 1 PID: 8409 Comm: syz-executor035 Not tainted 5.12.0-rc5-syzkaller #0
+>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+>> RIP: 0010:mntput_no_expire+0xaca/0xcb0 fs/namespace.c:1186
+>> Code: ff 48 c7 c2 e0 cb 78 89 be c2 02 00 00 48 c7 c7 a0 cb 78 89 c6 05 e5 6d e5 0b 01 e8 ff e1 f6 06 e9 3f fd ff ff e8 c6 a5 a8 ff <0f> 0b e9 fc fc ff ff e8 ba a5 a8 ff e8 55 dc 94 ff 31 ff 89 c5 89
+>> RSP: 0018:ffffc9000165fc78 EFLAGS: 00010293
+>> RAX: 0000000000000000 RBX: 1ffff920002cbf95 RCX: 0000000000000000
+>> RDX: ffff88802072d4c0 RSI: ffffffff81cb4b8a RDI: 0000000000000003
+>> RBP: ffff888011656900 R08: 0000000000000000 R09: ffffffff8fa978af
+>> R10: ffffffff81cb4884 R11: 0000000000000000 R12: 0000000000000008
+>> R13: ffffc9000165fcc8 R14: dffffc0000000000 R15: 00000000ffffffff
+>> FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> CR2: 000055a722053160 CR3: 000000000bc8e000 CR4: 00000000001506e0
+>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>> Call Trace:
+>>  mntput fs/namespace.c:1232 [inline]
+>>  cleanup_mnt+0x523/0x530 fs/namespace.c:1132
+>>  task_work_run+0xdd/0x1a0 kernel/task_work.c:140
+>>  exit_task_work include/linux/task_work.h:30 [inline]
+>>  do_exit+0xbfc/0x2a60 kernel/exit.c:825
+>>  do_group_exit+0x125/0x310 kernel/exit.c:922
+>>  __do_sys_exit_group kernel/exit.c:933 [inline]
+>>  __se_sys_exit_group kernel/exit.c:931 [inline]
+>>  __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
+>>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+>> RIP: 0033:0x446af9
+>> Code: Unable to access opcode bytes at RIP 0x446acf.
+>> RSP: 002b:00000000005dfe48 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+>> RAX: ffffffffffffffda RBX: 00000000004ce450 RCX: 0000000000446af9
+>> RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000001
+>> RBP: 0000000000000001 R08: ffffffffffffffbc R09: 0000000000000000
+>> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004ce450
+>> R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
 > 
-> 1) iommu driver receives a page request from device
-> 2) iommu driver parses the page request message. Get the RID,PASID, faulted
->    page and requested permissions etc.
-> 3) iommu driver triggers fault handler registered by device driver with
->    iommu_report_device_fault()
+> [+Cc Jens + io_uring]
+> 
+> Hm, this reproducer uses io_uring and it's the io_uring_enter() that
+> triggers this reliably. With this reproducer I've managed to reproduce
+> the issue on v5.12-rc4, and v5.12-rc3, v5.12-rc2 and v5.12-rc1.
+> It's not reproducible at
+> 9820b4dca0f9c6b7ab8b4307286cdace171b724d
+> which is the commit immediately before the first v5.12 io_uring merge.
+> It's first reproducible with the first io_uring merge for v5.12, i.e.
+> 5bbb336ba75d95611a7b9456355b48705016bdb1
 
-This seems confused.
+Thanks, that's good info. I'll take a look at it and see if I can
+reproduce.
 
-The PASID should define how to handle the page fault, not the driver.
+-- 
+Jens Axboe
 
-I don't remember any device specific actions in ATS, so what is the
-driver supposed to do?
-
-> 4) device driver's fault handler signals an event FD to notify userspace to
->    fetch the information about the page fault. If it's VM case, inject the
->    page fault to VM and let guest to solve it.
-
-If the PASID is set to 'report page fault to userspace' then some
-event should come out of /dev/ioasid, or be reported to a linked
-eventfd, or whatever.
-
-If the PASID is set to 'SVM' then the fault should be passed to
-handle_mm_fault
-
-And so on.
-
-Userspace chooses what happens based on how they configure the PASID
-through /dev/ioasid.
-
-Why would a device driver get involved here?
-
-> Eric has sent below series for the page fault reporting for VM with passthru
-> device.
-> https://lore.kernel.org/kvm/20210223210625.604517-5-eric.auger@redhat.com/
-
-It certainly should not be in vfio pci. Everything using a PASID needs
-this infrastructure, VDPA, mdev, PCI, CXL, etc.
-
-Jason
