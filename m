@@ -2,102 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D0A35214A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D98F935214D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234024AbhDAVIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 17:08:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42232 "EHLO mail.kernel.org"
+        id S234191AbhDAVJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 17:09:01 -0400
+Received: from mga02.intel.com ([134.134.136.20]:50323 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233710AbhDAVIE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 17:08:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5914B6023E;
-        Thu,  1 Apr 2021 21:08:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617311284;
-        bh=oRAU1aLqpuZLbEgF6AvATIUxz5sNjxR9aSqYA5ZpliQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y07i3HGP22Q6JsjOJr9GUY1qNAuzus12l5VFINX4mpLM2YakkQ8QB+a7yq1zmcWD8
-         u3LU/UrPveADqSKjvPFCrYdYku9HnvF7eo9J41e/PZaz0xciBJax3zovbfFXUVmfD5
-         Bx56EWCA5LRzZDrQwXOmekhP/RgMw/u5e/akEhfwL9sSeuGyz8mokJdWNv3gzQhx+H
-         OsXrYKBRQrUraRWVhxSxd4c6Ug64YRz/1BMBen4viIcIZ3zKmwqcwuw5wS0jISJTKF
-         /ZBj89ly7AZHqT/zl/PEWw/DPc0MRKzuQONeOZFFA5IG1WQW2luOgHRNd6twnb8WfF
-         H2WNUtTI5pEmw==
-Date:   Thu, 1 Apr 2021 23:08:02 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] torture: Correctly fetch CPUs for kvm-build.sh with all
- native language
-Message-ID: <20210401210802.GC116405@lothringen>
-References: <20210401132602.116352-1-frederic@kernel.org>
- <20210401185116.GH2696@paulmck-ThinkPad-P72>
- <20210401203112.GA116405@lothringen>
- <20210401204022.GI2696@paulmck-ThinkPad-P72>
- <20210401204113.GB116405@lothringen>
- <20210401210253.GJ2696@paulmck-ThinkPad-P72>
+        id S233710AbhDAVJB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 17:09:01 -0400
+IronPort-SDR: sKHlBYxkqEgjaki3KuAk7A0aC9hSkf4/Cb14mm8qPGKLwYHftk20GMkxMaWDTuXKizDkrOiY+m
+ ZagMsy5qNDoA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="179463787"
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="179463787"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 14:09:00 -0700
+IronPort-SDR: nHEmBPUD6EBcCM1PKuf9YJE85IJcY4Hg5mp0QQLxtPwmsn/o6H3KZprkMsregX4Y/06KRHpXsp
+ 7UgNvVbTiMzw==
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="611063291"
+Received: from pzlai-mobl.amr.corp.intel.com (HELO [10.213.169.242]) ([10.213.169.242])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 14:08:59 -0700
+Subject: Re: [RFC v1 03/26] x86/cpufeatures: Add is_tdx_guest() interface
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <83c8fcff9ac09f73924104cfb534258747e98bff.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <0116481d-581b-9433-3641-47e39550b99a@intel.com>
+Date:   Thu, 1 Apr 2021 14:08:59 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <83c8fcff9ac09f73924104cfb534258747e98bff.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210401210253.GJ2696@paulmck-ThinkPad-P72>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 02:02:53PM -0700, Paul E. McKenney wrote:
-> On Thu, Apr 01, 2021 at 10:41:13PM +0200, Frederic Weisbecker wrote:
-> > On Thu, Apr 01, 2021 at 01:40:22PM -0700, Paul E. McKenney wrote:
-> > > On Thu, Apr 01, 2021 at 10:31:12PM +0200, Frederic Weisbecker wrote:
-> > > > On Thu, Apr 01, 2021 at 11:51:16AM -0700, Paul E. McKenney wrote:
-> > > > > On Thu, Apr 01, 2021 at 03:26:02PM +0200, Frederic Weisbecker wrote:
-> > > > > > Grepping for "CPU" on lscpu output isn't always successful, depending
-> > > > > > on the local language setting. As a result, the build can be aborted
-> > > > > > early with:
-> > > > > > 
-> > > > > > 	"make: the '-j' option requires a positive integer argument"
-> > > > > > 
-> > > > > > Prefer a more generic solution.
-> > > > > > 
-> > > > > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > > > > 
-> > > > > Good catch, applied, thank you!
-> > > > > 
-> > > > > There is a similar construct in kvm-remote.sh, so I added a similar
-> > > > > fix to your patch.
-> > > > > 
-> > > > > But what about this in functions.sh?
-> > > > > 
-> > > > > nt="`lscpu | grep '^NUMA node0' | sed -e 's/^[^,]*,\([0-9]*\),.*$/\1/'`"
-> > > > > 
-> > > > > I am guessing that "node0" is human-language-independent, but is "NUMA"?
-> > > > 
-> > > > I thought they wouldn't bother translating that, but they did...
-> > > > 
-> > > >     NUMA node0 CPU(s):               0-7
-> > > > 
-> > > > becomes:
-> > > > 
-> > > >     Nœud NUMA 0 de processeur(s) : 0-7
-> > > > 
-> > > > Not sure about the best way to fix it.
-> > > 
-> > > The rude and crude fix is for the scripts to force the local language
-> > > to English.  ;-)
-> > 
-> > I don't have a better answer :o)
-> 
-> If you set the environment variable LANG to en_US.UTF-8, does that
-> make things work for you?  Huh.  Setting it to fr_FR.UTF-8 does not
-> shift lscpu out of English for me, so I am guessing "no".
+On 2/5/21 3:38 PM, Kuppuswamy Sathyanarayanan wrote:
+> +bool is_tdx_guest(void)
+> +{
+> +	return static_cpu_has(X86_FEATURE_TDX_GUEST);
+> +}
 
-Maybe that language isn't installed in your system. I would expect
-en_US.UTF-8 to be supported pretty much everywhere though. At least it
-works for me with: "LANG=en_US.UTF-8 lscpu".
-
-Thanks.
-
-> 
-> Help?
-> 
-> 							Thanx, Paul
+Why do you need is_tdx_guest() as opposed to calling
+cpu_feature_enabled(X86_FEATURE_TDX_GUEST) everywhere?
