@@ -2,96 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1EE351117
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 10:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2513135111B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 10:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233394AbhDAIrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 04:47:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36622 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229459AbhDAIrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 04:47:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EFF56610A5;
-        Thu,  1 Apr 2021 08:47:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617266831;
-        bh=kIY39xSiWjoF6sZnoaotfSd9UwS1ZraiYATimaHn4q4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dthggg8b7dAPmVCaE/dTavdjFa9rPW8UC6EfXQSxSbfgnQ9ohbBnbsZA43xvhJI/s
-         z5AUK4v+HYnJ5wBTqGGETFvrn6t7evM30qoWMU4SvAvJis8ig8zAD2M+K3dxU7pRjN
-         FvmyysaLIlQ/m4hZkAK1hPCX6sqxtbFEVdVewtBbcYW9KSc+cIBKDRyBb0T3xXdKak
-         PydMSo+vl7MDbweuD2w+RK4JAEeWVootOCKB20Rk5gQXPQF4rkAulqJ95gZruqdCYn
-         AsM1FKvblH5PGVDShbZ2Q4PDUuXU2qJn8cKgzxqPwv7l3c6SQkGb2dIquF0hgKdRuJ
-         Nh9W3nV64Iunw==
-Received: by mail-ot1-f48.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so1465812otk.5;
-        Thu, 01 Apr 2021 01:47:10 -0700 (PDT)
-X-Gm-Message-State: AOAM532c6aKaIx4bB0ecoyi09cpft/YYs0vXQ2FrL8AvMunLTDPP6+Yt
-        EBhXL1YiKZwLJh0HvMCMUw3W0jJsbfeOd6YZ1jc=
-X-Google-Smtp-Source: ABdhPJxMNssJ30KB6dSY69fDuCOr4LCVZh/D5LIw2zyYA6sUCNNW1VJBb7EkMscKsxoRWI5AjBchYD6rYN1Quvypp1A=
-X-Received: by 2002:a9d:12cb:: with SMTP id g69mr5843158otg.77.1617266830166;
- Thu, 01 Apr 2021 01:47:10 -0700 (PDT)
+        id S233592AbhDAIsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 04:48:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233404AbhDAIsi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 04:48:38 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25487C0613E6;
+        Thu,  1 Apr 2021 01:48:38 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso650531pjb.3;
+        Thu, 01 Apr 2021 01:48:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zaMKRvnuGzCN3sXjasGo8hmNFZefS5kSQGclo2fJbBI=;
+        b=RljTDOEYU5XD+dZbqPCT0sRbBCzSo+UFmVUzBkTwHvl4gZ2pUQe0+WjEXJEE2jsBd6
+         ZWO9Ffluvko6gBrEZ0GS10VRCIyB6hVuXie4Nwh9bY9G6SuxCwdc0PzYkXi1/HjViyQ6
+         TApFIOfDUzfXslu7xPtrqUQPFu80STdM5GhiLc8KR6OQasaosPaJ5ixgWUUTyEgZS4El
+         2BghF6UtLpMLhSvxFwEWAo7bq8D1tTrlWSXbAai0HJ/max4AVhSFR4Fq5mYbD6tGkxWb
+         gJL1+IjFzf5SQBwxB433GSOiVcD7Y+QTe8k28x1u1nSvip/Vpd7sXQS1kHqzG4ypzI0r
+         tAFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zaMKRvnuGzCN3sXjasGo8hmNFZefS5kSQGclo2fJbBI=;
+        b=EkQhlsMCz0BVeL85lWfnRrN6gx7Cly4liXydf9S3tdW+nec9zu4NZvv8BOxSaFJIab
+         hX0lQ/aS8ser4tCD1oq9EwOAdBcX1NiKq9X0/sibjpIstD/XdqkVc8xoMa2j0V4wquRd
+         KIOvJErq/gc8LJUu87AxmlOqhZJfq73bPF2tjNQyszWiDniDsSow2EOftxH2q+ibZXST
+         5uF9bkGpBZ+zK5YqMsf2QZKszQurejOBjtsgXztVj1S4DkLwhC4+pgKvYcaBrK9t9SDL
+         N1GCNJdRqPM46mnDSw2hY/hrYDf6iTFeyT1/34pMWUChiq/QU7MEw1O11npeTXpZNW7X
+         bZ0w==
+X-Gm-Message-State: AOAM531nn71IalLsr8izbqlkxX0A5z8qWdvL4y2VumvYiPwF4UMxVSsG
+        XgWaFe4qArZz437k6HmagaQ1FzOCXDYb5ofqcDs=
+X-Google-Smtp-Source: ABdhPJwD8VPdnqmAWIPa4E1ZC+MKDhMghA/DJtHpKqSt5PzZvEnlukiOQ/Q9RsJYH72bZmvB9GrVcr8b7RqVItcMmks=
+X-Received: by 2002:a17:902:a406:b029:e6:78c4:71c8 with SMTP id
+ p6-20020a170902a406b02900e678c471c8mr7035221plq.17.1617266917618; Thu, 01 Apr
+ 2021 01:48:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <MW2PR2101MB08924CD74C6EB773C4D5FAFDBF7E9@MW2PR2101MB0892.namprd21.prod.outlook.com>
- <CAJZ5v0g+=AnRAmAAn8NpHm8bmZ1WkwDpjb5rr_zPOVABW1PYug@mail.gmail.com>
- <4e95307db43e2f7cc8516e645b81db7db0dd8ad4.camel@redhat.com>
- <CAMj1kXHg2RDgwmOhJkaAPoWeHpxnd6tixp94Kha1-bzNvCaQUg@mail.gmail.com> <504652e70f0a4e42e4927583b9ed47cd78590329.camel@redhat.com>
-In-Reply-To: <504652e70f0a4e42e4927583b9ed47cd78590329.camel@redhat.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 1 Apr 2021 10:46:59 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXHRduBs0TJcLC4iMkyoGXyyrXPM_WpVVij33ki8THf9Kw@mail.gmail.com>
-Message-ID: <CAMj1kXHRduBs0TJcLC4iMkyoGXyyrXPM_WpVVij33ki8THf9Kw@mail.gmail.com>
-Subject: Re: Fix hibernation in FIPS mode?
-To:     Simo Sorce <simo@redhat.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "crecklin@redhat.com" <crecklin@redhat.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210401003153.97325-1-yury.norov@gmail.com> <20210401003153.97325-10-yury.norov@gmail.com>
+In-Reply-To: <20210401003153.97325-10-yury.norov@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 1 Apr 2021 11:48:21 +0300
+Message-ID: <CAHp75Vd6c4+Q5+-FYcMPL_64FX2qjqmz9u0hJ7N0m2Ojs0RCcA@mail.gmail.com>
+Subject: Re: [PATCH 09/12] lib: add fast path for find_next_*_bit()
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux-SH <linux-sh@vger.kernel.org>,
+        Alexey Klimov <aklimov@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 30 Mar 2021 at 21:56, Simo Sorce <simo@redhat.com> wrote:
+On Thu, Apr 1, 2021 at 3:41 AM Yury Norov <yury.norov@gmail.com> wrote:
 >
-> On Tue, 2021-03-30 at 21:45 +0200, Ard Biesheuvel wrote:
-> > On Tue, 30 Mar 2021 at 20:05, Simo Sorce <simo@redhat.com> wrote:
-> > > On Tue, 2021-03-30 at 16:46 +0200, Rafael J. Wysocki wrote:
-> > > > On Tue, Mar 30, 2021 at 12:14 AM Dexuan Cui <decui@microsoft.com> wrote:
-> > > > > Hi,
-> > > > > MD5 was marked incompliant with FIPS in 2009:
-> > > > > a3bef3a31a19 ("crypto: testmgr - Skip algs not flagged fips_allowed in fips mode")
-> > > > > a1915d51e8e7 ("crypto: testmgr - Mark algs allowed in fips mode")
-> > > > >
-> > > > > But hibernation_e820_save() is still using MD5, and fails in FIPS mode
-> > > > > due to the 2018 patch:
-> > > > > 749fa17093ff ("PM / hibernate: Check the success of generating md5 digest before hibernation")
-> > > > >
-> > > > > As a result, hibernation doesn't work when FIPS is on.
-> > > > >
-> > > > > Do you think if hibernation_e820_save() should be changed to use a
-> > > > > FIPS-compliant algorithm like SHA-1?
-> > > >
-> > > > I would say yes, it should.
-> > > >
-> > > > > PS, currently it looks like FIPS mode is broken in the mainline:
-> > > > > https://www.mail-archive.com/linux-crypto@vger.kernel.org/msg49414.html
-> > >
-> > > FYI, SHA-1 is not a good choice, it is only permitted in HMAC
-> > > constructions and only for specified uses. If you need to change
-> > > algorithm you should go straight to SHA-2 or SHA-3 based hashes.
-> > >
-> >
-> > What is the reason for using a [broken] cryptographic hash here? if
-> > this is just an integrity check, better use CRC32
+> Similarly to bitmap functions, find_next_*_bit() users will benefit
+> if we'll handle a case of bitmaps that fit into a single word inline.
+> In the very best case, the compiler may replace a function call with
+> a few instructions.
 >
-> If the integrity check is used exclusively to verify there were no
-> accidental changes and is not used as a security measure, by all means
-> I agree that using crc32 is a better idea.
+> This is the quite typical find_next_bit() user:
+>
+>         unsigned int cpumask_next(int n, const struct cpumask *srcp)
+>         {
+>                 /* -1 is a legal arg here. */
+>                 if (n != -1)
+>                         cpumask_check(n);
+>                 return find_next_bit(cpumask_bits(srcp), nr_cpumask_bits, n + 1);
+>         }
+>         EXPORT_SYMBOL(cpumask_next);
+>
+> Currently, on ARM64 the generated code looks like this:
+>         0000000000000000 <cpumask_next>:
+>            0:   a9bf7bfd        stp     x29, x30, [sp, #-16]!
+>            4:   11000402        add     w2, w0, #0x1
+>            8:   aa0103e0        mov     x0, x1
+>            c:   d2800401        mov     x1, #0x40                       // #64
+>           10:   910003fd        mov     x29, sp
+>           14:   93407c42        sxtw    x2, w2
+>           18:   94000000        bl      0 <find_next_bit>
+>           1c:   a8c17bfd        ldp     x29, x30, [sp], #16
+>           20:   d65f03c0        ret
+>           24:   d503201f        nop
+>
+> After applying this patch:
+>         0000000000000140 <cpumask_next>:
+>          140:   11000400        add     w0, w0, #0x1
+>          144:   93407c00        sxtw    x0, w0
+>          148:   f100fc1f        cmp     x0, #0x3f
+>          14c:   54000168        b.hi    178 <cpumask_next+0x38>  // b.pmore
+>          150:   f9400023        ldr     x3, [x1]
+>          154:   92800001        mov     x1, #0xffffffffffffffff         // #-1
+>          158:   9ac02020        lsl     x0, x1, x0
+>          15c:   52800802        mov     w2, #0x40                       // #64
+>          160:   8a030001        and     x1, x0, x3
+>          164:   dac00020        rbit    x0, x1
+>          168:   f100003f        cmp     x1, #0x0
+>          16c:   dac01000        clz     x0, x0
+>          170:   1a800040        csel    w0, w2, w0, eq  // eq = none
+>          174:   d65f03c0        ret
+>          178:   52800800        mov     w0, #0x40                       // #64
+>          17c:   d65f03c0        ret
+>
+> find_next_bit() call is replaced with 6 instructions. find_next_bit()
+> itself is 41 instructions plus function call overhead.
+>
+> Despite inlining, the scripts/bloat-o-meter report smaller .text size
+> after applying the series:
+>         add/remove: 11/9 grow/shrink: 233/176 up/down: 5780/-6768 (-988)
+
+Acked-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> ---
+>  include/asm-generic/bitops/find.h | 30 ++++++++++++++++++++++++++++++
+>  include/asm-generic/bitops/le.h   | 21 +++++++++++++++++++++
+>  2 files changed, 51 insertions(+)
+>
+> diff --git a/include/asm-generic/bitops/find.h b/include/asm-generic/bitops/find.h
+> index 7ad70dab8e93..4148c74a1e4d 100644
+> --- a/include/asm-generic/bitops/find.h
+> +++ b/include/asm-generic/bitops/find.h
+> @@ -20,6 +20,16 @@ static inline
+>  unsigned long find_next_bit(const unsigned long *addr, unsigned long size,
+>                             unsigned long offset)
+>  {
+> +       if (small_const_nbits(size)) {
+> +               unsigned long val;
+> +
+> +               if (unlikely(offset >= size))
+> +                       return size;
+> +
+> +               val = *addr & GENMASK(size - 1, offset);
+> +               return val ? __ffs(val) : size;
+> +       }
+> +
+>         return _find_next_bit(addr, NULL, size, offset, 0UL, 0);
+>  }
+>  #endif
+> @@ -40,6 +50,16 @@ unsigned long find_next_and_bit(const unsigned long *addr1,
+>                 const unsigned long *addr2, unsigned long size,
+>                 unsigned long offset)
+>  {
+> +       if (small_const_nbits(size)) {
+> +               unsigned long val;
+> +
+> +               if (unlikely(offset >= size))
+> +                       return size;
+> +
+> +               val = *addr1 & *addr2 & GENMASK(size - 1, offset);
+> +               return val ? __ffs(val) : size;
+> +       }
+> +
+>         return _find_next_bit(addr1, addr2, size, offset, 0UL, 0);
+>  }
+>  #endif
+> @@ -58,6 +78,16 @@ static inline
+>  unsigned long find_next_zero_bit(const unsigned long *addr, unsigned long size,
+>                                  unsigned long offset)
+>  {
+> +       if (small_const_nbits(size)) {
+> +               unsigned long val;
+> +
+> +               if (unlikely(offset >= size))
+> +                       return size;
+> +
+> +               val = *addr | ~GENMASK(size - 1, offset);
+> +               return val == ~0UL ? size : ffz(val);
+> +       }
+> +
+>         return _find_next_bit(addr, NULL, size, offset, ~0UL, 0);
+>  }
+>  #endif
+> diff --git a/include/asm-generic/bitops/le.h b/include/asm-generic/bitops/le.h
+> index 21305f6cea0b..5a28629cbf4d 100644
+> --- a/include/asm-generic/bitops/le.h
+> +++ b/include/asm-generic/bitops/le.h
+> @@ -5,6 +5,7 @@
+>  #include <asm-generic/bitops/find.h>
+>  #include <asm/types.h>
+>  #include <asm/byteorder.h>
+> +#include <linux/swab.h>
+>
+>  #if defined(__LITTLE_ENDIAN)
+>
+> @@ -37,6 +38,16 @@ static inline
+>  unsigned long find_next_zero_bit_le(const void *addr, unsigned
+>                 long size, unsigned long offset)
+>  {
+> +       if (small_const_nbits(size)) {
+> +               unsigned long val = *(const unsigned long *)addr;
+> +
+> +               if (unlikely(offset >= size))
+> +                       return size;
+> +
+> +               val = swab(val) | ~GENMASK(size - 1, offset);
+> +               return val == ~0UL ? size : ffz(val);
+> +       }
+> +
+>         return _find_next_bit(addr, NULL, size, offset, ~0UL, 1);
+>  }
+>  #endif
+> @@ -46,6 +57,16 @@ static inline
+>  unsigned long find_next_bit_le(const void *addr, unsigned
+>                 long size, unsigned long offset)
+>  {
+> +       if (small_const_nbits(size)) {
+> +               unsigned long val = *(const unsigned long *)addr;
+> +
+> +               if (unlikely(offset >= size))
+> +                       return size;
+> +
+> +               val = swab(val) & GENMASK(size - 1, offset);
+> +               return val ? __ffs(val) : size;
+> +       }
+> +
+>         return _find_next_bit(addr, NULL, size, offset, 0UL, 1);
+>  }
+>  #endif
+> --
+> 2.25.1
 >
 
-Looking at 62a03defeabd58f74e07ca030d6c21e069d4d88e which introduced
-this, it is only a best effort check which is simply omitted if md5
-happens to be unavailable, so there is definitely no need for crypto
-here.
+
+-- 
+With Best Regards,
+Andy Shevchenko
