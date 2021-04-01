@@ -2,147 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1E0A351EDE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1D44351E5E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:54:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236513AbhDASsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:48:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25480 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234308AbhDAS2F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:28:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617301684;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7sDTaVgWT9Uk0Jsav/2bWha3xiyU83b/ipUGLZIGqss=;
-        b=dB7XFyQbxoWn1SJt3Wqi09IKPrjXeulWVWzi/Yk1Wj9lewz7SkehTewiC+5fziN4OIe/Bf
-        AHBDOfWRhIctiL0SCE7c9KFS8i41H4A6RFtIpIziMsVCrxnStgaF3LafLpd6PkLDcohxTj
-        fcOkqZLUsLnk9wMgwie1tWgIFM8lXN8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-540-8xDbHPHKMEmK88BxDa-lVA-1; Thu, 01 Apr 2021 08:06:17 -0400
-X-MC-Unique: 8xDbHPHKMEmK88BxDa-lVA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S239280AbhDASkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:40:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46028 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239664AbhDASQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:16:45 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E82FA1007478;
-        Thu,  1 Apr 2021 12:06:13 +0000 (UTC)
-Received: from [10.36.112.13] (ovpn-112-13.ams2.redhat.com [10.36.112.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1577251DE2;
-        Thu,  1 Apr 2021 12:06:07 +0000 (UTC)
-Subject: Re: [PATCH v14 07/13] iommu/smmuv3: Implement cache_invalidate
-To:     Zenghui Yu <yuzenghui@huawei.com>
-Cc:     eric.auger.pro@gmail.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, will@kernel.org, maz@kernel.org,
-        robin.murphy@arm.com, joro@8bytes.org, alex.williamson@redhat.com,
-        tn@semihalf.com, zhukeqian1@huawei.com,
-        jacob.jun.pan@linux.intel.com, yi.l.liu@intel.com,
-        wangxingang5@huawei.com, jiangkunkun@huawei.com,
-        jean-philippe@linaro.org, zhangfei.gao@linaro.org,
-        zhangfei.gao@gmail.com, vivek.gautam@arm.com,
-        shameerali.kolothum.thodi@huawei.com, nicoleotsuka@gmail.com,
-        lushenming@huawei.com, vsethi@nvidia.com,
-        wanghaibin.wang@huawei.com
-References: <20210223205634.604221-1-eric.auger@redhat.com>
- <20210223205634.604221-8-eric.auger@redhat.com>
- <95a178f0-fc84-b9a2-d824-c09ea91c9d30@huawei.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <86d5f9e9-1c84-91c4-75a8-770dd4c591a7@redhat.com>
-Date:   Thu, 1 Apr 2021 14:06:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <95a178f0-fc84-b9a2-d824-c09ea91c9d30@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C9D0610E9;
+        Thu,  1 Apr 2021 12:07:21 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lRw6Z-0056AE-Bb; Thu, 01 Apr 2021 13:07:19 +0100
+Date:   Thu, 01 Apr 2021 13:07:18 +0100
+Message-ID: <87v996p5s9.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Michal Simek <michal.simek@xilinx.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>, linux-pci@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-tegra@vger.kernel.org, Rob Herring <robh@kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Bharat Kumar Gogada <bharatku@xilinx.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        linux-mediatek@lists.infradead.org,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        linux-hyperv@vger.kernel.org, Will Deacon <will@kernel.org>,
+        kernel-team@android.com, Michael Kelley <mikelley@microsoft.com>,
+        linux-kernel@vger.kernel.org,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        linux-renesas-soc@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 00/14] PCI/MSI: Getting rid of msi_controller, and other cleanups
+In-Reply-To: <161727636757.32506.11592578621890085687.b4-ty@arm.com>
+References: <20210330151145.997953-1-maz@kernel.org>
+        <161727636757.32506.11592578621890085687.b4-ty@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: lorenzo.pieralisi@arm.com, bhelgaas@google.com, frank-w@public-files.de, michal.simek@xilinx.com, kys@microsoft.com, linux-pci@vger.kernel.org, thierry.reding@gmail.com, linux-tegra@vger.kernel.org, robh@kernel.org, jonathanh@nvidia.com, bharatku@xilinx.com, paul.walmsley@sifive.com, treding@nvidia.com, marek.vasut+renesas@gmail.com, wei.liu@kernel.org, sthemmin@microsoft.com, ryder.lee@mediatek.com, linux-mediatek@lists.infradead.org, haiyangz@microsoft.com, linux-hyperv@vger.kernel.org, will@kernel.org, kernel-team@android.com, mikelley@microsoft.com, linux-kernel@vger.kernel.org, yoshihiro.shimoda.uh@renesas.com, linux-renesas-soc@vger.kernel.org, tglx@linutronix.de, linux-arm-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zenghui,
+On Thu, 01 Apr 2021 12:27:42 +0100,
+Lorenzo Pieralisi <lorenzo.pieralisi@arm.com> wrote:
+> 
+> On Tue, 30 Mar 2021 16:11:31 +0100, Marc Zyngier wrote:
+> > This is a respin of the series described at [1].
+> > 
+> > * From v2 [2]:
+> >   - Fixed the Xilinx driver, thanks to Bharat for testing it
+> >   - Dropped the no_msi attribute, and solely rely on msi_domain, which
+> >     has the same effect for the only platform that was using it.
+> >   - Fixed compilation on architectures that do not select the generic
+> >     MSI support
+> > 
+> > [...]
+> 
+> I have applied it to pci/msi and should be moved into -next shortly
+> for further testing/visibility, thanks a lot for putting it together.
 
-On 4/1/21 8:11 AM, Zenghui Yu wrote:
-> Hi Eric,
-> 
-> On 2021/2/24 4:56, Eric Auger wrote:
->> +static int
->> +arm_smmu_cache_invalidate(struct iommu_domain *domain, struct device
->> *dev,
->> +              struct iommu_cache_invalidate_info *inv_info)
->> +{
->> +    struct arm_smmu_cmdq_ent cmd = {.opcode = CMDQ_OP_TLBI_NSNH_ALL};
->> +    struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
->> +    struct arm_smmu_device *smmu = smmu_domain->smmu;
->> +
->> +    if (smmu_domain->stage != ARM_SMMU_DOMAIN_NESTED)
->> +        return -EINVAL;
->> +
->> +    if (!smmu)
->> +        return -EINVAL;
->> +
->> +    if (inv_info->version != IOMMU_CACHE_INVALIDATE_INFO_VERSION_1)
->> +        return -EINVAL;
->> +
->> +    if (inv_info->cache & IOMMU_CACHE_INV_TYPE_PASID ||
-> 
-> I didn't find any code where we would emulate the CFGI_CD{_ALL} commands
-> for guest and invalidate the stale CD entries on the physical side. Is
-> PASID-cache type designed for that effect?
-Yes it is. PASID-cache matches the CD table.
-> 
->> +        inv_info->cache & IOMMU_CACHE_INV_TYPE_DEV_IOTLB) {
->> +        return -ENOENT;
->> +    }
->> +
->> +    if (!(inv_info->cache & IOMMU_CACHE_INV_TYPE_IOTLB))
->> +        return -EINVAL;
->> +
->> +    /* IOTLB invalidation */
->> +
->> +    switch (inv_info->granularity) {
->> +    case IOMMU_INV_GRANU_PASID:
->> +    {
->> +        struct iommu_inv_pasid_info *info =
->> +            &inv_info->granu.pasid_info;
->> +
->> +        if (info->flags & IOMMU_INV_ADDR_FLAGS_PASID)
->> +            return -ENOENT;
->> +        if (!(info->flags & IOMMU_INV_PASID_FLAGS_ARCHID))
->> +            return -EINVAL;
->> +
->> +        __arm_smmu_tlb_inv_context(smmu_domain, info->archid);
->> +        return 0;
->> +    }
->> +    case IOMMU_INV_GRANU_ADDR:
->> +    {
->> +        struct iommu_inv_addr_info *info = &inv_info->granu.addr_info;
->> +        size_t size = info->nb_granules * info->granule_size;
->> +        bool leaf = info->flags & IOMMU_INV_ADDR_FLAGS_LEAF;
->> +
->> +        if (info->flags & IOMMU_INV_ADDR_FLAGS_PASID)
->> +            return -ENOENT;
->> +
->> +        if (!(info->flags & IOMMU_INV_ADDR_FLAGS_ARCHID))
->> +            break;
->> +
->> +        arm_smmu_tlb_inv_range_domain(info->addr, size,
->> +                          info->granule_size, leaf,
->> +                          info->archid, smmu_domain);
->> +
->> +        arm_smmu_cmdq_issue_sync(smmu);
-> 
-> There is no need to issue one more SYNC.
-Hum yes I did not notice it was made by the arm_smmu_cmdq_issue_cmdlist()
+Thanks Lorenzo.
 
-Thanks!
+	M.
 
-Eric
-> 
-
+-- 
+Without deviation from the norm, progress is not possible.
