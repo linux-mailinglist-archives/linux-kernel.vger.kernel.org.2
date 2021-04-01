@@ -2,52 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A13333521CB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65DA03521CC
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:43:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235125AbhDAVnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 17:43:10 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:65142 "EHLO
+        id S235229AbhDAVnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 17:43:12 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:50488 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234635AbhDAVnI (ORCPT
+        by vger.kernel.org with ESMTP id S234026AbhDAVnJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 17:43:08 -0400
+        Thu, 1 Apr 2021 17:43:09 -0400
 Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 131LQvlB008113
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 131LQvlC008113
         for <linux-kernel@vger.kernel.org>; Thu, 1 Apr 2021 14:43:08 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=cPdVRtjHCrwtHY9AKEXGme23byUr2ZAJdsE3h3TIrUI=;
- b=GKshCNpLtrzUttzgbAZOLlhLzuAy8LlWmzjT0e4tBnxC1wIQN+x66+BJWCy8SjjozpkR
- Xk5k0jBpZkFp14xg2mLjESuzHMU5x96X+l3+ZYv7kI0T8N92vbBxQdT8hEyARlhmqOGC
- F9OJ9XoSQfsvOhYj5WlJMCGxFid8VT/kVkw= 
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=9dh7amTc+an0u2dpKOhh//MRpTHrYPPGwQYtxlH4t8k=;
+ b=AUR4drg+EeZTZVKT4qAVfvSjJkZeHg4pJMfxdhtpDMkd3mUCdc135VHYa6WeINAVal7f
+ 3tC9Eq4i60GUTvsoBmPFp+qO5Q9Y7VignUi7rU2INOUO0p1iNSmihZ0lCy5qKFPgpAT0
+ Cx7T9G4efZpfiOcBq1bem6zCa5RIZu7/3dM= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 37n29negp1-3
+        by m0001303.ppops.net with ESMTP id 37n29negp1-4
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
         for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 14:43:08 -0700
 Received: from intmgw003.48.prn1.facebook.com (2620:10d:c0a8:1b::d) by
  mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 1 Apr 2021 14:43:06 -0700
+ 15.1.2176.2; Thu, 1 Apr 2021 14:43:07 -0700
 Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
-        id 3B5AE5C2F8E5; Thu,  1 Apr 2021 14:43:04 -0700 (PDT)
+        id 3F10B5C2F8E7; Thu,  1 Apr 2021 14:43:04 -0700 (PDT)
 From:   Roman Gushchin <guro@fb.com>
 To:     Dennis Zhou <dennis@kernel.org>
 CC:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
         Roman Gushchin <guro@fb.com>
-Subject: [PATCH v1 0/5] percpu: partial chunk depopulation
-Date:   Thu, 1 Apr 2021 14:42:56 -0700
-Message-ID: <20210401214301.1689099-1-guro@fb.com>
+Subject: [PATCH v1 1/5] percpu: split __pcpu_balance_workfn()
+Date:   Thu, 1 Apr 2021 14:42:57 -0700
+Message-ID: <20210401214301.1689099-2-guro@fb.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210401214301.1689099-1-guro@fb.com>
+References: <20210401214301.1689099-1-guro@fb.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: 9bckJOoSdWLHxpjiHTCSvPinYpb0mbyF
-X-Proofpoint-ORIG-GUID: 9bckJOoSdWLHxpjiHTCSvPinYpb0mbyF
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
+X-Proofpoint-GUID: IhdeRE8QyqRZvQ4b2ajiD5GifT5HB_fC
+X-Proofpoint-ORIG-GUID: IhdeRE8QyqRZvQ4b2ajiD5GifT5HB_fC
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
  definitions=2021-04-01_13:2021-04-01,2021-04-01 signatures=0
 X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
@@ -60,107 +62,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In our production experience the percpu memory allocator is sometimes strug=
-gling
-with returning the memory to the system. A typical example is a creation of
-several thousands memory cgroups (each has several chunks of the percpu data
-used for vmstats, vmevents, ref counters etc). Deletion and complete releas=
-ing
-of these cgroups doesn't always lead to a shrinkage of the percpu memory.
+__pcpu_balance_workfn() became fairly big and hard to follow, but in
+fact it consists of two fully independent parts, responsible for
+the destruction of excessive free chunks and population of necessarily
+amount of free pages.
 
-The underlying problem is the fragmentation: to release an underlying chunk
-all percpu allocations should be released first. The percpu allocator tends
-to top up chunks to improve the utilization. It means new small-ish allocat=
-ions
-(e.g. percpu ref counters) are placed onto almost filled old-ish chunks,
-effectively pinning them in memory.
+In order to simplify the code and prepare for adding of a new
+functionality, split it in two functions:
 
-This patchset pretends to solve this problem by implementing a partial
-depopulation of percpu chunks: chunks with many empty pages are being
-asynchronously depopulated and the pages are returned to the system.
+  1) pcpu_balance_free,
+  2) pcpu_balance_populated.
 
-To illustrate the problem the following script can be used:
+Move the taking/releasing of the pcpu_alloc_mutex to an upper level
+to keep the current synchronization in place.
 
---
-#!/bin/bash
+Signed-off-by: Roman Gushchin <guro@fb.com>
+Reviewed-by: Dennis Zhou <dennis@kernel.org>
+---
+ mm/percpu.c | 46 +++++++++++++++++++++++++++++-----------------
+ 1 file changed, 29 insertions(+), 17 deletions(-)
 
-cd /sys/fs/cgroup
-
-mkdir percpu_test
-echo "+memory" > percpu_test/cgroup.subtree_control
-
-cat /proc/meminfo | grep Percpu
-
-for i in `seq 1 1000`; do
-    mkdir percpu_test/cg_"${i}"
-    for j in `seq 1 10`; do
-	mkdir percpu_test/cg_"${i}"_"${j}"
-    done
-done
-
-cat /proc/meminfo | grep Percpu
-
-for i in `seq 1 1000`; do
-    for j in `seq 1 10`; do
-	rmdir percpu_test/cg_"${i}"_"${j}"
-    done
-done
-
-sleep 10
-
-cat /proc/meminfo | grep Percpu
-
-for i in `seq 1 1000`; do
-    rmdir percpu_test/cg_"${i}"
-done
-
-rmdir percpu_test
---
-
-It creates 11000 memory cgroups and removes every 10 out of 11.
-It prints the initial size of the percpu memory, the size after
-creating all cgroups and the size after deleting most of them.
-
-Results:
-  vanilla:
-    ./percpu_test.sh
-    Percpu:             7488 kB
-    Percpu:           481152 kB
-    Percpu:           481152 kB
-
-  with this patchset applied:
-    ./percpu_test.sh
-    Percpu:             7488 kB
-    Percpu:           481408 kB
-    Percpu:           159488 kB
-
-So the total size of the percpu memory was reduced by 3 times.
-
-v2:
-  - depopulation heuristics changed and optimized
-  - chunks are put into a separate list, depopulation scan this list
-  - chunk->isolated is introduced, chunk->depopulate is dropped
-  - rearranged patches a bit
-  - fixed a panic discovered by krobot
-  - made pcpu_nr_empty_pop_pages per chunk type
-  - minor fixes
-
-rfc:
-  https://lwn.net/Articles/850508/
-
-
-Roman Gushchin (5):
-  percpu: split __pcpu_balance_workfn()
-  percpu: make pcpu_nr_empty_pop_pages per chunk type
-  percpu: generalize pcpu_balance_populated()
-  percpu: fix a comment about the chunks ordering
-  percpu: implement partial chunk depopulation
-
- mm/percpu-internal.h |   3 +-
- mm/percpu-stats.c    |   9 +-
- mm/percpu.c          | 219 ++++++++++++++++++++++++++++++++++---------
- 3 files changed, 182 insertions(+), 49 deletions(-)
-
+diff --git a/mm/percpu.c b/mm/percpu.c
+index 6596a0a4286e..5b505a459028 100644
+--- a/mm/percpu.c
++++ b/mm/percpu.c
+@@ -1930,31 +1930,22 @@ void __percpu *__alloc_reserved_percpu(size_t siz=
+e, size_t align)
+ }
+=20
+ /**
+- * __pcpu_balance_workfn - manage the amount of free chunks and populate=
+d pages
++ * pcpu_balance_free - manage the amount of free chunks
+  * @type: chunk type
+  *
+- * Reclaim all fully free chunks except for the first one.  This is also
+- * responsible for maintaining the pool of empty populated pages.  Howev=
+er,
+- * it is possible that this is called when physical memory is scarce cau=
+sing
+- * OOM killer to be triggered.  We should avoid doing so until an actual
+- * allocation causes the failure as it is possible that requests can be
+- * serviced from already backed regions.
++ * Reclaim all fully free chunks except for the first one.
+  */
+-static void __pcpu_balance_workfn(enum pcpu_chunk_type type)
++static void pcpu_balance_free(enum pcpu_chunk_type type)
+ {
+-	/* gfp flags passed to underlying allocators */
+-	const gfp_t gfp =3D GFP_KERNEL | __GFP_NORETRY | __GFP_NOWARN;
+ 	LIST_HEAD(to_free);
+ 	struct list_head *pcpu_slot =3D pcpu_chunk_list(type);
+ 	struct list_head *free_head =3D &pcpu_slot[pcpu_nr_slots - 1];
+ 	struct pcpu_chunk *chunk, *next;
+-	int slot, nr_to_pop, ret;
+=20
+ 	/*
+ 	 * There's no reason to keep around multiple unused chunks and VM
+ 	 * areas can be scarce.  Destroy all free chunks except for one.
+ 	 */
+-	mutex_lock(&pcpu_alloc_mutex);
+ 	spin_lock_irq(&pcpu_lock);
+=20
+ 	list_for_each_entry_safe(chunk, next, free_head, list) {
+@@ -1982,6 +1973,25 @@ static void __pcpu_balance_workfn(enum pcpu_chunk_=
+type type)
+ 		pcpu_destroy_chunk(chunk);
+ 		cond_resched();
+ 	}
++}
++
++/**
++ * pcpu_balance_populated - manage the amount of populated pages
++ * @type: chunk type
++ *
++ * Maintain a certain amount of populated pages to satisfy atomic alloca=
+tions.
++ * It is possible that this is called when physical memory is scarce cau=
+sing
++ * OOM killer to be triggered.  We should avoid doing so until an actual
++ * allocation causes the failure as it is possible that requests can be
++ * serviced from already backed regions.
++ */
++static void pcpu_balance_populated(enum pcpu_chunk_type type)
++{
++	/* gfp flags passed to underlying allocators */
++	const gfp_t gfp =3D GFP_KERNEL | __GFP_NORETRY | __GFP_NOWARN;
++	struct list_head *pcpu_slot =3D pcpu_chunk_list(type);
++	struct pcpu_chunk *chunk;
++	int slot, nr_to_pop, ret;
+=20
+ 	/*
+ 	 * Ensure there are certain number of free populated pages for
+@@ -2051,22 +2061,24 @@ static void __pcpu_balance_workfn(enum pcpu_chunk=
+_type type)
+ 			goto retry_pop;
+ 		}
+ 	}
+-
+-	mutex_unlock(&pcpu_alloc_mutex);
+ }
+=20
+ /**
+  * pcpu_balance_workfn - manage the amount of free chunks and populated =
+pages
+  * @work: unused
+  *
+- * Call __pcpu_balance_workfn() for each chunk type.
++ * Call pcpu_balance_free() and pcpu_balance_populated() for each chunk =
+type.
+  */
+ static void pcpu_balance_workfn(struct work_struct *work)
+ {
+ 	enum pcpu_chunk_type type;
+=20
+-	for (type =3D 0; type < PCPU_NR_CHUNK_TYPES; type++)
+-		__pcpu_balance_workfn(type);
++	for (type =3D 0; type < PCPU_NR_CHUNK_TYPES; type++) {
++		mutex_lock(&pcpu_alloc_mutex);
++		pcpu_balance_free(type);
++		pcpu_balance_populated(type);
++		mutex_unlock(&pcpu_alloc_mutex);
++	}
+ }
+=20
+ /**
 --=20
 2.30.2
 
