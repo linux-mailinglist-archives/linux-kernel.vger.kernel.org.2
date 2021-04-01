@@ -2,126 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 544D035205E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48CB035206D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235223AbhDAUIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 16:08:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52500 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234153AbhDAUIR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 16:08:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 524B9610E9;
-        Thu,  1 Apr 2021 20:08:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617307697;
-        bh=leXRGFCaTe62iNXS9w44O42W8yxC/IB8Rcab5IVMEdo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZkxjcrpVIoR0UEZPAPwcCGRNCr9cnaA8ap9gvRp4jG0hf1ImuQrB2wy7jdHBNp4J8
-         +B6DTRenJaqRuVw182uynS3O32+RWy36NHQ4NVmOs0uERUsoS0z0YIuCVKtIezpQaf
-         ar8zPs7y24q5Srof2D/yE6kT+20NEcXp6C2mI5SQ7X6r3aN/FP+ATmxolsyxP5MpYT
-         7NCJo48UM5HYxI/NGZmIbO5BI7lz6QHAEg6D/9PyVuj/nEJF3OsBF99i626YiF29DE
-         grEk3QDd2ku4LB6wDx6iQIOep2wLfsf2NpExyi99i3NsqyYF/Nc2kd3WGauqNfXcpi
-         sqcEd4bpv2hVA==
-Received: by mail-ej1-f49.google.com with SMTP id ce10so4641863ejb.6;
-        Thu, 01 Apr 2021 13:08:17 -0700 (PDT)
-X-Gm-Message-State: AOAM530mt8jJuY2h1OQXS/Cq50IeumxeWjMXKWNjDm9mZD/pM+q5ikak
-        BR1xKz2jJIyC0TLWfyQd6OeCFf5wB8iVb9RYpw==
-X-Google-Smtp-Source: ABdhPJwo4ozd5r/I3vDcht4+RN+4+j5bUHW3XwFV21OlpcnhU71wdknH6GNYfELodycCl347pJJo+2xFYHlBdNJZ9TM=
-X-Received: by 2002:a17:906:5e01:: with SMTP id n1mr10940420eju.359.1617307695709;
- Thu, 01 Apr 2021 13:08:15 -0700 (PDT)
+        id S235205AbhDAULE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 16:11:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234287AbhDAULC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 16:11:02 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41964C0613E6;
+        Thu,  1 Apr 2021 13:11:02 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id b16so3271118eds.7;
+        Thu, 01 Apr 2021 13:11:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lhY6AEaLMMkgvg+FYNnHd9fBKmOOgfnIt8T40ozDuzs=;
+        b=qhOpzzTG2HENwjAGLhQUT1qBNU1sZlK/ZyWlrgvFX3P9sUtMnlnWdLZp9Uo5cP2Fd6
+         Hs/sownsomQPprhLo5myKczvg7bUA/PlLD+9lgatC7q4oPf8x7QJhRFe3PvNDz5iwe9u
+         tbCIkWGZUsUSo5SPfrQefDj3XxpFfhs/TaiH0voqbJjPHCDj6hDZBjvvV2Cmj79jXL4Z
+         GbV2XIqfwxAEQlIhpGxEvQVWFBFSxFWrA1iq55yN55TZrwu3ZCV6RcOgW+qtlLZYOZEL
+         KR1CXcGAdiAAx9oQMNKA3s35SiIJtVQJ2dagGDzrBlZo8kernucRm3cusAPSJHYmDSTZ
+         uw0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lhY6AEaLMMkgvg+FYNnHd9fBKmOOgfnIt8T40ozDuzs=;
+        b=D7BfEclPjyOkEPpQJTbCZU97ZYkPvW848zkxFlw2bDb+te5/5zUuIN26UlbF2NPOfD
+         6dVJGYmfo7SXx4crBsLmN0OckLtoc2eOLywr2PWUSPzOyc7Vubsqdl9/A3NFRtCe9wWR
+         KuXYz7JQ8zPdH1gz99XfQ8oNFs3wo0PVUoaY00vOG8qtBzWdv/4IjeCDVYq+SXlafqMZ
+         wGCvCmGOG4URudmdmyynSb1A/ZeWVTSCX3Nsys+4VLuIIwbpW921wn/+Z6R8fupQpNU/
+         Fa3zFAvPIS0UjbofkjN+Fx440rZYPngOi+BMKYN+lNJSFCacHdiozRinCUf5K9b/DaTy
+         /kQw==
+X-Gm-Message-State: AOAM532cA88JfQTrNQ4LJRPDe05UF6wuljSxqCwFJ9KFUkr2mYP4ULDi
+        AHnGpwnalfSgRkBnh4uRwUIQdcc/Mdsz6xBUd6Q=
+X-Google-Smtp-Source: ABdhPJwmU2K77LdLdfvZWAExOfcct4DvD4TtqfUc5f/ANVMPG2uE3fZfJ2InJ7LexNueZknTnhK3VI3AE41ok9sI92Y=
+X-Received: by 2002:aa7:cc03:: with SMTP id q3mr12039422edt.366.1617307861047;
+ Thu, 01 Apr 2021 13:11:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210309000247.2989531-4-danielwa@cisco.com> <5f865584-09c9-d21f-ffb7-23cf07cf058e@csgroup.eu>
- <20210309212944.GR109100@zorba> <e4899874-1684-fa1b-443e-f4e478e05e31@csgroup.eu>
- <CAL_JsqKm76jRQYDcu3rGyUWKPLspoO=EZW_WFy=zAK+m_JYCTg@mail.gmail.com>
- <20fd7d44-8c39-48bc-25c3-990be9d9d911@csgroup.eu> <20210325195956.GM109100@zorba>
- <CAL_Jsq+10nucQSRkrTKe9BD5wBScqEb7-Rdg=9TsPiKuiuPG7w@mail.gmail.com>
- <20210330173254.GS109100@zorba> <CAL_JsqJKBeAgaHQJwOL9G2qLbQSh32L5LtN+cSUgn5sV_P8How@mail.gmail.com>
- <20210330233137.GB2469518@zorba>
-In-Reply-To: <20210330233137.GB2469518@zorba>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 1 Apr 2021 15:08:04 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqL8bJrxnJgs4doQ0L7YTF0vrDZLOoPOBdJzwTgMhXm-dw@mail.gmail.com>
-Message-ID: <CAL_JsqL8bJrxnJgs4doQ0L7YTF0vrDZLOoPOBdJzwTgMhXm-dw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/7] powerpc: convert config files to generic cmdline
-To:     Daniel Walker <danielwa@cisco.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Will Deacon <will@kernel.org>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+References: <20210329183312.178266-1-shy828301@gmail.com> <20210330164200.01a4b78f@thinkpad>
+ <CAHbLzkrYd+5L8Ep+b83PkkFL_QGQe_vSAk=erQ+fvC6dEOsGsw@mail.gmail.com> <20210331134727.47bc1e6d@thinkpad>
+In-Reply-To: <20210331134727.47bc1e6d@thinkpad>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Thu, 1 Apr 2021 13:10:49 -0700
+Message-ID: <CAHbLzkquYxq_eXoVhUCib9qu_aMS9U2XXjb5pop9JtJ8uco_vg@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/6] mm: thp: use generic THP migration for NUMA
+ hinting fault
+To:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Cc:     Mel Gorman <mgorman@suse.de>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Zi Yan <ziy@nvidia.com>, Michal Hocko <mhocko@suse.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Hugh Dickins <hughd@google.com>, hca@linux.ibm.com,
+        gor@linux.ibm.com, borntraeger@de.ibm.com,
         Andrew Morton <akpm@linux-foundation.org>,
-        X86 ML <x86@kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        xe-linux-external@cisco.com, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+        Linux MM <linux-mm@kvack.org>, linux-s390@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexander Gordeev <agordeev@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 6:31 PM Daniel Walker <danielwa@cisco.com> wrote:
+On Wed, Mar 31, 2021 at 4:47 AM Gerald Schaefer
+<gerald.schaefer@linux.ibm.com> wrote:
 >
-> On Tue, Mar 30, 2021 at 03:13:04PM -0500, Rob Herring wrote:
-> > On Tue, Mar 30, 2021 at 12:33 PM Daniel Walker <danielwa@cisco.com> wrote:
+> On Tue, 30 Mar 2021 09:51:46 -0700
+> Yang Shi <shy828301@gmail.com> wrote:
+>
+> > On Tue, Mar 30, 2021 at 7:42 AM Gerald Schaefer
+> > <gerald.schaefer@linux.ibm.com> wrote:
 > > >
-> > > On Thu, Mar 25, 2021 at 05:29:44PM -0600, Rob Herring wrote:
-> > > > On Thu, Mar 25, 2021 at 2:00 PM Daniel Walker <danielwa@cisco.com> wrote:
-> > > > >
-> > > > > On Thu, Mar 25, 2021 at 01:03:55PM +0100, Christophe Leroy wrote:
-> > > > > >
-> > > > > > Ok, so you agree we don't need to provide two CMDLINE, one to be appended and one to be prepended.
-> > > > > >
-> > > > > > Let's only provide once CMDLINE as of today, and ask the user to select
-> > > > > > whether he wants it appended or prepended or replacee. Then no need to
-> > > > > > change all existing config to rename CONFIG_CMDLINE into either of the new
-> > > > > > ones.
-> > > > > >
-> > > > > > That's the main difference between my series and Daniel's series. So I'll
-> > > > > > finish taking Will's comment into account and we'll send out a v3 soon.
-> > > > >
-> > > > > It doesn't solve the needs of Cisco, I've stated many times your changes have
-> > > > > little value. Please stop submitting them.
+> > > On Mon, 29 Mar 2021 11:33:06 -0700
+> > > Yang Shi <shy828301@gmail.com> wrote:
+> > >
 > > > >
-> > > > Can you please outline what those needs are which aren't met?
+> > > > When the THP NUMA fault support was added THP migration was not supported yet.
+> > > > So the ad hoc THP migration was implemented in NUMA fault handling.  Since v4.14
+> > > > THP migration has been supported so it doesn't make too much sense to still keep
+> > > > another THP migration implementation rather than using the generic migration
+> > > > code.  It is definitely a maintenance burden to keep two THP migration
+> > > > implementation for different code paths and it is more error prone.  Using the
+> > > > generic THP migration implementation allows us remove the duplicate code and
+> > > > some hacks needed by the old ad hoc implementation.
+> > > >
+> > > > A quick grep shows x86_64, PowerPC (book3s), ARM64 ans S390 support both THP
+> > > > and NUMA balancing.  The most of them support THP migration except for S390.
+> > > > Zi Yan tried to add THP migration support for S390 before but it was not
+> > > > accepted due to the design of S390 PMD.  For the discussion, please see:
+> > > > https://lkml.org/lkml/2018/4/27/953.
+> > > >
+> > > > I'm not expert on S390 so not sure if it is feasible to support THP migration
+> > > > for S390 or not.  If it is not feasible then the patchset may make THP NUMA
+> > > > balancing not be functional on S390.  Not sure if this is a show stopper although
+> > > > the patchset does simplify the code a lot.  Anyway it seems worth posting the
+> > > > series to the mailing list to get some feedback.
 > > >
-> > > append AND prepend at the same time on all architectures. Christophe doesn't
-> > > understand the need, and hence tries to minimize the feature set which is
-> > > incompatible with Cisco needs and all the other out of tree users.
+> > > The reason why THP migration cannot work on s390 is because the migration
+> > > code will establish swap ptes in a pmd. The pmd layout is very different from
+> > > the pte layout on s390, so you cannot simply write a swap pte into a pmd.
+> > > There are no separate swp primitives for swap/migration pmds, IIRC. And even
+> > > if there were, we'd still need to find some space for a present bit in the
+> > > s390 pmd, and/or possibly move around some other bits.
+> > >
+> > > A lot of things can go wrong here, even if it could be possible in theory,
+> > > by introducing separate swp primitives in common code for pmd entries, along
+> > > with separate offset, type, shift, etc. I don't see that happening in the
+> > > near future.
 > >
-> > Okay, but that's never been a feature in upstream. For upstream, we
-> > refactor first and add features 2nd. In this case, the difference is
-> > largely the kconfig and it would be better to not change the options
-> > twice, but that's not a blocker for taking the refactoring. You won't
-> > find a maintainer that's going to take adding a feature over cleanups
-> > and unification.
+> > Thanks a lot for elaboration. IIUC, implementing migration PMD entry
+> > is *not* prevented from by hardware, it may be very tricky to
+> > implement it, right?
 >
-> It kind of is a feature in upstream, it's a matter of opinion. Some platform
-> used append and some use prepend, and it's likely because the maintainers needed
-> one or the other for development.
+> Well, it depends. The HW is preventing proper full-blown swap + migration
+> support for PMD, similar to what we have for PTE, because we simply don't
+> have enough OS-defined bits in the PMD. A 5-bit swap type for example,
+> similar to a PTE, plus the PFN would not be possible.
+>
+> The HW would not prevent a similar mechanism in principle, i.e. we could
+> mark it as invalid to trigger a fault, and have some magic bits that tell
+> the fault handler or migration code what it is about.
+>
+> For handling migration aspects only, w/o any swap device or other support, a
+> single type bit could already be enough, to indicate read/write migration,
+> plus a "present" bit similar to PTE. But even those 2 bits would be hard to
+> find, though I would not entirely rule that out. That would be the tricky
+> part.
+>
+> Then of course, common code would need some changes, to reflect the
+> different swap/migration (type) capabilities of PTE and PMD entries.
+> Not sure if such an approach would be acceptable for common code.
+>
+> But this is just some very abstract and optimistic view, I have not
+> really properly looked into the details. So it might be even more
+> tricky, or not possible at all.
 
-Which arch/platform upstream does both prepend and append at the same time?
+Thanks a lot for the elaboration.
 
-> I'm not sure why you think I can't add the features in one go. It would be
-> horrid to take Christophe's changes, then have to do basically all the same work
-> a second time which is what Christophe's changes would force me to do.
+>
+> >
+> > >
+> > > Not sure if this is a show stopper, but I am not familiar enough with
+> > > NUMA and migration code to judge. E.g., I do not see any swp entry action
+> > > in your patches, but I assume this is implicitly triggered by the switch
+> > > to generic THP migration code.
+> >
+> > Yes, exactly. The migrate_pages() called by migrate_misplaced_page()
+> > takes care of everything.
+> >
+> > >
+> > > Could there be a work-around by splitting THP pages instead of marking them
+> > > as migrate pmds (via pte swap entries), at least when THP migration is not
+> > > supported? I guess it could also be acceptable if THP pages were simply not
+> > > migrated for NUMA balancing on s390, but then we might need some extra config
+> > > option to make that behavior explicit.
+> >
+> > Yes, it could be. The old behavior of migration was to return -ENOMEM
+> > if THP migration is not supported then split THP. That behavior was
+> > not very friendly to some usecases, for example, memory policy and
+> > migration lieu of reclaim (the upcoming). But I don't mean we restore
+> > the old behavior. We could split THP if it returns -ENOSYS and the
+> > page is THP.
+>
+> OK, as long as we don't get any broken PMD migration entries established
+> for s390, some extra THP splitting would be acceptable I guess.
 
-I didn't say it couldn't be done. In fact, I said it would be better
-all at once: "it would be better to not change the options twice"
-
-But both of you ignoring comments and continuing to post competing
-series is not going to get us there. TBC, I think Christophe's series
-is much closer to being in shape to merge upstream.
-
-> Say for example I implement this change only on one architecture. In that case
-> the maintainer would be accepting a feature enhancement , but there would be no
-> stopping it. I shouldn't have to go two strokes on one architecture, but each
-> change I'm making is essentially a single architecture. They can go in all
-> together or one at a time.
-
-Features do get implemented all the time on one arch. And then maybe a
-2nd and 3rd. At some point we decide no more copying, it needs to be
-common and refactored. We're at that point for cmdline handling IMO.
-
-Rob
+There will be no migration PMD installed. The current behavior is a
+no-op if THP migration is not supported.
