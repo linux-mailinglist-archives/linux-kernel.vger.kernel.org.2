@@ -2,56 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70BB2351CA4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36DB8351DA1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237458AbhDASTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:19:22 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:16319 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237544AbhDASAW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:00:22 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FB53m2Wdgz9vBf;
-        Thu,  1 Apr 2021 22:22:12 +0800 (CST)
-Received: from huawei.com (10.175.103.91) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Thu, 1 Apr 2021
- 22:24:15 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <rostedt@goodmis.org>, <mingo@redhat.com>
-Subject: [PATCH -next] iocost: remove redundant semi-colon
-Date:   Thu, 1 Apr 2021 22:27:27 +0800
-Message-ID: <20210401142727.1689300-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S240529AbhDASar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:30:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41128 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237318AbhDASIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:08:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3367A6128D;
+        Thu,  1 Apr 2021 14:28:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617287292;
+        bh=JFXI2qgnmtA6r8bUMZZVX4N/87ZKt4iyLtk7U97B1mA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e44YahgV/pu/QzxCZRD5kRVq1pm7DfpJ8cNgBXXdhSBjV2JLqG6Pl1jyJccu+GWoU
+         6qcFYsY+NjpeufBfEsp6ClTfQeqJSULxx+VCLPsHa6UpKG2kuh4s+nqlaRbOmwjwxX
+         rKR8qyaIloYa2lss0bTec2F8DVJN5Pbb9ZSigvmMRyLWdVriqn8RG1+6+qpoBLE79S
+         akT8KrCEztgiIgdMyD/bCd/92Gimi1FcJKh+3lgOifZMcGLk9yFaCXgJnK72cd9PXM
+         uX/C4306GX5OtzJQyqVvBA7sdsmS2VmLsNqruEjp1kPwNJ3XEQdCcrISq/IavflRPc
+         GZ7PasG9qcPag==
+Date:   Thu, 1 Apr 2021 15:27:59 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     madvenka@linux.microsoft.com
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v1 3/4] arm64: Detect FTRACE cases that make the
+ stack trace unreliable
+Message-ID: <20210401142759.GJ4758@sirena.org.uk>
+References: <77bd5edeea72d44533c769b1e8c0fea7a9d7eb3a>
+ <20210330190955.13707-1-madvenka@linux.microsoft.com>
+ <20210330190955.13707-4-madvenka@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="+Hr//EUsa8//ouuB"
+Content-Disposition: inline
+In-Reply-To: <20210330190955.13707-4-madvenka@linux.microsoft.com>
+X-Cookie: You can't take damsel here now.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- include/trace/events/iocost.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/trace/events/iocost.h b/include/trace/events/iocost.h
-index e282ce02fa2d..6d1626e7a4ce 100644
---- a/include/trace/events/iocost.h
-+++ b/include/trace/events/iocost.h
-@@ -160,7 +160,7 @@ TRACE_EVENT(iocost_ioc_vrate_adj,
- 
- 	TP_fast_assign(
- 		__assign_str(devname, ioc_name(ioc));
--		__entry->old_vrate = atomic64_read(&ioc->vtime_rate);;
-+		__entry->old_vrate = atomic64_read(&ioc->vtime_rate);
- 		__entry->new_vrate = new_vrate;
- 		__entry->busy_level = ioc->busy_level;
- 		__entry->read_missed_ppm = missed_ppm[READ];
--- 
-2.25.1
+--+Hr//EUsa8//ouuB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Tue, Mar 30, 2021 at 02:09:54PM -0500, madvenka@linux.microsoft.com wrote:
+
+> +	 * FTRACE trampolines.
+> +	 */
+> +#ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
+> +	{ (unsigned long) &ftrace_graph_call, 0 },
+> +#ifdef CONFIG_FUNCTION_GRAPH_TRACER
+> +	{ (unsigned long) ftrace_graph_caller, 0 },
+> +	{ (unsigned long) return_to_handler, 0 },
+> +#endif
+> +#endif
+
+It's weird that we take the address of ftrace_graph_call but not the
+other functions - we should be consistent or explain why.  It'd probably
+also look nicer to not nest the ifdefs, the dependencies in Kconfig will
+ensure we only get things when we should.
+
+--+Hr//EUsa8//ouuB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBl2G4ACgkQJNaLcl1U
+h9ABmwgAgAbbz3JBh1WdmU/r9m09iztnpUa9NC1TIa5viOMygEFVM6vdmqTldrbC
+ytq45f+kzx514+suKlEN2/1OP8eUMY+4Fr7gqbbbGlAiwVs4Bb+lhsubkCrNd2La
+8pvdwuj2l4moEzM3Yhz+DnC64XJGsDHWpqoRsSq3udh6AqD/jqfjfoZs4u5ZlrGC
+13+fC7Q1JlTvzfCNvUc/YCvp+r1qWDo0A7oXiS519MgqyXt00pYIQgWcyfYIua/i
+vXVQvO7P3x6Kfwj2aCGIG8Sxekiqupra+sFgHX3gQrmu6lwtOIBlbcqnpZ839t6q
+wNKbkMbAJF8qQ5XbpIXE5b+VDJW3tg==
+=i44Z
+-----END PGP SIGNATURE-----
+
+--+Hr//EUsa8//ouuB--
