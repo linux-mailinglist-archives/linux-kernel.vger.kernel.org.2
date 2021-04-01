@@ -2,134 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F92351EEB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE46C351E75
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239115AbhDASur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:50:47 -0400
-Received: from mail1.bemta24.messagelabs.com ([67.219.250.112]:29628 "EHLO
-        mail1.bemta24.messagelabs.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240344AbhDASaJ (ORCPT
+        id S240953AbhDASl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:41:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239844AbhDASRD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:30:09 -0400
-Received: from [100.112.134.153] (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256 bits))
-        by server-1.bemta.az-b.us-west-2.aws.symcld.net id 2C/76-17150-FC1E5606; Thu, 01 Apr 2021 15:07:59 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupkleJIrShJLcpLzFFi42JJl3vFpnvuYWq
-  CQfM5RYsnB9oZLd4cn85ksbBtCYvF5V1z2Cwezr7KaPF4xVt2BzaPxXteMnlsWtUJZPVNZvV4
-  v+8qm8fnTXIBrFGsmXlJ+RUJrBnHnl9lLLjKU3HweRNTA+M9ri5GLg4hgf+MEh9Xb2eBcJ4zS
-  vw93MHaxcjJISyQKnHgwlywhIjABEaJV90nwBLMAuUSW1ffgOo4wijxZupWNpAEm4C2xJYtv4
-  BsDg5eAVuJS584QEwWARWJAyviQCpEBcIleq/cBhvDKyAocXLmExYQm1PATmLK1DNMIOXMApo
-  S63fpQ2wSl7j1ZD4ThC0vsf3tHGaQEgkBBYm1P8B2SggkSPT8e8Q2gVFwFpKhsxAGzUIyaBaS
-  QQsYWVYxWiQVZaZnlOQmZuboGhoY6BoaGukaGhvpGhlY6CVW6SbplRbrlqcWl+ga6SWWF+sVV
-  +Ym56To5aWWbGIExlBKQcuFHYzr3nzQO8QoycGkJMo7ZVpKghBfUn5KZUZicUZ8UWlOavEhRh
-  kODiUJ3jX3UhOEBItS01Mr0jJzgPEMk5bg4FES4Y19AJTmLS5IzC3OTIdInWJUlBLnXQOSEAB
-  JZJTmwbXBUsglRlkpYV5GBgYGIZ6C1KLczBJU+VeM4hyMSsK8LMCEJMSTmVcCN/0V0GImoMWu
-  N8AWlyQipKQamC69nzh3WUW7Qsa31upWwRVrexfqJZ5R27j40Y97G1cltb4VWrDnpArPh+dyw
-  d2ldq4KbPcNmlub92d1/djYvPr8MRO7eSFP9N/+TsvZr/B2ifmixdza3CdzlFrPqulXCet/YJ
-  0UvcfTWXDiil06Vv8DbwQe89DzKGcsYStbdkTR2nqRlfyWY192rGR899HRQ32f9EXvHmP3uyw
-  NutPYEvf0M82vmjrZTm2j6lktzYqJO+9GP+jdrybQ+jX55Msll8x9BbbNzKrYJbB2Z+YivVy5
-  s381lpe3PuAWLZaea/34XaTr541u8gf7cz64zQzT5Lj8+16AwPmvux9/WOgw8dzdFNenzx3KF
-  UT42+7X9yixFGckGmoxFxUnAgDnzIpOnAMAAA==
-X-Env-Sender: markpearson@lenovo.com
-X-Msg-Ref: server-27.tower-356.messagelabs.com!1617289676!60248!1
-X-Originating-IP: [103.30.234.6]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.60.3; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 17845 invoked from network); 1 Apr 2021 15:07:58 -0000
-Received: from unknown (HELO lenovo.com) (103.30.234.6)
-  by server-27.tower-356.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 1 Apr 2021 15:07:58 -0000
-Received: from reswpmail01.lenovo.com (unknown [10.62.32.20])
-        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by Forcepoint Email with ESMTPS id 3305AC9AC3AC72103416;
-        Thu,  1 Apr 2021 23:07:55 +0800 (CST)
-Received: from localhost.localdomain (10.38.99.122) by reswpmail01.lenovo.com
- (10.62.32.20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2106.2; Thu, 1 Apr 2021
- 11:07:52 -0400
-Subject: Re: [External] Re: [PATCH 31/32] Documentation: update
- sysfs-platform_profile.rst reference
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-CC:     Jonathan Corbet <corbet@lwn.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        <linux-kernel@vger.kernel.org>
-References: <cover.1617279355.git.mchehab+huawei@kernel.org>
- <828434d891e40234255e3f06c13827b7996b1ad1.1617279356.git.mchehab+huawei@kernel.org>
- <e042f8f8-0ba1-098d-2503-8c319c3c2bf9@redhat.com>
-From:   Mark Pearson <markpearson@lenovo.com>
-Message-ID: <79ad4a98-a70c-2f7d-3ce6-8202fcc83857@lenovo.com>
-Date:   Thu, 1 Apr 2021 11:07:52 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 1 Apr 2021 14:17:03 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19492C00F7E6;
+        Thu,  1 Apr 2021 08:09:02 -0700 (PDT)
+Date:   Thu, 01 Apr 2021 15:08:54 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1617289735;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=t0zDfszPMzVD4e7e1uk3V4RHtYjezhTwgdZ2JqUzdcQ=;
+        b=E0ivD/olUHzmIk3ezFKUp1P3igmIQ+M9kpHbU5DlFxwNuXwyGrmONJCScO/JiY0x0YLBP2
+        /1gBvQxhIww9K9h3HJ9nIubmLMncDc5lx1QFPGbEErFLFHDWLZwiykUgWv/S6iE+TjF3z4
+        Ic0XVxebgfcodyJ2xJ/hAZGhQicvfCzxIuU6lUG43D3vLZTD8A2E/gv5tcU08Ej+zWIjDk
+        oVUQf7mSWnHwPY+Rq+1Z7xwFSaYz8xvuM7fqS2XB5HSlhp++F2BansmKPIG5+CkhU57nMI
+        b2y7o1oN+pmED1QZhKQm1mQMheufv0k+GXfdLS9DI2kJGL3xZbzcouMo2hOuZA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1617289735;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=t0zDfszPMzVD4e7e1uk3V4RHtYjezhTwgdZ2JqUzdcQ=;
+        b=7otdZnEoMf0dYBsgWxrO8k78XLK9cdxGIVd/cMJYUclQE/wzDc0c4bKciHybH//IhecedZ
+        BNX1COYdAaXFGKCQ==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/core] objtool: Cache instruction relocs
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Borislav Petkov <bp@suse.de>, Miroslav Benes <mbenes@suse.cz>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210326151300.195441549@infradead.org>
+References: <20210326151300.195441549@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <e042f8f8-0ba1-098d-2503-8c319c3c2bf9@redhat.com>
+Message-ID: <161728973469.29796.15437583715279384112.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.38.99.122]
-X-ClientProxiedBy: reswpmail04.lenovo.com (10.62.32.23) To
- reswpmail01.lenovo.com (10.62.32.20)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the x86/core branch of tip:
 
+Commit-ID:     4ecdc0265dc911adba0772fd6e816d48da678fe7
+Gitweb:        https://git.kernel.org/tip/4ecdc0265dc911adba0772fd6e816d48da678fe7
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Fri, 26 Mar 2021 16:12:13 +01:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 01 Apr 2021 13:25:38 +02:00
 
-On 01/04/2021 09:49, Hans de Goede wrote:
-> Hi,
-> 
-> On 4/1/21 2:17 PM, Mauro Carvalho Chehab wrote:
->> The file name: Documentation/ABI/testing/sysfs-platform_profile.rst
->> should be, instead: Documentation/userspace-api/sysfs-platform_profile.rst.
->>
->> Update its cross-reference accordingly.
->>
->> Fixes: a2ff95e018f1 ("ACPI: platform: Add platform profile support")
->> Fixes: 8e0cbf356377 ("Documentation: Add documentation for new platform_profile sysfs attribute")
->> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> 
-> Thanks, patch looks good to me:
-> 
-> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-> 
-> Rafael, I assume you will merge this through your tree?
-> 
-> Regards,
-> 
-> Hans
-> 
-Looks good to me too - though I'd missed the fact the file had moved
-somehow :)
+objtool: Cache instruction relocs
 
-Not sure if my reviewed tag has any value but if it's useful:
-Reviewed-by: Mark Pearson <markpearson@lenovo.com>
+Track the reloc of instructions to avoid having to look them up again
+later.
 
-Just for my education - how do things get moved from testing to
-somewhere else, is there a decision process etc?
+(Technically x86 instructions can have two relocations, but not jumps
+and calls, for which we're using this.)
 
-Thank you!
-Mark
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+Link: https://lkml.kernel.org/r/20210326151300.195441549@infradead.org
+---
+ tools/objtool/check.c                 | 28 ++++++++++++++++++++------
+ tools/objtool/include/objtool/check.h |  1 +-
+ 2 files changed, 23 insertions(+), 6 deletions(-)
 
->> ---
->>  include/linux/platform_profile.h | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/include/linux/platform_profile.h b/include/linux/platform_profile.h
->> index a6329003aee7..e5cbb6841f3a 100644
->> --- a/include/linux/platform_profile.h
->> +++ b/include/linux/platform_profile.h
->> @@ -2,7 +2,7 @@
->>  /*
->>   * Platform profile sysfs interface
->>   *
->> - * See Documentation/ABI/testing/sysfs-platform_profile.rst for more
->> + * See Documentation/userspace-api/sysfs-platform_profile.rst for more
->>   * information.
->>   */
->>  
->>
-> 
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 77074db..1f4154f 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -797,6 +797,25 @@ __weak bool arch_is_retpoline(struct symbol *sym)
+ 	return false;
+ }
+ 
++#define NEGATIVE_RELOC	((void *)-1L)
++
++static struct reloc *insn_reloc(struct objtool_file *file, struct instruction *insn)
++{
++	if (insn->reloc == NEGATIVE_RELOC)
++		return NULL;
++
++	if (!insn->reloc) {
++		insn->reloc = find_reloc_by_dest_range(file->elf, insn->sec,
++						       insn->offset, insn->len);
++		if (!insn->reloc) {
++			insn->reloc = NEGATIVE_RELOC;
++			return NULL;
++		}
++	}
++
++	return insn->reloc;
++}
++
+ /*
+  * Find the destination instructions for all jumps.
+  */
+@@ -811,8 +830,7 @@ static int add_jump_destinations(struct objtool_file *file)
+ 		if (!is_static_jump(insn))
+ 			continue;
+ 
+-		reloc = find_reloc_by_dest_range(file->elf, insn->sec,
+-						 insn->offset, insn->len);
++		reloc = insn_reloc(file, insn);
+ 		if (!reloc) {
+ 			dest_sec = insn->sec;
+ 			dest_off = arch_jump_destination(insn);
+@@ -944,8 +962,7 @@ static int add_call_destinations(struct objtool_file *file)
+ 		if (insn->type != INSN_CALL)
+ 			continue;
+ 
+-		reloc = find_reloc_by_dest_range(file->elf, insn->sec,
+-					       insn->offset, insn->len);
++		reloc = insn_reloc(file, insn);
+ 		if (!reloc) {
+ 			dest_off = arch_jump_destination(insn);
+ 			insn->call_dest = find_call_destination(insn->sec, dest_off);
+@@ -1144,8 +1161,7 @@ static int handle_group_alt(struct objtool_file *file,
+ 		 * alternatives code can adjust the relative offsets
+ 		 * accordingly.
+ 		 */
+-		alt_reloc = find_reloc_by_dest_range(file->elf, insn->sec,
+-						   insn->offset, insn->len);
++		alt_reloc = insn_reloc(file, insn);
+ 		if (alt_reloc &&
+ 		    !arch_support_alt_relocation(special_alt, insn, alt_reloc)) {
+ 
+diff --git a/tools/objtool/include/objtool/check.h b/tools/objtool/include/objtool/check.h
+index e5528ce..56d50bc 100644
+--- a/tools/objtool/include/objtool/check.h
++++ b/tools/objtool/include/objtool/check.h
+@@ -56,6 +56,7 @@ struct instruction {
+ 	struct instruction *jump_dest;
+ 	struct instruction *first_jump_src;
+ 	struct reloc *jump_table;
++	struct reloc *reloc;
+ 	struct list_head alts;
+ 	struct symbol *func;
+ 	struct list_head stack_ops;
