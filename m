@@ -2,82 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA13351089
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 10:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07D6A35108D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 10:05:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233633AbhDAIDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 04:03:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233553AbhDAIBx (ORCPT
+        id S233409AbhDAIEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 04:04:23 -0400
+Received: from mail-m17637.qiye.163.com ([59.111.176.37]:8488 "EHLO
+        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230284AbhDAIDz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 04:01:53 -0400
-X-Greylist: delayed 459 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 01 Apr 2021 01:01:53 PDT
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16122C0613E6;
-        Thu,  1 Apr 2021 01:01:53 -0700 (PDT)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4F9wcv3lyCzQk1Y;
-        Thu,  1 Apr 2021 10:01:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
-        content-transfer-encoding:content-type:content-type:mime-version
-        :subject:subject:references:in-reply-to:message-id:from:from
-        :date:date:received; s=mail20150812; t=1617264108; bh=5V1MdvL7YC
-        8mVZKfU9szLtKJFoYBtXMkN3Yon1JEiHM=; b=G0AyDYnBdxfI9/snr0bPAutkON
-        LpO7nRJbVUa5KRfAN/ryNMnK7qBm9ncSpJ1546u9AFdXqkYGD+gxD+5jf4XgV3wa
-        72J2u25OnsGMithZo2aObiDBYikj1aY4AWNxUyslpQBXx9u1IC5vvYJkv0KA/GQ+
-        HGDuyBJsfAxJY7op1FS0leU12OfXE5hIoWGd37GUZccbagHtHG2Pt2BdQQJOkp2j
-        JUdFkupizo0yzuLCSEBKwDRiZ9DBp90vx0F/kOIHCXhtiGG/M9UZoLuXIsZrSRGv
-        aeUNB7jYSsik1DuelN7mZ3WA3RB4o9S85z1F+oCJ2c5iBELIiyBXnp5BElNA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1617264109;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5V1MdvL7YC8mVZKfU9szLtKJFoYBtXMkN3Yon1JEiHM=;
-        b=KQ/vkqM1BHlzIDsPMdL72r2R3771zg144k5E9+uDpVxONOJWPra9ZnaEdjbSUpjq75O5dW
-        jCH/EPncm714aD8hehSf9pq3OTLTYOZpmkkZH2EYzPcrLFJWuGmurLR25WPZWAdb1FNf1D
-        qi7Tori3uzRe0goEYmiNqdzI1bzI8qZn7ZYpR57WuYe7+B6ycNZgi3DpgKmp+gyD0O9cfu
-        QlOlmh/UriKDmn3i5rn5hepsmlMnva7qzvV56GKSuV4Ekn4MBsknTYzbPiOawURZ7lfSUJ
-        Axmao3NFqStM0bybgx2fzPXyOVSlCvOM2qW2JMRHiCm7xPc67E/cRwPKp+N06w==
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by gerste.heinlein-support.de (gerste.heinlein-support.de [91.198.250.173]) (amavisd-new, port 10030)
-        with ESMTP id cm216P1dCBau; Thu,  1 Apr 2021 10:01:48 +0200 (CEST)
-Date:   Thu, 1 Apr 2021 10:01:47 +0200 (CEST)
-From:   torvic9@mailbox.org
-To:     =?UTF-8?Q?Piotr_G=C3=B3rski?= <lucjan.lucjanov@gmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "oleksandr@natalenko.name" <oleksandr@natalenko.name>,
-        "terrelln@fb.com" <terrelln@fb.com>,
-        "michal.lkml@markovi.net" <michal.lkml@markovi.net>
-Message-ID: <1118697629.5907.1617264107835@office.mailbox.org>
-In-Reply-To: <722602000.5829.1617263646814@office.mailbox.org>
-References: <722602000.5829.1617263646814@office.mailbox.org>
-Subject: Re: [PATCH] init: add support for zstd compressed modules
+        Thu, 1 Apr 2021 04:03:55 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id 1193D9804D8;
+        Thu,  1 Apr 2021 16:03:52 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] fs: btrfs: Remove repeated struct declaration
+Date:   Thu,  1 Apr 2021 16:03:39 +0800
+Message-Id: <20210401080339.999529-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-MBO-SPAM-Probability: *
-X-Rspamd-Score: 1.19 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 68D8A17BD
-X-Rspamd-UID: f965c0
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZTx5DSEMfSUwYGUtLVkpNSkxJTU9JSElISkpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6ME06Axw6HD8UPCsrDEo3OR06
+        Li5PCUpVSlVKTUpMSU1PSUhJTUlDVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFJS01LNwY+
+X-HM-Tid: 0a788c75c728d992kuws1193d9804d8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Piotr, good work!
-Question: Is `-T0` really faster in this particular case than the default `-T1`? Are modules installed sequentially?
-I also saw that Masahiro did some work on modules_install, moving MODULE_COMPRESS from the base Makefile to scripts/Makefile.modinst, so perhaps this should also be moved there at a later point.
+struct btrfs_inode is declared twice. One is declared at 67th line.
+The blew declaration is not needed. Remove the duplicate.
+struct btrfs_fs_info should be declared in the forward declarations.
+Move it to the forward declarations.
 
-(sorry for double post)
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ fs/btrfs/extent_io.h | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Tor Vic
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index 824640cb0ace..227215a5722c 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -66,6 +66,7 @@ enum {
+ struct btrfs_root;
+ struct btrfs_inode;
+ struct btrfs_io_bio;
++struct btrfs_fs_info;
+ struct io_failure_record;
+ struct extent_io_tree;
+ 
+@@ -270,9 +271,6 @@ struct bio *btrfs_io_bio_alloc(unsigned int nr_iovecs);
+ struct bio *btrfs_bio_clone(struct bio *bio);
+ struct bio *btrfs_bio_clone_partial(struct bio *orig, int offset, int size);
+ 
+-struct btrfs_fs_info;
+-struct btrfs_inode;
+-
+ int repair_io_failure(struct btrfs_fs_info *fs_info, u64 ino, u64 start,
+ 		      u64 length, u64 logical, struct page *page,
+ 		      unsigned int pg_offset, int mirror_num);
+-- 
+2.25.1
+
