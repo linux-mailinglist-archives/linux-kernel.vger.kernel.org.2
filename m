@@ -2,97 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60D2635212D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FCFB352132
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234120AbhDAU4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 16:56:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38928 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234024AbhDAU4u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 16:56:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6357D60BBB;
-        Thu,  1 Apr 2021 20:56:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617310610;
-        bh=9T/IXqBtp+umSPMgidOSDUq4bIQY292EI+YBBoHkTlc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZTqDelDp/ufSmnejeQjZT0LOta51/UU2Qah0+yFRPxcRPELTf2IVLz7as8EMCryoQ
-         Wbz8iHuAjFCAyYsctedDXXcEDnlYFfC+/gmNPk8MeYyRRquao9EpTNXfk1tx1IgzE2
-         So7xHHEA957/FJgqkIH+sWjqjQfAMgjMcISsqw+4=
-Date:   Thu, 1 Apr 2021 22:56:45 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        hui.wang@canonical.com, sanyog.r.kale@intel.com,
-        rander.wang@linux.intel.com, bard.liao@intel.com
-Subject: Re: [PATCH 1/2] soundwire: add macro to selectively change error
- levels
-Message-ID: <YGYzjWOz076M3ZUq@kroah.com>
-References: <20210331011355.14313-1-yung-chuan.liao@linux.intel.com>
- <20210331011355.14313-2-yung-chuan.liao@linux.intel.com>
- <YGV1HYL+XcVmxfQG@vkoul-mobl.Dlink>
- <0834b9fc-9b3a-1184-fed2-6f9c7e66c6fb@linux.intel.com>
- <YGX5AUQi41z52xk8@kroah.com>
- <81c6b53b-e3fb-32d0-1e99-365d87ab6524@linux.intel.com>
- <YGYQIJh8X2C8sW44@kroah.com>
- <28515962-6fb1-511d-fc6b-f1422b11e6ab@linux.intel.com>
+        id S234220AbhDAU6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 16:58:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233816AbhDAU63 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 16:58:29 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 651F4C0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 13:58:29 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lS4OV-0003bP-Sw; Thu, 01 Apr 2021 22:58:23 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lS4OV-0005nC-5i; Thu, 01 Apr 2021 22:58:23 +0200
+Date:   Thu, 1 Apr 2021 22:58:19 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 4/7] pwm: pca9685: Support staggered output ON times
+Message-ID: <20210401205819.soloiozcrgq4eool@pengutronix.de>
+References: <20210329125707.182732-1-clemens.gruber@pqgruber.com>
+ <20210329125707.182732-4-clemens.gruber@pqgruber.com>
+ <20210329170357.par7c3izvtmtovlj@pengutronix.de>
+ <YGILdjZBCc2vVlRd@workstation.tuxnet>
+ <20210329180206.rejl32uajslpvbgi@pengutronix.de>
+ <YGRqZsi4WApZcwIT@workstation.tuxnet>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="n7fwc2tuuwjeiysf"
 Content-Disposition: inline
-In-Reply-To: <28515962-6fb1-511d-fc6b-f1422b11e6ab@linux.intel.com>
+In-Reply-To: <YGRqZsi4WApZcwIT@workstation.tuxnet>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 01:43:53PM -0500, Pierre-Louis Bossart wrote:
-> 
-> > > > My bigger issue with this is that this macro is crazy.  Why do you need
-> > > > debugging here at all for this type of thing?  That's what ftrace is
-> > > > for, do not sprinkle code with "we got this return value from here!" all
-> > > > over the place like what this does.
-> > > 
-> > > We are not sprinkling the code all over the place with any new logs, they
-> > > exist already in the SoundWire code and this patch helps filter them out.
-> > > See e.g. patch 2/2
-> > > 
-> > > -			dev_err(&slave->dev,
-> > > -				"Clk Stop type =%d failed: %d\n", type, ret);
-> > > +			sdw_dev_dbg_or_err(&slave->dev, ret != -ENODATA,
-> > > +					   "Clk Stop mode %d type =%d failed: %d\n",
-> > > +					   mode, type, ret);
-> > 
-> > You just added a debug log for no reason.
-> 
-> The number of logs is lower when dynamic debug is not enabled, and equal
-> when it is. there's no addition.
-> 
-> The previous behavior was unconditional dev_err that everyone sees.
-> 
-> Now it's dev_err ONLY when the code is NOT -ENODATA, and dev_dgb otherwise,
-> meaning it will seen ONLY be seen IF dynamic debug is enabled for
-> drivers/soundwire/bus.c
-> 
-> Allow me to use another example from patch2:
-> 
-> -		if (ret == -ENODATA)
-> -			dev_dbg(bus->dev,
-> -				"ClockStopNow Broadcast msg ignored %d", ret);
-> -		else
-> -			dev_err(bus->dev,
-> -				"ClockStopNow Broadcast msg failed %d", ret);
-> +		sdw_dev_dbg_or_err(bus->dev, ret != -ENODATA,
-> +				   "ClockStopNow Broadcast msg failed %d\n", ret);
-> 
-> There's no new log, is there?
 
-No, but that is not what you showed above which was just an error
-message being replaced with both a debug and an error message.
+--n7fwc2tuuwjeiysf
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Just drop the debug messages, they are pointless, right?
+Hello Clemens,
 
-thanks,
+On Wed, Mar 31, 2021 at 02:26:14PM +0200, Clemens Gruber wrote:
+> On Mon, Mar 29, 2021 at 08:02:06PM +0200, Uwe Kleine-K=F6nig wrote:
+> > On Mon, Mar 29, 2021 at 07:16:38PM +0200, Clemens Gruber wrote:
+> > > On Mon, Mar 29, 2021 at 07:03:57PM +0200, Uwe Kleine-K=F6nig wrote:
+> > > > On Mon, Mar 29, 2021 at 02:57:04PM +0200, Clemens Gruber wrote:
+> > > > > The PCA9685 supports staggered LED output ON times to minimize cu=
+rrent
+> > > > > surges and reduce EMI.
+> > > > > When this new option is enabled, the ON times of each channel are
+> > > > > delayed by channel number x counter range / 16, which avoids asse=
+rting
+> > > > > all enabled outputs at the same counter value while still maintai=
+ning
+> > > > > the configured duty cycle of each output.
+> > > > >=20
+> > > > > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+> > > >=20
+> > > > Is there a reason to not want this staggered output? If it never hu=
+rts I
+> > > > suggest to always stagger and drop the dt property.
+> > >=20
+> > > There might be applications where you want multiple outputs to assert=
+ at
+> > > the same time / to be synchronized.
+> > > With staggered outputs mode always enabled, this would no longer be
+> > > possible as they are spread out according to their channel number.
+> > >=20
+> > > Not sure how often that usecase is required, but just enforcing the
+> > > staggered mode by default sounds risky to me.
+> >=20
+> > There is no such guarantee in the PWM framework, so I don't think we
+> > need to fear breaking setups. Thierry?
+>=20
+> Still, someone might rely on it? But let's wait for Thierry's opinion.
 
-greg k-h
+Someone might rely on the pca9685 driver being as racy as a driver with
+legacy bindings usually is. Should this be the reason to drop this whole
+series?
+
+> > One reason we might not want staggering is if we have a consumer who
+> > cares about config transitions. (This however is moot it the hardware
+> > doesn't provide sane transitions even without staggering.)
+> >=20
+> > Did I already ask about races in this driver? I assume there is a
+> > free running counter and the ON and OFF registers just define where in
+> > the period the transitions happen, right? Given that changing ON and OFF
+> > needs two register writes probably all kind of strange things can
+> > happen, right? (Example thought: for simplicity's sake I assume ON is
+> > always 0. Then if you want to change from OFF =3D 0xaaa to OFF =3D 0xcc=
+c we
+> > might see a period with 0xacc. Depending on how the hardware works we
+> > might even see 4 edges in a single period then.)
+>=20
+> Yes, there is a free running counter from 0 to 4095.
+> And it is probably true, that there can be short intermediate states
+> with our two register writes.
+>=20
+> There is a separate mode "Update on ACK" (MODE2 register, bit 3 "OCH"),
+> which is 0 by default (Outputs change on STOP command) but could be set
+> to 1 (Outputs change on ACK):
+> "Update on ACK requires all 4 PWM channel registers to be loaded before
+> outputs will change on the last ACK."
+
+This is about the ACK and STOP in the i2c communication, right? I fail
+to understand the relevance of this difference. I guess I have to read
+the manual myself.
+=20
+> The chip datasheet also states:
+> "Because the loading of the LEDn_ON and LEDn_OFF registers is via the
+> I2C-bus, and asynchronous to the internal oscillator, we want to ensure
+> that we do not see any visual artifacts of changing the ON and OFF
+> values. This is achieved by updating the changes at the end of the LOW
+> cycle."
+
+So we're only out of luck if the first register write happens before and
+the second after the end of the LOW cycle, aren't we?
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--n7fwc2tuuwjeiysf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBmM+gACgkQwfwUeK3K
+7AnrnAf+PVqO/phKEkjjclL7NYX3i7Sm9fZztTdeMkcLrsnLRFF5qwQXZSraTmST
+3WWiIqCLUmgCh/ksNhqyP6Ka1tQe0oEnNodSjMVKCK6773byXUevAz4xF/1xXFfj
+Lcef2ZfuztMUgRAKOKCDqMDN/KJNsYZrYWtcJND2GwIGSCIIbnZdkVVPZ2rq2Ewh
+lf5HuxSDzn28um1H+4wD4MzXtWcBPV72UFgPwitUC0xDxwuZARQ7HmDJorCp8r7C
+swsBJ8V0fVab2vFyL0jch+IHn3E8MS6VFj442JMk9kNwSWjscaJFVJ+XcP0gvwFk
+/pQEleVfH97fDbezvKksfAfh5xTi3w==
+=scZq
+-----END PGP SIGNATURE-----
+
+--n7fwc2tuuwjeiysf--
