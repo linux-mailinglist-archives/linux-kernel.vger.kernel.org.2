@@ -2,127 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 325A2352166
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EB59352168
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234598AbhDAVQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 17:16:07 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:38738 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234406AbhDAVQF (ORCPT
+        id S234667AbhDAVQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 17:16:32 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:33684 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234406AbhDAVQ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 17:16:05 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AhvtUpagYSEDpkH6znjKDNKNDPHBQX4lx3DAb?=
- =?us-ascii?q?vn1ZSRFFG/Gwv9yynfgdyB//gCsQXnZlotybJKycWxrnmKJdy48XILukQU3ao2?=
- =?us-ascii?q?OuNo5v9s/PxDfnFi34+IdmpMBdWoJ5D8D9CkU/sNbi7GCDYrId6fSO7azAv5a9?=
- =?us-ascii?q?815DVgdvApsB0y5cKiK2VnJ7XxNHA51RLvuhz+5KvSCpd3hSTunTPAh9Y8H5q9?=
- =?us-ascii?q?fGlI3rbHc9bnZNgmbhsRqS5LT3EweV01Mlahwn+9sf2FPIjhDj4eGbu+y7oyWs?=
- =?us-ascii?q?sVP71Yhcm9fq17J4damxo/USQw+c6TqAVcBMfYSroS0voOqy9VomtNXXuR8vM6?=
- =?us-ascii?q?1ImgjsV1Dwjh331wb61jEyr1fk1F+DmHPm5ff0XTQgFqN69PJkWyqcz3BlkMB3?=
- =?us-ascii?q?0apN0W7cnYFQFwn4hyj458LFTVVDkVe1u2MrlaoohXRZe40YdbNBsOUkjQ1oOa?=
- =?us-ascii?q?ZFOBi/xJEsEeFoAs2Zzu1Ra0midHzcvnNi2piFQmkzNg3ueDlMhuWllxxt2Fxp?=
- =?us-ascii?q?xUoRw8IS2l0a8ogmcoJJ4+TfPr4tvK1ST/URcbl2CI46MIeKI12IZSiJHHOZIF?=
- =?us-ascii?q?zhGq1CEWnKsYTP+7kw5PunYtgv15s9mJPIVXlctWI0ZmLWIcCCx5FQ6Hn2MS+A?=
- =?us-ascii?q?dAWo7vsby4lyu7X6SrauGzaEUkoWiMelo+8SGInjQPC4NIhND/KmBnurOoBUxA?=
- =?us-ascii?q?r3XplUJxAlIY0ok+d+f2jLjtPAK4XsuOCeWu3UPqDVCjohWnnyGD84dh2bHrQA?=
- =?us-ascii?q?0mmbHlvDxDTBUXLkfULyubhqFrLBxvMezIgWOpcJjxMcjk6h4NqXFCZLvaM3dn?=
- =?us-ascii?q?ZvOb+PqNL3mUCGuULzq0l5MBtUCUhYpJ/6VWlRmAMMO0ToNZ4eptS2YwlprTK6?=
- =?us-ascii?q?Dy46a/mTPB9Uplxx967yBYeX3zoeB9WuNX/fp2cPpUiNU4wXlsS4lLHYU6J9Kq?=
- =?us-ascii?q?xjdL16FA3NGRAwsx1tsn1/ZAgNQVKaOSjpjYmjkZwIFMDSf9Rxm26QUIZpgEOa?=
- =?us-ascii?q?kX/ZidAkR3MdUTLre9WQmxwSSz1dgUA006J3usv1pR+fbU8ExMgoOlxFb2qaRJ?=
- =?us-ascii?q?hcCh6eWYlSkrf3PCZ9UHmNnj7frx0oYGLl+wEziwXaXFipUMCOJmAYlmFT067s?=
- =?us-ascii?q?/l8xXH6aZVhMZndztpA4M3/HtHZ12eqifbGyzGOVV1sHzogmQUP4SApXBjkr68?=
- =?us-ascii?q?G81RaTljrHP24h3I8SMuvUC6lmVarS1HOrIIihiLwcH/RJ4ZppCdzouugXe+SZ?=
- =?us-ascii?q?fAOeMTP+BcMxsjbl0UoNCW1Rkj0JgPno0Brq4CyEx3Y5G+PVO0kjbaocOcug42?=
- =?us-ascii?q?/tQOuo3J11gckuh/a5Nnz8Z7e9uOrqRg8GDimWh2G4T+sl888J+Y0zsaZ+BJnd?=
- =?us-ascii?q?X3/j0mpd0BA3Mcfzkwc/Tc1Akc38E74qW/ZXXSRTumcNvpCoCmAAtwTtGO8wfV?=
- =?us-ascii?q?03lRbgTqy0youNjYBqO1GLoQv7BEKW/CJc9crURifr789hN4sAZUBtLHUm4Hts?=
- =?us-ascii?q?/Om+Z5TdJQWjeeZE5ke7OBaGAcNgYZnAPbUbtRBh5d6U28eRairjwQjV1AELXJ?=
- =?us-ascii?q?5mwiKCQcmoBhiLFvMN29umOU6Uiq/vxMKolj/4RX+abEsf7Lc1BHA4X4BkkTcr?=
- =?us-ascii?q?i40l2jWzTKvXrkopn0BF2CpqjFL3xYSqiV2rXn1uAEn+mZVZXT5aN1CSlsTb+e?=
- =?us-ascii?q?2k1HDwiQI1oaXrJQN3ZdFBG98ZU47tCTxhQPJgz4KVww=3D=3D?=
-X-IronPort-AV: E=Sophos;i="5.81,296,1610406000"; 
-   d="scan'208";a="501210527"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 23:16:04 +0200
-Date:   Thu, 1 Apr 2021 23:16:03 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
-cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Subject: Re: [Outreachy kernel] [PATCH] staging: emxx_udc: Ending line with
- argument
-In-Reply-To: <20210401195457.24512-1-martinsdecarvalhobeatriz@gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2104012314480.2908@hadrien>
-References: <20210401195457.24512-1-martinsdecarvalhobeatriz@gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Thu, 1 Apr 2021 17:16:27 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617311787; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=N1rfetjGj9Mgpic0F4KnoNz3E55UZDt9FIL0P3fkZzU=; b=Cwy2s4ogh+5YjL/HomIUPsgtO7xuFqsiZEc2igKBVuGrpjKLn9Dk2XE9Rm8/vaDgopKnhp+9
+ H0f4UPLJAwkXFV+pnZkr0oxicUeK0C6yKOXNg5V+3UmjtNjCNBazV62bkF44rkYVj2tOfoFc
+ o7K3lNFRuJ0QRnQngui7OaQMGlw=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 6066382a74f773a66493f013 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 01 Apr 2021 21:16:26
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 98ACBC43465; Thu,  1 Apr 2021 21:16:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7345FC433ED;
+        Thu,  1 Apr 2021 21:16:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7345FC433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        carl.yin@quectel.com, naveen.kumar@quectel.com,
+        loic.poulain@linaro.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: 
+Date:   Thu,  1 Apr 2021 14:16:09 -0700
+Message-Id: <1617311778-1254-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Subject: [PATCH v8 0/9] Updates to MHI channel handling
 
+MHI specification shows a state machine with support for STOP channel command
+and the validity of certain state transitions. MHI host currently does not
+provide any mechanism to stop a channel and restart it without resetting it.
+There are also times when the device moves on to a different execution
+environment while client drivers on the host are unaware of it and still
+attempt to reset the channels facing unnecessary timeouts.
 
-On Thu, 1 Apr 2021, Beatriz Martins de Carvalho wrote:
+This series addresses the above areas to provide support for stopping an MHI
+channel, resuming it back, improved documentation and improving upon channel
+state machine handling in general.
 
-> Cleans up check of "Lines should not end with a '('"
-> with argument present in next line in file emxx_udc.c
+This set of patches was tested on arm64 and x86_64 architecture.
 
-The coding style documentation encourages remaining within 80 characters.
-I'm not sure that the ( warning is worth increading the excess beyond 80
-characters (or introducing it in the last case).
+v8:
+-Split the state machine improvements patch to three patches as per review
 
-julia
+v7:
+-Tested on x86_64 architecture
+-Drop the patch "Do not clear channel context more than once" as issue is fixed
+differently using "bus: mhi: core: Fix double dma free()"
+-Update the commit text to better reflect changes on state machine improvements
 
->
-> Signed-off-by: Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
-> ---
->  drivers/staging/emxx_udc/emxx_udc.c | 11 ++++-------
->  1 file changed, 4 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/staging/emxx_udc/emxx_udc.c b/drivers/staging/emxx_udc/emxx_udc.c
-> index 741147a4f0fe..20f53cf6e20f 100644
-> --- a/drivers/staging/emxx_udc/emxx_udc.c
-> +++ b/drivers/staging/emxx_udc/emxx_udc.c
-> @@ -1073,9 +1073,8 @@ static int _nbu2ss_epn_in_pio(struct nbu2ss_udc *udc, struct nbu2ss_ep *ep,
->  		i_word_length = length / sizeof(u32);
->  		if (i_word_length > 0) {
->  			for (i = 0; i < i_word_length; i++) {
-> -				_nbu2ss_writel(
-> -					&preg->EP_REGS[ep->epnum - 1].EP_WRITE,
-> -					p_buf_32->dw);
-> +				_nbu2ss_writel(&preg->EP_REGS[ep->epnum - 1].EP_WRITE,
-> +					       p_buf_32->dw);
->
->  				p_buf_32++;
->  			}
-> @@ -1225,8 +1224,7 @@ static void _nbu2ss_restert_transfer(struct nbu2ss_ep *ep)
->  		return;
->
->  	if (ep->epnum > 0) {
-> -		length = _nbu2ss_readl(
-> -			&ep->udc->p_regs->EP_REGS[ep->epnum - 1].EP_LEN_DCNT);
-> +		length = _nbu2ss_readl(&ep->udc->p_regs->EP_REGS[ep->epnum - 1].EP_LEN_DCNT);
->
->  		length &= EPN_LDATA;
->  		if (length < ep->ep.maxpacket)
-> @@ -1462,8 +1460,7 @@ static void _nbu2ss_epn_set_stall(struct nbu2ss_udc *udc,
->  		for (limit_cnt = 0
->  			; limit_cnt < IN_DATA_EMPTY_COUNT
->  			; limit_cnt++) {
-> -			regdata = _nbu2ss_readl(
-> -				&preg->EP_REGS[ep->epnum - 1].EP_STATUS);
-> +			regdata = _nbu2ss_readl(&preg->EP_REGS[ep->epnum - 1].EP_STATUS);
->
->  			if ((regdata & EPN_IN_DATA) == 0)
->  				break;
-> --
-> 2.25.1
->
-> --
-> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/20210401195457.24512-1-martinsdecarvalhobeatriz%40gmail.com.
->
+v6:
+-Dropped the patch which introduced start/stop transfer APIs for lack of users
+-Updated error handling and debug prints on channel handling improvements patch
+-Improved commit text to better explain certain patches based on review comments
+-Removed references to new APIs from the documentation improvement patch
+
+v5:
+-Added reviewed-by tags from Hemant I missed earlier
+-Added patch to prevent kernel warnings on clearing channel context twice
+
+v4:
+-Updated commit text/descriptions and addressed checkpatch checks
+-Added context validity check before starting/stopping channels from new API
+-Added patch to clear channel context configuration after reset/unprepare
+
+v3:
+-Updated documentation for channel transfer APIs to highlight differences
+-Create separate patch for "allowing channel to be disabled from stopped state"
+
+v2:
+-Renamed the newly introduced APIs to mhi_start_transfer() / mhi_stop_transfer()
+-Added improved documentation to avoid confusion with the new APIs
+-Removed the __ prefix from mhi_unprepare_channel() API for consistency.
+
+Bhaumik Bhatt (9):
+  bus: mhi: core: Allow sending the STOP channel command
+  bus: mhi: core: Clear context for stopped channels from remove()
+  bus: mhi: core: Improvements to the channel handling state machine
+  bus: mhi: core: Update debug messages to use client device
+  bus: mhi: core: Hold device wake for channel update commands
+  bus: mhi: core: Clear configuration from channel context during reset
+  bus: mhi: core: Check channel execution environment before issuing
+    reset
+  bus: mhi: core: Remove __ prefix for MHI channel unprepare function
+  bus: mhi: Improve documentation on channel transfer setup APIs
+
+ drivers/bus/mhi/core/init.c     |  22 ++++-
+ drivers/bus/mhi/core/internal.h |  12 +++
+ drivers/bus/mhi/core/main.c     | 190 ++++++++++++++++++++++++----------------
+ include/linux/mhi.h             |  18 +++-
+ 4 files changed, 162 insertions(+), 80 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
