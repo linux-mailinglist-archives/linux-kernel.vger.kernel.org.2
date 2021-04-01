@@ -2,145 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B840B351B07
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01391351BE8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237922AbhDASE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:04:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59940 "EHLO
+        id S237463AbhDASL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:11:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235783AbhDARtN (ORCPT
+        with ESMTP id S236883AbhDARzg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:49:13 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48FCEC02FEA1
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 09:09:20 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id k25so2724863iob.6
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 09:09:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=48dyaiUyVqMwLE0OwYdfA5ySCjDx5Xf12eY4xzzdxXs=;
-        b=Q/SR523Ar1LWM4oiRWdcYVGDmBiu+zeFT7gA4UE9r2y+wh90OYXx0JJGDPcwMu5adH
-         uaxbD0Pu9f5900tZeP3hEe5v2db7lKqxdaDTGAE/r7ppii0REDgnpsq6WNA0PbdjmASs
-         de+PdzOIIxIaRBSOh6zS9hLprKOaCN962rHWHBbcMLKOPqJaWZnw7i9AAS1x73820wX4
-         8sdjPlS3OXDG74thkV/VB4/we1prlMFDH0VAhEh7RXO01Mzf/ywd8gl8j+WVw6mGPw+B
-         rI1wrqE5kG1B24gee8UOlunMIzDWGoXzeN2be49I1Kr/MgV80/4Up2UOB+FRq0EsQwSm
-         ieQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=48dyaiUyVqMwLE0OwYdfA5ySCjDx5Xf12eY4xzzdxXs=;
-        b=e4o2vHlhDn/DLg64SWfFg47bGU9FjZBE6imvMohbMIBJA5iFvB0vUurP+1ZiElLj+g
-         1GqsLwRCMvvZPblNej81dXfxwUukTv2Bp8SV29Bf2tkd8C8FwNGcXLZVbMNan7fBiXEE
-         V21WXRRw6Hl79+EFj/jy3c52WuZpjGFsQLrL6O1ce3KkZjRaGuW74WX9BUvu95NMpTzR
-         dnx6gYsGcR9xx/Pwl2pN9lp+7MgSjugaRZYYF9AYTAmpNY06W98a30rDdz1vZ0n8c/C9
-         kkGgTJIBy/dIJLmdN+gecxILkhOcLVtSbL0jixX63DM117vANcVklip0evLZWjrNQLxj
-         c9AQ==
-X-Gm-Message-State: AOAM531I7d1bYRqK9dLJn7vfnuTgmwgK0JH6W3eLxfI1Fh+03+GJgZ0z
-        nCY1LXCwqrTtpUc4beRi/0CzGQ==
-X-Google-Smtp-Source: ABdhPJx71PWvRQl21JSc09Uw5jU8+9y4mYpLpsKeo9v5KDSxkuD5Ozc7hcvTXmb/nzJ5eqed0eNeZw==
-X-Received: by 2002:a5e:c102:: with SMTP id v2mr7178492iol.137.1617293359632;
-        Thu, 01 Apr 2021 09:09:19 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id b4sm2637045ilj.11.2021.04.01.09.09.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Apr 2021 09:09:19 -0700 (PDT)
-Subject: Re: [syzbot] WARNING in mntput_no_expire (2)
-To:     Christian Brauner <christian.brauner@ubuntu.com>,
-        syzbot <syzbot+c88a7030da47945a3cc3@syzkaller.appspotmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
-        io-uring@vger.kernel.org
-References: <0000000000003a565e05bee596f2@google.com>
- <20210401154515.k24qdd2lzhtneu47@wittgenstein>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <90e7e339-eaec-adb2-cfed-6dc058a117a3@kernel.dk>
-Date:   Thu, 1 Apr 2021 10:09:18 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 1 Apr 2021 13:55:36 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F03C02FEA8;
+        Thu,  1 Apr 2021 09:12:42 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f08870070b45f06e9fedc1b.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:8700:70b4:5f06:e9fe:dc1b])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AB3DC1EC0516;
+        Thu,  1 Apr 2021 18:12:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1617293560;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=D5AcjEpLI6NGptAOcU3s8MiJCsw0QoCR1oFeiyhm3WI=;
+        b=ICGT7NtqfpvmcbkOCvNVXfUSW4DiRDjsdi0Vfd1AnVEq9yQ03QGiNrhU8M9mztVs53ktGI
+        QvcFxQNBAszJ08e0c4IkAcajOFOUfOHHuPSEYOnp4dtBxuBzBzxCnJfHyrjYZwSwZLtk5V
+        sb7NQpWtiZStw5rQZ37/DaMnXqZQryA=
+Date:   Thu, 1 Apr 2021 18:12:37 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     William Roche <william.roche@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
+        linux-edac@vger.kernel.org
+Subject: Re: [PATCH v1] RAS/CEC: Memory Corrected Errors consistent event
+ filtering
+Message-ID: <20210401161237.GC28954@zn.tnic>
+References: <1616783429-6793-1-git-send-email-william.roche@oracle.com>
+ <20210326190242.GI25229@zn.tnic>
+ <fac89612-e15c-2940-9d6d-70a812dbe99c@oracle.com>
+ <20210326224310.GL25229@zn.tnic>
+ <3ee5551c-d311-1939-315f-a4712e3821ff@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <20210401154515.k24qdd2lzhtneu47@wittgenstein>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <3ee5551c-d311-1939-315f-a4712e3821ff@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/1/21 9:45 AM, Christian Brauner wrote:
-> On Thu, Apr 01, 2021 at 02:09:20AM -0700, syzbot wrote:
->> Hello,
->>
->> syzbot found the following issue on:
->>
->> HEAD commit:    d19cc4bf Merge tag 'trace-v5.12-rc5' of git://git.kernel.o..
->> git tree:       upstream
->> console output: https://syzkaller.appspot.com/x/log.txt?x=1018f281d00000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=d1a3d65a48dbd1bc
->> dashboard link: https://syzkaller.appspot.com/bug?extid=c88a7030da47945a3cc3
->> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12f50d11d00000
->> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=137694a1d00000
->>
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+c88a7030da47945a3cc3@syzkaller.appspotmail.com
->>
->> ------------[ cut here ]------------
->> WARNING: CPU: 1 PID: 8409 at fs/namespace.c:1186 mntput_no_expire+0xaca/0xcb0 fs/namespace.c:1186
->> Modules linked in:
->> CPU: 1 PID: 8409 Comm: syz-executor035 Not tainted 5.12.0-rc5-syzkaller #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->> RIP: 0010:mntput_no_expire+0xaca/0xcb0 fs/namespace.c:1186
->> Code: ff 48 c7 c2 e0 cb 78 89 be c2 02 00 00 48 c7 c7 a0 cb 78 89 c6 05 e5 6d e5 0b 01 e8 ff e1 f6 06 e9 3f fd ff ff e8 c6 a5 a8 ff <0f> 0b e9 fc fc ff ff e8 ba a5 a8 ff e8 55 dc 94 ff 31 ff 89 c5 89
->> RSP: 0018:ffffc9000165fc78 EFLAGS: 00010293
->> RAX: 0000000000000000 RBX: 1ffff920002cbf95 RCX: 0000000000000000
->> RDX: ffff88802072d4c0 RSI: ffffffff81cb4b8a RDI: 0000000000000003
->> RBP: ffff888011656900 R08: 0000000000000000 R09: ffffffff8fa978af
->> R10: ffffffff81cb4884 R11: 0000000000000000 R12: 0000000000000008
->> R13: ffffc9000165fcc8 R14: dffffc0000000000 R15: 00000000ffffffff
->> FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
->> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> CR2: 000055a722053160 CR3: 000000000bc8e000 CR4: 00000000001506e0
->> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->> Call Trace:
->>  mntput fs/namespace.c:1232 [inline]
->>  cleanup_mnt+0x523/0x530 fs/namespace.c:1132
->>  task_work_run+0xdd/0x1a0 kernel/task_work.c:140
->>  exit_task_work include/linux/task_work.h:30 [inline]
->>  do_exit+0xbfc/0x2a60 kernel/exit.c:825
->>  do_group_exit+0x125/0x310 kernel/exit.c:922
->>  __do_sys_exit_group kernel/exit.c:933 [inline]
->>  __se_sys_exit_group kernel/exit.c:931 [inline]
->>  __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
->>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->>  entry_SYSCALL_64_after_hwframe+0x44/0xae
->> RIP: 0033:0x446af9
->> Code: Unable to access opcode bytes at RIP 0x446acf.
->> RSP: 002b:00000000005dfe48 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
->> RAX: ffffffffffffffda RBX: 00000000004ce450 RCX: 0000000000446af9
->> RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000001
->> RBP: 0000000000000001 R08: ffffffffffffffbc R09: 0000000000000000
->> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004ce450
->> R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
-> 
-> [+Cc Jens + io_uring]
-> 
-> Hm, this reproducer uses io_uring and it's the io_uring_enter() that
-> triggers this reliably. With this reproducer I've managed to reproduce
-> the issue on v5.12-rc4, and v5.12-rc3, v5.12-rc2 and v5.12-rc1.
-> It's not reproducible at
-> 9820b4dca0f9c6b7ab8b4307286cdace171b724d
-> which is the commit immediately before the first v5.12 io_uring merge.
-> It's first reproducible with the first io_uring merge for v5.12, i.e.
-> 5bbb336ba75d95611a7b9456355b48705016bdb1
+On Mon, Mar 29, 2021 at 11:44:05AM +0200, William Roche wrote:
+> I totally agree with you, and in order to schedule a replacement, MCEs
+> information (enriched by the notifiers chain) are more meaningful than
+> only PFN values.
 
-Thanks, that's good info. I'll take a look at it and see if I can
-reproduce.
+Well, if you want to collect errors and analyze patterns in order to
+detect hw going bad, you're probably better off disabling the CEC
+altogether - either disable it in Kconfig or boot with ras=cec_disable.
+
+> 1/ Giving back ras_cec a consistent behavior where the first occurrence
+> of a CE doesn't generate an MCE message from the MCE_HANDLED_CEC
+> notifiers, and a consistent behavior between the slot 0 and the other
+> pfn slots.
+
+If by this you mean the issue with the return value, then sure.
+
+If you mean something else, you'd have to be more specific.
+
+> 2/ Give the CE MCE information when the action threshold is reached to
+> help the administrator identify what generated the PFN "Soft-offlining"
+> or "Invalid pfn" message.
+> 
+> When ras_cec is enabled it hides most of the CE errors, but when the
+> action threshold is reached all notifiers can generate their indication
+> about the error that appeared too often.
+> 
+> An administrator getting too many action threshold CE errors can
+> schedule a replacement based on the indications provided by his EDAC
+> module etc...
+
+Well, this works probably only in theory.
+
+First of all, the CEC sees the error first, before the EDAC drivers.
+
+But, in order to map from the virtual address to the actual DIMM, you
+need the EDAC drivers to have a go at the error. In many cases not even
+the EDAC drivers can give you that mapping because, well, hw/fw does its
+own stuff underneath, predictive fault bla, added value crap, whatever,
+so that we can't even get a "DIMM X on processor Y caused the error."
+
+I know, your assumption is that if a page gets offlined by the CEC, then
+all the errors' addresses are coming from the same physical DIMM. And
+that is probably correct in most cases but I'm not convinced for all.
+
+In any case, what we could do - which is pretty easy and cheap - is to
+fix the retval of cec_add_elem() to communicate to the caller that it
+offlined a page and this way tell the notifier chain that the error
+needs to be printed into dmesg with a statement sayin that DIMM Y got
+just one more page offlined.
+
+Over time, if a DIMM is going bad, one should be able to grep dmesg and
+correlate all those offlined pages to DIMMs and then maybe see a pattern
+and eventually schedule a downtime.
+
+A lot of ifs, I know. :-\
 
 -- 
-Jens Axboe
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
