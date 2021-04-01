@@ -2,102 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DAC7351E42
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6D2351EC1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235926AbhDAShP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:37:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239204AbhDASPm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:15:42 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15637C05BD11;
-        Thu,  1 Apr 2021 05:52:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Yw41C/LM/CLkV/f2jz3URlFrp1rmhB03Zhe1Y9zc6w8=; b=VReZDpDt5aNf6kSFMIIU9tiZ9p
-        5jBuVEp/WF4EuLT2Hz8powvl9pghjOFAizPU5QqGxMcTSuk5AlVDG7Rzp7vHscBL2WL0TQuQJcoNB
-        x0M3qRg4kpC0vTnXlJxgPn+72DK0T1eUYtuMoLu8e/A6IiEJjVLlfctuB6CPjCh5eyenHHWvzrU0L
-        o0P6LZ0dsT4WJsi6JYfJt8nhNvLEzQAZpr4sOcMV4YaUBxdSKHBZhfHmOzrLSXhxZx45e1jrHyrBC
-        AKzBk8cRUSNvLbtv2B6nLwhzd1qQAd5DocwjB1H1ixZjYvH5kwC1SLLmit+KJ9coSwn2UTs06N8Ya
-        UZqijUyQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lRwnp-0068jn-3I; Thu, 01 Apr 2021 12:52:05 +0000
-Date:   Thu, 1 Apr 2021 13:52:01 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Christoph Hellwig <hch@infradead.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org
-Subject: Re: [PATCH v6 00/27] Memory Folios
-Message-ID: <20210401125201.GD351017@casper.infradead.org>
-References: <20210331184728.1188084-1-willy@infradead.org>
- <20210401070537.GB1363493@infradead.org>
- <20210401112656.GA351017@casper.infradead.org>
- <20210401122803.GB2710221@ziepe.ca>
+        id S236750AbhDASqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:46:11 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53828 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236067AbhDASXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:23:39 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D037CB1E9;
+        Thu,  1 Apr 2021 12:56:44 +0000 (UTC)
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     hch@lst.de
+Subject: [PATCH v3 0/4] MIPS: Remove get_fs/set_fs
+Date:   Thu,  1 Apr 2021 14:56:33 +0200
+Message-Id: <20210401125639.42963-1-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401122803.GB2710221@ziepe.ca>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 09:28:03AM -0300, Jason Gunthorpe wrote:
-> On Thu, Apr 01, 2021 at 12:26:56PM +0100, Matthew Wilcox wrote:
-> > On Thu, Apr 01, 2021 at 08:05:37AM +0100, Christoph Hellwig wrote:
-> > > On Wed, Mar 31, 2021 at 07:47:01PM +0100, Matthew Wilcox (Oracle) wrote:
-> > > >  - Mirror members of struct page (for pagecache / anon) into struct folio,
-> > > >    so (eg) you can use folio->mapping instead of folio->page.mapping
-> > > 
-> > > Eww, why?
-> > 
-> > So that eventually we can rename page->mapping to page->_mapping and
-> > prevent the bugs from people doing page->mapping on a tail page.  eg
-> > https://lore.kernel.org/linux-mm/alpine.LSU.2.11.2103102214170.7159@eggly.anvils/
-> 
-> Is that gcc structure layout randomization stuff going to be a problem
-> here?
-> 
-> Add some 
->   static_assert(offsetof(struct folio,..) == offsetof(struct page,..))
-> 
-> tests to force it?
+This series replaces get_fs/set_fs and removes it from MIPS arch code.
 
-You sound like the kind of person who hasn't read patch 1.
+Changes in v3:
+- use get_user/get_kernel_nofault for helper functions
 
-diff --git a/mm/util.c b/mm/util.c
-index 0b6dd9d81da7..521a772f06eb 100644
---- a/mm/util.c
-+++ b/mm/util.c
-@@ -686,6 +686,25 @@ struct anon_vma *page_anon_vma(struct page *page)
- 	return __page_rmapping(page);
- }
- 
-+static inline void folio_build_bug(void)
-+{
-+#define FOLIO_MATCH(pg, fl)						\
-+BUILD_BUG_ON(offsetof(struct page, pg) != offsetof(struct folio, fl));
-+
-+	FOLIO_MATCH(flags, flags);
-+	FOLIO_MATCH(lru, lru);
-+	FOLIO_MATCH(mapping, mapping);
-+	FOLIO_MATCH(index, index);
-+	FOLIO_MATCH(private, private);
-+	FOLIO_MATCH(_mapcount, _mapcount);
-+	FOLIO_MATCH(_refcount, _refcount);
-+#ifdef CONFIG_MEMCG
-+	FOLIO_MATCH(memcg_data, memcg_data);
-+#endif
-+#undef FOLIO_MATCH
-+	BUILD_BUG_ON(sizeof(struct page) != sizeof(struct folio));
-+}
-+
- struct address_space *page_mapping(struct page *page)
- {
- 	struct address_space *mapping;
+Changes in v2:
+- added copy_from_kernel_nofault_allowed() for !EVA to restrict
+  access of __get/__put_kernel_nofault
+- replaced __get_data macro by helper functions
+- removed leftover set_fs calls in ftrace.c
+- further cleanup uaccess.h
+
+Thomas Bogendoerfer (4):
+  MIPS: kernel: Remove not needed set_fs calls
+  MIPS: uaccess: Added __get/__put_kernel_nofault
+  MIPS: uaccess: Remove get_fs/set_fs call sites
+  MIPS: Remove get_fs/set_fs
+
+ arch/mips/Kconfig                   |   1 -
+ arch/mips/include/asm/processor.h   |   4 -
+ arch/mips/include/asm/thread_info.h |   6 -
+ arch/mips/include/asm/uaccess.h     | 436 +++++++++++-----------------
+ arch/mips/kernel/access-helper.h    |  18 ++
+ arch/mips/kernel/asm-offsets.c      |   1 -
+ arch/mips/kernel/ftrace.c           |   8 -
+ arch/mips/kernel/process.c          |   2 -
+ arch/mips/kernel/scall32-o32.S      |   4 +-
+ arch/mips/kernel/traps.c            | 105 +++----
+ arch/mips/kernel/unaligned.c        | 199 +++++--------
+ arch/mips/lib/memcpy.S              |  28 +-
+ arch/mips/lib/memset.S              |   3 -
+ arch/mips/lib/strncpy_user.S        |  48 +--
+ arch/mips/lib/strnlen_user.S        |  44 +--
+ arch/mips/mm/Makefile               |   4 +
+ arch/mips/mm/maccess.c              |  10 +
+ 17 files changed, 357 insertions(+), 564 deletions(-)
+ create mode 100644 arch/mips/kernel/access-helper.h
+ create mode 100644 arch/mips/mm/maccess.c
+
+-- 
+2.29.2
 
