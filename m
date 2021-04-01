@@ -2,90 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74A7F351DB0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A86E8351F26
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240846AbhDASbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:31:40 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:45439 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238618AbhDASJs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:09:48 -0400
-Received: from [192.168.1.155] ([95.114.120.255]) by mrelayeu.kundenserver.de
- (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1Mxlio-1lpRFh0GyM-00zFhl; Thu, 01 Apr 2021 18:15:43 +0200
-Subject: Re: [PATCH v3 3/4] watchdog: simatic-ipc-wdt: add new driver for
- Siemens Industrial PCs
-To:     Henning Schild <henning.schild@siemens.com>,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-watchdog@vger.kernel.org
-Cc:     Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-References: <20210329174928.18816-1-henning.schild@siemens.com>
- <20210329174928.18816-4-henning.schild@siemens.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <ffdfe9a9-ab17-18af-300e-062b79d132f3@metux.net>
-Date:   Thu, 1 Apr 2021 18:15:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S239324AbhDASyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:54:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38166 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238593AbhDASpA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:45:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8AD361184;
+        Thu,  1 Apr 2021 16:16:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617293762;
+        bh=9mXHLLqBBxMNhCZn7ktuoeDjGYnyOHv6qaqbCKJFjoA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=u9/vii/UoXb0uxDdG74x9V0lQghXcLTLlWDb35ensNRZ6BPx0t/aEl2JdYC8seB5x
+         DafKxVIVQDvzGxxC3ZFM7vZv9sbGdrLNVpRWXxwS1I9CnHgD5zsaO1fHFE2qMjTUNn
+         FBb1z9NduKM7PEBei6T6Vx4VVPMkzWS/98A/0vJlMkqGw8cYUjXcmzVVXnueoaAdMn
+         QpsRv9r3IngTFkwSdLn2cwiGlSqimP6B2Ykw0FLFMrpbFz80yi7zZV63e6J4gYfwiI
+         2dBPU+JaCUMKJGwtEAnwXCBYpl8/Sxt/8OYAhXaRHomUa2WtCuK+IET4dN5/IkF+GM
+         IO9+YPYdJgRRQ==
+From:   Mark Brown <broonie@kernel.org>
+To:     Wan Jiabing <wanjiabing@vivo.com>, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>, kael_w@yeah.net
+Subject: Re: [PATCH] linux/spi: Remove repeated struct declaration
+Date:   Thu,  1 Apr 2021 17:15:46 +0100
+Message-Id: <161729347262.31861.6906734696742982702.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210401065904.994121-1-wanjiabing@vivo.com>
+References: <20210401065904.994121-1-wanjiabing@vivo.com>
 MIME-Version: 1.0
-In-Reply-To: <20210329174928.18816-4-henning.schild@siemens.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:mZl+/Fxt0NAigmLCH+RKccI3nE5xVjZG1xhGoPUgCxNSXAPqiMk
- S9U84N7eW7dsD5O10wzfTPVnBv3R4PqEnqCSUCAC0WPCG0h2NbnNAl+zUpmSy7xb6z34dWa
- W7Sp+3iSb/gJINI7M6KgJlUZoRypT/s5uqJ2mpqPT1/wsHl/phqOpvzs0ebTMg5vgbZL0f2
- jv/KHgLgD3iBP1j67CACw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vWF9FgB7mL8=:UG6L83VGSPgRsVAviCBrxt
- KXA9dc0Vp+RuCgdsB+XC/Qwyr/LgC+xNnFeLHgByex/68aGjqseF8jord8HHgtvn1/sL3Qh9P
- qjATQnm0IBEwteNtgjRUYOGZhJLd8aBFj3GoMBfHhkOld+f4iXwjrJGmcPGojmRSVXkICDFeQ
- JqJEcnXPizz7ntzhqY9PggqHlO6VhLxrWMDIGeaHJgMFUciombnIDONf8iX6K39sVJFAkfccS
- u7CvrQELD2gjN3DvjrqwcR9V5jhBqPa5Zc4UdX2loNXuwEkSGSVGQtn6Xwi0r2cGZ3UN74Usx
- XD3UJKVWJlCQjzbaIiEXIpq9qiqzIEtIF48kH9gzNRmOlrIIqLJ97CLy9LJNV+Peo4fc3B742
- 2B1eJcMlor/v7G2WuVCl9kjivhJdRBd9gluP1JlJqACC12epgJX06mKA7y4JRE2J8jaCdgEGC
- 3ivlcz7rxOS2m0lC3t5Hb3ism7N0KdglsVHyrG8gm0V1NDKXN2TX
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.03.21 19:49, Henning Schild wrote:
+On Thu, 1 Apr 2021 14:59:04 +0800, Wan Jiabing wrote:
+> struct spi_transfer is declared twice. One is declared at 24th line.
+> The blew one is not needed though. Remove the duplicate.
 
-Hi,
+Applied to
 
-> This driver adds initial support for several devices from Siemens. It is
-> based on a platform driver introduced in an earlier commit.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-Where does the wdt actually come from ?
+Thanks!
 
-Is it in the SoC ? (which SoC exactly). SoC-builtin wdt is a pretty 
-usual case.
+[1/1] linux/spi: Remove repeated struct declaration
+      commit: d6644a1c2e17febf261fd692bb32271e5779bbd2
 
-Or some external chip ?
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-The code smells a bit like two entirely different wdt's that just have
-some similarities. If that's the case, I'd rather split it into two
-separate drivers and let the parent driver (board file) instantiate
-the correct one.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---mtx
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+Thanks,
+Mark
