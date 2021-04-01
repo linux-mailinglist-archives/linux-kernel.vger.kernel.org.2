@@ -2,64 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26EF351EA6
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F620351EA7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238890AbhDASpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:45:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51642 "EHLO mail.kernel.org"
+        id S239159AbhDASpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:45:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237298AbhDASW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237301AbhDASW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 1 Apr 2021 14:22:59 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 57DCD6124B;
-        Thu,  1 Apr 2021 13:34:45 +0000 (UTC)
-Date:   Thu, 1 Apr 2021 09:34:43 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kernel: initialize cpumask before parsing
-Message-ID: <20210401093443.019b57d2@gandalf.local.home>
-In-Reply-To: <20210401055823.3929-1-penguin-kernel@I-love.SAKURA.ne.jp>
-References: <20210401055823.3929-1-penguin-kernel@I-love.SAKURA.ne.jp>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F28B56125F;
+        Thu,  1 Apr 2021 13:36:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617284193;
+        bh=vdqpbIiFVQCTzNkTSPPb4s679q4GnbQsjQR5dtp0kpw=;
+        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
+        b=lc1Ypn2QCS+etYZjiz7TJYylTWImQNHyQmWsCig/mgpJ4QeUVcQtLRkHmNqcZZbHo
+         51emm0oOmo61C8E/tme13bhTZkCs57qA17nkncb7Mw1U3+G7fPUEsiFS8WHDSQjBNo
+         Xwa+Inq2fH6DB9JAac3ob/XkbfT3dIPrXfN5rzypeyypCGgvWVvwZ8dOZmvz3AtfEv
+         lyJBTr+v1yuKLG5nDV4wdiJb0IP4WH1Ilk1QMW7GmW/vAnFodOfLBkl3etOV8HYATd
+         5scAdOpUHrSVs3KVN/6krObgBSrOVe/dejo3wk4Icol6e/sTfYsqR90mitoOR4WvJT
+         5ALBTxqzXEBAg==
+Received: by mail-oo1-f47.google.com with SMTP id x187-20020a4a41c40000b02901b664cf3220so556781ooa.10;
+        Thu, 01 Apr 2021 06:36:32 -0700 (PDT)
+X-Gm-Message-State: AOAM531ZCcGIXgSz/2uaa1J2XnVKsQFcQk2pGeredc0oWPOeHklQzoP/
+        ETHeLc1wY+UiY4iWnsBQy6oyipBoe/Ukqrke9L0=
+X-Google-Smtp-Source: ABdhPJxG5NOdiJPO3847XJakVS3nw89NRW7KqKUiwhStvsrTCGzw7AIm5C8p258c1KbPsOpl+YfYdoZXlU4mt6YmGwY=
+X-Received: by 2002:a4a:3c48:: with SMTP id p8mr7283092oof.79.1617284192287;
+ Thu, 01 Apr 2021 06:36:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: by 2002:ac9:5ed4:0:0:0:0:0 with HTTP; Thu, 1 Apr 2021 06:36:31 -0700 (PDT)
+In-Reply-To: <2b758812-f00b-9465-c24e-763912748809@samba.org>
+References: <20210401113933.GA2828895@LEGION> <20210401115008.GS2088@kadam>
+ <CAKYAXd-ou4-jf7_8xa4jDQ_otyQ9ffKhwD7WZrmrna1P3b_W8Q@mail.gmail.com>
+ <ca1b9b0c-55f9-025d-558b-1b2b6c866d12@samba.org> <CAKYAXd-ScM9i9Ln_FL8pWyEnPO_0n8t1BLH8MJ=b4NkqEbhZ=Q@mail.gmail.com>
+ <2b758812-f00b-9465-c24e-763912748809@samba.org>
+From:   Namjae Jeon <linkinjeon@kernel.org>
+Date:   Thu, 1 Apr 2021 22:36:31 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd_p1MrB2G25_p52OfppfSUcEWQEVxgJbBikAe3GZrJFhw@mail.gmail.com>
+Message-ID: <CAKYAXd_p1MrB2G25_p52OfppfSUcEWQEVxgJbBikAe3GZrJFhw@mail.gmail.com>
+Subject: Re: [Linux-cifsd-devel] [PATCH] cifsd: use kfree to free memory
+ allocated by kzalloc
+To:     Ralph Boehme <slow@samba.org>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        COMMON INTERNET FILE SYSTEM SERVER 
+        <linux-cifs@vger.kernel.org>,
+        COMMON INTERNET FILE SYSTEM SERVER 
+        <linux-cifsd-devel@lists.sourceforge.net>,
+        kernel-janitors@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Steve French <sfrench@samba.org>, colin.king@canonical.com,
+        Muhammad Usama Anjum <musamaanjum@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  1 Apr 2021 14:58:23 +0900
-Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp> wrote:
-
-> KMSAN complains that new_value at cpumask_parse_user() from
-> write_irq_affinity() from irq_affinity_proc_write() is uninitialized.
-> 
->   [  148.133411][ T5509] =====================================================
->   [  148.135383][ T5509] BUG: KMSAN: uninit-value in find_next_bit+0x325/0x340
->   [  148.137819][ T5509]
->   [  148.138448][ T5509] Local variable ----new_value.i@irq_affinity_proc_write created at:
->   [  148.140768][ T5509]  irq_affinity_proc_write+0xc3/0x3d0
->   [  148.142298][ T5509]  irq_affinity_proc_write+0xc3/0x3d0
->   [  148.143823][ T5509] =====================================================
-> 
-> Since bitmap_parse() from cpumask_parse_user() calls find_next_bit(),
-> any alloc_cpumask_var() + cpumask_parse_user() sequence has possibility
-> that find_next_bit() accesses uninitialized cpu mask variable. Fix this
-> problem by replacing alloc_cpumask_var() with zalloc_cpumask_var().
-> 
-> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> ---
->  kernel/irq/proc.c    | 4 ++--
->  kernel/profile.c     | 2 +-
-
-
->  kernel/trace/trace.c | 2 +-
-
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
--- Steve
+2021-04-01 22:14 GMT+09:00, Ralph Boehme <slow@samba.org>:
+> Am 4/1/21 um 2:59 PM schrieb Namjae Jeon:
+>> 2021-04-01 21:50 GMT+09:00, Ralph Boehme <slow@samba.org>:
+>>> fwiw, while at it what about renaming everything that still references
+>>> "cifs" to "smb" ? This is not the 90's... :)
+>> It is also used with the name "ksmbd". So function and variable prefix
+>> are used with ksmbd.
+>
+> well, I was thinking of this:
+>
+>  > +++ b/fs/cifsd/...
+>
+> We should really stop using the name cifs for modern implementation of
+> SMB{23} and the code should not be added as fs/cifsd/ to the kernel.
+As I know, currently "cifs" is being used for the subdirectory name
+for historical reasons and to avoid confusions, even though the CIFS
+(SMB1) dialect is no longer recommended.
+>
+> Cheers!
+> -slow
+>
+> --
+> Ralph Boehme, Samba Team                https://samba.org/
+> Samba Developer, SerNet GmbH   https://sernet.de/en/samba/
+> GPG-Fingerprint   FAE2C6088A24252051C559E4AA1E9B7126399E46
+>
+>
