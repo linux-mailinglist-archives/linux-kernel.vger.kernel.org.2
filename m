@@ -2,94 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A6A5352186
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC4A135213C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234743AbhDAVUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 17:20:18 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:20963 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234114AbhDAVUR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 17:20:17 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FB4Cb1lVsz9v3Xp;
-        Thu,  1 Apr 2021 15:43:55 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id yxEuLDOMoY9i; Thu,  1 Apr 2021 15:43:55 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FB4Cb0Hxbz9v3Xj;
-        Thu,  1 Apr 2021 15:43:55 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 986D08BB1D;
-        Thu,  1 Apr 2021 15:43:54 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id Ym_JGFu42o0b; Thu,  1 Apr 2021 15:43:54 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0E8BA8B99D;
-        Thu,  1 Apr 2021 15:43:54 +0200 (CEST)
-Subject: Re: [PATCH] powerpc/8xx: Load modules closer to kernel text
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Jordan Niethe <jniethe5@gmail.com>
-References: <db20abbecb129c49d3c663de67dac6a87501ac0b.1617001615.git.christophe.leroy@csgroup.eu>
- <87czvf788t.fsf@mpe.ellerman.id.au>
- <e50f8127-3a87-92eb-d88a-72aa1557ffe7@csgroup.eu>
- <87ft0a1v5i.fsf@mpe.ellerman.id.au>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <7ff6c893-8dcb-3908-3b6c-7172bc224c77@csgroup.eu>
-Date:   Thu, 1 Apr 2021 15:43:52 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S234597AbhDAVA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 17:00:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234026AbhDAVAy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 17:00:54 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A61C0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 14:00:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+        :Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=n1pVqEnDA94zWJ5OljAPLmIt0VPuoXxcB8fy86DJBH8=; b=OcXu3kEAH/PG5O6cHtmbMw59gt
+        s0L5W8iGRTBWmb0s5Uemd1voj4dFxVr7GosasYRcUE4MurzMf5mGHKVXX3uEz92DVq8W0zne9BB6S
+        jqP4+QnxOo+g6fcL6yravFNVQfPCsfa1Y1Y+wXF71p0pcSUyJiX9E4fw8m1TPOpKHIYW/LlRLmivg
+        nETV+BeF+Thl+Eag63eSNotSuRFpMkzuwRwtW1B9U7UljOyvf7WicP2WmXOP4UYSaftcfi/HRxpOB
+        RgMBK0S2l61dWvKjO1U/WY6mHJNxal5Pkro0rRzPqWWSrTu4pcQacXiMFxBkfpKDjA6BOjmagvvvF
+        2JuMlkfA==;
+Received: from [2601:1c0:6280:3f0::e0e1] (helo=smtpauth.infradead.org)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lS4Qs-00B0d6-TX; Thu, 01 Apr 2021 21:00:51 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Kostya Porotchkin <kostap@marvell.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, linux-phy@lists.infradead.org
+Subject: [PATCH -next] phy: marvell: phy-mvebu-cp11i-utmi needs USB_COMMON
+Date:   Thu,  1 Apr 2021 14:00:45 -0700
+Message-Id: <20210401210045.23525-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <87ft0a1v5i.fsf@mpe.ellerman.id.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When USB and USB_COMMON are not enabled, phy-mvebu-cp110-utmi
+suffers a build error due to a missing interface that is provided
+by CONFIG_USB_COMMON, so make the driver depend on USB_COMMON.
 
+ld: drivers/phy/marvell/phy-mvebu-cp110-utmi.o: in function `mvebu_cp110_utmi_phy_probe':
+phy-mvebu-cp110-utmi.c:(.text+0x152): undefined reference to `of_usb_get_dr_mode_by_phy'
 
-Le 01/04/2021 à 06:33, Michael Ellerman a écrit :
-> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->> Le 31/03/2021 à 15:39, Michael Ellerman a écrit :
->>> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->>>> On the 8xx, TASK_SIZE is 0x80000000. The space between TASK_SIZE and
->>>> PAGE_OFFSET is not used.
->>>>
->>>> Use it to load modules in order to minimise the distance between
->>>> kernel text and modules and avoid trampolines in modules to access
->>>> kernel functions or other module functions.
->>>>
->>>> Define a 16Mbytes area for modules, that's more than enough.
->>>
->>> 16MB seems kind of small.
->>>
->>> At least on 64-bit we could potentially have hundreds of MBs of modules.
->>>
->>
->> Well, with a 16 MB kernel and 16 MB modules, my board is full :)
-> 
-> Heh.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Kostya Porotchkin <kostap@marvell.com>
+Cc: Kishon Vijay Abraham I <kishon@ti.com>
+Cc: Vinod Koul <vkoul@kernel.org>
+Cc: linux-phy@lists.infradead.org
+---
+ drivers/phy/marvell/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-ARM set it to 16M or 8M.
-
-> 
->> Even on the more recent board that has 128 MB, I don't expect more than a few MBs of modules in
->> addition to the kernel which is approx 8M.
->>
->> But ok, I'll do something more generic, though it will conflict with Jordan's series.
-> 
-> Don't feel you have to. You're the expert on 8xx, not me.
-> 
-
-Doing it generic allows to also get it on book3s/32 for free.
-
-Christophe
+--- linux-next-20210331.orig/drivers/phy/marvell/Kconfig
++++ linux-next-20210331/drivers/phy/marvell/Kconfig
+@@ -70,7 +70,7 @@ config PHY_MVEBU_CP110_COMPHY
+ config PHY_MVEBU_CP110_UTMI
+ 	tristate "Marvell CP110 UTMI driver"
+ 	depends on ARCH_MVEBU || COMPILE_TEST
+-	depends on OF
++	depends on OF && USB_COMMON
+ 	select GENERIC_PHY
+ 	help
+ 	  Enable this to support Marvell CP110 UTMI PHY driver.
