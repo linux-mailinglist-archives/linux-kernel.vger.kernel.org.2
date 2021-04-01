@@ -2,74 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7624B351F35
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03186351F61
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235302AbhDASzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:55:38 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:42664 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237955AbhDASxP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:53:15 -0400
-Received: from [192.168.254.32] (unknown [47.187.194.202])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 527A620ABC27;
-        Thu,  1 Apr 2021 11:53:13 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 527A620ABC27
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1617303193;
-        bh=u325FlALmyhfVu2h9i2pftAUehF46sneQVwUlnNlb1s=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
-        b=W3lEpvprUanbv8tw2BwtQbbTSrqEoQnyqfD4f2rLBQ4ImnKlyKze626f8At7UqqDX
-         XnJkTN64B9OzIjMST/j2qgnyLNo0nBa4VklH0RxsvySAzDZLr0bGWquTNqCflDnMYM
-         miec66nAfloXZn8cdFA5Cv+j9TSi2gTyYiJ8Gmok=
-Subject: Re: [RFC PATCH v1 3/4] arm64: Detect FTRACE cases that make the stack
- trace unreliable
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <77bd5edeea72d44533c769b1e8c0fea7a9d7eb3a>
- <20210330190955.13707-1-madvenka@linux.microsoft.com>
- <20210330190955.13707-4-madvenka@linux.microsoft.com>
- <20210401142759.GJ4758@sirena.org.uk>
- <0bece48b-5fee-2bd1-752e-66d2b89cc5ad@linux.microsoft.com>
- <20210401182810.GO4758@sirena.org.uk>
- <2a56fe4b-9929-0d8b-aa49-c2b1c1b82b79@linux.microsoft.com>
-Message-ID: <fe2f3b1e-8cb6-05ce-7968-216fed079fe4@linux.microsoft.com>
-Date:   Thu, 1 Apr 2021 13:53:12 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <2a56fe4b-9929-0d8b-aa49-c2b1c1b82b79@linux.microsoft.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S234438AbhDATNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 15:13:14 -0400
+Received: from m12-16.163.com ([220.181.12.16]:37211 "EHLO m12-16.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233817AbhDATMe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 15:12:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=bbLsjxUWqWIkerb7Uh
+        lE40+J1NmZ+tI75bAMTfi7e7s=; b=jRDrzHuNRJ6PC8C+W/CpngVlOquWUlSNvQ
+        xFRsosKMS39twnd1TE3fEzViMe7ZdXWoFPHkOEIwRurpDcLUcEqzJp/D59HTLS+i
+        xWahJfQonZwpDGvaDI8QWVTBjnYaBF6pmCq4C/vvkoqvJmtbnQLBeD1tPgLdUrnT
+        8YswcrSA0=
+Received: from wengjianfeng.ccdomain.com (unknown [218.17.89.92])
+        by smtp12 (Coremail) with SMTP id EMCowACXnhowrWVgeWQpjg--.43479S2;
+        Thu, 01 Apr 2021 19:23:30 +0800 (CST)
+From:   samirweng1979 <samirweng1979@163.com>
+To:     perex@perex.cz, tiwai@suse.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+Subject: [PATCH] ASoC: topology: fix typo error about asoc.h
+Date:   Thu,  1 Apr 2021 19:23:19 +0800
+Message-Id: <20210401112319.28084-1-samirweng1979@163.com>
+X-Mailer: git-send-email 2.15.0.windows.1
+X-CM-TRANSID: EMCowACXnhowrWVgeWQpjg--.43479S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtrW7Cw45Ww47Aryxur45ZFb_yoWDGFg_Cw
+        naqr4xZry8Gw1I9w1UJrs5JFZ8Zwn7Ca1kKFnaqr1Yq34DCa1fCw18GryxZryrG3Wvq3sI
+        9F1fu340k3sIgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5k73DUUUUU==
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/xtbBERJnsVaEDiqtHgAAsQ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: wengjianfeng <wengjianfeng@yulong.com>
+
+change 'freqency' to 'frequecy'
+
+Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+---
+ include/uapi/sound/asoc.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+index da61398..0066eee 100644
+--- a/include/uapi/sound/asoc.h
++++ b/include/uapi/sound/asoc.h
+@@ -346,8 +346,8 @@ struct snd_soc_tplg_hw_config {
+ 	__u8 fsync_provider;	/* SND_SOC_TPLG_FSYNC_ value */
+ 	__u8 mclk_direction;    /* SND_SOC_TPLG_MCLK_ value */
+ 	__le16 reserved;	/* for 32bit alignment */
+-	__le32 mclk_rate;	/* MCLK or SYSCLK freqency in Hz */
+-	__le32 bclk_rate;	/* BCLK freqency in Hz */
++	__le32 mclk_rate;	/* MCLK or SYSCLK frequency in Hz */
++	__le32 bclk_rate;	/* BCLK frequency in Hz */
+ 	__le32 fsync_rate;	/* frame clock in Hz */
+ 	__le32 tdm_slots;	/* number of TDM slots in use */
+ 	__le32 tdm_slot_width;	/* width in bits for each slot */
+-- 
+1.9.1
 
 
-On 4/1/21 1:40 PM, Madhavan T. Venkataraman wrote:
->>> So, it is only defined if CONFIG_FUNCTION_GRAPH_TRACER is defined. I can address
->>> this as well as your comment by defining another label whose name is more meaningful
->>> to our use:
->>> +SYM_INNER_LABEL(ftrace_trampoline, SYM_L_GLOBAL) // checked by the unwinder
->>> #ifdef CONFIG_FUNCTION_GRAPH_TRACER
->>> SYM_INNER_LABEL(ftrace_graph_call, SYM_L_GLOBAL) // ftrace_graph_caller();
->>>         nop                             // If enabled, this will be replaced
->>>                                         // "b ftrace_graph_caller"
->>> #endif
->> I'm not sure we need to bother with that, you'd still need the & I think.
-> I think we need to bother with that. If CONFIG_FUNCTION_GRAPH_TRACER is not on but
-> CONFIG_DYNAMIC_FTRACE_WITH_REGS is, then ftrace_graph_call() will not occur in the stack
-> trace taken from a tracer function. The unwinder still needs to recognize an ftrace frame.
-> I don't want to assume ftrace_common_return which is the label that currently follows
-> the above code. So, we need a different label outside the above ifdef.
-
-Alternatively, I could just move the SYM_INNER_LABEL(ftrace_graph_call..) to outside the ifdef.
-
-Madhavan
