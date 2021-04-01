@@ -2,105 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 660A4351EE2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6442C351EFC
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237688AbhDAStL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:49:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54364 "EHLO mail.kernel.org"
+        id S239008AbhDASuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:50:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237391AbhDAS2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:28:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B562D601FC;
-        Thu,  1 Apr 2021 18:28:23 +0000 (UTC)
+        id S240327AbhDASaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:30:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id C82C260FD9;
+        Thu,  1 Apr 2021 18:30:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617301704;
-        bh=2iyVMk2LQHYUn0A73vvTr7YeNun8Ulm667R/SCyeFI0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XLyfdbkchdgeFB2GljILpxrknvwknW54lZAUwkgQM9wyhVtSrnJBWNopYPag0fmIW
-         RHilpluhnkYT9V4Jlin4lh04S3ZEg3cuuSrDZUlCGOA66X/a3AWuwigjhAuBLzJR43
-         ogrZfbRPgaah6na89eUu8d2Yi64xD8Zia9Jvb4QpFJruM/uMzhSXpvSZLphnjbbFYK
-         2yCAm3VhCwDHdoimkJTp+1JYpO0nKfee1oFJpU5gNmqGrlVZiQXHW0fjLhOxz0sbBC
-         LEnJX+6wFh84H7p19HKJh+oCO5GCqO/at7v2r7pdjOCTmcSqs+flLL0nkxO/663OzQ
-         xkHR6X41D6FmQ==
-Date:   Thu, 1 Apr 2021 19:28:11 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1 3/4] arm64: Detect FTRACE cases that make the
- stack trace unreliable
-Message-ID: <20210401182810.GO4758@sirena.org.uk>
-References: <77bd5edeea72d44533c769b1e8c0fea7a9d7eb3a>
- <20210330190955.13707-1-madvenka@linux.microsoft.com>
- <20210330190955.13707-4-madvenka@linux.microsoft.com>
- <20210401142759.GJ4758@sirena.org.uk>
- <0bece48b-5fee-2bd1-752e-66d2b89cc5ad@linux.microsoft.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="JfVplkuTfB13Rsg5"
-Content-Disposition: inline
-In-Reply-To: <0bece48b-5fee-2bd1-752e-66d2b89cc5ad@linux.microsoft.com>
-X-Cookie: You can't take damsel here now.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        s=k20201202; t=1617301804;
+        bh=1ELKyvpd++ROkVOHTBdt6K60ayurXgliSP236qEp8q0=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=ZjPSKkhMhp7FvtYwb5ouXTRc4Y+tRgwfhURVwcEl+Z3pFzX+LG6ZXmuF1flcMfA8a
+         jeVbqUeBUa5f8oh37S6CS+yUcGt9mJRYifIMmSBl5Lu/R8SIkrSS+F1qXNVw8ruGZt
+         jUT3QP/zXeT7+531apwF6WPQm3I5UiM2Z4tkeOUiQqT6Zm9bHG3ha9kI9rL1LPDwy2
+         44IiohN+M6XU0xLqhLZbufeOnuDDqAlfAkWE5MQHjR634/xhEuZGQuiU8ck7cRp6gG
+         kmgbV5oABydkAR4Y/j15zumCW9U82nb++vhlhMrPAYqnOZxyfLiKbE6ASxUySADSaF
+         4FsdfTEPAcfRw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B3B4A609CD;
+        Thu,  1 Apr 2021 18:30:04 +0000 (UTC)
+Subject: Re: [GIT PULL] sound fixes for 5.12-rc6
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <s5h4kgqdpu1.wl-tiwai@suse.de>
+References: <s5h4kgqdpu1.wl-tiwai@suse.de>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <s5h4kgqdpu1.wl-tiwai@suse.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.12-rc6
+X-PR-Tracked-Commit-Id: 417eadfdd9e25188465280edf3668ed163fda2d0
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: ffd9fb546d498b2105dca6efc58a5cd0c17f0807
+Message-Id: <161730180467.20031.15014670369466140810.pr-tracker-bot@kernel.org>
+Date:   Thu, 01 Apr 2021 18:30:04 +0000
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The pull request you sent on Thu, 01 Apr 2021 16:47:18 +0200:
 
---JfVplkuTfB13Rsg5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.12-rc6
 
-On Thu, Apr 01, 2021 at 12:43:25PM -0500, Madhavan T. Venkataraman wrote:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/ffd9fb546d498b2105dca6efc58a5cd0c17f0807
 
-> >> +#ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
-> >> +	{ (unsigned long) &ftrace_graph_call, 0 },
-> >> +#ifdef CONFIG_FUNCTION_GRAPH_TRACER
-> >> +	{ (unsigned long) ftrace_graph_caller, 0 },
+Thank you!
 
-> > It's weird that we take the address of ftrace_graph_call but not the
-> > other functions - we should be consistent or explain why.  It'd probably
-> > also look nicer to not nest the ifdefs, the dependencies in Kconfig will
-> > ensure we only get things when we should.
-
-> I have explained it in the comment in the FTRACE trampoline right above
-> ftrace_graph_call().
-
-Ah, right - it's a result of it being an inner label.  I'd suggest
-putting a brief note right at that line of code explaining this (eg,
-"Inner label, not a function"), it wasn't confusing due to the use of
-that symbol but rather due to it being different from everything else
-in the list and that's kind of lost in the main comment.
-
-> So, it is only defined if CONFIG_FUNCTION_GRAPH_TRACER is defined. I can address
-> this as well as your comment by defining another label whose name is more meaningful
-> to our use:
-
-> +SYM_INNER_LABEL(ftrace_trampoline, SYM_L_GLOBAL) // checked by the unwinder
-> #ifdef CONFIG_FUNCTION_GRAPH_TRACER
-> SYM_INNER_LABEL(ftrace_graph_call, SYM_L_GLOBAL) // ftrace_graph_caller();
->         nop                             // If enabled, this will be replaced
->                                         // "b ftrace_graph_caller"
-> #endif
-
-I'm not sure we need to bother with that, you'd still need the & I think.
-
---JfVplkuTfB13Rsg5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBmELoACgkQJNaLcl1U
-h9C93Qf/eFtaA9mswR2hJPLjgvWxUJT2Ojc2wjAhGJENXEqgUuNy8cZbDKA0+xHn
-rCY/8FPBA5mUmRiS6RdkIXfsVyeRl4ASphssRdboKJLaC2vwbv+U3H0zuBk9HYbN
-4Jx9C4j8uxsT3xD9vYnBoel5ffcI+zC3dVr7FPhpYODEArDEx5YAP835vCBXiUMq
-8OsieIJtW3ymQBuSSyken77C8zUwTKgwk3NyRKoXx5Wd3kRpZEqKwf+PgSkA4TXo
-6fbpOBwdwy/2wBHL+TK2Ij59zNGh5GJf4wUn8FIoApI7QL1J7KW+zfsVRXd42GjN
-IV/i3AuBtZx5dC4hLW0as6MGqmpyiw==
-=7FAu
------END PGP SIGNATURE-----
-
---JfVplkuTfB13Rsg5--
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
