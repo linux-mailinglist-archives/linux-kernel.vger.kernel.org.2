@@ -2,95 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62546351B45
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83660351BAC
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235773AbhDASHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:07:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59754 "EHLO
+        id S238678AbhDASJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:09:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234855AbhDARwb (ORCPT
+        with ESMTP id S236502AbhDARyj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:52:31 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED7AC02FEA9
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 09:16:28 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id 11so105423pfn.9
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 09:16:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=T0rYie3R/Ll/Af9JkBaLcz+s5C8Xgvssk29GDuQKtVo=;
-        b=hZTs4t39HPYJt8nFN3+uw+fFkJwWZQ+USL2SvOKmRHoMWJYlqMgchLE/jdrKEQcQm7
-         gG67zb/7GhmqoLrWGHg/Yppb1uBDzTF4+FiwMtt71zoxlxDEOpkE6h66XxFp9l4QDcdE
-         pOik5kwxa6cfUCHP7d0vnJwUPTSuG6/ydSUHmYcQwMtYti/RPWW9m9F1HQ+cvqZO7y6g
-         vcsd0I9j/k/SQfuOIP2v5L4FHaNZcKbdeDIEDHbOc22oisyz2nLQzXyvKa9bg65dG5Ar
-         m2g128D1RWoAMw08JIBItzjtBpzSKa6iZmzUxG1MYB410HY9xC1t9vYZnw8gRJJ3KZju
-         BFiA==
+        Thu, 1 Apr 2021 13:54:39 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF11C02FEAC;
+        Thu,  1 Apr 2021 09:20:10 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id k25so2313666oic.4;
+        Thu, 01 Apr 2021 09:20:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=T0rYie3R/Ll/Af9JkBaLcz+s5C8Xgvssk29GDuQKtVo=;
-        b=qEg2TYLh0HCsOGbnA3AcAbnk3gXHQE2bHrnT+dtFr5De267Gsao/H+CYNcqw3KmGcx
-         qcgJ1WCv7AQHcsItTajVg3wk4JwrYwp3psmgtGErq59mntPnZvGdjr7u0s9TJWsTI/ar
-         XHNI+GBE1M7sIufyrHkVgKmoHbgGYdrC8kfT1UQrI+H46zsrn8ZTPOYA2jCrsDK2lk0N
-         cnIlf4iFaIqtCBAD5BZFlTXT8ICDHjhYQ7x5yInAufTlzY1Mn9Ds1/A2x3lW2Whk9kpz
-         fUhwQ3JHJ6IUfLrA+iZaqsK54hmm+41WvesRVD7I2xmkIy+dkNkWH9e+1x9DL1RGbq2t
-         6iOg==
-X-Gm-Message-State: AOAM533AdfA0JMMSJxlzEUeuqL/U0mqCGZmXs5tRf19OP+J+qL+iduv0
-        0N5Akt7x7gZy8sB36XDwh6cX
-X-Google-Smtp-Source: ABdhPJzRfPJ4ww9afESIc0EdZwAUVJbhKldoXwCOD5bB0LhtoJSQ3txH5Jvp0nJUZlBjYBX4u6rxEg==
-X-Received: by 2002:a63:c741:: with SMTP id v1mr8045403pgg.207.1617293787509;
-        Thu, 01 Apr 2021 09:16:27 -0700 (PDT)
-Received: from work ([103.77.37.138])
-        by smtp.gmail.com with ESMTPSA id t18sm6174736pfq.147.2021.04.01.09.16.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 01 Apr 2021 09:16:26 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 21:46:22 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Daniele.Palmas@telit.com,
-        bjorn.andersson@linaro.org
-Subject: Re: [PATCH v10 3/4] mtd: rawnand: Add support for secure regions in
- NAND memory
-Message-ID: <20210401161622.GH14052@work>
-References: <20210401151955.143817-1-manivannan.sadhasivam@linaro.org>
- <20210401151955.143817-4-manivannan.sadhasivam@linaro.org>
- <20210401175421.65db63bf@collabora.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Hoy9JWbZpNKKgJwwAmTLHFplX2rUrxGqNdm9v8L9dMU=;
+        b=j7/QkXhOpGVwzChbSZ94wE8RHL2qth7PoVtFxL9ypQ7Vb4OtJEQ1qVfN4jQdIBxToB
+         m6lH/8CiEitgkAtDGLyHGbRGF0fEEBnPAOband/GhQSBE0gfA9zKIqvzRu6PwOdyMU+e
+         fxhXQoauxr8naE+uZ2rxkne3vV6faJCtU70NYGjB3BPzkuih+X4qQz3M4FZYmxUX0AyK
+         nF4prV0jkQGEu7a61eu57DXJn8qIsPf5ZGkA3rWrJ/cYw+dcuPs78sBtXALAYKzxw6gd
+         7scwNxYKLJ24HXOonS6RAaSZo9C0NkoWKbDXj40YTyFlBdrzs/3O5sytibKbZ5INduQe
+         bs8Q==
+X-Gm-Message-State: AOAM530w6bpgKVrlctRqrinAk3YimROJYkJnvtku35h3BHAB6YOzAlmn
+        71rcB/9JtVIlPTS+b1sL+uc54Jjl923+W+HKCuM=
+X-Google-Smtp-Source: ABdhPJwLLFe8AN0azUamchJsJA2GytFp8mOWOLpmp56AWSXoBEUHQmtJLTpZhJIOrc4IiBnN23gOPVFKYY4e5y8xWD8=
+X-Received: by 2002:aca:5fc3:: with SMTP id t186mr6329836oib.69.1617294008998;
+ Thu, 01 Apr 2021 09:20:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401175421.65db63bf@collabora.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210401122458.12663-1-crecklin@redhat.com> <20210401122458.12663-2-crecklin@redhat.com>
+ <CAJZ5v0gCkhoKC_81WP6wdehZBYpEpmNhHwDygYawFdrWk3K6vg@mail.gmail.com> <CAMj1kXFKRtB_YNGCKAGmRfvZTERCYJHR3hRdZ9-vyiRrB67rdg@mail.gmail.com>
+In-Reply-To: <CAMj1kXFKRtB_YNGCKAGmRfvZTERCYJHR3hRdZ9-vyiRrB67rdg@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 1 Apr 2021 18:19:57 +0200
+Message-ID: <CAJZ5v0iqB7h1i_wuHTHTV-cvX+uQsbuae8W7wcFS8QffitD4aw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] use crc32 instead of md5 for hibernation e820
+ integrity check
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Chris von Recklinghausen <crecklin@redhat.com>,
+        Simo Sorce <simo@redhat.com>, Dexuan Cui <decui@microsoft.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 05:54:21PM +0200, Boris Brezillon wrote:
-> On Thu,  1 Apr 2021 20:49:54 +0530
-> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
-> 
-> > @@ -565,6 +608,11 @@ static int nand_block_isreserved(struct mtd_info *mtd, loff_t ofs)
-> >  
-> >  	if (!chip->bbt)
-> >  		return 0;
-> > +
-> > +	/* Check if the region is secured */
-> > +	if (nand_region_is_secured(chip, ofs, 0))
-> > +		return -EIO;
-> 
-> That would is still wrong, you should never pass a 0 size to
-> nand_region_is_secured().
-> 
+On Thu, Apr 1, 2021 at 3:59 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Thu, 1 Apr 2021 at 15:34, Rafael J. Wysocki <rafael@kernel.org> wrote:
+> >
+> > On Thu, Apr 1, 2021 at 2:25 PM Chris von Recklinghausen
+> > <crecklin@redhat.com> wrote:
+> > >
+> > > Suspend fails on a system in fips mode because md5 is used for the e820
+> > > integrity check and is not available. Use crc32 instead.
+> > >
+> > > Fixes: 62a03defeabd ("PM / hibernate: Verify the consistent of e820 memory map
+> > >        by md5 digest")
+> > > Signed-off-by: Chris von Recklinghausen <crecklin@redhat.com>
+> > > ---
+> > >  arch/x86/power/hibernate.c | 31 +++++++++++++++++--------------
+> > >  1 file changed, 17 insertions(+), 14 deletions(-)
+> > >
+> > > diff --git a/arch/x86/power/hibernate.c b/arch/x86/power/hibernate.c
+> > > index cd3914fc9f3d..6a3f4e32e49c 100644
+> > > --- a/arch/x86/power/hibernate.c
+> > > +++ b/arch/x86/power/hibernate.c
+> > > @@ -55,31 +55,31 @@ int pfn_is_nosave(unsigned long pfn)
+> > >  }
+> > >
+> > >
+> > > -#define MD5_DIGEST_SIZE 16
+> > > +#define CRC32_DIGEST_SIZE 16
+> > >
+> > >  struct restore_data_record {
+> > >         unsigned long jump_address;
+> > >         unsigned long jump_address_phys;
+> > >         unsigned long cr3;
+> > >         unsigned long magic;
+> > > -       u8 e820_digest[MD5_DIGEST_SIZE];
+> > > +       u8 e820_digest[CRC32_DIGEST_SIZE];
+> > >  };
+> >
+> > No.
+> >
+> > CRC32 was used here before and it was deemed insufficient.
+> >
+>
+> Why? The git commit log does not have an explanation of this.
 
-Size doesn't matter here, that's why I passed 0. Maybe 1 would be
-appropriate?
+IIRC there was an example of a memory map that would produce the same
+CRC32 value as the original or something like that.
 
-Thanks,
-Mani
-
+But that said this code is all about failing more gracefully, so I
+guess it isn't a big deal if the failure is more graceful in fewer
+cases ...
