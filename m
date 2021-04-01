@@ -2,98 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E3D53513BF
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 12:38:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0203513C4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 12:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233947AbhDAKhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 06:37:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46374 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233553AbhDAKhX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 06:37:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617273442;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CwwpY9zbsR9wmWnWgRPCRzGvVQBCnRsTEtAa4NdFU5k=;
-        b=ScnHDH9hunJq0jEW40aJ8NAd2Dlj4H/obNsQeyEQkUDgUFZSjWZDHf/JMcTM2WNqQOiRUJ
-        WBx5FSr/G2eAmjtIzaBGWCobYKZvY95NmKp5pefboRcCxD9j6yBh85kwVc4ojGwVFBWGS0
-        0cROoGMD0fF5Jl1v4vXyrSGJfZbK0SQ=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-19-dRFHr6BHMImm1Qz7UGpXtg-1; Thu, 01 Apr 2021 06:37:20 -0400
-X-MC-Unique: dRFHr6BHMImm1Qz7UGpXtg-1
-Received: by mail-ed1-f72.google.com with SMTP id i6so2637421edq.12
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 03:37:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CwwpY9zbsR9wmWnWgRPCRzGvVQBCnRsTEtAa4NdFU5k=;
-        b=sc8ofWkrQSNsfWM9C3Tufqq3fb9WDhz5P2YS5aqZrYXLpGCqW9Fq+6JLdbUAwnOPHq
-         XpN0e3HTs3z0wlqDQsxz5GKR5X+hxaf6+WsDTgUhp2Jzp/h4JKr8hiiLHuL6aRvpuGdp
-         r8H+LLB72DhGGDVjO4So3nonehiLtd1KHLr+RQXtV4I7xrKp3TacFBcwLxDk+uh9oX1j
-         o+QBvqpKRaEjIYU1kiQ0RKrfyhqcinhNbEpKfWWCsNFQowZMl0pQJVZqkfkBxvNj3TBk
-         q1AuOIN+VXDj3mH4/8FeYS0pv5lmN97ICv15pLn9vCiVhi2tARZbVfDPGyfjyBIhTeFi
-         38kA==
-X-Gm-Message-State: AOAM533dLUx0ps0jqtJYOHgyBr2oCx5scEzLyC53yTAm9TIcEEk80aNF
-        tOPxjvimS7KUfEqb537DS64e79Jh5YZX4LVq4p/uTC/Qf3Iz2MJzl6A22eKVAfir0qUvr2ODPXH
-        5rglc1mGy3KAqoFPC55uG4BBG
-X-Received: by 2002:a17:906:73cd:: with SMTP id n13mr8138949ejl.535.1617273439666;
-        Thu, 01 Apr 2021 03:37:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxoUdSWV6alowEJjrB0ng3a9PHsGiuAok+cNZ5pAIf5wRLMsANMzn1JKnVF08lT4MhG1RqcJg==
-X-Received: by 2002:a17:906:73cd:: with SMTP id n13mr8138926ejl.535.1617273439481;
-        Thu, 01 Apr 2021 03:37:19 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id mc10sm2581695ejb.56.2021.04.01.03.37.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Apr 2021 03:37:18 -0700 (PDT)
-Subject: Re: [PATCH 13/13] KVM: x86/mmu: Tear down roots in fast invalidation
- thread
-To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-References: <20210331210841.3996155-1-bgardon@google.com>
- <20210331210841.3996155-14-bgardon@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f1055496-6da4-0652-a95c-f5b56748ca04@redhat.com>
-Date:   Thu, 1 Apr 2021 12:37:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <20210331210841.3996155-14-bgardon@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S233990AbhDAKiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 06:38:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47576 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234000AbhDAKid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 06:38:33 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 52DDB60FEA;
+        Thu,  1 Apr 2021 10:38:22 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lRuiS-0055RO-9t; Thu, 01 Apr 2021 11:38:20 +0100
+Date:   Thu, 01 Apr 2021 11:38:19 +0100
+Message-ID: <87y2e2p9wk.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Thierry Reding <treding@nvidia.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh@kernel.org>, Will Deacon <will@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Bharat Kumar Gogada <bharatku@xilinx.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH v3 03/14] PCI: rcar: Convert to MSI domains
+In-Reply-To: <20210401101957.GA30653@lpieralisi>
+References: <20210330151145.997953-1-maz@kernel.org>
+        <20210330151145.997953-4-maz@kernel.org>
+        <20210401101957.GA30653@lpieralisi>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: lorenzo.pieralisi@arm.com, bhelgaas@google.com, frank-w@public-files.de, treding@nvidia.com, tglx@linutronix.de, robh@kernel.org, will@kernel.org, kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com, mikelley@microsoft.com, wei.liu@kernel.org, thierry.reding@gmail.com, jonathanh@nvidia.com, ryder.lee@mediatek.com, marek.vasut+renesas@gmail.com, yoshihiro.shimoda.uh@renesas.com, michal.simek@xilinx.com, paul.walmsley@sifive.com, bharatku@xilinx.com, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org, linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org, linux-renesas-soc@vger.kernel.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/03/21 23:08, Ben Gardon wrote:
-> +/*
-> + * Since kvm_tdp_mmu_invalidate_roots has acquired a reference to each
-> + * invalidated root, they will not be freed until this function drops the
-> + * reference. Before dropping that reference, tear down the paging
-> + * structure so that whichever thread does drop the last reference
-> + * only has to do a trivial ammount of work. Since the roots are invalid,
-> + * no new SPTEs should be created under them.
-> + */
-> +void kvm_tdp_mmu_zap_all_fast(struct kvm *kvm)
+On Thu, 01 Apr 2021 11:19:57 +0100,
+Lorenzo Pieralisi <lorenzo.pieralisi@arm.com> wrote:
+> 
+> On Tue, Mar 30, 2021 at 04:11:34PM +0100, Marc Zyngier wrote:
+> 
+> [...]
+> 
+> > +static void rcar_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
+> > +{
+> > +	struct rcar_msi *msi = irq_data_get_irq_chip_data(data);
+> > +	unsigned long pa = virt_to_phys(msi);
+> >  
+> > -	hwirq = rcar_msi_alloc_region(msi, nvec);
+> > -	if (hwirq < 0)
+> > -		return -ENOSPC;
+> > +	/* Use the msi structure as the PA for the MSI doorbell */
+> > +	msg->address_lo = lower_32_bits(pa);
+> > +	msg->address_hi = upper_32_bits(pa);
+> 
+> I don't think this change is aligned with the previous patch (is it ?),
+> the PA address we are using here is different from the one programmed
+> into the controller registers - either that or I am missing something,
+> please let me know.
 
-Please rename this to kvm_tdp_mmu_zap_invalidated_roots.
+Err. You are right. This looks like a bad case of broken conflict
+resolution on my part.
 
-Paolo
+The following snippet should fix it. Let me know if you want me to
+resend the whole thing or whether you are OK with applying this by
+hand.
 
+Thanks,
+
+	M.
+
+diff --git a/drivers/pci/controller/pcie-rcar-host.c b/drivers/pci/controller/pcie-rcar-host.c
+index f7331ad0d6dc..765cf2b45e24 100644
+--- a/drivers/pci/controller/pcie-rcar-host.c
++++ b/drivers/pci/controller/pcie-rcar-host.c
+@@ -573,11 +573,10 @@ static int rcar_msi_set_affinity(struct irq_data *d, const struct cpumask *mask,
+ static void rcar_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
+ {
+ 	struct rcar_msi *msi = irq_data_get_irq_chip_data(data);
+-	unsigned long pa = virt_to_phys(msi);
++	struct rcar_pcie *pcie = &msi_to_host(msi)->pcie;
+ 
+-	/* Use the msi structure as the PA for the MSI doorbell */
+-	msg->address_lo = lower_32_bits(pa);
+-	msg->address_hi = upper_32_bits(pa);
++	msg->address_lo = rcar_pci_read_reg(pcie, PCIEMSIALR) & ~MSIFE;
++	msg->address_hi = rcar_pci_read_reg(pcie, PCIEMSIAUR);
+ 	msg->data = data->hwirq;
+ }
+ 
+
+-- 
+Without deviation from the norm, progress is not possible.
