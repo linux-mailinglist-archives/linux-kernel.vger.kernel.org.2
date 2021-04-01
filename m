@@ -2,195 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38AD2350EE8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB17350EEB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233392AbhDAGP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 02:15:29 -0400
-Received: from labrats.qualcomm.com ([199.106.110.90]:4666 "EHLO
-        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233227AbhDAGPP (ORCPT
+        id S233247AbhDAGRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 02:17:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233125AbhDAGQk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 02:15:15 -0400
-IronPort-SDR: /VfosNVVmtyfg2jHLAEFA+T/PyUpLYFLuFnPvcgjUAxB/oZVA64xJuaG5/dWc7WWbuTcGgsgKC
- IhRvetYF9dKt+TOwCCqyxqWIbHj3IP9eDTbx3pj7F7JbqGC/jRtrRSNjSZPDq473M2Ko0vJfa4
- qwWbwhTLWC4DdPwMOe061QGLg5mu8CEZgTqpjsXBae2QzHiix09smrBdtYTo8zSTsBKaHpUtxa
- xJWNtJM1QweXsWT5j/hGZXhtV3Hnp7sb8UaobJ8qVZseLRrA8stLmg9iVMBWSA1Yy4ARksgMdZ
- AT4=
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="29736607"
-Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
-  by labrats.qualcomm.com with ESMTP; 31 Mar 2021 23:15:15 -0700
-X-QCInternal: smtphost
-Received: from wsp769891wss.qualcomm.com (HELO stor-presley.qualcomm.com) ([192.168.140.85])
-  by ironmsg05-sd.qualcomm.com with ESMTP; 31 Mar 2021 23:15:14 -0700
-Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
-        id 7E9BA210A9; Wed, 31 Mar 2021 23:15:14 -0700 (PDT)
-From:   Can Guo <cang@codeaurora.org>
-To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, cang@codeaurora.org
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Tom Rix <trix@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/2] scsi: ufs: Add support for hba performance monitor
-Date:   Wed, 31 Mar 2021 23:15:03 -0700
-Message-Id: <1617257704-1154-3-git-send-email-cang@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1617257704-1154-1-git-send-email-cang@codeaurora.org>
-References: <1617257704-1154-1-git-send-email-cang@codeaurora.org>
+        Thu, 1 Apr 2021 02:16:40 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E393C0613E6
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 23:16:40 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id y5so1200633qkl.9
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 23:16:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=/tdHq+eMgfvUCfgr19g4KGgjUw8dwNFaPcptJLMvv20=;
+        b=d1tet9Y2otJ4bPKkudFR7D1GN4TSxbb31ttdrlkl/P3sIGNBKqc6I78rPuwagFZLLP
+         91dZeX1IuFNgTohpD/7akTLAyWiZR/t0GCbC7hQJFaTYIzg/1yxYzN48AUTERaZYb92I
+         d5X5ASx9YOH20slwp7tXU1V8OlvUf4JNjbmasNAhuntVXe11XdwFpLt/Pqm/VPF3LI98
+         wj9AKLkB4qVEmBFKJposxVO3VlPRrmBgrjmHiJRND+jlasqobxNVWZF6L0k5Po8PJh5Q
+         DK3ZIR+/syfAhiRsujKvn1J0W61ILlAfeucEfPwH7DPcWSxFLVCfg/WaEjEWdcWbeJQO
+         TDHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=/tdHq+eMgfvUCfgr19g4KGgjUw8dwNFaPcptJLMvv20=;
+        b=EnSM06bwDAQoZWV8kXXGVUWWCslXcLe0mMgUfFnujC//iOqrUK3zOOFv38MHxg39T+
+         AgsPkolw/ydNzNEh2NSDGP15J8lWxvOZHsfKqZtqgT/QvggyJeiOWDXnuYtXZLknZBy/
+         cU1cgXLUaH+ta8thXNUIPk0EivaP5PvoL3bNrJH/E1Swe1jM17tz6cbOJHlW9wiQel4P
+         J9iZvSR61Q2NNI8hrw8Xr9yzQsZKxIS8UUWtP1fbdSU+xt9Co6L/m9Fw0hVP0969qpcH
+         ZQKhzY/gVP6IIOxmxAJgRfRMSJNW6TKlFjUkZJpnBuNF9r7Xyaz662rp5FQqm6XfxeCs
+         AAhQ==
+X-Gm-Message-State: AOAM533gmPAjz50x3DYnNlBmU6qFdV1Glf5VGZXwXqRGseXcD2nTP6f1
+        YhQYX4mtUZM4j9/l+/WjELlmDDMFppeyuApN7OIpeQ==
+X-Google-Smtp-Source: ABdhPJxN7gKZfahwJhOWLIepnEZQQrrtp1Bkzqp9sIf8uf8W7egGtdMcqMlqet9G2ktx96KkylccNRofqZFJM0jdU/A=
+X-Received: by 2002:a37:66cd:: with SMTP id a196mr7046403qkc.374.1617257799357;
+ Wed, 31 Mar 2021 23:16:39 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1615954045.git.greentime.hu@sifive.com> <161704512808.3012082.7539298875497991635@swboyd.mtv.corp.google.com>
+In-Reply-To: <161704512808.3012082.7539298875497991635@swboyd.mtv.corp.google.com>
+From:   Greentime Hu <greentime.hu@sifive.com>
+Date:   Thu, 1 Apr 2021 14:16:28 +0800
+Message-ID: <CAHCEehJyzsTOHpMhRQ4U3Ex+QiO8h2emBAq3ZemFrgqB-XRZNw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/6] Add SiFive FU740 PCIe host controller driver support
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     alex.dewar90@gmail.com, Albert Ou <aou@eecs.berkeley.edu>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        devicetree@vger.kernel.org, Erik Danie <erik.danie@sifive.com>,
+        hayashi.kunihiko@socionext.com, Bjorn Helgaas <helgaas@kernel.org>,
+        hes@sifive.com, jh80.chung@samsung.com, khilman@baylibre.com,
+        linux-clk@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        lorenzo.pieralisi@arm.com,
+        Michael Turquette <mturquette@baylibre.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>, robh+dt@kernel.org,
+        vidyas@nvidia.com, Zong Li <zong.li@sifive.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new sysfs group which has nodes to monitor data/request transfer
-performance. This sysfs group has nodes showing total sectors/requests
-transferred, total busy time spent and max/min/avg/sum latencies.
+Stephen Boyd <sboyd@kernel.org> =E6=96=BC 2021=E5=B9=B43=E6=9C=8830=E6=97=
+=A5 =E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=883:12=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> Quoting Greentime Hu (2021-03-17 23:08:07)
+> > This patchset includes SiFive FU740 PCIe host controller driver. We als=
+o
+> > add pcie_aux clock and pcie_power_on_reset controller to prci driver fo=
+r
+> > PCIe driver to use it.
+> >
+> > This is tested with e1000e: Intel(R) PRO/1000 Network Card, AMD Radeon =
+R5
+> > 230 graphics card and SP M.2 PCIe Gen 3 SSD in SiFive Unmatched based o=
+n
+> > v5.11 Linux kernel.
+>
+> Can I merge the clk patches to clk-next? Or is the dts patch going to be
+> sent in for the merge window? I'd like to merge the clk patches if the
+> other patches are going to miss the next merge window.
 
-Signed-off-by: Can Guo <cang@codeaurora.org>
+Hi Stephen,
 
-diff --git a/Documentation/ABI/testing/sysfs-driver-ufs b/Documentation/ABI/testing/sysfs-driver-ufs
-index d1bc23c..8380866 100644
---- a/Documentation/ABI/testing/sysfs-driver-ufs
-+++ b/Documentation/ABI/testing/sysfs-driver-ufs
-@@ -995,6 +995,132 @@ Description:	This entry shows the target state of an UFS UIC link
- 
- 		The file is read only.
- 
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/monitor_enable
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows the status of performance monitor enablement
-+		and it can be used to start/stop the monitor. When the monitor
-+		is stopped, the performance data collected is also cleared.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/monitor_chunk_size
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file tells the monitor to focus on requests transferring
-+		data of specific chunk size (in Bytes). 0 means any chunk size.
-+		It can only be changed when monitor is disabled.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/read_total_sectors
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows how many sectors (in 512 Bytes) have been
-+		sent from device to host after monitor gets started.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/read_total_busy
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows how long (in micro seconds) has been spent
-+		sending data from device to host after monitor gets started.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/read_nr_requests
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows how many read requests have been sent after
-+		monitor gets started.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/read_req_latency_max
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows the maximum latency (in micro seconds) of
-+		read requests after monitor gets started.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/read_req_latency_min
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows the minimum latency (in micro seconds) of
-+		read requests after monitor gets started.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/read_req_latency_avg
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows the average latency (in micro seconds) of
-+		read requests after monitor gets started.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/read_req_latency_sum
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows the total latency (in micro seconds) of
-+		read requests sent after monitor gets started.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/write_total_sectors
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows how many sectors (in 512 Bytes) have been sent
-+		from host to device after monitor gets started.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/write_total_busy
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows how long (in micro seconds) has been spent
-+		sending data from host to device after monitor gets started.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/write_nr_requests
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows how many write requests have been sent after
-+		monitor gets started.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/write_req_latency_max
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows the maximum latency (in micro seconds) of write
-+		requests after monitor gets started.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/write_req_latency_min
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows the minimum latency (in micro seconds) of write
-+		requests after monitor gets started.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/write_req_latency_avg
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows the average latency (in micro seconds) of write
-+		requests after monitor gets started.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/write_req_latency_sum
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows the total latency (in micro seconds) of write
-+		requests after monitor gets started.
-+
-+		The file is read only.
-+
- What:		/sys/bus/platform/drivers/ufshcd/*/device_descriptor/wb_presv_us_en
- Date:		June 2020
- Contact:	Asutosh Das <asutoshd@codeaurora.org>
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+Thank you for reviewing. I am ok with either way. :)
