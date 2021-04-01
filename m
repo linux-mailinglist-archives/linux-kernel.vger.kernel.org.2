@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46FA53523E3
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 01:37:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DFCE3523E6
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 01:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236466AbhDAXdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 19:33:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50152 "EHLO
+        id S236417AbhDAXdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 19:33:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236295AbhDAXdK (ORCPT
+        with ESMTP id S236411AbhDAXdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 19:33:10 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80B45C06178C
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 16:32:42 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id f26so4036826qtq.17
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 16:32:42 -0700 (PDT)
+        Thu, 1 Apr 2021 19:33:19 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5333C0610DF
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 16:32:44 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id y13so7391721ybk.20
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 16:32:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=h2cUBfrxKiLvUm4K3FiEqQsW7/CwbTTOloFCTdH2CHs=;
-        b=WwXYJEUtzPp5OgieXNSDH1jlEl5JZ0W/R7AL0K533fvUhOWdAZ9AGUs2eGGOPAXoOV
-         9ozbSMsvBM3fx5D5LtP6Wwj5vTRMKtVGliPsMJFstImK8hWqbNvneO11EFMHlgjN9j8E
-         Gxgb+CYWv9/NMpO603YX/M1xglU8wTRB2je50aC09bt/Q+N13fSJMOHOutVU+FJW8VRH
-         buFVQ6JhTKnPP9sHJSvuwhCmHBM3KlHMmvtXp8wtpQYRTn/+3gN0dNfz6qElxu5IW19P
-         6wyJ5fhugbFhtzg1oHjkOAL/OAUuMNDm5YMcIesJpyOU9dDyMEApglZuAgeX/R91ZsV9
-         QlzQ==
+        bh=US4jGgKY8G5DfLFeUodkpP35btrx7ts0CLHDF+n9ZqI=;
+        b=PRz3MFDuokm+w3IxnWltMpzxfsPLf8nUTH2Cm2JRtKoFDs5tjZV9dE2QQ7zHJVdVLi
+         4iY5onXSOWdoZLvRKnbHGN3US9zL9LyQt6POgqN1iJGwPo0t9Q6Mzom1yqVFkfTwGgxR
+         7g0AQg/BkgU93LW8c8y/FNi1kjeU5+buOKaJ+c+1Zo96nm+JnRe7GXMG0bfZSVbgwrBy
+         S8gTnIGO8lKmp/TA2Irs02Gsmasx5KNnKuAz71fowOI44G0xsJvDSVa4EdT6ZwJ7oiHW
+         JIRrVdeZXPVojoF1m9tr8GOvmzAdnoz0Xuud72L3TS/uh00kfkLUB7c1SinbKPgzQdVq
+         t+bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=h2cUBfrxKiLvUm4K3FiEqQsW7/CwbTTOloFCTdH2CHs=;
-        b=bGpjCZAjJf6GEooRTQnFyFET9xNRJ1N2HMvshH0Ccuc3Omf5XdeK0E7d7FFIYB1w+C
-         HCEDitao7reOCbhNd8Yw4HT/KgmGHnH9Fs619Ek4st5u8RLe/n76UrzWU8pnc5jwJk8/
-         9Yo02cze9mdRARCKrDdKx1X0PP1QxmdHgR0QwZ9WKmbnXRBF0PAtst1Ftjz5isJ6E/xn
-         7tubyh1LwIbZxOy0P9wiDoIl4F0BhDG99tR/7DtF20BHQQOy7Fzy/ayYXpgdzAxoyh7E
-         IWgsYmIgdSHYrhTMz/+lcJJkc5FrlDnf9Z7sPaN7AkF14B45jNxsqxW4+P91fRirnwwM
-         2ibQ==
-X-Gm-Message-State: AOAM531c1V1OXkNIIuBkBkgJEp2R24Ro1ELZs6yQ+gjAVG1g5+yyh0jv
-        ET2NkHy2hCkfGKCcH87utbRVXzl54p7FSfA4jEo=
-X-Google-Smtp-Source: ABdhPJziT3D45uCf3xMud/lYL8zWHTujTbizJ/biGPptb9CAf5S2oQq2ohDlzAjndytnNYlfJC1g6e8VKQiUGTMfQg8=
+        bh=US4jGgKY8G5DfLFeUodkpP35btrx7ts0CLHDF+n9ZqI=;
+        b=RTUNh24zPEVgctr0FAgbmr0sGKbhqn058efX85QVIlH9vguTwT3hKuv2bjMa3WJtOP
+         S95E0SYGkHIopTv7ZtqnzRrpGI3lQe+vl7pRIMZsXSTdEtoz7zY6B/FmK4/foGLAxb2a
+         lBxrRYbOC0GdWDnN1MbE81zJMf9imIGVe00s/80Kc/ojZiq/sZkvI1OWay931J5l3o3p
+         xG80E3hj3kxPoVU861igoVvAZge/LaC5zmuMb8dtFF9Zx53O4SBKGMe4HS8PMXz5nS9C
+         pLcoht+N22OeL30haKaq1SVbKaM3yVw4azgGiIfehkb/jnRgIqccvrUAaCStz+9Kx+m+
+         u4Dw==
+X-Gm-Message-State: AOAM533+HajqojPqvSQfKY21Stt07h7bHrTHj0PIQuG9nh0e2dnIkXn2
+        Wnbeg4MkH2nbwSngfPGznwKHwyKNFkHsiibXgvM=
+X-Google-Smtp-Source: ABdhPJyAtum2nuP+lVZ9BfeUeCfXFUi2ZrH2E6FgcEuBzztVxnpeaqWs+SRUS0lZ2LuUE5T5CK4HQCRb+WFqq84q4xA=
 X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:4cd1:da86:e91b:70b4])
- (user=samitolvanen job=sendgmr) by 2002:a0c:eb87:: with SMTP id
- x7mr10859482qvo.14.1617319961673; Thu, 01 Apr 2021 16:32:41 -0700 (PDT)
-Date:   Thu,  1 Apr 2021 16:32:09 -0700
+ (user=samitolvanen job=sendgmr) by 2002:a25:ba85:: with SMTP id
+ s5mr15701230ybg.336.1617319963848; Thu, 01 Apr 2021 16:32:43 -0700 (PDT)
+Date:   Thu,  1 Apr 2021 16:32:10 -0700
 In-Reply-To: <20210401233216.2540591-1-samitolvanen@google.com>
-Message-Id: <20210401233216.2540591-12-samitolvanen@google.com>
+Message-Id: <20210401233216.2540591-13-samitolvanen@google.com>
 Mime-Version: 1.0
 References: <20210401233216.2540591-1-samitolvanen@google.com>
 X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
-Subject: [PATCH v5 11/18] psci: use function_nocfi for cpu_resume
+Subject: [PATCH v5 12/18] arm64: implement function_nocfi
 From:   Sami Tolvanen <samitolvanen@google.com>
 To:     Kees Cook <keescook@chromium.org>
 Cc:     Nathan Chancellor <nathan@kernel.org>,
@@ -75,46 +75,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With CONFIG_CFI_CLANG, the compiler replaces function pointers with
-jump table addresses, which results in __pa_symbol returning the
-physical address of the jump table entry. As the jump table contains
-an immediate jump to an EL1 virtual address, this typically won't
-work as intended. Use function_nocfi to get the actual address of
-cpu_resume.
+With CONFIG_CFI_CLANG, the compiler replaces function addresses in
+instrumented C code with jump table addresses. This change implements
+the function_nocfi() macro, which returns the actual function address
+instead.
 
 Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 Reviewed-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/firmware/psci/psci.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ arch/arm64/include/asm/memory.h | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
-index f5fc429cae3f..64344e84bd63 100644
---- a/drivers/firmware/psci/psci.c
-+++ b/drivers/firmware/psci/psci.c
-@@ -325,8 +325,9 @@ static int __init psci_features(u32 psci_func_id)
- static int psci_suspend_finisher(unsigned long state)
- {
- 	u32 power_state = state;
-+	phys_addr_t pa_cpu_resume = __pa_symbol(function_nocfi(cpu_resume));
+diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+index 0aabc3be9a75..b55410afd3d1 100644
+--- a/arch/arm64/include/asm/memory.h
++++ b/arch/arm64/include/asm/memory.h
+@@ -321,6 +321,21 @@ static inline void *phys_to_virt(phys_addr_t x)
+ #define virt_to_pfn(x)		__phys_to_pfn(__virt_to_phys((unsigned long)(x)))
+ #define sym_to_pfn(x)		__phys_to_pfn(__pa_symbol(x))
  
--	return psci_ops.cpu_suspend(power_state, __pa_symbol(cpu_resume));
-+	return psci_ops.cpu_suspend(power_state, pa_cpu_resume);
- }
- 
- int psci_cpu_suspend_enter(u32 state)
-@@ -344,8 +345,10 @@ int psci_cpu_suspend_enter(u32 state)
- 
- static int psci_system_suspend(unsigned long unused)
- {
-+	phys_addr_t pa_cpu_resume = __pa_symbol(function_nocfi(cpu_resume));
++#ifdef CONFIG_CFI_CLANG
++/*
++ * With CONFIG_CFI_CLANG, the compiler replaces function address
++ * references with the address of the function's CFI jump table
++ * entry. The function_nocfi macro always returns the address of the
++ * actual function instead.
++ */
++#define function_nocfi(x) ({						\
++	void *addr;							\
++	asm("adrp %0, " __stringify(x) "\n\t"				\
++	    "add  %0, %0, :lo12:" __stringify(x) : "=r" (addr));	\
++	addr;								\
++})
++#endif
 +
- 	return invoke_psci_fn(PSCI_FN_NATIVE(1_0, SYSTEM_SUSPEND),
--			      __pa_symbol(cpu_resume), 0, 0);
-+			      pa_cpu_resume, 0, 0);
- }
- 
- static int psci_system_suspend_enter(suspend_state_t state)
+ /*
+  *  virt_to_page(x)	convert a _valid_ virtual address to struct page *
+  *  virt_addr_valid(x)	indicates whether a virtual address is valid
 -- 
 2.31.0.208.g409f899ff0-goog
 
