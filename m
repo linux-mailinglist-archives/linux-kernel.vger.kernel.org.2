@@ -2,94 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E89351A96
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:07:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67122351B1A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235144AbhDASCL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 1 Apr 2021 14:02:11 -0400
-Received: from lithops.sigma-star.at ([195.201.40.130]:40600 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235561AbhDARrI (ORCPT
+        id S238497AbhDASG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:06:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58674 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237208AbhDARvI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:47:08 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 0D0C5606BA22;
-        Thu,  1 Apr 2021 13:16:55 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id g4O_tLTycO8a; Thu,  1 Apr 2021 13:16:54 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 9AA6F606BA25;
-        Thu,  1 Apr 2021 13:16:54 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 2cdZCkDK2XPn; Thu,  1 Apr 2021 13:16:54 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 30F67606BA22;
-        Thu,  1 Apr 2021 13:16:54 +0200 (CEST)
-Date:   Thu, 1 Apr 2021 13:16:54 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        horia geanta <horia.geanta@nxp.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        aymen sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        davem <davem@davemloft.net>,
-        James Bottomley <jejb@linux.ibm.com>,
-        kernel <kernel@pengutronix.de>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        david <david@sigma-star.at>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        "open list, ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        LSM <linux-security-module@vger.kernel.org>
-Message-ID: <1465227062.139734.1617275814134.JavaMail.zimbra@nod.at>
-In-Reply-To: <638717a5-a456-24a7-b0ab-9f71adb13687@pengutronix.de>
-References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de> <897df7dd-83a1-3e3e-1d9f-5a1adfd5b2fb@pengutronix.de> <1263763932.139584.1617272457698.JavaMail.zimbra@nod.at> <27d7d3fa-5df8-1880-df21-200de31cc629@pengutronix.de> <717795270.139671.1617274418087.JavaMail.zimbra@nod.at> <c72f93be-04e8-bb52-7252-4b4131648100@pengutronix.de> <1713376107.139705.1617275134320.JavaMail.zimbra@nod.at> <638717a5-a456-24a7-b0ab-9f71adb13687@pengutronix.de>
-Subject: Re: [PATCH v1 0/3] KEYS: trusted: Introduce support for NXP
- CAAM-based trusted keys
+        Thu, 1 Apr 2021 13:51:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617299467;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=6tYRJ1YPm2YiHZpNplHwmZcadjvns9Uy/SktMSxJfhw=;
+        b=WxS2TTytlIBoG5DR2QhGt2KZHSbA6ucBbL4q2wX5+P135xeP3o/TRABYEdF1JwfwCR6LOR
+        wEEnxAbqKtAvjZ2Zn0/L7Qw9dhAyZgfXVHhiIQmqgng3277H9AucfsLUy3PNnk5zrCo6kI
+        KtzE1uRAkF51c3Gty0XRKeV02iIXxN0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-14-A4WTr3KoPZWJDliuqV2sJA-1; Thu, 01 Apr 2021 07:19:34 -0400
+X-MC-Unique: A4WTr3KoPZWJDliuqV2sJA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9ADAE108BD06;
+        Thu,  1 Apr 2021 11:19:32 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.35.206.58])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 368C117B15;
+        Thu,  1 Apr 2021 11:19:29 +0000 (UTC)
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
+        64-BIT)), "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: [PATCH v2 0/2] KVM: x86: nSVM: fixes for SYSENTER emulation
+Date:   Thu,  1 Apr 2021 14:19:26 +0300
+Message-Id: <20210401111928.996871-1-mlevitsk@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Topic: KEYS: trusted: Introduce support for NXP CAAM-based trusted keys
-Thread-Index: mqcZxSDGQ+2iXRHRM0FbHdiOFBs5eA==
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ahmad,
+This is a result of a deep rabbit hole dive in regard to why=0D
+currently the nested migration of 32 bit guests=0D
+is totally broken on AMD.=0D
+=0D
+It turns out that due to slight differences between the original AMD64=0D
+implementation and the Intel's remake, SYSENTER instruction behaves a=0D
+bit differently on Intel, and to support migration from Intel to AMD we=0D
+try to emulate those differences away.=0D
+=0D
+Sadly that collides with virtual vmload/vmsave feature that is used in nest=
+ing.=0D
+The problem was that when it is enabled,=0D
+on migration (and otherwise when userspace reads MSR_IA32_SYSENTER_{EIP|ESP=
+},=0D
+wrong value were returned, which leads to #DF in the=0D
+nested guest when the wrong value is loaded back.=0D
+=0D
+The patch I prepared carefully fixes this, by mostly disabling that=0D
+SYSCALL emulation when we don't spoof the Intel's vendor ID, and if we do,=
+=0D
+and yet somehow SVM is enabled (this is a very rare edge case), then=0D
+virtual vmload/save is force disabled.=0D
+=0D
+V2: incorporated review feedback from Paulo.=0D
+=0D
+Best regards,=0D
+        Maxim Levitsky=0D
+=0D
+Maxim Levitsky (2):=0D
+  KVM: x86: add guest_cpuid_is_intel=0D
+  KVM: nSVM: improve SYSENTER emulation on AMD=0D
+=0D
+ arch/x86/kvm/cpuid.h   |  8 ++++=0D
+ arch/x86/kvm/svm/svm.c | 99 +++++++++++++++++++++++++++---------------=0D
+ arch/x86/kvm/svm/svm.h |  6 +--=0D
+ 3 files changed, 76 insertions(+), 37 deletions(-)=0D
+=0D
+-- =0D
+2.26.2=0D
+=0D
 
------ Ursprüngliche Mail -----
-> Von: "Ahmad Fatoum" <a.fatoum@pengutronix.de>
->> But using LUKS would mean that cryptsetup has access to the plain disc
->> encryption key material?
->> This would be a no-go for many systems out there, key material must not
->> accessible to userspace.
->> I know, distrusting userspace root is not easy, but doable. :)
-> 
-> The LUKS2 format supports tokens. I see no reason why the encrypted blob
-> couldn't be stored there along with the usual metadata. cryptsetup would
-> then load it as kernel trusted key and use it for dmcrypt decryption.
-> 
-> This will mean we have to part ways with features such as having multiple
-> keys, but I think it's worth it to have a plug and play solution for
-> trusted keys.
-
-Ah, now I can follow your thoughts!
-Yes, that would be nice to have. :)
-
-I kind of assumed you want to use LUKS with passphrases and CAAM blobs.
-
-Thanks,
-//richard
