@@ -2,92 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 890EA352032
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6D69352033
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235516AbhDAT4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 15:56:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47740 "EHLO mail.kernel.org"
+        id S234956AbhDAT42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 15:56:28 -0400
+Received: from mga04.intel.com ([192.55.52.120]:62757 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234956AbhDAT4L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 15:56:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3DAE61041;
-        Thu,  1 Apr 2021 19:56:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617306971;
-        bh=ChFC7NycbeTj6zCwP3dNjOnoAHLUf/WuAPwnnC/LFV8=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=ozr0Ie6ieEYkXukXSwKYxaakNNL2BiwauH7/3xdXx4KIYUdp2wPYF/Jdxm/v76dNE
-         TMVKpVj45DvMTWehDunaEisOD/KyvK8Qf/MN+bGCdEiPenAAjTqYKKghftKPGMCv0y
-         hgs46ejoYVkap1tkQBG6MLnxAKGEwmrau7YBpBPYHezjXSA2Szut7CPAKh0Ehali5P
-         nYU5fsHPASAOvU4VR7vzw/roeeAkAcHs5luixwIDjNoONh2GG6h7hSF/SdC5UDTVGi
-         GEAQd1lUyFdWofNkHAPy7CE30RJkqqtxXrGsIrwc8mBTnmz/wEGrtrP4UbNF5jwq0v
-         Vbd079jLClzYw==
-Content-Type: text/plain; charset="utf-8"
+        id S235528AbhDAT4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 15:56:25 -0400
+IronPort-SDR: LOIz7/5vZOiJjvl3M8c9Y0bbYQpolzeUydXXI16fcl4waZfsin58wqaXKk+bA7BUGh9gufWd0i
+ ZlYhO7e2Yj6g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="190090505"
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="190090505"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 12:56:26 -0700
+IronPort-SDR: ymOuhrp/XhPgn1c+DeOfrSwUJ9GkN69f1jbfiw4Vm/WNCcSZR0qI1NVMm+qSE26ca+XxrL9mJR
+ qku2lJdaqC0w==
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="611044183"
+Received: from pzlai-mobl.amr.corp.intel.com (HELO [10.213.169.242]) ([10.213.169.242])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 12:56:25 -0700
+Subject: Re: [RFC v1 12/26] x86/tdx: Handle in-kernel MMIO
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <94a9847072098e554146ca4fa3c6f28fc1ac5b22.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
+ 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
+ K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
+ VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
+ e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
+ ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
+ kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
+ rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
+ f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
+ mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
+ UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
+ sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
+ 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
+ cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
+ UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
+ db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
+ lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
+ kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
+ gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
+ AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
+ XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
+ e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
+ pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
+ YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
+ lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
+ M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
+ 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
+ 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
+ OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
+ ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
+ z5cecg==
+Message-ID: <3e43ff6b-2f19-69f1-3017-d8d67abcfd9f@intel.com>
+Date:   Thu, 1 Apr 2021 12:56:24 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210313021919.435332-8-konrad.dybcio@somainline.org>
-References: <20210313021919.435332-1-konrad.dybcio@somainline.org> <20210313021919.435332-8-konrad.dybcio@somainline.org>
-Subject: Re: [PATCH 8/9] clk: qcom: gcc-msm8994: Add proper msm8992 support
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        ~postmarketos/upstreaming@lists.sr.ht
-Date:   Thu, 01 Apr 2021 12:56:10 -0700
-Message-ID: <161730697046.2260335.17961769659321987524@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <94a9847072098e554146ca4fa3c6f28fc1ac5b22.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Konrad Dybcio (2021-03-12 18:19:17)
-> diff --git a/drivers/clk/qcom/gcc-msm8994.c b/drivers/clk/qcom/gcc-msm899=
-4.c
-> index fae784b4242f..a5b9db7678d1 100644
-> --- a/drivers/clk/qcom/gcc-msm8994.c
-> +++ b/drivers/clk/qcom/gcc-msm8994.c
-> @@ -2718,13 +2742,57 @@ static const struct qcom_cc_desc gcc_msm8994_desc=
- =3D {
->  };
-> =20
->  static const struct of_device_id gcc_msm8994_match_table[] =3D {
-> -       { .compatible =3D "qcom,gcc-msm8994" },
-> +       { .compatible =3D "qcom,gcc-msm8992" },
-> +       { .compatible =3D "qcom,gcc-msm8994" }, /* V2 and V2.1 */
->         {}
->  };
->  MODULE_DEVICE_TABLE(of, gcc_msm8994_match_table);
-> =20
->  static int gcc_msm8994_probe(struct platform_device *pdev)
->  {
-> +       struct device *dev =3D &pdev->dev;
-> +       bool is_msm8992;
-> +
-> +       is_msm8992 =3D of_device_is_compatible(pdev->dev.of_node, "qcom,g=
-cc-msm8992");
-> +
-> +       if (is_msm8992) {
+On 2/5/21 3:38 PM, Kuppuswamy Sathyanarayanan wrote:
+> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+> 
+> Handle #VE due to MMIO operations. MMIO triggers #VE with EPT_VIOLATION
+> exit reason.
+> 
+> For now we only handle subset of instruction that kernel uses for MMIO
+> oerations. User-space access triggers SIGBUS.
+..
+> +	case EXIT_REASON_EPT_VIOLATION:
+> +		ve->instr_len = tdx_handle_mmio(regs, ve);
+> +		break;
 
-Drop the bool please
+Is MMIO literally the only thing that can cause an EPT violation for TDX
+guests?
 
-	if (of_device_is_compatible(pdev->dev.of_node, "qcom,gcc-msm8992")) {
+Forget userspace for a minute.  #VE's from userspace are annoying, but
+fine.  We can't control what userspace does.  If an action it takes
+causes a #VE in the TDX architecture, tough cookies, the kernel must
+handle it and try to recover or kill the app.
 
-> +               /* MSM8992 features less clocks and some have different f=
-req tables */
-> +               gcc_msm8994_desc.clks[GCC_LPASS_Q6_AXI_CLK] =3D 0;
+The kernel is very different.  We know in advance (must know,
+actually...) which instructions might cause exceptions of any kind.
+That's why we have exception tables and copy_to/from_user().  That's why
+we can handle kernel page faults on userspace, but not inside spinlocks.
 
-Use NULL please.
+Binary-dependent OSes are also very different.  It's going to be natural
+for them to want to take existing, signed drivers and use them in TDX
+guests.  They might want to do something like this.
 
-> +               gcc_msm8994_desc.clks[GCC_PCIE_1_AUX_CLK] =3D 0;
-> +               gcc_msm8994_desc.clks[GCC_PCIE_1_CFG_AHB_CLK] =3D 0;
-> +               gcc_msm8994_desc.clks[GCC_PCIE_1_MSTR_AXI_CLK] =3D 0;
+But for an OS where we have source for the *ENTIRE* thing, and where we
+have a chokepoint for MMIO accesses (arch/x86/include/asm/io.h), it
+seems like an *AWFUL* idea to:
+1. Have the kernel set up special mappings for I/O memory
+2. Kernel generates special instructions to access that memory
+3. Kernel faults on that memory
+4. Kernel cracks its own special instructions to see what they were
+   doing
+5. Kernel calls up to host to do the MMIO
+
+Instead of doing 2/3/4, why not just have #2 call up to the host
+directly?  This patch seems a very slow, roundabout way to do
+paravirtualized MMIO.
+
+BTW, there's already some SEV special-casing in io.h.
