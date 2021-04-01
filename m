@@ -2,90 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41C25350B17
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 02:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B345C350B1B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 02:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232549AbhDAATD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 20:19:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbhDAASu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 20:18:50 -0400
-Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8291C061574;
-        Wed, 31 Mar 2021 17:18:49 -0700 (PDT)
-Received: by mail-oo1-xc36.google.com with SMTP id w1-20020a4adec10000b02901bc77feac3eso149792oou.3;
-        Wed, 31 Mar 2021 17:18:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=STvPrV5JuwYSv0Aq7r42gqM6RUkqGxJqGQ6E+64EXj4=;
-        b=RM6jVIIEk7Xxa/loBbtyN1vB2ZVxU26jXCNJlzK7Q8vT7f+OGdzKxB+vU7i4fnS3Ph
-         UcX5/BipdN+8vyHli0Qat3DabIKP+X2vIoDVGxi+s0bjPiF+6LNFnWGoQL0QxvSWS7bN
-         Y0rg0QH4jM6vrzSIABbljul7H+CE+N/2pMKK4fpG1ZuSznVidQgVqLDCmaUqBjA8lCMu
-         y5TAz0yJgIr01VXqgg/mP0xwEiMEaf8e9zZWM6TA9ghAf8MG1RZi5Rm5EiyAb3ywduDw
-         WtTLAFDDIVK+H+SSmgN0VhQ1fGUdVXQ4nbujtY9OoYIcMRs+WkXvZdZ68FIrhDCbalVd
-         twUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=STvPrV5JuwYSv0Aq7r42gqM6RUkqGxJqGQ6E+64EXj4=;
-        b=gnXrpWjpo2oTBpvGXV5KaSOaUWbEaHedPD2wwzOcXsCUzQY9XBDlAgASY2jRMJOqga
-         murC+O+FCZIAKjqu36HgpSb5az4kqs/eaYn7D3FMrchzZr57cqftChKJms5E2Cbz8Kv8
-         471+7t01y02+lc8BE8lgtgJdhvkjNiE1G6phtbfKL6GH3vSTaO3vC0X2qOnjVtgYVyXm
-         PRvJYKZgAkQPgyG6efNn98EkSar537LuOSZjixKbi9G5oTlGkADsByBNJA9Fo248x4ND
-         9EY3Sl3Xd3Gv/596l+B8Pv/flrZf00LqzpZwScK04pPTXcMS+OgzowBBp3O0t/M92BRs
-         QQkA==
-X-Gm-Message-State: AOAM530bbDzSWQ2I8WTX4kZ8fYWYmUFzp7zGtqrc0fUkvKYMK9qpTRpE
-        vEgnme//K9LvZrJQZ4HrxqA=
-X-Google-Smtp-Source: ABdhPJysuCN0yqHaekb+tpRaqJj6MX/ID2IwE28+v3asEEoFAm5qJeblCcgtMi65c5kGAKg1X2AVyQ==
-X-Received: by 2002:a4a:be86:: with SMTP id o6mr4769856oop.70.1617236329008;
-        Wed, 31 Mar 2021 17:18:49 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.56])
-        by smtp.googlemail.com with ESMTPSA id w11sm764236ooc.35.2021.03.31.17.18.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Mar 2021 17:18:48 -0700 (PDT)
-Subject: Re: [PATCH] udp: Add support for getsockopt(..., ..., UDP_GRO, ...,
- ...)
-To:     Norman Maurer <norman.maurer@googlemail.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dsahern@kernel.org,
-        davem@davemloft.net
-References: <20210325195614.800687-1-norman_maurer@apple.com>
- <8eadc07055ac1c99bbc55ea10c7b98acc36dde55.camel@redhat.com>
- <CF78DCAD-6F2C-46C4-9FF1-61DF66183C76@apple.com>
- <2e667826f183fbef101a62f0ad8ccb4ed253cb75.camel@redhat.com>
- <71BBD1B0-FA0A-493D-A1D2-40E7304B0A35@googlemail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <4ba2450c-413a-0417-e805-2486ab562df8@gmail.com>
-Date:   Wed, 31 Mar 2021 18:18:46 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.0
-MIME-Version: 1.0
-In-Reply-To: <71BBD1B0-FA0A-493D-A1D2-40E7304B0A35@googlemail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S232600AbhDAAZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 20:25:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37890 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229486AbhDAAYg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 20:24:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B08D961001;
+        Thu,  1 Apr 2021 00:24:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1617236676;
+        bh=gLUa9Cv36lS6Ye58IN3xZXaCNCRPQPiULeyeri4i3N8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=0e/o12XugAFbYd+f0XIAkAcKxPNnub8+C2c1HMNSvRWYKnCMimNnl1D8tYNWymnYU
+         ZN/lzNfAhk3ofH784OKlAPyEHsvGYNHpQWWmC65DW31nfFPqA2caBLrAEc8ph+3663
+         Affqxwp85K5WZvjMpXOr9Q7W0nwN7ja4N2qzkSL4=
+Date:   Wed, 31 Mar 2021 17:24:35 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Bui Quang Minh <minhquangbui99@gmail.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>
+Subject: Re: [PATCH] userfaultfd: Write protect when virtual memory range
+ has no page table entry
+Message-Id: <20210331172435.7d06f805c803553517f03271@linux-foundation.org>
+In-Reply-To: <YGSL91uL1K2RwOWY@dhcp22.suse.cz>
+References: <20210319152428.52683-1-minhquangbui99@gmail.com>
+        <YFhuDf6L7nkUoT7q@dhcp22.suse.cz>
+        <YFiU9YWbYpLnlnde@kernel.org>
+        <YFigbjaTT+YEEAO6@dhcp22.suse.cz>
+        <YGSL91uL1K2RwOWY@dhcp22.suse.cz>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/31/21 7:10 AM, Norman Maurer wrote:
-> Friendly ping… 
+On Wed, 31 Mar 2021 16:49:27 +0200 Michal Hocko <mhocko@suse.com> wrote:
+
+> > Thanks for the clarification! I have suspected this to be the case but
+> > I am not really familiar with the interface to have any strong statement
+> > here. Maybe we want to document this explicitly.
 > 
-> As this missing change was most likely an oversight in the original commit I do think it should go into 5.12 and subsequently stable as well. That’s also the reason why I didn’t send a v2 and changed the commit message / subject for the patch. For me it clearly is a bug and not a new feature.
-> 
-> 
+> Btw. Andrew the patch still seems to be in mmotm. Do you plan to keep it
+> there?
 
-I agree that it should be added to net
-
-If you do not see it here:
-  https://patchwork.kernel.org/project/netdevbpf/list/
-
-you need to re-send and clearly mark it as [PATCH net]. Make sure it has
-a Fixes tag.
-
+Dropped, thanks.
