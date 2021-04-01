@@ -2,693 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BED3351A64
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE153351973
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:02:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237586AbhDASAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:00:44 -0400
-Received: from mout.web.de ([217.72.192.78]:55155 "EHLO mout.web.de"
+        id S235165AbhDARxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:53:42 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:59685 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236413AbhDARoo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:44:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1617299082;
-        bh=umachb5L4Rh+9LC8tk5fZUXerK5xUJY2V8FE3/GAhes=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=RSv082TiHKICUuLqViPPc6XQarhVjvnJpRNa++qnzXWTKwr5pQ2AdJdGcATs9qQgY
-         5SZB0lJX8Fd6vV2MWPA1ByaE18wA6nsS0+jMM481pa+WTsGjq7WgBgzbDTrN6j2v3A
-         JLDxH58TNjfSB1ZK4e4UY6zxMh6xCO8H9kZwVsS8=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.178.20] ([84.61.93.130]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1N79RG-1lg4k802CC-017Yip; Thu, 01
- Apr 2021 16:52:48 +0200
-Subject: Re: [PATCH 1/3] arm64: dts: xilinx: Add the clock nodes for zynqmp
-To:     Michal Simek <michal.simek@xilinx.com>,
-        Rajan Vaja <rajan.vaja@xilinx.com>, robh+dt@kernel.org,
-        mark.rutland@arm.com, harini.katakam@xilinx.com,
-        ulf.hansson@linaro.org, xuwei5@hisilicon.com, mripard@kernel.org,
-        heiko@sntech.de
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <1573119856-13548-1-git-send-email-rajan.vaja@xilinx.com>
- <1573119856-13548-2-git-send-email-rajan.vaja@xilinx.com>
- <8b039dac-06c4-6b33-f53b-44b8fa144495@web.de>
- <580bccb2-2e41-aec7-2612-99a2b231f2fc@xilinx.com>
-From:   Jan Kiszka <jan.kiszka@web.de>
-Message-ID: <09343e7d-fcd8-1a54-470f-c0d8741921b1@web.de>
-Date:   Thu, 1 Apr 2021 16:52:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S234860AbhDARlH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:41:07 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617298867; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=h4rZg3loUeGrmbFwxfTS2JVTeQDuJOSIq3TF+e6Bitg=;
+ b=E/yvqXdP66yQMzKx3aCvVjgP+kTZbY7u7H+F01EohB7YLoNoOV2wz6pKgfCD8+YlnZkemT/o
+ WVOksrVspxEri20YkGKWMsFQ3bhft7U+VzLnAOuiLSXWOx4COwjxHz/lmaJkrCfe2sQTp5Oj
+ JqYF3FWrHSILhp/jLENTyC6prqk=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 6065dfb38807bcde1d6d50a1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 01 Apr 2021 14:58:59
+ GMT
+Sender: nitirawa=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6F000C433ED; Thu,  1 Apr 2021 14:58:59 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: nitirawa)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id ED74DC433C6;
+        Thu,  1 Apr 2021 14:58:57 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <580bccb2-2e41-aec7-2612-99a2b231f2fc@xilinx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:vGywyNvXpMsw1mQSKhj7uufyvwRkYPhazD7qHn6z0LzqCZ902sy
- +zR7pNGbscbj6FnJHzz+cYnR+smioMQod9m/1FyUTHjQeO7+AG4RACh5tHvYUwW0smUH+bh
- en5YHCS9/toxVEvscDf3BSvek+BQ0Xt2RMQb/Y/dbcdB3zQI7kU51BhNhenneF70vVm8Nim
- nkCtYE68lAyCHX6Rh/2DA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:GUg6T/KRTkg=:cyf+WX2Q7gadsEJOJeL7ng
- DYkNdTjnBgpn1KO6UKAh+HqUwGIvLP3r0/Z8dm5aVlkub78x+vqxtqnG+7BC8iMPHbwAvQmj3
- hJURYzvSo+j7eOeUE2sZpAYv4xAY0U9bKq0xYL/Ga2E3SW74DuC/ff9LaI9lAh0J+wPVTHQuj
- A6tZDYjBtRQEhEU1VuQlDO4XzHKJroZvTOPpzytoQxcAFUkyNc1XXEADE7uprviejKqxgBnA3
- Y/aau7ZBy3wT8me4ywlrKf2w0FkpyJ3JFoICWwUOBtPVE53kEOOk/tFJac4RneRfYCSLVV7GE
- 7Soz4DNTaT5Bd4+rBQOiYhIazPAgzdVmjM3fMpYOwHYyXomN6kV5Lh5Vt441EdZ+xx5ikusGs
- RTGNNH3Ov/Zn1OD0GFko0naKy+3KvG/61wCCzU9dnBlN5c64h3kt95FgCThKuMVNAxjaVlsT2
- NNFyBMhzy+UVcu3mAN+dsMQWZyvte0qUA+b3k3uSI+qSjsCraP105eFvkilw8UKL7G8mZk2A0
- CNubzrmPB/nu/tpmdH3A8A+nPsg5Uj6NYZH4UyhZBlQkHaGY+8OJDe8VmFTF9B+oQkGuyLIrs
- dLwfZuau9u/zyyYHNNeGRFtKoITwO5xhgWAvu2bqfFi3UskmsvuXHHkVyIjhsmgxDx2Z8vWle
- O/+yg7uKgkuSaax+Xwzt5PdoLxP00SDrUHnzTn+X5Hu6IoCtBM1iBLBwAJfINwLYBRS/X/eBB
- ABFc3AoQ6MAHNbb28/TDF85JjQY3XO/SvZXrRw5Kvi3YLM9e9fBEQI6gxSF5XGMjGKaGVTcxi
- RgJ4J52Qq+9H9iMCU8fRjl03Rs5bPmBMNWarO9i6JRBubSZo3JF6u23bzDFH7zVOtBin3AhdW
- TsGzHcvySOlxjnCJ4DfxB5ow7HKp5W2/WzsltWUM2bEBhy6+BqSQmb0ZvtFddRfMuNm87v/Jj
- 5eOrqHQPN8UzMGJKgmGlCsyiWA+urYhEtmCESYKd+pCxdOXJwhCPfJpEu4A01rXSpNgObcBvu
- NAiin/zUQ2rk90MoVoqoOBPEI7M+XeJwz2Gn+lXcwSu3z1RQZi1shbstioxjF015/5UaZT+u1
- oMjocX9FVEr89th6TBndZtqPg7bmgTnvm6cSvEySY05//6vyT8w0+q5kDovDAVhoMvmkSq/N5
- cJZdiSxXMBsO/jOZjNwiibCX8f9oB3xnhdTlG1AScXz5k8a0FbTJMCAuW/jEilCophqb0=
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 01 Apr 2021 20:28:57 +0530
+From:   nitirawa@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     asutoshd@codeaurora.org, cang@codeaurora.org,
+        stummala@codeaurora.org, vbadigan@codeaurora.org,
+        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, adrian.hunter@intel.com, bvanassche@acm.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 3/3] scsi: ufs-qcom: configure VCC voltage level in
+ vendor file
+In-Reply-To: <20210331181959.GL904837@yoga>
+References: <1616363857-26760-1-git-send-email-nitirawa@codeaurora.org>
+ <1616363857-26760-4-git-send-email-nitirawa@codeaurora.org>
+ <20210323152834.GH5254@yoga>
+ <f27b4fde8092088ec5dc6232cc4b2318@codeaurora.org>
+ <20210331181959.GL904837@yoga>
+Message-ID: <d9d7d6fb9241bbe48b3f8df5d2c0bc4e@codeaurora.org>
+X-Sender: nitirawa@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.04.21 13:42, Michal Simek wrote:
-> Hi Jan,
->
-> On 3/27/21 8:55 PM, Jan Kiszka wrote:
->> On 07.11.19 10:44, Rajan Vaja wrote:
->>> Add clock nodes for zynqmp based on CCF.
->>>
->>> Signed-off-by: Rajan Vaja <rajan.vaja@xilinx.com>
->>> ---
->>>  arch/arm64/boot/dts/xilinx/zynqmp-clk-ccf.dtsi     | 222 ++++++++++++=
-+++++++++
->>>  arch/arm64/boot/dts/xilinx/zynqmp-zc1232-revA.dts  |   4 +-
->>>  arch/arm64/boot/dts/xilinx/zynqmp-zc1254-revA.dts  |   4 +-
->>>  arch/arm64/boot/dts/xilinx/zynqmp-zc1275-revA.dts  |   2 +-
->>>  .../boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts    |   4 +-
->>>  .../boot/dts/xilinx/zynqmp-zc1751-xm016-dc2.dts    |   4 +-
->>>  .../boot/dts/xilinx/zynqmp-zc1751-xm017-dc3.dts    |   4 +-
->>>  .../boot/dts/xilinx/zynqmp-zc1751-xm018-dc4.dts    |   4 +-
->>>  .../boot/dts/xilinx/zynqmp-zc1751-xm019-dc5.dts    |   4 +-
->>>  arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts  |   4 +-
->>>  arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts  |   4 +-
->>>  arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts  |   4 +-
->>>  arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts  |   4 +-
->>>  arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts  |   4 +-
->>>  arch/arm64/boot/dts/xilinx/zynqmp.dtsi             |  24 ++-
->>>  15 files changed, 270 insertions(+), 26 deletions(-)
->>>  create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-clk-ccf.dtsi
->>>
->>> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-clk-ccf.dtsi b/arch/arm=
-64/boot/dts/xilinx/zynqmp-clk-ccf.dtsi
->>> new file mode 100644
->>> index 0000000..9868ca1
->>> --- /dev/null
->>> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-clk-ccf.dtsi
->>> @@ -0,0 +1,222 @@
->>> +// SPDX-License-Identifier: GPL-2.0+
->>> +/*
->>> + * Clock specification for Xilinx ZynqMP
->>> + *
->>> + * (C) Copyright 2017 - 2019, Xilinx, Inc.
->>> + *
->>> + * Michal Simek <michal.simek@xilinx.com>
->>> + */
->>> +
->>> +#include <dt-bindings/clock/xlnx-zynqmp-clk.h>
->>> +/ {
->>> +	pss_ref_clk: pss_ref_clk {
->>> +		u-boot,dm-pre-reloc;
->>> +		compatible =3D "fixed-clock";
->>> +		#clock-cells =3D <0>;
->>> +		clock-frequency =3D <33333333>;
->>> +	};
->>> +
->>> +	video_clk: video_clk {
->>> +		u-boot,dm-pre-reloc;
->>> +		compatible =3D "fixed-clock";
->>> +		#clock-cells =3D <0>;
->>> +		clock-frequency =3D <27000000>;
->>> +	};
->>> +
->>> +	pss_alt_ref_clk: pss_alt_ref_clk {
->>> +		u-boot,dm-pre-reloc;
->>> +		compatible =3D "fixed-clock";
->>> +		#clock-cells =3D <0>;
->>> +		clock-frequency =3D <0>;
->>> +	};
->>> +
->>> +	gt_crx_ref_clk: gt_crx_ref_clk {
->>> +		u-boot,dm-pre-reloc;
->>> +		compatible =3D "fixed-clock";
->>> +		#clock-cells =3D <0>;
->>> +		clock-frequency =3D <108000000>;
->>> +	};
->>> +
->>> +	aux_ref_clk: aux_ref_clk {
->>> +		u-boot,dm-pre-reloc;
->>> +		compatible =3D "fixed-clock";
->>> +		#clock-cells =3D <0>;
->>> +		clock-frequency =3D <27000000>;
->>> +	};
->>> +};
->>> +
->>> +&can0 {
->>> +	clocks =3D <&zynqmp_clk CAN0_REF>, <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&can1 {
->>> +	clocks =3D <&zynqmp_clk CAN1_REF>, <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&cpu0 {
->>> +	clocks =3D <&zynqmp_clk ACPU>;
->>> +};
->>> +
->>> +&fpd_dma_chan1 {
->>> +	clocks =3D <&zynqmp_clk GDMA_REF>, <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&fpd_dma_chan2 {
->>> +	clocks =3D <&zynqmp_clk GDMA_REF>, <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&fpd_dma_chan3 {
->>> +	clocks =3D <&zynqmp_clk GDMA_REF>, <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&fpd_dma_chan4 {
->>> +	clocks =3D <&zynqmp_clk GDMA_REF>, <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&fpd_dma_chan5 {
->>> +	clocks =3D <&zynqmp_clk GDMA_REF>, <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&fpd_dma_chan6 {
->>> +	clocks =3D <&zynqmp_clk GDMA_REF>, <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&fpd_dma_chan7 {
->>> +	clocks =3D <&zynqmp_clk GDMA_REF>, <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&fpd_dma_chan8 {
->>> +	clocks =3D <&zynqmp_clk GDMA_REF>, <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&lpd_dma_chan1 {
->>> +	clocks =3D <&zynqmp_clk ADMA_REF>, <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&lpd_dma_chan2 {
->>> +	clocks =3D <&zynqmp_clk ADMA_REF>, <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&lpd_dma_chan3 {
->>> +	clocks =3D <&zynqmp_clk ADMA_REF>, <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&lpd_dma_chan4 {
->>> +	clocks =3D <&zynqmp_clk ADMA_REF>, <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&lpd_dma_chan5 {
->>> +	clocks =3D <&zynqmp_clk ADMA_REF>, <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&lpd_dma_chan6 {
->>> +	clocks =3D <&zynqmp_clk ADMA_REF>, <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&lpd_dma_chan7 {
->>> +	clocks =3D <&zynqmp_clk ADMA_REF>, <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&lpd_dma_chan8 {
->>> +	clocks =3D <&zynqmp_clk ADMA_REF>, <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&gem0 {
->>> +	clocks =3D <&zynqmp_clk LPD_LSBUS>, <&zynqmp_clk GEM0_REF>,
->>> +		 <&zynqmp_clk GEM0_TX>, <&zynqmp_clk GEM0_RX>,
->>> +		 <&zynqmp_clk GEM_TSU>;
->>> +	clock-names =3D "pclk", "hclk", "tx_clk", "rx_clk", "tsu_clk";
->>> +};
->>> +
->>> +&gem1 {
->>> +	clocks =3D <&zynqmp_clk LPD_LSBUS>, <&zynqmp_clk GEM1_REF>,
->>> +		 <&zynqmp_clk GEM1_TX>, <&zynqmp_clk GEM1_RX>,
->>> +		 <&zynqmp_clk GEM_TSU>;
->>> +	clock-names =3D "pclk", "hclk", "tx_clk", "rx_clk", "tsu_clk";
->>> +};
->>> +
->>> +&gem2 {
->>> +	clocks =3D <&zynqmp_clk LPD_LSBUS>, <&zynqmp_clk GEM2_REF>,
->>> +		 <&zynqmp_clk GEM2_TX>, <&zynqmp_clk GEM2_RX>,
->>> +		 <&zynqmp_clk GEM_TSU>;
->>> +	clock-names =3D "pclk", "hclk", "tx_clk", "rx_clk", "tsu_clk";
->>> +};
->>> +
->>> +&gem3 {
->>> +	clocks =3D <&zynqmp_clk LPD_LSBUS>, <&zynqmp_clk GEM3_REF>,
->>> +		 <&zynqmp_clk GEM3_TX>, <&zynqmp_clk GEM3_RX>,
->>> +		 <&zynqmp_clk GEM_TSU>;
->>> +	clock-names =3D "pclk", "hclk", "tx_clk", "rx_clk", "tsu_clk";
->>> +};
->>> +
->>> +&gpio {
->>> +	clocks =3D <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&i2c0 {
->>> +	clocks =3D <&zynqmp_clk I2C0_REF>;
->>> +};
->>> +
->>> +&i2c1 {
->>> +	clocks =3D <&zynqmp_clk I2C1_REF>;
->>> +};
->>> +
->>> +&pcie {
->>> +	clocks =3D <&zynqmp_clk PCIE_REF>;
->>> +};
->>> +
->>> +&sata {
->>> +	clocks =3D <&zynqmp_clk SATA_REF>;
->>> +};
->>> +
->>> +&sdhci0 {
->>> +	clocks =3D <&zynqmp_clk SDIO0_REF>, <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&sdhci1 {
->>> +	clocks =3D <&zynqmp_clk SDIO1_REF>, <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&spi0 {
->>> +	clocks =3D <&zynqmp_clk SPI0_REF>, <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&spi1 {
->>> +	clocks =3D <&zynqmp_clk SPI1_REF>, <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&ttc0 {
->>> +	clocks =3D <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&ttc1 {
->>> +	clocks =3D <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&ttc2 {
->>> +	clocks =3D <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&ttc3 {
->>> +	clocks =3D <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&uart0 {
->>> +	clocks =3D <&zynqmp_clk UART0_REF>, <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&uart1 {
->>> +	clocks =3D <&zynqmp_clk UART1_REF>, <&zynqmp_clk LPD_LSBUS>;
->>> +};
->>> +
->>> +&usb0 {
->>> +	clocks =3D <&zynqmp_clk USB0_BUS_REF>, <&zynqmp_clk USB3_DUAL_REF>;
->>> +};
->>> +
->>> +&usb1 {
->>> +	clocks =3D <&zynqmp_clk USB1_BUS_REF>, <&zynqmp_clk USB3_DUAL_REF>;
->>> +};
->>> +
->>> +&watchdog0 {
->>> +	clocks =3D <&zynqmp_clk WDT>;
->>> +};
->>> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zc1232-revA.dts b/arch/=
-arm64/boot/dts/xilinx/zynqmp-zc1232-revA.dts
->>> index 0f7b4cf..2e05fa4 100644
->>> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zc1232-revA.dts
->>> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zc1232-revA.dts
->>> @@ -2,7 +2,7 @@
->>>  /*
->>>   * dts file for Xilinx ZynqMP ZC1232
->>>   *
->>> - * (C) Copyright 2017 - 2018, Xilinx, Inc.
->>> + * (C) Copyright 2017 - 2019, Xilinx, Inc.
->>>   *
->>>   * Michal Simek <michal.simek@xilinx.com>
->>>   */
->>> @@ -10,7 +10,7 @@
->>>  /dts-v1/;
->>>
->>>  #include "zynqmp.dtsi"
->>> -#include "zynqmp-clk.dtsi"
->>> +#include "zynqmp-clk-ccf.dtsi"
->>>
->>>  / {
->>>  	model =3D "ZynqMP ZC1232 RevA";
->>> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zc1254-revA.dts b/arch/=
-arm64/boot/dts/xilinx/zynqmp-zc1254-revA.dts
->>> index 9092828..3d0aaa0 100644
->>> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zc1254-revA.dts
->>> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zc1254-revA.dts
->>> @@ -2,7 +2,7 @@
->>>  /*
->>>   * dts file for Xilinx ZynqMP ZC1254
->>>   *
->>> - * (C) Copyright 2015 - 2018, Xilinx, Inc.
->>> + * (C) Copyright 2015 - 2019, Xilinx, Inc.
->>>   *
->>>   * Michal Simek <michal.simek@xilinx.com>
->>>   * Siva Durga Prasad Paladugu <sivadur@xilinx.com>
->>> @@ -11,7 +11,7 @@
->>>  /dts-v1/;
->>>
->>>  #include "zynqmp.dtsi"
->>> -#include "zynqmp-clk.dtsi"
->>> +#include "zynqmp-clk-ccf.dtsi"
->>>
->>>  / {
->>>  	model =3D "ZynqMP ZC1254 RevA";
->>> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zc1275-revA.dts b/arch/=
-arm64/boot/dts/xilinx/zynqmp-zc1275-revA.dts
->>> index 4f404c5..1a8127d4 100644
->>> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zc1275-revA.dts
->>> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zc1275-revA.dts
->>> @@ -11,7 +11,7 @@
->>>  /dts-v1/;
->>>
->>>  #include "zynqmp.dtsi"
->>> -#include "zynqmp-clk.dtsi"
->>> +#include "zynqmp-clk-ccf.dtsi"
->>>
->>>  / {
->>>  	model =3D "ZynqMP ZC1275 RevA";
->>> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts b/=
-arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts
->>> index 9a3e39d..fa7eb1b 100644
->>> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts
->>> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts
->>> @@ -2,7 +2,7 @@
->>>  /*
->>>   * dts file for Xilinx ZynqMP zc1751-xm015-dc1
->>>   *
->>> - * (C) Copyright 2015 - 2018, Xilinx, Inc.
->>> + * (C) Copyright 2015 - 2019, Xilinx, Inc.
->>>   *
->>>   * Michal Simek <michal.simek@xilinx.com>
->>>   */
->>> @@ -10,7 +10,7 @@
->>>  /dts-v1/;
->>>
->>>  #include "zynqmp.dtsi"
->>> -#include "zynqmp-clk.dtsi"
->>> +#include "zynqmp-clk-ccf.dtsi"
->>>  #include <dt-bindings/gpio/gpio.h>
->>>
->>>  / {
->>> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm016-dc2.dts b/=
-arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm016-dc2.dts
->>> index 2421ec7..4191dfa 100644
->>> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm016-dc2.dts
->>> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm016-dc2.dts
->>> @@ -2,7 +2,7 @@
->>>  /*
->>>   * dts file for Xilinx ZynqMP zc1751-xm016-dc2
->>>   *
->>> - * (C) Copyright 2015 - 2018, Xilinx, Inc.
->>> + * (C) Copyright 2015 - 2019, Xilinx, Inc.
->>>   *
->>>   * Michal Simek <michal.simek@xilinx.com>
->>>   */
->>> @@ -10,7 +10,7 @@
->>>  /dts-v1/;
->>>
->>>  #include "zynqmp.dtsi"
->>> -#include "zynqmp-clk.dtsi"
->>> +#include "zynqmp-clk-ccf.dtsi"
->>>  #include <dt-bindings/gpio/gpio.h>
->>>
->>>  / {
->>> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm017-dc3.dts b/=
-arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm017-dc3.dts
->>> index 7a49dee..3750690 100644
->>> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm017-dc3.dts
->>> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm017-dc3.dts
->>> @@ -2,7 +2,7 @@
->>>  /*
->>>   * dts file for Xilinx ZynqMP zc1751-xm017-dc3
->>>   *
->>> - * (C) Copyright 2016 - 2018, Xilinx, Inc.
->>> + * (C) Copyright 2016 - 2019, Xilinx, Inc.
->>>   *
->>>   * Michal Simek <michal.simek@xilinx.com>
->>>   */
->>> @@ -10,7 +10,7 @@
->>>  /dts-v1/;
->>>
->>>  #include "zynqmp.dtsi"
->>> -#include "zynqmp-clk.dtsi"
->>> +#include "zynqmp-clk-ccf.dtsi"
->>>
->>>  / {
->>>  	model =3D "ZynqMP zc1751-xm017-dc3 RevA";
->>> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm018-dc4.dts b/=
-arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm018-dc4.dts
->>> index 54c7b4f..2366cd9 100644
->>> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm018-dc4.dts
->>> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm018-dc4.dts
->>> @@ -2,7 +2,7 @@
->>>  /*
->>>   * dts file for Xilinx ZynqMP zc1751-xm018-dc4
->>>   *
->>> - * (C) Copyright 2015 - 2018, Xilinx, Inc.
->>> + * (C) Copyright 2015 - 2019, Xilinx, Inc.
->>>   *
->>>   * Michal Simek <michal.simek@xilinx.com>
->>>   */
->>> @@ -10,7 +10,7 @@
->>>  /dts-v1/;
->>>
->>>  #include "zynqmp.dtsi"
->>> -#include "zynqmp-clk.dtsi"
->>> +#include "zynqmp-clk-ccf.dtsi"
->>>
->>>  / {
->>>  	model =3D "ZynqMP zc1751-xm018-dc4";
->>> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm019-dc5.dts b/=
-arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm019-dc5.dts
->>> index b8b5ff1..9a894e6 100644
->>> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm019-dc5.dts
->>> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm019-dc5.dts
->>> @@ -2,7 +2,7 @@
->>>  /*
->>>   * dts file for Xilinx ZynqMP zc1751-xm019-dc5
->>>   *
->>> - * (C) Copyright 2015 - 2018, Xilinx, Inc.
->>> + * (C) Copyright 2015 - 2019, Xilinx, Inc.
->>>   *
->>>   * Siva Durga Prasad <siva.durga.paladugu@xilinx.com>
->>>   * Michal Simek <michal.simek@xilinx.com>
->>> @@ -11,7 +11,7 @@
->>>  /dts-v1/;
->>>
->>>  #include "zynqmp.dtsi"
->>> -#include "zynqmp-clk.dtsi"
->>> +#include "zynqmp-clk-ccf.dtsi"
->>>  #include <dt-bindings/gpio/gpio.h>
->>>
->>>  / {
->>> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts b/arch/=
-arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts
->>> index e5699d0..3e39454 100644
->>> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts
->>> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts
->>> @@ -2,7 +2,7 @@
->>>  /*
->>>   * dts file for Xilinx ZynqMP ZCU100 revC
->>>   *
->>> - * (C) Copyright 2016 - 2018, Xilinx, Inc.
->>> + * (C) Copyright 2016 - 2019, Xilinx, Inc.
->>>   *
->>>   * Michal Simek <michal.simek@xilinx.com>
->>>   * Nathalie Chan King Choy
->>> @@ -11,7 +11,7 @@
->>>  /dts-v1/;
->>>
->>>  #include "zynqmp.dtsi"
->>> -#include "zynqmp-clk.dtsi"
->>> +#include "zynqmp-clk-ccf.dtsi"
->>>  #include <dt-bindings/input/input.h>
->>>  #include <dt-bindings/interrupt-controller/irq.h>
->>>  #include <dt-bindings/gpio/gpio.h>
->>> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts b/arch/=
-arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts
->>> index 2a3b665..f6e9558 100644
->>> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts
->>> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts
->>> @@ -2,7 +2,7 @@
->>>  /*
->>>   * dts file for Xilinx ZynqMP ZCU102 RevA
->>>   *
->>> - * (C) Copyright 2015 - 2018, Xilinx, Inc.
->>> + * (C) Copyright 2015 - 2019, Xilinx, Inc.
->>>   *
->>>   * Michal Simek <michal.simek@xilinx.com>
->>>   */
->>> @@ -10,7 +10,7 @@
->>>  /dts-v1/;
->>>
->>>  #include "zynqmp.dtsi"
->>> -#include "zynqmp-clk.dtsi"
->>> +#include "zynqmp-clk-ccf.dtsi"
->>>  #include <dt-bindings/input/input.h>
->>>  #include <dt-bindings/gpio/gpio.h>
->>>
->>> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts b/arch/=
-arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts
->>> index 8f45614..f457f8a 100644
->>> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts
->>> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts
->>> @@ -2,7 +2,7 @@
->>>  /*
->>>   * dts file for Xilinx ZynqMP ZCU104
->>>   *
->>> - * (C) Copyright 2017 - 2018, Xilinx, Inc.
->>> + * (C) Copyright 2017 - 2019, Xilinx, Inc.
->>>   *
->>>   * Michal Simek <michal.simek@xilinx.com>
->>>   */
->>> @@ -10,7 +10,7 @@
->>>  /dts-v1/;
->>>
->>>  #include "zynqmp.dtsi"
->>> -#include "zynqmp-clk.dtsi"
->>> +#include "zynqmp-clk-ccf.dtsi"
->>>  #include <dt-bindings/gpio/gpio.h>
->>>
->>>  / {
->>> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts b/arch/=
-arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts
->>> index 93ce7eb..f15b99a 100644
->>> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts
->>> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts
->>> @@ -2,7 +2,7 @@
->>>  /*
->>>   * dts file for Xilinx ZynqMP ZCU106
->>>   *
->>> - * (C) Copyright 2016, Xilinx, Inc.
->>> + * (C) Copyright 2016 - 2019, Xilinx, Inc.
->>>   *
->>>   * Michal Simek <michal.simek@xilinx.com>
->>>   */
->>> @@ -10,7 +10,7 @@
->>>  /dts-v1/;
->>>
->>>  #include "zynqmp.dtsi"
->>> -#include "zynqmp-clk.dtsi"
->>> +#include "zynqmp-clk-ccf.dtsi"
->>>  #include <dt-bindings/input/input.h>
->>>  #include <dt-bindings/gpio/gpio.h>
->>>
->>> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts b/arch/=
-arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts
->>> index 8bb0001..e27cd60 100644
->>> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts
->>> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts
->>> @@ -2,7 +2,7 @@
->>>  /*
->>>   * dts file for Xilinx ZynqMP ZCU111
->>>   *
->>> - * (C) Copyright 2017 - 2018, Xilinx, Inc.
->>> + * (C) Copyright 2017 - 2019, Xilinx, Inc.
->>>   *
->>>   * Michal Simek <michal.simek@xilinx.com>
->>>   */
->>> @@ -10,7 +10,7 @@
->>>  /dts-v1/;
->>>
->>>  #include "zynqmp.dtsi"
->>> -#include "zynqmp-clk.dtsi"
->>> +#include "zynqmp-clk-ccf.dtsi"
->>>  #include <dt-bindings/input/input.h>
->>>  #include <dt-bindings/gpio/gpio.h>
->>>
->>> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/=
-dts/xilinx/zynqmp.dtsi
->>> index 9aa6734..59a547b 100644
->>> --- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
->>> +++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
->>> @@ -2,7 +2,7 @@
->>>  /*
->>>   * dts file for Xilinx ZynqMP
->>>   *
->>> - * (C) Copyright 2014 - 2015, Xilinx, Inc.
->>> + * (C) Copyright 2014 - 2019, Xilinx, Inc.
->>>   *
->>>   * Michal Simek <michal.simek@xilinx.com>
->>>   *
->>> @@ -124,6 +124,28 @@
->>>  			     <1 10 0xf08>;
->>>  	};
->>>
->>> +	firmware {
->>> +		zynqmp_firmware: zynqmp-firmware {
->>> +			compatible =3D "xlnx,zynqmp-firmware";
->>> +			method =3D "smc";
->>> +			zynqmp_clk: clock-controller {
->>> +				u-boot,dm-pre-reloc;
->>> +				#clock-cells =3D <1>;
->>> +				compatible =3D "xlnx,zynqmp-clk";
->>> +				clocks =3D <&pss_ref_clk>,
->>> +					 <&video_clk>,
->>> +					 <&pss_alt_ref_clk>,
->>> +					 <&aux_ref_clk>,
->>> +					 <&gt_crx_ref_clk>;
->>> +				clock-names =3D "pss_ref_clk",
->>> +					      "video_clk",
->>> +					      "pss_alt_ref_clk",
->>> +					      "aux_ref_clk",
->>> +					      "gt_crx_ref_clk";
->>> +			};
->>> +		};
->>> +	};
->>> +
->>>  	amba_apu: amba-apu@0 {
->>>  		compatible =3D "simple-bus";
->>>  		#address-cells =3D <2>;
->>>
->>
->> Updating my Ultra96 setups from 5.4 to 5.10, I ran into a blocker:
->> Starting from this commit on, I'm no longer getting the kernel to boot
->> on both revision 1 and 2 (arm64 defconfig as reference). If I switch th=
-e
->> DTBs back before this commit, even a kernel from today's head is fine.
->>
->> Further versions of potential relevance:
->>  - PMUFW 2019.1 and 2020.2
->>  - TF-A 2.3
->>  - U-Boot 2020.10
->>
->> What's missing? I suspect someone forgot to document a subtle dependenc=
-y
->> of this change.
->
-> Does this fix your issue?
-> https://lore.kernel.org/linux-arm-kernel/20210316090540.973014-1-punit1.=
-agrawal@toshiba.co.jp/
->
+On 2021-03-31 23:49, Bjorn Andersson wrote:
+> On Wed 24 Mar 16:55 CDT 2021, nitirawa@codeaurora.org wrote:
+> 
+>> On 2021-03-23 20:58, Bjorn Andersson wrote:
+>> > On Sun 21 Mar 16:57 CDT 2021, Nitin Rawat wrote:
+>> >
+>> > > As a part of vops handler, VCC voltage is updated
+>> > > as per the ufs device probed after reading the device
+>> > > descriptor. We follow below steps to configure voltage
+>> > > level.
+>> > >
+>> > > 1. Set the device to SLEEP state.
+>> > > 2. Disable the Vcc Regulator.
+>> > > 3. Set the vcc voltage according to the device type and reenable
+>> > >    the regulator.
+>> > > 4. Set the device mode back to ACTIVE.
+>> > >
+>> >
+>> > When we discussed this a while back this was described as a requirement
+>> > from the device specification, you only operate on objects "owned" by
+>> > ufshcd and you invoke ufshcd operations to perform the actions.
+>> >
+>> > So why is this a ufs-qcom patch and not something in ufshcd?
+>> >
+>> > Regards,
+>> > Bjorn
+>> >
+>> > > Signed-off-by: Nitin Rawat <nitirawa@codeaurora.org>
+>> > > Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+>> > > ---
+>> > >  drivers/scsi/ufs/ufs-qcom.c | 51
+>> > > +++++++++++++++++++++++++++++++++++++++++++++
+>> > >  1 file changed, 51 insertions(+)
+>> > >
+>> > > diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
+>> > > index f97d7b0..ca35f5c 100644
+>> > > --- a/drivers/scsi/ufs/ufs-qcom.c
+>> > > +++ b/drivers/scsi/ufs/ufs-qcom.c
+>> > > @@ -21,6 +21,17 @@
+>> > >  #define UFS_QCOM_DEFAULT_DBG_PRINT_EN	\
+>> > >  	(UFS_QCOM_DBG_PRINT_REGS_EN | UFS_QCOM_DBG_PRINT_TEST_BUS_EN)
+>> > >
+>> > > +#define	ANDROID_BOOT_DEV_MAX	30
+>> > > +static char android_boot_dev[ANDROID_BOOT_DEV_MAX];
+>> > > +
+>> > > +/* Min and Max VCC voltage values for ufs 2.x and
+>> > > + * ufs 3.x devices
+>> > > + */
+>> > > +#define UFS_3X_VREG_VCC_MIN_UV	2540000 /* uV */
+>> > > +#define UFS_3X_VREG_VCC_MAX_UV	2700000 /* uV */
+>> > > +#define UFS_2X_VREG_VCC_MIN_UV	2950000 /* uV */
+>> > > +#define UFS_2X_VREG_VCC_MAX_UV	2960000 /* uV */
+>> > > +
+>> > >  enum {
+>> > >  	TSTBUS_UAWM,
+>> > >  	TSTBUS_UARM,
+>> > > @@ -1293,6 +1304,45 @@ static void
+>> > > ufs_qcom_print_hw_debug_reg_all(struct ufs_hba *hba,
+>> > >  	print_fn(hba, reg, 9, "UFS_DBG_RD_REG_TMRLUT ", priv);
+>> > >  }
+>> > >
+>> > > +  /**
+>> > > +   * ufs_qcom_setup_vcc_regulators - Update VCC voltage
+>> > > +   * @hba: host controller instance
+>> > > +   * Update VCC voltage based on UFS device(ufs 2.x or
+>> > > +   * ufs 3.x probed)
+>> > > +   */
+>> > > +static int ufs_qcom_setup_vcc_regulators(struct ufs_hba *hba)
+>> > > +{
+>> > > +	struct ufs_dev_info *dev_info = &hba->dev_info;
+>> > > +	struct ufs_vreg *vreg = hba->vreg_info.vcc;
+>> > > +	int ret;
+>> > > +
+>> > > +	/* Put the device in sleep before lowering VCC level */
+>> > > +	ret = ufshcd_set_dev_pwr_mode(hba, UFS_SLEEP_PWR_MODE);
+>> > > +
+>> > > +	/* Switch off VCC before switching it ON at 2.5v or 2.96v */
+>> > > +	ret = ufshcd_disable_vreg(hba->dev, vreg);
+>> > > +
+>> > > +	/* add ~2ms delay before renabling VCC at lower voltage */
+>> > > +	usleep_range(2000, 2100);
+>> > > +
+>> > > +	/* set VCC min and max voltage according to ufs device type */
+>> > > +	if (dev_info->wspecversion >= 0x300) {
+>> > > +		vreg->min_uV = UFS_3X_VREG_VCC_MIN_UV;
+>> > > +		vreg->max_uV = UFS_3X_VREG_VCC_MAX_UV;
+>> > > +	}
+>> > > +
+>> > > +	else {
+>> > > +		vreg->min_uV = UFS_2X_VREG_VCC_MIN_UV;
+>> > > +		vreg->max_uV = UFS_2X_VREG_VCC_MAX_UV;
+>> > > +	}
+>> > > +
+>> > > +	ret = ufshcd_enable_vreg(hba->dev, vreg);
+>> > > +
+>> > > +	/* Bring the device in active now */
+>> > > +	ret = ufshcd_set_dev_pwr_mode(hba, UFS_ACTIVE_PWR_MODE);
+>> > > +	return ret;
+>> > > +}
+>> > > +
+>> > >  static void ufs_qcom_enable_test_bus(struct ufs_qcom_host *host)
+>> > >  {
+>> > >  	if (host->dbg_print_en & UFS_QCOM_DBG_PRINT_TEST_BUS_EN) {
+>> > > @@ -1490,6 +1540,7 @@ static const struct ufs_hba_variant_ops
+>> > > ufs_hba_qcom_vops = {
+>> > >  	.device_reset		= ufs_qcom_device_reset,
+>> > >  	.config_scaling_param = ufs_qcom_config_scaling_param,
+>> > >  	.program_key		= ufs_qcom_ice_program_key,
+>> > > +	.setup_vcc_regulators	= ufs_qcom_setup_vcc_regulators,
+>> > >  };
+>> > >
+>> > >  /**
+>> > > --
+>> > > 2.7.4
+>> > >
+>> 
+>> Hi Bjorn,
+>> Thanks for your review.
+>> But As per the earlier discussion regarding handling of vcc voltage
+>> for platform supporting both ufs 2.x and ufs 3.x , it was finally 
+>> concluded
+>> to
+>> use "vops and let vendors handle it, until specs or someone
+>> has a better suggestion". Please correct me in case i am wrong.
+>> 
+> 
+> I was under the impression that this would result in something custom
+> per platform, but what I'm objecting to now that I see the code is that
+> this is completely generic.
+> 
+> And the concerns we discussed regarding these regulators being shared
+> with other devices is not considered in this implementation. But in
+> practice I don't see how you could support 2.x, 3.x and rail sharing at
+> the same time.
+> 
+> Regards,
+> Bjorn
+> 
+>> https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2399116.html
+>> 
+>> Regards,
+>> Nitin
 
-Nope, CONFIG_COMMON_CLK_ZYNQMP=3Dy does not help. Maybe the defconfig is
-missing even more. If you have some reference, I'm happy to try. I
-suspect that earlyprintk will also not reveal more without clocks (but I
-didn't play with that yet).
+Hi Bjorn,
+Thanks for your feedback.
+Regarding your query for regulator being shared with other device,
+Imho, the soc/pmic designer should share only those device
+with ufs regulator which has the same voltage range (2.4-3.6v).
+If that is not considered by the pmic designer,
+wouldn't that would be a board design issue ???
 
-Meanwhile, I'm carrying a revert of this commit and a related cleanup.
-That helps for now.
+And I agree with you that - the code looks generic but
+since the below steps is not part of the specs,
+I had to keep it in vendor specific file for which I
+had to export few api from ufshcd.c to use in vendor
+specific files.
 
-Jan
+1. Set the device to SLEEP state.
+2. Disable the Vcc Regulator.
+3. Set the vcc voltage according to the device type and reenable
+    the regulator.
+4. Set the device mode back to ACTIVE.
+
+Please correct me if my understanding is not correct.
+
+Regards,
+Nitin
