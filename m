@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4505351914
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 757D6351815
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237055AbhDARuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:50:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57266 "EHLO
+        id S236179AbhDARny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:43:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234781AbhDARkH (ORCPT
+        with ESMTP id S234443AbhDARhg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:40:07 -0400
+        Thu, 1 Apr 2021 13:37:36 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 212FBC00F7E7;
-        Thu,  1 Apr 2021 08:09:02 -0700 (PDT)
-Date:   Thu, 01 Apr 2021 15:08:54 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E57DEC00F7DB;
+        Thu,  1 Apr 2021 08:08:56 -0700 (PDT)
+Date:   Thu, 01 Apr 2021 15:08:55 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617289734;
+        s=2020; t=1617289735;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=DGp/1emv1CnmJ/jzv0hWe8ELyeBO/Rl0ogdWD3dTOPY=;
-        b=vvlWAXzr9eTgs4R9CO8cNFiY5O2vp4xc4ZZzrpvZGqGKzH9eo1l+r006aKPByANT/NsqiK
-        pfvS4Gug3KFv1V7TR048V6Z2JeDYXFLPsqfqh7VqDrwLyWrxCCrPXj9gQW7jyblPA7NTPa
-        n8Z67OUxQ2jiRgHH1Tay1Q9ngQ8rL+H80KM+jBieDxqLQeGwNDGZpmmr2VfYbkr10/XUWl
-        o/wLujgNVUYSEgoEkKz3EFpKNYTM2IDgzssim1tQfgVI4ho6zNlmDe8oR3Y6pOtmtOlwXG
-        j2vWZ1VTqOLhnZco3StxpbNEUSiuQWHl3vSeHZdsGE71+b0RW2/vcO57ORoAPg==
+        bh=4rdu1LkXVj5GFqckOGCu5le6JItyBLWu9hMH2stGX1A=;
+        b=ogXyF7soUXdsCbeXPPQkkTxkJS+ZeyjHzoRUJQAcbI839BxFhoGk7NgXAsJ09dHA8K+/Ua
+        U2ZwVgfYvAPkGrzLJO3TWNOxmWHBVS0RJtE+u/H/M7Z/keVgPJTRxGWPVqteiUJoeW06Rw
+        rBHeqBBEyPrsq5AjCJpGZpscHyHOwjTzbRGp+iZFFyou6O7Qqkxo87XO1Dy/UxdlA8eZcm
+        sbs6QeiyL1054F5H3IIwbF/J/n4iSn0qIyK35cUKy2K0qtHjCLOnXbu85B2BTehxGF+3aa
+        MrLaIUj1S37P3A1IS0TpnBv4DlXp2dMz2uceZsK9H+XiE0IhNDJNuRuhKTNLzA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617289734;
+        s=2020e; t=1617289735;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=DGp/1emv1CnmJ/jzv0hWe8ELyeBO/Rl0ogdWD3dTOPY=;
-        b=yotoOKV2rdZQBhc6b/jlLmlTLGHlJaq+CS5yu1u5azIOXvfIqrAxEujc866O4sCz3j7Id3
-        j4C/Lbf9JxPStTCQ==
+        bh=4rdu1LkXVj5GFqckOGCu5le6JItyBLWu9hMH2stGX1A=;
+        b=LejbyA7ChQ/IIasdgGz3p0TX9jgCN8sFx24KQQM1KoiZCPjQIMK3fEAKRx/6gQSmnkbMus
+        3VzBJQywiMZfYuAw==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/core] objtool: Skip magical retpoline .altinstr_replacement
+Subject: [tip: x86/core] objtool: Keep track of retpoline call sites
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Borislav Petkov <bp@suse.de>, Miroslav Benes <mbenes@suse.cz>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210326151300.259429287@infradead.org>
-References: <20210326151300.259429287@infradead.org>
+In-Reply-To: <20210326151300.130805730@infradead.org>
+References: <20210326151300.130805730@infradead.org>
 MIME-Version: 1.0
-Message-ID: <161728973439.29796.6449261903974714354.tip-bot2@tip-bot2>
+Message-ID: <161728973500.29796.7148615703905180273.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,53 +61,186 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/core branch of tip:
 
-Commit-ID:     68a59124f4c6363de619fea63231a97dd220a12c
-Gitweb:        https://git.kernel.org/tip/68a59124f4c6363de619fea63231a97dd220a12c
+Commit-ID:     7e57a6bc5a22145429d3a232619b0637c312397a
+Gitweb:        https://git.kernel.org/tip/7e57a6bc5a22145429d3a232619b0637c312397a
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Fri, 26 Mar 2021 16:12:14 +01:00
+AuthorDate:    Fri, 26 Mar 2021 16:12:12 +01:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 01 Apr 2021 13:29:40 +02:00
+CommitterDate: Thu, 01 Apr 2021 13:20:21 +02:00
 
-objtool: Skip magical retpoline .altinstr_replacement
+objtool: Keep track of retpoline call sites
 
-When the .altinstr_replacement is a retpoline, skip the alternative.
-We already special case retpolines anyway.
+Provide infrastructure for architectures to rewrite/augment compiler
+generated retpoline calls. Similar to what we do for static_call()s,
+keep track of the instructions that are retpoline calls.
+
+Use the same list_head, since a retpoline call cannot also be a
+static_call.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Borislav Petkov <bp@suse.de>
 Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-Link: https://lkml.kernel.org/r/20210326151300.259429287@infradead.org
+Link: https://lkml.kernel.org/r/20210326151300.130805730@infradead.org
 ---
- tools/objtool/special.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ tools/objtool/check.c                   | 34 ++++++++++++++++++++----
+ tools/objtool/include/objtool/arch.h    |  2 +-
+ tools/objtool/include/objtool/check.h   |  2 +-
+ tools/objtool/include/objtool/objtool.h |  1 +-
+ tools/objtool/objtool.c                 |  1 +-
+ 5 files changed, 34 insertions(+), 6 deletions(-)
 
-diff --git a/tools/objtool/special.c b/tools/objtool/special.c
-index 2c7fbda..07b21cf 100644
---- a/tools/objtool/special.c
-+++ b/tools/objtool/special.c
-@@ -106,6 +106,14 @@ static int get_alt_entry(struct elf *elf, struct special_entry *entry,
- 			return -1;
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 600fa67..77074db 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -451,7 +451,7 @@ static int create_static_call_sections(struct objtool_file *file)
+ 		return 0;
+ 
+ 	idx = 0;
+-	list_for_each_entry(insn, &file->static_call_list, static_call_node)
++	list_for_each_entry(insn, &file->static_call_list, call_node)
+ 		idx++;
+ 
+ 	sec = elf_create_section(file->elf, ".static_call_sites", SHF_WRITE,
+@@ -460,7 +460,7 @@ static int create_static_call_sections(struct objtool_file *file)
+ 		return -1;
+ 
+ 	idx = 0;
+-	list_for_each_entry(insn, &file->static_call_list, static_call_node) {
++	list_for_each_entry(insn, &file->static_call_list, call_node) {
+ 
+ 		site = (struct static_call_site *)sec->data->d_buf + idx;
+ 		memset(site, 0, sizeof(struct static_call_site));
+@@ -829,13 +829,16 @@ static int add_jump_destinations(struct objtool_file *file)
+ 			else
+ 				insn->type = INSN_JUMP_DYNAMIC_CONDITIONAL;
+ 
++			list_add_tail(&insn->call_node,
++				      &file->retpoline_call_list);
++
+ 			insn->retpoline_safe = true;
+ 			continue;
+ 		} else if (insn->func) {
+ 			/* internal or external sibling call (with reloc) */
+ 			insn->call_dest = reloc->sym;
+ 			if (insn->call_dest->static_call_tramp) {
+-				list_add_tail(&insn->static_call_node,
++				list_add_tail(&insn->call_node,
+ 					      &file->static_call_list);
+ 			}
+ 			continue;
+@@ -897,7 +900,7 @@ static int add_jump_destinations(struct objtool_file *file)
+ 				/* internal sibling call (without reloc) */
+ 				insn->call_dest = insn->jump_dest->func;
+ 				if (insn->call_dest->static_call_tramp) {
+-					list_add_tail(&insn->static_call_node,
++					list_add_tail(&insn->call_node,
+ 						      &file->static_call_list);
+ 				}
+ 			}
+@@ -981,6 +984,9 @@ static int add_call_destinations(struct objtool_file *file)
+ 			insn->type = INSN_CALL_DYNAMIC;
+ 			insn->retpoline_safe = true;
+ 
++			list_add_tail(&insn->call_node,
++				      &file->retpoline_call_list);
++
+ 			remove_insn_ops(insn);
+ 			continue;
+ 
+@@ -988,7 +994,7 @@ static int add_call_destinations(struct objtool_file *file)
+ 			insn->call_dest = reloc->sym;
+ 
+ 		if (insn->call_dest && insn->call_dest->static_call_tramp) {
+-			list_add_tail(&insn->static_call_node,
++			list_add_tail(&insn->call_node,
+ 				      &file->static_call_list);
  		}
  
-+		/*
-+		 * Skip retpoline .altinstr_replacement... we already rewrite the
-+		 * instructions for retpolines anyway, see arch_is_retpoline()
-+		 * usage in add_{call,jump}_destinations().
-+		 */
-+		if (arch_is_retpoline(new_reloc->sym))
-+			return 1;
+@@ -1714,6 +1720,11 @@ static void mark_rodata(struct objtool_file *file)
+ 	file->rodata = found;
+ }
+ 
++__weak int arch_rewrite_retpolines(struct objtool_file *file)
++{
++	return 0;
++}
 +
- 		alt->new_sec = new_reloc->sym->sec;
- 		alt->new_off = (unsigned int)new_reloc->addend;
+ static int decode_sections(struct objtool_file *file)
+ {
+ 	int ret;
+@@ -1742,6 +1753,10 @@ static int decode_sections(struct objtool_file *file)
+ 	if (ret)
+ 		return ret;
  
-@@ -154,7 +162,9 @@ int special_get_alts(struct elf *elf, struct list_head *alts)
- 			memset(alt, 0, sizeof(*alt));
++	/*
++	 * Must be before add_special_section_alts() as that depends on
++	 * jump_dest being set.
++	 */
+ 	ret = add_jump_destinations(file);
+ 	if (ret)
+ 		return ret;
+@@ -1778,6 +1793,15 @@ static int decode_sections(struct objtool_file *file)
+ 	if (ret)
+ 		return ret;
  
- 			ret = get_alt_entry(elf, entry, sec, idx, alt);
--			if (ret)
-+			if (ret > 0)
-+				continue;
-+			if (ret < 0)
- 				return ret;
++	/*
++	 * Must be after add_special_section_alts(), since this will emit
++	 * alternatives. Must be after add_{jump,call}_destination(), since
++	 * those create the call insn lists.
++	 */
++	ret = arch_rewrite_retpolines(file);
++	if (ret)
++		return ret;
++
+ 	return 0;
+ }
  
- 			list_add_tail(&alt->list, alts);
+diff --git a/tools/objtool/include/objtool/arch.h b/tools/objtool/include/objtool/arch.h
+index bb30993..48b540a 100644
+--- a/tools/objtool/include/objtool/arch.h
++++ b/tools/objtool/include/objtool/arch.h
+@@ -88,4 +88,6 @@ int arch_decode_hint_reg(struct instruction *insn, u8 sp_reg);
+ 
+ bool arch_is_retpoline(struct symbol *sym);
+ 
++int arch_rewrite_retpolines(struct objtool_file *file);
++
+ #endif /* _ARCH_H */
+diff --git a/tools/objtool/include/objtool/check.h b/tools/objtool/include/objtool/check.h
+index f5be798..e5528ce 100644
+--- a/tools/objtool/include/objtool/check.h
++++ b/tools/objtool/include/objtool/check.h
+@@ -39,7 +39,7 @@ struct alt_group {
+ struct instruction {
+ 	struct list_head list;
+ 	struct hlist_node hash;
+-	struct list_head static_call_node;
++	struct list_head call_node;
+ 	struct list_head mcount_loc_node;
+ 	struct section *sec;
+ 	unsigned long offset;
+diff --git a/tools/objtool/include/objtool/objtool.h b/tools/objtool/include/objtool/objtool.h
+index e68e374..e4084af 100644
+--- a/tools/objtool/include/objtool/objtool.h
++++ b/tools/objtool/include/objtool/objtool.h
+@@ -18,6 +18,7 @@ struct objtool_file {
+ 	struct elf *elf;
+ 	struct list_head insn_list;
+ 	DECLARE_HASHTABLE(insn_hash, 20);
++	struct list_head retpoline_call_list;
+ 	struct list_head static_call_list;
+ 	struct list_head mcount_loc_list;
+ 	bool ignore_unreachables, c_file, hints, rodata;
+diff --git a/tools/objtool/objtool.c b/tools/objtool/objtool.c
+index 7b97ce4..3a3ea1b 100644
+--- a/tools/objtool/objtool.c
++++ b/tools/objtool/objtool.c
+@@ -61,6 +61,7 @@ struct objtool_file *objtool_open_read(const char *_objname)
+ 
+ 	INIT_LIST_HEAD(&file.insn_list);
+ 	hash_init(file.insn_hash);
++	INIT_LIST_HEAD(&file.retpoline_call_list);
+ 	INIT_LIST_HEAD(&file.static_call_list);
+ 	INIT_LIST_HEAD(&file.mcount_loc_list);
+ 	file.c_file = !vmlinux && find_section_by_name(file.elf, ".comment");
