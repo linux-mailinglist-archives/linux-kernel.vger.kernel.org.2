@@ -2,68 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03186351F61
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30F04351F45
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234438AbhDATNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 15:13:14 -0400
-Received: from m12-16.163.com ([220.181.12.16]:37211 "EHLO m12-16.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233817AbhDATMe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 15:12:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=bbLsjxUWqWIkerb7Uh
-        lE40+J1NmZ+tI75bAMTfi7e7s=; b=jRDrzHuNRJ6PC8C+W/CpngVlOquWUlSNvQ
-        xFRsosKMS39twnd1TE3fEzViMe7ZdXWoFPHkOEIwRurpDcLUcEqzJp/D59HTLS+i
-        xWahJfQonZwpDGvaDI8QWVTBjnYaBF6pmCq4C/vvkoqvJmtbnQLBeD1tPgLdUrnT
-        8YswcrSA0=
-Received: from wengjianfeng.ccdomain.com (unknown [218.17.89.92])
-        by smtp12 (Coremail) with SMTP id EMCowACXnhowrWVgeWQpjg--.43479S2;
-        Thu, 01 Apr 2021 19:23:30 +0800 (CST)
-From:   samirweng1979 <samirweng1979@163.com>
-To:     perex@perex.cz, tiwai@suse.com
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: [PATCH] ASoC: topology: fix typo error about asoc.h
-Date:   Thu,  1 Apr 2021 19:23:19 +0800
-Message-Id: <20210401112319.28084-1-samirweng1979@163.com>
-X-Mailer: git-send-email 2.15.0.windows.1
-X-CM-TRANSID: EMCowACXnhowrWVgeWQpjg--.43479S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtrW7Cw45Ww47Aryxur45ZFb_yoWDGFg_Cw
-        naqr4xZry8Gw1I9w1UJrs5JFZ8Zwn7Ca1kKFnaqr1Yq34DCa1fCw18GryxZryrG3Wvq3sI
-        9F1fu340k3sIgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5k73DUUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/xtbBERJnsVaEDiqtHgAAsQ
+        id S235825AbhDATEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 15:04:49 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:55923 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S234588AbhDAS5U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:57:20 -0400
+Received: (qmail 1052805 invoked by uid 1000); 1 Apr 2021 09:30:37 -0400
+Date:   Thu, 1 Apr 2021 09:30:37 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     syzbot <syzbot+fbf4fc11a819824e027b@syzkaller.appspotmail.com>
+Cc:     a@unstable.cc, alex.aring@gmail.com,
+        b.a.t.m.a.n@lists.open-mesh.org, davem@davemloft.net,
+        info@sophiescuban.com, jkosina@suse.cz, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wpan@vger.kernel.org,
+        mareklindner@neomailbox.ch, netdev@vger.kernel.org,
+        stefan@datenfreihafen.org, sw@simonwunderlich.de,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] WARNING in ieee802154_del_seclevel
+Message-ID: <20210401133037.GA1052133@rowland.harvard.edu>
+References: <00000000000073afff05bbe9a54d@google.com>
+ <00000000000020564605bedb716e@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00000000000020564605bedb716e@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wengjianfeng <wengjianfeng@yulong.com>
+On Wed, Mar 31, 2021 at 02:03:08PM -0700, syzbot wrote:
+> syzbot has bisected this issue to:
+> 
+> commit 416dacb819f59180e4d86a5550052033ebb6d72c
+> Author: Alan Stern <stern@rowland.harvard.edu>
+> Date:   Wed Aug 21 17:27:12 2019 +0000
+> 
+>     HID: hidraw: Fix invalid read in hidraw_ioctl
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=127430fcd00000
+> start commit:   6e5a03bc ethernet/netronome/nfp: Fix a use after free in n..
+> git tree:       net
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=117430fcd00000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=167430fcd00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=daeff30c2474a60f
+> dashboard link: https://syzkaller.appspot.com/bug?extid=fbf4fc11a819824e027b
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13bfe45ed00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1188e31ad00000
+> 
+> Reported-by: syzbot+fbf4fc11a819824e027b@syzkaller.appspotmail.com
+> Fixes: 416dacb819f5 ("HID: hidraw: Fix invalid read in hidraw_ioctl")
+> 
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-change 'freqency' to 'frequecy'
+It seems likely that the bisection ran off the rails here.  This commit 
+could not have caused a problem, although it may have revealed a 
+pre-existing problem that previously was hidden.
 
-Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
----
- include/uapi/sound/asoc.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+By the way, what happened to the annotated stack dumps that syzkaller 
+used to provide in its bug reports?
 
-diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index da61398..0066eee 100644
---- a/include/uapi/sound/asoc.h
-+++ b/include/uapi/sound/asoc.h
-@@ -346,8 +346,8 @@ struct snd_soc_tplg_hw_config {
- 	__u8 fsync_provider;	/* SND_SOC_TPLG_FSYNC_ value */
- 	__u8 mclk_direction;    /* SND_SOC_TPLG_MCLK_ value */
- 	__le16 reserved;	/* for 32bit alignment */
--	__le32 mclk_rate;	/* MCLK or SYSCLK freqency in Hz */
--	__le32 bclk_rate;	/* BCLK freqency in Hz */
-+	__le32 mclk_rate;	/* MCLK or SYSCLK frequency in Hz */
-+	__le32 bclk_rate;	/* BCLK frequency in Hz */
- 	__le32 fsync_rate;	/* frame clock in Hz */
- 	__le32 tdm_slots;	/* number of TDM slots in use */
- 	__le32 tdm_slot_width;	/* width in bits for each slot */
--- 
-1.9.1
-
-
+Alan Stern
