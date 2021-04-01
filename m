@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84843352045
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93915352043
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:03:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235318AbhDAUDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 16:03:15 -0400
+        id S234637AbhDAUDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 16:03:13 -0400
 Received: from youngberry.canonical.com ([91.189.89.112]:45358 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235440AbhDAUDN (ORCPT
+        with ESMTP id S235318AbhDAUDL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 16:03:13 -0400
-Received: from mail-ej1-f70.google.com ([209.85.218.70])
+        Thu, 1 Apr 2021 16:03:11 -0400
+Received: from mail-wr1-f70.google.com ([209.85.221.70])
         by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lS1T4-0004IV-Va
-        for linux-kernel@vger.kernel.org; Thu, 01 Apr 2021 17:50:55 +0000
-Received: by mail-ej1-f70.google.com with SMTP id li22so2551710ejb.18
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 10:50:54 -0700 (PDT)
+        id 1lS1Wb-0004kP-12
+        for linux-kernel@vger.kernel.org; Thu, 01 Apr 2021 17:54:33 +0000
+Received: by mail-wr1-f70.google.com with SMTP id b6so3097676wrq.22
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 10:54:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=jI4Q1f6JmKvUhseU4uFtZHzreA5O97M1GFvewVTukcc=;
-        b=gW4N6M+14HV7tCHfF8Iwn60l1LNXWX8O/YH3BaUIRno9HzphgLUmHLKF/zSJ+i7Uxc
-         iW4mXlD6MdvMzg1JppD9VRVuTSXH2C3TAyj0P4k0n2bZGuzTGQjA+ogefww3mSaHELRa
-         oN+PIXugDLgD9uLzEpg68V2+Q0mmPckYuD5URMp6YXzD7vmuwlbHvL0M+6pCG6xwoudG
-         w7CNi+4gsY/R4goIsYHH1oI85D6fr9wFIINF/ZUuli5dPjL8rgUP0PYrNru3fsmhIQKC
-         YMgCOCe+Y9e2vSanCZ6yPaln1GECOQ3s8GRPOQXICyPsEMwot2S6b6GlqsIck3ZP+nYV
-         FDXA==
-X-Gm-Message-State: AOAM532sOnmN6dJ0Ru3WZKb8Ps0uOAR+XlqZT7SjmO8gPjUyi9SfKaBQ
-        sBrvAGKvQeZX40PuhxQPj4MkIQIJly8JX48KIkfRRBLZtsiYC8xYvD60yZHNRgawEnJsTJyGzej
-        wEKyyJCdMT4mX/cZMolm1slvSDy6/PDu3R2xhMmmmHg==
-X-Received: by 2002:a17:906:86c6:: with SMTP id j6mr10041941ejy.197.1617299454729;
-        Thu, 01 Apr 2021 10:50:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxDSkyQ6PuA/8iyU/VtM67QamGObdqG0BXSB2U5ohluI5HgA3wKWbFxOvwx6jhDgk/pg1SS7A==
-X-Received: by 2002:a17:906:86c6:: with SMTP id j6mr10041932ejy.197.1617299454607;
-        Thu, 01 Apr 2021 10:50:54 -0700 (PDT)
+        bh=5dMbR7wCBt/+xH/e8sgRUmjWpaig2muqZGSN778lIFA=;
+        b=ZwYQZjV/Yc4cvzQdXHExjE9uGnVl4Q/7n540RtqznEKTvR5jiOSOu+HOUMElYq1L/3
+         +Iu5LeODzxQhtpBP6G8Dc1WkDPpfm8X8lDN+mAIj6iKeYTGKWbI0B5/NJqmVivyfOag6
+         uKdYP0/kHnL27f3N5knWBBYMv0CyQru3onY9g7MaA4dZ6Gzl7Q9XrB223Cj8muCDdkbP
+         k7LiI+OeGGLlROICteEtX8wnqbNNes5v5c+g/0JgnMpZTfBajEGLS+Tb7DAT2VZKu5bP
+         OfAdtaAGa0av0RKnDlGdwwZKglvtdpWqexuotrX5W3Mxhp1CMOHciEsu1EfBryYpVisM
+         6DOQ==
+X-Gm-Message-State: AOAM533LK+zee+mOu+yXcF+Y7cxNDC2eoh0B1ftOgTfRse9/4rThIhYf
+        BIYPtCpOXUZbm5IICsqlQLmPCJGe4D2ZEmidYnKoKJA01y09Gy+nWe2OxK+2JUefPnevbSwTvDQ
+        VP6RUIkkJm64ycA13RCJPwcr01FtTQmqOANi+aetIyA==
+X-Received: by 2002:adf:ec01:: with SMTP id x1mr8807891wrn.353.1617299672595;
+        Thu, 01 Apr 2021 10:54:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzbSdlZKPMXFL4nQftb0j/6maPjV/oqPt8S+RTK5Jj3mxkExo7AEjR5QNpmbun8G+weRTqHrQ==
+X-Received: by 2002:adf:ec01:: with SMTP id x1mr8807876wrn.353.1617299672482;
+        Thu, 01 Apr 2021 10:54:32 -0700 (PDT)
 Received: from localhost.localdomain (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
-        by smtp.gmail.com with ESMTPSA id v24sm3137066ejw.17.2021.04.01.10.50.53
+        by smtp.gmail.com with ESMTPSA id c9sm10481524wrr.78.2021.04.01.10.54.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 10:50:54 -0700 (PDT)
+        Thu, 01 Apr 2021 10:54:32 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Rob Herring <robh+dt@kernel.org>,
+To:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>,
         Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>
+        Thierry Reding <thierry.reding@gmail.com>
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v2 0/6] NVIDIA Tegra memory improvements
-Date:   Thu,  1 Apr 2021 19:50:52 +0200
-Message-Id: <161729942370.11933.4405261208235446764.b4-ty@canonical.com>
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: (subset) [PATCH v2 0/6] NVIDIA Tegra memory improvements
+Date:   Thu,  1 Apr 2021 19:54:30 +0200
+Message-Id: <161729966152.12691.6136048726737117285.b4-ty@canonical.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210330230445.26619-1-digetx@gmail.com>
 References: <20210330230445.26619-1-digetx@gmail.com>
@@ -77,14 +77,8 @@ On Wed, 31 Mar 2021 02:04:39 +0300, Dmitry Osipenko wrote:
 
 Applied, thanks!
 
-[1/6] dt-bindings: memory: tegra20: emc: Replace core regulator with power domain
-      commit: d46cf7106c4979117e108336dfadcaf57d23f9ed
-[2/6] dt-bindings: memory: tegra30: emc: Replace core regulator with power domain
-      commit: c19137a97e39a9cdf24c9feb580af4564997c1f9
-[3/6] dt-bindings: memory: tegra124: emc: Replace core regulator with power domain
-      commit: 749d01cd0b796adb69d68e9079520f4f95b17cd2
-[6/6] memory: tegra: Print out info-level once per driver probe
-      commit: 06949d1d9accbc7d3a029536650162bbca30151b
+[4/6] dt-bindings: memory: tegra20: mc: Convert to schema
+      commit: 6553fa57cb1707396ad3a27dc78fa61e1750ab31
 
 Best regards,
 -- 
