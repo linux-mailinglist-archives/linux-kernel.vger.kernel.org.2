@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E398351D12
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53756351ED8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237327AbhDASXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:23:47 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:1272 "EHLO
+        id S235201AbhDASrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:47:42 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:46540 "EHLO
         esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237699AbhDASEK (ORCPT
+        with ESMTP id S240057AbhDAS1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:04:10 -0400
+        Thu, 1 Apr 2021 14:27:01 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1617300251; x=1648836251;
+  t=1617301621; x=1648837621;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=NwVmuhcuP0mbkPb9G0ZjUPRewv6a/UcN2N/zsqQK+6E=;
-  b=hXN7hAWvLlwl2R/5WJrcuIWFoXO1FFoY8C5X4dNtC/KAbEwjyU46iIGb
-   sfPeqS0UPdc3/JG3xJIp1Xg0QBreEcmdjb+jPRUZX6o3Bi7ddXw15Fw1h
-   7t7q6hwcJsHd4V7wVvu32KEkYNOyOh7LIxbSz/qZOVGsZbzO4nzJFEqaE
-   e/g/tOBZ9y3Zu28lf7evGTgP4u0gZPtrBSljh7Wm2AL+qcrp2feEnRLPd
-   wpjw4V8GX84erSPJy7IsxHtn5XrQ+T0BIbKnqJaRR0j7ccnKsR/keP9db
-   0O/0RZPEt/a2YGRAI8g2v40wafh5YGGSJMgLb28nlQzvr5UaWXXn8zO+p
-   g==;
-IronPort-SDR: 2avqN/GIltDF063VwkTMNBT47ALPCK0XA3TbL0GVsoK+CG7X4rOOO8bg1szaFyEKc14J44u+Pi
- 8STEd17EnsZBSUQdnVGs1dGWZI2eu3In/F3G2ANjdPmwj8BpVvOSUoYmuGz97Yq3G1MeFyl0mj
- v3D8MYDu/5d7Y/CTVwYQUGUNG/+cfCfo7QKLZ8Kj11IjtaCS4CowGijsE2eWFwW/m9yFGH7ajK
- Itzk1Kl+XiXyedMiG0N4cLKLYT6DPvZUbXiRnSV+vIJgMJHz5ydgfdJP3dqT9L04WeJaSUDKwp
- 30k=
+  bh=GVvIsZVQNrPMN1hvtWjBMXJ1JLr9Fd87AOEdQTPgcIk=;
+  b=Rd7VLyWhf8ddys2AYPRgwdDKm0//R3wGiTs9qvO1NuTN6wE3lssmYleL
+   oNoaLZEgkGHFpWolM06i3Kfx+tZaaZbv4fE89a1p/6sn9tlBqdtmB5Pmf
+   JbvOCYzdt+h8ii8KFScAJxhT5klLEAvsLv6ERN0sbM0Ye3bM/9WuxzhVC
+   Aq5LbF5LanHEjgCVBlnVL8G9OtAq93/F0VG061hKktxiw/+0x88w+ILzI
+   4VrlDjKHUUupvVchR4o+RBSd1cTC5Xdw2PggEbGf2L8fNlZ133hst4QK5
+   GqDQS8eyXMflszwGKP6b1Pti9bFkRCIU1PQNBTFJ6qBG/z8k+tiy+aZH1
+   A==;
+IronPort-SDR: nHdQnCDb6C7TBFjD1RAlb/KXxyl/VTykt5tJfKvqnNkKKAcIebDSVCkx2k+Hy9fXYT+1QmIDz/
+ +OnYjdK6OpjDFXG/UIS6pP3y2Y3Vx79bg5Dmur+6OtzFuev8Mk9/qxmoDBAM8VPShKQFDt2WRe
+ 5UpnR87trs0vcCu45mIUsM5+TZDLE+VNqOcACP2pYRwhq5mGybXegLv3ZkzEOUvyUOJorEMfud
+ NUFEI32UACLNRISUHf/RAtc5Of2s8mGp6lDwnGPWT2JEJfSaNFSS0Tq6oBCr23e0fMxMRBmCAS
+ AvQ=
 X-IronPort-AV: E=Sophos;i="5.81,296,1610434800"; 
-   d="scan'208";a="49671114"
+   d="scan'208";a="121402132"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Apr 2021 04:33:28 -0700
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Apr 2021 04:33:40 -0700
 Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 1 Apr 2021 04:33:28 -0700
+ 15.1.2176.2; Thu, 1 Apr 2021 04:33:40 -0700
 Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Thu, 1 Apr 2021 04:33:02 -0700
+ 15.1.2176.2 via Frontend Transport; Thu, 1 Apr 2021 04:33:30 -0700
 From:   Eugen Hristev <eugen.hristev@microchip.com>
 To:     <devicetree@vger.kernel.org>, <linux-media@vger.kernel.org>
 CC:     <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
         Eugen Hristev <eugen.hristev@microchip.com>
-Subject: [PATCH 20/30] media: atmel: atmel-isc: create product specific v4l2 controls config
-Date:   Thu, 1 Apr 2021 14:27:13 +0300
-Message-ID: <20210401112723.189107-21-eugen.hristev@microchip.com>
+Subject: [PATCH 21/30] media: atmel: atmel-isc: create callback for DPC submodule product specific
+Date:   Thu, 1 Apr 2021 14:27:14 +0300
+Message-ID: <20210401112723.189107-22-eugen.hristev@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210401112723.189107-1-eugen.hristev@microchip.com>
 References: <20210401112723.189107-1-eugen.hristev@microchip.com>
@@ -59,88 +59,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create product specific callback for initializing v4l2 controls.
-Call this from v4l2 controls init function.
+Create a product specific callback for initializing the DPC submodule
+of the pipeline.
+For sama5d2 product, this module does not exist, thus this function is a noop.
 
 Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
 ---
- drivers/media/platform/atmel/atmel-isc-base.c    |  5 +++--
- drivers/media/platform/atmel/atmel-isc.h         |  5 +++++
- drivers/media/platform/atmel/atmel-sama5d2-isc.c | 12 ++++++++++++
- 3 files changed, 20 insertions(+), 2 deletions(-)
+ drivers/media/platform/atmel/atmel-isc-base.c    | 1 +
+ drivers/media/platform/atmel/atmel-isc.h         | 3 +++
+ drivers/media/platform/atmel/atmel-sama5d2-isc.c | 6 ++++++
+ 3 files changed, 10 insertions(+)
 
 diff --git a/drivers/media/platform/atmel/atmel-isc-base.c b/drivers/media/platform/atmel/atmel-isc-base.c
-index 182903803c05..69952b6ac401 100644
+index 69952b6ac401..1f7116abc61a 100644
 --- a/drivers/media/platform/atmel/atmel-isc-base.c
 +++ b/drivers/media/platform/atmel/atmel-isc-base.c
-@@ -2036,11 +2036,12 @@ static int isc_ctrl_init(struct isc_device *isc)
- 	if (ret < 0)
- 		return ret;
+@@ -651,6 +651,7 @@ static void isc_set_pipeline(struct isc_device *isc, u32 pipeline)
+ 	regmap_bulk_write(regmap, ISC_GAM_GENTRY, gamma, GAMMA_ENTRIES);
+ 	regmap_bulk_write(regmap, ISC_GAM_RENTRY, gamma, GAMMA_ENTRIES);
  
-+	/* Initialize product specific controls. For example, contrast */
-+	isc->config_ctrls(isc, ops);
-+
- 	ctrls->brightness = 0;
--	ctrls->contrast = 256;
- 
- 	v4l2_ctrl_new_std(hdl, ops, V4L2_CID_BRIGHTNESS, -1024, 1023, 1, 0);
--	v4l2_ctrl_new_std(hdl, ops, V4L2_CID_CONTRAST, -2048, 2047, 1, 256);
- 	v4l2_ctrl_new_std(hdl, ops, V4L2_CID_GAMMA, 0, isc->gamma_max, 1,
- 			  isc->gamma_max);
- 	isc->awb_ctrl = v4l2_ctrl_new_std(hdl, &isc_awb_ops,
++	isc->config_dpc(isc);
+ 	isc->config_csc(isc);
+ 	isc->config_cbc(isc);
+ 	isc->config_cc(isc);
 diff --git a/drivers/media/platform/atmel/atmel-isc.h b/drivers/media/platform/atmel/atmel-isc.h
-index a5f8d5001381..eb549fadb1a8 100644
+index eb549fadb1a8..d6cd85a4c3e9 100644
 --- a/drivers/media/platform/atmel/atmel-isc.h
 +++ b/drivers/media/platform/atmel/atmel-isc.h
-@@ -227,6 +227,8 @@ struct isc_reg_offsets {
-  *			specific CBC module
-  * @config_cc:		pointer to a function that initializes product
-  *			specific CC module
-+ * @config_ctrls:	pointer to a functoin that initializes product
-+ *			specific v4l2 controls.
+@@ -221,6 +221,8 @@ struct isc_reg_offsets {
+  * @max_width:		maximum frame width, dependent on the internal RAM
+  * @max_height:		maximum frame height, dependent on the internal RAM
   *
-  * @offsets:		struct holding the product specific register offsets
-  */
-@@ -301,6 +303,9 @@ struct isc_device {
++ * @config_dpc:		pointer to a function that initializes product
++ *			specific DPC module
+  * @config_csc:		pointer to a function that initializes product
+  *			specific CSC module
+  * @config_cbc:		pointer to a function that initializes product
+@@ -300,6 +302,7 @@ struct isc_device {
+ 	u32		max_height;
+ 
+ 	struct {
++		void (*config_dpc)(struct isc_device *isc);
  		void (*config_csc)(struct isc_device *isc);
  		void (*config_cbc)(struct isc_device *isc);
  		void (*config_cc)(struct isc_device *isc);
-+
-+		void (*config_ctrls)(struct isc_device *isc,
-+				     const struct v4l2_ctrl_ops *ops);
- 	};
- 
- 	struct isc_reg_offsets		offsets;
 diff --git a/drivers/media/platform/atmel/atmel-sama5d2-isc.c b/drivers/media/platform/atmel/atmel-sama5d2-isc.c
-index 917d10baa525..a8375961f97d 100644
+index a8375961f97d..ae906126ffb8 100644
 --- a/drivers/media/platform/atmel/atmel-sama5d2-isc.c
 +++ b/drivers/media/platform/atmel/atmel-sama5d2-isc.c
-@@ -96,6 +96,17 @@ void isc_sama5d2_config_cc(struct isc_device *isc)
- 	regmap_write(regmap, ISC_CC_BB_OB, (1 << 8));
+@@ -107,6 +107,11 @@ void isc_sama5d2_config_ctrls(struct isc_device *isc,
+ 	v4l2_ctrl_new_std(hdl, ops, V4L2_CID_CONTRAST, -2048, 2047, 1, 256);
  }
  
-+void isc_sama5d2_config_ctrls(struct isc_device *isc,
-+			      const struct v4l2_ctrl_ops *ops)
++void isc_sama5d2_config_dpc(struct isc_device *isc)
 +{
-+	struct isc_ctrls *ctrls = &isc->ctrls;
-+	struct v4l2_ctrl_handler *hdl = &ctrls->handler;
-+
-+	ctrls->contrast = 256;
-+
-+	v4l2_ctrl_new_std(hdl, ops, V4L2_CID_CONTRAST, -2048, 2047, 1, 256);
++	/* This module is not present on sama5d2 pipeline */
 +}
 +
  /* Gamma table with gamma 1/2.2 */
  const u32 isc_sama5d2_gamma_table[][GAMMA_ENTRIES] = {
  	/* 0 --> gamma 1/1.8 */
-@@ -244,6 +255,7 @@ static int atmel_isc_probe(struct platform_device *pdev)
+@@ -252,6 +257,7 @@ static int atmel_isc_probe(struct platform_device *pdev)
+ 	isc->max_width = ISC_SAMA5D2_MAX_SUPPORT_WIDTH;
+ 	isc->max_height = ISC_SAMA5D2_MAX_SUPPORT_HEIGHT;
+ 
++	isc->config_dpc = isc_sama5d2_config_dpc;
  	isc->config_csc = isc_sama5d2_config_csc;
  	isc->config_cbc = isc_sama5d2_config_cbc;
  	isc->config_cc = isc_sama5d2_config_cc;
-+	isc->config_ctrls = isc_sama5d2_config_ctrls;
- 
- 	isc->offsets.csc = ISC_SAMA5D2_CSC_OFFSET;
- 	isc->offsets.cbc = ISC_SAMA5D2_CBC_OFFSET;
 -- 
 2.25.1
 
