@@ -2,105 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83660351BAC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F12351B1F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238678AbhDASJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:09:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236502AbhDARyj (ORCPT
+        id S237818AbhDASEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:04:38 -0400
+Received: from mx0b-00154904.pphosted.com ([148.163.137.20]:34602 "EHLO
+        mx0b-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236410AbhDARom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:54:39 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF11C02FEAC;
-        Thu,  1 Apr 2021 09:20:10 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id k25so2313666oic.4;
-        Thu, 01 Apr 2021 09:20:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Hoy9JWbZpNKKgJwwAmTLHFplX2rUrxGqNdm9v8L9dMU=;
-        b=j7/QkXhOpGVwzChbSZ94wE8RHL2qth7PoVtFxL9ypQ7Vb4OtJEQ1qVfN4jQdIBxToB
-         m6lH/8CiEitgkAtDGLyHGbRGF0fEEBnPAOband/GhQSBE0gfA9zKIqvzRu6PwOdyMU+e
-         fxhXQoauxr8naE+uZ2rxkne3vV6faJCtU70NYGjB3BPzkuih+X4qQz3M4FZYmxUX0AyK
-         nF4prV0jkQGEu7a61eu57DXJn8qIsPf5ZGkA3rWrJ/cYw+dcuPs78sBtXALAYKzxw6gd
-         7scwNxYKLJ24HXOonS6RAaSZo9C0NkoWKbDXj40YTyFlBdrzs/3O5sytibKbZ5INduQe
-         bs8Q==
-X-Gm-Message-State: AOAM530w6bpgKVrlctRqrinAk3YimROJYkJnvtku35h3BHAB6YOzAlmn
-        71rcB/9JtVIlPTS+b1sL+uc54Jjl923+W+HKCuM=
-X-Google-Smtp-Source: ABdhPJwLLFe8AN0azUamchJsJA2GytFp8mOWOLpmp56AWSXoBEUHQmtJLTpZhJIOrc4IiBnN23gOPVFKYY4e5y8xWD8=
-X-Received: by 2002:aca:5fc3:: with SMTP id t186mr6329836oib.69.1617294008998;
- Thu, 01 Apr 2021 09:20:08 -0700 (PDT)
+        Thu, 1 Apr 2021 13:44:42 -0400
+Received: from pps.filterd (m0170397.ppops.net [127.0.0.1])
+        by mx0b-00154904.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 131GMG3x012816;
+        Thu, 1 Apr 2021 12:22:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=smtpout1; bh=amhyBFWYg660b275fb3PiPThRjnmySpyVBJZ9j3pYgI=;
+ b=rPceU7gQMhSedF8nSFORfW9yO+FEpyxwXVr3CC3wrgeYSpyE0ScphWfD+EUyLvGGbg53
+ +EcgnuvByXJLp8KOzLGSj23pxGR9INEYsV2NBIz2ygzOJgSE6CQH3qMYdIDDBXz4LFGw
+ YwpqZ3saH5SI9wfH6vSpJ+fj0uhbc1psO3Ux9wWXIZDELfaW6BD7WzVA0hwTsRNryxxy
+ AKasHDpqCoXh6BrIORn+w1tFycIifmZWGn22X3tbVyjB0l1zQqMyZA/6pPN2fa1WvwAl
+ qbgu8tkqjaGbm6RkoFe4NL2vDKmA1Wu0l+5/rT306ZC9V5ieBdPwDOhsvggESA2cHvCJ rA== 
+Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
+        by mx0b-00154904.pphosted.com with ESMTP id 37n299b49p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 01 Apr 2021 12:22:25 -0400
+Received: from pps.filterd (m0142699.ppops.net [127.0.0.1])
+        by mx0a-00154901.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 131EJwVO141020;
+        Thu, 1 Apr 2021 12:22:25 -0400
+Received: from ausxipps310.us.dell.com (AUSXIPPS310.us.dell.com [143.166.148.211])
+        by mx0a-00154901.pphosted.com with ESMTP id 37n6cem6k0-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 01 Apr 2021 12:22:24 -0400
+X-LoopCount0: from 10.177.160.151
+X-PREM-Routing: D-Outbound
+X-IronPort-AV: E=Sophos;i="5.81,296,1610431200"; 
+   d="scan'208";a="618976136"
+From:   Mario Limonciello <mario.limonciello@dell.com>
+To:     Hans De Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Dell.Client.Kernel@dell.com,
+        platform-driver-x86@vger.kernel.org,
+        Mario Limonciello <mario.limonciello@outlook.com>,
+        Mario Limonciello <mario.limonciello@dell.com>
+Subject: [PATCH 0/3] Adjust contacts for Dell drivers
+Date:   Thu,  1 Apr 2021 11:22:03 -0500
+Message-Id: <20210401162206.26901-1-mario.limonciello@dell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210401122458.12663-1-crecklin@redhat.com> <20210401122458.12663-2-crecklin@redhat.com>
- <CAJZ5v0gCkhoKC_81WP6wdehZBYpEpmNhHwDygYawFdrWk3K6vg@mail.gmail.com> <CAMj1kXFKRtB_YNGCKAGmRfvZTERCYJHR3hRdZ9-vyiRrB67rdg@mail.gmail.com>
-In-Reply-To: <CAMj1kXFKRtB_YNGCKAGmRfvZTERCYJHR3hRdZ9-vyiRrB67rdg@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 1 Apr 2021 18:19:57 +0200
-Message-ID: <CAJZ5v0iqB7h1i_wuHTHTV-cvX+uQsbuae8W7wcFS8QffitD4aw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] use crc32 instead of md5 for hibernation e820
- integrity check
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Chris von Recklinghausen <crecklin@redhat.com>,
-        Simo Sorce <simo@redhat.com>, Dexuan Cui <decui@microsoft.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-28_03:2021-03-26,2021-03-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
+ clxscore=1015 mlxscore=0 impostorscore=0 malwarescore=0 priorityscore=1501
+ suspectscore=0 spamscore=0 mlxlogscore=662 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
+ definitions=main-2104010093
+X-Proofpoint-GUID: Sp87cyChh7nNDuNxhD8JEk2sSVzTFB4k
+X-Proofpoint-ORIG-GUID: Sp87cyChh7nNDuNxhD8JEk2sSVzTFB4k
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 spamscore=0
+ mlxlogscore=805 adultscore=0 bulkscore=0 suspectscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
+ definitions=main-2104010107
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 3:59 PM Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Thu, 1 Apr 2021 at 15:34, Rafael J. Wysocki <rafael@kernel.org> wrote:
-> >
-> > On Thu, Apr 1, 2021 at 2:25 PM Chris von Recklinghausen
-> > <crecklin@redhat.com> wrote:
-> > >
-> > > Suspend fails on a system in fips mode because md5 is used for the e820
-> > > integrity check and is not available. Use crc32 instead.
-> > >
-> > > Fixes: 62a03defeabd ("PM / hibernate: Verify the consistent of e820 memory map
-> > >        by md5 digest")
-> > > Signed-off-by: Chris von Recklinghausen <crecklin@redhat.com>
-> > > ---
-> > >  arch/x86/power/hibernate.c | 31 +++++++++++++++++--------------
-> > >  1 file changed, 17 insertions(+), 14 deletions(-)
-> > >
-> > > diff --git a/arch/x86/power/hibernate.c b/arch/x86/power/hibernate.c
-> > > index cd3914fc9f3d..6a3f4e32e49c 100644
-> > > --- a/arch/x86/power/hibernate.c
-> > > +++ b/arch/x86/power/hibernate.c
-> > > @@ -55,31 +55,31 @@ int pfn_is_nosave(unsigned long pfn)
-> > >  }
-> > >
-> > >
-> > > -#define MD5_DIGEST_SIZE 16
-> > > +#define CRC32_DIGEST_SIZE 16
-> > >
-> > >  struct restore_data_record {
-> > >         unsigned long jump_address;
-> > >         unsigned long jump_address_phys;
-> > >         unsigned long cr3;
-> > >         unsigned long magic;
-> > > -       u8 e820_digest[MD5_DIGEST_SIZE];
-> > > +       u8 e820_digest[CRC32_DIGEST_SIZE];
-> > >  };
-> >
-> > No.
-> >
-> > CRC32 was used here before and it was deemed insufficient.
-> >
->
-> Why? The git commit log does not have an explanation of this.
+The Dell drivers I'm involved with all have me as an author and/or
+maintainer.  In the future these will be maintained as a team effort.
+Adjust the contact addresses accordingly.
 
-IIRC there was an example of a memory map that would produce the same
-CRC32 value as the original or something like that.
+Mario Limonciello (3):
+  MAINTAINERS: Adjust Dell drivers to email alias
+  MAINTAINERS: Add missing section for alienware-wmi driver
+  platform/x86: Adjust Dell drivers to a personal email address
 
-But that said this code is all about failing more gracefully, so I
-guess it isn't a big deal if the failure is more graceful in fewer
-cases ...
+ MAINTAINERS                                     | 17 +++++++++++------
+ drivers/platform/x86/dell/alienware-wmi.c       |  4 ++--
+ drivers/platform/x86/dell/dell-smbios-base.c    |  2 +-
+ drivers/platform/x86/dell/dell-wmi-descriptor.c |  2 +-
+ .../platform/x86/dell/dell-wmi-sysman/sysman.c  |  2 +-
+ 5 files changed, 16 insertions(+), 11 deletions(-)
+
+-- 
+2.25.1
+
