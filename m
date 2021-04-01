@@ -2,89 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A056351EF9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40655351EA2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240999AbhDASvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:51:52 -0400
-Received: from mga05.intel.com ([192.55.52.43]:63637 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239714AbhDASfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:35:44 -0400
-IronPort-SDR: ScP/eBa6io6Voj4bLvRaC3r0mVKp40YkJNIbJE7e+PMIhabI3mTNGZcnUFl7TstjhUWkCTuymw
- WJlaLKVwvVoQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="277437470"
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="277437470"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 07:13:20 -0700
-IronPort-SDR: xEYD6l9IQmNGjYdKlOnUnpJ2zfYoO9IV0lxv2unD/ieccwFS8iTc2CxV4JGf05ieOF985KENll
- ibIGOmQN5xlw==
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="610936606"
-Received: from ybai4-mobl.amr.corp.intel.com (HELO [10.255.229.23]) ([10.255.229.23])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 07:13:19 -0700
-Subject: Re: [PATCH 3/7] PM: runtime: remove kernel-doc warnings
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        "open list:SUSPEND TO RAM" <linux-pm@vger.kernel.org>
-References: <20210331232614.304591-1-pierre-louis.bossart@linux.intel.com>
- <20210331232614.304591-4-pierre-louis.bossart@linux.intel.com>
- <CAJZ5v0jS0Wfzq0M45ZbP2vNX4y=e+tvZjrmn4AiE+ycxij+CWg@mail.gmail.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <579db6b4-d6ed-2dcb-b633-fe7fb94cb3c9@linux.intel.com>
-Date:   Thu, 1 Apr 2021 09:13:18 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S238107AbhDASol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:44:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58104 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235400AbhDASVD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:21:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617301262;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Gy/ng5zCwEi0kvaEHLz2eineziKHWcaMJpVr9bUxhnU=;
+        b=eVbfKshU0rpWhdVZISL+3gKcPPe2dx13MEssTleOKUce4PvALxlsUje8ppFQOOpgjg6QPq
+        uWgTHCR2w9j/BP28yGgsrQjqRHFePTQ0gcE+BsWyrDXNd2dnY+JiWb4PkxVGfUfrMQ13x+
+        lFe5teYzKZrUOMTpY9KPqIW9txVZX4Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-390-o6gNyiRcMtqFtV05SKEVdg-1; Thu, 01 Apr 2021 10:19:01 -0400
+X-MC-Unique: o6gNyiRcMtqFtV05SKEVdg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 17C831853032;
+        Thu,  1 Apr 2021 14:18:20 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.35.206.58])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EC2AA6F7EA;
+        Thu,  1 Apr 2021 14:18:15 +0000 (UTC)
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        Jim Mattson <jmattson@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
+        64-BIT)), Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: [PATCH 0/6] Introduce KVM_{GET|SET}_SREGS2 and fix PDPTR migration
+Date:   Thu,  1 Apr 2021 17:18:08 +0300
+Message-Id: <20210401141814.1029036-1-mlevitsk@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0jS0Wfzq0M45ZbP2vNX4y=e+tvZjrmn4AiE+ycxij+CWg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch set aims to fix few flaws that were discovered=0D
+in KVM_{GET|SET}_SREGS on x86:=0D
+=0D
+* There is no support for reading/writing PDPTRs although=0D
+  these are considered to be part of the guest state.=0D
+=0D
+* There is useless interrupt bitmap which isn't needed=0D
+=0D
+* No support for future extensions (via flags and such)=0D
+=0D
+Final two patches in this patch series allow to=0D
+correctly migrate PDPTRs when new API is used.=0D
+=0D
+This patch series was tested by doing nested migration test=0D
+of 32 bit PAE L1 + 32 bit PAE L2 on AMD and Intel and by=0D
+nested migration test of 64 bit L1 + 32 bit PAE L2 on AMD.=0D
+The later test currently fails on Intel (regardless of my patches).=0D
+=0D
+Finally patch 2 in this patch series fixes a rare L0 kernel oops,=0D
+which I can trigger by migrating a hyper-v machine.=0D
+=0D
+Best regards,=0D
+	Maxim Levitskky=0D
+=0D
+Maxim Levitsky (6):=0D
+  KVM: nVMX: delay loading of PDPTRs to KVM_REQ_GET_NESTED_STATE_PAGES=0D
+  KVM: nSVM: call nested_svm_load_cr3 on nested state load=0D
+  KVM: x86: introduce kvm_register_clear_available=0D
+  KVM: x86: Introduce KVM_GET_SREGS2 / KVM_SET_SREGS2=0D
+  KVM: nSVM: avoid loading PDPTRs after migration when possible=0D
+  KVM: nVMX: avoid loading PDPTRs after migration when possible=0D
+=0D
+ Documentation/virt/kvm/api.rst  |  43 ++++++++++=0D
+ arch/x86/include/asm/kvm_host.h |   7 ++=0D
+ arch/x86/include/uapi/asm/kvm.h |  13 +++=0D
+ arch/x86/kvm/kvm_cache_regs.h   |  12 +++=0D
+ arch/x86/kvm/svm/nested.c       |  55 ++++++++-----=0D
+ arch/x86/kvm/svm/svm.c          |   6 +-=0D
+ arch/x86/kvm/vmx/nested.c       |  26 ++++--=0D
+ arch/x86/kvm/x86.c              | 136 ++++++++++++++++++++++++++------=0D
+ include/uapi/linux/kvm.h        |   5 ++=0D
+ 9 files changed, 249 insertions(+), 54 deletions(-)=0D
+=0D
+-- =0D
+2.26.2=0D
+=0D
 
-
-On 4/1/21 8:40 AM, Rafael J. Wysocki wrote:
-> On Thu, Apr 1, 2021 at 1:26 AM Pierre-Louis Bossart
-> <pierre-louis.bossart@linux.intel.com> wrote:
->>
->> remove make W=1 warnings
->>
->> drivers/base/power/runtime.c:926: warning: Function parameter or
->> member 'timer' not described in 'pm_suspend_timer_fn'
->>
->> drivers/base/power/runtime.c:926: warning: Excess function parameter
->> 'data' description in 'pm_suspend_timer_fn'
->>
->> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->> ---
->>   drivers/base/power/runtime.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
->> index fe1dad68aee4..1fc1a992f90c 100644
->> --- a/drivers/base/power/runtime.c
->> +++ b/drivers/base/power/runtime.c
->> @@ -951,7 +951,7 @@ static void pm_runtime_work(struct work_struct *work)
->>
->>   /**
->>    * pm_suspend_timer_fn - Timer function for pm_schedule_suspend().
->> - * @data: Device pointer passed by pm_schedule_suspend().
->> + * @timer: hrtimer used by pm_schedule_suspend().
->>    *
->>    * Check if the time is right and queue a suspend request.
->>    */
->> --
-> 
-> I can apply this along with the [4-5/7].  Do you want me to do that?
-
-Works for me. I wasn't sure by looking at the MAINTAINERS file which 
-files in drivers/base/ are maintained by whom, so sent the patches as a 
-single set.
