@@ -2,127 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 367F6351FC1
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:27:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E006A351FC3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234378AbhDAT1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 15:27:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52872 "EHLO
+        id S234674AbhDAT1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 15:27:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234627AbhDAT1W (ORCPT
+        with ESMTP id S234273AbhDAT1d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 15:27:22 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16E0C00F7F4
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 11:56:01 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id b4so4341687lfi.6
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 11:56:01 -0700 (PDT)
+        Thu, 1 Apr 2021 15:27:33 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86019C02D54B
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 11:59:21 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id b10so3226090iot.4
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 11:59:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=C6RnQY5m7m3ncSxYtoqki2XanY7LHf9+m0qLfxHwJv8=;
-        b=n6CdqStVJIHXrG1K2XEgTZs5XJtVlF4KxqJ/2p5uH8S49o6LC3QEXBEYwB7egMRYND
-         vTfn1naYORnX8ZPNCeyVseCkaEwQMNn/B7bFnxQ1fvF3VPhWVYhhJdtWVL+JSL8bZeOx
-         ilJVORp5HL/C8LgOdpHsaG45249b9QL0E0LMQvOmqcgLSEmonpNtyJpei6lK1I1NE/KY
-         nNmMK+gzLZ1rFTqEByDv0HHhkdKkpFUm7y9eM81DQZTFMtaj6wmfxmEBHvwMfyVWb/Hz
-         olec1ZXzDkr1i/gaduOnxYSd3X+/tHx0XBk8PHkkdzWmp9IAlnatubmw0ZlNXpxBk738
-         m9rg==
+        bh=LTrV/slVNcOkclb52d6/XH5+RZLu+eLYQgE7tTk9jm8=;
+        b=XqoN1J3OfCjIrC0KWqrkgQ4DHvlDvGlYbtGG6DwF8z4jqeqPjQ1wpeF1fBeQsk8Od9
+         YkUQRF3ovgwy4aaADuNf66LgpJIfpfyEmaVzlL/9XTx8Z/9sLBkqco+k5KxHi74jEIQZ
+         72DMM9iMns8rRBgUeb6W3OyJCjDnuFyIiDThI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=C6RnQY5m7m3ncSxYtoqki2XanY7LHf9+m0qLfxHwJv8=;
-        b=mkMqzlMOWNHooH29blZD6jBppw/oN3LYOppacCZ84StAXkR8gaahanHRJO6G3B9hhq
-         w6ktunrg6x77Fb7O2L8Nynhv1PL1XFs5T04nl+QNMH8o6+BOYfkTRoJtmT6v/QONVoQT
-         om0m8xNrvr8hqShrnMIkp07JTDZsrgUPpbfAJlOPrGwAM4yfJd3ntAcrjWDvewTGF9Gx
-         NpE2oZQfWnglyYKLBImD4oLx5Dq+1ygYJhlyX7ZmFjOQb84+H3KDvgSN6sMx3R3NRx4X
-         Kt6E/vPJCMAMdwcExc7MuRXWsW0hv14Hg7rW0SsBqN2zsmCw29L0Ac2MnQQukPWLvysk
-         LyoQ==
-X-Gm-Message-State: AOAM530qLBbuLl/rAzOIkYkS3lFPLmMjzusyS3JwxsLhaAXlR7sV7XTE
-        3jIZmkBfwT1UXXANzseXkgmREyIUdUT3tg8kc387qQ==
-X-Google-Smtp-Source: ABdhPJyYCJgriopjHXug9mhzm3srWjL1GEuqin+19LcZQ/zBxqJQuLESsIXP0n2PRb5JlWQi3tLvN5cZJPesy1Vx6NM=
-X-Received: by 2002:a19:430e:: with SMTP id q14mr6743083lfa.374.1617303360081;
- Thu, 01 Apr 2021 11:56:00 -0700 (PDT)
+        bh=LTrV/slVNcOkclb52d6/XH5+RZLu+eLYQgE7tTk9jm8=;
+        b=SMmat2t0q3c7/3M43o1WFIu574T3Ev9O3MkL91x2ww8PfQUZCVAwGGOw2mERrFwY4l
+         6+BcNz7bA26H7WjyMJXjaSItrDU9BqYXAy4MRjS2T8J0cvqHGGFqNPziAXc1TsWHxE3o
+         GTkc2eXT8ova9GScc06LbmCQI5IDAiC+MB7U7JmUNyIpX2wVmV5dVdkEtTzEnZga7ZX9
+         IMJ+NK39a9HZpARF4uQN0pSKBOKz0prpOkAowNqXIWSy1wQ4rh0ncMAi8h864YS8BMKr
+         APm/HK6ns/PW2/8FuA8uOqElQw9U+BEOkdB/03ed4Izu5n+5AQZCBI2HbsBlBnZuaPqi
+         kcVQ==
+X-Gm-Message-State: AOAM532Pw5QHA+TQfUEKfHjQZRRFv79NHPtyji28CLWBO4s6tFjgSobv
+        DkZJQG+QXwG3L9nMBzox5AxwChagSbMwBw==
+X-Google-Smtp-Source: ABdhPJwc8Vw9owR1Z3LYnseNY3luK+22Cce2znUaBA3JJLJXCz8eL75Absp2oiR3RAguSgFoLx3iAw==
+X-Received: by 2002:a6b:f00a:: with SMTP id w10mr8044450ioc.2.1617303560502;
+        Thu, 01 Apr 2021 11:59:20 -0700 (PDT)
+Received: from mail-il1-f177.google.com (mail-il1-f177.google.com. [209.85.166.177])
+        by smtp.gmail.com with ESMTPSA id w16sm3138684iod.51.2021.04.01.11.59.19
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Apr 2021 11:59:19 -0700 (PDT)
+Received: by mail-il1-f177.google.com with SMTP id y17so2913348ila.6
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 11:59:19 -0700 (PDT)
+X-Received: by 2002:a05:6e02:20ee:: with SMTP id q14mr7590690ilv.223.1617303559149;
+ Thu, 01 Apr 2021 11:59:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210401160434.7655-1-maciej.falkowski9@gmail.com>
-In-Reply-To: <20210401160434.7655-1-maciej.falkowski9@gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 1 Apr 2021 11:55:49 -0700
-Message-ID: <CAKwvOdmSCz7awnjuDWKSd8n+x1E2ziN9F4xLOX0RG5F1yYOFQg@mail.gmail.com>
-Subject: Re: [PATCH] ARM: OMAP1: ams-delta: remove unused function ams_delta_camera_power
-To:     Maciej Falkowski <maciej.falkowski9@gmail.com>
-Cc:     aaro.koskinen@iki.fi, tony@atomide.com,
-        Russell King <linux@armlinux.org.uk>,
-        linux-omap@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
+References: <20210401181741.168763-1-surenb@google.com>
+In-Reply-To: <20210401181741.168763-1-surenb@google.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 1 Apr 2021 11:59:01 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg8MDMLi8x+u-dee-ai0KiAavm6+JceV00gRXQRFG=Cgw@mail.gmail.com>
+Message-ID: <CAHk-=wg8MDMLi8x+u-dee-ai0KiAavm6+JceV00gRXQRFG=Cgw@mail.gmail.com>
+Subject: Re: [PATCH 0/5] 4.14 backports of fixes for "CoW after fork() issue"
+To:     Suren Baghdasaryan <surenb@google.com>,
+        Peter Xu <peterx@redhat.com>
+Cc:     stable <stable@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jann Horn <jannh@google.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>, Shaohua Li <shli@fb.com>,
+        Nadav Amit <namit@vmware.com>, Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 9:05 AM Maciej Falkowski
-<maciej.falkowski9@gmail.com> wrote:
+On Thu, Apr 1, 2021 at 11:17 AM Suren Baghdasaryan <surenb@google.com> wrote:
 >
-> The ams_delta_camera_power() function is unused as reports
-> Clang compilation with omap1_defconfig on linux-next:
->
-> arch/arm/mach-omap1/board-ams-delta.c:462:12: warning: unused function 'ams_delta_camera_power' [-Wunused-function]
-> static int ams_delta_camera_power(struct device *dev, int power)
->            ^
-> 1 warning generated.
->
-> The soc_camera support was dropped without removing
-> ams_delta_camera_power() function, making it unused.
->
-> Signed-off-by: Maciej Falkowski <maciej.falkowski9@gmail.com>
+> We received a report that the copy-on-write issue repored by Jann Horn in
+> https://bugs.chromium.org/p/project-zero/issues/detail?id=2045 is still
+> reproducible on 4.14 and 4.19 kernels (the first issue with the reproducer
+> coded in vmsplice.c).
 
-Thanks for the patch!
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Gaah.
 
-> Fixes: ce548396a433 ("media: mach-omap1: board-ams-delta.c: remove soc_camera dependencies")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1326
-> ---
->  arch/arm/mach-omap1/board-ams-delta.c | 14 --------------
->  1 file changed, 14 deletions(-)
+> I confirmed this and also that the issue was not
+> reproducible with 5.10 kernel. I tracked the fix to the following patch
+> introduced in 5.9 which changes the do_wp_page() logic:
 >
-> diff --git a/arch/arm/mach-omap1/board-ams-delta.c b/arch/arm/mach-omap1/board-ams-delta.c
-> index 2ee527c00284..1026a816dcc0 100644
-> --- a/arch/arm/mach-omap1/board-ams-delta.c
-> +++ b/arch/arm/mach-omap1/board-ams-delta.c
-> @@ -458,20 +458,6 @@ static struct gpiod_lookup_table leds_gpio_table = {
->
->  #ifdef CONFIG_LEDS_TRIGGERS
->  DEFINE_LED_TRIGGER(ams_delta_camera_led_trigger);
-> -
-> -static int ams_delta_camera_power(struct device *dev, int power)
-> -{
-> -       /*
-> -        * turn on camera LED
-> -        */
-> -       if (power)
-> -               led_trigger_event(ams_delta_camera_led_trigger, LED_FULL);
-> -       else
-> -               led_trigger_event(ams_delta_camera_led_trigger, LED_OFF);
-> -       return 0;
-> -}
-> -#else
-> -#define ams_delta_camera_power NULL
->  #endif
->
->  static struct platform_device ams_delta_audio_device = {
-> --
-> 2.26.3
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210401160434.7655-1-maciej.falkowski9%40gmail.com.
+> 09854ba94c6a 'mm: do_wp_page() simplification'
 
+The problem here is that there's a _lot_ more patches than the few you
+found that fixed various other cases (THP etc).
 
+> I backported this patch (#2 in the series) along with 2 prerequisite patches
+> (#1 and #4) that keep the backports clean and two followup fixes to the main
+> patch (#3 and #5). I had to skip the following fix:
+>
+> feb889fb40fa 'mm: don't put pinned pages into the swap cache'
+>
+> because it uses page_maybe_dma_pinned() which does not exists in earlier
+> kernels. Because pin_user_pages() does not exist there as well, I *think*
+> we can safely skip this fix on older kernels, but I would appreciate if
+> someone could confirm that claim.
 
--- 
-Thanks,
-~Nick Desaulniers
+Hmm. I think this means that swap activity can now break the
+connection to a GUP page (the whole pre-pinning model), but it
+probably isn't a new problem for 4.9/4.19.
+
+I suspect the test there should be something like
+
+        /* Single mapper, more references than us and the map? */
+        if (page_mapcount(page) == 1 && page_count(page) > 2)
+                goto keep_locked;
+
+in the pre-pinning days.
+
+But I really think that there are a number of other commits you're
+missing too, because we had a whole series for THP fixes for the same
+exact issue.
+
+Added Peter Xu to the cc, because he probably tracked those issues
+better than I did.
+
+So NAK on this for now, I think this limited patch-set likely
+introduces more problems than it fixes.
+
+        Linus
