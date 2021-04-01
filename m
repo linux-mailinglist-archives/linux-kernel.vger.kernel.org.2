@@ -2,168 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD0635105F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 09:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D46B1351064
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 09:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233223AbhDAHuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 03:50:51 -0400
-Received: from mail.pqgruber.com ([52.59.78.55]:57568 "EHLO mail.pqgruber.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229850AbhDAHuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 03:50:50 -0400
-Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
-        by mail.pqgruber.com (Postfix) with ESMTPSA id A1142C729F1;
-        Thu,  1 Apr 2021 09:50:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
-        s=mail; t=1617263446;
-        bh=ODlCl+gxfx826JgxdXLsP1/L3ZuE5RKRNde/2G0M1Js=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vm+unAxxzDYDDAcYzcIshqmlQmjx+ANEzg1cgGmBq9xzMCYhIJ/cFBWPtQwro6mc6
-         fzPSM8dsHHH5a8LZXO4Xpv1VRp0BBUz2QHpolY/yaImPbWenQJkygrhaIsAwKRl4xX
-         ddFCPs1eUdFEati69EG92OOU1ZnE38BTW5cJAgB4=
-Date:   Thu, 1 Apr 2021 09:50:44 +0200
-From:   Clemens Gruber <clemens.gruber@pqgruber.com>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-pwm@vger.kernel.org,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
+        id S233529AbhDAHv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 03:51:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233460AbhDAHu7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 03:50:59 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58AF7C0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 00:50:59 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id v10so1017006pgs.12
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 00:50:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=srm3JYP08enw1OQnuuA5mkOdjEGKLES8Og7DhbuwbI4=;
+        b=PgHKbUtSrY36oOnPfjKXXrgGBXkkckGVLxVvkql/X96Hx0nTTDMhwUqbxY1c9Eg9Al
+         6/K/TOQi7ZawAtFr2tgVJwYgfcOw0gUXeg5GpMa/1f3CO9lt9SK8QjaCQ6aKBnWNVHIu
+         Qpq/wKkDn72r5+Gfc4023ELGnQ0rSD2AC+r9A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=srm3JYP08enw1OQnuuA5mkOdjEGKLES8Og7DhbuwbI4=;
+        b=kmBMPn5u5OnVGfmUUx19HdynOK581Pfu9fZ0ACzB/X2UCJeXJYwyz6aJXzLibXwitJ
+         k2C6sEPW+uIR2Y6SkVsH1quaKBzbs7QjJq6U4BtQkVwBx4GFaBedgEhC/S5YA1Ilt5Bc
+         jRDcv6yUXvWIFyFzucxLJ8j5uiYKNTrIYxnGpkivEdowZkjj9Rh9HVzaaCe3dkr1YxwL
+         uxXlRuTUe9RQWnG8b9XWEC6AGsfxb3gn/nVFaZS+Ieajeh/570E6Y1c6fMLXu/bnl7Z5
+         NlLtOW519/8DNU33lNw9a3GaqV/Vpccu4USOUF0rLsF/hj33VQCIdmFPCVafm+2EEBa5
+         vRsQ==
+X-Gm-Message-State: AOAM532aynzNnoDwQpzPtWI5xghhAWxKsruGLXjRcgEspTTDZzJ2xhH+
+        BmT5wkaaepguINePhogkNtVDKEFl0qVNFg==
+X-Google-Smtp-Source: ABdhPJyc3+pKVPUyh2uuaRmrgOjclsv3uRKTHOeoCU2R4RLPumjVf5lB/2lkZSUdGDn6Clln3OeN3Q==
+X-Received: by 2002:a65:40c7:: with SMTP id u7mr6476330pgp.29.1617263458857;
+        Thu, 01 Apr 2021 00:50:58 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id f17sm4444479pgj.86.2021.04.01.00.50.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 00:50:58 -0700 (PDT)
+Date:   Thu, 1 Apr 2021 00:50:57 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Josh Hunt <johunt@akamai.com>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 4/7] pwm: pca9685: Support staggered output ON times
-Message-ID: <YGV7VJ72nWDIjNbu@workstation.tuxnet>
-References: <20210329125707.182732-1-clemens.gruber@pqgruber.com>
- <20210329125707.182732-4-clemens.gruber@pqgruber.com>
- <20210329170357.par7c3izvtmtovlj@pengutronix.de>
- <YGILdjZBCc2vVlRd@workstation.tuxnet>
- <20210329180206.rejl32uajslpvbgi@pengutronix.de>
- <YGRqZsi4WApZcwIT@workstation.tuxnet>
- <YGShjDE8R31LwAbi@orome.fritz.box>
+Subject: Re: [PATCH] psi: allow unprivileged users with CAP_SYS_RESOURCE to
+ write psi files
+Message-ID: <202104010039.A134EC56@keescook>
+References: <20210401033156.7262-1-johunt@akamai.com>
+ <m15z16r583.fsf@fess.ebiederm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YGShjDE8R31LwAbi@orome.fritz.box>
+In-Reply-To: <m15z16r583.fsf@fess.ebiederm.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thierry,
-
-On Wed, Mar 31, 2021 at 06:21:32PM +0200, Thierry Reding wrote:
-> On Wed, Mar 31, 2021 at 02:26:14PM +0200, Clemens Gruber wrote:
-> > On Mon, Mar 29, 2021 at 08:02:06PM +0200, Uwe Kleine-König wrote:
-> > > On Mon, Mar 29, 2021 at 07:16:38PM +0200, Clemens Gruber wrote:
-> > > > On Mon, Mar 29, 2021 at 07:03:57PM +0200, Uwe Kleine-König wrote:
-> > > > > On Mon, Mar 29, 2021 at 02:57:04PM +0200, Clemens Gruber wrote:
-> > > > > > The PCA9685 supports staggered LED output ON times to minimize current
-> > > > > > surges and reduce EMI.
-> > > > > > When this new option is enabled, the ON times of each channel are
-> > > > > > delayed by channel number x counter range / 16, which avoids asserting
-> > > > > > all enabled outputs at the same counter value while still maintaining
-> > > > > > the configured duty cycle of each output.
-> > > > > > 
-> > > > > > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
-> > > > > 
-> > > > > Is there a reason to not want this staggered output? If it never hurts I
-> > > > > suggest to always stagger and drop the dt property.
-> > > > 
-> > > > There might be applications where you want multiple outputs to assert at
-> > > > the same time / to be synchronized.
-> > > > With staggered outputs mode always enabled, this would no longer be
-> > > > possible as they are spread out according to their channel number.
-> > > > 
-> > > > Not sure how often that usecase is required, but just enforcing the
-> > > > staggered mode by default sounds risky to me.
-> > > 
-> > > There is no such guarantee in the PWM framework, so I don't think we
-> > > need to fear breaking setups. Thierry?
-> > 
-> > Still, someone might rely on it? But let's wait for Thierry's opinion.
+On Wed, Mar 31, 2021 at 11:36:28PM -0500, Eric W. Biederman wrote:
+> Josh Hunt <johunt@akamai.com> writes:
 > 
-> There's currently no way to synchronize two PWM channels in the PWM
-> framework. And given that each PWM channel is handled separately the
-> programming for two channels will never happen atomically or even
-> concurrently, so I don't see how you could run two PWMs completely
-> synchronized to one another.
+> > Currently only root can write files under /proc/pressure. Relax this to
+> > allow tasks running as unprivileged users with CAP_SYS_RESOURCE to be
+> > able to write to these files.
+> 
+> The test for CAP_SYS_RESOURCE really needs to be in open rather
+> than in write.
+> 
+> Otherwise a suid root executable could have stdout redirected
+> into these files.
 
-As the PCA9685 has only one prescaler and one counter per chip, by
-default, all PWMs enabled will go high at the same time. If they also
-have the same duty cycle configured, they also go low at the same time.
+Right. Or check against f_cred. (See uses of kallsyms_show_value())
+https://www.kernel.org/doc/html/latest/security/credentials.html#open-file-credentials
 
-> Or did I misunderstand and it's only the start time of the rising edge
-> that's shifted, but the signal will remain high for a full duty cycle
-> after that and then go down and remain low for period - duty - offset?
-
-Yes, that's how it works.
+-Kees
 
 > 
-> That's slightly better than the above in that it likely won't trip up
-> any consumers. But it might still be worth to make this configurable per
-> PWM (perhaps by specifying a third specifier cell, in addition to the
-> period and flags, that defines the offset/phase of the signal).
+> Eric
 > 
-> In both cases, doing this on a per-PWM basis will allow the consumer to
-> specify that they're okay with staggered mode and you won't actually
-> force it onto anyone. This effectively makes this opt-in and there will
-> be no change for existing consumers.
-
-I agree that it should be opt-in, but I am not sure about doing it
-per-pwm:
-The reason why you'd want staggered mode is to reduce EMI or current
-spikes and it is most effective if it is enabled for all PWMs.
-
-If it is specified in the DT anyway and you have a consumer that does
-not support staggered mode (probably rare but can happen), then I'd
-suggest just disabling it globally by not specifying nxp,staggered-mode;
-
-Also it would make the configuration more complicated: You have to do
-the "staggering" yourself and assign offsets per channel.
-It's certainly easier to just enable or disable it.
-
-What do you think?
-
-> > > One reason we might not want staggering is if we have a consumer who
-> > > cares about config transitions. (This however is moot it the hardware
-> > > doesn't provide sane transitions even without staggering.)
-> > > 
-> > > Did I already ask about races in this driver? I assume there is a
-> > > free running counter and the ON and OFF registers just define where in
-> > > the period the transitions happen, right? Given that changing ON and OFF
-> > > needs two register writes probably all kind of strange things can
-> > > happen, right? (Example thought: for simplicity's sake I assume ON is
-> > > always 0. Then if you want to change from OFF = 0xaaa to OFF = 0xccc we
-> > > might see a period with 0xacc. Depending on how the hardware works we
-> > > might even see 4 edges in a single period then.)
-> > 
-> > Yes, there is a free running counter from 0 to 4095.
-> > And it is probably true, that there can be short intermediate states
-> > with our two register writes.
-> > 
-> > There is a separate mode "Update on ACK" (MODE2 register, bit 3 "OCH"),
-> > which is 0 by default (Outputs change on STOP command) but could be set
-> > to 1 (Outputs change on ACK):
-> > "Update on ACK requires all 4 PWM channel registers to be loaded before
-> > outputs will change on the last ACK."
 > 
-> This sounds like it would allow atomic updates of the PWM settings.
-> That's probably something that you want to implement to avoid any
-> glitches.
-> 
-> > The chip datasheet also states:
-> > "Because the loading of the LEDn_ON and LEDn_OFF registers is via the
-> > I2C-bus, and asynchronous to the internal oscillator, we want to ensure
-> > that we do not see any visual artifacts of changing the ON and OFF
-> > values. This is achieved by updating the changes at the end of the LOW
-> > cycle."
-> > 
-> > We could look into this in a future patch series, however I would like
-> > to keep the register updating as-is for this series (otherwise I would
-> > have to do all the tests with the oscilloscope again and the transitions
-> > were like this since the driver was first implemented).
-> 
-> Yeah, it sounds fine to implement this at a later point in time. No need
-> to conflate it with the current series.
+> > Signed-off-by: Josh Hunt <johunt@akamai.com>
+> > ---
+> >  kernel/sched/psi.c | 9 ++++++---
+> >  1 file changed, 6 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+> > index b1b00e9bd7ed..98ff7baf1ba8 100644
+> > --- a/kernel/sched/psi.c
+> > +++ b/kernel/sched/psi.c
+> > @@ -1270,6 +1270,9 @@ static ssize_t psi_write(struct file *file, const char __user *user_buf,
+> >  	if (!nbytes)
+> >  		return -EINVAL;
+> >  
+> > +	if (!capable(CAP_SYS_RESOURCE))
+> > +		return -EPERM;
+> > +
+> >  	buf_size = min(nbytes, sizeof(buf));
+> >  	if (copy_from_user(buf, user_buf, buf_size))
+> >  		return -EFAULT;
+> > @@ -1353,9 +1356,9 @@ static int __init psi_proc_init(void)
+> >  {
+> >  	if (psi_enable) {
+> >  		proc_mkdir("pressure", NULL);
+> > -		proc_create("pressure/io", 0, NULL, &psi_io_proc_ops);
+> > -		proc_create("pressure/memory", 0, NULL, &psi_memory_proc_ops);
+> > -		proc_create("pressure/cpu", 0, NULL, &psi_cpu_proc_ops);
+> > +		proc_create("pressure/io", 0666, NULL, &psi_io_proc_ops);
+> > +		proc_create("pressure/memory", 0666, NULL, &psi_memory_proc_ops);
+> > +		proc_create("pressure/cpu", 0666, NULL, &psi_cpu_proc_ops);
+> >  	}
+> >  	return 0;
+> >  }
 
-Sounds good.
-
-Thanks,
-Clemens
+-- 
+Kees Cook
