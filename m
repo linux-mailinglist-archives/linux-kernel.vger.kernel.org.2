@@ -2,154 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF33D3519DC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C806351B02
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236991AbhDAR4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:56:43 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:59134 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235147AbhDARmX (ORCPT
+        id S237685AbhDASEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:04:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236375AbhDARsZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:42:23 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617298944; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=bHbr7KBSlGV8bKA1algZFTTPRBsvH2U+aHDd0G/QszY=;
- b=WrOHH14Al24CxRnv0499HXBp9unvzD18HktIvHrpymAllszQmc/K9ruVdlpzdS65YBmHH/Re
- hXrdBt6NcybfO3sX9QUOWXsmdou3Og3WzXUxqCe8v+OoAwEH7iSK/zyRj6mdo+idhl7NtUrv
- 3COctvFUXtcPZVIEFJ1+Hafjg4E=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 6065e0d48166b7eff77a57fc (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 01 Apr 2021 15:03:48
- GMT
-Sender: nitirawa=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EFE16C43466; Thu,  1 Apr 2021 15:03:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: nitirawa)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 74421C433CA;
-        Thu,  1 Apr 2021 15:03:46 +0000 (UTC)
+        Thu, 1 Apr 2021 13:48:25 -0400
+Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4399FC00F7C9;
+        Thu,  1 Apr 2021 08:05:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+         s=42; h=Date:Message-ID:From:Cc:To;
+        bh=9An728KlZVjFf0+wENS6eedafMqAahJG4Eij/X4oC/A=; b=qsotVAOsAg8OcFq9zC5lgMb9GG
+        MurbuwzIaErbn6IKjPavhYlcQzwF3VkGyyEeE5qZ7Z5Rh1nT2gqMB3fe6VIe4jGiTxGk2Hb2jrMxY
+        TPd0KHj+62YMLei1/cpln9i8/osy4zGPYFVH5/ZXKBmuvpJXGE18p3jHCV0ouuRcdEX91zs8mZMLB
+        B5Yjzj6ZgxySQMFUEW1q9361RLEtX5Nxsw8GzqhM0Yu8F6R8HtME2Wl9w4xYxFytlYeEqE+tmsBsi
+        JQsEirprZ0bVIRYgnWSX/fE/+Rpc6MmMW+uCodPy0fLyD4qEwkFhUcTB+fKeBoOcULcE0yp/Ohy5m
+        Dj4jlWmc6rk4anGQsw/kDht1WQwF0Qpe5T1G8r4ts4yK9ROwpfmo7x015b4OYbuuhT9hXxm+J5LDU
+        ARXpwmeARIXcuUP8/ktzb9754M3xWrfplDaBqnd1EWZ6qHjpbB81AOSKiAAuW6IAbvxQw9/Pd1JIU
+        teYLJXz18h/IPJJHsgm+UNcO;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_RSA_CHACHA20_POLY1305:256)
+        (Exim)
+        id 1lRysz-0007XZ-En; Thu, 01 Apr 2021 15:05:29 +0000
+To:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>, fw@deneb.enyo.de,
+        io-uring <io-uring@vger.kernel.org>
+References: <YFYjOB1jpbqyNPAp@localhost.localdomain>
+ <CALCETrUPAvUOr8V5db0gu5RKVftKFwbBEkh6Aob57v+D-xdEig@mail.gmail.com>
+ <20210322075310.GA1946905@infradead.org>
+ <YGTMTJ7h5aspTQ5M@localhost.localdomain>
+From:   Stefan Metzmacher <metze@samba.org>
+Subject: Re: [PATCH] Document that PF_KTHREAD _is_ ABI
+Message-ID: <5992461c-1aad-3ba4-47d6-4dad10b6903a@samba.org>
+Date:   Thu, 1 Apr 2021 17:05:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 01 Apr 2021 20:33:46 +0530
-From:   nitirawa@codeaurora.org
-To:     "Asutosh Das (asd)" <asutoshd@codeaurora.org>
-Cc:     cang@codeaurora.org, stummala@codeaurora.org,
-        vbadigan@codeaurora.org, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bjorn.andersson@linaro.org,
-        adrian.hunter@intel.com, bvanassche@acm.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        asutoshd=codeaurora.org@codeaurora.org
-Subject: Re: [PATCH V2 2/3] scsi: ufs: add a vops to configure VCC voltage
- level
-In-Reply-To: <80f681a6-165f-0610-dfea-6b66ce4abddc@codeaurora.org>
-References: <1616363857-26760-1-git-send-email-nitirawa@codeaurora.org>
- <1616363857-26760-3-git-send-email-nitirawa@codeaurora.org>
- <80f681a6-165f-0610-dfea-6b66ce4abddc@codeaurora.org>
-Message-ID: <0681d6426135afebf4feca549bf0a79c@codeaurora.org>
-X-Sender: nitirawa@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <YGTMTJ7h5aspTQ5M@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-31 23:30, Asutosh Das (asd) wrote:
-> On 3/21/2021 2:57 PM, Nitin Rawat wrote:
->> Add a vops to configure VCC voltage VCC voltage level
->> for platform supporting both ufs2.x and ufs 3.x devices.
->> 
->> Suggested-by: Stanley Chu <stanley.chu@mediatek.com>
->> Suggested-by: Asutosh Das <asutoshd@codeaurora.org>
->> Suggested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
->> Signed-off-by: Nitin Rawat <nitirawa@codeaurora.org>
->> Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
->> ---
->>   drivers/scsi/ufs/ufshcd.c |  4 ++++
->>   drivers/scsi/ufs/ufshcd.h | 10 ++++++++++
->>   2 files changed, 14 insertions(+)
->> 
->> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->> index 633ca8e..5bfe987 100644
->> --- a/drivers/scsi/ufs/ufshcd.c
->> +++ b/drivers/scsi/ufs/ufshcd.c
->> @@ -7763,6 +7763,10 @@ static int ufshcd_add_lus(struct ufs_hba *hba)
->>   		goto out;
->> 
->>   	ufshcd_clear_ua_wluns(hba);
->> +	if (ufshcd_vops_setup_vcc_regulators(hba))
-> This would be invoked even for platforms that don't support both 2.x
-> and 3.x and don't need to set the voltages in the driver.
-> I guess platforms that support both 2.x and 3.x and can't set the
-> regulator voltages from dts due to different voltage requirements of
-> 2.x and 3.x, should request the driver to set the voltages. And the
-> driver may do so after determining the device version.
-> 
->> +		dev_err(hba->dev,
->> +			"%s: Failed to set the VCC regulator values, continue with 
->> 2.7v\n",
->> +			__func__);
->> 
->>   	/* Initialize devfreq after UFS device is detected */
->>   	if (ufshcd_is_clkscaling_supported(hba)) {
->> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
->> index 0db796a..8f0945d 100644
->> --- a/drivers/scsi/ufs/ufshcd.h
->> +++ b/drivers/scsi/ufs/ufshcd.h
->> @@ -324,6 +324,7 @@ struct ufs_pwr_mode_info {
->>    * @device_reset: called to issue a reset pulse on the UFS device
->>    * @program_key: program or evict an inline encryption key
->>    * @event_notify: called to notify important events
->> + * @setup_vcc_regulators : update vcc regulator level
->>    */
->>   struct ufs_hba_variant_ops {
->>   	const char *name;
->> @@ -360,6 +361,7 @@ struct ufs_hba_variant_ops {
->>   			       const union ufs_crypto_cfg_entry *cfg, int slot);
->>   	void	(*event_notify)(struct ufs_hba *hba,
->>   				enum ufs_event_type evt, void *data);
->> +	int    (*setup_vcc_regulators)(struct ufs_hba *hba);
->>   };
->> 
->>   /* clock gating state  */
->> @@ -1269,6 +1271,14 @@ static inline void 
->> ufshcd_vops_config_scaling_param(struct ufs_hba *hba,
->>   		hba->vops->config_scaling_param(hba, profile, data);
->>   }
->> 
->> +static inline int ufshcd_vops_setup_vcc_regulators(struct ufs_hba 
->> *hba)
->> +{
->> +	if (hba->vops && hba->vops->setup_vcc_regulators)
->> +		return hba->vops->setup_vcc_regulators(hba);
->> +
->> +	return 0;
->> +}
->> +
->>   extern struct ufs_pm_lvl_states ufs_pm_lvl_states[];
->> 
->>   /*
->> --
->> 2.7.4
->> 
 
-Hi Asutosh,
-Thanks for the suggestion. I will check and try to accommodate your 
-suggestion.
-Regards,
-Nitin
+Am 31.03.21 um 21:23 schrieb Alexey Dobriyan:
+> On Mon, Mar 22, 2021 at 07:53:10AM +0000, Christoph Hellwig wrote:
+>> On Sat, Mar 20, 2021 at 10:23:12AM -0700, Andy Lutomirski wrote:
+>>>> https://github.com/systemd/systemd/blob/main/src/basic/process-util.c#L354
+>>>> src/basic/process-util.c:is_kernel_thread()
+>>>
+>>> Eww.
+>>>
+>>> Could we fix it differently and more permanently by modifying the proc
+>>> code to display the values systemd expects?
+>>
+>> Yes, do_task_stat needs a mapping from kernel flags to UABI flags.  And
+>> we should already discard everything we think we can from the UABI
+>> now, and only add the ones back that are required to not break
+>> userspace.
+> 
+> Sure we do. Who is going to find all the flags? I found PF_KTHREAD. :^)
+> 
+> More seriously,
+> 
+> /proc/$pid/stat was expanded to include tsk->flags in 0.99.1 (!!!)
+> 
+> Developers kept adding and shuffling flags probably not even realising
+> what's going on. The last incident happened at 5.10 when PF_IO_WORKER
+> was exchanged with PF_VCPU for smaller codegen.
+
+With the create_io_thread(), the impact of PF_IO_WORKER becomes more broadly
+visible and userspace might start to look at it in order to find the difference
+between userspace and kernel io threads. (I also think it should actually be renamed to
+PF_IO_THREAD...)
+
+Jens, what do you think about that?
+
+metze
