@@ -2,39 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1796E351330
+	by mail.lfdr.de (Postfix) with ESMTP id 64B2E351331
 	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 12:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233383AbhDAKR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 06:17:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38612 "EHLO mail.kernel.org"
+        id S234084AbhDAKR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 06:17:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233834AbhDAKRB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 06:17:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C023610A5;
-        Thu,  1 Apr 2021 10:17:00 +0000 (UTC)
+        id S233926AbhDAKRH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 06:17:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CBF2B610CA;
+        Thu,  1 Apr 2021 10:17:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617272220;
-        bh=/jx/jQje8kkrqXjx7RDy/j90nb/SyqP/To3rfuqgLRc=;
+        s=k20201202; t=1617272227;
+        bh=EIrQgPFlkTqPA7xToyxwP9zrW21fScMH9YJARgGuBdA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EacqhlpbFRD8tiLhUf3EBRi8BL3pSQsYZP4uO0NUsCbH7hNwKiN4h+EwQUwiLX9I6
-         3uUeZ9WZinW9kPKN3kmD4uErSHQfuRxTNZJasfIkVg8/UPNe9JZ6QpZbIAWq6AuWEv
-         foHXsC7yNXxmnhc7Ewn7UEZlLRLAOlg9tCj1VUU7+aI0Z5LLk5s2lK2gxgRDMPbPR1
-         bQvazsZq3EGhCCSl3dlT86VpG3oPBc8JmJycBeV7SdPvrq4v9IjIJYojI57kD//YlI
-         6Lla4hBTNNaRwDEBm0AyIKljMX6leB+RH0UWkFsublfyHZLuLCI7QCOGc2HWbJ/OBa
-         3mFqkk1ozhpvA==
+        b=i1b4LWb5h3mxG99vNqWH6h6CoSFG+jtujoAX5FHkpc8zcbZjk95+SJiZy8AtG6UAf
+         rb1YgjLA6JBv3BZ/7WU4On9MsvA9raSQxcN399IycTRm5L8UEFYNH4YfgVpbLhC88U
+         YgXTweGlccahyPmaHb1FQoq0HpdqJcgua4JG+pEfFf07GS2+xNF5cyVBm0brk0X+Df
+         4npDaFC0O+ccya0UYNJuRLjKWbyRu7BexQIIYJPz3ZGxVEuur+pyWf32+RmWaJUvVd
+         rZdT6j8gbJyseq+UanJzKqfN+QEFExmxth9kY3vjyXTAmQSbd1XuGXcUFXsSgliXpn
+         3cvQKPU5XEA1w==
 From:   Mark Brown <broonie@kernel.org>
-To:     perex@perex.cz, tiwai@suse.com, robh+dt@kernel.org,
-        lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
-        alsa-devel@alsa-project.org
-Cc:     Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/2] ASoC: ak5558: Add support for ak5552
-Date:   Thu,  1 Apr 2021 11:16:19 +0100
-Message-Id: <161726938994.2219.919053802022134922.b4-ty@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Sameer Pujar <spujar@nvidia.com>, linux-kernel@vger.kernel.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        devicetree@vger.kernel.org,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lubomir Rintel <lkundrak@v3.sk>, alsa-devel@alsa-project.org
+Subject: Re: [PATCH v2 0/3] ASoC: dt-bindings: Rework audio-graph-port schema
+Date:   Thu,  1 Apr 2021 11:16:21 +0100
+Message-Id: <161726938994.2219.6158932183318290762.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1617176686-25528-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1617176686-25528-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <20210331142748.2163272-1-robh@kernel.org>
+References: <20210331142748.2163272-1-robh@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,9 +48,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 31 Mar 2021 15:44:45 +0800, Shengjiu Wang wrote:
-> AK5552 is a 32-bit 2ch ADC and has the same register
-> map as AK5558.
+On Wed, 31 Mar 2021 09:27:45 -0500, Rob Herring wrote:
+> This series refactors the audio-graph-port.yaml schema moving the
+> 'port' node out of the schema and updating to use graph.yaml schema.
+> This allows users to define what each 'port' node is like other graph
+> binding users.
+> 
+> v2:
+> - Rebase on ASoC tree
+> 
+> [...]
 
 Applied to
 
@@ -52,10 +65,12 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: ak5558: Add support for ak5552
-      commit: d8c5c82e4e5b641404c65bfc6cdf57b5d0a6c836
-[2/2] ASoC: dt-bindings: ak5558: Add compatible string for ak5552
-      commit: 8d246806d510c1bf7da9aab0473dc0f9c9f99308
+[1/3] ASoC: dt-bindings: Move port/ports properties out of audio-graph-port.yaml
+      commit: 9c1e0439ada9973ec99cc1e0887eb84fd26444b8
+[2/3] ASoC: dt-bindings: Use OF graph schema
+      commit: ec1c8302178a946986bb7b52ac7bb9ccdcdf7d92
+[3/3] ASoC: dt-bindings: socionext: Use audio-graph-port schema
+      commit: f1321c9766b2c9e79de268225e291dead0a8f969
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
