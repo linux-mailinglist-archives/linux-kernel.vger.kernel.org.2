@@ -2,117 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C37BC352148
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4D0A35214A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234160AbhDAVEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 17:04:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233710AbhDAVEr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 17:04:47 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ABC6C0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 14:04:46 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id il9-20020a17090b1649b0290114bcb0d6c2so3728329pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 14:04:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rS1LPIsezpCfocYIASL2NtIlww+sNkf6cjcT4RJnaow=;
-        b=fwh3+pD5yDTbAvFnHw+DPPjbmI6jhKr1a2h5FwBZuCtmYefNWziRgemcSVNnPTJ0He
-         zcu31whNStsYbAhTrWIP+L/bdiMzcTF+Fp/8dS1f0TDFWHohIIFonTjAXwGAXbjwa+HJ
-         I7zvP/F3lnV1dJLOPH43Y3Pm6QqyBlydZzfp8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rS1LPIsezpCfocYIASL2NtIlww+sNkf6cjcT4RJnaow=;
-        b=VGJ661MbSxojnOheCAtMJ9SkJw8TkBCqFASjlRg/xhIwR51wZJ8R0bb+G0H1yOvXpc
-         9FKls4uavMN32PxjFf5Ddyqm8ZM7U89MNNyQF1aVcMAvtPLR9J3jdH47RCrosv3EVx73
-         hHz+tmp+G7QVBEOpZBW3B4lMPuBbUexg0Iy+5l4jb7pH3ElGVSZ2LjVEYvZ9xLy8MCM0
-         7OA1jyaQvgdXCpIvSevP6yLUSEiTp+UhwWOyYu1MN73HPDaDC9Op+TiT7+Qli741CR8N
-         3TfmNPcWp/38VoWOfifBb4hMioupdGtTDKkpwE19zZuHdYZkLjlcWjhS93ySbweymibN
-         CENw==
-X-Gm-Message-State: AOAM5310DaeLDD2dB6c8jGQ1WT5GHAMzMq3liT2dejDwW4I/331HJdka
-        k2AaFNyNc1pvGcq9Z56fOqrYUQ==
-X-Google-Smtp-Source: ABdhPJzkuyTHdQb/knNIIqB3C0DeN2XN+Vg4Xtzz3s7QdKB2fG8O1l+f1uvrtei5Q2dfF394h9dijw==
-X-Received: by 2002:a17:90a:174c:: with SMTP id 12mr10470133pjm.40.1617311085643;
-        Thu, 01 Apr 2021 14:04:45 -0700 (PDT)
-Received: from evgreen-glaptop.lan ([2601:646:c780:5ba8:208f:468e:f20:f4a])
-        by smtp.gmail.com with ESMTPSA id j3sm6177873pfi.74.2021.04.01.14.04.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 14:04:45 -0700 (PDT)
-From:   Evan Green <evgreen@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Arthur Heymans <arthur@aheymans.xyz>,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        Furquan Shaikh <furquan@google.com>,
-        Evan Green <evgreen@chromium.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH] firmware: google: Enable s0ix logging by default
-Date:   Thu,  1 Apr 2021 14:04:36 -0700
-Message-Id: <20210401140430.1.Ie141e6044d9b0d5aba72cb08857fdb43660c54d3@changeid>
-X-Mailer: git-send-email 2.29.2
+        id S234024AbhDAVIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 17:08:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42232 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233710AbhDAVIE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 17:08:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5914B6023E;
+        Thu,  1 Apr 2021 21:08:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617311284;
+        bh=oRAU1aLqpuZLbEgF6AvATIUxz5sNjxR9aSqYA5ZpliQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Y07i3HGP22Q6JsjOJr9GUY1qNAuzus12l5VFINX4mpLM2YakkQ8QB+a7yq1zmcWD8
+         u3LU/UrPveADqSKjvPFCrYdYku9HnvF7eo9J41e/PZaz0xciBJax3zovbfFXUVmfD5
+         Bx56EWCA5LRzZDrQwXOmekhP/RgMw/u5e/akEhfwL9sSeuGyz8mokJdWNv3gzQhx+H
+         OsXrYKBRQrUraRWVhxSxd4c6Ug64YRz/1BMBen4viIcIZ3zKmwqcwuw5wS0jISJTKF
+         /ZBj89ly7AZHqT/zl/PEWw/DPc0MRKzuQONeOZFFA5IG1WQW2luOgHRNd6twnb8WfF
+         H2WNUtTI5pEmw==
+Date:   Thu, 1 Apr 2021 23:08:02 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] torture: Correctly fetch CPUs for kvm-build.sh with all
+ native language
+Message-ID: <20210401210802.GC116405@lothringen>
+References: <20210401132602.116352-1-frederic@kernel.org>
+ <20210401185116.GH2696@paulmck-ThinkPad-P72>
+ <20210401203112.GA116405@lothringen>
+ <20210401204022.GI2696@paulmck-ThinkPad-P72>
+ <20210401204113.GB116405@lothringen>
+ <20210401210253.GJ2696@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210401210253.GJ2696@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many moons ago, support was added to the SMI handlers to log s0ix entry
-and exit. Early iterations of firmware on Apollo Lake correctly returned
-"unsupported" for this new command they did not recognize, but
-unfortunately also contained a quirk where this command would cause them
-to power down rather than resume from s0ix.
+On Thu, Apr 01, 2021 at 02:02:53PM -0700, Paul E. McKenney wrote:
+> On Thu, Apr 01, 2021 at 10:41:13PM +0200, Frederic Weisbecker wrote:
+> > On Thu, Apr 01, 2021 at 01:40:22PM -0700, Paul E. McKenney wrote:
+> > > On Thu, Apr 01, 2021 at 10:31:12PM +0200, Frederic Weisbecker wrote:
+> > > > On Thu, Apr 01, 2021 at 11:51:16AM -0700, Paul E. McKenney wrote:
+> > > > > On Thu, Apr 01, 2021 at 03:26:02PM +0200, Frederic Weisbecker wrote:
+> > > > > > Grepping for "CPU" on lscpu output isn't always successful, depending
+> > > > > > on the local language setting. As a result, the build can be aborted
+> > > > > > early with:
+> > > > > > 
+> > > > > > 	"make: the '-j' option requires a positive integer argument"
+> > > > > > 
+> > > > > > Prefer a more generic solution.
+> > > > > > 
+> > > > > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > > > > 
+> > > > > Good catch, applied, thank you!
+> > > > > 
+> > > > > There is a similar construct in kvm-remote.sh, so I added a similar
+> > > > > fix to your patch.
+> > > > > 
+> > > > > But what about this in functions.sh?
+> > > > > 
+> > > > > nt="`lscpu | grep '^NUMA node0' | sed -e 's/^[^,]*,\([0-9]*\),.*$/\1/'`"
+> > > > > 
+> > > > > I am guessing that "node0" is human-language-independent, but is "NUMA"?
+> > > > 
+> > > > I thought they wouldn't bother translating that, but they did...
+> > > > 
+> > > >     NUMA node0 CPU(s):               0-7
+> > > > 
+> > > > becomes:
+> > > > 
+> > > >     Nœud NUMA 0 de processeur(s) : 0-7
+> > > > 
+> > > > Not sure about the best way to fix it.
+> > > 
+> > > The rude and crude fix is for the scripts to force the local language
+> > > to English.  ;-)
+> > 
+> > I don't have a better answer :o)
+> 
+> If you set the environment variable LANG to en_US.UTF-8, does that
+> make things work for you?  Huh.  Setting it to fr_FR.UTF-8 does not
+> shift lscpu out of English for me, so I am guessing "no".
 
-Fixes for this quirk were pushed out long ago, so all APL devices still
-in the field should have updated firmware. As such, we no longer need to
-have the s0ix_logging_enable be opt-in, where every new platform has to
-add this to their kernel commandline parameters. Change it to be on by
-default.
+Maybe that language isn't installed in your system. I would expect
+en_US.UTF-8 to be supported pretty much everywhere though. At least it
+works for me with: "LANG=en_US.UTF-8 lscpu".
 
-In theory we could remove the parameter altogether: updated versions of
-Chrome OS containing a kernel with this change would also be coupled
-with firmware that behaves properly with these commands. Eventually we
-should probably do that. For now, convert this to an opt-out parameter
-so there's an emergency valve for people who are deliberately running
-old firmware, or as an escape hatch in case of unforeseen regressions.
+Thanks.
 
-Signed-off-by: Evan Green <evgreen@chromium.org>
----
-
- drivers/firmware/google/gsmi.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/firmware/google/gsmi.c b/drivers/firmware/google/gsmi.c
-index 3d77f26c1e8c93..bb6e77ee3898c1 100644
---- a/drivers/firmware/google/gsmi.c
-+++ b/drivers/firmware/google/gsmi.c
-@@ -136,12 +136,16 @@ MODULE_PARM_DESC(spincount,
- 	"The number of loop iterations to use when using the spin handshake.");
- 
- /*
-- * Platforms might not support S0ix logging in their GSMI handlers. In order to
-- * avoid any side-effects of generating an SMI for S0ix logging, use the S0ix
-- * related GSMI commands only for those platforms that explicitly enable this
-- * option.
-+ * Some older platforms with Apollo Lake chipsets do not support S0ix logging
-+ * in their GSMI handlers, and behaved poorly when resuming via power button
-+ * press if the logging was attempted. Updated firmware with proper behavior
-+ * has long since shipped, removing the need for this opt-in parameter. It
-+ * now exists as an opt-out parameter for folks defiantly running old
-+ * firmware, or unforeseen circumstances. After the change from opt-in to
-+ * opt-out has baked sufficiently, this parameter should probably be removed
-+ * entirely.
-  */
--static bool s0ix_logging_enable;
-+static bool s0ix_logging_enable = true;
- module_param(s0ix_logging_enable, bool, 0600);
- 
- static struct gsmi_buf *gsmi_buf_alloc(void)
--- 
-2.29.2
-
+> 
+> Help?
+> 
+> 							Thanx, Paul
