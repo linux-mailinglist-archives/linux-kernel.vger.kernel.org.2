@@ -2,114 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40BFE351945
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:02:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB69C351B14
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234657AbhDARwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:52:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234867AbhDARk5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:40:57 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0380AC05BD18
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 05:55:16 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id c6so644169lji.8
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 05:55:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VIk1VyBFqF5fVZFBu0yexXHYaS9Jn30Rld7o2bVbBwk=;
-        b=Apd+UzHEAEi98S6OdfucHkNROZU7jCgX5/KNygYU3cVOLmi2PHXIN8LRL/INjJMZT2
-         +T7sbpkA1dHoI5hc7fww5ba5aE2TjM8dwGwwufSllGQiwylrGI0cS488JL/xNibDw5Cu
-         2+eknYxHVIfteXbHDfVGnwtETKC61+6Ys9Q59Y5+NreZIXf3O8ek1f6nwiPeAZ31FLYx
-         JP07cdx8Lht2U45g70INCV2MprWQgxaOUq4Y3uGF3LwH7J/nRfQOjuLD03XeTBhbnZ3w
-         3kGM/AEkbnuu9X/oEc2B9w4enaBqVfgrhZYb3ySlCRAGSvA6qD8rW+w9ga1FZsJLnIXC
-         z8Dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VIk1VyBFqF5fVZFBu0yexXHYaS9Jn30Rld7o2bVbBwk=;
-        b=gjaoXQ50GGe5YEvF8WUv/RYH/tL2zvQj6hj/jvoR0XqZKNzxhZPCAz3cOe3lOEswfr
-         Nd70ti6Uusd0KXJSk2WcZqHeJTTcrykzCeqxBXrzQ4wpO8IILhRKiZas3iJr9VT7Ec02
-         poqBAtxhA5wCUQ7OaIeBmxVHIpzaIxDsvOAVP3wVGjCSLxlgfjEaB8HCvqNdu2hFoPuf
-         hYDf+nRNPxPCks/j1ZTRcEu5jrZ/+8HmZCMnMiABUlKliND6qw0U7LljxewnehbV/dml
-         5R8cqzoruOtndF1RxP5k8U4807d7gS+mtv1iEGTnQpsaobbZvDWbVm4S0yQeP5L1K6Ax
-         rsLA==
-X-Gm-Message-State: AOAM533wO1/ojBJJnFupWfn9RZCfNDJd8d7b13ZenjnYoXmdJPpat4gt
-        gItRtBeQHvwhO/E2uYKxTqYDPv11CP0feIKZ0Wa9/g==
-X-Google-Smtp-Source: ABdhPJzxwz2LDe0yIeonE1iDSI5e5lDG4mIYMjWxL+WfT+GgrPcNFOKL6OGonaimUeBpqxqGZ9SE9Ng/p3VJVcrOnEs=
-X-Received: by 2002:a2e:8e33:: with SMTP id r19mr5136316ljk.40.1617281715310;
- Thu, 01 Apr 2021 05:55:15 -0700 (PDT)
+        id S238303AbhDASGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:06:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48904 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236997AbhDARuA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:50:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA71A611EE;
+        Thu,  1 Apr 2021 12:59:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617281956;
+        bh=3TI1EuLRPuxW83T74of5le/iuIR7ZM+AAKpIDXUTGuY=;
+        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
+        b=etmUILOFF6pESIgyelf63J4doWIyp0lXP4ajOwTZGn3ySiwdu0jDMFMUgsFxpBXmm
+         GLdEW2/7CQ/CqLVNDktPs2HRqo4A+A/tJNHCs2F0Bs/CV9F++uM+Zw8OtO4VPU4GLM
+         LhAFtQbIO5X4aQC+WWSsVaIs7LVhMwubBd77272T7utGqgbaNBZVL6K8O3plI6FSFe
+         2/utx2hrMPBI/ZbJgs5fk5pDJpXD+gJ/r5FwP/H5pXPMy/cYDNwY2QH1Ynq2AIuEp9
+         pYPKb+nx8M6VWEEy3t4G/SiyYX1V8parXtUgxu1ogAcTRFBw6LCapgC0O/9s/VaX+y
+         KDuD0VCyyxGDw==
+Received: by mail-ot1-f46.google.com with SMTP id v24-20020a9d69d80000b02901b9aec33371so2043859oto.2;
+        Thu, 01 Apr 2021 05:59:15 -0700 (PDT)
+X-Gm-Message-State: AOAM530hH2umoVi6kCWLthNAttmIbf7OpmiH3XvDOmh4Om6njWV5H7MX
+        cOdvv0KVGP5iCfPsKNBM0KY18HWv+1SWarZJzNk=
+X-Google-Smtp-Source: ABdhPJwznrcoAV5FnaPD9IdAczoLlbDeiM99a3uS3N2n0WLAy4hk8QGAQMgtueYbLhn/uJuf1rhT+a1ewHX2ctgaM4I=
+X-Received: by 2002:a9d:7854:: with SMTP id c20mr7182988otm.114.1617281955108;
+ Thu, 01 Apr 2021 05:59:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
- <CAFLxGvzWLje+_HFeb+hKNch4U1f5uypVUOuP=QrEPn_JNM+scg@mail.gmail.com>
- <ca2a7c17-3ed0-e52f-2e2f-c0f8bbe10323@pengutronix.de> <CAFLxGvwNomKOo3mQLMxYGDA8T8zN=Szpo2q5jrp4D1CaMHydWA@mail.gmail.com>
-In-Reply-To: <CAFLxGvwNomKOo3mQLMxYGDA8T8zN=Szpo2q5jrp4D1CaMHydWA@mail.gmail.com>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Thu, 1 Apr 2021 18:25:03 +0530
-Message-ID: <CAFA6WYO29o73nSg4ikU9cyaOr0kpaXFJpcGLGmFLgjKQWchcEg@mail.gmail.com>
-Subject: Re: [PATCH v1 0/3] KEYS: trusted: Introduce support for NXP
- CAAM-based trusted keys
-To:     Richard Weinberger <richard.weinberger@gmail.com>
-Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        James Bottomley <jejb@linux.ibm.com>, kernel@pengutronix.de,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        David Gstir <david@sigma-star.at>,
-        Franck LENORMAND <franck.lenormand@nxp.com>,
-        linux-integrity@vger.kernel.org,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        LSM <linux-security-module@vger.kernel.org>
+Received: by 2002:ac9:5ed4:0:0:0:0:0 with HTTP; Thu, 1 Apr 2021 05:59:14 -0700 (PDT)
+In-Reply-To: <ca1b9b0c-55f9-025d-558b-1b2b6c866d12@samba.org>
+References: <20210401113933.GA2828895@LEGION> <20210401115008.GS2088@kadam>
+ <CAKYAXd-ou4-jf7_8xa4jDQ_otyQ9ffKhwD7WZrmrna1P3b_W8Q@mail.gmail.com> <ca1b9b0c-55f9-025d-558b-1b2b6c866d12@samba.org>
+From:   Namjae Jeon <linkinjeon@kernel.org>
+Date:   Thu, 1 Apr 2021 21:59:14 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd-ScM9i9Ln_FL8pWyEnPO_0n8t1BLH8MJ=b4NkqEbhZ=Q@mail.gmail.com>
+Message-ID: <CAKYAXd-ScM9i9Ln_FL8pWyEnPO_0n8t1BLH8MJ=b4NkqEbhZ=Q@mail.gmail.com>
+Subject: Re: [Linux-cifsd-devel] [PATCH] cifsd: use kfree to free memory
+ allocated by kzalloc
+To:     Ralph Boehme <slow@samba.org>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        COMMON INTERNET FILE SYSTEM SERVER 
+        <linux-cifs@vger.kernel.org>,
+        COMMON INTERNET FILE SYSTEM SERVER 
+        <linux-cifsd-devel@lists.sourceforge.net>,
+        kernel-janitors@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Steve French <sfrench@samba.org>, colin.king@canonical.com,
+        Muhammad Usama Anjum <musamaanjum@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Richard,
-
-On Wed, 31 Mar 2021 at 03:34, Richard Weinberger
-<richard.weinberger@gmail.com> wrote:
+2021-04-01 21:50 GMT+09:00, Ralph Boehme <slow@samba.org>:
+> Am 4/1/21 um 2:43 PM schrieb Namjae Jeon:
+>> 2021-04-01 20:50 GMT+09:00, Dan Carpenter <dan.carpenter@oracle.com>:
+>>> On Thu, Apr 01, 2021 at 04:39:33PM +0500, Muhammad Usama Anjum wrote:
+>>>> kfree should be used to free memory allocated by kzalloc to avoid
+>>>> any overhead and for maintaining consistency.
+>>>>
+>>>> Fixes: 5dfeb6d945 ("cifsd: use kmalloc() for small allocations")
+>>>> Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+>>>> ---
+>>>> This one place was left in earlier patch. I've already received
+>>>> responsse on that patch. I'm sending a separate patch.
+>>>>
+>>>>   fs/cifsd/transport_tcp.c | 2 +-
+>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/fs/cifsd/transport_tcp.c b/fs/cifsd/transport_tcp.c
+>>>> index 67163efcf472..040881893417 100644
+>>>> --- a/fs/cifsd/transport_tcp.c
+>>>> +++ b/fs/cifsd/transport_tcp.c
+>>>> @@ -551,7 +551,7 @@ void ksmbd_tcp_destroy(void)
+>>>>   	list_for_each_entry_safe(iface, tmp, &iface_list, entry) {
+>>>>   		list_del(&iface->entry);
+>>>>   		kfree(iface->name);
+>>>> -		ksmbd_free(iface);
+>>>> +		kfree(iface);
+>>>
+>>> We should just delete the ksmbd_free() function completely.
+>> Yes, I have added your review comment about this to my todo-list.
+>> I will do that.
+>>>
+>>> I think that cifsd is being re-written though so it might not be worth
+>>> it.
+>> Right.
 >
-> Ahmad,
+> fwiw, while at it what about renaming everything that still references
+> "cifs" to "smb" ? This is not the 90's... :)
+It is also used with the name "ksmbd". So function and variable prefix
+are used with ksmbd.
+
+Thanks!
 >
-> On Wed, Mar 17, 2021 at 3:08 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
-> >     keyctl add trusted $KEYNAME "load $(cat ~/kmk.blob)" @s
+> Cheers!
+> -slow
 >
-> Is there a reason why we can't pass the desired backend name in the
-> trusted key parameters?
-> e.g.
-> keyctl add trusted $KEYNAME "backendtype caam load $(cat ~/kmk.blob)" @s
 >
-
-IIUC, this would require support for multiple trusted keys backends at
-runtime but currently the trusted keys subsystem only supports a
-single backend which is selected via kernel module parameter during
-boot.
-
-So the trusted keys framework needs to evolve to support multiple
-trust sources at runtime but I would like to understand the use-cases
-first. IMO, selecting the best trust source available on a platform
-for trusted keys should be a one time operation, so why do we need to
-have other backends available at runtime as well?
-
--Sumit
-
-> --
-> Thanks,
-> //richard
