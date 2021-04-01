@@ -2,78 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B27351E84
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74A7F351DB0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234705AbhDASm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:42:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239307AbhDASUm (ORCPT
+        id S240846AbhDASbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:31:40 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:45439 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238618AbhDASJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:20:42 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B089DC02FEA6;
-        Thu,  1 Apr 2021 09:12:23 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso2602292otq.3;
-        Thu, 01 Apr 2021 09:12:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Q6dkaX8MCC1QWlhms6LKLDJBhv8fv/w3cbDi9ipTADQ=;
-        b=VkgbthkXc2HqBSrdop+tgqbqroR4hghxywA0i5NC9MI5fy0VRTmHUeM2U8n/bmVFqB
-         dcf6N7ZmgkbLmLXhdmkBtitwclAJhi2CpCGNAf2GROuHGSXTgvCDn+4RYN79OMSpwk/O
-         IrT0PhmYHLdZKoycZABOFDTSAfifh2S/bT0MgekHNGrNWt4pwgZ6Vutz6ldtw4aZHIGi
-         nds4/Cw9rCx6n2PawhJiiUPhNToTrNeH/2fmPLL7CF9mglGPPWnl0+iwD9M2YD8rOGPK
-         C6urzCvVgm80cSYpPF35xSTT5ODSmxLUuBkz8wJtzfgjlq8Ncc/4E2KehZSFCW4gTdY/
-         ZbIw==
-X-Gm-Message-State: AOAM533Kb0eabITxD/GiQueyqpsMLJPa2mde56ebv1lLRQAJ2rqeALSG
-        bOUUHzCnC/3cZ7I/pg40oOx6dPY4Tw==
-X-Google-Smtp-Source: ABdhPJyQS8ZYJmHSsmQe0gtNV4ljM0aMybfxwE16FwmOSPgDHIGJQ6KTnf9NOVhz5wJMxvHIf5PcFg==
-X-Received: by 2002:a9d:70cf:: with SMTP id w15mr7805191otj.283.1617293542965;
-        Thu, 01 Apr 2021 09:12:22 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id e15sm1210740otk.64.2021.04.01.09.12.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 09:12:22 -0700 (PDT)
-Received: (nullmailer pid 530912 invoked by uid 1000);
-        Thu, 01 Apr 2021 16:12:21 -0000
-Date:   Thu, 1 Apr 2021 11:12:21 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Carlis <zhangxuezhi3@gmail.com>
-Cc:     devicetree@vger.kernel.org, daniel@ffwll.ch,
-        linux-kernel@vger.kernel.org, kraxel@redhat.com, airlied@linux.ie,
-        tzimmermann@suse.de, zhangxuezhi1@yulong.com, robh+dt@kernel.org,
-        sam@ravnborg.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v4 2/2] dt-bindings: display: sitronix, st7789v-dbi: Add
- Waveshare 2inch LCD module
-Message-ID: <20210401161221.GA530733@robh.at.kernel.org>
-References: <20210331030550.119493-1-zhangxuezhi3@gmail.com>
- <20210331030550.119493-3-zhangxuezhi3@gmail.com>
+        Thu, 1 Apr 2021 14:09:48 -0400
+Received: from [192.168.1.155] ([95.114.120.255]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1Mxlio-1lpRFh0GyM-00zFhl; Thu, 01 Apr 2021 18:15:43 +0200
+Subject: Re: [PATCH v3 3/4] watchdog: simatic-ipc-wdt: add new driver for
+ Siemens Industrial PCs
+To:     Henning Schild <henning.schild@siemens.com>,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-watchdog@vger.kernel.org
+Cc:     Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+References: <20210329174928.18816-1-henning.schild@siemens.com>
+ <20210329174928.18816-4-henning.schild@siemens.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <ffdfe9a9-ab17-18af-300e-062b79d132f3@metux.net>
+Date:   Thu, 1 Apr 2021 18:15:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210331030550.119493-3-zhangxuezhi3@gmail.com>
+In-Reply-To: <20210329174928.18816-4-henning.schild@siemens.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:mZl+/Fxt0NAigmLCH+RKccI3nE5xVjZG1xhGoPUgCxNSXAPqiMk
+ S9U84N7eW7dsD5O10wzfTPVnBv3R4PqEnqCSUCAC0WPCG0h2NbnNAl+zUpmSy7xb6z34dWa
+ W7Sp+3iSb/gJINI7M6KgJlUZoRypT/s5uqJ2mpqPT1/wsHl/phqOpvzs0ebTMg5vgbZL0f2
+ jv/KHgLgD3iBP1j67CACw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:vWF9FgB7mL8=:UG6L83VGSPgRsVAviCBrxt
+ KXA9dc0Vp+RuCgdsB+XC/Qwyr/LgC+xNnFeLHgByex/68aGjqseF8jord8HHgtvn1/sL3Qh9P
+ qjATQnm0IBEwteNtgjRUYOGZhJLd8aBFj3GoMBfHhkOld+f4iXwjrJGmcPGojmRSVXkICDFeQ
+ JqJEcnXPizz7ntzhqY9PggqHlO6VhLxrWMDIGeaHJgMFUciombnIDONf8iX6K39sVJFAkfccS
+ u7CvrQELD2gjN3DvjrqwcR9V5jhBqPa5Zc4UdX2loNXuwEkSGSVGQtn6Xwi0r2cGZ3UN74Usx
+ XD3UJKVWJlCQjzbaIiEXIpq9qiqzIEtIF48kH9gzNRmOlrIIqLJ97CLy9LJNV+Peo4fc3B742
+ 2B1eJcMlor/v7G2WuVCl9kjivhJdRBd9gluP1JlJqACC12epgJX06mKA7y4JRE2J8jaCdgEGC
+ 3ivlcz7rxOS2m0lC3t5Hb3ism7N0KdglsVHyrG8gm0V1NDKXN2TX
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 31 Mar 2021 03:05:50 +0000, Carlis wrote:
-> From: Xuezhi Zhang <zhangxuezhi1@yulong.com>
-> 
-> Document support for the Waveshare 2inch LCD module display, which is a
-> 240x320 2" TFT display driven by a Sitronix ST7789V TFT Controller.
-> 
-> Signed-off-by: Xuezhi Zhang <zhangxuezhi1@yulong.com>
-> ---
-> v2:change compatible value.
-> v3:change author name.
-> v4:delete a maintainer.
-> ---
->  .../display/sitronix,st7789v-dbi.yaml         | 72 +++++++++++++++++++
->  1 file changed, 72 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/sitronix,st7789v-dbi.yaml
-> 
+On 29.03.21 19:49, Henning Schild wrote:
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Hi,
+
+> This driver adds initial support for several devices from Siemens. It is
+> based on a platform driver introduced in an earlier commit.
+
+Where does the wdt actually come from ?
+
+Is it in the SoC ? (which SoC exactly). SoC-builtin wdt is a pretty 
+usual case.
+
+Or some external chip ?
+
+The code smells a bit like two entirely different wdt's that just have
+some similarities. If that's the case, I'd rather split it into two
+separate drivers and let the parent driver (board file) instantiate
+the correct one.
+
+
+--mtx
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
