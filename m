@@ -2,76 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F83351E7E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EA92351D9A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241124AbhDASmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:42:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37958 "EHLO
+        id S240331AbhDASaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:30:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237543AbhDASTc (ORCPT
+        with ESMTP id S236837AbhDASHj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:19:32 -0400
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B54E3C0319C4;
-        Thu,  1 Apr 2021 10:17:48 -0700 (PDT)
-Received: by mail-oo1-xc2d.google.com with SMTP id 125-20020a4a1a830000b02901b6a144a417so713141oof.13;
-        Thu, 01 Apr 2021 10:17:48 -0700 (PDT)
+        Thu, 1 Apr 2021 14:07:39 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0ECAC0319C5;
+        Thu,  1 Apr 2021 10:18:30 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id y19-20020a0568301d93b02901b9f88a238eso2733001oti.11;
+        Thu, 01 Apr 2021 10:18:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=rTYpQxnYeisun6vuUDJAUFTYg5NuDKCDGsq0N/u9+TQ=;
-        b=RWcnkAuE/4lS55uJ9WqNlDsvP0mUpga3lNK034a+UvICNh2X8k2bw8IqGay1YQOQGs
-         HI5jqmWctPALEXXjxkiIhIxxLFShwddjID79gVrFr3xg63oN/TjFYPvpuIDwML6gEgMk
-         9o//h+0Z/6Dh4sLYhqlweeGqS7jE85Af+8X+p6u63+Gt0lE8SWPtWy4zlkyzgoC6dqPi
-         gJqk2ZzbxFhzbwpUeMKfFWZQhl8V9yOVLyoqx2Iia8HySGahu3DWSeEEn6LzOVB1w/VE
-         Rsn5l18sgHxkLSSqh4oj45UPQqZ3kxG1j52fltgPBIFSmYeQ3lk13mdqCsrlmha7H1z3
-         Qekg==
-X-Gm-Message-State: AOAM5327rdUggi8z4QoykYpbjcugb9gfKg+FOzal3RmthNezewbCuad4
-        VGIP0y04JT5gvdALdhX0A1Espyxj0Q==
-X-Google-Smtp-Source: ABdhPJzWzVT5IQc4aLRQt2NzaPCyhgFdVeHL9nOVBmHSD87cvob9pcfyrMrymy98s/V5kxzd6Smfbw==
-X-Received: by 2002:a4a:b102:: with SMTP id a2mr7975195ooo.30.1617297465008;
-        Thu, 01 Apr 2021 10:17:45 -0700 (PDT)
+        bh=LIjI2NUwDFlAYdJOBAJek6rk7rUaA28ZeDcvyQ9Nhm0=;
+        b=Q/L10nBE34UdT/g10T0xeDrajVtKUuryGAwndb66qHC5CgF2643yeNksqQSMV/HIyJ
+         jnQc0o1OdlLBbb1lW8yp+3mMRCO5sKdHKHhEuLnGskOGEeHzvE/DVs3ikGVhFDAmbJFC
+         MjR97vbLSOSyWF7575Io1gZaHTCnZg750h5jBV5eP7QEvrKgkm+KZpmMKZx4tgfuCsCc
+         qtmg2Z/c5xp/XVMI0X3aWJueyeo3zvGPQMkGIdJdy0cCk1ZNJavY6WgBlLt5PT65ycNO
+         CO1DoFqo1yi2E8hmj9aCKkXPaXv0eGhLvhRUkgCvHkTssxINBWv0eI03CGQSyw5HfaSf
+         Dmsw==
+X-Gm-Message-State: AOAM530+cEQ3siN6gyib1aRb5vIoRhm3LIC6MreKZkEIl9oU7RZsyA5D
+        XJgY8qSVFBOfmuJFN3wkoQ==
+X-Google-Smtp-Source: ABdhPJzTwRBGIosUW74Hf7hJbz23dNYIA7uex/H49XPguHIvYAQWA7pqj4y6jdKNAirvM1WZ0YDtZg==
+X-Received: by 2002:a05:6830:1515:: with SMTP id k21mr7651423otp.269.1617297506910;
+        Thu, 01 Apr 2021 10:18:26 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id d1sm1246305oth.13.2021.04.01.10.17.43
+        by smtp.gmail.com with ESMTPSA id m14sm1316149otn.69.2021.04.01.10.18.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 10:17:44 -0700 (PDT)
-Received: (nullmailer pid 636777 invoked by uid 1000);
-        Thu, 01 Apr 2021 17:17:43 -0000
-Date:   Thu, 1 Apr 2021 12:17:43 -0500
+        Thu, 01 Apr 2021 10:18:26 -0700 (PDT)
+Received: (nullmailer pid 637987 invoked by uid 1000);
+        Thu, 01 Apr 2021 17:18:25 -0000
+Date:   Thu, 1 Apr 2021 12:18:25 -0500
 From:   Rob Herring <robh@kernel.org>
 To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+Cc:     devicetree@vger.kernel.org,
         Thierry Reding <thierry.reding@gmail.com>,
+        linux-tegra@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
         linux-kernel@vger.kernel.org,
         Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 3/6] dt-bindings: memory: tegra124: emc: Replace core
- regulator with power domain
-Message-ID: <20210401171743.GA636437@robh.at.kernel.org>
+        Jonathan Hunter <jonathanh@nvidia.com>
+Subject: Re: [PATCH v2 4/6] dt-bindings: memory: tegra20: mc: Convert to
+ schema
+Message-ID: <20210401171825.GA637934@robh.at.kernel.org>
 References: <20210330230445.26619-1-digetx@gmail.com>
- <20210330230445.26619-4-digetx@gmail.com>
+ <20210330230445.26619-5-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210330230445.26619-4-digetx@gmail.com>
+In-Reply-To: <20210330230445.26619-5-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 31 Mar 2021 02:04:42 +0300, Dmitry Osipenko wrote:
-> Power domain fits much better than a voltage regulator in regards to
-> a proper hardware description and from a software perspective as well.
-> Hence replace the core regulator with the power domain. Note that this
-> doesn't affect any existing DTBs because we haven't started to use the
-> regulator yet, and thus, it's okay to change it.
+On Wed, 31 Mar 2021 02:04:43 +0300, Dmitry Osipenko wrote:
+> Convert Tegra20 Memory Controller binding to schema.
 > 
 > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 > ---
->  .../bindings/memory-controllers/nvidia,tegra124-emc.yaml   | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
+>  .../memory-controllers/nvidia,tegra20-mc.txt  | 40 ----------
+>  .../memory-controllers/nvidia,tegra20-mc.yaml | 79 +++++++++++++++++++
+>  2 files changed, 79 insertions(+), 40 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-mc.txt
+>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-mc.yaml
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
