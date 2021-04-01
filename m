@@ -2,160 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B656E351F58
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84109351F6A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234542AbhDATIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 15:08:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47672 "EHLO
+        id S234476AbhDATQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 15:16:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236980AbhDATGI (ORCPT
+        with ESMTP id S234850AbhDATOn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 15:06:08 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C598CC03D225;
-        Thu,  1 Apr 2021 10:57:06 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id b7so4171277ejv.1;
-        Thu, 01 Apr 2021 10:57:06 -0700 (PDT)
+        Thu, 1 Apr 2021 15:14:43 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BEEDC0613B3;
+        Thu,  1 Apr 2021 11:06:15 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so3483151pjq.5;
+        Thu, 01 Apr 2021 11:06:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SU4RbOPNHP2ZwBcuTmWq/GTcYcUsYxKHBsEME1pvvGQ=;
-        b=Pk+H3SeIsgoAjYphDeLPalvCm6EsJbsA7KyLIPux7/WfS3x7EsLRgUNfTPL4QwprU3
-         sHWuE5J2TsFm5rYykvq+Vn4uw2nmvPDVjeEnQQ9hDzxbn3U3a3+3WlCHUhEXFpCW13N+
-         /vSnIMRA6aHL9eRRmias0UlyXR/0nbCS8ba+mBEVsLz40sOSo5NAq3LhSN6JvTD3ml7w
-         jBSXTrdIcjUwtNlUTLYVhXfob8OnG3eH7o5AsljAUNBylL1TTiQNWdx5zLunp4cptHFX
-         t2JIJe9XIsyu5Ul9/4lN3UokJtOwhYeQDo9BjnbedAGxHj37dVRX3RBJ4EY79+PMLPe9
-         +Bhg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LtbHgeOb5Q/GLe2iHTvlk5L+iXICHogfcJ7TfbimPCs=;
+        b=VrZzKx+uJE1Tg2egJrBWLu9gt7VPFt1vdgxVuXWVwFli0ZByDP+TLwtmNsK3rBfDjr
+         X7hhAzyzRTpOvhmB/LeTdNIxX4XX/UGzFC/GMPKd2Eryww1KZ40M7qxQSEaOYEPSzprh
+         nw/hLrU383xEpIKwm1BCBTTUunmbXPf8Tc8j/IeWclI9wMWW/Gdk3CRe9QDZmDs8rUjP
+         +YebusOFF126ld9ZER5jzx5j/WDpY2fs9fZQTq4mZoc/gd+fS6ExHGSO40lmtnWjlEoj
+         M7gUflHLs8oMkXRwy55JMpOT0s4+Hu2QgkbC/5nsdS/qCKwMoFWsMty9iSBGa0LPtJGy
+         aLSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SU4RbOPNHP2ZwBcuTmWq/GTcYcUsYxKHBsEME1pvvGQ=;
-        b=sC7GFsv2emXQ62sK3W6+ZPincUPI+sZWOXmFHc8p+liV7ONS2fFGSeTEVW/0EvUH+o
-         Po0bc8wQTMRqFx28VYiMCQqob221BDg8peP9Ycp7ZfwkbBAzsyYGQdF6lAmhWtJUuSZn
-         +iGbjg8hMkko2OOilXcgjqvQYKTRl8zABYErgyFBoQR7WANZV3jqh7T/2xooe7NTzlJS
-         hLnulYnCciNzqzpvBZlBx4TwDTLPFCjivo7seh/qRn7Wt7euwJHpRXltsntxNRV7CrTo
-         xNRbVsH5l1mIPSR54lKIi4bRTwLw4oxJ+tsCoTzsm2dy87XHGyO9d1i9hfVObo5x/ha7
-         hqXQ==
-X-Gm-Message-State: AOAM530CjWhTB2m2MwT9yMwvmpe1Pe+3mLLKg7IQAikBZXDIGw9MDOkj
-        ODcqkUT07rTDs4wC4T+Y0zo=
-X-Google-Smtp-Source: ABdhPJzdA/tAYmJiie7zrEmMoslDQAs4DVN4ChKNsQPEoQCee4kryfkGjoQcSj/rqZOo4zGkwdVSvQ==
-X-Received: by 2002:a17:907:110c:: with SMTP id qu12mr10556442ejb.442.1617299825578;
-        Thu, 01 Apr 2021 10:57:05 -0700 (PDT)
-Received: from BV030612LT ([188.24.140.160])
-        by smtp.gmail.com with ESMTPSA id yk8sm3167870ejb.123.2021.04.01.10.57.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 10:57:05 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 20:57:02 +0300
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/6] dt-bindings: soc: actions: Add Actions Semi Owl
- socinfo binding
-Message-ID: <20210401175702.GB2016477@BV030612LT>
-References: <cover.1617110420.git.cristian.ciocaltea@gmail.com>
- <15da0257b10aa62bfb7046437915d05a614c01ee.1617110420.git.cristian.ciocaltea@gmail.com>
- <20210401170818.GB610119@robh.at.kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LtbHgeOb5Q/GLe2iHTvlk5L+iXICHogfcJ7TfbimPCs=;
+        b=laWGGfliET5gp7ZVcjfbb+7U5dzjYk36fEmZWeFu18+JlMWNTn2I8mFHAE7LXGodYw
+         r11n3BecWCOvzg35M9dQleHy3y0tKNbeodhqXFJ9LHHPYh+QR5Wvux/mGdl5NjyLMoCa
+         5PjWSfVs4Z1cJytAE7NSsg6cd2bQFHCreG1IzyMaPTe9bJco3Xxz7o/LgzEYQQsSSsKD
+         0Hl24JcftsfE75COnv1taMhLOjI/A/W52iMZxleLNV68WbcIlKa7/7inU8rHcAx2TC3B
+         EE6YepKJB/gq4lyY1up0iv8Y6doeny91dFxgHaZhtgYdBU8IKIlXI7vWl5KKbHNIoH6I
+         5OAg==
+X-Gm-Message-State: AOAM533AriOvDoNi5HX+kEfer9Ig12dG5gQxXvqrwKrwktNcw05Hm1bz
+        beAhSZ3Wnnnz6lltVI9nnhlpVCMpRjetSZNPEns=
+X-Google-Smtp-Source: ABdhPJzsvLX9harUfAuK07k4egskm6yqn6pQylArKiWFguIMrjNLOlW5MORgdYPmir2kwL2JGK0erL1PRRJAwTzvGaw=
+X-Received: by 2002:a17:90a:db49:: with SMTP id u9mr10351275pjx.181.1617300374919;
+ Thu, 01 Apr 2021 11:06:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401170818.GB610119@robh.at.kernel.org>
+References: <20210401154343.41527-1-dmugil2000@gmail.com>
+In-Reply-To: <20210401154343.41527-1-dmugil2000@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 1 Apr 2021 21:05:58 +0300
+Message-ID: <CAHp75VfkCQpfUrVcWHUnD4DLMp9iZJBL8mYfsYOCsESm_y068A@mail.gmail.com>
+Subject: Re: [PATCH] iio: adc: stm32-dfsdm: drop __func__ while using Dynamic debug
+To:     Mugilraj Dhavachelvan <dmugil2000@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 12:08:18PM -0500, Rob Herring wrote:
-> On Tue, Mar 30, 2021 at 04:48:17PM +0300, Cristian Ciocaltea wrote:
-> > Add devicetree binding for the Actions Semi Owl socinfo driver.
-> > 
-> > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> > ---
-> >  .../bindings/soc/actions/owl-socinfo.yaml     | 57 +++++++++++++++++++
-> >  1 file changed, 57 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/soc/actions/owl-socinfo.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/soc/actions/owl-socinfo.yaml b/Documentation/devicetree/bindings/soc/actions/owl-socinfo.yaml
-> > new file mode 100644
-> > index 000000000000..01e4a8b4f5ac
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/soc/actions/owl-socinfo.yaml
-> > @@ -0,0 +1,57 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/soc/actions/owl-socinfo.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Actions Semi Owl SoC info module
-> > +
-> > +maintainers:
-> > +  - Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> > +
-> > +description: |
-> > +  Actions Semi Owl SoC info module provides access to various information
-> > +  about the S500, S700 and S900 SoC variants, such as serial number or id.
-> > +
-> > +select:
-> > +  properties:
-> > +    compatible:
-> > +      contains:
-> > +        enum:
-> > +          - actions,s500-soc
-> > +          - actions,s700-soc
-> > +          - actions,s900-soc
-> > +  required:
-> > +    - compatible
-> > +
-> > +properties:
-> > +  compatible:
-> > +    items:
-> > +      - enum:
-> > +          - actions,s500-soc
-> > +          - actions,s700-soc
-> > +          - actions,s900-soc
-> > +      - const: simple-bus
-> > +
-> > +required:
-> > +  - compatible
-> > +
-> > +additionalProperties: true
-> > +
-> > +examples:
-> > +  - |
-> > +    / {
-> > +        compatible = "roseapplepi,roseapplepi", "actions,s500";
-> > +        model = "Roseapple Pi";
-> > +        #address-cells = <1>;
-> > +        #size-cells = <1>;
-> > +
-> > +        soc {
-> > +            compatible = "actions,s500-soc", "simple-bus";
-> 
-> What's the actual h/w for this bus? Still looks like abuse of DT to 
-> create your virtual soc_info driver.
+On Thu, Apr 1, 2021 at 8:48 PM Mugilraj Dhavachelvan
+<dmugil2000@gmail.com> wrote:
+>
+> dropped __func__ while using dev_dbg() and pr_debug()
 
-Right, there is no bus involved in accessing soc info, but I assumed
-the already existing soc node in common DTS is a good candidate for
-binding the driver. (e.g. arch/arm/boot/dts/owl-s500.dtsi)
+The commit message may be amended, from code perspective LGTM!
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-Should I, instead, create a dedicated sub-node?
+> Signed-off-by: Mugilraj Dhavachelvan <dmugil2000@gmail.com>
+> ---
+>  drivers/iio/adc/stm32-dfsdm-adc.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/iio/adc/stm32-dfsdm-adc.c b/drivers/iio/adc/stm32-dfsdm-adc.c
+> index 76a60d93fe23..95ec5f3c3126 100644
+> --- a/drivers/iio/adc/stm32-dfsdm-adc.c
+> +++ b/drivers/iio/adc/stm32-dfsdm-adc.c
+> @@ -198,7 +198,7 @@ static int stm32_dfsdm_compute_osrs(struct stm32_dfsdm_filter *fl,
+>         unsigned int p = fl->ford;      /* filter order (ford) */
+>         struct stm32_dfsdm_filter_osr *flo = &fl->flo[fast];
+>
+> -       pr_debug("%s: Requested oversampling: %d\n",  __func__, oversamp);
+> +       pr_debug("Requested oversampling: %d\n", oversamp);
+>         /*
+>          * This function tries to compute filter oversampling and integrator
+>          * oversampling, base on oversampling ratio requested by user.
+> @@ -294,8 +294,8 @@ static int stm32_dfsdm_compute_osrs(struct stm32_dfsdm_filter *fl,
+>                                 }
+>                                 flo->max = (s32)max;
+>
+> -                               pr_debug("%s: fast %d, fosr %d, iosr %d, res 0x%llx/%d bits, rshift %d, lshift %d\n",
+> -                                        __func__, fast, flo->fosr, flo->iosr,
+> +                               pr_debug("fast %d, fosr %d, iosr %d, res 0x%llx/%d bits, rshift %d, lshift %d\n",
+> +                                        fast, flo->fosr, flo->iosr,
+>                                          flo->res, bits, flo->rshift,
+>                                          flo->lshift);
+>                         }
+> @@ -858,7 +858,7 @@ static void stm32_dfsdm_dma_buffer_done(void *data)
+>          * support in IIO.
+>          */
+>
+> -       dev_dbg(&indio_dev->dev, "%s: pos = %d, available = %d\n", __func__,
+> +       dev_dbg(&indio_dev->dev, "pos = %d, available = %d\n",
+>                 adc->bufi, available);
+>         old_pos = adc->bufi;
+>
+> @@ -912,7 +912,7 @@ static int stm32_dfsdm_adc_dma_start(struct iio_dev *indio_dev)
+>         if (!adc->dma_chan)
+>                 return -EINVAL;
+>
+> -       dev_dbg(&indio_dev->dev, "%s size=%d watermark=%d\n", __func__,
+> +       dev_dbg(&indio_dev->dev, "size=%d watermark=%d\n",
+>                 adc->buf_sz, adc->buf_sz / 2);
+>
+>         if (adc->nconv == 1 && !indio_dev->trig)
+> --
+> 2.25.1
+>
 
-Thanks,
-Cristi
 
-> 
-> > +            #address-cells = <1>;
-> > +            #size-cells = <1>;
-> > +            ranges;
-> > +        };
-> > +    };
-> > +
-> > +...
-> > -- 
-> > 2.31.1
-> > 
+-- 
+With Best Regards,
+Andy Shevchenko
