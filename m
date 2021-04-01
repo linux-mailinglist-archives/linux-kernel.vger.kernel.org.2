@@ -2,83 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1273520AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:41:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB8753520B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235075AbhDAUlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 16:41:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33550 "EHLO mail.kernel.org"
+        id S235255AbhDAUnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 16:43:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234376AbhDAUlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 16:41:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 829BC610E9;
-        Thu,  1 Apr 2021 20:41:15 +0000 (UTC)
+        id S234276AbhDAUnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 16:43:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57CFD610D0;
+        Thu,  1 Apr 2021 20:43:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617309676;
-        bh=yuDRLRtXXUlCn56424LLjY6gpkdOniglbruDAsp0dII=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uKkF9QgGhXa2W/z2aoBY7b9lCuIeNSHHK+mv6Dq7C2pfvvgOx6PIythX+fnilBz4U
-         3m7UKdn/iaS/4LvcR9YPd7WroVmbow7PdHp6jSI4q6sT6XcF1zDPLz4PJnj3RnEasQ
-         BsCd3hgMDSlXMvzOUFMNCvKLWzqJkwMczXA9GJJMONh+Sg7FieNDHWc/n2uIRVozYm
-         9F9A8U5bYt+lSB0ywWK4kfMdXRQMTU3vuIrUumTBWoR1tuLMon5ldtEbMilbAN1WGQ
-         xrn0ocvHFHKHK1DxP9yQwelSXVCVi/fnueGI2LKpLelyaHZLve+UdRAqobUqzzibbC
-         M+vLM4vBxmrQw==
-Date:   Thu, 1 Apr 2021 22:41:13 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] torture: Correctly fetch CPUs for kvm-build.sh with all
- native language
-Message-ID: <20210401204113.GB116405@lothringen>
-References: <20210401132602.116352-1-frederic@kernel.org>
- <20210401185116.GH2696@paulmck-ThinkPad-P72>
- <20210401203112.GA116405@lothringen>
- <20210401204022.GI2696@paulmck-ThinkPad-P72>
+        s=k20201202; t=1617309811;
+        bh=VlhQGoUOqdCIYNUihDA2mj8pdQI3cX+qCuRPl+Gh2eI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ExaDY6ycp4e5cUynKGmfkCpPML+X4JyMjj2woGnGRXhutch5+k5qBd5Y0tWO+OpO+
+         /B8MvQ9u2z9F8tt/1oBjKV2LX43DjQXdhL9L15aF1Go5r6S6HERvAUMcjJLK0zK3YP
+         JGkN7Hqs3Mf5Lgvs3pNsPs9eUmhQnPKh8Q7KBoaulOvUTrg3fTs5f6Mtxc2fLxRk5g
+         9RuEFOIGqnPymaF+boMWNtUdV9EgvAPe64II9Y41NfHmhMNAmt7QV2kyObNRdtxCGl
+         rSQtdH0QfdFjUZWGS9cfykfyIjhRk6swxt44kiMSBchWQsy0z2ZvCuJ3b+7x9Fwc0a
+         qki+hn5DCkIzw==
+From:   Mark Brown <broonie@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        satya priya <skakit@codeaurora.org>
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        rnayak@codeaurora.org, Liam Girdwood <lgirdwood@gmail.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        kgunda@codeaurora.org
+Subject: Re: [PATCH V3 0/5] Add PM7325/PM8350C/PMR735A regulator support
+Date:   Thu,  1 Apr 2021 21:43:17 +0100
+Message-Id: <161730974895.25526.12885475666064429104.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <1617192339-3760-1-git-send-email-skakit@codeaurora.org>
+References: <1617192339-3760-1-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210401204022.GI2696@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 01:40:22PM -0700, Paul E. McKenney wrote:
-> On Thu, Apr 01, 2021 at 10:31:12PM +0200, Frederic Weisbecker wrote:
-> > On Thu, Apr 01, 2021 at 11:51:16AM -0700, Paul E. McKenney wrote:
-> > > On Thu, Apr 01, 2021 at 03:26:02PM +0200, Frederic Weisbecker wrote:
-> > > > Grepping for "CPU" on lscpu output isn't always successful, depending
-> > > > on the local language setting. As a result, the build can be aborted
-> > > > early with:
-> > > > 
-> > > > 	"make: the '-j' option requires a positive integer argument"
-> > > > 
-> > > > Prefer a more generic solution.
-> > > > 
-> > > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > > 
-> > > Good catch, applied, thank you!
-> > > 
-> > > There is a similar construct in kvm-remote.sh, so I added a similar
-> > > fix to your patch.
-> > > 
-> > > But what about this in functions.sh?
-> > > 
-> > > nt="`lscpu | grep '^NUMA node0' | sed -e 's/^[^,]*,\([0-9]*\),.*$/\1/'`"
-> > > 
-> > > I am guessing that "node0" is human-language-independent, but is "NUMA"?
-> > 
-> > I thought they wouldn't bother translating that, but they did...
-> > 
-> >     NUMA node0 CPU(s):               0-7
-> > 
-> > becomes:
-> > 
-> >     Nœud NUMA 0 de processeur(s) : 0-7
-> > 
-> > Not sure about the best way to fix it.
+On Wed, 31 Mar 2021 17:35:34 +0530, satya priya wrote:
+> This series is dependent on below series which adds DT files for SC7280 SoC
+> https://lore.kernel.org/patchwork/project/lkml/list/?series=488871
 > 
-> The rude and crude fix is for the scripts to force the local language
-> to English.  ;-)
+> satya priya (5):
+>   regulator: qcom-rpmh: Add pmic5_ftsmps520 buck
+>   regulator: qcom-rpmh: Add PM7325/PMR735A regulator support
+>   arm64: dts: qcom: sc7280: Add RPMh regulators for sc7280-idp
+>   dt-bindings: regulator: Convert RPMh regulator bindings to YAML
+>   dt-bindings: regulator: Add compatibles for PM7325/PMR735A
+> 
+> [...]
 
-I don't have a better answer :o)
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+
+Thanks!
+
+[1/5] regulator: qcom-rpmh: Add pmic5_ftsmps520 buck
+      commit: 9405b4f7fa78b55fc83e5b5258f00e651aed5734
+[2/5] regulator: qcom-rpmh: Add PM7325/PMR735A regulator support
+      commit: c4e5aa3dbee56bde70dfa03debc49bf9494fb3d9
+[3/5] arm64: dts: qcom: sc7280: Add RPMh regulators for sc7280-idp
+      (no commit info)
+[4/5] dt-bindings: regulator: Convert RPMh regulator bindings to YAML
+      commit: 7255f98d08c73f0bcf1397d3060fdb776d7aa147
+[5/5] dt-bindings: regulator: Add compatibles for PM7325/PMR735A
+      commit: be724fd5b60dd083c8e39a4a2652e5017d2f7a20
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
