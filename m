@@ -2,64 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 605653513DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 12:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA333513A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 12:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234054AbhDAKpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 06:45:04 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14667 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234062AbhDAKof (ORCPT
+        id S234014AbhDAKbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 06:31:49 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2756 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233834AbhDAKbj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 06:44:35 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F9zlv6ZfRzmcYy;
-        Thu,  1 Apr 2021 18:23:07 +0800 (CST)
-Received: from huawei.com (10.175.103.91) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Thu, 1 Apr 2021
- 18:25:43 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>
-CC:     <mchehab@kernel.org>, <bparrot@ti.com>
-Subject: [PATCH -next] media: ti-vpe: csc: remove redundant dev_err call in csc_create()
-Date:   Thu, 1 Apr 2021 18:28:50 +0800
-Message-ID: <20210401102850.1555368-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 1 Apr 2021 06:31:39 -0400
+Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4F9znv0bmMz685Dg;
+        Thu,  1 Apr 2021 18:24:51 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Thu, 1 Apr 2021 12:31:37 +0200
+Received: from localhost (10.47.80.95) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Thu, 1 Apr 2021
+ 11:31:36 +0100
+Date:   Thu, 1 Apr 2021 11:30:15 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Mugilraj Dhavachelvan <dmugil2000@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] iio: adc: bcm_iproc_adc: Use %s and __func__
+Message-ID: <20210401113015.00006b70@Huawei.com>
+In-Reply-To: <CAHp75VfgL0KW0fetgE3NuBb4itMK1oY+yLmr1xDYkn390hCscg@mail.gmail.com>
+References: <20210401062517.28832-1-dmugil2000@gmail.com>
+        <CAHp75VfgL0KW0fetgE3NuBb4itMK1oY+yLmr1xDYkn390hCscg@mail.gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.80.95]
+X-ClientProxiedBy: lhreml715-chm.china.huawei.com (10.201.108.66) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is an error message within devm_ioremap_resource
-already, so remove the dev_err call to avoid redundant
-error message.
+On Thu, 1 Apr 2021 12:24:50 +0300
+Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/media/platform/ti-vpe/csc.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+> On Thu, Apr 1, 2021 at 9:27 AM Mugilraj Dhavachelvan
+> <dmugil2000@gmail.com> wrote:
+> >
+> > Change function's name to %s and __func__ to fix checkpatch.pl errors.  
+> 
+> No, just drop the __func__ completely. First of all, we have a device
+> name, and uniqueness of the messages in the driver should guarantee
+> easy findings. Second, specific to _dbg() variants, with enabled
+> Dynamic Debug it can be chosen at run time!
+> 
+> I recommend going through all drivers and drop __func__ near to
+> dev_dbg() and pr_debug().
+> 
 
-diff --git a/drivers/media/platform/ti-vpe/csc.c b/drivers/media/platform/ti-vpe/csc.c
-index f4e0cf72d1cf..ff15bc589f1b 100644
---- a/drivers/media/platform/ti-vpe/csc.c
-+++ b/drivers/media/platform/ti-vpe/csc.c
-@@ -267,10 +267,8 @@ struct csc_data *csc_create(struct platform_device *pdev, const char *res_name)
- 	}
- 
- 	csc->base = devm_ioremap_resource(&pdev->dev, csc->res);
--	if (IS_ERR(csc->base)) {
--		dev_err(&pdev->dev, "failed to ioremap\n");
-+	if (IS_ERR(csc->base))
- 		return ERR_CAST(csc->base);
--	}
- 
- 	return csc;
- }
--- 
-2.25.1
+Agreed.  Though beware that some maintainers will count this
+as noise and get grumpy.
 
+I'm fine with such patches for IIO.
+
+Jonathan
