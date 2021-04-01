@@ -2,171 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCDD5350F8A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 159A0350F77
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233658AbhDAGyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 02:54:04 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:15426 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233227AbhDAGx1 (ORCPT
+        id S233519AbhDAGwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 02:52:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233470AbhDAGwi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 02:53:27 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F9v3s4GbQzjXhm;
-        Thu,  1 Apr 2021 14:51:37 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 1 Apr 2021 14:53:14 +0800
-From:   Meng Yu <yumeng18@huawei.com>
-To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>,
-        <luiz.dentz@gmail.com>
-CC:     <linux-bluetooth@vger.kernel.org>, <wangzhou1@hisilicon.com>,
-        <yumeng18@huawei.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] Bluetooth: Coding style fix
-Date:   Thu, 1 Apr 2021 14:50:39 +0800
-Message-ID: <1617259839-31383-3-git-send-email-yumeng18@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1617259839-31383-1-git-send-email-yumeng18@huawei.com>
-References: <1617259839-31383-1-git-send-email-yumeng18@huawei.com>
+        Thu, 1 Apr 2021 02:52:38 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F45CC06178A
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 23:52:22 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id f17so558860plr.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 23:52:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=b9ryqUXjlQ30IT8LdTW/JmPrwJayz7Foc4p5htGFNa0=;
+        b=BVuxWfkvBVEvDB2Lpc+ukiSEQ2sj9+O7sLQZDIriWuhcrEcXX/nXmqIN1of31iR4TB
+         lyhAFPc96fmbwROpGn4jt/GHL9j34UoXIu82i43V9EoV/svRyloI7pJya+iH8DijSd5n
+         ftiGRVDHqxjMGX7NAibmk75+hSqVyopuTc41Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=b9ryqUXjlQ30IT8LdTW/JmPrwJayz7Foc4p5htGFNa0=;
+        b=Fg8I764iG6R2QjFycJMaZnZM/nMbahnDAF21wTTbZsM1mClq/r0eRodTRJtYN+oQ3S
+         rwQbaUv2oYxFo2EPszgJY2FATedK5PFVhJ3emk/nPJM2rO80gTEM0OmyJ6qwRF7PY7z7
+         l8LxINdjKnGJVpEruuOYYMshHyYYvTPkpY/myhflRGTtOx8it4n8Lt0nSYB7bOhFnGTv
+         JZ21Npj0uqT+hCzHHXFeawEoJ5wP8WbiuucI3uvM6i1mh9OgRpzEhtvP3G8lPKA1/Dqj
+         vAopTPAMDC5hKRgfSjKRHdMTETlRw8EFhfXJspT7X6vmCdmScrnzC9d1eCIIL1OKqQmi
+         iQjA==
+X-Gm-Message-State: AOAM533Pr+Z6YL/GUqvUTgcOdrSF7Qfv77gwN5EPTu6CJDo6h85jjnED
+        mKVlm5ce2WQFQe7+R1gPWCwJ1A==
+X-Google-Smtp-Source: ABdhPJwHJUQYxPWKm0HOzv69evNZgW/7ovx9+48lWgs2MIQnBKJubEUmheoM6gqLZ5fsPNAWKO7Zag==
+X-Received: by 2002:a17:902:c317:b029:e4:aecd:8539 with SMTP id k23-20020a170902c317b02900e4aecd8539mr6758734plx.61.1617259941703;
+        Wed, 31 Mar 2021 23:52:21 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id x1sm4258456pfj.209.2021.03.31.23.52.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 23:52:21 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 23:52:20 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
+        Adam Nichols <adam@grimm-co.com>,
+        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] sysfs: Unconditionally use vmalloc for buffer
+Message-ID: <202103312335.25EA9650@keescook>
+References: <20210401022145.2019422-1-keescook@chromium.org>
+ <YGVXSFMlvX4RQI8n@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YGVXSFMlvX4RQI8n@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1. Add space when needed;
-2. Block comments style fix;
-3. Move open brace '{' following function definitions to the next line;
-4. Remove unnecessary braces '{}' for single statement blocks.
+On Thu, Apr 01, 2021 at 07:16:56AM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Mar 31, 2021 at 07:21:45PM -0700, Kees Cook wrote:
+> > The sysfs interface to seq_file continues to be rather fragile
+> > (seq_get_buf() should not be used outside of seq_file), as seen with
+> > some recent exploits[1]. Move the seq_file buffer to the vmap area
+> > (while retaining the accounting flag), since it has guard pages that
+> > will catch and stop linear overflows. This seems justified given that
+> > sysfs's use of seq_file already uses kvmalloc(), is almost always using
+> > a PAGE_SIZE or larger allocation, has normally short-lived allocations,
+> > and is not normally on a performance critical path.
+> > 
+> > Once seq_get_buf() has been removed (and all sysfs callbacks using
+> > seq_file directly), this change can also be removed.
+> > 
+> > [1] https://blog.grimm-co.com/2021/03/new-old-bugs-in-linux-kernel.html
+> > 
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> > v3:
+> > - Limit to only sysfs (instead of all of seq_file).
+> > v2: https://lore.kernel.org/lkml/20210315174851.622228-1-keescook@chromium.org/
+> > v1: https://lore.kernel.org/lkml/20210312205558.2947488-1-keescook@chromium.org/
+> > ---
+> >  fs/sysfs/file.c | 23 +++++++++++++++++++++++
+> >  1 file changed, 23 insertions(+)
+> > 
+> > diff --git a/fs/sysfs/file.c b/fs/sysfs/file.c
+> > index 9aefa7779b29..70e7a450e5d1 100644
+> > --- a/fs/sysfs/file.c
+> > +++ b/fs/sysfs/file.c
+> > @@ -16,6 +16,7 @@
+> >  #include <linux/mutex.h>
+> >  #include <linux/seq_file.h>
+> >  #include <linux/mm.h>
+> > +#include <linux/vmalloc.h>
+> >  
+> >  #include "sysfs.h"
+> >  
+> > @@ -32,6 +33,25 @@ static const struct sysfs_ops *sysfs_file_ops(struct kernfs_node *kn)
+> >  	return kobj->ktype ? kobj->ktype->sysfs_ops : NULL;
+> >  }
+> >  
+> > +/*
+> > + * To be proactively defensive against sysfs show() handlers that do not
+> > + * correctly stay within their PAGE_SIZE buffer, use the vmap area to gain
+> > + * the trailing guard page which will stop linear buffer overflows.
+> > + */
+> > +static void *sysfs_kf_seq_start(struct seq_file *sf, loff_t *ppos)
+> > +{
+> > +	struct kernfs_open_file *of = sf->private;
+> > +	struct kernfs_node *kn = of->kn;
+> > +
+> > +	WARN_ON_ONCE(sf->buf);
+> 
+> How can buf ever not be NULL?  And if it is, we will leak memory in the
+> next line so we shouldn't have _ONCE, we should always know, but not
+> rebooting the machine would be nice.
 
-Signed-off-by: Meng Yu <yumeng18@huawei.com>
----
- net/bluetooth/6lowpan.c     | 3 +--
- net/bluetooth/hci_debugfs.c | 8 ++++----
- net/bluetooth/hci_event.c   | 2 +-
- net/bluetooth/hci_request.c | 6 ++----
- net/bluetooth/l2cap_core.c  | 5 +++--
- 5 files changed, 11 insertions(+), 13 deletions(-)
+It should never be possible. I did this because seq_file has some
+unusual buf allocation patterns in the kernel, and I liked the cheap
+leak check. I use _ONCE because spewing endlessly doesn't help most
+cases. And if you want to trigger it again, you don't have to reboot:
+https://www.kernel.org/doc/html/latest/admin-guide/clearing-warn-once.html
 
-diff --git a/net/bluetooth/6lowpan.c b/net/bluetooth/6lowpan.c
-index 19f7e42..97617d0 100644
---- a/net/bluetooth/6lowpan.c
-+++ b/net/bluetooth/6lowpan.c
-@@ -205,8 +205,7 @@ static inline struct lowpan_peer *peer_lookup_dst(struct lowpan_btle_dev *dev,
- 		}
- 	}
- 
--	/* use the neighbour cache for matching addresses assigned by SLAAC
--	*/
-+	/* use the neighbour cache for matching addresses assigned by SLAAC */
- 	neigh = __ipv6_neigh_lookup(dev->netdev, nexthop);
- 	if (neigh) {
- 		list_for_each_entry_rcu(peer, &dev->peers, list) {
-diff --git a/net/bluetooth/hci_debugfs.c b/net/bluetooth/hci_debugfs.c
-index 1a0ab58..47f4f21 100644
---- a/net/bluetooth/hci_debugfs.c
-+++ b/net/bluetooth/hci_debugfs.c
-@@ -274,7 +274,7 @@ static ssize_t use_debug_keys_read(struct file *file, char __user *user_buf,
- 	struct hci_dev *hdev = file->private_data;
- 	char buf[3];
- 
--	buf[0] = hci_dev_test_flag(hdev, HCI_USE_DEBUG_KEYS) ? 'Y': 'N';
-+	buf[0] = hci_dev_test_flag(hdev, HCI_USE_DEBUG_KEYS) ? 'Y' : 'N';
- 	buf[1] = '\n';
- 	buf[2] = '\0';
- 	return simple_read_from_buffer(user_buf, count, ppos, buf, 2);
-@@ -292,7 +292,7 @@ static ssize_t sc_only_mode_read(struct file *file, char __user *user_buf,
- 	struct hci_dev *hdev = file->private_data;
- 	char buf[3];
- 
--	buf[0] = hci_dev_test_flag(hdev, HCI_SC_ONLY) ? 'Y': 'N';
-+	buf[0] = hci_dev_test_flag(hdev, HCI_SC_ONLY) ? 'Y' : 'N';
- 	buf[1] = '\n';
- 	buf[2] = '\0';
- 	return simple_read_from_buffer(user_buf, count, ppos, buf, 2);
-@@ -428,7 +428,7 @@ static ssize_t ssp_debug_mode_read(struct file *file, char __user *user_buf,
- 	struct hci_dev *hdev = file->private_data;
- 	char buf[3];
- 
--	buf[0] = hdev->ssp_debug_mode ? 'Y': 'N';
-+	buf[0] = hdev->ssp_debug_mode ? 'Y' : 'N';
- 	buf[1] = '\n';
- 	buf[2] = '\0';
- 	return simple_read_from_buffer(user_buf, count, ppos, buf, 2);
-@@ -742,7 +742,7 @@ static ssize_t force_static_address_read(struct file *file,
- 	struct hci_dev *hdev = file->private_data;
- 	char buf[3];
- 
--	buf[0] = hci_dev_test_flag(hdev, HCI_FORCE_STATIC_ADDR) ? 'Y': 'N';
-+	buf[0] = hci_dev_test_flag(hdev, HCI_FORCE_STATIC_ADDR) ? 'Y' : 'N';
- 	buf[1] = '\n';
- 	buf[2] = '\0';
- 	return simple_read_from_buffer(user_buf, count, ppos, buf, 2);
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 341c8ce..593eafa 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -5891,7 +5891,7 @@ static void hci_le_remote_conn_param_req_evt(struct hci_dev *hdev,
- 			params->conn_latency = latency;
- 			params->supervision_timeout = timeout;
- 			store_hint = 0x01;
--		} else{
-+		} else {
- 			store_hint = 0x00;
- 		}
- 
-diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
-index 8ace5d3..6cd9d41 100644
---- a/net/bluetooth/hci_request.c
-+++ b/net/bluetooth/hci_request.c
-@@ -1647,9 +1647,8 @@ static u8 create_default_scan_rsp_data(struct hci_dev *hdev, u8 *ptr)
- {
- 	u8 scan_rsp_len = 0;
- 
--	if (hdev->appearance) {
-+	if (hdev->appearance)
- 		scan_rsp_len = append_appearance(hdev, ptr, scan_rsp_len);
--	}
- 
- 	return append_local_name(hdev, ptr, scan_rsp_len);
- }
-@@ -1667,9 +1666,8 @@ static u8 create_instance_scan_rsp_data(struct hci_dev *hdev, u8 instance,
- 
- 	instance_flags = adv_instance->flags;
- 
--	if ((instance_flags & MGMT_ADV_FLAG_APPEARANCE) && hdev->appearance) {
-+	if ((instance_flags & MGMT_ADV_FLAG_APPEARANCE) && hdev->appearance)
- 		scan_rsp_len = append_appearance(hdev, ptr, scan_rsp_len);
--	}
- 
- 	memcpy(&ptr[scan_rsp_len], adv_instance->scan_rsp_data,
- 	       adv_instance->scan_rsp_len);
-diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
-index ccfe8ad..6e10cb8 100644
---- a/net/bluetooth/l2cap_core.c
-+++ b/net/bluetooth/l2cap_core.c
-@@ -652,7 +652,7 @@ void l2cap_chan_del(struct l2cap_chan *chan, int err)
- 	if (test_bit(CONF_NOT_COMPLETE, &chan->conf_state))
- 		return;
- 
--	switch(chan->mode) {
-+	switch (chan->mode) {
- 	case L2CAP_MODE_BASIC:
- 		break;
- 
-@@ -7770,7 +7770,8 @@ static struct l2cap_conn *l2cap_conn_add(struct hci_conn *hcon)
- 	return conn;
- }
- 
--static bool is_valid_psm(u16 psm, u8 dst_type) {
-+static bool is_valid_psm(u16 psm, u8 dst_type)
-+{
- 	if (!psm)
- 		return false;
- 
+> 
+> > +	sf->buf = __vmalloc(kn->attr.size, GFP_KERNEL_ACCOUNT);
+> > +	if (!sf->buf)
+> > +		return ERR_PTR(-ENOMEM);
+> > +	sf->size = kn->attr.size;
+> > +
+> > +	return NULL + !*ppos;
+> > +}
+> 
+> Will this also cause the vmalloc fragmentation/abuse that others have
+> mentioned as userspace can trigger this?
+
+If I understood the concern correctly, it was about it being a risk for
+doing it for all seq_file uses. This version confines the changes to only
+sysfs seq_file uses.
+
+> And what code frees it?
+
+The existing hooks to seq_release() handle this already. This kind of
+"preallocation" of the seq_file buffer is done in a few places already
+(hence my desire for the sanity checking WARN lest future seq_file
+semantics change).
+
 -- 
-2.8.1
-
+Kees Cook
