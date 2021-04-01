@@ -2,118 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D795351ED3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7996D351EDB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237884AbhDASrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:47:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52880 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239234AbhDASZi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:25:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37CFF60201;
-        Thu,  1 Apr 2021 18:25:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617301538;
-        bh=j5+Gt7YrskSy16RAzvRfGLikHQTlG4Rfz+SErDOkJ28=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jdXtqBV5YMaCOoxJsRTulppNVjInfNl6hw0ys7+jFGMlNRK0T/68rvgWFKHPTLqUf
-         8tVUa0YByeIwwoaBQCRlFnMWruiUxdR/m+CKMKPALghW1DGEH59CwUUiUodMjh5ZWV
-         wrakNHdIa5EGpQTljtJZKsv3qbjIf3IuFfxE22y8=
-Date:   Thu, 1 Apr 2021 20:25:36 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        hui.wang@canonical.com, sanyog.r.kale@intel.com,
-        rander.wang@linux.intel.com, bard.liao@intel.com
-Subject: Re: [PATCH 1/2] soundwire: add macro to selectively change error
- levels
-Message-ID: <YGYQIJh8X2C8sW44@kroah.com>
-References: <20210331011355.14313-1-yung-chuan.liao@linux.intel.com>
- <20210331011355.14313-2-yung-chuan.liao@linux.intel.com>
- <YGV1HYL+XcVmxfQG@vkoul-mobl.Dlink>
- <0834b9fc-9b3a-1184-fed2-6f9c7e66c6fb@linux.intel.com>
- <YGX5AUQi41z52xk8@kroah.com>
- <81c6b53b-e3fb-32d0-1e99-365d87ab6524@linux.intel.com>
+        id S234414AbhDASsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:48:06 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:6500 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235887AbhDAS1S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:27:18 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 131I3vUX105386;
+        Thu, 1 Apr 2021 14:26:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : reply-to : to : cc : date : in-reply-to : references : content-type
+ : content-transfer-encoding : mime-version; s=pp1;
+ bh=T4fnw2TRi67LEfpdXplN06AKuUVnvjkqgYiFc9IZrMc=;
+ b=FOuKJG5g+2U13uazzqdu1BcuiyuYo4Cj75yLBrKdqL5QOB4BzwC/GDwCpBBN4ImNUXRP
+ XI5hd8Nn4wKk7EolYNGfNuIihiU8qVeysxYUFSGqSPk6fYZqEaiX48Kr2CjocT2L6Kri
+ wjEBbOAbKuGmx1cR0Juz8+kjAaEQf2TQYYAbyzQjLLx6MwpKBd20TuTFtC1IUrISV4hS
+ ahmSLVjVAh0T1kB/M9Pe7DU66OdgYCt1ZreirwFowAcmUIJDCtetTwkwAv6AhD8+Fq/h
+ CxBaGYC7i21hM8+9fVUtb8iFbBsUf0SBaF4o5l9YJ3m1DgyRHwPY/F3yYpb4SJ2Ooy3n cw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37ng71qjfv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 01 Apr 2021 14:26:47 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 131I5CDw112885;
+        Thu, 1 Apr 2021 14:26:47 -0400
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37ng71qjfe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 01 Apr 2021 14:26:46 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 131ICMAZ008896;
+        Thu, 1 Apr 2021 18:26:45 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma01dal.us.ibm.com with ESMTP id 37n28vqkjf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 01 Apr 2021 18:26:45 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 131IQiiU21889324
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 1 Apr 2021 18:26:44 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 71EBC7805F;
+        Thu,  1 Apr 2021 18:26:44 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D629F78063;
+        Thu,  1 Apr 2021 18:26:40 +0000 (GMT)
+Received: from jarvis.int.hansenpartnership.com (unknown [9.80.239.180])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu,  1 Apr 2021 18:26:40 +0000 (GMT)
+Message-ID: <3a5f19008b11730816143ba5d7e87e7c7605e08a.camel@linux.ibm.com>
+Subject: Re: [PATCH v1 0/3] KEYS: trusted: Introduce support for NXP
+ CAAM-based trusted keys
+From:   James Bottomley <jejb@linux.ibm.com>
+Reply-To: jejb@linux.ibm.com
+To:     Sumit Garg <sumit.garg@linaro.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        horia geanta <horia.geanta@nxp.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        aymen sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        davem <davem@davemloft.net>, kernel <kernel@pengutronix.de>,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        david <david@sigma-star.at>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        "open list, ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        LSM <linux-security-module@vger.kernel.org>
+Date:   Thu, 01 Apr 2021 11:26:39 -0700
+In-Reply-To: <CAFA6WYNd7PEcZheSYPbEmFbkkMx4dmafeYcSpMBSdNZgqz=TyQ@mail.gmail.com>
+References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
+         <CAFLxGvzWLje+_HFeb+hKNch4U1f5uypVUOuP=QrEPn_JNM+scg@mail.gmail.com>
+         <ca2a7c17-3ed0-e52f-2e2f-c0f8bbe10323@pengutronix.de>
+         <CAFLxGvwNomKOo3mQLMxYGDA8T8zN=Szpo2q5jrp4D1CaMHydWA@mail.gmail.com>
+         <f01c80a0da7cffd3115ce4e16a793a2db5cbe2ed.camel@linux.ibm.com>
+         <1777909690.136833.1617215767704.JavaMail.zimbra@nod.at>
+         <a57192d9d9a5a9a66d11b38d054a5a3a70466a4b.camel@linux.ibm.com>
+         <2034693332.137003.1617219379831.JavaMail.zimbra@nod.at>
+         <f3399480-020e-e3ca-7e7c-eec641fe5afc@pengutronix.de>
+         <CAFA6WYNd7PEcZheSYPbEmFbkkMx4dmafeYcSpMBSdNZgqz=TyQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: oZsApjl-rSYCxLO7wJFji72D7oQKevCZ
+X-Proofpoint-ORIG-GUID: _wmv2nFeFhh6NXJegczUjdX5lixyB8TD
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <81c6b53b-e3fb-32d0-1e99-365d87ab6524@linux.intel.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-04-01_09:2021-04-01,2021-04-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=818
+ malwarescore=0 phishscore=0 lowpriorityscore=0 clxscore=1015 mlxscore=0
+ suspectscore=0 adultscore=0 impostorscore=0 spamscore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103310000 definitions=main-2104010118
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 01:07:49PM -0500, Pierre-Louis Bossart wrote:
-> 
-> > > > > +#define sdw_dev_dbg_or_err(dev, is_err, fmt, ...)			\
-> > > > > +	do {								\
-> > > > > +		if (is_err)						\
-> > > > > +			dev_err(dev, fmt, __VA_ARGS__);			\
-> > > > > +		else							\
-> > > > > +			dev_dbg(dev, fmt, __VA_ARGS__);			\
-> > > > > +	} while (0)
+On Thu, 2021-04-01 at 18:50 +0530, Sumit Garg wrote:
+> On Thu, 1 Apr 2021 at 15:36, Ahmad Fatoum <a.fatoum@pengutronix.de>
+> wrote:
+> > Hello Richard,
+> > 
+> > On 31.03.21 21:36, Richard Weinberger wrote:
+> > > James,
+> > > 
+> > > ----- Ursprüngliche Mail -----
+> > > > Von: "James Bottomley" <jejb@linux.ibm.com>
+> > > > Well, yes.  For the TPM, there's a defined ASN.1 format for the
+> > > > keys:
 > > > > 
-> > > > I see a variant in sof code and now here, why not add in a
-> > > > dev_dbg_or_err() and use everywhere?
+> > > > https://git.kernel.org/pub/scm/linux/kernel/git/jejb/openssl_tpm2_engine.git/tree/tpm2-asn.h
+> > > > 
+> > > > and part of the design of the file is that it's distinguishable
+> > > > either
+> > > > in DER or PEM (by the guards) format so any crypto application
+> > > > can know
+> > > > it's dealing with a TPM key simply by inspecting the file.  I
+> > > > think you
+> > > > need the same thing for CAAM and any other format.
+> > > > 
+> > > > We're encouraging new ASN.1 formats to be of the form
+> > > > 
+> > > > SEQUENCE {
+> > > >    type   OBJECT IDENTIFIER
+> > > >    ... key specific fields ...
+> > > > }
+> > > > 
+> > > > Where you choose a defined OID to represent the key and that
+> > > > means
+> > > > every key even in DER form begins with a unique binary
+> > > > signature.
 > > > 
-> > > Good point, I hesitated back and forth on specific v. generic macro.
+> > > I like this idea.
+> > > Ahmad, what do you think?
 > > > 
-> > > The main reason why I added this macro for SoundWire is that quite a few
-> > > subsystems have their own debug functions (DRM, ACPI, etc), and I wasn't
-> > > sure if there was any appetite to add more options in
-> > > include/linux/dev_printk.h. SOF also uses a different format due to history.
+> > > That way we could also get rid off the kernel parameter and all
+> > > the fall back logic,
+> > > given that we find a way to reliable detect TEE blobs too...
 > > 
-> > It is better if those other subsystems move to using the common kernel
-> > debug functions.  Historically they were all separate, there is no good
-> > reason for them to be that way today.
+> > Sounds good to me. Sumit, your thoughts on doing this for TEE as
+> > well?
 > > 
-> > So please do not create custom subsystem debug macros like this just for
-> > this tiny set of drivers.
-> > 
-> > My bigger issue with this is that this macro is crazy.  Why do you need
-> > debugging here at all for this type of thing?  That's what ftrace is
-> > for, do not sprinkle code with "we got this return value from here!" all
-> > over the place like what this does.
 > 
-> We are not sprinkling the code all over the place with any new logs, they
-> exist already in the SoundWire code and this patch helps filter them out.
-> See e.g. patch 2/2
+> AFAIU, ASN.1 formating should be independent of trusted keys backends
+> which could be abstracted to trusted keys core layer so that every
+> backend could be plugged in seamlessly.
 > 
-> -			dev_err(&slave->dev,
-> -				"Clk Stop type =%d failed: %d\n", type, ret);
-> +			sdw_dev_dbg_or_err(&slave->dev, ret != -ENODATA,
-> +					   "Clk Stop mode %d type =%d failed: %d\n",
-> +					   mode, type, ret);
-
-You just added a debug log for no reason.
-
-That's what I was referring to :)
-
-> If you see all my recent patches they were precisely trying to avoid
-> polluting the console logs with too much information that is irrelevant from
-> most users, and making sure that when a log is provided it's uniquely
-> identifiable.
+> James,
 > 
-> There are similar macros where -EPROBE_DEFER is ignored.
+> Would it be possible to achieve this?
 
-deffered probe is a totally different beast and one that I constantly am
-ashamed I accepted into the kernel as the added complexity it has caused
-is crazy.
+I'm not quite sure what you're asking.  The saved format of the keys is
+particular to the underlying hardware.  The ASN.1 wraps this so we have
+an identifier, some useful information to help load the key (like the
+policy systemements) and then the blobs the hardware expects.
 
-> This addresses a very SoundWire-specific case where if we see a -ENODATA
-> error code (Command Ignored), we ignore it and don't report it by default.
-> We still have a rare set of cases where this -ENODATA code shows up
-> unexpectedly, possibly due to problematic reset sequences, and we want
-> developers to help track them down what causes this sequence using dynamic
-> debug.
-> 
-> I am not arguing about ftrace v. dynamic debug, and that's also partly why I
-> didn't feel comfortable expanding the generic set of debug functions.
+This makes the ASN.1 specific to the backend but having a
+distinguishing OID that allows anyone to tell which backend it needs
+from the file.
 
-Great, then don't add unneeded dev_dbg() lines :)
+So you can call the ASN.1 format that begins with the type OID, the
+"universal" format, but if you mean there should be a standard ASN.1
+format for all keys that defines all the fields then that's not
+possible because the fields after type are very specific to the
+underlying hardware.
 
-thanks,
+James
 
-greg k-h
+
