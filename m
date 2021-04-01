@@ -2,70 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5737351BBD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:11:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E873351B13
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234799AbhDASK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:10:57 -0400
-Received: from mga03.intel.com ([134.134.136.65]:59689 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236814AbhDARzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:55:20 -0400
-IronPort-SDR: k5HkxKDkn3fiAAnFHOAH/oAzAzEOXzquMlUKFpxZGurHzlr02JChBGvOT/5JrgKKB211lCh/0z
- ml1cTFX2goKA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="192320370"
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="192320370"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 10:10:25 -0700
-IronPort-SDR: g6Tse/4thvhlVozYx4wVCCtnNaYRAlvK/7I1niy9zfDmq3OAiASjMKaLEq+mR0uRh/uIzsZqqN
- JnhEabq9BCjA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="456067919"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga001.jf.intel.com with ESMTP; 01 Apr 2021 10:10:23 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id DDCB3A1; Thu,  1 Apr 2021 20:10:37 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-kernel@vger.kernel.org
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] driver core: Cast to (void *) with __force for __percpu pointer
-Date:   Thu,  1 Apr 2021 20:10:30 +0300
-Message-Id: <20210401171030.60527-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S238252AbhDASFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:05:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58115 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234521AbhDARoE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:44:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617299044;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=98iVITrp+QoQaOvmHFzYOL2p801lu1RcC2838VOSYvw=;
+        b=CZM+eGV8HtYLzfjwqLdPS+WQw0YMjjUPBst8p1g5NKB4EL+qXKip7oCBPegrsltqd6ph++
+        FL+jZj+cAW0GTp6Bus0oS9H55N2/3zSNAoHScGJKP3I3wjYsdfV2PKwQBPK3nXFDjSA7VP
+        6vbbnVyRZmgBBAXeSBbQbN27ga7xAbE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-127-Y_Ye3OZyN3qad7yzaRZVwg-1; Thu, 01 Apr 2021 13:13:05 -0400
+X-MC-Unique: Y_Ye3OZyN3qad7yzaRZVwg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1BEDC8189C8;
+        Thu,  1 Apr 2021 17:13:03 +0000 (UTC)
+Received: from starship (unknown [10.35.206.58])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EC7015D6D1;
+        Thu,  1 Apr 2021 17:12:59 +0000 (UTC)
+Message-ID: <889f4565fb9b86e77ed22da6cbbe649311744f16.camel@redhat.com>
+Subject: Re: [PATCH 1/4] KVM: x86: pending exceptions must not be blocked by
+ an injected event
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Jim Mattson <jmattson@google.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Sean Christopherson <seanjc@google.com>
+Date:   Thu, 01 Apr 2021 20:12:58 +0300
+In-Reply-To: <4f6a321a-bc44-fe2f-37f5-6b22bc7fae1c@redhat.com>
+References: <20210401143817.1030695-1-mlevitsk@redhat.com>
+         <20210401143817.1030695-2-mlevitsk@redhat.com>
+         <4f6a321a-bc44-fe2f-37f5-6b22bc7fae1c@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sparse is not happy:
+On Thu, 2021-04-01 at 19:05 +0200, Paolo Bonzini wrote:
+> On 01/04/21 16:38, Maxim Levitsky wrote:
+> > Injected interrupts/nmi should not block a pending exception,
+> > but rather be either lost if nested hypervisor doesn't
+> > intercept the pending exception (as in stock x86), or be delivered
+> > in exitintinfo/IDT_VECTORING_INFO field, as a part of a VMexit
+> > that corresponds to the pending exception.
+> > 
+> > The only reason for an exception to be blocked is when nested run
+> > is pending (and that can't really happen currently
+> > but still worth checking for).
+> > 
+> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> 
+> This patch would be an almost separate bugfix, right?  I am going to 
+> queue this, but a confirmation would be helpful.
 
-  drivers/base/devres.c:1230:9: warning: cast removes address space '__percpu' of expression
+Yes, this patch doesn't depend on anything else.
+Thanks!
+Best regards,
+	Maxim Levitsky
 
-Use __force attribute to make it happy.
+> 
+> Paolo
+> 
+> > ---
+> >   arch/x86/kvm/svm/nested.c |  8 +++++++-
+> >   arch/x86/kvm/vmx/nested.c | 10 ++++++++--
+> >   2 files changed, 15 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> > index 8523f60adb92..34a37b2bd486 100644
+> > --- a/arch/x86/kvm/svm/nested.c
+> > +++ b/arch/x86/kvm/svm/nested.c
+> > @@ -1062,7 +1062,13 @@ static int svm_check_nested_events(struct kvm_vcpu *vcpu)
+> >   	}
+> >   
+> >   	if (vcpu->arch.exception.pending) {
+> > -		if (block_nested_events)
+> > +		/*
+> > +		 * Only a pending nested run can block a pending exception.
+> > +		 * Otherwise an injected NMI/interrupt should either be
+> > +		 * lost or delivered to the nested hypervisor in the EXITINTINFO
+> > +		 * vmcb field, while delivering the pending exception.
+> > +		 */
+> > +		if (svm->nested.nested_run_pending)
+> >                           return -EBUSY;
+> >   		if (!nested_exit_on_exception(svm))
+> >   			return 0;
+> > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> > index fd334e4aa6db..c3ba842fc07f 100644
+> > --- a/arch/x86/kvm/vmx/nested.c
+> > +++ b/arch/x86/kvm/vmx/nested.c
+> > @@ -3806,9 +3806,15 @@ static int vmx_check_nested_events(struct kvm_vcpu *vcpu)
+> >   
+> >   	/*
+> >   	 * Process any exceptions that are not debug traps before MTF.
+> > +	 *
+> > +	 * Note that only a pending nested run can block a pending exception.
+> > +	 * Otherwise an injected NMI/interrupt should either be
+> > +	 * lost or delivered to the nested hypervisor in the IDT_VECTORING_INFO,
+> > +	 * while delivering the pending exception.
+> >   	 */
+> > +
+> >   	if (vcpu->arch.exception.pending && !vmx_pending_dbg_trap(vcpu)) {
+> > -		if (block_nested_events)
+> > +		if (vmx->nested.nested_run_pending)
+> >   			return -EBUSY;
+> >   		if (!nested_vmx_check_exception(vcpu, &exit_qual))
+> >   			goto no_vmexit;
+> > @@ -3825,7 +3831,7 @@ static int vmx_check_nested_events(struct kvm_vcpu *vcpu)
+> >   	}
+> >   
+> >   	if (vcpu->arch.exception.pending) {
+> > -		if (block_nested_events)
+> > +		if (vmx->nested.nested_run_pending)
+> >   			return -EBUSY;
+> >   		if (!nested_vmx_check_exception(vcpu, &exit_qual))
+> >   			goto no_vmexit;
+> > 
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/base/devres.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/base/devres.c b/drivers/base/devres.c
-index fa2cdb250af4..8746f2212781 100644
---- a/drivers/base/devres.c
-+++ b/drivers/base/devres.c
-@@ -1228,6 +1228,6 @@ EXPORT_SYMBOL_GPL(__devm_alloc_percpu);
- void devm_free_percpu(struct device *dev, void __percpu *pdata)
- {
- 	WARN_ON(devres_destroy(dev, devm_percpu_release, devm_percpu_match,
--			       (void *)pdata));
-+			       (__force void *)pdata));
- }
- EXPORT_SYMBOL_GPL(devm_free_percpu);
--- 
-2.30.2
 
