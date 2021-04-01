@@ -2,96 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC49351050
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 09:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A7D2351052
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 09:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233376AbhDAHqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 03:46:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39482 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233327AbhDAHqH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 03:46:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6B7C6101E;
-        Thu,  1 Apr 2021 07:46:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617263166;
-        bh=AQWEF0EII9igzQR3BAdlFeDDeBGdVba7SzCII5XIQhA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=e6q8Y4yV3Q7XxrDJFHPw2EIYwQnA37Ph59gl2wB3GXdFobCzk6NawPM/FBxKuRemW
-         mODPw3Z+XB5a1eZwiKVcZBPPyigsdz799nOfpj6pHRdnQ4J4SImvmJcCYP/EF8tjH5
-         oNxteu+W44MUHwTkG3zrqH/4bMy5gT5SL/Sehmsj4ZjsYj2Orn/IeZtTUQT29jGgHU
-         e550g5n2HYMk6mB2fNr4eVqghy+PrvsvsdwOdngtUvSGxSl5V7turD5Sz8xr+YkulE
-         Tvt1KD2awoCE3lijCTmnsWYxyrM1joHTqUmtwz9RoyYlaI0q86c8HxjOVf10jZngib
-         pyWyVWM51pl7g==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lRs1j-0003gX-Rt; Thu, 01 Apr 2021 09:46:03 +0200
-Date:   Thu, 1 Apr 2021 09:46:03 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Oliver Neukum <oneukum@suse.com>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/4] USB: serial: add support for multi-interface
- functions
-Message-ID: <YGV6O5jycIj9Nv9Z@hovoldconsulting.com>
-References: <20210330143820.9103-1-johan@kernel.org>
- <20210330143820.9103-4-johan@kernel.org>
- <e0b2984e7de0287c5811a10faaac4d5d6d7d91ef.camel@suse.com>
- <YGNCIT1ocatZ3V3/@hovoldconsulting.com>
- <e4d3d21cdfe94068c76ceb4ba38630d76fa9418c.camel@suse.com>
- <3ae68552f3c689c23cbf2573772239c00e2c94be.camel@suse.com>
+        id S232310AbhDAHsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 03:48:08 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:53726 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229612AbhDAHrj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 03:47:39 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1317i673030903;
+        Thu, 1 Apr 2021 07:47:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=2bcovUiEvqLT3u5u4Mm/FOWPoWqn+P5taGkkF1I4kq4=;
+ b=tm8X6D86+wim7J4xB4euCtAUJDXPhNsPcr4ewc4uaX1h34LkBUEtqpJQP3oBeMOHNT/J
+ sS3FBIjTTnonJ5I4MQbZB0RLvVp2PoMkqRkvEOH92BVSM3yOvpuXi2h/eSwUObPGrMLJ
+ i5+ugOzV+dltP4tdCq2TUvI+FdlcJGBbYZW7pTO8xIm00bbum+n4HnkZQVc83J3R42gD
+ yKOGwFDadkZBiaZRokOwcGRlXCRymfsjyuvhSP2a7EjzR4ogKX3Wb8r0+5ID/5c03P02
+ aSp/AfDija/Qr4W2n4ok/IApAG5Cwj5QJNelCXUBJxSP8wO6AhH7dWyCKDnk5SmZzeAF xg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 37n2akgu0v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 01 Apr 2021 07:47:29 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1317fhsC181366;
+        Thu, 1 Apr 2021 07:47:28 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 37n2arwn28-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 01 Apr 2021 07:47:28 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 1317lQ4e016493;
+        Thu, 1 Apr 2021 07:47:26 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 01 Apr 2021 00:47:26 -0700
+Date:   Thu, 1 Apr 2021 10:47:19 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
+        johan@kernel.org, elder@kernel.org, gregkh@linuxfoundation.org
+Subject: Re: [PATCH -next v2] staging: greybus: camera: Switch to
+ memdup_user_nul()
+Message-ID: <20210401074719.GP2065@kadam>
+References: <20210401031752.2861248-1-yangyingliang@huawei.com>
+ <20210401074332.GO2065@kadam>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3ae68552f3c689c23cbf2573772239c00e2c94be.camel@suse.com>
+In-Reply-To: <20210401074332.GO2065@kadam>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9940 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
+ suspectscore=0 bulkscore=0 mlxscore=0 adultscore=0 malwarescore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103310000 definitions=main-2104010053
+X-Proofpoint-ORIG-GUID: hWVRwZENoBwvIUFAvOrohnWO9uz3lIkC
+X-Proofpoint-GUID: hWVRwZENoBwvIUFAvOrohnWO9uz3lIkC
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9940 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0 phishscore=0
+ bulkscore=0 adultscore=0 clxscore=1015 malwarescore=0 priorityscore=1501
+ suspectscore=0 spamscore=0 mlxlogscore=999 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
+ definitions=main-2104010053
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 01:21:15PM +0200, Oliver Neukum wrote:
-> Am Mittwoch, den 31.03.2021, 09:08 +0200 schrieb Oliver Neukum:
-> > Am Dienstag, den 30.03.2021, 17:22 +0200 schrieb Johan Hovold:
-> > > On Tue, Mar 30, 2021 at 04:44:32PM +0200, Oliver Neukum wrote:
-> > > > Am Dienstag, den 30.03.2021, 16:38 +0200 schrieb Johan Hovold:
-> > > > > @@ -1115,6 +1161,8 @@ static void usb_serial_disconnect(struct usb_interface *interface)
-> > > > >         if (serial->type->disconnect)
-> > > > >                 serial->type->disconnect(serial);
-> > > > >  
-> > > > > +       release_sibling(serial, interface);
-> > > > > +
-> > > > >         /* let the last holder of this object cause it to be cleaned up */
-> > > > >         usb_serial_put(serial);
-> > > > >         dev_info(dev, "device disconnected\n");
-> > > > 
-> > > > Hi,
-> > > > 
-> > > > does this assume you are called for the original interface first?
-> > > 
-> > > No, I handle either interface being unbound first (e.g. see
-> > > release_sibling()).
-> > > 
-> > > > I am afraid that is an assumption you cannot make. In fact, if somebody
-> > > > is doing odd things with sysfs you cannot even assume both will see a
-> > > > disconnect()
-> > > 
-> > > Right, but disconnect() will still be called also for the sibling
-> > > interface as part of release_sibling() above.
+On Thu, Apr 01, 2021 at 10:43:32AM +0300, Dan Carpenter wrote:
+> On Thu, Apr 01, 2021 at 11:17:52AM +0800, Yang Yingliang wrote:
+> > Use memdup_user_nul() helper instead of open-coding to
+> > simplify the code.
 > > 
-> > OK, sorry I overlooked that.
-> 
-> Hi,
-> 
-> on the third hand, the more I look at this, would you mind putting
-> sibling_release() with a modified name into usbcore? This functionality
-> is not limited to serial drivers. btusb needs it; cdc-acm needs it;
-> usbaudio neds it. We have code duplication.
+> > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> > ---
+> >  drivers/staging/greybus/camera.c | 13 +++----------
+> >  1 file changed, 3 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/drivers/staging/greybus/camera.c b/drivers/staging/greybus/camera.c
+> > index b570e13394ac..2ecdc1bc5092 100644
+> > --- a/drivers/staging/greybus/camera.c
+> > +++ b/drivers/staging/greybus/camera.c
+> > @@ -1120,16 +1120,9 @@ static ssize_t gb_camera_debugfs_write(struct file *file,
+> >  	if (len > 1024)
+> >  		return -EINVAL;
+> >  
+> > -	kbuf = kmalloc(len + 1, GFP_KERNEL);
+> > -	if (!kbuf)
+> > -		return -ENOMEM;
+> > -
+> > -	if (copy_from_user(kbuf, buf, len)) {
+> > -		ret = -EFAULT;
+> > -		goto done;
+> > -	}
+> > -
+> > -	kbuf[len] = '\0';
+> > +	kbuf = memdup_user_nul(buf, len);
+> > +	if (IS_ERR(kbuf))
+> > +		return PTR_ERR(kbuf);;
+>                                     ^^
+> There is an extra semi-colon here.  Checkpatch actually catches this
+> sort of typo.
 
-Tell me about it. ;) Unfortunately, drivers all tend to handle this
-slightly different, for example, using a disconnected flag, some claim
-more than one other interface, others look like they may be using their
-interface data as a flag for other purposes, etc.
+So when someone makes a typo like this, my response is:
 
-At some point we could unify all this but until then I don't think
-putting only half of an interface into core makes much sense.
+1) Let's add this to checkpatch (turns out it was already done)
+2) Let's grep the kernel and fix the other instances.  The command would
+be something like: git grep ';;$' | grep '\.c:'
 
-Johan
+regards,
+dan carpenter
+
