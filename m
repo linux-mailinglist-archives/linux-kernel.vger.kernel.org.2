@@ -2,312 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EF0F351D92
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56823351D95
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240122AbhDAS3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:29:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58872 "EHLO
+        id S240187AbhDAS3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:29:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32980 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238318AbhDASGE (ORCPT
+        by vger.kernel.org with ESMTP id S235277AbhDASHO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:06:04 -0400
+        Thu, 1 Apr 2021 14:07:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617300364;
+        s=mimecast20190719; t=1617300433;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=hLVqt2QYW6TOLsN96NJCLqj6SvvzzFLG9Bs0zwK5yJM=;
-        b=ArLx0dCjFpc16YEACH+UDdrjoV6iz4EsigXCGK4Yxktwc2Z8lBfDy7dFwX8Cqx63a9BDhQ
-        SnEcvuj4xuOKWamAzzEzamOae9dnXtv3ce8FHIzI1n+lSFJuhWBNax7qyKOtbJBi+d6815
-        pPIp+t1pCVZjxHHo6XLDxwWHK3fXf9Q=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-512-1SwJu_JvO8WSR8PBivWxxQ-1; Thu, 01 Apr 2021 09:03:48 -0400
-X-MC-Unique: 1SwJu_JvO8WSR8PBivWxxQ-1
-Received: by mail-ej1-f69.google.com with SMTP id e7so2182896ejx.5
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 06:03:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=hLVqt2QYW6TOLsN96NJCLqj6SvvzzFLG9Bs0zwK5yJM=;
-        b=jYHA63ToGjxui7ZGrowITrR8pJ6LG1fpuNMhF+jz9XSgxsMK+40l9ShpAqW6Bw/2/V
-         zo+FvOrR9tXR8iAt0BFwTlYItsMRDZdN0gBq61tOE3p61xgL8/kaaSLe/7MIzgiPOHpy
-         NmKtrlp/O3Q0bm97t8jWiwPhORM/Q+lsR1fvBXmMv8ONtQoboTB+kOes2Ln9F70zo+cl
-         ppsdxa8w3wT1KsbmoCwELC+q9xV3rD/UkLzY3h9dL5KITJaSmCxVSgu7WT2p5sv18vwx
-         P7kBJUfHjIaS1SL7u+zjg++EFVMkSt7/zg2DDTbKjcsK/RMqeawpgbsNUGPY1dac6er5
-         Z4gA==
-X-Gm-Message-State: AOAM530e5dRkuNfRf7RCVgdVoz9KcPRY89uUZhOyO5ZYApUuyY784AYm
-        oJ13rAkCSHW9QK5teIbkfwkd/iqBU2S1pQNVCUWP1JPa/R0K3jJUkAJErRiggH5AnGSFdxsWmk0
-        FI+ERz1COmGvzcwTnHTUjOHqA
-X-Received: by 2002:a17:907:9808:: with SMTP id ji8mr9062285ejc.333.1617282227119;
-        Thu, 01 Apr 2021 06:03:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzu00HuRy5493wFcNdLMauC3GnVcaBPNNgBHoztJRng8KFwTyRj9c++l2mYn9EoseVAMj7d8Q==
-X-Received: by 2002:a17:907:9808:: with SMTP id ji8mr9062245ejc.333.1617282226799;
-        Thu, 01 Apr 2021 06:03:46 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id hb19sm2739579ejb.11.2021.04.01.06.03.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 06:03:46 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <seanjc@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: Re: [PATCH v2 2/2] KVM: nSVM: improve SYSENTER emulation on AMD
-In-Reply-To: <20210401111928.996871-3-mlevitsk@redhat.com>
-References: <20210401111928.996871-1-mlevitsk@redhat.com>
- <20210401111928.996871-3-mlevitsk@redhat.com>
-Date:   Thu, 01 Apr 2021 15:03:45 +0200
-Message-ID: <87h7kqrwb2.fsf@vitty.brq.redhat.com>
+        bh=Zkg94QyxQt7WMn8LSwxDdV3WDpQrOTmKUNrPCeN0IKY=;
+        b=T5e9nbRrXVj9QZvze8kS0GS4cPVrcY/GHuMte7yDQtbY1WhrC+B67jJXSnmMzjrzbwbyOy
+        0n/snpuAHHL5CO2RxTscYejr4Ha0O2Y+Ot/YzV0U9sYn8mwoaZG+JWVOfGyxrfIM18ywk7
+        9icSwRI8dYvk0P/nVWreN3J07VrvNk4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-318-rRL8fXYJMhKNaeUgfbVMOw-1; Thu, 01 Apr 2021 09:04:57 -0400
+X-MC-Unique: rRL8fXYJMhKNaeUgfbVMOw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 49DF48030A1;
+        Thu,  1 Apr 2021 13:04:55 +0000 (UTC)
+Received: from gondolin (ovpn-113-119.ams2.redhat.com [10.36.113.119])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 694265D9CA;
+        Thu,  1 Apr 2021 13:04:48 +0000 (UTC)
+Date:   Thu, 1 Apr 2021 15:04:45 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, Christoph Hellwig <hch@lst.de>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, liranl@nvidia.com, oren@nvidia.com,
+        tzahio@nvidia.com, leonro@nvidia.com, yarong@nvidia.com,
+        aviadye@nvidia.com, shahafs@nvidia.com, artemp@nvidia.com,
+        kwankhede@nvidia.com, ACurrid@nvidia.com, cjia@nvidia.com,
+        yishaih@nvidia.com, mjrosato@linux.ibm.com
+Subject: Re: [PATCH 8/9] vfio/pci: export nvlink2 support into vendor
+ vfio_pci drivers
+Message-ID: <20210401150445.70dc025f.cohuck@redhat.com>
+In-Reply-To: <20210329171053.7a2ebce3@omen.home.shazbot.org>
+References: <20210319162033.GA18218@lst.de>
+        <20210319162848.GZ2356281@nvidia.com>
+        <20210319163449.GA19186@lst.de>
+        <20210319113642.4a9b0be1@omen.home.shazbot.org>
+        <20210319200749.GB2356281@nvidia.com>
+        <20210319150809.31bcd292@omen.home.shazbot.org>
+        <20210319225943.GH2356281@nvidia.com>
+        <20210319224028.51b01435@x1.home.shazbot.org>
+        <20210321125818.GM2356281@nvidia.com>
+        <20210322104016.36eb3c1f@omen.home.shazbot.org>
+        <20210323193213.GM2356281@nvidia.com>
+        <20210329171053.7a2ebce3@omen.home.shazbot.org>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maxim Levitsky <mlevitsk@redhat.com> writes:
+On Mon, 29 Mar 2021 17:10:53 -0600
+Alex Williamson <alex.williamson@redhat.com> wrote:
 
-> Currently to support Intel->AMD migration, if CPU vendor is GenuineIntel,
-> we emulate the full 64 value for MSR_IA32_SYSENTER_{EIP|ESP}
-> msrs, and we also emulate the sysenter/sysexit instruction in long mode.
->
-> (Emulator does still refuse to emulate sysenter in 64 bit mode, on the
-> ground that the code for that wasn't tested and likely has no users)
->
-> However when virtual vmload/vmsave is enabled, the vmload instruction will
-> update these 32 bit msrs without triggering their msr intercept,
-> which will lead to having stale values in kvm's shadow copy of these msrs,
-> which relies on the intercept to be up to date.
->
-> Fix/optimize this by doing the following:
->
-> 1. Enable the MSR intercepts for SYSENTER MSRs iff vendor=GenuineIntel
->    (This is both a tiny optimization and also ensures that in case
->    the guest cpu vendor is AMD, the msrs will be 32 bit wide as
->    AMD defined).
->
-> 2. Store only high 32 bit part of these msrs on interception and combine
->    it with hardware msr value on intercepted read/writes
->    iff vendor=GenuineIntel.
->
-> 3. Disable vmload/vmsave virtualization if vendor=GenuineIntel.
->    (It is somewhat insane to set vendor=GenuineIntel and still enable
->    SVM for the guest but well whatever).
->    Then zero the high 32 bit parts when kvm intercepts and emulates vmload.
->
-> Thanks a lot to Paulo Bonzini for helping me with fixing this in the most
+> On Tue, 23 Mar 2021 16:32:13 -0300
+> Jason Gunthorpe <jgg@nvidia.com> wrote:
+> 
+> > On Mon, Mar 22, 2021 at 10:40:16AM -0600, Alex Williamson wrote:
 
-s/Paulo/Paolo/ :-)
+> > > So unless you want to do some bitkeeper archaeology, we've always
+> > > allowed driver probes to fail and fall through to the next one, not
+> > > even complaining with -ENODEV.  In practice it hasn't been an issue
+> > > because how many drivers do you expect to have that would even try to
+> > > claim a device.      
+> > 
+> > Do you know of anything using this ability? It might be helpful  
+> 
+> I don't.
 
-> correct way.
->
-> This patch fixes nested migration of 32 bit nested guests, that was
-> broken because incorrect cached values of SYSENTER msrs were stored in
-> the migration stream if L1 changed these msrs with
-> vmload prior to L2 entry.
->
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> ---
->  arch/x86/kvm/svm/svm.c | 99 +++++++++++++++++++++++++++---------------
->  arch/x86/kvm/svm/svm.h |  6 +--
->  2 files changed, 68 insertions(+), 37 deletions(-)
->
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 271196400495..6c39b0cd6ec6 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -95,6 +95,8 @@ static const struct svm_direct_access_msrs {
->  } direct_access_msrs[MAX_DIRECT_ACCESS_MSRS] = {
->  	{ .index = MSR_STAR,				.always = true  },
->  	{ .index = MSR_IA32_SYSENTER_CS,		.always = true  },
-> +	{ .index = MSR_IA32_SYSENTER_EIP,		.always = false },
-> +	{ .index = MSR_IA32_SYSENTER_ESP,		.always = false },
->  #ifdef CONFIG_X86_64
->  	{ .index = MSR_GS_BASE,				.always = true  },
->  	{ .index = MSR_FS_BASE,				.always = true  },
-> @@ -1258,16 +1260,6 @@ static void init_vmcb(struct kvm_vcpu *vcpu)
->  	if (kvm_vcpu_apicv_active(vcpu))
->  		avic_init_vmcb(svm);
->  
-> -	/*
-> -	 * If hardware supports Virtual VMLOAD VMSAVE then enable it
-> -	 * in VMCB and clear intercepts to avoid #VMEXIT.
-> -	 */
-> -	if (vls) {
-> -		svm_clr_intercept(svm, INTERCEPT_VMLOAD);
-> -		svm_clr_intercept(svm, INTERCEPT_VMSAVE);
-> -		svm->vmcb->control.virt_ext |= VIRTUAL_VMLOAD_VMSAVE_ENABLE_MASK;
-> -	}
-> -
->  	if (vgif) {
->  		svm_clr_intercept(svm, INTERCEPT_STGI);
->  		svm_clr_intercept(svm, INTERCEPT_CLGI);
-> @@ -2133,9 +2125,11 @@ static int vmload_vmsave_interception(struct kvm_vcpu *vcpu, bool vmload)
->  
->  	ret = kvm_skip_emulated_instruction(vcpu);
->  
-> -	if (vmload)
-> +	if (vmload) {
->  		nested_svm_vmloadsave(vmcb12, svm->vmcb);
-> -	else
-> +		svm->sysenter_eip_hi = 0;
-> +		svm->sysenter_esp_hi = 0;
-> +	} else
->  		nested_svm_vmloadsave(svm->vmcb, vmcb12);
+I've been trying to remember why I added that patch to ignore all
+errors (rather than only -ENODEV), but I suspect it might have been
+related to the concurrent probing stuff I tried to implement back then.
+The one instance of drivers matching to the same id I recall (s390
+ctc/lcs) is actually not handled on the individual device level, but in
+the meta ccwgroup driver; I don't remember anything else in the s390
+case.
 
-Nitpicking: {} are now needed for both branches here.
+> 
+> > > Ordering is only important when there's a catch-all so we need to
+> > > figure out how to make that last among a class of drivers that will
+> > > attempt to claim a device.  The softdep is a bit of a hack to do
+> > > that, I'll admit, but I don't see how the alternate driver flavor
+> > > universe solves having a catch-all either.    
+> > 
+> > Haven't entirely got there yet, but I think the catch all probably has
+> > to be handled by userspace udev/kmod in some way, as it is the only
+> > thing that knows if there is a more specific module to load. This is
+> > the biggest problem..
+> > 
+> > And again, I feel this is all a big tangent, especially now that HCH
+> > wants to delete the nvlink stuff we should just leave igd alone.  
+> 
+> Determining which things stay in vfio-pci-core and which things are
+> split to variant drivers and how those variant drivers can match the
+> devices they intend to support seems very inline with this series.  If
+> igd stays as part of vfio-pci-core then I think we're drawing a
+> parallel to z-pci support, where a significant part of that support is
+> a set of extra data structures exposed through capabilities to support
+> userspace use of the device.  Therefore extra regions or data
+> structures through capabilities, where we're not changing device
+> access, except as required for the platform (not the device) seem to be
+> things that fit within the core, right?  Thanks,
+> 
+> Alex
 
->  
->  	kvm_vcpu_unmap(vcpu, &map, true);
-> @@ -2677,10 +2671,14 @@ static int svm_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->  		msr_info->data = svm->vmcb01.ptr->save.sysenter_cs;
->  		break;
->  	case MSR_IA32_SYSENTER_EIP:
-> -		msr_info->data = svm->sysenter_eip;
-> +		msr_info->data = (u32)svm->vmcb01.ptr->save.sysenter_eip;
-> +		if (guest_cpuid_is_intel(vcpu))
-> +			msr_info->data |= (u64)svm->sysenter_eip_hi << 32;
->  		break;
->  	case MSR_IA32_SYSENTER_ESP:
-> -		msr_info->data = svm->sysenter_esp;
-> +		msr_info->data = svm->vmcb01.ptr->save.sysenter_esp;
-> +		if (guest_cpuid_is_intel(vcpu))
-> +			msr_info->data |= (u64)svm->sysenter_esp_hi << 32;
->  		break;
->  	case MSR_TSC_AUX:
->  		if (!boot_cpu_has(X86_FEATURE_RDTSCP))
-> @@ -2885,12 +2883,19 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
->  		svm->vmcb01.ptr->save.sysenter_cs = data;
->  		break;
->  	case MSR_IA32_SYSENTER_EIP:
-> -		svm->sysenter_eip = data;
-> -		svm->vmcb01.ptr->save.sysenter_eip = data;
-> +		svm->vmcb01.ptr->save.sysenter_eip = (u32)data;
-> +		/*
-> +		 * We only intercept the MSR_IA32_SYSENTER_{EIP|ESP} msrs
-> +		 * when we spoof an Intel vendor ID (for cross vendor migration).
-> +		 * In this case we use this intercept to track the high
-> +		 * 32 bit part of these msrs to support Intel's
-> +		 * implementation of SYSENTER/SYSEXIT.
-> +		 */
-> +		svm->sysenter_eip_hi = guest_cpuid_is_intel(vcpu) ? (data >> 32) : 0;
+As we are only talking about extra data governed by a capability, I
+don't really see a problem with keeping it in the vfio core.
 
-(Personal taste) I'd suggest we keep the whole 'sysenter_eip'/'sysenter_esp' 
-even if we only use the upper 32 bits of it. That would reduce the code
-churn a little bit (no need to change 'struct vcpu_svm').
+For those devices that need more specialized treatment, maybe we need
+some kind of priority-based matching? I.e., if we match a device with
+drivers, start with the one with highest priority (the specialized
+one), and have the generic driver at the lowest priority. A
+higher-priority driver added later one should not affect already bound
+devices (and would need manual intervention again.)
 
->  		break;
->  	case MSR_IA32_SYSENTER_ESP:
-> -		svm->sysenter_esp = data;
-> -		svm->vmcb01.ptr->save.sysenter_esp = data;
-> +		svm->vmcb01.ptr->save.sysenter_esp = (u32)data;
-> +		svm->sysenter_esp_hi = guest_cpuid_is_intel(vcpu) ? (data >> 32) : 0;
->  		break;
->  	case MSR_TSC_AUX:
->  		if (!boot_cpu_has(X86_FEATURE_RDTSCP))
-> @@ -4009,24 +4014,50 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
->  			vcpu->arch.reserved_gpa_bits &= ~(1UL << (best->ebx & 0x3f));
->  	}
->  
-> -	if (!kvm_vcpu_apicv_active(vcpu))
-> -		return;
-> +	if (kvm_vcpu_apicv_active(vcpu)) {
-> +		/*
-> +		 * AVIC does not work with an x2APIC mode guest. If the X2APIC feature
-> +		 * is exposed to the guest, disable AVIC.
-> +		 */
-> +		if (guest_cpuid_has(vcpu, X86_FEATURE_X2APIC))
-> +			kvm_request_apicv_update(vcpu->kvm, false,
-> +						 APICV_INHIBIT_REASON_X2APIC);
->  
-> -	/*
-> -	 * AVIC does not work with an x2APIC mode guest. If the X2APIC feature
-> -	 * is exposed to the guest, disable AVIC.
-> -	 */
-> -	if (guest_cpuid_has(vcpu, X86_FEATURE_X2APIC))
-> -		kvm_request_apicv_update(vcpu->kvm, false,
-> -					 APICV_INHIBIT_REASON_X2APIC);
-> +		/*
-> +		 * Currently, AVIC does not work with nested virtualization.
-> +		 * So, we disable AVIC when cpuid for SVM is set in the L1 guest.
-> +		 */
-> +		if (nested && guest_cpuid_has(vcpu, X86_FEATURE_SVM))
-> +			kvm_request_apicv_update(vcpu->kvm, false,
-> +						 APICV_INHIBIT_REASON_NESTED);
-> +	}
->  
-> -	/*
-> -	 * Currently, AVIC does not work with nested virtualization.
-> -	 * So, we disable AVIC when cpuid for SVM is set in the L1 guest.
-> -	 */
-> -	if (nested && guest_cpuid_has(vcpu, X86_FEATURE_SVM))
-> -		kvm_request_apicv_update(vcpu->kvm, false,
-> -					 APICV_INHIBIT_REASON_NESTED);
-> +	if (guest_cpuid_is_intel(vcpu)) {
-> +		/*
-> +		 * We must intercept SYSENTER_EIP and SYSENTER_ESP
-> +		 * accesses because the processor only stores 32 bits.
-> +		 * For the same reason we cannot use virtual VMLOAD/VMSAVE.
-> +		 */
-> +		svm_set_intercept(svm, INTERCEPT_VMLOAD);
-> +		svm_set_intercept(svm, INTERCEPT_VMSAVE);
-> +		svm->vmcb->control.virt_ext &= ~VIRTUAL_VMLOAD_VMSAVE_ENABLE_MASK;
-> +
-> +		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_SYSENTER_EIP, 0, 0);
-> +		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_SYSENTER_ESP, 0, 0);
-> +	} else {
-> +		/*
-> +		 * If hardware supports Virtual VMLOAD VMSAVE then enable it
-> +		 * in VMCB and clear intercepts to avoid #VMEXIT.
-> +		 */
-> +		if (vls) {
-> +			svm_clr_intercept(svm, INTERCEPT_VMLOAD);
-> +			svm_clr_intercept(svm, INTERCEPT_VMSAVE);
-> +			svm->vmcb->control.virt_ext |= VIRTUAL_VMLOAD_VMSAVE_ENABLE_MASK;
-> +		}
-> +		/* No need to intercept these MSRs */
-> +		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_SYSENTER_EIP, 1, 1);
-> +		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_SYSENTER_ESP, 1, 1);
-> +	}
->  }
->  
->  static bool svm_has_wbinvd_exit(void)
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 8e276c4fb33d..fffdd5fb446d 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -28,7 +28,7 @@ static const u32 host_save_user_msrs[] = {
->  };
->  #define NR_HOST_SAVE_USER_MSRS ARRAY_SIZE(host_save_user_msrs)
->  
-> -#define MAX_DIRECT_ACCESS_MSRS	18
-> +#define MAX_DIRECT_ACCESS_MSRS	20
->  #define MSRPM_OFFSETS	16
->  extern u32 msrpm_offsets[MSRPM_OFFSETS] __read_mostly;
->  extern bool npt_enabled;
-> @@ -116,8 +116,8 @@ struct vcpu_svm {
->  	struct kvm_vmcb_info *current_vmcb;
->  	struct svm_cpu_data *svm_data;
->  	u32 asid;
-> -	uint64_t sysenter_esp;
-> -	uint64_t sysenter_eip;
-> +	u32 sysenter_esp_hi;
-> +	u32 sysenter_eip_hi;
->  	uint64_t tsc_aux;
->  
->  	u64 msr_decfg;
-
--- 
-Vitaly
+[I think this has come up in other places in the past as well, but I
+don't have any concrete pointers handy.]
 
