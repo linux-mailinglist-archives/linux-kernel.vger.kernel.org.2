@@ -2,99 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4027350CFD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 05:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F565350D02
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 05:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232492AbhDADMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 23:12:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhDADLp (ORCPT
+        id S233356AbhDADP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 23:15:29 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:15423 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233139AbhDADO4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 23:11:45 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EAF8C0613E6
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 20:11:45 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 71so1365059ybl.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 20:11:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=RmMaazUpNv9dO0QVdc1//Lz/b+2IP+ReIbSX7312Y+8=;
-        b=DWp72/rU729D+hNGxjG+KVccftla4VD7a3chImMlNuJh5r4/oHs86378r5+At3wKLo
-         UDRk7mV/mRTupfLSxZQh8dvayAwuZkOC+SZfTycsU3Luq1SSbqOdTR1E4jYXoRVqjS4r
-         MGa5uEmiTAMyuxuvuiSGKiO7CnH/t2stpHq3pC3yjU7xYSQ9Z3UlvkyMpdeJQ8DpQ0eG
-         UXE9sNvQeJ4dBiERcJFZ/AUPSz0u1accV6fojG++W4IQmF8AKaL6P0tpiX1Um49NTsoe
-         jNWusKX65n5RCovDUKJJr1zF6p+4+ODgVsX2rtjh6kFsQys9GH8wARX9sftz3WlroL9G
-         VOIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=RmMaazUpNv9dO0QVdc1//Lz/b+2IP+ReIbSX7312Y+8=;
-        b=SAeDQKruDnP+Fn/YTHL/D4cQ+1D1Zw+VG/pYhGXcDCwe2PpK5RPx23yE5Uq8q05x4r
-         K67oMMpyK97fJDc5e+UvaleRjk2ffdT4ymzQkMbj7+9yecHg5sLsNuqR2OLmeyECVIvD
-         IXC/IlCg4gjDavlXQaRbSaG1x2iQxQjqqi6+Gzt17ladIf33y6oUlggCpDeljRRS1dos
-         +B53tiL3BPuFfl1ZIF7gpuDI+c+Z8tHd9w3q41wxXECxOMnR4E+LITjhuzhPDHv/sdtX
-         sjuE41WAFphjwJg+xK7W6W1N+pHxqmGYev/z+d5Sc8hxMlY8TrZJBJ254WiHs6WPXiOA
-         qZFA==
-X-Gm-Message-State: AOAM532gTsUEljylHf5DzbucdjXMSJtsMJQ4JWdRpO0+bRN8gJzPm6sr
-        G2nRQupv7Bgq4fUdZn1NLDINllLnKcLk
-X-Google-Smtp-Source: ABdhPJzlfwkJIYqwcBVjfLPx8f6dUBnhcDwwnnv822xSCx5WdAOodoBa9nWHxL/IAIe/c2LX4cmnxKqqjF3O
-X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:b:7d3f:ea49:2c08:677b])
- (user=apusaka job=sendgmr) by 2002:a5b:98d:: with SMTP id c13mr8478703ybq.463.1617246704286;
- Wed, 31 Mar 2021 20:11:44 -0700 (PDT)
-Date:   Thu,  1 Apr 2021 11:11:33 +0800
-Message-Id: <20210401111036.1.I26d172ded4e4ac8ad334516a8d196539777fba2a@changeid>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH] Bluetooth: Check inquiry status before sending one
-From:   Archie Pusaka <apusaka@google.com>
-To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>
-Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Sonny Sasaka <sonnysasaka@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 31 Mar 2021 23:14:56 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F9pCq5LmpzjXWd;
+        Thu,  1 Apr 2021 11:13:11 +0800 (CST)
+Received: from huawei.com (10.175.103.91) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.498.0; Thu, 1 Apr 2021
+ 11:14:50 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-staging@lists.linux.dev>
+CC:     <johan@kernel.org>, <elder@kernel.org>,
+        <gregkh@linuxfoundation.org>
+Subject: [PATCH -next v2] staging: greybus: camera: Switch to memdup_user_nul()
+Date:   Thu, 1 Apr 2021 11:17:52 +0800
+Message-ID: <20210401031752.2861248-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Archie Pusaka <apusaka@chromium.org>
+Use memdup_user_nul() helper instead of open-coding to
+simplify the code.
 
-There is a possibility where HCI_INQUIRY flag is set but we still
-send HCI_OP_INQUIRY anyway.
-
-Such a case can be reproduced by connecting to an LE device while
-active scanning. When the device is discovered, we initiate a
-connection, stop LE Scan, and send Discovery MGMT with status
-disabled, but we don't cancel the inquiry.
-
-Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-Reviewed-by: Sonny Sasaka <sonnysasaka@chromium.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
+ drivers/staging/greybus/camera.c | 13 +++----------
+ 1 file changed, 3 insertions(+), 10 deletions(-)
 
- net/bluetooth/hci_request.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
-index 8ace5d34b01e..5a5ec7ed15ea 100644
---- a/net/bluetooth/hci_request.c
-+++ b/net/bluetooth/hci_request.c
-@@ -2952,6 +2952,9 @@ static int bredr_inquiry(struct hci_request *req, unsigned long opt)
- 	const u8 liac[3] = { 0x00, 0x8b, 0x9e };
- 	struct hci_cp_inquiry cp;
+diff --git a/drivers/staging/greybus/camera.c b/drivers/staging/greybus/camera.c
+index b570e13394ac..2ecdc1bc5092 100644
+--- a/drivers/staging/greybus/camera.c
++++ b/drivers/staging/greybus/camera.c
+@@ -1120,16 +1120,9 @@ static ssize_t gb_camera_debugfs_write(struct file *file,
+ 	if (len > 1024)
+ 		return -EINVAL;
  
-+	if (test_bit(HCI_INQUIRY, &req->hdev->flags))
-+		return 0;
-+
- 	bt_dev_dbg(req->hdev, "");
+-	kbuf = kmalloc(len + 1, GFP_KERNEL);
+-	if (!kbuf)
+-		return -ENOMEM;
+-
+-	if (copy_from_user(kbuf, buf, len)) {
+-		ret = -EFAULT;
+-		goto done;
+-	}
+-
+-	kbuf[len] = '\0';
++	kbuf = memdup_user_nul(buf, len);
++	if (IS_ERR(kbuf))
++		return PTR_ERR(kbuf);;
  
- 	hci_dev_lock(req->hdev);
+ 	ret = op->execute(gcam, kbuf, len);
+ 
 -- 
-2.31.0.291.g576ba9dcdaf-goog
+2.25.1
 
