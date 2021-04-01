@@ -2,80 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF9D3522CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 00:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A283522D1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 00:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234835AbhDAWeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 18:34:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37438 "EHLO
+        id S233981AbhDAWfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 18:35:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233789AbhDAWeH (ORCPT
+        with ESMTP id S233789AbhDAWfK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 18:34:07 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC6EC0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 15:34:07 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id e14so5082473ejz.11
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 15:34:07 -0700 (PDT)
+        Thu, 1 Apr 2021 18:35:10 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5AD0C0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 15:35:10 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id c24-20020a9d6c980000b02902662e210895so2998607otr.9
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 15:35:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JwcjbJLuM+EQBpQBaYXeeiUQ+PAdC8SwyIK2hsMA+cM=;
-        b=ArrtknezTEhO1CbNH/4AuLxj39IAsAhS8HfkNL1rCTftdshfkOd8L47P6zhArH91AQ
-         qdz+isC5+X4wzKL+rSuJltVSyDLDd/XnzkyZwmvUTKbgLrfW4LpgQkDVNX0TM3LyQgZZ
-         UsJyvEyzk91eLiQhU1OE7VrOP+tZDW59yW6n2YuDi7XFvh+d56Sp9qvwiKMOiKU9oISr
-         WURK5c7OhcFHEmZOOL94RieBve3I/RGgYcBJWnwWJdWeiAwBHGOlbE7kh5I9Ecgj/1zq
-         cGbWbeMO5fGht+6/ZoRaX93QkqyM2EkyfinvlnnciVnDq3Wsq0ko3kmPzEb2lvT+MmNc
-         mUNg==
+         :cc:content-transfer-encoding;
+        bh=Fj85qQK7dbFMVrWc6drYDzKb296D9FbiiC583NFbWrY=;
+        b=IQUVaebifeGyZummO+FyMc4HYoA8epMMse84C7n0U0fsWyoFXP8OCKn24+g3ihYgpS
+         np8crOUCKDBih1v8z55ihhICh3Lz/y6TMC/rZnJCa5G+WQL4sqoqNRSb6MN3GrYCTws4
+         +IoGC5zMHomwEa7+19+dNME/iP3tgB43k4CwrEIeGlBgWLDWcQqFAVkue2qiA0GNQdJt
+         AHKUQaeSY+/qwp0/BkjMiHzrLSPEvgvkbALGjI/E8t1dgvx3H8Bj9sYvaH3n1r4F/mLr
+         OBrMi/+R2cHWKp/OgoVZBf/HMP6i/cm994PjeeHpenAUOmRWzCeJFC+oxq/DzB82kuoC
+         LbJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JwcjbJLuM+EQBpQBaYXeeiUQ+PAdC8SwyIK2hsMA+cM=;
-        b=Zp9Ij7bF3F8bkw/iReGlG1CMxpuMw5AzUzUvs2MRDovhQnfDtAnErpE3V1uZBL1XS9
-         /rZSfEpGzLHAmxSwMEv9mjKprL4HRDBHmvHTvotyxUespvsDKQyM4Np7Vj3FDbBqoF/U
-         ZuqkXdpCF7BsEcBydXpla7PbbWCnDojh/YVCVY8bh9m9kfgfFckcK5EfGVrOBSCUGaQz
-         /4UyhYRjT9iNr6EstPBckCM4pp/5gaM30l3pV6JLmADRbKMo2yjp5XJtJP3QVhUbqKSF
-         6idzermws7o/L4FgMoPsTk/r5rSme2gXKPtNwyjk3IBN30Ab8l6PJ4czg4EOW3tgjM2q
-         xCqg==
-X-Gm-Message-State: AOAM533XwxerxyUK8UcqBo0qq4dEVtODpTrz79CHC1x0T4VRfDtAQHEk
-        /5jEwKxWGXCub05nU6qboem2JnpL3IZNbgCjBAR4
-X-Google-Smtp-Source: ABdhPJxYWvOvGnocVpSGrtJOWnm5EYFUlzKhq4aZsQnf53wQs7vQnFDt9HwxI+R7ZOEiFenWayr3lkhLV1BUE3aVwas=
-X-Received: by 2002:a17:906:3d62:: with SMTP id r2mr11255187ejf.488.1617316446452;
- Thu, 01 Apr 2021 15:34:06 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Fj85qQK7dbFMVrWc6drYDzKb296D9FbiiC583NFbWrY=;
+        b=coHAkdrtF8lvkQ28avljyGDuGat7pBlQ5dTrgfXGdqoaZE/5ZFryCfvKyVjjuseMPG
+         3o0gGUBt0vwoaa5GOJt9//k6etMLj8/2SaE7FuodhzYZ9Qi2oQFduokiicM0zsYWewE4
+         QnnfnvJHNrEGOywAF/oZ3cTwq/BKzgcjlNiqfiFCduu6F1ai/48fqdY54tMmAClPEzGl
+         v0NcIC6bVX+K+eT9rLXUlliLQeDP4rS+dIc4kK1RgMPzR80lFpx6eSlGyr5Jps+9SyHk
+         5JeawicXGEWlc96smvBz/RYJHqWUpsG2JQg3iptHAD8v1mXdbiIv8gn0RDO7N+rGCqso
+         RtIw==
+X-Gm-Message-State: AOAM532jJzqJhbr7Jhdj/Q/56NAFkVRRyByatNikh0IjVLjFCijlR9mK
+        MC90IuEhq/hcbjc7VPuyV2nwhZkMyrGfTIgvmUlWSQ==
+X-Google-Smtp-Source: ABdhPJzcNmOg3S5/WZxTXo0+O8T2gdkqSFEArCAiEh0ns2GZ+Yj7eLyW7JvUvO12GPjG7oeI1bzc4xzk/WWQcf2lOvc=
+X-Received: by 2002:a9d:620a:: with SMTP id g10mr8664398otj.335.1617316510065;
+ Thu, 01 Apr 2021 15:35:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <ea7f2e3b49b1cae523b58f128c8419c9b8565d9d.1617303032.git.rgb@redhat.com>
-In-Reply-To: <ea7f2e3b49b1cae523b58f128c8419c9b8565d9d.1617303032.git.rgb@redhat.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 1 Apr 2021 18:33:55 -0400
-Message-ID: <CAHC9VhQRYEaHWQLZjj8kqfZ-WHuTnRC1bXMybvzSYVpz2VU-wg@mail.gmail.com>
-Subject: Re: [PATCH] audit: drop /proc/PID/loginuid documentation Format field
-To:     Richard Guy Briggs <rgb@redhat.com>
-Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Eric Paris <eparis@parisplace.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+References: <20210318225632.2481291-1-jollys@google.com> <5e7ea537-86ab-f654-1df4-765364116e18@huawei.com>
+ <993f97da-01f0-262b-3fbe-66fa1769698a@huawei.com> <f74c0003-dbbf-5b4a-87f2-cd5571ea412e@huawei.com>
+In-Reply-To: <f74c0003-dbbf-5b4a-87f2-cd5571ea412e@huawei.com>
+From:   Jolly Shah <jollys@google.com>
+Date:   Thu, 1 Apr 2021 15:34:58 -0700
+Message-ID: <CABGCNpBABSkdSQf=c2T9qMTGgJPL7Si9Ft_DvC8WiLtT_vmL1Q@mail.gmail.com>
+Subject: Re: [PATCH v2] scsi: libsas: Reset num_scatter if libata mark qc as NODATA
+To:     luojiaxing <luojiaxing@huawei.com>
+Cc:     John Garry <john.garry@huawei.com>,
+        Jason Yan <yanaijie@huawei.com>, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, a.darwish@linutronix.de,
+        dan.carpenter@oracle.com, b.zolnierkie@samsung.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 3:11 PM Richard Guy Briggs <rgb@redhat.com> wrote:
->
-> Drop the "Format:" field from the /proc/PID/loginuid documentation and
-> integrate the information into the Description field since it is not
-> recognized by the "./scripts/get_abi.pl validate" command which causes a
-> warning.  Documentation/ABI/README describes the valid fields.
->
-> Reported-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
-> ---
->  .../ABI/stable/procfs-audit_loginuid          | 22 +++++++++----------
->  1 file changed, 11 insertions(+), 11 deletions(-)
+Hi Luojiaxing,
 
-Merged into audit/next, thanks.
 
--- 
-paul moore
-www.paul-moore.com
+On Mon, Mar 22, 2021 at 1:41 AM luojiaxing <luojiaxing@huawei.com> wrote:
+>
+>
+> On 2021/3/20 20:14, John Garry wrote:
+> > On 19/03/2021 01:43, Jason Yan wrote:
+> >>
+> >>
+> >> =E5=9C=A8 2021/3/19 6:56, Jolly Shah =E5=86=99=E9=81=93:
+> >>> When the cache_type for the scsi device is changed, the scsi layer
+> >>> issues a MODE_SELECT command. The caching mode details are communicat=
+ed
+> >>> via a request buffer associated with the scsi command with data
+> >>> direction set as DMA_TO_DEVICE (scsi_mode_select). When this command
+> >>> reaches the libata layer, as a part of generic initial setup, libata
+> >>> layer sets up the scatterlist for the command using the scsi command
+> >>> (ata_scsi_qc_new). This command is then translated by the libata laye=
+r
+> >>> into ATA_CMD_SET_FEATURES (ata_scsi_mode_select_xlat). The libata lay=
+er
+> >>> treats this as a non data command (ata_mselect_caching), since it onl=
+y
+> >>> needs an ata taskfile to pass the caching on/off information to the
+> >>> device. It does not need the scatterlist that has been setup, so it
+> >>> does
+> >>> not perform dma_map_sg on the scatterlist (ata_qc_issue).
+> >>> Unfortunately,
+> >>> when this command reaches the libsas layer(sas_ata_qc_issue), libsas
+> >>> layer sees it as a non data command with a scatterlist. It cannot
+> >>> extract the correct dma length, since the scatterlist has not been
+> >>> mapped with dma_map_sg for a DMA operation. When this partially
+> >>> constructed SAS task reaches pm80xx LLDD, it results in below warning=
+.
+> >>>
+> >>> "pm80xx_chip_sata_req 6058: The sg list address
+> >>> start_addr=3D0x0000000000000000 data_len=3D0x0end_addr_high=3D0xfffff=
+fff
+> >>> end_addr_low=3D0xffffffff has crossed 4G boundary"
+> >>>
+> >>> This patch updates code to handle ata non data commands separately so
+> >>> num_scatter and total_xfer_len remain 0.
+> >>>
+> >>> Fixes: 53de092f47ff ("scsi: libsas: Set data_dir as DMA_NONE if
+> >>> libata marks qc as NODATA")
+> >>> Signed-off-by: Jolly Shah <jollys@google.com>
+> >
+> > Reviewed-by: John Garry <john.garry@huawei.com>
+> >
+> > @luojiaxing, can you please test this?
+>
+>
+> Sure, let me take a look, and reply the test result here later
+>
+
+Wanted to follow up on test results. Any updates?
+
+Thanks,
+Jolly
+
+>
+> Thanks
+>
+> Jiaxing
+>
+>
+> >
+> >>> ---
+> >>> v2:
+> >>> - reorganized code to avoid setting num_scatter twice
+> >>>
+> >>>   drivers/scsi/libsas/sas_ata.c | 9 ++++-----
+> >>>   1 file changed, 4 insertions(+), 5 deletions(-)
+> >>>
+> >>> diff --git a/drivers/scsi/libsas/sas_ata.c
+> >>> b/drivers/scsi/libsas/sas_ata.c
+> >>> index 024e5a550759..8b9a39077dba 100644
+> >>> --- a/drivers/scsi/libsas/sas_ata.c
+> >>> +++ b/drivers/scsi/libsas/sas_ata.c
+> >>> @@ -201,18 +201,17 @@ static unsigned int sas_ata_qc_issue(struct
+> >>> ata_queued_cmd *qc)
+> >>>           memcpy(task->ata_task.atapi_packet, qc->cdb,
+> >>> qc->dev->cdb_len);
+> >>>           task->total_xfer_len =3D qc->nbytes;
+> >>>           task->num_scatter =3D qc->n_elem;
+> >>> +        task->data_dir =3D qc->dma_dir;
+> >>> +    } else if (qc->tf.protocol =3D=3D ATA_PROT_NODATA) {
+> >>> +        task->data_dir =3D DMA_NONE;
+> >>
+> >> Hi Jolly & John,
+> >>
+> >> We only set DMA_NONE for ATA_PROT_NODATA, I'm curious about why
+> >> ATA_PROT_NCQ_NODATA and ATAPI_PROT_NODATA do not need to set DMA_NONE?
+> >
+> > So we can see something like atapi_eh_tur() -> ata_exec_internal(),
+> > which is a ATAPI NONDATA and has DMA_NONE, so should be ok.
+> >
+> > Other cases, like those using the xlate function on the qc for
+> > ATA_PROT_NCQ_NODATA, could be checked further.
+> >
+> > For now, we're just trying to fix the fix.
+> >
+> >>
+> >> Thanks,
+> >> Jason
+> >>
+> >>
+> >>>       } else {
+> >>>           for_each_sg(qc->sg, sg, qc->n_elem, si)
+> >>>               xfer +=3D sg_dma_len(sg);
+> >>>           task->total_xfer_len =3D xfer;
+> >>>           task->num_scatter =3D si;
+> >>> -    }
+> >>> -
+> >>> -    if (qc->tf.protocol =3D=3D ATA_PROT_NODATA)
+> >>> -        task->data_dir =3D DMA_NONE;
+> >>> -    else
+> >>>           task->data_dir =3D qc->dma_dir;
+> >>> +    }
+> >>>       task->scatter =3D qc->sg;
+> >>>       task->ata_task.retry_count =3D 1;
+> >>>       task->task_state_flags =3D SAS_TASK_STATE_PENDING;
+> >>>
+> >> .
+> >
+> >
+> > .
+> >
+>
