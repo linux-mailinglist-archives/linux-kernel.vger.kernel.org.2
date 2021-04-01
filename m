@@ -2,29 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BC8D351C63
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BB2351CA4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239873AbhDASRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:17:04 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15585 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237139AbhDAR7h (ORCPT
+        id S237458AbhDASTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:19:22 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:16319 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237544AbhDASAW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:59:37 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FB51F68bgz19KZq;
-        Thu,  1 Apr 2021 22:20:01 +0800 (CST)
-Received: from huawei.com (10.175.103.91) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.498.0; Thu, 1 Apr 2021
- 22:22:03 +0800
+        Thu, 1 Apr 2021 14:00:22 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FB53m2Wdgz9vBf;
+        Thu,  1 Apr 2021 22:22:12 +0800 (CST)
+Received: from huawei.com (10.175.103.91) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Thu, 1 Apr 2021
+ 22:24:15 +0800
 From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <kvm@vger.kernel.org>
-CC:     <pbonzini@redhat.com>
-Subject: [PATCH -next] KVM: selftests: remove redundant semi-colon
-Date:   Thu, 1 Apr 2021 22:25:14 +0800
-Message-ID: <20210401142514.1688199-1-yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <rostedt@goodmis.org>, <mingo@redhat.com>
+Subject: [PATCH -next] iocost: remove redundant semi-colon
+Date:   Thu, 1 Apr 2021 22:27:27 +0800
+Message-ID: <20210401142727.1689300-1-yangyingliang@huawei.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -37,22 +36,22 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c | 2 +-
+ include/trace/events/iocost.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c b/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c
-index 804ff5ff022d..1f4a0599683c 100644
---- a/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c
-@@ -186,7 +186,7 @@ int main(int argc, char *argv[])
- 		vcpu_ioctl(vm, VCPU_ID, KVM_XEN_VCPU_SET_ATTR, &st);
- 	}
+diff --git a/include/trace/events/iocost.h b/include/trace/events/iocost.h
+index e282ce02fa2d..6d1626e7a4ce 100644
+--- a/include/trace/events/iocost.h
++++ b/include/trace/events/iocost.h
+@@ -160,7 +160,7 @@ TRACE_EVENT(iocost_ioc_vrate_adj,
  
--	struct vcpu_runstate_info *rs = addr_gpa2hva(vm, RUNSTATE_ADDR);;
-+	struct vcpu_runstate_info *rs = addr_gpa2hva(vm, RUNSTATE_ADDR);
- 	rs->state = 0x5a;
- 
- 	for (;;) {
+ 	TP_fast_assign(
+ 		__assign_str(devname, ioc_name(ioc));
+-		__entry->old_vrate = atomic64_read(&ioc->vtime_rate);;
++		__entry->old_vrate = atomic64_read(&ioc->vtime_rate);
+ 		__entry->new_vrate = new_vrate;
+ 		__entry->busy_level = ioc->busy_level;
+ 		__entry->read_missed_ppm = missed_ppm[READ];
 -- 
 2.25.1
 
