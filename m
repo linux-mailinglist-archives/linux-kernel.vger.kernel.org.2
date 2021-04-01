@@ -2,216 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38063351B9F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1255E3519E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238552AbhDASJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:09:34 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:52566 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236451AbhDARy2 (ORCPT
+        id S234577AbhDAR44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:56:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235144AbhDARmT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:54:28 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 131FtQ04090955;
-        Thu, 1 Apr 2021 15:56:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=P2FMFea8CwTrqluRleaKWD/glkma6hm45gNU/tJF1PU=;
- b=zal8e0GXf0AmYFsbfySbEg1jX7RXa/Urp64OzcRLWUkV4tvhVlED1zHJJme1d/fP+y6Y
- 6q+3KbyyxQSmEYjtTdbO2PmCyuF7utcxPnX16J+RqeIk56CTGiA/oQbHnyo+DRpdFJS4
- 5z9Y8nzVNOS3Td33guRml7fs/+6tvCAfjNPMWmz1+TObSgCaOOQwq/0+dBSQguEpmgml
- FyVCwhzmL5XqJ1nomUHWIZK0Bijf9NdBX4LlxTUIwl4MQSBrURUBW5BU4yMi/I2MJwf6
- VP4PtVhROPVskWMexyvctcHNXH9foTfOvC/VuQo43Xg5dS20buWhDzMaC37OHvGQbLaq 8A== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 37n33dt9ph-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 01 Apr 2021 15:56:41 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 131FehpL006247;
-        Thu, 1 Apr 2021 15:56:40 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
-        by userp3020.oracle.com with ESMTP id 37n2paqkpn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 01 Apr 2021 15:56:40 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IlOxibtecLPwiCcTTHF7bxYDBvRkga/lgtp+nsiUwCXfmwxyICo2gAoL+D35vZBQKeR8c0RMzq/JsqK7e7K2aiUWv2eycQMaMV8iQQahLSe6SMOwI41EVU7WjvdneTgOCIrRbqKbVmw7KY4x1UmuV1qyvkUMrQITt+hyu4aURwlbEIR7Ub4f/fzEe/1T6hoVeHLdaI5T4/8D98Jq/4cfcGYIemPFYdJabT2QPTtv6jw9j6dn6DIv3KN9iA7BQrGo2f9JNRBg0Y85g9ydNBwwmzxY3fWGNbS9zCQX/KlRT023LJvtUppaK0KLC51H2CGYDDf4hgUeP56f9BjkzPnWYQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=P2FMFea8CwTrqluRleaKWD/glkma6hm45gNU/tJF1PU=;
- b=VnDR2CF3NQy0hIxb5EZkZVbWwRS2m3sTCj8dInd6UU1+N2YQA3kM4Sf7QiTKvfRyI1hhra4huGOu1xqrjm7Yzfdxe2w4UbpKI4qMgGIsyAYYfF8sBYkC7VFpT/hWCuXDjWeQuCDhE+xsDLkOcl1DTqNrCPy79NjCoC7CFhy37LwRsRQC/dN9FWEAY5kQzr0Sl/dbjw7HF2n8/yWe5wenSLNYIIAca/L9DgJHzWzfmslgaZJbb7Rz36LzTTFTMuo6pzRxx5OGh3SpW54YOz4BLWSmU/kXjxGS8nEOxmzMDZOYTbQ8lblC4WXiXmlWNe0aAYndqF54CFTiMLdRTQ8dkg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=P2FMFea8CwTrqluRleaKWD/glkma6hm45gNU/tJF1PU=;
- b=CrPROTlBeQYEPuCxXr4YbnBgIk9kXCcostP7az/LDDKJTao84I9K1tcZ0oK/g6hdc16nsvYMSnqi0VfSP/Sbcba4CdSlmZmYaI7U19bLLKqP/nwLuTRc65FIUfSbIKoZ6GUf1QuJ5pbbIq/nEoGLKpKHxt4Hs8hIdTtr8IbwJvI=
-Received: from CY4PR10MB1448.namprd10.prod.outlook.com (2603:10b6:903:27::12)
- by CY4PR10MB1368.namprd10.prod.outlook.com (2603:10b6:903:22::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25; Thu, 1 Apr
- 2021 15:56:38 +0000
-Received: from CY4PR10MB1448.namprd10.prod.outlook.com
- ([fe80::69eb:33a1:2d07:8554]) by CY4PR10MB1448.namprd10.prod.outlook.com
- ([fe80::69eb:33a1:2d07:8554%5]) with mapi id 15.20.3977.033; Thu, 1 Apr 2021
- 15:56:37 +0000
-From:   Praveen Kannoju <praveen.kannoju@oracle.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Aruna Ramakrishna <aruna.ramakrishna@oracle.com>
-CC:     "leon@kernel.org" <leon@kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rajesh Sivaramasubramaniom 
-        <rajesh.sivaramasubramaniom@oracle.com>,
-        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
-        Jeffery Yoder <jeffery.yoder@oracle.com>
-Subject: RE: [PATCH v2] IB/mlx5: Reduce max order of memory allocated for xlt
- update
-Thread-Topic: [PATCH v2] IB/mlx5: Reduce max order of memory allocated for xlt
- update
-Thread-Index: AQHXGmWJp8i+xPdCxUaGXGoNHWnqKKqRyJQAgAA7xICAADsYgIAAV88AgAI9RwCACaQeAIABcEqQ
-Date:   Thu, 1 Apr 2021 15:56:37 +0000
-Message-ID: <CY4PR10MB1448C03F77B4DDF8833489058C7B9@CY4PR10MB1448.namprd10.prod.outlook.com>
-References: <1615900141-14012-1-git-send-email-praveen.kannoju@oracle.com>
- <20210323160756.GE2710221@ziepe.ca>
- <80966C8E-341B-4F5D-9DCA-C7D82AB084D5@oracle.com>
- <20210323231321.GF2710221@ziepe.ca>
- <0DFF7518-8818-445B-94AC-8EB2096446BE@oracle.com>
- <20210325143928.GM2710221@ziepe.ca> <20210331175312.GA1531363@nvidia.com>
-In-Reply-To: <20210331175312.GA1531363@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=oracle.com;
-x-originating-ip: [103.203.175.226]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 9c098f3e-46a6-4b72-c28e-08d8f526bb7d
-x-ms-traffictypediagnostic: CY4PR10MB1368:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CY4PR10MB136878F0DF5D930D79A1C8B98C7B9@CY4PR10MB1368.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ZUvtJp1JDqOaa01IgvpoW7ZvRJaDi+f5/zEtfFW/bzsj+W6/1If802gW9pSZt2p5ENc5xNOl0ecrMWpgl5MBGYOSGT7/vMX12PhjpVqPhqlbtuFzkZM6g30EM5SsDmeHvjjyUWU3/lzZEIRuNwWbX2dTe4gByvax71+9N/mxJznl8SRC2AZLubkyfz5N0QE+ZJ5MBFYwpI3IHvxXn7c/bm9FwQxDgL8ZHRNqas0y7Sjxm0xz/IkUJqWqPNb/Qnf3zAjdDkBWsg3xXDZNg2Cp9HgC4FSmBT9j42oHg8WYx2DlLtnamFsXlXyVjZeTf+/3SJOLb5vqivewVDqBQU7x08T20iY2hf3mccfAuYJ4GJnSA8eUS4YqZBMXNHnt+QCSzQEOInYtDNg5P1eQsq3rikTtzux17490Qz3wstrxxjRzQyYXzmq7ubqa0j0afBw8FXxd16PHh5mogTJHEgsinuT7Y0o6ObN+rWIgcHMu4jHdOutQ2zb4amsiBCvOeCJaQKB1QCW7gyGaYz6r9D+U4O4V6lUE+eH5YLCDnY8t7XSyxY8QUc8IXJCkZ6OgNntKycwH2VLfCayZe2wDQtJqe6CG2PuHYxWi0iBAgTwoqN9pZL1NS7wYFEcZqflfLeED2R8SflCBJnJooPVybfcAZPPKgIvHKLruseJE8kpbX8o=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR10MB1448.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(376002)(136003)(39860400002)(396003)(6506007)(83380400001)(53546011)(478600001)(4326008)(6636002)(7696005)(33656002)(186003)(44832011)(26005)(5660300002)(38100700001)(71200400001)(8936002)(15650500001)(2906002)(86362001)(54906003)(110136005)(9686003)(316002)(107886003)(55016002)(52536014)(66946007)(64756008)(76116006)(66556008)(66446008)(66476007)(8676002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?CjuFaHBFoDHJm0iNNdc2AyEjBW+n/vR5a5RMCzthwdLiR+yftdp7yJ19/Tz3?=
- =?us-ascii?Q?Tx2BTc6urLnGEqHdi6c6Z/0fQKU234PyAjqWgxtAaiApEZzeYg6Xk5ZngsH0?=
- =?us-ascii?Q?cRmcyeDeadRM2Gfq4DrM7Q2o9FnQ1sYANbC3Ka1mVDNIkw5QlVm6aEk5qT5e?=
- =?us-ascii?Q?1DIRDr/h1GTgZU1DKo2YG077LJcnkSUa+B8Yv7Zpie1k47OcJ27inSGj/gWa?=
- =?us-ascii?Q?xSv6nXKeA8hW5Y12oNTj9rQUKL6Uk4x/4NccYtjCpUibIHVaut1IXVx3Dqyl?=
- =?us-ascii?Q?MNGgQNVkEISQa2cZRboUaDqmQomieUYbDrx2FxUdX43++5AmyTWF/fHoLJcl?=
- =?us-ascii?Q?jzkEHmOSoXkwjHavJWkCdtkwoHh2pBacRlNvsGXVWYp3emBUUCNb28zpVBM8?=
- =?us-ascii?Q?TVSi969+ZolKragrrqDvxVF3bP0saZtHpronNxE7NHP9qVyvQw3hpBYYRfO4?=
- =?us-ascii?Q?DW2ytuQeQIR+MDkMS9wrimNtrdhntWobLyCuPe1HCNKCsUWbujPgKiHVUTen?=
- =?us-ascii?Q?s94qf8TdV4Z5Z1s8kODFloTFC10+2dkF5TInXiITs3vRcua9xZb1BY+AEVfk?=
- =?us-ascii?Q?JC7TTReK+o/fTXsqdWpw2fVM3Q9O+oQDdetg2wLplGWCxoGy4ZhvKzNTyuUj?=
- =?us-ascii?Q?EXP0SMXT66QM16IOdozgDH/YQ8m999cW5jr07sAuwK3OwJE/lvbqvCsRNHE/?=
- =?us-ascii?Q?Hi5Qk1EGI0N8HRpoz6b4dRR7WcRcIu9qFNdPtGi/rB5ZJ+CtOymNIqR7lBX5?=
- =?us-ascii?Q?k1AfnbmCqseIuILWWVfH1FxGCAaOKGTeBkeA8Nk/itrj0eOY3o3Zfut1I9aK?=
- =?us-ascii?Q?xZuXhDzxE5bNgT814LGeftceFXU99i9sLL947NZBkICXFb49k8nomD7tBZch?=
- =?us-ascii?Q?eRwfISrOQeWAhN3T3Wwh5X+xk0hQC8V7mpwCC5sZzg4y8rfMd4QC41e402Vt?=
- =?us-ascii?Q?VUSVJsC75hja3DXsRrXtBlsjaDVHyre5hXt3YiB8bZUWdp/DJekIkk+on4In?=
- =?us-ascii?Q?eFOWf57Kur80TuKSruzxcbUNo/cyHVaVhsRDBPjZVHvup8YAIu1dbYRSxLyW?=
- =?us-ascii?Q?SCBq7PW5qpBBEFwjj/mkJIwHuZNljBXdQhXcbWI/BqSutArczZIIivb6g5S8?=
- =?us-ascii?Q?YMEdJ0uHtbu4b9HIbbYKjjo5GUxSOv6JounAaFJGsVG6GX8og+GzcQ9L/COj?=
- =?us-ascii?Q?oUa/6JefO1iEqfNwRy3UZwnf+qEoJuVylNRcW5Hbx2LYdJW5/gEA7T934vR1?=
- =?us-ascii?Q?0badDrxrsRoOcK+c090T9XVrkr8KjtQ8kgsewXZfMVIO+sD/KVCLGv+nlDYg?=
- =?us-ascii?Q?/JYm/twMbty/LoOAULaGzLRy?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 1 Apr 2021 13:42:19 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C46D6C02FE8C;
+        Thu,  1 Apr 2021 09:00:23 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: benjamin.gaignard)
+        with ESMTPSA id 4666B1F46893
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+To:     ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
+        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        festevam@gmail.com, lee.jones@linaro.org,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
+        emil.l.velikov@gmail.com
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        kernel@collabora.com,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: [PATCH v8 06/13] media: hantro: change hantro_codec_ops run prototype to return errors
+Date:   Thu,  1 Apr 2021 17:59:56 +0200
+Message-Id: <20210401160003.88803-7-benjamin.gaignard@collabora.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210401160003.88803-1-benjamin.gaignard@collabora.com>
+References: <20210401160003.88803-1-benjamin.gaignard@collabora.com>
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR10MB1448.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9c098f3e-46a6-4b72-c28e-08d8f526bb7d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Apr 2021 15:56:37.4759
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: TtEucn7irk6sxLlGE5qE+dvgl5yQVKI8VP5WsNghyxryRiHEMzqSmS3kxsGLdx5pFwdhzOcl/S7U7dw2Fh1vCg7gv/Axd6p6DnP1mtR+tr8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR10MB1368
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9941 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
- adultscore=0 bulkscore=0 mlxscore=0 spamscore=0 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2103310000 definitions=main-2104010105
-X-Proofpoint-GUID: asGQy_dk67aNyNBDOp6qD0UDcy8oLQeK
-X-Proofpoint-ORIG-GUID: asGQy_dk67aNyNBDOp6qD0UDcy8oLQeK
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9941 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999 mlxscore=0
- lowpriorityscore=0 suspectscore=0 priorityscore=1501 phishscore=0
- clxscore=1011 impostorscore=0 malwarescore=0 bulkscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
- definitions=main-2104010105
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
-We will go ahead with just adding the "__GFP_NORETRY " flag to reduce the t=
-ime it takes to fail the higher order memory allocations in case higher ord=
-er pages are not available.
+Change hantro_codec_ops run prototype from 'void' to 'int'.
+This allow to cancel the job if an error occur while configuring
+the hardware.
 
-Will send out the corresponding patch.
+Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+---
+version 8:
+ - add Ezequiel review tag
 
-Thank you very much for your inputs.
+version 5:
+ - forward hantro_h264_dec_prepare_run() return value in case
+   of error
 
--
-Praveen Kumar Kannoju.
+ drivers/staging/media/hantro/hantro_drv.c     |  4 +++-
+ .../staging/media/hantro/hantro_g1_h264_dec.c | 10 +++++++---
+ .../media/hantro/hantro_g1_mpeg2_dec.c        |  4 +++-
+ .../staging/media/hantro/hantro_g1_vp8_dec.c  |  6 ++++--
+ .../staging/media/hantro/hantro_h1_jpeg_enc.c |  4 +++-
+ drivers/staging/media/hantro/hantro_hw.h      | 19 ++++++++++---------
+ .../media/hantro/rk3399_vpu_hw_jpeg_enc.c     |  4 +++-
+ .../media/hantro/rk3399_vpu_hw_mpeg2_dec.c    |  4 +++-
+ .../media/hantro/rk3399_vpu_hw_vp8_dec.c      |  6 ++++--
+ 9 files changed, 40 insertions(+), 21 deletions(-)
 
+diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
+index 595e82a82728..02c5c2f1a88b 100644
+--- a/drivers/staging/media/hantro/hantro_drv.c
++++ b/drivers/staging/media/hantro/hantro_drv.c
+@@ -161,7 +161,9 @@ static void device_run(void *priv)
+ 
+ 	v4l2_m2m_buf_copy_metadata(src, dst, true);
+ 
+-	ctx->codec_ops->run(ctx);
++	if (ctx->codec_ops->run(ctx))
++		goto err_cancel_job;
++
+ 	return;
+ 
+ err_cancel_job:
+diff --git a/drivers/staging/media/hantro/hantro_g1_h264_dec.c b/drivers/staging/media/hantro/hantro_g1_h264_dec.c
+index 845bef73d218..5c792b7bcb79 100644
+--- a/drivers/staging/media/hantro/hantro_g1_h264_dec.c
++++ b/drivers/staging/media/hantro/hantro_g1_h264_dec.c
+@@ -273,13 +273,15 @@ static void set_buffers(struct hantro_ctx *ctx)
+ 	vdpu_write_relaxed(vpu, ctx->h264_dec.priv.dma, G1_REG_ADDR_QTABLE);
+ }
+ 
+-void hantro_g1_h264_dec_run(struct hantro_ctx *ctx)
++int hantro_g1_h264_dec_run(struct hantro_ctx *ctx)
+ {
+ 	struct hantro_dev *vpu = ctx->dev;
++	int ret;
+ 
+ 	/* Prepare the H264 decoder context. */
+-	if (hantro_h264_dec_prepare_run(ctx))
+-		return;
++	ret = hantro_h264_dec_prepare_run(ctx);
++	if (ret)
++		return ret;
+ 
+ 	/* Configure hardware registers. */
+ 	set_params(ctx);
+@@ -301,4 +303,6 @@ void hantro_g1_h264_dec_run(struct hantro_ctx *ctx)
+ 			   G1_REG_CONFIG_DEC_CLK_GATE_E,
+ 			   G1_REG_CONFIG);
+ 	vdpu_write(vpu, G1_REG_INTERRUPT_DEC_E, G1_REG_INTERRUPT);
++
++	return 0;
+ }
+diff --git a/drivers/staging/media/hantro/hantro_g1_mpeg2_dec.c b/drivers/staging/media/hantro/hantro_g1_mpeg2_dec.c
+index 6386a3989bfe..5e8943d31dc5 100644
+--- a/drivers/staging/media/hantro/hantro_g1_mpeg2_dec.c
++++ b/drivers/staging/media/hantro/hantro_g1_mpeg2_dec.c
+@@ -155,7 +155,7 @@ hantro_g1_mpeg2_dec_set_buffers(struct hantro_dev *vpu, struct hantro_ctx *ctx,
+ 	vdpu_write_relaxed(vpu, backward_addr, G1_REG_REFER3_BASE);
+ }
+ 
+-void hantro_g1_mpeg2_dec_run(struct hantro_ctx *ctx)
++int hantro_g1_mpeg2_dec_run(struct hantro_ctx *ctx)
+ {
+ 	struct hantro_dev *vpu = ctx->dev;
+ 	struct vb2_v4l2_buffer *src_buf, *dst_buf;
+@@ -248,4 +248,6 @@ void hantro_g1_mpeg2_dec_run(struct hantro_ctx *ctx)
+ 
+ 	reg = G1_REG_DEC_E(1);
+ 	vdpu_write(vpu, reg, G1_SWREG(1));
++
++	return 0;
+ }
+diff --git a/drivers/staging/media/hantro/hantro_g1_vp8_dec.c b/drivers/staging/media/hantro/hantro_g1_vp8_dec.c
+index 57002ba70176..96622a7f8279 100644
+--- a/drivers/staging/media/hantro/hantro_g1_vp8_dec.c
++++ b/drivers/staging/media/hantro/hantro_g1_vp8_dec.c
+@@ -425,7 +425,7 @@ static void cfg_buffers(struct hantro_ctx *ctx,
+ 	vdpu_write_relaxed(vpu, dst_dma, G1_REG_ADDR_DST);
+ }
+ 
+-void hantro_g1_vp8_dec_run(struct hantro_ctx *ctx)
++int hantro_g1_vp8_dec_run(struct hantro_ctx *ctx)
+ {
+ 	const struct v4l2_ctrl_vp8_frame *hdr;
+ 	struct hantro_dev *vpu = ctx->dev;
+@@ -438,7 +438,7 @@ void hantro_g1_vp8_dec_run(struct hantro_ctx *ctx)
+ 
+ 	hdr = hantro_get_ctrl(ctx, V4L2_CID_STATELESS_VP8_FRAME);
+ 	if (WARN_ON(!hdr))
+-		return;
++		return -EINVAL;
+ 
+ 	/* Reset segment_map buffer in keyframe */
+ 	if (V4L2_VP8_FRAME_IS_KEY_FRAME(hdr) && ctx->vp8_dec.segment_map.cpu)
+@@ -498,4 +498,6 @@ void hantro_g1_vp8_dec_run(struct hantro_ctx *ctx)
+ 	hantro_end_prepare_run(ctx);
+ 
+ 	vdpu_write(vpu, G1_REG_INTERRUPT_DEC_E, G1_REG_INTERRUPT);
++
++	return 0;
+ }
+diff --git a/drivers/staging/media/hantro/hantro_h1_jpeg_enc.c b/drivers/staging/media/hantro/hantro_h1_jpeg_enc.c
+index b88dc4ed06db..56cf261a8e95 100644
+--- a/drivers/staging/media/hantro/hantro_h1_jpeg_enc.c
++++ b/drivers/staging/media/hantro/hantro_h1_jpeg_enc.c
+@@ -88,7 +88,7 @@ hantro_h1_jpeg_enc_set_qtable(struct hantro_dev *vpu,
+ 	}
+ }
+ 
+-void hantro_h1_jpeg_enc_run(struct hantro_ctx *ctx)
++int hantro_h1_jpeg_enc_run(struct hantro_ctx *ctx)
+ {
+ 	struct hantro_dev *vpu = ctx->dev;
+ 	struct vb2_v4l2_buffer *src_buf, *dst_buf;
+@@ -136,6 +136,8 @@ void hantro_h1_jpeg_enc_run(struct hantro_ctx *ctx)
+ 	hantro_end_prepare_run(ctx);
+ 
+ 	vepu_write(vpu, reg, H1_REG_ENC_CTRL);
++
++	return 0;
+ }
+ 
+ void hantro_jpeg_enc_done(struct hantro_ctx *ctx)
+diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
+index 13a6e7113001..a76852966578 100644
+--- a/drivers/staging/media/hantro/hantro_hw.h
++++ b/drivers/staging/media/hantro/hantro_hw.h
+@@ -126,14 +126,15 @@ struct hantro_postproc_ctx {
+  *		Optional and called from process context.
+  * @run:	Start single {en,de)coding job. Called from atomic context
+  *		to indicate that a pair of buffers is ready and the hardware
+- *		should be programmed and started.
++ *		should be programmed and started. Returns zero if OK, a
++ *		negative value in error cases.
+  * @done:	Read back processing results and additional data from hardware.
+  * @reset:	Reset the hardware in case of a timeout.
+  */
+ struct hantro_codec_ops {
+ 	int (*init)(struct hantro_ctx *ctx);
+ 	void (*exit)(struct hantro_ctx *ctx);
+-	void (*run)(struct hantro_ctx *ctx);
++	int (*run)(struct hantro_ctx *ctx);
+ 	void (*done)(struct hantro_ctx *ctx);
+ 	void (*reset)(struct hantro_ctx *ctx);
+ };
+@@ -164,8 +165,8 @@ void hantro_irq_done(struct hantro_dev *vpu,
+ void hantro_start_prepare_run(struct hantro_ctx *ctx);
+ void hantro_end_prepare_run(struct hantro_ctx *ctx);
+ 
+-void hantro_h1_jpeg_enc_run(struct hantro_ctx *ctx);
+-void rk3399_vpu_jpeg_enc_run(struct hantro_ctx *ctx);
++int hantro_h1_jpeg_enc_run(struct hantro_ctx *ctx);
++int rk3399_vpu_jpeg_enc_run(struct hantro_ctx *ctx);
+ int hantro_jpeg_enc_init(struct hantro_ctx *ctx);
+ void hantro_jpeg_enc_exit(struct hantro_ctx *ctx);
+ void hantro_jpeg_enc_done(struct hantro_ctx *ctx);
+@@ -173,7 +174,7 @@ void hantro_jpeg_enc_done(struct hantro_ctx *ctx);
+ dma_addr_t hantro_h264_get_ref_buf(struct hantro_ctx *ctx,
+ 				   unsigned int dpb_idx);
+ int hantro_h264_dec_prepare_run(struct hantro_ctx *ctx);
+-void hantro_g1_h264_dec_run(struct hantro_ctx *ctx);
++int hantro_g1_h264_dec_run(struct hantro_ctx *ctx);
+ int hantro_h264_dec_init(struct hantro_ctx *ctx);
+ void hantro_h264_dec_exit(struct hantro_ctx *ctx);
+ 
+@@ -204,15 +205,15 @@ hantro_h264_mv_size(unsigned int width, unsigned int height)
+ 	return 64 * MB_WIDTH(width) * MB_WIDTH(height) + 32;
+ }
+ 
+-void hantro_g1_mpeg2_dec_run(struct hantro_ctx *ctx);
+-void rk3399_vpu_mpeg2_dec_run(struct hantro_ctx *ctx);
++int hantro_g1_mpeg2_dec_run(struct hantro_ctx *ctx);
++int rk3399_vpu_mpeg2_dec_run(struct hantro_ctx *ctx);
+ void hantro_mpeg2_dec_copy_qtable(u8 *qtable,
+ 	const struct v4l2_ctrl_mpeg2_quantization *ctrl);
+ int hantro_mpeg2_dec_init(struct hantro_ctx *ctx);
+ void hantro_mpeg2_dec_exit(struct hantro_ctx *ctx);
+ 
+-void hantro_g1_vp8_dec_run(struct hantro_ctx *ctx);
+-void rk3399_vpu_vp8_dec_run(struct hantro_ctx *ctx);
++int hantro_g1_vp8_dec_run(struct hantro_ctx *ctx);
++int rk3399_vpu_vp8_dec_run(struct hantro_ctx *ctx);
+ int hantro_vp8_dec_init(struct hantro_ctx *ctx);
+ void hantro_vp8_dec_exit(struct hantro_ctx *ctx);
+ void hantro_vp8_prob_update(struct hantro_ctx *ctx,
+diff --git a/drivers/staging/media/hantro/rk3399_vpu_hw_jpeg_enc.c b/drivers/staging/media/hantro/rk3399_vpu_hw_jpeg_enc.c
+index 3498e6124acd..3a27ebef4f38 100644
+--- a/drivers/staging/media/hantro/rk3399_vpu_hw_jpeg_enc.c
++++ b/drivers/staging/media/hantro/rk3399_vpu_hw_jpeg_enc.c
+@@ -118,7 +118,7 @@ rk3399_vpu_jpeg_enc_set_qtable(struct hantro_dev *vpu,
+ 	}
+ }
+ 
+-void rk3399_vpu_jpeg_enc_run(struct hantro_ctx *ctx)
++int rk3399_vpu_jpeg_enc_run(struct hantro_ctx *ctx)
+ {
+ 	struct hantro_dev *vpu = ctx->dev;
+ 	struct vb2_v4l2_buffer *src_buf, *dst_buf;
+@@ -168,4 +168,6 @@ void rk3399_vpu_jpeg_enc_run(struct hantro_ctx *ctx)
+ 	/* Kick the watchdog and start encoding */
+ 	hantro_end_prepare_run(ctx);
+ 	vepu_write(vpu, reg, VEPU_REG_ENCODE_START);
++
++	return 0;
+ }
+diff --git a/drivers/staging/media/hantro/rk3399_vpu_hw_mpeg2_dec.c b/drivers/staging/media/hantro/rk3399_vpu_hw_mpeg2_dec.c
+index f610fa5b4335..4bd3080abbc1 100644
+--- a/drivers/staging/media/hantro/rk3399_vpu_hw_mpeg2_dec.c
++++ b/drivers/staging/media/hantro/rk3399_vpu_hw_mpeg2_dec.c
+@@ -157,7 +157,7 @@ rk3399_vpu_mpeg2_dec_set_buffers(struct hantro_dev *vpu,
+ 	vdpu_write_relaxed(vpu, backward_addr, VDPU_REG_REFER3_BASE);
+ }
+ 
+-void rk3399_vpu_mpeg2_dec_run(struct hantro_ctx *ctx)
++int rk3399_vpu_mpeg2_dec_run(struct hantro_ctx *ctx)
+ {
+ 	struct hantro_dev *vpu = ctx->dev;
+ 	struct vb2_v4l2_buffer *src_buf, *dst_buf;
+@@ -254,4 +254,6 @@ void rk3399_vpu_mpeg2_dec_run(struct hantro_ctx *ctx)
+ 
+ 	reg = vdpu_read(vpu, VDPU_SWREG(57)) | VDPU_REG_DEC_E(1);
+ 	vdpu_write(vpu, reg, VDPU_SWREG(57));
++
++	return 0;
+ }
+diff --git a/drivers/staging/media/hantro/rk3399_vpu_hw_vp8_dec.c b/drivers/staging/media/hantro/rk3399_vpu_hw_vp8_dec.c
+index 8661a3cc1e6b..e5d20fe5b007 100644
+--- a/drivers/staging/media/hantro/rk3399_vpu_hw_vp8_dec.c
++++ b/drivers/staging/media/hantro/rk3399_vpu_hw_vp8_dec.c
+@@ -503,7 +503,7 @@ static void cfg_buffers(struct hantro_ctx *ctx,
+ 	vdpu_write_relaxed(vpu, dst_dma, VDPU_REG_ADDR_DST);
+ }
+ 
+-void rk3399_vpu_vp8_dec_run(struct hantro_ctx *ctx)
++int rk3399_vpu_vp8_dec_run(struct hantro_ctx *ctx)
+ {
+ 	const struct v4l2_ctrl_vp8_frame *hdr;
+ 	struct hantro_dev *vpu = ctx->dev;
+@@ -516,7 +516,7 @@ void rk3399_vpu_vp8_dec_run(struct hantro_ctx *ctx)
+ 
+ 	hdr = hantro_get_ctrl(ctx, V4L2_CID_STATELESS_VP8_FRAME);
+ 	if (WARN_ON(!hdr))
+-		return;
++		return -EINVAL;
+ 
+ 	/* Reset segment_map buffer in keyframe */
+ 	if (V4L2_VP8_FRAME_IS_KEY_FRAME(hdr) && ctx->vp8_dec.segment_map.cpu)
+@@ -589,4 +589,6 @@ void rk3399_vpu_vp8_dec_run(struct hantro_ctx *ctx)
+ 	hantro_end_prepare_run(ctx);
+ 
+ 	hantro_reg_write(vpu, &vp8_dec_start_dec, 1);
++
++	return 0;
+ }
+-- 
+2.25.1
 
------Original Message-----
-From: Jason Gunthorpe [mailto:jgg@nvidia.com]=20
-Sent: 31 March 2021 11:23 PM
-To: Aruna Ramakrishna <aruna.ramakrishna@oracle.com>
-Cc: Praveen Kannoju <praveen.kannoju@oracle.com>; leon@kernel.org; dledford=
-@redhat.com; linux-rdma@vger.kernel.org; linux-kernel@vger.kernel.org; Raje=
-sh Sivaramasubramaniom <rajesh.sivaramasubramaniom@oracle.com>; Rama Nichan=
-amatlu <rama.nichanamatlu@oracle.com>; Jeffery Yoder <jeffery.yoder@oracle.=
-com>
-Subject: Re: [PATCH v2] IB/mlx5: Reduce max order of memory allocated for x=
-lt update
-
-On Thu, Mar 25, 2021 at 11:39:28AM -0300, Jason Gunthorpe wrote:
-> On Tue, Mar 23, 2021 at 09:27:38PM -0700, Aruna Ramakrishna wrote:
->=20
-> > > Do you have benchmarks that show the performance of the high order=20
-> > > pages is not relavent? I'm a bit surprised to hear that
-> > >=20
-> >=20
-> > I guess my point was more to the effect that an order-8 alloc will=20
-> > fail more often than not, in this flow. For instance, when we were=20
-> > debugging the latency spikes here, this was the typical buddyinfo=20
-> > output on that system:
-> >=20
-> > Node 0, zone      DMA      0      1      1      2      3      0      1 =
-     0      1      1      3=20
-> > Node 0, zone    DMA32      7      7      7      6     10      2      6 =
-     7      6      2    306=20
-> > Node 0, zone   Normal   3390  51354  17574   6556   1586     26      2 =
-     1      0      0      0=20
-> > Node 1, zone   Normal  11519  23315  23306   9738     73      2      0 =
-     1      0      0      0=20
-> >=20
-> > I think this level of fragmentation is pretty normal on long running=20
-> > systems. Here, in the reg_mr flow, the first try (order-8) alloc=20
-> > will probably fail 9 times out of 10 (esp. after the addition of=20
-> > GFP_NORETRY flag), and then as fallback, the code tries to allocate=20
-> > a lower order, and if that too fails, it allocates a page. I think=20
-> > it makes sense to just avoid trying an order-8 alloc here.
->=20
-> But a system like this won't get THPs either, so I'm not sure it is=20
-> relevant. The function was designed as it is to consume a "THP" if it=20
-> is available.
-
-So can we do this with just the addition of __GFP_NORETRY ?
-
-Jason
