@@ -2,171 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A873521DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A073A3521DE
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235666AbhDAVp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 17:45:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55200 "EHLO
+        id S235674AbhDAVqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 17:46:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234724AbhDAVp4 (ORCPT
+        with ESMTP id S234211AbhDAVqY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 17:45:56 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F8E6C0613E6;
-        Thu,  1 Apr 2021 14:45:56 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id w28so4928698lfn.2;
-        Thu, 01 Apr 2021 14:45:56 -0700 (PDT)
+        Thu, 1 Apr 2021 17:46:24 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA5DC0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 14:46:24 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id j25so2392777pfe.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 14:46:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=P5Ia//itWDC9V/vcJ3c9AEqi1Bj3R5y64czNxp6zEcw=;
-        b=C8BLmv9EQ3prOkB4r0BJRFvU/UkWUr0hdGvFgYdlAQv7xK0D/uqGYnfxMNfATpsjSw
-         ztJdX08okda7kYW/quR0tG6m+sD7WW07zQKeDdplFEi1f5idts6g0FcEqsYfjBV4G5xt
-         GyP6yOieuqst7K0lcsJ8UZ66DV/SwA2Q07rjk7+U/QNGQw7bmN/RzqI81vh59rr4/Ar5
-         wgZf0xLs34hOiBuHlrrMEOxgIMqqoaoIBCD2/tuL19+/BLgQzT0Wjsn1id+zu/uBmLZ2
-         tzbJ+xlsfHP1B44sCiZEZe7DRMsCLPulEr/yE68t3J+8hCmmAhZ9uyjZFx/gYI+eqKnr
-         Dfzw==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=usJD8QXCUUQ3yDD19nRhcfJUMWYiKf+EiZNOMzSngU8=;
+        b=G4ChGKwb73jivZgOdREGW7Jl/xK+07gkogP9+1kyu2QispNTwwRqLKZMdl/YtU/+Lt
+         /6pS84xtYTduYfABsJSoN4e+N+/d5AQAGm1DhERFMawsMiwP/sKWF3z+8kShjCvWc2Xx
+         J1qo99Tg1cz6t80SOTCoCClKVew6dbnE2D8Wo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=P5Ia//itWDC9V/vcJ3c9AEqi1Bj3R5y64czNxp6zEcw=;
-        b=obBd2pTHUyLt3PtNbNoRHglQsGHp2shs58OlmQLi3ZYErNd3q3Q6HvmvTxC7rtPC3t
-         sMD4Lsa9R3jH18Q5ro+cvVkDhqxYdpN+CFCjEfV5XGPBEeZarhMrBVCjKj6yDVDHB+uS
-         GbDpl3YlHyGB+oQykDv2Tz/coTANtW8JRhxseohRxUNHq4Lr8RctAmB9yLJA8dD3N8mt
-         HfmQYJ3F0SYJHHqaraBuffyT9Y+0xjqxaeYSizSGo8+h+mnsX6mc0LSeiLSf+zGSehSx
-         hogHU3URj0UkJrzytbyt74nfGj5Sd7h83o7DeoAl0vLZk6cxENrVbWTprhCvFJTN4Odf
-         fqEA==
-X-Gm-Message-State: AOAM531RI0v2VWYEpEB3ACe+k3gqzLR4dPnE2As+2zVq7SSEbuIXu033
-        qNuwIyGzQ5DCGgqwxQRrbqI=
-X-Google-Smtp-Source: ABdhPJzWsvw5Ygx/cSlqZqDz6LTyQo25ET8arYh335Qd7wFLbqYt1X9un11PTzTq8MgMtVUaOdE8mg==
-X-Received: by 2002:ac2:43d4:: with SMTP id u20mr6535270lfl.210.1617313554959;
-        Thu, 01 Apr 2021 14:45:54 -0700 (PDT)
-Received: from DESKTOP-GSFPEC9.localdomain (broadband-46-242-10-29.ip.moscow.rt.ru. [46.242.10.29])
-        by smtp.gmail.com with ESMTPSA id a18sm704508ljj.106.2021.04.01.14.45.54
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=usJD8QXCUUQ3yDD19nRhcfJUMWYiKf+EiZNOMzSngU8=;
+        b=pocvOOT/cHtZ3eyV0qwnsJJohYRhsoNlIx0FPJ7jcdneSoWXbJf6c/a/pPYidO8E0Z
+         na5zbFEUzeLeX7IG6ChS0oznj7kBGOb88QkovxQNhAR5hIIhWnzB6XMu0AKmCL6sJ5Ua
+         V+tJDl9Qkd6fpOCPYikevlzkJyI+bB5m4EabsAU92PcoFnU3RxAXOrzJIKGHvT899nso
+         UrJic2zrHBAJJZFOXz09nxRiSX+MzpllUqJXZV8x+MI+oKjocsJzUy6AJULBgZ0GXRwS
+         QeBESJVPQdS9u8kJJklp3DsCrNNdna5qQbgN0Z4hL78va2aFUrmlTugV5CNUaFZglmyi
+         rv9w==
+X-Gm-Message-State: AOAM531ik2r+ZrRyIDetTyu0IGckoX8wXKQIiGywniP+LWlFtwf9hpj8
+        YmOROKRbzg6etgnxlVR5SMnxVg==
+X-Google-Smtp-Source: ABdhPJw2Igjg2dUPUc361qNdAsnz5koMvMjgAifwUOU3txfIVOmKgYERtvxS6R3TbAJ8ajqzLbNIRQ==
+X-Received: by 2002:a63:2f03:: with SMTP id v3mr9286709pgv.408.1617313584551;
+        Thu, 01 Apr 2021 14:46:24 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id x186sm6325466pfc.65.2021.04.01.14.46.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 14:45:54 -0700 (PDT)
-From:   Konstantin Aladyshev <aladyshev22@gmail.com>
-Cc:     kunyi@google.com, aladyshev22@gmail.com,
-        Konstantin Aladyshev <aladyshev@nicevt.ru>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] hwmon: (sbtsi) Don't read sensor more than once if it doesn't respond
-Date:   Fri,  2 Apr 2021 00:45:42 +0300
-Message-Id: <20210401214543.4073-1-aladyshev22@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 01 Apr 2021 14:46:23 -0700 (PDT)
+Date:   Thu, 1 Apr 2021 14:46:23 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Roy Yang <royyang@google.com>
+Cc:     akpm@linux-foundation.org, alex.popov@linux.com,
+        ard.biesheuvel@linaro.org, catalin.marinas@arm.com, corbet@lwn.net,
+        david@redhat.com, elena.reshetova@intel.com, glider@google.com,
+        jannh@google.com, kernel-hardening@lists.openwall.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, luto@kernel.org, mark.rutland@arm.com,
+        peterz@infradead.org, rdunlap@infradead.org, rppt@linux.ibm.com,
+        tglx@linutronix.de, vbabka@suse.cz, will@kernel.org, x86@kernel.org
+Subject: Re: [PATCH v8 0/6] Optionally randomize kernel stack offset each
+ syscall
+Message-ID: <202104011442.B20F2BAFC@keescook>
+References: <20210330205750.428816-1-keescook@chromium.org>
+ <20210401191744.1685896-1-royyang@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401191744.1685896-1-royyang@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Konstantin Aladyshev <aladyshev@nicevt.ru>
+On Thu, Apr 01, 2021 at 12:17:44PM -0700, Roy Yang wrote:
+> Both Android and Chrome OS really want this feature; For Container-Optimized OS, we have customers
+> interested in the defense too.
 
-SBTSI sensors don't work when the CPU is off.
-In this case every 'i2c_smbus_read_byte_data' function would fail
-by a timeout.
-Currently temp1_max/temp1_min file reads can cause two such timeouts
-for every read.
-Restructure code so there will be no more than one timeout for every
-read opeartion.
+It's pretty close! There are a couple recent comments that need to be
+addressed, but hopefully it can land if x86 and arm64 maintainers are
+happy v10.
 
-Signed-off-by: Konstantin Aladyshev <aladyshev@nicevt.ru>
----
- drivers/hwmon/sbtsi_temp.c | 59 +++++++++++++++++++-------------------
- 1 file changed, 29 insertions(+), 30 deletions(-)
+> Change-Id: I1eb1b726007aa8f9c374b934cc1c690fb4924aa3
+> -- 
+> 2.31.0.208.g409f899ff0-goog
 
-diff --git a/drivers/hwmon/sbtsi_temp.c b/drivers/hwmon/sbtsi_temp.c
-index e35357c48b8e..e09a8cf6de45 100644
---- a/drivers/hwmon/sbtsi_temp.c
-+++ b/drivers/hwmon/sbtsi_temp.c
-@@ -74,53 +74,52 @@ static int sbtsi_read(struct device *dev, enum hwmon_sensor_types type,
- 		      u32 attr, int channel, long *val)
- {
- 	struct sbtsi_data *data = dev_get_drvdata(dev);
-+	u8 temp_int_reg, temp_dec_reg;
- 	s32 temp_int, temp_dec;
- 	int err;
- 
- 	switch (attr) {
- 	case hwmon_temp_input:
--		/*
--		 * ReadOrder bit specifies the reading order of integer and
--		 * decimal part of CPU temp for atomic reads. If bit == 0,
--		 * reading integer part triggers latching of the decimal part,
--		 * so integer part should be read first. If bit == 1, read
--		 * order should be reversed.
--		 */
--		err = i2c_smbus_read_byte_data(data->client, SBTSI_REG_CONFIG);
--		if (err < 0)
--			return err;
--
--		mutex_lock(&data->lock);
--		if (err & BIT(SBTSI_CONFIG_READ_ORDER_SHIFT)) {
--			temp_dec = i2c_smbus_read_byte_data(data->client, SBTSI_REG_TEMP_DEC);
--			temp_int = i2c_smbus_read_byte_data(data->client, SBTSI_REG_TEMP_INT);
--		} else {
--			temp_int = i2c_smbus_read_byte_data(data->client, SBTSI_REG_TEMP_INT);
--			temp_dec = i2c_smbus_read_byte_data(data->client, SBTSI_REG_TEMP_DEC);
--		}
--		mutex_unlock(&data->lock);
-+		temp_int_reg = SBTSI_REG_TEMP_INT;
-+		temp_dec_reg = SBTSI_REG_TEMP_DEC;
- 		break;
- 	case hwmon_temp_max:
--		mutex_lock(&data->lock);
--		temp_int = i2c_smbus_read_byte_data(data->client, SBTSI_REG_TEMP_HIGH_INT);
--		temp_dec = i2c_smbus_read_byte_data(data->client, SBTSI_REG_TEMP_HIGH_DEC);
--		mutex_unlock(&data->lock);
-+		temp_int_reg = SBTSI_REG_TEMP_HIGH_INT;
-+		temp_dec_reg = SBTSI_REG_TEMP_HIGH_DEC;
- 		break;
- 	case hwmon_temp_min:
--		mutex_lock(&data->lock);
--		temp_int = i2c_smbus_read_byte_data(data->client, SBTSI_REG_TEMP_LOW_INT);
--		temp_dec = i2c_smbus_read_byte_data(data->client, SBTSI_REG_TEMP_LOW_DEC);
--		mutex_unlock(&data->lock);
-+		temp_int_reg = SBTSI_REG_TEMP_LOW_INT;
-+		temp_dec_reg = SBTSI_REG_TEMP_LOW_DEC;
- 		break;
- 	default:
- 		return -EINVAL;
- 	}
- 
-+	/*
-+	 * ReadOrder bit specifies the reading order of integer and
-+	 * decimal part of CPU temp for atomic reads. If bit == 0,
-+	 * reading integer part triggers latching of the decimal part,
-+	 * so integer part should be read first. If bit == 1, read
-+	 * order should be reversed.
-+	 */
-+	err = i2c_smbus_read_byte_data(data->client, SBTSI_REG_CONFIG);
-+	if (err < 0)
-+		return err;
-+
-+	mutex_lock(&data->lock);
-+	if (err & BIT(SBTSI_CONFIG_READ_ORDER_SHIFT)) {
-+		temp_dec = i2c_smbus_read_byte_data(data->client, temp_dec_reg);
-+		temp_int = i2c_smbus_read_byte_data(data->client, temp_int_reg);
-+	} else {
-+		temp_int = i2c_smbus_read_byte_data(data->client, temp_int_reg);
-+		temp_dec = i2c_smbus_read_byte_data(data->client, temp_dec_reg);
-+	}
-+	mutex_unlock(&data->lock);
- 
--	if (temp_int < 0)
--		return temp_int;
- 	if (temp_dec < 0)
- 		return temp_dec;
-+	if (temp_int < 0)
-+		return temp_int;
- 
- 	*val = sbtsi_reg_to_mc(temp_int, temp_dec);
- 
+And to let other folks know, I'm guessing this email got sent with git
+send-email to try to get a valid In-Reply-To header, but I guess git
+trashed the Subject and ran hooks to generate a Change-Id UUID.
+
+I assume it's from following the "Reply instructions" at the bottom of:
+https://lore.kernel.org/lkml/20210330205750.428816-1-keescook@chromium.org/
+(It seems those need clarification about Subject handling.)
+
 -- 
-2.17.1
-
+Kees Cook
