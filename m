@@ -2,319 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BFA6351906
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 019D93518F4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235231AbhDARtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:49:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57240 "EHLO
+        id S235016AbhDARse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:48:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234722AbhDARj1 (ORCPT
+        with ESMTP id S234700AbhDARjQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:39:27 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94ED4C08EC3B
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 06:44:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=6KSRs7S4YweZ8o3DqPK161BkSZcXGT2BQw8VyK+l4QY=; b=WcPVGnm7uLqOKW7NJBHTlASNJg
-        Dl62CUpquoT1duPgBzuseh5gwFxX//GKS4W0yfMzxlP4TaRGQzMcb8aikv+atG5f+89vSUTy2D0Tg
-        G4p7ujxusZcanfeWaP/4uuo5VCo5kev44WvEulis2qMGFyH4EB6PSdt646TiuXrMoKI5V5cgiHs45
-        bqQyOxxFLlTiAvc1nW5MxgZyFCB/WfhA4Sf31S6EzqNgwrT1Za9Y00oTLmaJ0pPzLMbIoekdkrfUh
-        jfBm4Hr68rukbzf2r+xodzZ+UvTnnWh4ohaQdyCUQ/ypn6MdLfP/xQ3ceselB6dZuNYvM6WbAIRZg
-        3a5MywWg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lRxag-009isi-Ul; Thu, 01 Apr 2021 13:44:18 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3E59C307691;
-        Thu,  1 Apr 2021 15:42:30 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id E090124C1A53D; Thu,  1 Apr 2021 15:42:29 +0200 (CEST)
-Message-ID: <20210401133917.469929784@infradead.org>
-User-Agent: quilt/0.66
-Date:   Thu, 01 Apr 2021 15:10:19 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     joel@joelfernandes.org, chris.hyser@oracle.com, joshdon@google.com,
-        mingo@kernel.org, vincent.guittot@linaro.org,
-        valentin.schneider@arm.com, mgorman@suse.de
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org, tj@kernel.org,
-        tglx@linutronix.de
-Subject: [PATCH 7/9] sched: Cgroup core-scheduling interface
-References: <20210401131012.395311786@infradead.org>
+        Thu, 1 Apr 2021 13:39:16 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on20616.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e88::616])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905ECC05BD3B;
+        Thu,  1 Apr 2021 06:12:31 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mi4JUVs/RhWnDcPnh4OzgBjlxgADvRZdKfbkqekxjT9vcUjOjF0AMqukn83FPJ5fS8sivBTYTmYdEr+XNx+aPB68baigsopesum5MScLbk1UZxVqFl63mrEGd1HyGldUQWM4EYIodZWYYH29zYw1SVMTaAuxtsc/tQpo9dCXtQ7D+rLtDaA65iNxBvx8FhTc2hy7W0uHOoHGvSsJcxylUy2iCD2z5U5DfwhfSF6bBL3tYWvzHH7agzSScWVbDlcGjUNIzKx/OmoiBHIbUVLn1O8KoAxWMVabOarwkFsFd5PCA0igRP/piOsUXnLBjTf8b4N2Dj1trsAfCZdeDal/Bw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ybeFRWEwGVsFG8ikK6z6UITgVU5sGtbaTB4U9CHvex0=;
+ b=NJaqultIjhoI1JPnC/ccJox9e3YMm8mqs8QYo2Nm/Om2RpqKZ5VQ29NWYq4588FMMuYnI0ytCY6RWkeR0iI+zEopagsXl1JbJn7LLmx/GFGJyEJgl65Pz0+JNZWYniSSyKAbmmSxB48Fjt1cO0JL2rakhjWyhpND7l2mUCW/NSR+uVCPreOHbALFaR4ISlhstCdEgDECgT1SjfpWqbOyQLsCP2X8yNehtXNhweXGm0KY8Oe45duSwtnMlFAGg78bXSzTweQUBe2nKQoRH/HAGCrNoWgyqWJHMt6jTobBuQLTulnIN+mAyRtDUq3x2HbO76vcCUX4zpQdT2OWSKFMDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ybeFRWEwGVsFG8ikK6z6UITgVU5sGtbaTB4U9CHvex0=;
+ b=clQk8CQ91VotZ2ARsvpDRpyO9tpGF2s3+Onu0qwaR/qcw2ep79sd42Zi/0uKJS0bj9NMFpOjRA1QT8r32hZFChsQa67N3tP9TZEd0I30Yf57+AG7GaHj1fhs1/FDE7xMLSf63uIMVOkRdcDtrqSO3kUPgRf8Wc5slwO+A1Y+gOUsR207XRqa9KOmq7vO2iMSab92URVipNQvAYSFV+zkETL5v9PK31DrismCE55dq3/e4r37yNzSiDPU/NX0DY/dCdCvYtHQGCNmBaIs5hK1N1HS0r8Uxa6J8KtsKqsPHLXk8+Xxwk9maTMJOMiN14IQxz/Ujev4qABVGDe80fMXug==
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB2858.namprd12.prod.outlook.com (2603:10b6:5:182::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27; Thu, 1 Apr
+ 2021 13:12:29 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3999.028; Thu, 1 Apr 2021
+ 13:12:29 +0000
+Date:   Thu, 1 Apr 2021 10:12:27 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>, cohuck@redhat.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        liranl@nvidia.com, oren@nvidia.com, tzahio@nvidia.com,
+        leonro@nvidia.com, yarong@nvidia.com, aviadye@nvidia.com,
+        shahafs@nvidia.com, artemp@nvidia.com, kwankhede@nvidia.com,
+        ACurrid@nvidia.com, cjia@nvidia.com, yishaih@nvidia.com,
+        mjrosato@linux.ibm.com
+Subject: Re: [PATCH 8/9] vfio/pci: export nvlink2 support into vendor
+ vfio_pci drivers
+Message-ID: <20210401131227.GC1463678@nvidia.com>
+References: <20210319163449.GA19186@lst.de>
+ <20210319113642.4a9b0be1@omen.home.shazbot.org>
+ <20210319200749.GB2356281@nvidia.com>
+ <20210319150809.31bcd292@omen.home.shazbot.org>
+ <20210319225943.GH2356281@nvidia.com>
+ <20210319224028.51b01435@x1.home.shazbot.org>
+ <20210321125818.GM2356281@nvidia.com>
+ <20210322104016.36eb3c1f@omen.home.shazbot.org>
+ <20210323193213.GM2356281@nvidia.com>
+ <20210329171053.7a2ebce3@omen.home.shazbot.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210329171053.7a2ebce3@omen.home.shazbot.org>
+X-Originating-IP: [142.162.115.133]
+X-ClientProxiedBy: MN2PR10CA0021.namprd10.prod.outlook.com
+ (2603:10b6:208:120::34) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR10CA0021.namprd10.prod.outlook.com (2603:10b6:208:120::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28 via Frontend Transport; Thu, 1 Apr 2021 13:12:29 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lRx7b-006kWx-Cl; Thu, 01 Apr 2021 10:12:27 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2cb00d9f-4082-4e91-943a-08d8f50fcd50
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2858:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB285810E98FBF81447BBE36C7C27B9@DM6PR12MB2858.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: e5F5axLj5xeWdqjjtI6ACGC2dAqEMCjoGsHzcD57WkWaBg8VpQ7dcj/NoGr6iKtckmnBKjS9ycAzdaLOFd5HSyGdFF5NAT/krLd8oomHx8biwlACnJGEYsozCIlb4HqoPBiHvgvuggnRY8a3rE8fIMNirzB++iG7vaNb8ot1TrRfGYDU6nXDDfn7zgY5pTgC5gBRrNm3B1ormBo2aKhr9b8lDC1233TpVoMTlLpF15z9vDon1vJz69zx3A6MAnQ9lJJNHRI0ZS/+7/IpRS+hBTtWchfJ2tPIHSrwg2/8D207xXzf6ENzcCX7wH8USpiKKUx7NH0uX0L3xbd9f0ZStJs/5hvnSqiXx9nZyULpkq0LU6S44WL7K/Zs9lOJVFv0WOMCk+3lh6eEGbRMbD7q9sF4v4nQYR7bLEo3kxjX7919nhPkoI1nJo+xA/i1nzYNxtNCVVq7gUHGLc3dyVMXq88yP9Ui48XWr0GmK9Aj0RVtG8M4sBNV1fho2Rnk8oS7Q6R0ifa1jnatSo5prn25928hP4PkxbWuf6eg3FqdqpApi6sWMpQxI3h8UQ6Lhks1yGGbDalnYvM0xVQ6O3ncKWHkfYanrG08pTX3tL8C2R8pjXOnlEGqPXPN8SlD7sU6EuyXrSuRrtiWENCKFL4aUDHAqLSuUS5sPNhmg2r0PlE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(346002)(396003)(366004)(1076003)(86362001)(66476007)(54906003)(186003)(38100700001)(9786002)(66556008)(9746002)(36756003)(66946007)(2906002)(5660300002)(6916009)(8936002)(8676002)(316002)(426003)(83380400001)(478600001)(26005)(4326008)(33656002)(2616005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?y1y7b28CEA9nnTrDAwZHTYIufryxFbKu6UhiNyRW0383/tEf9Xu/6tM5OKeK?=
+ =?us-ascii?Q?kgWHi52HDVb+i2JnzDtc9CRrXFze8fm0ZOE5Oq7w0/AplVYp75hwYmTjXklY?=
+ =?us-ascii?Q?BKQpY2wxjHL5UrcL5pMORHo1UuVWrQLUtMoSqAib3Aaw1EMErgev/j+kkdyy?=
+ =?us-ascii?Q?Jt7LoEtAiJBcopJjpN+cLJrtnCyrjpuas/rGfn8rCFPBEOM040MhEdeV9oWF?=
+ =?us-ascii?Q?1n0ds/cBRZym6Jo/MWHojfPfWIScHhZOvyeGTHcf8z4LoZhY7W/eTKWWE5UC?=
+ =?us-ascii?Q?eL3kEMpSAw7YnXJ4H2CfzL+R1/2DfyVYOR6xLRMtwfDp6KZ4/FEuiE7DmW/b?=
+ =?us-ascii?Q?MGwCeBc1NyW6ogN+gIW+og+4viRYE5k0W2qPQ0DsjHKKK+mxr2WMVI7INCG/?=
+ =?us-ascii?Q?/kEMLOZFRddfUsKFpvCZVjEgx0lWts3Y0/4b0to1ghyPBH16m1hd0keOykFx?=
+ =?us-ascii?Q?NbCzOVM7S4X40oBgIfpiMtG3MkCd0aZQF9umALUv2giyGy3iZLx6F3qUusdX?=
+ =?us-ascii?Q?ES+t7G1qs4d9m1keOWzMOXg8/HhnUu5/NGRL9efLLA4CBPUYbbuLOwzXJ/cK?=
+ =?us-ascii?Q?MHJ5YAHN4q+iRkE7oI5vcEXtgQI+2l6VpK8R0cly6WvGSKdyw7d13RgeSuHG?=
+ =?us-ascii?Q?8tISJ9XhCS6ZABVE+Pkkdni6HQei7qVeldKFsdj7rGWNJ4QS/x8iZ1sF1bEW?=
+ =?us-ascii?Q?GBPdiNxHhAFMX70ujB+ofRRF2MzV8UecOhF/6PiZpIneutWTvL3GTvdXySLa?=
+ =?us-ascii?Q?yAclQ36waWkTPBcwFdFbzCWds4hutPxvlZrUgC27RVGrTi42lBd+dYBQKmlZ?=
+ =?us-ascii?Q?I4ojuyQJb+uXepi2tcIwVh+0WlvRFZp61CWSN5jNz+6wo3X1XQjV0qiozixL?=
+ =?us-ascii?Q?Qzmeps+WhKmZfMF9cQ6lgdF7FwUr7ah6di9pZx8xGzDOBBikh86iIsmTLCZJ?=
+ =?us-ascii?Q?1SJxAhpv5HIYTdEqerQYAwLVAJuKpaA1555fxyjxriKheiGKHbs1umf+O9N/?=
+ =?us-ascii?Q?T5+A/GW6HzXyyDt5h3lXRQVY+KIT8ew7eSjrupjPrbkUk66pLBT/7+89WQ55?=
+ =?us-ascii?Q?fbNjjrvm+nMXOwrlrZrL8xQPm2sfm/jk8gdBnJfKK1sGU59WrrOt8SjGxqAB?=
+ =?us-ascii?Q?PJ+UPldpOdHHwoKisiEYgDa86d7HibcjduMOdYeMLljhQnNS5sgGK+buMoQJ?=
+ =?us-ascii?Q?e1vD794MCDRcWxDizMT87PLuuMw+yOdqEmxiGig2r/i0dvxdByireuHjA3PV?=
+ =?us-ascii?Q?BTLGJI6QQ0CN8l0ekih8CQ2LcWPDO5lP+Kx8vLNTk9MvQtpoDOVjLp6yovYE?=
+ =?us-ascii?Q?DeELrqsfH9kXn/+AqhBQ9HBE?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2cb00d9f-4082-4e91-943a-08d8f50fcd50
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2021 13:12:29.5797
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BkNMSUZ6Q6HDh44RNX/s/ufCEVC7wZN/NC/fqVWBlLWp2GD8mO21dvJaYXXWkQ0Y
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2858
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement a basic cgroup core-scheduling interface.
+On Mon, Mar 29, 2021 at 05:10:53PM -0600, Alex Williamson wrote:
+> On Tue, 23 Mar 2021 16:32:13 -0300
+> Jason Gunthorpe <jgg@nvidia.com> wrote:
+> 
+> > On Mon, Mar 22, 2021 at 10:40:16AM -0600, Alex Williamson wrote:
+> > 
+> > > Of course if you start looking at features like migration support,
+> > > that's more than likely not simply an additional region with optional
+> > > information, it would need to interact with the actual state of the
+> > > device.  For those, I would very much support use of a specific
+> > > id_table.  That's not these.  
+> > 
+> > What I don't understand is why do we need two different ways of
+> > inserting vendor code?
+> 
+> Because a PCI id table only identifies the device, these drivers are
+> looking for a device in the context of firmware dependencies.
 
-A new cpu.core_sched file is added which takes the values 0,1. When
-set, the cgroup and all it's descendants will be granted the same
-cookie and thus allowed to share a core with each-other, but not with
-system tasks or tasks of other subtrees that might have another
-cookie.
+The firmware dependencies only exist for a defined list of ID's, so I
+don't entirely agree with this statement. I agree with below though,
+so lets leave it be.
 
-The file is hierarchical, and a subtree can again set it to 1, in
-which case that subtree will get a different cookie and will no longer
-share with the parent tree.
+> > I understood he ment that NVIDI GPUs *without* NVLINK can exist, but
+> > the ID table we have here is supposed to be the NVLINK compatible
+> > ID's.
+> 
+> Those IDs are just for the SXM2 variants of the device that can
+> exist on a variety of platforms, only one of which includes the
+> firmware tables to activate the vfio support.
 
-For each task, the nearest core_sched parent 'wins'.
+AFAIK, SXM2 is a special physical form factor that has the nvlink
+physical connection - it is only for this specific generation of power
+servers that can accept the specific nvlink those cards have.
 
-Interaction with the prctl() interface is non-existent and left for a
-future patch.
+> I think you're looking for a significant inflection in vendor's stated
+> support for vfio use cases, beyond the "best-effort, give it a try",
+> that we currently have.
 
-Noteably; this patch somewhat abuses cgroup_mutex. By holding
-cgroup_mutex over the write() operation, which sets the cookie, the
-cookie is stable in any cgroup callback (that is called with
-cgroup_mutex held). A future patch relies on ss->can_attach() and
-ss->attach() being 'atomic', which is hard to do without cgroup_mutex.
+I see, so they don't want to. Lets leave it then.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- kernel/sched/core.c  |  150 +++++++++++++++++++++++++++++++++++++++++++++++++++
- kernel/sched/sched.h |    7 ++
- 2 files changed, 157 insertions(+)
+Though if Xe breaks everything they need to add/maintain a proper ID
+table, not more hackery.
 
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -5688,10 +5688,53 @@ static inline void sched_core_cpu_starti
- 		}
- 	}
- }
-+
-+void sched_core_cgroup_online(struct task_group *parent, struct task_group *tg)
-+{
-+	lockdep_assert_held(&cgroup_mutex);
-+
-+	if (parent->core_parent) {
-+		WARN_ON_ONCE(parent->core_cookie);
-+		WARN_ON_ONCE(!parent->core_parent->core_cookie);
-+		tg->core_parent = parent->core_parent;
-+
-+	} else if (parent->core_cookie) {
-+		WARN_ON_ONCE(parent->core_parent);
-+		tg->core_parent = parent;
-+	}
-+}
-+
-+void sched_core_cgroup_free(struct task_group *tg)
-+{
-+	sched_core_put_cookie(tg->core_cookie);
-+}
-+
-+unsigned long sched_core_cgroup_cookie(struct task_group *tg)
-+{
-+	unsigned long cookie = 0;
-+
-+	lockdep_assert_held(&cgroup_mutex);
-+
-+	if (tg->core_cookie)
-+		cookie = tg->core_cookie;
-+	else if (tg->core_parent)
-+		cookie = tg->core_parent->core_cookie;
-+
-+	return sched_core_get_cookie(cookie);
-+}
-+
- #else /* !CONFIG_SCHED_CORE */
- 
- static inline void sched_core_cpu_starting(unsigned int cpu) {}
- 
-+static inline void sched_core_cgroup_free(struct task_group *tg) { }
-+static inline void sched_core_cgroup_online(struct task_group *parent, struct task_group tg) { }
-+
-+static inline unsigned long sched_core_cgroup_cookie(struct task_group *tg)
-+{
-+	return 0;
-+}
-+
- static struct task_struct *
- pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- {
-@@ -9310,6 +9353,7 @@ static void sched_free_group(struct task
- 	free_fair_sched_group(tg);
- 	free_rt_sched_group(tg);
- 	autogroup_free(tg);
-+	sched_core_cgroup_free(tg);
- 	kmem_cache_free(task_group_cache, tg);
- }
- 
-@@ -9353,6 +9397,8 @@ void sched_online_group(struct task_grou
- 	spin_unlock_irqrestore(&task_group_lock, flags);
- 
- 	online_fair_sched_group(tg);
-+
-+	sched_core_cgroup_online(parent, tg);
- }
- 
- /* rcu callback to free various structures associated with a task group */
-@@ -9414,6 +9460,7 @@ void sched_move_task(struct task_struct
- {
- 	int queued, running, queue_flags =
- 		DEQUEUE_SAVE | DEQUEUE_MOVE | DEQUEUE_NOCLOCK;
-+	unsigned long cookie;
- 	struct rq_flags rf;
- 	struct rq *rq;
- 
-@@ -9443,6 +9490,10 @@ void sched_move_task(struct task_struct
- 	}
- 
- 	task_rq_unlock(rq, tsk, &rf);
-+
-+	cookie = sched_core_cgroup_cookie(tsk->sched_task_group);
-+	cookie = sched_core_update_cookie(tsk, cookie);
-+	sched_core_put_cookie(cookie);
- }
- 
- static inline struct task_group *css_tg(struct cgroup_subsys_state *css)
-@@ -10050,6 +10101,89 @@ static u64 cpu_rt_period_read_uint(struc
- }
- #endif /* CONFIG_RT_GROUP_SCHED */
- 
-+#ifdef CONFIG_SCHED_CORE
-+u64 cpu_sched_core_read_u64(struct cgroup_subsys_state *css, struct cftype *cft)
-+{
-+	return !!css_tg(css)->core_cookie;
-+}
-+
-+int cpu_sched_core_write_u64(struct cgroup_subsys_state *css, struct cftype *cft, u64 val)
-+{
-+	unsigned long cookie = 0, old_cookie = 0;
-+	struct task_group *tg = css_tg(css);
-+	struct cgroup_subsys_state *cssi;
-+	struct task_group *parent = NULL;
-+	int ret = 0;
-+
-+	if (val > 1)
-+		return -ERANGE;
-+
-+	if (!static_branch_likely(&sched_smt_present))
-+		return -ENODEV;
-+
-+	mutex_lock(&cgroup_mutex);
-+	if (!!val == !!tg->core_cookie)
-+		goto unlock;
-+
-+	old_cookie = tg->core_cookie;
-+	if (val) {
-+		cookie = sched_core_alloc_cookie();
-+		if (!cookie) {
-+			ret = -ENOMEM;
-+			goto unlock;
-+		}
-+		WARN_ON_ONCE(old_cookie);
-+
-+	} else if (tg->parent) {
-+		if (tg->parent->core_parent)
-+			parent = tg->parent->core_parent;
-+		else if (tg->parent->core_cookie)
-+			parent = tg->parent;
-+	}
-+
-+	WARN_ON_ONCE(cookie && parent);
-+
-+	tg->core_cookie = sched_core_get_cookie(cookie);
-+	tg->core_parent = parent;
-+
-+	if (cookie)
-+		parent = tg;
-+	else if (parent)
-+		cookie = sched_core_get_cookie(parent->core_cookie);
-+
-+	css_for_each_descendant_pre(cssi, css) {
-+		struct task_group *tgi = css_tg(cssi);
-+		struct css_task_iter it;
-+		struct task_struct *p;
-+
-+		if (tgi != tg) {
-+			if (tgi->core_cookie || (tgi->core_parent && tgi->core_parent != tg))
-+				continue;
-+
-+			tgi->core_parent = parent;
-+			tgi->core_cookie = 0;
-+		}
-+
-+		css_task_iter_start(cssi, 0, &it);
-+		while ((p = css_task_iter_next(&it))) {
-+			unsigned long p_cookie;
-+
-+			cookie = sched_core_get_cookie(cookie);
-+			p_cookie = sched_core_update_cookie(p, cookie);
-+			sched_core_put_cookie(p_cookie);
-+		}
-+		css_task_iter_end(&it);
-+	}
-+
-+unlock:
-+	mutex_unlock(&cgroup_mutex);
-+
-+	sched_core_put_cookie(cookie);
-+	sched_core_put_cookie(old_cookie);
-+	return ret;
-+}
-+#endif
-+
- static struct cftype cpu_legacy_files[] = {
- #ifdef CONFIG_FAIR_GROUP_SCHED
- 	{
-@@ -10100,6 +10234,14 @@ static struct cftype cpu_legacy_files[]
- 		.write = cpu_uclamp_max_write,
- 	},
- #endif
-+#ifdef CONFIG_SCHED_CORE
-+	{
-+		.name = "core_sched",
-+		.flags = CFTYPE_NOT_ON_ROOT,
-+		.read_u64 = cpu_sched_core_read_u64,
-+		.write_u64 = cpu_sched_core_write_u64,
-+	},
-+#endif
- 	{ }	/* Terminate */
- };
- 
-@@ -10281,6 +10423,14 @@ static struct cftype cpu_files[] = {
- 		.write = cpu_uclamp_max_write,
- 	},
- #endif
-+#ifdef CONFIG_SCHED_CORE
-+	{
-+		.name = "core_sched",
-+		.flags = CFTYPE_NOT_ON_ROOT,
-+		.read_u64 = cpu_sched_core_read_u64,
-+		.write_u64 = cpu_sched_core_write_u64,
-+	},
-+#endif
- 	{ }	/* terminate */
- };
- 
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -431,6 +431,10 @@ struct task_group {
- 	struct uclamp_se	uclamp[UCLAMP_CNT];
- #endif
- 
-+#ifdef CONFIG_SCHED_CORE
-+	struct task_group	*core_parent;
-+	unsigned long		core_cookie;
-+#endif
- };
- 
- #ifdef CONFIG_FAIR_GROUP_SCHED
-@@ -1130,6 +1134,9 @@ static inline bool is_migration_disabled
- 
- struct sched_group;
- #ifdef CONFIG_SCHED_CORE
-+
-+extern struct mutex cgroup_mutex; // XXX
-+
- DECLARE_STATIC_KEY_FALSE(__sched_core_enabled);
- static inline struct cpumask *sched_group_span(struct sched_group *sg);
- 
+> > And again, I feel this is all a big tangent, especially now that HCH
+> > wants to delete the nvlink stuff we should just leave igd alone.
+> 
+> Determining which things stay in vfio-pci-core and which things are
+> split to variant drivers and how those variant drivers can match the
+> devices they intend to support seems very inline with this series.  
 
+IMHO, the main litmus test for core is if variant drivers will need it
+or not.
 
+No variant driver should be stacked on an igd device, or if it someday
+is, it should implement the special igd hackery internally (and have a
+proper ID table). So when we split it up igd goes into vfio_pci.ko as
+some special behavior vfio_pci.ko's universal driver provides for IGD.
+
+Every variant driver will still need the zdev data to be exposed to
+userspace, and every PCI device on s390 has that extra information. So
+vdev goes to vfio_pci_core.ko
+
+Future things going into vfio_pci.ko need a really good reason why
+they can't be varian drivers instead.
+
+Jason
