@@ -2,112 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A445351AA7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5412D351B2C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236444AbhDASC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:02:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236744AbhDARrT (ORCPT
+        id S233970AbhDASGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:06:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43857 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237199AbhDARvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:47:19 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C24C03115E
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 09:50:21 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id j16so2550531ilq.13
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 09:50:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0w+zGLeMzdcB8Xl8lhep34DyBJozrhHS5e3zByXXsOs=;
-        b=kDL/vWg/Yf17Di0EMzIUc6FTgS3eEoyakAdcYbqSWhng1EWqEv0beBVyXtY4oMNxaT
-         N/Pybyl9KFbE5JHW15B9s2JAfmLpaETxhpwtABnrRLesdkJB2k/93y6hre3CvjPCLfUt
-         Tdkll+aURgcxmO+zKx5lfF1YibCZ/hWW/H1MVFume13yOjQqD3JfrTrsyDpw5S+z417O
-         B866pKBWyfTSwcB6LBN6YRPRzxQRne1JjhFvH372zxhUSmvNg4Vk4dPUgVGlyDIOvtP1
-         fMilIuY0gUCwtkcqWF2QTzpaF1YtaaJwLCxzN9lEB4gbAnjTIcmnWfWb5r/XL4GjXdPW
-         CxBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0w+zGLeMzdcB8Xl8lhep34DyBJozrhHS5e3zByXXsOs=;
-        b=D8sk4HbCgUSxlBAQcqIEf8GFGNXJ4SGpG+8qRCFMuPVzmIpGjLd9JjCw7Zq552Rql0
-         91W6t2PHFesz6NQa51dX2KsEoGC5gOZ69k6fxiYSc0j+6VDCohC61BuprhaIDUdc25NN
-         sVmueTwxDMbi/q+zK/26U2sM5CS76AkV2DBhLn8IqIXkRC7ICVFkFlTS9MYjgZK4XP8Y
-         czWStJ7gEpLG8/JHCldcHvt5Xqx3GDJJ38O8QLhpqRqiyjfTbtoKZehub4Dy8vqrPVJ9
-         n7nicCcMekGf5Q6hCoHwU35NGLVLx98DqHYWT6LmDjsu/QNPjBip7UmGm8IpIA67e703
-         JuYA==
-X-Gm-Message-State: AOAM530LF6GEeQmWHb9diCoyV4D5ZnKqZa0cqxK4+T3y6UF0Yg5Uo3yo
-        EiWiCkVdh3sQ82j9NaLOTEXROYLdDlqZsgzCh1SH+A==
-X-Google-Smtp-Source: ABdhPJzR7BDh9Ca3MkXwQf+bgt+Bza0FQYsPhBc+iMKM1VlGXSeWit3IupkcyE1arRrDDCtAOdPSXDonDgYOAeXAcKU=
-X-Received: by 2002:a92:8752:: with SMTP id d18mr7088426ilm.283.1617295820655;
- Thu, 01 Apr 2021 09:50:20 -0700 (PDT)
+        Thu, 1 Apr 2021 13:51:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617299461;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GXWPtffsDMR9QZWl6Ce2ebcQcVpDYm8f+5vNo4wn+Z8=;
+        b=caVGPMXDmYWuYM5hSrjUji+pXrwlKnH4igvZkHl+5eIrK9ssMsj+vKzljhC57Rw98JwsFQ
+        d28XfwRcJUs7Cxyvnl2ijoFJp3Q7r/5Ul0T0gUUY3Y9MCOXILSHwN9j3lsEaQaoSl2EM4P
+        unug7Ssq+iN4p9eqODI5jExC+FwJhzA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-184-QwU6G8GQPR-20xv5hW3C5w-1; Thu, 01 Apr 2021 12:50:28 -0400
+X-MC-Unique: QwU6G8GQPR-20xv5hW3C5w-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7070187A826;
+        Thu,  1 Apr 2021 16:50:27 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-113-97.rdu2.redhat.com [10.10.113.97])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C30F85D6D1;
+        Thu,  1 Apr 2021 16:50:25 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 683EA22054F; Thu,  1 Apr 2021 12:50:24 -0400 (EDT)
+Date:   Thu, 1 Apr 2021 12:50:24 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        Amir Goldstein <amir73il@gmail.com>, stable@vger.kernel.org,
+        syzbot <syzkaller@googlegroups.com>,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
+Subject: Re: [PATCH v1] ovl: Fix leaked dentry
+Message-ID: <20210401165024.GB801967@redhat.com>
+References: <20210329164907.2133175-1-mic@digikod.net>
 MIME-Version: 1.0
-References: <20210331210841.3996155-1-bgardon@google.com> <20210331210841.3996155-13-bgardon@google.com>
- <YGT3UmSKVQFaY1Fd@google.com>
-In-Reply-To: <YGT3UmSKVQFaY1Fd@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Thu, 1 Apr 2021 09:50:09 -0700
-Message-ID: <CANgfPd8=2tcsgoBkMztMjhztGUN-ZMV_mbSb7JHe-sT1i3g+7Q@mail.gmail.com>
-Subject: Re: [PATCH 12/13] KVM: x86/mmu: Fast invalidation for TDP MMU
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210329164907.2133175-1-mic@digikod.net>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 3:27 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Wed, Mar 31, 2021, Ben Gardon wrote:
-> > Provide a real mechanism for fast invalidation by marking roots as
-> > invalid so that their reference count will quickly fall to zero
-> > and they will be torn down.
-> >
-> > One negative side affect of this approach is that a vCPU thread will
-> > likely drop the last reference to a root and be saddled with the work of
-> > tearing down an entire paging structure. This issue will be resolved in
-> > a later commit.
-> >
-> > Signed-off-by: Ben Gardon <bgardon@google.com>
-> > ---
->
-> ...
->
-> > +/*
-> > + * This function depends on running in the same MMU lock cirical section as
-> > + * kvm_reload_remote_mmus. Since this is in the same critical section, no new
-> > + * roots will be created between this function and the MMU reload signals
-> > + * being sent.
->
-> Eww.  That goes beyond just adding a lockdep assertion here.  I know you want to
-> isolate the TDP MMU as much as possible, but this really feels like it should be
-> open coded in kvm_mmu_zap_all_fast().  And assuming this lands after as_id is
-> added to for_each_tdp_mmu_root(), it's probably easier to open code anyways, e.g.
-> use list_for_each_entry() directly instead of bouncing through an iterator.
+On Mon, Mar 29, 2021 at 06:49:07PM +0200, Mickaël Salaün wrote:
+> From: Mickaël Salaün <mic@linux.microsoft.com>
+> 
+> Since commit 6815f479ca90 ("ovl: use only uppermetacopy state in
+> ovl_lookup()"), overlayfs doesn't put temporary dentry when there is a
+> metacopy error, which leads to dentry leaks when shutting down the
+> related superblock:
+> 
+>   overlayfs: refusing to follow metacopy origin for (/file0)
+>   ...
+>   BUG: Dentry (____ptrval____){i=3f33,n=file3}  still in use (1) [unmount of overlay overlay]
+>   ...
+>   WARNING: CPU: 1 PID: 432 at umount_check.cold+0x107/0x14d
+>   CPU: 1 PID: 432 Comm: unmount-overlay Not tainted 5.12.0-rc5 #1
+>   ...
+>   RIP: 0010:umount_check.cold+0x107/0x14d
+>   ...
+>   Call Trace:
+>    d_walk+0x28c/0x950
+>    ? dentry_lru_isolate+0x2b0/0x2b0
+>    ? __kasan_slab_free+0x12/0x20
+>    do_one_tree+0x33/0x60
+>    shrink_dcache_for_umount+0x78/0x1d0
+>    generic_shutdown_super+0x70/0x440
+>    kill_anon_super+0x3e/0x70
+>    deactivate_locked_super+0xc4/0x160
+>    deactivate_super+0xfa/0x140
+>    cleanup_mnt+0x22e/0x370
+>    __cleanup_mnt+0x1a/0x30
+>    task_work_run+0x139/0x210
+>    do_exit+0xb0c/0x2820
+>    ? __kasan_check_read+0x1d/0x30
+>    ? find_held_lock+0x35/0x160
+>    ? lock_release+0x1b6/0x660
+>    ? mm_update_next_owner+0xa20/0xa20
+>    ? reacquire_held_locks+0x3f0/0x3f0
+>    ? __sanitizer_cov_trace_const_cmp4+0x22/0x30
+>    do_group_exit+0x135/0x380
+>    __do_sys_exit_group.isra.0+0x20/0x20
+>    __x64_sys_exit_group+0x3c/0x50
+>    do_syscall_64+0x45/0x70
+>    entry_SYSCALL_64_after_hwframe+0x44/0xae
+>   ...
+>   VFS: Busy inodes after unmount of overlay. Self-destruct in 5 seconds.  Have a nice day...
+> 
+> This fix has been tested with a syzkaller reproducer.
+> 
 
-Yeah, that's fair. I'll open-code it here. I agree that it will remove
-confusion from the function, though it would be nice to be able to use
-for_each_tdp_mmu_root for the lockdep and rcu annotations.
+Looks good to me. I realized that dentry leak will happen on underlying
+filesystem so unmount of underlying filesystem will give this warning. I
+created nested overlayfs configuration and could reproduce this error
+and tested that this patch fixes it.
 
+Reviewed-by: Vivek Goyal <vgoyal@redhat.com>
 
->
-> > + */
-> > +void kvm_tdp_mmu_invalidate_roots(struct kvm *kvm)
-> > +{
-> > +     struct kvm_mmu_page *root;
-> > +
-> > +     for_each_tdp_mmu_root(kvm, root)
-> > +             root->role.invalid = true;
-> > +}
+Vivek
+
+> Cc: Amir Goldstein <amir73il@gmail.com>
+> Cc: Miklos Szeredi <miklos@szeredi.hu>
+> Cc: Vivek Goyal <vgoyal@redhat.com>
+> Cc: <stable@vger.kernel.org> # v5.7+
+> Reported-by: syzbot <syzkaller@googlegroups.com>
+> Fixes: 6815f479ca90 ("ovl: use only uppermetacopy state in ovl_lookup()")
+> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+> Link: https://lore.kernel.org/r/20210329164907.2133175-1-mic@digikod.net
+> ---
+>  fs/overlayfs/namei.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/fs/overlayfs/namei.c b/fs/overlayfs/namei.c
+> index 3fe05fb5d145..424c594afd79 100644
+> --- a/fs/overlayfs/namei.c
+> +++ b/fs/overlayfs/namei.c
+> @@ -921,6 +921,7 @@ struct dentry *ovl_lookup(struct inode *dir, struct dentry *dentry,
+>  		if ((uppermetacopy || d.metacopy) && !ofs->config.metacopy) {
+>  			err = -EPERM;
+>  			pr_warn_ratelimited("refusing to follow metacopy origin for (%pd2)\n", dentry);
+> +			dput(this);
+>  			goto out_put;
+>  		}
+>  
+> 
+> base-commit: a5e13c6df0e41702d2b2c77c8ad41677ebb065b3
+> -- 
+> 2.30.2
+> 
+
