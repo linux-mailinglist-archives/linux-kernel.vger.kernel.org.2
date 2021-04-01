@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4110A35186E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA84C35192E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235082AbhDARpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:45:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57212 "EHLO
+        id S234728AbhDARwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:52:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234627AbhDARi3 (ORCPT
+        with ESMTP id S234855AbhDARkx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:38:29 -0400
+        Thu, 1 Apr 2021 13:40:53 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F42C00F7E8;
-        Thu,  1 Apr 2021 08:09:02 -0700 (PDT)
-Date:   Thu, 01 Apr 2021 15:08:55 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E42CC00F7DF;
+        Thu,  1 Apr 2021 08:08:59 -0700 (PDT)
+Date:   Thu, 01 Apr 2021 15:08:56 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617289735;
+        s=2020; t=1617289736;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ewilDfX8xZ5f96JbSoLPDUYRIp3UVVGWZNdgrnNzb74=;
-        b=yydnilu1TpUapeFcGJaY7x5iJhHt0S/Z2lZaxRTx3qHqJfnx6cJcTJJhboXUlA/16CLdD4
-        SWin7PB6NEBJ3vGqQMK094WL8Au/936Hb9nwZVE5c2He+zUJgPurJNNjmQHOdyRpvDtb6l
-        9/rL69jPXDAVxkF5WvklQ0lsaVH7ZPptIERYI56J3mnpKZyVDaBlM7UvJCEqO8n1/GUgM/
-        zzz9JuRoq3vdNudJu8OrtJfcVqBHyw0xqCSSy9NKuE43+36C2+SIeDpf2mHfgU4gIW+zvD
-        XE6xWq6mUAf+9kAJmdXuDDAMJIlS8UCq68M3j6jPzg84joOOK/kX/HS6O+pLCw==
+        bh=c7PX5AnAr8nq3pYt8IX3dW6sMpPFXAd/ofQR1KSuruY=;
+        b=O69gGr4PQ2IAMx3ttd4I4gjKlQeME+0xJw+b5yTny7NcTxnmhB2asaNdFy35WrorEOrboz
+        LgRHgURYZQR+wN8svX3RI21FzHZgrem+vUaxQL3beueEwwvIWjgTfdtRf9sQYJSNI4fueW
+        KzgJ3G/uigIaUj+X9UCcZLRCG1TTYHy7CTFAiKpwtIwNEaj+E4RulrQsnVr0gsfrLrx+GS
+        6YbHaWQFw0VPelDDRWtV/onJjWp7sezBlIgx1m1JQrIqs3Gmhl7f17e/mQQrBd7WliQZ8G
+        Ky9G0vf8lBf8v+UrXqwBqRjU9q3nKAC1KLXQFohWqtfGQkKtDSMFrU/0PXlQsw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617289735;
+        s=2020e; t=1617289736;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ewilDfX8xZ5f96JbSoLPDUYRIp3UVVGWZNdgrnNzb74=;
-        b=u0/VxmpA+RTBbsNbr8iiKT/REjiXT4T62+q2WH8DcYISpd9ToYya+IbZyvriNuspPhuIDY
-        JH2ZSj/Yld6tSDAg==
+        bh=c7PX5AnAr8nq3pYt8IX3dW6sMpPFXAd/ofQR1KSuruY=;
+        b=1rpAaK62LjlP2lplOcroBJMkCnk7xxlWhdza0QGqi3nAFJJFVgYWF4FFFhzNwOM36TIKbI
+        ESjUsNrXsPbNH2AA==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/core] objtool: Add elf_create_undef_symbol()
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+Subject: [tip: x86/core] objtool: Implicitly create reloc sections
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Borislav Petkov <bp@suse.de>, Miroslav Benes <mbenes@suse.cz>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210326151300.064743095@infradead.org>
-References: <20210326151300.064743095@infradead.org>
+In-Reply-To: <20210326151259.880174448@infradead.org>
+References: <20210326151259.880174448@infradead.org>
 MIME-Version: 1.0
-Message-ID: <161728973533.29796.18219156552513333991.tip-bot2@tip-bot2>
+Message-ID: <161728973626.29796.13144377125307470696.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,107 +62,107 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/core branch of tip:
 
-Commit-ID:     993b477acdb652c6134e5faae05e8a378911cbb3
-Gitweb:        https://git.kernel.org/tip/993b477acdb652c6134e5faae05e8a378911cbb3
+Commit-ID:     aef0f13e96db08f31be6b96d28e761df46d86ff4
+Gitweb:        https://git.kernel.org/tip/aef0f13e96db08f31be6b96d28e761df46d86ff4
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Fri, 26 Mar 2021 16:12:11 +01:00
+AuthorDate:    Fri, 26 Mar 2021 16:12:08 +01:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 01 Apr 2021 13:12:48 +02:00
+CommitterDate: Thu, 01 Apr 2021 13:01:15 +02:00
 
-objtool: Add elf_create_undef_symbol()
+objtool: Implicitly create reloc sections
 
-Allow objtool to create undefined symbols; this allows creating
-relocations to symbols not currently in the symbol table.
+Have elf_add_reloc() create the relocation section implicitly.
 
+Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Borislav Petkov <bp@suse.de>
 Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-Link: https://lkml.kernel.org/r/20210326151300.064743095@infradead.org
+Link: https://lkml.kernel.org/r/20210326151259.880174448@infradead.org
 ---
- tools/objtool/elf.c                 | 60 ++++++++++++++++++++++++++++-
- tools/objtool/include/objtool/elf.h |  1 +-
- 2 files changed, 61 insertions(+)
+ tools/objtool/check.c               |  6 ------
+ tools/objtool/elf.c                 |  9 ++++++++-
+ tools/objtool/include/objtool/elf.h |  1 -
+ tools/objtool/orc_gen.c             |  2 --
+ 4 files changed, 8 insertions(+), 10 deletions(-)
 
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 61fe29a..600fa67 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -459,9 +459,6 @@ static int create_static_call_sections(struct objtool_file *file)
+ 	if (!sec)
+ 		return -1;
+ 
+-	if (!elf_create_reloc_section(file->elf, sec, SHT_RELA))
+-		return -1;
+-
+ 	idx = 0;
+ 	list_for_each_entry(insn, &file->static_call_list, static_call_node) {
+ 
+@@ -547,9 +544,6 @@ static int create_mcount_loc_sections(struct objtool_file *file)
+ 	if (!sec)
+ 		return -1;
+ 
+-	if (!elf_create_reloc_section(file->elf, sec, SHT_RELA))
+-		return -1;
+-
+ 	idx = 0;
+ 	list_for_each_entry(insn, &file->mcount_loc_list, mcount_loc_node) {
+ 
 diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
-index 8457218..d08f5f3 100644
+index 0ab52ac..7b65ae3 100644
 --- a/tools/objtool/elf.c
 +++ b/tools/objtool/elf.c
-@@ -715,6 +715,66 @@ static int elf_add_string(struct elf *elf, struct section *strtab, char *str)
- 	return len;
+@@ -447,11 +447,18 @@ err:
+ 	return -1;
  }
  
-+struct symbol *elf_create_undef_symbol(struct elf *elf, const char *name)
-+{
-+	struct section *symtab;
-+	struct symbol *sym;
-+	Elf_Data *data;
-+	Elf_Scn *s;
++static struct section *elf_create_reloc_section(struct elf *elf,
++						struct section *base,
++						int reltype);
 +
-+	sym = malloc(sizeof(*sym));
-+	if (!sym) {
-+		perror("malloc");
-+		return NULL;
-+	}
-+	memset(sym, 0, sizeof(*sym));
+ int elf_add_reloc(struct elf *elf, struct section *sec, unsigned long offset,
+ 		  unsigned int type, struct symbol *sym, int addend)
+ {
+ 	struct reloc *reloc;
+ 
++	if (!sec->reloc && !elf_create_reloc_section(elf, sec, SHT_RELA))
++		return -1;
 +
-+	sym->name = strdup(name);
-+
-+	sym->sym.st_name = elf_add_string(elf, NULL, sym->name);
-+	if (sym->sym.st_name == -1)
-+		return NULL;
-+
-+	sym->sym.st_info = GELF_ST_INFO(STB_GLOBAL, STT_NOTYPE);
-+	// st_other 0
-+	// st_shndx 0
-+	// st_value 0
-+	// st_size 0
-+
-+	symtab = find_section_by_name(elf, ".symtab");
-+	if (!symtab) {
-+		WARN("can't find .symtab");
-+		return NULL;
-+	}
-+
-+	s = elf_getscn(elf->elf, symtab->idx);
-+	if (!s) {
-+		WARN_ELF("elf_getscn");
-+		return NULL;
-+	}
-+
-+	data = elf_newdata(s);
-+	if (!data) {
-+		WARN_ELF("elf_newdata");
-+		return NULL;
-+	}
-+
-+	data->d_buf = &sym->sym;
-+	data->d_size = sizeof(sym->sym);
-+	data->d_align = 1;
-+
-+	sym->idx = symtab->len / sizeof(sym->sym);
-+
-+	symtab->len += data->d_size;
-+	symtab->changed = true;
-+
-+	sym->sec = find_section_by_index(elf, 0);
-+
-+	elf_add_symbol(elf, sym);
-+
-+	return sym;
-+}
-+
- struct section *elf_create_section(struct elf *elf, const char *name,
- 				   unsigned int sh_flags, size_t entsize, int nr)
+ 	reloc = malloc(sizeof(*reloc));
+ 	if (!reloc) {
+ 		perror("malloc");
+@@ -829,7 +836,7 @@ static struct section *elf_create_rela_reloc_section(struct elf *elf, struct sec
+ 	return sec;
+ }
+ 
+-struct section *elf_create_reloc_section(struct elf *elf,
++static struct section *elf_create_reloc_section(struct elf *elf,
+ 					 struct section *base,
+ 					 int reltype)
  {
 diff --git a/tools/objtool/include/objtool/elf.h b/tools/objtool/include/objtool/elf.h
-index 463f329..45e5ede 100644
+index 825ad32..463f329 100644
 --- a/tools/objtool/include/objtool/elf.h
 +++ b/tools/objtool/include/objtool/elf.h
-@@ -133,6 +133,7 @@ int elf_write_insn(struct elf *elf, struct section *sec,
- 		   unsigned long offset, unsigned int len,
- 		   const char *insn);
- int elf_write_reloc(struct elf *elf, struct reloc *reloc);
-+struct symbol *elf_create_undef_symbol(struct elf *elf, const char *name);
- int elf_write(struct elf *elf);
- void elf_close(struct elf *elf);
+@@ -122,7 +122,6 @@ static inline u32 reloc_hash(struct reloc *reloc)
  
+ struct elf *elf_open_read(const char *name, int flags);
+ struct section *elf_create_section(struct elf *elf, const char *name, unsigned int sh_flags, size_t entsize, int nr);
+-struct section *elf_create_reloc_section(struct elf *elf, struct section *base, int reltype);
+ 
+ int elf_add_reloc(struct elf *elf, struct section *sec, unsigned long offset,
+ 		  unsigned int type, struct symbol *sym, int addend);
+diff --git a/tools/objtool/orc_gen.c b/tools/objtool/orc_gen.c
+index 1b57be6..dc9b7dd 100644
+--- a/tools/objtool/orc_gen.c
++++ b/tools/objtool/orc_gen.c
+@@ -225,8 +225,6 @@ int orc_create(struct objtool_file *file)
+ 	sec = elf_create_section(file->elf, ".orc_unwind_ip", 0, sizeof(int), nr);
+ 	if (!sec)
+ 		return -1;
+-	if (!elf_create_reloc_section(file->elf, sec, SHT_RELA))
+-		return -1;
+ 
+ 	/* Write ORC entries to sections: */
+ 	list_for_each_entry(entry, &orc_list, list) {
