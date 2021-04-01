@@ -2,101 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4461351EEA
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6ECD351F2C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239067AbhDASuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:50:46 -0400
-Received: from foss.arm.com ([217.140.110.172]:46726 "EHLO foss.arm.com"
+        id S239896AbhDASzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:55:00 -0400
+Received: from foss.arm.com ([217.140.110.172]:47232 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240340AbhDASaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:30:07 -0400
+        id S239199AbhDASpN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:45:13 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C4AD3D6E;
-        Thu,  1 Apr 2021 04:27:53 -0700 (PDT)
-Received: from e123427-lin.arm.com (unknown [10.57.56.129])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1D3193F694;
-        Thu,  1 Apr 2021 04:27:49 -0700 (PDT)
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>, Marc Zyngier <maz@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Michal Simek <michal.simek@xilinx.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>, linux-pci@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-tegra@vger.kernel.org, Rob Herring <robh@kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Bharat Kumar Gogada <bharatku@xilinx.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        linux-hyperv@vger.kernel.org, Will Deacon <will@kernel.org>,
-        kernel-team@android.com, Michael Kelley <mikelley@microsoft.com>,
-        linux-kernel@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        linux-renesas-soc@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 00/14] PCI/MSI: Getting rid of msi_controller, and other cleanups
-Date:   Thu,  1 Apr 2021 12:27:42 +0100
-Message-Id: <161727636757.32506.11592578621890085687.b4-ty@arm.com>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20210330151145.997953-1-maz@kernel.org>
-References: <20210330151145.997953-1-maz@kernel.org>
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E2E66152D;
+        Thu,  1 Apr 2021 04:28:19 -0700 (PDT)
+Received: from [10.57.24.208] (unknown [10.57.24.208])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A1E573F694;
+        Thu,  1 Apr 2021 04:28:16 -0700 (PDT)
+Subject: Re: [PATCH 2/3] tracing: Use pr_crit() instead of long fancy messages
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Petr Mladek <pmladek@suse.com>, Marco Elver <elver@google.com>,
+        Linux Embedded <linux-embedded@vger.kernel.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Will Deacon <will@kernel.org>, Gary R Hook <gary.hook@amd.com>
+References: <20210331093104.383705-1-geert+renesas@glider.be>
+ <20210331093104.383705-3-geert+renesas@glider.be>
+ <20210331094007.77aa5194@gandalf.local.home>
+ <CAMuHMdUvgRiYfsVOJdocB3peLhnDWe=Kn1MLW64sh8zpd2XoLA@mail.gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <b8dba57b-860b-0bd4-2ca0-e8f2e26571bd@arm.com>
+Date:   Thu, 1 Apr 2021 12:28:11 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdUvgRiYfsVOJdocB3peLhnDWe=Kn1MLW64sh8zpd2XoLA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 30 Mar 2021 16:11:31 +0100, Marc Zyngier wrote:
-> This is a respin of the series described at [1].
+On 2021-04-01 10:39, Geert Uytterhoeven wrote:
+> Hi Steven,
 > 
-> * From v2 [2]:
->   - Fixed the Xilinx driver, thanks to Bharat for testing it
->   - Dropped the no_msi attribute, and solely rely on msi_domain, which
->     has the same effect for the only platform that was using it.
->   - Fixed compilation on architectures that do not select the generic
->     MSI support
+> On Wed, Mar 31, 2021 at 3:40 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>> On Wed, 31 Mar 2021 11:31:03 +0200
+>> Geert Uytterhoeven <geert+renesas@glider.be> wrote:
+>>
+>>> This reduces kernel size by ca. 0.5 KiB.
+>>
+>> If you are worried about size, disable tracing and it will go away
+>> entirely. 0.5KiB is a drop in the bucket compared to what tracing adds in
+>> size overhead.
 > 
-> [...]
+> Fair enough for this particular case, as tracing can be disabled.
 
-I have applied it to pci/msi and should be moved into -next shortly
-for further testing/visibility, thanks a lot for putting it together.
+I think the same argument can be applied to patch #1 - it's hard to 
+imaging anyone debugging an IOMMU driver on a system where a few hundred 
+bytes makes the slightest bit of difference, and for people not 
+debugging IOMMU drivers it should be moot (per the message itself).
 
-[01/14] PCI: tegra: Convert to MSI domains
-        https://git.kernel.org/lpieralisi/pci/c/973a28677e
-[02/14] PCI: rcar: Don't allocate extra memory for the MSI capture address
-        https://git.kernel.org/lpieralisi/pci/c/c244dc15dc
-[03/14] PCI: rcar: Convert to MSI domains
-        https://git.kernel.org/lpieralisi/pci/c/516286287d
-[04/14] PCI: xilinx: Don't allocate extra memory for the MSI capture address
-        https://git.kernel.org/lpieralisi/pci/c/cc8cf90738
-[05/14] PCI: xilinx: Convert to MSI domains
-        https://git.kernel.org/lpieralisi/pci/c/b66873599e
-[06/14] PCI: hv: Drop msi_controller structure
-        https://git.kernel.org/lpieralisi/pci/c/65b131816a
-[07/14] PCI/MSI: Drop use of msi_controller from core code
-        https://git.kernel.org/lpieralisi/pci/c/54729d2a7a
-[08/14] PCI/MSI: Kill msi_controller structure
-        https://git.kernel.org/lpieralisi/pci/c/27278a3fac
-[09/14] PCI/MSI: Kill default_teardown_msi_irqs()
-        https://git.kernel.org/lpieralisi/pci/c/f68f571db9
-[10/14] PCI/MSI: Let PCI host bridges declare their reliance on MSI domains
-        https://git.kernel.org/lpieralisi/pci/c/419150a4ff
-[11/14] PCI/MSI: Make pci_host_common_probe() declare its reliance on MSI domains
-        https://git.kernel.org/lpieralisi/pci/c/98be0634c8
-[12/14] PCI: mediatek: Advertise lack of built-in MSI handling
-        https://git.kernel.org/lpieralisi/pci/c/77cbd88c90
-[13/14] PCI/MSI: Document the various ways of ending up with NO_MSI
-        https://git.kernel.org/lpieralisi/pci/c/44ec480daf
-[14/14] PCI: Refactor HT advertising of NO_MSI flag
-        https://git.kernel.org/lpieralisi/pci/c/18d56e5afe
-
-Thanks,
-Lorenzo
+Robin.
