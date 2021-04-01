@@ -2,140 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CE6D351EEC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D09E0351F37
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239196AbhDASus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:50:48 -0400
-Received: from mail-bn8nam12on2081.outbound.protection.outlook.com ([40.107.237.81]:57184
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240387AbhDASaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:30:24 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZQkOeWYubvS325HbWIUHNAVdJUwdQRHAMhiPgVA/tFwtlqC/TEAR5yOOk9VV4fFKhUCqNhMEktbliTVwptznA9EGvFhkJLrgaH6XHvc8e41WLkP/nOu4BrVA2f50lLWLikgA0+y4Gyh3Bwnyv+nl8SIB/WA0ndBYyxMAFzf3zUuJbIHK/S8onkUnkyyw5A+PoFXeVoKIMuwUEouiw3uEmOckITL1xnYFFSTEHWsklt9XVAAPZPdQp1cR0RA3faApjGFHEgse3AgPc6zzrruKgaVmediBvdYRnKNYBms/2JXwCya6ZzCJy1jFJCF8/29JbJrv5umoB7Eurv5gpyyU7w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YlqBaFjozKs3HNNan8VK+uKXxKiD6IB81ny+xEF4KWE=;
- b=LlzFiYQeVSEFKR61Fx13OwC6g3/1+CJ4ZAKz+yqB6sAQDdDdEYKCiKyM3t+CUR7Ak/ckbnYt9T69kQ+m+NA3jSjdYYFDk+50ZuJZCM5L7EN7cyur66LcjYIoTzsG2EJYdE/lNBfCp+hl1mLtUzr9CWzoH10b/2j8QxkpBC8sTdA4ksdIAG3yX3l3he4RxbV/i7BxJsvTpR9yXctg7xHyQs8nvkn4gde/+n9w+hVcw5BjbX3+3Y+5BSe/j2fXnEAe2zEwGJzFp7FHvi8AZy2+RB00QpHBhpBLC84TEU/Dl8dh7pmD4V00ZDD7Qgoz65OJA1dRZ+E1o+wjoep3Pca0sg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YlqBaFjozKs3HNNan8VK+uKXxKiD6IB81ny+xEF4KWE=;
- b=CTj758eYOmogSPQxYlawqI3Lk6GrmbLFndIaH6N21Uw3yX3JxDtbGAxc2McycOdz6glAViAS210AyNrAWDAFfkI3IHrtJ78MT24aM/QuRFE/dk4FzMjjvP2vpyxfoKmNCWJlMVPQ+gfLlxnaXT4PdtveZ/tC67f5SflYLJ53AOCeJC8jTQZq2kIYUTGvWWbYfo4GFN800ypAG84ScBEGCAaHbwO97O+M6eoPblDj86Zi/dgAVUkDtyoOVxZjxorsqE42zf38QlEOE04NMEWyZXlrj9qjC4TzfSNinZvFZ7Bk5sT9/p6xajuYek2sguzIxFoJu88comMyH3+WZCHznw==
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3836.namprd12.prod.outlook.com (2603:10b6:5:1c3::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28; Thu, 1 Apr
- 2021 18:30:23 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3999.028; Thu, 1 Apr 2021
- 18:30:23 +0000
-Date:   Thu, 1 Apr 2021 15:30:22 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] RDMA/uverbs: Fix -Wunused-function warning
-Message-ID: <20210401183022.GA1636921@nvidia.com>
-References: <20210401021028.25720-1-yuehaibing@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210401021028.25720-1-yuehaibing@huawei.com>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: BL1PR13CA0207.namprd13.prod.outlook.com
- (2603:10b6:208:2be::32) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0207.namprd13.prod.outlook.com (2603:10b6:208:2be::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.9 via Frontend Transport; Thu, 1 Apr 2021 18:30:23 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lS25G-006trv-6m; Thu, 01 Apr 2021 15:30:22 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 822e5b2d-9e8d-485f-f506-08d8f53c3677
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3836:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB383656926A2FB9BA01E20C7EC27B9@DM6PR12MB3836.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7tEQX0yFZpKQTnCieC0uKyTAfs+wJyn9INYxO7/3sbY4M34CrwPvGXgJPG37PptXvBd3xD4y37Eey5jNZygsnsoEz0171UNGHp1fbJ4DjyEXvu2c2jQ6rYLkvr1Bnf105Bs88UcCIqhkaxzY/2DhRLLYOx71jsXMv/7OT8yLb1z5+7lDlXN8cJIoqNUwqZMnvfm6PmWZUZ4aJEJTebqlrm+Uq/4euiwTu6uJUqG1y7vu8h7pPoSNf/YszjUiH5Ejy5ix0lH5FcUMPWiAS5ah90ky3/ITFXE6KPhq4i0X18zxcddprUGrhJ90ao3toLj0ujsd3iAmh/U5a0sw+HZp5hKl1iFkXSUjZhD0rU+zwBJ+wIj/dnuwcrMYvVbBVhDUfRWUyYScWK0kRlKaUAiP14/xUALEfLFEZY9KoDnmDc8JUQYDar9HD598WiD3o4GWgL3wfQPikc5gDV/BzPN8q8tuLmUE5Bbvq5/AjQyE3xxYyjzOBMvTEI9jlaIXOQoMx1Q/sTSuDS/R1A2v1QdcL/01OuZsW22Yyfl6cVYLUzjtt90raRypWblq8AMY+YOk7AHgN2dE1QTzEIgq90GuzJLSdyyj48XQl+2cTWq3x1s5TC1Q4erE2RNqFFBXW4DkKglnw6tze1wonwaOLKvuDMYHrDk558HpYJlxhPtyMi4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(136003)(39860400002)(366004)(346002)(26005)(4744005)(36756003)(4326008)(9746002)(9786002)(2906002)(1076003)(5660300002)(2616005)(186003)(316002)(478600001)(426003)(83380400001)(8676002)(86362001)(38100700001)(6916009)(33656002)(66946007)(66476007)(66556008)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TzVrVGhGNXVYVjJjQmJHWjhXQXkzSk4rdlFlQklIOStCL0s0Zm5pUjUwYVl6?=
- =?utf-8?B?MlQyblNyc0huVmQxRzZuWHNHNmE4T2VVT3N6aDJMRmlHTUJYWTYxb1laNWZL?=
- =?utf-8?B?WCtGL0U4c3pkWHR6R1RGWXdLY3pZd21tRzJqYmVxSHdPczV6cTBCaFk3ci85?=
- =?utf-8?B?cHRlTHNwaFVhNGxwTHhDb3l0YzRzMkNtWEVuSVk5SjREU2hpYnZhYW1ySDF0?=
- =?utf-8?B?Zkp1cklxRlAwWllSSFJobmV6VjRndzVJdVVjK1dGTXhSbW1JVTN4U244enEz?=
- =?utf-8?B?cG1La2hoSWcyQ2h0R2lnb0xPM2JxdXl0Wm1GOGpJdTVIeURwcndUL0ZLdXFQ?=
- =?utf-8?B?Mkp3bDBGdWZaZ0liUXBaa0NqOHZvUmEveDQ3RUh3M1NHMS96R3BYZitERnBI?=
- =?utf-8?B?Z0dJOEoycXVITFhydnpyenhjNzhzNGFYWGJQek1VUUZWcFpyOEp0MjVFSjMy?=
- =?utf-8?B?SUc0UjFiMGJwS3JINE9ZQkdGYk0wWTNwcEV2eGhrUlY4bVZKYk44MWdXUVBE?=
- =?utf-8?B?bmJaVGovTnBaMmlDL01wOFdZRXQvS3ZTNWUzcFRJSTdBR1FOaXEwK3h3Szl2?=
- =?utf-8?B?b3J0ZWhRZU9aZFh4UnFLL2tGZ0JneVl1SWNObGhiaVZHNklNRU9LZkdGZFRE?=
- =?utf-8?B?YXdCQ1ZIUjBlam01dFZ3ZEsydTVMWDF1VklnTVBUZnVNb2Y5QkNKaXFZVjQ0?=
- =?utf-8?B?ZjIrZGJDVHJibWVlenFtRmxYNFpaMnNiWVR1RG1XZ3UrejBHTmpRRVFQdUlZ?=
- =?utf-8?B?RW5jOFBoQmRIS1owSkN1TkJNMnhCOXc0MUs0MzYyMHN5L3p3S0oxTmFqNlZ0?=
- =?utf-8?B?dGNZaFJDa091Mm5LcEN0cWRueTRMVmlFUVFUYzhEMVBQanl4ZTM0Wi9iTmV4?=
- =?utf-8?B?U3JyYXVaMUhld1dFWGh3QjdlRWN3Rlg4WGNsOU4zM3dpUnd0UENQdDh1K1lJ?=
- =?utf-8?B?L0pmRjhJZDNaMk04cC9jWFFmNHMwVFFJMlNSTFpBcUI3OHZqcEs0QjNOcU9H?=
- =?utf-8?B?K04rOUFJY3BjUXBHcWdETGhRRDJZblNjbGJzVFBXQjQ3eFQzQTZ2T0drQzBR?=
- =?utf-8?B?VUs4ZDVoRVh2ZXZBNmNvdVRtM0JkQWRzQ20xdFJLYUs5VHFtZ2pldmtYZXFZ?=
- =?utf-8?B?bHVwajd5QTBVcFYxSS9XdFd3NkV4UUljZFJzcnN0MkFBUGwzTXJwT1BwbjZm?=
- =?utf-8?B?ZWlyS0ZVM3hkc1d4MkVZMndMdG1TQmtBMlR1ZEpjLzV3VEx3Z0EwQ3Frc0Zq?=
- =?utf-8?B?SHhhRWhPV2FwSVZNcHhjRnI0WVEvOVBHSnh6dVZvUWxDeUl5R3ZKeXRHL0Z5?=
- =?utf-8?B?VFdITzh3QmpaWVhYTWp6d3E4djRIdkI2UmJMN0kzMXhWSEJvaERlU1JJdHAx?=
- =?utf-8?B?UmlpRkRUWlVjTXhqcjNBQUVjcjk3bzMyK1dBOGh0d0dWV245clY5c1NJMFN0?=
- =?utf-8?B?a295VGpPMTgvRVpRVGpLL09yV2V3bm1laW8vclRia2ltTlJ2U3ZZMjdZanBw?=
- =?utf-8?B?TkhtRW9QVldQNFRVejYxOXVTZWRDMUpJZzFaSHRWek5CQzhNc2x0ZllUcXNy?=
- =?utf-8?B?Nm42UTdVMnpWNXNFVVZXekFqc0tQTk05SVlwanBVTm1TOHoybmtFYmJQcjJl?=
- =?utf-8?B?VllLNnlUTVA2aUxMTkZJalBSQTJ4ZkwwdTRReTFLSlRza3IrdFdKSHpnd1RH?=
- =?utf-8?B?OUpTRnM4UWhZZjN2ZDJQc0pENHE5cFljSlNnR2xIVjZGSk5PLzNUU2dUMEY0?=
- =?utf-8?B?dFgzdEdnTXdQZ1d1L2dhNUtzRDJqWjcvY1VRaEx2bFA4all0bkh2VU94L252?=
- =?utf-8?B?WFpoTWlsREJHUWl1dTJYdz09?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 822e5b2d-9e8d-485f-f506-08d8f53c3677
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2021 18:30:23.7087
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KgpZuJePpnOFs49ytg8QmLhhK6QIZfSfOXL4ueEFS0/zpZ3U7NfHvOCQniPsyUg7
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3836
+        id S236874AbhDAS4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:56:38 -0400
+Received: from mga05.intel.com ([192.55.52.43]:64255 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239226AbhDASy2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:54:28 -0400
+IronPort-SDR: FuP25OydwmxOHt5ft04yNJY8h19VCZz8PTpeNfPDIrhA6LSVNCjdPAbmnb6ekjJ7Tapyl2bhQX
+ E84hPznSdtPw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="277494267"
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="277494267"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 11:34:57 -0700
+IronPort-SDR: KwSwaWBSIhCOyuwnE9NGHX67rxb1NL7OZFkpD94w6Ry8dIAVGJ5AiUXtNZe+AEmNc4VbdxfORX
+ Ys646TBphLDg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="446192246"
+Received: from viggo.jf.intel.com (HELO localhost.localdomain) ([10.54.77.144])
+  by FMSMGA003.fm.intel.com with ESMTP; 01 Apr 2021 11:34:57 -0700
+Subject: [PATCH 00/10] [v7][RESEND] Migrate Pages in lieu of discard
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        yang.shi@linux.alibaba.com, rientjes@google.com,
+        ying.huang@intel.com, dan.j.williams@intel.com, david@redhat.com,
+        osalvador@suse.de, weixugc@google.com
+From:   Dave Hansen <dave.hansen@linux.intel.com>
+Date:   Thu, 01 Apr 2021 11:32:16 -0700
+Message-Id: <20210401183216.443C4443@viggo.jf.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 10:10:28AM +0800, YueHaibing wrote:
-> make W=1 warns this:
-> 
-> In file included from drivers/infiniband/sw/rdmavt/mmap.c:51:0:
-> ./include/rdma/uverbs_ioctl.h:937:1:
->  warning: ‘_uverbs_get_const_unsigned’ defined but not used [-Wunused-function]
->  _uverbs_get_const_unsigned(u64 *to,
->  ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> ./include/rdma/uverbs_ioctl.h:930:1:
->  warning: ‘_uverbs_get_const_signed’ defined but not used [-Wunused-function]
->  _uverbs_get_const_signed(s64 *to, const struct uverbs_attr_bundle *attrs_bundle,
->  ^~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Make these functions inline to fix this warnings.
-> 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
->  include/rdma/uverbs_ioctl.h | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
+I'm resending this because I forgot to cc the mailing lists on the
+post yesterday.  Sorry for the noise.  Please reply to this series.
 
-Applied to for-next
+The full series is also available here:
 
-I added
-    Fixes: 2904bb37b35d ("IB/core: Split uverbs_get_const/default to consider target type")
- 
-Jason
+	https://github.com/hansendc/linux/tree/automigrate-20210331
+
+which also inclues some vm.zone_reclaim_mode sysctl ABI fixup
+prerequisites:
+
+	https://github.com/hansendc/linux/commit/18daad8f0181a2da57cb43e595303c2ef5bd7b6e
+	https://github.com/hansendc/linux/commit/a873f3b6f250581072ab36f2735a3aa341e36705
+
+There are no major changes since the last post.
+
+--
+
+We're starting to see systems with more and more kinds of memory such
+as Intel's implementation of persistent memory.
+
+Let's say you have a system with some DRAM and some persistent memory.
+Today, once DRAM fills up, reclaim will start and some of the DRAM
+contents will be thrown out.  Allocations will, at some point, start
+falling over to the slower persistent memory.
+
+That has two nasty properties.  First, the newer allocations can end
+up in the slower persistent memory.  Second, reclaimed data in DRAM
+are just discarded even if there are gobs of space in persistent
+memory that could be used.
+
+This set implements a solution to these problems.  At the end of the
+reclaim process in shrink_page_list() just before the last page
+refcount is dropped, the page is migrated to persistent memory instead
+of being dropped.
+
+While I've talked about a DRAM/PMEM pairing, this approach would
+function in any environment where memory tiers exist.
+
+This is not perfect.  It "strands" pages in slower memory and never
+brings them back to fast DRAM.  Huang Ying has follow-on work which
+repurposes autonuma to promote hot pages back to DRAM.
+
+This is also all based on an upstream mechanism that allows
+persistent memory to be onlined and used as if it were volatile:
+
+	http://lkml.kernel.org/r/20190124231441.37A4A305@viggo.jf.intel.com
+
+== Open Issues ==
+
+ * Memory policies and cpusets that, for instance, restrict allocations
+   to DRAM can be demoted to PMEM whenever they opt in to this
+   new mechanism.  A cgroup-level API to opt-in or opt-out of
+   these migrations will likely be required as a follow-on.
+ * Could be more aggressive about where anon LRU scanning occurs
+   since it no longer necessarily involves I/O.  get_scan_count()
+   for instance says: "If we have no swap space, do not bother
+   scanning anon pages"
+
+--
+
+ Documentation/admin-guide/sysctl/vm.rst |  12 +
+ include/linux/migrate.h                 |  14 +-
+ include/linux/swap.h                    |   3 +-
+ include/linux/vm_event_item.h           |   2 +
+ include/trace/events/migrate.h          |   3 +-
+ include/uapi/linux/mempolicy.h          |   1 +
+ mm/compaction.c                         |   3 +-
+ mm/gup.c                                |   3 +-
+ mm/internal.h                           |   5 +
+ mm/memory-failure.c                     |   4 +-
+ mm/memory_hotplug.c                     |   4 +-
+ mm/mempolicy.c                          |   8 +-
+ mm/migrate.c                            | 315 +++++++++++++++++++++++-
+ mm/page_alloc.c                         |  11 +-
+ mm/vmscan.c                             | 158 +++++++++++-
+ mm/vmstat.c                             |   2 +
+ 16 files changed, 520 insertions(+), 28 deletions(-)
+
+--
+
+Changes since (automigrate-20210304):
+ * Add ack/review tags
+ * Remove duplicate synchronize_rcu() call
+
+Changes since (automigrate-20210122):
+ * move from GFP_HIGHUSER -> GFP_HIGHUSER_MOVABLE since pages *are*
+   movable.
+ * Separate out helpers that check for being able to relaim anonymous
+   pages versus being able to meaningfully scan the anon LRU.
+
+Changes since (automigrate-20200818):
+ * Fall back to normal reclaim when demotion fails
+ * Fix some compile issues, when page migration and NUMA are off
+
+Changes since (automigrate-20201007):
+ * separate out checks for "can scan anon LRU" from "can actually
+   swap anon pages right now".  Previous series conflated them
+   and may have been overly aggressive scanning LRU
+ * add MR_DEMOTION to tracepoint header
+ * remove unnecessary hugetlb page check
+
+Changes since (https://lwn.net/Articles/824830/):
+ * Use higher-level migrate_pages() API approach from Yang Shi's
+   earlier patches.
+ * made sure to actually check node_reclaim_mode's new bit
+ * disabled migration entirely before introducing RECLAIM_MIGRATE
+ * Replace GFP_NOWAIT with explicit __GFP_KSWAPD_RECLAIM and
+   comment why we want that.
+ * Comment on effects of that keep multiple source nodes from
+   sharing target nodes
+
+Cc: Yang Shi <yang.shi@linux.alibaba.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Huang Ying <ying.huang@intel.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: osalvador <osalvador@suse.de>
+Cc: Huang Ying <ying.huang@intel.com>
+Cc: Wei Xu <weixugc@google.com>
+
