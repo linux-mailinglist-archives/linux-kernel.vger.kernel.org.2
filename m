@@ -2,198 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9104C352059
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39382352057
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234900AbhDAUGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 16:06:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234287AbhDAUGk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 16:06:40 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACA8CC0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 13:06:40 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id b7so4659723ejv.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 13:06:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/5FgskCBgp4mYNMsW4JO+VcIW0/eiYLcwbqkkWuoz1o=;
-        b=VR9rdV+dZtbtNdZi+t7HB7jIHlB6jGzShQeEsDb84EsEBYYfW+qnmLVXvQQIZkSWD6
-         VPRTbyWKemmh/hOHgXnqqOAU+dDYdqCSxX2CkAIoDFnF2JT8XBseONmXJUC+pRx9u7kC
-         Y4FbiTcJwwdpB9CRpfpmu9yhupsnCFxsZv1+jqmUF3vj176dGQp2o7gBfUUBFF5MOR8l
-         Q0nKRp9ZFvYkIYzNp2Fdfovdd0ExxK6z+xmpRtrbFa7NCK4jA9V2U3QzdzFHrR7CoXQT
-         bChDcJJADEh1onUweHesT6SnBjH4/TQwGpTVCANRt/D+5MualskepxrMn7vSj+cNn/pt
-         NE+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/5FgskCBgp4mYNMsW4JO+VcIW0/eiYLcwbqkkWuoz1o=;
-        b=N57kCEY0ycxen2ezdhD1aJAo8nEzm3fEbF7UtdAWS9VrusVL4Umv7imLmhNO173Ioe
-         2HDFYf7HD3Ozva8udAKdaIu09+5h0/D5R6aHPAIUzieA/+e/f7yQ95exLzhTs/wpmzGB
-         E/OaCDHIatbOKeMiA9E2yQSerLalOHYoYogj/TEt/cmohtmaIeCW683ZXp+FY6fQ2Qoz
-         k360Cnb6sHSgZQdFCfrrnGi+dXFmOYz8hmX1lyqn9Dcie/e5g3YE8ex7XKdgYEAtkAef
-         67wU2GCaum0d8p9sTN7gdeMvrxgPDEYKne1hwL1IPjvCPL7wu8Jh4DGSg5r53YzWCe/5
-         35KQ==
-X-Gm-Message-State: AOAM532mDIKuWAV9QXupzHjX/HTNegkblKGxEGVZO2VvuMRHE/jaxqO3
-        gsIdsOsE8nTivKnKRSbxdIkTWPmSv1ZKPJjou3Y=
-X-Google-Smtp-Source: ABdhPJw1cweuziLtv/UH9L+Hjp146uOcfObrlPQGwV1dUwYQeFuQvXUBmPLl90qcZqsPi0V8EDbqD/v4uSTh3H+5Jfg=
-X-Received: by 2002:a17:906:4bce:: with SMTP id x14mr10681523ejv.383.1617307599465;
- Thu, 01 Apr 2021 13:06:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210401183216.443C4443@viggo.jf.intel.com> <20210401183235.BCC49E8B@viggo.jf.intel.com>
-In-Reply-To: <20210401183235.BCC49E8B@viggo.jf.intel.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 1 Apr 2021 13:06:27 -0700
-Message-ID: <CAHbLzkpbua9BM+sMng3d3Fxo+61HVNEegviTLqtVVtxtjjbsCQ@mail.gmail.com>
-Subject: Re: [PATCH 10/10] mm/migrate: new zone_reclaim_mode to enable reclaim migration
-To:     Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        weixugc@google.com, Yang Shi <yang.shi@linux.alibaba.com>,
-        David Rientjes <rientjes@google.com>,
-        Huang Ying <ying.huang@intel.com>,
+        id S234697AbhDAUGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 16:06:34 -0400
+Received: from mga02.intel.com ([134.134.136.20]:45509 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234287AbhDAUGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 16:06:33 -0400
+IronPort-SDR: PIQHFYyPXXuknLwtyuzXwLbUOa16tJwKkT2J8pnHze3xpK7LsCMO90fkTaUZ+iZL/G1kgcG06w
+ 9OWkCThqbTSw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="179454389"
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="179454389"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 13:06:33 -0700
+IronPort-SDR: KFs5kMk14y7tyfv8Sqq05NSBIUus/kmxXMKnxhsyOHy/cPO62WYvGcUJrPPRToAi0GyGFLvmH2
+ nzb4Ffx6HKEA==
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="611046689"
+Received: from pzlai-mobl.amr.corp.intel.com (HELO [10.213.169.242]) ([10.213.169.242])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 13:06:29 -0700
+Subject: Re: [RFC v1 21/26] x86/mm: Move force_dma_unencrypted() to common
+ code
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
         Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <444fe9c7c035417f6abc3e0be2a4861cb573ab28.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <d4eb7452-f6dd-2e0e-a790-76abdbbbfee9@intel.com>
+Date:   Thu, 1 Apr 2021 13:06:29 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <444fe9c7c035417f6abc3e0be2a4861cb573ab28.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 11:35 AM Dave Hansen <dave.hansen@linux.intel.com> wrote:
->
->
-> From: Dave Hansen <dave.hansen@linux.intel.com>
->
-> Some method is obviously needed to enable reclaim-based migration.
->
-> Just like traditional autonuma, there will be some workloads that
-> will benefit like workloads with more "static" configurations where
-> hot pages stay hot and cold pages stay cold.  If pages come and go
-> from the hot and cold sets, the benefits of this approach will be
-> more limited.
->
-> The benefits are truly workload-based and *not* hardware-based.
-> We do not believe that there is a viable threshold where certain
-> hardware configurations should have this mechanism enabled while
-> others do not.
->
-> To be conservative, earlier work defaulted to disable reclaim-
-> based migration and did not include a mechanism to enable it.
-> This proposes extending the existing "zone_reclaim_mode" (now
-> now really node_reclaim_mode) as a method to enable it.
->
-> We are open to any alternative that allows end users to enable
-> this mechanism or disable it it workload harm is detected (just
-> like traditional autonuma).
->
-> Once this is enabled page demotion may move data to a NUMA node
-> that does not fall into the cpuset of the allocating process.
-> This could be construed to violate the guarantees of cpusets.
-> However, since this is an opt-in mechanism, the assumption is
-> that anyone enabling it is content to relax the guarantees.
->
-> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Wei Xu <weixugc@google.com>
-> Cc: Yang Shi <yang.shi@linux.alibaba.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Huang Ying <ying.huang@intel.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: osalvador <osalvador@suse.de>
->
-> Changes since 20200122:
->  * Changelog material about relaxing cpuset constraints
->
-> Changes since 20210304:
->  * Add Documentation/ material about relaxing cpuset constraints
+On 2/5/21 3:38 PM, Kuppuswamy Sathyanarayanan wrote:
+> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+> 
+> Intel TDX doesn't allow VMM to access guest memory. Any memory that is
+> required for communication with VMM suppose to be shared explicitly by
 
-Reviewed-by: Yang Shi <shy828301@gmail.com>
+s/suppose to/must/
 
-> ---
->
->  b/Documentation/admin-guide/sysctl/vm.rst |   12 ++++++++++++
->  b/include/linux/swap.h                    |    3 ++-
->  b/include/uapi/linux/mempolicy.h          |    1 +
->  b/mm/vmscan.c                             |    6 ++++--
->  4 files changed, 19 insertions(+), 3 deletions(-)
->
-> diff -puN Documentation/admin-guide/sysctl/vm.rst~RECLAIM_MIGRATE Documentation/admin-guide/sysctl/vm.rst
-> --- a/Documentation/admin-guide/sysctl/vm.rst~RECLAIM_MIGRATE   2021-03-31 15:17:40.324000190 -0700
-> +++ b/Documentation/admin-guide/sysctl/vm.rst   2021-03-31 15:17:40.349000190 -0700
-> @@ -976,6 +976,7 @@ This is value OR'ed together of
->  1      Zone reclaim on
->  2      Zone reclaim writes dirty pages out
->  4      Zone reclaim swaps pages
-> +8      Zone reclaim migrates pages
->  =      ===================================
->
->  zone_reclaim_mode is disabled by default.  For file servers or workloads
-> @@ -1000,3 +1001,14 @@ of other processes running on other node
->  Allowing regular swap effectively restricts allocations to the local
->  node unless explicitly overridden by memory policies or cpuset
->  configurations.
+> setting the bit in page table entry. The shared memory is similar to
+> unencrypted memory in AMD SME/SEV terminology.
+
+In addition to setting the page table bit, there's also a dance to go
+through to convert the memory.  Please mention the procedure here at
+least.  It's very different from SME.
+
+> force_dma_unencrypted() has to return true for TDX guest. Move it out of
+> AMD SME code.
+
+You lost me here.  What does force_dma_unencrypted() have to do with
+host/guest shared memory?
+
+> Introduce new config option X86_MEM_ENCRYPT_COMMON that has to be
+> selected by all x86 memory encryption features.
+
+Please also mention what will set it.  I assume TDX guest support will
+set this option.  It's probably also worth a sentence to say that
+force_dma_unencrypted() will have TDX-specific code added to it.  (It
+will, right??)
+
+> This is preparation for TDX changes in DMA code.
+
+Probably best to also mention that this effectively just moves code
+around.  This patch should have no functional changes at runtime.
+
+
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 0374d9f262a5..8fa654d61ac2 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -1538,14 +1538,18 @@ config X86_CPA_STATISTICS
+>  	  helps to determine the effectiveness of preserving large and huge
+>  	  page mappings when mapping protections are changed.
+>  
+> +config X86_MEM_ENCRYPT_COMMON
+> +	select ARCH_HAS_FORCE_DMA_UNENCRYPTED
+> +	select DYNAMIC_PHYSICAL_MASK
+> +	def_bool n
 > +
-> +Page migration during reclaim is intended for systems with tiered memory
-> +configurations.  These systems have multiple types of memory with varied
-> +performance characteristics instead of plain NUMA systems where the same
-> +kind of memory is found at varied distances.  Allowing page migration
-> +during reclaim enables these systems to migrate pages from fast tiers to
-> +slow tiers when the fast tier is under pressure.  This migration is
-> +performed before swap.  It may move data to a NUMA node that does not
-> +fall into the cpuset of the allocating process which might be construed
-> +to violate the guarantees of cpusets.  This should not be enabled on
-> +systems which need strict cpuset location guarantees.
-> diff -puN include/linux/swap.h~RECLAIM_MIGRATE include/linux/swap.h
-> --- a/include/linux/swap.h~RECLAIM_MIGRATE      2021-03-31 15:17:40.331000190 -0700
-> +++ b/include/linux/swap.h      2021-03-31 15:17:40.351000190 -0700
-> @@ -382,7 +382,8 @@ extern int sysctl_min_slab_ratio;
->  static inline bool node_reclaim_enabled(void)
+>  config AMD_MEM_ENCRYPT
+>  	bool "AMD Secure Memory Encryption (SME) support"
+>  	depends on X86_64 && CPU_SUP_AMD
+>  	select DMA_COHERENT_POOL
+> -	select DYNAMIC_PHYSICAL_MASK
+>  	select ARCH_USE_MEMREMAP_PROT
+> -	select ARCH_HAS_FORCE_DMA_UNENCRYPTED
+>  	select INSTRUCTION_DECODER
+> +	select X86_MEM_ENCRYPT_COMMON
+>  	help
+>  	  Say yes to enable support for the encryption of system memory.
+>  	  This requires an AMD processor that supports Secure Memory
+> diff --git a/arch/x86/include/asm/io.h b/arch/x86/include/asm/io.h
+> index 30a3b30395ad..95e534cffa99 100644
+> --- a/arch/x86/include/asm/io.h
+> +++ b/arch/x86/include/asm/io.h
+> @@ -257,10 +257,12 @@ static inline void slow_down_io(void)
+>  
+>  #endif
+>  
+> -#ifdef CONFIG_AMD_MEM_ENCRYPT
+>  #include <linux/jump_label.h>
+>  
+>  extern struct static_key_false sev_enable_key;
+
+This _looks_ odd.  sev_enable_key went from being under
+CONFIG_AMD_MEM_ENCRYPT to being unconditionally referenced.
+
+Could you explain a bit more?
+
+I would have expected it tot at *least* be tied to the new #ifdef.
+
+> +#ifdef CONFIG_AMD_MEM_ENCRYPT
+> +
+>  static inline bool sev_key_active(void)
 >  {
->         /* Is any node_reclaim_mode bit set? */
-> -       return node_reclaim_mode & (RECLAIM_ZONE|RECLAIM_WRITE|RECLAIM_UNMAP);
-> +       return node_reclaim_mode & (RECLAIM_ZONE |RECLAIM_WRITE|
-> +                                   RECLAIM_UNMAP|RECLAIM_MIGRATE);
->  }
->
->  extern void check_move_unevictable_pages(struct pagevec *pvec);
-> diff -puN include/uapi/linux/mempolicy.h~RECLAIM_MIGRATE include/uapi/linux/mempolicy.h
-> --- a/include/uapi/linux/mempolicy.h~RECLAIM_MIGRATE    2021-03-31 15:17:40.337000190 -0700
-> +++ b/include/uapi/linux/mempolicy.h    2021-03-31 15:17:40.352000190 -0700
-> @@ -71,5 +71,6 @@ enum {
->  #define RECLAIM_ZONE   (1<<0)  /* Run shrink_inactive_list on the zone */
->  #define RECLAIM_WRITE  (1<<1)  /* Writeout pages during reclaim */
->  #define RECLAIM_UNMAP  (1<<2)  /* Unmap pages during reclaim */
-> +#define RECLAIM_MIGRATE        (1<<3)  /* Migrate to other nodes during reclaim */
->
->  #endif /* _UAPI_LINUX_MEMPOLICY_H */
-> diff -puN mm/vmscan.c~RECLAIM_MIGRATE mm/vmscan.c
-> --- a/mm/vmscan.c~RECLAIM_MIGRATE       2021-03-31 15:17:40.339000190 -0700
-> +++ b/mm/vmscan.c       2021-03-31 15:17:40.357000190 -0700
-> @@ -1074,6 +1074,9 @@ static bool migrate_demote_page_ok(struc
->         VM_BUG_ON_PAGE(PageHuge(page), page);
->         VM_BUG_ON_PAGE(PageLRU(page), page);
->
-> +       if (!(node_reclaim_mode & RECLAIM_MIGRATE))
-> +               return false;
-> +
->         /* It is pointless to do demotion in memcg reclaim */
->         if (cgroup_reclaim(sc))
->                 return false;
-> @@ -1083,8 +1086,7 @@ static bool migrate_demote_page_ok(struc
->         if (PageTransHuge(page) && !thp_migration_supported())
->                 return false;
->
-> -       // FIXME: actually enable this later in the series
-> -       return false;
-> +       return true;
->  }
->
->  /* Check if a page is dirty or under writeback */
-> _
->
+>  	return static_branch_unlikely(&sev_enable_key);
+> diff --git a/arch/x86/mm/Makefile b/arch/x86/mm/Makefile
+> index 5864219221ca..b31cb52bf1bd 100644
+> --- a/arch/x86/mm/Makefile
+...
