@@ -2,240 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 153C2351E0A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:53:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 056B2351E1C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:53:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238010AbhDASeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:34:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48755 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234792AbhDASKx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:10:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617300653;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=E5bC0vECj2mIP0nmc8dEH5Vvyl4hURi0jrKY5gJ1kZk=;
-        b=iyA6O0EebExx8AEnIpSW0zaG9ncQO/IaLv1qpKXz9G3V6Ab7hmNntB1dlhnf7IYaClldNm
-        w83+eDaDXhmVl+jRTNCZs/DHPziH5nvT5XRimeXydvVdX1GuhWaa5QK0iSrvcc3DFm+NNP
-        aCbE2lsLcm/g0CcXP9LoRB4OWyd0z+I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-348-K2ZX0QaRMZeXKYmxaKcuoA-1; Thu, 01 Apr 2021 14:10:51 -0400
-X-MC-Unique: K2ZX0QaRMZeXKYmxaKcuoA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 72B0B814338;
-        Thu,  1 Apr 2021 18:10:50 +0000 (UTC)
-Received: from llong.com (ovpn-117-25.rdu2.redhat.com [10.10.117.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2EFFF100238C;
-        Thu,  1 Apr 2021 18:10:39 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     Bharata B Rao <bharata@linux.vnet.ibm.com>,
-        Phil Auld <pauld@redhat.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        linux-kernel@vger.kernel.org, Waiman Long <longman@redhat.com>
-Subject: [PATCH v3] sched/debug: Use sched_debug_lock to serialize use of cgroup_path[] only
-Date:   Thu,  1 Apr 2021 14:10:30 -0400
-Message-Id: <20210401181030.7689-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        id S238708AbhDASfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:35:05 -0400
+Received: from mail-bn8nam11on2059.outbound.protection.outlook.com ([40.107.236.59]:65412
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238842AbhDASPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:15:01 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i1X0yZSStn1Gdzu5s+kc68tHv/wjjdZA9nrbinwF5dkyMFZu0oXHWzMoGKICIJtsc+z04QwM0795CrDDb2l4+ExU5owMSsG0CnidYyM8T5vDcZPLAVGIJXBp+am6TcpSm43WTXlE/NoyjrHb2nJooOj9E45TmkWejqdeiJkaMeFOFYDe+a9ITBDfL3vpoEoneQLkBBRa3k+CnCEljz60X0PhMRDCrGHecWo7E0V6YNZgYMACB9iyeEjtWMqgoQg8ItxYMEUZvhWX5LT/C4rc+sODrqwcEadzQSo6tlWEEnYk2mxdcNf/9lAcuhVrFCXNgtUwVkKyjkwGKQwbsqf1xA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zvHtaskFfgkJ28J6H+KSW/fFlSAx3KuS/uY2lWymGho=;
+ b=bF4LWf5Z/kH5k35Em3vA4Q0ZLFFCAewMKMQ89JiDtjUXg2ISCmLS1okY0d0nu7G9POZ6u8wEf3objxuJPN7XiYeViF8PtQ6943ELeAj0c59e1lO5EA1BnCrTSm1+Mf7qhptD5wjdanYUIo+w83lQQFkrXforsLW7gsBJmXy9Nuy6FU4lPwNiVjnR6sGHkMfcXhZjZuXL1hA3dM/9HZKZkbE/S7nppvHQjnXUzo+wBCeTJ/hSdT6WKzDFSQ156mcvkxtyneHsz41eVuC0dyjys9QAH/+ObKHbWwtzxX8ihZb0quMD5Q7lmaK8ieGfdBFREYWVGoTTh5F9kI6KfC+oSA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zvHtaskFfgkJ28J6H+KSW/fFlSAx3KuS/uY2lWymGho=;
+ b=JHxqLFT0fo6w2kZCA1qslIKlO0o8dP0XRknMDRC5rNqIrJlmgEy1oh23Gh5h9X9zejqhXAfToOdtJrIAlVEDOFpOgaPiNoKeWmzMvw28575a5y8Us08w6JmoRR49/35w0SLhyGgZSdQkcd4qidiFra1/XGTOn4kvZ2uru0kq2hFcbC7sk5TOzCCTHAvBuVoU1iaKylak4rGHeF1A7ZgTq7W4vbUHW/6dopVo6InBk9tcxMPVIutLf717vMRKCM22v707tL12XH/4eLTVbCu4CarL4SbnuUL5vNyxG0WFk8+/b7GptWyuYYQfDVz6AGypF4fkuZNpHAYCETLQahbIKA==
+Authentication-Results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4340.namprd12.prod.outlook.com (2603:10b6:5:2a8::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.29; Thu, 1 Apr
+ 2021 18:14:59 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3999.028; Thu, 1 Apr 2021
+ 18:14:59 +0000
+Date:   Thu, 1 Apr 2021 15:14:57 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     bvanassche@acm.org, dledford@redhat.com,
+        linux-rdma@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] IB/srpt: Fix passing zero to 'PTR_ERR'
+Message-ID: <20210401181457.GA1634722@nvidia.com>
+References: <20210324140939.7480-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210324140939.7480-1-yuehaibing@huawei.com>
+X-Originating-IP: [142.162.115.133]
+X-ClientProxiedBy: BL1PR13CA0012.namprd13.prod.outlook.com
+ (2603:10b6:208:256::17) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0012.namprd13.prod.outlook.com (2603:10b6:208:256::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.8 via Frontend Transport; Thu, 1 Apr 2021 18:14:58 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lS1qL-006rIK-Af; Thu, 01 Apr 2021 15:14:57 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b2bcd459-53e3-4905-98c0-08d8f53a0f4d
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4340:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB4340D4A6AC4A69A4E1562898C27B9@DM6PR12MB4340.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1751;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BGRoVscKEOrVtecm0pFuqfHEi61e7YYJZnAiK+2j5TuDF47rA3nzU/uuIfS8pw0LKRa1tDRjNPGuPL3rvDyaONW4IH+EcHAaBHOzykuPhJ6TIJE7UDaejKAKKepJ3z7IBLpjUaK8bfxB7t6wiPRJF8ouNopSpdeDxkSZmqRADHFChA/5lKh/Pa5ewOtCF6YWcu1rylG5nkOJcDluc2fbBUdamnAjvaDe0Xl+prlSMzjWIgZnIUPWSZHZcMd0z20NaQb6bIQ6PC+nqCYTxrWSKQ/WiSBGNgGEBbPDZr3Mpsc2IWvAgbDw8teBKrQeK9Mq8sQGe7hkYbQJ11MOWTN88USLRL0uG0v5INDTld9PiEXEgj6V3L+hYLMB+RuHsHc8nn3Ljg4cd84M+TrTGXvbWsFAQBbv/NaSHritBXq0QtnUS3sfIfpvgGbbAOTydkIl6XC7US1z9DF9gfne1vcB4BCS1ppVhjogNtLtVzi+Xp8reMVWpPOnBs7qBnPpOF5sApxfqJyD9NU6ak8jQiXtfiatJOb3rUAWh8C8bUby8BIJAtnPwnuGhtA/VRG+3qrY3H/AjuFXcGxt7ai7GDN9f1dShl1zq5/bWASXd0x5D7QRXCvbVt8iWulKspy+Bj+wwxPYjH/6zkLRR1F/iy6ZN80b6G8Ex4rhhiXEFUzG/Uk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(39860400002)(396003)(346002)(366004)(4744005)(2906002)(9786002)(1076003)(4326008)(5660300002)(66556008)(38100700001)(66476007)(66946007)(2616005)(36756003)(426003)(9746002)(8936002)(478600001)(83380400001)(26005)(33656002)(186003)(86362001)(8676002)(6916009)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?daUX1ByD9SAStdedlH5ky3NgXEtemmEGMg0awTfF1etoYHMg+rHrmsjaKjRN?=
+ =?us-ascii?Q?f1+ORVmsgxr5NFW4Vkbq7GGWmstEGWgMm1TPLZR/xZx7GOmFDARML/pB4VuQ?=
+ =?us-ascii?Q?JnF7HfEolagvOH8M4Z0YFOx+g7iyJCfOQ6nBqTI9DaAq2hRTso4pKIhhtoIq?=
+ =?us-ascii?Q?xZxmo/mPGSnAbpAgbDiOn0k4QaP4ucT+nM7XdcUTa7y1dlQTLB8BOhJn+AEV?=
+ =?us-ascii?Q?pagTKMcO9LIvc6gWVgWgNICrN+EZ1te7GVEaoV90C2WlYKvk8Ez8Pu47VhK0?=
+ =?us-ascii?Q?CKKE0PJEUtcLJaDuaUVUdFN0uFdpXjnLCyAcy8dQQy3wYvfEJjt3gwJW5aTu?=
+ =?us-ascii?Q?JYJjie6IjCu6CDtB8UttzyZZoM25pxYe0+TaXIl9dxiid8rvvu9//dnEVr8m?=
+ =?us-ascii?Q?4etU7zZ6DsEDUy4fFnbhKDVXEruNJyOKiohfsZHyKF/2F9+cKlk9npKiPlR7?=
+ =?us-ascii?Q?A16Ol5BiIlGCBF7IhPLyJePEY0kdKAuUVhUp+wxl+HmN7HnrBNkY2Nq1RNnA?=
+ =?us-ascii?Q?zGNatyKtdSBsh0NcGn9O/iW9OspXyeEVG5ZkFyb6NJFirKvYFt0mgk83zcXI?=
+ =?us-ascii?Q?8TpMH/3TGYT37uKug2H4FLjfvSpQhdrPF3UI1vD/ZFWtgcdJE8LTRL57yWz0?=
+ =?us-ascii?Q?N6GvnGH9sGPRbj4E1hhzmP+3pyd5Cz6JIDoooBMsfmB3Nl6/0WlorvZIpBWf?=
+ =?us-ascii?Q?d8k8ygkiH/hVQXuyUN71+5eIv5mylXPtchHP1daDOEBTbkvxVGOYNwCoM3Ct?=
+ =?us-ascii?Q?eJVD64K15MShJAEudW7GMyyJhmZTf6ICUKeXBZDgbhQbxe5VOcxzBtd9nS7T?=
+ =?us-ascii?Q?+NpbWK3yFw7DDUjGUq2lDhkLe5EpK465k1YHdX7sNizfH+lOCqDqiHQdrGvX?=
+ =?us-ascii?Q?TthrBLAZVR5Gvt5VqZk9zVH0CEI3EOTfNRXvjqUGugYDQvmcJ/okj7DRq6TW?=
+ =?us-ascii?Q?TUBHX9+mLOlf3zEDfi8RHqdIuMnQZcxeU/rpd0SUZ/hwzurtGSbbWPtXLdcy?=
+ =?us-ascii?Q?As9qIejPpTHf5lW2/JWyyZhUZCdOzQ/rKdBEteu32hUCS7mo1t0haoUH5rMH?=
+ =?us-ascii?Q?3lSOGeFP2U20VGBU5L3rllprE1chjEhvYpq9hoyBxy9ler4d4LsGN/XQBOIf?=
+ =?us-ascii?Q?BhecjWOa+crGXu06+ZX3nD/hQdMKgS5f4vEgq0wxZmL+Z3981RcbGar+YqmJ?=
+ =?us-ascii?Q?VpOfoYg+N8SxVh34aWa3+yHBsNE2GZu9vUR4LbNZltynFRd+b2L5LuPOzscB?=
+ =?us-ascii?Q?GkpZomygiMOJ8TBDMutaJKwPqezDMKWMBC9Vku/FEAC8/OIAnUCE/3TwTj0E?=
+ =?us-ascii?Q?xhz5LubABT6Xwfz3m3N5vXGYvUMA8g+C9uRPcE379fWzQg=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b2bcd459-53e3-4905-98c0-08d8f53a0f4d
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2021 18:14:59.7311
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: e/95U0URbYU8CP15EvTW2OlgLuW4rBSgW1gDLKPNz3vFYHPlABTUOxes5bQ2OAUp
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4340
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The handling of sysrq key can be activated by echoing the key to
-/proc/sysrq-trigger or via the magic key sequence typed into a terminal
-that is connected to the system in some way (serial, USB or other mean).
-In the former case, the handling is done in a user context. In the
-latter case, it is likely to be in an interrupt context.
+On Wed, Mar 24, 2021 at 10:09:39PM +0800, YueHaibing wrote:
+> Fix smatch warning:
+> 
+> drivers/infiniband/ulp/srpt/ib_srpt.c:2341 srpt_cm_req_recv() warn: passing zero to 'PTR_ERR'
+> 
+> Use PTR_ERR_OR_ZERO instead of PTR_ERR
+> 
+> Fixes: 847462de3a0a ("IB/srpt: Fix srpt_cm_req_recv() error path (1/2)")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+>  drivers/infiniband/ulp/srpt/ib_srpt.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> index 6be60aa5ffe2..3ff24b5048ac 100644
+> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> @@ -2338,7 +2338,7 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+>  
+>  	if (IS_ERR_OR_NULL(ch->sess)) {
+>  		WARN_ON_ONCE(ch->sess == NULL);
+> -		ret = PTR_ERR(ch->sess);
+> +		ret = PTR_ERR_OR_ZERO(ch->sess);
 
-There should be no more than one instance of sysrq key processing via
-a terminal, but multiple instances of /proc/sysrq-trigger is possible.
+This whole flow is a mess, if someone fixes properly then fine, but
+I'm not convinced returning 0 here is correct either.
 
-Currently in print_cpu() of kernel/sched/debug.c, sched_debug_lock is
-taken with interrupt disabled for the whole duration of the calls to
-print_*_stats() and print_rq() which could last for the quite some time
-if the information dump happens on the serial console.
-
-If the system has many cpus and the sched_debug_lock is somehow busy
-(e.g. parallel sysrq-t), the system may hit a hard lockup panic
-depending on the actually serial console implementation of the
-system. For instance,
-
-[ 7809.796262] Kernel panic - not syncing: Hard LOCKUP
-[ 7809.796264] CPU: 13 PID: 79867 Comm: reproducer.sh Kdump: loaded Tainted: G          I      --------- -  - 4.18.0-301.el8.x86_64 #1
-[ 7809.796264] Hardware name: Dell Inc. PowerEdge R640/0W23H8, BIOS 1.4.9 06/29/2018
-[ 7809.796265] Call Trace:
-[ 7809.796265]  <NMI>
-[ 7809.796266]  dump_stack+0x5c/0x80
-[ 7809.796266]  panic+0xe7/0x2a9
-[ 7809.796267]  nmi_panic.cold.9+0xc/0xc
-[ 7809.796267]  watchdog_overflow_callback.cold.7+0x5c/0x70
-[ 7809.796268]  __perf_event_overflow+0x52/0xf0
-[ 7809.796268]  handle_pmi_common+0x204/0x2a0
-[ 7809.796269]  ? __set_pte_vaddr+0x32/0x50
-[ 7809.796269]  ? __native_set_fixmap+0x24/0x30
-[ 7809.796270]  ? ghes_copy_tofrom_phys+0xd3/0x1c0
-[ 7809.796271]  intel_pmu_handle_irq+0xbf/0x160
-[ 7809.796271]  perf_event_nmi_handler+0x2d/0x50
-[ 7809.796272]  nmi_handle+0x63/0x110
-[ 7809.796272]  default_do_nmi+0x49/0x100
-[ 7809.796273]  do_nmi+0x17e/0x1e0
-[ 7809.796273]  end_repeat_nmi+0x16/0x6f
-[ 7809.796274] RIP: 0010:native_queued_spin_lock_slowpath+0x5b/0x1d0
-[ 7809.796275] Code: 6d f0 0f ba 2f 08 0f 92 c0 0f b6 c0 c1 e0 08 89 c2 8b 07 30 e4 09 d0 a9 00 01 ff ff 75 47 85 c0 74 0e 8b 07 84 c0 74 08 f3 90 <8b> 07 84 c0 75 f8 b8 01 00 00 00 66 89 07 c3 8b 37 81 fe 00 01 00
-[ 7809.796276] RSP: 0018:ffffaa54cd887df8 EFLAGS: 00000002
-[ 7809.796277] RAX: 0000000000000101 RBX: 0000000000000246 RCX: 0000000000000000
-[ 7809.796278] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff936b66d0
-[ 7809.796278] RBP: ffffffff9301fb40 R08: 0000000000000004 R09: 000000000000004f
-[ 7809.796279] R10: 0000000000000000 R11: ffffaa54cd887cc0 R12: ffff907fd0a29ec0
-[ 7809.796280] R13: 0000000000000000 R14: ffffffff926ab7c0 R15: 0000000000000000
-[ 7809.796280]  ? native_queued_spin_lock_slowpath+0x5b/0x1d0
-[ 7809.796281]  ? native_queued_spin_lock_slowpath+0x5b/0x1d0
-[ 7809.796281]  </NMI>
-[ 7809.796282]  _raw_spin_lock_irqsave+0x32/0x40
-[ 7809.796283]  print_cpu+0x261/0x7c0
-[ 7809.796283]  sysrq_sched_debug_show+0x34/0x50
-[ 7809.796284]  sysrq_handle_showstate+0xc/0x20
-[ 7809.796284]  __handle_sysrq.cold.11+0x48/0xfb
-[ 7809.796285]  write_sysrq_trigger+0x2b/0x30
-[ 7809.796285]  proc_reg_write+0x39/0x60
-[ 7809.796286]  vfs_write+0xa5/0x1a0
-[ 7809.796286]  ksys_write+0x4f/0xb0
-[ 7809.796287]  do_syscall_64+0x5b/0x1a0
-[ 7809.796287]  entry_SYSCALL_64_after_hwframe+0x65/0xca
-[ 7809.796288] RIP: 0033:0x7fabe4ceb648
-
-The purpose of sched_debug_lock is to serialize the use of the global
-cgroup_path[] buffer in print_cpu(). The rests of the printk calls don't
-need serialization from sched_debug_lock.
-
-Calling printk() with interrupt disabled can still be problematic if
-multiple instances are running. Allocating a stack buffer of PATH_MAX
-bytes is not feasible. So a compromised solution is used where a small
-stack buffer is allocated for pathname. If the actual pathname is
-short enough, it is copied to the stack buffer with sched_debug_lock
-release afterward before printk.  Otherwise, the global group_path[]
-buffer will be used with sched_debug_lock held until after printk().
-
-This patch does not completely solve the problem, but it will greatly
-reduce the chance of its occurrence. To really fix it, we probably need
-to wait until the printk rework is done so that printk() will take much
-less time to execute than before.
-
-Fixes: efe25c2c7b3a ("sched: Reinstate group names in /proc/sched_debug")
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- kernel/sched/debug.c | 33 +++++++++++++++++++++++++--------
- 1 file changed, 25 insertions(+), 8 deletions(-)
-
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index 486f403a778b..191ccb111cb4 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -8,8 +8,6 @@
-  */
- #include "sched.h"
- 
--static DEFINE_SPINLOCK(sched_debug_lock);
--
- /*
-  * This allows printing both to /proc/sched_debug and
-  * to the console
-@@ -470,6 +468,7 @@ static void print_cfs_group_stats(struct seq_file *m, int cpu, struct task_group
- #endif
- 
- #ifdef CONFIG_CGROUP_SCHED
-+static DEFINE_SPINLOCK(sched_debug_lock);
- static char group_path[PATH_MAX];
- 
- static char *task_group_path(struct task_group *tg)
-@@ -481,6 +480,27 @@ static char *task_group_path(struct task_group *tg)
- 
- 	return group_path;
- }
-+
-+#define SEQ_printf_task_group_path(m, tg, fmt...)			\
-+{									\
-+	unsigned long flags;						\
-+	char *path, buf[128];						\
-+	bool locked;							\
-+									\
-+	spin_lock_irqsave(&sched_debug_lock, flags);			\
-+	locked = true;							\
-+	path = task_group_path(tg);					\
-+	if (strlen(path) < sizeof(buf)) {				\
-+		strcpy(buf, path);					\
-+		spin_unlock_irqrestore(&sched_debug_lock, flags);	\
-+		locked = false;						\
-+		path = buf;						\
-+	}								\
-+									\
-+	SEQ_printf(m, fmt, path);					\
-+	if (locked)							\
-+		spin_unlock_irqrestore(&sched_debug_lock, flags);	\
-+}
- #endif
- 
- static void
-@@ -506,7 +526,7 @@ print_task(struct seq_file *m, struct rq *rq, struct task_struct *p)
- 	SEQ_printf(m, " %d %d", task_node(p), task_numa_group_id(p));
- #endif
- #ifdef CONFIG_CGROUP_SCHED
--	SEQ_printf(m, " %s", task_group_path(task_group(p)));
-+	SEQ_printf_task_group_path(m, task_group(p), " %s")
- #endif
- 
- 	SEQ_printf(m, "\n");
-@@ -543,7 +563,7 @@ void print_cfs_rq(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq)
- 
- #ifdef CONFIG_FAIR_GROUP_SCHED
- 	SEQ_printf(m, "\n");
--	SEQ_printf(m, "cfs_rq[%d]:%s\n", cpu, task_group_path(cfs_rq->tg));
-+	SEQ_printf_task_group_path(m, cfs_rq->tg, "cfs_rq[%d]:%s\n", cpu);
- #else
- 	SEQ_printf(m, "\n");
- 	SEQ_printf(m, "cfs_rq[%d]:\n", cpu);
-@@ -614,7 +634,7 @@ void print_rt_rq(struct seq_file *m, int cpu, struct rt_rq *rt_rq)
- {
- #ifdef CONFIG_RT_GROUP_SCHED
- 	SEQ_printf(m, "\n");
--	SEQ_printf(m, "rt_rq[%d]:%s\n", cpu, task_group_path(rt_rq->tg));
-+	SEQ_printf_task_group_path(m, rt_rq->tg, "rt_rq[%d]:%s\n", cpu);
- #else
- 	SEQ_printf(m, "\n");
- 	SEQ_printf(m, "rt_rq[%d]:\n", cpu);
-@@ -666,7 +686,6 @@ void print_dl_rq(struct seq_file *m, int cpu, struct dl_rq *dl_rq)
- static void print_cpu(struct seq_file *m, int cpu)
- {
- 	struct rq *rq = cpu_rq(cpu);
--	unsigned long flags;
- 
- #ifdef CONFIG_X86
- 	{
-@@ -717,13 +736,11 @@ do {									\
- 	}
- #undef P
- 
--	spin_lock_irqsave(&sched_debug_lock, flags);
- 	print_cfs_stats(m, cpu);
- 	print_rt_stats(m, cpu);
- 	print_dl_stats(m, cpu);
- 
- 	print_rq(m, rq, cpu);
--	spin_unlock_irqrestore(&sched_debug_lock, flags);
- 	SEQ_printf(m, "\n");
- }
- 
--- 
-2.18.1
-
+Jason
