@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC9B3523F5
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 01:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7AF93523F8
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 01:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236538AbhDAXd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 19:33:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50218 "EHLO
+        id S235905AbhDAXeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 19:34:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236464AbhDAXdj (ORCPT
+        with ESMTP id S236341AbhDAXdn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 19:33:39 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EED89C0613A7
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 16:32:50 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id b13so3650551plh.19
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 16:32:50 -0700 (PDT)
+        Thu, 1 Apr 2021 19:33:43 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66651C05BD12
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 16:32:53 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id f18so4538728ybq.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 16:32:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=UnGCKexXdTyI7Eiqrpiu9/A3gEqTseA/WgHOqsa1uKs=;
-        b=Y6zfeKMJZ/0smJ+JE3FMI+/MMd/ZXHcogVJQP02BVRavDHQc2Edoxb8O9UMVaoGWhY
-         9M7E77BUjYKqGqhxNg2Ko45u1WpKF8gpGXMiV7k/Tc1x//nVTn29FLsuyQQgeT3V8din
-         SROVjqBNbPfeHTigsIDGDSOViR6QN9BzqkYAwyvaBD4SA5L9n9oHfj14K7uLGlt9J08o
-         mKGxub1wSpYG2Y+5GS3JqQ4O0M0C5WJF9Q77BaDZaElF6rrR+h+xp7Ff9VOWJ+6vYTF6
-         /Wx+GGqcw4dH75WEKap9ddzI2quiNytHhOyUqj2yLAD5J+cNXqEslF8JyxBMuvId9p8q
-         rGNg==
+        bh=4zmDXsca0ECrWDzVS194BszWB+2fKXJW5Au7Imi/uhE=;
+        b=PH3FtJBGBsmgrkbZDVz3BXtOomtM40isF73uxHHdcAgWFlI0hQzmJ+Yiu0Nbk36AiS
+         oIUF/OouhVLXAHv5lePfztQEQCdoF3WKPYY1A6g21bn1QVawFocJ0FQMqW+JvkyRMXC0
+         7MlgKTeKlTukJdkvN/08vCaQdhh5X+mvr2muSbV3dFgjINzTMQPZYmQpEcNiuXE8tNMf
+         3VgtV0lRhBFCEGG3XpYQc/aLht2YKd/8ej+EsbM8UOkPXsBBShbt6fFkrZnQbYbNFDMD
+         JSw7hOAw7svmOppJvJC33a/bIukeU+OjfUKoipleTgiaIG9tnHBTD0G84ol+6TIFQPCe
+         UDkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=UnGCKexXdTyI7Eiqrpiu9/A3gEqTseA/WgHOqsa1uKs=;
-        b=Ipmy5W0uJKjOZPMiFj6UNJkheBqS/97XJdcwt3ckMviKBueeB4w6XTu1EPVAt1u+Vf
-         /EzYk8Mr+xj0KVhF/igk8OLpGd2LAfL4kGBGR61w5uEGDScGhSJEbUuj0mvOJj7fYr+E
-         xMX6V6U7+TpP21N5T9haVoj4R9YObohj+huL6//4UdDvSJX1WB/BZEpg6PKsVCVqdja4
-         wWqHyisN46qQjGFG5GOcD5SvH2DzyGDzvuq8KTLwbEJxBaoCckI1iBBuH+fcBeX7yS1W
-         d9lHXQGKTP6giip3xPo44idr7r2dAcaKqq2orVCbP6sSYpq3kR2u5MGf1sZbko0nMujk
-         e2ww==
-X-Gm-Message-State: AOAM5320NAhWvBSjd63Q+TXqi9lsFRHgmfRWu/BxO01k5EB8v/PZ4NoA
-        YXO0VZ/XKep9lSGL/TXk9uT6q3zrbOm4CuBsCrI=
-X-Google-Smtp-Source: ABdhPJyBRWK1tySqgHsv5VTyvnh7AhzpICkyfxDBUbSBurGBw1+GMJMgKtJy/KlOFY96rLBaJQLLx0AfoI3De6kZmhg=
+        bh=4zmDXsca0ECrWDzVS194BszWB+2fKXJW5Au7Imi/uhE=;
+        b=MO3hW7amme7eDmNUXPLiwDQS7qm8UwgXYmw4gcPFUASAty9N4Za1ThsLG5orq7Uta3
+         NGAhfUgsIDSNQmW1tXEdCIHRcGo8evB+Gqyipph7BZunbBojS0W4PWbz3TTzawE48Wpi
+         Syauy7Mv3zc22Uyl7i060n5qbq0NPD9cgal5H44V4KSIu3hdhplZ4JY1TMWf7u9i0vEI
+         oTkhdfNbydKYA3cFNq/ER8XJ3Nxs5r6bdOyEyfRDcbVqapsaII1a9nd0g/SVJ/oVEkPq
+         hT8Tu9TxGMElsOAeOxyF0dhG9Ij7oCr4E/Nf9EutzLVK268Tq8JrNv3bhbnp7rD+Isg/
+         iqwQ==
+X-Gm-Message-State: AOAM530xTzpFjE4nolAuMtMpDVUjS+02VcpTDK51nHCPWbui+ODxm+bb
+        DPMfMv0o//baunDN5fBpP8ptevTlOzuGojPQNFw=
+X-Google-Smtp-Source: ABdhPJxZF9glk9+ZtBirKYDEGjQrdMhhNWgdR3tCZ5JLBfUCEc7h35+3XPVRFL47JJ5bGJZvKS8N/Lhi8ZZQtRsAJC4=
 X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:4cd1:da86:e91b:70b4])
- (user=samitolvanen job=sendgmr) by 2002:a62:e805:0:b029:1f8:16ba:4518 with
- SMTP id c5-20020a62e8050000b02901f816ba4518mr9437095pfi.37.1617319970406;
- Thu, 01 Apr 2021 16:32:50 -0700 (PDT)
-Date:   Thu,  1 Apr 2021 16:32:13 -0700
+ (user=samitolvanen job=sendgmr) by 2002:a25:880c:: with SMTP id
+ c12mr15159486ybl.399.1617319972614; Thu, 01 Apr 2021 16:32:52 -0700 (PDT)
+Date:   Thu,  1 Apr 2021 16:32:14 -0700
 In-Reply-To: <20210401233216.2540591-1-samitolvanen@google.com>
-Message-Id: <20210401233216.2540591-16-samitolvanen@google.com>
+Message-Id: <20210401233216.2540591-17-samitolvanen@google.com>
 Mime-Version: 1.0
 References: <20210401233216.2540591-1-samitolvanen@google.com>
 X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
-Subject: [PATCH v5 15/18] arm64: add __nocfi to __apply_alternatives
+Subject: [PATCH v5 16/18] arm64: ftrace: use function_nocfi for ftrace_call
 From:   Sami Tolvanen <samitolvanen@google.com>
 To:     Kees Cook <keescook@chromium.org>
 Cc:     Nathan Chancellor <nathan@kernel.org>,
@@ -76,33 +75,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__apply_alternatives makes indirect calls to functions whose address
-is taken in assembly code using the alternative_cb macro. With
-non-canonical CFI, the compiler won't replace these function
-references with the jump table addresses, which trips CFI. Disable CFI
-checking in the function to work around the issue.
+With CONFIG_CFI_CLANG, the compiler replaces function pointers with
+jump table addresses, which breaks dynamic ftrace as the address of
+ftrace_call is replaced with the address of ftrace_call.cfi_jt. Use
+function_nocfi() to get the address of the actual function instead.
 
+Suggested-by: Ben Dai <ben.dai@unisoc.com>
 Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
 ---
- arch/arm64/kernel/alternative.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/kernel/ftrace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/alternative.c b/arch/arm64/kernel/alternative.c
-index 1184c44ea2c7..abc84636af07 100644
---- a/arch/arm64/kernel/alternative.c
-+++ b/arch/arm64/kernel/alternative.c
-@@ -133,8 +133,8 @@ static void clean_dcache_range_nopatch(u64 start, u64 end)
- 	} while (cur += d_size, cur < end);
- }
+diff --git a/arch/arm64/kernel/ftrace.c b/arch/arm64/kernel/ftrace.c
+index 86a5cf9bc19a..b5d3ddaf69d9 100644
+--- a/arch/arm64/kernel/ftrace.c
++++ b/arch/arm64/kernel/ftrace.c
+@@ -55,7 +55,7 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
+ 	unsigned long pc;
+ 	u32 new;
  
--static void __apply_alternatives(void *alt_region,  bool is_module,
--				 unsigned long *feature_mask)
-+static void __nocfi __apply_alternatives(void *alt_region,  bool is_module,
-+					 unsigned long *feature_mask)
- {
- 	struct alt_instr *alt;
- 	struct alt_region *region = alt_region;
+-	pc = (unsigned long)&ftrace_call;
++	pc = (unsigned long)function_nocfi(ftrace_call);
+ 	new = aarch64_insn_gen_branch_imm(pc, (unsigned long)func,
+ 					  AARCH64_INSN_BRANCH_LINK);
+ 
 -- 
 2.31.0.208.g409f899ff0-goog
 
