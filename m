@@ -2,29 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D82D3513DF
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 12:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 605653513DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 12:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234130AbhDAKpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 06:45:07 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15066 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234089AbhDAKo6 (ORCPT
+        id S234054AbhDAKpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 06:45:04 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14667 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234062AbhDAKof (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 06:44:58 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F9zhg3rMVzNrWR;
-        Thu,  1 Apr 2021 18:20:19 +0800 (CST)
-Received: from huawei.com (10.175.103.91) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Thu, 1 Apr 2021
- 18:22:56 +0800
+        Thu, 1 Apr 2021 06:44:35 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F9zlv6ZfRzmcYy;
+        Thu,  1 Apr 2021 18:23:07 +0800 (CST)
+Received: from huawei.com (10.175.103.91) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Thu, 1 Apr 2021
+ 18:25:43 +0800
 From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <mchehab@kernel.org>, <p.zabel@pengutronix.de>
-Subject: [PATCH -next] media: imx-pxp: remove redundant dev_err call in pxp_probe()
-Date:   Thu, 1 Apr 2021 18:26:07 +0800
-Message-ID: <20210401102607.1554006-1-yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>
+CC:     <mchehab@kernel.org>, <bparrot@ti.com>
+Subject: [PATCH -next] media: ti-vpe: csc: remove redundant dev_err call in csc_create()
+Date:   Thu, 1 Apr 2021 18:28:50 +0800
+Message-ID: <20210401102850.1555368-1-yangyingliang@huawei.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -42,27 +41,25 @@ error message.
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- drivers/media/platform/imx-pxp.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ drivers/media/platform/ti-vpe/csc.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/media/platform/imx-pxp.c b/drivers/media/platform/imx-pxp.c
-index 08d76eb05ed1..13bc88e9358e 100644
---- a/drivers/media/platform/imx-pxp.c
-+++ b/drivers/media/platform/imx-pxp.c
-@@ -1654,11 +1654,8 @@ static int pxp_probe(struct platform_device *pdev)
+diff --git a/drivers/media/platform/ti-vpe/csc.c b/drivers/media/platform/ti-vpe/csc.c
+index f4e0cf72d1cf..ff15bc589f1b 100644
+--- a/drivers/media/platform/ti-vpe/csc.c
++++ b/drivers/media/platform/ti-vpe/csc.c
+@@ -267,10 +267,8 @@ struct csc_data *csc_create(struct platform_device *pdev, const char *res_name)
+ 	}
  
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	dev->mmio = devm_ioremap_resource(&pdev->dev, res);
--	if (IS_ERR(dev->mmio)) {
--		ret = PTR_ERR(dev->mmio);
--		dev_err(&pdev->dev, "Failed to map register space: %d\n", ret);
--		return ret;
+ 	csc->base = devm_ioremap_resource(&pdev->dev, csc->res);
+-	if (IS_ERR(csc->base)) {
+-		dev_err(&pdev->dev, "failed to ioremap\n");
++	if (IS_ERR(csc->base))
+ 		return ERR_CAST(csc->base);
 -	}
-+	if (IS_ERR(dev->mmio))
-+		return PTR_ERR(dev->mmio);
  
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq < 0)
+ 	return csc;
+ }
 -- 
 2.25.1
 
