@@ -2,166 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 193F6351AB7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D05351BEB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:12:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236721AbhDASCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:02:52 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:52730 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235436AbhDARpx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:45:53 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 131EUOwa043580;
-        Thu, 1 Apr 2021 14:32:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=wqAWeuP8pgtH8tcRXg6w3pb7HUuw1+zzkXuZ1BFgBPY=;
- b=QmPAOcPWtEtNaGTh1AhcIKkjFWCcDjA7qmsTl4FJbdbHxlALnkkHQzjbIX1R8dAdZ0SV
- HNOou25aJjLlRRkaWWqrUm8PHtJnf3Adxu7wEGBp6QiABwKPKP+YhwxEaUTbE5SLheVs
- 3zkzkOYdLz4ujhqO1oRDmQ6WHgxBHvLrWjVupoiGZ+KcIK8mC4G9SCZ9sg3hmoACWv/0
- YvKC7x8ZNQrAD/owh+laK/1C0o4vuXaQvxuFAU7sAhBvYO4A4KAGYxWYcLAH02Cs/cgd
- 1TQ/jYzNUVUUugSCFlJTSGv7GinfsrX6YEIC0oqEdhUpzzmsrHN30PExNG3AJwEK320x VA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 37n2akj2k9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 01 Apr 2021 14:32:49 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 131EOhWe074615;
-        Thu, 1 Apr 2021 14:32:46 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 37n2pam94k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 01 Apr 2021 14:32:46 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 131EWivu016975;
-        Thu, 1 Apr 2021 14:32:44 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 01 Apr 2021 07:32:43 -0700
-Date:   Thu, 1 Apr 2021 17:32:36 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     gregkh@linuxfoundation.org, joe@perches.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 08/49] staging: rtl8723bs: remove RT_TRACE logs in
- core/rtw_cmd.c
-Message-ID: <20210401143235.GV2065@kadam>
-References: <cover.1617268327.git.fabioaiuto83@gmail.com>
- <7f51432d99459d79742639341f107115f0c224c5.1617268327.git.fabioaiuto83@gmail.com>
- <20210401095017.GR2065@kadam>
- <20210401135536.GA1691@agape.jhs>
+        id S236245AbhDASMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:12:07 -0400
+Received: from mga14.intel.com ([192.55.52.115]:59020 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236893AbhDARzk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:55:40 -0400
+IronPort-SDR: U1sJuOYSwqkoVr5A2b6V0KElHdsztjkDeQNLzO7rN5Whm30jy8/bvgdjxdZcwjlPkhk6KKiOFR
+ 72UiJQsUtcgg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="191734627"
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="191734627"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 07:33:22 -0700
+IronPort-SDR: sElXlFcU6PLxT1vSpePXLl46lI7T8lRNPYIX4uYZJ11nwEkx9CM1dqrgkUZEBD6pdPW00Vim9U
+ vJKXHmn155kQ==
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="446110675"
+Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 07:33:19 -0700
+Subject: [PATCH v4 2/4] cxl/mem: Fix synchronization mechanism for device
+ removal vs ioctl operations
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     linux-cxl@vger.kernel.org
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, Jason Gunthorpe <jgg@nvidia.com>,
+        linux-kernel@vger.kernel.org, vishal.l.verma@intel.com,
+        ira.weiny@intel.com, alison.schofield@intel.com
+Date:   Thu, 01 Apr 2021 07:33:19 -0700
+Message-ID: <161728759948.2474381.17481500816783671817.stgit@dwillia2-desk3.amr.corp.intel.com>
+In-Reply-To: <161728758895.2474381.12683589190335430004.stgit@dwillia2-desk3.amr.corp.intel.com>
+References: <161728758895.2474381.12683589190335430004.stgit@dwillia2-desk3.amr.corp.intel.com>
+User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401135536.GA1691@agape.jhs>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9941 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
- adultscore=0 bulkscore=0 mlxscore=0 spamscore=0 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2103310000 definitions=main-2104010100
-X-Proofpoint-ORIG-GUID: 13N7doJFI8bwWPWRhNo0DEDJrsYq0KTW
-X-Proofpoint-GUID: 13N7doJFI8bwWPWRhNo0DEDJrsYq0KTW
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9941 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0 phishscore=0
- bulkscore=0 adultscore=0 clxscore=1015 malwarescore=0 priorityscore=1501
- suspectscore=0 spamscore=0 mlxlogscore=999 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
- definitions=main-2104010100
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 03:55:37PM +0200, Fabio Aiuto wrote:
-> 
-> Hi Dan,
-> 
-> I have the following:
-> 
->  	if (rtw_createbss_cmd(adapter) != _SUCCESS)
-> -		RT_TRACE(_module_rtl871x_mlme_c_, _drv_err_, ("Error =>rtw_createbss_cmd status FAIL\n"));
-> +	;
-> 
-> will I leave
-> 
-> 	if (rtw_createbss_cmd(adapter) != _SUCCESS)
-> 		;
-> 
-> or just
-> 
-> 	rtw_createbss_cmd(adapter);
-> 
-> ?
-> 
-> what's best from the static analysis point of view?
-> 
-> smatch and sparse says nothing about that.
+The percpu_ref to gate whether cxl_memdev_ioctl() is free to use the
+driver context (@cxlm) to issue I/O is overkill, implemented incorrectly
+(missing a device reference before accessing the percpu_ref), and the
+complexities of shutting down a percpu_ref contributed to a bug in the
+error unwind in cxl_mem_add_memdev() (missing put_device() to be fixed
+separately).
 
-rtw_createbss_cmd() can only fail if this allocation fails:
+Use an rwsem to explicitly synchronize the usage of cxlmd->cxlm, and add
+the missing reference counting for cxlmd in cxl_memdev_open() and
+cxl_memdev_release_file().
 
-	pcmd = rtw_zmalloc(sizeof(struct cmd_obj));
-
-In current kernels, that size of small allocation will never fail.  But
-we alway write code as if every allocation can fail.
-
-Normally when an allocation fails then we want to return -ENOMEM and
-clean up.  But this code is an event handler for firmware events and
-there isn't any real clean up to do.  Since there is nothing we can do
-then this is basically working and fine.
-
-How I would write this is:
-
-			ret = rtw_createbss_cmd(adapter);
-			if (ret != _SUCCESS)
-				goto unlock;
-		}
-	}
-unlock:
-	spin_unlock_bh(&pmlmepriv->lock);
-}
-
-That doesn't change how the code works but it signals to the the reader
-what your intention is.  If we just remove the error handling then it's
-ambiguous.
-
-			rtw_createbss_cmd(adapter);
-		}
-	}
-	<-- Futurue programmer decides to add code here then figuring
-            that rtw_createbss_cmd() can fail is a problem.
-
-	spin_unlock_bh(&pmlmepriv->lock);
-}
-
-But for something like this which is maybe more subtle than just a
-straight delete of lines of code, then consider pulling it out into its
-own separate patch.  That makes it easier to review.  Put all the stuff
-that I said in the commit message:
-
+Fixes: b39cb1052a5c ("cxl/mem: Register CXL memX devices")
+Reported-by: Jason Gunthorpe <jgg@nvidia.com>
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 ---
-[PATCH] tidy up some error handling
+ drivers/cxl/mem.c |   97 +++++++++++++++++++++++++++--------------------------
+ 1 file changed, 50 insertions(+), 47 deletions(-)
 
-The RT_TRACE() output is not useful so we want to delete it.  In this
-case there is no cleanup for rtw_createbss_cmd() required or even
-possible.  I've deleted the RT_TRACE() output and added a goto unlock
-to show that we can't continue if rtw_createbss_cmd() fails.
-
----
-
-> 
-> Checkpatch too seems to ignore it, maybe the first one is good,
-> but I would like to be sure before sending another over 40 patches
-> long patchset.
-
-Don't send 40 patches.  Just send 10 at a time until you get a better
-feel for which ones are going to get applied or not. :P  It's not
-arbitrary, and I'm definitely not trying to NAK your patches.  Once you
-learn the rules I hope that it's predictable and straight forward.
-
-regards,
-dan carpenter
+diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+index 30bf4f0f3c17..c77d375fad95 100644
+--- a/drivers/cxl/mem.c
++++ b/drivers/cxl/mem.c
+@@ -96,21 +96,18 @@ struct mbox_cmd {
+  * @dev: driver core device object
+  * @cdev: char dev core object for ioctl operations
+  * @cxlm: pointer to the parent device driver data
+- * @ops_active: active user of @cxlm in ops handlers
+- * @ops_dead: completion when all @cxlm ops users have exited
+  * @id: id number of this memdev instance.
+  */
+ struct cxl_memdev {
+ 	struct device dev;
+ 	struct cdev cdev;
+ 	struct cxl_mem *cxlm;
+-	struct percpu_ref ops_active;
+-	struct completion ops_dead;
+ 	int id;
+ };
+ 
+ static int cxl_mem_major;
+ static DEFINE_IDA(cxl_memdev_ida);
++static DECLARE_RWSEM(cxl_memdev_rwsem);
+ static struct dentry *cxl_debugfs;
+ static bool cxl_raw_allow_all;
+ 
+@@ -776,26 +773,43 @@ static long __cxl_memdev_ioctl(struct cxl_memdev *cxlmd, unsigned int cmd,
+ static long cxl_memdev_ioctl(struct file *file, unsigned int cmd,
+ 			     unsigned long arg)
+ {
+-	struct cxl_memdev *cxlmd;
+-	struct inode *inode;
+-	int rc = -ENOTTY;
++	struct cxl_memdev *cxlmd = file->private_data;
++	int rc = -ENXIO;
+ 
+-	inode = file_inode(file);
+-	cxlmd = container_of(inode->i_cdev, typeof(*cxlmd), cdev);
++	down_read(&cxl_memdev_rwsem);
++	if (cxlmd->cxlm)
++		rc = __cxl_memdev_ioctl(cxlmd, cmd, arg);
++	up_read(&cxl_memdev_rwsem);
+ 
+-	if (!percpu_ref_tryget_live(&cxlmd->ops_active))
+-		return -ENXIO;
++	return rc;
++}
+ 
+-	rc = __cxl_memdev_ioctl(cxlmd, cmd, arg);
++static int cxl_memdev_open(struct inode *inode, struct file *file)
++{
++	struct cxl_memdev *cxlmd =
++		container_of(inode->i_cdev, typeof(*cxlmd), cdev);
+ 
+-	percpu_ref_put(&cxlmd->ops_active);
++	get_device(&cxlmd->dev);
++	file->private_data = cxlmd;
+ 
+-	return rc;
++	return 0;
++}
++
++static int cxl_memdev_release_file(struct inode *inode, struct file *file)
++{
++	struct cxl_memdev *cxlmd =
++		container_of(inode->i_cdev, typeof(*cxlmd), cdev);
++
++	put_device(&cxlmd->dev);
++
++	return 0;
+ }
+ 
+ static const struct file_operations cxl_memdev_fops = {
+ 	.owner = THIS_MODULE,
+ 	.unlocked_ioctl = cxl_memdev_ioctl,
++	.open = cxl_memdev_open,
++	.release = cxl_memdev_release_file,
+ 	.compat_ioctl = compat_ptr_ioctl,
+ 	.llseek = noop_llseek,
+ };
+@@ -1049,7 +1063,6 @@ static void cxl_memdev_release(struct device *dev)
+ {
+ 	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
+ 
+-	percpu_ref_exit(&cxlmd->ops_active);
+ 	ida_free(&cxl_memdev_ida, cxlmd->id);
+ 	kfree(cxlmd);
+ }
+@@ -1150,24 +1163,21 @@ static const struct device_type cxl_memdev_type = {
+ 	.groups = cxl_memdev_attribute_groups,
+ };
+ 
+-static void cxlmdev_unregister(void *_cxlmd)
++static void cxl_memdev_shutdown(struct cxl_memdev *cxlmd)
+ {
+-	struct cxl_memdev *cxlmd = _cxlmd;
+-	struct device *dev = &cxlmd->dev;
+-
+-	percpu_ref_kill(&cxlmd->ops_active);
+-	cdev_device_del(&cxlmd->cdev, dev);
+-	wait_for_completion(&cxlmd->ops_dead);
++	down_write(&cxl_memdev_rwsem);
+ 	cxlmd->cxlm = NULL;
+-	put_device(dev);
++	up_write(&cxl_memdev_rwsem);
+ }
+ 
+-static void cxlmdev_ops_active_release(struct percpu_ref *ref)
++static void cxl_memdev_unregister(void *_cxlmd)
+ {
+-	struct cxl_memdev *cxlmd =
+-		container_of(ref, typeof(*cxlmd), ops_active);
++	struct cxl_memdev *cxlmd = _cxlmd;
++	struct device *dev = &cxlmd->dev;
+ 
+-	complete(&cxlmd->ops_dead);
++	cdev_device_del(&cxlmd->cdev, dev);
++	cxl_memdev_shutdown(cxlmd);
++	put_device(dev);
+ }
+ 
+ static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
+@@ -1181,17 +1191,6 @@ static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
+ 	cxlmd = kzalloc(sizeof(*cxlmd), GFP_KERNEL);
+ 	if (!cxlmd)
+ 		return -ENOMEM;
+-	init_completion(&cxlmd->ops_dead);
+-
+-	/*
+-	 * @cxlm is deallocated when the driver unbinds so operations
+-	 * that are using it need to hold a live reference.
+-	 */
+-	cxlmd->cxlm = cxlm;
+-	rc = percpu_ref_init(&cxlmd->ops_active, cxlmdev_ops_active_release, 0,
+-			     GFP_KERNEL);
+-	if (rc)
+-		goto err_ref;
+ 
+ 	rc = ida_alloc_range(&cxl_memdev_ida, 0, CXL_MEM_MAX_DEVS, GFP_KERNEL);
+ 	if (rc < 0)
+@@ -1209,23 +1208,27 @@ static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
+ 	cdev = &cxlmd->cdev;
+ 	cdev_init(cdev, &cxl_memdev_fops);
+ 
++	/*
++	 * Activate ioctl operations, no cxl_memdev_rwsem manipulation
++	 * needed as this is ordered with cdev_add() publishing the device.
++	 */
++	cxlmd->cxlm = cxlm;
++
+ 	rc = cdev_device_add(cdev, dev);
+ 	if (rc)
+ 		goto err_add;
+ 
+-	return devm_add_action_or_reset(dev->parent, cxlmdev_unregister, cxlmd);
++	return devm_add_action_or_reset(dev->parent, cxl_memdev_unregister,
++					cxlmd);
+ 
+ err_add:
+-	ida_free(&cxl_memdev_ida, cxlmd->id);
+-err_id:
+ 	/*
+-	 * Theoretically userspace could have already entered the fops,
+-	 * so flush ops_active.
++	 * The cdev was briefly live, shutdown any ioctl operations that
++	 * saw that state.
+ 	 */
+-	percpu_ref_kill(&cxlmd->ops_active);
+-	wait_for_completion(&cxlmd->ops_dead);
+-	percpu_ref_exit(&cxlmd->ops_active);
+-err_ref:
++	cxl_memdev_shutdown(cxlmd);
++	ida_free(&cxl_memdev_ida, cxlmd->id);
++err_id:
+ 	kfree(cxlmd);
+ 
+ 	return rc;
 
