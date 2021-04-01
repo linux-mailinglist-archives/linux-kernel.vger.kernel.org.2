@@ -2,417 +2,486 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED2E351FBA
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:25:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A501351FB6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235451AbhDATZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 15:25:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52222 "EHLO
+        id S235356AbhDATZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 15:25:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234416AbhDATYl (ORCPT
+        with ESMTP id S234634AbhDATYi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 15:24:41 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF2AC0319E5
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 11:37:17 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id d8-20020a1c1d080000b029010f15546281so3305057wmd.4
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 11:37:17 -0700 (PDT)
+        Thu, 1 Apr 2021 15:24:38 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3D10C0319DF
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 11:37:14 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id d1so6612686ybj.15
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 11:37:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KQ6hPo95a3wvVRy/jZ2q06aWXfh952Y7a16CltLTSbI=;
-        b=VI8VSv/bTrFExp50I79hMr6vhgekzzKfzYdLibJwWBezGhMCDqN2QFxiXnd+lgjZ1A
-         BnXlgoc7rYgXvb5aD1aFR4OBKK2pWrRapDlWgZVxgzlACICALWIPyk9Ma87eGt03bH8P
-         0yYDD5/PICXXWL492yxktYIIRlxvupnpAtcqWj4C6TgpNQyz+QlwK18thZ8Xn0zjKYOX
-         CiijXMvAvtIMSZ8v4vZVTfAgnirPGxoEEhmV8F462Rjr4BzAPpq/8NT4zEShCXMST0p8
-         mS+p3Y6VR7dgJCgRBzvbsKes8cB078Z+IPA+gJOzNR+F7Gy1tT+uctVCbTqScF4oFCUv
-         jMdw==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=X+WKfjTQZel8GESVz31Ne1H6IO8a/apyVTco0b+7YWM=;
+        b=cZQ9w1UOGP6AG0TsS/XX4IVypHtAQjeGSDbmHhJ50xJn0f+LT6rRb8GQrAXYaEgiGo
+         0LWohhxNOm65gYWG8Bph33IvBFB0HlH7JnZsk8H+QdmIweiCMedjLXpXgBS147YWd85m
+         WbvdBhAplPr5+Pl9v8nWHFGTL01x4mgqd+cIKnOzkIaNsvypbcViNCW5JGWi7yFdjZGD
+         AudVG3vurT64vXvFQXozJhArQg38qmmDhe3W+rqc11Kw6epkOXNBwoBHPBOzcKiuqf0H
+         BuCsAgaz7L3FDoOjzK2ugmIDrsHcQ006ISizyfNaAkoKB/1f4JTFKD3FivIaQ3hRLdk2
+         bLcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KQ6hPo95a3wvVRy/jZ2q06aWXfh952Y7a16CltLTSbI=;
-        b=Z6MtnVQms6f0OeLftVK6bzLw05vQy+BOWq5wfh9+6hTUVVp1Hx+j/TPT0qEzIpW+vb
-         G0ts4DzCelehZQh6Wgo0Fpe7h1c5KzygajmdIUIi3t+Sa5DkMkgYL0Ua4wldZr8LZ6uK
-         OGNSEhm/cEnMGf1hiEAVKXMcZL2hwul16iPBI2z7GL0wXGgNKS0I0oKlzLkNP2T8saBl
-         xeidr7sFh05fnZYU2F3q6BLVIMczWLnPzdjzp73aihgHuCEQp5KKBq1g7fgAUZ27/hDM
-         w8xmjPuLKztUNraa4VkVv6zCzDssR5p98z+DnDFkUFDfGT11q6Q+w6XPyL4bZnjQgmcu
-         sgAA==
-X-Gm-Message-State: AOAM531iCEGuNRNJ0sOd1ajiq1Nexh33L473f+GfgFqzB+7axcPH6BMy
-        QwB2PIljODmNNKwAKbzrYL3W6g==
-X-Google-Smtp-Source: ABdhPJyA3cKfSTYjh1/2fVaH/IqrtBKol3oPQL0aC7WIlbRLzGMukvCEzJaf2vt67ZPsG3+SG/9Inw==
-X-Received: by 2002:a1c:20ce:: with SMTP id g197mr9192700wmg.129.1617302236346;
-        Thu, 01 Apr 2021 11:37:16 -0700 (PDT)
-Received: from localhost.localdomain ([82.142.26.252])
-        by smtp.gmail.com with ESMTPSA id b131sm9111490wmb.34.2021.04.01.11.37.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 11:37:15 -0700 (PDT)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     daniel.lezcano@linaro.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lukasz.luba@arm.com, rafael@kernel.org, gregkh@linuxfoundation.org
-Subject: [PATCH v6 7/7] powercap/drivers/dtpm: Allow dtpm node device creation through configfs
-Date:   Thu,  1 Apr 2021 20:36:54 +0200
-Message-Id: <20210401183654.27214-7-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210401183654.27214-1-daniel.lezcano@linaro.org>
-References: <20210401183654.27214-1-daniel.lezcano@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=X+WKfjTQZel8GESVz31Ne1H6IO8a/apyVTco0b+7YWM=;
+        b=nLJhHMzO1oKFiwY9WZg79IWTGoJXKy+THwra1BU78y1QBlDGPAlEPh8xBBcv2ryMVG
+         DTBM+GrlRYm6eayy/v23FTRTWM5MgY0eZ12d/udiRUn/kEV9XYsaCwTEon7Pg4d6RvEU
+         uqmK3kd0XAl5sqVlboWArla4pVqO04iMJyoFxBbAlpY+kHO4Zu5D3GykbCSbqFOsdk65
+         SBY8gEBf9rKjPilySA5lzrl8gPTjwPEqCHeYjtXazzfGdhtWbGAH8Tp2BmDI2WwgT6Cv
+         Lqu6x5c6EwpUbpd2MHGTLtcbdUvyYqpCPBIvLZbuJ83CtN4ysGtwDTLIKkKVlYt2k2zj
+         0GLw==
+X-Gm-Message-State: AOAM530YjKOjZlENcWPCfpjzWBvs4zERNJuTqJ8PFXEN3uLQymwhUDBx
+        lH+ENOi1TgsduPq9i6KKjZHlkfebtvz5lyQjbanm
+X-Google-Smtp-Source: ABdhPJweEeATtgnO29SenGwXZI3wsXXVnNqH0nUaIpqi1Q1Z6R4LS2lJaGapfHy0YbCDBmII0OADbXPJpr9Gdw3yB+dY
+X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:4c6:17b6:e763:5f4a])
+ (user=axelrasmussen job=sendgmr) by 2002:a25:d202:: with SMTP id
+ j2mr13154119ybg.80.1617302233989; Thu, 01 Apr 2021 11:37:13 -0700 (PDT)
+Date:   Thu,  1 Apr 2021 11:37:01 -0700
+Message-Id: <20210401183701.1774159-1-axelrasmussen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
+Subject: [PATCH v4] userfaultfd/shmem: fix MCOPY_ATOMIC_CONTINUE behavior
+From:   Axel Rasmussen <axelrasmussen@google.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Brian Geffon <bgeffon@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DTPM framework is built on top of the powercap framework as a new
-controller to act on the power of the devices. The approach is to
-provide an unified API to do power limitation on devices which are
-capable of that with different techniques.
+Previously, the continue implementation in shmem_mcopy_atomic_pte was
+incorrect for two main reasons:
 
-In addition, the DTPM framework allows to create a hierarchical
-representation of the devices in order to reflect the dependencies of
-the power constraints we want to apply to a group of devices.
+- It didn't correctly skip some sections of code which make sense for
+  newly allocated pages, but absolutely don't make sense for
+  pre-existing page cache pages.
 
-The hierarchy can be different for the same platform as it will depend
-on the form factor (tablet, notebook, phone, ...), on other components
-and/or a policy, and application scenario.
+- Because shmem_mcopy_continue_pte is called only if VM_SHARED is
+  detected in mm/userfaultd.c, we were incorrectly not supporting the
+  case where a tmpfs file had been mmap()-ed with MAP_PRIVATE.
 
-The kernel can not have such knowledge and only the SoC vendor can
-setup its platform to fulfill the objectives of its hardware.
+So, this patch does the following:
 
-This patch adds the ability to create a DTPM hierarchy via
-configfs. All DTPM capable devices are registered in a list, and the
-creation of a configfs directory with the name of one of this device
-will create a DTPM node in the DTPM powercap sysfs. If the name is not
-in the list, a virtual node will be created instead. This virtual node
-in the DTPM semantic is to aggregate the power characteristics of the
-children.
+In mm/userfaultfd.c, break the logic to install PTEs out of
+mcopy_atomic_pte, into a separate helper function.
 
-In order to do the connection between the configfs and sysfs easily, a
-'device' file contains the path to the corresponding DTPM powercap
-node in sysfs (cross filesystems symlink is not supported by
-configfs).
+In mfill_atomic_pte, for the MCOPY_ATOMIC_CONTINUE case, simply look
+up the existing page in the page cache, and then use the PTE
+installation helper to setup the mapping. This addresses the two issues
+noted above.
 
-In order to not block any new features in the future, the hierarchical
-constraints are stored under a top folder 'constraints', so sibling
-can be created for other purposes if needed.
+The previous code's bugs manifested clearly in the error handling path.
+So, to detect this kind of issue in the future, modify the selftest to
+exercise the error handling path as well.
 
-When the configfs was populated, the module can not be unloaded until
-all the elements in the tree have been removed.
+Note that this patch is based on linux-next/akpm; the "fixes" line
+refers to a SHA1 in that branch.
 
-1) Resulting creation via mkdir:
+Changes since v3:
+- Significantly refactored the patch. Continue handling now happens in
+  mm/userfaultfd.c, via a PTE installation helper. Most of the
+  mm/shmem.c changes from the patch being fixed [1] are reverted.
 
-root@rock960:/sys/kernel/config# tree dtpm/
-dtpm/
-└── constraints
-    └── platform
-            ├── device
-	    └── soc
-	        ├── device
-		└── pkg
-		     ├── device
-		     ├── cpu0-cpufreq
-		     │   └── device
-		     ├── cpu4-cpufreq
-		     │   └── device
-		     └── panfrost-devfreq
-		            └── device
+Changes since v2:
+- Drop the ClearPageDirty() entirely, instead of trying to remember the
+  old value.
+- Modify both pgoff / max_off checks to use pgoff. It's equivalent to
+  offset, but offset wasn't initialized until the first check (which
+  we're skipping).
+- Keep the second pgoff / max_off check in the continue case.
 
-2) The content of the 'device' file above
+Changes since v1:
+- Refactor to skip ahead with goto, instead of adding several more
+  "if (!is_continue)".
+- Fix unconditional ClearPageDirty().
+- Don't pte_mkwrite() when is_continue && !VM_SHARED.
 
-root@rock960:/sys/kernel/config# find dtpm/constraints -name "device" -exec cat {} \;
-/devices/virtual/powercap/dtpm/dtpm:0/dtpm:0:0/dtpm:0:0:1
-/devices/virtual/powercap/dtpm/dtpm:0/dtpm:0:0/dtpm:0:0:0/dtpm:0:0:0:2
-/devices/virtual/powercap/dtpm/dtpm:0/dtpm:0:0/dtpm:0:0:0/dtpm:0:0:0:1
-/devices/virtual/powercap/dtpm/dtpm:0/dtpm:0:0/dtpm:0:0:0/dtpm:0:0:0:0
-/devices/virtual/powercap/dtpm/dtpm:0/dtpm:0:0/dtpm:0:0:0
-/devices/virtual/powercap/dtpm/dtpm:0/dtpm:0:0
-/devices/virtual/powercap/dtpm/dtpm:0
+[1] https://lore.kernel.org/patchwork/patch/1392464/
 
-3) The dtpm device creation node is reflected in sysfs:
-
-root@rock960:/sys/devices/virtual/powercap/dtpm# find . -type d | grep dtpm
-./dtpm:0
-./dtpm:0/power
-./dtpm:0/dtpm:0:0
-./dtpm:0/dtpm:0:0/power
-./dtpm:0/dtpm:0:0/dtpm:0:0:0
-./dtpm:0/dtpm:0:0/dtpm:0:0:0/dtpm:0:0:0:1
-./dtpm:0/dtpm:0:0/dtpm:0:0:0/dtpm:0:0:0:1/power
-./dtpm:0/dtpm:0:0/dtpm:0:0:0/power
-./dtpm:0/dtpm:0:0/dtpm:0:0:0/dtpm:0:0:0:2
-./dtpm:0/dtpm:0:0/dtpm:0:0:0/dtpm:0:0:0:2/power
-./dtpm:0/dtpm:0:0/dtpm:0:0:0/dtpm:0:0:0:0
-./dtpm:0/dtpm:0:0/dtpm:0:0:0/dtpm:0:0:0:0/power
-./dtpm:0/dtpm:0:0/dtpm:0:0:1
-./dtpm:0/dtpm:0:0/dtpm:0:0:1/power
-
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Fixes: 00da60b9d0a0 ("userfaultfd: support minor fault handling for shmem")
+Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 ---
- drivers/powercap/Kconfig         |   8 ++
- drivers/powercap/Makefile        |   1 +
- drivers/powercap/dtpm_configfs.c | 202 +++++++++++++++++++++++++++++++
- include/linux/dtpm.h             |   2 +
- 4 files changed, 213 insertions(+)
- create mode 100644 drivers/powercap/dtpm_configfs.c
+ mm/shmem.c       |  56 ++++++---------
+ mm/userfaultfd.c | 183 ++++++++++++++++++++++++++++++++++-------------
+ 2 files changed, 156 insertions(+), 83 deletions(-)
 
-diff --git a/drivers/powercap/Kconfig b/drivers/powercap/Kconfig
-index 8242e8c5ed77..599b41e4e0a7 100644
---- a/drivers/powercap/Kconfig
-+++ b/drivers/powercap/Kconfig
-@@ -50,6 +50,14 @@ config DTPM
- 	  This enables support for the power capping for the dynamic
- 	  thermal power management userspace engine.
- 
-+config DTPM_CONFIGFS
-+	tristate "Dynamic Thermal Power Management configuration via configfs"
-+	depends on DTPM && CONFIGFS_FS
-+	help
-+	  This enables support for creating the DTPM device hierarchy
-+	  via configfs giving the userspace full control of the
-+	  thermal constraint representation.
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 5cfd2fb6e52b..9d9a9f254f33 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -2366,7 +2366,6 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+ 			   unsigned long dst_addr, unsigned long src_addr,
+ 			   enum mcopy_atomic_mode mode, struct page **pagep)
+ {
+-	bool is_continue = (mode == MCOPY_ATOMIC_CONTINUE);
+ 	struct inode *inode = file_inode(dst_vma->vm_file);
+ 	struct shmem_inode_info *info = SHMEM_I(inode);
+ 	struct address_space *mapping = inode->i_mapping;
+@@ -2377,18 +2376,17 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+ 	struct page *page;
+ 	pte_t _dst_pte, *dst_pte;
+ 	int ret;
+-	pgoff_t offset, max_off;
++	pgoff_t max_off;
 +
- config DTPM_CPU
- 	bool "Add CPU power capping based on the energy model"
- 	depends on DTPM && ENERGY_MODEL
-diff --git a/drivers/powercap/Makefile b/drivers/powercap/Makefile
-index fabcf388a8d3..519cabc624c3 100644
---- a/drivers/powercap/Makefile
-+++ b/drivers/powercap/Makefile
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- obj-$(CONFIG_DTPM) += dtpm.o
-+obj-$(CONFIG_DTPM_CONFIGFS) += dtpm_configfs.o
- obj-$(CONFIG_DTPM_CPU) += dtpm_cpu.o
- obj-$(CONFIG_POWERCAP)	+= powercap_sys.o
- obj-$(CONFIG_INTEL_RAPL_CORE) += intel_rapl_common.o
-diff --git a/drivers/powercap/dtpm_configfs.c b/drivers/powercap/dtpm_configfs.c
-new file mode 100644
-index 000000000000..b8de71e94fc3
---- /dev/null
-+++ b/drivers/powercap/dtpm_configfs.c
-@@ -0,0 +1,202 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright 2021 Linaro Limited
-+ *
-+ * Author: Daniel Lezcano <daniel.lezcano@linaro.org>
-+ *
-+ * The DTPM framework defines a set of devices which are power capable.
-+ *
-+ * The configfs allows to create a hierarchy of devices in order
-+ * to reflect the constraints we want to apply to them.
-+ *
-+ * Each dtpm node is created via a mkdir operation in the configfs
-+ * directory. It will create the corresponding dtpm device in the
-+ * sysfs and the 'device' will contain the absolute path to the dtpm
-+ * node in the sysfs, thus allowing to do the connection between the
-+ * created dtpm node in the configfs hierarchy and the dtpm node in
-+ * the powercap framework.
-+ *
-+ * The dtpm nodes can be real or virtual. The former is a real device
-+ * where acting on its power is possible and is registered in a dtpm
-+ * framework's list with an unique name. A creation with mkdir with
-+ * one of the registered name will instanciate the dtpm device. If the
-+ * name is not in the registered list, it will create a virtual node
-+ * where its purpose is to aggregate the power characteristics of its
-+ * children which can virtual or real.
-+ *
-+ * It is not allowed to create a node if another one in the hierarchy
-+ * has the same name. That ensures the consistency and prevents
-+ * multiple instanciation of the same dtpm device.
-+ */
-+#include <linux/dtpm.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/slab.h>
-+#include <linux/configfs.h>
-+
-+static struct config_group *cstrn_group;
-+
-+static struct config_item_type dtpm_cstrn_type;
-+
-+static const struct config_item_type dtpm_root_group_type = {
-+	.ct_owner = THIS_MODULE,
-+};
-+
-+static struct configfs_subsystem dtpm_subsys = {
-+	.su_group = {
-+		.cg_item = {
-+			.ci_namebuf = "dtpm",
-+			.ci_type = &dtpm_root_group_type,
-+		},
-+	},
-+	.su_mutex = __MUTEX_INITIALIZER(dtpm_subsys.su_mutex),
-+};
-+
-+static bool dtpm_configfs_exists(struct config_group *grp, const char *name)
-+{
-+	struct list_head *entry;
-+
-+	list_for_each(entry, &grp->cg_children) {
-+		struct config_item *item =
-+			container_of(entry, struct config_item, ci_entry);
-+
-+		if (config_item_name(item) &&
-+		    !strcmp(config_item_name(item), name))
-+			return true;
-+
-+		if (dtpm_configfs_exists(to_config_group(item), name))
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
-+static struct config_group *dtpm_cstrn_make_group(struct config_group *grp, const char *name)
-+{
-+	struct dtpm *d, *p;
-+	int ret;
-+
-+	if (dtpm_configfs_exists(cstrn_group, name))
-+		return ERR_PTR(-EEXIST);
-+
-+	d = dtpm_lookup(name);
-+	if (!d) {
-+		d = kzalloc(sizeof(*d), GFP_KERNEL);
-+		if (!d)
-+			return ERR_PTR(-ENOMEM);
-+		dtpm_init(d, NULL);
-+	}
-+
-+	config_group_init_type_name(&d->cfg, name, &dtpm_cstrn_type);
-+
-+	/*
-+	 * Retrieve the dtpm parent node. The first dtpm node in the
-+	 * hierarchy constraint is the root node, thus it does not
-+	 * have a parent.
-+	 */
-+	p = (grp == cstrn_group) ? NULL :
-+		container_of(grp, struct dtpm, cfg);
-+
-+	ret = dtpm_register(name, d, p);
-+	if (ret)
-+		goto dtpm_free;
-+
-+	if (!try_module_get(THIS_MODULE)) {
-+		ret = -ENODEV;
-+		goto dtpm_unregister;
-+	}
-+
-+	return &d->cfg;
-+
-+dtpm_unregister:
-+	dtpm_unregister(d);
-+dtpm_free:
-+	if (!d->ops)
-+		kfree(d);
-+
-+	return ERR_PTR(ret);
-+}
-+
-+static void dtpm_cstrn_drop_group(struct config_group *grp,
-+				  struct config_item *cfg)
-+{
-+	struct config_group *cg = to_config_group(cfg);
-+	struct dtpm *d = container_of(cg, struct dtpm, cfg);
-+
-+	dtpm_unregister(d);
-+	if (!d->ops)
-+		kfree(d);
-+	module_put(THIS_MODULE);
-+	config_item_put(cfg);
-+}
-+
-+static struct configfs_group_operations dtpm_cstrn_group_ops = {
-+	.make_group = dtpm_cstrn_make_group,
-+	.drop_item = dtpm_cstrn_drop_group,
-+};
-+
-+static ssize_t dtpm_cstrn_device_show(struct config_item *cfg, char *str)
-+{
-+	struct config_group *cg = to_config_group(cfg);
-+	struct dtpm *d = container_of(cg, struct dtpm, cfg);
-+	struct kobject *kobj = &d->zone.dev.kobj;
-+	char *string = kobject_get_path(kobj, GFP_KERNEL);
-+	ssize_t len;
-+
-+	if (!string)
++	/* Handled by mcontinue_atomic_pte instead. */
++	if (WARN_ON_ONCE(mode == MCOPY_ATOMIC_CONTINUE))
 +		return -EINVAL;
-+
-+	len = sprintf(str, "%s\n", string);
-+
-+	kfree(string);
-+
-+	return len;
-+}
-+
-+CONFIGFS_ATTR_RO(dtpm_cstrn_, device);
-+
-+static struct configfs_attribute *dtpm_cstrn_attrs[] = {
-+	&dtpm_cstrn_attr_device,
-+	NULL
-+};
-+
-+static struct config_item_type dtpm_cstrn_type = {
-+	.ct_owner = THIS_MODULE,
-+	.ct_group_ops = &dtpm_cstrn_group_ops,
-+};
-+
-+static int __init dtpm_configfs_init(void)
+
+ 	ret = -ENOMEM;
+ 	if (!shmem_inode_acct_block(inode, 1))
+ 		goto out;
+
+-	if (is_continue) {
+-		ret = -EFAULT;
+-		page = find_lock_page(mapping, pgoff);
+-		if (!page)
+-			goto out_unacct_blocks;
+-	} else if (!*pagep) {
++	if (!*pagep) {
+ 		page = shmem_alloc_page(gfp, info, pgoff);
+ 		if (!page)
+ 			goto out_unacct_blocks;
+@@ -2415,27 +2413,21 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+ 		*pagep = NULL;
+ 	}
+
+-	if (!is_continue) {
+-		VM_BUG_ON(PageSwapBacked(page));
+-		VM_BUG_ON(PageLocked(page));
+-		__SetPageLocked(page);
+-		__SetPageSwapBacked(page);
+-		__SetPageUptodate(page);
+-	}
++	VM_BUG_ON(PageSwapBacked(page));
++	VM_BUG_ON(PageLocked(page));
++	__SetPageLocked(page);
++	__SetPageSwapBacked(page);
++	__SetPageUptodate(page);
+
+ 	ret = -EFAULT;
+-	offset = linear_page_index(dst_vma, dst_addr);
+ 	max_off = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
+-	if (unlikely(offset >= max_off))
++	if (unlikely(pgoff >= max_off))
+ 		goto out_release;
+
+-	/* If page wasn't already in the page cache, add it. */
+-	if (!is_continue) {
+-		ret = shmem_add_to_page_cache(page, mapping, pgoff, NULL,
+-					      gfp & GFP_RECLAIM_MASK, dst_mm);
+-		if (ret)
+-			goto out_release;
+-	}
++	ret = shmem_add_to_page_cache(page, mapping, pgoff, NULL,
++				      gfp & GFP_RECLAIM_MASK, dst_mm);
++	if (ret)
++		goto out_release;
+
+ 	_dst_pte = mk_pte(page, dst_vma->vm_page_prot);
+ 	if (dst_vma->vm_flags & VM_WRITE)
+@@ -2455,22 +2447,20 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+
+ 	ret = -EFAULT;
+ 	max_off = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
+-	if (unlikely(offset >= max_off))
++	if (unlikely(pgoff >= max_off))
+ 		goto out_release_unlock;
+
+ 	ret = -EEXIST;
+ 	if (!pte_none(*dst_pte))
+ 		goto out_release_unlock;
+
+-	if (!is_continue) {
+-		lru_cache_add(page);
++	lru_cache_add(page);
+
+-		spin_lock_irq(&info->lock);
+-		info->alloced++;
+-		inode->i_blocks += BLOCKS_PER_PAGE;
+-		shmem_recalc_inode(inode);
+-		spin_unlock_irq(&info->lock);
+-	}
++	spin_lock_irq(&info->lock);
++	info->alloced++;
++	inode->i_blocks += BLOCKS_PER_PAGE;
++	shmem_recalc_inode(inode);
++	spin_unlock_irq(&info->lock);
+
+ 	inc_mm_counter(dst_mm, mm_counter_file(page));
+ 	page_add_file_rmap(page, false);
+diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
+index cbb7c8d79a4d..286d0657fbe2 100644
+--- a/mm/userfaultfd.c
++++ b/mm/userfaultfd.c
+@@ -48,21 +48,103 @@ struct vm_area_struct *find_dst_vma(struct mm_struct *dst_mm,
+ 	return dst_vma;
+ }
+
++/*
++ * Install PTEs, to map dst_addr (within dst_vma) to page.
++ *
++ * This function handles MCOPY_ATOMIC_CONTINUE (which is always file-backed),
++ * whether or not dst_vma is VM_SHARED. It also handles the more general
++ * MCOPY_ATOMIC_NORMAL case, when dst_vma is *not* VM_SHARED (it may be file
++ * backed, or not).
++ *
++ * Note that MCOPY_ATOMIC_NORMAL for a VM_SHARED dst_vma is handled by
++ * shmem_mcopy_atomic_pte instead.
++ */
++static int mcopy_atomic_install_ptes(struct mm_struct *dst_mm, pmd_t *dst_pmd,
++				     struct vm_area_struct *dst_vma,
++				     unsigned long dst_addr, struct page *page,
++				     enum mcopy_atomic_mode mode, bool wp_copy)
 +{
 +	int ret;
++	pte_t _dst_pte, *dst_pte;
++	bool is_continue = mode == MCOPY_ATOMIC_CONTINUE;
++	int writable;
++	bool vm_shared = dst_vma->vm_flags & VM_SHARED;
++	bool is_file_backed = dst_vma->vm_file;
++	spinlock_t *ptl;
++	struct inode *inode;
++	pgoff_t offset, max_off;
 +
-+	config_group_init(&dtpm_subsys.su_group);
++	_dst_pte = mk_pte(page, dst_vma->vm_page_prot);
++	writable = dst_vma->vm_flags & VM_WRITE;
++	/* For CONTINUE on a non-shared VMA, don't pte_mkwrite for CoW. */
++	if (is_continue && !vm_shared)
++		writable = 0;
 +
-+	ret = configfs_register_subsystem(&dtpm_subsys);
++	if (writable) {
++		_dst_pte = pte_mkdirty(_dst_pte);
++		if (wp_copy)
++			_dst_pte = pte_mkuffd_wp(_dst_pte);
++		else
++			_dst_pte = pte_mkwrite(_dst_pte);
++	} else if (vm_shared) {
++		/*
++		 * Since we didn't pte_mkdirty(), mark the page dirty or it
++		 * could be freed from under us. We could do this
++		 * unconditionally, but doing it only if !writable is faster.
++		 */
++		set_page_dirty(page);
++	}
++
++	dst_pte = pte_offset_map_lock(dst_mm, dst_pmd, dst_addr, &ptl);
++
++	if (is_file_backed) {
++		/* The shmem MAP_PRIVATE case requires checking the i_size */
++		inode = dst_vma->vm_file->f_inode;
++		offset = linear_page_index(dst_vma, dst_addr);
++		max_off = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
++		ret = -EFAULT;
++		if (unlikely(offset >= max_off))
++			goto out_unlock;
++	}
++
++	ret = -EEXIST;
++	if (!pte_none(*dst_pte))
++		goto out_unlock;
++
++	inc_mm_counter(dst_mm, mm_counter(page));
++	if (is_file_backed)
++		page_add_file_rmap(page, false);
++	else
++		page_add_new_anon_rmap(page, dst_vma, dst_addr, false);
++
++	if (!is_continue)
++		lru_cache_add_inactive_or_unevictable(page, dst_vma);
++
++	set_pte_at(dst_mm, dst_addr, dst_pte, _dst_pte);
++
++	/* No need to invalidate - it was non-present before */
++	update_mmu_cache(dst_vma, dst_addr, dst_pte);
++	pte_unmap_unlock(dst_pte, ptl);
++	ret = 0;
++out:
++	return ret;
++out_unlock:
++	pte_unmap_unlock(dst_pte, ptl);
++	goto out;
++}
++
+ static int mcopy_atomic_pte(struct mm_struct *dst_mm,
+ 			    pmd_t *dst_pmd,
+ 			    struct vm_area_struct *dst_vma,
+ 			    unsigned long dst_addr,
+ 			    unsigned long src_addr,
+ 			    struct page **pagep,
++			    enum mcopy_atomic_mode mode,
+ 			    bool wp_copy)
+ {
+-	pte_t _dst_pte, *dst_pte;
+-	spinlock_t *ptl;
+ 	void *page_kaddr;
+ 	int ret;
+ 	struct page *page;
+-	pgoff_t offset, max_off;
+-	struct inode *inode;
+
+ 	if (!*pagep) {
+ 		ret = -ENOMEM;
+@@ -99,43 +181,12 @@ static int mcopy_atomic_pte(struct mm_struct *dst_mm,
+ 	if (mem_cgroup_charge(page, dst_mm, GFP_KERNEL))
+ 		goto out_release;
+
+-	_dst_pte = pte_mkdirty(mk_pte(page, dst_vma->vm_page_prot));
+-	if (dst_vma->vm_flags & VM_WRITE) {
+-		if (wp_copy)
+-			_dst_pte = pte_mkuffd_wp(_dst_pte);
+-		else
+-			_dst_pte = pte_mkwrite(_dst_pte);
+-	}
+-
+-	dst_pte = pte_offset_map_lock(dst_mm, dst_pmd, dst_addr, &ptl);
+-	if (dst_vma->vm_file) {
+-		/* the shmem MAP_PRIVATE case requires checking the i_size */
+-		inode = dst_vma->vm_file->f_inode;
+-		offset = linear_page_index(dst_vma, dst_addr);
+-		max_off = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
+-		ret = -EFAULT;
+-		if (unlikely(offset >= max_off))
+-			goto out_release_uncharge_unlock;
+-	}
+-	ret = -EEXIST;
+-	if (!pte_none(*dst_pte))
+-		goto out_release_uncharge_unlock;
+-
+-	inc_mm_counter(dst_mm, MM_ANONPAGES);
+-	page_add_new_anon_rmap(page, dst_vma, dst_addr, false);
+-	lru_cache_add_inactive_or_unevictable(page, dst_vma);
+-
+-	set_pte_at(dst_mm, dst_addr, dst_pte, _dst_pte);
+-
+-	/* No need to invalidate - it was non-present before */
+-	update_mmu_cache(dst_vma, dst_addr, dst_pte);
+-
+-	pte_unmap_unlock(dst_pte, ptl);
+-	ret = 0;
++	ret = mcopy_atomic_install_ptes(dst_mm, dst_pmd, dst_vma, dst_addr,
++					page, mode, wp_copy);
 +	if (ret)
-+		return ret;
-+
-+	cstrn_group = configfs_register_default_group(&dtpm_subsys.su_group,
-+						      "constraints",
-+						      &dtpm_cstrn_type);
-+
-+	/*
-+	 * The default group does not contain attributes but the other
-+	 * group will
-+	 */
-+	dtpm_cstrn_type.ct_attrs = dtpm_cstrn_attrs;
-+
-+	return PTR_ERR_OR_ZERO(cstrn_group);
-+}
-+module_init(dtpm_configfs_init);
-+
-+static void __exit dtpm_configfs_exit(void)
++		goto out_release;
+ out:
+ 	return ret;
+-out_release_uncharge_unlock:
+-	pte_unmap_unlock(dst_pte, ptl);
+ out_release:
+ 	put_page(page);
+ 	goto out;
+@@ -176,6 +227,38 @@ static int mfill_zeropage_pte(struct mm_struct *dst_mm,
+ 	return ret;
+ }
+
++static int mcontinue_atomic_pte(struct mm_struct *dst_mm,
++				pmd_t *dst_pmd,
++				struct vm_area_struct *dst_vma,
++				unsigned long dst_addr,
++				bool wp_copy)
 +{
-+	configfs_unregister_default_group(cstrn_group);
-+	configfs_unregister_subsystem(&dtpm_subsys);
-+}
-+module_exit(dtpm_configfs_exit);
++	struct inode *inode = file_inode(dst_vma->vm_file);
++	struct address_space *mapping = inode->i_mapping;
++	pgoff_t pgoff = linear_page_index(dst_vma, dst_addr);
++	struct page *page;
++	int ret;
 +
-+MODULE_DESCRIPTION("DTPM configuration driver");
-+MODULE_AUTHOR("Daniel Lezcano");
-+MODULE_LICENSE("GPL v2");
-diff --git a/include/linux/dtpm.h b/include/linux/dtpm.h
-index e47bd5bbf56e..d7bbb9fd97eb 100644
---- a/include/linux/dtpm.h
-+++ b/include/linux/dtpm.h
-@@ -8,11 +8,13 @@
- #define ___DTPM_H__
- 
- #include <linux/powercap.h>
-+#include <linux/configfs.h>
- 
- #define MAX_DTPM_DESCR 8
- #define MAX_DTPM_CONSTRAINTS 1
- 
- struct dtpm {
-+	struct config_group cfg;
- 	struct powercap_zone zone;
- 	struct dtpm *parent;
- 	struct list_head sibling;
--- 
-2.17.1
++	ret = -EFAULT;
++	page = find_lock_page(mapping, pgoff);
++	if (!page)
++		goto out;
++
++	ret = mcopy_atomic_install_ptes(dst_mm, dst_pmd, dst_vma, dst_addr,
++					page, MCOPY_ATOMIC_CONTINUE, wp_copy);
++	if (ret)
++		goto out_release;
++
++	unlock_page(page);
++	ret = 0;
++out:
++	return ret;
++out_release:
++	unlock_page(page);
++	put_page(page);
++	goto out;
++}
++
+ static pmd_t *mm_alloc_pmd(struct mm_struct *mm, unsigned long address)
+ {
+ 	pgd_t *pgd;
+@@ -418,7 +501,13 @@ static __always_inline ssize_t mfill_atomic_pte(struct mm_struct *dst_mm,
+ 						enum mcopy_atomic_mode mode,
+ 						bool wp_copy)
+ {
+-	ssize_t err;
++	ssize_t err = 0;
++
++	if (mode == MCOPY_ATOMIC_CONTINUE) {
++		err = mcontinue_atomic_pte(dst_mm, dst_pmd, dst_vma, dst_addr,
++					   wp_copy);
++		goto out;
++	}
+
+ 	/*
+ 	 * The normal page fault path for a shmem will invoke the
+@@ -431,26 +520,20 @@ static __always_inline ssize_t mfill_atomic_pte(struct mm_struct *dst_mm,
+ 	 * and not in the radix tree.
+ 	 */
+ 	if (!(dst_vma->vm_flags & VM_SHARED)) {
+-		switch (mode) {
+-		case MCOPY_ATOMIC_NORMAL:
++		if (mode == MCOPY_ATOMIC_NORMAL)
+ 			err = mcopy_atomic_pte(dst_mm, dst_pmd, dst_vma,
+ 					       dst_addr, src_addr, page,
+-					       wp_copy);
+-			break;
+-		case MCOPY_ATOMIC_ZEROPAGE:
++					       mode, wp_copy);
++		else if (mode == MCOPY_ATOMIC_ZEROPAGE)
+ 			err = mfill_zeropage_pte(dst_mm, dst_pmd,
+ 						 dst_vma, dst_addr);
+-			break;
+-		case MCOPY_ATOMIC_CONTINUE:
+-			err = -EINVAL;
+-			break;
+-		}
+ 	} else {
+ 		VM_WARN_ON_ONCE(wp_copy);
+ 		err = shmem_mcopy_atomic_pte(dst_mm, dst_pmd, dst_vma, dst_addr,
+ 					     src_addr, mode, page);
+ 	}
+
++out:
+ 	return err;
+ }
+
+--
+2.31.0.208.g409f899ff0-goog
 
