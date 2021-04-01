@@ -2,148 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E549335122E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CCE7351231
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233825AbhDAJZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 05:25:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233781AbhDAJY7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 05:24:59 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6DFC061788
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 02:24:58 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id hq27so1838958ejc.9
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 02:24:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oOGfrAjnaHDyy1tyd/ITu7l8d1aLT0q9c434VgRCWEU=;
-        b=Hcyf8uZ1S+AbwrUswcBEuo0hbJdidSJ3m55scMsQLn6YgcfRifwgdwX9lFIdR0/EwD
-         sGhFr60G2F8wy8HLT6Fq5DhdGsBHMiuPlmytuu7EgzkSuqlo95gnVhKjzr1ar1reXWRy
-         zFyQ/s7NNZEF2DY6cBUFD4LsxM57FCe1SKmiy823/oelgR+egUmQIK7uO3UEGLNNyiHV
-         y+t6qvzdHTboH9aDRDUNYi0DYZsK6YNoYc5CDjo7AeQwjabpspIEd+IprIQHYt+yPhvS
-         WReETkGNvh5uLj8sisd8E9GbdkynxeV6Sz2jOsz2Nxo0HTjfX8ZYuwb52ygiKLE07zbC
-         Bj/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oOGfrAjnaHDyy1tyd/ITu7l8d1aLT0q9c434VgRCWEU=;
-        b=HAJ7R/6XgaXK3sVnAqbB8ST7nz1tLA9vDUtVlWBVle0avrMLMnDXr7go+qZM+YEG5Z
-         Nwgix4wJGdOlxOvPyAXeYKPXaxzqRBUOUHBvWXMWWF+geTLCbdAhPgkWcHPC08HehmMC
-         QdMwbnHnd/Vvz2EXXzHpsVjlRjhRV/WNRWVEDGQMvMOz4VkUNSXPjZuUQCiTglO7Rsx5
-         Lwihg9IWOV7i54Ig5dkfmfsE2mFMrhWLjI3XsMo1UpJMRXp+YqduBxZcXtgYngGY7M2J
-         nRh2/uJNKzNnwL7FlXBmEVspD5joHhjCu4XZ9jwGPLmWbYDLd73HZuD4S0VevU7PGaEc
-         lK2g==
-X-Gm-Message-State: AOAM533qkQer386gagjDFTHNyZGYOayLE3FlTxa4ifv6rBy7upaBmEfT
-        qbyDymc5XzW0tNiUhsoCizZUyQ==
-X-Google-Smtp-Source: ABdhPJzc8mO3rKu0OflJbxXCo6lNYZ1oXBNAu5JQfDr5Rx7+ZGLHFGAQPxX9JPUy+kSv8IfVBWKpyg==
-X-Received: by 2002:a17:907:94cc:: with SMTP id dn12mr8188592ejc.177.1617269097400;
-        Thu, 01 Apr 2021 02:24:57 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id cb17sm3221540edb.10.2021.04.01.02.24.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 02:24:56 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     vkoul@kernel.org
-Cc:     yung-chuan.liao@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        robh@kernel.org, devicetree@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH] soundwire: qcom: cleanup internal port config indexing
-Date:   Thu,  1 Apr 2021 10:24:54 +0100
-Message-Id: <20210401092454.21299-1-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S233788AbhDAJ00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 05:26:26 -0400
+Received: from foss.arm.com ([217.140.110.172]:34688 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233504AbhDAJ0D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 05:26:03 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BC6DF31B;
+        Thu,  1 Apr 2021 02:26:02 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.70.228])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 9E3BB3F719;
+        Thu,  1 Apr 2021 02:25:56 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-mm@kvack.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-xtensa@linux-xtensa.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V2 RESEND] mm/memtest: Add ARCH_USE_MEMTEST
+Date:   Thu,  1 Apr 2021 14:56:33 +0530
+Message-Id: <1617269193-22294-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Internally used portconfig array for storing port bandwidth
-params starts from offset zero. However port zero is not really
-used and we also copy the bus parameters to offset zero.
-So basically we endup with a code which has to subtract 1 from port
-number to get to port parameters.
+early_memtest() does not get called from all architectures. Hence enabling
+CONFIG_MEMTEST and providing a valid memtest=[1..N] kernel command line
+option might not trigger the memory pattern tests as would be expected in
+normal circumstances. This situation is misleading.
 
-This is bit confusing to the reader so, make this bit more obvious by only
-copying the parameters to offset 1 instead of zero. This will avoid doing
--1 every time when we try to get port params.
+The change here prevents the above mentioned problem after introducing a
+new config option ARCH_USE_MEMTEST that should be subscribed on platforms
+that call early_memtest(), in order to enable the config CONFIG_MEMTEST.
+Conversely CONFIG_MEMTEST cannot be enabled on platforms where it would
+not be tested anyway.
 
-Similar thing has been recently done with din/dout_port_mask.
-
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Chris Zankel <chris@zankel.net>
+Cc: Max Filippov <jcmvbkbc@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-mips@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-xtensa@linux-xtensa.org
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Acked-by: Catalin Marinas <catalin.marinas@arm.com> (arm64)
+Reviewed-by: Max Filippov <jcmvbkbc@gmail.com>
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- drivers/soundwire/qcom.c | 27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
+This patch applies on v5.12-rc5 and has been tested on arm64 platform.
+But it has been just build tested on all other platforms.
 
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index 94fd58f9dda3..348d9a46f850 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -724,7 +724,7 @@ static int qcom_swrm_transport_params(struct sdw_bus *bus,
- 	int reg = SWRM_DP_PORT_CTRL_BANK((params->port_num), bank);
- 	int ret;
+Changes in V2:
+
+https://patchwork.kernel.org/project/linux-mm/patch/1614573126-7740-1-git-send-email-anshuman.khandual@arm.com/
+
+- Added ARCH_USE_MEMTEST in the sorted alphabetical order on platforms
+
+Changes in V1:
+
+https://patchwork.kernel.org/project/linux-mm/patch/1612498242-31579-1-git-send-email-anshuman.khandual@arm.com/
+
+ arch/arm/Kconfig     | 1 +
+ arch/arm64/Kconfig   | 1 +
+ arch/mips/Kconfig    | 1 +
+ arch/powerpc/Kconfig | 1 +
+ arch/x86/Kconfig     | 1 +
+ arch/xtensa/Kconfig  | 1 +
+ lib/Kconfig.debug    | 9 ++++++++-
+ 7 files changed, 14 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 5da96f5df48f..49878877df88 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -33,6 +33,7 @@ config ARM
+ 	select ARCH_SUPPORTS_ATOMIC_RMW
+ 	select ARCH_USE_BUILTIN_BSWAP
+ 	select ARCH_USE_CMPXCHG_LOCKREF
++	select ARCH_USE_MEMTEST
+ 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
+ 	select ARCH_WANT_IPC_PARSE_VERSION
+ 	select ARCH_WANT_LD_ORPHAN_WARN
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index e4e1b6550115..63c380587a77 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -67,6 +67,7 @@ config ARM64
+ 	select ARCH_KEEP_MEMBLOCK
+ 	select ARCH_USE_CMPXCHG_LOCKREF
+ 	select ARCH_USE_GNU_PROPERTY
++	select ARCH_USE_MEMTEST
+ 	select ARCH_USE_QUEUED_RWLOCKS
+ 	select ARCH_USE_QUEUED_SPINLOCKS
+ 	select ARCH_USE_SYM_ANNOTATIONS
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index d89efba3d8a4..93a4f502f962 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -14,6 +14,7 @@ config MIPS
+ 	select ARCH_SUPPORTS_UPROBES
+ 	select ARCH_USE_BUILTIN_BSWAP
+ 	select ARCH_USE_CMPXCHG_LOCKREF if 64BIT
++	select ARCH_USE_MEMTEST
+ 	select ARCH_USE_QUEUED_RWLOCKS
+ 	select ARCH_USE_QUEUED_SPINLOCKS
+ 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 386ae12d8523..3778ad17f56a 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -149,6 +149,7 @@ config PPC
+ 	select ARCH_SUPPORTS_DEBUG_PAGEALLOC	if PPC32 || PPC_BOOK3S_64
+ 	select ARCH_USE_BUILTIN_BSWAP
+ 	select ARCH_USE_CMPXCHG_LOCKREF		if PPC64
++	select ARCH_USE_MEMTEST
+ 	select ARCH_USE_QUEUED_RWLOCKS		if PPC_QUEUED_SPINLOCKS
+ 	select ARCH_USE_QUEUED_SPINLOCKS	if PPC_QUEUED_SPINLOCKS
+ 	select ARCH_WANT_IPC_PARSE_VERSION
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 2792879d398e..2cb76fd5258e 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -100,6 +100,7 @@ config X86
+ 	select ARCH_SUPPORTS_LTO_CLANG		if X86_64
+ 	select ARCH_SUPPORTS_LTO_CLANG_THIN	if X86_64
+ 	select ARCH_USE_BUILTIN_BSWAP
++	select ARCH_USE_MEMTEST
+ 	select ARCH_USE_QUEUED_RWLOCKS
+ 	select ARCH_USE_QUEUED_SPINLOCKS
+ 	select ARCH_USE_SYM_ANNOTATIONS
+diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
+index 9ad6b7b82707..524413aabbc4 100644
+--- a/arch/xtensa/Kconfig
++++ b/arch/xtensa/Kconfig
+@@ -7,6 +7,7 @@ config XTENSA
+ 	select ARCH_HAS_SYNC_DMA_FOR_CPU if MMU
+ 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE if MMU
+ 	select ARCH_HAS_DMA_SET_UNCACHED if MMU
++	select ARCH_USE_MEMTEST
+ 	select ARCH_USE_QUEUED_RWLOCKS
+ 	select ARCH_USE_QUEUED_SPINLOCKS
+ 	select ARCH_WANT_FRAME_POINTERS
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 2779c29d9981..a3fd69e6f6af 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -2515,11 +2515,18 @@ config TEST_FPU
  
--	pcfg = &ctrl->pconfig[params->port_num - 1];
-+	pcfg = &ctrl->pconfig[params->port_num];
+ endif # RUNTIME_TESTING_MENU
  
- 	value = pcfg->off1 << SWRM_DP_PORT_CTRL_OFFSET1_SHFT;
- 	value |= pcfg->off2 << SWRM_DP_PORT_CTRL_OFFSET2_SHFT;
-@@ -811,11 +811,11 @@ static int qcom_swrm_compute_params(struct sdw_bus *bus)
- 	struct qcom_swrm_port_config *pcfg;
- 	struct sdw_slave *slave;
- 	unsigned int m_port;
--	int i = 0;
-+	int i = 1;
- 
- 	list_for_each_entry(m_rt, &bus->m_rt_list, bus_node) {
- 		list_for_each_entry(p_rt, &m_rt->port_list, port_node) {
--			pcfg = &ctrl->pconfig[p_rt->num - 1];
-+			pcfg = &ctrl->pconfig[p_rt->num];
- 			p_rt->transport_params.port_num = p_rt->num;
- 			if (pcfg->word_length != SWR_INVALID_PARAM) {
- 				sdw_fill_port_params(&p_rt->port_params,
-@@ -832,7 +832,7 @@ static int qcom_swrm_compute_params(struct sdw_bus *bus)
- 				m_port = slave->m_port_map[p_rt->num];
- 				/* port config starts at offset 0 so -1 from actual port number */
- 				if (m_port)
--					pcfg = &ctrl->pconfig[m_port - 1];
-+					pcfg = &ctrl->pconfig[m_port];
- 				else
- 					pcfg = &ctrl->pconfig[i];
- 				p_rt->transport_params.port_num = p_rt->num;
-@@ -1167,15 +1167,16 @@ static int qcom_swrm_get_port_config(struct qcom_swrm_ctrl *ctrl)
- 	of_property_read_u8_array(np, "qcom,ports-lane-control", lane_control, nports);
- 
- 	for (i = 0; i < nports; i++) {
--		ctrl->pconfig[i].si = si[i];
--		ctrl->pconfig[i].off1 = off1[i];
--		ctrl->pconfig[i].off2 = off2[i];
--		ctrl->pconfig[i].bp_mode = bp_mode[i];
--		ctrl->pconfig[i].hstart = hstart[i];
--		ctrl->pconfig[i].hstop = hstop[i];
--		ctrl->pconfig[i].word_length = word_length[i];
--		ctrl->pconfig[i].blk_group_count = blk_group_count[i];
--		ctrl->pconfig[i].lane_control = lane_control[i];
-+		/* Valid port number range is from 1-14 */
-+		ctrl->pconfig[i + 1].si = si[i];
-+		ctrl->pconfig[i + 1].off1 = off1[i];
-+		ctrl->pconfig[i + 1].off2 = off2[i];
-+		ctrl->pconfig[i + 1].bp_mode = bp_mode[i];
-+		ctrl->pconfig[i + 1].hstart = hstart[i];
-+		ctrl->pconfig[i + 1].hstop = hstop[i];
-+		ctrl->pconfig[i + 1].word_length = word_length[i];
-+		ctrl->pconfig[i + 1].blk_group_count = blk_group_count[i];
-+		ctrl->pconfig[i + 1].lane_control = lane_control[i];
- 	}
- 
- 	return 0;
++config ARCH_USE_MEMTEST
++	bool
++	help
++	  An architecture should select this when it uses early_memtest()
++	  during boot process.
++
+ config MEMTEST
+ 	bool "Memtest"
++	depends on ARCH_USE_MEMTEST
+ 	help
+ 	  This option adds a kernel parameter 'memtest', which allows memtest
+-	  to be set.
++	  to be set and executed.
+ 	        memtest=0, mean disabled; -- default
+ 	        memtest=1, mean do 1 test pattern;
+ 	        ...
 -- 
-2.21.0
+2.20.1
 
