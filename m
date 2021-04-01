@@ -2,186 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE36351C15
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2237351D96
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235907AbhDASMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:12:45 -0400
-Received: from mga03.intel.com ([134.134.136.65]:59725 "EHLO mga03.intel.com"
+        id S240233AbhDAS3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:29:47 -0400
+Received: from mga06.intel.com ([134.134.136.31]:62924 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234850AbhDARzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:55:52 -0400
-IronPort-SDR: Gss/hcMTKFH1Aynyb3drUC8tAMQFPbjs3bwHXwKYP+sFwS/IMrP4RdkYvq6uxgApCUyaDtCBB4
- hGOcok3sT+dw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="192322670"
+        id S236046AbhDASHT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:07:19 -0400
+IronPort-SDR: ER+LGoulvksKQGCPtS7Gzk72ByFY8DdIMuTp/aKd2XBj2s1TQx6styyYwELNiir6xuAnSN7kKv
+ JvOW5yBaOgcg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="253631394"
 X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="192322670"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 10:21:23 -0700
-IronPort-SDR: FFJ3yy27N0ijmymlKcf7V8zicG08idghljFw0s4Y6KD/UjpiAbD1gOdnFbw1W3kJKMbXkxqAG8
- ft75EXtnVLnQ==
+   d="scan'208";a="253631394"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 10:24:58 -0700
+IronPort-SDR: +0wdeX3LTAMoYxwm6C1Z6dbxa8UIhmNql/ahRgg4vDZZ/d7VvNwb9T1sln20vIMXuzd8yhuPIl
+ LSh37j/6epgA==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="394609303"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 10:21:23 -0700
-Date:   Thu, 1 Apr 2021 10:23:55 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, "Liu, Yi L" <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>, jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210401102355.38b0b7d7@jacob-builder>
-In-Reply-To: <20210401003705.GS1463678@nvidia.com>
-References: <20210319135432.GT2356281@nvidia.com>
-        <20210319112221.5123b984@jacob-builder>
-        <20210322120300.GU2356281@nvidia.com>
-        <20210324120528.24d82dbd@jacob-builder>
-        <20210329163147.GG2356281@nvidia.com>
-        <MWHPR11MB18867EC048E3E3FA37F9C38F8C7D9@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <20210330132740.GB1403691@nvidia.com>
-        <BN6PR11MB40688BB2693A657D411E33C8C37C9@BN6PR11MB4068.namprd11.prod.outlook.com>
-        <20210331123801.GD1463678@nvidia.com>
-        <20210331164621.5f0b0d63@jacob-builder>
-        <20210401003705.GS1463678@nvidia.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+   d="scan'208";a="456072743"
+Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 01 Apr 2021 10:24:57 -0700
+Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lS13w-0006bH-TZ; Thu, 01 Apr 2021 17:24:56 +0000
+Date:   Fri, 02 Apr 2021 01:24:01 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:testing/warray-bounds] BUILD SUCCESS WITH
+ WARNING 53c8d676f843d4a8b8a7fb528dd77e79791df28f
+Message-ID: <606601b1.TZ0LGj5R18+e6XKP%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/warray-bounds
+branch HEAD: 53c8d676f843d4a8b8a7fb528dd77e79791df28f  wl3501_cs: Fix out-of-bounds warning in wl3501_mgmt_join
 
-On Wed, 31 Mar 2021 21:37:05 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
+possible Warning in current branch:
 
-> On Wed, Mar 31, 2021 at 04:46:21PM -0700, Jacob Pan wrote:
-> > Hi Jason,
-> > 
-> > On Wed, 31 Mar 2021 09:38:01 -0300, Jason Gunthorpe <jgg@nvidia.com>
-> > wrote: 
-> > > > > Get rid of the ioasid set.
-> > > > >
-> > > > > Each driver has its own list of allowed ioasids.    
-> > >  [...]  
-> > > 
-> > > The /dev/ioasid FD replaces this security check. By becoming FD
-> > > centric you don't need additional kernel security objects.
-> > > 
-> > > Any process with access to the /dev/ioasid FD is allowed to control
-> > > those PASID. The seperation between VMs falls naturally from the
-> > > seperation of FDs without creating additional, complicated, security
-> > > infrastrucure in the kernel.
-> > > 
-> > > This is why all APIs must be FD focused, and you need to have a
-> > > logical layering of responsibility.
-> > > 
-> > >  Allocate a /dev/ioasid FD
-> > >  Allocate PASIDs inside the FD
-Just to be super clear. Do we allocate a FD for each PASID and return the
-FD to the user? Or return the plain PASID number back to the user space?
+drivers/gpu/drm/mga/mga_ioc32.c:70:2: warning: 'memcpy' offset [21, 80] from the object at 'init' is out of the bounds of referenced subobject 'chipset' with type 'int' at offset 16 [-Warray-bounds]
+drivers/ide/ide-ioctls.c:213:2: warning: 'memcpy' offset [3, 7] from the object at 'cmd' is out of the bounds of referenced subobject 'feature' with type 'unsigned char' at offset 1 [-Warray-bounds]
+drivers/ide/ide-ioctls.c:213:2: warning: 'memcpy' offset [6, 10] from the object at 'cmd' is out of the bounds of referenced subobject 'feature' with type 'unsigned char' at offset 4 [-Warray-bounds]
+drivers/net/ethernet/i825xx/sun3_82586.c:993:108: warning: array subscript 1 is above array bounds of 'volatile struct transmit_cmd_struct *[1]' [-Warray-bounds]
+include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [25, 32] from the object at 'data64' is out of the bounds of referenced subobject 'buf' with type 'void *' at offset 16 [-Warray-bounds]
 
-> > >  Assign memory to the PASIDS
-> > > 
-> > >  Open a device FD, eg from VFIO or VDP
-> > >  Instruct the device FD to authorize the device to access PASID A in
-> > >  an ioasid FD  
-> > How do we know user provided PASID A was allocated by the ioasid FD?  
-> 
-> You pass in the ioasid FD and use a 'get pasid from fdno' API to
-> extract the required kernel structure.
-> 
-Seems you are talking about two FDs:
-- /dev/ioasid FD
-- per IOASID FD
-This API ioasid = get_pasid_from_fd(dev_ioasid_fd, ioasid_fd);
-dev_ioasid_fd will find the xarray for all the PASIDs allocated under it,
-ioasid_fd wil be the index into the xarray to retrieve the actual ioasid.
-Correct?
+Warning ids grouped by kconfigs:
 
-> > Shouldn't we validate user input by tracking which PASIDs are
-> > allocated by which ioasid FD?  
-> 
-> Yes, but it is integral to the ioasid FD, not something separated.
-> 
-OK, if we have per IOASID FD in addition to the /dev/ioasid FD we can
-validate user input.
+gcc_recent_errors
+|-- arm-footbridge_defconfig
+|   `-- drivers-ide-ide-ioctls.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+|-- arm-randconfig-c024-20210401
+|   `-- drivers-ide-ide-ioctls.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+|-- ia64-allmodconfig
+|   `-- drivers-ide-ide-ioctls.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+|-- ia64-allyesconfig
+|   `-- drivers-ide-ide-ioctls.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+|-- ia64-randconfig-s031-20210401
+|   `-- drivers-ide-ide-ioctls.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+|-- m68k-sun3_defconfig
+|   `-- drivers-net-ethernet-i825xx-sun3_82586.c:warning:array-subscript-is-above-array-bounds-of-volatile-struct-transmit_cmd_struct
+|-- parisc-allyesconfig
+|   `-- drivers-ide-ide-ioctls.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+|-- powerpc-randconfig-s032-20210401
+|   `-- include-linux-fortify-string.h:warning:__builtin_memcpy-offset-from-the-object-at-data64-is-out-of-the-bounds-of-referenced-subobject-buf-with-type-void-at-offset
+|-- x86_64-randconfig-a012-20210401
+|   `-- drivers-ide-ide-ioctls.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+|-- x86_64-randconfig-c022-20210401
+|   |-- drivers-gpu-drm-mga-mga_ioc32.c:warning:memcpy-offset-from-the-object-at-init-is-out-of-the-bounds-of-referenced-subobject-chipset-with-type-int-at-offset
+|   `-- drivers-ide-ide-ioctls.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+`-- x86_64-randconfig-s021-20210401
+    `-- drivers-ide-ide-ioctls.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
 
-> > > VFIO extracts some kernel representation of the ioasid from the ioasid
-> > > fd using an API
-> > >   
-> > This lookup API seems to be asking for per ioasid FD storage array.
-> > Today, the ioasid_set is per mm and contains a Xarray.   
-> 
-> Right, put the xarray per FD. A set per mm is fairly nonsensical, we
-> don't use the mm as that kind of security key.
-> 
-Sounds good, one xarray per /dev/ioasid FD.
+elapsed time: 732m
 
-> > Since each VM, KVM can only open one ioasid FD, this per FD array
-> > would be equivalent to the per mm ioasid_set, right?  
-> 
-> Why only one?  Each interaction with the other FDs should include the
-> PASID/FD pair. There is no restriction to just one.
-> 
-OK, one per subsystem-VM. For example, if a VM has a VFIO and a VDPA
-device, it should only two /dev/ioasid FDs respectively. Correct?
+configs tested: 120
+configs skipped: 3
 
-> > > VFIO does some kernel call to IOMMU/IOASID layer that says 'tell the
-> > > IOMMU that this PCI device is allowed to use this PASID'  
-> >
-> > Would it be redundant to what iommu_uapi_sva_bind_gpasid() does? I
-> > thought the idea is to use ioasid FD IOCTL to issue IOMMU uAPI calls.
-> > Or we can skip this step for now and wait for the user to do SVA bind.  
-> 
-> I'm not sure what you are asking.
-> 
-> Possibly some of the IOMMU API will need a bit adjusting to make
-> things split.
-> 
-> The act of programming the page tables and the act of authorizing a
-> PCI BDF to use a PASID are distinct things with two different IOCTLs.
-> 
-Why separate? I don't see a use case to just authorize a PASID but don't
-bind it with a page table. The very act of bind page table *is* the
-authorization.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+powerpc                     akebono_defconfig
+sh                             sh03_defconfig
+sh                              ul2_defconfig
+mips                        bcm63xx_defconfig
+powerpc                 mpc836x_mds_defconfig
+m68k                             alldefconfig
+powerpc                 mpc8560_ads_defconfig
+sh                          r7785rp_defconfig
+xtensa                  audio_kc705_defconfig
+arm                        vexpress_defconfig
+um                            kunit_defconfig
+sh                        edosk7760_defconfig
+alpha                               defconfig
+sh                  sh7785lcr_32bit_defconfig
+m68k                                defconfig
+m68k                         apollo_defconfig
+arc                           tb10x_defconfig
+arm                            dove_defconfig
+arm                        multi_v7_defconfig
+sh                          landisk_defconfig
+mips                     cu1000-neo_defconfig
+xtensa                       common_defconfig
+arm                      integrator_defconfig
+powerpc                 mpc836x_rdk_defconfig
+sh                                  defconfig
+arm                           corgi_defconfig
+arm                        spear6xx_defconfig
+powerpc                    ge_imp3a_defconfig
+sh                         ap325rxa_defconfig
+powerpc                     ep8248e_defconfig
+arm                      footbridge_defconfig
+arm                         orion5x_defconfig
+xtensa                    xip_kc705_defconfig
+powerpc                        fsp2_defconfig
+sh                        apsh4ad0a_defconfig
+arm                         lpc32xx_defconfig
+m68k                        stmark2_defconfig
+arm                         socfpga_defconfig
+powerpc                 linkstation_defconfig
+mips                         tb0226_defconfig
+m68k                           sun3_defconfig
+ia64                            zx1_defconfig
+powerpc                     powernv_defconfig
+powerpc                 mpc8315_rdb_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20210401
+i386                 randconfig-a003-20210401
+i386                 randconfig-a001-20210401
+i386                 randconfig-a004-20210401
+i386                 randconfig-a002-20210401
+i386                 randconfig-a005-20210401
+x86_64               randconfig-a014-20210401
+x86_64               randconfig-a015-20210401
+x86_64               randconfig-a011-20210401
+x86_64               randconfig-a013-20210401
+x86_64               randconfig-a012-20210401
+x86_64               randconfig-a016-20210401
+i386                 randconfig-a014-20210401
+i386                 randconfig-a011-20210401
+i386                 randconfig-a016-20210401
+i386                 randconfig-a012-20210401
+i386                 randconfig-a013-20210401
+i386                 randconfig-a015-20210401
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-> iommu_uapi_sva_bind_gpasid() is never called by anything, and it's
-> uAPI is never implemented.
-> 
-Just a little background here. We have been working on the vSVA stack
-since 2017. At the time, VFIO was the de facto interface for IOMMU-aware
-driver framework. These uAPIs were always developed alone side with the
-accompanying VFIO patches served as consumers. By the time these IOMMU uAPIs
-were merged after reviews from most vendors, the VFIO patchset was
-approaching maturity in around v7. This is when we suddenly saw a new
-request to support VDPA, which attempted VFIO earlier but ultimately moved
-away.
+clang tested configs:
+x86_64               randconfig-a004-20210401
+x86_64               randconfig-a005-20210401
+x86_64               randconfig-a003-20210401
+x86_64               randconfig-a001-20210401
+x86_64               randconfig-a002-20210401
+x86_64               randconfig-a006-20210401
 
-For a complex stack like vSVA, I feel we have to reduce moving parts and do
-some divide and conquer.
-
-> Joerg? Why did you merge dead uapi and dead code?
-> 
-> Jason
-
-
-Thanks,
-
-Jacob
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
