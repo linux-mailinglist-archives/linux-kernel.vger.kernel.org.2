@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1788B35121E
+	by mail.lfdr.de (Postfix) with ESMTP id 883B935121F
 	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:30:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234486AbhDAJXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 05:23:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36470 "EHLO
+        id S234501AbhDAJXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 05:23:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234011AbhDAJWd (ORCPT
+        with ESMTP id S233861AbhDAJWf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 05:22:33 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EACB3C06178A
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 02:22:32 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id h10so1129127edt.13
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 02:22:32 -0700 (PDT)
+        Thu, 1 Apr 2021 05:22:35 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70EA2C061794
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 02:22:34 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id jy13so1865474ejc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 02:22:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=7hdax9p/vB4Qg+0O3qoMDiFgv/iIraqhxfLO0Zus+xg=;
-        b=f0YWzc7rXuj6/KUdQvi+2O7rP9cCnmtYfZtTPHRcutrTH/ikhZ9aAJt229i2ciqQhv
-         vnp7LuixuvT842+G3sr0rB89GS6o3QzMeAbhbdQr8RXm4R/jWLWqdGG951Z54QeqH/LX
-         12J4KIgvmU99tFWnX347QgSS3twbsqqSOaa9DocvLXhSgR6pCZIgKhhJIys3ELTN5FpO
-         WXGboBjTlgQ+WAGklXGxmU0/90wTO/RZqnPl/gi62MLIhdjFV5KV3meNh9EWJyQ+R6Uo
-         uBBAfU/U4O4HObG/+ZIXpbWmq3Nl593UWlZ68gjj+DJuz/jIaW2EkICjXYDyYQuQysQ8
-         yZEw==
+        bh=whK0jEbKryksV4Tco/q0sErwNXSaatvT6sONXK2sG/Y=;
+        b=uIL42zPP52sEEkjGOh3Moj7SXGeTKvJsp8Rd9IqsusYwHR7m+9jW6yd/8iyqKgwhFc
+         tHzGsSN92z2DUJbl0G9cFbVjlJj0Ap5Zh4JRjtvGX3QMaOdrTJhHUYtdSzEEQIlkMzFL
+         iMEx8RkRwruoSwf+ySLDFEgFzygBSfpnG6PNCttgzfBLq0LpfYTzY+h9h2bka0IttmdO
+         Wgg0ewHMmZ93aImU54ShwU7+pswtZfOiUSYIzFt2YGAeDWo4Vum6VTvtmTgTW8pipMeH
+         0GkxKsHYPA1eCtnWQEYymh0qw9pLHsV8mWFsg4u7+t9Q5AQRUwZgUwwFwsj3K7TPX5U7
+         Qotg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7hdax9p/vB4Qg+0O3qoMDiFgv/iIraqhxfLO0Zus+xg=;
-        b=XVU3GBzx/pD8vFdEpZmZPNnnzMVF05tWDs++RYZE2T2StYU4P/ZcEdhOpgnxjaPi80
-         9dAwSVWxm3/dMmOr58IFTniOcVDb3HIhAHpFmRIo0k6Y4+ivTxUJYfY9N/bSxXbGvnmR
-         aQGKf8RL5WSKj4fYBW1w2CizMU2A/+obEPxz22X6oHidEBbU/U5cx0JszdnmUzE2WA9r
-         hH41nRG6yXxkH1k8YXrzaamtK6AVwRbVlNP1DQGfnqQ2kVYSd3rL4yHH9Sln3Rn5xpTR
-         XXfoRECpo/x4fnHRKTDshymOQp4oSSgnY04em7cr8LTmlftS2RyFtWWLHhw2rPbnlOnF
-         145A==
-X-Gm-Message-State: AOAM531pw8IGQG/BSGzehLghX442HytTJc8rjqcjhTb8BvC8rjr7Ejz7
-        CMxCyg0tJ3Eony1VvAcfnA0=
-X-Google-Smtp-Source: ABdhPJxCuZJEaDHmRrFoVqRE+qs3loDCRkh3JKZ+RYAK2aoDsCi8RquicZEOS7b3TqhxCMdhPNu3Kw==
-X-Received: by 2002:a05:6402:4244:: with SMTP id g4mr8750615edb.204.1617268951784;
-        Thu, 01 Apr 2021 02:22:31 -0700 (PDT)
+        bh=whK0jEbKryksV4Tco/q0sErwNXSaatvT6sONXK2sG/Y=;
+        b=DEMligFJ6hZdqaoDf6PGS2sFQv9VE7kbcwZFp1j8SMyDql5dpYHH2gvDiP+oX0PEWR
+         cEDR4olOVFnbm/i3eRE2YJFpUnAVfL+Xm1cq86gNczIwh2CLvAva5mhktzRk5fERT1uH
+         YNPPoETKNi7bd8javnxtEBj5QKxqJarfXSSDK7Nd7s9L5Hw48FbMMqFyVGlMqEkY4K5m
+         F64pqMiW9QcybPc+HqrT29QhaRRPfn36FFGSzwbVbZ5dQFN5o2+F9i91K3mWJtSEm1S+
+         9IvoVEaTZ+bqzD4zaeQ4mQ3inFoJq9hceyLvKIWlaXzNLjdecwLjDusSoLqEE/ZYWh9e
+         tIIA==
+X-Gm-Message-State: AOAM531cqMD9n+d0Su8WnlPaqHslVYWXen+U+cdtJO3aGvDg2huCgxNQ
+        Rbh+klovPKF+mW3+CrmHVm35/7Ogw4Iyxg==
+X-Google-Smtp-Source: ABdhPJwFNrl1XybbUowJTbrAxBWSs23W/D1h0p1F1hffjN/meExjXri4Prsp715srmVLeR79TR+fLg==
+X-Received: by 2002:a17:907:10ce:: with SMTP id rv14mr8345846ejb.56.1617268953230;
+        Thu, 01 Apr 2021 02:22:33 -0700 (PDT)
 Received: from agape ([5.171.80.247])
-        by smtp.gmail.com with ESMTPSA id 90sm3728691edr.69.2021.04.01.02.22.31
+        by smtp.gmail.com with ESMTPSA id n3sm2434165ejj.113.2021.04.01.02.22.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 02:22:31 -0700 (PDT)
+        Thu, 01 Apr 2021 02:22:32 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     joe@perches.com, dan.carpenter@oracle.com,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH 42/49] staging: rtl8723bs: remove RT_TRACE logs in os_dep/mlme_linux.c
-Date:   Thu,  1 Apr 2021 11:21:12 +0200
-Message-Id: <dd874e10f5cc8e12ab0fc33462f6e29a7c66d9e9.1617268327.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 43/49] staging: rtl8723bs: remove RT_TRACE logs in os_dep/ioctl_cfg80211.c
+Date:   Thu,  1 Apr 2021 11:21:13 +0200
+Message-Id: <3fdf7a35a4991a634cdca30444435abd269b0f1f.1617268327.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1617268327.git.fabioaiuto83@gmail.com>
 References: <cover.1617268327.git.fabioaiuto83@gmail.com>
@@ -65,30 +65,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove all macro RT_TRACE logs
+remove all RT_TRACE logs
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/os_dep/mlme_linux.c | 4 ----
- 1 file changed, 4 deletions(-)
+ drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/os_dep/mlme_linux.c b/drivers/staging/rtl8723bs/os_dep/mlme_linux.c
-index ba4d3789a41e..b46c086233bb 100644
---- a/drivers/staging/rtl8723bs/os_dep/mlme_linux.c
-+++ b/drivers/staging/rtl8723bs/os_dep/mlme_linux.c
-@@ -145,12 +145,8 @@ void rtw_report_sec_ie(struct adapter *adapter, u8 authmode, u8 *sec_ie)
- 	u8 *buff, *p, i;
- 	union iwreq_data wrqu;
+diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+index 4f6398f86b75..42c0685e976e 100644
+--- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
++++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+@@ -875,7 +875,6 @@ static int rtw_cfg80211_set_encryption(struct net_device *dev, struct ieee_param
  
--	RT_TRACE(_module_mlme_osdep_c_, _drv_info_, ("+rtw_report_sec_ie, authmode =%d\n", authmode));
+ 	if (strcmp(param->u.crypt.alg, "WEP") == 0)
+ 	{
+-		RT_TRACE(_module_rtl871x_ioctl_os_c, _drv_err_, ("wpa_set_encryption, crypt.alg = WEP\n"));
+ 		DBG_8192C("wpa_set_encryption, crypt.alg = WEP\n");
+ 
+ 		wep_key_idx = param->u.crypt.idx;
+@@ -1797,7 +1796,6 @@ static int rtw_cfg80211_set_wpa_ie(struct adapter *padapter, u8 *pie, size_t iel
+ 	}
+ 
+ 	if (ielen < RSN_HEADER_LEN) {
+-		RT_TRACE(_module_rtl871x_ioctl_os_c, _drv_err_, ("Ie len too short %d\n", ielen));
+ 		ret  = -1;
+ 		goto exit;
+ 	}
+@@ -1901,10 +1899,6 @@ static int rtw_cfg80211_set_wpa_ie(struct adapter *padapter, u8 *pie, size_t iel
+ 		/*  check_fwstate(&padapter->mlmepriv, WIFI_UNDER_WPS) == true) */
+ 		rtw_hal_set_hwreg(padapter, HW_VAR_OFF_RCR_AM, null_addr);
+ 
+-	RT_TRACE(_module_rtl871x_ioctl_os_c, _drv_info_,
+-		("rtw_set_wpa_ie: pairwise_cipher = 0x%08x padapter->securitypriv.ndisencryptstatus =%d padapter->securitypriv.ndisauthtype =%d\n",
+-		pairwise_cipher, padapter->securitypriv.ndisencryptstatus, padapter->securitypriv.ndisauthtype));
 -
- 	buff = NULL;
- 	if (authmode == WLAN_EID_VENDOR_SPECIFIC) {
--		RT_TRACE(_module_mlme_osdep_c_, _drv_info_, ("rtw_report_sec_ie, authmode =%d\n", authmode));
--
- 		buff = rtw_zmalloc(IW_CUSTOM_MAX);
- 		if (NULL == buff) {
- 			DBG_871X(FUNC_ADPT_FMT ": alloc memory FAIL!!\n",
+ exit:
+ 	kfree(buf);
+ 	if (ret)
 -- 
 2.20.1
 
