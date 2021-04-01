@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2C3B3517AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 910673518E0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235331AbhDARmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:42:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57168 "EHLO
+        id S236418AbhDARsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:48:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234347AbhDARg6 (ORCPT
+        with ESMTP id S234687AbhDARjK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:36:58 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8418C022580
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 08:15:35 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id ay2so1183043plb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 08:15:35 -0700 (PDT)
+        Thu, 1 Apr 2021 13:39:10 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91BC3C022592
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 08:20:21 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id x26so1743316pfn.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 08:20:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
         bh=v+aoqp7/hh2ZJdg8Bt5Hf7dmndB59spkh4lB3mp0E74=;
-        b=kGBK/r8CKBxUNprCLJ6ee9nOvbOqWpDSdZJUuszXHKcioB/BkSJAcMMc8wbwiBeQxg
-         EYkP3PZT1RxY88LvRMhINgnkjtqMCFCPwWZdbe7ndIVaihFMZYNBkJBnvCGyob94oQud
-         iNf7QlgVJgbXhj1el6Rlsm/nAlXZpyLhiSWfnFMCSFg/SoNZZc8mGvxvB4RFNDprXC73
-         QuxrFsIKqb7uxLo/MgrWkrf3whDIrg8LmKPYhyZRGs3QVPGROa/qxdpFzDY0LDPM7i5A
-         K/2D9YX8AhClTgoTUKXaMRJyMv2Spq53DRBW0txjxp2rEnnywWOgoReioJW49t5AKzMC
-         yiEw==
+        b=f3DwcN7w4qd2BNUiwf2Zf6uIPlCFYdUV85r3kZddA+QC5XLH2diKbVl4PhBab2cvAU
+         pmgFP02TGCZXCHfaTlBhV2jpRDmVgEDVkuwqh5ZIjpcQLtr4/kuGEOJXuDgrNZxLDhT+
+         xGYRHiODXoSV8YmtXXM+JZI7CQNGTH2nRU/95DBQHGG1zTzehtHMm8t/qmAu4kDBgIIa
+         hGDQsIgddyP9kC/PjQ+RBG2D81N8jNGBQKYpBdOm/ehTLHydUR2WaDI8RE7rzqidQkqA
+         mixaThPVCPLBnsj5x46KdlqlRVQbsCKCnHlBTcCgigALOvTIQqgT8jjEJh9Ld2IT348V
+         Atmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
         bh=v+aoqp7/hh2ZJdg8Bt5Hf7dmndB59spkh4lB3mp0E74=;
-        b=D/aJHPkieeJnEpcTZcJj9S4C9FJNZNzadQQmqLcl5rI/TlrLpuvAkSZmXq0+MKQCdH
-         2hLGolkP5vQwkG2wDJxjkT1TWOoDBk133Cp6slSMFaYWwkCWhOGrn8Coqld7xMux0wqv
-         4U2vBSsd+XIwLJeyeJ9E1crUxmZs+VgNk7C3pRwwDxYyiS8ChQMH1vlR77Cgxpq6qNpW
-         XP2OvCBY4DwVjBRDvuNITQQWLQBwdln7Td0UXuOjvIlAJDTryZUgnBns2UKg/noiBsBp
-         zNfL+9dMer4lEAcZNWa2t3bhj+UH4sDVPatHeo0lQn1uQflbiDC6/uvBszTZTaQj5lWE
-         nbUA==
-X-Gm-Message-State: AOAM533b4xky1qAAIO2C7DJKvjHivbr7c6Os0jpF7SqQ3WZ6+6DEUUt0
-        ItCJQA2Qh43aQLtI6XUYz52g
-X-Google-Smtp-Source: ABdhPJyLl09ogfVFgj/40f2XOlVbEF3wsCwgBy9MwM0lPlcS8zD1vWvy+BWlPcZDVcEBOZFpehentQ==
-X-Received: by 2002:a17:903:2490:b029:e6:faf5:86df with SMTP id p16-20020a1709032490b02900e6faf586dfmr8239479plw.69.1617290135384;
-        Thu, 01 Apr 2021 08:15:35 -0700 (PDT)
+        b=W3HuZJXhLGj05nA+U2GVTcEL5ZP6W6e+aErp60JTozbKsfPIFOt8B1cBEul58MQ1qi
+         TyNHd3TArl8wWfeLHU3JqH3wuY7oRslp+wzpiwG1bmniX+jCaMPGUMu7++KLPu5vf6da
+         L45MOAQo88y0KV5v9Dg91DDym+0Fpf2Hs4c0WX2cL7ou8FCDeBZio+fzBPwTjjAG9+yR
+         096W2Ohr1MmSXP3DBvlUnHpecuAiKLO6Prfzf4l1rHKlCu5fm9I018+GwbVPH9Om+94G
+         aUMfczd8jeyq47tdbz4aaENVBLmDx75NjIO1q5mDwnexWIEZ+T0J/GphnI9BmL9dmXIq
+         5hvg==
+X-Gm-Message-State: AOAM531DvUil7lETR9gv64d06wGDXullJee+B4k06OJd01ctea/k9mA1
+        ovjmXqVBosV6iPsKkfB5Sc4r
+X-Google-Smtp-Source: ABdhPJwtz7tkeDzkY3us5Zn3F41d1wiMPH9nqNUwX2O6k3xjphZQ50wW+fg26V1ZV41J8p6HlwnuQw==
+X-Received: by 2002:a63:5004:: with SMTP id e4mr7841479pgb.61.1617290421033;
+        Thu, 01 Apr 2021 08:20:21 -0700 (PDT)
 Received: from localhost.localdomain ([103.77.37.138])
-        by smtp.gmail.com with ESMTPSA id 35sm5652769pgr.14.2021.04.01.08.15.30
+        by smtp.gmail.com with ESMTPSA id l22sm6500919pjl.14.2021.04.01.08.20.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 08:15:35 -0700 (PDT)
+        Thu, 01 Apr 2021 08:20:20 -0700 (PDT)
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
         robh+dt@kernel.org
@@ -56,12 +56,12 @@ Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         boris.brezillon@collabora.com, Daniele.Palmas@telit.com,
         bjorn.andersson@linaro.org,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v9 3/4] mtd: rawnand: Add support for secure regions in NAND memory
-Date:   Thu,  1 Apr 2021 20:45:07 +0530
-Message-Id: <20210401151508.143075-4-manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v10 3/4] mtd: rawnand: Add support for secure regions in NAND memory
+Date:   Thu,  1 Apr 2021 20:49:54 +0530
+Message-Id: <20210401151955.143817-4-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210401151508.143075-1-manivannan.sadhasivam@linaro.org>
-References: <20210401151508.143075-1-manivannan.sadhasivam@linaro.org>
+In-Reply-To: <20210401151955.143817-1-manivannan.sadhasivam@linaro.org>
+References: <20210401151955.143817-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
