@@ -2,92 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B76D35105C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 09:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DCD6351058
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 09:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233554AbhDAHuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 03:50:19 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:35086 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233383AbhDAHt4 (ORCPT
+        id S233227AbhDAHtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 03:49:47 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14663 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233333AbhDAHta (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 03:49:56 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1317nCoJ087870;
-        Thu, 1 Apr 2021 07:49:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=SA7wCCNN+mAeWw8tOf7p23ED4+d4WG2ymIuZDIXJ7Xw=;
- b=x+yzm4tYG06gGnAwPrBDLz/1BJhaIPEtOVe3cAPBdiWcbZc7yxugtQm5Fh2wOW/TnzBv
- HUXHrOYZA+FvM3LKbyPPmUr5eCHXlEgbeDD2inUfisFY5VosH7UFW9ZkfPT/4MARBY5n
- Solv6vumnpD3a6ZEA4mq3w2g+rCm088rml8zwO42IIMvwQAEt2eR1M899UCewvu70u33
- +LOG07a6R806G4aS7hQmYXkE/Xcvx7ZV+fqcfaeMOkerUMxOdbXJdHlggkEHq+CjAR2I
- tW22K7ahNAIKa+SyyNt2Tm7NbhaxigEFt3Ax5L43yc2L7gsGE03JSnSx8WNL8Up8LEYZ ew== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 37n30s8s18-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 01 Apr 2021 07:49:23 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1317egNm082688;
-        Thu, 1 Apr 2021 07:49:21 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 37n2pa5msv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 01 Apr 2021 07:49:21 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 1317nEsA005753;
-        Thu, 1 Apr 2021 07:49:18 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 01 Apr 2021 00:49:14 -0700
-Date:   Thu, 1 Apr 2021 10:49:05 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     chenlifu <chenlifu@huawei.com>
-Cc:     Russell King <linux@armlinux.org.uk>, heying24@huawei.com,
-        yuehaibing@huawei.com, weiyongjun1@huawei.com,
-        johnny.chenyi@huawei.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH -next] i2c: gpio: use DEFINE_SPINLOCK() for spinlock
-Message-ID: <20210401074905.GQ2065@kadam>
-References: <20210327095228.105123-1-chenlifu@huawei.com>
- <fec9295e-c5d6-13ee-23f5-13b593d2fd2e@huawei.com>
+        Thu, 1 Apr 2021 03:49:30 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F9wHY48VHznX5d;
+        Thu,  1 Apr 2021 15:46:49 +0800 (CST)
+Received: from huawei.com (10.67.174.166) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.498.0; Thu, 1 Apr 2021
+ 15:49:19 +0800
+From:   Zucheng Zheng <zhengzucheng@huawei.com>
+To:     <alcooperx@gmail.com>, <gregkh@linuxfoundation.org>,
+        <jirislaby@kernel.org>
+CC:     <linux-serial@vger.kernel.org>,
+        <bcm-kernel-feedback-list@broadcom.com>,
+        <linux-kernel@vger.kernel.org>, <hucool.lihua@huawei.com>
+Subject: [PATCH -next] serial: 8250: Make symbol 'brcmuart_debugfs_root' static
+Date:   Thu, 1 Apr 2021 15:49:19 +0800
+Message-ID: <20210401074919.56573-1-zhengzucheng@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fec9295e-c5d6-13ee-23f5-13b593d2fd2e@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9940 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
- adultscore=0 bulkscore=0 mlxscore=0 spamscore=0 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2103310000 definitions=main-2104010053
-X-Proofpoint-GUID: SGcL9X88jdvImiMwP0_StNqprF49Esev
-X-Proofpoint-ORIG-GUID: SGcL9X88jdvImiMwP0_StNqprF49Esev
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9940 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
- bulkscore=0 priorityscore=1501 suspectscore=0 mlxscore=0 spamscore=0
- clxscore=1011 mlxlogscore=999 malwarescore=0 adultscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
- definitions=main-2104010054
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.166]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 11:38:30AM +0800, chenlifu wrote:
-> Kindly pinging ...
-> 
-> Best Regards,
-> Chen Lifu
-> 
-> 在 2021/3/27 17:52, Chen Lifu 写道:
+symbol 'brcmuart_debugfs_root' is not used outside of 8250_bcm7271.c,
+so this commit marks it static.
 
-It's to early to start asking for a response.  Please wait at least two
-weeks.  (Probably four weeks if the merge window was open).
+Signed-off-by: Zucheng Zheng <zhengzucheng@huawei.com>
+---
+ drivers/tty/serial/8250/8250_bcm7271.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-regards,
-dan carpenter
-
+diff --git a/drivers/tty/serial/8250/8250_bcm7271.c b/drivers/tty/serial/8250/8250_bcm7271.c
+index 63883185fccd..ebba7f2e960c 100644
+--- a/drivers/tty/serial/8250/8250_bcm7271.c
++++ b/drivers/tty/serial/8250/8250_bcm7271.c
+@@ -239,7 +239,7 @@ struct brcmuart_priv {
+ 	u32		rx_abort;
+ };
+ 
+-struct dentry *brcmuart_debugfs_root;
++static struct dentry *brcmuart_debugfs_root;
+ 
+ /*
+  * Register access routines
+-- 
+2.17.1
 
