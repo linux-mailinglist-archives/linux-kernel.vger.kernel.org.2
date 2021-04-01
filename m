@@ -2,51 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5217352403
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 01:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03A85352405
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 01:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236084AbhDAXea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 19:34:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46326 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235847AbhDAXeQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 19:34:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 75A5D6112E;
-        Thu,  1 Apr 2021 23:34:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617320053;
-        bh=ohek8UUkVa/WNRVimemVyrb/6iFVB0Xi3zFzl5e8oWw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T8b/8Ep9Qwp2hbgR7w43giAhu/eYWGHHiX/wis/WSBibeFvaVhd3y/dqO8FrcIthm
-         L7fnT8cztFZD9RWrfYvmq8AtYPyGcmOEBPW9ThBGYbwdw4H+MnQELcU3pPRLrYsqHt
-         fl1geUu6hmD4Va1dG6tqHwaruKcCfLCC/IAY6kIU=
-Date:   Fri, 2 Apr 2021 01:34:09 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH v1 1/1] driver core: enable trace events (devres)
-Message-ID: <YGZYcQLXejdKFzvd@kroah.com>
-References: <20210401212129.82552-1-andriy.shevchenko@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401212129.82552-1-andriy.shevchenko@linux.intel.com>
+        id S236008AbhDAXhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 19:37:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233677AbhDAXho (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 19:37:44 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6021C061788
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 16:37:42 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id p133so4772223qka.17
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 16:37:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=vJ782tPIwg5HrJEEBMGpQmwNZsk9pDTuVerO6dJHWsw=;
+        b=vTJwbEAu/t/5wjVhuKeAyWFRl/XKhnrScZ8p3fG7OVHAXGKID0UIxVoi3bwPA1Sa3z
+         my7FswdYJWVOzOXsMwWMytT299p+3GmTzjBLfeTdg/IOiEhlCljIrAnmilsr5kCXRkcQ
+         C9IiLRGlN2QDwVhACUN3SrDAmIiAQ7vc2E/YKySqepqxLCMrUGZYG+DnufFUJDWcfneZ
+         L1R6Ybn7nUc0YA13CaKBcfj1q3FLfdISK9pc+q6bZ4FEkT1t6oit+5jjUDUz1cU3z+Re
+         LurQ/wYnapokxkghUBE1y7e2c0fM5oHYTpP4ZVUqgWg2eRakJXUtvvMxCcgRlRXw5yhO
+         FUhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=vJ782tPIwg5HrJEEBMGpQmwNZsk9pDTuVerO6dJHWsw=;
+        b=rhYsUvn1D9nl8GayLul8XFxMIdb8sIhEsnGQQf1EGucdwUr+Lrhf0S/BcV3vVQAXGO
+         BcNxrgM/NzKRMks4eCNOKqG1irgIwnSHL+ddqk+94/Ugp36dL5Mthp5qE3he/22qO54i
+         5TUmhdfH5vaaai7YNHsDDOVrkcvpwQU1SlrBbH7PKa4i8XTFNW6LxKMLU5I6kKuDzoDS
+         LIzEKH1SY0yA9Y2ugfHP/jBqqr7taJIptuSOQ4d/z9jvAEVBOz0Sl7HYugt380uhSqzs
+         LYsAoq8J8HYuKZfhiF+i9jtEjn9FO4vK5Du52bmm8jW0t6d2lywmh6lz9s7jjt3ZLBD7
+         l+wg==
+X-Gm-Message-State: AOAM530uq2RWJr+3szZVDKANM+YwRzk6CxHLn5hPeDSNcUtBqA+3/u7b
+        3vgBXh9O0F18v5GwlQqBaMr1yvRBpN9BSmAxqG/vM08VDYJFujklln+WxhYGmPQNiq+lLtdCedg
+        Mda99LuWrdxv4ayNPr1Rj1B1Gvp+4slGuXyrM5X7DhzLrvZsPnVDyKtD1sJ07AT4fkFioZLPE
+X-Google-Smtp-Source: ABdhPJwb6aFvxKbxcOeSkUQALt7XSlnEE2UVCGTOZMkY0L/y0eaBNHoMr25u4faIyyH6LpVmwDAbLT9I5Vyg
+X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:e088:88b8:ea4a:22b6])
+ (user=bgardon job=sendgmr) by 2002:a0c:fd62:: with SMTP id
+ k2mr10563221qvs.51.1617320261994; Thu, 01 Apr 2021 16:37:41 -0700 (PDT)
+Date:   Thu,  1 Apr 2021 16:37:23 -0700
+Message-Id: <20210401233736.638171-1-bgardon@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
+Subject: [PATCH v2 00/13] More parallel operations for the TDP MMU
+From:   Ben Gardon <bgardon@google.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Ben Gardon <bgardon@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 12:21:29AM +0300, Andy Shevchenko wrote:
-> Enable trace events for driver core. For now only devres is supported.
+Now that the TDP MMU is able to handle page faults in parallel, it's a
+relatively small change to expand to other operations. This series allows
+zapping a range of GFNs, reclaiming collapsible SPTEs (when disabling
+dirty logging), and enabling dirty logging to all happen under the MMU
+lock in read mode.
 
-That says _what_ this does, but not _why_ this is needed or wanted.
+This is partly a cleanup + rewrite of the last few patches of the parallel
+page faults series. I've incorporated feedback from Sean and Paolo, but
+the patches have changed so much that I'm sending this as a separate
+series.
 
-And you really don't even describe the "what" at all here either :(
+Ran kvm-unit-tests + selftests on an SMP kernel + Intel Skylake, with the
+TDP MMU enabled and disabled. This series introduces no new failures or
+warnings.
 
-Please be much more verbose when adding new features.
+I know this will conflict horribly with the patches from Sean's series
+which were just queued, and I'll send a v2 to fix those conflicts +
+address any feedback on this v1.
 
-thanks,
+Changelog
+v2:
+--	Rebased patches on top of kvm/queue to incorporate Sean's recent
+	TLB flushing changes
+--	Dropped patch 5: "KVM: x86/mmu: comment for_each_tdp_mmu_root
+	requires MMU write lock" as the following patch to protect the roots
+	list with RCU adds lockdep which makes the comment somewhat redundant.
 
-greg k-h
+Ben Gardon (13):
+  KVM: x86/mmu: Re-add const qualifier in
+    kvm_tdp_mmu_zap_collapsible_sptes
+  KVM: x86/mmu: Move kvm_mmu_(get|put)_root to TDP MMU
+  KVM: x86/mmu: use tdp_mmu_free_sp to free roots
+  KVM: x86/mmu: Merge TDP MMU put and free root
+  KVM: x86/mmu: Refactor yield safe root iterator
+  KVM: x86/mmu: Make TDP MMU root refcount atomic
+  KVM: x86/mmu: handle cmpxchg failure in kvm_tdp_mmu_get_root
+  KVM: x86/mmu: Protect the tdp_mmu_roots list with RCU
+  KVM: x86/mmu: Allow zap gfn range to operate under the mmu read lock
+  KVM: x86/mmu: Allow zapping collapsible SPTEs to use MMU read lock
+  KVM: x86/mmu: Allow enabling / disabling dirty logging under MMU read
+    lock
+  KVM: x86/mmu: Fast invalidation for TDP MMU
+  KVM: x86/mmu: Tear down roots in fast invalidation thread
+
+ arch/x86/include/asm/kvm_host.h |  21 +-
+ arch/x86/kvm/mmu/mmu.c          | 115 +++++++---
+ arch/x86/kvm/mmu/mmu_internal.h |  27 +--
+ arch/x86/kvm/mmu/tdp_mmu.c      | 375 +++++++++++++++++++++++---------
+ arch/x86/kvm/mmu/tdp_mmu.h      |  28 ++-
+ include/linux/kvm_host.h        |   2 +-
+ 6 files changed, 407 insertions(+), 161 deletions(-)
+
+-- 
+2.31.0.208.g409f899ff0-goog
+
