@@ -2,91 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 349F8351E24
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C827351DF4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240062AbhDASfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:35:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37146 "EHLO
+        id S237664AbhDASdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:33:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239238AbhDASPu (ORCPT
+        with ESMTP id S236828AbhDASLn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:15:50 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12AC5C0F26CA;
-        Thu,  1 Apr 2021 07:56:29 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id n8so2016723oie.10;
-        Thu, 01 Apr 2021 07:56:29 -0700 (PDT)
+        Thu, 1 Apr 2021 14:11:43 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53AC0C0F26CF
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 07:57:47 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id y5so2419643qkl.9
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 07:57:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nCK+9gyhJ+QTOf23dV8336ka6cbFD0kpJr3qSmWMf/A=;
+        b=a12ULmvhqA5tQeB47VPUgbZnQyq/OtOTne66EZZHLr6NeodGaZ1M9FdCCRPYJi67YL
+         D9rtL73mcziJjG8xq7Knwil1/c5HvTK5XiEhLltYFWA0e7Rl2k8taKVFkKwuAX5oq5Ui
+         Zk6m74paHw+LzBRqvEVUgjxIFclMSvtMVwuHM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=hmK4hQlTe/dm4OEhWDvI1X0E5xhesSt9X9vk7PN2+D0=;
-        b=Nt3OrrBvL3S9XKUVqA54ZvBGEsaBvezPl3jRLE0I2Bi0NWtYOZ61z05xk5t0aahcS3
-         iKsAk7vQVS9oV8UWzL8INOpgyzhugy7vON9xMXMREoLwQcdbduWVnLvXfkZquUmwvzbz
-         sjJiRCLDSWYIsmRe+BxuRCYgU4VJ9swJKjnVKyz5TrUaAjzFeIn9Kcc7XKOc4RdpA4rM
-         kR+XQ9PIs9NEbPwWMDk8Mu1UxX+NYGWpvDINS4NrOnA3yzvE+YdHi9I2d3T+iIL7hC0u
-         WmJJG2Zecscg0R3l06J+8g/yLQensHlob2lkGgQr8npEQ9Mhhq7zn9bP2Qdwtf4ZRxIB
-         q+7Q==
-X-Gm-Message-State: AOAM533+7v6il8Nkpt37Z0U4nFlnYvXbVBUu2I7mbeUniBP6ecZQl08+
-        l8rkVm+KjwyjC18vFZmDHA==
-X-Google-Smtp-Source: ABdhPJzSJezFFJWfsrLlTbHO7wSon9UUy58X1LwrBJKlLXSZ7+3BsgnGryhpiYtiaivLvDP+5R1zPg==
-X-Received: by 2002:a05:6808:249:: with SMTP id m9mr6434303oie.170.1617288986305;
-        Thu, 01 Apr 2021 07:56:26 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id v65sm1092368oib.42.2021.04.01.07.56.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 07:56:24 -0700 (PDT)
-Received: (nullmailer pid 409162 invoked by uid 1000);
-        Thu, 01 Apr 2021 14:56:21 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Puranjay Mohan <puranjay12@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, alexandru.ardelean@analog.com,
-        knaack.h@gmx.de, devicetree@vger.kernel.org, lars@metafoo.de,
-        jic23@kernel.org, linux-iio@vger.kernel.org
-In-Reply-To: <20210401091648.87421-2-puranjay12@gmail.com>
-References: <20210401091648.87421-1-puranjay12@gmail.com> <20210401091648.87421-2-puranjay12@gmail.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: iio: temperature: Add DT bindings for TMP117
-Date:   Thu, 01 Apr 2021 09:56:21 -0500
-Message-Id: <1617288981.576340.409161.nullmailer@robh.at.kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nCK+9gyhJ+QTOf23dV8336ka6cbFD0kpJr3qSmWMf/A=;
+        b=LbOtjud48x70j440SIDx8+ScSj1CqEh2T/sCaR+V2Ekid/90Ro1kn53zWo6OhO3wnz
+         JApGVN+FuMzvsKrtgMqNxix6Su1D5kgxT02JJr/rZ5Vbutcucc4rwFV9Bfl4ogdhjoxl
+         hRl7H0TvV6F0pekrghN26x0z7oTOK+By1xGkySVE0lcpQxubYuEi15GpjIQL+1Mh2tnF
+         wylOIEWwsoRlPBToMXKXqgjdWHJyzCVDsgvh5yt4YLfwy6rYmDKO/3uFEiWjaZW1rKA7
+         TztxLdLey/6UPJGJLo26p+tego2XajgkOdATrBT9ECZf2sOT+/tqGBpOfLnPPqxbB8wO
+         gGtw==
+X-Gm-Message-State: AOAM531lGEMaHudXm9E3ocZy0GSh6FoSSgibkBzDdC+TqxYwjeUsYpn1
+        j4xLC8Pyju6WlIhehFXHgIGU/b4C2X8W1A==
+X-Google-Smtp-Source: ABdhPJwPPPAhjvolx+6Nm8SlOzs7/2/zDjbV16DjEmkD5mBg48hfxRCmKytz5mAMihWd+iV9wok8nQ==
+X-Received: by 2002:a05:620a:55a:: with SMTP id o26mr8772575qko.43.1617289066128;
+        Thu, 01 Apr 2021 07:57:46 -0700 (PDT)
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com. [209.85.219.182])
+        by smtp.gmail.com with ESMTPSA id f8sm4138841qkk.23.2021.04.01.07.57.45
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Apr 2021 07:57:45 -0700 (PDT)
+Received: by mail-yb1-f182.google.com with SMTP id m132so2099107ybf.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 07:57:45 -0700 (PDT)
+X-Received: by 2002:a25:8712:: with SMTP id a18mr6421390ybl.79.1617289064490;
+ Thu, 01 Apr 2021 07:57:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210330025345.3980086-1-dianders@chromium.org>
+ <CGME20210330025435eucas1p12b96966451ee0691f6d5d99b64ac2c8b@eucas1p1.samsung.com>
+ <20210329195255.v2.11.Ied721dc895156046ac523baa55a71da241cd09c7@changeid>
+ <8887ded7-d1ab-844c-e3a3-f39f6ef6264a@samsung.com> <CAD=FV=XJ5qtMDn5B431ObPS0JU3-P3755N7jzLZbbcc6XpqYtg@mail.gmail.com>
+ <b3c08808-204c-6a3c-3e58-a2766985b5ef@samsung.com>
+In-Reply-To: <b3c08808-204c-6a3c-3e58-a2766985b5ef@samsung.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 1 Apr 2021 07:57:32 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WS8=hi07tA=t_5xOfPkb8TqY63A712uhJg4H8pUPCRJw@mail.gmail.com>
+Message-ID: <CAD=FV=WS8=hi07tA=t_5xOfPkb8TqY63A712uhJg4H8pUPCRJw@mail.gmail.com>
+Subject: Re: [PATCH v2 11/14] drm/bridge: ti-sn65dsi86: Power things properly
+ for reading the EDID
+To:     Andrzej Hajda <a.hajda@samsung.com>
+Cc:     Rob Clark <robdclark@chromium.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Steev Klimaszewski <steev@kali.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 01 Apr 2021 14:46:47 +0530, Puranjay Mohan wrote:
-> Add devicetree binding document for TMP117, a digital temperature sensor.
-> 
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> ---
->  .../bindings/iio/temperature/ti,tmp117.yaml   | 34 +++++++++++++++++++
->  1 file changed, 34 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/temperature/ti,tmp117.yaml
-> 
+Hi,
 
-My bot found errors running 'make dt_binding_check' on your patch:
+On Thu, Apr 1, 2021 at 4:12 AM Andrzej Hajda <a.hajda@samsung.com> wrote:
+>
+>
+> W dniu 31.03.2021 o 16:48, Doug Anderson pisze:
+> > Hi,
+> >
+> > On Wed, Mar 31, 2021 at 4:08 AM Andrzej Hajda <a.hajda@samsung.com> wrote:
+> >>
+> >> W dniu 30.03.2021 o 04:53, Douglas Anderson pisze:
+> >>> eDP panels won't provide their EDID unless they're powered on. Let's
+> >>> chain a power-on before we read the EDID. This roughly matches what
+> >>> was done in 'parade-ps8640.c'.
+> >>>
+> >>> NOTE: The old code attempted to call pm_runtime_get_sync() before
+> >>> reading the EDID. While that was enough to power the bridge chip on,
+> >>> it wasn't enough to talk to the panel for two reasons:
+> >>> 1. Since we never ran the bridge chip's pre-enable then we never set
+> >>>      the bit to ignore HPD. This meant the bridge chip didn't even _try_
+> >>>      to go out on the bus and communicate with the panel.
+> >>> 2. Even if we fixed things to ignore HPD, the EDID still wouldn't read
+> >>>      if the panel wasn't on.
+> >>>
+> >>> One thing that's a bit odd here is taking advantage of the EDID that
+> >>> the core might have cached for us. See the patch ("drm/edid: Use the
+> >>> cached EDID in drm_get_edid() if eDP"). We manage to get at the cache
+> >>> by:
+> >>> - Instantly failing aux transfers if we're not powered.
+> >>> - If the first read of the EDID fails we try again after powering.
+> >>>
+> >>> Fixes: 58074b08c04a ("drm/bridge: ti-sn65dsi86: Read EDID blob over DDC")
+> >>> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> >>> ---
+> >>> Depending on what people think of the other patches in this series,
+> >>> some of this could change.
+> >>> - If everyone loves the "runtime PM" in the panel driver then we
+> >>>     could, in theory, put the pre-enable chaining straight in the "aux
+> >>>     transfer" function.
+> >>> - If everyone hates the EDID cache moving to the core then we can
+> >>>     avoid some of the awkward flow of things and keep the EDID cache in
+> >>>     the sn65dsi86 driver.
+> >>
+> >> I wonder if this shouldn't be solved in the core - ie caller of
+> >> get_modes callback should be responsible for powering up the pipeline,
+> >> otherwise we need to repeat this stuff in every bridge/panel driver.
+> >>
+> >> Any thoughts?
+> > Yeah, I did look at this a little bit. Presumably it would only make
+> > sense to do it for eDP connections since:
+> >
+> > a) The concept of reading an EDID doesn't make sense for things like MIPI.
+>
+> I guess you mean MIPI DSI
 
-yamllint warnings/errors:
+Yes, sorry! I'll try to be more clear.
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/iio/temperature/ti,tmp117.example.dts:21.13-26: Warning (reg_format): /example-0/tmp117@48:reg: property has invalid length (4 bytes) (#address-cells == 1, #size-cells == 1)
-Documentation/devicetree/bindings/iio/temperature/ti,tmp117.example.dt.yaml: Warning (pci_device_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/iio/temperature/ti,tmp117.example.dt.yaml: Warning (pci_device_bus_num): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/iio/temperature/ti,tmp117.example.dt.yaml: Warning (simple_bus_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/iio/temperature/ti,tmp117.example.dt.yaml: Warning (i2c_bus_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/iio/temperature/ti,tmp117.example.dt.yaml: Warning (spi_bus_reg): Failed prerequisite 'reg_format'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/temperature/ti,tmp117.example.dt.yaml: example-0: tmp117@48:reg:0: [72] is too short
-	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
 
-See https://patchwork.ozlabs.org/patch/1460920
+> and yes I agree, more generally it usually(!)
+> doesn't make sense for any setup with fixed display panel.
+>
+> On the other hand there are DSI/HDMI or DSI/DP adapters which usually
+> have EDID reading logic.
+>
+> And the concept makes sense for most connectors accepting external
+> displays: HDMI, DP, MHL, VGA...
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+So, actually, IMO the concept doesn't make sense for anything with an
+external connector. Here's the logic for a handful of connectors:
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+1. MIPI DSI: there is no EDID so this doesn't make sense.
 
-pip3 install dtschema --upgrade
+2. An external connector (HDMI, DP, etc): the display that's plugged
+in is externally powered so doesn't need us to power it up to read the
+EDID. By definition, when the HPD signal is asserted then it's OK to
+read the EDID and we don't even know if a display is plugged in until
+HPD is asserted. Thus no special power sequencing is needed to read
+the EDID.  (Yes, we need to make sure that the eDP controller itself
+is powered, but that doesn't seem like it's the core's business).
 
-Please check and re-submit.
+3. eDP: this is where it matters. This is because:
 
+3a) eDP displays aren't powered all the time. If you just boot up or
+you blank your screen, likely the display has no power at all.
+
+3b) Because the display has no power, the "HPD" signal doesn't assert.
+In fact, for eDP the "HPD" signal really should mean "display ready"
+or "display finished powering up".
+
+3c) Even though we never get a HPD signal, we still simply assume that
+a display is present because this is an "embedded" device.
+
+So eDP is unique (as far as I know) in that it's a type of display
+that has an EDID but that we will report "a display is here" before
+we've powered up the display and before we can read the EDID.
+
+
+> > b) For something with an external connector (DP and HDMI) you don't
+> > even know they're inserted unless the EDID is ready to read (these
+> > devices are, essentially, always powered).
+>
+> Usually there are two elements which are not the same:
+>
+> 1. HotPlug signal/wire.
+>
+> 2. EDID reading logic.
+>
+> The logic responsible for reading EDID needs to be enabled only for time
+> required for EDID reading :) So it's power state often must be
+> controlled explicitly by the bridge driver. So even if in many cases
+> pre_enable powers on the logic for EDID reading it does not make it the
+> rule, so I must step back from my claim that it is up to caller :)
+
+OK, I'll plan to keep it in the bridge chip driver now.
+
+
+> > So I started off trying to do this in the core for eDP, but then it
+> > wasn't completely clear how to write this code in a way that was super
+> > generic. Specifically:
+> >
+> > 1. I don't think it's a 100% guarantee that everything is powered on
+> > in pre-enable and powered off in post-disable. In this bridge chip
+> > it's true, but maybe not every eDP driver? Would you want me to just
+> > assume this, or add a flag?
+>
+> Ok, pre_enable should power on the chip, but for performing
+> initialization of video transport layer. Assumption it will power on
+> EDID logic is incorrect, so my claim seems wrong, but also this patch
+> looks incorrect :)
+>
+> In general only device containing EDID logic knows how to power it up.
+
+I still believe my patch is correct. Specifically I don't need to make
+any assumptions about display elements upstream of me (sources of the
+bridge chip). I only need to make assumptions about the pre-enable of
+the bridge driver itself and anything downstream of it.
+
+At the moment downstream of this particular bridge chip is always a
+panel device. Even further, all known downstream devices are
+"simple-panel". That is known to power up the panel enough to read the
+EDID in the "prepare" stage.
+
+Sure, someone _could_ add another bridge downstream in some design,
+but it would be up to that person to either fix that downstream driver
+to power itself in pre-enable or to add some type of quirk disabling
+the EDID reading.
+
+
+> Since I do not know your particular case I can propose few possible ways
+> to investigate:
+>
+> - call bridge.next->get_modes - you leave responsibility for powering up
+> to the downstream device.
+
+The "next" bridge is the panel, so I don't think this works.
+
+
+> - ddc driver on i2c request should power up the panel - seems also correct,
+
+Right, so I could put the
+"drm_bridge_chain_pre_enable(&pdata->bridge)" into the
+ti_sn_aux_transfer() function. I talked about that a little bit "after
+the cut" in my post where I said:
+
+> - If everyone loves the "runtime PM" in the panel driver then we
+>   could, in theory, put the pre-enable chaining straight in the "aux
+>   transfer" function.
+
+The reason for the dependence on "runtime PM" in the panel driver is
+that we are doing DDC over AUX and it breaks the EDID reading into
+lots of chunks so if we did the powering up and powering down there it
+would be crazy slow without the delayed poweroff.
+
+-Doug
