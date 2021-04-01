@@ -2,430 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90C5C351FE7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB2F351FED
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:38:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234380AbhDAThR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 15:37:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38534 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233786AbhDAThQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 15:37:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A468D6108B;
-        Thu,  1 Apr 2021 19:37:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617305836;
-        bh=+2HkIIjf3Fx8Ql7r+k8EhdnzFruKkCkpZUMFaA0onMg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LUX/yzlicpQEcWwq9cgjEwJPuF2qlr/1yhoGOgNljU454tAKZyMCXSHZRnck6fIeR
-         pOMg3WG1ogoNzn2fRYfG5dvGl1bcRb9azRZyf+Lv2PoXXS5J8mh1XRpgrvXEUbChWf
-         WNkDrumgsYo34ztwtGLtywgAB9zBj/fGpSUoNY9M=
-Date:   Thu, 1 Apr 2021 21:37:13 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lukasz.luba@arm.com, rafael@kernel.org
-Subject: Re: [PATCH v6 7/7] powercap/drivers/dtpm: Allow dtpm node device
- creation through configfs
-Message-ID: <YGYg6ZeZ1181/pXk@kroah.com>
-References: <20210401183654.27214-1-daniel.lezcano@linaro.org>
- <20210401183654.27214-7-daniel.lezcano@linaro.org>
+        id S234185AbhDAThy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 15:37:54 -0400
+Received: from smtp-17.italiaonline.it ([213.209.10.17]:50670 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234508AbhDAThw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 15:37:52 -0400
+Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
+ ([87.20.116.197])
+        by smtp-17.iol.local with ESMTPA
+        id S38SlkFJgtpGHS38Wly34z; Thu, 01 Apr 2021 21:37:50 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1617305870; bh=YQB7g1tisjsO2/drdzJfID05HXMNLmMVG06wPqjwn88=;
+        h=From;
+        b=bqHrWqGHQHCwRxWwIwip8RK7Moc2HaHTTEil/uUqh+ipY0d43VmtwGRzQoAENdjXf
+         cvIKiXFiZfJhxf/GlhkLU1qCB/Lnun1pB9HugdgWawQZSr9siJg45Lilo7wWJ6KE9x
+         TX8TvzGOGFaO2PmC8TIY5hP0lqvXp7rdwWnQRc+Y1Gh3BGxfckF7hcJL+kbJYvbRYw
+         hf0+1h0cpxDtyDyPHiTrbQj6DRh+UKsGyPmtNT5QVNJkctmieynMTxbOXk90cdo9Tk
+         fPPWlGWot4+3kuAfBqBEG28uQVCOrLSUGvj2mET1xFe/mOCEIXJo9J5ubZ39DCEbDd
+         x2QSS3kfeNVYg==
+X-CNFS-Analysis: v=2.4 cv=Q7IXX66a c=1 sm=1 tr=0 ts=6066210e cx=a_exe
+ a=AVqmXbCQpuNSdJmApS5GbQ==:117 a=AVqmXbCQpuNSdJmApS5GbQ==:17
+ a=IkcTkHD0fZMA:10 a=1Ew--PDDX9GlwpKbZyQA:9 a=QEXdDO2ut3YA:10
+From:   Dario Binacchi <dariobin@libero.it>
+To:     linux-kernel@vger.kernel.org
+Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        Dario Binacchi <dariobin@libero.it>,
+        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Tero Kristo <kristo@kernel.org>,
+        Tony Lindgren <tony@atomide.com>, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-omap@vger.kernel.org
+Subject: [PATCH v4 0/5] clk: ti: add am33xx spread spectrum clock support
+Date:   Thu,  1 Apr 2021 21:37:36 +0200
+Message-Id: <20210401193741.24639-1-dariobin@libero.it>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210401183654.27214-7-daniel.lezcano@linaro.org>
+X-CMAE-Envelope: MS4xfDiLzMti9f+2PiHEAAsu6xn+rVDM+lPnGENoR6zBoMCDhuA17etv25hLQb5jrSKjuAcMphCH4j+8tg/G5wT4AC9Exakc0HQKI9oab86fVstoTZdlfS6G
+ 9WoiF3Qx5zZx1dyZ07esTdm9XgZdhVG4puKiW+Rg8HcJg84o7ivevZa6Juoj9t7AVQFtkHok8+4O+SJ+B9bMjxJqC/q2bIePtlFAMN/z/nIem8dtpiFv2Lcy
+ pjFZJg98+FtwBAxf6cao3tiraGuo3pQ/vY63V4TsYHC8OVVYyVwRaUVx3XDmcWsQTcICWrC6oWN+TssYh9LdJMI2x5YbucWIEUw2LaDU6bN04ADkMGkocuTr
+ athPYBqo3jlp48xTGV+0Q67qnFPghdwkAeEAfQkeWZZhkSQRWJEREoMea1XJjyR9p7fuZFYBp/wP/0SdlnMjGGWnp3kHisPO+Rf6WmNNqs4WO31Kcxo1Xy7k
+ NFWPETc5yBfr5bOguHIJJrCLUU4PKymgrYJzW0ryrs+Sk7YE1JjUBZRvT050XUWfjINrHJMlV2BpS/6x9/daF/KNYdKzTe73lfASYrj6op7Hwe9wqmS1WYge
+ zzlcXVQHbvFX+6zqXpBCyrWXWfSmO6NuGErygIrguoISIA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 08:36:54PM +0200, Daniel Lezcano wrote:
-> The DTPM framework is built on top of the powercap framework as a new
-> controller to act on the power of the devices. The approach is to
-> provide an unified API to do power limitation on devices which are
-> capable of that with different techniques.
-> 
-> In addition, the DTPM framework allows to create a hierarchical
-> representation of the devices in order to reflect the dependencies of
-> the power constraints we want to apply to a group of devices.
-> 
-> The hierarchy can be different for the same platform as it will depend
-> on the form factor (tablet, notebook, phone, ...), on other components
-> and/or a policy, and application scenario.
-> 
-> The kernel can not have such knowledge and only the SoC vendor can
-> setup its platform to fulfill the objectives of its hardware.
-> 
-> This patch adds the ability to create a DTPM hierarchy via
-> configfs. All DTPM capable devices are registered in a list, and the
-> creation of a configfs directory with the name of one of this device
-> will create a DTPM node in the DTPM powercap sysfs. If the name is not
-> in the list, a virtual node will be created instead. This virtual node
-> in the DTPM semantic is to aggregate the power characteristics of the
-> children.
-> 
-> In order to do the connection between the configfs and sysfs easily, a
-> 'device' file contains the path to the corresponding DTPM powercap
-> node in sysfs (cross filesystems symlink is not supported by
-> configfs).
-> 
-> In order to not block any new features in the future, the hierarchical
-> constraints are stored under a top folder 'constraints', so sibling
-> can be created for other purposes if needed.
-> 
-> When the configfs was populated, the module can not be unloaded until
-> all the elements in the tree have been removed.
-> 
-> 1) Resulting creation via mkdir:
-> 
-> root@rock960:/sys/kernel/config# tree dtpm/
-> dtpm/
-> └── constraints
->     └── platform
->             ├── device
-> 	    └── soc
-> 	        ├── device
-> 		└── pkg
-> 		     ├── device
-> 		     ├── cpu0-cpufreq
-> 		     │   └── device
-> 		     ├── cpu4-cpufreq
-> 		     │   └── device
-> 		     └── panfrost-devfreq
-> 		            └── device
-> 
-> 2) The content of the 'device' file above
-> 
-> root@rock960:/sys/kernel/config# find dtpm/constraints -name "device" -exec cat {} \;
-> /devices/virtual/powercap/dtpm/dtpm:0/dtpm:0:0/dtpm:0:0:1
-> /devices/virtual/powercap/dtpm/dtpm:0/dtpm:0:0/dtpm:0:0:0/dtpm:0:0:0:2
-> /devices/virtual/powercap/dtpm/dtpm:0/dtpm:0:0/dtpm:0:0:0/dtpm:0:0:0:1
-> /devices/virtual/powercap/dtpm/dtpm:0/dtpm:0:0/dtpm:0:0:0/dtpm:0:0:0:0
-> /devices/virtual/powercap/dtpm/dtpm:0/dtpm:0:0/dtpm:0:0:0
-> /devices/virtual/powercap/dtpm/dtpm:0/dtpm:0:0
-> /devices/virtual/powercap/dtpm/dtpm:0
-> 
-> 3) The dtpm device creation node is reflected in sysfs:
-> 
-> root@rock960:/sys/devices/virtual/powercap/dtpm# find . -type d | grep dtpm
-> ./dtpm:0
-> ./dtpm:0/power
-> ./dtpm:0/dtpm:0:0
-> ./dtpm:0/dtpm:0:0/power
-> ./dtpm:0/dtpm:0:0/dtpm:0:0:0
-> ./dtpm:0/dtpm:0:0/dtpm:0:0:0/dtpm:0:0:0:1
-> ./dtpm:0/dtpm:0:0/dtpm:0:0:0/dtpm:0:0:0:1/power
-> ./dtpm:0/dtpm:0:0/dtpm:0:0:0/power
-> ./dtpm:0/dtpm:0:0/dtpm:0:0:0/dtpm:0:0:0:2
-> ./dtpm:0/dtpm:0:0/dtpm:0:0:0/dtpm:0:0:0:2/power
-> ./dtpm:0/dtpm:0:0/dtpm:0:0:0/dtpm:0:0:0:0
-> ./dtpm:0/dtpm:0:0/dtpm:0:0:0/dtpm:0:0:0:0/power
-> ./dtpm:0/dtpm:0:0/dtpm:0:0:1
-> ./dtpm:0/dtpm:0:0/dtpm:0:0:1/power
+As reported by the TI spruh73x/spruhl7x RM, MPU and LCD modules support
+spread spectrum clocking (SSC) on their output clocks. SSC is used to
+spread the spectral peaking of the clock to reduce any electromagnetic
+interference (EMI) that may be caused due to the clock’s fundamental
+or any of its harmonics.
+The series allows you to enable and adjust the spread spectrum clocking
+for all am33xx/am43xx PLLs for which it is supported. All these issues
+have been fixed.
 
-Why have you not documented all of this in Documentation/ABI so that we
-can find it later?
+Previous versions of the series did not supported SSC for am43xx SOCs,
+causing clock registration failure for DPLLs. Furthermore, for am33xx
+SOCs, clock registration failed for DPLLs for which SSC is not supported.
 
+Changes in v4:
+- Add Stephen Boyd review tag.
+- Add Rob Herring review tag.
+- Add SSC registers for CORE, DDR and PER PLLs.
+- Update commit message.
+- Update commit message.
 
-> 
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->  drivers/powercap/Kconfig         |   8 ++
->  drivers/powercap/Makefile        |   1 +
->  drivers/powercap/dtpm_configfs.c | 202 +++++++++++++++++++++++++++++++
->  include/linux/dtpm.h             |   2 +
->  4 files changed, 213 insertions(+)
->  create mode 100644 drivers/powercap/dtpm_configfs.c
-> 
-> diff --git a/drivers/powercap/Kconfig b/drivers/powercap/Kconfig
-> index 8242e8c5ed77..599b41e4e0a7 100644
-> --- a/drivers/powercap/Kconfig
-> +++ b/drivers/powercap/Kconfig
-> @@ -50,6 +50,14 @@ config DTPM
->  	  This enables support for the power capping for the dynamic
->  	  thermal power management userspace engine.
->  
-> +config DTPM_CONFIGFS
-> +	tristate "Dynamic Thermal Power Management configuration via configfs"
-> +	depends on DTPM && CONFIGFS_FS
-> +	help
-> +	  This enables support for creating the DTPM device hierarchy
-> +	  via configfs giving the userspace full control of the
-> +	  thermal constraint representation.
+Changes in v3:
+- Add '-hz' suffix to "ti,ssc-modfreq" binding.
+- Add Tony Lindgren acked tag.
+- Use "ti,ssc-modfreq-hz" binding instead of "ti,ssc-modfreq".
 
-Why does this have to be a module, shouldn't it just be part of the DTPM
-code itself?
+Changes in v2:
+- Remove SSC registers from dpll_core_ck@490 node (SSC is not supported)
+- Add SSC registers to dpll_mpu_ck@488 node.
+- Move the DT changes to the previous patch in the series.
 
-> +
->  config DTPM_CPU
->  	bool "Add CPU power capping based on the energy model"
->  	depends on DTPM && ENERGY_MODEL
-> diff --git a/drivers/powercap/Makefile b/drivers/powercap/Makefile
-> index fabcf388a8d3..519cabc624c3 100644
-> --- a/drivers/powercap/Makefile
-> +++ b/drivers/powercap/Makefile
-> @@ -1,5 +1,6 @@
->  # SPDX-License-Identifier: GPL-2.0-only
->  obj-$(CONFIG_DTPM) += dtpm.o
-> +obj-$(CONFIG_DTPM_CONFIGFS) += dtpm_configfs.o
->  obj-$(CONFIG_DTPM_CPU) += dtpm_cpu.o
->  obj-$(CONFIG_POWERCAP)	+= powercap_sys.o
->  obj-$(CONFIG_INTEL_RAPL_CORE) += intel_rapl_common.o
-> diff --git a/drivers/powercap/dtpm_configfs.c b/drivers/powercap/dtpm_configfs.c
-> new file mode 100644
-> index 000000000000..b8de71e94fc3
-> --- /dev/null
-> +++ b/drivers/powercap/dtpm_configfs.c
-> @@ -0,0 +1,202 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright 2021 Linaro Limited
-> + *
-> + * Author: Daniel Lezcano <daniel.lezcano@linaro.org>
-> + *
-> + * The DTPM framework defines a set of devices which are power capable.
-> + *
-> + * The configfs allows to create a hierarchy of devices in order
-> + * to reflect the constraints we want to apply to them.
-> + *
-> + * Each dtpm node is created via a mkdir operation in the configfs
-> + * directory. It will create the corresponding dtpm device in the
-> + * sysfs and the 'device' will contain the absolute path to the dtpm
-> + * node in the sysfs, thus allowing to do the connection between the
-> + * created dtpm node in the configfs hierarchy and the dtpm node in
-> + * the powercap framework.
+Dario Binacchi (5):
+  clk: ti: fix typo in routine description
+  dt-bindings: ti: dpll: add spread spectrum support
+  ARM: dts: am33xx-clocks: add spread spectrum support
+  ARM: dts: am43xx-clocks: add spread spectrum support
+  clk: ti: add am33xx/am43xx spread spectrum clock support
 
-Tieing configfs and sysfs is very odd, and ripe for problems.  Those are
-independant filesystems with independant devices and paths and object
-lifetimes.  How can you guarantee they all work together ok?
+ .../devicetree/bindings/clock/ti/dpll.txt     | 20 +++++
+ arch/arm/boot/dts/am33xx-clocks.dtsi          | 10 +--
+ arch/arm/boot/dts/am43xx-clocks.dtsi          | 12 +--
+ drivers/clk/ti/dpll.c                         | 42 +++++++++
+ drivers/clk/ti/dpll3xxx.c                     | 87 ++++++++++++++++++-
+ include/linux/clk/ti.h                        | 24 +++++
+ 6 files changed, 183 insertions(+), 12 deletions(-)
 
-> + *
-> + * The dtpm nodes can be real or virtual. The former is a real device
-> + * where acting on its power is possible and is registered in a dtpm
-> + * framework's list with an unique name. A creation with mkdir with
-> + * one of the registered name will instanciate the dtpm device. If the
-> + * name is not in the registered list, it will create a virtual node
-> + * where its purpose is to aggregate the power characteristics of its
-> + * children which can virtual or real.
-> + *
-> + * It is not allowed to create a node if another one in the hierarchy
-> + * has the same name. That ensures the consistency and prevents
-> + * multiple instanciation of the same dtpm device.
-> + */
-> +#include <linux/dtpm.h>
-> +#include <linux/init.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/slab.h>
-> +#include <linux/configfs.h>
-> +
-> +static struct config_group *cstrn_group;
-> +
-> +static struct config_item_type dtpm_cstrn_type;
-> +
-> +static const struct config_item_type dtpm_root_group_type = {
-> +	.ct_owner = THIS_MODULE,
-> +};
-> +
-> +static struct configfs_subsystem dtpm_subsys = {
-> +	.su_group = {
-> +		.cg_item = {
-> +			.ci_namebuf = "dtpm",
-> +			.ci_type = &dtpm_root_group_type,
-> +		},
-> +	},
-> +	.su_mutex = __MUTEX_INITIALIZER(dtpm_subsys.su_mutex),
-> +};
-> +
-> +static bool dtpm_configfs_exists(struct config_group *grp, const char *name)
-> +{
-> +	struct list_head *entry;
-> +
-> +	list_for_each(entry, &grp->cg_children) {
-> +		struct config_item *item =
-> +			container_of(entry, struct config_item, ci_entry);
-> +
-> +		if (config_item_name(item) &&
-> +		    !strcmp(config_item_name(item), name))
-> +			return true;
-> +
-> +		if (dtpm_configfs_exists(to_config_group(item), name))
-> +			return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +
-> +static struct config_group *dtpm_cstrn_make_group(struct config_group *grp, const char *name)
-> +{
-> +	struct dtpm *d, *p;
-> +	int ret;
-> +
-> +	if (dtpm_configfs_exists(cstrn_group, name))
-> +		return ERR_PTR(-EEXIST);
-> +
-> +	d = dtpm_lookup(name);
-> +	if (!d) {
-> +		d = kzalloc(sizeof(*d), GFP_KERNEL);
-> +		if (!d)
-> +			return ERR_PTR(-ENOMEM);
-> +		dtpm_init(d, NULL);
-> +	}
-> +
-> +	config_group_init_type_name(&d->cfg, name, &dtpm_cstrn_type);
-> +
-> +	/*
-> +	 * Retrieve the dtpm parent node. The first dtpm node in the
-> +	 * hierarchy constraint is the root node, thus it does not
-> +	 * have a parent.
-> +	 */
-> +	p = (grp == cstrn_group) ? NULL :
-> +		container_of(grp, struct dtpm, cfg);
-> +
-> +	ret = dtpm_register(name, d, p);
+-- 
+2.17.1
 
-Why isn't the "name" the same name of the sysfs object that the kernel
-created already?
-
-I still do not understand why you need 2 different names for the same
-device.
-
-> +	if (ret)
-> +		goto dtpm_free;
-> +
-> +	if (!try_module_get(THIS_MODULE)) {
-
-Why are you trying to increment your own module reference count?  That's
-totally racy and does not work.  And you are doing it _way_ after the
-function has been called, what is this for?
-
-
-> +		ret = -ENODEV;
-> +		goto dtpm_unregister;
-> +	}
-> +
-> +	return &d->cfg;
-> +
-> +dtpm_unregister:
-> +	dtpm_unregister(d);
-> +dtpm_free:
-> +	if (!d->ops)
-> +		kfree(d);
-> +
-> +	return ERR_PTR(ret);
-> +}
-> +
-> +static void dtpm_cstrn_drop_group(struct config_group *grp,
-> +				  struct config_item *cfg)
-> +{
-> +	struct config_group *cg = to_config_group(cfg);
-> +	struct dtpm *d = container_of(cg, struct dtpm, cfg);
-> +
-> +	dtpm_unregister(d);
-> +	if (!d->ops)
-> +		kfree(d);
-> +	module_put(THIS_MODULE);
-> +	config_item_put(cfg);
-> +}
-> +
-> +static struct configfs_group_operations dtpm_cstrn_group_ops = {
-> +	.make_group = dtpm_cstrn_make_group,
-> +	.drop_item = dtpm_cstrn_drop_group,
-> +};
-> +
-> +static ssize_t dtpm_cstrn_device_show(struct config_item *cfg, char *str)
-> +{
-> +	struct config_group *cg = to_config_group(cfg);
-> +	struct dtpm *d = container_of(cg, struct dtpm, cfg);
-> +	struct kobject *kobj = &d->zone.dev.kobj;
-
-Why are you using the "raw" kobject?
-
-And wait, a configfs and sysfs object are in the same structure?  You
-just broke lifetime rules again :(
-
-> +	char *string = kobject_get_path(kobj, GFP_KERNEL);
-> +	ssize_t len;
-> +
-> +	if (!string)
-> +		return -EINVAL;
-> +
-> +	len = sprintf(str, "%s\n", string);
-
-What sysfs namespace is this in?  This feels really odd to me...
-
-> +
-> +	kfree(string);
-> +
-> +	return len;
-> +}
-> +
-> +CONFIGFS_ATTR_RO(dtpm_cstrn_, device);
-> +
-> +static struct configfs_attribute *dtpm_cstrn_attrs[] = {
-> +	&dtpm_cstrn_attr_device,
-> +	NULL
-> +};
-> +
-> +static struct config_item_type dtpm_cstrn_type = {
-> +	.ct_owner = THIS_MODULE,
-> +	.ct_group_ops = &dtpm_cstrn_group_ops,
-> +};
-> +
-> +static int __init dtpm_configfs_init(void)
-> +{
-> +	int ret;
-> +
-> +	config_group_init(&dtpm_subsys.su_group);
-> +
-> +	ret = configfs_register_subsystem(&dtpm_subsys);
-> +	if (ret)
-> +		return ret;
-> +
-> +	cstrn_group = configfs_register_default_group(&dtpm_subsys.su_group,
-> +						      "constraints",
-> +						      &dtpm_cstrn_type);
-> +
-> +	/*
-> +	 * The default group does not contain attributes but the other
-> +	 * group will
-> +	 */
-> +	dtpm_cstrn_type.ct_attrs = dtpm_cstrn_attrs;
-> +
-> +	return PTR_ERR_OR_ZERO(cstrn_group);
-> +}
-> +module_init(dtpm_configfs_init);
-> +
-> +static void __exit dtpm_configfs_exit(void)
-> +{
-> +	configfs_unregister_default_group(cstrn_group);
-> +	configfs_unregister_subsystem(&dtpm_subsys);
-> +}
-> +module_exit(dtpm_configfs_exit);
-> +
-> +MODULE_DESCRIPTION("DTPM configuration driver");
-> +MODULE_AUTHOR("Daniel Lezcano");
-> +MODULE_LICENSE("GPL v2");
-> diff --git a/include/linux/dtpm.h b/include/linux/dtpm.h
-> index e47bd5bbf56e..d7bbb9fd97eb 100644
-> --- a/include/linux/dtpm.h
-> +++ b/include/linux/dtpm.h
-> @@ -8,11 +8,13 @@
->  #define ___DTPM_H__
->  
->  #include <linux/powercap.h>
-> +#include <linux/configfs.h>
->  
->  #define MAX_DTPM_DESCR 8
->  #define MAX_DTPM_CONSTRAINTS 1
->  
->  struct dtpm {
-> +	struct config_group cfg;
-
-You now have 2 reference counted structures trying to control the same
-structure.  Your lifetime rules just got so intertwined and messed up
-it's not going to work, sorry.
-
-thanks,
-
-greg k-h
