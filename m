@@ -2,158 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0383A351E83
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8806A351EFB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241219AbhDASmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:42:52 -0400
-Received: from foss.arm.com ([217.140.110.172]:46420 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238228AbhDASUH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:20:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 27CFB1596;
-        Thu,  1 Apr 2021 07:06:08 -0700 (PDT)
-Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.195.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 44EA93F719;
-        Thu,  1 Apr 2021 07:06:06 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 15:06:03 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Alexey Klimov <aklimov@redhat.com>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, peterz@infradead.org,
-        yury.norov@gmail.com, daniel.m.jordan@oracle.com,
-        jobaker@redhat.com, audralmitchel@gmail.com, arnd@arndb.de,
-        gregkh@linuxfoundation.org, rafael@kernel.org, tj@kernel.org,
-        hannes@cmpxchg.org, klimov.linux@gmail.com
-Subject: Re: [PATCH v3] cpu/hotplug: wait for cpuset_hotplug_work to finish
- on cpu onlining
-Message-ID: <20210401140603.hvtbxjxw2izuhwus@e107158-lin>
-References: <20210317003616.2817418-1-aklimov@redhat.com>
- <87tuowcnv3.ffs@nanos.tec.linutronix.de>
+        id S238477AbhDAStz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:49:55 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:54452 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240134AbhDAS3Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:29:24 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 131E5M7T049686;
+        Thu, 1 Apr 2021 14:07:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=sLK6zOQHnZG1HuSVK798EHRmx5dU8oG3uqDFjbJ8k9k=;
+ b=p95oI/MXpGa4RWfw7jwz9i6Y2vPGL/mqCNwYID/ttPesJOa3VCNCOGbMFuy3mNclUowI
+ IWIwOb7JnAVxyg+gNRSG52YbWS1QVBhbSPq6YfBDQGZs4g/LU0aRwDxJkg9va7m+Gtao
+ NxswtjoqtmMRXrUfgg0xnRS5eYWainecn4UhyP7YQYdSLrmBxz6cn+TPKCPkcqi9cXVX
+ 9b2WiyMtJNUuLz3N+7LvJMNZZV9UxXP4eo9XLcRi8cQcEAU/K9BfZTGNAcDRlRA8XccW
+ rKPqgh2i3WxlGMGrL7SBVLHWFbIpzXiK1UblsL2s5vn5Q5FMxN2IpTwilyjCLdvgpP96 ag== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 37n30s9vp6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 01 Apr 2021 14:07:04 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 131E5C4j181433;
+        Thu, 1 Apr 2021 14:07:01 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 37n2aba69n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 01 Apr 2021 14:07:01 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 131E6xkH025904;
+        Thu, 1 Apr 2021 14:07:00 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 01 Apr 2021 07:06:59 -0700
+Date:   Thu, 1 Apr 2021 17:06:52 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     kbusch@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [bug report] node: Add memory-side caching attributes
+Message-ID: <20210401140652.GT2088@kadam>
+References: <YGWLtzMLqSW4cxma@mwanda>
+ <20210401112511.GV1463678@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87tuowcnv3.ffs@nanos.tec.linutronix.de>
+In-Reply-To: <20210401112511.GV1463678@nvidia.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9941 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 bulkscore=0
+ suspectscore=0 phishscore=0 malwarescore=0 mlxlogscore=999 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
+ definitions=main-2104010097
+X-Proofpoint-GUID: lwzVbBSNsusYUcK1odCVGCUw-mL-2FAv
+X-Proofpoint-ORIG-GUID: lwzVbBSNsusYUcK1odCVGCUw-mL-2FAv
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9941 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
+ bulkscore=0 priorityscore=1501 suspectscore=0 mlxscore=0 spamscore=0
+ clxscore=1015 mlxlogscore=999 malwarescore=0 adultscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
+ definitions=main-2104010097
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/27/21 22:01, Thomas Gleixner wrote:
-> And while you carefully reworded the comment, did you actually read what
-> it said and what is says now?
+On Thu, Apr 01, 2021 at 08:25:11AM -0300, Jason Gunthorpe wrote:
+> On Thu, Apr 01, 2021 at 12:00:39PM +0300, Dan Carpenter wrote:
+> > Hi Keith,
+> > 
+> > I've been trying to figure out ways Smatch can check for device managed
+> > resources.  Like adding rules that if we call dev_set_name(&foo->bar)
+> > then it's device managaged and if there is a kfree(foo) without calling
+> > device_put(&foo->bar) then that's a resource leak.
 > 
-> > -		 * cpu_down() which takes cpu maps lock. cpu maps lock
-> > -		 * needs to be held as this might race against in kernel
-> > -		 * abusers of the hotplug machinery (thermal management).
+> It seems to be working from what I can see
+
+This check is actually more simple, and older.  It just looks for
+
+	device_register(dev);
+	...
+	kfree(dev);
+
+I've written your proposed check of:
+
+	device_register(&foo->dev);
+	...
+	kfree(foo); // warning missing device_put(&foo->dev);
+
+But I just did that earler today and it will probably take a couple
+iterations to work out the kinks.  Plus I'm off for a small vacation so
+it will be a week before I have the results from that.
+
 > 
-> vs.
+> Also I wasn't able to convince myself that any locking around
+> node->cache_attrs exist..
 > 
-> > +	 * cpu_down() which takes cpu maps lock. cpu maps lock
-> > +	 * needed to be held as this might race against in-kernel
-> > +	 * abusers of the hotplug machinery (thermal management).
+> > Of course one of the rules is that if you call device_register(dev) then
+> > you can't kfree(dev), it has to released with device_put(dev) and that's
+> > true even if the register fails.  But this code here feels very
+> > intentional so maybe there is an exception to the rule?
 > 
-> The big fat hint is: "cpu maps lock needs to be held as this ...." and
-> it still needs to be held for the above loop to work correctly at
-> all. See also below.
+> There is no exception. Open coding this:
 > 
-> So just moving comments blindly around and making them past tense is not
-> cutting it. Quite the contrary the comments make no sense anymore. They
-> became uncomprehensible word salad.
+> >    282  free_name:
+> >    283          kfree_const(dev->kobj.name);
 > 
-> Now for the second part of that comment:
+> To avoid leaking memory from dev_set_name is a straight up layering
+> violation, WTF?
 > 
-> > +      *                                          ....  This is
-> > +	 * called under the sysfs hotplug lock, so it is properly
-> > +	 * serialized against the regular offline usage.
+> node_cacheinfo_release() is just kfree(), so there is no need.
+> Instead (please feel free to send this Dan):
+
+Sure, I can send this (tomorrow).
+
 > 
-> So there are two layers of protection:
-> 
->    cpu_maps_lock and sysfs hotplug lock
-> 
-> One protects surprisingly against concurrent sysfs writes and the other
-> is required to serialize in kernel usage.
-> 
-> Now lets look at the original protection:
-> 
->    lock(sysfs)
->      lock(cpu_maps)
->        hotplug
->         dev->offline = new_state
->         uevent()
->      unlock(cpu_maps)
->    unlock(sysfs)
-> 
-> and the one you created:
-> 
->    lock(sysfs)
->      lock(cpu_maps)
->        hotplug
->      unlock(cpu_maps)
->      dev->offline = new_state
->      uevent()
->    unlock(sysfs)
-> 
-> Where is that protection scope change mentioned in the change log and
-> where is the analysis that it is correct?
+> diff --git a/drivers/base/node.c b/drivers/base/node.c
+> index f449dbb2c74666..89c28952863977 100644
+> --- a/drivers/base/node.c
+> +++ b/drivers/base/node.c
+> @@ -319,25 +319,24 @@ void node_add_cache(unsigned int nid, struct node_cache_attrs *cache_attrs)
+>  		return;
+>  
+>  	dev = &info->dev;
+> +	device_initialize(dev)
+>  	dev->parent = node->cache_dev;
+>  	dev->release = node_cacheinfo_release;
+>  	dev->groups = cache_groups;
+>  	if (dev_set_name(dev, "index%d", cache_attrs->level))
 
-The comment do still need updating though. Its reference to thermal management
-is cryptic. I couldn't see who performs hotplug operations in thermal code.
+Is calling dev_set_name() without doing a device_initialize() a bug?  I
+could write a check for that.
 
-I also think generally that comment is no longer valid after the refactor I did
-to 'prevent' in-kernel users from calling cpu_up/down() directly and force them
-all to go via device_offline/online() which is wrapped via the add/remove_cpu()
+regards,
+dan carpenter
 
-	33c3736ec888 cpu/hotplug: Hide cpu_up/down()
-
-So I think except for suspend/resume/hibernate/kexec, all in-kernel users
-should be serialized by lock(hotplug) now. Since uevents() don't matter for
-suspend/resume/hiberante/kexec I think moving it outside of lock(cpu_maps) is
-fine.
-
-So IIUC in the past we had the race
-
-	userspace			in-kernel users
-
-	lock(hotplug)
-	cpuhp_smt_disable()
-	   lock(cpu_maps)		cpu_down()
-					  lock(cpu_maps)
-
-So they were serialized by cpu_maps lock. But that should not happen now since
-in-kernel (except for the aforementioned) users should use remove_cpu().
-
-	userspace			in-kernel users
-
-	lock(hotplug)
-	cpuhp_smt_disable()
-	   lock(cpu_maps)		remove_cpu()
-					  lock(hotplug)
-					  device_offline()
-					    cpu_down()
-					      lock(cpu_maps)
-
-Which forces the serialization at lock(hotplug), which is what
-lock_device_hotplug_sysfs() is actually tries to hold.
-
-So I think that race condition should not happen now. Or did I miss something?
-
-The only loophole is that cpu_device_up() could be abused if not caught by
-reviewers. I didn't find a way to warn/error if someone other than
-cpu_subsys_online() uses it. We rely on a comment explaining it..
-
-I think cpuhp_smt_disable/enable can safely call device_offline/online now.
-Although it might still be more efficient to hold lock(cpu_maps) once than
-repeatedly in a loop.
-
-If we do that, then cpu_up_down_serialize_trainwrech() can be called from
-cpu_device_up/down() which implies !task_frozen.
-
-Can't remember now if Alexey moved the uevent() handling out of the loop for
-efficiency reasons or was seeing something else. I doubt it was the latter.
-
-
-Thanks
-
---
-Qais Yousef
