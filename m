@@ -2,161 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C374350C35
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 04:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B4FA350C5A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 04:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233020AbhDACDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 22:03:38 -0400
-Received: from mail-dm3nam07on2062.outbound.protection.outlook.com ([40.107.95.62]:6177
-        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230284AbhDACDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 22:03:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LOGgy0xJ0lIfenesxhPCOaV+qG/1OH4neiGDDpryW+uEkKEZa386dvVzuX5ryWYtAguYB7sP7jwvo3DEOtsF8oZS+i3xcKB/U009bqTfPXPh/61DhrtSJNnsm8YVWF3+dfKKuYHdHZN+JJagqAONCGhPOkSmVUKBkHsKgYLjnPKhVOjoz1oaukJFuvSVYI2nShbhqyIgxoD8QPb7z0kZxMEVyk3Bku7qF+Vt84BT2C/HN8vSgR+gtfrvk7L10jc1OtJBjDpmeOg2UC8E/E1rfIM0rtJ9ilaNJyjSWDK3Vh13Ij/vl1lxAeRFE4rcHu+VtPBZrijIUgwRpXgAWAUY3w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C3WR43gUNB69e4lV+OmbnzDB7K/Z8/D6Vl267eWYBp4=;
- b=dCtLbzQTvDFEw+NvbZoJxf1I9FLcDo7Bcx61VciQAWstVmiXQMPdpfn2lOhftXfddnanO6y/0eS6bM/ba/T3DHwMj8q81NjiF1Jb6E7llNcBMWYS9fp84oL82klLsSXEpTVkAW+v8zjd0EK1Glyerw8HmxIeXezEuZJtYOz6flmV84VrVYO1COqOLtDXKsuS8XJzG7tD8CPL0XdpHzSOj2k0c/yh/fFHoZZTrJH41J+DF7ncvvAPMwAImAInXUf3kDP/Th/QSTYoGUoRDXK/f7k0g/kvn8e1iI4w60cIm+XSpbPx5WQCmTUBPK4Z4WbCKZqlQKXuc/zqLVCxHcRsAQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S233288AbhDACIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 22:08:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233015AbhDACHy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 22:07:54 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACDEEC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 19:07:53 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id g8so449178lfv.12
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 19:07:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C3WR43gUNB69e4lV+OmbnzDB7K/Z8/D6Vl267eWYBp4=;
- b=iP1i8b21za0i4KYxFpuMbzps2uclOtr5wezqZFHkS8iAlfWmulXC3jQYaQ5b6vW/3rthDlDt0bVm15xE04BN/m8qkiT837nipMlMqaIEwv/A2CBtgZ43wVj0eW+fOMpb6OPSC4rpeZDEUuHXgwOUqAdhIPt+cQqjcGZ1gBOI8eo=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from CY4PR11MB0071.namprd11.prod.outlook.com (2603:10b6:910:7a::30)
- by CY4PR11MB1718.namprd11.prod.outlook.com (2603:10b6:903:2c::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28; Thu, 1 Apr
- 2021 02:03:07 +0000
-Received: from CY4PR11MB0071.namprd11.prod.outlook.com
- ([fe80::d4fe:8135:d8fa:81c0]) by CY4PR11MB0071.namprd11.prod.outlook.com
- ([fe80::d4fe:8135:d8fa:81c0%5]) with mapi id 15.20.3977.033; Thu, 1 Apr 2021
- 02:03:07 +0000
-Subject: Re: [V2] [PATCH] clk: zynqmp: pll: add set_pll_mode to check
- condition in zynqmp_pll_enable
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Michal Simek <michal.simek@xilinx.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        Jolly Shah <jolly.shah@xilinx.com>, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210330121701.3258948-1-quanyang.wang@windriver.com>
- <161724174987.2260335.3629133210221429059@swboyd.mtv.corp.google.com>
-From:   "quanyang.wang" <quanyang.wang@windriver.com>
-Message-ID: <deac32ec-a80b-bca7-2573-4c80fe2bca72@windriver.com>
-Date:   Thu, 1 Apr 2021 10:02:02 +0800
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tSWB6tAtYfqgy88WCLhQW25yPDif2mP7BXO1UanisQo=;
+        b=aj/IQxrYkHRQTun5ka3gkXEnhf0iKxGwKNdh5fd3psjWzkorNJsjLGjaIjQIV3ewKn
+         lAj8ZU7BWh3FqA8ewlstETO0j6FJXqH6Ef0yz1IzUkJVYwXKMIH2qaezEu/wwu5jt8Dc
+         7WCYBjww8qtktcxpv3qpUQnu8CJaxFtRYb+gzmCdE8bnIR9O7huEgjW8X8Xo54jjkSV4
+         MAFF/zKAp9Yhip+pibGzR99CMSMmfjWGQjhOx4RxEELmCQqHDIuG5zt2w/NNtCVBZESB
+         atZ8qJyNtexpQof8QmeGS4dacDS4uRo+S/x8l7Ymmp/hR1e9/Yt5omL3MXhgP7f9T5rK
+         NeaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tSWB6tAtYfqgy88WCLhQW25yPDif2mP7BXO1UanisQo=;
+        b=HSEDPuTLzi/uYcPWdY8dfigKhJNg7Q31o9JfPSiz8FMuh27ekTlGmvTgbVoxseIYvS
+         Gde9plGrNA/ePLwRWBF93p06f2pKCzAAoPOWOqBj84x2TV4bC21CAWI/faDDLxsvM0fD
+         kOaEcgWKgasGf/wRvc5i0MDjsEcXlTcRYCqzr1slJuIoBOtmLUKvQC4uiQ0FGdSkuDGZ
+         gm4iKh/wSmraUo47fQGZECuYaGWB2fUx9P7AYc+vyB2LPgBXQEy+u2FwjtEJvOzoGsrG
+         XTPCNOZELGLtGRAo1qxLA2dyFNR4hYDJ53ssZHSytfNRmmaj4/YRb/dvxd//0CHWXYvJ
+         BOTA==
+X-Gm-Message-State: AOAM533RUqcv7gxdTxPOFgWcLyGhE75eaHbCrZkPUsQ81FV+da6VgACT
+        oQv13IeOKiX/itrYj5odRncGnRbHPI01mg==
+X-Google-Smtp-Source: ABdhPJz5E9eGnZNL3mgtCGPnpEuPLyUIxWwdt306tTEkD9FAarcX1t9YW/pQGOHuNgi+UNXx76nfqw==
+X-Received: by 2002:a19:ae11:: with SMTP id f17mr4149867lfc.532.1617242872222;
+        Wed, 31 Mar 2021 19:07:52 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id j27sm386834lfp.186.2021.03.31.19.07.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Mar 2021 19:07:51 -0700 (PDT)
+Subject: Re: [v1] drm/msm/disp/dpu1: fix warn stack reported during dpu resume
+To:     Rob Clark <robdclark@gmail.com>,
+        Kalyan Thota <kalyan_t@codeaurora.org>
+Cc:     y@qualcomm.com, dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Krishna Manikandan <mkrishn@codeaurora.org>,
+        Daniel Hung-yu Wu <hywu@google.com>, mka@google.com,
+        Michelle Dean <midean@google.com>,
+        Steev Klimaszewski <steev@kali.org>
+References: <1617190020-7931-1-git-send-email-kalyan_t@codeaurora.org>
+ <84fdbdc7-7890-965a-bc6b-a19bd0ca4937@linaro.org>
+ <CAF6AEGt_aAq4dF9QkS9uJ7vwvGeR42oToCQKpsWCrfuhy_j+pw@mail.gmail.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <d104a40f-65c3-2700-e829-bfe8f5712ac5@linaro.org>
+Date:   Thu, 1 Apr 2021 05:07:50 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-In-Reply-To: <161724174987.2260335.3629133210221429059@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: SJ0PR13CA0015.namprd13.prod.outlook.com
- (2603:10b6:a03:2c0::20) To CY4PR11MB0071.namprd11.prod.outlook.com
- (2603:10b6:910:7a::30)
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [128.224.162.199] (60.247.85.82) by SJ0PR13CA0015.namprd13.prod.outlook.com (2603:10b6:a03:2c0::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.8 via Frontend Transport; Thu, 1 Apr 2021 02:03:04 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c5b52f76-1fb7-487d-a8af-08d8f4b24b0b
-X-MS-TrafficTypeDiagnostic: CY4PR11MB1718:
-X-Microsoft-Antispam-PRVS: <CY4PR11MB171833814D1ADABD61136833F07B9@CY4PR11MB1718.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EshzPiRedVpufcaGcr3buTEVUX39kQQx4rKvuOMIGwKIBPCrO6pHn4IUmmiV3UfIWXuNqWRFXOMza4vQdPHv5I01Iuo726brEvgcGVtQ6tBufX2EbpfFW/9w1Y+vNfXWPVTEd9swgpB0BJfimo3v465Z0tFBO7frQjEpQ+gFoK050oCDzlc6pNlSkl5Gbdhwrm/LtO4J2GLosRYCPJ6zd3t84kkC9Er8ZOCX66G7NDzaV0rxPpdQUVq3HSWm9l1tbGdUlhGzZDspljg6TFOnG7ogdMJNZKQaYm3aF2x9Og0xTRp9G/GH7OrepLvzQGJOmTBHzmY1waoZyeJj6lirMC9gGmOlGrR10/I3kILpWdUqLg2WwA5XK0E5B9e9VRD7DjcKrPxKSuuTbrmbsu3ZUbnYSkeKUgRtWuKMPDwibamT0/ybth+v9M8tjposTjfxf/TpzuvHLoChpPrEdDaLRbMsAvWfFT+f42NjHeZkppy1lIOYRNNln4CFxp4E4uAlQzDBcsUK1sSu+CdzNU6soFs8SPg1q49FQT3P1HbLON96AKs1YIbHM1/Cu/NBOiVsyMrkff2qwnMVVVh30oiSJtufxKOt5B9Rr8xS1rZyGpYsY+KgmvU0CvsYKKf1F3FRX3wjxGudiyaGyNtALsv+iMTX6Gh4BAaMEyjgMSA+RDYYFIeZOtv0NUT0VekaK7DwhDqBIlR1U85muf3vwnYCNyWoCc4mve2/jxxk/iy5eJu6n8b1u/gGTYf4YEZLXQ2m
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB0071.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(396003)(136003)(366004)(376002)(346002)(6706004)(66946007)(31696002)(66556008)(66476007)(2616005)(38100700001)(53546011)(478600001)(6486002)(956004)(36756003)(31686004)(52116002)(2906002)(16576012)(316002)(16526019)(8676002)(7416002)(186003)(110136005)(54906003)(4326008)(8936002)(86362001)(26005)(83380400001)(5660300002)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?bU9mUDdrQ2NNZzM2Tis4ZnA1ZEUrNFU5N3pieWN4T05FK1A4MFpNYUJSSGY2?=
- =?utf-8?B?YTA1Zjk3L1Y4ZnpYeXQ2U282M0srWHltUWZiV2dUcm9tQWpXTkNSbGZaUUVl?=
- =?utf-8?B?cldPTHVXQVg4OStSTVFCMXNPRTFqejhoMUhWOGxOYkpKNTFyTjFmZWxsd2RT?=
- =?utf-8?B?V1c4MGZ1VEVJaitWcVNqclpoekJBcm9ReVZvTFdJRTFnZXRuOEpJdlVRelBq?=
- =?utf-8?B?aGlRTlB4NU1qYnRwUE9oMWxQZWMxQWF3S2s0emliNzA5a1pxb3ZzbEtobFhV?=
- =?utf-8?B?Unl2K1BIMUNIQjRDMmgrSUltdXhuNmtLcHo0eVJDRXlnVlRINnIxc1JGUjdX?=
- =?utf-8?B?dVgyWnVOZVhCbGRrOXR4cmtLbm5IQXlRMUZYcUlJaCtudVFxbWVaSFVob0lu?=
- =?utf-8?B?YTh0WlBHczl6RXQreEdEeGNEU0RDYXBRazBuUFNISnZUaHRHNGc0OXpxQ3B0?=
- =?utf-8?B?Z1lzRGUyTEVnRTNvVWhaeXlONnVlMWdCbWtwaFdCeGZyMHNJK3Z2ZmZVQ3Fo?=
- =?utf-8?B?V1d5OFRSMnhqYUFqVGFFVjNhV1J3NWhpd2FSRWEyOTFoeWczd0xHMzBDU0pB?=
- =?utf-8?B?VWt5OS9obnMzaGRWeUl0dkdaVGlzZGZYN0UwN1A3dHdOWjR1aWtoM05qdTdC?=
- =?utf-8?B?Q2N1SmdWZlo4QnRhcEt2bTVaTXRPRE1yNHI0ZUJYbzB2OUNXSVNneUNVbVFt?=
- =?utf-8?B?dVE4djlLNFBabHI4K1JMQzBRZWdOOVBzUTU3VzlZYTZaOGNONGU0ejU3N1J4?=
- =?utf-8?B?SzdKcVhMTmJBR3BkNXRWWlBHT05udGhKamh0MmhJZVRidUNOVHBHQ3Z0Q0ZQ?=
- =?utf-8?B?eEVORmZxRTBqNmRjUmJkVUhVbkk0eEhQK1JrUkx6YU5reHYvT05wVVVTNENY?=
- =?utf-8?B?aFpFeVBacnRyYVkxL2VlbXN1R2dMdTJ4Vkx6bWh0SWQwTll6aEpjSGhNWUlF?=
- =?utf-8?B?YjBja2FJWmRoYUZSOUNEOXdZejU2MVMyZEN3VFV2bHV4amk3a3lFNC9NUzJx?=
- =?utf-8?B?aW11aDhUNEZMSDU1VXpkaytlUS9SdGhtZmp1SG9RUEkvdytPUm1pTG5WbFNq?=
- =?utf-8?B?Q1FDS0NnZ1BuUzdRS2wwRGxyQ0NNcG5Mb1BqT296NGpNYzFFMEZwY0RFbGlJ?=
- =?utf-8?B?SnBDRFJrM1VTbnlkbWdkd3NwVlhaZkxucmt2b1dFbmIzSGRGTkVnaFFhQkg1?=
- =?utf-8?B?d3RtZzB5WkNENStCM0JSNlRUZEhiYWEvdjg2eVVRRGtwK3BNZURNZU5KUEk2?=
- =?utf-8?B?U2RWRGkzT2NHcHpFZ1NXZzZxMzRxVjhWckZmOXAvTlBCSmtubVdkWml1TXo1?=
- =?utf-8?B?VzlIdnJPRWtTTHFGcUpaMFV6NDRzbWVnLzZGeVRLNkNFY3FTck1xQVFqOUIy?=
- =?utf-8?B?Sk83dERjVHZEVElIVEU2cGpPNVVvQk9CUmVkQUZWNFYxQVNJOVdqUmpVVTJz?=
- =?utf-8?B?Mkgzb3JReTVhVGp1RjNHTTIvQmpSMFhBWkg0dUp3R1dWd0ZSRUY1YWdWeXhl?=
- =?utf-8?B?NWxUbytSVnFNM3l1MnNGZm9ZZEFNdTU5UGpGeFV0NFlVbWZWY0QzdEcrVk0y?=
- =?utf-8?B?YktiKyttb1N5K2Y5MGgvSi9YNUdrREo0bGdpdkJCK2FUaWZsU0N4SVI3TUpC?=
- =?utf-8?B?UmhEZG9rcUdxZXZ1UUFFRzBlald2RUEvNGV3SUM4SUpPM1J5SzhMOGVnc0J4?=
- =?utf-8?B?ci8wUWVWampQOCtCUjhXbUdUd2FQallmNnQrTHVtenZCVy9HZEt2OFl2VS9y?=
- =?utf-8?Q?RCl3aLQWvJNmJBzSNsjsVc1KcGW2BNMTmFpmlc5?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c5b52f76-1fb7-487d-a8af-08d8f4b24b0b
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB0071.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2021 02:03:07.5385
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8AlNb+GO4OeiWjSQnn9rbeh+qnwwJkJ9NyC4JEjUa8v28nvW1SS3JT8LBZBScfbG7VvGU5lEsWezc+DvoZ+7gco0UINLj+YMk1y2rGCGulk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB1718
+In-Reply-To: <CAF6AEGt_aAq4dF9QkS9uJ7vwvGeR42oToCQKpsWCrfuhy_j+pw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
-
-On 4/1/21 9:49 AM, Stephen Boyd wrote:
-> Quoting quanyang.wang@windriver.com (2021-03-30 05:17:01)
->> From: Quanyang Wang <quanyang.wang@windriver.com>
+On 01/04/2021 01:47, Rob Clark wrote:
+> On Wed, Mar 31, 2021 at 9:03 AM Dmitry Baryshkov
+> <dmitry.baryshkov@linaro.org> wrote:
 >>
->> If there is a IOCTL_SET_PLL_FRAC_MODE request sent to ATF ever,
->> we shouldn't skip invoking PM_CLOCK_ENABLE fn even though this
->> pll has been enabled. In ATF implementation, it will only assign
->> the mode to the variable (struct pm_pll *)pll->mode when handling
->> IOCTL_SET_PLL_FRAC_MODE call. Invoking PM_CLOCK_ENABLE can force
->> ATF send request to PWU to set the pll mode to PLL's register.
+>> On 31/03/2021 14:27, Kalyan Thota wrote:
+>>> WARN_ON was introduced by the below commit to catch runtime resumes
+>>> that are getting triggered before icc path was set.
+>>>
+>>> "drm/msm/disp/dpu1: icc path needs to be set before dpu runtime resume"
+>>>
+>>> For the targets where the bw scaling is not enabled, this WARN_ON is
+>>> a false alarm. Fix the WARN condition appropriately.
 >>
->> There is a scenario that happens in enabling VPLL_INT(clk_id:96):
->> 1) VPLL_INT has been enabled during booting.
->> 2) A driver calls clk_set_rate and according to the rate, the VPLL_INT
->>     should be set to FRAC mode. Then zynqmp_pll_set_mode is called
->>     to pass IOCTL_SET_PLL_FRAC_MODE to ATF. Note that at this point
->>     ATF just stores the mode to a variable.
->> 3) This driver calls clk_prepare_enable and zynqmp_pll_enable is
->>     called to try to enable VPLL_INT pll. Because of 1), the function
->>     zynqmp_pll_enable just returns without doing anything after checking
->>     that this pll has been enabled.
+>> Should we change all DPU targets to use bw scaling to the mdp from the
+>> mdss nodes? The limitation to sc7180 looks artificial.
+> 
+> yes, we should, this keeps biting us on 845
+
+Done, 
+https://lore.kernel.org/linux-arm-msm/20210401020533.3956787-2-dmitry.baryshkov@linaro.org/
+
+> 
+>>>
+>>> Reported-by: Steev Klimaszewski <steev@kali.org>
+> 
+> Please add Fixes: tag as well
+> 
+>>> Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+>>> ---
+>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c  |  8 +++++---
+>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h  |  9 +++++++++
+>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c | 11 ++++++-----
+>>>    3 files changed, 20 insertions(+), 8 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+>>> index cab387f..0071a4d 100644
+>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+>>> @@ -294,6 +294,9 @@ static int dpu_kms_parse_data_bus_icc_path(struct dpu_kms *dpu_kms)
+>>>        struct icc_path *path1;
+>>>        struct drm_device *dev = dpu_kms->dev;
+>>>
+>>> +     if (!dpu_supports_bw_scaling(dev))
+>>> +             return 0;
+>>> +
+>>>        path0 = of_icc_get(dev->dev, "mdp0-mem");
+>>>        path1 = of_icc_get(dev->dev, "mdp1-mem");
+>>>
+>>> @@ -934,8 +937,7 @@ static int dpu_kms_hw_init(struct msm_kms *kms)
+>>>                DPU_DEBUG("REG_DMA is not defined");
+>>>        }
+>>>
+>>> -     if (of_device_is_compatible(dev->dev->of_node, "qcom,sc7180-mdss"))
+>>> -             dpu_kms_parse_data_bus_icc_path(dpu_kms);
+>>> +     dpu_kms_parse_data_bus_icc_path(dpu_kms);
+>>>
+>>>        pm_runtime_get_sync(&dpu_kms->pdev->dev);
+>>>
+>>> @@ -1198,7 +1200,7 @@ static int __maybe_unused dpu_runtime_resume(struct device *dev)
+>>>
+>>>        ddev = dpu_kms->dev;
+>>>
+>>> -     WARN_ON(!(dpu_kms->num_paths));
+>>> +     WARN_ON((dpu_supports_bw_scaling(ddev) && !dpu_kms->num_paths));
+>>>        /* Min vote of BW is required before turning on AXI clk */
+>>>        for (i = 0; i < dpu_kms->num_paths; i++)
+>>>                icc_set_bw(dpu_kms->path[i], 0, Bps_to_icc(MIN_IB_BW));
+>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
+>>> index d6717d6..f7bcc0a 100644
+>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
+>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
+>>> @@ -154,6 +154,15 @@ struct vsync_info {
+>>>
+>>>    #define to_dpu_global_state(x) container_of(x, struct dpu_global_state, base)
+>>>
+>>> +/**
+>>> + * dpu_supports_bw_scaling: returns true for drivers that support bw scaling.
+>>> + * @dev: Pointer to drm_device structure
+>>> + */
+>>> +static inline int dpu_supports_bw_scaling(struct drm_device *dev)
+>>> +{
+>>> +     return of_device_is_compatible(dev->dev->of_node, "qcom,sc7180-mdss");
+>>> +}
+>>> +
+>>>    /* Global private object state for tracking resources that are shared across
+>>>     * multiple kms objects (planes/crtcs/etc).
+>>>     */
+>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
+>>> index cd40788..8cd712c 100644
+>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
+>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
+>>> @@ -41,6 +41,9 @@ static int dpu_mdss_parse_data_bus_icc_path(struct drm_device *dev,
+>>>        struct icc_path *path0 = of_icc_get(dev->dev, "mdp0-mem");
+>>>        struct icc_path *path1 = of_icc_get(dev->dev, "mdp1-mem");
+>>>
+>>> +     if (dpu_supports_bw_scaling(dev))
+>>> +             return 0;
+>>> +
+>>>        if (IS_ERR_OR_NULL(path0))
+>>>                return PTR_ERR_OR_ZERO(path0);
+>>>
+>>> @@ -276,11 +279,9 @@ int dpu_mdss_init(struct drm_device *dev)
+>>>
+>>>        DRM_DEBUG("mapped mdss address space @%pK\n", dpu_mdss->mmio);
+>>>
+>>> -     if (!of_device_is_compatible(dev->dev->of_node, "qcom,sc7180-mdss")) {
+>>> -             ret = dpu_mdss_parse_data_bus_icc_path(dev, dpu_mdss);
+>>> -             if (ret)
+>>> -                     return ret;
+>>> -     }
+>>> +     ret = dpu_mdss_parse_data_bus_icc_path(dev, dpu_mdss);
+>>> +     if (ret)
+>>> +             return ret;
+>>>
+>>>        mp = &dpu_mdss->mp;
+>>>        ret = msm_dss_parse_clock(pdev, mp);
+>>>
 >>
->> In the scenario above, the pll mode of VPLL_INT will never be set
->> successfully. So adding set_pll_mode to check condition to fix it.
 >>
->> Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
->> Tested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
->> ---
-> Any Fixes tag?
+>> --
+>> With best wishes
+>> Dmitry
 
-Will add it at V3 patch.
 
-Thanks,
-
-Quanyang
-
+-- 
+With best wishes
+Dmitry
