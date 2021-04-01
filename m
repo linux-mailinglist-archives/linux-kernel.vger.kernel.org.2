@@ -2,79 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F62D3513FB
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF543513FC
 	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 12:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234082AbhDAKzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 06:55:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44745 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234062AbhDAKyS (ORCPT
+        id S234119AbhDAKzd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 1 Apr 2021 06:55:33 -0400
+Received: from lithops.sigma-star.at ([195.201.40.130]:60844 "EHLO
+        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234057AbhDAKy5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 06:54:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617274420;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AeIuul5ZcJWK6eSi1peQ3Q3v2fRek8mT72TwlcJLzZg=;
-        b=Lzcd2AeKwcPSJj8NaoIQD3UMXlomRjbiGtw/iQEt5iVFfvqk3d6znMcdOLJCIAQyYdTV+U
-        +c/gbTLzGu53XCPMSvKKf/9jMvJKeVJYtQMI2PUDu/+7+LbpmWq5co6TVfsEfHIAxgnVDT
-        lsb/L9V4IHjGEUtg7IBF12z41eEaUhE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-356-JYIJMMwvPASGaTacegJYRw-1; Thu, 01 Apr 2021 06:53:38 -0400
-X-MC-Unique: JYIJMMwvPASGaTacegJYRw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 13AE483DD34;
-        Thu,  1 Apr 2021 10:53:37 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.195.76])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 9297117B15;
-        Thu,  1 Apr 2021 10:53:31 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Thu,  1 Apr 2021 12:53:36 +0200 (CEST)
-Date:   Thu, 1 Apr 2021 12:53:26 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        syzbot <syzbot+b804f902bbb6bcf290cb@syzkaller.appspotmail.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] possible deadlock in register_for_each_vma
-Message-ID: <20210401105305.GA18680@redhat.com>
-References: <00000000000030aca605be6e0102@google.com>
- <20210327042150.7460-1-hdanton@sina.com>
- <20210328025217.7312-1-hdanton@sina.com>
- <20210401092907.1098-1-hdanton@sina.com>
+        Thu, 1 Apr 2021 06:54:57 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id E55D960FB28C;
+        Thu,  1 Apr 2021 12:53:38 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id kHf6bXNSWmLt; Thu,  1 Apr 2021 12:53:38 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 76B666071A7C;
+        Thu,  1 Apr 2021 12:53:38 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Q_FICC5ApzVQ; Thu,  1 Apr 2021 12:53:38 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 3928660FB28C;
+        Thu,  1 Apr 2021 12:53:38 +0200 (CEST)
+Date:   Thu, 1 Apr 2021 12:53:38 +0200 (CEST)
+From:   Richard Weinberger <richard@nod.at>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        horia geanta <horia.geanta@nxp.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        aymen sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        davem <davem@davemloft.net>,
+        James Bottomley <jejb@linux.ibm.com>,
+        kernel <kernel@pengutronix.de>,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        david <david@sigma-star.at>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        "open list, ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        LSM <linux-security-module@vger.kernel.org>
+Message-ID: <717795270.139671.1617274418087.JavaMail.zimbra@nod.at>
+In-Reply-To: <27d7d3fa-5df8-1880-df21-200de31cc629@pengutronix.de>
+References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de> <CAFLxGvzWLje+_HFeb+hKNch4U1f5uypVUOuP=QrEPn_JNM+scg@mail.gmail.com> <ca2a7c17-3ed0-e52f-2e2f-c0f8bbe10323@pengutronix.de> <CAFLxGvyj1aZ_3MuxJC6onejchV_6A8WbNR1vTLpSBF5QTxvLyQ@mail.gmail.com> <897df7dd-83a1-3e3e-1d9f-5a1adfd5b2fb@pengutronix.de> <1263763932.139584.1617272457698.JavaMail.zimbra@nod.at> <27d7d3fa-5df8-1880-df21-200de31cc629@pengutronix.de>
+Subject: Re: [PATCH v1 0/3] KEYS: trusted: Introduce support for NXP
+ CAAM-based trusted keys
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401092907.1098-1-hdanton@sina.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
+Thread-Topic: KEYS: trusted: Introduce support for NXP CAAM-based trusted keys
+Thread-Index: DfD/q4ZvfJZf2mMkmIDHHYWuBGwS1g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/01, Hillf Danton wrote:
->
-> If I dont misread it,  the lockdep chain will likely evolve from
->
->    event_mutex -> uprobe.register_rwsem -> dup_mmap_sem -> mm.mmap_lock ->
->    event_mutex
-> to
->    dup_mmap_sem -> mm.mmap_lock -> dup_mmap_sem
->
-> after this patch as both uprobe_register() and uprobe_unregister() would take
-> dup_mmap_sem.
+Ahmad,
 
-Hmm, please correct me, but I don't think so. I think mmap_lock -> dup_mmap_sem
-is not possible.
+----- Ursprüngliche Mail -----
+> Do you mean systemd-cryptsetup? It looks to me like it's just a way to supply
+> the keyphrase. With trusted keys and a keyphrase unknown to userspace, this
+> won't work.
 
-Oleg.
+Nah, I meant existing scripts/service Files.
 
+> I don't (yet) see the utility of it without LUKS. Perhaps a command dump on how
+> to do the same I did with dmsetup, but with cryptsetup plain instead could
+> help me to see the benefits?
+
+My reasoning is simple, why do I need a different tool when there is already one
+that could do the task too?
+Usually the systems I get my hands on use already dm-crypt with cryptsetup in some way.
+So I have the tooling already in my initramfs, etc.. and need to adopt the callers of cryptsetup a little.
+
+If I need all of a sudden different/additional tooling, it means more work, more docs to write,
+more hassle with crypto/system reviewers, etc...
+
+I don't want you to force to use cryptsetup.
+The only goal was pointing out that it can be done with cryptsetup and that there
+is already code such that no work is done twice.
+One the kernel side it does not matter.
+
+Thanks,
+//richard
