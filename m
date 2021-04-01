@@ -2,83 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9038351431
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 13:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36CE5351439
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 13:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234195AbhDALFz convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 1 Apr 2021 07:05:55 -0400
-Received: from lithops.sigma-star.at ([195.201.40.130]:32846 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234041AbhDALFh (ORCPT
+        id S234138AbhDALIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 07:08:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233850AbhDALHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 07:05:37 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 3B499606BA22;
-        Thu,  1 Apr 2021 13:05:35 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id E9eRLkGUOegD; Thu,  1 Apr 2021 13:05:34 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id BA9F4606BA25;
-        Thu,  1 Apr 2021 13:05:34 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id EHEmUm6zRXLO; Thu,  1 Apr 2021 13:05:34 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 80607606BA22;
-        Thu,  1 Apr 2021 13:05:34 +0200 (CEST)
-Date:   Thu, 1 Apr 2021 13:05:34 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        horia geanta <horia.geanta@nxp.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        aymen sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        davem <davem@davemloft.net>,
-        James Bottomley <jejb@linux.ibm.com>,
-        kernel <kernel@pengutronix.de>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        david <david@sigma-star.at>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        "open list, ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        LSM <linux-security-module@vger.kernel.org>
-Message-ID: <1713376107.139705.1617275134320.JavaMail.zimbra@nod.at>
-In-Reply-To: <c72f93be-04e8-bb52-7252-4b4131648100@pengutronix.de>
-References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de> <ca2a7c17-3ed0-e52f-2e2f-c0f8bbe10323@pengutronix.de> <CAFLxGvyj1aZ_3MuxJC6onejchV_6A8WbNR1vTLpSBF5QTxvLyQ@mail.gmail.com> <897df7dd-83a1-3e3e-1d9f-5a1adfd5b2fb@pengutronix.de> <1263763932.139584.1617272457698.JavaMail.zimbra@nod.at> <27d7d3fa-5df8-1880-df21-200de31cc629@pengutronix.de> <717795270.139671.1617274418087.JavaMail.zimbra@nod.at> <c72f93be-04e8-bb52-7252-4b4131648100@pengutronix.de>
-Subject: Re: [PATCH v1 0/3] KEYS: trusted: Introduce support for NXP
- CAAM-based trusted keys
+        Thu, 1 Apr 2021 07:07:32 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A19DC06178A
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 04:07:31 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id by2so763180qvb.11
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 04:07:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5hr4EJfC6Dy4LxB2ks0ND142hkf8rNwvgR5bFJx1My8=;
+        b=IwfvFudKaG7ulKrhClM3/mRjUThVsffOd8fFnuhBPUkS35EDofF6DoNmO2uJl0ZJe5
+         w9rFM1Svm6WR0jHPftrVEjfPU1eMR2oS0EwmA/dpM000mgQHQyWSWOa00XbSoRkoTy9a
+         AmV8tA/1UITRcKRQzP+3RAU311ay+sDi2dTLI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5hr4EJfC6Dy4LxB2ks0ND142hkf8rNwvgR5bFJx1My8=;
+        b=SuykDWi5tvmt8PB/UrCDGZZ/4IXeM9yKyRIC4GnT2B2eWvWwmGCzcVtWAndNXRBmHj
+         FOKbeN8gL4CqG1uek1eMyNhD9w7hyfnXEWJ2S/5QOCYi8yvRNBhvyPY4E4paIdL4Snze
+         zQ6WSNVPKOyYO1SUmiEvFXRJ5OCGP2EL4HT9wH/h/TAR+Mcrkb39kTxl2GSLog/Ai54R
+         ddXHe/oVOH6xUq1pZYF3vddJZ5+Tkbgj7xxQ/v79KTHWJn0kg4RdU0gGcUGSYJf3Zg/b
+         TpIIhuoivdV9WGa8Co1heTg1EdMQimPIY0BFJcJCrAzATK7bg0apfWrPEryeNShX2Udb
+         RtIw==
+X-Gm-Message-State: AOAM53319yZHUNurrXwdacv/4b13ceqdTB7dJVPrpQ0eKrxeicHwZujp
+        dhwVCxzYTCZlmmh7dRdb8vgcwYSCa4bIaoiH3NPXnQ==
+X-Google-Smtp-Source: ABdhPJxPeLgGNYuUVol7wcn3UD700JCejRwjzkrn+bZT/fTLQdwdf0L0H88XiIRNF+6k69uJk/9V3D5PfwQ6HMp9Q6E=
+X-Received: by 2002:ad4:56e1:: with SMTP id cr1mr7615297qvb.25.1617275251088;
+ Thu, 01 Apr 2021 04:07:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Topic: KEYS: trusted: Introduce support for NXP CAAM-based trusted keys
-Thread-Index: +7QYEzCmiCSeqRxyZ/IwtzeggPfilw==
+References: <20210223061830.1913700-1-daniel@0x0f.com> <20210223061830.1913700-2-daniel@0x0f.com>
+ <1614108850.540354.4116103.nullmailer@robh.at.kernel.org> <CAFr9PX=h2JPdAwjYS2849ufH=wnxSti2Dj60fbq4bg8b8=xy_g@mail.gmail.com>
+ <CAK8P3a1L62YT1WUxmmfLNmvERo7DbeVwfCHCxuKvxs7Uap+iXg@mail.gmail.com>
+In-Reply-To: <CAK8P3a1L62YT1WUxmmfLNmvERo7DbeVwfCHCxuKvxs7Uap+iXg@mail.gmail.com>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Thu, 1 Apr 2021 20:07:20 +0900
+Message-ID: <CAFr9PXmT-FUUu-yMBWCe52KDHUSF2+Zhr8wk-NdC+cW+_8prKw@mail.gmail.com>
+Subject: Re: [PATCH 1/8] dt-bindings: clk: mstar msc313 cpupll binding description
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Rob Herring <robh@kernel.org>, SoC Team <soc@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Willy Tarreau <w@1wt.eu>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ahmad,
+Hi Arnd,
 
------ Ursprüngliche Mail -----
-> Von: "Ahmad Fatoum" <a.fatoum@pengutronix.de>
->> I don't want you to force to use cryptsetup.
-> 
-> I'd love to use cryptsetup with LUKS and trusted keys eventually. I'll take
+On Thu, 1 Apr 2021 at 20:04, Arnd Bergmann <arnd@arndb.de> wrote:
+> I found this is still in patchwork as not merged, and I have not
+> seen a replacement. Marking all eight patches as 'changes requested' now,
+> please resend.
 
-But using LUKS would mean that cryptsetup has access to the plain disc encryption key material?
-This would be a no-go for many systems out there, key material must not accessible to userspace.
-I know, distrusting userspace root is not easy, but doable. :)
+Understood. I will resend.
 
 Thanks,
-//richard
+
+Daniel
