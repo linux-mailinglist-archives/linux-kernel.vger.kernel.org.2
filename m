@@ -2,151 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A25352053
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1AA0352052
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235687AbhDAUDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 16:03:38 -0400
+        id S235672AbhDAUDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 16:03:34 -0400
 Received: from youngberry.canonical.com ([91.189.89.112]:45358 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235636AbhDAUDb (ORCPT
+        with ESMTP id S235619AbhDAUD3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 16:03:31 -0400
-Received: from 1-171-223-121.dynamic-ip.hinet.net ([1.171.223.121] helo=localhost)
+        Thu, 1 Apr 2021 16:03:29 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
         by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1lRx86-0006Dm-G1; Thu, 01 Apr 2021 13:12:59 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     bhelgaas@google.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        linux-pci@vger.kernel.org (open list:PCI SUBSYSTEM),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] PCI: Coalesce contiguous regions for host bridges
-Date:   Thu,  1 Apr 2021 21:12:52 +0800
-Message-Id: <20210401131252.531935-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        (envelope-from <colin.king@canonical.com>)
+        id 1lRxqy-0001rx-9N; Thu, 01 Apr 2021 13:59:20 +0000
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc:     =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
+        <thomas.hellstrom@linux.intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Colin Ian King <colin.king@canonical.com>
+Subject: re: drm/i915/selftests: Prepare gtt tests for obj->mm.lock removal
+Message-ID: <5fac4ebb-e0aa-d628-1457-3feffea3b891@canonical.com>
+Date:   Thu, 1 Apr 2021 14:59:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Built-in graphics on HP EliteDesk 805 G6 doesn't work because graphics
-can't get the BAR it needs:
-[    0.611504] pci_bus 0000:00: root bus resource [mem 0x10020200000-0x100303fffff window]
-[    0.611505] pci_bus 0000:00: root bus resource [mem 0x10030400000-0x100401fffff window]
-...
-[    0.638083] pci 0000:00:08.1:   bridge window [mem 0xd2000000-0xd23fffff]
-[    0.638086] pci 0000:00:08.1:   bridge window [mem 0x10030000000-0x100401fffff 64bit pref]
-[    0.962086] pci 0000:00:08.1: can't claim BAR 15 [mem 0x10030000000-0x100401fffff 64bit pref]: no compatible bridge window
-[    0.962086] pci 0000:00:08.1: [mem 0x10030000000-0x100401fffff 64bit pref] clipped to [mem 0x10030000000-0x100303fffff 64bit pref]
-[    0.962086] pci 0000:00:08.1:   bridge window [mem 0x10030000000-0x100303fffff 64bit pref]
-[    0.962086] pci 0000:07:00.0: can't claim BAR 0 [mem 0x10030000000-0x1003fffffff 64bit pref]: no compatible bridge window
-[    0.962086] pci 0000:07:00.0: can't claim BAR 2 [mem 0x10040000000-0x100401fffff 64bit pref]: no compatible bridge window
+Hi,
 
-However, the root bus has two contiguous regions that can contain the
-child resource requested.
+Static analysis with Coverity on Linux-next has detected a potential
+issue with the following commit:
 
-Bjorn Helgaas pointed out that we can simply coalesce contiguous regions
-for host bridges, since host bridge don't have _SRS. So do that
-accordingly to make child resource can be contained. This change makes
-the graphics works on the system in question.
+commit 480ae79537b28f30ef6e07b7de69a9ae2599daa7
+Author: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Date:   Tue Mar 23 16:50:49 2021 +0100
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=212013
-Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
-v2:
- - Coalesce all contiguous regresion in pci_register_host_bridge(), if
-   conditions are met.
+    drm/i915/selftests: Prepare gtt tests for obj->mm.lock removal
 
- drivers/pci/probe.c | 49 +++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 45 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-index 953f15abc850..3607ce7402b4 100644
---- a/drivers/pci/probe.c
-+++ b/drivers/pci/probe.c
-@@ -19,6 +19,7 @@
- #include <linux/hypervisor.h>
- #include <linux/irqdomain.h>
- #include <linux/pm_runtime.h>
-+#include <linux/list_sort.h>
- #include "pci.h"
- 
- #define CARDBUS_LATENCY_TIMER	176	/* secondary latency timer */
-@@ -874,14 +875,30 @@ static void pci_set_bus_msi_domain(struct pci_bus *bus)
- 	dev_set_msi_domain(&bus->dev, d);
- }
- 
-+static int res_cmp(void *priv, struct list_head *a, struct list_head *b)
-+{
-+	struct resource_entry *entry1, *entry2;
-+
-+	entry1 = container_of(a, struct resource_entry, node);
-+	entry2 = container_of(b, struct resource_entry, node);
-+
-+	if (entry1->res->flags != entry2->res->flags)
-+		return entry1->res->flags > entry2->res->flags;
-+
-+	if (entry1->offset != entry2->offset)
-+		return entry1->offset > entry2->offset;
-+
-+	return entry1->res->start > entry2->res->start;
-+}
-+
- static int pci_register_host_bridge(struct pci_host_bridge *bridge)
- {
- 	struct device *parent = bridge->dev.parent;
--	struct resource_entry *window, *n;
-+	struct resource_entry *window, *next, *n;
- 	struct pci_bus *bus, *b;
--	resource_size_t offset;
-+	resource_size_t offset, next_offset;
- 	LIST_HEAD(resources);
--	struct resource *res;
-+	struct resource *res, *next_res;
- 	char addr[64], *fmt;
- 	const char *name;
- 	int err;
-@@ -959,11 +976,35 @@ static int pci_register_host_bridge(struct pci_host_bridge *bridge)
- 	if (nr_node_ids > 1 && pcibus_to_node(bus) == NUMA_NO_NODE)
- 		dev_warn(&bus->dev, "Unknown NUMA node; performance will be reduced\n");
- 
-+	/* Sort and coalesce contiguous windows */
-+	list_sort(NULL, &resources, res_cmp);
-+	resource_list_for_each_entry_safe(window, n, &resources) {
-+		if (list_is_last(&window->node, &resources))
-+			break;
-+
-+		next = list_next_entry(window, node);
-+		offset = window->offset;
-+		res = window->res;
-+		next_offset = next->offset;
-+		next_res = next->res;
-+
-+		if (res->flags != next_res->flags || offset != next_offset)
-+			continue;
-+
-+		if (res->end + 1 == next_res->start) {
-+			next_res->start = res->start;
-+			res->flags = res->start = res->end = 0;
-+		}
-+	}
-+
- 	/* Add initial resources to the bus */
- 	resource_list_for_each_entry_safe(window, n, &resources) {
--		list_move_tail(&window->node, &bridge->windows);
- 		offset = window->offset;
- 		res = window->res;
-+		if (!res->end)
-+			continue;
-+
-+		list_move_tail(&window->node, &bridge->windows);
- 
- 		if (res->flags & IORESOURCE_BUS)
- 			pci_bus_insert_busn_res(bus, bus->number, res->end);
--- 
-2.30.2
+The analysis by Coverity is as follows:
+
+145 static int igt_ppgtt_alloc(void *arg)
+146 {
+147        struct drm_i915_private *dev_priv = arg;
+148        struct i915_ppgtt *ppgtt;
+   1. var_decl: Declaring variable ww without initializer.
+149        struct i915_gem_ww_ctx ww;
+150        u64 size, last, limit;
+151        int err = 0;
+152
+153        /* Allocate a ppggt and try to fill the entire range */
+154
+   2. Condition !(dev_priv->__info.ppgtt_type != INTEL_PPGTT_NONE),
+taking false branch.
+155        if (!HAS_PPGTT(dev_priv))
+156                return 0;
+157
+158        ppgtt = i915_ppgtt_create(&dev_priv->gt);
+   3. Condition IS_ERR(ppgtt), taking false branch.
+159        if (IS_ERR(ppgtt))
+160                return PTR_ERR(ppgtt);
+161
+   4. Condition !ppgtt->vm.allocate_va_range, taking true branch.
+162        if (!ppgtt->vm.allocate_va_range)
+   5. Jumping to label err_ppgtt_cleanup.
+163                goto err_ppgtt_cleanup;
+164
+165        /*
+166         * While we only allocate the page tables here and so we could
+167         * address a much larger GTT than we could actually fit into
+168         * RAM, a practical limit is the amount of physical pages in
+the system.
+169         * This should ensure that we do not run into the oomkiller
+during
+170         * the test and take down the machine wilfully.
+171         */
+172        limit = totalram_pages() << PAGE_SHIFT;
+173        limit = min(ppgtt->vm.total, limit);
+174
+175        i915_gem_ww_ctx_init(&ww, false);
+176retry:
+177        err = i915_vm_lock_objects(&ppgtt->vm, &ww);
+178        if (err)
+179                goto err_ppgtt_cleanup;
+180
+181        /* Check we can allocate the entire range */
+182        for (size = 4096; size <= limit; size <<= 2) {
+183                struct i915_vm_pt_stash stash = {};
+184
+185                err = i915_vm_alloc_pt_stash(&ppgtt->vm, &stash, size);
+186                if (err)
+187                        goto err_ppgtt_cleanup;
+188
+189                err = i915_vm_pin_pt_stash(&ppgtt->vm, &stash);
+190                if (err) {
+191                        i915_vm_free_pt_stash(&ppgtt->vm, &stash);
+192                        goto err_ppgtt_cleanup;
+193                }
+194
+195                ppgtt->vm.allocate_va_range(&ppgtt->vm, &stash, 0, size);
+196                cond_resched();
+197
+198                ppgtt->vm.clear_range(&ppgtt->vm, 0, size);
+199
+200                i915_vm_free_pt_stash(&ppgtt->vm, &stash);
+201        }
+202
+203        /* Check we can incrementally allocate the entire range */
+204        for (last = 0, size = 4096; size <= limit; last = size, size
+<<= 2) {
+205                struct i915_vm_pt_stash stash = {};
+206
+207                err = i915_vm_alloc_pt_stash(&ppgtt->vm, &stash, size
+- last);
+208                if (err)
+209                        goto err_ppgtt_cleanup;
+210
+211                err = i915_vm_pin_pt_stash(&ppgtt->vm, &stash);
+212                if (err) {
+213                        i915_vm_free_pt_stash(&ppgtt->vm, &stash);
+214                        goto err_ppgtt_cleanup;
+215                }
+216
+217                ppgtt->vm.allocate_va_range(&ppgtt->vm, &stash,
+218                                            last, size - last);
+219                cond_resched();
+220
+221                i915_vm_free_pt_stash(&ppgtt->vm, &stash);
+222        }
+223
+224 err_ppgtt_cleanup:
+   6. Condition err == -35, taking false branch.
+225        if (err == -EDEADLK) {
+226                err = i915_gem_ww_ctx_backoff(&ww);
+227                if (!err)
+228                        goto retry;
+229        }
+   7. uninit_use_in_call: Using uninitialized value ww.contended when
+calling i915_gem_ww_ctx_fini.
+   Uninitialized pointer read (UNINIT)
+   8. uninit_use_in_call: Using uninitialized value ww.ctx.acquired when
+calling i915_gem_ww_ctx_fini.
+230        i915_gem_ww_ctx_fini(&ww);
+231
+232        i915_vm_put(&ppgtt->vm);
+233        return err;
+234 }
+
+Coverity is reporting use of uninitialized values in (lines 230.  Not
+sure what the best fix is for this, so I'm reporting this as a potential
+issue.
+
+Colin
 
