@@ -2,126 +2,337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 595ED350D42
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 05:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2B7350D48
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 05:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232902AbhDADqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 23:46:44 -0400
-Received: from mga11.intel.com ([192.55.52.93]:8390 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230284AbhDADqX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 23:46:23 -0400
-IronPort-SDR: szfWMKu8eMD31JcKOt6ZgO0imCztilUKDvZJkKM7V2CLH9IBp4K+VVHECE6tyePen8t/e8xtO/
- WIONp6qttYJw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="188887209"
-X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="188887209"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 20:46:20 -0700
-IronPort-SDR: O+1+pL3ZoNuhcZKCxQe8ISPoLntCHgsEBIWIS0AsBVLiD6IlrGN3TDwC5Bn25GKHu4Ql+P17oe
- BwCZCaDglUzw==
-X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="418990501"
-Received: from algolden-mobl1.amr.corp.intel.com (HELO [10.209.172.7]) ([10.209.172.7])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 20:46:18 -0700
-Subject: Re: [PATCH v4 1/1] x86/tdx: Handle MWAIT, MONITOR and WBINVD
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
-References: <2FE32855-EA5D-44E4-AACC-25E9B1476547@amacapital.net>
- <e62cfd0ae90de435e6819979d9027f76d835a22a.1617224710.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <YGTvSvr2T2v3t3XA@google.com>
- <5d961c25-3dee-4a5d-4bba-a97d157a5a49@intel.com>
- <YGTyWUQbxVZeeko+@google.com>
- <d8078f5d-735c-2b0f-98eb-663be2118762@intel.com>
- <ef49222a-8ffc-dacc-4f21-3bd1ef13a2ac@linux.intel.com>
- <b175f08d-2930-158d-8543-fe6a7f6aaf12@intel.com>
- <20210401032827.GI1285835@tassilo.jf.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <92688a68-f4b8-9518-424b-7d967c4c728a@intel.com>
-Date:   Wed, 31 Mar 2021 20:46:18 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232757AbhDADwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 23:52:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhDADvz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 23:51:55 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E040C0613E6;
+        Wed, 31 Mar 2021 20:51:55 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id g20so1039680qkk.1;
+        Wed, 31 Mar 2021 20:51:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=G2UzKuCdp1j8anPgqYZtRd7WtA1gZSM9upkU0HaBZxs=;
+        b=Ys55/Yc56xPgdVRXN/HBS4oQkCdVyEAfTsBTgt22jNI/ReUyHJC7Fivo6VgQTVCqXK
+         F/LOIRBjNGoAUB9lQGIVJCYOX2D5CXOkD4yYxL64eWhS9nssupqqC5R9BKyRrUB4zo8W
+         4xnpbdVNsRDDpFUYLRiqpsceODnK/2dQM8wIQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G2UzKuCdp1j8anPgqYZtRd7WtA1gZSM9upkU0HaBZxs=;
+        b=Xyj/FiUKrB8L8rquJEf3khVWxv6TaUjXehZ/WIQaSe5QSheYUm8kmbLuWTw8XUbybs
+         yq9Un/zefYWe81Ym5JazYHu2Ed81wCeIbR5gqBWq9t0CK2VZnSp18PjSuXsRxPn5yUvq
+         CRcigK4LCGz5ASyyuyYb+xYgz2ghnVtfg6uHNE3VdXCp6e5OXBdg5nILcNtsRUbe8Pdt
+         4ZA2fq5zRN3RTXdgBKi+w6AlVJskgYpczlZyE0T0wF9UWWdKUY4KWr1XMWMTkQrt11v2
+         a6Dg9mq6c9eZFrvfJSidrXNKpF5mUMiejDYDyYo7O2dZU+R66ViOJv+gqpe2VVryzGOI
+         jpkg==
+X-Gm-Message-State: AOAM533LoUH+App9DC/B3tniBxQHlRTqCBfgtfhQr6/DkKiajFjIajiN
+        06v6VivgPyVs9jIymIduej7clzy8J0OsQWHfLwY=
+X-Google-Smtp-Source: ABdhPJyPyUqt1LE98UHlWdEY70Fzzk2zIuvPWojOLPrtTopLJFCQ2ygWnNdRtshS4txlG2QtOIodDE5mmLwZT1wWiPA=
+X-Received: by 2002:a37:a147:: with SMTP id k68mr6564933qke.66.1617249114564;
+ Wed, 31 Mar 2021 20:51:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210401032827.GI1285835@tassilo.jf.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CACPK8XfBsq6H5qsSNgwqdRhHXTUYnNQKekSNMnxXoVaAzMc=MQ@mail.gmail.com>
+ <20210401025104.2278-1-zev@bewilderbeest.net>
+In-Reply-To: <20210401025104.2278-1-zev@bewilderbeest.net>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Thu, 1 Apr 2021 03:51:42 +0000
+Message-ID: <CACPK8Xcr+OauMH2NFSOKF7TZ2HDDnpqPvbnqg17YbKmhroqBMw@mail.gmail.com>
+Subject: Re: [PATCH] ARM: dts: aspeed: add ASRock E3C246D4I BMC
+To:     Zev Weiss <zev@bewilderbeest.net>
+Cc:     OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        SoC Team <soc@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/31/21 8:28 PM, Andi Kleen wrote:
->> The hardware (and VMMs and SEAM) have ways of telling the guest kernel
->> what is supported: CPUID.  If it screws up, and the guest gets an
->> unexpected #VE, so be it.
-> The main reason for disabling stuff is actually that we don't need
-> to harden it. All these things are potential attack paths.
+Hi Zev,
 
-Wait, MWAIT is an attack path?  If it were an attack path, wouldn't it
-be an attack path that was created from the SEAM layer or the hardware
-being broken?  Aren't those two things within the trust boundary?  Do we
-harden against other things within the trust boundary?
+On Thu, 1 Apr 2021 at 02:57, Zev Weiss <zev@bewilderbeest.net> wrote:
+>
+> This is a relatively low-cost AST2500-based Xeon E-2100/E-2200 series
+> mini-ITX board that we hope can provide a decent platform for OpenBMC
+> development.
+>
+> This initial device-tree provides the necessary configuration for
+> basic BMC functionality such as host power control, serial console and
+> KVM support, and POST code snooping.
 
->> We don't have all kinds of crazy handling in the kernel's #UD handler
->> just in case a CPU mis-enumerates a feature and we get a #UD.  We have
->> to trust the underlying hardware to be sane.  If it isn't, we die a
->> horrible death as fast as possible.  Why should TDX be any different?
-> That's what the original patch did -- no unnecessary checks -- but reviewers
-> keep asking for the extra checks, so Sathya added more. We have the not
-> unusual problem here that reviewers don't agree among themselves.
+The patch looks good! Some minor things below.
 
-Getting consensus is a pain in the neck, eh?
+When sending subsequent versions, make sure to add -v N to your git
+format-patch to mark it as the Nth version.
 
-It's too bad all the reviewers in the community aren't like all of the
-engineers at big companies where everyone always agrees. :)
+You've also set this to be threaded with a previous version of the
+patch. We normally don't do that, and in this case it's doubly
+confusing as you've split this patch out from the previous series.
+
+I noticed you cc'd soc@kernel.org. We normally only do this when we
+want the soc maintainers to apply a patch directly without going
+through another maintainer. In this case the patch should go through
+the aspeed maintainer's tree (me), so you don't need to cc that
+address.
+
+> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+> Reviewed-by: Joel Stanley <joel@jms.id.au>
+> ---
+
+This spot just here is where you should put the changes between v1 and v2.
+
+>  arch/arm/boot/dts/Makefile                    |   1 +
+>  .../boot/dts/aspeed-bmc-asrock-e3c246d4i.dts  | 202 ++++++++++++++++++
+>  2 files changed, 203 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts
+>
+> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> index 8e5d4ab4e75e..b12911262ca1 100644
+> --- a/arch/arm/boot/dts/Makefile
+> +++ b/arch/arm/boot/dts/Makefile
+> @@ -1406,6 +1406,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
+>         aspeed-bmc-ampere-mtjade.dtb \
+>         aspeed-bmc-arm-centriq2400-rep.dtb \
+>         aspeed-bmc-arm-stardragon4800-rep2.dtb \
+> +       aspeed-bmc-asrock-e3c246d4i.dts \
+
+This should be the output name (.dtb).
+
+>         aspeed-bmc-bytedance-g220a.dtb \
+>         aspeed-bmc-facebook-cmm.dtb \
+>         aspeed-bmc-facebook-galaxy100.dtb \
+> diff --git a/arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts b/arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts
+> new file mode 100644
+> index 000000000000..dcab6e78dfa4
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts
+
+The device tree itself looks good!
+
+If you fix up the things I mentioned and send a v3 I will apply it.
+
+Cheers,
+
+Joel
+
+> @@ -0,0 +1,202 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/dts-v1/;
+> +
+> +#include "aspeed-g5.dtsi"
+> +#include <dt-bindings/gpio/aspeed-gpio.h>
+> +#include <dt-bindings/i2c/i2c.h>
+> +
+> +/{
+> +       model = "ASRock E3C246D4I BMC";
+> +       compatible = "asrock,e3c246d4i-bmc", "aspeed,ast2500";
+> +
+> +       aliases {
+> +               serial4 = &uart5;
+> +       };
+> +
+> +       chosen {
+> +               stdout-path = &uart5;
+> +               bootargs = "console=tty0 console=ttyS4,115200 earlyprintk";
+> +       };
+> +
+> +       memory@80000000 {
+> +               reg = <0x80000000 0x20000000>;
+> +       };
+> +
+> +       leds {
+> +               compatible = "gpio-leds";
+> +
+> +               heartbeat {
+> +                       /* BMC_HB_LED_N */
+> +                       gpios = <&gpio ASPEED_GPIO(H, 6) GPIO_ACTIVE_LOW>;
+> +                       linux,default-trigger = "timer";
+> +               };
+> +
+> +               system-fault {
+> +                       /* SYSTEM_FAULT_LED_N */
+> +                       gpios = <&gpio ASPEED_GPIO(Z, 2) GPIO_ACTIVE_LOW>;
+> +                       panic-indicator;
+> +               };
+> +       };
+> +
+> +       gpio-keys {
+> +               compatible = "gpio-keys";
+> +
+> +               uid-button {
+> +                       label = "uid-button";
+> +                       gpios = <&gpio ASPEED_GPIO(F, 1) GPIO_ACTIVE_LOW>;
+> +                       linux,code = <ASPEED_GPIO(F, 1)>;
+> +               };
+> +       };
+> +
+> +       iio-hwmon {
+> +               compatible = "iio-hwmon";
+> +               io-channels = <&adc 0>, <&adc 1>, <&adc 2>, <&adc 3>, <&adc 4>,
+> +                       <&adc 5>, <&adc 6>, <&adc 7>, <&adc 8>, <&adc 9>,
+> +                       <&adc 10>, <&adc 11>, <&adc 12>;
+> +       };
+> +};
+> +
+> +&fmc {
+> +       status = "okay";
+> +       flash@0 {
+> +               status = "okay";
+> +               m25p,fast-read;
+> +               label = "bmc";
+> +               spi-max-frequency = <100000000>; /* 100 MHz */
+> +#include "openbmc-flash-layout.dtsi"
+> +       };
+> +};
+> +
+> +&uart5 {
+> +       status = "okay";
+> +};
+> +
+> +&vuart {
+> +       status = "okay";
+> +       aspeed,sirq-active-high;
+> +};
+> +
+> +&mac0 {
+> +       status = "okay";
+> +
+> +       pinctrl-names = "default";
+> +       pinctrl-0 = <&pinctrl_rgmii1_default &pinctrl_mdio1_default>;
+> +};
+> +
+> +&i2c1 {
+> +       status = "okay";
+> +
+> +       /* thermal sensor, one diode run to a disconnected header */
+> +       w83773g@4c {
+> +               compatible = "nuvoton,w83773g";
+> +               reg = <0x4c>;
+> +       };
+> +};
+> +
+> +&i2c3 {
+> +       status = "okay";
+> +
+> +       /* FRU EEPROM */
+> +       eeprom@57 {
+> +               compatible = "st,24c128", "atmel,24c128";
+> +               reg = <0x57>;
+> +               pagesize = <16>;
+> +       };
+> +};
+> +
+> +&video {
+> +       status = "okay";
+> +};
+> +
+> +&vhub {
+> +       status = "okay";
+> +};
+> +
+> +&lpc_ctrl {
+> +       status = "okay";
+> +};
+> +
+> +&lpc_snoop {
+> +       status = "okay";
+> +       snoop-ports = <0x80>;
+> +};
+> +
+> +&gpio {
+> +       status = "okay";
+> +       gpio-line-names =
+> +               /*  A */ "BMC_MAC1_INTB", "BMC_MAC2_INTB", "NMI_BTN_N", "BMC_NMI",
+> +                       "", "", "", "",
+> +               /*  B */ "", "", "", "", "", "IRQ_BMC_PCH_SMI_LPC_N", "", "",
+> +               /*  C */ "", "", "", "", "", "", "", "",
+> +               /*  D */ "BMC_PSIN", "BMC_PSOUT", "BMC_RESETCON", "RESETCON",
+> +                       "", "", "", "",
+> +               /*  E */ "", "", "", "", "", "", "", "",
+> +               /*  F */ "LOCATORLED_STATUS_N", "LOCATORBTN", "", "",
+> +                       "", "", "BMC_PCH_SCI_LPC", "BMC_NCSI_MUX_CTL",
+> +               /*  G */ "HWM_BAT_EN", "CHASSIS_ID0", "CHASSIS_ID1", "CHASSIS_ID2",
+> +                       "BMC_ALERT1_N_R", "BMC_ALERT2_N_R", "BMC_ALERT3_N", "SML0ALERT",
+> +               /*  H */ "FM_ME_RCVR_N", "O_PWROK", "SKL_CNL_R", "D4_DIMM_EVENT_3V_N",
+> +                       "MFG_MODE_N", "BMC_RTCRST", "BMC_HB_LED_N", "BMC_CASEOPEN",
+> +               /*  I */ "", "", "", "", "", "", "", "",
+> +               /*  J */ "BMC_READY", "BMC_PCH_BIOS_CS_N", "BMC_SMI", "",
+> +                       "", "", "", "",
+> +               /*  K */ "", "", "", "", "", "", "", "",
+> +               /*  L */ "BMC_CTS1", "BMC_DCD1", "BMC_DSR1", "BMC_RI1",
+> +                       "BMC_DTR1", "BMC_RTS1", "BMC_TXD1", "BMC_RXD1",
+> +               /*  M */ "BMC_LAN0_DIS_N", "BMC_LAN1_DIS_N", "", "",
+> +                       "", "", "", "",
+> +               /*  N */ "", "", "", "", "", "", "", "",
+> +               /*  O */ "", "", "", "", "", "", "", "",
+> +               /*  P */ "", "", "", "", "", "", "", "",
+> +               /*  Q */ "", "", "", "",
+> +                       "BMC_SBM_PRESENT_1_N", "BMC_SBM_PRESENT_2_N",
+> +                       "BMC_SBM_PRESENT_3_N", "BMC_PCIE_WAKE_N",
+> +               /*  R */ "", "", "", "", "", "", "", "",
+> +               /*  S */ "PCHHOT_BMC_N", "", "RSMRST",
+> +                       "", "", "", "", "",
+> +               /*  T */ "", "", "", "", "", "", "", "",
+> +               /*  U */ "", "", "", "", "", "", "", "",
+> +               /*  V */ "", "", "", "", "", "", "", "",
+> +               /*  W */ "PS_PWROK", /* dummy always-high signal */
+> +                       "", "", "", "", "", "", "",
+> +               /*  X */ "", "", "", "", "", "", "", "",
+> +               /*  Y */ "SLP_S3", "SLP_S5", "", "", "", "", "", "",
+> +               /*  Z */ "CPU_CATERR_BMC_PCH_N", "", "SYSTEM_FAULT_LED_N", "BMC_THROTTLE_N",
+> +                       "", "", "", "",
+> +               /* AA */ "CPU1_THERMTRIP_LATCH_N", "", "CPU1_PROCHOT_N", "",
+> +                       "", "", "IRQ_SMI_ACTIVE_N", "FM_BIOS_POST_CMPLT_N",
+> +               /* AB */ "", "", "ME_OVERRIDE", "BMC_DMI_MODIFY",
+> +                       "", "", "", "",
+> +               /* AC */ "LAD0", "LAD1", "LAD2", "LAD3",
+> +                       "CK_33M_BMC", "LFRAME", "SERIRQ", "S_PLTRST";
+> +
+> +       /* Assert BMC_READY so BIOS doesn't sit around waiting for it */
+> +       bmc-ready {
+> +               gpio-hog;
+> +               gpios = <ASPEED_GPIO(J, 0) GPIO_ACTIVE_LOW>;
+> +               output-high;
+> +       };
+> +};
+> +
+> +&adc {
+> +       status = "okay";
+> +       pinctrl-names = "default";
+> +       pinctrl-0 = <&pinctrl_adc0_default
+> +                       &pinctrl_adc1_default
+> +                       &pinctrl_adc2_default
+> +                       &pinctrl_adc3_default
+> +                       &pinctrl_adc4_default
+> +                       &pinctrl_adc5_default
+> +                       &pinctrl_adc6_default
+> +                       &pinctrl_adc7_default
+> +                       &pinctrl_adc8_default
+> +                       &pinctrl_adc9_default
+> +                       &pinctrl_adc10_default
+> +                       &pinctrl_adc11_default
+> +                       &pinctrl_adc12_default>;
+> +};
+> +
+> +&kcs3 {
+> +       status = "okay";
+> +       aspeed,lpc-io-reg = <0xca2>;
+> +};
+> --
+> 2.31.1
+>
