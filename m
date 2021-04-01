@@ -2,195 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A283522D1
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 00:35:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B0963522D4
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 00:36:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233981AbhDAWfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 18:35:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37666 "EHLO
+        id S235078AbhDAWgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 18:36:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233789AbhDAWfK (ORCPT
+        with ESMTP id S234841AbhDAWgM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 18:35:10 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5AD0C0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 15:35:10 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id c24-20020a9d6c980000b02902662e210895so2998607otr.9
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 15:35:10 -0700 (PDT)
+        Thu, 1 Apr 2021 18:36:12 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D24DCC06178A
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 15:36:11 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id o16so3242283wrn.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 15:36:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Fj85qQK7dbFMVrWc6drYDzKb296D9FbiiC583NFbWrY=;
-        b=IQUVaebifeGyZummO+FyMc4HYoA8epMMse84C7n0U0fsWyoFXP8OCKn24+g3ihYgpS
-         np8crOUCKDBih1v8z55ihhICh3Lz/y6TMC/rZnJCa5G+WQL4sqoqNRSb6MN3GrYCTws4
-         +IoGC5zMHomwEa7+19+dNME/iP3tgB43k4CwrEIeGlBgWLDWcQqFAVkue2qiA0GNQdJt
-         AHKUQaeSY+/qwp0/BkjMiHzrLSPEvgvkbALGjI/E8t1dgvx3H8Bj9sYvaH3n1r4F/mLr
-         OBrMi/+R2cHWKp/OgoVZBf/HMP6i/cm994PjeeHpenAUOmRWzCeJFC+oxq/DzB82kuoC
-         LbJw==
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4U2nL9QjvKiGF6omVp4A37Sds4R82N2PeBqJStbYldc=;
+        b=Uza0EMA2Glg7QYmWPwKr7bEtGQEB6QPQZZwhdeOydUy3/GCSlCQTvJLQF0AH2BEuD9
+         g1jPinOr9hTWuw9Qlc8Z+BpzITlNrihd/bWxfxvV2/QG4mSwf66ST66XJ5g+SjtZtawa
+         ugTZJWrMu5nWGwanayECiamibYZRHBiyGQ9FCFcg3N/LdOePpVxmQ8UQ897jZbtxiX5W
+         o7Tb3tbl2khyXvZK5N/Gw4c0Vkaz95iX8DN6D9L8pwcwF76MCDV0sq7eZbYEjP5ge3ht
+         JsMCGMESqo/tXV9o12jWzQ6iC9oRkUZClIKRb13jiaRlZkY8mYSeT8q6kId0rAhVD/Gi
+         xu5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Fj85qQK7dbFMVrWc6drYDzKb296D9FbiiC583NFbWrY=;
-        b=coHAkdrtF8lvkQ28avljyGDuGat7pBlQ5dTrgfXGdqoaZE/5ZFryCfvKyVjjuseMPG
-         3o0gGUBt0vwoaa5GOJt9//k6etMLj8/2SaE7FuodhzYZ9Qi2oQFduokiicM0zsYWewE4
-         QnnfnvJHNrEGOywAF/oZ3cTwq/BKzgcjlNiqfiFCduu6F1ai/48fqdY54tMmAClPEzGl
-         v0NcIC6bVX+K+eT9rLXUlliLQeDP4rS+dIc4kK1RgMPzR80lFpx6eSlGyr5Jps+9SyHk
-         5JeawicXGEWlc96smvBz/RYJHqWUpsG2JQg3iptHAD8v1mXdbiIv8gn0RDO7N+rGCqso
-         RtIw==
-X-Gm-Message-State: AOAM532jJzqJhbr7Jhdj/Q/56NAFkVRRyByatNikh0IjVLjFCijlR9mK
-        MC90IuEhq/hcbjc7VPuyV2nwhZkMyrGfTIgvmUlWSQ==
-X-Google-Smtp-Source: ABdhPJzcNmOg3S5/WZxTXo0+O8T2gdkqSFEArCAiEh0ns2GZ+Yj7eLyW7JvUvO12GPjG7oeI1bzc4xzk/WWQcf2lOvc=
-X-Received: by 2002:a9d:620a:: with SMTP id g10mr8664398otj.335.1617316510065;
- Thu, 01 Apr 2021 15:35:10 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4U2nL9QjvKiGF6omVp4A37Sds4R82N2PeBqJStbYldc=;
+        b=Cr5DidcVrFGvzAy6FkB+4y/mKE8U2RyA/a16gXYiaIbws1pEQKx2nVRm2hM1afudYk
+         wyCUBrERqRexeVXyykhk2MFramfADVfx05DB9z5XX6gFSxlY5sqTTWp0LpszR3Hq0y16
+         LXk4kvcp/9BEdHemqjXoap5TeI9/dSzlvw0YFxAN3R4fMuiPVpHvSDUcuwD6LwK3PUGN
+         9POTItH2WQHkL1GDbRUOdxhJ46805/jej2ukxSRlPMA4qSgdo5fqTl9abqUk4myyWwiz
+         BuN0MyJ96AT03B3mHeb2rtCKe0dfkiveHSXdrCQ2W+edajtPxfc9nBIIIwX405F0iPZn
+         ZG+w==
+X-Gm-Message-State: AOAM531X6x5eoWDhkOtIfWOji5w/QcBIAnBjFk/Wk3bS1puHh6SEHC1/
+        7pg+IGxF1jRnJfcK9wiE5Ulw6A==
+X-Google-Smtp-Source: ABdhPJw/C3ZrBCftCrOvZjL+ApQqQgKzWAVLMVHrv1u37S8D1wDTQsU2Mj8Wo5y1baoHQwAc7C+E9Q==
+X-Received: by 2002:adf:e3c9:: with SMTP id k9mr12580365wrm.308.1617316570460;
+        Thu, 01 Apr 2021 15:36:10 -0700 (PDT)
+Received: from localhost.localdomain (2.0.5.1.1.6.3.8.5.c.c.3.f.b.d.3.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16:0:3dbf:3cc5:8361:1502])
+        by smtp.gmail.com with ESMTPSA id j26sm12380395wrh.57.2021.04.01.15.36.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 15:36:09 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, wilken.gottwalt@mailbox.org,
+        colin.king@canonical.com, bjorn@mork.no, jk@ozlabs.org,
+        hkallweit1@gmail.com, bjorn.andersson@linaro.org,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] net: usb: ax88179_178a: initialize local variables before use
+Date:   Thu,  1 Apr 2021 23:36:07 +0100
+Message-Id: <20210401223607.3846-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210318225632.2481291-1-jollys@google.com> <5e7ea537-86ab-f654-1df4-765364116e18@huawei.com>
- <993f97da-01f0-262b-3fbe-66fa1769698a@huawei.com> <f74c0003-dbbf-5b4a-87f2-cd5571ea412e@huawei.com>
-In-Reply-To: <f74c0003-dbbf-5b4a-87f2-cd5571ea412e@huawei.com>
-From:   Jolly Shah <jollys@google.com>
-Date:   Thu, 1 Apr 2021 15:34:58 -0700
-Message-ID: <CABGCNpBABSkdSQf=c2T9qMTGgJPL7Si9Ft_DvC8WiLtT_vmL1Q@mail.gmail.com>
-Subject: Re: [PATCH v2] scsi: libsas: Reset num_scatter if libata mark qc as NODATA
-To:     luojiaxing <luojiaxing@huawei.com>
-Cc:     John Garry <john.garry@huawei.com>,
-        Jason Yan <yanaijie@huawei.com>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, a.darwish@linutronix.de,
-        dan.carpenter@oracle.com, b.zolnierkie@samsung.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Luojiaxing,
+Use memset to initialize local array in drivers/net/usb/ax88179_178a.c, and
+also set a local u16 and u32 variable to 0. Fixes a KMSAN found uninit-value bug
+reported by syzbot at:
+https://syzkaller.appspot.com/bug?id=00371c73c72f72487c1d0bfe0cc9d00de339d5aa
 
+Reported-by: syzbot+4993e4a0e237f1b53747@syzkaller.appspotmail.com
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+---
+ drivers/net/usb/ax88179_178a.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-On Mon, Mar 22, 2021 at 1:41 AM luojiaxing <luojiaxing@huawei.com> wrote:
->
->
-> On 2021/3/20 20:14, John Garry wrote:
-> > On 19/03/2021 01:43, Jason Yan wrote:
-> >>
-> >>
-> >> =E5=9C=A8 2021/3/19 6:56, Jolly Shah =E5=86=99=E9=81=93:
-> >>> When the cache_type for the scsi device is changed, the scsi layer
-> >>> issues a MODE_SELECT command. The caching mode details are communicat=
-ed
-> >>> via a request buffer associated with the scsi command with data
-> >>> direction set as DMA_TO_DEVICE (scsi_mode_select). When this command
-> >>> reaches the libata layer, as a part of generic initial setup, libata
-> >>> layer sets up the scatterlist for the command using the scsi command
-> >>> (ata_scsi_qc_new). This command is then translated by the libata laye=
-r
-> >>> into ATA_CMD_SET_FEATURES (ata_scsi_mode_select_xlat). The libata lay=
-er
-> >>> treats this as a non data command (ata_mselect_caching), since it onl=
-y
-> >>> needs an ata taskfile to pass the caching on/off information to the
-> >>> device. It does not need the scatterlist that has been setup, so it
-> >>> does
-> >>> not perform dma_map_sg on the scatterlist (ata_qc_issue).
-> >>> Unfortunately,
-> >>> when this command reaches the libsas layer(sas_ata_qc_issue), libsas
-> >>> layer sees it as a non data command with a scatterlist. It cannot
-> >>> extract the correct dma length, since the scatterlist has not been
-> >>> mapped with dma_map_sg for a DMA operation. When this partially
-> >>> constructed SAS task reaches pm80xx LLDD, it results in below warning=
-.
-> >>>
-> >>> "pm80xx_chip_sata_req 6058: The sg list address
-> >>> start_addr=3D0x0000000000000000 data_len=3D0x0end_addr_high=3D0xfffff=
-fff
-> >>> end_addr_low=3D0xffffffff has crossed 4G boundary"
-> >>>
-> >>> This patch updates code to handle ata non data commands separately so
-> >>> num_scatter and total_xfer_len remain 0.
-> >>>
-> >>> Fixes: 53de092f47ff ("scsi: libsas: Set data_dir as DMA_NONE if
-> >>> libata marks qc as NODATA")
-> >>> Signed-off-by: Jolly Shah <jollys@google.com>
-> >
-> > Reviewed-by: John Garry <john.garry@huawei.com>
-> >
-> > @luojiaxing, can you please test this?
->
->
-> Sure, let me take a look, and reply the test result here later
->
+diff --git a/drivers/net/usb/ax88179_178a.c b/drivers/net/usb/ax88179_178a.c
+index d650b39b6e5d..c1316718304d 100644
+--- a/drivers/net/usb/ax88179_178a.c
++++ b/drivers/net/usb/ax88179_178a.c
+@@ -296,12 +296,12 @@ static int ax88179_read_cmd(struct usbnet *dev, u8 cmd, u16 value, u16 index,
+ 	int ret;
+ 
+ 	if (2 == size) {
+-		u16 buf;
++		u16 buf = 0;
+ 		ret = __ax88179_read_cmd(dev, cmd, value, index, size, &buf, 0);
+ 		le16_to_cpus(&buf);
+ 		*((u16 *)data) = buf;
+ 	} else if (4 == size) {
+-		u32 buf;
++		u32 buf = 0;
+ 		ret = __ax88179_read_cmd(dev, cmd, value, index, size, &buf, 0);
+ 		le32_to_cpus(&buf);
+ 		*((u32 *)data) = buf;
+@@ -1296,6 +1296,8 @@ static void ax88179_get_mac_addr(struct usbnet *dev)
+ {
+ 	u8 mac[ETH_ALEN];
+ 
++	memset(mac, 0, sizeof(mac));
++
+ 	/* Maybe the boot loader passed the MAC address via device tree */
+ 	if (!eth_platform_get_mac_address(&dev->udev->dev, mac)) {
+ 		netif_dbg(dev, ifup, dev->net,
+-- 
+2.30.2
 
-Wanted to follow up on test results. Any updates?
-
-Thanks,
-Jolly
-
->
-> Thanks
->
-> Jiaxing
->
->
-> >
-> >>> ---
-> >>> v2:
-> >>> - reorganized code to avoid setting num_scatter twice
-> >>>
-> >>>   drivers/scsi/libsas/sas_ata.c | 9 ++++-----
-> >>>   1 file changed, 4 insertions(+), 5 deletions(-)
-> >>>
-> >>> diff --git a/drivers/scsi/libsas/sas_ata.c
-> >>> b/drivers/scsi/libsas/sas_ata.c
-> >>> index 024e5a550759..8b9a39077dba 100644
-> >>> --- a/drivers/scsi/libsas/sas_ata.c
-> >>> +++ b/drivers/scsi/libsas/sas_ata.c
-> >>> @@ -201,18 +201,17 @@ static unsigned int sas_ata_qc_issue(struct
-> >>> ata_queued_cmd *qc)
-> >>>           memcpy(task->ata_task.atapi_packet, qc->cdb,
-> >>> qc->dev->cdb_len);
-> >>>           task->total_xfer_len =3D qc->nbytes;
-> >>>           task->num_scatter =3D qc->n_elem;
-> >>> +        task->data_dir =3D qc->dma_dir;
-> >>> +    } else if (qc->tf.protocol =3D=3D ATA_PROT_NODATA) {
-> >>> +        task->data_dir =3D DMA_NONE;
-> >>
-> >> Hi Jolly & John,
-> >>
-> >> We only set DMA_NONE for ATA_PROT_NODATA, I'm curious about why
-> >> ATA_PROT_NCQ_NODATA and ATAPI_PROT_NODATA do not need to set DMA_NONE?
-> >
-> > So we can see something like atapi_eh_tur() -> ata_exec_internal(),
-> > which is a ATAPI NONDATA and has DMA_NONE, so should be ok.
-> >
-> > Other cases, like those using the xlate function on the qc for
-> > ATA_PROT_NCQ_NODATA, could be checked further.
-> >
-> > For now, we're just trying to fix the fix.
-> >
-> >>
-> >> Thanks,
-> >> Jason
-> >>
-> >>
-> >>>       } else {
-> >>>           for_each_sg(qc->sg, sg, qc->n_elem, si)
-> >>>               xfer +=3D sg_dma_len(sg);
-> >>>           task->total_xfer_len =3D xfer;
-> >>>           task->num_scatter =3D si;
-> >>> -    }
-> >>> -
-> >>> -    if (qc->tf.protocol =3D=3D ATA_PROT_NODATA)
-> >>> -        task->data_dir =3D DMA_NONE;
-> >>> -    else
-> >>>           task->data_dir =3D qc->dma_dir;
-> >>> +    }
-> >>>       task->scatter =3D qc->sg;
-> >>>       task->ata_task.retry_count =3D 1;
-> >>>       task->task_state_flags =3D SAS_TASK_STATE_PENDING;
-> >>>
-> >> .
-> >
-> >
-> > .
-> >
->
