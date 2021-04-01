@@ -2,68 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6173351238
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F302351239
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233752AbhDAJ2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 05:28:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233504AbhDAJ2f (ORCPT
+        id S233884AbhDAJ2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 05:28:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33741 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233818AbhDAJ2l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 05:28:35 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76771C0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 02:28:35 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id f22-20020a7bc8d60000b029010c024a1407so2497780wml.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 02:28:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2rkOw5Dx1TINvXjRB+SiB7YZDBdwJ+e4cTjDJv7XxLk=;
-        b=Kkl/wVVY/CWcsAXD8YzUvZ68ov4zSNmqyjBFYGm67pyuuH9d4pT0MdHIOSQXv0pHOO
-         ZRjZSOfiv73ln2HcUdwL39tBVytU/0N5KciME3fJJM3bC5ltdbjVPA8F+Bem8c01jOvd
-         u94DIHU4ghDz9rEibwoTCPdGJYGxmNwjGkN2LJPeh+u8+wjhUO33ZQKhtqAkpINDJu6r
-         uPdMbRj4AEjNaRTMpGWT1eCrnHaV94TiAJK2NORYOg7LoFgLNY5VBvMbsKyP0g7JFYAB
-         LmgfQEFlHVEJNw7aYhyQndV9U4KCa7B8PZCspL7QKmjyYCTfggiJ4+vHv9pY5/rBdCMJ
-         ADHQ==
+        Thu, 1 Apr 2021 05:28:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617269320;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CdAJIUk4E0rZzWrFLM7OQdm2JVVzi0mVz8CuYgR6iRQ=;
+        b=ToJ0UwdOd4Qh4AGmWgAdUtFFtLWpwYKTAdqUFsrrWdB8U6G/hqzYeSlJvJJAlJXdr3buYK
+        sU0pzgzb6HUEGcyXpLJErLkTthybYHZV9Ua6In6wat7cqhcpg1dAYcQ1WDZzGkqgjNJa75
+        IgPtvHOyA7ngF8uXw8GVCHUj8J01gJU=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-207-VZmdR_8JPFygp3hgPWArKw-1; Thu, 01 Apr 2021 05:28:39 -0400
+X-MC-Unique: VZmdR_8JPFygp3hgPWArKw-1
+Received: by mail-ed1-f69.google.com with SMTP id y10so2528588edr.20
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 02:28:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=2rkOw5Dx1TINvXjRB+SiB7YZDBdwJ+e4cTjDJv7XxLk=;
-        b=gFxjREePl2D+VRCG+SJIZhDa1boULXjszhnD1SPZKUb6IuMwDU/N1GcPiGR1MDU25q
-         xJNwdyWJH88aVT+M+0omNwB8kvhJhtbconQ+sPudB0MKk5PnD6WxA9b3wdJmlkvSBPJi
-         4WerJeP0h17GJJnV1mtKbM1O1BKP3HKKzGWiziJQAk62ihTPrF1FmwW2ptwOTXiB1FV0
-         XynHGPNoIydVlueHpJ0zWlrXI6dIm52aRCgvG1uy2G1LRRfXwDFYeeLCZQS5awgd1M0D
-         LJU0dY0OmREEC7j2vi+vbxQzA84+ok7+naZEHIEeFkSKhOUeHOs6G7dNRXJiYbL4/ofF
-         mI7g==
-X-Gm-Message-State: AOAM530gu8noLR3YaZPmSJq4hvvKYYNKoCQJYy8Gg3qs/jr1dmjrp2QM
-        JQ9lRcmR5rR7wCzMH8dwxwL70T+gEXVk+A==
-X-Google-Smtp-Source: ABdhPJzPCsFAwf7ujt/gAxK0yWMBleixfbHx3YsvhYfgFARTDwByt+1NnYOjdpBffXveTask0jwj9w==
-X-Received: by 2002:a7b:c2fa:: with SMTP id e26mr7003419wmk.102.1617269314149;
-        Thu, 01 Apr 2021 02:28:34 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id p6sm8831324wru.2.2021.04.01.02.28.33
+        bh=CdAJIUk4E0rZzWrFLM7OQdm2JVVzi0mVz8CuYgR6iRQ=;
+        b=WDerrHzRjjZenfP6cd+dIReM85eAuhwYeqDG1AACxYatQ2WhVeYAtkiqZ8kuDZg4mx
+         wccwkfDCTK2EAh+kzA9dWu9pGGlrXcs7wwHjvCSVfm2CXlpCxSjrNJIDHLm88OlNCsCm
+         z1pzEPen8/0/+Ub0ZHkNi7Qx7wdr65pmWBS6hN1lJmsZrE5ill2FJHLV9lRPm7p8bW4V
+         79T1Hr/vOK2HiWYoM4oOvWUTx5Sc0uLXFn5I4HE+KVei8sb+TJFO5qu+oSsmfKMMgB0N
+         4i4QGK7jGUPJxO9BcSuQtv6KlfkDtpiFupOpY3ZjcEzRwCJJ9LRXuiwe+SxcJ4vjXwlj
+         r0yQ==
+X-Gm-Message-State: AOAM530QfbNX7LD3hoj5i+d4XjgX9qlRQr8v9J2z6VIHbgM38IFnq+28
+        C5E1HIx84fL8DZAiObC4+c55zmIh/fWKkzHBZQRGzNirDHc8i0l7AV+MWFuekx+w7eaEPc7E8Sk
+        FGtM3cvQ7Qbz35a4EHcY+wTYV
+X-Received: by 2002:a17:906:e16:: with SMTP id l22mr8099315eji.173.1617269317930;
+        Thu, 01 Apr 2021 02:28:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzIlGvqJGxpSAvkxwuKoS+tfRvPYTtyqOWPe5X29pYmiMYvtWLlSZhmpHnmVGL4jZJzfGGOcA==
+X-Received: by 2002:a17:906:e16:: with SMTP id l22mr8099291eji.173.1617269317705;
+        Thu, 01 Apr 2021 02:28:37 -0700 (PDT)
+Received: from localhost.localdomain ([194.230.155.195])
+        by smtp.gmail.com with ESMTPSA id t17sm3215284edr.36.2021.04.01.02.28.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Apr 2021 02:28:33 -0700 (PDT)
-Subject: Re: [PATCH -next] soc: mediatek: Make symbol 'mtk_mutex_driver'
- static
-To:     Wei Yongjun <weiyongjun1@huawei.com>,
-        Hulk Robot <hulkci@huawei.com>, CK Hu <ck.hu@mediatek.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210210075656.1096251-1-weiyongjun1@huawei.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <c22c6ae9-9bfc-570b-7b02-ec9c24963b89@gmail.com>
-Date:   Thu, 1 Apr 2021 11:28:32 +0200
+        Thu, 01 Apr 2021 02:28:37 -0700 (PDT)
+Subject: Re: [PATCH v2 1/4] kvm: cpuid: adjust the returned nent field of
+ kvm_cpuid2 for KVM_GET_SUPPORTED_CPUID and KVM_GET_EMULATED_CPUID
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
+        Alexander Graf <graf@amazon.com>,
+        Andrew Jones <drjones@redhat.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20210331122649.38323-1-eesposit@redhat.com>
+ <20210331122649.38323-2-eesposit@redhat.com> <YGS/7hQo91cVuXbB@google.com>
+From:   Emanuele Giuseppe Esposito <eesposit@redhat.com>
+Message-ID: <c0f9e1b6-e751-a06f-e753-6603f17a6bce@redhat.com>
+Date:   Thu, 1 Apr 2021 11:28:33 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210210075656.1096251-1-weiyongjun1@huawei.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YGS/7hQo91cVuXbB@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -72,37 +82,165 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 10/02/2021 08:56, Wei Yongjun wrote:
-> The sparse tool complains as follows:
+On 31/03/2021 20:31, Sean Christopherson wrote:
+> On Wed, Mar 31, 2021, Emanuele Giuseppe Esposito wrote:
+>> Calling the kvm KVM_GET_[SUPPORTED/EMULATED]_CPUID ioctl requires
+>> a nent field inside the kvm_cpuid2 struct to be big enough to contain
+>> all entries that will be set by kvm.
+>> Therefore if the nent field is too high, kvm will adjust it to the
+>> right value. If too low, -E2BIG is returned.
+>>
+>> However, when filling the entries do_cpuid_func() requires an
+>> additional entry, so if the right nent is known in advance,
+>> giving the exact number of entries won't work because it has to be
+>> increased by one.
 > 
-> drivers/soc/mediatek/mtk-mutex.c:464:24: warning:
->  symbol 'mtk_mutex_driver' was not declared. Should it be static?
+> I'd strong prefer to reword the shortlog and changelog.  It's not immediately
+> obvious what this is changing without the context from the v1 thread.  E.g.
 > 
-> This symbol is not used outside of mtk-mutex.c, so this
-> commit marks it static.
+>    KVM: x86: Fix a spurious -E2BIG in KVM_GET_EMULATED_CPUID
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+>    When retrieving emulated CPUID entries, check for an insufficient array size
+>    if and only if KVM is actually inserting an entry.  If userspace has a priori
+>    knowledge of the exact array size, KVM_GET_EMULATED_CPUID will incorrectly
+>    fail due to effectively requiring an extra, unused entry.
 
-Applied to v5.12-next/soc
+I will update it with v3, thanks.
 
-Thanks!
+> 
+>> Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
+>> ---
+>>   arch/x86/kvm/cpuid.c | 35 ++++++++++++++++++-----------------
+>>   1 file changed, 18 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+>> index 6bd2f8b830e4..02a51f921548 100644
+>> --- a/arch/x86/kvm/cpuid.c
+>> +++ b/arch/x86/kvm/cpuid.c
+>> @@ -567,34 +567,34 @@ static struct kvm_cpuid_entry2 *do_host_cpuid(struct kvm_cpuid_array *array,
+>>   
+>>   static int __do_cpuid_func_emulated(struct kvm_cpuid_array *array, u32 func)
+>>   {
+>> -	struct kvm_cpuid_entry2 *entry;
+>> -
+>> -	if (array->nent >= array->maxnent)
+>> -		return -E2BIG;
+>> +	struct kvm_cpuid_entry2 entry;
+>>   
+>> -	entry = &array->entries[array->nent];
+>> -	entry->function = func;
+>> -	entry->index = 0;
+>> -	entry->flags = 0;
+>> +	entry.function = func;
+>> +	entry.index = 0;
+>> +	entry.flags = 0;
+> 
+> Depending on the leaf, eax/ebx/ecx/edx will be left uninitialized.  This wasn't
+> a bug before since @array is zeroed on allocation.
+> 
+> What about pre-checking @func?  I don't particular like the duplicate checks,
+> but none of the solutions are particularly elegant.  E.g.
+You're right, I should have zeroed it. I agree that memsetting and 
+memcopying is not elegant either, but unless I am missing something and 
+it changes the intended behavior, IMHO this avoids duplicate checks and 
+makes it simpler to add a new 'func'.
 
-> ---
->  drivers/soc/mediatek/mtk-mutex.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Emanuele
 > 
-> diff --git a/drivers/soc/mediatek/mtk-mutex.c b/drivers/soc/mediatek/mtk-mutex.c
-> index f531b119da7a..3a315a62e783 100644
-> --- a/drivers/soc/mediatek/mtk-mutex.c
-> +++ b/drivers/soc/mediatek/mtk-mutex.c
-> @@ -461,7 +461,7 @@ static const struct of_device_id mutex_driver_dt_match[] = {
->  };
->  MODULE_DEVICE_TABLE(of, mutex_driver_dt_match);
->  
-> -struct platform_driver mtk_mutex_driver = {
-> +static struct platform_driver mtk_mutex_driver = {
->  	.probe		= mtk_mutex_probe,
->  	.remove		= mtk_mutex_remove,
->  	.driver		= {
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index 6bd2f8b830e4..9824947bd5ad 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -565,14 +565,18 @@ static struct kvm_cpuid_entry2 *do_host_cpuid(struct kvm_cpuid_array *array,
+>          return entry;
+>   }
 > 
+> -static int __do_cpuid_func_emulated(struct kvm_cpuid_array *array, u32 func)
+> +static noinline int __do_cpuid_func_emulated(struct kvm_cpuid_array *array, u32 func)
+>   {
+>          struct kvm_cpuid_entry2 *entry;
+> 
+> +       if (func != 0 && func != 1 && func != 7)
+> +               return 0;
+> +
+>          if (array->nent >= array->maxnent)
+>                  return -E2BIG;
+> 
+> -       entry = &array->entries[array->nent];
+> +       entry = &array->entries[array->nent++];
+> +
+>          entry->function = func;
+>          entry->index = 0;
+>          entry->flags = 0;
+> @@ -580,19 +584,17 @@ static int __do_cpuid_func_emulated(struct kvm_cpuid_array *array, u32 func)
+>          switch (func) {
+>          case 0:
+>                  entry->eax = 7;
+> -               ++array->nent;
+>                  break;
+>          case 1:
+>                  entry->ecx = F(MOVBE);
+> -               ++array->nent;
+>                  break;
+>          case 7:
+>                  entry->flags |= KVM_CPUID_FLAG_SIGNIFCANT_INDEX;
+>                  entry->eax = 0;
+>                  entry->ecx = F(RDPID);
+> -               ++array->nent;
+> -       default:
+>                  break;
+> +       default:
+> +               BUG();
+>          }
+> 
+>          return 0
+> 
+> 
+>>   
+>>   	switch (func) {
+>>   	case 0:
+>> -		entry->eax = 7;
+>> -		++array->nent;
+>> +		entry.eax = 7;
+>>   		break;
+>>   	case 1:
+>> -		entry->ecx = F(MOVBE);
+>> -		++array->nent;
+>> +		entry.ecx = F(MOVBE);
+>>   		break;
+>>   	case 7:
+>> -		entry->flags |= KVM_CPUID_FLAG_SIGNIFCANT_INDEX;
+>> -		entry->eax = 0;
+>> -		entry->ecx = F(RDPID);
+>> -		++array->nent;
+>> -	default:
+>> +		entry.flags |= KVM_CPUID_FLAG_SIGNIFCANT_INDEX;
+>> +		entry.eax = 0;
+>> +		entry.ecx = F(RDPID);
+>>   		break;
+>> +	default:
+>> +		goto out;
+>>   	}
+>>   
+>> +	if (array->nent >= array->maxnent)
+>> +		return -E2BIG;
+>> +
+>> +	memcpy(&array->entries[array->nent++], &entry, sizeof(entry));
+>> +
+>> +out:
+>>   	return 0;
+>>   }
+>>   
+>> @@ -975,6 +975,7 @@ int kvm_dev_ioctl_get_cpuid(struct kvm_cpuid2 *cpuid,
+>>   
+>>   	if (cpuid->nent < 1)
+>>   		return -E2BIG;
+>> +
+>>   	if (cpuid->nent > KVM_MAX_CPUID_ENTRIES)
+>>   		cpuid->nent = KVM_MAX_CPUID_ENTRIES;
+>>   
+>> -- 
+>> 2.30.2
+>>
+> 
+
