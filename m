@@ -2,55 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 253F9351DAE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B704351EFE
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240799AbhDASbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:31:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238590AbhDASJj (ORCPT
+        id S239719AbhDASvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:51:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33522 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235556AbhDASdD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:09:39 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CE31C0225A9;
-        Thu,  1 Apr 2021 08:30:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=miloN6DGw1sq8TwRfQqBfE3nU1vq3X8oB+icH0CHsp8=; b=ih5mRSpb3Oj6LJUx+Ph6Z6FA+B
-        VMfYDwEsuVumiZWxiEz7wgQAlhLEGqEsDVz7leYoL9HqW94qxnvzAi8pzK3zNxCZ27faXCsIAE4Io
-        lCI6eiYrHkkWanKTjaNUbEuXRE14U4i+KLJLX1RtUnbBtHARwh0fMmDCFOfm/GJ+7FTaZCOdw/a2h
-        C24cvu70+OFvDA3OiGBgV/apvynx3MdNmBLMNkK3w7womxDmjxwwUlRlLYUHMbL3FixGSAdvhuTF3
-        +8DJSuphaZHfc5zUktTD8SJM8AV9/GfPSt3epB7J9HlhZBy9CYU4acRqL+YRdhD+MJSxOxbGpokm2
-        8mCmwhvA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lRzGX-006IJe-F0; Thu, 01 Apr 2021 15:29:51 +0000
-Date:   Thu, 1 Apr 2021 16:29:49 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
-Cc:     laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com
-Subject: Re: [Outreachy kernel] [PATCH 2/2] staging: media: omap4iss: align
- arguments with open parenthesis
-Message-ID: <20210401152949.GG351017@casper.infradead.org>
-References: <cover.1617287509.git.martinsdecarvalhobeatriz@gmail.com>
- <475dbbe5774cbfed2d924807d8a3cfeb84b3d845.1617287509.git.martinsdecarvalhobeatriz@gmail.com>
+        Thu, 1 Apr 2021 14:33:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617301981;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zV8gIwvUm/KU6YRC6HTfZNfZbn7owoKKDfoum0B8FQg=;
+        b=HOsMbCNlsc5dnN1kqa3CFueKiy/ZqlGFJP2GV688DnITeIy73HwhV9F9hi4LUD+4+vt2HD
+        vIvFxPs6QqkSS69WXlFpsKjrxBvC24tfmi/X17JLo91vCFsmFjABMzU3YbS5xWunRPVqZu
+        ojExcdzka0ZmcKmp3x8mjrrMFnAETrs=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-430-j2jLVOxgOY2MPbrBZxiBGQ-1; Thu, 01 Apr 2021 11:31:25 -0400
+X-MC-Unique: j2jLVOxgOY2MPbrBZxiBGQ-1
+Received: by mail-ej1-f72.google.com with SMTP id k16so2376210ejg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 08:31:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=zV8gIwvUm/KU6YRC6HTfZNfZbn7owoKKDfoum0B8FQg=;
+        b=Mb+YoF5sAs0Yk3QDERlGoqPnYoUeTHRXKEfoOuFPK7PJ8Ms8q666OfUzAokpj+qg9G
+         0Xmh1h03/yY7MldoIKEU4W/SWN5iHJ+c59S2hJvyEFzXABNooGq8o5J8CH2nCCaa9UFq
+         4r1n6R+Ws9J2IQrGfmEndS4x1CIq6F1iDwh2f9PdzOGPC3GlDfVeFTMADHOgmFRk4cv4
+         RD8Py3McZNHOWVxbwvIzNaH1OfJQsF/FO6U0T/+jTeB6NW49L9NECQk4GG+/t6ZrErcJ
+         onHBncN4IvtrGqJm9Go3rvCZXLZaCATxVJjhHYdcQ02G/++tCHAsvQMgfTvu+2eD2GTN
+         Kvbg==
+X-Gm-Message-State: AOAM530/qCvnjp1SsCHLy8zAA8yTINVXUObOzcRLJU0AAx9hf+ORLaVf
+        jn0cOzROFEethBu7Zeb5odk8o9dv8DFU/RAnWHbtHO1UD7Y3XU9SOdW1LkbbVDdV2x1LWWBCm2C
+        XTpNDyLX58RjkuNoDISPdCkMT
+X-Received: by 2002:a17:907:76b3:: with SMTP id jw19mr9506184ejc.202.1617291084824;
+        Thu, 01 Apr 2021 08:31:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw2OyaXOnqsMAdV9O9/OpOj49/Etytctob8p7D5zvVV46D//28nISt7Li1rmBfAywC50ToRKA==
+X-Received: by 2002:a17:907:76b3:: with SMTP id jw19mr9506170ejc.202.1617291084698;
+        Thu, 01 Apr 2021 08:31:24 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id a17sm2918642ejf.20.2021.04.01.08.31.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 08:31:24 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [PATCH v2 2/2] KVM: nSVM: improve SYSENTER emulation on AMD
+In-Reply-To: <6f138606-d6c3-d332-9dc2-9ba4796fd4ce@redhat.com>
+References: <20210401111928.996871-1-mlevitsk@redhat.com>
+ <20210401111928.996871-3-mlevitsk@redhat.com>
+ <87h7kqrwb2.fsf@vitty.brq.redhat.com>
+ <6f138606-d6c3-d332-9dc2-9ba4796fd4ce@redhat.com>
+Date:   Thu, 01 Apr 2021 17:31:23 +0200
+Message-ID: <87zgyic984.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <475dbbe5774cbfed2d924807d8a3cfeb84b3d845.1617287509.git.martinsdecarvalhobeatriz@gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 04:07:39PM +0100, Beatriz Martins de Carvalho wrote:
->  		subdev = v4l2_i2c_new_subdev_board(&iss->v4l2_dev, adapter,
-> -				board_info->board_info, NULL);
-> +						   board_info->board_info, NULL);
+Paolo Bonzini <pbonzini@redhat.com> writes:
 
-Also not a readability improvement.  This checkpatch warning should
-be disregarded.
+> On 01/04/21 15:03, Vitaly Kuznetsov wrote:
+>>> +		svm->sysenter_eip_hi = guest_cpuid_is_intel(vcpu) ? (data >> 32) : 0;
+>> 
+>> (Personal taste) I'd suggest we keep the whole 'sysenter_eip'/'sysenter_esp'
+>> even if we only use the upper 32 bits of it. That would reduce the code
+>> churn a little bit (no need to change 'struct vcpu_svm').
+>
+> Would there really be less changes?  Consider that you'd have to look at 
+> the VMCB anyway because svm_get_msr can be reached not just for guest 
+> RDMSR but also for ioctls.
+>
+
+I was thinking about the hunk in arch/x86/kvm/svm/svm.h tweaking
+vcpu_svm. My opinion is not strong at all here)
+
+-- 
+Vitaly
+
