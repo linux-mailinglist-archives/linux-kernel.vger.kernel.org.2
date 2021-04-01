@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 794E0350F2E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01E34350F2F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:40:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233422AbhDAGjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 02:39:53 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:41440 "EHLO
+        id S233058AbhDAGjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 02:39:54 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:41615 "EHLO
         mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229539AbhDAGjR (ORCPT
+        with ESMTP id S233102AbhDAGjc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 02:39:17 -0400
-X-UUID: 066aaf53bd90488995aeaacb876a3e0e-20210401
-X-UUID: 066aaf53bd90488995aeaacb876a3e0e-20210401
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        Thu, 1 Apr 2021 02:39:32 -0400
+X-UUID: 62d6e9a0872d42658b94ccc97ae5c1f2-20210401
+X-UUID: 62d6e9a0872d42658b94ccc97ae5c1f2-20210401
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
         (envelope-from <nina-cm.wu@mediatek.com>)
         (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 380086253; Thu, 01 Apr 2021 14:39:12 +0800
+        with ESMTP id 889749307; Thu, 01 Apr 2021 14:39:28 +0800
 Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 1 Apr 2021 14:39:08 +0800
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 1 Apr 2021 14:39:27 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 1 Apr 2021 14:39:09 +0800
+ Transport; Thu, 1 Apr 2021 14:39:27 +0800
 From:   Nina Wu <nina-cm.wu@mediatek.com>
 To:     Rob Herring <robh+dt@kernel.org>,
         Matthias Brugger <matthias.bgg@gmail.com>
@@ -34,13 +34,14 @@ CC:     Nina Wu <Nina-CM.Wu@mediatek.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>,
         <srv_heupstream@mediatek.com>, <Jackson-kt.Chang@mediatek.com>
-Subject: [PATCH v2 1/6] dt-bindings: devapc: Update bindings
-Date:   Thu, 1 Apr 2021 14:38:02 +0800
-Message-ID: <1617259087-5502-1-git-send-email-nina-cm.wu@mediatek.com>
+Subject: [PATCH v2 2/6] soc: mediatek: devapc: move 'vio_idx_num' info to DT
+Date:   Thu, 1 Apr 2021 14:38:03 +0800
+Message-ID: <1617259087-5502-2-git-send-email-nina-cm.wu@mediatek.com>
 X-Mailer: git-send-email 2.6.4
+In-Reply-To: <1617259087-5502-1-git-send-email-nina-cm.wu@mediatek.com>
+References: <1617259087-5502-1-git-send-email-nina-cm.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-TM-SNTS-SMTP: 580A08974BAFC9A6A81C47BC47B66CEFAAC52E26F7B27EACDDAD88708ABEC6EC2000:8
 X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,52 +49,90 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nina Wu <Nina-CM.Wu@mediatek.com>
 
-To support newer hardware architecture of devapc,
-update device tree bindings.
+For new ICs, there are multiple devapc HWs for different subsys.
+The number of devices controlled by each devapc (i.e. 'vio_idx_num'
+in the code) varies.
+We move this info from compatible data to DT so that we do not need
+to add n compatible for a certain IC which has n devapc HWs with
+different 'vio_idx_num', respectively.
 
 Signed-off-by: Nina Wu <Nina-CM.Wu@mediatek.com>
 ---
- Documentation/devicetree/bindings/soc/mediatek/devapc.yaml | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/soc/mediatek/mtk-devapc.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/soc/mediatek/devapc.yaml b/Documentation/devicetree/bindings/soc/mediatek/devapc.yaml
-index 31e4d3c..42b284e 100644
---- a/Documentation/devicetree/bindings/soc/mediatek/devapc.yaml
-+++ b/Documentation/devicetree/bindings/soc/mediatek/devapc.yaml
-@@ -20,11 +20,17 @@ properties:
-   compatible:
-     enum:
-       - mediatek,mt6779-devapc
-+      - mediatek,mt8192-devapc
+diff --git a/drivers/soc/mediatek/mtk-devapc.c b/drivers/soc/mediatek/mtk-devapc.c
+index f1cea04..a0f6fbd 100644
+--- a/drivers/soc/mediatek/mtk-devapc.c
++++ b/drivers/soc/mediatek/mtk-devapc.c
+@@ -32,9 +32,6 @@ struct mtk_devapc_vio_dbgs {
+ };
  
-   reg:
-     description: The base address of devapc register bank
-     maxItems: 1
+ struct mtk_devapc_data {
+-	/* numbers of violation index */
+-	u32 vio_idx_num;
+-
+ 	/* reg offset */
+ 	u32 vio_mask_offset;
+ 	u32 vio_sta_offset;
+@@ -49,6 +46,7 @@ struct mtk_devapc_data {
+ struct mtk_devapc_context {
+ 	struct device *dev;
+ 	void __iomem *infra_base;
++	u32 vio_idx_num;
+ 	struct clk *infra_clk;
+ 	const struct mtk_devapc_data *data;
+ };
+@@ -60,10 +58,10 @@ static void clear_vio_status(struct mtk_devapc_context *ctx)
  
-+  vio-idx-num:
-+    description: The number of the devices controlled by devapc
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    maxItems: 1
+ 	reg = ctx->infra_base + ctx->data->vio_sta_offset;
+ 
+-	for (i = 0; i < VIO_MOD_TO_REG_IND(ctx->data->vio_idx_num) - 1; i++)
++	for (i = 0; i < VIO_MOD_TO_REG_IND(ctx->vio_idx_num - 1); i++)
+ 		writel(GENMASK(31, 0), reg + 4 * i);
+ 
+-	writel(GENMASK(VIO_MOD_TO_REG_OFF(ctx->data->vio_idx_num) - 1, 0),
++	writel(GENMASK(VIO_MOD_TO_REG_OFF(ctx->vio_idx_num - 1), 0),
+ 	       reg + 4 * i);
+ }
+ 
+@@ -80,15 +78,15 @@ static void mask_module_irq(struct mtk_devapc_context *ctx, bool mask)
+ 	else
+ 		val = 0;
+ 
+-	for (i = 0; i < VIO_MOD_TO_REG_IND(ctx->data->vio_idx_num) - 1; i++)
++	for (i = 0; i < VIO_MOD_TO_REG_IND(ctx->vio_idx_num - 1); i++)
+ 		writel(val, reg + 4 * i);
+ 
+ 	val = readl(reg + 4 * i);
+ 	if (mask)
+-		val |= GENMASK(VIO_MOD_TO_REG_OFF(ctx->data->vio_idx_num) - 1,
++		val |= GENMASK(VIO_MOD_TO_REG_OFF(ctx->vio_idx_num - 1),
+ 			       0);
+ 	else
+-		val &= ~GENMASK(VIO_MOD_TO_REG_OFF(ctx->data->vio_idx_num) - 1,
++		val &= ~GENMASK(VIO_MOD_TO_REG_OFF(ctx->vio_idx_num - 1),
+ 				0);
+ 
+ 	writel(val, reg + 4 * i);
+@@ -216,7 +214,6 @@ static void stop_devapc(struct mtk_devapc_context *ctx)
+ }
+ 
+ static const struct mtk_devapc_data devapc_mt6779 = {
+-	.vio_idx_num = 511,
+ 	.vio_mask_offset = 0x0,
+ 	.vio_sta_offset = 0x400,
+ 	.vio_dbg0_offset = 0x900,
+@@ -256,6 +253,9 @@ static int mtk_devapc_probe(struct platform_device *pdev)
+ 	if (!ctx->infra_base)
+ 		return -EINVAL;
+ 
++	if (of_property_read_u32(node, "vio_idx_num", &ctx->vio_idx_num))
++		return -EINVAL;
 +
-   interrupts:
-     description: A single interrupt specifier
-     maxItems: 1
-@@ -40,6 +46,7 @@ properties:
- required:
-   - compatible
-   - reg
-+  - vio-idx-num
-   - interrupts
-   - clocks
-   - clock-names
-@@ -54,6 +61,7 @@ examples:
-     devapc: devapc@10207000 {
-       compatible = "mediatek,mt6779-devapc";
-       reg = <0x10207000 0x1000>;
-+      vio-idx-num = <511>;
-       interrupts = <GIC_SPI 168 IRQ_TYPE_LEVEL_LOW>;
-       clocks = <&infracfg_ao CLK_INFRA_DEVICE_APC>;
-       clock-names = "devapc-infra-clock";
+ 	devapc_irq = irq_of_parse_and_map(node, 0);
+ 	if (!devapc_irq)
+ 		return -EINVAL;
 -- 
 2.6.4
 
