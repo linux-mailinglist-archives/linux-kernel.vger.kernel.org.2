@@ -2,147 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E873351B13
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7423351BE6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238252AbhDASFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:05:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58115 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234521AbhDARoE (ORCPT
+        id S237323AbhDASLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:11:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236859AbhDARz2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:44:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617299044;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=98iVITrp+QoQaOvmHFzYOL2p801lu1RcC2838VOSYvw=;
-        b=CZM+eGV8HtYLzfjwqLdPS+WQw0YMjjUPBst8p1g5NKB4EL+qXKip7oCBPegrsltqd6ph++
-        FL+jZj+cAW0GTp6Bus0oS9H55N2/3zSNAoHScGJKP3I3wjYsdfV2PKwQBPK3nXFDjSA7VP
-        6vbbnVyRZmgBBAXeSBbQbN27ga7xAbE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-127-Y_Ye3OZyN3qad7yzaRZVwg-1; Thu, 01 Apr 2021 13:13:05 -0400
-X-MC-Unique: Y_Ye3OZyN3qad7yzaRZVwg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1BEDC8189C8;
-        Thu,  1 Apr 2021 17:13:03 +0000 (UTC)
-Received: from starship (unknown [10.35.206.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EC7015D6D1;
-        Thu,  1 Apr 2021 17:12:59 +0000 (UTC)
-Message-ID: <889f4565fb9b86e77ed22da6cbbe649311744f16.camel@redhat.com>
-Subject: Re: [PATCH 1/4] KVM: x86: pending exceptions must not be blocked by
- an injected event
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Jim Mattson <jmattson@google.com>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Sean Christopherson <seanjc@google.com>
-Date:   Thu, 01 Apr 2021 20:12:58 +0300
-In-Reply-To: <4f6a321a-bc44-fe2f-37f5-6b22bc7fae1c@redhat.com>
-References: <20210401143817.1030695-1-mlevitsk@redhat.com>
-         <20210401143817.1030695-2-mlevitsk@redhat.com>
-         <4f6a321a-bc44-fe2f-37f5-6b22bc7fae1c@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Thu, 1 Apr 2021 13:55:28 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69AE9C0319C0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 10:15:58 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id d13so3938998lfg.7
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 10:15:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WVDGqZfP8CTFi7i9UziPzlSl+qgQw2QPqRQAU0O6vCI=;
+        b=IX55qoHfL8y3EtErFQYBvPcpWM6kg4j9Lq7Vuh5ufhjKJGc3KczMGzc39TUpbbMzVT
+         CSpHGFsKsQjzUA+LqiSMVyfny3edaLBYuDm341QVKfxWacX5CDe3xo8Gab0ojqeah7fX
+         ZGURyN/PM7LJn8ERrBrnbEetwPBOpv2Izcp5McUcxF7YsVw2cGtb3ma6B3xaHbuP5beZ
+         pDd0HTgJInatB++grkOkHnOxfrMSvpLovoiaq+elQ4XjXk0GKhKLf5po4n4tYIteamhq
+         Unar5bdRt0RiBRd1sHJ3AFfkPmNg7Rn2gESb6l9hDtCPl4h838xz/1HIYYpEcL5qs08Q
+         Q1lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WVDGqZfP8CTFi7i9UziPzlSl+qgQw2QPqRQAU0O6vCI=;
+        b=RGwfFCwBXO05jHkg1G3E21uHrwkIWJqo+fh/522hky4PopFXnmZPh2GhdsdsWdlxua
+         uVwCJ08s3yzH4SApu34DyDxai4WqUPEmbTFBB/rOmYpkX/PvLlBz4Er3o7KAjLYLG4de
+         +iX9lxYRrwV4yMxvESVAPoLUGMJQVsCKpHpMUoJxFEMpRbRGd2BaXYEYmoDM/xjIbZXD
+         BYfGaEOm9newxSQELChy1X07epfgTZYdJiOvjfuDkjJrFF7Nv9M+DlIe0sHRXd/lQoQd
+         +t+2plU6gS9xZiDB1i37MMJQtdyBBMylJ7rlhtmK95VbCAHTBxLpGLqyS8YFbOI2WT+I
+         JpRg==
+X-Gm-Message-State: AOAM530bQlvfd3gVPlTptM0OZSpf3C/W0iC8MEqxTEtIU2XczgxhlpdI
+        uBZtiGyufuKYLrl3t3Nmr89d1Li4EKPuOcgPkZXzfg==
+X-Google-Smtp-Source: ABdhPJyTtcQEz3dDdExeyagC8hu6fOgWKz7iFXCveSspTZ6Jukk9GiQddSqWeVrwsI2KQRRtDE1x/0e3S0nFutElX6A=
+X-Received: by 2002:a05:6512:2356:: with SMTP id p22mr5958452lfu.347.1617297356582;
+ Thu, 01 Apr 2021 10:15:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20210330101531.82752-1-songmuchun@bytedance.com>
+ <CALvZod4xHNmTQMd+zg71s7uyXUHEfwnQ-zqRXSWphwi9RogeNg@mail.gmail.com>
+ <YGN0141iu5HTGiNJ@carbon.dhcp.thefacebook.com> <YGOYYgWbwiYlKmzV@cmpxchg.org>
+ <YGOgth4IUflVE/Me@carbon.dhcp.thefacebook.com> <YGSSemLLpiHJHanV@cmpxchg.org> <CAMZfGtVYMDt_3CyH1g8d+Sey8J+W2HVY73xwCk_anm3UgHcr0w@mail.gmail.com>
+In-Reply-To: <CAMZfGtVYMDt_3CyH1g8d+Sey8J+W2HVY73xwCk_anm3UgHcr0w@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 1 Apr 2021 10:15:45 -0700
+Message-ID: <CALvZod6EeDeb8S-LT8BgFP=KqUKqGS-EnRTKCy+ajAthMC2Vfw@mail.gmail.com>
+Subject: Re: [External] Re: [RFC PATCH 00/15] Use obj_cgroup APIs to charge
+ the LRU pages
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Greg Thelen <gthelen@google.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-04-01 at 19:05 +0200, Paolo Bonzini wrote:
-> On 01/04/21 16:38, Maxim Levitsky wrote:
-> > Injected interrupts/nmi should not block a pending exception,
-> > but rather be either lost if nested hypervisor doesn't
-> > intercept the pending exception (as in stock x86), or be delivered
-> > in exitintinfo/IDT_VECTORING_INFO field, as a part of a VMexit
-> > that corresponds to the pending exception.
-> > 
-> > The only reason for an exception to be blocked is when nested run
-> > is pending (and that can't really happen currently
-> > but still worth checking for).
-> > 
-> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> 
-> This patch would be an almost separate bugfix, right?  I am going to 
-> queue this, but a confirmation would be helpful.
+On Thu, Apr 1, 2021 at 9:08 AM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+[...]
+> > The zombie issue is a pretty urgent concern that has caused several
+> > production emergencies now. It needs a fix sooner rather than later.
+>
+> Thank you very much for clarifying the problem for me. I do agree
+> with you. This issue should be fixed ASAP. Using objcg is a good
+> choice. Dying objcg should not be a problem. Because the size of
+> objcg is so small compared to memcg.
+>
 
-Yes, this patch doesn't depend on anything else.
-Thanks!
-Best regards,
-	Maxim Levitsky
+Just wanted to say out loud that yes this patchset will reduce the
+memcg zombie issue but this is not the final destination. We should
+continue the discussions on sharing/reusing scenarios.
 
-> 
-> Paolo
-> 
-> > ---
-> >   arch/x86/kvm/svm/nested.c |  8 +++++++-
-> >   arch/x86/kvm/vmx/nested.c | 10 ++++++++--
-> >   2 files changed, 15 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-> > index 8523f60adb92..34a37b2bd486 100644
-> > --- a/arch/x86/kvm/svm/nested.c
-> > +++ b/arch/x86/kvm/svm/nested.c
-> > @@ -1062,7 +1062,13 @@ static int svm_check_nested_events(struct kvm_vcpu *vcpu)
-> >   	}
-> >   
-> >   	if (vcpu->arch.exception.pending) {
-> > -		if (block_nested_events)
-> > +		/*
-> > +		 * Only a pending nested run can block a pending exception.
-> > +		 * Otherwise an injected NMI/interrupt should either be
-> > +		 * lost or delivered to the nested hypervisor in the EXITINTINFO
-> > +		 * vmcb field, while delivering the pending exception.
-> > +		 */
-> > +		if (svm->nested.nested_run_pending)
-> >                           return -EBUSY;
-> >   		if (!nested_exit_on_exception(svm))
-> >   			return 0;
-> > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> > index fd334e4aa6db..c3ba842fc07f 100644
-> > --- a/arch/x86/kvm/vmx/nested.c
-> > +++ b/arch/x86/kvm/vmx/nested.c
-> > @@ -3806,9 +3806,15 @@ static int vmx_check_nested_events(struct kvm_vcpu *vcpu)
-> >   
-> >   	/*
-> >   	 * Process any exceptions that are not debug traps before MTF.
-> > +	 *
-> > +	 * Note that only a pending nested run can block a pending exception.
-> > +	 * Otherwise an injected NMI/interrupt should either be
-> > +	 * lost or delivered to the nested hypervisor in the IDT_VECTORING_INFO,
-> > +	 * while delivering the pending exception.
-> >   	 */
-> > +
-> >   	if (vcpu->arch.exception.pending && !vmx_pending_dbg_trap(vcpu)) {
-> > -		if (block_nested_events)
-> > +		if (vmx->nested.nested_run_pending)
-> >   			return -EBUSY;
-> >   		if (!nested_vmx_check_exception(vcpu, &exit_qual))
-> >   			goto no_vmexit;
-> > @@ -3825,7 +3831,7 @@ static int vmx_check_nested_events(struct kvm_vcpu *vcpu)
-> >   	}
-> >   
-> >   	if (vcpu->arch.exception.pending) {
-> > -		if (block_nested_events)
-> > +		if (vmx->nested.nested_run_pending)
-> >   			return -EBUSY;
-> >   		if (!nested_vmx_check_exception(vcpu, &exit_qual))
-> >   			goto no_vmexit;
-> > 
-
-
+Muchun, can you please also CC Hugh Dickins and Alex Shi in the next
+version of your patchset?
