@@ -2,202 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C12350BE9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 03:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F36E350BF6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 03:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233274AbhDABYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 21:24:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46222 "EHLO
+        id S232367AbhDABaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 21:30:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233028AbhDABYE (ORCPT
+        with ESMTP id S229486AbhDABaB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 21:24:04 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE3E9C061574;
-        Wed, 31 Mar 2021 18:24:03 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id v23so152031ple.9;
-        Wed, 31 Mar 2021 18:24:03 -0700 (PDT)
+        Wed, 31 Mar 2021 21:30:01 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B0A1C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 18:30:01 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id z136so526396iof.10
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 18:30:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zsCSqM7YP3RCVWsP5WM5Atj6TW8UyCzrw8pSRQkMoNc=;
-        b=LMbTOJkEXOm6POeA3AvN2jWp+gm7OYjAEInVGJH/FBXpQgQexNOAfHPhPH1blrp+Hk
-         QfxUXb88N0cw1YHrVpuNOlBjs2SQs4pfqX7CgsNyL9By5Yir/XkzzxoFPDLRzNQm9vXK
-         G7MVU+v9lw15hwZfxLV87elkv2gpj0x9gDfnWfvf5F4/uRJw/U1dkjX19wm+/AXQlTnL
-         wrj4qnT3SN83ShjI9YUEFf6qsgcElJh10iAodoEJZTbuRRBjrDvJUl/ihho7RDVa0uTx
-         /R/efHGHsCCddrUS4tDSCMqDECdYvdrut1Z8vxKVtEV0ICXwwnnoijt7jWhtb2Fs/kW7
-         z60Q==
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=wM+XOgEb/yBuTMFzMcbGJ4c8cJikNdFkuv6UmPLcLng=;
+        b=QkzQZY63ngEPITl4SX2dPkBF7/E+fHCZh0befa4u3t6kdfHAzruKWwXBksiWQqwp1/
+         Vno0iT4L+6GLXgzXHBoJbepGtiVh99Fap4kzPWFJkaqgxG8TJFi9mKVsGOqgFR2uqthr
+         dQZVAw0lNKjdYwNeCOwdA/BU8/6EDmEj1XqzX+yVq+uTsD2h1hAHWYQSKXs/aHTNi6A/
+         SLoMs23XBv9jnI02uRZ+tbVGhr1EBWoUnhYutMNlPUv2IOiKhQMewKmn7AmM2kKQpUwk
+         ccyNL6DqE9mgTCNetEU9oVygjkUgb2RL4hWMpbknsM9TDRmsHmkahnWpn7m72hyRhWlu
+         ebCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zsCSqM7YP3RCVWsP5WM5Atj6TW8UyCzrw8pSRQkMoNc=;
-        b=ssx6aZSF1oji9opCRQin/IPHeZxzU5/HMo5Q+rgxUsd8WFg+BiE9pxQGcvRqAUkyjW
-         3USiO3nknaMYVzm2Q/Mg3h9fJ+fYIchossL2T19t3eOnbW5MmRXTrQjD4yIAsxoJrDal
-         wDDJsrV6dl3kKwBDzW1YSN1RAW2jlAbes3uVbMVf36aHfCEWh5zDNBuU/GP3ZNIi5dQv
-         NSu8SHWr1sFXVR130uToKjbVMp1io1SppHnkEYjx+HX+l0AjYUFggH5dDtB+/F2pJZ6O
-         0hH6tcDTvsG+T6/up7/CwAMiaQ7fUzWUDeYaqnmSLjnt3iVOc9GBEinSmFDBCFz8g0kG
-         Y4FA==
-X-Gm-Message-State: AOAM531i7a5Is2Wc11AW3G6zpnSsL4cD0d9uZGhtKT13gjMQqkXRUXSe
-        6xYPx+4/We341OGgX7FJi7U=
-X-Google-Smtp-Source: ABdhPJy+Ipg5FOivJlIvHzZ6cboe/AYEvu38Avnp5oGumsFN75ULhelm0LN9Knlc4dEZiTXcaaUkhg==
-X-Received: by 2002:a17:90a:b293:: with SMTP id c19mr6227917pjr.193.1617240243491;
-        Wed, 31 Mar 2021 18:24:03 -0700 (PDT)
-Received: from localhost ([2601:1c0:5200:a6:307:a401:7b76:c6e5])
-        by smtp.gmail.com with ESMTPSA id y12sm3520619pfq.118.2021.03.31.18.24.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 18:24:02 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     Rob Clark <robdclark@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
-        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 4/4] drm/msm: Improved debugfs gem stats
-Date:   Wed, 31 Mar 2021 18:27:21 -0700
-Message-Id: <20210401012722.527712-5-robdclark@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210401012722.527712-1-robdclark@gmail.com>
-References: <20210331221630.488498-1-robdclark@gmail.com>
- <20210401012722.527712-1-robdclark@gmail.com>
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=wM+XOgEb/yBuTMFzMcbGJ4c8cJikNdFkuv6UmPLcLng=;
+        b=dCqQJHRKL71dlytX6EL8oXdySk0Zz4udXpmfZ58pMO0DBp/cXCzn/lq+PFcZsqcRs6
+         5q+UxC5vIdZhNyl+RveCTYeZp0w8N4JKE9RQZwzIMAmx3qfIDA/xeTJQLfenKj0h1f0j
+         DDVngYcKhnlwSFTpDrvbv+O42/W+uHg91n7tHTlu8PkttMq0i7+7aN9SeUe0RAMAAwKu
+         uJ2Y0kH3WcquAh8VasLNX7IGdwfIbIYEd8e8WABGCm72ZfWtGdCH8/VeGKcr2PSVkx3E
+         15jFPz5cs2dLzsXEHPMCg6A8DiWQDIca2laRkrkPEU+De8XNmpIOfOgdsVVmGRkmK+PJ
+         HExA==
+X-Gm-Message-State: AOAM530k4yGlgb14qRVovV9AA+U8cE4S6CErajbTLQZaSXJpKRpJiufX
+        k4mtH4YLpGDNjLijSuNxLJUaEkGwyCKn0diDT10=
+X-Google-Smtp-Source: ABdhPJwb+v0pZcLvcMz3RbJkvqhLo56yD2ieC0PpDPQpixNqyATKyLF6xNv3yVj5JDG+QqtIOJjLQLmKMSY1RYvwalY=
+X-Received: by 2002:a5e:a515:: with SMTP id 21mr4573657iog.164.1617240600631;
+ Wed, 31 Mar 2021 18:30:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Sender: nenelegalpractitioners@gmail.com
+Received: by 2002:a05:6e02:1210:0:0:0:0 with HTTP; Wed, 31 Mar 2021 18:30:00
+ -0700 (PDT)
+From:   Patricia Leson <lk361630@gmail.com>
+Date:   Wed, 31 Mar 2021 17:30:00 -0800
+X-Google-Sender-Auth: r6M8N5Y6c4wN-ZV6Sx674Um-QNA
+Message-ID: <CAMHJu+7NYMsEVBMgL2zfVFBjzVawm0iCWBjV3jijx68=c-=JOA@mail.gmail.com>
+Subject: I wait for your prompt response,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+Dear Friend,
+May the grace, peace, love and the truth in the word of God be with
+you and all those that you love and care for. Please permit me to
+share with you, my desire to go into this Godly business partnership
+with you as I believe that You and I can cooperate together in this
+humanitarian social project only for the glory and honor of God.  My
+names are Mrs. Patricia Leson,  I am a dying widow hospitalized
+undergoing treatment for brain tumor disease. Because of this reason i
+decided to seek for your sincerity and ability to carry out this
+transaction and fulfill my final wish in implementing the charitable
+social project in your country as it requires absolute trust and
+devotion without any failure, which i believe that you are a reliable
+person and you will not expose or betray this trust and confident that
+I'm about to entrust on you. My late husband made a substantial
+deposit with the bank with my name as the beneficiary which I decided
+to hand over and entrust the sum of ($ 12,500,000.00, Dollars) in the
+account to you to invest into the humanitarian social project. Based
+on my present health status as I'm permanently indisposed to handle
+finances or any financial related project, following my diagnoses.
+Having known my present health condition, I decided to seek for your
+assistance in reclaiming the fund for the support and mutual benefit
+of the less privileged as I don't have any relation, and I have been
+touched by God to donate from what I have to the needy because it will
+be a great loss in spending the fund on my health treatment hence my
+doctor has confirmed to me that i will not survive this illness.
 
-The last patch lost the breakdown of active vs inactive GEM objects in
-$debugfs/gem.  But we can add some better stats to summarize not just
-active vs inactive, but also purgable/purged to make up for that.
+This is the reason I contacted you for your support and help to stand
+as my rightful beneficiary and claim the money for humanitarian
+purposes for the mutual benefits of the less privileged ones. Because
+If the money remains unclaimed with the bank after my death, those
+greedy bank executives will place the money as an unclaimed Fund and
+share it for their selfish and worthless ventures. It will be my
+pleasure to compensate you with part of the money as my Investment
+Manager/Partner for your effort in handling the transaction, while the
+remaining amount of the money will be invested into the charity
+project there in your country.
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
-Tested-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
----
- drivers/gpu/drm/msm/msm_fb.c  |  3 ++-
- drivers/gpu/drm/msm/msm_gem.c | 31 ++++++++++++++++++++++++-------
- drivers/gpu/drm/msm/msm_gem.h | 11 ++++++++++-
- 3 files changed, 36 insertions(+), 9 deletions(-)
+IF YOU ARE WILLING TO ACCEPT MY OFFER AND DO EXACTLY AS I HAVE STATED
+ABOVE. YOU SHOULD IMMEDIATELY GET BACK TO ME FOR FURTHER DETAILS OF
+THE TRANSACTION.
 
-diff --git a/drivers/gpu/drm/msm/msm_fb.c b/drivers/gpu/drm/msm/msm_fb.c
-index d42f0665359a..91c0e493aed5 100644
---- a/drivers/gpu/drm/msm/msm_fb.c
-+++ b/drivers/gpu/drm/msm/msm_fb.c
-@@ -33,6 +33,7 @@ static const struct drm_framebuffer_funcs msm_framebuffer_funcs = {
- #ifdef CONFIG_DEBUG_FS
- void msm_framebuffer_describe(struct drm_framebuffer *fb, struct seq_file *m)
- {
-+	struct msm_gem_stats stats = {};
- 	int i, n = fb->format->num_planes;
- 
- 	seq_printf(m, "fb: %dx%d@%4.4s (%2d, ID:%d)\n",
-@@ -42,7 +43,7 @@ void msm_framebuffer_describe(struct drm_framebuffer *fb, struct seq_file *m)
- 	for (i = 0; i < n; i++) {
- 		seq_printf(m, "   %d: offset=%d pitch=%d, obj: ",
- 				i, fb->offsets[i], fb->pitches[i]);
--		msm_gem_describe(fb->obj[i], m);
-+		msm_gem_describe(fb->obj[i], m, &stats);
- 	}
- }
- #endif
-diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
-index 7ca30e362222..2ecf7f1cef25 100644
---- a/drivers/gpu/drm/msm/msm_gem.c
-+++ b/drivers/gpu/drm/msm/msm_gem.c
-@@ -873,7 +873,8 @@ static void describe_fence(struct dma_fence *fence, const char *type,
- 				fence->seqno);
- }
- 
--void msm_gem_describe(struct drm_gem_object *obj, struct seq_file *m)
-+void msm_gem_describe(struct drm_gem_object *obj, struct seq_file *m,
-+		struct msm_gem_stats *stats)
- {
- 	struct msm_gem_object *msm_obj = to_msm_bo(obj);
- 	struct dma_resv *robj = obj->resv;
-@@ -885,11 +886,23 @@ void msm_gem_describe(struct drm_gem_object *obj, struct seq_file *m)
- 
- 	msm_gem_lock(obj);
- 
-+	stats->all.count++;
-+	stats->all.size += obj->size;
-+
-+	if (is_active(msm_obj)) {
-+		stats->active.count++;
-+		stats->active.size += obj->size;
-+	}
-+
- 	switch (msm_obj->madv) {
- 	case __MSM_MADV_PURGED:
-+		stats->purged.count++;
-+		stats->purged.size += obj->size;
- 		madv = " purged";
- 		break;
- 	case MSM_MADV_DONTNEED:
-+		stats->purgable.count++;
-+		stats->purgable.size += obj->size;
- 		madv = " purgeable";
- 		break;
- 	case MSM_MADV_WILLNEED:
-@@ -956,20 +969,24 @@ void msm_gem_describe(struct drm_gem_object *obj, struct seq_file *m)
- 
- void msm_gem_describe_objects(struct list_head *list, struct seq_file *m)
- {
-+	struct msm_gem_stats stats = {};
- 	struct msm_gem_object *msm_obj;
--	int count = 0;
--	size_t size = 0;
- 
- 	seq_puts(m, "   flags       id ref  offset   kaddr            size     madv      name\n");
- 	list_for_each_entry(msm_obj, list, node) {
- 		struct drm_gem_object *obj = &msm_obj->base;
- 		seq_puts(m, "   ");
--		msm_gem_describe(obj, m);
--		count++;
--		size += obj->size;
-+		msm_gem_describe(obj, m, &stats);
- 	}
- 
--	seq_printf(m, "Total %d objects, %zu bytes\n", count, size);
-+	seq_printf(m, "Total:    %4d objects, %9zu bytes\n",
-+			stats.all.count, stats.all.size);
-+	seq_printf(m, "Active:   %4d objects, %9zu bytes\n",
-+			stats.active.count, stats.active.size);
-+	seq_printf(m, "Purgable: %4d objects, %9zu bytes\n",
-+			stats.purgable.count, stats.purgable.size);
-+	seq_printf(m, "Purged:   %4d objects, %9zu bytes\n",
-+			stats.purged.count, stats.purged.size);
- }
- #endif
- 
-diff --git a/drivers/gpu/drm/msm/msm_gem.h b/drivers/gpu/drm/msm/msm_gem.h
-index e6b28edb1db9..7c7d54bad189 100644
---- a/drivers/gpu/drm/msm/msm_gem.h
-+++ b/drivers/gpu/drm/msm/msm_gem.h
-@@ -158,7 +158,16 @@ struct drm_gem_object *msm_gem_import(struct drm_device *dev,
- __printf(2, 3)
- void msm_gem_object_set_name(struct drm_gem_object *bo, const char *fmt, ...);
- #ifdef CONFIG_DEBUG_FS
--void msm_gem_describe(struct drm_gem_object *obj, struct seq_file *m);
-+
-+struct msm_gem_stats {
-+	struct {
-+		unsigned count;
-+		size_t size;
-+	} all, active, purgable, purged;
-+};
-+
-+void msm_gem_describe(struct drm_gem_object *obj, struct seq_file *m,
-+		struct msm_gem_stats *stats);
- void msm_gem_describe_objects(struct list_head *list, struct seq_file *m);
- #endif
- 
--- 
-2.30.2
-
+May God Bless You.
+Regards. Mrs. Patricia Leson.
