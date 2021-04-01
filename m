@@ -2,62 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7984351EE5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D03351D71
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238601AbhDASt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:49:56 -0400
-Received: from mga18.intel.com ([134.134.136.126]:38549 "EHLO mga18.intel.com"
+        id S237400AbhDAS2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:28:34 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42002 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240295AbhDASaB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:30:01 -0400
-IronPort-SDR: 46tFSyiTBFbTHqm+ajNzuWyDPv/0bczOl41VolkhQT0x2QUIi4Y8uwP4x2pjSsPbwHBEmJW5UG
- UDBLtlFboryg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="179810992"
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="179810992"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 09:03:23 -0700
-IronPort-SDR: 4QbDotXZHHyUF/mrZZU6rz0IbZ67UA7GraB1G+XBmuOpxgxG6yCnqIzxdEruyJ/dy5KQHEcu7x
- 1keblEV6B3zA==
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="439265765"
-Received: from mooreale-mobl.amr.corp.intel.com (HELO [10.255.229.43]) ([10.255.229.43])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 09:03:22 -0700
-Subject: Re: [PATCH v2] soundwire: qcom: wait for fifo space to be available
- before read/write
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        vkoul@kernel.org
-Cc:     robh@kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com
-References: <20210401090058.24041-1-srinivas.kandagatla@linaro.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <e1bcc85d-b583-2c9a-18e5-634994cc2916@linux.intel.com>
-Date:   Thu, 1 Apr 2021 09:36:22 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S237278AbhDASDj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:03:39 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1617287853; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FJrA00uxIGXmEJZOjpdMpdaaSrHyC5HALtOFInOMB88=;
+        b=P0jFij1KoLqdUY5uwbXKSbR/LbYWyxi4Wk+q4F34B0IOYeUGzbxTVr3vKcCDt9FtsbE27w
+        9dHbGfZzGBYaU+qoeDZJ9UxWwnym0QoMmahTbtKn3jCFalv31tYB1tc8Ei6GEW/lZcFg1w
+        azGlcTsmU9JcyFTemfJobLE5oBejI9c=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AA704B230;
+        Thu,  1 Apr 2021 14:37:33 +0000 (UTC)
+Date:   Thu, 1 Apr 2021 16:37:29 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Tejun Heo <tj@kernel.org>, axboe@fb.com,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH v2] writeback: fix obtain a reference to a
+ freeing memcg css
+Message-ID: <YGXaqcLOHjlCkNkt@dhcp22.suse.cz>
+References: <20210401093343.51299-1-songmuchun@bytedance.com>
+ <YGWf1C/gIZgs0AhR@dhcp22.suse.cz>
+ <CAMZfGtX9V898aezb-huMEYU_-NjqfL6HbXeaZr2Q2MUa+VG3qQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210401090058.24041-1-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtX9V898aezb-huMEYU_-NjqfL6HbXeaZr2Q2MUa+VG3qQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/1/21 4:00 AM, Srinivas Kandagatla wrote:
-> If we write registers very fast we can endup in a situation where some
-> of the writes will be dropped without any notice.
+On Thu 01-04-21 21:59:13, Muchun Song wrote:
+> On Thu, Apr 1, 2021 at 6:26 PM Michal Hocko <mhocko@suse.com> wrote:
+[...]
+> > Even if the css ref count is not really necessary it shouldn't cause any
+> > harm and it makes the code easier to understand. At least a comment
+> > explaining why that is not necessary would be required without it
 > 
-> So wait for the fifo space to be available before reading/writing the
-> soundwire registers.
+> OK. I will add a comment here to explain why we need to hold a
+> ref.
 
-Out of curiosity, do you actually need to do a check in the read case as 
-well?
+I do not think this is necessary. Taking the reference is a standard
+way and I am not sure it requires a comment. I meant to say that not
+having a reference should really have a comment explaining why.
 
-The commit message talks about writes getting dropped, is the opposite 
-also a problem?
-
+Thanks!
+-- 
+Michal Hocko
+SUSE Labs
