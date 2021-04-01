@@ -2,128 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB9C3517C0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40681351838
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235396AbhDARmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:42:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51589 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234376AbhDARhB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:37:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617298621;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FWlPTwVU/JhlFoa7PnUm7BiufeipdRCCVm3t67X/6Ck=;
-        b=S+38g3MK6rlY57leg61tt4XH5OBBVTy8S6XH8IjXsLRL8RujEoSUVPemYWGt3JMBPTn8FV
-        HowcEfFpnM+EpINMxJSnToxhsJRMG5EbGUm/ZuKjPKM6O2T6KQJBKYWZUOw/O2Br33GagS
-        OzxEEGLHqrTM2n1slszsJ5HNV1YqRAM=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-82-CWdqqg29O_mntcGcT8XmWg-1; Thu, 01 Apr 2021 12:36:29 -0400
-X-MC-Unique: CWdqqg29O_mntcGcT8XmWg-1
-Received: by mail-ej1-f69.google.com with SMTP id kx22so2462462ejc.17
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 09:36:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FWlPTwVU/JhlFoa7PnUm7BiufeipdRCCVm3t67X/6Ck=;
-        b=syf6Zghgzu0KGOAcICDYpP8mUW8M1s6ewOnvykaW95ZJ0rME2sTbmFR5vBnMn1IK1s
-         sV5K+bMg3+5g/+Z755BvbvobyzFIunWn2mnWpPvfLbSHUxysQiE1D8MDVind0Y6lUvpV
-         3Ukbo1I4go5DiOIxc6Xm88695n2PBKbYCfOPdXi3Z/Lukzw8lhcwO14bD8jJrNrZZ6xF
-         20VbpzT+aZRjsBxlOolvRiB6eFQ0cbo6b1mLfTrifVNqfyPgq+TNpQEgJn+PVXMnV/eJ
-         ElKuW0JvNAsvOM4Y9uqN0OYIYJi6E92ylHNC7HFIdYURXMnHYr36+dIm0NiGGfnpowx2
-         6xLw==
-X-Gm-Message-State: AOAM530ZOOQ2EWjyFG+CH/NUMUiNK6oynd5D18eafqNj4P9D3Fo9aavp
-        OBVVUGyU2XpHXVoEXUZjjP2g/i1bxeGiY0bHpcbb10UOL8+PUdk1j9+GswML6s2ShRj5dWSTgCw
-        o7MtYg+TPdhM7ausq9wVQFajB
-X-Received: by 2002:a17:906:33d9:: with SMTP id w25mr10387091eja.413.1617294988175;
-        Thu, 01 Apr 2021 09:36:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwJhdw9ZNAVxopX21NkBHBalklLzA7F/+seNIdWSSfqZWuAJGVcBjNNYohV15vdXdcEN2XjTw==
-X-Received: by 2002:a17:906:33d9:: with SMTP id w25mr10387072eja.413.1617294988034;
-        Thu, 01 Apr 2021 09:36:28 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id f9sm3831396edq.43.2021.04.01.09.36.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Apr 2021 09:36:27 -0700 (PDT)
-To:     David Woodhouse <dwmw2@infradead.org>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     mtosatti@redhat.com, vkuznets@redhat.com,
-        syzbot+b282b65c2c68492df769@syzkaller.appspotmail.com
-References: <20210330165958.3094759-1-pbonzini@redhat.com>
- <20210330165958.3094759-3-pbonzini@redhat.com>
- <1b37ba872b4d2e6186f8e172b95c36d92153d952.camel@infradead.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [EXTERNAL] [PATCH 2/2] KVM: x86: disable interrupts while
- pvclock_gtod_sync_lock is taken
-Message-ID: <65799142-76ce-fc90-0fcc-b384eaf2b038@redhat.com>
-Date:   Thu, 1 Apr 2021 18:36:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S236314AbhDARoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:44:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40596 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234559AbhDARiA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:38:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B76F161386;
+        Thu,  1 Apr 2021 16:42:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617295378;
+        bh=i04niHeXuQvwIy5MixftZzotTP0TGOM+jM0OxbF9CXw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=V0A1RN+DPE2xtWYyDCDoxSGkMsS1QrILEzosJPbis4ibuJoVVIl4ZdF3i89mvsOY6
+         +fH7WX9Ps2Jlw9/cbCJBJ5mE48dsmK6NXkCaZyPpEvUSmKuddYv4gHqDBUra6f0Ov4
+         nsJ3lsAcFsxMUwflSoK41pwCfsEUJjmbZyP54B0FA4EbtF5Lil1xT4B5yteUg0cR6O
+         44aRc52oTCBzFrJ/QDenCd7I7SjQU+BqxUMTOsg65DGdcFl/pJDm9X3KNf6oNC+8bX
+         O+nOlYUmtOKeZLZEjVUn4oBVUMvm5rzm9B0e6Vr7a4PrWk6PM1tA3AKtNmQXJt5Kd5
+         bVuJrTDgpDRZg==
+Date:   Thu, 1 Apr 2021 11:42:56 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Henning Schild <henning.schild@siemens.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Jean Delvare <jdelvare@suse.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Tan Jui Nee <jui.nee.tan@intel.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Jonathan Yong <jonathan.yong@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pci@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Peter Tyser <ptyser@xes-inc.com>, hdegoede@redhat.com
+Subject: Re: [PATCH v1 3/7] PCI: New Primary to Sideband (P2SB) bridge
+ support library
+Message-ID: <20210401164256.GA1516177@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <1b37ba872b4d2e6186f8e172b95c36d92153d952.camel@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YGXqfvBv37eLL28Z@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/04/21 17:27, David Woodhouse wrote:
->> -       spin_lock(&ka->pvclock_gtod_sync_lock);
->> +       spin_lock_irqsave(&ka->pvclock_gtod_sync_lock, flags);
->>          use_master_clock = ka->use_master_clock;
->>          if (use_master_clock) {
->>                  host_tsc = ka->master_cycle_now;
->>                  kernel_ns = ka->master_kernel_ns;
->>          }
->> -       spin_unlock(&ka->pvclock_gtod_sync_lock);
->> +       spin_unlock_irqrestore(&ka->pvclock_gtod_sync_lock, flags);
->>
->>          /* Keep irq disabled to prevent changes to the clock */
->>          local_irq_save(flags);
-> That seems a little gratuitous at the end; restoring the flags as part
-> of the spin_unlock_irqrestore() and then immediately calling
-> local_irq_save().
+On Thu, Apr 01, 2021 at 06:45:02PM +0300, Andy Shevchenko wrote:
+> On Tue, Mar 09, 2021 at 09:42:52AM +0100, Henning Schild wrote:
+> > Am Mon, 8 Mar 2021 19:42:21 -0600
+> > schrieb Bjorn Helgaas <helgaas@kernel.org>:
+> > > On Mon, Mar 08, 2021 at 09:16:50PM +0200, Andy Shevchenko wrote:
+> > > > On Mon, Mar 08, 2021 at 12:52:12PM -0600, Bjorn Helgaas wrote:  
+> > > > > On Mon, Mar 08, 2021 at 02:20:16PM +0200, Andy Shevchenko wrote:  
 > 
-> Is something going to complain if we just use spin_unlock() there and
-> then later restore the flags with the existing local_irq_restore()?
+> ...
+> 
+> > > > > > +	/* Read the first BAR of the device in question */
+> > > > > > +	__pci_bus_read_base(bus, devfn, pci_bar_unknown, mem,
+> > > > > > PCI_BASE_ADDRESS_0, true);  
+> > > > > 
+> > > > > I don't get this.  Apparently this normally hidden device is
+> > > > > consuming PCI address space.  The PCI core needs to know
+> > > > > about this.  If it doesn't, the PCI core may assign this
+> > > > > space to another device.  
+> > > > 
+> > > > Right, it returns all 1:s to any request so PCI core *thinks*
+> > > > it's plugged off (like D3cold or so).  
+> > > 
+> > > I'm asking about the MMIO address space.  The BAR is a register
+> > > in config space.  AFAICT, clearing P2SBC_HIDE_BYTE makes that
+> > > BAR visible.  The BAR describes a region of PCI address space.
+> > > It looks like setting P2SBC_HIDE_BIT makes the BAR disappear
+> > > from config space, but it sounds like the PCI address space
+> > > *described* by the BAR is still claimed by the device.  If the
+> > > device didn't respond to that MMIO space, you would have no
+> > > reason to read the BAR at all.
+> > > 
+> > > So what keeps the PCI core from assigning that MMIO space to
+> > > another device?
+> > 
+> > The device will respond to MMIO while being hidden. I am afraid
+> > nothing stops a collision, except for the assumption that the BIOS
+> > is always right and PCI devices never get remapped. But just
+> > guessing here.
+> > 
+> > I have seen devices with coreboot having the P2SB visible, and
+> > most likely relocatable. Making it visible in Linux and not hiding
+> > it again might work, but probably only as long as Linux will not
+> > relocate it.  Which i am afraid might seriously upset the BIOS,
+> > depending on what a device does with those GPIOs and which parts
+> > are implemented in the BIOS.
+> 
+> So the question is, do we have knobs in PCI core to mark device
+> fixes in terms of BARs, no relocation must be applied, no other
+> devices must have the region?
 
-Yes, I think it breaks on RT kernels.
+I think the closest thing is the IORESOURCE_PCI_FIXED bit that we use
+for things that must not be moved.  Generally PCI resources are
+associated with a pci_dev, and we set IORESOURCE_PCI_FIXED for BARs,
+e.g., dev->resource[n].  We do that for IDE legacy regions (see
+LEGACY_IO_RESOURCE), Langwell devices (pci_fixed_bar_fixup()),
+"enhanced allocation" (pci_ea_flags()), and some quirks (quirk_io()).
 
-> Or should we move the local_irq_save() up above the existing
-> spin_lock() and leave the spin lock/unlock as they are?
+In your case, the device is hidden so it doesn't respond to config
+accesses, so there is no pci_dev for it.
 
-Nope, also breaks on RT (and this one is explicitly called out by 
-Documentation/locking/locktypes.rst).  Since it's necessary to use 
-spin_lock_irqsave and spin_unlock_irqrestore, one would need flags and 
-flags2 variables which is really horrible.
+Maybe you could do some sort of quirk that allocates its own struct
+resource, fills it in, sets IORESOURCE_PCI_FIXED, and does something
+similar to pci_claim_resource()?
 
-I thought of a similar one which is to move the critical section within 
-the IRQ-disabled region:
-
-         local_irq_save(flags);
-	...
-         spin_lock(&ka->pvclock_gtod_sync_lock);
-         use_master_clock = ka->use_master_clock;
-         if (use_master_clock) {
-                 host_tsc = ka->master_cycle_now;
-                 kernel_ns = ka->master_kernel_ns;
-         } else {
-                 host_tsc = rdtsc();
-                 kernel_ns = get_kvmclock_base_ns();
-         }
-         spin_unlock(&ka->pvclock_gtod_sync_lock);
-	...
-	local_irq_restore(flags);
-
-... but didn't do it because of RT again.
-
-Paolo
-
+Bjorn
