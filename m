@@ -2,107 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E9CD351E59
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:54:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59ED8351C90
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:46:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239033AbhDASjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:39:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46034 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239674AbhDASQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:16:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C419E6121D;
-        Thu,  1 Apr 2021 12:17:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617279476;
-        bh=9PoexKn9B5sUWryT4Sa8hCkGzVDwIievA60/TyPSyHs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iFRlkOcszOpL6rWYIXnLOz+v6RhlW0xR5evg1Ll2AA62ktfi/CR1Z40nb9/3TKtyM
-         Ij7WycN2aDV9Vte8hYEs2IKLipd7tYAbRADCjP8Z6vVtwZ0AJ07X9qR7Zaso83jQwH
-         /lGiwH1uRCD8wPDNkTGZ+Mrx+ndm+ArqMweiUnE5+9AyevgTCc05fvQjhEL5XTLJ0j
-         IobUl/1sEL+cdG45cX0iGS7jIff4q243+Cs0tKiMGa3dP3qvS3L9XyHJIRmxDTOj5c
-         mKGDsjiQlwnMMIbmmmtIrloOb85ZpfgMyVHQVMbBakxVk40r4CETe1quWzCI7L3ozn
-         hyLHuE4zBYZXg==
-Received: by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1lRwGo-001c3n-OB; Thu, 01 Apr 2021 14:17:54 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-Subject: [PATCH 32/32] pinctrl: update pin-control.rst references
-Date:   Thu,  1 Apr 2021 14:17:52 +0200
-Message-Id: <f056e1e16adff1df42416f0033fdb730169edf44.1617279356.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1617279355.git.mchehab+huawei@kernel.org>
-References: <cover.1617279355.git.mchehab+huawei@kernel.org>
+        id S234566AbhDASSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:18:46 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:64963 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237494AbhDASAI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:00:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1617300009; x=1648836009;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=1gbYsP2wdU79Eo+67NSj21KZcKxsPiSxBTPycBjQZlE=;
+  b=CSxaIZliDEFpruCPsNAWMM5IYDCsYJKzGkRuqBqXICV/e6NzGPfphVa1
+   rZ0XnWhjTzDnlB9fpucD/KhusMAjdWFC8BOFDLA468DVP6EfVe0Ceqi2G
+   c0RozdobOYuVfOLT1EA4w3dVw97zEIkBau7Ke6HEn0+lHPwegv8ljcAO4
+   e6+Q50JbY8S5LnmiWKeiaiBWceB9RNu/CngpJ/gZrmIQTu/mgJiO59vll
+   GHPNJb7OwSPyAdHe/tAj26UL8WGWb5dKe3eB9+fXgtEO+4iHvWE4gn1uX
+   YzAC+aepRsa29bKo4a7VFdhmHOSMX9DGEmZqT4Rq4E+cfZEPn3QZhQ6T/
+   A==;
+IronPort-SDR: zhUnO31ksvTXKc+1uADU7PtWJfrCmlUl0STBK8tyA1EfONg2CibpjEpcheDW9djnQieB7LM0wi
+ WGPc8MR8ZuXuPy1noNxbpOlMyWwnH7HZkO+TPzRvxcASSbpxhifQuhSCMrA6M8u/jDAvKGnAO5
+ CJ0a0JZ2Uc4AAP99BD6t+3M9yY1J/YhCSMGvW8aR7XfKjxSYFADiCKvTVyGwmKvHDgoj6R/tjS
+ lXj0st7973FUZ8VNMM3TFQVAOicpjVBc2cg9wEQKzpTZbZieSgAtn9NIwPbiYyDWPwoePTQb7s
+ kx0=
+X-IronPort-AV: E=Sophos;i="5.81,296,1610434800"; 
+   d="scan'208";a="49676190"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Apr 2021 05:27:31 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 1 Apr 2021 05:27:31 -0700
+Received: from rob-dk-mpu01.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Thu, 1 Apr 2021 05:27:29 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>
+CC:     <viresh.kumar@linaro.org>, <linux-clk@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH v2 0/6] clk: at91: updates for power management and dvfs
+Date:   Thu, 1 Apr 2021 15:27:20 +0300
+Message-ID: <20210401122726.28528-1-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset 5513b411ea5b ("Documentation: rename pinctl to pin-control")
-renamed: Documentation/driver-api/pinctl.rst
-to: Documentation/driver-api/pin-control.rst.
+Hi,
 
-Update the cross-references accordingly.
+This series addresses the power management for SAMA7G5 and also updates
+the master clock prescaller and master clock divider drivers to accommodate
+the requests at [1].
 
-Fixes: 5513b411ea5b ("Documentation: rename pinctl to pin-control")
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- include/linux/device.h                  | 2 +-
- include/linux/mfd/madera/pdata.h        | 2 +-
- include/linux/pinctrl/pinconf-generic.h | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+The power management part is implemented by adding
+save_context()/restore_context() on each clock driver (patch 1/6). Since
+the PM part is necessary only for backup mode (supported on SAMA5D2 and
+SAMA7G5) the pmc.c has been adapted to call the
+save_context()/restore_context() only on switches to/from backup mode
+(patch 2/6).
 
-diff --git a/include/linux/device.h b/include/linux/device.h
-index 38a2071cf776..d1183cfdc8fb 100644
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -399,7 +399,7 @@ struct dev_links_info {
-  * 		along with subsystem-level and driver-level callbacks.
-  * @em_pd:	device's energy model performance domain
-  * @pins:	For device pin management.
-- *		See Documentation/driver-api/pinctl.rst for details.
-+ *		See Documentation/driver-api/pin-control.rst for details.
-  * @msi_list:	Hosts MSI descriptors
-  * @msi_domain: The generic MSI domain this device is using.
-  * @numa_node:	NUMA node this device is close to.
-diff --git a/include/linux/mfd/madera/pdata.h b/include/linux/mfd/madera/pdata.h
-index 601cbbc10370..32e3470708ed 100644
---- a/include/linux/mfd/madera/pdata.h
-+++ b/include/linux/mfd/madera/pdata.h
-@@ -31,7 +31,7 @@ struct pinctrl_map;
-  * @irq_flags:	    Mode for primary IRQ (defaults to active low)
-  * @gpio_base:	    Base GPIO number
-  * @gpio_configs:   Array of GPIO configurations (See
-- *		    Documentation/driver-api/pinctl.rst)
-+ *		    Documentation/driver-api/pin-control.rst)
-  * @n_gpio_configs: Number of entries in gpio_configs
-  * @gpsw:	    General purpose switch mode setting. Depends on the external
-  *		    hardware connected to the switch. (See the SW1_MODE field
-diff --git a/include/linux/pinctrl/pinconf-generic.h b/include/linux/pinctrl/pinconf-generic.h
-index 6aeb711f7cd1..fdcd773adba3 100644
---- a/include/linux/pinctrl/pinconf-generic.h
-+++ b/include/linux/pinctrl/pinconf-generic.h
-@@ -88,7 +88,7 @@ struct pinctrl_map;
-  * 	it.
-  * @PIN_CONFIG_OUTPUT: this will configure the pin as an output and drive a
-  * 	value on the line. Use argument 1 to indicate high level, argument 0 to
-- *	indicate low level. (Please see Documentation/driver-api/pinctl.rst,
-+ *	indicate low level. (Please see Documentation/driver-api/pin-control.rst,
-  *	section "GPIO mode pitfalls" for a discussion around this parameter.)
-  * @PIN_CONFIG_POWER_SOURCE: if the pin can select between different power
-  *	supplies, the argument to this parameter (on a custom format) tells
+Patch 3/6 adds the securam clock on SAMA7G5. This is necessary for
+backup mode of SAMA7G5.
+
+Patch 4/6 adds registers definitions for the new master clocks (MCK1..4) of
+SAMA7G5 and adapt the clk-master.c. The defines exported in
+include/linux/clk/at91_pmc.h will be also used by platform specific PM
+code.
+
+Patch 5/6 adpat the master clock divider and master clock prescaller
+to address the requests at [1].
+
+Patch 6/6 clean up a bit the code in clk-master as suggested by Nicolas.
+
+Thank you,
+Claudiu Beznea
+
+[1] https://lore.kernel.org/lkml/20210105104426.4tmgc2l3vyicwedd@vireshk-i7/
+
+Changes in v2:
+- addressed code review comments
+- collected tags
+
+Claudiu Beznea (6):
+  clk: at91: re-factor clocks suspend/resume
+  clk: at91: pmc: execute suspend/resume only for backup mode
+  clk: at91: sama7g5: add securam's peripheral clock
+  clk: at91: clk-master: add register definition for sama7g5's master
+    clock
+  clk: at91: clk-master: update for dvfs
+  clk: at91: clk-master: improve readability by using local variables
+
+ drivers/clk/at91/at91rm9200.c       |   2 +-
+ drivers/clk/at91/at91sam9260.c      |   2 +-
+ drivers/clk/at91/at91sam9g45.c      |   2 +-
+ drivers/clk/at91/at91sam9n12.c      |   2 +-
+ drivers/clk/at91/at91sam9rl.c       |   2 +-
+ drivers/clk/at91/at91sam9x5.c       |   2 +-
+ drivers/clk/at91/clk-generated.c    |  46 +++-
+ drivers/clk/at91/clk-main.c         |  66 +++++
+ drivers/clk/at91/clk-master.c       | 396 +++++++++++++++++++++-------
+ drivers/clk/at91/clk-peripheral.c   |  40 ++-
+ drivers/clk/at91/clk-pll.c          |  37 +++
+ drivers/clk/at91/clk-programmable.c |  29 +-
+ drivers/clk/at91/clk-sam9x60-pll.c  |  68 ++++-
+ drivers/clk/at91/clk-system.c       |  20 ++
+ drivers/clk/at91/clk-usb.c          |  27 ++
+ drivers/clk/at91/clk-utmi.c         |  47 +++-
+ drivers/clk/at91/dt-compat.c        |   2 +-
+ drivers/clk/at91/pmc.c              | 175 +++---------
+ drivers/clk/at91/pmc.h              |  27 +-
+ drivers/clk/at91/sam9x60.c          |   2 +-
+ drivers/clk/at91/sama5d2.c          |   2 +-
+ drivers/clk/at91/sama5d3.c          |   2 +-
+ drivers/clk/at91/sama5d4.c          |   2 +-
+ drivers/clk/at91/sama7g5.c          |   3 +-
+ include/linux/clk/at91_pmc.h        |  26 ++
+ 25 files changed, 752 insertions(+), 277 deletions(-)
+
 -- 
-2.30.2
+2.25.1
 
