@@ -2,241 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EB6A351084
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 10:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B06D35107E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 10:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233470AbhDAIBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 04:01:37 -0400
-Received: from mx0b-00268f01.pphosted.com ([148.163.159.192]:29772 "EHLO
-        mx0b-00268f01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233258AbhDAIBL (ORCPT
+        id S233151AbhDAIBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 04:01:03 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:18740 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229459AbhDAIAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 04:01:11 -0400
-X-Greylist: delayed 2172 seconds by postgrey-1.27 at vger.kernel.org; Thu, 01 Apr 2021 04:01:10 EDT
-Received: from pps.filterd (m0165120.ppops.net [127.0.0.1])
-        by mx0b-00268f01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1317MgjM010986;
-        Thu, 1 Apr 2021 07:24:09 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2177.outbound.protection.outlook.com [104.47.57.177])
-        by mx0b-00268f01.pphosted.com with ESMTP id 37n297h6t8-1
+        Thu, 1 Apr 2021 04:00:33 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1317wSqH018320;
+        Thu, 1 Apr 2021 10:00:05 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=dQQnehMvfeIOz8ToW7gRQOcCaUxuauDw8fWY91KRE5w=;
+ b=rc1H6xJM1rGiAC/BHBzMsQwt+ou0S+D//o7AuRm0P4C/7cVAu1dd56gnHrUrqsNrsewp
+ LtnHvHORx+JG1byuqwX4RhYHUuTslv4SiDvWCjWUvr9fb6PCjiyZfvOx1hjAJq6YF7Oo
+ wJFEqYIWDNfrvrBLDyHvo1YDghz8Jh6pDV+BxVB1CupWyA/VyybYYsFOXloQJ5puaKRt
+ Mq/NxfIGuxpchHoRa2CQnRvLqa5gyAWCNWM1zu82OMbUDfLJwXoOw1CajIDQmCKafEVC
+ NXtsBYDpAUtEneT/8wFNWnIWt1SVjFbjJGxrsmS7mEiIqV8kjs7ivDkqmhuDyE+BV3Bo yg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 37n296tbht-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Apr 2021 07:24:08 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Jfl601ljt1cyS4QxaLVzSk1HGp4Mn5h9fgWqYzkczgDN6/TPZCepZSJTyDscL35Nab+Yk3hwZL6chabZsv5S/9QlUTYYn+DAqetD2a4C7BeLgQOcHWBxpAtoWr3pMy+gRWv7bgPdRU9wtleqze8EuEespqjuAup3iE1CGHsMTt4gr/x5ePv9Cv2wLG32AE4i+SMNDvfbV2JhiRr6BwPTG999Kh+latT1rC21nJBYdENKYSJEwfuxybBd7sGnTAJkBVwDa5eWKoh5M2c9uFmkmQ5Y7ZfMmU59loELo78MLx3vUkZtEZwhyxZGaXeZrozeIu653JU1Gb6x2qGWNEvylw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oisYPEgtTq+dOix/7U9jZLGo4mUSoZZipp3LR3qJ70M=;
- b=H6+3PdAhm1ksbmW5nMUGtFDOuobYuA2gwbzJyl/Rv/0dxps4dZV6Oqed7p9zSuspRmD/KDAJFyRTQ3BN2X1TQKjqC0LLgBxlyRNn5bgctwctemgwkx6S8v3neBM2eiPpZM5aqd2iL1M0iKcG7dasFalWTajmJ361gAhSo63o8S6NWTDxGU+QRXu0h3ztCFOdCvUganqyT1WSCfdarlTQzDE914gvfn0ONiwCdWf+Gv0Ub2BmwAhj/m+zG7g3Xluh1sXo57sV6gEuqbgqArfaDhTfl8WD1mN7Q1ORPDP9uRuQN2hmZl6caaPytb2IdVSyrtkxvE90ca1fUqRJvTW6ng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=equinix.com; dmarc=pass action=none header.from=equinix.com;
- dkim=pass header.d=equinix.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=equinixinc.onmicrosoft.com; s=selector2-equinixinc-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oisYPEgtTq+dOix/7U9jZLGo4mUSoZZipp3LR3qJ70M=;
- b=gGqTbsYXWqa5nkB39bnS6PM6+QFb/XNl21QvOgdXeNe+6JzlyELGQWW9o4INCbBDINELNmUTaFDkJU9U7Ip3O7GKyVQVsknkjFAjF8w6KDp0JAZorOiyvTEWac2qwMIv6KakHh8ZfeVGq9yPT0HAVCDS96DANOmBSCYHc+Ys60w=
-Received: from DM5PR04MB0762.namprd04.prod.outlook.com (2603:10b6:3:f3::13) by
- DM6PR04MB6185.namprd04.prod.outlook.com (2603:10b6:5:12e::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3999.28; Thu, 1 Apr 2021 07:24:06 +0000
-Received: from DM5PR04MB0762.namprd04.prod.outlook.com
- ([fe80::4c98:aeb:87a8:13ad]) by DM5PR04MB0762.namprd04.prod.outlook.com
- ([fe80::4c98:aeb:87a8:13ad%5]) with mapi id 15.20.3977.033; Thu, 1 Apr 2021
- 07:24:05 +0000
-From:   Zev Weiss <zweiss@equinix.com>
-To:     Andrew Jeffery <andrew@aj.id.au>
-CC:     "openipmi-developer@lists.sourceforge.net" 
-        <openipmi-developer@lists.sourceforge.net>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "minyard@acm.org" <minyard@acm.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "ryan_chen@aspeedtech.com" <ryan_chen@aspeedtech.com>,
-        "tmaimon77@gmail.com" <tmaimon77@gmail.com>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "avifishman70@gmail.com" <avifishman70@gmail.com>,
-        "venture@google.com" <venture@google.com>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tali.perry1@gmail.com" <tali.perry1@gmail.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "chiawei_wang@aspeedtech.com" <chiawei_wang@aspeedtech.com>,
-        "linux-arm-kernel@lists.infradead.org" 
+        Thu, 01 Apr 2021 10:00:05 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3534A100034;
+        Thu,  1 Apr 2021 09:59:59 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E586F21B399;
+        Thu,  1 Apr 2021 09:59:58 +0200 (CEST)
+Received: from lmecxl0912.lme.st.com (10.75.127.47) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 1 Apr
+ 2021 09:59:57 +0200
+Subject: Re: [PATCH v9 0/6] ARM: STM32: add art-pi(stm32h750xbh6) board
+ support
+To:     <dillon.minfei@gmail.com>, <robh@kernel.org>,
+        <valentin.caron@foss.st.com>, <rong.a.chen@intel.com>,
+        <a.fatoum@pengutronix.de>, <mcoquelin.stm32@gmail.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-arm-kernel@lists.infradead.org>,
-        "benjaminfair@google.com" <benjaminfair@google.com>
-Subject: Re: [PATCH v2 00/21] ipmi: Allow raw access to KCS devices
-Thread-Topic: [PATCH v2 00/21] ipmi: Allow raw access to KCS devices
-Thread-Index: AQHXJsf/9djoVAwHJ0KGcn7YGwLpdQ==
-Date:   Thu, 1 Apr 2021 07:24:05 +0000
-Message-ID: <YGV1FIKVX/4hxt1U@packtop>
-References: <20210319061952.145040-1-andrew@aj.id.au>
-In-Reply-To: <20210319061952.145040-1-andrew@aj.id.au>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: aj.id.au; dkim=none (message not signed)
- header.d=none;aj.id.au; dmarc=none action=none header.from=equinix.com;
-x-originating-ip: [24.181.166.149]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6b808e67-df80-4e8f-d2f2-08d8f4df2200
-x-ms-traffictypediagnostic: DM6PR04MB6185:
-x-microsoft-antispam-prvs: <DM6PR04MB6185090FED6348B55F9FEC4BC37B9@DM6PR04MB6185.namprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: LPqyIoiOekByvWrnLeIFKcRzQlSPsfQQg52eZXGWadVUVu/GGhI6nFcVRXlYJcelUWSGwpM+3xBLyvNmsBad+MPoknx1AQVZ/IbOSe0wnCu16gMsmcecHAXA5VL36VBvNhxiQlUlvE9ta8VGHzxOVwqAQWNG4WqPmW54mywzCXVpmagnsYT7li41/1s/4GTXCPUQSnb700iy+DFo2GGV1/lcPn0pC4CxxmGeT955LvZc/m5nUbiBCfPL2WtUkKB4Ns42CURpTsTz8ri87CD88LzD99S0qBGTebIbkDsK6J7i6uMtNvPQzjBRuv/SWqc2NVq0chK5r7nvIAEGtcrpi0IJIlaBxQ5IT9ZIleKdzsGorngW9CJdUcMkmWMeEk+b8fpV8Y8NSsWH/aeeBIq779xILde2eP9bJoP5JcIecYwD03Bkm+3+65UzrI2oqXysDMCEBFnrEiMD9njWnMDszkUv9JFV4nN6cM1dPWzMGj6KtduVsgXdfKGIo0FGJTD6bSUk/oDEwJP/0xpBVlRuaOKWvMt29L81PkxpUNZ9xIEU2169HmIcD91A26kOkTuG2KYwGWbhXy+FcZqQbe+HeYHnFQBO2yXlYDsMiy1wGJOKYib2nTakE/xT3I6pj7hy/WHjMhnE/tr9GtIf41tgLcg5C0XUTrmL1JicICUhb8TQ1933YiLEKEJ9gGih3/3QOlE2oIqgI4ekRdV1OctlIr3KQnPznGAxLDp/2nEydMM=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR04MB0762.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(39860400002)(376002)(396003)(346002)(136003)(366004)(5660300002)(6506007)(9686003)(76116006)(6512007)(71200400001)(66946007)(64756008)(66446008)(66476007)(66556008)(83380400001)(86362001)(316002)(6916009)(54906003)(8936002)(2906002)(33716001)(478600001)(186003)(6486002)(8676002)(38100700001)(4326008)(7416002)(26005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?XdtZv861/CQ13zFN07g7DaMWyqqRV3l9TUs5/h5aVh1fX8h6ivjeSGwUErb5?=
- =?us-ascii?Q?GtUd4Jatwcr5mYelLma0z/XKh2CHrQrdn+ubPKANfTMQMOag476n1ITR2yhG?=
- =?us-ascii?Q?I9IakEi8y2If0P2CGOkJlBV02x2RFz9G1we+q0QvXjkcxVUWaShWrvgMANTT?=
- =?us-ascii?Q?hWOhB65AnV9vh+aszBKobrtRb39GEYHu8vLV5dWRzlVput8McWTGAKfR7SI8?=
- =?us-ascii?Q?op1xQxbwRMZ7mvy/LCY8gdd34TXlBmOBDTacOhvtIETZTRlfhLsC5RL9BK+I?=
- =?us-ascii?Q?yx48CYmkMDR9KFJWXgg8ysE5kXegctpHIL3Z+pbRS/qkc8Uz9YuxBCQUjz9c?=
- =?us-ascii?Q?GmG6sGdT00kh7sKL96qbuDmHDZcTVIdjekdRUiPnZEFZjLD5jXfB9wLR+1hf?=
- =?us-ascii?Q?VOiHu8I55RqAz1IRSdmNSC8sWhO6+j/41erm96B+b+j2G7jiZwcV/bWiB7T+?=
- =?us-ascii?Q?FmNJEotazpU6I5AHetbeEtfMj0C5BbvLwczBxUxgF+lOsAXSoIBecmImhG37?=
- =?us-ascii?Q?G7AD2tF1ej+4LgxbLQYGBQQXqIb362WCiSLKEhSwgsj8ZS5Drk5bWsBR4de6?=
- =?us-ascii?Q?kpwaSLzqUpZl2BKRZPiiW86uz/9tfNmcftFLPeNyiieLRcXDvn/CI7UGERdd?=
- =?us-ascii?Q?iA9LwsMntFJB2J0qVTfmcFs4b5M4s4Mrz20iGgbLAFlMAdVi54AwZTAZD2hz?=
- =?us-ascii?Q?Z6hYRxRavYp6AxTHtSpEmD6VFFriF+mmi1BPIon//hECn2UyvYUvfHSkYVpU?=
- =?us-ascii?Q?C59cx0pweowxZ2o4zxY2thgmLkI+DzN/4nr+2hIluzhtfBGJggrz3clG9BGC?=
- =?us-ascii?Q?58Xf2cnh6Whje+6qYmC5jnOjTosxbkPMnHts5rbvirtWUL3E+JKLCH1MxtCY?=
- =?us-ascii?Q?VYKEnSTSg28AojGC5rXyhNOwzt7jGZ6rHegiftAmwrBy8eoficY98/MbIi39?=
- =?us-ascii?Q?l31/yq2OvBvUaJNFPQR40eLna+5B+wz9Zq4p4GM17Uw3om5h+j28yXCYEubO?=
- =?us-ascii?Q?1kSw1n89NEkkdXyUy3AznxQdCTdD7FjrtAQG0g/pORzY/G50rv61uaQVFeuE?=
- =?us-ascii?Q?Z21XB3foL7DqIt733uD+MpE9WKPpvWrTw16FOuGzkyo37KPAUcJ3y6Z5BQSb?=
- =?us-ascii?Q?vW3uyL4d0gqsUv9KK/EwxvUUhpw/Qow+iM/ahiuCCjKEpaTxa7lWms+WXunU?=
- =?us-ascii?Q?Lg1NACYAoGEnr4iBIWECXTU1+bNbOA1U4XX2mAaza3iJQq8knOMfeDtyz7kq?=
- =?us-ascii?Q?mX024YORGVngsGvS1ao8xHrPl9wvWgGKvlOWzKrXn39xYrCgBBVcZ2v2t7wO?=
- =?us-ascii?Q?2dbbt67SXW7BIicr3V4/vt9/?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <8C4B244CA87C114A8B816828171409A7@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        <linux-kernel@vger.kernel.org>, <linux@armlinux.org.uk>,
+        <afzal.mohd.ma@gmail.com>, <gregkh@linuxfoundation.org>,
+        <erwan.leray@foss.st.com>, <erwan.leray@st.com>,
+        <linux-serial@vger.kernel.org>, <lkp@intel.com>,
+        <patrice.chotard@foss.st.com>, <corbet@lwn.net>,
+        <linux-doc@vger.kernel.org>, <pali@kernel.org>,
+        <mchehab+huawei@kernel.org>, <andrew@lunn.ch>
+References: <1617179325-6383-1-git-send-email-dillon.minfei@gmail.com>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Message-ID: <50cee64f-a264-4073-bafa-1e6775608169@foss.st.com>
+Date:   Thu, 1 Apr 2021 09:59:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: equinix.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR04MB0762.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6b808e67-df80-4e8f-d2f2-08d8f4df2200
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Apr 2021 07:24:05.5849
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72adb271-2fc7-4afe-a5ee-9de6a59f6bfb
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3MFXClpAj9Hno7/QistrEVz/QrC7i+1LOoY/rF3OPDpJfCFOwJ0jEAyvqnEqJHYu2G1s3OTo8mrqZe4+JuK3BQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6185
-X-Proofpoint-GUID: 9e8GXM1_PWB8u9tUHb1iuWvrNnXNBdap
-X-Proofpoint-ORIG-GUID: 9e8GXM1_PWB8u9tUHb1iuWvrNnXNBdap
+In-Reply-To: <1617179325-6383-1-git-send-email-dillon.minfei@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
  definitions=2021-04-01_03:2021-03-31,2021-04-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- mlxscore=0 priorityscore=1501 spamscore=0 lowpriorityscore=0 clxscore=1011
- suspectscore=0 adultscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
- definitions=main-2104010050
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 01:19:30AM CDT, Andrew Jeffery wrote:
->Hello,
->
->This series is a bit of a mix of things, but its primary purpose is to
->expose BMC KCS IPMI devices to userspace in a way that enables userspace
->to talk to host firmware using protocols that are not IPMI.
->
->v1 can be found here:
->
->https://lore.kernel.org/openbmc/20210219142523.3464540-1-andrew@aj.id.au/
->
->Changes in v2 include:
->
->* A rebase onto v5.12-rc2
->* Incorporation of off-list feedback on SerIRQ configuration from
->  Chiawei
->* Further validation on hardware for ASPEED KCS devices 2, 3 and 4
->* Lifting the existing single-open constraint of the IPMI chardev
->* Fixes addressing Rob's feedback on the conversion of the ASPEED KCS
->  binding to dt-schema
->* Fixes addressing Rob's feedback on the new aspeed,lpc-interrupts
->  property definition for the ASPEED KCS binding
->
->A new chardev device is added whose implementation exposes the Input
->Data Register (IDR), Output Data Register (ODR) and Status Register
->(STR) via read() and write(), and implements poll() for event
->monitoring.
->
->The existing /dev/ipmi-kcs* chardev interface exposes the KCS devices in
->a way which encoded the IPMI protocol in its behaviour. However, as
->LPC[0] KCS devices give us bi-directional interrupts between the host
->and a BMC with both a data and status byte, they are useful for purposes
->beyond IPMI.
->
->As a concrete example, libmctp[1] implements a vendor-defined MCTP[2]
->binding using a combination of LPC Firmware cycles for bulk data
->transfer and a KCS device via LPC IO cycles for out-of-band protocol
->control messages[3]. This gives a throughput improvement over the
->standard KCS binding[4] while continuing to exploit the ease of setup of
->the LPC bus for early boot firmware on the host processor.
->
->The series takes a bit of a winding path to achieve its aim:
->
->1. It begins with patches 1-5 put together by Chia-Wei, which I've
->rebased on v5.12-rc2. These fix the ASPEED LPC bindings and other
->non-KCS LPC-related ASPEED device drivers in a way that enables the
->SerIRQ patches at the end of the series. With Joel's review I'm hoping
->these 5 can go through the aspeed tree, and that the rest can go through
->the IPMI tree.
->
->2. Next, patches 6-13 fairly heavily refactor the KCS support in the
->IPMI part of the tree, re-architecting things such that it's possible to
->support multiple chardev implementations sitting on top of the ASPEED
->and Nuvoton device drivers. However, the KCS code didn't really have
->great separation of concerns as it stood, so even if we disregard the
->multiple-chardev support I think the cleanups are worthwhile.
->
->3. Patch 14 adds some interrupt management capabilities to the KCS
->device drivers in preparation for patch 16, which introduces the new
->"raw" KCS device interface. I'm not stoked about the device name/path,
->so if people are looking to bikeshed something then feel free to lay
->into that.
->
->4. The remaining patches switch the ASPEED KCS devicetree binding to
->dt-schema, add a new interrupt property to describe the SerIRQ behaviour
->of the device and finally clean up Serial IRQ support in the ASPEED KCS
->driver.
->
->Rob: The dt-binding patches still come before the relevant driver
->changes, I tried to keep the two close together in the series, hence the
->bindings changes not being patches 1 and 2.
->
->I've exercised the series under qemu with the rainier-bmc machine plus
->additional patches for KCS support[5]. I've also substituted this series i=
-n
->place of a hacky out-of-tree driver that we've been using for the
->libmctp stack and successfully booted the host processor under our
->internal full-platform simulation tools for a Rainier system.
->
->Note that this work touches the Nuvoton driver as well as ASPEED's, but
->I don't have the capability to test those changes or the IPMI chardev
->path. Tested-by tags would be much appreciated if you can exercise one
->or both.
->
->Please review!
->
->Andrew
->
+Hi Dillon
 
-After rebasing the series onto the OpenBMC dev-5.10 kernel (with only a
-tiny conflict for the addition of the ast2600 entry in
-ast_kcs_bmc_match) and enabling CONFIG_IPMI_KCS_BMC_CDEV_IPMI, my
-e3c246d4i system booted healthily and handled some basic ipmitool
-operations as expected.
+On 3/31/21 10:28 AM, dillon.minfei@gmail.com wrote:
+> From: dillon min <dillon.minfei@gmail.com>
+> 
+> This patchset intend to add art-pi board support, this board developed
+> by rt-thread(https://www.rt-thread.org/).
+> 
+> Board resources:
+> 8MiB QSPI flash
+> 16MiB SPI flash
+> 32MiB SDRAM
+> AP6212 wifi,bt,fm comb
+> 
+> sw context:
+> - as stm32h750 just has 128k bytes internal flash, so running a fw on
+>    internal flash to download u-boot/kernel to qspi flash, boot
+>    u-boot/kernel from qspi flash. this fw is based on rt-thread.
+> - kernel can be xip on qspi flash or load to sdram
+> - root filesystem is jffs2(created by buildroot), stored on spi flash
+> 
+> to support the boad, add following changes.
+> - fix r0-r3, r12 register restore failed after svc call,
+> - add dts binding
+> - update yaml doc
+> 
 
-Tested-by: Zev Weiss <zweiss@equinix.com>
+Thanks for adding this new STM32 MCU board. Series applied on 
+stm32-next. As discussed I made some changes applying the series.
+
+Regards
+Alex
 
 
-Zev
 
+> ---
+> changes in v9:
+> - move gpio{a..k} entries from stm32h7-pinctrl.dtsi to stm32h743.dtsi
+> v8 link:
+> https://lore.kernel.org/lkml/1617094704-10040-1-git-send-email-dillon.minfei@gmail.com/
+> 
+> changes in v8:
+> - drop '[PATCH v7 3/6] ARM: dts: stm32: introduce stm32h7-pinctrl.dtsi to
+>    support stm32h750' - stm32h743-pinctrl.dtsi file
+> - move compatible string "st,stm32h743-pinctrl" from stm32h7-pinctrl.dtsi
+>    to stm32h743.dtsi
+> - update stm32h743i-{dico/eval}.dtsi to include stm32h7-pinctrl.dtsi
+> - move file stm32h743.dtsi submit position to [PATCH V8 3/6]
+> v7 link:
+> https://lore.kernel.org/lkml/1617071338-9436-1-git-send-email-dillon.minfei@gmail.com/
+> 
+> changes in v7:
+> - remove changes in
+>    Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
+>    Hi Rob Herring
+>    as you has already ack this patch, please ignore it. thanks
+>    history link:
+>    https://lore.kernel.org/lkml/1614758717-18223-4-git-send-email-dillon.minfei@gmail.com/
+>    https://lore.kernel.org/lkml/20210308195033.GA2855292@robh.at.kernel.org/
+> - remove "[PATCH v6 8/9] pinctrl: stm32: Add STM32H750 MCU pinctrl support"
+>    remove "[PATCH v6 5/9] ARM: dts: stm32: add stm32h750-pinctrl.dtsi"
+> - reference to stm32h743-pinctrl.dtsi in stm32h750i-art-pi.dts
+> v6 link:
+> https://lore.kernel.org/lkml/1616757302-7889-1-git-send-email-dillon.minfei@gmail.com/
+> 
+> changes in v6:
+> - add gpiox{gpio-ranges, ngpios} in stm32h7-pinctrl.dtsi
+> - add status="disabled" in stm32h743.dtsi
+> 
+> changes in v5:
+> - accroding to rob's suggestion, replace false with 'type: object'
+>    of 'additionalProperties'.
+> - add Tested-by: Valentin Caron <valentin.caron@foss.st.com>
+> 
+> changes in v4:
+> - use unevaluatedProperties: false to fix dtbs_check warrnings instead of
+>    add 'bluetooth' in st,stm32-uart.yaml
+> 
+> changes in v3:
+> - fix dtbs_check warrning: (8002cbd78fd5 and 4bc21d3dd678)
+>    >> arch/arm/boot/dts/stm32h743i-eval.dt.yaml: soc: pin-controller:
+>       {'type': 'object'} is not allowed for {'#address-cells': [[1]], '#size-cells':
+>       [[1]], 'ranges': [[0,
+> 
+>    >> arch/arm/boot/dts/stm32h743i-eval.dt.yaml: soc: 'i2c@40005C00',
+>       'i2c@58001C00' do not match any of the regexes: '@(0|[1-9a-f][0-9a-f]*)$',
+>       '^[^@]+$', 'pinctrl-[0-9]+'
+>    >> arch/arm/boot/dts/stm32h750i-art-pi.dt.yaml: serial@40004800:
+>       'bluetooth' does not match any of the regexes: 'pinctrl-[0-9]+'
+> 
+> changes in v2:
+> - reorganize the pinctrl device tree about
+>    stm32h7-pinctrl/stm32h743/750-pinctrl
+>    stm32h7-pinctrl.dtsi --> stm32h743-pinctrl.dtsi --> stm32h743i-disco.dts
+>                           |                          |-> stm32h743i-eval.dts
+>                           |-> stm32h750-pinctrl.dtsi --> stm32h750i-art-pi.dts
+>    same to the stm32f7/f4's pinctrl style
+> - fix author name/copyright mistake
+> - add compatible string st,stm32h750-pinctrl to pinctl-stm32h743.c as they
+>    have same pin alternate functions, update Kconfig description
+> - make item in stm32h750i-art-pi.dts sort by letter
+> 
+> *** BLURB HERE ***
+> 
+> dillon min (6):
+>    Documentation: arm: stm32: Add stm32h750 value line doc
+>    dt-bindings: arm: stm32: Add compatible strings for ART-PI board
+>    ARM: dts: stm32: introduce stm32h7-pinctrl.dtsi to support stm32h750
+>    ARM: dts: stm32: add support for art-pi board based on stm32h750xbh6
+>    ARM: stm32: Add a new SOC - STM32H750
+>    dt-bindings: serial: stm32: Use 'type: object' instead of false for
+>      'additionalProperties'
+> 
+>   Documentation/arm/index.rst                        |   1 +
+>   Documentation/arm/stm32/stm32h750-overview.rst     |  34 +++
+>   .../devicetree/bindings/arm/stm32/stm32.yaml       |   4 +
+>   .../devicetree/bindings/serial/st,stm32-uart.yaml  |   3 +-
+>   arch/arm/boot/dts/Makefile                         |   1 +
+>   arch/arm/boot/dts/stm32h7-pinctrl.dtsi             | 275 ++++++++++++++++++
+>   arch/arm/boot/dts/stm32h743-pinctrl.dtsi           | 306 ---------------------
+>   arch/arm/boot/dts/stm32h743.dtsi                   | 176 +++++++++++-
+>   arch/arm/boot/dts/stm32h743i-disco.dts             |   2 +-
+>   arch/arm/boot/dts/stm32h743i-eval.dts              |   2 +-
+>   arch/arm/boot/dts/stm32h750.dtsi                   |   6 +
+>   arch/arm/boot/dts/stm32h750i-art-pi.dts            | 229 +++++++++++++++
+>   arch/arm/mach-stm32/board-dt.c                     |   1 +
+>   13 files changed, 729 insertions(+), 311 deletions(-)
+>   create mode 100644 Documentation/arm/stm32/stm32h750-overview.rst
+>   create mode 100644 arch/arm/boot/dts/stm32h7-pinctrl.dtsi
+>   delete mode 100644 arch/arm/boot/dts/stm32h743-pinctrl.dtsi
+>   create mode 100644 arch/arm/boot/dts/stm32h750.dtsi
+>   create mode 100644 arch/arm/boot/dts/stm32h750i-art-pi.dts
+> 
