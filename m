@@ -2,75 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB2A3519A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 085F8351A52
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234632AbhDARzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:55:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234938AbhDARlW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:41:22 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE4ABC0319C3;
-        Thu,  1 Apr 2021 10:17:23 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so2767793otk.5;
-        Thu, 01 Apr 2021 10:17:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+2kq+1w5gAVuUAkpXfDABRglxdrwk5CN20K9T6CLATY=;
-        b=nKVcDCx1OfYCZwyLoKu3xiU54k1uo5zys6Uoi7en8nj68zDtTNNchhkbJgIPjzk5g/
-         Ud3pBU5Wlq2qb6Hc9U1H2pxE743t6VCDe7bPnfbIfbXBfslGSdR36ZTJTJs3biTcs/i5
-         pvVz1FG/6XCXhENxexfFdvhM/SVwMI9iUbBVNPi8DIJoLF/2aulC5r4ViTDZTWFTs2Sr
-         LgJ5VU/prA8czXSb2pGqtSuJhlTJgmOoR99hhAw/TJK2lJPV9J96zv2jcNKwVmb5dO9F
-         bfT9b7AbezMMp6+bDmfd+yOIMs2ZzD9pE5B/Yea/Gj0bHPg3whh0Jjl3TGiOqpm3KNn1
-         QyBQ==
-X-Gm-Message-State: AOAM5339LymCnJQQInhn0iVrbFESMpBZtDJF3dhRR4lPe5CzoMjGsWr4
-        0db3LfZuGrruSTwdjV+AprEhSfa/mw==
-X-Google-Smtp-Source: ABdhPJwpqhvCdW/nRYpc8uU8W48cA+3c+3B8vYbgvlcWnRhbLPoudwBKy1Y4w0BmEdI7/o2BTvfbug==
-X-Received: by 2002:a9d:2d8a:: with SMTP id g10mr7693548otb.212.1617297439804;
-        Thu, 01 Apr 2021 10:17:19 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id v136sm1155436oie.15.2021.04.01.10.17.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 10:17:18 -0700 (PDT)
-Received: (nullmailer pid 635999 invoked by uid 1000);
-        Thu, 01 Apr 2021 17:17:17 -0000
-Date:   Thu, 1 Apr 2021 12:17:17 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, Jonathan Hunter <jonathanh@nvidia.com>
-Subject: Re: [PATCH v2 2/6] dt-bindings: memory: tegra30: emc: Replace core
- regulator with power domain
-Message-ID: <20210401171717.GA635946@robh.at.kernel.org>
-References: <20210330230445.26619-1-digetx@gmail.com>
- <20210330230445.26619-3-digetx@gmail.com>
+        id S237051AbhDAR7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:59:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42942 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235599AbhDARnA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:43:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46FF86136D;
+        Thu,  1 Apr 2021 17:23:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617297830;
+        bh=Xaq+PFMvaSLmYYTakUM+Wo3bxk9I4RER+hC85kYqeRA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eMZxtUSWzR3JAHYDs7v+NIHX6E7liZNw9bkYy46pCPaTroA+oxawzuvD86QsEf/oE
+         p5Vc+kUnECH03XfJZ/9TezHjdsdQLv9QVDZD7aoXMor5Vf5IxD0sfO4GVAsQddvlLS
+         pfUvGKn/eRFSuFn0nadD27QL7V5h4NZoBnHMaeKYFBJ34r7YHE2Nm537M1x6XXYNWj
+         N4jU7BssJD0E5VR62h7q0Nzww74feGRR9iPBZ/ZgE7bDtoCitHj6PKMUGRs1f/VX8P
+         pKjfn3/ZApZ3p4NOVSvnUUR9dOkTng1dLGYVk7rOm29EK6XnUm/OeaOCTEG+2W/IyB
+         GX6xZuJkhnqDA==
+Date:   Thu, 1 Apr 2021 18:23:37 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     madvenka@linux.microsoft.com
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v1 4/4] arm64: Mark stack trace as unreliable if
+ kretprobed functions are present
+Message-ID: <20210401172337.GN4758@sirena.org.uk>
+References: <77bd5edeea72d44533c769b1e8c0fea7a9d7eb3a>
+ <20210330190955.13707-1-madvenka@linux.microsoft.com>
+ <20210330190955.13707-5-madvenka@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="hNG1vEeyG8BCaHbQ"
 Content-Disposition: inline
-In-Reply-To: <20210330230445.26619-3-digetx@gmail.com>
+In-Reply-To: <20210330190955.13707-5-madvenka@linux.microsoft.com>
+X-Cookie: You can't take damsel here now.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 31 Mar 2021 02:04:41 +0300, Dmitry Osipenko wrote:
-> Power domain fits much better than a voltage regulator in regards to
-> a proper hardware description and from a software perspective as well.
-> Hence replace the core regulator with the power domain. Note that this
-> doesn't affect any existing DTBs because we haven't started to use the
-> regulator yet, and thus, it's okay to change it.
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  .../bindings/memory-controllers/nvidia,tegra30-emc.yaml    | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+--hNG1vEeyG8BCaHbQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Mar 30, 2021 at 02:09:55PM -0500, madvenka@linux.microsoft.com wrot=
+e:
+> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+>=20
+> When a kretprobe is active for a function, the function's return address
+> in its stack frame is modified to point to the kretprobe trampoline. When
+> the function returns, the frame is popped and control is transferred
+> to the trampoline. The trampoline eventually returns to the original retu=
+rn
+> address.
+
+Reviewed-by: Mark Brown <broonie@kernel.org>
+
+--hNG1vEeyG8BCaHbQ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBmAZgACgkQJNaLcl1U
+h9DNLgf9EjVfbJEbXcT1czVIISqZQ/VUQdmsEihE9aMX89+FMUyAfslCMNF0tk3z
+fugyNqT47uJf0EpdoRti10YNBbltKT2EWC3CWciuA6UA4NWqnjw+nDRHFFZQ3Vy0
+9rfXsW9DqAO3Mb6rHq3yAFlJC/MAiXLBGsg3Om2tSEvjOOzoUfJ6OMtkLCfPQe2k
+JeyZx7dgHDuMPAuU4gdTruUm+ou6gbK4J0FjlJr+uJJ/CWbkbyeA4BcP5J/I8S4t
+Vy1JjNWKABb4RYMT7yV4npNQBlOkn9NVp3vUqp21AivaUzD3oRSYEEieyynS/I/4
+/WuEtg6fDPOXcU7mU5ctOMYhYUsuJA==
+=fy6D
+-----END PGP SIGNATURE-----
+
+--hNG1vEeyG8BCaHbQ--
