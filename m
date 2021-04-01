@@ -2,255 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A89F350EAA
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39837350EAC
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233403AbhDAGBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 02:01:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49010 "EHLO
+        id S233426AbhDAGBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 02:01:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233024AbhDAGA6 (ORCPT
+        with ESMTP id S233333AbhDAGBC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 02:00:58 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44262C0613E6
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 23:00:58 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id m20-20020a7bcb940000b029010cab7e5a9fso2203074wmi.3
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 23:00:58 -0700 (PDT)
+        Thu, 1 Apr 2021 02:01:02 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7DDFC0613E6
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 23:01:01 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id g15so665746pfq.3
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 23:01:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bOuO/SomUyftEDfBlu1o3TTCUlyQnNkw9jFExw5ouN0=;
-        b=P+y++9ovHFRXgOTm+JzrPT+5ktl84UYml6V5UbXiI0hs2FsvDwJQ8fpHV+lsnh+7AV
-         OrbBqtk3SlkyFcA32UoI/MPBABjrDNzstzGazQ7y6jWZqvAPDxw6zR5SRyiP77ItsiNO
-         vvinCJnX0MpwyruoHCe0+wqyOea+lk3s582xWd/hI1KOksfBtu4O+Ga8PRIYWdTr3yXj
-         wCWJ751aSJI4ccWGht3mhyl6axrlHu330HMwj96ZRRDkwvQLttTdUwuQZkJpUOJmF0EJ
-         xwET9dbKyC5NmTpMkN/gr0Abzpim3H6DBzUFIaOZZ+XV5frHGSbClEcNffsEhBsGSijJ
-         7ZvA==
+        d=sifive.com; s=google;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uAkl8M4METQp4Mm9sKB+PbWAOillZ+9QKk7wqLzx2ik=;
+        b=kloLjxLfd0OejQ8NPmE8+w+AelvEtQ5wlqJ/yxgI5sdP1+zxwHWcGzRx3VUVckPvL2
+         aLtsS2kfCfKKF8sTKs1VW8qVlADk/o6dFe1E5Nbmoc/sjbs8olBc0UZv+fQBpJebk4Z5
+         pC6TA6HkeTJJFxjjiIGACxFskYggw8STbfmDHlcuBtkilS3q1OlLKTE81NO7/BsR+WfD
+         CEi1IvIy8YeeaQtRv3onLS6bt0TSdb86oRp6gLVvO26l7P/24TCZyJ/8O0b+6S+8MAjY
+         pKVWBVvheFwbcIGltFqdAwZtCmdyiEKGZd7briO0U3NPokgMa/UKrqA9xVGMHxz3+j7Q
+         5XBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bOuO/SomUyftEDfBlu1o3TTCUlyQnNkw9jFExw5ouN0=;
-        b=NNvLB6paKnHPuOEnHTo8xn1ZKkX5wxm6xeheL2aSG/TG+t3G7/85iJmGJZJ1pEnZBD
-         zOW8LrRwDTeFfgPEva5x7uNY0JwLfSQW+s1qig1apx5H5eCTftX6uoBEFS6DZCIJNfy+
-         AMbB1cSxmAwHWGsI4/ltCbVXsg0xOjcRpxZeZMHh+uUvD8N8OIO24PEkVo/kKsePcBzx
-         XllQUwy/hL/kqQfV/gnBmsruVSAGdIrF9TO/A5kWsHWiCGP1Pf3yHPHyS803shCyyaD1
-         jjd8WnRI60gCaOcqNAcLPnoZY0btvdgagEXcFk8xzFMGnye9IsmShOF45zqYBHQemiOG
-         DU7w==
-X-Gm-Message-State: AOAM531nUOEEmbCrs4XlUFxApnjhvK9WqoNPEVn5a5gBx/ardFn9kUNq
-        2kFvg/uTjSCNgG3HNa6zuTQFiNI3mz+5ouTmwpkmUw==
-X-Google-Smtp-Source: ABdhPJxUClMqFITI9C291uVIachKnDaMAIFwmBR++afKICeK+pelouSnB0UH9QnQY7MA+nWePkfq2lTLHX9QczqOemc=
-X-Received: by 2002:a1c:5f89:: with SMTP id t131mr6036605wmb.173.1617256856743;
- Wed, 31 Mar 2021 23:00:56 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uAkl8M4METQp4Mm9sKB+PbWAOillZ+9QKk7wqLzx2ik=;
+        b=FtLpwWYr/T3/0sfGDkOPgKfYpXL7puoBbwX/ATJKyNy80edY7sRI7ciCyoEp/Yj+46
+         0PDJ2XPHGOzxFUi8xCXFTPaKi/QN6M2hvjVeoBZJfJoPJOX66QBXI45Ddqy8Nk4xjdzx
+         rtan/MMHMQiDKXiPgyw+XHX0fmjsm98UVfUeOc3b/6OZI/vEuQf4+vfH/wC8sGQAqYnL
+         /cEHqx16bO4lGExGgxY6OhE+iQ9cMJG3rF3WALAo2fa7e9fLLPVDIpotY4OmvnSwBYfQ
+         Np0MHhb1cHIdyLc56cxkyn6MY1loK2laV2T54/9Anr6i2vhv/XcHfsoLj1ZkvW2ZD3th
+         Dtgg==
+X-Gm-Message-State: AOAM532zFxlKM8Xvguaatj9VoGyRs2MV9LFlenQN9xFPufvPb5ewJLzF
+        wQZTdAj4b0tH9FFNsmx0uIK/Gw==
+X-Google-Smtp-Source: ABdhPJxaVYjdSka2klDIXVKJNz6O8INGxI7E/EAZ0NbbLCwgWADxmkZYkF03MJkl85Ic1XBys+NkDg==
+X-Received: by 2002:a63:f443:: with SMTP id p3mr6118424pgk.378.1617256861296;
+        Wed, 31 Mar 2021 23:01:01 -0700 (PDT)
+Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
+        by smtp.gmail.com with ESMTPSA id a6sm4037328pfc.61.2021.03.31.23.00.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 23:01:00 -0700 (PDT)
+From:   Greentime Hu <greentime.hu@sifive.com>
+To:     greentime.hu@sifive.com, paul.walmsley@sifive.com, hes@sifive.com,
+        erik.danie@sifive.com, zong.li@sifive.com, bhelgaas@google.com,
+        robh+dt@kernel.org, aou@eecs.berkeley.edu, mturquette@baylibre.com,
+        sboyd@kernel.org, lorenzo.pieralisi@arm.com,
+        p.zabel@pengutronix.de, alex.dewar90@gmail.com,
+        khilman@baylibre.com, hayashi.kunihiko@socionext.com,
+        vidyas@nvidia.com, jh80.chung@samsung.com,
+        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, helgaas@kernel.org
+Subject: [PATCH v4 0/6] Add SiFive FU740 PCIe host controller driver support
+Date:   Thu,  1 Apr 2021 14:00:48 +0800
+Message-Id: <20210401060054.40788-1-greentime.hu@sifive.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210323162156.1340260-1-namhyung@kernel.org> <20210323162156.1340260-2-namhyung@kernel.org>
- <180E871A-7C5E-4DB2-80F4-643237A7FA69@fb.com> <CAM9d7cg6-D2G7ii0sEJoEynvvmXUz=QsqjXG5K7j947DL1PymQ@mail.gmail.com>
- <8B2062CE-9BD5-4F17-B831-38C9274A1509@fb.com> <CAM9d7chtYw0v49Q5ue6B=D_8kV6ZyMvT7p10_jxsHMc+H309tA@mail.gmail.com>
-In-Reply-To: <CAM9d7chtYw0v49Q5ue6B=D_8kV6ZyMvT7p10_jxsHMc+H309tA@mail.gmail.com>
-From:   Stephane Eranian <eranian@google.com>
-Date:   Wed, 31 Mar 2021 23:00:45 -0700
-Message-ID: <CABPqkBSjDt-Me-VwppO52ShYnopDuqai__sXo-m1AkuC2PKKew@mail.gmail.com>
-Subject: Re: [PATCH 1/2] perf/core: Share an event with multiple cgroups
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Song Liu <songliubraving@fb.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>, Tejun Heo <tj@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This patchset includes SiFive FU740 PCIe host controller driver. We also
+add pcie_aux clock and pcie_power_on_reset controller to prci driver for
+PCIe driver to use it.
 
-I would like to re-emphasize why this patch is important. As Namhyung
-outlined in his cover message,
-cgroup monitoring build on top of per-cpu monitoring and offers
-maximum flexibility by allowing each event
-to be attached to a single cgroup. Although this is fine when the
-machines were much smaller and the number
-of simultaneous cgroups was also small, it does not work anymore with
-today's machines and even less with future
-machines.  Over the last couple of years, we have tried to make cgroup
-monitoring more scalable. Ian  Rogers
-patch series addressed the RB-tree handling of the event to avoid
-walking the whole tree to find events from the
-sched in cgroup. This helped reduce some of the overhead we are seeing
-and which is causing serious problems
-to our end users, forcing them to tone down monitoring and slice
-collection over cgroup over time which is far from
-ideal.
+This is tested with e1000e: Intel(R) PRO/1000 Network Card, AMD Radeon R5
+230 graphics card and SP M.2 PCIe Gen 3 SSD in SiFive Unmatched based on
+v5.11 Linux kernel.
 
-Namhyung's series goes a lot further, by addressing two key overhead factors:
-  1- the file descriptor consumption explosion
-  2- the context switch overhead
+Changes in v4:
+ - Fix Wunused-but-set-variable warning in prci driver
 
-Again this is a major cause of problems for us and needed to be
-addressed in a way that maintained backward compatibility.
-We are interested in the case where the same events are measured
-across all cgroups and I believe this is a common usage
-model.
+Changes in v3:
+ - Remove items that has been defined
+ - Refine format of sifive,fu740-pcie.yaml
+ - Replace perstn-gpios with the common one
+ - Change DBI mapping space to 2GB from 4GB
+ - Refine drivers/reset/Kconfig
 
-1/ File descriptor issue
+Changes in v2:
+ - Refine codes based on reviewers' feedback
+ - Remove define and use the common one
+ - Replace __raw_writel with writel_relaxed
+ - Split fu740_phyregreadwrite to write function
+ - Use readl_poll_timeout in stead of while loop checking
+ - Use dwc common codes
+ - Use gpio descriptors and the gpiod_* api.
+ - Replace devm_ioremap_resource with devm_platform_ioremap_resource_byname
+ - Replace devm_reset_control_get with devm_reset_control_get_exclusive
+ - Add more comments for delay and sleep
+ - Remove "phy ? x : y" expressions
+ - Refine code logic to remove possible infinite loop
+ - Replace magic number with meaningful define
+ - Remove fu740_pcie_pm_ops
+ - Use builtin_platform_driver
 
-With the current interface, if you want to monitor 10 events on a 112
-CPU server across 200 cgroups, you need:
+Greentime Hu (5):
+  clk: sifive: Add pcie_aux clock in prci driver for PCIe driver
+  clk: sifive: Use reset-simple in prci driver for PCIe driver
+  MAINTAINERS: Add maintainers for SiFive FU740 PCIe driver
+  dt-bindings: PCI: Add SiFive FU740 PCIe host controller
+  riscv: dts: Add PCIe support for the SiFive FU740-C000 SoC
 
-    num_fds = num_events x num_cpus x num_cgroups = 10 x 112 x 200 =
-224,000 descriptors
+Paul Walmsley (1):
+  PCI: fu740: Add SiFive FU740 PCIe host controller driver
 
-A usual Linux distribution allows around 1024. Although if you are
-root, you could increase the limit, this has some other impact to the
-system: the memory footprint in kernel memory to back these file
-descriptors and struct perf_event is large (see our presentation at
-LPC2019).
+ .../bindings/pci/sifive,fu740-pcie.yaml       | 109 ++++++
+ MAINTAINERS                                   |   8 +
+ arch/riscv/boot/dts/sifive/fu740-c000.dtsi    |  33 ++
+ drivers/clk/sifive/Kconfig                    |   2 +
+ drivers/clk/sifive/fu740-prci.c               |  11 +
+ drivers/clk/sifive/fu740-prci.h               |   2 +-
+ drivers/clk/sifive/sifive-prci.c              |  54 +++
+ drivers/clk/sifive/sifive-prci.h              |  13 +
+ drivers/pci/controller/dwc/Kconfig            |   9 +
+ drivers/pci/controller/dwc/Makefile           |   1 +
+ drivers/pci/controller/dwc/pcie-fu740.c       | 324 ++++++++++++++++++
+ drivers/reset/Kconfig                         |   1 +
+ include/dt-bindings/clock/sifive-fu740-prci.h |   1 +
+ 13 files changed, 567 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/pci/sifive,fu740-pcie.yaml
+ create mode 100644 drivers/pci/controller/dwc/pcie-fu740.c
 
-2/ Context switch overhead
+-- 
+2.30.2
 
-Each time you have a cgroup switch, i.e., a context switch where you
-switch cgroups, then you incur a PMU event reschedule. A cgroup sched
-in
-is more expensive than a per-process sched in because you have to find
-the events which are relevant to the next cgroup, i.e., you may have
-to
-walk more entries in the RB-tree. If the events are identical across
-cgroups, you may end up paying that cost to reinstall the same events
-(ignoring
-multiplexing).
-Furthermore, event scheduling is an expensive operation because of
-memory access and PMU register accesses. It is always best, if it can
-be avoided.
-From our experience, that has caused significant overhead in our
-systems to the point where we have to reduce the interval at which we
-collect the data
-and the number of cgroups we can monitor at once.
-
-
-3/ Namhyung's solution
-
-I personally like Namhyung's solution to the problem because it fits
-within the interface, does not break existing per-cgroup mode. The
-implementation is fairly
-simple and non-invasive. It provides a very significant reduction of
-overhead on BOTH the file descriptor pressure and context switch
-overheads. It matches perfectly
-with the common usage model of monitoring the same events across
-multiple cgroups simultaneously. The patch does not disrupt existing
-perf_event_open() or
-read()/close() syscalls. Everything is handled via a pair of new ioctl().
-
-It eliminates the file descriptor overhead as follows using the same
-example as before:
-
-Before:
-    num_fds = num_events x num_cpus x num_cgroups = 10 x 112 x 200 =
-224,000 descriptors
-After:
-    num_fds = num_events x num_cpus = 10 x 112 = 1120 descriptors
-(200x reduction in fds and the memory savings that go with that in the
-kernel)
-
-In other words, it reduces the file descriptor consumption to what is
-necessary for plain system-wide monitoring.
-
-On context switch, the kernel computes the event delta and stores into
-a hash table, i.e., a single PMU register access instead of the full
-PMU rescheduling.
-The delta is propagated to the proper cgroup hierarchy if needed.
-
-The change is generic and benefits ALL processor architectures in the
-same manner.
-
-We have tested the patch on our servers with large configurations and
-it has delivered significant savings and enabled monitoring of more
-cgroups simultaneously
-instead of monitoring in batches which never yielded a consistent view
-of the system.
-
-Furthermore, the patches could be extended to add, as Song Lu
-suggested, the possibility of deleting cgroups attached to an event to
-allow continuous monitoring
-without having to restart the monitoring tool. I believe the extension
-can be further improved by allowing a vector read of the counts as
-well. That would eliminate a
-significant number of ioctl(READ) syscalls.
-
-Overall, I think this patch series delivers significant value-add to
-the perf_events interface and should be committed ASAP.
-
-Thanks.
-
-
-
-
-On Tue, Mar 30, 2021 at 8:11 AM Namhyung Kim <namhyung@kernel.org> wrote:
->
-> On Tue, Mar 30, 2021 at 3:33 PM Song Liu <songliubraving@fb.com> wrote:
-> > > On Mar 29, 2021, at 4:33 AM, Namhyung Kim <namhyung@kernel.org> wrote:
-> > >
-> > > On Mon, Mar 29, 2021 at 2:17 AM Song Liu <songliubraving@fb.com> wrote:
-> > >>> On Mar 23, 2021, at 9:21 AM, Namhyung Kim <namhyung@kernel.org> wrote:
-> > >>>
-> > >>> As we can run many jobs (in container) on a big machine, we want to
-> > >>> measure each job's performance during the run.  To do that, the
-> > >>> perf_event can be associated to a cgroup to measure it only.
-> > >>>
-> >
-> > [...]
-> >
-> > >>> +     return 0;
-> > >>> +}
-> > >>
-> > >> Could you please explain why we need this logic in can_attach?
-> > >
-> > > IIUC the ss->attach() is called after a task's cgroup membership
-> > > is changed.  But we want to collect the performance numbers for
-> > > the old cgroup just before the change.  As the logic merely checks
-> > > the current task's cgroup, it should be done in the can_attach()
-> > > which is called before the cgroup change.
-> >
-> > Thanks for the explanations.
-> >
-> > Overall, I really like the core idea, especially that the overhead on
-> > context switch is bounded (by the depth of cgroup tree).
->
-> Thanks!
->
-> >
-> > Is it possible to make PERF_EVENT_IOC_ATTACH_CGROUP more flexible?
-> > Specifically, if we can have
-> >
-> >   PERF_EVENT_IOC_ADD_CGROUP     add a cgroup to the list
-> >   PERF_EVENT_IOC_EL_CGROUP      delete a cgroup from the list
-> >
-> > we can probably share these events among multiple processes, and
-> > these processes don't need to know others' cgroup list. I think
-> > this will be useful for users to build customized monitoring in
-> > its own container.
-> >
-> > Does this make sense?
->
-> Maybe we can add ADD/DEL interface for more flexible monitoring
-> but I'm not sure which use cases it'll be used actually.
->
-> For your multi-process sharing case, the original events' file
-> descriptors should be shared first.  Also adding and deleting
-> (or just reading) arbitrary cgroups from a container can be a
-> security concern IMHO.
->
-> So I just focused on the single-process multi-cgroup case which is
-> already used (perf stat --for-each-cgroup) and very important in my
-> company's setup.  In this case we have a list of interested cgroups
-> from the beginning so it's more efficient to create a properly sized
-> hash table and all the nodes at once.
->
-> Thanks,
-> Namhyung
