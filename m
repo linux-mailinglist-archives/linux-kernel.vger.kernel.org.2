@@ -2,168 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB97435194E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:02:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 573FD351A5D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235152AbhDARwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:52:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234872AbhDARk6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:40:58 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on20601.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eaa::601])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F54DC05BD1A;
-        Thu,  1 Apr 2021 05:55:34 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MGzWC5xQkrPoKeGNrjfeqZ5ROQtlX6ZKUaXI7U3HMQ5SI1P+eI/TO4f9IN/BRuv21UvZbSTBsZls7kMAVtYLgn04+JWLpd3AezGZ/syuSVIDnaMvDx15RS3OjYBhtHwUhUWQM9PuFYaHsTr/zUrUi8HqJ7NKowhhAh2N88qt4yccbklZtphWpkY7IMRlG4a8b1n3+EPbcJz7rLOB5RTb/pLzWKYg7StiYMMpcDJB4rHepRqn8JJSPspUmFeLN5f92jXyoeQ7MtE0JrP/RhUZtg5/41dXRw8J9MeiEd1PY3v+IRlNClXwVrNd5yUV/2WCGoJPuvcSnHaVF8jWbTsqEA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/anNxsoy5vzfvhIHE3TZV7QT/7MV5nFOcgmLayLRY48=;
- b=IP5+RoM6LGxDFn7Nw3iIO8m8jgKppP/29VlYgKRFcgANASdnn0lbAzUorzlm83t4byl5R4dsmpPQ7KVkAjByu79nDpBwa0zIOhry4/u42c59iEGq7YOkoYGrXjH/sUsHPZkNJYPlzE7EmnyFf2aC6OjAs+XmIfA/OmKaNKevR4P1+NlPkesVLGSFvS1LDcpW+xwA/a1BJru2QqsddUOY9CBcz/X2a+UzM8BIdZjst2TNeTDeIhaIRwxVH+kueSZbBW/SSFrUkQr4nvrxA3kW3X3dLjFqSGdoJBWpELkd3/VJZAG0tmzDnh1tbwWuk9t8vcz+nYPKvzuNPLLxSgItuQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/anNxsoy5vzfvhIHE3TZV7QT/7MV5nFOcgmLayLRY48=;
- b=LUfjBEmC2Cc9lxEVmd5cM7ADR/xsayJ0vjavNaAvCS5kxR02KpPtyFJh5QM1sDY7kZPwUlOmfFKYK3k0QVe10tgxsaoP690aCSwDTQ4v0yms84qhRUpdSldK4yOeKOH3f4AM78GDk/pABPZYvKg1J9hB857boJ9CbSekV5xT/DQUhAeHm+Iq8/IYH/YLToruk7vyRopWTcrDnl0YeokUH3Da7JmAwgBtDBjPD8Ald/vWz9sUcpBd7gMLMLGxxWwydhgcEbA0SzWvstxr0AMXYa83uKs66rDgZDtC9g+iFVQ9wN8hHPsm+3lxOpWGTR4TgnRx4PbI+QqXb5z1YvZXgA==
-Authentication-Results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4619.namprd12.prod.outlook.com (2603:10b6:5:7c::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25; Thu, 1 Apr
- 2021 11:55:25 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3999.028; Thu, 1 Apr 2021
- 11:55:25 +0000
-Date:   Thu, 1 Apr 2021 08:55:23 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     linux-mm@kvack.org, nouveau@lists.freedesktop.org,
-        bskeggs@redhat.com, akpm@linux-foundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        jhubbard@nvidia.com, rcampbell@nvidia.com, jglisse@redhat.com,
-        hch@infradead.org, daniel@ffwll.ch, willy@infradead.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v7 5/8] mm: Device exclusive memory access
-Message-ID: <20210401115523.GZ1463678@nvidia.com>
-References: <20210326000805.2518-1-apopple@nvidia.com>
- <35941260.J9UuDlmC3F@nvdebian>
- <20210401004813.GT1463678@nvidia.com>
- <9244031.kThbcIvB84@nvdebian>
+        id S237364AbhDAR74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:59:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60668 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236035AbhDARni (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:43:38 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1617279715; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eW8pAnIayldEm1B55Y6sLVe6CRWlvBKHn4flF3zxEZA=;
+        b=gszLMzW8RwZal8nPtgjXEa3lBBuovgYMXPDk9fIl09T2HiDxo3bXO1Emk1xlxN1DylqM+p
+        fJf880WFv4pCJoBHmxch2VVw8HcMS2foGhH1A7eU1SmcpQA1d02/Ke9uyzdXyLc9xGG9du
+        zbe9scOKZCHGMMMBzQyPGFTolRbPaNg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5CD0DB2E5;
+        Thu,  1 Apr 2021 12:21:55 +0000 (UTC)
+Date:   Thu, 1 Apr 2021 14:21:51 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Alistair Popple <alistair@popple.id.au>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Yue Hu <huyue2@yulong.com>, Rafael Aquini <aquini@redhat.com>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, kexec@lists.infradead.org
+Subject: Re: [PATCH printk v2 2/5] printk: remove safe buffers
+Message-ID: <YGW63/elFr/gYW1u@alley>
+References: <20210330153512.1182-1-john.ogness@linutronix.de>
+ <20210330153512.1182-3-john.ogness@linutronix.de>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9244031.kThbcIvB84@nvdebian>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: MN2PR20CA0019.namprd20.prod.outlook.com
- (2603:10b6:208:e8::32) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR20CA0019.namprd20.prod.outlook.com (2603:10b6:208:e8::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28 via Frontend Transport; Thu, 1 Apr 2021 11:55:25 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lRvv1-006jEO-G9; Thu, 01 Apr 2021 08:55:23 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 91971180-879c-40af-4e05-08d8f505092a
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4619:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4619B5F96C108221BFCB491BC27B9@DM6PR12MB4619.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fNVOEFDIyINxpvvyudo3HUcTq03h3ntJy+THrHyDNw2lLFvSVYoIREpmdCvn3Rl5V5P6/yBDU2bbK6eVIszZuOGTVgiCyq+TT5JljueOvS0UfDCogpWQBQkQbv1TfkpEK2/fQJLtlWnCGLBcZctZLXBb/YCqEca65emIhxdLKhlQU4d5qACMEV/N9YxTr493x4+jGLNGuyxpSqg1LjxQQHuKtIObMaJ9hnzueTMap+RcuGDEihP/7I329wE2krwjghs1O8srtLvb0IgBHPLWyI0OczkPvNgcujR1aQIV0TdG9ZHJfSQ0s8JZ8Y48YLUkTCeUZ+/O1AvHLVVrwVffN0+WMUoVbLhUswT59xRKS1mVaANfBsaiAs6Bh/B6+F5/h02NUY1tGvpG6mWuwGaT9jRDfmA0B8kYNzPx9u9c2BNNTKY63Jo5yBVGAJqGdYL2Za9tUC8sxfS4bPDYT5hh4pAk4d+xWrnIx7YlXTGYAO6EQZknQddW52aDAiZwd78Bq2V0hRLamKy86gfJAn/ttTiiN9r9w5xnafWuj3TR/BeSQzZgUSGoUns6hTC9ctvApy/0sF6lfDjaBtYI1WtKzhxV2MPVpO+LYNHukeBci9jQ8oZZPSQqzGzIwybc5+QWuwmfNJynlv1DsE3fONY8hiJKvW4lI+ARHdmOZ2nNyoo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(396003)(376002)(136003)(366004)(1076003)(316002)(33656002)(4326008)(186003)(66946007)(9746002)(5660300002)(86362001)(37006003)(2616005)(26005)(83380400001)(38100700001)(36756003)(6862004)(478600001)(66476007)(426003)(2906002)(66556008)(6636002)(9786002)(8936002)(7416002)(8676002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?FrSGC0T4QimKulGn7nJDJu2YCqkkVTf21itqOLon+0rGZ5PSfNshf1/sCZuF?=
- =?us-ascii?Q?Gr0mmiTIg1zBVkxsIQMrsSx/S1ts46y+6TVveH9fnO0V1Gegt77H0dN3b9+U?=
- =?us-ascii?Q?Gf5lf3B1tfL9PemcO0bSb4WaOdp7kSCsJ8CQFwWaiWu8+PzS6SwnUGy3+aoq?=
- =?us-ascii?Q?r3UhA2qui/LlukRU0l/Dahm1yLemu11zS+XvCgtHPhw1GeTMRmcAG8XdJ5KX?=
- =?us-ascii?Q?J/U/Rnr7Crme8T0FdCUwwwjwv73fQZszD8HEFLt6kNATaLAYDS1AxfkzBgMb?=
- =?us-ascii?Q?CSm+/LWivnh/cp2ESfOu1CctSj3jjxVBBkZBjcWRrOeq1OZ/8uQ4wjf+af/C?=
- =?us-ascii?Q?ia3v62n0WkkyVWDrOQpC2bTTwQpYHgX1BK3IbVM89HPcW2Qin/hEbZi+Q8I+?=
- =?us-ascii?Q?nHzqmLQsQyVMMy+NNuW/mEVN/4jtMyb6PgLGcQCRu4ZCQTlOEZI9nwiAmlvj?=
- =?us-ascii?Q?kqla4aQoUQ71WyO0og5jbLQqOKuqvdRjo0m5mnv8+i3nUs0ngksbTMVlOdSX?=
- =?us-ascii?Q?oKuzOhgJi68nQFt+IjDSmpe5pvl2j8CTTX6ztIqDU7OhdrzfThj1JaQtl0QE?=
- =?us-ascii?Q?KxTHm/qnzww9uHZ9xLUi5ZejcvU3JlpADTQyJ2UgNoXoSbdb7B+X/58g9pjr?=
- =?us-ascii?Q?9n+AEnkZoa2Bn3xsw09lxpAj3aMDFp6AANLJMxv76QZiq3ME9ur9NUtF4+bk?=
- =?us-ascii?Q?rymwl7KZgqEi/+9CmMQ8oSv+ys7U5XgZQCYpb35OGqqxtZrc4B9ianpB5yK8?=
- =?us-ascii?Q?qbW1TGNqbsHepst/X4pTSgubJ9QQKhEbypS7cXtBLMPooChWIhGDcehwGZqq?=
- =?us-ascii?Q?NgD8o/c0h52C12aHCKoXp1ofi/zeIzvWW5kDxOso7qSfCR6f/umITYmfz2RV?=
- =?us-ascii?Q?t7/HWj07H1RzamsnO7DscWOu5Z/hHgLKS7+UeLq9XEg+yBcxYyz8tOd2YGC0?=
- =?us-ascii?Q?ULy8Ib/+Ukdl5SHjSzTKk69IpZsAaAAZD6HbYL0SJJ6PaGvzsk4at/4JveEt?=
- =?us-ascii?Q?GbsQ3utDRCE0i0xzz9Oli0oVTuLWlYBCJiNalHRQWocjNl3hIU0l+yXXVzuw?=
- =?us-ascii?Q?Jk6ngZGpsHxfvCwjj6oykAlOWRAnYBF1O4MWGtX2TkI8i5IXNfuV1W6R7BT1?=
- =?us-ascii?Q?PwqBe9jAT/EJ2ARBZjz4fuaUdEGyjzJd1F4+FXKHFzunDyLLAeLkgYgnomm0?=
- =?us-ascii?Q?y7qfiFN1Y2D1u4E+RZm0Lv2KAOFT/Yb3SqEcck3hNHZ0dxyCP4jnumlOpzWW?=
- =?us-ascii?Q?53tque2LaVp7RKtMx2S7g0PrtI/NrNq76+6T6Kfar0hGRzAcsge9UN8IY6Q7?=
- =?us-ascii?Q?repubB0L+EFogLDSvJNsPdGhC196JeiQ0tXdW5SFfUhVgQ=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 91971180-879c-40af-4e05-08d8f505092a
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2021 11:55:25.3722
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1LWivyd5MErq9MyDKtkkmYd8RuuHLRHSgxJk6pGjCfgGuq5bjCrIKRYKK8CIMSLP
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4619
+In-Reply-To: <20210330153512.1182-3-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 01:20:05PM +1100, Alistair Popple wrote:
-> On Thursday, 1 April 2021 11:48:13 AM AEDT Jason Gunthorpe wrote:
-> > On Thu, Apr 01, 2021 at 11:45:57AM +1100, Alistair Popple wrote:
-> > > On Thursday, 1 April 2021 12:46:04 AM AEDT Jason Gunthorpe wrote:
-> > > > On Thu, Apr 01, 2021 at 12:27:52AM +1100, Alistair Popple wrote:
-> > > > > On Thursday, 1 April 2021 12:18:54 AM AEDT Jason Gunthorpe wrote:
-> > > > > > On Wed, Mar 31, 2021 at 11:59:28PM +1100, Alistair Popple wrote:
-> > > > > > 
-> > > > > > > I guess that makes sense as the split could go either way at the
-> > > > > > > moment but I should add a check to make sure this isn't used with
-> > > > > > > pinned pages anyway.
-> > > > > > 
-> > > > > > Is it possible to have a pinned page under one of these things? If I
-> > > > > > pin it before you migrate it then it remains pinned but hidden under
-> > > > > > the swap entry?
-> > > > > 
-> > > > > At the moment yes. But I had planned (and this reminded me) to add a 
-> check 
-> > > to 
-> > > > > prevent marking pinned pages for exclusive access. 
-> > > > 
-> > > > How do you even do that without races with GUP fast?
-> > > 
-> > > Unless I've missed something I think I've convinced myself it should be 
-> safe 
-> > > to do the pin check after make_device_exclusive() has replaced all the 
-> PTEs 
-> > > with exclusive entries.
-> > > 
-> > > GUP fast sequence:
-> > > 1. Read PTE
-> > > 2. Pin page
-> > > 3. Check PTE
-> > > 4. if PTE changed -> unpin and fallback
-> > > 
-> > > If make_device_exclusive() runs after (1) it will either succeed or see 
-> the 
-> > > pin from (2) and fail (as desired). GUP should always see the PTE change 
-> and 
-> > > fallback which will revoke the exclusive access.
-> > 
-> > AFAICT the user can trigger fork at that instant and fork will try to
-> > copy the desposited migration entry before it has been checked
+On Tue 2021-03-30 17:35:09, John Ogness wrote:
+> With @logbuf_lock removed, the high level printk functions for
+> storing messages are lockless. Messages can be stored from any
+> context, so there is no need for the NMI and safe buffers anymore.
+> Remove the NMI and safe buffers.
 > 
-> In that case the child will get a read-only exclusive entry and eventually a 
-> page copy via do_wp_page() 
+> Although the safe buffers are removed, the NMI and safe context
+> tracking is still in place. In these contexts, store the message
+> immediately but still use irq_work to defer the console printing.
+> 
+> Since printk recursion tracking is in place, safe context tracking
+> for most of printk is not needed. Remove it. Only safe context
+> tracking relating to the console lock is left in place. This is
+> because the console lock is needed for the actual printing.
 
-Having do_wp_page() do a copy is a security bug. We closed it with the
-at-fork checks.
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -1142,24 +1128,37 @@ void __init setup_log_buf(int early)
+>  		 new_descs, ilog2(new_descs_count),
+>  		 new_infos);
+>  
+> -	printk_safe_enter_irqsave(flags);
+> +	local_irq_save(flags);
 
-Jason
+IMHO, we actually do not have to disable IRQ here. We already copy
+messages that might appear in the small race window in NMI. It would work
+the same way also for IRQ context.
+
+>  	log_buf_len = new_log_buf_len;
+>  	log_buf = new_log_buf;
+>  	new_log_buf_len = 0;
+>  
+>  	free = __LOG_BUF_LEN;
+> -	prb_for_each_record(0, &printk_rb_static, seq, &r)
+> -		free -= add_to_rb(&printk_rb_dynamic, &r);
+> +	prb_for_each_record(0, &printk_rb_static, seq, &r) {
+> +		text_size = add_to_rb(&printk_rb_dynamic, &r);
+> +		if (text_size > free)
+> +			free = 0;
+> +		else
+> +			free -= text_size;
+> +	}
+>  
+> -	/*
+> -	 * This is early enough that everything is still running on the
+> -	 * boot CPU and interrupts are disabled. So no new messages will
+> -	 * appear during the transition to the dynamic buffer.
+> -	 */
+>  	prb = &printk_rb_dynamic;
+>  
+> -	printk_safe_exit_irqrestore(flags);
+> +	local_irq_restore(flags);
+> +
+> +	/*
+> +	 * Copy any remaining messages that might have appeared from
+> +	 * NMI context after copying but before switching to the
+> +	 * dynamic buffer.
+
+The above comment would need to get updated if we keep also normal
+IRQ enabled when copying the log buffers.
+
+> +	 */
+> +	prb_for_each_record(seq, &printk_rb_static, seq, &r) {
+> +		text_size = add_to_rb(&printk_rb_dynamic, &r);
+> +		if (text_size > free)
+> +			free = 0;
+> +		else
+> +			free -= text_size;
+> +	}
+>  
+>  	if (seq != prb_next_seq(&printk_rb_static)) {
+>  		pr_err("dropped %llu messages\n",
+
+> --- a/lib/nmi_backtrace.c
+> +++ b/lib/nmi_backtrace.c
+> @@ -75,12 +75,6 @@ void nmi_trigger_cpumask_backtrace(const cpumask_t *mask,
+>  		touch_softlockup_watchdog();
+>  	}
+>  
+> -	/*
+> -	 * Force flush any remote buffers that might be stuck in IRQ context
+> -	 * and therefore could not run their irq_work.
+> -	 */
+> -	printk_safe_flush();
+
+Sigh, this reminds me that the nmi_safe buffers serialized backtraces
+from all CPUs.
+
+I am afraid that we have to put back the spinlock into
+nmi_cpu_backtrace(). It has been repeatedly added and removed depending
+on whether the backtrace was printed into the main log buffer
+or into the per-CPU buffers. Last time it was removed by
+the commit 03fc7f9c99c1e7ae2925d ("printk/nmi: Prevent deadlock
+when accessing the main log buffer in NMI").
+
+It should be safe because there should not be any other locks in the
+code path. Note that only one backtrace might be triggered at the same
+time, see @backtrace_flag in nmi_trigger_cpumask_backtrace().
+
+We _must_ serialize it somehow[*]. The lock in nmi_cpu_backtrace()
+looks less evil than the nmi_safe machinery. nmi_safe() shrinks
+too long backtraces, lose timestamps, needs to be explicitely
+flushed here and there, is a non-trivial code.
+
+[*] Non-serialized bactraces are real mess. Caller-id is visible
+    only on consoles or via syslogd interface. And it is not much
+    convenient.
+
+    I get this with "echo l >/proc/sysrq-trigger" and this patchset:
+
+[   95.642793] sysrq: Show backtrace of all active CPUs
+[   95.645202] NMI backtrace for cpu 3
+[   95.646778] CPU: 3 PID: 5095 Comm: bash Kdump: loaded Tainted: G        W         5.11.0-default+ #231
+[   95.650397] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
+[   95.656497] Call Trace:
+[   95.657937]  dump_stack+0x88/0xab
+[   95.659888]  nmi_cpu_backtrace+0xa4/0xc0
+[   95.661744]  ? lapic_can_unplug_cpu+0xa0/0xa0
+[   95.663658]  nmi_trigger_cpumask_backtrace+0xe6/0x120
+[   95.665657]  arch_trigger_cpumask_backtrace+0x19/0x20
+[   95.667720]  sysrq_handle_showallcpus+0x17/0x20
+[   95.670218]  __handle_sysrq+0xe1/0x240
+[   95.672190]  write_sysrq_trigger+0x51/0x60
+[   95.673993]  proc_reg_write+0x62/0x90
+[   95.675319]  vfs_write+0xed/0x380
+[   95.676636]  ksys_write+0xad/0xf0
+[   95.677835]  __x64_sys_write+0x1a/0x20
+[   95.678722]  do_syscall_64+0x37/0x50
+[   95.679525]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[   95.680571] RIP: 0033:0x7f3cbc2b3d44
+[   95.681380] Code: 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 80 00 00 00 00 8b 05 ea fa 2c 00 48 63 ff 85 c0 75 13 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 54 f3 c3 66 90 55 53 48 89 d5 48 89 f3 48 83
+[   95.684456] RSP: 002b:00007ffe29f06018 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+[   95.686029] RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f3cbc2b3d44
+[   95.687346] RDX: 0000000000000002 RSI: 000055ad7117b420 RDI: 0000000000000001
+[   95.688690] RBP: 000055ad7117b420 R08: 000000000000000a R09: 0000000000000000
+[   95.690071] R10: 000000000000000a R11: 0000000000000246 R12: 0000000000000002
+[   95.691243] R13: 0000000000000001 R14: 00007f3cbc57f720 R15: 0000000000000002
+[   95.692318] Sending NMI from CPU 3 to CPUs 0-2:
+[   95.693014] NMI backtrace for cpu 2
+[   95.693014] NMI backtrace for cpu 1
+[   95.693016] CPU: 2 PID: 0 Comm: swapper/2 Kdump: loaded Tainted: G        W         5.11.0-default+ #231
+[   95.693014] NMI backtrace for cpu 0 skipped: idling at native_safe_halt+0x12/0x20
+[   95.693016] CPU: 1 PID: 448 Comm: systemd-journal Kdump: loaded Tainted: G        W         5.11.0-default+ #231
+[   95.693018] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
+[   95.693019] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
+[   95.693020] RIP: 0010:ttwu_do_wakeup+0x1aa/0x220
+[   95.693021] RIP: 0010:inode_permission+0x1d/0x150
+[   95.693025] Code: f0 48 39 c1 72 1b 48 89 83 c8 0b 00 00 48 c7 83 c0 0b 00 00 00 00 00 00 5b 41 5c 41 5d 41 5e 5d c3 48 89 8b c8 0b 00 00 eb e3 <48> 8d 7b 18 be ff ff ff ff e8 68 95 c4 00 85 c0 75 80 0f 0b e9 79
+[   95.693025] Code: ff ff 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 55 48 89 e5 41 56 41 55 41 89 f5 41 54 53 41 83 e5 02 75 43 f6 47 02 01 <41> 89 f4 48 89 fb 0f 84 80 00 00 00 44 89 e6 48 89 df e8 dc fd ff
+[   95.693027] RSP: 0018:ffffbae700120ef8 EFLAGS: 00000002
+[   95.693028] RSP: 0018:ffffbae7003ebea0 EFLAGS: 00000202
+[   95.693028] RAX: 0000000000000001 RBX: ffff9eb2ffbebec0 RCX: 0000000000000000
+[   95.693030] RDX: 0000000000010003 RSI: ffffffffaa6a9860 RDI: ffff9eb2803351d0
+[   95.693031] RAX: ffff9eb28229fa80 RBX: 0000000000000001 RCX: 0000000000000000
+[   95.693031] RBP: ffffbae700120f18 R08: 0000000000000001 R09: 0000000000000001
+[   95.693032] R10: ffff9eb282f00850 R11: 000000000000028d R12: ffff9eb282f00780
+[   95.693032] RDX: 0000000000000001 RSI: 0000000000000010 RDI: ffff9eb286df5298
+[   95.693033] R13: ffffbae700120f60 R14: ffffbae700120f60 R15: 0000000000000000
+[   95.693034] RBP: ffffbae7003ebec0 R08: 0000000000000001 R09: 0000000000000001
+[   95.693035] FS:  0000000000000000(0000) GS:ffff9eb2ffa00000(0000) knlGS:0000000000000000
+[   95.693036] R10: ffffbae7003ebea8 R11: 0000000000000001 R12: 0000000000000000
+[   95.693037] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   95.693037] R13: 0000000000000000 R14: 000055a9f3817900 R15: 0000000000000000
+[   95.693038] CR2: 000055e2be208280 CR3: 0000000103838003 CR4: 0000000000370ee0
+[   95.693039] FS:  00007f1682ccb1c0(0000) GS:ffff9eb2ff800000(0000) knlGS:0000000000000000
+[   95.693041] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   95.693042] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   95.693043] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[   95.693043] CR2: 00007f3cbbfb36a8 CR3: 0000000102708005 CR4: 0000000000370ee0
+[   95.693044] Call Trace:
+[   95.693045]  <IRQ>
+[   95.693047] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   95.693047]  ttwu_do_activate+0x90/0x190
+[   95.693049] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[   95.693050] Call Trace:
+[   95.693051]  sched_ttwu_pending+0xe6/0x180
+[   95.693054]  do_faccessat+0xbb/0x260
+[   95.693055]  flush_smp_call_function_queue+0x117/0x220
+[   95.693058]  generic_smp_call_function_single_interrupt+0x13/0x20
+[   95.693060]  __x64_sys_access+0x1d/0x20
+[   95.693060]  __sysvec_call_function_single+0x47/0x190
+[   95.693063]  asm_call_irq_on_stack+0xf/0x20
+[   95.693064]  do_syscall_64+0x37/0x50
+[   95.693066]  </IRQ>
+[   95.693067]  sysvec_call_function_single+0x6d/0xb0
+[   95.693068]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[   95.693070]  asm_sysvec_call_function_single+0x12/0x20
+[   95.693071] RIP: 0033:0x7f1681d6be1a
+[   95.693072] RIP: 0010:native_safe_halt+0x12/0x20
+[   95.693074] Code: 48 8b 15 81 a0 2c 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 63 f6 b8 15 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 06 f3 c3 0f 1f 40 00 48 8b 15 49 a0 2c 00 f7
+[   95.693074] Code: 00 0f 00 2d 92 4f 48 00 f4 5d c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 55 48 89 e5 e9 07 00 00 00 0f 00 2d 72 4f 48 00 fb f4 <5d> c3 cc cc cc cc cc cc cc cc cc cc cc cc 0f 1f 44 00 00 55 65 8b
+[   95.693076] RSP: 002b:00007fff61a07828 EFLAGS: 00000246
+[   95.693078] RSP: 0018:ffffbae7000b7e90 EFLAGS: 00000206
+[   95.693080] RAX: ffffffffa8d86240 RBX: 0000000000000002 RCX: 0000000000000000
+[   95.693080] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffffa8d865f5
+[   95.693078]  ORIG_RAX: 0000000000000015
+[   95.693081] RBP: ffffbae7000b7e90 R08: 0000000000000001 R09: 0000000000000001
+[   95.693082] R10: 0000000000000000 R11: 0000000000000001 R12: ffffffffaa9bdf60
+[   95.693082] RAX: ffffffffffffffda RBX: 00007fff61a0a550 RCX: 00007f1681d6be1a
+[   95.693083] R13: 0000000000000000 R14: 0000000000000000 R15: ffff9eb280334400
+[   95.693084] RDX: 00007f16827d70e0 RSI: 0000000000000000 RDI: 000055a9f3817900
+[   95.693085] RBP: 00007fff61a07870 R08: 0000000000000000 R09: 0000000000000000
+[   95.693085]  ? __cpuidle_text_start+0x8/0x8
+[   95.693086] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+[   95.693087] R13: 0000000000000000 R14: 00007fff61a07970 R15: 0000000000000000
+[   95.693087]  ? default_idle_call+0x45/0x200
+[   95.693091]  default_idle+0xe/0x20
+[   95.693093]  arch_cpu_idle+0x15/0x20
+[   95.693094]  default_idle_call+0x6c/0x200
+[   95.693096]  do_idle+0x1fb/0x2e0
+[   95.693098]  ? do_idle+0x1d9/0x2e0
+[   95.693100]  cpu_startup_entry+0x1d/0x20
+[   95.693102]  start_secondary+0x12b/0x160
+[   95.693105]  secondary_startup_64_no_verify+0xc2/0xcb
+
+
+Otherwise, I really love this patch removing a lot of tricky code.
+
+Best Regards,
+Petr
