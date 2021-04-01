@@ -2,96 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 933DD351B21
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2401351B25
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237881AbhDASEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:04:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31656 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236268AbhDARoQ (ORCPT
+        id S238281AbhDASF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:05:59 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:35396 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235634AbhDARtM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:44:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617299056;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xpun99tvWb1lx2RACJU6X8cw0dJvrT8bzWLMZnVlAdk=;
-        b=BNSCE9vYkFpkCSWwwpnQRBzOWrNfRr2mRufSWK5jSjTe0wUQ+gvLXDI/sZZ+gDKLgwkJEF
-        V0WXjCMh35J0XVFW2SyKz4xiPD/b3wqgeeunlAojTxD8IiyTlciI4bqhl728cXdLnW7ywi
-        uSJIPOh6GbD+En9gr5lZcXvg5dGRsw8=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-144-3NdpqpWyM32lZEnJ4PXn3w-1; Thu, 01 Apr 2021 09:43:13 -0400
-X-MC-Unique: 3NdpqpWyM32lZEnJ4PXn3w-1
-Received: by mail-wm1-f71.google.com with SMTP id f9so1375235wml.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 06:43:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xpun99tvWb1lx2RACJU6X8cw0dJvrT8bzWLMZnVlAdk=;
-        b=DGtIjxCmSIPNnk6ULagoaOqj9bgx1w0qG40IzaEJ5rT8YvaNkhmYQRFnuiRWOkjIKG
-         d7wsA806yHhYXmxVD0n4SHC31yggf//F11pZlAPXCCAbm0AoP1Icm/I0kwzc1AGmRl6u
-         qQSTjrGvMirCb7LM1iDm3xrMyKPZE3Xqvd3/3QPPHxN3j64hME3U4aC3FS460Rwvfhqy
-         ebf6VhPTMAbW7MtvhHSlkKy1EX7XUnPzaHubbq7o3oYctCqF5P9gRUB3eBk70YDJE7X6
-         u3yn1KzvEdifGlH5HyJM8VT0nCnfV7s5rNOZ1NuLBYovyniWo6HC0TDAeAFcCG6FOS63
-         Wrtw==
-X-Gm-Message-State: AOAM532WIPAFOQO6e0uJEsUOQ9z/q6+Hcwb2HWtbaqmm9mricHoG7mbL
-        7J2taW5KvF+4YNee/DZBSTZKw4BxvOCiJ+mD4pKBeEKKoUaEAOniRYFgF/3G5R0ffGv+twRopQy
-        EszimpWZePbPWSkJsiqjbTCbl
-X-Received: by 2002:a1c:49c2:: with SMTP id w185mr8144711wma.163.1617284591746;
-        Thu, 01 Apr 2021 06:43:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy74Z45BwFltJfqODTBF4QpnKZOLKhdk7mXnXxGmt5DzRb4wc5TlQU8xGt7xNshzePaYeV6yg==
-X-Received: by 2002:a1c:49c2:: with SMTP id w185mr8144686wma.163.1617284591546;
-        Thu, 01 Apr 2021 06:43:11 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id r1sm12960441wrj.63.2021.04.01.06.43.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Apr 2021 06:43:10 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] KVM: nSVM: improve SYSENTER emulation on AMD
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <seanjc@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-References: <20210401111928.996871-1-mlevitsk@redhat.com>
- <20210401111928.996871-3-mlevitsk@redhat.com>
- <87h7kqrwb2.fsf@vitty.brq.redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <6f138606-d6c3-d332-9dc2-9ba4796fd4ce@redhat.com>
-Date:   Thu, 1 Apr 2021 15:43:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Thu, 1 Apr 2021 13:49:12 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 131DY5pf076011;
+        Thu, 1 Apr 2021 09:48:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Mg2lDEAe6gklpkKFAHaPTHh7cIMcXDrfVTsmQ1dH3Ck=;
+ b=DgGS7NEGDNxFLRUDeaVKVkZjWdFVD9tvCVSmFBXwT81r8CjJ8mkXvw1gG0dL1VzhQ59X
+ SQMCAM54yGMUP7dMiqXmNmQNsfr6skgjWv0Z/SiJ7KOfRhuVNTUD6hK6to363P6lvK29
+ 29xiOWfB4INW/mdqPRFlLR/Il29dWrzLLdJC5g4ihaMyVhQKTlrEa1B9dGqfkZWdFJ4o
+ 8Zbp5ihkla2khpba9uVjUUFw76r5M/IEx3XAsObqk7uKf4hM94cdOrV1LO34GzF4n0uj
+ ZAHc5FWham0Ln9DIrZIPRlQkMS2jkE7yY6HwI3q1x0pdbUu4mIkhkO3NrxA/pkiFhQup dQ== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37n8r0cbdy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 01 Apr 2021 09:48:03 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 131DgKIC016839;
+        Thu, 1 Apr 2021 13:48:00 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma05fra.de.ibm.com with ESMTP id 37n28w89gq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 01 Apr 2021 13:48:00 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 131DlcGv36504056
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 1 Apr 2021 13:47:38 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 389A5A4060;
+        Thu,  1 Apr 2021 13:47:58 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CFE39A4054;
+        Thu,  1 Apr 2021 13:47:57 +0000 (GMT)
+Received: from [9.171.31.36] (unknown [9.171.31.36])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  1 Apr 2021 13:47:57 +0000 (GMT)
+Subject: Re: [PATCH] net: smc: Remove repeated struct declaration
+To:     Wan Jiabing <wanjiabing@vivo.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net
+References: <20210401084030.1002882-1-wanjiabing@vivo.com>
+From:   Karsten Graul <kgraul@linux.ibm.com>
+Organization: IBM Deutschland Research & Development GmbH
+Message-ID: <c46c4186-7d48-efa1-ec4f-03bcb1c7188e@linux.ibm.com>
+Date:   Thu, 1 Apr 2021 15:47:58 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <87h7kqrwb2.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210401084030.1002882-1-wanjiabing@vivo.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: FKexRfPIxGpEh_yaWuXYovGDO14eBo-o
+X-Proofpoint-GUID: FKexRfPIxGpEh_yaWuXYovGDO14eBo-o
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-04-01_05:2021-03-31,2021-04-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 bulkscore=0 priorityscore=1501 phishscore=0 suspectscore=0
+ mlxlogscore=946 clxscore=1011 lowpriorityscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103310000 definitions=main-2104010094
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/04/21 15:03, Vitaly Kuznetsov wrote:
->> +		svm->sysenter_eip_hi = guest_cpuid_is_intel(vcpu) ? (data >> 32) : 0;
+On 01/04/2021 10:40, Wan Jiabing wrote:
+> struct smc_clc_msg_local is declared twice. One is declared at
+> 301st line. The blew one is not needed. Remove the duplicate.
 > 
-> (Personal taste) I'd suggest we keep the whole 'sysenter_eip'/'sysenter_esp'
-> even if we only use the upper 32 bits of it. That would reduce the code
-> churn a little bit (no need to change 'struct vcpu_svm').
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+> ---
+>  net/smc/smc_core.h | 1 -
+>  1 file changed, 1 deletion(-)
+> 
 
-Would there really be less changes?  Consider that you'd have to look at 
-the VMCB anyway because svm_get_msr can be reached not just for guest 
-RDMSR but also for ioctls.
-
-Paolo
-
+Acked-by: Karsten Graul <kgraul@linux.ibm.com>
