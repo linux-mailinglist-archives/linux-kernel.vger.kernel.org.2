@@ -2,275 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36794351BA2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D06C3351A13
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238667AbhDASJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:09:51 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14674 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236492AbhDARyk (ORCPT
+        id S236176AbhDAR6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:58:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234343AbhDARlo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:54:40 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FB2tZ0L3Jzmcqm;
-        Thu,  1 Apr 2021 20:44:06 +0800 (CST)
-Received: from huawei.com (10.174.28.241) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.498.0; Thu, 1 Apr 2021
- 20:46:37 +0800
-From:   Bixuan Cui <cuibixuan@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-s390@vger.kernel.org>
-CC:     <schnelle@linux.ibm.com>, <gor@linux.ibm.com>,
-        <borntraeger@de.ibm.com>, <john.wanghui@huawei.com>
-Subject: [PATCH] s390/pci: move ioremap/ioremap_prot/ioremap_wc/ioremap_wt/iounmap to arch/s390/mm/ioremap.c
-Date:   Thu, 1 Apr 2021 20:46:11 +0800
-Message-ID: <20210401124611.49917-1-cuibixuan@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 1 Apr 2021 13:41:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDEF0C0604DE
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 05:50:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=ojDjqcSeZKBZ1QucxS4+kU/n4y+EBdALOnFOKmlpENc=; b=Qp21uJoz2TECONNp80kaf/4OSX
+        z9O7vlKwC1LBBtwaMWgv6pXHpOACDbnpKdJLNGsHlVLVWYK+XV2oqnnD93DHyd8DueUEqETvik0pY
+        pA1aiFRpIVRmZtim9QpvT1fGPLdK+f/Wj9jSGjpHrwFJ2q0sB4zFbDlORS89GyAZJUlWvGP+GnPJ0
+        QA0LJUNBZR/eu+p336x5DI+nvGsN5XlwswGiqYppcJBjUkS6v9h4qwjXhlumR24CjLOdCQ20fBzGS
+        GGH2CSL+sbCqR1dhLUQNBcsGhmHD+ibxZbP3aQGZb7e2kP23LZh0KKvi5VlRe2THGJqcmeDxQJ3ik
+        XXIZgJNQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lRwmb-0068gQ-MU; Thu, 01 Apr 2021 12:50:47 +0000
+Date:   Thu, 1 Apr 2021 13:50:45 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [GIT PULL] XArray for 5.12
+Message-ID: <20210401125045.GC351017@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.28.241]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ioremap/iounmap is implemented in arch/s390/pci/pci.c.
-While CONFIG_PCI is disabled,the compilation error is reported:
-    s390x-linux-gnu-ld: drivers/pcmcia/cistpl.o: in function `set_cis_map':
-    cistpl.c:(.text+0x32a): undefined reference to `ioremap'
-    s390x-linux-gnu-ld: cistpl.c:(.text+0x360): undefined reference to `iounmap'
-    s390x-linux-gnu-ld: cistpl.c:(.text+0x384): undefined reference to `iounmap'
-    s390x-linux-gnu-ld: cistpl.c:(.text+0x396): undefined reference to `ioremap'
-    s390x-linux-gnu-ld: drivers/pcmcia/cistpl.o: in function `release_cis_mem':
-    cistpl.c:(.text+0xcb8): undefined reference to `iounmap'
 
-Add arch/s390/mm/ioremap.c file and move ioremap/ioremap_wc/ioremap_rt/iounmap
-to it to fix the error.
+My apologies for the lateness of this pull.  I had a bug reported in
+the test suite, and when I started working on it, I realised I had two
+fixes sitting in the xarray tree since last November.  Anyway, everything
+here is fixes, apart from adding xa_limit_16b.  The test suite passes.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
----
- arch/s390/include/asm/io.h |  8 ++---
- arch/s390/mm/Makefile      |  2 +-
- arch/s390/mm/ioremap.c     | 64 +++++++++++++++++++++++++++++++++
- arch/s390/pci/pci.c        | 73 ++++++--------------------------------
- 4 files changed, 80 insertions(+), 67 deletions(-)
- create mode 100644 arch/s390/mm/ioremap.c
+The following changes since commit 17860ccabff533748c85ea32904abd6bae990099:
 
-diff --git a/arch/s390/include/asm/io.h b/arch/s390/include/asm/io.h
-index e3882b012bfa..48a55644c34f 100644
---- a/arch/s390/include/asm/io.h
-+++ b/arch/s390/include/asm/io.h
-@@ -22,6 +22,10 @@ void unxlate_dev_mem_ptr(phys_addr_t phys, void *addr);
- 
- #define IO_SPACE_LIMIT 0
- 
-+#define ioremap ioremap
-+#define ioremap_wt ioremap_wt
-+#define ioremap_wc ioremap_wc
-+
- void __iomem *ioremap_prot(phys_addr_t addr, size_t size, unsigned long prot);
- void __iomem *ioremap(phys_addr_t addr, size_t size);
- void __iomem *ioremap_wc(phys_addr_t addr, size_t size);
-@@ -51,10 +55,6 @@ static inline void ioport_unmap(void __iomem *p)
- #define pci_iomap_wc pci_iomap_wc
- #define pci_iomap_wc_range pci_iomap_wc_range
- 
--#define ioremap ioremap
--#define ioremap_wt ioremap_wt
--#define ioremap_wc ioremap_wc
--
- #define memcpy_fromio(dst, src, count)	zpci_memcpy_fromio(dst, src, count)
- #define memcpy_toio(dst, src, count)	zpci_memcpy_toio(dst, src, count)
- #define memset_io(dst, val, count)	zpci_memset_io(dst, val, count)
-diff --git a/arch/s390/mm/Makefile b/arch/s390/mm/Makefile
-index cd67e94c16aa..74c22dfb131b 100644
---- a/arch/s390/mm/Makefile
-+++ b/arch/s390/mm/Makefile
-@@ -4,7 +4,7 @@
- #
- 
- obj-y		:= init.o fault.o extmem.o mmap.o vmem.o maccess.o
--obj-y		+= page-states.o pageattr.o pgtable.o pgalloc.o
-+obj-y		+= page-states.o pageattr.o pgtable.o pgalloc.o ioremap.o
- 
- obj-$(CONFIG_CMM)		+= cmm.o
- obj-$(CONFIG_HUGETLB_PAGE)	+= hugetlbpage.o
-diff --git a/arch/s390/mm/ioremap.c b/arch/s390/mm/ioremap.c
-new file mode 100644
-index 000000000000..132e6ddff36f
---- /dev/null
-+++ b/arch/s390/mm/ioremap.c
-@@ -0,0 +1,64 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2021 Huawei Ltd.
-+ * Author: Bixuan Cui <cuibixuan@huawei.com>
-+ */
-+#include <linux/vmalloc.h>
-+#include <linux/io.h>
-+#include <linux/mm.h>
-+#include <linux/jump_label.h>
-+
-+static void __iomem *__ioremap(phys_addr_t addr, size_t size, pgprot_t prot)
-+{
-+	unsigned long offset, vaddr;
-+	struct vm_struct *area;
-+	phys_addr_t last_addr;
-+
-+	last_addr = addr + size - 1;
-+	if (!size || last_addr < addr)
-+		return NULL;
-+
-+	offset = addr & ~PAGE_MASK;
-+	addr &= PAGE_MASK;
-+	size = PAGE_ALIGN(size + offset);
-+	area = get_vm_area(size, VM_IOREMAP);
-+	if (!area)
-+		return NULL;
-+
-+	vaddr = (unsigned long) area->addr;
-+	if (ioremap_page_range(vaddr, vaddr + size, addr, prot)) {
-+		free_vm_area(area);
-+		return NULL;
-+	}
-+	return (void __iomem *) ((unsigned long) area->addr + offset);
-+}
-+
-+void __iomem *ioremap_prot(phys_addr_t addr, size_t size, unsigned long prot)
-+{
-+	return __ioremap(addr, size, __pgprot(prot));
-+}
-+EXPORT_SYMBOL(ioremap_prot);
-+
-+void __iomem *ioremap(phys_addr_t addr, size_t size)
-+{
-+	return __ioremap(addr, size, PAGE_KERNEL);
-+}
-+EXPORT_SYMBOL(ioremap);
-+
-+void __iomem *ioremap_wc(phys_addr_t addr, size_t size)
-+{
-+	return __ioremap(addr, size, pgprot_writecombine(PAGE_KERNEL));
-+}
-+EXPORT_SYMBOL(ioremap_wc);
-+
-+void __iomem *ioremap_wt(phys_addr_t addr, size_t size)
-+{
-+	return __ioremap(addr, size, pgprot_writethrough(PAGE_KERNEL));
-+}
-+EXPORT_SYMBOL(ioremap_wt);
-+
-+void iounmap(volatile void __iomem *addr)
-+{
-+	vunmap((__force void *) ((unsigned long) addr & PAGE_MASK));
-+}
-+EXPORT_SYMBOL(iounmap);
-diff --git a/arch/s390/pci/pci.c b/arch/s390/pci/pci.c
-index dd14641b2d20..be300850df9c 100644
---- a/arch/s390/pci/pci.c
-+++ b/arch/s390/pci/pci.c
-@@ -227,65 +227,6 @@ void __iowrite64_copy(void __iomem *to, const void *from, size_t count)
-        zpci_memcpy_toio(to, from, count);
- }
- 
--static void __iomem *__ioremap(phys_addr_t addr, size_t size, pgprot_t prot)
--{
--	unsigned long offset, vaddr;
--	struct vm_struct *area;
--	phys_addr_t last_addr;
--
--	last_addr = addr + size - 1;
--	if (!size || last_addr < addr)
--		return NULL;
--
--	if (!static_branch_unlikely(&have_mio))
--		return (void __iomem *) addr;
--
--	offset = addr & ~PAGE_MASK;
--	addr &= PAGE_MASK;
--	size = PAGE_ALIGN(size + offset);
--	area = get_vm_area(size, VM_IOREMAP);
--	if (!area)
--		return NULL;
--
--	vaddr = (unsigned long) area->addr;
--	if (ioremap_page_range(vaddr, vaddr + size, addr, prot)) {
--		free_vm_area(area);
--		return NULL;
--	}
--	return (void __iomem *) ((unsigned long) area->addr + offset);
--}
--
--void __iomem *ioremap_prot(phys_addr_t addr, size_t size, unsigned long prot)
--{
--	return __ioremap(addr, size, __pgprot(prot));
--}
--EXPORT_SYMBOL(ioremap_prot);
--
--void __iomem *ioremap(phys_addr_t addr, size_t size)
--{
--	return __ioremap(addr, size, PAGE_KERNEL);
--}
--EXPORT_SYMBOL(ioremap);
--
--void __iomem *ioremap_wc(phys_addr_t addr, size_t size)
--{
--	return __ioremap(addr, size, pgprot_writecombine(PAGE_KERNEL));
--}
--EXPORT_SYMBOL(ioremap_wc);
--
--void __iomem *ioremap_wt(phys_addr_t addr, size_t size)
--{
--	return __ioremap(addr, size, pgprot_writethrough(PAGE_KERNEL));
--}
--EXPORT_SYMBOL(ioremap_wt);
--
--void iounmap(volatile void __iomem *addr)
--{
--	if (static_branch_likely(&have_mio))
--		vunmap((__force void *) ((unsigned long) addr & PAGE_MASK));
--}
--EXPORT_SYMBOL(iounmap);
--
- /* Create a virtual mapping cookie for a PCI BAR */
- static void __iomem *pci_iomap_range_fh(struct pci_dev *pdev, int bar,
- 					unsigned long offset, unsigned long max)
-@@ -312,7 +253,10 @@ static void __iomem *pci_iomap_range_mio(struct pci_dev *pdev, int bar,
- 	struct zpci_dev *zdev = to_zpci(pdev);
- 	void __iomem *iova;
- 
--	iova = ioremap((unsigned long) zdev->bars[bar].mio_wt, barsize);
-+	if (!static_branch_unlikely(&have_mio))
-+		iova = (void __iomem *) zdev->bars[bar].mio_wt;
-+	else
-+		iova = ioremap((unsigned long) zdev->bars[bar].mio_wt, barsize);
- 	return iova ? iova + offset : iova;
- }
- 
-@@ -342,7 +286,11 @@ static void __iomem *pci_iomap_wc_range_mio(struct pci_dev *pdev, int bar,
- 	struct zpci_dev *zdev = to_zpci(pdev);
- 	void __iomem *iova;
- 
--	iova = ioremap((unsigned long) zdev->bars[bar].mio_wb, barsize);
-+	if (!static_branch_unlikely(&have_mio))
-+		iova = (void __iomem *) zdev->bars[bar].mio_wb;
-+	else
-+		iova = ioremap((unsigned long) zdev->bars[bar].mio_wb, barsize);
-+
- 	return iova ? iova + offset : iova;
- }
- 
-@@ -381,7 +329,8 @@ static void pci_iounmap_fh(struct pci_dev *pdev, void __iomem *addr)
- 
- static void pci_iounmap_mio(struct pci_dev *pdev, void __iomem *addr)
- {
--	iounmap(addr);
-+	if (static_branch_likely(&have_mio))
-+		iounmap(addr);
- }
- 
- void pci_iounmap(struct pci_dev *pdev, void __iomem *addr)
--- 
-2.17.1
+  Merge tag 'vfio-v5.12-rc6' of git://github.com/awilliam/linux-vfio (2021-03-30 09:49:36 -0700)
+
+are available in the Git repository at:
+
+  git://git.infradead.org/users/willy/xarray.git tags/xarray-5.12
+
+for you to fetch changes up to 2c7e57a02708a69d0194f9ef2a7b7e54f5a0484a:
+
+  idr test suite: Improve reporting from idr_find_test_1 (2021-04-01 07:50:42 -0400)
+
+----------------------------------------------------------------
+XArray updates for 5.12
+ - Fix a bug when splitting to a non-zero order
+ - Documentation fix
+ - Add a predefined 16-bit allocation limit
+ - Various test suite fixes
+
+----------------------------------------------------------------
+Matthew Wilcox (Oracle) (8):
+      XArray: Fix split documentation
+      XArray: Fix splitting to non-zero orders
+      XArray: Add xa_limit_16b
+      radix tree test suite: Fix compilation
+      radix tree test suite: Register the main thread with the RCU library
+      idr test suite: Take RCU read lock in idr_find_test_1
+      idr test suite: Create anchor before launching throbber
+      idr test suite: Improve reporting from idr_find_test_1
+
+ include/linux/xarray.h                          |  4 +++-
+ lib/test_xarray.c                               | 26 +++++++++++++------------
+ lib/xarray.c                                    | 11 ++++++-----
+ tools/testing/radix-tree/idr-test.c             | 21 +++++++++++++++++---
+ tools/testing/radix-tree/linux/compiler_types.h |  0
+ tools/testing/radix-tree/multiorder.c           |  2 ++
+ tools/testing/radix-tree/xarray.c               |  2 ++
+ 7 files changed, 45 insertions(+), 21 deletions(-)
+ delete mode 100644 tools/testing/radix-tree/linux/compiler_types.h
+
 
