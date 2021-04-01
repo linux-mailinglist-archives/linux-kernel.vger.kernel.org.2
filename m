@@ -2,196 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CCE7351231
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6173351238
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233788AbhDAJ00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 05:26:26 -0400
-Received: from foss.arm.com ([217.140.110.172]:34688 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233504AbhDAJ0D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 05:26:03 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BC6DF31B;
-        Thu,  1 Apr 2021 02:26:02 -0700 (PDT)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.70.228])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 9E3BB3F719;
-        Thu,  1 Apr 2021 02:25:56 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-mm@kvack.org
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-xtensa@linux-xtensa.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V2 RESEND] mm/memtest: Add ARCH_USE_MEMTEST
-Date:   Thu,  1 Apr 2021 14:56:33 +0530
-Message-Id: <1617269193-22294-1-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
+        id S233752AbhDAJ2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 05:28:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233504AbhDAJ2f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 05:28:35 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76771C0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 02:28:35 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id f22-20020a7bc8d60000b029010c024a1407so2497780wml.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 02:28:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2rkOw5Dx1TINvXjRB+SiB7YZDBdwJ+e4cTjDJv7XxLk=;
+        b=Kkl/wVVY/CWcsAXD8YzUvZ68ov4zSNmqyjBFYGm67pyuuH9d4pT0MdHIOSQXv0pHOO
+         ZRjZSOfiv73ln2HcUdwL39tBVytU/0N5KciME3fJJM3bC5ltdbjVPA8F+Bem8c01jOvd
+         u94DIHU4ghDz9rEibwoTCPdGJYGxmNwjGkN2LJPeh+u8+wjhUO33ZQKhtqAkpINDJu6r
+         uPdMbRj4AEjNaRTMpGWT1eCrnHaV94TiAJK2NORYOg7LoFgLNY5VBvMbsKyP0g7JFYAB
+         LmgfQEFlHVEJNw7aYhyQndV9U4KCa7B8PZCspL7QKmjyYCTfggiJ4+vHv9pY5/rBdCMJ
+         ADHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2rkOw5Dx1TINvXjRB+SiB7YZDBdwJ+e4cTjDJv7XxLk=;
+        b=gFxjREePl2D+VRCG+SJIZhDa1boULXjszhnD1SPZKUb6IuMwDU/N1GcPiGR1MDU25q
+         xJNwdyWJH88aVT+M+0omNwB8kvhJhtbconQ+sPudB0MKk5PnD6WxA9b3wdJmlkvSBPJi
+         4WerJeP0h17GJJnV1mtKbM1O1BKP3HKKzGWiziJQAk62ihTPrF1FmwW2ptwOTXiB1FV0
+         XynHGPNoIydVlueHpJ0zWlrXI6dIm52aRCgvG1uy2G1LRRfXwDFYeeLCZQS5awgd1M0D
+         LJU0dY0OmREEC7j2vi+vbxQzA84+ok7+naZEHIEeFkSKhOUeHOs6G7dNRXJiYbL4/ofF
+         mI7g==
+X-Gm-Message-State: AOAM530gu8noLR3YaZPmSJq4hvvKYYNKoCQJYy8Gg3qs/jr1dmjrp2QM
+        JQ9lRcmR5rR7wCzMH8dwxwL70T+gEXVk+A==
+X-Google-Smtp-Source: ABdhPJzPCsFAwf7ujt/gAxK0yWMBleixfbHx3YsvhYfgFARTDwByt+1NnYOjdpBffXveTask0jwj9w==
+X-Received: by 2002:a7b:c2fa:: with SMTP id e26mr7003419wmk.102.1617269314149;
+        Thu, 01 Apr 2021 02:28:34 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.126.134])
+        by smtp.gmail.com with ESMTPSA id p6sm8831324wru.2.2021.04.01.02.28.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Apr 2021 02:28:33 -0700 (PDT)
+Subject: Re: [PATCH -next] soc: mediatek: Make symbol 'mtk_mutex_driver'
+ static
+To:     Wei Yongjun <weiyongjun1@huawei.com>,
+        Hulk Robot <hulkci@huawei.com>, CK Hu <ck.hu@mediatek.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210210075656.1096251-1-weiyongjun1@huawei.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <c22c6ae9-9bfc-570b-7b02-ec9c24963b89@gmail.com>
+Date:   Thu, 1 Apr 2021 11:28:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <20210210075656.1096251-1-weiyongjun1@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-early_memtest() does not get called from all architectures. Hence enabling
-CONFIG_MEMTEST and providing a valid memtest=[1..N] kernel command line
-option might not trigger the memory pattern tests as would be expected in
-normal circumstances. This situation is misleading.
 
-The change here prevents the above mentioned problem after introducing a
-new config option ARCH_USE_MEMTEST that should be subscribed on platforms
-that call early_memtest(), in order to enable the config CONFIG_MEMTEST.
-Conversely CONFIG_MEMTEST cannot be enabled on platforms where it would
-not be tested anyway.
 
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-mips@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-xtensa@linux-xtensa.org
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
-Acked-by: Catalin Marinas <catalin.marinas@arm.com> (arm64)
-Reviewed-by: Max Filippov <jcmvbkbc@gmail.com>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
-This patch applies on v5.12-rc5 and has been tested on arm64 platform.
-But it has been just build tested on all other platforms.
+On 10/02/2021 08:56, Wei Yongjun wrote:
+> The sparse tool complains as follows:
+> 
+> drivers/soc/mediatek/mtk-mutex.c:464:24: warning:
+>  symbol 'mtk_mutex_driver' was not declared. Should it be static?
+> 
+> This symbol is not used outside of mtk-mutex.c, so this
+> commit marks it static.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 
-Changes in V2:
+Applied to v5.12-next/soc
 
-https://patchwork.kernel.org/project/linux-mm/patch/1614573126-7740-1-git-send-email-anshuman.khandual@arm.com/
+Thanks!
 
-- Added ARCH_USE_MEMTEST in the sorted alphabetical order on platforms
-
-Changes in V1:
-
-https://patchwork.kernel.org/project/linux-mm/patch/1612498242-31579-1-git-send-email-anshuman.khandual@arm.com/
-
- arch/arm/Kconfig     | 1 +
- arch/arm64/Kconfig   | 1 +
- arch/mips/Kconfig    | 1 +
- arch/powerpc/Kconfig | 1 +
- arch/x86/Kconfig     | 1 +
- arch/xtensa/Kconfig  | 1 +
- lib/Kconfig.debug    | 9 ++++++++-
- 7 files changed, 14 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 5da96f5df48f..49878877df88 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -33,6 +33,7 @@ config ARM
- 	select ARCH_SUPPORTS_ATOMIC_RMW
- 	select ARCH_USE_BUILTIN_BSWAP
- 	select ARCH_USE_CMPXCHG_LOCKREF
-+	select ARCH_USE_MEMTEST
- 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
- 	select ARCH_WANT_IPC_PARSE_VERSION
- 	select ARCH_WANT_LD_ORPHAN_WARN
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index e4e1b6550115..63c380587a77 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -67,6 +67,7 @@ config ARM64
- 	select ARCH_KEEP_MEMBLOCK
- 	select ARCH_USE_CMPXCHG_LOCKREF
- 	select ARCH_USE_GNU_PROPERTY
-+	select ARCH_USE_MEMTEST
- 	select ARCH_USE_QUEUED_RWLOCKS
- 	select ARCH_USE_QUEUED_SPINLOCKS
- 	select ARCH_USE_SYM_ANNOTATIONS
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index d89efba3d8a4..93a4f502f962 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -14,6 +14,7 @@ config MIPS
- 	select ARCH_SUPPORTS_UPROBES
- 	select ARCH_USE_BUILTIN_BSWAP
- 	select ARCH_USE_CMPXCHG_LOCKREF if 64BIT
-+	select ARCH_USE_MEMTEST
- 	select ARCH_USE_QUEUED_RWLOCKS
- 	select ARCH_USE_QUEUED_SPINLOCKS
- 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 386ae12d8523..3778ad17f56a 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -149,6 +149,7 @@ config PPC
- 	select ARCH_SUPPORTS_DEBUG_PAGEALLOC	if PPC32 || PPC_BOOK3S_64
- 	select ARCH_USE_BUILTIN_BSWAP
- 	select ARCH_USE_CMPXCHG_LOCKREF		if PPC64
-+	select ARCH_USE_MEMTEST
- 	select ARCH_USE_QUEUED_RWLOCKS		if PPC_QUEUED_SPINLOCKS
- 	select ARCH_USE_QUEUED_SPINLOCKS	if PPC_QUEUED_SPINLOCKS
- 	select ARCH_WANT_IPC_PARSE_VERSION
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 2792879d398e..2cb76fd5258e 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -100,6 +100,7 @@ config X86
- 	select ARCH_SUPPORTS_LTO_CLANG		if X86_64
- 	select ARCH_SUPPORTS_LTO_CLANG_THIN	if X86_64
- 	select ARCH_USE_BUILTIN_BSWAP
-+	select ARCH_USE_MEMTEST
- 	select ARCH_USE_QUEUED_RWLOCKS
- 	select ARCH_USE_QUEUED_SPINLOCKS
- 	select ARCH_USE_SYM_ANNOTATIONS
-diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
-index 9ad6b7b82707..524413aabbc4 100644
---- a/arch/xtensa/Kconfig
-+++ b/arch/xtensa/Kconfig
-@@ -7,6 +7,7 @@ config XTENSA
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU if MMU
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE if MMU
- 	select ARCH_HAS_DMA_SET_UNCACHED if MMU
-+	select ARCH_USE_MEMTEST
- 	select ARCH_USE_QUEUED_RWLOCKS
- 	select ARCH_USE_QUEUED_SPINLOCKS
- 	select ARCH_WANT_FRAME_POINTERS
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 2779c29d9981..a3fd69e6f6af 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2515,11 +2515,18 @@ config TEST_FPU
- 
- endif # RUNTIME_TESTING_MENU
- 
-+config ARCH_USE_MEMTEST
-+	bool
-+	help
-+	  An architecture should select this when it uses early_memtest()
-+	  during boot process.
-+
- config MEMTEST
- 	bool "Memtest"
-+	depends on ARCH_USE_MEMTEST
- 	help
- 	  This option adds a kernel parameter 'memtest', which allows memtest
--	  to be set.
-+	  to be set and executed.
- 	        memtest=0, mean disabled; -- default
- 	        memtest=1, mean do 1 test pattern;
- 	        ...
--- 
-2.20.1
-
+> ---
+>  drivers/soc/mediatek/mtk-mutex.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soc/mediatek/mtk-mutex.c b/drivers/soc/mediatek/mtk-mutex.c
+> index f531b119da7a..3a315a62e783 100644
+> --- a/drivers/soc/mediatek/mtk-mutex.c
+> +++ b/drivers/soc/mediatek/mtk-mutex.c
+> @@ -461,7 +461,7 @@ static const struct of_device_id mutex_driver_dt_match[] = {
+>  };
+>  MODULE_DEVICE_TABLE(of, mutex_driver_dt_match);
+>  
+> -struct platform_driver mtk_mutex_driver = {
+> +static struct platform_driver mtk_mutex_driver = {
+>  	.probe		= mtk_mutex_probe,
+>  	.remove		= mtk_mutex_remove,
+>  	.driver		= {
+> 
