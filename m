@@ -2,265 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F6BF3519AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B050A351A51
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235920AbhDARz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:55:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235379AbhDARml (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:42:41 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD43EC00F7F1
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 08:12:37 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso2430024otq.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 08:12:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tTqE/Ky1fv1LrXz3ESekIhjrImO3lS/9eDpjSCLV/dA=;
-        b=mkD39DIBsHo55o2F+OMgcNeGzO1SocdX0efVdLUhsmO/H7f7DvVZT4fevmeDXaGfxx
-         wfVADYNspNFNjDWj/3kPl81dfmJ0ft2710v408/acG6s2GyPFmk3mY5uw0beiWIfnh1O
-         s00QIQOJTX6eK+vwRlpOr1bq3lHpIEkfLh2BrhD5f2Oon/ummCloMdzaYh/Drhtc6CCj
-         AmlOabVry5mY0aQxit3q+ExLTRQ+SOqmw1vKS10w1of5yUjlJ4LColNC5v7oX+F370v5
-         R8ez4vS5uQ2plC6G3dauS3yUPMgAk8c9D/MFdF398FB0KMOAeaSnoh1LOzSWDgTQVI5y
-         03rA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tTqE/Ky1fv1LrXz3ESekIhjrImO3lS/9eDpjSCLV/dA=;
-        b=cG2xKdhRjytn71l5sLqUXWjDotHOO8SX1dYKHSTuyj6JuxGzBnNphtzIPY9hukXlKk
-         JQK7gZ2q3YIu1/SxVcF2VXW9RRd+6/qYlXUHPs30qmmz2SsqyQ/KHsbKdQqR6/JSLjHl
-         WwR2T8boJNk/PLhohUXLuqX8ZbmCxvxPGvFyy0xaNVqzQ2aEy8uZphpJyH8pEDzQhoLb
-         PHw3PsAI0K56H4i1v/ve0AxmK+ZjHwuy1vLxY3rORkZ3zgjwI7OU8l5N/grmpUmmYVIk
-         Si/mkuNoLgNe/mbzeA9gqAAODy538y4QV9iA3/4dJ7ASRgTuD96p6ZP4wWKRMM/EAa+M
-         C7DQ==
-X-Gm-Message-State: AOAM530UwnMu2yuMSUJdmHd8pHz5jU/WVFHZQa1RscvHFLLJLJq8kPps
-        10M5sgC2dE9tJ4JN1j9ff5L9ig==
-X-Google-Smtp-Source: ABdhPJzZ92r+oustT9ea2xEnOJETO5WzvjglrudhBJeBGatZI0w5tCU8L3w+OGWI0EVpeoxbDWgBBQ==
-X-Received: by 2002:a05:6830:4121:: with SMTP id w33mr7104656ott.153.1617289957105;
-        Thu, 01 Apr 2021 08:12:37 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id c26sm1230830otm.51.2021.04.01.08.12.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 08:12:36 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 10:12:34 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     nitirawa@codeaurora.org
-Cc:     asutoshd@codeaurora.org, cang@codeaurora.org,
-        stummala@codeaurora.org, vbadigan@codeaurora.org,
-        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, adrian.hunter@intel.com, bvanassche@acm.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 3/3] scsi: ufs-qcom: configure VCC voltage level in
- vendor file
-Message-ID: <20210401151234.GO904837@yoga>
-References: <1616363857-26760-1-git-send-email-nitirawa@codeaurora.org>
- <1616363857-26760-4-git-send-email-nitirawa@codeaurora.org>
- <20210323152834.GH5254@yoga>
- <f27b4fde8092088ec5dc6232cc4b2318@codeaurora.org>
- <20210331181959.GL904837@yoga>
- <d9d7d6fb9241bbe48b3f8df5d2c0bc4e@codeaurora.org>
+        id S236962AbhDAR7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:59:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42950 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235595AbhDARnA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:43:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EA2661277;
+        Thu,  1 Apr 2021 15:13:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617290020;
+        bh=oIMd6/IwnzXM2f7FHdSrACNcFz9T7GzoNQqDjQwcJt0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=nYHZIaVXuxXEECURowpvtvUXv4m1MGCoTU3o66nAvmBdtNlkIYDKs+8f21Bv7Fsl4
+         uYPblfAQ5NKS0hH0OcqVAzqQx6l3d1Wxgpnm7dfmRTVIxWfpBfoCjs0MJhBJJsLNnM
+         UJKbxcZvfo3M7UzVLZfEwCKVQAHiH0I1Gh7+/jbUA53lS7T+qQK/o7ExYkZf0LYAs6
+         /PRkIw6vE+AeTwF9c4NcN1CT1iCtuLKZqzFxx2q89i86te9sKBYrr7fosBAfEVku/e
+         OGs+/+4b5iR8H+I+8zHQ9pcqSJpP7xpviIjyLAgUzBS3SRGviJAtOJm9eUCa2JfQJP
+         ekOKa6UAjNQtA==
+From:   Dinh Nguyen <dinguyen@kernel.org>
+To:     gregkh@linuxfoundation.org
+Cc:     dinguyen@kernel.org, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        kernel test robot <lkp@intel.com>,
+        Richard Gong <richard.gong@linux.intel.com>
+Subject: [PATCH] firmware: stratix10-svc: build only on 64-bit ARM
+Date:   Thu,  1 Apr 2021 10:13:29 -0500
+Message-Id: <20210401151329.606004-1-dinguyen@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d9d7d6fb9241bbe48b3f8df5d2c0bc4e@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 01 Apr 09:58 CDT 2021, nitirawa@codeaurora.org wrote:
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-> On 2021-03-31 23:49, Bjorn Andersson wrote:
-> > On Wed 24 Mar 16:55 CDT 2021, nitirawa@codeaurora.org wrote:
-> > 
-> > > On 2021-03-23 20:58, Bjorn Andersson wrote:
-> > > > On Sun 21 Mar 16:57 CDT 2021, Nitin Rawat wrote:
-> > > >
-> > > > > As a part of vops handler, VCC voltage is updated
-> > > > > as per the ufs device probed after reading the device
-> > > > > descriptor. We follow below steps to configure voltage
-> > > > > level.
-> > > > >
-> > > > > 1. Set the device to SLEEP state.
-> > > > > 2. Disable the Vcc Regulator.
-> > > > > 3. Set the vcc voltage according to the device type and reenable
-> > > > >    the regulator.
-> > > > > 4. Set the device mode back to ACTIVE.
-> > > > >
-> > > >
-> > > > When we discussed this a while back this was described as a requirement
-> > > > from the device specification, you only operate on objects "owned" by
-> > > > ufshcd and you invoke ufshcd operations to perform the actions.
-> > > >
-> > > > So why is this a ufs-qcom patch and not something in ufshcd?
-> > > >
-> > > > Regards,
-> > > > Bjorn
-> > > >
-> > > > > Signed-off-by: Nitin Rawat <nitirawa@codeaurora.org>
-> > > > > Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-> > > > > ---
-> > > > >  drivers/scsi/ufs/ufs-qcom.c | 51
-> > > > > +++++++++++++++++++++++++++++++++++++++++++++
-> > > > >  1 file changed, 51 insertions(+)
-> > > > >
-> > > > > diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
-> > > > > index f97d7b0..ca35f5c 100644
-> > > > > --- a/drivers/scsi/ufs/ufs-qcom.c
-> > > > > +++ b/drivers/scsi/ufs/ufs-qcom.c
-> > > > > @@ -21,6 +21,17 @@
-> > > > >  #define UFS_QCOM_DEFAULT_DBG_PRINT_EN	\
-> > > > >  	(UFS_QCOM_DBG_PRINT_REGS_EN | UFS_QCOM_DBG_PRINT_TEST_BUS_EN)
-> > > > >
-> > > > > +#define	ANDROID_BOOT_DEV_MAX	30
-> > > > > +static char android_boot_dev[ANDROID_BOOT_DEV_MAX];
-> > > > > +
-> > > > > +/* Min and Max VCC voltage values for ufs 2.x and
-> > > > > + * ufs 3.x devices
-> > > > > + */
-> > > > > +#define UFS_3X_VREG_VCC_MIN_UV	2540000 /* uV */
-> > > > > +#define UFS_3X_VREG_VCC_MAX_UV	2700000 /* uV */
-> > > > > +#define UFS_2X_VREG_VCC_MIN_UV	2950000 /* uV */
-> > > > > +#define UFS_2X_VREG_VCC_MAX_UV	2960000 /* uV */
-> > > > > +
-> > > > >  enum {
-> > > > >  	TSTBUS_UAWM,
-> > > > >  	TSTBUS_UARM,
-> > > > > @@ -1293,6 +1304,45 @@ static void
-> > > > > ufs_qcom_print_hw_debug_reg_all(struct ufs_hba *hba,
-> > > > >  	print_fn(hba, reg, 9, "UFS_DBG_RD_REG_TMRLUT ", priv);
-> > > > >  }
-> > > > >
-> > > > > +  /**
-> > > > > +   * ufs_qcom_setup_vcc_regulators - Update VCC voltage
-> > > > > +   * @hba: host controller instance
-> > > > > +   * Update VCC voltage based on UFS device(ufs 2.x or
-> > > > > +   * ufs 3.x probed)
-> > > > > +   */
-> > > > > +static int ufs_qcom_setup_vcc_regulators(struct ufs_hba *hba)
-> > > > > +{
-> > > > > +	struct ufs_dev_info *dev_info = &hba->dev_info;
-> > > > > +	struct ufs_vreg *vreg = hba->vreg_info.vcc;
-> > > > > +	int ret;
-> > > > > +
-> > > > > +	/* Put the device in sleep before lowering VCC level */
-> > > > > +	ret = ufshcd_set_dev_pwr_mode(hba, UFS_SLEEP_PWR_MODE);
-> > > > > +
-> > > > > +	/* Switch off VCC before switching it ON at 2.5v or 2.96v */
-> > > > > +	ret = ufshcd_disable_vreg(hba->dev, vreg);
-> > > > > +
-> > > > > +	/* add ~2ms delay before renabling VCC at lower voltage */
-> > > > > +	usleep_range(2000, 2100);
-> > > > > +
-> > > > > +	/* set VCC min and max voltage according to ufs device type */
-> > > > > +	if (dev_info->wspecversion >= 0x300) {
-> > > > > +		vreg->min_uV = UFS_3X_VREG_VCC_MIN_UV;
-> > > > > +		vreg->max_uV = UFS_3X_VREG_VCC_MAX_UV;
-> > > > > +	}
-> > > > > +
-> > > > > +	else {
-> > > > > +		vreg->min_uV = UFS_2X_VREG_VCC_MIN_UV;
-> > > > > +		vreg->max_uV = UFS_2X_VREG_VCC_MAX_UV;
-> > > > > +	}
-> > > > > +
-> > > > > +	ret = ufshcd_enable_vreg(hba->dev, vreg);
-> > > > > +
-> > > > > +	/* Bring the device in active now */
-> > > > > +	ret = ufshcd_set_dev_pwr_mode(hba, UFS_ACTIVE_PWR_MODE);
-> > > > > +	return ret;
-> > > > > +}
-> > > > > +
-> > > > >  static void ufs_qcom_enable_test_bus(struct ufs_qcom_host *host)
-> > > > >  {
-> > > > >  	if (host->dbg_print_en & UFS_QCOM_DBG_PRINT_TEST_BUS_EN) {
-> > > > > @@ -1490,6 +1540,7 @@ static const struct ufs_hba_variant_ops
-> > > > > ufs_hba_qcom_vops = {
-> > > > >  	.device_reset		= ufs_qcom_device_reset,
-> > > > >  	.config_scaling_param = ufs_qcom_config_scaling_param,
-> > > > >  	.program_key		= ufs_qcom_ice_program_key,
-> > > > > +	.setup_vcc_regulators	= ufs_qcom_setup_vcc_regulators,
-> > > > >  };
-> > > > >
-> > > > >  /**
-> > > > > --
-> > > > > 2.7.4
-> > > > >
-> > > 
-> > > Hi Bjorn,
-> > > Thanks for your review.
-> > > But As per the earlier discussion regarding handling of vcc voltage
-> > > for platform supporting both ufs 2.x and ufs 3.x , it was finally
-> > > concluded
-> > > to
-> > > use "vops and let vendors handle it, until specs or someone
-> > > has a better suggestion". Please correct me in case i am wrong.
-> > > 
-> > 
-> > I was under the impression that this would result in something custom
-> > per platform, but what I'm objecting to now that I see the code is that
-> > this is completely generic.
-> > 
-> > And the concerns we discussed regarding these regulators being shared
-> > with other devices is not considered in this implementation. But in
-> > practice I don't see how you could support 2.x, 3.x and rail sharing at
-> > the same time.
-> > 
-> > Regards,
-> > Bjorn
-> > 
-> > > https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2399116.html
-> > > 
-> > > Regards,
-> > > Nitin
-> 
-> Hi Bjorn,
-> Thanks for your feedback.
-> Regarding your query for regulator being shared with other device,
-> Imho, the soc/pmic designer should share only those device
-> with ufs regulator which has the same voltage range (2.4-3.6v).
-> If that is not considered by the pmic designer,
-> wouldn't that would be a board design issue ???
-> 
+The Stratix10 service layer and RCU drivers are useful only on
+Stratix10, so on ARMv8.  Compile testing the RCU driver on 32-bit ARM
+fails:
 
-It's not only that the rail needs to stay within 2.4-3.6V, depending on
-operating mode of this device it either need to be at 2.54-2.7V or
-2.95-2.96V depending on wspecversion for this instance.
+  drivers/firmware/stratix10-rsu.c: In function 'rsu_status_callback':
+  include/linux/compiler_types.h:320:38: error: call to '__compiletime_assert_179'
+    declared with attribute error: FIELD_GET: type of reg too small for mask
+    _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+  ...
+  drivers/firmware/stratix10-rsu.c:96:26: note: in expansion of macro 'FIELD_GET'
+    priv->status.version = FIELD_GET(RSU_VERSION_MASK,
 
-So either that other device need to be completely flexible in that range
-and support the voltage jumping between them without notice, or such
-design isn't possible.
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Acked-by: Richard Gong <richard.gong@linux.intel.com>
+Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+---
+ drivers/firmware/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-And as you say, that would be something that the hardware designers
-would need to handle for us.
+diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
+index 6a4e882e448d..08bd4d01fb04 100644
+--- a/drivers/firmware/Kconfig
++++ b/drivers/firmware/Kconfig
+@@ -206,7 +206,7 @@ config FW_CFG_SYSFS_CMDLINE
+ 
+ config INTEL_STRATIX10_SERVICE
+ 	tristate "Intel Stratix10 Service Layer"
+-	depends on ARCH_INTEL_SOCFPGA && HAVE_ARM_SMCCC
++	depends on ARCH_INTEL_SOCFPGA && ARM64 && HAVE_ARM_SMCCC
+ 	default n
+ 	help
+ 	  Intel Stratix10 service layer runs at privileged exception level,
+-- 
+2.25.1
 
-> And I agree with you that - the code looks generic but
-> since the below steps is not part of the specs,
-> I had to keep it in vendor specific file for which I
-> had to export few api from ufshcd.c to use in vendor
-> specific files.
-> 
-> 1. Set the device to SLEEP state.
-> 2. Disable the Vcc Regulator.
-> 3. Set the vcc voltage according to the device type and reenable
->    the regulator.
-> 4. Set the device mode back to ACTIVE.
-> 
-> Please correct me if my understanding is not correct.
-> 
-
-Are you saying that steps 1 to 4 here are not defined in the
-specification and therefor Qualcomm specific? Do we expect other vendors
-to not follow this sequence, or do they simply not have these voltage
-constraints?
-
-And again, isn't this the voltage for the attached UFS device? (Rather
-than a Qualcomm thing)
-
-Regards,
-Bjorn
