@@ -2,199 +2,479 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51E89351FA2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E662B351FA8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234883AbhDATXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 15:23:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51146 "EHLO
+        id S234922AbhDATYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 15:24:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234710AbhDATWs (ORCPT
+        with ESMTP id S234702AbhDATX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 15:22:48 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD2AEC049FD0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 11:21:38 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id p133so4280712qka.17
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 11:21:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc:content-transfer-encoding;
-        bh=1v73NpRb4gNLtIJ6f4iTsLt04NK7xDWlZvvGIJeIyOY=;
-        b=BGhVoWtyVDS11um69GvHWaBxjInp0xc3nZ5igQbDAiVstwD+DwfnURZTAVsHvefgul
-         54CNcu4PR19AQT/0CY7RzNPbivkK8sBS4gr5l9Y8nIqdzfWJXgPSfyuryUbXs1i117CW
-         ypS9RQXBq/eURlzTCMmK5OT5dgKf2sJM9PYhQwlJ24MLApAGorTD0mAVAvC8SCFmekKR
-         rJ53gDagXqpf+orSrLVUX6slrSoSNg32aHBosaupo8IXy6ULWRPhUqVFRP319BpvKy4q
-         0jADW5Au3xewFYvz4nt8yaXmmPjjO63lVrGa6MCKaHqCIhu3+iCbTWipUikh7ZnmJxXZ
-         YgBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc:content-transfer-encoding;
-        bh=1v73NpRb4gNLtIJ6f4iTsLt04NK7xDWlZvvGIJeIyOY=;
-        b=Q0ial7lgolcCiFTQeebegWPXXAYRVB5qBhS9v7nZVg4SxLKtvGKSJO6DOo+i9tGLqz
-         XBNekVd9c1ZNr/GB9P6Ji2UuUCjZTRxu3jpuJalIvpL70zpQP+xOHaJ6sBKYYuecEXOa
-         G78/WLWqqqk4T2ozgMhIyxhiRZ9C5+6oAjCp+Y3IFtQjQf981fXdNFKXKd1TCeVRNnYl
-         didfW1YG8dB4OwfrBlmrDd3XIJk9tauOytOwoJhIH/1RTfVEOiPvTyx1AN7nM6mn3O2V
-         rR+xCro8S1rUQNcJTuoN9n09y36ipNGHjp/zU1RZH0hPXioMsWf5yNLmqkCFJvExJ5od
-         8sJw==
-X-Gm-Message-State: AOAM531EkX+idBgbgxCm41Nvf4YEbSGtShzRSQWAC8FL+enGvsS/5AD1
-        x84eDxKwYIbDQRxJpSNGDa+X8e1G/P0=
-X-Google-Smtp-Source: ABdhPJwxEkRxWitj7VWGtbxQbGP2KZXXbWNT/3WR7Y0OIP2YMtheTtde/hB1RIvwzNn28Us9gKp/DzrgxuY=
-X-Received: from surenb1.mtv.corp.google.com ([2620:15c:211:200:899:1066:21fc:b3c5])
- (user=surenb job=sendgmr) by 2002:ad4:50c7:: with SMTP id e7mr9408265qvq.58.1617301298047;
- Thu, 01 Apr 2021 11:21:38 -0700 (PDT)
-Date:   Thu,  1 Apr 2021 11:21:25 -0700
-In-Reply-To: <20210401182125.171484-1-surenb@google.com>
-Message-Id: <20210401182125.171484-6-surenb@google.com>
-Mime-Version: 1.0
-References: <20210401182125.171484-1-surenb@google.com>
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH 5/5] mm/userfaultfd: fix memory corruption due to writeprotect
-From:   Suren Baghdasaryan <surenb@google.com>
-To:     stable@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, jannh@google.com, ktkhai@virtuozzo.com,
-        torvalds@linux-foundation.org, shli@fb.com, namit@vmware.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, surenb@google.com,
-        Yu Zhao <yuzhao@google.com>, Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 1 Apr 2021 15:23:58 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB921C08EC8A;
+        Thu,  1 Apr 2021 11:32:00 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0887008b9ed797a9a7b7e1.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:8700:8b9e:d797:a9a7:b7e1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 060841EC050F;
+        Thu,  1 Apr 2021 20:31:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1617301919;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Z+AZHR2xY01OQysKb5tjqq1wDfFvfRj53C9yBpdSXmg=;
+        b=NRmyO7nnFl/BbSYjI1TDXOT82zZ3KqRVDYJSdUzyzP4PSf5ZrBB4OXf7XN+n5YlbDbP/eI
+        FhKB2rI7icxYUbnhjlFuBIIzlwAspBxZe/W8WEJMqceDYufg+asheNpKoDYBiJsO11Jfk4
+        N4dv0L+iO/5aDmc87BXv+b6xQ0y3JuI=
+Date:   Thu, 1 Apr 2021 20:31:59 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     seanjc@google.com, kvm@vger.kernel.org, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jarkko@kernel.org, luto@kernel.org, dave.hansen@intel.com,
+        rick.p.edgecombe@intel.com, haitao.huang@intel.com,
+        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        hpa@zytor.com
+Subject: Re: [PATCH v3 05/25] x86/sgx: Introduce virtual EPC for use by KVM
+ guests
+Message-ID: <20210401183159.GD28954@zn.tnic>
+References: <cover.1616136307.git.kai.huang@intel.com>
+ <0c38ced8c8e5a69872db4d6a1c0dabd01e07cad7.1616136308.git.kai.huang@intel.com>
+ <20210326150320.GF25229@zn.tnic>
+ <20210331141032.db59586da8ba2cccf7b46f77@intel.com>
+ <D4ECF8D3-C483-4E75-AD41-2CEFDF56B12D@alien8.de>
+ <20210331195138.2af97ec1bb4b5e4202f2600d@intel.com>
+ <3889C4C6-48E2-4C97-A074-180EB18BDA29@alien8.de>
+ <20210331215345.cad098cfcfcaabf489243807@intel.com>
+ <20210401012039.c78f02ea2ba9f1e5fd504621@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210401012039.c78f02ea2ba9f1e5fd504621@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nadav Amit <namit@vmware.com>
+On Thu, Apr 01, 2021 at 01:20:39AM +1300, Kai Huang wrote:
+> Could you help to review whether below change is OK?
 
-Userfaultfd self-test fails occasionally, indicating a memory corruption.
+I ended up applying this:
 
-Analyzing this problem indicates that there is a real bug since mmap_lock
-is only taken for read in mwriteprotect_range() and defers flushes, and
-since there is insufficient consideration of concurrent deferred TLB
-flushes in wp_page_copy().  Although the PTE is flushed from the TLBs in
-wp_page_copy(), this flush takes place after the copy has already been
-performed, and therefore changes of the page are possible between the time
-of the copy and the time in which the PTE is flushed.
-
-To make matters worse, memory-unprotection using userfaultfd also poses a
-problem.  Although memory unprotection is logically a promotion of PTE
-permissions, and therefore should not require a TLB flush, the current
-userrfaultfd code might actually cause a demotion of the architectural PTE
-permission: when userfaultfd_writeprotect() unprotects memory region, it
-unintentionally *clears* the RW-bit if it was already set.  Note that this
-unprotecting a PTE that is not write-protected is a valid use-case: the
-userfaultfd monitor might ask to unprotect a region that holds both
-write-protected and write-unprotected PTEs.
-
-The scenario that happens in selftests/vm/userfaultfd is as follows:
-
-cpu0				cpu1			cpu2
-----				----			----
-							[ Writable PTE
-							  cached in TLB ]
-userfaultfd_writeprotect()
-[ write-*unprotect* ]
-mwriteprotect_range()
-mmap_read_lock()
-change_protection()
-
-change_protection_range()
-...
-change_pte_range()
-[ *clear* =E2=80=9Cwrite=E2=80=9D-bit ]
-[ defer TLB flushes ]
-				[ page-fault ]
-				...
-				wp_page_copy()
-				 cow_user_page()
-				  [ copy page ]
-							[ write to old
-							  page ]
-				...
-				 set_pte_at_notify()
-
-A similar scenario can happen:
-
-cpu0		cpu1		cpu2		cpu3
-----		----		----		----
-						[ Writable PTE
-				  		  cached in TLB ]
-userfaultfd_writeprotect()
-[ write-protect ]
-[ deferred TLB flush ]
-		userfaultfd_writeprotect()
-		[ write-unprotect ]
-		[ deferred TLB flush]
-				[ page-fault ]
-				wp_page_copy()
-				 cow_user_page()
-				 [ copy page ]
-				 ...		[ write to page ]
-				set_pte_at_notify()
-
-This race exists since commit 292924b26024 ("userfaultfd: wp: apply
-_PAGE_UFFD_WP bit").  Yet, as Yu Zhao pointed, these races became apparent
-since commit 09854ba94c6a ("mm: do_wp_page() simplification") which made
-wp_page_copy() more likely to take place, specifically if page_count(page)
-> 1.
-
-To resolve the aforementioned races, check whether there are pending
-flushes on uffd-write-protected VMAs, and if there are, perform a flush
-before doing the COW.
-
-Further optimizations will follow to avoid during uffd-write-unprotect
-unnecassary PTE write-protection and TLB flushes.
-
-Link: https://lkml.kernel.org/r/20210304095423.3825684-1-namit@vmware.com
-Fixes: 09854ba94c6a ("mm: do_wp_page() simplification")
-Signed-off-by: Nadav Amit <namit@vmware.com>
-Suggested-by: Yu Zhao <yuzhao@google.com>
-Reviewed-by: Peter Xu <peterx@redhat.com>
-Tested-by: Peter Xu <peterx@redhat.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Pavel Emelyanov <xemul@openvz.org>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: <stable@vger.kernel.org>	[5.9+]
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 ---
- mm/memory.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+From: Sean Christopherson <sean.j.christopherson@intel.com>
+Date: Fri, 19 Mar 2021 20:22:21 +1300
+Subject: [PATCH] x86/sgx: Introduce virtual EPC for use by KVM guests
 
-diff --git a/mm/memory.c b/mm/memory.c
-index 656d90a75cf8..fe6e92de9bec 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -2825,6 +2825,14 @@ static vm_fault_t do_wp_page(struct vm_fault *vmf)
- {
- 	struct vm_area_struct *vma =3D vmf->vma;
-=20
-+	/*
-+	 * Userfaultfd write-protect can defer flushes. Ensure the TLB
-+	 * is flushed in this case before copying.
-+	 */
-+	if (unlikely(userfaultfd_wp(vmf->vma) &&
-+		     mm_tlb_flush_pending(vmf->vma->vm_mm)))
-+		flush_tlb_page(vmf->vma, vmf->address);
+Add a misc device /dev/sgx_vepc to allow userspace to allocate "raw"
+Enclave Page Cache (EPC) without an associated enclave. The intended
+and only known use case for raw EPC allocation is to expose EPC to a
+KVM guest, hence the 'vepc' moniker, virt.{c,h} files and X86_SGX_KVM
+Kconfig.
+
+The SGX driver uses the misc device /dev/sgx_enclave to support
+userspace in creating an enclave. Each file descriptor returned from
+opening /dev/sgx_enclave represents an enclave. Unlike the SGX driver,
+KVM doesn't control how the guest uses the EPC, therefore EPC allocated
+to a KVM guest is not associated with an enclave, and /dev/sgx_enclave
+is not suitable for allocating EPC for a KVM guest.
+
+Having separate device nodes for the SGX driver and KVM virtual EPC also
+allows separate permission control for running host SGX enclaves and KVM
+SGX guests.
+
+To use /dev/sgx_vepc to allocate a virtual EPC instance with particular
+size, the hypervisor opens /dev/sgx_vepc, and uses mmap() with the
+intended size to get an address range of virtual EPC. Then it may use
+the address range to create one KVM memory slot as virtual EPC for
+a guest.
+
+Implement the "raw" EPC allocation in the x86 core-SGX subsystem via
+/dev/sgx_vepc rather than in KVM. Doing so has two major advantages:
+
+  - Does not require changes to KVM's uAPI, e.g. EPC gets handled as
+    just another memory backend for guests.
+
+  - EPC management is wholly contained in the SGX subsystem, e.g. SGX
+    does not have to export any symbols, changes to reclaim flows don't
+    need to be routed through KVM, SGX's dirty laundry doesn't have to
+    get aired out for the world to see, and so on and so forth.
+
+The virtual EPC pages allocated to guests are currently not reclaimable.
+Reclaiming an EPC page used by enclave requires a special reclaim
+mechanism separate from normal page reclaim, and that mechanism is not
+supported for virutal EPC pages. Due to the complications of handling
+reclaim conflicts between guest and host, reclaiming virtual EPC pages
+is significantly more complex than basic support for SGX virtualization.
+
+ [ bp:
+   - Massage commit message and comments
+   - use cpu_feature_enabled()
+   - vertically align struct members init
+   - massage Virtual EPC clarification text ]
+
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Co-developed-by: Kai Huang <kai.huang@intel.com>
+Signed-off-by: Kai Huang <kai.huang@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Dave Hansen <dave.hansen@intel.com>
+Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+Link: https://lkml.kernel.org/r/0c38ced8c8e5a69872db4d6a1c0dabd01e07cad7.1616136308.git.kai.huang@intel.com
+---
+ Documentation/x86/sgx.rst        |  16 ++
+ arch/x86/Kconfig                 |  12 ++
+ arch/x86/kernel/cpu/sgx/Makefile |   1 +
+ arch/x86/kernel/cpu/sgx/sgx.h    |   9 ++
+ arch/x86/kernel/cpu/sgx/virt.c   | 259 +++++++++++++++++++++++++++++++
+ 5 files changed, 297 insertions(+)
+ create mode 100644 arch/x86/kernel/cpu/sgx/virt.c
+
+diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
+index f90076e67cde..dd0ac96ff9ef 100644
+--- a/Documentation/x86/sgx.rst
++++ b/Documentation/x86/sgx.rst
+@@ -234,3 +234,19 @@ As a result, when this happpens, user should stop running any new
+ SGX workloads, (or just any new workloads), and migrate all valuable
+ workloads. Although a machine reboot can recover all EPC memory, the bug
+ should be reported to Linux developers.
 +
- 	vmf->page =3D vm_normal_page(vma, vmf->address, vmf->orig_pte);
- 	if (!vmf->page) {
- 		/*
---=20
-2.31.0.291.g576ba9dcdaf-goog
++
++Virtual EPC
++===========
++
++The implementation has also a virtual EPC driver to support SGX enclaves
++in guests. Unlike the SGX driver, an EPC page allocated by the virtual
++EPC driver doesn't have a specific enclave associated with it. This is
++because KVM doesn't track how a guest uses EPC pages.
++
++As a result, the SGX core page reclaimer doesn't support reclaiming EPC
++pages allocated to KVM guests through the virtual EPC driver. If the
++user wants to deploy SGX applications both on the host and in guests
++on the same machine, the user should reserve enough EPC (by taking out
++total virtual EPC size of all SGX VMs from the physical EPC size) for
++host SGX applications so they can run with acceptable performance.
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 35391e94bd22..007912f67a06 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1942,6 +1942,18 @@ config X86_SGX
+ 
+ 	  If unsure, say N.
+ 
++config X86_SGX_KVM
++	bool "Software Guard eXtensions (SGX) Virtualization"
++	depends on X86_SGX && KVM_INTEL
++	help
++
++	  Enables KVM guests to create SGX enclaves.
++
++	  This includes support to expose "raw" unreclaimable enclave memory to
++	  guests via a device node, e.g. /dev/sgx_vepc.
++
++	  If unsure, say N.
++
+ config EFI
+ 	bool "EFI runtime service support"
+ 	depends on ACPI
+diff --git a/arch/x86/kernel/cpu/sgx/Makefile b/arch/x86/kernel/cpu/sgx/Makefile
+index 91d3dc784a29..9c1656779b2a 100644
+--- a/arch/x86/kernel/cpu/sgx/Makefile
++++ b/arch/x86/kernel/cpu/sgx/Makefile
+@@ -3,3 +3,4 @@ obj-y += \
+ 	encl.o \
+ 	ioctl.o \
+ 	main.o
++obj-$(CONFIG_X86_SGX_KVM)	+= virt.o
+diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
+index 4aa40c627819..4854f3980edd 100644
+--- a/arch/x86/kernel/cpu/sgx/sgx.h
++++ b/arch/x86/kernel/cpu/sgx/sgx.h
+@@ -84,4 +84,13 @@ void sgx_mark_page_reclaimable(struct sgx_epc_page *page);
+ int sgx_unmark_page_reclaimable(struct sgx_epc_page *page);
+ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim);
+ 
++#ifdef CONFIG_X86_SGX_KVM
++int __init sgx_vepc_init(void);
++#else
++static inline int __init sgx_vepc_init(void)
++{
++	return -ENODEV;
++}
++#endif
++
+ #endif /* _X86_SGX_H */
+diff --git a/arch/x86/kernel/cpu/sgx/virt.c b/arch/x86/kernel/cpu/sgx/virt.c
+new file mode 100644
+index 000000000000..259cc46ad78c
+--- /dev/null
++++ b/arch/x86/kernel/cpu/sgx/virt.c
+@@ -0,0 +1,259 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Device driver to expose SGX enclave memory to KVM guests.
++ *
++ * Copyright(c) 2021 Intel Corporation.
++ */
++
++#include <linux/miscdevice.h>
++#include <linux/mm.h>
++#include <linux/mman.h>
++#include <linux/sched/mm.h>
++#include <linux/sched/signal.h>
++#include <linux/slab.h>
++#include <linux/xarray.h>
++#include <asm/sgx.h>
++#include <uapi/asm/sgx.h>
++
++#include "encls.h"
++#include "sgx.h"
++
++struct sgx_vepc {
++	struct xarray page_array;
++	struct mutex lock;
++};
++
++/*
++ * Temporary SECS pages that cannot be EREMOVE'd due to having child in other
++ * virtual EPC instances, and the lock to protect it.
++ */
++static struct mutex zombie_secs_pages_lock;
++static struct list_head zombie_secs_pages;
++
++static int __sgx_vepc_fault(struct sgx_vepc *vepc,
++			    struct vm_area_struct *vma, unsigned long addr)
++{
++	struct sgx_epc_page *epc_page;
++	unsigned long index, pfn;
++	int ret;
++
++	WARN_ON(!mutex_is_locked(&vepc->lock));
++
++	/* Calculate index of EPC page in virtual EPC's page_array */
++	index = vma->vm_pgoff + PFN_DOWN(addr - vma->vm_start);
++
++	epc_page = xa_load(&vepc->page_array, index);
++	if (epc_page)
++		return 0;
++
++	epc_page = sgx_alloc_epc_page(vepc, false);
++	if (IS_ERR(epc_page))
++		return PTR_ERR(epc_page);
++
++	ret = xa_err(xa_store(&vepc->page_array, index, epc_page, GFP_KERNEL));
++	if (ret)
++		goto err_free;
++
++	pfn = PFN_DOWN(sgx_get_epc_phys_addr(epc_page));
++
++	ret = vmf_insert_pfn(vma, addr, pfn);
++	if (ret != VM_FAULT_NOPAGE) {
++		ret = -EFAULT;
++		goto err_delete;
++	}
++
++	return 0;
++
++err_delete:
++	xa_erase(&vepc->page_array, index);
++err_free:
++	sgx_free_epc_page(epc_page);
++	return ret;
++}
++
++static vm_fault_t sgx_vepc_fault(struct vm_fault *vmf)
++{
++	struct vm_area_struct *vma = vmf->vma;
++	struct sgx_vepc *vepc = vma->vm_private_data;
++	int ret;
++
++	mutex_lock(&vepc->lock);
++	ret = __sgx_vepc_fault(vepc, vma, vmf->address);
++	mutex_unlock(&vepc->lock);
++
++	if (!ret)
++		return VM_FAULT_NOPAGE;
++
++	if (ret == -EBUSY && (vmf->flags & FAULT_FLAG_ALLOW_RETRY)) {
++		mmap_read_unlock(vma->vm_mm);
++		return VM_FAULT_RETRY;
++	}
++
++	return VM_FAULT_SIGBUS;
++}
++
++const struct vm_operations_struct sgx_vepc_vm_ops = {
++	.fault = sgx_vepc_fault,
++};
++
++static int sgx_vepc_mmap(struct file *file, struct vm_area_struct *vma)
++{
++	struct sgx_vepc *vepc = file->private_data;
++
++	if (!(vma->vm_flags & VM_SHARED))
++		return -EINVAL;
++
++	vma->vm_ops = &sgx_vepc_vm_ops;
++	/* Don't copy VMA in fork() */
++	vma->vm_flags |= VM_PFNMAP | VM_IO | VM_DONTDUMP | VM_DONTCOPY;
++	vma->vm_private_data = vepc;
++
++	return 0;
++}
++
++static int sgx_vepc_free_page(struct sgx_epc_page *epc_page)
++{
++	int ret;
++
++	/*
++	 * Take a previously guest-owned EPC page and return it to the
++	 * general EPC page pool.
++	 *
++	 * Guests can not be trusted to have left this page in a good
++	 * state, so run EREMOVE on the page unconditionally.  In the
++	 * case that a guest properly EREMOVE'd this page, a superfluous
++	 * EREMOVE is harmless.
++	 */
++	ret = __eremove(sgx_get_epc_virt_addr(epc_page));
++	if (ret) {
++		/*
++		 * Only SGX_CHILD_PRESENT is expected, which is because of
++		 * EREMOVE'ing an SECS still with child, in which case it can
++		 * be handled by EREMOVE'ing the SECS again after all pages in
++		 * virtual EPC have been EREMOVE'd. See comments in below in
++		 * sgx_vepc_release().
++		 *
++		 * The user of virtual EPC (KVM) needs to guarantee there's no
++		 * logical processor is still running in the enclave in guest,
++		 * otherwise EREMOVE will get SGX_ENCLAVE_ACT which cannot be
++		 * handled here.
++		 */
++		WARN_ONCE(ret != SGX_CHILD_PRESENT, EREMOVE_ERROR_MESSAGE,
++			  ret, ret);
++		return ret;
++	}
++
++	sgx_free_epc_page(epc_page);
++
++	return 0;
++}
++
++static int sgx_vepc_release(struct inode *inode, struct file *file)
++{
++	struct sgx_vepc *vepc = file->private_data;
++	struct sgx_epc_page *epc_page, *tmp, *entry;
++	unsigned long index;
++
++	LIST_HEAD(secs_pages);
++
++	xa_for_each(&vepc->page_array, index, entry) {
++		/*
++		 * Remove all normal, child pages.  sgx_vepc_free_page()
++		 * will fail if EREMOVE fails, but this is OK and expected on
++		 * SECS pages.  Those can only be EREMOVE'd *after* all their
++		 * child pages. Retries below will clean them up.
++		 */
++		if (sgx_vepc_free_page(entry))
++			continue;
++
++		xa_erase(&vepc->page_array, index);
++	}
++
++	/*
++	 * Retry EREMOVE'ing pages.  This will clean up any SECS pages that
++	 * only had children in this 'epc' area.
++	 */
++	xa_for_each(&vepc->page_array, index, entry) {
++		epc_page = entry;
++		/*
++		 * An EREMOVE failure here means that the SECS page still
++		 * has children.  But, since all children in this 'sgx_vepc'
++		 * have been removed, the SECS page must have a child on
++		 * another instance.
++		 */
++		if (sgx_vepc_free_page(epc_page))
++			list_add_tail(&epc_page->list, &secs_pages);
++
++		xa_erase(&vepc->page_array, index);
++	}
++
++	/*
++	 * SECS pages are "pinned" by child pages, and "unpinned" once all
++	 * children have been EREMOVE'd.  A child page in this instance
++	 * may have pinned an SECS page encountered in an earlier release(),
++	 * creating a zombie.  Since some children were EREMOVE'd above,
++	 * try to EREMOVE all zombies in the hopes that one was unpinned.
++	 */
++	mutex_lock(&zombie_secs_pages_lock);
++	list_for_each_entry_safe(epc_page, tmp, &zombie_secs_pages, list) {
++		/*
++		 * Speculatively remove the page from the list of zombies,
++		 * if the page is successfully EREMOVE'd it will be added to
++		 * the list of free pages.  If EREMOVE fails, throw the page
++		 * on the local list, which will be spliced on at the end.
++		 */
++		list_del(&epc_page->list);
++
++		if (sgx_vepc_free_page(epc_page))
++			list_add_tail(&epc_page->list, &secs_pages);
++	}
++
++	if (!list_empty(&secs_pages))
++		list_splice_tail(&secs_pages, &zombie_secs_pages);
++	mutex_unlock(&zombie_secs_pages_lock);
++
++	kfree(vepc);
++
++	return 0;
++}
++
++static int sgx_vepc_open(struct inode *inode, struct file *file)
++{
++	struct sgx_vepc *vepc;
++
++	vepc = kzalloc(sizeof(struct sgx_vepc), GFP_KERNEL);
++	if (!vepc)
++		return -ENOMEM;
++	mutex_init(&vepc->lock);
++	xa_init(&vepc->page_array);
++
++	file->private_data = vepc;
++
++	return 0;
++}
++
++static const struct file_operations sgx_vepc_fops = {
++	.owner		= THIS_MODULE,
++	.open		= sgx_vepc_open,
++	.release	= sgx_vepc_release,
++	.mmap		= sgx_vepc_mmap,
++};
++
++static struct miscdevice sgx_vepc_dev = {
++	.minor		= MISC_DYNAMIC_MINOR,
++	.name		= "sgx_vepc",
++	.nodename	= "sgx_vepc",
++	.fops		= &sgx_vepc_fops,
++};
++
++int __init sgx_vepc_init(void)
++{
++	/* SGX virtualization requires KVM to work */
++	if (!cpu_feature_enabled(X86_FEATURE_VMX))
++		return -ENODEV;
++
++	INIT_LIST_HEAD(&zombie_secs_pages);
++	mutex_init(&zombie_secs_pages_lock);
++
++	return misc_register(&sgx_vepc_dev);
++}
+-- 
+2.29.2
 
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
