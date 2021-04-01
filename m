@@ -2,76 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9147350F1E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 794E0350F2E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233303AbhDAGhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 02:37:43 -0400
-Received: from mga01.intel.com ([192.55.52.88]:18679 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233080AbhDAGhj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 02:37:39 -0400
-IronPort-SDR: knuMgLHOezQ2r6b9r/22kzvcxhXs/pmM9QVDX9yO0yXNZBFzvuMrTF4p+RdD77hZUqYHNGdOxn
- N6KBaEo5XqkQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="212414570"
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="212414570"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 23:37:36 -0700
-IronPort-SDR: xrOLOLJxgHvR5ZRV7Icjk6hgoUlE8iWeyUxgW0aK8wgXIkkRl//aJshplmJ/s9tDgdYeWWiUoi
- kmcPM/DtcODA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="517212558"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 31 Mar 2021 23:37:34 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 01 Apr 2021 09:37:33 +0300
-Date:   Thu, 1 Apr 2021 09:37:33 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 5/6] usb: Iterator for ports
-Message-ID: <YGVqLVMaUeqgvT4x@kuha.fi.intel.com>
-References: <20210331105908.67066-1-heikki.krogerus@linux.intel.com>
- <20210331105908.67066-6-heikki.krogerus@linux.intel.com>
- <7cf8093e-20ab-ab88-5ba1-c2e6128c0480@roeck-us.net>
+        id S233422AbhDAGjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 02:39:53 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:41440 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229539AbhDAGjR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 02:39:17 -0400
+X-UUID: 066aaf53bd90488995aeaacb876a3e0e-20210401
+X-UUID: 066aaf53bd90488995aeaacb876a3e0e-20210401
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <nina-cm.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 380086253; Thu, 01 Apr 2021 14:39:12 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 1 Apr 2021 14:39:08 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 1 Apr 2021 14:39:09 +0800
+From:   Nina Wu <nina-cm.wu@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Nina Wu <Nina-CM.Wu@mediatek.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Neal Liu <neal.liu@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <Jackson-kt.Chang@mediatek.com>
+Subject: [PATCH v2 1/6] dt-bindings: devapc: Update bindings
+Date:   Thu, 1 Apr 2021 14:38:02 +0800
+Message-ID: <1617259087-5502-1-git-send-email-nina-cm.wu@mediatek.com>
+X-Mailer: git-send-email 2.6.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7cf8093e-20ab-ab88-5ba1-c2e6128c0480@roeck-us.net>
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 580A08974BAFC9A6A81C47BC47B66CEFAAC52E26F7B27EACDDAD88708ABEC6EC2000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 09:41:22AM -0700, Guenter Roeck wrote:
-> > diff --git a/include/linux/usb.h b/include/linux/usb.h
-> > index ddd2f5b2a2827..ebcd03d835d04 100644
-> > --- a/include/linux/usb.h
-> > +++ b/include/linux/usb.h
-> > @@ -882,6 +882,15 @@ extern struct usb_host_interface *usb_find_alt_setting(
-> >  		unsigned int iface_num,
-> >  		unsigned int alt_num);
-> >  
-> > +#ifdef CONFIG_USB
-> 
-> #if IS_ENABLED(CONFIG_USB)
+From: Nina Wu <Nina-CM.Wu@mediatek.com>
 
-Thanks Guenter.
+To support newer hardware architecture of devapc,
+update device tree bindings.
 
-> > +int usb_for_each_port(void *data, int (*fn)(struct device *, void *));
-> > +#else
-> > +static inline int usb_for_each_port(void *data, int (*fn)(struct device *, void *))
-> > +{
-> > +	return 0;
-> > +}
-> > +#endif
-> > +
-> >  /* port claiming functions */
-> >  int usb_hub_claim_port(struct usb_device *hdev, unsigned port1,
-> >  		struct usb_dev_state *owner);
-> > 
+Signed-off-by: Nina Wu <Nina-CM.Wu@mediatek.com>
+---
+ Documentation/devicetree/bindings/soc/mediatek/devapc.yaml | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/soc/mediatek/devapc.yaml b/Documentation/devicetree/bindings/soc/mediatek/devapc.yaml
+index 31e4d3c..42b284e 100644
+--- a/Documentation/devicetree/bindings/soc/mediatek/devapc.yaml
++++ b/Documentation/devicetree/bindings/soc/mediatek/devapc.yaml
+@@ -20,11 +20,17 @@ properties:
+   compatible:
+     enum:
+       - mediatek,mt6779-devapc
++      - mediatek,mt8192-devapc
+ 
+   reg:
+     description: The base address of devapc register bank
+     maxItems: 1
+ 
++  vio-idx-num:
++    description: The number of the devices controlled by devapc
++    $ref: /schemas/types.yaml#/definitions/uint32
++    maxItems: 1
++
+   interrupts:
+     description: A single interrupt specifier
+     maxItems: 1
+@@ -40,6 +46,7 @@ properties:
+ required:
+   - compatible
+   - reg
++  - vio-idx-num
+   - interrupts
+   - clocks
+   - clock-names
+@@ -54,6 +61,7 @@ examples:
+     devapc: devapc@10207000 {
+       compatible = "mediatek,mt6779-devapc";
+       reg = <0x10207000 0x1000>;
++      vio-idx-num = <511>;
+       interrupts = <GIC_SPI 168 IRQ_TYPE_LEVEL_LOW>;
+       clocks = <&infracfg_ao CLK_INFRA_DEVICE_APC>;
+       clock-names = "devapc-infra-clock";
 -- 
-heikki
+2.6.4
+
