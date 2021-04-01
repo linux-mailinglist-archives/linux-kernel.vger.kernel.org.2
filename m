@@ -2,242 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D05351BEB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 784BE351A41
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236245AbhDASMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:12:07 -0400
-Received: from mga14.intel.com ([192.55.52.115]:59020 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236893AbhDARzk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:55:40 -0400
-IronPort-SDR: U1sJuOYSwqkoVr5A2b6V0KElHdsztjkDeQNLzO7rN5Whm30jy8/bvgdjxdZcwjlPkhk6KKiOFR
- 72UiJQsUtcgg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="191734627"
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="191734627"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 07:33:22 -0700
-IronPort-SDR: sElXlFcU6PLxT1vSpePXLl46lI7T8lRNPYIX4uYZJ11nwEkx9CM1dqrgkUZEBD6pdPW00Vim9U
- vJKXHmn155kQ==
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="446110675"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 07:33:19 -0700
-Subject: [PATCH v4 2/4] cxl/mem: Fix synchronization mechanism for device
- removal vs ioctl operations
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     linux-cxl@vger.kernel.org
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, Jason Gunthorpe <jgg@nvidia.com>,
-        linux-kernel@vger.kernel.org, vishal.l.verma@intel.com,
-        ira.weiny@intel.com, alison.schofield@intel.com
-Date:   Thu, 01 Apr 2021 07:33:19 -0700
-Message-ID: <161728759948.2474381.17481500816783671817.stgit@dwillia2-desk3.amr.corp.intel.com>
-In-Reply-To: <161728758895.2474381.12683589190335430004.stgit@dwillia2-desk3.amr.corp.intel.com>
-References: <161728758895.2474381.12683589190335430004.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
+        id S236847AbhDAR6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:58:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30476 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234911AbhDARlR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:41:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617298876;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=vPQ/nf2q8LAkQ8OcVv2K8+oWAe1O0DGRxava7ECuAkg=;
+        b=fKjyL/mQYGT6FOrLp9bmGBK+1k2MjmUvAWdi8sRjj65GMaCs6Yz9bh5ghX4avItdZ8j2F0
+        7Kp/mr8j6enRgmvh3TznNcoUBmuQK2+l08GLDU5bHyjVE173TVF5p9fl1sL0lArr2xitlV
+        K98XG5jD+oOSPoNYv0o5v/O8pjLIbx4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-227-WkrSyo2-PJ2wmI7lp45zfw-1; Thu, 01 Apr 2021 10:39:29 -0400
+X-MC-Unique: WkrSyo2-PJ2wmI7lp45zfw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 27CA783DEA6;
+        Thu,  1 Apr 2021 14:38:22 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.35.206.58])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 351CD5D9CA;
+        Thu,  1 Apr 2021 14:38:18 +0000 (UTC)
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
+        64-BIT)), Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        Sean Christopherson <seanjc@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: [PATCH 0/4] KVM: nSVM/nVMX: fix nested virtualization treatment of
+ nested exceptions
+Date:   Thu,  1 Apr 2021 17:38:13 +0300
+Message-Id: <20210401143817.1030695-1-mlevitsk@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The percpu_ref to gate whether cxl_memdev_ioctl() is free to use the
-driver context (@cxlm) to issue I/O is overkill, implemented incorrectly
-(missing a device reference before accessing the percpu_ref), and the
-complexities of shutting down a percpu_ref contributed to a bug in the
-error unwind in cxl_mem_add_memdev() (missing put_device() to be fixed
-separately).
-
-Use an rwsem to explicitly synchronize the usage of cxlmd->cxlm, and add
-the missing reference counting for cxlmd in cxl_memdev_open() and
-cxl_memdev_release_file().
-
-Fixes: b39cb1052a5c ("cxl/mem: Register CXL memX devices")
-Reported-by: Jason Gunthorpe <jgg@nvidia.com>
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
----
- drivers/cxl/mem.c |   97 +++++++++++++++++++++++++++--------------------------
- 1 file changed, 50 insertions(+), 47 deletions(-)
-
-diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-index 30bf4f0f3c17..c77d375fad95 100644
---- a/drivers/cxl/mem.c
-+++ b/drivers/cxl/mem.c
-@@ -96,21 +96,18 @@ struct mbox_cmd {
-  * @dev: driver core device object
-  * @cdev: char dev core object for ioctl operations
-  * @cxlm: pointer to the parent device driver data
-- * @ops_active: active user of @cxlm in ops handlers
-- * @ops_dead: completion when all @cxlm ops users have exited
-  * @id: id number of this memdev instance.
-  */
- struct cxl_memdev {
- 	struct device dev;
- 	struct cdev cdev;
- 	struct cxl_mem *cxlm;
--	struct percpu_ref ops_active;
--	struct completion ops_dead;
- 	int id;
- };
- 
- static int cxl_mem_major;
- static DEFINE_IDA(cxl_memdev_ida);
-+static DECLARE_RWSEM(cxl_memdev_rwsem);
- static struct dentry *cxl_debugfs;
- static bool cxl_raw_allow_all;
- 
-@@ -776,26 +773,43 @@ static long __cxl_memdev_ioctl(struct cxl_memdev *cxlmd, unsigned int cmd,
- static long cxl_memdev_ioctl(struct file *file, unsigned int cmd,
- 			     unsigned long arg)
- {
--	struct cxl_memdev *cxlmd;
--	struct inode *inode;
--	int rc = -ENOTTY;
-+	struct cxl_memdev *cxlmd = file->private_data;
-+	int rc = -ENXIO;
- 
--	inode = file_inode(file);
--	cxlmd = container_of(inode->i_cdev, typeof(*cxlmd), cdev);
-+	down_read(&cxl_memdev_rwsem);
-+	if (cxlmd->cxlm)
-+		rc = __cxl_memdev_ioctl(cxlmd, cmd, arg);
-+	up_read(&cxl_memdev_rwsem);
- 
--	if (!percpu_ref_tryget_live(&cxlmd->ops_active))
--		return -ENXIO;
-+	return rc;
-+}
- 
--	rc = __cxl_memdev_ioctl(cxlmd, cmd, arg);
-+static int cxl_memdev_open(struct inode *inode, struct file *file)
-+{
-+	struct cxl_memdev *cxlmd =
-+		container_of(inode->i_cdev, typeof(*cxlmd), cdev);
- 
--	percpu_ref_put(&cxlmd->ops_active);
-+	get_device(&cxlmd->dev);
-+	file->private_data = cxlmd;
- 
--	return rc;
-+	return 0;
-+}
-+
-+static int cxl_memdev_release_file(struct inode *inode, struct file *file)
-+{
-+	struct cxl_memdev *cxlmd =
-+		container_of(inode->i_cdev, typeof(*cxlmd), cdev);
-+
-+	put_device(&cxlmd->dev);
-+
-+	return 0;
- }
- 
- static const struct file_operations cxl_memdev_fops = {
- 	.owner = THIS_MODULE,
- 	.unlocked_ioctl = cxl_memdev_ioctl,
-+	.open = cxl_memdev_open,
-+	.release = cxl_memdev_release_file,
- 	.compat_ioctl = compat_ptr_ioctl,
- 	.llseek = noop_llseek,
- };
-@@ -1049,7 +1063,6 @@ static void cxl_memdev_release(struct device *dev)
- {
- 	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
- 
--	percpu_ref_exit(&cxlmd->ops_active);
- 	ida_free(&cxl_memdev_ida, cxlmd->id);
- 	kfree(cxlmd);
- }
-@@ -1150,24 +1163,21 @@ static const struct device_type cxl_memdev_type = {
- 	.groups = cxl_memdev_attribute_groups,
- };
- 
--static void cxlmdev_unregister(void *_cxlmd)
-+static void cxl_memdev_shutdown(struct cxl_memdev *cxlmd)
- {
--	struct cxl_memdev *cxlmd = _cxlmd;
--	struct device *dev = &cxlmd->dev;
--
--	percpu_ref_kill(&cxlmd->ops_active);
--	cdev_device_del(&cxlmd->cdev, dev);
--	wait_for_completion(&cxlmd->ops_dead);
-+	down_write(&cxl_memdev_rwsem);
- 	cxlmd->cxlm = NULL;
--	put_device(dev);
-+	up_write(&cxl_memdev_rwsem);
- }
- 
--static void cxlmdev_ops_active_release(struct percpu_ref *ref)
-+static void cxl_memdev_unregister(void *_cxlmd)
- {
--	struct cxl_memdev *cxlmd =
--		container_of(ref, typeof(*cxlmd), ops_active);
-+	struct cxl_memdev *cxlmd = _cxlmd;
-+	struct device *dev = &cxlmd->dev;
- 
--	complete(&cxlmd->ops_dead);
-+	cdev_device_del(&cxlmd->cdev, dev);
-+	cxl_memdev_shutdown(cxlmd);
-+	put_device(dev);
- }
- 
- static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
-@@ -1181,17 +1191,6 @@ static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
- 	cxlmd = kzalloc(sizeof(*cxlmd), GFP_KERNEL);
- 	if (!cxlmd)
- 		return -ENOMEM;
--	init_completion(&cxlmd->ops_dead);
--
--	/*
--	 * @cxlm is deallocated when the driver unbinds so operations
--	 * that are using it need to hold a live reference.
--	 */
--	cxlmd->cxlm = cxlm;
--	rc = percpu_ref_init(&cxlmd->ops_active, cxlmdev_ops_active_release, 0,
--			     GFP_KERNEL);
--	if (rc)
--		goto err_ref;
- 
- 	rc = ida_alloc_range(&cxl_memdev_ida, 0, CXL_MEM_MAX_DEVS, GFP_KERNEL);
- 	if (rc < 0)
-@@ -1209,23 +1208,27 @@ static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
- 	cdev = &cxlmd->cdev;
- 	cdev_init(cdev, &cxl_memdev_fops);
- 
-+	/*
-+	 * Activate ioctl operations, no cxl_memdev_rwsem manipulation
-+	 * needed as this is ordered with cdev_add() publishing the device.
-+	 */
-+	cxlmd->cxlm = cxlm;
-+
- 	rc = cdev_device_add(cdev, dev);
- 	if (rc)
- 		goto err_add;
- 
--	return devm_add_action_or_reset(dev->parent, cxlmdev_unregister, cxlmd);
-+	return devm_add_action_or_reset(dev->parent, cxl_memdev_unregister,
-+					cxlmd);
- 
- err_add:
--	ida_free(&cxl_memdev_ida, cxlmd->id);
--err_id:
- 	/*
--	 * Theoretically userspace could have already entered the fops,
--	 * so flush ops_active.
-+	 * The cdev was briefly live, shutdown any ioctl operations that
-+	 * saw that state.
- 	 */
--	percpu_ref_kill(&cxlmd->ops_active);
--	wait_for_completion(&cxlmd->ops_dead);
--	percpu_ref_exit(&cxlmd->ops_active);
--err_ref:
-+	cxl_memdev_shutdown(cxlmd);
-+	ida_free(&cxl_memdev_ida, cxlmd->id);
-+err_id:
- 	kfree(cxlmd);
- 
- 	return rc;
+clone of "kernel-starship-5.12.unstable"=0D
+=0D
+Maxim Levitsky (4):=0D
+  KVM: x86: pending exceptions must not be blocked by an injected event=0D
+  KVM: x86: separate pending and injected exception=0D
+  KVM: x86: correctly merge pending and injected exception=0D
+  KVM: x86: remove tweaking of inject_page_fault=0D
+=0D
+ arch/x86/include/asm/kvm_host.h |  34 +++-=0D
+ arch/x86/kvm/svm/nested.c       |  65 +++----=0D
+ arch/x86/kvm/svm/svm.c          |   8 +-=0D
+ arch/x86/kvm/vmx/nested.c       | 107 +++++------=0D
+ arch/x86/kvm/vmx/vmx.c          |  14 +-=0D
+ arch/x86/kvm/x86.c              | 302 ++++++++++++++++++--------------=0D
+ arch/x86/kvm/x86.h              |   6 +-=0D
+ 7 files changed, 283 insertions(+), 253 deletions(-)=0D
+=0D
+-- =0D
+2.26.2=0D
+=0D
 
