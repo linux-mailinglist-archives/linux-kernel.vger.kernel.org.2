@@ -2,103 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B3C351D58
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C74B351DF1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237265AbhDAS2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:28:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37014 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236824AbhDASDB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:03:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3A326138E;
-        Thu,  1 Apr 2021 16:46:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617295620;
-        bh=f3yZ/9sfR8caygUqeEk+iSpCs9WAqRkd59lqpXyjtlo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=y2qmaWu7xE5U8wJYR/J0QQzSKnLxAJNwTm8015Yyk28A+wnnGi7/RAYrFhSADnUID
-         EDyTPjkesEekvBMbPtDLYSQFNU3NVzUCLXja5bLtlz3H71Kqd/BfydWKSIHUWQXhSo
-         EkQ6CWkVqe9OE05P5LS1DcAtw1P3OAIHCCyg0heY=
-Date:   Thu, 1 Apr 2021 18:46:57 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        hui.wang@canonical.com, sanyog.r.kale@intel.com,
-        rander.wang@linux.intel.com, bard.liao@intel.com
-Subject: Re: [PATCH 1/2] soundwire: add macro to selectively change error
- levels
-Message-ID: <YGX5AUQi41z52xk8@kroah.com>
-References: <20210331011355.14313-1-yung-chuan.liao@linux.intel.com>
- <20210331011355.14313-2-yung-chuan.liao@linux.intel.com>
- <YGV1HYL+XcVmxfQG@vkoul-mobl.Dlink>
- <0834b9fc-9b3a-1184-fed2-6f9c7e66c6fb@linux.intel.com>
+        id S237439AbhDASdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:33:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236973AbhDASLm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:11:42 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52135C03115C
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 09:50:17 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id j16so2550370ilq.13
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 09:50:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6hS10QxYqo081plk7djXLpiSk72EjSMQOalfDnvofOY=;
+        b=d0a/qJGLS+gJRHp77DqbzcXWpsEQOcN8NRzk/ofcis8L0n9MZJLfSJYDFZmEbDXG+/
+         8mGYUDuDwD6O1u4jO3/EAFBgzol5FlgW+sWdBSKsaffN2xpxW0L4CJ45KohqNYoQ4grZ
+         Zxw+goiD2nAq/u/4AD4F24yOeW6qs4rbiovAHGEJ/CBP6bxp1iUxhynh+LbzTX8H1A13
+         ikoRt1jgpoIn4b6BwKkrGSD5FW7I4uCP8LEU2eNFiqfc3FRCovfuoLYtXnoUMpaWhy+1
+         RX3611GzLDhdPJxSnU+fqjU/ssHfu9l7t9x7ji0neV4QYywz/jxlYvvfLJwnbt7uKwLe
+         PPtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6hS10QxYqo081plk7djXLpiSk72EjSMQOalfDnvofOY=;
+        b=n+auQMrF0OtSTqDiQMWLEdY88Ub43gTDmIeGGuTQumd1IDzUCcFzmTJ66bw/MLq47Y
+         cl58iZE1wcFYZRCnGYhVR3bPkhCDcyGLaAlr6Rk1Q75/OzIYjErfdOAW7EtQKzDEEtqF
+         HlG2fUnqn2XwLO8v95u91hfwMg6h5/Mfp7knpoY365sc8ebRm+kI8N0JejC6j0RcXSRt
+         8OoR6TfOEzMNPy4UpuneIBhJ/XVoetWU5HOWyZywsxTdVyNdgAp9H0YZUWG3qaqOA+A0
+         w6yCsfmmBXSAR458mXPhcZYiac4ndYEfKK1MJiwds2rw77fJSWv5h6nosMiVOdZmA0Y7
+         yvwg==
+X-Gm-Message-State: AOAM531RghjLvXa3CYJubcBv8TI3BGvmh51hldDTQaCP2RV5UytXKvGF
+        jMkM98k4oWis6+q3fsLIAj5sxnzulkQqfxRhASKB/A==
+X-Google-Smtp-Source: ABdhPJwFzuPSMDw12EOMJER9qENN/CIBqX9OAyOnoUTwYHBf2oLUWdWnC0zmZH3vh8FAFQD1I3W1eH16VPeBr1j0yCA=
+X-Received: by 2002:a92:d9c3:: with SMTP id n3mr7902126ilq.306.1617295816642;
+ Thu, 01 Apr 2021 09:50:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0834b9fc-9b3a-1184-fed2-6f9c7e66c6fb@linux.intel.com>
+References: <20210331210841.3996155-1-bgardon@google.com> <20210331210841.3996155-13-bgardon@google.com>
+ <79548215-b86f-99de-9322-c76ba5a1802d@redhat.com>
+In-Reply-To: <79548215-b86f-99de-9322-c76ba5a1802d@redhat.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Thu, 1 Apr 2021 09:50:05 -0700
+Message-ID: <CANgfPd_wFMFQgqSG9gi5zo3=WMGVST-66DkNJTopvTBZoangmQ@mail.gmail.com>
+Subject: Re: [PATCH 12/13] KVM: x86/mmu: Fast invalidation for TDP MMU
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 09:30:27AM -0500, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 4/1/21 2:24 AM, Vinod Koul wrote:
-> > On 31-03-21, 09:13, Bard Liao wrote:
-> > > From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > > 
-> > > We sometimes discard -ENODATA when reporting errors and lose all
-> > > traces of issues in the console log, add a macro to add use dev_dbg()
-> > > in such cases.
-> > > 
-> > > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > > Reviewed-by: Rander Wang <rander.wang@intel.com>
-> > > Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-> > > Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> > > ---
-> > >   drivers/soundwire/bus.h | 8 ++++++++
-> > >   1 file changed, 8 insertions(+)
-> > > 
-> > > diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
-> > > index 40354469860a..8370216f95d4 100644
-> > > --- a/drivers/soundwire/bus.h
-> > > +++ b/drivers/soundwire/bus.h
-> > > @@ -227,4 +227,12 @@ int sdw_bwrite_no_pm_unlocked(struct sdw_bus *bus, u16 dev_num, u32 addr, u8 val
-> > >   void sdw_clear_slave_status(struct sdw_bus *bus, u32 request);
-> > >   int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size);
-> > > +#define sdw_dev_dbg_or_err(dev, is_err, fmt, ...)			\
-> > > +	do {								\
-> > > +		if (is_err)						\
-> > > +			dev_err(dev, fmt, __VA_ARGS__);			\
-> > > +		else							\
-> > > +			dev_dbg(dev, fmt, __VA_ARGS__);			\
-> > > +	} while (0)
-> > 
-> > I see a variant in sof code and now here, why not add in a
-> > dev_dbg_or_err() and use everywhere?
-> 
-> Good point, I hesitated back and forth on specific v. generic macro.
-> 
-> The main reason why I added this macro for SoundWire is that quite a few
-> subsystems have their own debug functions (DRM, ACPI, etc), and I wasn't
-> sure if there was any appetite to add more options in
-> include/linux/dev_printk.h. SOF also uses a different format due to history.
+On Thu, Apr 1, 2021 at 3:36 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 31/03/21 23:08, Ben Gardon wrote:
+> >
+> > +     if (is_tdp_mmu_enabled(kvm))
+> > +             kvm_tdp_mmu_invalidate_roots(kvm);
+> > +
+> >       /*
+> >        * Toggle mmu_valid_gen between '0' and '1'.  Because slots_lock is
+> >        * held for the entire duration of zapping obsolete pages, it's
+> > @@ -5451,9 +5454,6 @@ static void kvm_mmu_zap_all_fast(struct kvm *kvm)
+> >
+> >       kvm_zap_obsolete_pages(kvm);
+> >
+> > -     if (is_tdp_mmu_enabled(kvm))
+> > -             kvm_tdp_mmu_zap_all(kvm);
+> > -
+>
+> This is just cosmetic, but I'd prefer to keep the call to
+> kvm_tdp_mmu_invalidate_roots at the original place, so that it's clear
+> in the next patch that it's two separate parts because of the different
+> locking requirements.
 
-It is better if those other subsystems move to using the common kernel
-debug functions.  Historically they were all separate, there is no good
-reason for them to be that way today.
+I'm not sure exactly what you mean and I could certainly do a better
+job explaining in the commit description, but it's actually quite
+important that kvm_tdp_mmu_invalidate_roots at least precede
+kvm_zap_obsolete_pages as kvm_zap_obsolete_pages drops the lock and
+yields. If kvm_tdp_mmu_invalidate_roots doesn't go first then vCPUs
+could wind up dropping their ref on an old root and then picking it up
+again before the last root had a chance to drop its ref.
 
-So please do not create custom subsystem debug macros like this just for
-this tiny set of drivers.
+Explaining in the description that kvm_tdp_mmu_zap_all is being
+dropped because it is no longer necessary (as opposed to being moved)
+might help make that cleaner.
 
-My bigger issue with this is that this macro is crazy.  Why do you need
-debugging here at all for this type of thing?  That's what ftrace is
-for, do not sprinkle code with "we got this return value from here!" all
-over the place like what this does.
+Alternatively I could just leave kvm_tdp_mmu_zap_all and replace it in
+the next patch.
 
-thanks,
-
-greg k-h
+>
+> Paolo
+>
