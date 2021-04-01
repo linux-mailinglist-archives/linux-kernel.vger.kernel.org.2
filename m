@@ -2,158 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8654351A6A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88536351ABD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234576AbhDASBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:01:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47286 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235535AbhDARq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:46:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BF6261165;
-        Thu,  1 Apr 2021 17:46:17 +0000 (UTC)
-Date:   Thu, 1 Apr 2021 19:46:13 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     syzbot <syzbot+c88a7030da47945a3cc3@syzkaller.appspotmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
-        io-uring@vger.kernel.org
-Subject: Re: [syzbot] WARNING in mntput_no_expire (2)
-Message-ID: <20210401174613.vymhhrfsemypougv@wittgenstein>
-References: <0000000000003a565e05bee596f2@google.com>
- <20210401154515.k24qdd2lzhtneu47@wittgenstein>
- <90e7e339-eaec-adb2-cfed-6dc058a117a3@kernel.dk>
+        id S234729AbhDASDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:03:01 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:36320 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236891AbhDARsB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:48:01 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lS1QF-00BMjZ-Mk; Thu, 01 Apr 2021 11:47:59 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lS1QE-00063A-Tr; Thu, 01 Apr 2021 11:47:59 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Josh Hunt <johunt@akamai.com>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org
+References: <20210401033156.7262-1-johunt@akamai.com>
+        <m15z16r583.fsf@fess.ebiederm.org> <202104010039.A134EC56@keescook>
+Date:   Thu, 01 Apr 2021 12:47:54 -0500
+In-Reply-To: <202104010039.A134EC56@keescook> (Kees Cook's message of "Thu, 1
+        Apr 2021 00:50:57 -0700")
+Message-ID: <m1v995q4l1.fsf@fess.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <90e7e339-eaec-adb2-cfed-6dc058a117a3@kernel.dk>
+Content-Type: text/plain
+X-XM-SPF: eid=1lS1QE-00063A-Tr;;;mid=<m1v995q4l1.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+9kKaosOHZQa/CHlshDAMlvxbI/RV1V68=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa03.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
+        version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa03 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa03 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Kees Cook <keescook@chromium.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 302 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 4.4 (1.5%), b_tie_ro: 3.0 (1.0%), parse: 1.01
+        (0.3%), extract_message_metadata: 14 (4.7%), get_uri_detail_list: 1.60
+        (0.5%), tests_pri_-1000: 32 (10.5%), tests_pri_-950: 1.18 (0.4%),
+        tests_pri_-900: 0.81 (0.3%), tests_pri_-90: 69 (22.7%), check_bayes:
+        66 (22.0%), b_tokenize: 4.1 (1.4%), b_tok_get_all: 5 (1.8%),
+        b_comp_prob: 1.31 (0.4%), b_tok_touch_all: 53 (17.5%), b_finish: 0.75
+        (0.2%), tests_pri_0: 170 (56.3%), check_dkim_signature: 0.37 (0.1%),
+        check_dkim_adsp: 2.1 (0.7%), poll_dns_idle: 0.48 (0.2%), tests_pri_10:
+        1.78 (0.6%), tests_pri_500: 5 (1.8%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH] psi: allow unprivileged users with CAP_SYS_RESOURCE to write psi files
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 10:09:18AM -0600, Jens Axboe wrote:
-> On 4/1/21 9:45 AM, Christian Brauner wrote:
-> > On Thu, Apr 01, 2021 at 02:09:20AM -0700, syzbot wrote:
-> >> Hello,
-> >>
-> >> syzbot found the following issue on:
-> >>
-> >> HEAD commit:    d19cc4bf Merge tag 'trace-v5.12-rc5' of git://git.kernel.o..
-> >> git tree:       upstream
-> >> console output: https://syzkaller.appspot.com/x/log.txt?x=1018f281d00000
-> >> kernel config:  https://syzkaller.appspot.com/x/.config?x=d1a3d65a48dbd1bc
-> >> dashboard link: https://syzkaller.appspot.com/bug?extid=c88a7030da47945a3cc3
-> >> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12f50d11d00000
-> >> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=137694a1d00000
-> >>
-> >> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> >> Reported-by: syzbot+c88a7030da47945a3cc3@syzkaller.appspotmail.com
-> >>
-> >> ------------[ cut here ]------------
-> >> WARNING: CPU: 1 PID: 8409 at fs/namespace.c:1186 mntput_no_expire+0xaca/0xcb0 fs/namespace.c:1186
-> >> Modules linked in:
-> >> CPU: 1 PID: 8409 Comm: syz-executor035 Not tainted 5.12.0-rc5-syzkaller #0
-> >> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> >> RIP: 0010:mntput_no_expire+0xaca/0xcb0 fs/namespace.c:1186
-> >> Code: ff 48 c7 c2 e0 cb 78 89 be c2 02 00 00 48 c7 c7 a0 cb 78 89 c6 05 e5 6d e5 0b 01 e8 ff e1 f6 06 e9 3f fd ff ff e8 c6 a5 a8 ff <0f> 0b e9 fc fc ff ff e8 ba a5 a8 ff e8 55 dc 94 ff 31 ff 89 c5 89
-> >> RSP: 0018:ffffc9000165fc78 EFLAGS: 00010293
-> >> RAX: 0000000000000000 RBX: 1ffff920002cbf95 RCX: 0000000000000000
-> >> RDX: ffff88802072d4c0 RSI: ffffffff81cb4b8a RDI: 0000000000000003
-> >> RBP: ffff888011656900 R08: 0000000000000000 R09: ffffffff8fa978af
-> >> R10: ffffffff81cb4884 R11: 0000000000000000 R12: 0000000000000008
-> >> R13: ffffc9000165fcc8 R14: dffffc0000000000 R15: 00000000ffffffff
-> >> FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-> >> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >> CR2: 000055a722053160 CR3: 000000000bc8e000 CR4: 00000000001506e0
-> >> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> >> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> >> Call Trace:
-> >>  mntput fs/namespace.c:1232 [inline]
-> >>  cleanup_mnt+0x523/0x530 fs/namespace.c:1132
-> >>  task_work_run+0xdd/0x1a0 kernel/task_work.c:140
-> >>  exit_task_work include/linux/task_work.h:30 [inline]
-> >>  do_exit+0xbfc/0x2a60 kernel/exit.c:825
-> >>  do_group_exit+0x125/0x310 kernel/exit.c:922
-> >>  __do_sys_exit_group kernel/exit.c:933 [inline]
-> >>  __se_sys_exit_group kernel/exit.c:931 [inline]
-> >>  __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
-> >>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-> >>  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> >> RIP: 0033:0x446af9
-> >> Code: Unable to access opcode bytes at RIP 0x446acf.
-> >> RSP: 002b:00000000005dfe48 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-> >> RAX: ffffffffffffffda RBX: 00000000004ce450 RCX: 0000000000446af9
-> >> RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000001
-> >> RBP: 0000000000000001 R08: ffffffffffffffbc R09: 0000000000000000
-> >> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004ce450
-> >> R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
-> > 
-> > [+Cc Jens + io_uring]
-> > 
-> > Hm, this reproducer uses io_uring and it's the io_uring_enter() that
-> > triggers this reliably. With this reproducer I've managed to reproduce
-> > the issue on v5.12-rc4, and v5.12-rc3, v5.12-rc2 and v5.12-rc1.
-> > It's not reproducible at
-> > 9820b4dca0f9c6b7ab8b4307286cdace171b724d
-> > which is the commit immediately before the first v5.12 io_uring merge.
-> > It's first reproducible with the first io_uring merge for v5.12, i.e.
-> > 5bbb336ba75d95611a7b9456355b48705016bdb1
-> 
-> Thanks, that's good info. I'll take a look at it and see if I can
-> reproduce.
+Kees Cook <keescook@chromium.org> writes:
 
-Ok, I was deep into this anyway and it didn't make much sense to do
-anything else at that point so I bisected this a bit further. The first
-bad commit is:
+> On Wed, Mar 31, 2021 at 11:36:28PM -0500, Eric W. Biederman wrote:
+>> Josh Hunt <johunt@akamai.com> writes:
+>> 
+>> > Currently only root can write files under /proc/pressure. Relax this to
+>> > allow tasks running as unprivileged users with CAP_SYS_RESOURCE to be
+>> > able to write to these files.
+>> 
+>> The test for CAP_SYS_RESOURCE really needs to be in open rather
+>> than in write.
+>> 
+>> Otherwise a suid root executable could have stdout redirected
+>> into these files.
+>
+> Right. Or check against f_cred. (See uses of kallsyms_show_value())
+> https://www.kernel.org/doc/html/latest/security/credentials.html#open-file-credentials
 
-commit 3a81fd02045c329f25e5900fa61f613c9b317644
-Author: Jens Axboe <axboe@kernel.dk>
-Date:   Thu Dec 10 12:25:36 2020 -0700
+We really want to limit checking against f_cred to those cases where we
+break userspace by checking in open.  AKA the cases where we made the
+mistake of putting the permission check in the wrong place and now can't
+fix it.
 
-    io_uring: enable LOOKUP_CACHED path resolution for filename lookups
+Since this change is change the permissions that open uses already I
+don't see any reason we can't perform a proper check in open.
 
-    Instead of being pessimistic and assume that path lookup will block, use
-    LOOKUP_CACHED to attempt just a cached lookup. This ensures that the
-    fast path is always done inline, and we only punt to async context if
-    IO is needed to satisfy the lookup.
-
-    For forced nonblock open attempts, mark the file O_NONBLOCK over the
-    actual ->open() call as well. We can safely clear this again before
-    doing fd_install(), so it'll never be user visible that we fiddled with
-    it.
-
-    This greatly improves the performance of file open where the dentry is
-    already cached:
-
-    ached           5.10-git        5.10-git+LOOKUP_CACHED  Speedup
-    ---------------------------------------------------------------
-    33%             1,014,975       900,474                 1.1x
-    89%              545,466        292,937                 1.9x
-    100%             435,636        151,475                 2.9x
-
-    The more cache hot we are, the faster the inline LOOKUP_CACHED
-    optimization helps. This is unsurprising and expected, as a thread
-    offload becomes a more dominant part of the total overhead. If we look
-    at io_uring tracing, doing an IORING_OP_OPENAT on a file that isn't in
-    the dentry cache will yield:
-
-    275.550481: io_uring_create: ring 00000000ddda6278, fd 3 sq size 8, cq size 16, flags 0
-    275.550491: io_uring_submit_sqe: ring 00000000ddda6278, op 18, data 0x0, non block 1, sq_thread 0
-    275.550498: io_uring_queue_async_work: ring 00000000ddda6278, request 00000000c0267d17, flags 69760, normal queue, work 000000003d683991
-    275.550502: io_uring_cqring_wait: ring 00000000ddda6278, min_events 1
-    275.550556: io_uring_complete: ring 00000000ddda6278, user_data 0x0, result 4
-
-    which shows a failed nonblock lookup, then punt to worker, and then we
-    complete with fd == 4. This takes 65 usec in total. Re-running the same
-    test case again:
-
-    281.253956: io_uring_create: ring 0000000008207252, fd 3 sq size 8, cq size 16, flags 0
-    281.253967: io_uring_submit_sqe: ring 0000000008207252, op 18, data 0x0, non block 1, sq_thread 0
-    281.253973: io_uring_complete: ring 0000000008207252, user_data 0x0, result 4
-
-    shows the same request completing inline, also returning fd == 4. This
-    takes 6 usec.
-
-    Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Eric
