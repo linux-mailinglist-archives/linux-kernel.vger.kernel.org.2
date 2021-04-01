@@ -2,83 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF56350D36
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 05:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 983A9350D3B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 05:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233017AbhDADjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 23:39:08 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15129 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232800AbhDADil (ORCPT
+        id S232885AbhDADjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 23:39:42 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:35444 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232887AbhDADjG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 23:38:41 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F9pkp2MK8z19K4Y;
-        Thu,  1 Apr 2021 11:36:34 +0800 (CST)
-Received: from [10.67.100.236] (10.67.100.236) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 1 Apr 2021 11:38:30 +0800
-Subject: Re: [PATCH -next] i2c: gpio: use DEFINE_SPINLOCK() for spinlock
-To:     Russell King <linux@armlinux.org.uk>
-CC:     <heying24@huawei.com>, <yuehaibing@huawei.com>,
-        <weiyongjun1@huawei.com>, <johnny.chenyi@huawei.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
-References: <20210327095228.105123-1-chenlifu@huawei.com>
-From:   chenlifu <chenlifu@huawei.com>
-Message-ID: <fec9295e-c5d6-13ee-23f5-13b593d2fd2e@huawei.com>
-Date:   Thu, 1 Apr 2021 11:38:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Wed, 31 Mar 2021 23:39:06 -0400
+Received: by mail-io1-f69.google.com with SMTP id v24so2997982ion.2
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 20:39:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=y0jAq5S9GiYMY36r36rGvrhgs2PgZlLJSzcOUpx10aI=;
+        b=OJuZ28xj+OoqifJaHn9CUvJoS4AdBOeIXD9z6bhkiFqa5Rib5m3sSElIvz7j2L+Cku
+         NTmh05bIpII2/zEOQ3qHkOwr+kpi0huVsEBrzl/Jy3AziGk58xDQmCnuuTh8KX/xD+OX
+         dIi4TmayuTzlfyxYQ4lfy7M+AaPzYubzAL/G8WdPVqTsbKQDRTqtiFbOwNQ4ASHr9poA
+         I4PWyBkXohJQVzFGe9q7IH6zHARCpiXLvq1sPtB+izTnUhsddEU4+wYb3CF1Tj4hLagu
+         CQsat1qSGQIq0VEzD02Sm/PnuLMm7w3lxQGttliKQHnvtxVHaXCNyYRIZBGF/bbleW+O
+         ROHA==
+X-Gm-Message-State: AOAM533gaWpxp/8xy/htaupPCvOw4hrs2i3vXvkoE3jX5bA5U7rQjXF5
+        iRilVeGMEPA/1cOPwRIzozqvkOaa53MmFWQk/6EKYmIh3Hae
+X-Google-Smtp-Source: ABdhPJwzE7eMfw19r1VuuSvTtkhe67TPWs/rerGhe9Jm/clMO1VZfFxpEvlHGpoSYRqwFXicx9bTkonPXQ0pNzLMdY1wAwRSdeeF
 MIME-Version: 1.0
-In-Reply-To: <20210327095228.105123-1-chenlifu@huawei.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.100.236]
-X-CFilter-Loop: Reflected
+X-Received: by 2002:a05:6638:2603:: with SMTP id m3mr5782480jat.64.1617248345919;
+ Wed, 31 Mar 2021 20:39:05 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 20:39:05 -0700
+In-Reply-To: <00000000000046e0e905afcff205@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002c193805bee0f97c@google.com>
+Subject: Re: [syzbot] KASAN: vmalloc-out-of-bounds Read in bpf_trace_run2
+From:   syzbot <syzbot+845923d2172947529b58@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, andriin@fb.com, ast@kernel.org,
+        bpf@vger.kernel.org, coreteam@netfilter.org, daniel@iogearbox.net,
+        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+        kaber@trash.net, kadlec@blackhole.kfki.hu, kafai@fb.com,
+        kpsingh@chromium.org, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        mathieu.desnoyers@efficios.com, mchehab@kernel.org,
+        mchehab@s-opensource.com, mingo@kernel.org, mingo@redhat.com,
+        mmullins@mmlx.us, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        peterz@infradead.org, rostedt@goodmis.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kindly pinging ...
+syzbot suspects this issue was fixed by commit:
 
-Best Regards,
-Chen Lifu
+commit befe6d946551d65cddbd32b9cb0170b0249fd5ed
+Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Date:   Wed Nov 18 14:34:05 2020 +0000
 
-ÔÚ 2021/3/27 17:52, Chen Lifu Ð´µÀ:
-> From: Lifu Chen <chenlifu@huawei.com>
-> 
-> spinlock can be initialized automatically with DEFINE_SPINLOCK()
-> rather than explicitly calling spin_lock_init().
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Lifu Chen <chenlifu@huawei.com>
-> ---
->   arch/arm/mach-sa1100/simpad.c | 4 +---
->   1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm/mach-sa1100/simpad.c b/arch/arm/mach-sa1100/simpad.c
-> index c7fb9a73e4c5..c183432880d3 100644
-> --- a/arch/arm/mach-sa1100/simpad.c
-> +++ b/arch/arm/mach-sa1100/simpad.c
-> @@ -45,7 +45,7 @@
->    */
->   
->   static long cs3_shadow;
-> -static spinlock_t cs3_lock;
-> +static DEFINE_SPINLOCK(cs3_lock);
->   static struct gpio_chip cs3_gpio;
->   
->   long simpad_get_cs3_ro(void)
-> @@ -379,8 +379,6 @@ static int __init simpad_init(void)
->   {
->   	int ret;
->   
-> -	spin_lock_init(&cs3_lock);
-> -
->   	cs3_gpio.label = "simpad_cs3";
->   	cs3_gpio.base = SIMPAD_CS3_GPIO_BASE;
->   	cs3_gpio.ngpio = 24;
-> 
-> .
-> 
+    tracepoint: Do not fail unregistering a probe due to memory failure
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=123358a1d00000
+start commit:   70b97111 bpf: Use hlist_add_head_rcu when linking to local..
+git tree:       bpf-next
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7e0ca96a9b6ee858
+dashboard link: https://syzkaller.appspot.com/bug?extid=845923d2172947529b58
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10193f3b900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=168c729b900000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: tracepoint: Do not fail unregistering a probe due to memory failure
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
