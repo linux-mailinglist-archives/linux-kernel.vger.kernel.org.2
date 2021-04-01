@@ -2,67 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19BC35214E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06DB9352152
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:10:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234268AbhDAVJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 17:09:34 -0400
-Received: from smtp.gentoo.org ([140.211.166.183]:54304 "EHLO smtp.gentoo.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233710AbhDAVJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 17:09:30 -0400
-Received: by sf.home (Postfix, from userid 1000)
-        id 729335A22061; Thu,  1 Apr 2021 22:09:22 +0100 (BST)
-From:   Sergei Trofimovich <slyfox@gentoo.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Sergei Trofimovich <slyfox@gentoo.org>, linux-mm@kvack.org
-Subject: [PATCH] mm: page_owner: use kstrtobool() to parse bool option
-Date:   Thu,  1 Apr 2021 22:09:09 +0100
-Message-Id: <20210401210909.3532086-1-slyfox@gentoo.org>
-X-Mailer: git-send-email 2.31.1
+        id S234300AbhDAVKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 17:10:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233710AbhDAVKJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 17:10:09 -0400
+Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A510C0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 14:10:09 -0700 (PDT)
+Received: from [192.168.1.101] (abae153.neoplus.adsl.tpnet.pl [83.6.168.153])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 035EE3F5D2;
+        Thu,  1 Apr 2021 23:10:06 +0200 (CEST)
+Subject: Re: [PATCH 5/6] clk: qcom: gcc-sdm660: Account for needed adjustments
+ in probe function
+To:     Stephen Boyd <sboyd@kernel.org>, phone-devel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Craig Tatlor <ctatlor97@gmail.com>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20210220155618.176559-1-konrad.dybcio@somainline.org>
+ <20210220155618.176559-5-konrad.dybcio@somainline.org>
+ <161404077336.1254594.15002572465360321874@swboyd.mtv.corp.google.com>
+ <3917fba4-e5b0-911f-9220-f401a90aac38@somainline.org>
+ <161724198675.2260335.14358880292682931985@swboyd.mtv.corp.google.com>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <abc821cc-ef43-3241-793a-cc4c85b72563@somainline.org>
+Date:   Thu, 1 Apr 2021 23:10:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <161724198675.2260335.14358880292682931985@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I tried to use page_owner=1 for a while noticed too late it had
-no effect as opposed to similar init_on_alloc=1 (these work).
 
-Let's make them consistent.
+>>>> +
+>>>> +       /* Keep bimc gfx clock port on all the time */
+>>>> +       clk_prepare_enable(gcc_bimc_gfx_clk.clkr.hw.clk);
+>>>> +
+>>> Preferably just set these various bits with regmap_update_bits() during
+>>> probe. Also, please do it before regsitering the clks, not after.
+>> To be fair, now I think that simply adding CLK_IS_CRITICAL flag to the clocks in question is the smartest thing to do. Magic writes don't tell a whole lot.
+> This is how it's been done in various other qcom clk drivers. Usually
+> there is a comment about what is enabled, but really it's just setting
+> random bits that sadly aren't already set by default.
 
-The change decreses binary size slightly:
-   text    data     bss     dec     hex filename
-  12408     321      17   12746    31ca mm/page_owner.o.before
-  12320     321      17   12658    3172 mm/page_owner.o.after
+But why.. why should we give Linux less information about the hardware it's running on? It's a kernel after all, I know some parties would prefer to keep the hardware away from its users, but cmon, it's OSSLand out there!
 
-CC: Andrew Morton <akpm@linux-foundation.org>
-CC: linux-mm@kvack.org
-Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
----
- mm/page_owner.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+Allocating a few bytes more in memory is proooobably a good trade-off for keeping an eye on the state of various clocks instead of simply setting some seemingly random bits and hoping nothing bad happens under the hood.. This isn't only a case for this clock, but for all ones that are effectively pinky-promise-trusted to function properly with no way of checking if they're even still alive other than poking the registers manually.. As of v5.12-rc2, there are *46* such trust credits..
 
-diff --git a/mm/page_owner.c b/mm/page_owner.c
-index d15c7c4994f5..63e4ecaba97b 100644
---- a/mm/page_owner.c
-+++ b/mm/page_owner.c
-@@ -41,13 +41,7 @@ static void init_early_allocated_pages(void);
- 
- static int __init early_page_owner_param(char *buf)
- {
--	if (!buf)
--		return -EINVAL;
--
--	if (strcmp(buf, "on") == 0)
--		page_owner_enabled = true;
--
--	return 0;
-+	return kstrtobool(buf, &page_owner_enabled);
- }
- early_param("page_owner", early_page_owner_param);
- 
--- 
-2.31.1
+It's NOT easy to track down issues in big monolithic kernels, especially when people submitting changes to common code seem to think that only their hardware uses it (no hard feelings, but drm/msm broke on !a6xx *at least* two times within the last year) and since making sure the clocks are ticking properly is one of the most crucial things when looking into more complex issues, which may or may not randomly happen on a platform that is just being brought up for various reasons (e.g. half of mdm9607 hardware doesn't wanna play along without a ICC driver), I *really* think we should use CLK_IS_CRITICAL instead and give developers a way to check if everything's in tact with the clock, while still keeping the "never turn it off, don't touch it!" aspect.
+
+
+>>>> +       /* Set the HMSS_GPLL0_SRC for 300MHz to CPU subsystem */
+>>>> +       clk_set_rate(hmss_gpll0_clk_src.clkr.hw.clk, 300000000);
+>>> Is this not already the case?
+>>
+>> This is a mission-critical clock and we cannot trust the bootloader with setting it. Otherwise dragons might appear.
+>>
+> What does the bootloader set it to?
+
+Sorry but I can't check, nor do I remember right now. But we still shouldn't add a variable that might come from a lazy OEM not incorporating the fix into their release, especially since this one is used for clocking the AP.
+
+
+Konrad
 
