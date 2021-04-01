@@ -2,150 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A414D351FDC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6691351FDF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:33:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235363AbhDATan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 15:30:43 -0400
-Received: from foss.arm.com ([217.140.110.172]:48214 "EHLO foss.arm.com"
+        id S234417AbhDATdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 15:33:02 -0400
+Received: from mga17.intel.com ([192.55.52.151]:26240 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234613AbhDATaa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 15:30:30 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 12C8411FB;
-        Thu,  1 Apr 2021 12:30:30 -0700 (PDT)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 819153F719;
-        Thu,  1 Apr 2021 12:30:28 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Qais Yousef <qais.yousef@arm.com>,
-        Lingutla Chandrasekhar <clingutla@codeaurora.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Rik van Riel <riel@surriel.com>
-Subject: [PATCH v4 3/3] sched/fair: Introduce a CPU capacity comparison helper
-Date:   Thu,  1 Apr 2021 20:30:06 +0100
-Message-Id: <20210401193006.3392788-4-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210401193006.3392788-1-valentin.schneider@arm.com>
-References: <20210401193006.3392788-1-valentin.schneider@arm.com>
+        id S234000AbhDATdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 15:33:00 -0400
+IronPort-SDR: eOu+46GhBZpv/3vEMSe4UJSKHBw0DtZpz5Ce2cUYJflhtXaDAjC2QooSI3EIuU2ojKk65CRw4h
+ AWJnhGL2aRrQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="172349725"
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="172349725"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 12:33:00 -0700
+IronPort-SDR: gxl1yi5y1YfUwuN90gj4fUexuL4P1FoRtbnHP0fLOe3825DZ2LM5aO2B/PGZWqam4SoEfM1Ct8
+ 9BkiMH0zb9gg==
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="611039409"
+Received: from pzlai-mobl.amr.corp.intel.com (HELO [10.213.169.242]) ([10.213.169.242])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 12:32:59 -0700
+Subject: Re: [PATCH 2/2] x86/sgx: Add sgx_nr_{all, free}_pages to the debugfs
+To:     Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+References: <20210401052114.697432-1-jarkko@kernel.org>
+ <20210401052114.697432-2-jarkko@kernel.org>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <57c18e08-3e36-b5b3-aaba-9a21b75a1613@intel.com>
+Date:   Thu, 1 Apr 2021 12:32:58 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210401052114.697432-2-jarkko@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During load-balance, groups classified as group_misfit_task are filtered
-out if they do not pass
+On 3/31/21 10:21 PM, Jarkko Sakkinen wrote:
+> +#ifdef CONFIG_DEBUG_FS
+> +	debugfs_create_file("sgx_nr_all_pages", 0400, arch_debugfs_dir, NULL,
+> +			    &sgx_nr_all_pages_fops);
+> +	debugfs_create_file("sgx_nr_free_pages", 0400, arch_debugfs_dir, NULL,
+> +			    &sgx_nr_free_pages_fops);
+> +#endif /* CONFIG_DEBUG_FS */
 
-  group_smaller_max_cpu_capacity(<candidate group>, <local group>);
 
-which itself employs fits_capacity() to compare the sgc->max_capacity of
-both groups.
-
-Due to the underlying margin, fits_capacity(X, 1024) will return false for
-any X > 819. Tough luck, the capacity_orig's on e.g. the Pixel 4 are
-{261, 871, 1024}. If a CPU-bound task ends up on one of those "medium"
-CPUs, misfit migration will never intentionally upmigrate it to a CPU of
-higher capacity due to the aforementioned margin.
-
-One may argue the 20% margin of fits_capacity() is excessive in the advent
-of counter-enhanced load tracking (APERF/MPERF, AMUs), but one point here
-is that fits_capacity() is meant to compare a utilization value to a
-capacity value, whereas here it is being used to compare two capacity
-values. As CPU capacity and task utilization have different dynamics, a
-sensible approach here would be to add a new helper dedicated to comparing
-CPU capacities.
-
-While at it, replace group_smaller_{min, max}_cpu_capacity() with
-comparisons of the source group's min/max capacity and the destination
-CPU's capacity.
-
-Reviewed-by: Qais Yousef <qais.yousef@arm.com>
-Tested-by: Lingutla Chandrasekhar <clingutla@codeaurora.org>
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
----
- kernel/sched/fair.c | 33 ++++++++++-----------------------
- 1 file changed, 10 insertions(+), 23 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index d8077f82a380..c9c5c2697998 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -113,6 +113,13 @@ int __weak arch_asym_cpu_priority(int cpu)
-  */
- #define fits_capacity(cap, max)	((cap) * 1280 < (max) * 1024)
- 
-+/*
-+ * The margin used when comparing CPU capacities.
-+ * is 'cap1' noticeably greater than 'cap2'
-+ *
-+ * (default: ~5%)
-+ */
-+#define capacity_greater(cap1, cap2) ((cap1) * 1024 > (cap2) * 1078)
- #endif
- 
- #ifdef CONFIG_CFS_BANDWIDTH
-@@ -8364,26 +8371,6 @@ group_is_overloaded(unsigned int imbalance_pct, struct sg_lb_stats *sgs)
- 	return false;
- }
- 
--/*
-- * group_smaller_min_cpu_capacity: Returns true if sched_group sg has smaller
-- * per-CPU capacity than sched_group ref.
-- */
--static inline bool
--group_smaller_min_cpu_capacity(struct sched_group *sg, struct sched_group *ref)
--{
--	return fits_capacity(sg->sgc->min_capacity, ref->sgc->min_capacity);
--}
--
--/*
-- * group_smaller_max_cpu_capacity: Returns true if sched_group sg has smaller
-- * per-CPU capacity_orig than sched_group ref.
-- */
--static inline bool
--group_smaller_max_cpu_capacity(struct sched_group *sg, struct sched_group *ref)
--{
--	return fits_capacity(sg->sgc->max_capacity, ref->sgc->max_capacity);
--}
--
- static inline enum
- group_type group_classify(unsigned int imbalance_pct,
- 			  struct sched_group *group,
-@@ -8539,7 +8526,7 @@ static bool update_sd_pick_busiest(struct lb_env *env,
- 	 * internally or be covered by avg_load imbalance (eventually).
- 	 */
- 	if (sgs->group_type == group_misfit_task &&
--	    (!group_smaller_max_cpu_capacity(sg, sds->local) ||
-+	    (!capacity_greater(capacity_of(env->dst_cpu), sg->sgc->max_capacity) ||
- 	     sds->local_stat.group_type != group_has_spare))
- 		return false;
- 
-@@ -8623,7 +8610,7 @@ static bool update_sd_pick_busiest(struct lb_env *env,
- 	 */
- 	if ((env->sd->flags & SD_ASYM_CPUCAPACITY) &&
- 	    (sgs->group_type <= group_fully_busy) &&
--	    (group_smaller_min_cpu_capacity(sds->local, sg)))
-+	    (capacity_greater(sg->sgc->min_capacity, capacity_of(env->dst_cpu))))
- 		return false;
- 
- 	return true;
-@@ -9423,7 +9410,7 @@ static struct rq *find_busiest_queue(struct lb_env *env,
- 		 * average load.
- 		 */
- 		if (env->sd->flags & SD_ASYM_CPUCAPACITY &&
--		    capacity_of(env->dst_cpu) < capacity &&
-+		    !capacity_greater(capacity_of(env->dst_cpu), capacity) &&
- 		    nr_running == 1)
- 			continue;
- 
--- 
-2.25.1
-
+Why not make the types u64's and use debugfs_create_u64()?  That would
+save a ton of code.  There's also debugfs_create_ulong().
