@@ -2,87 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 050553512A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C9E3512AA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233934AbhDAJpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 05:45:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233936AbhDAJoh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 05:44:37 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B55C0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 02:44:37 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id n11-20020a05600c4f8bb029010e5cf86347so3562250wmq.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 02:44:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XtEhDbltiZ/OfVBpz9Jx7SA1IxogX1Jkk6XPFN266w4=;
-        b=VuepqFNDknWsdsL8lo/vf2lSR512hGTBYSdoU5t0A6DSJvyG4Pw9msoJZXW/2LyoEL
-         NAElHsNx+E9N5RoRn9IRDxcsrKMsPkNV0KhxPf4/TnOs0sxZJtr6IF5p97Kn9XlaND6o
-         XVm7znnNS3WaRY51FkU6YcNU18O9UjcOLwBzYmVQPDeug6bZp8sjEWRC1h9WnJ7AFJu8
-         ZxThnyLYAa9R6OoGlWwoThnrpOhBJtz5CeW+K28Wzr1jHzBxLFef0bq4/SH0RN2GgB1i
-         BucXYCruIkt5PHe3U0rZnyCvi7AXWcrz3U5LuQ2GplCYhTZHY3cRVn4IAADiLXrQHPdg
-         L45w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XtEhDbltiZ/OfVBpz9Jx7SA1IxogX1Jkk6XPFN266w4=;
-        b=teOHYSNdrwsg+IqktPNHzE0vuN2bFjzmSXAfQ+Jo4ki6BuRh5TgVPDFiadE/+CyqGZ
-         2zsWlq/QTTocgLagzHYEnq0AEcGm0pTNTqTpkW6NF8INj3bocfroOZGQTfwY3wl/1EP3
-         kuiGE57CuIImvjJU4nLG+Trdm2GE/3pzyus0/7hDlYZT8EBNCfrSgL0VEKSK+HjFBft+
-         uz2f+VVyr2uuZnS7cs0iIZJ4WXHXvM3VUvpmMuNt0NLcITDldtddj2+o89RfIQQaw2If
-         6cg+WzX6uItWAUDV8Oi0D/Uy6YI/pCv3WzYqpVacyULu/fC66yZXf0Lyp7uy4ov0HMui
-         0p2Q==
-X-Gm-Message-State: AOAM531xygFQS4eDziCNNnvm+naA5DUsoH77SIuo5wzLEUTDJtN8hsBl
-        4nG6SAl14dflDNsdiLach2LPyQ==
-X-Google-Smtp-Source: ABdhPJwgCKB8DBoGW8iKnUqTZqgN7lbQehMMzlrJKID29AbwEiVBBJiDJ9zDGQbAacz404TXesZ3tQ==
-X-Received: by 2002:a1c:b002:: with SMTP id z2mr7191659wme.121.1617270276227;
-        Thu, 01 Apr 2021 02:44:36 -0700 (PDT)
-Received: from localhost.localdomain ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id u4sm8921234wrm.24.2021.04.01.02.44.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 01 Apr 2021 02:44:35 -0700 (PDT)
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-To:     djakov@kernel.org, vkoul@kernel.org, elder@linaro.org
-Cc:     bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        georgi.djakov@linaro.org
-Subject: [PATCH] interconnect: qcom: sm8350: Add missing link between nodes
-Date:   Thu,  1 Apr 2021 12:44:35 +0300
-Message-Id: <20210401094435.28937-1-georgi.djakov@linaro.org>
-X-Mailer: git-send-email 2.29.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S234027AbhDAJpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 05:45:44 -0400
+Received: from mga05.intel.com ([192.55.52.43]:16502 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233852AbhDAJpb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 05:45:31 -0400
+IronPort-SDR: L9P/PWLPD921TjlKKesixATkX+qwTKL3NVun37Yw4Ybgybw/Zd4zM9CNEWyFT1L6MQN0hUWefH
+ cJIBpOA7tqXA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="277394217"
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="277394217"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 02:45:30 -0700
+IronPort-SDR: blAQuc4E3rWTURQ0eEQXFFV0+ZBWAGQGoqNBDIhYSlOdhkdsiBOd6dP5nPkf5LUZw0KAYDU+Hf
+ C2qb5BPCe2yg==
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="517276254"
+Received: from aemorris-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.254.67.39])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 02:45:26 -0700
+Date:   Thu, 1 Apr 2021 22:45:24 +1300
+From:   Kai Huang <kai.huang@intel.com>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     Boris Petkov <bp@alien8.de>, <seanjc@google.com>,
+        <kvm@vger.kernel.org>, <x86@kernel.org>,
+        <linux-sgx@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <jarkko@kernel.org>, <luto@kernel.org>, <dave.hansen@intel.com>,
+        <rick.p.edgecombe@intel.com>, <haitao.huang@intel.com>,
+        <pbonzini@redhat.com>, <tglx@linutronix.de>, <mingo@redhat.com>,
+        <hpa@zytor.com>
+Subject: Re: [PATCH v3 05/25] x86/sgx: Introduce virtual EPC for use by KVM
+ guests
+Message-Id: <20210401224524.629afce712a1f012316b6dfc@intel.com>
+In-Reply-To: <20210331215345.cad098cfcfcaabf489243807@intel.com>
+References: <cover.1616136307.git.kai.huang@intel.com>
+        <0c38ced8c8e5a69872db4d6a1c0dabd01e07cad7.1616136308.git.kai.huang@intel.com>
+        <20210326150320.GF25229@zn.tnic>
+        <20210331141032.db59586da8ba2cccf7b46f77@intel.com>
+        <D4ECF8D3-C483-4E75-AD41-2CEFDF56B12D@alien8.de>
+        <20210331195138.2af97ec1bb4b5e4202f2600d@intel.com>
+        <3889C4C6-48E2-4C97-A074-180EB18BDA29@alien8.de>
+        <20210331215345.cad098cfcfcaabf489243807@intel.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a link between the GEM NoC and C NoC nodes, which is currently
-missing from the topology. Let's add it to allow consumers request paths
-that use this link.
+On Wed, 31 Mar 2021 21:53:45 +1300 Kai Huang wrote:
+> On Wed, 31 Mar 2021 09:44:39 +0200 Boris Petkov wrote:
+> > On March 31, 2021 8:51:38 AM GMT+02:00, Kai Huang <kai.huang@intel.com> wrote:
+> > >How about adding explanation to Documentation/x86/sgx.rst?
+> > 
+> > Sure, and then we should point users at it. The thing is also indexed by search engines so hopefully people will find it.
+> 
+> Thanks. Will do and send out new patch for review.
+> 
 
-Reported-by: Alex Elder <elder@linaro.org>
-Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
----
- drivers/interconnect/qcom/sm8350.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Boris,
 
-diff --git a/drivers/interconnect/qcom/sm8350.c b/drivers/interconnect/qcom/sm8350.c
-index 01202989a5b2..579b6ce8e046 100644
---- a/drivers/interconnect/qcom/sm8350.c
-+++ b/drivers/interconnect/qcom/sm8350.c
-@@ -139,7 +139,7 @@ DEFINE_QNODE(qhs_llcc, SM8350_SLAVE_LLCC_CFG, 1, 4);
- DEFINE_QNODE(qns_gemnoc, SM8350_SLAVE_GEM_NOC_CFG, 1, 4);
- DEFINE_QNODE(qhs_mdsp_ms_mpu_cfg, SM8350_SLAVE_MSS_PROC_MS_MPU_CFG, 1, 4);
- DEFINE_QNODE(qhs_modem_ms_mpu_cfg, SM8350_SLAVE_MCDMA_MS_MPU_CFG, 1, 4);
--DEFINE_QNODE(qns_gem_noc_cnoc, SM8350_SLAVE_GEM_NOC_CNOC, 1, 16);
-+DEFINE_QNODE(qns_gem_noc_cnoc, SM8350_SLAVE_GEM_NOC_CNOC, 1, 16, SM8350_MASTER_GEM_NOC_CNOC);
- DEFINE_QNODE(qns_llcc, SM8350_SLAVE_LLCC, 4, 16, SM8350_MASTER_LLCC);
- DEFINE_QNODE(qns_pcie, SM8350_SLAVE_MEM_NOC_PCIE_SNOC, 1, 8);
- DEFINE_QNODE(srvc_even_gemnoc, SM8350_SLAVE_SERVICE_GEM_NOC_1, 1, 4);
+I have sent out the updated patch, with documentation added. I also added
+changelog in the patch. please help to take a look. Thanks!
