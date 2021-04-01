@@ -2,67 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D2B352324
+	by mail.lfdr.de (Postfix) with ESMTP id 300E6352322
 	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 01:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236140AbhDAXAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 19:00:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60190 "EHLO mail.kernel.org"
+        id S236117AbhDAXAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 19:00:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235670AbhDAXAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 19:00:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id E79716112E;
+        id S234459AbhDAXAI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 19:00:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 735AA610D0;
         Thu,  1 Apr 2021 23:00:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1617318008;
-        bh=tSr+zGDSluwm5YWn2jN0KZi3KMNYKIeIsuiiZFz4PkI=;
+        bh=hDp9DCn3isArVRyAUCFga4V5VN4rt1NJttlC359HQIU=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Bd74D8KdBl9+NjVrc3KlWF3RDkEL8bCZ46tt4u60K3OC4d17ZFdEixaFm0bqrlwUS
-         GEHmDrNXSlVZKVKPhcgk3qCIKQn/mbsBU7It93ODlc+F8thfYtnk6ooJHlxfJPoTfT
-         1UXzvjYX3/BHVvSOUvABfsUc4iSLQ7pdFtBAibvcaGrNAD6/tcrsEo7g3C8yoj+DiN
-         6yOxl6HDH+dkMe3cfKY35CGK22IrzuyiqyHIrGqy/+36s52C6rbpLpWZDH1eCurT0j
-         H9m0FAiM5zbYR2UjCbPIDZcmkMsggxIaja79lBrqr4hptmrtjcIuk2sutMM+B3ksYh
-         eTgaklKYzvYsg==
+        b=EKUPmBSv3eaQYIOmCLhGvQl1GXc/tx2k/cWi5c5jKMhIGOU5WbEvC/WJX0gTeayEk
+         3cLoBTJrELS4Ey95jPdwlp6+i/p856HHFwvnHP7V5z4wSid7hbScADio5v8n/m6pwV
+         xh87k5s/B1JBcXbopMHl0cZ0/pwoKfqfU15YrYYsnsJaouSN3dCDZqradH9TmgXT04
+         OGwraRoDKv5LWz7qeQgOWzAJ4cGE2CY3PTsvaCNFJSlBjX6TkKtj0BwuuD2DA92WBy
+         d5YicCSIn+0RtZFtlFkEco8OrgkUzNN5qky6xzmzcR6d8mhxZIs1QJsNka/n0mhvSr
+         96j2QchAe/cDQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DF301609CF;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5EF72609CD;
         Thu,  1 Apr 2021 23:00:08 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 1/1] net: stmmac: remove unnecessary pci_enable_msi()
- call
+Subject: Re: [PATCH] drivers: net: fix memory leak in peak_usb_create_dev
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161731800891.8028.4149863007531019665.git-patchwork-notify@kernel.org>
+Message-Id: <161731800838.8028.10693283331125703609.git-patchwork-notify@kernel.org>
 Date:   Thu, 01 Apr 2021 23:00:08 +0000
-References: <20210401060628.27339-1-vee.khee.wong@linux.intel.com>
-In-Reply-To: <20210401060628.27339-1-vee.khee.wong@linux.intel.com>
-To:     Wong Vee Khee <vee.khee.wong@linux.intel.com>
-Cc:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
-        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
-        mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210401132752.25358-1-paskripkin@gmail.com>
+In-Reply-To: <20210401132752.25358-1-paskripkin@gmail.com>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net,
+        kuba@kernel.org, mailhol.vincent@wanadoo.fr,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+91adee8d9ebb9193d22d@syzkaller.appspotmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+This patch was applied to netdev/net.git (refs/heads/master):
 
-On Thu,  1 Apr 2021 14:06:28 +0800 you wrote:
-> The commit d2a029bde37b ("stmmac: pci: add MSI support for Intel Quark
-> X1000") introduced a pci_enable_msi() call in stmmac_pci.c.
+On Thu,  1 Apr 2021 16:27:52 +0300 you wrote:
+> syzbot reported memory leak in peak_usb.
+> The problem was in case of failure after calling
+> ->dev_init()[2] in peak_usb_create_dev()[1]. The data
+> allocated int dev_init() wasn't freed, so simple
+> ->dev_free() call fix this problem.
 > 
-> With the commit 58da0cfa6cf1 ("net: stmmac: create dwmac-intel.c to
-> contain all Intel platform"), Intel Quark platform related codes
-> have been moved to the newly created driver.
+> backtrace:
+>     [<0000000079d6542a>] kmalloc include/linux/slab.h:552 [inline]
+>     [<0000000079d6542a>] kzalloc include/linux/slab.h:682 [inline]
+>     [<0000000079d6542a>] pcan_usb_fd_init+0x156/0x210 drivers/net/can/usb/peak_usb/pcan_usb_fd.c:868   [2]
+>     [<00000000c09f9057>] peak_usb_create_dev drivers/net/can/usb/peak_usb/pcan_usb_core.c:851 [inline] [1]
+>     [<00000000c09f9057>] peak_usb_probe+0x389/0x490 drivers/net/can/usb/peak_usb/pcan_usb_core.c:949
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next,1/1] net: stmmac: remove unnecessary pci_enable_msi() call
-    https://git.kernel.org/netdev/net-next/c/2237778d8c21
+  - drivers: net: fix memory leak in peak_usb_create_dev
+    https://git.kernel.org/netdev/net/c/a0b96b4a6274
 
 You are awesome, thank you!
 --
