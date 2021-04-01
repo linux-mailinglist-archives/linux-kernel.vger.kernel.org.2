@@ -2,169 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B4BA35104E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 09:45:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC49351050
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 09:47:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233427AbhDAHp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 03:45:29 -0400
-Received: from mga07.intel.com ([134.134.136.100]:2550 "EHLO mga07.intel.com"
+        id S233376AbhDAHqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 03:46:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230284AbhDAHpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 03:45:10 -0400
-IronPort-SDR: AozoHmkV2Kuj+SszmoaH6YXXMfIzJA/FuY+l0a7przeTicEXJZvrqRkd8WN52X6FhSm4Ms9Ir5
- nBKnyh3W3xqA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="256160553"
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="256160553"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 00:45:07 -0700
-IronPort-SDR: lsbWgO8aRTgEJJiGUMpmyaRbtmcauxhMmNapB9ei3jfvohdyrNPtGYFBZQe67fxtzdYtxYWhU7
- 9g+tDZ9olIrw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="377598402"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by orsmga003.jf.intel.com with ESMTP; 01 Apr 2021 00:45:00 -0700
-Subject: Re: [PATCH v14 1/2] scsi: ufs: Enable power management for wlun
-To:     "Asutosh Das (asd)" <asutoshd@codeaurora.org>, cang@codeaurora.org,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org
-Cc:     linux-arm-msm@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Pedro Sousa <pedrom.sousa@synopsys.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Bean Huo <beanhuo@micron.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Yue Hu <huyue2@yulong.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Bart van Assche <bvanassche@acm.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-mediatek@lists.infradead.org>
-References: <cover.1617143113.git.asutoshd@codeaurora.org>
- <16f1bcf76ff411c70fe0e3e13f84e4b0fa7d9063.1617143113.git.asutoshd@codeaurora.org>
- <a385141d-324b-680e-a19c-ab6121bd6c5d@intel.com>
- <dbac8ce8-83c6-49a5-9f4d-f5ea19d7a883@codeaurora.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <612d0f35-89a2-947b-9fa4-608624c4c032@intel.com>
-Date:   Thu, 1 Apr 2021 10:45:10 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233327AbhDAHqH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 03:46:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6B7C6101E;
+        Thu,  1 Apr 2021 07:46:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617263166;
+        bh=AQWEF0EII9igzQR3BAdlFeDDeBGdVba7SzCII5XIQhA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e6q8Y4yV3Q7XxrDJFHPw2EIYwQnA37Ph59gl2wB3GXdFobCzk6NawPM/FBxKuRemW
+         mODPw3Z+XB5a1eZwiKVcZBPPyigsdz799nOfpj6pHRdnQ4J4SImvmJcCYP/EF8tjH5
+         oNxteu+W44MUHwTkG3zrqH/4bMy5gT5SL/Sehmsj4ZjsYj2Orn/IeZtTUQT29jGgHU
+         e550g5n2HYMk6mB2fNr4eVqghy+PrvsvsdwOdngtUvSGxSl5V7turD5Sz8xr+YkulE
+         Tvt1KD2awoCE3lijCTmnsWYxyrM1joHTqUmtwz9RoyYlaI0q86c8HxjOVf10jZngib
+         pyWyVWM51pl7g==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lRs1j-0003gX-Rt; Thu, 01 Apr 2021 09:46:03 +0200
+Date:   Thu, 1 Apr 2021 09:46:03 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Oliver Neukum <oneukum@suse.com>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] USB: serial: add support for multi-interface
+ functions
+Message-ID: <YGV6O5jycIj9Nv9Z@hovoldconsulting.com>
+References: <20210330143820.9103-1-johan@kernel.org>
+ <20210330143820.9103-4-johan@kernel.org>
+ <e0b2984e7de0287c5811a10faaac4d5d6d7d91ef.camel@suse.com>
+ <YGNCIT1ocatZ3V3/@hovoldconsulting.com>
+ <e4d3d21cdfe94068c76ceb4ba38630d76fa9418c.camel@suse.com>
+ <3ae68552f3c689c23cbf2573772239c00e2c94be.camel@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <dbac8ce8-83c6-49a5-9f4d-f5ea19d7a883@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3ae68552f3c689c23cbf2573772239c00e2c94be.camel@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/04/21 4:40 am, Asutosh Das (asd) wrote:
-> On 3/31/2021 11:19 AM, Adrian Hunter wrote:
->> On 31/03/21 1:31 am, Asutosh Das wrote:
->>> During runtime-suspend of ufs host, the scsi devices are
->>> already suspended and so are the queues associated with them.
->>> But the ufs host sends SSU (START_STOP_UNIT) to wlun
->>> during its runtime-suspend.
->>> During the process blk_queue_enter checks if the queue is not in
->>> suspended state. If so, it waits for the queue to resume, and never
->>> comes out of it.
->>> The commit
->>> (d55d15a33: scsi: block: Do not accept any requests while suspended)
->>> adds the check if the queue is in suspended state in blk_queue_enter().
->>>
->>> Call trace:
->>>   __switch_to+0x174/0x2c4
->>>   __schedule+0x478/0x764
->>>   schedule+0x9c/0xe0
->>>   blk_queue_enter+0x158/0x228
->>>   blk_mq_alloc_request+0x40/0xa4
->>>   blk_get_request+0x2c/0x70
->>>   __scsi_execute+0x60/0x1c4
->>>   ufshcd_set_dev_pwr_mode+0x124/0x1e4
->>>   ufshcd_suspend+0x208/0x83c
->>>   ufshcd_runtime_suspend+0x40/0x154
->>>   ufshcd_pltfrm_runtime_suspend+0x14/0x20
->>>   pm_generic_runtime_suspend+0x28/0x3c
->>>   __rpm_callback+0x80/0x2a4
->>>   rpm_suspend+0x308/0x614
->>>   rpm_idle+0x158/0x228
->>>   pm_runtime_work+0x84/0xac
->>>   process_one_work+0x1f0/0x470
->>>   worker_thread+0x26c/0x4c8
->>>   kthread+0x13c/0x320
->>>   ret_from_fork+0x10/0x18
->>>
->>> Fix this by registering ufs device wlun as a scsi driver and
->>> registering it for block runtime-pm. Also make this as a
->>> supplier for all other luns. That way, this device wlun
->>> suspends after all the consumers and resumes after
->>> hba resumes.
->>>
->>> Co-developed-by: Can Guo <cang@codeaurora.org>
->>> Signed-off-by: Can Guo <cang@codeaurora.org>
->>> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
->>> ---
->>
-> Hi Adrian
-> Thanks for the comments.
->> Looks good but still doesn't seem to based on the latest tree.
->>
-> Umm, it's based on the below:
-> git://git.kernel.org/pub/scm/linux/kernel/git/mkp/scsi.git
-> Branch: refs/heads/for-next
+On Wed, Mar 31, 2021 at 01:21:15PM +0200, Oliver Neukum wrote:
+> Am Mittwoch, den 31.03.2021, 09:08 +0200 schrieb Oliver Neukum:
+> > Am Dienstag, den 30.03.2021, 17:22 +0200 schrieb Johan Hovold:
+> > > On Tue, Mar 30, 2021 at 04:44:32PM +0200, Oliver Neukum wrote:
+> > > > Am Dienstag, den 30.03.2021, 16:38 +0200 schrieb Johan Hovold:
+> > > > > @@ -1115,6 +1161,8 @@ static void usb_serial_disconnect(struct usb_interface *interface)
+> > > > >         if (serial->type->disconnect)
+> > > > >                 serial->type->disconnect(serial);
+> > > > >  
+> > > > > +       release_sibling(serial, interface);
+> > > > > +
+> > > > >         /* let the last holder of this object cause it to be cleaned up */
+> > > > >         usb_serial_put(serial);
+> > > > >         dev_info(dev, "device disconnected\n");
+> > > > 
+> > > > Hi,
+> > > > 
+> > > > does this assume you are called for the original interface first?
+> > > 
+> > > No, I handle either interface being unbound first (e.g. see
+> > > release_sibling()).
+> > > 
+> > > > I am afraid that is an assumption you cannot make. In fact, if somebody
+> > > > is doing odd things with sysfs you cannot even assume both will see a
+> > > > disconnect()
+> > > 
+> > > Right, but disconnect() will still be called also for the sibling
+> > > interface as part of release_sibling() above.
+> > 
+> > OK, sorry I overlooked that.
 > 
-> The top most change is e27f3c8 on 27th March'21.
-> Which tree are you referring to that'd be latest?
-
-Dunno, but that seems to be missing:
-
-  commit aa53f580e67b49ec5f4d9bd1de81eb9eb0dc079f
-  Author: Can Guo <cang@codeaurora.org>
-  Date:   Tue Feb 23 21:36:47 2021 -0800
-
-    scsi: ufs: Minor adjustments to error handling
-
-which is in v5.12-rc3
-
+> Hi,
 > 
->> Also came across the issue below:
->>
->> <SNIP>
->>
->>> +#ifdef CONFIG_PM_SLEEP
->>> +static int ufshcd_wl_poweroff(struct device *dev)
->>> +{
->>> +    ufshcd_wl_shutdown(dev);
->>
->> This turned out to be wrong.  This is a PM op and SCSI has already
->> quiesced the sdev's.  All that is needed isOk. I'll fix it in the next version.
-> 
->>
->>     __ufshcd_wl_suspend(hba, UFS_SHUTDOWN_PM);
->>
->>> +    return 0;
->>> +}
->>> +#endif
-> 
-> 
+> on the third hand, the more I look at this, would you mind putting
+> sibling_release() with a modified name into usbcore? This functionality
+> is not limited to serial drivers. btusb needs it; cdc-acm needs it;
+> usbaudio neds it. We have code duplication.
 
+Tell me about it. ;) Unfortunately, drivers all tend to handle this
+slightly different, for example, using a disconnected flag, some claim
+more than one other interface, others look like they may be using their
+interface data as a flag for other purposes, etc.
+
+At some point we could unify all this but until then I don't think
+putting only half of an interface into core makes much sense.
+
+Johan
