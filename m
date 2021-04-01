@@ -2,106 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 671EA350ED3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40877350EC8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:03:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233367AbhDAGDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 02:03:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45352 "EHLO mail.kernel.org"
+        id S233469AbhDAGCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 02:02:50 -0400
+Received: from mga04.intel.com ([192.55.52.120]:24122 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233219AbhDAGDk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 02:03:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C04461055;
-        Thu,  1 Apr 2021 06:03:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617257019;
-        bh=xt6GQYsb58xuQ6PPnQZNlaKyr1g0GjRYBFrfAuKY2t8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p1Qt48hXISX/0tFEftpS56HuuzWK2yhF8NA6tlN9DbOlNoRic99mX4UqP85MlVPC+
-         /wD/PmfERDh5wOjvraogBFYLnf0LRsOE9QKfOrcgjXqMwX1xwuJo62xwTYse0Zw8dB
-         GzWE0pO3I/UDUaiA5JGffU2/M9qXqmYaIDyuTUdYdeEPq827TGHwLjvgcIrtZDzJb0
-         oEiC+HE6KHGa1SdyGn8z+FD7mDFUgVNkSJCTwb+XcS3KzibyfWK1f8vsapZcAgH9e1
-         zpLPnXmR3P5w6xLmYqO2YXih4YGc2w6F/KSBotAWogQaiG2lhnEbcYGD2P0Bmubnoq
-         vTlmBPA7bbDwQ==
-Date:   Wed, 31 Mar 2021 23:03:37 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        David Gstir <david@sigma-star.at>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Howells <dhowells@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-Subject: Re: [PATCH v1 3/3] KEYS: trusted: Introduce support for NXP
- CAAM-based trusted keys
-Message-ID: <YGViOc3DG+Pjuur6@sol.localdomain>
-References: <CAFA6WYOw_mQwOUN=onhzb7zCTyYDBrcx0E7C3LRk6nPLAVCWEQ@mail.gmail.com>
- <557b92d2-f3b8-d136-7431-419429f0e059@pengutronix.de>
- <CAFA6WYNE44=Y7Erfc-xNtOrf7TkJjh+odmYH5vzhEHR6KqBfeQ@mail.gmail.com>
- <6F812C20-7585-4718-997E-0306C4118468@sigma-star.at>
- <YGDpA4yPWmTWEyx+@kernel.org>
- <YGOcZtkw3ZM5kvl6@gmail.com>
- <YGUGYi4Q3Uxyol6r@kernel.org>
- <YGUHBelwhvJDhKoo@gmail.com>
- <20210401011132.GB4349@gondor.apana.org.au>
- <YGVfDUHunGC44iuH@kernel.org>
+        id S233589AbhDAGCS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 02:02:18 -0400
+IronPort-SDR: UWmDSWNdsWUV+rcRMAK5bEsrFweQJpG3mtTOzoTiOWvzj330R7pQKAOAAz0wJjfQ2axZbSle96
+ Y35IJkTk0sKQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="189929995"
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="189929995"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 23:02:14 -0700
+IronPort-SDR: 3syucskN8LM8LtLBaJYl15+HJr2elqI3Irezo8nFFZK7qqndb3cAk7h8Sm6ZMiEAa1rK5s636C
+ M8QXjV6XVGBA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="377569641"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga003.jf.intel.com with ESMTP; 31 Mar 2021 23:02:09 -0700
+Received: from glass.png.intel.com (glass.png.intel.com [10.158.65.59])
+        by linux.intel.com (Postfix) with ESMTP id 6387F5808ED;
+        Wed, 31 Mar 2021 23:02:07 -0700 (PDT)
+From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 1/1] net: stmmac: remove unnecessary pci_enable_msi() call
+Date:   Thu,  1 Apr 2021 14:06:28 +0800
+Message-Id: <20210401060628.27339-1-vee.khee.wong@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YGVfDUHunGC44iuH@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 08:50:05AM +0300, Jarkko Sakkinen wrote:
-> On Thu, Apr 01, 2021 at 12:11:32PM +1100, Herbert Xu wrote:
-> > On Wed, Mar 31, 2021 at 04:34:29PM -0700, Eric Biggers wrote:
-> > > On Thu, Apr 01, 2021 at 02:31:46AM +0300, Jarkko Sakkinen wrote:
-> > > > 
-> > > > It's a bummer but uapi is the god in the end. Since TPM does not do it
-> > > > today, that behaviour must be supported forever. That's why a boot option
-> > > > AND a warning would be the best compromise.
-> > > 
-> > > It's not UAPI if there is no way for userspace to tell if it changed.
-> > 
-> > Exactly.  UAPI is only an issue if something *breaks*.
-> 
-> If there's even one user that comes shouting that he has a user space
-> configuration, where e.g. rng entropy is consumed constantly and the
-> code assumes that trusted keys does not add to that, then something
-> would break.
-> 
-> It would be a crap user space yes, but I don't want to go on reverting
-> because of that. I think there is small but still existing chance that
-> something could break.
+The commit d2a029bde37b ("stmmac: pci: add MSI support for Intel Quark
+X1000") introduced a pci_enable_msi() call in stmmac_pci.c.
 
-random.c no longer provides any interfaces that subtract entropy credits, as
-that was never something that made sense.  So "consuming" all the entropy from
-random.c isn't a thing anymore.
+With the commit 58da0cfa6cf1 ("net: stmmac: create dwmac-intel.c to
+contain all Intel platform"), Intel Quark platform related codes
+have been moved to the newly created driver.
 
-> 
-> Why not just add a boot parameter instead of making brutal enforcing
-> changes, indirectly visible to the user space?
+Removing this unnecessary pci_enable_msi() call as there are no other
+devices that uses stmmac-pci and need MSI to be enabled.
 
-Why not just fix this bug instead of providing an option to fix it that everyone
-will need to remember to provide?
+Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_pci.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-- Eric
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_pci.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_pci.c
+index 272cb47af9f2..95e0e4d6f74d 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_pci.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_pci.c
+@@ -198,8 +198,6 @@ static int stmmac_pci_probe(struct pci_dev *pdev,
+ 	if (ret)
+ 		return ret;
+ 
+-	pci_enable_msi(pdev);
+-
+ 	memset(&res, 0, sizeof(res));
+ 	res.addr = pcim_iomap_table(pdev)[i];
+ 	res.wol_irq = pdev->irq;
+-- 
+2.25.1
+
