@@ -2,196 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 325CB351EF5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD64351C75
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240261AbhDASvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:51:25 -0400
-Received: from mga17.intel.com ([192.55.52.151]:21439 "EHLO mga17.intel.com"
+        id S234503AbhDASRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:17:45 -0400
+Received: from comms.puri.sm ([159.203.221.185]:57236 "EHLO comms.puri.sm"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237825AbhDASdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:33:39 -0400
-IronPort-SDR: Ln5mp+JK/DSC8JIs9+RlJggEH1Z/YiVin4eURTZd3aRtN/UPR3dbBNBR2PmBeOP8pjsNBHFs8Z
- Bk/Dhp4DdglQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="172270780"
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="172270780"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 06:10:51 -0700
-IronPort-SDR: P0Co626Nb60sBjbiBFZZOY5DCxm3HC9T2wxb4kgPo3TK+bk71UEB5mA2C/WuJf0yZPO4Y2e3DL
- El642EceMzuA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="412678277"
-Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
-  by fmsmga008.fm.intel.com with ESMTP; 01 Apr 2021 06:10:50 -0700
-Received: from orsmsx609.amr.corp.intel.com (10.22.229.22) by
- ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 1 Apr 2021 06:10:50 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx609.amr.corp.intel.com (10.22.229.22) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
- via Frontend Transport; Thu, 1 Apr 2021 06:10:50 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.174)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2106.2; Thu, 1 Apr 2021 06:10:50 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lzM94p0kRq1mBEmzXKAaTapyuegnT3DyLb1hmaZuBpdXNrYDkpDSGn1OrZf59WPGtkOd45klV84kz6CWOPJCU+puKJrPyrDKc9LZHj5CCKpwYLtOwdoia2GFyhzRxXJk++nJYH5p1fF+yjlQZ6BScJX13DCnTswCur2ql0shDPUSbu9rlrxxr7OufKTyAxrDuvgr5JDweKOptRRvPcs4uLFu+s3fXroinLFZCkJAuppGPfvaksSUdBXc0Ij5y4DH39kDv5EmTFt1/+6kDaLA+TvlOMNXU/OErfCQopPZXM+RrR1QXkjo9t8nW+GZigdTHxC4Kyvx70I+3QG9MNRpQw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0/7vLWC2v/7rHFXrU6lEbUmMu7vl7X1aHBDTI8ba3Js=;
- b=RcOU7HTCcx2lYQ+/RSQ5J5qAXVf9X7AqGqquSyYq0TnkW0E25h5KT3lvUUeZ76Vy6CtgpTPXO07RYo5bzjaxkwa5TeLg2wnc6zWZQ3CRzTq9F626C9ppuXQokCIasATU3pHTEhTNIBkSSHr4Urlb/3+U0Ww/LK1bFe/p4b5R9ONqlwL10BlSmjRmsLxqo2SDhFTwyxMiV0VWBM3MVlVx08LqboVkzpgwPxsZBloMB2+w9MYCBQcV8WHYNp+m/jJGSSdKRRo5EHe3p1pZtn+wHOrCeqro5ppUJMHWkZOWlRisWuK9U+jfy7XxvoBGTl+QATJ6CaHhsrOl3BjEJouwEQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0/7vLWC2v/7rHFXrU6lEbUmMu7vl7X1aHBDTI8ba3Js=;
- b=ObN4cbxzx4M0AyvVyHT1Fq901ePWRlhJ4k5sBc5KRLE27LHF/FeW6xgPLs57PgTIXFJyiSEOIKncjYtOLbixiB2VbOTEFunbX4XkrxL5BnpgINWBm3vTdTCAgKfZFLzWCClWzb2Viy6M8QYbZs7DFyxBtWSC3K+aXn/Ic1XSI7g=
-Received: from BN6PR11MB4068.namprd11.prod.outlook.com (2603:10b6:405:7c::31)
- by BN9PR11MB5433.namprd11.prod.outlook.com (2603:10b6:408:11e::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27; Thu, 1 Apr
- 2021 13:10:48 +0000
-Received: from BN6PR11MB4068.namprd11.prod.outlook.com
- ([fe80::5404:7a7d:4c2a:1c1d]) by BN6PR11MB4068.namprd11.prod.outlook.com
- ([fe80::5404:7a7d:4c2a:1c1d%3]) with mapi id 15.20.3977.033; Thu, 1 Apr 2021
- 13:10:48 +0000
-From:   "Liu, Yi L" <yi.l.liu@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Jean-Philippe Brucker" <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>
-Subject: RE: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
- APIs
-Thread-Topic: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Thread-Index: AQHXDZuc1/oaTFwUU0WheDxUmLBHiqqKkLIAgACg94CAAC72gIAAD04AgAADogCAAErUgIAETQEAgAOaswCAB7C3gIAAmFuAgADGxQCAAR7PEIAAZiYAgAECgOCAAIDKAIAAErow
-Date:   Thu, 1 Apr 2021 13:10:48 +0000
-Message-ID: <BN6PR11MB406858FAC3821B84CCC4D30DC37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
-References: <20210319135432.GT2356281@nvidia.com>
- <20210319112221.5123b984@jacob-builder> <20210322120300.GU2356281@nvidia.com>
- <20210324120528.24d82dbd@jacob-builder> <20210329163147.GG2356281@nvidia.com>
- <MWHPR11MB188639EE54B48B0E1321C8198C7D9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210330132830.GO2356281@nvidia.com>
- <BN6PR11MB40688F5AA2323AB8CC8E65E7C37C9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <20210331124038.GE1463678@nvidia.com>
- <BN6PR11MB406854CAE9D7CE86BEAB3E23C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <20210401114648.GX1463678@nvidia.com>
-In-Reply-To: <20210401114648.GX1463678@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-authentication-results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [192.55.46.52]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 25d7a807-6c69-4435-f78e-08d8f50f9167
-x-ms-traffictypediagnostic: BN9PR11MB5433:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BN9PR11MB5433805D0C4B26F59E38C1B5C37B9@BN9PR11MB5433.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: sE/1TO9x2Gv3QoESYRFuVTno9cJxchOSaybf7uokUmALBd4pMTctuI4fdDrK2ppMcjjhwKoGhokxBtyQzFlTLalOYpgwcS9ga+JoDsYYgtGua8kAtlOiwZvf0LzJJPhk6WbsszTmTzVB6C1AGm90lS8UmyHZ932HRBrWYzo9zh2pGqOq6KLhJcyQsLLpPF4IluzyS8qU3MPdfoCbqYeD5f3HH1+wtw6MSXkWcHgKxo9YY7/SUsSVFbT/ppK/eQNRQLUy3ntn9R1TSAc5C6fTNAXvlDXL12bgZMgmuJe2QR/hXq6zHU6tDr3uWPKEYeexCx4uWkUBxadXR6QUMzhdBne2kTq9Iesph6nVv8j+c6XCjmZuQ3z1iXCKM8teLKSGHDQGIvtqp7T4jnZurLFdtPJCDUZ10K/5NxfJje8utb4oYmYBXhJKyGneObmLzftWd7EVQBMidO1AHs7VP0sDfEk3RMP5r407iD+9vhbZxVucCIvY/p0lx2Rd8UiaH5FhnrHg0raKpe5v3pY5+Fw+3XWmT86eJ4QwrlMlkcN7phhj3sZ7Rn8VczbXXNf7Jp7QaWVmqFpOrjdbcGN/RTftqJ9Rr6sQNgpRhbqEvi+g4U/5tA9y+Q/uwrdSyr9skmxJvoCTWPGdQ4vjWYE304SryGFDJT1aLVB2YM7pPkvltXY=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR11MB4068.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(376002)(136003)(39860400002)(396003)(316002)(8936002)(6506007)(8676002)(52536014)(5660300002)(6916009)(76116006)(64756008)(54906003)(66476007)(478600001)(66446008)(66556008)(71200400001)(7416002)(7696005)(4326008)(26005)(66946007)(186003)(2906002)(9686003)(55016002)(86362001)(38100700001)(33656002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?zmckRoiQZ8CRquCgv0UW9n3fqeqDb4hE/Gi8nGmilqfujUYY3t/1IVjAuClW?=
- =?us-ascii?Q?H6KwndXXzz58b4hBUXwzQ0SLfVb3sImypAhOANfllIH38PoqK0UTKE03ZepF?=
- =?us-ascii?Q?2U9maBZkk8Iu1LhrxTmfW8fCrp938WcDHkxoc6EHp4zdR8UpS+SXQ/Qu+y1B?=
- =?us-ascii?Q?yDOSZ9zGZkpF0ewXvwEc4YGxB35w5hIL6APWrZTiXoPZgoe6VU9K2rd2MqF4?=
- =?us-ascii?Q?vp2occ+WzbA4nkCPSeLcnAX8JXc56rlDUSElQ0c2pWsjEce4Vj1ZCe9voE9F?=
- =?us-ascii?Q?fgUdCMYWdBFkqrdUaCHnmCu28BXScIdH3qNI4sySxikYwucP8SWK61Lhn8Yk?=
- =?us-ascii?Q?pqGDM6M3z0W/lPCWTOH6w+OG3HM/+uhhKb++3a0i9VJA9VUQdCWev00J+x5Q?=
- =?us-ascii?Q?lDDo7132fnyHV4dwj1+TAEr+xe+A3timnm1MJ3stOgAY5WlAGU507sxKty7P?=
- =?us-ascii?Q?YKUvjM8vVSkI8M2gLfjHqS9H4/DGfIvUBymR3W78AUTb4PTG5EGIEyK1jOfw?=
- =?us-ascii?Q?Uxu1YFcjx03w8CdhMl+o48CjUwlRBjZEsI2GR9yXY6Tg1v0vrjIekTh2vORH?=
- =?us-ascii?Q?0HJfztqGTvnAVSjnu0nZAQJBnnB+bAEdrabAuIazZJV59EKAFxkTdU/eGKVp?=
- =?us-ascii?Q?sGMSQwp2Lz2pATPDMhtq41L8Irv4Tj1Oy0cuaPFRj187PAT49+yQiCYMn4Yl?=
- =?us-ascii?Q?lf7hxL15fEQ0mD/3ysLSelftYnTSOJKxntXBJcjsHkF9kIigW1zOg5hvTPQP?=
- =?us-ascii?Q?GcIw9qb9ugpITaNn4REoVj/PiE0qupdKNHqb38N8CoavDLiu4/a8/sm5Ogg7?=
- =?us-ascii?Q?NZZlgSWoutadmyNbND6dGtiaAzkb5GNWRROp2MNHUTBT8qtowhf2K6BtC0GX?=
- =?us-ascii?Q?3z8p6phsseHqYdgkOTBRADSSo88P+trIrgSOCJbFnkP1KVZ7UeWefXbQVFzj?=
- =?us-ascii?Q?Z/1wqP3rU3L1cgGTOT4UrysEBAvOzEWwXp6pd6wDEjwlAzOSQyocaUvN9sDr?=
- =?us-ascii?Q?tXTob902F4FeESV9NZL6sYRdQvAefBihBBPQCn0KmWjuSHZP1EHDQmi2Ey8i?=
- =?us-ascii?Q?JQ0Iueem5L7Bz6h860Wkd5ibpsCEqA242yDZeojiRiYjkh/jJiVSyoSfeCDy?=
- =?us-ascii?Q?uXIKBIQLd0DgfEO91zEgDGKObBhwkzCf9VlyQhpYMwgfaoztdTbW7wRerPc6?=
- =?us-ascii?Q?JpxMYimOnvVDMNdZo0dIcfMY/d7NwyPKhAiVMuNZbkqTrWzB8KGrAifgI/ku?=
- =?us-ascii?Q?rL4IlJ1cGdMaY0KWYyq4VkEGboG5gmBdcQ7UolnO60TcFEHapsp4LOxl0J0M?=
- =?us-ascii?Q?/xw=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN6PR11MB4068.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 25d7a807-6c69-4435-f78e-08d8f50f9167
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Apr 2021 13:10:48.4300
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Uo1/StE/pCQg3z+A83nC+RBTS8BTt6kFa5ZP3vhPlmkEBrF3eZz0DEKYqxD9BVZwGC/JfkVytP8T/6R+CK8d1A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5433
-X-OriginatorOrg: intel.com
+        id S237028AbhDAR7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:59:21 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id B934CDF33F;
+        Thu,  1 Apr 2021 06:11:26 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id DHkhq2-1mdZF; Thu,  1 Apr 2021 06:11:24 -0700 (PDT)
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     gregkh@linuxfoundation.org, balbi@kernel.org
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        linux-usb@vger.kernel.org, wcheng@codeaurora.org,
+        Martin Kepplinger <martin.kepplinger@puri.sm>
+Subject: [PATCH v2] Revert "usb: dwc3: gadget: Prevent EP queuing while stopping transfers"
+Date:   Thu,  1 Apr 2021 15:11:08 +0200
+Message-Id: <20210401131108.2149766-1-martin.kepplinger@puri.sm>
+In-Reply-To: <YGXE0gQoj8HOzpuw@kroah.com>
+References: <YGXE0gQoj8HOzpuw@kroah.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Jason Gunthorpe <jgg@nvidia.com>
-> Sent: Thursday, April 1, 2021 7:47 PM
-[...]
-> I'm worried Intel views the only use of PASID in a guest is with
-> ENQCMD, but that is not consistent with the industry. We need to see
-> normal nested PASID support with assigned PCI VFs.
+commit 9de499997c ("usb: dwc3: gadget: Prevent EP queuing while stopping
+transfers") results in the below error every time I connect the type-c
+connector to the dwc3, configured with serial and ethernet gadgets.
+I also apply the following to dwc3 on this port:
 
-I'm not quire flow here. Intel also allows PASID usage in guest without
-ENQCMD. e.g. Passthru a PF to guest, and use PASID on it without ENQCMD.
+dr_mode = "otg";                                                        
+snps,dis_u3_susphy_quirk;                                               
+hnp-disable;                                                            
+srp-disable;                                                            
+adp-disable;                                                            
+usb-role-switch;
 
-[...]
+[   51.148220] ------------[ cut here ]------------
+[   51.148241] dwc3 38100000.usb: No resource for ep2in
+[   51.148376] WARNING: CPU: 0 PID: 299 at drivers/usb/dwc3/gadget.c:360 dwc3_send_gadget_ep_cmd+0x570/0x740 [dwc3]
+[   51.148837] CPU: 0 PID: 299 Comm: irq/64-dwc3 Not tainted 5.11.11-librem5-00334-ge4c4ff3624e9 #218
+[   51.148848] Hardware name: Purism Librem 5r4 (DT)
+[   51.148854] pstate: 60000085 (nZCv daIf -PAN -UAO -TCO BTYPE=--)
+[   51.148863] pc : dwc3_send_gadget_ep_cmd+0x570/0x740 [dwc3]
+[   51.148894] lr : dwc3_send_gadget_ep_cmd+0x570/0x740 [dwc3]
+[   51.148924] sp : ffff800011cb3ac0
+[   51.148929] x29: ffff800011cb3ac0 x28: ffff0000032a7b00 
+[   51.148942] x27: ffff00000327da00 x26: 0000000000000000 
+[   51.148954] x25: 00000000ffffffea x24: 0000000000000006 
+[   51.148967] x23: ffff0000bee1c080 x22: ffff800011cb3b7c 
+[   51.148979] x21: 0000000000000406 x20: ffff0000bf170000 
+[   51.148992] x19: 0000000000000001 x18: 0000000000000000 
+[   51.149004] x17: 0000000000000000 x16: 0000000000000000 
+[   51.149016] x15: 0000000000000000 x14: ffff8000114512c0 
+[   51.149028] x13: 0000000000001698 x12: 0000000000000040 
+[   51.149040] x11: ffff80001151a6f8 x10: 00000000ffffe000 
+[   51.149052] x9 : ffff8000100b2b7c x8 : ffff80001146a6f8 
+[   51.149065] x7 : ffff80001151a6f8 x6 : 0000000000000000 
+[   51.149077] x5 : ffff0000bf939948 x4 : 0000000000000000 
+[   51.149089] x3 : 0000000000000027 x2 : 0000000000000000 
+[   51.149101] x1 : 0000000000000000 x0 : ffff0000049ae040 
+[   51.149114] Call trace:
+[   51.149120]  dwc3_send_gadget_ep_cmd+0x570/0x740 [dwc3]
+[   51.149150]  __dwc3_gadget_ep_enable+0x288/0x4fc [dwc3]
+[   51.149179]  dwc3_gadget_ep_enable+0x6c/0x15c [dwc3]
+[   51.149209]  usb_ep_enable+0x48/0x110 [udc_core]
+[   51.149251]  rndis_set_alt+0x138/0x1c0 [usb_f_rndis]
+[   51.149276]  composite_setup+0x674/0x194c [libcomposite]
+[   51.149314]  dwc3_ep0_interrupt+0x9c4/0xb9c [dwc3]
+[   51.149344]  dwc3_thread_interrupt+0x8bc/0xe74 [dwc3]
+[   51.149374]  irq_thread_fn+0x38/0xb0
+[   51.149388]  irq_thread+0x170/0x294
+[   51.149397]  kthread+0x164/0x16c
+[   51.149407]  ret_from_fork+0x10/0x34
+[   51.149419] ---[ end trace 62c6cc2ebfb18047 ]---
 
-> I'm sure there will be some small differences, and you should clearly
-> explain the entire uAPI surface so that soneone from AMD and ARM can
-> review it.
+Linus' tree isn't affected. Revert the change.
 
-good suggestion, will do.
+Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
 
-> > - this per-ioasid SVA operations is not aligned with the native SVA usa=
-ge
-> >   model. Native SVA bind is per-device.
->=20
-> Seems like that is an error in native SVA.
->=20
-> SVA is a particular mode of the PASID's memory mapping table, it has
-> nothing to do with a device.
+---
 
-I think it still has relationship with device. This is determined by the
-DMA remapping hierarchy in hardware. e.g. Intel VT-d, the DMA isolation is
-enforced first in device granularity and then PASID granularity. SVA makes
-usage of both PASID and device granularity isolation.
+ drivers/usb/dwc3/gadget.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-Regards,
-Yi Liu
+diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+index 2a86ad4b12b3..ef8ecaf8655a 100644
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -783,6 +783,8 @@ static int __dwc3_gadget_ep_disable(struct dwc3_ep *dep)
+ 
+ 	trace_dwc3_gadget_ep_disable(dep);
+ 
++	dwc3_remove_requests(dwc, dep);
++
+ 	/* make sure HW endpoint isn't stalled */
+ 	if (dep->flags & DWC3_EP_STALL)
+ 		__dwc3_gadget_ep_set_halt(dep, 0, false);
+@@ -801,8 +803,6 @@ static int __dwc3_gadget_ep_disable(struct dwc3_ep *dep)
+ 		dep->endpoint.desc = NULL;
+ 	}
+ 
+-	dwc3_remove_requests(dwc, dep);
+-
+ 	return 0;
+ }
+ 
+@@ -1617,7 +1617,7 @@ static int __dwc3_gadget_ep_queue(struct dwc3_ep *dep, struct dwc3_request *req)
+ {
+ 	struct dwc3		*dwc = dep->dwc;
+ 
+-	if (!dep->endpoint.desc || !dwc->pullups_connected || !dwc->connected) {
++	if (!dep->endpoint.desc || !dwc->pullups_connected) {
+ 		dev_err(dwc->dev, "%s: can't queue to disabled endpoint\n",
+ 				dep->name);
+ 		return -ESHUTDOWN;
+@@ -2150,7 +2150,6 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
+ 	if (!is_on) {
+ 		u32 count;
+ 
+-		dwc->connected = false;
+ 		/*
+ 		 * In the Synopsis DesignWare Cores USB3 Databook Rev. 3.30a
+ 		 * Section 4.1.8 Table 4-7, it states that for a device-initiated
+@@ -2175,6 +2174,7 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
+ 			dwc->ev_buf->lpos = (dwc->ev_buf->lpos + count) %
+ 						dwc->ev_buf->length;
+ 		}
++		dwc->connected = false;
+ 	} else {
+ 		__dwc3_gadget_start(dwc);
+ 	}
+@@ -3267,6 +3267,8 @@ static void dwc3_gadget_reset_interrupt(struct dwc3 *dwc)
+ {
+ 	u32			reg;
+ 
++	dwc->connected = true;
++
+ 	/*
+ 	 * WORKAROUND: DWC3 revisions <1.88a have an issue which
+ 	 * would cause a missing Disconnect Event if there's a
+@@ -3306,7 +3308,6 @@ static void dwc3_gadget_reset_interrupt(struct dwc3 *dwc)
+ 	 * transfers."
+ 	 */
+ 	dwc3_stop_active_transfers(dwc);
+-	dwc->connected = true;
+ 
+ 	reg = dwc3_readl(dwc->regs, DWC3_DCTL);
+ 	reg &= ~DWC3_DCTL_TSTCTRL_MASK;
+-- 
+2.30.2
 
-> Jason
