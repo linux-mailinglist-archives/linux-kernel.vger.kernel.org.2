@@ -2,153 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ABAB351970
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FF8F351AAA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235138AbhDARxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:53:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22394 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234891AbhDARlD (ORCPT
+        id S235240AbhDASCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:02:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236840AbhDARre (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:41:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617298863;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:in-reply-to:in-reply-to:references:references;
-        bh=N2tZyDHI8yuulr5oAhszdAg4BY1xZKCEFn3sL3MLBYo=;
-        b=galdsy1+CdkhH9pYA81TjfWRJWxZbjYTR1sffoxnVgOEh4D+GVFc40FMAEFsjAkz9XI1xN
-        xEVmfkYisY9NnHZHj8EnWkG7glh3g2ScA9jCDYn3w1lzwGZ2KbltfCAEyZVrHteHqdtGRH
-        /41VWg6xLd+SKy+voPlwa1Ubxxt7mMA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-204-862U-t2IMrOje033oNCdkA-1; Thu, 01 Apr 2021 08:25:11 -0400
-X-MC-Unique: 862U-t2IMrOje033oNCdkA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 26D4E881283;
-        Thu,  1 Apr 2021 12:25:10 +0000 (UTC)
-Received: from crecklin.bos.com (unknown [10.22.8.39])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 656805C233;
-        Thu,  1 Apr 2021 12:25:04 +0000 (UTC)
-From:   Chris von Recklinghausen <crecklin@redhat.com>
-To:     ardb@kernel.org, simo@redhat.com, rafael@kernel.org,
-        decui@microsoft.com, linux-pm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] use crc32 instead of md5 for hibernation e820 integrity check
-Date:   Thu,  1 Apr 2021 08:24:58 -0400
-Message-Id: <20210401122458.12663-2-crecklin@redhat.com>
-In-Reply-To: <20210401122458.12663-1-crecklin@redhat.com>
-References: <20210401122458.12663-1-crecklin@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        Thu, 1 Apr 2021 13:47:34 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA0CC061222
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 05:26:25 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id j26so1962705iog.13
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 05:26:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yzoc7dlOuPc3fxpeVRBd2xxNN+g9BpN8EdGoYo9aWVE=;
+        b=m5QiDBDooUfCNqfYQlVTwxVtvLK54ia5tZo6Wys7ChLrzR/J9dXdq7Pexaq2BrjoVV
+         bz09dEbLFywRSzfY3pWZnETz3jE/J1OpCQ0y2UvAg9cPwQPdZ9sCCyQIMzv6qzeQspij
+         gRmUY2LoFzHD29EWn0vUjYOEsd6KlWw17JzhLQEWPHXOrXlUa0fx8epVjIj069gYGUH9
+         QrSPV9b7mKtSWkQX0PClaYqdNSuOb5HwyVB3YtPRIuj3z7HEcLH2C2eoMEOuT0ZAPpXw
+         prdzXQ+vyGc1khcnnotPCu1aoM6ejtTVjokiJ7nVSZ319txyAyZNeWgZbFCqRU2NGXh0
+         AYVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yzoc7dlOuPc3fxpeVRBd2xxNN+g9BpN8EdGoYo9aWVE=;
+        b=a/OIGboNdjVsngCSRw+uBKSpMxuxYQu+4NmWZ10M9XCzMjyIcM/HOVLHuW6jStcK5Q
+         1eI2ul5a/rjWWeuR4dTC62eZGaK+zbdFOCj3FHkFO0NNLFoTDH6+3fK++zv++vB6JBMg
+         ugapIjRDB001VG2kUVcKGIk1wv9xNCR5dPtKM+f3xGyxqGnSobVMelCJ9w37AJwS8XD8
+         NCDOPDT+l578gV2aYo+nFgeitq+M/za4sK9ic0BQaq9FMUIvqtr8SsOTHZtIGezCknLN
+         e4OwvuC2VNdxn/XguonYGPETcXrWWEbrofI81B18deTLle1Qu8G3FrW0eDh9xfi7xcCl
+         7L4A==
+X-Gm-Message-State: AOAM531JmNnjhcsHEjTOoacglCZV1D8CXy5Y9v4QpaAFgtq25V+1N4Ed
+        85+EWoMY/ZFsHN/MPORGUgNlaa4dj7SxpgsA
+X-Google-Smtp-Source: ABdhPJyE24mml/gnaveIp3qOdCpfL7fwfK5stVOa3qBN51+rH8IAcY9hD0/00XIwekootMyJpESaXg==
+X-Received: by 2002:a5d:9807:: with SMTP id a7mr6644491iol.7.1617279984396;
+        Thu, 01 Apr 2021 05:26:24 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id w2sm132030iot.29.2021.04.01.05.26.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Apr 2021 05:26:23 -0700 (PDT)
+Subject: Re: [PATCH] interconnect: qcom: sm8350: Use the correct ids
+To:     Georgi Djakov <georgi.djakov@linaro.org>, djakov@kernel.org,
+        vkoul@kernel.org
+Cc:     bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210401094334.28871-1-georgi.djakov@linaro.org>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <ff0c1b21-7d83-cb29-17d5-06061f46006e@linaro.org>
+Date:   Thu, 1 Apr 2021 07:26:23 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <20210401094334.28871-1-georgi.djakov@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Suspend fails on a system in fips mode because md5 is used for the e820
-integrity check and is not available. Use crc32 instead.
+On 4/1/21 4:43 AM, Georgi Djakov wrote:
+> For creating an array with the members for each NoC, we should be using
+> a local indexes, as otherwise unnecessary large arrays would be created.
+> Using an incorrect indexes will also result error for the consumers when
+> they try to find a valid path between the endpoints. Let's fix this and
+> use the correct ids.
+> 
+> Reported-by: Alex Elder <elder@linaro.org>
+> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
 
-Fixes: 62a03defeabd ("PM / hibernate: Verify the consistent of e820 memory map
-       by md5 digest")
-Signed-off-by: Chris von Recklinghausen <crecklin@redhat.com>
----
- arch/x86/power/hibernate.c | 31 +++++++++++++++++--------------
- 1 file changed, 17 insertions(+), 14 deletions(-)
+Looks good to me.
 
-diff --git a/arch/x86/power/hibernate.c b/arch/x86/power/hibernate.c
-index cd3914fc9f3d..6a3f4e32e49c 100644
---- a/arch/x86/power/hibernate.c
-+++ b/arch/x86/power/hibernate.c
-@@ -55,31 +55,31 @@ int pfn_is_nosave(unsigned long pfn)
- }
- 
- 
--#define MD5_DIGEST_SIZE 16
-+#define CRC32_DIGEST_SIZE 16
- 
- struct restore_data_record {
- 	unsigned long jump_address;
- 	unsigned long jump_address_phys;
- 	unsigned long cr3;
- 	unsigned long magic;
--	u8 e820_digest[MD5_DIGEST_SIZE];
-+	u8 e820_digest[CRC32_DIGEST_SIZE];
- };
- 
--#if IS_BUILTIN(CONFIG_CRYPTO_MD5)
-+#if IS_BUILTIN(CONFIG_CRYPTO_CRC32)
- /**
-- * get_e820_md5 - calculate md5 according to given e820 table
-+ * get_e820_crc32 - calculate crc32 according to given e820 table
-  *
-  * @table: the e820 table to be calculated
-- * @buf: the md5 result to be stored to
-+ * @buf: the crc32 result to be stored to
-  */
--static int get_e820_md5(struct e820_table *table, void *buf)
-+static int get_e820_crc32(struct e820_table *table, void *buf)
- {
- 	struct crypto_shash *tfm;
- 	struct shash_desc *desc;
- 	int size;
- 	int ret = 0;
- 
--	tfm = crypto_alloc_shash("md5", 0, 0);
-+	tfm = crypto_alloc_shash("crc32", 0, 0);
- 	if (IS_ERR(tfm))
- 		return -ENOMEM;
- 
-@@ -107,24 +107,24 @@ static int get_e820_md5(struct e820_table *table, void *buf)
- 
- static int hibernation_e820_save(void *buf)
- {
--	return get_e820_md5(e820_table_firmware, buf);
-+	return get_e820_crc32(e820_table_firmware, buf);
- }
- 
- static bool hibernation_e820_mismatch(void *buf)
- {
- 	int ret;
--	u8 result[MD5_DIGEST_SIZE];
-+	u8 result[CRC32_DIGEST_SIZE];
- 
--	memset(result, 0, MD5_DIGEST_SIZE);
-+	memset(result, 0, CRC32_DIGEST_SIZE);
- 	/* If there is no digest in suspend kernel, let it go. */
--	if (!memcmp(result, buf, MD5_DIGEST_SIZE))
-+	if (!memcmp(result, buf, CRC32_DIGEST_SIZE))
- 		return false;
- 
--	ret = get_e820_md5(e820_table_firmware, result);
-+	ret = get_e820_crc32(e820_table_firmware, result);
- 	if (ret)
- 		return true;
- 
--	return memcmp(result, buf, MD5_DIGEST_SIZE) ? true : false;
-+	return memcmp(result, buf, CRC32_DIGEST_SIZE) ? true : false;
- }
- #else
- static int hibernation_e820_save(void *buf)
-@@ -134,7 +134,7 @@ static int hibernation_e820_save(void *buf)
- 
- static bool hibernation_e820_mismatch(void *buf)
- {
--	/* If md5 is not builtin for restore kernel, let it go. */
-+	/* If crc32 is not builtin for restore kernel, let it go. */
- 	return false;
- }
- #endif
-@@ -160,6 +160,9 @@ int arch_hibernation_header_save(void *addr, unsigned int max_size)
- 	rdr->jump_address = (unsigned long)restore_registers;
- 	rdr->jump_address_phys = __pa_symbol(restore_registers);
- 
-+	/* crc32 digest size is 4 but digest buffer size is 16 so zero it all */
-+	memset(rdr->e820_digest, 0, CRC32_DIGEST_SIZE);
-+
- 	/*
- 	 * The restore code fixes up CR3 and CR4 in the following sequence:
- 	 *
--- 
-2.18.1
+Acked-by: Alex Elder <elder@linaro.org>
+
+> ---
+>   drivers/interconnect/qcom/sm8350.c | 80 +++++++++++++++---------------
+>   1 file changed, 40 insertions(+), 40 deletions(-)
+> 
+> diff --git a/drivers/interconnect/qcom/sm8350.c b/drivers/interconnect/qcom/sm8350.c
+> index f3aab02b8678..01202989a5b2 100644
+> --- a/drivers/interconnect/qcom/sm8350.c
+> +++ b/drivers/interconnect/qcom/sm8350.c
+> @@ -228,20 +228,20 @@ static struct qcom_icc_bcm *aggre2_noc_bcms[] = {
+>   };
+>   
+>   static struct qcom_icc_node *aggre2_noc_nodes[] = {
+> -	[SM8350_MASTER_QDSS_BAM] = &qhm_qdss_bam,
+> -	[SM8350_MASTER_QUP_0] = &qhm_qup0,
+> -	[SM8350_MASTER_QUP_2] = &qhm_qup2,
+> -	[SM8350_MASTER_A2NOC_CFG] = &qnm_a2noc_cfg,
+> -	[SM8350_MASTER_CRYPTO] = &qxm_crypto,
+> -	[SM8350_MASTER_IPA] = &qxm_ipa,
+> -	[SM8350_MASTER_PCIE_0] = &xm_pcie3_0,
+> -	[SM8350_MASTER_PCIE_1] = &xm_pcie3_1,
+> -	[SM8350_MASTER_QDSS_ETR] = &xm_qdss_etr,
+> -	[SM8350_MASTER_SDCC_2] = &xm_sdc2,
+> -	[SM8350_MASTER_UFS_CARD] = &xm_ufs_card,
+> -	[SM8350_SLAVE_A2NOC_SNOC] = &qns_a2noc_snoc,
+> -	[SM8350_SLAVE_ANOC_PCIE_GEM_NOC] = &qns_pcie_mem_noc,
+> -	[SM8350_SLAVE_SERVICE_A2NOC] = &srvc_aggre2_noc,
+> +	[MASTER_QDSS_BAM] = &qhm_qdss_bam,
+> +	[MASTER_QUP_0] = &qhm_qup0,
+> +	[MASTER_QUP_2] = &qhm_qup2,
+> +	[MASTER_A2NOC_CFG] = &qnm_a2noc_cfg,
+> +	[MASTER_CRYPTO] = &qxm_crypto,
+> +	[MASTER_IPA] = &qxm_ipa,
+> +	[MASTER_PCIE_0] = &xm_pcie3_0,
+> +	[MASTER_PCIE_1] = &xm_pcie3_1,
+> +	[MASTER_QDSS_ETR] = &xm_qdss_etr,
+> +	[MASTER_SDCC_2] = &xm_sdc2,
+> +	[MASTER_UFS_CARD] = &xm_ufs_card,
+> +	[SLAVE_A2NOC_SNOC] = &qns_a2noc_snoc,
+> +	[SLAVE_ANOC_PCIE_GEM_NOC] = &qns_pcie_mem_noc,
+> +	[SLAVE_SERVICE_A2NOC] = &srvc_aggre2_noc,
+>   };
+>   
+>   static struct qcom_icc_desc sm8350_aggre2_noc = {
+> @@ -414,10 +414,10 @@ static struct qcom_icc_bcm *mc_virt_bcms[] = {
+>   };
+>   
+>   static struct qcom_icc_node *mc_virt_nodes[] = {
+> -	[SM8350_MASTER_LLCC] = &llcc_mc,
+> -	[SM8350_SLAVE_EBI1] = &ebi,
+> -	[SM8350_MASTER_LLCC_DISP] = &llcc_mc_disp,
+> -	[SM8350_SLAVE_EBI1_DISP] = &ebi_disp,
+> +	[MASTER_LLCC] = &llcc_mc,
+> +	[SLAVE_EBI1] = &ebi,
+> +	[MASTER_LLCC_DISP] = &llcc_mc_disp,
+> +	[SLAVE_EBI1_DISP] = &ebi_disp,
+>   };
+>   
+>   static struct qcom_icc_desc sm8350_mc_virt = {
+> @@ -439,24 +439,24 @@ static struct qcom_icc_bcm *mmss_noc_bcms[] = {
+>   };
+>   
+>   static struct qcom_icc_node *mmss_noc_nodes[] = {
+> -	[SM8350_MASTER_CAMNOC_HF] = &qnm_camnoc_hf,
+> -	[SM8350_MASTER_CAMNOC_ICP] = &qnm_camnoc_icp,
+> -	[SM8350_MASTER_CAMNOC_SF] = &qnm_camnoc_sf,
+> -	[SM8350_MASTER_CNOC_MNOC_CFG] = &qnm_mnoc_cfg,
+> -	[SM8350_MASTER_VIDEO_P0] = &qnm_video0,
+> -	[SM8350_MASTER_VIDEO_P1] = &qnm_video1,
+> -	[SM8350_MASTER_VIDEO_PROC] = &qnm_video_cvp,
+> -	[SM8350_MASTER_MDP0] = &qxm_mdp0,
+> -	[SM8350_MASTER_MDP1] = &qxm_mdp1,
+> -	[SM8350_MASTER_ROTATOR] = &qxm_rot,
+> -	[SM8350_SLAVE_MNOC_HF_MEM_NOC] = &qns_mem_noc_hf,
+> -	[SM8350_SLAVE_MNOC_SF_MEM_NOC] = &qns_mem_noc_sf,
+> -	[SM8350_SLAVE_SERVICE_MNOC] = &srvc_mnoc,
+> -	[SM8350_MASTER_MDP0_DISP] = &qxm_mdp0_disp,
+> -	[SM8350_MASTER_MDP1_DISP] = &qxm_mdp1_disp,
+> -	[SM8350_MASTER_ROTATOR_DISP] = &qxm_rot_disp,
+> -	[SM8350_SLAVE_MNOC_HF_MEM_NOC_DISP] = &qns_mem_noc_hf_disp,
+> -	[SM8350_SLAVE_MNOC_SF_MEM_NOC_DISP] = &qns_mem_noc_sf_disp,
+> +	[MASTER_CAMNOC_HF] = &qnm_camnoc_hf,
+> +	[MASTER_CAMNOC_ICP] = &qnm_camnoc_icp,
+> +	[MASTER_CAMNOC_SF] = &qnm_camnoc_sf,
+> +	[MASTER_CNOC_MNOC_CFG] = &qnm_mnoc_cfg,
+> +	[MASTER_VIDEO_P0] = &qnm_video0,
+> +	[MASTER_VIDEO_P1] = &qnm_video1,
+> +	[MASTER_VIDEO_PROC] = &qnm_video_cvp,
+> +	[MASTER_MDP0] = &qxm_mdp0,
+> +	[MASTER_MDP1] = &qxm_mdp1,
+> +	[MASTER_ROTATOR] = &qxm_rot,
+> +	[SLAVE_MNOC_HF_MEM_NOC] = &qns_mem_noc_hf,
+> +	[SLAVE_MNOC_SF_MEM_NOC] = &qns_mem_noc_sf,
+> +	[SLAVE_SERVICE_MNOC] = &srvc_mnoc,
+> +	[MASTER_MDP0_DISP] = &qxm_mdp0_disp,
+> +	[MASTER_MDP1_DISP] = &qxm_mdp1_disp,
+> +	[MASTER_ROTATOR_DISP] = &qxm_rot_disp,
+> +	[SLAVE_MNOC_HF_MEM_NOC_DISP] = &qns_mem_noc_hf_disp,
+> +	[SLAVE_MNOC_SF_MEM_NOC_DISP] = &qns_mem_noc_sf_disp,
+>   };
+>   
+>   static struct qcom_icc_desc sm8350_mmss_noc = {
+> @@ -472,10 +472,10 @@ static struct qcom_icc_bcm *nsp_noc_bcms[] = {
+>   };
+>   
+>   static struct qcom_icc_node *nsp_noc_nodes[] = {
+> -	[SM8350_MASTER_CDSP_NOC_CFG] = &qhm_nsp_noc_config,
+> -	[SM8350_MASTER_CDSP_PROC] = &qxm_nsp,
+> -	[SM8350_SLAVE_CDSP_MEM_NOC] = &qns_nsp_gemnoc,
+> -	[SM8350_SLAVE_SERVICE_NSP_NOC] = &service_nsp_noc,
+> +	[MASTER_CDSP_NOC_CFG] = &qhm_nsp_noc_config,
+> +	[MASTER_CDSP_PROC] = &qxm_nsp,
+> +	[SLAVE_CDSP_MEM_NOC] = &qns_nsp_gemnoc,
+> +	[SLAVE_SERVICE_NSP_NOC] = &service_nsp_noc,
+>   };
+>   
+>   static struct qcom_icc_desc sm8350_compute_noc = {
+> 
 
