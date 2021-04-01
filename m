@@ -2,94 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A822351085
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 10:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA13351089
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 10:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233542AbhDAIBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 04:01:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44462 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229612AbhDAIBd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 04:01:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80CBB601FA;
-        Thu,  1 Apr 2021 08:01:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617264093;
-        bh=Mq39K3+LAF97oI/GCfA+BJgXkBEWc8OJfLC8NFrrFmM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U38w/jppE4U80LMU0eTPKdD0Q1xwYUuzr5tVlGCmRWhJHF2AqILRO/deV1RMPPllL
-         QxNrQDGBqJcDo15xr9h+eZ9ClYqQjbB9JJME76TbZhdJTSfGbRAheGYFXN7fUa6JQj
-         4/sivFnPspRku+jX2rhRL62DbbcFlRwXmPK75p+NJ8jP1uf7arOpiwN3JgH9JzKHp6
-         nk/DA+AU3QUJDKmUKR6amIit8TwdI1TGUFHPqzTLulat3OIh+WOY57z11Z9Xlnpxo/
-         U+pSLsOWV9NDjGRt0BZhq7aPEHMywTlGW03EyHp+7bzYZdGg57b5LGAe182IQexycN
-         eFyo1gN6etMeQ==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lRsGh-0004FK-5C; Thu, 01 Apr 2021 10:01:31 +0200
-Date:   Thu, 1 Apr 2021 10:01:31 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] USB: serial: iuu_phoenix: remove redundant variable
- 'error'
-Message-ID: <YGV923BQBelY1vnu@hovoldconsulting.com>
-References: <20210327232744.26237-1-colin.king@canonical.com>
+        id S233633AbhDAIDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 04:03:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233553AbhDAIBx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 04:01:53 -0400
+X-Greylist: delayed 459 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 01 Apr 2021 01:01:53 PDT
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16122C0613E6;
+        Thu,  1 Apr 2021 01:01:53 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4F9wcv3lyCzQk1Y;
+        Thu,  1 Apr 2021 10:01:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
+        content-transfer-encoding:content-type:content-type:mime-version
+        :subject:subject:references:in-reply-to:message-id:from:from
+        :date:date:received; s=mail20150812; t=1617264108; bh=5V1MdvL7YC
+        8mVZKfU9szLtKJFoYBtXMkN3Yon1JEiHM=; b=G0AyDYnBdxfI9/snr0bPAutkON
+        LpO7nRJbVUa5KRfAN/ryNMnK7qBm9ncSpJ1546u9AFdXqkYGD+gxD+5jf4XgV3wa
+        72J2u25OnsGMithZo2aObiDBYikj1aY4AWNxUyslpQBXx9u1IC5vvYJkv0KA/GQ+
+        HGDuyBJsfAxJY7op1FS0leU12OfXE5hIoWGd37GUZccbagHtHG2Pt2BdQQJOkp2j
+        JUdFkupizo0yzuLCSEBKwDRiZ9DBp90vx0F/kOIHCXhtiGG/M9UZoLuXIsZrSRGv
+        aeUNB7jYSsik1DuelN7mZ3WA3RB4o9S85z1F+oCJ2c5iBELIiyBXnp5BElNA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1617264109;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5V1MdvL7YC8mVZKfU9szLtKJFoYBtXMkN3Yon1JEiHM=;
+        b=KQ/vkqM1BHlzIDsPMdL72r2R3771zg144k5E9+uDpVxONOJWPra9ZnaEdjbSUpjq75O5dW
+        jCH/EPncm714aD8hehSf9pq3OTLTYOZpmkkZH2EYzPcrLFJWuGmurLR25WPZWAdb1FNf1D
+        qi7Tori3uzRe0goEYmiNqdzI1bzI8qZn7ZYpR57WuYe7+B6ycNZgi3DpgKmp+gyD0O9cfu
+        QlOlmh/UriKDmn3i5rn5hepsmlMnva7qzvV56GKSuV4Ekn4MBsknTYzbPiOawURZ7lfSUJ
+        Axmao3NFqStM0bybgx2fzPXyOVSlCvOM2qW2JMRHiCm7xPc67E/cRwPKp+N06w==
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp2.mailbox.org ([80.241.60.241])
+        by gerste.heinlein-support.de (gerste.heinlein-support.de [91.198.250.173]) (amavisd-new, port 10030)
+        with ESMTP id cm216P1dCBau; Thu,  1 Apr 2021 10:01:48 +0200 (CEST)
+Date:   Thu, 1 Apr 2021 10:01:47 +0200 (CEST)
+From:   torvic9@mailbox.org
+To:     =?UTF-8?Q?Piotr_G=C3=B3rski?= <lucjan.lucjanov@gmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "oleksandr@natalenko.name" <oleksandr@natalenko.name>,
+        "terrelln@fb.com" <terrelln@fb.com>,
+        "michal.lkml@markovi.net" <michal.lkml@markovi.net>
+Message-ID: <1118697629.5907.1617264107835@office.mailbox.org>
+In-Reply-To: <722602000.5829.1617263646814@office.mailbox.org>
+References: <722602000.5829.1617263646814@office.mailbox.org>
+Subject: Re: [PATCH] init: add support for zstd compressed modules
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210327232744.26237-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-MBO-SPAM-Probability: *
+X-Rspamd-Score: 1.19 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 68D8A17BD
+X-Rspamd-UID: f965c0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 27, 2021 at 11:27:44PM +0000, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The variable error is initialized to 0 and is set to 1 this
-> value is never read as it is on an immediate return path. The
-> only read of error is to check it is 0 and this check is always
-> true at that point of the code. The variable is redundant and
-> can be removed.
-> 
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/usb/serial/iuu_phoenix.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/usb/serial/iuu_phoenix.c b/drivers/usb/serial/iuu_phoenix.c
-> index 093afd67a664..19753611e7b0 100644
-> --- a/drivers/usb/serial/iuu_phoenix.c
-> +++ b/drivers/usb/serial/iuu_phoenix.c
-> @@ -643,7 +643,6 @@ static void iuu_uart_read_callback(struct urb *urb)
->  	struct iuu_private *priv = usb_get_serial_port_data(port);
->  	unsigned long flags;
->  	int status = urb->status;
-> -	int error = 0;
->  	int len = 0;
->  	unsigned char *data = urb->transfer_buffer;
->  	priv->poll++;
-> @@ -660,12 +659,11 @@ static void iuu_uart_read_callback(struct urb *urb)
->  	if (urb->actual_length > 1) {
->  		dev_dbg(&port->dev, "%s - urb->actual_length = %i\n", __func__,
->  		    urb->actual_length);
-> -		error = 1;
->  		return;
+Thanks Piotr, good work!
+Question: Is `-T0` really faster in this particular case than the default `-T1`? Are modules installed sequentially?
+I also saw that Masahiro did some work on modules_install, moving MODULE_COMPRESS from the base Makefile to scripts/Makefile.modinst, so perhaps this should also be moved there at a later point.
 
-Heh, I guess the author at some point intended not return here, but who
-knows. The rest of this function is about as esoteric.
+(sorry for double post)
 
->  	}
->  	/* if len > 0 call readbuf */
->  
-> -	if (len > 0 && error == 0) {
-> +	if (len > 0) {
->  		dev_dbg(&port->dev, "%s - call read buf - len to read is %i\n",
->  			__func__, len);
->  		status = iuu_read_buf(port, len);
-
-Now applied, thanks.
-
-Johan
+Tor Vic
