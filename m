@@ -2,89 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98296351846
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6407E351812
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236408AbhDARol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:44:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57266 "EHLO
+        id S236082AbhDARnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:43:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234582AbhDARiK (ORCPT
+        with ESMTP id S234354AbhDARh3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:38:10 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E2D0C0D942E;
-        Thu,  1 Apr 2021 07:56:28 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso2379034otq.3;
-        Thu, 01 Apr 2021 07:56:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=b51MdFXC3VyV3rk2wSYcP9E+sT/K1k0PZUFp+W5EgPY=;
-        b=axfyOe4pKnjLXgnZcjftqxCP79YXpFahjtPQIgnehX8FfHBQN8qsNCmuvgAU6uvaE0
-         +W976oQ3ljsrqi5Y6sCfNviRdnwM7tOA6W5fHoQkSO4XKaKAys+xdxz9QjFddUy49Y9d
-         S5YhEH9V+R2cO2DV4OqzQ2dbIR+LWDJDXnMf8d0oXG43Ylw+g30ZPifAn0sdcFtG3aOn
-         jhQV2POuwA8/0yU6nfyU/DNLjpkWWSkjI3032hRwkbGiUzKWraU/Ej7wZ8ZSzoRBWx11
-         HNHEI473qs2tDf3WPP5IOsCigrWJxxljTd3dXqq4oMWjnO9Adz8ZE93aCAgiNbqm7K2s
-         1nWQ==
-X-Gm-Message-State: AOAM530hR8UF1DohjH9GeNAIdugckXW3NyEdrAcibp91QYzjeOo8r0P+
-        Y7J1/inN2ZeO7AiYjYrUCBYc/y8X4A==
-X-Google-Smtp-Source: ABdhPJzvGwq10FN++hBJ+VBjgxixDeXeYVqnUGGXPtJLMldLSliVun6grNAzy9JrRlq2ysk537TmhA==
-X-Received: by 2002:a05:6830:4d:: with SMTP id d13mr7257198otp.295.1617288983889;
-        Thu, 01 Apr 2021 07:56:23 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t22sm1229535otl.49.2021.04.01.07.56.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 07:56:23 -0700 (PDT)
-Received: (nullmailer pid 409159 invoked by uid 1000);
-        Thu, 01 Apr 2021 14:56:21 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Zev Weiss <zev@bewilderbeest.net>
-Cc:     Rob Herring <robh+dt@kernel.org>, - <devicetree@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
-        Andrew Jeffery <andrew@aj.id.au>, openbmc@lists.ozlabs.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Joel Stanley <joel@jms.id.au>, Lubomir Rintel <lkundrak@v3.sk>
-In-Reply-To: <20210401005702.28271-4-zev@bewilderbeest.net>
-References: <YGOuhjD19SmjmQou@hatter.bewilderbeest.net> <20210401005702.28271-1-zev@bewilderbeest.net> <20210401005702.28271-4-zev@bewilderbeest.net>
-Subject: Re: [PATCH v2 3/3] dt-bindings: serial: 8250: add aspeed, sirq-active-high
-Date:   Thu, 01 Apr 2021 09:56:21 -0500
-Message-Id: <1617288981.559685.409158.nullmailer@robh.at.kernel.org>
+        Thu, 1 Apr 2021 13:37:29 -0400
+Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE17DC0F26D1;
+        Thu,  1 Apr 2021 07:58:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+         s=42; h=Date:Message-ID:Cc:To:From;
+        bh=qsREKFlh59lQ4zdk5VkHPiTTnXwKjF0VPiMuSccVscw=; b=ktFjLEl9BtTHht4JW3GOztN5r5
+        4Q+b3DFeFQT6GjH9r7Zd5BKSgYHxlGH1Yn1HvH4sAiuHWioIHXVbe7xL1zsf3bqa2v+J9LuBx8sss
+        /Mq3g48+G9wfQxT5NF6Y8eAg4CjiW1ESTRYUGwOF6QyjG2UFrTS4FQC8JTDpe9dynG/fg8A/i9TCk
+        sjKZgRqjLmxLjn8NvKnTkfdkVSdVASm5Erp3RpZnYqHiy2zNZnrROY3/qIje3z+tchV75RxnnKfE0
+        8wlEZtfrG1tkNdlX2IdkS0LJanPg30Qs0VDeigjzwiwhoT5jamAojf5mfZg4O6wrZNEmzzpp4k+7F
+        AiUgd/8Zk7Zqg/s4TMaNSeEQNJOa6KhMT4U6CxFvNTqBxDqudRRf2UtVlMk74SX1UswKzkvhbNkcJ
+        Q/1O+1sQORmrERLtQqjTgQQse7nME4eLZWI1VL8EimhxU9gxJG1tbwg8ML4PagKIGd77Jr+yIERZO
+        F4i+vnbnBhUeIJupWJfjxwW0;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_RSA_CHACHA20_POLY1305:256)
+        (Exim)
+        id 1lRym4-0007U6-Qv; Thu, 01 Apr 2021 14:58:20 +0000
+From:   Stefan Metzmacher <metze@samba.org>
+To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, ebiederm@xmission.com,
+        oleg@redhat.com, linux-kernel@vger.kernel.org
+References: <20210326003928.978750-1-axboe@kernel.dk>
+ <e6de934a-a794-f173-088d-a140d0645188@samba.org>
+ <f2c93b75-a18b-fc2c-7941-9208c19869c1@kernel.dk>
+ <8efd9977-003b-be65-8ae2-4b04d8dd1224@samba.org>
+ <358c5225-c23f-de08-65cb-ca3349793c0e@samba.org>
+Subject: Re: [PATCH 0/6] Allow signals for IO threads
+Message-ID: <5bb47c3a-2990-e4c4-69c6-1b5d1749a241@samba.org>
+Date:   Thu, 1 Apr 2021 16:58:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <358c5225-c23f-de08-65cb-ca3349793c0e@samba.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 31 Mar 2021 19:57:02 -0500, Zev Weiss wrote:
-> This provides a simpler, more direct alternative to the deprecated
-> aspeed,sirq-polarity-sense property for indicating the polarity of
-> the Aspeed VUART's SIRQ line.
+Hi Jens,
+
+>> For help, type "help".
+>> Type "apropos word" to search for commands related to "word".
+>> Attaching to process 1320
+>> [New LWP 1321]
+>> [New LWP 1322]
+>>
+>> warning: Selected architecture i386:x86-64 is not compatible with reported target architecture i386
+>>
+>> warning: Architecture rejected target-supplied description
+>> syscall () at ../sysdeps/unix/sysv/linux/x86_64/syscall.S:38
+>> 38      ../sysdeps/unix/sysv/linux/x86_64/syscall.S: No such file or directory.
+>> (gdb)
 > 
-> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
-> ---
->  Documentation/devicetree/bindings/serial/8250.yaml | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
+> Ok, the following makes gdb happy again:
 > 
+> --- a/arch/x86/kernel/process.c
+> +++ b/arch/x86/kernel/process.c
+> @@ -163,6 +163,8 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
+>         /* Kernel thread ? */
+>         if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
+>                 memset(childregs, 0, sizeof(struct pt_regs));
+> +               if (p->flags & PF_IO_WORKER)
+> +                       childregs->cs = current_pt_regs()->cs;
+>                 kthread_frame_init(frame, sp, arg);
+>                 return 0;
+>         }
+> 
+> I'm wondering if we should decouple the PF_KTHREAD and PF_IO_WORKER cases even more
+> and keep as much of a userspace-like copy_thread as possible.
 
-My bot found errors running 'make dt_binding_check' on your patch:
+Would it be possible to fix this remaining problem before 5.12 final?
+(I don't think my change would be the correct fix actually
+and other architectures may have similar problems).
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/serial/8250.yaml:16:30: [warning] too few spaces after comma (commas)
-./Documentation/devicetree/bindings/serial/8250.yaml:17:30: [warning] too few spaces after comma (commas)
+Thanks!
+metze
 
-dtschema/dtc warnings/errors:
 
-See https://patchwork.ozlabs.org/patch/1460791
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
 
