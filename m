@@ -2,76 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1291B3513AD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 12:33:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42EB13513B5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 12:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234166AbhDAKc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 06:32:56 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15571 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234105AbhDAKc0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 06:32:26 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F9zw90gJhz17PPH;
-        Thu,  1 Apr 2021 18:30:17 +0800 (CST)
-Received: from huawei.com (10.175.103.91) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Thu, 1 Apr 2021
- 18:32:19 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <mchehab@kernel.org>, <todor.too@gmail.com>
-Subject: [PATCH -next] media: camss: csiphy: Remove redundant dev_err call in msm_csiphy_subdev_init()
-Date:   Thu, 1 Apr 2021 18:35:00 +0800
-Message-ID: <20210401103500.1558058-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-CFilter-Loop: Reflected
+        id S233969AbhDAKgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 06:36:09 -0400
+Received: from mga03.intel.com ([134.134.136.65]:24643 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233760AbhDAKf5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 06:35:57 -0400
+IronPort-SDR: EvEfbOm7JEGGuoE9DeCv+DJSQI0BOCglE6jazw2sKXqeEnxI7XGfmtri7Pe5C3/HoDGbn4QriW
+ ch8ZHslfwwAA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="192241135"
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="192241135"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 03:35:56 -0700
+IronPort-SDR: uLtn0qHe95Rdu3q4NBD3H5nsB30oX7pP1IxMOAdlwagyMGZtCWvOtLrYuHBKVeq2hGSNKk9fzF
+ 1u2YtDjd37Ow==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="610873649"
+Received: from ahunter-desktop.fi.intel.com ([10.237.72.174])
+  by fmsmga005.fm.intel.com with ESMTP; 01 Apr 2021 03:35:54 -0700
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] perf inject: Fix repipe usage
+Date:   Thu,  1 Apr 2021 13:36:05 +0300
+Message-Id: <20210401103605.9000-1-adrian.hunter@intel.com>
+X-Mailer: git-send-email 2.17.1
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is an error message within devm_ioremap_resource
-already, so remove the dev_err call to avoid redundant
-error message.
+Since commit 14d3d5405253 ("perf session: Try to read pipe data from file")
+perf inject has started printing "PERFILE2h" when not processing pipes.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+The commit exposed perf to the possiblity that the input is not a pipe but
+the 'repipe' parameter gets used. That causes the printing because perf
+inject sets 'repipe' to true always.
+
+The 'repipe' parameter of perf_session__new() is used by 2 functions:
+	- perf_file_header__read_pipe()
+	- trace_report()
+In both cases, the functions copy data to STDOUT_FILENO when 'repipe' is
+true.
+
+Fix by setting 'repipe' to true only if the output is a pipe.
+
+Fixes: e558a5bd8b74 ("perf inject: Work with files")
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- drivers/media/platform/qcom/camss/camss-csiphy.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ tools/perf/builtin-inject.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.c b/drivers/media/platform/qcom/camss/camss-csiphy.c
-index 6ceb6d7d53d1..b3c3bf19e522 100644
---- a/drivers/media/platform/qcom/camss/camss-csiphy.c
-+++ b/drivers/media/platform/qcom/camss/camss-csiphy.c
-@@ -593,20 +593,16 @@ int msm_csiphy_subdev_init(struct camss *camss,
- 
- 	r = platform_get_resource_byname(pdev, IORESOURCE_MEM, res->reg[0]);
- 	csiphy->base = devm_ioremap_resource(dev, r);
--	if (IS_ERR(csiphy->base)) {
--		dev_err(dev, "could not map memory\n");
-+	if (IS_ERR(csiphy->base))
- 		return PTR_ERR(csiphy->base);
--	}
- 
- 	if (camss->version == CAMSS_8x16 ||
- 	    camss->version == CAMSS_8x96) {
- 		r = platform_get_resource_byname(pdev, IORESOURCE_MEM,
- 						 res->reg[1]);
- 		csiphy->base_clk_mux = devm_ioremap_resource(dev, r);
--		if (IS_ERR(csiphy->base_clk_mux)) {
--			dev_err(dev, "could not map memory\n");
-+		if (IS_ERR(csiphy->base_clk_mux))
- 			return PTR_ERR(csiphy->base_clk_mux);
--		}
- 	} else {
- 		csiphy->base_clk_mux = NULL;
+diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
+index 6fe44d97fde5..ddccc0eb7390 100644
+--- a/tools/perf/builtin-inject.c
++++ b/tools/perf/builtin-inject.c
+@@ -906,7 +906,7 @@ int cmd_inject(int argc, const char **argv)
  	}
+ 
+ 	data.path = inject.input_name;
+-	inject.session = perf_session__new(&data, true, &inject.tool);
++	inject.session = perf_session__new(&data, inject.output.is_pipe, &inject.tool);
+ 	if (IS_ERR(inject.session))
+ 		return PTR_ERR(inject.session);
+ 
 -- 
-2.25.1
+2.17.1
 
