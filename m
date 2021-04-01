@@ -2,108 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17043351EFA
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CEBE351E57
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241096AbhDASv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:51:56 -0400
-Received: from mga17.intel.com ([192.55.52.151]:21588 "EHLO mga17.intel.com"
+        id S238821AbhDASjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:39:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239257AbhDASfj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:35:39 -0400
-IronPort-SDR: tXO/dxmlE5sqd1abhq/7nn/2XptM3h5IpMnQ6tsBCsPJRlAOfWs3a87FqDV+pmd6RLyHt4oF/i
- jaEYdmYFPIJg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="172302385"
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="172302385"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 08:45:09 -0700
-IronPort-SDR: 9JIoGX7euufyX4xQWwr0Nz8ALNgrGaxn0Oao/n8CFrYiEl1uSjPYxQOBJdkMAJKtCd5w6N1DlZ
- 2Mm0sBPNEIiQ==
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="377743107"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 08:45:05 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lRzVG-000IET-2U; Thu, 01 Apr 2021 18:45:02 +0300
-Date:   Thu, 1 Apr 2021 18:45:02 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Henning Schild <henning.schild@siemens.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Jean Delvare <jdelvare@suse.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Tan Jui Nee <jui.nee.tan@intel.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Jonathan Yong <jonathan.yong@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pci@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Peter Tyser <ptyser@xes-inc.com>, hdegoede@redhat.com
-Subject: Re: [PATCH v1 3/7] PCI: New Primary to Sideband (P2SB) bridge
- support library
-Message-ID: <YGXqfvBv37eLL28Z@smile.fi.intel.com>
-References: <YEZ4IitUa+I9HM5F@smile.fi.intel.com>
- <20210309014221.GA1831206@bjorn-Precision-5520>
- <20210309094252.396b7f2d@md1za8fc.ad001.siemens.net>
+        id S239646AbhDASQo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:16:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 534F5610E6;
+        Thu,  1 Apr 2021 15:45:18 +0000 (UTC)
+Date:   Thu, 1 Apr 2021 17:45:15 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     syzbot <syzbot+c88a7030da47945a3cc3@syzkaller.appspotmail.com>,
+        axboe@kernel.dk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+        io-uring@vger.kernel.org
+Subject: Re: [syzbot] WARNING in mntput_no_expire (2)
+Message-ID: <20210401154515.k24qdd2lzhtneu47@wittgenstein>
+References: <0000000000003a565e05bee596f2@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210309094252.396b7f2d@md1za8fc.ad001.siemens.net>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <0000000000003a565e05bee596f2@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 09:42:52AM +0100, Henning Schild wrote:
-> Am Mon, 8 Mar 2021 19:42:21 -0600
-> schrieb Bjorn Helgaas <helgaas@kernel.org>:
-> > On Mon, Mar 08, 2021 at 09:16:50PM +0200, Andy Shevchenko wrote:
-> > > On Mon, Mar 08, 2021 at 12:52:12PM -0600, Bjorn Helgaas wrote:  
-> > > > On Mon, Mar 08, 2021 at 02:20:16PM +0200, Andy Shevchenko wrote:  
-
-...
-
-> > > > > +	/* Read the first BAR of the device in question */
-> > > > > +	__pci_bus_read_base(bus, devfn, pci_bar_unknown, mem,
-> > > > > PCI_BASE_ADDRESS_0, true);  
-> > > > 
-> > > > I don't get this.  Apparently this normally hidden device is
-> > > > consuming PCI address space.  The PCI core needs to know about
-> > > > this.  If it doesn't, the PCI core may assign this space to
-> > > > another device.  
-> > > 
-> > > Right, it returns all 1:s to any request so PCI core *thinks* it's
-> > > plugged off (like D3cold or so).  
-> > 
-> > I'm asking about the MMIO address space.  The BAR is a register in
-> > config space.  AFAICT, clearing P2SBC_HIDE_BYTE makes that BAR
-> > visible.  The BAR describes a region of PCI address space.  It looks
-> > like setting P2SBC_HIDE_BIT makes the BAR disappear from config space,
-> > but it sounds like the PCI address space *described* by the BAR is
-> > still claimed by the device.  If the device didn't respond to that
-> > MMIO space, you would have no reason to read the BAR at all.
-> > 
-> > So what keeps the PCI core from assigning that MMIO space to another
-> > device?
+On Thu, Apr 01, 2021 at 02:09:20AM -0700, syzbot wrote:
+> Hello,
 > 
-> The device will respond to MMIO while being hidden. I am afraid nothing
-> stops a collision, except for the assumption that the BIOS is always
-> right and PCI devices never get remapped. But just guessing here.
+> syzbot found the following issue on:
 > 
-> I have seen devices with coreboot having the P2SB visible, and most
-> likely relocatable. Making it visible in Linux and not hiding it again
-> might work, but probably only as long as Linux will not relocate it.
-> Which i am afraid might seriously upset the BIOS, depending on what a
-> device does with those GPIOs and which parts are implemented in the
-> BIOS.
+> HEAD commit:    d19cc4bf Merge tag 'trace-v5.12-rc5' of git://git.kernel.o..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1018f281d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=d1a3d65a48dbd1bc
+> dashboard link: https://syzkaller.appspot.com/bug?extid=c88a7030da47945a3cc3
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12f50d11d00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=137694a1d00000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+c88a7030da47945a3cc3@syzkaller.appspotmail.com
+> 
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 8409 at fs/namespace.c:1186 mntput_no_expire+0xaca/0xcb0 fs/namespace.c:1186
+> Modules linked in:
+> CPU: 1 PID: 8409 Comm: syz-executor035 Not tainted 5.12.0-rc5-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:mntput_no_expire+0xaca/0xcb0 fs/namespace.c:1186
+> Code: ff 48 c7 c2 e0 cb 78 89 be c2 02 00 00 48 c7 c7 a0 cb 78 89 c6 05 e5 6d e5 0b 01 e8 ff e1 f6 06 e9 3f fd ff ff e8 c6 a5 a8 ff <0f> 0b e9 fc fc ff ff e8 ba a5 a8 ff e8 55 dc 94 ff 31 ff 89 c5 89
+> RSP: 0018:ffffc9000165fc78 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: 1ffff920002cbf95 RCX: 0000000000000000
+> RDX: ffff88802072d4c0 RSI: ffffffff81cb4b8a RDI: 0000000000000003
+> RBP: ffff888011656900 R08: 0000000000000000 R09: ffffffff8fa978af
+> R10: ffffffff81cb4884 R11: 0000000000000000 R12: 0000000000000008
+> R13: ffffc9000165fcc8 R14: dffffc0000000000 R15: 00000000ffffffff
+> FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 000055a722053160 CR3: 000000000bc8e000 CR4: 00000000001506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  mntput fs/namespace.c:1232 [inline]
+>  cleanup_mnt+0x523/0x530 fs/namespace.c:1132
+>  task_work_run+0xdd/0x1a0 kernel/task_work.c:140
+>  exit_task_work include/linux/task_work.h:30 [inline]
+>  do_exit+0xbfc/0x2a60 kernel/exit.c:825
+>  do_group_exit+0x125/0x310 kernel/exit.c:922
+>  __do_sys_exit_group kernel/exit.c:933 [inline]
+>  __se_sys_exit_group kernel/exit.c:931 [inline]
+>  __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x446af9
+> Code: Unable to access opcode bytes at RIP 0x446acf.
+> RSP: 002b:00000000005dfe48 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+> RAX: ffffffffffffffda RBX: 00000000004ce450 RCX: 0000000000446af9
+> RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000001
+> RBP: 0000000000000001 R08: ffffffffffffffbc R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004ce450
+> R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
 
-So the question is, do we have knobs in PCI core to mark device fixes in terms
-of BARs, no relocation must be applied, no other devices must have the region?
+[+Cc Jens + io_uring]
 
--- 
-With Best Regards,
-Andy Shevchenko
+Hm, this reproducer uses io_uring and it's the io_uring_enter() that
+triggers this reliably. With this reproducer I've managed to reproduce
+the issue on v5.12-rc4, and v5.12-rc3, v5.12-rc2 and v5.12-rc1.
+It's not reproducible at
+9820b4dca0f9c6b7ab8b4307286cdace171b724d
+which is the commit immediately before the first v5.12 io_uring merge.
+It's first reproducible with the first io_uring merge for v5.12, i.e.
+5bbb336ba75d95611a7b9456355b48705016bdb1
 
-
+Christian
