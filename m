@@ -2,109 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE3F3351310
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 12:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ABB5351311
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 12:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233670AbhDAKM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 06:12:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbhDAKMl (ORCPT
+        id S233818AbhDAKM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 06:12:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51275 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233504AbhDAKM5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 06:12:41 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 334A3C0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 03:12:41 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id e14so2025030ejz.11
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 03:12:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=6lzW4BlsZetgCzXxUSanRsURtvah1swCuTO5rdJaayc=;
-        b=cOGQRq6JAECo/E439aNxCpfYxchqSefixnlJyby+0LJFFl8urNEsPTi7pwj7xwpRaE
-         KnO36R+PBqp+HAlC00jTY/SU74h292yR18GBGf41CMRNyMxkCd7DUYJ5urZRJ8fQUg0p
-         c7XBX4s4x24Up1ARbUHJ0Qvrjvg8uzVz6yicKOCp4CW8HTiFxebe242yMWCOXKAX0y2v
-         wkTWniGFaWb3YY8/gEatWHILsfpSa2JkuIJBc9m2EDz1CuKFYaFqiJJKlvBl9udIP3pP
-         Qi0TI7YiCYfuoEtVc5hCsYYZ/thXxXUstpTSVUjQs7oyltNlUct70TSuAAGF4ty0rot4
-         lHFQ==
+        Thu, 1 Apr 2021 06:12:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617271976;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0xVtkud0FGFVllFbRHTCHeF0n3q4DIXws1lAIbt6JHY=;
+        b=HB7UhLvKBMuybS0aiPHeHkQmKFAXvNaSQA5FycxENHGoJJiFsXPrcWfhxYjVUnjDkivEdF
+        73CqbYoHYw+M/xgAe1Y4xKsWrJ8sR99hJtJSAG+rnMG3WQyixkcHWhM9JM2Yj4xi17t7Lp
+        JE+1nTWpxl2g597RPDsOQsHcaKB/R9M=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-377-MGOx6_eqMBmRIDuu4GNsww-1; Thu, 01 Apr 2021 06:12:55 -0400
+X-MC-Unique: MGOx6_eqMBmRIDuu4GNsww-1
+Received: by mail-ed1-f69.google.com with SMTP id v27so2606055edx.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 03:12:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=6lzW4BlsZetgCzXxUSanRsURtvah1swCuTO5rdJaayc=;
-        b=mRaTPqQpsL/JQWBby+nC4Nb26kJ3AVrXRQvhowQMLjK2gWTQVgDoNI2/A0lHYIxcqo
-         lP/LKGFKc78RJd4k1m1w37U95TGsOANAG+ft8tAPz3RkKZUg2nVb0iJScVwNDDrIHhzL
-         OZ4eOYF2XtLYlwWWFoCtdoEngAnA5XrCrR7dhpAXJCmFj45amOhq1EBIU0g8PKIkpKC2
-         FbMEUxsJnV2Y9uQqAzeVD/RAP1Ri2Go0wHmTjJm9cAwHCR9XU403SEyM4ljGfFDwvcYI
-         nL6rHRrg/J4iBk9URrrzWNTyZ3Zmu5s/8an9+kmhd4Nc2fa6C66HGEQAQOlzGBIo08PC
-         LJbw==
-X-Gm-Message-State: AOAM531kNSeGzx+zVk8sY41Kvn3eArsfR56caUY7olgp3oFQIGWaOTm9
-        0RMko4mprO6hDwwNAzg0eIo=
-X-Google-Smtp-Source: ABdhPJxRxpCLy0cFre89eHn7+chccPiKXzBr53GO9fe1kmkoQFwYzKw0cP22uRUjtQBwyKbINUQVAw==
-X-Received: by 2002:a17:906:4c56:: with SMTP id d22mr8606019ejw.426.1617271959817;
-        Thu, 01 Apr 2021 03:12:39 -0700 (PDT)
-Received: from agape.jhs ([5.171.72.75])
-        by smtp.gmail.com with ESMTPSA id j14sm3278007edr.97.2021.04.01.03.12.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 03:12:39 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 12:12:36 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     gregkh@linuxfoundation.org, dan.carpenter@oracle.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 49/49] staging: rtl8723bs: remove obsolete macro
-Message-ID: <20210401101236.GB32563@agape.jhs>
-References: <cover.1617268327.git.fabioaiuto83@gmail.com>
- <1c7cdfcf488e5dc5bc5c3c29733b0d53caee71fb.1617268327.git.fabioaiuto83@gmail.com>
- <44730b7154cba578c5c342f1919d0937009985fa.camel@perches.com>
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0xVtkud0FGFVllFbRHTCHeF0n3q4DIXws1lAIbt6JHY=;
+        b=m8TIN3u/hex+KU9ZFuHn8SE54tRLHlqw6ou62cPDSdLL4SleVjcuzSVPyvfYENSG9k
+         dbGBSN5BMvnuMVUjD7zn7N6WfVpYrCF3amyUDHHNtAJjE2plFxxfOCio8KcJqXfp4v2E
+         iqxanVZRBCSimFMfW7NTF4TXu2wnZiwx70TY/s6OwqOtEG6vgfOwuXbBTzsPJJwpQ/K9
+         IvFEKN0cfCJLwVvcDtG6aPxeOimafBIx3exu29QStyyi37bFlxpu9Z9lhhdU0Orul3tv
+         U5N12S2kC/v9AIawBBNCJ8G6ruAu5cIzcxnmnPYSuHTtg1/6t/6wCnomyXt/5f7BeD7b
+         dopA==
+X-Gm-Message-State: AOAM532DjCiD2TlScyYVWMscylQkZtPmClqXyHZuA1bbRFXCACnKSU2N
+        jCrO28C+OEA3G/uVQiJiwYt72rI2FFi+NNigiJXhFwEMe+wnVDad1lDcBpv7jku2pV3M/TgZAML
+        aeJFU8BheD0mY6dLNZD75G2AC
+X-Received: by 2002:a05:6402:375:: with SMTP id s21mr8925789edw.287.1617271974373;
+        Thu, 01 Apr 2021 03:12:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJybUDAIY2pZzNujL1X/TNW7x2ha+e8W7ahPYGzrvN5rd/bAcBeSWCPMWWfNv5LJZC8H7IIMKQ==
+X-Received: by 2002:a05:6402:375:: with SMTP id s21mr8925778edw.287.1617271974245;
+        Thu, 01 Apr 2021 03:12:54 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id hy13sm2526147ejc.32.2021.04.01.03.12.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Apr 2021 03:12:53 -0700 (PDT)
+To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20210331210841.3996155-1-bgardon@google.com>
+ <20210331210841.3996155-11-bgardon@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH 10/13] KVM: x86/mmu: Allow zapping collapsible SPTEs to
+ use MMU read lock
+Message-ID: <51034a41-2d03-103e-6c11-1ed27a952de2@redhat.com>
+Date:   Thu, 1 Apr 2021 12:12:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <44730b7154cba578c5c342f1919d0937009985fa.camel@perches.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210331210841.3996155-11-bgardon@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 02:57:36AM -0700, Joe Perches wrote:
-> On Thu, 2021-04-01 at 11:21 +0200, Fabio Aiuto wrote:
-> > remove obsolete macro RT_TRACE
-> []
-> > diff --git a/drivers/staging/rtl8723bs/include/rtw_debug.h b/drivers/staging/rtl8723bs/include/rtw_debug.h
-> []
-> > -#ifdef DEBUG_RTL871X
-> > -
-> > -#if	defined(_dbgdump) && defined(_MODULE_DEFINE_)
-> > -
-> > -	#undef RT_TRACE
-> > -	#define RT_TRACE(_Comp, _Level, Fmt)\
-> > -	do {\
-> > -		if ((_Comp & GlobalDebugComponents) && (_Level <= GlobalDebugLevel)) {\
-> > -			_dbgdump("%s [0x%08x,%d]", DRIVER_PREFIX, (unsigned int)_Comp, _Level);\
-> > -			_dbgdump Fmt;\
-> > -		} \
-> > -	} while (0)
-> > -
-> > -#endif /* defined(_dbgdump) && defined(_MODULE_DEFINE_) */
-> > -#endif /* DEBUG_RTL871X */
-> 
-> Maybe remove all of these too
-> 
-> $ git grep DEBUG_RTL871X
-> drivers/staging/rtl8723bs/core/rtw_debug.c:#ifdef DEBUG_RTL871X
-> drivers/staging/rtl8723bs/core/rtw_debug.c:#endif /* DEBUG_RTL871X */
-> drivers/staging/rtl8723bs/core/rtw_mlme_ext.c:#ifdef DEBUG_RTL871X
-> drivers/staging/rtl8723bs/core/rtw_mlme_ext.c:#ifdef DEBUG_RTL871X
-> drivers/staging/rtl8723bs/core/rtw_mlme_ext.c:#ifdef DEBUG_RTL871X
-> drivers/staging/rtl8723bs/include/autoconf.h:/*#define DEBUG_RTL871X */
-> drivers/staging/rtl8723bs/include/rtw_debug.h:#ifdef DEBUG_RTL871X
-> drivers/staging/rtl8723bs/include/rtw_debug.h:#endif /* DEBUG_RTL871X */
-> 
-> 
+On 31/03/21 23:08, Ben Gardon wrote:
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index dcbfc784cf2f..81967b4e7d76 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -5610,10 +5610,13 @@ void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
+>   
+>   	write_lock(&kvm->mmu_lock);
+>   	slot_handle_leaf(kvm, slot, kvm_mmu_zap_collapsible_spte, true);
+> -
+> -	if (is_tdp_mmu_enabled(kvm))
+> -		kvm_tdp_mmu_zap_collapsible_sptes(kvm, slot);
+>   	write_unlock(&kvm->mmu_lock);
+> +
+> +	if (is_tdp_mmu_enabled(kvm)) {
+> +		read_lock(&kvm->mmu_lock);
+> +		kvm_tdp_mmu_zap_collapsible_sptes(kvm, memslot);
+> +		read_unlock(&kvm->mmu_lock);
+> +	}
+>   }
 
-there are a lot of things to remove, I thought to do it in next patchsets
+Same here, this will conflict with
 
-maybe other obsolete tracing macros are involved...
+KVM: x86/mmu: Coalesce TLB flushes when zapping collapsible SPTEs
 
+Again, you will have to add back some "if (flush)" before the write_unlock.
+
+Paolo
 
