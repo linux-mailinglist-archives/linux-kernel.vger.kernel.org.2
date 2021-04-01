@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B53351E6F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFEB6351E58
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240739AbhDASlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:41:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46016 "EHLO mail.kernel.org"
+        id S238952AbhDASjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:39:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236983AbhDASSo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:18:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C741F61105;
+        id S239633AbhDASQn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:16:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F28706113B;
         Thu,  1 Apr 2021 12:17:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617279475;
-        bh=trfI3RModrzK+dm2v1y2mbmJI2GJrsD8BjwL5Jg6EoE=;
+        s=k20201202; t=1617279476;
+        bh=ekIVTXtWg0qIVZoCnSn6WFNsby2PlIa7pgvfL4Nneeo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QSVmTMZlEN2cqt6oYF5FeS1JYbW37t9MuDRRrQDLqoWVrAbQmwc4IHtySKdbgcyuA
-         Uc6A4YGjNTmm/dOz98BL5Y/43FwhuZcuLERTU3lJ7bdavzO3ppexkiujfKMs1N/AdT
-         1qH1galmdvne8AHSpYZh1J6YCiutI4OkbJrjKu++BcuiQvIQbI0da1obDrIVtoUSLk
-         kBSH53P1azV3wWnCWEkpZXeoZ2J0TgT3PsUIzGTdrKR1EqHlNP7Wg0e2TUFHSqmjzG
-         ytOKZ26PB8XZ++XXqEwqPHEARO4hDtpBqygDUDY4xmO3LXlDQHPMiozRlwRX2I69I6
-         z9yDqLWdUcTZg==
+        b=NXPSy9WdyMsLa4Am/wRozwOsV17YhCpkoI9SgpZdbpUbGjzStSmK1Ydr+0J4UHcjQ
+         drZ775xX9i1vVlzhDBhnIgjnB8cPtSV1cwI5W5Am7LDwwpPFJsW4AIh1hE6MXJwAqq
+         F9W6VLErd80E2jolClL5GaL/ZAkK5+x8LdlEIHgGyY22hofjw8Ca/uDe2oFNYJpvLn
+         ePbcbFN6GPzZh7/oazI8zIjUOlc/k8X5zNQSIfr/P+zECEir9Cp4HJim49QmT7gaut
+         WaBCbinNmPuDKmW/zDl3WpIVE2shSZpLQWmSg37TZmhcREKRIsQTW/3/lSi4IXeau7
+         8c8EFznJVXlPw==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1lRwGn-001c2q-Ut; Thu, 01 Apr 2021 14:17:53 +0200
+        id 1lRwGn-001c2t-W9; Thu, 01 Apr 2021 14:17:54 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        David Lechner <david@lechnology.com>,
-        Rob Herring <robh@kernel.org>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Konstantin Porotchkin <kostap@marvell.com>,
+        Rob Herring <robh@kernel.org>, Vinod Koul <vkoul@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 12/32] MAINTAINERS: update lego,ev3-battery.yaml reference
-Date:   Thu,  1 Apr 2021 14:17:32 +0200
-Message-Id: <be4e2f1c7f6b2cfbda4fc98ca2177b048a3ed575.1617279355.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 13/32] MAINTAINERS: update marvell,armada-3700-utmi-phy.yaml reference
+Date:   Thu,  1 Apr 2021 14:17:33 +0200
+Message-Id: <ab0ef465a9c679b273761bcae3249ccb1fcbd707.1617279355.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1617279355.git.mchehab+huawei@kernel.org>
 References: <cover.1617279355.git.mchehab+huawei@kernel.org>
@@ -47,30 +46,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset 3004e581d92a ("dt-bindings: power: supply: lego-ev3-battery: Convert to DT schema format")
-renamed: Documentation/devicetree/bindings/power/supply/lego_ev3_battery.txt
-to: Documentation/devicetree/bindings/power/supply/lego,ev3-battery.yaml.
+Changeset 6569d8386388 ("dt-bindings: phy: convert phy-mvebu-utmi to YAML schema")
+renamed: Documentation/devicetree/bindings/phy/phy-mvebu-utmi.txt
+to: Documentation/devicetree/bindings/phy/marvell,armada-3700-utmi-phy.yaml.
 
 Update its cross-reference accordingly.
 
-Fixes: 3004e581d92a ("dt-bindings: power: supply: lego-ev3-battery: Convert to DT schema format")
+Fixes: 6569d8386388 ("dt-bindings: phy: convert phy-mvebu-utmi to YAML schema")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
  MAINTAINERS | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index ce675a0b3819..b16830f54226 100644
+index b16830f54226..17bd389b7985 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -10173,7 +10173,7 @@ F:	drivers/misc/eeprom/eeprom.c
- LEGO MINDSTORMS EV3
- R:	David Lechner <david@lechnology.com>
+@@ -10774,7 +10774,7 @@ MARVELL ARMADA 3700 PHY DRIVERS
+ M:	Miquel Raynal <miquel.raynal@bootlin.com>
  S:	Maintained
--F:	Documentation/devicetree/bindings/power/supply/lego_ev3_battery.txt
-+F:	Documentation/devicetree/bindings/power/supply/lego,ev3-battery.yaml
- F:	arch/arm/boot/dts/da850-lego-ev3.dts
- F:	drivers/power/supply/lego_ev3_battery.c
+ F:	Documentation/devicetree/bindings/phy/phy-mvebu-comphy.txt
+-F:	Documentation/devicetree/bindings/phy/phy-mvebu-utmi.txt
++F:	Documentation/devicetree/bindings/phy/marvell,armada-3700-utmi-phy.yaml
+ F:	drivers/phy/marvell/phy-mvebu-a3700-comphy.c
+ F:	drivers/phy/marvell/phy-mvebu-a3700-utmi.c
  
 -- 
 2.30.2
