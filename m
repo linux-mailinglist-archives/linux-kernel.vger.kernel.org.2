@@ -2,92 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2401351B25
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E14351B19
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238281AbhDASF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:05:59 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:35396 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235634AbhDARtM (ORCPT
+        id S238476AbhDASG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:06:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26940 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237309AbhDARvU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:49:12 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 131DY5pf076011;
-        Thu, 1 Apr 2021 09:48:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Mg2lDEAe6gklpkKFAHaPTHh7cIMcXDrfVTsmQ1dH3Ck=;
- b=DgGS7NEGDNxFLRUDeaVKVkZjWdFVD9tvCVSmFBXwT81r8CjJ8mkXvw1gG0dL1VzhQ59X
- SQMCAM54yGMUP7dMiqXmNmQNsfr6skgjWv0Z/SiJ7KOfRhuVNTUD6hK6to363P6lvK29
- 29xiOWfB4INW/mdqPRFlLR/Il29dWrzLLdJC5g4ihaMyVhQKTlrEa1B9dGqfkZWdFJ4o
- 8Zbp5ihkla2khpba9uVjUUFw76r5M/IEx3XAsObqk7uKf4hM94cdOrV1LO34GzF4n0uj
- ZAHc5FWham0Ln9DIrZIPRlQkMS2jkE7yY6HwI3q1x0pdbUu4mIkhkO3NrxA/pkiFhQup dQ== 
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37n8r0cbdy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Apr 2021 09:48:03 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 131DgKIC016839;
-        Thu, 1 Apr 2021 13:48:00 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma05fra.de.ibm.com with ESMTP id 37n28w89gq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Apr 2021 13:48:00 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 131DlcGv36504056
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 1 Apr 2021 13:47:38 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 389A5A4060;
-        Thu,  1 Apr 2021 13:47:58 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CFE39A4054;
-        Thu,  1 Apr 2021 13:47:57 +0000 (GMT)
-Received: from [9.171.31.36] (unknown [9.171.31.36])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  1 Apr 2021 13:47:57 +0000 (GMT)
-Subject: Re: [PATCH] net: smc: Remove repeated struct declaration
-To:     Wan Jiabing <wanjiabing@vivo.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net
-References: <20210401084030.1002882-1-wanjiabing@vivo.com>
-From:   Karsten Graul <kgraul@linux.ibm.com>
-Organization: IBM Deutschland Research & Development GmbH
-Message-ID: <c46c4186-7d48-efa1-ec4f-03bcb1c7188e@linux.ibm.com>
-Date:   Thu, 1 Apr 2021 15:47:58 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 1 Apr 2021 13:51:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617299480;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6Di0BWBiR9j8X6GwMiIH6dAiJ9FfCbmkOlLWEvf+m8I=;
+        b=jQOthO5RBuy8EAUGTdzAx9QbusbJQKsbUwktEdu4AdI/fqq+LZa2U4L+BoP52TKsyCTx1M
+        9VlVMl08S2xzU65a6YSHf3PcvPGi1Qu47GRlA3vM0cKuICVRjVU8cmCUW1JK1F2KykoXRa
+        rg/vhAHeINh2d2mSJxdfew9xz72f7vA=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-483-W5brmruLNO-UO12uvdFh7A-1; Thu, 01 Apr 2021 09:49:19 -0400
+X-MC-Unique: W5brmruLNO-UO12uvdFh7A-1
+Received: by mail-ej1-f69.google.com with SMTP id p11so2241711eju.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 06:49:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6Di0BWBiR9j8X6GwMiIH6dAiJ9FfCbmkOlLWEvf+m8I=;
+        b=NqqLrlH8QjgJb+s+/OoP0FQPTljbfJPFfU3t+v6Ncus+mRQEOcmiGE2Jw3L3188srt
+         Ayo3S5sGBPl9z+m/KuywrxuoiqwfO+eRppN1wN/6EryMImCTVfH9NTd6tngmb0oR+emW
+         N/oxI+RniaTS/ExQb2S3PaTivOlQ3D3O63pmOJqclVkR4z15fpEeGAYX9XKiWE0htJTf
+         edpEx0OhgFtfofPkSfjpvC15wCMHryXuoLoN4oljaaR4sq5TTr/ktAtsMbFy7NoyiYM3
+         /mprYOveRw9P7h8ipn0Noot/L/MPo9HEkDLGTzVlCPgJ1fA1mchyLw2ijpGqyiipZWrl
+         z5cA==
+X-Gm-Message-State: AOAM530sIO4ntZw7xnCLbCAqieRQ43MhBO/H0qxeudgq8+vKK7lswYh7
+        mq4AiT93TOln6hy0MBwYrspQS4x3kgqtZjjFUUCJ9nhp4LGaQemTbL/RNJ4c0e3tsux1/fTiihT
+        uhQ+YEjZc7gcxxwLXP0a1CEm7GTTphZPlMDW22GkGSrfF88p+q7uBdRHuQctYXOXfzx+oFf6gVw
+        mc
+X-Received: by 2002:a17:906:e48:: with SMTP id q8mr9366891eji.84.1617284957357;
+        Thu, 01 Apr 2021 06:49:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzQCqTJPlf5xHvtZrdLYGwFx8VHwJr7Nn508W2djrIkVNqJD9RRZhr4LvfkPbi+pedlY2rRgA==
+X-Received: by 2002:a17:906:e48:: with SMTP id q8mr9366872eji.84.1617284957182;
+        Thu, 01 Apr 2021 06:49:17 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id g21sm2822186ejd.6.2021.04.01.06.49.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Apr 2021 06:49:16 -0700 (PDT)
+Subject: Re: [PATCH 31/32] Documentation: update sysfs-platform_profile.rst
+ reference
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Mark Pearson <markpearson@lenovo.com>,
+        linux-kernel@vger.kernel.org
+References: <cover.1617279355.git.mchehab+huawei@kernel.org>
+ <828434d891e40234255e3f06c13827b7996b1ad1.1617279356.git.mchehab+huawei@kernel.org>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <e042f8f8-0ba1-098d-2503-8c319c3c2bf9@redhat.com>
+Date:   Thu, 1 Apr 2021 15:49:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210401084030.1002882-1-wanjiabing@vivo.com>
+In-Reply-To: <828434d891e40234255e3f06c13827b7996b1ad1.1617279356.git.mchehab+huawei@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: FKexRfPIxGpEh_yaWuXYovGDO14eBo-o
-X-Proofpoint-GUID: FKexRfPIxGpEh_yaWuXYovGDO14eBo-o
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-04-01_05:2021-03-31,2021-04-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 bulkscore=0 priorityscore=1501 phishscore=0 suspectscore=0
- mlxlogscore=946 clxscore=1011 lowpriorityscore=0 mlxscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2103310000 definitions=main-2104010094
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/04/2021 10:40, Wan Jiabing wrote:
-> struct smc_clc_msg_local is declared twice. One is declared at
-> 301st line. The blew one is not needed. Remove the duplicate.
+Hi,
+
+On 4/1/21 2:17 PM, Mauro Carvalho Chehab wrote:
+> The file name: Documentation/ABI/testing/sysfs-platform_profile.rst
+> should be, instead: Documentation/userspace-api/sysfs-platform_profile.rst.
 > 
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+> Update its cross-reference accordingly.
+> 
+> Fixes: a2ff95e018f1 ("ACPI: platform: Add platform profile support")
+> Fixes: 8e0cbf356377 ("Documentation: Add documentation for new platform_profile sysfs attribute")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+Thanks, patch looks good to me:
+
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+Rafael, I assume you will merge this through your tree?
+
+Regards,
+
+Hans
+
 > ---
->  net/smc/smc_core.h | 1 -
->  1 file changed, 1 deletion(-)
+>  include/linux/platform_profile.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/platform_profile.h b/include/linux/platform_profile.h
+> index a6329003aee7..e5cbb6841f3a 100644
+> --- a/include/linux/platform_profile.h
+> +++ b/include/linux/platform_profile.h
+> @@ -2,7 +2,7 @@
+>  /*
+>   * Platform profile sysfs interface
+>   *
+> - * See Documentation/ABI/testing/sysfs-platform_profile.rst for more
+> + * See Documentation/userspace-api/sysfs-platform_profile.rst for more
+>   * information.
+>   */
+>  
 > 
 
-Acked-by: Karsten Graul <kgraul@linux.ibm.com>
