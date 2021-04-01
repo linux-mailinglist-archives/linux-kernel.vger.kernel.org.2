@@ -2,110 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5499A35209F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 288F33520A1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235545AbhDAUcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 16:32:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39206 "EHLO
+        id S234874AbhDAUgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 16:36:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234114AbhDAUcd (ORCPT
+        with ESMTP id S234114AbhDAUgk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 16:32:33 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33CAFC0613E6;
-        Thu,  1 Apr 2021 13:32:32 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id t5so1647079qvs.5;
-        Thu, 01 Apr 2021 13:32:32 -0700 (PDT)
+        Thu, 1 Apr 2021 16:36:40 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 981A4C0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 13:36:38 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id m20-20020a7bcb940000b029010cab7e5a9fso3438958wmi.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 13:36:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
          :content-transfer-encoding;
-        bh=JrRmoKrgox5TdPF5v5CxQyEmXDXtni/IJFJUUVdCAgc=;
-        b=a2HX9LLYYbw0SBHdBm5Ey466W/mYdcoPD2OEs7MlsBSUI3W200E+8yuJ4AYQd6/fLz
-         aF3sMs/TQrP/xt2ABtPwXSyULTLmcOZFK8qjJuPiFlyE3jThTflADO/0jHBcCjnwRjwQ
-         Po3BwOI1VhAIpKwTRsM71VgV+h8tOfcLRWq30sTukmdUfXSX89Lu5i/u6UTE/oCuj9vA
-         tFgHCLpkF8ltRrjt21gLw/7u5kSPmYhRi9lcwyDf82MC/6DrerYCv4xC+JLMccg0uBQC
-         pt5UvdBMdJT9vZDXxefuFgY/78jfBTm0JbcFdQFEY6u1xmtvzCiKmvDpdQHNc18kAxWr
-         QGtQ==
+        bh=2KaND/sffuyinKdIJbKbxcJA+nsm9S2X6h8dQ3LasyQ=;
+        b=WC8fHh0kp1JkeWuPcZdLaC5r0ucDNMMFkliNRgRK00hZ7vA+QVirCEcFxCjkTqywH2
+         QTcY7iwQkjdueVbRqQILr9dQpE54+kQ7djc6HW6gneDbmIejokZl7E75Oj2/Ker5U2ll
+         GHFglluG0pW07c9KTvEnaFnzaSLRUnS1gBp1sxPOSweEUlXyKZTH5yCFhCTCTvt3xqjQ
+         0cpL5Psp/FRS1oH2jsPNRwhaiXXo6iuY2ERhnD/ipTDvKLLZSqsSluQ9XQ4a4qhzMpXc
+         pN+YxN/RgzQvr+C834C2sjcvR+F3Yattf2r47t+LT+1SOjJSeJGq6uRUD9M3qT0Gi4yg
+         cdoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JrRmoKrgox5TdPF5v5CxQyEmXDXtni/IJFJUUVdCAgc=;
-        b=qVhgogcAtJmetfPasl+jng8ed9J7qvMDG76uS3BSkqx0bb4u5wYn5ht/65KMK7+hc5
-         GHPAuE3Bm1Bs0y4j405woUvVD0fzQ6wVstwn3Irs4WraqiVyOBQxTeXqxeousy9NT6HU
-         xbYKoByIIVK6569EXpHY4HPvg2y35wYWcIR1gbLcba01lnyzLfkP1m+6ztNgliQ3GeMu
-         ynJmXIiaACE55vSwM937NdX0QUwtKb526SAxn8i9hGwvYAjtuYgqTe/f4fTHIM84mvpg
-         0DhgGDvx2/aD8XSE0kZHa2/SoI+q13M7d8F9GYo7RyJ6+dOf8zUVN7lrichWZmfgxowA
-         snXw==
-X-Gm-Message-State: AOAM533OEbTOUc6Iw4D6fDfsvBCCb2HNTze5QlFwoXNM53XM/dWQJTCq
-        gXGq0TZ5/IuzXH1BxtcwEuM=
-X-Google-Smtp-Source: ABdhPJwv9FqVwsX5szrMtboAEThcjgirdWnzdo0IDWvh2Xlx2gJNw8gf0DcpQJoqFGub6qBVWdWHZQ==
-X-Received: by 2002:ad4:4cc8:: with SMTP id i8mr9799347qvz.56.1617309151291;
-        Thu, 01 Apr 2021 13:32:31 -0700 (PDT)
-Received: from localhost ([207.98.216.60])
-        by smtp.gmail.com with ESMTPSA id o36sm4516969qtd.89.2021.04.01.13.32.30
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding;
+        bh=2KaND/sffuyinKdIJbKbxcJA+nsm9S2X6h8dQ3LasyQ=;
+        b=BQIIoMnV7FIgcP5ot+numsvYWHOjNS6fciJJQBLxKSMGem5K2umvh+6InMiSM53iXN
+         yhLpB/3kf/Zb88t815gPz88mipZg7laXzjFu6P6O+I9pNr6jxVyzV2SvODKdhKFlroY0
+         slhppXt3X1ugUs5Xy54bL3Ckom+OzgJZkMTkvHT2X9JhYl4hxA359AN0SMgoz6R0tLZa
+         nAB4md6kIWq5/j4MD9yXlO6JTdOqfqmUMi58UPS1wwBFbE4QOs8TFUG6z60Uo4bHi9s1
+         UPKCdKiXaHfJwCCtScime900OWJ0/xjDQSD/xeU0YTRVviPP5LbwA2P2K8DWOea6YF3w
+         ZuKA==
+X-Gm-Message-State: AOAM531f8+lYA3iSZ+R0Spp3ybpQApEUkDyRdjTu+qcIbnPycDoKP4JF
+        W1v67PK3DGywt7P9cOquMEBeOaPe0A==
+X-Google-Smtp-Source: ABdhPJy/F6dVK3Ul4qZaUZ1AcRr449zoY2CndDQf7wQu4DmoHwe5x7CPFG8PeVbAz1qm0yenk9eoug==
+X-Received: by 2002:a7b:c418:: with SMTP id k24mr9733751wmi.169.1617309397285;
+        Thu, 01 Apr 2021 13:36:37 -0700 (PDT)
+Received: from localhost.localdomain ([46.53.251.196])
+        by smtp.gmail.com with ESMTPSA id 137sm9768190wmb.42.2021.04.01.13.36.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 13:32:30 -0700 (PDT)
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        uclinux-h8-devel@lists.sourceforge.jp,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Yury Norov <yury.norov@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] h8300: rearrange headers inclusion order in asm/bitops
-Date:   Thu,  1 Apr 2021 13:32:28 -0700
-Message-Id: <20210401203228.124145-1-yury.norov@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 01 Apr 2021 13:36:36 -0700 (PDT)
+Date:   Thu, 1 Apr 2021 23:36:35 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     torvalds@linux-foundation.org
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Dixup sysname wrt recent cultural developments
+Message-ID: <YGYu0z7mqhKRsRf5@localhost.localdomain>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes [next-20210401] commit a5145bdad3ff ("arch: rearrange
-headers inclusion order in asm/bitops for m68k and sh"). h8300 has 
-similar problem, which was overlooked by me.
+It is apparent that emoji outbreak can not be contained.
+In that case might as well embrace it.
 
-h8300 includes bitmap/{find,le}.h prior to ffs/fls headers. New fast-path
-implementation in find.h requires ffs/fls. Reordering the headers inclusion
-sequence helps to prevent compile-time implicit function declaration error.
+Change main kernel banner, /proc/version and uname(2) output.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Yury Norov <yury.norov@gmail.com>
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
 ---
- arch/h8300/include/asm/bitops.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/h8300/include/asm/bitops.h b/arch/h8300/include/asm/bitops.h
-index 7aa16c732aa9..c867a80cab5b 100644
---- a/arch/h8300/include/asm/bitops.h
-+++ b/arch/h8300/include/asm/bitops.h
-@@ -9,6 +9,10 @@
- 
- #include <linux/compiler.h>
- 
-+#include <asm-generic/bitops/fls.h>
-+#include <asm-generic/bitops/__fls.h>
-+#include <asm-generic/bitops/fls64.h>
-+
- #ifdef __KERNEL__
- 
- #ifndef _LINUX_BITOPS_H
-@@ -173,8 +177,4 @@ static inline unsigned long __ffs(unsigned long word)
- 
- #endif /* __KERNEL__ */
- 
--#include <asm-generic/bitops/fls.h>
--#include <asm-generic/bitops/__fls.h>
--#include <asm-generic/bitops/fls64.h>
--
- #endif /* _H8300_BITOPS_H */
--- 
-2.25.1
+ include/linux/uts.h |    2 +-
+ init/version.c      |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
+--- a/include/linux/uts.h
++++ b/include/linux/uts.h
+@@ -6,7 +6,7 @@
+  * Defines for what uname() should return 
+  */
+ #ifndef UTS_SYSNAME
+-#define UTS_SYSNAME "Linux"
++#define UTS_SYSNAME "🐧"
+ #endif
+ 
+ #ifndef UTS_NODENAME
+--- a/init/version.c
++++ b/init/version.c
+@@ -36,7 +36,7 @@ EXPORT_SYMBOL_GPL(init_uts_ns);
+ 
+ /* FIXED STRINGS! Don't touch! */
+ const char linux_banner[] =
+-	"Linux version " UTS_RELEASE " (" LINUX_COMPILE_BY "@"
++	"🐧 version " UTS_RELEASE " (" LINUX_COMPILE_BY "@"
+ 	LINUX_COMPILE_HOST ") (" LINUX_COMPILER ") " UTS_VERSION "\n";
+ 
+ const char linux_proc_banner[] =
