@@ -2,117 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC821351162
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13337351164
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233654AbhDAJBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 05:01:16 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:43052 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233024AbhDAJAz (ORCPT
+        id S233690AbhDAJBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 05:01:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233642AbhDAJB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 05:00:55 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1318wouB071849;
-        Thu, 1 Apr 2021 09:00:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=CGkPXPPHpmlF1CktlWv/KooP+Kf2+sLKW+hJlQZ63QM=;
- b=uQWRsIQecYnbeUwf+EBYy4ejFKeyZTeLbpVEgV8ZCKSpg53yxi5xSNjokSwQGMmEuXa3
- nUq0JyGpklpqrRuDqNuU6pDTbHsa4JdHsyjwYm94QOq7KfuHHIHS6445XOvshB8sdiOJ
- L2r8jDL8tWmlFBPinrAhqlePD157yeKA667JdBtznjiO8MSDMEqv+C1ki7Dkmr/y1zZt
- CXqzepE8PUiaWQAB8FEIWoDxpMC5xRrawY3/g4cCIOrNHB5/8Dh8e1Jcg6121DjL9B6j
- bLHsHGWqwdzcnUdJtZuYsfoE3+y0XwPpzo9JdSDGfzWfmaD7OEFJJv/yzyyke8t4GoJr mg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 37n33ds1eq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 01 Apr 2021 09:00:50 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1318ti4b043749;
-        Thu, 1 Apr 2021 09:00:49 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 37n2aryxdh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 01 Apr 2021 09:00:49 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13190mNd027839;
-        Thu, 1 Apr 2021 09:00:48 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 01 Apr 2021 02:00:48 -0700
-Date:   Thu, 1 Apr 2021 12:00:39 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     kbusch@kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: [bug report] node: Add memory-side caching attributes
-Message-ID: <YGWLtzMLqSW4cxma@mwanda>
+        Thu, 1 Apr 2021 05:01:29 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03B15C0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 02:01:22 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id jy13so1778337ejc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 02:01:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jeawG8MSfVqkUaUQtWGB1XMFCzIepDytNa9lre7e8Mw=;
+        b=FEl2YMxTXVENiSYhVxaNieJr41QVaMPMGAbtjUf0Lcupljd9MFs4+63s/XEefLX86R
+         j5pyDaWxXXyH+dA3uC9nREG6q9KH91YJevjvLMEA74/8t061DdCnVSgNU0LlpUaBoSdC
+         etLUdWLlFDQvbOxuzIfkrR6e9+C3bZ+KmNQCkF7e6Asm3NqVojfmMsI4h8WR7NoR9bWN
+         olH/pHoqmabUJbIDL2hHPAOPsNVGjKyoEZF4p77ig+wSAAnXyWZcw7O5ckhq+RdSfVOy
+         A2RvwCS7fHrckzzFc99HthIuDG/Nsk1GhY0qp/q+eTKc/FVmfkOF18vif9+qlO+dh9I5
+         MZdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jeawG8MSfVqkUaUQtWGB1XMFCzIepDytNa9lre7e8Mw=;
+        b=EmBXqO/ZaXNx8MV11K5jRrcB67tRKZRsVRpv0buOCJaME0RkISGf00qMjUYCr2CZfj
+         DJ6kfkwLKRSIPmvky3xC+mkNQhPguopQjdCW4XOUXP33AMoxdjBg/KTuLQMmlIAQKA0R
+         P1G14HBJX1+BNFTQubkNqt5tU1l96ZfnZXPfQWdAYKE6OHjhHEAQrhh4SwF7WdPqlqxH
+         6UFZxOwhHpXZ7sKf1lUbgFYqgMTUUwqQIjAQr8B8N+ooOIEEbVpa+Nt6wnw6r6q7bowT
+         qLvq43tb1a/jWQY8V6xeIAi6PFOpJdMNgqbcqVgqxyvw2th+xzw6W66Vkosq+wpCn3J0
+         ugKQ==
+X-Gm-Message-State: AOAM531moYo4BJLcTNXbmoL+i+x7afzVAkMcwsgGJOXJSicNcR8SC0fP
+        DRUT8zt1Mo8D/B4HqrP+BMrYgKWRokUm8w==
+X-Google-Smtp-Source: ABdhPJyND7NWGHCHO2SVFXcbvtjRs4Uug5GLJ9Z0wsMVcYpCzK4a0hP/S/pqmI46Vcx93pGbGdmXIQ==
+X-Received: by 2002:a17:906:b202:: with SMTP id p2mr8135406ejz.244.1617267680719;
+        Thu, 01 Apr 2021 02:01:20 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id q26sm2500264eja.45.2021.04.01.02.01.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 02:01:19 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     vkoul@kernel.org
+Cc:     yung-chuan.liao@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        robh@kernel.org, devicetree@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2] soundwire: qcom: wait for fifo space to be available before read/write
+Date:   Thu,  1 Apr 2021 10:00:58 +0100
+Message-Id: <20210401090058.24041-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9940 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
- suspectscore=0 bulkscore=0 mlxscore=0 adultscore=0 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2103310000 definitions=main-2104010063
-X-Proofpoint-GUID: vqzIBXprIwB4fcWmwErknLt8mEbyDy8v
-X-Proofpoint-ORIG-GUID: vqzIBXprIwB4fcWmwErknLt8mEbyDy8v
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9940 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999 mlxscore=0
- lowpriorityscore=0 suspectscore=0 priorityscore=1501 phishscore=0
- clxscore=1011 impostorscore=0 malwarescore=0 bulkscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
- definitions=main-2104010063
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Keith,
+If we write registers very fast we can endup in a situation where some
+of the writes will be dropped without any notice.
 
-I've been trying to figure out ways Smatch can check for device managed
-resources.  Like adding rules that if we call dev_set_name(&foo->bar)
-then it's device managaged and if there is a kfree(foo) without calling
-device_put(&foo->bar) then that's a resource leak.
+So wait for the fifo space to be available before reading/writing the
+soundwire registers.
 
-Of course one of the rules is that if you call device_register(dev) then
-you can't kfree(dev), it has to released with device_put(dev) and that's
-true even if the register fails.  But this code here feels very
-intentional so maybe there is an exception to the rule?
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
 
-The patch acc02a109b04: "node: Add memory-side caching attributes"
-from Mar 11, 2019, leads to the following static checker warning:
+Changes since v1:
+        merged some of the loop code to make it simple as suggested by Pierre
+        updated error code and comments as suggested by Vinod
 
-	drivers/base/node.c:285 node_init_cache_dev()
-	error: kfree after device_register(): 'dev'
 
-drivers/base/node.c
-   263  static void node_init_cache_dev(struct node *node)
-   264  {
-   265          struct device *dev;
-   266  
-   267          dev = kzalloc(sizeof(*dev), GFP_KERNEL);
-   268          if (!dev)
-   269                  return;
-   270  
-   271          dev->parent = &node->dev;
-   272          dev->release = node_cache_release;
-   273          if (dev_set_name(dev, "memory_side_cache"))
-   274                  goto free_dev;
-   275  
-   276          if (device_register(dev))
-                    ^^^^^^^^^^^^^^^^^^^
-   277                  goto free_name;
-   278  
-   279          pm_runtime_no_callbacks(dev);
-   280          node->cache_dev = dev;
-   281          return;
-   282  free_name:
-   283          kfree_const(dev->kobj.name);
-   284  free_dev:
-   285          kfree(dev);
-                ^^^^^^^^^^
-   286  }
+ drivers/soundwire/qcom.c | 66 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 66 insertions(+)
 
-regards,
-dan carpenter
+diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+index 6affa3cd4039..5fd4a99cc8ac 100644
+--- a/drivers/soundwire/qcom.c
++++ b/drivers/soundwire/qcom.c
+@@ -24,6 +24,8 @@
+ #define SWRM_COMP_CFG_IRQ_LEVEL_OR_PULSE_MSK			BIT(1)
+ #define SWRM_COMP_CFG_ENABLE_MSK				BIT(0)
+ #define SWRM_COMP_PARAMS					0x100
++#define SWRM_COMP_PARAMS_WR_FIFO_DEPTH				GENMASK(14, 10)
++#define SWRM_COMP_PARAMS_RD_FIFO_DEPTH				GENMASK(19, 15)
+ #define SWRM_COMP_PARAMS_DOUT_PORTS_MASK			GENMASK(4, 0)
+ #define SWRM_COMP_PARAMS_DIN_PORTS_MASK				GENMASK(9, 5)
+ #define SWRM_INTERRUPT_STATUS					0x200
+@@ -51,6 +53,8 @@
+ #define SWRM_CMD_FIFO_CMD					0x308
+ #define SWRM_CMD_FIFO_FLUSH					0x1
+ #define SWRM_CMD_FIFO_STATUS					0x30C
++#define SWRM_RD_CMD_FIFO_CNT_MASK				GENMASK(20, 16)
++#define SWRM_WR_CMD_FIFO_CNT_MASK				GENMASK(12, 8)
+ #define SWRM_CMD_FIFO_CFG_ADDR					0x314
+ #define SWRM_CONTINUE_EXEC_ON_CMD_IGNORE			BIT(31)
+ #define SWRM_RD_WR_CMD_RETRIES					0x7
+@@ -104,6 +108,7 @@
+ #define SWR_BROADCAST_CMD_ID    0x0F
+ #define SWR_MAX_CMD_ID	14
+ #define MAX_FIFO_RD_RETRY 3
++#define SWR_OVERFLOW_RETRY_COUNT 30
+ 
+ struct qcom_swrm_port_config {
+ 	u8 si;
+@@ -147,6 +152,8 @@ struct qcom_swrm_ctrl {
+ 	int (*reg_read)(struct qcom_swrm_ctrl *ctrl, int reg, u32 *val);
+ 	int (*reg_write)(struct qcom_swrm_ctrl *ctrl, int reg, int val);
+ 	u32 slave_status;
++	u32 wr_fifo_depth;
++	u32 rd_fifo_depth;
+ };
+ 
+ struct qcom_swrm_data {
+@@ -238,6 +245,55 @@ static u32 swrm_get_packed_reg_val(u8 *cmd_id, u8 cmd_data,
+ 	return val;
+ }
+ 
++static int swrm_wait_for_rd_fifo_avail(struct qcom_swrm_ctrl *swrm)
++{
++	u32 fifo_outstanding_data, value;
++	int fifo_retry_count = SWR_OVERFLOW_RETRY_COUNT;
++
++	do {
++		/* Check for fifo underflow during read */
++		swrm->reg_read(swrm, SWRM_CMD_FIFO_STATUS, &value);
++		fifo_outstanding_data = FIELD_GET(SWRM_RD_CMD_FIFO_CNT_MASK, value);
++
++		/* Check if read data is available in read fifo */
++		if (fifo_outstanding_data > 0)
++			return 0;
++
++		usleep_range(500, 510);
++	} while (fifo_retry_count--);
++
++	if (fifo_outstanding_data == 0) {
++		dev_err_ratelimited(swrm->dev, "%s err read underflow\n", __func__);
++		return -EIO;
++	}
++
++	return 0;
++}
++
++static int swrm_wait_for_wr_fifo_avail(struct qcom_swrm_ctrl *swrm)
++{
++	u32 fifo_outstanding_cmds, value;
++	int fifo_retry_count = SWR_OVERFLOW_RETRY_COUNT;
++
++	do {
++		/* Check for fifo overflow during write */
++		swrm->reg_read(swrm, SWRM_CMD_FIFO_STATUS, &value);
++		fifo_outstanding_cmds = FIELD_GET(SWRM_WR_CMD_FIFO_CNT_MASK, value);
++
++		/* Check for space in write fifo before writing */
++		if (fifo_outstanding_cmds < swrm->wr_fifo_depth)
++			return 0;
++
++		usleep_range(500, 510);
++	} while (fifo_retry_count--);
++
++	if (fifo_outstanding_cmds == swrm->wr_fifo_depth) {
++		dev_err_ratelimited(swrm->dev, "%s err write overflow\n", __func__);
++		return -EIO;
++	}
++
++	return 0;
++}
+ 
+ static int qcom_swrm_cmd_fifo_wr_cmd(struct qcom_swrm_ctrl *swrm, u8 cmd_data,
+ 				     u8 dev_addr, u16 reg_addr)
+@@ -256,6 +312,9 @@ static int qcom_swrm_cmd_fifo_wr_cmd(struct qcom_swrm_ctrl *swrm, u8 cmd_data,
+ 					      dev_addr, reg_addr);
+ 	}
+ 
++	if (swrm_wait_for_wr_fifo_avail(swrm))
++		return SDW_CMD_FAIL_OTHER;
++
+ 	/* Its assumed that write is okay as we do not get any status back */
+ 	swrm->reg_write(swrm, SWRM_CMD_FIFO_WR_CMD, val);
+ 
+@@ -295,6 +354,9 @@ static int qcom_swrm_cmd_fifo_rd_cmd(struct qcom_swrm_ctrl *swrm,
+ 	/* wait for FIFO RD CMD complete to avoid overflow */
+ 	usleep_range(250, 255);
+ 
++	if (swrm_wait_for_rd_fifo_avail(swrm))
++		return SDW_CMD_FAIL_OTHER;
++
+ 	do {
+ 		swrm->reg_read(swrm, SWRM_CMD_FIFO_RD_FIFO_ADDR, &cmd_data);
+ 		rval[0] = cmd_data & 0xFF;
+@@ -586,6 +648,10 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
+ 				SWRM_INTERRUPT_STATUS_RMSK);
+ 	}
+ 	ctrl->slave_status = 0;
++	ctrl->reg_read(ctrl, SWRM_COMP_PARAMS, &val);
++	ctrl->rd_fifo_depth = FIELD_GET(SWRM_COMP_PARAMS_RD_FIFO_DEPTH, val);
++	ctrl->wr_fifo_depth = FIELD_GET(SWRM_COMP_PARAMS_WR_FIFO_DEPTH, val);
++
+ 	return 0;
+ }
+ 
+-- 
+2.21.0
+
