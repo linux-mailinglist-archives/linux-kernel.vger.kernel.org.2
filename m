@@ -2,100 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51E16352402
+	by mail.lfdr.de (Postfix) with ESMTP id B5217352403
 	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 01:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235827AbhDAXeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 19:34:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236457AbhDAXdz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 19:33:55 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C15A6C05BD1D
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 16:32:57 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id g205so4220843pfb.15
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 16:32:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=Z8NWn4jVbToJav0h5JmVWRAqRYl6h2XMv8WXZ63o+ic=;
-        b=sWQZYrnybic/Guuvi4FLa32pcaoh1lAqAMERMtk/3AuG1Snas/3tmCJ9HTS8KD0KZ2
-         DIyS6n2azDelH2lWTJyz9wybfQaWqBpe11BGARLCpeQggnLYl/XP3Uj2cZa4+SKz8VAj
-         p/n4GcFQfdHxAybtZn/J3po7/veQAWAlQ2mjHxxTyIclKOPD91Aizuo/JF+Ek1nZGDY9
-         kP6kMCtYS0ikKI7mEz2VJvvBuMrXxK7XSAz05VZV8iRsy0FnY7iO/NYieB2Y9ImEF2Rs
-         33dX8T00jNHrkpZ0goIKWVOkD5UvlkwqOmlx9stTgcls1OksOdYC6jX0eL53aBEnGzNo
-         zx4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=Z8NWn4jVbToJav0h5JmVWRAqRYl6h2XMv8WXZ63o+ic=;
-        b=ODbt/GwLQPMfO9wk2Sxnc60BZVVt9JaXoiGvk5Gd/VkUdiu86l34N5HCe8D/dqQ2bJ
-         80qdvXXWHtZcmMQz7c5ztuH1dMAODAM+/hE/MDVaC1GhCFeAb4S5CItYlI0ku8Qf15IN
-         y4H1zJzKtpCIPNzzfkjaTPNyECnx4KlGqyIXTo8yN09iHdYjSaU3CPdKma9uWnPWDtc9
-         WAbr/7F84AnM+Fo4Z4th643WfzJXBGOHcwKOI+3oSGYnXCG7lIPdX+pEY6xzs+3yXmMB
-         3mSXBHzjHZZjBzQxcPmMJFxV2boNlb0oklWZ4wYni6NB4gQtACMaAlAoRqLF1fmlBEGo
-         Xk4Q==
-X-Gm-Message-State: AOAM531J44BU3hbCOcixOmKL3B/BW3BN2HGpW9l+xbCLx8qya/zwrS0k
-        NyfHH/pteT8Guvy2xSGHWKkt0Pkov147IJ34JyE=
-X-Google-Smtp-Source: ABdhPJwiZbq9c4iXijVEYKsvmSZncty9LqawpPJhjxnXl2iNWMREeFwCFILyiiZ0pCK1rOKFlzrry48vXGoQ9XxlZv4=
-X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:4cd1:da86:e91b:70b4])
- (user=samitolvanen job=sendgmr) by 2002:a17:902:c711:b029:e7:3d4e:8149 with
- SMTP id p17-20020a170902c711b02900e73d4e8149mr10140878plp.38.1617319977301;
- Thu, 01 Apr 2021 16:32:57 -0700 (PDT)
-Date:   Thu,  1 Apr 2021 16:32:16 -0700
-In-Reply-To: <20210401233216.2540591-1-samitolvanen@google.com>
-Message-Id: <20210401233216.2540591-19-samitolvanen@google.com>
-Mime-Version: 1.0
-References: <20210401233216.2540591-1-samitolvanen@google.com>
-X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
-Subject: [PATCH v5 18/18] arm64: allow CONFIG_CFI_CLANG to be selected
-From:   Sami Tolvanen <samitolvanen@google.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>, bpf@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S236084AbhDAXea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 19:34:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46326 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235847AbhDAXeQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 19:34:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 75A5D6112E;
+        Thu,  1 Apr 2021 23:34:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617320053;
+        bh=ohek8UUkVa/WNRVimemVyrb/6iFVB0Xi3zFzl5e8oWw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=T8b/8Ep9Qwp2hbgR7w43giAhu/eYWGHHiX/wis/WSBibeFvaVhd3y/dqO8FrcIthm
+         L7fnT8cztFZD9RWrfYvmq8AtYPyGcmOEBPW9ThBGYbwdw4H+MnQELcU3pPRLrYsqHt
+         fl1geUu6hmD4Va1dG6tqHwaruKcCfLCC/IAY6kIU=
+Date:   Fri, 2 Apr 2021 01:34:09 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v1 1/1] driver core: enable trace events (devres)
+Message-ID: <YGZYcQLXejdKFzvd@kroah.com>
+References: <20210401212129.82552-1-andriy.shevchenko@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401212129.82552-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Select ARCH_SUPPORTS_CFI_CLANG to allow CFI to be enabled.
+On Fri, Apr 02, 2021 at 12:21:29AM +0300, Andy Shevchenko wrote:
+> Enable trace events for driver core. For now only devres is supported.
 
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
----
- arch/arm64/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+That says _what_ this does, but not _why_ this is needed or wanted.
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index e4e1b6550115..d7395772b6b8 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -75,6 +75,7 @@ config ARM64
- 	select ARCH_SUPPORTS_SHADOW_CALL_STACK if CC_HAVE_SHADOW_CALL_STACK
- 	select ARCH_SUPPORTS_LTO_CLANG if CPU_LITTLE_ENDIAN
- 	select ARCH_SUPPORTS_LTO_CLANG_THIN
-+	select ARCH_SUPPORTS_CFI_CLANG
- 	select ARCH_SUPPORTS_ATOMIC_RMW
- 	select ARCH_SUPPORTS_INT128 if CC_HAS_INT128 && (GCC_VERSION >= 50000 || CC_IS_CLANG)
- 	select ARCH_SUPPORTS_NUMA_BALANCING
--- 
-2.31.0.208.g409f899ff0-goog
+And you really don't even describe the "what" at all here either :(
 
+Please be much more verbose when adding new features.
+
+thanks,
+
+greg k-h
