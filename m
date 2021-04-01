@@ -2,261 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77639351A5A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58873351A62
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237285AbhDAR7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:59:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58416 "EHLO
+        id S237508AbhDASAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:00:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235993AbhDARnb (ORCPT
+        with ESMTP id S236323AbhDARoU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:43:31 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0BD2C08EAC1
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 06:31:26 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id cx5so958444qvb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 06:31:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M7URrjH3tF91DISeDksOmCw5FleOK4Jt+3qfSQ0iFrk=;
-        b=IetzjnnEEnrKVPOI7329Ipnch2bwPIbTtieTYatya9T4FGCuyLVG9yd96W2E/saio4
-         oHxwhsOmKTOftU4HQBBKaohi0d/LTaK5Z+KHpsbbZi+2NoPBznsZdAMLpsDRZ20vWiWz
-         qJiHz3Gh6vDCcQKxVVLcJdhlRKU/kYWbYs3SKUZkGptk4LEKHfNLKMiZ57ikRHEE1Ozn
-         tBE6oSsyGPQBlBWb6YWqoPbx8NX34qh1+G6RXQxOaya8foV+OU0d7ZJ0lbftgNj/uW1F
-         8BrhJ50NztOj0eTptkfAVtoUdJFeKHYUmruTTOcUZ2lVSLteKpSqtt/H7b9RZ/aa92K+
-         3P2A==
+        Thu, 1 Apr 2021 13:44:20 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D78B0C08EADC;
+        Thu,  1 Apr 2021 06:34:27 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id d12so1757865oiw.12;
+        Thu, 01 Apr 2021 06:34:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=M7URrjH3tF91DISeDksOmCw5FleOK4Jt+3qfSQ0iFrk=;
-        b=leIQ4ncV2RkQELOzV8C1cNRzqa81t0EkE/+aDz4mXPoDidViumksvMyDstqFGXesDM
-         mctZdjkaRbtXh9Gu+qR3A4Gy+LIfUhdCxZKgyVeEDa4LBmzm8H3g+oyBAdVpmbzaruTH
-         g3hA+crp21Q2gf/bc46LhzKj/yLxUq6fHvbOlJN9qGGtBJEuveCdLL3QqwSNx85a80v/
-         0uocs8a+2KLhziHswNWVOtPZ82LfZR2qz5/hMAlOrG0YpMRWvrOWfXyhViqmmnbMGBhV
-         rpXU7h9XjayTNLkeQSU0smDaBlkEu1skAJf6IehbNFaVbV+CRSxXJQz7/n1RHTT3leTf
-         S0iQ==
-X-Gm-Message-State: AOAM530ar+CaYRdIudqdDB7/L36iCSWn86ce2Wszj1PmzRoEQGfkySli
-        Ab3OmkzClT5cKHJ5dMQfDhNDs5OHyEGere3TaU8vnA==
-X-Google-Smtp-Source: ABdhPJyT6XQnSSLZ4RVAMOiJfUESRdDAvqkGit4/yqxtj7VeHvsLQtGr6UTr3EFqfbTrOykoWr2jbFcAAaIeUX+1A1w=
-X-Received: by 2002:a0c:a425:: with SMTP id w34mr8013579qvw.2.1617283885963;
- Thu, 01 Apr 2021 06:31:25 -0700 (PDT)
+        bh=2FWGYGFl/q/RksH9elhWIRdaES8PRAXWHrFmVuENWB4=;
+        b=GTeChfiMPnkoodzdhfPOUBirOBvRXjbbGdc2RJD655/vvvG9bStfPvTudLgj61H4Nj
+         n9/p/NRWUxyS5Lw7F2Xml5rS1xXuV2sGik0PPGPtHvSpCpUhR/3GUFFHdRTgptmR12MX
+         6K8jVM1RmAU2KS9kTMiTYP5kIJEUetMZWEUJKy3fqiIOG+ZVkKHJOWhXizTH3Abc+9PG
+         uNioX+g7zUopb6Jf8OeNhc58yCNuD+atp0Khcwcz6Hty0fV4k5imRXeYMa8P6T6Wn63u
+         FVbwK8uKOIWPPTTaHYPcdGbNgFzCP2v2hqtrN2d/FeDUlnQF57selQ4N0o/xpaqEwqW+
+         33jg==
+X-Gm-Message-State: AOAM531hrdZzrk0c71a/2AOzjrpy435C3qAM9sGLRY8xVOiDEtbHZZit
+        dWNIvRZMh/fz7Yr6dDvgzSDCfNopOKtB+2miqOg=
+X-Google-Smtp-Source: ABdhPJxy5cvNVArY7YtmFVwj2bftPEF9/Fi0jNClW4lM+qdCXnk+a0ThuQW3ynp5/rwcBik4xoJf8bq32A9F3IvNj3I=
+X-Received: by 2002:aca:5fc3:: with SMTP id t186mr5776955oib.69.1617284067177;
+ Thu, 01 Apr 2021 06:34:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <1617190020-7931-1-git-send-email-kalyan_t@codeaurora.org>
- <84fdbdc7-7890-965a-bc6b-a19bd0ca4937@linaro.org> <CAF6AEGt_aAq4dF9QkS9uJ7vwvGeR42oToCQKpsWCrfuhy_j+pw@mail.gmail.com>
- <d104a40f-65c3-2700-e829-bfe8f5712ac5@linaro.org> <96eb927abe1a22711709900cec7f8d11@codeaurora.org>
-In-Reply-To: <96eb927abe1a22711709900cec7f8d11@codeaurora.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Thu, 1 Apr 2021 16:31:14 +0300
-Message-ID: <CAA8EJpouKeor8J2QG3nUtLqyNTwd1J44BXDjk4fHCYhykeJ7Hw@mail.gmail.com>
-Subject: Re: [Freedreno] [v1] drm/msm/disp/dpu1: fix warn stack reported
- during dpu resume
-To:     Kalyan Thota <kalyan_t@codeaurora.org>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Krishna Manikandan <mkrishn@codeaurora.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Daniel Hung-yu Wu <hywu@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@google.com>,
-        Michelle Dean <midean@google.com>,
-        Steev Klimaszewski <steev@kali.org>,
-        freedreno <freedreno@lists.freedesktop.org>, y@qualcomm.com
+References: <20210401122458.12663-1-crecklin@redhat.com> <20210401122458.12663-2-crecklin@redhat.com>
+In-Reply-To: <20210401122458.12663-2-crecklin@redhat.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 1 Apr 2021 15:34:13 +0200
+Message-ID: <CAJZ5v0gCkhoKC_81WP6wdehZBYpEpmNhHwDygYawFdrWk3K6vg@mail.gmail.com>
+Subject: Re: [PATCH 1/1] use crc32 instead of md5 for hibernation e820
+ integrity check
+To:     Chris von Recklinghausen <crecklin@redhat.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, simo@redhat.com,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 1 Apr 2021 at 16:19, <kalyan_t@codeaurora.org> wrote:
+On Thu, Apr 1, 2021 at 2:25 PM Chris von Recklinghausen
+<crecklin@redhat.com> wrote:
 >
-> On 2021-04-01 07:37, Dmitry Baryshkov wrote:
-> > On 01/04/2021 01:47, Rob Clark wrote:
-> >> On Wed, Mar 31, 2021 at 9:03 AM Dmitry Baryshkov
-> >> <dmitry.baryshkov@linaro.org> wrote:
-> >>>
-> >>> On 31/03/2021 14:27, Kalyan Thota wrote:
-> >>>> WARN_ON was introduced by the below commit to catch runtime resumes
-> >>>> that are getting triggered before icc path was set.
-> >>>>
-> >>>> "drm/msm/disp/dpu1: icc path needs to be set before dpu runtime
-> >>>> resume"
-> >>>>
-> >>>> For the targets where the bw scaling is not enabled, this WARN_ON is
-> >>>> a false alarm. Fix the WARN condition appropriately.
-> >>>
-> >>> Should we change all DPU targets to use bw scaling to the mdp from
-> >>> the
-> >>> mdss nodes? The limitation to sc7180 looks artificial.
-> >>
-> >> yes, we should, this keeps biting us on 845
-> >
-> > Done,
-> > https://lore.kernel.org/linux-arm-msm/20210401020533.3956787-2-dmitry.baryshkov@linaro.org/
+> Suspend fails on a system in fips mode because md5 is used for the e820
+> integrity check and is not available. Use crc32 instead.
 >
-> Hi Dmitry,
+> Fixes: 62a03defeabd ("PM / hibernate: Verify the consistent of e820 memory map
+>        by md5 digest")
+> Signed-off-by: Chris von Recklinghausen <crecklin@redhat.com>
+> ---
+>  arch/x86/power/hibernate.c | 31 +++++++++++++++++--------------
+>  1 file changed, 17 insertions(+), 14 deletions(-)
 >
-> https://lore.kernel.org/linux-arm-msm/20210401020533.3956787-2-dmitry.baryshkov@linaro.org/
->
-> you need to add clk_inefficiency_factor, bw_inefficiency_factor in the
-> catalogue for the new
-> targets where bw scaling is being enabled. please reuse sc7180 values.
-
-Done in patch 1 in that series.
-
->
-> secondly, the AXI clock needs to be moved from mdss to mdp device like
-> as in sc7180 dt if its not done already.
-
-Is this enough:
-sm8250 has <&gcc GCC_DISP_HF_AXI_CLK> both in mdss and mdp nodes
-sdm845 has <&gcc GCC_DISP_AXI_CLK> in mdss node and <&dispcc
-DISP_CC_MDSS_AXI_CLK> in the mdp node.
-
-
->
-> lastly, if you are planning to remove the static votes from dpu_mdss, do
-> you also want to move the
-> interconnect paths from mdss device to mdp device in the dt ?
-
-I have no strong opinion on this. So far I did not change dt to be
-compatible with the current device trees.
-
+> diff --git a/arch/x86/power/hibernate.c b/arch/x86/power/hibernate.c
+> index cd3914fc9f3d..6a3f4e32e49c 100644
+> --- a/arch/x86/power/hibernate.c
+> +++ b/arch/x86/power/hibernate.c
+> @@ -55,31 +55,31 @@ int pfn_is_nosave(unsigned long pfn)
+>  }
 >
 >
-> Thanks,
-> Kalyan
+> -#define MD5_DIGEST_SIZE 16
+> +#define CRC32_DIGEST_SIZE 16
 >
-> >
-> >>
-> >>>>
-> >>>> Reported-by: Steev Klimaszewski <steev@kali.org>
-> >>
-> >> Please add Fixes: tag as well
-> Adding Fixes tag above my sign-off, should i push another version or can
-> it be picked from here ?
+>  struct restore_data_record {
+>         unsigned long jump_address;
+>         unsigned long jump_address_phys;
+>         unsigned long cr3;
+>         unsigned long magic;
+> -       u8 e820_digest[MD5_DIGEST_SIZE];
+> +       u8 e820_digest[CRC32_DIGEST_SIZE];
+>  };
+
+No.
+
+CRC32 was used here before and it was deemed insufficient.
+
+Please find a different way to address this issue.
+
+> -#if IS_BUILTIN(CONFIG_CRYPTO_MD5)
+> +#if IS_BUILTIN(CONFIG_CRYPTO_CRC32)
+>  /**
+> - * get_e820_md5 - calculate md5 according to given e820 table
+> + * get_e820_crc32 - calculate crc32 according to given e820 table
+>   *
+>   * @table: the e820 table to be calculated
+> - * @buf: the md5 result to be stored to
+> + * @buf: the crc32 result to be stored to
+>   */
+> -static int get_e820_md5(struct e820_table *table, void *buf)
+> +static int get_e820_crc32(struct e820_table *table, void *buf)
+>  {
+>         struct crypto_shash *tfm;
+>         struct shash_desc *desc;
+>         int size;
+>         int ret = 0;
 >
-> Fixes: Id252b9c2887 ("drm/msm/disp/dpu1: icc path needs to be set before
-> dpu runtime resume")
-> >>
-> >>>> Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
-> >>>> ---
-> >>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c  |  8 +++++---
-> >>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h  |  9 +++++++++
-> >>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c | 11 ++++++-----
-> >>>>    3 files changed, 20 insertions(+), 8 deletions(-)
-> >>>>
-> >>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> >>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> >>>> index cab387f..0071a4d 100644
-> >>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> >>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> >>>> @@ -294,6 +294,9 @@ static int
-> >>>> dpu_kms_parse_data_bus_icc_path(struct dpu_kms *dpu_kms)
-> >>>>        struct icc_path *path1;
-> >>>>        struct drm_device *dev = dpu_kms->dev;
-> >>>>
-> >>>> +     if (!dpu_supports_bw_scaling(dev))
-> >>>> +             return 0;
-> >>>> +
-> >>>>        path0 = of_icc_get(dev->dev, "mdp0-mem");
-> >>>>        path1 = of_icc_get(dev->dev, "mdp1-mem");
-> >>>>
-> >>>> @@ -934,8 +937,7 @@ static int dpu_kms_hw_init(struct msm_kms *kms)
-> >>>>                DPU_DEBUG("REG_DMA is not defined");
-> >>>>        }
-> >>>>
-> >>>> -     if (of_device_is_compatible(dev->dev->of_node,
-> >>>> "qcom,sc7180-mdss"))
-> >>>> -             dpu_kms_parse_data_bus_icc_path(dpu_kms);
-> >>>> +     dpu_kms_parse_data_bus_icc_path(dpu_kms);
-> >>>>
-> >>>>        pm_runtime_get_sync(&dpu_kms->pdev->dev);
-> >>>>
-> >>>> @@ -1198,7 +1200,7 @@ static int __maybe_unused
-> >>>> dpu_runtime_resume(struct device *dev)
-> >>>>
-> >>>>        ddev = dpu_kms->dev;
-> >>>>
-> >>>> -     WARN_ON(!(dpu_kms->num_paths));
-> >>>> +     WARN_ON((dpu_supports_bw_scaling(ddev) &&
-> >>>> !dpu_kms->num_paths));
-> >>>>        /* Min vote of BW is required before turning on AXI clk */
-> >>>>        for (i = 0; i < dpu_kms->num_paths; i++)
-> >>>>                icc_set_bw(dpu_kms->path[i], 0,
-> >>>> Bps_to_icc(MIN_IB_BW));
-> >>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-> >>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-> >>>> index d6717d6..f7bcc0a 100644
-> >>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-> >>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-> >>>> @@ -154,6 +154,15 @@ struct vsync_info {
-> >>>>
-> >>>>    #define to_dpu_global_state(x) container_of(x, struct
-> >>>> dpu_global_state, base)
-> >>>>
-> >>>> +/**
-> >>>> + * dpu_supports_bw_scaling: returns true for drivers that support
-> >>>> bw scaling.
-> >>>> + * @dev: Pointer to drm_device structure
-> >>>> + */
-> >>>> +static inline int dpu_supports_bw_scaling(struct drm_device *dev)
-> >>>> +{
-> >>>> +     return of_device_is_compatible(dev->dev->of_node,
-> >>>> "qcom,sc7180-mdss");
-> >>>> +}
-> >>>> +
-> >>>>    /* Global private object state for tracking resources that are
-> >>>> shared across
-> >>>>     * multiple kms objects (planes/crtcs/etc).
-> >>>>     */
-> >>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-> >>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-> >>>> index cd40788..8cd712c 100644
-> >>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-> >>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-> >>>> @@ -41,6 +41,9 @@ static int dpu_mdss_parse_data_bus_icc_path(struct
-> >>>> drm_device *dev,
-> >>>>        struct icc_path *path0 = of_icc_get(dev->dev, "mdp0-mem");
-> >>>>        struct icc_path *path1 = of_icc_get(dev->dev, "mdp1-mem");
-> >>>>
-> >>>> +     if (dpu_supports_bw_scaling(dev))
-> >>>> +             return 0;
-> >>>> +
-> >>>>        if (IS_ERR_OR_NULL(path0))
-> >>>>                return PTR_ERR_OR_ZERO(path0);
-> >>>>
-> >>>> @@ -276,11 +279,9 @@ int dpu_mdss_init(struct drm_device *dev)
-> >>>>
-> >>>>        DRM_DEBUG("mapped mdss address space @%pK\n",
-> >>>> dpu_mdss->mmio);
-> >>>>
-> >>>> -     if (!of_device_is_compatible(dev->dev->of_node,
-> >>>> "qcom,sc7180-mdss")) {
-> >>>> -             ret = dpu_mdss_parse_data_bus_icc_path(dev, dpu_mdss);
-> >>>> -             if (ret)
-> >>>> -                     return ret;
-> >>>> -     }
-> >>>> +     ret = dpu_mdss_parse_data_bus_icc_path(dev, dpu_mdss);
-> >>>> +     if (ret)
-> >>>> +             return ret;
-> >>>>
-> >>>>        mp = &dpu_mdss->mp;
-> >>>>        ret = msm_dss_parse_clock(pdev, mp);
-> >>>>
-> >>>
-> >>>
-> >>> --
-> >>> With best wishes
-> >>> Dmitry
-
-
-
--- 
-With best wishes
-Dmitry
+> -       tfm = crypto_alloc_shash("md5", 0, 0);
+> +       tfm = crypto_alloc_shash("crc32", 0, 0);
+>         if (IS_ERR(tfm))
+>                 return -ENOMEM;
+>
+> @@ -107,24 +107,24 @@ static int get_e820_md5(struct e820_table *table, void *buf)
+>
+>  static int hibernation_e820_save(void *buf)
+>  {
+> -       return get_e820_md5(e820_table_firmware, buf);
+> +       return get_e820_crc32(e820_table_firmware, buf);
+>  }
+>
+>  static bool hibernation_e820_mismatch(void *buf)
+>  {
+>         int ret;
+> -       u8 result[MD5_DIGEST_SIZE];
+> +       u8 result[CRC32_DIGEST_SIZE];
+>
+> -       memset(result, 0, MD5_DIGEST_SIZE);
+> +       memset(result, 0, CRC32_DIGEST_SIZE);
+>         /* If there is no digest in suspend kernel, let it go. */
+> -       if (!memcmp(result, buf, MD5_DIGEST_SIZE))
+> +       if (!memcmp(result, buf, CRC32_DIGEST_SIZE))
+>                 return false;
+>
+> -       ret = get_e820_md5(e820_table_firmware, result);
+> +       ret = get_e820_crc32(e820_table_firmware, result);
+>         if (ret)
+>                 return true;
+>
+> -       return memcmp(result, buf, MD5_DIGEST_SIZE) ? true : false;
+> +       return memcmp(result, buf, CRC32_DIGEST_SIZE) ? true : false;
+>  }
+>  #else
+>  static int hibernation_e820_save(void *buf)
+> @@ -134,7 +134,7 @@ static int hibernation_e820_save(void *buf)
+>
+>  static bool hibernation_e820_mismatch(void *buf)
+>  {
+> -       /* If md5 is not builtin for restore kernel, let it go. */
+> +       /* If crc32 is not builtin for restore kernel, let it go. */
+>         return false;
+>  }
+>  #endif
+> @@ -160,6 +160,9 @@ int arch_hibernation_header_save(void *addr, unsigned int max_size)
+>         rdr->jump_address = (unsigned long)restore_registers;
+>         rdr->jump_address_phys = __pa_symbol(restore_registers);
+>
+> +       /* crc32 digest size is 4 but digest buffer size is 16 so zero it all */
+> +       memset(rdr->e820_digest, 0, CRC32_DIGEST_SIZE);
+> +
+>         /*
+>          * The restore code fixes up CR3 and CR4 in the following sequence:
+>          *
+> --
+> 2.18.1
+>
