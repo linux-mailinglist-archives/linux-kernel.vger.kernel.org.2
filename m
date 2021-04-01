@@ -2,114 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB543351E15
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF58C351E4F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:53:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238301AbhDASei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:34:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237019AbhDASNl (ORCPT
+        id S238387AbhDASiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:38:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40203 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239383AbhDASQT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:13:41 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10A11C0613AC
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 04:44:28 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id k23-20020a17090a5917b02901043e35ad4aso2936271pji.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 04:44:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U32Xl3i+DvBGu9DIngpNbbKksxWeEgvCfpwavzhzq+M=;
-        b=U6k0aRtyT/YAqwZ9LCwDNUsQlw+SFxWmQ9bh45GG1kmLh9rU4+q0zApmYH+7u0K037
-         dgE/ybzBNXvCrXQRW1wQPS/ECzvh8JmmeKGrYDL3BA1tbx+kaHflL9TOlFgRJRr7JTzq
-         x7AL/rKBEaoxV4vUnCTHVFRlQTqUqCd2pAgTMd+rUvf5zK1gTZmTJ7xWKdzQ8dtjwFs/
-         bPXymJ5zhMO0yBSoj+IJCjC8+2Uy8yH/pc+jlNG0v3NjwVA/xP1QsczpLi3+L2VEenUD
-         PVnrPikzvh6JXVNZi7JGkVHMmU1YK1mEUyQmJxo/EDaW3br+1tWvrWHSOUEMp3LY336b
-         LAvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U32Xl3i+DvBGu9DIngpNbbKksxWeEgvCfpwavzhzq+M=;
-        b=g7iqaunLU3k/MSOAcMFDP/qUzDfqBsIKm61ns59gVeRdXB+c4ce7P65oN1ON0Eums6
-         h1KUvsceTF76T9mYVleid/2t4u0ZPTD8kPNSNiR/V8iJRvKWr5lvRPupYy+GAYLE2U3S
-         XmNnPIL6h2ILQrMp5psUuzPy+z6yww58McJlqAn7wfdNQMewGTZtyDDqUzjgFCE+Wsw0
-         cP41iHvmnCR+i50hIeL0RdutfussQ0KRvkozl//T7otUTciuQUuwuEDsfWUR6Y1pqmYy
-         NV4P/P1NFt/TZzgOQXEjS1waWdTnshTbwFcOGxUHy63kG+Wfd7FamLlJYzpZLKIWqrvz
-         mbvw==
-X-Gm-Message-State: AOAM530TdPXjZkz7qPGDjpUTtrPYa0c4eoGdNA1SEz9M8JwqAbqh/Oeo
-        gY0QbOoP5LqYFS77/n7LLAQKvQBmM8ir83/kRKGXbvhY8Fg=
-X-Google-Smtp-Source: ABdhPJwbu1LZT4NHxa6D/4UADQAFr2uPFpDu6MUnRoVyM5I3njWKwU7En/mUJvtnAV19sz3G1xPHaNXgEINtnmo/3Nw=
-X-Received: by 2002:a17:902:f68a:b029:e5:b17f:9154 with SMTP id
- l10-20020a170902f68ab02900e5b17f9154mr7458337plg.28.1617277467431; Thu, 01
- Apr 2021 04:44:27 -0700 (PDT)
+        Thu, 1 Apr 2021 14:16:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617300979;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iYT4yJTC86HCuhZrmDLNovfzTFC4qveUrUuvrfHdzTQ=;
+        b=DtkuOsCO9oNGi2TnzZxRx7VpPzZlwqqqs4XZJiijbzlbl1UTmm0FqIeL7vicBy2zE0F6DP
+        wQipoEODt8z4RDWQbGwBsyzcI3GLNw3oAZ1Xf6sAglksj+ueZnC78xAzSWWgDuOzK761nr
+        1HnUzLXlFT8CyaJs9CfafqGFnIwe9Zk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-602-wLIrvw3yMeqg6KUvwwbuZw-1; Thu, 01 Apr 2021 07:48:58 -0400
+X-MC-Unique: wLIrvw3yMeqg6KUvwwbuZw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4BC36107ACCD;
+        Thu,  1 Apr 2021 11:48:55 +0000 (UTC)
+Received: from [10.36.112.13] (ovpn-112-13.ams2.redhat.com [10.36.112.13])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9B7DC19C46;
+        Thu,  1 Apr 2021 11:48:46 +0000 (UTC)
+Subject: Re: [PATCH v14 13/13] iommu/smmuv3: Accept configs with more than one
+ context descriptor
+To:     Zenghui Yu <yuzenghui@huawei.com>
+Cc:     eric.auger.pro@gmail.com, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, will@kernel.org, maz@kernel.org,
+        robin.murphy@arm.com, joro@8bytes.org, alex.williamson@redhat.com,
+        tn@semihalf.com, zhukeqian1@huawei.com,
+        jacob.jun.pan@linux.intel.com, yi.l.liu@intel.com,
+        wangxingang5@huawei.com, jiangkunkun@huawei.com,
+        jean-philippe@linaro.org, zhangfei.gao@linaro.org,
+        zhangfei.gao@gmail.com, vivek.gautam@arm.com,
+        shameerali.kolothum.thodi@huawei.com, nicoleotsuka@gmail.com,
+        lushenming@huawei.com, vsethi@nvidia.com,
+        wanghaibin.wang@huawei.com
+References: <20210223205634.604221-1-eric.auger@redhat.com>
+ <20210223205634.604221-14-eric.auger@redhat.com>
+ <86614466-3c74-3a38-5f2e-6ac2f55c309a@huawei.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <bf928484-b9da-a4bc-b761-e73483cb2323@redhat.com>
+Date:   Thu, 1 Apr 2021 13:48:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210401103500.1558058-1-yangyingliang@huawei.com>
-In-Reply-To: <20210401103500.1558058-1-yangyingliang@huawei.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Thu, 1 Apr 2021 13:44:15 +0200
-Message-ID: <CAG3jFyupb==xBb19wdv=TKheKuS_TEojhsvzmAATJsh1VUrdzg@mail.gmail.com>
-Subject: Re: [PATCH -next] media: camss: csiphy: Remove redundant dev_err call
- in msm_csiphy_subdev_init()
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <86614466-3c74-3a38-5f2e-6ac2f55c309a@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Yang,
+Hi Zenghui,
 
-Thanks for the patch, feel free to add my r-b.
+On 3/30/21 11:23 AM, Zenghui Yu wrote:
+> Hi Eric,
+> 
+> On 2021/2/24 4:56, Eric Auger wrote:
+>> In preparation for vSVA, let's accept userspace provided configs
+>> with more than one CD. We check the max CD against the host iommu
+>> capability and also the format (linear versus 2 level).
+>>
+>> Signed-off-by: Eric Auger <eric.auger@redhat.com>
+>> Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+>> ---
+>>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 13 ++++++++-----
+>>   1 file changed, 8 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> index 332d31c0680f..ab74a0289893 100644
+>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> @@ -3038,14 +3038,17 @@ static int arm_smmu_attach_pasid_table(struct
+>> iommu_domain *domain,
+>>           if (smmu_domain->s1_cfg.set)
+>>               goto out;
+>>   -        /*
+>> -         * we currently support a single CD so s1fmt and s1dss
+>> -         * fields are also ignored
+>> -         */
+>> -        if (cfg->pasid_bits)
+>> +        list_for_each_entry(master, &smmu_domain->devices,
+>> domain_head) {
+>> +            if (cfg->pasid_bits > master->ssid_bits)
+>> +                goto out;
+>> +        }
+>> +        if (cfg->vendor_data.smmuv3.s1fmt ==
+>> STRTAB_STE_0_S1FMT_64K_L2 &&
+>> +                !(smmu->features & ARM_SMMU_FEAT_2_LVL_CDTAB))
+>>               goto out;
+>>             smmu_domain->s1_cfg.cdcfg.cdtab_dma = cfg->base_ptr;
+>> +        smmu_domain->s1_cfg.s1cdmax = cfg->pasid_bits;
+>> +        smmu_domain->s1_cfg.s1fmt = cfg->vendor_data.smmuv3.s1fmt;
+> 
+> And what about the SIDSS field?
+> 
+I added this patch upon Shameer's request, to be more vSVA friendly.
+Hower this series does not really target multiple CD support. At the
+moment the driver only supports STRTAB_STE_1_S1DSS_SSID0 (0x2) I think.
+At this moment maybe I can only check the s1dss field is 0x2. Or simply
+removes this patch?
 
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
+Thoughts?
 
-On Thu, 1 Apr 2021 at 12:33, Yang Yingliang <yangyingliang@huawei.com> wrote:
->
-> There is an error message within devm_ioremap_resource
-> already, so remove the dev_err call to avoid redundant
-> error message.
->
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
->  drivers/media/platform/qcom/camss/camss-csiphy.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.c b/drivers/media/platform/qcom/camss/camss-csiphy.c
-> index 6ceb6d7d53d1..b3c3bf19e522 100644
-> --- a/drivers/media/platform/qcom/camss/camss-csiphy.c
-> +++ b/drivers/media/platform/qcom/camss/camss-csiphy.c
-> @@ -593,20 +593,16 @@ int msm_csiphy_subdev_init(struct camss *camss,
->
->         r = platform_get_resource_byname(pdev, IORESOURCE_MEM, res->reg[0]);
->         csiphy->base = devm_ioremap_resource(dev, r);
-> -       if (IS_ERR(csiphy->base)) {
-> -               dev_err(dev, "could not map memory\n");
-> +       if (IS_ERR(csiphy->base))
->                 return PTR_ERR(csiphy->base);
-> -       }
->
->         if (camss->version == CAMSS_8x16 ||
->             camss->version == CAMSS_8x96) {
->                 r = platform_get_resource_byname(pdev, IORESOURCE_MEM,
->                                                  res->reg[1]);
->                 csiphy->base_clk_mux = devm_ioremap_resource(dev, r);
-> -               if (IS_ERR(csiphy->base_clk_mux)) {
-> -                       dev_err(dev, "could not map memory\n");
-> +               if (IS_ERR(csiphy->base_clk_mux))
->                         return PTR_ERR(csiphy->base_clk_mux);
-> -               }
->         } else {
->                 csiphy->base_clk_mux = NULL;
->         }
-> --
-> 2.25.1
->
+Eric
+
