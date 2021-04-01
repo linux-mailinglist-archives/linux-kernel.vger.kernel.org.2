@@ -2,228 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB4E350E6D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 07:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD773350E74
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 07:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232892AbhDAF3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 01:29:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37966 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229850AbhDAF3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 01:29:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8EE961055;
-        Thu,  1 Apr 2021 05:29:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617254975;
-        bh=4PD+/hmJOe6KDN5FqP2OiD2BFsgSpXT4q7TiOZRXfiI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sfwJqf3FAxfq4ODvNsQxu+vILMnIHP3toOj6nBHslLccpdJVtR9P9v/5WC+m+8uun
-         LhHLgETE4HuNBlX0eNAjELY9+1O0d89j90QaOgORB4eeyBLJIqmuCy3FBw26dqKrgZ
-         AB4ct5JxC0q5qkIJpwneUS9d/SU1fiJsI3VgMi+mpVEYix9G8Sb7KtgA6W9/CpU+Fa
-         gs/UOEL+K4q+L2Xssi5MBeq+8FZIKyOAj7xqFB1hYdAFy2ExXTZNhAPnVXaOn29WHI
-         JlP66dsMuEIz2LyjDq2zeQ9gpwRpMQIxCTMkGuyYQ1eH+4YRWOoztk45A+JuIyQHoC
-         qpHSz8Tda29rA==
-Date:   Thu, 1 Apr 2021 10:59:29 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] arm: dts: owl-s500-roseapplepi: Add ATC2603C PMIC
-Message-ID: <20210401052929.GC14052@work>
-References: <2e0a2931ae3757f016948e7c78e8e54afa325ae0.1615538629.git.cristian.ciocaltea@gmail.com>
+        id S232944AbhDAFcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 01:32:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232585AbhDAFcH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 01:32:07 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76025C0613E6
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 22:32:07 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id o2so451765plg.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 22:32:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EGCaNYuJs5ysS+G47sBAgFfeBuakOnmZVc6UOW7pnu8=;
+        b=H4LMh6naKuD9jE1jgXbD+Y6im6xj6SrczGVRGFyo2QjAV8r/Jzu0IWlYhmxqsaovAe
+         POh3cEIv5YtAJ9THgZPkjIual8JLUsh0XWwWlZTlBxVvdFSz5My3Z0YxGhRJUjkaMGuX
+         ZN1jamFCfnnYkzUq7QDx8/ngukUjepeiKGEKA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EGCaNYuJs5ysS+G47sBAgFfeBuakOnmZVc6UOW7pnu8=;
+        b=i1cfXM7rGEzZ2/5XOI9gvn3XTP/0LkioIizw3HyB/M/9+Z/VpST7rtxPyI8aZzQj6s
+         dNOUht82A27KpHXrAfb6OIt54QuPYIclMYR6eBaiFKalKiiuN2VJB7/pBgvKIb8Y0AK/
+         WyT1QJ2MFghFWg01crz7bIZua0g2wTe9AySCyEuYJle78o5y8qalbhP2wSfgWXtDg5sC
+         NK+a6iUfY3jdR6VZa+DQCTgNqa+gUUj8CVdsOBY8/3YVmW5ZSIdHtiWcPI2hrvphN1ot
+         vmdEilOOJVvjAkTQNxxXv4ln0B0XIn4THq0vjglpNxeuP2lL+QIjDQIEVlwdDcOME5Mo
+         8Jeg==
+X-Gm-Message-State: AOAM533wpEN8yRTf1hL4JwLDqjrqhWeFTIgJkBN+oEQ6CrVPf65fGxBj
+        AHKAUrNmvryQga24iKqluWbwbA==
+X-Google-Smtp-Source: ABdhPJze72R8x10Uwimtp/vAMjJ5lbZAFSGzBuvIY68rbCBL5/iz4VkpPs1KdmUR01pqLTvYeVHPSw==
+X-Received: by 2002:a17:90a:2e0d:: with SMTP id q13mr7361084pjd.225.1617255126907;
+        Wed, 31 Mar 2021 22:32:06 -0700 (PDT)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:8730:fe8e:d1f8:82c])
+        by smtp.gmail.com with ESMTPSA id mz11sm3990058pjb.6.2021.03.31.22.32.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 22:32:06 -0700 (PDT)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Sam Ravnborg <sam@ravnborg.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        dri-devel@lists.freedesktop.org
+Cc:     Robert Foss <robert.foss@linaro.org>,
+        David Airlie <airlied@linux.ie>, Xin Ji <xji@analogixsemi.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: [RESEND PATCH v4 1/2] dt-bindings: drm/bridge: anx7625: Add power supplies
+Date:   Thu,  1 Apr 2021 13:32:01 +0800
+Message-Id: <20210401053202.159302-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2e0a2931ae3757f016948e7c78e8e54afa325ae0.1615538629.git.cristian.ciocaltea@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 11:49:27AM +0200, Cristian Ciocaltea wrote:
-> Add device tree node for ATC2603C PMIC and remove the 'fixed-3.1V'
-> dummy regulator used for the uSD supply.
-> 
-> Additionally, add 'SYSPWR' fixed regulator and provide cpu0 supply.
-> 
-> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+anx7625 requires 3 power supply regulators.
 
-Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
+---
+v3->v4: rebase to drm-misc/for-linux-next
+---
+ .../bindings/display/bridge/analogix,anx7625.yaml | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-Thanks,
-Mani
+diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+index c789784efe306..ab48ab2f4240d 100644
+--- a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
++++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+@@ -34,6 +34,15 @@ properties:
+     description: used for reset chip control, RESET_N pin B7.
+     maxItems: 1
+ 
++  vdd10-supply:
++    description: Regulator that provides the supply 1.0V power.
++
++  vdd18-supply:
++    description: Regulator that provides the supply 1.8V power.
++
++  vdd33-supply:
++    description: Regulator that provides the supply 3.3V power.
++
+   ports:
+     $ref: /schemas/graph.yaml#/properties/ports
+ 
+@@ -55,6 +64,9 @@ properties:
+ required:
+   - compatible
+   - reg
++  - vdd10-supply
++  - vdd18-supply
++  - vdd33-supply
+   - ports
+ 
+ additionalProperties: false
+@@ -72,6 +84,9 @@ examples:
+             reg = <0x58>;
+             enable-gpios = <&pio 45 GPIO_ACTIVE_HIGH>;
+             reset-gpios = <&pio 73 GPIO_ACTIVE_HIGH>;
++            vdd10-supply = <&pp1000_mipibrdg>;
++            vdd18-supply = <&pp1800_mipibrdg>;
++            vdd33-supply = <&pp3300_mipibrdg>;
+ 
+             ports {
+                 #address-cells = <1>;
+-- 
+2.31.0.291.g576ba9dcdaf-goog
 
-> ---
-> Please note the patch depends on the ATC260x PMIC support which is queued
-> for merging in v5.13:
-> 
-> https://lore.kernel.org/lkml/cover.1611653995.git.cristian.ciocaltea@gmail.com/
-> https://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git/log/?h=for-mfd-next&qt=range&q=a38fd8748464831584a19438cbb3082b5a2dab15..eac013a0b7041f5cfc8feedf429a767675350102
-> 
->  arch/arm/boot/dts/owl-s500-roseapplepi.dts | 132 ++++++++++++++++++++-
->  1 file changed, 126 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/arm/boot/dts/owl-s500-roseapplepi.dts b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
-> index ff91561ca99c..b8c5db2344aa 100644
-> --- a/arch/arm/boot/dts/owl-s500-roseapplepi.dts
-> +++ b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
-> @@ -2,7 +2,7 @@
->  /*
->   * Roseapple Pi
->   *
-> - * Copyright (C) 2020 Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> + * Copyright (C) 2020-2021 Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
->   */
->  
->  /dts-v1/;
-> @@ -27,20 +27,140 @@ memory@0 {
->  		reg = <0x0 0x80000000>; /* 2GB */
->  	};
->  
-> -	/* Fixed regulator used in the absence of PMIC */
-> -	sd_vcc: sd-vcc {
-> +	syspwr: regulator-5v0 {
->  		compatible = "regulator-fixed";
-> -		regulator-name = "fixed-3.1V";
-> -		regulator-min-microvolt = <3100000>;
-> -		regulator-max-microvolt = <3100000>;
-> +		regulator-name = "SYSPWR";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
->  		regulator-always-on;
->  	};
->  };
->  
-> +&cpu0 {
-> +	cpu0-supply = <&vdd_cpu>;
-> +};
-> +
->  &i2c0 {
->  	status = "okay";
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&i2c0_pins>;
-> +
-> +	atc260x: pmic@65 {
-> +		compatible = "actions,atc2603c";
-> +		reg = <0x65>;
-> +		interrupt-parent = <&sirq>;
-> +		interrupts = <2 IRQ_TYPE_LEVEL_HIGH>;
-> +
-> +		reset-time-sec = <6>;
-> +
-> +		regulators {
-> +			compatible = "actions,atc2603c-regulator";
-> +
-> +			dcdc1-supply = <&syspwr>;
-> +			dcdc2-supply = <&syspwr>;
-> +			dcdc3-supply = <&syspwr>;
-> +			ldo1-supply = <&syspwr>;
-> +			ldo2-supply = <&syspwr>;
-> +			ldo3-supply = <&syspwr>;
-> +			ldo5-supply = <&syspwr>;
-> +			ldo6-supply = <&syspwr>;
-> +			ldo7-supply = <&syspwr>;
-> +			ldo8-supply = <&syspwr>;
-> +			ldo11-supply = <&syspwr>;
-> +			ldo12-supply = <&syspwr>;
-> +			switchldo1-supply = <&vcc>;
-> +
-> +			vdd_cpu: dcdc1 {
-> +				regulator-name = "VDD_CPU";
-> +				regulator-min-microvolt = <700000>;
-> +				regulator-max-microvolt = <1400000>;
-> +				regulator-always-on;
-> +			};
-> +
-> +			vddq: dcdc2 {
-> +				regulator-name = "VDDQ";
-> +				regulator-min-microvolt = <1300000>;
-> +				regulator-max-microvolt = <2150000>;
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +			};
-> +
-> +			vcc: dcdc3 {
-> +				regulator-name = "VCC";
-> +				regulator-min-microvolt = <2600000>;
-> +				regulator-max-microvolt = <3300000>;
-> +				regulator-always-on;
-> +			};
-> +
-> +			vcc_3v3: ldo1 {
-> +				regulator-name = "VCC_3V3";
-> +				regulator-min-microvolt = <2600000>;
-> +				regulator-max-microvolt = <3300000>;
-> +				regulator-always-on;
-> +			};
-> +
-> +			avcc: ldo2 {
-> +				regulator-name = "AVCC";
-> +				regulator-min-microvolt = <2600000>;
-> +				regulator-max-microvolt = <3300000>;
-> +				regulator-always-on;
-> +			};
-> +
-> +			vdd_1v8: ldo3 {
-> +				regulator-name = "VDD_1V8";
-> +				regulator-min-microvolt = <1500000>;
-> +				regulator-max-microvolt = <2000000>;
-> +				regulator-always-on;
-> +			};
-> +
-> +			vcc_3v1: ldo5 {
-> +				regulator-name = "VCC_3V1";
-> +				regulator-min-microvolt = <2600000>;
-> +				regulator-max-microvolt = <3300000>;
-> +			};
-> +
-> +			avdd: ldo6 {
-> +				regulator-name = "AVDD";
-> +				regulator-min-microvolt = <700000>;
-> +				regulator-max-microvolt = <1400000>;
-> +				regulator-always-on;
-> +			};
-> +
-> +			sens_1v8: ldo7 {
-> +				regulator-name = "SENS_1V8";
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <1800000>;
-> +			};
-> +
-> +			ldo8: ldo8 {
-> +				regulator-name = "LDO8";
-> +				regulator-min-microvolt = <2300000>;
-> +				regulator-max-microvolt = <3300000>;
-> +			};
-> +
-> +			svcc: ldo11 {
-> +				regulator-name = "SVCC";
-> +				regulator-min-microvolt = <2600000>;
-> +				regulator-max-microvolt = <3300000>;
-> +				regulator-always-on;
-> +			};
-> +
-> +			rtc_vdd: ldo12 {
-> +				regulator-name = "RTC_VDD";
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <1800000>;
-> +				regulator-always-on;
-> +			};
-> +
-> +			sd_vcc: switchldo1 {
-> +				regulator-name = "SD_VCC";
-> +				regulator-min-microvolt = <3000000>;
-> +				regulator-max-microvolt = <3300000>;
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +			};
-> +		};
-> +	};
->  };
->  
->  &i2c1 {
-> -- 
-> 2.30.2
-> 
