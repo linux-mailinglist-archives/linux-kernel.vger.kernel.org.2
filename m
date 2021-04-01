@@ -2,208 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B4FA350C5A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 04:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D6E3350C64
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 04:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233288AbhDACIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 22:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233015AbhDACHy (ORCPT
+        id S233451AbhDACIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 22:08:38 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:51260 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233028AbhDACIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 22:07:54 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACDEEC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 19:07:53 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id g8so449178lfv.12
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 19:07:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tSWB6tAtYfqgy88WCLhQW25yPDif2mP7BXO1UanisQo=;
-        b=aj/IQxrYkHRQTun5ka3gkXEnhf0iKxGwKNdh5fd3psjWzkorNJsjLGjaIjQIV3ewKn
-         lAj8ZU7BWh3FqA8ewlstETO0j6FJXqH6Ef0yz1IzUkJVYwXKMIH2qaezEu/wwu5jt8Dc
-         7WCYBjww8qtktcxpv3qpUQnu8CJaxFtRYb+gzmCdE8bnIR9O7huEgjW8X8Xo54jjkSV4
-         MAFF/zKAp9Yhip+pibGzR99CMSMmfjWGQjhOx4RxEELmCQqHDIuG5zt2w/NNtCVBZESB
-         atZ8qJyNtexpQof8QmeGS4dacDS4uRo+S/x8l7Ymmp/hR1e9/Yt5omL3MXhgP7f9T5rK
-         NeaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tSWB6tAtYfqgy88WCLhQW25yPDif2mP7BXO1UanisQo=;
-        b=HSEDPuTLzi/uYcPWdY8dfigKhJNg7Q31o9JfPSiz8FMuh27ekTlGmvTgbVoxseIYvS
-         Gde9plGrNA/ePLwRWBF93p06f2pKCzAAoPOWOqBj84x2TV4bC21CAWI/faDDLxsvM0fD
-         kOaEcgWKgasGf/wRvc5i0MDjsEcXlTcRYCqzr1slJuIoBOtmLUKvQC4uiQ0FGdSkuDGZ
-         gm4iKh/wSmraUo47fQGZECuYaGWB2fUx9P7AYc+vyB2LPgBXQEy+u2FwjtEJvOzoGsrG
-         XTPCNOZELGLtGRAo1qxLA2dyFNR4hYDJ53ssZHSytfNRmmaj4/YRb/dvxd//0CHWXYvJ
-         BOTA==
-X-Gm-Message-State: AOAM533RUqcv7gxdTxPOFgWcLyGhE75eaHbCrZkPUsQ81FV+da6VgACT
-        oQv13IeOKiX/itrYj5odRncGnRbHPI01mg==
-X-Google-Smtp-Source: ABdhPJz5E9eGnZNL3mgtCGPnpEuPLyUIxWwdt306tTEkD9FAarcX1t9YW/pQGOHuNgi+UNXx76nfqw==
-X-Received: by 2002:a19:ae11:: with SMTP id f17mr4149867lfc.532.1617242872222;
-        Wed, 31 Mar 2021 19:07:52 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id j27sm386834lfp.186.2021.03.31.19.07.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Mar 2021 19:07:51 -0700 (PDT)
-Subject: Re: [v1] drm/msm/disp/dpu1: fix warn stack reported during dpu resume
-To:     Rob Clark <robdclark@gmail.com>,
-        Kalyan Thota <kalyan_t@codeaurora.org>
-Cc:     y@qualcomm.com, dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Krishna Manikandan <mkrishn@codeaurora.org>,
-        Daniel Hung-yu Wu <hywu@google.com>, mka@google.com,
-        Michelle Dean <midean@google.com>,
-        Steev Klimaszewski <steev@kali.org>
-References: <1617190020-7931-1-git-send-email-kalyan_t@codeaurora.org>
- <84fdbdc7-7890-965a-bc6b-a19bd0ca4937@linaro.org>
- <CAF6AEGt_aAq4dF9QkS9uJ7vwvGeR42oToCQKpsWCrfuhy_j+pw@mail.gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <d104a40f-65c3-2700-e829-bfe8f5712ac5@linaro.org>
-Date:   Thu, 1 Apr 2021 05:07:50 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Wed, 31 Mar 2021 22:08:18 -0400
+X-UUID: 47acad642a104fb2a14041a079cb813c-20210401
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=xxoJj4PzGeFeHxkVicdKTYcSt15G5RUjI0591TbB/Mc=;
+        b=dvMoHBxp2+B60fJvac56osF3A+YFYzNYeApi6qe6NeBGp/h0I4cdCDUIvvHT84Aob9riMX78N+DmGDJ+9LYvYsmCdTKjgg0ARPvyaEnhrP2SVbehPeM5Bo3TAF4WP3i4DNDgYINdmmsDpwp9t+oVPjoAvgtlk3L8RJzlDqEYLlU=;
+X-UUID: 47acad642a104fb2a14041a079cb813c-20210401
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
+        (envelope-from <ck.hu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1636523368; Thu, 01 Apr 2021 10:08:13 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 1 Apr 2021 10:08:12 +0800
+Received: from [172.21.77.4] (172.21.77.4) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 1 Apr 2021 10:08:12 +0800
+Message-ID: <1617242892.14305.5.camel@mtksdaap41>
+Subject: Re: [PATCH 3/3] drm/mediatek: dpi: add bus format negociation
+From:   CK Hu <ck.hu@mediatek.com>
+To:     Jitao Shi <jitao.shi@mediatek.com>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <yingjoe.chen@mediatek.com>,
+        <eddie.huang@mediatek.com>, <cawa.cheng@mediatek.com>,
+        <bibby.hsieh@mediatek.com>, <stonea168@163.com>,
+        <huijuan.xie@mediatek.com>, <rex-bc.chen@mediatek.com>
+Date:   Thu, 1 Apr 2021 10:08:12 +0800
+In-Reply-To: <20210330155330.28759-4-jitao.shi@mediatek.com>
+References: <20210330155330.28759-1-jitao.shi@mediatek.com>
+         <20210330155330.28759-4-jitao.shi@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <CAF6AEGt_aAq4dF9QkS9uJ7vwvGeR42oToCQKpsWCrfuhy_j+pw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/04/2021 01:47, Rob Clark wrote:
-> On Wed, Mar 31, 2021 at 9:03 AM Dmitry Baryshkov
-> <dmitry.baryshkov@linaro.org> wrote:
->>
->> On 31/03/2021 14:27, Kalyan Thota wrote:
->>> WARN_ON was introduced by the below commit to catch runtime resumes
->>> that are getting triggered before icc path was set.
->>>
->>> "drm/msm/disp/dpu1: icc path needs to be set before dpu runtime resume"
->>>
->>> For the targets where the bw scaling is not enabled, this WARN_ON is
->>> a false alarm. Fix the WARN condition appropriately.
->>
->> Should we change all DPU targets to use bw scaling to the mdp from the
->> mdss nodes? The limitation to sc7180 looks artificial.
-> 
-> yes, we should, this keeps biting us on 845
+SGksIEppdGFvOg0KDQpPbiBUdWUsIDIwMjEtMDMtMzAgYXQgMjM6NTMgKzA4MDAsIEppdGFvIFNo
+aSB3cm90ZToNCj4gQWRkIHRoZSBhdG9taWNfZ2V0X291dHB1dF9idXNfZm10cywgYXRvbWljX2dl
+dF9pbnB1dF9idXNfZm10cyB0byBuZWdvY2lhdGUNCj4gdGhlIHBvc3NpYmxlIG91dHB1dCBhbmQg
+aW5wdXQgZm9ybWF0cyBmb3IgdGhlIGN1cnJlbnQgbW9kZSBhbmQgbW9uaXRvciwNCj4gYW5kIHVz
+ZSB0aGUgbmVnb3RpYXRlZCBmb3JtYXRzIGluIGEgYmFzaWMgYXRvbWljX2NoZWNrIGNhbGxiYWNr
+Lg0KPiANCj4gU2lnbmVkLW9mZi1ieTogSml0YW8gU2hpIDxqaXRhby5zaGlAbWVkaWF0ZWsuY29t
+Pg0KPiAtLS0NCj4gIGRyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHBpLmMgfCA5NiArKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDkx
+IGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVy
+cy9ncHUvZHJtL21lZGlhdGVrL210a19kcGkuYyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9t
+dGtfZHBpLmMNCj4gaW5kZXggODdiYjI3NjQ5YzRjLi40ZTQ1ZDFiMDFiMGMgMTAwNjQ0DQo+IC0t
+LSBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHBpLmMNCj4gKysrIGIvZHJpdmVycy9n
+cHUvZHJtL21lZGlhdGVrL210a19kcGkuYw0KPiBAQCAtODEsNiArODEsOCBAQCBzdHJ1Y3QgbXRr
+X2RwaSB7DQo+ICAJc3RydWN0IHBpbmN0cmwgKnBpbmN0cmw7DQo+ICAJc3RydWN0IHBpbmN0cmxf
+c3RhdGUgKnBpbnNfZ3BpbzsNCj4gIAlzdHJ1Y3QgcGluY3RybF9zdGF0ZSAqcGluc19kcGk7DQo+
+ICsJdW5zaWduZWQgaW50IGluX2J1c19mb3JtYXQ7DQo+ICsJdW5zaWduZWQgaW50IG91dF9idXNf
+Zm9ybWF0Ow0KDQpXaHkgZG8geW91IGtlZXAgdGhlc2UgdHdvIHZhbHVlPyBZb3UgZG9lcyBub3Qg
+dXNlIHRoZW0uDQoNCj4gIAlib29sIGRkcl9lZGdlX3NlbDsNCj4gIAlpbnQgcmVmY291bnQ7DQo+
+ICB9Ow0KPiBAQCAtNTM0LDYgKzUzNiw5MiBAQCBzdGF0aWMgaW50IG10a19kcGlfc2V0X2Rpc3Bs
+YXlfbW9kZShzdHJ1Y3QgbXRrX2RwaSAqZHBpLA0KPiAgCXJldHVybiAwOw0KPiAgfQ0KPiAgDQo+
+ICsjZGVmaW5lIE1BWF9PVVRQVVRfU0VMX0ZPUk1BVFMJMg0KPiArDQo+ICtzdGF0aWMgdTMyICpt
+dGtfZHBpX2JyaWRnZV9hdG9taWNfZ2V0X291dHB1dF9idXNfZm10cyhzdHJ1Y3QgZHJtX2JyaWRn
+ZSAqYnJpZGdlLA0KPiArCQkJCQlzdHJ1Y3QgZHJtX2JyaWRnZV9zdGF0ZSAqYnJpZGdlX3N0YXRl
+LA0KPiArCQkJCQlzdHJ1Y3QgZHJtX2NydGNfc3RhdGUgKmNydGNfc3RhdGUsDQo+ICsJCQkJCXN0
+cnVjdCBkcm1fY29ubmVjdG9yX3N0YXRlICpjb25uX3N0YXRlLA0KPiArCQkJCQl1bnNpZ25lZCBp
+bnQgKm51bV9vdXRwdXRfZm10cykNCj4gK3sNCj4gKwlzdHJ1Y3QgZHJtX2Rpc3BsYXlfbW9kZSAq
+bW9kZSA9ICZjcnRjX3N0YXRlLT5tb2RlOw0KPiArCXUzMiAqb3V0cHV0X2ZtdHM7DQo+ICsJc3Ry
+dWN0IG10a19kcGkgKmRwaSA9IGJyaWRnZV90b19kcGkoYnJpZGdlKTsNCj4gKw0KPiArCSpudW1f
+b3V0cHV0X2ZtdHMgPSAwOw0KPiArDQo+ICsJb3V0cHV0X2ZtdHMgPSBrY2FsbG9jKE1BWF9PVVRQ
+VVRfU0VMX0ZPUk1BVFMsIHNpemVvZigqb3V0cHV0X2ZtdHMpLA0KPiArCQkJICAgICAgR0ZQX0tF
+Uk5FTCk7DQo+ICsJaWYgKCFvdXRwdXRfZm10cykNCj4gKwkJcmV0dXJuIE5VTEw7DQo+ICsNCj4g
+KwkvKiBEZWZhdWx0IDhiaXQgUkdCIGZhbGxiYWNrICovDQo+ICsJaWYgKGRwaS0+Y29uZi0+ZHVh
+bF9lZGdlKSB7DQo+ICsJCW91dHB1dF9mbXRzWzBdID0gIE1FRElBX0JVU19GTVRfUkdCODg4XzJY
+MTJfTEU7DQo+ICsJCW91dHB1dF9mbXRzWzFdID0gIE1FRElBX0JVU19GTVRfUkdCODg4XzJYMTJf
+QkU7DQoNClNvIG10ODE4MyBkb2VzIG5vdCBzdXBwb3J0IE1FRElBX0JVU19GTVRfUkdCODg4XzFY
+MjQ/DQoNCj4gKwkJKm51bV9vdXRwdXRfZm10cyA9IDI7DQo+ICsJfSBlbHNlIHsNCj4gKwkJb3V0
+cHV0X2ZtdHNbMF0gPSAgTUVESUFfQlVTX0ZNVF9SR0I4ODhfMVgyNDsNCj4gKwkJKm51bV9vdXRw
+dXRfZm10cyA9IDE7DQo+ICsJfQ0KPiArDQo+ICsJcmV0dXJuIG91dHB1dF9mbXRzOw0KPiArfQ0K
+PiArDQo+ICsjZGVmaW5lIE1BWF9JTlBVVF9TRUxfRk9STUFUUwkxDQo+ICsNCj4gK3N0YXRpYyB1
+MzIgKm10a19kcGlfYnJpZGdlX2F0b21pY19nZXRfaW5wdXRfYnVzX2ZtdHMoc3RydWN0IGRybV9i
+cmlkZ2UgKmJyaWRnZSwNCj4gKwkJCQkJc3RydWN0IGRybV9icmlkZ2Vfc3RhdGUgKmJyaWRnZV9z
+dGF0ZSwNCj4gKwkJCQkJc3RydWN0IGRybV9jcnRjX3N0YXRlICpjcnRjX3N0YXRlLA0KPiArCQkJ
+CQlzdHJ1Y3QgZHJtX2Nvbm5lY3Rvcl9zdGF0ZSAqY29ubl9zdGF0ZSwNCj4gKwkJCQkJdTMyIG91
+dHB1dF9mbXQsDQo+ICsJCQkJCXVuc2lnbmVkIGludCAqbnVtX2lucHV0X2ZtdHMpDQo+ICt7DQo+
+ICsJdTMyICppbnB1dF9mbXRzOw0KPiArDQo+ICsJKm51bV9pbnB1dF9mbXRzID0gMDsNCj4gKw0K
+PiArCWlucHV0X2ZtdHMgPSBrY2FsbG9jKE1BWF9JTlBVVF9TRUxfRk9STUFUUywgc2l6ZW9mKCpp
+bnB1dF9mbXRzKSwNCj4gKwkJCSAgICAgR0ZQX0tFUk5FTCk7DQo+ICsJaWYgKCFpbnB1dF9mbXRz
+KQ0KPiArCQlyZXR1cm4gTlVMTDsNCj4gKw0KPiArCSpudW1faW5wdXRfZm10cyA9IDE7DQo+ICsJ
+aW5wdXRfZm10c1swXSA9IE1FRElBX0JVU19GTVRfUkdCODg4XzFYMjQ7DQo+ICsNCj4gKwlyZXR1
+cm4gaW5wdXRfZm10czsNCj4gK30NCj4gKw0KPiArc3RhdGljIGludCBtdGtfZHBpX2JyaWRnZV9h
+dG9taWNfY2hlY2soc3RydWN0IGRybV9icmlkZ2UgKmJyaWRnZSwNCj4gKwkJCQkgICAgICAgc3Ry
+dWN0IGRybV9icmlkZ2Vfc3RhdGUgKmJyaWRnZV9zdGF0ZSwNCj4gKwkJCQkgICAgICAgc3RydWN0
+IGRybV9jcnRjX3N0YXRlICpjcnRjX3N0YXRlLA0KPiArCQkJCSAgICAgICBzdHJ1Y3QgZHJtX2Nv
+bm5lY3Rvcl9zdGF0ZSAqY29ubl9zdGF0ZSkNCj4gK3sNCj4gKwlzdHJ1Y3QgbXRrX2RwaSAqZHBp
+ID0gYnJpZGdlLT5kcml2ZXJfcHJpdmF0ZTsNCj4gKw0KPiArCWRwaS0+b3V0X2J1c19mb3JtYXQg
+PSBicmlkZ2Vfc3RhdGUtPm91dHB1dF9idXNfY2ZnLmZvcm1hdDsNCj4gKw0KPiArCWRwaS0+aW5f
+YnVzX2Zvcm1hdCA9IGJyaWRnZV9zdGF0ZS0+aW5wdXRfYnVzX2NmZy5mb3JtYXQ7DQo+ICsNCj4g
+KwlkZXZfZGJnKGRwaS0+ZGV2LCAiaW5wdXQgZm9ybWF0IDB4JTA0eCwgb3V0cHV0IGZvcm1hdCAw
+eCUwNHhcbiIsDQo+ICsJCWJyaWRnZV9zdGF0ZS0+aW5wdXRfYnVzX2NmZy5mb3JtYXQsDQo+ICsJ
+CWJyaWRnZV9zdGF0ZS0+b3V0cHV0X2J1c19jZmcuZm9ybWF0KTsNCj4gKw0KPiArCWlmIChkcGkt
+Pm91dF9idXNfZm9ybWF0ID09IE1FRElBX0JVU19GTVRfUkdCODg4XzJYMTJfTEUgfHwNCj4gKwkg
+ICAgZHBpLT5vdXRfYnVzX2Zvcm1hdCA9PSBNRURJQV9CVVNfRk1UX1JHQjg4OF8yWDEyX0JFKSB7
+DQoNCkkgdGhpbmsgeW91IGNvdWxkIHJlbW92ZSB0aGlzICdpZicgY2hlY2tpbmcuDQoNClJlZ2Fy
+ZHMsDQpDSy4NCg0KPiArCQlkcGktPmRkcl9lZGdlX3NlbCA9DQo+ICsJCQkoZHBpLT5vdXRfYnVz
+X2Zvcm1hdCA9PSBNRURJQV9CVVNfRk1UX1JHQjg4OF8yWDEyX0xFKSA/DQo+ICsJCQkgdHJ1ZSA6
+IGZhbHNlOw0KPiArCX0NCj4gKw0KPiArCWRwaS0+Yml0X251bSA9IE1US19EUElfT1VUX0JJVF9O
+VU1fOEJJVFM7DQo+ICsJZHBpLT5jaGFubmVsX3N3YXAgPSBNVEtfRFBJX09VVF9DSEFOTkVMX1NX
+QVBfUkdCOw0KPiArCWRwaS0+eWNfbWFwID0gTVRLX0RQSV9PVVRfWUNfTUFQX1JHQjsNCj4gKwlk
+cGktPmNvbG9yX2Zvcm1hdCA9IE1US19EUElfQ09MT1JfRk9STUFUX1JHQjsNCj4gKw0KPiArCXJl
+dHVybiAwOw0KPiArfQ0KPiArDQo+ICBzdGF0aWMgaW50IG10a19kcGlfYnJpZGdlX2F0dGFjaChz
+dHJ1Y3QgZHJtX2JyaWRnZSAqYnJpZGdlLA0KPiAgCQkJCSBlbnVtIGRybV9icmlkZ2VfYXR0YWNo
+X2ZsYWdzIGZsYWdzKQ0KPiAgew0KPiBAQCAtNTcyLDYgKzY2MCw5IEBAIHN0YXRpYyBjb25zdCBz
+dHJ1Y3QgZHJtX2JyaWRnZV9mdW5jcyBtdGtfZHBpX2JyaWRnZV9mdW5jcyA9IHsNCj4gIAkubW9k
+ZV9zZXQgPSBtdGtfZHBpX2JyaWRnZV9tb2RlX3NldCwNCj4gIAkuZGlzYWJsZSA9IG10a19kcGlf
+YnJpZGdlX2Rpc2FibGUsDQo+ICAJLmVuYWJsZSA9IG10a19kcGlfYnJpZGdlX2VuYWJsZSwNCj4g
+KwkuYXRvbWljX2NoZWNrID0gbXRrX2RwaV9icmlkZ2VfYXRvbWljX2NoZWNrLA0KPiArCS5hdG9t
+aWNfZ2V0X291dHB1dF9idXNfZm10cyA9IG10a19kcGlfYnJpZGdlX2F0b21pY19nZXRfb3V0cHV0
+X2J1c19mbXRzLA0KPiArCS5hdG9taWNfZ2V0X2lucHV0X2J1c19mbXRzID0gbXRrX2RwaV9icmlk
+Z2VfYXRvbWljX2dldF9pbnB1dF9idXNfZm10cywNCj4gIH07DQo+ICANCj4gIHN0YXRpYyB2b2lk
+IG10a19kcGlfc3RhcnQoc3RydWN0IG10a19kZHBfY29tcCAqY29tcCkNCj4gQEAgLTYyMSwxMSAr
+NzEyLDYgQEAgc3RhdGljIGludCBtdGtfZHBpX2JpbmQoc3RydWN0IGRldmljZSAqZGV2LCBzdHJ1
+Y3QgZGV2aWNlICptYXN0ZXIsIHZvaWQgKmRhdGEpDQo+ICAJCWdvdG8gZXJyX2NsZWFudXA7DQo+
+ICAJfQ0KPiAgDQo+IC0JZHBpLT5iaXRfbnVtID0gTVRLX0RQSV9PVVRfQklUX05VTV84QklUUzsN
+Cj4gLQlkcGktPmNoYW5uZWxfc3dhcCA9IE1US19EUElfT1VUX0NIQU5ORUxfU1dBUF9SR0I7DQo+
+IC0JZHBpLT55Y19tYXAgPSBNVEtfRFBJX09VVF9ZQ19NQVBfUkdCOw0KPiAtCWRwaS0+Y29sb3Jf
+Zm9ybWF0ID0gTVRLX0RQSV9DT0xPUl9GT1JNQVRfUkdCOw0KPiAtDQo+ICAJcmV0dXJuIDA7DQo+
+ICANCj4gIGVycl9jbGVhbnVwOg0KDQo=
 
-Done, 
-https://lore.kernel.org/linux-arm-msm/20210401020533.3956787-2-dmitry.baryshkov@linaro.org/
-
-> 
->>>
->>> Reported-by: Steev Klimaszewski <steev@kali.org>
-> 
-> Please add Fixes: tag as well
-> 
->>> Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
->>> ---
->>>    drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c  |  8 +++++---
->>>    drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h  |  9 +++++++++
->>>    drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c | 11 ++++++-----
->>>    3 files changed, 20 insertions(+), 8 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
->>> index cab387f..0071a4d 100644
->>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
->>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
->>> @@ -294,6 +294,9 @@ static int dpu_kms_parse_data_bus_icc_path(struct dpu_kms *dpu_kms)
->>>        struct icc_path *path1;
->>>        struct drm_device *dev = dpu_kms->dev;
->>>
->>> +     if (!dpu_supports_bw_scaling(dev))
->>> +             return 0;
->>> +
->>>        path0 = of_icc_get(dev->dev, "mdp0-mem");
->>>        path1 = of_icc_get(dev->dev, "mdp1-mem");
->>>
->>> @@ -934,8 +937,7 @@ static int dpu_kms_hw_init(struct msm_kms *kms)
->>>                DPU_DEBUG("REG_DMA is not defined");
->>>        }
->>>
->>> -     if (of_device_is_compatible(dev->dev->of_node, "qcom,sc7180-mdss"))
->>> -             dpu_kms_parse_data_bus_icc_path(dpu_kms);
->>> +     dpu_kms_parse_data_bus_icc_path(dpu_kms);
->>>
->>>        pm_runtime_get_sync(&dpu_kms->pdev->dev);
->>>
->>> @@ -1198,7 +1200,7 @@ static int __maybe_unused dpu_runtime_resume(struct device *dev)
->>>
->>>        ddev = dpu_kms->dev;
->>>
->>> -     WARN_ON(!(dpu_kms->num_paths));
->>> +     WARN_ON((dpu_supports_bw_scaling(ddev) && !dpu_kms->num_paths));
->>>        /* Min vote of BW is required before turning on AXI clk */
->>>        for (i = 0; i < dpu_kms->num_paths; i++)
->>>                icc_set_bw(dpu_kms->path[i], 0, Bps_to_icc(MIN_IB_BW));
->>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
->>> index d6717d6..f7bcc0a 100644
->>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
->>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
->>> @@ -154,6 +154,15 @@ struct vsync_info {
->>>
->>>    #define to_dpu_global_state(x) container_of(x, struct dpu_global_state, base)
->>>
->>> +/**
->>> + * dpu_supports_bw_scaling: returns true for drivers that support bw scaling.
->>> + * @dev: Pointer to drm_device structure
->>> + */
->>> +static inline int dpu_supports_bw_scaling(struct drm_device *dev)
->>> +{
->>> +     return of_device_is_compatible(dev->dev->of_node, "qcom,sc7180-mdss");
->>> +}
->>> +
->>>    /* Global private object state for tracking resources that are shared across
->>>     * multiple kms objects (planes/crtcs/etc).
->>>     */
->>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
->>> index cd40788..8cd712c 100644
->>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
->>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
->>> @@ -41,6 +41,9 @@ static int dpu_mdss_parse_data_bus_icc_path(struct drm_device *dev,
->>>        struct icc_path *path0 = of_icc_get(dev->dev, "mdp0-mem");
->>>        struct icc_path *path1 = of_icc_get(dev->dev, "mdp1-mem");
->>>
->>> +     if (dpu_supports_bw_scaling(dev))
->>> +             return 0;
->>> +
->>>        if (IS_ERR_OR_NULL(path0))
->>>                return PTR_ERR_OR_ZERO(path0);
->>>
->>> @@ -276,11 +279,9 @@ int dpu_mdss_init(struct drm_device *dev)
->>>
->>>        DRM_DEBUG("mapped mdss address space @%pK\n", dpu_mdss->mmio);
->>>
->>> -     if (!of_device_is_compatible(dev->dev->of_node, "qcom,sc7180-mdss")) {
->>> -             ret = dpu_mdss_parse_data_bus_icc_path(dev, dpu_mdss);
->>> -             if (ret)
->>> -                     return ret;
->>> -     }
->>> +     ret = dpu_mdss_parse_data_bus_icc_path(dev, dpu_mdss);
->>> +     if (ret)
->>> +             return ret;
->>>
->>>        mp = &dpu_mdss->mp;
->>>        ret = msm_dss_parse_clock(pdev, mp);
->>>
->>
->>
->> --
->> With best wishes
->> Dmitry
-
-
--- 
-With best wishes
-Dmitry
