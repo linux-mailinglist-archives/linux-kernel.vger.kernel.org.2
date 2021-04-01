@@ -2,95 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9558035127D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C40351280
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233769AbhDAJik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 05:38:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58406 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234027AbhDAJii (ORCPT
+        id S233900AbhDAJjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 05:39:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229612AbhDAJiq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 05:38:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617269918;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3Hn127n4+W9QT98rMhYkTztLXr0yp9CQW2nFtLHdNsg=;
-        b=OiqhED6+Ute+hn6KSkhCxLpV3IF7vfylLmMNc5YRAIQAC+XuJEb3LH0GgcFPGIQkVCJX3y
-        q0IuHn6tRRFOJazEgvoATAyhi7x+NGjHAjdXPmEMcBwdXHPdcLk8yQbpHBoBFd3SwJlIBi
-        E98RO94NyedtTdLATEY+cf11r+LM8BU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-577-duJBAVOJMpCjeWyJ694eNA-1; Thu, 01 Apr 2021 05:38:34 -0400
-X-MC-Unique: duJBAVOJMpCjeWyJ694eNA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EBE96107B7C3;
-        Thu,  1 Apr 2021 09:38:30 +0000 (UTC)
-Received: from [10.36.112.13] (ovpn-112-13.ams2.redhat.com [10.36.112.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 189EB5C8AB;
-        Thu,  1 Apr 2021 09:38:18 +0000 (UTC)
-Subject: Re: [PATCH v14 06/13] iommu/smmuv3: Allow stage 1 invalidation with
- unmanaged ASIDs
-To:     Zenghui Yu <yuzenghui@huawei.com>
-Cc:     eric.auger.pro@gmail.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, will@kernel.org, maz@kernel.org,
-        robin.murphy@arm.com, joro@8bytes.org, alex.williamson@redhat.com,
-        tn@semihalf.com, zhukeqian1@huawei.com,
-        jacob.jun.pan@linux.intel.com, yi.l.liu@intel.com,
-        wangxingang5@huawei.com, jiangkunkun@huawei.com,
-        jean-philippe@linaro.org, zhangfei.gao@linaro.org,
-        zhangfei.gao@gmail.com, vivek.gautam@arm.com,
-        shameerali.kolothum.thodi@huawei.com, nicoleotsuka@gmail.com,
-        lushenming@huawei.com, vsethi@nvidia.com,
-        wanghaibin.wang@huawei.com
-References: <20210223205634.604221-1-eric.auger@redhat.com>
- <20210223205634.604221-7-eric.auger@redhat.com>
- <7a270196-2a8d-1b23-ee5f-f977c53d2134@huawei.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <8350e4e2-4607-cfd7-b1a7-1470bf18da6d@redhat.com>
-Date:   Thu, 1 Apr 2021 11:38:16 +0200
+        Thu, 1 Apr 2021 05:38:46 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D36C0613E6;
+        Thu,  1 Apr 2021 02:38:46 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id j9so1121909wrx.12;
+        Thu, 01 Apr 2021 02:38:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zqr07vO7upTy6e/RfoTA/s/3/fiA55XFyYEasLBQqAs=;
+        b=p0kuOLQzv7pOsdzulIw0amiLHAVOfPGe5DwWjMeFJf5AzMxzaCYEMUgM9T3FypvUdv
+         e/bMIZ8nI3hxskYZiOGabqQ4a+/Y2k/My3Yt/DKyaMyNASskHbtDMWQ3q8/7FH/ZPl4L
+         ZCO3Q2Nu61go8RTQSXpvJB7nkG6W82+rnPyxrx29La6dgk2z/4Jg/y4LcEAmRJDzOMxu
+         y5NUQuQIkAkl+CMJ8ZpHUU48CBTdBLBgCE5jpe8XiDZI+GB6tGs2zefrZXHfZl/bREwq
+         VlowOiql+sUl6pTygLI9Fh98sNyvqagzrvW29OPzuieF3oUykBrV6XSh0h718fGf8Znv
+         kriw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zqr07vO7upTy6e/RfoTA/s/3/fiA55XFyYEasLBQqAs=;
+        b=drY/OHU4H66uXTe6HY1W17InV+EaE9bqf6HvvEPh0bwtFAI9uEm1m+1vz3f0Gv3jZh
+         5wdVqC3oyq03AenYry2zEilJ30hyL55fek17oADMBZahFOiUbJ668hKm8pwi6WcCJ4Ma
+         RMN8/L/AFgSln6nQyiFPZpy0Ejz+c+Gyca/1qVPX8LO80r5Cora+m/HAFR4RxTvTbLaq
+         ee626qCCyRu2gh5Rz32sA8f2NlziwWZIcKCJfEOU/lI09nE7i7+TSmI9vGEE0pV269vo
+         vzeOQ4amvX5Ks25UCgJzZG6GTnKA4deKGu/Estwp7IBYhu6QnjuAk5ekqQ+lucPRcZSY
+         KrSQ==
+X-Gm-Message-State: AOAM530a4zI0BaaiaAkFH/D/HF44Hw7ECmctQw2MabmwUSz70JYrOUsf
+        7D7Wxr1CbkEw2ZESg/TzZKc=
+X-Google-Smtp-Source: ABdhPJweFebP/Y9EsngFkTBEoYEMOAIhx/IutptK0Pf+C/0UMSu2/tnCwPdU/DZEPTl2HAr4BMnZeA==
+X-Received: by 2002:adf:f587:: with SMTP id f7mr8572552wro.147.1617269925248;
+        Thu, 01 Apr 2021 02:38:45 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.126.134])
+        by smtp.gmail.com with ESMTPSA id k4sm12625016wrd.9.2021.04.01.02.38.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Apr 2021 02:38:44 -0700 (PDT)
+Subject: Re: [PATCH] arm64: dts: mt8183: Add power-domains properity to mfgcfg
+To:     Enric Balletbo Serra <eballetbo@gmail.com>,
+        Ikjoon Jang <ikjn@chromium.org>
+Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Weiyi Lu <weiyi.lu@mediatek.com>
+References: <20210224091742.1060508-1-ikjn@chromium.org>
+ <CAFqH_50BWF4sQnJAnVZDf3Dbuw+LaN67q39DvOh7ipzqNeNEMw@mail.gmail.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <6df6486e-89fc-6ea8-2b36-59e2bf49eb3a@gmail.com>
+Date:   Thu, 1 Apr 2021 11:38:44 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <7a270196-2a8d-1b23-ee5f-f977c53d2134@huawei.com>
+In-Reply-To: <CAFqH_50BWF4sQnJAnVZDf3Dbuw+LaN67q39DvOh7ipzqNeNEMw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zenghui,
 
-On 3/30/21 11:17 AM, Zenghui Yu wrote:
-> On 2021/2/24 4:56, Eric Auger wrote:
->> @@ -1936,7 +1950,12 @@ static void
->> arm_smmu_tlb_inv_range_domain(unsigned long iova, size_t size,
->>           },
->>       };
->>   -    if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
->> +    if (ext_asid >= 0) {  /* guest stage 1 invalidation */
->> +        cmd.opcode    = smmu_domain->smmu->features &
->> ARM_SMMU_FEAT_E2H ?
->> +                  CMDQ_OP_TLBI_EL2_VA : CMDQ_OP_TLBI_NH_VA;
+
+On 24/02/2021 11:30, Enric Balletbo Serra wrote:
+> Hi Ikjoon,
 > 
-> If I understand it correctly, the true nested mode effectively gives us
-> a *NS-EL1* StreamWorld. We should therefore use CMDQ_OP_TLBI_NH_VA to
-> invalidate the stage-1 NS-EL1 entries, no matter E2H is selected or not.
+> Thank you for your patch.
+> 
+> Missatge de Ikjoon Jang <ikjn@chromium.org> del dia dc., 24 de febr.
+> 2021 a les 10:21:
+>>
+>> mfgcfg clock is under MFG_ASYNC power domain
+>>
+>> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
+>> Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+>> ---
+>>
+>>  arch/arm64/boot/dts/mediatek/mt8183.dtsi | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+>> index 5b782a4769e7..3384df5284c0 100644
+>> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+>> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+>> @@ -962,6 +962,7 @@ mfgcfg: syscon@13000000 {
+>>                         compatible = "mediatek,mt8183-mfgcfg", "syscon";
+>>                         reg = <0 0x13000000 0 0x1000>;
+>>                         #clock-cells = <1>;
+>> +                       power-domains = <&scpsys MT8183_POWER_DOMAIN_MFG_ASYNC>;
+> 
+> I don't think this will work in mainline, at least, the reference name
+> should be &spm
 > 
 
-Yes at the moment you're right. Support for nested virt may induce some
-changes here but we are not there. I will fix it and add a comment.
-Thank you!
+Correct. Would you mind to resend with the comment from Enric. Apart from that,
+patch looks fine to me.
 
-Best Regards
+Regards,
+Matthias
 
-Eric
-
+> Thanks,
+>   Enric
+>>                 };
+>>
+>>                 mmsys: syscon@14000000 {
+>> --
+>> 2.30.0.617.g56c4b15f3c-goog
+>>
+>>
+>> _______________________________________________
+>> Linux-mediatek mailing list
+>> Linux-mediatek@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-mediatek
