@@ -2,154 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6E1351C48
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1990351F21
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239172AbhDASPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:15:38 -0400
-Received: from mga14.intel.com ([192.55.52.115]:59181 "EHLO mga14.intel.com"
+        id S237342AbhDASxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:53:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236256AbhDAR5l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:57:41 -0400
-IronPort-SDR: hqhpiG/RizbXRHKfZ+W010E+HnntWjbvQl2AWjJQVidBdxQdfUSgeAvPaQGlHm5+M7VnCgMFg8
- SyJNt0dyHOoA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="191741856"
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="191741856"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 08:07:23 -0700
-IronPort-SDR: ofBm94j9Mw4CZVy5cmsG656vaAiUCEBQsuSgTBE6Vk+aKSnHBherureYJoGmIQo1v7NRrqvg6k
- Ac2f/hBd4GPg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="446121281"
-Received: from mike-ilbpg1.png.intel.com ([10.88.227.76])
-  by FMSMGA003.fm.intel.com with ESMTP; 01 Apr 2021 08:07:18 -0700
-From:   Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
-To:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
-        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
-        mcoquelin.stm32@gmail.com, linux@armlinux.org.uk,
-        weifeng.voon@intel.com, boon.leong.ong@intel.com,
-        qiangqing.zhang@nxp.com, vee.khee.wong@intel.com,
-        fugang.duan@nxp.com, kim.tatt.chuah@intel.com,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        andrew@lunn.ch, hkallweit1@gmail.com
-Subject: [PATCH net-next 2/2] net: pcs: configure xpcs 2.5G speed mode
-Date:   Thu,  1 Apr 2021 23:01:52 +0800
-Message-Id: <20210401150152.22444-3-michael.wei.hong.sit@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210401150152.22444-1-michael.wei.hong.sit@intel.com>
-References: <20210401150152.22444-1-michael.wei.hong.sit@intel.com>
+        id S235778AbhDASnC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:43:02 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C22761364;
+        Thu,  1 Apr 2021 15:05:47 +0000 (UTC)
+Date:   Thu, 1 Apr 2021 16:05:57 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Mugilraj D <dmugil2000@gmail.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] iio: adc: bcm_iproc_adc: Use %s and __func__
+Message-ID: <20210401160557.533bae90@jic23-huawei>
+In-Reply-To: <a2ac91a9-54e3-2525-1e7e-00a26d3393e3@gmail.com>
+References: <20210401062517.28832-1-dmugil2000@gmail.com>
+        <CAHp75VfgL0KW0fetgE3NuBb4itMK1oY+yLmr1xDYkn390hCscg@mail.gmail.com>
+        <20210401113015.00006b70@Huawei.com>
+        <a2ac91a9-54e3-2525-1e7e-00a26d3393e3@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Voon Weifeng <weifeng.voon@intel.com>
+On Thu, 1 Apr 2021 20:22:47 +0530
+Mugilraj D <dmugil2000@gmail.com> wrote:
 
-Besides setting 2.5G configuration, this patch will also disable
-automatic speed mode change. This is due to the 2.5G mode is
-using the same functionality as 1G mode except the clock rate is
-2.5 times the original rate. Hence, auto-negotiation is disabled
-to make sure it will only be in 2.5G mode.
+> On 01/04/21 4:00 pm, Jonathan Cameron wrote:
+> > On Thu, 1 Apr 2021 12:24:50 +0300
+> > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> >   
+> >> On Thu, Apr 1, 2021 at 9:27 AM Mugilraj Dhavachelvan
+> >> <dmugil2000@gmail.com> wrote:  
+> >>>
+> >>> Change function's name to %s and __func__ to fix checkpatch.pl errors.    
+> >>
+> >> No, just drop the __func__ completely. First of all, we have a device
+> >> name, and uniqueness of the messages in the driver should guarantee
+> >> easy findings. Second, specific to _dbg() variants, with enabled
+> >> Dynamic Debug it can be chosen at run time!
+> >>
+> >> I recommend going through all drivers and drop __func__ near to
+> >> dev_dbg() and pr_debug().
+> >>  
+> > 
+> > Agreed.  Though beware that some maintainers will count this
+> > as noise and get grumpy.
+> > 
+> > I'm fine with such patches for IIO.  
+> 
+> Sorry for the noise. I just seen the docs about dynamic debug.
+> So, if we use dev_dbg("log_msg") it will print statement like
+> filename:lineno [module]func flag log_msg, If I get it correctly.
+> And no need of specifying __func__ in dev_dbg() and dp_dbg() right!!
+> 
+> Jonathan do you have any TODO's?
 
-Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
-Signed-off-by: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
----
- .../net/ethernet/stmicro/stmmac/stmmac_main.c |  1 +
- drivers/net/pcs/pcs-xpcs.c                    | 29 +++++++++++++++++++
- include/linux/pcs/pcs-xpcs.h                  |  1 +
- 3 files changed, 31 insertions(+)
+I tend not to mind cleanup patches (within reason)in IIO so I'm absolutely
+fine with a series removing any __func__ items like this.  One patch per
+driver preferred because it avoids issues with this interfering with backports
+etc. There will end up being about 18 patches from a quick grep.  Perhaps send
+a small number first though to avoid having to put in too much effort as
+any issues likely to affect the whole set.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index e182f9be4247..23178651310e 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -5835,6 +5835,7 @@ int stmmac_dvr_probe(struct device *device,
- 	if (priv->plat->speed_mode_2500) {
- 		priv->plat->speed_2500_en = priv->plat->speed_mode_2500(ndev,
- 									priv->plat->bsp_priv);
-+		priv->hw->xpcs_args.speed_2500_en = priv->plat->speed_2500_en;
- 	}
- 
- 	ret = stmmac_phy_setup(priv);
-diff --git a/drivers/net/pcs/pcs-xpcs.c b/drivers/net/pcs/pcs-xpcs.c
-index 944ba105cac1..e7562cfcd7d5 100644
---- a/drivers/net/pcs/pcs-xpcs.c
-+++ b/drivers/net/pcs/pcs-xpcs.c
-@@ -60,10 +60,14 @@
- 
- /* Clause 37 Defines */
- /* VR MII MMD registers offsets */
-+#define DW_VR_MII_MMD_CTRL		0x0000
- #define DW_VR_MII_DIG_CTRL1		0x8000
- #define DW_VR_MII_AN_CTRL		0x8001
- #define DW_VR_MII_AN_INTR_STS		0x8002
- 
-+/* Enable 2.5G Mode */
-+#define DW_VR_MII_DIG_CTRL1_2G5_EN	BIT(2)
-+
- /* VR_MII_DIG_CTRL1 */
- #define DW_VR_MII_DIG_CTRL1_MAC_AUTO_SW		BIT(9)
- 
-@@ -86,6 +90,11 @@
- #define DW_VR_MII_C37_ANSGM_SP_1000		0x2
- #define DW_VR_MII_C37_ANSGM_SP_LNKSTS		BIT(4)
- 
-+/* SR MII MMD Control defines */
-+#define AN_CL37_EN		BIT(12)	/* Enable Clause 37 auto-nego */
-+#define SGMII_SPEED_SS13	BIT(13)	/* SGMII speed along with SS6 */
-+#define SGMII_SPEED_SS6		BIT(6)	/* SGMII speed along with SS13 */
-+
- static const int xpcs_usxgmii_features[] = {
- 	ETHTOOL_LINK_MODE_Pause_BIT,
- 	ETHTOOL_LINK_MODE_Asym_Pause_BIT,
-@@ -141,6 +150,7 @@ static const int xpcs_sgmii_features[] = {
- 	ETHTOOL_LINK_MODE_100baseT_Full_BIT,
- 	ETHTOOL_LINK_MODE_1000baseT_Half_BIT,
- 	ETHTOOL_LINK_MODE_1000baseT_Full_BIT,
-+	ETHTOOL_LINK_MODE_2500baseT_Full_BIT,
- 	__ETHTOOL_LINK_MODE_MASK_NBITS,
- };
- 
-@@ -654,6 +664,25 @@ static int xpcs_config_aneg_c37_sgmii(struct mdio_xpcs_args *xpcs)
- {
- 	int ret;
- 
-+	if (xpcs->speed_2500_en) {
-+		ret = xpcs_read(xpcs, MDIO_MMD_VEND2, DW_VR_MII_DIG_CTRL1);
-+		if (ret < 0)
-+			return ret;
-+		ret |= DW_VR_MII_DIG_CTRL1_2G5_EN;
-+		ret &= ~DW_VR_MII_DIG_CTRL1_MAC_AUTO_SW;
-+		ret = xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_DIG_CTRL1, ret);
-+		if (ret < 0)
-+			return ret;
-+
-+		ret = xpcs_read(xpcs, MDIO_MMD_VEND2, DW_VR_MII_MMD_CTRL);
-+		if (ret < 0)
-+			return ret;
-+		ret &= ~AN_CL37_EN;
-+		ret |= SGMII_SPEED_SS6;
-+		ret &= ~SGMII_SPEED_SS13;
-+		return xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_MMD_CTRL, ret);
-+	}
-+
- 	/* For AN for C37 SGMII mode, the settings are :-
- 	 * 1) VR_MII_AN_CTRL Bit(2:1)[PCS_MODE] = 10b (SGMII AN)
- 	 * 2) VR_MII_AN_CTRL Bit(3) [TX_CONFIG] = 0b (MAC side SGMII)
-diff --git a/include/linux/pcs/pcs-xpcs.h b/include/linux/pcs/pcs-xpcs.h
-index 2cb5188a7ef1..6b94b2a48e0c 100644
---- a/include/linux/pcs/pcs-xpcs.h
-+++ b/include/linux/pcs/pcs-xpcs.h
-@@ -19,6 +19,7 @@ struct mdio_xpcs_args {
- 	struct mii_bus *bus;
- 	int addr;
- 	int an_mode;
-+	bool speed_2500_en;
- };
- 
- struct mdio_xpcs_ops {
--- 
-2.17.1
+Just be careful with other maintainers, they sometimes strike a different
+balance for what they consider noise vs useful.  
+
+Jonathan
+
+> 
+> > 
+> > Jonathan
+> >   
 
