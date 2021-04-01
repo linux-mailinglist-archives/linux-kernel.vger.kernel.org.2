@@ -2,79 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 194CF351425
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 13:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3DA0351428
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 13:05:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233834AbhDALEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 07:04:14 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:52181 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234000AbhDALEC (ORCPT
+        id S233858AbhDALFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 07:05:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233760AbhDALFI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 07:04:02 -0400
-Received: from mail-ot1-f42.google.com ([209.85.210.42]) by
- mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1M5PVb-1lQYCr46bN-001UKe; Thu, 01 Apr 2021 13:04:01 +0200
-Received: by mail-ot1-f42.google.com with SMTP id h6-20020a0568300346b02901b71a850ab4so1742097ote.6;
-        Thu, 01 Apr 2021 04:04:00 -0700 (PDT)
-X-Gm-Message-State: AOAM5332uRNNpVLBqeGcHCgl4CPMAH6cKgNq5iUjXyhyAEPDMO8sJOEH
-        PBaeAPI0mpMSyVL6ShLUwCgp9ZUlzlMT1GTitUg=
-X-Google-Smtp-Source: ABdhPJzv7NfJJM5P4rtmBV6imKoE6SXOGcuNPsyG7xm5vTrhAebddjzZDciuJMsX9IJPq79khP0o2GXRH+qVT+juje4=
-X-Received: by 2002:a05:6830:148c:: with SMTP id s12mr6614473otq.251.1617275039517;
- Thu, 01 Apr 2021 04:03:59 -0700 (PDT)
+        Thu, 1 Apr 2021 07:05:08 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99026C0613E6;
+        Thu,  1 Apr 2021 04:05:08 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id gb6so985729pjb.0;
+        Thu, 01 Apr 2021 04:05:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yrUEeBItpHwXb2zkwPEmfBcEOiKyaLjDCMMacKHkExg=;
+        b=FqJiPe3UqWPf36sK5sraHSf7KF9T8xUT8laNp2UNhGPFabncaZIfBO+QStJcFVcbeJ
+         /cqYXtLhrgPgT6U0LS4K8axmKw7oPISXBt/35JipmWhazY86szZEE1VRZ+ehq/hCojhm
+         QoLeCWobfXnVKrOiT9DgeuijP4RxX89qlCAbJ1nz8Y12fZJ4P7VVnjuQPggPtdvnamTG
+         yUZw/flnno1dCZaMaFerd9nIDk1++p8A9n38OcrsTR0sUBlt10lIZhkM+HsL/IqSbh1I
+         QliFMaiFPqdC8kmqooOcmbhvEOeqCtyKkC4IwEgmNA3SAt2+VXy/c3wA+JyII3vI85hl
+         scWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yrUEeBItpHwXb2zkwPEmfBcEOiKyaLjDCMMacKHkExg=;
+        b=rFqNXBmui+AONMiAqHnSFwqzk1NsjSk5ozZSusFG2z0dKMLiBIWC8cqNgKf7Za3qJo
+         9k7vcWESO5S7cUAo8RZf5XBgPIcsVud6eAgcFvLD/EdkEZuwlOMOHW4SCdQep5PEV79e
+         XwQqrWy+Yqnh9+ssPYr1v3WsDAr+xYoI4ZBvUU8DpCr1ZS/ePLgIZB5Q6HZ/0d2LiW2E
+         6eHyVdtU0nzZak3SG2yULuS6fStesCWWY6Bj+wTl6rPlpkzWRO47ZagR43OIggJMJ1Dd
+         2s6P29iFi+/7tbzBoeFcqqXMiV66AlEpHht4Kx5lFKqB6QbsmwfnMpdOpV+iQ8sAj/J6
+         KPpw==
+X-Gm-Message-State: AOAM532Oc6dUwjudPMIHJQhrq7CJl9NtMUz+Lihgsd5WSNcmsHxO+9Xy
+        DImtN2J27VtxsVaN6A7iBa/yfo4Uq0QkS0VF29g=
+X-Google-Smtp-Source: ABdhPJyHjtADObihZXxEJ9xmXmS8A6qv6dA+h925u9DoXHtafhKY2y+djom7gruzHp422cEn1GInwkwHkccNnaGKFrk=
+X-Received: by 2002:a17:902:ee02:b029:e6:5397:d79c with SMTP id
+ z2-20020a170902ee02b02900e65397d79cmr7560833plb.21.1617275108048; Thu, 01 Apr
+ 2021 04:05:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210223061830.1913700-1-daniel@0x0f.com> <20210223061830.1913700-2-daniel@0x0f.com>
- <1614108850.540354.4116103.nullmailer@robh.at.kernel.org> <CAFr9PX=h2JPdAwjYS2849ufH=wnxSti2Dj60fbq4bg8b8=xy_g@mail.gmail.com>
-In-Reply-To: <CAFr9PX=h2JPdAwjYS2849ufH=wnxSti2Dj60fbq4bg8b8=xy_g@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 1 Apr 2021 13:03:42 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1L62YT1WUxmmfLNmvERo7DbeVwfCHCxuKvxs7Uap+iXg@mail.gmail.com>
-Message-ID: <CAK8P3a1L62YT1WUxmmfLNmvERo7DbeVwfCHCxuKvxs7Uap+iXg@mail.gmail.com>
-Subject: Re: [PATCH 1/8] dt-bindings: clk: mstar msc313 cpupll binding description
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     Rob Herring <robh@kernel.org>, SoC Team <soc@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Willy Tarreau <w@1wt.eu>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>
+References: <20210329174928.18816-1-henning.schild@siemens.com>
+ <20210329174928.18816-3-henning.schild@siemens.com> <CAHp75Vdh_YAJLE4DWPhxhYY1g5Fc_7EFgr4FED3crpfpzwXeRg@mail.gmail.com>
+ <20210330135808.373c3308@md1za8fc.ad001.siemens.net> <CAHp75Vc0f0HfAJx0KPyQMWjekkhB_T-1+vuR566qAcYGA2JLJA@mail.gmail.com>
+ <20210330143011.0e8ae4a0@md1za8fc.ad001.siemens.net> <CAHp75VceCsuANZpib6HXJvxgMdJhmr8KPTZgThxKvXq6Yotymg@mail.gmail.com>
+ <20210330172305.67b6e050@md1za8fc.ad001.siemens.net> <CAHp75VcSwW42_oQDpxn34gN7+aJNmB=HdJUbaWsYkBokYAHkSA@mail.gmail.com>
+ <20210401124415.3c9321c0@md1za8fc.ad001.siemens.net>
+In-Reply-To: <20210401124415.3c9321c0@md1za8fc.ad001.siemens.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 1 Apr 2021 14:04:51 +0300
+Message-ID: <CAHp75VcU-7-BVum4xuuQcG7NZZc9xXOoXYpfSBUwwPr6iZLWGg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/4] leds: simatic-ipc-leds: add new driver for Siemens
+ Industial PCs
+To:     Henning Schild <henning.schild@siemens.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-watchdog@vger.kernel.org,
+        Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pavel Machek <pavel@ucw.cz>, Enrico Weigelt <lkml@metux.net>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:VYITO51LBE9r9PCcrCD8PAJtMuvCJtiQ2yotVDhuUgxbaS6ogPD
- K+omwmuiJtgYAxermfB5znfB+aAlZeqDNkeY/rqSfRjcjMJs5bXk+yRyxpgut1FgCpQnTIo
- R4+4zD9cmOC4CAa0CVtnvha17jS5efA58K1S9tqXxRwKdjXvKabcXMGC/QkWo5zTVvAxjN0
- tExHTxZbz9BIMtSJm2erQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:zRn54HoKq6I=:v79/lefLgMBPzWuAVUpQqi
- SkB5xaungZs1NOZECnXq0moEiHqVwPLvcaiNfLxkhqns3VhD26eggo4R1PjgypbjdIYWsgzDq
- yHepV8HuZHFzBvQ1ujDIqgelCqAx4dEfbnSU2VTb2+ZBasv/PfoW1amqL+p4UIgxEfKyvleL8
- Vlh7lgIjOtjuZuoncu3laK0sCSApsxcpW56Oq4B9K5m8w1tZafLyt/sTMKUwy9h83XnnbQ8yR
- 6U+r20DselenS63vh3efm0Z25EYKZKhsOykIvoCQ7UBsgUX5kz0NYV2vEZaxdKnLVrpVjbwj/
- a1NhAbP9L1o+lFXUwTorOMEjXYpjZ+ClH8vwWxT4ecsfFXKjWbxFK5uZN+3vkUgCYyt8utQQ6
- Bj1+BHMVs9gbKDa9znS3pPGuRo/cnZZ/ltljZ14DfOQRcdVDjVeXyV6xVJ04vmLHPmMoRak4t
- /4HP919OpB3hm31LRraIvZgDIsJ7a0M=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 12:31 PM Daniel Palmer <daniel@0x0f.com> wrote:
+On Thu, Apr 1, 2021 at 1:44 PM Henning Schild
+<henning.schild@siemens.com> wrote:
 >
-> Hi Rob's bot
+> Am Wed, 31 Mar 2021 18:40:23 +0300
+> schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
 >
-> On Wed, 24 Feb 2021 at 04:34, Rob Herring <robh@kernel.org> wrote:
-> > dtschema/dtc warnings/errors:
-> > Documentation/devicetree/bindings/clock/mstar,msc313-cpupll.example.dts:19:18: fatal error: dt-bindings/clock/mstar-msc313-mpll.h: No such file or directory
-> >    19 |         #include <dt-bindings/clock/mstar-msc313-mpll.h>
-> >       |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > compilation terminated.
-> > make[1]: *** [scripts/Makefile.lib:344: Documentation/devicetree/bindings/clock/mstar,msc313-cpupll.example.dt.yaml] Error 1
-> > make[1]: *** Waiting for unfinished jobs....
-> > make: *** [Makefile:1370: dt_binding_check] Error 2
+> > On Tue, Mar 30, 2021 at 6:33 PM Henning Schild
+> > <henning.schild@siemens.com> wrote:
+> > > Am Tue, 30 Mar 2021 15:41:53 +0300
+> > > schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
+> > > > On Tue, Mar 30, 2021 at 3:35 PM Henning Schild
+> > > > <henning.schild@siemens.com> wrote:
+> > > > > Am Tue, 30 Mar 2021 15:15:16 +0300
+> > > > > schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
+> > > > > > On Tue, Mar 30, 2021 at 2:58 PM Henning Schild
+> > > > > > <henning.schild@siemens.com> wrote:
+> > > > > > > Am Tue, 30 Mar 2021 14:04:35 +0300
+> > > > > > > schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
+> > > > > > > > On Mon, Mar 29, 2021 at 8:59 PM Henning Schild
+> > > > > > > > <henning.schild@siemens.com> wrote:
+> > > >
+> > > > > > > > > +static struct simatic_ipc_led simatic_ipc_leds_mem[] =
+> > > > > > > > > {
+> > > > > > > > > +       {0x500 + 0x1A0, "red:" LED_FUNCTION_STATUS
+> > > > > > > > > "-1"},
+> > > > > > > > > +       {0x500 + 0x1A8, "green:" LED_FUNCTION_STATUS
+> > > > > > > > > "-1"},
+> > > > > > > > > +       {0x500 + 0x1C8, "red:" LED_FUNCTION_STATUS
+> > > > > > > > > "-2"},
+> > > > > > > > > +       {0x500 + 0x1D0, "green:" LED_FUNCTION_STATUS
+> > > > > > > > > "-2"},
+> > > > > > > > > +       {0x500 + 0x1E0, "red:" LED_FUNCTION_STATUS
+> > > > > > > > > "-3"},
+> > > > > > > > > +       {0x500 + 0x198, "green:" LED_FUNCTION_STATUS
+> > > > > > > > > "-3"},
+> > > > > > > > > +       { }
+> > > > > > > > > +};
+> > > > > > > >
+> > > > > > > > It seems to me like poking GPIO controller registers
+> > > > > > > > directly. This is not good. The question still remains:
+> > > > > > > > Can we simply register a GPIO (pin control) driver and
+> > > > > > > > use an LED GPIO driver with an additional board file that
+> > > > > > > > instantiates it?
+> > > > > > >
+> > > > > > > I wrote about that in reply to the cover letter. My view is
+> > > > > > > still that it would be an abstraction with only one user,
+> > > > > > > just causing work and likely not ending up as generic as it
+> > > > > > > might eventually have to be.
+> > > > > > >
+> > > > > > > The region is reserved, not sure what the problem with the
+> > > > > > > "poking" is.
+> > > > > >
+> > > > > >
+> > > > > > > Maybe i do not understand all the benefits of such a split
+> > > > > > > at this point in time. At the moment i only see work with
+> > > > > > > hardly any benefit, not just work for me but also for
+> > > > > > > maintainers. I sure do not mean to be ignorant. Maybe you
+> > > > > > > go into details and convince me or we wait for other
+> > > > > > > peoples opinions on how to proceed, maybe there is a second
+> > > > > > > user that i am not aware of? Until i am convinced otherwise
+> > > > > > > i will try to argue that a single-user-abstraction is
+> > > > > > > needless work/code, and should be done only when actually
+> > > > > > > needed.
+> > > > > >
+> > > > > > I have just read your messages (there is a cover letter and
+> > > > > > additional email which was sent lately).
+> > > > > >
+> > > > > > I would like to know what the CPU model number on that board
+> > > > > > is. Than we can continue to see what possibilities we have
+> > > > > > here.
+> > > > >
+> > > > > I guess we are talking about the one that uses memory mapped,
+> > > > > that is called an "IPC127E" and seems to have either Intel Atom
+> > > > > E3940 or E3930 which seems to be Apollo Lake.
+> > > >
+> > > > Yep. And now the question, in my patch series you should have got
+> > > > the apollolake-pinctrl driver loaded (if not, we have to
+> > > > investigate why it's not being instantiated). This will give you
+> > > > a read GPIO driver.
+> > >
+> > > Ok, so there is the existing driver i asked about several times.
+> > > Thanks for pointing it out.
+> >
+> > If you remember, I asked you about the chip twice :-)
+> > I assumed that we were talking about Apollo Lake and that's why I
+> > insisted that the driver is in the kernel source tree.
 >
-> Looks like I sent this too early. I will try again later.
+> Sorry, maybe i did not get the context of your question and which of
+> the machines you asked about. Now it is clear i guess.
+>
+> >
+> > > > So, you may use regular LED GPIO on top of it
+> > > > (https://elixir.bootlin.com/linux/latest/source/drivers/leds/leds-gpio.c).
+> > > > I would like to understand why it can't be achieved.
+> > >
+> > > Will have a look. Unfortunately this one box is missing in my
+> > > personal collection, but let us assume that one can be converted to
+> > > that existing driver.
+> >
+> > OK!
+> >
+> > > I guess that will still mean the PIO-based part of the LED driver
+> > > will have to stay as is.
+> >
+> > Probably yes. I haven't looked into that part and I have no idea
+> > what's going on on that platform(s).
+> >
+>
+> Which i guess means the series can be reviewed as if the mmio bits for
+> that apollo lake would not be in it, maybe i will even send a version
+> without that one box. We have others in the "backlog" might as well
+> delay that one if it helps sorting out a base-line.
 
-I found this is still in patchwork as not merged, and I have not
-seen a replacement. Marking all eight patches as 'changes requested' now,
-please resend.
+It depends on the role of P2SB in this case.
+Shouldn't you drop that completely out from this series?
 
-         Arnd
+Otherwise we have to understand what to do with it.
+It seems the best approach can be to expose the P2SB device to Linux,
+but we have to answer to Bjorn's request about region reservations.
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
