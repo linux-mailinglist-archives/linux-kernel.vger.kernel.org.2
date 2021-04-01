@@ -2,59 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C41B0351DCB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA399351C3B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:45:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235974AbhDAScD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:32:03 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15463 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238728AbhDASKB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:10:01 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FB11K5HVKzyNCT;
-        Thu,  1 Apr 2021 19:19:49 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 1 Apr 2021 19:21:45 +0800
-From:   Qi Liu <liuqi115@huawei.com>
-To:     <will@kernel.org>, <joro@8bytes.org>
-CC:     <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH] iommu: Remove duplicate check of pasids
-Date:   Thu, 1 Apr 2021 19:19:16 +0800
-Message-ID: <1617275956-4467-1-git-send-email-liuqi115@huawei.com>
-X-Mailer: git-send-email 2.8.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+        id S238509AbhDASOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:14:41 -0400
+Received: from m12-16.163.com ([220.181.12.16]:40424 "EHLO m12-16.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234423AbhDAR4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:56:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=bbLsjxUWqWIkerb7Uh
+        lE40+J1NmZ+tI75bAMTfi7e7s=; b=jRDrzHuNRJ6PC8C+W/CpngVlOquWUlSNvQ
+        xFRsosKMS39twnd1TE3fEzViMe7ZdXWoFPHkOEIwRurpDcLUcEqzJp/D59HTLS+i
+        xWahJfQonZwpDGvaDI8QWVTBjnYaBF6pmCq4C/vvkoqvJmtbnQLBeD1tPgLdUrnT
+        8YswcrSA0=
+Received: from wengjianfeng.ccdomain.com (unknown [218.17.89.92])
+        by smtp12 (Coremail) with SMTP id EMCowACXnhowrWVgeWQpjg--.43479S2;
+        Thu, 01 Apr 2021 19:23:30 +0800 (CST)
+From:   samirweng1979 <samirweng1979@163.com>
+To:     perex@perex.cz, tiwai@suse.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+Subject: [PATCH] ASoC: topology: fix typo error about asoc.h
+Date:   Thu,  1 Apr 2021 19:23:19 +0800
+Message-Id: <20210401112319.28084-1-samirweng1979@163.com>
+X-Mailer: git-send-email 2.15.0.windows.1
+X-CM-TRANSID: EMCowACXnhowrWVgeWQpjg--.43479S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtrW7Cw45Ww47Aryxur45ZFb_yoWDGFg_Cw
+        naqr4xZry8Gw1I9w1UJrs5JFZ8Zwn7Ca1kKFnaqr1Yq34DCa1fCw18GryxZryrG3Wvq3sI
+        9F1fu340k3sIgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5k73DUUUUU==
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/xtbBERJnsVaEDiqtHgAAsQ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove duplicate check of pasids in amd_iommu_domain_enable_v2(), as it
-has been guaranteed in amd_iommu_init_device().
+From: wengjianfeng <wengjianfeng@yulong.com>
 
-Signed-off-by: Qi Liu <liuqi115@huawei.com>
+change 'freqency' to 'frequecy'
+
+Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
 ---
- drivers/iommu/amd/iommu.c | 3 ---
- 1 file changed, 3 deletions(-)
+ include/uapi/sound/asoc.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-index 107316e..7ca9f2f 100644
---- a/drivers/iommu/amd/iommu.c
-+++ b/drivers/iommu/amd/iommu.c
-@@ -2310,9 +2310,6 @@ int amd_iommu_domain_enable_v2(struct iommu_domain *dom, int pasids)
- 	unsigned long flags;
- 	int levels, ret;
- 
--	if (pasids <= 0 || pasids > (PASID_MASK + 1))
--		return -EINVAL;
--
- 	/* Number of GCR3 table levels required */
- 	for (levels = 0; (pasids - 1) & ~0x1ff; pasids >>= 9)
- 		levels += 1;
+diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+index da61398..0066eee 100644
+--- a/include/uapi/sound/asoc.h
++++ b/include/uapi/sound/asoc.h
+@@ -346,8 +346,8 @@ struct snd_soc_tplg_hw_config {
+ 	__u8 fsync_provider;	/* SND_SOC_TPLG_FSYNC_ value */
+ 	__u8 mclk_direction;    /* SND_SOC_TPLG_MCLK_ value */
+ 	__le16 reserved;	/* for 32bit alignment */
+-	__le32 mclk_rate;	/* MCLK or SYSCLK freqency in Hz */
+-	__le32 bclk_rate;	/* BCLK freqency in Hz */
++	__le32 mclk_rate;	/* MCLK or SYSCLK frequency in Hz */
++	__le32 bclk_rate;	/* BCLK frequency in Hz */
+ 	__le32 fsync_rate;	/* frame clock in Hz */
+ 	__le32 tdm_slots;	/* number of TDM slots in use */
+ 	__le32 tdm_slot_width;	/* width in bits for each slot */
 -- 
-2.8.1
+1.9.1
+
 
