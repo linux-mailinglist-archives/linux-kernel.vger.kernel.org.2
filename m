@@ -2,118 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F432350D8E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 06:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B98E2350D6C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 06:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230441AbhDAESR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 00:18:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbhDAERy (ORCPT
+        id S230088AbhDAEFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 00:05:14 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:45059 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229514AbhDAEFI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 00:17:54 -0400
-X-Greylist: delayed 2728 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 31 Mar 2021 21:17:53 PDT
-Received: from mx0a-00190b01.pphosted.com (mx0a-00190b01.pphosted.com [IPv6:2620:100:9001:583::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7D6FC0613E6
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 21:17:53 -0700 (PDT)
-Received: from pps.filterd (m0050093.ppops.net [127.0.0.1])
-        by m0050093.ppops.net-00190b01. (8.16.0.43/8.16.0.43) with SMTP id 1313SmVC001047;
-        Thu, 1 Apr 2021 04:32:08 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=jan2016.eng;
- bh=z3JH9GtrbWmDHVkPQqloZjRKOV4P3FD9Ih3u4Xkk08E=;
- b=NCroEzYdVVcnAI760NJXBe2oY4FuLN/WY5uahCaXuGrB34bcXsnVYk16tMe8Sm8ZGKrk
- 8FyO0Vej5Ql29xC3Fw1eLPN1+v/IrWUIGjQcXH+RJZokh4oCOEWmBF77xBLdgT0NDWYH
- Bb38FVsgdyu27mue1GnQ5W00R5taZvkgcn9VNs+EYubNNFyVEAuKiM6T0xMLXnUrlmU4
- Y4QGlqmrruQx5EykpUs4V+KBU5+qIX0L+Xg72J9O8b1OIJSleIumEXlQB2HsFYgf81FT
- LHHwtrm0qxFerEh/Ib+Lio9U+/JMUJd1HCERBA8JSiIy8ZS74oPhF5mhiT/QdwNYg5rW Dg== 
-Received: from prod-mail-ppoint5 (prod-mail-ppoint5.akamai.com [184.51.33.60] (may be forged))
-        by m0050093.ppops.net-00190b01. with ESMTP id 37n2jytc38-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Apr 2021 04:32:08 +0100
-Received: from pps.filterd (prod-mail-ppoint5.akamai.com [127.0.0.1])
-        by prod-mail-ppoint5.akamai.com (8.16.0.43/8.16.0.43) with SMTP id 1313L2Pj007100;
-        Wed, 31 Mar 2021 20:32:07 -0700
-Received: from email.msg.corp.akamai.com ([172.27.123.57])
-        by prod-mail-ppoint5.akamai.com with ESMTP id 37n2jmrhfy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 31 Mar 2021 20:32:07 -0700
-Received: from usma1ex-cas4.msg.corp.akamai.com (172.27.123.57) by
- usma1ex-dag3mb1.msg.corp.akamai.com (172.27.123.60) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Wed, 31 Mar 2021 23:32:06 -0400
-Received: from sjo-lpkf5.sanatclara.corp.akamai.com (172.28.3.202) by
- usma1ex-cas4.msg.corp.akamai.com (172.27.123.57) with Microsoft SMTP Server
- id 15.0.1497.2 via Frontend Transport; Wed, 31 Mar 2021 23:32:06 -0400
-Received: by sjo-lpkf5.sanatclara.corp.akamai.com (Postfix, from userid 30754)
-        id D02B41608E1; Wed, 31 Mar 2021 23:32:06 -0400 (EDT)
-From:   Josh Hunt <johunt@akamai.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Josh Hunt <johunt@akamai.com>
-Subject: [PATCH] psi: allow unprivileged users with CAP_SYS_RESOURCE to write psi files
-Date:   Wed, 31 Mar 2021 23:31:56 -0400
-Message-ID: <20210401033156.7262-1-johunt@akamai.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
+        Thu, 1 Apr 2021 00:05:08 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 13799580857;
+        Thu,  1 Apr 2021 00:05:07 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Thu, 01 Apr 2021 00:05:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=bM72u7Zut+UqToL176LTPYUWVZDWGgs
+        ivmdUNPFKxMU=; b=IrQSKxYQzpv/1jouAp11qxZyIIHeQnXCrcT9S70hS3YFos+
+        qX1yamOzq5tRUNluxnpDJJaC4BQsGg0fqnKCBN6Uko4thO9s1rf09dj5P72ybqqY
+        T7uJ78Xj/NZvZYnhLXyqUNt7D5uHuG9Yi13uTVI67dfVjwYMUl3ST0wiOUW/zWKs
+        yZaA0YYviLCftcX2ZdE1XVPXd4orzokOzolQr6l5Dz8+1T/aQYr4zsYD9LTrFzGZ
+        0CH9gBy8eUs87ymtI8RVq7Cwx+bIkj5gGmRczRj6RBg/PHbdAjLJOSswY1bgQKfu
+        nLkGdJ5pHimIBU0Fp6k28lBc/sNw9bueam+qvJw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=bM72u7
+        Zut+UqToL176LTPYUWVZDWGgsivmdUNPFKxMU=; b=flu+nAeG56GJ4xCUCWHFAk
+        lpu8FXQMkirsiz9hQpRBsMLmpy2uil4XUE30IFWyKX4eG4RZsJoCmoAeiVpo7qmF
+        HXaBKvJq2pgVwljWOyLY2bNru499SaaWUx0bV5GHbSYkf/0RK5pa5sW/MMLHZzGj
+        I2BQqGF5Xx3Scxz8izYko3o5EWPtPvcOB7wUj8eibny07vGzxqZTFvQJYWhvOWtX
+        cZMz9P0u0WZLDiXMtmudcra28kPmPw+ki6woB2lDdFzgCq1N/e5SDXl99XfcNIYd
+        xl2FHT7769A8YVD/RQYnkRLNgTbXcMjrCDiyHhUJNLDixSzQJfVe8ZYWO4bRErow
+        ==
+X-ME-Sender: <xms:cUZlYJAFHOqSxDwnmsOA0a8s57EnBEMLKb1zkJMbKkSZMQ5RvonblA>
+    <xme:cUZlYHjaoyP0oCg4CpUtoO0fiT1il4DSkP3YNPxDCK9Ew_V06DZCCHso2q281nWAI
+    4UzQozQOep4j_956w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudeifedgjeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepudehtddtleektedvfeeitdeljeekveelkeegvdfhtdejhefgfedtfedv
+    jeejledtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:cUZlYEktDNHkVnociacTZn9o_1v1vGrEK6B-J_7z9MLkinn_-CpWhQ>
+    <xmx:cUZlYDxKDkUu4S9fKlrpI2gRku7K6cE5wNap_DlMnEsc657fexkrTg>
+    <xmx:cUZlYORHW_GgcOHywhUXRNVEczxo1Kj6Xqgkz1MBRmpvURTiy9mlCg>
+    <xmx:c0ZlYBH6NEkHP1Z7OxOJv0bSfsi-IUy7ymsHeOje4V9oSQxSlcD2Kw>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 0A181A00073; Thu,  1 Apr 2021 00:05:04 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-273-g8500d2492d-fm-20210323.002-g8500d249
+Mime-Version: 1.0
+Message-Id: <d66753ee-7db2-41e5-9fe5-762b1ab678bc@www.fastmail.com>
+In-Reply-To: <20210401005702.28271-4-zev@bewilderbeest.net>
+References: <YGOuhjD19SmjmQou@hatter.bewilderbeest.net>
+ <20210401005702.28271-1-zev@bewilderbeest.net>
+ <20210401005702.28271-4-zev@bewilderbeest.net>
+Date:   Thu, 01 Apr 2021 14:34:44 +1030
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Zev Weiss" <zev@bewilderbeest.net>,
+        "Joel Stanley" <joel@jms.id.au>
+Cc:     openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Lubomir Rintel" <lkundrak@v3.sk>, - <devicetree@vger.kernel.org>,
+        linux-serial@vger.kernel.org
+Subject: =?UTF-8?Q?Re:_[PATCH_v2_3/3]_dt-bindings:_serial:_8250:_add_aspeed,sirq-?=
+ =?UTF-8?Q?active-high?=
 Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-04-01_02:2021-03-31,2021-04-01 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 adultscore=0
- bulkscore=0 suspectscore=0 spamscore=0 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
- definitions=main-2104010021
-X-Proofpoint-GUID: hZvmu9nMXPkfYlGOc87SYPpw62wCKEo8
-X-Proofpoint-ORIG-GUID: hZvmu9nMXPkfYlGOc87SYPpw62wCKEo8
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-31_11:2021-03-31,2021-03-31 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0 phishscore=0
- mlxlogscore=999 mlxscore=0 spamscore=0 clxscore=1011 priorityscore=1501
- malwarescore=0 adultscore=0 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
- definitions=main-2104010023
-X-Agari-Authentication-Results: mx.akamai.com; spf=${SPFResult} (sender IP is 184.51.33.60)
- smtp.mailfrom=johunt@akamai.com smtp.helo=prod-mail-ppoint5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently only root can write files under /proc/pressure. Relax this to
-allow tasks running as unprivileged users with CAP_SYS_RESOURCE to be
-able to write to these files.
 
-Signed-off-by: Josh Hunt <johunt@akamai.com>
----
- kernel/sched/psi.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index b1b00e9bd7ed..98ff7baf1ba8 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -1270,6 +1270,9 @@ static ssize_t psi_write(struct file *file, const char __user *user_buf,
- 	if (!nbytes)
- 		return -EINVAL;
- 
-+	if (!capable(CAP_SYS_RESOURCE))
-+		return -EPERM;
-+
- 	buf_size = min(nbytes, sizeof(buf));
- 	if (copy_from_user(buf, user_buf, buf_size))
- 		return -EFAULT;
-@@ -1353,9 +1356,9 @@ static int __init psi_proc_init(void)
- {
- 	if (psi_enable) {
- 		proc_mkdir("pressure", NULL);
--		proc_create("pressure/io", 0, NULL, &psi_io_proc_ops);
--		proc_create("pressure/memory", 0, NULL, &psi_memory_proc_ops);
--		proc_create("pressure/cpu", 0, NULL, &psi_cpu_proc_ops);
-+		proc_create("pressure/io", 0666, NULL, &psi_io_proc_ops);
-+		proc_create("pressure/memory", 0666, NULL, &psi_memory_proc_ops);
-+		proc_create("pressure/cpu", 0666, NULL, &psi_cpu_proc_ops);
- 	}
- 	return 0;
- }
--- 
-2.17.1
+On Thu, 1 Apr 2021, at 11:27, Zev Weiss wrote:
+> This provides a simpler, more direct alternative to the deprecated
+> aspeed,sirq-polarity-sense property for indicating the polarity of
+> the Aspeed VUART's SIRQ line.
+> 
+> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+> ---
+>  Documentation/devicetree/bindings/serial/8250.yaml | 13 ++++++++++---
+>  1 file changed, 10 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/serial/8250.yaml 
+> b/Documentation/devicetree/bindings/serial/8250.yaml
+> index 491b9297432d..e79bb6ab9d2c 100644
+> --- a/Documentation/devicetree/bindings/serial/8250.yaml
+> +++ b/Documentation/devicetree/bindings/serial/8250.yaml
+> @@ -12,8 +12,9 @@ maintainers:
+>  allOf:
+>    - $ref: /schemas/serial.yaml#
+>    - if:
+> -      required:
+> -        - aspeed,sirq-polarity-sense
+> +      anyOf:
+> +        - required: [ aspeed,sirq-active-high ]
 
+Do you think we could make use of the approach I put forward here?
+
+https://lore.kernel.org/openbmc/20210319062752.145730-18-andrew@aj.id.au/T/#u
+
+Andrew
