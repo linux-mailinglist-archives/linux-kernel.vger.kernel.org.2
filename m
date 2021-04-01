@@ -2,146 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BDD23522C1
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 00:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B07C3522C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 00:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235222AbhDAW0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 18:26:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233789AbhDAW0b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 18:26:31 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96500C0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 15:26:31 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id x126so2416070pfc.13
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 15:26:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=18g3azgNpXLBiDy1fceNEHeBAHJw5ajsbhSUXk66/jI=;
-        b=h0vjJ8ucH3NMUushuqVRXFeMYpppdeszEB1TYaxkpVp0oJ1QMA2NvhQtZRNiprQkhW
-         Fw+RiLelIVFd0DCHgSja38PaLxnh3NRJmRBBiuel+bEtfb2xhMht0xyoZjKnxzWl7Zfo
-         uTO/rOS2EQkVTZvzigUR/qacysDeN7uNf0F4Bynpim1aXofMBkAu6EBgyUT0LBj7sSpX
-         r3+ec/5CPAJWAT2h2byuJBq9idcyhCnTYKR3WPDKyFrwTXjU5PXDSXvD1R0x/7aTkH+y
-         E2jhRw0NqfD/0wig4srCsMJTReToDgKKRsaZN2/47mPsGlQVx73joukWeaDZ+YerYAhH
-         iJ6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=18g3azgNpXLBiDy1fceNEHeBAHJw5ajsbhSUXk66/jI=;
-        b=kwwdNvKAlSL4xmx3AAGn9/FQtaCNTPcKzW6vnq+dkVOtIsGpkPVKR8DVQITtjA4ZhP
-         16J2Rfqx+ILSIJEG0guFE18RQB/ebqWe28nXBK8wClKQVDcyE+5W3hMspH0S9lkZC7Lp
-         VmaYjtWJbidAdYPgO4oExr5krHC8iqLYGcKMdMkbEwp9Z4g4p9SmirbDWwK6iSE/vcCh
-         lh5Znpd0Zt8YjpTSUvK+GUBDm9wGRBDSW4nrZgnum/A2ToG9G6cHQgdb6i2mmVyFK/IM
-         knlgppkq6Tym2IWMQaQvoeTysInxuSKqA/6upBT7T08a2uo/KFF/66WZepXhqBg5XE5h
-         zQpQ==
-X-Gm-Message-State: AOAM531wIJ19yKAiAfRMpVjMWFfMRizElI2ROp7A1luqTyE4ftvEIG14
-        zX/IFvaSmn4jlPHh++k0G4Pelg==
-X-Google-Smtp-Source: ABdhPJzxaQY6FyUjw5pZCnv0nbBgIb7TP/OCuVAMsRFKkADjoBP2kUzz2jW8nlR/GSsNsZEIx9xlEg==
-X-Received: by 2002:aa7:9aaa:0:b029:1f3:dd0e:282d with SMTP id x10-20020aa79aaa0000b02901f3dd0e282dmr9219192pfi.38.1617315990897;
-        Thu, 01 Apr 2021 15:26:30 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id g21sm6438669pfk.30.2021.04.01.15.26.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 15:26:30 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 22:26:26 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        id S234114AbhDAWa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 18:30:29 -0400
+Received: from smtp.gentoo.org ([140.211.166.183]:44420 "EHLO smtp.gentoo.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233881AbhDAWa0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 18:30:26 -0400
+Received: by sf.home (Postfix, from userid 1000)
+        id 1CBBC5A22061; Thu,  1 Apr 2021 23:30:19 +0100 (BST)
+From:   Sergei Trofimovich <slyfox@gentoo.org>
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
+        Sergei Trofimovich <slyfox@gentoo.org>,
+        Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC v1 12/26] x86/tdx: Handle in-kernel MMIO
-Message-ID: <YGZIks0DsfPS2IMk@google.com>
-References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <94a9847072098e554146ca4fa3c6f28fc1ac5b22.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <3e43ff6b-2f19-69f1-3017-d8d67abcfd9f@intel.com>
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH] mm: page_owner: detect page_owner recursion via task_struct
+Date:   Thu,  1 Apr 2021 23:30:10 +0100
+Message-Id: <20210401223010.3580480-1-slyfox@gentoo.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3e43ff6b-2f19-69f1-3017-d8d67abcfd9f@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021, Dave Hansen wrote:
-> On 2/5/21 3:38 PM, Kuppuswamy Sathyanarayanan wrote:
-> > From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-> > 
-> > Handle #VE due to MMIO operations. MMIO triggers #VE with EPT_VIOLATION
-> > exit reason.
-> > 
-> > For now we only handle subset of instruction that kernel uses for MMIO
-> > oerations. User-space access triggers SIGBUS.
-> ..
-> > +	case EXIT_REASON_EPT_VIOLATION:
-> > +		ve->instr_len = tdx_handle_mmio(regs, ve);
-> > +		break;
-> 
-> Is MMIO literally the only thing that can cause an EPT violation for TDX
-> guests?
+Before the change page_owner recursion was detected via fetching
+backtrace and inspecting it for current instruction pointer.
+It has a few problems:
+- it is slightly slow as it requires extra backtrace and a linear
+  stack scan of the result
+- it is too late to check if backtrace fetching required memory
+  allocation itself (ia64's unwinder requires it).
 
-Any EPT Violation, or specifically EPT Violation #VE?  Any memory access can
-cause an EPT violation, but the VMM will get the ones that lead to VM-Exit.  The
-guest will only get the ones that cause #VE.
+To simplify recursion tracking let's use page_owner recursion depth
+as a counter in 'struct task_struct'.
 
-Assuming you're asking about #VE... No, any shared memory access can take a #VE
-since the VMM controls the shared EPT tables and can clear the SUPPRESS_VE bit 
-at any time.  But, if the VMM is friendly, #VE should be limited to MMIO.
+The change make page_owner=on work on ia64 bu avoiding infinite
+recursion in:
+  kmalloc()
+  -> __set_page_owner()
+  -> save_stack()
+  -> unwind() [ia64-specific]
+  -> build_script()
+  -> kmalloc()
+  -> __set_page_owner() [we short-circuit here]
+  -> save_stack()
+  -> unwind() [recursion]
 
-There's also the unaccepted private memory case, but if Linux gets an option to
-opt out of that, then #VE is limited to shared memory.
+CC: Ingo Molnar <mingo@redhat.com>
+CC: Peter Zijlstra <peterz@infradead.org>
+CC: Juri Lelli <juri.lelli@redhat.com>
+CC: Vincent Guittot <vincent.guittot@linaro.org>
+CC: Dietmar Eggemann <dietmar.eggemann@arm.com>
+CC: Steven Rostedt <rostedt@goodmis.org>
+CC: Ben Segall <bsegall@google.com>
+CC: Mel Gorman <mgorman@suse.de>
+CC: Daniel Bristot de Oliveira <bristot@redhat.com>
+CC: Andrew Morton <akpm@linux-foundation.org>
+CC: linux-mm@kvack.org
+Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
+---
+ include/linux/sched.h |  9 +++++++++
+ init/init_task.c      |  3 +++
+ mm/page_owner.c       | 41 +++++++++++++++++------------------------
+ 3 files changed, 29 insertions(+), 24 deletions(-)
 
-> Forget userspace for a minute.  #VE's from userspace are annoying, but
-> fine.  We can't control what userspace does.  If an action it takes
-> causes a #VE in the TDX architecture, tough cookies, the kernel must
-> handle it and try to recover or kill the app.
-> 
-> The kernel is very different.  We know in advance (must know,
-> actually...) which instructions might cause exceptions of any kind.
-> That's why we have exception tables and copy_to/from_user().  That's why
-> we can handle kernel page faults on userspace, but not inside spinlocks.
-> 
-> Binary-dependent OSes are also very different.  It's going to be natural
-> for them to want to take existing, signed drivers and use them in TDX
-> guests.  They might want to do something like this.
-> 
-> But for an OS where we have source for the *ENTIRE* thing, and where we
-> have a chokepoint for MMIO accesses (arch/x86/include/asm/io.h), it
-> seems like an *AWFUL* idea to:
-> 1. Have the kernel set up special mappings for I/O memory
-> 2. Kernel generates special instructions to access that memory
-> 3. Kernel faults on that memory
-> 4. Kernel cracks its own special instructions to see what they were
->    doing
-> 5. Kernel calls up to host to do the MMIO
-> 
-> Instead of doing 2/3/4, why not just have #2 call up to the host
-> directly?  This patch seems a very slow, roundabout way to do
-> paravirtualized MMIO.
-> 
-> BTW, there's already some SEV special-casing in io.h.
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index ef00bb22164c..35771703fd89 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1371,6 +1371,15 @@ struct task_struct {
+ 	struct llist_head               kretprobe_instances;
+ #endif
+ 
++#ifdef CONFIG_PAGE_OWNER
++	/*
++	 * Used by page_owner=on to detect recursion in page tracking.
++	 * Is it fine to have non-atomic ops here if we ever access
++	 * this variable via current->page_owner_depth?
++	 */
++	unsigned int page_owner_depth;
++#endif
++
+ 	/*
+ 	 * New fields for task_struct should be added above here, so that
+ 	 * they are included in the randomized portion of task_struct.
+diff --git a/init/init_task.c b/init/init_task.c
+index 3711cdaafed2..f579f2b2eca8 100644
+--- a/init/init_task.c
++++ b/init/init_task.c
+@@ -213,6 +213,9 @@ struct task_struct init_task
+ #ifdef CONFIG_SECCOMP
+ 	.seccomp	= { .filter_count = ATOMIC_INIT(0) },
+ #endif
++#ifdef CONFIG_PAGE_OWNER
++	.page_owner_depth	= 0,
++#endif
+ };
+ EXPORT_SYMBOL(init_task);
+ 
+diff --git a/mm/page_owner.c b/mm/page_owner.c
+index 7147fd34a948..422558605fcc 100644
+--- a/mm/page_owner.c
++++ b/mm/page_owner.c
+@@ -20,6 +20,16 @@
+  */
+ #define PAGE_OWNER_STACK_DEPTH (16)
+ 
++/*
++ * How many reenters we allow to page_owner.
++ *
++ * Sometimes metadata allocation tracking requires more memory to be allocated:
++ * - when new stack trace is saved to stack depot
++ * - when backtrace itself is calculated (ia64)
++ * Instead of falling to infinite recursion give it a chance to recover.
++ */
++#define PAGE_OWNER_MAX_RECURSION_DEPTH (1)
++
+ struct page_owner {
+ 	unsigned short order;
+ 	short last_migrate_reason;
+@@ -97,42 +107,25 @@ static inline struct page_owner *get_page_owner(struct page_ext *page_ext)
+ 	return (void *)page_ext + page_owner_ops.offset;
+ }
+ 
+-static inline bool check_recursive_alloc(unsigned long *entries,
+-					 unsigned int nr_entries,
+-					 unsigned long ip)
+-{
+-	unsigned int i;
+-
+-	for (i = 0; i < nr_entries; i++) {
+-		if (entries[i] == ip)
+-			return true;
+-	}
+-	return false;
+-}
+-
+ static noinline depot_stack_handle_t save_stack(gfp_t flags)
+ {
+ 	unsigned long entries[PAGE_OWNER_STACK_DEPTH];
+ 	depot_stack_handle_t handle;
+ 	unsigned int nr_entries;
+ 
+-	nr_entries = stack_trace_save(entries, ARRAY_SIZE(entries), 2);
+-
+-	/*
+-	 * We need to check recursion here because our request to
+-	 * stackdepot could trigger memory allocation to save new
+-	 * entry. New memory allocation would reach here and call
+-	 * stack_depot_save_entries() again if we don't catch it. There is
+-	 * still not enough memory in stackdepot so it would try to
+-	 * allocate memory again and loop forever.
+-	 */
+-	if (check_recursive_alloc(entries, nr_entries, _RET_IP_))
++	/* Avoid recursion. Used in stack trace generation code. */
++	if (current->page_owner_depth >= PAGE_OWNER_MAX_RECURSION_DEPTH)
+ 		return dummy_handle;
+ 
++	current->page_owner_depth++;
++
++	nr_entries = stack_trace_save(entries, ARRAY_SIZE(entries), 2);
++
+ 	handle = stack_depot_save(entries, nr_entries, flags);
+ 	if (!handle)
+ 		handle = failure_handle;
+ 
++	current->page_owner_depth--;
+ 	return handle;
+ }
+ 
+-- 
+2.31.1
 
-I implemented #2 a while back for build_mmio_{read,write}(), I'm guessing the
-code is floating around somewhere.  The gotcha is that there are nasty little
-pieces of the kernel that don't use the helpers provided by io.h, e.g. the I/O
-APIC code likes to access MMIO via a struct overlay, so the compiler is free to
-use any instruction that satisfies the constraint.
-
-The I/O APIC can and should be forced off, but dollars to donuts says there are
-more special snowflakes lying in wait.  If the kernel uses an allowlist for
-drivers, then in theory it should be possible to hunt down all offenders.  But
-I think we'll want fallback logic to handle kernel MMIO #VEs, especially if the
-kernel needs ISA cracking logic for userspace.  Without fallback logic, any MMIO
-#VE from the kernel would be fatal, which is too harsh IMO since the behavior
-isn't so obviously wrong, e.g. versus the split lock #AC purge where there's no
-legitimate reason for the kernel to generate a split lock.
