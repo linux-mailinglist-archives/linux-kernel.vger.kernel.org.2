@@ -2,104 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0126D350D3E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 05:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0088350D41
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 05:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233168AbhDADjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 23:39:44 -0400
-Received: from mail-pf1-f172.google.com ([209.85.210.172]:39760 "EHLO
-        mail-pf1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230291AbhDADjb (ORCPT
+        id S232789AbhDADqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 23:46:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34850 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232565AbhDADps (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 23:39:31 -0400
-Received: by mail-pf1-f172.google.com with SMTP id c17so458646pfn.6;
-        Wed, 31 Mar 2021 20:39:31 -0700 (PDT)
+        Wed, 31 Mar 2021 23:45:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617248747;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jjaNSeBgfzgkuyEsWxYZoYBCpAjOIOQn7I8YDCkmDGo=;
+        b=dFHb1v5tJNBcDuwHgD30UxS24ns1JuxChuII8XEY/ruQIlyJwSz/9pbrgM2pfhXjAoQXjn
+        LibCuizmf5XqI/ZohoHsC2RJYba1YeqDpUuL30Uyb7DwCAtFuU+vs0YM8FgntjJznHJrwh
+        a7yVy1YWASBzb9idwFNhNPv25kchlVw=
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
+ [209.85.210.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-123-tm8bY0-5NgW4yVjfIOMZyA-1; Wed, 31 Mar 2021 23:45:45 -0400
+X-MC-Unique: tm8bY0-5NgW4yVjfIOMZyA-1
+Received: by mail-pf1-f197.google.com with SMTP id u126so2583654pfc.6
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 20:45:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZUzB2TfM1k6bbkpAhqsg/vqqGpQdkYUtRjbJgsJe7Uk=;
-        b=nZTvc8ZM5zpx7oP4FnkZ2tIWS0tBJdj0sKlrGB8DAU3XP0BMFX7z+Uha5sKg8Dtq0C
-         2p1Lxb1oYKIEI28pQQT0+oUmeUqraZweLOMQ29JniunaIfoFzX+4xaUMDF0kGO+Bt417
-         fLPuxg97Ma/dZmntSq0s0RslN3EmFsxA7TwYMIinDnM16xagcYeY1jEce00xdD5pxLyc
-         SH0QXQbTS88rC8tqsPSihkW5lCutK7dIvK2vMoxTZI3hCDUh0CpbngWYYTVB4NxHj9/p
-         N43/5gnkOA6gkOIxCWC5euVyMBwqGYlDs9pwlvhpkoOxes+mFLWX+q8YHNOd2T2TCm6C
-         gCEg==
-X-Gm-Message-State: AOAM531LDmknDrTsNx/wL7wcGLvsp+b9FbE7DemRyjny9EC69UjLTp7Z
-        vq+ZB8OzbbXVPnW18GRowXjy05KteZk=
-X-Google-Smtp-Source: ABdhPJzbUa5bstIPClaRRbGKOnyS1OuOyapcj0/01e7SKWIuLKAG1HdFxVfygwkCQnEPhFgENMUUTA==
-X-Received: by 2002:a63:fd45:: with SMTP id m5mr5860603pgj.264.1617248370879;
-        Wed, 31 Mar 2021 20:39:30 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:be87:d7bf:6a65:f00d? ([2601:647:4000:d7:be87:d7bf:6a65:f00d])
-        by smtp.gmail.com with ESMTPSA id g10sm3787013pgh.36.2021.03.31.20.39.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Mar 2021 20:39:29 -0700 (PDT)
-Subject: Re: [PATCH v4 1/2] scsi: ufs: Fix task management request completion
- timeout
-To:     Avri Altman <Avri.Altman@wdc.com>, Can Guo <cang@codeaurora.org>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "nguyenb@codeaurora.org" <nguyenb@codeaurora.org>,
-        "hongwus@codeaurora.org" <hongwus@codeaurora.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "kernel-team@android.com" <kernel-team@android.com>
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1617166236-39908-1-git-send-email-cang@codeaurora.org>
- <1617166236-39908-2-git-send-email-cang@codeaurora.org>
- <BL0PR04MB656448E22577076A27F1EADAFC7C9@BL0PR04MB6564.namprd04.prod.outlook.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <3206bafd-6a5a-1e9b-7939-a1360b5c55fc@acm.org>
-Date:   Wed, 31 Mar 2021 20:39:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=jjaNSeBgfzgkuyEsWxYZoYBCpAjOIOQn7I8YDCkmDGo=;
+        b=bV+wusjf0f7gq7WrtO+7OcJ1ZIPJsfXV4SMblEL+CwIV8zPdy9MlaLmrK0pfFUBIiK
+         2ypk+PEbdIAI4ksHnF59TGwl4EQnoECasDW9Xq9gMAZUFsyLHG3zBzuFKrqB5aoDf5+5
+         Kzgz/BmxKOHvhlSH+ISJGPgBmGx93Xni11zO8TuLZeN4MlijBgyxC4QWDscoCciBX4uZ
+         qWHS+EFIdl2YflvW8whIbUmqLwcGwu3y9ptDToF3lKATgPJqOgtdhWjo+7Y6o6t5AR9z
+         d+fHhh9Jurf7tr/6CFrn1tKiMe1/BqM4CLZdhlf2nkcRsGk8LnbPPfWEO4ZUKvIKNzS9
+         4Qtw==
+X-Gm-Message-State: AOAM532v1fFXaI0cvFT7Ljah8kSeIomBGjTsvuR9sAsrSwkjjsHXlrEG
+        gEQO/oRGXcw/JXwt4OhAN3lx84QL9d8fKeni7lQKufG0arNTLQtFaUHj9FkV/02PA6vDO2z1FTY
+        c1U8LKTZAAf0PJqg2IxqBMHV4
+X-Received: by 2002:a17:90a:6343:: with SMTP id v3mr6637659pjs.153.1617248744354;
+        Wed, 31 Mar 2021 20:45:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzhbkMW5A2oZJnz4u017su9Wobd1uajyGrVAtazuw1W7uQMfatgbwuglcftS+X0YMAajTJhSw==
+X-Received: by 2002:a17:90a:6343:: with SMTP id v3mr6637644pjs.153.1617248744148;
+        Wed, 31 Mar 2021 20:45:44 -0700 (PDT)
+Received: from xiangao.remote.csb ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id k11sm3553600pjs.1.2021.03.31.20.45.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 20:45:43 -0700 (PDT)
+Date:   Thu, 1 Apr 2021 11:45:33 +0800
+From:   Gao Xiang <hsiangkao@redhat.com>
+To:     Ruiqi Gong <gongruiqi1@huawei.com>
+Cc:     Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
+        Wang Weiyang <wangweiyang2@huawei.com>,
+        linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] erofs: Clean up spelling mistakes found in fs/erofs
+Message-ID: <20210401034533.GA3803200@xiangao.remote.csb>
+References: <20210331093920.31923-1-gongruiqi1@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <BL0PR04MB656448E22577076A27F1EADAFC7C9@BL0PR04MB6564.namprd04.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210331093920.31923-1-gongruiqi1@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/31/21 9:45 AM, Avri Altman wrote:
->> ufshcd_tmc_handler() calls blk_mq_tagset_busy_iter(fn =
->> ufshcd_compl_tm()),
->> but since blk_mq_tagset_busy_iter() only iterates over all reserved tags
->> and requests which are not in IDLE state, ufshcd_compl_tm() never gets a
->> chance to run. Thus, TMR always ends up with completion timeout. Fix it by
->> calling blk_mq_start_request() in  __ufshcd_issue_tm_cmd().
->>
->> Fixes: 69a6c269c097 ("scsi: ufs: Use blk_{get,put}_request() to allocate and
->> free TMFs")
->>
->> Signed-off-by: Can Guo <cang@codeaurora.org>
->> ---
->>  drivers/scsi/ufs/ufshcd.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->> index b49555fa..d4f8cb2 100644
->> --- a/drivers/scsi/ufs/ufshcd.c
->> +++ b/drivers/scsi/ufs/ufshcd.c
->> @@ -6464,6 +6464,7 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba
->> *hba,
->>
->>         spin_lock_irqsave(host->host_lock, flags);
->>         task_tag = hba->nutrs + free_slot;
->> +       blk_mq_start_request(req);
-> Maybe just set req->state to MQ_RQ_IN_FLIGHT
-> Without all other irrelevant initializations such as add timeout etc.
+On Wed, Mar 31, 2021 at 05:39:20AM -0400, Ruiqi Gong wrote:
+> zmap.c:  s/correspoinding/corresponding
+> zdata.c: s/endding/ending
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Ruiqi Gong <gongruiqi1@huawei.com>
 
-Hmm ... I'm not sure that any of the actions performed by
-blk_mq_start_request() are irrelevant in this context. Additionally, no
-other block or SCSI driver sets MQ_RQ_IN_FLIGHT directly.
+Reviewed-by: Gao Xiang <hsiangkao@redhat.com>
 
 Thanks,
+Gao Xiang
 
-Bart.
