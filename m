@@ -2,118 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 172D8352183
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D074352185
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234656AbhDAVTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 17:19:08 -0400
-Received: from mga02.intel.com ([134.134.136.20]:51039 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234639AbhDAVTE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 17:19:04 -0400
-IronPort-SDR: eBwlN1yja4t7wYIzDmxgKqDLjlJfMiOnAvguhD5wzYZ1TUoRkD9nTCYogIp4Vor/63HdN75u3r
- tmzT168vP8bQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="179465219"
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="179465219"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 14:19:04 -0700
-IronPort-SDR: Jv9mUSQuuazG/MvWHU9hNFEV19FntMSPsimLStrQTwuy4DOO0D/WM/KAZN5GyKtOf/FFptYg/3
- IIde1ILLKRVg==
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="611065482"
-Received: from pzlai-mobl.amr.corp.intel.com (HELO [10.213.169.242]) ([10.213.169.242])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 14:19:03 -0700
-Subject: Re: [RFC v1 03/26] x86/cpufeatures: Add is_tdx_guest() interface
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <83c8fcff9ac09f73924104cfb534258747e98bff.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <0116481d-581b-9433-3641-47e39550b99a@intel.com>
- <8f0bd4e5-195b-7e65-f780-f5e31d72cfe8@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <3aee61d5-9cc2-2c3c-00ea-f3ec7d5f7e04@intel.com>
-Date:   Thu, 1 Apr 2021 14:19:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S234639AbhDAVUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 17:20:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234114AbhDAVUB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 17:20:01 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 106C7C0613E6;
+        Thu,  1 Apr 2021 14:20:01 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id jy13so4941484ejc.2;
+        Thu, 01 Apr 2021 14:20:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KC0mTuJ4tgq29clt/DJ1oKRDWafL4y7QMhvb3vAxv64=;
+        b=KRAgTi8Xn1rADTywa6/h1bK6vvnZ5Xk8rKdavqQbRCx4KkmZOzawZHnEz+XOffhRwJ
+         eoClDVWHY0uaKbFPMa+l0aCMYdBllnbasCEKckPy4eAG0EHHy3qo3H1ryG5lR8K2wO61
+         GKxv7tUPa/D4K6+wiw6x4JXHFtXXkTXHbZ7HuiH/1c2Pr1+3Hct4E24RwjKUTkdGvv5L
+         sg2brW87LUkN6DlU/270ayFdlgkJDs8+aQCI7D8iT5F1R537ryQmt8UrO+DMxdXyMX44
+         6pF4T76GkHtI5DZ7maHEJy+7DgjKWXTZ7F2kyuMwMaDDxY/Ab0TO+GlGaK1ZccT3Kqm0
+         Ty8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KC0mTuJ4tgq29clt/DJ1oKRDWafL4y7QMhvb3vAxv64=;
+        b=icxDdrGIgGm6O+w5dt/ggcyUQ8VmZ6Wu2OaVPw0/2Wtu/zJLJk6u/tthWJwj+o52sr
+         kzthNOhqrTcvOPZL/VyfDNc/9tsisFThEEG7fXF9JoYEdrER77X8Yrm8IrOfJeDq7dQv
+         PoQbOt7HWnDbBckNyfoCLlDuiiZSV5/qQwfW4UkAxt/pmZ/soJjhofKAGhMFxQMA6tqG
+         wkzNipRINCm46ZreOC78oL+Fzao2KeOxPar1T7y9RMVZ7dMLFKTF+9eE60c1igE/x4Qo
+         MUR4UlZ0/SNwIkbnRbQarX9RY677sSIY1TXzG+XBJi/xSbGkdpHq+c9UHrxGYj3CxyO4
+         8tSw==
+X-Gm-Message-State: AOAM5311tfDZSxTbCvC2fr28VNtjOxEgXN2JRDsNpHm67ov+xl4PqTQP
+        qsLPFB3McXqyqzb27AXVFPkABwrxbh0PYzEwtUxqe4ko47U=
+X-Google-Smtp-Source: ABdhPJwtHXc+ksomWeIaHGamXKspypkINK+06RXyA5gdVtCimYtqIkYh7FQORxH0Ah8aG7yz4+beL4aCKsUXkLnuycg=
+X-Received: by 2002:a17:907:7683:: with SMTP id jv3mr11106994ejc.450.1617311999664;
+ Thu, 01 Apr 2021 14:19:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <8f0bd4e5-195b-7e65-f780-f5e31d72cfe8@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201118230414.121316-1-aford173@gmail.com> <20201130220249.GA3109751@robh.at.kernel.org>
+In-Reply-To: <20201130220249.GA3109751@robh.at.kernel.org>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Thu, 1 Apr 2021 16:19:48 -0500
+Message-ID: <CAHCN7x+om4W5jqnuAW4-nMkZLc5nrYu7NUsbM36r0wyFSYa4-g@mail.gmail.com>
+Subject: Re: [PATCH V5] dt-bindings: soc: imx: Add binding doc for spba bus
+To:     Rob Herring <robh@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/1/21 2:15 PM, Kuppuswamy, Sathyanarayanan wrote:
-> On 4/1/21 2:08 PM, Dave Hansen wrote:
->> On 2/5/21 3:38 PM, Kuppuswamy Sathyanarayanan wrote:
->>> +bool is_tdx_guest(void)
->>> +{
->>> +    return static_cpu_has(X86_FEATURE_TDX_GUEST);
->>> +}
->>
->> Why do you need is_tdx_guest() as opposed to calling
->> cpu_feature_enabled(X86_FEATURE_TDX_GUEST) everywhere?
-> 
-> is_tdx_guest() is also implemented/used in compressed
-> code (which uses native_cpuid calls). I don't think
-> we can use cpu_feature_enabled(X86_FEATURE_TDX_GUEST) in
-> compressed code right? Also is_tdx_guest() looks easy
-> to read and use.
+On Mon, Nov 30, 2020 at 4:02 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Wed, 18 Nov 2020 17:04:14 -0600, Adam Ford wrote:
+> > Add binding doc for fsl,spba-bus.
+> >
+> > Signed-off-by: Adam Ford <aford173@gmail.com>
+> > ---
+> > make dt_binding_check -j8 |grep spba
+> >   DTEX    Documentation/devicetree/bindings/bus/fsl,spba-bus.example.dts
+> >   DTC     Documentation/devicetree/bindings/bus/fsl,spba-bus.example.dt.yaml
+> >   CHECK   Documentation/devicetree/bindings/bus/fsl,spba-bus.example.dt.yaml
+> >
+> > V5:  Rebase on 5.10-rc2 to be able to check yaml
+> >      Add Reg entry
+> >
+> > V4:  Remove an accidental makefile change
+> >      Move type:object under additional properties
+> >
+> > V3:  Rebase sample from aips-bus example
+> >      Split off from series adding i.MX8M Nano functions to reduce noise
+> >
+> > V2:  Attempted to update yaml from feedback
+> >
+>
+> Applied, thanks!
 
-OK, but how many of the is_tdx_guest() uses are in the compressed code?
- Why has its use spread beyond that?
+Rob,
+
+I am not seeing this anywhere.  Can you tell me where this was
+applied?  It's not appearing in Linux-next
+
+adam
