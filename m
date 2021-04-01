@@ -2,217 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 100F5350E32
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 06:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B697A350E37
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 06:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232763AbhDAEj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 00:39:27 -0400
-Received: from mga18.intel.com ([134.134.136.126]:28370 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232565AbhDAEi5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 00:38:57 -0400
-IronPort-SDR: GKn+Kc4ZAFMErZgH6nMkUFkAfIR2b4qPuQlj3r75sbQrIJQlG6jPIDPRgHHCB3vggIKFFLI1ww
- OFlSdEWPvqdg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="179680916"
-X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="179680916"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 21:38:56 -0700
-IronPort-SDR: Y+IGxmc4FguCGL96VWhe93DTaEAlZGRJ/MRsIjvE7C6hdSsvHKxtF0A9b9HQBpmEGlozFl10Ag
- 1dGUjzV8rTXg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="455806551"
-Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
-  by orsmga001.jf.intel.com with ESMTP; 31 Mar 2021 21:38:55 -0700
-Received: from fmsmsx608.amr.corp.intel.com (10.18.126.88) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 31 Mar 2021 21:38:55 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx608.amr.corp.intel.com (10.18.126.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 31 Mar 2021 21:38:54 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
- via Frontend Transport; Wed, 31 Mar 2021 21:38:54 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.106)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2106.2; Wed, 31 Mar 2021 21:38:54 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LcHiDmz0a7UQAhRLIMEH8/mLHt3eGrRvSNyA9/1jL6L6V609puhVN0RZfJ5LicUgwMyWQQjD8zRea1YU6w6eKtmXSfqAuSSsavmHnX9N1UfPc5neLZZFMGfJPkQAbAqSMyLbhuTyxRY3FX4XndL8b/VWUiv9+jjyp33ksY0xZgi3tbT06L72gKkajSoKc88Ph+TQWgLv06daoAEM02CJ1dtwARnoKxlN0pJykL5Cbtkx+Jx0hWlxg+pAmP7CClpvBD2bz14UhU4yDYex2k+VfZcd+1OeVzMVTsCq9QOUZHgVlNdED40MsV3CZXd2fZAOiTqvU9SVjsLSWX9uCGJiuw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qXSOJViBbZ6SuHEVQVEIFjoANg7WaIZHScfU6nPwqcw=;
- b=IEW92ARm7nP8U2EbJqAeeGEwf5XgCXkzyroQV+Jd29khgMlQuayIjzxyuR9eroRnqlDDISEfpAyFj46cjMCLrMkTuOW9/yeWNm9sOAjFtZg8EIngpS3pi64DbGxgc4I8rfjfMdo1DQMm8Nx6n3TGRSzyV/sPHaTHSkIiSP4N2+OKtbnStWwlnNRWnjTyRfWAcTpIbwQeWgKlGyzfucXnvgCxJULBTfHT8JRUUvD7q29IZZEdYT28DDThoRyXVPQ10LYa/1l4/bdds+4JrjML353QdJnGj5tBUScrmoCdpPkeI8d3P52VogpzI3UC7lIHWl2RuFyXZZK0zWYngSlqGA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qXSOJViBbZ6SuHEVQVEIFjoANg7WaIZHScfU6nPwqcw=;
- b=J8yjvtnnqRimNIHzZPeBaOTZFyaQMhrl4aQaVJtnw2WpHTS8cGtmwAZpuKOPvA4J6eikQ68lCeRQVc4wNIF0ddHeM0RulvSYfmcceNwLq3Lfu59qRqlrYiVHmRbCd9FaijIMNE8Y71OoCeqO8g3dM9Gc8GtPdDAJp8fdmfxYp74=
-Received: from BN6PR11MB4068.namprd11.prod.outlook.com (2603:10b6:405:7c::31)
- by BN6PR11MB1265.namprd11.prod.outlook.com (2603:10b6:404:48::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25; Thu, 1 Apr
- 2021 04:38:44 +0000
-Received: from BN6PR11MB4068.namprd11.prod.outlook.com
- ([fe80::5404:7a7d:4c2a:1c1d]) by BN6PR11MB4068.namprd11.prod.outlook.com
- ([fe80::5404:7a7d:4c2a:1c1d%3]) with mapi id 15.20.3977.033; Thu, 1 Apr 2021
- 04:38:44 +0000
-From:   "Liu, Yi L" <yi.l.liu@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Jean-Philippe Brucker" <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>
-Subject: RE: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
- APIs
-Thread-Topic: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Thread-Index: AQHXDZuc1/oaTFwUU0WheDxUmLBHiqqKkLIAgACg94CAAC72gIAAD04AgAADogCAAErUgIAETQEAgAOaswCAB7C3gIAAmFuAgADGxQCAAR7PEIAAZiYAgAECgOA=
-Date:   Thu, 1 Apr 2021 04:38:44 +0000
-Message-ID: <BN6PR11MB406854CAE9D7CE86BEAB3E23C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
-References: <20210319124645.GP2356281@nvidia.com> <YFSqDNJ5yagk4eO+@myrica>
- <20210319135432.GT2356281@nvidia.com> <20210319112221.5123b984@jacob-builder>
- <20210322120300.GU2356281@nvidia.com> <20210324120528.24d82dbd@jacob-builder>
- <20210329163147.GG2356281@nvidia.com>
- <MWHPR11MB188639EE54B48B0E1321C8198C7D9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210330132830.GO2356281@nvidia.com>
- <BN6PR11MB40688F5AA2323AB8CC8E65E7C37C9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <20210331124038.GE1463678@nvidia.com>
-In-Reply-To: <20210331124038.GE1463678@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-authentication-results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [192.55.46.56]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 94b98ee3-e671-45bd-5896-08d8f4c8083e
-x-ms-traffictypediagnostic: BN6PR11MB1265:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BN6PR11MB126577E59EB3FA3BEEBF4BBCC37B9@BN6PR11MB1265.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ljCPlGSnJRdn3cVDOLC1heirXannNmEQMolmbQ6wPtyKvkSGtY2hq9IN1to1CGI5IOA6M23Gc+fwVebYnfwIa0cY0i9M1I3NvBhHZFaZKO49/BGSAJJ7+z3iZQ8mKEUnhA2vEf7XAqTyO2KMW7tBrMAv8f8BakWpfGFSo1/IdTGYdnGVeX/rN+ITye4Da0+yus8drPp+lb51pDh9coJXOOE+pCSZZnpaAVuQ80S7Ti2AkfQmr9Dry01dPLzUuJTxEtBzPqdk0RTz4BJTUsYJPZ7de+TMPufTi4TU5jgxb67w7F0irrhcwAEp/q61HpVbBZlnqHjH0Nc2utrNFOekC9iVfmF2bm/OICCC5vCYkbCC9FL86Xgg0aLXUTaIFDCmdDQzTCLews9d+4L4dsi6YkQM0YDCzYEZ1wBi9V6cAMESEwa6+Ogf2Z1m8Rqqi9U9tcid8GqGkCxFBhyi+J12ysFfb48wIPSjGuCWUV/YHOxEk33Pdcw4MlT3wXhHvhbvnOIZ4VxHfDuvX4E5r78lhbLakoDndvrIZSbp/Y5OzZglpjgCron+Kb/C5v1IQBxEt9KdguBQFOA4FAtgqgMFiOPKt76wNu1mHGlUpHw8CA1bRU3IXbSF8ZJeIPMNGaqCUuxGKm0yjza0gulxXd/ca8IWD+fG87+l+7lzax7O1Ac=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR11MB4068.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(376002)(136003)(346002)(396003)(54906003)(66446008)(7696005)(76116006)(6916009)(52536014)(64756008)(2906002)(478600001)(7416002)(6506007)(9686003)(26005)(5660300002)(38100700001)(55016002)(66946007)(8936002)(66556008)(316002)(33656002)(71200400001)(186003)(66476007)(86362001)(4326008)(8676002)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?uqmJC007WMrQqhTkoXPbRC6QWIUbGVoq/Q44NNaNDtZKEAIQifyuzXlcJGkV?=
- =?us-ascii?Q?67l6NISur/s8RKK1uLQSUjngpL0f7I4VJ5RWqKTiNeKTM+UJ3w7miShBPlc+?=
- =?us-ascii?Q?88uL5rU8UlbAXfDlsV5OA/fRRpVxp6CRZC6C/3x6g7BwnO43uhOkcjZOrGxE?=
- =?us-ascii?Q?XN20K/a+y7tZNfEPdNAaQMyBcma6n99j2ZpFkuJf75mTHx5qd7wHm3kP/gYK?=
- =?us-ascii?Q?NDqaBdRoLF2c2RhrAHmAklfaDS+Ost/xnC31mmUTMO4kaa1ls7UYPPRrBdbg?=
- =?us-ascii?Q?ummUjf0PX/FWOJGqv6w4EQOe1ptG+HB3aoinMb6hCcne0XZbYuFvsEqCea8Y?=
- =?us-ascii?Q?UZmRtlFFsj+gU+vHOJzoaYw/d0aMIV0/uhANLVqgbj2mlvde6Fi8Xozqc7M0?=
- =?us-ascii?Q?gUF63JKOnXSCzrAgkFEdnl3Cn3+t4O0xiQo2vkFsSuPsTzBvSwEXB93SwJ2D?=
- =?us-ascii?Q?F8/uloSFY8hKJE1oZFUSczla34a9Zv1ssXkBGhgKiXoKvIsMVdxZYnerqoXN?=
- =?us-ascii?Q?bC/LQLZZsh2yiOHl+qex751LdjsnKN1+Tt45AFxgvrRtkVfyFN6CcevbvLd2?=
- =?us-ascii?Q?ZzFw9G6HDFOxkyxyr6urDVOm8z2DWm8YLiN+NeefU64HpByXnh9M0jDfvzDg?=
- =?us-ascii?Q?O68eBcTwwaLJcOoL+lxBQiXfpZ4u5SmhMU/bu1TF/lmG9RrMSqh7gz0qdK4N?=
- =?us-ascii?Q?m64GBYcCWQ45IfQeLOG5FuT/C/iYzkZozPK4nTM/nmHgcAnsPA/h3k/0emd8?=
- =?us-ascii?Q?LHtcG2FlSSEB4ZcWUnWzUM4n5VqqCUPquZ/ZuttBzwsaWgIwX3XIjW7CeCnJ?=
- =?us-ascii?Q?xZBQcsmhUBoqKBh2iQ/l+/30+5C1lDCrTATR9FjiiyU1gX+NDYuXnCpxxTwO?=
- =?us-ascii?Q?Y+mvPOtexVGzNQEqmfhP4MYXfW7tiwEmQr8hx0h0kicA04j8eTr93u2B6Vo4?=
- =?us-ascii?Q?Vn9bM2Y10F/jFp+d/BsdRPyH2l4ccvYLP7oZE8J+9NCLAq+6ikeCdZoBZxd2?=
- =?us-ascii?Q?2PkgnzA72Qu7/IX+GiVbokmd8WoAkPLc4r2zTTJMxiwhryGE0+PJooeSVNK9?=
- =?us-ascii?Q?Q0RocB/rpCJKHrSVLYa9NUZJ/Lkm2Ti7mZoazcti0JddMtJGb4WHoQKLqqEO?=
- =?us-ascii?Q?EAJhBeL26GudMh6lNTerPgBHt04j/hc+mXkZrQU+JtmFlPcG4o/hVJOOADof?=
- =?us-ascii?Q?EIh6hHka4wB8TCYCpbW7udpxJi9Iho3215vwLQymomHFmU0K8WNBueNSwg9x?=
- =?us-ascii?Q?QwlV3m+nsslsY9v4N9Jwh+rCrUvjYE00EMS3G8CInmzz67IZ2Irp1fNLKQOO?=
- =?us-ascii?Q?n39rCr6JpM121rjsGORNjJQg?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S229480AbhDAEnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 00:43:16 -0400
+Received: from thorn.bewilderbeest.net ([71.19.156.171]:57197 "EHLO
+        thorn.bewilderbeest.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhDAEmu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 00:42:50 -0400
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20::7c6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 5E02A6F;
+        Wed, 31 Mar 2021 21:42:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1617252170;
+        bh=Ay5WK54HZGhiIeFKN2gWw14BaktduKWzm6t4txNJPAk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=knepkPPZBus6BYQdLLFGxdXGruvS9SaNGeiS9NQI7gEmjsPwObm3JuUnoZ2/YNvok
+         qkyBGzIuHsA0r+FhNV04wzhhWGulPrJk2zDTIqzOfu065tigtfkhYON8h0nIh7Tuzi
+         3ca+vbko8vvMu22aTyK5CWFYkL1UHMnunO4ySrKw=
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Zev Weiss <zev@bewilderbeest.net>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Subject: [PATCH v3] ARM: dts: aspeed: add ASRock E3C246D4I BMC
+Date:   Wed, 31 Mar 2021 23:42:31 -0500
+Message-Id: <20210401044232.9637-1-zev@bewilderbeest.net>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN6PR11MB4068.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 94b98ee3-e671-45bd-5896-08d8f4c8083e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Apr 2021 04:38:44.0865
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2i0Q9A0EjC6nW6y8sCuTn9eAr9XTUBlt6deS3WXp1yaihsLa3kjHInVg139c3jLnJKcece3HAfPreAfwM/FgHA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB1265
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Jason Gunthorpe <jgg@nvidia.com>
-> Sent: Wednesday, March 31, 2021 8:41 PM
->=20
-> On Wed, Mar 31, 2021 at 07:38:36AM +0000, Liu, Yi L wrote:
->=20
-> > The reason is /dev/ioasid FD is per-VM since the ioasid allocated to
-> > the VM should be able to be shared by all assigned device for the VM.
-> > But the SVA operations (bind/unbind page table, cache_invalidate) shoul=
-d
-> > be per-device.
->=20
-> It is not *per-device* it is *per-ioasid*
->
-> And as /dev/ioasid is an interface for controlling multiple ioasid's
-> there is no issue to also multiplex the page table manipulation for
-> multiple ioasids as well.
->=20
-> What you should do next is sketch out in some RFC the exactl ioctls
-> each FD would have and show how the parts I outlined would work and
-> point out any remaining gaps.
->=20
-> The device FD is something like the vfio_device FD from VFIO, it has
-> *nothing* to do with PASID beyond having a single ioctl to authorize
-> the device to use the PASID. All control of the PASID is in
-> /dev/ioasid.
+This is a relatively low-cost AST2500-based Xeon E-2100/E-2200 series
+mini-ITX board that we hope can provide a decent platform for OpenBMC
+development.
 
-good to see this reply. Your idea is much clearer to me now. If I'm getting
-you correctly. I think the skeleton is something like below:
+This initial device-tree provides the necessary configuration for
+basic BMC functionality such as host power control, serial console and
+KVM support, and POST code snooping.
 
-1) userspace opens a /dev/ioasid, meanwhile there will be an ioasid
-   allocated and a per-ioasid context which can be used to do bind page
-   table and cache invalidate, an ioasid FD returned to userspace.
-2) userspace passes the ioasid FD to VFIO, let it associated with a device
-   FD (like vfio_device FD).
-3) userspace binds page table on the ioasid FD with the page table info.
-4) userspace unbinds the page table on the ioasid FD
-5) userspace de-associates the ioasid FD and device FD
+Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+Reviewed-by: Joel Stanley <joel@jms.id.au>
+---
 
-Does above suit your outline?
+Changes since v2:
+ - un-bungled filename in dtb-$(CONFIG_ARCH_ASPEED)
+Changes since v1:
+ - added entry to dtb-$(CONFIG_ARCH_ASPEED)
+ - added board to compatible
+ - added pinctrl properties to adc
+ - split out of mostly-unrelated patch series
 
-If yes, I still have below concern and wish to see your opinion.
-- the ioasid FD and device association will happen at runtime instead of
-  just happen in the setup phase.
-- how about AMD and ARM's vSVA support? Their PASID allocation and page tab=
-le
-  happens within guest. They only need to bind the guest PASID table to hos=
-t.
-  Above model seems unable to fit them. (Jean, Eric, Jacob please feel free
-  to correct me)
-- this per-ioasid SVA operations is not aligned with the native SVA usage
-  model. Native SVA bind is per-device.
+ arch/arm/boot/dts/Makefile                    |   1 +
+ .../boot/dts/aspeed-bmc-asrock-e3c246d4i.dts  | 202 ++++++++++++++++++
+ 2 files changed, 203 insertions(+)
+ create mode 100644 arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts
 
-Regards,
-Yi Liu
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index 8e5d4ab4e75e..c22151b50ddc 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -1406,6 +1406,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
+ 	aspeed-bmc-ampere-mtjade.dtb \
+ 	aspeed-bmc-arm-centriq2400-rep.dtb \
+ 	aspeed-bmc-arm-stardragon4800-rep2.dtb \
++	aspeed-bmc-asrock-e3c246d4i.dtb \
+ 	aspeed-bmc-bytedance-g220a.dtb \
+ 	aspeed-bmc-facebook-cmm.dtb \
+ 	aspeed-bmc-facebook-galaxy100.dtb \
+diff --git a/arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts b/arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts
+new file mode 100644
+index 000000000000..dcab6e78dfa4
+--- /dev/null
++++ b/arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts
+@@ -0,0 +1,202 @@
++// SPDX-License-Identifier: GPL-2.0+
++/dts-v1/;
++
++#include "aspeed-g5.dtsi"
++#include <dt-bindings/gpio/aspeed-gpio.h>
++#include <dt-bindings/i2c/i2c.h>
++
++/{
++	model = "ASRock E3C246D4I BMC";
++	compatible = "asrock,e3c246d4i-bmc", "aspeed,ast2500";
++
++	aliases {
++		serial4 = &uart5;
++	};
++
++	chosen {
++		stdout-path = &uart5;
++		bootargs = "console=tty0 console=ttyS4,115200 earlyprintk";
++	};
++
++	memory@80000000 {
++		reg = <0x80000000 0x20000000>;
++	};
++
++	leds {
++		compatible = "gpio-leds";
++
++		heartbeat {
++			/* BMC_HB_LED_N */
++			gpios = <&gpio ASPEED_GPIO(H, 6) GPIO_ACTIVE_LOW>;
++			linux,default-trigger = "timer";
++		};
++
++		system-fault {
++			/* SYSTEM_FAULT_LED_N */
++			gpios = <&gpio ASPEED_GPIO(Z, 2) GPIO_ACTIVE_LOW>;
++			panic-indicator;
++		};
++	};
++
++	gpio-keys {
++		compatible = "gpio-keys";
++
++		uid-button {
++			label = "uid-button";
++			gpios = <&gpio ASPEED_GPIO(F, 1) GPIO_ACTIVE_LOW>;
++			linux,code = <ASPEED_GPIO(F, 1)>;
++		};
++	};
++
++	iio-hwmon {
++		compatible = "iio-hwmon";
++		io-channels = <&adc 0>, <&adc 1>, <&adc 2>, <&adc 3>, <&adc 4>,
++			<&adc 5>, <&adc 6>, <&adc 7>, <&adc 8>, <&adc 9>,
++			<&adc 10>, <&adc 11>, <&adc 12>;
++	};
++};
++
++&fmc {
++	status = "okay";
++	flash@0 {
++		status = "okay";
++		m25p,fast-read;
++		label = "bmc";
++		spi-max-frequency = <100000000>; /* 100 MHz */
++#include "openbmc-flash-layout.dtsi"
++	};
++};
++
++&uart5 {
++	status = "okay";
++};
++
++&vuart {
++	status = "okay";
++	aspeed,sirq-active-high;
++};
++
++&mac0 {
++	status = "okay";
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_rgmii1_default &pinctrl_mdio1_default>;
++};
++
++&i2c1 {
++	status = "okay";
++
++	/* thermal sensor, one diode run to a disconnected header */
++	w83773g@4c {
++		compatible = "nuvoton,w83773g";
++		reg = <0x4c>;
++	};
++};
++
++&i2c3 {
++	status = "okay";
++
++	/* FRU EEPROM */
++	eeprom@57 {
++		compatible = "st,24c128", "atmel,24c128";
++		reg = <0x57>;
++		pagesize = <16>;
++	};
++};
++
++&video {
++	status = "okay";
++};
++
++&vhub {
++	status = "okay";
++};
++
++&lpc_ctrl {
++	status = "okay";
++};
++
++&lpc_snoop {
++	status = "okay";
++	snoop-ports = <0x80>;
++};
++
++&gpio {
++	status = "okay";
++	gpio-line-names =
++		/*  A */ "BMC_MAC1_INTB", "BMC_MAC2_INTB", "NMI_BTN_N", "BMC_NMI",
++			"", "", "", "",
++		/*  B */ "", "", "", "", "", "IRQ_BMC_PCH_SMI_LPC_N", "", "",
++		/*  C */ "", "", "", "", "", "", "", "",
++		/*  D */ "BMC_PSIN", "BMC_PSOUT", "BMC_RESETCON", "RESETCON",
++			"", "", "", "",
++		/*  E */ "", "", "", "", "", "", "", "",
++		/*  F */ "LOCATORLED_STATUS_N", "LOCATORBTN", "", "",
++			"", "", "BMC_PCH_SCI_LPC", "BMC_NCSI_MUX_CTL",
++		/*  G */ "HWM_BAT_EN", "CHASSIS_ID0", "CHASSIS_ID1", "CHASSIS_ID2",
++			"BMC_ALERT1_N_R", "BMC_ALERT2_N_R", "BMC_ALERT3_N", "SML0ALERT",
++		/*  H */ "FM_ME_RCVR_N", "O_PWROK", "SKL_CNL_R", "D4_DIMM_EVENT_3V_N",
++			"MFG_MODE_N", "BMC_RTCRST", "BMC_HB_LED_N", "BMC_CASEOPEN",
++		/*  I */ "", "", "", "", "", "", "", "",
++		/*  J */ "BMC_READY", "BMC_PCH_BIOS_CS_N", "BMC_SMI", "",
++			"", "", "", "",
++		/*  K */ "", "", "", "", "", "", "", "",
++		/*  L */ "BMC_CTS1", "BMC_DCD1", "BMC_DSR1", "BMC_RI1",
++			"BMC_DTR1", "BMC_RTS1", "BMC_TXD1", "BMC_RXD1",
++		/*  M */ "BMC_LAN0_DIS_N", "BMC_LAN1_DIS_N", "", "",
++			"", "", "", "",
++		/*  N */ "", "", "", "", "", "", "", "",
++		/*  O */ "", "", "", "", "", "", "", "",
++		/*  P */ "", "", "", "", "", "", "", "",
++		/*  Q */ "", "", "", "",
++			"BMC_SBM_PRESENT_1_N", "BMC_SBM_PRESENT_2_N",
++			"BMC_SBM_PRESENT_3_N", "BMC_PCIE_WAKE_N",
++		/*  R */ "", "", "", "", "", "", "", "",
++		/*  S */ "PCHHOT_BMC_N", "", "RSMRST",
++			"", "", "", "", "",
++		/*  T */ "", "", "", "", "", "", "", "",
++		/*  U */ "", "", "", "", "", "", "", "",
++		/*  V */ "", "", "", "", "", "", "", "",
++		/*  W */ "PS_PWROK", /* dummy always-high signal */
++			"", "", "", "", "", "", "",
++		/*  X */ "", "", "", "", "", "", "", "",
++		/*  Y */ "SLP_S3", "SLP_S5", "", "", "", "", "", "",
++		/*  Z */ "CPU_CATERR_BMC_PCH_N", "", "SYSTEM_FAULT_LED_N", "BMC_THROTTLE_N",
++			"", "", "", "",
++		/* AA */ "CPU1_THERMTRIP_LATCH_N", "", "CPU1_PROCHOT_N", "",
++			"", "", "IRQ_SMI_ACTIVE_N", "FM_BIOS_POST_CMPLT_N",
++		/* AB */ "", "", "ME_OVERRIDE", "BMC_DMI_MODIFY",
++			"", "", "", "",
++		/* AC */ "LAD0", "LAD1", "LAD2", "LAD3",
++			"CK_33M_BMC", "LFRAME", "SERIRQ", "S_PLTRST";
++
++	/* Assert BMC_READY so BIOS doesn't sit around waiting for it */
++	bmc-ready {
++		gpio-hog;
++		gpios = <ASPEED_GPIO(J, 0) GPIO_ACTIVE_LOW>;
++		output-high;
++	};
++};
++
++&adc {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_adc0_default
++			&pinctrl_adc1_default
++			&pinctrl_adc2_default
++			&pinctrl_adc3_default
++			&pinctrl_adc4_default
++			&pinctrl_adc5_default
++			&pinctrl_adc6_default
++			&pinctrl_adc7_default
++			&pinctrl_adc8_default
++			&pinctrl_adc9_default
++			&pinctrl_adc10_default
++			&pinctrl_adc11_default
++			&pinctrl_adc12_default>;
++};
++
++&kcs3 {
++	status = "okay";
++	aspeed,lpc-io-reg = <0xca2>;
++};
+-- 
+2.31.1
+
