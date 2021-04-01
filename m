@@ -2,118 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E2935190D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:51:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D086351916
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236643AbhDARt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:49:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57172 "EHLO
+        id S237104AbhDARuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:50:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234740AbhDARje (ORCPT
+        with ESMTP id S234791AbhDARkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:39:34 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 274A4C05BD35
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 06:08:07 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id g8so2699612lfv.12
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 06:08:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kgXD3U/DrQ9vSxCEaPsInQj0EAhn8kdogWYjyNQBOE4=;
-        b=KE3cKfhcFR48eqKLC026k68pj4XXeu75rKpuzgjr/cCOeB3a2ZoW36SGUE4+5fJ2Kg
-         anl1T6Ry7ODVw+cyx2r1T6RHnx5kkzvXPZPGKI/WinOkm3cxHCJYDKa47N7RMBmg7W4o
-         bT5zsLP/Ud06DHmEe7NDDOvxnTDhyg1EfC+zGD+QJKaaFK6GMJr9QI5VTH7yhehh0ZRB
-         8jsBc2SewYPaNHJ6kej06LXk7XfXSAiPhQfS9i2LVStwmZfSGw69eirzZd0H+DeFfmaV
-         +Tj7OUgjmT6L8z/J7Ndvo0Fs7o0gWpUXH8ddz91BF+gO0bZ66D+xNFhJTvSJKD8cniuS
-         5M8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kgXD3U/DrQ9vSxCEaPsInQj0EAhn8kdogWYjyNQBOE4=;
-        b=umNcC+zdeTYmXNUezbGYuYMnPzTA37i1G0ytZn87A6jIkSWMr8r7XC9G0Acy3U3nUN
-         /F/sd15ChugbNrjKSJy5fp45QVyXjTWcBrSMH+mjeDkIEGchZEJJNZbByihEsjdvaZW6
-         UhVyhhGLChGkfgy5XcIcg2kA67+tJAqMMWEg1YDBlpIhuXHEti5R0IvZ0L6L/7t8nanr
-         9OvyGfIrcUp+Q7fPq25UcblSWitTuGr+jCmcmpHLKCB8zi408ZuntyAz09fQVoDmucvZ
-         xvYjpx0Ca86gMC6neIJ03EaJMrkoY73nICnv+nlxTgLdBi3Dq306XDEaXJvM/4WilKJb
-         U/JA==
-X-Gm-Message-State: AOAM530hCEMuG7jP3/D2CNFqvTIp4J4IUuSelRSA1D5RsOH/Tf7KkSiE
-        N4a/MxVTcxn4Wez5qveuJ9dt27r5OswFvYAueyO/iVAVn/F2Cx6g
-X-Google-Smtp-Source: ABdhPJzQC9jNQb6dsL7WniFLh6CGPL6/0Y6vVpiVvZ6eUfNUk61mYIzybCiFhSxh0pYAScadm4UZ9/cr5T+ZjZHLenU=
-X-Received: by 2002:a05:6512:243:: with SMTP id b3mr5550624lfo.529.1617282485530;
- Thu, 01 Apr 2021 06:08:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210330085655.12615-1-wsa+renesas@sang-engineering.com> <20210330085655.12615-2-wsa+renesas@sang-engineering.com>
-In-Reply-To: <20210330085655.12615-2-wsa+renesas@sang-engineering.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 1 Apr 2021 15:07:54 +0200
-Message-ID: <CACRpkdbABbvxRLGhzmiQ8kTmwHsRqevvmDpfLKv-dUhEHVpF6g@mail.gmail.com>
-Subject: Re: [PATCH RFC/RFT 1/1] misc: add simple logic analyzer using polling
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 1 Apr 2021 13:40:10 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28907C08EC3C
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 06:44:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=xWuW6DllhK9JF+DFKMKd1igMk+bjQL2yPWcdW6CIbNc=; b=mgXVzIFzPxxbmQ7LIA0Y8BiZDS
+        Bg8+zbytxYIqoWywMCbE9aU27M8Wi3gMJhwRdyquzYgohBZQpZU+PVUN6GliG3gWMeAZqQdkn9xJ2
+        rrRyfOHVV1w+GYGgZ25nKkw9Z21F+s8lb8yeBBIgnvKl0skTZwyDpRYq7V3t5PkDoONNq6iRF+DUc
+        2KNDnzekFUFIAQM/7WCC7dsNtHxUu5u6MB4gDppcJmxf8DUv3bbz4Ou8O4TYAZTfA3BgD75csI4Gc
+        NRdo+gRT8OHoBjOzRCxEPy7ane3pMYVLDtIvYfVmrth4IxUnNy7KSDBaSN9EzfXAGbI0BbmQAHtoS
+        CR1p8LsQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lRxag-009ise-Q6; Thu, 01 Apr 2021 13:44:18 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 02F25304B90;
+        Thu,  1 Apr 2021 15:42:29 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id C0D81235FA3BF; Thu,  1 Apr 2021 15:42:29 +0200 (CEST)
+Message-ID: <20210401131012.395311786@infradead.org>
+User-Agent: quilt/0.66
+Date:   Thu, 01 Apr 2021 15:10:12 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     joel@joelfernandes.org, chris.hyser@oracle.com, joshdon@google.com,
+        mingo@kernel.org, vincent.guittot@linaro.org,
+        valentin.schneider@arm.com, mgorman@suse.de
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org, tj@kernel.org,
+        tglx@linutronix.de
+Subject: [PATCH 0/9] sched: Core scheduling interfaces
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 10:58 AM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
+Hi,
 
-> This is a simple logic analyzer using GPIO polling. It comes with a
-> script to isolate a CPU for polling. While this is definately not a
-> production level analyzer, it can be a helpful first view when remote
-> debugging. Read the documentation for details.
->
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+This is a rewrite of the core sched interface bits, and mostly replaces patches
+2-5 from this set here:
 
-I am a great supporter of this idea.
+  https://lkml.kernel.org/r/20210324214020.34142-1-joel@joelfernandes.org
 
-When we created gpiod_get_array_value() and friends, the idea
-was exactly to be able to do things like this. It's a good way to
-utilize the fact that several GPIO lines can often be read from a single
-register read.
+The task interface is extended to include PR_SCHED_CORE_GET, because the
+selftest. Otherwise the task interface is much the same, except completely new
+code.
 
-> +    i2c-analyzer {
-> +            compatible = "gpio-logic-analyzer";
-> +            probe-gpios = <&gpio6 21 GPIO_OPEN_DRAIN>, <&gpio6 4 GPIO_OPEN_DRAIN>;
-> +            probe-names = "SCL", "SDA";
-> +    };
-> +
-> +The binding documentation is in the ``misc`` folder of the Kernel binding
-> +documentation.
-(...)
-> +++ b/Documentation/devicetree/bindings/misc/gpio-logic-analyzer.yaml
+The cgroup interface now uses a 'core_sched' file, which still takes 0,1. It is
+however changed such that you can have nested tags. The for any given task, the
+first parent with a cookie is the effective one. The rationale is that this way
+you can delegate subtrees and still allow them some control over grouping.
 
-When other debugging tools for GPIO got DT bindings it was concluded that
-it is possible to create bindings like this for debugging without even
-specifying
-any formal bindings. They are just for debugging after all.
+The cgroup thing also '(ab)uses' cgroup_mutex for serialization because it
+needs to ensure continuity between ss->can_attach() and ss->attach() for the
+memory allocation. If the prctl() were allowed to interleave it might steal the
+memory.
 
-Personally I like the bindings anyway.
+Using cgroup_mutex feels icky, but is not without precedent,
+kernel/bpf/cgroup.c does the same thing afaict.
 
-> diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+TJ, can you please have a look at this?
 
-I would consider housing this tool under drivers/gpio actually.
-We have other funky things like gpio-sim and gpio-aggregator
-so why not.
+The last patch implements the prctl() / cgroup interaction, up until that point
+each task carries the cookie set last between either interface, which is not
+desirable. It really isn't the nicest thing ever, but it does keep the
+scheduling core from having to consider multiple cookies.
 
-I would create a Kconfig menu with "GPIO hardware hacking tools".
+Also, I still hate the kernel/sched/core_sched.c filename, but short of using
+gibberish names to make tab-completion easier I simply cannot come up with
+a remotely sane alternative :/
 
-But Bartosz would need to agree on that idea.
+The code seems to not insta crash, and I can run the prctl() selftest while in
+a cgroup and have it pass, not leak any references etc.. But it's otherwise
+lightly tested code. Please read carefully etc..
 
-> +config GPIO_LOGIC_ANALYZER
-> +       tristate "Simple GPIO logic analyzer"
-> +       depends on GPIOLIB || COMPILE_TEST
-> +       help
+Also of note; I didn't seem to need the css_offline and css_exit handlers the
+other set added.
 
-depends on EXPERT
+FWIW, I have a 4 day weekend ahead :-)
 
-I would say. Definitely not something for the average user.
-
-Yours,
-Linus Walleij
