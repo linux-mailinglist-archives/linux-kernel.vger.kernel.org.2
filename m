@@ -2,97 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB17350EEB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F70350EEF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233247AbhDAGRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 02:17:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233125AbhDAGQk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 02:16:40 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E393C0613E6
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 23:16:40 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id y5so1200633qkl.9
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 23:16:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=/tdHq+eMgfvUCfgr19g4KGgjUw8dwNFaPcptJLMvv20=;
-        b=d1tet9Y2otJ4bPKkudFR7D1GN4TSxbb31ttdrlkl/P3sIGNBKqc6I78rPuwagFZLLP
-         91dZeX1IuFNgTohpD/7akTLAyWiZR/t0GCbC7hQJFaTYIzg/1yxYzN48AUTERaZYb92I
-         d5X5ASx9YOH20slwp7tXU1V8OlvUf4JNjbmasNAhuntVXe11XdwFpLt/Pqm/VPF3LI98
-         wj9AKLkB4qVEmBFKJposxVO3VlPRrmBgrjmHiJRND+jlasqobxNVWZF6L0k5Po8PJh5Q
-         DK3ZIR+/syfAhiRsujKvn1J0W61ILlAfeucEfPwH7DPcWSxFLVCfg/WaEjEWdcWbeJQO
-         TDHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=/tdHq+eMgfvUCfgr19g4KGgjUw8dwNFaPcptJLMvv20=;
-        b=EnSM06bwDAQoZWV8kXXGVUWWCslXcLe0mMgUfFnujC//iOqrUK3zOOFv38MHxg39T+
-         AgsPkolw/ydNzNEh2NSDGP15J8lWxvOZHsfKqZtqgT/QvggyJeiOWDXnuYtXZLknZBy/
-         cU1cgXLUaH+ta8thXNUIPk0EivaP5PvoL3bNrJH/E1Swe1jM17tz6cbOJHlW9wiQel4P
-         J9iZvSR61Q2NNI8hrw8Xr9yzQsZKxIS8UUWtP1fbdSU+xt9Co6L/m9Fw0hVP0969qpcH
-         ZQKhzY/gVP6IIOxmxAJgRfRMSJNW6TKlFjUkZJpnBuNF9r7Xyaz662rp5FQqm6XfxeCs
-         AAhQ==
-X-Gm-Message-State: AOAM533gmPAjz50x3DYnNlBmU6qFdV1Glf5VGZXwXqRGseXcD2nTP6f1
-        YhQYX4mtUZM4j9/l+/WjELlmDDMFppeyuApN7OIpeQ==
-X-Google-Smtp-Source: ABdhPJxN7gKZfahwJhOWLIepnEZQQrrtp1Bkzqp9sIf8uf8W7egGtdMcqMlqet9G2ktx96KkylccNRofqZFJM0jdU/A=
-X-Received: by 2002:a37:66cd:: with SMTP id a196mr7046403qkc.374.1617257799357;
- Wed, 31 Mar 2021 23:16:39 -0700 (PDT)
+        id S233230AbhDAGSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 02:18:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35548 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233128AbhDAGSK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 02:18:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 09A8861007;
+        Thu,  1 Apr 2021 06:18:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617257889;
+        bh=6rvN9ddFIrCz8JVd3fiGYugNn97znHLYzDPSD73gplU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nD/JLyXlF1FEU/RlL2D+tFNxkZrIrs8jdSbFpDTCZz+3pRzqufMyxHv3CRuoDIbz2
+         OMXsCaAEe/9EzeHCW+7Abv5IXOY56yaHSbKShlW94g8eexHzEsIn1obnyq3B9BkqAx
+         4xZQeMJzDvk6siEtNTU0RWm79pjl4LWGmgTQmbAc=
+Date:   Thu, 1 Apr 2021 08:18:05 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] misc: vmw_vmci: initialize payload passed to
+ vmci_send_datagram()
+Message-ID: <YGVlnbTIVsps8FeJ@kroah.com>
+References: <20210401055747.3820-1-penguin-kernel@I-love.SAKURA.ne.jp>
 MIME-Version: 1.0
-References: <cover.1615954045.git.greentime.hu@sifive.com> <161704512808.3012082.7539298875497991635@swboyd.mtv.corp.google.com>
-In-Reply-To: <161704512808.3012082.7539298875497991635@swboyd.mtv.corp.google.com>
-From:   Greentime Hu <greentime.hu@sifive.com>
-Date:   Thu, 1 Apr 2021 14:16:28 +0800
-Message-ID: <CAHCEehJyzsTOHpMhRQ4U3Ex+QiO8h2emBAq3ZemFrgqB-XRZNw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/6] Add SiFive FU740 PCIe host controller driver support
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     alex.dewar90@gmail.com, Albert Ou <aou@eecs.berkeley.edu>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        devicetree@vger.kernel.org, Erik Danie <erik.danie@sifive.com>,
-        hayashi.kunihiko@socionext.com, Bjorn Helgaas <helgaas@kernel.org>,
-        hes@sifive.com, jh80.chung@samsung.com, khilman@baylibre.com,
-        linux-clk@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        lorenzo.pieralisi@arm.com,
-        Michael Turquette <mturquette@baylibre.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>, robh+dt@kernel.org,
-        vidyas@nvidia.com, Zong Li <zong.li@sifive.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401055747.3820-1-penguin-kernel@I-love.SAKURA.ne.jp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Boyd <sboyd@kernel.org> =E6=96=BC 2021=E5=B9=B43=E6=9C=8830=E6=97=
-=A5 =E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=883:12=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> Quoting Greentime Hu (2021-03-17 23:08:07)
-> > This patchset includes SiFive FU740 PCIe host controller driver. We als=
-o
-> > add pcie_aux clock and pcie_power_on_reset controller to prci driver fo=
-r
-> > PCIe driver to use it.
-> >
-> > This is tested with e1000e: Intel(R) PRO/1000 Network Card, AMD Radeon =
-R5
-> > 230 graphics card and SP M.2 PCIe Gen 3 SSD in SiFive Unmatched based o=
-n
-> > v5.11 Linux kernel.
->
-> Can I merge the clk patches to clk-next? Or is the dts patch going to be
-> sent in for the merge window? I'd like to merge the clk patches if the
-> other patches are going to miss the next merge window.
+On Thu, Apr 01, 2021 at 02:57:47PM +0900, Tetsuo Handa wrote:
+> KMSAN complains that the vmci_use_ppn64() == false path in
+> vmci_dbell_register_notification_bitmap() left upper 32bits of
+> bitmap_set_msg.bitmap_ppn64 member uninitialized.
+> 
+> KMSAN also complains that vmci_check_host_caps() left the payload part
+> of check_msg uninitialized.
+> 
+>   [   21.458023][    T1] vmw_vmci 0000:00:07.7: Found VMCI PCI device at 0x11080, irq 16
+>   [   21.461252][    T1] vmw_vmci 0000:00:07.7: Using capabilities 0xc
+>   [   21.463199][    T1] =====================================================
+>   [   21.465014][    T1] BUG: KMSAN: uninit-value in kmsan_check_memory+0xd/0x10
+>   [   21.465014][    T1] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.11.0-rc7+ #4
+>   [   21.465014][    T1] Hardware name: VMware, Inc. VMware Virtual Platform/440BX Desktop Reference Platform, BIOS 6.00 02/27/2020
+>   [   21.465014][    T1] Call Trace:
+>   [   21.465014][    T1]  dump_stack+0x21c/0x280
+>   [   21.465014][    T1]  kmsan_report+0xfb/0x1e0
+>   [   21.465014][    T1]  kmsan_internal_check_memory+0x484/0x520
+>   [   21.465014][    T1]  ? kmsan_get_metadata+0x116/0x180
+>   [   21.465014][    T1]  kmsan_check_memory+0xd/0x10
+>   [   21.465014][    T1]  iowrite8_rep+0x86/0x380
+>   [   21.465014][    T1]  vmci_send_datagram+0x150/0x280
+>   [   21.465014][    T1]  vmci_dbell_register_notification_bitmap+0x133/0x1e0
+>   [   21.465014][    T1]  vmci_guest_probe_device+0xcab/0x1e70
+>   [   21.465014][    T1]  ? vmci_send_datagram+0x280/0x280
+>   [   21.465014][    T1]  pci_device_probe+0xab3/0xe70
+>   [   21.465014][    T1]  ? pci_uevent+0x830/0x830
+>   [   21.465014][    T1]  really_probe+0xd16/0x24d0
+>   [   21.465014][    T1]  driver_probe_device+0x29d/0x3a0
+>   [   21.465014][    T1]  device_driver_attach+0x25a/0x490
+>   [   21.465014][    T1]  __driver_attach+0x78c/0x840
+>   [   21.465014][    T1]  ? kmsan_get_metadata+0x116/0x180
+>   [   21.465014][    T1]  bus_for_each_dev+0x210/0x340
+>   [   21.465014][    T1]  ? driver_attach+0xb0/0xb0
+>   [   21.465014][    T1]  driver_attach+0x89/0xb0
+>   [   21.465014][    T1]  bus_add_driver+0x677/0xc40
+>   [   21.465014][    T1]  driver_register+0x485/0x8e0
+>   [   21.465014][    T1]  __pci_register_driver+0x1ff/0x350
+>   [   21.465014][    T1]  vmci_guest_init+0x3e/0x41
+>   [   21.465014][    T1]  vmci_drv_init+0x1d6/0x43f
+>   [   21.465014][    T1]  do_one_initcall+0x39c/0x9a0
+>   [   21.465014][    T1]  ? null_init+0x11dc/0x11dc
+>   [   21.465014][    T1]  ? kmsan_get_metadata+0x116/0x180
+>   [   21.465014][    T1]  ? kmsan_get_shadow_origin_ptr+0x84/0xb0
+>   [   21.465014][    T1]  ? null_init+0x11dc/0x11dc
+>   [   21.465014][    T1]  do_initcall_level+0x1d7/0x259
+>   [   21.465014][    T1]  do_initcalls+0x127/0x1cb
+>   [   21.465014][    T1]  ? cpu_init_udelay+0xcf/0xcf
+>   [   21.465014][    T1]  ? debug_boot_weak_hash_enable+0x61/0x61
+>   [   21.465014][    T1]  do_basic_setup+0x33/0x36
+>   [   21.465014][    T1]  kernel_init_freeable+0x29a/0x3ed
+>   [   21.465014][    T1]  ? rest_init+0x1f0/0x1f0
+>   [   21.465014][    T1]  kernel_init+0x1f/0x840
+>   [   21.465014][    T1]  ? rest_init+0x1f0/0x1f0
+>   [   21.465014][    T1]  ret_from_fork+0x1f/0x30
+>   [   21.465014][    T1]
+>   [   21.465014][    T1] Local variable ----bitmap_set_msg@vmci_dbell_register_notification_bitmap created at:
+>   [   21.465014][    T1]  vmci_dbell_register_notification_bitmap+0x50/0x1e0
+>   [   21.465014][    T1]  vmci_dbell_register_notification_bitmap+0x50/0x1e0
+>   [   21.465014][    T1]
+>   [   21.465014][    T1] Bytes 28-31 of 32 are uninitialized
+>   [   21.465014][    T1] Memory access of size 32 starts at ffff88810098f570
+>   [   21.465014][    T1] =====================================================
+>   [   21.465014][    T1] Disabling lock debugging due to kernel taint
+>   [   21.539748][    T1] =====================================================
+>   [   21.541627][    T1] BUG: KMSAN: uninit-value in kmsan_check_memory+0xd/0x10
+>   [   21.543636][    T1] CPU: 1 PID: 1 Comm: swapper/0 Tainted: G    B             5.11.0-rc7+ #4
+>   [   21.546134][    T1] Hardware name: VMware, Inc. VMware Virtual Platform/440BX Desktop Reference Platform, BIOS 6.00 02/27/2020
+>   [   21.549126][    T1] Call Trace:
+>   [   21.549639][    T1]  dump_stack+0x21c/0x280
+>   [   21.549639][    T1]  kmsan_report+0xfb/0x1e0
+>   [   21.549639][    T1]  kmsan_internal_check_memory+0x202/0x520
+>   [   21.549639][    T1]  ? kmsan_get_metadata+0x116/0x180
+>   [   21.549639][    T1]  kmsan_check_memory+0xd/0x10
+>   [   21.549639][    T1]  iowrite8_rep+0x86/0x380
+>   [   21.549639][    T1]  vmci_guest_probe_device+0xf0b/0x1e70
+>   [   21.549639][    T1]  ? vmci_send_datagram+0x280/0x280
+>   [   21.549639][    T1]  pci_device_probe+0xab3/0xe70
+>   [   21.549639][    T1]  ? pci_uevent+0x830/0x830
+>   [   21.549639][    T1]  really_probe+0xd16/0x24d0
+>   [   21.549639][    T1]  driver_probe_device+0x29d/0x3a0
+>   [   21.549639][    T1]  device_driver_attach+0x25a/0x490
+>   [   21.549639][    T1]  __driver_attach+0x78c/0x840
+>   [   21.549639][    T1]  ? kmsan_get_metadata+0x116/0x180
+>   [   21.549639][    T1]  bus_for_each_dev+0x210/0x340
+>   [   21.549639][    T1]  ? driver_attach+0xb0/0xb0
+>   [   21.549639][    T1]  driver_attach+0x89/0xb0
+>   [   21.549639][    T1]  bus_add_driver+0x677/0xc40
+>   [   21.549639][    T1]  driver_register+0x485/0x8e0
+>   [   21.549639][    T1]  __pci_register_driver+0x1ff/0x350
+>   [   21.549639][    T1]  vmci_guest_init+0x3e/0x41
+>   [   21.549639][    T1]  vmci_drv_init+0x1d6/0x43f
+>   [   21.549639][    T1]  do_one_initcall+0x39c/0x9a0
+>   [   21.549639][    T1]  ? null_init+0x11dc/0x11dc
+>   [   21.549639][    T1]  ? kmsan_get_metadata+0x116/0x180
+>   [   21.549639][    T1]  ? kmsan_get_shadow_origin_ptr+0x84/0xb0
+>   [   21.549639][    T1]  ? null_init+0x11dc/0x11dc
+>   [   21.549639][    T1]  do_initcall_level+0x1d7/0x259
+>   [   21.549639][    T1]  do_initcalls+0x127/0x1cb
+>   [   21.549639][    T1]  ? cpu_init_udelay+0xcf/0xcf
+>   [   21.549639][    T1]  ? debug_boot_weak_hash_enable+0x61/0x61
+>   [   21.549639][    T1]  do_basic_setup+0x33/0x36
+>   [   21.549639][    T1]  kernel_init_freeable+0x29a/0x3ed
+>   [   21.549639][    T1]  ? rest_init+0x1f0/0x1f0
+>   [   21.549639][    T1]  kernel_init+0x1f/0x840
+>   [   21.549639][    T1]  ? rest_init+0x1f0/0x1f0
+>   [   21.549639][    T1]  ret_from_fork+0x1f/0x30
+>   [   21.549639][    T1]
+>   [   21.549639][    T1] Uninit was created at:
+>   [   21.549639][    T1]  kmsan_internal_poison_shadow+0x5c/0xf0
+>   [   21.549639][    T1]  kmsan_slab_alloc+0x8d/0xe0
+>   [   21.549639][    T1]  kmem_cache_alloc+0x84f/0xe30
+>   [   21.549639][    T1]  vmci_guest_probe_device+0xd11/0x1e70
+>   [   21.549639][    T1]  pci_device_probe+0xab3/0xe70
+>   [   21.549639][    T1]  really_probe+0xd16/0x24d0
+>   [   21.549639][    T1]  driver_probe_device+0x29d/0x3a0
+>   [   21.549639][    T1]  device_driver_attach+0x25a/0x490
+>   [   21.549639][    T1]  __driver_attach+0x78c/0x840
+>   [   21.549639][    T1]  bus_for_each_dev+0x210/0x340
+>   [   21.549639][    T1]  driver_attach+0x89/0xb0
+>   [   21.549639][    T1]  bus_add_driver+0x677/0xc40
+>   [   21.549639][    T1]  driver_register+0x485/0x8e0
+>   [   21.549639][    T1]  __pci_register_driver+0x1ff/0x350
+>   [   21.549639][    T1]  vmci_guest_init+0x3e/0x41
+>   [   21.549639][    T1]  vmci_drv_init+0x1d6/0x43f
+>   [   21.549639][    T1]  do_one_initcall+0x39c/0x9a0
+>   [   21.549639][    T1]  do_initcall_level+0x1d7/0x259
+>   [   21.549639][    T1]  do_initcalls+0x127/0x1cb
+>   [   21.549639][    T1]  do_basic_setup+0x33/0x36
+>   [   21.549639][    T1]  kernel_init_freeable+0x29a/0x3ed
+>   [   21.549639][    T1]  kernel_init+0x1f/0x840
+>   [   21.549639][    T1]  ret_from_fork+0x1f/0x30
+>   [   21.549639][    T1]
+>   [   21.549639][    T1] Bytes 28-31 of 36 are uninitialized
+>   [   21.549639][    T1] Memory access of size 36 starts at ffff8881675e5f00
+>   [   21.549639][    T1] =====================================================
+>   [   21.639830][    T1] Guest personality initialized and is active
+>   [   21.642165][    T1] VMCI host device registered (name=vmci, major=10, minor=121)
+> 
+> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> ---
 
-Hi Stephen,
+What commit does this "fix"?  Can you resend with a proper "Fixes:" tag
+so we know where it needs to be backported to?
 
-Thank you for reviewing. I am ok with either way. :)
+thanks,
+
+greg k-h
