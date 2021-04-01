@@ -2,217 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 838C9350F30
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B77350F3B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233475AbhDAGj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 02:39:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233305AbhDAGjf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 02:39:35 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9BFEC0613E6;
-        Wed, 31 Mar 2021 23:39:35 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so2539876pjq.5;
-        Wed, 31 Mar 2021 23:39:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Cdhn3hlT1LofiWiq9NSsZXRFtnuTmpkFOIZBKIG5BiA=;
-        b=UTL5B1kymvtzLNP/91qrZli7L9K/RRc+t3YUJywMQyXnYDuvkYCGKiqHl2oJcMHHoy
-         UGaOiavWcQuvbtsY1AjPK18htFJRFjqk3J5JdwTUPpjlDB0xyn5dXDyWUmP05ep0zZd3
-         /PasjavPWANRdOiP9OF2XgmhE9kIQIp8A01zzEzf9Th+GbR4RZ3V8I8HEFY87DA13dkG
-         txGDPNpeNWXZC+RFFqxjEarVoUhbMJnYh/2oHqJq6Qh6NIAaDiKc9Or3dcxwhb/yJSfj
-         VqvUFcWPRWPOFWq4prpgIgVuKKW4b/yRynE+dhn2QPX62tiJcvfvYUdyKCX/c2u8m8US
-         VzLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Cdhn3hlT1LofiWiq9NSsZXRFtnuTmpkFOIZBKIG5BiA=;
-        b=NCUJqBFOLVLXGD0CS/MEPMCNlHc+jL7GWR2/74fQYIaiTMVx/vz1xJzpHBbVHFR6f1
-         /FCsxTqB41Y/1fIrLVPno+W73BLI8NZjyFqtPdWRCIDOAULaQ9cfbQM8iLddz0bVLTud
-         vSz5a035FeULYXbGFCk8XsmhjsTD8DD1cOTJ4KFmidJse0A40RwutMhL53uVdi6p2Oq1
-         6kKhednRO9BFV+35zuTAzgPsAW4cIMpK7x0amtQXD95FttQSzHlx3iicjfe8/zMEddjO
-         +P+5clRlXNAK1tJpp9kl+MQqtBThuMYmwd/Vm+oRsZ/weI8U/ETJLp0clcT9//1DEZsn
-         4Lcw==
-X-Gm-Message-State: AOAM533F1GzGaQBAdm2ue4cCwYi+dhdBkxh5nhJIER87VEZC/wIY+KY/
-        +FlJXt+I7IuFo8gcJzfXDnQ=
-X-Google-Smtp-Source: ABdhPJxV7qnJmiKTK7vMsVhFFpLWa9nVg5l0P/yHHXGvs45jJWGW4/3YJNYe6mcpuHqq0YLrqeBnjw==
-X-Received: by 2002:a17:90a:990a:: with SMTP id b10mr7368818pjp.178.1617259175255;
-        Wed, 31 Mar 2021 23:39:35 -0700 (PDT)
-Received: from localhost ([122.182.250.63])
-        by smtp.gmail.com with ESMTPSA id w26sm4326195pfj.58.2021.03.31.23.39.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 23:39:34 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 12:09:32 +0530
-From:   Ritesh Harjani <ritesh.list@gmail.com>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        darrick.wong@oracle.com, dan.j.williams@intel.com,
-        willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
-        linux-btrfs@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        david@fromorbit.com, hch@lst.de, rgoldwyn@suse.de,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: Re: [PATCH v3 05/10] fsdax: Replace mmap entry in case of CoW
-Message-ID: <20210401063932.tro7a4hhy25zdmho@riteshh-domain>
-References: <20210319015237.993880-1-ruansy.fnst@fujitsu.com>
- <20210319015237.993880-6-ruansy.fnst@fujitsu.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319015237.993880-6-ruansy.fnst@fujitsu.com>
+        id S233125AbhDAGnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 02:43:35 -0400
+Received: from foss.arm.com ([217.140.110.172]:59884 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232661AbhDAGna (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 02:43:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D595AD6E;
+        Wed, 31 Mar 2021 23:43:29 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.70.228])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 3D3773F719;
+        Wed, 31 Mar 2021 23:43:27 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-mm@kvack.org, akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH V2 0/6] mm: some config cleanups
+Date:   Thu,  1 Apr 2021 12:14:02 +0530
+Message-Id: <1617259448-22529-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/03/19 09:52AM, Shiyang Ruan wrote:
-> We replace the existing entry to the newly allocated one in case of CoW.
-> Also, we mark the entry as PAGECACHE_TAG_TOWRITE so writeback marks this
-> entry as writeprotected.  This helps us snapshots so new write
-> pagefaults after snapshots trigger a CoW.
->
+This series contains config cleanup patches which reduces code duplication
+across platforms and also improves maintainability. There is no functional
+change intended with this series. This has been boot tested on arm64 but
+only build tested on some other platforms.
 
-Please correct me here. So the flow is like this.
-1. In case of CoW or a reflinked file, on an mmaped file if write is attempted,
-   Then in DAX fault handler code, ->iomap_begin() on a given filesystem will
-   populate iomap and srcmap. srcmap being from where the read needs to be
-   attempted from and iomap on where the new write should go to.
-2. So the dax_insert_entry() code as part of the fault handling will take care
-   of removing the old entry and inserting the new pfn entry to xas and mark
-   it with PAGECACHE_TAG_TOWRITE so that dax writeback can mark the entry as
-   write protected.
-Is my above understanding correct?
+This applies on 5.12-rc5
 
-> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> ---
->  fs/dax.c | 37 ++++++++++++++++++++++++++-----------
->  1 file changed, 26 insertions(+), 11 deletions(-)
->
-> diff --git a/fs/dax.c b/fs/dax.c
-> index 181aad97136a..cfe513eb111e 100644
-> --- a/fs/dax.c
-> +++ b/fs/dax.c
-> @@ -722,6 +722,9 @@ static int copy_cow_page_dax(struct block_device *bdev, struct dax_device *dax_d
->  	return 0;
->  }
->
-> +#define DAX_IF_DIRTY		(1 << 0)
-> +#define DAX_IF_COW		(1 << 1)
-> +
->
-small comment expalining this means DAX insert flags used in dax_insert_entry()
+Changes in V2:
 
->
->  /*
->   * By this point grab_mapping_entry() has ensured that we have a locked entry
->   * of the appropriate size so we don't have to worry about downgrading PMDs to
-> @@ -729,16 +732,19 @@ static int copy_cow_page_dax(struct block_device *bdev, struct dax_device *dax_d
->   * already in the tree, we will skip the insertion and just dirty the PMD as
->   * appropriate.
->   */
-> -static void *dax_insert_entry(struct xa_state *xas,
-> -		struct address_space *mapping, struct vm_fault *vmf,
-> -		void *entry, pfn_t pfn, unsigned long flags, bool dirty)
-> +static void *dax_insert_entry(struct xa_state *xas, struct vm_fault *vmf,
-> +		void *entry, pfn_t pfn, unsigned long flags,
-> +		unsigned int insert_flags)
->  {
-> +	struct address_space *mapping = vmf->vma->vm_file->f_mapping;
->  	void *new_entry = dax_make_entry(pfn, flags);
-> +	bool dirty = insert_flags & DAX_IF_DIRTY;
-> +	bool cow = insert_flags & DAX_IF_COW;
->
->  	if (dirty)
->  		__mark_inode_dirty(mapping->host, I_DIRTY_PAGES);
->
-> -	if (dax_is_zero_entry(entry) && !(flags & DAX_ZERO_PAGE)) {
-> +	if (cow || (dax_is_zero_entry(entry) && !(flags & DAX_ZERO_PAGE))) {
->  		unsigned long index = xas->xa_index;
->  		/* we are replacing a zero page with block mapping */
->  		if (dax_is_pmd_entry(entry))
-> @@ -750,7 +756,7 @@ static void *dax_insert_entry(struct xa_state *xas,
->
->  	xas_reset(xas);
->  	xas_lock_irq(xas);
-> -	if (dax_is_zero_entry(entry) || dax_is_empty_entry(entry)) {
-> +	if (cow || dax_is_zero_entry(entry) || dax_is_empty_entry(entry)) {
->  		void *old;
->
->  		dax_disassociate_entry(entry, mapping, false);
-> @@ -774,6 +780,9 @@ static void *dax_insert_entry(struct xa_state *xas,
->  	if (dirty)
->  		xas_set_mark(xas, PAGECACHE_TAG_DIRTY);
->
-> +	if (cow)
-> +		xas_set_mark(xas, PAGECACHE_TAG_TOWRITE);
-> +
->  	xas_unlock_irq(xas);
->  	return entry;
->  }
-> @@ -1098,8 +1107,7 @@ static vm_fault_t dax_load_hole(struct xa_state *xas,
->  	pfn_t pfn = pfn_to_pfn_t(my_zero_pfn(vaddr));
->  	vm_fault_t ret;
->
-> -	*entry = dax_insert_entry(xas, mapping, vmf, *entry, pfn,
-> -			DAX_ZERO_PAGE, false);
-> +	*entry = dax_insert_entry(xas, vmf, *entry, pfn, DAX_ZERO_PAGE, 0);
->
->  	ret = vmf_insert_mixed(vmf->vma, vaddr, pfn);
->  	trace_dax_load_hole(inode, vmf, ret);
-> @@ -1126,8 +1134,8 @@ static vm_fault_t dax_pmd_load_hole(struct xa_state *xas, struct vm_fault *vmf,
->  		goto fallback;
->
->  	pfn = page_to_pfn_t(zero_page);
-> -	*entry = dax_insert_entry(xas, mapping, vmf, *entry, pfn,
-> -			DAX_PMD | DAX_ZERO_PAGE, false);
-> +	*entry = dax_insert_entry(xas, vmf, *entry, pfn,
-> +				  DAX_PMD | DAX_ZERO_PAGE, 0);
->
->  	if (arch_needs_pgtable_deposit()) {
->  		pgtable = pte_alloc_one(vma->vm_mm);
-> @@ -1431,6 +1439,7 @@ static vm_fault_t dax_fault_actor(struct vm_fault *vmf, pfn_t *pfnp,
->  	loff_t pos = (loff_t)xas->xa_offset << PAGE_SHIFT;
->  	bool write = vmf->flags & FAULT_FLAG_WRITE;
->  	bool sync = dax_fault_is_synchronous(flags, vmf->vma, iomap);
-> +	unsigned int insert_flags = 0;
->  	int err = 0;
->  	pfn_t pfn;
->  	void *kaddr;
-> @@ -1453,8 +1462,14 @@ static vm_fault_t dax_fault_actor(struct vm_fault *vmf, pfn_t *pfnp,
->  	if (err)
->  		return dax_fault_return(err);
->
-> -	entry = dax_insert_entry(xas, mapping, vmf, entry, pfn, 0,
-> -				 write && !sync);
-> +	if (write) {
-> +		if (!sync)
-> +			insert_flags |= DAX_IF_DIRTY;
-> +		if (iomap->flags & IOMAP_F_SHARED)
-> +			insert_flags |= DAX_IF_COW;
-> +	}
-> +
-> +	entry = dax_insert_entry(xas, vmf, entry, pfn, 0, insert_flags);
->
->  	if (write && srcmap->addr != iomap->addr) {
->  		err = dax_iomap_cow_copy(pos, size, size, srcmap, kaddr, false);
->
+- Rebased on 5.12-rc5
+- Added tags from previous version
 
-Rest looks good to me. Please feel free to add
-Reviewed-by: Ritesh Harjani <riteshh@gmail.com>
+Changes in V1:
 
-sorry about changing my email in between of this code review.
-I am planning to use above gmail id as primary account for all upstream work
-from now.
+https://lore.kernel.org/linux-arm-kernel/1615278790-18053-1-git-send-email-anshuman.khandual@arm.com/
 
-> --
-> 2.30.1
->
->
->
+Anshuman Khandual (6):
+  mm: Generalize ARCH_HAS_CACHE_LINE_SIZE
+  mm: Generalize SYS_SUPPORTS_HUGETLBFS (rename as ARCH_SUPPORTS_HUGETLBFS)
+  mm: Generalize ARCH_ENABLE_MEMORY_[HOTPLUG|HOTREMOVE]
+  mm: Drop redundant ARCH_ENABLE_[HUGEPAGE|THP]_MIGRATION
+  mm: Drop redundant ARCH_ENABLE_SPLIT_PMD_PTLOCK
+  mm: Drop redundant HAVE_ARCH_TRANSPARENT_HUGEPAGE
+
+ arch/arc/Kconfig                       |  9 ++------
+ arch/arm/Kconfig                       | 10 ++-------
+ arch/arm64/Kconfig                     | 30 ++++++--------------------
+ arch/ia64/Kconfig                      |  8 ++-----
+ arch/mips/Kconfig                      |  6 +-----
+ arch/parisc/Kconfig                    |  5 +----
+ arch/powerpc/Kconfig                   | 11 ++--------
+ arch/powerpc/platforms/Kconfig.cputype | 16 +++++---------
+ arch/riscv/Kconfig                     |  5 +----
+ arch/s390/Kconfig                      | 12 +++--------
+ arch/sh/Kconfig                        |  7 +++---
+ arch/sh/mm/Kconfig                     |  8 -------
+ arch/x86/Kconfig                       | 29 ++++++-------------------
+ fs/Kconfig                             |  5 ++++-
+ mm/Kconfig                             |  9 ++++++++
+ 15 files changed, 48 insertions(+), 122 deletions(-)
+
+-- 
+2.20.1
+
