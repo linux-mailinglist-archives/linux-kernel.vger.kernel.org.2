@@ -2,129 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DDBE351EDA
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D795351ED3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237199AbhDASr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:47:58 -0400
-Received: from mga06.intel.com ([134.134.136.31]:62929 "EHLO mga06.intel.com"
+        id S237884AbhDASrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:47:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52880 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240029AbhDAS04 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:26:56 -0400
-IronPort-SDR: t1q/F+j3zutU6A7MxiVXsB58ObzyuL3tl5oYGhAfIxz9LsTywAos0AgtTYtUu+YinLV65Gc3Uh
- 9semmPeNQUrQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="253643745"
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="253643745"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 11:23:12 -0700
-IronPort-SDR: BpQApRmhMC2VG0Roa0vW6dfKW9oSoqXCJXE4cVlaFcC63pvFcWaxK4Fo6kw27W/6Y0aDiHCzb1
- P3yD5hmyveTA==
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="377802024"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 11:23:08 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lS1yC-000KGK-P8; Thu, 01 Apr 2021 21:23:04 +0300
-Date:   Thu, 1 Apr 2021 21:23:04 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Henning Schild <henning.schild@siemens.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Jean Delvare <jdelvare@suse.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Tan Jui Nee <jui.nee.tan@intel.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Jonathan Yong <jonathan.yong@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pci@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Peter Tyser <ptyser@xes-inc.com>, hdegoede@redhat.com
-Subject: Re: [PATCH v1 3/7] PCI: New Primary to Sideband (P2SB) bridge
- support library
-Message-ID: <YGYPiCekM3clFEsD@smile.fi.intel.com>
-References: <YGXqfvBv37eLL28Z@smile.fi.intel.com>
- <20210401164256.GA1516177@bjorn-Precision-5520>
+        id S239234AbhDASZi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:25:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37CFF60201;
+        Thu,  1 Apr 2021 18:25:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617301538;
+        bh=j5+Gt7YrskSy16RAzvRfGLikHQTlG4Rfz+SErDOkJ28=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jdXtqBV5YMaCOoxJsRTulppNVjInfNl6hw0ys7+jFGMlNRK0T/68rvgWFKHPTLqUf
+         8tVUa0YByeIwwoaBQCRlFnMWruiUxdR/m+CKMKPALghW1DGEH59CwUUiUodMjh5ZWV
+         wrakNHdIa5EGpQTljtJZKsv3qbjIf3IuFfxE22y8=
+Date:   Thu, 1 Apr 2021 20:25:36 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        hui.wang@canonical.com, sanyog.r.kale@intel.com,
+        rander.wang@linux.intel.com, bard.liao@intel.com
+Subject: Re: [PATCH 1/2] soundwire: add macro to selectively change error
+ levels
+Message-ID: <YGYQIJh8X2C8sW44@kroah.com>
+References: <20210331011355.14313-1-yung-chuan.liao@linux.intel.com>
+ <20210331011355.14313-2-yung-chuan.liao@linux.intel.com>
+ <YGV1HYL+XcVmxfQG@vkoul-mobl.Dlink>
+ <0834b9fc-9b3a-1184-fed2-6f9c7e66c6fb@linux.intel.com>
+ <YGX5AUQi41z52xk8@kroah.com>
+ <81c6b53b-e3fb-32d0-1e99-365d87ab6524@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210401164256.GA1516177@bjorn-Precision-5520>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <81c6b53b-e3fb-32d0-1e99-365d87ab6524@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 11:42:56AM -0500, Bjorn Helgaas wrote:
-> On Thu, Apr 01, 2021 at 06:45:02PM +0300, Andy Shevchenko wrote:
-> > On Tue, Mar 09, 2021 at 09:42:52AM +0100, Henning Schild wrote:
-> > > Am Mon, 8 Mar 2021 19:42:21 -0600
-> > > schrieb Bjorn Helgaas <helgaas@kernel.org>:
-> > > > On Mon, Mar 08, 2021 at 09:16:50PM +0200, Andy Shevchenko wrote:
-> > > > > On Mon, Mar 08, 2021 at 12:52:12PM -0600, Bjorn Helgaas wrote:  
-> > > > > > On Mon, Mar 08, 2021 at 02:20:16PM +0200, Andy Shevchenko wrote:  
-> > 
-> > ...
-> > 
-> > > > > > > +	/* Read the first BAR of the device in question */
-> > > > > > > +	__pci_bus_read_base(bus, devfn, pci_bar_unknown, mem,
-> > > > > > > PCI_BASE_ADDRESS_0, true);  
-> > > > > > 
-> > > > > > I don't get this.  Apparently this normally hidden device is
-> > > > > > consuming PCI address space.  The PCI core needs to know
-> > > > > > about this.  If it doesn't, the PCI core may assign this
-> > > > > > space to another device.  
-> > > > > 
-> > > > > Right, it returns all 1:s to any request so PCI core *thinks*
-> > > > > it's plugged off (like D3cold or so).  
-> > > > 
-> > > > I'm asking about the MMIO address space.  The BAR is a register
-> > > > in config space.  AFAICT, clearing P2SBC_HIDE_BYTE makes that
-> > > > BAR visible.  The BAR describes a region of PCI address space.
-> > > > It looks like setting P2SBC_HIDE_BIT makes the BAR disappear
-> > > > from config space, but it sounds like the PCI address space
-> > > > *described* by the BAR is still claimed by the device.  If the
-> > > > device didn't respond to that MMIO space, you would have no
-> > > > reason to read the BAR at all.
-> > > > 
-> > > > So what keeps the PCI core from assigning that MMIO space to
-> > > > another device?
-> > > 
-> > > The device will respond to MMIO while being hidden. I am afraid
-> > > nothing stops a collision, except for the assumption that the BIOS
-> > > is always right and PCI devices never get remapped. But just
-> > > guessing here.
-> > > 
-> > > I have seen devices with coreboot having the P2SB visible, and
-> > > most likely relocatable. Making it visible in Linux and not hiding
-> > > it again might work, but probably only as long as Linux will not
-> > > relocate it.  Which i am afraid might seriously upset the BIOS,
-> > > depending on what a device does with those GPIOs and which parts
-> > > are implemented in the BIOS.
-> > 
-> > So the question is, do we have knobs in PCI core to mark device
-> > fixes in terms of BARs, no relocation must be applied, no other
-> > devices must have the region?
+On Thu, Apr 01, 2021 at 01:07:49PM -0500, Pierre-Louis Bossart wrote:
 > 
-> I think the closest thing is the IORESOURCE_PCI_FIXED bit that we use
-> for things that must not be moved.  Generally PCI resources are
-> associated with a pci_dev, and we set IORESOURCE_PCI_FIXED for BARs,
-> e.g., dev->resource[n].  We do that for IDE legacy regions (see
-> LEGACY_IO_RESOURCE), Langwell devices (pci_fixed_bar_fixup()),
-> "enhanced allocation" (pci_ea_flags()), and some quirks (quirk_io()).
+> > > > > +#define sdw_dev_dbg_or_err(dev, is_err, fmt, ...)			\
+> > > > > +	do {								\
+> > > > > +		if (is_err)						\
+> > > > > +			dev_err(dev, fmt, __VA_ARGS__);			\
+> > > > > +		else							\
+> > > > > +			dev_dbg(dev, fmt, __VA_ARGS__);			\
+> > > > > +	} while (0)
+> > > > 
+> > > > I see a variant in sof code and now here, why not add in a
+> > > > dev_dbg_or_err() and use everywhere?
+> > > 
+> > > Good point, I hesitated back and forth on specific v. generic macro.
+> > > 
+> > > The main reason why I added this macro for SoundWire is that quite a few
+> > > subsystems have their own debug functions (DRM, ACPI, etc), and I wasn't
+> > > sure if there was any appetite to add more options in
+> > > include/linux/dev_printk.h. SOF also uses a different format due to history.
+> > 
+> > It is better if those other subsystems move to using the common kernel
+> > debug functions.  Historically they were all separate, there is no good
+> > reason for them to be that way today.
+> > 
+> > So please do not create custom subsystem debug macros like this just for
+> > this tiny set of drivers.
+> > 
+> > My bigger issue with this is that this macro is crazy.  Why do you need
+> > debugging here at all for this type of thing?  That's what ftrace is
+> > for, do not sprinkle code with "we got this return value from here!" all
+> > over the place like what this does.
 > 
-> In your case, the device is hidden so it doesn't respond to config
-> accesses, so there is no pci_dev for it.
+> We are not sprinkling the code all over the place with any new logs, they
+> exist already in the SoundWire code and this patch helps filter them out.
+> See e.g. patch 2/2
+> 
+> -			dev_err(&slave->dev,
+> -				"Clk Stop type =%d failed: %d\n", type, ret);
+> +			sdw_dev_dbg_or_err(&slave->dev, ret != -ENODATA,
+> +					   "Clk Stop mode %d type =%d failed: %d\n",
+> +					   mode, type, ret);
 
-Yes, and the idea is to unhide it on the early stage.
-Would it be possible to quirk it to fix the IO resources?
+You just added a debug log for no reason.
 
-> Maybe you could do some sort of quirk that allocates its own struct
-> resource, fills it in, sets IORESOURCE_PCI_FIXED, and does something
-> similar to pci_claim_resource()?
+That's what I was referring to :)
 
--- 
-With Best Regards,
-Andy Shevchenko
+> If you see all my recent patches they were precisely trying to avoid
+> polluting the console logs with too much information that is irrelevant from
+> most users, and making sure that when a log is provided it's uniquely
+> identifiable.
+> 
+> There are similar macros where -EPROBE_DEFER is ignored.
 
+deffered probe is a totally different beast and one that I constantly am
+ashamed I accepted into the kernel as the added complexity it has caused
+is crazy.
 
+> This addresses a very SoundWire-specific case where if we see a -ENODATA
+> error code (Command Ignored), we ignore it and don't report it by default.
+> We still have a rare set of cases where this -ENODATA code shows up
+> unexpectedly, possibly due to problematic reset sequences, and we want
+> developers to help track them down what causes this sequence using dynamic
+> debug.
+> 
+> I am not arguing about ftrace v. dynamic debug, and that's also partly why I
+> didn't feel comfortable expanding the generic set of debug functions.
+
+Great, then don't add unneeded dev_dbg() lines :)
+
+thanks,
+
+greg k-h
