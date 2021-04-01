@@ -2,114 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58DE23510C4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 10:22:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B9D3510C9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 10:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233185AbhDAIVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 04:21:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25586 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230284AbhDAIVJ (ORCPT
+        id S233434AbhDAIWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 04:22:48 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:11460 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233383AbhDAIWK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 04:21:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617265268;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0MM1VR6/A5jTsbab6p2eQODlayvRnz6tiru7uoQ/VlI=;
-        b=C+FBlw/viuQs1/tAG+Ul/nX95YQc0DU8JnY2fY5UwMNBqbAHpLRzcSlsioWM5MJmqbtHTy
-        gqhHtJFBThxPRzwNdPypUfL6XP1SZ4jm/CbFMsGC4Mi7u4jwz4F/Ke0m8ogLGL/JOsf63N
-        hNmkoEgiqGo+EhV5A+wxa4fwNku25Q0=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-142-Tvo-wod1NI6KDvFpcv18hw-1; Thu, 01 Apr 2021 04:21:07 -0400
-X-MC-Unique: Tvo-wod1NI6KDvFpcv18hw-1
-Received: by mail-ej1-f72.google.com with SMTP id mj6so1912736ejb.11
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 01:21:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=0MM1VR6/A5jTsbab6p2eQODlayvRnz6tiru7uoQ/VlI=;
-        b=FNkCw6YxwBEI1ykKVtYHIH5lqtV1CY0o0dJ4402MOK+qnMzroBS4mjNBllDYwq72CN
-         KK+y6xaZKvDGQZ+Br73Z7zs7ntNkFxy4RzDmTNxeR6+hFOeCfFiNROY7ID5idVMzcHkR
-         foOYcviIvoAWD6ns+pjVYNwPgBIFzg1WM9wQIbmXiyTTeDTltSMNVIzy1abSz5XRB59D
-         ekTehcKin+AoSCy+spRlUWq4fySFMNO3+yWqeu5b3zWgQ451o/uU6p8qkDsGRPDkZ7MY
-         qCqZLNaAuQlCU8rkDinLSqMHzrLuFxzhIQUeg+bj8MsMoRcW6lgFiwZ0LfIp3UbW5Bos
-         1QZQ==
-X-Gm-Message-State: AOAM532oHOzZSgwcvYZR2aEEfX0C5gSJ+UALheCzkJDSAljjMK2gIYjs
-        QbrqOam90F37lDTDU60fj/f73HMffTR938gCaJ1ZvfU8BgAYjzcvtcFKxZUVfpIccsiCoU0F6FA
-        kl9kDpgUS9LnMNSi6+5krR7b6
-X-Received: by 2002:a50:ee10:: with SMTP id g16mr8367960eds.215.1617265266053;
-        Thu, 01 Apr 2021 01:21:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwQd6v8W1tiSUNXdFnYdiBd5A2Pnx2X951i2gw6YNvs3Bp5MzyFCqdP4jJQZr0cvQIcMrEYjw==
-X-Received: by 2002:a50:ee10:: with SMTP id g16mr8367945eds.215.1617265265929;
-        Thu, 01 Apr 2021 01:21:05 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id gn19sm2352669ejc.4.2021.04.01.01.21.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 01:21:05 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Shixin Liu <liushixin2@huawei.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shixin Liu <liushixin2@huawei.com>, Len Brown <lenb@kernel.org>
-Subject: Re: [PATCH -next] ACPI: processor: Fix a prepocessor warning
-In-Reply-To: <20210401023900.3114325-1-liushixin2@huawei.com>
-References: <20210401023900.3114325-1-liushixin2@huawei.com>
-Date:   Thu, 01 Apr 2021 10:21:04 +0200
-Message-ID: <87pmzes9e7.fsf@vitty.brq.redhat.com>
+        Thu, 1 Apr 2021 04:22:10 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617265330; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=73kahUGG37r2p6wLbYlXpBi11gwXumfvlc37qLlQw/0=;
+ b=ZItyyMHMKjwX8I4FMCK2ZKkJpR6OKe3YnJTHyASupzeIAfGn5cTkNli5pjmexSeQDDR7XDT0
+ dcyDmTyfqaY9x+wucPltvLRyWeFRwM9ruFoGGRMNUJcG/qyj5Sh7mTvZmfhQiVal+YqqkMQu
+ yPENeUx+OAy76uGcPYPCUtEQlaA=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 606582b18807bcde1d0d22fd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 01 Apr 2021 08:22:09
+ GMT
+Sender: schowdhu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 61D41C43466; Thu,  1 Apr 2021 08:22:09 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: schowdhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B6CF3C433CA;
+        Thu,  1 Apr 2021 08:22:07 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 01 Apr 2021 13:52:07 +0530
+From:   schowdhu@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>, vkoul@kernel.org
+Subject: Re: [PATCH V2 1/5] dt-bindings: Added the yaml bindings for DCC
+In-Reply-To: <161704647819.3012082.13027529193947275446@swboyd.mtv.corp.google.com>
+References: <cover.1616651305.git.schowdhu@codeaurora.org>
+ <5cd274f98b38d4b85c1ce212720b6b680f4a00f0.1616651305.git.schowdhu@codeaurora.org>
+ <161704647819.3012082.13027529193947275446@swboyd.mtv.corp.google.com>
+Message-ID: <0e389c1a842e66db58f2d9371b23c4f3@codeaurora.org>
+X-Sender: schowdhu@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shixin Liu <liushixin2@huawei.com> writes:
+On 2021-03-30 01:04, Stephen Boyd wrote:
+> Quoting Souradeep Chowdhury (2021-03-25 01:02:32)
+>> diff --git a/Documentation/devicetree/bindings/arm/msm/qcom,dcc.yaml 
+>> b/Documentation/devicetree/bindings/arm/msm/qcom,dcc.yaml
+>> new file mode 100644
+>> index 0000000..c6e0a9c
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/arm/msm/qcom,dcc.yaml
+>> @@ -0,0 +1,49 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-or-later OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/arm/msm/qcom,dcc.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Data Capture and Compare
+>> +
+>> +maintainers:
+>> +  - Souradeep Chowdhury <schowdhu@codeaurora.org>
+>> +
+>> +description: |
+>> +    DCC (Data Capture and Compare) is a DMA engine which is used to 
+>> save
+>> +    configuration data or system memory contents during catastrophic 
+>> failure
+>> +    or SW trigger.DCC is used to capture and store data for debugging 
+>> purpose
+> 
+> Add space between trigger. and DCC?
 
-> When compiling with defconfig on x86_64, I got a warning:
->
-> drivers/acpi/processor_idle.c: In function =E2=80=98acpi_idle_play_dead=
-=E2=80=99:
-> drivers/acpi/processor_idle.c:542:15: warning: extra tokens at end of #if=
-def directive
->   542 | #ifdef defined(CONFIG_X86) && defined(CONFIG_HOTPLUG_CPU)
->       |
->
-> Fixes: bc5706eaeae0 ("ACPI: processor: Fix CPU0 wakeup in acpi_idle_play_=
-dead()")
-> Signed-off-by: Shixin Liu <liushixin2@huawei.com>
-> ---
->  drivers/acpi/processor_idle.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
-> index 19fb28a8005b..0925b1477230 100644
-> --- a/drivers/acpi/processor_idle.c
-> +++ b/drivers/acpi/processor_idle.c
-> @@ -539,7 +539,7 @@ static int acpi_idle_play_dead(struct cpuidle_device =
-*dev, int index)
->  		} else
->  			return -ENODEV;
->=20=20
-> -#ifdef defined(CONFIG_X86) && defined(CONFIG_HOTPLUG_CPU)
-> +#if defined(CONFIG_X86) && defined(CONFIG_HOTPLUG_CPU)
->  		/* If NMI wants to wake up CPU0, start CPU0. */
->  		if (wakeup_cpu0())
->  			start_cpu0();
+Ack
 
-Thank you for the patch,
+> 
+>> +
+>> +
+> 
+> Drop double newline?
 
-this was already reported by Stephen Rothwell and I suggested Rafael the
-exact same fix:
+Ack
 
-https://lore.kernel.org/lkml/87czvfu9j5.fsf@vitty.brq.redhat.com/
+> 
+>> +properties:
+>> +  compatible:
+>> +    items:
+>> +      - enum:
+>> +          - qcom,sm8150-dcc
+>> +      - const: qcom,dcc
+>> +
+>> +  reg:
+>> +    items:
+>> +      - description: DCC base register region
+>> +      - description: DCC RAM base register region
+>> +
+>> +  reg-names:
+>> +    items:
+>> +      - const: dcc
+>> +      - const: dcc-ram
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +  - reg-names
+> 
+> Do we really need reg names? Seems like we can assume the ordering.
 
-It would probably be better if we fold the fix in (if stil possible).
+Ack
 
---=20
-Vitaly
+> 
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    dcc@10a2000{
+> 
+> dma@10a2000? Or debug@10a2000?
 
+Ack
+
+> 
+>> +                compatible = "qcom,sm8150-dcc","qcom,dcc";
+>> +                reg = <0x010a2000  0x1000>,
+>> +                      <0x010ad000  0x2000>;
+>> +                reg-names = "dcc", "dcc-ram";
+>> +    };
