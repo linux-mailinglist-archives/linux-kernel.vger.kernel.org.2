@@ -2,167 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F2B3513DE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 12:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D0D3513E5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 12:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234094AbhDAKpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 06:45:05 -0400
-Received: from lizzard.sbs.de ([194.138.37.39]:34838 "EHLO lizzard.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232565AbhDAKo4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 06:44:56 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 131AiIRf013128
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 1 Apr 2021 12:44:18 +0200
-Received: from md1za8fc.ad001.siemens.net ([139.22.45.60])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 131AiG12019279;
-        Thu, 1 Apr 2021 12:44:16 +0200
-Date:   Thu, 1 Apr 2021 12:44:15 +0200
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>, Enrico Weigelt <lkml@metux.net>
-Subject: Re: [PATCH v3 2/4] leds: simatic-ipc-leds: add new driver for
- Siemens Industial PCs
-Message-ID: <20210401124415.3c9321c0@md1za8fc.ad001.siemens.net>
-In-Reply-To: <CAHp75VcSwW42_oQDpxn34gN7+aJNmB=HdJUbaWsYkBokYAHkSA@mail.gmail.com>
-References: <20210329174928.18816-1-henning.schild@siemens.com>
-        <20210329174928.18816-3-henning.schild@siemens.com>
-        <CAHp75Vdh_YAJLE4DWPhxhYY1g5Fc_7EFgr4FED3crpfpzwXeRg@mail.gmail.com>
-        <20210330135808.373c3308@md1za8fc.ad001.siemens.net>
-        <CAHp75Vc0f0HfAJx0KPyQMWjekkhB_T-1+vuR566qAcYGA2JLJA@mail.gmail.com>
-        <20210330143011.0e8ae4a0@md1za8fc.ad001.siemens.net>
-        <CAHp75VceCsuANZpib6HXJvxgMdJhmr8KPTZgThxKvXq6Yotymg@mail.gmail.com>
-        <20210330172305.67b6e050@md1za8fc.ad001.siemens.net>
-        <CAHp75VcSwW42_oQDpxn34gN7+aJNmB=HdJUbaWsYkBokYAHkSA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S233917AbhDAKqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 06:46:39 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:38444 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232565AbhDAKqR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 06:46:17 -0400
+Received: by mail-ot1-f49.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so1714342otk.5;
+        Thu, 01 Apr 2021 03:46:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o87MMBtEyXrLDI+UXXVN/kLAY/ixo6UgJV9nJTpzby0=;
+        b=n+PniYApmaTxqx1KRPtmEpK71o7hU89EQOFNHod08o6h4syknXKlrO74O8yqG4iH2z
+         bEfEqMSmveENP4dKb1JcevEswChDc9pG6AKN/ZR3AGaAVzRGwW7E5yf5fFn+Y5irHw99
+         l/nUanCr+Gaw7Kc6tDTH2k6Emh547b2yyiuxD9PnyyGJjxRFillvGVgVpMfC5qcFIJLv
+         /fVjo9toufQELotfLLjy2xTuIOCJJyuOqv47dPCL29GN5LRm6t5nYgNKgCFF6mwkYCrv
+         Z0bMm/1p0gpx5Jc5rVqy3Cv4xl8QWPlSeXkubSSuJHWdCBA7xSdRVGt7mrsy7KHiX0aG
+         NaIA==
+X-Gm-Message-State: AOAM530o2SFLgAqLw1GO8KnIctn/3smsNlBGD/VQYoL0Z4FzpNlSbYqw
+        bCnXQtAVFyiQQELwztewFfZYsgnwDufvYbABsJnXm+tb
+X-Google-Smtp-Source: ABdhPJy35DDwAq+peQ/etkj5pBR3XohD0I+EXiJaupWlcMzeaTf9KWgxaFEZwnqZqOJFIH6z2AIFVAmajpUx8DQfUQw=
+X-Received: by 2002:a05:6830:55b:: with SMTP id l27mr5757449otb.260.1617273976398;
+ Thu, 01 Apr 2021 03:46:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <4319486.LvFx2qVVIh@kreacher> <20210331210845.GA1422864@bjorn-Precision-5520>
+In-Reply-To: <20210331210845.GA1422864@bjorn-Precision-5520>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 1 Apr 2021 12:46:03 +0200
+Message-ID: <CAJZ5v0jksMw4Cmo_u4cU_6ii5_4R5xfytLzpF282tfkv__nF_w@mail.gmail.com>
+Subject: Re: [PATCH] PCI: ACPI: PM: Fix debug message in acpi_pci_set_power_state()
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        David Box <david.e.box@linux.intel.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Wed, 31 Mar 2021 18:40:23 +0300
-schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
-
-> On Tue, Mar 30, 2021 at 6:33 PM Henning Schild
-> <henning.schild@siemens.com> wrote:
-> > Am Tue, 30 Mar 2021 15:41:53 +0300
-> > schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:  
-> > > On Tue, Mar 30, 2021 at 3:35 PM Henning Schild
-> > > <henning.schild@siemens.com> wrote:  
-> > > > Am Tue, 30 Mar 2021 15:15:16 +0300
-> > > > schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:  
-> > > > > On Tue, Mar 30, 2021 at 2:58 PM Henning Schild
-> > > > > <henning.schild@siemens.com> wrote:  
-> > > > > > Am Tue, 30 Mar 2021 14:04:35 +0300
-> > > > > > schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:  
-> > > > > > > On Mon, Mar 29, 2021 at 8:59 PM Henning Schild
-> > > > > > > <henning.schild@siemens.com> wrote:  
-> > >  
-> > > > > > > > +static struct simatic_ipc_led simatic_ipc_leds_mem[] =
-> > > > > > > > {
-> > > > > > > > +       {0x500 + 0x1A0, "red:" LED_FUNCTION_STATUS
-> > > > > > > > "-1"},
-> > > > > > > > +       {0x500 + 0x1A8, "green:" LED_FUNCTION_STATUS
-> > > > > > > > "-1"},
-> > > > > > > > +       {0x500 + 0x1C8, "red:" LED_FUNCTION_STATUS
-> > > > > > > > "-2"},
-> > > > > > > > +       {0x500 + 0x1D0, "green:" LED_FUNCTION_STATUS
-> > > > > > > > "-2"},
-> > > > > > > > +       {0x500 + 0x1E0, "red:" LED_FUNCTION_STATUS
-> > > > > > > > "-3"},
-> > > > > > > > +       {0x500 + 0x198, "green:" LED_FUNCTION_STATUS
-> > > > > > > > "-3"},
-> > > > > > > > +       { }
-> > > > > > > > +};  
-> > > > > > >
-> > > > > > > It seems to me like poking GPIO controller registers
-> > > > > > > directly. This is not good. The question still remains:
-> > > > > > > Can we simply register a GPIO (pin control) driver and
-> > > > > > > use an LED GPIO driver with an additional board file that
-> > > > > > > instantiates it?  
-> > > > > >
-> > > > > > I wrote about that in reply to the cover letter. My view is
-> > > > > > still that it would be an abstraction with only one user,
-> > > > > > just causing work and likely not ending up as generic as it
-> > > > > > might eventually have to be.
-> > > > > >
-> > > > > > The region is reserved, not sure what the problem with the
-> > > > > > "poking" is.  
-> > > > >
-> > > > >  
-> > > > > > Maybe i do not understand all the benefits of such a split
-> > > > > > at this point in time. At the moment i only see work with
-> > > > > > hardly any benefit, not just work for me but also for
-> > > > > > maintainers. I sure do not mean to be ignorant. Maybe you
-> > > > > > go into details and convince me or we wait for other
-> > > > > > peoples opinions on how to proceed, maybe there is a second
-> > > > > > user that i am not aware of? Until i am convinced otherwise
-> > > > > > i will try to argue that a single-user-abstraction is
-> > > > > > needless work/code, and should be done only when actually
-> > > > > > needed.  
-> > > > >
-> > > > > I have just read your messages (there is a cover letter and
-> > > > > additional email which was sent lately).
-> > > > >
-> > > > > I would like to know what the CPU model number on that board
-> > > > > is. Than we can continue to see what possibilities we have
-> > > > > here.  
-> > > >
-> > > > I guess we are talking about the one that uses memory mapped,
-> > > > that is called an "IPC127E" and seems to have either Intel Atom
-> > > > E3940 or E3930 which seems to be Apollo Lake.  
-> > >
-> > > Yep. And now the question, in my patch series you should have got
-> > > the apollolake-pinctrl driver loaded (if not, we have to
-> > > investigate why it's not being instantiated). This will give you
-> > > a read GPIO driver.  
+On Wed, Mar 31, 2021 at 11:09 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Thu, Mar 25, 2021 at 07:57:51PM +0100, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > >
-> > Ok, so there is the existing driver i asked about several times.
-> > Thanks for pointing it out.  
-> 
-> If you remember, I asked you about the chip twice :-)
-> I assumed that we were talking about Apollo Lake and that's why I
-> insisted that the driver is in the kernel source tree.
-
-Sorry, maybe i did not get the context of your question and which of
-the machines you asked about. Now it is clear i guess.
-
-> 
-> > > So, you may use regular LED GPIO on top of it
-> > > (https://elixir.bootlin.com/linux/latest/source/drivers/leds/leds-gpio.c).
-> > > I would like to understand why it can't be achieved.  
+> > If PCI_D3cold is passed to acpi_pci_set_power_state() as the second
+> > argument and there is no ACPI D3cold support for the given device,
+> > the debug message printed by that function will state that the
+> > device power state has been changed to D3cold, while in fact it
+> > will be D3hot, because acpi_device_set_power() falls back to D3hot
+> > automatically if D3cold is not supported without returning an error.
 > >
-> > Will have a look. Unfortunately this one box is missing in my
-> > personal collection, but let us assume that one can be converted to
-> > that existing driver.  
-> 
-> OK!
-> 
-> > I guess that will still mean the PIO-based part of the LED driver
-> > will have to stay as is.  
-> 
-> Probably yes. I haven't looked into that part and I have no idea
-> what's going on on that platform(s).
-> 
+> > To address this issue, modify the debug message in question to print
+> > the current power state of the target PCI device's ACPI companion
+> > instead of printing the target power state which may not reflect
+> > the real final power state of the device.
+> >
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>
+> Applied with Krzysztof's reviewed-by to pci/pm for v5.13, thanks!
+>
+> Let me know if you have nearby or related changes that you'd rather
+> take via your tree.
 
-Which i guess means the series can be reviewed as if the mmio bits for
-that apollo lake would not be in it, maybe i will even send a version
-without that one box. We have others in the "backlog" might as well
-delay that one if it helps sorting out a base-line.
-
-regards,
-Henning
+I don't have any, thank you!
