@@ -2,152 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E09351969
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF96351A68
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235703AbhDARxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:53:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54660 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234888AbhDARlC (ORCPT
+        id S237643AbhDASAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:00:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234527AbhDARq1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:41:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617298862;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bmwsKY8J4nK6bYChJo7qBgeWMBlHl0uvtUs7chjpSMQ=;
-        b=S5Mq4WRuLdTyELvN+FC4Ly20ap9keUJwkACeW0Jb6dCjPzScOZ5gnOj635tLRK0FIhz6SK
-        mE2zA7YgvoScRHOQIiobL2CxZurCN1/CBcQE+DiA1B5M9LhcPd7IuitwuAxv1mmncgY/9A
-        DM0v67+IK5Q/CGKy//BmZsXV5WLKLU8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-303-yw6xFhj4MYqEz1LKH2Bguw-1; Thu, 01 Apr 2021 10:39:32 -0400
-X-MC-Unique: yw6xFhj4MYqEz1LKH2Bguw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5765910074A1;
-        Thu,  1 Apr 2021 14:38:37 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.35.206.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0DED55D9CA;
-        Thu,  1 Apr 2021 14:38:33 +0000 (UTC)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
-        64-BIT)), Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        Sean Christopherson <seanjc@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH 4/4] KVM: x86: remove tweaking of inject_page_fault
-Date:   Thu,  1 Apr 2021 17:38:17 +0300
-Message-Id: <20210401143817.1030695-5-mlevitsk@redhat.com>
-In-Reply-To: <20210401143817.1030695-1-mlevitsk@redhat.com>
-References: <20210401143817.1030695-1-mlevitsk@redhat.com>
+        Thu, 1 Apr 2021 13:46:27 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A5D5C0045E1
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 07:39:23 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id f17so1148332plr.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 07:39:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VJd+MUFo0XX0bZ87nAzur9O3CX6wH0hMl9szGovIO+U=;
+        b=lT8rLoA46GAsqanEivZwqwGf8FFfuPDGksXMy8dE1ySACchbIqAtpInKtAyJ5Yqe9k
+         GzsqRT4MRlwH4ev0c46sD16C2EaZsJ/87dxJ7+FFNKu77qJwACz5JF/bzLCymjmyvRN/
+         LDm/EiPP1kwy8nckigs4rv4bEV/e0Y2iRMMQGt0KldiN+C813ng5sRuB4ND1ZdUqlJc0
+         nUMWRadeX1yrZ4kCF3vYWwcRtZuP46Dw95sEGcBSwhgtMAzTBu+rSTnLf4K9p2jwvg5A
+         VYwpulwlpikyBGlMD1XMbyeomiajTx5AsFgoSmcc7IUS8Ivon4jhXB6SM9pUeyhmKoA5
+         Avyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VJd+MUFo0XX0bZ87nAzur9O3CX6wH0hMl9szGovIO+U=;
+        b=oJm97xzZWD8/jjmbtEwjvCCe7BW3eVXZmNkgD+UEgj88SGJzMnU//9Pe0V2HlWUmhw
+         ffdK9YO7WPsH9POV9vSAtINLTRIvGbqagmH8sqLJ8kulgKYDByOsyvrOeTgslnn0BVaV
+         fm0xK5+ftxfdXJWFqWXKgWGOr7nbxOVirBXYmcf3VVbs1+NFrfpWRASEdFHL1o6w1i7u
+         sNYouiMrxWuKSgV/vTbXpLar3hEb+ShTFqQfDS/kGwRnlLl8Ng9aZDqcpNGtKrXub/RV
+         hGqdY/9cIyyuCpZqLyUanEGvl2opaJlcEXW84TRC2ImH7+60PkNIOIzSAww4kOr94UZo
+         TqPg==
+X-Gm-Message-State: AOAM533vp8ewKfCeRhhIBnQvhD2BQc9ZqgRMCXLbnMoQcYFfUP5DEqv+
+        Ej8pYWPRDB0blLU3Qy2yj6s1nWVpgHf3FGmB3ottyA==
+X-Google-Smtp-Source: ABdhPJx5J2TMYKbVuGkqz4CgIBmuDV05Jucwa3rkV95Iqq7+kFDcfqmogyShve1r3BsgBXZyMLNsn0GDbOWgYFavOpQ=
+X-Received: by 2002:a17:90a:be07:: with SMTP id a7mr9381570pjs.75.1617287962645;
+ Thu, 01 Apr 2021 07:39:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20210222215502.24487-1-julianbraha@gmail.com>
+In-Reply-To: <20210222215502.24487-1-julianbraha@gmail.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Thu, 1 Apr 2021 16:39:11 +0200
+Message-ID: <CAG3jFysbOHbDGDWNnyOUH5tyLAxAWutp6HHnO-97BagnLqA8Yg@mail.gmail.com>
+Subject: Re: [PATCH] drivers: gpu: drm: bridge: fix kconfig dependency on DRM_KMS_HELPER
+To:     Julian Braha <julianbraha@gmail.com>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is no longer needed since page faults can now be
-injected as regular exceptions in all the cases.
+Hey Julian,
 
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
----
- arch/x86/kvm/svm/nested.c | 20 --------------------
- arch/x86/kvm/vmx/nested.c | 23 -----------------------
- 2 files changed, 43 deletions(-)
+Nice catch, this patch looks good to me. I've pushed it to drm-misc-next.
 
-diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-index ff745d59ffcf..25840399841e 100644
---- a/arch/x86/kvm/svm/nested.c
-+++ b/arch/x86/kvm/svm/nested.c
-@@ -53,23 +53,6 @@ static void nested_svm_inject_npf_exit(struct kvm_vcpu *vcpu,
- 	nested_svm_vmexit(svm);
- }
- 
--static void svm_inject_page_fault_nested(struct kvm_vcpu *vcpu, struct x86_exception *fault)
--{
--       struct vcpu_svm *svm = to_svm(vcpu);
--       WARN_ON(!is_guest_mode(vcpu));
--
--       if (vmcb_is_intercept(&svm->nested.ctl, INTERCEPT_EXCEPTION_OFFSET + PF_VECTOR) &&
--	   !svm->nested.nested_run_pending) {
--               svm->vmcb->control.exit_code = SVM_EXIT_EXCP_BASE + PF_VECTOR;
--               svm->vmcb->control.exit_code_hi = 0;
--               svm->vmcb->control.exit_info_1 = fault->error_code;
--               svm->vmcb->control.exit_info_2 = fault->address;
--               nested_svm_vmexit(svm);
--       } else {
--               kvm_inject_page_fault(vcpu, fault);
--       }
--}
--
- static u64 nested_svm_get_tdp_pdptr(struct kvm_vcpu *vcpu, int index)
- {
- 	struct vcpu_svm *svm = to_svm(vcpu);
-@@ -575,9 +558,6 @@ int enter_svm_guest_mode(struct kvm_vcpu *vcpu, u64 vmcb12_gpa,
- 	if (ret)
- 		return ret;
- 
--	if (!npt_enabled)
--		vcpu->arch.mmu->inject_page_fault = svm_inject_page_fault_nested;
--
- 	svm_set_gif(svm, true);
- 
- 	return 0;
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index 1c09b132c55c..8add4c27e718 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -418,26 +418,6 @@ static int nested_vmx_check_exception(struct kvm_vcpu *vcpu, unsigned long *exit
- 	return 0;
- }
- 
--
--static void vmx_inject_page_fault_nested(struct kvm_vcpu *vcpu,
--		struct x86_exception *fault)
--{
--	struct vmcs12 *vmcs12 = get_vmcs12(vcpu);
--
--	WARN_ON(!is_guest_mode(vcpu));
--
--	if (nested_vmx_is_page_fault_vmexit(vmcs12, fault->error_code) &&
--		!to_vmx(vcpu)->nested.nested_run_pending) {
--		vmcs12->vm_exit_intr_error_code = fault->error_code;
--		nested_vmx_vmexit(vcpu, EXIT_REASON_EXCEPTION_NMI,
--				  PF_VECTOR | INTR_TYPE_HARD_EXCEPTION |
--				  INTR_INFO_DELIVER_CODE_MASK | INTR_INFO_VALID_MASK,
--				  fault->address);
--	} else {
--		kvm_inject_page_fault(vcpu, fault);
--	}
--}
--
- static int nested_vmx_check_io_bitmap_controls(struct kvm_vcpu *vcpu,
- 					       struct vmcs12 *vmcs12)
- {
-@@ -2588,9 +2568,6 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
- 		vmcs_write64(GUEST_PDPTR3, vmcs12->guest_pdptr3);
- 	}
- 
--	if (!enable_ept)
--		vcpu->arch.walk_mmu->inject_page_fault = vmx_inject_page_fault_nested;
--
- 	if ((vmcs12->vm_entry_controls & VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL) &&
- 	    WARN_ON_ONCE(kvm_set_msr(vcpu, MSR_CORE_PERF_GLOBAL_CTRL,
- 				     vmcs12->guest_ia32_perf_global_ctrl)))
--- 
-2.26.2
+https://cgit.freedesktop.org/drm/drm-misc/commit/?id=62066d3164467167fc27b2383f67d097e39bf176
 
+On Mon, 22 Feb 2021 at 22:56, Julian Braha <julianbraha@gmail.com> wrote:
+>
+> When DRM_TOSHIBA_TC358762 is enabled and DRM_KMS_HELPER is disabled,
+> Kbuild gives the following warning:
+>
+> WARNING: unmet direct dependencies detected for DRM_PANEL_BRIDGE
+>   Depends on [n]: HAS_IOMEM [=y] && DRM_BRIDGE [=y] && DRM_KMS_HELPER [=n]
+>   Selected by [y]:
+>   - DRM_TOSHIBA_TC358762 [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && OF [=y]
+>
+> This is because DRM_TOSHIBA_TC358762 selects DRM_PANEL_BRIDGE,
+> without depending on or selecting DRM_KMS_HELPER,
+> despite that config option depending on DRM_KMS_HELPER.
+>
+> Signed-off-by: Julian Braha <julianbraha@gmail.com>
+> ---
+>  drivers/gpu/drm/bridge/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
+> index e4110d6ca7b3..909d0a5643c2 100644
+> --- a/drivers/gpu/drm/bridge/Kconfig
+> +++ b/drivers/gpu/drm/bridge/Kconfig
+> @@ -183,6 +183,7 @@ config DRM_TOSHIBA_TC358762
+>         tristate "TC358762 DSI/DPI bridge"
+>         depends on OF
+>         select DRM_MIPI_DSI
+> +       select DRM_KMS_HELPER
+>         select DRM_PANEL_BRIDGE
+>         help
+>           Toshiba TC358762 DSI/DPI bridge driver.
+> --
+> 2.27.0
