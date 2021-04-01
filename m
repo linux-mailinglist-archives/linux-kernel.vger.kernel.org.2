@@ -2,91 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBFC5351BA3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40BFE351945
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238767AbhDASKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:10:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44438 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236608AbhDARyz (ORCPT
+        id S234657AbhDARwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:52:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234867AbhDARk5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:54:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617299695;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GhP9mKAC835udYamk6sLlCgw3JJRwFbPZGXQbpeFSwU=;
-        b=U04udFiDiAWsvg2mMU4C/X9Ad6o9OafLFy1WJkymhwUWf3yVAuy9SQdP1/DUyVp7YiR45e
-        DB8wH+WOlFY0IuSMN9GnG+dwSDccokrGsOEqjC9zMpgB5o3V8hHGboc7ysw/tGmwasK/3j
-        dptk7h4cHmrJz6+cftgLjRnd8GwT9Zg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-189-dz0J8KJfP2CVKb8yctgc0Q-1; Thu, 01 Apr 2021 08:54:23 -0400
-X-MC-Unique: dz0J8KJfP2CVKb8yctgc0Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C6E55801814;
-        Thu,  1 Apr 2021 12:54:20 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-58.rdu2.redhat.com [10.10.112.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 21230614FC;
-        Thu,  1 Apr 2021 12:54:18 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210401093545.4055-1-lyl2019@mail.ustc.edu.cn>
-References: <20210401093545.4055-1-lyl2019@mail.ustc.edu.cn>
-To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Cc:     dhowells@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        linux-afs@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net/rxrpc: Fix a use after free in rxrpc_input_packet
+        Thu, 1 Apr 2021 13:40:57 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0380AC05BD18
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 05:55:16 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id c6so644169lji.8
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 05:55:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VIk1VyBFqF5fVZFBu0yexXHYaS9Jn30Rld7o2bVbBwk=;
+        b=Apd+UzHEAEi98S6OdfucHkNROZU7jCgX5/KNygYU3cVOLmi2PHXIN8LRL/INjJMZT2
+         +T7sbpkA1dHoI5hc7fww5ba5aE2TjM8dwGwwufSllGQiwylrGI0cS488JL/xNibDw5Cu
+         2+eknYxHVIfteXbHDfVGnwtETKC61+6Ys9Q59Y5+NreZIXf3O8ek1f6nwiPeAZ31FLYx
+         JP07cdx8Lht2U45g70INCV2MprWQgxaOUq4Y3uGF3LwH7J/nRfQOjuLD03XeTBhbnZ3w
+         3kGM/AEkbnuu9X/oEc2B9w4enaBqVfgrhZYb3ySlCRAGSvA6qD8rW+w9ga1FZsJLnIXC
+         z8Dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VIk1VyBFqF5fVZFBu0yexXHYaS9Jn30Rld7o2bVbBwk=;
+        b=gjaoXQ50GGe5YEvF8WUv/RYH/tL2zvQj6hj/jvoR0XqZKNzxhZPCAz3cOe3lOEswfr
+         Nd70ti6Uusd0KXJSk2WcZqHeJTTcrykzCeqxBXrzQ4wpO8IILhRKiZas3iJr9VT7Ec02
+         poqBAtxhA5wCUQ7OaIeBmxVHIpzaIxDsvOAVP3wVGjCSLxlgfjEaB8HCvqNdu2hFoPuf
+         hYDf+nRNPxPCks/j1ZTRcEu5jrZ/+8HmZCMnMiABUlKliND6qw0U7LljxewnehbV/dml
+         5R8cqzoruOtndF1RxP5k8U4807d7gS+mtv1iEGTnQpsaobbZvDWbVm4S0yQeP5L1K6Ax
+         rsLA==
+X-Gm-Message-State: AOAM533wO1/ojBJJnFupWfn9RZCfNDJd8d7b13ZenjnYoXmdJPpat4gt
+        gItRtBeQHvwhO/E2uYKxTqYDPv11CP0feIKZ0Wa9/g==
+X-Google-Smtp-Source: ABdhPJzxwz2LDe0yIeonE1iDSI5e5lDG4mIYMjWxL+WfT+GgrPcNFOKL6OGonaimUeBpqxqGZ9SE9Ng/p3VJVcrOnEs=
+X-Received: by 2002:a2e:8e33:: with SMTP id r19mr5136316ljk.40.1617281715310;
+ Thu, 01 Apr 2021 05:55:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3723091.1617281658.1@warthog.procyon.org.uk>
-Date:   Thu, 01 Apr 2021 13:54:18 +0100
-Message-ID: <3723092.1617281658@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
+ <CAFLxGvzWLje+_HFeb+hKNch4U1f5uypVUOuP=QrEPn_JNM+scg@mail.gmail.com>
+ <ca2a7c17-3ed0-e52f-2e2f-c0f8bbe10323@pengutronix.de> <CAFLxGvwNomKOo3mQLMxYGDA8T8zN=Szpo2q5jrp4D1CaMHydWA@mail.gmail.com>
+In-Reply-To: <CAFLxGvwNomKOo3mQLMxYGDA8T8zN=Szpo2q5jrp4D1CaMHydWA@mail.gmail.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Thu, 1 Apr 2021 18:25:03 +0530
+Message-ID: <CAFA6WYO29o73nSg4ikU9cyaOr0kpaXFJpcGLGmFLgjKQWchcEg@mail.gmail.com>
+Subject: Re: [PATCH v1 0/3] KEYS: trusted: Introduce support for NXP
+ CAAM-based trusted keys
+To:     Richard Weinberger <richard.weinberger@gmail.com>
+Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        James Bottomley <jejb@linux.ibm.com>, kernel@pengutronix.de,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        David Gstir <david@sigma-star.at>,
+        Franck LENORMAND <franck.lenormand@nxp.com>,
+        linux-integrity@vger.kernel.org,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        LSM <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lv Yunlong <lyl2019@mail.ustc.edu.cn> wrote:
+Hi Richard,
 
-> In the case RXRPC_PACKET_TYPE_DATA of rxrpc_input_packet, if
-> skb_unshare(skb,..) failed, it will free the skb and return NULL.
-> But if skb_unshare() return NULL, the freed skb will be used by
-> rxrpc_eaten_skb(skb,..).
+On Wed, 31 Mar 2021 at 03:34, Richard Weinberger
+<richard.weinberger@gmail.com> wrote:
+>
+> Ahmad,
+>
+> On Wed, Mar 17, 2021 at 3:08 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+> >     keyctl add trusted $KEYNAME "load $(cat ~/kmk.blob)" @s
+>
+> Is there a reason why we can't pass the desired backend name in the
+> trusted key parameters?
+> e.g.
+> keyctl add trusted $KEYNAME "backendtype caam load $(cat ~/kmk.blob)" @s
+>
 
-That's not precisely the case:
+IIUC, this would require support for multiple trusted keys backends at
+runtime but currently the trusted keys subsystem only supports a
+single backend which is selected via kernel module parameter during
+boot.
 
-	void rxrpc_eaten_skb(struct sk_buff *skb, enum rxrpc_skb_trace op)
-	{
-		const void *here = __builtin_return_address(0);
-		int n = atomic_inc_return(&rxrpc_n_rx_skbs);
-		trace_rxrpc_skb(skb, op, 0, n, 0, here);
-	}
+So the trusted keys framework needs to evolve to support multiple
+trust sources at runtime but I would like to understand the use-cases
+first. IMO, selecting the best trust source available on a platform
+for trusted keys should be a one time operation, so why do we need to
+have other backends available at runtime as well?
 
-The only thing that happens to skb here is that it's passed to
-trace_rxrpc_skb(), but that doesn't dereference it either.  The *address* is
-used for display purposes, but that's all.
+-Sumit
 
-> I see that rxrpc_eaten_skb() is used to drop a ref of skb.
-
-It isn't.
-
-> As the skb is already freed in skb_unshare() on error, my patch removes the
-> rxrpc_eaten_skb() to avoid the uaf.
-
-But you remove the accounting, which might lead to an assertion failure in
-af_rxrpc_exit().
-
-That said, rxrpc_eaten_skb() should probably decrement rxrpc_n_rx_skbs, not
-increment it...
-
-David
-
+> --
+> Thanks,
+> //richard
