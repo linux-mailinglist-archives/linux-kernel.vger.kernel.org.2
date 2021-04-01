@@ -2,138 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CFC235185F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40616351B0A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234631AbhDARpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:45:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57168 "EHLO
+        id S238026AbhDASFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:05:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234626AbhDARi2 (ORCPT
+        with ESMTP id S236919AbhDARth (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:38:28 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A7CFC0319DB;
-        Thu,  1 Apr 2021 10:34:20 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id b9so2595119wrt.8;
-        Thu, 01 Apr 2021 10:34:20 -0700 (PDT)
+        Thu, 1 Apr 2021 13:49:37 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46170C0617AB;
+        Thu,  1 Apr 2021 04:28:05 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id k8so1797603iop.12;
+        Thu, 01 Apr 2021 04:28:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=rK2LdS6ODAydJkNJDKUimZKMnsbdOM3cvA6asgW0c80=;
-        b=fbPIbSHJtsRAZcXnsol7EI9DCaFJZ9nwvBGgXN7up6EJ+E7CAhF1Ocm4pX77zRlF+8
-         iKer8GP+EWclFlHSRplim3szwZeCqo9UrNPQK+ESFU3xZx/mVuM36sWFCBPU02kN8Uq0
-         DrqxAh9Yelt//O5VEqVWrdz94ICrGpecJ2+v7/UoVs3x95tlMaCNyEElnc+zC12GyHtt
-         3QOyMFLgzT9duhlCILmgOvPRQhwbHAQWQOicexLPIm89xw1ppK5cpSIp43+b9tOWE5kU
-         GrihkfBolOIcGBgdosfKtjs1FoGncRGD0YlOxjPzUrt1qVQnOvspWi4etXScsO+R2xt6
-         rDug==
+        bh=moOyGRcGHar9YNt0N/Y7uFjPvSME0sZl6mnpRsX5JvU=;
+        b=ifnqDCESEWCwygu7Q8TcEEjwG35Ap4TGL1lIxVlgSIHnbzmG25rF7VK74GW/oT/Lgh
+         2UJ9bIQNzSDOlkch2hOCYH1HpIqOco9idX9WVqPyouTWaS8Ou04kvDlzHghlRMp4jHPf
+         nskapKeDijNI6NmbdwMQ0kmLLDvSqDkg1MFJwvHTqGAGSsKLk5VXeqNC5Euy8zgxYvnF
+         O3TzXfeLmGd9cTk7Hw7vPqePTLusUXV5nmy1w7nHwPPWrDqSZAM1o5RCdXpXwBhAZ9SF
+         he5bn3R+I/nx5KU477ajaxMPDRxH3dbiHtmAvkpsU7i0mKguLtw3QMN4BcDqvQv0/j90
+         uHKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rK2LdS6ODAydJkNJDKUimZKMnsbdOM3cvA6asgW0c80=;
-        b=ZIr5ZSklDvEAgYwVG07300BdM5ck0HcVzAqhZScq8Li+BdpAcVsGrfWREjaY5ITD44
-         +5FulZbbHRfH4l6L8gNFl3ZIOSy5wA+eGjN5eWoc0HukWVsl8Wj0ue3cCw678hkVJjeu
-         2rOqdDOZ40hjWaBAx0FmM5iotUkkz2doZ2shxbWVPceVow11kvO31cho+OGnVzYggCCc
-         Rqrn84qp/wn06XI5hnX+3RdRjurhULmU+cmwfXsQ3bMpB1TuJuavv9yIARuKDMp+6ymS
-         ZYqpq8OfLNcmr2tsUchtFvEk/o5wug+mZf4ET4h3M60HdG/vfB0Wui4drI9pE1mXC2aW
-         CZYA==
-X-Gm-Message-State: AOAM5323/Lp/jaa6jnfzhjebjyRzbpGFxZKCFFmFKN0jF1rkVtLavFr3
-        CKnGetYVqXMtzZ40mT68eUYQo2D+MgJ58xb7vao=
-X-Google-Smtp-Source: ABdhPJzTzb75Zq5lVKxlXsLtahJ+rLK1yT4ChASxTdyK4VvEYKWc/dOfoDSRkP8SuHFCh33/CUU6oLC581EOnJ+bucE=
-X-Received: by 2002:adf:fb42:: with SMTP id c2mr11041823wrs.83.1617298459053;
- Thu, 01 Apr 2021 10:34:19 -0700 (PDT)
+        bh=moOyGRcGHar9YNt0N/Y7uFjPvSME0sZl6mnpRsX5JvU=;
+        b=kHhW+NJQO3z63t/oCc+6zGf8AhETEZabjnLpYw4FXB7iG35u2fc30tSO9+tVymtdeO
+         JCZR4QmFL2OiI2jMiJtoP2SMWn5RqjrP44sa28ft7G9tJTaiA4X9EHEWFqVA0Ar4mipk
+         n6hla3mMHMPc8TZH+MM0mvvKcI+23znEY2u5STX/UNw6u3ht/SqfNyPb+Ena2CRvWejR
+         +L/KpN+IHXcU89bDuES+8zB0zTOIsEPqvBIMHvMWov6IPyDqTLpzd327x/8S8uZ1ZOkD
+         DeRbmcYYbytKkn2lcyBYR8rLd6kSQpOZiIzqN7Rh2LMhQYGKexuX9LRYa46cXxvzx1tc
+         GxMg==
+X-Gm-Message-State: AOAM533BHM4sBB3om+ON/d6xRvL0Ngl+Z9InSujeZmgYvMPWUq852m7t
+        QmngFRiMURBi+ppQAVJTVqDd6RXKeWfiu1OMJGSClh+xhZrFLA==
+X-Google-Smtp-Source: ABdhPJxhpMPww1OveGSHxepFu4l+A0e2gZ/exiHFMOBtsrHDLLr9n61X8fXz/bnSkzdlVx94sCa1xegT1QRnmXoNsps=
+X-Received: by 2002:a05:6602:21cd:: with SMTP id c13mr6082518ioc.44.1617275764762;
+ Thu, 01 Apr 2021 04:16:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210331221630.488498-1-robdclark@gmail.com> <20210401012722.527712-1-robdclark@gmail.com>
- <20210401012722.527712-3-robdclark@gmail.com> <CAD=FV=XexfG9oQa8JndOgQ9JSNRmO4-xjmQdiA_9Rn9dJWxsow@mail.gmail.com>
-In-Reply-To: <CAD=FV=XexfG9oQa8JndOgQ9JSNRmO4-xjmQdiA_9Rn9dJWxsow@mail.gmail.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Thu, 1 Apr 2021 10:37:44 -0700
-Message-ID: <CAF6AEGvQ3Ep4O_SKGiptq1BiMK0tUjJ=U84M2otvQtVfWHEzoQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] drm/msm: Avoid mutex in shrinker_count()
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
+References: <cover.1615038553.git.syednwaris@gmail.com> <4c259d34b5943bf384fd3cb0d98eccf798a34f0f.1615038553.git.syednwaris@gmail.com>
+ <36db7be3-73b6-c822-02e8-13e3864b0463@xilinx.com> <CAMpxmJUv0iU0Ntmks1f6ThDAG6x_eJLYYCaDSjy+1Syedzc5dQ@mail.gmail.com>
+ <DM6PR02MB53863852A28F782B0942ECD8AF7C9@DM6PR02MB5386.namprd02.prod.outlook.com>
+In-Reply-To: <DM6PR02MB53863852A28F782B0942ECD8AF7C9@DM6PR02MB5386.namprd02.prod.outlook.com>
+From:   Syed Nayyar Waris <syednwaris@gmail.com>
+Date:   Thu, 1 Apr 2021 16:45:52 +0530
+Message-ID: <CACG_h5q6P5NiNByttQ-NZvq8x3GCTKfSU=Yyywk7PcO6_=i2Mw@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] gpio: xilinx: Utilize generic bitmap_get_value and _set_value
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Michal Simek <michals@xilinx.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Robert Richter <rrichter@marvell.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        linux-pm <linux-pm@vger.kernel.org>,
+        Srinivas Goud <sgoud@xilinx.com>,
+        Srinivas Neeli <sneeli@xilinx.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 8:34 AM Doug Anderson <dianders@chromium.org> wrote:
+On Wed, Mar 31, 2021 at 8:56 PM Srinivas Neeli <sneeli@xilinx.com> wrote:
 >
 > Hi,
 >
-> On Wed, Mar 31, 2021 at 6:24 PM Rob Clark <robdclark@gmail.com> wrote:
+> > -----Original Message-----
+> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > Sent: Friday, March 26, 2021 10:58 PM
+> > To: Michal Simek <michals@xilinx.com>
+> > Cc: Syed Nayyar Waris <syednwaris@gmail.com>; Srinivas Neeli
+> > <sneeli@xilinx.com>; Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com>; William Breathitt Gray
+> > <vilhelm.gray@gmail.com>; Arnd Bergmann <arnd@arndb.de>; Robert
+> > Richter <rrichter@marvell.com>; Linus Walleij <linus.walleij@linaro.org>;
+> > Masahiro Yamada <yamada.masahiro@socionext.com>; Andrew Morton
+> > <akpm@linux-foundation.org>; Zhang Rui <rui.zhang@intel.com>; Daniel
+> > Lezcano <daniel.lezcano@linaro.org>; Amit Kucheria
+> > <amit.kucheria@verdurent.com>; Linux-Arch <linux-arch@vger.kernel.org>;
+> > linux-gpio <linux-gpio@vger.kernel.org>; LKML <linux-
+> > kernel@vger.kernel.org>; arm-soc <linux-arm-kernel@lists.infradead.org>;
+> > linux-pm <linux-pm@vger.kernel.org>; Srinivas Goud <sgoud@xilinx.com>
+> > Subject: Re: [PATCH v3 3/3] gpio: xilinx: Utilize generic bitmap_get_value and
+> > _set_value
 > >
-> > @@ -45,6 +30,9 @@ msm_gem_shrinker_scan(struct shrinker *shrinker, struct shrink_control *sc)
-> >         list_for_each_entry(msm_obj, &priv->inactive_dontneed, mm_list) {
-> >                 if (freed >= sc->nr_to_scan)
-> >                         break;
-> > +               /* Use trylock, because we cannot block on a obj that
-> > +                * might be trying to acquire mm_lock
-> > +                */
->
-> nit: I thought the above multi-line commenting style was only for
-> "net" subsystem?
-
-we do use the "net" style a fair bit already.. (OTOH I tend to not
-really care what checkpatch says)
-
-> >                 if (!msm_gem_trylock(&msm_obj->base))
-> >                         continue;
-> >                 if (is_purgeable(msm_obj)) {
-> > @@ -56,8 +44,11 @@ msm_gem_shrinker_scan(struct shrinker *shrinker, struct shrink_control *sc)
+> > On Mon, Mar 8, 2021 at 8:13 AM Michal Simek <michal.simek@xilinx.com>
+> > wrote:
+> > >
+> > >
+> > >
+> > > On 3/6/21 3:06 PM, Syed Nayyar Waris wrote:
+> > > > This patch reimplements the xgpio_set_multiple() function in
+> > > > drivers/gpio/gpio-xilinx.c to use the new generic functions:
+> > > > bitmap_get_value() and bitmap_set_value(). The code is now simpler
+> > > > to read and understand. Moreover, instead of looping for each bit in
+> > > > xgpio_set_multiple() function, now we can check each channel at a
+> > > > time and save cycles.
+> > > >
+> > > > Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > > > Cc: Michal Simek <michal.simek@xilinx.com>
+> > > > Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
+> > > > Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> > > > ---
+> > > >  drivers/gpio/gpio-xilinx.c | 63
+> > > > +++++++++++++++++++-------------------
+> > > >  1 file changed, 32 insertions(+), 31 deletions(-)
+> > > >
+> > > > diff --git a/drivers/gpio/gpio-xilinx.c b/drivers/gpio/gpio-xilinx.c
+> > > > index be539381fd82..8445e69cf37b 100644
+> > > > --- a/drivers/gpio/gpio-xilinx.c
+> > > > +++ b/drivers/gpio/gpio-xilinx.c
+> > > > @@ -15,6 +15,7 @@
+> > > >  #include <linux/of_device.h>
+> > > >  #include <linux/of_platform.h>
+> > > >  #include <linux/slab.h>
+> > > > +#include "gpiolib.h"
+> > > >
+> > > >  /* Register Offset Definitions */
+> > > >  #define XGPIO_DATA_OFFSET   (0x0)    /* Data register  */
+> > > > @@ -141,37 +142,37 @@ static void xgpio_set_multiple(struct
+> > > > gpio_chip *gc, unsigned long *mask,  {
+> > > >       unsigned long flags;
+> > > >       struct xgpio_instance *chip = gpiochip_get_data(gc);
+> > > > -     int index = xgpio_index(chip, 0);
+> > > > -     int offset, i;
+> > > > -
+> > > > -     spin_lock_irqsave(&chip->gpio_lock[index], flags);
+> > > > -
+> > > > -     /* Write to GPIO signals */
+> > > > -     for (i = 0; i < gc->ngpio; i++) {
+> > > > -             if (*mask == 0)
+> > > > -                     break;
+> > > > -             /* Once finished with an index write it out to the register */
+> > > > -             if (index !=  xgpio_index(chip, i)) {
+> > > > -                     xgpio_writereg(chip->regs + XGPIO_DATA_OFFSET +
+> > > > -                                    index * XGPIO_CHANNEL_OFFSET,
+> > > > -                                    chip->gpio_state[index]);
+> > > > -                     spin_unlock_irqrestore(&chip->gpio_lock[index], flags);
+> > > > -                     index =  xgpio_index(chip, i);
+> > > > -                     spin_lock_irqsave(&chip->gpio_lock[index], flags);
+> > > > -             }
+> > > > -             if (__test_and_clear_bit(i, mask)) {
+> > > > -                     offset =  xgpio_offset(chip, i);
+> > > > -                     if (test_bit(i, bits))
+> > > > -                             chip->gpio_state[index] |= BIT(offset);
+> > > > -                     else
+> > > > -                             chip->gpio_state[index] &= ~BIT(offset);
+> > > > -             }
+> > > > -     }
+> > > > -
+> > > > -     xgpio_writereg(chip->regs + XGPIO_DATA_OFFSET +
+> > > > -                    index * XGPIO_CHANNEL_OFFSET, chip->gpio_state[index]);
+> > > > -
+> > > > -     spin_unlock_irqrestore(&chip->gpio_lock[index], flags);
+> > > > +     u32 *const state = chip->gpio_state;
+> > > > +     unsigned int *const width = chip->gpio_width;
+> > > > +
+> > > > +     DECLARE_BITMAP(old, 64);
+> > > > +     DECLARE_BITMAP(new, 64);
+> > > > +     DECLARE_BITMAP(changed, 64);
+> > > > +
+> > > > +     spin_lock_irqsave(&chip->gpio_lock[0], flags);
+> > > > +     spin_lock(&chip->gpio_lock[1]);
+> > > > +
+> > > > +     bitmap_set_value(old, 64, state[0], width[0], 0);
+> > > > +     bitmap_set_value(old, 64, state[1], width[1], width[0]);
+> > > > +     bitmap_replace(new, old, bits, mask, gc->ngpio);
+> > > > +
+> > > > +     bitmap_set_value(old, 64, state[0], 32, 0);
+> > > > +     bitmap_set_value(old, 64, state[1], 32, 32);
+> > > > +     state[0] = bitmap_get_value(new, 0, width[0]);
+> > > > +     state[1] = bitmap_get_value(new, width[0], width[1]);
+> > > > +     bitmap_set_value(new, 64, state[0], 32, 0);
+> > > > +     bitmap_set_value(new, 64, state[1], 32, 32);
+> > > > +     bitmap_xor(changed, old, new, 64);
+> > > > +
+> > > > +     if (((u32 *)changed)[0])
+> > > > +             xgpio_writereg(chip->regs + XGPIO_DATA_OFFSET,
+> > > > +                             state[0]);
+> > > > +     if (((u32 *)changed)[1])
+> > > > +             xgpio_writereg(chip->regs + XGPIO_DATA_OFFSET +
+> > > > +                             XGPIO_CHANNEL_OFFSET, state[1]);
+> > > > +
+> > > > +     spin_unlock(&chip->gpio_lock[1]);
+> > > > +     spin_unlock_irqrestore(&chip->gpio_lock[0], flags);
+> > > >  }
+> > > >
+> > > >  /**
+> > > >
+> > >
+> > > Srinivas N: Can you please test this code?
+> > >
+> > > Thanks,
+> > > Michal
 > >
-> >         mutex_unlock(&priv->mm_lock);
+> > Hey, any chance of getting that Tested-by?
+> I tested patches with few modifications in code (spin_lock handling and merge conflict).
+> functionality wise it's working fine.
+>
 > >
-> > -       if (freed > 0)
-> > +       if (freed > 0) {
-> >                 trace_msm_gem_purge(freed << PAGE_SHIFT);
-> > +       } else {
-> > +               return SHRINK_STOP;
-> > +       }
->
-> It probably doesn't matter, but I wonder if we should still be
-> returning SHRINK_STOP if we got any trylock failures. It could
-> possibly be worth returning 0 in that case?
+> > Bart
 
-On the surface, you'd think that, but there be mm dragons.. we can hit
-shrinker from the submit path when the obj is locked already and we
-are trying to allocate backing pages.  We don't want to tell vmscan to
-keep trying, because we'll keep failing to grab that objects lock
+Hi Bartosz,
 
->
-> > @@ -75,6 +66,9 @@ vmap_shrink(struct list_head *mm_list)
-> >         unsigned unmapped = 0;
-> >
-> >         list_for_each_entry(msm_obj, mm_list, mm_list) {
-> > +               /* Use trylock, because we cannot block on a obj that
-> > +                * might be trying to acquire mm_lock
-> > +                */
->
-> If you end up changing the commenting style above, should also be here.
->
-> At this point this seems fine to land to me. Though I'm not an expert
-> on every interaction in this code, I've spent enough time starting at
-> it that I'm comfortable with:
->
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+May I please know the URL of the tree that you are using. I had been
+using the tree below for submitting this patchset on GPIO to you.
+https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-gpio.git
 
-thanks
+I think I am using the wrong tree. On which tree should I base my
+patches on for my next  (v4) submission? Should I use the tree below?
+:
+https://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git
 
-BR,
--R
+Regards
+Syed Nayyar Waris
