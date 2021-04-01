@@ -2,117 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B920E351F14
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF30D351F18
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237803AbhDASwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:52:49 -0400
-Received: from mga07.intel.com ([134.134.136.100]:4759 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239215AbhDASkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:40:05 -0400
-IronPort-SDR: kGV+xrUfzUcRU90RmrdOurEym6yVXlsqiPPviIJFOq+OU1buPeQ6KYYFPJuoJCm9sJ8uCihQuZ
- ghmvOqhtNMhQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="256291142"
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="256291142"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 11:40:05 -0700
-IronPort-SDR: eWJiAyfh1NywKgKGQy4LN84mDTgDltrSsyqUzMOQRtWXWhguJHFj/WfnYXRaETLkn2up+Tx6Ja
- ubRtN+B4wHMg==
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="611024852"
-Received: from pzlai-mobl.amr.corp.intel.com (HELO [10.213.169.242]) ([10.213.169.242])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 11:40:04 -0700
-Subject: Re: [PATCH RESEND 0/3] x86/sgx: eextend ioctl
-To:     Raoul Strackx <raoul.strackx@fortanix.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <9688abee-6ba7-e1d9-701e-a5cabac36269@fortanix.com>
- <c7b19652-3b5a-e864-1e0e-3e3d26944398@intel.com>
- <ece49a38-c84d-dba7-6039-b409511e7303@fortanix.com>
- <0498080e-6fdc-ed6d-8efa-d9c3265fe7e5@intel.com>
- <9d15aae0-078a-ed72-6c14-155cd1bf27c5@fortanix.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <247ffbee-0ef6-1b6f-75aa-2dc06df42d5d@intel.com>
-Date:   Thu, 1 Apr 2021 11:40:04 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S235992AbhDASxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:53:07 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:41004 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239423AbhDASkZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:40:25 -0400
+Received: from [192.168.254.32] (unknown [47.187.194.202])
+        by linux.microsoft.com (Postfix) with ESMTPSA id BDFDF20ABC25;
+        Thu,  1 Apr 2021 11:40:24 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BDFDF20ABC25
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1617302425;
+        bh=SOlvCGNF2qL5Q3qgj9PLqYCmEQf62InHHijTjNlIusI=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=PnrhJu9LCcT59AvJiHeY+krR88BIg5ss+Vm+tOQZcJ+rklhu2M8B38Qvj5bnMgCyT
+         O66WxUU29Ta/gNMB+kWtkN6uCu+FU0EsFnFIlSy4xbDWNI6nMkQK+F3EhHOft3iAmO
+         zx7iV8lXhO2Y5OLAwpQgTmfPaGhtpV7VcF9PFkeg=
+Subject: Re: [RFC PATCH v1 3/4] arm64: Detect FTRACE cases that make the stack
+ trace unreliable
+To:     Mark Brown <broonie@kernel.org>
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <77bd5edeea72d44533c769b1e8c0fea7a9d7eb3a>
+ <20210330190955.13707-1-madvenka@linux.microsoft.com>
+ <20210330190955.13707-4-madvenka@linux.microsoft.com>
+ <20210401142759.GJ4758@sirena.org.uk>
+ <0bece48b-5fee-2bd1-752e-66d2b89cc5ad@linux.microsoft.com>
+ <20210401182810.GO4758@sirena.org.uk>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <2a56fe4b-9929-0d8b-aa49-c2b1c1b82b79@linux.microsoft.com>
+Date:   Thu, 1 Apr 2021 13:40:23 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <9d15aae0-078a-ed72-6c14-155cd1bf27c5@fortanix.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210401182810.GO4758@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/1/21 10:49 AM, Raoul Strackx wrote:
-> On 4/1/21 6:11 PM, Dave Hansen wrote:
->> On 4/1/21 7:56 AM, Raoul Strackx wrote:
->>> SOLUTION OF THIS PATCH
->>> This patch adds a new ioctl to enable userspace to execute EEXTEND leaf 
->>> functions per 256 bytes of enclave memory. This enables enclaves to be 
->>> build as specified by enclave providers.
->> I think tying the user ABI to the SGX architecture this closely is a
->> mistake.
->>
->> Do we need another ioctl() or can we just relax the existing add_pages
->> ioctl() to allow unaligned addresses?
->>
-> I've considered this. In order to do an EEXTEND without an EADD, we'd
-> need to add a flag DONT_ADD_PAGES flag to `add_pages` ioctl as well. Two
-> separate ioctls, one for adding, another for extending made more sense
-> to me.
 
-So, we're talking here about pages that have been EEADDED, but for which
-we do not want to include the entire contents of the page?  Do these
-contents always include the beginning of the page, or can the holes be
-anywhere?
+
+On 4/1/21 1:28 PM, Mark Brown wrote:
+> On Thu, Apr 01, 2021 at 12:43:25PM -0500, Madhavan T. Venkataraman wrote:
+> 
+>>>> +#ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
+>>>> +	{ (unsigned long) &ftrace_graph_call, 0 },
+>>>> +#ifdef CONFIG_FUNCTION_GRAPH_TRACER
+>>>> +	{ (unsigned long) ftrace_graph_caller, 0 },
+> 
+>>> It's weird that we take the address of ftrace_graph_call but not the
+>>> other functions - we should be consistent or explain why.  It'd probably
+>>> also look nicer to not nest the ifdefs, the dependencies in Kconfig will
+>>> ensure we only get things when we should.
+> 
+>> I have explained it in the comment in the FTRACE trampoline right above
+>> ftrace_graph_call().
+> 
+> Ah, right - it's a result of it being an inner label.  I'd suggest
+> putting a brief note right at that line of code explaining this (eg,
+> "Inner label, not a function"), it wasn't confusing due to the use of
+> that symbol but rather due to it being different from everything else
+> in the list and that's kind of lost in the main comment.
+> 
+
+OK, So, I will add a note in the main comment above the list. I will add the
+comment line you have suggested at the exact line.
+
+>> So, it is only defined if CONFIG_FUNCTION_GRAPH_TRACER is defined. I can address
+>> this as well as your comment by defining another label whose name is more meaningful
+>> to our use:
+> 
+>> +SYM_INNER_LABEL(ftrace_trampoline, SYM_L_GLOBAL) // checked by the unwinder
+>> #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+>> SYM_INNER_LABEL(ftrace_graph_call, SYM_L_GLOBAL) // ftrace_graph_caller();
+>>         nop                             // If enabled, this will be replaced
+>>                                         // "b ftrace_graph_caller"
+>> #endif
+> 
+> I'm not sure we need to bother with that, you'd still need the & I think.
+
+I think we need to bother with that. If CONFIG_FUNCTION_GRAPH_TRACER is not on but
+CONFIG_DYNAMIC_FTRACE_WITH_REGS is, then ftrace_graph_call() will not occur in the stack
+trace taken from a tracer function. The unwinder still needs to recognize an ftrace frame.
+I don't want to assume ftrace_common_return which is the label that currently follows
+the above code. So, we need a different label outside the above ifdef.
+
+As for the &, I needed it because ftrace_graph_call is currently defined elsewhere as:
+
+extern unsigned long ftrace_graph_call;
+
+I did not want to change that.
+
+Thanks,
+
+Madhavan
+
