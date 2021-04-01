@@ -2,142 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1718350FE4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 09:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2225350FE5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 09:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233476AbhDAHKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 03:10:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50088 "EHLO mail.kernel.org"
+        id S233406AbhDAHLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 03:11:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229850AbhDAHKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 03:10:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 55F3660FEF;
-        Thu,  1 Apr 2021 07:10:07 +0000 (UTC)
+        id S233050AbhDAHKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 03:10:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB99C60FEF;
+        Thu,  1 Apr 2021 07:10:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617261008;
-        bh=QIf5mgQ42j36vldjH9A5iJlCOIvsFsU9/pGT+bmlJzQ=;
+        s=korg; t=1617261051;
+        bh=hBCvfn9cBUbVyzPwPTGBx2KYC5IfCBRbGy9L4ghZ9OM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GCUgT57uil/6iDaWEF9gZ7ILDB953G7uePa86DPIggwvl5sOVAoGMaZW9QwK7DxHT
-         +eAufu4LcqCgTMPwKjX0QQpOvXFExuW/EryaPExD5Fu56JbhNxGZ7wzXAXo0dOn2Xo
-         WzOAqfVSjnHV+2ckvUCVPC0r5h1VoeOx3j7vwbkA=
-Date:   Thu, 1 Apr 2021 09:10:05 +0200
+        b=aQTjaYBJax7KP/2dDcsHaNkxu/lMlHSajkGO2BqfGEpxDExN2mQCzP/g7SAV//Bfb
+         e4itHXKo7lRZe924aKQUJ46iUROgZ3TU78uIexKShsceXrwegin5p6HhASrQMQGl0C
+         IDl+DQjTCCfzgG95CzTHt8M2QzHP48I+KRA5HFUQ=
+Date:   Thu, 1 Apr 2021 09:10:48 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
-        Adam Nichols <adam@grimm-co.com>,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] sysfs: Unconditionally use vmalloc for buffer
-Message-ID: <YGVxzSH8fV9MwBDM@kroah.com>
-References: <20210401022145.2019422-1-keescook@chromium.org>
- <YGVXSFMlvX4RQI8n@kroah.com>
- <202103312335.25EA9650@keescook>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     George Zhang <georgezhang@vmware.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] misc: vmw_vmci: initialize payload passed to
+ vmci_send_datagram()
+Message-ID: <YGVx+A7VyV7LVLPW@kroah.com>
+References: <20210401055747.3820-1-penguin-kernel@I-love.SAKURA.ne.jp>
+ <YGVlnbTIVsps8FeJ@kroah.com>
+ <29011e79-edb4-35ce-10ab-6d0fd5fd2ec5@i-love.sakura.ne.jp>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202103312335.25EA9650@keescook>
+In-Reply-To: <29011e79-edb4-35ce-10ab-6d0fd5fd2ec5@i-love.sakura.ne.jp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 11:52:20PM -0700, Kees Cook wrote:
-> On Thu, Apr 01, 2021 at 07:16:56AM +0200, Greg Kroah-Hartman wrote:
-> > On Wed, Mar 31, 2021 at 07:21:45PM -0700, Kees Cook wrote:
-> > > The sysfs interface to seq_file continues to be rather fragile
-> > > (seq_get_buf() should not be used outside of seq_file), as seen with
-> > > some recent exploits[1]. Move the seq_file buffer to the vmap area
-> > > (while retaining the accounting flag), since it has guard pages that
-> > > will catch and stop linear overflows. This seems justified given that
-> > > sysfs's use of seq_file already uses kvmalloc(), is almost always using
-> > > a PAGE_SIZE or larger allocation, has normally short-lived allocations,
-> > > and is not normally on a performance critical path.
-> > > 
-> > > Once seq_get_buf() has been removed (and all sysfs callbacks using
-> > > seq_file directly), this change can also be removed.
-> > > 
-> > > [1] https://blog.grimm-co.com/2021/03/new-old-bugs-in-linux-kernel.html
-> > > 
-> > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > ---
-> > > v3:
-> > > - Limit to only sysfs (instead of all of seq_file).
-> > > v2: https://lore.kernel.org/lkml/20210315174851.622228-1-keescook@chromium.org/
-> > > v1: https://lore.kernel.org/lkml/20210312205558.2947488-1-keescook@chromium.org/
-> > > ---
-> > >  fs/sysfs/file.c | 23 +++++++++++++++++++++++
-> > >  1 file changed, 23 insertions(+)
-> > > 
-> > > diff --git a/fs/sysfs/file.c b/fs/sysfs/file.c
-> > > index 9aefa7779b29..70e7a450e5d1 100644
-> > > --- a/fs/sysfs/file.c
-> > > +++ b/fs/sysfs/file.c
-> > > @@ -16,6 +16,7 @@
-> > >  #include <linux/mutex.h>
-> > >  #include <linux/seq_file.h>
-> > >  #include <linux/mm.h>
-> > > +#include <linux/vmalloc.h>
-> > >  
-> > >  #include "sysfs.h"
-> > >  
-> > > @@ -32,6 +33,25 @@ static const struct sysfs_ops *sysfs_file_ops(struct kernfs_node *kn)
-> > >  	return kobj->ktype ? kobj->ktype->sysfs_ops : NULL;
-> > >  }
-> > >  
-> > > +/*
-> > > + * To be proactively defensive against sysfs show() handlers that do not
-> > > + * correctly stay within their PAGE_SIZE buffer, use the vmap area to gain
-> > > + * the trailing guard page which will stop linear buffer overflows.
-> > > + */
-> > > +static void *sysfs_kf_seq_start(struct seq_file *sf, loff_t *ppos)
-> > > +{
-> > > +	struct kernfs_open_file *of = sf->private;
-> > > +	struct kernfs_node *kn = of->kn;
-> > > +
-> > > +	WARN_ON_ONCE(sf->buf);
+On Thu, Apr 01, 2021 at 03:53:02PM +0900, Tetsuo Handa wrote:
+> On 2021/04/01 15:18, Greg Kroah-Hartman wrote:
+> > On Thu, Apr 01, 2021 at 02:57:47PM +0900, Tetsuo Handa wrote:
+> >> KMSAN complains that the vmci_use_ppn64() == false path in
+> >> vmci_dbell_register_notification_bitmap() left upper 32bits of
+> >> bitmap_set_msg.bitmap_ppn64 member uninitialized.
+> >>
+> >> KMSAN also complains that vmci_check_host_caps() left the payload part
+> >> of check_msg uninitialized.
+> >>
 > > 
-> > How can buf ever not be NULL?  And if it is, we will leak memory in the
-> > next line so we shouldn't have _ONCE, we should always know, but not
-> > rebooting the machine would be nice.
+> > What commit does this "fix"?  Can you resend with a proper "Fixes:" tag
+> > so we know where it needs to be backported to?
 > 
-> It should never be possible. I did this because seq_file has some
-> unusual buf allocation patterns in the kernel, and I liked the cheap
-> leak check. I use _ONCE because spewing endlessly doesn't help most
-> cases. And if you want to trigger it again, you don't have to reboot:
-> https://www.kernel.org/doc/html/latest/admin-guide/clearing-warn-once.html
-
-True, I was thinking of the panic-on-warn people, and the hesitation of
-adding new WARN_ON() to the kernel code.  If this really can happen,
-shouldn't we handle it properly?
-
-> > > +	sf->buf = __vmalloc(kn->attr.size, GFP_KERNEL_ACCOUNT);
-> > > +	if (!sf->buf)
-> > > +		return ERR_PTR(-ENOMEM);
-> > > +	sf->size = kn->attr.size;
-> > > +
-> > > +	return NULL + !*ppos;
-> > > +}
-> > 
-> > Will this also cause the vmalloc fragmentation/abuse that others have
-> > mentioned as userspace can trigger this?
+> It seems that this problem exists since the introduction.
 > 
-> If I understood the concern correctly, it was about it being a risk for
-> doing it for all seq_file uses. This version confines the changes to only
-> sysfs seq_file uses.
-
-There are a few sysfs files that userspace can read from out there :)
-
-> > And what code frees it?
+>   commit 83e2ec765be03e8a8a07619e65df70b48a1db023
+>   Author: George Zhang <georgezhang@vmware.com>
+>   Date:   Tue Jan 8 15:53:51 2013 -0800
+>   
+>       VMCI: doorbell implementation.
+>   
+>   commit 1f166439917b69d3046e2e49fe923579d9181212
+>   Author: George Zhang <georgezhang@vmware.com>
+>   Date:   Tue Jan 8 15:55:32 2013 -0800
+>   
+>       VMCI: guest side driver implementation.
 > 
-> The existing hooks to seq_release() handle this already. This kind of
-> "preallocation" of the seq_file buffer is done in a few places already
-> (hence my desire for the sanity checking WARN lest future seq_file
-> semantics change).
+> But this patch should be safe to backport to as old as possible, for
+> this patch is merely explicitly initializing variables.
 
-Ah, "magic", gotta love it...
+Great, can you please resend with the Fixes: tag and a cc: stable in the
+signed-off-by area as well when you resend these as a 2 patch series?
 
 thanks,
 
