@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B963F3513C9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 12:42:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71A8C3513D2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 12:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233702AbhDAKle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 06:41:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42852 "EHLO
+        id S233946AbhDAKn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 06:43:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20032 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232565AbhDAKlF (ORCPT
+        by vger.kernel.org with ESMTP id S233780AbhDAKn5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 06:41:05 -0400
+        Thu, 1 Apr 2021 06:43:57 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617273664;
+        s=mimecast20190719; t=1617273836;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=CbaTvFT9jV915Hh2tSzMnC9qOGARRNTOWV6YJrRhpRs=;
-        b=DnUPfSHo/3dvAN77RpHLun8eQe3UBJIdnK0tcoTHkmclc4AVZv1F5XmaU+KwrlYBsBzpph
-        UZ2tRA0hWM2CZneW6+FROC8zGaf/Pm6+P/I5GmgecYJ4OxL/O6oDnAgEAwQ0EbVRKcsfQE
-        r922ySjChglUBsbPNB/t8x78YzToAbM=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-220-5VfAc2lTM1OtSR0wFH42Vw-1; Thu, 01 Apr 2021 06:41:03 -0400
-X-MC-Unique: 5VfAc2lTM1OtSR0wFH42Vw-1
-Received: by mail-wr1-f72.google.com with SMTP id n16so2539300wro.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 03:41:03 -0700 (PDT)
+        bh=06eBF4o9d28G+6vg65LbOreOw6UgB9u15+hd9KC5gTQ=;
+        b=YMwEcccAYCXnRB+WD0F3+sU2GzRgz+Ltzlt4r02UdXsJK5MfgWyhLgYtttyapbuMO8Q2qi
+        Q5ZVdsOC5lZvDx1/ayypE6tAqOjKOvcZ6CAjE7gwhuenNTEBXA5/NugBRkO59LW8Wk4ZcI
+        6uH1QYmHbggOdIegu+DachoVesuKvjU=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-299-zASO8NqRMmehQ8Pdq_u5YA-1; Thu, 01 Apr 2021 06:43:55 -0400
+X-MC-Unique: zASO8NqRMmehQ8Pdq_u5YA-1
+Received: by mail-ej1-f69.google.com with SMTP id t21so2038490ejf.14
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 03:43:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=CbaTvFT9jV915Hh2tSzMnC9qOGARRNTOWV6YJrRhpRs=;
-        b=OPrsk9TUhTvu0PkPW61TTMGs8tnLD3gt5kJqw/xrvgmjPbAWeOzwjeOZ2DU2Y2ACFF
-         eK4royxJbTEcSQRCfl8gxnmHCy99WvXQhoELgKR7E9F+tHm4SGIQ7oWps4+clDhf3Wad
-         hwmAQ7J561+jQAkcqXMplRmn6Pvecr1yzH8Sn4qp7WEdOTX7qza64Vj5oUUkQOupSGs7
-         Hnvet0T3UKUrkdPbooJyh1nPxpwjCfqK/VhrfWPC8UeAX+EfdcvTiRLFPmNRd/I5kF6C
-         KKHhBNIgiWR7wBNAzqRa+fTAABDJdZlQRMFvijDKSB8yPUvGviHiHe3msEvTlkuyug5e
-         k/XQ==
-X-Gm-Message-State: AOAM532anxtyJuVf9DVY604YQJV/9FiLtWSs7qI9/CFvdbbbH+yYL1AK
-        +6ald/p8UramTuesm8+lY2SItTN4KPszF+IuWzEwQe3hooF7KTsbgkfvNhcOfdzTw6fwZ+fu/Mz
-        k5V4cL9vBbzQL+wVpICoM3Ib3
-X-Received: by 2002:a5d:4582:: with SMTP id p2mr8757243wrq.34.1617273662151;
-        Thu, 01 Apr 2021 03:41:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwsj33kTXQgfYY9muxulNGXdA3guJ/A5QPfb4dIyEUtaXTPvlUwaH3PhUPRfj3yFTOi1zGcSg==
-X-Received: by 2002:a5d:4582:: with SMTP id p2mr8757224wrq.34.1617273661994;
-        Thu, 01 Apr 2021 03:41:01 -0700 (PDT)
+        bh=06eBF4o9d28G+6vg65LbOreOw6UgB9u15+hd9KC5gTQ=;
+        b=D6D/QCO+VbMKi+a2+MWJtN9DZpxk3cZlNS053Gtjc5Hs4wpHaZKxPg0yw/YB9ZYmS0
+         yi8GiV/DOLdrYYoz23kkI3qN2o4k5+AahlXJbL0CqYPnUux4KmlcuDOSAVoL+vHBOiMr
+         1g1u097eW9rFVxwL2ivdgWLrFQ4Nu9yrQSL72J+Co0FLk3O/89dJEOEwiGngvN+eUkoa
+         Df6QPaBoZ6PXVBl0qQ4dQwXa926WVOv+WUhFkK921XeSYK2lFy3TgO311xVGlrT5x95R
+         lAfXyMF8NYMEOPoBiEaKEWR5lKuW//o4dAP8K2xblPqIL0wtlV8VePO89P3jfw4wh4qx
+         sTow==
+X-Gm-Message-State: AOAM532aa+RmjZcwVObb/RKNpHtpUvmcl4dgRFFtyZO/FEBBXX29Axiq
+        PFdzZ716p8f3SevBl9ueM41z0CDdcejqOnowH51/4NhXexJYP7c/PrXMprbOYCl356J/64+m8jw
+        tgxmZ9Y2rnoGzOc37oD1nkNOP
+X-Received: by 2002:a05:6402:35c9:: with SMTP id z9mr9100003edc.94.1617273834230;
+        Thu, 01 Apr 2021 03:43:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyaEuHHzciANwnLmu0x2hIKZoVzKLp+pSGWi/TjhOef41m8Xy6dIdyT4us53vS/TpmgrvFbJw==
+X-Received: by 2002:a05:6402:35c9:: with SMTP id z9mr9099988edc.94.1617273834091;
+        Thu, 01 Apr 2021 03:43:54 -0700 (PDT)
 Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id u20sm9714996wru.6.2021.04.01.03.41.00
+        by smtp.gmail.com with ESMTPSA id la15sm2574423ejb.46.2021.04.01.03.43.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Apr 2021 03:41:01 -0700 (PDT)
-Subject: Re: [PATCH 13/13] KVM: x86/mmu: Tear down roots in fast invalidation
- thread
-To:     Sean Christopherson <seanjc@google.com>,
-        Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Thu, 01 Apr 2021 03:43:53 -0700 (PDT)
+Subject: Re: [PATCH 00/13] More parallel operations for the TDP MMU
+To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
         Peter Feiner <pfeiner@google.com>,
         Junaid Shahid <junaids@google.com>,
         Jim Mattson <jmattson@google.com>,
@@ -66,14 +66,13 @@ Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
         Vitaly Kuznetsov <vkuznets@redhat.com>,
         Xiao Guangrong <xiaoguangrong.eric@gmail.com>
 References: <20210331210841.3996155-1-bgardon@google.com>
- <20210331210841.3996155-14-bgardon@google.com> <YGT31GoDhVSXlgP4@google.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <ca227500-9fe9-0600-065c-70e02916488f@redhat.com>
-Date:   Thu, 1 Apr 2021 12:41:00 +0200
+Message-ID: <880ebe32-2ea5-6369-be2c-ce5d93746292@redhat.com>
+Date:   Thu, 1 Apr 2021 12:43:52 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <YGT31GoDhVSXlgP4@google.com>
+In-Reply-To: <20210331210841.3996155-1-bgardon@google.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -81,18 +80,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/04/21 00:29, Sean Christopherson wrote:
->> +	if (is_tdp_mmu_enabled(kvm)) {
->> +		read_lock(&kvm->mmu_lock);
->> +		kvm_tdp_mmu_zap_all_fast(kvm);
-> Purely because it exists first, I think we should follow the legacy MMU's
-> terminology, i.e. kvm_tdp_mmu_zap_obsolete_pages().
+On 31/03/21 23:08, Ben Gardon wrote:
+> Now that the TDP MMU is able to handle page faults in parallel, it's a
+> relatively small change to expand to other operations. This series allows
+> zapping a range of GFNs, reclaiming collapsible SPTEs (when disabling
+> dirty logging), and enabling dirty logging to all happen under the MMU
+> lock in read mode.
 > 
+> This is partly a cleanup + rewrite of the last few patches of the parallel
+> page faults series. I've incorporated feedback from Sean and Paolo, but
+> the patches have changed so much that I'm sending this as a separate
+> series.
+> 
+> Ran kvm-unit-tests + selftests on an SMP kernel + Intel Skylake, with the
+> TDP MMU enabled and disabled. This series introduces no new failures or
+> warnings.
+> 
+> I know this will conflict horribly with the patches from Sean's series
+> which were just queued, and I'll send a v2 to fix those conflicts +
+> address any feedback on this v1.
 
-It's a bit different, obsolete pages in kvm_zap_obsolete_pages have an 
-old mmu_valid_gen.  They are not invalid, so it is inaccurate to talk 
-about obsolete pages in the context of the TDP MMU.  But I agree that 
-the function should be renamed.
+Mostly looks good (the only substantial remark is from Sean's reply to 
+patch 7); I've made a couple adjustments to the patches I had queued to 
+ease the fixing of conflicts.  The patches should hit kvm/queue later 
+today, right after I send my 5.11 pull request to Linus.
+
+I have also just sent a completely unrelated remark on the existing page 
+fault function, which was prompted by reviewing these patches.  If you 
+agree, I can take care of the change or you can include it in v2, as you 
+prefer (I don't expect conflicts).
 
 Paolo
 
