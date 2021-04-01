@@ -2,77 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A67335102B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 09:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A2A35102E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 09:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233371AbhDAHgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 03:36:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46608 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232951AbhDAHfm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 03:35:42 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 78C66AF32;
-        Thu,  1 Apr 2021 07:35:41 +0000 (UTC)
-Date:   Thu, 1 Apr 2021 09:35:40 +0200
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-Cc:     "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Hannes Reinecke <hare@suse.de>,
-        Chao Leng <lengchao@huawei.com>,
-        Victor Gladkov <Victor.Gladkov@kioxia.com>
-Subject: Re: [PATCH] nvme: Export fast_io_fail_tmo to sysfs
-Message-ID: <20210401073540.6tsv2ib3fapnglqo@beryllium.lan>
-References: <20210331131228.131118-1-dwagner@suse.de>
- <BYAPR04MB49658F0DDA22B253F98C6F3A867C9@BYAPR04MB4965.namprd04.prod.outlook.com>
+        id S233438AbhDAHgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 03:36:38 -0400
+Received: from thorn.bewilderbeest.net ([71.19.156.171]:39095 "EHLO
+        thorn.bewilderbeest.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233379AbhDAHgX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 03:36:23 -0400
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20::7c6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 52C8C8C;
+        Thu,  1 Apr 2021 00:36:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1617262574;
+        bh=B3O9cEE/x7yQOH3OCzBfuz/r90ljyAx9qgSdSAUBQeg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=C6N3FcwA7Id76ASk9cp4pGQ/ND/WQGbdAlIE2LuJdb68naJSLZ7qYJ/XbnoQstgtt
+         xTa2QgbpBg4DvpayDCbLB54CIq3bTjSQQ6zcFkFUKeSHHTO+CIwNuFQdsKvqj/BUK7
+         yr22HupdBi6ZVCWCAO6kxXZftOwKlcz0EeoIf9NM=
+Date:   Thu, 1 Apr 2021 02:36:11 -0500
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     Joel Stanley <joel@jms.id.au>, Jeremy Kerr <jk@ozlabs.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] drivers/tty/serial/8250: add DT property for
+ aspeed vuart sirq polarity
+Message-ID: <YGV368K00FHSj5aY@hatter.bewilderbeest.net>
+References: <YGOuhjD19SmjmQou@hatter.bewilderbeest.net>
+ <20210401005702.28271-1-zev@bewilderbeest.net>
+ <20210401005702.28271-3-zev@bewilderbeest.net>
+ <CACPK8XdPVf1WMmo8C8RJtd-1cH5qV9odEDhDUHWRiMOk=dQNtg@mail.gmail.com>
+ <YGVXuyqOyxc8kcQz@hatter.bewilderbeest.net>
+ <06aee58f-819b-4486-a5ea-22e6d45e2be5@beta.fastmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <BYAPR04MB49658F0DDA22B253F98C6F3A867C9@BYAPR04MB4965.namprd04.prod.outlook.com>
+In-Reply-To: <06aee58f-819b-4486-a5ea-22e6d45e2be5@beta.fastmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chaitanya,
+On Thu, Apr 01, 2021 at 12:34:04AM CDT, Andrew Jeffery wrote:
+>
+>
+>On Thu, 1 Apr 2021, at 15:48, Zev Weiss wrote:
+>> On Wed, Mar 31, 2021 at 11:15:44PM CDT, Joel Stanley wrote:
+>> >On Thu, 1 Apr 2021 at 00:57, Zev Weiss <zev@bewilderbeest.net> wrote:
+>> >>
+>> >> This provides a simple boolean to use instead of the deprecated
+>> >> aspeed,sirq-polarity-sense property.
+>> >>
+>> >> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+>> >> ---
+>> >>  drivers/tty/serial/8250/8250_aspeed_vuart.c | 3 +++
+>> >>  1 file changed, 3 insertions(+)
+>> >>
+>> >> diff --git a/drivers/tty/serial/8250/8250_aspeed_vuart.c b/drivers/tty/serial/8250/8250_aspeed_vuart.c
+>> >> index c33e02cbde93..e5ef9f957f9a 100644
+>> >> --- a/drivers/tty/serial/8250/8250_aspeed_vuart.c
+>> >> +++ b/drivers/tty/serial/8250/8250_aspeed_vuart.c
+>> >> @@ -482,6 +482,9 @@ static int aspeed_vuart_probe(struct platform_device *pdev)
+>> >>                 of_node_put(sirq_polarity_sense_args.np);
+>> >>         }
+>> >>
+>> >> +       if (of_property_read_bool(np, "aspeed,sirq-active-high"))
+>> >> +               aspeed_vuart_set_sirq_polarity(vuart, 1);
+>> >
+>> >This assumes the default is always low, so we don't need a property to
+>> >set it to that state?
+>> >
+>> >Would it make more sense to have the property describe if it's high or
+>> >low? (I'm happy for the answer to be "no", as we've gotten by for the
+>> >past few years without it).
+>> >
+>>
+>> Yeah, that sounds like better way to approach it -- I think I'll
+>> rearrange as Andrew suggested in
+>> https://lore.kernel.org/openbmc/d66753ee-7db2-41e5-9fe5-762b1ab678bc@www.fastmail.com/
+>>
+>> >This brings up another point. We already have the sysfs file for
+>> >setting the lpc address, from userspace. In OpenBMC land this can be
+>> >set with obmc-console-client (/etc/obmc-console.conf). Should we add
+>> >support to that application for setting the irq polarity too, and do
+>> >away with device tree descriptions?
+>> >
+>>
+>> I guess I might lean slightly toward keeping the DT description so that
+>> if for whatever reason obmc-console-server flakes out and doesn't start
+>> you're better positioned to try banging on /dev/ttyS* manually if you're
+>> desperate.  Though I suppose that in turn might imply that I'm arguing
+>> for adding DT properties for lpc_address and sirq too,
+>
+>Why not just adopt exactly what I've done with KCS, where we have aspeed,lpc-io-reg and aspeed,lpc-interrupts?
+>
+>Andrew
 
-On Wed, Mar 31, 2021 at 08:34:31PM +0000, Chaitanya Kulkarni wrote:
-> >   WARNING: Symbolic permissions 'S_IRUGO | S_IWUSR' are not preferred. Consider using octal permissions '0644'.
-> 
-> For now keep the current style.
+Ah -- yes, that does sound like a sensible approach.  I'll send a v3 
+with that worked in.
 
-Okay, I thought so too. I am just wondering if a patch for changing all
-the permission sets is acceptable. I prefer the the octal permissions ;)
 
-> > +static ssize_t nvme_ctrl_fast_io_fail_tmo_show(struct device *dev,
-> > +		struct device_attribute *attr, char *buf)
-> > +{
-> > +	struct nvme_ctrl *ctrl = dev_get_drvdata(dev);
-> > +
-> > +	if (ctrl->opts->fast_io_fail_tmo == -1)
-> > +		return sprintf(buf, "off\n");
-> > +	return sprintf(buf, "%d\n", ctrl->opts->fast_io_fail_tmo);
-> 
-> do we need snprintf() for 2nd ?
+Zev
 
-Sure thing can do. Also here I followed the existing style. The other
-store functions tend to use sprintf().
-
-> > +	err = kstrtoint(buf, 10, &fast_io_fail_tmo);
-> > +	if (err)
-> > +		return -EINVAL;
-> > +
-> 
-> since you are returning an error, you can remove next else if, this also
-> removes the extra line after above return. Something like this on the top
-> of yours totally untested :-
-
-Right, same here, followed the existing style. I prepare a patch which
-addresses your comments for the existing code as well.
-
-Thanks,
-Daniel
