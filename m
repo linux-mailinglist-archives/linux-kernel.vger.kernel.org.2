@@ -2,103 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E4B7350E68
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 07:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CB4E350E6D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 07:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232989AbhDAFYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 01:24:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36040 "EHLO mail.kernel.org"
+        id S232892AbhDAF3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 01:29:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230291AbhDAFYp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 01:24:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24F3960698;
-        Thu,  1 Apr 2021 05:24:41 +0000 (UTC)
+        id S229850AbhDAF3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 01:29:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8EE961055;
+        Thu,  1 Apr 2021 05:29:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617254684;
-        bh=BRPNGHFq9n8qHOWZs3Z9xHbkEAkNiy/Yclwd+wHA1Nw=;
+        s=k20201202; t=1617254975;
+        bh=4PD+/hmJOe6KDN5FqP2OiD2BFsgSpXT4q7TiOZRXfiI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E+wj1eNWvmWW7hOVckRKHD3fCJ0ZqwUYd5wDnWUsHIhKkJz0yAms8iqFdv7b7bS44
-         D/USeu8n+Erqt+I4oiQLgXaF3jMLbMgGSVj/SUgCmwSZ+ba4Yv0F80r0FKgXFEPo0o
-         nxjyXLNjpWR+a+l7Ad9paOjOnytgpW7vV6nZJSeZAezfT/0fpDFFAEMtvtTbNfrr5p
-         hUt6iuZAQ0L6CH2gnDSLPegydhp7OUqkGbMfz8JoVOq+3djuP60zyKP8UeRSh1s6ob
-         n9U9WeJKbgqvJIs82hqQG+g5dziqPKxL7mvvbGX/sa/Jw35LGrh6U5W+t+5IdCcJG+
-         RHCocMiCb1Svg==
-Date:   Thu, 1 Apr 2021 10:54:38 +0530
+        b=sfwJqf3FAxfq4ODvNsQxu+vILMnIHP3toOj6nBHslLccpdJVtR9P9v/5WC+m+8uun
+         LhHLgETE4HuNBlX0eNAjELY9+1O0d89j90QaOgORB4eeyBLJIqmuCy3FBw26dqKrgZ
+         AB4ct5JxC0q5qkIJpwneUS9d/SU1fiJsI3VgMi+mpVEYix9G8Sb7KtgA6W9/CpU+Fa
+         gs/UOEL+K4q+L2Xssi5MBeq+8FZIKyOAj7xqFB1hYdAFy2ExXTZNhAPnVXaOn29WHI
+         JlP66dsMuEIz2LyjDq2zeQ9gpwRpMQIxCTMkGuyYQ1eH+4YRWOoztk45A+JuIyQHoC
+         qpHSz8Tda29rA==
+Date:   Thu, 1 Apr 2021 10:59:29 +0530
 From:   Manivannan Sadhasivam <mani@kernel.org>
 To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 Cc:     Rob Herring <robh+dt@kernel.org>,
         Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/6] Add support for Actions Semi Owl socinfo
-Message-ID: <20210401052438.GB14052@work>
-References: <cover.1617110420.git.cristian.ciocaltea@gmail.com>
+Subject: Re: [PATCH 1/1] arm: dts: owl-s500-roseapplepi: Add ATC2603C PMIC
+Message-ID: <20210401052929.GC14052@work>
+References: <2e0a2931ae3757f016948e7c78e8e54afa325ae0.1615538629.git.cristian.ciocaltea@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1617110420.git.cristian.ciocaltea@gmail.com>
+In-Reply-To: <2e0a2931ae3757f016948e7c78e8e54afa325ae0.1615538629.git.cristian.ciocaltea@gmail.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 04:48:15PM +0300, Cristian Ciocaltea wrote:
-> This patchset adds a socinfo driver which provides information about
-> Actions Semi Owl SoCs to user space via sysfs: machine, family, soc_id,
-> serial_number.
+On Fri, Mar 12, 2021 at 11:49:27AM +0200, Cristian Ciocaltea wrote:
+> Add device tree node for ATC2603C PMIC and remove the 'fixed-3.1V'
+> dummy regulator used for the uSD supply.
 > 
-> Please note the serial number is currently available only for the S500
-> SoC variant.
+> Additionally, add 'SYSPWR' fixed regulator and provide cpu0 supply.
 > 
-> This has been tested on the S500 SoC based RoseapplePi SBC.
-> 
+> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 
-Is this the soc_id provided by the vendor bootloader (uboot)? If so, under
-what basis it provides? I don't think the SoC has the provision for
-soc_id based on HW parameters.
+Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
 
 Thanks,
 Mani
 
-> Thanks,
-> Cristi
+> ---
+> Please note the patch depends on the ATC260x PMIC support which is queued
+> for merging in v5.13:
 > 
-> Changes in v2:
->  - Exposed the memory range for reading the SoC serial number under
->    /reserved-memory DT node, according to Rob's review; as a consequence
->    added a new binding document (actions,owl-soc-serial.yaml) and updated
->    owl-socinfo.yaml
+> https://lore.kernel.org/lkml/cover.1611653995.git.cristian.ciocaltea@gmail.com/
+> https://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git/log/?h=for-mfd-next&qt=range&q=a38fd8748464831584a19438cbb3082b5a2dab15..eac013a0b7041f5cfc8feedf429a767675350102
 > 
->  - Replaced the unportable usage of system_serial_{low,high} globals
->    with a public API to provide external access to SoC serial number
->    parts (e.g. Owl Ethernet MAC driver will use this to generate a
->    stable MAC address)
+>  arch/arm/boot/dts/owl-s500-roseapplepi.dts | 132 ++++++++++++++++++++-
+>  1 file changed, 126 insertions(+), 6 deletions(-)
 > 
->  - Rebased patch series on v5.12-rc5
-> 
-> Cristian Ciocaltea (6):
->   dt-bindings: reserved-memory: Add Owl SoC serial number binding
->   dt-bindings: soc: actions: Add Actions Semi Owl socinfo binding
->   soc: actions: Add Actions Semi Owl socinfo driver
->   arm: dts: owl-s500: Add reserved-memory range for Owl SoC serial
->     number
->   arm: dts: owl-s500: Add socinfo support
->   MAINTAINERS: Add entries for Owl reserved-memory and socinfo bindings
-> 
->  .../actions,owl-soc-serial.yaml               |  53 ++++++
->  .../bindings/soc/actions/owl-socinfo.yaml     |  57 +++++++
->  MAINTAINERS                                   |   2 +
->  arch/arm/boot/dts/owl-s500.dtsi               |  13 +-
->  drivers/soc/actions/Kconfig                   |   8 +
->  drivers/soc/actions/Makefile                  |   1 +
->  drivers/soc/actions/owl-socinfo.c             | 152 ++++++++++++++++++
->  include/linux/soc/actions/owl-serial-number.h |  20 +++
->  8 files changed, 305 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/devicetree/bindings/reserved-memory/actions,owl-soc-serial.yaml
->  create mode 100644 Documentation/devicetree/bindings/soc/actions/owl-socinfo.yaml
->  create mode 100644 drivers/soc/actions/owl-socinfo.c
->  create mode 100644 include/linux/soc/actions/owl-serial-number.h
-> 
+> diff --git a/arch/arm/boot/dts/owl-s500-roseapplepi.dts b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
+> index ff91561ca99c..b8c5db2344aa 100644
+> --- a/arch/arm/boot/dts/owl-s500-roseapplepi.dts
+> +++ b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
+> @@ -2,7 +2,7 @@
+>  /*
+>   * Roseapple Pi
+>   *
+> - * Copyright (C) 2020 Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> + * Copyright (C) 2020-2021 Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+>   */
+>  
+>  /dts-v1/;
+> @@ -27,20 +27,140 @@ memory@0 {
+>  		reg = <0x0 0x80000000>; /* 2GB */
+>  	};
+>  
+> -	/* Fixed regulator used in the absence of PMIC */
+> -	sd_vcc: sd-vcc {
+> +	syspwr: regulator-5v0 {
+>  		compatible = "regulator-fixed";
+> -		regulator-name = "fixed-3.1V";
+> -		regulator-min-microvolt = <3100000>;
+> -		regulator-max-microvolt = <3100000>;
+> +		regulator-name = "SYSPWR";
+> +		regulator-min-microvolt = <5000000>;
+> +		regulator-max-microvolt = <5000000>;
+>  		regulator-always-on;
+>  	};
+>  };
+>  
+> +&cpu0 {
+> +	cpu0-supply = <&vdd_cpu>;
+> +};
+> +
+>  &i2c0 {
+>  	status = "okay";
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&i2c0_pins>;
+> +
+> +	atc260x: pmic@65 {
+> +		compatible = "actions,atc2603c";
+> +		reg = <0x65>;
+> +		interrupt-parent = <&sirq>;
+> +		interrupts = <2 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +		reset-time-sec = <6>;
+> +
+> +		regulators {
+> +			compatible = "actions,atc2603c-regulator";
+> +
+> +			dcdc1-supply = <&syspwr>;
+> +			dcdc2-supply = <&syspwr>;
+> +			dcdc3-supply = <&syspwr>;
+> +			ldo1-supply = <&syspwr>;
+> +			ldo2-supply = <&syspwr>;
+> +			ldo3-supply = <&syspwr>;
+> +			ldo5-supply = <&syspwr>;
+> +			ldo6-supply = <&syspwr>;
+> +			ldo7-supply = <&syspwr>;
+> +			ldo8-supply = <&syspwr>;
+> +			ldo11-supply = <&syspwr>;
+> +			ldo12-supply = <&syspwr>;
+> +			switchldo1-supply = <&vcc>;
+> +
+> +			vdd_cpu: dcdc1 {
+> +				regulator-name = "VDD_CPU";
+> +				regulator-min-microvolt = <700000>;
+> +				regulator-max-microvolt = <1400000>;
+> +				regulator-always-on;
+> +			};
+> +
+> +			vddq: dcdc2 {
+> +				regulator-name = "VDDQ";
+> +				regulator-min-microvolt = <1300000>;
+> +				regulator-max-microvolt = <2150000>;
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +			};
+> +
+> +			vcc: dcdc3 {
+> +				regulator-name = "VCC";
+> +				regulator-min-microvolt = <2600000>;
+> +				regulator-max-microvolt = <3300000>;
+> +				regulator-always-on;
+> +			};
+> +
+> +			vcc_3v3: ldo1 {
+> +				regulator-name = "VCC_3V3";
+> +				regulator-min-microvolt = <2600000>;
+> +				regulator-max-microvolt = <3300000>;
+> +				regulator-always-on;
+> +			};
+> +
+> +			avcc: ldo2 {
+> +				regulator-name = "AVCC";
+> +				regulator-min-microvolt = <2600000>;
+> +				regulator-max-microvolt = <3300000>;
+> +				regulator-always-on;
+> +			};
+> +
+> +			vdd_1v8: ldo3 {
+> +				regulator-name = "VDD_1V8";
+> +				regulator-min-microvolt = <1500000>;
+> +				regulator-max-microvolt = <2000000>;
+> +				regulator-always-on;
+> +			};
+> +
+> +			vcc_3v1: ldo5 {
+> +				regulator-name = "VCC_3V1";
+> +				regulator-min-microvolt = <2600000>;
+> +				regulator-max-microvolt = <3300000>;
+> +			};
+> +
+> +			avdd: ldo6 {
+> +				regulator-name = "AVDD";
+> +				regulator-min-microvolt = <700000>;
+> +				regulator-max-microvolt = <1400000>;
+> +				regulator-always-on;
+> +			};
+> +
+> +			sens_1v8: ldo7 {
+> +				regulator-name = "SENS_1V8";
+> +				regulator-min-microvolt = <1800000>;
+> +				regulator-max-microvolt = <1800000>;
+> +			};
+> +
+> +			ldo8: ldo8 {
+> +				regulator-name = "LDO8";
+> +				regulator-min-microvolt = <2300000>;
+> +				regulator-max-microvolt = <3300000>;
+> +			};
+> +
+> +			svcc: ldo11 {
+> +				regulator-name = "SVCC";
+> +				regulator-min-microvolt = <2600000>;
+> +				regulator-max-microvolt = <3300000>;
+> +				regulator-always-on;
+> +			};
+> +
+> +			rtc_vdd: ldo12 {
+> +				regulator-name = "RTC_VDD";
+> +				regulator-min-microvolt = <1800000>;
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-always-on;
+> +			};
+> +
+> +			sd_vcc: switchldo1 {
+> +				regulator-name = "SD_VCC";
+> +				regulator-min-microvolt = <3000000>;
+> +				regulator-max-microvolt = <3300000>;
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +			};
+> +		};
+> +	};
+>  };
+>  
+>  &i2c1 {
 > -- 
-> 2.31.1
+> 2.30.2
 > 
