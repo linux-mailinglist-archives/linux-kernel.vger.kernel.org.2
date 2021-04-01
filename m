@@ -2,127 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 095DF3511D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F79D3511D8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233700AbhDAJSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 05:18:44 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:12387 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233792AbhDAJSZ (ORCPT
+        id S233327AbhDAJUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 05:20:20 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:15844 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233616AbhDAJUN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 05:18:25 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210401091819epoutp01eb500986bfa7fb13e867d9e3bf55f93f~xsVBMwjFg1184311843epoutp011
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 09:18:19 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210401091819epoutp01eb500986bfa7fb13e867d9e3bf55f93f~xsVBMwjFg1184311843epoutp011
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1617268699;
-        bh=b9IPwcKsm2C3n9PXMZFOeCKKX6wHbwjJy1ULphl8cio=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=ULBVfcaY5Kgerrg1kzft3A/w4oqVquMI+em5/MzgSZ6EUCB8v4jONcA6S6lndW4Yj
-         uVswPSV+hjdJcNleaSBlgegWdsIPETx5psckrT+z+mWkJ/e/1Zd9pFcQbFdfsOlx2T
-         3SZFrqbJW0dfd0fYentCZiXT4InRMus8tRRLW22w=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20210401091819epcas1p4a9a9f94d65f6b73a019fab675ef99f2f~xsVA0Nwbv0415804158epcas1p4V;
-        Thu,  1 Apr 2021 09:18:19 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.159]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4F9yK56pP8z4x9Q9; Thu,  1 Apr
-        2021 09:18:17 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        32.B9.02277.9DF85606; Thu,  1 Apr 2021 18:18:17 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20210401091817epcas1p4d4afc08a87993ff719a16be8647d60f3~xsU-M1gPs0415804158epcas1p4E;
-        Thu,  1 Apr 2021 09:18:17 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210401091817epsmtrp2396429f28f1f3843ab5b2ac0cbb5524c~xsU-L8vgX2156921569epsmtrp2f;
-        Thu,  1 Apr 2021 09:18:17 +0000 (GMT)
-X-AuditID: b6c32a36-4edff700000108e5-9d-60658fd9838d
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        BE.C8.08745.9DF85606; Thu,  1 Apr 2021 18:18:17 +0900 (KST)
-Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210401091817epsmtip290bcb67977fd68ca8c281437dd894131~xsU_9mdDz3106231062epsmtip2a;
-        Thu,  1 Apr 2021 09:18:17 +0000 (GMT)
-From:   "Namjae Jeon" <namjae.jeon@samsung.com>
-To:     "'Muhammad Usama Anjum'" <musamaanjum@gmail.com>
-Cc:     "'Sergey Senozhatsky'" <sergey.senozhatsky@gmail.com>,
-        "'Steve French'" <sfrench@samba.org>,
-        "'Hyunchul Lee'" <hyc.lee@gmail.com>,
-        "'open list:COMMON INTERNET FILE SYSTEM SERVER \(CIFSD\)'" 
-        <linux-cifs@vger.kernel.org>,
-        "'open list:COMMON INTERNET FILE SYSTEM SERVER \(CIFSD\)'" 
-        <linux-cifsd-devel@lists.sourceforge.net>,
-        "'open list'" <linux-kernel@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>, <colin.king@canonical.com>,
-        <dan.carpenter@oracle.com>
-In-Reply-To: <20210401090850.GA2779473@LEGION>
-Subject: RE: [PATCH] cifsd: use kfree to free memory allocated by kmalloc or
- kzalloc
-Date:   Thu, 1 Apr 2021 18:18:17 +0900
-Message-ID: <004601d726d7$f3798310$da6c8930$@samsung.com>
+        Thu, 1 Apr 2021 05:20:13 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F9yJr6SQ4z9s0x;
+        Thu,  1 Apr 2021 17:18:04 +0800 (CST)
+Received: from [10.174.178.174] (10.174.178.174) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 1 Apr 2021 17:20:07 +0800
+Subject: Re: [PATCH -next v2] staging: greybus: camera: Switch to
+ memdup_user_nul()
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-staging@lists.linux.dev>,
+        <johan@kernel.org>, <elder@kernel.org>,
+        <gregkh@linuxfoundation.org>
+References: <20210401031752.2861248-1-yangyingliang@huawei.com>
+ <20210401074332.GO2065@kadam> <20210401074719.GP2065@kadam>
+From:   Yang Yingliang <yangyingliang@huawei.com>
+Message-ID: <b3a9b8ad-30b8-1716-1252-a6796b2c837a@huawei.com>
+Date:   Thu, 1 Apr 2021 17:20:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <20210401074719.GP2065@kadam>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQHE1YfbJKWSfn21hU+sU4uf/CNVewIuWIugqrKR2PA=
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrJJsWRmVeSWpSXmKPExsWy7bCmru7N/tQEg1OLTS1+r+5ls3j9bzqL
-        xbX779kttt6Stnjxfxezxc//3xktLu+aw2axt3Ubo8Xaz4/ZLTpeHmV24PKY1dDL5rFz1l12
-        j90LPjN5fHx6i8Vj7q4+Ro/Pm+QC2KJybDJSE1NSixRS85LzUzLz0m2VvIPjneNNzQwMdQ0t
-        LcyVFPISc1NtlVx8AnTdMnOALlNSKEvMKQUKBSQWFyvp29kU5ZeWpCpk5BeX2CqlFqTkFBga
-        FOgVJ+YWl+al6yXn51oZGhgYmQJVJuRk/Nv+kKXgAFPF7sutzA2MrUxdjJwcEgImEpe2NrCB
-        2EICOxglnl6KhLA/MUrMXxLQxcgFZH9mlNg6ZzsLTMPsc61sEIldjBK/1uxih+h4ySix4oMJ
-        iM0moCvx789+sKkiQA3H73QxgTQwC9xklpjaexRsEqeAnsTFv+8ZQWxhgTCJxxe6mUFsFgEV
-        ia6mPlYQm1fAUmL6rG1QtqDEyZlPwHqZBeQltr+dwwxxkYLEz6fLWCGWWUnsXT0fqkZEYnZn
-        GzPIYgmBHRwSm7vOQf3sIrFxzQYoW1ji1fEt7BC2lMTnd3uBruYAsqslPu6Hmt/BKPHiuy2E
-        bSxxc/0GVpASZgFNifW79CHCihI7f89lhFjLJ/Huaw8rxBReiY42IYgSVYm+S4ehlkpLdLV/
-        YJ/AqDQLyWOzkDw2C8kDsxCWLWBkWcUollpQnJueWmxYYIQc1ZsYwWlWy2wH46S3H/QOMTJx
-        MB5ilOBgVhLhFT6QmCDEm5JYWZValB9fVJqTWnyI0RQY1BOZpUST84GJPq8k3tDUyNjY2MLE
-        zNzM1FhJnDfR4EG8kEB6YklqdmpqQWoRTB8TB6dUA5Plkyfi88pOsAkEu3xe897e1HRp4Rdh
-        udUr8g/vulz/XoH/eYN1qOnqTW/W/tsZ8/h8TfWtZ8sO9QQHfE8teXo47HTy6e45MdUnfkQ9
-        djlmzZHv4rZxkpQJp0vw/E9etQ5e1zbv2sedWMeWd2qxe77I7Funfe3vPHO9ysjjN+tr754j
-        MYxiYf9+KF+Z+HrJfDH5NnGh/RsmXVq4xPj/5Ds7T28R+XCG588cg7w0fjMm/pVynFbbNy5e
-        fO/QPsXt3x4qle28bc+7/Kvb/9NrtCISSq5ECs1WzVpi+kHzo1ppmZPKls8zL/26nRLQLfKv
-        XTpD/ve7+29fips2P2x3+iox0W5Hh7B/4e6rLTPf9da8UGIpzkg01GIuKk4EANk2ALY8BAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprMIsWRmVeSWpSXmKPExsWy7bCSvO7N/tQEg+lPRC1+r+5ls3j9bzqL
-        xbX779kttt6Stnjxfxezxc//3xktLu+aw2axt3Ubo8Xaz4/ZLTpeHmV24PKY1dDL5rFz1l12
-        j90LPjN5fHx6i8Vj7q4+Ro/Pm+QC2KK4bFJSczLLUov07RK4Mv5tf8hScICpYvflVuYGxlam
-        LkZODgkBE4nZ51rZuhi5OIQEdjBKLPt1ghkiIS1x7MQZIJsDyBaWOHy4GKLmOaPErYYdbCA1
-        bAK6Ev/+7AezRYAGHb/TxQRSxCxwl1niycIFLCAJIYF6ibOz94AN5RTQk7j49z0jyFBhgRCJ
-        yUudQcIsAioSXU19rCA2r4ClxPRZ26BsQYmTM5+wgJQzA7W2bWQECTMLyEtsfzsH6kwFiZ9P
-        l7FCnGAlsXf1fBaIGhGJ2Z1tzBMYhWchmTQLYdIsJJNmIelYwMiyilEytaA4Nz232LDAKC+1
-        XK84Mbe4NC9dLzk/dxMjON60tHYw7ln1Qe8QIxMH4yFGCQ5mJRFe4QOJCUK8KYmVValF+fFF
-        pTmpxYcYpTlYlMR5L3SdjBcSSE8sSc1OTS1ILYLJMnFwSjUwLbC7nBPcW7SZ8fsMZb7wu+UZ
-        M/o2+orvWSfn3rNsJtPftZe+LWS2edUcHDA//WDjr7ZzX1d7vuF5w3JSSfyo1F+Z/3ZhUU3K
-        joolDZXP2y8cmFfz5ccFjmV7l+Xx54jFP485ETFNR6tD3WN3694XW3efPL5S9nLqMaVVXsqn
-        r72KWzBdV3pH7NyzRosf2kefeeR9c/Ovr/Fm6tfUsvT9+pkPS3SXTv96/Mb5b++7e3tnaHTr
-        9fLN6rw61eOl/6pbX2uvBzzVjrm15U3qg/VTOaZm/dabFWfcyTK9dnlh+KldUT8POE6W+GM2
-        Mz6RtS93lmRIVknT/ayNnueLW5hrn552jpGSsvw9Yer9GYs2aSuxFGckGmoxFxUnAgC4xBiT
-        JgMAAA==
-X-CMS-MailID: 20210401091817epcas1p4d4afc08a87993ff719a16be8647d60f3
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
+Content-Language: en-US
+X-Originating-IP: [10.174.178.174]
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210401090901epcas1p49be3384fda4e000a6e9f40af63833f3a
-References: <CGME20210401090901epcas1p49be3384fda4e000a6e9f40af63833f3a@epcas1p4.samsung.com>
-        <20210401090850.GA2779473@LEGION>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> 
-> kfree should be used to free memory allocated by kmalloc or kzalloc to avoid any overhead and for
-> maintaining consistency.
-> 
-> Fixes: 5dfeb6d945 ("cifsd: use kmalloc() for small allocations")
-> Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
-Looks good. I will apply. Thanks for your patch!
 
+On 2021/4/1 15:47, Dan Carpenter wrote:
+> On Thu, Apr 01, 2021 at 10:43:32AM +0300, Dan Carpenter wrote:
+>> On Thu, Apr 01, 2021 at 11:17:52AM +0800, Yang Yingliang wrote:
+>>> Use memdup_user_nul() helper instead of open-coding to
+>>> simplify the code.
+>>>
+>>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>>> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+>>> ---
+>>>   drivers/staging/greybus/camera.c | 13 +++----------
+>>>   1 file changed, 3 insertions(+), 10 deletions(-)
+>>>
+>>> diff --git a/drivers/staging/greybus/camera.c b/drivers/staging/greybus/camera.c
+>>> index b570e13394ac..2ecdc1bc5092 100644
+>>> --- a/drivers/staging/greybus/camera.c
+>>> +++ b/drivers/staging/greybus/camera.c
+>>> @@ -1120,16 +1120,9 @@ static ssize_t gb_camera_debugfs_write(struct file *file,
+>>>   	if (len > 1024)
+>>>   		return -EINVAL;
+>>>   
+>>> -	kbuf = kmalloc(len + 1, GFP_KERNEL);
+>>> -	if (!kbuf)
+>>> -		return -ENOMEM;
+>>> -
+>>> -	if (copy_from_user(kbuf, buf, len)) {
+>>> -		ret = -EFAULT;
+>>> -		goto done;
+>>> -	}
+>>> -
+>>> -	kbuf[len] = '\0';
+>>> +	kbuf = memdup_user_nul(buf, len);
+>>> +	if (IS_ERR(kbuf))
+>>> +		return PTR_ERR(kbuf);;
+>>                                      ^^
+>> There is an extra semi-colon here.  Checkpatch actually catches this
+>> sort of typo.
+> So when someone makes a typo like this, my response is:
+>
+> 1) Let's add this to checkpatch (turns out it was already done)
+> 2) Let's grep the kernel and fix the other instances.  The command would
+> be something like: git grep ';;$' | grep '\.c:'
+I search it in kernel and find some other instances like this, I can 
+send some
+patches to fix these.
+
+Thanks,
+Yang
+>
+> regards,
+> dan carpenter
+>
+> .
