@@ -2,226 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8049D352035
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A2D35208F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235543AbhDAT46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 15:56:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56054 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234791AbhDAT45 (ORCPT
+        id S235387AbhDAUZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 16:25:47 -0400
+Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21308 "EHLO
+        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234783AbhDAUZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 15:56:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617307017;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4B8rrR2ZlPDVkEWIjOjrV74gMnzPRF/GWjn8bfBWXkA=;
-        b=BJiF6RErYoRYl693n9FXnibwr4HLUboeKDPtKTep+DOtkHTDEmB8S2knKcvedrRDlbTY21
-        4yyM4FVIyCTiSu+eUJgND1bTYt9hBeZhIIpQ+YODZiwhwlpWw+1usLgkABKeOGExq1XISx
-        h2sMbIxiS4yRajwlh+m9CFeLQVBMCGQ=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-14-Ql13CgjLO1KCUHouAU5m6A-1; Thu, 01 Apr 2021 15:56:55 -0400
-X-MC-Unique: Ql13CgjLO1KCUHouAU5m6A-1
-Received: by mail-wm1-f70.google.com with SMTP id o9-20020a05600c4fc9b029010cea48b602so3496006wmq.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 12:56:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4B8rrR2ZlPDVkEWIjOjrV74gMnzPRF/GWjn8bfBWXkA=;
-        b=hSGBLPCVp+l77EItYVOVmf5Xsy/5W4TB7B8Itfvei638VJYrjfCqWynXFpiNfYhWTK
-         3FuTO63VolRnRTVvN+hfWVHpUcGgqMr0zNvcutlIEiB8Tmwce1zOFZXDhvmGcIllj6F5
-         9eoUGhOn7Bbpb7V27di874UQRCPLI9wjRCSvjKw/DrLmmZtpElGpobrtMGPKUKnvVbFe
-         OM9PZz0yAczDC0mB66wcmr1hcSQtr2KULxiViUtnWJxUTNedgMW1cMhyKTBJ2WXVJ0vA
-         06R4AnXwxN6zeaKgRTXqs8uIt2weECpQn3dM0I1m/MJSjQSESOWRTdDTiY67yS5vmX6o
-         +Q+A==
-X-Gm-Message-State: AOAM530jt6cfVbqyLfI3N1Dxs+mnefSYKMUxLgGccf9nUrpFHK+t/cPr
-        Ik4bBXuwVWJ22W7mlakaHlPGQbw860b+do/C2hFIvpgpJBpSxjXMOxRZ9rDnM+/aHgdD2qa/FLZ
-        rvs+gfivc34RX47uO6bnT9+T0
-X-Received: by 2002:a05:6000:221:: with SMTP id l1mr11561496wrz.370.1617307014544;
-        Thu, 01 Apr 2021 12:56:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyiZ2uzEHFPKu2AQ2TtBFKkRmD/mD6mhiDw22xCxwVoWlYuBzyOZfFCCd4sEmt6QQkM2FUR/g==
-X-Received: by 2002:a05:6000:221:: with SMTP id l1mr11561454wrz.370.1617307014001;
-        Thu, 01 Apr 2021 12:56:54 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id b12sm11950894wrf.39.2021.04.01.12.56.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Apr 2021 12:56:53 -0700 (PDT)
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Jim Mattson <jmattson@google.com>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Sean Christopherson <seanjc@google.com>
-References: <20210401143817.1030695-1-mlevitsk@redhat.com>
- <20210401143817.1030695-4-mlevitsk@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 3/4] KVM: x86: correctly merge pending and injected
- exception
-Message-ID: <c4f06a75-412c-d546-9ce7-4bf4cc49d102@redhat.com>
-Date:   Thu, 1 Apr 2021 21:56:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Thu, 1 Apr 2021 16:25:46 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1617280451; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=Hphq8jqHjlxUUzmfeGTplrmlvxjbDQfagXj6aFK0A5e7DjRI5x6IddOZIm8iLLJaNUzyWGglzTgtR4Fl74SWXWlQx7xkBF6iHkJDnizzZql9bxFPnyhVmrG4dQwJ2bpg3HebLi0OijLixVT/OF74A11aC94DdRKWfRDdt+XQ31E=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1617280451; h=Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=FmOnjU0+A8QfoCamxd5H0OwzMaGlHS8vAIU7QBMAShY=; 
+        b=dBIP7hwIM//OWpxAsFrN3jSMxFd+fE9Du15ZDgq42QKJ7stEVS+gYHxUFW2yItYJR3EI2NIrDkmeUHgR6F/pwWHlRj6KisrzxtziOy/c3NlhOd6ZY5BKOVcGodTjrdOGAMOcq9Mg4hX6T3jqL+2shKolxtC73jzvwt3hchpF/JI=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=anirudhrb.com;
+        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
+        dmarc=pass header.from=<mail@anirudhrb.com> header.from=<mail@anirudhrb.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1617280451;
+        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Transfer-Encoding;
+        bh=FmOnjU0+A8QfoCamxd5H0OwzMaGlHS8vAIU7QBMAShY=;
+        b=lkVz8x40dot3CU1cFJ4F1+JLyCuA1XESqq3I03UjLCnDsVrPBjyT8z/On9Ejamjz
+        mAaIsMwLrJcxaaJOgjL+z/09tg2cc38o7dIM+IVb9hVJXjvyaaXSnbBnV12r29TYIHy
+        VztKp8sl4T8cemv7J9Q5j3EA2UzeDaL0qrcMojXk=
+Received: from localhost.localdomain (106.51.106.233 [106.51.106.233]) by mx.zohomail.com
+        with SMTPS id 16172804475521015.1822725426097; Thu, 1 Apr 2021 05:34:07 -0700 (PDT)
+From:   Anirudh Rayabharam <mail@anirudhrb.com>
+To:     Mike Isely <isely@pobox.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     gregkh@linuxfoundation.org,
+        Anirudh Rayabharam <mail@anirudhrb.com>,
+        syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] media: pvrusb2: fix warning in pvr2_i2c_core_done
+Date:   Thu,  1 Apr 2021 18:03:38 +0530
+Message-Id: <20210401123338.3937-1-mail@anirudhrb.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20210401143817.1030695-4-mlevitsk@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/04/21 16:38, Maxim Levitsky wrote:
-> +static int kvm_do_deliver_pending_exception(struct kvm_vcpu *vcpu)
-> +{
-> +	int class1, class2, ret;
-> +
-> +	/* try to deliver current pending exception as VM exit */
-> +	if (is_guest_mode(vcpu)) {
-> +		ret = kvm_x86_ops.nested_ops->deliver_exception_as_vmexit(vcpu);
-> +		if (ret || !vcpu->arch.pending_exception.valid)
-> +			return ret;
-> +	}
-> +
-> +	/* No injected exception, so just deliver the payload and inject it */
-> +	if (!vcpu->arch.injected_exception.valid) {
-> +		trace_kvm_inj_exception(vcpu->arch.pending_exception.nr,
-> +					vcpu->arch.pending_exception.has_error_code,
-> +					vcpu->arch.pending_exception.error_code);
-> +queue:
+syzbot has reported the following warning in pvr2_i2c_done:
 
-If you move the queue label to the top of the function, you can "goto queue" for #DF as well and you don't need to call kvm_do_deliver_pending_exception again.  In fact you can merge this function and kvm_deliver_pending_exception completely:
+	sysfs group 'power' not found for kobject '1-0043'
 
+When the device is disconnected (pvr_hdw_disconnect), the i2c adapter is
+not unregistered along with the USB and vl42 teardown. As part of the
+USB device disconnect, the sysfs files of the subdevices are also
+deleted. So, by the time pvr_i2c_core_done is called by
+pvr_context_destroy, the sysfs files have been deleted.
 
-static int kvm_deliver_pending_exception_as_vmexit(struct kvm_vcpu *vcpu)
-{
-	WARN_ON(!vcpu->arch.pending_exception.valid);
-	if (is_guest_mode(vcpu))
-		return kvm_x86_ops.nested_ops->deliver_exception_as_vmexit(vcpu);
-	else
-		return 0;
-}
+To fix this, unregister the i2c adapter too in pvr_hdw_disconnect. Make
+the device deregistration code shared by calling pvr_hdw_disconnect from
+pvr2_hdw_destory.
 
-static int kvm_merge_injected_exception(struct kvm_vcpu *vcpu)
-{
-	/*
-	 * First check if the pending exception takes precedence
-	 * over the injected one, which will be reported in the
-	 * vmexit info.
-	 */
-	ret = kvm_deliver_pending_exception_as_vmexit(vcpu);
-	if (ret || !vcpu->arch.pending_exception.valid)
-		return ret;
+Reported-and-tested-by: syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com
+Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+---
+ drivers/media/usb/pvrusb2/pvrusb2-hdw.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-	if (vcpu->arch.injected_exception.nr == DF_VECTOR) {
-		...
-		return 0;
-	}
-	...
-	if ((class1 == EXCPT_CONTRIBUTORY && class2 == EXCPT_CONTRIBUTORY)
-	    || (class1 == EXCPT_PF && class2 != EXCPT_BENIGN)) {
-		...
-	}
-	vcpu->arch.injected_exception.valid = false;
-}
-
-static int kvm_deliver_pending_exception(struct kvm_vcpu *vcpu)
-{
-	if (!vcpu->arch.pending_exception.valid)
-		return 0;
-
-	if (vcpu->arch.injected_exception.valid)
-		kvm_merge_injected_exception(vcpu);
-
-	ret = kvm_deliver_pending_exception_as_vmexit(vcpu));
-	if (ret || !vcpu->arch.pending_exception.valid)
-		return ret;
-
-	trace_kvm_inj_exception(vcpu->arch.pending_exception.nr,
-				vcpu->arch.pending_exception.has_error_code,
-				vcpu->arch.pending_exception.error_code);
-	...
-}
-
-Note that if the pending exception is a page fault, its payload
-must be delivered to CR2 before converting it to a double fault.
-
-Going forward to vmx.c:
-
-> 
->  	if (mtf_pending) {
->  		if (block_nested_events)
->  			return -EBUSY;
-> +
->  		nested_vmx_update_pending_dbg(vcpu);
-
-Should this instead "WARN_ON(vmx_pending_dbg_trap(vcpu));" since
-the pending-#DB-plus-MTF combination is handled in
-vmx_deliver_exception_as_vmexit?...
-
-> 
-> +
-> +	if (vmx->nested.mtf_pending && vmx_pending_dbg_trap(vcpu)) {
-> +		/*
-> +		 * A pending monitor trap takes precedence over pending
-> +		 * debug exception which is 'stashed' into
-> +		 * 'GUEST_PENDING_DBG_EXCEPTIONS'
-> +		 */
-> +
-> +		nested_vmx_update_pending_dbg(vcpu);
-> +		vmx->nested.mtf_pending = false;
-> +		nested_vmx_vmexit(vcpu, EXIT_REASON_MONITOR_TRAP_FLAG, 0, 0);
-> +		return 0;
-> +	}
-
-... though this is quite ugly, even more so if you add the case of an
-INIT with a pending #DB.  The problem is that INIT and MTF have higher
-priority than debug exceptions.
-
-The good thing is that an INIT or MTF plus #DB cannot happen with
-nested_run_pending == 1, so it will always be inject right away.
-
-There is precedent with KVM_GET_* modifying the CPU state; in
-particular, KVM_GET_MPSTATE can modify CS and RIP and even cause a
-vmexit via kvm_apic_accept_events.  And in fact, because
-kvm_apic_accept_events calls kvm_check_nested_events, calling it
-from KVM_GET_VCPU_EVENTS would fix the problem: the injected exception
-would go into the IDT-vectored exit field, while the pending exception
-would go into GUEST_PENDING_DBG_EXCEPTION and disappear.
-
-However, you cannot do kvm_apic_accept_events twice because there would
-be a race with INIT: a #DB exception could be first stored by
-KVM_GET_VCPU_EVENTS, then disappear when kvm_apic_accept_events
-KVM_GET_MPSTATE is called.
-
-Fortunately, the correct order for KVM_GET_* events is first
-KVM_GET_VCPU_EVENTS and then KVM_GET_MPSTATE.  So perhaps
-instead of calling kvm_deliver_pending_exception on vmexit,
-KVM_GET_VCPU_EVENTS could call kvm_apic_accept_events (and thus
-kvm_check_nested_events) instead of KVM_GET_MPSTATE.  In addition:
-nested_ops.check_events would be split in two, with high-priority
-events (triple fault, now in kvm_check_nested_events; INIT; MTF)
-remaining in the first and interrupts in the second, tentatively
-named check_interrupts).
-
-I'll take a look at cleaning up the current mess we have around
-kvm_apic_accept_events, where most of the calls do not have to
-handle guest mode at all.
-
-Thanks for this work and for showing that it's possible to fix the
-underlying mess with exception vmexit.  It may be a bit more
-complicated than this, but it's a great start.
-
-Paolo
+diff --git a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
+index f4a727918e35..791227787ff5 100644
+--- a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
++++ b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
+@@ -2676,9 +2676,7 @@ void pvr2_hdw_destroy(struct pvr2_hdw *hdw)
+ 		pvr2_stream_destroy(hdw->vid_stream);
+ 		hdw->vid_stream = NULL;
+ 	}
+-	pvr2_i2c_core_done(hdw);
+-	v4l2_device_unregister(&hdw->v4l2_dev);
+-	pvr2_hdw_remove_usb_stuff(hdw);
++	pvr2_hdw_disconnect(hdw);
+ 	mutex_lock(&pvr2_unit_mtx);
+ 	do {
+ 		if ((hdw->unit_number >= 0) &&
+@@ -2705,6 +2703,7 @@ void pvr2_hdw_disconnect(struct pvr2_hdw *hdw)
+ {
+ 	pvr2_trace(PVR2_TRACE_INIT,"pvr2_hdw_disconnect(hdw=%p)",hdw);
+ 	LOCK_TAKE(hdw->big_lock);
++	pvr2_i2c_core_done(hdw);
+ 	LOCK_TAKE(hdw->ctl_lock);
+ 	pvr2_hdw_remove_usb_stuff(hdw);
+ 	LOCK_GIVE(hdw->ctl_lock);
+-- 
+2.26.2
 
