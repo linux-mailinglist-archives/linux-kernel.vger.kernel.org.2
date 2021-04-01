@@ -2,74 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131DF351B22
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 889EB351B10
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237949AbhDASFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:05:05 -0400
-Received: from vern.gendns.com ([98.142.107.122]:42486 "EHLO vern.gendns.com"
+        id S238185AbhDASFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:05:39 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:63281 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236216AbhDARn6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:43:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=RNTCZdBbhMjO2dSPgQllX07OBfeYeDmdhR8sOt+nJoE=; b=vwbwnsmAtNcVyjR8tkrz0eRMBh
-        CnyXQ6lqeYRkpUIOZKS0A7ZbmOuy6x9rnrLNOKkC7c+umNbC8CisM4UIkzjWlauPZwcnxin/7/jS2
-        tS1zslG3PeZcBvsUUsmEYGF5xgP53MAFQpT4Z2dFSuPX2xGQi7E8JNwFta/Fu/aP5PuTL4NuNW/uS
-        NmQAyubwdxboI/QLNyTqOOyXCY+D/34jZK7/4CJHbrySh6hqYWzMrSFxDfDnLB3hmozeuJo2ARCyl
-        Z+vmkTCFFkF5IdCLrHJRKH4SOu6gQf6FPz6uo0j9utqvAJv98WW+I6DU18pRbz5Y3bU6oHPfJzShw
-        K53VXlsw==;
-Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:43322 helo=[192.168.0.134])
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <david@lechnology.com>)
-        id 1lRzQv-00056q-AA; Thu, 01 Apr 2021 11:40:33 -0400
-Subject: Re: [PATCH 12/32] MAINTAINERS: update lego,ev3-battery.yaml reference
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Rob Herring <robh@kernel.org>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        linux-kernel@vger.kernel.org
-References: <cover.1617279355.git.mchehab+huawei@kernel.org>
- <be4e2f1c7f6b2cfbda4fc98ca2177b048a3ed575.1617279355.git.mchehab+huawei@kernel.org>
-From:   David Lechner <david@lechnology.com>
-Message-ID: <a727e107-a322-7720-3438-a165b3297a32@lechnology.com>
-Date:   Thu, 1 Apr 2021 10:40:32 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S236503AbhDARpU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:45:20 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617299120; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=5F0p2SwBfvxYJuM5YokPniaLIv8Fsk+9QwSZB8XZ6cA=;
+ b=rXMsNIp8Wfz1CB+O/bw+QyhHp9zRbpwVhzUxkkXraIOAlRpz2XjgNSeL9lhILFUDb496gv0Q
+ 39tDMoOnwLgf/pBbNydcjgT0y0hC4dvXW7lTrh1H/NXyr0esm03M6nhGzjtke1p4APCL7K8/
+ bOKYvP1IO1HQ1T6I3WA7OOGLQIg=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 6065e9fc8807bcde1dacb9c5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 01 Apr 2021 15:42:52
+ GMT
+Sender: schowdhu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CE086C433ED; Thu,  1 Apr 2021 15:42:51 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: schowdhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D2EC2C433CA;
+        Thu,  1 Apr 2021 15:42:50 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <be4e2f1c7f6b2cfbda4fc98ca2177b048a3ed575.1617279355.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Date:   Thu, 01 Apr 2021 21:12:50 +0530
+From:   schowdhu@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>, vkoul@kernel.org
+Subject: Re: [PATCH V2 3/5] DCC: Added the sysfs entries for DCC(Data Capture
+ and Compare) driver
+In-Reply-To: <161704857307.3012082.499264834486221320@swboyd.mtv.corp.google.com>
+References: <cover.1616651305.git.schowdhu@codeaurora.org>
+ <eeb3cfe92cba2c7981170f3c3ff96dd440b69f25.1616651305.git.schowdhu@codeaurora.org>
+ <161704857307.3012082.499264834486221320@swboyd.mtv.corp.google.com>
+Message-ID: <56a657ebc4b843575037e3ba9ec9cb9a@codeaurora.org>
+X-Sender: schowdhu@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/1/21 7:17 AM, Mauro Carvalho Chehab wrote:
-> Changeset 3004e581d92a ("dt-bindings: power: supply: lego-ev3-battery: Convert to DT schema format")
-> renamed: Documentation/devicetree/bindings/power/supply/lego_ev3_battery.txt
-> to: Documentation/devicetree/bindings/power/supply/lego,ev3-battery.yaml.
+On 2021-03-30 01:39, Stephen Boyd wrote:
+> Quoting Souradeep Chowdhury (2021-03-25 01:02:34)
+>> The DCC is a DMA engine designed to store register values either in
+>> case of a system crash or in case of software triggers manually done
+>> by the user.Using DCC hardware and the sysfs interface of the driver
+>> the user can exploit various functionalities of DCC.The user can 
+>> specify
+>> the register addresses,the values of which is stored by DCC in it's
+>> dedicated SRAM.The register addresses can be used either to read from,
+>> write to,first read and store value and then write or to loop.All 
+>> these
+>> options can be exploited using the sysfs interface given to the user.
+>> Following are the sysfs interfaces exposed in DCC driver which are
+>> documented
+>> 1)trigger
+>> 2)config
+>> 3)config_write
+>> 4)config_reset
+>> 5)enable
+>> 6)rd_mod_wr
+>> 7)loop
+>> 
+>> Signed-off-by: Souradeep Chowdhury <schowdhu@codeaurora.org>
+>> ---
+>>  Documentation/ABI/testing/sysfs-driver-dcc | 114 
+>> +++++++++++++++++++++++++++++
 > 
-> Update its cross-reference accordingly.
+> Please combine this with the driver patch.
+
+Ack
+
 > 
-> Fixes: 3004e581d92a ("dt-bindings: power: supply: lego-ev3-battery: Convert to DT schema format")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
+>>  1 file changed, 114 insertions(+)
+>>  create mode 100644 Documentation/ABI/testing/sysfs-driver-dcc
+> 
+> Perhaps this should be an ioctl interface instead of a sysfs interface?
 
-Reviewed-by: David Lechner <david@lechnology.com>
+The reasons for choosing sysfs over ioctl is as follows
 
+
+i) As can be seen from the sysfs attribute descriptions, most of it does 
+basic hardware manipulations like dcc_enable, dcc_disable, config reset 
+etc. As a result sysfs is preferred over ioctl as we just need to enter 
+a 0 or 1
+signal in such cases.
+
+ii) Existing similar debug hardwares are there for which drivers have 
+been written using sysfs interface. One such example is the 
+coresight-etm-trace driver. Following is the link for reference
+
+https://www.kernel.org/doc/html/latest/trace/coresight/coresight-etm4x-reference.html
+
+> 
+>> 
+>> diff --git a/Documentation/ABI/testing/sysfs-driver-dcc 
+>> b/Documentation/ABI/testing/sysfs-driver-dcc
+>> new file mode 100644
+>> index 0000000..05d24f0
+>> --- /dev/null
+>> +++ b/Documentation/ABI/testing/sysfs-driver-dcc
+>> @@ -0,0 +1,114 @@
+>> +What:           /sys/bus/platform/devices/.../trigger
+>> +Date:           March 2021
+>> +Contact:        Souradeep Chowdhury <schowdhu@codeaurora.org>
+>> +Description:
+>> +               This is the sysfs interface for manual software
+>> +               triggers.The user can simply enter a 1 against
+>> +               the sysfs file and enable a manual trigger.
+>> +               Example:
+>> +               echo  1 > /sys/bus/platform/devices/.../trigger
+>> +
+>> +What:           /sys/bus/platform/devices/.../enable
+>> +Date:           March 2021
+>> +Contact:        Souradeep Chowdhury <schowdhu@codeaurora.org>
+>> +Description:
+>> +               This sysfs interface is used for enabling the
+>> +               the dcc hardware.Without this being set to 1,
+> 
+> Space after period please.
+
+Ack
+
+> 
+>> +               the dcc hardware ceases to function.
+>> +               Example:
+>> +               echo  0 > /sys/bus/platform/devices/.../enable
+>> +               (disable interface)
+>> +               echo  1 > /sys/bus/platform/devices/.../enable
+>> +               (enable interface)
+>> +
+>> +What:           /sys/bus/platform/devices/.../config
+>> +Date:           March 2021
+>> +Contact:        Souradeep Chowdhury <schowdhu@codeaurora.org>
+>> +Description:
+>> +               This is the most commonly used sysfs interface
+>> +               file and this basically stores the addresses of
+>> +               the registers which needs to be read in case of
+>> +               a hardware crash or manual software triggers.
+>> +               Example:
+>> +               echo  0x80000010 10 > 
+>> /sys/bus/platform/devices/../config
+>> +               This specifies that 10 words starting from address
+>> +               0x80000010 is to be read.In case there are no words to 
+>> be
+>> +               specified we can simply enter the address.
+>> +
+>> +What:           /sys/bus/platform/devices/.../config_write
+>> +Date:           March 2021
+>> +Contact:        Souradeep Chowdhury <schowdhu@codeaurora.org>
+>> +Description:
+>> +               This file allows user to write a value to the register
+>> +               address given as argument.The values are entered in 
+>> the
+>> +               form of <register_address> <value>.The reason for this
+>> +               feature of dcc is that for accessing certain registers
+>> +               it is necessary to set some bits of soe other 
+>> register.
+> 
+> s/soe/some/?
+
+Ack
+
+> 
+>> +               That is achievable by giving DCC this privelege.
+> 
+> s/privelege/privilege/
+
+Ack
+
+> 
+>> +               Example:
+>> +               echo 0x80000000 0xFF > 
+>> /sys/bus/platform/devices/.../config_write
+>> +
+>> +What:           /sys/bus/platform/devices/.../config_reset
+>> +Date:           March 2021
+>> +Contact:        Souradeep Chowdhury <schowdhu@codeaurora.org>
+>> +Description:
+>> +               This file is used to reset the configuration of
+>> +               a dcc driver to the default configuration.
+>> +               Example:
+>> +               echo  1 > /sys/bus/platform/devices/.../config_reset
+>> +
