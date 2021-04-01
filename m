@@ -2,84 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1033351157
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 10:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D11A351153
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 10:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233706AbhDAI6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 04:58:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233637AbhDAI5v (ORCPT
+        id S233610AbhDAI5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 04:57:32 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:56000 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233527AbhDAI5B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 04:57:51 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D475CC0613E6;
-        Thu,  1 Apr 2021 01:57:50 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id gb6so829809pjb.0;
-        Thu, 01 Apr 2021 01:57:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=oXtJ821yB9S8peS7jwk7jXIhvNxqy4kwSPnw73VGxuY=;
-        b=aA5+PCF5ZjUkVztXBPOOYY2ElzvNGYpU+nmwQbZeikkytPRSBL3KM0UIJYvlGV43eZ
-         jMCLFVWtv0tNz/qNiQPUDKTbOuAKOXQT4Go8yTJZx6BLJP5iiPI7E2pbfp6ObQK7cNGo
-         NGpuNX7kaEnW/v3sJsAQnq1p21TchRmAm8ofsDXDzn786S0o+0sTpP7zb49tQ5mZ0BE6
-         WwyMNvXZVwqy6nMZ0SfONJmIxRNDW885ZzzFzjySanxNQrl3E1un6u8Zl9S8DZjXTpCm
-         eCqk0n3W/gKZkEH/ySIRus1BQ6SeM9T/sv16mkNcKIok3heNI6DMJdfbjqaElZfyHiZs
-         CyJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=oXtJ821yB9S8peS7jwk7jXIhvNxqy4kwSPnw73VGxuY=;
-        b=dlqkRZQK2cN5/c9kaCtn0lqBBZ0OApRDh7Aw4G22t7f5UgNyXADcjp00kYuUEBUK8T
-         YOHOeuAz17J1YFCZpCPpsPP03UBWLAXa4/kzrYmdkxCP4thDhvP0KcEe/75YLH3wRXOp
-         2GZ5zvKzUPNqTD9Niova5AGd1lvN9pH/a0ZR3ukSC4NrR+JWjpJhAkziXKtuITl+ACbT
-         8uolstOWbkN6kNguIO3VuLRKKAmkga+gUgoPPKvQrT9A/sOklYj9VqpKWq/p8Iy2ZOaP
-         WGUDBokk84Ppbn1aeERyeHxIExDYUp9FgRXKGxW1KLpNoGlleFFrV49guwxcNbfmrT5q
-         WFJw==
-X-Gm-Message-State: AOAM530859A+OtlQFu8/IqX/tu4WVqh8viAN66WTqyojTVny47BHcTsa
-        vSZ/Rmk8L/0ia5d2EkNHLRE=
-X-Google-Smtp-Source: ABdhPJzvGu1N/wS8TdEjPhRmZPGQtvMqhoK8l4yaacUdBjiNF8CVAyTyrCf93DCUjT3hj2p3hpmsTg==
-X-Received: by 2002:a17:902:a502:b029:e8:3a40:bc6d with SMTP id s2-20020a170902a502b02900e83a40bc6dmr4974818plq.14.1617267470411;
-        Thu, 01 Apr 2021 01:57:50 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id y7sm4824167pja.25.2021.04.01.01.57.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 01 Apr 2021 01:57:50 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 01:55:49 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        Will Deacon <will@kernel.org>,
-        iommu@lists.linux-foundation.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, guillaume.tucker@collabora.com
-Subject: Re: [PATCH v1 2/2] iommu/tegra-smmu: Revert workaround that was
- needed for Nyan Big Chromebook
-Message-ID: <20210401085549.GA31146@Asurada-Nvidia>
-References: <20210328233256.20494-1-digetx@gmail.com>
- <20210328233256.20494-2-digetx@gmail.com>
+        Thu, 1 Apr 2021 04:57:01 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1318uqf5052252;
+        Thu, 1 Apr 2021 03:56:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1617267412;
+        bh=cGcqM28hwUnMq94RUS26mmi8GyO7P5f4FTSW7afpD1Y=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=iZfbQ5Sy9Wu91yo9y6VQYENbnmzoaYqIJePHSPdLbZTUa9ef+bukHc6ty6XBqSKJN
+         lft3Xt/UJu+ygFAm4JK9p+8o2r8LtzbxtMb4lhQDybXg005V5N1PMTllVY+ZVtwYKk
+         YltyydlpzG4nnepb4MfQ/+8kjiny3Bp27kGaFyuk=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1318uqga011899
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 1 Apr 2021 03:56:52 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 1 Apr
+ 2021 03:56:52 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 1 Apr 2021 03:56:52 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1318uplB019785;
+        Thu, 1 Apr 2021 03:56:52 -0500
+Date:   Thu, 1 Apr 2021 14:26:51 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Vignesh Raghavendra <vigneshr@ti.com>
+CC:     Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 4/4] dt-bindings: spi: Convert cadence-quadspi.txt to
+ cadence-quadspi.yaml
+Message-ID: <20210401085649.deocs3cbd7kiljrf@ti.com>
+References: <20210326130034.15231-1-p.yadav@ti.com>
+ <20210326130034.15231-5-p.yadav@ti.com>
+ <20210327183628.GA345487@robh.at.kernel.org>
+ <20210329182256.q4zhss6lezj3s44a@ti.com>
+ <1161dc3b-c889-c5d7-f7c8-baf5b7b79505@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210328233256.20494-2-digetx@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1161dc3b-c889-c5d7-f7c8-baf5b7b79505@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 02:32:56AM +0300, Dmitry Osipenko wrote:
-> The previous commit fixes problem where display client was attaching too
-> early to IOMMU during kernel boot in a multi-platform kernel configuration
-> which enables CONFIG_ARM_DMA_USE_IOMMU=y. The workaround that helped to
-> defer the IOMMU attachment for Nyan Big Chromebook isn't needed anymore,
-> revert it.
+On 01/04/21 01:57PM, Vignesh Raghavendra wrote:
+> 
+> 
+> On 3/29/21 11:52 PM, Pratyush Yadav wrote:
+> >>> +  cdns,fifo-depth:
+> >>> +    description:
+> >>> +      Size of the data FIFO in words.
+> >>> +    $ref: "/schemas/types.yaml#/definitions/uint32"
+> >>> +    enum: [ 128, 256 ]
+> >>> +    default: 128
+> >>> +
+> >>> +  cdns,fifo-width:
+> >>> +    $ref: /schemas/types.yaml#/definitions/uint32
+> >>> +    description:
+> >>> +      Bus width of the data FIFO in bytes.
+> >>> +    default: 4
+> >> I assume there's some constraints on this?
+> > IIUC this is a matter of how the peripheral is implemented and there are 
+> > no clear constraints. Different implementations can use different bus 
+> > widths for the SRAM bus but I don't see any mention of minimum or 
+> > maximum values. FWIW, all users in the kernel use a 4 byte bus.
+> > 
+> 
+> IMO a safe constraint would be to set a range of 1 to 4 (8/16/24/32 bit
+> wide) given this represents SRAM bus width. Binding can always be
+> updated if there exists an implementation with higher SRAM bus
+> width/fifo-width (although that's highly unlikely given there are no
+> such examples today).
+> 
+> But leaving it open ended with range of 0 to UINT_MAX sounds incorrect
+> to me.
 
-Sorry for the late reply. I have been busy with downstream tasks.
+Ok. Will respin.
 
-I will give them a try by the end of the week. Yet, probably it'd
-be better to include Guillaume also as he has the Nyan platform.
+> 
+> >> With that,
+> >>
+> >> Reviewed-by: Rob Herring <robh@kernel.org>
+> > Thanks.
+> > 
+
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
