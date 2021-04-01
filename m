@@ -2,143 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF73351FD4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C74351F94
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:22:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235313AbhDAT3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 15:29:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235465AbhDAT3M (ORCPT
+        id S234994AbhDATWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 15:22:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60051 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234958AbhDATVY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 15:29:12 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D51C0613B0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 12:21:13 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id k25so3281415iob.6
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 12:21:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=898Op6M40JinO4D3cznUkQtr1L0luSLau7chpWc5uKg=;
-        b=ZHtLYWtQ+FqDVYKZTHwxwCgUSMGSoQwWB3jcqgznkK+uvYCZl71pVwy5ATKWFW+awD
-         RSsxcenvm4NI2KyYWaJUIG6gvaMfET9w4iUr92BU7UnnqyKaC+Ju011n6FIZIKYDawUS
-         RfPx0iEgWjQkSsfvtpGU74dXu9GoGZoyW0RremDQPcGSRotsSgTYpyhipkTT3zuFwni9
-         sjiPRhgr49+7DQJBGGd7WW1reLrFWvr/qNBKcAA2mu09pJ2RM+Gdf2ROLzB5obPcnu9S
-         RvCPLxzmOd4AN2AX3Z8HVq/gV/3V7zY244fX74qyZGgWcN/dIAA+Fg3WJlQfpEJEuMwR
-         wlBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=898Op6M40JinO4D3cznUkQtr1L0luSLau7chpWc5uKg=;
-        b=Y9qW5SmHtCS1ZPCTUomQXiyaLufBErdvY6nV+W1LZWcbZlXG9ljCZqgN2kNIJ5L0Qn
-         uX1ju7nDC6SSPMfueYXydEK4D8dfubcT4pMGhnbX8W/VZEzMm4lrKVC8W4oEJOkWtfB5
-         AxneTPxUYHYnMhLQjvZUKU0lyCyAgtILFr1ldiVB6QDgyfC8W6u86tYL49ecaHVYGqW4
-         ZWGfEdRt3rnzE+zLJ//CBWmQd7qNjd5mqqboXofU0I5wFi3DoLnxR/ssBrZ2rinrMpwI
-         KKebG7mJ9c3Wu8hSqRgVySyOZ5zlWFHEGmjNHq736LaNmPj7QPsbxtccZ4C2qTZtMbWH
-         z/4w==
-X-Gm-Message-State: AOAM533zLQj3yzw09tMxzLAXvCixhNER9+5v2ktzwZZiWFk8Ez+Nwul8
-        a6hmrzarJXFYXaeN6CG2712dkQEIFLn2CWpuXcnrpj87JgY=
-X-Google-Smtp-Source: ABdhPJxEg/kpAy++MLYpSkRG9zcOD0RT02x3wwPiTJxd0kzs4URGTpC5xS4fYjGbFYzdClWgvc/xicYjAnIIn52b/Ng=
-X-Received: by 2002:a05:6638:388e:: with SMTP id b14mr9630881jav.62.1617304872817;
- Thu, 01 Apr 2021 12:21:12 -0700 (PDT)
+        Thu, 1 Apr 2021 15:21:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617304884;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=vvLDO2u5BxPZbBq5VTfe/3e16RM7zi3D4zzYHWMuYwE=;
+        b=hhjJ4WaSroR2OT3cFT+3GqDsTuiUq+pD62uYXjEGy56bw9Z2kdyj9qHTPI6fOkCEgnaoMH
+        sIKEBmN1y56aqu2NK+BOR6bgHIoF4w08o8ecfOL4UUyaiXeRHZpCcpRgMe81hpx+//vU0K
+        tEdcdJOFwTqxSZKHxUdWM4sXPSzJsII=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-554-sMcizY3QPIOoyiOMZgp80w-1; Thu, 01 Apr 2021 15:21:22 -0400
+X-MC-Unique: sMcizY3QPIOoyiOMZgp80w-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E638C83DD20;
+        Thu,  1 Apr 2021 19:21:21 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 949B319C59;
+        Thu,  1 Apr 2021 19:21:21 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [GIT PULL] KVM changes for Linux 5.12-rc6
+Date:   Thu,  1 Apr 2021 15:21:20 -0400
+Message-Id: <20210401192120.3280562-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-References: <20210326000805.2518-1-apopple@nvidia.com> <23784464.epyy5R1Yul@nvdebian>
- <20210331115746.GA1463678@nvidia.com> <2557539.O4bb4zRkYN@nvdebian>
-In-Reply-To: <2557539.O4bb4zRkYN@nvdebian>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 1 Apr 2021 12:21:01 -0700
-Message-ID: <CALvZod5a39kNUW3uj4z0+eYi_yfWLPEZ1BKdzbA42=E5TeEgHQ@mail.gmail.com>
-Subject: Re: [PATCH v7 3/8] mm/rmap: Split try_to_munlock from try_to_unmap
-To:     Alistair Popple <apopple@nvidia.com>,
-        Hugh Dickins <hughd@google.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Linux MM <linux-mm@kvack.org>, nouveau@lists.freedesktop.org,
-        bskeggs@redhat.com, Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        kvm-ppc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        rcampbell@nvidia.com,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>, daniel@ffwll.ch,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CC: Hugh Dickins
+Linus,
 
-On Wed, Mar 31, 2021 at 9:37 PM Alistair Popple <apopple@nvidia.com> wrote:
->
-> On Wednesday, 31 March 2021 10:57:46 PM AEDT Jason Gunthorpe wrote:
-> > On Wed, Mar 31, 2021 at 03:15:47PM +1100, Alistair Popple wrote:
-> > > On Wednesday, 31 March 2021 2:56:38 PM AEDT John Hubbard wrote:
-> > > > On 3/30/21 3:56 PM, Alistair Popple wrote:
-> > > > ...
-> > > > >> +1 for renaming "munlock*" items to "mlock*", where applicable. good
-> > > grief.
-> > > > >
-> > > > > At least the situation was weird enough to prompt further
-> investigation :)
-> > > > >
-> > > > > Renaming to mlock* doesn't feel like the right solution to me either
-> > > though. I
-> > > > > am not sure if you saw me responding to myself earlier but I am
-> thinking
-> > > > > renaming try_to_munlock() -> page_mlocked() and try_to_munlock_one() -
-> >
-> > > > > page_mlock_one() might be better. Thoughts?
-> > > > >
-> > > >
-> > > > Quite confused by this naming idea. Because: try_to_munlock() returns
-> > > > void, so a boolean-style name such as "page_mlocked()" is already not a
-> > > > good fit.
-> > > >
-> > > > Even more important, though, is that try_to_munlock() is mlock-ing the
-> > > > page, right? Is there some subtle point I'm missing? It really is doing
-> > > > an mlock to the best of my knowledge here. Although the kerneldoc
-> > > > comment for try_to_munlock() seems questionable too:
-> > >
-> > > It's mlocking the page if it turns out it still needs to be locked after
-> > > unlocking it. But I don't think you're missing anything.
-> >
-> > It is really searching all VMA's to see if the VMA flag is set and if
-> > any are found then it mlocks the page.
-> >
-> > But presenting this rountine in its simplified form raises lots of
-> > questions:
-> >
-> >  - What locking is being used to read the VMA flag?
-> >  - Why do we need to manipulate global struct page flags under the
-> >    page table locks of a single VMA?
->
-> I was wondering that and questioned it in an earlier version of this series. I
-> have done some digging and the commit log for b87537d9e2fe ("mm: rmap use pte
-> lock not mmap_sem to set PageMlocked") provides the original justification.
->
-> It's fairly long so I won't quote it here but the summary seems to be that
-> among other things the combination of page lock and ptl makes this safe. I
-> have yet to verify if everything there still holds and is sensible, but the
-> last paragraph certainly is :-)
->
-> "Stopped short of separating try_to_munlock_one() from try_to_munmap_one()
-> on this occasion, but that's probably the sensible next step - with a
-> rename, given that try_to_munlock()'s business is to try to set Mlocked."
->
-> >  - Why do we need to check for huge pages inside the VMA loop, not
-> >    before going to the rmap? PageTransCompoundHead() is not sensitive to
-> >    the PTEs. (and what happens if the huge page breaks up concurrently?)
-> >  - Why do we clear the mlock bit then run around to try and set it?
->
-> I don't have an answer for that as I'm not (yet) across all the mlock code
-> paths, but I'm hoping this patch at least won't change anything.
->
+The following changes since commit a5e13c6df0e41702d2b2c77c8ad41677ebb065b3:
 
-It would be good to ask the person who has the most answers?
+  Linux 5.12-rc5 (2021-03-28 15:48:16 -0700)
 
-Hugh, the thread started at
-https://lore.kernel.org/dri-devel/20210326000805.2518-4-apopple@nvidia.com/
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+
+for you to fetch changes up to 55626ca9c6909d077eca71bccbe15fef6e5ad917:
+
+  selftests: kvm: Check that TSC page value is small after KVM_SET_CLOCK(0) (2021-04-01 05:14:19 -0400)
+
+It's a bit larger than I (and probably you) would like by the time we 
+get to -rc6, but perhaps not entirely unexpected since the changes in
+the last merge window were larger than usual.
+
+The SVM fixes will cause conflicts in the next merge window, but I have
+already tried a merge and just keeping the "new" (5.13) code will be
+fine.
+
+During the merge window I mentioned that I was considering a switch
+of the default MMU around 5.12-rc3.  However, I am not going to do
+this until at least 5.13.
+
+----------------------------------------------------------------
+x86:
+
+* Fixes for missing TLB flushes with TDP MMU
+
+* Fixes for race conditions in nested SVM
+
+* Fixes for lockdep splat with Xen emulation
+
+* Fix for kvmclock underflow
+
+* Fix srcdir != builddir builds
+
+* Other small cleanups
+
+ARM:
+* Fix GICv3 MMIO compatibility probing
+
+* Prevent guests from using the ARMv8.4 self-hosted tracing extension
+
+----------------------------------------------------------------
+Dongli Zhang (1):
+      KVM: x86: remove unused declaration of kvm_write_tsc()
+
+Haiwei Li (1):
+      KVM: clean up the unused argument
+
+Marc Zyngier (1):
+      KVM: arm64: Fix CPU interface MMIO compatibility detection
+
+Paolo Bonzini (7):
+      Merge tag 'kvmarm-fixes-5.12-3' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into HEAD
+      Merge commit 'kvm-tdp-fix-flushes' into kvm-master
+      KVM: SVM: load control fields from VMCB12 before checking them
+      KVM: SVM: ensure that EFER.SVME is set when running nested guest or on nested vmexit
+      Merge branch 'kvm-fix-svm-races' into kvm-master
+      KVM: x86: reduce pvclock_gtod_sync_lock critical sections
+      KVM: x86: disable interrupts while pvclock_gtod_sync_lock is taken
+
+Sean Christopherson (3):
+      KVM: x86/mmu: Ensure TLBs are flushed when yielding during GFN range zap
+      KVM: x86/mmu: Ensure TLBs are flushed for TDP MMU during NX zapping
+      KVM: x86/mmu: Don't allow TDP MMU to yield when recovering NX pages
+
+Siddharth Chandrasekaran (1):
+      KVM: make: Fix out-of-source module builds
+
+Stefan Raspl (1):
+      tools/kvm_stat: Add restart delay
+
+Suzuki K Poulose (2):
+      KVM: arm64: Hide system instruction access to Trace registers
+      KVM: arm64: Disable guest access to trace filter controls
+
+Vitaly Kuznetsov (4):
+      KVM: x86/vPMU: Forbid writing to MSR_F15H_PERF MSRs when guest doesn't have X86_FEATURE_PERFCTR_CORE
+      selftests: kvm: make hardware_disable_test less verbose
+      KVM: x86: Prevent 'hv_clock->system_time' from going negative in kvm_guest_time_update()
+      selftests: kvm: Check that TSC page value is small after KVM_SET_CLOCK(0)
+
+ arch/arm64/include/asm/kvm_arm.h                   |  1 +
+ arch/arm64/kernel/cpufeature.c                     |  1 -
+ arch/arm64/kvm/debug.c                             |  2 +
+ arch/arm64/kvm/hyp/vgic-v3-sr.c                    |  9 ++++
+ arch/x86/kvm/Makefile                              |  2 +-
+ arch/x86/kvm/mmu/mmu.c                             |  9 ++--
+ arch/x86/kvm/mmu/tdp_mmu.c                         | 26 +++++-----
+ arch/x86/kvm/mmu/tdp_mmu.h                         | 24 ++++++++-
+ arch/x86/kvm/svm/nested.c                          | 28 +++++++++--
+ arch/x86/kvm/svm/pmu.c                             |  8 +++
+ arch/x86/kvm/x86.c                                 | 57 ++++++++++++++--------
+ arch/x86/kvm/x86.h                                 |  1 -
+ tools/kvm/kvm_stat/kvm_stat.service                |  1 +
+ .../testing/selftests/kvm/hardware_disable_test.c  | 10 ++--
+ tools/testing/selftests/kvm/x86_64/hyperv_clock.c  | 13 ++++-
+ 15 files changed, 139 insertions(+), 53 deletions(-)
+
