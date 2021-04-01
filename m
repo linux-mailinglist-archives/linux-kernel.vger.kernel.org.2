@@ -2,89 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A66F352133
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D36035213A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234363AbhDAU6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 16:58:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39298 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233710AbhDAU63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 16:58:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA96F606A5;
-        Thu,  1 Apr 2021 20:58:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617310709;
-        bh=yEfAj33X/M6Ig0AFvQgAR+NEY0HL62e7KQs+a/f97xI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MAY7R2WNL8JQCEYCn9A8RqhEANTSmnGgTMaJlRIFIC8La4XPRDe+EaiwjZk96P2HV
-         jME6kYBfLQHlGgL1f9om+wEXV6Ove8eMkksWy527sZaBnuU8Xnfi7NpqaD/y01C936
-         dfOE1GifziV2XrXmsM+shZOhNkUnP8OX6rMUAnZ4=
-Date:   Thu, 1 Apr 2021 22:58:25 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Anirudh Rayabharam <mail@anirudhrb.com>
-Cc:     Mike Isely <isely@pobox.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: pvrusb2: fix warning in pvr2_i2c_core_done
-Message-ID: <YGYz8Z0sWYhb9lb/@kroah.com>
-References: <20210401123338.3937-1-mail@anirudhrb.com>
+        id S234531AbhDAVA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 17:00:29 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:43723 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234047AbhDAVA2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 17:00:28 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 131KxKua015368
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 1 Apr 2021 16:59:21 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 3E36F15C3A90; Thu,  1 Apr 2021 16:59:20 -0400 (EDT)
+Date:   Thu, 1 Apr 2021 16:59:20 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Roy Yang <royyang@google.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, keescook@chromium.org,
+        akpm@linux-foundation.org, alex.popov@linux.com,
+        ard.biesheuvel@linaro.org, catalin.marinas@arm.com, corbet@lwn.net,
+        david@redhat.com, elena.reshetova@intel.com,
+        Alexander Potapenko <glider@google.com>,
+        Jann Horn <jannh@google.com>,
+        kernel-hardening@lists.openwall.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, luto@kernel.org, mark.rutland@arm.com,
+        peterz@infradead.org, rdunlap@infradead.org, rppt@linux.ibm.com,
+        tglx@linutronix.de, vbabka@suse.cz, will@kernel.org, x86@kernel.org
+Subject: Re: [PATCH v8 0/6] Optionally randomize kernel stack offset each
+ syscall
+Message-ID: <YGY0KAgMmm4XlaS8@mit.edu>
+References: <CANemeMjOw4sOzMxjdjJcWKD315u+KRn19h687GMbkQdP5Jc_kQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210401123338.3937-1-mail@anirudhrb.com>
+In-Reply-To: <CANemeMjOw4sOzMxjdjJcWKD315u+KRn19h687GMbkQdP5Jc_kQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 06:03:38PM +0530, Anirudh Rayabharam wrote:
-> syzbot has reported the following warning in pvr2_i2c_done:
+On Thu, Apr 01, 2021 at 01:49:17PM -0700, Roy Yang wrote:
+> Thanks Ted, Casey and Al Viro. I am sorry for the inconvenience.
 > 
-> 	sysfs group 'power' not found for kobject '1-0043'
+> I tried to follow the instructions listed under
+> https://lore.kernel.org/lkml/20210330205750.428816-1-keescook@chromium.org/
+> using git-send-email
 > 
-> When the device is disconnected (pvr_hdw_disconnect), the i2c adapter is
-> not unregistered along with the USB and vl42 teardown. As part of the
-> USB device disconnect, the sysfs files of the subdevices are also
-> deleted. So, by the time pvr_i2c_core_done is called by
-> pvr_context_destroy, the sysfs files have been deleted.
-> 
-> To fix this, unregister the i2c adapter too in pvr_hdw_disconnect. Make
-> the device deregistration code shared by calling pvr_hdw_disconnect from
-> pvr2_hdw_destory.
-> 
-> Reported-and-tested-by: syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com
-> Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-> ---
->  drivers/media/usb/pvrusb2/pvrusb2-hdw.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-> index f4a727918e35..791227787ff5 100644
-> --- a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-> +++ b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-> @@ -2676,9 +2676,7 @@ void pvr2_hdw_destroy(struct pvr2_hdw *hdw)
->  		pvr2_stream_destroy(hdw->vid_stream);
->  		hdw->vid_stream = NULL;
->  	}
-> -	pvr2_i2c_core_done(hdw);
-> -	v4l2_device_unregister(&hdw->v4l2_dev);
-> -	pvr2_hdw_remove_usb_stuff(hdw);
-> +	pvr2_hdw_disconnect(hdw);
->  	mutex_lock(&pvr2_unit_mtx);
->  	do {
->  		if ((hdw->unit_number >= 0) &&
-> @@ -2705,6 +2703,7 @@ void pvr2_hdw_disconnect(struct pvr2_hdw *hdw)
->  {
->  	pvr2_trace(PVR2_TRACE_INIT,"pvr2_hdw_disconnect(hdw=%p)",hdw);
->  	LOCK_TAKE(hdw->big_lock);
-> +	pvr2_i2c_core_done(hdw);
->  	LOCK_TAKE(hdw->ctl_lock);
->  	pvr2_hdw_remove_usb_stuff(hdw);
->  	LOCK_GIVE(hdw->ctl_lock);
-> -- 
-> 2.26.2
+> Thought that will reply to the original thread with the original
+> subject . Let me know what I can do to correct this to avoid
+> confusion.
 
-Looks sane to me, nice work tracking this down.
+It did chain to the original thread; that's how I was able to figure
+out the context.  However, it looks like in your reply, you set the
+subject to be:
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[PATCH] Where we are for this patch?
+
+And the problem is if someone had deleted the original e-mail chain
+--- for example, optimizing the kernel stack is not one of the
+subjects that I normally closely track, I had already deleted those
+e-mail chains.  So all I saw (and I suspect all Al saw) was a message
+with the above subject line, and no context.
+
+If you had kept the original subject line, then those of us who mostly
+focus on file system stuff would have known that it's an area which is
+covered by other maintainers, and we wouldn't have deleted your query
+and let someone else respond.
+
+Cheers,
+
+					- Ted
+
+P.S.  I personally find the use "git-send-email" to reply to be so
+much of a pain that I just use a non-google.com address to which I can
+use a traditional threaded mail-reader (such as mutt) and I can send
+e-mail without having to worry about the DMARC nonsense.  :-)
+
