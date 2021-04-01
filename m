@@ -2,92 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91085350F19
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC5B1350F1D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 08:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232672AbhDAGgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 02:36:03 -0400
-Received: from mail-wr1-f42.google.com ([209.85.221.42]:42686 "EHLO
-        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhDAGfw (ORCPT
+        id S233236AbhDAGhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 02:37:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230291AbhDAGhg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 02:35:52 -0400
-Received: by mail-wr1-f42.google.com with SMTP id x13so619943wrs.9;
-        Wed, 31 Mar 2021 23:35:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4rL9IgiyziFhXFq9JhHe8MRiCspi+Fv8AChbH+YGoiU=;
-        b=Rj5XDwKRTS5/KBbtPpopcf5XDovGAoqH5lC3YJGlqXaJ0YssGzN3200uen4VpP3mM3
-         nuxZsVvbOtAwRFrgUb6t0MBX9306iBcfgvYq9xjUk9f3MSNgPwyYLhM8jlf/BV8VHIjF
-         PkCKGdIkJ4jEr+bp0Ct+TfuS2TRe+Hsd2r0HhkItB+K9RP212JFbHLUc+0D9QX8FG5fh
-         qxkK1npDe06eUExH/QkRLZPJILAI1yZtDgZXJWF66Un+8cakJITbaQ3KtwLwpCtYC2wZ
-         yRqIBhexWG9r/eUfQ6+qSlql6wO1waLAlD0Sz8x8RMNU3rv6qof49em6K8CEZRBrRgwF
-         sKRQ==
-X-Gm-Message-State: AOAM533EgJiax2A1+UafRvswvjLynK8RJtOKYQMFN5N83JI8DgvMqv1x
-        stijOfvs1zl4j38ezPS5rpw=
-X-Google-Smtp-Source: ABdhPJw/qtpkUX8J2ufQv5E/USmElRfcGrQQSfQnIFS25ZxrLYmTbD+T5qkceGS46q+4xdmea/1CTg==
-X-Received: by 2002:a5d:4d45:: with SMTP id a5mr7872790wru.396.1617258950754;
-        Wed, 31 Mar 2021 23:35:50 -0700 (PDT)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id k4sm11620091wrd.9.2021.03.31.23.35.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 23:35:50 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 08:35:48 +0200
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Greentime Hu <greentime.hu@sifive.com>
-Cc:     paul.walmsley@sifive.com, hes@sifive.com, erik.danie@sifive.com,
-        zong.li@sifive.com, bhelgaas@google.com, robh+dt@kernel.org,
-        aou@eecs.berkeley.edu, mturquette@baylibre.com, sboyd@kernel.org,
-        lorenzo.pieralisi@arm.com, p.zabel@pengutronix.de,
-        alex.dewar90@gmail.com, khilman@baylibre.com,
-        hayashi.kunihiko@socionext.com, vidyas@nvidia.com,
-        jh80.chung@samsung.com, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        helgaas@kernel.org
-Subject: Re: [PATCH v4 5/6] PCI: fu740: Add SiFive FU740 PCIe host controller
- driver
-Message-ID: <YGVpxHd/JhYPyaMQ@rocinante>
-References: <20210401060054.40788-1-greentime.hu@sifive.com>
- <20210401060054.40788-6-greentime.hu@sifive.com>
+        Thu, 1 Apr 2021 02:37:36 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39860C0613E6
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 23:37:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=UnDsqWuvOuHdfoPwQZfisLiRixlJIZ0mZK0rwiZPBp4=; b=SeItDScDzhSk2FeB9nhoeHpmMQ
+        FBuWTRohENB5eGO7fbkSTwV4gkO3YRWGqoAna5JxXiM1HIoPtwoR2ZU8k1rv79Xf1jXKjTDJqyU2s
+        YnqWzS/O8iSgduV7PVWtbbczvwuWyxihagsNNeOD5JeHosFoo90yGpm9fJfcw3Nb1DOfTAyrqdG6K
+        tUia+hUBgVON7cFLNbJANP9SdrVz4gC4/m3ksuGbhfc36f1kphPMARvOhfZJQcXeN/N0oxlaRdcOC
+        nvt9q/5/hV7qps0n6k7ad/ZR6dBLkXp9mlMV6dMWoQ1wO17Ne0i5LIUInFVgy7gLZdtkfS5tOOumu
+        l3sWMCiQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lRqx1-005ibZ-0P; Thu, 01 Apr 2021 06:37:10 +0000
+Date:   Thu, 1 Apr 2021 07:37:07 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jiuyang Liu <liu@jiuyang.me>
+Cc:     Alex Ghiti <alex@ghiti.fr>,
+        Andrew Waterman <waterman@eecs.berkeley.edu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] implement flush_cache_vmap and flush_cache_vunmap for
+ RISC-V
+Message-ID: <20210401063707.GA1362465@infradead.org>
+References: <20210329015510.44110-1-liu@jiuyang.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210401060054.40788-6-greentime.hu@sifive.com>
+In-Reply-To: <20210329015510.44110-1-liu@jiuyang.me>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greentime,
+On Mon, Mar 29, 2021 at 01:55:09AM +0000, Jiuyang Liu wrote:
+> +/*
+> + * flush_cache_vmap and flush_cache_vunmap might modify PTE, needs SFENCE.VMA.
+> + * - flush_cache_vmap is invoked after map_kernel_range() has installed the page table entries.
+> + * - flush_cache_vunmap is invoked before unmap_kernel_range() deletes the page table entries
+> + */
 
-[...]
-> +	/* Wait for wait_idle */
-> +	ret = readl_poll_timeout(phy_cr_para_ack, val, val, 10, 5000);
-> +	if (ret)
-> +		dev_err(dev, "Wait for wait_ilde state failed!\n");
-> +
-> +	/* Clear */
-> +	writel_relaxed(0, phy_cr_para_wr_en);
-> +
-> +	/* Wait for ~wait_idle */
-> +	ret = readl_poll_timeout(phy_cr_para_ack, val, !val, 10, 5000);
-> +	if (ret)
-> +		dev_err(dev, "Wait for !wait_ilde state failed!\n");
-> +}
-[...]
-> +static int fu740_pcie_start_link(struct dw_pcie *pci)
-> +{
-> +	struct device *dev = pci->dev;
-> +
-> +	/* Start LTSSM. */
-> +	fu740_pcie_ltssm_enable(dev);
-> +	return 0;
-> +}
-
-The typos etc., are still here.  See:
-
-  https://lore.kernel.org/linux-pci/YFQqpojmJyX0l6lx@rocinante/
-
-Krzysztof
+Please never ever write comments > 80 chars.  And please read the
+coding style document.
