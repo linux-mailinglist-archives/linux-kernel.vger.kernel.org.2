@@ -2,78 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF604352077
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 504DD352080
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235589AbhDAUOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 16:14:31 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:35609 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235002AbhDAUO3 (ORCPT
+        id S234985AbhDAURS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 16:17:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234783AbhDAURR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 16:14:29 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 131KDLnN028880
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 1 Apr 2021 16:13:22 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id B235F15C3A90; Thu,  1 Apr 2021 16:13:21 -0400 (EDT)
-Date:   Thu, 1 Apr 2021 16:13:21 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Roy Yang <royyang@google.com>, keescook@chromium.org,
-        akpm@linux-foundation.org, alex.popov@linux.com,
-        ard.biesheuvel@linaro.org, catalin.marinas@arm.com, corbet@lwn.net,
-        david@redhat.com, elena.reshetova@intel.com, glider@google.com,
-        jannh@google.com, kernel-hardening@lists.openwall.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, luto@kernel.org, mark.rutland@arm.com,
-        peterz@infradead.org, rdunlap@infradead.org, rppt@linux.ibm.com,
-        tglx@linutronix.de, vbabka@suse.cz, will@kernel.org, x86@kernel.org
-Subject: Re: [PATCH] Where we are for this patch?
-Message-ID: <YGYpYUqIf9rdJqRi@mit.edu>
-References: <20210330205750.428816-1-keescook@chromium.org>
- <20210401191744.1685896-1-royyang@google.com>
- <YGYjjpoj1uMn1VEd@zeniv-ca.linux.org.uk>
+        Thu, 1 Apr 2021 16:17:17 -0400
+Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C4EBC061788
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 13:17:17 -0700 (PDT)
+Received: from [192.168.1.101] (abae153.neoplus.adsl.tpnet.pl [83.6.168.153])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id D33303F5DD;
+        Thu,  1 Apr 2021 22:17:12 +0200 (CEST)
+Subject: Re: [PATCH 1/9] dt-bindings: clk: qcom: Add bindings for MSM8994 GCC
+ driver
+To:     Stephen Boyd <sboyd@kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht
+Cc:     martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210313021919.435332-1-konrad.dybcio@somainline.org>
+ <161730597895.2260335.4437139498852095330@swboyd.mtv.corp.google.com>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <407789fb-bb43-874b-af4b-a3c1fa74a1bc@somainline.org>
+Date:   Thu, 1 Apr 2021 22:17:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YGYjjpoj1uMn1VEd@zeniv-ca.linux.org.uk>
+In-Reply-To: <161730597895.2260335.4437139498852095330@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 07:48:30PM +0000, Al Viro wrote:
-> On Thu, Apr 01, 2021 at 12:17:44PM -0700, Roy Yang wrote:
-> > Both Android and Chrome OS really want this feature; For Container-Optimized OS, we have customers
-> > interested in the defense too.
-> > 
-> > Thank you very much.
-> > 
-> > Change-Id: I1eb1b726007aa8f9c374b934cc1c690fb4924aa3
-> 
-> 	You forgot to tell what patch you are refering to.  Your
-> Change-Id (whatever the hell that is) doesn't help at all.  Don't
-> assume that keys in your internal database make sense for the
-> rest of the world, especially when they appear to contain a hash
-> of something...
 
-The Change-Id fails to have any direct search hits at lore.kernel.org.
-However, it turn up Roy's original patch, and clicking on the
-message-Id in the "In-Reply-Field", it apperas Roy was replying to
-this message:
+> Isn't this already documented in
+> Documentation/devicetree/bindings/clock/qcom,gcc.yaml
 
-https://lore.kernel.org/lkml/20210330205750.428816-1-keescook@chromium.org/
 
-which is the head of this patch series:
+I wanted to document the custom property for the SONY SDHCI quirk, but if it's not necessary, we can just omit this patch.
 
-Subject: [PATCH v8 0/6] Optionally randomize kernel stack offset each syscall
 
-That being said, it would have been better if the original subject
-line had been preserved, and it's yet another example of how the
-lore.kernel.org URL is infinitely better than the Change-Id.  :-)
+Konrad
 
-		       		  	      - Ted
