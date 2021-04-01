@@ -2,138 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81901351CD0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 349F8351E24
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236398AbhDASV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:21:26 -0400
-Received: from mga07.intel.com ([134.134.136.100]:1736 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236615AbhDASCp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:02:45 -0400
-IronPort-SDR: AosnQ+6nSoLTZ8YlxVgXpKw+b4pU4V4kK1Zmq04SKOxc87ZpKxuROjEguP8WFG18SzxqJDr2mU
- SEHAvL9uaDMQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="256244491"
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="256244491"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 07:54:50 -0700
-IronPort-SDR: X9eLACOkTT5s82bm68RFcb7IcKuSxWeqc0tDNTkihzqGTXvuC0QEZfQ2TXEgsuY9JVRnD8vA4X
- HWKH4yKraf4Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="377726725"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga003.jf.intel.com with ESMTP; 01 Apr 2021 07:54:48 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 85C7D29D; Thu,  1 Apr 2021 17:55:03 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 2/2] iio: trigger: Fix strange (ladder-tupe) indentation
-Date:   Thu,  1 Apr 2021 17:54:57 +0300
-Message-Id: <20210401145457.12255-2-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210401145457.12255-1-andriy.shevchenko@linux.intel.com>
-References: <20210401145457.12255-1-andriy.shevchenko@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S240062AbhDASfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:35:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239238AbhDASPu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:15:50 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12AC5C0F26CA;
+        Thu,  1 Apr 2021 07:56:29 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id n8so2016723oie.10;
+        Thu, 01 Apr 2021 07:56:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=hmK4hQlTe/dm4OEhWDvI1X0E5xhesSt9X9vk7PN2+D0=;
+        b=Nt3OrrBvL3S9XKUVqA54ZvBGEsaBvezPl3jRLE0I2Bi0NWtYOZ61z05xk5t0aahcS3
+         iKsAk7vQVS9oV8UWzL8INOpgyzhugy7vON9xMXMREoLwQcdbduWVnLvXfkZquUmwvzbz
+         sjJiRCLDSWYIsmRe+BxuRCYgU4VJ9swJKjnVKyz5TrUaAjzFeIn9Kcc7XKOc4RdpA4rM
+         kR+XQ9PIs9NEbPwWMDk8Mu1UxX+NYGWpvDINS4NrOnA3yzvE+YdHi9I2d3T+iIL7hC0u
+         WmJJG2Zecscg0R3l06J+8g/yLQensHlob2lkGgQr8npEQ9Mhhq7zn9bP2Qdwtf4ZRxIB
+         q+7Q==
+X-Gm-Message-State: AOAM533+7v6il8Nkpt37Z0U4nFlnYvXbVBUu2I7mbeUniBP6ecZQl08+
+        l8rkVm+KjwyjC18vFZmDHA==
+X-Google-Smtp-Source: ABdhPJzSJezFFJWfsrLlTbHO7wSon9UUy58X1LwrBJKlLXSZ7+3BsgnGryhpiYtiaivLvDP+5R1zPg==
+X-Received: by 2002:a05:6808:249:: with SMTP id m9mr6434303oie.170.1617288986305;
+        Thu, 01 Apr 2021 07:56:26 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id v65sm1092368oib.42.2021.04.01.07.56.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 07:56:24 -0700 (PDT)
+Received: (nullmailer pid 409162 invoked by uid 1000);
+        Thu, 01 Apr 2021 14:56:21 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Puranjay Mohan <puranjay12@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, alexandru.ardelean@analog.com,
+        knaack.h@gmx.de, devicetree@vger.kernel.org, lars@metafoo.de,
+        jic23@kernel.org, linux-iio@vger.kernel.org
+In-Reply-To: <20210401091648.87421-2-puranjay12@gmail.com>
+References: <20210401091648.87421-1-puranjay12@gmail.com> <20210401091648.87421-2-puranjay12@gmail.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: iio: temperature: Add DT bindings for TMP117
+Date:   Thu, 01 Apr 2021 09:56:21 -0500
+Message-Id: <1617288981.576340.409161.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In some cases indentation looks a bit weird with starting from = sign
-and being in a ladder-type style. Unify it across the module.
+On Thu, 01 Apr 2021 14:46:47 +0530, Puranjay Mohan wrote:
+> Add devicetree binding document for TMP117, a digital temperature sensor.
+> 
+> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+> ---
+>  .../bindings/iio/temperature/ti,tmp117.yaml   | 34 +++++++++++++++++++
+>  1 file changed, 34 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/temperature/ti,tmp117.yaml
+> 
 
-While at it, add blank line after definition block where it needed,
+My bot found errors running 'make dt_binding_check' on your patch:
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/iio/industrialio-trigger.c | 25 ++++++++++++-------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
+yamllint warnings/errors:
 
-diff --git a/drivers/iio/industrialio-trigger.c b/drivers/iio/industrialio-trigger.c
-index 77fca24147b2..f998900a34f5 100644
---- a/drivers/iio/industrialio-trigger.c
-+++ b/drivers/iio/industrialio-trigger.c
-@@ -211,6 +211,7 @@ EXPORT_SYMBOL(iio_trigger_notify_done);
- static int iio_trigger_get_irq(struct iio_trigger *trig)
- {
- 	int ret;
-+
- 	mutex_lock(&trig->pool_lock);
- 	ret = bitmap_find_free_region(trig->pool,
- 				      CONFIG_IIO_CONSUMERS_PER_TRIGGER,
-@@ -239,9 +240,9 @@ static void iio_trigger_put_irq(struct iio_trigger *trig, int irq)
- int iio_trigger_attach_poll_func(struct iio_trigger *trig,
- 				 struct iio_poll_func *pf)
- {
-+	bool notinuse =
-+		bitmap_empty(trig->pool, CONFIG_IIO_CONSUMERS_PER_TRIGGER);
- 	int ret = 0;
--	bool notinuse
--		= bitmap_empty(trig->pool, CONFIG_IIO_CONSUMERS_PER_TRIGGER);
- 
- 	/* Prevent the module from being removed whilst attached to a trigger */
- 	__module_get(pf->indio_dev->driver_module);
-@@ -290,11 +291,10 @@ int iio_trigger_attach_poll_func(struct iio_trigger *trig,
- int iio_trigger_detach_poll_func(struct iio_trigger *trig,
- 				 struct iio_poll_func *pf)
- {
-+	bool no_other_users =
-+		bitmap_weight(trig->pool, CONFIG_IIO_CONSUMERS_PER_TRIGGER) == 1;
- 	int ret = 0;
--	bool no_other_users
--		= (bitmap_weight(trig->pool,
--				 CONFIG_IIO_CONSUMERS_PER_TRIGGER)
--		   == 1);
-+
- 	if (trig->ops && trig->ops->set_trigger_state && no_other_users) {
- 		ret = trig->ops->set_trigger_state(trig, false);
- 		if (ret)
-@@ -312,6 +312,7 @@ int iio_trigger_detach_poll_func(struct iio_trigger *trig,
- irqreturn_t iio_pollfunc_store_time(int irq, void *p)
- {
- 	struct iio_poll_func *pf = p;
-+
- 	pf->timestamp = iio_get_time_ns(pf->indio_dev);
- 	return IRQ_WAKE_THREAD;
- }
-@@ -498,18 +499,16 @@ static const struct device_type iio_trig_type = {
- static void iio_trig_subirqmask(struct irq_data *d)
- {
- 	struct irq_chip *chip = irq_data_get_irq_chip(d);
--	struct iio_trigger *trig
--		= container_of(chip,
--			       struct iio_trigger, subirq_chip);
-+	struct iio_trigger *trig = container_of(chip, struct iio_trigger, subirq_chip);
-+
- 	trig->subirqs[d->irq - trig->subirq_base].enabled = false;
- }
- 
- static void iio_trig_subirqunmask(struct irq_data *d)
- {
- 	struct irq_chip *chip = irq_data_get_irq_chip(d);
--	struct iio_trigger *trig
--		= container_of(chip,
--			       struct iio_trigger, subirq_chip);
-+	struct iio_trigger *trig = container_of(chip, struct iio_trigger, subirq_chip);
-+
- 	trig->subirqs[d->irq - trig->subirq_base].enabled = true;
- }
- 
-@@ -695,7 +694,7 @@ EXPORT_SYMBOL(iio_trigger_using_own);
-  * device, -EINVAL otherwise.
-  */
- int iio_trigger_validate_own_device(struct iio_trigger *trig,
--	struct iio_dev *indio_dev)
-+				    struct iio_dev *indio_dev)
- {
- 	if (indio_dev->dev.parent != trig->dev.parent)
- 		return -EINVAL;
--- 
-2.30.2
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/iio/temperature/ti,tmp117.example.dts:21.13-26: Warning (reg_format): /example-0/tmp117@48:reg: property has invalid length (4 bytes) (#address-cells == 1, #size-cells == 1)
+Documentation/devicetree/bindings/iio/temperature/ti,tmp117.example.dt.yaml: Warning (pci_device_reg): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/iio/temperature/ti,tmp117.example.dt.yaml: Warning (pci_device_bus_num): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/iio/temperature/ti,tmp117.example.dt.yaml: Warning (simple_bus_reg): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/iio/temperature/ti,tmp117.example.dt.yaml: Warning (i2c_bus_reg): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/iio/temperature/ti,tmp117.example.dt.yaml: Warning (spi_bus_reg): Failed prerequisite 'reg_format'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/temperature/ti,tmp117.example.dt.yaml: example-0: tmp117@48:reg:0: [72] is too short
+	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
+
+See https://patchwork.ozlabs.org/patch/1460920
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
