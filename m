@@ -2,844 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71E95351A60
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50670351AD0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237456AbhDASAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:00:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32063 "EHLO
+        id S236446AbhDASDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:03:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30875 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236339AbhDARoX (ORCPT
+        by vger.kernel.org with ESMTP id S236500AbhDARpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:44:23 -0400
+        Thu, 1 Apr 2021 13:45:17 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617299062;
+        s=mimecast20190719; t=1617299116;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=gSGkwZShHCu81Rw9f0Jx6S83C6mIwz3c5/Z0u/7jY+U=;
-        b=KodkrcJdMpRMwoFh75AjVEjMDhIHylGVVoVCyb/aWGnvzATNgIyOiXo05klxvQFikfrWsb
-        5r2K/unACjRpLRc9hxTKCSRxDzE85HaBWin8VTO259V6KQUGlk7sXKqCGG8t9kIyLHjDNQ
-        c4aQewEebIKNEKrpibTp0Ni4B2Z1aLc=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-265-hHAnNq-dNlarqYSRduVqPw-1; Thu, 01 Apr 2021 10:43:55 -0400
-X-MC-Unique: hHAnNq-dNlarqYSRduVqPw-1
-Received: by mail-qk1-f199.google.com with SMTP id j14so3869077qka.7
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 07:43:55 -0700 (PDT)
+        bh=5cXKDMg3hKjPJQxwPGQ5ktY0E9OHOmBfWVuhkV+IFpg=;
+        b=H7g0bcsE7OmJVh8n14J+ms3Zdmj2YSUOYKffGCc00W01mGQ5tGBxIu1lRrxMnFZxD2qTK5
+        qvrtNKddmsY09u3BU/R5OebARg0m0LilhKILEQWRPDUPN1hCcNVN7Ig7z7koyiRywBBaQg
+        FCtqEl/AxbDzlrW2kT9NWGXWx/1o5nc=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-519-c47tW2yuMLepSNRpxiOUEg-1; Thu, 01 Apr 2021 10:44:16 -0400
+X-MC-Unique: c47tW2yuMLepSNRpxiOUEg-1
+Received: by mail-ej1-f72.google.com with SMTP id sa29so2312562ejb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 07:44:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=gSGkwZShHCu81Rw9f0Jx6S83C6mIwz3c5/Z0u/7jY+U=;
-        b=suhBV5L6RghHgHFuZCG1xMdetWuB/GpSVX28pjG6e8zXFmspfkonbB+LpcLZRcrlN/
-         MI44E9tT4ntnpstlxN/D3c0L/ehfJZozg6aay3wHtCKlzsjkfT89EiPiNXF+lYPGUmV/
-         xgYhggTm0JFcwcycFbSgYqOgXJBvWSyYMJYFTrbGpohP0Um28D8IMQj450f8Y2Djwv3Z
-         hl8lQMWCeyKXpx4lqT19SK1d8S5QlRmLXHayMFlZ5wgiw92m/KWz+CJbvBPbKCs/RACF
-         3v6QP8SyUaSYRlF95+jvAZe7HgYhz/fnp1l81zZ0PCSklCb6LIU+PM/4pTYK14GEZnx5
-         LShg==
-X-Gm-Message-State: AOAM533omMVqk2cB2Zzxym//G47CPwe36Wyf31mhuN8Bnd2fjMozZ9yt
-        LPulduC1zwvalqgq/zcoFhmiejTW4ijwG9MaSY6JsAIq4crI64CCL1P+5AwH8ZqMgO0/dsJshRl
-        H2S4ySGt6JmX6pSklvtjAj+DI
-X-Received: by 2002:a05:622a:1701:: with SMTP id h1mr6421630qtk.86.1617288235021;
-        Thu, 01 Apr 2021 07:43:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxuLDbMHXC9CNvo0t2A3qF2LXyPIzZ504k6tflBIRR+WR0egk4w4i3pHgMEitLwOK0HrA9UUg==
-X-Received: by 2002:a05:622a:1701:: with SMTP id h1mr6421591qtk.86.1617288234575;
-        Thu, 01 Apr 2021 07:43:54 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id k126sm4082887qkb.4.2021.04.01.07.43.52
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5cXKDMg3hKjPJQxwPGQ5ktY0E9OHOmBfWVuhkV+IFpg=;
+        b=Vua0mfzFoM2sSRhEnQj2O/m1ly76q6s3/jwRW+wBFhPXH1aLvOw8SCdDqp2B/96aPZ
+         CRc6VQYCpEbVEmejZGDQLNaGF80ERxEz/uPheBIhqpAiO4fHrYjPzvC8b4O++joBeQmI
+         nwm6rSSdBNy2gBz5lsnQtK3MYlhS0uGa2EK2pJQkP6kacF6KAbignqqzywa29T2I8ekl
+         C09+H4W95/5yOza2qnElpVtK7JdJvsu7C+zYHK1+5wp4cMuKyUTJgu1yYz8yundo59nE
+         XMJwmv9urB3FStKixN6tuQ2Q9kvtlIY4EMHnlKBqK396oPl58+Sc62G1v3RRlJx6UtT1
+         vWjA==
+X-Gm-Message-State: AOAM533UMuRI9y6kuz8fd/SLz8gEj+idyxGZp/ex5mtTo1KutL5o1m24
+        TUthEpscthBTD9AVrSLw//2eRTgnYgKCJQweBEB+CibkqETGXcMn6VYqh/PjrxqYVZxNz6hqpmt
+        oKDluqfEIoL8fvHEW071t4kHJ
+X-Received: by 2002:a17:906:7cc:: with SMTP id m12mr9198949ejc.171.1617288255494;
+        Thu, 01 Apr 2021 07:44:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxBvqVmNf7jxxrmZVvbLGCfGGoUZuyyx3hDl4qqpBdw1aJqT1wubt4ceARSA8kiv/b6Aoi4tw==
+X-Received: by 2002:a17:906:7cc:: with SMTP id m12mr9198931ejc.171.1617288255332;
+        Thu, 01 Apr 2021 07:44:15 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id si3sm2877618ejb.90.2021.04.01.07.44.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Apr 2021 07:43:54 -0700 (PDT)
-Subject: Re: [PATCH V4 XRT Alveo 11/20] fpga: xrt: fpga-mgr and region
- implementation for xclbin download
-To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org
-Cc:     linux-fpga@vger.kernel.org, maxz@xilinx.com,
-        sonal.santan@xilinx.com, yliu@xilinx.com, michal.simek@xilinx.com,
-        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
-        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
-References: <20210324052947.27889-1-lizhi.hou@xilinx.com>
- <20210324052947.27889-12-lizhi.hou@xilinx.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <7fea5bed-c64a-528b-5e03-54f41220be8c@redhat.com>
-Date:   Thu, 1 Apr 2021 07:43:51 -0700
+        Thu, 01 Apr 2021 07:44:14 -0700 (PDT)
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Jim Mattson <jmattson@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+References: <20210401141814.1029036-1-mlevitsk@redhat.com>
+ <20210401141814.1029036-5-mlevitsk@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH 4/6] KVM: x86: Introduce KVM_GET_SREGS2 / KVM_SET_SREGS2
+Message-ID: <b1a36c94-6dd5-88ef-a503-f6d91eb2d267@redhat.com>
+Date:   Thu, 1 Apr 2021 16:44:13 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210324052947.27889-12-lizhi.hou@xilinx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210401141814.1029036-5-mlevitsk@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-small alloc's should use kzalloc.
+Just a quick review on the API:
 
-On 3/23/21 10:29 PM, Lizhi Hou wrote:
-> fpga-mgr and region implementation for xclbin download which will be
-> called from main platform driver
->
-> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
-> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
-> Signed-off-by: Lizhi Hou <lizhi.hou@xilinx.com>
-> ---
->  drivers/fpga/xrt/mgmt/fmgr-drv.c    | 191 +++++++++++
->  drivers/fpga/xrt/mgmt/fmgr.h        |  19 ++
->  drivers/fpga/xrt/mgmt/main-region.c | 483 ++++++++++++++++++++++++++++
->  3 files changed, 693 insertions(+)
->  create mode 100644 drivers/fpga/xrt/mgmt/fmgr-drv.c
->  create mode 100644 drivers/fpga/xrt/mgmt/fmgr.h
-a better file name would be xrt-mgr.*
->  create mode 100644 drivers/fpga/xrt/mgmt/main-region.c
->
-> diff --git a/drivers/fpga/xrt/mgmt/fmgr-drv.c b/drivers/fpga/xrt/mgmt/fmgr-drv.c
-> new file mode 100644
-> index 000000000000..12e1cc788ad9
-> --- /dev/null
-> +++ b/drivers/fpga/xrt/mgmt/fmgr-drv.c
-> @@ -0,0 +1,191 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * FPGA Manager Support for Xilinx Alveo Management Function Driver
+On 01/04/21 16:18, Maxim Levitsky wrote:
+> +struct kvm_sregs2 {
+> +	/* out (KVM_GET_SREGS2) / in (KVM_SET_SREGS2) */
+> +	struct kvm_segment cs, ds, es, fs, gs, ss;
+> +	struct kvm_segment tr, ldt;
+> +	struct kvm_dtable gdt, idt;
+> +	__u64 cr0, cr2, cr3, cr4, cr8;
+> +	__u64 efer;
+> +	__u64 apic_base;
+> +	__u64 flags; /* must be zero*/
 
-Since there is only one fpga mgr for xrt, this could be shortened to
+I think it would make sense to define a flag bit for the PDPTRs, so that 
+userspace can use KVM_SET_SREGS2 unconditionally (e.g. even when 
+migrating from a source that uses KVM_GET_SREGS and therefore doesn't 
+provide the PDPTRs).
 
-* FPGA Manager Support for Xilinx Alevo
+> +	__u64 pdptrs[4];
+> +	__u64 padding;
 
-> + *
-> + * Copyright (C) 2020-2021 Xilinx, Inc.
-> + *
-> + * Authors: Sonal.Santan@xilinx.com
-> + */
-> +
-> +#include <linux/cred.h>
-> +#include <linux/efi.h>
-> +#include <linux/fpga/fpga-mgr.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/module.h>
-> +#include <linux/vmalloc.h>
-> +
-> +#include "xclbin-helper.h"
-> +#include "xleaf.h"
-> +#include "fmgr.h"
-> +#include "xleaf/axigate.h"
-> +#include "xleaf/icap.h"
-> +#include "xmgnt.h"
-> +
-> +struct xfpga_class {
-> +	const struct platform_device *pdev;
-> +	char                          name[64];
-> +};
-> +
-> +/*
-> + * xclbin download plumbing -- find the download subsystem, ICAP and
-> + * pass the xclbin for heavy lifting
-> + */
-> +static int xmgmt_download_bitstream(struct platform_device *pdev,
-> +				    const struct axlf *xclbin)
-> +
-> +{
-> +	struct xclbin_bit_head_info bit_header = { 0 };
-> +	struct platform_device *icap_leaf = NULL;
-> +	struct xrt_icap_wr arg;
-> +	char *bitstream = NULL;
-> +	u64 bit_len;
-> +	int ret;
-> +
-> +	ret = xrt_xclbin_get_section(DEV(pdev), xclbin, BITSTREAM, (void **)&bitstream, &bit_len);
-> +	if (ret) {
-> +		xrt_err(pdev, "bitstream not found");
-> +		return -ENOENT;
-> +	}
-> +	ret = xrt_xclbin_parse_bitstream_header(DEV(pdev), bitstream,
-> +						XCLBIN_HWICAP_BITFILE_BUF_SZ,
-> +						&bit_header);
-> +	if (ret) {
-> +		ret = -EINVAL;
-> +		xrt_err(pdev, "invalid bitstream header");
-> +		goto fail;
-> +	}
-> +	if (bit_header.header_length + bit_header.bitstream_length > bit_len) {
-> +		ret = -EINVAL;
-> +		xrt_err(pdev, "invalid bitstream length. header %d, bitstream %d, section len %lld",
-> +			bit_header.header_length, bit_header.bitstream_length, bit_len);
-> +		goto fail;
-> +	}
-> +
-> +	icap_leaf = xleaf_get_leaf_by_id(pdev, XRT_SUBDEV_ICAP, PLATFORM_DEVID_NONE);
-> +	if (!icap_leaf) {
-> +		ret = -ENODEV;
-> +		xrt_err(pdev, "icap does not exist");
-> +		goto fail;
-> +	}
-> +	arg.xiiw_bit_data = bitstream + bit_header.header_length;
-> +	arg.xiiw_data_len = bit_header.bitstream_length;
-> +	ret = xleaf_call(icap_leaf, XRT_ICAP_WRITE, &arg);
-> +	if (ret) {
-> +		xrt_err(pdev, "write bitstream failed, ret = %d", ret);
-> +		xleaf_put_leaf(pdev, icap_leaf);
-> +		goto fail;
-> +	}
-ok, free_header removed
-> +
-> +	xleaf_put_leaf(pdev, icap_leaf);
-> +	vfree(bitstream);
-> +
-> +	return 0;
-> +
-> +fail:
-> +	vfree(bitstream);
-> +
-> +	return ret;
-> +}
-> +
-> +/*
-> + * There is no HW prep work we do here since we need the full
-> + * xclbin for its sanity check.
-> + */
-> +static int xmgmt_pr_write_init(struct fpga_manager *mgr,
-> +			       struct fpga_image_info *info,
-> +			       const char *buf, size_t count)
-> +{
-> +	const struct axlf *bin = (const struct axlf *)buf;
-> +	struct xfpga_class *obj = mgr->priv;
-> +
-> +	if (!(info->flags & FPGA_MGR_PARTIAL_RECONFIG)) {
-> +		xrt_info(obj->pdev, "%s only supports partial reconfiguration\n", obj->name);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (count < sizeof(struct axlf))
-> +		return -EINVAL;
-> +
-> +	if (count > bin->header.length)
-> +		return -EINVAL;
-> +
-> +	xrt_info(obj->pdev, "Prepare download of xclbin %pUb of length %lld B",
-> +		 &bin->header.uuid, bin->header.length);
-> +
-> +	return 0;
-> +}
-> +
-> +/*
-> + * The implementation requries full xclbin image before we can start
-> + * programming the hardware via ICAP subsystem. The full image is required
-ok
-> + * for checking the validity of xclbin and walking the sections to
-> + * discover the bitstream.
-> + */
-> +static int xmgmt_pr_write(struct fpga_manager *mgr,
-> +			  const char *buf, size_t count)
-> +{
-> +	const struct axlf *bin = (const struct axlf *)buf;
-> +	struct xfpga_class *obj = mgr->priv;
-> +
-> +	if (bin->header.length != count)
-> +		return -EINVAL;
-> +
-> +	return xmgmt_download_bitstream((void *)obj->pdev, bin);
-> +}
-> +
-> +static int xmgmt_pr_write_complete(struct fpga_manager *mgr,
-> +				   struct fpga_image_info *info)
-> +{
-> +	const struct axlf *bin = (const struct axlf *)info->buf;
-> +	struct xfpga_class *obj = mgr->priv;
-> +
-> +	xrt_info(obj->pdev, "Finished download of xclbin %pUb",
-> +		 &bin->header.uuid);
-> +	return 0;
-> +}
-> +
-> +static enum fpga_mgr_states xmgmt_pr_state(struct fpga_manager *mgr)
-> +{
-> +	return FPGA_MGR_STATE_UNKNOWN;
-ok as-is
-> +}
-> +
-> +static const struct fpga_manager_ops xmgmt_pr_ops = {
-> +	.initial_header_size = sizeof(struct axlf),
-> +	.write_init = xmgmt_pr_write_init,
-> +	.write = xmgmt_pr_write,
-> +	.write_complete = xmgmt_pr_write_complete,
-> +	.state = xmgmt_pr_state,
-> +};
-> +
-> +struct fpga_manager *xmgmt_fmgr_probe(struct platform_device *pdev)
-> +{
-> +	struct xfpga_class *obj = devm_kzalloc(DEV(pdev), sizeof(struct xfpga_class),
-> +					       GFP_KERNEL);
-> +	struct fpga_manager *fmgr = NULL;
-> +	int ret = 0;
-> +
-> +	if (!obj)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	snprintf(obj->name, sizeof(obj->name), "Xilinx Alveo FPGA Manager");
-> +	obj->pdev = pdev;
-> +	fmgr = fpga_mgr_create(&pdev->dev,
-> +			       obj->name,
-> +			       &xmgmt_pr_ops,
-> +			       obj);
-> +	if (!fmgr)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	ret = fpga_mgr_register(fmgr);
-> +	if (ret) {
-> +		fpga_mgr_free(fmgr);
-> +		return ERR_PTR(ret);
-> +	}
-> +	return fmgr;
-> +}
-> +
-> +int xmgmt_fmgr_remove(struct fpga_manager *fmgr)
-> +{
-> +	fpga_mgr_unregister(fmgr);
-> +	return 0;
-> +}
-> diff --git a/drivers/fpga/xrt/mgmt/fmgr.h b/drivers/fpga/xrt/mgmt/fmgr.h
-> new file mode 100644
-> index 000000000000..ff1fc5f870f8
-> --- /dev/null
-> +++ b/drivers/fpga/xrt/mgmt/fmgr.h
-> @@ -0,0 +1,19 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2020-2021 Xilinx, Inc.
-> + *
-> + * Authors: Sonal.Santan@xilinx.com
-> + */
-> +
-> +#ifndef _XMGMT_FMGR_H_
-> +#define _XMGMT_FMGR_H_
-> +
-> +#include <linux/fpga/fpga-mgr.h>
-> +#include <linux/mutex.h>
+No need to add padding; if we add more fields in the future we can use 
+the flags to determine the length of the userspace data, similar to 
+KVM_GET/SET_NESTED_STATE.
 
-why do mutex.h and xclbin.h need to be included ?
 
-consider removing them.
+> 
+> +	idx = srcu_read_lock(&vcpu->kvm->srcu);
+> +	if (is_pae_paging(vcpu)) {
+> +		for (i = 0 ; i < 4 ; i++)
+> +			kvm_pdptr_write(vcpu, i, sregs2->pdptrs[i]);
+> +		kvm_register_mark_dirty(vcpu, VCPU_EXREG_PDPTR);
+> +		mmu_reset_needed = 1;
+> +	}
+> +	srcu_read_unlock(&vcpu->kvm->srcu, idx);
+> +
 
-> +
-> +#include <linux/xrt/xclbin.h>
-ok enum removed.
-> +
-> +struct fpga_manager *xmgmt_fmgr_probe(struct platform_device *pdev);
-> +int xmgmt_fmgr_remove(struct fpga_manager *fmgr);
-> +
-> +#endif
-> diff --git a/drivers/fpga/xrt/mgmt/main-region.c b/drivers/fpga/xrt/mgmt/main-region.c
-> new file mode 100644
-> index 000000000000..96a674618e86
-> --- /dev/null
-> +++ b/drivers/fpga/xrt/mgmt/main-region.c
-> @@ -0,0 +1,483 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * FPGA Region Support for Xilinx Alveo Management Function Driver
-> + *
-> + * Copyright (C) 2020-2021 Xilinx, Inc.
-> + * Bulk of the code borrowed from XRT mgmt driver file, fmgr.c
-review this line, there is not fmgr.c
-> + *
-> + * Authors: Lizhi.Hou@xilinx.com
-> + */
-> +
-> +#include <linux/uuid.h>
-> +#include <linux/fpga/fpga-bridge.h>
-> +#include <linux/fpga/fpga-region.h>
-> +#include "metadata.h"
-> +#include "xleaf.h"
-> +#include "xleaf/axigate.h"
-> +#include "xclbin-helper.h"
-> +#include "xmgnt.h"
-> +
-> +struct xmgmt_bridge {
-> +	struct platform_device *pdev;
-> +	const char *bridge_name;
-ok
-> +};
-> +
-> +struct xmgmt_region {
-> +	struct platform_device *pdev;
-> +	struct fpga_region *region;
-> +	struct fpga_compat_id compat_id;
-> +	uuid_t intf_uuid;
-interface_uuid
-> +	struct fpga_bridge *bridge;
-> +	int group_instance;
-> +	uuid_t dep_uuid;
-dep ? expand.
-> +	struct list_head list;
-> +};
-> +
-> +struct xmgmt_region_match_arg {
-> +	struct platform_device *pdev;
-> +	uuid_t *uuids;
-> +	u32 uuid_num;
-> +};
-> +
-> +static int xmgmt_br_enable_set(struct fpga_bridge *bridge, bool enable)
-> +{
-> +	struct xmgmt_bridge *br_data = (struct xmgmt_bridge *)bridge->priv;
-> +	struct platform_device *axigate_leaf;
-> +	int rc;
-> +
-> +	axigate_leaf = xleaf_get_leaf_by_epname(br_data->pdev, br_data->bridge_name);
-> +	if (!axigate_leaf) {
-> +		xrt_err(br_data->pdev, "failed to get leaf %s",
-> +			br_data->bridge_name);
-> +		return -ENOENT;
-> +	}
-> +
-> +	if (enable)
-> +		rc = xleaf_call(axigate_leaf, XRT_AXIGATE_OPEN, NULL);
-> +	else
-> +		rc = xleaf_call(axigate_leaf, XRT_AXIGATE_CLOSE, NULL);
-> +
-> +	if (rc) {
-> +		xrt_err(br_data->pdev, "failed to %s gate %s, rc %d",
-> +			(enable ? "free" : "freeze"), br_data->bridge_name,
-> +			rc);
-> +	}
-> +
-> +	xleaf_put_leaf(br_data->pdev, axigate_leaf);
-> +
-> +	return rc;
-> +}
-> +
-> +const struct fpga_bridge_ops xmgmt_bridge_ops = {
-> +	.enable_set = xmgmt_br_enable_set
-> +};
-> +
-> +static void xmgmt_destroy_bridge(struct fpga_bridge *br)
-> +{
-> +	struct xmgmt_bridge *br_data = br->priv;
-> +
-> +	if (!br_data)
-> +		return;
-> +
-> +	xrt_info(br_data->pdev, "destroy fpga bridge %s", br_data->bridge_name);
-> +	fpga_bridge_unregister(br);
-> +
-> +	devm_kfree(DEV(br_data->pdev), br_data);
-> +
-> +	fpga_bridge_free(br);
-> +}
-> +
-> +static struct fpga_bridge *xmgmt_create_bridge(struct platform_device *pdev,
-> +					       char *dtb)
-> +{
-> +	struct fpga_bridge *br = NULL;
-> +	struct xmgmt_bridge *br_data;
-> +	const char *gate;
-> +	int rc;
-> +
-> +	br_data = devm_kzalloc(DEV(pdev), sizeof(*br_data), GFP_KERNEL);
-> +	if (!br_data)
-> +		return NULL;
-> +	br_data->pdev = pdev;
-> +
-> +	br_data->bridge_name = XRT_MD_NODE_GATE_ULP;
-> +	rc = xrt_md_find_endpoint(&pdev->dev, dtb, XRT_MD_NODE_GATE_ULP,
-> +				  NULL, &gate);
-> +	if (rc) {
-> +		br_data->bridge_name = XRT_MD_NODE_GATE_PLP;
-> +		rc = xrt_md_find_endpoint(&pdev->dev, dtb, XRT_MD_NODE_GATE_PLP,
-> +					  NULL, &gate);
-> +	}
-> +	if (rc) {
-> +		xrt_err(pdev, "failed to get axigate, rc %d", rc);
-> +		goto failed;
-> +	}
-> +
-> +	br = fpga_bridge_create(DEV(pdev), br_data->bridge_name,
-> +				&xmgmt_bridge_ops, br_data);
-> +	if (!br) {
-> +		xrt_err(pdev, "failed to create bridge");
-> +		goto failed;
-> +	}
-> +
-> +	rc = fpga_bridge_register(br);
-> +	if (rc) {
-> +		xrt_err(pdev, "failed to register bridge, rc %d", rc);
-> +		goto failed;
-> +	}
-> +
-> +	xrt_info(pdev, "created fpga bridge %s", br_data->bridge_name);
-> +
-> +	return br;
-> +
-> +failed:
-> +	if (br)
-> +		fpga_bridge_free(br);
-> +	if (br_data)
-> +		devm_kfree(DEV(pdev), br_data);
-> +
-> +	return NULL;
-> +}
-> +
-> +static void xmgmt_destroy_region(struct fpga_region *region)
-ok
-> +{
-> +	struct xmgmt_region *r_data = region->priv;
-> +
-> +	xrt_info(r_data->pdev, "destroy fpga region %llx.%llx",
-> +		 region->compat_id->id_l, region->compat_id->id_h);
-are the args ordered correctly ? I expected id_h to be first.
-> +
-> +	fpga_region_unregister(region);
-> +
-> +	if (r_data->group_instance > 0)
-> +		xleaf_destroy_group(r_data->pdev, r_data->group_instance);
-> +
-> +	if (r_data->bridge)
-> +		xmgmt_destroy_bridge(r_data->bridge);
-> +
-> +	if (r_data->region->info) {
-> +		fpga_image_info_free(r_data->region->info);
-> +		r_data->region->info = NULL;
-> +	}
-> +
-> +	fpga_region_free(region);
-> +
-> +	devm_kfree(DEV(r_data->pdev), r_data);
-> +}
-> +
-> +static int xmgmt_region_match(struct device *dev, const void *data)
-> +{
-> +	const struct xmgmt_region_match_arg *arg = data;
-> +	const struct fpga_region *match_region;
-ok
-> +	uuid_t compat_uuid;
-> +	int i;
-> +
-> +	if (dev->parent != &arg->pdev->dev)
-> +		return false;
-> +
-> +	match_region = to_fpga_region(dev);
-> +	/*
-> +	 * The device tree provides both parent and child uuids for an
-> +	 * xclbin in one array. Here we try both uuids to see if it matches
-> +	 * with target region's compat_id. Strictly speaking we should
-> +	 * only match xclbin's parent uuid with target region's compat_id
-> +	 * but given the uuids by design are unique comparing with both
-> +	 * does not hurt.
-> +	 */
-> +	import_uuid(&compat_uuid, (const char *)match_region->compat_id);
-> +	for (i = 0; i < arg->uuid_num; i++) {
-> +		if (uuid_equal(&compat_uuid, &arg->uuids[i]))
-> +			return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +
-> +static int xmgmt_region_match_base(struct device *dev, const void *data)
-> +{
-> +	const struct xmgmt_region_match_arg *arg = data;
-> +	const struct fpga_region *match_region;
-> +	const struct xmgmt_region *r_data;
-> +
-> +	if (dev->parent != &arg->pdev->dev)
-> +		return false;
-> +
-> +	match_region = to_fpga_region(dev);
-> +	r_data = match_region->priv;
-> +	if (uuid_is_null(&r_data->dep_uuid))
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
-> +static int xmgmt_region_match_by_uuid(struct device *dev, const void *data)
-ok
-> +{
-> +	const struct xmgmt_region_match_arg *arg = data;
-> +	const struct fpga_region *match_region;
-> +	const struct xmgmt_region *r_data;
-> +
-> +	if (dev->parent != &arg->pdev->dev)
-> +		return false;
-> +
-> +	if (arg->uuid_num != 1)
-> +		return false;
-ok
-> +
-> +	match_region = to_fpga_region(dev);
-> +	r_data = match_region->priv;
-> +	if (uuid_equal(&r_data->dep_uuid, arg->uuids))
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
-> +static void xmgmt_region_cleanup(struct fpga_region *region)
-> +{
-> +	struct xmgmt_region *r_data = region->priv, *pdata, *temp;
-> +	struct platform_device *pdev = r_data->pdev;
-> +	struct xmgmt_region_match_arg arg = { 0 };
-> +	struct fpga_region *match_region = NULL;
-> +	struct device *start_dev = NULL;
-> +	LIST_HEAD(free_list);
-> +	uuid_t compat_uuid;
-> +
-> +	list_add_tail(&r_data->list, &free_list);
-> +	arg.pdev = pdev;
-> +	arg.uuid_num = 1;
-> +	arg.uuids = &compat_uuid;
-> +
-> +	/* find all regions depending on this region */
-> +	list_for_each_entry_safe(pdata, temp, &free_list, list) {
-ok
-> +		import_uuid(arg.uuids, (const char *)pdata->region->compat_id);
-> +		start_dev = NULL;
-> +		while ((match_region = fpga_region_class_find(start_dev, &arg,
-> +							      xmgmt_region_match_by_uuid))) {
-> +			pdata = match_region->priv;
-> +			list_add_tail(&pdata->list, &free_list);
-> +			start_dev = &match_region->dev;
-> +			put_device(&match_region->dev);
-> +		}
-> +	}
-> +
-> +	list_del(&r_data->list);
-> +
-> +	list_for_each_entry_safe_reverse(pdata, temp, &free_list, list)
-> +		xmgmt_destroy_region(pdata->region);
-> +
-> +	if (r_data->group_instance > 0) {
-> +		xleaf_destroy_group(pdev, r_data->group_instance);
-> +		r_data->group_instance = -1;
-> +	}
-> +	if (r_data->region->info) {
-> +		fpga_image_info_free(r_data->region->info);
-> +		r_data->region->info = NULL;
-> +	}
-> +}
-> +
-> +void xmgmt_region_cleanup_all(struct platform_device *pdev)
-> +{
-> +	struct xmgmt_region_match_arg arg = { 0 };
-> +	struct fpga_region *base_region;
-> +
-> +	arg.pdev = pdev;
-> +
-> +	while ((base_region = fpga_region_class_find(NULL, &arg, xmgmt_region_match_base))) {
-ok
-> +		put_device(&base_region->dev);
-> +
-> +		xmgmt_region_cleanup(base_region);
-> +		xmgmt_destroy_region(base_region);
-> +	}
-> +}
-> +
-> +/*
-> + * Program a region with a xclbin image. Bring up the subdevs and the
-ok
-> + * group object to contain the subdevs.
-> + */
-> +static int xmgmt_region_program(struct fpga_region *region, const void *xclbin, char *dtb)
-> +{
-> +	const struct axlf *xclbin_obj = xclbin;
-> +	struct fpga_image_info *info;
-> +	struct platform_device *pdev;
-> +	struct xmgmt_region *r_data;
-> +	int rc;
-> +
-> +	r_data = region->priv;
-> +	pdev = r_data->pdev;
-> +
-> +	info = fpga_image_info_alloc(&pdev->dev);
-> +	if (!info)
-> +		return -ENOMEM;
-> +
-> +	info->buf = xclbin;
-> +	info->count = xclbin_obj->header.length;
-> +	info->flags |= FPGA_MGR_PARTIAL_RECONFIG;
-> +	region->info = info;
-> +	rc = fpga_region_program_fpga(region);
-> +	if (rc) {
-> +		xrt_err(pdev, "programming xclbin failed, rc %d", rc);
-> +		return rc;
-> +	}
-> +
-> +	/* free bridges to allow reprogram */
-> +	if (region->get_bridges)
-> +		fpga_bridges_put(&region->bridge_list);
-> +
-> +	/*
-> +	 * Next bringup the subdevs for this region which will be managed by
-> +	 * its own group object.
-> +	 */
-> +	r_data->group_instance = xleaf_create_group(pdev, dtb);
-> +	if (r_data->group_instance < 0) {
-> +		xrt_err(pdev, "failed to create group, rc %d",
-> +			r_data->group_instance);
-> +		rc = r_data->group_instance;
-> +		return rc;
-> +	}
-> +
-> +	rc = xleaf_wait_for_group_bringup(pdev);
-> +	if (rc)
-> +		xrt_err(pdev, "group bringup failed, rc %d", rc);
-> +	return rc;
-> +}
-> +
-> +static int xmgmt_get_bridges(struct fpga_region *region)
-> +{
-> +	struct xmgmt_region *r_data = region->priv;
-> +	struct device *dev = &r_data->pdev->dev;
-> +
-> +	return fpga_bridge_get_to_list(dev, region->info, &region->bridge_list);
-> +}
-> +
-> +/*
-> + * Program/create FPGA regions based on input xclbin file.
-ok, dropped sentence
-> + * 1. Identify a matching existing region for this xclbin
-> + * 2. Tear down any previous objects for the found region
-> + * 3. Program this region with input xclbin
-> + * 4. Iterate over this region's interface uuids to determine if it defines any
-> + *    child region. Create fpga_region for the child region.
-> + */
-> +int xmgmt_process_xclbin(struct platform_device *pdev,
-> +			 struct fpga_manager *fmgr,
-> +			 const struct axlf *xclbin,
-> +			 enum provider_kind kind)
-> +{
-> +	struct fpga_region *region, *compat_region = NULL;
-> +	struct xmgmt_region_match_arg arg = { 0 };
-ok
-> +	struct xmgmt_region *r_data;
-> +	uuid_t compat_uuid;
-> +	char *dtb = NULL;
-> +	int rc, i;
-> +
-> +	rc = xrt_xclbin_get_metadata(DEV(pdev), xclbin, &dtb);
-> +	if (rc) {
-> +		xrt_err(pdev, "failed to get dtb: %d", rc);
-> +		goto failed;
-> +	}
-> +
-> +	rc = xrt_md_get_interface_uuids(DEV(pdev), dtb, 0, NULL);
-> +	if (rc < 0) {
-> +		xrt_err(pdev, "failed to get intf uuid");
-> +		rc = -EINVAL;
-ok
-> +		goto failed;
-> +	}
-> +	arg.uuid_num = rc;
-> +	arg.uuids = vzalloc(sizeof(uuid_t) * arg.uuid_num);
-uuids small, convert to bzalloc
-> +	if (!arg.uuids) {
-> +		rc = -ENOMEM;
-> +		goto failed;
-> +	}
-> +	arg.pdev = pdev;
-> +
-> +	rc = xrt_md_get_interface_uuids(DEV(pdev), dtb, arg.uuid_num, arg.uuids);
-> +	if (rc != arg.uuid_num) {
-> +		xrt_err(pdev, "only get %d uuids, expect %d", rc, arg.uuid_num);
-> +		rc = -EINVAL;
-> +		goto failed;
-> +	}
-> +
-> +	/* if this is not base firmware, search for a compatible region */
-> +	if (kind != XMGMT_BLP) {
-> +		compat_region = fpga_region_class_find(NULL, &arg, xmgmt_region_match);
-> +		if (!compat_region) {
-> +			xrt_err(pdev, "failed to get compatible region");
-> +			rc = -ENOENT;
-> +			goto failed;
-> +		}
-> +
-> +		xmgmt_region_cleanup(compat_region);
-> +
-> +		rc = xmgmt_region_program(compat_region, xclbin, dtb);
-> +		if (rc) {
-> +			xrt_err(pdev, "failed to program region");
-> +			goto failed;
-> +		}
-> +	}
-> +
-> +	if (compat_region)
-> +		import_uuid(&compat_uuid, (const char *)compat_region->compat_id);
-> +
-> +	/* create all the new regions contained in this xclbin */
-> +	for (i = 0; i < arg.uuid_num; i++) {
-> +		if (compat_region && uuid_equal(&compat_uuid, &arg.uuids[i])) {
-> +			/* region for this interface already exists */
-> +			continue;
-> +		}
-> +
-> +		region = fpga_region_create(DEV(pdev), fmgr, xmgmt_get_bridges);
-> +		if (!region) {
-> +			xrt_err(pdev, "failed to create fpga region");
-> +			rc = -EFAULT;
-> +			goto failed;
-> +		}
-> +		r_data = devm_kzalloc(DEV(pdev), sizeof(*r_data), GFP_KERNEL);
-> +		if (!r_data) {
-> +			rc = -ENOMEM;
-> +			fpga_region_free(region);
-> +			goto failed;
-> +		}
-> +		r_data->pdev = pdev;
-> +		r_data->region = region;
-> +		r_data->group_instance = -1;
-> +		uuid_copy(&r_data->intf_uuid, &arg.uuids[i]);
-> +		if (compat_region)
-> +			import_uuid(&r_data->dep_uuid, (const char *)compat_region->compat_id);
-> +		r_data->bridge = xmgmt_create_bridge(pdev, dtb);
-> +		if (!r_data->bridge) {
-> +			xrt_err(pdev, "failed to create fpga bridge");
-> +			rc = -EFAULT;
-> +			devm_kfree(DEV(pdev), r_data);
-> +			fpga_region_free(region);
-> +			goto failed;
-> +		}
-> +
-> +		region->compat_id = &r_data->compat_id;
-> +		export_uuid((char *)region->compat_id, &r_data->intf_uuid);
-> +		region->priv = r_data;
-> +
-> +		rc = fpga_region_register(region);
-> +		if (rc) {
-> +			xrt_err(pdev, "failed to register fpga region");
-> +			xmgmt_destroy_bridge(r_data->bridge);
-> +			fpga_region_free(region);
-> +			devm_kfree(DEV(pdev), r_data);
-> +			goto failed;
-> +		}
-> +
-> +		xrt_info(pdev, "created fpga region %llx%llx",
-> +			 region->compat_id->id_l, region->compat_id->id_h);
+SRCU should not be needed here?
 
-see above comment on id_h
+> +	case KVM_GET_SREGS2: {
+> +		u.sregs2 = kzalloc(sizeof(struct kvm_sregs2), GFP_KERNEL_ACCOUNT);
+> +		r = -ENOMEM;
+> +		if (!u.sregs2)
+> +			goto out;
 
-destroy's info used %llx.%llx, for consistency need to add or remove a '.'
+No need to account, I think it's a little slower and this allocation is 
+very short lived.
 
-Tom
+>  #define KVM_CAP_PPC_DAWR1 194
+> +#define KVM_CAP_SREGS2 196
 
-> +	}
+195, not 196.
+
+>  #define KVM_XEN_VCPU_GET_ATTR	_IOWR(KVMIO, 0xca, struct kvm_xen_vcpu_attr)
+>  #define KVM_XEN_VCPU_SET_ATTR	_IOW(KVMIO,  0xcb, struct kvm_xen_vcpu_attr)
 > +
-> +	if (compat_region)
-> +		put_device(&compat_region->dev);
-> +	vfree(dtb);
-> +	return 0;
+> +#define KVM_GET_SREGS2             _IOR(KVMIO,  0xca, struct kvm_sregs2)
+> +#define KVM_SET_SREGS2             _IOW(KVMIO,  0xcb, struct kvm_sregs2)
 > +
-> +failed:
-> +	if (compat_region) {
-> +		put_device(&compat_region->dev);
-> +		xmgmt_region_cleanup(compat_region);
-> +	} else {
-> +		xmgmt_region_cleanup_all(pdev);
-> +	}
-> +
-> +	vfree(dtb);
-> +	return rc;
-> +}
+
+It's not exactly overlapping, but please bump the ioctls to 0xcc/0xcd.
+
+Paolo
 
