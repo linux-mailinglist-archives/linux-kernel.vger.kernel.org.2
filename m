@@ -2,65 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4211735231F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 01:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D2B352324
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 01:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235810AbhDAXAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 19:00:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60146 "EHLO mail.kernel.org"
+        id S236140AbhDAXAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 19:00:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234043AbhDAXAI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 19:00:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 7800861103;
+        id S235670AbhDAXAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 19:00:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id E79716112E;
         Thu,  1 Apr 2021 23:00:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1617318008;
-        bh=lWptgok4IUA8E+fiJ3AoApa/DeUWaH+zVu1U5CgK/rY=;
+        bh=tSr+zGDSluwm5YWn2jN0KZi3KMNYKIeIsuiiZFz4PkI=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=uJO2z0kbljIsPQXySoz5y5le90/nUIg3o/uNNpHUeEK/hs+TBm/wR4afuuwh8z5TZ
-         qW6uQjZ4pLNXi/QSPtWpX7YYktKpZw6w5nDjfpN7xVFujk6XNj17Gxr1YiMnV9AV+7
-         BuRfYKe2NmqSQWnd1RODeFPwcMJ+kFNAA7zj4+uXNNDUIZSURAzKUTr37/NcifG0lg
-         i1WiuQ0q47yuJTHxgL3zCTwUEPw4Ccf+NZCSNOMYD8ifXB+cKxvHDXS7kg7y+Mqq7F
-         t05oo48YB9hyBOuMMarqaFm93zvSo3+vEqY0L0E2aXnA7KYvjUlsQ+ggqC9HHhtFg2
-         3Xan0RsVWGh3w==
+        b=Bd74D8KdBl9+NjVrc3KlWF3RDkEL8bCZ46tt4u60K3OC4d17ZFdEixaFm0bqrlwUS
+         GEHmDrNXSlVZKVKPhcgk3qCIKQn/mbsBU7It93ODlc+F8thfYtnk6ooJHlxfJPoTfT
+         1UXzvjYX3/BHVvSOUvABfsUc4iSLQ7pdFtBAibvcaGrNAD6/tcrsEo7g3C8yoj+DiN
+         6yOxl6HDH+dkMe3cfKY35CGK22IrzuyiqyHIrGqy/+36s52C6rbpLpWZDH1eCurT0j
+         H9m0FAiM5zbYR2UjCbPIDZcmkMsggxIaja79lBrqr4hptmrtjcIuk2sutMM+B3ksYh
+         eTgaklKYzvYsg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 68F77609D2;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DF301609CF;
         Thu,  1 Apr 2021 23:00:08 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net: udp: Add support for getsockopt(..., ..., UDP_GRO,
- ..., ...);
+Subject: Re: [PATCH net-next 1/1] net: stmmac: remove unnecessary pci_enable_msi()
+ call
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161731800842.8028.10788470037981900309.git-patchwork-notify@kernel.org>
+Message-Id: <161731800891.8028.4149863007531019665.git-patchwork-notify@kernel.org>
 Date:   Thu, 01 Apr 2021 23:00:08 +0000
-References: <20210401065917.78025-1-norman_maurer@apple.com>
-In-Reply-To: <20210401065917.78025-1-norman_maurer@apple.com>
-To:     Norman Maurer <norman.maurer@googlemail.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        davem@davemloft.net, dsahern@kernel.org, pabeni@redhat.com,
-        norman_maurer@apple.com
+References: <20210401060628.27339-1-vee.khee.wong@linux.intel.com>
+In-Reply-To: <20210401060628.27339-1-vee.khee.wong@linux.intel.com>
+To:     Wong Vee Khee <vee.khee.wong@linux.intel.com>
+Cc:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
+        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
+        mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net.git (refs/heads/master):
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Thu,  1 Apr 2021 08:59:17 +0200 you wrote:
-> From: Norman Maurer <norman_maurer@apple.com>
+On Thu,  1 Apr 2021 14:06:28 +0800 you wrote:
+> The commit d2a029bde37b ("stmmac: pci: add MSI support for Intel Quark
+> X1000") introduced a pci_enable_msi() call in stmmac_pci.c.
 > 
-> Support for UDP_GRO was added in the past but the implementation for
-> getsockopt was missed which did lead to an error when we tried to
-> retrieve the setting for UDP_GRO. This patch adds the missing switch
-> case for UDP_GRO
+> With the commit 58da0cfa6cf1 ("net: stmmac: create dwmac-intel.c to
+> contain all Intel platform"), Intel Quark platform related codes
+> have been moved to the newly created driver.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net] net: udp: Add support for getsockopt(..., ..., UDP_GRO, ..., ...);
-    https://git.kernel.org/netdev/net/c/98184612aca0
+  - [net-next,1/1] net: stmmac: remove unnecessary pci_enable_msi() call
+    https://git.kernel.org/netdev/net-next/c/2237778d8c21
 
 You are awesome, thank you!
 --
