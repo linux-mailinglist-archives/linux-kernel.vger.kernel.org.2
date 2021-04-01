@@ -2,97 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 661FB351053
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 09:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B76D35105C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 09:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233467AbhDAHsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 03:48:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230284AbhDAHsA (ORCPT
+        id S233554AbhDAHuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 03:50:19 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:35086 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233383AbhDAHt4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 03:48:00 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C06B7C0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 00:47:59 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lRs3V-0001u2-GP; Thu, 01 Apr 2021 09:47:53 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lRs3T-000588-IB; Thu, 01 Apr 2021 09:47:51 +0200
-Date:   Thu, 1 Apr 2021 09:47:51 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Fugang Duan <fugang.duan@nxp.com>, kernel@pengutronix.de,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        Fabio Estevam <festevam@gmail.com>,
-        David Jander <david@protonic.nl>,
-        Russell King <linux@armlinux.org.uk>,
-        Philippe Schenker <philippe.schenker@toradex.com>
-Subject: Re: [PATCH net-next v1 3/3] net: fec: add basic selftest support
-Message-ID: <20210401074751.so4m7k3pnhcjeofx@pengutronix.de>
-References: <20210330135407.17010-1-o.rempel@pengutronix.de>
- <20210330135407.17010-4-o.rempel@pengutronix.de>
- <YGRqpxefTxZjqp6w@lunn.ch>
+        Thu, 1 Apr 2021 03:49:56 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1317nCoJ087870;
+        Thu, 1 Apr 2021 07:49:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
+ bh=SA7wCCNN+mAeWw8tOf7p23ED4+d4WG2ymIuZDIXJ7Xw=;
+ b=x+yzm4tYG06gGnAwPrBDLz/1BJhaIPEtOVe3cAPBdiWcbZc7yxugtQm5Fh2wOW/TnzBv
+ HUXHrOYZA+FvM3LKbyPPmUr5eCHXlEgbeDD2inUfisFY5VosH7UFW9ZkfPT/4MARBY5n
+ Solv6vumnpD3a6ZEA4mq3w2g+rCm088rml8zwO42IIMvwQAEt2eR1M899UCewvu70u33
+ +LOG07a6R806G4aS7hQmYXkE/Xcvx7ZV+fqcfaeMOkerUMxOdbXJdHlggkEHq+CjAR2I
+ tW22K7ahNAIKa+SyyNt2Tm7NbhaxigEFt3Ax5L43yc2L7gsGE03JSnSx8WNL8Up8LEYZ ew== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 37n30s8s18-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 01 Apr 2021 07:49:23 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1317egNm082688;
+        Thu, 1 Apr 2021 07:49:21 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 37n2pa5msv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 01 Apr 2021 07:49:21 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 1317nEsA005753;
+        Thu, 1 Apr 2021 07:49:18 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 01 Apr 2021 00:49:14 -0700
+Date:   Thu, 1 Apr 2021 10:49:05 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     chenlifu <chenlifu@huawei.com>
+Cc:     Russell King <linux@armlinux.org.uk>, heying24@huawei.com,
+        yuehaibing@huawei.com, weiyongjun1@huawei.com,
+        johnny.chenyi@huawei.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH -next] i2c: gpio: use DEFINE_SPINLOCK() for spinlock
+Message-ID: <20210401074905.GQ2065@kadam>
+References: <20210327095228.105123-1-chenlifu@huawei.com>
+ <fec9295e-c5d6-13ee-23f5-13b593d2fd2e@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YGRqpxefTxZjqp6w@lunn.ch>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 09:44:36 up 119 days, 21:50, 47 users,  load average: 0.01, 0.04,
- 0.01
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fec9295e-c5d6-13ee-23f5-13b593d2fd2e@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9940 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ adultscore=0 bulkscore=0 mlxscore=0 spamscore=0 malwarescore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103310000 definitions=main-2104010053
+X-Proofpoint-GUID: SGcL9X88jdvImiMwP0_StNqprF49Esev
+X-Proofpoint-ORIG-GUID: SGcL9X88jdvImiMwP0_StNqprF49Esev
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9940 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
+ bulkscore=0 priorityscore=1501 suspectscore=0 mlxscore=0 spamscore=0
+ clxscore=1011 mlxlogscore=999 malwarescore=0 adultscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
+ definitions=main-2104010054
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 02:27:19PM +0200, Andrew Lunn wrote:
-> On Tue, Mar 30, 2021 at 03:54:07PM +0200, Oleksij Rempel wrote:
-> > Port some parts of the stmmac selftest to the FEC. This patch was tested
-> > on iMX6DL.
-> > With this tests it is possible to detect some basic issues like:
-> > - MAC loopback fail: most probably wrong clock configuration.
-> > - PHY loopback fail: incorrect RGMII timings, damaged traces, etc
+On Thu, Apr 01, 2021 at 11:38:30AM +0800, chenlifu wrote:
+> Kindly pinging ...
 > 
-> Hi
+> Best Regards,
+> Chen Lifu
 > 
-> Oleksij
-> 
-> I've not done a side-by-side diff with stmmac, but i guess a lot of
-> this code is identical?
+> 在 2021/3/27 17:52, Chen Lifu 写道:
 
-ack
+It's to early to start asking for a response.  Please wait at least two
+weeks.  (Probably four weeks if the merge window was open).
 
-> Rather than make a copy/paste, could you move
-> it somewhere under net and turn it into a library any driver can use?
+regards,
+dan carpenter
 
-yes, I assume, it is possible to make this code complete generic for all
-devices, but we will need to provide some more call backs. For example
-enable MAC loop back, enable DSA loopbacks and so on.
 
-Do you have ideas for the new location of generic selftest code and
-where  can be added loopback options for different levels?
-
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
