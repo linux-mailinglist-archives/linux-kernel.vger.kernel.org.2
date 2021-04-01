@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2BE3511EC
+	by mail.lfdr.de (Postfix) with ESMTP id A5B233511ED
 	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234123AbhDAJWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 05:22:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36268 "EHLO
+        id S234146AbhDAJWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 05:22:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233788AbhDAJVw (ORCPT
+        with ESMTP id S233807AbhDAJVy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 05:21:52 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31ABFC0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 02:21:52 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id jy13so1862695ejc.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 02:21:52 -0700 (PDT)
+        Thu, 1 Apr 2021 05:21:54 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0CB9C0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 02:21:53 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id u5so1835838ejn.8
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 02:21:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=XZ/WaUQjAmY8KmnixOjdV9SPezviiC6YLCxzwBrmxos=;
-        b=mihdA6KGXgxejzuR7cuTDHmcAlNctRHHXCmAVbxWp7nd9m9x4GHKj7HdAtp2YXkKUc
-         lM8GnLgjjgokSXmyCTGFEaPd44q19OvdF9LY7WvFzNOZIzAiuMpvSBv1vslRpmp00pYc
-         +kcww02Vjeg1I7vu+oV55TynlyTANHmijzJChcKfVWk5QGy+jvG1VMya9FM++Q23gBPH
-         6eCarEJJYXePENNj2CN3XFlZJv74TX7+56AAcgpx4JT1YnvgI1dXLcYGiFMsiYPgSJr0
-         gnhHAXGptf6YVcTMcRX7vxQ1S/T+VkpxTrV0yiDz2Z6MtCZDa9r+FfLVv/OHoRD/U0U2
-         M0kg==
+        bh=+JF/B2DTWQj/w/voWt1Q8G3VMWTtinDgQ1FwmaBkjzU=;
+        b=fqKPBTA4YqLvHiSqr0e/3V5WUlX09ghCtNP2BEZVo4yg1MYHYXSXCpyPy3wpjsz1US
+         zlMl6TDiTEnmXN6s1/BLHBa/CEySzUeoF/03a2l+BzxtwTii0uzBZHkTySL3RvvLsyM1
+         Y3LYnu4FWUbFwovnLiWlJzdB4J7lmAVrTWtWGm9DKQ1Wg/12yfeAGNU04cPGFHX4szZY
+         Ny1qpYp4nMatqDYNh/vtqjjDTNijVD3KvClQeAd+H+3357JvtvkVci0+JFjnRBx4wfOJ
+         vS7R2jK1K6sdL6DyFw7ALGMpdOo7yc2fKguP8z6tDIWcVweVW7pgkQoL6qNkNSlcy04O
+         6XXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=XZ/WaUQjAmY8KmnixOjdV9SPezviiC6YLCxzwBrmxos=;
-        b=Z93pUekg8KQdF0Vpio5FOwCugEIt+l6M8R1IFNiQdbnBadyja4+sTCJFRq0Hlq5QFr
-         eMd+mZ7FuRa2ukAsGeT889VPWPdsmP/AP7W1yPsn4zL4wDDozcL9m2zLEuKA6sqaTV1g
-         dJdLxalcT1wq4RFxela772B0UnEjncY0jsAPaP2aHyRUHomW/zY15nq17dvNx2kyuiH/
-         Ut3I0AEPMFiwVJjzXeFQs1nNkokU972IARxVqZn3V9bud2ctn5NYSv99pPXZD9KKCgg0
-         twQBzzi/81S1Do47jnjPMXjXiEE6TpFfRhNruHGhBMyrqSiENF9wz0DSzS5qA9oQ38w0
-         3ZYA==
-X-Gm-Message-State: AOAM532kjBSH4I6AlpISBQGFETXDVDtlogC40kveemMPXZNwts9oTiyK
-        BCRJqPaLkHcnnpQoSLEDVy8=
-X-Google-Smtp-Source: ABdhPJwfYyd01GZ+9c/2GChvVL0cWDtlVPNd+vRSZ/UuUPSqkX9LhyNllrsTlJeAQ9bHtyreixy6qg==
-X-Received: by 2002:a17:907:766f:: with SMTP id kk15mr8203810ejc.24.1617268911020;
-        Thu, 01 Apr 2021 02:21:51 -0700 (PDT)
+        bh=+JF/B2DTWQj/w/voWt1Q8G3VMWTtinDgQ1FwmaBkjzU=;
+        b=RBTS75y7jjc9xNpvMRd9cLZcUatCUShU2HLFr9si/PEjWswW68RKSzItu62bMhYPTT
+         z8Tq/HKSN4/6oHdlMAQ4VBhEI8YVIB5Yx1K9AfUgYoFezcCnQkG6fSpcPZxWTKnot1jX
+         cDOsw83x8AqjCZnSq8uxEwqYDqyilHzJrellRtrKcmoGNH5XZrBd8KqwlI8+adhgvIY/
+         jCeJAF7bc/I4AYwmUa0+YoJxbiGyk0SxZBJNwYvy6ZjjFLNcqhs1KXRWgSJcAac/ye7r
+         pm+bAw6TZr56Nh1VgstfbC+U+mv5tjyqpNIkO+T7YcPFADJ8JyEZe1ecD44D+RFxs7LA
+         YgkQ==
+X-Gm-Message-State: AOAM530nuUz950nmg6+ClaeueGYnXPebOiFCAGEsNYkQvnDNpZaxHNUa
+        UnKqKg36LoB3k+OKiSuHgHU=
+X-Google-Smtp-Source: ABdhPJyowsWjq10HPM6L2qVdOerWWnxHTpPIRI+5Ii0QcEp4tm0KBdy6VnG9TNQoVAUiqmPL4JUfyQ==
+X-Received: by 2002:a17:906:4705:: with SMTP id y5mr8189186ejq.119.1617268912668;
+        Thu, 01 Apr 2021 02:21:52 -0700 (PDT)
 Received: from agape ([5.171.80.247])
-        by smtp.gmail.com with ESMTPSA id e16sm3088001edu.94.2021.04.01.02.21.50
+        by smtp.gmail.com with ESMTPSA id g11sm3237786edw.37.2021.04.01.02.21.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 02:21:50 -0700 (PDT)
+        Thu, 01 Apr 2021 02:21:52 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     joe@perches.com, dan.carpenter@oracle.com,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH 17/49] staging: rtl8723bs: remove empty if-block in core/rtw_recv.c
-Date:   Thu,  1 Apr 2021 11:20:47 +0200
-Message-Id: <2cb9acb430ea2c37b067f8dbab1509c827a8e200.1617268327.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 18/49] staging: rtl8723bs: remove commented RT_TRACE call in core/rtw_ioctl_set.c
+Date:   Thu,  1 Apr 2021 11:20:48 +0200
+Message-Id: <b89831a6ad12c895c6d78c3bac721ef28da747d1.1617268327.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1617268327.git.fabioaiuto83@gmail.com>
 References: <cover.1617268327.git.fabioaiuto83@gmail.com>
@@ -65,27 +65,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove empty if-block
+remove commented RT_TRACE call in core/rtw_ioctl_set.c
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/core/rtw_recv.c | 3 ---
+ drivers/staging/rtl8723bs/core/rtw_ioctl_set.c | 3 ---
  1 file changed, 3 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_recv.c b/drivers/staging/rtl8723bs/core/rtw_recv.c
-index 5eb9914c48fc..fdba5cb74452 100644
---- a/drivers/staging/rtl8723bs/core/rtw_recv.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_recv.c
-@@ -535,9 +535,6 @@ static union recv_frame *portctrl(struct adapter *adapter, union recv_frame *pre
- 			/* allowed */
- 			/* check decryption status, and decrypt the frame if needed */
+diff --git a/drivers/staging/rtl8723bs/core/rtw_ioctl_set.c b/drivers/staging/rtl8723bs/core/rtw_ioctl_set.c
+index 7d858cae2395..14eb01df69b0 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_ioctl_set.c
++++ b/drivers/staging/rtl8723bs/core/rtw_ioctl_set.c
+@@ -451,9 +451,6 @@ u8 rtw_set_802_11_infrastructure_mode(struct adapter *padapter,
  
--			if (pattrib->bdecrypted == 0)
--				;
+ 		/* SecClearAllKeys(adapter); */
+ 
+-		/* RT_TRACE(COMP_OID_SET, DBG_LOUD, ("set_infrastructure: fw_state:%x after changing mode\n", */
+-		/* 									get_fwstate(pmlmepriv))); */
 -
- 			prtnframe = precv_frame;
- 			/* check is the EAPOL frame or not (Rekey) */
- 			/* if (ether_type == eapol_type) { */
+ 		spin_unlock_bh(&pmlmepriv->lock);
+ 	}
+ 	return true;
 -- 
 2.20.1
 
