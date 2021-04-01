@@ -2,315 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB6C35203A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C401F352056
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 22:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234726AbhDAUCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 16:02:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60810 "EHLO
+        id S234629AbhDAUFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 16:05:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234153AbhDAUCM (ORCPT
+        with ESMTP id S234346AbhDAUFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 16:02:12 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49FA3C0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 13:02:12 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id z1so3234160edb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 13:02:12 -0700 (PDT)
+        Thu, 1 Apr 2021 16:05:10 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 687EFC0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 13:05:10 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id i19so2372783qtv.7
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 13:05:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=+q9B9XbC0+FcsNbQi9vPNC1cqCVeUEwwN8dyF/FV3gU=;
-        b=t+Q1JMZRxD2txyeYnddimN5MvI6MJ1elYcCiuoFq9ab6HX+Pg+p1UxpslbaeN9FHFs
-         NV92KbNo9VJ8X0LqZwNTXK+WRfYppxiiSdgOO4sytJKCgSZrMFkwmmWOy5AO4wvCGADd
-         YThZmTih9yONmBpwkZZxLp1yoMKQxi5yHNSVViHtimJ8C7SYFAqH373wUNjh/UMauOnl
-         h4EqMWauQvQcSwBQv0AW1IAym1TgeumtecIVTF3spOyw9flUu7x9/14Xp/8Sxk3rI7+5
-         LFuteDknAnmJaeDT/ZQX5ZbxDLRQ/rmqkkfvC8pmWShOmR6xlm0GjlMaXP++8HC9KCjm
-         Pdsg==
+        bh=tJIfyCCxoJ1oRrXpStAL174OJkuWIck/NN2407gpF6A=;
+        b=Al+lBo76+4pP3lg8KL5KV05Kkzd5oSl9yZbI0d9YiyfrCx42/zyCTy+/FfwcO5JHPf
+         fz7F9K4W58cyG99bBoA5u4vpDoc5Rghu9YO49v9+joDJZKU82Uxql4PBW/83uNH6Sm8a
+         57IcgcMLXSy6h87zvnErm83bNXNVwpGqyyOBZEccXVGux1qFPoAp+27iEY89EzGliD92
+         HLFaYTkhZq55FxniNUHUTA2VNDjJfboYQP0QnGNtSiI+T1Ji1lmoyYTes4t2Fm5c8dyz
+         B0TDEIyKQoymSdyS8u8KU4QHR6cw5pR0M4jNOj4cC4IIDv6cEJOIQd75aV7BGNSizcP0
+         E63g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=+q9B9XbC0+FcsNbQi9vPNC1cqCVeUEwwN8dyF/FV3gU=;
-        b=m1DhWxbeNLTWzOrkRDSYoI+pQFmRqbcwd77KLgFGTPJXLejRl+xurqznabW71SZFXH
-         +gnFerlKHxx+ytNlznYs9BHN3o6vsMsrImfFYfvHXKgoq8/udRdjMxxwTWRRTDbTByFC
-         cmoYhxYQNhHZ2CaOwIY3Din1rsHovOp+NRffP10o9X49UdN8AztyWAGyPb+ajap+lp4j
-         ntMioUj8eqbL9oUtXX/81KruRgvaLn1me/A7WhXHeAUn/EqDoKyZ49CEmQdh4cMiJIq9
-         EItiiWL1j7CFLpH8cahdf4jZWYH4uqRe8/AKJ84kzSwCy64DZnTxGlbE9Uw9ufMjbjy6
-         5heQ==
-X-Gm-Message-State: AOAM533312GnVPGe3RdPmi8dyi0SKgqvrZQLimrKL78AUE9L15iZl1US
-        zoD6WD/XeF/YCZF2o1yVK5t9T/cBdg3Wnwp1sG0=
-X-Google-Smtp-Source: ABdhPJxAJkcdfzTp0vie5xwixZD08ikXEqU5NA1NCdgkjaD4srCiMqrROOKc6lcHA4ZDykt7yMs+Pl1D3ZqmtVxqNXM=
-X-Received: by 2002:a05:6402:518d:: with SMTP id q13mr11812902edd.313.1617307331009;
- Thu, 01 Apr 2021 13:02:11 -0700 (PDT)
+        bh=tJIfyCCxoJ1oRrXpStAL174OJkuWIck/NN2407gpF6A=;
+        b=PlYvhPPezjxdgOPcrigvhYWR/zB0XcvLQN8d4ip9XdMnaJdue9+B+NoIYjXbYIaksE
+         6453DPgq9gBojpS1O+r7JgbNzLtE4q4fFTKjtCO4Yxid+pVoiuvHc6wm2ZsSemfKniWV
+         F6XOxK/AJ47imcQEvfnsyVaU129ryI1f3MaOWVdLkn0jycq8HM5fW7BoL7a0J2mVzktq
+         ff5UCHE5B1QlCkVza4cJ8iWmdZB+c7l2M2ecAbnJVFWAxEXZWsPv3kmYSCiRrVTWOgcX
+         wkGitHQ5YEExGQAUBOEiOUTSN8DL1faECLONsNn5KrTa3dk2qW4ur/xf2UgkVCQo0zDv
+         9nhQ==
+X-Gm-Message-State: AOAM531TgokW0Ymle3XhnK5RlPDGvCTyRzIbjOZEuIXrkl5nEBD1laiD
+        ATY6rLYzgEoCF1Ahtab4njXAE13rdLFKh0HFFElkwg==
+X-Google-Smtp-Source: ABdhPJysEsnw00J777772ETYEKmlBIugUHCoAcTlBnA5MijBujeZj3Yh4tTh2kN5DATCGxlTTX9UhROsMkTj1weJ+RE=
+X-Received: by 2002:a05:622a:114:: with SMTP id u20mr8550700qtw.317.1617307509318;
+ Thu, 01 Apr 2021 13:05:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210401183216.443C4443@viggo.jf.intel.com> <20210401183225.2EDC224F@viggo.jf.intel.com>
-In-Reply-To: <20210401183225.2EDC224F@viggo.jf.intel.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 1 Apr 2021 13:01:59 -0700
-Message-ID: <CAHbLzkoHb_cLe6ORWeD=3P6tgZc-5AJJTyjWGivCenciUmoByw@mail.gmail.com>
-Subject: Re: [PATCH 05/10] mm/migrate: demote pages during reclaim
-To:     Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        weixugc@google.com, Yang Shi <yang.shi@linux.alibaba.com>,
-        David Rientjes <rientjes@google.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Oscar Salvador <osalvador@suse.de>
+References: <20210401131012.395311786@infradead.org> <20210401133917.231259659@infradead.org>
+In-Reply-To: <20210401133917.231259659@infradead.org>
+From:   Josh Don <joshdon@google.com>
+Date:   Thu, 1 Apr 2021 13:04:58 -0700
+Message-ID: <CABk29NtHj47DXiFBkJpG748bj2HSG09BCb-h5fXUatFMWn2qCQ@mail.gmail.com>
+Subject: Re: [PATCH 3/9] sched: Trivial core scheduling cookie management
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        "Hyser,Chris" <chris.hyser@oracle.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Thomas Gleixner <tglx@linutronix.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 11:35 AM Dave Hansen <dave.hansen@linux.intel.com> wrote:
->
->
-> From: Dave Hansen <dave.hansen@linux.intel.com>
->
-> This is mostly derived from a patch from Yang Shi:
->
->         https://lore.kernel.org/linux-mm/1560468577-101178-10-git-send-email-yang.shi@linux.alibaba.com/
->
-> Add code to the reclaim path (shrink_page_list()) to "demote" data
-> to another NUMA node instead of discarding the data.  This always
-> avoids the cost of I/O needed to read the page back in and sometimes
-> avoids the writeout cost when the pagee is dirty.
-
-s/pagee/page
-
->
-> A second pass through shrink_page_list() will be made if any demotions
-> fail.  This essentally falls back to normal reclaim behavior in the
-
-s/essentally/essentially
-
-> case that demotions fail.  Previous versions of this patch may have
-> simply failed to reclaim pages which were eligible for demotion but
-> were unable to be demoted in practice.
->
-> Note: This just adds the start of infratructure for migration. It is
-
-s/infratructure/infrastructure
-
-> actually disabled next to the FIXME in migrate_demote_page_ok().
->
-> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Wei Xu <weixugc@google.com>
-> Cc: Yang Shi <yang.shi@linux.alibaba.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Huang Ying <ying.huang@intel.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: osalvador <osalvador@suse.de>
->
-> --
-> changes from 20210122:
->  * move from GFP_HIGHUSER -> GFP_HIGHUSER_MOVABLE (Ying)
->
-> changes from 202010:
->  * add MR_NUMA_MISPLACED to trace MIGRATE_REASON define
->  * make migrate_demote_page_ok() static, remove 'sc' arg until
->    later patch
->  * remove unnecessary alloc_demote_page() hugetlb warning
->  * Simplify alloc_demote_page() gfp mask.  Depend on
->    __GFP_NORETRY to make it lightweight instead of fancier
->    stuff like leaving out __GFP_IO/FS.
->  * Allocate migration page with alloc_migration_target()
->    instead of allocating directly.
-> changes from 20200730:
->  * Add another pass through shrink_page_list() when demotion
->    fails.
-> changes from 20210302:
->  * Use __GFP_THISNODE and revise the comment explaining the
->    GFP mask constructionn
-
-Other than some typos above this patch looks good to me. Reviewed-by:
-Yang Shi <shy828301@gmail.com>
-
-Another nit below:
-
-> ---
->
->  b/include/linux/migrate.h        |    9 ++++
->  b/include/trace/events/migrate.h |    3 -
->  b/mm/vmscan.c                    |   82 +++++++++++++++++++++++++++++++++++++++
->  3 files changed, 93 insertions(+), 1 deletion(-)
->
-> diff -puN include/linux/migrate.h~demote-with-migrate_pages include/linux/migrate.h
-> --- a/include/linux/migrate.h~demote-with-migrate_pages 2021-03-31 15:17:15.842000251 -0700
-> +++ b/include/linux/migrate.h   2021-03-31 15:17:15.853000251 -0700
-> @@ -27,6 +27,7 @@ enum migrate_reason {
->         MR_MEMPOLICY_MBIND,
->         MR_NUMA_MISPLACED,
->         MR_CONTIG_RANGE,
-> +       MR_DEMOTION,
->         MR_TYPES
->  };
->
-> @@ -196,6 +197,14 @@ struct migrate_vma {
->  int migrate_vma_setup(struct migrate_vma *args);
->  void migrate_vma_pages(struct migrate_vma *migrate);
->  void migrate_vma_finalize(struct migrate_vma *migrate);
-> +int next_demotion_node(int node);
-> +
-> +#else /* CONFIG_MIGRATION disabled: */
-> +
-> +static inline int next_demotion_node(int node)
-> +{
-> +       return NUMA_NO_NODE;
-> +}
->
->  #endif /* CONFIG_MIGRATION */
->
-> diff -puN include/trace/events/migrate.h~demote-with-migrate_pages include/trace/events/migrate.h
-> --- a/include/trace/events/migrate.h~demote-with-migrate_pages  2021-03-31 15:17:15.846000251 -0700
-> +++ b/include/trace/events/migrate.h    2021-03-31 15:17:15.853000251 -0700
-> @@ -20,7 +20,8 @@
->         EM( MR_SYSCALL,         "syscall_or_cpuset")            \
->         EM( MR_MEMPOLICY_MBIND, "mempolicy_mbind")              \
->         EM( MR_NUMA_MISPLACED,  "numa_misplaced")               \
-> -       EMe(MR_CONTIG_RANGE,    "contig_range")
-> +       EM( MR_CONTIG_RANGE,    "contig_range")                 \
-> +       EMe(MR_DEMOTION,        "demotion")
->
->  /*
->   * First define the enums in the above macros to be exported to userspace
-> diff -puN mm/vmscan.c~demote-with-migrate_pages mm/vmscan.c
-> --- a/mm/vmscan.c~demote-with-migrate_pages     2021-03-31 15:17:15.848000251 -0700
-> +++ b/mm/vmscan.c       2021-03-31 15:17:15.856000251 -0700
-> @@ -41,6 +41,7 @@
->  #include <linux/kthread.h>
->  #include <linux/freezer.h>
->  #include <linux/memcontrol.h>
-> +#include <linux/migrate.h>
->  #include <linux/delayacct.h>
->  #include <linux/sysctl.h>
->  #include <linux/oom.h>
-> @@ -1035,6 +1036,23 @@ static enum page_references page_check_r
->         return PAGEREF_RECLAIM;
->  }
->
-> +static bool migrate_demote_page_ok(struct page *page)
-> +{
-> +       int next_nid = next_demotion_node(page_to_nid(page));
-> +
-> +       VM_BUG_ON_PAGE(!PageLocked(page), page);
-> +       VM_BUG_ON_PAGE(PageHuge(page), page);
-> +       VM_BUG_ON_PAGE(PageLRU(page), page);
-> +
-> +       if (next_nid == NUMA_NO_NODE)
-> +               return false;
-> +       if (PageTransHuge(page) && !thp_migration_supported())
-> +               return false;
-> +
-> +       // FIXME: actually enable this later in the series
-> +       return false;
-> +}
-> +
->  /* Check if a page is dirty or under writeback */
->  static void page_check_dirty_writeback(struct page *page,
->                                        bool *dirty, bool *writeback)
-> @@ -1065,6 +1083,46 @@ static void page_check_dirty_writeback(s
->                 mapping->a_ops->is_dirty_writeback(page, dirty, writeback);
->  }
->
-> +static struct page *alloc_demote_page(struct page *page, unsigned long node)
-> +{
-> +       struct migration_target_control mtc = {
-> +               /*
-> +                * Allocate from 'node', or fail the quickly and quietly.
-> +                * When this happens, 'page; will likely just be discarded
-
-s/'page;/'page'
-
-> +                * instead of migrated.
-> +                */
-> +               .gfp_mask = GFP_HIGHUSER_MOVABLE | __GFP_NORETRY |
-> +                           __GFP_THISNODE       | __GFP_NOWARN,
-> +               .nid = node
-> +       };
-> +
-> +       return alloc_migration_target(page, (unsigned long)&mtc);
-> +}
-> +
 > +/*
-> + * Take pages on @demote_list and attempt to demote them to
-> + * another node.  Pages which are not demoted are left on
-> + * @demote_pages.
-> + */
-> +static unsigned int demote_page_list(struct list_head *demote_pages,
-> +                                    struct pglist_data *pgdat,
-> +                                    struct scan_control *sc)
-> +{
-> +       int target_nid = next_demotion_node(pgdat->node_id);
-> +       unsigned int nr_succeeded = 0;
-> +       int err;
-> +
-> +       if (list_empty(demote_pages))
-> +               return 0;
-> +
-> +       /* Demotion ignores all cpuset and mempolicy settings */
-> +       err = migrate_pages(demote_pages, alloc_demote_page, NULL,
-> +                           target_nid, MIGRATE_ASYNC, MR_DEMOTION,
-> +                           &nr_succeeded);
-> +
-> +       return nr_succeeded;
-> +}
-> +
->  /*
->   * shrink_page_list() returns the number of reclaimed pages
->   */
-> @@ -1076,12 +1134,15 @@ static unsigned int shrink_page_list(str
->  {
->         LIST_HEAD(ret_pages);
->         LIST_HEAD(free_pages);
-> +       LIST_HEAD(demote_pages);
->         unsigned int nr_reclaimed = 0;
->         unsigned int pgactivate = 0;
-> +       bool do_demote_pass = true;
->
->         memset(stat, 0, sizeof(*stat));
->         cond_resched();
->
-> +retry:
->         while (!list_empty(page_list)) {
->                 struct address_space *mapping;
->                 struct page *page;
-> @@ -1231,6 +1292,16 @@ static unsigned int shrink_page_list(str
->                 }
->
->                 /*
-> +                * Before reclaiming the page, try to relocate
-> +                * its contents to another node.
-> +                */
-> +               if (do_demote_pass && migrate_demote_page_ok(page)) {
-> +                       list_add(&page->lru, &demote_pages);
-> +                       unlock_page(page);
-> +                       continue;
-> +               }
-> +
-> +               /*
->                  * Anonymous process memory has backing store?
->                  * Try to allocate it some swap space here.
->                  * Lazyfree page could be freed directly
-> @@ -1480,6 +1551,17 @@ keep:
->                 list_add(&page->lru, &ret_pages);
->                 VM_BUG_ON_PAGE(PageLRU(page) || PageUnevictable(page), page);
->         }
-> +       /* 'page_list' is always empty here */
-> +
-> +       /* Migrate pages selected for demotion */
-> +       nr_reclaimed += demote_page_list(&demote_pages, pgdat, sc);
-> +       /* Pages that could not be demoted are still in @demote_pages */
-> +       if (!list_empty(&demote_pages)) {
-> +               /* Pages which failed to demoted go back on @page_list for retry: */
-> +               list_splice_init(&demote_pages, page_list);
-> +               do_demote_pass = false;
-> +               goto retry;
-> +       }
->
->         pgactivate = stat->nr_activate[0] + stat->nr_activate[1];
->
-> _
->
+> + * sched_core_update_cookie - Common helper to update a task's core cookie. This
+> + * updates the selected cookie field.
+> + * @p: The task whose cookie should be updated.
+> + * @cookie: The new cookie.
+> + * @cookie_type: The cookie field to which the cookie corresponds.
+
+No cookie_type in this patch (or cookie fields). Also might want to
+call out that the caller is responsible for put'ing the return value.
