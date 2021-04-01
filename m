@@ -2,107 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E3635198A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5ACB351BAD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236261AbhDARyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:54:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234899AbhDARlL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:41:11 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06645C08EA7D;
-        Thu,  1 Apr 2021 06:30:54 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id n11-20020a05600c4f8bb029010e5cf86347so3867290wmq.1;
-        Thu, 01 Apr 2021 06:30:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xkmJRNyHZF6zO/+Ccr4Et1V1ZjM78NEZ05svjz/naMI=;
-        b=lILFftuC0IPr3uLEncMP2OrLr9zLpsfw4zdDDm7j/WvMTg4Db4ko0/YIULamJlFGkE
-         y+BZXopV/bNZnncS7HNQPDTUOcOum/4KbED+UvkANuDAxpcXKe1e12G1o/jmxWbwYMcf
-         eP6vU4RDt7W3qNd3u/u0T7m/mqjicz6H+sJ58bgAcl4H5txfKWEJf9eErSX7BbyyKRMs
-         2CAvYaa4b98Yw8cKEgUd2FqQpG0gEaeYsU8BsEM1sn9BkuogXAe5uqI4Hotknm5m8tBl
-         /m9NP93JunHEhR+8kzHXvkKsypa3MSEyYzvQNPY+xsxzIu26e0+NXxJZ/DohMz19MwNu
-         lj7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xkmJRNyHZF6zO/+Ccr4Et1V1ZjM78NEZ05svjz/naMI=;
-        b=NQ5R8gTfd/bkXQFSCcNwDEjku+FZGamUrcAVZot9ZyY1COXp5dlzVnZtd52sRo/mvn
-         Y/SHTSCwqpHvZ3cobey2kWOApr717MVxTqBQE/pQ8O1Wk24DAHE3OAY1toQitMipXADw
-         CxcpyBxg5TzChsP5W9VgxtWnO2TpJKwdZk0hhHIbKUTeIy04p5BgIzgUU+hM9BS+A67x
-         ZbS9nG1WSxavBAwTZ2ElnzJ+FMzoDXklA0L1HVxykhW2xpl6imeuHQdeDDmNmgkCGsJz
-         JQ/cdqYJsDjGiZLZik7oqYDI0dbwFW62VZELJeGCB8UQiKKava1biurf7mkldwx/YSoV
-         FwSA==
-X-Gm-Message-State: AOAM531+nmydr0w0abGqDaYPp6asYyzWt1YITxhN4Pb6y6l94HtLt/VR
-        1MWGfC58Vcx0q5RK59alLsg=
-X-Google-Smtp-Source: ABdhPJyCyaREQFPgcDkUYPNV4ggRYGiB0YNKqwnW2+WJUTFQMJ4jUJs75EA85o1xxpFIvrmPyn/t4g==
-X-Received: by 2002:a1c:b006:: with SMTP id z6mr7775346wme.19.1617283852803;
-        Thu, 01 Apr 2021 06:30:52 -0700 (PDT)
-Received: from arch-thunder.localdomain (a109-49-46-234.cpe.netcabo.pt. [109.49.46.234])
-        by smtp.gmail.com with ESMTPSA id l15sm8215400wme.43.2021.04.01.06.30.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 06:30:52 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 14:30:50 +0100
-From:   Rui Miguel Silva <rmfrfs@gmail.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Rob Herring <robh@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 23/32] MAINTAINERS: update ovti,ov2680.yaml reference
-Message-ID: <20210401133050.dmnteppqmtst37f5@arch-thunder.localdomain>
-References: <cover.1617279355.git.mchehab+huawei@kernel.org>
- <f6474fa072117ec42bef82379abb5df958fab426.1617279355.git.mchehab+huawei@kernel.org>
+        id S238714AbhDASJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:09:58 -0400
+Received: from mga11.intel.com ([192.55.52.93]:15100 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236526AbhDARys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:54:48 -0400
+IronPort-SDR: VbTwa833wtDfiYnYgPXW1eJ3ghvP3244r5/ispRtPtRBkx7Ud0dpGdEdRRiXD4j8zwpukZou+l
+ Jz5cLs3aNSgw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="188983926"
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="188983926"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 06:31:28 -0700
+IronPort-SDR: 5tvB92jiRMGNLabXybckCSLFFBmaAQU7vUD+qPiiyyb+IZu2wKXYLWG2p2afaEIA03ZnIMWo2v
+ zWr4SP+SYDZg==
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="419204532"
+Received: from shergane-mobl.ger.corp.intel.com (HELO localhost) ([10.252.41.188])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 06:31:08 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Lyude Paul <lyude@redhat.com>, nouveau@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?utf-8?Q?K=C3=B6n?= =?utf-8?Q?ig?= 
+        <christian.koenig@amd.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Hyun Kwon <hyun.kwon@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        Oleg Vasilev <oleg.vasilev@intel.com>,
+        Mikita Lipski <mikita.lipski@amd.com>,
+        Eryk Brol <eryk.brol@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        "Jerry \(Fangzhi\) Zuo" <Jerry.Zuo@amd.com>,
+        Chris Park <Chris.Park@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>, Joe Perches <joe@perches.com>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Andy Yan <andy.yan@rock-chips.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Swapnil Jakhade <sjakhade@cadence.com>,
+        Yuti Amonkar <yamonkar@cadence.com>,
+        Jyri Sarha <jsarha@ti.com>,
+        Julia Lawall <Julia.Lawall@inria.fr>,
+        Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        Imre Deak <imre.deak@intel.com>,
+        Matt Roper <matthew.d.roper@intel.com>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list\:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list\:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        "open list\:DRM DRIVERS FOR NVIDIA TEGRA" 
+        <linux-tegra@vger.kernel.org>,
+        "moderated list\:ARM\/ZYNQ ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v2 05/20] drm/dp: Add backpointer to drm_device in drm_dp_aux
+In-Reply-To: <20210326203807.105754-6-lyude@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210326203807.105754-1-lyude@redhat.com> <20210326203807.105754-6-lyude@redhat.com>
+Date:   Thu, 01 Apr 2021 16:31:05 +0300
+Message-ID: <87eefum8rq.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f6474fa072117ec42bef82379abb5df958fab426.1617279355.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
-Thanks for fixing this.
+On Fri, 26 Mar 2021, Lyude Paul <lyude@redhat.com> wrote:
+>   * The @dev field should be set to a pointer to the device that implements the
+> - * AUX channel.
+> + * AUX channel. As well, the @drm_dev field should be set to the &drm_device
+> + * that will be using this AUX channel as early as possible. For many graphics
+> + * drivers this should happen before drm_dp_aux_init(), however it's perfectly
+> + * fine to set this field later so long as it's assigned before calling
+> + * drm_dp_aux_register().
 
-On Thu, Apr 01, 2021 at 02:17:43PM +0200, Mauro Carvalho Chehab wrote:
-> The file name: Documentation/devicetree/bindings/media/i2c/ov2680.yaml
-> should be, instead: Documentation/devicetree/bindings/media/i2c/ovti,ov2680.yaml.
-> 
-> Update its cross-reference accordingly.
-> 
-> Fixes: 57226cd8c8bf ("media: dt-bindings: ov2680: convert bindings to yaml")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Perhaps add a follow-up patch to actually ensure this is the case in
+drm_dp_aux_register()?
 
-Reviewed-by: Rui Miguel Silva <rmfrfs@gmail.com>
+>   *
+>   * The @name field may be used to specify the name of the I2C adapter. If set to
+>   * %NULL, dev_name() of @dev will be used.
+> @@ -1877,6 +1883,7 @@ struct drm_dp_aux {
+>  	const char *name;
+>  	struct i2c_adapter ddc;
+>  	struct device *dev;
+> +	struct drm_device *drm_dev;
 
-------
-Cheers,
-     Rui
-> ---
->  MAINTAINERS | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 0ee42d68a269..1644b6e9697c 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -13351,7 +13351,7 @@ M:	Rui Miguel Silva <rmfrfs@gmail.com>
->  L:	linux-media@vger.kernel.org
->  S:	Maintained
->  T:	git git://linuxtv.org/media_tree.git
-> -F:	Documentation/devicetree/bindings/media/i2c/ov2680.yaml
-> +F:	Documentation/devicetree/bindings/media/i2c/ovti,ov2680.yaml
->  F:	drivers/media/i2c/ov2680.c
->  
->  OMNIVISION OV2685 SENSOR DRIVER
-> -- 
-> 2.30.2
-> 
+Bikeshed, I would probably have called it just drm for brevity, but no
+strong feelings.
+
+BR,
+Jani.
+
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
