@@ -2,98 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FE5D3521C5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2153A3521C8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234715AbhDAVjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 17:39:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234278AbhDAVjW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 17:39:22 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E678AC0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 14:39:20 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id h25so2417180pgm.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 14:39:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=JbYGPXM9MppFzzOc6a75EzwhFrSHPR8Nkt7+cyvmtv8=;
-        b=Sokv0wMxDS3iavZIDASWRIUD5WNqDzVXlijmdv4G+E60ODbaUUYMCZCAEqFLjvaf2p
-         GBaP0hFnf/JPb2YHjs1ucIqwcVQihfme4baNH31ZVYdz2A6Q1Qd8Yvo1YDru84hHNd73
-         HwNBzRJQlBYelwYhcTSOe6Lg4cwOsJMp1ME58=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=JbYGPXM9MppFzzOc6a75EzwhFrSHPR8Nkt7+cyvmtv8=;
-        b=HA1lxZS9Hv9dMXaYkjGl64F7iTKpkozxEoULBUQzYoANzuIwniJEA5fC4tCECe7ZZc
-         weCdAdQSngRqRr/ZXIEXE9jy86tk2zz6xcheqii/ooqBpIZDVdnTmVROTkrT0WEbSTOp
-         ZcEFs/OkgbinKoejLMQF7YLRn7CZ26kzN1CxLB2nB+ByKlGfytC3IwO7CtNgbmYHc/SI
-         I6U/Q6xiis7tglKllCFGEyiyNZQwsZT+7XprzIu5LVUMZkZlbilDwt9q/n5V1I0XV5MS
-         IGxILS/GTi5rKx17U2a/qrQa1Qb36zifB6tzJcxmctFWwua8GnAfHftM5kxrayyA2CFK
-         84NQ==
-X-Gm-Message-State: AOAM5321SLjUm6ZrxMcn/IUoDZWwvfYbtO7O6s38G3CuoKY4IlyfBYwK
-        uk0x7IMRsHrytNTSixiUQ6o9Cg==
-X-Google-Smtp-Source: ABdhPJzBWyABUBUyBM9ZRntLbXqge5hAucOVDKV+ejvKekDASN/D5KYmevZSagIgPE6eN7oPLZcuMA==
-X-Received: by 2002:a62:5ac4:0:b029:22e:e8de:eaba with SMTP id o187-20020a625ac40000b029022ee8deeabamr9357545pfb.4.1617313160524;
-        Thu, 01 Apr 2021 14:39:20 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v25sm6244669pfn.51.2021.04.01.14.39.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 14:39:19 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 14:39:19 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: [GIT PULL] LTO fix for v5.12-rc6
-Message-ID: <202104011435.78CF22D@keescook>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        id S234596AbhDAVmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 17:42:04 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:43321 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234278AbhDAVmC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 17:42:02 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617313322; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=7u0OwwrXPKL1bucWQ9WibD5tcBQEFubjqnsp6gZDcGI=; b=ZbIT5p6mETwerwUCahDDDr2+KH+F+ATuWcHalt3d4UDveQBQr+BZSGtKa8QCGyTamiQpf6gK
+ Leq5wVdyuJ9l3n3QuVtVeZKIn+JR1KKQsKc+XAPpLfgdmhjdnuMyBxKqQfBMlA6W8E+itYmy
+ YiuoYS94VYHFFJNXh888bJ0PbNA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 60663e29f34440a9d4e124d7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 01 Apr 2021 21:42:01
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CFCE4C433ED; Thu,  1 Apr 2021 21:42:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7EA15C433CA;
+        Thu,  1 Apr 2021 21:42:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7EA15C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        carl.yin@quectel.com, loic.poulain@linaro.org,
+        kvalo@codeaurora.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [RESEND PATCH] bus: mhi: core: Remove pre_init flag used for power purposes
+Date:   Thu,  1 Apr 2021 14:41:49 -0700
+Message-Id: <1617313309-24035-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Some controllers can choose to skip preparation for power up.
+In that case, device context is initialized based on the pre_init
+flag not being set during mhi_prepare_for_power_up(). There is no
+reason MHI host driver should maintain and provide controllers
+with two separate paths for preparing MHI.
 
-Please pull this LTO fix for v5.12-rc6. It seems that there is a bug in
-ld.bfd when doing module section merging. As explicit merging is only
-needed for LTO, the work-around is to only do it under LTO, leaving the
-original section layout choices alone under normal builds.
+Going forward, all controllers will be required to call the
+mhi_prepare_for_power_up() API followed by their choice of sync
+or async power up. This allows MHI host driver to get rid of the
+pre_init flag and sets up a common way for all controllers to use
+MHI. This also helps controllers fail early on during preparation
+phase in some failure cases.
 
-Thanks!
+Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+---
+This patch was tested on arm64 architecture.
 
--Kees
+ drivers/bus/mhi/core/init.c |  3 ---
+ drivers/bus/mhi/core/pm.c   | 20 --------------------
+ include/linux/mhi.h         |  2 --
+ 3 files changed, 25 deletions(-)
 
-The following changes since commit a5e13c6df0e41702d2b2c77c8ad41677ebb065b3:
-
-  Linux 5.12-rc5 (2021-03-28 15:48:16 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/lto-v5.12-rc6
-
-for you to fetch changes up to 6a3193cdd5e5b96ac65f04ee42555c216da332af:
-
-  kbuild: lto: Merge module sections if and only if CONFIG_LTO_CLANG is enabled (2021-04-01 14:15:59 -0700)
-
-----------------------------------------------------------------
-LTO fix for v5.12-rc6
-
-- Only perform explicit module section merges under LTO (Sean Christopherson)
-
-----------------------------------------------------------------
-Sean Christopherson (1):
-      kbuild: lto: Merge module sections if and only if CONFIG_LTO_CLANG is enabled
-
- scripts/module.lds.S | 2 ++
- 1 file changed, 2 insertions(+)
-
+diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+index d1d9b0d..1f61352 100644
+--- a/drivers/bus/mhi/core/init.c
++++ b/drivers/bus/mhi/core/init.c
+@@ -1080,8 +1080,6 @@ int mhi_prepare_for_power_up(struct mhi_controller *mhi_cntrl)
+ 			mhi_rddm_prepare(mhi_cntrl, mhi_cntrl->rddm_image);
+ 	}
+ 
+-	mhi_cntrl->pre_init = true;
+-
+ 	mutex_unlock(&mhi_cntrl->pm_mutex);
+ 
+ 	return 0;
+@@ -1112,7 +1110,6 @@ void mhi_unprepare_after_power_down(struct mhi_controller *mhi_cntrl)
+ 	}
+ 
+ 	mhi_deinit_dev_ctxt(mhi_cntrl);
+-	mhi_cntrl->pre_init = false;
+ }
+ EXPORT_SYMBOL_GPL(mhi_unprepare_after_power_down);
+ 
+diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+index e4aff77..b23eec5 100644
+--- a/drivers/bus/mhi/core/pm.c
++++ b/drivers/bus/mhi/core/pm.c
+@@ -1062,13 +1062,6 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
+ 	mutex_lock(&mhi_cntrl->pm_mutex);
+ 	mhi_cntrl->pm_state = MHI_PM_DISABLE;
+ 
+-	if (!mhi_cntrl->pre_init) {
+-		/* Setup device context */
+-		ret = mhi_init_dev_ctxt(mhi_cntrl);
+-		if (ret)
+-			goto error_dev_ctxt;
+-	}
+-
+ 	ret = mhi_init_irq_setup(mhi_cntrl);
+ 	if (ret)
+ 		goto error_setup_irq;
+@@ -1150,10 +1143,6 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
+ 	mhi_deinit_free_irq(mhi_cntrl);
+ 
+ error_setup_irq:
+-	if (!mhi_cntrl->pre_init)
+-		mhi_deinit_dev_ctxt(mhi_cntrl);
+-
+-error_dev_ctxt:
+ 	mhi_cntrl->pm_state = MHI_PM_DISABLE;
+ 	mutex_unlock(&mhi_cntrl->pm_mutex);
+ 
+@@ -1203,15 +1192,6 @@ void mhi_power_down(struct mhi_controller *mhi_cntrl, bool graceful)
+ 	flush_work(&mhi_cntrl->st_worker);
+ 
+ 	free_irq(mhi_cntrl->irq[0], mhi_cntrl);
+-
+-	if (!mhi_cntrl->pre_init) {
+-		/* Free all allocated resources */
+-		if (mhi_cntrl->fbc_image) {
+-			mhi_free_bhie_table(mhi_cntrl, mhi_cntrl->fbc_image);
+-			mhi_cntrl->fbc_image = NULL;
+-		}
+-		mhi_deinit_dev_ctxt(mhi_cntrl);
+-	}
+ }
+ EXPORT_SYMBOL_GPL(mhi_power_down);
+ 
+diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+index b16afd3..c9b36a3 100644
+--- a/include/linux/mhi.h
++++ b/include/linux/mhi.h
+@@ -354,7 +354,6 @@ struct mhi_controller_config {
+  * @index: Index of the MHI controller instance
+  * @bounce_buf: Use of bounce buffer
+  * @fbc_download: MHI host needs to do complete image transfer (optional)
+- * @pre_init: MHI host needs to do pre-initialization before power up
+  * @wake_set: Device wakeup set flag
+  * @irq_flags: irq flags passed to request_irq (optional)
+  *
+@@ -447,7 +446,6 @@ struct mhi_controller {
+ 	int index;
+ 	bool bounce_buf;
+ 	bool fbc_download;
+-	bool pre_init;
+ 	bool wake_set;
+ 	unsigned long irq_flags;
+ };
 -- 
-Kees Cook
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
