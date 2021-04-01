@@ -2,102 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C0A351F00
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71DBA351F01
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240411AbhDASvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:51:39 -0400
-Received: from mga12.intel.com ([192.55.52.136]:21181 "EHLO mga12.intel.com"
+        id S240446AbhDASvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:51:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234986AbhDAScr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:32:47 -0400
-IronPort-SDR: nrROu4O+UxTHXapzO0FiamFPzoVlIxiycoF7howGhAt1StkjkVkF6J+HTe2C1MNLhdIqcNDEN6
- 5PIpjmSeBTHA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="171724585"
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="171724585"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 11:32:46 -0700
-IronPort-SDR: IK5UHFhLBdE5pYfsa+NQjj5JNbIe6bMm/CdvIA0Qkq2p9Lz4dSaLrqwcwkzCZRg8ci/0L6ryBD
- 5BsRqGQ6klbw==
-X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="377805450"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 11:32:40 -0700
-Received: by lahna (sSMTP sendmail emulation); Thu, 01 Apr 2021 21:32:36 +0300
-Date:   Thu, 1 Apr 2021 21:32:36 +0300
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Henning Schild <henning.schild@siemens.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Jean Delvare <jdelvare@suse.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Tan Jui Nee <jui.nee.tan@intel.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Jonathan Yong <jonathan.yong@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pci@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Peter Tyser <ptyser@xes-inc.com>, hdegoede@redhat.com
-Subject: Re: [PATCH v1 3/7] PCI: New Primary to Sideband (P2SB) bridge
- support library
-Message-ID: <20210401183236.GN2542@lahna.fi.intel.com>
-References: <20210308122020.57071-1-andriy.shevchenko@linux.intel.com>
- <20210308122020.57071-4-andriy.shevchenko@linux.intel.com>
- <20210313104557.321de08e@md1za8fc.ad001.siemens.net>
- <YGXqDxSJhCO9bD1X@smile.fi.intel.com>
- <20210401180617.GL2542@lahna.fi.intel.com>
- <YGYPSoXDn8GW5iSI@smile.fi.intel.com>
+        id S238674AbhDASfB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:35:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C895860FDA;
+        Thu,  1 Apr 2021 18:32:57 +0000 (UTC)
+Date:   Thu, 1 Apr 2021 20:32:54 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     syzbot <syzbot+c88a7030da47945a3cc3@syzkaller.appspotmail.com>
+Cc:     axboe@kernel.dk, chaitanya.kulkarni@wdc.com, damien.lemoal@wdc.com,
+        hch@lst.de, johannes.thumshirn@edc.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Subject: Re: [syzbot] WARNING in mntput_no_expire (2)
+Message-ID: <20210401183254.yup76gxvxk7foc3c@wittgenstein>
+References: <0000000000003a565e05bee596f2@google.com>
+ <000000000000f9391c05bee831ad@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YGYPSoXDn8GW5iSI@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <000000000000f9391c05bee831ad@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 09:22:02PM +0300, Andy Shevchenko wrote:
-> On Thu, Apr 01, 2021 at 09:06:17PM +0300, Mika Westerberg wrote:
-> > On Thu, Apr 01, 2021 at 06:43:11PM +0300, Andy Shevchenko wrote:
-> > > On Sat, Mar 13, 2021 at 10:45:57AM +0100, Henning Schild wrote:
-> > > > Am Mon, 8 Mar 2021 14:20:16 +0200
-> > > > schrieb Andy Shevchenko <andriy.shevchenko@linux.intel.com>:
-> > > 
-> > > ...
-> > > 
-> > > > > + * pci_p2sb_bar - Get Primary to Sideband bridge (P2SB) device BAR
-> > > > > + * @pdev:	PCI device to get a PCI bus to communicate with
-> > > > > + * @devfn:	PCI slot and function to communicate with
-> > > > > + * @mem:	memory resource to be filled in
-> > > > 
-> > > > Do we really need that many arguments to it?
-> > > > 
-> > > > Before i had, in a platform driver that never had its own pci_dev or bus
-> > > > 
-> > > >   res->start = simatic_ipc_get_membase0(PCI_DEVFN(13, 0));
-> > > >   if (res-start == 0)
-> > > >     return -ENODEV;
-> > > > 
-> > > > So helper only asked for the devfn, returned base and no dedicated
-> > > > error code.
-> > > > 
-> > > > With this i need
-> > > > 
-> > > >   struct pci_bus *bus = pci_find_bus(0, 0);
-> > > >   struct pci_dev *pci_dev = bus->self;
-> > > >   unsigned int magic_i_do_not_want =  PCI_DEVFN(13, 0);
-> > > 
-> > > What confuses me is the use for SPI NOR controller on Broxton. And I think
-> > > we actually can indeed hide all this under the hood by exposing P2SB to the OS.
-> > > 
-> > > Mika, what do you think?
-> > 
-> > Not sure I follow. Do you mean we force unhide P2SB and then bind (MFD)
-> > driver to that?
+On Thu, Apr 01, 2021 at 05:16:03AM -0700, syzbot wrote:
+> syzbot has bisected this issue to:
 > 
-> Not MFD, SPI NOR (if I understood correctly the code in MFD driver for SPI NOR
-> in regards to P2SB case).
+> commit 73d90386b559d6f4c3c5db5e6bb1b68aae8fd3e7
+> Author: Damien Le Moal <damien.lemoal@wdc.com>
+> Date:   Thu Jan 28 04:47:27 2021 +0000
+> 
+>     nvme: cleanup zone information initialization
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1440e986d00000
+> start commit:   d19cc4bf Merge tag 'trace-v5.12-rc5' of git://git.kernel.o..
+> git tree:       upstream
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=1640e986d00000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1240e986d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=d1a3d65a48dbd1bc
+> dashboard link: https://syzkaller.appspot.com/bug?extid=c88a7030da47945a3cc3
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12f50d11d00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=137694a1d00000
+> 
+> Reported-by: syzbot+c88a7030da47945a3cc3@syzkaller.appspotmail.com
+> Fixes: 73d90386b559 ("nvme: cleanup zone information initialization")
+> 
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-I mean a new MFD driver that binds to the P2SB and that one then exposes
-the stuff needed by the SPI-NOR driver.
+That seems like a bogus bisect. Please see the bisect I provided in the
+thread which seems more likely (Fyi, b4 mbox on the original thread
+should help to get at those messages.).
+
+Christian
