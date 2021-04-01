@@ -2,85 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42B6C3513EB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 12:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 702E3351403
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 12:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233780AbhDAKtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 06:49:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40458 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233817AbhDAKtj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 06:49:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D87BFB154;
-        Thu,  1 Apr 2021 10:49:37 +0000 (UTC)
-Subject: Re: [PATCH v2 0/6] Add support for Actions Semi Owl socinfo
-To:     Manivannan Sadhasivam <mani@kernel.org>,
-        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <cover.1617110420.git.cristian.ciocaltea@gmail.com>
- <20210401052438.GB14052@work> <20210401094041.GA1993499@BV030612LT>
- <20210401102717.GF14052@work>
-From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
-Organization: SUSE Software Solutions Germany GmbH
-Message-ID: <252dd954-c8f1-fa2a-c37a-ede386fc9d43@suse.de>
-Date:   Thu, 1 Apr 2021 12:49:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234157AbhDAK5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 06:57:46 -0400
+Received: from mail-177142.yeah.net ([123.58.177.142]:30906 "EHLO
+        mail-177142.yeah.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233665AbhDAK5b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 06:57:31 -0400
+X-Greylist: delayed 471 seconds by postgrey-1.27 at vger.kernel.org; Thu, 01 Apr 2021 06:57:31 EDT
+Received: from vivo.com (localhost [127.0.0.1])
+        by mail-177142.yeah.net (Hmail) with ESMTP id 4A48F645E61;
+        Thu,  1 Apr 2021 18:49:37 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <ACUA-ACHDo4PFmCPQ3ckzKr7.3.1617274177288.Hmail.zhouchuangao@vivo.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0gYXJtNjQva2VybmVsL3Byb2JlczogVXNlIEJVR19PTiBpbnN0ZWFkIG9mIGlmIGNvbmRpdGlvbiBmb2xsb3dlZCBieSBCVUcu?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 36.152.145.182
+In-Reply-To: <20210330120801.GA5908@willie-the-truck>
 MIME-Version: 1.0
-In-Reply-To: <20210401102717.GF14052@work>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: from zhouchuangao@vivo.com( [36.152.145.182) ] by ajax-webmail ( [127.0.0.1] ) ; Thu, 1 Apr 2021 18:49:37 +0800 (GMT+08:00)
+From:   =?UTF-8?B?5ZGo5Lyg6auY?= <zhouchuangao@vivo.com>
+Date:   Thu, 1 Apr 2021 18:49:37 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQx4fQ0pKQ05OHh5CVkpNSkxJTE9KTExISkpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kJHlYWEh9ZQU1JT0xOTEJPSU1IN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6OC46Vjo4Mz8UTys9FjgrKkgYEAEwCUxVSFVKTUpMSUxPSkxMTUtPVTMWGhIXVQETFA4YEw4a
+        FRwaFDsNEg0UVRgUFkVZV1kSC1lBWUhNVUpOSVVKT05VSkNJWVdZCAFZQUhISkg3Bg++
+X-HM-Tid: 0a788d0d871b6473kurs4a48f645e61
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 01.04.21 12:27, Manivannan Sadhasivam wrote:
-> On Thu, Apr 01, 2021 at 12:40:41PM +0300, Cristian Ciocaltea wrote:
->> On Thu, Apr 01, 2021 at 10:54:38AM +0530, Manivannan Sadhasivam wrote:
->>> On Tue, Mar 30, 2021 at 04:48:15PM +0300, Cristian Ciocaltea wrote:
->>>> This patchset adds a socinfo driver which provides information about
->>>> Actions Semi Owl SoCs to user space via sysfs: machine, family, soc_id,
->>>> serial_number.
->>>>
->>>> Please note the serial number is currently available only for the S500
->>>> SoC variant.
->>>>
->>>> This has been tested on the S500 SoC based RoseapplePi SBC.
->>>>
->>>
->>> Is this the soc_id provided by the vendor bootloader (uboot)? If so, under
->>> what basis it provides? I don't think the SoC has the provision for
->>> soc_id based on HW parameters.
->>
->> No, the soc_id is not provided by the bootloader, or at least I couldn't
->> identify any related implementation. Instead, I provided this via the
->> driver itself, since I've encountered this approach in some other soc
->> drivers as well (e.g. imx/soc-imx.c, versatile/soc-integrator.c). 
->>
-> 
-> Sorry, I was referring to serial_number. Since your comment says so, can
-> you point to the corresponding code?
-
-Seconded that this needs to be better understood. If this is just a
-convention of some downstream U-Boot that's not implemented in mainline
-(and maybe not even for Guitar or Labrador? tested on RoseapplePi only),
-it might not be worth its own reserved-memory based kernel driver?
-
-Implementing a standard interface such as DMI tables or a DT property in
-mainline U-Boot may be more useful then. Is it still Mani's S900 only?
-
-Regards,
-Andreas
-
--- 
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 Nürnberg, Germany
-GF: Felix Imendörffer
-HRB 36809 (AG Nürnberg)
+Cj5PbiBUdWUsIE1hciAzMCwgMjAyMSBhdCAwNDo1Nzo1MEFNIC0wNzAwLCB6aG91Y2h1YW5nYW8g
+d3JvdGU6Pj4gSXQgY2FuIGJlIG9wdGltaXplZCBhdCBjb21waWxlIHRpbWUuCj4KPkhtbSwgSSBk
+b24ndCBzZWUgaXQgKGFuZCBJIGFsc28gZG9uJ3QgdW5kZXJzdGFuZCB3aHkgd2UgY2FyZSkuIERv
+IHlvdSBoYXZlCj5udW1iZXJzIHNob3dpbmcgdGhhdCB0aGlzIGlzIHdvcnRod2hpbGU/Cj4KCiNk
+ZWZpbmUgQlVHX09OKGNvbmRpdGlvbikgZG8geyBpZiAodW5saWtlbHkoY29uZGl0aW9uKSkgQlVH
+KCk7IH0gd2hpbGUgKDApCgpCVUdfT04gdXNlcyB1bmxpa2VseSBpbiBpZigpLiBUaHJvdWdoIGRp
+c2Fzc2VtYmx5LCB3ZSBjYW4gc2VlIHRoYXQKYnJrICMweDgwMCBpcyBjb21waWxlZCB0byB0aGUg
+ZW5kIG9mIHRoZSBmdW5jdGlvbi4KQXMgeW91IGNhbiBzZWUgYmVsb3c6CiAgICAuLi4uLi4KICAg
+IGZmZmZmZjgwMDg2NjBiZWM6ICAgZDY1ZjAzYzAgICAgcmV0CiAgICBmZmZmZmY4MDA4NjYwYmYw
+OiAgIGQ0MjEwMDAwICAgIGJyayAjMHg4MDAKClVzdWFsbHksIHRoZSBjb25kaXRpb24gaW4gaWYg
+KCkgaXMgbm90IHNhdGlzZmllZC4gRm9yIHRoZSBtdWx0aS1zdGFnZSBwaXBlbGluZSwgCndlIGRv
+IG5vdCBuZWVkIHRvIHBlcmZvcm0gZmV0Y2ggZGVjb2RlIGFuZCBleGN1dGUgb3BlcmF0aW9uIG9u
+IGJyayAKaW5zdHJ1Y3Rpb24uCgpJbiBteSBvcGluaW9uLCB0aGlzIGNhbiBpbXByb3ZlIHRoZSBl
+ZmZpY2llbmN5IG9mIHRoZSBtdWx0aS1zdGFnZSBwaXBlbGluZS4KCnpob3VjaHVhbmdhbwoKPldp
+bGwKDQoNCg==
