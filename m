@@ -2,159 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0576351EDC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2917D351EF8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235156AbhDASsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:48:09 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:52500 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237275AbhDAS1y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:27:54 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 131FPOoF176752;
-        Thu, 1 Apr 2021 15:32:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=T0MWikKGNzZ7RZia50CndXflubXFeWns/L+OAB/N2sY=;
- b=pDVgX2iRNMVNHWDK01nC0Qr+248CKENMbAJN3AFlQshXPlLgUBWnOnlEMxsS/MvffDvt
- cO/VJW2dCujOLRfcIKE0dEAvsX0WmXUxmiMGBbU4UB7DhcuTSAsD7hNuLOXyYP5H1Rew
- pDaklv2JSUYKaIKh87IpfBSGamtEsVf263MrUqHlqtsIMY+jaK+K3zvsmajlQI9g6/aU
- 8gcNC0H/J7nfOayylhmUYZrDWLWwnmJW8q4Y0KpyQ2G+1XA1xXbkoOriYK1eFwaJiIpR
- Xc2SbRLxsZKUWXJa5RlgV/VIaBqZ9kz7tlEKLryw+pHSi/XIIkRzZeaLOcy7+6mVrXk6 CQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 37n30sa773-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 01 Apr 2021 15:32:29 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 131FLw3A024247;
-        Thu, 1 Apr 2021 15:32:27 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 37n2asea1j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 01 Apr 2021 15:32:27 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 131FWHp4016838;
-        Thu, 1 Apr 2021 15:32:17 GMT
-Received: from neelam.us.oracle.com (/10.152.128.16)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 01 Apr 2021 08:32:17 -0700
-From:   Alex Kogan <alex.kogan@oracle.com>
-To:     linux@armlinux.org.uk, peterz@infradead.org, mingo@redhat.com,
-        will.deacon@arm.com, arnd@arndb.de, longman@redhat.com,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, bp@alien8.de,
-        hpa@zytor.com, x86@kernel.org, guohanjun@huawei.com,
-        jglauber@marvell.com
-Cc:     steven.sistare@oracle.com, daniel.m.jordan@oracle.com,
-        alex.kogan@oracle.com, dave.dice@oracle.com
-Subject: [PATCH v14 6/6] locking/qspinlock: Introduce the shuffle reduction optimization into CNA
-Date:   Thu,  1 Apr 2021 11:31:56 -0400
-Message-Id: <20210401153156.1165900-7-alex.kogan@oracle.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210401153156.1165900-1-alex.kogan@oracle.com>
-References: <20210401153156.1165900-1-alex.kogan@oracle.com>
+        id S240859AbhDASvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:51:48 -0400
+Received: from mga17.intel.com ([192.55.52.151]:21439 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239256AbhDASfj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:35:39 -0400
+IronPort-SDR: Gf3Fn9b7pipnaxsjEv1Ah6uRe5TX1AYqGmxCFhydoJPIm0CPoesTCtBGWFLX9ZnaE8WDfHCCla
+ zW6XbFAC9cng==
+X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="172299659"
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="172299659"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 08:33:22 -0700
+IronPort-SDR: EBPvS0zSWy2R1Xo9zIwtnmV8WneC4HY6sYw3cj6KTRVy6BNNiiIrGT6wSo3+56dBjtCXBklc7h
+ zYcD1f4Y9sLg==
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="419247613"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 08:33:22 -0700
+Date:   Thu, 1 Apr 2021 08:33:20 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Aili Yao <yaoaili@kingsoft.com>
+Cc:     HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+j44CA55u05LmfKQ==?= 
+        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
+        "david@redhat.com" <david@redhat.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
+        sunhao2@kingsoft.com
+Subject: Re: [PATCH v3] mm,hwpoison: return -EHWPOISON when page already
+ poisoned
+Message-ID: <20210401153320.GA426964@agluck-desk2.amr.corp.intel.com>
+References: <20210305093656.6c262b19@alex-virtual-machine>
+ <20210305221143.GA220893@agluck-desk2.amr.corp.intel.com>
+ <20210308064558.GA3617@hori.linux.bs1.fc.nec.co.jp>
+ <3690ece2101d428fb9067fcd2a423ff8@intel.com>
+ <20210308223839.GA21886@hori.linux.bs1.fc.nec.co.jp>
+ <20210308225504.GA233893@agluck-desk2.amr.corp.intel.com>
+ <20210309100421.3d09b6b1@alex-virtual-machine>
+ <20210309060440.GA29668@hori.linux.bs1.fc.nec.co.jp>
+ <20210309143534.6c1a8ec5@alex-virtual-machine>
+ <20210331192540.2141052f@alex-virtual-machine>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9941 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
- suspectscore=0 bulkscore=0 mlxscore=0 adultscore=0 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2103310000 definitions=main-2104010104
-X-Proofpoint-GUID: Suax28I4h68d2rkveiReGBIh8bcE8Is2
-X-Proofpoint-ORIG-GUID: Suax28I4h68d2rkveiReGBIh8bcE8Is2
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9941 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
- bulkscore=0 priorityscore=1501 suspectscore=0 mlxscore=0 spamscore=0
- clxscore=1015 mlxlogscore=999 malwarescore=0 adultscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
- definitions=main-2104010104
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210331192540.2141052f@alex-virtual-machine>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This performance optimization chooses probabilistically to avoid moving
-threads from the main queue into the secondary one when the secondary queue
-is empty.
+On Wed, Mar 31, 2021 at 07:25:40PM +0800, Aili Yao wrote:
+> When the page is already poisoned, another memory_failure() call in the
+> same page now return 0, meaning OK. For nested memory mce handling, this
+> behavior may lead to one mce looping, Example:
+> 
+> 1.When LCME is enabled, and there are two processes A && B running on
+> different core X && Y separately, which will access one same page, then
+> the page corrupted when process A access it, a MCE will be rasied to
+> core X and the error process is just underway.
+> 
+> 2.Then B access the page and trigger another MCE to core Y, it will also
+> do error process, it will see TestSetPageHWPoison be true, and 0 is
+> returned.
+> 
+> 3.The kill_me_maybe will check the return:
+> 
+> 1244 static void kill_me_maybe(struct callback_head *cb)
+> 1245 {
+> 
+> 1254         if (!memory_failure(p->mce_addr >> PAGE_SHIFT, flags) &&
+> 1255             !(p->mce_kflags & MCE_IN_KERNEL_COPYIN)) {
+> 1256                 set_mce_nospec(p->mce_addr >> PAGE_SHIFT,
+> p->mce_whole_page);
+> 1257                 sync_core();
+> 1258                 return;
+> 1259         }
+> 
+> 1267 }
 
-It is helpful when the lock is only lightly contended. In particular, it
-makes CNA less eager to create a secondary queue, but does not introduce
-any extra delays for threads waiting in that queue once it is created.
+With your change memory_failure() will return -EHWPOISON for the
+second task that consumes poison ... so that "if" statement won't
+be true and so we fall into the following code:
 
-Signed-off-by: Alex Kogan <alex.kogan@oracle.com>
-Reviewed-by: Steve Sistare <steven.sistare@oracle.com>
-Reviewed-by: Waiman Long <longman@redhat.com>
----
- kernel/locking/qspinlock_cna.h | 39 ++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+1273         if (p->mce_vaddr != (void __user *)-1l) {
+1274                 force_sig_mceerr(BUS_MCEERR_AR, p->mce_vaddr, PAGE_SHIFT);
+1275         } else {
+1276                 pr_err("Memory error not recovered");
+1277                 kill_me_now(cb);
+1278         }
 
-diff --git a/kernel/locking/qspinlock_cna.h b/kernel/locking/qspinlock_cna.h
-index 29c3abbd3d94..983c6a47a221 100644
---- a/kernel/locking/qspinlock_cna.h
-+++ b/kernel/locking/qspinlock_cna.h
-@@ -5,6 +5,7 @@
- 
- #include <linux/topology.h>
- #include <linux/sched/rt.h>
-+#include <linux/random.h>
- 
- /*
-  * Implement a NUMA-aware version of MCS (aka CNA, or compact NUMA-aware lock).
-@@ -86,6 +87,34 @@ static inline bool intra_node_threshold_reached(struct cna_node *cn)
- 	return current_time - threshold > 0;
- }
- 
-+/*
-+ * Controls the probability for enabling the ordering of the main queue
-+ * when the secondary queue is empty. The chosen value reduces the amount
-+ * of unnecessary shuffling of threads between the two waiting queues
-+ * when the contention is low, while responding fast enough and enabling
-+ * the shuffling when the contention is high.
-+ */
-+#define SHUFFLE_REDUCTION_PROB_ARG  (7)
-+
-+/* Per-CPU pseudo-random number seed */
-+static DEFINE_PER_CPU(u32, seed);
-+
-+/*
-+ * Return false with probability 1 / 2^@num_bits.
-+ * Intuitively, the larger @num_bits the less likely false is to be returned.
-+ * @num_bits must be a number between 0 and 31.
-+ */
-+static bool probably(unsigned int num_bits)
-+{
-+	u32 s;
-+
-+	s = this_cpu_read(seed);
-+	s = next_pseudo_random32(s);
-+	this_cpu_write(seed, s);
-+
-+	return s & ((1 << num_bits) - 1);
-+}
-+
- static void __init cna_init_nodes_per_cpu(unsigned int cpu)
- {
- 	struct mcs_spinlock *base = per_cpu_ptr(&qnodes[0].mcs, cpu);
-@@ -293,6 +322,16 @@ static __always_inline u32 cna_wait_head_or_lock(struct qspinlock *lock,
- {
- 	struct cna_node *cn = (struct cna_node *)node;
- 
-+	if (node->locked <= 1 && probably(SHUFFLE_REDUCTION_PROB_ARG)) {
-+		/*
-+		 * When the secondary queue is empty, skip the call to
-+		 * cna_order_queue() below with high probability. This optimization
-+		 * reduces the overhead of unnecessary shuffling of threads
-+		 * between waiting queues when the lock is only lightly contended.
-+		 */
-+		return 0;
-+	}
-+
- 	if (!cn->start_time || !intra_node_threshold_reached(cn)) {
- 		/*
- 		 * We are at the head of the wait queue, no need to use
--- 
-2.24.3 (Apple Git-128)
+If this was a copy_from_user() machine check, p->mce_vaddr is set and
+the task gets a BUS_MCEERR_AR SIGBUS, otherwise we print that
 
+	"Memory error not recovered"
+
+message and send a generic SIGBUS.  I don't think either of those options
+is right.
+
+Combined with my "mutex" patch (to get rid of races where 2nd process returns
+early, but first process is still looking for mappings to unmap and tasks
+to signal) this patch moves forward a bit. But I think it needs an
+additional change here in kill_me_maybe() to just "return" if there is a
+EHWPOISON return from memory_failure()
+
+-Tony
