@@ -2,141 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D978C3522CA
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 00:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DF9D3522CD
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 00:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234278AbhDAWdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 18:33:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52324 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233789AbhDAWda (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 18:33:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B56F360FE7;
-        Thu,  1 Apr 2021 22:33:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617316409;
-        bh=fROVYi26J7ke/VX/V+4Nv14tpmDBZAjJdqilLVHHglk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=uHXRfi5K+pBC6bS4BvrFy+IU/6XjZ9+WZGGee/glm1/qVm+SoSC/FE18X+kcWSk52
-         JPldzNVCggoYvexsrYcsJBZwxOBOJcFCQsQlnoQgENOkPqy4pKxSdF34il0e+J4qst
-         cN+HAmoNz/n5NIojvvIUcstfO37YF5NrH9xJeWqcotDVKIHPmOPpl80ZgKkkW5ZSZ8
-         oJRHp1Qb6R+Qd19UnTHCVytCNtdvEEr2ohDVGJX2aGLkVzV1geTGS9V0ngQxR8fxJg
-         3LZfFKBYPUkRAOf/PwWBkC9kq56Nbdoa+nxzMqoJSPiuwLfRX3wkhqdNXgQI66oY1Y
-         Kakasdb+lVvqQ==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 61D7035237B2; Thu,  1 Apr 2021 15:33:29 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 15:33:29 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] torture: Correctly fetch CPUs for kvm-build.sh with all
- native language
-Message-ID: <20210401223329.GK2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210401132602.116352-1-frederic@kernel.org>
- <20210401185116.GH2696@paulmck-ThinkPad-P72>
- <20210401203112.GA116405@lothringen>
- <20210401204022.GI2696@paulmck-ThinkPad-P72>
- <20210401204113.GB116405@lothringen>
- <20210401210253.GJ2696@paulmck-ThinkPad-P72>
- <20210401210802.GC116405@lothringen>
+        id S234835AbhDAWeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 18:34:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233789AbhDAWeH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 18:34:07 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC6EC0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 15:34:07 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id e14so5082473ejz.11
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 15:34:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JwcjbJLuM+EQBpQBaYXeeiUQ+PAdC8SwyIK2hsMA+cM=;
+        b=ArrtknezTEhO1CbNH/4AuLxj39IAsAhS8HfkNL1rCTftdshfkOd8L47P6zhArH91AQ
+         qdz+isC5+X4wzKL+rSuJltVSyDLDd/XnzkyZwmvUTKbgLrfW4LpgQkDVNX0TM3LyQgZZ
+         UsJyvEyzk91eLiQhU1OE7VrOP+tZDW59yW6n2YuDi7XFvh+d56Sp9qvwiKMOiKU9oISr
+         WURK5c7OhcFHEmZOOL94RieBve3I/RGgYcBJWnwWJdWeiAwBHGOlbE7kh5I9Ecgj/1zq
+         cGbWbeMO5fGht+6/ZoRaX93QkqyM2EkyfinvlnnciVnDq3Wsq0ko3kmPzEb2lvT+MmNc
+         mUNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JwcjbJLuM+EQBpQBaYXeeiUQ+PAdC8SwyIK2hsMA+cM=;
+        b=Zp9Ij7bF3F8bkw/iReGlG1CMxpuMw5AzUzUvs2MRDovhQnfDtAnErpE3V1uZBL1XS9
+         /rZSfEpGzLHAmxSwMEv9mjKprL4HRDBHmvHTvotyxUespvsDKQyM4Np7Vj3FDbBqoF/U
+         ZuqkXdpCF7BsEcBydXpla7PbbWCnDojh/YVCVY8bh9m9kfgfFckcK5EfGVrOBSCUGaQz
+         /4UyhYRjT9iNr6EstPBckCM4pp/5gaM30l3pV6JLmADRbKMo2yjp5XJtJP3QVhUbqKSF
+         6idzermws7o/L4FgMoPsTk/r5rSme2gXKPtNwyjk3IBN30Ab8l6PJ4czg4EOW3tgjM2q
+         xCqg==
+X-Gm-Message-State: AOAM533XwxerxyUK8UcqBo0qq4dEVtODpTrz79CHC1x0T4VRfDtAQHEk
+        /5jEwKxWGXCub05nU6qboem2JnpL3IZNbgCjBAR4
+X-Google-Smtp-Source: ABdhPJxYWvOvGnocVpSGrtJOWnm5EYFUlzKhq4aZsQnf53wQs7vQnFDt9HwxI+R7ZOEiFenWayr3lkhLV1BUE3aVwas=
+X-Received: by 2002:a17:906:3d62:: with SMTP id r2mr11255187ejf.488.1617316446452;
+ Thu, 01 Apr 2021 15:34:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210401210802.GC116405@lothringen>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <ea7f2e3b49b1cae523b58f128c8419c9b8565d9d.1617303032.git.rgb@redhat.com>
+In-Reply-To: <ea7f2e3b49b1cae523b58f128c8419c9b8565d9d.1617303032.git.rgb@redhat.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 1 Apr 2021 18:33:55 -0400
+Message-ID: <CAHC9VhQRYEaHWQLZjj8kqfZ-WHuTnRC1bXMybvzSYVpz2VU-wg@mail.gmail.com>
+Subject: Re: [PATCH] audit: drop /proc/PID/loginuid documentation Format field
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Eric Paris <eparis@parisplace.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 11:08:02PM +0200, Frederic Weisbecker wrote:
-> On Thu, Apr 01, 2021 at 02:02:53PM -0700, Paul E. McKenney wrote:
-> > On Thu, Apr 01, 2021 at 10:41:13PM +0200, Frederic Weisbecker wrote:
-> > > On Thu, Apr 01, 2021 at 01:40:22PM -0700, Paul E. McKenney wrote:
-> > > > On Thu, Apr 01, 2021 at 10:31:12PM +0200, Frederic Weisbecker wrote:
-> > > > > On Thu, Apr 01, 2021 at 11:51:16AM -0700, Paul E. McKenney wrote:
-> > > > > > On Thu, Apr 01, 2021 at 03:26:02PM +0200, Frederic Weisbecker wrote:
-> > > > > > > Grepping for "CPU" on lscpu output isn't always successful, depending
-> > > > > > > on the local language setting. As a result, the build can be aborted
-> > > > > > > early with:
-> > > > > > > 
-> > > > > > > 	"make: the '-j' option requires a positive integer argument"
-> > > > > > > 
-> > > > > > > Prefer a more generic solution.
-> > > > > > > 
-> > > > > > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > > > > > 
-> > > > > > Good catch, applied, thank you!
-> > > > > > 
-> > > > > > There is a similar construct in kvm-remote.sh, so I added a similar
-> > > > > > fix to your patch.
-> > > > > > 
-> > > > > > But what about this in functions.sh?
-> > > > > > 
-> > > > > > nt="`lscpu | grep '^NUMA node0' | sed -e 's/^[^,]*,\([0-9]*\),.*$/\1/'`"
-> > > > > > 
-> > > > > > I am guessing that "node0" is human-language-independent, but is "NUMA"?
-> > > > > 
-> > > > > I thought they wouldn't bother translating that, but they did...
-> > > > > 
-> > > > >     NUMA node0 CPU(s):               0-7
-> > > > > 
-> > > > > becomes:
-> > > > > 
-> > > > >     Nœud NUMA 0 de processeur(s) : 0-7
-> > > > > 
-> > > > > Not sure about the best way to fix it.
-> > > > 
-> > > > The rude and crude fix is for the scripts to force the local language
-> > > > to English.  ;-)
-> > > 
-> > > I don't have a better answer :o)
-> > 
-> > If you set the environment variable LANG to en_US.UTF-8, does that
-> > make things work for you?  Huh.  Setting it to fr_FR.UTF-8 does not
-> > shift lscpu out of English for me, so I am guessing "no".
-> 
-> Maybe that language isn't installed in your system. I would expect
-> en_US.UTF-8 to be supported pretty much everywhere though. At least it
-> works for me with: "LANG=en_US.UTF-8 lscpu".
-> 
-> Thanks.
+On Thu, Apr 1, 2021 at 3:11 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+>
+> Drop the "Format:" field from the /proc/PID/loginuid documentation and
+> integrate the information into the Description field since it is not
+> recognized by the "./scripts/get_abi.pl validate" command which causes a
+> warning.  Documentation/ABI/README describes the valid fields.
+>
+> Reported-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+> ---
+>  .../ABI/stable/procfs-audit_loginuid          | 22 +++++++++----------
+>  1 file changed, 11 insertions(+), 11 deletions(-)
 
-How about like this?  I put this only in kvm.sh for the moment, but
-if these keep cropping up I will just hit all the scripts.  ;-)
+Merged into audit/next, thanks.
 
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit 4ca332016ed81c15ebb3b744dbfc462281c544b8
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Thu Apr 1 15:26:56 2021 -0700
-
-    torture:  Set kvm.sh language to English
-    
-    Some of the code invoked directly and indirectly from kvm.sh parses
-    the output of commands.  This parsing assumes English, which can cause
-    failures if the user has set some other language.  In a few cases,
-    there are language-independent commands available, but this is not
-    always the case.  Therefore, as an alternative to polyglot parsing,
-    this commit sets the LANG environment variable to en_US.UTF-8.
-    
-    Reported-by: Frederic Weisbecker <frederic@kernel.org>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index fab3bd9..390bb97 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -20,6 +20,9 @@ mkdir $T
- 
- cd `dirname $scriptname`/../../../../../
- 
-+# This script knows only English.
-+LANG=en_US.UTF-8; export LANG
-+
- dur=$((30*60))
- dryrun=""
- KVM="`pwd`/tools/testing/selftests/rcutorture"; export KVM
+-- 
+paul moore
+www.paul-moore.com
