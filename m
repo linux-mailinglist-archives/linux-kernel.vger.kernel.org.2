@@ -2,124 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 448223519C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E388351B09
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236966AbhDAR4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:56:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60666 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234932AbhDARni (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:43:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1617290027; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mtYjimH27BNkKQWQsPQAw4+uvVPdvh/ki26vPC2H74E=;
-        b=aqSk/FYqrSmkXhic8cv6txd/R/9YcdLS25ENfXEVUY3ONRy1Qh+gY7IDSzQeuSkMhIMXkj
-        Jwu9ecCPfyySJrpELTaR7Ty1Cu49Sjyw4vADfQb2SqfFJy48j1SP7omoTwY1tDgfhgSF0R
-        vrG4j3mNqiHL8DcK8XQ6cjVmM1KtECs=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 452EFB2B9;
-        Thu,  1 Apr 2021 15:13:47 +0000 (UTC)
-Date:   Thu, 1 Apr 2021 17:13:46 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v2 4/5] printk: convert @syslog_lock to mutex
-Message-ID: <YGXjKqCgXdTmtTxy@alley>
-References: <20210330153512.1182-1-john.ogness@linutronix.de>
- <20210330153512.1182-5-john.ogness@linutronix.de>
+        id S238006AbhDASFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:05:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236677AbhDARtc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:49:32 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 440FDC00F7F5
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 08:15:20 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id v10so1699499pfn.5
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 08:15:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6hVxFcdqIWJsoJww2TX8Rs1EJ/1vV+wVzt8D6tZZ7vg=;
+        b=V2SSL0Pi5+6mu3HiAmhqpMolEG4wuNHWrS2TVrZcHy9mpYl3rGgtq+Quq5UKfKlA1I
+         /BowUj9PF06X3mwejz+A4ImVUz1iLhRkAI/qCJOcgCwIqKZc3JwpB3ayur3M+v4rFPbW
+         qzqua/OwHMqEnMrnCeD5ilTR7H+RN7GToXmaWcsZm+rGNfI1TNTSPwt/YJInMBXTrTBW
+         3upl4/jMJQO1dt97S5SFBr5aIAbFfQFPB+2CT8kyYstKqt4IBwjxzAsTgAuJSrte02a6
+         tURtcps7W2BPrmm+TvkaQUW13BHkhx01llGLVuHVJxAlN1voarzqxgybOJ4FFV7QHIbG
+         9mng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6hVxFcdqIWJsoJww2TX8Rs1EJ/1vV+wVzt8D6tZZ7vg=;
+        b=H8e2/y6QksVy3lxbVLbnSWpvgnl8DYkpp/M/9PH967x2Sq2PZcBs2PBoWmrICdO4qL
+         SCF9C5GApyKQ0+VQu2eZBdo/LEZI6gPmaiHVq/HlgYhPq03ES5ADm7Gc6+Yl3Rzu2JNL
+         saHeDYFsgtEhSSE+uPhvRKw1US5N0gW2WawGJ9G7/SzJ3TioDX/TX99KLS7dgO+/4Q1J
+         RMW+j7ru6UqQFHW2AngL+ACjjgWRToVWeecUnxLduiW8lHi35bV8I/XlML3S+uZkvpnm
+         0W/5ZiDHi4A4owxM0k3Ta86osO//cG3rIjrEzj8MfQ+J7Xp9eY/F+tjr4L+tsyri1ahY
+         2KHQ==
+X-Gm-Message-State: AOAM533bwHHTEP86EjT6LCnsSyMuSE2Z1Ehq32ac5idzQ07+RCY0Pkuq
+        eTtLCo77TI0DT/AOisku2KnY
+X-Google-Smtp-Source: ABdhPJxwsf37PFmW0FURNCujtvANPBeSWY2X75PU4vA3tHobt9EELwTTBv6yWyv1K8e8UN8+g5pOHw==
+X-Received: by 2002:a65:5a4a:: with SMTP id z10mr7745684pgs.240.1617290119691;
+        Thu, 01 Apr 2021 08:15:19 -0700 (PDT)
+Received: from localhost.localdomain ([103.77.37.138])
+        by smtp.gmail.com with ESMTPSA id 35sm5652769pgr.14.2021.04.01.08.15.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 08:15:19 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        boris.brezillon@collabora.com, Daniele.Palmas@telit.com,
+        bjorn.andersson@linaro.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v9 0/4] Add support for secure regions in NAND
+Date:   Thu,  1 Apr 2021 20:45:04 +0530
+Message-Id: <20210401151508.143075-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210330153512.1182-5-john.ogness@linutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-03-30 17:35:11, John Ogness wrote:
-> @syslog_lock was a raw_spin_lock to simplify the transition of
-> removing @logbuf_lock and the safe buffers. With that transition
-> complete, and since all uses of @syslog_lock are within sleepable
-> contexts, @syslog_lock can become a mutex.
+On a typical end product, a vendor may choose to secure some regions in
+the NAND memory which are supposed to stay intact between FW upgrades.
+The access to those regions will be blocked by a secure element like
+Trustzone. So the normal world software like Linux kernel should not
+touch these regions (including reading).
 
-It makes perfect sense.
+So this series adds a property for declaring such secure regions in DT
+so that the driver can skip touching them. While at it, the Qcom NANDc
+DT binding is also converted to YAML format.
 
-> ---
->  Note: The removal of read_syslog_seq_irq() is technically a small
->        step backwards. But the follow-up patch moves forward again
->        and closes a window that existed with read_syslog_seq_irq()
->        and @syslog_lock as a spin_lock.
+Thanks,
+Mani
 
-This change would deserve a comment in the commit message. Well, I do
-not think that is a step backward, see below.
+Changes in v9:
 
->  kernel/printk/printk.c | 49 +++++++++++++++++-------------------------
->  1 file changed, 20 insertions(+), 29 deletions(-)
-> 
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index f090d6a1b39e..b771aae46445 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -1603,21 +1603,9 @@ static int syslog_print_all(char __user *buf, int size, bool clear)
->  
->  static void syslog_clear(void)
->  {
-> -	raw_spin_lock_irq(&syslog_lock);
-> +	mutex_lock(&syslog_lock);
->  	latched_seq_write(&clear_seq, prb_next_seq(prb));
-> -	raw_spin_unlock_irq(&syslog_lock);
-> -}
-> -
-> -/* Return a consistent copy of @syslog_seq. */
-> -static u64 read_syslog_seq_irq(void)
-> -{
-> -	u64 seq;
-> -
-> -	raw_spin_lock_irq(&syslog_lock);
-> -	seq = syslog_seq;
-> -	raw_spin_unlock_irq(&syslog_lock);
-> -
-> -	return seq;
-> +	mutex_unlock(&syslog_lock);
->  }
->  
->  int do_syslog(int type, char __user *buf, int len, int source)
-> @@ -1644,8 +1633,12 @@ int do_syslog(int type, char __user *buf, int len, int source)
->  		if (!access_ok(buf, len))
->  			return -EFAULT;
->  
-> -		error = wait_event_interruptible(log_wait,
-> -				prb_read_valid(prb, read_syslog_seq_irq(), NULL));
-> +		/* Get a consistent copy of @syslog_seq. */
-> +		mutex_lock(&syslog_lock);
-> +		seq = syslog_seq;
-> +		mutex_unlock(&syslog_lock);
-> +
-> +		error = wait_event_interruptible(log_wait, prb_read_valid(prb, seq, NULL));
+Based on review comments from Miquel:
 
-Honestly, I am not sure how the syslog interface should work when there
-are two readers in the system. They both share the same "syslog_seq".
+* Fixed the secure-regions check
+* Renamed the function to nand_region_is_secured() and used bool return
+* Moved the parsing function to nand_scan()
 
-This either fixes a historic bug. The caller of SYSLOG_ACTION_READ
-might miss the new message when another reader did read it in the
-meantime.
+* Added a patch to fix nand_cleanup in qcom driver
 
-Or it might introduce a regression when two readers would read the
-same message.
+Changes in v8:
 
-Or it does not matter because the behavior is racy by definition.
+* Reworked the secure region check logic based on input from Boris
+* Removed the check where unnecessary in rawnand core.
 
-Best Regards,
-Petr
+Changes in v7:
 
-PS: I am going to look at this more with a fresh head after Easter
- holidays.  The answer is important also for the next patch that
- basically restores the original behavior.
- 
+* Made "size" u64 and fixed a warning reported by Kernel test bot
+
+Changes in v6:
+
+* Made use of "size" of the regions for comparision
+* Used "secure" instead of "sec"
+* Fixed the sizeof parameter in of_get_nand_secure_regions()
+
+Changes in v5:
+
+* Switched to "uint64-matrix" as suggested by Rob
+* Moved the whole logic from qcom driver to nand core as suggested by Boris
+
+Changes in v4:
+
+* Used "uint32-matrix" instead of "uint32-array" as per Rob's review.
+* Collected Rob's review tag for binding conversion patch
+
+Changes in v3:
+
+* Removed the nand prefix from DT property and moved the property parsing
+  logic before nand_scan() in driver.
+
+Changes in v2:
+
+* Moved the secure-regions property to generic NAND binding as a NAND
+  chip property and renamed it as "nand-secure-regions".
+
+Manivannan Sadhasivam (4):
+  dt-bindings: mtd: Convert Qcom NANDc binding to YAML
+  dt-bindings: mtd: Add a property to declare secure regions in NAND
+    chips
+  mtd: rawnand: Add support for secure regions in NAND memory
+  mtd: rawnand: qcom: Add missing nand_cleanup() in error path
+
+ .../bindings/mtd/nand-controller.yaml         |   7 +
+ .../devicetree/bindings/mtd/qcom,nandc.yaml   | 196 ++++++++++++++++++
+ .../devicetree/bindings/mtd/qcom_nandc.txt    | 142 -------------
+ drivers/mtd/nand/raw/nand_base.c              | 107 +++++++++-
+ drivers/mtd/nand/raw/qcom_nandc.c             |   1 +
+ include/linux/mtd/rawnand.h                   |  14 ++
+ 6 files changed, 324 insertions(+), 143 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+
+-- 
+2.25.1
+
