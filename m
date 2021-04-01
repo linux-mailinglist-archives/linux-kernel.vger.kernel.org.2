@@ -2,109 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1602F3517E1
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D7435182E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 19:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235583AbhDARm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:42:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57186 "EHLO
+        id S236258AbhDARoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:44:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234383AbhDARhD (ORCPT
+        with ESMTP id S234544AbhDARh6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:37:03 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB5A4C0613B9
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 05:18:42 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id 11so1341813pfn.9
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 05:18:42 -0700 (PDT)
+        Thu, 1 Apr 2021 13:37:58 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8542FC0613BB
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 05:19:35 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id s2so1256072qtx.10
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 05:19:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=P569iaTbs6O5c4QvqrT8hmFqAirjxm+5X5n/nLel8Hk=;
-        b=SdIzob6Rg9lJgd20DviDj66kT6JWmI8l4nn81KpJ8eJKbOQf+fMz0mfbQBEglYad8f
-         fq3HjSdtdzSWIN/p0S0HS9WjsO+GP+vRSFNpbm0EgHYOaThKtaXgvbwUTismZa4jJmO4
-         OA9p5NKzddeSnnSaadxllyht67NmLCYi7x6ftUNvwU1gdwwPkt2Q0Oa7lQDT0GzLWUIm
-         fAlGhXcWinDInv8lB6TeuVoZQwxnVbV/VyQ45oMgv7VcDShjxBXA/QDRyX7igOYD+0I3
-         Dq1LcTaVEbC1fuzOBZjTYCKB5jd3SR+8cmazJ/+qigcVNEo3ZZqZeOLaxHhKobsLMApJ
-         npTw==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Vgr/Zl3BDXRnrq2J6EE+e/3R7mQgt/D2Dsj5nuE2w0M=;
+        b=JpAs1vzPTjz4W8rdx9Lqz6nBqd13qCgN3+erq91mh4WGoo/LZS5fEquo+DACiJnKkX
+         QrRXi051hfgjTbJbWkb4DYzvsW7dd5nBrV1B7iZhANXyvf9JPdE2B/K8FL9e62txVK7G
+         0X/gpOxbofNzmLf0GAqzpX8sBfJtZmAM5AgY6NsA+fMjUnX+sBbt/uAKoHA8hXKR3thw
+         I4MqU09EK54ap9j94WYb6DERRr6dM1RBsJqJQLblOPlbmso1274vL9Xp0KegLKnMSTTI
+         OwoDTz18mnTz8i5OKZzE0CwVDjue/qX8moZSc4OPC55MzH1GtPpdWvMfTcPBykbbhtQ4
+         E5jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=P569iaTbs6O5c4QvqrT8hmFqAirjxm+5X5n/nLel8Hk=;
-        b=g9txtNNeGvMUFHwzgp5sR1h9EOgX44QUyLk9hC9cjOYqGd64qPujJngzoid89iksfa
-         3JtpQGB1Mn+Nbf+QBvHxm73E8PZSRxdIhPEtAvViPuHrzY9X80v6AaFth93S+O52kCxD
-         pyu2cOdtSgM/SGgf73Wz+vneaTAd0p2FnGc/zVEeCkRjW1+yRTCoBi0+u2om/X8mrL4Q
-         P6z2pVRxu83JMp4OC1ck383HdhryK3OFdMvWmj0UpeWNkkOsb56zXrWAbG5DSeqX9hJQ
-         az72BAjtylahGmLiEmDt5KS8NMZja1GYi0ff+yGKmfwEJGG+e9MfKfg+F4c5WI9wVWIf
-         b8zw==
-X-Gm-Message-State: AOAM532MvUOkbP3xGzkNsdjje2kEOUG4gghrZSKUWNZFuFM0d9NCZuDm
-        jFEquW+PjlroNUCSFAQjA6mZRg==
-X-Google-Smtp-Source: ABdhPJz8KUHW7fvncKxqlaOv7HvQQN55BF4qVQIjaxSsBq1uiESyP2+Jik4zX8CZhRuMK5Ox7skF+g==
-X-Received: by 2002:a65:4887:: with SMTP id n7mr7267201pgs.14.1617279522544;
-        Thu, 01 Apr 2021 05:18:42 -0700 (PDT)
-Received: from [192.168.11.133] (li1566-229.members.linode.com. [139.162.86.229])
-        by smtp.gmail.com with ESMTPSA id i22sm5413134pgj.90.2021.04.01.05.18.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Apr 2021 05:18:41 -0700 (PDT)
-Subject: Re: [PATCH v2] dmaengine: k3dma: use the correct HiSilicon copyright
-To:     Hao Fang <fanghao11@huawei.com>, vkoul@kernel.org,
-        mchehab@kernel.org, dmaengine@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, prime.zeng@hisilicon.com
-References: <1617277820-26971-1-git-send-email-fanghao11@huawei.com>
-From:   Zhangfei Gao <zhangfei.gao@linaro.org>
-Message-ID: <8091f42c-755d-c412-bb1d-b723d887bf43@linaro.org>
-Date:   Thu, 1 Apr 2021 20:18:32 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Vgr/Zl3BDXRnrq2J6EE+e/3R7mQgt/D2Dsj5nuE2w0M=;
+        b=bOjlVzaokgnkC8bZbTb/y/amQK9l8WA0yG7CdZ9yuUS8MQw7DIe9V/uCs8Cn7E+eq3
+         K2x612EhopsaBifIT93SPdQYhvaj1hmOlDLj7QqK+2OBGV6nLrHVNbD/9tLbMSPyL/Fq
+         MM9JJPlsU7Ubu0t99O00SMQ+MniwY9Fei8Fmk/qIBxe6OAA1F8JdwWIJPS8yHX9Gz279
+         bdVTpVLYj+bbgICavdqFP3EjDFwsyGU4SvJ6p0jnL195aQr7d6gWxVUCur6i+Sz90VHi
+         Y3+Cxy56pQLECk+G7biSUK6qwIHHVkHhvRXEeDm3BFd2ILHcuJCjtWG3LDTL3ix5Wi/w
+         v3dw==
+X-Gm-Message-State: AOAM530zv3Uy0oml3Tiffr54BOjs2sWIb9WiZxL2POFGbn+Y4pUTo1Xk
+        zNcoF3ewQLjlbFgDXnYdmzqeRg==
+X-Google-Smtp-Source: ABdhPJz6ns0s4EMUeoQopcXj71hOMnL0XWBbKVYAuaGM2OabeF39OGOUzeq0Rc+BHh/xNK4055cz0A==
+X-Received: by 2002:ac8:7f52:: with SMTP id g18mr6906607qtk.250.1617279574765;
+        Thu, 01 Apr 2021 05:19:34 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id s28sm3807098qkj.73.2021.04.01.05.19.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 05:19:34 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lRwIP-006jdH-LT; Thu, 01 Apr 2021 09:19:33 -0300
+Date:   Thu, 1 Apr 2021 09:19:33 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        syzbot <syzbot+015dd7cdbbbc2c180c65@syzkaller.appspotmail.com>,
+        akpm@linux-foundation.org, bp@alien8.de, daniel.vetter@ffwll.ch,
+        daniel.vetter@intel.com, hpa@zytor.com, jmattson@google.com,
+        jmorris@namei.org, joro@8bytes.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
+        m.szyprowski@samsung.com, mchehab@kernel.org, mingo@redhat.com,
+        seanjc@google.com, serge@hallyn.com,
+        syzkaller-bugs@googlegroups.com, tfiga@chromium.org,
+        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
+        x86@kernel.org
+Subject: Re: [syzbot] WARNING in unsafe_follow_pfn
+Message-ID: <20210401121933.GA2710221@ziepe.ca>
+References: <000000000000ca9a6005bec29ebe@google.com>
+ <2db3c803-6a94-9345-261a-a2bb74370c02@redhat.com>
+ <20210331042922.GE2065@kadam>
 MIME-Version: 1.0
-In-Reply-To: <1617277820-26971-1-git-send-email-fanghao11@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210331042922.GE2065@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Mar 31, 2021 at 07:29:22AM +0300, Dan Carpenter wrote:
+> On Tue, Mar 30, 2021 at 07:04:30PM +0200, Paolo Bonzini wrote:
+> > On 30/03/21 17:26, syzbot wrote:
+> > > Hello,
+> > > 
+> > > syzbot found the following issue on:
+> > > 
+> > > HEAD commit:    93129492 Add linux-next specific files for 20210326
+> > > git tree:       linux-next
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=169ab21ad00000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=6f2f73285ea94c45
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=015dd7cdbbbc2c180c65
+> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=119b8d06d00000
+> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=112e978ad00000
+> > > 
+> > > The issue was bisected to:
+> > > 
+> > > commit d40b9fdee6dc819d8fc35f70c345cbe0394cde4c
+> > > Author: Daniel Vetter <daniel.vetter@ffwll.ch>
+> > > Date:   Tue Mar 16 15:33:01 2021 +0000
+> > > 
+> > >      mm: Add unsafe_follow_pfn
+> > > 
+> > > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=122d2016d00000
+> > > final oops:     https://syzkaller.appspot.com/x/report.txt?x=112d2016d00000
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=162d2016d00000
+> > > 
+> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > Reported-by: syzbot+015dd7cdbbbc2c180c65@syzkaller.appspotmail.com
+> > > Fixes: d40b9fdee6dc ("mm: Add unsafe_follow_pfn")
+> > 
+> > This is basically intentional because get_vaddr_frames is broken, isn't it?
+> > I think it needs to be ignored in syzkaller.
+> 
+> What?
+> 
+> The bisect is wrong (because it's blaming the commit which added the
+> warning instead of the commit which added the buggy caller) but the
+> warning is correct.
+> 
+> Plus users are going to be seeing this as well.  According to the commit
+> message for 69bacee7f9ad ("mm: Add unsafe_follow_pfn") "Unfortunately
+> there's some users where this is not fixable (like v4l userptr of iomem
+> mappings)".  It sort of seems crazy to dump this giant splat and then
+> tell users to ignore it forever because it can't be fixed...  0_0
 
+I think the discussion conclusion was that this interface should not
+be used by userspace anymore, it is obsolete by some new interface?
 
-On 2021/4/1 下午7:50, Hao Fang wrote:
-> s/Hisilicon/HiSilicon/g.
-> It should use capital S, according to the official website.
->
-> Signed-off-by: Hao Fang <fanghao11@huawei.com>
+It should be protected by some kconfig and the kconfig should be
+turned off for syzkaller runs.
 
-Thanks for the patch.
-
-Acked-by:  Zhangfei Gao <zhangfei.gao@linaro.org>
-> ---
-> V2:
->   -remove the terms of use link.
-> ---
->   drivers/dma/k3dma.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/dma/k3dma.c b/drivers/dma/k3dma.c
-> index d0b2e60..ecdaada9 100644
-> --- a/drivers/dma/k3dma.c
-> +++ b/drivers/dma/k3dma.c
-> @@ -1,7 +1,7 @@
->   // SPDX-License-Identifier: GPL-2.0-only
->   /*
->    * Copyright (c) 2013 - 2015 Linaro Ltd.
-> - * Copyright (c) 2013 Hisilicon Limited.
-> + * Copyright (c) 2013 HiSilicon Limited.
->    */
->   #include <linux/sched.h>
->   #include <linux/device.h>
-> @@ -1039,6 +1039,6 @@ static struct platform_driver k3_pdma_driver = {
->   
->   module_platform_driver(k3_pdma_driver);
->   
-> -MODULE_DESCRIPTION("Hisilicon k3 DMA Driver");
-> +MODULE_DESCRIPTION("HiSilicon k3 DMA Driver");
->   MODULE_ALIAS("platform:k3dma");
->   MODULE_LICENSE("GPL v2");
-
+Jason
