@@ -2,91 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D50253522E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 00:48:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FAA53522E5
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 00:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230521AbhDAWsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 18:48:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55674 "EHLO mail.kernel.org"
+        id S235213AbhDAWuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 18:50:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234043AbhDAWso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 18:48:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D1AE8610CE;
-        Thu,  1 Apr 2021 22:48:43 +0000 (UTC)
+        id S234273AbhDAWuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 18:50:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 98A61610F7;
+        Thu,  1 Apr 2021 22:50:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617317324;
-        bh=ihxVY1Xf7RR0Ojf3QwbQINACQO40jOZN2xYgkYw4Vpg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ekBdLhBLQ1QXfEPpmXTeSj1bybHoWfsdh5j9sbTsK8o8EVIJNVYmBqc/DV5VmTZ0L
-         zLbfE/OkR4SsUTVf+KSGK/5jyds34x7e2SML4BhMjZPtxVT939b+wFb4EbI8qdVfkG
-         isddxDbB3qZjVT0wHYaV8fm0eiyRMGBS3tpFfc1T1X/RaulPECV+Icxaxg7KzN6Di3
-         T5zPq2zsmJ0NkdXbMmnBHC3OQaq+csITwZbj918LUMRodWprZQDJGJeLDnUxLXcFoP
-         KuisUVFvPNS+R9aMBJlMiQgvUMAlO900PTMFcAmM8F3Zt6CEejPB87MBtIp1337EgO
-         MWEBW0Ec+m97A==
-Date:   Fri, 2 Apr 2021 00:48:41 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] torture: Correctly fetch CPUs for kvm-build.sh with all
- native language
-Message-ID: <20210401224841.GD116405@lothringen>
-References: <20210401132602.116352-1-frederic@kernel.org>
- <20210401185116.GH2696@paulmck-ThinkPad-P72>
- <20210401203112.GA116405@lothringen>
- <20210401204022.GI2696@paulmck-ThinkPad-P72>
- <20210401204113.GB116405@lothringen>
- <20210401210253.GJ2696@paulmck-ThinkPad-P72>
- <20210401210802.GC116405@lothringen>
- <20210401223329.GK2696@paulmck-ThinkPad-P72>
+        s=k20201202; t=1617317408;
+        bh=XzQ9t7E1vfxGLlA0Ov+CF+/XYR82rASkAZpibljHW3Y=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=XTgFgm2NF7+p4Kr9gb10rgaevqFOotUB5bhrJsZpyQGSwareYD94y57naHMWbTssC
+         1L4YmLW2hrkvA9xs06m5t2max9Fo1Z9A8Mui7l201aS2OLV7gYVeGZ9FysY3M++/Es
+         xhRzSSOHicac8HovTbDhPWNNmHlmWSJEqFxftLSDH+9GHRICQDCScKT8qBTn/2qZuv
+         xFujRwMF1/RoEkHfE1PKVU1SD7SsgXuEVYx85QY8MZkn14/IQWbjuYYsEVQH/oZoPP
+         kYR5dmAVJS56jEzIQVByoiRdGbfdM1VFgmJfbSLFgBozG7T/abnkskZ1xkuiCevJfn
+         nyG5QL1PW0rTQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8AC95609CD;
+        Thu,  1 Apr 2021 22:50:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401223329.GK2696@paulmck-ThinkPad-P72>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] drivers: net: fix memory leak in atusb_probe
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161731740856.4407.2943205104358647134.git-patchwork-notify@kernel.org>
+Date:   Thu, 01 Apr 2021 22:50:08 +0000
+References: <20210401044624.19017-1-paskripkin@gmail.com>
+In-Reply-To: <20210401044624.19017-1-paskripkin@gmail.com>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     stefan@datenfreihafen.org, alex.aring@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, linux-wpan@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+28a246747e0a465127f3@syzkaller.appspotmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 03:33:29PM -0700, Paul E. McKenney wrote:
-> On Thu, Apr 01, 2021 at 11:08:02PM +0200, Frederic Weisbecker wrote:
-> How about like this?  I put this only in kvm.sh for the moment, but
-> if these keep cropping up I will just hit all the scripts.  ;-)
+Hello:
 
-Sure, works for me!
+This patch was applied to netdev/net.git (refs/heads/master):
 
-Thanks.
+On Thu,  1 Apr 2021 07:46:24 +0300 you wrote:
+> syzbot reported memory leak in atusb_probe()[1].
+> The problem was in atusb_alloc_urbs().
+> Since urb is anchored, we need to release the reference
+> to correctly free the urb
+> 
+> backtrace:
+>     [<ffffffff82ba0466>] kmalloc include/linux/slab.h:559 [inline]
+>     [<ffffffff82ba0466>] usb_alloc_urb+0x66/0xe0 drivers/usb/core/urb.c:74
+>     [<ffffffff82ad3888>] atusb_alloc_urbs drivers/net/ieee802154/atusb.c:362 [inline][2]
+>     [<ffffffff82ad3888>] atusb_probe+0x158/0x820 drivers/net/ieee802154/atusb.c:1038 [1]
+> 
+> [...]
 
-> 
-> 							Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> commit 4ca332016ed81c15ebb3b744dbfc462281c544b8
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Thu Apr 1 15:26:56 2021 -0700
-> 
->     torture:  Set kvm.sh language to English
->     
->     Some of the code invoked directly and indirectly from kvm.sh parses
->     the output of commands.  This parsing assumes English, which can cause
->     failures if the user has set some other language.  In a few cases,
->     there are language-independent commands available, but this is not
->     always the case.  Therefore, as an alternative to polyglot parsing,
->     this commit sets the LANG environment variable to en_US.UTF-8.
->     
->     Reported-by: Frederic Weisbecker <frederic@kernel.org>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-> index fab3bd9..390bb97 100755
-> --- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-> +++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-> @@ -20,6 +20,9 @@ mkdir $T
->  
->  cd `dirname $scriptname`/../../../../../
->  
-> +# This script knows only English.
-> +LANG=en_US.UTF-8; export LANG
-> +
->  dur=$((30*60))
->  dryrun=""
->  KVM="`pwd`/tools/testing/selftests/rcutorture"; export KVM
+Here is the summary with links:
+  - drivers: net: fix memory leak in atusb_probe
+    https://git.kernel.org/netdev/net/c/6b9fbe169551
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
