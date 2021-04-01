@@ -2,362 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3965E351F1A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B36351F02
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234944AbhDASx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:53:27 -0400
-Received: from mga06.intel.com ([134.134.136.31]:65478 "EHLO mga06.intel.com"
+        id S240494AbhDASvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:51:44 -0400
+Received: from mga09.intel.com ([134.134.136.24]:63339 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239913AbhDASlA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:41:00 -0400
-IronPort-SDR: ERsTRl1B8uQnYAl8vDcpmEYTxrfDdj5zvHsLG2YljdWYoYTMTlW9mO8U18s3YnN3NsgU5JKx3r
- YIRK8nZNaOog==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="253645629"
+        id S238724AbhDASfI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:35:08 -0400
+IronPort-SDR: iKwTb7y6YW4x/e0wjZ3VHtX9Zp92L7rnkAmkpEM8qaA72u0Bwn1hKV/dbHX88PKR608q1ZIi0f
+ BcG5OAjo003w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="192412468"
 X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="253645629"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 11:35:05 -0700
-IronPort-SDR: hteujL5LfzZ7EH8lftDrEVt2YRu1ovueLE6XkPxe+MEUExRwMKTNpsN/9zzEwOnCbmq9i4jzm3
- 5JRDeOQmBM4w==
+   d="scan'208";a="192412468"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 11:35:08 -0700
+IronPort-SDR: FuczjaOkjpIBLAKeW+4j5STy9zhzNKRb35N03V/HjmNAUK0ddH6LaPa48GdywqxY+TjJhK0mkI
+ 4e1vxG0zsGRQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
-   d="scan'208";a="611023757"
+   d="scan'208";a="446390564"
 Received: from viggo.jf.intel.com (HELO localhost.localdomain) ([10.54.77.144])
-  by fmsmga005.fm.intel.com with ESMTP; 01 Apr 2021 11:35:04 -0700
-Subject: [PATCH 04/10] mm/migrate: make migrate_pages() return nr_succeeded
+  by fmsmga002.fm.intel.com with ESMTP; 01 Apr 2021 11:35:06 -0700
+Subject: [PATCH 05/10] mm/migrate: demote pages during reclaim
 To:     linux-mm@kvack.org
 Cc:     linux-kernel@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        yang.shi@linux.alibaba.com, shy828301@gmail.com,
-        weixugc@google.com, ying.huang@intel.com, dan.j.williams@intel.com,
-        david@redhat.com, osalvador@suse.de
+        Dave Hansen <dave.hansen@linux.intel.com>, weixugc@google.com,
+        yang.shi@linux.alibaba.com, rientjes@google.com,
+        ying.huang@intel.com, dan.j.williams@intel.com, osalvador@suse.de
 From:   Dave Hansen <dave.hansen@linux.intel.com>
-Date:   Thu, 01 Apr 2021 11:32:23 -0700
+Date:   Thu, 01 Apr 2021 11:32:25 -0700
 References: <20210401183216.443C4443@viggo.jf.intel.com>
 In-Reply-To: <20210401183216.443C4443@viggo.jf.intel.com>
-Message-Id: <20210401183223.80F1E291@viggo.jf.intel.com>
+Message-Id: <20210401183225.2EDC224F@viggo.jf.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-From: Yang Shi <yang.shi@linux.alibaba.com>
+From: Dave Hansen <dave.hansen@linux.intel.com>
 
-The migrate_pages() returns the number of pages that were not migrated,
-or an error code.  When returning an error code, there is no way to know
-how many pages were migrated or not migrated.
+This is mostly derived from a patch from Yang Shi:
 
-In the following patch, migrate_pages() is used to demote pages to PMEM
-node, we need account how many pages are reclaimed (demoted) since page
-reclaim behavior depends on this.  Add *nr_succeeded parameter to make
-migrate_pages() return how many pages are demoted successfully for all
-cases.
+	https://lore.kernel.org/linux-mm/1560468577-101178-10-git-send-email-yang.shi@linux.alibaba.com/
 
-Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
+Add code to the reclaim path (shrink_page_list()) to "demote" data
+to another NUMA node instead of discarding the data.  This always
+avoids the cost of I/O needed to read the page back in and sometimes
+avoids the writeout cost when the pagee is dirty.
+
+A second pass through shrink_page_list() will be made if any demotions
+fail.  This essentally falls back to normal reclaim behavior in the
+case that demotions fail.  Previous versions of this patch may have
+simply failed to reclaim pages which were eligible for demotion but
+were unable to be demoted in practice.
+
+Note: This just adds the start of infratructure for migration. It is
+actually disabled next to the FIXME in migrate_demote_page_ok().
+
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Reviewed-by: Yang Shi <shy828301@gmail.com>
 Cc: Wei Xu <weixugc@google.com>
+Cc: Yang Shi <yang.shi@linux.alibaba.com>
+Cc: David Rientjes <rientjes@google.com>
 Cc: Huang Ying <ying.huang@intel.com>
 Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: David Hildenbrand <david@redhat.com>
 Cc: osalvador <osalvador@suse.de>
 
 --
+changes from 20210122:
+ * move from GFP_HIGHUSER -> GFP_HIGHUSER_MOVABLE (Ying)
 
-Note: Yang Shi originally wrote the patch, thus the SoB.  There was
-also a Reviewed-by provided since there were some modifications made
-to this after the original work.
-
-Changes since 20210302:
- * Fix definition of CONFIG_MIGRATION=n stub migrate_pages().  Its
-   parameters were wrong, but oddly enough did not generate any
-   compile errors.
-
-Changes since 20200122:
- * Fix migrate_pages() to manipulate nr_succeeded *value*
-   rather than the pointer.
+changes from 202010:
+ * add MR_NUMA_MISPLACED to trace MIGRATE_REASON define
+ * make migrate_demote_page_ok() static, remove 'sc' arg until
+   later patch
+ * remove unnecessary alloc_demote_page() hugetlb warning
+ * Simplify alloc_demote_page() gfp mask.  Depend on
+   __GFP_NORETRY to make it lightweight instead of fancier
+   stuff like leaving out __GFP_IO/FS.
+ * Allocate migration page with alloc_migration_target()
+   instead of allocating directly.
+changes from 20200730:
+ * Add another pass through shrink_page_list() when demotion
+   fails.
+changes from 20210302:
+ * Use __GFP_THISNODE and revise the comment explaining the
+   GFP mask constructionn
 ---
 
- b/include/linux/migrate.h |    5 +++--
- b/mm/compaction.c         |    3 ++-
- b/mm/gup.c                |    3 ++-
- b/mm/memory-failure.c     |    4 +++-
- b/mm/memory_hotplug.c     |    4 +++-
- b/mm/mempolicy.c          |    8 ++++++--
- b/mm/migrate.c            |   19 +++++++++++--------
- b/mm/page_alloc.c         |    9 ++++++---
- 8 files changed, 36 insertions(+), 19 deletions(-)
+ b/include/linux/migrate.h        |    9 ++++
+ b/include/trace/events/migrate.h |    3 -
+ b/mm/vmscan.c                    |   82 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 93 insertions(+), 1 deletion(-)
 
-diff -puN include/linux/migrate.h~migrate_pages-add-success-return include/linux/migrate.h
---- a/include/linux/migrate.h~migrate_pages-add-success-return	2021-03-31 15:17:14.144000255 -0700
-+++ b/include/linux/migrate.h	2021-03-31 15:17:14.182000255 -0700
-@@ -40,7 +40,8 @@ extern int migrate_page(struct address_s
- 			struct page *newpage, struct page *page,
- 			enum migrate_mode mode);
- extern int migrate_pages(struct list_head *l, new_page_t new, free_page_t free,
--		unsigned long private, enum migrate_mode mode, int reason);
-+		unsigned long private, enum migrate_mode mode, int reason,
-+		unsigned int *nr_succeeded);
- extern struct page *alloc_migration_target(struct page *page, unsigned long private);
- extern int isolate_movable_page(struct page *page, isolate_mode_t mode);
- extern void putback_movable_page(struct page *page);
-@@ -58,7 +59,7 @@ extern int migrate_page_move_mapping(str
- static inline void putback_movable_pages(struct list_head *l) {}
- static inline int migrate_pages(struct list_head *l, new_page_t new,
- 		free_page_t free, unsigned long private, enum migrate_mode mode,
--		int reason)
-+		int reason, unsigned int *nr_succeeded)
- 	{ return -ENOSYS; }
- static inline struct page *alloc_migration_target(struct page *page,
- 		unsigned long private)
-diff -puN mm/compaction.c~migrate_pages-add-success-return mm/compaction.c
---- a/mm/compaction.c~migrate_pages-add-success-return	2021-03-31 15:17:14.146000255 -0700
-+++ b/mm/compaction.c	2021-03-31 15:17:14.186000255 -0700
-@@ -2247,6 +2247,7 @@ compact_zone(struct compact_control *cc,
- 	unsigned long last_migrated_pfn;
- 	const bool sync = cc->mode != MIGRATE_ASYNC;
- 	bool update_cached;
+diff -puN include/linux/migrate.h~demote-with-migrate_pages include/linux/migrate.h
+--- a/include/linux/migrate.h~demote-with-migrate_pages	2021-03-31 15:17:15.842000251 -0700
++++ b/include/linux/migrate.h	2021-03-31 15:17:15.853000251 -0700
+@@ -27,6 +27,7 @@ enum migrate_reason {
+ 	MR_MEMPOLICY_MBIND,
+ 	MR_NUMA_MISPLACED,
+ 	MR_CONTIG_RANGE,
++	MR_DEMOTION,
+ 	MR_TYPES
+ };
+ 
+@@ -196,6 +197,14 @@ struct migrate_vma {
+ int migrate_vma_setup(struct migrate_vma *args);
+ void migrate_vma_pages(struct migrate_vma *migrate);
+ void migrate_vma_finalize(struct migrate_vma *migrate);
++int next_demotion_node(int node);
++
++#else /* CONFIG_MIGRATION disabled: */
++
++static inline int next_demotion_node(int node)
++{
++	return NUMA_NO_NODE;
++}
+ 
+ #endif /* CONFIG_MIGRATION */
+ 
+diff -puN include/trace/events/migrate.h~demote-with-migrate_pages include/trace/events/migrate.h
+--- a/include/trace/events/migrate.h~demote-with-migrate_pages	2021-03-31 15:17:15.846000251 -0700
++++ b/include/trace/events/migrate.h	2021-03-31 15:17:15.853000251 -0700
+@@ -20,7 +20,8 @@
+ 	EM( MR_SYSCALL,		"syscall_or_cpuset")		\
+ 	EM( MR_MEMPOLICY_MBIND,	"mempolicy_mbind")		\
+ 	EM( MR_NUMA_MISPLACED,	"numa_misplaced")		\
+-	EMe(MR_CONTIG_RANGE,	"contig_range")
++	EM( MR_CONTIG_RANGE,	"contig_range")			\
++	EMe(MR_DEMOTION,	"demotion")
+ 
+ /*
+  * First define the enums in the above macros to be exported to userspace
+diff -puN mm/vmscan.c~demote-with-migrate_pages mm/vmscan.c
+--- a/mm/vmscan.c~demote-with-migrate_pages	2021-03-31 15:17:15.848000251 -0700
++++ b/mm/vmscan.c	2021-03-31 15:17:15.856000251 -0700
+@@ -41,6 +41,7 @@
+ #include <linux/kthread.h>
+ #include <linux/freezer.h>
+ #include <linux/memcontrol.h>
++#include <linux/migrate.h>
+ #include <linux/delayacct.h>
+ #include <linux/sysctl.h>
+ #include <linux/oom.h>
+@@ -1035,6 +1036,23 @@ static enum page_references page_check_r
+ 	return PAGEREF_RECLAIM;
+ }
+ 
++static bool migrate_demote_page_ok(struct page *page)
++{
++	int next_nid = next_demotion_node(page_to_nid(page));
++
++	VM_BUG_ON_PAGE(!PageLocked(page), page);
++	VM_BUG_ON_PAGE(PageHuge(page), page);
++	VM_BUG_ON_PAGE(PageLRU(page), page);
++
++	if (next_nid == NUMA_NO_NODE)
++		return false;
++	if (PageTransHuge(page) && !thp_migration_supported())
++		return false;
++
++	// FIXME: actually enable this later in the series
++	return false;
++}
++
+ /* Check if a page is dirty or under writeback */
+ static void page_check_dirty_writeback(struct page *page,
+ 				       bool *dirty, bool *writeback)
+@@ -1065,6 +1083,46 @@ static void page_check_dirty_writeback(s
+ 		mapping->a_ops->is_dirty_writeback(page, dirty, writeback);
+ }
+ 
++static struct page *alloc_demote_page(struct page *page, unsigned long node)
++{
++	struct migration_target_control mtc = {
++		/*
++		 * Allocate from 'node', or fail the quickly and quietly.
++		 * When this happens, 'page; will likely just be discarded
++		 * instead of migrated.
++		 */
++		.gfp_mask = GFP_HIGHUSER_MOVABLE | __GFP_NORETRY |
++			    __GFP_THISNODE	 | __GFP_NOWARN,
++		.nid = node
++	};
++
++	return alloc_migration_target(page, (unsigned long)&mtc);
++}
++
++/*
++ * Take pages on @demote_list and attempt to demote them to
++ * another node.  Pages which are not demoted are left on
++ * @demote_pages.
++ */
++static unsigned int demote_page_list(struct list_head *demote_pages,
++				     struct pglist_data *pgdat,
++				     struct scan_control *sc)
++{
++	int target_nid = next_demotion_node(pgdat->node_id);
 +	unsigned int nr_succeeded = 0;
- 
- 	/*
- 	 * These counters track activities during zone compaction.  Initialize
-@@ -2364,7 +2365,7 @@ compact_zone(struct compact_control *cc,
- 
- 		err = migrate_pages(&cc->migratepages, compaction_alloc,
- 				compaction_free, (unsigned long)cc, cc->mode,
--				MR_COMPACTION);
-+				MR_COMPACTION, &nr_succeeded);
- 
- 		trace_mm_compaction_migratepages(cc->nr_migratepages, err,
- 							&cc->migratepages);
-diff -puN mm/gup.c~migrate_pages-add-success-return mm/gup.c
---- a/mm/gup.c~migrate_pages-add-success-return	2021-03-31 15:17:14.150000255 -0700
-+++ b/mm/gup.c	2021-03-31 15:17:14.190000255 -0700
-@@ -1550,6 +1550,7 @@ static long check_and_migrate_cma_pages(
- 	unsigned long i;
- 	unsigned long step;
- 	bool drain_allow = true;
-+	unsigned int nr_succeeded = 0;
- 	bool migrate_allow = true;
- 	LIST_HEAD(cma_page_list);
- 	long ret = nr_pages;
-@@ -1606,7 +1607,7 @@ check_again:
- 				put_page(pages[i]);
- 
- 		if (migrate_pages(&cma_page_list, alloc_migration_target, NULL,
--			(unsigned long)&mtc, MIGRATE_SYNC, MR_CONTIG_RANGE)) {
-+			(unsigned long)&mtc, MIGRATE_SYNC, MR_CONTIG_RANGE, &nr_succeeded)) {
- 			/*
- 			 * some of the pages failed migration. Do get_user_pages
- 			 * without migration.
-diff -puN mm/memory-failure.c~migrate_pages-add-success-return mm/memory-failure.c
---- a/mm/memory-failure.c~migrate_pages-add-success-return	2021-03-31 15:17:14.155000255 -0700
-+++ b/mm/memory-failure.c	2021-03-31 15:17:14.194000255 -0700
-@@ -1809,6 +1809,7 @@ static int __soft_offline_page(struct pa
- 	unsigned long pfn = page_to_pfn(page);
- 	struct page *hpage = compound_head(page);
- 	char const *msg_page[] = {"page", "hugepage"};
-+	unsigned int nr_succeeded = 0;
- 	bool huge = PageHuge(page);
- 	LIST_HEAD(pagelist);
- 	struct migration_target_control mtc = {
-@@ -1852,7 +1853,8 @@ static int __soft_offline_page(struct pa
- 
- 	if (isolate_page(hpage, &pagelist)) {
- 		ret = migrate_pages(&pagelist, alloc_migration_target, NULL,
--			(unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_FAILURE);
-+			(unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_FAILURE,
-+			&nr_succeeded);
- 		if (!ret) {
- 			bool release = !huge;
- 
-diff -puN mm/memory_hotplug.c~migrate_pages-add-success-return mm/memory_hotplug.c
---- a/mm/memory_hotplug.c~migrate_pages-add-success-return	2021-03-31 15:17:14.160000255 -0700
-+++ b/mm/memory_hotplug.c	2021-03-31 15:17:14.197000255 -0700
-@@ -1392,6 +1392,7 @@ do_migrate_range(unsigned long start_pfn
- 	unsigned long pfn;
- 	struct page *page, *head;
- 	int ret = 0;
-+	unsigned int nr_succeeded = 0;
- 	LIST_HEAD(source);
- 
- 	for (pfn = start_pfn; pfn < end_pfn; pfn++) {
-@@ -1466,7 +1467,8 @@ do_migrate_range(unsigned long start_pfn
- 		if (nodes_empty(nmask))
- 			node_set(mtc.nid, nmask);
- 		ret = migrate_pages(&source, alloc_migration_target, NULL,
--			(unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_HOTPLUG);
-+			(unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_HOTPLUG,
-+			&nr_succeeded);
- 		if (ret) {
- 			list_for_each_entry(page, &source, lru) {
- 				pr_warn("migrating pfn %lx failed ret:%d ",
-diff -puN mm/mempolicy.c~migrate_pages-add-success-return mm/mempolicy.c
---- a/mm/mempolicy.c~migrate_pages-add-success-return	2021-03-31 15:17:14.163000255 -0700
-+++ b/mm/mempolicy.c	2021-03-31 15:17:14.203000255 -0700
-@@ -1081,6 +1081,7 @@ static int migrate_page_add(struct page
- static int migrate_to_node(struct mm_struct *mm, int source, int dest,
- 			   int flags)
- {
-+	unsigned int nr_succeeded = 0;
- 	nodemask_t nmask;
- 	LIST_HEAD(pagelist);
- 	int err = 0;
-@@ -1103,7 +1104,8 @@ static int migrate_to_node(struct mm_str
- 
- 	if (!list_empty(&pagelist)) {
- 		err = migrate_pages(&pagelist, alloc_migration_target, NULL,
--				(unsigned long)&mtc, MIGRATE_SYNC, MR_SYSCALL);
-+				(unsigned long)&mtc, MIGRATE_SYNC, MR_SYSCALL,
-+				&nr_succeeded);
- 		if (err)
- 			putback_movable_pages(&pagelist);
- 	}
-@@ -1278,6 +1280,7 @@ static long do_mbind(unsigned long start
- 		     nodemask_t *nmask, unsigned long flags)
- {
- 	struct mm_struct *mm = current->mm;
-+	unsigned int nr_succeeded = 0;
- 	struct mempolicy *new;
- 	unsigned long end;
- 	int err;
-@@ -1355,7 +1358,8 @@ static long do_mbind(unsigned long start
- 		if (!list_empty(&pagelist)) {
- 			WARN_ON_ONCE(flags & MPOL_MF_LAZY);
- 			nr_failed = migrate_pages(&pagelist, new_page, NULL,
--				start, MIGRATE_SYNC, MR_MEMPOLICY_MBIND);
-+				start, MIGRATE_SYNC, MR_MEMPOLICY_MBIND,
-+				&nr_succeeded);
- 			if (nr_failed)
- 				putback_movable_pages(&pagelist);
- 		}
-diff -puN mm/migrate.c~migrate_pages-add-success-return mm/migrate.c
---- a/mm/migrate.c~migrate_pages-add-success-return	2021-03-31 15:17:14.168000255 -0700
-+++ b/mm/migrate.c	2021-03-31 15:17:14.207000255 -0700
-@@ -1493,6 +1493,7 @@ static inline int try_split_thp(struct p
-  * @mode:		The migration mode that specifies the constraints for
-  *			page migration, if any.
-  * @reason:		The reason for page migration.
-+ * @nr_succeeded:	The number of pages migrated successfully.
-  *
-  * The function returns after 10 attempts or if no pages are movable any more
-  * because the list has become empty or no retryable pages exist any more.
-@@ -1503,12 +1504,11 @@ static inline int try_split_thp(struct p
++	int err;
++
++	if (list_empty(demote_pages))
++		return 0;
++
++	/* Demotion ignores all cpuset and mempolicy settings */
++	err = migrate_pages(demote_pages, alloc_demote_page, NULL,
++			    target_nid, MIGRATE_ASYNC, MR_DEMOTION,
++			    &nr_succeeded);
++
++	return nr_succeeded;
++}
++
+ /*
+  * shrink_page_list() returns the number of reclaimed pages
   */
- int migrate_pages(struct list_head *from, new_page_t get_new_page,
- 		free_page_t put_new_page, unsigned long private,
--		enum migrate_mode mode, int reason)
-+		enum migrate_mode mode, int reason, unsigned int *nr_succeeded)
+@@ -1076,12 +1134,15 @@ static unsigned int shrink_page_list(str
  {
- 	int retry = 1;
- 	int thp_retry = 1;
- 	int nr_failed = 0;
--	int nr_succeeded = 0;
- 	int nr_thp_succeeded = 0;
- 	int nr_thp_failed = 0;
- 	int nr_thp_split = 0;
-@@ -1611,10 +1611,10 @@ retry:
- 			case MIGRATEPAGE_SUCCESS:
- 				if (is_thp) {
- 					nr_thp_succeeded++;
--					nr_succeeded += nr_subpages;
-+					*nr_succeeded += nr_subpages;
- 					break;
- 				}
--				nr_succeeded++;
-+				(*nr_succeeded)++;
- 				break;
- 			default:
- 				/*
-@@ -1643,12 +1643,12 @@ out:
- 	 */
- 	list_splice(&ret_pages, from);
+ 	LIST_HEAD(ret_pages);
+ 	LIST_HEAD(free_pages);
++	LIST_HEAD(demote_pages);
+ 	unsigned int nr_reclaimed = 0;
+ 	unsigned int pgactivate = 0;
++	bool do_demote_pass = true;
  
--	count_vm_events(PGMIGRATE_SUCCESS, nr_succeeded);
-+	count_vm_events(PGMIGRATE_SUCCESS, *nr_succeeded);
- 	count_vm_events(PGMIGRATE_FAIL, nr_failed);
- 	count_vm_events(THP_MIGRATION_SUCCESS, nr_thp_succeeded);
- 	count_vm_events(THP_MIGRATION_FAIL, nr_thp_failed);
- 	count_vm_events(THP_MIGRATION_SPLIT, nr_thp_split);
--	trace_mm_migrate_pages(nr_succeeded, nr_failed, nr_thp_succeeded,
-+	trace_mm_migrate_pages(*nr_succeeded, nr_failed, nr_thp_succeeded,
- 			       nr_thp_failed, nr_thp_split, mode, reason);
+ 	memset(stat, 0, sizeof(*stat));
+ 	cond_resched();
  
- 	if (!swapwrite)
-@@ -1716,6 +1716,7 @@ static int store_status(int __user *stat
- static int do_move_pages_to_node(struct mm_struct *mm,
- 		struct list_head *pagelist, int node)
- {
-+	unsigned int nr_succeeded = 0;
- 	int err;
- 	struct migration_target_control mtc = {
- 		.nid = node,
-@@ -1723,7 +1724,8 @@ static int do_move_pages_to_node(struct
- 	};
++retry:
+ 	while (!list_empty(page_list)) {
+ 		struct address_space *mapping;
+ 		struct page *page;
+@@ -1231,6 +1292,16 @@ static unsigned int shrink_page_list(str
+ 		}
  
- 	err = migrate_pages(pagelist, alloc_migration_target, NULL,
--			(unsigned long)&mtc, MIGRATE_SYNC, MR_SYSCALL);
-+			(unsigned long)&mtc, MIGRATE_SYNC, MR_SYSCALL,
-+			&nr_succeeded);
- 	if (err)
- 		putback_movable_pages(pagelist);
- 	return err;
-@@ -2207,6 +2209,7 @@ int migrate_misplaced_page(struct page *
- 	pg_data_t *pgdat = NODE_DATA(node);
- 	int isolated;
- 	int nr_remaining;
-+	unsigned int nr_succeeded = 0;
- 	LIST_HEAD(migratepages);
- 
- 	/*
-@@ -2230,7 +2233,7 @@ int migrate_misplaced_page(struct page *
- 	list_add(&page->lru, &migratepages);
- 	nr_remaining = migrate_pages(&migratepages, alloc_misplaced_dst_page,
- 				     NULL, node, MIGRATE_ASYNC,
--				     MR_NUMA_MISPLACED);
-+				     MR_NUMA_MISPLACED, &nr_succeeded);
- 	if (nr_remaining) {
- 		if (!list_empty(&migratepages)) {
- 			list_del(&page->lru);
-diff -puN mm/page_alloc.c~migrate_pages-add-success-return mm/page_alloc.c
---- a/mm/page_alloc.c~migrate_pages-add-success-return	2021-03-31 15:17:14.178000255 -0700
-+++ b/mm/page_alloc.c	2021-03-31 15:17:14.213000255 -0700
-@@ -8452,7 +8452,8 @@ static unsigned long pfn_max_align_up(un
- 
- /* [start, end) must belong to a single zone. */
- static int __alloc_contig_migrate_range(struct compact_control *cc,
--					unsigned long start, unsigned long end)
-+					unsigned long start, unsigned long end,
-+					unsigned int *nr_succeeded)
- {
- 	/* This function is based on compact_zone() from compaction.c. */
- 	unsigned int nr_reclaimed;
-@@ -8490,7 +8491,8 @@ static int __alloc_contig_migrate_range(
- 		cc->nr_migratepages -= nr_reclaimed;
- 
- 		ret = migrate_pages(&cc->migratepages, alloc_migration_target,
--				NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
-+				NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE,
-+				nr_succeeded);
+ 		/*
++		 * Before reclaiming the page, try to relocate
++		 * its contents to another node.
++		 */
++		if (do_demote_pass && migrate_demote_page_ok(page)) {
++			list_add(&page->lru, &demote_pages);
++			unlock_page(page);
++			continue;
++		}
++
++		/*
+ 		 * Anonymous process memory has backing store?
+ 		 * Try to allocate it some swap space here.
+ 		 * Lazyfree page could be freed directly
+@@ -1480,6 +1551,17 @@ keep:
+ 		list_add(&page->lru, &ret_pages);
+ 		VM_BUG_ON_PAGE(PageLRU(page) || PageUnevictable(page), page);
  	}
- 	if (ret < 0) {
- 		putback_movable_pages(&cc->migratepages);
-@@ -8526,6 +8528,7 @@ int alloc_contig_range(unsigned long sta
- 	unsigned long outer_start, outer_end;
- 	unsigned int order;
- 	int ret = 0;
-+	unsigned int nr_succeeded = 0;
++	/* 'page_list' is always empty here */
++
++	/* Migrate pages selected for demotion */
++	nr_reclaimed += demote_page_list(&demote_pages, pgdat, sc);
++	/* Pages that could not be demoted are still in @demote_pages */
++	if (!list_empty(&demote_pages)) {
++		/* Pages which failed to demoted go back on @page_list for retry: */
++		list_splice_init(&demote_pages, page_list);
++		do_demote_pass = false;
++		goto retry;
++	}
  
- 	struct compact_control cc = {
- 		.nr_migratepages = 0,
-@@ -8580,7 +8583,7 @@ int alloc_contig_range(unsigned long sta
- 	 * allocated.  So, if we fall through be sure to clear ret so that
- 	 * -EBUSY is not accidentally used or returned to caller.
- 	 */
--	ret = __alloc_contig_migrate_range(&cc, start, end);
-+	ret = __alloc_contig_migrate_range(&cc, start, end, &nr_succeeded);
- 	if (ret && ret != -EBUSY)
- 		goto done;
- 	ret =0;
+ 	pgactivate = stat->nr_activate[0] + stat->nr_activate[1];
+ 
 _
