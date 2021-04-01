@@ -2,186 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B07C3522C7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 00:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D978C3522CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 00:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234114AbhDAWa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 18:30:29 -0400
-Received: from smtp.gentoo.org ([140.211.166.183]:44420 "EHLO smtp.gentoo.org"
+        id S234278AbhDAWdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 18:33:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233881AbhDAWa0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 18:30:26 -0400
-Received: by sf.home (Postfix, from userid 1000)
-        id 1CBBC5A22061; Thu,  1 Apr 2021 23:30:19 +0100 (BST)
-From:   Sergei Trofimovich <slyfox@gentoo.org>
-To:     linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org,
-        Sergei Trofimovich <slyfox@gentoo.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH] mm: page_owner: detect page_owner recursion via task_struct
-Date:   Thu,  1 Apr 2021 23:30:10 +0100
-Message-Id: <20210401223010.3580480-1-slyfox@gentoo.org>
-X-Mailer: git-send-email 2.31.1
+        id S233789AbhDAWda (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 18:33:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B56F360FE7;
+        Thu,  1 Apr 2021 22:33:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617316409;
+        bh=fROVYi26J7ke/VX/V+4Nv14tpmDBZAjJdqilLVHHglk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=uHXRfi5K+pBC6bS4BvrFy+IU/6XjZ9+WZGGee/glm1/qVm+SoSC/FE18X+kcWSk52
+         JPldzNVCggoYvexsrYcsJBZwxOBOJcFCQsQlnoQgENOkPqy4pKxSdF34il0e+J4qst
+         cN+HAmoNz/n5NIojvvIUcstfO37YF5NrH9xJeWqcotDVKIHPmOPpl80ZgKkkW5ZSZ8
+         oJRHp1Qb6R+Qd19UnTHCVytCNtdvEEr2ohDVGJX2aGLkVzV1geTGS9V0ngQxR8fxJg
+         3LZfFKBYPUkRAOf/PwWBkC9kq56Nbdoa+nxzMqoJSPiuwLfRX3wkhqdNXgQI66oY1Y
+         Kakasdb+lVvqQ==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 61D7035237B2; Thu,  1 Apr 2021 15:33:29 -0700 (PDT)
+Date:   Thu, 1 Apr 2021 15:33:29 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] torture: Correctly fetch CPUs for kvm-build.sh with all
+ native language
+Message-ID: <20210401223329.GK2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210401132602.116352-1-frederic@kernel.org>
+ <20210401185116.GH2696@paulmck-ThinkPad-P72>
+ <20210401203112.GA116405@lothringen>
+ <20210401204022.GI2696@paulmck-ThinkPad-P72>
+ <20210401204113.GB116405@lothringen>
+ <20210401210253.GJ2696@paulmck-ThinkPad-P72>
+ <20210401210802.GC116405@lothringen>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210401210802.GC116405@lothringen>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before the change page_owner recursion was detected via fetching
-backtrace and inspecting it for current instruction pointer.
-It has a few problems:
-- it is slightly slow as it requires extra backtrace and a linear
-  stack scan of the result
-- it is too late to check if backtrace fetching required memory
-  allocation itself (ia64's unwinder requires it).
+On Thu, Apr 01, 2021 at 11:08:02PM +0200, Frederic Weisbecker wrote:
+> On Thu, Apr 01, 2021 at 02:02:53PM -0700, Paul E. McKenney wrote:
+> > On Thu, Apr 01, 2021 at 10:41:13PM +0200, Frederic Weisbecker wrote:
+> > > On Thu, Apr 01, 2021 at 01:40:22PM -0700, Paul E. McKenney wrote:
+> > > > On Thu, Apr 01, 2021 at 10:31:12PM +0200, Frederic Weisbecker wrote:
+> > > > > On Thu, Apr 01, 2021 at 11:51:16AM -0700, Paul E. McKenney wrote:
+> > > > > > On Thu, Apr 01, 2021 at 03:26:02PM +0200, Frederic Weisbecker wrote:
+> > > > > > > Grepping for "CPU" on lscpu output isn't always successful, depending
+> > > > > > > on the local language setting. As a result, the build can be aborted
+> > > > > > > early with:
+> > > > > > > 
+> > > > > > > 	"make: the '-j' option requires a positive integer argument"
+> > > > > > > 
+> > > > > > > Prefer a more generic solution.
+> > > > > > > 
+> > > > > > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > > > > > 
+> > > > > > Good catch, applied, thank you!
+> > > > > > 
+> > > > > > There is a similar construct in kvm-remote.sh, so I added a similar
+> > > > > > fix to your patch.
+> > > > > > 
+> > > > > > But what about this in functions.sh?
+> > > > > > 
+> > > > > > nt="`lscpu | grep '^NUMA node0' | sed -e 's/^[^,]*,\([0-9]*\),.*$/\1/'`"
+> > > > > > 
+> > > > > > I am guessing that "node0" is human-language-independent, but is "NUMA"?
+> > > > > 
+> > > > > I thought they wouldn't bother translating that, but they did...
+> > > > > 
+> > > > >     NUMA node0 CPU(s):               0-7
+> > > > > 
+> > > > > becomes:
+> > > > > 
+> > > > >     Nœud NUMA 0 de processeur(s) : 0-7
+> > > > > 
+> > > > > Not sure about the best way to fix it.
+> > > > 
+> > > > The rude and crude fix is for the scripts to force the local language
+> > > > to English.  ;-)
+> > > 
+> > > I don't have a better answer :o)
+> > 
+> > If you set the environment variable LANG to en_US.UTF-8, does that
+> > make things work for you?  Huh.  Setting it to fr_FR.UTF-8 does not
+> > shift lscpu out of English for me, so I am guessing "no".
+> 
+> Maybe that language isn't installed in your system. I would expect
+> en_US.UTF-8 to be supported pretty much everywhere though. At least it
+> works for me with: "LANG=en_US.UTF-8 lscpu".
+> 
+> Thanks.
 
-To simplify recursion tracking let's use page_owner recursion depth
-as a counter in 'struct task_struct'.
+How about like this?  I put this only in kvm.sh for the moment, but
+if these keep cropping up I will just hit all the scripts.  ;-)
 
-The change make page_owner=on work on ia64 bu avoiding infinite
-recursion in:
-  kmalloc()
-  -> __set_page_owner()
-  -> save_stack()
-  -> unwind() [ia64-specific]
-  -> build_script()
-  -> kmalloc()
-  -> __set_page_owner() [we short-circuit here]
-  -> save_stack()
-  -> unwind() [recursion]
+							Thanx, Paul
 
-CC: Ingo Molnar <mingo@redhat.com>
-CC: Peter Zijlstra <peterz@infradead.org>
-CC: Juri Lelli <juri.lelli@redhat.com>
-CC: Vincent Guittot <vincent.guittot@linaro.org>
-CC: Dietmar Eggemann <dietmar.eggemann@arm.com>
-CC: Steven Rostedt <rostedt@goodmis.org>
-CC: Ben Segall <bsegall@google.com>
-CC: Mel Gorman <mgorman@suse.de>
-CC: Daniel Bristot de Oliveira <bristot@redhat.com>
-CC: Andrew Morton <akpm@linux-foundation.org>
-CC: linux-mm@kvack.org
-Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
----
- include/linux/sched.h |  9 +++++++++
- init/init_task.c      |  3 +++
- mm/page_owner.c       | 41 +++++++++++++++++------------------------
- 3 files changed, 29 insertions(+), 24 deletions(-)
+------------------------------------------------------------------------
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index ef00bb22164c..35771703fd89 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1371,6 +1371,15 @@ struct task_struct {
- 	struct llist_head               kretprobe_instances;
- #endif
+commit 4ca332016ed81c15ebb3b744dbfc462281c544b8
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Thu Apr 1 15:26:56 2021 -0700
+
+    torture:  Set kvm.sh language to English
+    
+    Some of the code invoked directly and indirectly from kvm.sh parses
+    the output of commands.  This parsing assumes English, which can cause
+    failures if the user has set some other language.  In a few cases,
+    there are language-independent commands available, but this is not
+    always the case.  Therefore, as an alternative to polyglot parsing,
+    this commit sets the LANG environment variable to en_US.UTF-8.
+    
+    Reported-by: Frederic Weisbecker <frederic@kernel.org>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
+index fab3bd9..390bb97 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
+@@ -20,6 +20,9 @@ mkdir $T
  
-+#ifdef CONFIG_PAGE_OWNER
-+	/*
-+	 * Used by page_owner=on to detect recursion in page tracking.
-+	 * Is it fine to have non-atomic ops here if we ever access
-+	 * this variable via current->page_owner_depth?
-+	 */
-+	unsigned int page_owner_depth;
-+#endif
+ cd `dirname $scriptname`/../../../../../
+ 
++# This script knows only English.
++LANG=en_US.UTF-8; export LANG
 +
- 	/*
- 	 * New fields for task_struct should be added above here, so that
- 	 * they are included in the randomized portion of task_struct.
-diff --git a/init/init_task.c b/init/init_task.c
-index 3711cdaafed2..f579f2b2eca8 100644
---- a/init/init_task.c
-+++ b/init/init_task.c
-@@ -213,6 +213,9 @@ struct task_struct init_task
- #ifdef CONFIG_SECCOMP
- 	.seccomp	= { .filter_count = ATOMIC_INIT(0) },
- #endif
-+#ifdef CONFIG_PAGE_OWNER
-+	.page_owner_depth	= 0,
-+#endif
- };
- EXPORT_SYMBOL(init_task);
- 
-diff --git a/mm/page_owner.c b/mm/page_owner.c
-index 7147fd34a948..422558605fcc 100644
---- a/mm/page_owner.c
-+++ b/mm/page_owner.c
-@@ -20,6 +20,16 @@
-  */
- #define PAGE_OWNER_STACK_DEPTH (16)
- 
-+/*
-+ * How many reenters we allow to page_owner.
-+ *
-+ * Sometimes metadata allocation tracking requires more memory to be allocated:
-+ * - when new stack trace is saved to stack depot
-+ * - when backtrace itself is calculated (ia64)
-+ * Instead of falling to infinite recursion give it a chance to recover.
-+ */
-+#define PAGE_OWNER_MAX_RECURSION_DEPTH (1)
-+
- struct page_owner {
- 	unsigned short order;
- 	short last_migrate_reason;
-@@ -97,42 +107,25 @@ static inline struct page_owner *get_page_owner(struct page_ext *page_ext)
- 	return (void *)page_ext + page_owner_ops.offset;
- }
- 
--static inline bool check_recursive_alloc(unsigned long *entries,
--					 unsigned int nr_entries,
--					 unsigned long ip)
--{
--	unsigned int i;
--
--	for (i = 0; i < nr_entries; i++) {
--		if (entries[i] == ip)
--			return true;
--	}
--	return false;
--}
--
- static noinline depot_stack_handle_t save_stack(gfp_t flags)
- {
- 	unsigned long entries[PAGE_OWNER_STACK_DEPTH];
- 	depot_stack_handle_t handle;
- 	unsigned int nr_entries;
- 
--	nr_entries = stack_trace_save(entries, ARRAY_SIZE(entries), 2);
--
--	/*
--	 * We need to check recursion here because our request to
--	 * stackdepot could trigger memory allocation to save new
--	 * entry. New memory allocation would reach here and call
--	 * stack_depot_save_entries() again if we don't catch it. There is
--	 * still not enough memory in stackdepot so it would try to
--	 * allocate memory again and loop forever.
--	 */
--	if (check_recursive_alloc(entries, nr_entries, _RET_IP_))
-+	/* Avoid recursion. Used in stack trace generation code. */
-+	if (current->page_owner_depth >= PAGE_OWNER_MAX_RECURSION_DEPTH)
- 		return dummy_handle;
- 
-+	current->page_owner_depth++;
-+
-+	nr_entries = stack_trace_save(entries, ARRAY_SIZE(entries), 2);
-+
- 	handle = stack_depot_save(entries, nr_entries, flags);
- 	if (!handle)
- 		handle = failure_handle;
- 
-+	current->page_owner_depth--;
- 	return handle;
- }
- 
--- 
-2.31.1
-
+ dur=$((30*60))
+ dryrun=""
+ KVM="`pwd`/tools/testing/selftests/rcutorture"; export KVM
