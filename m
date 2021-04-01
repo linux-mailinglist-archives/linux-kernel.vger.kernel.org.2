@@ -2,102 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3C09351000
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 09:21:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00330351003
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 09:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233541AbhDAHU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 03:20:58 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14661 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233580AbhDAHUk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 03:20:40 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F9vfG2VVNznWyN;
-        Thu,  1 Apr 2021 15:17:58 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 1 Apr 2021 15:20:29 +0800
-From:   Zhiqi Song <songzhiqi1@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>, <fanghao11@huawei.com>,
-        <prime.zeng@hisilicon.com>
-Subject: [PATCH] crypto: api - fix coding style
-Date:   Thu, 1 Apr 2021 15:20:49 +0800
-Message-ID: <1617261649-35947-1-git-send-email-songzhiqi1@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        id S233647AbhDAHVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 03:21:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55010 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233151AbhDAHVC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 03:21:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2A7F6023C;
+        Thu,  1 Apr 2021 07:21:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617261661;
+        bh=ZWEem6wvNgJS46gZy7rOARo0M8j/1n/7RpnfGUxvSAQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z43pJ/6J/QBbelI2RTCRvZu30Fv1erhhUhjEBzUeviZp0gVedrhHqCvU3V4JIlKmq
+         Kd5et0N3hsYmuzD/Kj1cnJeJ+6/HCfDmo43fc1kuuaZcX6dngqwMohwR3ZvDie4nAZ
+         KegY93RXfl4dSsUUfMZ+M1wxBDFpDoCJ4rJQ+r51SIJrcJyNJ+0oB9ZJuEvIeq8JL6
+         0xKT9sn9u49sPx1r3raYir3aUy2Y2AG8AOzNtukmss4tPdjxOBY7ymITpS9oPb7N2g
+         cBHMemX9lWNV5UiguUGo2hcjKZdHiQQyupC+5tTEuLNViqXI1PKrAOV0KFcdlvOi3+
+         sa8A9gGcc9IIQ==
+Date:   Thu, 1 Apr 2021 12:50:57 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
+        rander.wang@linux.intel.com, hui.wang@canonical.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        bard.liao@intel.com
+Subject: Re: [PATCH] soundwire: stream: fix memory leak in stream config
+ error path
+Message-ID: <YGV0WRmhscWmn8y+@vkoul-mobl.Dlink>
+References: <20210331004610.12242-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210331004610.12242-1-yung-chuan.liao@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed following checkpatch error:
-- do not use assignment in if condition
-Fixed following checkpatch warning:
-- prefer strscpy over strlcpy
-- delete repeated word
+On 31-03-21, 08:46, Bard Liao wrote:
+> From: Rander Wang <rander.wang@intel.com>
+> 
+> When stream config is failed, master runtime will release all
+> slave runtime in the slave_rt_list, but slave runtime is not
+> added to the list at this time. This patch frees slave runtime
+> in the config error path to fix the memory leak.
 
-Signed-off-by: Zhiqi Song <songzhiqi1@huawei.com>
----
- crypto/api.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+Applied, thanks
 
-diff --git a/crypto/api.c b/crypto/api.c
-index c4eda56..624e653 100644
---- a/crypto/api.c
-+++ b/crypto/api.c
-@@ -115,7 +115,7 @@ struct crypto_larval *crypto_larval_alloc(const char *name, u32 type, u32 mask)
- 	larval->alg.cra_priority = -1;
- 	larval->alg.cra_destroy = crypto_larval_destroy;
-
--	strlcpy(larval->alg.cra_name, name, CRYPTO_MAX_ALG_NAME);
-+	strscpy(larval->alg.cra_name, name, CRYPTO_MAX_ALG_NAME);
- 	init_completion(&larval->completion);
-
- 	return larval;
-@@ -266,7 +266,7 @@ struct crypto_alg *crypto_alg_mod_lookup(const char *name, u32 type, u32 mask)
-
- 	/*
- 	 * If the internal flag is set for a cipher, require a caller to
--	 * to invoke the cipher with the internal flag to use that cipher.
-+	 * invoke the cipher with the internal flag to use that cipher.
- 	 * Also, if a caller wants to allocate a cipher that may or may
- 	 * not be an internal cipher, use type | CRYPTO_ALG_INTERNAL and
- 	 * !(mask & CRYPTO_ALG_INTERNAL).
-@@ -359,9 +359,11 @@ struct crypto_tfm *__crypto_alloc_tfm(struct crypto_alg *alg, u32 type,
- 	if (err)
- 		goto out_free_tfm;
-
--	if (!tfm->exit && alg->cra_init && (err = alg->cra_init(tfm)))
--		goto cra_init_failed;
--
-+	if (!tfm->exit && alg->cra_init) {
-+		err = alg->cra_init(tfm);
-+		if (err)
-+			goto cra_init_failed;
-+	}
- 	goto out;
-
- cra_init_failed:
-@@ -458,9 +460,11 @@ void *crypto_create_tfm_node(struct crypto_alg *alg,
- 	if (err)
- 		goto out_free_tfm;
-
--	if (!tfm->exit && alg->cra_init && (err = alg->cra_init(tfm)))
--		goto cra_init_failed;
--
-+	if (!tfm->exit && alg->cra_init) {
-+		err = alg->cra_init(tfm);
-+		if (err)
-+			goto cra_init_failed;
-+	}
- 	goto out;
-
- cra_init_failed:
---
-2.7.4
-
+-- 
+~Vinod
