@@ -2,149 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58B2F351EA5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F645351D20
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238551AbhDASo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:44:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236115AbhDASWn (ORCPT
+        id S238205AbhDASY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:24:27 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:62179 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237778AbhDASEY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:22:43 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E2FC0613A7;
-        Thu,  1 Apr 2021 10:40:06 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id ce10so4076968ejb.6;
-        Thu, 01 Apr 2021 10:40:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sa4bDFe6mIaoemCJgtMB/NPxmX+AQNUFt+wjs8t9sOo=;
-        b=D62U/IshJFz7x3o9pOoXzRhEbHEr5ja98nd820fHNV+Z/NkUu4gsmsVXhZofbgxdB4
-         oSaGl2RPU7Zbw5PF1dd4Xpk6evxBsHv/igGy8n1Ghr4YmC/jEvVYkO1fLMewf89y+niS
-         roqYBSzlcM3NsZVvkXHPf7dOXWf5rJynBtLBhbjoYSgnoszPlJUooPHh+cdXw63DdZAs
-         Sp88Uz7tWR5+ynp9rqmsNPXDzoG4lP3a/lvO+wpcgRpQwU+ppYuWCTVEUvshFoiFgLqV
-         RqBCO4wGErcwvcxGi/pDLxGzMJgwR9xtW+7La4LR9ybjIZlKW5myG+xl4aZpJS6Jfx/p
-         Mw4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sa4bDFe6mIaoemCJgtMB/NPxmX+AQNUFt+wjs8t9sOo=;
-        b=XP2+cxTQWTsiFn3igx+VQ72gFj3GyVYawJFb71obavC/S6aXFInNOS228V9M/dZb5r
-         XrtDfbmFrllId8jsDZwO8OroJ3+lHMJx4CrmQRuHpHmo/ELuWaCYgETJJ701q6TOVYfL
-         3+YXWDcFxKLkMNo/5p1gKanZslht+BLO0D9FLTUfxZ9olV9I863qCcqY1sSNH3Ea6b/D
-         Sr1VjOPCSBEp6DtyHryNDsyG38aNw5ZKLqSx1oaQJmLnjEkcxaHjkCZOCqu2Kr+gdC1Q
-         cy/6ZOzW3pHIJy61EDyMtXMlnOPAO/Z4jaj1eiJThEGtzwpuLBeOmzh4MWQpD7ovPCl9
-         GRqg==
-X-Gm-Message-State: AOAM533WCeBe2cVnUcuZ5FkfO6PA8SxTvocdl1XtM2QVvH/aC6LhSs4U
-        mWqTPvVFf+U8rgVg5llBNNQ=
-X-Google-Smtp-Source: ABdhPJy2sAfpdTqwT3vX1CHebqkSk0u+KeMsFGf5vdWgZRWS3RCD0iA1Np9fZT+Bd1eEgbWBo8bc0w==
-X-Received: by 2002:a17:907:9863:: with SMTP id ko3mr10268034ejc.543.1617298805285;
-        Thu, 01 Apr 2021 10:40:05 -0700 (PDT)
-Received: from BV030612LT ([188.24.140.160])
-        by smtp.gmail.com with ESMTPSA id gb22sm3000106ejc.78.2021.04.01.10.40.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 10:40:04 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 20:40:01 +0300
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/6] dt-bindings: reserved-memory: Add Owl SoC serial
- number binding
-Message-ID: <20210401174001.GA2016477@BV030612LT>
-References: <cover.1617110420.git.cristian.ciocaltea@gmail.com>
- <fb74862bec15f1e9e0c4d8b70ebd6c07c6eb1a40.1617110420.git.cristian.ciocaltea@gmail.com>
- <20210401170704.GA610119@robh.at.kernel.org>
+        Thu, 1 Apr 2021 14:04:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1617300265; x=1648836265;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=t+Damo6lBLTec0MqdYsAZG21XEfwTrUjDwnQIVPgrfg=;
+  b=y4wmYYSboVKZsXGNac69x72cISxvrjOB4bQdyjorWjWAPos6c7+5QCti
+   lapoCTc4ffzAUd/tiKtJcaiGaXWQtwibbFJiseRZ0vlyBndgAS8fnPQm/
+   GQogQShNOIWgqaCSyKBx36Y5NQK1LNBxECg/P3F25WXnA4SYCb7ASiOYi
+   D64JNMHbPfmKM8HgDHc0B4OIWmc1svkgNwaD7JxNmXPzTq5Xav+ON6WdM
+   RdfXLZwyMPWpUilwj4/m+oZmY+ERgy/fQvqUNCEXfJZGo+WgVgXaBL6bK
+   erGDEJYt/PMxIcCSa9lcJ/Y6te9PM2+Uxsr2HCioz6QIFFvpg2TUpH9UZ
+   A==;
+IronPort-SDR: 5Ng5NM1EzbpwR/HTQNvjcYL+q3V6cpSEYUklwZ7HK057B398VMKy7ww3FQCX3PxiL+u3xAMd55
+ MXUshv32BekJnKyET4D489sAzSpIGtg6eqmR/LYgGcT6AHFfvCai4HxPcgvH9jkVRiHUF/VIkt
+ dapG1mATxs46C4ElHH7FoXFGb2vgTzPrbx4ZDVrZFsWtf9Rl2B7ZyXbTLXgeDXK/GIiVarPOXS
+ 7aLrbtkGK+ZQOXfye16SXvY8kG+hwYf9n6Pv9gbrVw9Db3edYDVLcvqt7Z6pcSNs0fjKoo+ZT+
+ eQ4=
+X-IronPort-AV: E=Sophos;i="5.81,296,1610434800"; 
+   d="scan'208";a="112171420"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Apr 2021 10:49:54 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 1 Apr 2021 10:49:54 -0700
+Received: from localhost.localdomain (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Thu, 1 Apr 2021 10:49:52 -0700
+From:   <nicolas.ferre@microchip.com>
+To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        <arm@kernel.org>, <soc@kernel.org>
+CC:     Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Linux Kernel list <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
+Subject: [GIT PULL] ARM: at91: soc for 5.13
+Date:   Thu, 1 Apr 2021 19:45:44 +0200
+Message-ID: <20210401174544.32193-1-nicolas.ferre@microchip.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401170704.GA610119@robh.at.kernel.org>
+Organization: microchip
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 12:07:04PM -0500, Rob Herring wrote:
-> On Tue, Mar 30, 2021 at 04:48:16PM +0300, Cristian Ciocaltea wrote:
-> > Add devicetree binding for the Actions Semi Owl SoC serial number
-> > reserved-memory range.
-> > 
-> > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> > ---
-> >  .../actions,owl-soc-serial.yaml               | 53 +++++++++++++++++++
-> >  1 file changed, 53 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/reserved-memory/actions,owl-soc-serial.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/reserved-memory/actions,owl-soc-serial.yaml b/Documentation/devicetree/bindings/reserved-memory/actions,owl-soc-serial.yaml
-> > new file mode 100644
-> > index 000000000000..41b71f47ee6c
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/reserved-memory/actions,owl-soc-serial.yaml
-> > @@ -0,0 +1,53 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/reserved-memory/actions,owl-soc-serial.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Actions Semi Owl reserved-memory for SoC serial number
-> > +
-> > +maintainers:
-> > +  - Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> > +
-> > +description: |
-> > +  Provide access to the memory region where the two parts of the Actions
-> > +  Semi Owl SoC serial number (low & high) can be read from. This information
-> > +  is provided by the bootloader, hence expose it under /reserved-memory node.
-> > +
-> > +  Please refer to reserved-memory.txt in this directory for common binding
-> > +  part and usage.
-> > +
-> > +  This is currently supported only on the S500 SoC variant.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    oneOf:
-> > +      - const: actions,owl-soc-serial
-> > +      - items:
-> > +          - enum:
-> > +              - actions,s500-soc-serial
-> > +          - const: actions,owl-soc-serial
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +
-> > +additionalProperties: true
-> > +
-> > +examples:
-> > +  - |
-> > +    reserved-memory {
-> > +        #address-cells = <1>;
-> > +        #size-cells = <1>;
-> > +        ranges;
-> > +
-> > +        soc_serial: soc-serial@800 {
-> > +            compatible = "actions,s500-soc-serial", "actions,owl-soc-serial";
-> > +            reg = <0x800 0x8>;
-> 
-> You end up wasting a whole page of memory for 8 bytes. It may be better 
-> to copy this to a DT property ('serial-number' is already a defined root 
-> property).
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-Actually there is more information provided by the vendor bootloader
-in this memory page, so we might use it once we are able to decode it.
-For the moment I could only identify the serial number.
+Arnd, Olof,
 
-Thanks,
-Cristi
+One single patch for now on our SoC branch. Stakeholders agreed to make it
+travel with at91 -> arm-soc.
 
-> Rob
+Thanks, best regards,
+  Nicolas
+
+The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+
+  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/at91/linux.git tags/at91-soc-5.13
+
+for you to fetch changes up to 41dbf4a146a06443d1cbf39e238f02fa1ca9d626:
+
+  ARM: at91: pm: Move prototypes to mutually included header (2021-03-26 18:20:49 +0100)
+
+----------------------------------------------------------------
+AT91 soc for 5.13:
+
+- Fixing a W=1 warning
+
+----------------------------------------------------------------
+Lee Jones (1):
+      ARM: at91: pm: Move prototypes to mutually included header
+
+ arch/arm/mach-at91/pm.c        | 19 ++++++++-----------
+ drivers/pinctrl/pinctrl-at91.c |  2 ++
+ include/soc/at91/pm.h          | 16 ++++++++++++++++
+ 3 files changed, 26 insertions(+), 11 deletions(-)
+ create mode 100644 include/soc/at91/pm.h
+
+-- 
+Nicolas Ferre
