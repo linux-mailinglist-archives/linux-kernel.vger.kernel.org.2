@@ -2,153 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 187283521E3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62CAA3521E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234643AbhDAVtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 17:49:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57821 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233974AbhDAVtl (ORCPT
+        id S235267AbhDAVvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 17:51:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233974AbhDAVvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 17:49:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617313781;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jP0nlzEEVR13Z7R8FOMceHzyBDcyUqQjSA6O6JQqCF4=;
-        b=S2FPRt9cEedJvhQJnhzo+wB96olN0Brl6mSdWDbwfsfdyyyATgLnBU9SlbSC0wx7psAg9V
-        4CF3cy0mqh2THyb6JsHVx+fWkQUy+ZS+ymiUn2PSahOXhP/Sh+B99ZttDVri2f5pmV81pM
-        HFE8R96VQ5VPmy7FlcsuTC+kLNBT+18=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-520-dLOsyKQwMtGDIuTFn3fZmg-1; Thu, 01 Apr 2021 17:49:39 -0400
-X-MC-Unique: dLOsyKQwMtGDIuTFn3fZmg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 68AAE180FCA4;
-        Thu,  1 Apr 2021 21:49:36 +0000 (UTC)
-Received: from omen (ovpn-112-85.phx2.redhat.com [10.3.112.85])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 372C85D9CC;
-        Thu,  1 Apr 2021 21:49:34 +0000 (UTC)
-Date:   Thu, 1 Apr 2021 15:49:33 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>, cohuck@redhat.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        liranl@nvidia.com, oren@nvidia.com, tzahio@nvidia.com,
-        leonro@nvidia.com, yarong@nvidia.com, aviadye@nvidia.com,
-        shahafs@nvidia.com, artemp@nvidia.com, kwankhede@nvidia.com,
-        ACurrid@nvidia.com, cjia@nvidia.com, yishaih@nvidia.com,
-        mjrosato@linux.ibm.com
-Subject: Re: [PATCH 8/9] vfio/pci: export nvlink2 support into vendor
- vfio_pci drivers
-Message-ID: <20210401154933.544f8fec@omen>
-In-Reply-To: <20210401131227.GC1463678@nvidia.com>
-References: <20210319163449.GA19186@lst.de>
-        <20210319113642.4a9b0be1@omen.home.shazbot.org>
-        <20210319200749.GB2356281@nvidia.com>
-        <20210319150809.31bcd292@omen.home.shazbot.org>
-        <20210319225943.GH2356281@nvidia.com>
-        <20210319224028.51b01435@x1.home.shazbot.org>
-        <20210321125818.GM2356281@nvidia.com>
-        <20210322104016.36eb3c1f@omen.home.shazbot.org>
-        <20210323193213.GM2356281@nvidia.com>
-        <20210329171053.7a2ebce3@omen.home.shazbot.org>
-        <20210401131227.GC1463678@nvidia.com>
+        Thu, 1 Apr 2021 17:51:21 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15BD0C0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 14:51:20 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id j3so3538087edp.11
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 14:51:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=qr/zVXs4BBK3bX/o8KKs0/9ybzhhmiWFwZmB2BtSGVQ=;
+        b=kQQwtFTWjnxgx2QvhXYC533iMgthpb5COZPCB0XfISupEww/VuHydSCCbVZms3TmLV
+         4EKLMNsjVdSEezhDdCZgZipHY3FymwQwIdx3DqjDkbaonD4BqHbaYqbJaYZLJFdwypwm
+         k6oHguxYl0cKXOYRvzjzHzQpLoVoDMzEVv9uQthprYrHmkannz5+1JRfBVx7uIxOj/BU
+         BPlZ3kfI3Y9DwtKql+2bXyJHx6Uinn8gcDy3Yjq/1eY4kvQryiYeOfYIkgZNOK4ktJvL
+         3VMKoKMFU2SwQGNTK7QMvSQtxop2mORZqL2zC+i8cdt7/3pup39Sx13LAqIvzgoXBrkU
+         om3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=qr/zVXs4BBK3bX/o8KKs0/9ybzhhmiWFwZmB2BtSGVQ=;
+        b=QnRin45LTZIZYHOQnVjOTF8uTHzJY4tjIlJxdssNfvuf9aHk3z9bxFrnZglA0UBVrz
+         BOsu2f/pk/gvoAiLw6pKu1Hrfmsv8KmEqnKvlZwzqNIqE7gcs+KHl2Z72UluRAxmqiQN
+         9y1uA24Cvfj7/xBXrBWFY+y5AVOfpg/IhWrl0mRYoshXPB11JiEzkLuVKU0uOGjJjccS
+         AyG7wx9ci+accLGk3z/fuF+uQRuy4K+zGCszt3ihuJur4RrBneRDNQ4CAlLNYbmmmogx
+         NRhMunrZr2Fj9ntamCJXQd/Qm8IkOpsgUOahaY7F0ZlMWSubpUIcHfAT7YbctwCn+Z0B
+         QoOw==
+X-Gm-Message-State: AOAM533T3BDDVk200uZdO9ArT0aN+k90LG/+nYIPCtlzARAKIQspghw2
+        dhE0Gpmy66vImNpKPQ2tMY4=
+X-Google-Smtp-Source: ABdhPJy4IZaKdl/6YddAP+of+xBJDZHvqjdUtGoyUDBS4e+lSmMu9KtzO1uQ2W1TvLm3ARmZnZIvzg==
+X-Received: by 2002:aa7:cb90:: with SMTP id r16mr12410133edt.139.1617313878783;
+        Thu, 01 Apr 2021 14:51:18 -0700 (PDT)
+Received: from agape.jhs ([5.171.72.8])
+        by smtp.gmail.com with ESMTPSA id q20sm3336517ejs.41.2021.04.01.14.51.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 14:51:18 -0700 (PDT)
+Date:   Thu, 1 Apr 2021 23:51:15 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     gregkh@linuxfoundation.org, joe@perches.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 08/49] staging: rtl8723bs: remove RT_TRACE logs in
+ core/rtw_cmd.c
+Message-ID: <20210401215114.GA15992@agape.jhs>
+References: <cover.1617268327.git.fabioaiuto83@gmail.com>
+ <7f51432d99459d79742639341f107115f0c224c5.1617268327.git.fabioaiuto83@gmail.com>
+ <20210401095017.GR2065@kadam>
+ <20210401135536.GA1691@agape.jhs>
+ <20210401143235.GV2065@kadam>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401143235.GV2065@kadam>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 1 Apr 2021 10:12:27 -0300
-Jason Gunthorpe <jgg@nvidia.com> wrote:
-
-> On Mon, Mar 29, 2021 at 05:10:53PM -0600, Alex Williamson wrote:
-> > On Tue, 23 Mar 2021 16:32:13 -0300
-> > Jason Gunthorpe <jgg@nvidia.com> wrote:
-> >   
-> > > On Mon, Mar 22, 2021 at 10:40:16AM -0600, Alex Williamson wrote:
-> > >   
-> > > > Of course if you start looking at features like migration support,
-> > > > that's more than likely not simply an additional region with optional
-> > > > information, it would need to interact with the actual state of the
-> > > > device.  For those, I would very much support use of a specific
-> > > > id_table.  That's not these.    
-> > > 
-> > > What I don't understand is why do we need two different ways of
-> > > inserting vendor code?  
+On Thu, Apr 01, 2021 at 05:32:36PM +0300, Dan Carpenter wrote:
+> On Thu, Apr 01, 2021 at 03:55:37PM +0200, Fabio Aiuto wrote:
 > > 
-> > Because a PCI id table only identifies the device, these drivers are
-> > looking for a device in the context of firmware dependencies.  
-> 
-> The firmware dependencies only exist for a defined list of ID's, so I
-> don't entirely agree with this statement. I agree with below though,
-> so lets leave it be.
-> 
-> > > I understood he ment that NVIDI GPUs *without* NVLINK can exist, but
-> > > the ID table we have here is supposed to be the NVLINK compatible
-> > > ID's.  
+> > Hi Dan,
 > > 
-> > Those IDs are just for the SXM2 variants of the device that can
-> > exist on a variety of platforms, only one of which includes the
-> > firmware tables to activate the vfio support.  
+> > I have the following:
+> > 
+> >  	if (rtw_createbss_cmd(adapter) != _SUCCESS)
+> > -		RT_TRACE(_module_rtl871x_mlme_c_, _drv_err_, ("Error =>rtw_createbss_cmd status FAIL\n"));
+> > +	;
+> > 
+> > will I leave
+> > 
+> > 	if (rtw_createbss_cmd(adapter) != _SUCCESS)
+> > 		;
+> > 
+> > or just
+> > 
+> > 	rtw_createbss_cmd(adapter);
+> > 
+> > ?
+> > 
+> > what's best from the static analysis point of view?
+> > 
+> > smatch and sparse says nothing about that.
 > 
-> AFAIK, SXM2 is a special physical form factor that has the nvlink
-> physical connection - it is only for this specific generation of power
-> servers that can accept the specific nvlink those cards have.
-
-SXM2 is not unique to Power, there are various x86 systems that support
-the interface, everything from NVIDIA's own line of DGX systems,
-various vendor systems, all the way to VARs like Super Micro and
-Gigabyte.
-
-> > I think you're looking for a significant inflection in vendor's stated
-> > support for vfio use cases, beyond the "best-effort, give it a try",
-> > that we currently have.  
+> rtw_createbss_cmd() can only fail if this allocation fails:
 > 
-> I see, so they don't want to. Lets leave it then.
+> 	pcmd = rtw_zmalloc(sizeof(struct cmd_obj));
 > 
-> Though if Xe breaks everything they need to add/maintain a proper ID
-> table, not more hackery.
+> In current kernels, that size of small allocation will never fail.  But
+> we alway write code as if every allocation can fail.
+> 
+> Normally when an allocation fails then we want to return -ENOMEM and
+> clean up.  But this code is an event handler for firmware events and
+> there isn't any real clean up to do.  Since there is nothing we can do
+> then this is basically working and fine.
+> 
+> How I would write this is:
+> 
+> 			ret = rtw_createbss_cmd(adapter);
+> 			if (ret != _SUCCESS)
+> 				goto unlock;
+> 		}
+> 	}
+> unlock:
+> 	spin_unlock_bh(&pmlmepriv->lock);
+> }
+> 
+> That doesn't change how the code works but it signals to the the reader
+> what your intention is.  If we just remove the error handling then it's
+> ambiguous.
+> 
+> 			rtw_createbss_cmd(adapter);
+> 		}
+> 	}
+> 	<-- Futurue programmer decides to add code here then figuring
+>             that rtw_createbss_cmd() can fail is a problem.
+> 
+> 	spin_unlock_bh(&pmlmepriv->lock);
+> }
+> 
+> But for something like this which is maybe more subtle than just a
+> straight delete of lines of code, then consider pulling it out into its
+> own separate patch.  That makes it easier to review.  Put all the stuff
+> that I said in the commit message:
+> 
+> ---
+> [PATCH] tidy up some error handling
+> 
+> The RT_TRACE() output is not useful so we want to delete it.  In this
+> case there is no cleanup for rtw_createbss_cmd() required or even
+> possible.  I've deleted the RT_TRACE() output and added a goto unlock
+> to show that we can't continue if rtw_createbss_cmd() fails.
+> 
+> ---
+> 
+> > 
+> > Checkpatch too seems to ignore it, maybe the first one is good,
+> > but I would like to be sure before sending another over 40 patches
+> > long patchset.
+> 
+> Don't send 40 patches.  Just send 10 at a time until you get a better
+> feel for which ones are going to get applied or not. :P  It's not
+> arbitrary, and I'm definitely not trying to NAK your patches.  Once you
+> learn the rules I hope that it's predictable and straight forward.
+> 
+> regards,
+> dan carpenter
+> 
 
-e4eccb853664 ("vfio/pci: Bypass IGD init in case of -ENODEV") is
-supposed to enable Xe, where the IGD code is expected to return -ENODEV
-and we go on with the base vfio-pci support.
+Hi Dan,
+
+sorry again. In this case:
+
+@@ -828,10 +829,11 @@ void rtw_surveydone_event_callback(struct adapter *adapter, u8 *pbuf)
  
-> > > And again, I feel this is all a big tangent, especially now that
-> > > HCH wants to delete the nvlink stuff we should just leave igd
-> > > alone.  
-> > 
-> > Determining which things stay in vfio-pci-core and which things are
-> > split to variant drivers and how those variant drivers can match the
-> > devices they intend to support seems very inline with this series.
-> >   
-> 
-> IMHO, the main litmus test for core is if variant drivers will need it
-> or not.
-> 
-> No variant driver should be stacked on an igd device, or if it someday
-> is, it should implement the special igd hackery internally (and have a
-> proper ID table). So when we split it up igd goes into vfio_pci.ko as
-> some special behavior vfio_pci.ko's universal driver provides for IGD.
-> 
-> Every variant driver will still need the zdev data to be exposed to
-> userspace, and every PCI device on s390 has that extra information. So
-> vdev goes to vfio_pci_core.ko
-> 
-> Future things going into vfio_pci.ko need a really good reason why
-> they can't be varian drivers instead.
+                                        pmlmepriv->fw_state = WIFI_ADHOC_MASTER_STATE;
+ 
+-                                       if (rtw_createbss_cmd(adapter) != _SUCCESS)
+-                                               ;
+-
+                                        pmlmepriv->to_join = false;
++
++                                       ret = rtw_createbss_cmd(adapter);
++                                       if (ret != _SUCCESS)
++                                               goto unlock;
+                                }
+                        }
 
-That sounds fair.  Thanks,
+I decided to move the set to false of pmlepriv->to_join before 
+the rtw_createbss_cmd(). In old code that statement was executed
+unconditionally and seems not to be tied to the failure of 
+rtw_createbss_cmd().
 
-Alex
+The eventual goto would skip this instruction so I moved it
+before.
 
+What do you think?
+
+Thank you,
+
+fabio
