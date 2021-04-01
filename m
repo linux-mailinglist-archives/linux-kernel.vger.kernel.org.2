@@ -2,129 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 257BC351E53
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE4E351D94
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238240AbhDASiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:38:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36950 "EHLO
+        id S240164AbhDAS3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:29:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239580AbhDASQj (ORCPT
+        with ESMTP id S234671AbhDASGm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:16:39 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CBA8C02FEA5;
-        Thu,  1 Apr 2021 09:09:54 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id z15so2261216oic.8;
-        Thu, 01 Apr 2021 09:09:54 -0700 (PDT)
+        Thu, 1 Apr 2021 14:06:42 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAFC8C02FEA7;
+        Thu,  1 Apr 2021 09:12:38 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id u9so2814499ljd.11;
+        Thu, 01 Apr 2021 09:12:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=r2enjizmpD/LJygPj4XEpQS/6/yzRXEF2wF7GTPmSXo=;
+        b=KyF3n3noNl+TF4SyZKEn3jqL0Mzlp8c6bW86UpMr0aPNIIUPyLsI61pZeNXgA6PwAD
+         wtYKQFIZc3XNHc+wGhz6vJWtEUGczM+s5yO4a21aLeQDUt0C476NSjWybeLLLsSxzuv3
+         wS7dD9KBYCSl8nDJB1lJrgZxACXRZ1jJcNoluQWLGdq8drqI+0kro/pqmrX0V5m2754/
+         Lh8Nv6nsac84VCAYU/AyyH44y1hQ2rUN8EnBO8ZS6RhdFm7yQTUOvPtosrCUrFVX7ubT
+         D65RGfnGaBJhMlVWWEpaeaL3h/23JxZImJs7qLSg66uHwgDoCeVzv/jBsVnTXRV/D9YC
+         OhqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FLBIDyYd3J/QtsHCQ3avUSdZOaQsAsWhMC43OlTTZSw=;
-        b=Iqtud0triEWyazPJmzlGRQ6Ocgrzhq5cXJjODDFqG+EbWlylLqxW5JEZ4Oqs3oVxjr
-         +/+UM+k/6eFJf0uYAophB0CwPJxJL2Veo6w2nrdTymgpR4O5w7bMNMA19bg0u+vz86xY
-         QA1+dqkdHKtOWypgr+6YeIDynkJadusJchIuTxvEmhlq6O3TraCUc9nywbgxd2NQ9aex
-         TyxGonDCQrcQdmBvi25wKwcyO0L86aURZX/6EoviSR+SgqdHDyi61sTlOh3BDX16H3hD
-         hGVr5OwgDDKXHQ0P9pWd5tEV9jGgOKo+vivBDmsNIgXhhZpmn35StNc1sszWGDGbEtSR
-         e6/g==
-X-Gm-Message-State: AOAM530z/9WHrfqFjQVEwDp41uxX8vPJMrqFiexuEeBbc2ImFMt86Pyq
-        uvQOdzoMPeYmSRVIl/i02Q==
-X-Google-Smtp-Source: ABdhPJzuyvMJcuMo9cj5QfUbMgNUWOVcunNaqBnqvwFCm8lZfeH3oWw+mP/behHNWR56hqSEeRKiIA==
-X-Received: by 2002:a54:4492:: with SMTP id v18mr6593685oiv.49.1617293393485;
-        Thu, 01 Apr 2021 09:09:53 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id b12sm1259828oti.17.2021.04.01.09.09.52
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=r2enjizmpD/LJygPj4XEpQS/6/yzRXEF2wF7GTPmSXo=;
+        b=QrMZsHCazGDNoYMDT8CFEUKhQrXtNgeHQk4FeemzJPCjLudq5zzopOrJCg7xaLHlRN
+         Dd4veYU9+BaOy6vYz3Mi07LcVfHi/ZlDppeKG+nQPNYlspfyj7YUN65tUAwdhJE0PXXc
+         sfHzAY6eniGGLB8BSqu5ABH8dwRk3TNLNHKnyyGhDqJP2e1wisWHoHFuqtH5bl4WbA9n
+         r4ijoi0CT9n/dX0FzHo7aq0i6uVQMVkYbsXk7AzGY69vuAkjz9za2sUBM7PX7QX0/xzr
+         YSOJkadNNGvTrvAxQ3D+YhrBm/FI1GfVZiMWxQFeSSt3iZvI1u9KRSk1PRe8mn9LPQTJ
+         BMEw==
+X-Gm-Message-State: AOAM533ikS3a8+eh3XC/wsjB1osIW8BqlVs+BvpX074ZpGYnHBUeEENH
+        BqP+xR2K+vWJ/NiNjFw+f/A=
+X-Google-Smtp-Source: ABdhPJzcTjTlmmQdnEzAYC4y/zeNUyjAzAY+REJdX/vK/J+OVPyc4sDFCIkK9GVuPk/uNanPkBQncQ==
+X-Received: by 2002:a2e:b5d8:: with SMTP id g24mr6094104ljn.64.1617293557129;
+        Thu, 01 Apr 2021 09:12:37 -0700 (PDT)
+Received: from 192.168.1.8 ([212.59.242.58])
+        by smtp.gmail.com with ESMTPSA id l10sm586356lfk.48.2021.04.01.09.12.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 09:09:53 -0700 (PDT)
-Received: (nullmailer pid 524765 invoked by uid 1000);
-        Thu, 01 Apr 2021 16:09:51 -0000
-Date:   Thu, 1 Apr 2021 11:09:51 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Puranjay Mohan <puranjay12@gmail.com>
-Cc:     alexandru.ardelean@analog.com, jic23@kernel.org,
-        devicetree@vger.kernel.org, knaack.h@gmx.de,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lars@metafoo.de
-Subject: Re: [PATCH v2 1/2] dt-bindings: iio: temperature: Add DT bindings
- for TMP117
-Message-ID: <20210401160951.GA522095@robh.at.kernel.org>
-References: <20210401091648.87421-1-puranjay12@gmail.com>
- <20210401091648.87421-2-puranjay12@gmail.com>
+        Thu, 01 Apr 2021 09:12:36 -0700 (PDT)
+From:   Maciej Falkowski <maciej.falkowski9@gmail.com>
+To:     khilman@kernel.org, aaro.koskinen@iki.fi, tony@atomide.com,
+        linux@armlinux.org.uk
+Cc:     linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        maciej.falkowski9@gmail.com
+Subject: [PATCH] ARM: OMAP: Fix use of possibly uninitialized irq variable
+Date:   Thu,  1 Apr 2021 18:11:27 +0200
+Message-Id: <20210401161127.8942-1-maciej.falkowski9@gmail.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401091648.87421-2-puranjay12@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 02:46:47PM +0530, Puranjay Mohan wrote:
-> Add devicetree binding document for TMP117, a digital temperature sensor.
+The current control flow of IRQ number assignment to `irq` variable
+allows a request of IRQ of unspecified value,
+generating a warning under Clang compilation with omap1_defconfig on linux-next:
 
-Please run checkpatch.pl and fix trailing WS.
+arch/arm/mach-omap1/pm.c:656:11: warning: variable 'irq' is used uninitialized whenever
+'if' condition is false [-Wsometimes-uninitialized]
+        else if (cpu_is_omap16xx())
+                 ^~~~~~~~~~~~~~~~~
+./arch/arm/mach-omap1/include/mach/soc.h:123:30: note: expanded from macro 'cpu_is_omap16xx'
+                                        ^~~~~~~~~~~~~
+arch/arm/mach-omap1/pm.c:658:18: note: uninitialized use occurs here
+        if (request_irq(irq, omap_wakeup_interrupt, 0, "peripheral wakeup",
+                        ^~~
+arch/arm/mach-omap1/pm.c:656:7: note: remove the 'if' if its condition is always true
+        else if (cpu_is_omap16xx())
+             ^~~~~~~~~~~~~~~~~~~~~~
+arch/arm/mach-omap1/pm.c:611:9: note: initialize the variable 'irq' to silence this warning
+        int irq;
+               ^
+                = 0
+1 warning generated.
 
-> 
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> ---
->  .../bindings/iio/temperature/ti,tmp117.yaml   | 34 +++++++++++++++++++
->  1 file changed, 34 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/temperature/ti,tmp117.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/temperature/ti,tmp117.yaml b/Documentation/devicetree/bindings/iio/temperature/ti,tmp117.yaml
-> new file mode 100644
-> index 000000000..1ead22317
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/temperature/ti,tmp117.yaml
-> @@ -0,0 +1,34 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/iio/temperature/ti,tmp117.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: "TI TMP117 - Digital temperature sensor with integrated NV memory"
-> +
-> +description: |
-> +    TI TMP117 - Digital temperature sensor with integrated NV memory that supports
-> +    I2C interface.
-> +      https://www.ti.com/lit/gpn/tmp1
-> +
-> +maintainers: 
-> +  - "Puranjay Mohan <puranjay12@gmail.com>"
+The patch provides a default value to the `irq` variable
+along with a validity check.
 
-Don't need quotes.
+Signed-off-by: Maciej Falkowski <maciej.falkowski9@gmail.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1324
+---
+ arch/arm/mach-omap1/pm.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-> +
-> +properties: 
-> +  compatible: 
-> +    enum: 
-> +      - "ti,tmp117"
+diff --git a/arch/arm/mach-omap1/pm.c b/arch/arm/mach-omap1/pm.c
+index 2c1e2b32b9b3..a745d64d4699 100644
+--- a/arch/arm/mach-omap1/pm.c
++++ b/arch/arm/mach-omap1/pm.c
+@@ -655,9 +655,13 @@ static int __init omap_pm_init(void)
+ 		irq = INT_7XX_WAKE_UP_REQ;
+ 	else if (cpu_is_omap16xx())
+ 		irq = INT_1610_WAKE_UP_REQ;
+-	if (request_irq(irq, omap_wakeup_interrupt, 0, "peripheral wakeup",
+-			NULL))
+-		pr_err("Failed to request irq %d (peripheral wakeup)\n", irq);
++	else
++		irq = -1;
++
++	if (irq >= 0) {
++		if (request_irq(irq, omap_wakeup_interrupt, 0, "peripheral wakeup", NULL))
++			pr_err("Failed to request irq %d (peripheral wakeup)\n", irq);
++	}
+ 
+ 	/* Program new power ramp-up time
+ 	 * (0 for most boards since we don't lower voltage when in deep sleep)
+-- 
+2.26.3
 
-Don't need quotes.
-
-Blank line here.
-
-> +  reg: 
-> +    maxItems: 1
-
-blank line here.
-
-> +required: 
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - | 
-> +    tmp117@48 {
-> +        compatible = "ti,tmp117";
-> +        reg = <0x48>;
-
-You could just add to trivial-devices.yaml.
-
-> +      };  
-> -- 
-> 2.30.1
-> 
