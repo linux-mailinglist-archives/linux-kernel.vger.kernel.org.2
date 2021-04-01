@@ -2,131 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB99351D90
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F87F351F0D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239529AbhDAS3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:29:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238124AbhDASF1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:05:27 -0400
-Received: from mail-pj1-x1045.google.com (mail-pj1-x1045.google.com [IPv6:2607:f8b0:4864:20::1045])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD591C08EAE0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 06:37:58 -0700 (PDT)
-Received: by mail-pj1-x1045.google.com with SMTP id f2so3300485pjt.7
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 06:37:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=V1YPBBmXV6Zf6ofFKc69jLxBo6I+75nDp0+ssUeEtEM=;
-        b=FnGEG4c+4KfAvoOApXLIUPnAcQ1KMszPlTqMwBjuLf/mruo8xEqkhNLLznL6wv6IyX
-         0HktkS0RpAQWKxWCorjkw5msbMcNH8FlNnlIE6W5gj8Gy9xuk4STzTi7vhGeqneigtXe
-         JGxO31Vq4wqw9TSNlkwh6sIiVOH/1QPg3TCtfKZKWJrVjnsU/YiTO+f45/N9V90s3OOQ
-         rs1UJ64TwAniukAzGcr0QsFMwyMUK9rZBmyDJE8czMtx0F9/cJnDdXoLRJ9jtUBEFx2X
-         eBo12Xh+Yto2098IH47VtDJNZk4H3sQ4/umF8pyKiINRMfR9WlAjywGDF+887iNwlaQ+
-         wM/Q==
-X-Gm-Message-State: AOAM532ECFgPYyHZCxBL7midtLjTRvNWUNRW4sXIAZAA4g/bLxw7+AOC
-        8Za8ThP1AYc4odhTFztmgmq7rxFiRWd6JCS3kwvX094Ykx7N
-X-Google-Smtp-Source: ABdhPJx/5tqNGXQlJ27uFdO6oc1q+y5cAbEhG+gQ0NtMiUPsSxdE1cBf9c1xnuC34oj9gnsTFZUhqBMyOMroa7wQiaswaike9eKr
+        id S236355AbhDASw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:52:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32790 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238357AbhDASh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:37:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF4D3610D0;
+        Thu,  1 Apr 2021 11:32:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617276781;
+        bh=hfjvB9ERt7bvtAIEkjFz4Hvuc2oFEMjwZBh8Tsw4mdI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=YOBsd9WVnLhP8AWR4lzPTOPl5RcODxd2bxg/z8jI0NG5w+uhlfyhIqCrCqOZfuh4t
+         zRfRcCTUpp7ZD0VoUdODDpX0avFN0ZpCP73Fxcr1F49rIp/WqAkONKDIniby1yFcu9
+         V3rKBjxRvVLK/hUk0b4Hv3UKSIhCNxSz3ZkdzFIVeuZL4iKjlPoadB9lhegO68Lkud
+         rNEFJvuuhT2LcMNh3VTN8xEwIDICZk00cm9LSYb8ZU0hK5ZVi2G8p+bKpZynFdL0Ve
+         HfaxgSYas6h0lt/vn1AhhiDRt4frwjd02hjWEtqZ9ynXjy3A+7ZcNykrgJdYAM6dTb
+         D5cG0nRRuX+VQ==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: qcom: sm8350: Add interconnects
+Date:   Thu,  1 Apr 2021 17:02:52 +0530
+Message-Id: <20210401113252.3078466-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:20cd:: with SMTP id 13mr6179334ilq.126.1617276559816;
- Thu, 01 Apr 2021 04:29:19 -0700 (PDT)
-Date:   Thu, 01 Apr 2021 04:29:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d9fefa05bee78afd@google.com>
-Subject: [syzbot] WARNING in bpf_test_run
-From:   syzbot <syzbot+774c590240616eaa3423@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
-        bp@alien8.de, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, hawk@kernel.org, hpa@zytor.com,
-        jmattson@google.com, john.fastabend@gmail.com, joro@8bytes.org,
-        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, masahiroy@kernel.org, mingo@redhat.com,
-        netdev@vger.kernel.org, pbonzini@redhat.com, peterz@infradead.org,
-        rafael.j.wysocki@intel.com, rostedt@goodmis.org, seanjc@google.com,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
-        will@kernel.org, x86@kernel.org, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Add interconnect nodes and add them for modem and cdsp nodes
 
-syzbot found the following issue on:
-
-HEAD commit:    36e79851 libbpf: Preserve empty DATASEC BTFs during static..
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1569bb06d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7eff0f22b8563a5f
-dashboard link: https://syzkaller.appspot.com/bug?extid=774c590240616eaa3423
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17556b7cd00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1772be26d00000
-
-The issue was bisected to:
-
-commit 997acaf6b4b59c6a9c259740312a69ea549cc684
-Author: Mark Rutland <mark.rutland@arm.com>
-Date:   Mon Jan 11 15:37:07 2021 +0000
-
-    lockdep: report broken irq restoration
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10197016d00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=12197016d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=14197016d00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+774c590240616eaa3423@syzkaller.appspotmail.com
-Fixes: 997acaf6b4b5 ("lockdep: report broken irq restoration")
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 8725 at include/linux/bpf-cgroup.h:193 bpf_cgroup_storage_set include/linux/bpf-cgroup.h:193 [inline]
-WARNING: CPU: 0 PID: 8725 at include/linux/bpf-cgroup.h:193 bpf_test_run+0x65e/0xaa0 net/bpf/test_run.c:109
-Modules linked in:
-CPU: 0 PID: 8725 Comm: syz-executor927 Not tainted 5.12.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:bpf_cgroup_storage_set include/linux/bpf-cgroup.h:193 [inline]
-RIP: 0010:bpf_test_run+0x65e/0xaa0 net/bpf/test_run.c:109
-Code: e9 29 fe ff ff e8 b2 9d 3a fa 41 83 c6 01 bf 08 00 00 00 44 89 f6 e8 51 a5 3a fa 41 83 fe 08 0f 85 74 fc ff ff e8 92 9d 3a fa <0f> 0b bd f0 ff ff ff e9 5c fd ff ff e8 81 9d 3a fa 83 c5 01 bf 08
-RSP: 0018:ffffc900017bfaf0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffffc90000f29000 RCX: 0000000000000000
-RDX: ffff88801bc68000 RSI: ffffffff8739543e RDI: 0000000000000003
-RBP: 0000000000000007 R08: 0000000000000008 R09: 0000000000000001
-R10: ffffffff8739542f R11: 0000000000000000 R12: dffffc0000000000
-R13: ffff888021dd54c0 R14: 0000000000000008 R15: 0000000000000000
-FS:  00007f00157d7700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f0015795718 CR3: 00000000157ae000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- bpf_prog_test_run_skb+0xabc/0x1c70 net/bpf/test_run.c:628
- bpf_prog_test_run kernel/bpf/syscall.c:3132 [inline]
- __do_sys_bpf+0x218b/0x4f40 kernel/bpf/syscall.c:4411
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x446199
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 11 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f00157d72f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00000000004cb440 RCX: 0000000000446199
-RDX: 0000000000000028 RSI: 0000000020000080 RDI: 000000000000000a
-RBP: 000000000049b074 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: f9abde7200f522cd
-R13: 3952ddf3af240c07 R14: 1631e0d82d3fa99d R15: 00000000004cb448
-
-
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ arch/arm64/boot/dts/qcom/sm8350.dtsi | 79 ++++++++++++++++++++++++++++
+ 1 file changed, 79 insertions(+)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+index a0d459069211..72cd3e7574a0 100644
+--- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+@@ -4,6 +4,7 @@
+  */
+ 
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
++#include <dt-bindings/interconnect/qcom,sm8350.h>
+ #include <dt-bindings/clock/qcom,gcc-sm8350.h>
+ #include <dt-bindings/clock/qcom,rpmh.h>
+ #include <dt-bindings/mailbox/qcom-ipcc.h>
+@@ -557,6 +558,62 @@ apps_smmu: iommu@15000000 {
+ 					<GIC_SPI 707 IRQ_TYPE_LEVEL_HIGH>;
+ 		};
+ 
++		config_noc: interconnect@1500000 {
++			compatible = "qcom,sm8350-config-noc";
++			reg = <0 0x01500000 0 0xa580>;
++			#interconnect-cells = <1>;
++			qcom,bcm-voters = <&apps_bcm_voter>;
++		};
++
++		mc_virt: interconnect@1580000 {
++			compatible = "qcom,sm8350-mc-virt";
++			reg = <0 0x01580000 0 0x1000>;
++			#interconnect-cells = <1>;
++			qcom,bcm-voters = <&apps_bcm_voter>;
++		};
++
++		system_noc: interconnect@1680000 {
++			compatible = "qcom,sm8350-system-noc";
++			reg = <0 0x01680000 0 0x1c200>;
++			#interconnect-cells = <1>;
++			qcom,bcm-voters = <&apps_bcm_voter>;
++		};
++
++		aggre1_noc: interconnect@16e0000 {
++			compatible = "qcom,sm8350-aggre1-noc";
++			reg = <0 0x016e0000 0 0x1f180>;
++			#interconnect-cells = <1>;
++			qcom,bcm-voters = <&apps_bcm_voter>;
++		};
++
++		aggre2_noc: interconnect@1700000 {
++			compatible = "qcom,sm8350-aggre2-noc";
++			reg = <0 0x01700000 0 0x33000>;
++			#interconnect-cells = <1>;
++			qcom,bcm-voters = <&apps_bcm_voter>;
++		};
++
++		mmss_noc: interconnect@1740000 {
++			compatible = "qcom,sm8350-mmss-noc";
++			reg = <0 0x01740000 0 0x1f080>;
++			#interconnect-cells = <1>;
++			qcom,bcm-voters = <&apps_bcm_voter>;
++		};
++
++		lpass_ag_noc: interconnect@3c40000 {
++			compatible = "qcom,sm8350-lpass-ag-noc";
++			reg = <0 0x03c40000 0 0xf080>;
++			#interconnect-cells = <1>;
++			qcom,bcm-voters = <&apps_bcm_voter>;
++		};
++
++		compute_noc: interconnect@a0c0000{
++			compatible = "qcom,sm8350-compute-noc";
++			reg = <0 0x0a0c0000 0 0xa180>;
++			#interconnect-cells = <1>;
++			qcom,bcm-voters = <&apps_bcm_voter>;
++		};
++
+ 		tcsr_mutex: hwlock@1f40000 {
+ 			compatible = "qcom,tcsr-mutex";
+ 			reg = <0x0 0x01f40000 0x0 0x40000>;
+@@ -584,6 +641,8 @@ mpss: remoteproc@4080000 {
+ 					<&rpmhpd SM8350_MSS>;
+ 			power-domain-names = "load_state", "cx", "mss";
+ 
++			interconnects = <&mc_virt 0 &mc_virt 1>;
++
+ 			memory-region = <&pil_modem_mem>;
+ 
+ 			qcom,smem-states = <&smp2p_modem_out 0>;
+@@ -787,6 +846,10 @@ rpmhpd_opp_turbo_l1: opp10 {
+ 					};
+ 				};
+ 			};
++
++			apps_bcm_voter: bcm_voter {
++				compatible = "qcom,bcm-voter";
++			};
+ 		};
+ 
+ 		ufs_mem_hc: ufshc@1d84000 {
+@@ -925,6 +988,8 @@ cdsp: remoteproc@98900000 {
+ 					<&rpmhpd SM8350_MXC>;
+ 			power-domain-names = "load_state", "cx", "mxc";
+ 
++			interconnects = <&compute_noc 1 &mc_virt 1>;
++
+ 			memory-region = <&pil_cdsp_mem>;
+ 
+ 			qcom,smem-states = <&smp2p_cdsp_out 0>;
+@@ -1036,6 +1101,20 @@ usb_2_ssphy: phy@88ebe00 {
+ 			};
+ 		};
+ 
++		dc_noc: interconnect@90e0000 {
++			compatible = "qcom,sm8350-dc-noc";
++			reg = <0 0x090c0000 0 0x4200>;
++			#interconnect-cells = <1>;
++			qcom,bcm-voters = <&apps_bcm_voter>;
++		};
++
++		gem_noc: interconnect@9100000 {
++			compatible = "qcom,sm8350-gem-noc";
++			reg = <0 0x09100000 0 0xb4000>;
++			#interconnect-cells = <1>;
++			qcom,bcm-voters = <&apps_bcm_voter>;
++		};
++
+ 		usb_1: usb@a6f8800 {
+ 			compatible = "qcom,sm8350-dwc3", "qcom,dwc3";
+ 			reg = <0 0x0a6f8800 0 0x400>;
+-- 
+2.26.3
+
