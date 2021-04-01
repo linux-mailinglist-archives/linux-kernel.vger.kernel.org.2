@@ -2,112 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBFF7351A59
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:04:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C1E351A66
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237259AbhDAR7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 13:59:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58410 "EHLO
+        id S237625AbhDASAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:00:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235953AbhDARn3 (ORCPT
+        with ESMTP id S235282AbhDARq0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:43:29 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D20E7C08EA6F;
-        Thu,  1 Apr 2021 06:28:11 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id w28so2848385lfn.2;
-        Thu, 01 Apr 2021 06:28:11 -0700 (PDT)
+        Thu, 1 Apr 2021 13:46:26 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C05C08EA72;
+        Thu,  1 Apr 2021 06:29:05 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id kt15so2853382ejb.12;
+        Thu, 01 Apr 2021 06:29:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pPTQXH4q4Y3+As2WDfnWN7LhkfWGagXjj+j3XYslqSs=;
-        b=edQu655dnVXxAwsXxZFBvnZHT5VQ8axoKWqSrmsoe6+v7obF4uTVtqcvoynBxne0bW
-         6yEiGCUhrAfwBETdN0RKj4INLGCF1sqoDWlmGq/Yijcf+UUDqylByj/wOoXcGXDrBKSn
-         dVZtMm7RY21vNCv4Y4LCFUmrxHQ8fow5ayf7/82pA1YCqqC1JEHgvBeFUieyVB8OSJYx
-         YjdtqNqA1BetdZm6Fa+l39bqscqzTJvgeYvXmbYeVg9iN9Zhcs/nDWSBFaRJcOpg9QS9
-         /UW4rRhsPgC0Dk55t2FvE3ztWPSUAq3uDYdHYLigtaIxKxOg4ex5+Lmmj447ZDwb1+Wz
-         z5Yw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=oae4ls4BhwnbmVn/1Lh6LcnL14vfnBaIytV3du8Rujk=;
+        b=VYTo7HseSWsBQLyvUd7Iu017MMZOPuzh8TeFsU0W24YQDYEygsl8zouH2Km+H5v8J6
+         ay05F6+QBHlFNxiTsR6gmT3BV1JV1kImfnNWbT5Lks2bfSwfHLDw6bJUfE3+8PErEerM
+         hgUlTp4HOAROQXeJUuN+WJFcILkKTZ/KIxzqCmjh8scWG/GaoLvSEpHr10blUpCfzLte
+         e5sgRZKAdyC9Hg9HomiPwd510wYCjiSOCUXiOKwNNgtjWuKxblkVmT/3cbAGH3QkUwf7
+         GuylkYFFXiutJz/RmEgb7VGcbWYDHZm3IkUTjngcD7G0JftUYScbpp9Hv7itGMFskUGA
+         w7xQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pPTQXH4q4Y3+As2WDfnWN7LhkfWGagXjj+j3XYslqSs=;
-        b=uHVyDrtayRvJT6Wr8/6L2Ilu0HVU1vvA6k0pYD0OO0miARgvbitSRvaey1EBj2WAP/
-         fes/vM5RVea5LRCZTRWVSPc4xWJmO46LCB+sdNSB2lgFT8naQ6WbcCWn76JCWKWze4Wu
-         0EkzYNnUhpJWphEpT8XNTSKYTA+U6Wz4Ugi39tBWurlKzr92/OC/OfyCgpqekYu/btDR
-         JT+j1v5bmvG1KZPAO79lnjgFyyKIw7SJGYdmdovJBkHd5dD2sZFuBZEzjrOJuMn4Y+IT
-         slKPvi/ZqBd98WDQold5h2jem5H10EfVkmRmluyJJpk2N/7uGbx3vTnkVe6ip2EuFuOs
-         nQtA==
-X-Gm-Message-State: AOAM533xcPWoRTAAwiCQq0VNOW9rMxT75gJXEFIM5LJQdoiWlimqsXTH
-        AjpZcK0lZSm2JuKbmuCm13U=
-X-Google-Smtp-Source: ABdhPJzUqIGbIxM3wfJ/lIRhRzchR48PEJ5arWl6KT6NLjy5Bj8IrHZIGN5GVLuwSve2gxdWJXvBSw==
-X-Received: by 2002:a05:6512:49a:: with SMTP id v26mr5404651lfq.211.1617283689681;
-        Thu, 01 Apr 2021 06:28:09 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.229.149])
-        by smtp.gmail.com with ESMTPSA id t13sm617533ljk.47.2021.04.01.06.28.08
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=oae4ls4BhwnbmVn/1Lh6LcnL14vfnBaIytV3du8Rujk=;
+        b=eTjR9DbzXfPM331O4syHDorw3sOg2DxfJlIusszruyZtHw8qxnWeZraoFl/UaTCBH9
+         AHzVVq+1F3jXXktzbo/9iJqJYMtfTbuNMXu+F1e5UZ6ZSzYSsN1nksTruS0+8qwbsBEa
+         oHNILnGrwCP0BNJfdwKSa6BeeTR5LLOGTp24TvDKacItKs/T6uAKXS3smoKo4xvUEjMb
+         AP/gZ4Zb0lOBoFDiQSP8Ch1AqxtKraqyZHCGiQx5sSoTf2gr1YFCCrbY+QgCPvysAzYs
+         ye5oTJnzKDRq1+nMI+W7iY2gOBQ3PiymRNlBROHtvvihBvDXcUhPBegm60XDtmOSlPJb
+         7yXQ==
+X-Gm-Message-State: AOAM5334xpz7p3lZqKIW/r1TT7veK2TJhZ54NIYdcK/TDShDEcnjjNvq
+        08DAcq5bNTjfb0t5Y6An+CI=
+X-Google-Smtp-Source: ABdhPJz25tOy2sqcUWqCR9fOAwcYwyHVph0hSckovigQCs6mgZ9r6xWWYbwu2Q0QnCLAAaUi8NY3uw==
+X-Received: by 2002:a17:906:948d:: with SMTP id t13mr8861426ejx.402.1617283744008;
+        Thu, 01 Apr 2021 06:29:04 -0700 (PDT)
+Received: from localhost.localdomain (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
+        by smtp.gmail.com with ESMTPSA id cf4sm3488399edb.19.2021.04.01.06.29.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 06:28:09 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net,
-        kuba@kernel.org, mailhol.vincent@wanadoo.fr
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+91adee8d9ebb9193d22d@syzkaller.appspotmail.com
-Subject: [PATCH] drivers: net: fix memory leak in peak_usb_create_dev
-Date:   Thu,  1 Apr 2021 16:27:52 +0300
-Message-Id: <20210401132752.25358-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Thu, 01 Apr 2021 06:29:03 -0700 (PDT)
+From:   Bean Huo <huobean@gmail.com>
+To:     ulf.hansson@linaro.org, yoshihiro.shimoda.uh@renesas.com,
+        wsa+renesas@sang-engineering.com, adrian.hunter@intel.com
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bean Huo <beanhuo@micron.com>
+Subject: [PATCH v2 1/2] mmc: core: Let sanitize timeout readable/writable via sysfs
+Date:   Thu,  1 Apr 2021 15:28:52 +0200
+Message-Id: <20210401132853.105448-2-huobean@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210401132853.105448-1-huobean@gmail.com>
+References: <20210401132853.105448-1-huobean@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot reported memory leak in peak_usb.
-The problem was in case of failure after calling
-->dev_init()[2] in peak_usb_create_dev()[1]. The data
-allocated int dev_init() wasn't freed, so simple
-->dev_free() call fix this problem.
+From: Bean Huo <beanhuo@micron.com>
 
-backtrace:
-    [<0000000079d6542a>] kmalloc include/linux/slab.h:552 [inline]
-    [<0000000079d6542a>] kzalloc include/linux/slab.h:682 [inline]
-    [<0000000079d6542a>] pcan_usb_fd_init+0x156/0x210 drivers/net/can/usb/peak_usb/pcan_usb_fd.c:868   [2]
-    [<00000000c09f9057>] peak_usb_create_dev drivers/net/can/usb/peak_usb/pcan_usb_core.c:851 [inline] [1]
-    [<00000000c09f9057>] peak_usb_probe+0x389/0x490 drivers/net/can/usb/peak_usb/pcan_usb_core.c:949
+As the density increases, the 4-minute timeout value for
+sanitize is no longer feasible. At the same time, devices
+of different densities have different timeout values, and it is
+difficult to obtain a unified standard timeout value. Therefore,
+it is better to let the user explicitly change  sanitize timeout
+value according to the eMMC density on the board.
 
-Reported-by: syzbot+91adee8d9ebb9193d22d@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Bean Huo <beanhuo@micron.com>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_core.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/mmc/core/mmc.c     | 34 ++++++++++++++++++++++++++++++++++
+ drivers/mmc/core/mmc_ops.c |  3 +--
+ include/linux/mmc/card.h   |  1 +
+ 3 files changed, 36 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-index 573b11559d73..28e916a04047 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -857,7 +857,7 @@ static int peak_usb_create_dev(const struct peak_usb_adapter *peak_usb_adapter,
- 	if (dev->adapter->dev_set_bus) {
- 		err = dev->adapter->dev_set_bus(dev, 0);
- 		if (err)
--			goto lbl_unregister_candev;
-+			goto adap_dev_free;
+diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
+index 8741271d3971..3885cc1780ac 100644
+--- a/drivers/mmc/core/mmc.c
++++ b/drivers/mmc/core/mmc.c
+@@ -28,6 +28,7 @@
+ 
+ #define DEFAULT_CMD6_TIMEOUT_MS	500
+ #define MIN_CACHE_EN_TIMEOUT_MS 1600
++#define MMC_SANITIZE_TIMEOUT_MS	(240 * 1000) /* 240s */
+ 
+ static const unsigned int tran_exp[] = {
+ 	10000,		100000,		1000000,	10000000,
+@@ -835,6 +836,37 @@ static ssize_t mmc_dsr_show(struct device *dev,
+ 
+ static DEVICE_ATTR(dsr, S_IRUGO, mmc_dsr_show, NULL);
+ 
++static ssize_t sanitize_timeout_ms_show(struct device *dev,
++					struct device_attribute *attr,
++					char *buf)
++{
++	struct mmc_card *card = mmc_dev_to_card(dev);
++
++	return sysfs_emit(buf, "%d\n", card->sanitize_timeout_ms);
++}
++
++static ssize_t sanitize_timeout_ms_store(struct device *dev,
++					 struct device_attribute *attr,
++					 const char *buf, size_t len)
++{
++	struct mmc_card *card = mmc_dev_to_card(dev);
++	unsigned int new;
++	int ret;
++
++	ret = kstrtouint(buf, 0, &new);
++	if (ret < 0)
++		return ret;
++
++	if (new == 0)
++		return -EINVAL;
++
++	card->sanitize_timeout_ms = new;
++
++	return len;
++}
++static DEVICE_ATTR_RW(sanitize_timeout_ms);
++
++
+ static struct attribute *mmc_std_attrs[] = {
+ 	&dev_attr_cid.attr,
+ 	&dev_attr_csd.attr,
+@@ -861,6 +893,7 @@ static struct attribute *mmc_std_attrs[] = {
+ 	&dev_attr_rca.attr,
+ 	&dev_attr_dsr.attr,
+ 	&dev_attr_cmdq_en.attr,
++	&dev_attr_sanitize_timeout_ms.attr,
+ 	NULL,
+ };
+ ATTRIBUTE_GROUPS(mmc_std);
+@@ -1623,6 +1656,7 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
+ 		card->ocr = ocr;
+ 		card->type = MMC_TYPE_MMC;
+ 		card->rca = 1;
++		card->sanitize_timeout_ms = MMC_SANITIZE_TIMEOUT_MS;
+ 		memcpy(card->raw_cid, cid, sizeof(card->raw_cid));
  	}
  
- 	/* get device number early */
-@@ -869,6 +869,10 @@ static int peak_usb_create_dev(const struct peak_usb_adapter *peak_usb_adapter,
+diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
+index f413474f0f80..40a4f9e22d30 100644
+--- a/drivers/mmc/core/mmc_ops.c
++++ b/drivers/mmc/core/mmc_ops.c
+@@ -21,7 +21,6 @@
  
- 	return 0;
+ #define MMC_BKOPS_TIMEOUT_MS		(120 * 1000) /* 120s */
+ #define MMC_CACHE_FLUSH_TIMEOUT_MS	(30 * 1000) /* 30s */
+-#define MMC_SANITIZE_TIMEOUT_MS		(240 * 1000) /* 240s */
  
-+adap_dev_free:
-+	if (dev->adapter->dev_free)
-+		dev->adapter->dev_free(dev);
-+
- lbl_unregister_candev:
- 	unregister_candev(netdev);
+ static const u8 tuning_blk_pattern_4bit[] = {
+ 	0xff, 0x0f, 0xff, 0x00, 0xff, 0xcc, 0xc3, 0xcc,
+@@ -1025,7 +1024,7 @@ int mmc_sanitize(struct mmc_card *card)
+ 	mmc_retune_hold(host);
  
+ 	err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL, EXT_CSD_SANITIZE_START,
+-			 1, MMC_SANITIZE_TIMEOUT_MS);
++			 1, card->sanitize_timeout_ms);
+ 	if (err)
+ 		pr_err("%s: Sanitize failed err=%d\n", mmc_hostname(host), err);
+ 
+diff --git a/include/linux/mmc/card.h b/include/linux/mmc/card.h
+index f9ad35dd6012..9db0dcd9661e 100644
+--- a/include/linux/mmc/card.h
++++ b/include/linux/mmc/card.h
+@@ -273,6 +273,7 @@ struct mmc_card {
+ 
+ 	bool			reenable_cmdq;	/* Re-enable Command Queue */
+ 
++	unsigned int            sanitize_timeout_ms;
+ 	unsigned int		erase_size;	/* erase size in sectors */
+  	unsigned int		erase_shift;	/* if erase unit is power 2 */
+  	unsigned int		pref_erase;	/* in sectors */
 -- 
-2.30.2
+2.25.1
 
