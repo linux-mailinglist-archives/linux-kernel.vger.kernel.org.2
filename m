@@ -2,150 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C74351F94
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 453C6351FD5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234994AbhDATWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 15:22:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60051 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234958AbhDATVY (ORCPT
+        id S235367AbhDAT3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 15:29:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235529AbhDAT3N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 15:21:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617304884;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=vvLDO2u5BxPZbBq5VTfe/3e16RM7zi3D4zzYHWMuYwE=;
-        b=hhjJ4WaSroR2OT3cFT+3GqDsTuiUq+pD62uYXjEGy56bw9Z2kdyj9qHTPI6fOkCEgnaoMH
-        sIKEBmN1y56aqu2NK+BOR6bgHIoF4w08o8ecfOL4UUyaiXeRHZpCcpRgMe81hpx+//vU0K
-        tEdcdJOFwTqxSZKHxUdWM4sXPSzJsII=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-554-sMcizY3QPIOoyiOMZgp80w-1; Thu, 01 Apr 2021 15:21:22 -0400
-X-MC-Unique: sMcizY3QPIOoyiOMZgp80w-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E638C83DD20;
-        Thu,  1 Apr 2021 19:21:21 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 949B319C59;
-        Thu,  1 Apr 2021 19:21:21 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [GIT PULL] KVM changes for Linux 5.12-rc6
-Date:   Thu,  1 Apr 2021 15:21:20 -0400
-Message-Id: <20210401192120.3280562-1-pbonzini@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        Thu, 1 Apr 2021 15:29:13 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B21C0610E0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 12:21:49 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id t20so1486415plr.13
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 12:21:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=HbgURG3oZJI8peiYJ47Xrk9y5ZJA0pTdMQGeypLtuzA=;
+        b=BzYNuSVwkeosizznb4U6wvdKT9P19ptL93d7gZDGWR+1UROQFmfXTi8J0brxLrsesd
+         nF6yGNKPi/1oDh4zi/AdHCqjahSFgTvyzogJ6J1TYDqCvwmZL8514GPHV0ECOzlGd8XO
+         zvzwEJkRGfeZQGAWolHMyKnEDUhqUJ0/iSZuZ79c6x3F1+n9MdDkYyPkb+RHcJui+t4i
+         eMl9AsbgBDcHByvxVFmtzrPPDODu/QGa37w5HrDUqCtbIOuwVSbiGKnHwYe07Z4n0JuR
+         AeOtK0IYLACrEkPjKaQztkWoV0+37eaza0H1qk9X8ftOIhQBx3PqopP18jrxtqnZZ93G
+         kRCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=HbgURG3oZJI8peiYJ47Xrk9y5ZJA0pTdMQGeypLtuzA=;
+        b=dRhwWtgvwzNxTcem1ZyZJrhW70CVljTfcbD2t7KFbmUILhWLW+DVzfLIS6K+HhFyee
+         oWE/0USY4gWjhL2Yn5w79CfpJdR7Y3q7O2N3KuJYl3C6S4T+n4vtyCL5m4PxYC/H+RLC
+         Ya47w1DCXPuglsdrA70I/iJtZEhm5l0ExxWYuXq9vMcXGA5V6HA3MF83l5A7zi/SC2uP
+         Z6urqRVpxHtI7hWTr5RwHDcpgxs+qjKdcoSj/gOu1BbW3Oc/v39RbM9rGUbegoXs5W1m
+         brAFRP9Vpsfc8hoBR511nGIo1Rj+C1iFs+pMTvUuS0V4scCc8gIhKwywLFnAZGOyaQuS
+         iVzA==
+X-Gm-Message-State: AOAM533Z1p2KWwqKGheulyIX16ddadXZB4pKXJk2rpmeOSOrAz0vd8BF
+        E7Qeng/64mfS5ShKkMmFsQU=
+X-Google-Smtp-Source: ABdhPJxORTF7J6CpoEywQ0luCEGj3f9ZOuJSKRtrgM7n8NywgNlvwPMOMv2X3hsTIXWa0GYmW+iUoA==
+X-Received: by 2002:a17:902:a406:b029:e6:78c4:71c8 with SMTP id p6-20020a170902a406b02900e678c471c8mr9255966plq.17.1617304908637;
+        Thu, 01 Apr 2021 12:21:48 -0700 (PDT)
+Received: from [192.168.88.245] (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
+        by smtp.gmail.com with ESMTPSA id y4sm5919923pfn.67.2021.04.01.12.21.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 01 Apr 2021 12:21:47 -0700 (PDT)
+From:   Nadav Amit <nadav.amit@gmail.com>
+Message-Id: <1F67895A-C2CA-481D-AB33-58E8201BCE71@gmail.com>
+Content-Type: multipart/signed;
+        boundary="Apple-Mail=_893D95E3-DB07-4148-AC61-E60F3DABEC09";
+        protocol="application/pgp-signature";
+        micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [RFC] NUMA balancing: reduce TLB flush via delaying mapping on
+ hint page fault
+Date:   Thu, 1 Apr 2021 12:21:46 -0700
+In-Reply-To: <20210401083809.GX15768@suse.de>
+Cc:     "Huang, Ying" <ying.huang@intel.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Peter Xu <peterx@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Arjun Roy <arjunroy@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Mel Gorman <mgorman@suse.de>
+References: <20210329062651.2487905-1-ying.huang@intel.com>
+ <20210330133310.GT15768@suse.de>
+ <87a6qj8t92.fsf@yhuang6-desk1.ccr.corp.intel.com>
+ <20210331131658.GV15768@suse.de>
+ <C42F16F8-646B-448D-A098-E1A98637E28D@gmail.com>
+ <20210401083809.GX15768@suse.de>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
 
-The following changes since commit a5e13c6df0e41702d2b2c77c8ad41677ebb065b3:
+--Apple-Mail=_893D95E3-DB07-4148-AC61-E60F3DABEC09
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=utf-8
 
-  Linux 5.12-rc5 (2021-03-28 15:48:16 -0700)
 
-are available in the Git repository at:
 
-  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+> On Apr 1, 2021, at 1:38 AM, Mel Gorman <mgorman@suse.de> wrote:
+>=20
+> On Wed, Mar 31, 2021 at 09:36:04AM -0700, Nadav Amit wrote:
+>>=20
+>>=20
+>>> On Mar 31, 2021, at 6:16 AM, Mel Gorman <mgorman@suse.de> wrote:
+>>>=20
+>>> On Wed, Mar 31, 2021 at 07:20:09PM +0800, Huang, Ying wrote:
+>>>> Mel Gorman <mgorman@suse.de> writes:
+>>>>=20
+>>>>> On Mon, Mar 29, 2021 at 02:26:51PM +0800, Huang Ying wrote:
+>>>>>> For NUMA balancing, in hint page fault handler, the faulting page =
+will
+>>>>>> be migrated to the accessing node if necessary.  During the =
+migration,
+>>>>>> TLB will be shot down on all CPUs that the process has run on
+>>>>>> recently.  Because in the hint page fault handler, the PTE will =
+be
+>>>>>> made accessible before the migration is tried.  The overhead of =
+TLB
+>>>>>> shooting down is high, so it's better to be avoided if possible.  =
+In
+>>>>>> fact, if we delay mapping the page in PTE until migration, that =
+can be
+>>>>>> avoided.  This is what this patch doing.
+>>>>>>=20
+>>>>>=20
+>>>>> Why would the overhead be high? It was previously inaccessibly so =
+it's
+>>>>> only parallel accesses making forward progress that trigger the =
+need
+>>>>> for a flush.
+>>>>=20
+>>>> Sorry, I don't understand this.  Although the page is inaccessible, =
+the
+>>>> threads may access other pages, so TLB flushing is still necessary.
+>>>>=20
+>>>=20
+>>> You assert the overhead of TLB shootdown is high and yes, it can be
+>>> very high but you also said "the benchmark score has no visible =
+changes"
+>>> indicating the TLB shootdown cost is not a major problem for the =
+workload.
+>>> It does not mean we should ignore it though.
+>>=20
+>> If you are looking for a benchmark that is negatively affected by =
+NUMA
+>> balancing, then IIRC Parsec???s dedup is such a workload. [1]
+>>=20
+>=20
+> Few questions;
+>=20
+> Is Parsec imparied due to NUMA balancing in general or due to TLB
+> shootdowns specifically?
 
-for you to fetch changes up to 55626ca9c6909d077eca71bccbe15fef6e5ad917:
+TLB shootdowns specifically.
 
-  selftests: kvm: Check that TSC page value is small after KVM_SET_CLOCK(0) (2021-04-01 05:14:19 -0400)
+>=20
+> Are you using "gcc-pthreads" for parallelisation and the "native" size
+> for Parsec?
 
-It's a bit larger than I (and probably you) would like by the time we 
-get to -rc6, but perhaps not entirely unexpected since the changes in
-the last merge window were larger than usual.
+native as it is the biggest workload, so it is most apparent with
+native. I don=E2=80=99t remember that I played with the threading model
+parameters.
 
-The SVM fixes will cause conflicts in the next merge window, but I have
-already tried a merge and just keeping the "new" (5.13) code will be
-fine.
+>=20
+> Is there any specific thread count that matters either in
+> absolute terms or as a precentage of online CPUs?
 
-During the merge window I mentioned that I was considering a switch
-of the default MMU around 5.12-rc3.  However, I am not going to do
-this until at least 5.13.
+IIRC, when thread count matches the CPU numbers (or perhaps
+slightly lower), the impact is the greatest.
 
-----------------------------------------------------------------
-x86:
 
-* Fixes for missing TLB flushes with TDP MMU
+--Apple-Mail=_893D95E3-DB07-4148-AC61-E60F3DABEC09
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
 
-* Fixes for race conditions in nested SVM
+-----BEGIN PGP SIGNATURE-----
 
-* Fixes for lockdep splat with Xen emulation
+iQIzBAEBCAAdFiEESJL3osl5Ymx/w9I1HaAqSabaD1oFAmBmHUoACgkQHaAqSaba
+D1p2fw//RAgsNKT5ss22mo08un176bYzRehM82EXzJjDeWXcHhEFVAPpXUMpRXo+
+2XNjGtHHBHvGbXoNwGQN/O0W6g3Q3pFnW78G0RE8e7zLBKj6lALPIBcP/+tDvUCc
+tY2Fhj4BqMZ6O18C8UXJqrxSPAqCGzvF+VjavZ/XUQVDlzB70c0B+i85vMXD8kGq
+JgwBhhyDnHcTToDm1bG7GMLGUcYJZEcGEA4KP0EdUjSOQLkt+/0/r+We9zFsDInV
+9LfSo+aMFTzRPLj++TrF278VJU+GiEjkRJ9DLlojty7c6whsQvJS6vhDPYTCwkT0
+NSuNGknPEnXJVpeg0hc3lmwYTgRk3RDr1CKbgGoVCKlFCdNlwX4BlEBfcaoMcftC
+7tvasSgIWfbHNdHHKopAFJS1KEmoJaBgIxCADwBVECZB5LEYnJTim7FrmipS7ASI
++tP1+VRRytvTeZteOjDi/9FF8izExQ4WB+64ot2a1EdoC2y3njmhkeWuOLOiRVaQ
+EH+o4PWGTUlAalvV5K/tDTrpX5ywPhr0QKskMlXKCcoXmcHPNQmo6Nb1hvjQ6lFn
+Ov3lNhltdfeL9YJPPC5WBQAGiA6HSjMzBCaQpLuGtssQbjG4TKTbAtEhqyw0JEA2
+5PQDdHvyYQi8USwlnsvkCOu2PKJDM2OudeJybW9kVsmJSK9LjwU=
+=MMz9
+-----END PGP SIGNATURE-----
 
-* Fix for kvmclock underflow
-
-* Fix srcdir != builddir builds
-
-* Other small cleanups
-
-ARM:
-* Fix GICv3 MMIO compatibility probing
-
-* Prevent guests from using the ARMv8.4 self-hosted tracing extension
-
-----------------------------------------------------------------
-Dongli Zhang (1):
-      KVM: x86: remove unused declaration of kvm_write_tsc()
-
-Haiwei Li (1):
-      KVM: clean up the unused argument
-
-Marc Zyngier (1):
-      KVM: arm64: Fix CPU interface MMIO compatibility detection
-
-Paolo Bonzini (7):
-      Merge tag 'kvmarm-fixes-5.12-3' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into HEAD
-      Merge commit 'kvm-tdp-fix-flushes' into kvm-master
-      KVM: SVM: load control fields from VMCB12 before checking them
-      KVM: SVM: ensure that EFER.SVME is set when running nested guest or on nested vmexit
-      Merge branch 'kvm-fix-svm-races' into kvm-master
-      KVM: x86: reduce pvclock_gtod_sync_lock critical sections
-      KVM: x86: disable interrupts while pvclock_gtod_sync_lock is taken
-
-Sean Christopherson (3):
-      KVM: x86/mmu: Ensure TLBs are flushed when yielding during GFN range zap
-      KVM: x86/mmu: Ensure TLBs are flushed for TDP MMU during NX zapping
-      KVM: x86/mmu: Don't allow TDP MMU to yield when recovering NX pages
-
-Siddharth Chandrasekaran (1):
-      KVM: make: Fix out-of-source module builds
-
-Stefan Raspl (1):
-      tools/kvm_stat: Add restart delay
-
-Suzuki K Poulose (2):
-      KVM: arm64: Hide system instruction access to Trace registers
-      KVM: arm64: Disable guest access to trace filter controls
-
-Vitaly Kuznetsov (4):
-      KVM: x86/vPMU: Forbid writing to MSR_F15H_PERF MSRs when guest doesn't have X86_FEATURE_PERFCTR_CORE
-      selftests: kvm: make hardware_disable_test less verbose
-      KVM: x86: Prevent 'hv_clock->system_time' from going negative in kvm_guest_time_update()
-      selftests: kvm: Check that TSC page value is small after KVM_SET_CLOCK(0)
-
- arch/arm64/include/asm/kvm_arm.h                   |  1 +
- arch/arm64/kernel/cpufeature.c                     |  1 -
- arch/arm64/kvm/debug.c                             |  2 +
- arch/arm64/kvm/hyp/vgic-v3-sr.c                    |  9 ++++
- arch/x86/kvm/Makefile                              |  2 +-
- arch/x86/kvm/mmu/mmu.c                             |  9 ++--
- arch/x86/kvm/mmu/tdp_mmu.c                         | 26 +++++-----
- arch/x86/kvm/mmu/tdp_mmu.h                         | 24 ++++++++-
- arch/x86/kvm/svm/nested.c                          | 28 +++++++++--
- arch/x86/kvm/svm/pmu.c                             |  8 +++
- arch/x86/kvm/x86.c                                 | 57 ++++++++++++++--------
- arch/x86/kvm/x86.h                                 |  1 -
- tools/kvm/kvm_stat/kvm_stat.service                |  1 +
- .../testing/selftests/kvm/hardware_disable_test.c  | 10 ++--
- tools/testing/selftests/kvm/x86_64/hyperv_clock.c  | 13 ++++-
- 15 files changed, 139 insertions(+), 53 deletions(-)
-
+--Apple-Mail=_893D95E3-DB07-4148-AC61-E60F3DABEC09--
