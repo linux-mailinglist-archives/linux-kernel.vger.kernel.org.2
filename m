@@ -2,108 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 832B1351C3D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3A11351C40
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238676AbhDASO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:14:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38915 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234791AbhDAR5C (ORCPT
+        id S238967AbhDASPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:15:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236986AbhDAR4m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:57:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617299821;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QIKK3VZ5wPeLTNPPED7wrhhBskYELwzoCKx6AQcmW3w=;
-        b=R18OfuZC/iYvnAXNsAMUia7ihoaWH7JVNX1R3SDFc/RKKbUOV979f3G9xzP2/VQzdkUzlr
-        WSzktbIVjGnK/s+ef0zhXmiPc2m81RGJ3Q+iL7OxZwerPtZqR6QRP1/NuwbCQMqVotsV9n
-        5wT3i9YepOIBOJ3WFzucqZWc2TQ+WoU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-150-p5fM_ziwNSKp583x5rEgPw-1; Thu, 01 Apr 2021 12:56:18 -0400
-X-MC-Unique: p5fM_ziwNSKp583x5rEgPw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2B7541084D77;
-        Thu,  1 Apr 2021 16:56:17 +0000 (UTC)
-Received: from omen (ovpn-112-85.phx2.redhat.com [10.3.112.85])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AF96E18A77;
-        Thu,  1 Apr 2021 16:56:16 +0000 (UTC)
-Date:   Thu, 1 Apr 2021 10:56:16 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ameynarkhede03@gmail.com" <ameynarkhede03@gmail.com>
-Subject: Re: [PATCH] PCI: merge slot and bus reset implementations
-Message-ID: <20210401105616.71156d08@omen>
-In-Reply-To: <YGW8Oe9jn+n9sVsw@unreal>
-References: <20210401053656.16065-1-raphael.norwitz@nutanix.com>
-        <YGW8Oe9jn+n9sVsw@unreal>
+        Thu, 1 Apr 2021 13:56:42 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6333AC031172;
+        Thu,  1 Apr 2021 10:00:27 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id y19-20020a0568301d93b02901b9f88a238eso2685608oti.11;
+        Thu, 01 Apr 2021 10:00:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qrwXsuHqxeca6djxeZsefOCVnSzkGGzt5ErigLswIqs=;
+        b=iDF7jqiaFMeHuQaKARu9stZPSM13OGjexjTnLQuDeTRxizkCrLNQGpGE5AFCdcZVUc
+         dAfG5o0o+R5UfaQDZGTD+pjwDYS07bQsjQleeMIUYTA19jsHtFAD8pXT5xIRmh0yLcrW
+         GzBtnWn69QQx076tlEZWnAKNBXfJu8pSmkDolGuO1OaYhqupcJk/AQ2kd5Otmgrb1lxa
+         u6qKOAOgLt0MtWq4AmVbmeFagwf/ippvhF0mpB2aCblcKA8An2jLHD/JvY9pWBI5TGX+
+         l3IFSrlOZhySm1dP6BLiwzmFJdGEslVwz687zrcaz/DeL6id3k06oyAlNtWv0sBZ8oN+
+         Rlwg==
+X-Gm-Message-State: AOAM531paiKoMrkBWhl4cl1ppCC5O1xlNT/KcAZZtNF9/CxRBYkgFuH1
+        nloMIKvtCcKjm8cqjeAdjA==
+X-Google-Smtp-Source: ABdhPJzH4ytmFQ978P4N4lw84SIT1Gw4I6uSES4ev+O/Jfcklt34kk4k4T/vhX7Py5mfhNguQjie0Q==
+X-Received: by 2002:a05:6830:15cb:: with SMTP id j11mr7560825otr.126.1617296425226;
+        Thu, 01 Apr 2021 10:00:25 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id h20sm1153284oor.8.2021.04.01.10.00.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 10:00:24 -0700 (PDT)
+Received: (nullmailer pid 609353 invoked by uid 1000);
+        Thu, 01 Apr 2021 17:00:22 -0000
+Date:   Thu, 1 Apr 2021 12:00:22 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     peng.fan@oss.nxp.com
+Cc:     shawnguo@kernel.org, festevam@gmail.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        o.rempel@pengutronix.de, robh+dt@kernel.org, kernel@pengutronix.de,
+        mathieu.poirier@linaro.org, Peng Fan <peng.fan@nxp.com>,
+        ohad@wizery.com, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, bjorn.andersson@linaro.org,
+        s.hauer@pengutronix.de
+Subject: Re: [PATCH V2 1/8] dt-bindings: remoteproc: imx_rproc: add fsl,
+ auto-boot property
+Message-ID: <20210401170022.GA609295@robh.at.kernel.org>
+References: <1617095574-6764-1-git-send-email-peng.fan@oss.nxp.com>
+ <1617095574-6764-2-git-send-email-peng.fan@oss.nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1617095574-6764-2-git-send-email-peng.fan@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 1 Apr 2021 15:27:37 +0300
-Leon Romanovsky <leon@kernel.org> wrote:
-
-> On Thu, Apr 01, 2021 at 05:37:16AM +0000, Raphael Norwitz wrote:
-> > Slot resets are bus resets with additional logic to prevent a device
-> > from being removed during the reset. Currently slot and bus resets have
-> > separate implementations in pci.c, complicating higher level logic. As
-> > discussed on the mailing list, they should be combined into a generic
-> > function which performs an SBR. This change adds a function,
-> > pci_reset_bus_function(), which first attempts a slot reset and then
-> > attempts a bus reset if -ENOTTY is returned, such that there is now a
-> > single device agnostic function to perform an SBR.
-> > 
-> > This new function is also needed to add SBR reset quirks and therefore
-> > is exposed in pci.h.
-> > 
-> > Link: https://lkml.org/lkml/2021/3/23/911
-> > 
-> > Suggested-by: Alex Williamson <alex.williamson@redhat.com>
-> > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
-> > Signed-off-by: Raphael Norwitz <raphael.norwitz@nutanix.com>
-> > ---
-> >  drivers/pci/pci.c   | 17 +++++++++--------
-> >  include/linux/pci.h |  1 +
-> >  2 files changed, 10 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> > index 16a17215f633..12a91af2ade4 100644
-> > --- a/drivers/pci/pci.c
-> > +++ b/drivers/pci/pci.c
-> > @@ -4982,6 +4982,13 @@ static int pci_dev_reset_slot_function(struct pci_dev *dev, int probe)
-> >  	return pci_reset_hotplug_slot(dev->slot->hotplug, probe);
-> >  }
-> >  
-> > +int pci_reset_bus_function(struct pci_dev *dev, int probe)
-> > +{
-> > +	int rc = pci_dev_reset_slot_function(dev, probe);
-> > +
-> > +	return (rc == -ENOTTY) ? pci_parent_bus_reset(dev, probe) : rc;  
+On Tue, 30 Mar 2021 17:12:47 +0800, peng.fan@oss.nxp.com wrote:
+> From: Peng Fan <peng.fan@nxp.com>
 > 
-> The previous coding style is preferable one in the Linux kernel.
-> int rc = pci_dev_reset_slot_function(dev, probe);
-> if (rc != -ENOTTY)
->   return rc;
-> return pci_parent_bus_reset(dev, probe);
+> Add an optional property "fsl,auto-boot" to indicate remote processor
+> auto boot.
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  .../devicetree/bindings/remoteproc/fsl,imx-rproc.yaml       | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
 
-
-That'd be news to me, do you have a reference?  I've never seen
-complaints for ternaries previously.  Thanks,
-
-Alex
-
+Acked-by: Rob Herring <robh@kernel.org>
