@@ -2,92 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6C03522B6
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 00:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E89F3522B9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 00:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235635AbhDAWQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 18:16:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234458AbhDAWQb (ORCPT
+        id S235372AbhDAWSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 18:18:25 -0400
+Received: from sibelius.xs4all.nl ([83.163.83.176]:63918 "EHLO
+        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234047AbhDAWSY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 18:16:31 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E777AC0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 15:16:31 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id a12so2424437pfc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 15:16:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :in-reply-to:references;
-        bh=y67WIBj6mBIl1Wp751rFrF2l12F5d/MqUqEWEaYV53g=;
-        b=fx4VPA8okP1oGSngsHs6mosUQnkJAtCA714LP1AnHVisvlJU8j9EPH/uLeUyyUf6nm
-         IDednCvGELB9CILV3BLreT7bkDSWjFVQDLDwOMooydNk4buy+7SHNFDu82K+8gdWCjeK
-         deKseZF5AEhl+6K/LBB9TWtQ4VaPneXHqxTaEQiwig8pohu3jQ6rqeztqd99rLDEVHKv
-         vDmwn22KLVtcg40L/ufqBGNDF/0InCi+IVWlbbt+Y2mE0IBj/iWZ0JyZZFx6E4osSjWf
-         7n69PGzjlHtVcSRjR8LXFGJYNm5Dsw7YQDb2g+TGAyNqwBNc/S9XGaUDsAK1qZwnT/TI
-         bItg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:in-reply-to:references;
-        bh=y67WIBj6mBIl1Wp751rFrF2l12F5d/MqUqEWEaYV53g=;
-        b=HJ1VSMrsPgLIEq4gH/NF+kppjB8D7WTi02mptyZZ0gAH4MPqKdGyx488n85ERIosKx
-         nZ9rHS2yeZN9KbgFitWakf0mXM40ieFZOZ2auG+eeuK7tlXrdT3hCuigroqXwb7nPfbq
-         2jHWbr4AwFQryJAACoK8vl++RSnYfxivtG6NOIKrYDMMt50slIWRNQaRPIXNicgaGFL+
-         RBmheFDP8b18fi6RAu7CBDxa6tqj8GXXI3LcEoDgh/E4YKhlqujqa24LdTJReKcdXFxg
-         xRfDfPOjjDbRxzatsB6fiwzZCJJ3Kf7aG9TCcAaeFmtYVBZUrQi6A3dna3TeEfxZbIdd
-         NYew==
-X-Gm-Message-State: AOAM5327i0fBcTYLWvZdRXJ88fVrs67G/Eok4IVx5qzB/zupV/pXyhng
-        1jMlADdYGcUURGAAoT433gI=
-X-Google-Smtp-Source: ABdhPJy/K6Tbq0lKal/Vqh26SB57XMZpH865zhinWyBVMsuQ7m0t+aQTweKMi6fL4v2ny+wakjb7yw==
-X-Received: by 2002:a62:cd4d:0:b029:216:8c86:bf5c with SMTP id o74-20020a62cd4d0000b02902168c86bf5cmr9173867pfg.27.1617315391559;
-        Thu, 01 Apr 2021 15:16:31 -0700 (PDT)
-Received: from djbComp.hitronhub.home (S0106ac202ecb0523.gv.shawcable.net. [70.67.120.89])
-        by smtp.gmail.com with ESMTPSA id d13sm6671494pgb.6.2021.04.01.15.16.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 15:16:31 -0700 (PDT)
-From:   Deborah Brouwer <deborahbrouwer3563@gmail.com>
-To:     gregkh@linuxfoundation.org, ross.schm.dev@gmail.com,
-        marcocesati@gmail.com, fabioaiuto83@gmail.com,
-        dan.carpenter@oracle.com, phil@philpotter.co.uk,
-        amarjargal16@gmail.com
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com,
-        Deborah Brouwer <deborahbrouwer3563@gmail.com>
-Subject: [PATCH v3 3/3] staging: rtl8723bs: core: remove empty comment
-Date:   Thu,  1 Apr 2021 15:15:42 -0700
-Message-Id: <afe3c8846c555e1852ae1a760b73a19daaf1dc82.1617314121.git.deborahbrouwer3563@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1617314121.git.deborahbrouwer3563@gmail.com>
-References: <cover.1617314121.git.deborahbrouwer3563@gmail.com>
-In-Reply-To: <cover.1617314121.git.deborahbrouwer3563@gmail.com>
-References: <cover.1617314121.git.deborahbrouwer3563@gmail.com>
+        Thu, 1 Apr 2021 18:18:24 -0400
+Received: from localhost (bloch.sibelius.xs4all.nl [local])
+        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 1523916e;
+        Fri, 2 Apr 2021 00:18:21 +0200 (CEST)
+Date:   Fri, 2 Apr 2021 00:18:21 +0200 (CEST)
+From:   Mark Kettenis <mark.kettenis@xs4all.nl>
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     heiko@sntech.de, robh+dt@kernel.org, gregkh@linuxfoundation.org,
+        balbi@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
+In-Reply-To: <20210401213652.14676-1-jbx6244@gmail.com> (message from Johan
+        Jonker on Thu, 1 Apr 2021 23:36:48 +0200)
+Subject: Re: [PATCH v6 0/4] convert rockchip,dwc3.txt to yaml
+References: <20210401213652.14676-1-jbx6244@gmail.com>
+Message-ID: <c1bced42d7388f34@bloch.sibelius.xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove empty comment because it provides no information.
+> From: Johan Jonker <jbx6244@gmail.com>
+> Date: Thu,  1 Apr 2021 23:36:48 +0200
+> 
+> The conversion of rockchip,dwc3.txt to yaml was added to linux-next,
+> but the necessary changes for rk3399 are still pending.
+> 
+> For rk3399 dwc3 usb the wrapper node for only clocks makes no sense,
+> so that was removed in the YAML example.
+> 
+> Now dtbs_check still generates notifications for the compatibility string in
+> the dts files that doesn't match, because it changed from
+> "rockchip,rk3399-dwc3" to "rockchip,rk3399-dwc3", "snps,dwc3".
+> 
+> The problem is to keep compatible with old device trees.
+> I.e. a device running an older device tree should still work with newer
+> kernels.
+> 
+> Comment by Rob in version 3:
+> Presumably you are getting lucky here (with link order). The kernel
+> has no logic to decide which driver to bind to if there are 2 matching
+> drivers. If we did, it would probably be the opposite of what you want
+> here as we'd pick the most specific match. This driver should probably
+> bail probe if no dwc3 child node.
+> 
+> Please advise how to move forward with this serie.
 
-Signed-off-by: Deborah Brouwer <deborahbrouwer3563@gmail.com>
----
- drivers/staging/rtl8723bs/core/rtw_xmit.c | 2 --
- 1 file changed, 2 deletions(-)
+As I tried to point out earlier, this kind of binding change is
+unhelpful.  Yes, you now have extra code in future Linux kernels that
+works around the problem.  But other consumers of device trees
+(U-Boot, other OSes) will have to add similar code or keep using older
+device trees.  And even then it will still cause frustration for users
+that want to run older kernels.
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_xmit.c b/drivers/staging/rtl8723bs/core/rtw_xmit.c
-index 428c71ce0334..7b4c0f22cd90 100644
---- a/drivers/staging/rtl8723bs/core/rtw_xmit.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_xmit.c
-@@ -876,8 +876,6 @@ static s32 xmitframe_addmic(struct adapter *padapter, struct xmit_frame *pxmitfr
- 					*(payload+curfragnum), *(payload+curfragnum+1), *(payload+curfragnum+2), *(payload+curfragnum+3),
- 					*(payload+curfragnum+4), *(payload+curfragnum+5), *(payload+curfragnum+6), *(payload+curfragnum+7)));
- 			}
--/*
--*/
- 	}
- 	return _SUCCESS;
- }
--- 
-2.17.1
+I do understand that it is sometimes necessary to change device tree
+bindings.  But changes like this one just cause a lot of pain without
+a significant technical benefit.
 
+Cheers,
+
+Mark
+
+
+> Changed V6:
+>   rebase
+>   remove accepted patches from serie
+> 
+> Changed V5:
+>   add select
+> 
+> Changed V4:
+>   removed patch "of-simple: add compatible for rk3328"
+>   add patch "of-simple: bail probe if no dwc3 child node"
+> 
+> Changed V3:
+>   remove aclk_usb3_rksoc_axi_perf
+>   remove aclk_usb3
+> 
+> Changed V2:
+>   remove node wrapper
+> 
+> Johan Jonker (3):
+>   usb: dwc3: of-simple: bail probe if no dwc3 child node
+>   arm64: dts: rockchip: restyle rk3399 usbdrd3_0 node
+>   arm64: dts: rockchip: restyle rk3399 usbdrd3_1 node
+> 
+> Wu Liang feng (1):
+>   arm64: dts: rockchip: optimize clks for rk3399 dwc3
+> 
+>  arch/arm64/boot/dts/rockchip/rk3399-ficus.dts      |  4 +-
+>  arch/arm64/boot/dts/rockchip/rk3399-firefly.dts    | 12 +--
+>  .../boot/dts/rockchip/rk3399-gru-chromebook.dtsi   |  6 +-
+>  arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi       |  6 +-
+>  arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts | 12 +--
+>  .../boot/dts/rockchip/rk3399-khadas-edge.dtsi      | 12 +--
+>  arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts  | 12 +--
+>  arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts |  2 +-
+>  arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi   |  8 --
+>  arch/arm64/boot/dts/rockchip/rk3399-orangepi.dts   | 12 +--
+>  .../boot/dts/rockchip/rk3399-pinebook-pro.dts      |  8 --
+>  .../arm64/boot/dts/rockchip/rk3399-puma-haikou.dts |  4 -
+>  arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi      |  6 +-
+>  arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi    | 10 +--
+>  arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi | 12 +--
+>  arch/arm64/boot/dts/rockchip/rk3399-rock960.dts    |  4 +-
+>  arch/arm64/boot/dts/rockchip/rk3399-rock960.dtsi   |  8 --
+>  arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi | 12 +--
+>  arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi  | 12 +--
+>  arch/arm64/boot/dts/rockchip/rk3399.dtsi           | 86 ++++++++--------------
+>  .../boot/dts/rockchip/rk3399pro-vmarc-som.dtsi     |  4 -
+>  drivers/usb/dwc3/dwc3-of-simple.c                  |  4 +
+>  22 files changed, 59 insertions(+), 197 deletions(-)
+> 
+> -- 
+> 2.11.0
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
