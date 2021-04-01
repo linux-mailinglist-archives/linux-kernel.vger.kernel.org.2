@@ -2,96 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C327F350B86
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 03:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 254F7350BBD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 03:11:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbhDABI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 21:08:56 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:55579 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230073AbhDABIR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 21:08:17 -0400
-Received: by mail-il1-f199.google.com with SMTP id x15so2757031ilg.22
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 18:08:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=HhXZSdtRdZONG6W//ZnC0o+E0uXZyzIdW05SEDejhRI=;
-        b=kmFD2eWoeui6mzzfpyEEvyQHoPeKrXrpAje3+sLDxRHwVYRtCuTuhv2qJodpupRlcz
-         SNj2XC5MVB7KFufLYueHiHY/iIHWYkQ6Ay6aorvIhegvtpw9yV9GmWDPtm/wAwmdpGrz
-         Wt8ADBsN5euDHjmLsUnRQj3b+OUOsDcx4TF1ahACPrnWpC0v9dcVb8wDgL6WjPD/JsaF
-         9zUxkX4OgEFNHqCypb6GJRCnUPbq5D8E5CkWH8XLr+RfaKeTlAXTsMOKFmE+Vilu19mt
-         VU2rhVdDGF33o4wWYCaM5jfRhX7kErebiDrAeCiSRLXRhbBqVtd4lnSFdZ2qeGfjaTWk
-         mB8A==
-X-Gm-Message-State: AOAM5328BBTROSHPJ5iYVPYRLccZqpLt1zNmZlgj3IXUoPw5vXuVA8dB
-        Rn0WVE2CewqYErXVGy3SXGpz1C7zfv7toHyyHS8e1V+Qtdex
-X-Google-Smtp-Source: ABdhPJxRG2A1XbTYVHAQer5B/AXXuXwpzcTQx1FSnrCnLb4+x+o7eoZfn1yC5fbJYF3rbpC7Co0C7bW0E1x7QM8/fB+BYzDMfYxn
+        id S233055AbhDABKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 21:10:35 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:37064 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233002AbhDABKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 21:10:08 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1lRlqG-0007Ju-0n; Thu, 01 Apr 2021 12:09:49 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 01 Apr 2021 12:09:47 +1100
+Date:   Thu, 1 Apr 2021 12:09:47 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Varad Gautam <varad.gautam@suse.com>
+Cc:     linux-crypto@vger.kernel.org, David Howells <dhowells@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Vitaly Chikunov <vt@altlinux.org>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 01/18] X.509: Parse RSASSA-PSS style certificates
+Message-ID: <20210401010947.GA4349@gondor.apana.org.au>
+References: <20210330202829.4825-1-varad.gautam@suse.com>
+ <20210330202829.4825-2-varad.gautam@suse.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c90c:: with SMTP id t12mr79501ilp.248.1617239296423;
- Wed, 31 Mar 2021 18:08:16 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 18:08:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c7bbd305bededd29@google.com>
-Subject: [syzbot] memory leak in bpf (2)
-From:   syzbot <syzbot+5d895828587f49e7fe9b@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210330202829.4825-2-varad.gautam@suse.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Mar 30, 2021 at 10:28:12PM +0200, Varad Gautam wrote:
+> An X.509 wrapper for a RSASSA-PSS signature contains additional
+> signature parameters over the PKCSv.15 encoding scheme. Extend the
+> x509 parser to allow parsing RSASSA-PSS encoded certificates, with
+> the defaults taken from RFC8017.
 
-syzbot found the following issue on:
+Where is the cover letter for this series?
 
-HEAD commit:    0f4498ce Merge tag 'for-5.12/dm-fixes-2' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1250e126d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=49f2683f4e7a4347
-dashboard link: https://syzkaller.appspot.com/bug?extid=5d895828587f49e7fe9b
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10a17016d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10a32016d00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5d895828587f49e7fe9b@syzkaller.appspotmail.com
-
-Warning: Permanently added '10.128.0.74' (ECDSA) to the list of known hosts.
-executing program
-executing program
-BUG: memory leak
-unreferenced object 0xffff8881133295c0 (size 64):
-  comm "syz-executor529", pid 8395, jiffies 4294943939 (age 8.130s)
-  hex dump (first 32 bytes):
-    40 48 3c 04 00 ea ff ff 00 48 3c 04 00 ea ff ff  @H<......H<.....
-    c0 e7 3c 04 00 ea ff ff 80 e7 3c 04 00 ea ff ff  ..<.......<.....
-  backtrace:
-    [<ffffffff8139511c>] kmalloc_node include/linux/slab.h:577 [inline]
-    [<ffffffff8139511c>] __bpf_map_area_alloc+0xfc/0x120 kernel/bpf/syscall.c:300
-    [<ffffffff813d2414>] bpf_ringbuf_area_alloc kernel/bpf/ringbuf.c:90 [inline]
-    [<ffffffff813d2414>] bpf_ringbuf_alloc kernel/bpf/ringbuf.c:131 [inline]
-    [<ffffffff813d2414>] ringbuf_map_alloc kernel/bpf/ringbuf.c:170 [inline]
-    [<ffffffff813d2414>] ringbuf_map_alloc+0x134/0x350 kernel/bpf/ringbuf.c:146
-    [<ffffffff8139c8d3>] find_and_alloc_map kernel/bpf/syscall.c:122 [inline]
-    [<ffffffff8139c8d3>] map_create kernel/bpf/syscall.c:828 [inline]
-    [<ffffffff8139c8d3>] __do_sys_bpf+0x7c3/0x2fe0 kernel/bpf/syscall.c:4375
-    [<ffffffff842df20d>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
