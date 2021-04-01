@@ -2,103 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD26350B76
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 02:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C327F350B86
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 03:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232930AbhDAA6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 20:58:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232927AbhDAA5t (ORCPT
+        id S229812AbhDABI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 21:08:56 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:55579 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230073AbhDABIR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 20:57:49 -0400
-Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53123C061574;
-        Wed, 31 Mar 2021 17:57:49 -0700 (PDT)
-Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20::7c6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 3B062ADE;
-        Wed, 31 Mar 2021 17:57:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1617238669;
-        bh=VeSdxtND3tSvk8Zkgif2XWXT/Is3+dLyTKL7yc7Qvoc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qw0d/+b7JOOOzLuE0outZCZECFMgfxfVMs0LradvxSyvSqCYckRGnvUOytFASHby/
-         nvFgoetdI4403Wy/K+GX26I48WvL7XsyEeMTRwGdzn23gHUEQkepDyi28Oc/cxXZev
-         Wv5fooTglZjs1VKGHJbGL3pTqaRMuSbkpFNFuSyE=
-From:   Zev Weiss <zev@bewilderbeest.net>
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Zev Weiss <zev@bewilderbeest.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        - <devicetree@vger.kernel.org>, linux-serial@vger.kernel.org
-Subject: [PATCH v2 3/3] dt-bindings: serial: 8250: add aspeed,sirq-active-high
-Date:   Wed, 31 Mar 2021 19:57:02 -0500
-Message-Id: <20210401005702.28271-4-zev@bewilderbeest.net>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210401005702.28271-1-zev@bewilderbeest.net>
-References: <YGOuhjD19SmjmQou@hatter.bewilderbeest.net>
- <20210401005702.28271-1-zev@bewilderbeest.net>
+        Wed, 31 Mar 2021 21:08:17 -0400
+Received: by mail-il1-f199.google.com with SMTP id x15so2757031ilg.22
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 18:08:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=HhXZSdtRdZONG6W//ZnC0o+E0uXZyzIdW05SEDejhRI=;
+        b=kmFD2eWoeui6mzzfpyEEvyQHoPeKrXrpAje3+sLDxRHwVYRtCuTuhv2qJodpupRlcz
+         SNj2XC5MVB7KFufLYueHiHY/iIHWYkQ6Ay6aorvIhegvtpw9yV9GmWDPtm/wAwmdpGrz
+         Wt8ADBsN5euDHjmLsUnRQj3b+OUOsDcx4TF1ahACPrnWpC0v9dcVb8wDgL6WjPD/JsaF
+         9zUxkX4OgEFNHqCypb6GJRCnUPbq5D8E5CkWH8XLr+RfaKeTlAXTsMOKFmE+Vilu19mt
+         VU2rhVdDGF33o4wWYCaM5jfRhX7kErebiDrAeCiSRLXRhbBqVtd4lnSFdZ2qeGfjaTWk
+         mB8A==
+X-Gm-Message-State: AOAM5328BBTROSHPJ5iYVPYRLccZqpLt1zNmZlgj3IXUoPw5vXuVA8dB
+        Rn0WVE2CewqYErXVGy3SXGpz1C7zfv7toHyyHS8e1V+Qtdex
+X-Google-Smtp-Source: ABdhPJxRG2A1XbTYVHAQer5B/AXXuXwpzcTQx1FSnrCnLb4+x+o7eoZfn1yC5fbJYF3rbpC7Co0C7bW0E1x7QM8/fB+BYzDMfYxn
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:c90c:: with SMTP id t12mr79501ilp.248.1617239296423;
+ Wed, 31 Mar 2021 18:08:16 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 18:08:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c7bbd305bededd29@google.com>
+Subject: [syzbot] memory leak in bpf (2)
+From:   syzbot <syzbot+5d895828587f49e7fe9b@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This provides a simpler, more direct alternative to the deprecated
-aspeed,sirq-polarity-sense property for indicating the polarity of
-the Aspeed VUART's SIRQ line.
+Hello,
 
-Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+syzbot found the following issue on:
+
+HEAD commit:    0f4498ce Merge tag 'for-5.12/dm-fixes-2' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1250e126d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=49f2683f4e7a4347
+dashboard link: https://syzkaller.appspot.com/bug?extid=5d895828587f49e7fe9b
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10a17016d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10a32016d00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+5d895828587f49e7fe9b@syzkaller.appspotmail.com
+
+Warning: Permanently added '10.128.0.74' (ECDSA) to the list of known hosts.
+executing program
+executing program
+BUG: memory leak
+unreferenced object 0xffff8881133295c0 (size 64):
+  comm "syz-executor529", pid 8395, jiffies 4294943939 (age 8.130s)
+  hex dump (first 32 bytes):
+    40 48 3c 04 00 ea ff ff 00 48 3c 04 00 ea ff ff  @H<......H<.....
+    c0 e7 3c 04 00 ea ff ff 80 e7 3c 04 00 ea ff ff  ..<.......<.....
+  backtrace:
+    [<ffffffff8139511c>] kmalloc_node include/linux/slab.h:577 [inline]
+    [<ffffffff8139511c>] __bpf_map_area_alloc+0xfc/0x120 kernel/bpf/syscall.c:300
+    [<ffffffff813d2414>] bpf_ringbuf_area_alloc kernel/bpf/ringbuf.c:90 [inline]
+    [<ffffffff813d2414>] bpf_ringbuf_alloc kernel/bpf/ringbuf.c:131 [inline]
+    [<ffffffff813d2414>] ringbuf_map_alloc kernel/bpf/ringbuf.c:170 [inline]
+    [<ffffffff813d2414>] ringbuf_map_alloc+0x134/0x350 kernel/bpf/ringbuf.c:146
+    [<ffffffff8139c8d3>] find_and_alloc_map kernel/bpf/syscall.c:122 [inline]
+    [<ffffffff8139c8d3>] map_create kernel/bpf/syscall.c:828 [inline]
+    [<ffffffff8139c8d3>] __do_sys_bpf+0x7c3/0x2fe0 kernel/bpf/syscall.c:4375
+    [<ffffffff842df20d>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+
+
 ---
- Documentation/devicetree/bindings/serial/8250.yaml | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/Documentation/devicetree/bindings/serial/8250.yaml b/Documentation/devicetree/bindings/serial/8250.yaml
-index 491b9297432d..e79bb6ab9d2c 100644
---- a/Documentation/devicetree/bindings/serial/8250.yaml
-+++ b/Documentation/devicetree/bindings/serial/8250.yaml
-@@ -12,8 +12,9 @@ maintainers:
- allOf:
-   - $ref: /schemas/serial.yaml#
-   - if:
--      required:
--        - aspeed,sirq-polarity-sense
-+      anyOf:
-+        - required: [ aspeed,sirq-active-high ]
-+        - required: [ aspeed,sirq-polarity-sense ]
-     then:
-       properties:
-         compatible:
-@@ -190,6 +191,12 @@ properties:
-       applicable to aspeed,ast2500-vuart.
-     deprecated: true
- 
-+  aspeed,sirq-active-high:
-+    type: boolean
-+    description: |
-+      Set to indicate that the SIRQ polarity is active-high (default
-+      is active-low).  Only applicable to aspeed,ast2500-vuart.
-+
- required:
-   - reg
-   - interrupts
-@@ -228,7 +235,7 @@ examples:
-         interrupts = <8>;
-         clocks = <&syscon ASPEED_CLK_APB>;
-         no-loopback-test;
--        aspeed,sirq-polarity-sense = <&syscon 0x70 25>;
-+        aspeed,sirq-active-high;
-     };
- 
- ...
--- 
-2.31.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
