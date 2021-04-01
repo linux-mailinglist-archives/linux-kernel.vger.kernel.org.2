@@ -2,79 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3E1351F87
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF1C351F8A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 21:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234802AbhDATVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 15:21:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51388 "EHLO
+        id S234875AbhDATVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 15:21:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234569AbhDATVE (ORCPT
+        with ESMTP id S233985AbhDATVH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 15:21:04 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48E39C06178A;
-        Thu,  1 Apr 2021 11:15:15 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id f17so1445033plr.0;
-        Thu, 01 Apr 2021 11:15:15 -0700 (PDT)
+        Thu, 1 Apr 2021 15:21:07 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD3CBC0610E0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 11:17:48 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id m8so3588190qtp.14
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 11:17:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fCN7HFcnvMpvphnepoCBtJplYkwECQXR2iZTdliGiTg=;
-        b=dchZIDlXtJvfkwTLzGyyTve5opr2+bltojKqDNPOcF3IJah1ARE+lv/AfJNEYHb/TV
-         X8l/y3PNjPzZn1ybq4INWmCQ5Jsi0zNqPyXruuFXDm9l3XVQ6HJx2rKc3r8kmX/Lshk4
-         WYHPFuWfsI60CZQ1749BHQdDkUz8EWZMs+7J/IViwV3xaOa1gtOtMOCffQf8vSYN9qBc
-         2LIrHnWB6srdpRIbHBuVCFEsqFW6O/cl6vdrRdSYhZbKHzsnWf0QimI0vTvty7gSty+C
-         ofIXArAXVbH6xCJofuvId4hFanWuN4A+0qZW/8hZ4Q5TARRI3A1rCsCM5o9xGYspGPPf
-         3dUw==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=LPFWmJy1CR1Tecu95yi/uuh4QosZ2hRzRB/6uLDr3pg=;
+        b=U/hIVzen7h5iBYCTINhsdvlCIxT9bQoEkiUuVj6wyA3f3yFx7A9gdg0qKC8Z+EfrFV
+         O5YF45bNSQgokePzuLdTj89hb7rRyPSXG/OXOtZbf23vNx4W9KLI3368F0b9XRoXvM9A
+         2iISQ9Ss1tzF0OOqnCYY6G3Jgbj4fQZlmW7HHx2lmCViU4QkSJmxeivTAstXqOUK2+Wj
+         mBoTrjGW218GT90ckbb1GaRsqs0WrKUiCch7pg78HAUqiV2CF5USWTfwz0YjYLhJXu+I
+         odTxDIWm3pgKH/RnZW0gXxqfJzvJiktdKyuUQa3sc1MGzuKp9My+LPOvtJVfX7RcwT6R
+         kNGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fCN7HFcnvMpvphnepoCBtJplYkwECQXR2iZTdliGiTg=;
-        b=P1yiZDJrDoUDkfevG4K7qLLmec6vZMoRUp+lRS16dBHSf2XioS63Cge8SzTKpeOb2J
-         RxDoAOJZKGKgQn8S1ocvTEYgDO1a8XIDZX69UjH6D5O39BSOa/MrFE+K/zPcs0f+OFN6
-         A/HL2qmoxd3qKcU10Kv2pCQ3e2SSjAtz+ODIeTepzGbsZd+4d2cGBUI+F0uTTY8Ci+wJ
-         hBm7ZYtTaT1pnca+Fr3BL5e4LIVtgK9exI4Fi9/VlkDaDCsFyrB7kda0XFcUYucBpJbr
-         ywrsX6Rs5J+TLt+n1ZGu6Jk7d1QSgBAgsMRU/c+uuFJJIjO0ezp7eB2b1b7T8q4yqQDd
-         XPGg==
-X-Gm-Message-State: AOAM533XsKwEX2IdejhYi1LapdPApZXvkO1UhZyFm67J8BibWKj8zeN3
-        pUNziG+YSIo4yYeue4wPJq1NX/LgJkvBEty6x08NtwF1
-X-Google-Smtp-Source: ABdhPJwBYzTyRNc5CtDOYzz/PZZSIIocniBSGHjSb4F+WJEtDwFrRCi+7tXiHbjIobJvsh8lGp1yHXUy8nGzsKNPlxg=
-X-Received: by 2002:a17:902:8f8d:b029:e7:4a2f:1950 with SMTP id
- z13-20020a1709028f8db02900e74a2f1950mr8884582plo.77.1617300914858; Thu, 01
- Apr 2021 11:15:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210328221205.726511-1-xie.he.0141@gmail.com>
- <CAJht_EMVAV1eyredF+VEF=hxTTMVRMx+89XdpVAWpD5Lq1Y9Tw@mail.gmail.com> <21ec9eafa230f2e20dd88d31fd95faa0@dev.tdt.de>
-In-Reply-To: <21ec9eafa230f2e20dd88d31fd95faa0@dev.tdt.de>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Thu, 1 Apr 2021 11:15:04 -0700
-Message-ID: <CAJht_EMpRd8KhLQLZeDOVrhi2KHi5aLUkDknv=Ujw6MniesRHg@mail.gmail.com>
-Subject: Re: [PATCH net-next v4] net: x25: Queue received packets in the
- drivers instead of per-CPU queues
-To:     Martin Schiller <ms@dev.tdt.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Krzysztof Halasa <khc@pm.waw.pl>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=LPFWmJy1CR1Tecu95yi/uuh4QosZ2hRzRB/6uLDr3pg=;
+        b=BAkJyNVN25MlNXhyvE8QTapD26SLy+FaonVog4UJ7V8tvhHsP44ut2M60N2zoNBCST
+         uFZCSNXNdh4D/3ZevpwOJFIvmwPU7tmTEIbYDto41lSkzSC6OwVjqHNFODjbdK/UZ6xF
+         m3C706fymffEjH1bdqrvdoCBgfRQkpRzAyeUnvKY99o4iL1BsAm8vlz3rSHy2cidWj1n
+         NGcsgFRx76pjofsdPugb0gYckSijXGmxZH9UwFxleoP3I8MLtJx/rhlJOHuwbulSfuOn
+         rQbwaj0nZcjUmK0Z8CDN6UJUx+i7BxY+kbSrDnPFYPaxmXPoU+5VTKQ3ZjbUv0cErOPq
+         1HnQ==
+X-Gm-Message-State: AOAM530Ye/OW16oUxIaZX704+a+fIeULycwtZMyDrZdhYgNlmLNo8Pgk
+        OTL2uOybpZqatJgdpF7LGaeIAXB6pgc=
+X-Google-Smtp-Source: ABdhPJw3F1KX4e2DJnP33lAQeo4/gq99iK78UX7Xwlo3sqgnSKgk2nmVQXajUO34F3V/0QA2K1uBVmt5inQ=
+X-Received: from surenb1.mtv.corp.google.com ([2620:15c:211:200:899:1066:21fc:b3c5])
+ (user=surenb job=sendgmr) by 2002:a0c:cb0c:: with SMTP id o12mr9357867qvk.54.1617301067902;
+ Thu, 01 Apr 2021 11:17:47 -0700 (PDT)
+Date:   Thu,  1 Apr 2021 11:17:36 -0700
+Message-Id: <20210401181741.168763-1-surenb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+Subject: [PATCH 0/5] 4.14 backports of fixes for "CoW after fork() issue"
+From:   Suren Baghdasaryan <surenb@google.com>
+To:     stable@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org, jannh@google.com, ktkhai@virtuozzo.com,
+        torvalds@linux-foundation.org, shli@fb.com, namit@vmware.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, Suren Baghdasaryan <surenb@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 3:06 AM Martin Schiller <ms@dev.tdt.de> wrote:
->
-> Hi!
->
-> Sorry for my late answer.
-> Can you please also fix this line length warning?
-> https://patchwork.hopto.org/static/nipa/442445/12117801/checkpatch/stdout
+We received a report that the copy-on-write issue repored by Jann Horn in
+https://bugs.chromium.org/p/project-zero/issues/detail?id=2045 is still
+reproducible on 4.14 and 4.19 kernels (the first issue with the reproducer
+coded in vmsplice.c). I confirmed this and also that the issue was not
+reproducible with 5.10 kernel. I tracked the fix to the following patch
+introduced in 5.9 which changes the do_wp_page() logic:
 
-OK! Sure! I'll fix the line length warning and resubmit.
+09854ba94c6a 'mm: do_wp_page() simplification'
 
-Thanks!
+I backported this patch (#2 in the series) along with 2 prerequisite patches
+(#1 and #4) that keep the backports clean and two followup fixes to the main
+patch (#3 and #5). I had to skip the following fix:
+
+feb889fb40fa 'mm: don't put pinned pages into the swap cache'
+
+because it uses page_maybe_dma_pinned() which does not exists in earlier
+kernels. Because pin_user_pages() does not exist there as well, I *think*
+we can safely skip this fix on older kernels, but I would appreciate if
+someone could confirm that claim.
+
+The patchset cleanly applies over: stable linux-4.14.y, tag: v4.14.228
+
+Note: 4.14 and 4.19 backports are very similar, so while I backported
+only to these two versions I think backports for other versions can be
+done easily.
+
+Kirill Tkhai (1):
+  mm: reuse only-pte-mapped KSM page in do_wp_page()
+
+Linus Torvalds (2):
+  mm: do_wp_page() simplification
+  mm: fix misplaced unlock_page in do_wp_page()
+
+Nadav Amit (1):
+  mm/userfaultfd: fix memory corruption due to writeprotect
+
+Shaohua Li (1):
+  userfaultfd: wp: add helper for writeprotect check
+
+ include/linux/ksm.h           |  7 ++++
+ include/linux/userfaultfd_k.h | 10 ++++++
+ mm/ksm.c                      | 30 ++++++++++++++++--
+ mm/memory.c                   | 60 ++++++++++++++++-------------------
+ 4 files changed, 73 insertions(+), 34 deletions(-)
+
+-- 
+2.31.0.291.g576ba9dcdaf-goog
+
