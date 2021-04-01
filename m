@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65DA03521CC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:43:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2CA43521D0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235229AbhDAVnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 17:43:12 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:50488 "EHLO
+        id S235600AbhDAVnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 17:43:18 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:57200 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234026AbhDAVnJ (ORCPT
+        by vger.kernel.org with ESMTP id S234991AbhDAVnK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 17:43:09 -0400
+        Thu, 1 Apr 2021 17:43:10 -0400
 Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 131LQvlC008113
-        for <linux-kernel@vger.kernel.org>; Thu, 1 Apr 2021 14:43:08 -0700
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 131LQvlG008113
+        for <linux-kernel@vger.kernel.org>; Thu, 1 Apr 2021 14:43:09 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=9dh7amTc+an0u2dpKOhh//MRpTHrYPPGwQYtxlH4t8k=;
- b=AUR4drg+EeZTZVKT4qAVfvSjJkZeHg4pJMfxdhtpDMkd3mUCdc135VHYa6WeINAVal7f
- 3tC9Eq4i60GUTvsoBmPFp+qO5Q9Y7VignUi7rU2INOUO0p1iNSmihZ0lCy5qKFPgpAT0
- Cx7T9G4efZpfiOcBq1bem6zCa5RIZu7/3dM= 
+ bh=sKzBbS8jtSr0P6dHZUW8vodBCXJ3njqP2lxws3LcGCU=;
+ b=PCUEbVtuC5GRY77C82mJ4SPghD0GSpVhNpr3SsBfxQxNroY32sTPGFX7zXJ9LIVfedid
+ /A0+NoPZinVJid9KIBPOZqqNUCU8dGyHGwm9JqR6Wmik578Dn3lekgEbfDF/4ifnr+Jo
+ nRoVPkA02mYz6jytDk5tkCa5wNvEWaz9G84= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 37n29negp1-4
+        by m0001303.ppops.net with ESMTP id 37n29negp1-8
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 14:43:08 -0700
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 14:43:09 -0700
 Received: from intmgw003.48.prn1.facebook.com (2620:10d:c0a8:1b::d) by
  mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2176.2; Thu, 1 Apr 2021 14:43:07 -0700
 Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
-        id 3F10B5C2F8E7; Thu,  1 Apr 2021 14:43:04 -0700 (PDT)
+        id 44A325C2F8E9; Thu,  1 Apr 2021 14:43:04 -0700 (PDT)
 From:   Roman Gushchin <guro@fb.com>
 To:     Dennis Zhou <dennis@kernel.org>
 CC:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
         Roman Gushchin <guro@fb.com>
-Subject: [PATCH v1 1/5] percpu: split __pcpu_balance_workfn()
-Date:   Thu, 1 Apr 2021 14:42:57 -0700
-Message-ID: <20210401214301.1689099-2-guro@fb.com>
+Subject: [PATCH v1 2/5] percpu: make pcpu_nr_empty_pop_pages per chunk type
+Date:   Thu, 1 Apr 2021 14:42:58 -0700
+Message-ID: <20210401214301.1689099-3-guro@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210401214301.1689099-1-guro@fb.com>
 References: <20210401214301.1689099-1-guro@fb.com>
@@ -48,8 +48,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: IhdeRE8QyqRZvQ4b2ajiD5GifT5HB_fC
-X-Proofpoint-ORIG-GUID: IhdeRE8QyqRZvQ4b2ajiD5GifT5HB_fC
+X-Proofpoint-GUID: NA-3dbs4UgpoiAA4PyCFMrl7xZdM5svi
+X-Proofpoint-ORIG-GUID: NA-3dbs4UgpoiAA4PyCFMrl7xZdM5svi
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
  definitions=2021-04-01_13:2021-04-01,2021-04-01 signatures=0
 X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
@@ -62,131 +62,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__pcpu_balance_workfn() became fairly big and hard to follow, but in
-fact it consists of two fully independent parts, responsible for
-the destruction of excessive free chunks and population of necessarily
-amount of free pages.
+nr_empty_pop_pages is used to guarantee that there are some free
+populated pages to satisfy atomic allocations. Accounted and
+non-accounted allocations are using separate sets of chunks,
+so both need to have a surplus of empty pages.
 
-In order to simplify the code and prepare for adding of a new
-functionality, split it in two functions:
-
-  1) pcpu_balance_free,
-  2) pcpu_balance_populated.
-
-Move the taking/releasing of the pcpu_alloc_mutex to an upper level
-to keep the current synchronization in place.
+This commit makes pcpu_nr_empty_pop_pages and the corresponding logic
+per chunk type.
 
 Signed-off-by: Roman Gushchin <guro@fb.com>
-Reviewed-by: Dennis Zhou <dennis@kernel.org>
 ---
- mm/percpu.c | 46 +++++++++++++++++++++++++++++-----------------
- 1 file changed, 29 insertions(+), 17 deletions(-)
+ mm/percpu-internal.h |  2 +-
+ mm/percpu-stats.c    |  9 +++++++--
+ mm/percpu.c          | 14 +++++++-------
+ 3 files changed, 15 insertions(+), 10 deletions(-)
 
+diff --git a/mm/percpu-internal.h b/mm/percpu-internal.h
+index 18b768ac7dca..095d7eaa0db4 100644
+--- a/mm/percpu-internal.h
++++ b/mm/percpu-internal.h
+@@ -87,7 +87,7 @@ extern spinlock_t pcpu_lock;
+=20
+ extern struct list_head *pcpu_chunk_lists;
+ extern int pcpu_nr_slots;
+-extern int pcpu_nr_empty_pop_pages;
++extern int pcpu_nr_empty_pop_pages[];
+=20
+ extern struct pcpu_chunk *pcpu_first_chunk;
+ extern struct pcpu_chunk *pcpu_reserved_chunk;
+diff --git a/mm/percpu-stats.c b/mm/percpu-stats.c
+index c8400a2adbc2..f6026dbcdf6b 100644
+--- a/mm/percpu-stats.c
++++ b/mm/percpu-stats.c
+@@ -145,6 +145,7 @@ static int percpu_stats_show(struct seq_file *m, void=
+ *v)
+ 	int slot, max_nr_alloc;
+ 	int *buffer;
+ 	enum pcpu_chunk_type type;
++	int nr_empty_pop_pages;
+=20
+ alloc_buffer:
+ 	spin_lock_irq(&pcpu_lock);
+@@ -165,7 +166,11 @@ static int percpu_stats_show(struct seq_file *m, voi=
+d *v)
+ 		goto alloc_buffer;
+ 	}
+=20
+-#define PL(X) \
++	nr_empty_pop_pages =3D 0;
++	for (type =3D 0; type < PCPU_NR_CHUNK_TYPES; type++)
++		nr_empty_pop_pages +=3D pcpu_nr_empty_pop_pages[type];
++
++#define PL(X)								\
+ 	seq_printf(m, "  %-20s: %12lld\n", #X, (long long int)pcpu_stats_ai.X)
+=20
+ 	seq_printf(m,
+@@ -196,7 +201,7 @@ static int percpu_stats_show(struct seq_file *m, void=
+ *v)
+ 	PU(nr_max_chunks);
+ 	PU(min_alloc_size);
+ 	PU(max_alloc_size);
+-	P("empty_pop_pages", pcpu_nr_empty_pop_pages);
++	P("empty_pop_pages", nr_empty_pop_pages);
+ 	seq_putc(m, '\n');
+=20
+ #undef PU
 diff --git a/mm/percpu.c b/mm/percpu.c
-index 6596a0a4286e..5b505a459028 100644
+index 5b505a459028..0eeeb4e7a2f9 100644
 --- a/mm/percpu.c
 +++ b/mm/percpu.c
-@@ -1930,31 +1930,22 @@ void __percpu *__alloc_reserved_percpu(size_t siz=
-e, size_t align)
+@@ -173,10 +173,10 @@ struct list_head *pcpu_chunk_lists __ro_after_init;=
+ /* chunk list slots */
+ static LIST_HEAD(pcpu_map_extend_chunks);
+=20
+ /*
+- * The number of empty populated pages, protected by pcpu_lock.  The
+- * reserved chunk doesn't contribute to the count.
++ * The number of empty populated pages by chunk type, protected by pcpu_=
+lock.
++ * The reserved chunk doesn't contribute to the count.
+  */
+-int pcpu_nr_empty_pop_pages;
++int pcpu_nr_empty_pop_pages[PCPU_NR_CHUNK_TYPES];
+=20
+ /*
+  * The number of populated pages in use by the allocator, protected by
+@@ -556,7 +556,7 @@ static inline void pcpu_update_empty_pages(struct pcp=
+u_chunk *chunk, int nr)
+ {
+ 	chunk->nr_empty_pop_pages +=3D nr;
+ 	if (chunk !=3D pcpu_reserved_chunk)
+-		pcpu_nr_empty_pop_pages +=3D nr;
++		pcpu_nr_empty_pop_pages[pcpu_chunk_type(chunk)] +=3D nr;
  }
 =20
- /**
-- * __pcpu_balance_workfn - manage the amount of free chunks and populate=
-d pages
-+ * pcpu_balance_free - manage the amount of free chunks
-  * @type: chunk type
-  *
-- * Reclaim all fully free chunks except for the first one.  This is also
-- * responsible for maintaining the pool of empty populated pages.  Howev=
-er,
-- * it is possible that this is called when physical memory is scarce cau=
-sing
-- * OOM killer to be triggered.  We should avoid doing so until an actual
-- * allocation causes the failure as it is possible that requests can be
-- * serviced from already backed regions.
-+ * Reclaim all fully free chunks except for the first one.
-  */
--static void __pcpu_balance_workfn(enum pcpu_chunk_type type)
-+static void pcpu_balance_free(enum pcpu_chunk_type type)
- {
--	/* gfp flags passed to underlying allocators */
--	const gfp_t gfp =3D GFP_KERNEL | __GFP_NORETRY | __GFP_NOWARN;
- 	LIST_HEAD(to_free);
- 	struct list_head *pcpu_slot =3D pcpu_chunk_list(type);
- 	struct list_head *free_head =3D &pcpu_slot[pcpu_nr_slots - 1];
- 	struct pcpu_chunk *chunk, *next;
--	int slot, nr_to_pop, ret;
+ /*
+@@ -1832,7 +1832,7 @@ static void __percpu *pcpu_alloc(size_t size, size_=
+t align, bool reserved,
+ 		mutex_unlock(&pcpu_alloc_mutex);
+ 	}
 =20
- 	/*
- 	 * There's no reason to keep around multiple unused chunks and VM
- 	 * areas can be scarce.  Destroy all free chunks except for one.
- 	 */
--	mutex_lock(&pcpu_alloc_mutex);
- 	spin_lock_irq(&pcpu_lock);
+-	if (pcpu_nr_empty_pop_pages < PCPU_EMPTY_POP_PAGES_LOW)
++	if (pcpu_nr_empty_pop_pages[type] < PCPU_EMPTY_POP_PAGES_LOW)
+ 		pcpu_schedule_balance_work();
 =20
- 	list_for_each_entry_safe(chunk, next, free_head, list) {
-@@ -1982,6 +1973,25 @@ static void __pcpu_balance_workfn(enum pcpu_chunk_=
+ 	/* clear the areas and return address relative to base address */
+@@ -2010,7 +2010,7 @@ static void pcpu_balance_populated(enum pcpu_chunk_=
 type type)
- 		pcpu_destroy_chunk(chunk);
- 		cond_resched();
+ 		pcpu_atomic_alloc_failed =3D false;
+ 	} else {
+ 		nr_to_pop =3D clamp(PCPU_EMPTY_POP_PAGES_HIGH -
+-				  pcpu_nr_empty_pop_pages,
++				  pcpu_nr_empty_pop_pages[type],
+ 				  0, PCPU_EMPTY_POP_PAGES_HIGH);
  	}
-+}
-+
-+/**
-+ * pcpu_balance_populated - manage the amount of populated pages
-+ * @type: chunk type
-+ *
-+ * Maintain a certain amount of populated pages to satisfy atomic alloca=
-tions.
-+ * It is possible that this is called when physical memory is scarce cau=
-sing
-+ * OOM killer to be triggered.  We should avoid doing so until an actual
-+ * allocation causes the failure as it is possible that requests can be
-+ * serviced from already backed regions.
-+ */
-+static void pcpu_balance_populated(enum pcpu_chunk_type type)
-+{
-+	/* gfp flags passed to underlying allocators */
-+	const gfp_t gfp =3D GFP_KERNEL | __GFP_NORETRY | __GFP_NOWARN;
-+	struct list_head *pcpu_slot =3D pcpu_chunk_list(type);
-+	struct pcpu_chunk *chunk;
-+	int slot, nr_to_pop, ret;
 =20
- 	/*
- 	 * Ensure there are certain number of free populated pages for
-@@ -2051,22 +2061,24 @@ static void __pcpu_balance_workfn(enum pcpu_chunk=
-_type type)
- 			goto retry_pop;
- 		}
- 	}
--
--	mutex_unlock(&pcpu_alloc_mutex);
- }
+@@ -2592,7 +2592,7 @@ void __init pcpu_setup_first_chunk(const struct pcp=
+u_alloc_info *ai,
 =20
- /**
-  * pcpu_balance_workfn - manage the amount of free chunks and populated =
-pages
-  * @work: unused
-  *
-- * Call __pcpu_balance_workfn() for each chunk type.
-+ * Call pcpu_balance_free() and pcpu_balance_populated() for each chunk =
-type.
-  */
- static void pcpu_balance_workfn(struct work_struct *work)
- {
- 	enum pcpu_chunk_type type;
+ 	/* link the first chunk in */
+ 	pcpu_first_chunk =3D chunk;
+-	pcpu_nr_empty_pop_pages =3D pcpu_first_chunk->nr_empty_pop_pages;
++	pcpu_nr_empty_pop_pages[PCPU_CHUNK_ROOT] =3D pcpu_first_chunk->nr_empty=
+_pop_pages;
+ 	pcpu_chunk_relocate(pcpu_first_chunk, -1);
 =20
--	for (type =3D 0; type < PCPU_NR_CHUNK_TYPES; type++)
--		__pcpu_balance_workfn(type);
-+	for (type =3D 0; type < PCPU_NR_CHUNK_TYPES; type++) {
-+		mutex_lock(&pcpu_alloc_mutex);
-+		pcpu_balance_free(type);
-+		pcpu_balance_populated(type);
-+		mutex_unlock(&pcpu_alloc_mutex);
-+	}
- }
-=20
- /**
+ 	/* include all regions of the first chunk */
 --=20
 2.30.2
 
