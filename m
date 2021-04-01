@@ -2,183 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19903351017
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 09:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9922D351019
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 09:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233179AbhDAHai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 03:30:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233151AbhDAHa0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 03:30:26 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B92C061788
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 00:30:26 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id x126so770940pfc.13
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 00:30:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=43NDXGgfotmd8T021xD/PzKrOkjvp9eU15TIWjuTS6Q=;
-        b=T9iei2az1OzZPGs33+INYA6qjEddSZl9tKJhi1hESi0WIplLaJgW+ZEPKXy6x+ZIo+
-         1f4ny5Hn1h7zTJsFFONy31149OM5jFoHqwnwlxZDw4tM8ASrDgyQ/KKcUgpv0+iku9kc
-         Ru/zk+iH34T6x/4CJt2Gi2PjDS0NEw+r+H+ts=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=43NDXGgfotmd8T021xD/PzKrOkjvp9eU15TIWjuTS6Q=;
-        b=V/t6uJa51wwhQewvKlWXtteArxkXjULjBtHxhxjlaSyRm9vu6A/YVgrBteWMKtHJ9I
-         neu7gtmpg0lDEnBFmOpMhLpcjmv8IAoDkQmMbdX28r2Y6DgRlVt62FmeazwAHxt4lxsl
-         ul6SkpPIQXjL+CugWjPbt0ufnWyICilrY2DdPRpWcRmWlUANSo8ZnpVDAZxDIwVHyMF7
-         RDm+Eydf/MXubLU5IXCyO7kq0g6thOnfZuKR0OopW9U5CKPVGqQnehdkJplVAts5heSt
-         Cicu52FGMnVliLDHJ7igNnQM29mN8WWQ355iKGVVv8ZM7uTItnaEspKnEWcLijA0hdqc
-         Qxjg==
-X-Gm-Message-State: AOAM533ZM4GiKf4aUKIAJPmykT2izUBHuH+76SPeWx/3NDYHYOXvDsOb
-        oNOhGkBIzjCK+5bKJZ22cPJWQw==
-X-Google-Smtp-Source: ABdhPJwOph9440oECFc16IlP9JvBFBtO6iz26JSpoM4SC7KHyxWIdK25RwtNSKbz1sSwmp7HkcBmrA==
-X-Received: by 2002:a63:ee04:: with SMTP id e4mr6351016pgi.446.1617262225974;
-        Thu, 01 Apr 2021 00:30:25 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q25sm4149183pfh.34.2021.04.01.00.30.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 00:30:25 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 00:30:24 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
-        Adam Nichols <adam@grimm-co.com>,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] sysfs: Unconditionally use vmalloc for buffer
-Message-ID: <202104010022.5E7FB3069@keescook>
-References: <20210401022145.2019422-1-keescook@chromium.org>
- <YGVXSFMlvX4RQI8n@kroah.com>
- <202103312335.25EA9650@keescook>
- <YGVxzSH8fV9MwBDM@kroah.com>
+        id S233286AbhDAHbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 03:31:43 -0400
+Received: from mga03.intel.com ([134.134.136.65]:10004 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233371AbhDAHbe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 03:31:34 -0400
+IronPort-SDR: FYfRS/rOy3b7UFY6sWYSmr+t7re3V4kIggSYRZ1jvrvlbwHf+5Pj2Pqt/cWJtMvE9qQLLSfW3J
+ gAT0bNiKsNqA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="192198437"
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="192198437"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 00:31:30 -0700
+IronPort-SDR: Tdg5L3w7UTYkXJXRhFtTTdqAh2UxD8bFBcsE8EE7GySm5X52cXhiu6mYKd3rKN95FHk9vzKH5H
+ KCEmuF8/0jhg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; 
+   d="scan'208";a="416557583"
+Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 01 Apr 2021 00:31:29 -0700
+Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lRrnc-0006Le-Oz; Thu, 01 Apr 2021 07:31:28 +0000
+Date:   Thu, 01 Apr 2021 15:30:27 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD REGRESSION
+ a0af5201360a0e33399d2b65b3874c27ac29432b
+Message-ID: <60657693.IXofALejSEQRK+yC%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YGVxzSH8fV9MwBDM@kroah.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 09:10:05AM +0200, Greg Kroah-Hartman wrote:
-> On Wed, Mar 31, 2021 at 11:52:20PM -0700, Kees Cook wrote:
-> > On Thu, Apr 01, 2021 at 07:16:56AM +0200, Greg Kroah-Hartman wrote:
-> > > On Wed, Mar 31, 2021 at 07:21:45PM -0700, Kees Cook wrote:
-> > > > The sysfs interface to seq_file continues to be rather fragile
-> > > > (seq_get_buf() should not be used outside of seq_file), as seen with
-> > > > some recent exploits[1]. Move the seq_file buffer to the vmap area
-> > > > (while retaining the accounting flag), since it has guard pages that
-> > > > will catch and stop linear overflows. This seems justified given that
-> > > > sysfs's use of seq_file already uses kvmalloc(), is almost always using
-> > > > a PAGE_SIZE or larger allocation, has normally short-lived allocations,
-> > > > and is not normally on a performance critical path.
-> > > > 
-> > > > Once seq_get_buf() has been removed (and all sysfs callbacks using
-> > > > seq_file directly), this change can also be removed.
-> > > > 
-> > > > [1] https://blog.grimm-co.com/2021/03/new-old-bugs-in-linux-kernel.html
-> > > > 
-> > > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > > ---
-> > > > v3:
-> > > > - Limit to only sysfs (instead of all of seq_file).
-> > > > v2: https://lore.kernel.org/lkml/20210315174851.622228-1-keescook@chromium.org/
-> > > > v1: https://lore.kernel.org/lkml/20210312205558.2947488-1-keescook@chromium.org/
-> > > > ---
-> > > >  fs/sysfs/file.c | 23 +++++++++++++++++++++++
-> > > >  1 file changed, 23 insertions(+)
-> > > > 
-> > > > diff --git a/fs/sysfs/file.c b/fs/sysfs/file.c
-> > > > index 9aefa7779b29..70e7a450e5d1 100644
-> > > > --- a/fs/sysfs/file.c
-> > > > +++ b/fs/sysfs/file.c
-> > > > @@ -16,6 +16,7 @@
-> > > >  #include <linux/mutex.h>
-> > > >  #include <linux/seq_file.h>
-> > > >  #include <linux/mm.h>
-> > > > +#include <linux/vmalloc.h>
-> > > >  
-> > > >  #include "sysfs.h"
-> > > >  
-> > > > @@ -32,6 +33,25 @@ static const struct sysfs_ops *sysfs_file_ops(struct kernfs_node *kn)
-> > > >  	return kobj->ktype ? kobj->ktype->sysfs_ops : NULL;
-> > > >  }
-> > > >  
-> > > > +/*
-> > > > + * To be proactively defensive against sysfs show() handlers that do not
-> > > > + * correctly stay within their PAGE_SIZE buffer, use the vmap area to gain
-> > > > + * the trailing guard page which will stop linear buffer overflows.
-> > > > + */
-> > > > +static void *sysfs_kf_seq_start(struct seq_file *sf, loff_t *ppos)
-> > > > +{
-> > > > +	struct kernfs_open_file *of = sf->private;
-> > > > +	struct kernfs_node *kn = of->kn;
-> > > > +
-> > > > +	WARN_ON_ONCE(sf->buf);
-> > > 
-> > > How can buf ever not be NULL?  And if it is, we will leak memory in the
-> > > next line so we shouldn't have _ONCE, we should always know, but not
-> > > rebooting the machine would be nice.
-> > 
-> > It should never be possible. I did this because seq_file has some
-> > unusual buf allocation patterns in the kernel, and I liked the cheap
-> > leak check. I use _ONCE because spewing endlessly doesn't help most
-> > cases. And if you want to trigger it again, you don't have to reboot:
-> > https://www.kernel.org/doc/html/latest/admin-guide/clearing-warn-once.html
-> 
-> True, I was thinking of the panic-on-warn people, and the hesitation of
-> adding new WARN_ON() to the kernel code.  If this really can happen,
-> shouldn't we handle it properly?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: a0af5201360a0e33399d2b65b3874c27ac29432b  Merge branch 'linus'
 
-It should never happen, but I hate silent bugs. Given the existing
-pattern of "external preallocation", it seems like a fragile interface
-worth asserting our expectations.
+possible Error/Warning in current branch:
 
-The panic_on_warn folks will get exactly what they wanted: immediate
-feedback on "expected to be impossible" cases:
-https://www.kernel.org/doc/html/latest/process/deprecated.html#bug-and-bug-on
+arch/x86/net/bpf_jit_comp.c:2015:16: error: 'ideal_nops' undeclared (first use in this function)
+arch/x86/net/bpf_jit_comp.c:2015:16: error: use of undeclared identifier 'ideal_nops'
+arch/x86/net/bpf_jit_comp.c:2015:27: error: 'NOP_ATOMIC5' undeclared (first use in this function); did you mean 'GFP_ATOMIC'?
+arch/x86/net/bpf_jit_comp.c:2015:27: error: use of undeclared identifier 'NOP_ATOMIC5'
 
-> > > > +	sf->buf = __vmalloc(kn->attr.size, GFP_KERNEL_ACCOUNT);
-> > > > +	if (!sf->buf)
-> > > > +		return ERR_PTR(-ENOMEM);
-> > > > +	sf->size = kn->attr.size;
-> > > > +
-> > > > +	return NULL + !*ppos;
-> > > > +}
-> > > 
-> > > Will this also cause the vmalloc fragmentation/abuse that others have
-> > > mentioned as userspace can trigger this?
-> > 
-> > If I understood the concern correctly, it was about it being a risk for
-> > doing it for all seq_file uses. This version confines the changes to only
-> > sysfs seq_file uses.
-> 
-> There are a few sysfs files that userspace can read from out there :)
+Error/Warning ids grouped by kconfigs:
 
-Yes, but the vmap area is also used by default for process stacks, etc.
-Malicious fragmentation is already possible. I understood the concern to
-be about "regular" use. (And if I'm wrong, we can add a knob maybe?)
+gcc_recent_errors
+|-- x86_64-rhel-8.3-kbuiltin
+|   |-- arch-x86-net-bpf_jit_comp.c:error:NOP_ATOMIC5-undeclared-(first-use-in-this-function)
+|   `-- arch-x86-net-bpf_jit_comp.c:error:ideal_nops-undeclared-(first-use-in-this-function)
+`-- x86_64-rhel-8.3-kselftests
+    |-- arch-x86-net-bpf_jit_comp.c:error:NOP_ATOMIC5-undeclared-(first-use-in-this-function)
+    `-- arch-x86-net-bpf_jit_comp.c:error:ideal_nops-undeclared-(first-use-in-this-function)
 
-> > > And what code frees it?
-> > 
-> > The existing hooks to seq_release() handle this already. This kind of
-> > "preallocation" of the seq_file buffer is done in a few places already
-> > (hence my desire for the sanity checking WARN lest future seq_file
-> > semantics change).
-> 
-> Ah, "magic", gotta love it...
+clang_recent_errors
+`-- x86_64-randconfig-a016-20210330
+    |-- arch-x86-net-bpf_jit_comp.c:error:use-of-undeclared-identifier-NOP_ATOMIC5
+    `-- arch-x86-net-bpf_jit_comp.c:error:use-of-undeclared-identifier-ideal_nops
 
-Yeeeah. :P
+elapsed time: 724m
 
--- 
-Kees Cook
+configs tested: 107
+configs skipped: 2
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+sh                          rsk7264_defconfig
+sh                             espt_defconfig
+powerpc                      ppc6xx_defconfig
+arm                          simpad_defconfig
+powerpc                    mvme5100_defconfig
+arc                            hsdk_defconfig
+sparc                       sparc64_defconfig
+powerpc                     ksi8560_defconfig
+sh                          rsk7201_defconfig
+powerpc                       ebony_defconfig
+arm                           stm32_defconfig
+sh                ecovec24-romimage_defconfig
+arm                          pcm027_defconfig
+sh                            shmin_defconfig
+riscv                             allnoconfig
+mips                          ath25_defconfig
+powerpc                     ppa8548_defconfig
+mips                           gcw0_defconfig
+powerpc                        fsp2_defconfig
+arm                     eseries_pxa_defconfig
+sh                          r7780mp_defconfig
+mips                        jmr3927_defconfig
+powerpc                     sequoia_defconfig
+powerpc                        cell_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210330
+x86_64               randconfig-a003-20210330
+x86_64               randconfig-a002-20210330
+x86_64               randconfig-a001-20210330
+x86_64               randconfig-a005-20210330
+x86_64               randconfig-a006-20210330
+i386                 randconfig-a004-20210330
+i386                 randconfig-a006-20210330
+i386                 randconfig-a003-20210330
+i386                 randconfig-a002-20210330
+i386                 randconfig-a001-20210330
+i386                 randconfig-a005-20210330
+i386                 randconfig-a015-20210330
+i386                 randconfig-a011-20210330
+i386                 randconfig-a014-20210330
+i386                 randconfig-a013-20210330
+i386                 randconfig-a016-20210330
+i386                 randconfig-a012-20210330
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a012-20210330
+x86_64               randconfig-a015-20210330
+x86_64               randconfig-a014-20210330
+x86_64               randconfig-a016-20210330
+x86_64               randconfig-a013-20210330
+x86_64               randconfig-a011-20210330
+x86_64               randconfig-a004-20210401
+x86_64               randconfig-a005-20210401
+x86_64               randconfig-a003-20210401
+x86_64               randconfig-a001-20210401
+x86_64               randconfig-a002-20210401
+x86_64               randconfig-a006-20210401
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
