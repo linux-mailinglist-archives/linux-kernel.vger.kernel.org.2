@@ -2,208 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 022E6351E7C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80034351C56
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241084AbhDASmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:42:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59266 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237363AbhDASTM (ORCPT
+        id S239554AbhDASQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:16:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236795AbhDAR6m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:19:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617301152;
+        Thu, 1 Apr 2021 13:58:42 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B00C08E81A
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 06:20:02 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1617283194;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=hgwYknKSgdPGWp+Ftlm12JcG0t+YnhQzWt1SjCg5dbg=;
-        b=DnuDKztCAIT0etoMf5IAd4KIwjwg3pqaXKRmbz63xQx50ejoww323zfrzR0vV8XrfGsbrT
-        L1pRq7ilivZTdUOd/gjvhewzY2mXsc2dN16eiUcTeIauxsnX2+ECFeF69x1uvhV3WpJSjr
-        GpxLLRt8EtXRDLWlC39gjQ0ne+kG3Y0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-419-aBCEfiLjOj6vi-DfAea4hg-1; Thu, 01 Apr 2021 09:18:10 -0400
-X-MC-Unique: aBCEfiLjOj6vi-DfAea4hg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E17A787A83E;
-        Thu,  1 Apr 2021 13:18:07 +0000 (UTC)
-Received: from krava (unknown [10.40.193.98])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 500DC51DCB;
-        Thu,  1 Apr 2021 13:18:05 +0000 (UTC)
-Date:   Thu, 1 Apr 2021 15:18:04 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Nicholas Fraser <nfraser@codeweavers.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        Tan Xiaojun <tanxiaojun@huawei.com>,
-        Jin Yao <yao.jin@linux.intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf data: Add JSON export
-Message-ID: <YGXIDGfCLVtFuxgT@krava>
-References: <c4d0b0f1-79f4-f08d-3d7e-00046120f845@codeweavers.com>
+        bh=ropfd/50hZwFHygWvoKwWUv09SHlJREMcmKg0y/1COk=;
+        b=w4oEaTFxHJvv3fqbRVPTIUlUbLzczXOhRKdyeF4GvLQP185Tberl86XRlFEJoX/AGcs+1N
+        PFWuHAkJaPq/eyChQAN8RQHAy6FcaTZP/itmUCwpRj6Ws413xT6OkUB++KuMIpsSNjxhGR
+        M1NS9Avk4diwz5/PMur9fUzzJRwKj4n9cS+HQVzXKva8E9UKXjamvB/9kntsOuCcwAbfqe
+        bqvr0W/f0ltISNaSfpoBFOUG6HYkv5SBd0YTPHiT5W3ZZ+2HOC/ZcTZR88sMXHKtf4QcaD
+        6qjwd/JpUfsZWIwddumcLQVSi8CRRObqQ+1vk3FB5GI300dd9g9I4nNwUOmV5Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1617283194;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ropfd/50hZwFHygWvoKwWUv09SHlJREMcmKg0y/1COk=;
+        b=GSHqJTUL1+ALVe/5Kh9GKkiAVzFtP+9xFkfM37puBv2WdO1AxshdgLE2Iv9js81yEIcZ3L
+        eUZabLq8YYv87HBg==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Alistair Popple <alistair@popple.id.au>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Yue Hu <huyue2@yulong.com>, Rafael Aquini <aquini@redhat.com>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, kexec@lists.infradead.org
+Subject: Re: [PATCH printk v2 2/5] printk: remove safe buffers
+In-Reply-To: <YGW63/elFr/gYW1u@alley>
+References: <20210330153512.1182-1-john.ogness@linutronix.de> <20210330153512.1182-3-john.ogness@linutronix.de> <YGW63/elFr/gYW1u@alley>
+Date:   Thu, 01 Apr 2021 15:19:52 +0200
+Message-ID: <87a6qiqgzr.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c4d0b0f1-79f4-f08d-3d7e-00046120f845@codeweavers.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 06:42:48AM -0400, Nicholas Fraser wrote:
-> From ddcfd620e7cad4100d0076090c4b39dba8aeead3 Mon Sep 17 00:00:00 2001
-> From: Nicholas Fraser <nfraser@codeweavers.com>
-> Date: Wed, 31 Mar 2021 06:10:00 -0400
-> Subject: [PATCH] perf data: Add JSON export
+On 2021-04-01, Petr Mladek <pmladek@suse.com> wrote:
+>> --- a/kernel/printk/printk.c
+>> +++ b/kernel/printk/printk.c
+>> @@ -1142,24 +1128,37 @@ void __init setup_log_buf(int early)
+>>  		 new_descs, ilog2(new_descs_count),
+>>  		 new_infos);
+>>  
+>> -	printk_safe_enter_irqsave(flags);
+>> +	local_irq_save(flags);
+>
+> IMHO, we actually do not have to disable IRQ here. We already copy
+> messages that might appear in the small race window in NMI. It would
+> work the same way also for IRQ context.
 
-no need to add headers again in here
+We do not have to, but why open up this window? We are still in early
+boot and interrupts have always been disabled here. I am not happy that
+this window even exists. I really prefer to keep it NMI-only.
 
-> 
-> This adds a feature to export perf data to JSON. It uses a minimal
-> inline JSON encoding, no external dependencies. Currently it only
-> outputs some headers and sample metadata but it's easily extensible.
-> 
-> Use it like this:
-> 
->     perf data convert --to-json out.json
+>> --- a/lib/nmi_backtrace.c
+>> +++ b/lib/nmi_backtrace.c
+>> @@ -75,12 +75,6 @@ void nmi_trigger_cpumask_backtrace(const cpumask_t *mask,
+>>  		touch_softlockup_watchdog();
+>>  	}
+>>  
+>> -	/*
+>> -	 * Force flush any remote buffers that might be stuck in IRQ context
+>> -	 * and therefore could not run their irq_work.
+>> -	 */
+>> -	printk_safe_flush();
+>
+> Sigh, this reminds me that the nmi_safe buffers serialized backtraces
+> from all CPUs.
+>
+> I am afraid that we have to put back the spinlock into
+> nmi_cpu_backtrace().
 
-please add similar output summary message we have for CTF conversion:
+Please no. That spinlock is a disaster. It can cause deadlocks with
+other cpu-locks (such as in kdb) and it will cause a major problem for
+atomic consoles. We need to be very careful about introducing locks
+where NMIs are waiting on other CPUs.
 
-	[ perf data convert: Converted 'perf.data' into CTF data 'data' ]
-	[ perf data convert: Converted and wrote 0.000 MB (10 samples) ]
+> It has been repeatedly added and removed depending
+> on whether the backtrace was printed into the main log buffer
+> or into the per-CPU buffers. Last time it was removed by
+> the commit 03fc7f9c99c1e7ae2925d ("printk/nmi: Prevent deadlock
+> when accessing the main log buffer in NMI").
+>
+> It should be safe because there should not be any other locks in the
+> code path. Note that only one backtrace might be triggered at the same
+> time, see @backtrace_flag in nmi_trigger_cpumask_backtrace().
 
-also I will not push hard for test, becase we don't have any for CTF ;-)
-but if you could think of any, that'd be great
+It is adding a lock around a lockless ringbuffer. For me that is a step
+backwards.
 
-> +
-> +static void output_headers(struct perf_session *session, struct convert_json *c)
-> +{
-> +	struct stat st;
-> +	struct perf_header *header = &session->header;
-> +	int ret;
-> +	int fd = perf_data__fd(session->data);
-> +	int i;
-> +	bool first;
-> +
-> +	fprintf(c->out, "\n\t\t\t\"header-version\": %u", header->version);
-> +
-> +	ret = fstat(fd, &st);
-> +	if (ret >= 0) {
-> +		time_t stctime = st.st_mtime;
-> +		char buf[256];
-> +
-> +		strftime(buf, sizeof(buf), "%FT%TZ", gmtime(&stctime));
-> +		fprintf(c->out, ",\n\t\t\t\"captured-on\": \"%s\"", buf);
-> +	} else {
-> +		pr_debug("Failed to get mtime of source file, not writing \"captured-on\"");
-> +	}
-> +
-> +	fprintf(c->out, ",\n\t\t\t\"data-offset\": %" PRIu64, header->data_offset);
-> +	fprintf(c->out, ",\n\t\t\t\"data-size\": %" PRIu64, header->data_size);
-> +	fprintf(c->out, ",\n\t\t\t\"feat-offset\": %" PRIu64, header->feat_offset);
+> We _must_ serialize it somehow[*]. The lock in nmi_cpu_backtrace()
+> looks less evil than the nmi_safe machinery. nmi_safe() shrinks
+> too long backtraces, lose timestamps, needs to be explicitely
+> flushed here and there, is a non-trivial code.
+>
+> [*] Non-serialized bactraces are real mess. Caller-id is visible
+>     only on consoles or via syslogd interface. And it is not much
+>     convenient.
 
-I was wondering how to make this \t mess more readable,
-how about you define function like output_json:
+Caller-id solves this problem and is easy to sort for anyone with
+`grep'. Yes, it is a shame that `dmesg' does not show it, but directly
+using any of the printk interfaces does show it (kmsg_dump, /dev/kmsg,
+syslog, console).
 
-	output_json(FILE, level, field, format, ...);
+>     I get this with "echo l >/proc/sysrq-trigger" and this patchset:
 
-and use it:
+Of course. Without caller-id, it is a mess. But this has nothing to do
+with NMI. The same problem exists for WARN_ON() on multiple CPUs
+simultaneously. If the user is not using caller-id, they are
+lost. Caller-id is the current solution to the interlaced logs.
 
-	output_json(c->out, 3, "data-offset", "PRIu64", header->data_offset);
-	output_json(c->out, 3, "data-size", "PRIu64", header->data_size);
-	output_json(c->out, 3, "feat-offset", PRIu64, header->feat_offset);
+For the long term, we should introduce a printk-context API that allows
+callers to perfectly pack their multi-line output into a single
+entry. We discussed [0][1] this back in August 2020.
 
-similar way as we do for pr_debug -> eprintf
+John Ogness
 
-SNIP
-
-> +
-> +	fd = open(output_name, O_CREAT | O_WRONLY | (opts->force ? 0 : O_EXCL), 0666);
-> +	if (fd == -1) {
-> +		if (errno == EEXIST)
-> +			pr_err("Output file exists. Use --force to overwrite it.\n");
-> +		else
-> +			pr_err("Error opening output file!\n");
-> +		return -1;
-> +	}
-> +
-> +	c.out = fdopen(fd, "w");
-> +	if (!c.out) {
-> +		fprintf(stderr, "Error opening output file!\n");
-> +		return -1;
-> +	}
-> +
-> +	session = perf_session__new(&data, false, &c.tool);
-> +	if (IS_ERR(session)) {
-> +		fprintf(stderr, "Error creating perf session!\n");
-> +		return -1;
-
-here we should close c.out and call perf_session__delete,
-we normaly do goto to the end of the function in this case
-
-> +	}
-> +
-> +	if (symbol__init(&session->header.env) < 0) {
-> +		fprintf(stderr, "Symbol init error!\n");
-> +		return -1;
-> +	}
-> +
-> +	// Version number for future-proofing. Most additions should be able to be
-> +	// done in a backwards-compatible way so this should only need to be bumped
-> +	// if some major breaking change must be made.
-> +	fprintf(c.out, "{\n\t\"linux-perf-json-version\": 1,");
-> +
-> +	// Output headers
-> +	fprintf(c.out, "\n\t\"headers\": {");
-> +	output_headers(session, &c);
-> +	fprintf(c.out, "\n\t},");
-> +
-> +	// Output samples
-> +	fprintf(c.out, "\n\t\"samples\": [");
-> +	perf_session__process_events(session);
-> +	fprintf(c.out, "\n\t]\n}\n");
-> +
-
-you need to close c.out
-
-> +	perf_session__delete(session);
-> +	return 0;
-> +}
-> diff --git a/tools/perf/util/data-convert.h b/tools/perf/util/data-convert.h
-> index feab5f114e37..1b4c5f598415 100644
-> --- a/tools/perf/util/data-convert.h
-> +++ b/tools/perf/util/data-convert.h
-> @@ -2,10 +2,20 @@
->  #ifndef __DATA_CONVERT_H
->  #define __DATA_CONVERT_H
->  
-> +#include <stdbool.h>
-> +
->  struct perf_data_convert_opts {
->  	bool force;
->  	bool all;
->  	bool tod;
->  };
->  
-> +#ifdef HAVE_LIBBABELTRACE_SUPPORT
-> +int bt_convert__perf2ctf(const char *input_name, const char *to_ctf,
-> +			 struct perf_data_convert_opts *opts);
-> +#endif /* HAVE_LIBBABELTRACE_SUPPORT */
-> +
-> +int bt_convert__perf2json(const char *input_name, const char *to_ctf,
-> +			 struct perf_data_convert_opts *opts);
-> +
->  #endif /* __DATA_CONVERT_H */
-
-great, thanks for this
-jirka
-
+[0] https://lore.kernel.org/lkml/472f2e553805b52d9834d64e4056db965edee329.camel@perches.com
+[1] offlist message-id: 87d03k9ymz.fsf@jogness.linutronix.de
