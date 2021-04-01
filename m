@@ -2,110 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F4DE351DA7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 713B6351DAF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240648AbhDASbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:31:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35620 "EHLO
+        id S240820AbhDASbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:31:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237729AbhDASIo (ORCPT
+        with ESMTP id S238586AbhDASJj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:08:44 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5BE3BC00F7F3;
-        Thu,  1 Apr 2021 08:14:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-ID; bh=IMWqcG5DEpdf8+c6+2Rmv2KzMd3Qr2bVAXkr
-        IuCz158=; b=m6GHA/rBlvJ3Oxw04oYG2J7cBsbXWAUKTu6T7dl28ofUwFycj6Zm
-        SN7Z6mvoAHnppI4lQitWk63Sp1XS5gPpX5Pz87eCVGIZFRJc3wEdtNY3olQzqjSY
-        WPFn014sfDOs5xiK5y0YiSLiKEwsv/e9+rjVf0YxfEVuJGWUzP4Us2k=
-Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Thu, 1 Apr
- 2021 23:13:58 +0800 (GMT+08:00)
-X-Originating-IP: [156.234.142.150]
-Date:   Thu, 1 Apr 2021 23:13:58 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   lyl2019@mail.ustc.edu.cn
-To:     =?UTF-8?Q?Christoph_B=C3=B6hmwalder?= 
-        <christoph.boehmwalder@linbit.com>
-Cc:     philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
-        axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, drbd-dev@lists.linbit.com
-Subject: Re: Re: [Drbd-dev] [PATCH] drbd: Fix a use after free in
- get_initial_state
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
- 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
-In-Reply-To: <cb0f43e4-bfde-ac77-5153-f2f3cbed0172@linbit.com>
-References: <20210401115753.3684-1-lyl2019@mail.ustc.edu.cn>
- <cb0f43e4-bfde-ac77-5153-f2f3cbed0172@linbit.com>
-X-SendMailWithSms: false
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Thu, 1 Apr 2021 14:09:39 -0400
+Received: from mail.pqgruber.com (mail.pqgruber.com [IPv6:2a05:d014:575:f70b:4f2c:8f1d:40c4:b13e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 557BBC022586;
+        Thu,  1 Apr 2021 08:19:50 -0700 (PDT)
+Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
+        by mail.pqgruber.com (Postfix) with ESMTPSA id 7EF5EC72850;
+        Thu,  1 Apr 2021 17:19:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
+        s=mail; t=1617290382;
+        bh=tT0FEIHy1AZG5V42yfNXqku3bOLvq1PgHkhzVzYTvoM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=N1dkgjXALuojsa/8H3J4tpOlwOsclnmnNwYW4IqBA+2nUaoWknHXtj4UheHJBG0kb
+         obZ4FSYK1lhhuc4DfU0rUy/U+dOZ8yoi2qj2TVyq0yJWGcv6QDahJm5Wg7koSHvOXJ
+         CdpC7TBrm87nec9q3KTXv25F3l0+VxTDMZOHpu00=
+Date:   Thu, 1 Apr 2021 17:19:40 +0200
+From:   Clemens Gruber <clemens.gruber@pqgruber.com>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-pwm@vger.kernel.org,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 4/7] pwm: pca9685: Support staggered output ON times
+Message-ID: <YGXkjLDl/A0LpjXg@workstation.tuxnet>
+References: <20210329125707.182732-1-clemens.gruber@pqgruber.com>
+ <20210329125707.182732-4-clemens.gruber@pqgruber.com>
+ <20210329170357.par7c3izvtmtovlj@pengutronix.de>
+ <YGILdjZBCc2vVlRd@workstation.tuxnet>
+ <20210329180206.rejl32uajslpvbgi@pengutronix.de>
+ <YGRqZsi4WApZcwIT@workstation.tuxnet>
+ <YGShjDE8R31LwAbi@orome.fritz.box>
+ <YGV7VJ72nWDIjNbu@workstation.tuxnet>
+ <YGXO7oKWPjYYrVFy@orome.fritz.box>
 MIME-Version: 1.0
-Message-ID: <5b14fa53.26b7e.1788dff8d13.Coremail.lyl2019@mail.ustc.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: LkAmygA3P28242VgN8+CAA--.0W
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQoSBlQhn5pzrwAAsz
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YGXO7oKWPjYYrVFy@orome.fritz.box>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCg0KPiAtLS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+IOWPkeS7tuS6ujogIkNocmlzdG9waCBC
-w7ZobXdhbGRlciIgPGNocmlzdG9waC5ib2VobXdhbGRlckBsaW5iaXQuY29tPg0KPiDlj5HpgIHm
-l7bpl7Q6IDIwMjEtMDQtMDEgMjE6MDE6MjAgKOaYn+acn+WbmykNCj4g5pS25Lu25Lq6OiAiTHYg
-WXVubG9uZyIgPGx5bDIwMTlAbWFpbC51c3RjLmVkdS5jbj4NCj4g5oqE6YCBOiBwaGlsaXBwLnJl
-aXNuZXJAbGluYml0LmNvbSwgbGFycy5lbGxlbmJlcmdAbGluYml0LmNvbSwgYXhib2VAa2VybmVs
-LmRrLCBsaW51eC1ibG9ja0B2Z2VyLmtlcm5lbC5vcmcsIGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5l
-bC5vcmcsIGRyYmQtZGV2QGxpc3RzLmxpbmJpdC5jb20NCj4g5Li76aKYOiBSZTogW0RyYmQtZGV2
-XSBbUEFUQ0hdIGRyYmQ6IEZpeCBhIHVzZSBhZnRlciBmcmVlIGluIGdldF9pbml0aWFsX3N0YXRl
-DQo+IA0KPiBPbiA0LzEvMjEgMTo1NyBQTSwgTHYgWXVubG9uZyB3cm90ZToNCj4gPiBJbiBnZXRf
-aW5pdGlhbF9zdGF0ZSwgaXQgY2FsbHMgbm90aWZ5X2luaXRpYWxfc3RhdGVfZG9uZShza2IsLi4p
-IGlmDQo+ID4gY2ItPmFyZ3NbNV09PTEuIEkgc2VlIHRoYXQgaWYgZ2VubG1zZ19wdXQoKSBmYWls
-ZWQgaW4NCj4gPiBub3RpZnlfaW5pdGlhbF9zdGF0ZV9kb25lKCksIHRoZSBza2Igd2lsbCBiZSBm
-cmVlZCBieSBubG1zZ19mcmVlKHNrYikuDQo+ID4gVGhlbiBnZXRfaW5pdGlhbF9zdGF0ZSB3aWxs
-IGdvdG8gb3V0IGFuZCB0aGUgZnJlZWQgc2tiIHdpbGwgYmUgdXNlZCBieQ0KPiA+IHJldHVybiB2
-YWx1ZSBza2ItPmxlbi4NCj4gPiANCj4gPiBNeSBwYXRjaCBsZXRzIHNrYl9sZW4gPSBza2ItPmxl
-biBhbmQgcmV0dXJuIHRoZSBza2JfbGVuIHRvIGF2b2lkIHRoZSB1YWYuDQo+ID4gDQo+ID4gRml4
-ZXM6IGEyOTcyODQ2M2IyNTQgKCJkcmJkOiBCYWNrcG9ydCB0aGUgImV2ZW50czIiIGNvbW1hbmQi
-KQ0KPiA+IFNpZ25lZC1vZmYtYnk6IEx2IFl1bmxvbmcgPGx5bDIwMTlAbWFpbC51c3RjLmVkdS5j
-bj4NCj4gPiAtLS0NCj4gPiAgIGRyaXZlcnMvYmxvY2svZHJiZC9kcmJkX25sLmMgfCAzICsrLQ0K
-PiA+ICAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiA+
-IA0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2Jsb2NrL2RyYmQvZHJiZF9ubC5jIGIvZHJpdmVy
-cy9ibG9jay9kcmJkL2RyYmRfbmwuYw0KPiA+IGluZGV4IGJmN2RlNGM3Yjk2Yy4uNDc0Zjg0Njc1
-ZDBhIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvYmxvY2svZHJiZC9kcmJkX25sLmMNCj4gPiAr
-KysgYi9kcml2ZXJzL2Jsb2NrL2RyYmQvZHJiZF9ubC5jDQo+ID4gQEAgLTQ5MDUsNiArNDkwNSw3
-IEBAIHN0YXRpYyBpbnQgZ2V0X2luaXRpYWxfc3RhdGUoc3RydWN0IHNrX2J1ZmYgKnNrYiwgc3Ry
-dWN0IG5ldGxpbmtfY2FsbGJhY2sgKmNiKQ0KPiA+ICAgCXN0cnVjdCBkcmJkX3N0YXRlX2NoYW5n
-ZSAqc3RhdGVfY2hhbmdlID0gKHN0cnVjdCBkcmJkX3N0YXRlX2NoYW5nZSAqKWNiLT5hcmdzWzBd
-Ow0KPiA+ICAgCXVuc2lnbmVkIGludCBzZXEgPSBjYi0+YXJnc1syXTsNCj4gPiAgIAl1bnNpZ25l
-ZCBpbnQgbjsNCj4gPiArCXVuc2lnbmVkIGludCBza2JfbGVuID0gc2tiLT5sZW47DQo+ID4gICAJ
-ZW51bSBkcmJkX25vdGlmaWNhdGlvbl90eXBlIGZsYWdzID0gMDsNCj4gPiAgIA0KPiA+ICAgCS8q
-IFRoZXJlIGlzIG5vIG5lZWQgZm9yIHRha2luZyBub3RpZmljYXRpb25fbXV0ZXggaGVyZTogaXQg
-ZG9lc24ndA0KPiA+IEBAIC00OTE1LDcgKzQ5MTYsNyBAQCBzdGF0aWMgaW50IGdldF9pbml0aWFs
-X3N0YXRlKHN0cnVjdCBza19idWZmICpza2IsIHN0cnVjdCBuZXRsaW5rX2NhbGxiYWNrICpjYikN
-Cj4gPiAgIAljYi0+YXJnc1s1XS0tOw0KPiA+ICAgCWlmIChjYi0+YXJnc1s1XSA9PSAxKSB7DQo+
-ID4gICAJCW5vdGlmeV9pbml0aWFsX3N0YXRlX2RvbmUoc2tiLCBzZXEpOw0KPiA+IC0JCWdvdG8g
-b3V0Ow0KPiA+ICsJCXJldHVybiBza2JfbGVuOw0KPiA+ICAgCX0NCj4gPiAgIAluID0gY2ItPmFy
-Z3NbNF0rKzsNCj4gPiAgIAlpZiAoY2ItPmFyZ3NbNF0gPCBjYi0+YXJnc1szXSkNCj4gPiANCj4g
-DQo+IFRoYW5rcyBmb3IgdGhlIHBhdGNoIQ0KPiANCj4gSSB0aGluayB0aGUgcHJvYmxlbSBnb2Vz
-IGV2ZW4gZnVydGhlcjogc2tiIGNhbiBhbHNvIGJlIGZyZWVkIGluIHRoZSANCj4gbm90aWZ5Xypf
-c3RhdGVfY2hhbmdlIC0+IG5vdGlmeV8qX3N0YXRlIGNhbGxzIGJlbG93Lg0KPiANCj4gQWxzbywg
-YXQgdGhlIHBvaW50IHdoZXJlIHdlIHNhdmUgc2tiLT5sZW4gaW50byBza2JfbGVuLCBza2IgaXMg
-bm90IA0KPiBpbml0aWFsaXplZCB5ZXQuIE1heWJlIGl0IG1ha2VzIG1vcmUgc2Vuc2UgdG8gbm90
-IHJldHVybiBhIGxlbmd0aCBpbiB0aGUgDQo+IGZpcnN0IHBsYWNlIGhlcmUsIGJ1dCBhbiBlcnJv
-ciBjb2RlIGluc3RlYWQuDQo+IA0KPiAtLSANCj4gQ2hyaXN0b3BoIELDtmhtd2FsZGVyDQo+IExJ
-TkJJVCB8IEtlZXBpbmcgdGhlIERpZ2l0YWwgV29ybGQgUnVubmluZw0KPiBEUkJEIEhBIOKAlCAg
-RGlzYXN0ZXIgUmVjb3Zlcnkg4oCUIFNvZnR3YXJlIGRlZmluZWQgU3RvcmFnZQ0KDQpPaywgSSBz
-ZWUuDQpJIGZvdW5kIHRoYXQgZHJiZF9hZG1fZ2V0X2luaXRpYWxfc3RhdGUoKSBoYXMgY2FsbGVk
-IHRoZSBnZXRfaW5pdGlhbF9zdGF0ZSgpLA0KYW5kIHJldHVybiAtRU5PTUVNIGlmIGl0IGNhbGxz
-IHJlbWVtYmVyX29sZF9zdGF0ZSgpIGZhaWxlZC4NCg0KU28sIGkgdGhpbmsgdGhhdCBtZWFucyBp
-ZiBnZXRfaW5pdGlhbF9zdGF0ZSgpIGZhaWxlZCBvbiB0aGUgbm90aWZ5X2luaXRpYWxfc3RhdGVf
-ZG9uZSgpLA0KaXQgc2hvdWxkIHJldHVybiAtRU5PTUVNIHRvby4NCg0KSSB3aWxsIHN1Ym1pdCB0
-aGUgUEFUQ0ggdjIgdG8gZml4IHRoZSBmaXJzdCBwbGFjZS4gVGhlIGZpeGVzIG9mIHRoZSBmdXJ0
-aGVyIHByb2JsZW0gaXMgDQpoYXJkIGZvciBtZS4NCg0KVGhhbmtzLg0K
+On Thu, Apr 01, 2021 at 03:47:26PM +0200, Thierry Reding wrote:
+> On Thu, Apr 01, 2021 at 09:50:44AM +0200, Clemens Gruber wrote:
+> > Hi Thierry,
+> > 
+> > On Wed, Mar 31, 2021 at 06:21:32PM +0200, Thierry Reding wrote:
+> > > On Wed, Mar 31, 2021 at 02:26:14PM +0200, Clemens Gruber wrote:
+> > > > On Mon, Mar 29, 2021 at 08:02:06PM +0200, Uwe Kleine-König wrote:
+> > > > > On Mon, Mar 29, 2021 at 07:16:38PM +0200, Clemens Gruber wrote:
+> > > > > > On Mon, Mar 29, 2021 at 07:03:57PM +0200, Uwe Kleine-König wrote:
+> > > > > > > On Mon, Mar 29, 2021 at 02:57:04PM +0200, Clemens Gruber wrote:
+> > > > > > > > The PCA9685 supports staggered LED output ON times to minimize current
+> > > > > > > > surges and reduce EMI.
+> > > > > > > > When this new option is enabled, the ON times of each channel are
+> > > > > > > > delayed by channel number x counter range / 16, which avoids asserting
+> > > > > > > > all enabled outputs at the same counter value while still maintaining
+> > > > > > > > the configured duty cycle of each output.
+> > > > > > > > 
+> > > > > > > > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+> > > > > > > 
+> > > > > > > Is there a reason to not want this staggered output? If it never hurts I
+> > > > > > > suggest to always stagger and drop the dt property.
+> > > > > > 
+> > > > > > There might be applications where you want multiple outputs to assert at
+> > > > > > the same time / to be synchronized.
+> > > > > > With staggered outputs mode always enabled, this would no longer be
+> > > > > > possible as they are spread out according to their channel number.
+> > > > > > 
+> > > > > > Not sure how often that usecase is required, but just enforcing the
+> > > > > > staggered mode by default sounds risky to me.
+> > > > > 
+> > > > > There is no such guarantee in the PWM framework, so I don't think we
+> > > > > need to fear breaking setups. Thierry?
+> > > > 
+> > > > Still, someone might rely on it? But let's wait for Thierry's opinion.
+> > > 
+> > > There's currently no way to synchronize two PWM channels in the PWM
+> > > framework. And given that each PWM channel is handled separately the
+> > > programming for two channels will never happen atomically or even
+> > > concurrently, so I don't see how you could run two PWMs completely
+> > > synchronized to one another.
+> > 
+> > As the PCA9685 has only one prescaler and one counter per chip, by
+> > default, all PWMs enabled will go high at the same time. If they also
+> > have the same duty cycle configured, they also go low at the same time.
+> 
+> What happens if you enable one of them, it then goes high and then you
+> enable the next one? Is the second one going to get enabled on the next
+> period? Or will it start in the middle of the period?
+
+The channel configuration is updated at the end of the low cycle of the
+channel in question and if the counter is already past the ON time, it
+will start with the next period. So the second one should never start
+while the first one is high (unless staggering mode is enabled).
+
+> To truly enable them atomically, you'd have to ensure they all get
+> enabled in basically the same write, right? Because otherwise you can
+> still end up with just a subset enabled and the rest getting enabled
+> only after the first period.
+
+Yes. This could probably be achieved with auto-increment for consecutive
+channels or with the special ALL channel for all channels.
+
+In our usecases this is not required. I'd still like to send a follow up
+patch in the future that at least implements the register writes per
+channel with auto increment to not have intermediate states (due to high
+and low byte being written separately)
+
+> > > Or did I misunderstand and it's only the start time of the rising edge
+> > > that's shifted, but the signal will remain high for a full duty cycle
+> > > after that and then go down and remain low for period - duty - offset?
+> > 
+> > Yes, that's how it works.
+> 
+> That's less problematic because the signal will remain a standard PWM,
+> it's just shifted by some amount. Technically pwm_apply_state() must
+> only return when the signal has been enabled, so very strictly speaking
+> you'd have to wait for a given amount of time to ensure that's correct.
+> But again, I doubt that any use-case would require you to be that
+> deterministic.
+
+Yes, probably not and if we make it opt-in, it shouldn't be a problem.
+
+> 
+> > > That's slightly better than the above in that it likely won't trip up
+> > > any consumers. But it might still be worth to make this configurable per
+> > > PWM (perhaps by specifying a third specifier cell, in addition to the
+> > > period and flags, that defines the offset/phase of the signal).
+> > > 
+> > > In both cases, doing this on a per-PWM basis will allow the consumer to
+> > > specify that they're okay with staggered mode and you won't actually
+> > > force it onto anyone. This effectively makes this opt-in and there will
+> > > be no change for existing consumers.
+> > 
+> > I agree that it should be opt-in, but I am not sure about doing it
+> > per-pwm:
+> > The reason why you'd want staggered mode is to reduce EMI or current
+> > spikes and it is most effective if it is enabled for all PWMs.
+> > 
+> > If it is specified in the DT anyway and you have a consumer that does
+> > not support staggered mode (probably rare but can happen), then I'd
+> > suggest just disabling it globally by not specifying nxp,staggered-mode;
+> > 
+> > Also it would make the configuration more complicated: You have to do
+> > the "staggering" yourself and assign offsets per channel.
+> > It's certainly easier to just enable or disable it.
+> > 
+> > What do you think?
+> 
+> Yeah, if you use an offset in the PWM specifier, users would have to
+> manually specify the offset. An interesting "feature" of that would be
+> that they could configure a subset of PWM channels to run synchronized
+> (module the atomicity problems discussed above). Not sure if that's
+> something anyone would ever want to do.
+
+Yes and for the common case where you don't care it would be more work
+for the user.
+
+> 
+> Another option would be to add some new flag that specifies that a given
+> PWM channel may use this mode. In that case users wouldn't have to care
+> about specifying the exact offset and instead just use the flag and rely
+> on the driver to pick some offset. Within the driver you could then just
+> keep the same computation that offsets by channel index, or you could
+> have any other mechanism that you want.
+
+OK, so maybe a PWM_STAGGERING_ALLOWED flag in dt-bindings/pwm/pwm.h,
+pass it through via a new bool staggering_allowed in struct pwm_args?
+
+Thanks,
+Clemens
