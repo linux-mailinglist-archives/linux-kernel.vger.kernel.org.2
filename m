@@ -2,367 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 733BF351340
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 12:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63884351376
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 12:28:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234169AbhDAKSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 06:18:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234268AbhDAKSS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 06:18:18 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506B4C06178A
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 03:18:18 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id c204so1156956pfc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 03:18:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=1PmVbiFum68RPm2xjq+wDRFS4IXYN4MWZJ6i3ALZWU4=;
-        b=d/lCOOemG6NL8MCwt85vipgBPL/i2M4+xzmiBGNGELY02bQ3t0QMtCsXqh7tLiwuhc
-         unGOn4kcGibL2hH93A/30XF6r9aAfhc/JOYCfNlCYKHArMBn47FZ+7kVVI5T8E6gyLOs
-         9lgztV5Qd5XeqLy3Wk/pk1KrM21U/+v5PNzK8FAm+Br8rRplgqqvUdcPIoYf51T9iR0a
-         9sgYPf7yE28TG2xWpcUDaK78V4SOh5ZUkYONRqBsJDu9Hy89i4qI4r0N1/3W1sar6Kmn
-         GVXrhx1J8RUoeYMvHQi4TvvarDu9Cc/tx7b8pMGi+1wWZMRo/1zedoj8Rm5ZifwPB1pG
-         2NRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=1PmVbiFum68RPm2xjq+wDRFS4IXYN4MWZJ6i3ALZWU4=;
-        b=PDtAk6ieLAzPbQCDpkZT85hKrUoULEVyll2KTGBqFuaS0ABuiuoPLmt/upXzYAYnl5
-         rqPLz7ZjjSEBhbAHsgvI1sJUPwcDc7UNfQ68El4QBjOeCm3OT5dCUs7T7NuR6QEOFGqb
-         7PFe4J/51N4FJHZgaqmp6p9zgJuBrecWL73tHD14NqglHphRP1UL23trFgJ+yS63Qx8Q
-         MqrK5PKzCdpI2V1iedmnSkGWTWDwgg/tnDttZnZhGIIPp1q1rvsAv6OBqZ/k3dD03fO+
-         IOCPUQzXGKCq+3e9XNJDhOYsVlbtdwhMOI5NjdxaxLUDlVILkVGW1ksqiB1Q0O6LOHry
-         U6zA==
-X-Gm-Message-State: AOAM533ySkDhfe/3OrFQ4+l0H6gPdFB2OlREhzSKlLd82mrD9eg6BQwO
-        Bd9ccPWZQfpY3quySmMd/2hN
-X-Google-Smtp-Source: ABdhPJwlzUpXssxO0iaXnOh6SPVUv2Fl9/ZRgjijDxmMvlWxWPGU/U9gghvonsZI7MR4YFcYZwqiUQ==
-X-Received: by 2002:aa7:92cb:0:b029:1f1:542f:2b2b with SMTP id k11-20020aa792cb0000b02901f1542f2b2bmr6749779pfa.31.1617272297635;
-        Thu, 01 Apr 2021 03:18:17 -0700 (PDT)
-Received: from work ([103.77.37.138])
-        by smtp.gmail.com with ESMTPSA id s26sm4951297pfd.5.2021.04.01.03.18.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 01 Apr 2021 03:18:17 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 15:48:12 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        boris.brezillon@collabora.com, Daniele.Palmas@telit.com,
-        bjorn.andersson@linaro.org
-Subject: Re: [PATCH v8 3/3] mtd: rawnand: Add support for secure regions in
- NAND memory
-Message-ID: <20210401101812.GE14052@work>
-References: <20210323073930.89754-1-manivannan.sadhasivam@linaro.org>
- <20210323073930.89754-4-manivannan.sadhasivam@linaro.org>
- <20210323175715.38b4740a@xps13>
+        id S234227AbhDAK1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 06:27:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:35868 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233850AbhDAKUH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 06:20:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8158AD6E;
+        Thu,  1 Apr 2021 03:20:06 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 36FE73F694;
+        Thu,  1 Apr 2021 03:20:03 -0700 (PDT)
+Date:   Thu, 1 Apr 2021 11:19:57 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Thierry Reding <treding@nvidia.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh@kernel.org>, Will Deacon <will@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Bharat Kumar Gogada <bharatku@xilinx.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH v3 03/14] PCI: rcar: Convert to MSI domains
+Message-ID: <20210401101957.GA30653@lpieralisi>
+References: <20210330151145.997953-1-maz@kernel.org>
+ <20210330151145.997953-4-maz@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210323175715.38b4740a@xps13>
+In-Reply-To: <20210330151145.997953-4-maz@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquel,
+On Tue, Mar 30, 2021 at 04:11:34PM +0100, Marc Zyngier wrote:
 
-On Tue, Mar 23, 2021 at 05:57:15PM +0100, Miquel Raynal wrote:
-> Hi Manivannan,
-> 
-> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote on Tue,
-> 23 Mar 2021 13:09:30 +0530:
-> 
-> > On a typical end product, a vendor may choose to secure some regions in
-> > the NAND memory which are supposed to stay intact between FW upgrades.
-> > The access to those regions will be blocked by a secure element like
-> > Trustzone. So the normal world software like Linux kernel should not
-> > touch these regions (including reading).
-> > 
-> > The regions are declared using a NAND chip DT property,
-> > "secure-regions". So let's make use of this property in the raw NAND
-> > core and skip access to the secure regions present in a system.
-> > 
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> >  drivers/mtd/nand/raw/nand_base.c | 105 +++++++++++++++++++++++++++++++
-> >  include/linux/mtd/rawnand.h      |  14 +++++
-> >  2 files changed, 119 insertions(+)
-> > 
-> > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> > index c33fa1b1847f..2a990219f498 100644
-> > --- a/drivers/mtd/nand/raw/nand_base.c
-> > +++ b/drivers/mtd/nand/raw/nand_base.c
-> > @@ -278,11 +278,46 @@ static int nand_block_bad(struct nand_chip *chip, loff_t ofs)
-> >  	return 0;
-> >  }
-> >  
-> > +/**
-> > + * nand_check_secure_region() - Check if the region is secured
-> > + * @chip: NAND chip object
-> > + * @offset: Offset of the region to check
-> > + * @size: Size of the region to check
-> > + *
-> > + * Checks if the region is secured by comparing the offset and size with the
-> > + * list of secure regions obtained from DT. Returns -EIO if the region is
-> > + * secured else 0.
-> > + */
-> > +static int nand_check_secure_region(struct nand_chip *chip, loff_t offset, u64 size)
-> 
-> I think I would prefer a boolean return value here, with a rename:
-> 
-> static bool nand_region_is_secured() or
-> nand_region_is_accessible/reachable/whatever()
-> 
-> then something lik:
-> 
-> 	if (nand_region_is_secured())
-> 		return -EIO;
->
+[...]
 
-Okay
+> +static void rcar_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
+> +{
+> +	struct rcar_msi *msi = irq_data_get_irq_chip_data(data);
+> +	unsigned long pa = virt_to_phys(msi);
+>  
+> -	hwirq = rcar_msi_alloc_region(msi, nvec);
+> -	if (hwirq < 0)
+> -		return -ENOSPC;
+> +	/* Use the msi structure as the PA for the MSI doorbell */
+> +	msg->address_lo = lower_32_bits(pa);
+> +	msg->address_hi = upper_32_bits(pa);
 
-> > +{
-> > +	int i;
-> > +
-> > +	/* Skip touching the secure regions if present */
-> > +	for (i = 0; i < chip->nr_secure_regions; i++) {
-> > +		const struct nand_secure_region *region = &chip->secure_regions[i];
-> > +
-> > +		if (offset + size < region->offset ||
-> > +		    offset >= region->offset + region->size)
-> 
-> I think as-is the condition does not work.
-> 
-> Let's assume we want to check the region { .offset = 1, size = 1 } and
-> the region { .offset = 2, size = 1 } is reserved. This is:
-> 
-> 		if ((1 + 1 < 2) /* false */ ||
-> 		    (1 >= 2 + 1) /* false */)
-> 			continue;
-> 		return -EIO; /* EIO is returned while the area is valid
-
-I made a mistake. I should've used "offset + size <= region->offset" as
-suggested by Boris.
-
-The reason why I didn't go for it because the SoC was still accessing
-the secure region with (>=). So I went with just (>) blindly :/
-
-The actual issue was with the check at nand_isbad_bbm(), where I didn't
-pass the size of the region to check, instead just offset as below:
-
-	nand_check_secure_region(chip, ofs, 0);
-
-Because of this, the check went fine but since the block_bad() function
-reads the blocks starting from the offset, the secure region was
-accessed.
-
-For fixing this, I'm going to use below diff:
-
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 2a990219f498..53589c835f66 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -296,7 +296,7 @@ static int nand_check_secure_region(struct nand_chip *chip, loff_t offset, u64 s
-        for (i = 0; i < chip->nr_secure_regions; i++) {
-                const struct nand_secure_region *region = &chip->secure_regions[i];
- 
--               if (offset + size < region->offset ||
-+               if (offset + size <= region->offset ||
-                    offset >= region->offset + region->size)
-                        continue;
- 
-@@ -308,13 +308,16 @@ static int nand_check_secure_region(struct nand_chip *chip, loff_t offset, u64 s
- 
- static int nand_isbad_bbm(struct nand_chip *chip, loff_t ofs)
- {
-+       struct mtd_info *mtd = nand_to_mtd(chip);
-+       int last_page = ((mtd->erasesize - mtd->writesize) >>
-+                        chip->page_shift) & chip->pagemask;
-        int ret;
- 
-        if (chip->options & NAND_NO_BBM_QUIRK)
-                return 0;
- 
-        /* Check if the region is secured */
--       ret = nand_check_secure_region(chip, ofs, 0);
-+       ret = nand_check_secure_region(chip, ofs, last_page);
-        if (ret)
-                return ret;
-
-> 		*/
-> 
-> > +			continue;
-> > +
-> 
-> Perhaps a dev_dbg() entry here would make sense.
-> 
-
-Okay
-
-> > +		return -EIO;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> 
-> [...]
-> 
-> > +static int of_get_nand_secure_regions(struct nand_chip *chip)
-> > +{
-> > +	struct device_node *dn = nand_get_flash_node(chip);
-> > +	struct property *prop;
-> > +	int length, nr_elem, i, j;
-> > +
-> > +	prop = of_find_property(dn, "secure-regions", &length);
-> > +	if (prop) {
-> 
-> I generally prefer the below logic:
-> 
-> 	if (!prop)
-> 		return 0;
-> 
-> Then you earn an indentation level.
-> 
-> > +		nr_elem = length / sizeof(u64);
-> 
-> of_property_count_elems_of_size() ?
-> 
-
-Okay
-
-> > +		chip->nr_secure_regions = nr_elem / 2;
-> > +
-> > +		chip->secure_regions = kcalloc(nr_elem, sizeof(*chip->secure_regions), GFP_KERNEL);
-> 
-> IIRC ->secure_regions is a structure with lengths and offset, so you
-> don't want to allocate nr_elem but nr_secure_regions number of
-> items here.
-> 
-
-Oh yeah, I missed it.
-
-> > +		if (!chip->secure_regions)
-> > +			return -ENOMEM;
-> > +
-> > +		for (i = 0, j = 0; i < chip->nr_secure_regions; i++, j += 2) {
-> > +			of_property_read_u64_index(dn, "secure-regions", j,
-> > +						   &chip->secure_regions[i].offset);
-> > +			of_property_read_u64_index(dn, "secure-regions", j + 1,
-> > +						   &chip->secure_regions[i].size);
-> > +		}
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  static int rawnand_dt_init(struct nand_chip *chip)
-> >  {
-> >  	struct nand_device *nand = mtd_to_nanddev(nand_to_mtd(chip));
-> >  	struct device_node *dn = nand_get_flash_node(chip);
-> > +	int ret;
-> >  
-> >  	if (!dn)
-> >  		return 0;
-> > @@ -5015,6 +5107,16 @@ static int rawnand_dt_init(struct nand_chip *chip)
-> >  	of_get_nand_ecc_user_config(nand);
-> >  	of_get_nand_ecc_legacy_user_config(chip);
-> >  
-> > +	/*
-> > +	 * Look for secure regions in the NAND chip. These regions are supposed
-> > +	 * to be protected by a secure element like Trustzone. So the read/write
-> > +	 * accesses to these regions will be blocked in the runtime by this
-> > +	 * driver.
-> > +	 */
-> > +	ret = of_get_nand_secure_regions(chip);
-> > +	if (!ret)
-> > +		return ret;
-> 
-> I think we can do this initialization pretty much when we want in the
-> init process as long as it is done before the BBT parsing logic.
-> 
-> Here, besides the fact the memory will not be freed from
-> rawnand_dt_init()'s caller if something goes wrong, we are at a point
-> where nand_cleanup will not be called. nand_cleanup() will only be
-> called if the controller driver encounters an error *after* a
-> successful nand_scan().
-> 
-> We could perhaps move this call to nand_scan() which would simply solve
-> the situation. We don't need it in rawnand_dt_init() as this won't be
-> rawnand specific anyway...
-> 
-
-Okay, will do.
+I don't think this change is aligned with the previous patch (is it ?),
+the PA address we are using here is different from the one programmed
+into the controller registers - either that or I am missing something,
+please let me know.
 
 Thanks,
-Mani
+Lorenzo
 
-> > +
-> >  	/*
-> >  	 * If neither the user nor the NAND controller have
-> > requested a specific
-> >  	 * ECC engine type, we will default to
-> > NAND_ECC_ENGINE_TYPE_ON_HOST. @@ -6068,6 +6170,9 @@ void
-> > nand_cleanup(struct nand_chip *chip) /* Free manufacturer priv data.
-> > */ nand_manufacturer_cleanup(chip);
-> >  
-> > +	/* Free secure regions data */
-> > +	kfree(chip->secure_regions);
-> > +
-> >  	/* Free controller specific allocations after chip
-> > identification */ nand_detach(chip);
-> >  
-> > diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> > index 6b3240e44310..17ddc900a1dc 100644
-> > --- a/include/linux/mtd/rawnand.h
-> > +++ b/include/linux/mtd/rawnand.h
-> > @@ -1036,6 +1036,16 @@ struct nand_manufacturer {
-> >  	void *priv;
-> >  };
-> >  
-> > +/**
-> > + * struct nand_secure_region - NAND secure region structure
-> > + * @offset: Offset of the start of the secure region
-> > + * @size: Size of the secure region
-> > + */
-> > +struct nand_secure_region {
-> > +	u64 offset;
-> > +	u64 size;
-> > +};
-> > +
-> >  /**
-> >   * struct nand_chip - NAND Private Flash Chip Data
-> >   * @base: Inherit from the generic NAND device
-> > @@ -1086,6 +1096,8 @@ struct nand_manufacturer {
-> >   *          NAND Controller drivers should not modify this value,
-> > but they're
-> >   *          allowed to read it.
-> >   * @read_retries: The number of read retry modes supported
-> > + * @secure_regions: Structure containing the secure regions info
-> > + * @nr_secure_regions: Number of secure regions
-> >   * @controller: The hardware controller	structure which is
-> > shared among multiple
-> >   *              independent devices
-> >   * @ecc: The ECC controller structure
-> > @@ -1135,6 +1147,8 @@ struct nand_chip {
-> >  	unsigned int suspended : 1;
-> >  	int cur_cs;
-> >  	int read_retries;
-> > +	struct nand_secure_region *secure_regions;
-> > +	u8 nr_secure_regions;
-> >  
-> >  	/* Externals */
-> >  	struct nand_controller *controller;
+> +	msg->data = data->hwirq;
+> +}
+>  
+> -	irq = irq_find_mapping(msi->domain, hwirq);
+> -	if (!irq)
+> -		return -ENOSPC;
+> +static struct irq_chip rcar_msi_bottom_chip = {
+> +	.name			= "Rcar MSI",
+> +	.irq_ack		= rcar_msi_irq_ack,
+> +	.irq_mask		= rcar_msi_irq_mask,
+> +	.irq_unmask		= rcar_msi_irq_unmask,
+> +	.irq_set_affinity 	= rcar_msi_set_affinity,
+> +	.irq_compose_msi_msg	= rcar_compose_msi_msg,
+> +};
+>  
+> -	for (i = 0; i < nvec; i++) {
+> -		/*
+> -		 * irq_create_mapping() called from rcar_pcie_probe() pre-
+> -		 * allocates descs,  so there is no need to allocate descs here.
+> -		 * We can therefore assume that if irq_find_mapping() above
+> -		 * returns non-zero, then the descs are also successfully
+> -		 * allocated.
+> -		 */
+> -		if (irq_set_msi_desc_off(irq, i, desc)) {
+> -			/* TODO: clear */
+> -			return -EINVAL;
+> -		}
+> -	}
+> +static int rcar_msi_domain_alloc(struct irq_domain *domain, unsigned int virq,
+> +				  unsigned int nr_irqs, void *args)
+> +{
+> +	struct rcar_msi *msi = domain->host_data;
+> +	unsigned int i;
+> +	int hwirq;
+> +
+> +	mutex_lock(&msi->map_lock);
+>  
+> -	desc->nvec_used = nvec;
+> -	desc->msi_attrib.multiple = order_base_2(nvec);
+> +	hwirq = bitmap_find_free_region(msi->used, INT_PCI_MSI_NR, order_base_2(nr_irqs));
+>  
+> -	msg.address_lo = rcar_pci_read_reg(pcie, PCIEMSIALR) & ~MSIFE;
+> -	msg.address_hi = rcar_pci_read_reg(pcie, PCIEMSIAUR);
+> -	msg.data = hwirq;
+> +	mutex_unlock(&msi->map_lock);
+> +
+> +	if (hwirq < 0)
+> +		return -ENOSPC;
+>  
+> -	pci_write_msi_msg(irq, &msg);
+> +	for (i = 0; i < nr_irqs; i++)
+> +		irq_domain_set_info(domain, virq + i, hwirq + i,
+> +				    &rcar_msi_bottom_chip, domain->host_data,
+> +				    handle_edge_irq, NULL, NULL);
+>  
+>  	return 0;
+>  }
+>  
+> -static void rcar_msi_teardown_irq(struct msi_controller *chip, unsigned int irq)
+> +static void rcar_msi_domain_free(struct irq_domain *domain, unsigned int virq,
+> +				  unsigned int nr_irqs)
+>  {
+> -	struct rcar_msi *msi = to_rcar_msi(chip);
+> -	struct irq_data *d = irq_get_irq_data(irq);
+> +	struct irq_data *d = irq_domain_get_irq_data(domain, virq);
+> +	struct rcar_msi *msi = domain->host_data;
+>  
+> -	rcar_msi_free(msi, d->hwirq);
+> -}
+> -
+> -static struct irq_chip rcar_msi_irq_chip = {
+> -	.name = "R-Car PCIe MSI",
+> -	.irq_enable = pci_msi_unmask_irq,
+> -	.irq_disable = pci_msi_mask_irq,
+> -	.irq_mask = pci_msi_mask_irq,
+> -	.irq_unmask = pci_msi_unmask_irq,
+> -};
+> +	mutex_lock(&msi->map_lock);
+>  
+> -static int rcar_msi_map(struct irq_domain *domain, unsigned int irq,
+> -			irq_hw_number_t hwirq)
+> -{
+> -	irq_set_chip_and_handler(irq, &rcar_msi_irq_chip, handle_simple_irq);
+> -	irq_set_chip_data(irq, domain->host_data);
+> +	bitmap_release_region(msi->used, d->hwirq, order_base_2(nr_irqs));
+>  
+> -	return 0;
+> +	mutex_unlock(&msi->map_lock);
+>  }
+>  
+> -static const struct irq_domain_ops msi_domain_ops = {
+> -	.map = rcar_msi_map,
+> +static const struct irq_domain_ops rcar_msi_domain_ops = {
+> +	.alloc	= rcar_msi_domain_alloc,
+> +	.free	= rcar_msi_domain_free,
+> +};
+> +
+> +static struct msi_domain_info rcar_msi_info = {
+> +	.flags	= (MSI_FLAG_USE_DEF_DOM_OPS | MSI_FLAG_USE_DEF_CHIP_OPS |
+> +		   MSI_FLAG_MULTI_PCI_MSI),
+> +	.chip	= &rcar_msi_top_chip,
+>  };
+>  
+> -static void rcar_pcie_unmap_msi(struct rcar_pcie_host *host)
+> +static int rcar_allocate_domains(struct rcar_msi *msi)
+>  {
+> -	struct rcar_msi *msi = &host->msi;
+> -	int i, irq;
+> +	struct rcar_pcie *pcie = &msi_to_host(msi)->pcie;
+> +	struct fwnode_handle *fwnode = dev_fwnode(pcie->dev);
+> +	struct irq_domain *parent;
+> +
+> +	parent = irq_domain_create_linear(fwnode, INT_PCI_MSI_NR,
+> +					  &rcar_msi_domain_ops, msi);
+> +	if (!parent) {
+> +		dev_err(pcie->dev, "failed to create IRQ domain\n");
+> +		return -ENOMEM;
+> +	}
+> +	irq_domain_update_bus_token(parent, DOMAIN_BUS_NEXUS);
+>  
+> -	for (i = 0; i < INT_PCI_MSI_NR; i++) {
+> -		irq = irq_find_mapping(msi->domain, i);
+> -		if (irq > 0)
+> -			irq_dispose_mapping(irq);
+> +	msi->domain = pci_msi_create_irq_domain(fwnode, &rcar_msi_info, parent);
+> +	if (!msi->domain) {
+> +		dev_err(pcie->dev, "failed to create MSI domain\n");
+> +		irq_domain_remove(parent);
+> +		return -ENOMEM;
+>  	}
+>  
+> -	irq_domain_remove(msi->domain);
+> +	return 0;
+>  }
+>  
+> -static void rcar_pcie_hw_enable_msi(struct rcar_pcie_host *host)
+> +static void rcar_free_domains(struct rcar_msi *msi)
+>  {
+> -	struct rcar_pcie *pcie = &host->pcie;
+> -	struct device *dev = pcie->dev;
+> -	struct resource res;
+> +	struct irq_domain *parent = msi->domain->parent;
+>  
+> -	if (WARN_ON(of_address_to_resource(dev->of_node, 0, &res)))
+> -		return;
+> -
+> -	/* setup MSI data target */
+> -	rcar_pci_write_reg(pcie, lower_32_bits(res.start) | MSIFE, PCIEMSIALR);
+> -	rcar_pci_write_reg(pcie, upper_32_bits(res.start), PCIEMSIAUR);
+> -
+> -	/* enable all MSI interrupts */
+> -	rcar_pci_write_reg(pcie, 0xffffffff, PCIEMSIIER);
+> +	irq_domain_remove(msi->domain);
+> +	irq_domain_remove(parent);
+>  }
+>  
+>  static int rcar_pcie_enable_msi(struct rcar_pcie_host *host)
+> @@ -698,29 +675,24 @@ static int rcar_pcie_enable_msi(struct rcar_pcie_host *host)
+>  	struct rcar_pcie *pcie = &host->pcie;
+>  	struct device *dev = pcie->dev;
+>  	struct rcar_msi *msi = &host->msi;
+> -	int err, i;
+> -
+> -	mutex_init(&msi->lock);
+> +	struct resource res;
+> +	int err;
+>  
+> -	msi->chip.dev = dev;
+> -	msi->chip.setup_irq = rcar_msi_setup_irq;
+> -	msi->chip.setup_irqs = rcar_msi_setup_irqs;
+> -	msi->chip.teardown_irq = rcar_msi_teardown_irq;
+> +	mutex_init(&msi->map_lock);
+> +	spin_lock_init(&msi->mask_lock);
+>  
+> -	msi->domain = irq_domain_add_linear(dev->of_node, INT_PCI_MSI_NR,
+> -					    &msi_domain_ops, &msi->chip);
+> -	if (!msi->domain) {
+> -		dev_err(dev, "failed to create IRQ domain\n");
+> -		return -ENOMEM;
+> -	}
+> +	err = of_address_to_resource(dev->of_node, 0, &res);
+> +	if (err)
+> +		return err;
+>  
+> -	for (i = 0; i < INT_PCI_MSI_NR; i++)
+> -		irq_create_mapping(msi->domain, i);
+> +	err = rcar_allocate_domains(msi);
+> +	if (err)
+> +		return err;
+>  
+>  	/* Two irqs are for MSI, but they are also used for non-MSI irqs */
+>  	err = devm_request_irq(dev, msi->irq1, rcar_pcie_msi_irq,
+>  			       IRQF_SHARED | IRQF_NO_THREAD,
+> -			       rcar_msi_irq_chip.name, host);
+> +			       rcar_msi_bottom_chip.name, host);
+>  	if (err < 0) {
+>  		dev_err(dev, "failed to request IRQ: %d\n", err);
+>  		goto err;
+> @@ -728,19 +700,26 @@ static int rcar_pcie_enable_msi(struct rcar_pcie_host *host)
+>  
+>  	err = devm_request_irq(dev, msi->irq2, rcar_pcie_msi_irq,
+>  			       IRQF_SHARED | IRQF_NO_THREAD,
+> -			       rcar_msi_irq_chip.name, host);
+> +			       rcar_msi_bottom_chip.name, host);
+>  	if (err < 0) {
+>  		dev_err(dev, "failed to request IRQ: %d\n", err);
+>  		goto err;
+>  	}
+>  
+> -	/* setup MSI data target */
+> -	rcar_pcie_hw_enable_msi(host);
+> +	/* disable all MSIs */
+> +	rcar_pci_write_reg(pcie, 0, PCIEMSIIER);
+> +
+> +	/*
+> +	 * Setup MSI data target using RC base address address, which
+> +	 * is guaranteed to be in the low 32bit range on any RCar HW.
+> +	 */
+> +	rcar_pci_write_reg(pcie, lower_32_bits(res.start) | MSIFE, PCIEMSIALR);
+> +	rcar_pci_write_reg(pcie, upper_32_bits(res.start), PCIEMSIAUR);
+>  
+>  	return 0;
+>  
+>  err:
+> -	rcar_pcie_unmap_msi(host);
+> +	rcar_free_domains(msi);
+>  	return err;
+>  }
+>  
+> @@ -754,7 +733,7 @@ static void rcar_pcie_teardown_msi(struct rcar_pcie_host *host)
+>  	/* Disable address decoding of the MSI interrupt, MSIFE */
+>  	rcar_pci_write_reg(pcie, 0, PCIEMSIALR);
+>  
+> -	rcar_pcie_unmap_msi(host);
+> +	rcar_free_domains(&host->msi);
+>  }
+>  
+>  static int rcar_pcie_get_resources(struct rcar_pcie_host *host)
+> @@ -1007,8 +986,17 @@ static int __maybe_unused rcar_pcie_resume(struct device *dev)
+>  	dev_info(dev, "PCIe x%d: link up\n", (data >> 20) & 0x3f);
+>  
+>  	/* Enable MSI */
+> -	if (IS_ENABLED(CONFIG_PCI_MSI))
+> -		rcar_pcie_hw_enable_msi(host);
+> +	if (IS_ENABLED(CONFIG_PCI_MSI)) {
+> +		struct resource res;
+> +		u32 val;
+> +
+> +		of_address_to_resource(dev->of_node, 0, &res);
+> +		rcar_pci_write_reg(pcie, upper_32_bits(res.start), PCIEMSIAUR);
+> +		rcar_pci_write_reg(pcie, lower_32_bits(res.start) | MSIFE, PCIEMSIALR);
+> +
+> +		bitmap_to_arr32(&val, host->msi.used, INT_PCI_MSI_NR);
+> +		rcar_pci_write_reg(pcie, val, PCIEMSIIER);
+> +	}
+>  
+>  	rcar_pcie_hw_enable(host);
+>  
+> -- 
+> 2.29.2
 > 
-> Thanks,
-> Miquèl
