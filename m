@@ -2,144 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F3B350C11
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 03:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D24BD350C16
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 03:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232786AbhDABpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 21:45:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49272 "EHLO mail.kernel.org"
+        id S232579AbhDABsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 21:48:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230073AbhDABo6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 21:44:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 826F160FE9;
-        Thu,  1 Apr 2021 01:44:55 +0000 (UTC)
+        id S229497AbhDABrw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 21:47:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E06006105A;
+        Thu,  1 Apr 2021 01:47:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617241498;
-        bh=6uAZf7jnS4WPD6/B+kSOrMJE0qkekO89/Q0nhpXiQ2s=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=H763UPfOd5WptWDE3TKkg8T7g9iOn46oHu6L+1MxxNlyWu/Kp2e0qxo/14pnDlgm+
-         iJkWoK3x3zM3GD2Wnyw2lSG2ijTCs4bKSg1eMs2YYfRjMwq8MYNRKvjryqmxJcOq34
-         0QU10E2uV8aLkmtWrciKjBn5JAwdFmQUf2ojEuiSn5rG3XE3VKeuWABNAYPKlcEDZg
-         Cs4CfdMr9spK1JfcnDWL1+Olvw9z0PW/03O0XH6T4YLowqQC+7ltFxTbUioU601joG
-         r5dMUpFfkiCKRxxHME851MT6NsfCGGaRf2/yXzmYLXGE0vcOd3/+sNx9N6Hz57efFj
-         hiZRgn8crKfgw==
-Date:   Thu, 1 Apr 2021 10:44:52 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [RFC PATCH -tip 3/3] x86/kprobes,orc: Unwind optprobe
- trampoline correctly
-Message-Id: <20210401104452.e442afd995d32afecf991301@kernel.org>
-In-Reply-To: <20210331155736.qyuph7sgabmqqmq3@treble>
-References: <161716946413.721514.4057380464113663840.stgit@devnote2>
-        <161716949640.721514.14252504351086671126.stgit@devnote2>
-        <20210331155736.qyuph7sgabmqqmq3@treble>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        s=k20201202; t=1617241672;
+        bh=G2yJZdijShzF6Eiq4JKJhqU3MQLiI4jRpJuwzIzshZ0=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=AKswf+F8LN3LqcMldQgErtoNOnRl5HRmeuT6m5JJ2RlEejiC5x4NryC2d72ZSdNpW
+         WkqIgNFZq8QlEU++4L55a9FVfCBRRNpZ3P4dgb7LgIPZgMHx+HC39KJsGNcWLJfEAP
+         /50rDwXXy3MxlmVL0bwpwouIp9+H4wKvpLse2WmB2SbEw4cqOdxxaLmVFhQ1VoTCVO
+         GVrvGnEss/3CQ65qnkw9cDAwo56Xn/xvGUX0dNazHWp1z/5fM3kjgskEnR8DM3OSKG
+         rbIaE5ldq7kqQwtIqnWiK0SI1/mjRAvne9ep2pd0kcXdlN0AZaQa058z3fEbz2Fy/z
+         PFQe25hMcGSxA==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YGQNyGDkAbUXRYtA@atomide.com>
+References: <20210329164222.26794-1-dariobin@libero.it> <161707108197.3012082.13148389244272034996@swboyd.mtv.corp.google.com> <YGQNyGDkAbUXRYtA@atomide.com>
+Subject: Re: [PATCH v3 0/4] clk: ti: add am33xx spread spectrum clock support
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Dario Binacchi <dariobin@libero.it>, linux-kernel@vger.kernel.org,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        =?utf-8?q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tero Kristo <kristo@kernel.org>, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-omap@vger.kernel.org
+To:     Tony Lindgren <tony@atomide.com>
+Date:   Wed, 31 Mar 2021 18:47:50 -0700
+Message-ID: <161724167065.2260335.15543151418752525635@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 31 Mar 2021 10:57:36 -0500
-Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+Quoting Tony Lindgren (2021-03-30 22:51:04)
+> * Stephen Boyd <sboyd@kernel.org> [210330 02:25]:
+> > Quoting Dario Binacchi (2021-03-29 09:42:17)
+> > >=20
+> > > As reported by the TI spruh73x RM, MPU and LCD modules support spread
+> > > spectrum clocking (SSC) on their output clocks. SSC is used to spread
+> > > the spectral peaking of the clock to reduce any electromagnetic
+> > > interference (EMI) that may be caused due to the clock=E2=80=99s fund=
+amental
+> > > or any of its harmonics.
+> > > The series allows you to enable and adjust the spread spectrum clocki=
+ng
+> > > for all am33xx PLLs for which it is supported.
+> > >=20
+> >=20
+> > What is your merge strategy? Should all the patches go through clk tree?
+> > Or you'll send via arm-soc?
+>=20
+> Probably best to just merge all via the clk tree as that's where most of
+> the changes are.
+>=20
 
-> On Wed, Mar 31, 2021 at 02:44:56PM +0900, Masami Hiramatsu wrote:
-> > +#ifdef CONFIG_UNWINDER_ORC
-> > +unsigned long recover_optprobe_trampoline(unsigned long addr, unsigned long *sp)
-> > +{
-> > +	unsigned long offset, entry, probe_addr;
-> > +	struct optimized_kprobe *op;
-> > +	struct orc_entry *orc;
-> > +
-> > +	entry = find_kprobe_optinsn_slot_entry(addr);
-> > +	if (!entry)
-> > +		return addr;
-> > +
-> > +	offset = addr - entry;
-> > +
-> > +	/* Decode arg1 and get the optprobe */
-> > +	op = (void *)extract_set_arg1((void *)(entry + TMPL_MOVE_IDX));
-> > +	if (!op)
-> > +		return addr;
-> > +
-> > +	probe_addr = (unsigned long)op->kp.addr;
-> > +
-> > +	if (offset < TMPL_END_IDX) {
-> > +		orc = orc_find((unsigned long)optprobe_template_func + offset);
-> > +		if (!orc || orc->sp_reg != ORC_REG_SP)
-> > +			return addr;
-> > +		/*
-> > +		 * Since optprobe trampoline doesn't push caller on the stack,
-> > +		 * need to decrement 1 stack entry size
-> > +		 */
-> > +		*sp += orc->sp_offset - sizeof(long);
-> > +		return probe_addr;
-> > +	} else {
-> > +		return probe_addr + offset - TMPL_END_IDX;
-> > +	}
-> > +}
-> > +#endif
-> 
-> Hm, I'd like to avoid intertwining kprobes and ORC like this.
-> 
-> ORC unwinds other generated code by assuming the generated code uses a
-> frame pointer.  Could we do that here?
-
-No, because the optprobe is not a function call. I considered to make
-it call, but since it has to execute copied instructions directly on
-the trampoline code (without changing stack frame) it is not possible.
-
-> With CONFIG_FRAME_POINTER, unwinding works because SAVE_REGS_STRING has
-> ENCODE_FRAME_POINTER, but that's not going to work for ORC.
-
-Even in that case, the problem is that any interrupt can happen
-before doing ENCODE_FRAME_POINTER. I think this ENCODE_FRAME_POINTER
-in the SAVE_REGS_STRING is for probing right before the target
-function setup a frame pointer.
-
-> Instead of these patches, can we 'push %rbp; mov %rsp, %rbp' at the
-> beginning of the template and 'pop %rbp' at the end?
-
-No, since the trampoline code is not called, it is jumped into.
-This means there is no "return address" in the stack. If we setup
-the frame, there is no return address, thus it might stop there.
-(Moreover, optprobe can copy multiple instructins on trampoline
-buffer, since relative jump consumes 5bytes. where is the "return address"?)
-
-> 
-> I guess SAVE_REGS_STRING would need to be smart enough to push the
-> original saved version of %rbp.  Of course then that breaks the
-> kretprobe_trampoline() usage, so it may need to be a separate macro.
-> 
-> [ Or make the same change to kretprobe_trampoline().  Then the other
->   patch set wouldn't be needed either ;-) ]
-
-Hmm, I don't think it is a good idea which making such change on the
-optimized (hot) path only for the stack tracing. Moreover, that maybe
-not transparent with the stack made by int3.
-
-> Of course the downside is, when you get an interrupt during the frame
-> pointer setup, unwinding is broken.  But I think that's acceptable for
-> generated code.  We've lived with that limitation for all code, with
-> CONFIG_FRAME_POINTER, for many years.
-
-But above code can fix such issue too. To fix a corner case, non-generic
-code may be required, even it is not so simple.
-
-> 
-> Eventually we may want to have a way to register generated code (and the
-> ORC for it).
-> 
-> -- 
-> Josh
-> 
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Ok. If nobody reviews/acks the last patch in a few days I'll merge the
+pile through clk tree.
