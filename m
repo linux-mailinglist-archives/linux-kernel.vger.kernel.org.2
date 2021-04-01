@@ -2,194 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62CAA3521E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDD0D3521EA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 23:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235267AbhDAVvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 17:51:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56368 "EHLO
+        id S235121AbhDAVx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 17:53:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233974AbhDAVvV (ORCPT
+        with ESMTP id S233974AbhDAVxz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 17:51:21 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15BD0C0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 14:51:20 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id j3so3538087edp.11
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 14:51:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=qr/zVXs4BBK3bX/o8KKs0/9ybzhhmiWFwZmB2BtSGVQ=;
-        b=kQQwtFTWjnxgx2QvhXYC533iMgthpb5COZPCB0XfISupEww/VuHydSCCbVZms3TmLV
-         4EKLMNsjVdSEezhDdCZgZipHY3FymwQwIdx3DqjDkbaonD4BqHbaYqbJaYZLJFdwypwm
-         k6oHguxYl0cKXOYRvzjzHzQpLoVoDMzEVv9uQthprYrHmkannz5+1JRfBVx7uIxOj/BU
-         BPlZ3kfI3Y9DwtKql+2bXyJHx6Uinn8gcDy3Yjq/1eY4kvQryiYeOfYIkgZNOK4ktJvL
-         3VMKoKMFU2SwQGNTK7QMvSQtxop2mORZqL2zC+i8cdt7/3pup39Sx13LAqIvzgoXBrkU
-         om3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qr/zVXs4BBK3bX/o8KKs0/9ybzhhmiWFwZmB2BtSGVQ=;
-        b=QnRin45LTZIZYHOQnVjOTF8uTHzJY4tjIlJxdssNfvuf9aHk3z9bxFrnZglA0UBVrz
-         BOsu2f/pk/gvoAiLw6pKu1Hrfmsv8KmEqnKvlZwzqNIqE7gcs+KHl2Z72UluRAxmqiQN
-         9y1uA24Cvfj7/xBXrBWFY+y5AVOfpg/IhWrl0mRYoshXPB11JiEzkLuVKU0uOGjJjccS
-         AyG7wx9ci+accLGk3z/fuF+uQRuy4K+zGCszt3ihuJur4RrBneRDNQ4CAlLNYbmmmogx
-         NRhMunrZr2Fj9ntamCJXQd/Qm8IkOpsgUOahaY7F0ZlMWSubpUIcHfAT7YbctwCn+Z0B
-         QoOw==
-X-Gm-Message-State: AOAM533T3BDDVk200uZdO9ArT0aN+k90LG/+nYIPCtlzARAKIQspghw2
-        dhE0Gpmy66vImNpKPQ2tMY4=
-X-Google-Smtp-Source: ABdhPJy4IZaKdl/6YddAP+of+xBJDZHvqjdUtGoyUDBS4e+lSmMu9KtzO1uQ2W1TvLm3ARmZnZIvzg==
-X-Received: by 2002:aa7:cb90:: with SMTP id r16mr12410133edt.139.1617313878783;
-        Thu, 01 Apr 2021 14:51:18 -0700 (PDT)
-Received: from agape.jhs ([5.171.72.8])
-        by smtp.gmail.com with ESMTPSA id q20sm3336517ejs.41.2021.04.01.14.51.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 14:51:18 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 23:51:15 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     gregkh@linuxfoundation.org, joe@perches.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 08/49] staging: rtl8723bs: remove RT_TRACE logs in
- core/rtw_cmd.c
-Message-ID: <20210401215114.GA15992@agape.jhs>
-References: <cover.1617268327.git.fabioaiuto83@gmail.com>
- <7f51432d99459d79742639341f107115f0c224c5.1617268327.git.fabioaiuto83@gmail.com>
- <20210401095017.GR2065@kadam>
- <20210401135536.GA1691@agape.jhs>
- <20210401143235.GV2065@kadam>
+        Thu, 1 Apr 2021 17:53:55 -0400
+Received: from mail.pqgruber.com (mail.pqgruber.com [IPv6:2a05:d014:575:f70b:4f2c:8f1d:40c4:b13e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2186DC0613E6;
+        Thu,  1 Apr 2021 14:53:55 -0700 (PDT)
+Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
+        by mail.pqgruber.com (Postfix) with ESMTPSA id 48BF7C729F1;
+        Thu,  1 Apr 2021 23:53:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
+        s=mail; t=1617314033;
+        bh=0N8Xv5M2r8DuA0G72Eh5WJ4TQMU7XOSE5/H0mYt14VA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jZNJzO5feCcaWCsJY6YrHmOqx2LgB3TJkW0gS09OzzdJHoA4LttrhVahRm3i9sE9V
+         yc2sWiZxQa9cE+T8zNFiNtpF78P6ZgbM4tkZSwyeq2QAPWhDYxI5lYoW0dLQpAWoou
+         7OmqfWqPsiQcRVeX0M9QBH5OaNpkpo9mEqQqPlss=
+Date:   Thu, 1 Apr 2021 23:53:51 +0200
+From:   Clemens Gruber <clemens.gruber@pqgruber.com>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 4/7] pwm: pca9685: Support staggered output ON times
+Message-ID: <YGZA75SDBpt3Wt1Z@workstation.tuxnet>
+References: <20210329125707.182732-1-clemens.gruber@pqgruber.com>
+ <20210329125707.182732-4-clemens.gruber@pqgruber.com>
+ <20210329170357.par7c3izvtmtovlj@pengutronix.de>
+ <YGILdjZBCc2vVlRd@workstation.tuxnet>
+ <20210329180206.rejl32uajslpvbgi@pengutronix.de>
+ <YGRqZsi4WApZcwIT@workstation.tuxnet>
+ <YGR/ZYj+GZIonU/J@workstation.tuxnet>
+ <20210401205936.nnraoeeyo5nx3elf@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210401143235.GV2065@kadam>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210401205936.nnraoeeyo5nx3elf@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 05:32:36PM +0300, Dan Carpenter wrote:
-> On Thu, Apr 01, 2021 at 03:55:37PM +0200, Fabio Aiuto wrote:
+On Thu, Apr 01, 2021 at 10:59:36PM +0200, Uwe Kleine-König wrote:
+> On Wed, Mar 31, 2021 at 03:55:49PM +0200, Clemens Gruber wrote:
+> > On Wed, Mar 31, 2021 at 02:26:14PM +0200, Clemens Gruber wrote:
+> > > On Mon, Mar 29, 2021 at 08:02:06PM +0200, Uwe Kleine-König wrote:
+> > > > On Mon, Mar 29, 2021 at 07:16:38PM +0200, Clemens Gruber wrote:
+> > > > > On Mon, Mar 29, 2021 at 07:03:57PM +0200, Uwe Kleine-König wrote:
+> > > > > > On Mon, Mar 29, 2021 at 02:57:04PM +0200, Clemens Gruber wrote:
+> > > > > > > The PCA9685 supports staggered LED output ON times to minimize current
+> > > > > > > surges and reduce EMI.
+> > > > > > > When this new option is enabled, the ON times of each channel are
+> > > > > > > delayed by channel number x counter range / 16, which avoids asserting
+> > > > > > > all enabled outputs at the same counter value while still maintaining
+> > > > > > > the configured duty cycle of each output.
+> > > > > > > 
+> > > > > > > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+> > > > > > 
+> > > > > > Is there a reason to not want this staggered output? If it never hurts I
+> > > > > > suggest to always stagger and drop the dt property.
+> > > > > 
+> > > > > There might be applications where you want multiple outputs to assert at
+> > > > > the same time / to be synchronized.
+> > > > > With staggered outputs mode always enabled, this would no longer be
+> > > > > possible as they are spread out according to their channel number.
+> > > > > 
+> > > > > Not sure how often that usecase is required, but just enforcing the
+> > > > > staggered mode by default sounds risky to me.
+> > > > 
+> > > > There is no such guarantee in the PWM framework, so I don't think we
+> > > > need to fear breaking setups. Thierry?
+> > > 
+> > > Still, someone might rely on it? But let's wait for Thierry's opinion.
+> > > 
+> > > > 
+> > > > One reason we might not want staggering is if we have a consumer who
+> > > > cares about config transitions. (This however is moot it the hardware
+> > > > doesn't provide sane transitions even without staggering.)
+> > > > 
+> > > > Did I already ask about races in this driver? I assume there is a
+> > > > free running counter and the ON and OFF registers just define where in
+> > > > the period the transitions happen, right? Given that changing ON and OFF
+> > > > needs two register writes probably all kind of strange things can
+> > > > happen, right? (Example thought: for simplicity's sake I assume ON is
+> > > > always 0. Then if you want to change from OFF = 0xaaa to OFF = 0xccc we
+> > > > might see a period with 0xacc. Depending on how the hardware works we
+> > > > might even see 4 edges in a single period then.)
+> > > 
+> > > Yes, there is a free running counter from 0 to 4095.
+> > > And it is probably true, that there can be short intermediate states
+> > > with our two register writes.
+> > > 
+> > > There is a separate mode "Update on ACK" (MODE2 register, bit 3 "OCH"),
+> > > which is 0 by default (Outputs change on STOP command) but could be set
+> > > to 1 (Outputs change on ACK):
+> > > "Update on ACK requires all 4 PWM channel registers to be loaded before
+> > > outputs will change on the last ACK."
 > > 
-> > Hi Dan,
-> > 
-> > I have the following:
-> > 
-> >  	if (rtw_createbss_cmd(adapter) != _SUCCESS)
-> > -		RT_TRACE(_module_rtl871x_mlme_c_, _drv_err_, ("Error =>rtw_createbss_cmd status FAIL\n"));
-> > +	;
-> > 
-> > will I leave
-> > 
-> > 	if (rtw_createbss_cmd(adapter) != _SUCCESS)
-> > 		;
-> > 
-> > or just
-> > 
-> > 	rtw_createbss_cmd(adapter);
-> > 
-> > ?
-> > 
-> > what's best from the static analysis point of view?
-> > 
-> > smatch and sparse says nothing about that.
+> > This would require the auto-increment feature to be enabled, then
+> > multiple registers could be written before the STOP condition:
+> > LEDn_ON_L, LEDn_ON_H, LEDn_OFF_L & LEDn_OFF_H
+> > (With OCH=0 in MODE2)
 > 
-> rtw_createbss_cmd() can only fail if this allocation fails:
-> 
-> 	pcmd = rtw_zmalloc(sizeof(struct cmd_obj));
-> 
-> In current kernels, that size of small allocation will never fail.  But
-> we alway write code as if every allocation can fail.
-> 
-> Normally when an allocation fails then we want to return -ENOMEM and
-> clean up.  But this code is an event handler for firmware events and
-> there isn't any real clean up to do.  Since there is nothing we can do
-> then this is basically working and fine.
-> 
-> How I would write this is:
-> 
-> 			ret = rtw_createbss_cmd(adapter);
-> 			if (ret != _SUCCESS)
-> 				goto unlock;
-> 		}
-> 	}
-> unlock:
-> 	spin_unlock_bh(&pmlmepriv->lock);
-> }
-> 
-> That doesn't change how the code works but it signals to the the reader
-> what your intention is.  If we just remove the error handling then it's
-> ambiguous.
-> 
-> 			rtw_createbss_cmd(adapter);
-> 		}
-> 	}
-> 	<-- Futurue programmer decides to add code here then figuring
->             that rtw_createbss_cmd() can fail is a problem.
-> 
-> 	spin_unlock_bh(&pmlmepriv->lock);
-> }
-> 
-> But for something like this which is maybe more subtle than just a
-> straight delete of lines of code, then consider pulling it out into its
-> own separate patch.  That makes it easier to review.  Put all the stuff
-> that I said in the commit message:
-> 
-> ---
-> [PATCH] tidy up some error handling
-> 
-> The RT_TRACE() output is not useful so we want to delete it.  In this
-> case there is no cleanup for rtw_createbss_cmd() required or even
-> possible.  I've deleted the RT_TRACE() output and added a goto unlock
-> to show that we can't continue if rtw_createbss_cmd() fails.
-> 
-> ---
-> 
-> > 
-> > Checkpatch too seems to ignore it, maybe the first one is good,
-> > but I would like to be sure before sending another over 40 patches
-> > long patchset.
-> 
-> Don't send 40 patches.  Just send 10 at a time until you get a better
-> feel for which ones are going to get applied or not. :P  It's not
-> arbitrary, and I'm definitely not trying to NAK your patches.  Once you
-> learn the rules I hope that it's predictable and straight forward.
-> 
-> regards,
-> dan carpenter
-> 
+> Maybe a continued START would work, too?!
 
-Hi Dan,
+Yes, maybe. But according to the datasheet bus transaction examples,
+it's enough to have one START condition and write multiple (continuous)
+registers using the auto-increment feature. And repeated START does not
+seem to be supported via regmap..?
 
-sorry again. In this case:
-
-@@ -828,10 +829,11 @@ void rtw_surveydone_event_callback(struct adapter *adapter, u8 *pbuf)
- 
-                                        pmlmepriv->fw_state = WIFI_ADHOC_MASTER_STATE;
- 
--                                       if (rtw_createbss_cmd(adapter) != _SUCCESS)
--                                               ;
--
-                                        pmlmepriv->to_join = false;
-+
-+                                       ret = rtw_createbss_cmd(adapter);
-+                                       if (ret != _SUCCESS)
-+                                               goto unlock;
-                                }
-                        }
-
-I decided to move the set to false of pmlepriv->to_join before 
-the rtw_createbss_cmd(). In old code that statement was executed
-unconditionally and seems not to be tied to the failure of 
-rtw_createbss_cmd().
-
-The eventual goto would skip this instruction so I moved it
-before.
-
-What do you think?
-
-Thank you,
-
-fabio
+Clemens
