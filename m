@@ -2,245 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F302351239
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1885035123C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233884AbhDAJ2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 05:28:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33741 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233818AbhDAJ2l (ORCPT
+        id S233897AbhDAJ30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 05:29:26 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:58049 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233718AbhDAJ3M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 05:28:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617269320;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CdAJIUk4E0rZzWrFLM7OQdm2JVVzi0mVz8CuYgR6iRQ=;
-        b=ToJ0UwdOd4Qh4AGmWgAdUtFFtLWpwYKTAdqUFsrrWdB8U6G/hqzYeSlJvJJAlJXdr3buYK
-        sU0pzgzb6HUEGcyXpLJErLkTthybYHZV9Ua6In6wat7cqhcpg1dAYcQ1WDZzGkqgjNJa75
-        IgPtvHOyA7ngF8uXw8GVCHUj8J01gJU=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-207-VZmdR_8JPFygp3hgPWArKw-1; Thu, 01 Apr 2021 05:28:39 -0400
-X-MC-Unique: VZmdR_8JPFygp3hgPWArKw-1
-Received: by mail-ed1-f69.google.com with SMTP id y10so2528588edr.20
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 02:28:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CdAJIUk4E0rZzWrFLM7OQdm2JVVzi0mVz8CuYgR6iRQ=;
-        b=WDerrHzRjjZenfP6cd+dIReM85eAuhwYeqDG1AACxYatQ2WhVeYAtkiqZ8kuDZg4mx
-         wccwkfDCTK2EAh+kzA9dWu9pGGlrXcs7wwHjvCSVfm2CXlpCxSjrNJIDHLm88OlNCsCm
-         z1pzEPen8/0/+Ub0ZHkNi7Qx7wdr65pmWBS6hN1lJmsZrE5ill2FJHLV9lRPm7p8bW4V
-         79T1Hr/vOK2HiWYoM4oOvWUTx5Sc0uLXFn5I4HE+KVei8sb+TJFO5qu+oSsmfKMMgB0N
-         4i4QGK7jGUPJxO9BcSuQtv6KlfkDtpiFupOpY3ZjcEzRwCJJ9LRXuiwe+SxcJ4vjXwlj
-         r0yQ==
-X-Gm-Message-State: AOAM530QfbNX7LD3hoj5i+d4XjgX9qlRQr8v9J2z6VIHbgM38IFnq+28
-        C5E1HIx84fL8DZAiObC4+c55zmIh/fWKkzHBZQRGzNirDHc8i0l7AV+MWFuekx+w7eaEPc7E8Sk
-        FGtM3cvQ7Qbz35a4EHcY+wTYV
-X-Received: by 2002:a17:906:e16:: with SMTP id l22mr8099315eji.173.1617269317930;
-        Thu, 01 Apr 2021 02:28:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzIlGvqJGxpSAvkxwuKoS+tfRvPYTtyqOWPe5X29pYmiMYvtWLlSZhmpHnmVGL4jZJzfGGOcA==
-X-Received: by 2002:a17:906:e16:: with SMTP id l22mr8099291eji.173.1617269317705;
-        Thu, 01 Apr 2021 02:28:37 -0700 (PDT)
-Received: from localhost.localdomain ([194.230.155.195])
-        by smtp.gmail.com with ESMTPSA id t17sm3215284edr.36.2021.04.01.02.28.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Apr 2021 02:28:37 -0700 (PDT)
-Subject: Re: [PATCH v2 1/4] kvm: cpuid: adjust the returned nent field of
- kvm_cpuid2 for KVM_GET_SUPPORTED_CPUID and KVM_GET_EMULATED_CPUID
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
-        Alexander Graf <graf@amazon.com>,
-        Andrew Jones <drjones@redhat.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20210331122649.38323-1-eesposit@redhat.com>
- <20210331122649.38323-2-eesposit@redhat.com> <YGS/7hQo91cVuXbB@google.com>
-From:   Emanuele Giuseppe Esposito <eesposit@redhat.com>
-Message-ID: <c0f9e1b6-e751-a06f-e753-6603f17a6bce@redhat.com>
-Date:   Thu, 1 Apr 2021 11:28:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 1 Apr 2021 05:29:12 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MZTVu-1l5R442Tfa-00WXbO; Thu, 01 Apr 2021 11:29:10 +0200
+Received: by mail-ot1-f44.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so1578861otn.1;
+        Thu, 01 Apr 2021 02:29:10 -0700 (PDT)
+X-Gm-Message-State: AOAM531X1hlVm1C9ie4Z40gt/SkIsQSb70MCnuGEZqHdPbWM2VR/WgDA
+        MZdLI+eo/RuPZnR5DNt5pP4UW0CoZFamW+44oTg=
+X-Google-Smtp-Source: ABdhPJx3QsdoGUsw9pHERckr3f5KeRsspxanWz7xZVoNUPIClyIXxiSoe95afl7728tbFkutzVy8X1AghVyQZnowz7E=
+X-Received: by 2002:a9d:758b:: with SMTP id s11mr6210224otk.305.1617269349103;
+ Thu, 01 Apr 2021 02:29:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YGS/7hQo91cVuXbB@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210401003153.97325-1-yury.norov@gmail.com> <CAHp75VdzRXPsQ7Jvivm5UU+mfkgQ_0rmnegp04v-v9fwrjdrqg@mail.gmail.com>
+In-Reply-To: <CAHp75VdzRXPsQ7Jvivm5UU+mfkgQ_0rmnegp04v-v9fwrjdrqg@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 1 Apr 2021 11:28:53 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2EGc4BS7UTyC6=ySgLEoyqbswh1Gh_=M21NmhRThssYQ@mail.gmail.com>
+Message-ID: <CAK8P3a2EGc4BS7UTyC6=ySgLEoyqbswh1Gh_=M21NmhRThssYQ@mail.gmail.com>
+Subject: Re: [PATCH v6 00/12] lib/find_bit: fast path for small bitmaps
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Yury Norov <yury.norov@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux-SH <linux-sh@vger.kernel.org>,
+        Alexey Klimov <aklimov@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:F++a8GMABKVEPdySZrUnxiUUPOgM4EtC7DjMKJdw+Ms7eTAy49b
+ pUxu4d/nm1Vxv9UAV5LlF4z3pbaKutNbhWmftjr2/V2+P4voffkpav3IoXIIQ7TkVPvxc8/
+ YMgudxGSyOJQlI1UtaEElZfU6SqnGxnqoAK8veHkCMaCdwAwTFJABcyh9iEvCQHRCBvIYjH
+ zkDpdvFJ5+BbEeRTlBRVg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Ty5hi0VrPLo=:pz8rtaQK2hOPItwSD6pNce
+ sQPqr+A6pw+MliM3wbRYr+uD2Cts0vdrOWznMwBYVBny6neaEl3Uq6wTowLI+LwvFMA7V+Htq
+ 5tEl+iXX8+EJSH5gjgdsme4HcA/EVLdk1ZE1o/eWLKWj5Sk1TgaqZkVKDaCY0ZCxIAPBnVLNM
+ wwBuY5MRfoljUTTPE6xtAPKTnYP1Ad5j/V9j0iBCjw7nFAGyIAE7rHgHiKJldlZvT7nYHIspH
+ NkLU/wTrJPa36MWq1v2fR3CTUAwj1/s05V4Qi8V+j76hnbpIiVj2ZlmFJLegmal5a7MAIFINe
+ p4XdGY5rDAVRpQQalim0mmQg0bOsUd+B2UHGIAn3Kn/wj7WyCEsBcdXnAUh72c3BeomBtfM0c
+ olQtU1LSq7rFk51ETEcB+1Eky9ZYJLK5d9SsM1xRAn/ooVAeWQCTGUS42t4PzKykJd+u0Qgi6
+ Y90F2oRfDHv1fQkoC4crINxVL3cGlUj8sCgtago68EVfqbHjpD8gCBYJ3VCvUON0zvq94nNNH
+ N4sEEkVDmRCIncpeWqREYWwdnRPamqN4Q9uGG8QoustwrhVbPOmC/QEyFm8+QOdlYN3RNyFVV
+ Ucs/mvFd5BMn3rPCx4Rb9ywe85zBh/Gmiw
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 1, 2021 at 11:16 AM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Thu, Apr 1, 2021 at 3:36 AM Yury Norov <yury.norov@gmail.com> wrote:
+> >
+> > Bitmap operations are much simpler and faster in case of small bitmaps
+> > which fit into a single word. In linux/bitmap.c we have a machinery that
+> > allows compiler to replace actual function call with a few instructions
+> > if bitmaps passed into the function are small and their size is known at
+> > compile time.
+> >
+> > find_*_bit() API lacks this functionality; but users will benefit from it
+> > a lot. One important example is cpumask subsystem when
+> > NR_CPUS <= BITS_PER_LONG.
+>
+> Cool, thanks!
+>
+> I guess it's assumed to go via Andrew's tree.
+>
+> But after that since you are about to be a maintainer of this, I think
+> it would make sense to send PRs directly to Linus. I would recommend
+> creating an official tree (followed by an update in the MAINTAINERS)
+> and connecting it to Linux next (usually done by email to Stephen).
 
+It depends on how often we expect to see updates to this. I have not
+followed the changes as closely as I should have, but I can also
+merge them through the asm-generic tree for this time so Andrew
+has to carry fewer patches for this.
 
-On 31/03/2021 20:31, Sean Christopherson wrote:
-> On Wed, Mar 31, 2021, Emanuele Giuseppe Esposito wrote:
->> Calling the kvm KVM_GET_[SUPPORTED/EMULATED]_CPUID ioctl requires
->> a nent field inside the kvm_cpuid2 struct to be big enough to contain
->> all entries that will be set by kvm.
->> Therefore if the nent field is too high, kvm will adjust it to the
->> right value. If too low, -E2BIG is returned.
->>
->> However, when filling the entries do_cpuid_func() requires an
->> additional entry, so if the right nent is known in advance,
->> giving the exact number of entries won't work because it has to be
->> increased by one.
-> 
-> I'd strong prefer to reword the shortlog and changelog.  It's not immediately
-> obvious what this is changing without the context from the v1 thread.  E.g.
-> 
->    KVM: x86: Fix a spurious -E2BIG in KVM_GET_EMULATED_CPUID
-> 
->    When retrieving emulated CPUID entries, check for an insufficient array size
->    if and only if KVM is actually inserting an entry.  If userspace has a priori
->    knowledge of the exact array size, KVM_GET_EMULATED_CPUID will incorrectly
->    fail due to effectively requiring an extra, unused entry.
+I normally don't have a lot of material for asm-generic either, half
+the time there are no pull requests at all for a given release. I would
+expect future changes to the bitmap implementation to only need
+an occasional bugfix, which could go through either the asm-generic
+tree or through mm and doesn't need another separate pull request.
 
-I will update it with v3, thanks.
+If it turns out to be a tree that needs regular updates every time,
+then having a top level repository in linux-next would be appropriate.
 
-> 
->> Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
->> ---
->>   arch/x86/kvm/cpuid.c | 35 ++++++++++++++++++-----------------
->>   1 file changed, 18 insertions(+), 17 deletions(-)
->>
->> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
->> index 6bd2f8b830e4..02a51f921548 100644
->> --- a/arch/x86/kvm/cpuid.c
->> +++ b/arch/x86/kvm/cpuid.c
->> @@ -567,34 +567,34 @@ static struct kvm_cpuid_entry2 *do_host_cpuid(struct kvm_cpuid_array *array,
->>   
->>   static int __do_cpuid_func_emulated(struct kvm_cpuid_array *array, u32 func)
->>   {
->> -	struct kvm_cpuid_entry2 *entry;
->> -
->> -	if (array->nent >= array->maxnent)
->> -		return -E2BIG;
->> +	struct kvm_cpuid_entry2 entry;
->>   
->> -	entry = &array->entries[array->nent];
->> -	entry->function = func;
->> -	entry->index = 0;
->> -	entry->flags = 0;
->> +	entry.function = func;
->> +	entry.index = 0;
->> +	entry.flags = 0;
-> 
-> Depending on the leaf, eax/ebx/ecx/edx will be left uninitialized.  This wasn't
-> a bug before since @array is zeroed on allocation.
-> 
-> What about pre-checking @func?  I don't particular like the duplicate checks,
-> but none of the solutions are particularly elegant.  E.g.
-You're right, I should have zeroed it. I agree that memsetting and 
-memcopying is not elegant either, but unless I am missing something and 
-it changes the intended behavior, IMHO this avoids duplicate checks and 
-makes it simpler to add a new 'func'.
-
-Emanuele
-> 
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 6bd2f8b830e4..9824947bd5ad 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -565,14 +565,18 @@ static struct kvm_cpuid_entry2 *do_host_cpuid(struct kvm_cpuid_array *array,
->          return entry;
->   }
-> 
-> -static int __do_cpuid_func_emulated(struct kvm_cpuid_array *array, u32 func)
-> +static noinline int __do_cpuid_func_emulated(struct kvm_cpuid_array *array, u32 func)
->   {
->          struct kvm_cpuid_entry2 *entry;
-> 
-> +       if (func != 0 && func != 1 && func != 7)
-> +               return 0;
-> +
->          if (array->nent >= array->maxnent)
->                  return -E2BIG;
-> 
-> -       entry = &array->entries[array->nent];
-> +       entry = &array->entries[array->nent++];
-> +
->          entry->function = func;
->          entry->index = 0;
->          entry->flags = 0;
-> @@ -580,19 +584,17 @@ static int __do_cpuid_func_emulated(struct kvm_cpuid_array *array, u32 func)
->          switch (func) {
->          case 0:
->                  entry->eax = 7;
-> -               ++array->nent;
->                  break;
->          case 1:
->                  entry->ecx = F(MOVBE);
-> -               ++array->nent;
->                  break;
->          case 7:
->                  entry->flags |= KVM_CPUID_FLAG_SIGNIFCANT_INDEX;
->                  entry->eax = 0;
->                  entry->ecx = F(RDPID);
-> -               ++array->nent;
-> -       default:
->                  break;
-> +       default:
-> +               BUG();
->          }
-> 
->          return 0
-> 
-> 
->>   
->>   	switch (func) {
->>   	case 0:
->> -		entry->eax = 7;
->> -		++array->nent;
->> +		entry.eax = 7;
->>   		break;
->>   	case 1:
->> -		entry->ecx = F(MOVBE);
->> -		++array->nent;
->> +		entry.ecx = F(MOVBE);
->>   		break;
->>   	case 7:
->> -		entry->flags |= KVM_CPUID_FLAG_SIGNIFCANT_INDEX;
->> -		entry->eax = 0;
->> -		entry->ecx = F(RDPID);
->> -		++array->nent;
->> -	default:
->> +		entry.flags |= KVM_CPUID_FLAG_SIGNIFCANT_INDEX;
->> +		entry.eax = 0;
->> +		entry.ecx = F(RDPID);
->>   		break;
->> +	default:
->> +		goto out;
->>   	}
->>   
->> +	if (array->nent >= array->maxnent)
->> +		return -E2BIG;
->> +
->> +	memcpy(&array->entries[array->nent++], &entry, sizeof(entry));
->> +
->> +out:
->>   	return 0;
->>   }
->>   
->> @@ -975,6 +975,7 @@ int kvm_dev_ioctl_get_cpuid(struct kvm_cpuid2 *cpuid,
->>   
->>   	if (cpuid->nent < 1)
->>   		return -E2BIG;
->> +
->>   	if (cpuid->nent > KVM_MAX_CPUID_ENTRIES)
->>   		cpuid->nent = KVM_MAX_CPUID_ENTRIES;
->>   
->> -- 
->> 2.30.2
->>
-> 
-
+        Arnd
