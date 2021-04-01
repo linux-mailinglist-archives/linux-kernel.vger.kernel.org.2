@@ -2,98 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C84AC35126D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5909A351276
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233895AbhDAJhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 05:37:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39694 "EHLO
+        id S233888AbhDAJhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 05:37:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233818AbhDAJgv (ORCPT
+        with ESMTP id S233936AbhDAJhJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 05:36:51 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F499C0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 02:36:51 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id e18so1127630wrt.6
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 02:36:51 -0700 (PDT)
+        Thu, 1 Apr 2021 05:37:09 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50451C0613E6;
+        Thu,  1 Apr 2021 02:37:09 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so4456479pjb.0;
+        Thu, 01 Apr 2021 02:37:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=BGMa2gbqogbTba4AsXedNoo7A0vaWKxlg6Zr9So19iU=;
-        b=PXLoncE+D4wZXMYMRa28lu6fr5HlwCebUsGcNrwGgiPrddc3ANQVg/XSaq2Xp4XYMv
-         2oZZKpdSWgjOqWmfqDCMwKFvPyVPYAklWfDutTCV7MpuiH/7TNAWYcR6LVUiT1bg9Anp
-         z4rChQ+zA4zNKG+gLAIjtiSAofipjZPs/Vcr1SDWOlkwgglveAlLCtaT+Y73wnLOg0PD
-         bseFM4B3+L8BWgVlOmQQbBdbMFVWt2a1q6PvZudE6/kXGgoA7Ksz4iOR/G+Fks8+LMBA
-         bGbbJImVgfUklbjr+Y6Puxuj8HNBpWOv/AA1/H4zWa+G1u8R5WYn3c0YISbdXKkXtXtR
-         ffsQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SRsyfN5Ras+hHwkeeBXTNewhBhlVp4my6jL5NaeELlI=;
+        b=Lej32Bpor3H3GqOFCSPbJjhT7vpL+8wPDuSRWvaQ3bCsoETVVjOt0BXas1XVdQ6YY9
+         7/ybmE6RFsdZPFWDEtdrdMbS3yy4snajjI1c9W05NZhy7hLk8Gl7T2R5UYMTmce7Pgo3
+         xz7A16Ep0J468eGtyYU6ilvZN9DZMrD7ixoc1R7q7Wds+S72t1lfmNKyWadTRwCN20l5
+         UzhrQxdvaqsbIinbMCRxcrrKvjFUrPXAoUiiFJuQ/RdkEFymnh8S0YqDLj/kEn0zd/K+
+         A1nXOC8YV1g2cILkwZSjrykm2G7uofrusMGLbU9zM9RXSdjOeiIUN271T+p/zepH66tp
+         XpLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BGMa2gbqogbTba4AsXedNoo7A0vaWKxlg6Zr9So19iU=;
-        b=n/c48sbPg9WaWQsuzNISYCBv0wmq/O7F0cq5oihURNYAbWT7J+maYQkJbXsNBTBQzc
-         8BW6TpsRw3lysWUqBj1nbFm4YX6No+Hers1lbF7OI6eNNMJJowj5ihEqRrndQgjN6Hs8
-         h4OWSuTPEx6CnGmBPzhjXEA6CO2COgnjMT7QFK6BSH2ZBHE4ViUHcw+B/hHutvu06otS
-         SfgH9d2Vl1HAd5RHPPoVGMAhMR9Nw1nK8THUrS08SWJ4+wKQsntOqP3PyhBIrKe+861c
-         8K78nAI7igN35jM2QdnWMxeooPwT9ESzHnQpPitSZalSN/zSkhNznVjKx/GMcEzaRnBr
-         xaxQ==
-X-Gm-Message-State: AOAM532wFgz6vi9jYLD8sL0iPanKKCtA9ItguNA93/JPRyDeRXriV2k4
-        7HEzA3nYKZh7AAbl1Doj/dDtOjCNlgyAdQ==
-X-Google-Smtp-Source: ABdhPJwIkZmH3EUPGnZx4mX8XedNJ8j2SKpSXNkHezJYHbygkyNzoHgvzqSp4B1St8ISWd/sS9rydQ==
-X-Received: by 2002:adf:f083:: with SMTP id n3mr8367727wro.134.1617269810135;
-        Thu, 01 Apr 2021 02:36:50 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:1573:1dd5:899d:6362? ([2a01:e34:ed2f:f020:1573:1dd5:899d:6362])
-        by smtp.googlemail.com with ESMTPSA id n1sm11434746wro.36.2021.04.01.02.36.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Apr 2021 02:36:49 -0700 (PDT)
-Subject: Re: [PATCH] clocksource/arm_arch_timer: add __ro_after_init and
- __init
-To:     Marc Zyngier <maz@kernel.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210330140444.4fb2a7cb@xhacker.debian>
- <87zgyipfsl.wl-maz@kernel.org>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <d0188aa6-5682-6b0d-0221-f96f4ef77505@linaro.org>
-Date:   Thu, 1 Apr 2021 11:36:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SRsyfN5Ras+hHwkeeBXTNewhBhlVp4my6jL5NaeELlI=;
+        b=kn21SBrsFCuMQ6q+99stx4CrkEDreeE0csLXD1N6dYahaHp3Ij8AwKykmtx4oiyJ4b
+         skYwH+rdGx+6D7LuHVZIC9g4Pb4OT44Ilc55iQbtt3QfnIX9SqrPlW3FkzJZlhTVYih1
+         RznIBN+W5ogz9/aEJ899ciJH71caUZpCyDCxd84lWXRtDSFZZQjlcIdRNC2c3sTF4goT
+         O0AHjyQv7J3fXgJQD0HzvcKXE2yh9oVS7nqdqHJD6DLpoVH6lRps+GGxbU1AQ+n5q24Y
+         CSr+UiIkWs/nh7wkyYOqShEVZNX4Abk23Tljz/ADifyWBxdnljtX8UImimDLp6b3xJ3H
+         HnPQ==
+X-Gm-Message-State: AOAM5303PdxcsC3+fNrKRNRiGBlH393eleeO/oFzw/UjIAmMulKIuxoC
+        o45nwC0iQ4NiLtNP8/Xd0DgU8XR6XEBHxvjQBRo=
+X-Google-Smtp-Source: ABdhPJwgdTa9XvTPSPeUfTdQbPvjJLiU9q9OJasaD6mMJ1YMQ4z46ylE1+dsa/mIPrQbnXgjYrHD4Uup5I4GZ3+WmaQ=
+X-Received: by 2002:a17:902:7883:b029:e7:32bd:6b97 with SMTP id
+ q3-20020a1709027883b02900e732bd6b97mr7298169pll.0.1617269828761; Thu, 01 Apr
+ 2021 02:37:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87zgyipfsl.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210401091648.87421-1-puranjay12@gmail.com> <20210401091648.87421-3-puranjay12@gmail.com>
+In-Reply-To: <20210401091648.87421-3-puranjay12@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 1 Apr 2021 12:36:51 +0300
+Message-ID: <CAHp75Vcmyvi4V2D0cnmobTGHCS_ci2FC=cBF8tEoG9v51o8RmQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] iio: temperature: add driver support for ti tmp117
+To:     Puranjay Mohan <puranjay12@gmail.com>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/04/2021 10:31, Marc Zyngier wrote:
-> On Tue, 30 Mar 2021 07:04:44 +0100,
-> Jisheng Zhang <Jisheng.Zhang@synaptics.com> wrote:
->>
->> Some functions are not needed after booting, so mark them as __init
->> to move them to the .init section.
->>
->> Some global variables are never modified after init, so can be
->> __ro_after_init.
->>
->> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-> 
-> Acked-by: Marc Zyngier <maz@kernel.org>
-> 
-> 	M.
+On Thu, Apr 1, 2021 at 12:19 PM Puranjay Mohan <puranjay12@gmail.com> wrote:
+>
+> TMP117 is a Digital temperature sensor with integrated NV memory.
+>
+> Add support for tmp117 driver in iio subsystem.
 
-Thanks Marc
++ blank line
 
+> Datasheet:-https://www.ti.com/lit/gpn/tmp117
+
+Make it a tag, i.e. remove the following blank line and use a space after colon.
+
+>
+> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+
+...
+
+> +/*
+> + * tmp117.c - Digital temperature sensor with integrated NV memory
+
+It's useless and provokes an unneeded churn when having a file name
+inside the file.
+Please, drop it for good.
+
+> + *
+> + * Copyright (c) 2021 Puranjay Mohan <puranjay12@gmail.com>
+> + *
+> + * Driver for the Texas Instruments TMP117 Temperature Sensor
+
+> + *
+
+Redundant blank line.
+
+> + * (7-bit I2C slave address (0x48 - 0x4B), changeable via ADD pins)
+> + *
+> + * Note: This driver assumes that the sensor has been calibrated beforehand.
+> + */
+
+...
+
+> +#include <linux/err.h>
+> +#include <linux/i2c.h>
+> +#include <linux/module.h>
+
+Missed:
+  bitops.h //sign_extend32()
+  types.h // s32
+
+
+> +
+> +#include <linux/iio/iio.h>
+
+...
+
+> +struct tmp117_data {
+> +       struct i2c_client *client;
+> +};
+
+Doesn't make any sense to have a separate structure for just one
+pointer member. Use that pointer directly.
+
+...
+
+> +       case IIO_CHAN_INFO_CALIBBIAS:
+> +               ret = i2c_smbus_read_word_swapped(data->client,
+> +                                       TMP117_REG_TEMP_OFFSET);
+> +               if (ret < 0)
+> +                       return ret;
+> +               *val = ((int16_t)ret * (int32_t)TMP117_RESOLUTION_10UC)
+> +                                                               / 10000;
+
+One line
+
+> +               *val2 = ((int16_t)ret * (int32_t)TMP117_RESOLUTION_10UC)
+> +                                                               % 10000;
+
+One line.
+
+I'll be honest, I do not like these explicit castings at all. Can you
+revisit and try to refactor that you won't need them?
+For example, I can't understand how ret can be higher than 16 bit
+since we checked on negative values beforehand.
+
+> +               return IIO_VAL_INT_PLUS_MICRO;
+> +
+> +       case IIO_CHAN_INFO_SCALE:
+> +               /* Conversion from 10s of uC to mC
+> +                * as IIO reports temperature in mC
+> +                */
+> +               *val = TMP117_RESOLUTION_10UC / 10000;
+> +               *val2 = (TMP117_RESOLUTION_10UC % 10000) * 100;
+> +               return IIO_VAL_INT_PLUS_MICRO;
+
+You use 10000 many times, can you give it an appropriate name (via #define)?
+
+...
+
+> +       s16 off;
+
+> +       case IIO_CHAN_INFO_CALIBBIAS:
+
+> +               off = (s16)val;
+
+Redundant explicit casting.
+
+> +               return i2c_smbus_write_word_swapped(data->client,
+> +                                               TMP117_REG_TEMP_OFFSET, off);
+
+...
+
+> +static const struct of_device_id tmp117_of_match[] = {
+> +       { .compatible = "ti,tmp117", },
+
+> +       { },
+
+No need to comma in terminator line(s).
+
+> +};
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+With Best Regards,
+Andy Shevchenko
