@@ -2,88 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D626A35141D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 13:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 491DD351422
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 13:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234057AbhDALA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 07:00:57 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:34082 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234153AbhDALAf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 07:00:35 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 131AtO8V155297;
-        Thu, 1 Apr 2021 11:00:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=5uzyfBTDYbTwyhzctIMwM0dAGeez7rliuk3DjVjtV24=;
- b=ldbKxcGXrxE3p+8+OO8oRrODFyeLqC23Xvfz/9X6ySTt6qxaFssMYa5fwk+Irtkt8Rly
- RQlqWRmTnUG60zw5aDNPGku1OCVO0IoY4mwYBErGfMz7WDpFubLJnLpEHAJiKlVgJacV
- g3z7759IRGNsyWxEk7NbH8tM6lCSdMuvlzMPPMuIIKpUl9KHBV3eZZ14ePRipb9UcuqY
- H9Zx1ObH4y0bQJo96Y35rQ6iI+7NGxbQK4l6o2jcNlLdqat3JLX7PgaFAs08L2OreC4E
- gy7+69ELk7Hmr9uDkNze5Ir2ygzegM9LR2UAqxCmMbRjX2fAvIw63NHe1bg4AoNRM9lz Mw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 37n30s9ach-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 01 Apr 2021 11:00:18 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 131AtZ1s086656;
-        Thu, 1 Apr 2021 11:00:17 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 37n2asm4mg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 01 Apr 2021 11:00:16 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 131B0BpB018419;
-        Thu, 1 Apr 2021 11:00:11 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 01 Apr 2021 04:00:10 -0700
-Date:   Thu, 1 Apr 2021 14:00:02 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
-        johan@kernel.org, elder@kernel.org, gregkh@linuxfoundation.org
-Subject: Re: [PATCH -next v3] staging: greybus: camera: Switch to
- memdup_user_nul()
-Message-ID: <20210401110002.GT2065@kadam>
-References: <20210401103645.1558813-1-yangyingliang@huawei.com>
+        id S233925AbhDALDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 07:03:39 -0400
+Received: from foss.arm.com ([217.140.110.172]:36788 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229612AbhDALDL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 07:03:11 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A88BD6E;
+        Thu,  1 Apr 2021 04:03:10 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A619F3F694;
+        Thu,  1 Apr 2021 04:03:06 -0700 (PDT)
+Date:   Thu, 1 Apr 2021 12:03:01 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Thierry Reding <treding@nvidia.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh@kernel.org>, Will Deacon <will@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Bharat Kumar Gogada <bharatku@xilinx.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH v3 03/14] PCI: rcar: Convert to MSI domains
+Message-ID: <20210401110301.GA31407@lpieralisi>
+References: <20210330151145.997953-1-maz@kernel.org>
+ <20210330151145.997953-4-maz@kernel.org>
+ <20210401101957.GA30653@lpieralisi>
+ <87y2e2p9wk.wl-maz@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210401103645.1558813-1-yangyingliang@huawei.com>
+In-Reply-To: <87y2e2p9wk.wl-maz@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9940 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0 spamscore=0
- mlxscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
- definitions=main-2104010076
-X-Proofpoint-GUID: 8W_q66Z4z3nNIN1UvaCTKY9t8KmcDaTg
-X-Proofpoint-ORIG-GUID: 8W_q66Z4z3nNIN1UvaCTKY9t8KmcDaTg
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9940 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
- bulkscore=0 priorityscore=1501 suspectscore=0 mlxscore=0 spamscore=0
- clxscore=1015 mlxlogscore=999 malwarescore=0 adultscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
- definitions=main-2104010076
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 06:36:45PM +0800, Yang Yingliang wrote:
-> Use memdup_user_nul() helper instead of open-coding to
-> simplify the code.
+On Thu, Apr 01, 2021 at 11:38:19AM +0100, Marc Zyngier wrote:
+> On Thu, 01 Apr 2021 11:19:57 +0100,
+> Lorenzo Pieralisi <lorenzo.pieralisi@arm.com> wrote:
+> > 
+> > On Tue, Mar 30, 2021 at 04:11:34PM +0100, Marc Zyngier wrote:
+> > 
+> > [...]
+> > 
+> > > +static void rcar_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
+> > > +{
+> > > +	struct rcar_msi *msi = irq_data_get_irq_chip_data(data);
+> > > +	unsigned long pa = virt_to_phys(msi);
+> > >  
+> > > -	hwirq = rcar_msi_alloc_region(msi, nvec);
+> > > -	if (hwirq < 0)
+> > > -		return -ENOSPC;
+> > > +	/* Use the msi structure as the PA for the MSI doorbell */
+> > > +	msg->address_lo = lower_32_bits(pa);
+> > > +	msg->address_hi = upper_32_bits(pa);
+> > 
+> > I don't think this change is aligned with the previous patch (is it ?),
+> > the PA address we are using here is different from the one programmed
+> > into the controller registers - either that or I am missing something,
+> > please let me know.
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> Err. You are right. This looks like a bad case of broken conflict
+> resolution on my part.
+> 
+> The following snippet should fix it. Let me know if you want me to
+> resend the whole thing or whether you are OK with applying this by
+> hand.
 
-Thanks!
+I will apply it and merge the whole series into -next, thanks for
+implementing it !
 
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Lorenzo
 
-regards,
-dan carpenter
-
+> Thanks,
+> 
+> 	M.
+> 
+> diff --git a/drivers/pci/controller/pcie-rcar-host.c b/drivers/pci/controller/pcie-rcar-host.c
+> index f7331ad0d6dc..765cf2b45e24 100644
+> --- a/drivers/pci/controller/pcie-rcar-host.c
+> +++ b/drivers/pci/controller/pcie-rcar-host.c
+> @@ -573,11 +573,10 @@ static int rcar_msi_set_affinity(struct irq_data *d, const struct cpumask *mask,
+>  static void rcar_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
+>  {
+>  	struct rcar_msi *msi = irq_data_get_irq_chip_data(data);
+> -	unsigned long pa = virt_to_phys(msi);
+> +	struct rcar_pcie *pcie = &msi_to_host(msi)->pcie;
+>  
+> -	/* Use the msi structure as the PA for the MSI doorbell */
+> -	msg->address_lo = lower_32_bits(pa);
+> -	msg->address_hi = upper_32_bits(pa);
+> +	msg->address_lo = rcar_pci_read_reg(pcie, PCIEMSIALR) & ~MSIFE;
+> +	msg->address_hi = rcar_pci_read_reg(pcie, PCIEMSIAUR);
+>  	msg->data = data->hwirq;
+>  }
+>  
+> 
+> -- 
+> Without deviation from the norm, progress is not possible.
