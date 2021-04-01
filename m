@@ -2,117 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECAB5351BB3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBFC5351BA3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234582AbhDASKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:10:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44681 "EHLO
+        id S238767AbhDASKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:10:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44438 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236765AbhDARzR (ORCPT
+        by vger.kernel.org with ESMTP id S236608AbhDARyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:55:17 -0400
+        Thu, 1 Apr 2021 13:54:55 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617299716;
+        s=mimecast20190719; t=1617299695;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OpC0Pma1PFWAjwr0iJYckO0JsmXmNzZhIFWhXwl6Ie0=;
-        b=GbI9sizh/YSXQzaRX6S7Fn3Yx9vOSAz+uW7Bzv3r71X50ahYy1xhoy32/tQMguo1O53zdz
-        IO3HwqtUNvrF+ebBxr7+JNwCcxFhZmM6N8I9OPiVFaHtRc1O5kt94lpTitPOY1UPF7rIvL
-        tx+c1J/A9WYAogQNuDK3ixZ/Y+HNZXM=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-214-U5K9xpB2N6u1fU1pO5NTgQ-1; Thu, 01 Apr 2021 08:54:22 -0400
-X-MC-Unique: U5K9xpB2N6u1fU1pO5NTgQ-1
-Received: by mail-ej1-f69.google.com with SMTP id kx22so2168593ejc.17
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 05:54:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OpC0Pma1PFWAjwr0iJYckO0JsmXmNzZhIFWhXwl6Ie0=;
-        b=bT6I64lt+CqPlYpydlZ92WrcfE5+TMKDaI+pVLj/TtrMimttoq50ezeH4ADq9cf+NX
-         DuXPwskLmSZO6hG2HTPOOFzCr6wVsCSKwxmmafIDISBQXRnAffLycV/Bu/SPBQOmQlSH
-         wTOh94N7NXa3BCqTQg91X1liG0+wOcDe4a29bFBjVDxqshC/Clvv6UGS1AZIuddDv+Rw
-         9a7jULYGoBKKPSsJpk2X4Q1E1K6XNmuqQ94mjVWO+t00TvVgbQqDL6xDXwM2FF42c3th
-         aA3MrUbzVa3YsFMgKGd17vkqNJp33DEuB5LGflJdODJP8zXFcsmj3fi85Pt23dPDF+op
-         8VZg==
-X-Gm-Message-State: AOAM533keDj5gTMMKjcc8rKNkNHkMiDF/1bay4cjnGGuvfVzI9cOE+FU
-        hPHcuGfj5eakvtJcqinWVc973v5Lx/7E6Mtjpg36wqNp6PShup0aaSf7HxALuSqsDRK/ar1UUeK
-        bJqJoM9Z8Pk578IYii7nx62+3
-X-Received: by 2002:a17:907:76a3:: with SMTP id jw3mr9124307ejc.353.1617281660489;
-        Thu, 01 Apr 2021 05:54:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxMYpcr1VxmrLPcRqAXFqV+5+DVqQuWK1tQ2PT+nlPN+mKom8Wytem2m1aqXpphzINgdJwsZQ==
-X-Received: by 2002:a17:907:76a3:: with SMTP id jw3mr9124288ejc.353.1617281660342;
-        Thu, 01 Apr 2021 05:54:20 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id gr16sm2753013ejb.44.2021.04.01.05.54.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Apr 2021 05:54:19 -0700 (PDT)
-Subject: Re: [PATCH v5 0/5] KVM: x86: dump_vmcs: don't assume GUEST_IA32_EFER,
- show MSR autoloads/autosaves
-To:     David Edmondson <david.edmondson@oracle.com>,
+        bh=GhP9mKAC835udYamk6sLlCgw3JJRwFbPZGXQbpeFSwU=;
+        b=U04udFiDiAWsvg2mMU4C/X9Ad6o9OafLFy1WJkymhwUWf3yVAuy9SQdP1/DUyVp7YiR45e
+        DB8wH+WOlFY0IuSMN9GnG+dwSDccokrGsOEqjC9zMpgB5o3V8hHGboc7ysw/tGmwasK/3j
+        dptk7h4cHmrJz6+cftgLjRnd8GwT9Zg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-189-dz0J8KJfP2CVKb8yctgc0Q-1; Thu, 01 Apr 2021 08:54:23 -0400
+X-MC-Unique: dz0J8KJfP2CVKb8yctgc0Q-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C6E55801814;
+        Thu,  1 Apr 2021 12:54:20 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-58.rdu2.redhat.com [10.10.112.58])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 21230614FC;
+        Thu,  1 Apr 2021 12:54:18 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210401093545.4055-1-lyl2019@mail.ustc.edu.cn>
+References: <20210401093545.4055-1-lyl2019@mail.ustc.edu.cn>
+To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Cc:     dhowells@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        linux-afs@lists.infradead.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@redhat.com>, Joerg Roedel <joro@8bytes.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
-        Wanpeng Li <wanpengli@tencent.com>, x86@kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sean Christopherson <seanjc@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-References: <20210318120841.133123-1-david.edmondson@oracle.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <7bbf736c-efd8-6169-171c-098a2869944f@redhat.com>
-Date:   Thu, 1 Apr 2021 14:54:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+Subject: Re: [PATCH] net/rxrpc: Fix a use after free in rxrpc_input_packet
 MIME-Version: 1.0
-In-Reply-To: <20210318120841.133123-1-david.edmondson@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3723091.1617281658.1@warthog.procyon.org.uk>
+Date:   Thu, 01 Apr 2021 13:54:18 +0100
+Message-ID: <3723092.1617281658@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/03/21 13:08, David Edmondson wrote:
-> v2:
-> - Don't use vcpu->arch.efer when GUEST_IA32_EFER is not available (Paolo).
-> - Dump the MSR autoload/autosave lists (Paolo).
-> 
-> v3:
-> - Rebase to master.
-> - Check only the load controls (Sean).
-> - Always show the PTPRs from the VMCS if they exist (Jim/Sean).
-> - Dig EFER out of the MSR autoload list if it's there (Paulo).
-> - Calculate and show the effective EFER if it is not coming from
->    either the VMCS or the MSR autoload list (Sean).
-> 
-> v4:
-> - Ensure that each changeset builds with just the previous set.
-> 
-> v5:
-> - Rebase.
-> - Remove some cruft from changeset comments.
-> - Add S-by as appropriate.
-> 
-> David Edmondson (5):
->    KVM: x86: dump_vmcs should not assume GUEST_IA32_EFER is valid
->    KVM: x86: dump_vmcs should not conflate EFER and PAT presence in VMCS
->    KVM: x86: dump_vmcs should consider only the load controls of EFER/PAT
->    KVM: x86: dump_vmcs should show the effective EFER
->    KVM: x86: dump_vmcs should include the autoload/autostore MSR lists
-> 
->   arch/x86/kvm/vmx/vmx.c | 58 +++++++++++++++++++++++++++++-------------
->   arch/x86/kvm/vmx/vmx.h |  2 +-
->   2 files changed, 42 insertions(+), 18 deletions(-)
-> 
+Lv Yunlong <lyl2019@mail.ustc.edu.cn> wrote:
 
-Queued, thanks.
+> In the case RXRPC_PACKET_TYPE_DATA of rxrpc_input_packet, if
+> skb_unshare(skb,..) failed, it will free the skb and return NULL.
+> But if skb_unshare() return NULL, the freed skb will be used by
+> rxrpc_eaten_skb(skb,..).
 
-Paolo
+That's not precisely the case:
+
+	void rxrpc_eaten_skb(struct sk_buff *skb, enum rxrpc_skb_trace op)
+	{
+		const void *here = __builtin_return_address(0);
+		int n = atomic_inc_return(&rxrpc_n_rx_skbs);
+		trace_rxrpc_skb(skb, op, 0, n, 0, here);
+	}
+
+The only thing that happens to skb here is that it's passed to
+trace_rxrpc_skb(), but that doesn't dereference it either.  The *address* is
+used for display purposes, but that's all.
+
+> I see that rxrpc_eaten_skb() is used to drop a ref of skb.
+
+It isn't.
+
+> As the skb is already freed in skb_unshare() on error, my patch removes the
+> rxrpc_eaten_skb() to avoid the uaf.
+
+But you remove the accounting, which might lead to an assertion failure in
+af_rxrpc_exit().
+
+That said, rxrpc_eaten_skb() should probably decrement rxrpc_n_rx_skbs, not
+increment it...
+
+David
 
