@@ -2,85 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFEEE351B58
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B94F6351A2B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234817AbhDASHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:07:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235119AbhDARxL (ORCPT
+        id S236712AbhDAR6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:58:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37426 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234939AbhDARlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:53:11 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 399A4C03116F;
-        Thu,  1 Apr 2021 09:56:56 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id k25so2428177oic.4;
-        Thu, 01 Apr 2021 09:56:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ETBgH6qj9LbHFgemlBLsoBYb8gAvxD3wu+gkwcIGQv8=;
-        b=XUmSHU3R5xWAUWeizs2kUIUi4r1CCyEd8zAkvvEAZnAgaPpEKkBUa7EwNpFRi1PheD
-         d8Im4pG2YD3sPb/CoAJB1eZutvTnNhx+hGEgidm9lwpfKlZiwUY/1HSbpyhSCl+U/eXn
-         +31qmqKO7D2/6h2wi+nOaWKtZs4jz9LBcfqJz3hybvz079WZHMAw71hHk7YBrSV8Jefe
-         JIq72QcZNoou2bnXzWlXmcLchRfqIxxdAmUFI9NGg0hoBXEbVMAs7gXrkZN1p00N22Rc
-         dSeq9Lw5ZW8oZVCbqjT66Pnyl8GAtNKDyejaLI2EdaOeaHjy1twSgToQf0A5iAAG0Zou
-         soLA==
-X-Gm-Message-State: AOAM531yBVpHHpSArKCVh9JI51QF4OaG0dLKUjqv3+Ze5NSK8ep9oSLB
-        b2MKSYiUp3drhfB5gj713w==
-X-Google-Smtp-Source: ABdhPJyhXXKpBRxxtJP1yNigaZ96XAIF3twPdChuHy58h8DxT5BQe1kCb38lXntHjEwtI39n/HI/0Q==
-X-Received: by 2002:aca:4785:: with SMTP id u127mr6371919oia.163.1617296212860;
-        Thu, 01 Apr 2021 09:56:52 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id w199sm1134579oif.41.2021.04.01.09.56.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 09:56:51 -0700 (PDT)
-Received: (nullmailer pid 602233 invoked by uid 1000);
-        Thu, 01 Apr 2021 16:56:50 -0000
-Date:   Thu, 1 Apr 2021 11:56:50 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     satya priya <skakit@codeaurora.org>
-Cc:     devicetree@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        kgunda@codeaurora.org, rnayak@codeaurora.org,
-        Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Andy Gross <agross@kernel.org>
-Subject: Re: [PATCH V3 4/5] dt-bindings: regulator: Convert RPMh regulator
- bindings to YAML
-Message-ID: <20210401165650.GA602181@robh.at.kernel.org>
-References: <1617192339-3760-1-git-send-email-skakit@codeaurora.org>
- <1617192339-3760-5-git-send-email-skakit@codeaurora.org>
+        Thu, 1 Apr 2021 13:41:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617298885;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/DmKnXvfMsDsqJmp2i9gQ0b8U5NbC/IHrSRuv8yD1DA=;
+        b=HqaCZ5irNz029FeVyRh/OSJW2nTXorqCnlH7fXrEtFK8aaNXKpSCH/YHng55fa+RI0R3wJ
+        6awL4Z11YN8Oj20mzLeQ7MkBMD9ldGOsncWb9UW+8utCS+fFEtc2Pm7faKDBexeU4Xd7M/
+        0PpBRwEzvvRWwmhPzGscMdjtNCJwqaA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-534-O5uQh4liNO-3fml1QQs6rQ-1; Thu, 01 Apr 2021 13:10:31 -0400
+X-MC-Unique: O5uQh4liNO-3fml1QQs6rQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E1DF7817469;
+        Thu,  1 Apr 2021 17:10:29 +0000 (UTC)
+Received: from starship (unknown [10.35.206.58])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2172C59469;
+        Thu,  1 Apr 2021 17:10:25 +0000 (UTC)
+Message-ID: <0b3a93e3d1ba6a89da327b93be2ecf47f22010d4.camel@redhat.com>
+Subject: Re: [PATCH 4/6] KVM: x86: Introduce KVM_GET_SREGS2 / KVM_SET_SREGS2
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
+Cc:     "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Jim Mattson <jmattson@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Date:   Thu, 01 Apr 2021 20:10:24 +0300
+In-Reply-To: <b1a36c94-6dd5-88ef-a503-f6d91eb2d267@redhat.com>
+References: <20210401141814.1029036-1-mlevitsk@redhat.com>
+         <20210401141814.1029036-5-mlevitsk@redhat.com>
+         <b1a36c94-6dd5-88ef-a503-f6d91eb2d267@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617192339-3760-5-git-send-email-skakit@codeaurora.org>
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 31 Mar 2021 17:35:38 +0530, satya priya wrote:
-> Convert RPMh regulator bindings from .txt to .yaml format.
+On Thu, 2021-04-01 at 16:44 +0200, Paolo Bonzini wrote:
+> Just a quick review on the API:
 > 
-> Signed-off-by: satya priya <skakit@codeaurora.org>
-> ---
-> Changes in V2:
->  - As per Mark's comment moved this patch to the end of series.
->  - As per Rob's comments,  added flash and rgb bindings, dropped allOf and
->    unused labels and fixed few other things.
+> On 01/04/21 16:18, Maxim Levitsky wrote:
+> > +struct kvm_sregs2 {
+> > +	/* out (KVM_GET_SREGS2) / in (KVM_SET_SREGS2) */
+> > +	struct kvm_segment cs, ds, es, fs, gs, ss;
+> > +	struct kvm_segment tr, ldt;
+> > +	struct kvm_dtable gdt, idt;
+> > +	__u64 cr0, cr2, cr3, cr4, cr8;
+> > +	__u64 efer;
+> > +	__u64 apic_base;
+> > +	__u64 flags; /* must be zero*/
 > 
-> Changes in V3:
->  - Fixed bot errors and also changed commit text to specify RPMh regulator
->    bindings.
+> I think it would make sense to define a flag bit for the PDPTRs, so that 
+> userspace can use KVM_SET_SREGS2 unconditionally (e.g. even when 
+> migrating from a source that uses KVM_GET_SREGS and therefore doesn't 
+> provide the PDPTRs).
+Yes, I didn't think about this case! I'll add this to the next version.
+Thanks!
+
 > 
->  .../bindings/regulator/qcom,rpmh-regulator.txt     | 180 ---------------------
->  .../bindings/regulator/qcom,rpmh-regulator.yaml    | 158 ++++++++++++++++++
->  2 files changed, 158 insertions(+), 180 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.txt
->  create mode 100644 Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
+> > +	__u64 pdptrs[4];
+> > +	__u64 padding;
+> 
+> No need to add padding; if we add more fields in the future we can use 
+> the flags to determine the length of the userspace data, similar to 
+> KVM_GET/SET_NESTED_STATE.
+Got it, will fix. I added it just in case.
+
+> 
+> 
+> > +	idx = srcu_read_lock(&vcpu->kvm->srcu);
+> > +	if (is_pae_paging(vcpu)) {
+> > +		for (i = 0 ; i < 4 ; i++)
+> > +			kvm_pdptr_write(vcpu, i, sregs2->pdptrs[i]);
+> > +		kvm_register_mark_dirty(vcpu, VCPU_EXREG_PDPTR);
+> > +		mmu_reset_needed = 1;
+> > +	}
+> > +	srcu_read_unlock(&vcpu->kvm->srcu, idx);
+> > +
+> 
+> SRCU should not be needed here?
+
+I haven't yet studied in depth the locking that is used in the kvm,
+so I put this to be on the safe side.
+
+I looked at it a bit and it looks like the pdptr reading code takes
+this lock because it accesses the memslots, which is not done here,
+and therefore the lock is indeed not needed here.
+
+I need to study in depth how locking is done in kvm to be 100% sure
+about this.
+
+
+> 
+> > +	case KVM_GET_SREGS2: {
+> > +		u.sregs2 = kzalloc(sizeof(struct kvm_sregs2), GFP_KERNEL_ACCOUNT);
+> > +		r = -ENOMEM;
+> > +		if (!u.sregs2)
+> > +			goto out;
+> 
+> No need to account, I think it's a little slower and this allocation is 
+> very short lived.
+Right, I will fix this in the next version.
+
+> 
+> >  #define KVM_CAP_PPC_DAWR1 194
+> > +#define KVM_CAP_SREGS2 196
+> 
+> 195, not 196.
+
+I am also planning to add KVM_CAP_SET_GUEST_DEBUG2 for which I
+used 195.
+Prior to sending I rebased all of my patch series on top of kvm/queue,
+but I kept the numbers just in case.
+
+> 
+> >  #define KVM_XEN_VCPU_GET_ATTR	_IOWR(KVMIO, 0xca, struct kvm_xen_vcpu_attr)
+> >  #define KVM_XEN_VCPU_SET_ATTR	_IOW(KVMIO,  0xcb, struct kvm_xen_vcpu_attr)
+> > +
+> > +#define KVM_GET_SREGS2             _IOR(KVMIO,  0xca, struct kvm_sregs2)
+> > +#define KVM_SET_SREGS2             _IOW(KVMIO,  0xcb, struct kvm_sregs2)
+> > +
+> 
+> It's not exactly overlapping, but please bump the ioctls to 0xcc/0xcd.
+Will do.
+
+
+Thanks a lot for the review!
+
+Best regards,
+	Maxim Levitsky
+
+> 
+> Paolo
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+
