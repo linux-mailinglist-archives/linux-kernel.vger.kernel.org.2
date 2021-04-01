@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FBDE35120D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 957DC351210
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234293AbhDAJXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 05:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36364 "EHLO
+        id S234127AbhDAJXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 05:23:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233783AbhDAJWL (ORCPT
+        with ESMTP id S233889AbhDAJWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 05:22:11 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AC0CC061793
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 02:22:11 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id e7so1136409edu.10
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 02:22:10 -0700 (PDT)
+        Thu, 1 Apr 2021 05:22:17 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95805C061794
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 02:22:12 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id r12so1849376ejr.5
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 02:22:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=hM+Yde17Zdskg7zytVje3fm23lmUvElHVdMsmjIgn/U=;
-        b=PyxaMyX+0l6pefqOOZhM2RfksB7zsbY+16qwKPV3O4BSMwf57q/eruJNE9Nh13KOkE
-         9HHAiFNPrZx2UgHpG4x+t151H9FsyrXcViAbysVXpGxbaMCNlJqTcB3V1FdrQy2DYiF7
-         mYYHIQgzLfrxhU8kfkmJw+idBcdNTfh8H9QYHiB1BANGJP6XkFSoEyl7S/sjpx8ohYso
-         12UnCJTVOp8dHEUUZKe5hpRXfnsIi15M5W+uzMnTVTPtZtRcfZPHUEcMbw1Q9sleQba5
-         J0FNoTBw1Uad+3KT4GrSURR2vGS24a2+KS+R2HrngrQOpjX6UeyxMtugAKoFApfVldlw
-         dvBg==
+        bh=3G3s/S8lRMB91e3/ict3UMMhMSDTheEUiSUyBvwqizs=;
+        b=N/ajMhfMdO5Dqf7INeWxcn5JZV1txVtnS+0OKtDg4rfps5QzRuuHmxP0ETYwllMNYY
+         WT0akmoTcXC4Tyt3/qzfqEJ0+J/L+1FPezk7vX2GuC7VyZByGNaLFwTqKckIIIhzCjv+
+         mk8KHo0mbc0/bzU4Xr2XY0lJ8xtIpy8x6Z+E+6oKD6NxYD5pakYb/9QIrNEtBEHhSSo1
+         uLRsH+/f4eH/CUSBv3y6nhzO25vPpGEt3+YYOmcnYwZ+ePWzFCT9uMDGIAtRcXGiiRz0
+         PLQNin3WoC1jUYENvHpJWosDEixxycUdW5Sg8AEfKQbQDs7U5JhkZ+hnvg3yVEWORWpe
+         qBFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=hM+Yde17Zdskg7zytVje3fm23lmUvElHVdMsmjIgn/U=;
-        b=fccCDR3R6uhsyd8+F/VUeEq8pXbEs2Xl9ejQByVArM6VRus2JlXLX32MLaJ9iMqlum
-         dBW7z9bFP1U7Hj5VapsJeoUM07yp+mobJtH5QVCQHFvC3zOUc/mfKIbJ+wAb9JtnbfAQ
-         0T0zJ5kzMtqh3w1YjIUsMLkl5/RVNZOe/dr6wO2Mj1ys6Ji+I3P4kBAzZHlj56QrAbXp
-         7LUmRNSJbrHONjpSjuSwNxMP0DdF1lD/cOtyLh7wiidtuK/OsEl4Wr8v4bmfkQ0ubna9
-         HNepdxs1g7cjB572SYtZzR1EKAXn4lMats5sqQgRlnHf3G0ClUSoi7lgpwOSqkrZ1lTy
-         LLEA==
-X-Gm-Message-State: AOAM530tn8p+Cd1a8QlA+puHWxrhcvmcQSkgcAarSZ6La8bIkW+YKla3
-        VJYg5j9RoZQCM5KGajJlA2rwbjgRuPqRJA==
-X-Google-Smtp-Source: ABdhPJwCZocLXSE5ugKLapKC5x+a7wEvYaP7HQ/21h8xxTk7dbz8DpyGUDA/317TuEogqcRINEVKbQ==
-X-Received: by 2002:a05:6402:3592:: with SMTP id y18mr8594052edc.360.1617268929876;
-        Thu, 01 Apr 2021 02:22:09 -0700 (PDT)
+        bh=3G3s/S8lRMB91e3/ict3UMMhMSDTheEUiSUyBvwqizs=;
+        b=blkc7CemxtIfCA4VDIzVk+TzU+RYMYq03FSLtvTA3KTegAE81skm4stcoXzLFXL6H4
+         QvZzI2rWtG8A7b3baiCk/7RRCM4X+8chcXH2FeMWdj6tv0ElAj3ztImV2p82alWqA+nL
+         LTnrugytQ0HMphg/W9XE2SzcdSlARlbhL5cjoniZoz0vQKSlkpBukShiX+qayXtmX8Cf
+         XehZDDdC89cExLtsUo+W0wZcCZIk+DEdoLzLq9GLQNAlg1GgqJINEKt6605OU8t4GgIz
+         QEyrNpn1xNNmoyF+31TzK3VPAcTRa61D1MfYSgnBnU4ULymH/lC9Rdzvd98Q15x0MXMT
+         st/w==
+X-Gm-Message-State: AOAM530ZS8QA0Ma/0d7Gs8BW+PxszEZw8LGiBiACZOetvixVvZ2iHfgz
+        rjKCT2jOYLwMe+hAhaFyVT0=
+X-Google-Smtp-Source: ABdhPJz7v5KLPe1jt96WFfq5zX8Hzw37lFfVgjMdf/vqFLp7jPGvTHSEsf5Jits17Qy5ulxqFhvjVw==
+X-Received: by 2002:a17:907:75fc:: with SMTP id jz28mr8264546ejc.490.1617268931426;
+        Thu, 01 Apr 2021 02:22:11 -0700 (PDT)
 Received: from agape ([5.171.80.247])
-        by smtp.gmail.com with ESMTPSA id p3sm2538709ejd.7.2021.04.01.02.22.09
+        by smtp.gmail.com with ESMTPSA id pg2sm2439810ejb.49.2021.04.01.02.22.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 02:22:09 -0700 (PDT)
+        Thu, 01 Apr 2021 02:22:11 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     joe@perches.com, dan.carpenter@oracle.com,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH 28/49] staging: rtl8723bs: remove empty if blocks in hal/rtl8723bs_hal_init.c
-Date:   Thu,  1 Apr 2021 11:20:58 +0200
-Message-Id: <aff7710e7a36e99348eab7aacac525ab796c17fc.1617268327.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 29/49] staging: rtl8723bs: added driver prefix in log messages
+Date:   Thu,  1 Apr 2021 11:20:59 +0200
+Message-Id: <44684b22f5e90e730b64a574d3e6a3e433a2fc5d.1617268327.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1617268327.git.fabioaiuto83@gmail.com>
 References: <cover.1617268327.git.fabioaiuto83@gmail.com>
@@ -65,37 +65,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove empty if blocks after RT_TRACE deletion
+added driver prefix in log messages in hal/rtl8723b_hal_init.c
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c | 6 ------
- 1 file changed, 6 deletions(-)
+ drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-index fbc6ef0cfe0c..df15b9c206f3 100644
+index df15b9c206f3..da9529054459 100644
 --- a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
 +++ b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-@@ -64,9 +64,6 @@ static int _BlockWrite(struct adapter *padapter, void *buffer, u32 buffSize)
- 	blockCount_p1 = buffSize / blockSize_p1;
- 	remainSize_p1 = buffSize % blockSize_p1;
+@@ -360,13 +360,14 @@ s32 rtl8723b_FirmwareDownload(struct adapter *padapter, bool  bUsedWoWLANFw)
  
--	if (blockCount_p1) {
--	}
--
- 	for (i = 0; i < blockCount_p1; i++) {
- 		ret = rtw_write32(padapter, (FW_8723B_START_ADDRESS + i * blockSize_p1), *((u32 *)(bufferPtr + i * blockSize_p1)));
- 		if (ret == _FAIL) {
-@@ -82,9 +79,6 @@ static int _BlockWrite(struct adapter *padapter, void *buffer, u32 buffSize)
- 		blockCount_p2 = remainSize_p1/blockSize_p2;
- 		remainSize_p2 = remainSize_p1%blockSize_p2;
- 
--		if (blockCount_p2) {
--		}
--
+ 	rtStatus = request_firmware(&fw, fwfilepath, device);
+ 	if (rtStatus) {
+-		pr_err("Request firmware failed with error 0x%x\n", rtStatus);
++		pr_err("%s Request firmware failed with error 0x%x\n",
++		       DRIVER_PREFIX, rtStatus);
+ 		rtStatus = _FAIL;
+ 		goto exit;
  	}
  
- 	/* 3 Phase #3 */
+ 	if (!fw) {
+-		pr_err("Firmware %s not available\n", fwfilepath);
++		pr_err("%s Firmware %s not available\n", DRIVER_PREFIX, fwfilepath);
+ 		rtStatus = _FAIL;
+ 		goto exit;
+ 	}
 -- 
 2.20.1
 
