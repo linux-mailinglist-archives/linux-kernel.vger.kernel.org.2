@@ -2,108 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D2C351DA6
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B27351E84
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240626AbhDASbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:31:01 -0400
-Received: from gate.crashing.org ([63.228.1.57]:48323 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237652AbhDASIg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:08:36 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 131GBa12032064;
-        Thu, 1 Apr 2021 11:11:36 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 131GBVOu032063;
-        Thu, 1 Apr 2021 11:11:31 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Thu, 1 Apr 2021 11:11:31 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Xiongwei Song <sxwjean@gmail.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Xiongwei Song <sxwjean@me.com>, benh@kernel.crashing.org,
-        paulus@samba.org, oleg@redhat.com, npiggin@gmail.com,
-        christophe.leroy@csgroup.eu, msuchanek@suse.de,
-        aneesh.kumar@linux.ibm.com, ravi.bangoria@linux.ibm.com,
-        mikey@neuling.org, haren@linux.ibm.com, alistair@popple.id.au,
-        jniethe5@gmail.com, peterz@infradead.org, leobras.c@gmail.com,
-        akpm@linux-foundation.org, rppt@kernel.org, peterx@redhat.com,
-        atrajeev@linux.vnet.ibm.com, maddy@linux.ibm.com,
-        kjain@linux.ibm.com, kan.liang@linux.intel.com, aik@ozlabs.ru,
-        pmladek@suse.com, john.ogness@linutronix.de,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kvm-ppc@vger.kernel.org
-Subject: Re: [PATCH v2] powerpc/traps: Enhance readability for trap types
-Message-ID: <20210401161131.GE13863@gate.crashing.org>
-References: <20210330150425.10145-1-sxwjean@me.com> <875z17y79i.fsf@mpe.ellerman.id.au> <20210331212550.GD13863@gate.crashing.org> <CAEVVKH8XDiEGHjXj6sJAHynhwqKWpNqj_Ws03AqwNjR8OmHf5w@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S234705AbhDASm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:42:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239307AbhDASUm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:20:42 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B089DC02FEA6;
+        Thu,  1 Apr 2021 09:12:23 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso2602292otq.3;
+        Thu, 01 Apr 2021 09:12:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Q6dkaX8MCC1QWlhms6LKLDJBhv8fv/w3cbDi9ipTADQ=;
+        b=VkgbthkXc2HqBSrdop+tgqbqroR4hghxywA0i5NC9MI5fy0VRTmHUeM2U8n/bmVFqB
+         dcf6N7ZmgkbLmLXhdmkBtitwclAJhi2CpCGNAf2GROuHGSXTgvCDn+4RYN79OMSpwk/O
+         IrT0PhmYHLdZKoycZABOFDTSAfifh2S/bT0MgekHNGrNWt4pwgZ6Vutz6ldtw4aZHIGi
+         nds4/Cw9rCx6n2PawhJiiUPhNToTrNeH/2fmPLL7CF9mglGPPWnl0+iwD9M2YD8rOGPK
+         C6urzCvVgm80cSYpPF35xSTT5ODSmxLUuBkz8wJtzfgjlq8Ncc/4E2KehZSFCW4gTdY/
+         ZbIw==
+X-Gm-Message-State: AOAM533Kb0eabITxD/GiQueyqpsMLJPa2mde56ebv1lLRQAJ2rqeALSG
+        bOUUHzCnC/3cZ7I/pg40oOx6dPY4Tw==
+X-Google-Smtp-Source: ABdhPJyQS8ZYJmHSsmQe0gtNV4ljM0aMybfxwE16FwmOSPgDHIGJQ6KTnf9NOVhz5wJMxvHIf5PcFg==
+X-Received: by 2002:a9d:70cf:: with SMTP id w15mr7805191otj.283.1617293542965;
+        Thu, 01 Apr 2021 09:12:22 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id e15sm1210740otk.64.2021.04.01.09.12.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 09:12:22 -0700 (PDT)
+Received: (nullmailer pid 530912 invoked by uid 1000);
+        Thu, 01 Apr 2021 16:12:21 -0000
+Date:   Thu, 1 Apr 2021 11:12:21 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Carlis <zhangxuezhi3@gmail.com>
+Cc:     devicetree@vger.kernel.org, daniel@ffwll.ch,
+        linux-kernel@vger.kernel.org, kraxel@redhat.com, airlied@linux.ie,
+        tzimmermann@suse.de, zhangxuezhi1@yulong.com, robh+dt@kernel.org,
+        sam@ravnborg.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v4 2/2] dt-bindings: display: sitronix, st7789v-dbi: Add
+ Waveshare 2inch LCD module
+Message-ID: <20210401161221.GA530733@robh.at.kernel.org>
+References: <20210331030550.119493-1-zhangxuezhi3@gmail.com>
+ <20210331030550.119493-3-zhangxuezhi3@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEVVKH8XDiEGHjXj6sJAHynhwqKWpNqj_Ws03AqwNjR8OmHf5w@mail.gmail.com>
-User-Agent: Mutt/1.4.2.3i
+In-Reply-To: <20210331030550.119493-3-zhangxuezhi3@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 10:55:58AM +0800, Xiongwei Song wrote:
-> Segher Boessenkool <segher@kernel.crashing.org> 于2021年4月1日周四 上午6:15写道：
+On Wed, 31 Mar 2021 03:05:50 +0000, Carlis wrote:
+> From: Xuezhi Zhang <zhangxuezhi1@yulong.com>
 > 
-> > On Wed, Mar 31, 2021 at 08:58:17PM +1100, Michael Ellerman wrote:
-> > > So perhaps:
-> > >
-> > >   EXC_SYSTEM_RESET
-> > >   EXC_MACHINE_CHECK
-> > >   EXC_DATA_STORAGE
-> > >   EXC_DATA_SEGMENT
-> > >   EXC_INST_STORAGE
-> > >   EXC_INST_SEGMENT
-> > >   EXC_EXTERNAL_INTERRUPT
-> > >   EXC_ALIGNMENT
-> > >   EXC_PROGRAM_CHECK
-> > >   EXC_FP_UNAVAILABLE
-> > >   EXC_DECREMENTER
-> > >   EXC_HV_DECREMENTER
-> > >   EXC_SYSTEM_CALL
-> > >   EXC_HV_DATA_STORAGE
-> > >   EXC_PERF_MONITOR
-> >
-> > These are interrupt (vectors), not exceptions.  It doesn't matter all
-> > that much, but confusing things more isn't useful either!  There can be
-> > multiple exceptions that all can trigger the same interrupt.
-> >
-> >  When looking at the reference manual of e500 and e600 from NXP
->  official, they call them as interrupts.While looking at the "The
-> Programming Environments"
->  that is also from NXP, they call them exceptions. Looks like there is
->  no explicit distinction between interrupts and exceptions.
+> Document support for the Waveshare 2inch LCD module display, which is a
+> 240x320 2" TFT display driven by a Sitronix ST7789V TFT Controller.
+> 
+> Signed-off-by: Xuezhi Zhang <zhangxuezhi1@yulong.com>
+> ---
+> v2:change compatible value.
+> v3:change author name.
+> v4:delete a maintainer.
+> ---
+>  .../display/sitronix,st7789v-dbi.yaml         | 72 +++++++++++++++++++
+>  1 file changed, 72 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/sitronix,st7789v-dbi.yaml
+> 
 
-The architecture documents have always called it interrupts.  The PEM
-says it calls them exceptions instead, but they are called interrupts in
-the architecture (and the PEM says that, too).
-
-> Here is the "The Programming Environments" link:
-> https://www.nxp.com.cn/docs/en/user-guide/MPCFPE_AD_R1.pdf
-
-That document is 24 years old.  The architecture is still published,
-new versions regularly.
-
-> As far as I know, the values of interrupts or exceptions above are defined
-> explicitly in reference manual or the programming environments.
-
-They are defined in the architecture.
-
-> Could
-> you please provide more details about multiple exceptions with the same
-> interrupts?
-
-The simplest example is 700, program interrupt.  There are many causes
-for it, including all the exceptions in FPSCR: VX, ZX, OX, UX, XX, and
-VX is actually divided into nine separate cases itself.  There also are
-the various causes of privileged instruction type program interrupts,
-and  the trap type program interrupt, but the FEX ones are most obvious
-here.
-
-
-Segher
+Reviewed-by: Rob Herring <robh@kernel.org>
