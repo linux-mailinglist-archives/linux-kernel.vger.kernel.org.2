@@ -2,123 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65D8F351F20
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D93F0351C2B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237082AbhDASxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:53:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235585AbhDASnD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:43:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42B006127B;
-        Thu,  1 Apr 2021 13:54:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617285276;
-        bh=E1MzlRBNIUjGJaXAAgyCF+55RPXojah69hWzY81rL8c=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=pBk4gX5rfgrUemMy5yDME4Jyw/HzyUy3oVmxgTnxb79E871sCtPVOAnWY/vjCptNL
-         SIaj7j2dZpzqpv7eYCA4iUZMUR8qeGTsZKw4RRqI7t01LFvG4lSs9dZPU0EwL1bZY5
-         T9ep+vhTQXFOVsK2lVLLqSLt8eBw8sxWL7mhpj8FOXSo1FFmO53pT5/IFHBn+f8Di5
-         bgbquLapdAAP0PL9xSH7Gj6sTrYHUKZ+kmhq+aKkBfULJo6XQBJxcKs+MGDZbDwW0F
-         oMcolbp01BacVr4vANlxD8gQZRGJNX4GXndu2EcQb5jH7fkg/sDQR6qK3IkFrMmo+l
-         QXUCQygpm/OBw==
-Received: by mail-oo1-f51.google.com with SMTP id h3-20020a4ae8c30000b02901b68b39e2d3so569315ooe.9;
-        Thu, 01 Apr 2021 06:54:36 -0700 (PDT)
-X-Gm-Message-State: AOAM530+kgodvJ8gJ77+FkpKsizkHPfrLwQ2rK5D1drvtTIjKH8BzmT7
-        ilq23soBUwH6WNKj1Qkenuv8BTtGO9FxUdLvOQk=
-X-Google-Smtp-Source: ABdhPJwzloTq4sU/egDltze4DIJ8ibhKd4oREk2yk3c6I9Xx/E9U8vV4YNUsd5xZRqEUpIiJowZjREkRVdjmkO6xHLg=
-X-Received: by 2002:a4a:395d:: with SMTP id x29mr7229111oog.41.1617285275577;
- Thu, 01 Apr 2021 06:54:35 -0700 (PDT)
+        id S237461AbhDASNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:13:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32769 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236957AbhDAR4I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:56:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617299768;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=CqTbGA2nnEQCoezWyE1Fpgf0IZLhERcQWs6PZNwBkg4=;
+        b=jFiEEP1ySKt+P33XvxoDDxTYKWJSCcrP6KcaK1ncFumMvSJSIyDlhkiDVVQ+YJJCh0b6B3
+        oW/crAi4Jc+xaGNTetGQrHI8f65REIM8SsY9AC5DQlEzKNenm8Y+DD4sjJrCOkJio4y0pa
+        DDAXlb8AGKCzQbZfOc2xwboeHxiSUaA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-450-PwIa3jVQOJCoHvlqWy6ukQ-1; Thu, 01 Apr 2021 09:55:06 -0400
+X-MC-Unique: PwIa3jVQOJCoHvlqWy6ukQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A55FC107B789;
+        Thu,  1 Apr 2021 13:55:02 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.35.206.58])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8D0E15D6B1;
+        Thu,  1 Apr 2021 13:54:52 +0000 (UTC)
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-kernel@vger.kernel.org (open list),
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>, Jessica Yu <jeyu@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Will Deacon <will@kernel.org>,
+        kvmarm@lists.cs.columbia.edu (open list:KERNEL VIRTUAL MACHINE FOR
+        ARM64 (KVM/arm64)), Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Jim Mattson <jmattson@google.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org (open list:S390),
+        Heiko Carstens <hca@linux.ibm.com>,
+        Kieran Bingham <kbingham@kernel.org>,
+        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
+        linux-arm-kernel@lists.infradead.org (moderated list:KERNEL VIRTUAL
+        MACHINE FOR ARM64 (KVM/arm64)), James Morse <james.morse@arm.com>
+Subject: [PATCH v2 0/9] KVM: my debug patch queue
+Date:   Thu,  1 Apr 2021 16:54:42 +0300
+Message-Id: <20210401135451.1004564-1-mlevitsk@redhat.com>
 MIME-Version: 1.0
-References: <MW2PR2101MB08924CD74C6EB773C4D5FAFDBF7E9@MW2PR2101MB0892.namprd21.prod.outlook.com>
- <CAJZ5v0g+=AnRAmAAn8NpHm8bmZ1WkwDpjb5rr_zPOVABW1PYug@mail.gmail.com>
- <4e95307db43e2f7cc8516e645b81db7db0dd8ad4.camel@redhat.com>
- <CAMj1kXHg2RDgwmOhJkaAPoWeHpxnd6tixp94Kha1-bzNvCaQUg@mail.gmail.com>
- <504652e70f0a4e42e4927583b9ed47cd78590329.camel@redhat.com>
- <CAMj1kXHRduBs0TJcLC4iMkyoGXyyrXPM_WpVVij33ki8THf9Kw@mail.gmail.com> <CAJZ5v0hKPBtUzGKfGHD6KX-c2QEETfatCkNjCK8ukh-AhVfUhA@mail.gmail.com>
-In-Reply-To: <CAJZ5v0hKPBtUzGKfGHD6KX-c2QEETfatCkNjCK8ukh-AhVfUhA@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 1 Apr 2021 15:54:23 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFrBGTitSNYZC58=UdmfgbbF2MvTcfLVRpkxJ-uYX3piw@mail.gmail.com>
-Message-ID: <CAMj1kXFrBGTitSNYZC58=UdmfgbbF2MvTcfLVRpkxJ-uYX3piw@mail.gmail.com>
-Subject: Re: Fix hibernation in FIPS mode?
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Simo Sorce <simo@redhat.com>, Dexuan Cui <decui@microsoft.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "crecklin@redhat.com" <crecklin@redhat.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 1 Apr 2021 at 15:38, Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Thu, Apr 1, 2021 at 10:47 AM Ard Biesheuvel <ardb@kernel.org> wrote:
-> >
-> > On Tue, 30 Mar 2021 at 21:56, Simo Sorce <simo@redhat.com> wrote:
-> > >
-> > > On Tue, 2021-03-30 at 21:45 +0200, Ard Biesheuvel wrote:
-> > > > On Tue, 30 Mar 2021 at 20:05, Simo Sorce <simo@redhat.com> wrote:
-> > > > > On Tue, 2021-03-30 at 16:46 +0200, Rafael J. Wysocki wrote:
-> > > > > > On Tue, Mar 30, 2021 at 12:14 AM Dexuan Cui <decui@microsoft.com> wrote:
-> > > > > > > Hi,
-> > > > > > > MD5 was marked incompliant with FIPS in 2009:
-> > > > > > > a3bef3a31a19 ("crypto: testmgr - Skip algs not flagged fips_allowed in fips mode")
-> > > > > > > a1915d51e8e7 ("crypto: testmgr - Mark algs allowed in fips mode")
-> > > > > > >
-> > > > > > > But hibernation_e820_save() is still using MD5, and fails in FIPS mode
-> > > > > > > due to the 2018 patch:
-> > > > > > > 749fa17093ff ("PM / hibernate: Check the success of generating md5 digest before hibernation")
-> > > > > > >
-> > > > > > > As a result, hibernation doesn't work when FIPS is on.
-> > > > > > >
-> > > > > > > Do you think if hibernation_e820_save() should be changed to use a
-> > > > > > > FIPS-compliant algorithm like SHA-1?
-> > > > > >
-> > > > > > I would say yes, it should.
-> > > > > >
-> > > > > > > PS, currently it looks like FIPS mode is broken in the mainline:
-> > > > > > > https://www.mail-archive.com/linux-crypto@vger.kernel.org/msg49414.html
-> > > > >
-> > > > > FYI, SHA-1 is not a good choice, it is only permitted in HMAC
-> > > > > constructions and only for specified uses. If you need to change
-> > > > > algorithm you should go straight to SHA-2 or SHA-3 based hashes.
-> > > > >
-> > > >
-> > > > What is the reason for using a [broken] cryptographic hash here? if
-> > > > this is just an integrity check, better use CRC32
->
-> Not really.
->
-> CRC32 is not really sufficient for integrity checking here AFAICS.  It
-> might be made a fallback option if MD5 is not available, but making it
-> the default would be somewhat over the top IMO.
->
-> > > If the integrity check is used exclusively to verify there were no
-> > > accidental changes and is not used as a security measure, by all means
-> > > I agree that using crc32 is a better idea.
-> > >
-> >
-> > Looking at 62a03defeabd58f74e07ca030d6c21e069d4d88e which introduced
-> > this, it is only a best effort check which is simply omitted if md5
-> > happens to be unavailable, so there is definitely no need for crypto
-> > here.
->
-> Yes, it is about integrity checking only.  No, CRC32 is not equivalent
-> to MD5 in that respect AFAICS.
->
+Hi!=0D
+=0D
+I would like to publish two debug features which were needed for other stuf=
+f=0D
+I work on.=0D
+=0D
+One is the reworked lx-symbols script which now actually works on at least=
+=0D
+gdb 9.1 (gdb 9.2 was reported to fail to load the debug symbols from the ke=
+rnel=0D
+for some reason, not related to this patch) and upstream qemu.=0D
+=0D
+The other feature is the ability to trap all guest exceptions (on SVM for n=
+ow)=0D
+and see them in kvmtrace prior to potential merge to double/triple fault.=0D
+=0D
+This can be very useful and I already had to manually patch KVM a few=0D
+times for this.=0D
+I will, once time permits, implement this feature on Intel as well.=0D
+=0D
+V2:=0D
+=0D
+ * Some more refactoring and workarounds for lx-symbols script=0D
+=0D
+ * added KVM_GUESTDBG_BLOCKEVENTS flag to enable 'block interrupts on=0D
+   single step' together with KVM_CAP_SET_GUEST_DEBUG2 capability=0D
+   to indicate which guest debug flags are supported.=0D
+=0D
+   This is a replacement for unconditional block of interrupts on single=0D
+   step that was done in previous version of this patch set.=0D
+   Patches to qemu to use that feature will be sent soon.=0D
+=0D
+ * Reworked the the 'intercept all exceptions for debug' feature according=
+=0D
+   to the review feedback:=0D
+=0D
+   - renamed the parameter that enables the feature and=0D
+     moved it to common kvm module.=0D
+     (only SVM part is currently implemented though)=0D
+=0D
+   - disable the feature for SEV guests as was suggested during the review=
+=0D
+   - made the vmexit table const again, as was suggested in the review as w=
+ell.=0D
+=0D
+Best regards,=0D
+	Maxim Levitsky=0D
+=0D
+Maxim Levitsky (9):=0D
+  scripts/gdb: rework lx-symbols gdb script=0D
+  KVM: introduce KVM_CAP_SET_GUEST_DEBUG2=0D
+  KVM: x86: implement KVM_CAP_SET_GUEST_DEBUG2=0D
+  KVM: aarch64: implement KVM_CAP_SET_GUEST_DEBUG2=0D
+  KVM: s390x: implement KVM_CAP_SET_GUEST_DEBUG2=0D
+  KVM: x86: implement KVM_GUESTDBG_BLOCKEVENTS=0D
+  KVM: SVM: split svm_handle_invalid_exit=0D
+  KVM: x86: add force_intercept_exceptions_mask=0D
+  KVM: SVM: implement force_intercept_exceptions_mask=0D
+=0D
+ Documentation/virt/kvm/api.rst    |   4 +=0D
+ arch/arm64/include/asm/kvm_host.h |   4 +=0D
+ arch/arm64/kvm/arm.c              |   2 +=0D
+ arch/arm64/kvm/guest.c            |   5 -=0D
+ arch/s390/include/asm/kvm_host.h  |   4 +=0D
+ arch/s390/kvm/kvm-s390.c          |   3 +=0D
+ arch/x86/include/asm/kvm_host.h   |  12 ++=0D
+ arch/x86/include/uapi/asm/kvm.h   |   1 +=0D
+ arch/x86/kvm/svm/svm.c            |  87 +++++++++++--=0D
+ arch/x86/kvm/svm/svm.h            |   6 +-=0D
+ arch/x86/kvm/x86.c                |  14 ++-=0D
+ arch/x86/kvm/x86.h                |   2 +=0D
+ include/uapi/linux/kvm.h          |   1 +=0D
+ kernel/module.c                   |   8 +-=0D
+ scripts/gdb/linux/symbols.py      | 203 ++++++++++++++++++++----------=0D
+ 15 files changed, 272 insertions(+), 84 deletions(-)=0D
+=0D
+-- =0D
+2.26.2=0D
+=0D
 
-There are two possibilities:
-- we care about an adversary attempting to forge a collision, in which
-case you need a cryptographic hash which is not broken;
-- we only care about integrity, in which case crypto is overkill, and
-CRC32 is sufficient. (Note that the likelihood of an honest,
-inadvertent modification not being caught by CRC32 is 1 in 4 billion)
-
-MD5 does not meet either requirement, given that it is known to be
-broken, and overkill for simple integrity checks. MD5 should be phased
-out and removed, and moving this code onto the correct abstraction
-would be a reasonable step towards that goal.
