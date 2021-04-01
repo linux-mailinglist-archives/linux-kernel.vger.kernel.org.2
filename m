@@ -2,116 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A96C351278
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A36F35124A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 11:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233973AbhDAJhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 05:37:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233938AbhDAJhL (ORCPT
+        id S233793AbhDAJbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 05:31:35 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15569 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233807AbhDAJbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 05:37:11 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A8EC0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 02:37:11 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id m11so1014548pfc.11
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 02:37:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mcgJPI+OLnXKS6f2jEHdXibOScXid3UD2wHpcMZsYC8=;
-        b=XXHnwjtjUIXHglDE8sYs3uix5dsEwoiOr126fLR+uD3MRWnDxS5mXundRMl6oyKp8G
-         0BLCnAd0wZdUTDQv56WayLebeE+LCDZkat3P2QE/0k4sHmu8NBn0RGQRL6DskgayhEpO
-         f7OYOJq4cZf1cTx/cZ9d26eS+5jXRdj/j6OunAYDgBQsW3YFdnLcJadkiiuoPIQepTQz
-         SejeuXsZq8aFLT/CMxOee3LtDWYILC+Tl5e/mZ9gSpTzd8IItpg22a7lTIMUfH+6YlmD
-         ZyTzP9SIX/AQO1VFFJHw8ibEa1T0YPK9AzIhi9n+n+HwhvxGAX+4pSKt25A/Ehm2YWml
-         n8CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mcgJPI+OLnXKS6f2jEHdXibOScXid3UD2wHpcMZsYC8=;
-        b=NKFWWW+tZ/d5+oKzpCAL6qHJbKa74R8kc+C3SOtaTYA2nOkfH/xTHmY2hpe5Xaj1cq
-         UOehs/4nm6aJy/7dy7M/EC+QbknBJwB+R0t7/Dosjwzl5IOflkZw/SSXguR9fi28YjQU
-         jKDiAXFieFGtIF63ieAAq2niKNXO1lOJAZyh1v6xIxiIKZMQIvxJZFx1pPL5wc21jqQB
-         Iul8PSBMawpoyuckQBC+I1CReMAQfu7UnB7omwQryjC0uf3islIyp1Sa27oDO0C4gNCK
-         d6vcYROlB+Qw4+E3RVzQF7qdu6S7A8EK4XAs38/rW+9fB+brI0EdSZyqerfhW1POW40k
-         Dknw==
-X-Gm-Message-State: AOAM5336W3IZUf94u3wn56eCfd5XEhedI+89RTwIyGUYNjmPc4KJnstn
-        8cIUZGa1MNzPRWNK7uuRhH/4Iw==
-X-Google-Smtp-Source: ABdhPJxkfP7QA7T16arIV78STn7cljX0N93gxkGF9gMmDTfxUDZogi1r5p1jZl2QT4ir2ZVOhGGaSQ==
-X-Received: by 2002:a65:4c43:: with SMTP id l3mr6637800pgr.327.1617269831183;
-        Thu, 01 Apr 2021 02:37:11 -0700 (PDT)
-Received: from localhost.localdomain ([139.177.225.233])
-        by smtp.gmail.com with ESMTPSA id h13sm4710189pjv.52.2021.04.01.02.37.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 01 Apr 2021 02:37:10 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     viro@zeniv.linux.org.uk, tj@kernel.org, axboe@fb.com,
-        willy@infradead.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v2] writeback: fix obtain a reference to a freeing memcg css
-Date:   Thu,  1 Apr 2021 17:33:43 +0800
-Message-Id: <20210401093343.51299-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        Thu, 1 Apr 2021 05:31:14 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F9yYV0gSsz19KPb;
+        Thu,  1 Apr 2021 17:29:02 +0800 (CST)
+Received: from huawei.com (10.175.103.91) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Thu, 1 Apr 2021
+ 17:31:06 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <mingo@redhat.com>, <peterz@infradead.org>
+Subject: [PATCH -next] locking/ww_mutex: fix missing destroy_workqueue() on error in test_ww_mutex_init()
+Date:   Thu, 1 Apr 2021 17:33:58 +0800
+Message-ID: <20210401093358.1175493-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The caller of wb_get_create() should pin the memcg, because
-wb_get_create() relies on this guarantee. The rcu read lock
-only can guarantee that the memcg css returned by css_from_id()
-cannot be released, but the reference of the memcg can be zero.
-Fix it by holding a reference to the css before calling
-wb_get_create(). This is not a problem I encountered in the
-real world. Just the result of a code review.
+If test_ww_mutex_init() failed, the module won't be loaded,
+so test_ww_mutex_exit() can not be called, in this case, wq
+will be leaked, fix it by adding destroy_workqueue() on error
+path of test_ww_mutex_init().
 
-And it is unnecessary to use GFP_ATOMIC, so replace it with
-GFP_NOIO.
-
-Fixes: 682aa8e1a6a1 ("writeback: implement unlocked_inode_to_wb transaction and use it for stat updates")
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Fixes: d1b42b800e5d ("locking/ww_mutex: Add kselftests for resolving...")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
-Changelog in v2:
- 1. Replace GFP_ATOMIC with GFP_NOIO suggested by Matthew.
+ kernel/locking/test-ww_mutex.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
- fs/fs-writeback.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index e91980f49388..df7f89f8f771 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -501,16 +501,21 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
- 	if (atomic_read(&isw_nr_in_flight) > WB_FRN_MAX_IN_FLIGHT)
- 		return;
+diff --git a/kernel/locking/test-ww_mutex.c b/kernel/locking/test-ww_mutex.c
+index 3e82f449b4ff..6e4faa853e56 100644
+--- a/kernel/locking/test-ww_mutex.c
++++ b/kernel/locking/test-ww_mutex.c
+@@ -589,37 +589,41 @@ static int __init test_ww_mutex_init(void)
  
--	isw = kzalloc(sizeof(*isw), GFP_ATOMIC);
-+	isw = kzalloc(sizeof(*isw), GFP_NOIO);
- 	if (!isw)
- 		return;
+ 	ret = test_mutex();
+ 	if (ret)
+-		return ret;
++		goto out;
  
- 	/* find and pin the new wb */
- 	rcu_read_lock();
- 	memcg_css = css_from_id(new_wb_id, &memory_cgrp_subsys);
--	if (memcg_css)
--		isw->new_wb = wb_get_create(bdi, memcg_css, GFP_ATOMIC);
-+	if (memcg_css && !css_tryget(memcg_css))
-+		memcg_css = NULL;
- 	rcu_read_unlock();
-+	if (!memcg_css)
-+		goto out_free;
+ 	ret = test_aa();
+ 	if (ret)
+-		return ret;
++		goto out;
+ 
+ 	ret = test_abba(false);
+ 	if (ret)
+-		return ret;
++		goto out;
+ 
+ 	ret = test_abba(true);
+ 	if (ret)
+-		return ret;
++		goto out;
+ 
+ 	ret = test_cycle(ncpus);
+ 	if (ret)
+-		return ret;
++		goto out;
+ 
+ 	ret = stress(16, 2*ncpus, STRESS_INORDER);
+ 	if (ret)
+-		return ret;
++		goto out;
+ 
+ 	ret = stress(16, 2*ncpus, STRESS_REORDER);
+ 	if (ret)
+-		return ret;
++		goto out;
+ 
+ 	ret = stress(4095, hweight32(STRESS_ALL)*ncpus, STRESS_ALL);
+ 	if (ret)
+-		return ret;
++		goto out;
+ 
+ 	return 0;
 +
-+	isw->new_wb = wb_get_create(bdi, memcg_css, GFP_NOIO);
-+	css_put(memcg_css);
- 	if (!isw->new_wb)
- 		goto out_free;
++out:
++	destroy_workqueue(wq);
++	return ret;
+ }
  
+ static void __exit test_ww_mutex_exit(void)
 -- 
-2.11.0
+2.25.1
 
