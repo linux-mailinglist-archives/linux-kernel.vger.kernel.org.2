@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D2DC351F1E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA944351F1B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236451AbhDASxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:53:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35178 "EHLO mail.kernel.org"
+        id S235245AbhDASxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:53:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235598AbhDASnC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235584AbhDASnC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 1 Apr 2021 14:43:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B32FA61378;
-        Thu,  1 Apr 2021 16:16:04 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B51C61375;
+        Thu,  1 Apr 2021 16:16:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617293765;
-        bh=zp3Tpu+kUph5azbHKo/cVTxK4hhcTlET7aKDSzeCMns=;
+        s=k20201202; t=1617293769;
+        bh=Cnibmwj6f0ETV7KocKFsDxMa+XbFc5GMHnVOB7+uVj8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lNvRf4e1Nfc9GKuGcUaN0ir9vETDIpMi2U79MnBc+Q9xG1hMQob7fpW60rM/cjylH
-         szalDlN1ciZWkh+Q0ZIo0gqLQ7OxmpIynxKR16ev4hbo/5inHWcwz8upmKy1HuQwZU
-         HjHqQ9+9qXmHBfCjTTKgqEOn47JAou1pLETdRxbPJNpUdZQZgETOBtAfPdWJWeeOMq
-         kMBrc7EO7Wf/OEiVc/6ekKGT/7wgFOa5N5jAtmF3LXIKrl5NWhnZBNo8nZv6SAU4Vk
-         e249Fxae46RERG1LghVZl5E6vGnxmP7qA6zVMtM7tHaZDORrgl9PGffEuuwEwRwpNv
-         m3Q8Gd1ZH88gA==
+        b=PpMAOA90TD5bN5u2X9vxHO3I3m86DnD/Y5ANwMziPl7/lpYCGRYjj8OsxIJuv6oa0
+         JBkWvYBToj8InYMr3aXWqZGkvhA/LXviMznXaMRmllRz/X2oK7jUldkfIKu8TyKXqv
+         pbNyrVUHKrjQ7b7uylBhIS5cRSyLQjxj8+IzTyJNaE5Rx0nkmZ9qd4u4qPJkXt8DjW
+         ldPvVcQyhD0sN5RmOyn8FnEk47eAKj8Hti3MJE2RSCWjhUV9DNvgH2pau03lf2+0lj
+         h/lWhEKVxpd/gJ6Z+pkvarhPtcR8WWtuTSCGy2y/XbaAVwopgHfa7nfLV9eBhE7FGK
+         1ucnb582cLpJg==
 From:   Mark Brown <broonie@kernel.org>
-To:     devicetree <devicetree@vger.kernel.org>,
-        alsa-devel <alsa-devel@alsa-project.org>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/1] ASoC: intel, keembay-i2s: Fix a dt_binding_check warning
-Date:   Thu,  1 Apr 2021 17:15:47 +0100
-Message-Id: <161729333651.31618.6325079972879808660.b4-ty@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>, perex@perex.cz,
+        pierre-louis.bossart@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, cezary.rojewski@intel.com,
+        yang.jie@linux.intel.com, tiwai@suse.com,
+        alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com
+Cc:     Mark Brown <broonie@kernel.org>, rdunlap@infradead.org
+Subject: Re: [PATCH] ASoC: Intel: Fix a typo
+Date:   Thu,  1 Apr 2021 17:15:48 +0100
+Message-Id: <161729333652.31618.13965688976437699792.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210329081435.2200-1-thunder.leizhen@huawei.com>
-References: <20210329081435.2200-1-thunder.leizhen@huawei.com>
+In-Reply-To: <20210322065053.74022-1-unixbhaskar@gmail.com>
+References: <20210322065053.74022-1-unixbhaskar@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -44,13 +44,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Mar 2021 16:14:35 +0800, Zhen Lei wrote:
-> The property "dmas" contains two items: DMA "TX" and "RX" channel,
-> Therefore, its value also needs to be written in two parts.
-> 
-> Otherwise, below YAML check warning is reported:
-> Documentation/devicetree/bindings/sound/intel,keembay-i2s.example.dt.yaml:\
-> i2s@20140000: dmas: [[4294967295, 29, 4294967295, 33]] is too short
+On Mon, 22 Mar 2021 12:20:53 +0530, Bhaskar Chowdhury wrote:
+> s/struture/structure/
 
 Applied to
 
@@ -58,8 +53,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: intel, keembay-i2s: Fix a dt_binding_check warning
-      commit: 52cad756b777e82fabe05c728cc62b63b3c61fd3
+[1/1] ASoC: Intel: Fix a typo
+      commit: ebf721fbbb6e077864783c8d0146021815bb1f24
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
