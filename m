@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBFE13523FB
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 01:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51E16352402
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 01:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236375AbhDAXeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 19:34:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50172 "EHLO
+        id S235827AbhDAXeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 19:34:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236431AbhDAXdw (ORCPT
+        with ESMTP id S236457AbhDAXdz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 19:33:52 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB001C05BD1A
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 16:32:55 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id g62so4784508qkf.18
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 16:32:55 -0700 (PDT)
+        Thu, 1 Apr 2021 19:33:55 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C15A6C05BD1D
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 16:32:57 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id g205so4220843pfb.15
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 16:32:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=CIBsMUAzqVBKJMC//YF4MdkZzSoA2eT4NBvrPysyfhQ=;
-        b=BFiANp0pMWHC/IyuQ9DGSiKV70Aw33MNbDtGFQZCptIZJl11fKLLDwlPfO4BrNVOJp
-         xzRqfWKuwuvy9O8TfYc7fcGPZWCdHHqTS3flzLSd3zVxDLZBElZvtCaoUsohNJ42lKS+
-         7yY0vSiJ4daBjV9yrkjy1OXNtCCbOBPV5KYjE1jSVn2d02AszzrZlgXf0dFPaZ9Up5To
-         eq4R0xU+5yBj0s5fhti8O+UcraNwDXGjf0cZET5W6nlaaVo/DY6UE56DTVPCdAsmBb27
-         Qg0VzjbU12KqVP1onYHpSPh4rX6We4KOqxllBqzjOZeRf3DS2g8QdGnZX5lmwOzR6vrP
-         SHrA==
+        bh=Z8NWn4jVbToJav0h5JmVWRAqRYl6h2XMv8WXZ63o+ic=;
+        b=sWQZYrnybic/Guuvi4FLa32pcaoh1lAqAMERMtk/3AuG1Snas/3tmCJ9HTS8KD0KZ2
+         DIyS6n2azDelH2lWTJyz9wybfQaWqBpe11BGARLCpeQggnLYl/XP3Uj2cZa4+SKz8VAj
+         p/n4GcFQfdHxAybtZn/J3po7/veQAWAlQ2mjHxxTyIclKOPD91Aizuo/JF+Ek1nZGDY9
+         kP6kMCtYS0ikKI7mEz2VJvvBuMrXxK7XSAz05VZV8iRsy0FnY7iO/NYieB2Y9ImEF2Rs
+         33dX8T00jNHrkpZ0goIKWVOkD5UvlkwqOmlx9stTgcls1OksOdYC6jX0eL53aBEnGzNo
+         zx4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=CIBsMUAzqVBKJMC//YF4MdkZzSoA2eT4NBvrPysyfhQ=;
-        b=pBh4jiDh0eAxEBNXwVMLUVeCeidH6RJ/uFA+UvMclJcoSClAuScfZRyacUu57Jfjhf
-         FbAjNjWmTkQ0kBjjYnfb19UQJpmBER49d1IESiacWgvltHwPhFl7jD/biS+iWpWYD4u8
-         7hdvxy8uovuGFWtozuBLF/9k/qg8W/8pX6XOkhbxJTK+dijhJgpQXPxyDw06B6ZG44kP
-         ljVANh3inV99iMoquUEy7t2txnzL08G9WL+HOYYCYmPd78KVCDJLZMJT2PzPi6uzTLwh
-         dYQaqnsuEp+A0WSLaAm+UhaDJg4GODaTRRPkdX2gO+ETZUTOgllD944Q+sDX8unX0ewO
-         0B5Q==
-X-Gm-Message-State: AOAM530Ktz4dDXENSDGXBJJmWl9YBCzamvau1qLnB3LuBWiUg9H+m49M
-        C2TLBFHqNGCYu3fGq263OXT38jWI95C0pc0WVmQ=
-X-Google-Smtp-Source: ABdhPJwrLvJN4iFq87bXxxrX4+4K8e7wEfk2totPF6AIrVykX4E6RMB+YDXBq4nStyRioTba7CPxK2ZVTVGbLw7Xcks=
+        bh=Z8NWn4jVbToJav0h5JmVWRAqRYl6h2XMv8WXZ63o+ic=;
+        b=ODbt/GwLQPMfO9wk2Sxnc60BZVVt9JaXoiGvk5Gd/VkUdiu86l34N5HCe8D/dqQ2bJ
+         80qdvXXWHtZcmMQz7c5ztuH1dMAODAM+/hE/MDVaC1GhCFeAb4S5CItYlI0ku8Qf15IN
+         y4H1zJzKtpCIPNzzfkjaTPNyECnx4KlGqyIXTo8yN09iHdYjSaU3CPdKma9uWnPWDtc9
+         WAbr/7F84AnM+Fo4Z4th643WfzJXBGOHcwKOI+3oSGYnXCG7lIPdX+pEY6xzs+3yXmMB
+         3mSXBHzjHZZjBzQxcPmMJFxV2boNlb0oklWZ4wYni6NB4gQtACMaAlAoRqLF1fmlBEGo
+         Xk4Q==
+X-Gm-Message-State: AOAM531J44BU3hbCOcixOmKL3B/BW3BN2HGpW9l+xbCLx8qya/zwrS0k
+        NyfHH/pteT8Guvy2xSGHWKkt0Pkov147IJ34JyE=
+X-Google-Smtp-Source: ABdhPJwiZbq9c4iXijVEYKsvmSZncty9LqawpPJhjxnXl2iNWMREeFwCFILyiiZ0pCK1rOKFlzrry48vXGoQ9XxlZv4=
 X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:4cd1:da86:e91b:70b4])
- (user=samitolvanen job=sendgmr) by 2002:a0c:f7d1:: with SMTP id
- f17mr10229433qvo.38.1617319974835; Thu, 01 Apr 2021 16:32:54 -0700 (PDT)
-Date:   Thu,  1 Apr 2021 16:32:15 -0700
+ (user=samitolvanen job=sendgmr) by 2002:a17:902:c711:b029:e7:3d4e:8149 with
+ SMTP id p17-20020a170902c711b02900e73d4e8149mr10140878plp.38.1617319977301;
+ Thu, 01 Apr 2021 16:32:57 -0700 (PDT)
+Date:   Thu,  1 Apr 2021 16:32:16 -0700
 In-Reply-To: <20210401233216.2540591-1-samitolvanen@google.com>
-Message-Id: <20210401233216.2540591-18-samitolvanen@google.com>
+Message-Id: <20210401233216.2540591-19-samitolvanen@google.com>
 Mime-Version: 1.0
 References: <20210401233216.2540591-1-samitolvanen@google.com>
 X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
-Subject: [PATCH v5 17/18] KVM: arm64: Disable CFI for nVHE
+Subject: [PATCH v5 18/18] arm64: allow CONFIG_CFI_CLANG to be selected
 From:   Sami Tolvanen <samitolvanen@google.com>
 To:     Kees Cook <keescook@chromium.org>
 Cc:     Nathan Chancellor <nathan@kernel.org>,
@@ -75,31 +76,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Disable CFI for the nVHE code to avoid address space confusion.
+Select ARCH_SUPPORTS_CFI_CLANG to allow CFI to be enabled.
 
 Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 Reviewed-by: Kees Cook <keescook@chromium.org>
 ---
- arch/arm64/kvm/hyp/nvhe/Makefile | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/arm64/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
-index a6707df4f6c0..fb24a0f022ad 100644
---- a/arch/arm64/kvm/hyp/nvhe/Makefile
-+++ b/arch/arm64/kvm/hyp/nvhe/Makefile
-@@ -75,9 +75,9 @@ quiet_cmd_hyprel = HYPREL  $@
- quiet_cmd_hypcopy = HYPCOPY $@
-       cmd_hypcopy = $(OBJCOPY) --prefix-symbols=__kvm_nvhe_ $< $@
- 
--# Remove ftrace and Shadow Call Stack CFLAGS.
--# This is equivalent to the 'notrace' and '__noscs' annotations.
--KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_FTRACE) $(CC_FLAGS_SCS), $(KBUILD_CFLAGS))
-+# Remove ftrace, Shadow Call Stack, and CFI CFLAGS.
-+# This is equivalent to the 'notrace', '__noscs', and '__nocfi' annotations.
-+KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_FTRACE) $(CC_FLAGS_SCS) $(CC_FLAGS_CFI), $(KBUILD_CFLAGS))
- 
- # KVM nVHE code is run at a different exception code with a different map, so
- # compiler instrumentation that inserts callbacks or checks into the code may
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index e4e1b6550115..d7395772b6b8 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -75,6 +75,7 @@ config ARM64
+ 	select ARCH_SUPPORTS_SHADOW_CALL_STACK if CC_HAVE_SHADOW_CALL_STACK
+ 	select ARCH_SUPPORTS_LTO_CLANG if CPU_LITTLE_ENDIAN
+ 	select ARCH_SUPPORTS_LTO_CLANG_THIN
++	select ARCH_SUPPORTS_CFI_CLANG
+ 	select ARCH_SUPPORTS_ATOMIC_RMW
+ 	select ARCH_SUPPORTS_INT128 if CC_HAS_INT128 && (GCC_VERSION >= 50000 || CC_IS_CLANG)
+ 	select ARCH_SUPPORTS_NUMA_BALANCING
 -- 
 2.31.0.208.g409f899ff0-goog
 
