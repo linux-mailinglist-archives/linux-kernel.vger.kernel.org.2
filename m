@@ -2,202 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF8F351AAA
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA393519FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235240AbhDASCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:02:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59568 "EHLO
+        id S235771AbhDAR5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 13:57:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236840AbhDARre (ORCPT
+        with ESMTP id S235055AbhDARmJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:47:34 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA0CC061222
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 05:26:25 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id j26so1962705iog.13
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 05:26:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yzoc7dlOuPc3fxpeVRBd2xxNN+g9BpN8EdGoYo9aWVE=;
-        b=m5QiDBDooUfCNqfYQlVTwxVtvLK54ia5tZo6Wys7ChLrzR/J9dXdq7Pexaq2BrjoVV
-         bz09dEbLFywRSzfY3pWZnETz3jE/J1OpCQ0y2UvAg9cPwQPdZ9sCCyQIMzv6qzeQspij
-         gRmUY2LoFzHD29EWn0vUjYOEsd6KlWw17JzhLQEWPHXOrXlUa0fx8epVjIj069gYGUH9
-         QrSPV9b7mKtSWkQX0PClaYqdNSuOb5HwyVB3YtPRIuj3z7HEcLH2C2eoMEOuT0ZAPpXw
-         prdzXQ+vyGc1khcnnotPCu1aoM6ejtTVjokiJ7nVSZ319txyAyZNeWgZbFCqRU2NGXh0
-         AYVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yzoc7dlOuPc3fxpeVRBd2xxNN+g9BpN8EdGoYo9aWVE=;
-        b=a/OIGboNdjVsngCSRw+uBKSpMxuxYQu+4NmWZ10M9XCzMjyIcM/HOVLHuW6jStcK5Q
-         1eI2ul5a/rjWWeuR4dTC62eZGaK+zbdFOCj3FHkFO0NNLFoTDH6+3fK++zv++vB6JBMg
-         ugapIjRDB001VG2kUVcKGIk1wv9xNCR5dPtKM+f3xGyxqGnSobVMelCJ9w37AJwS8XD8
-         NCDOPDT+l578gV2aYo+nFgeitq+M/za4sK9ic0BQaq9FMUIvqtr8SsOTHZtIGezCknLN
-         e4OwvuC2VNdxn/XguonYGPETcXrWWEbrofI81B18deTLle1Qu8G3FrW0eDh9xfi7xcCl
-         7L4A==
-X-Gm-Message-State: AOAM531JmNnjhcsHEjTOoacglCZV1D8CXy5Y9v4QpaAFgtq25V+1N4Ed
-        85+EWoMY/ZFsHN/MPORGUgNlaa4dj7SxpgsA
-X-Google-Smtp-Source: ABdhPJyE24mml/gnaveIp3qOdCpfL7fwfK5stVOa3qBN51+rH8IAcY9hD0/00XIwekootMyJpESaXg==
-X-Received: by 2002:a5d:9807:: with SMTP id a7mr6644491iol.7.1617279984396;
-        Thu, 01 Apr 2021 05:26:24 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id w2sm132030iot.29.2021.04.01.05.26.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Apr 2021 05:26:23 -0700 (PDT)
-Subject: Re: [PATCH] interconnect: qcom: sm8350: Use the correct ids
-To:     Georgi Djakov <georgi.djakov@linaro.org>, djakov@kernel.org,
-        vkoul@kernel.org
-Cc:     bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210401094334.28871-1-georgi.djakov@linaro.org>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <ff0c1b21-7d83-cb29-17d5-06061f46006e@linaro.org>
-Date:   Thu, 1 Apr 2021 07:26:23 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <20210401094334.28871-1-georgi.djakov@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Thu, 1 Apr 2021 13:42:09 -0400
+Received: from EUR02-HE1-obe.outbound.protection.outlook.com (mail-he1eur02on062a.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe05::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9863C05BD2F;
+        Thu,  1 Apr 2021 06:02:57 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TBet6B8oWMV3SzfO/28o6dh+GYNTBrBPKV6QdGVKxnsj7DDS2Wq+Zj0xbfPvqp1rxlSGwfdbRbm5hDJYiZWCsBYehgdK0iVt4mJ/DAYVJY+oezMgnEyq2YbZlljHOXOqFFW38xorpf3Px7wKgQbw810ZgtOv8GgLsQpxPq7Mm2msvXS9zLEmqziZKkOOG5tFocOPGqJ701DbIctlPvExKxZPjqV4pLktinIrxJ2l0d1xEiwxO3lP7epPReZtVqny0x5VGkbiAuO1EbuAn6HN0A0lCMdJU9tqA5uwx/d/cx8pfMPr/I8klZk9YAwevTDekeltsm0m85MpyucsTRS7BQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oM8pup9HZnersTNG4Zf7j5pD01vFQUAtb7lX2uqFDoY=;
+ b=i5DylKz9di48kqQNYSSCUlImUQ4JzEvX8+mG6AHegz7FEHKDbP+1LgFacC1kGme/Y/Yb4yknVYUamSz6pxsnf4Av09NZR7F9Yu8YJZopr6KXL4CnH0ackTJhm7zRXw7B5QO1az81XzkeOgRw5bQJSNvIdB3KJraN/b0cFWQfwSoi9lv4PqSyuPxIvfdQbD7X3i0U8EfVqIPudejPFNxfTJu+iHmsx2hP9IyyuHH/YmpLKUokm0gQwBPoM154S1lypZQ2sYdJYFy0aPVs7N4P0UFAlzKXRBlwc/uEJUvtnmqCn/APGbe0JhLRi2ctGF46hrBKYQ61Vxn25Nx6Doz4BQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oM8pup9HZnersTNG4Zf7j5pD01vFQUAtb7lX2uqFDoY=;
+ b=oq9F5fOOWVjxo9ljcU2bEVa4onNEj2f0TPMwN2/Fr6YrRfQHOcW4xNmIIeFZZbZmwg0xOjWdk9Y3ALV1hcvkvNbVYiLyWDgMnPgBhltBvp+LixVebAy7nou3hNNaKcCwh5/TCjwdlhFhrZ2pkqdrp6nr1+a33sHBepaD5yTN1yk=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com (2603:10a6:803:3::26)
+ by VI1PR04MB4238.eurprd04.prod.outlook.com (2603:10a6:803:4e::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28; Thu, 1 Apr
+ 2021 12:32:51 +0000
+Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com
+ ([fe80::d68:ed11:c239:892b]) by VI1PR0402MB3405.eurprd04.prod.outlook.com
+ ([fe80::d68:ed11:c239:892b%7]) with mapi id 15.20.3999.027; Thu, 1 Apr 2021
+ 12:32:51 +0000
+Subject: Re: [PATCH 04/32] MAINTAINERS: update fsl,dpaa2-console.yaml
+ reference
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Ionut-robert Aron <ionut-robert.aron@nxp.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
+References: <cover.1617279355.git.mchehab+huawei@kernel.org>
+ <188e930100ecb7d4bd476681f3cc29fa536bdcde.1617279355.git.mchehab+huawei@kernel.org>
+From:   Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Message-ID: <a0bf8d46-3079-6246-647f-f92accbd3402@nxp.com>
+Date:   Thu, 1 Apr 2021 15:32:48 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+In-Reply-To: <188e930100ecb7d4bd476681f3cc29fa536bdcde.1617279355.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [78.96.81.175]
+X-ClientProxiedBy: AM0PR10CA0062.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:15::15) To VI1PR0402MB3405.eurprd04.prod.outlook.com
+ (2603:10a6:803:3::26)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.0.27] (78.96.81.175) by AM0PR10CA0062.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:15::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.26 via Frontend Transport; Thu, 1 Apr 2021 12:32:50 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 58bb9e97-93b7-4b7f-387f-08d8f50a4417
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4238:
+X-Microsoft-Antispam-PRVS: <VI1PR04MB42388F6A7E3B0475CBBA29C3EC7B9@VI1PR04MB4238.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:497;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GhuaI7gG8vrlAerSvtNk6M8ErXg2L93ns4UWOsKlt2JVyTJZ1WJ7Y5eN3bUob2huGl3IepXLcVemGY9yGX+4N1sWc2xhkmWq2WrJFBi/IyL4fOnVbeGzh60OOFjs18n5EF341taH+buV6tum8zaqa+GALf1ngZv89WVuoxvmRDpMhpRocVxEYN9Ka/b2tnLdNSW4kBjfjvGDeEmnJskrBSur7+xKEIULRf5R11fNR2nv/HfWDvfJPYeLjYj4btABk4Di2DFJDp6Nrdu92ayHE6lmnDeBX7Z5ogN39GUgCk5uTgej+BSo8ZBt29C+ogkP2PWxdO3cjmf6xe2Le/f1OMRlJR88bs4r1eXY+3/Q5gTCFR4mDdE0hGorDjsO1IcKsv+LcxUa10t9pxHuV7AflUygrNsLnjJX3c7oLImYd5A1UrItpZO88zPDmcj0AF+H62nuBfuqoW4pNKuvsVHUoeyAVHmoggagYffMAwqD0k9w0U7pwRh2xsxJf8z3xeTEU8jjdPWwd/tskc1NExFyxrBB170x+YFzveo4kzuIqHyql3u+3wwQFHI2ryyeT6pybp6MaKfkth4w8upUGW9KXf9DQYKgEYqIwnT2/E1IuICJYcBdixfpzAFnHzGbJ7KUpqnjxiAAUq0VaZgjiGovmtI95xT6eZxN7QiGYsyHvbqmYPubIEoEoC1OWnUiVZT/MYVFSxRwJ6j+FV8bNsDNfQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3405.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(376002)(346002)(396003)(39850400004)(86362001)(110136005)(16576012)(54906003)(6486002)(66946007)(52116002)(66476007)(36756003)(31696002)(66556008)(26005)(8936002)(44832011)(15650500001)(186003)(478600001)(5660300002)(8676002)(53546011)(956004)(2616005)(4326008)(38100700001)(83380400001)(16526019)(2906002)(31686004)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?c21Jd3c3eWIvZnk5U1IzdThsazZIUEpnc3RyQVJQNHN6WjRVUnQ1bmZlWDNC?=
+ =?utf-8?B?L29DamU0ZFQ4b2dlbFdINWN5dkZpTEJ3UmlFNHczdWpCZjY1T2F2Vm5NUTBI?=
+ =?utf-8?B?Z2xSeFlYbEtkM05yWlBtUVcwTGc2ZnJOZE4xVFE2L2ZQUFZ4SnkzM2F4Y3hZ?=
+ =?utf-8?B?VXQ5RXRuS0VvdHlmNU1XNEgzQ2pDb1dGbzNtWnBBY05VNksyWWhCejk3TmNY?=
+ =?utf-8?B?STdWTzZNRldOTHBVSjJXMGN4SUVoSEFOV3RNclFYeWRaK1NJdkthR2duSlNs?=
+ =?utf-8?B?SW5TQ3JYL0U3WTl1VHBqNW5uU3VCYi9SSGFoVXNxRzBJZ1RiVEJCUWtUNmxG?=
+ =?utf-8?B?cWR4NzN4RXlGMzlPRENWNXc0ZEZOZEdiUnY5RUJMbkh4Mnc2ZFo5aExmaTQx?=
+ =?utf-8?B?SDRQR3crMzd0YVl2ZEVnYVVwZGNJVmhMWlg2OVlvUnF4aUphVWdVTUtNMFNL?=
+ =?utf-8?B?di9uc040aW1BYXFyQzV2TCt0a29Ib3A1WDlvS3Z1U01SZDdpcm9ac0ttZGJ4?=
+ =?utf-8?B?a1VwZ2s2bCt0WVpwWFRyYlV1R3RxNWRPQVJuUDhqRTFVQS9iSXVFbzMySklt?=
+ =?utf-8?B?cm50NVV4R0ZtTWxnRk10YllqTGxGUFlXZ3RvL0tDSTZRZnZ0VkdWUkhIczRE?=
+ =?utf-8?B?WkE4cTlUMU8wS21TS0dZNDROMitlQU92UG9BZFN3R2hyQmhQb3dtOXE1THA2?=
+ =?utf-8?B?YlU3S3cvVFIyVDFsUVZYNVhZME9GTklQQzZsNkgxVDNXdTBvOW5XdU5CUG05?=
+ =?utf-8?B?ZjAzb2FMNG5PcHR4ZEpNcHJxT1hIMnFWTjFRQURPV0w1WkFBVnQwMjlQdk5E?=
+ =?utf-8?B?N3V0clYrdE5zMW4vVlhaaWlpK00wU3VEZTM4MVg2WU5RQXVNRTFmUWYyOTNM?=
+ =?utf-8?B?UzQvSVk3eUtHV2hUWEtzblBmcEg1TWl0ZUVablFNRTVnQmJEWUlzQ0ZVamVG?=
+ =?utf-8?B?QklNamNJOUhINVE4NTNXMzJzcTloVm1ySTN6bDJlK1NMMTljZ1dCMjZ3cDI0?=
+ =?utf-8?B?dXBlNHVUL0thbFN6cUFhK3NzcWpFWVcxWEMrd1A3NHpFYnYrVHNTUVpnZ0VG?=
+ =?utf-8?B?b0ZWdm9HM29XaFFnZ2NMYXBtZWp1R3lCOWdxMWRUbVF4UVN5cHRlT2d1Q2Fr?=
+ =?utf-8?B?bWowWlhmcW0xYlJYb1BEa0hGRXlVZzZkKzg4T2VrazJ6U2VyaUgzdDF3ZzVZ?=
+ =?utf-8?B?aU9HcnpJMXJSc0RPQUxhcjdrQUpLV25ZL1dhS3dQNEYvSi9hY2d6cVJ0MXdX?=
+ =?utf-8?B?QlE3NkRGcW93WkNKZU82SSszVE84ZW9qMnYzSkNvWEEzTUl0Y2tGNUIrTnBI?=
+ =?utf-8?B?dXNYMFM5QjhIQjlvMEh4S2V2NzhzRGRmUWlsajBROWNENUY2UWw4Nll0MnNw?=
+ =?utf-8?B?cXVROElXL3kweXZ5d2FCbmhUcEVNd2JLSVFDanFHaDNPNHBWRWRCblZUUHpt?=
+ =?utf-8?B?d25ETEs1MFNXWjUvUE1OMGd3T253T3JlM1YrREpqdkphTzVmYVl5QW4wb2tz?=
+ =?utf-8?B?dnc3bWprWXVRaG1naHMzVEpOYTFKeXV6c0tQbTVLU0x6MTJLbXRzK1Nmblpu?=
+ =?utf-8?B?c0NWQ0JwdU1nYmN6OXc4ajFVZnlESThlYnFoK3o3c2MwaklIUmJ2YVZrYS9h?=
+ =?utf-8?B?RGdRRG9lZXAycHhNYVlMUXY2YU5RWWl2YjlRNFRXYU1Fb0RTcWxMVjE4cUFN?=
+ =?utf-8?B?MTNtSytwWUJYdG9Ua0dSL1FuNFoyNkJEZTg4am53VGdZTm5EeThBTVlRT3Zh?=
+ =?utf-8?Q?GYp7m0lvxpYEhlRh0oCDxBy5ybQDeYxmfDckA/4?=
+X-MS-Exchange-Transport-Forked: True
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 58bb9e97-93b7-4b7f-387f-08d8f50a4417
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3405.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2021 12:32:51.5941
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9H3JiV+iCMogfuFu3AfvCe7IYMWiUh8jhamf7c+QP04ZJYU/PjQUO4df2s+2trkqy7PxAFOZ/ak7x5V4xMwNJA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4238
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/1/21 4:43 AM, Georgi Djakov wrote:
-> For creating an array with the members for each NoC, we should be using
-> a local indexes, as otherwise unnecessary large arrays would be created.
-> Using an incorrect indexes will also result error for the consumers when
-> they try to find a valid path between the endpoints. Let's fix this and
-> use the correct ids.
+
+
+On 4/1/2021 3:17 PM, Mauro Carvalho Chehab wrote:
+> Changeset 616fde2dd60f ("dt-bindings: misc: convert fsl,dpaa2-console from txt to YAML")
+> renamed: Documentation/devicetree/bindings/misc/fsl,dpaa2-console.txt
+> to: Documentation/devicetree/bindings/misc/fsl,dpaa2-console.yaml.
 > 
-> Reported-by: Alex Elder <elder@linaro.org>
-> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+> Update its cross-reference accordingly.
+> 
+> Fixes: 616fde2dd60f ("dt-bindings: misc: convert fsl,dpaa2-console from txt to YAML")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Looks good to me.
+Reviewed-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
 
-Acked-by: Alex Elder <elder@linaro.org>
+---
+Best Regards, Laurentiu
 
 > ---
->   drivers/interconnect/qcom/sm8350.c | 80 +++++++++++++++---------------
->   1 file changed, 40 insertions(+), 40 deletions(-)
+>  MAINTAINERS | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/interconnect/qcom/sm8350.c b/drivers/interconnect/qcom/sm8350.c
-> index f3aab02b8678..01202989a5b2 100644
-> --- a/drivers/interconnect/qcom/sm8350.c
-> +++ b/drivers/interconnect/qcom/sm8350.c
-> @@ -228,20 +228,20 @@ static struct qcom_icc_bcm *aggre2_noc_bcms[] = {
->   };
->   
->   static struct qcom_icc_node *aggre2_noc_nodes[] = {
-> -	[SM8350_MASTER_QDSS_BAM] = &qhm_qdss_bam,
-> -	[SM8350_MASTER_QUP_0] = &qhm_qup0,
-> -	[SM8350_MASTER_QUP_2] = &qhm_qup2,
-> -	[SM8350_MASTER_A2NOC_CFG] = &qnm_a2noc_cfg,
-> -	[SM8350_MASTER_CRYPTO] = &qxm_crypto,
-> -	[SM8350_MASTER_IPA] = &qxm_ipa,
-> -	[SM8350_MASTER_PCIE_0] = &xm_pcie3_0,
-> -	[SM8350_MASTER_PCIE_1] = &xm_pcie3_1,
-> -	[SM8350_MASTER_QDSS_ETR] = &xm_qdss_etr,
-> -	[SM8350_MASTER_SDCC_2] = &xm_sdc2,
-> -	[SM8350_MASTER_UFS_CARD] = &xm_ufs_card,
-> -	[SM8350_SLAVE_A2NOC_SNOC] = &qns_a2noc_snoc,
-> -	[SM8350_SLAVE_ANOC_PCIE_GEM_NOC] = &qns_pcie_mem_noc,
-> -	[SM8350_SLAVE_SERVICE_A2NOC] = &srvc_aggre2_noc,
-> +	[MASTER_QDSS_BAM] = &qhm_qdss_bam,
-> +	[MASTER_QUP_0] = &qhm_qup0,
-> +	[MASTER_QUP_2] = &qhm_qup2,
-> +	[MASTER_A2NOC_CFG] = &qnm_a2noc_cfg,
-> +	[MASTER_CRYPTO] = &qxm_crypto,
-> +	[MASTER_IPA] = &qxm_ipa,
-> +	[MASTER_PCIE_0] = &xm_pcie3_0,
-> +	[MASTER_PCIE_1] = &xm_pcie3_1,
-> +	[MASTER_QDSS_ETR] = &xm_qdss_etr,
-> +	[MASTER_SDCC_2] = &xm_sdc2,
-> +	[MASTER_UFS_CARD] = &xm_ufs_card,
-> +	[SLAVE_A2NOC_SNOC] = &qns_a2noc_snoc,
-> +	[SLAVE_ANOC_PCIE_GEM_NOC] = &qns_pcie_mem_noc,
-> +	[SLAVE_SERVICE_A2NOC] = &srvc_aggre2_noc,
->   };
->   
->   static struct qcom_icc_desc sm8350_aggre2_noc = {
-> @@ -414,10 +414,10 @@ static struct qcom_icc_bcm *mc_virt_bcms[] = {
->   };
->   
->   static struct qcom_icc_node *mc_virt_nodes[] = {
-> -	[SM8350_MASTER_LLCC] = &llcc_mc,
-> -	[SM8350_SLAVE_EBI1] = &ebi,
-> -	[SM8350_MASTER_LLCC_DISP] = &llcc_mc_disp,
-> -	[SM8350_SLAVE_EBI1_DISP] = &ebi_disp,
-> +	[MASTER_LLCC] = &llcc_mc,
-> +	[SLAVE_EBI1] = &ebi,
-> +	[MASTER_LLCC_DISP] = &llcc_mc_disp,
-> +	[SLAVE_EBI1_DISP] = &ebi_disp,
->   };
->   
->   static struct qcom_icc_desc sm8350_mc_virt = {
-> @@ -439,24 +439,24 @@ static struct qcom_icc_bcm *mmss_noc_bcms[] = {
->   };
->   
->   static struct qcom_icc_node *mmss_noc_nodes[] = {
-> -	[SM8350_MASTER_CAMNOC_HF] = &qnm_camnoc_hf,
-> -	[SM8350_MASTER_CAMNOC_ICP] = &qnm_camnoc_icp,
-> -	[SM8350_MASTER_CAMNOC_SF] = &qnm_camnoc_sf,
-> -	[SM8350_MASTER_CNOC_MNOC_CFG] = &qnm_mnoc_cfg,
-> -	[SM8350_MASTER_VIDEO_P0] = &qnm_video0,
-> -	[SM8350_MASTER_VIDEO_P1] = &qnm_video1,
-> -	[SM8350_MASTER_VIDEO_PROC] = &qnm_video_cvp,
-> -	[SM8350_MASTER_MDP0] = &qxm_mdp0,
-> -	[SM8350_MASTER_MDP1] = &qxm_mdp1,
-> -	[SM8350_MASTER_ROTATOR] = &qxm_rot,
-> -	[SM8350_SLAVE_MNOC_HF_MEM_NOC] = &qns_mem_noc_hf,
-> -	[SM8350_SLAVE_MNOC_SF_MEM_NOC] = &qns_mem_noc_sf,
-> -	[SM8350_SLAVE_SERVICE_MNOC] = &srvc_mnoc,
-> -	[SM8350_MASTER_MDP0_DISP] = &qxm_mdp0_disp,
-> -	[SM8350_MASTER_MDP1_DISP] = &qxm_mdp1_disp,
-> -	[SM8350_MASTER_ROTATOR_DISP] = &qxm_rot_disp,
-> -	[SM8350_SLAVE_MNOC_HF_MEM_NOC_DISP] = &qns_mem_noc_hf_disp,
-> -	[SM8350_SLAVE_MNOC_SF_MEM_NOC_DISP] = &qns_mem_noc_sf_disp,
-> +	[MASTER_CAMNOC_HF] = &qnm_camnoc_hf,
-> +	[MASTER_CAMNOC_ICP] = &qnm_camnoc_icp,
-> +	[MASTER_CAMNOC_SF] = &qnm_camnoc_sf,
-> +	[MASTER_CNOC_MNOC_CFG] = &qnm_mnoc_cfg,
-> +	[MASTER_VIDEO_P0] = &qnm_video0,
-> +	[MASTER_VIDEO_P1] = &qnm_video1,
-> +	[MASTER_VIDEO_PROC] = &qnm_video_cvp,
-> +	[MASTER_MDP0] = &qxm_mdp0,
-> +	[MASTER_MDP1] = &qxm_mdp1,
-> +	[MASTER_ROTATOR] = &qxm_rot,
-> +	[SLAVE_MNOC_HF_MEM_NOC] = &qns_mem_noc_hf,
-> +	[SLAVE_MNOC_SF_MEM_NOC] = &qns_mem_noc_sf,
-> +	[SLAVE_SERVICE_MNOC] = &srvc_mnoc,
-> +	[MASTER_MDP0_DISP] = &qxm_mdp0_disp,
-> +	[MASTER_MDP1_DISP] = &qxm_mdp1_disp,
-> +	[MASTER_ROTATOR_DISP] = &qxm_rot_disp,
-> +	[SLAVE_MNOC_HF_MEM_NOC_DISP] = &qns_mem_noc_hf_disp,
-> +	[SLAVE_MNOC_SF_MEM_NOC_DISP] = &qns_mem_noc_sf_disp,
->   };
->   
->   static struct qcom_icc_desc sm8350_mmss_noc = {
-> @@ -472,10 +472,10 @@ static struct qcom_icc_bcm *nsp_noc_bcms[] = {
->   };
->   
->   static struct qcom_icc_node *nsp_noc_nodes[] = {
-> -	[SM8350_MASTER_CDSP_NOC_CFG] = &qhm_nsp_noc_config,
-> -	[SM8350_MASTER_CDSP_PROC] = &qxm_nsp,
-> -	[SM8350_SLAVE_CDSP_MEM_NOC] = &qns_nsp_gemnoc,
-> -	[SM8350_SLAVE_SERVICE_NSP_NOC] = &service_nsp_noc,
-> +	[MASTER_CDSP_NOC_CFG] = &qhm_nsp_noc_config,
-> +	[MASTER_CDSP_PROC] = &qxm_nsp,
-> +	[SLAVE_CDSP_MEM_NOC] = &qns_nsp_gemnoc,
-> +	[SLAVE_SERVICE_NSP_NOC] = &service_nsp_noc,
->   };
->   
->   static struct qcom_icc_desc sm8350_compute_noc = {
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 53c66a6908b7..de9637196526 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -7274,7 +7274,7 @@ M:	Li Yang <leoyang.li@nxp.com>
+>  L:	linuxppc-dev@lists.ozlabs.org
+>  L:	linux-arm-kernel@lists.infradead.org
+>  S:	Maintained
+> -F:	Documentation/devicetree/bindings/misc/fsl,dpaa2-console.txt
+> +F:	Documentation/devicetree/bindings/misc/fsl,dpaa2-console.yaml
+>  F:	Documentation/devicetree/bindings/soc/fsl/
+>  F:	drivers/soc/fsl/
+>  F:	include/linux/fsl/
 > 
-
