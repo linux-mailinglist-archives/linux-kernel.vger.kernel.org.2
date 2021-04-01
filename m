@@ -2,128 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0AB43510FD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 10:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE8E351101
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 10:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233651AbhDAIib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 04:38:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48198 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233050AbhDAIiN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 04:38:13 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CA413AE92;
-        Thu,  1 Apr 2021 08:38:11 +0000 (UTC)
-Date:   Thu, 1 Apr 2021 09:38:09 +0100
-From:   Mel Gorman <mgorman@suse.de>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     "Huang, Ying" <ying.huang@intel.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Peter Xu <peterx@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Arjun Roy <arjunroy@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [RFC] NUMA balancing: reduce TLB flush via delaying mapping on
- hint page fault
-Message-ID: <20210401083809.GX15768@suse.de>
-References: <20210329062651.2487905-1-ying.huang@intel.com>
- <20210330133310.GT15768@suse.de>
- <87a6qj8t92.fsf@yhuang6-desk1.ccr.corp.intel.com>
- <20210331131658.GV15768@suse.de>
- <C42F16F8-646B-448D-A098-E1A98637E28D@gmail.com>
+        id S233509AbhDAIlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 04:41:12 -0400
+Received: from mail-m17637.qiye.163.com ([59.111.176.37]:18350 "EHLO
+        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhDAIky (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 04:40:54 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id 116E99800B6;
+        Thu,  1 Apr 2021 16:40:52 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Karsten Graul <kgraul@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] net: smc: Remove repeated struct declaration
+Date:   Thu,  1 Apr 2021 16:40:29 +0800
+Message-Id: <20210401084030.1002882-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="8GpibOaaTibBMecb"
-Content-Disposition: inline
-In-Reply-To: <C42F16F8-646B-448D-A098-E1A98637E28D@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGh0ZGB1JSUpNQk1CVkpNSkxJTU1PTklITExVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MBg6HSo6Sz8ROCsIOBotCSI1
+        OQIwCkNVSlVKTUpMSU1NT05JTEtLVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFKTUJLNwY+
+X-HM-Tid: 0a788c97a764d992kuws116e99800b6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+struct smc_clc_msg_local is declared twice. One is declared at
+301st line. The blew one is not needed. Remove the duplicate.
 
---8GpibOaaTibBMecb
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ net/smc/smc_core.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-On Wed, Mar 31, 2021 at 09:36:04AM -0700, Nadav Amit wrote:
->=20
->=20
-> > On Mar 31, 2021, at 6:16 AM, Mel Gorman <mgorman@suse.de> wrote:
-> >=20
-> > On Wed, Mar 31, 2021 at 07:20:09PM +0800, Huang, Ying wrote:
-> >> Mel Gorman <mgorman@suse.de> writes:
-> >>=20
-> >>> On Mon, Mar 29, 2021 at 02:26:51PM +0800, Huang Ying wrote:
-> >>>> For NUMA balancing, in hint page fault handler, the faulting page wi=
-ll
-> >>>> be migrated to the accessing node if necessary.  During the migratio=
-n,
-> >>>> TLB will be shot down on all CPUs that the process has run on
-> >>>> recently.  Because in the hint page fault handler, the PTE will be
-> >>>> made accessible before the migration is tried.  The overhead of TLB
-> >>>> shooting down is high, so it's better to be avoided if possible.  In
-> >>>> fact, if we delay mapping the page in PTE until migration, that can =
-be
-> >>>> avoided.  This is what this patch doing.
-> >>>>=20
-> >>>=20
-> >>> Why would the overhead be high? It was previously inaccessibly so it's
-> >>> only parallel accesses making forward progress that trigger the need
-> >>> for a flush.
-> >>=20
-> >> Sorry, I don't understand this.  Although the page is inaccessible, the
-> >> threads may access other pages, so TLB flushing is still necessary.
-> >>=20
-> >=20
-> > You assert the overhead of TLB shootdown is high and yes, it can be
-> > very high but you also said "the benchmark score has no visible changes"
-> > indicating the TLB shootdown cost is not a major problem for the worklo=
-ad.
-> > It does not mean we should ignore it though.
->=20
-> If you are looking for a benchmark that is negatively affected by NUMA
-> balancing, then IIRC Parsec???s dedup is such a workload. [1]
->=20
+diff --git a/net/smc/smc_core.h b/net/smc/smc_core.h
+index e8e448771f85..6d6fd1397c87 100644
+--- a/net/smc/smc_core.h
++++ b/net/smc/smc_core.h
+@@ -410,7 +410,6 @@ static inline void smc_set_pci_values(struct pci_dev *pci_dev,
+ 
+ struct smc_sock;
+ struct smc_clc_msg_accept_confirm;
+-struct smc_clc_msg_local;
+ 
+ void smc_lgr_cleanup_early(struct smc_connection *conn);
+ void smc_lgr_terminate_sched(struct smc_link_group *lgr);
+-- 
+2.25.1
 
-Few questions;
-
-Is Parsec imparied due to NUMA balancing in general or due to TLB
-shootdowns specifically?
-
-Are you using "gcc-pthreads" for parallelisation and the "native" size
-for Parsec?
-
-Is there any specific thread count that matters either in
-absolute terms or as a precentage of online CPUs?
-
---=20
-Mel Gorman
-SUSE Labs
-
---8GpibOaaTibBMecb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEElcbIJ2qkxLDKryriKjSY26pIcMkFAmBlhnEACgkQKjSY26pI
-cMkZqwf/eRNLVsSneirGm6M0609dSk2Vg3k6VeqVCLyJCJu4kVFS3HRiG61MyUsv
-S0edPNITHFcJFpql9Tf7U7Z1tjQQ8oUZR2KJjIw/lrPBqJu+rW4hu1F1VYfeJHqG
-Q6zMR2rsFBNe6kR0hW64e3I8A1rUFVzLrc+HyPQN33UkOjuLZzptUOhXOgVC+80s
-KBIPdyAhmDpk80MHy0hwKufbyCH3PcJa1pQ6XIKDQ/na+eTPOgliZayQtKGPs4iV
-yghAaPdSNeYftM0NJ4M3WaizOgRTQGQFA6mTaOC+MMuN5h4fEPTcQgwxWbEhQBh4
-4mOTvXRbxvhpkcirFa7DuOhsEO+mMw==
-=gTdL
------END PGP SIGNATURE-----
-
---8GpibOaaTibBMecb--
