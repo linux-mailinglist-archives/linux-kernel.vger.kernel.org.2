@@ -2,94 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF55E351E25
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2043351D25
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 20:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240155AbhDASfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 14:35:50 -0400
-Received: from mout.kundenserver.de ([212.227.126.187]:34391 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237761AbhDASMG (ORCPT
+        id S235283AbhDAS1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 14:27:16 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:19898 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237783AbhDASEZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:12:06 -0400
-Received: from [192.168.1.155] ([95.114.120.255]) by mrelayeu.kundenserver.de
- (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MD9Kj-1lItNN1Tyj-0095AP; Thu, 01 Apr 2021 18:20:52 +0200
-Subject: Re: [PATCH v2 2/4] leds: simatic-ipc-leds: add new driver for Siemens
- Industial PCs
-To:     Henning Schild <henning.schild@siemens.com>
-Cc:     Pavel Machek <pavel@ucw.cz>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>
-References: <20210315095710.7140-1-henning.schild@siemens.com>
- <20210315095710.7140-3-henning.schild@siemens.com>
- <CAHp75VcBdR8xqfWqKe+DwGAUYByVL7SBK0p7tHcKPs7m4Ay1iw@mail.gmail.com>
- <20210315111915.GA14857@duo.ucw.cz>
- <50836593-d5c9-421f-9140-2c65ac6fabe4@metux.net>
- <20210327104610.344afebc@md1za8fc.ad001.siemens.net>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <647d9b70-4efe-41e6-e592-74331d66b675@metux.net>
-Date:   Thu, 1 Apr 2021 18:20:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Thu, 1 Apr 2021 14:04:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1617300265; x=1648836265;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=mPIkwjQD5YnDveLgKJWb0Q8rKtmMJ9ReFqXZsU3nKaU=;
+  b=2H2Cz/fGTpkSRRTHmqKfKHm6nWqQhqmsXWi8VwnJj6mHiOSsitTPymHa
+   MkySlA+EJs6XYryzU3Hkuvs32csa/E0ndn7Sg5v1QBMeWi5sLjsRaA/HM
+   es3Duc/Zo4QRQnyY+O9LsW2QZHmSkgY/fh/YGTQqxpN5n5paaMZlEGDC0
+   r/oNhpKgykClYPGxzio6qQtPyp7OcJc3O2Wvw/b/DkjcNI/7/+rQJ8HfO
+   mNsXjecEGr6ZLNnZaqXF9NqQwZGwwgl3jb/jdSeEfJL7VWMbi4JwFseIW
+   caVjRWe3Rd2QP2aLCqWotrVpADiqRw2N//IAKhHbwMzAGkO3CVZxWKR6v
+   A==;
+IronPort-SDR: qhXlHQJy4oJtmkri0qncFVEdMT5iG+XH8L8JyrM+PXWaQDlsH3zzQVgdrv8oNOGk6s16oGs5fz
+ Bk01o4eH/KjvfR4OnCBICd310G5Fc2vmsRV1Q2XKYa4k0xDe5BZkFYoczu4JU78D2y92NIh+gH
+ ej7c8T18NtstEDan6vRRalQhaG2EZ1g8ira50fmwxWtCocfbfIc7PCrqT0UkG06ZB5YOS887Kz
+ vvI6w8jVj7PJiMAgtIR942dOY16DjH2kkXyOX44U2BjLgxBzZhnWo50YeerIkppj2OYfbjLeQM
+ lGQ=
+X-IronPort-AV: E=Sophos;i="5.81,296,1610434800"; 
+   d="scan'208";a="109371184"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Apr 2021 09:26:23 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 1 Apr 2021 09:26:23 -0700
+Received: from localhost.localdomain (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Thu, 1 Apr 2021 09:26:21 -0700
+From:   <nicolas.ferre@microchip.com>
+To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        <arm@kernel.org>, <soc@kernel.org>
+CC:     Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Linux Kernel list <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
+Subject: [GIT PULL] ARM: at91: defconfig for 5.13
+Date:   Thu, 1 Apr 2021 18:22:07 +0200
+Message-ID: <20210401162207.29299-1-nicolas.ferre@microchip.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210327104610.344afebc@md1za8fc.ad001.siemens.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
+Organization: microchip
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:mNglDIX27fLWItHQlziK/n+IY7HGTMabBbBP4e/KFtQ0p40i4z/
- Z3bfdaOjDN0xGaksYuJQC78S/UTb0Tx9jleuOfKumDqN6D48g8BPhbcRE3Nl4msCmUz6wGT
- cxB5vTjwyUmUEbCXM9bHndSkbRk94IZhVWNLBwt5iP3My13QtR4XAjtF/6jqDaIx03Lyl7X
- /L/oV8NRT3tOs2Z1AbG/A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:zv3heeluCKs=:hpK/+L7wEVi4G//3IOx+9b
- aoRBbL8+G/cOOfzYk9m+TikKMe/bUT+veAFcQdzo2v9AWS3P27rCfDITEf3zQ72Y2y5OAN78C
- 1wHqALJRpv8q6S8CZCA2xJrFMoIWMkmTdbyTpRdHls3TBUANoZpDJeIWA1AOSWBpC9f7b8Hbl
- c/sf7cP25OJC9BkmqX4bhQdQXq5Y4Q19aMTkf08m3B61RZEw5iuPXfySmBwBQ/yAoPJ8OPgts
- h6xNFTa546nd48QPN91x/8t8O513HA2FewPGxi6YQBzu0g+5/4eEo1PLbrviFBy9ca+3pgvyj
- qndEMEnvRFGzEG0Z9Tq/n79a2rqSN9CMsCbGrb/715yjPyaGno7jtRq2F5TNIfqxDM4Y/w5SH
- lmM0NMVfBqdAuqwwDD4/jakzk+D69qL1Syt+Fjifog8zQna6BKbhMn4JmniWHE/v8z+uOPzSV
- jYAvyUw0JEvMdt9IjYC7mXs6r12/zAg=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.03.21 10:46, Henning Schild wrote:
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
 
->> In this case, they seem to be assigned to certain specific functions
->> (by physical labels on the box), so IMHO the LED names should reflect
->> that in some ways.
-> 
-> The choice for "status" was because of
-> 
->>> /* Miscelleaus functions. Use functions above if you can. */
-> 
-> And those known names do not really come with an explanation of their
-> meaning. Names like "bluetooth" seem obvious, but "activity" or
-> "indicator" leave a lot of room for speculation.
+Arnd, Olof,
 
-Maybe we should revise these and add more functions ?
+Here are the defconfig changes for 5.13 which is bigger than usual for aligning
+with options that we use frequently and some changes which will be beneficial
+for CI.
+There is an update with savedefconfig included, tell me if you prefer the PR
+without this first patch of the series.
 
-Can you find out some more details, what these LEDs really had been
-intented for ?
+Thanks, best regards,
+  Nicolas
 
---mtx
+The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+
+  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/at91/linux.git tags/at91-defconfig-5.13
+
+for you to fetch changes up to 4136c4443efce6f028eca74885870ac649981da1:
+
+  ARM: configs: at91: Modernize UBI defconfig part (2021-03-29 11:27:14 +0200)
+
+----------------------------------------------------------------
+AT91 defconfig for 5.13:
+
+- aligment with recent kernel for sama5_defconfig
+- move of 2 options to built-in
+- addition of useful modules for validation and CI
+- addition of Hantro G1 VPU from staging
+
+----------------------------------------------------------------
+Codrin Ciubotariu (1):
+      ARM: configs: at91: sama5: Add audio MIKROE PROTO board
+
+Emil Velikov (2):
+      ARM: configs: at91: sama5: update with savedefconfig
+      ARM: configs: at91: sama5: enable the Hantro G1 engine
+
+Nicolas Ferre (4):
+      ARM: configs: at91: sama5: MCP16502 regulator as built-in
+      ARM: configs: at91: Add mtd tests as modules
+      ARM: configs: at91: Add USB Video webcam class
+      ARM: configs: at91: Modernize UBI defconfig part
+
+Razvan Stefanescu (2):
+      ARM: configs: at91: sama5: PIOBU as built-in
+      ARM: configs: at91: sama5: Enable LAN78XX as module
+
+ arch/arm/configs/at91_dt_defconfig |  5 +++-
+ arch/arm/configs/sama5_defconfig   | 51 ++++++++++++++++++++---------------
+ 2 files changed, 33 insertions(+), 23 deletions(-)
+
 -- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+Nicolas Ferre
