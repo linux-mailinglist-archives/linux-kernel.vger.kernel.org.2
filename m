@@ -2,183 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B4D2352F05
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 20:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE52352F09
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 20:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234548AbhDBSQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 14:16:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231406AbhDBSQc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 14:16:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B1FC61163;
-        Fri,  2 Apr 2021 18:16:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617387390;
-        bh=u3PAqOYVOWNVAEDlIIKhFM2h1sjcd3bKahqTg5C50CY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MsLg2bXvLAGN3DamTYLeOVKetksSKP2LzmsZa9Wpp5voKAeoTN4Lxj8SgCGv0P9Ao
-         c6N8BnNq2BKo5wX6UlpjZuD4ZoE0NvZVCG+7cROJsLqSw5YzL7CVP9BZS89r4e8CdT
-         6mSLS8zmEbKVyFBKQ8BO/e7dOXknztAOLlsSZ0+1FQZ6ULh/a8HRxChsVe4dLlmSFH
-         TEgwWRHZMqhZ6Mg6DGEDWby3dGx1nN9Z+OIPwSjF2MkruWZhlil7WBwzA1rF983Mqt
-         NYJD0BvSWHx5kUx926dfte5kMnwAJXrrNB8fP0HnoPTCq0rvqFtYL84ZffW5lcs589
-         AIelMmQPO9GZg==
-Date:   Fri, 2 Apr 2021 23:46:24 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/6] soc: actions: Add Actions Semi Owl socinfo driver
-Message-ID: <20210402181624.GC31906@thinkpad>
-References: <cover.1617110420.git.cristian.ciocaltea@gmail.com>
- <75ec4eff3e6113f4e72daa1b428c355b28005297.1617110420.git.cristian.ciocaltea@gmail.com>
+        id S235623AbhDBSRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 14:17:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235256AbhDBSR1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 14:17:27 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBE98C0613E6
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 11:17:25 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id o16so6385075ljp.3
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 11:17:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zliiDDAsTwkrrTylXBgddm70OO8AdbUDRcZfji03hH8=;
+        b=EoQDhfx90AsqZ7QfCWLGz93QI+7II1mb+FygdvP+HsAXKfAxZqWEabX0p1PczWOpb9
+         SLQxbJHYoOSgxncNVX8QmwHsNuo+WTx+/cgtkWcKJahDc65cYcx2/9vlaxBRaaRaIn5I
+         jzPpWouABQgrsqrkXwv9QpOB79yM1J3J6SGwUHn3IRGmF4f5+V4cUAiLlcg7IuFogOfy
+         QU5Tj5vmkRi/6W8CBIs7M3eh+zJoqL23SboNf7bs97rXuy4LMMLp5bwpEu5oFbX/0ils
+         yKxdjingRi6bDwSnUwvL8B+T+aAl86L7zurgiXSTJHFA2Cx5iXC9aUfMtwH0tgyP6LLX
+         yQzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zliiDDAsTwkrrTylXBgddm70OO8AdbUDRcZfji03hH8=;
+        b=iKJ30lBMoH+mXhXNfb42uPV1q18v+DEtUk5cyjLRPjCOFSYNHelSeEmH4eL0PK73kD
+         s5z7N4mMtSVEM5wZ46wmhxsrbYfTXALt+Eumu6XA+I2Z95KIC4CcZXS06GmHI48fFXjj
+         gNCqtUZ2b07jiZL8whM2NjJRR9e7Q+rch27/hHKGKrPWBwyiRQ8M5zgkzXo1rd+2xIx+
+         8U/bR6j7t3d4RiXeSg8s+zgI26P3UC+1fM+cb5iGYx6EyUNWa8Pb+QxLKvIBd/9gRFUk
+         SKBjsnoHev9cVLWyBgqf4oCpfi0iUz+JBsDcUaJMu5yreAp8Df0q5toIpKHy80qi9CS8
+         14Kw==
+X-Gm-Message-State: AOAM532uiIVVk+TxBuJZiuLAF85HAE/RC9R5l878dEFc33jO7g1CewN9
+        yC8N/uyA/InRwBqIOu4yd9QgE6ipu0i3ekpi7qvYxQ==
+X-Google-Smtp-Source: ABdhPJy+R8eCmxg02JelSrjoVIMjslbjDwAStEfGcVJaO/1a+KNS2qafGjgDuHvnWZbRMUtYRnZo8zxkzTH5bpZcQu4=
+X-Received: by 2002:a2e:988a:: with SMTP id b10mr9101771ljj.341.1617387444146;
+ Fri, 02 Apr 2021 11:17:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <75ec4eff3e6113f4e72daa1b428c355b28005297.1617110420.git.cristian.ciocaltea@gmail.com>
+References: <20210402094042.9218-1-gi-oh.kim@ionos.com>
+In-Reply-To: <20210402094042.9218-1-gi-oh.kim@ionos.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 2 Apr 2021 11:17:13 -0700
+Message-ID: <CAKwvOdkFJ_WFpt2+rnNR3tbrdFky2NnEOWSG7MhgLrBHJAOEVw@mail.gmail.com>
+Subject: Re: [PATCH] lib/string: Introduce sysfs_streqcase
+To:     Gioh Kim <gi-oh.kim@ionos.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, jinpu.wang@ionos.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 04:48:18PM +0300, Cristian Ciocaltea wrote:
-> The driver provides information about the Action Semi Owl family of
-> SoCs (S500, S700 and S900) to user space via sysfs: machine, family,
-> soc_id, serial_number.
-> 
-> Note the serial number is currently provided only for the S500 SoC
-> variant.
-> 
-> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Thanks for the patch!
+
++ akpm (please remember to run ./scripts/get_maintainer.pl on your patch files)
+
+On Fri, Apr 2, 2021 at 2:41 AM Gioh Kim <gi-oh.kim@ionos.com> wrote:
+>
+> As the name shows, it checks if strings are equal in case insensitive
+> manner. I found some cases using strncasecmp to check the entire
+> strings and they would not work as intended.
+>
+> For example, drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c uses
+> strncasecmp to check that the input via sysfs is "mi". But it would
+> work even-if the input is "min-wrongcommand".
+> And also drivers/pnp/interface.c checks "disable" command with
+> strncasecmp but it would also work if the command is "disable-wrong".
+
+Perhaps those callers should be using strcasecmp then, rather than strncasecmp?
+
+Also, if they're being liberal in accepting either case, I don't see
+why the sysfs nodes should be strict in rejecting trailing input at
+that point.
+
+>
+> Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
 > ---
->  drivers/soc/actions/Kconfig                   |   8 +
->  drivers/soc/actions/Makefile                  |   1 +
->  drivers/soc/actions/owl-socinfo.c             | 152 ++++++++++++++++++
->  include/linux/soc/actions/owl-serial-number.h |  20 +++
->  4 files changed, 181 insertions(+)
->  create mode 100644 drivers/soc/actions/owl-socinfo.c
->  create mode 100644 include/linux/soc/actions/owl-serial-number.h
-> 
-> diff --git a/drivers/soc/actions/Kconfig b/drivers/soc/actions/Kconfig
-> index 1aca2058a40c..15faade9282d 100644
-> --- a/drivers/soc/actions/Kconfig
-> +++ b/drivers/soc/actions/Kconfig
-> @@ -14,4 +14,12 @@ config OWL_PM_DOMAINS
->  	  power-gating on Actions Semiconductor S500, S700 and S900 SoCs.
->  	  If unsure, say 'n'.
->  
-> +config OWL_SOCINFO
-> +	bool "Actions Semi Owl SoC info driver"
-> +	default ARCH_ACTIONS
-> +	select SOC_BUS
-> +	help
-> +	  Say 'y' here to support the Action Semiconductor Owl socinfo
-
-Actions Semi
-
-> +	  driver, providing information about the SoC to user space.
-> +
->  endif
-> diff --git a/drivers/soc/actions/Makefile b/drivers/soc/actions/Makefile
-> index 4db9e7b050e5..4b2591d3089f 100644
-> --- a/drivers/soc/actions/Makefile
-> +++ b/drivers/soc/actions/Makefile
-> @@ -2,3 +2,4 @@
->  
->  obj-$(CONFIG_OWL_PM_DOMAINS_HELPER) += owl-sps-helper.o
->  obj-$(CONFIG_OWL_PM_DOMAINS) += owl-sps.o
-> +obj-$(CONFIG_OWL_SOCINFO) += owl-socinfo.o
-> diff --git a/drivers/soc/actions/owl-socinfo.c b/drivers/soc/actions/owl-socinfo.c
-> new file mode 100644
-> index 000000000000..f28eafac3792
-> --- /dev/null
-> +++ b/drivers/soc/actions/owl-socinfo.c
-> @@ -0,0 +1,152 @@
-
-[...]
-
-> + * Access SoC's serial number stored by the bootloader in DDR memory.
+>  lib/string.c | 23 +++++++++++++++++++++++
+>  1 file changed, 23 insertions(+)
+>
+> diff --git a/lib/string.c b/lib/string.c
+> index 7548eb715ddb..5e6bc0d3d5c6 100644
+> --- a/lib/string.c
+> +++ b/lib/string.c
+> @@ -714,6 +714,29 @@ bool sysfs_streq(const char *s1, const char *s2)
+>  }
+>  EXPORT_SYMBOL(sysfs_streq);
+>
+> +/**
+> + * sysfs_streqcase - same to sysfs_streq and case insensitive
+> + * @s1: one string
+> + * @s2: another string
+> + *
 > + */
-> +static int owl_socinfo_read_serial_rmem(struct device *dev)
+> +bool sysfs_streqcase(const char *s1, const char *s2)
 > +{
-> +	struct reserved_mem *rmem;
-> +	struct device_node *np;
-> +	int ret = 0;
+> +       while (*s1 && tolower(*s1) == tolower(*s2)) {
+> +               s1++;
+> +               s2++;
+> +       }
 > +
-> +	np = of_find_compatible_node(NULL, NULL, "actions,owl-soc-serial");
-> +	if (!np)
-> +		return -ENXIO;
-> +
-> +	rmem = of_reserved_mem_lookup(np);
-
-If you do this correctly, you could use "pdev->dev.of_node" here instead of
-using "of_find_compatible_node()" for getting np.
-
-> +	if (!rmem) {
-> +		dev_err(dev, "failed to acquire reserved memory region\n");
-> +		ret = -EINVAL;
-> +		goto out_put;
-> +	}
-> +
-
-[...]
-
-> +static const struct of_device_id owl_socinfo_of_match[] = {
-> +	{ .compatible = "actions,s500-soc", .data = &s500_soc_info, },
-> +	{ .compatible = "actions,s700-soc", .data = &s700_soc_info, },
-> +	{ .compatible = "actions,s900-soc", .data = &s900_soc_info, },
-
-Please don't add S700/S900 for now.
-
-> +	{ }
-> +};
-> +
-> +static struct platform_driver owl_socinfo_platform_driver = {
-> +	.probe = owl_socinfo_probe,
-> +	.driver = {
-> +		.name = "owl-socinfo",
-> +		.of_match_table = owl_socinfo_of_match,
-> +	},
-> +};
-> +
-> +static int __init owl_socinfo_init(void)
-> +{
-> +	return platform_driver_register(&owl_socinfo_platform_driver);
+> +       if (*s1 == *s2)
+> +               return true;
+> +       if (!*s1 && *s2 == '\n' && !s2[1])
+> +               return true;
+> +       if (*s1 == '\n' && !s1[1] && !*s2)
+> +               return true;
+> +       return false;
 > +}
-> +subsys_initcall(owl_socinfo_init);
-> diff --git a/include/linux/soc/actions/owl-serial-number.h b/include/linux/soc/actions/owl-serial-number.h
-> new file mode 100644
-> index 000000000000..f8595417668f
-> --- /dev/null
-> +++ b/include/linux/soc/actions/owl-serial-number.h
-> @@ -0,0 +1,20 @@
-> +/* SPDX-License-Identifier: GPL-2.0+ */
-> +/*
-> + * Copyright (c) 2021 Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> + */
-> +
-> +#ifndef __SOC_ACTIONS_OWL_SERIAL_NUMBER_H__
-> +#define __SOC_ACTIONS_OWL_SERIAL_NUMBER_H__
-> +
-> +#if IS_ENABLED(CONFIG_OWL_SOCINFO)
-> +u32 owl_get_soc_serial_low(void);
-> +u32 owl_get_soc_serial_high(void);
+> +EXPORT_SYMBOL(sysfs_streqcase);
 
-Where are these APIs used?
+This should be declared in
+include/linux/string.h
+in order for others to use this (as 0day bot notes).
 
+> +
+>  /**
+>   * match_string - matches given string in an array
+>   * @array:     array of strings
+> --
+> 2.25.1
+>
+
+
+--
 Thanks,
-Mani
-
-> +#else
-> +static inline u32 owl_get_soc_serial_low(void)
-> +{ return 0; }
-> +
-> +static inline u32 owl_get_soc_serial_high(void)
-> +{ return 0; }
-> +#endif /* CONFIG_OWL_SOCINFO */
-> +
-> +#endif /* __SOC_ACTIONS_OWL_SERIAL_NUMBER_H__ */
-> -- 
-> 2.31.1
-> 
+~Nick Desaulniers
