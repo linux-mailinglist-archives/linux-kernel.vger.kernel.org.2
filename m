@@ -2,87 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1663529CC
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 12:34:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0B9E3529D1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 12:36:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234506AbhDBKey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 06:34:54 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:54410 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229599AbhDBKex (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 06:34:53 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FBbyx42HFz9ty33;
-        Fri,  2 Apr 2021 12:34:49 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id XvwunlNFppuO; Fri,  2 Apr 2021 12:34:49 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FBbyx35lVz9ty2x;
-        Fri,  2 Apr 2021 12:34:49 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0E3DF8BB66;
-        Fri,  2 Apr 2021 12:34:51 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id P-Pc_R-4lJcd; Fri,  2 Apr 2021 12:34:50 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 83D938BB65;
-        Fri,  2 Apr 2021 12:34:50 +0200 (CEST)
-Subject: Re: [PATCH] ecc: delete a useless function declaration
-To:     Meng Yu <yumeng18@huawei.com>, herbert@gondor.apana.org.au,
-        davem@davemloft.net
-Cc:     linux-crypto@vger.kernel.org, wangzhou1@hisilicon.com,
-        linux-kernel@vger.kernel.org
-References: <1617357357-11828-1-git-send-email-yumeng18@huawei.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <3fbc88c4-50ae-3ffb-14e5-0cd39d492251@csgroup.eu>
-Date:   Fri, 2 Apr 2021 12:34:50 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S234877AbhDBKgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 06:36:25 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:45102 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229599AbhDBKgX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 06:36:23 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 292A28A1;
+        Fri,  2 Apr 2021 12:36:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1617359780;
+        bh=UiwoZzURvu+edfJ8wILaZuM2KkzO4G9btTpBQ1aMANw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ii2vkV/5RNRcexH/+9Y9WXjZwDulyV3PbakBqHXX3OsXtVQKYxPZ/kwzom7gKVRMF
+         VvAz/KFF9U0kNn7z+21xbG7nGA/DogMPndxH5CYxzkVS2IB/a4QXDJDxKW49eo/jVK
+         ure/Qlf0WivRAymEW2YV6zpd6moDgxNkaceNDW3E=
+Date:   Fri, 2 Apr 2021 13:35:36 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Benoit Parrot <bparrot@ti.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Michael Tretter <m.tretter@pengutronix.de>,
+        Peter Chen <peter.chen@nxp.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
+        dmaengine@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Subject: Re: [PATCH 16/16] dt-bindings: phy: cdns,dphy: add power-domains
+ property
+Message-ID: <YGbzeFuCKnetHRXN@pendragon.ideasonboard.com>
+References: <20210330173348.30135-1-p.yadav@ti.com>
+ <20210330173348.30135-17-p.yadav@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <1617357357-11828-1-git-send-email-yumeng18@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210330173348.30135-17-p.yadav@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Pratyush,
 
+Thank you for the patch.
 
-Le 02/04/2021 à 11:55, Meng Yu a écrit :
-> This function declaration has been added in 'ecc_curve.h',
-> delete it in 'crypto/ecc.h'.
+On Tue, Mar 30, 2021 at 11:03:48PM +0530, Pratyush Yadav wrote:
+> This property is needed on TI platforms to enable the PD of the DPHY
+> before it can be used.
 > 
-> Fixes: 14bb76768275(crypto: ecc - expose ecc curves)
-
-Fixes tag is wrong I think, should be 4e6602916bc6
-
-> Signed-off-by: Meng Yu <yumeng18@huawei.com>
+> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 > ---
->   crypto/ecc.h | 8 --------
->   1 file changed, 8 deletions(-)
+>  Documentation/devicetree/bindings/phy/cdns,dphy.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> diff --git a/crypto/ecc.h b/crypto/ecc.h
-> index 46aa9bc..a006132 100644
-> --- a/crypto/ecc.h
-> +++ b/crypto/ecc.h
-> @@ -56,14 +56,6 @@ static inline void ecc_swap_digits(const u64 *in, u64 *out, unsigned int ndigits
->   }
->   
->   /**
-> - * ecc_get_curve()  - Get a curve given its curve_id
-> - * @curve_id:  Id of the curve
-> - *
-> - * Returns pointer to the curve data, NULL if curve is not available
-> - */
-> -const struct ecc_curve *ecc_get_curve(unsigned int curve_id);
-> -
-> -/**
->    * ecc_is_key_valid() - Validate a given ECDH private key
->    *
->    * @curve_id:		id representing the curve to use
-> 
+> diff --git a/Documentation/devicetree/bindings/phy/cdns,dphy.yaml b/Documentation/devicetree/bindings/phy/cdns,dphy.yaml
+> index 0807ba68284d..ddcd4de0aef6 100644
+> --- a/Documentation/devicetree/bindings/phy/cdns,dphy.yaml
+> +++ b/Documentation/devicetree/bindings/phy/cdns,dphy.yaml
+> @@ -30,6 +30,9 @@ properties:
+>    "#phy-cells":
+>      const: 0
+>  
+> +  power-domains:
+> +    maxItems: 1
+> +
+
+Would it be useful to add power-domains to the example ?
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+>  required:
+>    - compatible
+>    - reg
+
+-- 
+Regards,
+
+Laurent Pinchart
