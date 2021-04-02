@@ -2,139 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86A84352EB9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 19:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD90B352EBA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 19:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235971AbhDBRtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 13:49:05 -0400
-Received: from mga04.intel.com ([192.55.52.120]:17691 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235836AbhDBRtC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 13:49:02 -0400
-IronPort-SDR: 3Ioe8XTko4Lnm3kgz5QttT6PRNroz/RlxbD3y9FiFwIdFyjWhqZimvcGq5K9Fx1J7e1uUhxvP4
- mgwzVm8p+hxA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9942"; a="190278005"
-X-IronPort-AV: E=Sophos;i="5.81,300,1610438400"; 
-   d="scan'208";a="190278005"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 10:49:01 -0700
-IronPort-SDR: j5s1BPlZdyePNVg2hcTS5FTsJBRILEsx1hDEf/0tZ4uXMSFEiYbIu9RAzLwa4YPHfV/MPmnmog
- /CvlIJ1GCTiA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,300,1610438400"; 
-   d="scan'208";a="439702772"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga004.fm.intel.com with ESMTP; 02 Apr 2021 10:48:59 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 04EF12E4; Fri,  2 Apr 2021 20:49:14 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v2 2/2] iio: trigger: Fix strange (ladder-type) indentation
-Date:   Fri,  2 Apr 2021 20:49:11 +0300
-Message-Id: <20210402174911.44408-2-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210402174911.44408-1-andriy.shevchenko@linux.intel.com>
-References: <20210402174911.44408-1-andriy.shevchenko@linux.intel.com>
+        id S236012AbhDBRtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 13:49:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234275AbhDBRtu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 13:49:50 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D18C0613E6;
+        Fri,  2 Apr 2021 10:49:48 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id i18so1871849wrm.5;
+        Fri, 02 Apr 2021 10:49:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6/S7y9C8nRxZmjQeY8wpCEGGx7d5w2nUI9mEHAzOyr4=;
+        b=EKJRA9qiti7P9cUGyyz4nzgoW4eR1olaGPIr8PtEys12m9EmxxXJqBe73YBwGzSwbN
+         TqnMm1GU6uCV7ISWh57RMLiE9Ns0bhZFqdMfvBlyWc2uJSssoMYy5dJQqQG/O5jTTUSL
+         EmppftdLqPklLWp/IQTtjH3du7sMMkpmxFUp8OsPqP4GqU6/7pxl4nxo5uMb5Hv56YKx
+         jj+6/MIjAaAxQwSSp9q/8cKbR+b4rgDqA0vkE1lKlv/KSaowHakhJuS7DfxTXycaPSFf
+         lspjUzd5LR5ojUcP+ZYseL07LH/jtqnI6Z6Q7PHO5BPuxJH9Z29JMCWZTwzk3dXE6kKd
+         2Hqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6/S7y9C8nRxZmjQeY8wpCEGGx7d5w2nUI9mEHAzOyr4=;
+        b=aKyEqFWKDtzxl/TJgcQ+UrJrRphR33Mvnen7cU0b67l43RO/q3qeOhTryaZjA9MJiw
+         yiuBFLEOGfpWzH+f3cOiQBj0ZujtwTggY+G4jF3EbX0yuGW+i4AqduLAgmMGcw0MXhvT
+         9n+zE29pGTbXNqJgA7KtIQdPnkfNRROnU3u6x4TXhmKh+ILNBkI9baZ+FKjLyGm/YYnH
+         jLPThcoWFBkcsc8PtC4/7nCnQn8SSv5fjlNi1GBP1dxo9CKfvDk0LxMGbMFT/P6HkBkH
+         l2L0KcOWbuLnan91dpVXUjPxETWqu7LoD+Wp4J2uMTdpcjXidgmV41Ium7c46CX4VyQv
+         NP3g==
+X-Gm-Message-State: AOAM5304M45/IxK0SrqvcymoLQAx+MJxtmcgYyv16uQQlWYcim86bid/
+        cQigAtcFR381v8anpdxzZWAaLIkI24g=
+X-Google-Smtp-Source: ABdhPJw8bkMpDdw4laVwoNHLaRMSJeXL7Ze2yJGqxwMYXo9ucLuObt0MlgbVEIMpRMBhG9soE6lzvw==
+X-Received: by 2002:a5d:6106:: with SMTP id v6mr16696092wrt.268.1617385786821;
+        Fri, 02 Apr 2021 10:49:46 -0700 (PDT)
+Received: from [192.168.1.101] ([37.166.24.151])
+        by smtp.gmail.com with ESMTPSA id h8sm15305784wrt.94.2021.04.02.10.49.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Apr 2021 10:49:45 -0700 (PDT)
+Subject: Re: [PATCH] net: initialize local variables in net/ipv6/mcast.c and
+ net/ipv4/igmp.c
+To:     Phillip Potter <phil@philpotter.co.uk>, davem@davemloft.net
+Cc:     yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210402173617.895-1-phil@philpotter.co.uk>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <d2334631-4b3a-48e5-5305-7320adc50909@gmail.com>
+Date:   Fri, 2 Apr 2021 19:49:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210402173617.895-1-phil@philpotter.co.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In some cases indentation looks a bit weird with starting from = sign
-and being in a ladder-type style. Unify it across the module.
 
-While at it, add blank line after definition block where it needed,
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: fixed typo in the commit message (tupe->type)
- drivers/iio/industrialio-trigger.c | 25 ++++++++++++-------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
+On 4/2/21 7:36 PM, Phillip Potter wrote:
+> Use memset to initialize two local buffers in net/ipv6/mcast.c,
+> and another in net/ipv4/igmp.c. Fixes a KMSAN found uninit-value
+> bug reported by syzbot at:
+> https://syzkaller.appspot.com/bug?id=0766d38c656abeace60621896d705743aeefed51
 
-diff --git a/drivers/iio/industrialio-trigger.c b/drivers/iio/industrialio-trigger.c
-index 78e30f0f915c..ec72ff04b38d 100644
---- a/drivers/iio/industrialio-trigger.c
-+++ b/drivers/iio/industrialio-trigger.c
-@@ -211,6 +211,7 @@ EXPORT_SYMBOL(iio_trigger_notify_done);
- static int iio_trigger_get_irq(struct iio_trigger *trig)
- {
- 	int ret;
-+
- 	mutex_lock(&trig->pool_lock);
- 	ret = bitmap_find_free_region(trig->pool,
- 				      CONFIG_IIO_CONSUMERS_PER_TRIGGER,
-@@ -239,9 +240,9 @@ static void iio_trigger_put_irq(struct iio_trigger *trig, int irq)
- int iio_trigger_attach_poll_func(struct iio_trigger *trig,
- 				 struct iio_poll_func *pf)
- {
-+	bool notinuse =
-+		bitmap_empty(trig->pool, CONFIG_IIO_CONSUMERS_PER_TRIGGER);
- 	int ret = 0;
--	bool notinuse
--		= bitmap_empty(trig->pool, CONFIG_IIO_CONSUMERS_PER_TRIGGER);
- 
- 	/* Prevent the module from being removed whilst attached to a trigger */
- 	__module_get(pf->indio_dev->driver_module);
-@@ -290,11 +291,10 @@ int iio_trigger_attach_poll_func(struct iio_trigger *trig,
- int iio_trigger_detach_poll_func(struct iio_trigger *trig,
- 				 struct iio_poll_func *pf)
- {
-+	bool no_other_users =
-+		bitmap_weight(trig->pool, CONFIG_IIO_CONSUMERS_PER_TRIGGER) == 1;
- 	int ret = 0;
--	bool no_other_users
--		= (bitmap_weight(trig->pool,
--				 CONFIG_IIO_CONSUMERS_PER_TRIGGER)
--		   == 1);
-+
- 	if (trig->ops && trig->ops->set_trigger_state && no_other_users) {
- 		ret = trig->ops->set_trigger_state(trig, false);
- 		if (ret)
-@@ -312,6 +312,7 @@ int iio_trigger_detach_poll_func(struct iio_trigger *trig,
- irqreturn_t iio_pollfunc_store_time(int irq, void *p)
- {
- 	struct iio_poll_func *pf = p;
-+
- 	pf->timestamp = iio_get_time_ns(pf->indio_dev);
- 	return IRQ_WAKE_THREAD;
- }
-@@ -498,18 +499,16 @@ static const struct device_type iio_trig_type = {
- static void iio_trig_subirqmask(struct irq_data *d)
- {
- 	struct irq_chip *chip = irq_data_get_irq_chip(d);
--	struct iio_trigger *trig
--		= container_of(chip,
--			       struct iio_trigger, subirq_chip);
-+	struct iio_trigger *trig = container_of(chip, struct iio_trigger, subirq_chip);
-+
- 	trig->subirqs[d->irq - trig->subirq_base].enabled = false;
- }
- 
- static void iio_trig_subirqunmask(struct irq_data *d)
- {
- 	struct irq_chip *chip = irq_data_get_irq_chip(d);
--	struct iio_trigger *trig
--		= container_of(chip,
--			       struct iio_trigger, subirq_chip);
-+	struct iio_trigger *trig = container_of(chip, struct iio_trigger, subirq_chip);
-+
- 	trig->subirqs[d->irq - trig->subirq_base].enabled = true;
- }
- 
-@@ -695,7 +694,7 @@ EXPORT_SYMBOL(iio_trigger_using_own);
-  * device, -EINVAL otherwise.
-  */
- int iio_trigger_validate_own_device(struct iio_trigger *trig,
--	struct iio_dev *indio_dev)
-+				    struct iio_dev *indio_dev)
- {
- 	if (indio_dev->dev.parent != trig->dev.parent)
- 		return -EINVAL;
--- 
-2.30.2
 
+According to this link, the bug no longer triggers.
+
+Please explain why you think it is still there.
+
+> 
+> Reported-by: syzbot+001516d86dbe88862cec@syzkaller.appspotmail.com
+> Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+> ---
+>  net/ipv4/igmp.c  | 2 ++
+>  net/ipv6/mcast.c | 4 ++++
+>  2 files changed, 6 insertions(+)
+> 
+> diff --git a/net/ipv4/igmp.c b/net/ipv4/igmp.c
+> index 7b272bbed2b4..bc8e358a9a2a 100644
+> --- a/net/ipv4/igmp.c
+> +++ b/net/ipv4/igmp.c
+> @@ -1131,6 +1131,8 @@ static void ip_mc_filter_add(struct in_device *in_dev, __be32 addr)
+>  	char buf[MAX_ADDR_LEN];
+>  	struct net_device *dev = in_dev->dev;
+>  
+> +	memset(buf, 0, sizeof(buf));
+> +
+>  	/* Checking for IFF_MULTICAST here is WRONG-WRONG-WRONG.
+>  	   We will get multicast token leakage, when IFF_MULTICAST
+>  	   is changed. This check should be done in ndo_set_rx_mode
+> diff --git a/net/ipv6/mcast.c b/net/ipv6/mcast.c
+> index 6c8604390266..ad90dc28f318 100644
+> --- a/net/ipv6/mcast.c
+> +++ b/net/ipv6/mcast.c
+> @@ -658,6 +658,8 @@ static void igmp6_group_added(struct ifmcaddr6 *mc)
+>  	struct net_device *dev = mc->idev->dev;
+>  	char buf[MAX_ADDR_LEN];
+>  
+> +	memset(buf, 0, sizeof(buf));
+> +
+>  	if (IPV6_ADDR_MC_SCOPE(&mc->mca_addr) <
+>  	    IPV6_ADDR_SCOPE_LINKLOCAL)
+>  		return;
+> @@ -694,6 +696,8 @@ static void igmp6_group_dropped(struct ifmcaddr6 *mc)
+>  	struct net_device *dev = mc->idev->dev;
+>  	char buf[MAX_ADDR_LEN];
+>  
+> +	memset(buf, 0, sizeof(buf));
+> +
+>  	if (IPV6_ADDR_MC_SCOPE(&mc->mca_addr) <
+>  	    IPV6_ADDR_SCOPE_LINKLOCAL)
+>  		return;
+> 
