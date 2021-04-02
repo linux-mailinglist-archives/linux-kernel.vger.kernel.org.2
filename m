@@ -2,57 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C6353527F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 11:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7008352808
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 11:07:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234741AbhDBJGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 05:06:44 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:53906 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231160AbhDBJGl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 05:06:41 -0400
-Received: from marcel-macbook.holtmann.net (p5b3d2269.dip0.t-ipconnect.de [91.61.34.105])
-        by mail.holtmann.org (Postfix) with ESMTPSA id C70F2CED22;
-        Fri,  2 Apr 2021 11:14:20 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [PATCH 0/2] net/Blutooth - Coding style fix
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <1617259839-31383-1-git-send-email-yumeng18@huawei.com>
-Date:   Fri, 2 Apr 2021 11:06:38 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-bluetooth@vger.kernel.org, wangzhou1@hisilicon.com,
-        linux-kernel@vger.kernel.org
+        id S234925AbhDBJHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 05:07:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51542 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234854AbhDBJHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 05:07:18 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C641B60724;
+        Fri,  2 Apr 2021 09:07:14 +0000 (UTC)
+Date:   Fri, 2 Apr 2021 10:07:26 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 05/32] MAINTAINERS: update st,hts221.yaml reference
+Message-ID: <20210402100602.1673bc1e@jic23-huawei>
+In-Reply-To: <a83cf29bbd27b26eb22e0046c41efebf488e7e4d.1617279355.git.mchehab+huawei@kernel.org>
+References: <cover.1617279355.git.mchehab+huawei@kernel.org>
+        <a83cf29bbd27b26eb22e0046c41efebf488e7e4d.1617279355.git.mchehab+huawei@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-Id: <678B96F2-0AFD-4506-AE57-1F0A164C644B@holtmann.org>
-References: <1617259839-31383-1-git-send-email-yumeng18@huawei.com>
-To:     Meng Yu <yumeng18@huawei.com>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Meng,
+On Thu,  1 Apr 2021 14:17:25 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 
-> Remove 'return' in void function and fix some coding style
+> Changeset 9a6ac3138258 ("dt-bindings:iio:humidity:st,hts221 yaml conversion.")
+> renamed: Documentation/devicetree/bindings/iio/humidity/hts221.txt
+> to: Documentation/devicetree/bindings/iio/humidity/st,hts221.yaml.
 > 
-> Meng Yu (2):
->  Bluetooth: Remove 'return' in void function
->  Bluetooth: Coding style fix
+> Update its cross-reference accordingly.
 > 
-> net/bluetooth/6lowpan.c     | 5 +----
-> net/bluetooth/hci_debugfs.c | 8 ++++----
-> net/bluetooth/hci_event.c   | 2 +-
-> net/bluetooth/hci_request.c | 6 ++----
-> net/bluetooth/l2cap_core.c  | 7 +++----
-> 5 files changed, 11 insertions(+), 17 deletions(-)
-
-both patches have been applied to bluetooth-next tree.
-
-Regards
-
-Marcel
+> Fixes: 9a6ac3138258 ("dt-bindings:iio:humidity:st,hts221 yaml conversion.")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Applied
+> ---
+>  MAINTAINERS | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index de9637196526..1985d75d59c7 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -8287,7 +8287,7 @@ M:	Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>
+>  L:	linux-iio@vger.kernel.org
+>  S:	Maintained
+>  W:	http://www.st.com/
+> -F:	Documentation/devicetree/bindings/iio/humidity/hts221.txt
+> +F:	Documentation/devicetree/bindings/iio/humidity/st,hts221.yaml
+>  F:	drivers/iio/humidity/hts221*
+>  
+>  HUAWEI ETHERNET DRIVER
 
