@@ -2,224 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C202B352E89
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 19:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31CDE352E90
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 19:38:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235529AbhDBRhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 13:37:00 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:57595 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234361AbhDBRg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 13:36:59 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FBnKy4WWlz9v3qS;
-        Fri,  2 Apr 2021 19:36:54 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id jNzMP97qRsnX; Fri,  2 Apr 2021 19:36:54 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FBnKy36stz9v3qR;
-        Fri,  2 Apr 2021 19:36:54 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 95F468BB77;
-        Fri,  2 Apr 2021 19:36:56 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id AmiRaLq6LC2w; Fri,  2 Apr 2021 19:36:56 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D381B8BB6F;
-        Fri,  2 Apr 2021 19:36:55 +0200 (CEST)
-Subject: Re: [PATCH 6/8] drivers: firmware: efi: libstub: enable generic
- commandline
-To:     Daniel Walker <danielwa@cisco.com>, Will Deacon <will@kernel.org>,
-        ob Herring <robh@kernel.org>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Cc:     xe-linux-external@cisco.com, Ard Biesheuvel <ardb@kernel.org>,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <41021d66db2ab427c14255d2a24bb4517c8b58fd.1617126961.git.danielwa@cisco.com>
- <e5d98d566c38d6f8516b8d9d1fd603ec1f131037.1617126961.git.danielwa@cisco.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <72fbd293-1d83-a558-4d7a-141576371864@csgroup.eu>
-Date:   Fri, 2 Apr 2021 19:36:53 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S235500AbhDBRiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 13:38:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35107 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235122AbhDBRir (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 13:38:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617385126;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TKDRlulogoRtKYWAUF1pyaqEOli9TuwMVFnHg7gDyqg=;
+        b=SPv70vAssGxeWskwIjz44+8Y540A4Z+bEV3DJDBgeoczZq/+BCzVgMNPYJftN06vxqowQb
+        3oxVbGc51WvJye0c005rii3ntG8c9yJj6cDbnAOqNuhYHEfTEQIegz2PV9pAhZUGd7F09u
+        R6ISiCgoXUb6BBxCWrzrTqb65PG2Elk=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-441-pmobN0_gOrynCxoLT1zCbQ-1; Fri, 02 Apr 2021 13:38:44 -0400
+X-MC-Unique: pmobN0_gOrynCxoLT1zCbQ-1
+Received: by mail-ej1-f70.google.com with SMTP id h14so3370434ejg.7
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 10:38:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TKDRlulogoRtKYWAUF1pyaqEOli9TuwMVFnHg7gDyqg=;
+        b=qbxo/2yk9Uy4U0zBV15yMjMbInRCuLf4OyNyRhBeNHfQCb3a9EJdm4ebWB/NuXcOsU
+         ZrPS1IOeOwjzvIM1GcbsB4gxl1RCLPC+IMVjwwSYmNgnF9BvhPd/wChxpBPCj01CLlGs
+         Zy5qGaTtkfZjhwHUbZQj7L1tl1npLdOW0RiBgQW1F7aORVNjIng+OdB6S0sVLyru005d
+         EADTCf1ohn8Ptiuu2eU0hh2qi2K+YSPA/5o0LZNoRPO1Tui1qDDTKP65vbdiuCQDbtuw
+         MX5QfP/fWaN98JVBKGQD1xYdgxVJBSuPL/FnKfof24vKryrOzYVstM8qxJg1/gVzCCVL
+         QbcQ==
+X-Gm-Message-State: AOAM530syHqZ08WSYSKQVYnmSlzdSuf8mHT5/UoZ5zeYuUrAPt9ZrEtc
+        w2EA2Y8Tq0da3KIriFszj/c2cWvPohNqCKE40+ClZhmLVBnem15M338wFO6hkVLw+xRb9KN/YyA
+        cjrXoVUSoOPCejJ5XYzva71+Q
+X-Received: by 2002:a17:907:3f10:: with SMTP id hq16mr2635475ejc.181.1617385123130;
+        Fri, 02 Apr 2021 10:38:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzAS7ZbtJVwnzUWnA/6X0McPrVes3ar3lqem09HSmYxMrqLZW+HviZElaAarzltynI2Jr8wwA==
+X-Received: by 2002:a17:907:3f10:: with SMTP id hq16mr2635443ejc.181.1617385122924;
+        Fri, 02 Apr 2021 10:38:42 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id y17sm4462135ejf.116.2021.04.02.10.38.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Apr 2021 10:38:42 -0700 (PDT)
+Subject: Re: [PATCH v2 0/9] KVM: my debug patch queue
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>, Jessica Yu <jeyu@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Will Deacon <will@kernel.org>,
+        "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
+        <kvmarm@lists.cs.columbia.edu>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Jim Mattson <jmattson@google.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "open list:S390" <linux-s390@vger.kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Kieran Bingham <kbingham@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        "moderated list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
+        <linux-arm-kernel@lists.infradead.org>,
+        James Morse <james.morse@arm.com>
+References: <20210401135451.1004564-1-mlevitsk@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <cb7f918c-932f-d558-76ec-801ed8ed1f62@redhat.com>
+Date:   Fri, 2 Apr 2021 19:38:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <e5d98d566c38d6f8516b8d9d1fd603ec1f131037.1617126961.git.danielwa@cisco.com>
+In-Reply-To: <20210401135451.1004564-1-mlevitsk@redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 30/03/2021 à 19:57, Daniel Walker a écrit :
-> This adds code to handle the generic command line changes.
-> The efi code appears that it doesn't benefit as much from this design
-> as it could.
+On 01/04/21 15:54, Maxim Levitsky wrote:
+> Hi!
 > 
-> For example, if you had a prepend command line with "nokaslr" then
-> you might be helpful to re-enable it in the boot loader or dts,
-> but there appears to be no way to re-enable kaslr or some of the
-> other options.
+> I would like to publish two debug features which were needed for other stuff
+> I work on.
 > 
-> Cc: xe-linux-external@cisco.com
-> Signed-off-by: Daniel Walker <danielwa@cisco.com>
-> ---
->   .../firmware/efi/libstub/efi-stub-helper.c    | 35 +++++++++++++++++++
->   drivers/firmware/efi/libstub/efi-stub.c       |  7 ++++
->   drivers/firmware/efi/libstub/efistub.h        |  1 +
->   drivers/firmware/efi/libstub/x86-stub.c       | 13 +++++--
->   4 files changed, 54 insertions(+), 2 deletions(-)
+> One is the reworked lx-symbols script which now actually works on at least
+> gdb 9.1 (gdb 9.2 was reported to fail to load the debug symbols from the kernel
+> for some reason, not related to this patch) and upstream qemu.
+
+Queued patches 2-5 for now.  6 is okay but it needs a selftest. (e.g. 
+using KVM_VCPU_SET_EVENTS) and the correct name for the constant.
+
+Paolo
+
+> The other feature is the ability to trap all guest exceptions (on SVM for now)
+> and see them in kvmtrace prior to potential merge to double/triple fault.
 > 
-> diff --git a/drivers/firmware/efi/libstub/efi-stub-helper.c b/drivers/firmware/efi/libstub/efi-stub-helper.c
-> index aa8da0a49829..c155837cedc9 100644
-> --- a/drivers/firmware/efi/libstub/efi-stub-helper.c
-> +++ b/drivers/firmware/efi/libstub/efi-stub-helper.c
-> @@ -13,6 +13,7 @@
->   #include <linux/efi.h>
->   #include <linux/kernel.h>
->   #include <linux/printk.h> /* For CONSOLE_LOGLEVEL_* */
-> +#include <linux/cmdline.h>
->   #include <asm/efi.h>
->   #include <asm/setup.h>
->   
-> @@ -172,6 +173,40 @@ int efi_printk(const char *fmt, ...)
->   	return printed;
->   }
->   
-> +/**
-> + * efi_handle_cmdline() - handle adding in building parts of the command line
-> + * @cmdline:	kernel command line
-> + *
-> + * Add in the generic parts of the commandline and start the parsing of the
-> + * command line.
-> + *
-> + * Return:	status code
-> + */
-> +efi_status_t efi_handle_cmdline(char const *cmdline)
-> +{
-> +	efi_status_t status;
-> +
-> +	status = efi_parse_options(CMDLINE_PREPEND);
-> +	if (status != EFI_SUCCESS) {
-> +		efi_err("Failed to parse options\n");
-> +		return status;
-> +	}
-> +
-> +	status = efi_parse_options(IS_ENABLED(CONFIG_CMDLINE_OVERRIDE) ? "" : cmdline);
-> +	if (status != EFI_SUCCESS) {
-> +		efi_err("Failed to parse options\n");
-> +		return status;
-> +	}
-> +
-> +	status = efi_parse_options(CMDLINE_APPEND);
-> +	if (status != EFI_SUCCESS) {
-> +		efi_err("Failed to parse options\n");
-> +		return status;
-> +	}
-> +
-> +	return EFI_SUCCESS;
-> +}
-
-I think we can refactor to first build the final command line, then call efi_parse_options() only 
-once after that.
-
-The big advantage of GENERIC_CMDLINE should be to not address anymore CONFIG_CMDLINE_XXX options at 
-all outside of linux/cmdline.h
-
-> +
->   /**
->    * efi_parse_options() - Parse EFI command line options
->    * @cmdline:	kernel command line
-> diff --git a/drivers/firmware/efi/libstub/efi-stub.c b/drivers/firmware/efi/libstub/efi-stub.c
-> index 26e69788f27a..760480248adf 100644
-> --- a/drivers/firmware/efi/libstub/efi-stub.c
-> +++ b/drivers/firmware/efi/libstub/efi-stub.c
-> @@ -172,6 +172,12 @@ efi_status_t __efiapi efi_pe_entry(efi_handle_t handle,
->   		goto fail;
->   	}
->   
-> +#ifdef CONFIG_GENERIC_CMDLINE
-> +	status = efi_handle_cmdline(cmdline_ptr);
-> +	if (status != EFI_SUCCESS) {
-> +		goto fail_free_cmdline;
-> +	}
-> +#else
-
-Why an alternative ?
-
->   	if (IS_ENABLED(CONFIG_CMDLINE_EXTEND) ||
->   	    IS_ENABLED(CONFIG_CMDLINE_FORCE) ||
->   	    cmdline_size == 0) {
-> @@ -189,6 +195,7 @@ efi_status_t __efiapi efi_pe_entry(efi_handle_t handle,
->   			goto fail_free_cmdline;
->   		}
->   	}
-> +#endif
->   
->   	efi_info("Booting Linux Kernel...\n");
->   
-> diff --git a/drivers/firmware/efi/libstub/efistub.h b/drivers/firmware/efi/libstub/efistub.h
-> index cde0a2ef507d..07c7f9fdfffc 100644
-> --- a/drivers/firmware/efi/libstub/efistub.h
-> +++ b/drivers/firmware/efi/libstub/efistub.h
-> @@ -800,6 +800,7 @@ efi_status_t efi_relocate_kernel(unsigned long *image_addr,
->   				 unsigned long alignment,
->   				 unsigned long min_addr);
->   
-> +efi_status_t efi_handle_cmdline(char const *cmdline);
->   efi_status_t efi_parse_options(char const *cmdline);
->   
->   void efi_parse_option_graphics(char *option);
-> diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
-> index f14c4ff5839f..30ad8fb7122d 100644
-> --- a/drivers/firmware/efi/libstub/x86-stub.c
-> +++ b/drivers/firmware/efi/libstub/x86-stub.c
-> @@ -673,6 +673,8 @@ unsigned long efi_main(efi_handle_t handle,
->   	unsigned long bzimage_addr = (unsigned long)startup_32;
->   	unsigned long buffer_start, buffer_end;
->   	struct setup_header *hdr = &boot_params->hdr;
-> +	unsigned long cmdline_paddr = ((u64)hdr->cmd_line_ptr |
-> +				       ((u64)boot_params->ext_cmd_line_ptr << 32));
->   	efi_status_t status;
->   
->   	efi_system_table = sys_table_arg;
-> @@ -735,6 +737,14 @@ unsigned long efi_main(efi_handle_t handle,
->   		image_offset = 0;
->   	}
->   
-> +#ifdef CONFIG_GENERIC_CMDLINE
-> +	status = efi_handle_cmdline((char *)cmdline_paddr);
-> +	if (status != EFI_SUCCESS) {
-> +		efi_err("Failed to parse options\n");
-> +		goto fail;
-> +	}
-> +#else /* CONFIG_GENERIC_CMDLINE */
-> +
->   #ifdef CONFIG_CMDLINE_BOOL
->   	status = efi_parse_options(CONFIG_CMDLINE);
->   	if (status != EFI_SUCCESS) {
-> @@ -743,8 +753,6 @@ unsigned long efi_main(efi_handle_t handle,
->   	}
->   #endif
->   	if (!IS_ENABLED(CONFIG_CMDLINE_OVERRIDE)) {
-> -		unsigned long cmdline_paddr = ((u64)hdr->cmd_line_ptr |
-> -					       ((u64)boot_params->ext_cmd_line_ptr << 32));
->   		status = efi_parse_options((char *)cmdline_paddr);
->   		if (status != EFI_SUCCESS) {
->   			efi_err("Failed to parse options\n");
-> @@ -752,6 +760,7 @@ unsigned long efi_main(efi_handle_t handle,
->   		}
->   	}
->   
-> +#endif
->   	/*
->   	 * At this point, an initrd may already have been loaded by the
->   	 * bootloader and passed via bootparams. We permit an initrd loaded
+> This can be very useful and I already had to manually patch KVM a few
+> times for this.
+> I will, once time permits, implement this feature on Intel as well.
 > 
+> V2:
+> 
+>   * Some more refactoring and workarounds for lx-symbols script
+> 
+>   * added KVM_GUESTDBG_BLOCKEVENTS flag to enable 'block interrupts on
+>     single step' together with KVM_CAP_SET_GUEST_DEBUG2 capability
+>     to indicate which guest debug flags are supported.
+> 
+>     This is a replacement for unconditional block of interrupts on single
+>     step that was done in previous version of this patch set.
+>     Patches to qemu to use that feature will be sent soon.
+> 
+>   * Reworked the the 'intercept all exceptions for debug' feature according
+>     to the review feedback:
+> 
+>     - renamed the parameter that enables the feature and
+>       moved it to common kvm module.
+>       (only SVM part is currently implemented though)
+> 
+>     - disable the feature for SEV guests as was suggested during the review
+>     - made the vmexit table const again, as was suggested in the review as well.
+> 
+> Best regards,
+> 	Maxim Levitsky
+> 
+> Maxim Levitsky (9):
+>    scripts/gdb: rework lx-symbols gdb script
+>    KVM: introduce KVM_CAP_SET_GUEST_DEBUG2
+>    KVM: x86: implement KVM_CAP_SET_GUEST_DEBUG2
+>    KVM: aarch64: implement KVM_CAP_SET_GUEST_DEBUG2
+>    KVM: s390x: implement KVM_CAP_SET_GUEST_DEBUG2
+>    KVM: x86: implement KVM_GUESTDBG_BLOCKEVENTS
+>    KVM: SVM: split svm_handle_invalid_exit
+>    KVM: x86: add force_intercept_exceptions_mask
+>    KVM: SVM: implement force_intercept_exceptions_mask
+> 
+>   Documentation/virt/kvm/api.rst    |   4 +
+>   arch/arm64/include/asm/kvm_host.h |   4 +
+>   arch/arm64/kvm/arm.c              |   2 +
+>   arch/arm64/kvm/guest.c            |   5 -
+>   arch/s390/include/asm/kvm_host.h  |   4 +
+>   arch/s390/kvm/kvm-s390.c          |   3 +
+>   arch/x86/include/asm/kvm_host.h   |  12 ++
+>   arch/x86/include/uapi/asm/kvm.h   |   1 +
+>   arch/x86/kvm/svm/svm.c            |  87 +++++++++++--
+>   arch/x86/kvm/svm/svm.h            |   6 +-
+>   arch/x86/kvm/x86.c                |  14 ++-
+>   arch/x86/kvm/x86.h                |   2 +
+>   include/uapi/linux/kvm.h          |   1 +
+>   kernel/module.c                   |   8 +-
+>   scripts/gdb/linux/symbols.py      | 203 ++++++++++++++++++++----------
+>   15 files changed, 272 insertions(+), 84 deletions(-)
+> 
+
