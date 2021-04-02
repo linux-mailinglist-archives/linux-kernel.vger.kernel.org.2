@@ -2,113 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13065352E83
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 19:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C202B352E89
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 19:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235343AbhDBRg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 13:36:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235134AbhDBRgZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 13:36:25 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81375C0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 10:36:22 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id o16so5333828wrn.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 10:36:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0BEtX5LP70nyJG7ya7uvmx8BAaUk54UVHdYb+hbUjBs=;
-        b=QzyT0nwPq9hlb8VwH4ggoTbr7mhqKsQiDxFKCItRTgFQpRHrRCC5eIc3RAr3mwHONj
-         TWVJdo9T+M+otRaMnL/CAIOHmsi+8JaiYmyCYFF7B1QdNXtKy2N5hOJL5mZcmZBEyIrM
-         IdvGPF8LZMPE5GaOpqSGg90+4N/bC6o8qRQ20m0ceN6wr0NszNaeXSqeKJ3+JWcV+qem
-         iksvIY+cj9RLrxCEjrl64693mGdouMHEdIqf4EVP7H2d9zpiD730J0VWCG3rEeRu1//R
-         vMtkfFQLxdOtzq+jQmOpLmzlW4lH9wJUAK6olOkFwcUpls5JLYLfNujbWPDceoCeS5tH
-         FZvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0BEtX5LP70nyJG7ya7uvmx8BAaUk54UVHdYb+hbUjBs=;
-        b=GFRiNRiIC1GIupv0Pmu3FzFAqSbcLM7ydq9aBgk6ZnQcVbPqcw5Qn+50c5CKK472l5
-         m7h8OdFWwghid4c44F3ALOY5hleEn5/3CFxV8/QxmvMtiOUe7Fxejv1G5/PFICAiVDSl
-         Hriu98QL0McxbGlZwpDtteyDTpsINJEM0iKxZRbcb/bioF2rYam/UoL9LivPxUCB7yzM
-         kz3mC+tQk11JE3BKV9VfSio6A9YyE691ByuL0oFauf2j19j6KrGS21I7OHX2fbHN5GSs
-         7XAqzFAsAKfCmjDrt+DX+0b5+BgV1oGbCyGXDdN85V2PF0W/DGzQnCw8i9yY582LlSlH
-         WB5w==
-X-Gm-Message-State: AOAM531TPygHT9y/aBxOZWT5dvOCRRz1c9feBinoOD3kLXVqwVYiGZBZ
-        VzQ62FdZ38c9E6qtxBHkszLMN+gCUAg+J62S4ac=
-X-Google-Smtp-Source: ABdhPJw36IoyUozGPz5B0NBKHhCpGWbRGV4z0TBLH3V+fiomyeu1Qa24ShXVDV2sdlY2fy4YjAW40g==
-X-Received: by 2002:a5d:6152:: with SMTP id y18mr16444764wrt.255.1617384981241;
-        Fri, 02 Apr 2021 10:36:21 -0700 (PDT)
-Received: from localhost.localdomain (2.0.5.1.1.6.3.8.5.c.c.3.f.b.d.3.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16:0:3dbf:3cc5:8361:1502])
-        by smtp.gmail.com with ESMTPSA id m5sm15616659wrq.15.2021.04.02.10.36.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 10:36:20 -0700 (PDT)
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     davem@davemloft.net
-Cc:     yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net: initialize local variables in net/ipv6/mcast.c and net/ipv4/igmp.c
-Date:   Fri,  2 Apr 2021 18:36:17 +0100
-Message-Id: <20210402173617.895-1-phil@philpotter.co.uk>
-X-Mailer: git-send-email 2.30.2
+        id S235529AbhDBRhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 13:37:00 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:57595 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234361AbhDBRg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 13:36:59 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FBnKy4WWlz9v3qS;
+        Fri,  2 Apr 2021 19:36:54 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id jNzMP97qRsnX; Fri,  2 Apr 2021 19:36:54 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FBnKy36stz9v3qR;
+        Fri,  2 Apr 2021 19:36:54 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 95F468BB77;
+        Fri,  2 Apr 2021 19:36:56 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id AmiRaLq6LC2w; Fri,  2 Apr 2021 19:36:56 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D381B8BB6F;
+        Fri,  2 Apr 2021 19:36:55 +0200 (CEST)
+Subject: Re: [PATCH 6/8] drivers: firmware: efi: libstub: enable generic
+ commandline
+To:     Daniel Walker <danielwa@cisco.com>, Will Deacon <will@kernel.org>,
+        ob Herring <robh@kernel.org>,
+        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+        Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Cc:     xe-linux-external@cisco.com, Ard Biesheuvel <ardb@kernel.org>,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <41021d66db2ab427c14255d2a24bb4517c8b58fd.1617126961.git.danielwa@cisco.com>
+ <e5d98d566c38d6f8516b8d9d1fd603ec1f131037.1617126961.git.danielwa@cisco.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <72fbd293-1d83-a558-4d7a-141576371864@csgroup.eu>
+Date:   Fri, 2 Apr 2021 19:36:53 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
+In-Reply-To: <e5d98d566c38d6f8516b8d9d1fd603ec1f131037.1617126961.git.danielwa@cisco.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use memset to initialize two local buffers in net/ipv6/mcast.c,
-and another in net/ipv4/igmp.c. Fixes a KMSAN found uninit-value
-bug reported by syzbot at:
-https://syzkaller.appspot.com/bug?id=0766d38c656abeace60621896d705743aeefed51
 
-Reported-by: syzbot+001516d86dbe88862cec@syzkaller.appspotmail.com
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
----
- net/ipv4/igmp.c  | 2 ++
- net/ipv6/mcast.c | 4 ++++
- 2 files changed, 6 insertions(+)
 
-diff --git a/net/ipv4/igmp.c b/net/ipv4/igmp.c
-index 7b272bbed2b4..bc8e358a9a2a 100644
---- a/net/ipv4/igmp.c
-+++ b/net/ipv4/igmp.c
-@@ -1131,6 +1131,8 @@ static void ip_mc_filter_add(struct in_device *in_dev, __be32 addr)
- 	char buf[MAX_ADDR_LEN];
- 	struct net_device *dev = in_dev->dev;
- 
-+	memset(buf, 0, sizeof(buf));
-+
- 	/* Checking for IFF_MULTICAST here is WRONG-WRONG-WRONG.
- 	   We will get multicast token leakage, when IFF_MULTICAST
- 	   is changed. This check should be done in ndo_set_rx_mode
-diff --git a/net/ipv6/mcast.c b/net/ipv6/mcast.c
-index 6c8604390266..ad90dc28f318 100644
---- a/net/ipv6/mcast.c
-+++ b/net/ipv6/mcast.c
-@@ -658,6 +658,8 @@ static void igmp6_group_added(struct ifmcaddr6 *mc)
- 	struct net_device *dev = mc->idev->dev;
- 	char buf[MAX_ADDR_LEN];
- 
-+	memset(buf, 0, sizeof(buf));
-+
- 	if (IPV6_ADDR_MC_SCOPE(&mc->mca_addr) <
- 	    IPV6_ADDR_SCOPE_LINKLOCAL)
- 		return;
-@@ -694,6 +696,8 @@ static void igmp6_group_dropped(struct ifmcaddr6 *mc)
- 	struct net_device *dev = mc->idev->dev;
- 	char buf[MAX_ADDR_LEN];
- 
-+	memset(buf, 0, sizeof(buf));
-+
- 	if (IPV6_ADDR_MC_SCOPE(&mc->mca_addr) <
- 	    IPV6_ADDR_SCOPE_LINKLOCAL)
- 		return;
--- 
-2.30.2
+Le 30/03/2021 à 19:57, Daniel Walker a écrit :
+> This adds code to handle the generic command line changes.
+> The efi code appears that it doesn't benefit as much from this design
+> as it could.
+> 
+> For example, if you had a prepend command line with "nokaslr" then
+> you might be helpful to re-enable it in the boot loader or dts,
+> but there appears to be no way to re-enable kaslr or some of the
+> other options.
+> 
+> Cc: xe-linux-external@cisco.com
+> Signed-off-by: Daniel Walker <danielwa@cisco.com>
+> ---
+>   .../firmware/efi/libstub/efi-stub-helper.c    | 35 +++++++++++++++++++
+>   drivers/firmware/efi/libstub/efi-stub.c       |  7 ++++
+>   drivers/firmware/efi/libstub/efistub.h        |  1 +
+>   drivers/firmware/efi/libstub/x86-stub.c       | 13 +++++--
+>   4 files changed, 54 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/firmware/efi/libstub/efi-stub-helper.c b/drivers/firmware/efi/libstub/efi-stub-helper.c
+> index aa8da0a49829..c155837cedc9 100644
+> --- a/drivers/firmware/efi/libstub/efi-stub-helper.c
+> +++ b/drivers/firmware/efi/libstub/efi-stub-helper.c
+> @@ -13,6 +13,7 @@
+>   #include <linux/efi.h>
+>   #include <linux/kernel.h>
+>   #include <linux/printk.h> /* For CONSOLE_LOGLEVEL_* */
+> +#include <linux/cmdline.h>
+>   #include <asm/efi.h>
+>   #include <asm/setup.h>
+>   
+> @@ -172,6 +173,40 @@ int efi_printk(const char *fmt, ...)
+>   	return printed;
+>   }
+>   
+> +/**
+> + * efi_handle_cmdline() - handle adding in building parts of the command line
+> + * @cmdline:	kernel command line
+> + *
+> + * Add in the generic parts of the commandline and start the parsing of the
+> + * command line.
+> + *
+> + * Return:	status code
+> + */
+> +efi_status_t efi_handle_cmdline(char const *cmdline)
+> +{
+> +	efi_status_t status;
+> +
+> +	status = efi_parse_options(CMDLINE_PREPEND);
+> +	if (status != EFI_SUCCESS) {
+> +		efi_err("Failed to parse options\n");
+> +		return status;
+> +	}
+> +
+> +	status = efi_parse_options(IS_ENABLED(CONFIG_CMDLINE_OVERRIDE) ? "" : cmdline);
+> +	if (status != EFI_SUCCESS) {
+> +		efi_err("Failed to parse options\n");
+> +		return status;
+> +	}
+> +
+> +	status = efi_parse_options(CMDLINE_APPEND);
+> +	if (status != EFI_SUCCESS) {
+> +		efi_err("Failed to parse options\n");
+> +		return status;
+> +	}
+> +
+> +	return EFI_SUCCESS;
+> +}
 
+I think we can refactor to first build the final command line, then call efi_parse_options() only 
+once after that.
+
+The big advantage of GENERIC_CMDLINE should be to not address anymore CONFIG_CMDLINE_XXX options at 
+all outside of linux/cmdline.h
+
+> +
+>   /**
+>    * efi_parse_options() - Parse EFI command line options
+>    * @cmdline:	kernel command line
+> diff --git a/drivers/firmware/efi/libstub/efi-stub.c b/drivers/firmware/efi/libstub/efi-stub.c
+> index 26e69788f27a..760480248adf 100644
+> --- a/drivers/firmware/efi/libstub/efi-stub.c
+> +++ b/drivers/firmware/efi/libstub/efi-stub.c
+> @@ -172,6 +172,12 @@ efi_status_t __efiapi efi_pe_entry(efi_handle_t handle,
+>   		goto fail;
+>   	}
+>   
+> +#ifdef CONFIG_GENERIC_CMDLINE
+> +	status = efi_handle_cmdline(cmdline_ptr);
+> +	if (status != EFI_SUCCESS) {
+> +		goto fail_free_cmdline;
+> +	}
+> +#else
+
+Why an alternative ?
+
+>   	if (IS_ENABLED(CONFIG_CMDLINE_EXTEND) ||
+>   	    IS_ENABLED(CONFIG_CMDLINE_FORCE) ||
+>   	    cmdline_size == 0) {
+> @@ -189,6 +195,7 @@ efi_status_t __efiapi efi_pe_entry(efi_handle_t handle,
+>   			goto fail_free_cmdline;
+>   		}
+>   	}
+> +#endif
+>   
+>   	efi_info("Booting Linux Kernel...\n");
+>   
+> diff --git a/drivers/firmware/efi/libstub/efistub.h b/drivers/firmware/efi/libstub/efistub.h
+> index cde0a2ef507d..07c7f9fdfffc 100644
+> --- a/drivers/firmware/efi/libstub/efistub.h
+> +++ b/drivers/firmware/efi/libstub/efistub.h
+> @@ -800,6 +800,7 @@ efi_status_t efi_relocate_kernel(unsigned long *image_addr,
+>   				 unsigned long alignment,
+>   				 unsigned long min_addr);
+>   
+> +efi_status_t efi_handle_cmdline(char const *cmdline);
+>   efi_status_t efi_parse_options(char const *cmdline);
+>   
+>   void efi_parse_option_graphics(char *option);
+> diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
+> index f14c4ff5839f..30ad8fb7122d 100644
+> --- a/drivers/firmware/efi/libstub/x86-stub.c
+> +++ b/drivers/firmware/efi/libstub/x86-stub.c
+> @@ -673,6 +673,8 @@ unsigned long efi_main(efi_handle_t handle,
+>   	unsigned long bzimage_addr = (unsigned long)startup_32;
+>   	unsigned long buffer_start, buffer_end;
+>   	struct setup_header *hdr = &boot_params->hdr;
+> +	unsigned long cmdline_paddr = ((u64)hdr->cmd_line_ptr |
+> +				       ((u64)boot_params->ext_cmd_line_ptr << 32));
+>   	efi_status_t status;
+>   
+>   	efi_system_table = sys_table_arg;
+> @@ -735,6 +737,14 @@ unsigned long efi_main(efi_handle_t handle,
+>   		image_offset = 0;
+>   	}
+>   
+> +#ifdef CONFIG_GENERIC_CMDLINE
+> +	status = efi_handle_cmdline((char *)cmdline_paddr);
+> +	if (status != EFI_SUCCESS) {
+> +		efi_err("Failed to parse options\n");
+> +		goto fail;
+> +	}
+> +#else /* CONFIG_GENERIC_CMDLINE */
+> +
+>   #ifdef CONFIG_CMDLINE_BOOL
+>   	status = efi_parse_options(CONFIG_CMDLINE);
+>   	if (status != EFI_SUCCESS) {
+> @@ -743,8 +753,6 @@ unsigned long efi_main(efi_handle_t handle,
+>   	}
+>   #endif
+>   	if (!IS_ENABLED(CONFIG_CMDLINE_OVERRIDE)) {
+> -		unsigned long cmdline_paddr = ((u64)hdr->cmd_line_ptr |
+> -					       ((u64)boot_params->ext_cmd_line_ptr << 32));
+>   		status = efi_parse_options((char *)cmdline_paddr);
+>   		if (status != EFI_SUCCESS) {
+>   			efi_err("Failed to parse options\n");
+> @@ -752,6 +760,7 @@ unsigned long efi_main(efi_handle_t handle,
+>   		}
+>   	}
+>   
+> +#endif
+>   	/*
+>   	 * At this point, an initrd may already have been loaded by the
+>   	 * bootloader and passed via bootparams. We permit an initrd loaded
+> 
