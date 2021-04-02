@@ -2,283 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 175423525EA
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 06:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C5513525EB
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 06:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229534AbhDBEDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 00:03:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52120 "EHLO
+        id S229679AbhDBEEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 00:04:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229466AbhDBEDl (ORCPT
+        with ESMTP id S229466AbhDBEEH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 00:03:41 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1986C0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 21:03:40 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so5662325pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 21:03:40 -0700 (PDT)
+        Fri, 2 Apr 2021 00:04:07 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EBFBC0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 21:04:05 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id g7so1519199ybm.13
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 21:04:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yc+d0bHLoBzOkJXSPDplJ1MBa+wqgpOrcLbxexU2+MU=;
-        b=GVeQv6hkS/9kIUIGZuSC7XL1ONKuWbAkC697hJBGb0YDMm7w0JuDNjh8usq+NS/7VC
-         nUMi5Dtexou58K74SGwL8qwyBNyT8g4khfG3wmPTbtWyFQ1kQLJ4s6HQa6YqlS1wU+Qk
-         OM872mNV0n/1hxQlwbcHoIXCsTVrICFFOLw5xil/pSl2/5ZYWcScriXs1LJJucF2vwmN
-         PeL3nh9v5LviFY4v4cEQ6GsfdgCThqK53GUz9bLrF0jVrftVdQOsFxaxLriDTXHakH/y
-         7SY3SmoSNJnxeCaLKU6G2goYdknHkck5DlGwQf13LRi9hzE32pcG6VETPddOze/kAwbl
-         ulyQ==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=XZrYx5QlhPN0C6ANYVOpCkedku0P+Q04Hro7oLo1wBA=;
+        b=SGjX4RsxIMdN3SWvrEY5AY19Edq7bUdXFGVZcr0+b02fxAzCsq4XHs3wjR6vO38VLA
+         gfm9zpD5PVYiMyRQhAWQxEx9/WT64gTJFGnBQh6cq6VIqzN6KptdASK4VzTFvnHhz48L
+         0q/pouo6H5fnVLon0zh1XvKNPg0H9H/yoWD2EgwZdpM82tlFfZSG5YaBJG9wqjsrLDCf
+         Ep7Dx1wMMpUk1rA70XxTyD9taIXPpHZWQQ2V1ZYOn6ILi9TaWgLv5a6Fknn7wZHAlL/T
+         afMjy+aEKfs+SUOi1xA7wbNyXLMIdOt+Yc7ffH0OLE9DmV9HhwYz1FLXj4sd7sqh0To5
+         2tBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yc+d0bHLoBzOkJXSPDplJ1MBa+wqgpOrcLbxexU2+MU=;
-        b=tQLJpot+09e9SIAP2IVrdiGedy2KAiDRKi2MH6spphFhoucq+hn1Z+cYdF5fPWVtZh
-         btqb/uVZ0Odp6VqLga0Eml00nLLZlF0wdoXaz1FGE2JBxiZ+DDexDkAo+1Ix69z4iPdu
-         +GDEJBpY4BJa0kUAT3l/OLlUGQaJ3UJnhOnYoXIyxkA9SsoRHs2/zqZzfxwq91Ma9W/0
-         CRERuejWkji6lDguCnQ9mcIMGxCe37nqZ1x9qD5I/iPKDCLOz+KiSeNYkMUnypfuS9lt
-         an/YsXT1DNs5/5uNVdYFlwDLZiooEOUdq6oxk/lgmaf0VwBF+SP1QyuLs40p56pcWfw6
-         +cGA==
-X-Gm-Message-State: AOAM531ytc43K6fP/anz9cwlHN2ghJDDOaaO+fbZ9FWg2Q2ORk+2gPIA
-        akCDCnYWQOtT766x1IwJzwlbEJdrD+SQVOTySGo/OQ==
-X-Google-Smtp-Source: ABdhPJzvjOliyKFQFJDkaWnp3brdV7kHavfOxh0mhkqIR8aFkiHRvQA7TnLlhRK9rEWcHVP5IVWsXwQ1Jfg+0LY4gxU=
-X-Received: by 2002:a17:90a:901:: with SMTP id n1mr12054348pjn.147.1617336220120;
- Thu, 01 Apr 2021 21:03:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210330101531.82752-1-songmuchun@bytedance.com>
- <CALvZod4xHNmTQMd+zg71s7uyXUHEfwnQ-zqRXSWphwi9RogeNg@mail.gmail.com>
- <YGN0141iu5HTGiNJ@carbon.dhcp.thefacebook.com> <YGOYYgWbwiYlKmzV@cmpxchg.org>
- <YGOgth4IUflVE/Me@carbon.dhcp.thefacebook.com> <YGSSemLLpiHJHanV@cmpxchg.org> <CAHbLzkqJfxUh4aZA1Qkumj0Za2Uz=wEfzuNv8NZpDaZ_dtUt=w@mail.gmail.com>
-In-Reply-To: <CAHbLzkqJfxUh4aZA1Qkumj0Za2Uz=wEfzuNv8NZpDaZ_dtUt=w@mail.gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 2 Apr 2021 12:03:03 +0800
-Message-ID: <CAMZfGtUc94088PHtWp=4SkrsYLrw69TEAvC2FDHJq7g3yqoh2w@mail.gmail.com>
-Subject: Re: [External] Re: [RFC PATCH 00/15] Use obj_cgroup APIs to charge
- the LRU pages
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=XZrYx5QlhPN0C6ANYVOpCkedku0P+Q04Hro7oLo1wBA=;
+        b=SqBICxZSIQ9O1j+sPXuG4Ufg2CJEki/tIQxyVShW/tDzPTO/gpB7Ik5Z3KlaecxIRu
+         pFqWp4tBnldY/niB4Exml2ETQ4EylKvBsF/qRqeZwljQt+NWhdkwX4dobdM0ZA3b01ui
+         q3NvHrZFWdDVUfpPN3BlOCtIxgY4q7tsTQ0VKFNEX+kTFg0IKxusXER4rtDXJr9oZqSy
+         6kJZXhlEixf53e4hjD+4xRDGxVyuGhB4vISuADKgio8goKOSOuGpr3H0XSUbKk90K9R5
+         m7dm6tkcEvFJrS23etpKwjSlUOSEYtcz6hfcJI8JNlYZ+l76ZArv6LVL0upTYWIdt99e
+         kd3g==
+X-Gm-Message-State: AOAM531ukYdm8KNzjnrhOecY3nzuVpUFON2EA/LC5gL1VKKMWVyMz4JX
+        D8ZbFDSuOduPuJ7PNuE9hx9STJ8RWOtZpfE=
+X-Google-Smtp-Source: ABdhPJxBQg1yvcD3glkhed2bKNtGOeiSZ/leYz2Zo/Oz0C/f7+VvEtoXgmstCPOAhQh78FpfLNTOnCw9eVDEzBs=
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:4867:55c5:8fbb:da39])
+ (user=saravanak job=sendgmr) by 2002:a25:ef42:: with SMTP id
+ w2mr15971414ybm.34.1617336244851; Thu, 01 Apr 2021 21:04:04 -0700 (PDT)
+Date:   Thu,  1 Apr 2021 21:03:39 -0700
+Message-Id: <20210402040342.2944858-1-saravanak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
+Subject: [PATCH v1 0/2] Fix deferred_probe_timeout and fw_devlink=on
+From:   Saravana Kannan <saravanak@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh@kernel.org>
+Cc:     Saravana Kannan <saravanak@google.com>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 2, 2021 at 6:55 AM Yang Shi <shy828301@gmail.com> wrote:
->
-> On Wed, Mar 31, 2021 at 8:17 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >
-> > On Tue, Mar 30, 2021 at 03:05:42PM -0700, Roman Gushchin wrote:
-> > > On Tue, Mar 30, 2021 at 05:30:10PM -0400, Johannes Weiner wrote:
-> > > > On Tue, Mar 30, 2021 at 11:58:31AM -0700, Roman Gushchin wrote:
-> > > > > On Tue, Mar 30, 2021 at 11:34:11AM -0700, Shakeel Butt wrote:
-> > > > > > On Tue, Mar 30, 2021 at 3:20 AM Muchun Song <songmuchun@bytedance.com> wrote:
-> > > > > > >
-> > > > > > > Since the following patchsets applied. All the kernel memory are charged
-> > > > > > > with the new APIs of obj_cgroup.
-> > > > > > >
-> > > > > > >         [v17,00/19] The new cgroup slab memory controller
-> > > > > > >         [v5,0/7] Use obj_cgroup APIs to charge kmem pages
-> > > > > > >
-> > > > > > > But user memory allocations (LRU pages) pinning memcgs for a long time -
-> > > > > > > it exists at a larger scale and is causing recurring problems in the real
-> > > > > > > world: page cache doesn't get reclaimed for a long time, or is used by the
-> > > > > > > second, third, fourth, ... instance of the same job that was restarted into
-> > > > > > > a new cgroup every time. Unreclaimable dying cgroups pile up, waste memory,
-> > > > > > > and make page reclaim very inefficient.
-> > > > > > >
-> > > > > > > We can convert LRU pages and most other raw memcg pins to the objcg direction
-> > > > > > > to fix this problem, and then the LRU pages will not pin the memcgs.
-> > > > > > >
-> > > > > > > This patchset aims to make the LRU pages to drop the reference to memory
-> > > > > > > cgroup by using the APIs of obj_cgroup. Finally, we can see that the number
-> > > > > > > of the dying cgroups will not increase if we run the following test script.
-> > > > > > >
-> > > > > > > ```bash
-> > > > > > > #!/bin/bash
-> > > > > > >
-> > > > > > > cat /proc/cgroups | grep memory
-> > > > > > >
-> > > > > > > cd /sys/fs/cgroup/memory
-> > > > > > >
-> > > > > > > for i in range{1..500}
-> > > > > > > do
-> > > > > > >         mkdir test
-> > > > > > >         echo $$ > test/cgroup.procs
-> > > > > > >         sleep 60 &
-> > > > > > >         echo $$ > cgroup.procs
-> > > > > > >         echo `cat test/cgroup.procs` > cgroup.procs
-> > > > > > >         rmdir test
-> > > > > > > done
-> > > > > > >
-> > > > > > > cat /proc/cgroups | grep memory
-> > > > > > > ```
-> > > > > > >
-> > > > > > > Patch 1 aims to fix page charging in page replacement.
-> > > > > > > Patch 2-5 are code cleanup and simplification.
-> > > > > > > Patch 6-15 convert LRU pages pin to the objcg direction.
-> > > > > >
-> > > > > > The main concern I have with *just* reparenting LRU pages is that for
-> > > > > > the long running systems, the root memcg will become a dumping ground.
-> > > > > > In addition a job running multiple times on a machine will see
-> > > > > > inconsistent memory usage if it re-accesses the file pages which were
-> > > > > > reparented to the root memcg.
-> > > > >
-> > > > > I agree, but also the reparenting is not the perfect thing in a combination
-> > > > > with any memory protections (e.g. memory.low).
-> > > > >
-> > > > > Imagine the following configuration:
-> > > > > workload.slice
-> > > > > - workload_gen_1.service   memory.min = 30G
-> > > > > - workload_gen_2.service   memory.min = 30G
-> > > > > - workload_gen_3.service   memory.min = 30G
-> > > > >   ...
-> > > > >
-> > > > > Parent cgroup and several generations of the child cgroup, protected by a memory.low.
-> > > > > Once the memory is getting reparented, it's not protected anymore.
-> > > >
-> > > > That doesn't sound right.
-> > > >
-> > > > A deleted cgroup today exerts no control over its abandoned
-> > > > pages. css_reset() will blow out any control settings.
-> > >
-> > > I know. Currently it works in the following way: once cgroup gen_1 is deleted,
-> > > it's memory is not protected anymore, so eventually it's getting evicted and
-> > > re-faulted as gen_2 (or gen_N) memory. Muchun's patchset doesn't change this,
-> > > of course. But long-term we likely wanna re-charge such pages to new cgroups
-> > > and avoid unnecessary evictions and re-faults. Switching to obj_cgroups doesn't
-> > > help and likely will complicate this change. So I'm a bit skeptical here.
-> >
-> > We should be careful with the long-term plans.
->
-> Excuse me for a dumb question. I recall we did reparent LRU pages
-> before (before 4.x kernel). I vaguely recall there were some tricky
-> race conditions during reparenting so we didn't do it anymore once
-> reclaimer could reclaim from offlined memcgs. My memory may be wrong,
-> if it is not so please feel free to correct me. If my memory is true,
+This series fixes existing bugs in deferred_probe_timeout and fixes some
+interaction with fw_devlink=on.
 
-I looked at the historical information by git. Your memory is right.
+Saravana Kannan (2):
+  driver core: Fix locking bug in deferred_probe_timeout_work_func()
+  driver core: Improve fw_devlink & deferred_probe_timeout interaction
 
-> it means the race conditions are gone? Or the new obj_cgroup APIs made
-> life easier?
+ drivers/base/base.h |  1 +
+ drivers/base/core.c | 64 ++++++++++++++++++++++++++++++++++++++++-----
+ drivers/base/dd.c   | 13 ++++++---
+ 3 files changed, 68 insertions(+), 10 deletions(-)
 
-I do not know about the history of how many race conditions
-there are. Johannes should be very familiar with this. From
-my point of view, obj_cgroup APIs could make life easier.
-Because we do not need to care about the correctness of
-page counters and statistics when the LRU pages are
-reparented. The operation of reparenting can be easy.
-Just splice the lruvec list to its parent lruvec list (We do
-not need to isolate page one by one).
+-- 
+2.31.0.208.g409f899ff0-goog
 
-Thanks.
-
->
-> Thanks,
-> Yang
->
-> >
-> > The zombie issue is a pretty urgent concern that has caused several
-> > production emergencies now. It needs a fix sooner rather than later.
-> >
-> > The long-term plans of how to handle shared/reused data better will
-> > require some time to work out. There are MANY open questions around
-> > recharging to arbitrary foreign cgroup users. Like how to identify
-> > accesses after the page's cgroup has been deleted: Do we need to
-> > annotate every page cache lookup? Do we need to inject minor faults to
-> > recharge mmapped pages? We can't wait for this discussion to complete.
-> >
-> > I also think the objcg is helping with that direction rather than
-> > getting in the way because:
-> >
-> > - The old charge moving code we have for LRU pages isn't reusable
-> >   anyway. It relies on optimistic locking to work, and may leave
-> >   memory behind in arbitrary and unpredictable ways. After a few
-> >   cycles, objects tend to be spread all over the place.
-> >
-> >   The objcg provides a new synchronization scheme that will always
-> >   work because the readside (page/object to memcg lookup) needs to be
-> >   prepared for the memcg to change and/or die at any time.
-> >
-> > - There isn't much point in recharging only some of the abandoned
-> >   memory. We've tried per-allocation class reparenting and it didn't
-> >   work out too well. Newly accounted allocations crop up faster than
-> >   we can conjure up tailor-made reparenting schemes for them.
-> >
-> >   The objcg provides a generic reference and reassignment scheme that
-> >   can be used by all tracked objects.
-> >
-> >   Importantly, once we have a central thing as LRU pages converted, we
-> >   can require all new allocation tracking to use objcg from the start.
-> >
-> > > Also, in my experience the pagecache is not the main/worst memcg reference
-> > > holder (writeback structures are way worse). Pages are relatively large
-> > > (in comparison to some slab objects), and rarely there is only one page pinning
-> > > a separate memcg.
-> >
-> > I've seen that exact thing cause zombies to pile up: one or two pages
-> > in the old group, pinned by the next instance of a job. If the job has
-> > a sufficiently large working set, this can pin a LOT of dead
-> > cgroups. Is it the biggest or most problematic source of buildups?
-> > Maybe not. But there is definitely cause to fix it.
-> >
-> > LRU pages are also the most difficult to convert because of their rich
-> > interactions. It's a good test of the api. If it works for those
-> > pages, converting everybody else will be much simpler.
-> >
-> > And again, as the core memory consumer it sets the tone of how memcg
-> > rmapping is supposed to work for new and existing object types. This
-> > helps align ongoing development.
-> >
-> > > And switching to obj_cgroup doesn't completely eliminate the
-> > > problem: we just switch from accumulating larger mem_cgroups to
-> > > accumulating smaller obj_cgroups.
-> >
-> > In your own words, the discrepancy between tiny objects pinning large
-> > memcgs is a problem. objcgs are smaller than most objects, so it's not
-> > much different as if an object were simply a few bytes bigger in size.
-> > A memcg on the other hand is vastly bigger than most objects. It's
-> > also composed of many allocations and so causes more fragmentation.
-> >
-> > Another issue is that memcgs with abandoned objects need to be visited
-> > by the reclaimer on every single reclaim walk, a hot path. The list of
-> > objcgs on the other hand is only iterated when the cgroup is deleted,
-> > which is not a fast path. It's also rare that parents with many dead
-> > children are deleted at all (system.slice, workload.slice etc.)
-> >
-> > So no, I would say for all intents and purposes, it fixes all the
-> > problems we're having with zombie memcgs.
-> >
-> > > With all this said, I'm not necessarily opposing the patchset, but it's
-> > > necessary to discuss how it fits into the long-term picture.
-> > > E.g. if we're going to use obj_cgroup API for page-sized objects, shouldn't
-> > > we split it back into the reparenting and bytes-sized accounting parts,
-> > > as I initially suggested. And shouldn't we move the reparenting part to
-> > > the cgroup core level, so we could use it for other controllers
-> > > (e.g. to fix the writeback problem).
-> >
-> > Yes, I do think we want to generalize it. But I wouldn't say it's a
-> > requirement for these patches, either:
-> >
-> > - The byte-sized accounting part is one atomic_t. That's 4 bytes
-> >   pinned unnecessarily - compared to an entire struct memcg right now
-> >   which includes memory accounting, swap accounting, byte accounting,
-> >   and a whole lot of other things likely not used by the stale object.
-> >
-> > - The cgroup generalization is a good idea too, but that doesn't
-> >   really change the callsites either. Unless you were thinking of
-> >   renaming, but objcg seems like a good, generic fit for a name to
-> >   describe the linkage between objects to a cgroup.
-> >
-> >   The memcg member will need to change into something generic (a
-> >   css_set type mapping), but that can likely be hidden behind
-> >   page_memcg(), objcg_memcg() and similar helpers.
-> >
-> > Both of these aspects can be improved incrementally.
-> >
