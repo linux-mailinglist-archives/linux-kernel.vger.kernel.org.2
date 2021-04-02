@@ -2,119 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF28B352A22
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 13:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74FFB352A24
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 13:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235030AbhDBLNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 07:13:30 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:56010 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235076AbhDBLNM (ORCPT
+        id S235143AbhDBLO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 07:14:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46940 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234919AbhDBLOz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 07:13:12 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id CF4DD1F46865
-Received: by earth.universe (Postfix, from userid 1000)
-        id A50203C0C96; Fri,  2 Apr 2021 13:13:08 +0200 (CEST)
-Date:   Fri, 2 Apr 2021 13:13:08 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>
-Cc:     nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-        ludovic.desroches@microchip.com, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v2 1/1] power: reset: at91-reset: use devm_of_iomap
-Message-ID: <20210402111308.jx7mrfb52wbcuwjg@earth.universe>
-References: <20210402105018.2212-1-claudiu.beznea@microchip.com>
+        Fri, 2 Apr 2021 07:14:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617362092;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/fKJ2OSCFXizuU2U1MJ67BIOWCyNds4Q38dY2jX+k4E=;
+        b=IuTrGx2H4s5+2boY/qSzwSUi70bWbbG7kBZSN2vQIJlTxSfpW9QhF2e33+CzSihH9Cla2q
+        khTZPYErEx+FWFSKvMHUZZR5PpDBpUT2gO+CaWhgrlXoRtYzi0OR3urF1kL5tY36LEwLUS
+        DZn290JgXSodiN1gdbv69H7ONV+xnDM=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-361-_gTvTO5ZPRunHnlNVaKVJg-1; Fri, 02 Apr 2021 07:14:51 -0400
+X-MC-Unique: _gTvTO5ZPRunHnlNVaKVJg-1
+Received: by mail-wr1-f72.google.com with SMTP id z17so4212824wrv.23
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 04:14:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/fKJ2OSCFXizuU2U1MJ67BIOWCyNds4Q38dY2jX+k4E=;
+        b=QGBBFgarOkcX5GZAed6B3eZiLO1RmwUa2buZCix0sT1Aej2ONpDzFFCIrayeJLY1PP
+         Gm6zxyOZ2ZLbE9WFx4wYQvTWVhkULil0u66trs9y932d9c3dstWgVG9+rLWrY9pBtzvX
+         EglLFzf0iKFm/iIsL/worzJlltijv/ohYojS8Z7G/sz0LJnl8SSE5Ru1kzoLa9ITS4ba
+         EvF/evHeei/CHopUjcBO0uBNYB0kqkoQRoMWPqE/RDsV6fzxavRfxRrLZPj3f4YW0uA6
+         ZB2N6tZSQX44bgw7cBLdagSZMs2Y6oVeJxF7sSRYbtJmTvOUKwQmrkk/ahCBuxOyVf93
+         4vTw==
+X-Gm-Message-State: AOAM530Y9aIT9BGw9HthZEknTZFOhqptEaWjpjqrhcKlxWzV/cgy3Qh2
+        87NcPOZNfJRHcHJ7GczlMfxHWgedXnJ7JQ3w2axZ41uRaFWl0fqsFOCEN7L2Izg52/5uy6R5TJv
+        XhgKU6pAMUp0uEEStB6TT4PMr
+X-Received: by 2002:adf:fb05:: with SMTP id c5mr15230079wrr.302.1617362090123;
+        Fri, 02 Apr 2021 04:14:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyDC2lEkIz55o7/8zmXTfl7KMf2+IvXa4U8NcK872E7p5nXNoS/a2umf8IXffQu2cm+oMqeRQ==
+X-Received: by 2002:adf:fb05:: with SMTP id c5mr15230063wrr.302.1617362089964;
+        Fri, 02 Apr 2021 04:14:49 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id n1sm18076777wro.36.2021.04.02.04.14.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Apr 2021 04:14:49 -0700 (PDT)
+Subject: Re: [PATCH v2 10/13] KVM: x86/mmu: Allow zapping collapsible SPTEs to
+ use MMU read lock
+To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20210401233736.638171-1-bgardon@google.com>
+ <20210401233736.638171-11-bgardon@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <4140362f-92d5-5c5e-de8e-4e1e3a65b317@redhat.com>
+Date:   Fri, 2 Apr 2021 13:14:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lpsjzq6g4e4q6k3u"
-Content-Disposition: inline
-In-Reply-To: <20210402105018.2212-1-claudiu.beznea@microchip.com>
+In-Reply-To: <20210401233736.638171-11-bgardon@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 02/04/21 01:37, Ben Gardon wrote:
+> To speed the process of disabling dirty logging, change the TDP MMU
+> function which zaps collapsible SPTEs to run under the MMU read lock.
 
---lpsjzq6g4e4q6k3u
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Technically it only reduces the impact on the running VM; it doesn't
+speed it up right?  Something like:
 
-Hi,
+     To reduce the impact of disabling dirty logging, change the TDP MMU
+     function which zaps collapsible SPTEs to run under the MMU read lock.
+     This way, page faults on zapped SPTEs can proceed in parallel with
+     kvm_mmu_zap_collapsible_sptes.
 
-On Fri, Apr 02, 2021 at 01:50:18PM +0300, Claudiu Beznea wrote:
-> Use devm_of_iomap() to map resources. This will avoid the necessity to
-> track the mapped resources and free them on failure path or on remove.
->=20
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Suggested-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-> ---
+Paolo
 
-Thanks, queued.
-
--- Sebastian
-
-> Changes in v2:
-> - use devm_of_iomap()
-> - change commit description and title to match to the new approach
-> - add Suggested-by tag
->=20
->  drivers/power/reset/at91-reset.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/power/reset/at91-reset.c b/drivers/power/reset/at91-=
-reset.c
-> index 3ff9d93a5226..026649409135 100644
-> --- a/drivers/power/reset/at91-reset.c
-> +++ b/drivers/power/reset/at91-reset.c
-> @@ -192,7 +192,7 @@ static int __init at91_reset_probe(struct platform_de=
-vice *pdev)
->  	if (!reset)
->  		return -ENOMEM;
-> =20
-> -	reset->rstc_base =3D of_iomap(pdev->dev.of_node, 0);
-> +	reset->rstc_base =3D devm_of_iomap(&pdev->dev, pdev->dev.of_node, 0, NU=
-LL);
->  	if (!reset->rstc_base) {
->  		dev_err(&pdev->dev, "Could not map reset controller address\n");
->  		return -ENODEV;
-> @@ -202,7 +202,7 @@ static int __init at91_reset_probe(struct platform_de=
-vice *pdev)
->  		/* we need to shutdown the ddr controller, so get ramc base */
->  		for_each_matching_node_and_match(np, at91_ramc_of_match, &match) {
->  			reset->ramc_lpr =3D (u32)match->data;
-> -			reset->ramc_base[idx] =3D of_iomap(np, 0);
-> +			reset->ramc_base[idx] =3D devm_of_iomap(&pdev->dev, np, 0, NULL);
->  			if (!reset->ramc_base[idx]) {
->  				dev_err(&pdev->dev, "Could not map ram controller address\n");
->  				of_node_put(np);
-> --=20
-> 2.25.1
->=20
-
---lpsjzq6g4e4q6k3u
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBm/DYACgkQ2O7X88g7
-+pp5Cg/8DLYf8b/8g4n5vfpAYfli6gcxs0eZbWgL5dRGvCyEnYiYeTPVt12pEP8d
-hb3XDvH9+c2RP1GIVnlyLFMsZDw7hhCkDanan0v7ILxgWyaY8AYO1EfrtH4oO3Fa
-sWr+Oov6vPenwMuSTCs2CCWZPKgF3MwInyAaFuF5QvKuyD4xuO/duc9YtpoDmCIr
-DFrtuvWtLzinTqWP0dDSEZXEGhAgg7eGcRHR1PQDF1BnkMFz8whJw9biUWpsNCsG
-FAQ/R1my+3uJ2TMnaWD4SeHsOgg89xIq8S6BJwpIkyXkNBJN0ySzCNk7a6qHjVMJ
-ycS/dDLMvIZ4ELP75OMw3pGak/3icWRxctVvtXp1Ty8cOh3Dhyg7iDm0If4PdG0x
-u6ZU5QeKvu1ZZ3eCC0vZ2UfvO3Zrgrf4WtrFkpqhggDCffV8/f2ID6x17CiZ4gnv
-5kbFXiL9K79iIqulfdLAo/tVarQhAN4ICtB2ynZ9gS8GzlxuyZKvcAmi1EwPprD5
-KhvGafBeGBR0fXhjshNDYskf4bg0WJx5M847Xj7NNsqGHwJVPAf4HHXLWa/NA0WT
-ZG+ENbBWOXwOf4TZDMOooZRE7Yf9RYC+wuZwIHxEuIvfCxi52xNIiXg9EQBhTiFD
-HEPjHw5bVdxrkcmLu0u8TELYHqrewXDyEIWUautld0WCO6n77AM=
-=6wlE
------END PGP SIGNATURE-----
-
---lpsjzq6g4e4q6k3u--
