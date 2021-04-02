@@ -2,160 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B7DE352B21
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 15:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD43352B27
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 16:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235592AbhDBNx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 09:53:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229932AbhDBNxz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 09:53:55 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B368DC0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 06:53:52 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id 91-20020a9d08640000b0290237d9c40382so4957085oty.12
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 06:53:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aluSn6bb33bhahqntft67ApwfyZT9WoQvHp/xBnQ0Zs=;
-        b=NEF/K2uB4Mkvy4QQ/Kz6ySI07BGzqJjrxihzA78nyYMoJrTXY3mmnlqkQhs+0ESiFJ
-         lhWgvwKJfeK1jJACRmBuCn48dzqK95k08G3Mi2VpaLMczEfgAMgIQWiKSZ0b67ayG8r5
-         WoTuSjVz6jgZ3y2IZ7DY5D10o3R2u1GKeiuh8xbD3TdxJxkl41B0Igiq9kECa5/1lcnH
-         aHnNoKk9nK1ynBbHn9Y3qWdx/UXpb04kOqWNl43OMKQ9c5vK4v3foO0C44NifgIQOkQt
-         ZdMp+84iAKwZvJrw9lgetF+HYzQkiKUC2ZBC4C5+AmCIv4nnfi0HjVHZZNn7gVl6EUFW
-         n9hA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition:in-reply-to;
-        bh=aluSn6bb33bhahqntft67ApwfyZT9WoQvHp/xBnQ0Zs=;
-        b=UBtDy2eAccULfwmOHgWM5P7r5TuZD3qjSEDNlqSiGd5N61tVEYhWxnadzPn7s1dI9l
-         sGj5eFiV4Da3dVpiB0VAoIQcBiBhX8UqxABD5tVg0S0gpN1UCI8iCueMdT+pkQnsJFYX
-         kPrYh+29tgpWRQI/yGr/E7jHAIJHSY5Nvl63y5kR54oKHwx7MaLb6I1jN+FcAK1B9oZN
-         61hlE2uyVd1Bco2ioMVC6Eym94bNdriqJL6Wg/l7XkJmPNuqKbXAD2DW7sL2BdUDX70u
-         93fHaVo983cxjmTIjAFh2xv3QjIu6Lfzh5rNz7YxPhkj4Pqu0PwH02IIX0WbHPJT66eg
-         vdyw==
-X-Gm-Message-State: AOAM531Gn/EbhzESLjArcq1iLLC0OutVtewU7+56u2QGFqg/oDHYHJH4
-        7NqadmUZqQLHfEx9U4XOG6avpby8o+BO
-X-Google-Smtp-Source: ABdhPJz7MN4hCAKS98a9/hIkc17VjCgo2vzjBNphOKi6TxpqwqAE5RzY8Xd0LdBkig2rqsxJHUSCJQ==
-X-Received: by 2002:a05:6830:1d45:: with SMTP id p5mr11219852oth.340.1617371631930;
-        Fri, 02 Apr 2021 06:53:51 -0700 (PDT)
-Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
-        by smtp.gmail.com with ESMTPSA id w23sm1768704oow.25.2021.04.02.06.53.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 06:53:51 -0700 (PDT)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:f99f:823a:495e:5af])
-        by serve.minyard.net (Postfix) with ESMTPSA id 93DA3180570;
-        Fri,  2 Apr 2021 13:53:50 +0000 (UTC)
-Date:   Fri, 2 Apr 2021 08:53:49 -0500
-From:   Corey Minyard <minyard@acm.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Corey Minyard <cminyard@mvista.com>,
-        openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 06/10] ipmi_si: Reuse si_to_str array in
- ipmi_hardcode_init_one()
-Message-ID: <20210402135349.GT507977@minyard.net>
-Reply-To: minyard@acm.org
-References: <20210330181649.66496-1-andriy.shevchenko@linux.intel.com>
- <20210330181649.66496-6-andriy.shevchenko@linux.intel.com>
+        id S235596AbhDBN5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 09:57:54 -0400
+Received: from mga01.intel.com ([192.55.52.88]:22014 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229932AbhDBN5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 09:57:43 -0400
+IronPort-SDR: BIYrNQOFXzo/hd52bZPhh5NWZJ0MhYwZVVLeMNc1e9tUHgTeXTCsyYljv+LsTPBjyCx4Wv67Zz
+ cZTRmk0jI52Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9942"; a="212744960"
+X-IronPort-AV: E=Sophos;i="5.81,299,1610438400"; 
+   d="scan'208";a="212744960"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 06:57:41 -0700
+IronPort-SDR: +zv6cCDWwz+JXwN0T+v1UAFzO1v7zqlQANUj43HnLNzm9T3/qFB4QRzf07DNf3svrj36xfNKjY
+ C7G1tgVSRlYw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,299,1610438400"; 
+   d="scan'208";a="413188499"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga008.fm.intel.com with ESMTP; 02 Apr 2021 06:57:41 -0700
+Received: from lcsmsx603.ger.corp.intel.com (10.109.210.12) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 2 Apr 2021 06:57:40 -0700
+Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
+ LCSMSX603.ger.corp.intel.com (10.109.210.12) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 2 Apr 2021 16:57:38 +0300
+Received: from hasmsx602.ger.corp.intel.com ([10.184.107.142]) by
+ HASMSX602.ger.corp.intel.com ([10.184.107.142]) with mapi id 15.01.2106.013;
+ Fri, 2 Apr 2021 16:57:38 +0300
+From:   "Winkler, Tomas" <tomas.winkler@intel.com>
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        "Box, David E" <david.e.box@intel.com>,
+        "Hans de Goede" <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>
+CC:     "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Mashiah, Tamar" <tamar.mashiah@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: RE: [PATCH] platform/x86: intel_pmc_core: export platform
+ global_reset via sysfs.
+Thread-Topic: [PATCH] platform/x86: intel_pmc_core: export platform
+ global_reset via sysfs.
+Thread-Index: AQHXJz51Jw2Dp3h1DUm1gcOTnDUY2qqhCEmAgAA4ZmA=
+Date:   Fri, 2 Apr 2021 13:57:38 +0000
+Message-ID: <a57460c2ca0949e4998a8545a01ab112@intel.com>
+References: <20210401213144.1009224-1-tomas.winkler@intel.com>
+ <f930c11b-7324-19ee-9776-d97a90533b21@metux.net>
+In-Reply-To: <f930c11b-7324-19ee-9776-d97a90533b21@metux.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.184.70.1]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210330181649.66496-6-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 09:16:45PM +0300, Andy Shevchenko wrote:
-> Instead of making the comparison one by one, reuse si_to_str array
-> in ipmi_hardcode_init_one() in conjunction with match_string() API.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/char/ipmi/ipmi_si.h          |  3 +++
->  drivers/char/ipmi/ipmi_si_hardcode.c | 23 +++++++++--------------
->  drivers/char/ipmi/ipmi_si_intf.c     |  2 --
->  3 files changed, 12 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/char/ipmi/ipmi_si.h b/drivers/char/ipmi/ipmi_si.h
-> index bac0ff86e48e..fd3167d1e1e9 100644
-> --- a/drivers/char/ipmi/ipmi_si.h
-> +++ b/drivers/char/ipmi/ipmi_si.h
-> @@ -22,6 +22,9 @@ enum si_type {
->  	SI_TYPE_INVALID, SI_KCS, SI_SMIC, SI_BT
->  };
->  
-> +/* 'invalid' to allow a firmware-specified interface to be disabled */
-> +static __maybe_unused const char *const si_to_str[] = { "invalid", "kcs", "smic", "bt" };
-
-Can we just make this non-static and leave the definition where it is?
-That would save a little space and wouldn't affect performance at all.
-
--corey
-
-> +
->  enum ipmi_addr_space {
->  	IPMI_IO_ADDR_SPACE, IPMI_MEM_ADDR_SPACE
->  };
-> diff --git a/drivers/char/ipmi/ipmi_si_hardcode.c b/drivers/char/ipmi/ipmi_si_hardcode.c
-> index f6ece7569504..cf3797523469 100644
-> --- a/drivers/char/ipmi/ipmi_si_hardcode.c
-> +++ b/drivers/char/ipmi/ipmi_si_hardcode.c
-> @@ -80,26 +80,21 @@ static void __init ipmi_hardcode_init_one(const char *si_type_str,
->  					  enum ipmi_addr_space addr_space)
->  {
->  	struct ipmi_plat_data p;
-> +	int t;
->  
->  	memset(&p, 0, sizeof(p));
->  
->  	p.iftype = IPMI_PLAT_IF_SI;
-> -	if (!si_type_str || !*si_type_str || strcmp(si_type_str, "kcs") == 0) {
-> +	if (!si_type_str || !*si_type_str) {
->  		p.type = SI_KCS;
-> -	} else if (strcmp(si_type_str, "smic") == 0) {
-> -		p.type = SI_SMIC;
-> -	} else if (strcmp(si_type_str, "bt") == 0) {
-> -		p.type = SI_BT;
-> -	} else if (strcmp(si_type_str, "invalid") == 0) {
-> -		/*
-> -		 * Allow a firmware-specified interface to be
-> -		 * disabled.
-> -		 */
-> -		p.type = SI_TYPE_INVALID;
->  	} else {
-> -		pr_warn("Interface type specified for interface %d, was invalid: %s\n",
-> -			i, si_type_str);
-> -		return;
-> +		t = match_string(si_to_str, ARRAY_SIZE(si_to_str), si_type_str);
-> +		if (t < 0) {
-> +			pr_warn("Interface type specified for interface %d, was invalid: %s\n",
-> +				i, si_type_str);
-> +			return;
-> +		}
-> +		p.type = t;
->  	}
->  
->  	p.regsize = regsizes[i];
-> diff --git a/drivers/char/ipmi/ipmi_si_intf.c b/drivers/char/ipmi/ipmi_si_intf.c
-> index be41a473e3c2..ff448098f185 100644
-> --- a/drivers/char/ipmi/ipmi_si_intf.c
-> +++ b/drivers/char/ipmi/ipmi_si_intf.c
-> @@ -70,8 +70,6 @@ enum si_intf_state {
->  #define IPMI_BT_INTMASK_CLEAR_IRQ_BIT	2
->  #define IPMI_BT_INTMASK_ENABLE_IRQ_BIT	1
->  
-> -static const char * const si_to_str[] = { "invalid", "kcs", "smic", "bt" };
-> -
->  static bool initialized;
->  
->  /*
-> -- 
-> 2.30.2
-> 
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogRW5yaWNvIFdlaWdlbHQs
+IG1ldHV4IElUIGNvbnN1bHQgPGxrbWxAbWV0dXgubmV0Pg0KPiBTZW50OiBGcmlkYXksIEFwcmls
+IDAyLCAyMDIxIDE2OjMyDQo+IFRvOiBXaW5rbGVyLCBUb21hcyA8dG9tYXMud2lua2xlckBpbnRl
+bC5jb20+OyBSYWpuZWVzaCBCaGFyZHdhag0KPiA8aXJlbmljLnJham5lZXNoQGdtYWlsLmNvbT47
+IEJveCwgRGF2aWQgRSA8ZGF2aWQuZS5ib3hAaW50ZWwuY29tPjsgSGFucw0KPiBkZSBHb2VkZSA8
+aGRlZ29lZGVAcmVkaGF0LmNvbT47IE1hcmsgR3Jvc3MgPG1ncm9zc0BsaW51eC5pbnRlbC5jb20+
+DQo+IENjOiBwbGF0Zm9ybS1kcml2ZXIteDg2QHZnZXIua2VybmVsLm9yZzsgbGludXgta2VybmVs
+QHZnZXIua2VybmVsLm9yZzsNCj4gTWFzaGlhaCwgVGFtYXIgPHRhbWFyLm1hc2hpYWhAaW50ZWwu
+Y29tPjsgQW5keSBTaGV2Y2hlbmtvDQo+IDxhbmRyaXkuc2hldmNoZW5rb0BsaW51eC5pbnRlbC5j
+b20+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIHBsYXRmb3JtL3g4NjogaW50ZWxfcG1jX2NvcmU6
+IGV4cG9ydCBwbGF0Zm9ybQ0KPiBnbG9iYWxfcmVzZXQgdmlhIHN5c2ZzLg0KPiANCj4gT24gMDEu
+MDQuMjEgMjM6MzEsIFRvbWFzIFdpbmtsZXIgd3JvdGU6DQo+IA0KPiBIaSwNCj4gDQo+ID4gRHVy
+aW5nIFBDSCBtYW51ZmFjdHVyaW5nIGEgZ2xvYmFsIHJlc2V0IGhhcyB0byBiZSBpbmR1Y2VkIGlu
+IG9yZGVyIGZvcg0KPiA+IGNvbmZpZ3VyYXRpb24gY2hhbmdlcyB0YWtlIGFmZmVjdCB1cG9uIGZv
+bGxvd2luZyBwbGF0Zm9ybSByZXNldC4NCj4gPiBUaGlzIHNldHRpbmcgd2FzIGNvbW1vbmx5IGRv
+bmUgYnkgYWNjZXNzaW5nIFBNQyByZWdpc3RlcnMgdmlhIC9kZXYvbWVtDQo+ID4gYnV0IGR1ZSB0
+byBzZWN1cml0eSBjb25jZXJuIC9kZXYvbWVtIGFjY2VzcyBpcyBtdWNoIHJlc3RyaWN0ZWQsIGhl
+bmNlDQo+ID4gdGhlIHJlYXNvbiBmb3IgZXhwb3NpbmcgdGhpcyBzZXR0aW5nIHZpYSBkZWRpY2F0
+ZWQgc3lzZnMgaW50ZXJmYWNlLg0KPiA+IFRvIHByZXZlbnQgcG9zdCBtYW51ZmFjdHVyaW5nIGFi
+dXNlIHRoZSByZWdpc3RlciBpcyBwcm90ZWN0ZWQgYnkNCj4gPiBoYXJkd2FyZSBsb2NraW5nLg0K
+PiANCj4gY291bGQgeW91IHBsZWFzZSBkZWZpbmUgIm1hbnVmYWN0dXJpbmciID8gVGhlIGNoaXAg
+b3IgYm9hcmQgPw0KQm9hcmQNCj4gDQo+IElzIHRoZXJlIGFueSB1c2UgZm9yIHRoaXMsIGFmdGVy
+IHRoZSBtYWNoaW5lIGxlZnQgdGhlIGZhY3RvcnkgPw0KDQpSZWZ1cmJpc2hpbmcsIG1vc3RseSwg
+dGhlIHJlZ2lzdGVyIGlzIGh3IGxvY2tlZCBhZnRlciB0aGF0Lg0KDQo+IA0KPiANCj4gLS1tdHgN
+Cj4gDQo+IC0tDQo+IC0tLQ0KPiBIaW53ZWlzOiB1bnZlcnNjaGzDvHNzZWx0ZSBFLU1haWxzIGvD
+tm5uZW4gbGVpY2h0IGFiZ2Vow7ZydCB1bmQgbWFuaXB1bGllcnQNCj4gd2VyZGVuICEgRsO8ciBl
+aW5lIHZlcnRyYXVsaWNoZSBLb21tdW5pa2F0aW9uIHNlbmRlbiBTaWUgYml0dGUgaWhyZW4NCj4g
+R1BHL1BHUC1TY2hsw7xzc2VsIHp1Lg0KPiAtLS0NCj4gRW5yaWNvIFdlaWdlbHQsIG1ldHV4IElU
+IGNvbnN1bHQNCj4gRnJlZSBzb2Z0d2FyZSBhbmQgTGludXggZW1iZWRkZWQgZW5naW5lZXJpbmcg
+aW5mb0BtZXR1eC5uZXQgLS0gKzQ5LTE1MS0NCj4gMjc1NjUyODcNCg==
