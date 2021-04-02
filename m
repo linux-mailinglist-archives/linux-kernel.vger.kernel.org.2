@@ -2,88 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CDCC352FBD
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 21:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7FC352FBB
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 21:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236553AbhDBT1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 15:27:34 -0400
-Received: from smtp-17.italiaonline.it ([213.209.10.17]:38351 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236539AbhDBT1c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 15:27:32 -0400
-Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
- ([87.20.116.197])
-        by smtp-17.iol.local with ESMTPA
-        id SPS2lt01JtpGHSPS6l2Gm5; Fri, 02 Apr 2021 21:27:30 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1617391650; bh=grgL9Q3sGgmvPCTIgfN2e1WV0FqyEFUkPw1kyuvyjF4=;
-        h=From;
-        b=O501lndXdlvNNIKljJKIInkfMTpkDAuiHdRjJhiS4o04qCMm9DP3dC/c0KCD5O4s0
-         AojE0wkkq+viWAXxhw6LYze23S5MogN7g5QeTDbhP7NVfhkF8BdlWoXWUsOUpZDaul
-         xPG5kwbh84SmRz9JCMrPQa5b+MVq4oy0idvgC91dFT7eCgMuVaQNzfC3NOXnoitqJK
-         K7LMj/6pZwXVzLLjK2MorMBPHKtK7Li+L+pZgbJ7I94eMsbPrILEAKr0tXdS8G+Pxp
-         84deQu5pi6TeC0FSyOeQaVyRlkyLNV1U/vgKrUtG659hiy6rq3NEgG44dN6QP6D2g2
-         9ZUDeVx3Jw6Jw==
-X-CNFS-Analysis: v=2.4 cv=Q7IXX66a c=1 sm=1 tr=0 ts=60677022 cx=a_exe
- a=AVqmXbCQpuNSdJmApS5GbQ==:117 a=AVqmXbCQpuNSdJmApS5GbQ==:17
- a=E4scLkpOueEFzuNnOYYA:9
-From:   Dario Binacchi <dariobin@libero.it>
-To:     linux-kernel@vger.kernel.org
-Cc:     Dario Binacchi <dariobin@libero.it>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Lindgren <tony@atomide.com>,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org
-Subject: [PATCH] ARM: OMAP2+: remove omap2_set_globals_control()
-Date:   Fri,  2 Apr 2021 21:27:20 +0200
-Message-Id: <20210402192720.9487-1-dariobin@libero.it>
-X-Mailer: git-send-email 2.17.1
-X-CMAE-Envelope: MS4xfPdwWTgt9achL+oyckcuJPiqYMERnZwnjydcfAahTZdXnDjqr8pjgUJ4Pmhl9/1IsI7VYCS7lcI++Xff2bx0BSKezdWuCjx2kujAuaLKR0cVAZtu5eZI
- JLwUTqh0ppEjcEDzB3RaBxczd6bphSr4cnIdj4+GNRwQqEBl1bzorzjrXhJ18aMZyORlIsS34mVro2Bf4MLvtalDTOdZ/QVhfntKj20l6UD/05FUZPwOJ60w
- 8bXicVA3Qm2nUPx0sckh2EHVeZZeRgRyG/fswhOCkT9Wzt90givqwN0TayuPEUp06GrNatNn1nZZvFwRndzLDoRvQWP4pvp9xTkplt+ehFZRU1177xWmbUO4
- OhZBed8clmBbqUHnUMhvQwk2xNp4casRfhFN3YUna0HrKUozKgWUsBrFFd2zyLPei/V8MPFH
+        id S236458AbhDBT13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 15:27:29 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:57300 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229553AbhDBT12 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 15:27:28 -0400
+Received: from zn.tnic (p200300ec2f0a2000165287017d4f49d2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:2000:1652:8701:7d4f:49d2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CDFAF1EC04C2;
+        Fri,  2 Apr 2021 21:27:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1617391645;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=IPuT0LMZhVBaWy/dNRmMZkfsRP4bN2xbwyHxqNljGN4=;
+        b=DKSiqGr30xWt95Fe9t+JUNWwhfybD7nq/haXE0zTVs2by8+BrT6ZXJ6RLH1gpsQ8CMhn1y
+        iznm1s7/5DkhCTO9nEDJwbrP2+GyvORKs9JYFW7I+1+eYvNI2U7ObS3JX250mSJigWJHhZ
+        1r7aCJDHyR4ABVT7cz0oFT+mFfuLdUQ=
+Date:   Fri, 2 Apr 2021 21:27:31 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        ak@linux.intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        David Rientjes <rientjes@google.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: Re: [RFC Part1 PATCH 05/13] X86/sev-es: move few helper functions in
+ common file
+Message-ID: <20210402192731.GM28499@zn.tnic>
+References: <20210324164424.28124-1-brijesh.singh@amd.com>
+ <20210324164424.28124-6-brijesh.singh@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210324164424.28124-6-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function is no longer used, so let's remove it.
+On Wed, Mar 24, 2021 at 11:44:16AM -0500, Brijesh Singh wrote:
+> The sev_es_terminate() and sev_es_{wr,rd}_ghcb_msr() helper functions
+> in a common file so that it can be used by both the SEV-ES and SEV-SNP.
+> 
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Joerg Roedel <jroedel@suse.de>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Tony Luck <tony.luck@intel.com>
+> Cc: Dave Hansen <dave.hansen@intel.com>
+> Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: x86@kernel.org
+> Cc: kvm@vger.kernel.org
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
+>  arch/x86/boot/compressed/sev-common.c | 32 +++++++++++++++++++++++++++
+>  arch/x86/boot/compressed/sev-es.c     | 22 ++----------------
+>  arch/x86/kernel/sev-common-shared.c   | 31 ++++++++++++++++++++++++++
+>  arch/x86/kernel/sev-es-shared.c       | 21 +++---------------
+>  4 files changed, 68 insertions(+), 38 deletions(-)
+>  create mode 100644 arch/x86/boot/compressed/sev-common.c
+>  create mode 100644 arch/x86/kernel/sev-common-shared.c
 
-Signed-off-by: Dario Binacchi <dariobin@libero.it>
+Yeah, once you merge it all into sev.c and sev-shared.c, that patch is
+not needed anymore.
 
----
+Thx.
 
- arch/arm/mach-omap2/control.c | 5 -----
- arch/arm/mach-omap2/control.h | 1 -
- 2 files changed, 6 deletions(-)
-
-diff --git a/arch/arm/mach-omap2/control.c b/arch/arm/mach-omap2/control.c
-index 73338cf80d76..062d431fc33a 100644
---- a/arch/arm/mach-omap2/control.c
-+++ b/arch/arm/mach-omap2/control.c
-@@ -136,11 +136,6 @@ struct omap3_control_regs {
- static struct omap3_control_regs control_context;
- #endif /* CONFIG_ARCH_OMAP3 && CONFIG_PM */
- 
--void __init omap2_set_globals_control(void __iomem *ctrl)
--{
--	omap2_ctrl_base = ctrl;
--}
--
- u8 omap_ctrl_readb(u16 offset)
- {
- 	u32 val;
-diff --git a/arch/arm/mach-omap2/control.h b/arch/arm/mach-omap2/control.h
-index eceb4b09adb2..c4ca30ba1790 100644
---- a/arch/arm/mach-omap2/control.h
-+++ b/arch/arm/mach-omap2/control.h
-@@ -528,7 +528,6 @@ extern int omap3_ctrl_save_padconf(void);
- void omap3_ctrl_init(void);
- int omap2_control_base_init(void);
- int omap_control_init(void);
--void omap2_set_globals_control(void __iomem *ctrl);
- void __init omap3_control_legacy_iomap_init(void);
- #else
- #define omap_ctrl_readb(x)		0
 -- 
-2.17.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
