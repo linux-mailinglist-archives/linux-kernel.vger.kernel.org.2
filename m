@@ -2,100 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 786C53527A9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 10:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BFE83527AD
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 10:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234184AbhDBI5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 04:57:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58616 "EHLO
+        id S230387AbhDBI73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 04:59:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230387AbhDBI5H (ORCPT
+        with ESMTP id S229742AbhDBI7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 04:57:07 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E692BC061788
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 01:57:03 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id y124-20020a1c32820000b029010c93864955so4005553wmy.5
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 01:57:03 -0700 (PDT)
+        Fri, 2 Apr 2021 04:59:20 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F23C0613E6;
+        Fri,  2 Apr 2021 01:59:18 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id s17so4978043ljc.5;
+        Fri, 02 Apr 2021 01:59:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=S7ce0Vxpg2sR3Lixx6Rl5vj4I10NemweROF9R1wsVX4=;
-        b=YsObxn3+33f0x47mw+a2YdWHzIAq5V3WcbiNe7j7zNPdwdnowgW+oxga2m7hqNvI+B
-         7rU41kLGQlBEYigBn89HOt0+v80Cmajma8pI6iY347QTK9XQdFbKIoDO/vrvQoJLpHqO
-         obXkXNg6VuOLbLbqHSaOpl1pdPXVN8P2YmOQysruh8fNhO/vCv3HnxA5xiu0NPu9/aG/
-         fMD1paRHHJg4uHgZj2hvLNSlbizzZpRH2Ec+uz6klP56c4BzTIwQCvlYOAkgC7s7xoRd
-         mlLBMWwaqxEOMZ+lH6qZVGj74qd9ehpoTcmROC5A968tecDYHLrm+ea8CwkghCMr10AT
-         8f0A==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HywOIhb5prU0SvgCATKvH+ZBrrrzKF5XQkM0MZqr0LA=;
+        b=K58phw+IpQ//OZE32Gwyp+hDyT7tu3gNVxEMtandIn2kAiffLXdmEdS04bVlL12zRL
+         3Ll05xL2x9/Gk+5wivRKbqrgR3LpQX0vyVTpJ69ZwbzSUeBmc2PKqPI6MKznUgBhI/Z5
+         6ei4DP+DUVX4r6T4Cb+PdXQWv0olcT9mOewLrjdl4pA2deoUzXoSDrNBwAImjMo8/q/v
+         RlMq/+aPVcFbNJQjRQ7XrCzv6wcTnjmm2dpsciA1HKIKMp+qf36tyl4KBeDJIK1iwFCc
+         CBIe9O1zsPBiX7cYdtK+nVIP3tr2MzJS7DIaCW1+LORojLEFSCg9UKN1WXHWls0FqOkm
+         Ks2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=S7ce0Vxpg2sR3Lixx6Rl5vj4I10NemweROF9R1wsVX4=;
-        b=E0d1rGXWdGji4mQRJb/4kMaRZBs3t574cmioKe3z0NMsZHE71sB5v5H3yembAwFIwO
-         jBxa301lEE/IPhvYcB5gEX0koz8qG7hl++YXesW3kqu7aRSh9Ifage3zr02ZEkiCYgxj
-         6vLIvHuuOmRPH8gMhNzothCyfO9C7MHXbFNznyHUu7Ig7TWxdelqTtDJEf3biCzhBlm/
-         TipFybeVhd9nkxHHIw5uUGWCj22LQBViTWryDFr7Cw6/AVGt2Q3AfrZfrDjwdWMZ866W
-         /FEmRcF1Xvd5bqiraw21YnoEiPJApriZh5ireOCf3LWSiqgs87oSYXQC2zbkgB0GGTrH
-         I2Nw==
-X-Gm-Message-State: AOAM533rEYYM9/j/uFHTWBWMYy7v2ovKI6z/eWdCo28a2WAWEGOT5AK5
-        5nJFumGXGpi4Ta3R6y6FicqoOQ==
-X-Google-Smtp-Source: ABdhPJyubigy03RcapzbnkfaAKQTZy3/TqkRV465izj294G5yfa90DXKok09jfrNBuiR9P3XMwdkZw==
-X-Received: by 2002:a1c:3d46:: with SMTP id k67mr11724458wma.188.1617353822549;
-        Fri, 02 Apr 2021 01:57:02 -0700 (PDT)
-Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id h8sm13874239wrt.94.2021.04.02.01.57.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 01:57:02 -0700 (PDT)
-Date:   Fri, 2 Apr 2021 09:57:00 +0100
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] zero-fill colormap in drivers/video/fbdev/core/fbcmap.c
-Message-ID: <YGbcXMfP5pbCkG/9@equinox>
-References: <20210331220719.1499743-1-phil@philpotter.co.uk>
- <CAMuHMdVh9JPZKphSi5+KR+BMJL7cQpVifrPBzhR3ees8QBhBXw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HywOIhb5prU0SvgCATKvH+ZBrrrzKF5XQkM0MZqr0LA=;
+        b=KxIZG03I8U4sHiC8JIgaKrKcgsbOD6HkB7EjRJjXP4gviYymLGiWgnQyg4O+nSq7on
+         WDtxImH4qPsjp8PyOCarK4P1hhu/qv6JmfBlggVgwDW6LPEnrq6Ez1gnmC5sa6LkYrM3
+         QVG5SIcUhGLScfBTMKSCbT2b89iLC/5DakPdiGWAkAGMlaSFLxWKUP8pGbr5rhZoOqgK
+         F3fgQCSSg6OE1W7oirS2f5RpNmIC1Jo0Y8hSD5Y5XgfzZHrxH1fQGqkw0AZuSihjJSDs
+         7GLn2QOgvHfKQuELU5JP0WZJ7TotlX5Un6W3EV6POPygCmvAe1fy9MLgtxyl28lyi4JR
+         qiYg==
+X-Gm-Message-State: AOAM5318wHIn5zPT8IeCN66qB0ofMqbzhjvwSIWYihUEI9H7qJJuewBR
+        OoP2qO9rdO76M2oMiVbVvaStmXZw6W1QmbkgX9W1yWKQrjY=
+X-Google-Smtp-Source: ABdhPJw8cpfvx6+g3xC+Ja1aMlvho4dmtsu+dGUtAgfwKzdxVgHhaVnDtPlWS7DxXgJ74G2bNz/qvwTyG1+eZ5ifgLo=
+X-Received: by 2002:a05:651c:384:: with SMTP id e4mr7528065ljp.500.1617353956993;
+ Fri, 02 Apr 2021 01:59:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdVh9JPZKphSi5+KR+BMJL7cQpVifrPBzhR3ees8QBhBXw@mail.gmail.com>
+References: <alpine.DEB.2.21.2103302221590.18977@angie.orcam.me.uk>
+ <mhng-08e5e4fb-8a42-4f7b-8ceb-ff549784100e@palmerdabbelt-glaptop> <CACT4Y+Z0PaAuUFrOBenztWkw8OV=J-qaeD1FASPM4ufcLg5a5A@mail.gmail.com>
+In-Reply-To: <CACT4Y+Z0PaAuUFrOBenztWkw8OV=J-qaeD1FASPM4ufcLg5a5A@mail.gmail.com>
+From:   David Abdurachmanov <david.abdurachmanov@gmail.com>
+Date:   Fri, 2 Apr 2021 11:58:40 +0300
+Message-ID: <CAEn-LTqTXCEC=bXTvGyo8SNL0JMWRKtiSwQB7R=Pc4uhxZUruA@mail.gmail.com>
+Subject: Re: [PATCH] riscv: Bump COMMAND_LINE_SIZE value to 1024
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>, macro@orcam.me.uk,
+        Alex Ghiti <alex@ghiti.fr>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 11:55:50AM +0200, Geert Uytterhoeven wrote:
-> On Thu, Apr 1, 2021 at 12:09 AM Phillip Potter <phil@philpotter.co.uk> wrote:
-> > Use kzalloc() rather than kmalloc() for the dynamically allocated parts
-> > of the colormap in fb_alloc_cmap_gfp, to prevent a leak of random kernel
-> > data to userspace under certain circumstances.
+On Fri, Apr 2, 2021 at 11:43 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Fri, Apr 2, 2021 at 6:37 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
 > >
-> > Fixes a KMSAN-found infoleak bug reported by syzbot at:
-> > https://syzkaller.appspot.com/bug?id=741578659feabd108ad9e06696f0c1f2e69c4b6e
+> > On Tue, 30 Mar 2021 13:31:45 PDT (-0700), macro@orcam.me.uk wrote:
+> > > On Mon, 29 Mar 2021, Palmer Dabbelt wrote:
+> > >
+> > >> > --- /dev/null
+> > >> > +++ b/arch/riscv/include/uapi/asm/setup.h
+> > >> > @@ -0,0 +1,8 @@
+> > >> > +/* SPDX-License-Identifier: GPL-2.0-only WITH Linux-syscall-note */
+> > >> > +
+> > >> > +#ifndef _UAPI_ASM_RISCV_SETUP_H
+> > >> > +#define _UAPI_ASM_RISCV_SETUP_H
+> > >> > +
+> > >> > +#define COMMAND_LINE_SIZE 1024
+> > >> > +
+> > >> > +#endif /* _UAPI_ASM_RISCV_SETUP_H */
+> > >>
+> > >> I put this on fixes, but it seemes like this should really be a Kconfig
+> > >> enttry.  Either way, ours was quite a bit smaller than most architectures and
+> > >> it's great that syzbot has started to find bugs, so I'd rather get this in
+> > >> sooner.
+> > >
+> > >  This macro is exported as a part of the user API so it must not depend on
+> > > Kconfig.  Also changing it (rather than say adding COMMAND_LINE_SIZE_V2 or
+> > > switching to an entirely new data object that has its dimension set in a
+> > > different way) requires careful evaluation as external binaries have and
+> > > will have the value it expands to compiled in, so it's a part of the ABI
+> > > too.
 > >
-> > Reported-by: syzbot+47fa9c9c648b765305b9@syzkaller.appspotmail.com
-> > Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-> 
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> -- 
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+> > Thanks, I didn't realize this was part of the user BI.  In that case we
+> > really can't chage it, so we'll have to sort out some other way do fix
+> > whatever is going on.
+> >
+> > I've dropped this from fixes.
+>
+> Does increasing COMMAND_LINE_SIZE break user-space binaries? I would
+> expect it to work the same way as adding new enum values, or adding
+> fields at the end of versioned structs, etc.
+> I would assume the old bootloaders/etc will only support up to the
+> old, smaller max command line size, while the kernel will support
+> larger command line size, which is fine.
+> However, if something copies /proc/cmdline into a fixed-size buffer
+> and expects that to work, that will break... that's quite unfortunate
+> user-space code... is it what we afraid of?
+>
+> Alternatively, could expose the same COMMAND_LINE_SIZE, but internally
+> support a larger command line?
 
-Dear Geert
+Looking at kernel commit history I see PowerPC switched from 512 to
+2048, and I don't see complaints about the ABI on the mailing list.
 
-Thank you for your review :-)
+If COMMAND_LINE_SIZE is used by user space applications and we
+increase it there shouldn't be problems. I would expect things to
+work, but just get truncated boot args? That is the application will
+continue only to look at the initial 512 chars.
 
-Regards,
-Phil
+https://linuxppc-dev.ozlabs.narkive.com/m4cj8nBa/patch-1-1-powerpc-increase-command-line-size-to-2048-from-512
