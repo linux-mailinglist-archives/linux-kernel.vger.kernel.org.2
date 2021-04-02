@@ -2,62 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA0C35251B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 03:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C98135253C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 03:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234318AbhDBBXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 21:23:34 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:15900 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234153AbhDBBXb (ORCPT
+        id S234043AbhDBBkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 21:40:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233677AbhDBBkp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 21:23:31 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FBMhp0TGtzkgjj;
-        Fri,  2 Apr 2021 09:21:46 +0800 (CST)
-Received: from huawei.com (10.175.103.91) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Fri, 2 Apr 2021
- 09:23:24 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-CC:     <ast@kernel.org>, <song@kernel.org>
-Subject: [PATCH -next v2] libbpf: remove redundant semi-colon
-Date:   Fri, 2 Apr 2021 09:26:34 +0800
-Message-ID: <20210402012634.1965453-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 1 Apr 2021 21:40:45 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A435C061788
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 18:40:45 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id e186so4044122iof.7
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 18:40:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BYRYEHo5Qq9x0q8CQNej+qVvQqMTQr6QPG404HMuZyQ=;
+        b=wIr572cj7EWZQK2u5tojEpXl8Iq/tC76EPb1VHr9GTOz2eMWV+fFJmZKERo0gznlnz
+         MyQnMNQKrwvJLaJJKXG3FC/3Vxecz7BrkuPPvmOE+G1jV/yO3iOPIu8G1MHui7BemZta
+         eU1lhOjvXvqEI4txZ8GEv2JB7IzTGPODDtbdeWupsIhF5bGC4Wo4JxubVTauO0WRHkwb
+         qMS7Jr5SJhwx7Ng575id5ACcCkJ+/nwEDyBhtqvIz8sKDowQ7mHKRSPRKlIGYvfCj93N
+         2QNQ2aoUAAZuu7wsfDmnpxYJJrB0PxTx6E8R/0UqKT3+PwyFxVx9ZMcqep07j9WXRDxh
+         2veA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BYRYEHo5Qq9x0q8CQNej+qVvQqMTQr6QPG404HMuZyQ=;
+        b=dvDMGXNODGBBoVRGF5o+uXvv+2AwrGl2r0tIanehY0tars1jaJvO+NmVgO/QGnnLeF
+         HiBaz10YR6QpW5G5pMxBiGQzFXa8zELyXbemj70IrBDM0CHPs5HQ2ScNiDRmfkApwwjv
+         S5vGhRb1NDDHnNyYQdYOW2cpSE7sqluPk4YP2dhKGT4FIfmC31NBGPjYIGhAE6h0Vok1
+         OJScCMrWRpijOhfTuYSlKEPM33hBwWpEPKbbAgvq6zveqgSM0wPgJb0YYxyPEENNLuUj
+         WoXNjoVeOOTAekXRMJVHBntA6QEIH5dNr2jKBN8YoWEasB5n7bkhuOOp8+BMp3f+xyR7
+         akGg==
+X-Gm-Message-State: AOAM533iUHYNFwIqaSKmajW/05sz3nZ4+jCdKExEOFS8N5Ja1kvnh4hb
+        rTKZ9zwbwe91q2Oyxvi7ZgAkF+fronpOpg5LBCv/yw==
+X-Google-Smtp-Source: ABdhPJzZTqNstwSg+fmrmIvqxruwwnuUKcvg/aS2kCLMyyOUqLWd5Obf0qRjUVqrqTzczeGMbKLBwut5r5dr8GzsOyA=
+X-Received: by 2002:a5d:8ad2:: with SMTP id e18mr9221863iot.51.1617327644384;
+ Thu, 01 Apr 2021 18:40:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-CFilter-Loop: Reflected
+References: <20210224175122.GA19661@ashkalra_ubuntu_server>
+ <YDaZacLqNQ4nK/Ex@google.com> <20210225202008.GA5208@ashkalra_ubuntu_server>
+ <CABayD+cn5e3PR6NtSWLeM_qxs6hKWtjEx=aeKpy=WC2dzPdRLw@mail.gmail.com>
+ <20210226140432.GB5950@ashkalra_ubuntu_server> <YDkzibkC7tAYbfFQ@google.com>
+ <20210302145543.GA29994@ashkalra_ubuntu_server> <20210303185441.GA19944@willie-the-truck>
+ <20210311181458.GA6650@ashkalra_ubuntu_server> <CABayD+cXH0oeV4-Ah3y6ThhNt3dhd0qDh6JmimjSz=EFjC+SYw@mail.gmail.com>
+ <20210319175953.GA585@ashkalra_ubuntu_server>
+In-Reply-To: <20210319175953.GA585@ashkalra_ubuntu_server>
+From:   Steve Rutherford <srutherford@google.com>
+Date:   Thu, 1 Apr 2021 18:40:06 -0700
+Message-ID: <CABayD+eJzGRsE_Y+YRJ+w-PKbXyX0_kvTSZhZqhMLQtQj2w_7g@mail.gmail.com>
+Subject: Re: [PATCH v10 10/16] KVM: x86: Introduce KVM_GET_SHARED_PAGES_LIST ioctl
+To:     Ashish Kalra <ashish.kalra@amd.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "venu.busireddy@oracle.com" <venu.busireddy@oracle.com>,
+        "Singh, Brijesh" <brijesh.singh@amd.com>,
+        Quentin Perret <qperret@google.com>, maz@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove redundant semi-colon in infinalize_btf_ext().
+On Fri, Mar 19, 2021 at 11:00 AM Ashish Kalra <ashish.kalra@amd.com> wrote:
+>
+> On Thu, Mar 11, 2021 at 12:48:07PM -0800, Steve Rutherford wrote:
+> > On Thu, Mar 11, 2021 at 10:15 AM Ashish Kalra <ashish.kalra@amd.com> wrote:
+> > >
+> > > On Wed, Mar 03, 2021 at 06:54:41PM +0000, Will Deacon wrote:
+> > > > [+Marc]
+> > > >
+> > > > On Tue, Mar 02, 2021 at 02:55:43PM +0000, Ashish Kalra wrote:
+> > > > > On Fri, Feb 26, 2021 at 09:44:41AM -0800, Sean Christopherson wrote:
+> > > > > > On Fri, Feb 26, 2021, Ashish Kalra wrote:
+> > > > > > > On Thu, Feb 25, 2021 at 02:59:27PM -0800, Steve Rutherford wrote:
+> > > > > > > > On Thu, Feb 25, 2021 at 12:20 PM Ashish Kalra <ashish.kalra@amd.com> wrote:
+> > > > > > > > Thanks for grabbing the data!
+> > > > > > > >
+> > > > > > > > I am fine with both paths. Sean has stated an explicit desire for
+> > > > > > > > hypercall exiting, so I think that would be the current consensus.
+> > > > > >
+> > > > > > Yep, though it'd be good to get Paolo's input, too.
+> > > > > >
+> > > > > > > > If we want to do hypercall exiting, this should be in a follow-up
+> > > > > > > > series where we implement something more generic, e.g. a hypercall
+> > > > > > > > exiting bitmap or hypercall exit list. If we are taking the hypercall
+> > > > > > > > exit route, we can drop the kvm side of the hypercall.
+> > > > > >
+> > > > > > I don't think this is a good candidate for arbitrary hypercall interception.  Or
+> > > > > > rather, I think hypercall interception should be an orthogonal implementation.
+> > > > > >
+> > > > > > The guest, including guest firmware, needs to be aware that the hypercall is
+> > > > > > supported, and the ABI needs to be well-defined.  Relying on userspace VMMs to
+> > > > > > implement a common ABI is an unnecessary risk.
+> > > > > >
+> > > > > > We could make KVM's default behavior be a nop, i.e. have KVM enforce the ABI but
+> > > > > > require further VMM intervention.  But, I just don't see the point, it would
+> > > > > > save only a few lines of code.  It would also limit what KVM could do in the
+> > > > > > future, e.g. if KVM wanted to do its own bookkeeping _and_ exit to userspace,
+> > > > > > then mandatory interception would essentially make it impossible for KVM to do
+> > > > > > bookkeeping while still honoring the interception request.
+> > > > > >
+> > > > > > However, I do think it would make sense to have the userspace exit be a generic
+> > > > > > exit type.  But hey, we already have the necessary ABI defined for that!  It's
+> > > > > > just not used anywhere.
+> > > > > >
+> > > > > >   /* KVM_EXIT_HYPERCALL */
+> > > > > >   struct {
+> > > > > >           __u64 nr;
+> > > > > >           __u64 args[6];
+> > > > > >           __u64 ret;
+> > > > > >           __u32 longmode;
+> > > > > >           __u32 pad;
+> > > > > >   } hypercall;
+> > > > > >
+> > > > > >
+> > > > > > > > Userspace could also handle the MSR using MSR filters (would need to
+> > > > > > > > confirm that).  Then userspace could also be in control of the cpuid bit.
+> > > > > >
+> > > > > > An MSR is not a great fit; it's x86 specific and limited to 64 bits of data.
+> > > > > > The data limitation could be fudged by shoving data into non-standard GPRs, but
+> > > > > > that will result in truly heinous guest code, and extensibility issues.
+> > > > > >
+>
+> We may also need to pass-through the MSR to userspace, as it is a part of this
+> complete host (userspace/kernel), OVMF and guest kernel negotiation of
+> the SEV live migration feature.
+>
+> Host (userspace/kernel) advertises it's support for SEV live migration
+> feature via the CPUID bits, which is queried by OVMF and which in turn
+> adds a new UEFI runtime variable to indicate support for SEV live
+> migration, which is later queried during guest kernel boot and
+> accordingly the guest does a wrmrsl() to custom MSR to complete SEV
+> live migration negotiation and enable it.
+>
+> Now, the GET_SHARED_REGION_LIST ioctl returns error, until this MSR write
+> enables SEV live migration, hence, preventing userspace to start live
+> migration before the feature support has been negotiated and enabled on
+> all the three components - host, guest OVMF and kernel.
+>
+> But, now with this ioctl not existing anymore, we will need to
+> pass-through the MSR to userspace too, for it to only initiate live
+> migration once the feature negotiation has been completed.
+Hey Ashish,
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
-v2:
-  add commit log
----
- tools/lib/bpf/linker.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I can't tell if you were waiting for feedback on this before posting
+the follow-up patch series.
 
-diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
-index 46b16cbdcda3..4e08bc07e635 100644
---- a/tools/lib/bpf/linker.c
-+++ b/tools/lib/bpf/linker.c
-@@ -1895,7 +1895,7 @@ static int finalize_btf_ext(struct bpf_linker *linker)
- 	hdr->func_info_len = funcs_sz;
- 	hdr->line_info_off = funcs_sz;
- 	hdr->line_info_len = lines_sz;
--	hdr->core_relo_off = funcs_sz + lines_sz;;
-+	hdr->core_relo_off = funcs_sz + lines_sz;
- 	hdr->core_relo_len = core_relos_sz;
- 
- 	if (funcs_sz) {
--- 
-2.25.1
+Here are a few options:
+1) Add the MSR explicitly to the list of custom kvm MSRs, but don't
+have it hooked up anywhere. The expectation would be for the VMM to
+use msr intercepts to handle the reads and writes. If that seems
+weird, have svm_set_msr (or whatever) explicitly ignore it.
+2) Add a getter and setter for the MSR. Only allow guests to use it if
+they are sev_guests with the requisite CPUID bit set.
 
+I think I prefer the former, and it should work fine from my
+understanding of the msr intercepts implementation. I'm also open to
+other ideas. You could also have the MSR write trigger a KVM_EXIT of
+the same type as the hypercall, but have it just say "the msr value
+changed to XYZ", but that design sounds awkward.
+
+Thanks,
+Steve
