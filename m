@@ -2,189 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C75352C33
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 483ED352C54
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234914AbhDBPRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 11:17:20 -0400
-Received: from smtpcmd15176.aruba.it ([62.149.156.176]:37862 "EHLO
-        smtpcmd15176.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbhDBPRT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 11:17:19 -0400
-Received: from [192.168.126.129] ([146.241.148.6])
-        by Aruba Outgoing Smtp  with ESMTPSA
-        id SLXslmHsBLwkNSLXtlemkt; Fri, 02 Apr 2021 17:17:16 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1617376636; bh=QXjVoBN8xuD0GsrqaCY0J1uEV+wIo47vaW7KNjjoM5U=;
-        h=From:Subject:To:Date:MIME-Version:Content-Type;
-        b=VqHYXF1eJH6RekIFrlzigQ1LTgNpJaWZHWw6K29yrKQ4hJTqZF67AS33OZY9g5fuE
-         O4uABUWjlaHOf2F2/aT3II/UHzY3YGEDpXVV0lBmGkar0M+cgxQ0BfphBDH5yqMkiR
-         POyThk/ryInN78CNc/W0w76nxgUku9p+jVeZx+jlcOYGFpGGsU3dzBb1VJj9joOilr
-         tvzCL4fS87tetgfxhPHgyqWYPDs7+eDpfL1mYsRaevxmOXwNTBh5wMLI1BwddKVDKo
-         DXPrKLQWPdQ0CSeymzIZCYwNGLST450tOWaypCSx8USElc43YPASb3yoJtGcT93E//
-         yrePLebUCIY4A==
-From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
-Subject: Re: [PATCH v2 2/3] dt-bindings: touchscreen: Add HY46XX bindings
-To:     =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.ne@posteo.net>
-References: <20210306194120.GA1075725@robh.at.kernel.org>
- <20210401230358.2468618-1-giulio.benetti@benettiengineering.com>
- <20210401230358.2468618-3-giulio.benetti@benettiengineering.com>
- <YGbXnGTpx1WTPpz0@latitude>
-Message-ID: <c7650856-aebc-72c6-7597-5f8dce4f347f@benettiengineering.com>
-Date:   Fri, 2 Apr 2021 17:17:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <YGbXnGTpx1WTPpz0@latitude>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfKUS9KgPuepvoi7+mnQUXkXCmPfFjCvW+tchLsuQfyRikf/wL/0YqJ2WLDYt1uxEL0pDVQF/ky5IrjdGYfYjQYud2HpsLf7P06RjafqeMaXMJZGVjv19
- MgJdSOmA8bp0Sb7TUgKU3XN8IZDeGgeqy9tdVjCbEg3Bpdmy/o8Y+njDxMDcSDYiUUdrX9mTc+b5ibH9EflXgQ42usfhMeAkc5NygQUWFiBa/LJ7x9jme4kA
- sBvLQz91hJm9wzbfyM8CE7QWrDoGud8NynsEsvflUiuDhWYtFGsocm4l1NPShsGNnZ3GJff8ac+RDV2MuSxGg5xbA/qJA2sD2cODrrNU9GZCN5QvSJRE+3f3
- spbymWSF0J4VWmaBjIQkfpF8c+OQhPEn3nM1YlCtv3og3Onyrf0W7D8hb8++MoApUHEbGas1cxvz9S0KabRF8SG2x/LC2xbuG9UdDEVqs/w8Wg657MU=
+        id S235038AbhDBPSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 11:18:08 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:51941 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234717AbhDBPSG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 11:18:06 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FBkFh5XNLz9v2lv;
+        Fri,  2 Apr 2021 17:18:00 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id MktCNdTeHFtr; Fri,  2 Apr 2021 17:18:00 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FBkFh4M9Fz9v2ls;
+        Fri,  2 Apr 2021 17:18:00 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4E5858BB79;
+        Fri,  2 Apr 2021 17:18:02 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id TLVHNmtRjBbO; Fri,  2 Apr 2021 17:18:02 +0200 (CEST)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9B1828BB7B;
+        Fri,  2 Apr 2021 17:18:01 +0200 (CEST)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 600FB67989; Fri,  2 Apr 2021 15:18:01 +0000 (UTC)
+Message-Id: <cover.1617375802.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v4 00/20] Implement GENERIC_CMDLINE
+To:     will@kernel.org, danielwa@cisco.com, robh@kernel.org,
+        daniel@gimpelevich.san-francisco.ca.us, arnd@kernel.org,
+        akpm@linux-foundation.org
+Cc:     linux-arch@vger.kernel.org, devicetree@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org,
+        microblaze <monstr@monstr.eu>, linux-mips@vger.kernel.org,
+        nios2 <ley.foon.tan@intel.com>, openrisc@lists.librecores.org,
+        linux-hexagon@vger.kernel.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, linux-xtensa@linux-xtensa.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-mm@kvack.org
+Date:   Fri,  2 Apr 2021 15:18:01 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
+The purpose of this series is to improve and enhance the
+handling of kernel boot arguments.
 
-thank you for reviewing,
+Current situation is that most if not all architectures are using
+similar options to do some manupulation on command line arguments:
+- Prepend built-in arguments in front of bootloader provided arguments
+- Append built-in arguments after bootloader provided arguments
+- Replace bootloader provided arguments by built-in arguments
+- Use built-in arguments when none is provided by bootloader.
 
-On 4/2/21 10:36 AM, Jonathan Neuschäfer wrote:
-> On Fri, Apr 02, 2021 at 01:03:57AM +0200, Giulio Benetti wrote:
->> This adds device tree bindings for the Hycon HY46XX touchscreen series.
->>
->> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
->> ---
->> V1->V2:
->> As suggested by Rob Herring:
->> * fixed $id: address
->> * added "hycon," in front of every custom property
->> * changed all possible property to boolean type
->> * removed proximity-sensor-switch property since it's not handled in driver
->> ---
->>   .../input/touchscreen/hycon,hy46xx.yaml       | 120 ++++++++++++++++++
->>   MAINTAINERS                                   |   6 +
->>   2 files changed, 126 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml b/Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
->> new file mode 100644
->> index 000000000000..71a1dbabcd4f
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
->> @@ -0,0 +1,120 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/input/touchscreen/hycon,hy46xx.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: hycon HY46XX series touchscreen controller Bindings
-> 
-> hycon -> Hycon        (because it's a name)
-> Bindings -> bindings  (because it's just a regular word)
+On some architectures, all the options are possible. On other ones,
+only a subset are available.
 
-ok
+The purpose of this series is to refactor and enhance the
+handling of kernel boot arguments so that every architecture can
+benefit from all possibilities.
 
->> +
->> +description: |
->> +             There are 6 variants of the chip for various touch panel sizes and coverl len material
-> 
-> "coverl len material" looks like a typo. What does it mean?
+It is first focussed on powerpc but also extends the capability
+for other arches.
 
-yes
+The work has been focussed on minimising the churn in architectures
+by keeping the most commonly used namings.
 
->> +              Glass: 0.3mm--4.0mm
->> +              PET/PMMA: 0.2mm--2.0mm
->> +               HY4613(B)-N048  < 6"
->> +               HY4614(B)-N068  7" .. 10.1"
-> 
-> According to the datasheet I was able to find[1], HY4613-N048 supports
-> touch panel sizes smaller than 5.3". Did this change in newer
-> datasheets?
+Main changes in V4:
+- Included patch from Daniel to replace powerpc's strcpy() by strlcpy()
+- Using strlcpy() instead of zeroing first char + strlcat() (idea taken frm Daniel's series)
+- Reworked the convertion of EFI which was wrong in V3
+- Added "too long" command line handling
+- Changed cmdline macro into a function
+- Done a few fixes in arch (NIOS2, SH, ARM)
+- Taken comments into account (see individual responses for details)
+- Tested on powerpc, build tested on ARM64, X86_64.
 
-Yes, there is a newer document called "HY46XX Application Notes
-V4.0", here is the screenshot of models:
-https://pasteboard.co/JVtOMcO.png
+Main changes in V3:
+- Also accept destination equal to source in cmdline_build() by setting a tmp buffer in __initdata. Powerpc provides different source and destination and call __cmdline_build() directly.
+- Taken comments received from Will and Rob
+- Converted all architectures (Only tested on powerpc)
 
-> What does the (B) part of the part number mean?
+Christophe Leroy (19):
+  cmdline: Add generic function to build command line.
+  drivers: of: use cmdline building function
+  x86/efi: Replace CONFIG_CMDLINE_OVERRIDE by CONFIG_CMDLINE_FORCE
+  drivers: firmware: efi: use cmdline building function
+  cmdline: Gives architectures opportunity to use generically defined
+    boot cmdline manipulation
+  powerpc: Convert to GENERIC_CMDLINE
+  arm: Convert to GENERIC_CMDLINE
+  arm64: Convert to GENERIC_CMDLINE
+  hexagon: Convert to GENERIC_CMDLINE
+  microblaze: Convert to GENERIC_CMDLINE
+  nios2: Convert to GENERIC_CMDLINE
+  openrisc: Convert to GENERIC_CMDLINE
+  riscv: Convert to GENERIC_CMDLINE
+  sh: Convert to GENERIC_CMDLINE
+  sparc: Convert to GENERIC_CMDLINE
+  xtensa: Convert to GENERIC_CMDLINE
+  x86: Convert to GENERIC_CMDLINE
+  mips: Convert to GENERIC_CMDLINE
+  cmdline: Remove CONFIG_CMDLINE_EXTEND
 
-It's an upgraded version even if hardware is fully compatible, so (B) 
-means with and without "B".
+Daniel Walker (1):
+  powerpc: convert strcpy to strlcpy in prom_init
 
-> 
-> [1]: https://datasheetspdf.com/pdf/1297773/HYCON/HY4613-N048/1 >> +               HY4621-NS32  < 5"
->> +               HY4623-NS48  5.1" .. 7"
->> +              Glass: 0.3mm--8.0mm
->> +              PET/PMMA: 0.2mm--4.0mm
->> +               HY4633(B)-N048  < 6"
->> +               HY4635(B)-N048  < 7" .. 10.1"
-> 
-> The description block seems unusually far indented. I'm not a YAML
-> expert, but according to the yamllint tool, it would work with much less
-> indentation:
-> 
-> description: |
->    There are 6 variants of the chip for various touch panel sizes and coverl len material
->     Glass: 0.3mm--4.0mm
-> [...]
+ arch/arm/Kconfig                              | 38 +--------
+ arch/arm/kernel/atags_parse.c                 | 13 +--
+ arch/arm64/Kconfig                            | 33 +-------
+ arch/arm64/kernel/idreg-override.c            |  9 +--
+ arch/hexagon/Kconfig                          | 11 +--
+ arch/hexagon/kernel/setup.c                   | 10 +--
+ arch/microblaze/Kconfig                       | 24 +-----
+ arch/microblaze/configs/mmu_defconfig         |  2 +-
+ arch/microblaze/kernel/head.S                 |  4 +-
+ arch/mips/Kconfig                             |  1 +
+ arch/mips/Kconfig.debug                       | 44 -----------
+ arch/mips/configs/ar7_defconfig               |  1 -
+ arch/mips/configs/bcm47xx_defconfig           |  1 -
+ arch/mips/configs/bcm63xx_defconfig           |  1 -
+ arch/mips/configs/bmips_be_defconfig          |  1 -
+ arch/mips/configs/bmips_stb_defconfig         |  1 -
+ arch/mips/configs/capcella_defconfig          |  1 -
+ arch/mips/configs/ci20_defconfig              |  1 -
+ arch/mips/configs/cu1000-neo_defconfig        |  1 -
+ arch/mips/configs/cu1830-neo_defconfig        |  1 -
+ arch/mips/configs/e55_defconfig               |  1 -
+ arch/mips/configs/generic_defconfig           |  1 -
+ arch/mips/configs/gpr_defconfig               |  1 -
+ arch/mips/configs/loongson3_defconfig         |  1 -
+ arch/mips/configs/mpc30x_defconfig            |  1 -
+ arch/mips/configs/rt305x_defconfig            |  1 -
+ arch/mips/configs/tb0219_defconfig            |  1 -
+ arch/mips/configs/tb0226_defconfig            |  1 -
+ arch/mips/configs/tb0287_defconfig            |  1 -
+ arch/mips/configs/workpad_defconfig           |  1 -
+ arch/mips/configs/xway_defconfig              |  1 -
+ arch/mips/kernel/relocate.c                   |  4 +-
+ arch/mips/kernel/setup.c                      | 40 +---------
+ arch/mips/pic32/pic32mzda/early_console.c     |  2 +-
+ arch/mips/pic32/pic32mzda/init.c              |  2 -
+ arch/nios2/Kconfig                            | 25 +-----
+ arch/nios2/kernel/setup.c                     | 13 +--
+ arch/openrisc/Kconfig                         | 10 +--
+ arch/powerpc/Kconfig                          | 37 +--------
+ arch/powerpc/kernel/prom_init.c               | 46 ++++++-----
+ arch/riscv/Kconfig                            | 44 +----------
+ arch/riscv/kernel/setup.c                     |  7 +-
+ arch/sh/Kconfig                               | 28 +------
+ arch/sh/configs/ap325rxa_defconfig            |  2 +-
+ arch/sh/configs/dreamcast_defconfig           |  2 +-
+ arch/sh/configs/ecovec24-romimage_defconfig   |  2 +-
+ arch/sh/configs/ecovec24_defconfig            |  2 +-
+ arch/sh/configs/edosk7760_defconfig           |  2 +-
+ arch/sh/configs/espt_defconfig                |  2 +-
+ arch/sh/configs/j2_defconfig                  |  2 +-
+ arch/sh/configs/kfr2r09-romimage_defconfig    |  2 +-
+ arch/sh/configs/kfr2r09_defconfig             |  2 +-
+ arch/sh/configs/lboxre2_defconfig             |  2 +-
+ arch/sh/configs/microdev_defconfig            |  2 +-
+ arch/sh/configs/migor_defconfig               |  2 +-
+ arch/sh/configs/polaris_defconfig             |  2 +-
+ arch/sh/configs/r7780mp_defconfig             |  2 +-
+ arch/sh/configs/r7785rp_defconfig             |  2 +-
+ arch/sh/configs/rsk7201_defconfig             |  2 +-
+ arch/sh/configs/rsk7203_defconfig             |  2 +-
+ arch/sh/configs/rts7751r2d1_defconfig         |  2 +-
+ arch/sh/configs/rts7751r2dplus_defconfig      |  2 +-
+ arch/sh/configs/sdk7780_defconfig             |  2 +-
+ arch/sh/configs/sdk7786_defconfig             |  2 +-
+ arch/sh/configs/se7206_defconfig              |  2 +-
+ arch/sh/configs/se7343_defconfig              |  2 +-
+ arch/sh/configs/se7712_defconfig              |  2 +-
+ arch/sh/configs/se7721_defconfig              |  2 +-
+ arch/sh/configs/se7724_defconfig              |  2 +-
+ arch/sh/configs/se7751_defconfig              |  2 +-
+ arch/sh/configs/se7780_defconfig              |  2 +-
+ arch/sh/configs/sh03_defconfig                |  2 +-
+ arch/sh/configs/sh2007_defconfig              |  2 +-
+ arch/sh/configs/sh7757lcr_defconfig           |  2 +-
+ arch/sh/configs/sh7763rdp_defconfig           |  2 +-
+ arch/sh/configs/shmin_defconfig               |  2 +-
+ arch/sh/configs/shx3_defconfig                |  2 +-
+ arch/sh/configs/titan_defconfig               |  2 +-
+ arch/sh/configs/ul2_defconfig                 |  2 +-
+ arch/sh/kernel/setup.c                        | 11 +--
+ arch/sparc/Kconfig                            | 18 +----
+ arch/sparc/prom/bootstr_64.c                  |  2 +-
+ arch/x86/Kconfig                              | 45 +----------
+ arch/x86/kernel/setup.c                       | 17 +---
+ arch/xtensa/Kconfig                           | 15 +---
+ arch/xtensa/configs/audio_kc705_defconfig     |  1 -
+ arch/xtensa/configs/common_defconfig          |  1 -
+ arch/xtensa/configs/generic_kc705_defconfig   |  1 -
+ arch/xtensa/configs/iss_defconfig             |  1 -
+ arch/xtensa/configs/nommu_kc705_defconfig     |  1 -
+ arch/xtensa/configs/smp_lx200_defconfig       |  1 -
+ arch/xtensa/configs/virt_defconfig            |  1 -
+ arch/xtensa/configs/xip_kc705_defconfig       |  1 -
+ arch/xtensa/kernel/setup.c                    | 10 +--
+ .../firmware/efi/libstub/efi-stub-helper.c    | 35 ++++----
+ drivers/firmware/efi/libstub/efi-stub.c       | 23 ++----
+ drivers/firmware/efi/libstub/efistub.h        |  2 +-
+ drivers/firmware/efi/libstub/x86-stub.c       | 18 +----
+ drivers/of/fdt.c                              | 23 +-----
+ include/linux/cmdline.h                       | 79 +++++++++++++++++++
+ init/Kconfig                                  | 46 +++++++++++
+ usr/Kconfig                                   |  2 +-
+ 102 files changed, 265 insertions(+), 628 deletions(-)
+ create mode 100644 include/linux/cmdline.h
 
-Ah yes, I've started from edt,ft5x06.yaml and there it was indented that 
-way. Anyway I've changed it.
-
-> 
->> +  hycon,glove-enable:
->> +    type: boolean
->> +    description: Allows enabling or disabling glove setting.
-> 
-> Small nit: Due to the way boolean properties work in DT, you can't
-> really use the property to disable the glove setting (in order to
-> disable the setting, you would explicitly not use the property).
-> Perhaps:
-> 
-> +    description: Allows enabling the glove setting.
-> 
-> I don't really know :)
-
-Ah yes, it's true. If not specified it's simply not enabled, so I use 
-your suggested form.
-
-> 
->> +
->> +  hycon,report-speed:
->> +    description: Allows setting the report speed(i.e 0x64 => 100Hz).
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    minimum: 0
->> +    maximum: 255
-> 
-> Please add a space before the opening parenthesis:
-> 
-> +    description: Allows setting the report speed (i.e 0x64 => 100Hz).
-> 
-> Or perhaps like this:
-> 
-> +    description: Allows setting the report speed in Hertz.
-> 
-
-Oh yes! I didn't realize it was exactly in Hertz, 0x64 is 100, not only 
-equivalent to 100Hz, so every step is 1 Hz
-
-> 
-> Thanks,
-> Jonathan Neuschäfer
-> 
-
-Thanks again!
-Best regards
 -- 
-Giulio Benetti
-Benetti Engineering sas
+2.25.0
+
