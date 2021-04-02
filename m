@@ -2,111 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8D0352F29
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 20:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F371F352F2D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 20:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235987AbhDBSZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 14:25:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40976 "EHLO
+        id S236094AbhDBS0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 14:26:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbhDBSZq (ORCPT
+        with ESMTP id S229553AbhDBS0l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 14:25:46 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D03E1C0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 11:25:44 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so4955304pjh.1
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 11:25:44 -0700 (PDT)
+        Fri, 2 Apr 2021 14:26:41 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5F1A3C0613E6;
+        Fri,  2 Apr 2021 11:26:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7WB9dyBxJfyi+dnN/pUTcNGEGmQQ19of2/quWexK5LI=;
-        b=S6NXdtr+LlK6Nx57Jl5hfAvwLV62rZq1q9FrJPkyMVNZcnp6YgfAJ0ljinGEeEojZL
-         542zCwNZXfoWy1Ucv+WcLme19/ihTv0HTdcMLHfon7tz7nivoz3RFfhLKvd4pdkzVuhR
-         5HVoI7ahUuhXAv+n/q9uCCpZVw9CCf5emX71w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7WB9dyBxJfyi+dnN/pUTcNGEGmQQ19of2/quWexK5LI=;
-        b=eL5lgrrJsF26pI1FcxitplnCuJlP37knwFwOgRK/rTd1gwT7yiSqUyjwVPUCkj5Ecc
-         8C2Z0p0ktXJvyHL2gtb3GYXHoM5+3mv0pfIlnaSJNAlUlgMES/FPr2mIf708ROdm6PCW
-         qSaTMlzMWoNkNBq+EHJ8rDI322djU9jL2qQJuotMiUBXlTCqgV6VwWbHFXnc1yYbQ5Aq
-         jtNqByh2aqtVd7MITSI9vv4EJ29lm+H7Vac7ihJtZbJS1m2JOJOjD7VJj8GN3BJQv7I/
-         4SDFyT26URQrCUbflcYx9NSHTyay7u+x1Z0WWh0EBr+d2SkMa7GkjHDSzKgKBVuACXRG
-         J7yA==
-X-Gm-Message-State: AOAM5312XGL+bAIiIQl9iapPks0ar8hxJ5+unZ+56ehbjPLWcpwXLw+F
-        ALNSVmO2kLiiHh4q/qGl5j3aAA==
-X-Google-Smtp-Source: ABdhPJxFdQIKTxzrvLroVyzxnLHiDY5q50gwTx44nmerTmTqVhmwikVsbTgh8V9WzpbDCaKSwEXltw==
-X-Received: by 2002:a17:90a:9413:: with SMTP id r19mr14769842pjo.65.1617387944473;
-        Fri, 02 Apr 2021 11:25:44 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id p17sm8464878pjv.49.2021.04.02.11.25.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 11:25:43 -0700 (PDT)
-Date:   Fri, 2 Apr 2021 11:25:42 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Gabriel Somlo <somlo@cmu.edu>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        qemu-devel@nongnu.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Sami Tolvanen <samitolvanen@google.com>
-Subject: Re: [PATCH] qemu_fw_cfg: Make fw_cfg_rev_attr a proper kobj_attribute
-Message-ID: <202104021125.53164550A@keescook>
-References: <20210211194258.4137998-1-nathan@kernel.org>
- <161428829728.2305454.15456455443457551559.b4-ty@chromium.org>
- <CA+icZUWdeWSy52bU4cjHau1hn5NiFAozaHgDb=geaaCYOET9+w@mail.gmail.com>
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=ro6FMNoOrO
+        0XEPRabqokeCXCn1zTlPGE+6MinH0yRww=; b=eB82CVb8uwTCIDRspd1HcTthSl
+        osXDtrCD6DEFM00shiDoHPv6P+N3QWfJaL2sGe6tduPKz3WpnonVkLYphWrcxMdx
+        M8kUe5p4hplnCO3iKIu+cF7qnxen22UjRljnOUIugwi0oAWwpMZQ+zE42+Djdwpk
+        aSiHubZifDOng5YA4=
+Received: from ubuntu.localdomain (unknown [202.38.69.14])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygCXoqzVYWdgHZqMAA--.553S4;
+        Sat, 03 Apr 2021 02:26:30 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     buytenh@wantstofly.org, kvalo@codeaurora.org, davem@davemloft.net,
+        kuba@kernel.org, gustavoars@kernel.org
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] wireless: marvell: mwl8k: Fix a double Free in mwl8k_probe_hw
+Date:   Fri,  2 Apr 2021 11:26:27 -0700
+Message-Id: <20210402182627.4256-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+icZUWdeWSy52bU4cjHau1hn5NiFAozaHgDb=geaaCYOET9+w@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygCXoqzVYWdgHZqMAA--.553S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7GrW7Aw1kur4rCF15CF4rZrb_yoWDKwbE93
+        W8WFnrWry7GrnFga1Uua1jv34S9Fy0gay8Wry7trWxWFWxAa9FqFWSkF13Ja43Cay3ZF9x
+        Xrs3Jr1UAa47XjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbVkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
+        0_Cr1UM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
+        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI2
+        0VAGYxC7MxkIecxEwVAFwVW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
+        nxnUUI43ZEXa7VUUX_-DUUUUU==
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 08:42:07AM +0200, Sedat Dilek wrote:
-> On Thu, Feb 25, 2021 at 10:25 PM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > On Thu, 11 Feb 2021 12:42:58 -0700, Nathan Chancellor wrote:
-> > > fw_cfg_showrev() is called by an indirect call in kobj_attr_show(),
-> > > which violates clang's CFI checking because fw_cfg_showrev()'s second
-> > > parameter is 'struct attribute', whereas the ->show() member of 'struct
-> > > kobj_structure' expects the second parameter to be of type 'struct
-> > > kobj_attribute'.
-> > >
-> > > $ cat /sys/firmware/qemu_fw_cfg/rev
-> > > 3
-> > >
-> > > [...]
-> >
-> > Applied to kspp/cfi/cleanups, thanks!
-> >
-> > [1/1] qemu_fw_cfg: Make fw_cfg_rev_attr a proper kobj_attribute
-> >       https://git.kernel.org/kees/c/f5c4679d6c49
-> >
-> 
-> I have queued this up in my custom patchset
-> (for-5.12/kspp-cfi-cleanups-20210225).
-> 
-> What is the plan to get this upstream?
+In mwl8k_probe_hw, hw->priv->txq is freed at the first time by
+dma_free_coherent() in the call chain:
+if(!priv->ap_fw)->mwl8k_init_txqs(hw)->mwl8k_txq_init(hw, i).
 
-I haven't sent it to Linus yet -- I was expecting to batch more of these
-and send them for v5.13. (But if the kvm folks snag it, that's good
-too.)
+Then in err_free_queues of mwl8k_probe_hw, hw->priv->txq is freed
+at the second time by mwl8k_txq_deinit(hw, i)->dma_free_coherent().
 
--Kees
+My patch set txq->txd to NULL after the first free to avoid the
+double free.
 
-> 
-> Feel free to add my:
-> 
-> Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-> 
-> - Sedat -
+Fixes: a66098daacee2 ("mwl8k: Marvell TOPDOG wireless driver")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ drivers/net/wireless/marvell/mwl8k.c | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/drivers/net/wireless/marvell/mwl8k.c b/drivers/net/wireless/marvell/mwl8k.c
+index c9f8c056aa51..84b32a5f01ee 100644
+--- a/drivers/net/wireless/marvell/mwl8k.c
++++ b/drivers/net/wireless/marvell/mwl8k.c
+@@ -1473,6 +1473,7 @@ static int mwl8k_txq_init(struct ieee80211_hw *hw, int index)
+ 	if (txq->skb == NULL) {
+ 		dma_free_coherent(&priv->pdev->dev, size, txq->txd,
+ 				  txq->txd_dma);
++		txq->txd = NULL;
+ 		return -ENOMEM;
+ 	}
+ 
 -- 
-Kees Cook
+2.25.1
+
+
