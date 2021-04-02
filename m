@@ -2,139 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18869352A4E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 13:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B33A3352A5B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 13:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235260AbhDBLnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 07:43:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21956 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235204AbhDBLnX (ORCPT
+        id S235246AbhDBLrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 07:47:42 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:53146 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229722AbhDBLrk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 07:43:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617363802;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cYQHtPyS3K3kSwaJScXUV//33d808h8hffQsTIn7SxE=;
-        b=BDkUo82hVntY9i9p+BRmrqO4eGsgp3bGHzZJuD5GrosEV8A+ExlIpKS8ih4P8eCk0S5s0n
-        orERUiSrqJGrpksyI2LKR3Ev5yQvom0NazKEB6TaQSOF0jGF35gFuRwV+lsdwLRTNFrPdS
-        cwbqB6UPT5A/D9NW6yZrNInr0PNZ8I8=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-341-xekmM11MMdaoTBkR4pdDEQ-1; Fri, 02 Apr 2021 07:43:20 -0400
-X-MC-Unique: xekmM11MMdaoTBkR4pdDEQ-1
-Received: by mail-wr1-f71.google.com with SMTP id z17so4239723wrv.23
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 04:43:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cYQHtPyS3K3kSwaJScXUV//33d808h8hffQsTIn7SxE=;
-        b=OBSZmGtGlkw9drDOc8V/dFR8/FVvvZXotw5i/lx5dE2VlX0mEHus8klV1GtNGfKUKb
-         /1vD5R5Sq53Az6n2KZTSjnKBR6fmjqTOZRbp4Bwt1XRr2LsPM9f2h0hHzZk/+2Bgz4qR
-         D7jm1DYCyxXAGrvMbi8T6CzqZwWPN43kP6ozhvDf/z2wfT/iKH73F9Q13quhIBes4IEF
-         mNDAoOnT156nygopw2fXhPsA5hHJ8nUW7U9pHO2d4XJ+qVZoBmWNhiXMOcwgJq6iElvg
-         npRAHhDGvn1y+6tlxAnuOkmgkP2pGKbQitVsOX/tP3L93Mtkz7LfzvCJIJIGeYK+HIZx
-         4L6A==
-X-Gm-Message-State: AOAM5306EvNZWvT4Nx3iHsOH4LvwJC+XxZcxF3US01Vu4dQXizx8cfrd
-        i33BZloQtDue17DwdR2TDL8qGemChWxAUDQMdx25KArDcpmYxp9nbV+I+6D9RFmhtuHk6isgsMM
-        V/EynOsA8MDIxTOeUvoslJROE
-X-Received: by 2002:adf:8b45:: with SMTP id v5mr14689032wra.398.1617363799180;
-        Fri, 02 Apr 2021 04:43:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwq4MTSyDihujFb6AqsRqg7LJPRX15XNFuThX5DURKh5bPitEB8MFZuROHgTc2qGTt6NCLg0A==
-X-Received: by 2002:adf:8b45:: with SMTP id v5mr14689002wra.398.1617363798953;
-        Fri, 02 Apr 2021 04:43:18 -0700 (PDT)
-Received: from [192.168.10.118] ([93.56.169.140])
-        by smtp.gmail.com with ESMTPSA id r10sm14348648wmh.45.2021.04.02.04.43.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Apr 2021 04:43:18 -0700 (PDT)
-Subject: Re: [PATCH v2 00/13] More parallel operations for the TDP MMU
-To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-References: <20210401233736.638171-1-bgardon@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <c630df18-c1af-8ece-37d2-3db5dc18ecc8@redhat.com>
-Date:   Fri, 2 Apr 2021 13:43:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Fri, 2 Apr 2021 07:47:40 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 132BcklS108604;
+        Fri, 2 Apr 2021 11:47:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=s86nNGXjuQO3BIkeVvSlQRzc9bKAV2oQ8jed6Z2e3HU=;
+ b=XizUMFnRdxrvpdhLZZDNaT9Vr14PnUnxWqXc9xaUE8ob/WhP9XBptaWf4WiyKtM0+USM
+ HV5pubFSSvTikTyTjnjqaHTdpKjyMiMH+ukDbbe6m4Ols7Bp9MC5JOXaYrGTM7C2ro63
+ IDsIM4LEhtFadLDZeTlWavJhKygz631O8NbGLAK/MpWi+0526fvnLUHJSraLiaCiRtwk
+ Eq00wVUQm0KYJwotwEhBwy2YfaK/bqIaZ4HRkZx6zd42T/walynPP8wzF01vAzmT8Xj9
+ g//r0KY+28WVQeOfgGW6Yx0Aers6RNk9I/roHusQSd3U7hUoe+6nrIGk88VvN36+L4CA xg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 37n33dve46-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 02 Apr 2021 11:47:34 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 132Bdg3a037341;
+        Fri, 2 Apr 2021 11:47:32 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 37n2atyu24-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 02 Apr 2021 11:47:32 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 132BlVAO014148;
+        Fri, 2 Apr 2021 11:47:31 GMT
+Received: from mwanda (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 02 Apr 2021 11:47:30 +0000
+Date:   Fri, 2 Apr 2021 14:47:23 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Doug Ledford <dledford@redhat.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        Mark Bloch <markb@mellanox.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] RDMA/addr: potential uninitialized variable in
+ ib_nl_process_good_ip_rsep()
+Message-ID: <YGcES6MsXGnh83qi@mwanda>
 MIME-Version: 1.0
-In-Reply-To: <20210401233736.638171-1-bgardon@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9941 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0 spamscore=0
+ mlxscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
+ definitions=main-2104020086
+X-Proofpoint-GUID: x-PxymaAPF3LEccK0jkXjXt0TExl6ZHs
+X-Proofpoint-ORIG-GUID: x-PxymaAPF3LEccK0jkXjXt0TExl6ZHs
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9941 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999 mlxscore=0
+ lowpriorityscore=0 suspectscore=0 priorityscore=1501 phishscore=0
+ clxscore=1011 impostorscore=0 malwarescore=0 bulkscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
+ definitions=main-2104020086
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/04/21 01:37, Ben Gardon wrote:
-> Now that the TDP MMU is able to handle page faults in parallel, it's a
-> relatively small change to expand to other operations. This series allows
-> zapping a range of GFNs, reclaiming collapsible SPTEs (when disabling
-> dirty logging), and enabling dirty logging to all happen under the MMU
-> lock in read mode.
-> 
-> This is partly a cleanup + rewrite of the last few patches of the parallel
-> page faults series. I've incorporated feedback from Sean and Paolo, but
-> the patches have changed so much that I'm sending this as a separate
-> series.
-> 
-> Ran kvm-unit-tests + selftests on an SMP kernel + Intel Skylake, with the
-> TDP MMU enabled and disabled. This series introduces no new failures or
-> warnings.
-> 
-> I know this will conflict horribly with the patches from Sean's series
-> which were just queued, and I'll send a v2 to fix those conflicts +
-> address any feedback on this v1.
-> 
-> Changelog
-> v2:
-> --	Rebased patches on top of kvm/queue to incorporate Sean's recent
-> 	TLB flushing changes
-> --	Dropped patch 5: "KVM: x86/mmu: comment for_each_tdp_mmu_root
-> 	requires MMU write lock" as the following patch to protect the roots
-> 	list with RCU adds lockdep which makes the comment somewhat redundant.
-> 
-> Ben Gardon (13):
->    KVM: x86/mmu: Re-add const qualifier in
->      kvm_tdp_mmu_zap_collapsible_sptes
->    KVM: x86/mmu: Move kvm_mmu_(get|put)_root to TDP MMU
->    KVM: x86/mmu: use tdp_mmu_free_sp to free roots
->    KVM: x86/mmu: Merge TDP MMU put and free root
->    KVM: x86/mmu: Refactor yield safe root iterator
->    KVM: x86/mmu: Make TDP MMU root refcount atomic
->    KVM: x86/mmu: handle cmpxchg failure in kvm_tdp_mmu_get_root
->    KVM: x86/mmu: Protect the tdp_mmu_roots list with RCU
->    KVM: x86/mmu: Allow zap gfn range to operate under the mmu read lock
->    KVM: x86/mmu: Allow zapping collapsible SPTEs to use MMU read lock
->    KVM: x86/mmu: Allow enabling / disabling dirty logging under MMU read
->      lock
->    KVM: x86/mmu: Fast invalidation for TDP MMU
->    KVM: x86/mmu: Tear down roots in fast invalidation thread
-> 
->   arch/x86/include/asm/kvm_host.h |  21 +-
->   arch/x86/kvm/mmu/mmu.c          | 115 +++++++---
->   arch/x86/kvm/mmu/mmu_internal.h |  27 +--
->   arch/x86/kvm/mmu/tdp_mmu.c      | 375 +++++++++++++++++++++++---------
->   arch/x86/kvm/mmu/tdp_mmu.h      |  28 ++-
->   include/linux/kvm_host.h        |   2 +-
->   6 files changed, 407 insertions(+), 161 deletions(-)
-> 
+The nla_len() is less than or equal to 16.  If it's less than 16 then
+end of the "gid" buffer is uninitialized.
 
-Applied to kvm/mmu-notifier-queue, thanks.
+Fixes: ae43f8286730 ("IB/core: Add IP to GID netlink offload")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+I just spotted this in review.  I think it's a bug but I'm not 100%.
 
-Paolo
+ drivers/infiniband/core/addr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
+index 0abce004a959..a037ba4424bf 100644
+--- a/drivers/infiniband/core/addr.c
++++ b/drivers/infiniband/core/addr.c
+@@ -98,7 +98,7 @@ static inline bool ib_nl_is_good_ip_resp(const struct nlmsghdr *nlh)
+ static void ib_nl_process_good_ip_rsep(const struct nlmsghdr *nlh)
+ {
+ 	const struct nlattr *head, *curr;
+-	union ib_gid gid;
++	union ib_gid gid = {};
+ 	struct addr_req *req;
+ 	int len, rem;
+ 	int found = 0;
+-- 
+2.30.2
 
