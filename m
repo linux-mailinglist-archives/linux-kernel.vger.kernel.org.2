@@ -2,172 +2,343 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44EA13525A1
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 05:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E87D6352599
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 05:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233915AbhDBDPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 23:15:37 -0400
-Received: from mga09.intel.com ([134.134.136.24]:50529 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234314AbhDBDPf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 23:15:35 -0400
-IronPort-SDR: mRXSHQ7r785d38tCb0HOYfMlHPS+vxTVnUOQjnhXcFHPZrfy++FYI3WhtIa1OOaiJctxbr6e8X
- uUWffY9o83tA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="192484245"
-X-IronPort-AV: E=Sophos;i="5.81,298,1610438400"; 
-   d="scan'208";a="192484245"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 20:15:35 -0700
-IronPort-SDR: mWCofTGb+zOCsHT2FJk/D0jGvVvJ01//G9LsEk+Iog9W47QH4udM/T9l1qXmRpyjApFDXIInZO
- xUmh97glinFA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,298,1610438400"; 
-   d="scan'208";a="439449589"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
-  by fmsmga004.fm.intel.com with ESMTP; 01 Apr 2021 20:15:32 -0700
-Cc:     baolu.lu@linux.intel.com, David Woodhouse <dwmw2@infradead.org>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Gonglei <arei.gonglei@huawei.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] iommu/vt-d: Force to flush iotlb before creating
- superpage
-To:     "Longpeng(Mike)" <longpeng2@huawei.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-References: <20210401071834.1639-1-longpeng2@huawei.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <af470760-04c1-0929-7304-0879ca7af542@linux.intel.com>
-Date:   Fri, 2 Apr 2021 11:06:10 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S234174AbhDBDNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 23:13:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233665AbhDBDNT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 23:13:19 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D55C0613E6;
+        Thu,  1 Apr 2021 20:13:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ePkApq+eAbci5ih5uu3fsCIhPqtvRqCGqPeCVh/d5TY=; b=b44SXhjJbU77CePf/FjihR1EdV
+        D6RQM0PR6b2PNYbE1D5gmWOEXWQkImvclrbGpKlJCWQFBBxBEDEBxd1KTngIwS5gLASDVmyemjANR
+        AFTafoLjxYafVU7uiMxaWWxyiiakdQIkMPog5vPzwrnBzFefR1ZSO5VFA76kbX+V1oPfrCj1eD9Hs
+        I5BaskiVAktrLxuIoEazU7nSMcJaAahI0WssyRt06ymaee5I/wzV342/UKvIeZIroO3CbiYcEBH3T
+        3ZIuBWePhJhwbpXcYMvx5/Xxl9A31HBZHk+yK0nqAT/QZvk/HF5ZLYDxXjRc80ixi0dzyKSay3MW9
+        +sWil21A==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lSAF7-0077dJ-AS; Fri, 02 Apr 2021 03:13:07 +0000
+Date:   Fri, 2 Apr 2021 04:13:05 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: BUG_ON(!mapping_empty(&inode->i_data))
+Message-ID: <20210402031305.GK351017@casper.infradead.org>
+References: <alpine.LSU.2.11.2103301654520.2648@eggly.anvils>
+ <20210331024913.GS351017@casper.infradead.org>
+ <alpine.LSU.2.11.2103311413560.1201@eggly.anvils>
+ <20210401170615.GH351017@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210401071834.1639-1-longpeng2@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401170615.GH351017@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Longpeng,
+On Thu, Apr 01, 2021 at 06:06:15PM +0100, Matthew Wilcox wrote:
+> On Wed, Mar 31, 2021 at 02:58:12PM -0700, Hugh Dickins wrote:
+> > I suspect there's a bug in the XArray handling in collapse_file(),
+> > which sometimes leaves empty nodes behind.
+> 
+> Urp, yes, that can easily happen.
+> 
+>         /* This will be less messy when we use multi-index entries */
+>         do {
+>                 xas_lock_irq(&xas);
+>                 xas_create_range(&xas);
+>                 if (!xas_error(&xas))
+>                         break;
+>                 if (!xas_nomem(&xas, GFP_KERNEL)) {
+>                         result = SCAN_FAIL;
+>                         goto out;
+>                 }
+> 
+> xas_create_range() can absolutely create nodes with zero entries.
+> So if we create m/n nodes and then it runs out of memory (or cgroup
+> denies it), we can leave nodes in the tree with zero entries.
+> 
+> There are three options for fixing it ...
+>  - Switch to using multi-index entries.  We need to do this anyway, but
+>    I don't yet have a handle on the bugs that you found last time I
+>    pushed this into linux-next.  At -rc5 seems like a late stage to be
+>    trying this solution.
+>  - Add an xas_prune_range() that gets called on failure.  Should be
+>    straightforward to write, but will be obsolete as soon as we do the
+>    above and it's a pain for the callers.
+>  - Change how xas_create_range() works to merely preallocate the xa_nodes
+>    and not insert them into the tree until we're trying to insert data into
+>    them.  I favour this option, and this scenario is amenable to writing
+>    a test that will simulate failure halfway through.
+> 
+> I'm going to start on option 3 now.
 
-On 4/1/21 3:18 PM, Longpeng(Mike) wrote:
-> The translation caches may preserve obsolete data when the
-> mapping size is changed, suppose the following sequence which
-> can reveal the problem with high probability.
-> 
-> 1.mmap(4GB,MAP_HUGETLB)
-> 2.
->    while (1) {
->     (a)    DMA MAP   0,0xa0000
->     (b)    DMA UNMAP 0,0xa0000
->     (c)    DMA MAP   0,0xc0000000
->               * DMA read IOVA 0 may failure here (Not present)
->               * if the problem occurs.
->     (d)    DMA UNMAP 0,0xc0000000
->    }
-> 
-> The page table(only focus on IOVA 0) after (a) is:
->   PML4: 0x19db5c1003   entry:0xffff899bdcd2f000
->    PDPE: 0x1a1cacb003  entry:0xffff89b35b5c1000
->     PDE: 0x1a30a72003  entry:0xffff89b39cacb000
->      PTE: 0x21d200803  entry:0xffff89b3b0a72000
-> 
-> The page table after (b) is:
->   PML4: 0x19db5c1003   entry:0xffff899bdcd2f000
->    PDPE: 0x1a1cacb003  entry:0xffff89b35b5c1000
->     PDE: 0x1a30a72003  entry:0xffff89b39cacb000
->      PTE: 0x0          entry:0xffff89b3b0a72000
-> 
-> The page table after (c) is:
->   PML4: 0x19db5c1003   entry:0xffff899bdcd2f000
->    PDPE: 0x1a1cacb003  entry:0xffff89b35b5c1000
->     PDE: 0x21d200883   entry:0xffff89b39cacb000 (*)
-> 
-> Because the PDE entry after (b) is present, it won't be
-> flushed even if the iommu driver flush cache when unmap,
-> so the obsolete data may be preserved in cache, which
-> would cause the wrong translation at end.
-> 
-> However, we can see the PDE entry is finally switch to
-> 2M-superpage mapping, but it does not transform
-> to 0x21d200883 directly:
-> 
-> 1. PDE: 0x1a30a72003
-> 2. __domain_mapping
->       dma_pte_free_pagetable
->         Set the PDE entry to ZERO
->       Set the PDE entry to 0x21d200883
-> 
-> So we must flush the cache after the entry switch to ZERO
-> to avoid the obsolete info be preserved.
-> 
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Lu Baolu <baolu.lu@linux.intel.com>
-> Cc: Nadav Amit <nadav.amit@gmail.com>
-> Cc: Alex Williamson <alex.williamson@redhat.com>
-> Cc: Kevin Tian <kevin.tian@intel.com>
-> Cc: Gonglei (Arei) <arei.gonglei@huawei.com>
-> 
-> Fixes: 6491d4d02893 ("intel-iommu: Free old page tables before creating superpage")
-> Cc: <stable@vger.kernel.org> # v3.0+
-> Link: https://lore.kernel.org/linux-iommu/670baaf8-4ff8-4e84-4be3-030b95ab5a5e@huawei.com/
-> Suggested-by: Lu Baolu <baolu.lu@linux.intel.com>
-> Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
-> ---
->   drivers/iommu/intel/iommu.c | 15 +++++++++++++--
->   1 file changed, 13 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> index ee09323..cbcb434 100644
-> --- a/drivers/iommu/intel/iommu.c
-> +++ b/drivers/iommu/intel/iommu.c
-> @@ -2342,9 +2342,20 @@ static inline int hardware_largepage_caps(struct dmar_domain *domain,
->   				 * removed to make room for superpage(s).
->   				 * We're adding new large pages, so make sure
->   				 * we don't remove their parent tables.
-> +				 *
-> +				 * We also need to flush the iotlb before creating
-> +				 * superpage to ensure it does not perserves any
-> +				 * obsolete info.
->   				 */
-> -				dma_pte_free_pagetable(domain, iov_pfn, end_pfn,
-> -						       largepage_lvl + 1);
-> +				if (dma_pte_present(pte)) {
-> +					int i;
-> +
-> +					dma_pte_free_pagetable(domain, iov_pfn, end_pfn,
-> +							       largepage_lvl + 1);
-> +					for_each_domain_iommu(i, domain)
-> +						iommu_flush_iotlb_psi(g_iommus[i], domain,
-> +								      iov_pfn, nr_pages, 0, 0);
+option 3 didn't work out terribly well.  So here's option 4; if we fail
+to allocate memory when creating a node, prune the tree.  This fixes
+(I think) the problem inherited from the radix tree, although the test
+case is only for xas_create_range().  I should add a couple of test cases
+for xas_create() failing, but I just got this to pass and I wanted to
+send it out as soon as possible.
 
-Thanks for patch!
-
-How about making the flushed page size accurate? For example,
-
-@@ -2365,8 +2365,8 @@ __domain_mapping(struct dmar_domain *domain, 
-unsigned long iov_pfn,
-                                         dma_pte_free_pagetable(domain, 
-iov_pfn, end_pfn,
+diff --git a/lib/test_xarray.c b/lib/test_xarray.c
+index 8b1c318189ce..84c6057932f3 100644
+--- a/lib/test_xarray.c
++++ b/lib/test_xarray.c
+@@ -1463,6 +1463,30 @@ static noinline void check_create_range_4(struct xarray *xa,
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ }
  
-largepage_lvl + 1);
-                                         for_each_domain_iommu(i, domain)
-- 
-iommu_flush_iotlb_psi(g_iommus[i], domain,
-- 
-iov_pfn, nr_pages, 0, 0);
-+ 
-iommu_flush_iotlb_psi(g_iommus[i], domain, iov_pfn,
-+ 
-ALIGN_DOWN(nr_pages, lvl_pages), 0, 0);
-
-
-> +				}
->   			} else {
->   				pteval &= ~(uint64_t)DMA_PTE_LARGE_PAGE;
->   			}
-> 
-
-Best regards,
-baolu
++static noinline void check_create_range_5(struct xarray *xa,
++		unsigned long index, unsigned order)
++{
++	XA_STATE_ORDER(xas, xa, index, order);
++	int i = 0;
++	gfp_t gfp = GFP_KERNEL;
++
++	XA_BUG_ON(xa, !xa_empty(xa));
++
++	do {
++		xas_lock(&xas);
++		xas_create_range(&xas);
++		xas_unlock(&xas);
++		if (++i == 4)
++			gfp = GFP_NOWAIT;
++	} while (xas_nomem(&xas, gfp));
++
++	if (!xas_error(&xas))
++		xa_destroy(xa);
++
++	XA_BUG_ON(xa, xas.xa_alloc);
++	XA_BUG_ON(xa, !xa_empty(xa));
++}
++
+ static noinline void check_create_range(struct xarray *xa)
+ {
+ 	unsigned int order;
+@@ -1490,6 +1514,12 @@ static noinline void check_create_range(struct xarray *xa)
+ 		check_create_range_4(xa, (3U << order) + 1, order);
+ 		check_create_range_4(xa, (3U << order) - 1, order);
+ 		check_create_range_4(xa, (1U << 24) + 1, order);
++
++		check_create_range_5(xa, 0, order);
++		check_create_range_5(xa, (1U << order), order);
++		check_create_range_5(xa, (2U << order), order);
++		check_create_range_5(xa, (3U << order), order);
++		check_create_range_5(xa, (1U << (2 * order)), order);
+ 	}
+ 
+ 	check_create_range_3();
+diff --git a/lib/xarray.c b/lib/xarray.c
+index f5d8f54907b4..923ccde6379e 100644
+--- a/lib/xarray.c
++++ b/lib/xarray.c
+@@ -276,77 +276,6 @@ static void xas_destroy(struct xa_state *xas)
+ 	}
+ }
+ 
+-/**
+- * xas_nomem() - Allocate memory if needed.
+- * @xas: XArray operation state.
+- * @gfp: Memory allocation flags.
+- *
+- * If we need to add new nodes to the XArray, we try to allocate memory
+- * with GFP_NOWAIT while holding the lock, which will usually succeed.
+- * If it fails, @xas is flagged as needing memory to continue.  The caller
+- * should drop the lock and call xas_nomem().  If xas_nomem() succeeds,
+- * the caller should retry the operation.
+- *
+- * Forward progress is guaranteed as one node is allocated here and
+- * stored in the xa_state where it will be found by xas_alloc().  More
+- * nodes will likely be found in the slab allocator, but we do not tie
+- * them up here.
+- *
+- * Return: true if memory was needed, and was successfully allocated.
+- */
+-bool xas_nomem(struct xa_state *xas, gfp_t gfp)
+-{
+-	if (xas->xa_node != XA_ERROR(-ENOMEM)) {
+-		xas_destroy(xas);
+-		return false;
+-	}
+-	if (xas->xa->xa_flags & XA_FLAGS_ACCOUNT)
+-		gfp |= __GFP_ACCOUNT;
+-	xas->xa_alloc = kmem_cache_alloc(radix_tree_node_cachep, gfp);
+-	if (!xas->xa_alloc)
+-		return false;
+-	xas->xa_alloc->parent = NULL;
+-	XA_NODE_BUG_ON(xas->xa_alloc, !list_empty(&xas->xa_alloc->private_list));
+-	xas->xa_node = XAS_RESTART;
+-	return true;
+-}
+-EXPORT_SYMBOL_GPL(xas_nomem);
+-
+-/*
+- * __xas_nomem() - Drop locks and allocate memory if needed.
+- * @xas: XArray operation state.
+- * @gfp: Memory allocation flags.
+- *
+- * Internal variant of xas_nomem().
+- *
+- * Return: true if memory was needed, and was successfully allocated.
+- */
+-static bool __xas_nomem(struct xa_state *xas, gfp_t gfp)
+-	__must_hold(xas->xa->xa_lock)
+-{
+-	unsigned int lock_type = xa_lock_type(xas->xa);
+-
+-	if (xas->xa_node != XA_ERROR(-ENOMEM)) {
+-		xas_destroy(xas);
+-		return false;
+-	}
+-	if (xas->xa->xa_flags & XA_FLAGS_ACCOUNT)
+-		gfp |= __GFP_ACCOUNT;
+-	if (gfpflags_allow_blocking(gfp)) {
+-		xas_unlock_type(xas, lock_type);
+-		xas->xa_alloc = kmem_cache_alloc(radix_tree_node_cachep, gfp);
+-		xas_lock_type(xas, lock_type);
+-	} else {
+-		xas->xa_alloc = kmem_cache_alloc(radix_tree_node_cachep, gfp);
+-	}
+-	if (!xas->xa_alloc)
+-		return false;
+-	xas->xa_alloc->parent = NULL;
+-	XA_NODE_BUG_ON(xas->xa_alloc, !list_empty(&xas->xa_alloc->private_list));
+-	xas->xa_node = XAS_RESTART;
+-	return true;
+-}
+-
+ static void xas_update(struct xa_state *xas, struct xa_node *node)
+ {
+ 	if (xas->xa_update)
+@@ -551,6 +480,120 @@ static void xas_free_nodes(struct xa_state *xas, struct xa_node *top)
+ 	}
+ }
+ 
++static bool __xas_trim(struct xa_state *xas)
++{
++	unsigned long index = xas->xa_index;
++	unsigned char shift = xas->xa_shift;
++	unsigned char sibs = xas->xa_sibs;
++
++	xas->xa_index |= ((sibs + 1UL) << shift) - 1;
++	xas->xa_shift = 0;
++	xas->xa_sibs = 0;
++	xas->xa_node = XAS_RESTART;
++
++	for (;;) {
++		xas_load(xas);
++		if (!xas_is_node(xas))
++			break;
++		xas_delete_node(xas);
++		xas->xa_index -= XA_CHUNK_SIZE;
++		if (xas->xa_index < index)
++			break;
++	}
++
++	xas->xa_shift = shift;
++	xas->xa_sibs = sibs;
++	xas->xa_index = index;
++	xas->xa_node = XA_ERROR(-ENOMEM);
++	return false;
++}
++
++/*
++ * We failed to allocate memory.  Trim any nodes we created along the
++ * way which are now unused.
++ */
++static bool xas_trim(struct xa_state *xas)
++{
++	unsigned int lock_type = xa_lock_type(xas->xa);
++
++	xas_lock_type(xas, lock_type);
++	__xas_trim(xas);
++	xas_unlock_type(xas, lock_type);
++
++	return false;
++}
++
++/**
++ * xas_nomem() - Allocate memory if needed.
++ * @xas: XArray operation state.
++ * @gfp: Memory allocation flags.
++ *
++ * If we need to add new nodes to the XArray, we try to allocate memory
++ * with GFP_NOWAIT while holding the lock, which will usually succeed.
++ * If it fails, @xas is flagged as needing memory to continue.  The caller
++ * should drop the lock and call xas_nomem().  If xas_nomem() succeeds,
++ * the caller should retry the operation.
++ *
++ * Forward progress is guaranteed as one node is allocated here and
++ * stored in the xa_state where it will be found by xas_alloc().  More
++ * nodes will likely be found in the slab allocator, but we do not tie
++ * them up here.
++ *
++ * Return: true if memory was needed, and was successfully allocated.
++ */
++bool xas_nomem(struct xa_state *xas, gfp_t gfp)
++{
++	if (xas->xa_node != XA_ERROR(-ENOMEM)) {
++		xas_destroy(xas);
++		return false;
++	}
++	if (xas->xa->xa_flags & XA_FLAGS_ACCOUNT)
++		gfp |= __GFP_ACCOUNT;
++	xas->xa_alloc = kmem_cache_alloc(radix_tree_node_cachep, gfp);
++	if (!xas->xa_alloc)
++		return xas_trim(xas);
++	xas->xa_alloc->parent = NULL;
++	XA_NODE_BUG_ON(xas->xa_alloc, !list_empty(&xas->xa_alloc->private_list));
++	xas->xa_node = XAS_RESTART;
++	return true;
++}
++EXPORT_SYMBOL_GPL(xas_nomem);
++
++/*
++ * __xas_nomem() - Drop locks and allocate memory if needed.
++ * @xas: XArray operation state.
++ * @gfp: Memory allocation flags.
++ *
++ * Internal variant of xas_nomem().
++ *
++ * Return: true if memory was needed, and was successfully allocated.
++ */
++static bool __xas_nomem(struct xa_state *xas, gfp_t gfp)
++	__must_hold(xas->xa->xa_lock)
++{
++	unsigned int lock_type = xa_lock_type(xas->xa);
++
++	if (xas->xa_node != XA_ERROR(-ENOMEM)) {
++		xas_destroy(xas);
++		return false;
++	}
++	if (xas->xa->xa_flags & XA_FLAGS_ACCOUNT)
++		gfp |= __GFP_ACCOUNT;
++	if (gfpflags_allow_blocking(gfp)) {
++		xas_unlock_type(xas, lock_type);
++		xas->xa_alloc = kmem_cache_alloc(radix_tree_node_cachep, gfp);
++		xas_lock_type(xas, lock_type);
++	} else {
++		xas->xa_alloc = kmem_cache_alloc(radix_tree_node_cachep, gfp);
++	}
++	if (!xas->xa_alloc)
++		return __xas_trim(xas);
++	xas->xa_alloc->parent = NULL;
++	XA_NODE_BUG_ON(xas->xa_alloc, !list_empty(&xas->xa_alloc->private_list));
++	xas->xa_node = XAS_RESTART;
++	return true;
++}
++
+ /*
+  * xas_expand adds nodes to the head of the tree until it has reached
+  * sufficient height to be able to contain @xas->xa_index
