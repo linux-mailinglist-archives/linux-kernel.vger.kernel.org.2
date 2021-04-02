@@ -2,152 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3E88352515
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 03:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA0C35251B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 03:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234150AbhDBBWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 21:22:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233786AbhDBBWJ (ORCPT
+        id S234318AbhDBBXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 21:23:34 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:15900 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234153AbhDBBXb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 21:22:09 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47549C061788
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 18:22:05 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so5527034pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 18:22:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=E8ffoar+fL+fe86KQoUmq1Ih6v7wT3mkutZg4Ab/B60=;
-        b=BKJq2lRvnSp7bYePvIMNoaXQlSqt2NczPI67nUM8Phsv338pezrtymYoxZUYV5785W
-         Ngx4jbXKwdpfu8sE1XFA2ZhrQZnPELVOlZ8vse1JFEDlgM6Bgr0UJQbIoPZ6qXHXvedb
-         fAwlp1BeZosibu3VCnTl9Tr5hmOJmtEt0f6vdC8mv8IL0rRP3vMjk/a/LMQu9CPwGBsg
-         NONz6juJe6ztMnRrJrdg2A4wLuopsrlr4n80bui+neDT4H2Hv0KvD6g/9u++ATIaeCKT
-         JnAqWI0dWvVETGj83pakT2NfN4ijG6xAQXc+pe4R+b7hlp3CLfMGN5TiFnDSrFyVGpMc
-         pXYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=E8ffoar+fL+fe86KQoUmq1Ih6v7wT3mkutZg4Ab/B60=;
-        b=V925SY3AT10+QqcId4UgIOHX24heXLfSUGHgR7ZjDsKYhDm6ZSsPhBFKYdUwUKE/TU
-         anTBUZuE5+8Z4hcFR1be0xoG3YXtEOt3zhiGvGd+DaCvEng2nKGGA3jnm51ZmJxHEdzw
-         D3NTXOA3Ifjc7XfcxcZSABaOUmMY6X6uXiGpIu/Zxc/oLL3U9pDxprLmElZtd/53cfJH
-         X0ZpTMW9vdfD4dskFqmnCixbyRz8Ie7Pwinu8eWfTa5mBDqbrVxj+OruqYvx0sT8grpr
-         1NR7hj1ukYrRqPBGM21uqzVG6zBmUIvoBqEtGy4Rb5ypO0Bd8dWQHUtvzbVax+WVHB3n
-         jpcQ==
-X-Gm-Message-State: AOAM533vBNSSAGHkepTl+JGL5rEjFhQCH8g4YepPlydda+LObP6Ij1sX
-        13vZQndevEdn0TUbAWqq/0Uw7g==
-X-Google-Smtp-Source: ABdhPJyP53AWpACw5NsWYjVJsCYCxFJIlAs9di76cFB/bZeeUQr0RpaK5YaL6WLQaB6UB/nbXMkb+A==
-X-Received: by 2002:a17:90a:39cf:: with SMTP id k15mr1719719pjf.71.1617326524560;
-        Thu, 01 Apr 2021 18:22:04 -0700 (PDT)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id k64sm6718934pgk.23.2021.04.01.18.22.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 01 Apr 2021 18:22:03 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <FC1C6625-2E89-4547-B2E4-2D992181309D@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_53BD9715-8557-487D-A7E2-C2F5CB7C369C";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH v2] ext4: Fix ext4_error_err save negative errno into
- superblock
-Date:   Thu, 1 Apr 2021 19:21:58 -0600
-In-Reply-To: <20210401074017.3382721-1-yebin10@huawei.com>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Liu Zhi Qiang <liuzhiqiang26@huawei.com>
-To:     Ye Bin <yebin10@huawei.com>
-References: <20210401074017.3382721-1-yebin10@huawei.com>
-X-Mailer: Apple Mail (2.3273)
+        Thu, 1 Apr 2021 21:23:31 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FBMhp0TGtzkgjj;
+        Fri,  2 Apr 2021 09:21:46 +0800 (CST)
+Received: from huawei.com (10.175.103.91) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Fri, 2 Apr 2021
+ 09:23:24 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+CC:     <ast@kernel.org>, <song@kernel.org>
+Subject: [PATCH -next v2] libbpf: remove redundant semi-colon
+Date:   Fri, 2 Apr 2021 09:26:34 +0800
+Message-ID: <20210402012634.1965453-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Remove redundant semi-colon in infinalize_btf_ext().
 
---Apple-Mail=_53BD9715-8557-487D-A7E2-C2F5CB7C369C
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+v2:
+  add commit log
+---
+ tools/lib/bpf/linker.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Apr 1, 2021, at 1:40 AM, Ye Bin <yebin10@huawei.com> wrote:
->=20
-> As read_mmp_block return 1 when failed. read_mmp_block return -EIO =
-when buffer
-> isn't uptodate.
+diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
+index 46b16cbdcda3..4e08bc07e635 100644
+--- a/tools/lib/bpf/linker.c
++++ b/tools/lib/bpf/linker.c
+@@ -1895,7 +1895,7 @@ static int finalize_btf_ext(struct bpf_linker *linker)
+ 	hdr->func_info_len = funcs_sz;
+ 	hdr->line_info_off = funcs_sz;
+ 	hdr->line_info_len = lines_sz;
+-	hdr->core_relo_off = funcs_sz + lines_sz;;
++	hdr->core_relo_off = funcs_sz + lines_sz;
+ 	hdr->core_relo_len = core_relos_sz;
+ 
+ 	if (funcs_sz) {
+-- 
+2.25.1
 
-Thank you for this second patch.  Unfortunately, the commit message
-is still confusing/incorrect because it references read_mmp_block()
-in the first usage but is actually changing write_mmp_block().
-
-With that change you could add a Reviewed-by label from me.
-
-Cheers, Andreas
-
-> Fixes: 54d3adbc29f0 ("ext4: save all error info in save_error_info() =
-and
-> drop ext4_set_errno()")
-> Reported-by: Liu Zhi Qiang <liuzhiqiang26@huawei.com>
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
-> ---
-> fs/ext4/mmp.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
-> index 795c3ff2907c..68fbeedd627b 100644
-> --- a/fs/ext4/mmp.c
-> +++ b/fs/ext4/mmp.c
-> @@ -56,7 +56,7 @@ static int write_mmp_block(struct super_block *sb, =
-struct buffer_head *bh)
-> 	wait_on_buffer(bh);
-> 	sb_end_write(sb);
-> 	if (unlikely(!buffer_uptodate(bh)))
-> -		return 1;
-> +		return -EIO;
->=20
-> 	return 0;
-> }
-> --
-> 2.25.4
->=20
-
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_53BD9715-8557-487D-A7E2-C2F5CB7C369C
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmBmcbcACgkQcqXauRfM
-H+Bgzg//WtpR3UQKASYF8Bu8cj7yHzoJC9CQwMcpojKCwcxDHboEXX9z7c9ia0sf
-e6sr7nMOJygOL+rS3QdR78fDI3xvaK+wbR1qZNBbCLBffEJ/13ry5YI5YezRIdfe
-hz9dhlMwT0WiniB3CpF7fb0/Fs/p30ud7u59Y3yrEMMCdr/WMkMtDs6v2BMZwmMN
-K6aR4DaOC9+mF+KjyW25+l4eJgfzS7dja7WiewvP8xfmtSAISHQkIjh/EYRvf1lo
-dQ2SW0yDsYrTuefVukavHhKk3dBHBUkKpwBpThcyrfzNdejUJPnpTwQ0YdFNcqRx
-9fo9oiMbC4kvmTX4GrHPKYsnr9wYyDLp+uj64kikObUzoO0mDm3mT8c5drAC8vu3
-rtmiO4Nze3BpieQYVdgnBHsbxmUWt207gBn/6rjSnuzeWtFIsZFq/CNaFVphHotF
-Ma0TC7JDbimaJqusQZ6LGzFx5E0xOZ7Job6En3HVEmwDrbz7yP3ktqxAvwDM/hpZ
-V8Bd44OO09mYb73API7AFjVdAG6ZjE26AMfnR1ShIAyJP8EwLioNaanNu+MY4Lcs
-+TvIbcZciWnVoCIlOwdLAMAUBqsc7w5AoXBNZ5qrZwRmqGRt4LvC9f7luRrZHiBl
-ZCYUjNcxG9s+slUO8MMwwQkA41rfWHYDAQs/uZSX7ZTMf72Sw44=
-=/tep
------END PGP SIGNATURE-----
-
---Apple-Mail=_53BD9715-8557-487D-A7E2-C2F5CB7C369C--
