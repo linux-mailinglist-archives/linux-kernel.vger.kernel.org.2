@@ -2,320 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99F9F352F44
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 20:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42945352F48
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 20:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235111AbhDBS34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 14:29:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbhDBS3x (ORCPT
+        id S236153AbhDBSa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 14:30:29 -0400
+Received: from mail-pg1-f171.google.com ([209.85.215.171]:45915 "EHLO
+        mail-pg1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235650AbhDBSaU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 14:29:53 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C7CC0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 11:29:50 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id c18so1434687iln.7
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 11:29:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MgAx+4lfEKiBJ1k2Wv3oAa2fGZrNLPzNERoCzjmBo/s=;
-        b=gBYDjHWZwyl3dfkvuLrQVknVoJCpCbAutxmjxeQ+nfJgjYIHOW+SUCnE0F4TXDto2g
-         cOeK8/97dq/IMnn2f+kgw7FsJz/5tx8pfgJTbTstC/Ypflz1iP+ZTzoh3nEC0oK0we54
-         KiwAKBn56tmiYIp1EpI2ZNNtjvWt9gBzQf8upai86In7Nd1LLlyQTIz+eNUpIHhFeeRr
-         moTVuiT3RDnBCyKtUO9Ps0rjbqpXl13CCBx/0vlG31CDsl7A6GV9W3c1uyMz7Q6uFFpB
-         eVBqasbIgDc4ZWfO9toxemnA0kaD0AhvcGQHnj5/a4kq8P3JW42xGpgaBTjZwIevQyr1
-         Cx0w==
+        Fri, 2 Apr 2021 14:30:20 -0400
+Received: by mail-pg1-f171.google.com with SMTP id j34so2023039pgj.12;
+        Fri, 02 Apr 2021 11:30:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MgAx+4lfEKiBJ1k2Wv3oAa2fGZrNLPzNERoCzjmBo/s=;
-        b=shhUVHeCahKiAE5TbCkp1EW1on9vzgvOl0oGeytpWSfIm52bppAD+qMip+5XrNRnw6
-         28DeF/isRCsW10TJ4OsaMl69+ba2WvW/JFETCOZcGw2tTN+V3IQV+mBhjmUTdYumcyFO
-         WBWuk6APEuiFnLaxZFfsSNZrkHPfpKyzYRPd3TJxc3Gprc77RfuGDwVf4SkdTKyZtAxM
-         onx6ikwyQ7yUkektziXDclScqz4x7Mrw51oGZ9Lp2qCKqcUvaA0GwNKyaJwnZ8TQ++wS
-         ir373DqcxMrmhXaJhRkksKbNZFVCdszOAqxvIRBHxf6fzdz2J7UyYAzyLZG5ALM8dD0Z
-         uBug==
-X-Gm-Message-State: AOAM5314Ow2wm1vJ8CJAGobiddywy/j9YE3BuPLjBwExS783sFoNDXaT
-        rIXv9M8aSgcE1Mm139qkJfOng2r5wXAfojNv1v4=
-X-Google-Smtp-Source: ABdhPJzhvXOFAhnGwN7ccq4DF0OeCcbJwsMPs5m9gZuvgMjks27+xIEX0l+NvyGH7ZsgCGmEGRGOuL+A0YPg7clrJxg=
-X-Received: by 2002:a05:6e02:965:: with SMTP id q5mr10956779ilt.95.1617388189299;
- Fri, 02 Apr 2021 11:29:49 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xRkD1TJOSJMcMv2UCmJTMCJhp0vcI/x373113VjrgTM=;
+        b=n+QCCnHFWAsw5tt2dSCT5Khm87fAzK05mhUKu2q6HA0lHcy7AlTHlFvS/2LmOyGwni
+         FQDi+env3RiEt4UiAML7iDK5BAhOSLrzwMxOQwUUAYYKeS/uEhSFkrdz8E6zj/SaAJ1L
+         d3MMjFgRDr4T2nl2PLFVdwe3Em2NUDBnl+DPB3Z0FONxpJB9aN5O7p3NF5nGt5/iQ7Sm
+         /dyN91cWsApqRE8GAN+UUdx2/TleUk4ScEvODMoLQFk4FF4mQvMlSJux3vlLJeu9ILcV
+         N7ApUQ1hMEDwKFRG1Dg12CL2WNezzppZOLfuqlFZRYFKVT2Ca5TG7r4sPDIzJYTN1x4H
+         O92Q==
+X-Gm-Message-State: AOAM530aI3TIRYjAPPQpG+yjrCXHQvnUxAhwHYtk0lzLP3/f6tPjSD9g
+        yIuB4+DwDFTL3D/vhtRGzaQ=
+X-Google-Smtp-Source: ABdhPJxYdv8/EDpCAQoe5gyEnTs18oyjAWzFJvJGO9nu1+gnu5+bcLkDpIMfk459EHLAMDM3lBhoig==
+X-Received: by 2002:a62:8f4a:0:b029:20a:448e:7018 with SMTP id n71-20020a628f4a0000b029020a448e7018mr13037098pfd.62.1617388218342;
+        Fri, 02 Apr 2021 11:30:18 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id gw20sm8272518pjb.3.2021.04.02.11.30.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Apr 2021 11:30:17 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id CB79A404D5; Fri,  2 Apr 2021 18:30:16 +0000 (UTC)
+Date:   Fri, 2 Apr 2021 18:30:16 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Minchan Kim <minchan@kernel.org>, keescook@chromium.org,
+        dhowells@redhat.com, hch@infradead.org, mbenes@suse.com,
+        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
+        axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
+ multistate
+Message-ID: <20210402183016.GU4332@42.do-not-panic.com>
+References: <20210310212128.GR4332@42.do-not-panic.com>
+ <YErOkGrvtQODXtB0@google.com>
+ <20210312183238.GW4332@42.do-not-panic.com>
+ <YEvA1dzDsFOuKdZ/@google.com>
+ <20210319190924.GK4332@42.do-not-panic.com>
+ <YFjHvUolScp3btJ9@google.com>
+ <20210322204156.GM4332@42.do-not-panic.com>
+ <YFkWMZ0m9nKCT69T@google.com>
+ <20210401235925.GR4332@42.do-not-panic.com>
+ <YGbNpLKXfWpy0ZZa@kroah.com>
 MIME-Version: 1.0
-References: <1616751898-58393-1-git-send-email-xlpang@linux.alibaba.com> <1616751898-58393-2-git-send-email-xlpang@linux.alibaba.com>
-In-Reply-To: <1616751898-58393-2-git-send-email-xlpang@linux.alibaba.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Fri, 2 Apr 2021 11:29:38 -0700
-Message-ID: <CAKgT0Ud1-XNw1Hkr0Q2vPOTAhvdj3726ZJA3QSVcmNqNOPZuyA@mail.gmail.com>
-Subject: Re: [PATCH 1/4] mm/page_reporting: Introduce free page reported counters
-To:     Xunlei Pang <xlpang@linux.alibaba.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YGbNpLKXfWpy0ZZa@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 2:45 AM Xunlei Pang <xlpang@linux.alibaba.com> wrote:
->
-> It's useful to know how many memory has been actually reported,
-> so add new zone::reported_pages to record that.
->
-> Add "/sys/kernel/mm/page_reporting/reported_kbytes" for the
-> actual memory has been reported.
->
-> Add "/sys/kernel/mm/page_reporting/refault_kbytes" for the
-> accumulated memory has refaulted in after been reported out.
->
-> Signed-off-by: Xunlei Pang <xlpang@linux.alibaba.com>
-> ---
->  include/linux/mmzone.h |   3 ++
->  mm/page_alloc.c        |   4 +-
->  mm/page_reporting.c    | 112 +++++++++++++++++++++++++++++++++++++++++++++++--
->  mm/page_reporting.h    |   5 +++
->  4 files changed, 119 insertions(+), 5 deletions(-)
->
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 47946ce..ebd169f 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -530,6 +530,9 @@ struct zone {
->         atomic_long_t           managed_pages;
->         unsigned long           spanned_pages;
->         unsigned long           present_pages;
-> +#ifdef CONFIG_PAGE_REPORTING
-> +       unsigned long           reported_pages;
-> +#endif
->  #ifdef CONFIG_CMA
->         unsigned long           cma_pages;
->  #endif
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 3e4b29ee..c2c5688 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -930,8 +930,10 @@ static inline void del_page_from_free_list(struct page *page, struct zone *zone,
->                                            unsigned int order)
->  {
->         /* clear reported state and update reported page count */
-> -       if (page_reported(page))
-> +       if (page_reported(page)) {
->                 __ClearPageReported(page);
-> +               page_reporting_update_refault(zone, 1 << order);
-> +       }
->
->         list_del(&page->lru);
->         __ClearPageBuddy(page);
-> diff --git a/mm/page_reporting.c b/mm/page_reporting.c
-> index c50d93f..ba195ea 100644
-> --- a/mm/page_reporting.c
-> +++ b/mm/page_reporting.c
-> @@ -1,4 +1,5 @@
->  // SPDX-License-Identifier: GPL-2.0
-> +#include <linux/module.h>
->  #include <linux/mm.h>
->  #include <linux/mmzone.h>
->  #include <linux/page_reporting.h>
-> @@ -19,6 +20,22 @@ enum {
->         PAGE_REPORTING_ACTIVE
->  };
->
-> +#ifdef CONFIG_SYSFS
-> +static struct percpu_counter refault_pages;
-> +
-> +void page_reporting_update_refault(struct zone *zone, unsigned int pages)
-> +{
-> +       zone->reported_pages -= pages;
-> +       percpu_counter_add_batch(&refault_pages, pages, INT_MAX / 2);
-> +}
-> +#else
-> +void page_reporting_update_refault(struct zone *zone, unsigned int pages)
-> +{
-> +       zone->reported_pages -= pages;
-> +}
-> +#endif
-> +
-> +
+On Fri, Apr 02, 2021 at 09:54:12AM +0200, Greg KH wrote:
+> On Thu, Apr 01, 2021 at 11:59:25PM +0000, Luis Chamberlain wrote:
+> > As for the syfs deadlock possible with drivers, this fixes it in a generic way:
+> > 
+> > commit fac43d8025727a74f80a183cc5eb74ed902a5d14
+> > Author: Luis Chamberlain <mcgrof@kernel.org>
+> > Date:   Sat Mar 27 14:58:15 2021 +0000
+> > 
+> >     sysfs: add optional module_owner to attribute
+> >     
+> >     This is needed as otherwise the owner of the attribute
+> >     or group read/store might have a shared lock used on driver removal,
+> >     and deadlock if we race with driver removal.
+> >     
+> >     Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> 
+> No, please no.  Module removal is a "best effort",
 
-I don't see the value added from the refault_pages counter.
-Essentially all it will tell you is how many reported pages were
-allocated. If you are really wanting to track a value such as this it
-might make more sense to just track the total number of reported pages
-over the lifetime of the system. At least with that you would once
-again be able to take advantage of batching so it isn't occurring as
-often.
+Not for live patching. I am not sure if I am missing any other valid
+use case?
 
->  /* request page reporting */
->  static void
->  __page_reporting_request(struct page_reporting_dev_info *prdev)
-> @@ -66,7 +83,8 @@ void __page_reporting_notify(void)
->
->  static void
->  page_reporting_drain(struct page_reporting_dev_info *prdev,
-> -                    struct scatterlist *sgl, unsigned int nents, bool reported)
-> +                    struct scatterlist *sgl, struct zone *zone,
-> +                    unsigned int nents, bool reported)
->  {
->         struct scatterlist *sg = sgl;
->
-> @@ -92,8 +110,10 @@ void __page_reporting_notify(void)
->                  * report on the new larger page when we make our way
->                  * up to that higher order.
->                  */
-> -               if (PageBuddy(page) && buddy_order(page) == order)
-> +               if (PageBuddy(page) && buddy_order(page) == order) {
->                         __SetPageReported(page);
-> +                       zone->reported_pages += (1 << order);
-> +               }
+> if the system dies when it happens, that's on you. 
 
-The parenthesis around "1 << order" is redundant.
+I think the better approach for now is simply to call testers / etc to
+deal with this open coded. I cannot be sure that other than live
+patching there may be other valid use cases for module removal, and for
+races we really may care for where userspace *will* typically be mucking
+with sysfs attributes. Monitoring my systems's sysfs attributes I am
+actually quite surprised at the random pokes at them.
 
->         } while ((sg = sg_next(sg)));
->
->         /* reinitialize scatterlist now that it is empty */
-> @@ -197,7 +217,7 @@ void __page_reporting_notify(void)
->                 spin_lock_irq(&zone->lock);
->
->                 /* flush reported pages from the sg list */
-> -               page_reporting_drain(prdev, sgl, PAGE_REPORTING_CAPACITY, !err);
-> +               page_reporting_drain(prdev, sgl, zone, PAGE_REPORTING_CAPACITY, !err);
->
->                 /*
->                  * Reset next to first entry, the old next isn't valid
-> @@ -260,7 +280,7 @@ void __page_reporting_notify(void)
->
->                 /* flush any remaining pages out from the last report */
->                 spin_lock_irq(&zone->lock);
-> -               page_reporting_drain(prdev, sgl, leftover, !err);
-> +               page_reporting_drain(prdev, sgl, zone, leftover, !err);
->                 spin_unlock_irq(&zone->lock);
->         }
->
-> @@ -362,3 +382,87 @@ void page_reporting_unregister(struct page_reporting_dev_info *prdev)
->         mutex_unlock(&page_reporting_mutex);
->  }
->  EXPORT_SYMBOL_GPL(page_reporting_unregister);
-> +
-> +#ifdef CONFIG_SYSFS
-> +#define REPORTING_ATTR(_name) \
-> +       static struct kobj_attribute _name##_attr = \
-> +               __ATTR(_name, 0644, _name##_show, _name##_store)
-> +
+> I am not willing to expend extra energy
+> and maintance of core things like sysfs for stuff like this that does
+> not matter in any system other than a developer's box.
 
-You would be better off defining a read only attribute so you don't
-have to define the dummy store functions.
+Should we document this as well? Without this it is unclear that tons of
+random tests are sanely nullified. At least this dead lock I spotted can
+be pretty common form on many drivers.
 
-> +static unsigned long get_reported_kbytes(void)
-> +{
-> +       struct zone *z;
-> +       unsigned long nr_reported = 0;
-> +
-> +       for_each_populated_zone(z)
-> +               nr_reported += z->reported_pages;
-> +
-> +       return nr_reported << (PAGE_SHIFT - 10);
-> +}
-> +
-> +static ssize_t reported_kbytes_show(struct kobject *kobj,
-> +               struct kobj_attribute *attr, char *buf)
-> +{
-> +       return sprintf(buf, "%lu\n", get_reported_kbytes());
-> +}
-> +
-> +static ssize_t reported_kbytes_store(struct kobject *kobj,
-> +               struct kobj_attribute *attr,
-> +               const char *buf, size_t count)
-> +{
-> +       return -EINVAL;
-> +}
+> Lock data, not code please.  Trying to tie data structure's lifespans
+> to the lifespan of code is a tangled mess, and one that I do not want to
+> add to in any form.
 
-Get rid of this dummy store function.
+Driver developers will simply have to open code these protections. In
+light of what I see on LTP / fuzzing, I suspect the use case will grow
+and we'll have to revisit this in the future. But for now, sure, we can
+just open code the required protections everywhere to not crash on module
+removal.
 
-> +REPORTING_ATTR(reported_kbytes);
-> +
-> +static u64 get_refault_kbytes(void)
-> +{
-> +       u64 sum;
-> +
-> +       sum = percpu_counter_sum_positive(&refault_pages);
-> +       return sum << (PAGE_SHIFT - 10);
-> +}
-> +
-> +static ssize_t refault_kbytes_show(struct kobject *kobj,
-> +               struct kobj_attribute *attr, char *buf)
-> +{
-> +       return sprintf(buf, "%llu\n", get_refault_kbytes());
-> +}
-> +
-> +static ssize_t refault_kbytes_store(struct kobject *kobj,
-> +               struct kobj_attribute *attr,
-> +               const char *buf, size_t count)
-> +{
-> +       return -EINVAL;
-> +}
-
-Also, no need for this store function.
-
-> +REPORTING_ATTR(refault_kbytes);
-> +
-> +static struct attribute *reporting_attrs[] = {
-> +       &reported_kbytes_attr.attr,
-> +       &refault_kbytes_attr.attr,
-> +       NULL,
-> +};
-> +
-> +static struct attribute_group reporting_attr_group = {
-> +       .attrs = reporting_attrs,
-> +       .name = "page_reporting",
-> +};
-> +#endif
-> +
-> +static int __init page_reporting_init(void)
-> +{
-> +#ifdef CONFIG_SYSFS
-> +       int err;
-> +
-> +       if (percpu_counter_init(&refault_pages, 0, GFP_KERNEL))
-> +               panic("Failed to allocate refault_pages percpu counter\n");
-> +
-> +       err = sysfs_create_group(mm_kobj, &reporting_attr_group);
-> +       if (err) {
-> +               pr_err("%s: Unable to populate sysfs files\n", __func__);
-> +               return err;
-> +       }
-> +#endif
-> +
-> +       return 0;
-> +}
-> +
-> +module_init(page_reporting_init);
-> diff --git a/mm/page_reporting.h b/mm/page_reporting.h
-> index 2c385dd..19549c7 100644
-> --- a/mm/page_reporting.h
-> +++ b/mm/page_reporting.h
-> @@ -44,11 +44,16 @@ static inline void page_reporting_notify_free(unsigned int order)
->         /* This will add a few cycles, but should be called infrequently */
->         __page_reporting_notify();
->  }
-> +
-> +void page_reporting_update_refault(struct zone *zone, unsigned int pages);
->  #else /* CONFIG_PAGE_REPORTING */
->  #define page_reported(_page)   false
->
->  static inline void page_reporting_notify_free(unsigned int order)
->  {
->  }
-> +
-> +static inline void
-> +page_reporting_update_refault(struct zone *zone, unsigned int pages) { }
->  #endif /* CONFIG_PAGE_REPORTING */
->  #endif /*_MM_PAGE_REPORTING_H */
-> --
-> 1.8.3.1
->
->
+  Luis
