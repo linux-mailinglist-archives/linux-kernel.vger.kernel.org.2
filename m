@@ -2,119 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F76C35243A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 02:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF20B35243D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 02:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235870AbhDBADC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 20:03:02 -0400
-Received: from mga11.intel.com ([192.55.52.93]:42759 "EHLO mga11.intel.com"
+        id S236026AbhDBAFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 20:05:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233677AbhDBAC7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 20:02:59 -0400
-IronPort-SDR: yMaZ/dtqTOwZxvtk1ybrtfxkQbpqzakKb0xpe5CziY9sOt0csCZvwe1coSQa660mfUYHb4xer3
- 3QH+IHJJaolg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="189100873"
-X-IronPort-AV: E=Sophos;i="5.81,298,1610438400"; 
-   d="scan'208";a="189100873"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 17:02:58 -0700
-IronPort-SDR: 9zHXH94T6YzxJIYzdwGQkFSMUejrGEaPs/oNIkTIzZe5EZYwaWyajtOeV7+7BSF0silahjPbY4
- tShuZ5GtnnTw==
-X-IronPort-AV: E=Sophos;i="5.81,298,1610438400"; 
-   d="scan'208";a="611111953"
-Received: from pzlai-mobl.amr.corp.intel.com (HELO [10.213.169.242]) ([10.213.169.242])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 17:02:57 -0700
-Subject: Re: [RFC v1 00/26] Add TDX Guest Support
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        id S233677AbhDBAFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 20:05:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2F4F60FED;
+        Fri,  2 Apr 2021 00:05:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1617321920;
+        bh=6DTceYIxopB6FCcqzfOkPPslBYRaOV3hFwQSWjZGRzg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=pN/xBbiuAx3DN06+F4R7VfLgYVMi6hoHcURfdtJSqHT1c4Fl3nRJhPAW4cV7BNcq2
+         H7iJf/vOIKAUGLliWJI0CPFbUqtrdhx6L+LIJ/mTyPbUXAvNnthFpADKeqDQBtGzeo
+         fkats2jlgZJGMrM0al1pxjEaop2kEV1rxPeTWNtY=
+Date:   Thu, 1 Apr 2021 17:05:19 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Sergei Trofimovich <slyfox@gentoo.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org
-References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <95e97456-478b-c6a2-f851-3b19ce794262@intel.com>
-Date:   Thu, 1 Apr 2021 17:02:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH] mm: page_owner: detect page_owner recursion via
+ task_struct
+Message-Id: <20210401170519.00824fbdf8ab60b720609422@linux-foundation.org>
+In-Reply-To: <20210401223010.3580480-1-slyfox@gentoo.org>
+References: <20210401223010.3580480-1-slyfox@gentoo.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/5/21 3:38 PM, Kuppuswamy Sathyanarayanan wrote:
-> Intel's Trust Domain Extensions (TDX) protect guest VMs from malicious
-> hosts and some physical attacks. This series adds the bare-minimum
-> support to run a TDX guest. The host-side support will be submitted
-> separately. Also support for advanced TD guest features like attestation
-> or debug-mode will be submitted separately. Also, at this point it is not
-> secure with some known holes in drivers, and also hasn’t been fully audited
-> and fuzzed yet.
+On Thu,  1 Apr 2021 23:30:10 +0100 Sergei Trofimovich <slyfox@gentoo.org> wrote:
 
-I want to hear a lot more about this driver model.
+> Before the change page_owner recursion was detected via fetching
+> backtrace and inspecting it for current instruction pointer.
+> It has a few problems:
+> - it is slightly slow as it requires extra backtrace and a linear
+>   stack scan of the result
+> - it is too late to check if backtrace fetching required memory
+>   allocation itself (ia64's unwinder requires it).
+> 
+> To simplify recursion tracking let's use page_owner recursion depth
+> as a counter in 'struct task_struct'.
 
-I've heard things like "we need to harden the drivers" or "we need to do
-audits" and that drivers might be "whitelisted".
+Seems like a better approach.
 
-What are we talking about specifically?  Which drivers?  How many
-approximately?  Just virtio?  Are there any "real" hardware drivers
-involved like how QEMU emulates an e1000 or rtl8139 device?  What about
-the APIC or HPET?
+> The change make page_owner=on work on ia64 bu avoiding infinite
+> recursion in:
+>   kmalloc()
+>   -> __set_page_owner()
+>   -> save_stack()
+>   -> unwind() [ia64-specific]
+>   -> build_script()
+>   -> kmalloc()
+>   -> __set_page_owner() [we short-circuit here]
+>   -> save_stack()
+>   -> unwind() [recursion]
+> 
+> ...
+>
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -1371,6 +1371,15 @@ struct task_struct {
+>  	struct llist_head               kretprobe_instances;
+>  #endif
+>  
+> +#ifdef CONFIG_PAGE_OWNER
+> +	/*
+> +	 * Used by page_owner=on to detect recursion in page tracking.
+> +	 * Is it fine to have non-atomic ops here if we ever access
+> +	 * this variable via current->page_owner_depth?
 
-How broadly across the kernel is this going to go?
+Yes, it is fine.  This part of the comment can be removed.
 
-Without something concrete, it's really hard to figure out if we should
-go full-blown paravirtualized MMIO, or do something like the #VE
-trapping that's in this series currently.
+> +	 */
+> +	unsigned int page_owner_depth;
+> +#endif
+
+Adding to the task_struct has a cost.  But I don't expect that
+PAGE_OWNER is commonly used in prodction builds (correct?).
+
+> --- a/init/init_task.c
+> +++ b/init/init_task.c
+> @@ -213,6 +213,9 @@ struct task_struct init_task
+>  #ifdef CONFIG_SECCOMP
+>  	.seccomp	= { .filter_count = ATOMIC_INIT(0) },
+>  #endif
+> +#ifdef CONFIG_PAGE_OWNER
+> +	.page_owner_depth	= 0,
+> +#endif
+>  };
+>  EXPORT_SYMBOL(init_task);
+
+It will be initialized to zero by the compiler.  We can omit this hunk
+entirely.
+
+> --- a/mm/page_owner.c
+> +++ b/mm/page_owner.c
+> @@ -20,6 +20,16 @@
+>   */
+>  #define PAGE_OWNER_STACK_DEPTH (16)
+>  
+> +/*
+> + * How many reenters we allow to page_owner.
+> + *
+> + * Sometimes metadata allocation tracking requires more memory to be allocated:
+> + * - when new stack trace is saved to stack depot
+> + * - when backtrace itself is calculated (ia64)
+> + * Instead of falling to infinite recursion give it a chance to recover.
+> + */
+> +#define PAGE_OWNER_MAX_RECURSION_DEPTH (1)
+
+So this is presently a boolean.  Is there any expectation that
+PAGE_OWNER_MAX_RECURSION_DEPTH will ever be greater than 1?  If not, we
+could use a single bit in the task_struct.  Add it to the
+"Unserialized, strictly 'current'" bitfields.  Could make it a 2-bit field if we want
+to permit PAGE_OWNER_MAX_RECURSION_DEPTH=larger.
+
+
