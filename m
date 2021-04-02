@@ -2,99 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12392352B90
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 16:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B0F352B8B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 16:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235807AbhDBOlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 10:41:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48520 "EHLO
+        id S235646AbhDBOlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 10:41:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235584AbhDBOlb (ORCPT
+        with ESMTP id S229932AbhDBOlF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 10:41:31 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEAB2C0613E6;
-        Fri,  2 Apr 2021 07:41:29 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id d13so7879596lfg.7;
-        Fri, 02 Apr 2021 07:41:29 -0700 (PDT)
+        Fri, 2 Apr 2021 10:41:05 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26CC3C0613E6
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 07:41:04 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id c3so2567084qvz.7
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 07:41:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IsX2fSpKSdiwRPQlQlIkNhzwSN2iZpEukx+GE8vH9qg=;
-        b=fFDfjIFUquAmZhBi79ZzBpPk8+pSX5NyVymkZyitmoi8HBcBpJOZk6E0VXmiwNT24h
-         1I2ySRqqaoLzP96y6aDYdBYayiybVzEmPuYuQWr4UyKWtwzfUTt6q58ekkwqJ6S1Tu54
-         FdWi856BHZtiMeNf9djvldoC41p1vhRHr115ksgkBOTI6aW+ade4OTNp10viyhYyyWh6
-         gVe57qpwV0m5wEUH8+CsHWXpZZ3pWazL9nmkZ70HMERVlIRFpGyDEXBPmf8dXC5r0wmX
-         ixrIMy95017vGsprcoRWBrHgbedvXjdqZHkqdAaA2+rbLd/2obfXgHGouQQDbQnWJwOj
-         PZFA==
+        d=metztli-com.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=+vgejU4/JZadtPYENjNbyRGMVCzwVSPUxWwXTslt1q4=;
+        b=XqzBy8GABaaVCHwtvbceZdyfltyfLjwIlZXmZ/QUkubphwR6CWfRdX/a1C39I4Zkfo
+         XGajLD4Fk968nQubxVGmz89TpfR6vyc7Y4+PHLMkvkowHGbMwbSuTK9K8iAbe/WqgkAU
+         GWlUWu045uerbz43w+ZUdr/QrTi+QR86kCcbIpP39UIMXvdw1ZcWdLMEZr2Q8EhfTjPF
+         WooT9wm0dXegr5gcyBcAyOZ1RbJmvEMCRPMcVOvU7puc5j9GMRQNhTdW0qtA6gd5vCfb
+         zGXoauqwnhzLvZnGKRIS00fx/1WaIGX3MynWv81gx01mc4NeouVHfWmtF1OI81+7lOLL
+         YbNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IsX2fSpKSdiwRPQlQlIkNhzwSN2iZpEukx+GE8vH9qg=;
-        b=HKD5ToiK3E07uGiJF2be6z9Ha+9HdfC63ZUNnCp95uK+mavc0BZYPKQOMn6CMaGQbq
-         8dUrYVK4azq3xpJhQL6LHUnXpUj2jS9yRP+RzXMhc7LYJlM+MVgyCc3Sd7TWXjacLoW6
-         leADibXygD4cnqF4AD9mAAn0EZiS7vrB1QuTZeUGWkW3LWTMFnrUEOiMtAjMv+ofa/am
-         Sr9FQJJYd/yqzUm6fcX3WJ5zgRBWJ8ByevQLdvRQGgbtxcjfX7/w52uy25gXMTw9XPbs
-         Zc850ufzolPhri/QxoRYBehjFGHCePuARvbGHhaFF34nqfp8hKjawwocGHU48U4f93kP
-         kDHA==
-X-Gm-Message-State: AOAM532jTlEjY+syTia4piFkPL3hXMOe+Ufuet6AY/96avW7eXNGYe3p
-        kJ0TQPh2PWtgTEO/bNJhjfMGGbcZVTk=
-X-Google-Smtp-Source: ABdhPJwwoUZvVSq/hePy5G963Ex3XoRDx03nWyTsTGIxWHYwZG/Fs5XTPo/9Yv99F31iN3SgR4Kx/w==
-X-Received: by 2002:a19:5008:: with SMTP id e8mr8987591lfb.571.1617374488127;
-        Fri, 02 Apr 2021 07:41:28 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-85.dynamic.spd-mgts.ru. [109.252.193.85])
-        by smtp.googlemail.com with ESMTPSA id x19sm878929lfr.198.2021.04.02.07.41.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Apr 2021 07:41:27 -0700 (PDT)
-Subject: Re: [PATCH v1 2/2] iommu/tegra-smmu: Revert workaround that was
- needed for Nyan Big Chromebook
-To:     Nicolin Chen <nicoleotsuka@gmail.com>,
-        guillaume.tucker@collabora.com
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        Will Deacon <will@kernel.org>,
-        iommu@lists.linux-foundation.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210328233256.20494-1-digetx@gmail.com>
- <20210328233256.20494-2-digetx@gmail.com>
- <20210401085549.GA31146@Asurada-Nvidia>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <50a7e4c7-0e72-534a-a317-366e455213c1@gmail.com>
-Date:   Fri, 2 Apr 2021 17:40:55 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=+vgejU4/JZadtPYENjNbyRGMVCzwVSPUxWwXTslt1q4=;
+        b=XD1XzZAez5WlOQGDcH6CsXST9aDl+wiHQ9Lol2C30ntjyptK7lhrAXH6SK+ld5+TWH
+         QlNhIsdoJd7xGmmzyQiuhEafgUscJyHiMOn7hqFzdDiJGEaSu0m2oKTYRoXx4ZlMuaG3
+         QLOJGo/mSHaVtK3qU6Fq1Bpdtl1+zxIByufxA6aKSaNfqZTDqywpmmZV8j++L+O2XvRT
+         qiWK+rSnOyV7XtBEFh5wULsoJOcO/V+w5jgMpVBU3z8oXEWzfd8XhhEcIkMMdxvZD0gj
+         RsZal5re5oa5Fs1YC5IkjsdPt1uOV7RUK1CQyb/rhz3hVA4VXkPEdabPfLtG642s/KtT
+         U4vg==
+X-Gm-Message-State: AOAM531exdzJznIz6eTpz49uOLGQrsukocZNIpmReuu3VENJVOdQtd4P
+        J7KkZ5TaWcUYlfH46oC1LBOTCg==
+X-Google-Smtp-Source: ABdhPJz4LErsUa6QJPvMHVW6+CLbNgfBrYTxFNjWtRJgCw1sc+1RbCj19wOKKQux/hPr712XfR/oIA==
+X-Received: by 2002:a0c:a425:: with SMTP id w34mr13007510qvw.2.1617374463466;
+        Fri, 02 Apr 2021 07:41:03 -0700 (PDT)
+Received: from ?IPv6:2600:1700:6470:27a0:4e80:93ff:fe00:3ff7? ([2600:1700:6470:27a0:4e80:93ff:fe00:3ff7])
+        by smtp.gmail.com with ESMTPSA id 18sm7663196qkr.90.2021.04.02.07.41.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Apr 2021 07:41:02 -0700 (PDT)
+Message-ID: <76f176ce14bb469293e15172e6522081a3539126.camel@metztli.com>
+Subject: Reiser4 -enabled Linux 5.10.26
+From:   Metztli Information Technology <jose.r.r@metztli.com>
+To:     ReiserFS Development List <reiserfs-devel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Cc:     Edward Shishkin <edward.shishkin@gmail.com>
+Date:   Fri, 02 Apr 2021 07:41:01 -0700
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
-In-Reply-To: <20210401085549.GA31146@Asurada-Nvidia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-01.04.2021 11:55, Nicolin Chen пишет:
-> On Mon, Mar 29, 2021 at 02:32:56AM +0300, Dmitry Osipenko wrote:
->> The previous commit fixes problem where display client was attaching too
->> early to IOMMU during kernel boot in a multi-platform kernel configuration
->> which enables CONFIG_ARM_DMA_USE_IOMMU=y. The workaround that helped to
->> defer the IOMMU attachment for Nyan Big Chromebook isn't needed anymore,
->> revert it.
-> 
-> Sorry for the late reply. I have been busy with downstream tasks.
-> 
-> I will give them a try by the end of the week. Yet, probably it'd
-> be better to include Guillaume also as he has the Nyan platform.
-> 
+Niltze [Hello], all-
 
-Indeed, thanks. Although, I'm pretty sure that it's the same issue which
-I reproduced on Nexus 7.
+We have just released a preliminary reiser4 -enabled Debian 11,
+codenamed Bullseye, minimal USB/ISO AMD64 image with Debianized kernel
+5.10.26-2. It has been tested lightly -- as Debian gives the finishing
+touches to their upcoming operating system distribution.
 
-Guillaume, could you please give a test to these patches on Nyan Big?
-There should be no EMEM errors in the kernel log with this patches.
+If anyone wants to give it a spin, here are the download link(s):
+https://metztli.it/bullseye/netboot/metztli-reiser4.iso
+https://metztli.it/bullseye/netboot/metztli-reiser4.iso.SHA256SUM
 
-https://patchwork.ozlabs.org/project/linux-tegra/list/?series=236215
+If using USB device /dev/sdb,
+dd if=metztli-reiser4.iso of=/dev/sdb bs=4M; sync
+
+https://metztli.it/bullseye
+*No warranties whatsoever*
+
+
+Best Professional Regards.
+
+-- 
+-- 
+Jose R R
+http://metztli.it
+-----------------------------------------------------------------------
+----------------------
+Download Metztli Reiser4: Debian Buster w/ Linux 5.10.20 AMD64
+-----------------------------------------------------------------------
+----------------------
+feats ZSTD compression https://sf.net/projects/metztli-reiser4/
+-----------------------------------------------------------------------
+----------------------
+or SFRN 5.1.3, Metztli Reiser5 https://sf.net/projects/debian-reiser4/
+-----------------------------------------------------------------------
+--------------------
+Official current Reiser4 resources: https://reiser4.wiki.kernel.org/
+
+
