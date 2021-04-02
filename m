@@ -2,92 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1155A35304D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 22:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B020353051
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 22:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236372AbhDBUai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 16:30:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231149AbhDBUah (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 16:30:37 -0400
-Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C810C0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 13:30:34 -0700 (PDT)
-Received: by mail-vk1-xa31.google.com with SMTP id r189so1329534vkb.11
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 13:30:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fpiYiPYqqN7tR3WWs4vXdHV3OFTJ2WT8sXLzAJnABRc=;
-        b=haCN18pcrEsv3UXlaoRpsd6piLapDWVWpYOTLeB5TqquoDoE3qDGjSA9u6iGuM34H1
-         I+sgmUsI2rkXTrjjcmnJqBi1u2D/Z3xjLf6/fvTbLngj9N3oJKJSNrpegrGntzQfPiso
-         i7XviCv8nE3Q1hZFjkx7fygPKSkcHnhlPqqUEhoz3rT8L1D2AtKf5pNAWp+X42iHLdup
-         mK3xr6bxD8Ly3/xml8+FV8Q8Ul0keB6/eCtdFu8d+3QWT8TGdEnL1MDFAfL0+zcdj6VM
-         C7OkcldcaZOnwBI+p2CCyk8h+oIptLsRFCSybT92GQSoWH865XpGtFf+MoQvAxgVITIH
-         J9XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fpiYiPYqqN7tR3WWs4vXdHV3OFTJ2WT8sXLzAJnABRc=;
-        b=Y8aIFGTbzNDDuWsxsswOJQFPtyAgAxwmY9AAHt/+CpG4QuL/CP3sRZAofbF1HpJdxP
-         BCxKF7ajKAQ26K1e+BqAI/V4g5GxXv3P12GNMMnDrmayNmMkb/YdKR7qQHFxhVqxxB83
-         Rx0c+lLJhT0SBE4Z/Wj6bu/OP2vNq+erRoEoZDrBcz2nV3vF9WAw6Lnmh4ZD44kiszvq
-         i/MilW+6YUY1I/fm+9FXEOlHCv32g7QO1jforIEaWr6ZmT5PCqYHwhnk60Kjn5TOb2xu
-         kF+UPzkKekXH0TWhiNrjABJkgNXZ6bcEp3SIIRkM8xH6sq6BSDUVwQFjOFPC2flpKhXl
-         GKKQ==
-X-Gm-Message-State: AOAM533AIsHS16MP2kFDZbpUTWq+IHKdogBCHi+IkGWZqRR3jFRxCAlE
-        TGVfATQOhIlAxGdX4JkcqpB6XGABoKa7+iIgSnw=
-X-Google-Smtp-Source: ABdhPJwvWeIbKrs/SzZtBEn1ny8YJn5TP3TDcgpCXaIFdtCva7kvl00ZsoPfrswoZEOzSAUmdvt3bkKHDGTGU8SeOMs=
-X-Received: by 2002:ac5:c84f:: with SMTP id g15mr10218660vkm.15.1617395432391;
- Fri, 02 Apr 2021 13:30:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210402202237.20334-1-urezki@gmail.com> <20210402202237.20334-5-urezki@gmail.com>
-In-Reply-To: <20210402202237.20334-5-urezki@gmail.com>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Sat, 3 Apr 2021 02:00:20 +0530
-Message-ID: <CAFqt6zbszFZKpbOg7A5L_keqUwsXMNCxa91+S7sCUij70u8pDw@mail.gmail.com>
-Subject: Re: [PATCH-next 5/5] mm/vmalloc: remove an empty line
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S236569AbhDBUbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 16:31:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49608 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229647AbhDBUbk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 16:31:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E3EE60FE8;
+        Fri,  2 Apr 2021 20:31:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617395499;
+        bh=k3BIxfi+L1YBlW8Mtw5C8sYz1WXfklRN1Yk9lexwAH0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=MWqGyHMEwtFkddN2aJrporTgBjI/4fqqRcMl6MJa9YwmMYXbBmNEQBZzB9N2HWUjJ
+         /QxRflUOvuEYfP/z9odjRzeY9+8HW0WUPiouuFk6/7lcX7gJV7D9Fe7wQOA2ZT52Zo
+         vBdpqgxherIZmp+sNh+K+bsSnCUwQ2wzZJbuDA5OW2WMQLt1wra3IMTz5KH551qgD5
+         DDvJ4EzrQs2C5lg2GkcKaXrVunW2onEYkWEB0V3D3bKOD3aXtPvDl8Z3GOGzsPpVmK
+         V9FnIXZyvfIhobWWPm68aYOtaRDFcSvRUbkFS/91jtEYUXHIQFU9555DUuSE1ZmDAL
+         BKJRqlIQ//3cA==
+From:   paulmck@kernel.org
+To:     linux-kernel@vger.kernel.org
+Cc:     john.stultz@linaro.org, tglx@linutronix.de, sboyd@kernel.org,
+        corbet@lwn.net, Mark.Rutland@arm.com, maz@kernel.org,
+        kernel-team@fb.com, neeraju@codeaurora.org, ak@linux.intel.com,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH v6 clocksource] Do not mark clocks unstable dueclocksource: Provide module parameters to inject delays in watchdog
+Date:   Fri,  2 Apr 2021 13:31:33 -0700
+Message-Id: <20210402203137.22479-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <20210402202929.GA22273@paulmck-ThinkPad-P72>
+References: <20210402202929.GA22273@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 3, 2021 at 1:53 AM Uladzislau Rezki (Sony) <urezki@gmail.com> wrote:
->
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-How about merging it with patch [4/5] ?
+When the clocksource watchdog marks a clock as unstable, this might be due
+to that clock being unstable or it might be due to delays that happen to
+occur between the reads of the two clocks.  Yes, interrupts are disabled
+across those two reads, but there are no shortage of things that can
+delay interrupts-disabled regions of code ranging from SMI handlers to
+vCPU preemption.  It would be good to have some indication as to why
+the clock was marked unstable.
 
-> ---
->  mm/vmalloc.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index 093c7e034ca2..1e643280cbcf 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -1503,7 +1503,6 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
->         va->va_end = addr + size;
->         va->vm = NULL;
->
-> -
->         spin_lock(&vmap_area_lock);
->         insert_vmap_area(va, &vmap_area_root, &vmap_area_list);
->         spin_unlock(&vmap_area_lock);
-> --
-> 2.20.1
->
->
+The first step is a way of injecting such delays, and this
+commit therefore provides a clocksource.inject_delay_freq and
+clocksource.inject_delay_run kernel boot parameters that specify that
+sufficient delay be injected to cause the clocksource_watchdog()
+function to mark a clock unstable.  This delay is injected every
+Nth set of M calls to clocksource_watchdog(), where N is the value
+specified for the inject_delay_freq boot parameter and M is the value
+specified for the inject_delay_run boot parameter.  Values of zero or
+less for either parameter disable delay injection, and the default for
+clocksource.inject_delay_freq is zero, that is, disabled.  The default for
+clocksource.inject_delay_run is the value one, that is single-call runs.
+
+This facility is intended for diagnostic use only, and should be avoided
+on production systems.
+
+Cc: John Stultz <john.stultz@linaro.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Mark Rutland <Mark.Rutland@arm.com>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Andi Kleen <ak@linux.intel.com>
+[ paulmck: Apply Rik van Riel feedback. ]
+Reported-by: Chris Mason <clm@fb.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ Documentation/admin-guide/kernel-parameters.txt | 22 ++++++++++++++++++++
+ kernel/time/clocksource.c                       | 27 +++++++++++++++++++++++++
+ 2 files changed, 49 insertions(+)
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 0454572..fc57952 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -583,6 +583,28 @@
+ 			loops can be debugged more effectively on production
+ 			systems.
+ 
++	clocksource.inject_delay_freq= [KNL]
++			Number of runs of calls to clocksource_watchdog()
++			before delays are injected between reads from the
++			two clocksources.  Values less than or equal to
++			zero disable this delay injection.  These delays
++			can cause clocks to be marked unstable, so use
++			of this parameter should therefore be avoided on
++			production systems.  Defaults to zero (disabled).
++
++	clocksource.inject_delay_run= [KNL]
++			Run lengths of clocksource_watchdog() delay
++			injections.  Specifying the value 8 will result
++			in eight consecutive delays followed by eight
++			times the value specified for inject_delay_freq
++			of consecutive non-delays.
++
++	clocksource.max_read_retries= [KNL]
++			Number of clocksource_watchdog() retries due to
++			external delays before the clock will be marked
++			unstable.  Defaults to three retries, that is,
++			four attempts to read the clock under test.
++
+ 	clearcpuid=BITNUM[,BITNUM...] [X86]
+ 			Disable CPUID feature X for the kernel. See
+ 			arch/x86/include/asm/cpufeatures.h for the valid bit
+diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+index cce484a..4be4391 100644
+--- a/kernel/time/clocksource.c
++++ b/kernel/time/clocksource.c
+@@ -14,6 +14,7 @@
+ #include <linux/sched.h> /* for spin_unlock_irq() using preempt_count() m68k */
+ #include <linux/tick.h>
+ #include <linux/kthread.h>
++#include <linux/delay.h>
+ 
+ #include "tick-internal.h"
+ #include "timekeeping_internal.h"
+@@ -184,6 +185,31 @@ void clocksource_mark_unstable(struct clocksource *cs)
+ 	spin_unlock_irqrestore(&watchdog_lock, flags);
+ }
+ 
++static int inject_delay_freq;
++module_param(inject_delay_freq, int, 0644);
++static int inject_delay_run = 1;
++module_param(inject_delay_run, int, 0644);
++static int max_read_retries = 3;
++module_param(max_read_retries, int, 0644);
++
++static void clocksource_watchdog_inject_delay(void)
++{
++	int i;
++	static int injectfail = -1;
++
++	if (inject_delay_freq <= 0 || inject_delay_run <= 0)
++		return;
++	if (injectfail < 0 || injectfail > INT_MAX / 2)
++		injectfail = inject_delay_run;
++	if (!(++injectfail / inject_delay_run % inject_delay_freq)) {
++		pr_warn("%s(): Injecting delay.\n", __func__);
++		for (i = 0; i < 2 * WATCHDOG_THRESHOLD / NSEC_PER_MSEC; i++)
++			udelay(1000);
++		pr_warn("%s(): Done injecting delay.\n", __func__);
++	}
++	WARN_ON_ONCE(injectfail < 0);
++}
++
+ static void clocksource_watchdog(struct timer_list *unused)
+ {
+ 	struct clocksource *cs;
+@@ -208,6 +234,7 @@ static void clocksource_watchdog(struct timer_list *unused)
+ 
+ 		local_irq_disable();
+ 		csnow = cs->read(cs);
++		clocksource_watchdog_inject_delay();
+ 		wdnow = watchdog->read(watchdog);
+ 		local_irq_enable();
+ 
+-- 
+2.9.5
+
