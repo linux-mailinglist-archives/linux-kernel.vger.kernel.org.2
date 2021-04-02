@@ -2,124 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C22B352B0B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 15:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33285352B06
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 15:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235575AbhDBNeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 09:34:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229932AbhDBNeg (ORCPT
+        id S235476AbhDBNcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 09:32:05 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:42851 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229932AbhDBNcD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 09:34:36 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3D398C0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 06:34:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=79odaMnTT9R2qi2lfpKGnNp4FQRgM5yuMypKBy3IvUw=; b=GV+SI9/xzy2LS
-        Q5Y8eXoABSerD/DKPBfVVMjUV4mL6VoIhL5ar1m+xVSuQ2++r8dBt+NWy4L0G09L
-        S4ScikiqZ9kLuOPaLsWK+FI38USXOfZ3ZPksNfJdwSPd8XHL1xcv+yPpXD5VvUNh
-        BjEDeoayxrrgmFY7x7lkcvdpg5Mw9c=
-Received: from xhacker (unknown [101.86.19.180])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBX+phgHWdgkQCLAA--.61503S2;
-        Fri, 02 Apr 2021 21:34:25 +0800 (CST)
-Date:   Fri, 2 Apr 2021 21:29:08 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH] riscv: vdso: fix and clean-up Makefile
-Message-ID: <20210402212908.6f9b9686@xhacker>
+        Fri, 2 Apr 2021 09:32:03 -0400
+Received: from [192.168.1.155] ([95.118.52.208]) by mrelayeu.kundenserver.de
+ (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MfpKZ-1m7xFf3xRx-00gEPf; Fri, 02 Apr 2021 15:31:51 +0200
+Subject: Re: [PATCH] platform/x86: intel_pmc_core: export platform
+ global_reset via sysfs.
+To:     Tomas Winkler <tomas.winkler@intel.com>,
+        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        David E Box <david.e.box@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tamar Mashiah <tamar.mashiah@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+References: <20210401213144.1009224-1-tomas.winkler@intel.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <f930c11b-7324-19ee-9776-d97a90533b21@metux.net>
+Date:   Fri, 2 Apr 2021 15:31:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygBX+phgHWdgkQCLAA--.61503S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7KFyfWF17AFyxur4kKw45Wrg_yoW8tw1Upa
-        13Kw1kurZ8CrWUCay7tF13u3yUuFZ3Gw13CFy8AF45Crs3tF4ak3saqF13WF15GF1xA3yU
-        tFWUuws0ya18Z37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyFb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E
-        4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGV
-        WUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_
-        Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rV
-        WrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_
-        GrUvcSsGvfC2KfnxnUUI43ZEXa7IU5PpnJUUUUU==
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+In-Reply-To: <20210401213144.1009224-1-tomas.winkler@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:IZu7NSzQEdCaYaop5YZYea5lfTlHFn4m6/du8f79d+chvvJdTbJ
+ GoShAPEkxR3vPrar/3Utbf2kjaDOuQIUIqZZXPTdoBoUWwalMwIHmNVXlonzm8RtOhe1BZa
+ 0+vKpTk1MLoToSWAurd3eeM3iSstaH1SAqthJlK1gZ6GLqK+K6Y7Jew5r+glvWEjpDpGBbr
+ 6EFIhglDGJ5jPiwJN4LSQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+IWMqBpt+/U=:pn+iKmMLb+Mm1y73/k7FgN
+ ug+msfUqiHCnXrfGEp24dtGv+Pxi2/IrKt9XI/djlpb1EBakRTXXGJDBZamUh696avsrZrbdu
+ wYaQyRb1lGH6JSEM1i926u0OslC/x2iaklAqB1YYZknQ+J9PAwLFwvCxAY7TxQKHNh/En336M
+ ug2BfBTSNUMGEGzoLyLwWlWsaPNJ9FO2Bi+nt6yl0UuNU/tcL1EpKV9cDozZJzun9C50DTMmY
+ ijXRDubX99HVCaRxT88niu7DPz/VTghcG8voRqxDW2MwvL6T0fPGQiwLIT4QBPEBir9TQA61H
+ ALTKeaOobN5mltky0yhFY23tkkljhMoyAmka5DxPTKD0Zb3y9M2URMqKcvvLrwcHkkXnykqKV
+ ATBArGE2Wxasbzni5OrPw25yqDlOhM9a5JM05aQHG2X47x62OTVRmFS+NeEh5MiJEGuyEmdAV
+ Tmdnn6HvcFS2fZ68I7Eocpfgh5zORhYF37xrO2cda6/CgwoG6HJs
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jisheng Zhang <jszhang@kernel.org>
+On 01.04.21 23:31, Tomas Winkler wrote:
 
-Running "make" on an already compiled kernel tree will rebuild the
-kernel even without any modifications:
+Hi,
 
-  CALL    linux/scripts/checksyscalls.sh
-  CALL    linux/scripts/atomic/check-atomics.sh
-  CHK     include/generated/compile.h
-  SO2S    arch/riscv/kernel/vdso/vdso-syms.S
-  AS      arch/riscv/kernel/vdso/vdso-syms.o
-  AR      arch/riscv/kernel/vdso/built-in.a
-  AR      arch/riscv/kernel/built-in.a
-  AR      arch/riscv/built-in.a
-  GEN     .version
-  CHK     include/generated/compile.h
-  UPD     include/generated/compile.h
-  CC      init/version.o
-  AR      init/built-in.a
-  LD      vmlinux.o
+> During PCH manufacturing a global reset has to be induced in order
+> for configuration changes take affect upon following platform reset.
+> This setting was commonly done by accessing PMC registers via /dev/mem
+> but due to security concern /dev/mem access is much restricted, hence
+> the reason for exposing this setting via dedicated sysfs interface.
+> To prevent post manufacturing abuse the register is protected
+> by hardware locking.
 
-The reason is "Any target that utilizes if_changed must be listed in
-$(targets), otherwise the command line check will fail, and the target
-will always be built" as explained by Documentation/kbuild/makefiles.rst
+could you please define "manufacturing" ? The chip or board ?
 
-Fix this build bug by adding vdso-syms.S to $(targets)
+Is there any use for this, after the machine left the factory ?
 
-At the same time, there are two trivial clean up modifications:
 
-- the vdso-dummy.o is not needed any more after so remove it.
+--mtx
 
-- vdso.lds is a generated file, so it should be prefixed with
-  $(obj)/ instead of $(src)/
-
-Fixes: c2c81bb2f691 ("RISC-V: Fix the VDSO symbol generaton for binutils-2.35+")
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
- arch/riscv/kernel/vdso/Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
-index 71a315e73cbe..7b9f505ba82f 100644
---- a/arch/riscv/kernel/vdso/Makefile
-+++ b/arch/riscv/kernel/vdso/Makefile
-@@ -23,7 +23,7 @@ ifneq ($(c-gettimeofday-y),)
- endif
- 
- # Build rules
--targets := $(obj-vdso) vdso.so vdso.so.dbg vdso.lds vdso-dummy.o
-+targets := $(obj-vdso) vdso.so vdso.so.dbg vdso.lds vdso-syms.S
- obj-vdso := $(addprefix $(obj)/, $(obj-vdso))
- 
- obj-y += vdso.o vdso-syms.o
-@@ -42,7 +42,7 @@ $(obj)/vdso.o: $(obj)/vdso.so
- 
- # link rule for the .so file, .lds has to be first
- SYSCFLAGS_vdso.so.dbg = $(c_flags)
--$(obj)/vdso.so.dbg: $(src)/vdso.lds $(obj-vdso) FORCE
-+$(obj)/vdso.so.dbg: $(obj)/vdso.lds $(obj-vdso) FORCE
- 	$(call if_changed,vdsold)
- SYSCFLAGS_vdso.so.dbg = -shared -s -Wl,-soname=linux-vdso.so.1 \
- 	-Wl,--build-id=sha1 -Wl,--hash-style=both
 -- 
-2.31.0
-
-
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
