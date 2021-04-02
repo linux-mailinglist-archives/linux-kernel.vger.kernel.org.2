@@ -2,101 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2C5352589
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 04:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E3335258E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 04:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234004AbhDBCsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 22:48:55 -0400
-Received: from mga17.intel.com ([192.55.52.151]:43768 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233665AbhDBCsy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 22:48:54 -0400
-IronPort-SDR: wV529Fcw12XmVUumTuIDOmgvu6iCTC63Kbc8oBsKBlJ+H2bR0xC47fvAMFLNf53dVCzyAvWvEf
- Js59GvyoWi8A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="172406896"
-X-IronPort-AV: E=Sophos;i="5.81,298,1610438400"; 
-   d="scan'208";a="172406896"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 19:48:53 -0700
-IronPort-SDR: 0cZxnLKxQ2igMPiF7I7ZOZm72ImAl9vnmvomzopHCqpBCB4r65MRotijuOEeJ+jhi8Q40bIsZR
- uyFBoxn3nh0A==
-X-IronPort-AV: E=Sophos;i="5.81,298,1610438400"; 
-   d="scan'208";a="596570650"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 19:48:53 -0700
-Date:   Thu, 1 Apr 2021 19:48:52 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC v1 00/26] Add TDX Guest Support
-Message-ID: <20210402024852.GK1285835@tassilo.jf.intel.com>
-References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <95e97456-478b-c6a2-f851-3b19ce794262@intel.com>
+        id S234272AbhDBCvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 22:51:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233665AbhDBCvB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 22:51:01 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86AA1C061788
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 19:51:00 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id ap14so5737238ejc.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 19:51:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=j6XxPke5LD1nAipEXvkY6x4mx+Z9DuUCRz1Jm7iuUKA=;
+        b=XxYgKbhyLhYwcqwHk/FPfahilkQhxmrZb04CQOEcZW2g6yH/Rovv91Y1IXHYuroxMb
+         eZTexywFtIq6AOm5m+eWt9EuD3vbTgAA84ftEirqTn81D9Ab3PKopF5yF2ftK8tGZAAx
+         XGgdYftYeFfWbKLDq7dEPaO72JdkPur/6H+rw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j6XxPke5LD1nAipEXvkY6x4mx+Z9DuUCRz1Jm7iuUKA=;
+        b=QdNkNt2J4MgnZ9lSxnr+9Gwitco+kIrZB6qYKvcwcbWiXqJ5XwS34V+Xkh+Ak3W+kO
+         PGHrX7oE+6SgSVtrbx/I/EwgqAKt2gI3U800a5/hHpjkbCDl7DPHX9wqCzlTCcfDlB5G
+         dbQe/j76Jvx/+TgmEcP1SQAZlFwxP9eHDxSJz6N3PvI+L3YnoisOKenNYw0LlB16u8W1
+         1TYzaKUT6+IDwIvzBnEp6G9CJNXX6EvHBmO4BRJZ8aESh+I/YNxG3YBEpD+2a7EPGbXi
+         hkygOTh+3Gc6MzUjcKKr8ngbVdHnWS1jtJ6tjp6E3HFKEuharQ8Io1cliewak0st8HT1
+         GazA==
+X-Gm-Message-State: AOAM533dq9rVTrxhQTB4f83GiImAKSVS4CUKYatSx2thGXKcb7+ZoH4O
+        4uGKpqxCeiGaqeuMZZWBJPw0tvEC2rFIhw==
+X-Google-Smtp-Source: ABdhPJwIk2+HvlJh9VRyczEjUc7KnKloJ5qOAPmutchp/m9SY9LFtMRxV0GotPMe8NDtJ7VB+5HOOA==
+X-Received: by 2002:a17:906:d291:: with SMTP id ay17mr11714246ejb.308.1617331858699;
+        Thu, 01 Apr 2021 19:50:58 -0700 (PDT)
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com. [209.85.221.54])
+        by smtp.gmail.com with ESMTPSA id r19sm4610215edp.52.2021.04.01.19.50.57
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Apr 2021 19:50:57 -0700 (PDT)
+Received: by mail-wr1-f54.google.com with SMTP id i18so102998wrm.5
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 19:50:57 -0700 (PDT)
+X-Received: by 2002:a05:6000:1549:: with SMTP id 9mr12962467wry.192.1617331856969;
+ Thu, 01 Apr 2021 19:50:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <95e97456-478b-c6a2-f851-3b19ce794262@intel.com>
+References: <20210326095840.364424-1-ribalda@chromium.org> <20210326095840.364424-23-ribalda@chromium.org>
+In-Reply-To: <20210326095840.364424-23-ribalda@chromium.org>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Fri, 2 Apr 2021 11:50:44 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5BCydvzYx4FGyNQSbrT9twGVcFGn2vTfsvLHKYdRhE8GQ@mail.gmail.com>
+Message-ID: <CAAFQd5BCydvzYx4FGyNQSbrT9twGVcFGn2vTfsvLHKYdRhE8GQ@mail.gmail.com>
+Subject: Re: [PATCH v9 22/22] uvc: use vb2 ioctl and fop helpers
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I've heard things like "we need to harden the drivers" or "we need to do
-> audits" and that drivers might be "whitelisted".
+Hi Ricardo,
 
-The basic driver allow listing patches are already in the repository,
-but not currently posted or complete:
+On Fri, Mar 26, 2021 at 7:00 PM Ricardo Ribalda <ribalda@chromium.org> wrote:
+>
+> From: Hans Verkuil <hverkuil@xs4all.nl>
+>
+> When uvc was written the vb2 ioctl and file operation helpers didn't exist.
+>
+> This patch switches uvc over to those helpers, which removes a lot of boilerplate
+> code and simplifies VIDIOC_G/S_PRIORITY handling and allows us to drop the
+> 'privileges' scheme, since that's now handled inside the vb2 helpers.
+>
+> This makes it possible for uvc to pass the v4l2-compliance streaming tests.
+>
+> Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-https://github.com/intel/tdx/commits/guest
+Thanks for the patch. Did you perhaps miss adding your sign-off?
 
-> 
-> What are we talking about specifically?  Which drivers?  How many
-> approximately?  Just virtio?  
+Also, see my comments inline.
 
-Right now just virtio, later other drivers that hypervisors need.
+[snip]
+> @@ -1166,11 +969,6 @@ static int uvc_ioctl_s_parm(struct file *file, void *fh,
+>  {
+>         struct uvc_fh *handle = fh;
+>         struct uvc_streaming *stream = handle->stream;
+> -       int ret;
+> -
+> -       ret = uvc_acquire_privileges(handle);
+> -       if (ret < 0)
+> -               return ret;
 
-> Are there any "real" hardware drivers
-> involved like how QEMU emulates an e1000 or rtl8139 device?  
+Why is it okay not to acquire the privileges here?
 
-Not currently (but some later hypervisor might rely on one of those)
+>
+>         return uvc_v4l2_set_streamparm(stream, parm);
+>  }
 
-> What about
-> the APIC or HPET?
-
-No IO-APIC, but the local APIC. No HPET.
-
-> 
-> How broadly across the kernel is this going to go?
-
-Not very broadly for drivers.
-
-> 
-> Without something concrete, it's really hard to figure out if we should
-> go full-blown paravirtualized MMIO, or do something like the #VE
-> trapping that's in this series currently.
-
-As Sean says the concern about MMIO is less drivers (which should
-be generally ok if they work on other architectures which require MMIO
-magic), but other odd code that only ran on x86 before.
-
-I really don't understand your crusade against #VE. It really
-isn't that bad if we can avoid the few corner cases.
-
-For me it would seem wrong to force all MMIO for all drivers to some
-complicated paravirt construct, blowing up code side everywhere
-and adding complicated self modifying code, when it's only needed for very
-few drivers. But we also don't want to patch every MMIO to be special cased
-even those few drivers.
-
-#VE based MMIO avoids all that cleanly while being nicely non intrusive.
-
--Andi
-
+Best regards,
+Tomasz
