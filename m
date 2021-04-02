@@ -2,98 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C67352CA9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:09:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F470352CAD
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236281AbhDBPmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 11:42:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33682 "EHLO
+        id S236341AbhDBPnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 11:43:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234968AbhDBPmY (ORCPT
+        with ESMTP id S235366AbhDBPm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 11:42:24 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2AEDC0613E6;
-        Fri,  2 Apr 2021 08:42:21 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id u20so5946881lja.13;
-        Fri, 02 Apr 2021 08:42:21 -0700 (PDT)
+        Fri, 2 Apr 2021 11:42:57 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D4EEC061788
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 08:42:56 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id x21-20020a17090a5315b029012c4a622e4aso2742889pjh.2
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 08:42:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ggySz5ziFujBJxLBrs7YHDp8OTC2HkWK1c+xKFsqIgE=;
-        b=Nz7dQjym5qVZsccPilJbfmOGjEgHU6MXQXCryAUdG0ybN3lGI6mBsl1Gwi5F340fnw
-         gmubvWwqdURU3W9hFdxCyhNPvu1p+4RJX6Z+wIYQmnMyPANbC8Xs0K1Qc1mBQ4YuFzby
-         LIk5wcLuGcoVsX2RibIRZAEVSk9K5Myr8Pu3yiY25+9FTJyRA+BNBXYdxVM+qtHqn6q5
-         r6Ln0yccRTPax8JfcUYyH/YPdCi92DgtkFyZCk6Gb9xxfAgbk8NduhwlqnfZYcKYyRC6
-         Hh7y+8VlmQf64Rn56rNL1Ct6jnZK3poF7hWlU6CSVLBX9DSCIwnIUSgqL4/+gQqObfPn
-         neEA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=948hixTMO4Bse84quoCDDTDU0D12jquiYBG/MaisshI=;
+        b=rOfzGVulAMSSNZLnXpdUSnMz9qp59WaXkf1bCdPbisSUQcE4FmyzPoa+HvgeMbj93l
+         //LpXDGPZI8qPxMgCAS6emI3JB6MgLd+ue+Goct+Ff5JnWOJ/IGdVtXmD0e4/Cc63KKG
+         t4yGRDQLmbduzsmnr5fiZ4St2SqOfotviZn9dnz2VJvtVIMUpcxdWoyKu3+VV18pB5wl
+         CX8dkPraIbgDYjb8M5mAPt5amM2hKhn76EoylG44tkrLJiAIVmlSNRwEThBmZKoE8JsK
+         54Ku+GKrgI+qkfOWbbS+65murE5mtumEh1yNijnkqVPO0ipQhRCl5n1kcSfY6MC+HWCc
+         A20g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ggySz5ziFujBJxLBrs7YHDp8OTC2HkWK1c+xKFsqIgE=;
-        b=Z/uE0PDJmCZ63uujwD8aAQ3G4ewYh3G//07aSIvHLj0XEaVMT2oD1o60VIMchyNTDb
-         RAKFFooq0NpN7dzDfD+B/9R4HLXmNwaLHk0g7jAaYiLiyELcNBKY5e2AvVBQgx9WiYKS
-         h4yiTzXMqXRDVC3CF4HQKsJFroNyKcytHUNHWrBiEkEJL5sdgnoNUECI5MomQ+K5rQst
-         B9Wdrn6jkJhIfBemvs3ylV6ZdfR3i51fSLXVCWIY4KOtTMi9FwGf3SlqIa8gqxzsWDT0
-         /xc4nVWKMQNKSMk4Zw4tWph6DGSM7M11vC8im6F/xCOguLIMha8QIWDSJuC2T/uoE06f
-         62iQ==
-X-Gm-Message-State: AOAM530T2qYDxRuFtlCFw2hUQwQEDi+gnL8iWDeFWE54BiJrj4BOpFBt
-        tdfotsBRT2YdjAfH815gynizDusba5dDeB24bV+FPsjDCaQ=
-X-Google-Smtp-Source: ABdhPJyV8JUgqosPubOwp84IVUCKDKLhg6YVBOoZt9qxKxatixf45J3IS0QozRVb6PrEBUw8/o36RQRXg8sJYO1+fUA=
-X-Received: by 2002:a2e:8503:: with SMTP id j3mr8627596lji.272.1617378140014;
- Fri, 02 Apr 2021 08:42:20 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=948hixTMO4Bse84quoCDDTDU0D12jquiYBG/MaisshI=;
+        b=EG2233byQf9XllURtX4/XWbfcVLv6WE0F8Ux12R4Lz+ogqiS753M3KDriKHvY27Iv/
+         cAhpgaWVEcNYik82c9CqODmPX0gP90JYHdXaQqvcdWFoRdDeP6WhlmPw/W3DnIzvTqzE
+         Ugf4GDGmgk0KJ2pmlj+50vaIWbqvbYGBV+XJ7f8e9Qnt7+tr55RJ2b13nl9xVGCXzN6g
+         qC0UApVshGWj494R0KrWtwDw8QGz5Z5uzGL0RFy/WQhdjRduqGW5wfs+NPB9+6PUZdhZ
+         mC09ZSf5mnWZxAkNuQTeH7DJYbVxBharY3eNr0qlsaXlnvXLsmdRwbBU2LpJ/wl0Fvau
+         Lgcg==
+X-Gm-Message-State: AOAM530FMdSKdDNjhnJBw2kk3SNTKD6kj9equBQf3gU7AJ6J3ENC+Xsf
+        bJUGDBpIGnJ1R5e3N7YFHb/HGA==
+X-Google-Smtp-Source: ABdhPJzEm9zD9QFj85ocvRmTmxRm0r8hRGMzuCeiZsQ/utPofnN/IZWYdnpG9T/w7AaWUS60aALNuA==
+X-Received: by 2002:a17:90b:201:: with SMTP id fy1mr14122204pjb.108.1617378175466;
+        Fri, 02 Apr 2021 08:42:55 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id v9sm9211979pfc.108.2021.04.02.08.42.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Apr 2021 08:42:54 -0700 (PDT)
+Date:   Fri, 2 Apr 2021 15:42:51 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Kai Huang <kai.huang@intel.com>, kvm@vger.kernel.org,
+        linux-sgx@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH v3 07/25] x86/sgx: Initialize virtual EPC driver even
+ when SGX driver is disabled
+Message-ID: <YGc7ezLWEu/ZvUOu@google.com>
+References: <cover.1616136307.git.kai.huang@intel.com>
+ <d35d17a02bbf8feef83a536cec8b43746d4ea557.1616136308.git.kai.huang@intel.com>
+ <20210402094816.GC28499@zn.tnic>
 MIME-Version: 1.0
-References: <20210401075117.998330-1-wanjiabing@vivo.com>
-In-Reply-To: <20210401075117.998330-1-wanjiabing@vivo.com>
-From:   Steve French <smfrench@gmail.com>
-Date:   Fri, 2 Apr 2021 10:42:09 -0500
-Message-ID: <CAH2r5ms-rZPZi9TLE6f4Xoc33B51YKbuT+pVy8xaeNFzg9jLVg@mail.gmail.com>
-Subject: Re: [PATCH] fs: cifs: Remove unnecessary struct declaration
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     Steve French <sfrench@samba.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        LKML <linux-kernel@vger.kernel.org>, kael_w@yeah.net
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210402094816.GC28499@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-merged into cifs-2.6.git for-next
+On Fri, Apr 02, 2021, Borislav Petkov wrote:
+> On Fri, Mar 19, 2021 at 08:23:02PM +1300, Kai Huang wrote:
+> > Modify sgx_init() to always try to initialize the virtual EPC driver,
+> > even if the SGX driver is disabled.  The SGX driver might be disabled
+> > if SGX Launch Control is in locked mode, or not supported in the
+> > hardware at all.  This allows (non-Linux) guests that support non-LC
+> > configurations to use SGX.
+> > 
+> > Acked-by: Dave Hansen <dave.hansen@intel.com>
+> > Reviewed-by: Sean Christopherson <seanjc@google.com>
+> > Signed-off-by: Kai Huang <kai.huang@intel.com>
+> > ---
+> >  arch/x86/kernel/cpu/sgx/main.c | 10 +++++++++-
+> >  1 file changed, 9 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> > index 6a734f484aa7..b73114150ff8 100644
+> > --- a/arch/x86/kernel/cpu/sgx/main.c
+> > +++ b/arch/x86/kernel/cpu/sgx/main.c
+> > @@ -743,7 +743,15 @@ static int __init sgx_init(void)
+> >  		goto err_page_cache;
+> >  	}
+> >  
+> > -	ret = sgx_drv_init();
+> > +	/*
+> > +	 * Always try to initialize the native *and* KVM drivers.
+> > +	 * The KVM driver is less picky than the native one and
+> > +	 * can function if the native one is not supported on the
+> > +	 * current system or fails to initialize.
+> > +	 *
+> > +	 * Error out only if both fail to initialize.
+> > +	 */
+> > +	ret = !!sgx_drv_init() & !!sgx_vepc_init();
+> 
+> This is a silly way of writing:
+> 
+>         if (sgx_drv_init() && sgx_vepc_init())
+>                 goto err_kthread;
+> 
+> methinks.
 
-On Thu, Apr 1, 2021 at 2:52 AM Wan Jiabing <wanjiabing@vivo.com> wrote:
->
-> struct cifs_readdata is declared twice. One is declared
-> at 208th line.
-> And struct cifs_readdata is defined blew.
-> The declaration here is not needed. Remove the duplicate.
->
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-> ---
->  fs/cifs/cifsglob.h | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/fs/cifs/cifsglob.h b/fs/cifs/cifsglob.h
-> index 67c056a9a519..ec824ab8c5ca 100644
-> --- a/fs/cifs/cifsglob.h
-> +++ b/fs/cifs/cifsglob.h
-> @@ -1283,8 +1283,6 @@ struct cifs_aio_ctx {
->         bool                    direct_io;
->  };
->
-> -struct cifs_readdata;
-> -
->  /* asynchronous read support */
->  struct cifs_readdata {
->         struct kref                     refcount;
-> --
-> 2.25.1
->
-
-
--- 
-Thanks,
-
-Steve
+Nope!  That's wrong, as sgx_epc_init() will not be called if sgx_drv_init()
+succeeds.  And writing it as "if (sgx_drv_init() || sgx_vepc_init())" is also
+wrong since that would kill SGX when one of the drivers is alive and well.
