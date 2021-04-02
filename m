@@ -2,127 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BEF2352D3E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:10:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C3D8352D4F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235435AbhDBPXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 11:23:23 -0400
-Received: from smtpcmd15177.aruba.it ([62.149.156.177]:46690 "EHLO
-        smtpcmd15177.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235198AbhDBPXW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 11:23:22 -0400
-Received: from [192.168.126.129] ([146.241.148.6])
-        by Aruba Outgoing Smtp  with ESMTPSA
-        id SLdmlmMJ3LwkNSLdmleqO8; Fri, 02 Apr 2021 17:23:19 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1617376999; bh=Zjgzub5UB8H8XQ9V4GX5bcr4pkotkNmq2kr2buL9Beg=;
-        h=Subject:To:From:Date:MIME-Version:Content-Type;
-        b=X+qGZbDU9Q6w7LxLKkxe5wTWsTbkLVJZuooXOA+BodQ15Is0JLWXkXX/88gINGyzm
-         S7Ur8zROubQakL0IE3GptcbYyzHBkQn1FzxmUuAUX53zq501EFeqmc+V/m7r1FImfn
-         MlAZ4dUSALlA8hyN14yJo3xi0gDdv63FXIqTcsm/yjAA7xjg/Moq4GfNkN3mz6n5d/
-         NEoPHCl1wkIfUhNhUm64Ui0gwCeI81XW3p7IEEILKVR+EZQYOlfAtFvPHs4pAl+oCB
-         aHYFOMCvDUrNarcWfvRuPZmsxDE3O/adte1rzIGFYO2jMaeeCgN5XrZAfohJJobZWy
-         OLlox5yKa5QCw==
-Subject: Re: [PATCH v2 3/3] Input: add driver for the Hycon HY46XX touchpanel
- series
-To:     =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.ne@posteo.net>
-References: <20210306194120.GA1075725@robh.at.kernel.org>
- <20210401230358.2468618-1-giulio.benetti@benettiengineering.com>
- <20210401230358.2468618-4-giulio.benetti@benettiengineering.com>
- <YGbc7Qbu6s659Mx4@latitude>
-From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
-Message-ID: <a4a060a1-8cf3-71f8-9f4a-498870a9cb53@benettiengineering.com>
-Date:   Fri, 2 Apr 2021 17:23:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S235931AbhDBPXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 11:23:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37142 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235634AbhDBPXl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 11:23:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B25EA61155;
+        Fri,  2 Apr 2021 15:23:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617377020;
+        bh=DBl2fwgcPxtK+wafl3e+AoDL7rHOuEM2EySnkBrXa18=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VPHheqi7hj3Ky8QYaqiooCBeHfhVgOjQY8lrW17v6d/dx8LvnHkXrGNy79Wk23aXo
+         ZbF9qnFOiimlWJiraE/MBhv/zSETlFdwGFkTYo//bBlpqRyK0IkhCtw9GlsXvlUh9k
+         G9tBnGR1v4ZYMboX8Vg2HtA3O7rJ6Sr9/sd3YnWMynN9Chu+WjkVZJFubFydCk19tm
+         0M0MUxD1sZmWYJHqzgOgCNrlxMcrCgkEqe4eQf+yW2hBk1G28ukNKp399u3uw9OpB6
+         8xWVRnT+ezrfSVWRl8L+FQBdQd1liiWA0Z8s5iqtC6AA4qF63K60Saz6JukrcpFfhb
+         MaWv53xYkTkIg==
+Date:   Fri, 2 Apr 2021 16:23:26 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Steve Lee <steves.lee@maximintegrated.com>
+Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        ckeepax@opensource.cirrus.com, geert@linux-m68k.org,
+        rf@opensource.wolfsonmicro.com, shumingf@realtek.com,
+        srinivas.kandagatla@linaro.org, krzk@kernel.org, dmurphy@ti.com,
+        jack.yu@realtek.com, nuno.sa@analog.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        ryan.lee.maxim@gmail.com, steves.lee.maxim@gmail.com
+Subject: Re: [PATCH] ASoC: max98390: Add controls for tx path
+Message-ID: <20210402152326.GA5402@sirena.org.uk>
+References: <20210402033643.12259-1-steves.lee@maximintegrated.com>
 MIME-Version: 1.0
-In-Reply-To: <YGbc7Qbu6s659Mx4@latitude>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfP0ZAjh3bi9ubFRtnjZE8kNgc6hXya9iP7Jl3K/EySvUDaWVVPU0Dx06B+pTmj0O83bOb72Isk0TMjZIeRHYRKgVDaK9J7C8eSVnJLmDxMnsi6xIZ6aL
- gpSVT1Cs6g6Ji8tQVdRRu/8rE2StHnfe1TKGJWwuMQQpI8Oj1R65ApOIIX317tPE8zjKwApmUxDxUbhkNEUokNxdK1LK3Q0Ez+QdSg3QnKHSSGdu2kjMWMhe
- 4mQhKd02sTfhFDG1h/9tKn1U0fqUzLp+tunyvWmNxgYz7S2G9CMzabtvhwDIYd7oDorYp+yu1nBRYIKL+lM7EtOJBEsXzdmP84StLcVB9Mr9V0n1trMPyZbH
- Bs3i14B3ZDM9Tyuhvoo7vPy2P4HIg0zoQPGfxe8RAqCcANp9I24AUhm9/VQ5y/him10NG7SJqLEfYxq8jKeA2tQqSIO9C2PMJNqJn5DIOAmfYhms1Fk=
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="uAKRQypu60I7Lcqm"
+Content-Disposition: inline
+In-Reply-To: <20210402033643.12259-1-steves.lee@maximintegrated.com>
+X-Cookie: Dammit Jim, I'm an actor, not a doctor.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
 
-On 4/2/21 10:59 AM, Jonathan Neuschäfer wrote:
-> Hi,
-> 
-> a few remarks below.
-> 
-> On Fri, Apr 02, 2021 at 01:03:58AM +0200, Giulio Benetti wrote:
->> This patch adds support for Hycon HY46XX.
->>
->> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
->> ---
->> V1->V2:
->> * removed proximity-sensor-switch property according to previous patch
->> As suggested by Dmitry Torokhov
->> * moved i2c communaction to regmap use
->> * added macro to avoid magic number
->> * removed cmd variable that could uninitiliazed since we're using regmap now
->> * removed useless byte masking
->> * removed useless struct hycon_hy46xx_i2c_chip_data
->> * used IRQF_ONESHOT only for isr
->> ---
-> 
-> 
->> +config TOUCHSCREEN_HYCON_HY46XX
->> +	tristate "Hycon hy46xx touchscreen support"
->> +	depends on I2C
->> +	help
->> +	  Say Y here if you have a touchscreen using Hycon hy46xx,
->> +	  or something similar enough.
-> 
-> The "something similar enough" part doesn't seem relevant, because the
-> driver only lists HY46xx chips (in the compatible strings), and no chips
-> that are similar enough to work with the driver, but have a different
-> part number.
+--uAKRQypu60I7Lcqm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Right
+On Fri, Apr 02, 2021 at 12:36:43PM +0900, Steve Lee wrote:
 
->> +static void hycon_hy46xx_get_defaults(struct device *dev, struct hycon_hy46xx_data *tsdata)
->> +{
->> +	bool val_bool;
->> +	int error;
->> +	u32 val;
->> +
->> +	error = device_property_read_u32(dev, "threshold", &val);
-> 
-> This seems to follow the old version of the binding, where
-> Hycon-specific properties didn't have the "hycon," prefix.
-> Please check that the driver still works with a devicetree that follows
-> the newest version of the binding.
+> +	SOC_SINGLE("Tx Enable Selection", MAX98390_PCM_TX_EN_A,
+> +		0, 255, 0),
 
-Ah yes, I've forgotten it while changing in bindings.
+I'm not clear what this is (especially given the source selection below)
+but it looks like it should be a mute control?
 
->> +MODULE_AUTHOR("Giulio Benetti <giulio.benetti@micronovasrl.com>");
-> 
-> This is a different email address than you used in the DT binding. If
-> this is intentional, no problem (Just letting you know, in case it's
-> unintentional).
+> +	SOC_SINGLE("Tx Hiz Selection", MAX98390_PCM_TX_HIZ_CTRL_A,
+> +		0, 255, 0),
 
-I've missed that
+This I'd expect to be tied into machine driver configuration, either DT
+properties or TDM slot configuration - it's not something that looks
+like it's something you'd want to control at runtime.
 
-> 
-> Thanks,
-> Jonathan Neuschäfer
-> 
+> +	SOC_SINGLE("Tx Source Selection", MAX98390_PCM_CH_SRC_2,
+> +		0, 255, 0),
 
-Thank you!
-Best regards
--- 
-Giulio Benetti
-Benetti Engineering sas
+This looks like it should be a DAPM control or possibly a TDM slot
+configuration - look at how the Arizona devices handle routing from
+multiple TDM slots for the DAPM version.
+
+--uAKRQypu60I7Lcqm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBnNu4ACgkQJNaLcl1U
+h9AcQAf9HFJYiEd0KVxqnDJ5nyLgUXBD7W2RjBQ7MMluKeti3cwsaSiFHs90efQt
+7wTHZWUbEl1V3FdBv1u/xe8yyCkrEBFUt5IRKh2HUcvvM7izZrfzl+Pfe3uz3G5j
++V7545xbUvIUsgMTDAGTdCjTZrjVvATyXYLNiZZKzFqrEUrT5fEWrKfoSnfO3EQG
+EHC5FDmzGz8jUWOjdUo6FkFXegsLJC2pm66jmSrT4pyVGQe71cePh2O03/Ok9uU5
+U5TTpQgqekU80WyOVAuJPoPiJAi1Xr/vV9H9LSlwxazeINQZDHYJhyqOhLzBtjYg
+K1XFzhEKIAHt6p61no1KcnWVk9ECEw==
+=k78j
+-----END PGP SIGNATURE-----
+
+--uAKRQypu60I7Lcqm--
