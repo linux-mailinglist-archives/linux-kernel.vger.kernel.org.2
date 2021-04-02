@@ -2,90 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8661F352F56
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 20:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BED02352F57
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 20:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235650AbhDBSdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 14:33:35 -0400
-Received: from angie.orcam.me.uk ([157.25.102.26]:38310 "EHLO
-        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbhDBSdd (ORCPT
+        id S234996AbhDBSh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 14:37:27 -0400
+Received: from smtprelay0035.hostedemail.com ([216.40.44.35]:48604 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229647AbhDBShY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 14:33:33 -0400
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 0BDAE92009C; Fri,  2 Apr 2021 20:33:31 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 05AAC92009B;
-        Fri,  2 Apr 2021 20:33:30 +0200 (CEST)
-Date:   Fri, 2 Apr 2021 20:33:30 +0200 (CEST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     David Abdurachmanov <david.abdurachmanov@gmail.com>
-cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Alex Ghiti <alex@ghiti.fr>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] riscv: Bump COMMAND_LINE_SIZE value to 1024
-In-Reply-To: <CAEn-LTqTXCEC=bXTvGyo8SNL0JMWRKtiSwQB7R=Pc4uhxZUruA@mail.gmail.com>
-Message-ID: <alpine.DEB.2.21.2104022022300.18977@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2103302221590.18977@angie.orcam.me.uk> <mhng-08e5e4fb-8a42-4f7b-8ceb-ff549784100e@palmerdabbelt-glaptop> <CACT4Y+Z0PaAuUFrOBenztWkw8OV=J-qaeD1FASPM4ufcLg5a5A@mail.gmail.com>
- <CAEn-LTqTXCEC=bXTvGyo8SNL0JMWRKtiSwQB7R=Pc4uhxZUruA@mail.gmail.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Fri, 2 Apr 2021 14:37:24 -0400
+Received: from omf09.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 18B551848AB32;
+        Fri,  2 Apr 2021 18:37:22 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf09.hostedemail.com (Postfix) with ESMTPA id E522F1E04D5;
+        Fri,  2 Apr 2021 18:37:20 +0000 (UTC)
+Message-ID: <906c8d899a3840afab1e624736b44292eacc6c97.camel@perches.com>
+Subject: Re: [PATCH 14/16] staging: rtl8723bs: remove all RT_TRACE logs in
+ core/rtw_wlan_util.c
+From:   Joe Perches <joe@perches.com>
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc:     gregkh@linuxfoundation.org, dan.carpenter@oracle.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Date:   Fri, 02 Apr 2021 11:37:17 -0700
+In-Reply-To: <20210402174003.GA1399@agape.jhs>
+References: <cover.1617356821.git.fabioaiuto83@gmail.com>
+         <34bf6cdc7bdf5c64d47cb3525897970644de7052.1617356821.git.fabioaiuto83@gmail.com>
+         <2014e0fc141d73d907c781ca31c822c96d3a7c47.camel@perches.com>
+         <20210402125127.GB1420@agape.jhs>
+         <c845d8ea7d0d8e7a613471edb53d780d660142a9.camel@perches.com>
+         <20210402174003.GA1399@agape.jhs>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Server: rspamout03
+X-Rspamd-Queue-Id: E522F1E04D5
+X-Spam-Status: No, score=0.10
+X-Stat-Signature: naiaqt4b5fn5f7fstamd8n9znom8idsy
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/uc4cr6ntvwUF+AwVVlcVSiEqG4XhPtCI=
+X-HE-Tag: 1617388640-394859
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2 Apr 2021, David Abdurachmanov wrote:
+On Fri, 2021-04-02 at 19:40 +0200, Fabio Aiuto wrote:
+> On Fri, Apr 02, 2021 at 08:20:17AM -0700, Joe Perches wrote:
+> > On Fri, 2021-04-02 at 14:51 +0200, Fabio Aiuto wrote:
+> > > On Fri, Apr 02, 2021 at 03:37:57AM -0700, Joe Perches wrote:
+> > > > On Fri, 2021-04-02 at 12:01 +0200, Fabio Aiuto wrote:
+> > > > > remove all RT_TRACE logs
+> > > > > 
+> > > > > fix patch-related checkpatch issues
+[]
+> > > > Lastly, another suggestion would be to just submit a single patch
+> > > > removing _ALL_ the RT_TRACE uses not intermixing various other cleanups
+> > > > with the series and then do those other cleanups.
+> > > > 
+> > > > Using a coccinelle script like:
+> > > > 
+> > > > $ cat RT_TRACE.cocci
+> > > > @@
+> > > > expression a, b, c;
+> > > > @@
+> > > > 
+> > > > -	RT_TRACE(a, b, (c));
+> > > > 
+> > > > $ spatch -sp-file RT_TRACE.cocci drivers/staging/rtl8723bs/
+> > > > 
+> > > > And then clean up the various bits you think are inappropriately done.
+[]
+> > > thank you Joe, I tried with (RT_TRACE.cocci in parent folder)
+> > > 
+> > > user@host:~/src/git/kernels/staging$ spatch -sp-file ../RT_TRACE.cocci drivers/staging/rtl8723bs/
+> > > init_defs_builtins: /usr/local/bin/../lib/coccinelle/standard.h
+> > > 0 files match
+> > 
+> > Likely you are running the script on the tree after you have
+> > applied all your patches.
+> > 
+> > Try running the cocci script on a fresh copy of -next.
+> > 
+> > Using the script and adding the script in the commit message helps
+> > others to verify that the changes you make do not have any other effect.
+> > 
+> > $ cat RT_TRACE.cocci
+> > @@
+> > expression a, b, c;
+> > @@
+> > 
+> > -	RT_TRACE(a, b, (c));
+> > 
+> > $ git checkout next-20210401
+> > $ spatch -sp-file RT_TRACE.cocci --in-place --no-show-diff --very-quiet drivers/staging/rtl8723bs/
+> > 31 files match
+> > $ git diff --stat -p
+> >  drivers/staging/rtl8723bs/core/rtw_cmd.c          |  34 +------
+[]
+> >  28 files changed, 19 insertions(+), 935 deletions(-)
+[]
+> thank you Joe, this mail is so precious ;)
 
-> > > >  This macro is exported as a part of the user API so it must not depend on
-> > > > Kconfig.  Also changing it (rather than say adding COMMAND_LINE_SIZE_V2 or
-> > > > switching to an entirely new data object that has its dimension set in a
-> > > > different way) requires careful evaluation as external binaries have and
-> > > > will have the value it expands to compiled in, so it's a part of the ABI
-> > > > too.
-> > >
-> > > Thanks, I didn't realize this was part of the user BI.  In that case we
-> > > really can't chage it, so we'll have to sort out some other way do fix
-> > > whatever is going on.
-> > >
-> > > I've dropped this from fixes.
-> >
-> > Does increasing COMMAND_LINE_SIZE break user-space binaries? I would
-> > expect it to work the same way as adding new enum values, or adding
-> > fields at the end of versioned structs, etc.
-> > I would assume the old bootloaders/etc will only support up to the
-> > old, smaller max command line size, while the kernel will support
-> > larger command line size, which is fine.
-> > However, if something copies /proc/cmdline into a fixed-size buffer
-> > and expects that to work, that will break... that's quite unfortunate
-> > user-space code... is it what we afraid of?
-> >
-> > Alternatively, could expose the same COMMAND_LINE_SIZE, but internally
-> > support a larger command line?
-> 
-> Looking at kernel commit history I see PowerPC switched from 512 to
-> 2048, and I don't see complaints about the ABI on the mailing list.
-> 
-> If COMMAND_LINE_SIZE is used by user space applications and we
-> increase it there shouldn't be problems. I would expect things to
-> work, but just get truncated boot args? That is the application will
-> continue only to look at the initial 512 chars.
+I'm not quite sure what you mean by that but you quoted
+nearly 200k of the previous email.
 
- The macro is in an include/uapi header, so it's exported to the userland 
-and a part of the user API.  I don't know what the consequences are for 
-the RISC-V port specifically, but it has raised my attention, and I think 
-it has to be investigated.
+Please remember to trim your replies.
 
- Perhaps it's OK to change it after all, but you'd have to go through 
-known/potential users of this macro.  I guess there shouldn't be that many 
-of them.
 
- In any case it cannot depend on Kconfig, because the userland won't have 
-access to the configuration, and then presumably wants to handle any and 
-all.
-
-  Maciej
