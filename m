@@ -2,210 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31C81352F62
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 20:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 605AA352F71
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 20:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235874AbhDBSpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 14:45:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45254 "EHLO
+        id S236043AbhDBSt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 14:49:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235392AbhDBSpf (ORCPT
+        with ESMTP id S229722AbhDBStW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 14:45:35 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6371C06178A
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 11:45:33 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id gv19-20020a17090b11d3b029014c516f4eb5so1154730pjb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 11:45:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lBknpnUfvW7Mp8L8MjbRdTTbJ2YiP+RrDtDZ87i1HWc=;
-        b=a1l1lme4++l+zuVvbvuPg11j5VRcaKdhH+EdpHF4zqEVznOydK8W+SNJwIXmze+azb
-         HQzCWQ38y+RONCzZiM5t2cA9IZD6bGbCwLv6Snpgm1DkOINWhdsYHZUkDkIdzqjMrXk7
-         hCQgYTWI++hjt7Xc2CkMjSYTR1DI7wt8SLw6g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lBknpnUfvW7Mp8L8MjbRdTTbJ2YiP+RrDtDZ87i1HWc=;
-        b=b5/cxvZwUlSmjQZ/maykDj8qo7zNs912U8sLQBWNWxHt3PWBQBdBo/31e3MBXBisp6
-         R1/YMR94ufoRb8tqhMiQIsIMu7ow3PAAnoV1HFhQClXgO832x2vdB3/zFY5efdJSgpe8
-         yoDK6lZoq0Jyg5uz6no8oRXF2CfOvMPlThIlMEwlKKXXfu55WGajkiodwqmPDq8bmjdr
-         tUXL42zbQf/CmTuINBZf0AbyW0GUyQQr9bKWh6/DOX59PLUkukheRojBf5hipaL0LVSg
-         U0POnfUCUhTfYqLL402zByAtwbJRPCLxsSFQb+DfSPE14vBP+ks2RXRMBFP9pI+La8v+
-         1B5Q==
-X-Gm-Message-State: AOAM532VkDCgHSawsTX8WnBm9PlPzumfjSzUgOSskKXcTWb6A0O+hI7z
-        +oE+lCNtyDp5DyR72Cqu44oKXQ==
-X-Google-Smtp-Source: ABdhPJyqvR/GeA0hGMMS3fUELGKBLUJ3jxozyY1rdnFq7+JShRmPb9RGh1zy5AHLN03Qvq9gS6OOXQ==
-X-Received: by 2002:a17:90a:fa02:: with SMTP id cm2mr3055188pjb.171.1617389133265;
-        Fri, 02 Apr 2021 11:45:33 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:581c:e04f:7c08:c602])
-        by smtp.gmail.com with UTF8SMTPSA id l10sm8194972pfc.125.2021.04.02.11.45.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Apr 2021 11:45:32 -0700 (PDT)
-Date:   Fri, 2 Apr 2021 11:45:31 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     satya priya <skakit@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, kgunda@codeaurora.org
-Subject: Re: [PATCH V2 3/5] arm64: dts: qcom: pmk8350: Add PMIC peripherals
- for pmk8350
-Message-ID: <YGdmS8Ih5TGGMbdE@google.com>
-References: <1617268396-1837-1-git-send-email-skakit@codeaurora.org>
- <1617268396-1837-4-git-send-email-skakit@codeaurora.org>
+        Fri, 2 Apr 2021 14:49:22 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E53B3C0613E6
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 11:49:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=5imDHSwUQgOQxNC3QbJlwJWAuCKtgprf+OXufQ8xKUI=; b=OWrtf2ShLsrxIdQboFPAmWoB9a
+        wPpsYRyHqCVywTt3OWv819le9vEGjof/FZfZFZUHWMFlRhD2SbF5HwyYxf35FHWaPOhrfVRDNAi1a
+        NcjF9/duz/jBGkRCtdnMNJXYS7bdqDrEbjEq1+d7O9mxjfFnAbuGuZ0z1+fdEJFYOb7Aa/nBl3ytp
+        ZUikvVlKslGjVT2pfKJI7ZemI7PKJ4Ft0fsCacDyc3KCfpDqYGL5sdbOFLLNtrrh4QfMgYo9vwNKN
+        56FES1+4Ne4S25k1Ek0hDoI6BvJtzlo9A0y4+JHojdHSQvj46ZDBtV4rR+m7lxnlAsJ6dMtnIgmKE
+        Y/5J4p6Q==;
+Received: from [2601:1c0:6280:3f0::e0e1]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lSOr3-00800S-CN; Fri, 02 Apr 2021 18:49:16 +0000
+Subject: Re: Compiling Linux kernel into a build directory
+To:     James Courtier-Dutton <james.dutton@gmail.com>,
+        LKML Mailing List <linux-kernel@vger.kernel.org>
+References: <CAAMvbhGzj3mTbNoLf55ZF5hdEFwRg5xj1J+g5jP-BW+Hn9kn=Q@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <acb6aef1-c8b2-1f0b-3859-be72aad3e0eb@infradead.org>
+Date:   Fri, 2 Apr 2021 11:49:10 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
+In-Reply-To: <CAAMvbhGzj3mTbNoLf55ZF5hdEFwRg5xj1J+g5jP-BW+Hn9kn=Q@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1617268396-1837-4-git-send-email-skakit@codeaurora.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 02:43:14PM +0530, satya priya wrote:
-> subject: arm64: dts: qcom: pmk8350: Add PMIC peripherals for pmk8350
-
-same nit as for 1/5: maybe just 'arm64: dts: qcom: Add pml7350 support/.dtsi'
-or similar since this adds the initial .dtsi for the pmk8350?
-
-> Add PON, GPIO, RTC and other PMIC infra modules support for pmk8350.
-
-nit: also mention that it adds the pmk8350 .dtsi in the first place.
-
-> Signed-off-by: satya priya <skakit@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/pmk8350.dtsi | 100 ++++++++++++++++++++++++++++++++++
->  1 file changed, 100 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/qcom/pmk8350.dtsi
+On 4/2/21 11:29 AM, James Courtier-Dutton wrote:
+> Hi,
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/pmk8350.dtsi b/arch/arm64/boot/dts/qcom/pmk8350.dtsi
-> new file mode 100644
-> index 0000000..13631f2
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/pmk8350.dtsi
-> @@ -0,0 +1,100 @@
-> +// SPDX-License-Identifier: BSD-3-Clause
-> +// Copyright (c) 2021, The Linux Foundation. All rights reserved.
-> +
-> +#include <dt-bindings/input/input.h>
-> +#include <dt-bindings/input/linux-event-codes.h>
-> +#include <dt-bindings/interrupt-controller/irq.h>
-> +#include <dt-bindings/spmi/spmi.h>
-> +#include <dt-bindings/iio/qcom,spmi-adc7-pm8350.h>
-> +#include <dt-bindings/iio/qcom,spmi-adc7-pmk8350.h>
-> +#include <dt-bindings/iio/qcom,spmi-adc7-pmr735a.h>
-> +#include <dt-bindings/iio/qcom,spmi-adc7-pmr735b.h>
-> +
-> +&spmi_bus {
-> +	pmk8350: pmic@0 {
-> +		compatible = "qcom,pmk8350", "qcom,spmi-pmic";
+> Currently, when one builds the linux kernel, it places .o files all
+> over the source code tree.
+> Is there a way to have the linux kernel build, but place all the .o
+> files into a separate build folder?
+> Similar to how cmake or ninja work when building C source code.
+> 
+> One possible advantage of this approach is one can then put the build
+> folder on a ram disk / tmpfs   and be able to compile and test much
+> quicker.
 
-Please provide a link to the binding if it has been sent.
+That has been available for quite a long time now.
+Just use "O=somebuilddir" on the make command line.
 
-> +		reg = <0x0 SPMI_USID>;
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +
-> +		pmk8350_pon: pon@1300 {
-> +			compatible = "qcom,pm8998-pon";
-> +			reg = <0x1300>;
-> +
-> +			pwrkey {
-> +				compatible = "qcom,pmk8350-pwrkey";
-> +				interrupts = <0x0 0x13 0x7 IRQ_TYPE_EDGE_BOTH>;
-> +				linux,code = <KEY_POWER>;
-> +			};
-> +
-> +			resin {
-> +				compatible = "qcom,pmk8350-resin";
-> +				interrupts = <0x0 0x13 0x6 IRQ_TYPE_EDGE_BOTH>;
-> +				linux,code = <KEY_VOLUMEDOWN>;
-> +			};
+$ mkdir build
+$ make O=build allnoconfig
+$ make O=build all
 
-Is the usage of this keys really universal across different boards?
+AFAIK 'somebuilddir' can be a relative path (that's what
+I use, in the kernel source tree) or an absolute path,
+like O=/tmp/buildit .
 
-At least for the volume down key for most PMICs the config is in the
-board file, which seems to make more sense.
+From kernel Makefile "help":
+	@echo  '  make O=dir [targets] Locate all output files in "dir", including .config'
 
-> +		};
-> +
-> +		pmk8350_vadc: adc@3100 {
-> +			compatible = "qcom,spmi-adc7";
-> +			reg = <0x3100>;
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			interrupts = <0x0 0x31 0x0 IRQ_TYPE_EDGE_RISING>;
-> +			interrupt-names = "eoc-int-en-set";
-> +			#io-channel-cells = <1>;
-> +			io-channel-ranges;
-> +
-> +			pmk8350_die_temp {
-> +				reg = <PMK8350_ADC7_DIE_TEMP>;
-> +				label = "pmk8350_die_temp";
-> +				qcom,pre-scaling = <1 1>;
-> +			};
-> +
-> +			pm8350_die_temp {
-> +				reg = <PM8350_ADC7_DIE_TEMP>;
-> +				label = "pm8350_die_temp";
-> +				qcom,pre-scaling = <1 1>;
-> +			};
 
-nit: I think this should be 'alphabetical' order, so 'pm8350_die_temp' should
-be before 'pmk8350_die_temp'.
+and from kernel Makefile comments:
 
-> +
-> +			pmr735a_die_temp {
-> +				reg = <PMR735A_ADC7_DIE_TEMP>;
-> +				label = "pmr735a_die_temp";
-> +				qcom,pre-scaling = <1 1>;
-> +			};
-> +
-> +			pmr735b_die_temp {
-> +				reg = <PMR735B_ADC7_DIE_TEMP>;
-> +				label = "pmr735b_die_temp";
-> +				qcom,pre-scaling = <1 1>;
-> +			};
+# Kbuild will save output files in the current working directory.
+# This does not need to match to the root of the kernel source tree.
+#
+# For example, you can do this:
+#
+#  cd /dir/to/store/output/files; make -f /dir/to/kernel/source/Makefile
+#
+# If you want to save output files in a different location, there are
+# two syntaxes to specify it.
+#
+# 1) O=
+# Use "make O=dir/to/store/output/files/"
+#
+# 2) Set KBUILD_OUTPUT
+# Set the environment variable KBUILD_OUTPUT to point to the output directory.
+# export KBUILD_OUTPUT=dir/to/store/output/files/; make
+#
+# The O= assignment takes precedence over the KBUILD_OUTPUT environment
+# variable.
 
-Is it guaranteed that a board with the pmk8350 will always have the
-other 3 PMICs?
 
-> +		};
-> +
-> +		pmk8350_adc_tm: adc-tm@3400 {
-> +			compatible = "qcom,adc-tm7";
-> +			reg = <0x3400>;
-> +			interrupts = <0x0 0x34 0x0 IRQ_TYPE_EDGE_RISING>;
-> +			interrupt-names = "threshold";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			#thermal-sensor-cells = <1>;
-> +			status = "disabled";
-> +		};
-> +
-> +		pmk8350_gpios: gpios@b000 {
-> +			compatible = "qcom,pmk8350-gpio", "qcom,spmi-gpio";
-> +			reg = <0xb000>;
-> +			gpio-controller;
-> +			gpio-ranges = <&pmk8350_gpios 0 0 4>;
-> +			#gpio-cells = <2>;
-> +			interrupt-controller;
-> +			#interrupt-cells = <2>;
-> +		};
-> +
-> +		pmk8350_rtc: rtc@6100 {
+HTH.
+-- 
+~Randy
 
-nit: nodes should be ordered by address, hence 'rtc@6100' should be before
-'gpios@b000'.
-
-> +			compatible = "qcom,pmk8350-rtc";
-> +			reg = <0x6100>, <0x6200>;
-> +			reg-names = "rtc", "alarm";
-> +			interrupts = <0x0 0x62 0x1 IRQ_TYPE_EDGE_RISING>;
-> +		};
-> +	};
-> +};
