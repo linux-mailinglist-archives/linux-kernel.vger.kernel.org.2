@@ -2,122 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1D28352D90
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0928B352D9B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:16:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234671AbhDBQLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 12:11:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbhDBQLm (ORCPT
+        id S235060AbhDBQQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 12:16:44 -0400
+Received: from smtpcmd12131.aruba.it ([62.149.156.131]:33987 "EHLO
+        smtpcmd12131.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231160AbhDBQQg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 12:11:42 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45EC3C0613E6;
-        Fri,  2 Apr 2021 09:11:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=Np2JCwfDCdo/ra8gFfhhpsJDI0A0gGoHyahJ9Xf1jxU=; b=BkBTNKrMj0VOK8BWlcfjicpB1B
-        zTWNurmyc+F8WctnN09Qh06JS7/QzwxgALtYkOCZPMy917M0g8tW/x0ZMJ8dM1iNecM4O/ksuXxQS
-        v6VWMZnlGbF5GDLEa0Vz/OyGIjMP38Pfn0r1/y5YlSaGjvADSEwuU+H3AAsCYuAn9ZMcSGuCWY2iP
-        eA/3W47wEF4k9fGifoxZ5YVVh4yha4oV9IbP8zR145Tdv4w9YVWA9dBMa9eRwgP5aw8VHqBHvEN/D
-        GKs9vogWKD3KJxXvwgyR8lACPsSRe4rw5tor+OsTZCYl1Tv5nCO/6DKn69dJgJvJuvlRH5LRp4a5M
-        fYYnjouQ==;
-Received: from [2601:1c0:6280:3f0::e0e1]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lSMOF-007qgY-ES; Fri, 02 Apr 2021 16:11:22 +0000
-Subject: Re: [PATCH -next] gpio: GPIO_SCH: depends on PCI same as LPC_SCH
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Denis Turischev <denis@compulab.co.il>
-References: <20210402002124.17207-1-rdunlap@infradead.org>
- <CAHp75VfqFde+uBHfYe5tZDgwcy3z_yME6MmQea5rydVOfFVkhQ@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <72016dea-515d-e254-cda5-adc097635e19@infradead.org>
-Date:   Fri, 2 Apr 2021 09:11:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Fri, 2 Apr 2021 12:16:36 -0400
+Received: from ubuntu.localdomain ([146.241.148.6])
+        by Aruba Outgoing Smtp  with ESMTPSA
+        id SMTElkkEVik8wSMTElXAND; Fri, 02 Apr 2021 18:16:34 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1617380194; bh=m13GAYsHNmluDy30JkKZAaaoyOxCHUEz0RY6LlOxN24=;
+        h=From:To:Subject:Date:MIME-Version:Content-Type;
+        b=cSGgyYnxq2EDqmDNa4Qa+LiSe0Hr11DtKt/uHkS9qUlItD5UqM7xfuVEn/9AHCpXT
+         mVehoI0Bua58p6sD72O0l5Z9HuvXkG3zEm3w+VDT0fyuuJf2vJAHmFsK46iEX7L9ba
+         hO//TTVgGIqu69H/dIerfLxyupG5Cf4H+qO3n9NxxuDR3ayddI7ATWwCP0ey0BDFua
+         0A3/Nv/yTvVDqCTcvqxMGlz1sDxAM8tiv64tzkO0R6DMX1ix2sDoo1xaKJQZLxhwO9
+         gsQI/a0fnrxFtXITnW3n5LQyit7SmF4PWfWIfHTouiry5zvcqcG1rn/26kfa5nKTXy
+         aenloCGE2BUqQ==
+From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.ne@posteo.net>
+Cc:     Giulio Benetti <giulio.benetti@benettiengineering.com>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/3] Input: add Hycon HY46XX Touchscreen controller
+Date:   Fri,  2 Apr 2021 18:16:24 +0200
+Message-Id: <20210402161627.2546145-1-giulio.benetti@benettiengineering.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <YGbc7Qbu6s659Mx4@latitude>
+References: <YGbc7Qbu6s659Mx4@latitude>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VfqFde+uBHfYe5tZDgwcy3z_yME6MmQea5rydVOfFVkhQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4wfAn22ZS6640d6wQU0xrLwtdcW2w0XJWRg6Hs7GkbH8TubKuFKt8xogcjquEDySuKr8IIvqh/w5/MZ4qUw9klDEvbxluHQUZp5P50C49C6EprEmIxGUlD
+ TrBvIhc0px3O19edTVJSAM2ZYpapyOW8jefuO9vnmMqe1Pk1cTAZ8tGBjd9BeW5uWRiHcw664T8jiNZWP/e22JGSKx5Xt8ch6LD/ItBYv3nClPsCDYWVz3AH
+ 1PJB5OAlw8qUBY9WYefXkuNA4jmN4smpm5H/46QKuAMSuVZRF+6eEnyx+Vh/XSJtzP+NWc+43wYSYaIhghyNUOiGOBG19Z3y0yfsLyZ6tB3RvKmSIej9kkKl
+ zqbpadX6ND74yhoGtNyFnOllgrY2nWao6Wxm09Qpo3K8YjC7l+QXeKvvc9+PYJaoxp0id2hFvSyz3UKyJDsAQ0EY/Eap2nj63BXgyvcXXd4o+bcHHjU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/2/21 2:00 AM, Andy Shevchenko wrote:
-> On Friday, April 2, 2021, Randy Dunlap <rdunlap@infradead.org> wrote:
-> 
->> Since LPC_SCH depends on PCI, GPIO_SCH must also depend on PCI
->> to prevent kconfig warning and build errors:
->>
->> WARNING: unmet direct dependencies detected for LPC_SCH
->>   Depends on [n]: HAS_IOMEM [=y] && PCI [=n]
->>   Selected by [y]:
->>   - GPIO_SCH [=y] && GPIOLIB [=y] && X86 [=y] && (X86 [=y] || COMPILE_TEST
->> [=n]) && ACPI [=y]
->>
->> and
->>
->> ../drivers/mfd/lpc_sch.c:204:1: warning: data definition has no type or
->> storage class
->>  module_pci_driver(lpc_sch_driver);
->>  ^~~~~~~~~~~~~~~~~
->> ../drivers/mfd/lpc_sch.c:204:1: error: type defaults to ‘int’ in
->> declaration of ‘module_pci_driver’ [-Werror=implicit-int]
->> ../drivers/mfd/lpc_sch.c:204:1: warning: parameter names (without types)
->> in function declaration
->> ../drivers/mfd/lpc_sch.c:197:26: warning: ‘lpc_sch_driver’ defined but
->> not used [-Wunused-variable]
->>  static struct pci_driver lpc_sch_driver = {
->>                           ^~~~~~~~~~~~~~
->>
->>
-> Thanks for catching this!
-> But I am wondering if this actually should be fixed by switching to depends
-> on LPC_SCH. What do you think?
-> 
+This patchset adds Hycon vendor, HY46XX touchscreen controller driver
+and its .yaml binding.
 
-Sounds good to me. I'll send v2 like that.
-Thanks.
+---
+V1->V2:
+* changed authorship and SoBs to @benettiengineering.com domain
+* fixed vendor commit log according to Jonathan Neuschäfer's suggestion
+* fixed hy46xx bindings according to Rob Herring's suggestions
+* fixed hy46xx driver according to Dmitry Torokhov's suggestions
+further details are listed in single patches
+V2->V3:
+* fixed hy46xx bindings according to Jonathan Neuschäfer's suggestion
+* fixed hy46xx driver according to Jonathan Neuschäfer's suggestion
+further details are listed in single patches
+---
 
-> 
-> 
->> Fixes: 6c46215d6b62 ("gpio: sch: Hook into ACPI GPE handler to catch GPIO
->> edge events")
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->> Cc: Linus Walleij <linus.walleij@linaro.org>
->> Cc: linux-gpio@vger.kernel.org
->> Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->> Cc: Denis Turischev <denis@compulab.co.il>
->> ---
->>  drivers/gpio/Kconfig |    2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> --- linux-next-20210401.orig/drivers/gpio/Kconfig
->> +++ linux-next-20210401/drivers/gpio/Kconfig
->> @@ -860,7 +860,7 @@ config GPIO_IT87
->>
->>  config GPIO_SCH
->>         tristate "Intel SCH/TunnelCreek/Centerton/Quark X1000 GPIO"
->> -       depends on (X86 || COMPILE_TEST) && ACPI
->> +       depends on (X86 || COMPILE_TEST) && ACPI && PCI
->>         select GPIOLIB_IRQCHIP
->>         select MFD_CORE
->>         select LPC_SCH
->>
-> 
-> 
+Giulio Benetti (3):
+  dt-bindings: Add Hycon Technology vendor prefix
+  dt-bindings: touchscreen: Add HY46XX bindings
+  Input: add driver for the Hycon HY46XX touchpanel series
 
+ .../input/touchscreen/hycon,hy46xx.yaml       | 120 ++++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ MAINTAINERS                                   |   7 +
+ drivers/input/touchscreen/Kconfig             |  11 +
+ drivers/input/touchscreen/Makefile            |   1 +
+ drivers/input/touchscreen/hycon-hy46xx.c      | 591 ++++++++++++++++++
+ 6 files changed, 732 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
+ create mode 100644 drivers/input/touchscreen/hycon-hy46xx.c
 
 -- 
-~Randy
+2.25.1
 
