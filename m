@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3954353037
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 22:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5055E353038
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 22:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236596AbhDBUW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 16:22:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38070 "EHLO
+        id S236611AbhDBUW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 16:22:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236410AbhDBUWw (ORCPT
+        with ESMTP id S236580AbhDBUWy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 16:22:52 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B126FC061788
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 13:22:50 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 184so6633637ljf.9
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 13:22:50 -0700 (PDT)
+        Fri, 2 Apr 2021 16:22:54 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8732AC06178C;
+        Fri,  2 Apr 2021 13:22:51 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id o10so8980720lfb.9;
+        Fri, 02 Apr 2021 13:22:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=NlTZYOTP6gxY+A8f1lp9gD0t94fGeKsz+KEdX5TSTq4=;
-        b=IL8emjWCMFzBpzm2REpTKSDItPqwcRHkwDyhpVa+fQUkJHytbmfdiE4bYlyWATY2+w
-         vGTzZ0xBGkMjQPOKifR5x0SRxTG5xC72QHw+kb5i6FZbHNZsW5bB5fBxr6sojWyFhWt4
-         X1xXaYrNxVN9lblPGDiEvQMy5/KffFH4hkIo8BEUkoY3t793mTbMa9DxGLkN3te4my0o
-         RXKafDau/hoEXeBFpQ4TuNACE7UmlDCyaBx8kX6IhRI6V4d1HnMZ/KogECpPd0Hd3Ub0
-         53KDDwBj5vpxhBAzPjV0CNJ/XDi9uCuiiJ7J/rXVXGxLoqAYHSZmfWj+F8WQOdZ5e5N+
-         CtOA==
+        bh=FuM4xH1nH2MjkVsKxAPd9c0o/UVsSU6PVrCfHekMLP0=;
+        b=HGiJplNIiEH49Jc+MlHgbms83lQfmWfQQvLsBsGybACK6X10jxnc1dYwNuuV15UZCX
+         jhZP18OliuP+gcBgdvqhkPcbd3k65haQ3WlFQMeLfOGqdptBZYGTEFZF99j0I5pv1P3j
+         7ClfoHpOBXfsphKUAz9CKwioYHbBzGASq5cx/VeAOVvjP35FDsbuulQHqQO0OPXsbJXz
+         1K9ekdx3MygGIACspecePntZyfNEF9+xXWn9ufGdk1SQvcQSwGRq0qRK0zcl+2cj19z6
+         c66yIaQGfx1RF0UzxmsqkgcUTe4CZeTKvthqPorMptIg+zsH3B2RWIfPfQ1ZiMTV3xtf
+         HPkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=NlTZYOTP6gxY+A8f1lp9gD0t94fGeKsz+KEdX5TSTq4=;
-        b=MYHvq4o1mxzPOAcrvI1QAlBTvEsinqqRScjhlpFZqGcR9wokS0Ha5uSyWP3kDPETdF
-         jTzCKu3bCMfCZy2WiNsZajT1ynwWM++zZOheO//ElNO5xuvG0xQV800LTnUv4l31iQY1
-         KBhDuCimXEiL4PzXVbN9sXDC6vsAqUPxn2Ykdb8ugTZnDIF0/9VXnJFn5JBiB11QuX3s
-         2nwGy6TFCJ8p9jmS6g1xlvzNoxj7V5xbnQMv/5FgYK0FKt4tVu8KOi6CFsR5N4lKLWls
-         Q4OzhVtsoru3IjDWnFgrSZIAvuuYTIonFcgUhe4IW7RAWEjB/Qs6NrVmvziEvAX7PhGA
-         l1eQ==
-X-Gm-Message-State: AOAM532d1qibRkrMHKZaEPzzmGCOnmGrfcPFneORXPVcNx/vK3bmOEcG
-        byVOx/jriPEO9oJPeXpeefI=
-X-Google-Smtp-Source: ABdhPJxrao1ogZYKuL2wEhq0h305cuoO/EgEpfZutWpdL6CCxZVyr0MHx315wkyYwd+B5ezHkncHwQ==
-X-Received: by 2002:a2e:6e17:: with SMTP id j23mr9128468ljc.209.1617394969128;
-        Fri, 02 Apr 2021 13:22:49 -0700 (PDT)
+        bh=FuM4xH1nH2MjkVsKxAPd9c0o/UVsSU6PVrCfHekMLP0=;
+        b=nMARnsrTq7EH+2M8Yw5noN8+CMxaqiUFQXUPOHqZs4pVs80vJz121s+4XOnlO6XtTP
+         2PGVWPS5ToLqGNEHHFhYQdgdjEUPAZqPhIilkucaLADJQwA8IKoWAIfAOkHr41Y+KktP
+         BiR/cb1W0D1ATA2C6pp1WJYfiXf36K1AP+XhH06s70MBAFOD9ng6/Vgte4pgPX7vNQCv
+         5Ip7/S+xnnTalhv3DBDNG0KQXa8AeCK+GYX30a3Nq8ptj8s4w16bhnz4oZ3Dkt+nbdOc
+         /w/cPwnNeDqP9OJgBLKxMU6K1iVOTgU0beA+l7RGFPaGhuNj4RAnp3xCLQRr6YfZQxXr
+         ulsQ==
+X-Gm-Message-State: AOAM530r0J1Z5ZqV/RrDweNiqtha5jje2aboV9PzFeLxA0plDXDcnbgh
+        JlZPKvp2e260Au4RkUEj/RE=
+X-Google-Smtp-Source: ABdhPJw4j+0eY/DUzPzdoOF9LRcINRLYxtb4g8ug6Fp5KR0G9M/RO9DMa5S7TgsP7x1z5tA0JXaCjA==
+X-Received: by 2002:ac2:57c6:: with SMTP id k6mr9832610lfo.264.1617394970033;
+        Fri, 02 Apr 2021 13:22:50 -0700 (PDT)
 Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id f11sm952514lfr.119.2021.04.02.13.22.48
+        by smtp.gmail.com with ESMTPSA id f11sm952514lfr.119.2021.04.02.13.22.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 13:22:48 -0700 (PDT)
+        Fri, 02 Apr 2021 13:22:49 -0700 (PDT)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
@@ -56,10 +56,11 @@ Cc:     linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
         Michal Hocko <mhocko@suse.com>,
         Matthew Wilcox <willy@infradead.org>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH-next 2/5] lib/test_vmalloc.c: add a new 'nr_threads' parameter
-Date:   Fri,  2 Apr 2021 22:22:34 +0200
-Message-Id: <20210402202237.20334-2-urezki@gmail.com>
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>
+Subject: [PATCH-next 3/5] vm/test_vmalloc.sh: adapt for updated driver interface
+Date:   Fri,  2 Apr 2021 22:22:35 +0200
+Message-Id: <20210402202237.20334-3-urezki@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210402202237.20334-1-urezki@gmail.com>
 References: <20210402202237.20334-1-urezki@gmail.com>
@@ -69,214 +70,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By using this parameter we can specify how many workers are
-created to perform vmalloc tests. By default it is one CPU.
-The maximum value is set to 1024.
+A 'single_cpu_test' parameter is odd and it does not exist
+anymore. Instead there was introduced a 'nr_threads' one.
+If it is not set it behaves as the former parameter.
 
-As a result of this change a 'single_cpu_test' one becomes
-obsolete, therefore it is no longer needed.
+That is why update a "stress mode" according to this change
+specifying number of workers which are equal to number of CPUs.
+Also update an output of help message based on a new interface.
 
+CC: linux-kselftest@vger.kernel.org
+CC: Shuah Khan <shuah@kernel.org>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- lib/test_vmalloc.c | 88 +++++++++++++++++++++-------------------------
- 1 file changed, 40 insertions(+), 48 deletions(-)
+ tools/testing/selftests/vm/test_vmalloc.sh | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/lib/test_vmalloc.c b/lib/test_vmalloc.c
-index 4eb6abdaa74e..d337985e4c5e 100644
---- a/lib/test_vmalloc.c
-+++ b/lib/test_vmalloc.c
-@@ -23,8 +23,8 @@
- 	module_param(name, type, 0444);			\
- 	MODULE_PARM_DESC(name, msg)				\
+diff --git a/tools/testing/selftests/vm/test_vmalloc.sh b/tools/testing/selftests/vm/test_vmalloc.sh
+index 06d2bb109f06..d73b846736f1 100755
+--- a/tools/testing/selftests/vm/test_vmalloc.sh
++++ b/tools/testing/selftests/vm/test_vmalloc.sh
+@@ -11,6 +11,7 @@
  
--__param(bool, single_cpu_test, false,
--	"Use single first online CPU to run tests");
-+__param(int, nr_threads, 0,
-+	"Number of workers to perform tests(min: 1 max: 1024)");
+ TEST_NAME="vmalloc"
+ DRIVER="test_${TEST_NAME}"
++NUM_CPUS=`grep -c ^processor /proc/cpuinfo`
  
- __param(bool, sequential_test_order, false,
- 	"Use sequential stress tests order");
-@@ -50,13 +50,6 @@ __param(int, run_test_mask, INT_MAX,
- 		/* Add a new test case description here. */
- );
+ # 1 if fails
+ exitcode=1
+@@ -22,9 +23,9 @@ ksft_skip=4
+ # Static templates for performance, stressing and smoke tests.
+ # Also it is possible to pass any supported parameters manualy.
+ #
+-PERF_PARAM="single_cpu_test=1 sequential_test_order=1 test_repeat_count=3"
+-SMOKE_PARAM="single_cpu_test=1 test_loop_count=10000 test_repeat_count=10"
+-STRESS_PARAM="test_repeat_count=20"
++PERF_PARAM="sequential_test_order=1 test_repeat_count=3"
++SMOKE_PARAM="test_loop_count=10000 test_repeat_count=10"
++STRESS_PARAM="nr_threads=$NUM_CPUS test_repeat_count=20"
  
--/*
-- * Depends on single_cpu_test parameter. If it is true, then
-- * use first online CPU to trigger a test on, otherwise go with
-- * all online CPUs.
-- */
--static cpumask_t cpus_run_test_mask = CPU_MASK_NONE;
--
- /*
-  * Read write semaphore for synchronization of setup
-  * phase that is done in main thread and workers.
-@@ -386,16 +379,13 @@ struct test_case_data {
- 	u64 time;
- };
- 
--/* Split it to get rid of: WARNING: line over 80 characters */
--static struct test_case_data
--	per_cpu_test_data[NR_CPUS][ARRAY_SIZE(test_case_array)];
--
- static struct test_driver {
- 	struct task_struct *task;
-+	struct test_case_data data[ARRAY_SIZE(test_case_array)];
-+
- 	unsigned long start;
- 	unsigned long stop;
--	int cpu;
--} per_cpu_test_driver[NR_CPUS];
-+} *tdriver;
- 
- static void shuffle_array(int *arr, int n)
+ check_test_requirements()
  {
-@@ -423,9 +413,6 @@ static int test_func(void *private)
- 	ktime_t kt;
- 	u64 delta;
+@@ -58,8 +59,8 @@ run_perfformance_check()
  
--	if (set_cpus_allowed_ptr(current, cpumask_of(t->cpu)) < 0)
--		pr_err("Failed to set affinity to %d CPU\n", t->cpu);
--
- 	for (i = 0; i < ARRAY_SIZE(test_case_array); i++)
- 		random_array[i] = i;
- 
-@@ -450,9 +437,9 @@ static int test_func(void *private)
- 		kt = ktime_get();
- 		for (j = 0; j < test_repeat_count; j++) {
- 			if (!test_case_array[index].test_func())
--				per_cpu_test_data[t->cpu][index].test_passed++;
-+				t->data[index].test_passed++;
- 			else
--				per_cpu_test_data[t->cpu][index].test_failed++;
-+				t->data[index].test_failed++;
- 		}
- 
- 		/*
-@@ -461,7 +448,7 @@ static int test_func(void *private)
- 		delta = (u64) ktime_us_delta(ktime_get(), kt);
- 		do_div(delta, (u32) test_repeat_count);
- 
--		per_cpu_test_data[t->cpu][index].time = delta;
-+		t->data[index].time = delta;
- 	}
- 	t->stop = get_cycles();
- 
-@@ -477,53 +464,56 @@ static int test_func(void *private)
- 	return 0;
- }
- 
--static void
-+static int
- init_test_configurtion(void)
+ run_stability_check()
  {
- 	/*
--	 * Reset all data of all CPUs.
-+	 * A maximum number of workers is defined as hard-coded
-+	 * value and set to 1024. We add such gap just in case
-+	 * and for potential heavy stressing.
- 	 */
--	memset(per_cpu_test_data, 0, sizeof(per_cpu_test_data));
-+	nr_threads = clamp(nr_threads, 1, 1024);
+-	echo "Run stability tests. In order to stress vmalloc subsystem we run"
+-	echo "all available test cases on all available CPUs simultaneously."
++	echo "Run stability tests. In order to stress vmalloc subsystem all"
++	echo "available test cases are run by NUM_CPUS workers simultaneously."
+ 	echo "It will take time, so be patient."
  
--	if (single_cpu_test)
--		cpumask_set_cpu(cpumask_first(cpu_online_mask),
--			&cpus_run_test_mask);
--	else
--		cpumask_and(&cpus_run_test_mask, cpu_online_mask,
--			cpu_online_mask);
-+	/* Allocate the space for test instances. */
-+	tdriver = kcalloc(nr_threads, sizeof(*tdriver), GFP_KERNEL);
-+	if (tdriver == NULL)
-+		return -1;
- 
- 	if (test_repeat_count <= 0)
- 		test_repeat_count = 1;
- 
- 	if (test_loop_count <= 0)
- 		test_loop_count = 1;
-+
-+	return 0;
- }
- 
- static void do_concurrent_test(void)
- {
--	int cpu, ret;
-+	int i, ret;
- 
- 	/*
- 	 * Set some basic configurations plus sanity check.
- 	 */
--	init_test_configurtion();
-+	ret = init_test_configurtion();
-+	if (ret < 0)
-+		return;
- 
- 	/*
- 	 * Put on hold all workers.
- 	 */
- 	down_write(&prepare_for_test_rwsem);
- 
--	for_each_cpu(cpu, &cpus_run_test_mask) {
--		struct test_driver *t = &per_cpu_test_driver[cpu];
-+	for (i = 0; i < nr_threads; i++) {
-+		struct test_driver *t = &tdriver[i];
- 
--		t->cpu = cpu;
--		t->task = kthread_run(test_func, t, "vmalloc_test/%d", cpu);
-+		t->task = kthread_run(test_func, t, "vmalloc_test/%d", i);
- 
- 		if (!IS_ERR(t->task))
- 			/* Success. */
- 			atomic_inc(&test_n_undone);
- 		else
--			pr_err("Failed to start kthread for %d CPU\n", cpu);
-+			pr_err("Failed to start %d kthread\n", i);
- 	}
- 
- 	/*
-@@ -541,29 +531,31 @@ static void do_concurrent_test(void)
- 		ret = wait_for_completion_timeout(&test_all_done_comp, HZ);
- 	} while (!ret);
- 
--	for_each_cpu(cpu, &cpus_run_test_mask) {
--		struct test_driver *t = &per_cpu_test_driver[cpu];
--		int i;
-+	for (i = 0; i < nr_threads; i++) {
-+		struct test_driver *t = &tdriver[i];
-+		int j;
- 
- 		if (!IS_ERR(t->task))
- 			kthread_stop(t->task);
- 
--		for (i = 0; i < ARRAY_SIZE(test_case_array); i++) {
--			if (!((run_test_mask & (1 << i)) >> i))
-+		for (j = 0; j < ARRAY_SIZE(test_case_array); j++) {
-+			if (!((run_test_mask & (1 << j)) >> j))
- 				continue;
- 
- 			pr_info(
- 				"Summary: %s passed: %d failed: %d repeat: %d loops: %d avg: %llu usec\n",
--				test_case_array[i].test_name,
--				per_cpu_test_data[cpu][i].test_passed,
--				per_cpu_test_data[cpu][i].test_failed,
-+				test_case_array[j].test_name,
-+				t->data[j].test_passed,
-+				t->data[j].test_failed,
- 				test_repeat_count, test_loop_count,
--				per_cpu_test_data[cpu][i].time);
-+				t->data[j].time);
- 		}
- 
--		pr_info("All test took CPU%d=%lu cycles\n",
--			cpu, t->stop - t->start);
-+		pr_info("All test took worker%d=%lu cycles\n",
-+			i, t->stop - t->start);
- 	}
-+
-+	kfree(tdriver);
- }
- 
- static int vmalloc_test_init(void)
+ 	modprobe $DRIVER $STRESS_PARAM > /dev/null 2>&1
+@@ -92,17 +93,17 @@ usage()
+ 	echo "# Shows help message"
+ 	echo "./${DRIVER}.sh"
+ 	echo
+-	echo "# Runs 1 test(id_1), repeats it 5 times on all online CPUs"
+-	echo "./${DRIVER}.sh run_test_mask=1 test_repeat_count=5"
++	echo "# Runs 1 test(id_1), repeats it 5 times by NUM_CPUS workers"
++	echo "./${DRIVER}.sh nr_threads=$NUM_CPUS run_test_mask=1 test_repeat_count=5"
+ 	echo
+ 	echo -n "# Runs 4 tests(id_1|id_2|id_4|id_16) on one CPU with "
+ 	echo "sequential order"
+-	echo -n "./${DRIVER}.sh single_cpu_test=1 sequential_test_order=1 "
++	echo -n "./${DRIVER}.sh sequential_test_order=1 "
+ 	echo "run_test_mask=23"
+ 	echo
+-	echo -n "# Runs all tests on all online CPUs, shuffled order, repeats "
++	echo -n "# Runs all tests by NUM_CPUS workers, shuffled order, repeats "
+ 	echo "20 times"
+-	echo "./${DRIVER}.sh test_repeat_count=20"
++	echo "./${DRIVER}.sh nr_threads=$NUM_CPUS test_repeat_count=20"
+ 	echo
+ 	echo "# Performance analysis"
+ 	echo "./${DRIVER}.sh performance"
 -- 
 2.20.1
 
