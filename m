@@ -2,141 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B06F353181
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 01:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DA1635318C
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 01:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235593AbhDBXad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 19:30:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50302 "EHLO
+        id S235617AbhDBXhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 19:37:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234908AbhDBXa0 (ORCPT
+        with ESMTP id S234908AbhDBXhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 19:30:26 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B9FFC061788
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 16:30:21 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id f12so4656390qtq.4
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 16:30:21 -0700 (PDT)
+        Fri, 2 Apr 2021 19:37:18 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F79CC06178C
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 16:37:15 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id i2so10904163ybl.21
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 16:37:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DUrZ26ujqM3QH+AI2fr1q6gmaG6zG9DayC1eq0IxhSk=;
-        b=VC23UchA4J9bfV/sfuT9otlTK2bD8j2XBa0RdA8wXN1iCDY4ehhZfOmbvIvnizSYXz
-         dzQpEFn04N7wmFOzpZPsMZ/mo1/4AoaX9/fX5DCf/MxyRxaXYxJg/z6VMx9ebrtIXIZL
-         Mh0y20k8HZZFmYoAUlCC/CEAa2+HN1ksO+WA8Dp3Y6SzL/auivv3nJWGW3lgdgRoQ4ab
-         82W7LZfjiPO+6rtsaGclwHeChKw6j0vqAy7Ht4pr2LKNgHGqy55PMlhLF9XvxVKwbXF+
-         CeDgl0yoYaQ56Avn9f54CnIcgYg6gSaKEuyQWgi2l5pf9aDorerWwdiSEDTFD2ZP6hwy
-         EV7A==
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=xjVYK5mNQJ2/NN13VjJsOwPYAqepZgVgkk4SOaWm23E=;
+        b=mqHeXZZ1B+Tm9h5UK2oztRPPQmzo7n1Fqx3Nx3sIENEHEfue7qDlNvha1zfD0T65nu
+         HXzHhU0ZxJvDaW1xqMfkX/tGpIxCr2CSoJDpCwRuUKESNfkcQfmAyWo+hvaYv4iGr3B+
+         97ZpXzK2pBA03CZznn+Bo4jT+UpvRhaNiazlvGqxIniysJqiHcIDGeXJPSphv8jIShyU
+         v4izN/skFvnVuOrOMOt0M2+LjEtP4qk/fmqFs+vXL1eWVRPa0wmn+X0cJthKKzFq5+ig
+         0RutQwQNeWIHMrOJbhBATnbC7IHrez2K0rySEQlQh5+EVLc7KdYxzBSrTCuw3REPfhbD
+         RZ+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DUrZ26ujqM3QH+AI2fr1q6gmaG6zG9DayC1eq0IxhSk=;
-        b=VzkWUYmn5AFTiTkagLnMR97GEMPjxiqR4IONN/3/FpjhF3HjFNmH6Z6VNv88Zar9t3
-         rGGMnnoxYmxUhwVIaTTYYg9KV0lW4gUjqUz7Zi+Ty96Q7gxU2qVqy4czQAGMmzpe6umI
-         Zc7xjND0OMnMDfi48zcgPy0DPi3q6Y+VL0eLe081Gv6IbbzxxiqGGVEg2I40KLofeOD1
-         OK4P7bk4Nz1Lsh1jVF9SYJLV/4uublXCd40T2qfZl9mFtaeK2XcS64KpH7sJVuP/bCwr
-         x4DpKb0xVHrJGSL9Y6lLEhBGmWg1z5mVlkrLHHwAgwstlH6JDPSH050m1N/b4BLcJx1C
-         H34A==
-X-Gm-Message-State: AOAM5325cbQT0hxMKtPJ/r/UVstj6Tz3+l2Q3cHe9N3g/fBK3CqkAMQD
-        G4UsmxQVoUlWyXGeER3mKDj3/g==
-X-Google-Smtp-Source: ABdhPJyXq9JJVKh9ZPP03LEYB2MdprlBH5ccTsJoqe+CHuailVTPToie9FqXqBBwvulXgWZ2jd4m4A==
-X-Received: by 2002:ac8:544:: with SMTP id c4mr13510366qth.248.1617406220566;
-        Fri, 02 Apr 2021 16:30:20 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id j6sm8695976qkl.84.2021.04.02.16.30.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 16:30:19 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lSTF4-0003Yk-So; Fri, 02 Apr 2021 20:30:18 -0300
-Date:   Fri, 2 Apr 2021 20:30:18 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Parav Pandit <parav@nvidia.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: CFI violation in drivers/infiniband/core/sysfs.c
-Message-ID: <20210402233018.GA7721@ziepe.ca>
-References: <20210402195241.gahc5w25gezluw7p@archlinux-ax161>
- <202104021555.08B883C7@keescook>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202104021555.08B883C7@keescook>
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=xjVYK5mNQJ2/NN13VjJsOwPYAqepZgVgkk4SOaWm23E=;
+        b=fDmNU6SrQWEqvrByOTETaRzyTEaNS670GogPb+X+Vt2dygoFNkA2TA2HB2moVGchQ9
+         nkdNA7xZ5TZDLjy1Ahuxk+bnWgN9disRKEaiye2Tpbuc414cps8pHYcufOAhwv6LBYdu
+         YCl7eGGW7I8kgVqBKOeuIL7rYd60hdEnkqs/TvcVT5ceobpBDlDUktaml07z+EWOBtZX
+         8zPE9yOf3/uDf2Bw8stGYVgJCLfhU0DKAQPThcs9fpRre772OphY4y3H0n5xw66m3pZD
+         hqcxWwtiJQkNYcRkN58fInBWyHSDjELutzAPslmfHJjPWHdVcEcmASQnPju0Bxtmhtif
+         bhjg==
+X-Gm-Message-State: AOAM530PXcFLpGdd3kgrUSTN41zi9tKdBUQfUptHhEPo2dZ0k5NeApA6
+        gjSOoNsl9J4iVTyJA1j+M4c/YOQwAzs=
+X-Google-Smtp-Source: ABdhPJwpzJvoUPM2VsTADsMCMUhBkIOf35+jqXhTBG7gS47Dz9zpQwjAxOQohrn+9EEBxcYlKKuTgGAKjwA=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:24a7:3342:da61:f6aa])
+ (user=seanjc job=sendgmr) by 2002:a25:e085:: with SMTP id x127mr14625429ybg.343.1617406634068;
+ Fri, 02 Apr 2021 16:37:14 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Fri,  2 Apr 2021 16:36:57 -0700
+Message-Id: <20210402233702.3291792-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
+Subject: [PATCH 0/5] ccp: KVM: SVM: Use stack for SEV command buffers
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        John Allen <john.allen@amd.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Borislav Petkov <bp@suse.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 04:03:30PM -0700, Kees Cook wrote:
+While doing minor KVM cleanup to account various kernel allocations, I
+noticed that all of the SEV command buffers are allocated via kmalloc(),
+even for commands whose payloads is smaller than a pointer.  After much
+head scratching, the only reason I could come up with for dynamically
+allocating the command data is CONFIG_VMAP_STACK=y.
 
-> > relevant. It seems to me that the hw_counters 'struct attribute_group'
-> > should probably be its own kobj within both of these structures so they
-> > can have their own sysfs ops (unless there is some other way to do this
-> > that I am missing).
+This series teaches __sev_do_cmd_locked() to gracefully handle vmalloc'd
+command buffers by copying such buffers an internal buffer before sending
+the command to the PSP.  The SEV driver and KVM are then converted to use
+the stack for all command buffers.
 
-Err, yes, every subclass of the attribute should be accompanied by a
-distinct kobject type to relay the show methods with typesafety, this
-is how this design pattern is intended to be used.
+The first patch is optional, I included it in case someone wants to
+backport it to stable kernels.  It wouldn't actually fix bugs, but it
+would make debugging issues a lot easier if they did pop up.
 
-If I understand your report properly the hw_stats_attribute is being
-assigned to a 'port_type' kobject and it only works by pure luck because
-the show/store happens to overlap between port and hsa attributes?
+Tested everything except sev_ioctl_do_pek_import(), I don't know anywhere
+near enough about the PSP to give it the right input.
 
-> > I would appreciate someone else taking a look and seeing if I am off
-> > base or if there is an easier way to solve this.
-> 
-> So, it seems that the reason for a custom kobj_type here is to use the
-> .release callback. 
+Based on kvm/queue, commit f96be2deac9b ("KVM: x86: Support KVM VMs
+sharing SEV context") to avoid a minor conflict.
 
-Every kobject should be associated with a specific, fixed, attribute
-type. The purpose of the wrappers is to inject type safety so the
-attribute implementations know they are working on the right stuff.
+Sean Christopherson (5):
+  crypto: ccp: Detect and reject vmalloc addresses destined for PSP
+  crypto: ccp: Reject SEV commands with mismatching command buffer
+  crypto: ccp: Play nice with vmalloc'd memory for SEV command structs
+  crypto: ccp: Use the stack for small SEV command buffers
+  KVM: SVM: Allocate SEV command structures on local stack
 
-In turn, an attribute of a specific attribute type can only be
-injected into a kobject that has the matching type.
+ arch/x86/kvm/svm/sev.c       | 262 +++++++++++++----------------------
+ drivers/crypto/ccp/sev-dev.c | 161 ++++++++++-----------
+ drivers/crypto/ccp/sev-dev.h |   7 +
+ 3 files changed, 184 insertions(+), 246 deletions(-)
 
-This code is insane because it does this:
+-- 
+2.31.0.208.g409f899ff0-goog
 
-		hsag->attrs[i] = alloc_hsa(i, port_num, stats->names[i]);
-
-		// This is port kobject
-		struct kobject *kobj = &port->kobj;
-		ret = sysfs_create_group(kobj, hsag); 
-[..]
-                // This is a struct device kobject
-		struct kobject *kobj = &device->dev.kobj;
-		ret = sysfs_create_group(kobj, hsag); 
-
-Which is absolutely not allowed, you can't have a generic attribute
-handler and stuff it into two different types! Things MUST use the
-proper attribute subclass for what they are being attached to.
-
-The answer is that the setup_hw_stats_() for port and device must
-be split up and the attribute implementations for each of them have to
-subclass starting from the correct type.
-
-So we'd end up with two attributes for hw_stats
-
-struct port_hw_stats {
-    struct port_attr attr;
-    struct hw_stats_data data;
-};
-
-
-struct device_hw_stats {
-    struct device_attr attr;
-    struct hw_stats_data data;
-};
-
-And then two show/set functions that bounce through the correct types
-to the data.
-
-And so on.
-
-Jason
