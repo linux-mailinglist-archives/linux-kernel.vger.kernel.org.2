@@ -2,87 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F02F4352ABC
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 14:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38F48352ABD
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 14:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235377AbhDBMkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 08:40:17 -0400
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:59605 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234161AbhDBMkP (ORCPT
+        id S235465AbhDBMkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 08:40:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234161AbhDBMkw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 08:40:15 -0400
-Date:   Fri, 02 Apr 2021 12:40:08 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1617367211; bh=DnRWb/ENWowUkZ8iMTc38PO0CZerw5Mgien+btzdpIs=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=f2ok6exh3P/IMfzSxhSEdxRg0SrKbm4qlxRtZlo1amxNMOVigSbPpx89+eCpKjh/x
-         CPLUsT38kheCkovQjvGAknk5XXH6ckD6gXapDIIr8hCZAvyxGDrK0MuU1GVZjb/28C
-         wqMP8JPWVmJEcZkyQROhUobTS9yv5fQbx1YAyR9gb4f/ZlcDnJbKYGZMXPb6RrX547
-         zpImCnpHuypY375B/xgiTkFfvDakg5+M6qw8M1aDHhlcD33cXrHdb1alXAxRtNOZaD
-         a1NRg9xO0qo2V25OwSRkKY77Rm9J5Dk8FibIOdu933XH1s/nSaPjDcLeLqRBc+YxaW
-         S+5MH+n1mpv0A==
-To:     Kees Cook <keescook@chromium.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Jessica Yu <jeyu@kernel.org>, Miroslav Benes <mbenes@suse.cz>,
-        Emil Velikov <emil.l.velikov@gmail.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        linux-hardening@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH] kbuild: merge module sections under CONFIG_LD_DEAD_CODE_DATA_ELIMINATION too
-Message-ID: <20210402123959.5143-1-alobakin@pm.me>
+        Fri, 2 Apr 2021 08:40:52 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AFC8C0613E6
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 05:40:51 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id v11so4633452wro.7
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 05:40:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=BNYUKZHrMhvTPOFQ1droPRgbVu7CLrkiY6RX4hkaSxA=;
+        b=CinOx2ahgmQnkhPg+emJ4c/OIpkUqWOEydyPkQdaHZpOZEL65VFQkeDeF62HQQ9PJb
+         D6LvQeUI2Ae66hMZeBJMxGRKUuP/FaQctBCXvS9e3Rfwhsn74Ixpp1cqiXnbCLZOT5gT
+         +N1AFKV8Ajm+JkS/RYARcwy/fbnUf6zkzXt+kF60+UTIdAdrT9I1pEFGru4IREQjgd7c
+         oQcaPAdDz6Dp5jpvApK/BB1Wf709gn8/iVJi6QwFIJM3KvJ5fhu0+wkmHP9dbCnwNE1Q
+         KtDrOxYUwlrzLtO9d7pLasOKBqwEHzcA/oQR4m7qGFrEKS5H8TyscuC+BSWG34C65IOC
+         XkUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=BNYUKZHrMhvTPOFQ1droPRgbVu7CLrkiY6RX4hkaSxA=;
+        b=Iusx605CthidTnDVJCbJ5lmtTeGeq9yTCez8+v1Rrw35sVjnbaxywczP8zupRYD4Jn
+         GF8FRu9VGcg3AtqPGEXdgoZd3bvBtS34zVT+m+wopl2GNojkE+/noocBixH++oWm60cP
+         iMx8ShgApSn272yK5KH9o5b4sacHpDwQ6WSf6TexkkOk2u+lKOWpQ0K03LxG4BS04HUq
+         Wjv6X1qWFYS7aSZ0dPCLCc6a2AGuSuaauCH2t72d1y7ud2I1DplVcyUZZtFUNGP679BP
+         mh4ZaOUE28okF598C7TFOpAdXteVbDJmM9hGu226ZdZuQbVsPZHlXwnGf9bjIIdClHkQ
+         mtPA==
+X-Gm-Message-State: AOAM533St88DRSm8tqZpDQUsSj27EbkbrE94Ycm8RRShHn3nii6LqIZj
+        5GX16t4NccaauhxWtVicrJyWeN86YYXl7A==
+X-Google-Smtp-Source: ABdhPJyXhFmNwuFZ6RiAxeiFyk6B8myjdOkmCJxAqUQpfnwijxF6oZR1CxQgtGANwyulpgEgDum4lQ==
+X-Received: by 2002:adf:ea0c:: with SMTP id q12mr2517845wrm.2.1617367249808;
+        Fri, 02 Apr 2021 05:40:49 -0700 (PDT)
+Received: from agape.jhs ([5.171.80.213])
+        by smtp.gmail.com with ESMTPSA id k11sm12342998wmj.1.2021.04.02.05.40.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Apr 2021 05:40:49 -0700 (PDT)
+Date:   Fri, 2 Apr 2021 14:40:46 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     gregkh@linuxfoundation.org, joe@perches.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/16] staging: rtl8723bs: remove RT_TRACE logs in
+ core/rtw_xmit.c
+Message-ID: <20210402124045.GA1420@agape.jhs>
+References: <cover.1617356821.git.fabioaiuto83@gmail.com>
+ <72ab5222629f912ca2dbe825d194108992d321e7.1617356821.git.fabioaiuto83@gmail.com>
+ <20210402115626.GV2088@kadam>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210402115626.GV2088@kadam>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building with CONFIG_LD_DEAD_CODE_DATA_ELIMINATION,
--fdata-sections and -ffunction-sections are being enabled by the
-top-level Makefile, and module section merging is also needed.
-Expand the ifdef (and the comment block) to cover that case too.
+On Fri, Apr 02, 2021 at 02:56:26PM +0300, Dan Carpenter wrote:
+> On Fri, Apr 02, 2021 at 12:01:21PM +0200, Fabio Aiuto wrote:
+> > @@ -568,20 +561,11 @@ static s32 update_attrib_sec_info(struct adapter *padapter, struct pkt_attrib *p
+> >  	if (pattrib->encrypt > 0)
+> >  		memcpy(pattrib->dot118021x_UncstKey.skey, psta->dot118021x_UncstKey.skey, 16);
+> >  
+> > -	RT_TRACE(_module_rtl871x_xmit_c_, _drv_info_,
+> > -		("update_attrib: encrypt =%d  securitypriv.sw_encrypt =%d\n",
+> > -		pattrib->encrypt, padapter->securitypriv.sw_encrypt));
+> > -
+> >  	if (pattrib->encrypt &&
+> > -		((padapter->securitypriv.sw_encrypt == true) || (psecuritypriv->hw_decrypted == false))) {
+> > +		((padapter->securitypriv.sw_encrypt) || (!psecuritypriv->hw_decrypted)))
+> 
+> You've done too much clean up here.  Just remove the { but leave the
+> == true/false comparisons.
+> 
+> If the patch is only changing five lines or code then fixing checkpatch
+> warnings on the line of code you are changing is fine, but in this case
+> you're doing a bunch of changes and these sort of cleanups make it hard
+> to review.
+> 
+> Ease to spot that the curly brace changed:
+> -		((padapter->securitypriv.sw_encrypt == true) || (psecuritypriv->hw_decrypted == false))) {
+> +		((padapter->securitypriv.sw_encrypt == true) || (psecuritypriv->hw_decrypted == false)))
+> 
+> Hard to spot:
+> -		((padapter->securitypriv.sw_encrypt == true) || (psecuritypriv->hw_decrypted == false))) {
+> +		((padapter->securitypriv.sw_encrypt) || (!psecuritypriv->hw_decrypted)))
+> 
+> regards,
+> dan carpenter
+> 
 
-Fixes: 6a3193cdd5e5 ("kbuild: lto: Merge module sections if and only if CON=
-FIG_LTO_CLANG is enabled")
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- scripts/module.lds.S | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+thank you Dan, it's a good tuning process for me. Shall I resend the
+whole patchset? Maybe some of them are ok...
 
-diff --git a/scripts/module.lds.S b/scripts/module.lds.S
-index 2c52535f9b56..d6bbdfc55e08 100644
---- a/scripts/module.lds.S
-+++ b/scripts/module.lds.S
-@@ -20,11 +20,14 @@ SECTIONS {
-
- =09__patchable_function_entries : { *(__patchable_function_entries) }
-
--#ifdef CONFIG_LTO_CLANG
-+#if defined(CONFIG_LD_DEAD_CODE_DATA_ELIMINATION) || defined(CONFIG_LTO_CL=
-ANG)
- =09/*
- =09 * With CONFIG_LTO_CLANG, LLD always enables -fdata-sections and
--=09 * -ffunction-sections, which increases the size of the final module.
--=09 * Merge the split sections in the final binary.
-+=09 * -ffunction-sections. With CONFIG_LD_DEAD_CODE_DATA_ELIMINATION,
-+=09 * -fdata-sections and -ffunction-sections are being enabled by
-+=09 * the top-level Makefile.
-+=09 * This increases the size of the final module. Merge the split
-+=09 * sections in the final binary.
- =09 */
- =09.bss : {
- =09=09*(.bss .bss.[0-9a-zA-Z_]*)
---
-2.31.1
-
-
+fabio
