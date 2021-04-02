@@ -2,84 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1EF35269A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 08:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06BB835269C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 08:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233965AbhDBGif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 02:38:35 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:46487 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233781AbhDBGie (ORCPT
+        id S229778AbhDBGmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 02:42:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229522AbhDBGmp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 02:38:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1617345513; x=1648881513;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=OoX4cNeKEIkkiFfvhPIvQVOX3Xtu6YxWKxsj4cFR3BA=;
-  b=dGhLqzU22cvHT+531+HLyZM++hoDrRGAMN1FXCWdfbVgqxaAl7jmA/So
-   0I2lKfcDbN5eTSLmlYN+4KYn4eegK0Ea+QX4y54VDhAU+2hrfHLaiXuco
-   CCj0PUyab/cMtmxt8KX6ebXNJ2SZiAzFVE9aS8Y+igog07XBBkrPsqCn+
-   BH92yabA6TCPdpcTTg2PFgAaic92LzIhHHwp0SqmM05Ub402JtLNHv5s5
-   Br2zxG+LyUW6pmMt1xECeSXAwZQVCjGUA+QBlvZxo0Y+5/XuWtAwo4u2s
-   WVsrmq1KJhO4okxJWac1lPCFD/4rbPKWNT+Zh7LpujqC5IN+zCjadFlPt
-   w==;
-IronPort-SDR: jdxJBQSii9C3nvRn0FXiC8+fWtAILLvX9RCn0YS/e585v9+w0qGtZzhlNtvx36R/jGAHk1UsZ2
- 5O0HJ8RQkcYmY0IBlVdGD0qPRaJyYFNbvm9X8Zhdm+wOqXrzYifB2aVMP1lJFStyhEVzCuQO2a
- WDPFpy1uEMFQFqwK7TrsE8TEcsEtctrB4m6Ycs8hsAvmEWOR9niqw5QS0/8y/L80+FXhWBgcGT
- nIB3W08QK4OwrxtcL9erQ3fez0vDL3cYyJUqamIn7mfc0aUNzjmumRu9bcTVywtEb1ik53Bmde
- gS8=
-X-IronPort-AV: E=Sophos;i="5.81,299,1610434800"; 
-   d="scan'208";a="49777315"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Apr 2021 23:38:33 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 1 Apr 2021 23:38:33 -0700
-Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Thu, 1 Apr 2021 23:38:30 -0700
-From:   Tudor Ambarus <tudor.ambarus@microchip.com>
-To:     <vigneshr@ti.com>, <michael@walle.cc>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>, <p.yadav@ti.com>
-CC:     <miquel.raynal@bootlin.com>, <linux-kernel@vger.kernel.org>,
-        <richard@nod.at>, <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v3 0/2] mtd: spi-nor: Cleanup patches
-Date:   Fri, 2 Apr 2021 09:38:25 +0300
-Message-ID: <161734495497.5882.9424697028347909012.b4-ty@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210322075131.45093-1-tudor.ambarus@microchip.com>
-References: <20210322075131.45093-1-tudor.ambarus@microchip.com>
+        Fri, 2 Apr 2021 02:42:45 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E6D9C0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 23:42:45 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id n198so2283180iod.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 23:42:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=yj6+vSRZLkkm8CHfCAHYPtQtKWMqvTFnQ6YMhgNKBnc=;
+        b=qiWYH2oiUzVi6Ex79pPXPik+XUkqKcMptn6lKyCdQ4wWCJM0GnNPshmRPPcepCqNIV
+         KJsBYAdAY9MSRQ4CTfQkneOFzz1VJsSD3/tBljlj/FhfzWQuPl30qRz9uKAtyOqMzMEx
+         hHk3GOHDKTZpIqqzUEnS2McEvzxfr62M8OJq3U07xz6djly/pR9cutjbG9sPTuF2zncJ
+         3eni8RIBZwp7KcrPwzIclWXS6x5U4o7uiS5ZK5oEkAwf0rWmULB86Xiz0QqB80WoGNpx
+         7x3uAyU6KPrqOnIG2z96sU0c0V7KeV+3djxtfZvdibuF6bhJTmNhXT82h9ajmBGzcMH5
+         dENA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=yj6+vSRZLkkm8CHfCAHYPtQtKWMqvTFnQ6YMhgNKBnc=;
+        b=qKxUHJYdJpySewWNcmKy6Jd9UuM9Y0yyibg4nzoROJsKhBJLvH731NJprZT7tdmkU3
+         vhl1DQD30BrBZu1LMfmytt3MCHGD7k+C89opxb6tR/qH/pbcD/CueDB5gHbs8OG+lhpO
+         kyd8Z03DQPzHuVYFGvvUA6vjYu7LdZ2BOAak7e6Wm6FOiGAdRv8PyDLDOU4qs/k+XpM/
+         WyLK/3W9i8t+SWP6/k21HuZC+Oo2Q4TGTYmZS+KRO9XW3RKs5NXSCxdV55B47XWKRxnL
+         RbPGYILMZRx89MTePwLK9EbWEsqaoUBUw30fuQRA1AYphx6sfX+7BD7LvVVTwi5cHYwi
+         7IdQ==
+X-Gm-Message-State: AOAM532fINM7OgWjH6bnQ+3qOgtV59emGw5p4cFifrByKTklTEAN3QRL
+        fMSFDx9+ga6qIj+baPQJ0ya4oG2/A3WTJ67CArdz5EMStOG7Ng==
+X-Google-Smtp-Source: ABdhPJz9e8u23bdl9W6P7q5ULqjRON5XoB6/o7v2BH97tDP2SNEtZQUtlKLox/z8j+wgSbu43gbCKyvpHGWIpyBE2ng=
+X-Received: by 2002:a5e:8610:: with SMTP id z16mr9600257ioj.57.1617345764402;
+ Thu, 01 Apr 2021 23:42:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210211194258.4137998-1-nathan@kernel.org> <161428829728.2305454.15456455443457551559.b4-ty@chromium.org>
+In-Reply-To: <161428829728.2305454.15456455443457551559.b4-ty@chromium.org>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 2 Apr 2021 08:42:07 +0200
+Message-ID: <CA+icZUWdeWSy52bU4cjHau1hn5NiFAozaHgDb=geaaCYOET9+w@mail.gmail.com>
+Subject: Re: [PATCH] qemu_fw_cfg: Make fw_cfg_rev_attr a proper kobj_attribute
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Gabriel Somlo <somlo@cmu.edu>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        qemu-devel@nongnu.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Mar 2021 09:51:29 +0200, Tudor Ambarus wrote:
-> Various cleanup patches done while reviewing contributions.
-> 
-> Tudor Ambarus (2):
->   mtd: spi-nor: Move Software Write Protection logic out of the core
->   mtd: spi-nor: swp: Improve code around spi_nor_check_lock_status_sr()
-> 
->  drivers/mtd/spi-nor/Makefile |   2 +-
->  drivers/mtd/spi-nor/core.c   | 406 +--------------------------------
->  drivers/mtd/spi-nor/core.h   |   4 +
->  drivers/mtd/spi-nor/swp.c    | 427 +++++++++++++++++++++++++++++++++++
->  4 files changed, 435 insertions(+), 404 deletions(-)
->  create mode 100644 drivers/mtd/spi-nor/swp.c
+On Thu, Feb 25, 2021 at 10:25 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Thu, 11 Feb 2021 12:42:58 -0700, Nathan Chancellor wrote:
+> > fw_cfg_showrev() is called by an indirect call in kobj_attr_show(),
+> > which violates clang's CFI checking because fw_cfg_showrev()'s second
+> > parameter is 'struct attribute', whereas the ->show() member of 'struct
+> > kobj_structure' expects the second parameter to be of type 'struct
+> > kobj_attribute'.
+> >
+> > $ cat /sys/firmware/qemu_fw_cfg/rev
+> > 3
+> >
+> > [...]
+>
+> Applied to kspp/cfi/cleanups, thanks!
+>
+> [1/1] qemu_fw_cfg: Make fw_cfg_rev_attr a proper kobj_attribute
+>       https://git.kernel.org/kees/c/f5c4679d6c49
+>
 
-Applied to spi-nor/next, thanks!
+I have queued this up in my custom patchset
+(for-5.12/kspp-cfi-cleanups-20210225).
 
-[1/2] mtd: spi-nor: Move Software Write Protection logic out of the core
-      https://git.kernel.org/mtd/c/c4c795105f29
-[2/2] mtd: spi-nor: swp: Improve code around spi_nor_check_lock_status_sr()
-      https://git.kernel.org/mtd/c/b6cbd9167d44
+What is the plan to get this upstream?
 
-Best regards,
--- 
-Tudor Ambarus <tudor.ambarus@microchip.com>
+Feel free to add my:
+
+Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+
+- Sedat -
