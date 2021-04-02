@@ -2,270 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C82A0352D26
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B0C352D36
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236011AbhDBPVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 11:21:30 -0400
-Received: from mga17.intel.com ([192.55.52.151]:15433 "EHLO mga17.intel.com"
+        id S236046AbhDBPVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 11:21:55 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:8919 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235448AbhDBPV2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 11:21:28 -0400
-IronPort-SDR: kOyxMcU5m0Z8npv+tebQquceT/36D7fDc/uYFVoMynPgAgpNIqFGcNkf8x8+0nEl12tfXtvcLM
- yvDylvoDPOiw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9942"; a="172517988"
-X-IronPort-AV: E=Sophos;i="5.81,300,1610438400"; 
-   d="scan'208";a="172517988"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 08:21:26 -0700
-IronPort-SDR: iTc0WdDPYCIJ56Fs8Ej3JM3UsZQG4la470WB1fiIkEiuD7bF9E9xdidYC1rui0B2ZtJfCvHVZ+
- 2ZUgnqbWJi/Q==
-X-IronPort-AV: E=Sophos;i="5.81,300,1610438400"; 
-   d="scan'208";a="419698816"
-Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 08:21:23 -0700
-From:   Tomas Winkler <tomas.winkler@intel.com>
-To:     Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        David E Box <david.e.box@intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tamar Mashiah <tamar.mashiah@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Tomas Winkler <tomas.winkler@intel.com>
-Subject: [PATCH v4] platform/x86: intel_pmc_core: export platform global_reset via sysfs.
-Date:   Fri,  2 Apr 2021 18:21:13 +0300
-Message-Id: <20210402152113.1191796-1-tomas.winkler@intel.com>
-X-Mailer: git-send-email 2.26.3
+        id S234968AbhDBPVy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 11:21:54 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FBkL51pq3z9v2lh;
+        Fri,  2 Apr 2021 17:21:49 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id OssVJYy-p_xH; Fri,  2 Apr 2021 17:21:49 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FBkL50gT0z9v2lf;
+        Fri,  2 Apr 2021 17:21:49 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 155BE8BB7D;
+        Fri,  2 Apr 2021 17:21:51 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 6n2Gg89KkRnV; Fri,  2 Apr 2021 17:21:51 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1C4F58BB7C;
+        Fri,  2 Apr 2021 17:21:50 +0200 (CEST)
+Subject: Re: [PATCH v3 11/17] riscv: Convert to GENERIC_CMDLINE
+To:     Rob Herring <robh@kernel.org>
+Cc:     Andreas Schwab <schwab@linux-m68k.org>,
+        Will Deacon <will@kernel.org>,
+        Daniel Walker <danielwa@cisco.com>,
+        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
+        <linux-arch@vger.kernel.org>, devicetree@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        microblaze <monstr@monstr.eu>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        nios2 <ley.foon.tan@intel.com>,
+        Openrisc <openrisc@lists.librecores.org>,
+        linux-hexagon@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        X86 ML <x86@kernel.org>, linux-xtensa@linux-xtensa.org,
+        SH-Linux <linux-sh@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>
+References: <cover.1616765869.git.christophe.leroy@csgroup.eu>
+ <46745e07b04139a22b5bd01dc37df97e6981e643.1616765870.git.christophe.leroy@csgroup.eu>
+ <87zgyqdn3d.fsf@igel.home> <81a7e63f-57d4-5c81-acc5-35278fe5bb04@csgroup.eu>
+ <CAL_JsqK2TT=j1QjiRgTYQvwHqivE-3HgYo2JzxTJSWO2wvK69Q@mail.gmail.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <d71c83a8-cc10-b435-5a28-70ca4df6fdf9@csgroup.eu>
+Date:   Fri, 2 Apr 2021 17:21:51 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
+In-Reply-To: <CAL_JsqK2TT=j1QjiRgTYQvwHqivE-3HgYo2JzxTJSWO2wvK69Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tamar Mashiah <tamar.mashiah@intel.com>
 
-During PCH (platform/board) manufacturing process a global reset
-has to be induced in order for configuration changes take the effect
-upon following platform reset.
-This setting was commonly done by accessing PMC registers via /dev/mem
-but due to security concern /dev/mem access is much restricted, hence
-the reason for exposing this setting via dedicated sysfs interface.
-To prevent post manufacturing abuse the register is protected
-by hardware locking.
 
-The register in MMIO space is defined for Cannon Lake and newer PCHs.
+Le 26/03/2021 à 16:26, Rob Herring a écrit :
+> On Fri, Mar 26, 2021 at 8:20 AM Christophe Leroy
+> <christophe.leroy@csgroup.eu> wrote:
+>>
+>>
+>>
+>> Le 26/03/2021 à 15:08, Andreas Schwab a écrit :
+>>> On Mär 26 2021, Christophe Leroy wrote:
+>>>
+>>>> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
+>>>> index f8f15332caa2..e7c91ee478d1 100644
+>>>> --- a/arch/riscv/kernel/setup.c
+>>>> +++ b/arch/riscv/kernel/setup.c
+>>>> @@ -20,6 +20,7 @@
+>>>>    #include <linux/swiotlb.h>
+>>>>    #include <linux/smp.h>
+>>>>    #include <linux/efi.h>
+>>>> +#include <linux/cmdline.h>
+>>>>
+>>>>    #include <asm/cpu_ops.h>
+>>>>    #include <asm/early_ioremap.h>
+>>>> @@ -228,10 +229,8 @@ static void __init parse_dtb(void)
+>>>>       }
+>>>>
+>>>>       pr_err("No DTB passed to the kernel\n");
+>>>> -#ifdef CONFIG_CMDLINE_FORCE
+>>>> -    strlcpy(boot_command_line, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
+>>>> +    cmdline_build(boot_command_line, NULL, COMMAND_LINE_SIZE);
+>>>>       pr_info("Forcing kernel command line to: %s\n", boot_command_line);
+>>>
+>>> Shouldn't that message become conditional in some way?
+>>>
+>>
+>> You are right, I did something similar on ARM but looks like I missed it on RISCV.
+> 
+> How is this hunk even useful? Under what conditions can you boot
+> without a DTB? Even with a built-in DTB, the DT cmdline handling would
+> be called.
+> 
 
-Cc: David E Box <david.e.box@intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Tamar Mashiah <tamar.mashiah@intel.com>
-Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
----
-2:
-1. Add locking for reading the ET3 register  (Andy)
-2. Fix few style issues (Andy)
-V3:
-1. Resend
-v4:
-1. Fix return statement (Andy) 
-2. Specify manufacturing process (Enrico)
+Don't know, I wanted to keep as is today.
 
- .../ABI/testing/sysfs-platform-intel-pmc      | 11 +++
- MAINTAINERS                                   |  1 +
- drivers/platform/x86/intel_pmc_core.c         | 97 +++++++++++++++++++
- drivers/platform/x86/intel_pmc_core.h         |  6 ++
- 4 files changed, 115 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-platform-intel-pmc
-
-diff --git a/Documentation/ABI/testing/sysfs-platform-intel-pmc b/Documentation/ABI/testing/sysfs-platform-intel-pmc
-new file mode 100644
-index 000000000000..7ce00e77fbcd
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-platform-intel-pmc
-@@ -0,0 +1,11 @@
-+What:		/sys/devices/platform/<platform>/global_reset
-+Date:		Apr 2021
-+KernelVersion:	5.13
-+Contact:	"Tomas Winkler" <tomas.winkler@intel.com>
-+Description:
-+		Display global reset setting bits for PMC.
-+			* bit 31 - global reset is locked
-+			* bit 20 - global reset is set
-+		Writing bit 20 value to the global_reset will induce
-+		a platform global reset upon consequent platform reset.
-+		in case the register is not locked.
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 04f68e0cda64..618676eba8c8 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9166,6 +9166,7 @@ M:	Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
- M:	David E Box <david.e.box@intel.com>
- L:	platform-driver-x86@vger.kernel.org
- S:	Maintained
-+F:	Documentation/ABI/testing/sysfs-platform-intel-pmc
- F:	drivers/platform/x86/intel_pmc_core*
- 
- INTEL PMIC GPIO DRIVERS
-diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
-index ee2f757515b0..8afc198550a4 100644
---- a/drivers/platform/x86/intel_pmc_core.c
-+++ b/drivers/platform/x86/intel_pmc_core.c
-@@ -401,6 +401,7 @@ static const struct pmc_reg_map cnp_reg_map = {
- 	.pm_cfg_offset = CNP_PMC_PM_CFG_OFFSET,
- 	.pm_read_disable_bit = CNP_PMC_READ_DISABLE_BIT,
- 	.ltr_ignore_max = CNP_NUM_IP_IGN_ALLOWED,
-+	.etr3_offset = ETR3_OFFSET,
- };
- 
- static const struct pmc_reg_map icl_reg_map = {
-@@ -418,6 +419,7 @@ static const struct pmc_reg_map icl_reg_map = {
- 	.pm_cfg_offset = CNP_PMC_PM_CFG_OFFSET,
- 	.pm_read_disable_bit = CNP_PMC_READ_DISABLE_BIT,
- 	.ltr_ignore_max = ICL_NUM_IP_IGN_ALLOWED,
-+	.etr3_offset = ETR3_OFFSET,
- };
- 
- static const struct pmc_bit_map tgl_clocksource_status_map[] = {
-@@ -585,6 +587,7 @@ static const struct pmc_reg_map tgl_reg_map = {
- 	.lpm_sts = tgl_lpm_maps,
- 	.lpm_status_offset = TGL_LPM_STATUS_OFFSET,
- 	.lpm_live_status_offset = TGL_LPM_LIVE_STATUS_OFFSET,
-+	.etr3_offset = ETR3_OFFSET,
- };
- 
- static inline u32 pmc_core_reg_read(struct pmc_dev *pmcdev, int reg_offset)
-@@ -603,6 +606,99 @@ static inline u64 pmc_core_adjust_slp_s0_step(struct pmc_dev *pmcdev, u32 value)
- 	return (u64)value * pmcdev->map->slp_s0_res_counter_step;
- }
- 
-+static int set_global_reset(struct pmc_dev *pmcdev)
-+{
-+	const struct pmc_reg_map *map = pmcdev->map;
-+	u32 reg;
-+	int err;
-+
-+	if (!map->etr3_offset)
-+		return -EOPNOTSUPP;
-+
-+	mutex_lock(&pmcdev->lock);
-+
-+	/* check if CF9 is locked */
-+	reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
-+	if (reg & ETR3_CF9LOCK) {
-+		err = -EACCES;
-+		goto out_unlock;
-+	}
-+
-+	/* write CF9 global reset bit */
-+	reg |= ETR3_CF9GR;
-+	pmc_core_reg_write(pmcdev, map->etr3_offset, reg);
-+
-+	reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
-+	if (!(reg & ETR3_CF9GR)) {
-+		err = -EIO;
-+		goto out_unlock;
-+	}
-+
-+	err = 0;
-+
-+out_unlock:
-+	mutex_unlock(&pmcdev->lock);
-+	return err;
-+}
-+
-+static ssize_t global_reset_show(struct device *dev,
-+				 struct device_attribute *attr, char *buf)
-+{
-+	struct pmc_dev *pmcdev = dev_get_drvdata(dev);
-+	const struct pmc_reg_map *map = pmcdev->map;
-+	u32 reg;
-+
-+	if (!map->etr3_offset)
-+		return -EOPNOTSUPP;
-+
-+	mutex_lock(&pmcdev->lock);
-+
-+	reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
-+	reg &= ETR3_CF9GR | ETR3_CF9LOCK;
-+
-+	mutex_unlock(&pmcdev->lock);
-+
-+	return sysfs_emit(buf, "0x%08x", reg);
-+}
-+
-+static ssize_t global_reset_store(struct device *dev,
-+				  struct device_attribute *attr,
-+				  const char *buf, size_t len)
-+{
-+	struct pmc_dev *pmcdev = dev_get_drvdata(dev);
-+	int err;
-+	u32 reg;
-+
-+	err = kstrtouint(buf, 16, &reg);
-+	if (err)
-+		return err;
-+
-+	/* allow only CF9 writes */
-+	if (reg != ETR3_CF9GR)
-+		return -EINVAL;
-+
-+	err = set_global_reset(pmcdev);
-+	if (err)
-+		return err;
-+
-+	return len;
-+}
-+static DEVICE_ATTR_RW(global_reset);
-+
-+static struct attribute *pmc_attrs[] = {
-+	&dev_attr_global_reset.attr,
-+	NULL
-+};
-+
-+static const struct attribute_group pmc_attr_group = {
-+	.attrs = pmc_attrs,
-+};
-+
-+static const struct attribute_group *pmc_dev_groups[] = {
-+	&pmc_attr_group,
-+	NULL
-+};
-+
- static int pmc_core_dev_state_get(void *data, u64 *val)
- {
- 	struct pmc_dev *pmcdev = data;
-@@ -1364,6 +1460,7 @@ static struct platform_driver pmc_core_driver = {
- 		.name = "intel_pmc_core",
- 		.acpi_match_table = ACPI_PTR(pmc_core_acpi_ids),
- 		.pm = &pmc_core_pm_ops,
-+		.dev_groups = pmc_dev_groups,
- 	},
- 	.probe = pmc_core_probe,
- 	.remove = pmc_core_remove,
-diff --git a/drivers/platform/x86/intel_pmc_core.h b/drivers/platform/x86/intel_pmc_core.h
-index f33cd2c34835..98ebdfe57138 100644
---- a/drivers/platform/x86/intel_pmc_core.h
-+++ b/drivers/platform/x86/intel_pmc_core.h
-@@ -200,6 +200,11 @@ enum ppfear_regs {
- #define TGL_LPM_STATUS_OFFSET			0x1C3C
- #define TGL_LPM_LIVE_STATUS_OFFSET		0x1C5C
- 
-+/* Extended Test Mode Register 3 (CNL and later) */
-+#define ETR3_OFFSET				0x1048
-+#define ETR3_CF9GR				BIT(20)
-+#define ETR3_CF9LOCK				BIT(31)
-+
- const char *tgl_lpm_modes[] = {
- 	"S0i2.0",
- 	"S0i2.1",
-@@ -263,6 +268,7 @@ struct pmc_reg_map {
- 	const u32 lpm_residency_offset;
- 	const u32 lpm_status_offset;
- 	const u32 lpm_live_status_offset;
-+	const u32 etr3_offset;
- };
- 
- /**
--- 
-2.26.3
+Do you think the hunk should be completely removed ?
 
