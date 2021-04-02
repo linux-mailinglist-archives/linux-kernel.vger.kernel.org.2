@@ -2,138 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C36043525B5
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 05:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DF153525B7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 05:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233921AbhDBDje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 23:39:34 -0400
-Received: from mail-mw2nam12on2139.outbound.protection.outlook.com ([40.107.244.139]:31809
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233701AbhDBDjc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 23:39:32 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Wc1GIk6PeS6C2qfw5caxmUwN/qildp33IKV5lUc8LTPig3QpI+80VTgg5Lzknuz+ifFZngM4s0gIuC+vyYsfu3JPHOzDe7bu1vOL4/nJFd2uMHYuUM12opDNQOiS/XXnUKTohQ1ldcv6CDWHi7PoukktkbXrQuvuo02qB3h2NoT8imm5Ghjrx0J6Cz9a8zWNi575X2pMTPiqIgkvUGvjWb4DBXpw97YNXGCpZiA5kM+drtlqKdEzI2NtgsofR1O+qTc1q50AgSBuiA7ckYWxjPvw/zgmHMH1UFDOPKogJ/zxbeEKuqCDk2qb6Iw862X+pPjKuQ2if7yr6B4e2YSz0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G0dtyvSrR2YsFIgYZFWkvzYvtcp2VPzwQEIisFKEYuw=;
- b=TLDb8k8KW4V75noRrMOfTqKTJHEhsDdyJYVPTZRTVkH5TG1HOcA6KCv/lGKNv7GgbHL3O6GgYOI2U+cjPUtnmFFfouCoJpgWS1Tq3zes1u9C3+gXeazzLfy2MgRpiyvTr/Rzfd9J+HwpwCPPIX6GiuQoKhoHMGpxQjCC+CCs/TVj0ELzl05JyofWdeBbwPgDmSYRODqhRFG+9RKYPujNgAmMrrZ0iCoLS3lMHUwltvTDv21a6weZwxXBFjU/52cuZ132TTOxl0Q4aDbudT6fhieiScLoynO/qYmDJosXylubmhzetJDh1SZl13i2/7WI0+EkpgxAP6IMk07Dch782Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=maximintegrated.com; dmarc=pass action=none
- header.from=maximintegrated.com; dkim=pass header.d=maximintegrated.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=maximintegrated.onmicrosoft.com;
- s=selector2-maximintegrated-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G0dtyvSrR2YsFIgYZFWkvzYvtcp2VPzwQEIisFKEYuw=;
- b=gLqbDIEnbejUKMZ/pWii4xHxT0UImptMVe4xsJVD+onRjKxRB+U7N0cId46dfftSFkZbWsW/jrTeuOqA5NC4uSZZ3tb6o2bTqy3tqKHj8exR3vkPeCE8Fm6SVg9j+wEdCCaWe5X1NWll/NccKoRVElbSxUkl3BYwmF3uBbBuG8Q=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none
- header.from=maximintegrated.com;
-Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
- by CO1PR11MB5060.namprd11.prod.outlook.com (2603:10b6:303:93::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27; Fri, 2 Apr
- 2021 03:39:28 +0000
-Received: from CO1PR11MB5089.namprd11.prod.outlook.com
- ([fe80::cc39:7519:2fa6:cc8b]) by CO1PR11MB5089.namprd11.prod.outlook.com
- ([fe80::cc39:7519:2fa6:cc8b%3]) with mapi id 15.20.3999.028; Fri, 2 Apr 2021
- 03:39:28 +0000
-From:   Steve Lee <steves.lee@maximintegrated.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, ckeepax@opensource.cirrus.com,
-        geert@linux-m68k.org, rf@opensource.wolfsonmicro.com,
-        shumingf@realtek.com, srinivas.kandagatla@linaro.org,
-        krzk@kernel.org, dmurphy@ti.com, jack.yu@realtek.com,
-        nuno.sa@analog.com, steves.lee@maximintegrated.com,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc:     ryan.lee.maxim@gmail.com, steves.lee.maxim@gmail.com
-Subject: [PATCH] ASoC: max98390: Add controls for tx path
-Date:   Fri,  2 Apr 2021 12:36:43 +0900
-Message-Id: <20210402033643.12259-1-steves.lee@maximintegrated.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-Originating-IP: [125.129.66.126]
-X-ClientProxiedBy: SL2P216CA0019.KORP216.PROD.OUTLOOK.COM
- (2603:1096:100:18::29) To CO1PR11MB5089.namprd11.prod.outlook.com
- (2603:10b6:303:9b::16)
+        id S234047AbhDBDlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 23:41:15 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15526 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233701AbhDBDlO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 23:41:14 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FBQkb4pJ0zNsD0;
+        Fri,  2 Apr 2021 11:38:31 +0800 (CST)
+Received: from [10.174.151.207] (10.174.151.207) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 2 Apr 2021 11:41:05 +0800
+Subject: Re: [PATCH] iommu/vt-d: Force to flush iotlb before creating
+ superpage
+To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>
+CC:     David Woodhouse <dwmw2@infradead.org>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Gonglei <arei.gonglei@huawei.com>, <stable@vger.kernel.org>
+References: <20210401071834.1639-1-longpeng2@huawei.com>
+ <af470760-04c1-0929-7304-0879ca7af542@linux.intel.com>
+From:   "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
+        <longpeng2@huawei.com>
+Message-ID: <b4ddcefa-9492-326f-e717-b6623bc824c1@huawei.com>
+Date:   Fri, 2 Apr 2021 11:41:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (125.129.66.126) by SL2P216CA0019.KORP216.PROD.OUTLOOK.COM (2603:1096:100:18::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.31 via Frontend Transport; Fri, 2 Apr 2021 03:39:24 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f5c06ccd-c84c-418a-3166-08d8f588eaf6
-X-MS-TrafficTypeDiagnostic: CO1PR11MB5060:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CO1PR11MB5060596EB45F6EF483ACDF43927A9@CO1PR11MB5060.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:454;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Ngv8NvCgG419PVWxobU1k9d2+tOB1l4xMoCxzs4A8aRiVozw8W0CO0DCyyhrYp++9U8iTNScl1wrTmKaP+6JvGAgIQRarmqSUF8Jt6DMGfp5k27Yo8OFVNZtTKvg4aZKgeyRvlDw/N0Abk3ihIYCMcus1XjmVJhL1UkQ6RzcuseJI3Qt9ppQnf1QwesY7/IfDTwQlU6pAiZXvR/pb7GlyVKJO/RHdVrxAIb2JvWKPk5psfA8zSBJlLyfyx/qCzBUF/PV1k8DJFdbb3+R7ItCi5tl1qI3mcBHN+VfGxUS9sjQRiA4mM355r8nZTHmqkMpWA/f2xLDOa1AX8gfx7iulFaRamg6fDUdxRiyIAI52qchyBgti2Qxoq9HmZRSbYPW6t9G8y0eKt3vRoX5NX9YDi6S0J3laqWSbHSSzG24rLm4IU6PeS3X2jKNsltBI7tFwutuY31gKMqsT1YffZLnpdoc8qFlfgkRXLHshnr9OLHkogO89zP5a0Yv1pzbBZ2Mh470Onn+Cn1NWcix+c+qtYb1Z/919Ayof/G8S9fsHMUFVwwNAhkzrDhMiGADmrx+9euCXM+5Dhx27LADVM2mpl8fFwtSnMUPdODl8/cjJm23oiAHzknYb4qNfvGzYFXK6D+uf1fzAA5elrAXMqdkzMmdYPfe0Z3gvd9ESirBTmI6C7F8MOtBTMmh7ZggCOP7RQjJgKvr2RuKia8Nb4Fvwg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(376002)(136003)(39860400002)(396003)(36756003)(66946007)(52116002)(6486002)(66476007)(38100700001)(66556008)(6512007)(83380400001)(7416002)(6506007)(478600001)(86362001)(956004)(8676002)(5660300002)(2616005)(1076003)(8936002)(4744005)(2906002)(4326008)(6666004)(26005)(69590400012)(186003)(921005)(316002)(16526019);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?4B8AwTM01P7cQBfwW4KeOqDr6kArECioRB/TGeCWCoFA8/Ryw938U6BT03l0?=
- =?us-ascii?Q?JEkg8nE2YSnRRhmXhc0oAHkAk3Af6adjgHdIs/PcLQHREbO7oYfpfINhHoBy?=
- =?us-ascii?Q?mGqrIgXiES8ZYQxZ8ZCbltQpuHSQ/IG6Ltoh+rM8uib3+B6RQ83mSR9D7QKK?=
- =?us-ascii?Q?CXahtaMNtZulvIXBa9PKTQzsicF+t9cvMbsdAgp5Q1cDStmCZPXfgY/Xf3wl?=
- =?us-ascii?Q?zJuiaSkAEpOQ5G8QGl+dzZR13M6F1ElcfV1k4r4LKwjciUFyOPQmLF5SneRc?=
- =?us-ascii?Q?zFqri6R+ZNc9HXcoSLkV9sHrsO2fMQocGE3Su8IrpMb/rtJMWlr9zUWWiT2I?=
- =?us-ascii?Q?KLZh1rCHryDsQYQWtLqBoBvY6ej5FpPtCwzQX92a4VLRJqdpI4Zlkxv6ZXgm?=
- =?us-ascii?Q?VTJ7yrMpw9+pj+2LNBi7y6oiuR3nbl7lgVFsHrD0yriKOurKrDMCv/duZoZo?=
- =?us-ascii?Q?uAFbP/gnC7kgho8ea/0DK6kFVO8Or7jVKvKNd4IwC9orqUq3iqquxW698lQ0?=
- =?us-ascii?Q?ZC2M2HWjLqalTFGqh+sK6qAEtc7fWYcG+r8lFbuQ/JKrEl8cgE53ZPKEfhG/?=
- =?us-ascii?Q?V/By4u6gP5BAVoOe5QeOq2Uw69ZF9uDhAFQNv3H4y5jlA1Z57ix9fiP5hjBi?=
- =?us-ascii?Q?hCuXGhh9jAtzClEcoYbsornYXXZzQUmdAwCjZfsrk5KXYLZnmsu+9N4zHXps?=
- =?us-ascii?Q?29c6a5BCQGr1xbqGx3aChIU1IIK2CAzR1VMQoDYEi0j5XZPopg/fjsbdTTdV?=
- =?us-ascii?Q?OIG64Y742IoQBaNYhHh7dpJ1DU5tM9J8hy1GmO8sMuod562NUSMb9gltKG42?=
- =?us-ascii?Q?w3lFaTAu7XZd+6yrwjlXfCLpalDio3A39l1y7xqNdh+bwveGl8yESjeUcxfm?=
- =?us-ascii?Q?aKIvYL7u6Yn3V1Rr2ZnLuVQ+CS2AxwOwz1br2JYOAWKcv5SEcOmrAvxnvox2?=
- =?us-ascii?Q?irTNF6g9pt1Rcp5MsQkFKdvtBKuqXBivY9LdVcOS655x5TJ2yCBHGtdixTBI?=
- =?us-ascii?Q?Bjcb+z8P+aKCWfMCgAQa1oQJzjuizzAVqbxX6Sj0HPgZNAqaJaVjRUF/aM0c?=
- =?us-ascii?Q?p2DSbIP75WfrBit/1oOpzVgwXIPuQ3va8LTgkJkQggkGIDqEL+L6OPm+aHGq?=
- =?us-ascii?Q?qquagzm9kz8I4fID3wIzIAhp6f0hcwyuOJn1VWUzYNkaJVoW1JJSx+1GcntC?=
- =?us-ascii?Q?dhapL9E6Vn9VnCbdyqHGfimmTw7jb/sTe3zPTfbP+ezpMv4Nr7AJGcvwH/ad?=
- =?us-ascii?Q?Jvcpc57CDkzNbyt9Wqw78UJkGfXCQEVpFVKs8fw1A7CHvYoxD/BhDCvNrUvh?=
- =?us-ascii?Q?4uHvB3i2CUPz5U++Nh6nn+qw?=
-X-OriginatorOrg: maximintegrated.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f5c06ccd-c84c-418a-3166-08d8f588eaf6
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Apr 2021 03:39:28.2431
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fbd909df-ea69-4788-a554-f24b7854ad03
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ydQYGcVf5tj98E1hDReTRprMYdlGLyQzDiwbbJ2yMsdK1a0cKHmvgqCPF4IRmiu49YkRu/k/DcVFJWmZPVp7fF/Md/ersDa56dOunPW90vs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5060
+In-Reply-To: <af470760-04c1-0929-7304-0879ca7af542@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.151.207]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- Add controls for tx source.
+Hi Baolu,
 
-Signed-off-by: Steve Lee <steves.lee@maximintegrated.com>
----
- sound/soc/codecs/max98390.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+在 2021/4/2 11:06, Lu Baolu 写道:
+> Hi Longpeng,
+> 
+> On 4/1/21 3:18 PM, Longpeng(Mike) wrote:
+>> The translation caches may preserve obsolete data when the
+>> mapping size is changed, suppose the following sequence which
+>> can reveal the problem with high probability.
+>>
+>> 1.mmap(4GB,MAP_HUGETLB)
+>> 2.
+>>    while (1) {
+>>     (a)    DMA MAP   0,0xa0000
+>>     (b)    DMA UNMAP 0,0xa0000
+>>     (c)    DMA MAP   0,0xc0000000
+>>               * DMA read IOVA 0 may failure here (Not present)
+>>               * if the problem occurs.
+>>     (d)    DMA UNMAP 0,0xc0000000
+>>    }
+>>
+>> The page table(only focus on IOVA 0) after (a) is:
+>>   PML4: 0x19db5c1003   entry:0xffff899bdcd2f000
+>>    PDPE: 0x1a1cacb003  entry:0xffff89b35b5c1000
+>>     PDE: 0x1a30a72003  entry:0xffff89b39cacb000
+>>      PTE: 0x21d200803  entry:0xffff89b3b0a72000
+>>
+>> The page table after (b) is:
+>>   PML4: 0x19db5c1003   entry:0xffff899bdcd2f000
+>>    PDPE: 0x1a1cacb003  entry:0xffff89b35b5c1000
+>>     PDE: 0x1a30a72003  entry:0xffff89b39cacb000
+>>      PTE: 0x0          entry:0xffff89b3b0a72000
+>>
+>> The page table after (c) is:
+>>   PML4: 0x19db5c1003   entry:0xffff899bdcd2f000
+>>    PDPE: 0x1a1cacb003  entry:0xffff89b35b5c1000
+>>     PDE: 0x21d200883   entry:0xffff89b39cacb000 (*)
+>>
+>> Because the PDE entry after (b) is present, it won't be
+>> flushed even if the iommu driver flush cache when unmap,
+>> so the obsolete data may be preserved in cache, which
+>> would cause the wrong translation at end.
+>>
+>> However, we can see the PDE entry is finally switch to
+>> 2M-superpage mapping, but it does not transform
+>> to 0x21d200883 directly:
+>>
+>> 1. PDE: 0x1a30a72003
+>> 2. __domain_mapping
+>>       dma_pte_free_pagetable
+>>         Set the PDE entry to ZERO
+>>       Set the PDE entry to 0x21d200883
+>>
+>> So we must flush the cache after the entry switch to ZERO
+>> to avoid the obsolete info be preserved.
+>>
+>> Cc: David Woodhouse <dwmw2@infradead.org>
+>> Cc: Lu Baolu <baolu.lu@linux.intel.com>
+>> Cc: Nadav Amit <nadav.amit@gmail.com>
+>> Cc: Alex Williamson <alex.williamson@redhat.com>
+>> Cc: Kevin Tian <kevin.tian@intel.com>
+>> Cc: Gonglei (Arei) <arei.gonglei@huawei.com>
+>>
+>> Fixes: 6491d4d02893 ("intel-iommu: Free old page tables before creating
+>> superpage")
+>> Cc: <stable@vger.kernel.org> # v3.0+
+>> Link:
+>> https://lore.kernel.org/linux-iommu/670baaf8-4ff8-4e84-4be3-030b95ab5a5e@huawei.com/
+>>
+>> Suggested-by: Lu Baolu <baolu.lu@linux.intel.com>
+>> Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
+>> ---
+>>   drivers/iommu/intel/iommu.c | 15 +++++++++++++--
+>>   1 file changed, 13 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+>> index ee09323..cbcb434 100644
+>> --- a/drivers/iommu/intel/iommu.c
+>> +++ b/drivers/iommu/intel/iommu.c
+>> @@ -2342,9 +2342,20 @@ static inline int hardware_largepage_caps(struct
+>> dmar_domain *domain,
+>>                    * removed to make room for superpage(s).
+>>                    * We're adding new large pages, so make sure
+>>                    * we don't remove their parent tables.
+>> +                 *
+>> +                 * We also need to flush the iotlb before creating
+>> +                 * superpage to ensure it does not perserves any
+>> +                 * obsolete info.
+>>                    */
+>> -                dma_pte_free_pagetable(domain, iov_pfn, end_pfn,
+>> -                               largepage_lvl + 1);
+>> +                if (dma_pte_present(pte)) {
+>> +                    int i;
+>> +
+>> +                    dma_pte_free_pagetable(domain, iov_pfn, end_pfn,
+>> +                                   largepage_lvl + 1);
+>> +                    for_each_domain_iommu(i, domain)
+>> +                        iommu_flush_iotlb_psi(g_iommus[i], domain,
+>> +                                      iov_pfn, nr_pages, 0, 0);
+> 
+> Thanks for patch!
+> 
+> How about making the flushed page size accurate? For example,
+> 
+> @@ -2365,8 +2365,8 @@ __domain_mapping(struct dmar_domain *domain, unsigned long
+> iov_pfn,
+>                                         dma_pte_free_pagetable(domain, iov_pfn,
+> end_pfn,
+> 
+> largepage_lvl + 1);
+>                                         for_each_domain_iommu(i, domain)
+> - iommu_flush_iotlb_psi(g_iommus[i], domain,
+> - iov_pfn, nr_pages, 0, 0);
+> + iommu_flush_iotlb_psi(g_iommus[i], domain, iov_pfn,
+> + ALIGN_DOWN(nr_pages, lvl_pages), 0, 0);
+> 
+Yes, make sense.
 
-diff --git a/sound/soc/codecs/max98390.c b/sound/soc/codecs/max98390.c
-index bb736c44e68a..163093959da8 100644
---- a/sound/soc/codecs/max98390.c
-+++ b/sound/soc/codecs/max98390.c
-@@ -656,6 +656,12 @@ static const struct snd_kcontrol_new max98390_snd_controls[] = {
- 		MAX98390_AMP_DSP_CFG_RMP_DN_SHIFT, 1, 0),
- 	SOC_SINGLE("Boost Clock Phase", MAX98390_BOOST_CTRL3,
- 		MAX98390_BOOST_CLK_PHASE_CFG_SHIFT, 3, 0),
-+	SOC_SINGLE("Tx Enable Selection", MAX98390_PCM_TX_EN_A,
-+		0, 255, 0),
-+	SOC_SINGLE("Tx Hiz Selection", MAX98390_PCM_TX_HIZ_CTRL_A,
-+		0, 255, 0),
-+	SOC_SINGLE("Tx Source Selection", MAX98390_PCM_CH_SRC_2,
-+		0, 255, 0),
- 	SOC_ENUM("Boost Output Voltage", max98390_boost_voltage),
- 	SOC_ENUM("Current Limit", max98390_current_limit),
- 	SOC_SINGLE_EXT("DSM Rdc", SND_SOC_NOPM, 0, 0xffffff, 0,
--- 
-2.17.1
+Maybe another alternative is 'end_pfn - iova_pfn + 1', it's readable because we
+free pagetable with (iova_pfn, end_pfn) above. Which one do you prefer?
 
+> 
+>> +                }
+>>               } else {
+>>                   pteval &= ~(uint64_t)DMA_PTE_LARGE_PAGE;
+>>               }
+>>
+> 
+> Best regards,
+> baolu
+> .
