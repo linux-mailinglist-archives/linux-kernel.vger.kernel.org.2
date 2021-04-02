@@ -2,99 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45CAF35301F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 22:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1E035302D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 22:13:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236090AbhDBUJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 16:09:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229647AbhDBUIz (ORCPT
+        id S236508AbhDBUN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 16:13:27 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:49473 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229647AbhDBUNZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 16:08:55 -0400
-Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF401C0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 13:08:53 -0700 (PDT)
-Received: by mail-vk1-xa32.google.com with SMTP id h136so1322471vka.7
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 13:08:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lBFiphv0iynhsmG5QBbrvBXWAHMSUgpS8oxKeXcIk4M=;
-        b=DyBPssubbxErBoPOq0fJNAK510u1T6sDaXNjdScMSC4hdsfrLwCYCE7W6/e4Zp69HO
-         9uaEgLi5XI/TvfpO0EcuWpS9mM7N6k9eRW0cLcSNfce1RbH0iEfi/5O2DMWN21gPAZOj
-         nfJBZuLqrkC8SUhasfiWypCLPc8Fa0YEdN85MqP9NyF4rnsL+q+fqCL0ywQ1p+/zsHM+
-         cbXiM0TTyJKuAaHx/VFd+ApBDy4aF8CMLqx3zXlZkrwnZNs5/EkkJ2G6p0MULBNj/tV7
-         Cxwjx9xgD4HtL+CN8cx5og7sGxOTDzD+epaYP/vIIMJR+pXd5Rs/ojrAGPlmJFh8Jj7e
-         KqzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lBFiphv0iynhsmG5QBbrvBXWAHMSUgpS8oxKeXcIk4M=;
-        b=bReB//Kh8a0u7ri7swZKySy2EfYsV1BFhfDWjIhDAeuG4QBmFbWI/0SyA/FRhru/Ug
-         3atAUE9twKHM71+MQ4o81vroarYajhUso7MUShYbFUnSxAlyBL2arnrvQ+hj6IGyAtpa
-         NAmz4x1J0JivUMJ027zzpkEpsh38AUv325LEwSfAeAtwreSnRJ1IvAMhVuralQgRynj1
-         Yr3ZxzNcbYNsyYJ9QvLv4GxQXCrmHKSJLKnz1Xao9+sm8QsDcwnalz324InGOes1motC
-         ydG1yLdx9bVamsOf7uY8LcU2PkXNMkIIwyqPfxpPZaZRDTg7y2CnOoTJYohiIgJyW39y
-         c96g==
-X-Gm-Message-State: AOAM5316qemM38rR+lnGJUrFI/LHusSkGNLeO4P/7/tc1d7VuN4CSljB
-        LSFgaEkKk6zXMDGx4aLxXEkjNcJtgpa4L/Zu7XQ=
-X-Google-Smtp-Source: ABdhPJyHxEUGE3dMiGIj93PvLiCC1o7fw/dlZeYfFtFeF4N46laW1ppvJ5d5JAIA+cPUSLBbvM6H227LYDwx9EwYh98=
-X-Received: by 2002:ac5:c84f:: with SMTP id g15mr10188260vkm.15.1617394132999;
- Fri, 02 Apr 2021 13:08:52 -0700 (PDT)
+        Fri, 2 Apr 2021 16:13:25 -0400
+X-Originating-IP: 91.175.115.186
+Received: from localhost (91-175-115-186.subs.proxad.net [91.175.115.186])
+        (Authenticated sender: gregory.clement@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 912D91BF203;
+        Fri,  2 Apr 2021 20:13:19 +0000 (UTC)
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Rui Salvaterra <rsalvaterra@gmail.com>, andrew@lunn.ch,
+        kabel@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Rui Salvaterra <rsalvaterra@gmail.com>
+Subject: Re: [PATCH] ARM: dts: turris-omnia: fix hardware buffer management
+In-Reply-To: <20210217153038.1068170-1-rsalvaterra@gmail.com>
+References: <20210217153038.1068170-1-rsalvaterra@gmail.com>
+Date:   Fri, 02 Apr 2021 22:13:19 +0200
+Message-ID: <87h7kocun4.fsf@BL-laptop>
 MIME-Version: 1.0
-References: <1610158662-3926-1-git-send-email-jrdr.linux@gmail.com>
-In-Reply-To: <1610158662-3926-1-git-send-email-jrdr.linux@gmail.com>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Sat, 3 Apr 2021 01:38:41 +0530
-Message-ID: <CAFqt6zb405L9AhrzdMd3CTRCFN9J9kEVE5vudeF_R4OfVjLygQ@mail.gmail.com>
-Subject: Re: [PATCH] perf/core: Mark perf_pmu_snapshot_aux() as static
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, acme@kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        jolsa@redhat.com, namhyung@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 9, 2021 at 7:47 AM Souptick Joarder <jrdr.linux@gmail.com> wrote:
->
-> Kernel test robot throws below warning ->
->
->  kernel/events/core.c:6535:6: warning: no previous prototype for
-> 'perf_pmu_snapshot_aux' [-Wmissing-prototypes]
->     6535 | long perf_pmu_snapshot_aux(struct perf_buffer *rb,
->          |      ^~~~~~~~~~~~~~~~~~~~~
-> Marking perf_pmu_snapshot_aux() as static as it is not used outside
-> this file.
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+Hi Rui,
 
-Any comment on this patch ?
+> Hardware buffer management has never worked on the Turris Omnia, as the
+> required MBus window hadn't been reserved. Fix thusly.
+>
+> Fixes: 018b88eee1a2 ("ARM: dts: turris-omnia: enable HW buffer management")
+>
+> Signed-off-by: Rui Salvaterra <rsalvaterra@gmail.com>
+
+Applied on mvebu/fixes
+
+Thanks,
+
+Gregory
 
 > ---
->  kernel/events/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/arm/boot/dts/armada-385-turris-omnia.dts | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 >
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 55d1879..a4ba6fd 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -6532,7 +6532,7 @@ static unsigned long perf_prepare_sample_aux(struct perf_event *event,
->         return data->aux_size;
->  }
+> diff --git a/arch/arm/boot/dts/armada-385-turris-omnia.dts b/arch/arm/boot/dts/armada-385-turris-omnia.dts
+> index 646a06420c77..dc80a909ea88 100644
+> --- a/arch/arm/boot/dts/armada-385-turris-omnia.dts
+> +++ b/arch/arm/boot/dts/armada-385-turris-omnia.dts
+> @@ -32,7 +32,8 @@ soc {
+>  		ranges = <MBUS_ID(0xf0, 0x01) 0 0xf1000000 0x100000
+>  			  MBUS_ID(0x01, 0x1d) 0 0xfff00000 0x100000
+>  			  MBUS_ID(0x09, 0x19) 0 0xf1100000 0x10000
+> -			  MBUS_ID(0x09, 0x15) 0 0xf1110000 0x10000>;
+> +			  MBUS_ID(0x09, 0x15) 0 0xf1110000 0x10000
+> +			  MBUS_ID(0x0c, 0x04) 0 0xf1200000 0x100000>;
+>  
+>  		internal-regs {
+>  
+> -- 
+> 2.30.1
 >
-> -long perf_pmu_snapshot_aux(struct perf_buffer *rb,
-> +static long perf_pmu_snapshot_aux(struct perf_buffer *rb,
->                            struct perf_event *event,
->                            struct perf_output_handle *handle,
->                            unsigned long size)
-> --
-> 1.9.1
->
+
+-- 
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
