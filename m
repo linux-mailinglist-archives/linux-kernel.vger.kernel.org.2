@@ -2,68 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB133526DF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 09:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EABE33526E2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 09:15:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234104AbhDBHNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 03:13:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229594AbhDBHNy (ORCPT
+        id S234229AbhDBHPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 03:15:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35332 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231550AbhDBHPA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 03:13:54 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A33BC0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 00:13:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GMUeC6Yjmhg5mc50fJijq6amkmPkeHC8IG7waCTSkRY=; b=vTKUD4VKmNB8R6iPR8VAQ7Knm6
-        VBnFbH5/bzlJi3qAGDErh2CKrF6LKvRRUgSY2WqHIvYUu4DsMUxw8/PYQDVTsLWQmdLcHg0R8yAD8
-        hjysrpAx8pH9Bwue0VgPbESXSng0lcQhVGoMhGi6RI3w5rlcL9UliuQmsqYBp5UTM+V+Y51MvktNa
-        PuQb3lQfw/5O5rsmbYHhdPAlO/ZoG0eTAv0SVzFZ9ej8C2Eciua5bTBmw8xFsBwK5vbSGueCGJfVG
-        ozuSfNJPFoCMBzSGniKXApipCWZUlXTBPpoQQKqq7hV6yGW60a0jvSTzQs4yqoW1qDkWsEaMsMUb+
-        hrjH2snw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lSDzQ-007KC7-C8; Fri, 02 Apr 2021 07:13:23 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0EB0F9864CC; Fri,  2 Apr 2021 09:13:07 +0200 (CEST)
-Date:   Fri, 2 Apr 2021 09:13:07 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Don <joshdon@google.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        "Hyser,Chris" <chris.hyser@oracle.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 3/9] sched: Trivial core scheduling cookie management
-Message-ID: <20210402071307.GS4746@worktop.programming.kicks-ass.net>
-References: <20210401131012.395311786@infradead.org>
- <20210401133917.231259659@infradead.org>
- <CABk29NtHj47DXiFBkJpG748bj2HSG09BCb-h5fXUatFMWn2qCQ@mail.gmail.com>
+        Fri, 2 Apr 2021 03:15:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617347699;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XlsXpBQYO8BnA+v2nCN1VsUgWlO7pUooTMOEWnRSvJI=;
+        b=gHtbHEQknJ9PBUWLepoqnQiiIMTYVbkZWlDnCyEr2fYjl6QzFOKJhFYERhMIkhbxSxR3Xo
+        229DmjSKQzFK25XUeOjsEZWjJEJcjS3W+ZjKav1+qtEdykCyBvjm9ODdJy7CEmGARrXcP5
+        taloKwKJ5KdVYMJ8MN5cEncA4ANtC1w=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-197-IxpAbtYDNy-rzV8fO0IgSA-1; Fri, 02 Apr 2021 03:14:57 -0400
+X-MC-Unique: IxpAbtYDNy-rzV8fO0IgSA-1
+Received: by mail-wr1-f71.google.com with SMTP id p12so3967925wrn.18
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 00:14:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XlsXpBQYO8BnA+v2nCN1VsUgWlO7pUooTMOEWnRSvJI=;
+        b=rMZV9IfSpkpAx8gFinKPMGgipsQGyAnB4sEyXNgwx58K0CI2xJ5LzqLnvOnzEm5Wyh
+         LcjxA+cM5lypNrcuIRWT25AE8yAZ0NR3I+n0P2Xfv+t4AfjQRu4hDmzxbaIjH8DK3Knd
+         7+FAzbf9DaUJTkTf2iwX7J32rIc5D+Rqx1RJldKkasDJ5+XizGvARDIk/a93IgYWlgl+
+         Ur6A5lqA1sGMS2zhkfYr9kwNWF8/EKYRV30FvMYas6khi/IO72ef0paRmFSv1Qr6eg0R
+         V6j3XwUlnR5SaodIbiZYsOns4TX7TJebEc6SmBUOKMdl+pPEN9xjVQoqvcRYKWRRWw8T
+         GJHA==
+X-Gm-Message-State: AOAM530F2nuI64jhnXPBK/bSdhuWoHW0AY0Sqb5dmjoqOZZJmKvDVg3a
+        FgaHfk8iZ22FbdpdFXgt2ip0Mb/pHLdv0cD5Mrt1U3okn9OgXV3H5zm6Hg2jazjxGt9SXH2v0Ua
+        15FP9HhtNGjJtOIkgxDsIbCO+
+X-Received: by 2002:adf:82af:: with SMTP id 44mr13280307wrc.279.1617347696640;
+        Fri, 02 Apr 2021 00:14:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz3KCpApFobW4U+KRji3BKlp3otCb2IZDr+rBpgP3L3s/iXTUtOscTxKuTStGNoCjltX5m7PA==
+X-Received: by 2002:adf:82af:: with SMTP id 44mr13280285wrc.279.1617347696422;
+        Fri, 02 Apr 2021 00:14:56 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id p27sm11878786wmi.12.2021.04.02.00.14.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Apr 2021 00:14:55 -0700 (PDT)
+Subject: Re: [PATCH 2/4] KVM: x86: separate pending and injected exception
+To:     Sean Christopherson <seanjc@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Jim Mattson <jmattson@google.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
+References: <20210401143817.1030695-1-mlevitsk@redhat.com>
+ <20210401143817.1030695-3-mlevitsk@redhat.com> <YGZRrOBVvlhVTyG8@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <09c74206-ded2-900f-ef28-a2c5065a6626@redhat.com>
+Date:   Fri, 2 Apr 2021 09:14:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABk29NtHj47DXiFBkJpG748bj2HSG09BCb-h5fXUatFMWn2qCQ@mail.gmail.com>
+In-Reply-To: <YGZRrOBVvlhVTyG8@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 01:04:58PM -0700, Josh Don wrote:
-> > +/*
-> > + * sched_core_update_cookie - Common helper to update a task's core cookie. This
-> > + * updates the selected cookie field.
-> > + * @p: The task whose cookie should be updated.
-> > + * @cookie: The new cookie.
-> > + * @cookie_type: The cookie field to which the cookie corresponds.
+On 02/04/21 01:05, Sean Christopherson wrote:
+>>
+>> +struct kvm_queued_exception {
+>> +	bool valid;
+>> +	u8 nr;
 > 
-> No cookie_type in this patch (or cookie fields). Also might want to
-> call out that the caller is responsible for put'ing the return value.
+> If we're refactoring all this code anyways, maybe change "nr" to something a
+> bit more descriptive?  E.g. vector.
 
-Lol, I don't think I've even seen the comment. Yes that needs more than
-a rewording.
+"nr" is part of the userspace structure, so consistency is an advantage too.
+
+>> +	struct kvm_exception_payload {
+>> +		bool valid;
+>> +		unsigned long value;
+>>   		u8 nested_apf;
+>> -	} exception;
+>> +	} exception_payload;
+> 
+> Hmm, even if it's dead code at this time, I think the exception payload should
+> be part of 'struct kvm_queued_exception'.  The payload is very much tied to a
+> single exception.
+
+Agreed, when handling injected exceptions you can WARN that there is no 
+payload.
+
+Paolo
+
