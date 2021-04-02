@@ -2,76 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46087352477
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 02:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F09DE35247B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 02:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236269AbhDBAdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 20:33:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35780 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233677AbhDBAdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 20:33:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2111D6100C;
-        Fri,  2 Apr 2021 00:32:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1617323580;
-        bh=l5OBmZolqQt7kxKdrbukEJTSt9ja/UZ2NhAmGHQ3zxU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kG/JulKQ/j7q300El8hcUdl9djvCOTMS316bPRU5+zmo9B22mCs+usRR8Evbkkn3N
-         vA22n5vywmXywzyPXhGzM0UbJXdoQ9BA2ttE7BZclCb+sTtuAmm/YGdbm35L7i53EV
-         glVlMEwvdxswxe9y/dSTG3XBRgE8mCchA/H3Kpqg=
-Date:   Thu, 1 Apr 2021 17:32:58 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Yury Norov <yury.norov@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux-SH <linux-sh@vger.kernel.org>,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.osdn.me>
-Subject: Re: [PATCH v6 00/12] lib/find_bit: fast path for small bitmaps
-Message-Id: <20210401173258.1f9a107ef13f210fb4896780@linux-foundation.org>
-In-Reply-To: <CAHp75VdTndAD1gyLE_e8m9AaxrRMCNpYEu22+tWe1xrAz8oKBw@mail.gmail.com>
-References: <20210401003153.97325-1-yury.norov@gmail.com>
-        <CAHp75VdzRXPsQ7Jvivm5UU+mfkgQ_0rmnegp04v-v9fwrjdrqg@mail.gmail.com>
-        <CAK8P3a2EGc4BS7UTyC6=ySgLEoyqbswh1Gh_=M21NmhRThssYQ@mail.gmail.com>
-        <CAHp75VdTndAD1gyLE_e8m9AaxrRMCNpYEu22+tWe1xrAz8oKBw@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S233903AbhDBAe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 20:34:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231550AbhDBAe1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 20:34:27 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA79C0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 17:34:26 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id i19so2822853qtv.7
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 17:34:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GH3plRryBuW9V2Hqcxc+vb+3ay6lNqrrq70AzxxfFQw=;
+        b=dNo4Ue3as5uGsGZN7+CWxkErz4b7UGIaOMYLtzYfFYg2ybvHFcJZVo6kDRopgaEzBs
+         4+P+NbvJDl4n3HyRh6F3JwVdp12m+Rks6IPRdRH2Xo1VFyDV+fp9AgSiJJrc7L9t2Z+u
+         Kt/q4T1O/RJIhSeR6i8g0VX3eq6b4dO0/oJIXG8jdWscGU4AvcUqsyx1Xuoxi9EWQGYN
+         j3xCzy1v4MQgmkNGNW9FxXpJBYSP8ddf+Vhe+OatJAj2q9S9SX10LxIU6LuCU5qk5we2
+         2XhxC3pc8by94b95NFiFiG91lAtMW1urTD7TERjlYYyAjr4rip8SRhq50PNBssbp1fMH
+         DiKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GH3plRryBuW9V2Hqcxc+vb+3ay6lNqrrq70AzxxfFQw=;
+        b=q4LMq1nzH14rCQf+eCqDibO8K7C40YRFqKE6McoqpyhcIN3oDwAlbLV2sWgunPHD9+
+         OacQjJGSXe0HPJ2GEY1JszEYnkXkd8o+JzUyq4fCMHGsDXuxH/HvaeYuDN990b/w+euY
+         D9CpDmJA8NMp6BK5axpXQ1CK1UfoJD0FNV5+xlvOKIOxqjmSm4PIJb5HPC3enMGeURqM
+         kY85Uy/fUMqDtSdqcHuwpHLe/U67s4SYdEBJXdvKqayLDe1sR3t3GZHjeWU7qbyZLXEj
+         6JS/b7xlUj+HVn9WvlItZsvF3RPlH+6BHEf7HWQzLPQQw9awCt2fUnAF3CFlvSwnN/mZ
+         ILhA==
+X-Gm-Message-State: AOAM533jig9lnywBB+dmkvpRKcOKTWcqQbx1ptvKJE4LUSvGayr7fwVZ
+        +IibhakDQSje0Q0Hvy21yz0x5/mAyJohImCWbRIUQA==
+X-Google-Smtp-Source: ABdhPJwsb46316pEr7F18AXZ94X7lfZXbWne4CKqxcN0Y+2yiAnatHWPKzsBr//fZ2DnAhaZ3p35hO4wPJyZM3X4cH4=
+X-Received: by 2002:ac8:5554:: with SMTP id o20mr9650227qtr.143.1617323664744;
+ Thu, 01 Apr 2021 17:34:24 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210401131012.395311786@infradead.org> <20210401133917.469929784@infradead.org>
+In-Reply-To: <20210401133917.469929784@infradead.org>
+From:   Josh Don <joshdon@google.com>
+Date:   Thu, 1 Apr 2021 17:34:13 -0700
+Message-ID: <CABk29NuhhwPgFm9HQs=CgpPMKAiqVn4kOACwwEeTYmBTbw03Uw@mail.gmail.com>
+Subject: Re: [PATCH 7/9] sched: Cgroup core-scheduling interface
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        "Hyser,Chris" <chris.hyser@oracle.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 1 Apr 2021 12:50:31 +0300 Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+Thanks, allowing for multiple group cookies in a hierarchy is a nice
+improvement.
 
-> > I normally don't have a lot of material for asm-generic either, half
-> > the time there are no pull requests at all for a given release. I would
-> > expect future changes to the bitmap implementation to only need
-> > an occasional bugfix, which could go through either the asm-generic
-> > tree or through mm and doesn't need another separate pull request.
-> >
-> > If it turns out to be a tree that needs regular updates every time,
-> > then having a top level repository in linux-next would be appropriate.
-> 
-> Agree. asm-generic may serve for this. My worries are solely about how
-> much burden we add on Andrew's shoulders.
+> +               if (tgi != tg) {
+> +                       if (tgi->core_cookie || (tgi->core_parent && tgi->core_parent != tg))
+> +                               continue;
+> +
+> +                       tgi->core_parent = parent;
+> +                       tgi->core_cookie = 0;
 
-Is fine.  Saving other developers from having to maintain tiny trees is
-a thing I do.
-
+core_cookie must already be 0, given the check above.
