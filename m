@@ -2,90 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F7FC352FBB
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 21:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D02C352FC0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 21:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236458AbhDBT13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 15:27:29 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:57300 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229553AbhDBT12 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 15:27:28 -0400
-Received: from zn.tnic (p200300ec2f0a2000165287017d4f49d2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:2000:1652:8701:7d4f:49d2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CDFAF1EC04C2;
-        Fri,  2 Apr 2021 21:27:25 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1617391645;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=IPuT0LMZhVBaWy/dNRmMZkfsRP4bN2xbwyHxqNljGN4=;
-        b=DKSiqGr30xWt95Fe9t+JUNWwhfybD7nq/haXE0zTVs2by8+BrT6ZXJ6RLH1gpsQ8CMhn1y
-        iznm1s7/5DkhCTO9nEDJwbrP2+GyvORKs9JYFW7I+1+eYvNI2U7ObS3JX250mSJigWJHhZ
-        1r7aCJDHyR4ABVT7cz0oFT+mFfuLdUQ=
-Date:   Fri, 2 Apr 2021 21:27:31 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        ak@linux.intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        David Rientjes <rientjes@google.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: Re: [RFC Part1 PATCH 05/13] X86/sev-es: move few helper functions in
- common file
-Message-ID: <20210402192731.GM28499@zn.tnic>
-References: <20210324164424.28124-1-brijesh.singh@amd.com>
- <20210324164424.28124-6-brijesh.singh@amd.com>
+        id S236552AbhDBT2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 15:28:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236459AbhDBT2G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 15:28:06 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 246A9C061788
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 12:28:05 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id p8so1037020ilm.13
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 12:28:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tvLOmR8hOfY+uCNhb7dxbq3LfXDPCC5IsmH1087GMzs=;
+        b=PdXbMsh17ip1drpwdORfoUdC4HWO0D78cliNxc/WjvcT1H1MaW2oEHRjcs1ILKaJhQ
+         If9L2kSbzXWZVsf/uI7u6q4UupZy8aJsryWS1EC3VazyNrfHQzCJtZq+8gkxhIjt4z1k
+         94vlhikIqGwZiGvF+/Z0MDwULsSYqMBbj/4xLh8+xhhAF9Vv/wxzOtHiHud1d2FKCEzq
+         QADzf+SaAVvaKFpgBMzE41ZxfN6/FYNMHYOFPk84Rw6JWptzFk3SqxN5LjxZjLNeLmlV
+         PwEt8aKKcNVuCkh1e1y6NSXHhwXxM72Ej2zdJrdgakep8rACDggA2QT1viLIMONintjd
+         P6Sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tvLOmR8hOfY+uCNhb7dxbq3LfXDPCC5IsmH1087GMzs=;
+        b=VXNQbNSeifwELlNaRw8EKGhgMvqG6CCXTEMKWH6/ZM8UzYSDFyC6R+9V7qxYTKeYS8
+         FEUWOpGtXJYOJzW4cjQD3JnNfbpcsth0gIM5ckw+TO376dx61yzSn3Y4ZEtID6PGRaxn
+         UYsgPK+PDgkjDOpic3xw998NVhq5026M5K4FWdGm4EuQqWB8t8xpbvt6WLp2Q8K+isBP
+         Uxuv5qb35oSCQgvD5BPXmu45/bfFM7xFBUXjwNOzS07PaBWix0hMGfu3Td7uNHzupi+p
+         uE/3mJwIhkFo10udRaPZzRavWzBnQ8e9qJlvGLx8qWbmurjaoOcFwjtc37bOLo+0GSem
+         q6rg==
+X-Gm-Message-State: AOAM532c64BiDcqZMt5OdaI0G+D8d1mIV0yWNPf3g6DT5qgJZiq9iVwO
+        ict1KqkGDV+2gSxU/pJihxfMIcxoBRbCWvT8FaWXSQ==
+X-Google-Smtp-Source: ABdhPJxo3cErWejISZ/m6a/GDZoXcDfi1vEQnReSm0d00ojIV2HtWGoMVKSAfjRfCy8lFoBxhK7FxHR4P6snFdd70QQ=
+X-Received: by 2002:a05:6e02:d52:: with SMTP id h18mr482108ilj.133.1617391684442;
+ Fri, 02 Apr 2021 12:28:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210324164424.28124-6-brijesh.singh@amd.com>
+References: <20210222225241.201145-1-dlatypov@google.com> <20210402093228.755260-1-brendanhiggins@google.com>
+ <38510e93-843c-b0e0-5ad5-4953660de79b@linuxfoundation.org>
+In-Reply-To: <38510e93-843c-b0e0-5ad5-4953660de79b@linuxfoundation.org>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Fri, 2 Apr 2021 12:27:53 -0700
+Message-ID: <CAGS_qxqoXhZo6hV_1BsqrpXBJTuBhXERUnW75U6aCtS382aNjg@mail.gmail.com>
+Subject: Re: [PATCH] kunit: tool: make --kunitconfig accept dirs, add
+ lib/kunit fragment
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, "Theodore Ts'o" <tytso@mit.edu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 11:44:16AM -0500, Brijesh Singh wrote:
-> The sev_es_terminate() and sev_es_{wr,rd}_ghcb_msr() helper functions
-> in a common file so that it can be used by both the SEV-ES and SEV-SNP.
-> 
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Joerg Roedel <jroedel@suse.de>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Tony Luck <tony.luck@intel.com>
-> Cc: Dave Hansen <dave.hansen@intel.com>
-> Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Sean Christopherson <seanjc@google.com>
-> Cc: x86@kernel.org
-> Cc: kvm@vger.kernel.org
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> ---
->  arch/x86/boot/compressed/sev-common.c | 32 +++++++++++++++++++++++++++
->  arch/x86/boot/compressed/sev-es.c     | 22 ++----------------
->  arch/x86/kernel/sev-common-shared.c   | 31 ++++++++++++++++++++++++++
->  arch/x86/kernel/sev-es-shared.c       | 21 +++---------------
->  4 files changed, 68 insertions(+), 38 deletions(-)
->  create mode 100644 arch/x86/boot/compressed/sev-common.c
->  create mode 100644 arch/x86/kernel/sev-common-shared.c
+On Fri, Apr 2, 2021 at 11:00 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>
+> On 4/2/21 3:32 AM, Brendan Higgins wrote:
+> >> TL;DR
+> >> $ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit
+> >>
+> >> Per suggestion from Ted [1], we can reduce the amount of typing by
+> >> assuming a convention that these files are named '.kunitconfig'.
+> >>
+> >> In the case of [1], we now have
+> >> $ ./tools/testing/kunit/kunit.py run --kunitconfig=fs/ext4
+> >>
+> >> Also add in such a fragment for kunit itself so we can give that as an
+> >> example more close to home (and thus less likely to be accidentally
+> >> broken).
+> >>
+> >> [1] https://lore.kernel.org/linux-ext4/YCNF4yP1dB97zzwD@mit.edu/
+> >>
+> >> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> >
+> > Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+> >
+>
+> Should this be captured in  documentation. Especially since this
+> is file is .* file.
+>
+> Do you want to include doc in this patch? Might be better that way.
 
-Yeah, once you merge it all into sev.c and sev-shared.c, that patch is
-not needed anymore.
+It definitely should be documented, yes.
+The only real example hadn't landed yet when I sent this patch
+(fs/ext4/.kunitconfig was going in through the ext4 tree), but now
+it's in linus/master.
 
-Thx.
+There's still some uncertainties about what best practices for this
+feature should be, i.e.
+* how granular should these be?
+* how should configs in parent dirs be handled? Should they be
+supersets of all the subdirs?
+    * E.g. should fs/.kunitconfig be a superset of
+fs/ext4/.kunitconfig and any other hypothetical subdir configs?
+    * Should we wait on saying "you should do this" until we have
+"import" statements/other mechanisms to make this less manual?
+* how should we handle non-UML tests, like the KASAN tests?
+  * ideally, kunit.py run will eventually support running tests on x86
+(using qemu)
 
--- 
-Regards/Gruss,
-    Boris.
+If it's fine with you, I was hoping to come back and add a section to
+kunit/start.rst when we've had some of those questions more figured
+out.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+>
+> thanks,
+> -- Shuah
