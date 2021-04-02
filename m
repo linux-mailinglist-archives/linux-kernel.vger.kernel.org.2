@@ -2,90 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9DF35276B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 10:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06B7235276D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 10:24:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234139AbhDBIXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 04:23:25 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43952 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229522AbhDBIXW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 04:23:22 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 93D5EABED;
-        Fri,  2 Apr 2021 08:23:20 +0000 (UTC)
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc:     intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] drm/i915: Fix invalid access to ACPI _DSM objects
-Date:   Fri,  2 Apr 2021 10:23:17 +0200
-Message-Id: <20210402082317.871-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
+        id S234015AbhDBIYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 04:24:55 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15589 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229522AbhDBIYy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 04:24:54 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FBY2Y3Rjpz1BFgh;
+        Fri,  2 Apr 2021 16:22:45 +0800 (CST)
+Received: from [10.67.101.248] (10.67.101.248) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 2 Apr 2021 16:24:43 +0800
+Subject: Re: [PATCH] crypto: hisilicon/hpre - delete redundant log
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+References: <1616833946-9682-1-git-send-email-tanghui20@huawei.com>
+ <20210402071924.GA10482@gondor.apana.org.au>
+CC:     <davem@davemloft.net>, <linux-crypto@vger.kernel.org>,
+        <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>,
+        <linux-kernel@vger.kernel.org>
+From:   tanghui20 <tanghui20@huawei.com>
+Message-ID: <b031d20e-e5c6-8bcb-66ae-03d66b0294c6@huawei.com>
+Date:   Fri, 2 Apr 2021 16:24:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210402071924.GA10482@gondor.apana.org.au>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.101.248]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-intel_dsm_platform_mux_info() tries to parse the ACPI package data
-from _DSM for the debug information, but it assumes the fixed format
-without checking what values are stored in the elements actually.
-When an unexpected value is returned from BIOS, it may lead to GPF or
-NULL dereference, as reported recently.
 
-Add the checks of the contents in the returned values and skip the
-values for invalid cases.
 
-v1->v2: Check the info contents before dereferencing, too
+On 2021/4/2 15:19, Herbert Xu wrote:
+> On Sat, Mar 27, 2021 at 04:32:26PM +0800, Hui Tang wrote:
+>> 'hpre_cfg_by_dsm' has checked and printed error path, so it is not
+>> necessary at all.
+>>
+>> Signed-off-by: Hui Tang <tanghui20@huawei.com>
+>> ---
+>>  drivers/crypto/hisilicon/hpre/hpre_main.c | 5 +----
+>>  1 file changed, 1 insertion(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
+>> index 8aae921..73ee997 100644
+>> --- a/drivers/crypto/hisilicon/hpre/hpre_main.c
+>> +++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
+>> @@ -384,10 +384,7 @@ static int hpre_set_user_domain_and_cache(struct hisi_qm *qm)
+>>
+>>  	/* This setting is only needed by Kunpeng 920. */
+>>  	if (qm->ver == QM_HW_V2) {
+>> -		ret = hpre_cfg_by_dsm(qm);
+>> -		if (ret)
+>> -			dev_err(dev, "acpi_evaluate_dsm err.\n");
+>> -
+>> +		hpre_cfg_by_dsm(qm);
+>>  		disable_flr_of_bme(qm);
+>>  	}
+>
+> If the return value is non-zero you've just changed what this code
+> does from returning non-zero to returning zero.  Are you sure about
+> this?
 
-BugLink: http://bugzilla.opensuse.org/show_bug.cgi?id=1184074
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- drivers/gpu/drm/i915/display/intel_acpi.c | 22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/i915/display/intel_acpi.c b/drivers/gpu/drm/i915/display/intel_acpi.c
-index e21fb14d5e07..833d0c1be4f1 100644
---- a/drivers/gpu/drm/i915/display/intel_acpi.c
-+++ b/drivers/gpu/drm/i915/display/intel_acpi.c
-@@ -84,13 +84,31 @@ static void intel_dsm_platform_mux_info(acpi_handle dhandle)
- 		return;
- 	}
- 
-+	if (!pkg->package.count) {
-+		DRM_DEBUG_DRIVER("no connection in _DSM\n");
-+		return;
-+	}
-+
- 	connector_count = &pkg->package.elements[0];
- 	DRM_DEBUG_DRIVER("MUX info connectors: %lld\n",
- 		  (unsigned long long)connector_count->integer.value);
- 	for (i = 1; i < pkg->package.count; i++) {
- 		union acpi_object *obj = &pkg->package.elements[i];
--		union acpi_object *connector_id = &obj->package.elements[0];
--		union acpi_object *info = &obj->package.elements[1];
-+		union acpi_object *connector_id;
-+		union acpi_object *info;
-+
-+		if (obj->type != ACPI_TYPE_PACKAGE || obj->package.count < 2) {
-+			DRM_DEBUG_DRIVER("Invalid object for MUX #%d\n", i);
-+			continue;
-+		}
-+
-+		connector_id = &obj->package.elements[0];
-+		info = &obj->package.elements[1];
-+		if (info->type != ACPI_TYPE_BUFFER || info->buffer.length < 4) {
-+			DRM_DEBUG_DRIVER("Invalid info for MUX obj #%d\n", i);
-+			continue;
-+		}
-+
- 		DRM_DEBUG_DRIVER("Connector id: 0x%016llx\n",
- 			  (unsigned long long)connector_id->integer.value);
- 		DRM_DEBUG_DRIVER("  port id: %s\n",
--- 
-2.26.2
-
+I am sorry, it should return error immediately when return value of 'hpre_cfg_by_dsm' is non-zero,
+and I will fix it in the next version.
