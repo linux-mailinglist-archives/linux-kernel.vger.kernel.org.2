@@ -2,82 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C976B352F79
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 21:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91115352F7C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 21:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235984AbhDBTBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 15:01:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbhDBTBK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 15:01:10 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43669C061788
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 12:01:07 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id l76so4071025pga.6
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 12:01:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2BwKai1Z1q1tHkMJ9YrsZG4bHQkDjyUiaOSqIthmyIo=;
-        b=RgkoEa5FSuxCd//qvqnFqTLEAAucy8uoKkNxWxkH6m7312AlJvZhHdS5bNwpiezFzw
-         +x1xptGRKcijwvf+W93wK4R08RQ2Yzpu98dsWbA7KpLFxnAdLtFFSbd+fuYuHvy/Vvnp
-         lhuFlIW5GEantTu4ESS3GLUjFBA8SA7l4rsPE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2BwKai1Z1q1tHkMJ9YrsZG4bHQkDjyUiaOSqIthmyIo=;
-        b=jLU7Ndz7x7BrUBHi5ZpaMPweFPfVW0DOrSDXJyxfLGuMQbEsp8uvGUqz6BVDwuNRyD
-         O+yUIkgFtWy2OzsNHwkQjA3zi1y03aedSEAzW0mgIKxVQr7q8esLsVPsLbCH34TwXFGR
-         h2oWL6xcbnQgdbMPUiY21kzP2EDrqX4FB3FO0UB8x3gPx+GAC8RXr2W5djIOzCF04yEr
-         R3srC+rkUXlcaPYCtIX8pDCopGYoM/ebbSaKXFCUK3v2PuQuukAO/w6dbXlCY1TjxB+5
-         p45HE+QSqiK4gF/UKFZMFdVBrcNLpMeV9XGXhruTRuww3saK0YMGqZiOe7vHvME+cS2O
-         /oVQ==
-X-Gm-Message-State: AOAM5339vY555pynCzC9GOaBwBngHOedzs+OIwQVaq+DtK536x7Ciq9I
-        LSD1YrPhCrbf9gC588p+UXYIBQ==
-X-Google-Smtp-Source: ABdhPJwuIimBVh8dl4suQh/XQVy8sUEBZHTPSnhdnQ2Tfc/3kBT2QXUbi4CMuJP4U7cPZmOjljwYqQ==
-X-Received: by 2002:a63:5a55:: with SMTP id k21mr12819957pgm.312.1617390066707;
-        Fri, 02 Apr 2021 12:01:06 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d1sm8984094pjc.24.2021.04.02.12.01.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 12:01:06 -0700 (PDT)
-Date:   Fri, 2 Apr 2021 12:01:05 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: [PATCH] fs: split receive_fd_replace from __receive_fd
-Message-ID: <202104021157.7B388D1B2@keescook>
-References: <20210325082209.1067987-1-hch@lst.de>
- <20210325082209.1067987-2-hch@lst.de>
+        id S236172AbhDBTC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 15:02:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33666 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229722AbhDBTC1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 15:02:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 381A761151;
+        Fri,  2 Apr 2021 19:02:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617390145;
+        bh=ViFsXDUB1E7AWBfBJCrghovWOG7+1rHYDGYcDESiobc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Gb0iBUJPDJ+eaWDrat0XQQvUF1+X2c3Mt2qvyCL+aLpQ4qdoUK8jYbafG3MNFrR4c
+         des71nJQQRO47tL4D6tiiPYmkj43VphHWqjT7AEkB4HEhw1ZiPE/6jCIQmL70ak/XN
+         DMp6guhXEjbxi+ZpZ/GPNtXHEH4EFDKbAvEuiewRoY7DKQLEiohnQM97zdgpszy0x8
+         hQh9kgmvp7MLD1gkxOBTDcBCBocmEc/WB3dpyXFAsrN/eC5DX4bvsqigXJlXfhbsNX
+         7v6d5G6AivHACl5Rm77MffP4sjVEGhPIDr5Tmi2hqShBUKtqOvfykLLh3CPX7x+vN5
+         abXxZlILdQUjg==
+Date:   Fri, 2 Apr 2021 20:02:11 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-power@fi.rohmeurope.com
+Subject: Re: [PATCH v5 16/19] regulator: bd71815: use ramp-delay helper
+Message-ID: <20210402190211.GJ5402@sirena.org.uk>
+References: <cover.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
+ <31db9c2bf1e9e1883d8caf4bf3b90475a8a1166e.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Ublo+h3cBgJ33ahC"
 Content-Disposition: inline
-In-Reply-To: <20210325082209.1067987-2-hch@lst.de>
+In-Reply-To: <31db9c2bf1e9e1883d8caf4bf3b90475a8a1166e.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
+X-Cookie: Dammit Jim, I'm an actor, not a doctor.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 09:22:09AM +0100, Christoph Hellwig wrote:
-> receive_fd_replace shares almost no code with the general case, so split
-> it out.  Also remove the "Bump the sock usage counts" comment from
-> both copies, as that is now what __receive_sock actually does.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-I'm okay with repeating code in fs/file.c. What I wanted to avoid was
-open coded combinations in various callers.
+--Ublo+h3cBgJ33ahC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-So, sure, this can be split, but as-is the patch breaks SECCOMP_IOCTL_NOTIF_ADDFD:
-https://lore.kernel.org/linux-fsdevel/20210329071939.GC3633@xsang-OptiPlex-9020/
+On Mon, Mar 29, 2021 at 04:00:13PM +0300, Matti Vaittinen wrote:
+> Use generic regamp ramp-delay helper function instead of implementing own.
 
--Kees
+This is patching something which was just added in the previous patch...
 
--- 
-Kees Cook
+Acked-by: Mark Brown <broonie@kernel.org>
+
+--Ublo+h3cBgJ33ahC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBnajMACgkQJNaLcl1U
+h9AaTQf9Gzw/b+PuEoYrIwaA7DklAoHk0w6KLVtsZNCFYQQMNu3qCql4QDoO3rAd
+SDN7tGg3baWbFswp+SVxGvsPp3UOfvSuOtjpoZGRvItNKxqMIeh6uYRBdMyo49oW
+3+XhsX/963bAf0LTM5hHIe5Yx/G2qhUcisO4cOVYfPrXECVa5wIUJoYmhd4jqPO+
+UIlW9ncneYPrmInFuYFbwUsInOllgj6hQJ/YQN65JAdoCMhBm2NysQuIvmfgltCU
+4CKwE0UuJdX+CMbyrW+Sq4Rlp8NrEiRzMvZDVCENkMJTpWwlaDBOoOTPtDFJ1bHT
+7bV9xdLU8x7qJhde7W4U55A7d1b2UQ==
+=eDIV
+-----END PGP SIGNATURE-----
+
+--Ublo+h3cBgJ33ahC--
