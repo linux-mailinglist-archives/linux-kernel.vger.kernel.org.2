@@ -2,320 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9392D352F97
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 21:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C87352F98
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 21:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236468AbhDBTRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 15:17:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236410AbhDBTRL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 15:17:11 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC6FC061788;
-        Fri,  2 Apr 2021 12:17:10 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id y5so6071904qkl.9;
-        Fri, 02 Apr 2021 12:17:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=pKDT3PUNN4QurKSXuiBd9ZwVRhX76C0ObzpbC3iUi+M=;
-        b=UiR3/ctyy02s8Lno7TAClwE4FH2pCo7tMHIDcSftg1SeEfY6sv60qJ1YUTC3e25f52
-         T+nttmVziDy61mQiuWn7Y5dYLMuzWzOGTtxiZ6ksgBSy/IdvQ0FSNCEbQ5p6+OIFC8GU
-         mN3ZkQ3cFOwYdZktzY4VyHwfkGIgqekldfSXCmPNP6vXBEBXl9u3J02r8+3Rw4gI3re5
-         SvtKy4H7Y69th7r+dPVKHVt9UlRU6AfmVfwyIDY/vESIMBjVdoVJ2l1BsvfbjF01wtnd
-         W0rFGFzAh2uQLH+4r9n9N+7+iY7F1ri2ZZTz33bHEEr/hw6bhTwt/Thsnd2tSwIErdj9
-         08WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pKDT3PUNN4QurKSXuiBd9ZwVRhX76C0ObzpbC3iUi+M=;
-        b=NM8Uzg6vKXtP6UDRbLoNt/7/Gxo3n+pcy5TsrunP9/325rsgGg1QODQ3kx3xiq1clm
-         VwyRReg4bc+x5DqFDw+jT0uagZXe3xF5Xj7zB3Vv28gNjMQAQBuy4/KMmzRJFVbsAkur
-         58sZTi7pwIAAiNDTKCg3UXoXOyCEhsTRvKYwjfo162FFEGFdKGEbza3JozmHQLPD3Mo5
-         nxfyCjtsmAsGDvuCgnRc2YKThWG5pbkW7KBJBlhu1tczxc42O159snA1qg2Je/fXOr4q
-         cvj7CRQXUukdPAnQzw169WMpU67TwNlhcJ+D8hRvrMJ62v2y1rDvBQQhiIlHR6iL6J6X
-         +7LA==
-X-Gm-Message-State: AOAM533NbscAbGsp+twUKTb5Rvjrbi+o0gZUjZ9PUCE47dcDW6Rt7Y+q
-        S3NX2Zt/1Z+PHoK3MfTrH/Y=
-X-Google-Smtp-Source: ABdhPJw0oP4SouqbHToZHYPkVUeM4tiWdhlKZgmEXRp0uc+RPEcKn9GabwPhY6gZBLxRu7d8Q3ccGw==
-X-Received: by 2002:a37:6348:: with SMTP id x69mr14152181qkb.154.1617391029573;
-        Fri, 02 Apr 2021 12:17:09 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:ae82])
-        by smtp.gmail.com with ESMTPSA id i8sm7214006qtj.16.2021.04.02.12.17.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 12:17:09 -0700 (PDT)
-From:   Dan Schatzberg <schatzberg.dan@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        linux-block@vger.kernel.org (open list:BLOCK LAYER),
-        linux-kernel@vger.kernel.org (open list),
-        cgroups@vger.kernel.org (open list:CONTROL GROUP (CGROUP)),
-        linux-mm@kvack.org (open list:MEMORY MANAGEMENT)
-Subject: [PATCH 3/3] loop: Charge i/o to mem and blk cg
-Date:   Fri,  2 Apr 2021 12:16:34 -0700
-Message-Id: <20210402191638.3249835-4-schatzberg.dan@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210402191638.3249835-1-schatzberg.dan@gmail.com>
-References: <20210402191638.3249835-1-schatzberg.dan@gmail.com>
+        id S234275AbhDBTTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 15:19:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35272 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229553AbhDBTTE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 15:19:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4528461163;
+        Fri,  2 Apr 2021 19:19:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617391142;
+        bh=TloOr9uUjiay4U8lrbS/0EWtLCdbRIr+Zgq5HJLUIz8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=pjYuZo4ITMya/aKhpDt60Pue8gO7OOtLe061ZC9NXX68um8O2JqGALCXOq4+Eqyxy
+         UVJgGP366kW7C//QwR3BmF34ezTCzoDq4PNFJWsT6hmeBQI31EkAP4wNZAND35lTW9
+         4aqAXo7NaPu03LdZRPuumAfsrWAxCcCaUEEfWvYcmR1PL+R+307oZbOWK6K/hRp+e3
+         uWMmZmm26JbAlKDfiV6OandcgpU5FG5VhtsZ/gy9sNRvdwBUwD5OHcoZAwLUR2G7iJ
+         5Z5tA8EBLFWzRWX8ngd5AXJYJF4zgs+zp5vWZ01ZKqWDFrnYS9JYeA4jVX2OAWNBqr
+         MkaqAOUgt2Qaw==
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Alon Mizrahi <amizrahi@habana.ai>
+Subject: [PATCH 1/3] habanalabs: add custom timeout flag per cs
+Date:   Fri,  2 Apr 2021 22:18:54 +0300
+Message-Id: <20210402191856.4849-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current code only associates with the existing blkcg when aio is
-used to access the backing file. This patch covers all types of i/o to
-the backing file and also associates the memcg so if the backing file is
-on tmpfs, memory is charged appropriately.
+From: Alon Mizrahi <amizrahi@habana.ai>
 
-This patch also exports cgroup_get_e_css and int_active_memcg so it
-can be used by the loop module.
+There is a need to allow to user to send command submissions with
+custom timeout as some CS take longer than the max timeout that is
+used by default.
 
-Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Signed-off-by: Alon Mizrahi <amizrahi@habana.ai>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/block/loop.c       | 61 +++++++++++++++++++++++++-------------
- drivers/block/loop.h       |  3 +-
- include/linux/memcontrol.h |  6 ++++
- kernel/cgroup/cgroup.c     |  1 +
- mm/memcontrol.c            |  1 +
- 5 files changed, 51 insertions(+), 21 deletions(-)
+ .../habanalabs/common/command_submission.c    | 35 +++++++++++--------
+ drivers/misc/habanalabs/common/habanalabs.h   |  2 ++
+ drivers/misc/habanalabs/common/hw_queue.c     |  2 +-
+ include/uapi/misc/habanalabs.h                | 15 ++++++--
+ 4 files changed, 36 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index 4750b373d4bb..d2759f8a7c2a 100644
---- a/drivers/block/loop.c
-+++ b/drivers/block/loop.c
-@@ -78,6 +78,7 @@
- #include <linux/uio.h>
- #include <linux/ioprio.h>
- #include <linux/blk-cgroup.h>
-+#include <linux/sched/mm.h>
+diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
+index 21a60b7c2091..ff8791a651fd 100644
+--- a/drivers/misc/habanalabs/common/command_submission.c
++++ b/drivers/misc/habanalabs/common/command_submission.c
+@@ -467,8 +467,7 @@ static void cs_handle_tdr(struct hl_device *hdev, struct hl_cs *cs)
  
- #include "loop.h"
+ 	if (next_entry_found && !next->tdr_active) {
+ 		next->tdr_active = true;
+-		schedule_delayed_work(&next->work_tdr,
+-					hdev->timeout_jiffies);
++		schedule_delayed_work(&next->work_tdr, next->timeout_jiffies);
+ 	}
  
-@@ -516,8 +517,6 @@ static void lo_rw_aio_complete(struct kiocb *iocb, long ret, long ret2)
+ 	spin_unlock(&hdev->cs_mirror_lock);
+@@ -622,7 +621,7 @@ static void cs_timedout(struct work_struct *work)
+ 
+ static int allocate_cs(struct hl_device *hdev, struct hl_ctx *ctx,
+ 			enum hl_cs_type cs_type, u64 user_sequence,
+-			struct hl_cs **cs_new)
++			struct hl_cs **cs_new, u32 flags, u32 timeout)
  {
- 	struct loop_cmd *cmd = container_of(iocb, struct loop_cmd, iocb);
- 
--	if (cmd->css)
--		css_put(cmd->css);
- 	cmd->ret = ret;
- 	lo_rw_aio_do_completion(cmd);
+ 	struct hl_cs_counters_atomic *cntr;
+ 	struct hl_fence *other = NULL;
+@@ -649,6 +648,8 @@ static int allocate_cs(struct hl_device *hdev, struct hl_ctx *ctx,
+ 	cs->submitted = false;
+ 	cs->completed = false;
+ 	cs->type = cs_type;
++	cs->timestamp = !!(flags & HL_CS_FLAGS_TIMESTAMP);
++	cs->timeout_jiffies = timeout;
+ 	INIT_LIST_HEAD(&cs->job_list);
+ 	INIT_DELAYED_WORK(&cs->work_tdr, cs_timedout);
+ 	kref_init(&cs->refcount);
+@@ -1092,7 +1093,8 @@ static int cs_staged_submission(struct hl_device *hdev, struct hl_cs *cs,
  }
-@@ -578,8 +577,6 @@ static int lo_rw_aio(struct loop_device *lo, struct loop_cmd *cmd,
- 	cmd->iocb.ki_complete = lo_rw_aio_complete;
- 	cmd->iocb.ki_flags = IOCB_DIRECT;
- 	cmd->iocb.ki_ioprio = IOPRIO_PRIO_VALUE(IOPRIO_CLASS_NONE, 0);
--	if (cmd->css)
--		kthread_associate_blkcg(cmd->css);
  
- 	if (rw == WRITE)
- 		ret = call_write_iter(file, &cmd->iocb, &iter);
-@@ -587,7 +584,6 @@ static int lo_rw_aio(struct loop_device *lo, struct loop_cmd *cmd,
- 		ret = call_read_iter(file, &cmd->iocb, &iter);
+ static int cs_ioctl_default(struct hl_fpriv *hpriv, void __user *chunks,
+-				u32 num_chunks, u64 *cs_seq, u32 flags)
++				u32 num_chunks, u64 *cs_seq, u32 flags,
++				u32 timeout)
+ {
+ 	bool staged_mid, int_queues_only = true;
+ 	struct hl_device *hdev = hpriv->hdev;
+@@ -1121,11 +1123,11 @@ static int cs_ioctl_default(struct hl_fpriv *hpriv, void __user *chunks,
+ 		staged_mid = false;
  
- 	lo_rw_aio_do_completion(cmd);
--	kthread_associate_blkcg(NULL);
+ 	rc = allocate_cs(hdev, hpriv->ctx, CS_TYPE_DEFAULT,
+-			staged_mid ? user_sequence : ULLONG_MAX, &cs);
++			staged_mid ? user_sequence : ULLONG_MAX, &cs, flags,
++			timeout);
+ 	if (rc)
+ 		goto free_cs_chunk_array;
  
- 	if (ret != -EIOCBQUEUED)
- 		cmd->iocb.ki_complete(&cmd->iocb, ret, 0);
-@@ -928,7 +924,7 @@ struct loop_worker {
- 	struct list_head cmd_list;
- 	struct list_head idle_list;
- 	struct loop_device *lo;
--	struct cgroup_subsys_state *css;
-+	struct cgroup_subsys_state *blkcg_css;
- 	unsigned long last_ran_at;
- };
+-	cs->timestamp = !!(flags & HL_CS_FLAGS_TIMESTAMP);
+ 	*cs_seq = cs->sequence;
  
-@@ -945,7 +941,7 @@ static void loop_queue_work(struct loop_device *lo, struct loop_cmd *cmd)
+ 	hl_debugfs_add_cs(cs);
+@@ -1323,7 +1325,8 @@ static int hl_submit_pending_cb(struct hl_fpriv *hpriv)
+ 		list_move_tail(&pending_cb->cb_node, &local_cb_list);
+ 	spin_unlock(&ctx->pending_cb_lock);
  
- 	spin_lock_irq(&lo->lo_work_lock);
+-	rc = allocate_cs(hdev, ctx, CS_TYPE_DEFAULT, ULLONG_MAX, &cs);
++	rc = allocate_cs(hdev, ctx, CS_TYPE_DEFAULT, ULLONG_MAX, &cs, 0,
++				hdev->timeout_jiffies);
+ 	if (rc)
+ 		goto add_list_elements;
  
--	if (!cmd->css)
-+	if (!cmd->blkcg_css)
- 		goto queue_work;
- 
- 	node = &lo->worker_tree.rb_node;
-@@ -953,10 +949,10 @@ static void loop_queue_work(struct loop_device *lo, struct loop_cmd *cmd)
- 	while (*node) {
- 		parent = *node;
- 		cur_worker = container_of(*node, struct loop_worker, rb_node);
--		if (cur_worker->css == cmd->css) {
-+		if (cur_worker->blkcg_css == cmd->blkcg_css) {
- 			worker = cur_worker;
- 			break;
--		} else if ((long)cur_worker->css < (long)cmd->css) {
-+		} else if ((long)cur_worker->blkcg_css < (long)cmd->blkcg_css) {
- 			node = &(*node)->rb_left;
+@@ -1424,7 +1427,7 @@ static int hl_cs_ctx_switch(struct hl_fpriv *hpriv, union hl_cs_args *args,
+ 			rc = 0;
  		} else {
- 			node = &(*node)->rb_right;
-@@ -968,13 +964,18 @@ static void loop_queue_work(struct loop_device *lo, struct loop_cmd *cmd)
- 	worker = kzalloc(sizeof(struct loop_worker), GFP_NOWAIT | __GFP_NOWARN);
+ 			rc = cs_ioctl_default(hpriv, chunks, num_chunks,
+-								cs_seq, 0);
++					cs_seq, 0, hdev->timeout_jiffies);
+ 		}
+ 
+ 		mutex_unlock(&hpriv->restore_phase_mutex);
+@@ -1594,7 +1597,7 @@ static int cs_ioctl_signal_wait_create_jobs(struct hl_device *hdev,
+ 
+ static int cs_ioctl_signal_wait(struct hl_fpriv *hpriv, enum hl_cs_type cs_type,
+ 				void __user *chunks, u32 num_chunks,
+-				u64 *cs_seq, bool timestamp)
++				u64 *cs_seq, u32 flags, u32 timeout)
+ {
+ 	struct hl_cs_chunk *cs_chunk_array, *chunk;
+ 	struct hw_queue_properties *hw_queue_prop;
+@@ -1700,7 +1703,7 @@ static int cs_ioctl_signal_wait(struct hl_fpriv *hpriv, enum hl_cs_type cs_type,
+ 		}
+ 	}
+ 
+-	rc = allocate_cs(hdev, ctx, cs_type, ULLONG_MAX, &cs);
++	rc = allocate_cs(hdev, ctx, cs_type, ULLONG_MAX, &cs, flags, timeout);
+ 	if (rc) {
+ 		if (cs_type == CS_TYPE_WAIT ||
+ 			cs_type == CS_TYPE_COLLECTIVE_WAIT)
+@@ -1708,8 +1711,6 @@ static int cs_ioctl_signal_wait(struct hl_fpriv *hpriv, enum hl_cs_type cs_type,
+ 		goto free_cs_chunk_array;
+ 	}
+ 
+-	cs->timestamp = !!timestamp;
+-
  	/*
- 	 * In the event we cannot allocate a worker, just queue on the
--	 * rootcg worker
-+	 * rootcg worker and issue the I/O as the rootcg
+ 	 * Save the signal CS fence for later initialization right before
+ 	 * hanging the wait CS on the queue.
+@@ -1767,7 +1768,7 @@ int hl_cs_ioctl(struct hl_fpriv *hpriv, void *data)
+ 	enum hl_cs_type cs_type;
+ 	u64 cs_seq = ULONG_MAX;
+ 	void __user *chunks;
+-	u32 num_chunks, flags;
++	u32 num_chunks, flags, timeout;
+ 	int rc;
+ 
+ 	rc = hl_cs_sanity_checks(hpriv, args);
+@@ -1793,16 +1794,20 @@ int hl_cs_ioctl(struct hl_fpriv *hpriv, void *data)
+ 			!(flags & HL_CS_FLAGS_STAGED_SUBMISSION_FIRST))
+ 		cs_seq = args->in.seq;
+ 
++	timeout = flags & HL_CS_FLAGS_CUSTOM_TIMEOUT
++			? msecs_to_jiffies(args->in.timeout * 1000)
++			: hpriv->hdev->timeout_jiffies;
++
+ 	switch (cs_type) {
+ 	case CS_TYPE_SIGNAL:
+ 	case CS_TYPE_WAIT:
+ 	case CS_TYPE_COLLECTIVE_WAIT:
+ 		rc = cs_ioctl_signal_wait(hpriv, cs_type, chunks, num_chunks,
+-			&cs_seq, args->in.cs_flags & HL_CS_FLAGS_TIMESTAMP);
++					&cs_seq, args->in.cs_flags, timeout);
+ 		break;
+ 	default:
+ 		rc = cs_ioctl_default(hpriv, chunks, num_chunks, &cs_seq,
+-							args->in.cs_flags);
++						args->in.cs_flags, timeout);
+ 		break;
+ 	}
+ 
+diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
+index ddb65639f518..54d7735991c7 100644
+--- a/drivers/misc/habanalabs/common/habanalabs.h
++++ b/drivers/misc/habanalabs/common/habanalabs.h
+@@ -1245,6 +1245,7 @@ struct hl_userptr {
+  * @sequence: the sequence number of this CS.
+  * @staged_sequence: the sequence of the staged submission this CS is part of,
+  *                   relevant only if staged_cs is set.
++ * @timeout_jiffies: cs timeout in jiffies.
+  * @type: CS_TYPE_*.
+  * @submitted: true if CS was submitted to H/W.
+  * @completed: true if CS was completed by device.
+@@ -1273,6 +1274,7 @@ struct hl_cs {
+ 	struct list_head	debugfs_list;
+ 	u64			sequence;
+ 	u64			staged_sequence;
++	u64			timeout_jiffies;
+ 	enum hl_cs_type		type;
+ 	u8			submitted;
+ 	u8			completed;
+diff --git a/drivers/misc/habanalabs/common/hw_queue.c b/drivers/misc/habanalabs/common/hw_queue.c
+index 4acc25dccad3..173438461835 100644
+--- a/drivers/misc/habanalabs/common/hw_queue.c
++++ b/drivers/misc/habanalabs/common/hw_queue.c
+@@ -629,7 +629,7 @@ int hl_hw_queue_schedule_cs(struct hl_cs *cs)
+ 	if ((hdev->timeout_jiffies != MAX_SCHEDULE_TIMEOUT) &&
+ 				first_entry && cs_needs_timeout(cs)) {
+ 		cs->tdr_active = true;
+-		schedule_delayed_work(&cs->work_tdr, hdev->timeout_jiffies);
++		schedule_delayed_work(&cs->work_tdr, cs->timeout_jiffies);
+ 
+ 	}
+ 
+diff --git a/include/uapi/misc/habanalabs.h b/include/uapi/misc/habanalabs.h
+index 92fd000ce0d3..90798eaac728 100644
+--- a/include/uapi/misc/habanalabs.h
++++ b/include/uapi/misc/habanalabs.h
+@@ -630,6 +630,7 @@ struct hl_cs_chunk {
+ #define HL_CS_FLAGS_STAGED_SUBMISSION		0x40
+ #define HL_CS_FLAGS_STAGED_SUBMISSION_FIRST	0x80
+ #define HL_CS_FLAGS_STAGED_SUBMISSION_LAST	0x100
++#define HL_CS_FLAGS_CUSTOM_TIMEOUT		0x200
+ 
+ #define HL_CS_STATUS_SUCCESS		0
+ 
+@@ -665,8 +666,18 @@ struct hl_cs_in {
  	 */
--	if (!worker)
-+	if (!worker) {
-+		cmd->blkcg_css = NULL;
-+		if (cmd->memcg_css)
-+			css_put(cmd->memcg_css);
-+		cmd->memcg_css = NULL;
- 		goto queue_work;
-+	}
+ 	__u32 num_chunks_execute;
  
--	worker->css = cmd->css;
--	css_get(worker->css);
-+	worker->blkcg_css = cmd->blkcg_css;
-+	css_get(worker->blkcg_css);
- 	INIT_WORK(&worker->work, loop_workfn);
- 	INIT_LIST_HEAD(&worker->cmd_list);
- 	INIT_LIST_HEAD(&worker->idle_list);
-@@ -1294,7 +1295,7 @@ static int __loop_clr_fd(struct loop_device *lo, bool release)
- 				idle_list) {
- 		list_del(&worker->idle_list);
- 		rb_erase(&worker->rb_node, &lo->worker_tree);
--		css_put(worker->css);
-+		css_put(worker->blkcg_css);
- 		kfree(worker);
- 	}
- 	spin_unlock_irq(&lo->lo_work_lock);
-@@ -2099,13 +2100,18 @@ static blk_status_t loop_queue_rq(struct blk_mq_hw_ctx *hctx,
- 	}
- 
- 	/* always use the first bio's css */
-+	cmd->blkcg_css = NULL;
-+	cmd->memcg_css = NULL;
- #ifdef CONFIG_BLK_CGROUP
--	if (cmd->use_aio && rq->bio && rq->bio->bi_blkg) {
--		cmd->css = &bio_blkcg(rq->bio)->css;
--		css_get(cmd->css);
--	} else
-+	if (rq->bio && rq->bio->bi_blkg) {
-+		cmd->blkcg_css = &bio_blkcg(rq->bio)->css;
-+#ifdef CONFIG_MEMCG
-+		cmd->memcg_css =
-+			cgroup_get_e_css(cmd->blkcg_css->cgroup,
-+					&memory_cgrp_subsys);
-+#endif
-+	}
- #endif
--		cmd->css = NULL;
- 	loop_queue_work(lo, cmd);
- 
- 	return BLK_STS_OK;
-@@ -2117,13 +2123,28 @@ static void loop_handle_cmd(struct loop_cmd *cmd)
- 	const bool write = op_is_write(req_op(rq));
- 	struct loop_device *lo = rq->q->queuedata;
- 	int ret = 0;
-+	struct mem_cgroup *old_memcg = NULL;
- 
- 	if (write && (lo->lo_flags & LO_FLAGS_READ_ONLY)) {
- 		ret = -EIO;
- 		goto failed;
- 	}
- 
-+	if (cmd->blkcg_css)
-+		kthread_associate_blkcg(cmd->blkcg_css);
-+	if (cmd->memcg_css)
-+		old_memcg = set_active_memcg(
-+			mem_cgroup_from_css(cmd->memcg_css));
+-	/* Number of chunks in restore phase array - Currently not in use */
+-	__u32 num_chunks_store;
++	union {
++		/* Number of chunks in restore phase array -
++		 * Currently not in use
++		 */
++		__u32 num_chunks_store;
 +
- 	ret = do_req_filebacked(lo, rq);
-+
-+	if (cmd->blkcg_css)
-+		kthread_associate_blkcg(NULL);
-+
-+	if (cmd->memcg_css) {
-+		set_active_memcg(old_memcg);
-+		css_put(cmd->memcg_css);
-+	}
-  failed:
- 	/* complete non-aio request */
- 	if (!cmd->use_aio || ret) {
-@@ -2202,7 +2223,7 @@ static void loop_free_idle_workers(struct timer_list *timer)
- 			break;
- 		list_del(&worker->idle_list);
- 		rb_erase(&worker->rb_node, &lo->worker_tree);
--		css_put(worker->css);
-+		css_put(worker->blkcg_css);
- 		kfree(worker);
- 	}
- 	if (!list_empty(&lo->idle_worker_list))
-diff --git a/drivers/block/loop.h b/drivers/block/loop.h
-index 9289c1cd6374..cd24a81e00e6 100644
---- a/drivers/block/loop.h
-+++ b/drivers/block/loop.h
-@@ -76,7 +76,8 @@ struct loop_cmd {
- 	long ret;
- 	struct kiocb iocb;
- 	struct bio_vec *bvec;
--	struct cgroup_subsys_state *css;
-+	struct cgroup_subsys_state *blkcg_css;
-+	struct cgroup_subsys_state *memcg_css;
- };
++		/* timeout in seconds - valid only if HL_CS_FLAGS_CUSTOM_TIMEOUT
++		 * is set. this parameter is ignored in case of future multiple
++		 * users support.
++		 */
++		__u32 timeout;
++	};
  
- /* Support for loadable transfer modules */
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index b8b0a802852c..a92500734f90 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -1249,6 +1249,12 @@ static inline struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm)
- 	return NULL;
- }
- 
-+static inline
-+struct mem_cgroup *mem_cgroup_from_css(struct cgroup_subsys_state *css)
-+{
-+	return NULL;
-+}
-+
- static inline void mem_cgroup_put(struct mem_cgroup *memcg)
- {
- }
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index e049edd66776..8c84a5374238 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -577,6 +577,7 @@ struct cgroup_subsys_state *cgroup_get_e_css(struct cgroup *cgrp,
- 	rcu_read_unlock();
- 	return css;
- }
-+EXPORT_SYMBOL_GPL(cgroup_get_e_css);
- 
- static void cgroup_get_live(struct cgroup *cgrp)
- {
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index d2939d6602b3..f12886a85e8b 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -78,6 +78,7 @@ struct mem_cgroup *root_mem_cgroup __read_mostly;
- 
- /* Active memory cgroup to use from an interrupt context */
- DEFINE_PER_CPU(struct mem_cgroup *, int_active_memcg);
-+EXPORT_PER_CPU_SYMBOL_GPL(int_active_memcg);
- 
- /* Socket memory accounting disabled? */
- static bool cgroup_memory_nosocket;
+ 	/* HL_CS_FLAGS_* */
+ 	__u32 cs_flags;
 -- 
-2.30.2
+2.25.1
 
