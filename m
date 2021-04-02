@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B97035311C
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 00:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BBA335311F
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 00:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235867AbhDBW3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 18:29:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37226 "EHLO
+        id S236000AbhDBW3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 18:29:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235617AbhDBW3c (ORCPT
+        with ESMTP id S235659AbhDBW3d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 18:29:32 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E70C061794
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 15:29:30 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id ay2so3067561plb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 15:29:30 -0700 (PDT)
+        Fri, 2 Apr 2021 18:29:33 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED3DC061797
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 15:29:31 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id f29so1861344pgm.8
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 15:29:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Qux1BcXKfGbtkPfbhFH+jwIJdgaEMApMJYvljbzcQac=;
-        b=WDsbf4lhRBTZdR+Ed/viXWb7jCiyUvqbtYl+NMkDRlA9aIsoeprHspN5GGG5ZoOIww
-         ufFT4Nq1RECpf0IYakhKA4dcWMfyo4X059HXV1UaUh0P/KnsS663C4PzZ03iLIEcoj33
-         AP5VnW5xF+JYQlJxpiqogAlXoqvQuQW4t9XTI=
+        bh=LWCZqEnQt7O4dKOp3uwcwxtiQFjYMPyEMkDo43bfXr8=;
+        b=YHdp6YkAZFHy7ph7L0Y8wFiPRja6fUyOKBIrreFiGUeAQaOdtiOE3kD19znNKVphAm
+         QEOc3L9wZlp/cuaGQfUJQCvwElQN+lGbhPWW4Z6S7UKxwunn024GJL4Agcz4MJWbmarp
+         zXXww/rb77+KKMosD1Q9oM7hNimK2+vAzaG9o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Qux1BcXKfGbtkPfbhFH+jwIJdgaEMApMJYvljbzcQac=;
-        b=m0BwwMMsjdnWJkz2WomQRFLwjSLX8iAL770CFefmiDI6ug3/6d7Tx4KeY2PC/hPF37
-         YlEUUTF+JA5jr7ffICJhuLCcjAJDgZntigDVCx/dbPy+4rbnZBBYYBeRvEOwtz9/y3Ht
-         dvX8YyNf3sRQvghDilas7znj3xH+v6tNtJZYGg8pNhmOgtN+6tTREu1GaOnSbu7dxxq9
-         o+NF3xeq3kdfBw7z7xAHjpvP6dqNt6xqXnqiWVCIa4MQrUd5F66CTp3AKUYc9ebgSdES
-         DNV5AAWs2zl+ptK7SEQtXKAizdIIFte0YbRkUhAIVcXfWv7OyG6Mvmmn6TN1/wXbgNKF
-         IkSg==
-X-Gm-Message-State: AOAM533E3AO8zOez81+UVpMgI4YORoE/cuLnAqTFogg+cYJnWQJ0Fpty
-        tsr5XEajokeu2b+nclOcqqRhSw==
-X-Google-Smtp-Source: ABdhPJz85KJT/5mvyklmGV27zCWK7g/5WFe1sKszdh7ahKEi36K8AnjDbqPhij1HqBG/Y+24UBiNOw==
-X-Received: by 2002:a17:902:9a06:b029:e6:9241:2779 with SMTP id v6-20020a1709029a06b02900e692412779mr14282257plp.24.1617402569906;
-        Fri, 02 Apr 2021 15:29:29 -0700 (PDT)
+        bh=LWCZqEnQt7O4dKOp3uwcwxtiQFjYMPyEMkDo43bfXr8=;
+        b=FW83BgrtijZdu95+Dup3eJtI5L40dG0+ZAYbg2rj4nbJo4XJr87elUOgEajHowTgbI
+         b1/ZkXqc9g4a62zi6bZzjL25f07ez0khMGM8KR6Xy+r6yMpFU23zgAsFb9jFFDAtIzRr
+         OO3LVN+X7mEVV/siVm/9lj5AzjjEMnc6CEzLixtiqmIBACl6kh6E/ML3Azi6+2hHdpB8
+         ozXv3GNfkrwIBPhaRqNrJkvs8ogC5OanCdgf8l/hraHpinBFpIb9Sv4hyo2l2Vg1GIK/
+         EFQdIPLPhIVlXKB6Kko272CaS1NdBSwDPdRWKDJn6RkAK0i2cTxb7mV+FWNgfDcCpnU0
+         6teQ==
+X-Gm-Message-State: AOAM531mJat5dvWcyJd0Od/+qQV4ghrVUP90yGIfG17RaEYk/inpNnHU
+        hd/U+AhLtAsAcI2XWP4QvSgC+Q==
+X-Google-Smtp-Source: ABdhPJwtwqI2tvZw0BgazX6ZmDH5UDrOdbnhYE1ACnzRHDuaa4PqC6+vmRWdeDEmIu3Kc2t4/6c2Yw==
+X-Received: by 2002:a62:1ad0:0:b029:1f2:c7b3:3039 with SMTP id a199-20020a621ad00000b02901f2c7b33039mr14390664pfa.30.1617402570970;
+        Fri, 02 Apr 2021 15:29:30 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:6c58:fab2:c5e2:f2d7])
-        by smtp.gmail.com with ESMTPSA id t16sm9233094pfc.204.2021.04.02.15.29.29
+        by smtp.gmail.com with ESMTPSA id t16sm9233094pfc.204.2021.04.02.15.29.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 15:29:29 -0700 (PDT)
+        Fri, 02 Apr 2021 15:29:30 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     Andrzej Hajda <a.hajda@samsung.com>,
         Neil Armstrong <narmstrong@baylibre.com>,
@@ -64,9 +64,9 @@ Cc:     Linus W <linus.walleij@linaro.org>,
         David Airlie <airlied@linux.ie>,
         Robert Foss <robert.foss@linaro.org>,
         dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 03/12] drm/bridge: ti-sn65dsi86: Remove incorrectly tagged kerneldoc comment
-Date:   Fri,  2 Apr 2021 15:28:37 -0700
-Message-Id: <20210402152701.v3.3.I167766eeaf4c4646a3934c4dd5332decbab6bd68@changeid>
+Subject: [PATCH v3 04/12] drm/bridge: ti-sn65dsi86: Reorder remove()
+Date:   Fri,  2 Apr 2021 15:28:38 -0700
+Message-Id: <20210402152701.v3.4.Ifcf1deaa372eba7eeb4f8eb516c5d15b77a657a9@changeid>
 X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
 In-Reply-To: <20210402222846.2461042-1-dianders@chromium.org>
 References: <20210402222846.2461042-1-dianders@chromium.org>
@@ -76,31 +76,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A random comment inside a function had "/**" in front of it. That
-doesn't make sense. Remove.
+Let's make the remove() function strictly the reverse of the probe()
+function so it's easier to reason about.
+
+This patch was created by code inspection and should move us closer to
+a proper remove.
 
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
 ---
 
-(no changes since v1)
+Changes in v3:
+- Removed "NOTES" from commit message.
 
- drivers/gpu/drm/bridge/ti-sn65dsi86.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/bridge/ti-sn65dsi86.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-index 96fe8f2c0ea9..76f43af6735d 100644
+index 76f43af6735d..c006678c9921 100644
 --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
 +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-@@ -788,7 +788,7 @@ static void ti_sn_bridge_enable(struct drm_bridge *bridge)
- 	/* set dsi clk frequency value */
- 	ti_sn_bridge_set_dsi_rate(pdata);
+@@ -1315,20 +1315,21 @@ static int ti_sn_bridge_remove(struct i2c_client *client)
+ 	if (!pdata)
+ 		return -EINVAL;
  
--	/**
-+	/*
- 	 * The SN65DSI86 only supports ASSR Display Authentication method and
- 	 * this method is enabled by default. An eDP panel must support this
- 	 * authentication method. We need to enable this method in the eDP panel
+-	kfree(pdata->edid);
+-	ti_sn_debugfs_remove(pdata);
+-
+-	of_node_put(pdata->host_node);
+-
+-	pm_runtime_disable(pdata->dev);
+-
+ 	if (pdata->dsi) {
+ 		mipi_dsi_detach(pdata->dsi);
+ 		mipi_dsi_device_unregister(pdata->dsi);
+ 	}
+ 
++	kfree(pdata->edid);
++
++	ti_sn_debugfs_remove(pdata);
++
+ 	drm_bridge_remove(&pdata->bridge);
+ 
++	pm_runtime_disable(pdata->dev);
++
++	of_node_put(pdata->host_node);
++
+ 	return 0;
+ }
+ 
 -- 
 2.31.0.208.g409f899ff0-goog
 
