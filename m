@@ -2,76 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BA1352A84
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 14:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9634352A8B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 14:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235368AbhDBMRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 08:17:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37086 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235204AbhDBMRJ (ORCPT
+        id S235402AbhDBMSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 08:18:39 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:64230 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235296AbhDBMSa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 08:17:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617365827;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=0jaEPxLaJfReD8pxSOXnANRrSayp5U1dcLmAQj7CP5E=;
-        b=b65z4Meu9/5m1HOQO/UQiMMM7gPtxy3UWh7exg5CfXIuAesEM3NVB7DNEBuNxIb168z2RW
-        Yec+slbZqeL0276a0rcPT0d0A+AegmLEpdiLHZG4CpLs0IcECG5RVGnQaselS5CLWbpdFe
-        Io4ruO+zfcoNU1MWszirwqDdtt+pOo4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-436-JItoow2QM461wIMIdOIiXQ-1; Fri, 02 Apr 2021 08:17:06 -0400
-X-MC-Unique: JItoow2QM461wIMIdOIiXQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 70CAA1005D57;
-        Fri,  2 Apr 2021 12:17:05 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 13D3F60BF1;
-        Fri,  2 Apr 2021 12:17:05 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Ben Gardon <bgardon@google.com>
-Subject: [PATCH] KVM: MMU: protect TDP MMU pages only down to required level
-Date:   Fri,  2 Apr 2021 08:17:04 -0400
-Message-Id: <20210402121704.3424115-1-pbonzini@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Fri, 2 Apr 2021 08:18:30 -0400
+Received: from fsav402.sakura.ne.jp (fsav402.sakura.ne.jp [133.242.250.101])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 132CHpUW086619;
+        Fri, 2 Apr 2021 21:17:51 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav402.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp);
+ Fri, 02 Apr 2021 21:17:50 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp)
+Received: from localhost.localdomain (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 132CHgND086600
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Fri, 2 Apr 2021 21:17:50 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: [PATCH 1/2] misc: vmw_vmci: explicitly initialize vmci_notify_bm_set_msg struct
+Date:   Fri,  2 Apr 2021 21:17:41 +0900
+Message-Id: <20210402121742.3917-1-penguin-kernel@I-love.SAKURA.ne.jp>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When using manual protection of dirty pages, it is not necessary
-to protect nested page tables down to the 4K level; instead KVM
-can protect only hugepages in order to split them lazily, and
-delay write protection at 4K-granularity until KVM_CLEAR_DIRTY_LOG.
-This was overlooked in the TDP MMU, so do it there as well.
+KMSAN complains that the vmci_use_ppn64() == false path in
+vmci_dbell_register_notification_bitmap() left upper 32bits of
+bitmap_set_msg.bitmap_ppn64 member uninitialized.
 
-Fixes: a6a0b05da9f37 ("kvm: x86/mmu: Support dirty logging for the TDP MMU")
-Cc: Ben Gardon <bgardon@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+  =====================================================
+  BUG: KMSAN: uninit-value in kmsan_check_memory+0xd/0x10
+  CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.11.0-rc7+ #4
+  Hardware name: VMware, Inc. VMware Virtual Platform/440BX Desktop Reference Platform, BIOS 6.00 02/27/2020
+  Call Trace:
+   dump_stack+0x21c/0x280
+   kmsan_report+0xfb/0x1e0
+   kmsan_internal_check_memory+0x484/0x520
+   kmsan_check_memory+0xd/0x10
+   iowrite8_rep+0x86/0x380
+   vmci_send_datagram+0x150/0x280
+   vmci_dbell_register_notification_bitmap+0x133/0x1e0
+   vmci_guest_probe_device+0xcab/0x1e70
+   pci_device_probe+0xab3/0xe70
+   really_probe+0xd16/0x24d0
+   driver_probe_device+0x29d/0x3a0
+   device_driver_attach+0x25a/0x490
+   __driver_attach+0x78c/0x840
+   bus_for_each_dev+0x210/0x340
+   driver_attach+0x89/0xb0
+   bus_add_driver+0x677/0xc40
+   driver_register+0x485/0x8e0
+   __pci_register_driver+0x1ff/0x350
+   vmci_guest_init+0x3e/0x41
+   vmci_drv_init+0x1d6/0x43f
+   do_one_initcall+0x39c/0x9a0
+   do_initcall_level+0x1d7/0x259
+   do_initcalls+0x127/0x1cb
+   do_basic_setup+0x33/0x36
+   kernel_init_freeable+0x29a/0x3ed
+   kernel_init+0x1f/0x840
+   ret_from_fork+0x1f/0x30
+
+  Local variable ----bitmap_set_msg@vmci_dbell_register_notification_bitmap created at:
+   vmci_dbell_register_notification_bitmap+0x50/0x1e0
+   vmci_dbell_register_notification_bitmap+0x50/0x1e0
+
+  Bytes 28-31 of 32 are uninitialized
+  Memory access of size 32 starts at ffff88810098f570
+  =====================================================
+
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Fixes: 83e2ec765be03e8a ("VMCI: doorbell implementation.")
+Cc: <stable@vger.kernel.org>
 ---
- arch/x86/kvm/mmu/mmu.c | 2 +-
+ drivers/misc/vmw_vmci/vmci_doorbell.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index efb41f31e80a..0d92a269c5fa 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -5538,7 +5538,7 @@ void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
- 	flush = slot_handle_level(kvm, memslot, slot_rmap_write_protect,
- 				start_level, KVM_MAX_HUGEPAGE_LEVEL, false);
- 	if (is_tdp_mmu_enabled(kvm))
--		flush |= kvm_tdp_mmu_wrprot_slot(kvm, memslot, PG_LEVEL_4K);
-+		flush |= kvm_tdp_mmu_wrprot_slot(kvm, memslot, start_level);
- 	write_unlock(&kvm->mmu_lock);
+diff --git a/drivers/misc/vmw_vmci/vmci_doorbell.c b/drivers/misc/vmw_vmci/vmci_doorbell.c
+index 345addd9306d..fa8a7fce4481 100644
+--- a/drivers/misc/vmw_vmci/vmci_doorbell.c
++++ b/drivers/misc/vmw_vmci/vmci_doorbell.c
+@@ -326,7 +326,7 @@ int vmci_dbell_host_context_notify(u32 src_cid, struct vmci_handle handle)
+ bool vmci_dbell_register_notification_bitmap(u64 bitmap_ppn)
+ {
+ 	int result;
+-	struct vmci_notify_bm_set_msg bitmap_set_msg;
++	struct vmci_notify_bm_set_msg bitmap_set_msg = { };
  
- 	/*
+ 	bitmap_set_msg.hdr.dst = vmci_make_handle(VMCI_HYPERVISOR_CONTEXT_ID,
+ 						  VMCI_SET_NOTIFY_BITMAP);
 -- 
-2.26.2
+2.18.4
 
