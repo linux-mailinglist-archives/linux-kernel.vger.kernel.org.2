@@ -2,81 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CA9A353067
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 22:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B7E353069
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 22:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234775AbhDBUuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 16:50:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54082 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231149AbhDBUum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 16:50:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3CD3610CC;
-        Fri,  2 Apr 2021 20:50:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617396641;
-        bh=0Ax51oRuPovlp3aM1JtM+jBcjX5iSBj0pzbz5C8UCeg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WkTNhUcZPMhxIi5tdWbvNZlct/lXnSrtiWKDHDDoi9XMjEmDXOd/8hG8QqJrpcOuG
-         11BVdUHref6TA76BzeFtkG6S0ygDSnaSAiVCdX69UtUMZ3SEk1htlGBvBGOppDUE8j
-         vv9A8el+IqQldtK8Qp48SHqBCGSGlE/g8FXZUFZp7iIBZ7RotRD2H9deIWgx0ouJxc
-         sr4EnvYnk9FwDctWCNNWf1SFvBtYLQM50auL8wnhTTUCIycXyusFRQDlWAY5refvad
-         F2yIxhAV6l88+CZ1KlfahrKseID/ZNHKFBxgJZo45T5lp8QMdVscnmIKViDXwmoA+E
-         0odCDMaVz527w==
-Date:   Fri, 2 Apr 2021 22:50:38 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH 3/3] srcu: Fix broken node geometry after early ssp init
-Message-ID: <20210402205038.GB134532@lothringen>
-References: <20210401234704.125498-1-frederic@kernel.org>
- <20210401234704.125498-4-frederic@kernel.org>
- <20210402011241.GO2696@paulmck-ThinkPad-P72>
- <20210402100221.GA134532@lothringen>
- <20210402150357.GQ2696@paulmck-ThinkPad-P72>
+        id S235139AbhDBUx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 16:53:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229722AbhDBUxz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 16:53:55 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21A6BC0613E6;
+        Fri,  2 Apr 2021 13:53:53 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id v4so5616879wrp.13;
+        Fri, 02 Apr 2021 13:53:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Ad8+4vvgRoJKzOknFf9IRYyd66+3erW31k5BSaoEf+c=;
+        b=HidmHgb/sOyGVcW6jXrCNrf2v+UDiio7uzj5SRxhMvG4eSX99KUviTX2Ap+jVWBQ2m
+         QzC2OIDsKtO1z+W0UA8TMXsm8/FoCe8hhbU5ygfurtvrOQiRD8Qkohrj+cOeqyz5Jfb0
+         S1nZsipoKDD86piMqTa/J1kh/3qg0uxzzz55px4GI+yMEmPk5PM7SSed9ogHCOah8rGc
+         qMNR3cHpfg8xnXbKY16fCbDy1Jjf4PSuAt2ADLtCZDSfGQUP+WBrt4PlP1ppfNs30OEQ
+         OHL7jctzIfiwf3f/xPinjVEYrxkUAsyYnSDM18aUCwZMj7sDOq3T2jQEEGZ3yS0LlRE3
+         YFtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ad8+4vvgRoJKzOknFf9IRYyd66+3erW31k5BSaoEf+c=;
+        b=Aie+PezEGUafvOcLntAaZzEjbO22U8jY0LbMFyboCKzOOSW0g+Otgj7PL1W0PeMJA8
+         aicY8cAVMpivJrEcIOr+1SceX9xWvY6Ao/xZj36Yc8zqPtlc+RYvacBPCC9WB1TTjfbu
+         lY+oN6jOB0RjDWUnEhu3NMk1XHErJXwMFPE/EXB9e4Uc9A6FyzcA4tYCgePRDRCHUm9o
+         jvHQh2tQ/WoEGtylZYqCQljj80bjhFLd8dChowl+cKYftCVK14PraRII8vIhZHXltLe8
+         3Fl+3rHzSbnCVhMbXL7Cj6e6B+Nb7GbOjjQQiG8ZqEoygWefR2CmDQnWV2hWdMmP5btj
+         hacA==
+X-Gm-Message-State: AOAM532WvbHVUrwNySE8MhnYaPXc0HnhyyuxdwzbI0eAG0lY32iQQUo0
+        QepBWRVHlOohfS6Fw/aup81UzJ1Hhqk=
+X-Google-Smtp-Source: ABdhPJwHo63N6QReuQKjsCqtKZ0sJst31jeXRGWCzZkl6Pv7kkREq/WwysS/uvQnmmsTQxvVKaCAig==
+X-Received: by 2002:adf:fa11:: with SMTP id m17mr3596191wrr.287.1617396831566;
+        Fri, 02 Apr 2021 13:53:51 -0700 (PDT)
+Received: from [192.168.1.101] ([37.166.24.151])
+        by smtp.gmail.com with ESMTPSA id h9sm13277017wmb.35.2021.04.02.13.53.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Apr 2021 13:53:51 -0700 (PDT)
+Subject: Re: [PATCH] net: initialize local variables in net/ipv6/mcast.c and
+ net/ipv4/igmp.c
+To:     Phillip Potter <phil@philpotter.co.uk>,
+        Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210402173617.895-1-phil@philpotter.co.uk>
+ <d2334631-4b3a-48e5-5305-7320adc50909@gmail.com> <YGdeAK3BwWSnDwRX@equinox>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <37f4c845-e63b-87b8-29ec-b28d895326cd@gmail.com>
+Date:   Fri, 2 Apr 2021 22:53:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210402150357.GQ2696@paulmck-ThinkPad-P72>
+In-Reply-To: <YGdeAK3BwWSnDwRX@equinox>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 08:03:57AM -0700, Paul E. McKenney wrote:
-> On Fri, Apr 02, 2021 at 12:02:21PM +0200, Frederic Weisbecker wrote:
-> > Arguably that's a quite a corner case and I don't expect anyone to call
-> > start_poll_synchronize_srcu() so early but who knows. An alternative is to
-> > forbid it and warn if used before srcu is initialized.
+
+
+On 4/2/21 8:10 PM, Phillip Potter wrote:
+> On Fri, Apr 02, 2021 at 07:49:44PM +0200, Eric Dumazet wrote:
+>>
+>>
+>> On 4/2/21 7:36 PM, Phillip Potter wrote:
+>>> Use memset to initialize two local buffers in net/ipv6/mcast.c,
+>>> and another in net/ipv4/igmp.c. Fixes a KMSAN found uninit-value
+>>> bug reported by syzbot at:
+>>> https://syzkaller.appspot.com/bug?id=0766d38c656abeace60621896d705743aeefed51
+>>
+>>
+>> According to this link, the bug no longer triggers.
+>>
+>> Please explain why you think it is still there.
+>>
 > 
-> Another approach would be to have start_poll_synchronize_rcu() check to
-> see if initialization has happened, and if not, simply queue a callback.
+> Dear Eric,
 > 
-> Any other ways to make this work?
+> It definitely still triggers, tested it on the master branch of
+> https://github.com/google/kmsan last night. The patch which fixes the
+> crash on that page is the same patch I've sent in.
 
-Ok I think that should work. We want to make sure that the cookies returned
-by each call to start_poll_synchronize_rcu() before rcu_init_geometry() will
-match the gpnums targeted by the corresponding callbacks we requeue.
-
-Since we are very early and the workqueues can't schedule, the grace periods
-shouldn't be able to complete. Assuming ssp->srcu_gp_seq is initialized as N.
-The first call to call_srcu/start_poll_synchronize_rcu should target gpnum N +
-1. Then all those that follow should target gpnum N + 2 and not further.
-
-While we call srcu_init() and requeue the callbacks in order after resetting
-gpnum to N, this should just behave the same and attribute the right gpnum
-to each callbacks.
-
-It would have been a problem if the workqueues could schedule and complete
-grace periods concurrently because we might target gpnum N + 3, N + 4, ...
-as we requeue the callbacks. But it's not the case so we should be fine as
-long as callbacks are requeued in order.
-
-Does that sound right to you as well? If so I can try it.
+Please send the full report (stack trace)
 
 Thanks.
+
+
+
