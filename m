@@ -2,116 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F30EB352F5F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 20:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C81352F62
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 20:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234652AbhDBSp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 14:45:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45218 "EHLO
+        id S235874AbhDBSpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 14:45:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbhDBSp1 (ORCPT
+        with ESMTP id S235392AbhDBSpf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 14:45:27 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06F01C0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 11:45:26 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id r193so3235764ior.9
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 11:45:25 -0700 (PDT)
+        Fri, 2 Apr 2021 14:45:35 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6371C06178A
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 11:45:33 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id gv19-20020a17090b11d3b029014c516f4eb5so1154730pjb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 11:45:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=/OThl2TJ86i+d/Z9onNMKzzml/86evlKk1D8sXUWm3s=;
-        b=spoXp4ymwf+FzwwvTbLnfHRGKw2cJp5whg010ZpGpMj7Je/U9GpUX6h6Shj6vEnj2V
-         2pp5bM13UMj8HBbM4e2Vp0mulbICA5btgWbxg5n8kuhbvRBwdQ2Sqxcr4EXaXFrFyGCy
-         hzWx5OJj9NkNVwIpEQSB2Nmw9EqP5y6PpWTSmkRP0+RAxS5p4DSEeMb/nOfHbuZjXzSn
-         aFIusYmUpIEbZM8XuaIqO1SXNamHYjSKcmwZSKPDq9TbxZs8POr5ji4EDRBgo9lLzglR
-         q1FL2F4XNE+T4ISBWzkZfA8NAk3Tcm7mFWPxpn/Y6/+fa9GcFZBsUPajvlorufdoNmpS
-         VoNQ==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lBknpnUfvW7Mp8L8MjbRdTTbJ2YiP+RrDtDZ87i1HWc=;
+        b=a1l1lme4++l+zuVvbvuPg11j5VRcaKdhH+EdpHF4zqEVznOydK8W+SNJwIXmze+azb
+         HQzCWQ38y+RONCzZiM5t2cA9IZD6bGbCwLv6Snpgm1DkOINWhdsYHZUkDkIdzqjMrXk7
+         hCQgYTWI++hjt7Xc2CkMjSYTR1DI7wt8SLw6g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=/OThl2TJ86i+d/Z9onNMKzzml/86evlKk1D8sXUWm3s=;
-        b=EY1lUybvTvuzo/9oZk7X/y9p4AY+BeECVMD1/adEGPns1wy/NOjJP9yz20I8qIZmc+
-         8OL1OrAPRbvnFR5Uv/Q6d9120WKyxFn1+dlZlZq+dIYfdzqPfFbOV5FG9b2dLzADZLfO
-         7neyOgg5T9V7T0kAhPFNkMvyEQ6731qJDEjRlTbTRGuX+JVVOFWr6KLQxo41NKUMfnkC
-         UKW7sIJBIMU2iflxSyfPQOLfKsvwzUIRuVZDxt0NAuZYM6vJUA7M9Zw4waKvoCC4scXS
-         M8e3LbqMb93CuFSPgLaTOXKDSFrAGbXk6ECgOaq278nBN3doySqCE+lFe9rp+JH1CBOi
-         SNNw==
-X-Gm-Message-State: AOAM533RlpuLv0RqEvbzteoxSo17lWB/dlFKHG4viraWEN53hu62wDnh
-        tx0QY5FkEY+2HA2/Njc9RqIAmgPX4Z22TA5Ox2A=
-X-Google-Smtp-Source: ABdhPJwIz5lMeJXF/ig31xaHINMB9NbZhAF9rqQ90Plamzp40mgR8F+megcIBShLyOw7K3egXeMkAPSODarClDsRkNY=
-X-Received: by 2002:a5d:9d13:: with SMTP id j19mr12186378ioj.110.1617389125411;
- Fri, 02 Apr 2021 11:45:25 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lBknpnUfvW7Mp8L8MjbRdTTbJ2YiP+RrDtDZ87i1HWc=;
+        b=b5/cxvZwUlSmjQZ/maykDj8qo7zNs912U8sLQBWNWxHt3PWBQBdBo/31e3MBXBisp6
+         R1/YMR94ufoRb8tqhMiQIsIMu7ow3PAAnoV1HFhQClXgO832x2vdB3/zFY5efdJSgpe8
+         yoDK6lZoq0Jyg5uz6no8oRXF2CfOvMPlThIlMEwlKKXXfu55WGajkiodwqmPDq8bmjdr
+         tUXL42zbQf/CmTuINBZf0AbyW0GUyQQr9bKWh6/DOX59PLUkukheRojBf5hipaL0LVSg
+         U0POnfUCUhTfYqLL402zByAtwbJRPCLxsSFQb+DfSPE14vBP+ks2RXRMBFP9pI+La8v+
+         1B5Q==
+X-Gm-Message-State: AOAM532VkDCgHSawsTX8WnBm9PlPzumfjSzUgOSskKXcTWb6A0O+hI7z
+        +oE+lCNtyDp5DyR72Cqu44oKXQ==
+X-Google-Smtp-Source: ABdhPJyqvR/GeA0hGMMS3fUELGKBLUJ3jxozyY1rdnFq7+JShRmPb9RGh1zy5AHLN03Qvq9gS6OOXQ==
+X-Received: by 2002:a17:90a:fa02:: with SMTP id cm2mr3055188pjb.171.1617389133265;
+        Fri, 02 Apr 2021 11:45:33 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:581c:e04f:7c08:c602])
+        by smtp.gmail.com with UTF8SMTPSA id l10sm8194972pfc.125.2021.04.02.11.45.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Apr 2021 11:45:32 -0700 (PDT)
+Date:   Fri, 2 Apr 2021 11:45:31 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org
+Subject: Re: [PATCH V2 3/5] arm64: dts: qcom: pmk8350: Add PMIC peripherals
+ for pmk8350
+Message-ID: <YGdmS8Ih5TGGMbdE@google.com>
+References: <1617268396-1837-1-git-send-email-skakit@codeaurora.org>
+ <1617268396-1837-4-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
-References: <20210211194258.4137998-1-nathan@kernel.org> <161428829728.2305454.15456455443457551559.b4-ty@chromium.org>
- <CA+icZUWdeWSy52bU4cjHau1hn5NiFAozaHgDb=geaaCYOET9+w@mail.gmail.com>
- <202104021125.53164550A@keescook> <20210402183110.zmnuoc74mzil3tml@archlinux-ax161>
-In-Reply-To: <20210402183110.zmnuoc74mzil3tml@archlinux-ax161>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 2 Apr 2021 20:44:49 +0200
-Message-ID: <CA+icZUXvqF79a=zSOxrshSK3gZHFpPQa=U=MqrK6cnu7Cvmq0A@mail.gmail.com>
-Subject: Re: [PATCH] qemu_fw_cfg: Make fw_cfg_rev_attr a proper kobj_attribute
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>, Gabriel Somlo <somlo@cmu.edu>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        qemu-devel@nongnu.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1617268396-1837-4-git-send-email-skakit@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 2, 2021 at 8:31 PM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> On Fri, Apr 02, 2021 at 11:25:42AM -0700, Kees Cook wrote:
-> > On Fri, Apr 02, 2021 at 08:42:07AM +0200, Sedat Dilek wrote:
-> > > On Thu, Feb 25, 2021 at 10:25 PM Kees Cook <keescook@chromium.org> wrote:
-> > > >
-> > > > On Thu, 11 Feb 2021 12:42:58 -0700, Nathan Chancellor wrote:
-> > > > > fw_cfg_showrev() is called by an indirect call in kobj_attr_show(),
-> > > > > which violates clang's CFI checking because fw_cfg_showrev()'s second
-> > > > > parameter is 'struct attribute', whereas the ->show() member of 'struct
-> > > > > kobj_structure' expects the second parameter to be of type 'struct
-> > > > > kobj_attribute'.
-> > > > >
-> > > > > $ cat /sys/firmware/qemu_fw_cfg/rev
-> > > > > 3
-> > > > >
-> > > > > [...]
-> > > >
-> > > > Applied to kspp/cfi/cleanups, thanks!
-> > > >
-> > > > [1/1] qemu_fw_cfg: Make fw_cfg_rev_attr a proper kobj_attribute
-> > > >       https://git.kernel.org/kees/c/f5c4679d6c49
-> > > >
-> > >
-> > > I have queued this up in my custom patchset
-> > > (for-5.12/kspp-cfi-cleanups-20210225).
-> > >
-> > > What is the plan to get this upstream?
-> >
-> > I haven't sent it to Linus yet -- I was expecting to batch more of these
-> > and send them for v5.13. (But if the kvm folks snag it, that's good
-> > too.)
->
-> I am going to be putting the CFI series through its paces on both arm64
-> and x86_64 over the next week or so on several different machines (in
-> fact, I am writing up a report right now) so I will probably have some
-> more of these as I find them.
->
+On Thu, Apr 01, 2021 at 02:43:14PM +0530, satya priya wrote:
+> subject: arm64: dts: qcom: pmk8350: Add PMIC peripherals for pmk8350
 
-This was just a friendly ping.
+same nit as for 1/5: maybe just 'arm64: dts: qcom: Add pml7350 support/.dtsi'
+or similar since this adds the initial .dtsi for the pmk8350?
 
-Sami has sent some patches which I reported in the early stage of
-clang-cfi (x86-64) through subtree maintainers.
-It's up to you Nathan or kvm folks.
+> Add PON, GPIO, RTC and other PMIC infra modules support for pmk8350.
 
-Upstreamed patches means to me a RDC-ed custom patchset.
+nit: also mention that it adds the pmk8350 .dtsi in the first place.
 
-- Sedat -
+> Signed-off-by: satya priya <skakit@codeaurora.org>
+> ---
+>  arch/arm64/boot/dts/qcom/pmk8350.dtsi | 100 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 100 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/qcom/pmk8350.dtsi
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/pmk8350.dtsi b/arch/arm64/boot/dts/qcom/pmk8350.dtsi
+> new file mode 100644
+> index 0000000..13631f2
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/pmk8350.dtsi
+> @@ -0,0 +1,100 @@
+> +// SPDX-License-Identifier: BSD-3-Clause
+> +// Copyright (c) 2021, The Linux Foundation. All rights reserved.
+> +
+> +#include <dt-bindings/input/input.h>
+> +#include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+> +#include <dt-bindings/spmi/spmi.h>
+> +#include <dt-bindings/iio/qcom,spmi-adc7-pm8350.h>
+> +#include <dt-bindings/iio/qcom,spmi-adc7-pmk8350.h>
+> +#include <dt-bindings/iio/qcom,spmi-adc7-pmr735a.h>
+> +#include <dt-bindings/iio/qcom,spmi-adc7-pmr735b.h>
+> +
+> +&spmi_bus {
+> +	pmk8350: pmic@0 {
+> +		compatible = "qcom,pmk8350", "qcom,spmi-pmic";
+
+Please provide a link to the binding if it has been sent.
+
+> +		reg = <0x0 SPMI_USID>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		pmk8350_pon: pon@1300 {
+> +			compatible = "qcom,pm8998-pon";
+> +			reg = <0x1300>;
+> +
+> +			pwrkey {
+> +				compatible = "qcom,pmk8350-pwrkey";
+> +				interrupts = <0x0 0x13 0x7 IRQ_TYPE_EDGE_BOTH>;
+> +				linux,code = <KEY_POWER>;
+> +			};
+> +
+> +			resin {
+> +				compatible = "qcom,pmk8350-resin";
+> +				interrupts = <0x0 0x13 0x6 IRQ_TYPE_EDGE_BOTH>;
+> +				linux,code = <KEY_VOLUMEDOWN>;
+> +			};
+
+Is the usage of this keys really universal across different boards?
+
+At least for the volume down key for most PMICs the config is in the
+board file, which seems to make more sense.
+
+> +		};
+> +
+> +		pmk8350_vadc: adc@3100 {
+> +			compatible = "qcom,spmi-adc7";
+> +			reg = <0x3100>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			interrupts = <0x0 0x31 0x0 IRQ_TYPE_EDGE_RISING>;
+> +			interrupt-names = "eoc-int-en-set";
+> +			#io-channel-cells = <1>;
+> +			io-channel-ranges;
+> +
+> +			pmk8350_die_temp {
+> +				reg = <PMK8350_ADC7_DIE_TEMP>;
+> +				label = "pmk8350_die_temp";
+> +				qcom,pre-scaling = <1 1>;
+> +			};
+> +
+> +			pm8350_die_temp {
+> +				reg = <PM8350_ADC7_DIE_TEMP>;
+> +				label = "pm8350_die_temp";
+> +				qcom,pre-scaling = <1 1>;
+> +			};
+
+nit: I think this should be 'alphabetical' order, so 'pm8350_die_temp' should
+be before 'pmk8350_die_temp'.
+
+> +
+> +			pmr735a_die_temp {
+> +				reg = <PMR735A_ADC7_DIE_TEMP>;
+> +				label = "pmr735a_die_temp";
+> +				qcom,pre-scaling = <1 1>;
+> +			};
+> +
+> +			pmr735b_die_temp {
+> +				reg = <PMR735B_ADC7_DIE_TEMP>;
+> +				label = "pmr735b_die_temp";
+> +				qcom,pre-scaling = <1 1>;
+> +			};
+
+Is it guaranteed that a board with the pmk8350 will always have the
+other 3 PMICs?
+
+> +		};
+> +
+> +		pmk8350_adc_tm: adc-tm@3400 {
+> +			compatible = "qcom,adc-tm7";
+> +			reg = <0x3400>;
+> +			interrupts = <0x0 0x34 0x0 IRQ_TYPE_EDGE_RISING>;
+> +			interrupt-names = "threshold";
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			#thermal-sensor-cells = <1>;
+> +			status = "disabled";
+> +		};
+> +
+> +		pmk8350_gpios: gpios@b000 {
+> +			compatible = "qcom,pmk8350-gpio", "qcom,spmi-gpio";
+> +			reg = <0xb000>;
+> +			gpio-controller;
+> +			gpio-ranges = <&pmk8350_gpios 0 0 4>;
+> +			#gpio-cells = <2>;
+> +			interrupt-controller;
+> +			#interrupt-cells = <2>;
+> +		};
+> +
+> +		pmk8350_rtc: rtc@6100 {
+
+nit: nodes should be ordered by address, hence 'rtc@6100' should be before
+'gpios@b000'.
+
+> +			compatible = "qcom,pmk8350-rtc";
+> +			reg = <0x6100>, <0x6200>;
+> +			reg-names = "rtc", "alarm";
+> +			interrupts = <0x0 0x62 0x1 IRQ_TYPE_EDGE_RISING>;
+> +		};
+> +	};
+> +};
