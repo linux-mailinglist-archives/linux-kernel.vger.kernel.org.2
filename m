@@ -2,89 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3E3352893
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 11:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C64E33528A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 11:26:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234682AbhDBJWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 05:22:16 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15469 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229599AbhDBJWP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 05:22:15 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FBZJk11jBzyNjd;
-        Fri,  2 Apr 2021 17:20:06 +0800 (CST)
-Received: from huawei.com (10.175.103.91) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Fri, 2 Apr 2021
- 17:22:10 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <target-devel@vger.kernel.org>,
-        <linux-scsi@vger.kernel.org>
-CC:     <martin.petersen@oracle.com>
-Subject: [PATCH -next] scsi: target: iscsi: Switch to kmemdup_nul()
-Date:   Fri, 2 Apr 2021 17:25:17 +0800
-Message-ID: <20210402092517.2445595-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S234669AbhDBJZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 05:25:59 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:50520 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234029AbhDBJZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 05:25:58 -0400
+Received: from zn.tnic (p200300ec2f0a2000e9f6c6f26a4b9205.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:2000:e9f6:c6f2:6a4b:9205])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1F27F1EC0288;
+        Fri,  2 Apr 2021 11:25:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1617355557;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Eta0G1SfvCYsjRcscD6Hy7PEpsXdwgNptI3H7GRU/qE=;
+        b=AS1PyZEOhJrLeAebzd55fGEvyU8ZXfs892Nm1VTjydh9SmFwXVJDPwFe7+gg1XHiedb+sJ
+        4qHOyC5EUCbdipooe3ek4Q7Ja37piDcnAWmmTQbyv1stmSEZZv84ivcMyImJJJ9Gf4N71a
+        +DUlpo6v9dOrohKv+rvzdtq5J+G687M=
+Date:   Fri, 2 Apr 2021 11:26:02 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     kan.liang@linux.intel.com
+Cc:     peterz@infradead.org, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, acme@kernel.org, tglx@linutronix.de,
+        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
+        yao.jin@linux.intel.com, alexander.shishkin@linux.intel.com,
+        adrian.hunter@intel.com,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: Re: [PATCH V4 02/25] x86/cpu: Add helper function to get the type of
+ the current hybrid CPU
+Message-ID: <20210402092602.GB28499@zn.tnic>
+References: <1617322252-154215-1-git-send-email-kan.liang@linux.intel.com>
+ <1617322252-154215-3-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1617322252-154215-3-git-send-email-kan.liang@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use kmemdup_nul() helper instead of open-coding to
-simplify the code.
+On Thu, Apr 01, 2021 at 05:10:29PM -0700, kan.liang@linux.intel.com wrote:
+> diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+> index dc6d149bf851..746512a68b30 100644
+> --- a/arch/x86/include/asm/processor.h
+> +++ b/arch/x86/include/asm/processor.h
+> @@ -166,6 +166,8 @@ enum cpuid_regs_idx {
+>  
+>  #define X86_VENDOR_UNKNOWN	0xff
+>  
+> +#define X86_HYBRID_CPU_TYPE_ID_SHIFT		24
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/target/iscsi/iscsi_target_nego.c       | 4 +---
- drivers/target/iscsi/iscsi_target_parameters.c | 4 +---
- 2 files changed, 2 insertions(+), 6 deletions(-)
+Just put that over the function where it is used, i.e. in intel.c
 
-diff --git a/drivers/target/iscsi/iscsi_target_nego.c b/drivers/target/iscsi/iscsi_target_nego.c
-index 151e2949bb75..9a4a632f631d 100644
---- a/drivers/target/iscsi/iscsi_target_nego.c
-+++ b/drivers/target/iscsi/iscsi_target_nego.c
-@@ -1082,14 +1082,12 @@ int iscsi_target_locate_portal(
- 	login_req = (struct iscsi_login_req *) login->req;
- 	payload_length = ntoh24(login_req->dlength);
- 
--	tmpbuf = kzalloc(payload_length + 1, GFP_KERNEL);
-+	tmpbuf = kmemdup_nul(login->req_buf, payload_length, GFP_KERNEL);
- 	if (!tmpbuf) {
- 		pr_err("Unable to allocate memory for tmpbuf.\n");
- 		return -1;
- 	}
- 
--	memcpy(tmpbuf, login->req_buf, payload_length);
--	tmpbuf[payload_length] = '\0';
- 	start = tmpbuf;
- 	end = (start + payload_length);
- 
-diff --git a/drivers/target/iscsi/iscsi_target_parameters.c b/drivers/target/iscsi/iscsi_target_parameters.c
-index 7a461fbb1566..6bc3aaf655fc 100644
---- a/drivers/target/iscsi/iscsi_target_parameters.c
-+++ b/drivers/target/iscsi/iscsi_target_parameters.c
-@@ -1357,14 +1357,12 @@ int iscsi_decode_text_input(
- 	struct iscsi_param_list *param_list = conn->param_list;
- 	char *tmpbuf, *start = NULL, *end = NULL;
- 
--	tmpbuf = kzalloc(length + 1, GFP_KERNEL);
-+	tmpbuf = kmemdup_nul(textbuf, length, GFP_KERNEL);
- 	if (!tmpbuf) {
- 		pr_err("Unable to allocate %u + 1 bytes for tmpbuf.\n", length);
- 		return -ENOMEM;
- 	}
- 
--	memcpy(tmpbuf, textbuf, length);
--	tmpbuf[length] = '\0';
- 	start = tmpbuf;
- 	end = (start + length);
- 
+With that addressed:
+
+Acked-by: Borislav Petkov <bp@suse.de>
+
 -- 
-2.25.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
