@@ -2,96 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE777352EAF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 19:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41051352EB2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 19:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235887AbhDBRqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 13:46:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60616 "EHLO
+        id S235122AbhDBRrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 13:47:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235426AbhDBRqN (ORCPT
+        with ESMTP id S234488AbhDBRrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 13:46:13 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED5E6C0613E6;
-        Fri,  2 Apr 2021 10:46:11 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id m11so1378838pfc.11;
-        Fri, 02 Apr 2021 10:46:11 -0700 (PDT)
+        Fri, 2 Apr 2021 13:47:41 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF7AC061788
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 10:47:39 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id f5so1258914ilr.9
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 10:47:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Hev9CLh/h74S7Fbo3xndcdWaR2hML7wLaPxLi/omfis=;
-        b=ID4Wf7ALZIiPVEmhVFZkbP2aFSYwsk7edMPOKf+WVKbVueJ7ShhGwfQY/m5sGHiD+W
-         SVF6N/45Udmsxp6LRuFArvMKtgjPCeN0JxgXH1ak7Z1rxvP7aKAQBqw1O8jwpKIzXk7S
-         Sg0kMHnlqDfIlmvN272xPvVKEEvj4VOJX0bgV5tQP/6x3Yazyh/+4hUhEzjqLAO3eTUP
-         mThMJXkaG6ZgqLLqtrH+H4KoC2Hf1m0Hv2n/6ISraf/i6KKv0ygMGfaMxACsIrI06y0f
-         Z0mUoTAeoA90lm4xqKHXSsgb8sJw1uuzH3LndPhfv29ecjwjCn/qpvKAcFAJW7Fg3vaU
-         0YCA==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hlmY9ay0U3wvSCBCBDTvrY5xuHoevwZSGxKNN6WLYyo=;
+        b=KEfPNYX0hxEQJ5RSJw8sTTqF6SLMJBEFqjzuZSfSkkxsb+EmcaGWoiJP4mXe6Q8LjP
+         pTEjwWZP7ShClLA3I49+c7Due/puEiX4q1BohoYtKzmEQXFmFBGQv2Cy3fo64wdOM6UK
+         I9b1N4VD9teUD1gjp3wMDgzPX5ke3fqOJQ2QI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Hev9CLh/h74S7Fbo3xndcdWaR2hML7wLaPxLi/omfis=;
-        b=ddy16/vNNLwXIf1pOu+x3p178v+CLcK5hip034bMm47Z3BJIHeIrojjO2QOHlHRMaN
-         vnxEqFJuEK0VrMGJ7N4EUwcuKI2MFZTevH3S7QXS8o/kdBe7C98+8Sz+BvEkPqC4LAbN
-         dONlmoM5jmplMry3yXdO08bD1qMJ7hpXKj/Qg9VEf1znP9357Q+/9VSdrs2elgrsMkZL
-         giEgY+typWiPN3ZF68HJBV9UfdnpVyCXilHPT2PRR0j2bDVsHuLN7rCoINVU0cbkVst2
-         xdqLjkuVN5WofRGWNHIGyvTx6IPJY+aKZCSKbugxee432bid2NUGQTyqz8iHyGd/mt9y
-         Q3BQ==
-X-Gm-Message-State: AOAM531cYi0FmO0VfqCLmxC9OMXq2Aw/F5aC029QAHz43Hf2qWqhyXeC
-        mWfi/sEHNAlH5SoiAgZ9s0mUNmcb8lPJ87Wsx+k=
-X-Google-Smtp-Source: ABdhPJwsw5JiGiZOCvBiTM3UrNGME8MWrLlebBOuOQFyvmtcGZt+9sqvgUnSV375xATeTO1q9XluJk5ZowfkRq2EtVk=
-X-Received: by 2002:a62:7c43:0:b029:1ef:20ce:ba36 with SMTP id
- x64-20020a627c430000b02901ef20ceba36mr13250559pfc.40.1617385571413; Fri, 02
- Apr 2021 10:46:11 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hlmY9ay0U3wvSCBCBDTvrY5xuHoevwZSGxKNN6WLYyo=;
+        b=bPoJsn/cbI1ellJ+YmxQF5ZjlIsTBKe5i85Ge6iydqnh6Pv+82XGzY9umMCh3V93Lk
+         sSZ2zg+Be3YfekY0YapIRaKPjmquUOlFZgZnvit7CssHldg+DX5PCHjBTpGyFopaVIlf
+         FmAwPF09Y9zufk2RuCeMhkABWOJConJhr21/0XDlzr8F1NT0hr88TmXx9h8kksvV1ZB8
+         WJbWkR3OdwjWk8NaGS418Eet+uYWnlS/IyKJG0rbOkcqPqeC/2dYdGDSrVtlYSFJsj2O
+         Pct232BqZLp9DJ2rvyqOYaX/qK82uMjhBhte4pkEF24qwQHcW9UatlDUdyzWO2Hzj4/A
+         K+aQ==
+X-Gm-Message-State: AOAM531AHD42yD46jrcwB+9Uf2gEZYc3Wje4fHzplmuJg7GC7kUGL0S5
+        FKmoIL6Wr6kB+nT668ueixvQCw==
+X-Google-Smtp-Source: ABdhPJyv/h+pcdXk22+CtdU5pG4KIhATDFSYSe1a1zZ/C6DXx8EzFnEFA3dU9NXzplHZrY+Q75UKQA==
+X-Received: by 2002:a92:c50c:: with SMTP id r12mr11991100ilg.52.1617385659329;
+        Fri, 02 Apr 2021 10:47:39 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id g16sm4424011ilk.22.2021.04.02.10.47.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Apr 2021 10:47:38 -0700 (PDT)
+Subject: Re: [PATCH] kunit: make KUNIT_EXPECT_STREQ() quote values, don't
+ print literals
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        Daniel Latypov <dlatypov@google.com>
+Cc:     David Gow <davidgow@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210205221808.1966010-1-dlatypov@google.com>
+ <CAFd5g44PL+DrN6+0bw-oYQCjCSR-f4Y0=QZL9DsSO-3hKLsFzw@mail.gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <9f5df593-6584-b7d4-3b6e-ad77ee6f8760@linuxfoundation.org>
+Date:   Fri, 2 Apr 2021 11:47:38 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210401145457.12255-1-andriy.shevchenko@linux.intel.com>
- <20210402103927.6758416d@jic23-huawei> <CAHp75VfijXvPEqCnJh2RDuhi0Ets_L034LYz-bp1zNuKA-x6AQ@mail.gmail.com>
-In-Reply-To: <CAHp75VfijXvPEqCnJh2RDuhi0Ets_L034LYz-bp1zNuKA-x6AQ@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 2 Apr 2021 20:45:55 +0300
-Message-ID: <CAHp75VcriL=Hei-UBJ2TT0ZDBq=n=cqd=z3Svob+LRauhFWhOg@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] iio: trigger: Replace explicit casting and wrong
- specifier with proper one
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAFd5g44PL+DrN6+0bw-oYQCjCSR-f4Y0=QZL9DsSO-3hKLsFzw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 2, 2021 at 4:25 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Friday, April 2, 2021, Jonathan Cameron <jic23@kernel.org> wrote:
->> On Thu,  1 Apr 2021 17:54:56 +0300
->> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+On 4/2/21 3:35 AM, Brendan Higgins wrote:
+> On Fri, Feb 5, 2021 at 2:18 PM Daniel Latypov <dlatypov@google.com> wrote:
 >>
->> > By unknown reason device name is set with an index casted from int
->> > to unsigned long while at the same time with "%ld" specifier. Both par=
-ts
->> > seems wrong to me, thus replace replace explicit casting and wrong spe=
-cifier
->> > with proper one, i.e. "%u".
->> I'm not going to pretend to know what planet I was on when I wrote this =
-:)
->
->
-> Actually =E2=80=9C%d=E2=80=9D is even more correct (aligned with the type=
-), but either will work.
+>> Before:
+>>>   Expected str == "world", but
+>>>       str == hello
+>>>       "world" == world
+>>
+>> After:
+>>>   Expected str == "world", but
+>>>       str == "hello"
+>> <we don't need to tell the user that "world" == "world">
+>>
+>> Note: like the literal ellision for integers, this doesn't handle the
+>> case of
+>>    KUNIT_EXPECT_STREQ(test, "hello", "world")
+>> since we don't expect it to realistically happen in checked in tests.
+>> (If you really wanted a test to fail, KUNIT_FAIL("msg") exists)
+>>
+>> In that case, you'd get:
+>>>   Expected "hello" == "world", but
+>> <output for next failure>
+>>
+>> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> 
+> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+> 
 
-I have noticed a typo in the commit message of the other patch.
-I'll send a v2 altogether.
+Hi Daniel,
 
->> Series applied to the togreg branch of iio.git and pushed out as testing
->> for the autobuilders to poke at.
+Please run checkpatch on your patches in the future. I am seeing
+a few checkpatch readability type improvements that can be made.
 
+Please make changes and send v2 with Brendan's Reviewed-by.
 
---=20
-With Best Regards,
-Andy Shevchenko
+thanks,
+-- Shuah
