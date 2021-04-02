@@ -2,161 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8AE2352A20
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 13:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF28B352A22
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 13:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235224AbhDBLMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 07:12:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234563AbhDBLMi (ORCPT
+        id S235030AbhDBLNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 07:13:30 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:56010 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235076AbhDBLNM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 07:12:38 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7640C0613E6;
-        Fri,  2 Apr 2021 04:12:37 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id h3so3391195pfr.12;
-        Fri, 02 Apr 2021 04:12:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=H2/nhflnKzHvaTQ+vpCIh5osUc/NCcpD8e/rg56e8Bc=;
-        b=UrYNRrGWCqGmJUl2NAgBwvMOBVb3L2c3yr+VVCKaJG779szdjI10o/QzX2SCtOjt03
-         lhBNAjpm1lM5HNTmv4fvDCARHoZEyveXbIZQgydcfwn6pyZsdy9fpFFe66fq/pDuFuDm
-         53J/xOhooNMOpnfaTVw7XDQBZ6hYlD7TLfwmteoO8CTLqPSFD9Nm5/pI04WKhRPT+6FS
-         vy9hSYI0IBRemjAxzf0IXDbbdQcRIlEmDcO4GBTcX44IYgj427Be24fDKNFuFWqlPxFa
-         nJPdXoyUzX+gam5gOHyPdHg6jcHcvqmeiPlEFoSSExGU5R3UIgylC/jtNMsQtH7XNMjS
-         3jpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H2/nhflnKzHvaTQ+vpCIh5osUc/NCcpD8e/rg56e8Bc=;
-        b=Igm13W+V1JIzDyE7V+pXTC22CXm2CvYCT656ziUK1bPs20skCxUj5N6UYNeH9+id3h
-         l52AE+q6XjtooQSLt7Jcd+Dt9WC6mekk8ya9Bf9Ztt2EvHI39LC8w9/FU0RyY0PAjksS
-         yaT2LKNIbbwuwRdEzR6/MqqRaDDNRfFJ4SiEjEFyEGK9/WjiCPVg2vDERuL12CEP1pLQ
-         Oqa7DXqDE7ymZA3HKg6qgDnj43l5Pxbl35vcTxUW33RWwKFKNb609c7fLvhJ+jUZw5Xo
-         zWnQb3wvWvdfjuGqUBk4Tti9zGSAA7uUV9GhRjIw9mDiIY11Tkxz/TIUioPZAIz0RjAO
-         obEA==
-X-Gm-Message-State: AOAM533q0MUY6U2v9gfzOT+1ibWZPMw2leaPzapvOmIbCUrJVydf2Ydm
-        ffSL5jVvnVWBaUx2FaDstVtMNydC+3fPnin11AY=
-X-Google-Smtp-Source: ABdhPJwVOpl/JXBaO5w+dkYyXadLdNxQiftTG8fEL2Sr55f8Cv3me01iwV982ZyK2BEHiNUWKhcBMWZZVx3gOSWyEz8=
-X-Received: by 2002:a62:7c43:0:b029:1ef:20ce:ba36 with SMTP id
- x64-20020a627c430000b02901ef20ceba36mr11907902pfc.40.1617361957170; Fri, 02
- Apr 2021 04:12:37 -0700 (PDT)
+        Fri, 2 Apr 2021 07:13:12 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id CF4DD1F46865
+Received: by earth.universe (Postfix, from userid 1000)
+        id A50203C0C96; Fri,  2 Apr 2021 13:13:08 +0200 (CEST)
+Date:   Fri, 2 Apr 2021 13:13:08 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc:     nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+        ludovic.desroches@microchip.com, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v2 1/1] power: reset: at91-reset: use devm_of_iomap
+Message-ID: <20210402111308.jx7mrfb52wbcuwjg@earth.universe>
+References: <20210402105018.2212-1-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
-References: <20210401213144.1009224-1-tomas.winkler@intel.com>
-In-Reply-To: <20210401213144.1009224-1-tomas.winkler@intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 2 Apr 2021 14:12:20 +0300
-Message-ID: <CAHp75Vedb4U7yfkjS9KhkcMVb3=rTrP_90xQCbujG-sG9+1YVQ@mail.gmail.com>
-Subject: Re: [PATCH] platform/x86: intel_pmc_core: export platform
- global_reset via sysfs.
-To:     Tomas Winkler <tomas.winkler@intel.com>
-Cc:     Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        David E Box <david.e.box@intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tamar Mashiah <tamar.mashiah@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="lpsjzq6g4e4q6k3u"
+Content-Disposition: inline
+In-Reply-To: <20210402105018.2212-1-claudiu.beznea@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 2, 2021 at 12:32 AM Tomas Winkler <tomas.winkler@intel.com> wrote:
->
-> From: Tamar Mashiah <tamar.mashiah@intel.com>
->
-> During PCH manufacturing a global reset has to be induced in order
-> for configuration changes take affect upon following platform reset.
 
-effect upon the following ?
+--lpsjzq6g4e4q6k3u
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> This setting was commonly done by accessing PMC registers via /dev/mem
-> but due to security concern /dev/mem access is much restricted, hence
-> the reason for exposing this setting via dedicated sysfs interface.
-> To prevent post manufacturing abuse the register is protected
-> by hardware locking.
->
-> The register in MMIO space is defined for Cannon Lake and newer PCHs.
->
-> Cc: David E Box <david.e.box@intel.com>
+Hi,
 
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On Fri, Apr 02, 2021 at 01:50:18PM +0300, Claudiu Beznea wrote:
+> Use devm_of_iomap() to map resources. This will avoid the necessity to
+> track the mapped resources and free them on failure path or on remove.
+>=20
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Suggested-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> ---
 
-Hmm... okay, I forgot this, so my additional comments above and below.
+Thanks, queued.
 
-...
+-- Sebastian
 
-> +static int set_global_reset(struct pmc_dev *pmcdev)
-> +{
-> +       const struct pmc_reg_map *map = pmcdev->map;
-> +       u32 reg;
-> +       int err;
-> +
-> +       mutex_lock(&pmcdev->lock);
+> Changes in v2:
+> - use devm_of_iomap()
+> - change commit description and title to match to the new approach
+> - add Suggested-by tag
+>=20
+>  drivers/power/reset/at91-reset.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/power/reset/at91-reset.c b/drivers/power/reset/at91-=
+reset.c
+> index 3ff9d93a5226..026649409135 100644
+> --- a/drivers/power/reset/at91-reset.c
+> +++ b/drivers/power/reset/at91-reset.c
+> @@ -192,7 +192,7 @@ static int __init at91_reset_probe(struct platform_de=
+vice *pdev)
+>  	if (!reset)
+>  		return -ENOMEM;
+> =20
+> -	reset->rstc_base =3D of_iomap(pdev->dev.of_node, 0);
+> +	reset->rstc_base =3D devm_of_iomap(&pdev->dev, pdev->dev.of_node, 0, NU=
+LL);
+>  	if (!reset->rstc_base) {
+>  		dev_err(&pdev->dev, "Could not map reset controller address\n");
+>  		return -ENODEV;
+> @@ -202,7 +202,7 @@ static int __init at91_reset_probe(struct platform_de=
+vice *pdev)
+>  		/* we need to shutdown the ddr controller, so get ramc base */
+>  		for_each_matching_node_and_match(np, at91_ramc_of_match, &match) {
+>  			reset->ramc_lpr =3D (u32)match->data;
+> -			reset->ramc_base[idx] =3D of_iomap(np, 0);
+> +			reset->ramc_base[idx] =3D devm_of_iomap(&pdev->dev, np, 0, NULL);
+>  			if (!reset->ramc_base[idx]) {
+>  				dev_err(&pdev->dev, "Could not map ram controller address\n");
+>  				of_node_put(np);
+> --=20
+> 2.25.1
+>=20
 
-> +       if (!map->etr3_offset) {
-> +               err = -EOPNOTSUPP;
-> +               goto out_unlock;
-> +       }
+--lpsjzq6g4e4q6k3u
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Do we really need this check under the lock?
+-----BEGIN PGP SIGNATURE-----
 
-> +       /* check if CF9 is locked */
-> +       reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
-> +       if (reg & ETR3_CF9LOCK) {
-> +               err = -EACCES;
-> +               goto out_unlock;
-> +       }
-> +
-> +       /* write CF9 global reset bit */
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBm/DYACgkQ2O7X88g7
++pp5Cg/8DLYf8b/8g4n5vfpAYfli6gcxs0eZbWgL5dRGvCyEnYiYeTPVt12pEP8d
+hb3XDvH9+c2RP1GIVnlyLFMsZDw7hhCkDanan0v7ILxgWyaY8AYO1EfrtH4oO3Fa
+sWr+Oov6vPenwMuSTCs2CCWZPKgF3MwInyAaFuF5QvKuyD4xuO/duc9YtpoDmCIr
+DFrtuvWtLzinTqWP0dDSEZXEGhAgg7eGcRHR1PQDF1BnkMFz8whJw9biUWpsNCsG
+FAQ/R1my+3uJ2TMnaWD4SeHsOgg89xIq8S6BJwpIkyXkNBJN0ySzCNk7a6qHjVMJ
+ycS/dDLMvIZ4ELP75OMw3pGak/3icWRxctVvtXp1Ty8cOh3Dhyg7iDm0If4PdG0x
+u6ZU5QeKvu1ZZ3eCC0vZ2UfvO3Zrgrf4WtrFkpqhggDCffV8/f2ID6x17CiZ4gnv
+5kbFXiL9K79iIqulfdLAo/tVarQhAN4ICtB2ynZ9gS8GzlxuyZKvcAmi1EwPprD5
+KhvGafBeGBR0fXhjshNDYskf4bg0WJx5M847Xj7NNsqGHwJVPAf4HHXLWa/NA0WT
+ZG+ENbBWOXwOf4TZDMOooZRE7Yf9RYC+wuZwIHxEuIvfCxi52xNIiXg9EQBhTiFD
+HEPjHw5bVdxrkcmLu0u8TELYHqrewXDyEIWUautld0WCO6n77AM=
+=6wlE
+-----END PGP SIGNATURE-----
 
-Somewhere you use cf9 (small letters) I suggest to be consistent and
-use the capitalized version everywhere.
-
-> +       reg |= ETR3_CF9GR;
-> +       pmc_core_reg_write(pmcdev, map->etr3_offset, reg);
-> +
-> +       reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
-> +       if ((reg & ETR3_CF9GR) == 0) {
-
-Can be written in a form of !(reg & ETR3_CF9GR).
-
-> +               err = -EIO;
-> +               goto out_unlock;
-> +       }
-> +
-> +       err = 0;
-> +
-> +out_unlock:
-> +       mutex_unlock(&pmcdev->lock);
-> +       return err;
-> +}
-> +
-> +static ssize_t global_reset_show(struct device *dev,
-> +                                struct device_attribute *attr, char *buf)
-> +{
-> +       struct pmc_dev *pmcdev = dev_get_drvdata(dev);
-> +       const struct pmc_reg_map *map = pmcdev->map;
-> +       u32 reg;
-> +
-> +       if (!map->etr3_offset)
-> +               return -EOPNOTSUPP;
-
-> +       reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
-> +       reg &= ETR3_CF9GR | ETR3_CF9LOCK;
-
-And why no lock here?
-
-> +       return sysfs_emit(buf, "0x%08x", reg);
-> +}
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+--lpsjzq6g4e4q6k3u--
