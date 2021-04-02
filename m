@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB7FF352E6C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 19:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28EAE352E6D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 19:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236478AbhDBRcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 13:32:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57242 "EHLO
+        id S236289AbhDBRcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 13:32:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235924AbhDBRbF (ORCPT
+        with ESMTP id S236059AbhDBRbH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 13:31:05 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 105D3C0617AA
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 10:31:04 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id j7so5319649wrd.1
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 10:31:03 -0700 (PDT)
+        Fri, 2 Apr 2021 13:31:07 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98496C061797
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 10:31:05 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id w203-20020a1c49d40000b029010c706d0642so5409925wma.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 10:31:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4uET64dyZ9Hm0pwJAXZNONIy0WBkkm1uCrrvEqR1Lv8=;
-        b=EdZ4T8kCkGQWsUjwwMiXJ+ArUG4AHL+mxDqYIsUNGiM2I6JwVQ8sSz8R+S9hs2MWWn
-         BpyBwjyS+LWHFoR+eQNiQp8CdxlEAhJmtU2G+izqVFIJdeGeQxqGCAOD844RYPINa8Ew
-         m+/Wepcm+3ryMg17aZibaU40fsal3pcFCvpgk1+1dZgQqo1bFeHIdG+uN/rUdWDA6Y+a
-         jeeqTT0Trv6QiHKwmrCtuYk/2oq6B8e8jzyfpeeSJR1hUi4CbMIvSzM2tn/SLQrZzLKs
-         t6aaHZQbxQk0DafsJb1QEfnwWeamUWgakEpCYA/TecJBOdgjYqcz4bEQw7XC7nyPBtja
-         E4+Q==
+        bh=PRAycMPkk3BeYju0V4ytoFfLBPPMJZ5EAZwyvpPYyTM=;
+        b=CBmnH1dsX8VvGAQcBwyxqG6O1rRjomMIPuxH2kaeJkAuHbdpp2HS2rmnmdNphuMe8R
+         ilKkHXEdL8nm2JYru72dizCAGkZl6RqHalOgEFoPxngW6I1KKv1NKwK8+/16jkkRU9gv
+         DLhcj6dG05083MixSkv7UVmwXkobP88Q9syaHW093eh59QglR3H8YwFXqP9vInDNpkKM
+         dh2OnOLq8CVcZ/wwM/ttroxMQiAehb+0uA+1k6zTY40J1hmxZObePqiE/DXHIzWdGge5
+         RAExcbVhZ74waEVfh2hG470/uUVOedrPjK1bXTLhDe4mZO0xQeFO52gHlUoPtzSvIlr1
+         JTCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4uET64dyZ9Hm0pwJAXZNONIy0WBkkm1uCrrvEqR1Lv8=;
-        b=CMvAVraTRqc/vKZYvT7Ok4nB47Aa+ZxNB6sAvPzCfJhrYCKygtJ2Oh3D1IPeTBJDua
-         HrdEfYfSGb5ZUfU5N3H5VA2Dvo+pv1YlZeBZOZCZHQK6gs6Y0eS2MpZuPwHTJlP9ntgW
-         q7I1VYXE7a3p+lyNHkKsTYoIVp/vXgapk4YDuU4mqk1SSP3vHD5sCcBjDA10HbWfosri
-         2/+sG7cE7gZ4LDL0/fXFMbdR8s+1FY65uIIxu5dhu0XtC0Dz0Q2JTnF/9rxZ+ultPhNM
-         FCgPW+JSEHYfae4I68Qzk8rJQEYDXKg/9+Jws/HJAkpBQx6vF9TgjYYRBUHRm8blkGgn
-         PnvQ==
-X-Gm-Message-State: AOAM530KIJsQ+3zjWoVS9v5W3iFvjb+pZiYb2/KJmDubNA5NZJiMMWmd
-        wqeWGylSySASutbm3Oeslfg=
-X-Google-Smtp-Source: ABdhPJzN8/LNAs3/FSP/OHMq6Eg+6+96zMNcmfYfHaeDbqkc3h0iFhObtuxxZ0InfTIQGkHOCCLS7g==
-X-Received: by 2002:adf:eec9:: with SMTP id a9mr16344148wrp.252.1617384662833;
-        Fri, 02 Apr 2021 10:31:02 -0700 (PDT)
+        bh=PRAycMPkk3BeYju0V4ytoFfLBPPMJZ5EAZwyvpPYyTM=;
+        b=Uaba7xhMYA+FJrs7ZLu30Mb50n6UIY5oev/HPDWx7nc1yMxOMFDlnd2BVxLOYh8w0W
+         TN5PP022ZYA07OF+92UiOvX1irH+55nszP95PfrHEJtsVzd4Vlng3ve+/OYVCt+/SE6A
+         9x0mEHCBW3XbIFlbwFW0yaJRf3DwMe/NJbpqkr+sf6lL0effPA78o+x972CrDEXri2bk
+         WjeKqAX2ej+aJMjBS4W0d3NZb6iDRIF3iVxNp4W9ToqOqnnwEjsQJLX/LMJJBVvM93Q3
+         KNt8FSGElK+jHKgIGJ4GLZYrLkuMjGeFzgYC2+AwLhn9yqu+wwUKEwxBSMHrMXFp35fR
+         WI6g==
+X-Gm-Message-State: AOAM530flf8tB5txCOCf9V5jetHj0ZQKehdEvJE3CWZb0avwCP78C3oG
+        zLGh2Y66+IkmjrjdisK9It0=
+X-Google-Smtp-Source: ABdhPJy/0BJ5n2EC0Z050VO68T3P48DDPFa+mdCFHQC2l5WhawlTWmeaLYIYu97tCrw1KhH5gVk8og==
+X-Received: by 2002:a1c:7905:: with SMTP id l5mr13949305wme.181.1617384664379;
+        Fri, 02 Apr 2021 10:31:04 -0700 (PDT)
 Received: from agape ([5.171.81.4])
-        by smtp.gmail.com with ESMTPSA id p27sm13450012wmi.12.2021.04.02.10.31.02
+        by smtp.gmail.com with ESMTPSA id 1sm35074162wmj.0.2021.04.02.10.31.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 10:31:02 -0700 (PDT)
+        Fri, 02 Apr 2021 10:31:04 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     dan.carpenter@oracle.com, joe@perches.com,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH v2 28/30] staging: rtl8723bs: remove RT_TRACE logs in core/rtw_sta_mgt.c
-Date:   Fri,  2 Apr 2021 19:30:10 +0200
-Message-Id: <4b3db6e98b192adcfeb0d9a20a6d24f65cd54105.1617384172.git.fabioaiuto83@gmail.com>
+Subject: [PATCH v2 29/30] staging: rtl8723bs: remove RT_TRACE logs in core/rtw_ieee80211.c
+Date:   Fri,  2 Apr 2021 19:30:11 +0200
+Message-Id: <7cf7a92877b586ef9e5a6eec1b388a438519c1f9.1617384172.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1617384172.git.fabioaiuto83@gmail.com>
 References: <cover.1617384172.git.fabioaiuto83@gmail.com>
@@ -69,67 +69,230 @@ remove all RT_TRACE logs
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/core/rtw_sta_mgt.c | 25 --------------------
- 1 file changed, 25 deletions(-)
+ .../staging/rtl8723bs/core/rtw_ieee80211.c    | 90 ++++---------------
+ 1 file changed, 15 insertions(+), 75 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c b/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
-index f96dd0b40e04..7dcac4dd9de2 100644
---- a/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
-@@ -216,10 +216,7 @@ struct	sta_info *rtw_alloc_stainfo(struct	sta_priv *pstapriv, u8 *hwaddr)
+diff --git a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c b/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
+index e931afc3ba22..eb2058f2d139 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
++++ b/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
+@@ -488,11 +488,8 @@ int rtw_parse_wpa_ie(u8 *wpa_ie, int wpa_ie_len, int *group_cipher, int *pairwis
+ 		pos += WPA_SELECTOR_LEN;
+ 		left -= WPA_SELECTOR_LEN;
  
- 		index = wifi_mac_hash(hwaddr);
- 
--		RT_TRACE(_module_rtl871x_sta_mgt_c_, _drv_info_, ("rtw_alloc_stainfo: index  = %x", index));
+-	} else if (left > 0) {
+-		RT_TRACE(_module_rtl871x_mlme_c_, _drv_err_, ("%s: ie length mismatch, %u too much", __func__, left));
 -
- 		if (index >= NUM_STA) {
--			RT_TRACE(_module_rtl871x_sta_mgt_c_, _drv_err_, ("ERROR => rtw_alloc_stainfo: index >= NUM_STA"));
- 			spin_unlock_bh(&(pstapriv->sta_hash_lock));
- 			psta = NULL;
- 			goto exit;
-@@ -242,17 +239,6 @@ struct	sta_info *rtw_alloc_stainfo(struct	sta_priv *pstapriv, u8 *hwaddr)
- 		for (i = 0; i < 16; i++)
- 			memcpy(&psta->sta_recvpriv.rxcache.tid_rxseq[i], &wRxSeqInitialValue, 2);
++	} else if (left > 0)
+ 		return _FAIL;
+-	}
  
--		RT_TRACE(_module_rtl871x_sta_mgt_c_, _drv_info_,
--			 ("alloc number_%d stainfo  with hwaddr = %x %x %x %x %x %x \n",
--			  pstapriv->asoc_sta_count,
--			  hwaddr[0],
--			  hwaddr[1],
--			  hwaddr[2],
--			  hwaddr[3],
--			  hwaddr[4],
--			  hwaddr[5])
--		);
+ 	/* pairwise_cipher */
+ 	if (left >= 2) {
+@@ -501,11 +498,8 @@ int rtw_parse_wpa_ie(u8 *wpa_ie, int wpa_ie_len, int *group_cipher, int *pairwis
+ 		pos += 2;
+ 		left -= 2;
+ 
+-		if (count == 0 || left < count * WPA_SELECTOR_LEN) {
+-			RT_TRACE(_module_rtl871x_mlme_c_, _drv_err_, ("%s: ie count botch (pairwise), "
+-						"count %u left %u", __func__, count, left));
++		if (count == 0 || left < count * WPA_SELECTOR_LEN)
+ 			return _FAIL;
+-		}
+ 
+ 		for (i = 0; i < count; i++) {
+ 			*pairwise_cipher |= rtw_get_wpa_cipher_suite(pos);
+@@ -514,16 +508,13 @@ int rtw_parse_wpa_ie(u8 *wpa_ie, int wpa_ie_len, int *group_cipher, int *pairwis
+ 			left -= WPA_SELECTOR_LEN;
+ 		}
+ 
+-	} else if (left == 1) {
+-		RT_TRACE(_module_rtl871x_mlme_c_, _drv_err_, ("%s: ie too short (for key mgmt)",   __func__));
++	} else if (left == 1)
+ 		return _FAIL;
+-	}
+ 
+ 	if (is_8021x) {
+ 		if (left >= 6) {
+ 			pos += 2;
+ 			if (!memcmp(pos, SUITE_1X, 4)) {
+-				RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("%s : there has 802.1x auth\n", __func__));
+ 				*is_8021x = 1;
+ 			}
+ 		}
+@@ -559,10 +550,8 @@ int rtw_parse_wpa2_ie(u8 *rsn_ie, int rsn_ie_len, int *group_cipher, int *pairwi
+ 		pos += RSN_SELECTOR_LEN;
+ 		left -= RSN_SELECTOR_LEN;
+ 
+-	} else if (left > 0) {
+-		RT_TRACE(_module_rtl871x_mlme_c_, _drv_err_, ("%s: ie length mismatch, %u too much", __func__, left));
++	} else if (left > 0)
+ 		return _FAIL;
+-	}
+ 
+ 	/* pairwise_cipher */
+ 	if (left >= 2) {
+@@ -571,11 +560,8 @@ int rtw_parse_wpa2_ie(u8 *rsn_ie, int rsn_ie_len, int *group_cipher, int *pairwi
+ 		pos += 2;
+ 		left -= 2;
+ 
+-		if (count == 0 || left < count * RSN_SELECTOR_LEN) {
+-			RT_TRACE(_module_rtl871x_mlme_c_, _drv_err_, ("%s: ie count botch (pairwise), "
+-						 "count %u left %u", __func__, count, left));
++		if (count == 0 || left < count * RSN_SELECTOR_LEN)
+ 			return _FAIL;
+-		}
+ 
+ 		for (i = 0; i < count; i++) {
+ 			*pairwise_cipher |= rtw_get_wpa2_cipher_suite(pos);
+@@ -584,19 +570,14 @@ int rtw_parse_wpa2_ie(u8 *rsn_ie, int rsn_ie_len, int *group_cipher, int *pairwi
+ 			left -= RSN_SELECTOR_LEN;
+ 		}
+ 
+-	} else if (left == 1) {
+-		RT_TRACE(_module_rtl871x_mlme_c_, _drv_err_, ("%s: ie too short (for key mgmt)",  __func__));
 -
- 		init_addba_retry_timer(pstapriv->padapter, psta);
++	} else if (left == 1)
+ 		return _FAIL;
+-	}
  
- 		/* for A-MPDU Rx reordering buffer control */
-@@ -363,16 +349,6 @@ u32 rtw_free_stainfo(struct adapter *padapter, struct sta_info *psta)
- 	spin_unlock_bh(&pxmitpriv->lock);
- 
- 	list_del_init(&psta->hash_list);
--	RT_TRACE(_module_rtl871x_sta_mgt_c_, _drv_err_,
--		 ("\n free number_%d stainfo  with hwaddr = 0x%.2x 0x%.2x 0x%.2x 0x%.2x 0x%.2x 0x%.2x \n",
--		  pstapriv->asoc_sta_count,
--		  psta->hwaddr[0],
--		  psta->hwaddr[1],
--		  psta->hwaddr[2],
--		  psta->hwaddr[3],
--		  psta->hwaddr[4],
--		  psta->hwaddr[5])
--	);
- 	pstapriv->asoc_sta_count--;
- 
- 	/*  re-init sta_info; 20061114 will be init in alloc_stainfo */
-@@ -543,7 +519,6 @@ u32 rtw_init_bcmc_stainfo(struct adapter *padapter)
- 
- 	if (!psta) {
- 		res = _FAIL;
--		RT_TRACE(_module_rtl871x_sta_mgt_c_, _drv_err_, ("rtw_alloc_stainfo fail"));
- 		goto exit;
+ 	if (is_8021x) {
+ 		if (left >= 6) {
+ 			pos += 2;
+-			if (!memcmp(pos, SUITE_1X, 4)) {
+-				RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("%s (): there has 802.1x auth\n", __func__));
++			if (!memcmp(pos, SUITE_1X, 4))
+ 				*is_8021x = 1;
+-			}
+ 		}
  	}
  
+@@ -607,7 +588,7 @@ int rtw_parse_wpa2_ie(u8 *rsn_ie, int rsn_ie_len, int *group_cipher, int *pairwi
+ int rtw_get_wapi_ie(u8 *in_ie, uint in_len, u8 *wapi_ie, u16 *wapi_len)
+ {
+ 	int len = 0;
+-	u8 authmode, i;
++	u8 authmode;
+ 	uint	cnt;
+ 	u8 wapi_oui1[4] = {0x0, 0x14, 0x72, 0x01};
+ 	u8 wapi_oui2[4] = {0x0, 0x14, 0x72, 0x02};
+@@ -626,16 +607,9 @@ int rtw_get_wapi_ie(u8 *in_ie, uint in_len, u8 *wapi_ie, u16 *wapi_len)
+ 		/* if (authmode == WLAN_EID_BSS_AC_ACCESS_DELAY) */
+ 		if (authmode == WLAN_EID_BSS_AC_ACCESS_DELAY && (!memcmp(&in_ie[cnt+6], wapi_oui1, 4) ||
+ 					!memcmp(&in_ie[cnt+6], wapi_oui2, 4))) {
+-			if (wapi_ie) {
++			if (wapi_ie)
+ 				memcpy(wapi_ie, &in_ie[cnt], in_ie[cnt+1]+2);
+ 
+-				for (i = 0; i < (in_ie[cnt+1]+2); i = i+8) {
+-					RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("\n %2x,%2x,%2x,%2x,%2x,%2x,%2x,%2x\n",
+-								wapi_ie[i], wapi_ie[i+1], wapi_ie[i+2], wapi_ie[i+3], wapi_ie[i+4],
+-								wapi_ie[i+5], wapi_ie[i+6], wapi_ie[i+7]));
+-				}
+-			}
+-
+ 			if (wapi_len)
+ 				*wapi_len = in_ie[cnt+1]+2;
+ 
+@@ -654,7 +628,7 @@ int rtw_get_wapi_ie(u8 *in_ie, uint in_len, u8 *wapi_ie, u16 *wapi_len)
+ 
+ void rtw_get_sec_ie(u8 *in_ie, uint in_len, u8 *rsn_ie, u16 *rsn_len, u8 *wpa_ie, u16 *wpa_len)
+ {
+-	u8 authmode, sec_idx, i;
++	u8 authmode, sec_idx;
+ 	u8 wpa_oui[4] = {0x0, 0x50, 0xf2, 0x01};
+ 	uint	cnt;
+ 
+@@ -668,33 +642,15 @@ void rtw_get_sec_ie(u8 *in_ie, uint in_len, u8 *rsn_ie, u16 *rsn_len, u8 *wpa_ie
+ 		authmode = in_ie[cnt];
+ 
+ 		if ((authmode == WLAN_EID_VENDOR_SPECIFIC) && (!memcmp(&in_ie[cnt+2], &wpa_oui[0], 4))) {
+-				RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("\n rtw_get_wpa_ie: sec_idx =%d in_ie[cnt+1]+2 =%d\n", sec_idx, in_ie[cnt+1]+2));
+-
+-				if (wpa_ie) {
++			if (wpa_ie)
+ 				memcpy(wpa_ie, &in_ie[cnt], in_ie[cnt+1]+2);
+ 
+-				for (i = 0; i < (in_ie[cnt+1]+2); i = i+8) {
+-						RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("\n %2x,%2x,%2x,%2x,%2x,%2x,%2x,%2x\n",
+-									wpa_ie[i], wpa_ie[i+1], wpa_ie[i+2], wpa_ie[i+3], wpa_ie[i+4],
+-									wpa_ie[i+5], wpa_ie[i+6], wpa_ie[i+7]));
+-					}
+-				}
+-
+-				*wpa_len = in_ie[cnt+1]+2;
+-				cnt += in_ie[cnt+1]+2;  /* get next */
++			*wpa_len = in_ie[cnt+1]+2;
++			cnt += in_ie[cnt+1]+2;  /* get next */
+ 		} else {
+ 			if (authmode == WLAN_EID_RSN) {
+-				RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("\n get_rsn_ie: sec_idx =%d in_ie[cnt+1]+2 =%d\n", sec_idx, in_ie[cnt+1]+2));
+-
+-				if (rsn_ie) {
+-				memcpy(rsn_ie, &in_ie[cnt], in_ie[cnt+1]+2);
+-
+-				for (i = 0; i < (in_ie[cnt+1]+2); i = i+8) {
+-						RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("\n %2x,%2x,%2x,%2x,%2x,%2x,%2x,%2x\n",
+-									rsn_ie[i], rsn_ie[i+1], rsn_ie[i+2], rsn_ie[i+3], rsn_ie[i+4],
+-									rsn_ie[i+5], rsn_ie[i+6], rsn_ie[i+7]));
+-					}
+-				}
++				if (rsn_ie)
++					memcpy(rsn_ie, &in_ie[cnt], in_ie[cnt + 1] + 2);
+ 
+ 				*rsn_len = in_ie[cnt+1]+2;
+ 				cnt += in_ie[cnt+1]+2;  /* get next */
+@@ -1138,28 +1094,20 @@ static int rtw_get_cipher_info(struct wlan_network *pnetwork)
+ 	pbuf = rtw_get_wpa_ie(&pnetwork->network.IEs[12], &wpa_ielen, pnetwork->network.IELength-12);
+ 
+ 	if (pbuf && (wpa_ielen > 0)) {
+-		RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("rtw_get_cipher_info: wpa_ielen: %d", wpa_ielen));
+ 		if (_SUCCESS == rtw_parse_wpa_ie(pbuf, wpa_ielen+2, &group_cipher, &pairwise_cipher, &is8021x)) {
+ 			pnetwork->BcnInfo.pairwise_cipher = pairwise_cipher;
+ 			pnetwork->BcnInfo.group_cipher = group_cipher;
+ 			pnetwork->BcnInfo.is_8021x = is8021x;
+-			RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("%s: pnetwork->pairwise_cipher: %d, is_8021x is %d",
+-						__func__, pnetwork->BcnInfo.pairwise_cipher, pnetwork->BcnInfo.is_8021x));
+ 			ret = _SUCCESS;
+ 		}
+ 	} else {
+ 		pbuf = rtw_get_wpa2_ie(&pnetwork->network.IEs[12], &wpa_ielen, pnetwork->network.IELength-12);
+ 
+ 		if (pbuf && (wpa_ielen > 0)) {
+-			RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("get RSN IE\n"));
+ 			if (_SUCCESS == rtw_parse_wpa2_ie(pbuf, wpa_ielen+2, &group_cipher, &pairwise_cipher, &is8021x)) {
+-				RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("get RSN IE  OK!!!\n"));
+ 				pnetwork->BcnInfo.pairwise_cipher = pairwise_cipher;
+ 				pnetwork->BcnInfo.group_cipher = group_cipher;
+ 				pnetwork->BcnInfo.is_8021x = is8021x;
+-				RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("%s: pnetwork->pairwise_cipher: %d,"
+-							"pnetwork->group_cipher is %d, is_8021x is %d",	__func__, pnetwork->BcnInfo.pairwise_cipher,
+-							pnetwork->BcnInfo.group_cipher, pnetwork->BcnInfo.is_8021x));
+ 				ret = _SUCCESS;
+ 			}
+ 		}
+@@ -1189,10 +1137,6 @@ void rtw_get_bcn_info(struct wlan_network *pnetwork)
+ 		pnetwork->BcnInfo.encryp_protocol = ENCRYP_PROTOCOL_OPENSYS;
+ 	}
+ 	rtw_get_sec_ie(pnetwork->network.IEs, pnetwork->network.IELength, NULL, &rsn_len, NULL, &wpa_len);
+-	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("rtw_get_bcn_info: ssid =%s\n", pnetwork->network.Ssid.Ssid));
+-	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("rtw_get_bcn_info: wpa_len =%d rsn_len =%d\n", wpa_len, rsn_len));
+-	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("rtw_get_bcn_info: ssid =%s\n", pnetwork->network.Ssid.Ssid));
+-	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("rtw_get_bcn_info: wpa_len =%d rsn_len =%d\n", wpa_len, rsn_len));
+ 
+ 	if (rsn_len > 0) {
+ 		pnetwork->BcnInfo.encryp_protocol = ENCRYP_PROTOCOL_WPA2;
+@@ -1202,10 +1146,6 @@ void rtw_get_bcn_info(struct wlan_network *pnetwork)
+ 		if (bencrypt)
+ 			pnetwork->BcnInfo.encryp_protocol = ENCRYP_PROTOCOL_WEP;
+ 	}
+-	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("rtw_get_bcn_info: pnetwork->encryp_protocol is %x\n",
+-				pnetwork->BcnInfo.encryp_protocol));
+-	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("rtw_get_bcn_info: pnetwork->encryp_protocol is %x\n",
+-				pnetwork->BcnInfo.encryp_protocol));
+ 	rtw_get_cipher_info(pnetwork);
+ 
+ 	/* get bwmode and ch_offset */
 -- 
 2.20.1
 
