@@ -2,85 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 255EA352BF3
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E47352BF7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234831AbhDBOqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 10:46:11 -0400
-Received: from mga18.intel.com ([134.134.136.126]:40102 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234361AbhDBOqK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 10:46:10 -0400
-IronPort-SDR: y8Zet9CI5jWvuRxlN6t6ACVBVIvIhCyk6EAcGZhLSFJFd50h7ySMIQoHi9pX51nIA+TBkpDSEH
- PY53YU3ziR4g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9942"; a="180008390"
-X-IronPort-AV: E=Sophos;i="5.81,300,1610438400"; 
-   d="scan'208";a="180008390"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 07:46:08 -0700
-IronPort-SDR: CSsqwVgnkpUyABPya9YjKXv0gBtS3CvlbKsTVuUFjb31UqWZqChSE3ZcwLqoqYO4Cj/vP/hfmO
- lgNfuu+B111Q==
-X-IronPort-AV: E=Sophos;i="5.81,300,1610438400"; 
-   d="scan'208";a="378106000"
-Received: from elizondo-mobl.amr.corp.intel.com ([10.212.205.64])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 07:46:08 -0700
-Message-ID: <de3adb5c71525908e8021763cc379db35bf5cac4.camel@linux.intel.com>
-Subject: Re: [PATCH] HID: intel-ish-hid: Remove an unused variable 'ret'
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     jikos@kernel.org, benjamin.tissoires@redhat.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 02 Apr 2021 07:46:08 -0700
-In-Reply-To: <1617357988-108792-1-git-send-email-yang.lee@linux.alibaba.com>
-References: <1617357988-108792-1-git-send-email-yang.lee@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        id S234563AbhDBOsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 10:48:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229553AbhDBOs2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 10:48:28 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD216C0613E6;
+        Fri,  2 Apr 2021 07:48:25 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id b4so7902488lfi.6;
+        Fri, 02 Apr 2021 07:48:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yy2uqVjUbahaeJgUjDmmu8U1mBFY9CHqnGFACDwFRI4=;
+        b=nHDe7e7FDWFrsJdYaEeFpzBgrWdsSoUKWLbEamFUSz3OkkYh+wu/J8RXuB+lJnEfXL
+         +zGc8yQiKJ6OTfq8rYDAege0vLkRusEHki8i72VbkSkuQSv5eeoL/Il9iWNfowbJfO+Q
+         8NX8SyHCpFD3KMEGNusBA8tdh47mF5GwTnpyEBi1FiPvHn3Ne6o/YzLXTiJIJsd9m+Ja
+         FTgEAiXkZ8L/Twl4lDTgFprpC4CuoJYh6ZHXH55JnBo07KEPFwTOPszxNoK6NMcp5+Ps
+         55sbiaMRNbGEsWZxujORnNsEWyc123oaohMQA+dE+/lmccXftzhs2DANJ+fzLfZk2swM
+         hHPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yy2uqVjUbahaeJgUjDmmu8U1mBFY9CHqnGFACDwFRI4=;
+        b=s7GQT32aaAr5kFQzO1e+lAowde8NFXCcfDqBUqe6VRiQ+b4VCbyoD4it8spXMwBoyx
+         eCay6vs2IYz3gswtArRdx9riDDiMn3hQRtxh88ZhkB301Ygg1u0SdXsMg6gvuh1xF8xP
+         nTO9qV2FoPJxRwnfQwgY/swvHH4N89QwXyuNKMqhSIh2Jw1+3DbbfjaLsSWA3MHX8SDb
+         rv1AkFL8hMiCLI+Ggsd/+QB1AiTmuD34yisYfpMeNxcXoGy92yPAhR6SsYllk5N+O1uB
+         XiiEaM3JnFxrnp8ct5B8SXnCzUl1lopxls0XT9YjKyp7ax0870wvMMFvRevFnfw0hTax
+         tZ4A==
+X-Gm-Message-State: AOAM530Ps4Y7lUwm6FObn4p5E1HDeyzeHMNKMkTDM3Vp2441WBvwiACL
+        yy0cya3Y5IlwT/pYiKv3056LV2yCaPE=
+X-Google-Smtp-Source: ABdhPJzrL3VbaC1N9ngpMB8IGJXnZfJgvhF2LTvf+yLIyloxqWe2E7ls2PaV/gkXkBZ+cuVD+ydC6A==
+X-Received: by 2002:ac2:5e9d:: with SMTP id b29mr8966652lfq.31.1617374904071;
+        Fri, 02 Apr 2021 07:48:24 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-85.dynamic.spd-mgts.ru. [109.252.193.85])
+        by smtp.googlemail.com with ESMTPSA id h3sm919114ljc.67.2021.04.02.07.48.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Apr 2021 07:48:23 -0700 (PDT)
+Subject: Re: [PATCH v2 0/6] NVIDIA Tegra memory improvements
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+References: <20210330230445.26619-1-digetx@gmail.com>
+ <b9bc9700-d3c1-54b4-72a3-ace4c3b9e9ed@canonical.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <25acdacd-ace5-f680-cace-f8d8119589ea@gmail.com>
+Date:   Fri, 2 Apr 2021 17:47:52 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <b9bc9700-d3c1-54b4-72a3-ace4c3b9e9ed@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-04-02 at 18:06 +0800, Yang Li wrote:
-> Fixes the following W=1 kernel build warning(s):
+01.04.2021 20:54, Krzysztof Kozlowski пишет:
+> On 31/03/2021 01:04, Dmitry Osipenko wrote:
+>> Hi,
+>>
+>> This series replaces the raw voltage regulator with a power domain that
+>> will be managing SoC core voltage. The core power domain patches are still
+>> under review, but it's clear at this point that this is the way we will
+>> implement the DVFS support.
+>>
+>> The remaining Tegra20 memory bindings are converted to schema. I also
+>> made a small improvement to the memory drivers.
+>>
+>> Changelog:
+>>
+>> v2: - Fixed typos in the converted schemas.
+>>     - Corrected reg entry of tegra20-mc-gart schema to use fixed number of items.
+>>     - Made power-domain to use maxItems instead of $ref phandle in schemas.
+>>
+>> Dmitry Osipenko (6):
+>>   dt-bindings: memory: tegra20: emc: Replace core regulator with power
+>>     domain
+>>   dt-bindings: memory: tegra30: emc: Replace core regulator with power
+>>     domain
+>>   dt-bindings: memory: tegra124: emc: Replace core regulator with power
+>>     domain
+>>   dt-bindings: memory: tegra20: mc: Convert to schema
+>>   dt-bindings: memory: tegra20: emc: Convert to schema
+>>   memory: tegra: Print out info-level once per driver probe
 > 
-> drivers/hid/intel-ish-hid/ipc/pci-ish.c:264:6: warning: variable
-> ‘ret’
-> set but not used
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> Thanks, applied subset - 1-4 and 6. For patch 5/6 I expect v3.
 
-> ---
->  drivers/hid/intel-ish-hid/ipc/pci-ish.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-> b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-> index 06081cf..61efc30 100644
-> --- a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-> +++ b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-> @@ -261,7 +261,6 @@ static void __maybe_unused
-> ish_resume_handler(struct work_struct *work)
->  	struct pci_dev *pdev = to_pci_dev(ish_resume_device);
->  	struct ishtp_device *dev = pci_get_drvdata(pdev);
->  	uint32_t fwsts = dev->ops->get_fw_status(dev);
-> -	int ret;
->  
->  	if (ish_should_leave_d0i3(pdev) && !dev->suspend_flag
->  			&& IPC_IS_ISH_ILUP(fwsts)) {
-> @@ -273,7 +272,7 @@ static void __maybe_unused
-> ish_resume_handler(struct work_struct *work)
->  
->  		/* Waiting to get resume response */
->  		if (dev->resume_flag)
-> -			ret = wait_event_interruptible_timeout(dev-
-> >resume_wait,
-> +			wait_event_interruptible_timeout(dev-
-> >resume_wait,
->  				!dev->resume_flag,
->  				msecs_to_jiffies(WAIT_FOR_RESUME_ACK_MS
-> ));
->  
+I'll make a v3, thank you.
 
