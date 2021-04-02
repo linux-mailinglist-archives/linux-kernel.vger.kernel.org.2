@@ -2,137 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8C235260D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 06:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 443F4352615
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 06:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230004AbhDBESm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 00:18:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55458 "EHLO
+        id S229652AbhDBEV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 00:21:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbhDBESk (ORCPT
+        with ESMTP id S229518AbhDBEV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 00:18:40 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C8AAC0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 21:18:40 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id r14-20020a05600c35ceb029010fe0f81519so311150wmq.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 21:18:40 -0700 (PDT)
+        Fri, 2 Apr 2021 00:21:57 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E77C0613E6;
+        Thu,  1 Apr 2021 21:21:55 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id x126so2848598pfc.13;
+        Thu, 01 Apr 2021 21:21:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gEf69q7AWE2x1/Rq0Iy3chkYVF+eXWxDAEWrpJWIPb0=;
-        b=BiN5pFW/O77DiJXd0zx2/X1iLpsaPL6JiRjeMEk1PTjCMe5IYyCVuNyE/BDjW9dIjZ
-         uoHOhBWvf5BPD2vTlyDG6HjXQg07ebuyoMX1EfVMRxOK2GWLsjRPkz7J2sb+ef6//hgr
-         pt4sNPV9i0Rtcuj5utnP8QuvOClSES26++sg+APEy0lcDT7xhN8CEVVgMN50DjD9YY2e
-         QksmwcQnz+uOeY8ntNWTj8qV3MgiYDpoQ7WOn/sQqqbxBQTO9DtVbBi7GHOhks+t+0dp
-         Rad0fUf0hiiSKPClQTyzzg5Se1Drv7oKzWSNbevXc+Kway8nQRGPGr+qfVqI9MneH2ff
-         YWSA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=WpaaAD4PmenHHvOL/jyRNYMJvLhUShrEir1c7Nvth/w=;
+        b=TiJLbOXPDzTlqOKy5t1e7/FJ7kHujYcoRlmf0TDUDrdD+jIAB9lqtjO4UDN/+Xl9nY
+         7d/nJ1e1UlB3HmHXr1mZ0lLpdl3ZjZRHTEr1SoofgI7XmUtSGRI6NJKNfn9tVIFF+u4A
+         T5p2fCub/HvLz3VC7QesCriApf1lEOQ/uHcSjaqHFgsTtqD3xUnPvtFQylPiLUspBj/0
+         u7hi9LIVl28SO/7ChuAPzlofRIEP99j833FvcqOfI0Vkj1PrEwFxDhReBA0LWRArtSEs
+         Xwnk6Qx2nLc35xpHoDJv4xlCXISvv2KmZyvv8PEzF4UT3ZN2ykvHT6RmqJe+TezFcu+2
+         9bbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gEf69q7AWE2x1/Rq0Iy3chkYVF+eXWxDAEWrpJWIPb0=;
-        b=jmZhLn0k6//7kxyIoJapDHq2M89jwZ77CW+mgVmKjJwsMvfoh7cHyADbIwencP2VvW
-         JH77HxTMHiThfXuXSqxjHyRhwntF5kA179TaF+UPsGlW5NiAk6RsDE4ZYyZ2hZCjyou8
-         gnLByjNiNulb275WWbTA5dlE5qkSmWe2Cbw1m6Auyl4SRIVQO/pn977MsrL/sbcmNijW
-         EVhcYa21Di27VUCEa/gJDlPe9vwDWRnfIWlUxiCvHkYpEa7lOUM6I8ZE9AZwsdfPNdne
-         w37Mr79+rCpKuQBNBJ1jbokTh/Or0UMEIZMvWpWtm72TN7Q3zz3nobOhQLJLJ9gIW2Rl
-         C2Gg==
-X-Gm-Message-State: AOAM530YbqUHVbEhwy9xANyEB6OD4W0Zhn8yNgvZf3K5pf5iRuPXlbTT
-        fUtHQTHP5tejqRMvtgMDV14eKiAngiWFmIyTQlqf0g==
-X-Google-Smtp-Source: ABdhPJygYb0Y34DkjFFMv58xpc9hYG+0m/JrspXVGLRPCjAU15Jzob3/DzPfO3yJZJFY3fTuzhjvnZTg71sUU9tB6Ug=
-X-Received: by 2002:a1c:60c2:: with SMTP id u185mr10663309wmb.157.1617337118714;
- Thu, 01 Apr 2021 21:18:38 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=WpaaAD4PmenHHvOL/jyRNYMJvLhUShrEir1c7Nvth/w=;
+        b=gj/+Xm2zVycBK9aa2GPckSKE0XOd08/EAaUxTraGTieC/iYk74By4okqxszXJMbzcR
+         8DsNYC+Z3jrGU6SE2x42GXQoq39s8EiYual9AWJHEQfQRR0I7SISWwCFJZ2xER+SsAtk
+         SLDF4OfGlo0v9sTXj0Imeq9Y/Z53/fe4fqeaEqVYFBcCrgWvXLS7AsMNH6xrC89bUnT7
+         cC9/bP/YRAKpnmHjS5up7MiCaifY7bWkEwo3IXHaTDXPxhwKqxyMhFfUw1H6643A9wFf
+         OEoE9S3BPpY/fUO9/9oLi/hIJDEmr/f2uN92oYDnHgRHvhdjd6C60rYEue9Psf+ahGys
+         FyYg==
+X-Gm-Message-State: AOAM530xA0WOTGXci14CezqnLI9Iw3eZVxsxaJlOZiri5n9cVU8z630S
+        1RN6ij1hlhkqIy2qEWl7iJ0=
+X-Google-Smtp-Source: ABdhPJyMgaBfBZCLfajiEHBf2YuYh0t6oFpmY6xtz0Nj9SKi5CRXY7FXqgFjYwPvIDhkjivbml4vhQ==
+X-Received: by 2002:a62:1ad5:0:b029:1fa:c667:2776 with SMTP id a204-20020a621ad50000b02901fac6672776mr10524988pfa.6.1617337314902;
+        Thu, 01 Apr 2021 21:21:54 -0700 (PDT)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id v13sm6423592pfu.54.2021.04.01.21.21.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 01 Apr 2021 21:21:54 -0700 (PDT)
+Date:   Thu, 1 Apr 2021 21:19:56 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     joro@8bytes.org, will@kernel.org, digetx@gmail.com,
+        vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5] iommu/tegra-smmu: Add pagetable mappings to debugfs
+Message-ID: <20210402041954.GB31146@Asurada-Nvidia>
+References: <20210315203631.24990-1-nicoleotsuka@gmail.com>
+ <YFCTmwpg9pMQqcSu@orome.fritz.box>
 MIME-Version: 1.0
-References: <20210401002442.2fe56b88@xhacker> <20210401002900.470f3413@xhacker>
-In-Reply-To: <20210401002900.470f3413@xhacker>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Fri, 2 Apr 2021 09:48:27 +0530
-Message-ID: <CAAhSdy0mYFTwhPEHVU11yFzAwUMR_wZx3LtA0KF11wW=wNu_zA@mail.gmail.com>
-Subject: Re: [PATCH v2 8/9] riscv: module: Create module allocations without
- exec permissions
-To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        kasan-dev@googlegroups.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFCTmwpg9pMQqcSu@orome.fritz.box>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 10:04 PM Jisheng Zhang
-<jszhang3@mail.ustc.edu.cn> wrote:
->
-> From: Jisheng Zhang <jszhang@kernel.org>
->
-> The core code manages the executable permissions of code regions of
-> modules explicitly, it is not necessary to create the module vmalloc
-> regions with RWX permissions. Create them with RW- permissions instead.
->
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+On Tue, Mar 16, 2021 at 12:16:43PM +0100, Thierry Reding wrote:
 
-Looks good to me.
+> > +struct tegra_smmu_group_debug {
+> > +	const struct tegra_smmu_swgroup *group;
+> > +	void *priv;
+> 
+> This always stores the address space, so why not make this:
+> 
+> 	struct tegra_smmu_as *as;
+> 
+> ? While at it, perhaps throw in a const to make sure we don't modify
+> this structure in the debugfs code.
 
-Reviewed-by: Anup Patel <anup@brainfault.org>
+OK. I will try to change that.
 
-Regards,
-Anup
+> > @@ -334,7 +350,7 @@ static void tegra_smmu_domain_free(struct iommu_domain *domain)
+> >  }
+> >  
+> >  static const struct tegra_smmu_swgroup *
+> > -tegra_smmu_find_swgroup(struct tegra_smmu *smmu, unsigned int swgroup)
+> > +tegra_smmu_find_swgroup(struct tegra_smmu *smmu, unsigned int swgroup, int *index)
+> >  {
+> >  	const struct tegra_smmu_swgroup *group = NULL;
+> >  	unsigned int i;
+> > @@ -342,6 +358,8 @@ tegra_smmu_find_swgroup(struct tegra_smmu *smmu, unsigned int swgroup)
+> >  	for (i = 0; i < smmu->soc->num_swgroups; i++) {
+> >  		if (smmu->soc->swgroups[i].swgroup == swgroup) {
+> >  			group = &smmu->soc->swgroups[i];
+> > +			if (index)
+> > +				*index = i;
+> 
+> This doesn't look like the right place for this. And this also makes
+> things hard to follow because it passes out-of-band data in the index
+> parameter.
+> 
+> I'm thinking that this could benefit from a bit of refactoring where
+> we could for example embed struct tegra_smmu_group_debug into struct
+> tegra_smmu_group and then reference that when necessary instead of
+> carrying all that data in an orthogonal array. That should also make
+> it easier to track this.
+> 
+> Come to think of it, everything that's currently in your new struct
+> tegra_smmu_group_debug would be useful in struct tegra_smmu_group,
+> irrespective of debugfs support.
 
-> ---
->  arch/riscv/kernel/module.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
-> index 104fba889cf7..e89367bba7c9 100644
-> --- a/arch/riscv/kernel/module.c
-> +++ b/arch/riscv/kernel/module.c
-> @@ -407,14 +407,20 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
->         return 0;
->  }
->
-> -#if defined(CONFIG_MMU) && defined(CONFIG_64BIT)
-> +#ifdef CONFIG_MMU
-> +
-> +#ifdef CONFIG_64BIT
->  #define VMALLOC_MODULE_START \
->          max(PFN_ALIGN((unsigned long)&_end - SZ_2G), VMALLOC_START)
-> +#else
-> +#define VMALLOC_MODULE_START   VMALLOC_START
-> +#endif
-> +
->  void *module_alloc(unsigned long size)
->  {
->         return __vmalloc_node_range(size, 1, VMALLOC_MODULE_START,
->                                     VMALLOC_END, GFP_KERNEL,
-> -                                   PAGE_KERNEL_EXEC, 0, NUMA_NO_NODE,
-> +                                   PAGE_KERNEL, 0, NUMA_NO_NODE,
->                                     __builtin_return_address(0));
->  }
->  #endif
-> --
-> 2.31.0
->
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+Will try to embed it or see what I can do following the suggestion.
+
+> > +static int tegra_smmu_mappings_show(struct seq_file *s, void *data)
+> > +{
+
+> > +	seq_printf(s, "\nSWGROUP: %s\nASID: %d\nreg: 0x%x\n",
+> > +		   group->name, as->id, group->reg);
+> 
+> Is group->reg really that useful here?
+
+Can drop it.
+
+> > +
+> > +	smmu_writel(smmu, as->id & 0x7f, SMMU_PTB_ASID);
+> > +	ptb_reg = smmu_readl(smmu, SMMU_PTB_DATA);
+> > +
+> > +	seq_printf(s, "PTB_ASID: 0x%x\nas->pd_dma: %pad\n",
+> > +		   ptb_reg, &as->pd_dma);
+> 
+> This looks somewhat redundant because as->pd_dma is already part of the
+> PTB_ASID register value. Instead, perhaps decode the upper bits of that
+> register and simply output as->pdma so that we don't duplicate the base
+> address of the page table?
+
+That's a good idea. Will change that too.
