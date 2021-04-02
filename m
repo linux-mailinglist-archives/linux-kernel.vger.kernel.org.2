@@ -2,193 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B12A352BF1
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70B27352BF4
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:09:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234704AbhDBOps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 10:45:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234488AbhDBOpr (ORCPT
+        id S234894AbhDBOqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 10:46:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25147 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234361AbhDBOqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 10:45:47 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47512C0613E6;
-        Fri,  2 Apr 2021 07:45:46 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id g8so7855361lfv.12;
-        Fri, 02 Apr 2021 07:45:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=4L8O9R+b3yxpyXZWZYDFuq/gdZ5zPognKIR1rH6oTng=;
-        b=l2MaDNhNcxkm/UMV/ZuFb/LtA5kV0diO7St9qdz8d8QmutyoPWqSLYJgIwxrpyoYAn
-         I0tGM2no+l8y3vFC/ygEwXOIqcebgVrH4IPM64mQjPrb3qsKWvN8XRft8P9anE9N+Iv/
-         fXG8aqs/4EmD30d1od/4EXag8dbe3pz18QvXBB+Pq/Kpu1GRsZT3jqgIv46geJ9WX3JI
-         2xqQxEd7AEKx9qlZ2ME6VKD5ssHk486e1piPr5arbT03XIDPj6ZrDdyCOo0zLZKt2T1J
-         6z0ENXcDcSijzDQHuUBNGwK8NgWIh2g7sWmgm+rChAQxe30Xu9GQa6vewnfYgVHnIX0p
-         t8zQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4L8O9R+b3yxpyXZWZYDFuq/gdZ5zPognKIR1rH6oTng=;
-        b=YKN3c0J/oAADLXKa/rLn2N0EnmoioEAdzd3icR4HAU0lhJaKcO/FGun+FoNnLzCUzp
-         R/THDSnCsWK5+LD4PjOXJTHCEA6MYI0NfdyTsN39ZApztX9yYfvRaOX3Im9VXw6lkoVR
-         r0GKdHG2d9rhefKZwwDzSW+AcCVa5JsucEwpCbj6sOqkzyNLHoF/f/s7oVRQfaWtEAMW
-         jYieCI3cePQbyVAr7upipLherYfmr1LbYAsMw/gCsfXYt/G/U6QB/q5rVvZWjoV6FHNY
-         lhl/nR6L3wpwnVutDMUMVx8Vf2ztyK1yFQmxw2sHadpqS0iV7dTA/moGeyc2orgX/z/Q
-         YJAQ==
-X-Gm-Message-State: AOAM533nczesq09qCOdVhNhsYm/dXIAtduX7usr70SPDMje+smWOXuAK
-        rufUrBnj9gBDGxryrteVcv4zJdY6NB7ol+OnzVr4ULr5vJM=
-X-Google-Smtp-Source: ABdhPJy1+4Hin00DaqW1l//jBwnZzIPQeswhbDJmhR8PYzmFP0Z642KTd/28afaSvr4/Wl3Y7sNf4jbsUkemtteeztk=
-X-Received: by 2002:a19:6d0:: with SMTP id 199mr9207233lfg.18.1617374744738;
- Fri, 02 Apr 2021 07:45:44 -0700 (PDT)
+        Fri, 2 Apr 2021 10:46:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617374775;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aOuQw7DpFlh88fS8SosgPD/I6DgHKfzHUUKxl8sNq2w=;
+        b=KR8djKciIyZMvHR7564ZGcHeCXL8ANC5+TYEisqEGeFZstZMXCAfu/si/sgKU2Y396Hth+
+        ewk9m8xzF95glpjsBuZf2xWDzL//ZKq8qwzFt7fItbANg25nLbVe2UpQgqfQA5CWHyeO2V
+        NzLpAqfDNQvQuQduX/FKx3MBohILpnM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-439-Ly2ZiBT0OFOCkjUN4tiX9w-1; Fri, 02 Apr 2021 10:46:11 -0400
+X-MC-Unique: Ly2ZiBT0OFOCkjUN4tiX9w-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 682E587A826;
+        Fri,  2 Apr 2021 14:46:10 +0000 (UTC)
+Received: from localhost (ovpn-112-54.ams2.redhat.com [10.36.112.54])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C310E5D9F2;
+        Fri,  2 Apr 2021 14:46:09 +0000 (UTC)
+From:   Giuseppe Scrivano <gscrivan@redhat.com>
+To:     "Serge E. Hallyn" <serge@hallyn.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org, christian.brauner@ubuntu.com,
+        Linux Containers <containers@lists.linux-foundation.org>
+Subject: Re: [PATCH] kernel: automatically split user namespace extent
+References: <20201126100839.381415-1-gscrivan@redhat.com>
+        <87ft4pe7km.fsf@x220.int.ebiederm.org> <87pn3schlg.fsf@redhat.com>
+        <20210402143212.GA18282@mail.hallyn.com>
+Date:   Fri, 02 Apr 2021 16:46:07 +0200
+In-Reply-To: <20210402143212.GA18282@mail.hallyn.com> (Serge E. Hallyn's
+        message of "Fri, 2 Apr 2021 09:32:12 -0500")
+Message-ID: <87zgygg2xc.fsf@redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-References: <16ceff73-1257-fc3d-aade-43656c7216e7@molgen.mpg.de>
- <12e8f7f1-6655-9f0b-72b1-0908f229dcac@molgen.mpg.de> <b5eb567d-9866-8f0f-ea61-83ae97d4d21f@molgen.mpg.de>
-In-Reply-To: <b5eb567d-9866-8f0f-ea61-83ae97d4d21f@molgen.mpg.de>
-From:   Roger Heflin <rogerheflin@gmail.com>
-Date:   Fri, 2 Apr 2021 09:45:33 -0500
-Message-ID: <CAAMCDedmGUcWY=9Nb36gXoo0+F82rhq=-6yKZ1xPf74Gj0mq7Q@mail.gmail.com>
-Subject: Re: OT: Processor recommendation for RAID6
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     Linux RAID <linux-raid@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 2, 2021 at 4:13 AM Paul Menzel <pmenzel@molgen.mpg.de> wrote:
->
-> Dear Linux folks,
->
->
+Hi Serge,
 
-> > Are these values a good benchmark for comparing processors?
->
-> After two years, yes they are. I created 16 10 GB files in `/dev/shm`,
-> set them up as loop devices, and created a RAID6. For resync speed it
-> makes difference.
->
-> 2 x AMD EPYC 7601 32-Core Processor:    34671K/sec
-> 2 x Intel Xeon Gold 6248 CPU @ 2.50GHz: 87533K/sec
->
-> So, the current state of affairs seems to be, that AVX512 instructions
-> do help for software RAIDs, if you want fast rebuild/resync times.
-> Getting, for example, a four core/eight thread Intel Xeon Gold 5222
-> might be useful.
->
-> Now, the question remains, if AMD processors could make it up with
-> higher performance, or better optimized code, or if AVX512 instructions
-> are a must,
->
-> [=E2=80=A6]
->
->
-> Kind regards,
->
-> Paul
->
->
-> PS: Here are the commands on the AMD EPYC system:
->
-> ```
-> $ for i in $(seq 1 16); do truncate -s 10G /dev/shm/vdisk$i.img; done
-> $ for i in /dev/shm/v*.img; do sudo losetup --find --show $i; done
-> /dev/loop0
-> /dev/loop1
-> /dev/loop2
-> /dev/loop3
-> /dev/loop4
-> /dev/loop5
-> /dev/loop6
-> /dev/loop7
-> /dev/loop8
-> /dev/loop9
-> /dev/loop10
-> /dev/loop11
-> /dev/loop12
-> /dev/loop13
-> /dev/loop14
-> /dev/loop15
-> $ sudo mdadm --create /dev/md1 --level=3D6 --raid-devices=3D16
-> /dev/loop{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15}
-> mdadm: Defaulting to version 1.2 metadata
-> mdadm: array /dev/md1 started.
-> $ more /proc/mdstat
-> Personalities : [linear] [raid0] [raid1] [raid6] [raid5] [raid4]
-> [multipath]
-> md1 : active raid6 loop15[15] loop14[14] loop13[13] loop12[12]
-> loop11[11] loop10[10] loop9[9] loop8[8] loop7[7] loop6[6] loop5[5]266
-> loop4[4] loop3[3] lo
-> op2[2] loop1[1] loop0[0]
->        146671616 blocks super 1.2 level 6, 512k chunk, algorithm 276
-> [16/16] [UUUUUUUUUUUUUUUU]
->        [>....................]  resync =3D  3.9% (416880/10476544)
-> finish=3D5.6min speed=3D29777K/sec
->
-> unused devices: <none>
-> $ more /proc/mdstat
-> Personalities : [linear] [raid0] [raid1] [raid6] [raid5] [raid4]
-> [multipath]
-> md1 : active raid6 loop15[15] loop14[14] loop13[13] loop12[12]
-> loop11[11] loop10[10] loop9[9] loop8[8] loop7[7] loop6[6] loop5[5]
-> loop4[4] loop3[3] lo
-> op2[2] loop1[1] loop0[0]
->        146671616 blocks super 1.2 level 6, 512k chunk, algorithm 2
-> [16/16] [UUUUUUUUUUUUUUUU]
->        [>....................]  resync =3D  4.1% (439872/10476544)
-> finish=3D5.3min speed=3D31419K/sec
-> $ sudo mdadm -S /dev/md1
-> mdadm: stopped /dev/md1
-> $ sudo losetup -D
-> $ sudo rm /dev/shm/vdisk*.img
+"Serge E. Hallyn" <serge@hallyn.com> writes:
 
+> On Wed, Dec 02, 2020 at 05:12:27PM +0100, Giuseppe Scrivano wrote:
+>> Hi Eric,
+>> 
+>> ebiederm@xmission.com (Eric W. Biederman) writes:
+>> 
+>> > Nit: The tag should have been "userns:" rather than kernel.
+>> >
+>> > Giuseppe Scrivano <gscrivan@redhat.com> writes:
+>> >
+>> >> writing to the id map fails when an extent overlaps multiple mappings
+>> >> in the parent user namespace, e.g.:
+>> >>
+>> >> $ cat /proc/self/uid_map
+>> >>          0       1000          1
+>> >>          1     100000      65536
+>> >> $ unshare -U sleep 100 &
+>> >> [1] 1029703
+>> >> $ printf "0 0 100\n" | tee /proc/$!/uid_map
+>> >> 0 0 100
+>> >> tee: /proc/1029703/uid_map: Operation not permitted
+>> >>
+>> >> To prevent it from happening, automatically split an extent so that
+>> >> each portion fits in one extent in the parent user namespace.
+>> >
+>> > I don't see anything fundamentally wrong with relaxing this
+>> > restriction, but more code does have more room for bugs to hide.
+>> >
+>> > What is the advantage of relaxing this restriction?
+>> 
+>> we are running rootless containers in a namespace created with
+>> newuidmap/newgidmap where the mappings look like:
+>> 
+>> $ cat /proc/self/uid_map
+>> 0       1000          1
+>> 1     110000      65536
+>> 
+>> users are allowed to create child user namespaces and specify the
+>> mappings to use.  Doing so, they often hit the issue that the mappings
+>> cannot overlap multiple extents in the parent user namespace.
+>> 
+>> The issue could be completely addressed in user space, but to me it
+>> looks like an implementation detail that user space should not know
+>> about.
+>> In addition, it would also be slower (additional read of the current
+>> uid_map and gid_map files) and must be implemented separately in each
+>> container runtime.
+>> 
+>> >> $ cat /proc/self/uid_map
+>> >>          0       1000          1
+>> >>          1     110000      65536
+>> >> $ unshare -U sleep 100 &
+>> >> [1] 1552
+>> >> $ printf "0 0 100\n" | tee /proc/$!/uid_map
+>> >> 0 0 100
+>> >> $ cat /proc/$!/uid_map
+>> >>          0          0          1
+>> >>          1          1         99
+>> >>
+>> >> Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
+>> >> ---
+>> >>  kernel/user_namespace.c | 62 ++++++++++++++++++++++++++++++++++-------
+>> >>  1 file changed, 52 insertions(+), 10 deletions(-)
+>> >>
+>> >> diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
+>> >> index 87804e0371fe..b5542be2bd0a 100644
+>> >> --- a/kernel/user_namespace.c
+>> >> +++ b/kernel/user_namespace.c
+>> >> @@ -706,6 +706,41 @@ const struct seq_operations proc_projid_seq_operations = {
+>> >>  	.show = projid_m_show,
+>> >>  };
+>> >>  
+>> >> +static void split_overlapping_mappings(struct uid_gid_map *parent_map,
+>> >> +				       struct uid_gid_extent *extent,
+>> >> +				       struct uid_gid_extent *overflow_extent)
+>> >> +{
+>> >> +	unsigned int idx;
+>> >> +
+>> >> +	overflow_extent->first = (u32) -1;
+>> >> +
+>> >> +	/* Split extent if it not fully contained in an extent from parent_map.  */
+>> >> +	for (idx = 0; idx < parent_map->nr_extents; idx++) {
+>> >
+>> > Ouch!
+>> >
+>> > For the larger tree we perform binary searches typically and
+>> > here you are walking every entry unconditionally.
+>> >
+>> > It looks like this makes the write O(N^2) from O(NlogN)
+>> > which for a user facing function is not desirable.
+>> >
+>> > I think something like insert_and_split_extent may be ok.
+>> > Incorporating your loop and the part that inserts an element.
+>> >
+>> > As written this almost doubles the complexity of the code,
+>> > as well as making it perform much worse.  Which is a problem.
+>> 
+>> I've attempted to implement the new functionality at input validation
+>> time to not touch the existing security checks.
+>> 
+>> I've thought the pattern for iterating the extents was fine as I've
+>> taken it from mappings_overlap (even if it is used differently on an
+>> unsorted array).
+>> 
+>> Thanks for the hint, I'll move the new logic when map_id_range_down() is
+>> used and I'll send a v2.
+>
+> Hi,
+>
+> sorry if I miseed it.  Did you ever send a v2?
 
-I think you are testing something else.  Your speeds are way below
-what the raw processor can do. You are probably testing memory
-speed/numa arch differences between the 2.
+no worries, the v2 is here:
 
-On the intel arch there are 2 numa nodes total with 4 channels, so the
-system  has 8 usable channels of bandwidth, but a allocation on a
-single numa node will only have 4 channels usable (ddr4-2933)
+https://lkml.kernel.org/lkml/20201203150252.1229077-1-gscrivan@redhat.com/
 
-On the epyc there are 8 numa nodes with 2 channels each (ddr4-2666),
-so any single memory allocation will have only 2 channels available
-and if the accesses are across the numa bus will be slower.
+Regards,
+Giuseppe
 
-So 4*2933/2*2666 =3D 2.20 * 34671 =3D 76286 (fairly close to your results).
-
-How the allocation for memory works depends a lot on how much ram you
-actually have per numa node and how much for the whole machine.  But
-any single block for any single device should be on a single numa node
-almost all of the time.
-
-You might want to drop the cache before the test, run numactl
---hardware to see how much memory is free per numa node, then rerun
-the test and at the of the test before the stop run numactl --hardware
-again to see how it was spread across numa nodes.  Even if it spreads
-it across multiple numa nodes that may well mean that on the epyc case
-you are running with several numa nodes were the main raid processes
-are running against remote numa nodes, and because intel only has 2
-then there is a decent chance that it is only running on 1 most of the
-time (so no remote memory).  I have also seen in benchmarks I have run
-on 2P and 4P intel machines that interleaved on a 2P single thread job
-is faster than running on a single numa nodes memory (with the process
-pinned to a single cpu on one of the numa nodes, memory interleaved
-over both), but on a 4P/4numa node machine interleaving slows it down
-significantly.  And in the default case any single write/read of a
-block is likely only on a single numa node so that specific read/write
-is constrained by a single numa node bandwidth giving an advantage to
-fewer faster/bigger numa nodes and less remote memory.
-
-Outside of rebooting and forcing the entire machine to interleave I am
-not sure how to get shm to interleave.   It might be a good enough
-test to just force the epyc to interleave and see if the benchmark
-result changes in any way.  If the result does change repeat on the
-intel.  Overall for the most part the raid would not be able to use
-very many cpu anyway, so a bigger machine with more numa nodes may
-slow down the overall rate.
