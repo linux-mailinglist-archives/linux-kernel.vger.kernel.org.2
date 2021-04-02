@@ -2,495 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E4F3524B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 02:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57A4B3524B6
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 02:55:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233912AbhDBAun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 20:50:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38970 "EHLO
+        id S233789AbhDBAz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 20:55:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233789AbhDBAul (ORCPT
+        with ESMTP id S231168AbhDBAz0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 20:50:41 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E65DC061788
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 17:50:41 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id a12so2622086pfc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 17:50:41 -0700 (PDT)
+        Thu, 1 Apr 2021 20:55:26 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 255A5C0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 17:55:26 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id t14so3589828ilu.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 17:55:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=zdktSwchFSboaBqEuqtV3+3dzGZphF0+Oj1BTU7ioco=;
-        b=BZvz8eqSSrf3c0ECoTcsde49xUb8HcYYXq9LoxwzYeeTKH4pNE9MNRmvio0+pZitx3
-         BiskEPtHTdlZawCF66kP6KqdNzyO2YL+HSd/fIHF6zSFQNtUeNDg0SP6lb0Qq1WV7aVJ
-         QLR21CLgNNn5e4e+TzKHShB1tqfYXxmf90WtY=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ggar240r8l1y1SR7kz5vR/iom4bN+ntyDx1BWqiKLWA=;
+        b=HfUsqhL+okD5Z6DtZAvlDomFb/eZX+9XmkHddnlgl6gSKyk8ihNeBFMl/o5/uKgLJT
+         kZJaw4s2Z++IPVOripdmiWATHKUmJLl4uP/dlVCoI595caniLn4znAZjDJf15XYwMCc+
+         CpgdD/nET0RYazA1I/7W712anpZmjGGROh+hqzUAQc9/AmPa/ZJTwuD0Hg/IHwagOE2H
+         hws/CVnk+C75Z0MceafmrdCVsUUz/rCzGJomdoI7qY6vzIfJ/nkrH7m8zBX3D67ma+dB
+         8xKxneQyjbNzgHX3LzohQC9Bu5zpuLktXOXGUhPSa9/no+mcL9inlPqvAmOvvpiiscGC
+         2f6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=zdktSwchFSboaBqEuqtV3+3dzGZphF0+Oj1BTU7ioco=;
-        b=OIPCOdd0tiluTujWNScjSco0jr3fvLMZiBjPgW+8WtLkmU2zTtEU2xjqxYnPYb7gyn
-         62bUID3FUWn+JALrGYtnvac2Gqz54U1KC/+klFay+Z1dKkn/KR5gAFtELoBvF1sxFgXO
-         O/kcFX4jmiFK1UWoHXRzgGmG11Qd47xXsmNxoFZMI1Ih274jjqVihKDk5qlwNXNh0hQy
-         yo0gMe0R0No+/lF4WB2Ll6zIhtHndpa9l6oB1ydPOgOMNfVBNW4bNxFS158UjhRMbmX/
-         cxD/Sj3KBn9I2j2QNjJx3X9JYoDMVFPj6e62mMygkiUQfEyYpV2ku5Bi3SErXB9yH0jF
-         skYw==
-X-Gm-Message-State: AOAM533QoA9lvLFNAfu/t820uTNVQpR9F7DMBkSm71PjyRtVHbjpcK2H
-        vHYauyGL7hHoruFu+qBbeGeFTg==
-X-Google-Smtp-Source: ABdhPJwKwvpel8DWpoky99VHW3S9BdUssReEoPqpOgNcTckoZYDEcEmMak13iPP/AjC+LOHroYI14g==
-X-Received: by 2002:a63:5a48:: with SMTP id k8mr9830070pgm.308.1617324640692;
-        Thu, 01 Apr 2021 17:50:40 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:201:450:f2a9:b3ca:879f])
-        by smtp.gmail.com with ESMTPSA id t6sm6454560pjs.26.2021.04.01.17.50.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 17:50:39 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ggar240r8l1y1SR7kz5vR/iom4bN+ntyDx1BWqiKLWA=;
+        b=i/YXrhMy70WI7eMKCazUMzN799rfxSE7gZPX83IDdPaW1004iFD8T8DYkLoXYA4Lk+
+         dp4PMCFsK3pKCuIa11rgpllffFofuUTkwJyuW2iniqwYbAAZzpxjHLPEKzUHSqcsJAQL
+         iIcGIW5Lr/POj5GPe31Dac2JjU04FUnuuhrjPEJw5DXKgHaOJC6fbPx3P8I0H6jMaZBr
+         pEBgiBE6zp8zg2Js2kcfm2gq8Zn5atUEG2mr3AshIMy8MT2xa0/UTVUfFJrX7pHk9Txy
+         3ouno5S6iQb0ZoVmkvqo4KaV4w3BJAtpKtZZYq1QAccjFGHqCTHZGU2kCULEX7i17BFF
+         jolA==
+X-Gm-Message-State: AOAM532yIPz0BgAbpe5mfUAsfMlR+T7bpGmE94I8fN1cLxwa7aG0WfyY
+        zkVrGJXUlkOU3sc1BZ+PM3nnR+XPZB600NNgotEP0A==
+X-Google-Smtp-Source: ABdhPJz52Elpa8MCYcBQKr2vnBLDMM40OFRVlMe3SRA4T3HZnstJIwIud5WK6sp99a2jtfaldbUB2+UTIh7apFf1O5A=
+X-Received: by 2002:a05:6e02:154d:: with SMTP id j13mr6792790ilu.128.1617324925442;
+ Thu, 01 Apr 2021 17:55:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <326da78181b566ee7d48683d68bb89d7@codeaurora.org>
-References: <cover.1616651305.git.schowdhu@codeaurora.org> <dc058ed6d05f1aec4e97fee6d4c007abdf3b54a0.1616651305.git.schowdhu@codeaurora.org> <161704834593.3012082.17486072850156076295@swboyd.mtv.corp.google.com> <326da78181b566ee7d48683d68bb89d7@codeaurora.org>
-Subject: Re: [PATCH V2 2/5] soc: qcom: dcc: Add driver support for Data Capture and Compare unit(DCC)
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>, vkoul@kernel.org
-To:     schowdhu@codeaurora.org
-Date:   Thu, 01 Apr 2021 17:50:38 -0700
-Message-ID: <161732463842.2260335.16117110131113613939@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+References: <20210401183216.443C4443@viggo.jf.intel.com> <20210401183231.8485C83D@viggo.jf.intel.com>
+In-Reply-To: <20210401183231.8485C83D@viggo.jf.intel.com>
+From:   Wei Xu <weixugc@google.com>
+Date:   Thu, 1 Apr 2021 17:55:13 -0700
+Message-ID: <CAAPL-u-zQFRD=m3+vygesijsQT01H9BYtpDw9Q+80CUB=mdW1g@mail.gmail.com>
+Subject: Re: [PATCH 08/10] mm/vmscan: Consider anonymous pages without swap
+To:     Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kbusch@kernel.org, shy828301@gmail.com,
+        David Rientjes <rientjes@google.com>, ying.huang@intel.com,
+        Dan Williams <dan.j.williams@intel.com>, david@redhat.com,
+        osalvador@suse.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting schowdhu@codeaurora.org (2021-04-01 07:04:07)
-> On 2021-03-30 01:35, Stephen Boyd wrote:
-> > Quoting Souradeep Chowdhury (2021-03-25 01:02:33)
-> >> diff --git a/drivers/soc/qcom/dcc.c b/drivers/soc/qcom/dcc.c
-> >> new file mode 100644
-> >> index 0000000..a55d8ca7
-> >> --- /dev/null
-> >> +++ b/drivers/soc/qcom/dcc.c
-> >> @@ -0,0 +1,1549 @@
-[..]
-> >=20
-> >> +       void __iomem            *base;
-> >> +       u32                     reg_size;
-> >> +       struct device           *dev;
-> >> +       struct mutex            mutex;
-> >=20
-> > In particular what this mutex is protecting.
->=20
-> Ack. The mutex is used to protect the access as well as manipulation of=20
-> the main instance of dcc_drvdata structure
-> initialized during probe time. This structure contains the useful driver =
+On Thu, Apr 1, 2021 at 11:35 AM Dave Hansen <dave.hansen@linux.intel.com> wrote:
+>
+>
+> From: Keith Busch <kbusch@kernel.org>
+>
+> Reclaim anonymous pages if a migration path is available now that
+> demotion provides a non-swap recourse for reclaiming anon pages.
+>
+> Note that this check is subtly different from the
+> anon_should_be_aged() checks.  This mechanism checks whether a
+> specific page in a specific context *can* actually be reclaimed, given
+> current swap space and cgroup limits
+>
+> anon_should_be_aged() is a much simpler and more preliminary check
+> which just says whether there is a possibility of future reclaim.
+>
+> #Signed-off-by: Keith Busch <keith.busch@intel.com>
+> Cc: Keith Busch <kbusch@kernel.org>
+> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Reviewed-by: Yang Shi <shy828301@gmail.com>
+> Cc: Wei Xu <weixugc@google.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Huang Ying <ying.huang@intel.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: osalvador <osalvador@suse.de>
+>
+> --
+>
+> Changes from Dave 10/2020:
+>  * remove 'total_swap_pages' modification
+>
+> Changes from Dave 06/2020:
+>  * rename reclaim_anon_pages()->can_reclaim_anon_pages()
+>
+> Note: Keith's Intel SoB is commented out because he is no
+> longer at Intel and his @intel.com mail will bounce.
+> ---
+>
+>  b/mm/vmscan.c |   35 ++++++++++++++++++++++++++++++++---
+>  1 file changed, 32 insertions(+), 3 deletions(-)
+>
+> diff -puN mm/vmscan.c~0009-mm-vmscan-Consider-anonymous-pages-without-swap mm/vmscan.c
+> --- a/mm/vmscan.c~0009-mm-vmscan-Consider-anonymous-pages-without-swap  2021-03-31 15:17:19.388000242 -0700
+> +++ b/mm/vmscan.c       2021-03-31 15:17:19.407000242 -0700
+> @@ -287,6 +287,34 @@ static bool writeback_throttling_sane(st
+>  }
+>  #endif
+>
+> +static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
+> +                                         int node_id)
+> +{
+> +       if (memcg == NULL) {
+> +               /*
+> +                * For non-memcg reclaim, is there
+> +                * space in any swap device?
+> +                */
+> +               if (get_nr_swap_pages() > 0)
+> +                       return true;
+> +       } else {
+> +               /* Is the memcg below its swap limit? */
+> +               if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
+> +                       return true;
+> +       }
+> +
+> +       /*
+> +        * The page can not be swapped.
+> +        *
+> +        * Can it be reclaimed from this node via demotion?
+> +        */
+> +       if (next_demotion_node(node_id) >= 0)
+> +               return true;
 
-> data information and is set using the call
-> platform_set_drvdata(pdev, drvdata) which links this data to the=20
-> platform device and hence needs to be protected via
-> mutex locks. The same convention is followed across other similar=20
-> drivers exposing userspace like the llcc driver.
+When neither swap space nor RECLAIM_MIGRATE is enabled, but
+next_demotion_node() is configured, inactive pages cannot be swapped out
+nor demoted.  However, this check can still cause these pages to be sent
+to shrink_page_list() (e.g., when can_reclaim_anon_pages() is called by
+get_scan_count()) and make the THP pages being unnecessarily split there.
 
-The region that the mutex is protecting seems quite large. That's
-probably because I don't understand the driver.
+One fix would be to guard this next_demotion_node() check with the
+RECLAIM_MIGRATE node_reclaim_mode check.  This RECLAIM_MIGRATE
+check needs to be applied to other calls to next_demotion_node() in
+vmscan.c as well.
 
-> >=20
-> >> +
-> >> +       mutex_lock(&drvdata->mutex);
-> >> +
-> >> +       for (curr_list =3D 0; curr_list < drvdata->nr_link_list;=20
-> >> curr_list++) {
-> >> +               if (!drvdata->enable[curr_list])
-> >> +                       continue;
-> >> +               ll_cfg =3D dcc_readl(drvdata, DCC_LL_CFG(curr_list));
-> >> +               tmp_ll_cfg =3D ll_cfg & ~BIT(9);
-> >> +               dcc_writel(drvdata, tmp_ll_cfg,=20
-> >> DCC_LL_CFG(curr_list));
-> >> +               dcc_writel(drvdata, 1, DCC_LL_SW_TRIGGER(curr_list));
-> >> +               dcc_writel(drvdata, ll_cfg, DCC_LL_CFG(curr_list));
-> >> +       }
-> >=20
-> > Does the mutex need to be held while waiting for ready?
->=20
-> Yes, to maintain consistency because inside the dcc_ready function,=20
-> there is access to dcc_drvdata structure set
-> on the platform device.
+> +
+> +       /* No way to reclaim anon pages */
+> +       return false;
+> +}
+> +
+>  /*
+>   * This misses isolated pages which are not accounted for to save counters.
+>   * As the data only determines if reclaim or compaction continues, it is
+> @@ -298,7 +326,7 @@ unsigned long zone_reclaimable_pages(str
+>
+>         nr = zone_page_state_snapshot(zone, NR_ZONE_INACTIVE_FILE) +
+>                 zone_page_state_snapshot(zone, NR_ZONE_ACTIVE_FILE);
+> -       if (get_nr_swap_pages() > 0)
+> +       if (can_reclaim_anon_pages(NULL, zone_to_nid(zone)))
+>                 nr += zone_page_state_snapshot(zone, NR_ZONE_INACTIVE_ANON) +
+>                         zone_page_state_snapshot(zone, NR_ZONE_ACTIVE_ANON);
+>
+> @@ -2323,6 +2351,7 @@ enum scan_balance {
+>  static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+>                            unsigned long *nr)
+>  {
+> +       struct pglist_data *pgdat = lruvec_pgdat(lruvec);
+>         struct mem_cgroup *memcg = lruvec_memcg(lruvec);
+>         unsigned long anon_cost, file_cost, total_cost;
+>         int swappiness = mem_cgroup_swappiness(memcg);
+> @@ -2333,7 +2362,7 @@ static void get_scan_count(struct lruvec
+>         enum lru_list lru;
+>
+>         /* If we have no swap space, do not bother scanning anon pages. */
+> -       if (!sc->may_swap || mem_cgroup_get_nr_swap_pages(memcg) <= 0) {
+> +       if (!sc->may_swap || !can_reclaim_anon_pages(memcg, pgdat->node_id)) {
 
-Is the drvdata going to be modified somewhere else?
+Demotion of anon pages still depends on sc->may_swap.  Any thoughts on
+decoupling
+demotion from swapping more completely?
 
-> >> +
-> >> +               dev_info(drvdata->dev, "All values written to=20
-> >> enable.\n");
-> >=20
-> > Debug print?
->=20
-> Ack
->=20
-> >=20
-> >> +               /* Make sure all config is written in sram */
-> >> +               mb();
-> >=20
-> > This won't work as intended.
->=20
-> This was called to prevent instruction reordering if the driver runs on=20
-> multiple
-> CPU cores. As the hardware manipulation has to be done sequentially=20
-> before the
-> trigger is set. Kindly let me know the concern in this case.
-
-Device I/O with the proper accessors is sequential even if the process
-moves to a different CPU. Is that what you're worried about? The comment
-says "make sure it is written to sram", which should be achieved by
-reading some register back from the device after all the writes so that
-the driver knows the writes have been posted to the device. I believe
-this mb() is doing nothing.
-
->=20
-> >=20
-> >> +
-> >> +               drvdata->enable[list] =3D true;
-> >> +
-> >> +               /* 5. Configure trigger */
-> >> +               dcc_writel(drvdata, BIT(9), DCC_LL_CFG(list));
-> >> +       }
-> >> +
-> >> +err:
-> >> +       mutex_unlock(&drvdata->mutex);
-> >> +       return ret;
-> >> +}
-> >> +
-> >> +static void dcc_disable(struct dcc_drvdata *drvdata)
-> >> +{
-> >> +       int curr_list;
-> >> +
-> >> +       mutex_lock(&drvdata->mutex);
-> >> +
-> >> +       if (!dcc_ready(drvdata))
-> >> +               dev_err(drvdata->dev, "DCC is not ready Disabling=20
-> >> DCC...\n");
-> >=20
-> > Is that two sentences? And a debug print?
->=20
-> Ack.
->=20
-> >=20
-> >> +
-> >> +       for (curr_list =3D 0; curr_list < drvdata->nr_link_list;=20
-> >> curr_list++) {
-> >> +               if (!drvdata->enable[curr_list])
-> >> +                       continue;
-> >> +               dcc_writel(drvdata, 0, DCC_LL_CFG(curr_list));
-> >> +               dcc_writel(drvdata, 0, DCC_LL_BASE(curr_list));
-> >> +               dcc_writel(drvdata, 0, DCC_FD_BASE(curr_list));
-> >> +               dcc_writel(drvdata, 0, DCC_LL_LOCK(curr_list));
-> >> +               drvdata->enable[curr_list] =3D false;
-> >> +       }
-> >> +       memset_io(drvdata->ram_base, 0, drvdata->ram_size);
-> >> +       drvdata->ram_cfg =3D 0;
-> >> +       drvdata->ram_start =3D 0;
-> >> +       mutex_unlock(&drvdata->mutex);
-> >> +}
-> >> +
-> >> +static ssize_t curr_list_show(struct device *dev,
-> >> +       struct device_attribute *attr, char *buf)
-> >> +{
-> >> +       int ret;
-> >> +       struct dcc_drvdata *drvdata =3D dev_get_drvdata(dev);
-> >> +
-> >> +       mutex_lock(&drvdata->mutex);
-> >> +       if (drvdata->curr_list =3D=3D DCC_INVALID_LINK_LIST) {
-> >> +               dev_err(dev, "curr_list is not set.\n");
-> >> +               ret =3D -EINVAL;
-> >> +               goto err;
-> >> +       }
-> >> +
-> >> +       ret =3D scnprintf(buf, PAGE_SIZE, "%d\n", drvdata->curr_list);
-> >> +err:
-> >> +       mutex_unlock(&drvdata->mutex);
-> >> +       return ret;
-> >> +}
-> >> +
-> >> +static ssize_t curr_list_store(struct device *dev,
-> >> +                                               struct=20
-> >> device_attribute *attr,
-> >> +                                               const char *buf,=20
-> >> size_t size)
-> >> +{
-> >> +       struct dcc_drvdata *drvdata =3D dev_get_drvdata(dev);
-> >> +       unsigned long val;
-> >> +       u32 lock_reg;
-> >> +       bool dcc_enable =3D false;
-> >> +
-> >> +       if (kstrtoul(buf, 16, &val))
-> >> +               return -EINVAL;
-> >> +
-> >> +       if (val >=3D drvdata->nr_link_list)
-> >> +               return -EINVAL;
-> >> +
-> >> +       mutex_lock(&drvdata->mutex);
-> >> +
-> >> +       dcc_enable =3D is_dcc_enabled(drvdata);
-> >> +       if (drvdata->curr_list !=3D DCC_INVALID_LINK_LIST && dcc_enabl=
-e)=20
-> >> {
-> >> +               dev_err(drvdata->dev, "DCC is enabled, please disable =
-
-> >> it first.\n");
-> >> +               mutex_unlock(&drvdata->mutex);
-> >> +               return -EINVAL;
-> >> +       }
-> >> +
-> >> +       lock_reg =3D dcc_readl(drvdata, DCC_LL_LOCK(val));
-> >> +       if (lock_reg & 0x1) {
-> >> +               dev_err(drvdata->dev, "DCC linked list is already=20
-> >> configured\n");
-> >> +               mutex_unlock(&drvdata->mutex);
-> >> +               return -EINVAL;
-> >> +       }
-> >> +       drvdata->curr_list =3D val;
-> >> +       mutex_unlock(&drvdata->mutex);
-> >> +
-> >> +       return size;
-> >> +}
-> >> +
-> >> +static DEVICE_ATTR_RW(curr_list);
-> >> +
-> >> +
-> >> +static ssize_t trigger_store(struct device *dev,
-> >> +                                       struct device_attribute *attr,
-> >> +                                       const char *buf, size_t size)
-> >> +{
-> >> +       int ret =3D 0;
-> >> +       unsigned long val;
-> >> +       struct dcc_drvdata *drvdata =3D dev_get_drvdata(dev);
-> >> +
-> >> +       if (kstrtoul(buf, 16, &val))
-> >> +               return -EINVAL;
-> >> +       if (val !=3D 1)
-> >> +               return -EINVAL;
-> >> +
-> >> +       ret =3D dcc_sw_trigger(drvdata);
-> >> +       if (!ret)
-> >> +               ret =3D size;
-> >> +
-> >> +       return ret;
-> >> +}
-> >> +static DEVICE_ATTR_WO(trigger);
-> >> +
-> >> +static ssize_t enable_show(struct device *dev,
-> >> +       struct device_attribute *attr, char *buf)
-> >> +{
-> >> +       int ret;
-> >> +       bool dcc_enable =3D false;
-> >> +       struct dcc_drvdata *drvdata =3D dev_get_drvdata(dev);
-> >> +
-> >> +       mutex_lock(&drvdata->mutex);
-> >> +       if (drvdata->curr_list >=3D drvdata->nr_link_list) {
-> >> +               dev_err(dev, "Select link list to program using=20
-> >> curr_list\n");
-> >> +               ret =3D -EINVAL;
-> >> +               goto err;
-> >> +       }
-> >> +
-> >> +       dcc_enable =3D is_dcc_enabled(drvdata);
-> >> +
-> >> +       ret =3D scnprintf(buf, PAGE_SIZE, "%u\n",
-> >> +                               (unsigned int)dcc_enable);
-> >> +err:
-> >> +       mutex_unlock(&drvdata->mutex);
-> >=20
-> > What does the mutex being held serve here?
->=20
-> As mentioned earlier, the mutex has been used while accessing=20
-> dcc_drvdata structure.
->=20
-
-And what purpose does it serve? I suppose curr_list can be modified? But
-then when this function returns it could be disabled before userspace
-sees the value so I'm still lost why we care to hold the lock this long.
-
-> >=20
-> >> +       return ret;
-> >> +}
-> >> +
-> >> +static ssize_t enable_store(struct device *dev,
-> >> +                               struct device_attribute *attr,
-> >> +                               const char *buf, size_t size)
-> >> +{
-> >> +       int ret =3D 0;
-> >> +       unsigned long val;
-> >> +       struct dcc_drvdata *drvdata =3D dev_get_drvdata(dev);
-> >> +
-> >> +       if (kstrtoul(buf, 16, &val))
-> >> +               return -EINVAL;
-> >> +
-> >> +       if (val)
-> >> +               ret =3D dcc_enable(drvdata);
-> >> +       else
-> >> +               dcc_disable(drvdata);
-> >> +
-> >> +       if (!ret)
-> >> +               ret =3D size;
-> >> +
-> >> +       return ret;
-> >> +
-> >> +}
-> >> +
-> >> +static DEVICE_ATTR_RW(enable);
-> >> +
-> >> +static ssize_t config_show(struct device *dev,
-> >> +       struct device_attribute *attr, char *buf)
-> >> +{
-> >> +       struct dcc_drvdata *drvdata =3D dev_get_drvdata(dev);
-> >> +       struct dcc_config_entry *entry;
-> >> +       char local_buf[64];
-> >> +       int len =3D 0, count =3D 0;
-> >> +
-> >> +       buf[0] =3D '\0';
-> >=20
-> > Why?
->=20
-> The strlcat function is used here to concatenate the buffer with the=20
-> config values.
-> The strlcat function in C needs a NULL terminated string both as it's=20
-> source and
-> destination. That's why this has been initialized with NULL termination.
->=20
-
-sysfs files shall be one value per file, i.e. something that a machine
-reads. This function looks like a debugfs function.
-
->=20
-> >=20
-> >> +
-> >> +       mutex_lock(&drvdata->mutex);
-> >> +       if (drvdata->curr_list >=3D drvdata->nr_link_list) {
-> >> +               dev_err(dev, "Select link list to program using=20
-> >> curr_list\n");
-> >> +               count =3D -EINVAL;
-> >> +               goto err;
-> >> +       }
-> >> +
-> >> +       list_for_each_entry(entry,
-> >> +       &drvdata->cfg_head[drvdata->curr_list], list) {
-> >> +               switch (entry->desc_type) {
-> >> +               case DCC_READ_WRITE_TYPE:
-> >> +                       len =3D snprintf(local_buf, 64, "Index: 0x%x, =
-
-> >> mask: 0x%x, val: 0x%x\n",
-> >> +                               entry->index, entry->mask,=20
-> >> entry->write_val);
-> >> +                       break;
-> >> +               case DCC_LOOP_TYPE:
-> >> +                       len =3D snprintf(local_buf, 64, "Index: 0x%x, =
-
-> >> Loop: %d\n",
-> >> +                               entry->index, entry->loop_cnt);
-> >> +                       break;
-> >> +               case DCC_WRITE_TYPE:
-> >> +                       len =3D snprintf(local_buf, 64,
-> >> +                               "Write Index: 0x%x, Base: 0x%x,=20
-> >> Offset: 0x%x, len: 0x%x APB: %d\n",
-> >> +                               entry->index, entry->base,=20
-> >> entry->offset, entry->len,
-> >> +                               entry->apb_bus);
-> >> +                       break;
-> >> +               default:
-> >> +                       len =3D snprintf(local_buf, 64,
-> >> +                               "Read Index: 0x%x, Base: 0x%x, Offset:=
-=20
-> >> 0x%x, len: 0x%x APB: %d\n",
-> >> +                               entry->index, entry->base,=20
-> >> entry->offset,
-> >> +                               entry->len, entry->apb_bus);
-> >> +               }
-> >> +
-> >> +               if ((count + len) > PAGE_SIZE) {
-> >> +                       dev_err(dev, "DCC: Couldn't write complete=20
-> >> config\n");
-> >> +                       break;
-> >> +               }
-> >> +               strlcat(buf, local_buf, PAGE_SIZE);
-> >> +               count +=3D len;
-> >> +       }
-> >> +
-> >> +err:
-> >> +       mutex_unlock(&drvdata->mutex);
-> >> +       return count;
-> >> +}
-> >=20
-> >> +
-> >> +       /* EOF check */
-> >> +       if (drvdata->ram_size <=3D *ppos)
-> >> +               return 0;
-> >> +
-> >> +       if ((*ppos + len) > drvdata->ram_size)
-> >> +               len =3D (drvdata->ram_size - *ppos);
-> >> +
-> >> +       buf =3D kzalloc(len, GFP_KERNEL);
-> >> +       if (!buf)
-> >> +               return -ENOMEM;
-> >> +
-> >> +       memcpy_fromio(buf, drvdata->ram_base + *ppos, len);
-> >> +
-> >> +       if (copy_to_user(data, buf, len)) {
-> >=20
-> > Is there any sort of memcpy_fromio_to_user() API? That would avoid the
-> > extra buffer allocation by copying to userspace in the readl loop.
->=20
-> No. For directly copying io data to userspace we need to use direct I/O=20
-> which is used for
-> special cases like tape drivers. In this case the complexity of using it =
-
-> outweighs it's
-> advantages. Also this is a fixed transfer of data in the form of=20
-> dcc_sram content rather
-> than bulk transfers.
-
-Tape drivers? Huh? Can you please look into adding a
-memcpy_fromio_to_user() API that does this without allocating memory for
-a buffer?
-
->=20
-> >=20
-> >> +               dcc->loopoff =3D DCC_FIX_LOOP_OFFSET;
-> >> +       else
-> >> +               dcc->loopoff =3D get_bitmask_order((dcc->ram_size +
-> >> +                               dcc->ram_offset) / 4 - 1);
-> >> +
-> >> +       mutex_init(&dcc->mutex);
-> >> +       dcc->enable =3D devm_kcalloc(dev, dcc->nr_link_list,
-> >> +                       sizeof(bool), GFP_KERNEL);
-> >> +       if (!dcc->enable)
-> >> +               return -ENOMEM;
-> >> +
-> >> +       dcc->configured =3D devm_kcalloc(dev, dcc->nr_link_list,
-> >> +                       sizeof(bool), GFP_KERNEL);
-> >> +       if (!dcc->configured)
-> >> +               return -ENOMEM;
-> >> +
-> >> +       dcc->nr_config =3D devm_kcalloc(dev, dcc->nr_link_list,
-> >> +                       sizeof(u32), GFP_KERNEL);
-> >> +       if (!dcc->nr_config)
-> >> +               return -ENOMEM;
-> >> +
-> >> +       dcc->cfg_head =3D devm_kcalloc(dev, dcc->nr_link_list,
-> >> +                       sizeof(struct list_head), GFP_KERNEL);
-> >> +       if (!dcc->cfg_head)
-> >> +               return -ENOMEM;
-> >=20
-> > These are a lot of allocations. Any chance we can do one instead of=20
-> > this
-> > many?
->=20
-> All these variable have predefined requirement of sizes
-> so they need to be allocated separately.
-
-Gather requirements, do some addition, and then allocate one chunk of
-memory?
+>                 scan_balance = SCAN_FILE;
+>                 goto out;
+>         }
+> @@ -2708,7 +2737,7 @@ static inline bool should_continue_recla
+>          */
+>         pages_for_compaction = compact_gap(sc->order);
+>         inactive_lru_pages = node_page_state(pgdat, NR_INACTIVE_FILE);
+> -       if (get_nr_swap_pages() > 0)
+> +       if (can_reclaim_anon_pages(NULL, pgdat->node_id))
+>                 inactive_lru_pages += node_page_state(pgdat, NR_INACTIVE_ANON);
+>
+>         return inactive_lru_pages > pages_for_compaction;
+> _
+>
