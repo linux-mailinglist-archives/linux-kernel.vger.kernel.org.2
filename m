@@ -2,87 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB474352A7E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 14:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCEE7352A81
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 14:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235288AbhDBMO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 08:14:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229599AbhDBMO2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 08:14:28 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99609C0613E6;
-        Fri,  2 Apr 2021 05:14:27 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 4EB681F46A50
-Received: by earth.universe (Postfix, from userid 1000)
-        id 2F4823C0C96; Fri,  2 Apr 2021 14:14:24 +0200 (CEST)
-Date:   Fri, 2 Apr 2021 14:14:24 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Timon Baetz <timon.baetz@protonmail.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH v2 0/1] charger-supply for max8997_charger
-Message-ID: <20210402121424.2imblhsxrkocjg7n@earth.universe>
-References: <20210329143715.806981-1-timon.baetz@protonmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wbfo3p5zroxgn7zs"
-Content-Disposition: inline
-In-Reply-To: <20210329143715.806981-1-timon.baetz@protonmail.com>
+        id S235323AbhDBMQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 08:16:39 -0400
+Received: from m12-17.163.com ([220.181.12.17]:35310 "EHLO m12-17.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229932AbhDBMQh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 08:16:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=IWxKbG8Cj43FYem+vi
+        40htkvh411QjWWlh67x/zPVmw=; b=Tr9LDxn7SOW6Qxbk0PlypryMV45g1kf2lp
+        ZzS/9yutOpOtsOmbOpvChmDXkMzb/97uSb+25DGCxUJtVPymfcl3buL1Dm36wZ8w
+        S9qm2sLhGeBtu8aUEFQbp0ddDaMwcRio3P+a/W101ywn84u69IrPRMF8f3/D4VJk
+        SPOOSwqlw=
+Received: from wengjianfeng.ccdomain.com (unknown [218.17.89.92])
+        by smtp13 (Coremail) with SMTP id EcCowACXwob2Cmdgsxc2tQ--.61767S2;
+        Fri, 02 Apr 2021 20:15:52 +0800 (CST)
+From:   samirweng1979 <samirweng1979@163.com>
+To:     krzysztof.kozlowski@canonical.com, k.opasiak@samsung.com
+Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+Subject: [PATCH] nfc: s3fwrn5: remove unnecessary label
+Date:   Fri,  2 Apr 2021 20:15:48 +0800
+Message-Id: <20210402121548.3260-1-samirweng1979@163.com>
+X-Mailer: git-send-email 2.15.0.windows.1
+X-CM-TRANSID: EcCowACXwob2Cmdgsxc2tQ--.61767S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWrtrW3Xw43uF4rCr15AF1UKFg_yoW8JryrpF
+        Z8Ka4xCFyFkF4rG34vyr4q9F9a93y3GFyxG3yjqws7A3yrZw4vvFnFyFyYkrykCrWUGFy3
+        JF42qrs8uFy7Kw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jWApnUUUUU=
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbirA1osVr7s48WXgAAst
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: wengjianfeng <wengjianfeng@yulong.com>
 
---wbfo3p5zroxgn7zs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In function s3fwrn5_nci_post_setup, The variable ret is assigned to 0,
+then goto out label, but just return ret in out label, so we use
+return 0 to replace it. and other goto sentences are similar, we use
+return sentences to replace it and delete out label.
 
-Hi,
+Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+---
+ drivers/nfc/s3fwrn5/core.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-On Mon, Mar 29, 2021 at 02:37:47PM +0000, Timon Baetz wrote:
-> Based on the discussion from [0] add an optional DT property to retrieve
-> the regulator used for charging control in the max8997_charger driver.
->=20
-> [0] https://lore.kernel.org/lkml/20210118124505.GG4455@sirena.org.uk/
->=20
-> Changes in v2:
->=20
-> * drop accepted patches
->=20
-> Timon Baetz (1):
->   power: supply: max8997_charger: Switch to new binding
->=20
->  drivers/power/supply/max8997_charger.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
+diff --git a/drivers/nfc/s3fwrn5/core.c b/drivers/nfc/s3fwrn5/core.c
+index c00b7a0..865d3e3 100644
+--- a/drivers/nfc/s3fwrn5/core.c
++++ b/drivers/nfc/s3fwrn5/core.c
+@@ -124,13 +124,12 @@ static int s3fwrn5_nci_post_setup(struct nci_dev *ndev)
+ 
+ 	if (s3fwrn5_firmware_init(info)) {
+ 		//skip bootloader mode
+-		ret = 0;
+-		goto out;
++		return 0;
+ 	}
+ 
+ 	ret = s3fwrn5_firmware_update(info);
+ 	if (ret < 0)
+-		goto out;
++		return ret;
+ 
+ 	/* NCI core reset */
+ 
+@@ -139,12 +138,9 @@ static int s3fwrn5_nci_post_setup(struct nci_dev *ndev)
+ 
+ 	ret = nci_core_reset(info->ndev);
+ 	if (ret < 0)
+-		goto out;
+-
+-	ret = nci_core_init(info->ndev);
++		return ret;
+ 
+-out:
+-	return ret;
++	return nci_core_init(info->ndev);
+ }
+ 
+ static struct nci_ops s3fwrn5_nci_ops = {
+-- 
+1.9.1
 
-Thanks, queued.
 
--- Sebastian
-
---wbfo3p5zroxgn7zs
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBnCpoACgkQ2O7X88g7
-+ppTag/+IkqQNu9jDkrBooJ96hNXWxts8q4CbwpUn7dknkpGC7Ti2OOWYaeG55lo
-BipXr6Seuiv4Ug9vasHK2PCy629aBfh6k/FbNus//iAgPl9dZH1OdPKJr6tw3NMf
-zpPQWC2LeVAAgchUo7OxGyEXWDJOIOd01IIjwx+7pqyIU0/IrBbLUvlsYKyE4OtK
-x1UQ2wZfE5j7ZTFiB/SXcJRUxBvESEURbvCY1fzVoFaMGEo+qDuE+21yDB0saJ2P
-wlCz4LhNuHm7CCX8XhWDaibFWpsu8i7i7SSTzJPmICg1gCrl8/px2AZCjoQWJ+o8
-SpyjZp6KmOHDUyirh4Ne9iFzrdNVLW97OvQ4aU5Z5cHBgtocbdhIH5sIHZHmJtbc
-jnd8stIMeSuyA8SpQ+yk/GcR1Wn7fdMO0EopZ2NMth29Mh4t6/XRta7IpVMt99kl
-3s+mAp3NCtkXNNzhrgVEvC9l2jb6D0NWsJaZPL///iuUcGbC7md+Y7KYzlR53QFg
-9u8kF292MxQ1oZphJP9uicrGC0PycuR/F/lIZbn9JXUphJNwTjAoAZ1wYGXnppzn
-YtKkzvxkcIbA0Jng9as00P5J1WphAElxkIrUmQl9EJO+mRMD7x2HoBkFPgd0ZX/j
-cHSYYLVsWz/clGfxHmoAab9qw40YqaazVbsdYCt/zh0RjZm0ZXg=
-=MzoX
------END PGP SIGNATURE-----
-
---wbfo3p5zroxgn7zs--
