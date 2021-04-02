@@ -2,183 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECB97352659
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 06:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAFB8352656
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 06:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbhDBE4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 00:56:32 -0400
-Received: from mga04.intel.com ([192.55.52.120]:34563 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230387AbhDBE4a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 00:56:30 -0400
-IronPort-SDR: NTNu2pPk9p/TbMS8eDYq/rMhzITwNt4oxXiknS0H+MSZH9DCCYBovs9uhkeZP+K8q82A+QJBIi
- kSfnUCuZXk1Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="190159062"
-X-IronPort-AV: E=Sophos;i="5.81,298,1610438400"; 
-   d="scan'208";a="190159062"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 21:56:28 -0700
-IronPort-SDR: mWB3118uCTIINZMPTNfhyU6fTxUfHNLgsqmUDa3qh+RGGuzEGIOR0lOcO2Sr/gffdufCMtZxMW
- tKW7FQrCglww==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,298,1610438400"; 
-   d="scan'208";a="439477089"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
-  by fmsmga004.fm.intel.com with ESMTP; 01 Apr 2021 21:56:26 -0700
-Cc:     baolu.lu@linux.intel.com, David Woodhouse <dwmw2@infradead.org>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Gonglei <arei.gonglei@huawei.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] iommu/vt-d: Force to flush iotlb before creating
- superpage
-To:     "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
-        <longpeng2@huawei.com>, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20210401071834.1639-1-longpeng2@huawei.com>
- <af470760-04c1-0929-7304-0879ca7af542@linux.intel.com>
- <b4ddcefa-9492-326f-e717-b6623bc824c1@huawei.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <94a6bd76-7382-8fc2-b398-b3d9a2146194@linux.intel.com>
-Date:   Fri, 2 Apr 2021 12:47:03 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <b4ddcefa-9492-326f-e717-b6623bc824c1@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S230074AbhDBE4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 00:56:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229518AbhDBE4V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 00:56:21 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA235C0613E6;
+        Thu,  1 Apr 2021 21:56:20 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id y3so146588pgi.0;
+        Thu, 01 Apr 2021 21:56:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=kVdcgww23VdErQfrCwBlNpGo/FOajrGJ912n2nUaTcE=;
+        b=qIE+CxChq8Pd5YUAkG3mWlCe/XJ9vL3eagK5/HekCLLfGabaqENuMTuTEFOO866xGL
+         1pRFGxSJ5MJJL6e8/cFcguS+N9tbV92JGtm0hNSn7i4x6z5v3qIlRH1NgrhzKqSw8p+a
+         nGPs6f13SSbIlLWiIVYLKg1Rj493pvEQLPi7Uf0Hh2I+rni4igNUKVWGk+1xWJrpgEbv
+         5WQm5Tr7vwMOpULUdN9695I3Ze3P5bEHnT2SjY1lKJFDP84mpN3iWcquZLdtAzS5UdR1
+         zSFx4r5otwXfdRBJHfQOHuihEcN7LRWVbyigxD7HOYLVE2GrmjFDIXzutHYFkwh/n1op
+         orwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=kVdcgww23VdErQfrCwBlNpGo/FOajrGJ912n2nUaTcE=;
+        b=cJuZdSRhxMg2YMXFI0+mTnvL5OpD/eVcJZUBz6pRbRj29pVlPH5Lo1TrpdBGNKeS19
+         f0Zs0A5sPxTs9z8KmszLHKlQYnVoElqT8r+xWi9eGS3rlX2W1pa7Ta0ZRM7GtJ3B7vtL
+         wdTtU3PgcEFWQYixagKpWExhFHJbz/aEO1jYltlFCqZ5EmfVWJN82KmErCA6o9iaiI2l
+         BIRoga8BRb0tsI+9O+huQ6UTBq44DgFvgWjYCL0EbPZck06TxI0f6ZjFRrotaU+SjBMh
+         0K5Xvk40F3eZhjp3J6F1axF1aVEJGPA44iW+JlKfuEKr3NH7m6B5nPIRUI/Ug+XX59Ez
+         nFgg==
+X-Gm-Message-State: AOAM532HWcFe/WmMgHjjaT7a9JTKBFMBS9g80/5YRs9xvEOCp4YiTf8I
+        Lj8iSMz/SdoV6eLt+Kp7BJo=
+X-Google-Smtp-Source: ABdhPJxu0ecpZKFkEfVjbKD6wzATRCTM0JlUiM/CtZULrBPTOEH1SQ6FJIbB+dtdWd+t9yIWpZhUPA==
+X-Received: by 2002:aa7:96f0:0:b029:1f3:97a4:19d2 with SMTP id i16-20020aa796f00000b02901f397a419d2mr10422788pfq.73.1617339380302;
+        Thu, 01 Apr 2021 21:56:20 -0700 (PDT)
+Received: from localhost.localdomain ([96.44.140.50])
+        by smtp.gmail.com with ESMTPSA id o4sm6942987pfk.15.2021.04.01.21.56.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 21:56:19 -0700 (PDT)
+From:   zhuguangqing83@gmail.com
+To:     Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Javi Merino <javi.merino@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guangqing Zhu <zhuguangqing83@gmail.com>
+Subject: [PATCH] thermal/drivers/cpuidle_cooling: Make sure that idle_duration is larger than residency
+Date:   Fri,  2 Apr 2021 12:56:14 +0800
+Message-Id: <20210402045615.22630-1-zhuguangqing83@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/2/21 11:41 AM, Longpeng (Mike, Cloud Infrastructure Service Product 
-Dept.) wrote:
-> Hi Baolu,
-> 
-> 在 2021/4/2 11:06, Lu Baolu 写道:
->> Hi Longpeng,
->>
->> On 4/1/21 3:18 PM, Longpeng(Mike) wrote:
->>> The translation caches may preserve obsolete data when the
->>> mapping size is changed, suppose the following sequence which
->>> can reveal the problem with high probability.
->>>
->>> 1.mmap(4GB,MAP_HUGETLB)
->>> 2.
->>>     while (1) {
->>>      (a)    DMA MAP   0,0xa0000
->>>      (b)    DMA UNMAP 0,0xa0000
->>>      (c)    DMA MAP   0,0xc0000000
->>>                * DMA read IOVA 0 may failure here (Not present)
->>>                * if the problem occurs.
->>>      (d)    DMA UNMAP 0,0xc0000000
->>>     }
->>>
->>> The page table(only focus on IOVA 0) after (a) is:
->>>    PML4: 0x19db5c1003   entry:0xffff899bdcd2f000
->>>     PDPE: 0x1a1cacb003  entry:0xffff89b35b5c1000
->>>      PDE: 0x1a30a72003  entry:0xffff89b39cacb000
->>>       PTE: 0x21d200803  entry:0xffff89b3b0a72000
->>>
->>> The page table after (b) is:
->>>    PML4: 0x19db5c1003   entry:0xffff899bdcd2f000
->>>     PDPE: 0x1a1cacb003  entry:0xffff89b35b5c1000
->>>      PDE: 0x1a30a72003  entry:0xffff89b39cacb000
->>>       PTE: 0x0          entry:0xffff89b3b0a72000
->>>
->>> The page table after (c) is:
->>>    PML4: 0x19db5c1003   entry:0xffff899bdcd2f000
->>>     PDPE: 0x1a1cacb003  entry:0xffff89b35b5c1000
->>>      PDE: 0x21d200883   entry:0xffff89b39cacb000 (*)
->>>
->>> Because the PDE entry after (b) is present, it won't be
->>> flushed even if the iommu driver flush cache when unmap,
->>> so the obsolete data may be preserved in cache, which
->>> would cause the wrong translation at end.
->>>
->>> However, we can see the PDE entry is finally switch to
->>> 2M-superpage mapping, but it does not transform
->>> to 0x21d200883 directly:
->>>
->>> 1. PDE: 0x1a30a72003
->>> 2. __domain_mapping
->>>        dma_pte_free_pagetable
->>>          Set the PDE entry to ZERO
->>>        Set the PDE entry to 0x21d200883
->>>
->>> So we must flush the cache after the entry switch to ZERO
->>> to avoid the obsolete info be preserved.
->>>
->>> Cc: David Woodhouse <dwmw2@infradead.org>
->>> Cc: Lu Baolu <baolu.lu@linux.intel.com>
->>> Cc: Nadav Amit <nadav.amit@gmail.com>
->>> Cc: Alex Williamson <alex.williamson@redhat.com>
->>> Cc: Kevin Tian <kevin.tian@intel.com>
->>> Cc: Gonglei (Arei) <arei.gonglei@huawei.com>
->>>
->>> Fixes: 6491d4d02893 ("intel-iommu: Free old page tables before creating
->>> superpage")
->>> Cc: <stable@vger.kernel.org> # v3.0+
->>> Link:
->>> https://lore.kernel.org/linux-iommu/670baaf8-4ff8-4e84-4be3-030b95ab5a5e@huawei.com/
->>>
->>> Suggested-by: Lu Baolu <baolu.lu@linux.intel.com>
->>> Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
->>> ---
->>>    drivers/iommu/intel/iommu.c | 15 +++++++++++++--
->>>    1 file changed, 13 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
->>> index ee09323..cbcb434 100644
->>> --- a/drivers/iommu/intel/iommu.c
->>> +++ b/drivers/iommu/intel/iommu.c
->>> @@ -2342,9 +2342,20 @@ static inline int hardware_largepage_caps(struct
->>> dmar_domain *domain,
->>>                     * removed to make room for superpage(s).
->>>                     * We're adding new large pages, so make sure
->>>                     * we don't remove their parent tables.
->>> +                 *
->>> +                 * We also need to flush the iotlb before creating
->>> +                 * superpage to ensure it does not perserves any
->>> +                 * obsolete info.
->>>                     */
->>> -                dma_pte_free_pagetable(domain, iov_pfn, end_pfn,
->>> -                               largepage_lvl + 1);
->>> +                if (dma_pte_present(pte)) {
->>> +                    int i;
->>> +
->>> +                    dma_pte_free_pagetable(domain, iov_pfn, end_pfn,
->>> +                                   largepage_lvl + 1);
->>> +                    for_each_domain_iommu(i, domain)
->>> +                        iommu_flush_iotlb_psi(g_iommus[i], domain,
->>> +                                      iov_pfn, nr_pages, 0, 0);
->>
->> Thanks for patch!
->>
->> How about making the flushed page size accurate? For example,
->>
->> @@ -2365,8 +2365,8 @@ __domain_mapping(struct dmar_domain *domain, unsigned long
->> iov_pfn,
->>                                          dma_pte_free_pagetable(domain, iov_pfn,
->> end_pfn,
->>
->> largepage_lvl + 1);
->>                                          for_each_domain_iommu(i, domain)
->> - iommu_flush_iotlb_psi(g_iommus[i], domain,
->> - iov_pfn, nr_pages, 0, 0);
->> + iommu_flush_iotlb_psi(g_iommus[i], domain, iov_pfn,
->> + ALIGN_DOWN(nr_pages, lvl_pages), 0, 0);
->>
-> Yes, make sense.
-> 
-> Maybe another alternative is 'end_pfn - iova_pfn + 1', it's readable because we
-> free pagetable with (iova_pfn, end_pfn) above. Which one do you prefer?
+From: Guangqing Zhu <zhuguangqing83@gmail.com>
 
-Yours looks better.
+The injected idle duration should be greater than the idle state min
+residency, otherwise we end up consuming more energy and potentially invert
+the mitigation effect.
 
-By the way, if you are willing to prepare a v2, please make sure to add
-Joerg (IOMMU subsystem maintainer) to the list.
+In function __cpuidle_cooling_register(), if
+of_property_read_u32(np, "exit-latency-us", &latency_us) is failed, then
+maybe we should not use latency_us. In this case, a zero latency_us for
+forced_idle_latency_limit_ns is better than UMAX_INT. It means to use
+governors in the usual way.
 
-Best regards,
-baolu
+Signed-off-by: Guangqing Zhu <zhuguangqing83@gmail.com>
+---
+ drivers/powercap/idle_inject.c    | 1 -
+ drivers/thermal/cpuidle_cooling.c | 8 +++++++-
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/powercap/idle_inject.c b/drivers/powercap/idle_inject.c
+index 6e1a0043c411..d76eef1e9387 100644
+--- a/drivers/powercap/idle_inject.c
++++ b/drivers/powercap/idle_inject.c
+@@ -309,7 +309,6 @@ struct idle_inject_device *idle_inject_register(struct cpumask *cpumask)
+ 	cpumask_copy(to_cpumask(ii_dev->cpumask), cpumask);
+ 	hrtimer_init(&ii_dev->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+ 	ii_dev->timer.function = idle_inject_timer_fn;
+-	ii_dev->latency_us = UINT_MAX;
+ 
+ 	for_each_cpu(cpu, to_cpumask(ii_dev->cpumask)) {
+ 
+diff --git a/drivers/thermal/cpuidle_cooling.c b/drivers/thermal/cpuidle_cooling.c
+index 7ecab4b16b29..de770eb5b2ba 100644
+--- a/drivers/thermal/cpuidle_cooling.c
++++ b/drivers/thermal/cpuidle_cooling.c
+@@ -175,7 +175,8 @@ static int __cpuidle_cooling_register(struct device_node *np,
+ 	struct cpuidle_cooling_device *idle_cdev;
+ 	struct thermal_cooling_device *cdev;
+ 	unsigned int idle_duration_us = TICK_USEC;
+-	unsigned int latency_us = UINT_MAX;
++	unsigned int latency_us = 0;
++	unsigned int residency_us = UINT_MAX;
+ 	char dev_name[THERMAL_NAME_LENGTH];
+ 	int id, ret;
+ 
+@@ -199,6 +200,11 @@ static int __cpuidle_cooling_register(struct device_node *np,
+ 
+ 	of_property_read_u32(np, "duration-us", &idle_duration_us);
+ 	of_property_read_u32(np, "exit-latency-us", &latency_us);
++	of_property_read_u32(np, "min-residency-us", &residency_us);
++	if (idle_duration_us <= residency_us) {
++		ret = -EINVAL;
++		goto out_unregister;
++	}
+ 
+ 	idle_inject_set_duration(ii_dev, TICK_USEC, idle_duration_us);
+ 	idle_inject_set_latency(ii_dev, latency_us);
+-- 
+2.17.1
+
