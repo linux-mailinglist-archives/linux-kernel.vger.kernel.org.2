@@ -2,109 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 690E4352935
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 12:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8145352943
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 12:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234450AbhDBKBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 06:01:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44582 "EHLO
+        id S235161AbhDBKCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 06:02:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234161AbhDBKBs (ORCPT
+        with ESMTP id S234926AbhDBKCJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 06:01:48 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D033C0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 03:01:47 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id y6so4968618eds.1
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 03:01:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RgR6eBkPH1N3b2kMo1NenojBzQbPmoeGNNkcW0tcO3Q=;
-        b=c4uiGenEROW/33JFGMviN5Yo6XpyRXGRc7txx+97Osuz3CdwfT8RiLp/LmnEzdokw+
-         9m9CO0RET8dbNJ7OLJY8pol368NKOjY+XeqyKsz4lkcuV+sBip5VXWCnnHX0gI8WgJUo
-         lx2Eys2jOVbeI7IBbkhtISi19z5CE5Vd2x9DMjC4RZRPpbvfY+Df1TSWTO9BpLuB50wU
-         LbOvWT2PjhPJP4H9DvonCd2DHrDHrjX/NX4IC/FRJ4YQ5aDmmyXJz7Tk0pU1cIzUcfdg
-         Bt33ooB21cYbG9sbXIcGOR+7ih9bREFIQz5ke8C6hHkKmbnp+xpGnap5UBrWh5cwaTPt
-         y7NQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RgR6eBkPH1N3b2kMo1NenojBzQbPmoeGNNkcW0tcO3Q=;
-        b=O51x/Q29hma6I9UqMJTR7/QFm77EkAV9i/hF2kz72vwmd8bSEa9yZiUHwklaScBYk6
-         LKG3nozDsyC+QeH5kzXf8u6/h7famQuF0ejU5muAIEhkEk03dWEe/A2yXNCD5iFumijI
-         uiDwpKqttKT3YBrG2AfbZlsByJeTfVqhxhuoYvBPqEPeeDVstzqFt7vVWa2h/U3GSxV1
-         68js7tC5SJ2xyuf/Yq6LfAtLMOjhplbqPwpDTZ3LLuMIHWo96Un4O4a0+zEeMhbJd9a5
-         fp2lVd2l4iONnBxcdoVnjC+ZW4USvRRRAV8LptmS3rCfzjm/7zBNNXLXp0rS4siKgVNO
-         mD4w==
-X-Gm-Message-State: AOAM533NP0Hm6HZ6u6PyDPCktsTMMSt3r5wU/6+c7C9LdDgwqU13aiaS
-        +e+R+35y54MvbSfEBtYLhJM=
-X-Google-Smtp-Source: ABdhPJzToUxZvFo+v9qOwXHEJQ6zBDAA4MX5SPMeisOunhDidlO0ekNdGunsfDJPkvGMUTB5T7TLoQ==
-X-Received: by 2002:aa7:c71a:: with SMTP id i26mr1705111edq.281.1617357706011;
-        Fri, 02 Apr 2021 03:01:46 -0700 (PDT)
-Received: from agape ([5.171.72.128])
-        by smtp.gmail.com with ESMTPSA id hy13sm3932350ejc.32.2021.04.02.03.01.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 03:01:45 -0700 (PDT)
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     dan.carpenter@oracle.com, joe@perches.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH 00/16] staging: rtl8723bs: remove RT_TRACE logs in core/*
-Date:   Fri,  2 Apr 2021 12:01:20 +0200
-Message-Id: <cover.1617356821.git.fabioaiuto83@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 2 Apr 2021 06:02:09 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 239B2C0613E6;
+        Fri,  2 Apr 2021 03:02:07 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id CAEF72C1;
+        Fri,  2 Apr 2021 12:02:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1617357725;
+        bh=BwK8ADmyN5yPbUxid040ws2OoDNAKB3jwfGdu8fQZu4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q6U9n5vdWLQqcMaG+9TqXJIFsIVakimELdS5Z4Q0CD1sqXzXU/wZzECK/T3glx4Qb
+         RYFYe4xlxpBoHt9Em4McABWRJBPpzbetZ5xp3Qc9rIs63dc1STbbKAKWC2Mo+5BRmu
+         1DLv5hDerBLDJY2N3NBSy04VBkudO9QtsHBZMong=
+Date:   Fri, 2 Apr 2021 13:01:20 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Benoit Parrot <bparrot@ti.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Michael Tretter <m.tretter@pengutronix.de>,
+        Peter Chen <peter.chen@nxp.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
+        dmaengine@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Subject: Re: [PATCH 12/16] dt-bindings: media: Add DT bindings for TI CSI2RX
+ driver
+Message-ID: <YGbrcKPA9K8Ws0lv@pendragon.ideasonboard.com>
+References: <20210330173348.30135-1-p.yadav@ti.com>
+ <20210330173348.30135-13-p.yadav@ti.com>
+ <20210401155201.GA488101@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210401155201.GA488101@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset removes all RT_TRACE usages in core/ files.
+On Thu, Apr 01, 2021 at 10:52:01AM -0500, Rob Herring wrote:
+> On Tue, Mar 30, 2021 at 11:03:44PM +0530, Pratyush Yadav wrote:
+> > TI's J721E uses the Cadence CSI2RX and DPHY peripherals to facilitate
+> > capture over a CSI-2 bus. The TI CSI2RX platform driver glues all the
+> > parts together.
+> > 
+> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> > ---
+> >  .../devicetree/bindings/media/ti,csi2rx.yaml  | 70 +++++++++++++++++++
+> >  1 file changed, 70 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/media/ti,csi2rx.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/media/ti,csi2rx.yaml b/Documentation/devicetree/bindings/media/ti,csi2rx.yaml
+> > new file mode 100644
+> > index 000000000000..ebd894364391
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/media/ti,csi2rx.yaml
+> > @@ -0,0 +1,70 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/media/ti,csi2rx.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: TI CSI2RX Wrapper Device Tree Bindings
+> > +
 
-This is the first of a series aimed at removing RT_TRACE macro.
+A description would be useful, especially given that the TRM doesn't
+mention "CSI2RX".
 
-The whole private tracing system is not tied to a configuration
-symbol and the default behaviour is _trace nothing_. It's verbose
-and relies on a private log level tracing doomed to be
-removed.
+> > +maintainers:
+> > +  - Pratyush Yadav <p.yadav@ti.com>
+> > +
+> > +properties:
+> > +  compatible:
+> > +    items:
+> > +      - const: ti,csi2rx
+> > +
+> > +  dmas:
+> > +    description: RX DMA Channel 0
+> 
+> items:
+>   - description: RX DMA Channel 0
+> 
+> Or just 'maxItems: 1'
+> 
+> > +
+> > +  dma-names:
+> > +    items:
+> > +      - const: rx0
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +    description: Base address and size of the TI wrapper registers.
+> 
+> That's all 'reg' properties, drop 'description'.
 
-Fabio Aiuto (16):
-  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_xmit.c
-  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_security.c
-  staging: rtl8723bs: remove all RT_TRACE logs in core/rtw_eeprom.c
-  staging: rtl8723bs: remove all RT_TRACE logs in core/rtw_pwrctrl.c
-  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_cmd.c
-  staging: rtl8723bs: remove commented RT_TRACE calls in core/rtw_mlme.c
-  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_mlme.c
-  staging: rtl8723bs: tidy up some error handling
-  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_mlme_ext.c
-  staging: rtl8723bs: remove commented RT_TRACE calls in core/rtw_recv.c
-  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_recv.c
-  staging: rtl8723bs: remove commented RT_TRACE call in
-    core/rtw_ioctl_set.c
-  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_ioctl_set.c
-  staging: rtl8723bs: remove all RT_TRACE logs in core/rtw_wlan_util.c
-  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_sta_mgt.c
-  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_ieee80211.c
+According to SPRUIL1B, there are four register banks for the CSI_RX_IF,
+and two register banks for the DPHY_RX. What's your plan to support
+these ? Not everything need to be implemented at once, but backward
+compatibility need to be taken into account in the design.
 
- drivers/staging/rtl8723bs/core/rtw_cmd.c      |  53 +------
- drivers/staging/rtl8723bs/core/rtw_eeprom.c   |  56 +++----
- .../staging/rtl8723bs/core/rtw_ieee80211.c    |  90 ++---------
- .../staging/rtl8723bs/core/rtw_ioctl_set.c    |  79 +---------
- drivers/staging/rtl8723bs/core/rtw_mlme.c     | 124 +++------------
- drivers/staging/rtl8723bs/core/rtw_mlme_ext.c |  39 +----
- drivers/staging/rtl8723bs/core/rtw_pwrctrl.c  |  60 +------
- drivers/staging/rtl8723bs/core/rtw_recv.c     | 147 +-----------------
- drivers/staging/rtl8723bs/core/rtw_security.c |  41 +----
- drivers/staging/rtl8723bs/core/rtw_sta_mgt.c  |  25 ---
- .../staging/rtl8723bs/core/rtw_wlan_util.c    |  26 +---
- drivers/staging/rtl8723bs/core/rtw_xmit.c     |  82 +---------
- 12 files changed, 104 insertions(+), 718 deletions(-)
+> > +
+> > +  power-domains:
+> > +    maxItems: 1
+> > +    description:
+> > +      PM domain provider node and an args specifier containing
+> > +      the device id value.
+> 
+> Drop.
+> 
+> > +
+> > +  ranges: true
+> > +
+> > +  "#address-cells":
+> > +    const: 2
+> > +
+> > +  "#size-cells":
+> > +    const: 2
+> > +
+> > +patternProperties:
+> > +  "csi-bridge@":
+> 
+> "^csi-bridge@"
+> 
+> > +    type: object
+> > +    description: CSI2 bridge node.
+> 
+> Just an empty node?
+
+Even if the node is optional, it would be useful to include it in the
+example below, to show how it's supposed to be used.
+
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - dmas
+> > +  - dma-names
+> > +  - power-domains
+> > +  - "#address-cells"
+> > +  - "#size-cells"
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/soc/ti,sci_pm_domain.h>
+> > +
+> > +    ti_csi2rx0: ticsi2rx {
+> > +        compatible = "ti,csi2rx";
+> > +        dmas = <&main_udmap 0x4940>;
+> > +        dma-names = "rx0";
+> > +        reg = <0x0 0x4500000 0x0 0x1000>;
+> > +        power-domains = <&k3_pds 26 TI_SCI_PD_EXCLUSIVE>;
+> > +        #address-cells = <2>;
+> > +        #size-cells = <2>;
+> > +    };
 
 -- 
-2.20.1
+Regards,
 
+Laurent Pinchart
