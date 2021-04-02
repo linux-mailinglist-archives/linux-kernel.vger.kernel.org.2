@@ -2,89 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0969935290D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 11:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22FFA352906
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 11:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234636AbhDBJs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 05:48:56 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:33790 "EHLO fornost.hmeau.com"
+        id S234522AbhDBJsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 05:48:18 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:58162 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234217AbhDBJsz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 05:48:55 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1lSGOu-0003UO-NG; Fri, 02 Apr 2021 20:47:37 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 02 Apr 2021 20:47:36 +1100
-Date:   Fri, 2 Apr 2021 20:47:36 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Eric Biggers <ebiggers@google.com>,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
-Subject: Re: [PATCH] crypto: poly1305: fix poly1305_core_setkey() declaration
-Message-ID: <20210402094736.GC24509@gondor.apana.org.au>
-References: <20210322170542.1791154-1-arnd@kernel.org>
+        id S229924AbhDBJsR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 05:48:17 -0400
+Received: from zn.tnic (p200300ec2f0a2000e9f6c6f26a4b9205.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:2000:e9f6:c6f2:6a4b:9205])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2500C1EC0288;
+        Fri,  2 Apr 2021 11:48:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1617356895;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=29TNI45C4NuBpa0bXgLlOHCPu6BWYV1mLhtyhBM9p6A=;
+        b=PHf7dRCwGU84w0iZ+8UuNhap63do/D8O/PMPayQKe782m3m3ABsapJLegqVHNyM0q4DC3Z
+        umvNT1Bihx+wXJb1Pj4QFFyCgC07AKm99m2Yc/B8FpjG//a8JrMqwQCGSMium7TNcaE+Ne
+        UJqF/0B4IuiAs6MKxZkIhITcSkZ0bY0=
+Date:   Fri, 2 Apr 2021 11:48:16 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     kvm@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
+        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH v3 07/25] x86/sgx: Initialize virtual EPC driver even
+ when SGX driver is disabled
+Message-ID: <20210402094816.GC28499@zn.tnic>
+References: <cover.1616136307.git.kai.huang@intel.com>
+ <d35d17a02bbf8feef83a536cec8b43746d4ea557.1616136308.git.kai.huang@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210322170542.1791154-1-arnd@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <d35d17a02bbf8feef83a536cec8b43746d4ea557.1616136308.git.kai.huang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 06:05:15PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Fri, Mar 19, 2021 at 08:23:02PM +1300, Kai Huang wrote:
+> Modify sgx_init() to always try to initialize the virtual EPC driver,
+> even if the SGX driver is disabled.  The SGX driver might be disabled
+> if SGX Launch Control is in locked mode, or not supported in the
+> hardware at all.  This allows (non-Linux) guests that support non-LC
+> configurations to use SGX.
 > 
-> gcc-11 points out a mismatch between the declaration and the definition
-> of poly1305_core_setkey():
-> 
-> lib/crypto/poly1305-donna32.c:13:67: error: argument 2 of type ‘const u8[16]’ {aka ‘const unsigned char[16]’} with mismatched bound [-Werror=array-parameter=]
->    13 | void poly1305_core_setkey(struct poly1305_core_key *key, const u8 raw_key[16])
->       |                                                          ~~~~~~~~~^~~~~~~~~~~
-> In file included from lib/crypto/poly1305-donna32.c:11:
-> include/crypto/internal/poly1305.h:21:68: note: previously declared as ‘const u8 *’ {aka ‘const unsigned char *’}
->    21 | void poly1305_core_setkey(struct poly1305_core_key *key, const u8 *raw_key);
-> 
-> This is harmless in principle, as the calling conventions are the same,
-> but the more specific prototype allows better type checking in the
-> caller.
-> 
-> Change the declaration to match the actual function definition.
-> The poly1305_simd_init() is a bit suspicious here, as it previously
-> had a 32-byte argument type, but looks like it needs to take the
-> 16-byte POLY1305_BLOCK_SIZE array instead.
-> 
-> Fixes: 1c08a104360f ("crypto: poly1305 - add new 32 and 64-bit generic versions")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Acked-by: Dave Hansen <dave.hansen@intel.com>
+> Reviewed-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Kai Huang <kai.huang@intel.com>
 > ---
->  arch/arm/crypto/poly1305-glue.c    | 2 +-
->  arch/arm64/crypto/poly1305-glue.c  | 2 +-
->  arch/mips/crypto/poly1305-glue.c   | 2 +-
->  arch/x86/crypto/poly1305_glue.c    | 6 +++---
->  include/crypto/internal/poly1305.h | 3 ++-
->  include/crypto/poly1305.h          | 6 ++++--
->  lib/crypto/poly1305-donna32.c      | 3 ++-
->  lib/crypto/poly1305-donna64.c      | 3 ++-
->  lib/crypto/poly1305.c              | 3 ++-
->  9 files changed, 18 insertions(+), 12 deletions(-)
+>  arch/x86/kernel/cpu/sgx/main.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> index 6a734f484aa7..b73114150ff8 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -743,7 +743,15 @@ static int __init sgx_init(void)
+>  		goto err_page_cache;
+>  	}
+>  
+> -	ret = sgx_drv_init();
+> +	/*
+> +	 * Always try to initialize the native *and* KVM drivers.
+> +	 * The KVM driver is less picky than the native one and
+> +	 * can function if the native one is not supported on the
+> +	 * current system or fails to initialize.
+> +	 *
+> +	 * Error out only if both fail to initialize.
+> +	 */
+> +	ret = !!sgx_drv_init() & !!sgx_vepc_init();
 
-Patch applied.  Thanks.
+This is a silly way of writing:
+
+        if (sgx_drv_init() && sgx_vepc_init())
+                goto err_kthread;
+
+methinks.
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
