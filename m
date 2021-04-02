@@ -2,263 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72567352A17
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 13:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E041352A1A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 13:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235174AbhDBLJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 07:09:36 -0400
-Received: from mail-bn7nam10on2086.outbound.protection.outlook.com ([40.107.92.86]:38526
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235055AbhDBLJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 07:09:35 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=arREZBQ4zkjTuNa4pHmpNiJsEu5JCpZfE1mIbW9xKSi7bpm5sWU+TXOyH0BrPCfoQCBeHpHibypvVqbtLxLrGn03307NnDwW9M0Qf4/F3NdCbh2aRnaHw0dcyQCLoO+cKdoul7smHaX8WR3/F3I1PZLt9uYvjtRbIjhdHSlLsPsN5xxUIG92xA00R6jXasAszM9Gf1PSlY42ten0dtqz7PfMysvTOQ+hRQNEddV4uGe5EEppcdEZHsGln0YsCYNwlyo68NbA2CbVD64IwnWxuYdC6MqZp8yYSZDeBmnyNljp64c1iMFqWDZ6pY0C4wXVIvFSUOdjsoiPQdR6j+OH1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OQve+TNt/uJu26hwBSfydZ2UCHWP5KZxgRMBZph9R60=;
- b=m3etu5KSDmxrCNH/uLeJzb0KM1It+aQjIYITQj370KUptU0bKzaVT2Em8gv2pYWOel0LVufJm1vqdeFG0Y8N/jzfdR9mrYThOZCC3xhQg3ApjtwItIH1WzynRKZpgfmM2bifL+KFyfkPwdlEvhHZD5wNIubEWWhO0dGFCjbVKCe6hCNzpdO/+qAkcoqZhK/l/S/YDBTQ/s7rbUwVIk+ESy70hidl5+onB2iv4jpowfE5C5SCtRrltqgOX+zXMG3+oic7BKasbjJu3LNXTzN6UU4HtWzzlvvRWLkmfsNtBS+1XGQOwE83UQC/AbQMQ7gBf/tfK0D9eCa+1z3ik3d/Xw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OQve+TNt/uJu26hwBSfydZ2UCHWP5KZxgRMBZph9R60=;
- b=urZrATvHRdVIMNcsL6xgylHKK/keJoyqID5jyu0/ymzPi3X/3D985WYl7sN6vHJDwILlAfMWKtKg25TiYGwWgNfFJQOzrnh1uvvY25b94OdJdKL+57O7tqxtwQV8QCQRWKR3RZwSaGYrJgboPpTX8DVl3OO5+of8UR7xAQVi7ec=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
- by SN1PR12MB2511.namprd12.prod.outlook.com (2603:10b6:802:23::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28; Fri, 2 Apr
- 2021 11:09:31 +0000
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::24bb:3e53:c95e:cb8e]) by SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::24bb:3e53:c95e:cb8e%7]) with mapi id 15.20.3999.029; Fri, 2 Apr 2021
- 11:09:31 +0000
-Date:   Fri, 2 Apr 2021 11:09:24 +0000
-From:   Ashish Kalra <ashish.kalra@amd.com>
-To:     Steve Rutherford <srutherford@google.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "venu.busireddy@oracle.com" <venu.busireddy@oracle.com>,
-        "Singh, Brijesh" <brijesh.singh@amd.com>,
-        Quentin Perret <qperret@google.com>, maz@kernel.org
-Subject: Re: [PATCH v10 10/16] KVM: x86: Introduce KVM_GET_SHARED_PAGES_LIST
- ioctl
-Message-ID: <20210402110924.GA17630@ashkalra_ubuntu_server>
-References: <20210225202008.GA5208@ashkalra_ubuntu_server>
- <CABayD+cn5e3PR6NtSWLeM_qxs6hKWtjEx=aeKpy=WC2dzPdRLw@mail.gmail.com>
- <20210226140432.GB5950@ashkalra_ubuntu_server>
- <YDkzibkC7tAYbfFQ@google.com>
- <20210302145543.GA29994@ashkalra_ubuntu_server>
- <20210303185441.GA19944@willie-the-truck>
- <20210311181458.GA6650@ashkalra_ubuntu_server>
- <CABayD+cXH0oeV4-Ah3y6ThhNt3dhd0qDh6JmimjSz=EFjC+SYw@mail.gmail.com>
- <20210319175953.GA585@ashkalra_ubuntu_server>
- <CABayD+eJzGRsE_Y+YRJ+w-PKbXyX0_kvTSZhZqhMLQtQj2w_7g@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABayD+eJzGRsE_Y+YRJ+w-PKbXyX0_kvTSZhZqhMLQtQj2w_7g@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: SN4PR0401CA0011.namprd04.prod.outlook.com
- (2603:10b6:803:21::21) To SN6PR12MB2767.namprd12.prod.outlook.com
- (2603:10b6:805:75::23)
+        id S235159AbhDBLK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 07:10:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234563AbhDBLK4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 07:10:56 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A558AC0613E6
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 04:10:54 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id o16so4471040wrn.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 04:10:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Q8yqk6Gg1lixYUdtJreF2pfRxp/mvmHcHSAW4jILJZ8=;
+        b=SQ/G73AeC7mBU2PGWmt5WJnEZLsP/2bRqZ3SK3xT58W4ZruzvfiH95FzSoWqW6FPkR
+         9+HjRCYyJiwo1X1SWSznrT9TdmA3ogguKEXSJ4lE7/qSSPbROkg9+nsqOVp2zEuRM67V
+         jrwzzWD7ck5mZMrZH5JlXK9TrDhmeBYxbkn2dpxODi0UzCj9dwuD9SoysUMIk4/Nk+NH
+         Q4PTOosLvv9jdTZi2j6VixnHR1wBFMuhnPDiag7rqbvqIm3Ykk6XbBjvC1r57c5JkOBN
+         KKpbKW2rJQJg56Q6qD3Y087ztwRTq9Vs2ZC9qJOIi2yGQ8CqnlTTRk+1F7EyxIYlxKpX
+         5Hdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Q8yqk6Gg1lixYUdtJreF2pfRxp/mvmHcHSAW4jILJZ8=;
+        b=O2+neRK70XURYzNmnlHLhGW1JpDtT05rLqSXpdHZe4aSMD+rNR8Csw5Idqh50gvKIS
+         h85kEpndUXyZ4y1LqAIF7XexiBAZwhN1YoJqQachgnpx4F10Pv7MXuXLzrEJX5PMK14D
+         2Wv4t4YYVfXXklwIKGBDjqWG8kgeDGlsbU0bVDAkkKttHen5+Io1ILa9+TkyQdoIRU92
+         ktfiBNdOwDZPU91vDSYUfwyeJWHQ6Bddz5yQ28JQKknck8gU9A9AfZVbhV3xZw0xpTDB
+         3H5s5TE5/niXRSPjieb7zgFOzdJbDpalGVZBUX81P4oVag/caT6+mAxawRpDORX6u6nc
+         X5kA==
+X-Gm-Message-State: AOAM5334s2TUlNDisSPbPElihu5oj9ohQKoOlQs3V1+j7+zrj672WEK/
+        CZDDhREqeyvNchcKcfXQOcArWw==
+X-Google-Smtp-Source: ABdhPJzpe284DhML5+Wc1Eb9A7WLfdYXYsJEIoaX8K4jQCJl80leDrwv6OnhLzJ39uiiuU+Veii8LQ==
+X-Received: by 2002:a05:6000:1ce:: with SMTP id t14mr14509771wrx.85.1617361853168;
+        Fri, 02 Apr 2021 04:10:53 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:c9d5:e4dc:e7c5:5fcf? ([2a01:e34:ed2f:f020:c9d5:e4dc:e7c5:5fcf])
+        by smtp.googlemail.com with ESMTPSA id z82sm12240424wmg.19.2021.04.02.04.10.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Apr 2021 04:10:52 -0700 (PDT)
+Subject: Re: [PATCH v6 2/7] powercap/drivers/dtpm: Create a registering system
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lukasz.luba@arm.com, rafael@kernel.org,
+        Ram Chandrasekar <rkumbako@codeaurora.org>
+References: <20210401183654.27214-1-daniel.lezcano@linaro.org>
+ <20210401183654.27214-2-daniel.lezcano@linaro.org>
+ <YGYe9p3oyNpMnsBT@kroah.com>
+ <d0f818c7-3262-268b-bcc2-8036ce559d7b@linaro.org>
+ <YGbPh/QrFsgyJC6B@kroah.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <c819700a-97b6-9993-491b-599b82842dc2@linaro.org>
+Date:   Fri, 2 Apr 2021 13:10:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ashkalra_ubuntu_server (165.204.77.1) by SN4PR0401CA0011.namprd04.prod.outlook.com (2603:10b6:803:21::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28 via Frontend Transport; Fri, 2 Apr 2021 11:09:30 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4ee1a251-2465-4121-9bd9-08d8f5c7c9ee
-X-MS-TrafficTypeDiagnostic: SN1PR12MB2511:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN1PR12MB2511B13C8960A72F57C747868E7A9@SN1PR12MB2511.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mXTfWlGl7ULshC0Klmf2i1xLFNHRitoghbJUAhdDMcyM1CVIzylwxDaIX6GVoPudWrRTcBxHVeW9VelWfDgrJPJ4hC3Fa6Q/zlnaOFWCUjyGSXNXFEHSfZhIhFJVrZgCXUG4kjPSgv9D5P5ikVINbi90pv+RnvZfNOxg17Xr8AkjALFRfsRg8igzg59bpDEsnX0wuVJrd3nPrkZ/ZeeNE6Xh2sR4QKsVBR2WcNWR5XUD+6oq4D0j/k8uUqid+WEEXX0WLe2mE0bX108Slcc1hNZx+ClL1J8o7ccGiY5lej02XOkgVQ+1jmwShhxrH6wiru4n49ljU9ZIHFu9Ce+o1+AsSSt0d9o7t8QXB4Nc88HP7NBPIpFcuyJKoADn9pn9MTj3sfkwAuOFba7TP98G4oXUZfiFV96mvEpiCgY9jXkzv//iEhW33aY08deuHGTyfVFfhN76D4rukDEpc8p0ICsFNXQ6lrpyMZgxYY2qjFhfO/uY1IZn6y/ifRo+DZCWyeJOkwbNo5Dw21BSEnFXkmPadrbY2/gZB7/PZBRdtnNNflSjSbGQ9IJZhr1ng2ckIZX2/nickaSYbY8S80on9p+Er/XhQffvT72Kk5G56XyV+sDYzCcQ6hBCanyGRg5PxD4QifhtRRCPtrLgOaegcg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(366004)(39860400002)(346002)(136003)(6496006)(66946007)(66476007)(66556008)(52116002)(316002)(478600001)(33656002)(5660300002)(26005)(956004)(55016002)(44832011)(9686003)(38100700001)(1076003)(6666004)(186003)(83380400001)(8676002)(6916009)(8936002)(86362001)(53546011)(7416002)(54906003)(33716001)(2906002)(4326008)(16526019);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?3eMPqOBxDhEqQdZP+eU9/5CvwVnNaoCxfYpyCtCxYTfNiJWC0pGMzcRLzSdf?=
- =?us-ascii?Q?PJs0fyLa52lV+h3ABq9ylyCbia/1A/Mu0fdNM8bmb3zrM7cQjTAuKMUKipvN?=
- =?us-ascii?Q?L6nuwgU2kZiw1MuLsCrg5HfraR8Er6yI1bKBj8PzTMVVHbMZDGfTLMvv7Axv?=
- =?us-ascii?Q?zV58UcP+I0R/th42sSr0fdpvURndQbN/ZZUrhKbU2WTZRzTQr9O0wOIRSJ+j?=
- =?us-ascii?Q?Je4YukfeI0Kq0cHY/kJ8MK0b4Rnd8ym2wx/co2uMEXrbmTGuFaE2DUIeBOUc?=
- =?us-ascii?Q?LC0q0VhoPoD9Qd0mtf/QQck+bEbLb59uI+mT7OP2Eqkc0uSsSJ8NsrqEpCH9?=
- =?us-ascii?Q?Ez5926bHNbG5n8sGt9+eqlCoXBIbQ/b0ohdKFtclz15EhUmnZ3Wm/2/IhIXG?=
- =?us-ascii?Q?h9Jpso3ai3OSJQphme/S/ZW3ZbOqqrRvmfGvVM2tyH7fWN1LUzktV1x+kYj4?=
- =?us-ascii?Q?KviHsGgkFzak2vnIS4Wyr2ptmJhQn9k3o73FeOx1Uw2s6yhfxsqpVS7rFiOo?=
- =?us-ascii?Q?+tISt+VgY2QQ6KpFyaUOSEjhW9jL355NwMOTdZp6hXSXa3TEBvq8JbPR/jK3?=
- =?us-ascii?Q?0GYZPufECn3GtNPibipciLxgz9hXK6P7QtVKZSb0b5bwhiJh/isHtCGD2NVD?=
- =?us-ascii?Q?jXY2WmSTHfFZctTIy8q43cw8KTvWAXGePBjfvZ5XwN4kvFxJskwe05etmudV?=
- =?us-ascii?Q?dac2D47M0xOAn/zVrHldhr0x6Ai3KDRbxGY3Lk1yEAh0pQSoFH83MU+C2jCG?=
- =?us-ascii?Q?MxokEByt+StMz4VASUy4QAgI2e+JCO4fEuahru0x/zrM7B76YzX1slNRvqfo?=
- =?us-ascii?Q?G4d4ivaBS/PPnq2aQzaF6AmFwqA1pYE/Op7868SvNNQMU6Bv0u4NVwPa7Oy1?=
- =?us-ascii?Q?h6fhCIdR3EFw9CjDnIJYSaB4f8hNXHaVss7sR7quDj6FOZv1O5hU3lNIZlfc?=
- =?us-ascii?Q?Y/kDP5Km3DLALADBi6lzRkqtCdaOG3yU4As2dFkPj2i0Wt8PoJrWHJAOKcj5?=
- =?us-ascii?Q?/OjptwbG5Bh00SSWMf5DugdiUXZUF2ZlVwdB2GbPo5GcuAIuFi0e8N9jPDQF?=
- =?us-ascii?Q?lI1gZQ4iCUuiRxMGb2h16KN0zdPyrt+7noN1ZTT7ocMjLnFmRTbPnVqjZVVd?=
- =?us-ascii?Q?NWjZWmYKhIu3us3iS9GQhQtjgc8M8iKfMx/96CuuvIlWvQFNXl8EDcpCOX3w?=
- =?us-ascii?Q?HDK9zx1OxSSr2Dbw4Y3eLQqBeqXO6Wbnftu9UoqzVBoznOeyJ4REQlm72RbJ?=
- =?us-ascii?Q?6JXtQQQ3X9ElPqHH3N0OeWC38z0il/Ewk4t504Bzb4ceZAYi46Q7CA5UieFs?=
- =?us-ascii?Q?PzO6urrC1AiEY8tVS1UymQTh?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4ee1a251-2465-4121-9bd9-08d8f5c7c9ee
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Apr 2021 11:09:31.1478
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Rntv8v/UtaCTiRLnl1xXM2nCXkvVNFoif7vkZBGiWUJPPvgV9gBY+sdS8em9kEAwQSW/vL+KMbziu3Mm2iHrUQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2511
+In-Reply-To: <YGbPh/QrFsgyJC6B@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Steve,
-
-On Thu, Apr 01, 2021 at 06:40:06PM -0700, Steve Rutherford wrote:
-> On Fri, Mar 19, 2021 at 11:00 AM Ashish Kalra <ashish.kalra@amd.com> wrote:
-> >
-> > On Thu, Mar 11, 2021 at 12:48:07PM -0800, Steve Rutherford wrote:
-> > > On Thu, Mar 11, 2021 at 10:15 AM Ashish Kalra <ashish.kalra@amd.com> wrote:
-> > > >
-> > > > On Wed, Mar 03, 2021 at 06:54:41PM +0000, Will Deacon wrote:
-> > > > > [+Marc]
-> > > > >
-> > > > > On Tue, Mar 02, 2021 at 02:55:43PM +0000, Ashish Kalra wrote:
-> > > > > > On Fri, Feb 26, 2021 at 09:44:41AM -0800, Sean Christopherson wrote:
-> > > > > > > On Fri, Feb 26, 2021, Ashish Kalra wrote:
-> > > > > > > > On Thu, Feb 25, 2021 at 02:59:27PM -0800, Steve Rutherford wrote:
-> > > > > > > > > On Thu, Feb 25, 2021 at 12:20 PM Ashish Kalra <ashish.kalra@amd.com> wrote:
-> > > > > > > > > Thanks for grabbing the data!
-> > > > > > > > >
-> > > > > > > > > I am fine with both paths. Sean has stated an explicit desire for
-> > > > > > > > > hypercall exiting, so I think that would be the current consensus.
-> > > > > > >
-> > > > > > > Yep, though it'd be good to get Paolo's input, too.
-> > > > > > >
-> > > > > > > > > If we want to do hypercall exiting, this should be in a follow-up
-> > > > > > > > > series where we implement something more generic, e.g. a hypercall
-> > > > > > > > > exiting bitmap or hypercall exit list. If we are taking the hypercall
-> > > > > > > > > exit route, we can drop the kvm side of the hypercall.
-> > > > > > >
-> > > > > > > I don't think this is a good candidate for arbitrary hypercall interception.  Or
-> > > > > > > rather, I think hypercall interception should be an orthogonal implementation.
-> > > > > > >
-> > > > > > > The guest, including guest firmware, needs to be aware that the hypercall is
-> > > > > > > supported, and the ABI needs to be well-defined.  Relying on userspace VMMs to
-> > > > > > > implement a common ABI is an unnecessary risk.
-> > > > > > >
-> > > > > > > We could make KVM's default behavior be a nop, i.e. have KVM enforce the ABI but
-> > > > > > > require further VMM intervention.  But, I just don't see the point, it would
-> > > > > > > save only a few lines of code.  It would also limit what KVM could do in the
-> > > > > > > future, e.g. if KVM wanted to do its own bookkeeping _and_ exit to userspace,
-> > > > > > > then mandatory interception would essentially make it impossible for KVM to do
-> > > > > > > bookkeeping while still honoring the interception request.
-> > > > > > >
-> > > > > > > However, I do think it would make sense to have the userspace exit be a generic
-> > > > > > > exit type.  But hey, we already have the necessary ABI defined for that!  It's
-> > > > > > > just not used anywhere.
-> > > > > > >
-> > > > > > >   /* KVM_EXIT_HYPERCALL */
-> > > > > > >   struct {
-> > > > > > >           __u64 nr;
-> > > > > > >           __u64 args[6];
-> > > > > > >           __u64 ret;
-> > > > > > >           __u32 longmode;
-> > > > > > >           __u32 pad;
-> > > > > > >   } hypercall;
-> > > > > > >
-> > > > > > >
-> > > > > > > > > Userspace could also handle the MSR using MSR filters (would need to
-> > > > > > > > > confirm that).  Then userspace could also be in control of the cpuid bit.
-> > > > > > >
-> > > > > > > An MSR is not a great fit; it's x86 specific and limited to 64 bits of data.
-> > > > > > > The data limitation could be fudged by shoving data into non-standard GPRs, but
-> > > > > > > that will result in truly heinous guest code, and extensibility issues.
-> > > > > > >
-> >
-> > We may also need to pass-through the MSR to userspace, as it is a part of this
-> > complete host (userspace/kernel), OVMF and guest kernel negotiation of
-> > the SEV live migration feature.
-> >
-> > Host (userspace/kernel) advertises it's support for SEV live migration
-> > feature via the CPUID bits, which is queried by OVMF and which in turn
-> > adds a new UEFI runtime variable to indicate support for SEV live
-> > migration, which is later queried during guest kernel boot and
-> > accordingly the guest does a wrmrsl() to custom MSR to complete SEV
-> > live migration negotiation and enable it.
-> >
-> > Now, the GET_SHARED_REGION_LIST ioctl returns error, until this MSR write
-> > enables SEV live migration, hence, preventing userspace to start live
-> > migration before the feature support has been negotiated and enabled on
-> > all the three components - host, guest OVMF and kernel.
-> >
-> > But, now with this ioctl not existing anymore, we will need to
-> > pass-through the MSR to userspace too, for it to only initiate live
-> > migration once the feature negotiation has been completed.
+On 02/04/2021 10:02, Greg KH wrote:
+> On Fri, Apr 02, 2021 at 12:08:49AM +0200, Daniel Lezcano wrote:
+>>
+>> Hi Greg,
+>>
+>> On 01/04/2021 21:28, Greg KH wrote:
+>>> On Thu, Apr 01, 2021 at 08:36:49PM +0200, Daniel Lezcano wrote:
+>>>> A SoC can be differently structured depending on the platform and the
+>>>> kernel can not be aware of all the combinations, as well as the
+>>>> specific tweaks for a particular board.
+>>>>
+>>>> The creation of the hierarchy must be delegated to userspace.
+>>>
+>>> Why?  Isn't this what DT is for?
+>>
+>> I've always been told the DT describes the hardware. Here we are more
+>> describing a configuration, that is the reason why I've let the
+>> userspace to handle that through configfs.
 > 
-> I can't tell if you were waiting for feedback on this before posting
-> the follow-up patch series.
-
-Actually, i am going to post the follow-up patch series upstream early
-next week. 
-
-I have already added support for MSR handling and exit to userspace, the
-current implementation looks like this :
-
-The custom MSR is hooked both in svm_get_msr() and svm_set_msr():
-
-@@ -2800,6 +2800,17 @@ static int svm_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
-        case MSR_F10H_DECFG:
-                msr_info->data = svm->msr_decfg;
-                break;
-+       case MSR_KVM_SEV_LIVE_MIGRATION:
-+               if (!sev_guest(vcpu->kvm))
-+                       return 1;
-+
-+               if (!guest_cpuid_has(vcpu, KVM_FEATURE_SEV_LIVE_MIGRATION))
-+                       return 1;
-+
-+               /*
-+                * Let userspace handle the MSR using MSR filters.
-+                */
-+               return KVM_MSR_RET_FILTERED;
-
-So there is special check added for both sev_guest() and requisite CPUID
-bit set in guest CPUID, if either fails this will signal #GP to guest.
-
-Otherwise, it returns MSR_FILTER return code, which will allow userspace
-to use msr intercepts to handle the reads and writes via userspace exits
-using KVM_EXIT_X86_RDMSR/KVM_EXIT_X86_WRMSR.
-
-Let me know if you have any feedback/comments on the above handling.
-
-Thanks,
-Ashish
-
+> DT does describe how the hardware configuration is to be used.  You are
+> saying that the hardware description does not work and somehow you need
+> a magic userspace tool to reconfigure things instead?
 > 
-> Here are a few options:
-> 1) Add the MSR explicitly to the list of custom kvm MSRs, but don't
-> have it hooked up anywhere. The expectation would be for the VMM to
-> use msr intercepts to handle the reads and writes. If that seems
-> weird, have svm_set_msr (or whatever) explicitly ignore it.
-> 2) Add a getter and setter for the MSR. Only allow guests to use it if
-> they are sev_guests with the requisite CPUID bit set.
+>>> What "userspace tool" is going to be created to manage all of this?
+>>> Pointers to that codebase?
+>>
+>> You are certainly aware of most of it but let me give a bit more of context.
 > 
-> I think I prefer the former, and it should work fine from my
-> understanding of the msr intercepts implementation. I'm also open to
-> other ideas. You could also have the MSR write trigger a KVM_EXIT of
-> the same type as the hypercall, but have it just say "the msr value
-> changed to XYZ", but that design sounds awkward.
+> No, I am not aware of it at all, thanks :)
 > 
-> Thanks,
-> Steve
+>> The thermal framework has cooling devices which export their 'state', a
+>> representation of their performance level, in sysfs. Unfortunately that
+>> gives access from the user space to act on the performance as a power
+>> limiter in total conflict with the in-kernel thermal governor decisions.
+> 
+> Why not remove that conflict?
+
+Because the cooling device state should have not be exported its state
+in a writable way, that is a weakness different applications are
+abusing. Moreover, the thermal framework is not designed for that. It is
+not the purpose of the cooling device to be managed as a power limiter
+by the userspace.
+
+The powercap framework is there for that.
+
+There are devices registering themselves as a cooling device while there
+is no sensor and governor for them just for the sake of acting on their
+power via opaque integer values.
+
+
+>> That is done from thermal daemon the different SoC vendors tweak for
+>> their platform. Depending on the application running and identified as a
+>> scenario, the daemon acts proactively on the different cooling devices
+>> to ensure a skin temperature which is far below the thermal limit of the
+>> components.
+> 
+> So userspace is going to try to manage power settings in order to keep
+> thermal values under control?  Has no one learned from our past mistakes
+> when we used to have to do this 10 years ago and it turned out so bad
+> that it was just baked into the hardware instead?
+
+I agree in a desktop/server environment, that is true but on the
+embedded world, things are a bit different because we are on battery,
+the cooling devices are passive and the device is carried. This is why
+there are different level of thermal control:
+
+ - In the hardware / firmware to protect physically the silicon
+
+ - In the kernel, to protect from a hard reset or reboot. Usually each
+of them is represented with a thermal zone (and its sensor) and a
+governor. There is a 1:1 relationship. IOW, a governor manage a thermal
+zone without any knowledge of the other thermal zones temperature, just
+the one it is monitoring and acts on the power (with different
+techniques) when the temperature threshold is reached. Its action is
+local and it is after crossing a certain temperature for this component.
+
+ - In the userspace, the logic will get notified about which application
+is running and can set the power limitation on different devices knowing
+the performances are enough for that particular application, that saves
+energy and consequently reduce the temperature. Its action is on
+multiple places and happens far below the thermal limits. On the other
+side, the skin temperature is a particular sensor placed on the
+dissipation path and its temperature must be below 45°C (30 minutes skin
+contact at 45°C causes a 1st degree burn). It is the results of the
+dissipation of all the devices, the logic in userspace can know which
+devices to act on to have the overall power dissipation low enough to
+stay below this 45°C (eg. reduce camera resolution).  So here userspace
+deals with performance, temperature, application profile, etc ... and
+abuse the cooling device.
+
+I'm not sure in the ARM/ARM64 embedded ecosystem, creating a complex
+hardware mechanism, supported by a firmware is really possible.
+
+In a desktop/server environment, we do not care about having this skin
+temperature (and battery savings) aspects.
+
+> {sigh}
+> 
+>> This usage of the cooling devices hijacked the real purpose of the
+>> thermal framework which is to protect the silicon. Nobody to blame,
+>> there is no alternative for userspace.
+> 
+> Userspace should not care.
+> 
+>> The use case falls under the power limitation framework prerogative and
+>> that is the reason why we provided a new framework to limit the power
+>> based on the powercap framework. The thermal daemon can then use it and
+>> stop abusing the thermal framework.
+>>
+>> This DTPM framework allows to read the power consumption and set a power
+>> limit to a device.
+>>
+>> While the powercap simple backend gives a single device entry, DTPM
+>> aggregates the different devices power by summing their power and their
+>> limits. The tree representation of the different DTPM nodes describe how
+>> their limits are set and how the power is computed along the different
+>> devices.
+> 
+> That's all great, doing this in-kernel is fine, it's now the "userspace
+> must set this up properly that I'm objecting to as no one will know how
+> to do this.
+> 
+>> For more info, we did a presentation at ELC [1] and Linux PM
+>> microconference [2] and there is an article talking about it [3].
+>>
+>>
+>> To answer your questions, there is a SoC vendor thermal daemon using
+>> DTPM and there is a tool created to watch the thermal framework and read
+>> the DTPM values, it is available at [4]. It is currently under
+>> development with the goal of doing power rebalancing / capping across
+>> the different nodes when there is a violation of the parent's power limit.
+> 
+> Crazy ideas aside, your implementation of this is my main objection
+> here.  You are creating a user/kernel api that you will have to support
+> for 20+ years, without a real userspace user just yet (from what I can
+> tell).  That's rough, and is going to mean that this gets messy over
+> time.
+
+I'm not sure to understand, the API already exists since v3.3, it is the
+powercap and DTPM is its backend. AFAICT, there are already users of it
+except they create their own way to build the hierarchy today.
+
+> Also there's the whole "tying sysfs to configfs" mess and reference
+> counting that I object to as well...
+
+Ok, I think my description was bad but I agree with the fact that we
+must get rid of any adherence between sysfs and configfs. Thanks for
+reporting the issue.
+
+[ ... ]
+
+>> The configfs does not represent the layout of the sensors or the floor
+>> plan of the devices but only the constraints we want to tie together.
+>>
+>> That is the reason why I think using configfs instead of OF is more
+>> adequate and flexible as userspace deals with the power numbers.
+>> Moreover, we won't be facing issues with devices initialization priority
+>> when the daemon starts.
+>>
+>> I thought we can add OF later, when the framework has more users and
+>> more devices. The configfs and OF can certainly co-exist or be mutually
+>> exclusive via the Kconfig option.
+> 
+> Kconfig options are not ok for this, you want to build a kernel that
+> works everywhere.
+> 
+> If you want to make virtual things, that's fine, but again, your tying
+> of sysfs to configfs in odd ways, along with the reference counting
+> bugs/nightmare the current implementation is creating, is a non-starter
+> for me at the moment, sorry.
+
+I did not realize this reference counting issue. Thanks for spotting it.
+
+The points you raised are IMO solvable and I can send a new version but
+with all the comments I'm a bit lost with the approach with configfs.
+
+Do you think it is preferable to use OF instead ?
+
+Thanks again for your time
+
+  -- Daniel
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
