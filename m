@@ -2,311 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01FB03524F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 03:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D3423524F9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 03:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234158AbhDBBMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 21:12:23 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:61585 "EHLO m43-7.mailgun.net"
+        id S234228AbhDBBMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 21:12:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234023AbhDBBMV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 21:12:21 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617325941; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=+Yni5q+FxzLsCq7NA7tG30P8JRAnN4P0W8qH0iJRtEA=; b=pbpWTWzDWpuqvV6bSgdQj3j/eVV10E4BSif2+PelzP21Z9fW6HOu0sftsBKuYceNL3RY1EVO
- 525yXh2za0+jQKeLbPnlKZBYrot4bxrRhkYvT0nYLNQO7ZkkblRaJFtknca+MT4/mpmmqHlD
- +LzQ7Axa1Y6WVIvFl38vYRu0mys=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 60666f728807bcde1d8e5b4f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 02 Apr 2021 01:12:18
- GMT
-Sender: eberman=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 11B33C43463; Fri,  2 Apr 2021 01:12:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.1.70] (cpe-76-167-231-33.san.res.rr.com [76.167.231.33])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: eberman)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E989AC433ED;
-        Fri,  2 Apr 2021 01:12:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E989AC433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=eberman@codeaurora.org
-Subject: Re: [PATCH v2] firmware: qcom_scm: Only compile legacy calls on ARM
-To:     Stephen Boyd <swboyd@chromium.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Brian Masney <masneyb@onstation.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Jeffrey Hugo <jhugo@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>
-References: <20210323224336.1311783-1-swboyd@chromium.org>
-From:   Elliot Berman <eberman@codeaurora.org>
-Message-ID: <6ec0ca8d-85c7-53d6-acf2-22c4ac13e805@codeaurora.org>
-Date:   Thu, 1 Apr 2021 18:12:14 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S233849AbhDBBMm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 21:12:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F359360FF0;
+        Fri,  2 Apr 2021 01:12:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617325962;
+        bh=8Xhc5KZnjaD+CPi/JprRYEt09xgwe6dMHUdoeuBTIfs=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=YVD8mg/EnnLnl37a2Wa6UXIKEp3e2VRxuslifnf1C/2A8mWvjtVOBJ/oEpRYDVn3N
+         HElPQf38UOsvPz5Y4DJixXFizqHsqDyQ5ZTGi1W1F4cEhwtp5Mfa3Iq/xkl+2z2mag
+         BaQ0Bk28IEyt4LrNW+5Zxt7h9HF27k/IqtKTc316EnFarV7zwESpBdLEBYzyYRuUdQ
+         qDHXCGWK1dkmzBv8C3o9sqIZTnw2+LRJRx0Pdej602iOiHP9NNDkGjkdBlaVc0bV6i
+         Cp77Dhe8RU57ICY8pP/TvkrH87hvKQKsaCiwnSAoFSLlDe8hd4rkgtsg+RXQns8d7z
+         wHni2KehsAKvQ==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id BBB203523A03; Thu,  1 Apr 2021 18:12:41 -0700 (PDT)
+Date:   Thu, 1 Apr 2021 18:12:41 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 3/3] srcu: Fix broken node geometry after early ssp init
+Message-ID: <20210402011241.GO2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210401234704.125498-1-frederic@kernel.org>
+ <20210401234704.125498-4-frederic@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210323224336.1311783-1-swboyd@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401234704.125498-4-frederic@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 02, 2021 at 01:47:04AM +0200, Frederic Weisbecker wrote:
+> An ssp initialized before rcu_init_geometry() will have its snp hierarchy
+> based on CONFIG_NR_CPUS.
+> 
+> Once rcu_init_geometry() is called, the nodes distribution is shrinked
+> and optimized toward meeting the actual possible number of CPUs detected
+> on boot.
+> 
+> Later on, the ssp that was initialized before rcu_init_geometry() is
+> confused and sometimes refers to its initial CONFIG_NR_CPUS based node
+> hierarchy, sometimes to the new num_possible_cpus() based one instead.
+> For example each of its sdp->mynode remain backward and refer to the
+> early node leaves that may not exist anymore. On the other hand the
+> srcu_for_each_node_breadth_first() refers to the new node hierarchy.
+> 
+> There are at least two bad possible outcomes to this:
+> 
+> 1) a) A callback enqueued early on an sdp is recorded pending on
+>       sdp->mynode->srcu_data_have_cbs in srcu_funnel_gp_start() with
+>       sdp->mynode pointing to a deep leaf (say 3 levels).
+> 
+>    b) The grace period ends after rcu_init_geometry() which shrinks the
+>       nodes level to a single one. srcu_gp_end() walks through the new
+>       snp hierarchy without ever reaching the old leaves so the callback
+>       is never executed.
+> 
+>    This is easily reproduced on an 8 CPUs machine with
+>    CONFIG_NR_CPUS >= 32 and "rcupdate.rcu_self_test=1". The
+>    srcu_barrier() after early tests verification never completes and
+>    the boot hangs:
+> 
+> 	[ 5413.141029] INFO: task swapper/0:1 blocked for more than 4915 seconds.
+> 	[ 5413.147564]       Not tainted 5.12.0-rc4+ #28
+> 	[ 5413.151927] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> 	[ 5413.159753] task:swapper/0       state:D stack:    0 pid:    1 ppid:     0 flags:0x00004000
+> 	[ 5413.168099] Call Trace:
+> 	[ 5413.170555]  __schedule+0x36c/0x930
+> 	[ 5413.174057]  ? wait_for_completion+0x88/0x110
+> 	[ 5413.178423]  schedule+0x46/0xf0
+> 	[ 5413.181575]  schedule_timeout+0x284/0x380
+> 	[ 5413.185591]  ? wait_for_completion+0x88/0x110
+> 	[ 5413.189957]  ? mark_held_locks+0x61/0x80
+> 	[ 5413.193882]  ? mark_held_locks+0x61/0x80
+> 	[ 5413.197809]  ? _raw_spin_unlock_irq+0x24/0x50
+> 	[ 5413.202173]  ? wait_for_completion+0x88/0x110
+> 	[ 5413.206535]  wait_for_completion+0xb4/0x110
+> 	[ 5413.210724]  ? srcu_torture_stats_print+0x110/0x110
+> 	[ 5413.215610]  srcu_barrier+0x187/0x200
+> 	[ 5413.219277]  ? rcu_tasks_verify_self_tests+0x50/0x50
+> 	[ 5413.224244]  ? rdinit_setup+0x2b/0x2b
+> 	[ 5413.227907]  rcu_verify_early_boot_tests+0x2d/0x40
+> 	[ 5413.232700]  do_one_initcall+0x63/0x310
+> 	[ 5413.236541]  ? rdinit_setup+0x2b/0x2b
+> 	[ 5413.240207]  ? rcu_read_lock_sched_held+0x52/0x80
+> 	[ 5413.244912]  kernel_init_freeable+0x253/0x28f
+> 	[ 5413.249273]  ? rest_init+0x250/0x250
+> 	[ 5413.252846]  kernel_init+0xa/0x110
+> 	[ 5413.256257]  ret_from_fork+0x22/0x30
+> 
+> 2) An ssp that gets initialized before rcu_init_geometry() and used
+>    afterward will always have stale rdp->mynode references, resulting in
+>    callbacks to be missed in srcu_gp_end(), just like in the previous
+>    scenario.
+> 
+> Solve this with fixing the node tree layout of early initialized ssp
+> once rcu_init_geometry() is done. Unfortunately this involves a new
+> field into struct srcu_struct to postpone the ssp hierarchy rebuild.
+> 
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Joel Fernandes <joel@joelfernandes.org>
+> Cc: Uladzislau Rezki <urezki@gmail.com>
 
+Again, good catch and thank you!
 
-On 3/23/2021 3:43 PM, Stephen Boyd wrote:
-> These scm calls are never used outside of legacy ARMv7 based platforms.
-> That's because PSCI, mandated on arm64, implements them for modern SoCs
-> via the PSCI spec. Let's move them to the legacy file and only compile
-> the legacy file into the kernel when CONFIG_ARM=y. Otherwise provide
-> stubs and fail the calls. This saves a little bit of space in an
-> arm64 allmodconfig.
-> 
->   $ ./scripts/bloat-o-meter vmlinux.before vmlinux.after
->   add/remove: 0/8 grow/shrink: 5/6 up/down: 509/-4401 (-3892)
->   Function                                     old     new   delta
->   __qcom_scm_set_dload_mode.constprop          312     452    +140
->   qcom_scm_qsmmu500_wait_safe_toggle           288     416    +128
->   qcom_scm_io_writel                           288     408    +120
->   qcom_scm_io_readl                            376     492    +116
->   __param_str_download_mode                     23      28      +5
->   __warned                                    4327    4326      -1
->   e843419@0b3f_00010432_324                      8       -      -8
->   qcom_scm_call                                228     208     -20
->   CSWTCH                                      5925    5877     -48
->   _sub_I_65535_1                            163100  163040     -60
->   _sub_D_65535_0                            163100  163040     -60
->   qcom_scm_wb                                   64       -     -64
->   qcom_scm_lock                                320     160    -160
->   qcom_scm_call_atomic                         212       -    -212
->   qcom_scm_cpu_power_down                      308       -    -308
->   scm_legacy_call_atomic                       520       -    -520
->   qcom_scm_set_warm_boot_addr                  720       -    -720
->   qcom_scm_set_cold_boot_addr                  728       -    -728
->   scm_legacy_call                             1492       -   -1492
->   Total: Before=66737606, After=66733714, chg -0.01%
-> 
-> Commit 9a434cee773a ("firmware: qcom_scm: Dynamically support SMCCC and
-> legacy conventions") didn't mention any motivating factors for keeping
-> the legacy code around on arm64 kernels, i.e. presumably that commit
-> wasn't trying to support these legacy APIs on arm64 kernels.
-> 
-> Cc: Elliot Berman <eberman@codeaurora.org>
-> Cc: Brian Masney <masneyb@onstation.org>
-> Cc: Stephan Gerhold <stephan@gerhold.net>
-> Cc: Jeffrey Hugo <jhugo@codeaurora.org>
-> Cc: Douglas Anderson <dianders@chromium.org>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+One question below.
+
+							Thanx, Paul
+
 > ---
-It might be a good idea to wrap these lines from qcom_scm_call with #if 
-IS_ENABLED(CONFIG_ARM), and the corresponding ones in qcom_scm_call_atomic:
-
-   case SMC_CONVENTION_LEGACY:
-       return scm_legacy_call(dev, desc, res);
-
-If something is wrong with loaded firmware and LEGACY convention is 
-incorrectly selected, you would get a better hint about the problem: 
-"Unknown current SCM calling convention." You would still get the hint 
-earlier from __get_convention, but that may not be obvious to someone 
-unfamiliar with the SCM driver.
-
-I'll defer to your/Bjorn's preference:
-
-Acked-by: Elliot Berman <eberman@codeaurora.org>
-
-with or without modifying qcom_scm_call{_atomic}.
-
+>  include/linux/srcutree.h |  1 +
+>  kernel/rcu/srcutree.c    | 68 +++++++++++++++++++++++++++++++++++-----
+>  2 files changed, 62 insertions(+), 7 deletions(-)
 > 
-> Followup to v1 (https://lore.kernel.org/r/20210223214539.1336155-7-swboyd@chromium.org):
->   * Don't change the legacy file to use legacy calls only
->   * Wrap more things in CONFIG_ARM checks
-> 
->   drivers/firmware/Makefile   |  4 +++-
->   drivers/firmware/qcom_scm.c | 47 ++++++++++++++++++++-----------------
->   drivers/firmware/qcom_scm.h | 15 ++++++++++++
->   include/linux/qcom_scm.h    | 21 ++++++++++-------
->   4 files changed, 56 insertions(+), 31 deletions(-)
-> 
-> diff --git a/drivers/firmware/Makefile b/drivers/firmware/Makefile
-> index 5e013b6a3692..0b7b35555a6c 100644
-> --- a/drivers/firmware/Makefile
-> +++ b/drivers/firmware/Makefile
-> @@ -17,7 +17,9 @@ obj-$(CONFIG_ISCSI_IBFT)	+= iscsi_ibft.o
->   obj-$(CONFIG_FIRMWARE_MEMMAP)	+= memmap.o
->   obj-$(CONFIG_RASPBERRYPI_FIRMWARE) += raspberrypi.o
->   obj-$(CONFIG_FW_CFG_SYSFS)	+= qemu_fw_cfg.o
-> -obj-$(CONFIG_QCOM_SCM)		+= qcom_scm.o qcom_scm-smc.o qcom_scm-legacy.o
-> +obj-$(CONFIG_QCOM_SCM)		+= qcom_scm_objs.o
-> +qcom_scm_objs-$(CONFIG_ARM)	+= qcom_scm-legacy.o
-> +qcom_scm_objs-$(CONFIG_QCOM_SCM) += qcom_scm.o qcom_scm-smc.o
->   obj-$(CONFIG_TI_SCI_PROTOCOL)	+= ti_sci.o
->   obj-$(CONFIG_TRUSTED_FOUNDATIONS) += trusted_foundations.o
->   obj-$(CONFIG_TURRIS_MOX_RWTM)	+= turris-mox-rwtm.o
-> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
-> index ee9cb545e73b..747808a8ddf4 100644
-> --- a/drivers/firmware/qcom_scm.c
-> +++ b/drivers/firmware/qcom_scm.c
-> @@ -49,28 +49,6 @@ struct qcom_scm_mem_map_info {
->   	__le64 mem_size;
->   };
->   
-> -#define QCOM_SCM_FLAG_COLDBOOT_CPU0	0x00
-> -#define QCOM_SCM_FLAG_COLDBOOT_CPU1	0x01
-> -#define QCOM_SCM_FLAG_COLDBOOT_CPU2	0x08
-> -#define QCOM_SCM_FLAG_COLDBOOT_CPU3	0x20
-> -
-> -#define QCOM_SCM_FLAG_WARMBOOT_CPU0	0x04
-> -#define QCOM_SCM_FLAG_WARMBOOT_CPU1	0x02
-> -#define QCOM_SCM_FLAG_WARMBOOT_CPU2	0x10
-> -#define QCOM_SCM_FLAG_WARMBOOT_CPU3	0x40
-> -
-> -struct qcom_scm_wb_entry {
-> -	int flag;
-> -	void *entry;
-> -};
-> -
-> -static struct qcom_scm_wb_entry qcom_scm_wb[] = {
-> -	{ .flag = QCOM_SCM_FLAG_WARMBOOT_CPU0 },
-> -	{ .flag = QCOM_SCM_FLAG_WARMBOOT_CPU1 },
-> -	{ .flag = QCOM_SCM_FLAG_WARMBOOT_CPU2 },
-> -	{ .flag = QCOM_SCM_FLAG_WARMBOOT_CPU3 },
-> -};
-> -
->   static const char *qcom_scm_convention_names[] = {
->   	[SMC_CONVENTION_UNKNOWN] = "unknown",
->   	[SMC_CONVENTION_ARM_32] = "smc arm 32",
-> @@ -260,6 +238,30 @@ static bool __qcom_scm_is_call_available(struct device *dev, u32 svc_id,
->   	return ret ? false : !!res.result[0];
->   }
->   
-> +#if IS_ENABLED(CONFIG_ARM)
+> diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+> index 9cfcc8a756ae..4339e5794a72 100644
+> --- a/include/linux/srcutree.h
+> +++ b/include/linux/srcutree.h
+> @@ -85,6 +85,7 @@ struct srcu_struct {
+>  #ifdef CONFIG_DEBUG_LOCK_ALLOC
+>  	struct lockdep_map dep_map;
+>  #endif /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+> +	struct list_head early_init;
+>  };
+>  
+>  /* Values for state variable (bottom bits of ->srcu_gp_seq). */
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 10e681ea7051..285f0c053754 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -39,7 +39,7 @@ static ulong counter_wrap_check = (ULONG_MAX >> 2);
+>  module_param(counter_wrap_check, ulong, 0444);
+>  
+>  /* Early-boot callback-management, so early that no lock is required! */
+> -static LIST_HEAD(srcu_boot_list);
+> +static LIST_HEAD(srcu_boot_queue_list);
+>  static bool __read_mostly srcu_init_done;
+>  
+>  static void srcu_invoke_callbacks(struct work_struct *work);
+> @@ -133,7 +133,9 @@ static void init_srcu_struct_nodes(struct srcu_struct *ssp)
+>  	for_each_possible_cpu(cpu) {
+>  		sdp = per_cpu_ptr(ssp->sda, cpu);
+>  		spin_lock_init(&ACCESS_PRIVATE(sdp, lock));
+> -		rcu_segcblist_init(&sdp->srcu_cblist);
+> +		/* Preserve the queue in case of hierarchy rebuild */
+> +		if (!rcu_segcblist_is_enabled(&sdp->srcu_cblist))
+> +			rcu_segcblist_init(&sdp->srcu_cblist);
+>  		sdp->srcu_cblist_invoking = false;
+>  		sdp->srcu_gp_seq_needed = ssp->srcu_gp_seq;
+>  		sdp->srcu_gp_seq_needed_exp = ssp->srcu_gp_seq;
+> @@ -151,6 +153,8 @@ static void init_srcu_struct_nodes(struct srcu_struct *ssp)
+>  	}
+>  }
+>  
+> +static LIST_HEAD(srcu_early_init_list);
 > +
-> +#define QCOM_SCM_FLAG_COLDBOOT_CPU0	0x00
-> +#define QCOM_SCM_FLAG_COLDBOOT_CPU1	0x01
-> +#define QCOM_SCM_FLAG_COLDBOOT_CPU2	0x08
-> +#define QCOM_SCM_FLAG_COLDBOOT_CPU3	0x20
-> +
-> +#define QCOM_SCM_FLAG_WARMBOOT_CPU0	0x04
-> +#define QCOM_SCM_FLAG_WARMBOOT_CPU1	0x02
-> +#define QCOM_SCM_FLAG_WARMBOOT_CPU2	0x10
-> +#define QCOM_SCM_FLAG_WARMBOOT_CPU3	0x40
-> +
-> +struct qcom_scm_wb_entry {
-> +	int flag;
-> +	void *entry;
-> +};
-> +
-> +static struct qcom_scm_wb_entry qcom_scm_wb[] = {
-> +	{ .flag = QCOM_SCM_FLAG_WARMBOOT_CPU0 },
-> +	{ .flag = QCOM_SCM_FLAG_WARMBOOT_CPU1 },
-> +	{ .flag = QCOM_SCM_FLAG_WARMBOOT_CPU2 },
-> +	{ .flag = QCOM_SCM_FLAG_WARMBOOT_CPU3 },
-> +};
-> +
->   /**
->    * qcom_scm_set_warm_boot_addr() - Set the warm boot address for cpus
->    * @entry: Entry point function for the cpus
-> @@ -369,6 +371,7 @@ void qcom_scm_cpu_power_down(u32 flags)
->   	qcom_scm_call_atomic(__scm ? __scm->dev : NULL, &desc, NULL);
->   }
->   EXPORT_SYMBOL(qcom_scm_cpu_power_down);
-> +#endif
->   
->   int qcom_scm_set_remote_state(u32 state, u32 id)
->   {
-> diff --git a/drivers/firmware/qcom_scm.h b/drivers/firmware/qcom_scm.h
-> index 632fe3142462..735e975320e4 100644
-> --- a/drivers/firmware/qcom_scm.h
-> +++ b/drivers/firmware/qcom_scm.h
-> @@ -68,11 +68,26 @@ extern int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
->   	__scm_smc_call((dev), (desc), qcom_scm_convention, (res), (atomic))
->   
->   #define SCM_LEGACY_FNID(s, c)	(((s) << 10) | ((c) & 0x3ff))
-> +#if IS_ENABLED(CONFIG_ARM)
->   extern int scm_legacy_call_atomic(struct device *dev,
->   				  const struct qcom_scm_desc *desc,
->   				  struct qcom_scm_res *res);
->   extern int scm_legacy_call(struct device *dev, const struct qcom_scm_desc *desc,
->   			   struct qcom_scm_res *res);
-> +#else
-> +static inline int scm_legacy_call_atomic(struct device *dev,
-> +					 const struct qcom_scm_desc *desc,
-> +					 struct qcom_scm_res *res)
+>  /*
+>   * Initialize non-compile-time initialized fields, including the
+>   * associated srcu_node and srcu_data structures.  The is_static
+> @@ -174,6 +178,8 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+>  	init_srcu_struct_nodes(ssp);
+>  	ssp->srcu_gp_seq_needed_exp = 0;
+>  	ssp->srcu_last_gp_end = ktime_get_mono_fast_ns();
+> +	if (!srcu_init_done)
+> +		list_add_tail(&ssp->early_init, &srcu_early_init_list);
+>  	smp_store_release(&ssp->srcu_gp_seq_needed, 0); /* Init done. */
+>  	return 0;
+>  }
+> @@ -679,7 +685,7 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
+>  			queue_delayed_work(rcu_gp_wq, &ssp->work,
+>  					   srcu_get_delay(ssp));
+>  		else if (list_empty(&ssp->work.work.entry))
+> -			list_add(&ssp->work.work.entry, &srcu_boot_list);
+> +			list_add(&ssp->work.work.entry, &srcu_boot_queue_list);
+>  	}
+>  	spin_unlock_irqrestore_rcu_node(ssp, flags);
+>  }
+> @@ -1380,14 +1386,62 @@ static int __init srcu_bootup_announce(void)
+>  }
+>  early_initcall(srcu_bootup_announce);
+>  
+> +static void __init restore_srcu_sdp(struct srcu_data *sdp,
+> +				    struct srcu_data *old_sdp,
+> +				    struct srcu_node *old_mynode)
 > +{
-> +	return -EINVAL;
+> +	int i;
+> +	struct srcu_node *mynode = sdp->mynode;
+> +	struct srcu_node *snp = mynode;
+> +
+> +	/* No need to lock the nodes at this stage. We are on early boot */
+> +	for (snp = mynode; snp != NULL; snp = snp->srcu_parent) {
+> +		for (i = 0; i < ARRAY_SIZE(old_mynode->srcu_have_cbs); i++) {
+> +			snp->srcu_have_cbs[i] = old_mynode->srcu_have_cbs[i];
+> +
+> +			if (snp != mynode)
+> +				continue;
+> +
+> +			if (old_mynode->srcu_data_have_cbs[i] == old_sdp->grpmask) {
+> +				snp->srcu_data_have_cbs[i] = sdp->grpmask;
+> +			} else if (!old_mynode->srcu_data_have_cbs[i]) {
+> +				snp->srcu_data_have_cbs[i] = 0;
+> +			} else {
+> +				/* Don't expect other CPUs to have callbacks that early */
+> +				WARN_ON_ONCE(1);
+> +			}
+> +		}
+> +		snp->srcu_gp_seq_needed_exp = old_mynode->srcu_gp_seq_needed_exp;
+> +	}
+> +
+> +	sdp->srcu_gp_seq_needed = old_sdp->srcu_gp_seq_needed;
+> +	sdp->srcu_gp_seq_needed_exp = old_sdp->srcu_gp_seq_needed_exp;
 > +}
 > +
-> +static inline int scm_legacy_call(struct device *dev, const struct qcom_scm_desc *desc,
-> +				  struct qcom_scm_res *res)
-> +{
-> +	return -EINVAL;
-> +}
-> +#endif
->   
->   #define QCOM_SCM_SVC_BOOT		0x01
->   #define QCOM_SCM_BOOT_SET_ADDR		0x01
-> diff --git a/include/linux/qcom_scm.h b/include/linux/qcom_scm.h
-> index 0165824c5128..0ec905d56e1a 100644
-> --- a/include/linux/qcom_scm.h
-> +++ b/include/linux/qcom_scm.h
-> @@ -64,9 +64,6 @@ enum qcom_scm_ice_cipher {
->   #if IS_ENABLED(CONFIG_QCOM_SCM)
->   extern bool qcom_scm_is_available(void);
->   
-> -extern int qcom_scm_set_cold_boot_addr(void *entry, const cpumask_t *cpus);
-> -extern int qcom_scm_set_warm_boot_addr(void *entry, const cpumask_t *cpus);
-> -extern void qcom_scm_cpu_power_down(u32 flags);
->   extern int qcom_scm_set_remote_state(u32 state, u32 id);
->   
->   extern int qcom_scm_pas_init_image(u32 peripheral, const void *metadata,
-> @@ -115,11 +112,6 @@ extern int qcom_scm_qsmmu500_wait_safe_toggle(bool en);
->   
->   static inline bool qcom_scm_is_available(void) { return false; }
->   
-> -static inline int qcom_scm_set_cold_boot_addr(void *entry,
-> -		const cpumask_t *cpus) { return -ENODEV; }
-> -static inline int qcom_scm_set_warm_boot_addr(void *entry,
-> -		const cpumask_t *cpus) { return -ENODEV; }
-> -static inline void qcom_scm_cpu_power_down(u32 flags) {}
->   static inline u32 qcom_scm_set_remote_state(u32 state,u32 id)
->   		{ return -ENODEV; }
->   
-> @@ -171,4 +163,17 @@ static inline int qcom_scm_hdcp_req(struct qcom_scm_hdcp_req *req, u32 req_cnt,
->   static inline int qcom_scm_qsmmu500_wait_safe_toggle(bool en)
->   		{ return -ENODEV; }
->   #endif
+>  void __init srcu_init(void)
+>  {
+> -	struct srcu_struct *ssp;
+> +	static struct srcu_data __initdata old_sdp;
+> +	static struct srcu_node __initdata old_mynode;
+> +	struct srcu_struct *ssp, *tmp;
+>  
+>  	srcu_init_done = true;
+> -	while (!list_empty(&srcu_boot_list)) {
+> -		ssp = list_first_entry(&srcu_boot_list, struct srcu_struct,
+> -				      work.work.entry);
+> +	/*
+> +	 * ssp's that got initialized before rcu_init_geometry() have a stale
+> +	 * node hierarchy. Rebuild their node trees and propagate states from
+> +	 * pruned leaf nodes.
+> +	 */
+> +	list_for_each_entry_safe(ssp, tmp, &srcu_early_init_list, early_init) {
+> +		struct srcu_data *sdp = this_cpu_ptr(ssp->sda);
 > +
-> +#if IS_ENABLED(CONFIG_ARM) && IS_ENABLED(CONFIG_QCOM_SCM)
-> +extern int qcom_scm_set_cold_boot_addr(void *entry, const cpumask_t *cpus);
-> +extern int qcom_scm_set_warm_boot_addr(void *entry, const cpumask_t *cpus);
-> +extern void qcom_scm_cpu_power_down(u32 flags);
-> +#else
-> +static inline int qcom_scm_set_cold_boot_addr(void *entry,
-> +		const cpumask_t *cpus) { return -ENODEV; }
-> +static inline int qcom_scm_set_warm_boot_addr(void *entry,
-> +		const cpumask_t *cpus) { return -ENODEV; }
-> +static inline void qcom_scm_cpu_power_down(u32 flags) {}
-> +#endif
+> +		list_del(&ssp->early_init);
+> +		old_sdp = *sdp;
+> +		old_mynode = *sdp->mynode;
+> +		init_srcu_struct_nodes(ssp);
+> +		restore_srcu_sdp(sdp, &old_sdp, &old_mynode);
+
+Why not just pull all of the pre-initialization callbacks onto a local
+list (re-initialization the rcu_segcblist structures if necessary),
+then iterate through that list re-invoking call_srcu() on each?
+There shouldn't be that many pre-initialization call_srcu() invocations,
+and if someday there are, it would not be hard to make __call_srcu()
+take lists of callbacks and a count instead of a single callback, correct?
+
+Or am I once again missing something basic?
+
+							Thanx, Paul
+
+> +	}
 > +
->   #endif
-> 
-> base-commit: 3b9cdafb5358eb9f3790de2f728f765fef100731
-> prerequisite-patch-id: 77da2cfd7591b1d7c35e879dca67d4f037f40e48
-> prerequisite-patch-id: 021337034973fa8ce52fc8c84787f40dabb33df6
-> prerequisite-patch-id: 5d374e97d8f0d384098a46e91006811ab89c84b0
-> prerequisite-patch-id: 892de894cc937f7fe6ddb8f95ec9e2e3557830c7
-> prerequisite-patch-id: 33b2442181aeb8adfa1c08d9a167d3bcbd1660fe
+> +	/* Handle works that had to wait before workqueues get created */
+> +	list_for_each_entry_safe(ssp, tmp, &srcu_boot_queue_list, work.work.entry) {
+>  		list_del_init(&ssp->work.work.entry);
+>  		queue_work(rcu_gp_wq, &ssp->work.work);
+>  	}
+> -- 
+> 2.25.1
 > 
