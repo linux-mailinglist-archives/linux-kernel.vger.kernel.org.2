@@ -2,132 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9A6352AA4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 14:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2555352AA9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 14:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235348AbhDBM1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 08:27:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49360 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229599AbhDBM1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 08:27:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 184BD61158;
-        Fri,  2 Apr 2021 12:27:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617366454;
-        bh=idDTKzoCPAbQsNqWyYOiujZSln6yo9RWoeQ82hvVNpc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=CBRsc9Z626kNMmpXAaBUyLCFT0F4HMn9KGxh227eSJ8a8vkGHhlND13KW25wlkQkq
-         tqFoLpK+sxXY1RcFp8rAamn7AtLWa6fNBRq4Ldbnka4dMgqpbC+EYvVs/zBB404mG4
-         qITvYaBkUD0UoPgXX07cB735PxuxVIhJVHWHjiZVtLANagQGepcCCcz9+xQiRnxBE1
-         ErmRSqCugMv5nf+zdu3WoGbUU2K+QxbqgV4ac1mRwnz6qto0BxSQ/edHP7nha1II7i
-         iYNP0VEpAq2YW7q0C8/2+7B9ljMzkfqxVbSEd++qE8x1ro0r3m+AkPfqppOJ/pUYKe
-         xA3uH1qHMR2CA==
-Received: by pali.im (Postfix)
-        id 5000A810; Fri,  2 Apr 2021 14:27:31 +0200 (CEST)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, ath9k-devel@qca.qualcomm.com,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ath9k: Fix kernel NULL pointer dereference during ath_reset_internal()
-Date:   Fri,  2 Apr 2021 14:26:53 +0200
-Message-Id: <20210402122653.24014-1-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S235416AbhDBM1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 08:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235373AbhDBM1n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 08:27:43 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B49C0613E6;
+        Fri,  2 Apr 2021 05:27:41 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 5C3AE1F442CC
+Message-ID: <5674859659f93ba547cad43528ac94ef145347b3.camel@collabora.com>
+Subject: Re: [PATCH v8 09/13] media: uapi: Add a control for HANTRO driver
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        lee.jones@linaro.org, gregkh@linuxfoundation.org,
+        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
+        emil.l.velikov@gmail.com
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        kernel@collabora.com
+Date:   Fri, 02 Apr 2021 09:27:28 -0300
+In-Reply-To: <20210401160003.88803-10-benjamin.gaignard@collabora.com>
+References: <20210401160003.88803-1-benjamin.gaignard@collabora.com>
+         <20210401160003.88803-10-benjamin.gaignard@collabora.com>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function ath9k_hw_reset() is dereferencing chan structure pointer, so it
-needs to be non-NULL pointer.
+Hi Benjamin,
 
-Function ath9k_stop() already contains code which sets ah->curchan to valid
-non-NULL pointer prior calling ath9k_hw_reset() function.
+Thanks for the patch.
 
-Add same code pattern also into ath_reset_internal() function to prevent
-kernel NULL pointer dereference in ath9k_hw_reset() function.
+On Thu, 2021-04-01 at 17:59 +0200, Benjamin Gaignard wrote:
+> The HEVC HANTRO driver needs to know the number of bits to skip at
+> the beginning of the slice header.
+> That is a hardware specific requirement so create a dedicated control
+> that this purpose.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> ---
+> version 5:
+>  - Be even more verbose in control documentation.
+>  - Do not create class for the control.
+> version 4:
+> - The control is now an integer which is enough to provide the numbers
+>   of bits to skip.
+> version 3:
+> - Fix typo in field name
+> 
+>  .../userspace-api/media/drivers/hantro.rst         | 14 ++++++++++++++
+>  .../userspace-api/media/drivers/index.rst          |  1 +
+>  include/uapi/linux/v4l2-controls.h                 | 13 +++++++++++++
+>  3 files changed, 28 insertions(+)
+>  create mode 100644 Documentation/userspace-api/media/drivers/hantro.rst
+> 
+> diff --git a/Documentation/userspace-api/media/drivers/hantro.rst b/Documentation/userspace-api/media/drivers/hantro.rst
+> new file mode 100644
+> index 000000000000..78dcd2a44a03
+> --- /dev/null
+> +++ b/Documentation/userspace-api/media/drivers/hantro.rst
+> @@ -0,0 +1,14 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +Hantro video decoder driver
+> +===========================
+> +
+> +The Hantro video decoder driver implements the following driver-specific controls:
+> +
+> +``V4L2_CID_HANTRO_HEVC_SLICE_HEADER_SKIP (integer)``
+> +    Specifies to Hantro HEVC video decoder driver the number of data (in bits) to
+> +    skip in the slice segment header.
+> +    If non-IDR, the bits to be skipped go from syntax element "pic_output_flag"
+> +    to before syntax element "slice_temporal_mvp_enabled_flag".
+> +    If IDR, the skipped bits are just "pic_output_flag"
+> +    (separate_colour_plane_flag is not supported).
+> diff --git a/Documentation/userspace-api/media/drivers/index.rst b/Documentation/userspace-api/media/drivers/index.rst
+> index 1a9038f5f9fa..12e3c512d718 100644
+> --- a/Documentation/userspace-api/media/drivers/index.rst
+> +++ b/Documentation/userspace-api/media/drivers/index.rst
+> @@ -33,6 +33,7 @@ For more details see the file COPYING in the source distribution of Linux.
+>  
+>         ccs
+>         cx2341x-uapi
+> +        hantro
+>         imx-uapi
+>         max2175
+>         meye-uapi
+> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+> index f3376aafea65..1dfb874b6272 100644
+> --- a/include/uapi/linux/v4l2-controls.h
+> +++ b/include/uapi/linux/v4l2-controls.h
+> @@ -869,6 +869,19 @@ enum v4l2_mpeg_mfc51_video_force_frame_type {
+>  #define V4L2_CID_MPEG_MFC51_VIDEO_H264_ADAPTIVE_RC_STATIC              (V4L2_CID_CODEC_MFC51_BASE+53)
+>  #define V4L2_CID_MPEG_MFC51_VIDEO_H264_NUM_REF_PIC_FOR_P               (V4L2_CID_CODEC_MFC51_BASE+54)
+>  
+> +/*  MPEG-class control IDs specific to the Hantro driver as defined by V4L2 */
 
-This change fixes kernel NULL pointer dereference in ath9k_hw_reset() which
-is caused by calling ath9k_hw_reset() from ath_reset_internal() with NULL
-chan structure.
+We are moving away from "MPEG" terminology for codecs.
 
-    [   45.334305] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000008
-    [   45.344417] Mem abort info:
-    [   45.347301]   ESR = 0x96000005
-    [   45.350448]   EC = 0x25: DABT (current EL), IL = 32 bits
-    [   45.356166]   SET = 0, FnV = 0
-    [   45.359350]   EA = 0, S1PTW = 0
-    [   45.362596] Data abort info:
-    [   45.365756]   ISV = 0, ISS = 0x00000005
-    [   45.369735]   CM = 0, WnR = 0
-    [   45.372814] user pgtable: 4k pages, 39-bit VAs, pgdp=000000000685d000
-    [   45.379663] [0000000000000008] pgd=0000000000000000, p4d=0000000000000000, pud=0000000000000000
-    [   45.388856] Internal error: Oops: 96000005 [#1] SMP
-    [   45.393897] Modules linked in: ath9k ath9k_common ath9k_hw
-    [   45.399574] CPU: 1 PID: 309 Comm: kworker/u4:2 Not tainted 5.12.0-rc2-dirty #785
-    [   45.414746] Workqueue: phy0 ath_reset_work [ath9k]
-    [   45.419713] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
-    [   45.425910] pc : ath9k_hw_reset+0xc4/0x1c48 [ath9k_hw]
-    [   45.431234] lr : ath9k_hw_reset+0xc0/0x1c48 [ath9k_hw]
-    [   45.436548] sp : ffffffc0118dbca0
-    [   45.439961] x29: ffffffc0118dbca0 x28: 0000000000000000
-    [   45.445442] x27: ffffff800dee4080 x26: 0000000000000000
-    [   45.450923] x25: ffffff800df9b9d8 x24: 0000000000000000
-    [   45.456404] x23: ffffffc0115f6000 x22: ffffffc008d0d408
-    [   45.461885] x21: ffffff800dee5080 x20: ffffff800df9b9d8
-    [   45.467366] x19: 0000000000000000 x18: 0000000000000000
-    [   45.472846] x17: 0000000000000000 x16: 0000000000000000
-    [   45.478326] x15: 0000000000000010 x14: ffffffffffffffff
-    [   45.483807] x13: ffffffc0918db94f x12: ffffffc011498720
-    [   45.489289] x11: 0000000000000003 x10: ffffffc0114806e0
-    [   45.494770] x9 : ffffffc01014b2ec x8 : 0000000000017fe8
-    [   45.500251] x7 : c0000000ffffefff x6 : 0000000000000001
-    [   45.505733] x5 : 0000000000000000 x4 : 0000000000000000
-    [   45.511213] x3 : 0000000000000000 x2 : ffffff801fece870
-    [   45.516693] x1 : ffffffc00eded000 x0 : 000000000000003f
-    [   45.522174] Call trace:
-    [   45.524695]  ath9k_hw_reset+0xc4/0x1c48 [ath9k_hw]
-    [   45.529653]  ath_reset_internal+0x1a8/0x2b8 [ath9k]
-    [   45.534696]  ath_reset_work+0x2c/0x40 [ath9k]
-    [   45.539198]  process_one_work+0x210/0x480
-    [   45.543339]  worker_thread+0x5c/0x510
-    [   45.547115]  kthread+0x12c/0x130
-    [   45.550445]  ret_from_fork+0x10/0x1c
-    [   45.554138] Code: 910922c2 9117e021 95ff0398 b4000294 (b9400a61)
-    [   45.560430] ---[ end trace 566410ba90b50e8b ]---
-    [   45.565193] Kernel panic - not syncing: Oops: Fatal exception in interrupt
-    [   45.572282] SMP: stopping secondary CPUs
-    [   45.576331] Kernel Offset: disabled
-    [   45.579924] CPU features: 0x00040002,0000200c
-    [   45.584416] Memory Limit: none
-    [   45.587564] Rebooting in 3 seconds..
+> +#define V4L2_CID_CODEC_HANTRO_BASE                             (V4L2_CTRL_CLASS_CODEC | 0x1200)
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Cc: stable@vger.kernel.org
----
- drivers/net/wireless/ath/ath9k/main.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Using V4L2_CTRL_CLASS_CODEC_STATELESS is IMO better,
+since this belongs to a stateless decoder.
 
-diff --git a/drivers/net/wireless/ath/ath9k/main.c b/drivers/net/wireless/ath/ath9k/main.c
-index 45f6402478b5..97c3a53f9cef 100644
---- a/drivers/net/wireless/ath/ath9k/main.c
-+++ b/drivers/net/wireless/ath/ath9k/main.c
-@@ -307,6 +307,11 @@ static int ath_reset_internal(struct ath_softc *sc, struct ath9k_channel *hchan)
- 		hchan = ah->curchan;
- 	}
- 
-+	if (!hchan) {
-+		fastcc = false;
-+		hchan = ath9k_cmn_get_channel(sc->hw, ah, &sc->cur_chan->chandef);
-+	}
-+
- 	if (!ath_prepare_reset(sc))
- 		fastcc = false;
- 
--- 
-2.20.1
+And also, since we are still a bit unsure about the
+syntax of this parameter (given it's not documented):
+
+how about keeping the V4L2_CID_HANTRO_HEVC_SLICE_HEADER_SKIP
+definition in drivers/staging/media/hantro/hantro.h ?
+
+This would be a hint for applications that this control
+is a quirk.
+
+Hans, Philipp, any thoughts on this?
+
+Regards,
+Ezequiel
 
