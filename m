@@ -2,149 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965D9352F26
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 20:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 597BE352F27
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 20:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235949AbhDBSYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 14:24:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40594 "EHLO
+        id S235286AbhDBSZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 14:25:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbhDBSYB (ORCPT
+        with ESMTP id S229553AbhDBSZZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 14:24:01 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BCBBC0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 11:24:00 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id a12so4067451pfc.7
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 11:24:00 -0700 (PDT)
+        Fri, 2 Apr 2021 14:25:25 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C64EC0613E6
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 11:25:24 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id i81so5680598oif.6
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 11:25:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=d3veUeKKkUH0RsPWtYG2CYnAax7p+7VbssTzLIdp0F4=;
-        b=c4q5KzCF8H5otc00haJ6k+g7KES2GT+/Bz0WUO2fArkJeI8c+o39+AIEugEoN81tn1
-         jmmyHzjEZI2wjmMEoPWIvEXk6Y253Xrwo7YLPpbpzgZc5PbTHZbEj19KEU1t19OQE5JZ
-         Ia1L+q8DorVAWBXz0gjSsiDOs6ycu09VBm/Ec=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:reply-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=j/8kqi2RzLaV+tl67ICL3y3OLhR7VMGrEFOXn5sbrIw=;
+        b=U9aR8sIhlMWss915BMjr4dOCFnbwtKYGK8K+pSdO/IR7Z523O1bz9qUHdcVwRhFeyd
+         bocjBCjNVOQsDoFVlscAA9IjBIohVynFC/kkOL7SpTCt9yZEBspKqm5LnXbNdMm2lhmd
+         eyQFdvMOicX/rsQYw5p/eN0udh7AQNezdjmfSdw8JyanCT94wuurTkCe3kfsFzSl0F53
+         l+ITjQYsrl6YoQoTmbMkS+25u/Fn4ij9CxJkO8fXy84CRv9aDSKuy3sRUXS84qEVbDhr
+         vewsdhafCMcrrn0mD+o9sv0Io3Ro7TVy5SbUrguo4WKPb9scDSw3uH5ZrzbIopFAKaBL
+         xClg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=d3veUeKKkUH0RsPWtYG2CYnAax7p+7VbssTzLIdp0F4=;
-        b=T2gfdyvdnbSRrS7UAho5mwIAxWKcy1zUTMAN0Vav2PNI8v4cYOX5HEt4giODYvo8e4
-         6ofJq8VHzewEtwxuq1J6PTzQltrGBgBRAeNsKODtJSL8t4pBFiouuWg2j0Bx4M1yG6+N
-         YB+ReHBebqy8bzX/rXRI3+XjQAPuRcJFT6evQO3ou1jFcoN+l5TYOzk0hjrF17dgMYBN
-         Maj1ImQUEhMUzew4CYuGrm/hEb1+UkNi4C8VPjRq7hbgGkXQC+IgNsgBi+8X18xBhfOc
-         Pb9Fw+SpriW2PQarAhv0jTMIsMK1tmcsot0VLIj2DUxfitWxkdITfIBlOgV06lze8tCN
-         uLGQ==
-X-Gm-Message-State: AOAM531JOtSZ6SDTzD75rY6Od2a+JKeekfONBhLYR6hBFFddrukeTQfn
-        C+HzvtG3yuRNXzcYMJl3ld99RQ==
-X-Google-Smtp-Source: ABdhPJxAzQKiAhYXyr+2W64ujClRC8TUCDGS25s8WHsSDt5PLZX5SqDcoVNtbRJ1SUND3J1h5ONf2A==
-X-Received: by 2002:a62:4e57:0:b029:203:93bc:3cb with SMTP id c84-20020a624e570000b029020393bc03cbmr12928980pfb.56.1617387840114;
-        Fri, 02 Apr 2021 11:24:00 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id r2sm8363076pgv.50.2021.04.02.11.23.59
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:references:mime-version:content-disposition:in-reply-to;
+        bh=j/8kqi2RzLaV+tl67ICL3y3OLhR7VMGrEFOXn5sbrIw=;
+        b=Fdl/4hTGEuErCT67NmeaEQY1fbN2dmVf74HvLxPEMhjVg6sOCjQRIPEFhBJXlATOvC
+         GpJfwyrsqmgAhxU1AMUYi9hUGy3BkUZ1bZloljjzuicZMwdo8xeG8w1GUdp12KhCT3Te
+         Nd1W8tdwaMJ3l6ZilkJUN8YCpsNQceuqT5XiQ+1YCh8rPL+wPGjLy0ibDMLFYbLqa9bK
+         YlVa9npumnRsfLZ78PxbaN3YxeGAhc53mysYCq02q1OpVf5Hs1uiAZJwG7jNjHgXp/ab
+         JhN+YUsAbfWYPJ1e+BxEejZxk7kHn9OTSPYIjS2eV/Wq+rsir2xCcYQhHIklLQ9uV33d
+         RvdQ==
+X-Gm-Message-State: AOAM531AZwuyvDMsz/+JPU5ZYigPSf2AXNi5f50/sUxl43gT6sqd54Rc
+        koecZNGxBy3gSafRqKwLLA==
+X-Google-Smtp-Source: ABdhPJyg8NjnwNN5qdOUaRIaeljwQA6KWBzkKsF3jz1qQ+ernlsCE+e5GXERUHs141Cd2IAzPWfJFw==
+X-Received: by 2002:a05:6808:94:: with SMTP id s20mr10488250oic.25.1617387923286;
+        Fri, 02 Apr 2021 11:25:23 -0700 (PDT)
+Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
+        by smtp.gmail.com with ESMTPSA id m14sm2032594otn.69.2021.04.02.11.25.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 11:23:59 -0700 (PDT)
-Date:   Fri, 2 Apr 2021 11:23:58 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Gioh Kim <gi-oh.kim@ionos.com>,
-        LKML <linux-kernel@vger.kernel.org>, jinpu.wang@ionos.com,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] lib/string: Introduce sysfs_streqcase
-Message-ID: <202104021122.7896C66@keescook>
-References: <20210402094042.9218-1-gi-oh.kim@ionos.com>
- <CAKwvOdkFJ_WFpt2+rnNR3tbrdFky2NnEOWSG7MhgLrBHJAOEVw@mail.gmail.com>
+        Fri, 02 Apr 2021 11:25:22 -0700 (PDT)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:f99f:823a:495e:5af])
+        by serve.minyard.net (Postfix) with ESMTPSA id E2F02180053;
+        Fri,  2 Apr 2021 18:25:21 +0000 (UTC)
+Date:   Fri, 2 Apr 2021 13:25:20 -0500
+From:   Corey Minyard <minyard@acm.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Corey Minyard <cminyard@mvista.com>,
+        openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 00/10] ipmi_si: Set of clean ups
+Message-ID: <20210402182520.GZ507977@minyard.net>
+Reply-To: minyard@acm.org
+References: <20210402174334.13466-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKwvOdkFJ_WFpt2+rnNR3tbrdFky2NnEOWSG7MhgLrBHJAOEVw@mail.gmail.com>
+In-Reply-To: <20210402174334.13466-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 11:17:13AM -0700, Nick Desaulniers wrote:
-> Thanks for the patch!
-> 
-> + akpm (please remember to run ./scripts/get_maintainer.pl on your patch files)
-> 
-> On Fri, Apr 2, 2021 at 2:41 AM Gioh Kim <gi-oh.kim@ionos.com> wrote:
-> >
-> > As the name shows, it checks if strings are equal in case insensitive
-> > manner. I found some cases using strncasecmp to check the entire
-> > strings and they would not work as intended.
-> >
-> > For example, drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c uses
-> > strncasecmp to check that the input via sysfs is "mi". But it would
-> > work even-if the input is "min-wrongcommand".
-> > And also drivers/pnp/interface.c checks "disable" command with
-> > strncasecmp but it would also work if the command is "disable-wrong".
-> 
-> Perhaps those callers should be using strcasecmp then, rather than strncasecmp?
-> 
-> Also, if they're being liberal in accepting either case, I don't see
-> why the sysfs nodes should be strict in rejecting trailing input at
-> that point.
+On Fri, Apr 02, 2021 at 08:43:24PM +0300, Andy Shevchenko wrote:
+> The series contains set of clean ups, main parts of which are:
+>  - use ne platform_get_mem_or_io() API
+>  - use match_string() API
 
-I think this shouldn't be prefixed "sysfs_" -- name it for what it does,
-not where it gets used, if it's a general utility function.
+As I have already said, a very nice set of cleanups.  Thank you.
+These are applied and in the ipmi linux-next tree.
 
--Kees
+-corey
 
 > 
-> >
-> > Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-> > ---
-> >  lib/string.c | 23 +++++++++++++++++++++++
-> >  1 file changed, 23 insertions(+)
-> >
-> > diff --git a/lib/string.c b/lib/string.c
-> > index 7548eb715ddb..5e6bc0d3d5c6 100644
-> > --- a/lib/string.c
-> > +++ b/lib/string.c
-> > @@ -714,6 +714,29 @@ bool sysfs_streq(const char *s1, const char *s2)
-> >  }
-> >  EXPORT_SYMBOL(sysfs_streq);
-> >
-> > +/**
-> > + * sysfs_streqcase - same to sysfs_streq and case insensitive
-> > + * @s1: one string
-> > + * @s2: another string
-> > + *
-> > + */
-> > +bool sysfs_streqcase(const char *s1, const char *s2)
-> > +{
-> > +       while (*s1 && tolower(*s1) == tolower(*s2)) {
-> > +               s1++;
-> > +               s2++;
-> > +       }
-> > +
-> > +       if (*s1 == *s2)
-> > +               return true;
-> > +       if (!*s1 && *s2 == '\n' && !s2[1])
-> > +               return true;
-> > +       if (*s1 == '\n' && !s1[1] && !*s2)
-> > +               return true;
-> > +       return false;
-> > +}
-> > +EXPORT_SYMBOL(sysfs_streqcase);
+> Since v2:
+> - patch 3: rephrased commit message (Corey)
+> - patch 5: added a comment that array maps to enum (Corey)
+> - patch 5: added "ipmi" prefix to the name of the array
+> - patch 6: just exported array w/o moving to header (Corey)
+> - wrapped up cover letter
 > 
-> This should be declared in
-> include/linux/string.h
-> in order for others to use this (as 0day bot notes).
+> Andy Shevchenko (10):
+>   ipmi_si: Switch to use platform_get_mem_or_io()
+>   ipmi_si: Remove bogus err_free label
+>   ipmi_si: Utilize temporary variable to hold device pointer
+>   ipmi_si: Use proper ACPI macros to check error code for failures
+>   ipmi_si: Introduce ipmi_panic_event_str[] array
+>   ipmi_si: Reuse si_to_str[] array in ipmi_hardcode_init_one()
+>   ipmi_si: Get rid of ->addr_source_cleanup()
+>   ipmi_si: Use strstrip() to remove surrounding spaces
+>   ipmi_si: Drop redundant check before calling put_device()
+>   ipmi_si: Join string literals back
 > 
-> > +
-> >  /**
-> >   * match_string - matches given string in an array
-> >   * @array:     array of strings
-> > --
-> > 2.25.1
-> >
+>  drivers/char/ipmi/ipmi_msghandler.c  | 54 ++++++----------
+>  drivers/char/ipmi/ipmi_si.h          |  8 ++-
+>  drivers/char/ipmi/ipmi_si_hardcode.c | 73 ++++++++-------------
+>  drivers/char/ipmi/ipmi_si_hotmod.c   | 24 ++-----
+>  drivers/char/ipmi/ipmi_si_intf.c     | 32 ++++------
+>  drivers/char/ipmi/ipmi_si_pci.c      | 22 ++-----
+>  drivers/char/ipmi/ipmi_si_platform.c | 95 ++++++++++++----------------
+>  7 files changed, 112 insertions(+), 196 deletions(-)
 > 
+> -- 
+> 2.30.2
 > 
-> --
-> Thanks,
-> ~Nick Desaulniers
-
--- 
-Kees Cook
