@@ -2,113 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B63353019
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 22:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45CAF35301F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 22:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236256AbhDBUEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 16:04:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34116 "EHLO
+        id S236090AbhDBUJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 16:09:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229647AbhDBUEU (ORCPT
+        with ESMTP id S229647AbhDBUIz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 16:04:20 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E318FC0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 13:04:17 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id f19so6355681ion.3
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 13:04:17 -0700 (PDT)
+        Fri, 2 Apr 2021 16:08:55 -0400
+Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF401C0613E6
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 13:08:53 -0700 (PDT)
+Received: by mail-vk1-xa32.google.com with SMTP id h136so1322471vka.7
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 13:08:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MplQbzRQT+z1bdJmXaR1KVHy2BkjrU2G1JmE86JIobE=;
-        b=QNtwHbIU+TmlqWMAulG7h9/kinoTe8R4yMngOQsbuR+nXnUNGwfjAgj8W5wieJKwn7
-         ZCCEI5tzGZ7RQ0iYBirGX9Myhl61mXP4e0WJIa7xC0bFdDEihLonXjgM3wGBTQg1vzmR
-         D3LQi1nmVQkObKfLjl78OeDKNybUR9fVGLTcA=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lBFiphv0iynhsmG5QBbrvBXWAHMSUgpS8oxKeXcIk4M=;
+        b=DyBPssubbxErBoPOq0fJNAK510u1T6sDaXNjdScMSC4hdsfrLwCYCE7W6/e4Zp69HO
+         9uaEgLi5XI/TvfpO0EcuWpS9mM7N6k9eRW0cLcSNfce1RbH0iEfi/5O2DMWN21gPAZOj
+         nfJBZuLqrkC8SUhasfiWypCLPc8Fa0YEdN85MqP9NyF4rnsL+q+fqCL0ywQ1p+/zsHM+
+         cbXiM0TTyJKuAaHx/VFd+ApBDy4aF8CMLqx3zXlZkrwnZNs5/EkkJ2G6p0MULBNj/tV7
+         Cxwjx9xgD4HtL+CN8cx5og7sGxOTDzD+epaYP/vIIMJR+pXd5Rs/ojrAGPlmJFh8Jj7e
+         KqzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MplQbzRQT+z1bdJmXaR1KVHy2BkjrU2G1JmE86JIobE=;
-        b=j0xuhudGqgu2WSKbP/6voFhrUytT7hqnIrKTmcND3yD/u3Vd1f/2XQ3lPj/eZsGZtF
-         +MTlqr6NGCNd8Ii3RMoe1WupygTCUb5vPVJqQIYRLIVCcaWG97O7wdkzJ8jARP3PBmIL
-         WpnsJ3vjmJ95UC/fNUdHaFKu/abHOJ2qv6ighmmg+9VTINW2EpFVXwYGdVmvWdSGiKOr
-         U9w8Nge5y2qtmvH6CkgW+eXOoQPNBwfXeQQNYRb/8Dnseo5IGDJkuTzbUTv3nAqfMQzu
-         efK+tfTdsGKGl4335IHN8GMXa6yKWfa/fjHG6lTaj4+Zo9BZJH3ziocMKqO3qr8eEb/1
-         zy2g==
-X-Gm-Message-State: AOAM533j/tkgUY+vFHXn8zp7vZUJfpPFdcpFxKKrbSME5CjlX6eJ/qtf
-        i8SDOKgVA7512qd1PVtA05z9Dw==
-X-Google-Smtp-Source: ABdhPJzJDkZYkTZKB1YRuviJOlyg7HgTbjG4HV0Ef/gdB8gbkEVvTlYX78jr9Q53a6SmOkXuzkYlxQ==
-X-Received: by 2002:a02:c6c4:: with SMTP id r4mr13881161jan.77.1617393857400;
-        Fri, 02 Apr 2021 13:04:17 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id n10sm4307445ili.15.2021.04.02.13.04.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Apr 2021 13:04:16 -0700 (PDT)
-Subject: Re: [PATCH v6 00/21] Miscellaneous fixes for resctrl selftests
-To:     Fenghua Yu <fenghua.yu@intel.com>
-Cc:     Shuah Khan <shuah@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        linux-kselftest <linux-kselftest@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210317022255.2536745-1-fenghua.yu@intel.com>
- <YF451jic7QNyUCVD@otcwcpicx3.sc.intel.com>
- <b10f5509-5111-e3e4-c247-dde542c36358@linuxfoundation.org>
- <YGdgDqyma+/VXNcc@otcwcpicx3.sc.intel.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <c2221c02-5646-0521-a501-87717d872b37@linuxfoundation.org>
-Date:   Fri, 2 Apr 2021 14:04:16 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lBFiphv0iynhsmG5QBbrvBXWAHMSUgpS8oxKeXcIk4M=;
+        b=bReB//Kh8a0u7ri7swZKySy2EfYsV1BFhfDWjIhDAeuG4QBmFbWI/0SyA/FRhru/Ug
+         3atAUE9twKHM71+MQ4o81vroarYajhUso7MUShYbFUnSxAlyBL2arnrvQ+hj6IGyAtpa
+         NAmz4x1J0JivUMJ027zzpkEpsh38AUv325LEwSfAeAtwreSnRJ1IvAMhVuralQgRynj1
+         Yr3ZxzNcbYNsyYJ9QvLv4GxQXCrmHKSJLKnz1Xao9+sm8QsDcwnalz324InGOes1motC
+         ydG1yLdx9bVamsOf7uY8LcU2PkXNMkIIwyqPfxpPZaZRDTg7y2CnOoTJYohiIgJyW39y
+         c96g==
+X-Gm-Message-State: AOAM5316qemM38rR+lnGJUrFI/LHusSkGNLeO4P/7/tc1d7VuN4CSljB
+        LSFgaEkKk6zXMDGx4aLxXEkjNcJtgpa4L/Zu7XQ=
+X-Google-Smtp-Source: ABdhPJyHxEUGE3dMiGIj93PvLiCC1o7fw/dlZeYfFtFeF4N46laW1ppvJ5d5JAIA+cPUSLBbvM6H227LYDwx9EwYh98=
+X-Received: by 2002:ac5:c84f:: with SMTP id g15mr10188260vkm.15.1617394132999;
+ Fri, 02 Apr 2021 13:08:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YGdgDqyma+/VXNcc@otcwcpicx3.sc.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1610158662-3926-1-git-send-email-jrdr.linux@gmail.com>
+In-Reply-To: <1610158662-3926-1-git-send-email-jrdr.linux@gmail.com>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Sat, 3 Apr 2021 01:38:41 +0530
+Message-ID: <CAFqt6zb405L9AhrzdMd3CTRCFN9J9kEVE5vudeF_R4OfVjLygQ@mail.gmail.com>
+Subject: Re: [PATCH] perf/core: Mark perf_pmu_snapshot_aux() as static
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, acme@kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        jolsa@redhat.com, namhyung@kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/2/21 12:18 PM, Fenghua Yu wrote:
-> Hi, Shuah,
-> 
-> On Fri, Apr 02, 2021 at 12:17:17PM -0600, Shuah Khan wrote:
->> On 3/26/21 1:45 PM, Fenghua Yu wrote:
->>> Hi, Shuah,
->>>
->>> On Wed, Mar 17, 2021 at 02:22:34AM +0000, Fenghua Yu wrote:
->>>> This patch set has several miscellaneous fixes to resctrl selftest tool
->>>> that are easily visible to user. V1 had fixes to CAT test and CMT test
->>>> but they were dropped in V2 because having them here made the patchset
->>>> humongous. So, changes to CAT test and CMT test will be posted in another
->>>> patchset.
->>>>
->>>> Change Log:
->>>> v6:
->>>> - Add Tested-by: Babu Moger <babu.moger@amd.com>.
->>>> - Replace "cat" by CAT_STR etc (Babu).
->>>> - Capitalize the first letter of printed message (Babu).
->>>
->>> Any comment on this series? Will you push it into linux-kselftest.git?
->>>
->> Yes. Will apply for 5.13-rc1
-> 
-> Great! Thank you very much for your help!
-> 
+On Sat, Jan 9, 2021 at 7:47 AM Souptick Joarder <jrdr.linux@gmail.com> wrote:
+>
+> Kernel test robot throws below warning ->
+>
+>  kernel/events/core.c:6535:6: warning: no previous prototype for
+> 'perf_pmu_snapshot_aux' [-Wmissing-prototypes]
+>     6535 | long perf_pmu_snapshot_aux(struct perf_buffer *rb,
+>          |      ^~~~~~~~~~~~~~~~~~~~~
+> Marking perf_pmu_snapshot_aux() as static as it is not used outside
+> this file.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
 
-Done. Now applied to linux-selftest next.
+Any comment on this patch ?
 
-https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/ 
-next
-
-Ran sanity test and suggested a change in message for 12/21.
-
-Please take a look other such messages and improve them as well
-and send follow-on patches.
-
-thanks,
--- Shuah
+> ---
+>  kernel/events/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 55d1879..a4ba6fd 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -6532,7 +6532,7 @@ static unsigned long perf_prepare_sample_aux(struct perf_event *event,
+>         return data->aux_size;
+>  }
+>
+> -long perf_pmu_snapshot_aux(struct perf_buffer *rb,
+> +static long perf_pmu_snapshot_aux(struct perf_buffer *rb,
+>                            struct perf_event *event,
+>                            struct perf_output_handle *handle,
+>                            unsigned long size)
+> --
+> 1.9.1
+>
