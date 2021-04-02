@@ -2,91 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A958352EF8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 20:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1435B352EFA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 20:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234673AbhDBSKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 14:10:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37546 "EHLO
+        id S234628AbhDBSKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 14:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbhDBSKE (ORCPT
+        with ESMTP id S231160AbhDBSKN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 14:10:04 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED84C0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 11:10:03 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id r193so3158013ior.9
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 11:10:03 -0700 (PDT)
+        Fri, 2 Apr 2021 14:10:13 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F81BC0613E6
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 11:10:12 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id g25so2867035wmh.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 11:10:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yjrmCjuaNHWTMVtf+Ev+uBc6DnJZmXfXNY+A28CCtys=;
-        b=OxZOKHA1AirLfe4HR0wmt1+tSU1Zq+F4Uo2VFWtWUzxkLeSFYJxLcY8B17QC/A/Dcu
-         DzhFGqVTIDpiGjVhsIF9oB1+nK+Rw205KeHmnj04XPZ33s9Q4U+OVn+h9nWh+wi2BAbR
-         M7T/uzEvdVd9NeyYuw7nn4jqU8yZwgigYibgU=
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0+42j5c9C3lnZRYmM2fmnkvuNubUgtRuZ5/m95qULpE=;
+        b=eEowShh4ooiHTH8jvSwGwrRH9tPgimJRq+ApGJEizC+0CwayQuOdZt1jWAIu8EICs8
+         o3JiWgE+7WkHNvS04My/6aGm+TBHvuof9htqscfHZ/sD9ERyw5Ga5gtniZe5AruSqwOz
+         UJl5npiOVCDAku9JQtDz647qybqSYQs0QF8IxF2Gq3eWAkzX6Rde0IqzB7JsAiyOerQl
+         qjt/voWLioqmv08BRGMQaTWAScvnLNCWQXv7+tzpNMyyiZopxexHyVfgtD9oKP4ETonk
+         2uea6gXi0d8otkDd7RLz4ItiSHqMYTdfh8JyR8OLzLrqj4iQpEHno+TM3Fbz2COjMPyo
+         AiZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yjrmCjuaNHWTMVtf+Ev+uBc6DnJZmXfXNY+A28CCtys=;
-        b=nKSonAn/yg/O6Qz4E61aUZa0RTayAURrytm/IgpUI25eBlldd13kCtHBhorgPaM/T3
-         +4ipTsAbn05OrUDUFNChLMZGgXi/d9+3yGPQ1PhzYiekL8JILwvmNibb2lyJItkXsXV1
-         zSDnw6d2IO/9S6aTHeiOjtPsEsqzDcTvkARBT26NN35r35zs6hfYLqGCKPgLgeh0/rVa
-         1RL6XQ6E2MHdwPzLELp0missQCxfO1eXOVXy+9ICUn51N3PIQrjQGzXZYlSMs/w4oO3d
-         hMEyBz35PUyua2EuhBv++pdBTrvauEp8FkNX0nnTC7V65bPHzPg3zGQ8EN1KeN0pZb3Z
-         z2Qw==
-X-Gm-Message-State: AOAM5303V15N6jkC16fAsuYnw6p/9HHhTNIINJY9+884uSxFpVSLupRV
-        cNc9Kml24c1LeU4OkDRe7mo2Kw==
-X-Google-Smtp-Source: ABdhPJzkcGhvBhQO8pqLTozGIowK9K7OA25Vy28EDdf/exqM7v7Xx8eoMG/ZzXzNA8nKbkxOfyWDsQ==
-X-Received: by 2002:a05:6602:722:: with SMTP id g2mr11985733iox.1.1617387002717;
-        Fri, 02 Apr 2021 11:10:02 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id 13sm4347668ilq.8.2021.04.02.11.10.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Apr 2021 11:10:02 -0700 (PDT)
-Subject: Re: [PATCH v5 00/21] Miscellaneous fixes for resctrl selftests
-To:     Fenghua Yu <fenghua.yu@intel.com>, Babu Moger <babu.moger@amd.com>
-Cc:     Shuah Khan <shuah@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        linux-kselftest <linux-kselftest@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210307145502.2916364-1-fenghua.yu@intel.com>
- <652bfb1c-91d4-13b1-b9be-be8a4147d304@amd.com>
- <YEvnGQ0W1IlOMjOf@otcwcpicx3.sc.intel.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <57162752-1db4-35a1-b6ca-0dcb7344dc27@linuxfoundation.org>
-Date:   Fri, 2 Apr 2021 12:10:01 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0+42j5c9C3lnZRYmM2fmnkvuNubUgtRuZ5/m95qULpE=;
+        b=rLYD+3cvjeDQtWw4xUfmdxrB2MZBahVJ3I7PZ7lETVB+PdZPN9FU7h5HH/+Ga3JAqf
+         WAn/lVGPgY2/n0gKoIr/QQmb+gKcyYikh82qY4aLwz4rtCSd7zGfytlCqkCnC4gISZoL
+         cQqr5a0d6CXhlt51eyae+KWFckUXcpcEUcUtcST60a0QAZVAFPZdSQlbuZ72jVhhLof/
+         q7Wj0dhtVP5u1glSqPxq2IcVe/gEqMUHowrcoyjtMbl6vv1GuvKtsvXLhI0F1zGJbPs1
+         5XXt2HRwkMIwLsvem/Fav0stNziIUoyv7fViiqEA2yVjKb0Us796eYjgZaRgujAo2/dT
+         hwBQ==
+X-Gm-Message-State: AOAM533Atwxo83INAj9gZ4ij0EA24luMRNNtqtdv0sAd/teHFVwxF+Gb
+        cp9X5+cEmd2ZtI1/8/Hf001T0Q==
+X-Google-Smtp-Source: ABdhPJxsqKyWReOmuCLtGGGPDS9aUEr3WeEguoYbBOQZlhqtUBGgV1MPgCR0zTNa2wH/NSoZiZiG5w==
+X-Received: by 2002:a1c:f715:: with SMTP id v21mr14185277wmh.187.1617387011194;
+        Fri, 02 Apr 2021 11:10:11 -0700 (PDT)
+Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
+        by smtp.gmail.com with ESMTPSA id j9sm12493297wmi.24.2021.04.02.11.10.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Apr 2021 11:10:10 -0700 (PDT)
+Date:   Fri, 2 Apr 2021 19:10:08 +0100
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: initialize local variables in net/ipv6/mcast.c and
+ net/ipv4/igmp.c
+Message-ID: <YGdeAK3BwWSnDwRX@equinox>
+References: <20210402173617.895-1-phil@philpotter.co.uk>
+ <d2334631-4b3a-48e5-5305-7320adc50909@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YEvnGQ0W1IlOMjOf@otcwcpicx3.sc.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d2334631-4b3a-48e5-5305-7320adc50909@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/12/21 3:11 PM, Fenghua Yu wrote:
-> Hi, Babu,
+On Fri, Apr 02, 2021 at 07:49:44PM +0200, Eric Dumazet wrote:
 > 
-> On Fri, Mar 12, 2021 at 01:08:11PM -0600, Babu Moger wrote:
->> Hi Fenghua, Thanks for the patches.
->> Sanity tested them on AMD systems. Appears to work fine.
->> Few minor comments in few patches.
->> Tested-by: Babu Moger <babu.moger@amd.com>
 > 
-> I will add Tested-by: Babu Moger in the series and address your
-> comments.
+> On 4/2/21 7:36 PM, Phillip Potter wrote:
+> > Use memset to initialize two local buffers in net/ipv6/mcast.c,
+> > and another in net/ipv4/igmp.c. Fixes a KMSAN found uninit-value
+> > bug reported by syzbot at:
+> > https://syzkaller.appspot.com/bug?id=0766d38c656abeace60621896d705743aeefed51
 > 
-> Thank you for your review!
+> 
+> According to this link, the bug no longer triggers.
+> 
+> Please explain why you think it is still there.
 > 
 
-Looks like a few patches in this series needs updates. Do you plan to
-send the new revision for consideration for 5.13?
+Dear Eric,
 
-thanks,
--- Shuah
+It definitely still triggers, tested it on the master branch of
+https://github.com/google/kmsan last night. The patch which fixes the
+crash on that page is the same patch I've sent in.
+
+Regards,
+Phil
