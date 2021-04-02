@@ -2,144 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 606C4352EED
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 20:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20FC4352EEF
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 20:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236048AbhDBSFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 14:05:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234984AbhDBSF3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 14:05:29 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB809C0613E6;
-        Fri,  2 Apr 2021 11:05:26 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id j20-20020a05600c1914b029010f31e15a7fso4658939wmq.1;
-        Fri, 02 Apr 2021 11:05:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7mr2GfJg5eEcgvBSMCjlj1cDx5zt7P141cpidCvA+OE=;
-        b=Bqpu5KNZC8ZgmSc6En7KsM0W7HKnyvePVTplgtYftLWqZ+TNghdf20o1psAEI+kaew
-         KDYPXs+KYA2s5Gz2Y5eprNf/ieV+N3tgD6Y+UZmrnzmjZKYd0DMMWKFjZwnum1FlmFm5
-         aGz2QvkBW/as3KtSS0xqaEqlBJBUwAhjkim5t8n3WSxF5a+Lradyt96TCSWTKDsM64Pl
-         eSOonjh4hCD8nG1bEKRE6L/E+ZouOr+vpkwHAHpVwGZnWScZ0cm2+TqFxTGghmDqZsyv
-         PKLlDKM/aCOxMqxEYLV+qflPTxGdqDAZPRQS8uBYUBm3eC9MsXJGGNxthK3KHWW0V7l1
-         Yj9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7mr2GfJg5eEcgvBSMCjlj1cDx5zt7P141cpidCvA+OE=;
-        b=jdHURbEGOdDwd9wQjilNPxjNZ/3RBhLBGaj+0wse5w9zGgWX5ArvZclQLeNP0lK1jZ
-         WFX92tVaVd2zAtnuoA2C/7LlqPaUNPFYqLMyK55hmkp3wl0BikEuOmr1DQPiRfoL5O9a
-         UMk4WGCA67ykuUvrEQGnUFsdAAIaiIphjKfKwRAnQGUSY4appTPpQxb3yasWhqjvaQMg
-         jAwTbFnC9IABKJNqfRXDFBrEfF31Xq9mhLnBWHSlr1yrPB/TpHphLeEkiQxNXr88I/GB
-         uZ81Nrnvdi0CeP9Y5X1RvW4JcsMkKU08XI14YNN1bi4zWwPgfQHPuFvvdzgIDnMBZRvX
-         gr6g==
-X-Gm-Message-State: AOAM533xBOYV3Ru26tM9ztSxBsINHv97DF1SMuNjl/RNmzHZjCgbphYU
-        vZuuOnz11Ks/Ulx+TZs3Ej1aFd8W1ts=
-X-Google-Smtp-Source: ABdhPJyaAtduqP9asCyPMlwX/IljNTQoupAqwWq5JfOut4afupWIFZmlDfHqtqmErqN1C8ZgqKkvDA==
-X-Received: by 2002:a05:600c:4f89:: with SMTP id n9mr14084482wmq.133.1617386725296;
-        Fri, 02 Apr 2021 11:05:25 -0700 (PDT)
-Received: from [192.168.1.101] ([37.166.24.151])
-        by smtp.gmail.com with ESMTPSA id u17sm11954151wmq.3.2021.04.02.11.05.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Apr 2021 11:05:24 -0700 (PDT)
-Subject: Re: [PATCH net v2] atl1c: move tx cleanup processing out of interrupt
-To:     Gatis Peisenieks <gatis@mikrotik.com>, chris.snook@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, hkallweit1@gmail.com,
-        jesse.brandeburg@intel.com, dchickles@marvell.com,
-        tully@mikrotik.com, eric.dumazet@gmail.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <c6ea0a3d1bcf79bb1e319d1e99cfed9b@mikrotik.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <e8b35b3e-ee20-412b-b2cd-5362e4282abf@gmail.com>
-Date:   Fri, 2 Apr 2021 20:05:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S235892AbhDBSGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 14:06:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52904 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234628AbhDBSGP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 14:06:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5798E610A5;
+        Fri,  2 Apr 2021 18:06:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617386774;
+        bh=g6R99wNEiaWYjUZA/Zr//MAlmyK7L1YWL5mD/61jbv4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EGaw/CfI/k5x+byWWJbrGybqVaGb31AIwkEo5rGJ1eH835kv0HMdK73qwOtsRY6Nu
+         RQ8AO0DR6v/KMLAnvA+IvKSgfp/Kw8+TLNOmSAE6RaUN10rLyeLjyhI2xu24+DcpC+
+         CH1kCSTuoDB3lW/nuboMLmkgZRyBQZnZTD269RhTjbkqfXP9PEBf4P+z1gtzNpaIUy
+         5i4GQ61FF1alW0z5K/fQX8HzYDusa74cH97ptCilGabfCE0pEzRu09C8ffzOaPD3iW
+         RCXpfM6DHSk+3CQfGpSUrJA128uEmtUXVi/5V8Lt675cUgb6HsVmLpu2ecbbnGH4op
+         oTml45c4736AQ==
+Date:   Fri, 2 Apr 2021 23:36:07 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/6] dt-bindings: reserved-memory: Add Owl SoC serial
+ number binding
+Message-ID: <20210402180607.GB31906@thinkpad>
+References: <cover.1617110420.git.cristian.ciocaltea@gmail.com>
+ <fb74862bec15f1e9e0c4d8b70ebd6c07c6eb1a40.1617110420.git.cristian.ciocaltea@gmail.com>
+ <20210401170704.GA610119@robh.at.kernel.org>
+ <20210401174001.GA2016477@BV030612LT>
 MIME-Version: 1.0
-In-Reply-To: <c6ea0a3d1bcf79bb1e319d1e99cfed9b@mikrotik.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401174001.GA2016477@BV030612LT>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 01, 2021 at 08:40:01PM +0300, Cristian Ciocaltea wrote:
+> On Thu, Apr 01, 2021 at 12:07:04PM -0500, Rob Herring wrote:
+> > On Tue, Mar 30, 2021 at 04:48:16PM +0300, Cristian Ciocaltea wrote:
+> > > Add devicetree binding for the Actions Semi Owl SoC serial number
+> > > reserved-memory range.
+> > > 
+> > > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> > > ---
+> > >  .../actions,owl-soc-serial.yaml               | 53 +++++++++++++++++++
+> > >  1 file changed, 53 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/reserved-memory/actions,owl-soc-serial.yaml
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/reserved-memory/actions,owl-soc-serial.yaml b/Documentation/devicetree/bindings/reserved-memory/actions,owl-soc-serial.yaml
+> > > new file mode 100644
+> > > index 000000000000..41b71f47ee6c
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/reserved-memory/actions,owl-soc-serial.yaml
+> > > @@ -0,0 +1,53 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/reserved-memory/actions,owl-soc-serial.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Actions Semi Owl reserved-memory for SoC serial number
+> > > +
+> > > +maintainers:
+> > > +  - Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> > > +
+> > > +description: |
+> > > +  Provide access to the memory region where the two parts of the Actions
+> > > +  Semi Owl SoC serial number (low & high) can be read from. This information
+> > > +  is provided by the bootloader, hence expose it under /reserved-memory node.
+> > > +
+> > > +  Please refer to reserved-memory.txt in this directory for common binding
+> > > +  part and usage.
+> > > +
+> > > +  This is currently supported only on the S500 SoC variant.
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    oneOf:
+> > > +      - const: actions,owl-soc-serial
+> > > +      - items:
+> > > +          - enum:
+> > > +              - actions,s500-soc-serial
+> > > +          - const: actions,owl-soc-serial
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - reg
+> > > +
+> > > +additionalProperties: true
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    reserved-memory {
+> > > +        #address-cells = <1>;
+> > > +        #size-cells = <1>;
+> > > +        ranges;
+> > > +
+> > > +        soc_serial: soc-serial@800 {
+> > > +            compatible = "actions,s500-soc-serial", "actions,owl-soc-serial";
+> > > +            reg = <0x800 0x8>;
+> > 
+> > You end up wasting a whole page of memory for 8 bytes. It may be better 
+> > to copy this to a DT property ('serial-number' is already a defined root 
+> > property).
+> 
+> Actually there is more information provided by the vendor bootloader
 
+Then you should call it as socinfo or something not soc_serial.
 
-On 4/2/21 7:20 PM, Gatis Peisenieks wrote:
-> Tx queue cleanup happens in interrupt handler on same core as rx queue processing.
-> Both can take considerable amount of processing in high packet-per-second scenarios.
-> 
-> Sending big amounts of packets can stall the rx processing which is unfair
-> and also can lead to to out-of-memory condition since __dev_kfree_skb_irq
-> queues the skbs for later kfree in softirq which is not allowed to happen
-> with heavy load in interrupt handler.
-> 
-> This puts tx cleanup in its own napi and enables threaded napi to allow the rx/tx
-> queue processing to happen on different cores.
-> 
-> The ability to sustain equal amounts of tx/rx traffic increased:
-> from 280Kpps to 1130Kpps on Threadripper 3960X with upcoming Mikrotik 10/25G NIC,
-> from 520Kpps to 850Kpps on Intel i3-3320 with Mikrotik RB44Ge adapter.
-> 
-> Signed-off-by: Gatis Peisenieks <gatis@mikrotik.com>
-> ---
->  drivers/net/ethernet/atheros/atl1c/atl1c.h    |  2 +
->  .../net/ethernet/atheros/atl1c/atl1c_main.c   | 43 +++++++++++++++++--
->  2 files changed, 41 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/atheros/atl1c/atl1c.h b/drivers/net/ethernet/atheros/atl1c/atl1c.h
-> index a0562a90fb6d..4404fa44d719 100644
-> --- a/drivers/net/ethernet/atheros/atl1c/atl1c.h
-> +++ b/drivers/net/ethernet/atheros/atl1c/atl1c.h
-> @@ -506,6 +506,7 @@ struct atl1c_adapter {
->      struct net_device   *netdev;
->      struct pci_dev      *pdev;
->      struct napi_struct  napi;
-> +    struct napi_struct  tx_napi;
->      struct page         *rx_page;
->      unsigned int        rx_page_offset;
->      unsigned int        rx_frag_size;
-> @@ -529,6 +530,7 @@ struct atl1c_adapter {
->      u16 link_duplex;
-> 
->      spinlock_t mdio_lock;
-> +    spinlock_t irq_mask_lock;
->      atomic_t irq_sem;
-> 
->      struct work_struct common_task;
-> diff --git a/drivers/net/ethernet/atheros/atl1c/atl1c_main.c b/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-> index 3f65f2b370c5..f51b28e8b6dc 100644
-> --- a/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-> +++ b/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-> @@ -813,6 +813,7 @@ static int atl1c_sw_init(struct atl1c_adapter *adapter)
->      atl1c_set_rxbufsize(adapter, adapter->netdev);
->      atomic_set(&adapter->irq_sem, 1);
->      spin_lock_init(&adapter->mdio_lock);
-> +    spin_lock_init(&adapter->irq_mask_lock);
->      set_bit(__AT_DOWN, &adapter->flags);
-> 
->      return 0;
-> @@ -1530,7 +1531,7 @@ static inline void atl1c_clear_phy_int(struct atl1c_adapter *adapter)
->      spin_unlock(&adapter->mdio_lock);
->  }
-> 
-> -static bool atl1c_clean_tx_irq(struct atl1c_adapter *adapter,
-> +static unsigned atl1c_clean_tx_irq(struct atl1c_adapter *adapter,
->                  enum atl1c_trans_queue type)
+Thanks,
+Mani
 
-
-This v2 is much better, thanks.
-
-You might rename this atl1c_clean_tx_irq(), because it is now
-not run under hard irqs ?
-
-Maybe merge atl1c_clean_tx_irq() and atl1c_clean_tx() into a single function ?
-
-
+> in this memory page, so we might use it once we are able to decode it.
+> For the moment I could only identify the serial number.
+> 
+> Thanks,
+> Cristi
+> 
+> > Rob
