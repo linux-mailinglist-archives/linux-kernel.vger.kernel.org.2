@@ -2,80 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F953530C7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 23:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F593530C9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 23:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235657AbhDBVcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 17:32:25 -0400
-Received: from mga09.intel.com ([134.134.136.24]:26210 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231577AbhDBVcX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 17:32:23 -0400
-IronPort-SDR: RKpoHlX0iX+CgIZ+UKJsyMIF7Xm1/M5Zb0VMoX7u9kCEcwHH6x7KfKUtsRnRjzgQ+UuH6OHFC/
- l0yNGq3gYFOA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9942"; a="192640760"
-X-IronPort-AV: E=Sophos;i="5.81,300,1610438400"; 
-   d="scan'208";a="192640760"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 14:32:21 -0700
-IronPort-SDR: vwzfe4oGMKxq040CuMrVtAUkUSOXaHDWevG0dFNC0y11lb4NDsxJ0TtTrFxMi6QoyZpBbnY6C9
- LyR+bZ5n9T/Q==
-X-IronPort-AV: E=Sophos;i="5.81,300,1610438400"; 
-   d="scan'208";a="456574638"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 14:32:21 -0700
-Date:   Fri, 2 Apr 2021 14:32:19 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC v1 00/26] Add TDX Guest Support
-Message-ID: <20210402213219.GM1285835@tassilo.jf.intel.com>
-References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <95e97456-478b-c6a2-f851-3b19ce794262@intel.com>
- <20210402024852.GK1285835@tassilo.jf.intel.com>
- <9bfa74a5-6a56-a2e0-7432-d35766099d54@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9bfa74a5-6a56-a2e0-7432-d35766099d54@intel.com>
+        id S235590AbhDBVd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 17:33:29 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:10735 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231577AbhDBVd2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 17:33:28 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617399206; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=SNgmJCBq3tjYrxVHV8+VHM2aq1+r1qtAuIzokb9UuMo=; b=hhS/v+yGA1bdnFCZgwAgQvciTgE3J/uL9zH+7rh+6bEQdaOZjndJqCbgm7DooldfWhltdRkS
+ Nej3jj/Zr3qy3cre1c4LhKnKMGXkueAbUym0pg7ku0QkdpgKKce9MCONYYKPukF5OLeoQxf4
+ 0Q4Hme+oLWz65y+zymOK/u4Pa44=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 60678da68807bcde1d9616c3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 02 Apr 2021 21:33:26
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 15A09C433C6; Fri,  2 Apr 2021 21:33:26 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 03C85C433C6;
+        Fri,  2 Apr 2021 21:33:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 03C85C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH] bus: mhi: pci_generic: Add SDX65 based modem support
+Date:   Fri,  2 Apr 2021 14:33:19 -0700
+Message-Id: <1617399199-35172-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> If we go this route, what are the rules and restrictions?  Do we have to
-> say "no MMIO in #VE"?
+Add generic info for SDX65 based modems.
 
-All we have to say is "No MMIO in #VE before getting thd TDVEINFO arguments"
-After that it can nest without problems.
+Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+---
+This patch was tested on SDX65 hardware with Ubuntu X86_64 PC as host.
 
-If you nest before that the TDX will cause a triple fault.
+ drivers/bus/mhi/pci_generic.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-The code that cannot do it is a few lines in the early handler which
-runs with interrupts off.
+diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
+index 5cf44bc..92a1b18 100644
+--- a/drivers/bus/mhi/pci_generic.c
++++ b/drivers/bus/mhi/pci_generic.c
+@@ -204,6 +204,15 @@ static struct mhi_controller_config modem_qcom_v1_mhiv_config = {
+ 	.event_cfg = modem_qcom_v1_mhi_events,
+ };
+ 
++static const struct mhi_pci_dev_info mhi_qcom_sdx65_info = {
++	.name = "qcom-sdx65m",
++	.fw = "qcom/sdx65m/xbl.elf",
++	.edl = "qcom/sdx65m/edl.mbn",
++	.config = &modem_qcom_v1_mhiv_config,
++	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
++	.dma_data_width = 32
++};
++
+ static const struct mhi_pci_dev_info mhi_qcom_sdx55_info = {
+ 	.name = "qcom-sdx55m",
+ 	.fw = "qcom/sdx55m/sbl1.mbn",
+@@ -261,6 +270,8 @@ static const struct mhi_pci_dev_info mhi_quectel_em1xx_info = {
+ };
+ 
+ static const struct pci_device_id mhi_pci_id_table[] = {
++	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0308),
++		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx65_info },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0306),
+ 		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx55_info },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0304),
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-The TDX module also makes sure to not inject NMIs while we're in
-that region, so NMIs are of no concern.
-
-That was the whole point of avoiding the system call gap problem. We don't
-need to make it IST, so it can nest.
-
-I'm not aware of any other special rules.
-
-> Which brings up another related point: How do you debug TD guests?  Does
-> earlyprintk work?
-
-Today it works actually because serial ports are allowed. But I expect it to
-be closed eventually because serial code is a lot of code to audit. 
-But you can always disable the filtering with a command line option and
-then it will always work for debugging.
-
--Andi
