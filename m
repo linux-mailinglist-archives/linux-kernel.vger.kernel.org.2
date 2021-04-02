@@ -2,111 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6254635305E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 22:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 645BC353063
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 22:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234981AbhDBUns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 16:43:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52500 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231149AbhDBUnp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 16:43:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E3E461177
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 20:43:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617396224;
-        bh=dWu4Y7lYBKipZYJpWvLnLR79oT1dy5VYsrwmwapX+qM=;
-        h=From:To:Subject:Date:From;
-        b=kLDKIdX4cjsTaVoml/tTsUguzEmh3/PhlsxTC47F7ik1Ro5kn7+Q7LWLKPgaWsHDP
-         aDUGQFcYtr+HlgbE3veISQ2ByZJOZ8jcJd5DexNc9uEAGGG/t9h9c7d2psqUd+RVpI
-         91+pf7Bo1EHZ9al7ATCPum3A4zVelWoruoWDc30KB1f+xNaTX89f4YbzBfiZaWOsKO
-         aazq7QFtdz6tXIhR+8cvtDu1d0iNW5OS6jNZ+piRRwL30Bfz8YlJIgCg8+HNxgnhZu
-         fmd8vHfuJL404ZIH8QftZrH652amf7O8YA9xDComuL3efitu+6fFKNnwV9lg0YTf8m
-         dbHtats0C5Hag==
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Subject: [PATCH] habanalabs: remove the store jobs array from CS IOCTL
-Date:   Fri,  2 Apr 2021 23:43:40 +0300
-Message-Id: <20210402204340.14717-1-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        id S235094AbhDBUs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 16:48:27 -0400
+Received: from relay12.mail.gandi.net ([217.70.178.232]:45261 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229722AbhDBUsY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 16:48:24 -0400
+Received: from localhost (91-175-115-186.subs.proxad.net [91.175.115.186])
+        (Authenticated sender: gregory.clement@bootlin.com)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id ED3AF200002;
+        Fri,  2 Apr 2021 20:48:18 +0000 (UTC)
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     kostap@marvell.com, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     lkundrak@v3.sk, linux@armlinux.org.uk,
+        sebastian.hesselbarth@gmail.com, andrew@lunn.ch,
+        robh+dt@kernel.org, vkoul@kernel.org, kishon@ti.com,
+        miquel.raynal@bootlin.com, mw@semihalf.com, jaz@semihalf.com,
+        nadavh@marvell.com, stefanc@marvell.com, bpeled@marvell.com,
+        Konstantin Porotchkin <kostap@marvell.com>
+Subject: Re: [PATCH v3 0/5] Add support for CP110 UTMI PHY
+In-Reply-To: <20210307163343.25684-1-kostap@marvell.com>
+References: <20210307163343.25684-1-kostap@marvell.com>
+Date:   Fri, 02 Apr 2021 22:48:18 +0200
+Message-ID: <877dlkct0t.fsf@BL-laptop>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The store part was never implemented in the code and never been used
-by the userspace applications.
+Hi Kosta,
 
-We currently use the related parameters to a different purpose with
-a defined union. However, there is no point in that and it is better
-to just remove the union and the store parameters.
+> From: Konstantin Porotchkin <kostap@marvell.com>
+>
+> This series of patches adds a new PHY driver for supporting CP110 UTMI
+> PHY in Linux. Currently the functionality of USB ports connected to
+> this PHY depends on boot loader setup.
+> The new driver eliminates kernel configuration dependency from the boot
+> loader. 
+>
+> v3:
+> - rebase on top of Linux 5.12-rc2
+> - convert Armada 3700 UTMI PHY DT binding document to YAML schema
+> - create a separate DT binding for Armada CP11x UTMI PHY in YAML format
+> - change UTMI PHY port node names from "phy" to "usb-phy"
+>
+> v2:
+> - extend the comment about reference clock 
+> - fix driver probe function, add some prints
+> - move to usage of dr_mode from connected USB controller instead of
+>   dedicated device tree property
+>
+> Konstantin Porotchkin (5):
+>   drivers: phy: add support for Armada CP110 UTMI PHY
+>   dt-bindings: phy: convert phy-mvebu-utmi to YAML schema
+>   devicetree/bindings: add support for CP110 UTMI PHY
+>   arch/arm64: dts: add support for Marvell CP110 UTMI PHY
+>   arch/arm64: dts: enable CP110 UTMI PHY usage
 
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
----
- include/uapi/misc/habanalabs.h | 35 ++++++++++------------------------
- 1 file changed, 10 insertions(+), 25 deletions(-)
+Patch 4 and 5 applied on mvebu/dt64.
 
-diff --git a/include/uapi/misc/habanalabs.h b/include/uapi/misc/habanalabs.h
-index 90798eaac728..d3e017b5f0db 100644
---- a/include/uapi/misc/habanalabs.h
-+++ b/include/uapi/misc/habanalabs.h
-@@ -644,17 +644,10 @@ struct hl_cs_in {
- 	/* holds address of array of hl_cs_chunk for execution phase */
- 	__u64 chunks_execute;
- 
--	union {
--		/* this holds address of array of hl_cs_chunk for store phase -
--		 * Currently not in use
--		 */
--		__u64 chunks_store;
--
--		/* Sequence number of a staged submission CS
--		 * valid only if HL_CS_FLAGS_STAGED_SUBMISSION is set
--		 */
--		__u64 seq;
--	};
-+	/* Sequence number of a staged submission CS
-+	 * valid only if HL_CS_FLAGS_STAGED_SUBMISSION is set
-+	 */
-+	__u64 seq;
- 
- 	/* Number of chunks in restore phase array. Maximum number is
- 	 * HL_MAX_JOBS_PER_CS
-@@ -666,18 +659,10 @@ struct hl_cs_in {
- 	 */
- 	__u32 num_chunks_execute;
- 
--	union {
--		/* Number of chunks in restore phase array -
--		 * Currently not in use
--		 */
--		__u32 num_chunks_store;
--
--		/* timeout in seconds - valid only if HL_CS_FLAGS_CUSTOM_TIMEOUT
--		 * is set. this parameter is ignored in case of future multiple
--		 * users support.
--		 */
--		__u32 timeout;
--	};
-+	/* timeout in seconds - valid only if HL_CS_FLAGS_CUSTOM_TIMEOUT
-+	 * is set
-+	 */
-+	__u32 timeout;
- 
- 	/* HL_CS_FLAGS_* */
- 	__u32 cs_flags;
-@@ -1051,8 +1036,8 @@ struct hl_debug_args {
-  * Each JOB will be enqueued on a specific queue, according to the user's input.
-  * There can be more then one JOB per queue.
-  *
-- * The CS IOCTL will receive three sets of JOBS. One set is for "restore" phase,
-- * a second set is for "execution" phase and a third set is for "store" phase.
-+ * The CS IOCTL will receive two sets of JOBS. One set is for "restore" phase
-+ * and a second set is for "execution" phase.
-  * The JOBS on the "restore" phase are enqueued only after context-switch
-  * (or if its the first CS for this context). The user can also order the
-  * driver to run the "restore" phase explicitly
+I've just modified the title to align with the other commits in
+arch/arm64/boot/dts/marvell. They now begin by "arm64: dts: marvell:".
+
+Thanks,
+
+Gregory
+
+
+>
+>  .../phy/marvell,armada-3700-utmi-phy.yaml     |  57 +++
+>  .../phy/marvell,armada-cp110-utmi-phy.yaml    | 109 +++++
+>  .../bindings/phy/phy-mvebu-utmi.txt           |  38 --
+>  .../arm64/boot/dts/marvell/armada-7040-db.dts |  14 +-
+>  .../arm64/boot/dts/marvell/armada-8040-db.dts |  21 +-
+>  .../boot/dts/marvell/armada-8040-mcbin.dtsi   |  19 +-
+>  arch/arm64/boot/dts/marvell/armada-cp11x.dtsi |  19 +
+>  arch/arm64/boot/dts/marvell/cn9130-db.dts     |  12 +-
+>  arch/arm64/boot/dts/marvell/cn9131-db.dts     |   9 +-
+>  arch/arm64/boot/dts/marvell/cn9132-db.dts     |  11 +-
+>  drivers/phy/marvell/Kconfig                   |   8 +
+>  drivers/phy/marvell/Makefile                  |   1 +
+>  drivers/phy/marvell/phy-mvebu-cp110-utmi.c    | 384 ++++++++++++++++++
+>  13 files changed, 650 insertions(+), 52 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/phy/marvell,armada-3700-utmi-phy.yaml
+>  create mode 100644 Documentation/devicetree/bindings/phy/marvell,armada-cp110-utmi-phy.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/phy/phy-mvebu-utmi.txt
+>  create mode 100644 drivers/phy/marvell/phy-mvebu-cp110-utmi.c
+>
+> -- 
+> 2.17.1
+>
+
 -- 
-2.25.1
-
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
