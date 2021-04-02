@@ -2,158 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3151352B2E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 16:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F305352B30
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 16:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235754AbhDBN6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 09:58:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235626AbhDBN6I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 09:58:08 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE846C061797
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 06:57:59 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id w70so5076684oie.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 06:57:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ylm6gpqeWvw+/HjVuWe1JAQMxGl3Tdm7u6ALrI9wXPg=;
-        b=Sj034CJIi3VnMuZiMqKsL5hC3zzp2N52bcqqe9luhYTARnp6LmGMqyP6XOMZEVJsr5
-         Ufyz9lz0puhkH6aRFnLB/O7cyzMIJ5S1ibV+E7xeLFzv1582dQzMoJYpD58LM0Le1EmI
-         NSv4VAHxaQCae1/zBN9SCZ28lQSKBiF4DZeSYgAfEgd5DLfbc57d4Twcz9lyfZBWn/qU
-         DvzHTFZxtvuwexVbDh6DZ/pzRYW6lXWrkFm9ZYDy7Qcsv7ZuNVJfQHiFFXAtsNnd8M5y
-         MLyYEdxM9DsO06Ua49kF7Ju7IMZFfOrLUI4efdhQx64y6vy2e1h8ljLE1XjSgjJzjLBY
-         2AVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition:in-reply-to;
-        bh=ylm6gpqeWvw+/HjVuWe1JAQMxGl3Tdm7u6ALrI9wXPg=;
-        b=UAWIiAiAU/cFOMoDEOWI62QvoaAPUMl3Xb80Ng6H1hc7v8Y/2UNq+hxfQH8btNLw4e
-         hTNJTXVVT6diLKOm0TuT7m+H+BgHyWVe8ww9uBVWj5zciYRP598w48CLVY1dmojB/Q+G
-         et5G4zpeZH3s8dykFLxX0h3eKMmI6WYHrzq84lcdM5/oSBsBgZfhFUY9wPTVoThTnuuE
-         deXuBSPtcavNxt54H+SvUC+JwUPyF6Bmbt9yHJby6DIaIkzcW0U8LKIZMSksWC4U62Ry
-         x0wWQ1tg2UQMagDTSX/BxJ5+xXQ1M+Qg0SaJMjzb28Sy/YYL8bPYjYisFjBWdmh+omoO
-         8Igg==
-X-Gm-Message-State: AOAM530ygE9leG8EFHzU8ZE0HwzSKzSXj41Svy+/LsL+KnwmNMHMfBvW
-        4SigxXbyhzodFozeG2dLZmDZ8OWPzfcQ
-X-Google-Smtp-Source: ABdhPJwPPPNj2VpHypzZIPQ8aJF0JlMzBORKo8KJpEx0heLQgj2IgvzbO3x1kFLGObizH/Up+c7q8w==
-X-Received: by 2002:aca:f041:: with SMTP id o62mr10103290oih.114.1617371879329;
-        Fri, 02 Apr 2021 06:57:59 -0700 (PDT)
-Received: from serve.minyard.net ([47.184.156.158])
-        by smtp.gmail.com with ESMTPSA id d13sm1861185otk.74.2021.04.02.06.57.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 06:57:58 -0700 (PDT)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:f99f:823a:495e:5af])
-        by serve.minyard.net (Postfix) with ESMTPSA id DC72D180570;
-        Fri,  2 Apr 2021 13:57:57 +0000 (UTC)
-Date:   Fri, 2 Apr 2021 08:57:56 -0500
-From:   Corey Minyard <minyard@acm.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Corey Minyard <cminyard@mvista.com>,
-        openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 01/10] ipmi_si: Switch to use platform_get_mem_or_io()
-Message-ID: <20210402135756.GU507977@minyard.net>
-Reply-To: minyard@acm.org
-References: <20210330181649.66496-1-andriy.shevchenko@linux.intel.com>
+        id S235594AbhDBOBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 10:01:11 -0400
+Received: from mga04.intel.com ([192.55.52.120]:64940 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234161AbhDBOBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 10:01:10 -0400
+IronPort-SDR: tZB53IUQAAXRnvPXgyyzQ33zRyAbwl5fDzanPShC7xRjPtwGhaTuU0UD1uaHbyKls284U+YEMK
+ Ij6v8W+0csCA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9942"; a="190238814"
+X-IronPort-AV: E=Sophos;i="5.81,299,1610438400"; 
+   d="scan'208";a="190238814"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 07:01:09 -0700
+IronPort-SDR: 3qct/WCI+kSWM8eG4TgEf+aiOf1f3wz/7Cz4/BvdTWpF66htUTZSd4cobdL80+p0PVdDIssM9F
+ u/rrxbCPHbCg==
+X-IronPort-AV: E=Sophos;i="5.81,299,1610438400"; 
+   d="scan'208";a="413189831"
+Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 07:01:06 -0700
+From:   Tomas Winkler <tomas.winkler@intel.com>
+To:     Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        David E Box <david.e.box@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tamar Mashiah <tamar.mashiah@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Tomas Winkler <tomas.winkler@intel.com>
+Subject: [PATCH v3] platform/x86: intel_pmc_core: export platform global_reset via sysfs.
+Date:   Fri,  2 Apr 2021 17:00:54 +0300
+Message-Id: <20210402140054.1145793-1-tomas.winkler@intel.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210330181649.66496-1-andriy.shevchenko@linux.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 09:16:40PM +0300, Andy Shevchenko wrote:
-> Switch to use new platform_get_mem_or_io() instead of home grown analogue.
-> Note, we also introduce ipmi_set_addr_data_and_space() helper here.
+From: Tamar Mashiah <tamar.mashiah@intel.com>
 
-You didn't send a part 0 that I saw, so just using this.  This is a nice
-cleanup set, I just had a few very minor nits.  Thanks for this.
+During PCH manufacturing a global reset has to be induced in order
+for configuration changes take affect upon following platform reset.
+This setting was commonly done by accessing PMC registers via /dev/mem
+but due to security concern /dev/mem access is much restricted, hence
+the reason for exposing this setting via dedicated sysfs interface.
+To prevent post manufacturing abuse the register is protected
+by hardware locking.
 
--corey
+The register in MMIO space is defined for Cannon Lake and newer PCHs.
 
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/char/ipmi/ipmi_si_platform.c | 40 +++++++++++-----------------
->  1 file changed, 16 insertions(+), 24 deletions(-)
-> 
-> diff --git a/drivers/char/ipmi/ipmi_si_platform.c b/drivers/char/ipmi/ipmi_si_platform.c
-> index 129b5713f187..d7bd093f80e9 100644
-> --- a/drivers/char/ipmi/ipmi_si_platform.c
-> +++ b/drivers/char/ipmi/ipmi_si_platform.c
-> @@ -100,35 +100,32 @@ static int acpi_gpe_irq_setup(struct si_sm_io *io)
->  }
->  #endif
->  
-> +static void ipmi_set_addr_data_and_space(struct resource *r, struct si_sm_io *io)
-> +{
-> +	io->addr_data = r->start;
-> +	if (resource_type(r) == IORESOURCE_IO)
-> +		io->addr_space = IPMI_IO_ADDR_SPACE;
-> +	else
-> +		io->addr_space = IPMI_MEM_ADDR_SPACE;
-> +}
-> +
->  static struct resource *
->  ipmi_get_info_from_resources(struct platform_device *pdev,
->  			     struct si_sm_io *io)
->  {
-> -	struct resource *res, *res_second;
-> +	struct resource *res, *second;
->  
-> -	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
-> -	if (res) {
-> -		io->addr_space = IPMI_IO_ADDR_SPACE;
-> -	} else {
-> -		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -		if (res)
-> -			io->addr_space = IPMI_MEM_ADDR_SPACE;
-> -	}
-> +	res = platform_get_mem_or_io(pdev, 0);
->  	if (!res) {
->  		dev_err(&pdev->dev, "no I/O or memory address\n");
->  		return NULL;
->  	}
-> -	io->addr_data = res->start;
-> +	ipmi_set_addr_data_and_space(res, io);
->  
->  	io->regspacing = DEFAULT_REGSPACING;
-> -	res_second = platform_get_resource(pdev,
-> -			       (io->addr_space == IPMI_IO_ADDR_SPACE) ?
-> -					IORESOURCE_IO : IORESOURCE_MEM,
-> -			       1);
-> -	if (res_second) {
-> -		if (res_second->start > io->addr_data)
-> -			io->regspacing = res_second->start - io->addr_data;
-> -	}
-> +	second = platform_get_mem_or_io(pdev, 1);
-> +	if (second && resource_type(second) == resource_type(res) && second->start > io->addr_data)
-> +		io->regspacing = second->start - io->addr_data;
->  
->  	return res;
->  }
-> @@ -275,12 +272,7 @@ static int of_ipmi_probe(struct platform_device *pdev)
->  	io.addr_source	= SI_DEVICETREE;
->  	io.irq_setup	= ipmi_std_irq_setup;
->  
-> -	if (resource.flags & IORESOURCE_IO)
-> -		io.addr_space = IPMI_IO_ADDR_SPACE;
-> -	else
-> -		io.addr_space = IPMI_MEM_ADDR_SPACE;
-> -
-> -	io.addr_data	= resource.start;
-> +	ipmi_set_addr_data_and_space(&resource, &io);
->  
->  	io.regsize	= regsize ? be32_to_cpup(regsize) : DEFAULT_REGSIZE;
->  	io.regspacing	= regspacing ? be32_to_cpup(regspacing) : DEFAULT_REGSPACING;
-> -- 
-> 2.30.2
-> 
+Cc: David E Box <david.e.box@intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Tamar Mashiah <tamar.mashiah@intel.com>
+Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+---
+V2:
+1. Add locking for reading the ET3 register  (Andy)
+2. Fix few style issues (Andy)
+V3:
+1. Resend
+
+ .../ABI/testing/sysfs-platform-intel-pmc      | 11 +++
+ MAINTAINERS                                   |  1 +
+ drivers/platform/x86/intel_pmc_core.c         | 97 +++++++++++++++++++
+ drivers/platform/x86/intel_pmc_core.h         |  6 ++
+ 4 files changed, 115 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-platform-intel-pmc
+
+diff --git a/Documentation/ABI/testing/sysfs-platform-intel-pmc b/Documentation/ABI/testing/sysfs-platform-intel-pmc
+new file mode 100644
+index 000000000000..7ce00e77fbcd
+--- /dev/null
++++ b/Documentation/ABI/testing/sysfs-platform-intel-pmc
+@@ -0,0 +1,11 @@
++What:		/sys/devices/platform/<platform>/global_reset
++Date:		Apr 2021
++KernelVersion:	5.13
++Contact:	"Tomas Winkler" <tomas.winkler@intel.com>
++Description:
++		Display global reset setting bits for PMC.
++			* bit 31 - global reset is locked
++			* bit 20 - global reset is set
++		Writing bit 20 value to the global_reset will induce
++		a platform global reset upon consequent platform reset.
++		in case the register is not locked.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 04f68e0cda64..618676eba8c8 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9166,6 +9166,7 @@ M:	Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
+ M:	David E Box <david.e.box@intel.com>
+ L:	platform-driver-x86@vger.kernel.org
+ S:	Maintained
++F:	Documentation/ABI/testing/sysfs-platform-intel-pmc
+ F:	drivers/platform/x86/intel_pmc_core*
+ 
+ INTEL PMIC GPIO DRIVERS
+diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
+index ee2f757515b0..951664133303 100644
+--- a/drivers/platform/x86/intel_pmc_core.c
++++ b/drivers/platform/x86/intel_pmc_core.c
+@@ -401,6 +401,7 @@ static const struct pmc_reg_map cnp_reg_map = {
+ 	.pm_cfg_offset = CNP_PMC_PM_CFG_OFFSET,
+ 	.pm_read_disable_bit = CNP_PMC_READ_DISABLE_BIT,
+ 	.ltr_ignore_max = CNP_NUM_IP_IGN_ALLOWED,
++	.etr3_offset = ETR3_OFFSET,
+ };
+ 
+ static const struct pmc_reg_map icl_reg_map = {
+@@ -418,6 +419,7 @@ static const struct pmc_reg_map icl_reg_map = {
+ 	.pm_cfg_offset = CNP_PMC_PM_CFG_OFFSET,
+ 	.pm_read_disable_bit = CNP_PMC_READ_DISABLE_BIT,
+ 	.ltr_ignore_max = ICL_NUM_IP_IGN_ALLOWED,
++	.etr3_offset = ETR3_OFFSET,
+ };
+ 
+ static const struct pmc_bit_map tgl_clocksource_status_map[] = {
+@@ -585,6 +587,7 @@ static const struct pmc_reg_map tgl_reg_map = {
+ 	.lpm_sts = tgl_lpm_maps,
+ 	.lpm_status_offset = TGL_LPM_STATUS_OFFSET,
+ 	.lpm_live_status_offset = TGL_LPM_LIVE_STATUS_OFFSET,
++	.etr3_offset = ETR3_OFFSET,
+ };
+ 
+ static inline u32 pmc_core_reg_read(struct pmc_dev *pmcdev, int reg_offset)
+@@ -603,6 +606,99 @@ static inline u64 pmc_core_adjust_slp_s0_step(struct pmc_dev *pmcdev, u32 value)
+ 	return (u64)value * pmcdev->map->slp_s0_res_counter_step;
+ }
+ 
++static int set_global_reset(struct pmc_dev *pmcdev)
++{
++	const struct pmc_reg_map *map = pmcdev->map;
++	u32 reg;
++	int err;
++
++	if (!map->etr3_offset)
++		err = -EOPNOTSUPP;
++
++	mutex_lock(&pmcdev->lock);
++
++	/* check if CF9 is locked */
++	reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
++	if (reg & ETR3_CF9LOCK) {
++		err = -EACCES;
++		goto out_unlock;
++	}
++
++	/* write CF9 global reset bit */
++	reg |= ETR3_CF9GR;
++	pmc_core_reg_write(pmcdev, map->etr3_offset, reg);
++
++	reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
++	if (!(reg & ETR3_CF9GR)) {
++		err = -EIO;
++		goto out_unlock;
++	}
++
++	err = 0;
++
++out_unlock:
++	mutex_unlock(&pmcdev->lock);
++	return err;
++}
++
++static ssize_t global_reset_show(struct device *dev,
++				 struct device_attribute *attr, char *buf)
++{
++	struct pmc_dev *pmcdev = dev_get_drvdata(dev);
++	const struct pmc_reg_map *map = pmcdev->map;
++	u32 reg;
++
++	if (!map->etr3_offset)
++		return -EOPNOTSUPP;
++
++	mutex_lock(&pmcdev->lock);
++
++	reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
++	reg &= ETR3_CF9GR | ETR3_CF9LOCK;
++
++	mutex_unlock(&pmcdev->lock);
++
++	return sysfs_emit(buf, "0x%08x", reg);
++}
++
++static ssize_t global_reset_store(struct device *dev,
++				  struct device_attribute *attr,
++				  const char *buf, size_t len)
++{
++	struct pmc_dev *pmcdev = dev_get_drvdata(dev);
++	int err;
++	u32 reg;
++
++	err = kstrtouint(buf, 16, &reg);
++	if (err)
++		return err;
++
++	/* allow only CF9 writes */
++	if (reg != ETR3_CF9GR)
++		return -EINVAL;
++
++	err = set_global_reset(pmcdev);
++	if (err)
++		return err;
++
++	return len;
++}
++static DEVICE_ATTR_RW(global_reset);
++
++static struct attribute *pmc_attrs[] = {
++	&dev_attr_global_reset.attr,
++	NULL
++};
++
++static const struct attribute_group pmc_attr_group = {
++	.attrs = pmc_attrs,
++};
++
++static const struct attribute_group *pmc_dev_groups[] = {
++	&pmc_attr_group,
++	NULL
++};
++
+ static int pmc_core_dev_state_get(void *data, u64 *val)
+ {
+ 	struct pmc_dev *pmcdev = data;
+@@ -1364,6 +1460,7 @@ static struct platform_driver pmc_core_driver = {
+ 		.name = "intel_pmc_core",
+ 		.acpi_match_table = ACPI_PTR(pmc_core_acpi_ids),
+ 		.pm = &pmc_core_pm_ops,
++		.dev_groups = pmc_dev_groups,
+ 	},
+ 	.probe = pmc_core_probe,
+ 	.remove = pmc_core_remove,
+diff --git a/drivers/platform/x86/intel_pmc_core.h b/drivers/platform/x86/intel_pmc_core.h
+index f33cd2c34835..98ebdfe57138 100644
+--- a/drivers/platform/x86/intel_pmc_core.h
++++ b/drivers/platform/x86/intel_pmc_core.h
+@@ -200,6 +200,11 @@ enum ppfear_regs {
+ #define TGL_LPM_STATUS_OFFSET			0x1C3C
+ #define TGL_LPM_LIVE_STATUS_OFFSET		0x1C5C
+ 
++/* Extended Test Mode Register 3 (CNL and later) */
++#define ETR3_OFFSET				0x1048
++#define ETR3_CF9GR				BIT(20)
++#define ETR3_CF9LOCK				BIT(31)
++
+ const char *tgl_lpm_modes[] = {
+ 	"S0i2.0",
+ 	"S0i2.1",
+@@ -263,6 +268,7 @@ struct pmc_reg_map {
+ 	const u32 lpm_residency_offset;
+ 	const u32 lpm_status_offset;
+ 	const u32 lpm_live_status_offset;
++	const u32 etr3_offset;
+ };
+ 
+ /**
+-- 
+2.26.3
+
