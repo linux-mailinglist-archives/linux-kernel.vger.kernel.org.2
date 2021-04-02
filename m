@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25106353128
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 00:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ABEE353126
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 00:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235890AbhDBW3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 18:29:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37246 "EHLO
+        id S235966AbhDBW3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 18:29:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235788AbhDBW3f (ORCPT
+        with ESMTP id S235890AbhDBW3h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 18:29:35 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B9DC061793
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 15:29:33 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id c17so4362202pfn.6
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 15:29:33 -0700 (PDT)
+        Fri, 2 Apr 2021 18:29:37 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8A5CC0617A7
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 15:29:34 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id x126so4345269pfc.13
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 15:29:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6G7mQknm6wjoWphPZSZUuxY9hNho1AQ+iay1c8iYnQ4=;
-        b=Y/riba2ZyERhmbUbp0nZgFQrpTe0WmQx/lQQLmVwpGVfRsd43VoIWOsO4jZfN5IS2V
-         J78oY0zNvSXmoIpHmCZfKN8ypiUOWVjANqbOkrxwOs7ZO3WCI5ocdcARKy0Fhbx60QpO
-         hgJxkCCRgFoVxizvJyry96LBAyaFNIDg6TkSg=
+        bh=LM7RMNcQZM8p5h41F/TtPYKzf6ZXd9Mgd1LpZEG6inw=;
+        b=PlyqJUC50sx5zn0/47YDciZkbiyJ8LRzKp3zJwBVfKGSe+VkeZYyiodikasjHz8fsh
+         M0mBw/L2StCjYLMNqS4c/zI1Ft92EESt5SGVyWw8A17Ctf1b8SwaTEuWZyPL91cniBKF
+         WL2GOJnfjKAQYgR5Dq+tSNuWcyZvd8NjSb6ZA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6G7mQknm6wjoWphPZSZUuxY9hNho1AQ+iay1c8iYnQ4=;
-        b=ZeOxVUIa/X0J4283ofZX2muwBPV9k2tBnDRdcID8efggNUsLs8ZNeUABzWXbO3fw6Q
-         Ys7krEo6uinhC+0lEHIVrABx2/1Wjzge8jsMzU7jdM/2hb1xW1aqRatGgpSssNVIVH1x
-         zPM5Y8qS9fMleRwRcSYDGl2r9RWNCq4OacuAu6AmY9ZJIQhjjWo/0Ifb/tt4EUjV6MAt
-         dhJBRxnDnpFeP5tyyO8jrvLwTI7Sjffp1H3/h15nxgEo3HczYKC5wZz+j82qy+b5RwsB
-         TDt0eItamd9YcXkld8Ouz59yeuOxaEjCNnxQEMef2v6RZwL3LOFmFhrN9r+ZSc9/ZA04
-         4CeA==
-X-Gm-Message-State: AOAM531yPQHHrUo9fw8iva/Ppm4FS1AKg9ncyz3aljBwnKD6o8iWQl19
-        RopZy7HqP2iMTbHagUbUiuZTdg==
-X-Google-Smtp-Source: ABdhPJz4NdL95sgVBazICIqKq0ekk4Cx/rwWSUaLe9Uv1pcNYM9TEmiPwe664DKuaS1enCO1P/h+RQ==
-X-Received: by 2002:a63:1d18:: with SMTP id d24mr13864452pgd.402.1617402573324;
-        Fri, 02 Apr 2021 15:29:33 -0700 (PDT)
+        bh=LM7RMNcQZM8p5h41F/TtPYKzf6ZXd9Mgd1LpZEG6inw=;
+        b=CxUT4F2lgIWOFUAJTo4vtZerp6I4gmCyklCsdNWC3gP3gVnOPU3EPT2HC+4dUq/4qv
+         7egq/B2ItwTs+DTAOLI5quqPtWFI5CdFjIJmTBXHzzFpvEVQzMaIaFEd6zHygHuAKx5A
+         t2VYKN2LRI8XU3j8EaXW7BR/qj9b0mSFicyoREmlV2bfPMtkqQKspMM2cJt0dMCMwcCg
+         uvdCSX76wPR0LcByITaxKg0IK4wOyMxSF/80+32OiZ0914Dx0qAr4tVGvVgDnpfhyMpQ
+         fdleCoaL8UfnHH62hrESEcjbFtF12bB1dvqC757oeGZfYz1Z44Ao/sG1b0jJhIbm/96M
+         m5Ng==
+X-Gm-Message-State: AOAM530E1D26aJUKD2V7Zy9vcp8lqjgiMMQzFxSEplG1OYeZtzz3irI5
+        k5OCrktVCOSviY7nYgAJu8JPCw==
+X-Google-Smtp-Source: ABdhPJxWGKyCxGLU83T7rVZlMq20Szif/yIsu/zpitphqaDLhG+i5KKTABmUjLOvxO8CvTXttJ+ZAg==
+X-Received: by 2002:a62:7b0b:0:b029:1ef:1999:1d57 with SMTP id w11-20020a627b0b0000b02901ef19991d57mr13977185pfc.19.1617402574407;
+        Fri, 02 Apr 2021 15:29:34 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:6c58:fab2:c5e2:f2d7])
-        by smtp.gmail.com with ESMTPSA id t16sm9233094pfc.204.2021.04.02.15.29.32
+        by smtp.gmail.com with ESMTPSA id t16sm9233094pfc.204.2021.04.02.15.29.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 15:29:33 -0700 (PDT)
+        Fri, 02 Apr 2021 15:29:34 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     Andrzej Hajda <a.hajda@samsung.com>,
         Neil Armstrong <narmstrong@baylibre.com>,
@@ -64,9 +64,9 @@ Cc:     Linus W <linus.walleij@linaro.org>,
         David Airlie <airlied@linux.ie>,
         Robert Foss <robert.foss@linaro.org>,
         dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 06/12] drm/bridge: ti-sn65dsi86: Get rid of the useless detect() function
-Date:   Fri,  2 Apr 2021 15:28:40 -0700
-Message-Id: <20210402152701.v3.6.I826adf4faeb7f39f560b387f6b380e639c6986c8@changeid>
+Subject: [PATCH v3 07/12] drm/bridge: ti-sn65dsi86: Remove extra call: drm_connector_update_edid_property()
+Date:   Fri,  2 Apr 2021 15:28:41 -0700
+Message-Id: <20210402152701.v3.7.Ic14a7ab8035df89e19a25ad4fbf2004f9673f167@changeid>
 X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
 In-Reply-To: <20210402222846.2461042-1-dianders@chromium.org>
 References: <20210402222846.2461042-1-dianders@chromium.org>
@@ -76,8 +76,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we just leave the detect() function as NULL then the upper layers
-assume we're always connected. There's no reason for a stub.
+As of commit 5186421cbfe2 ("drm: Introduce epoch counter to
+drm_connector") the drm_get_edid() function calls
+drm_connector_update_edid_property() for us. There's no reason for us
+to call it again.
 
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
@@ -85,34 +87,38 @@ Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
 
 (no changes since v1)
 
- drivers/gpu/drm/bridge/ti-sn65dsi86.c | 12 ------------
- 1 file changed, 12 deletions(-)
+ drivers/gpu/drm/bridge/ti-sn65dsi86.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-index e30460002c48..51db30d573c1 100644
+index 51db30d573c1..6390bc58f29a 100644
 --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
 +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-@@ -306,20 +306,8 @@ static struct drm_connector_helper_funcs ti_sn_bridge_connector_helper_funcs = {
- 	.mode_valid = ti_sn_bridge_connector_mode_valid,
- };
+@@ -270,7 +270,7 @@ static int ti_sn_bridge_connector_get_modes(struct drm_connector *connector)
+ {
+ 	struct ti_sn_bridge *pdata = connector_to_ti_sn_bridge(connector);
+ 	struct edid *edid = pdata->edid;
+-	int num, ret;
++	int num;
  
--static enum drm_connector_status
--ti_sn_bridge_connector_detect(struct drm_connector *connector, bool force)
--{
--	/**
--	 * TODO: Currently if drm_panel is present, then always
--	 * return the status as connected. Need to add support to detect
--	 * device state for hot pluggable scenarios.
--	 */
--	return connector_status_connected;
--}
--
- static const struct drm_connector_funcs ti_sn_bridge_connector_funcs = {
- 	.fill_modes = drm_helper_probe_single_connector_modes,
--	.detect = ti_sn_bridge_connector_detect,
- 	.destroy = drm_connector_cleanup,
- 	.reset = drm_atomic_helper_connector_reset,
- 	.atomic_duplicate_state = drm_atomic_helper_connector_duplicate_state,
+ 	if (!edid) {
+ 		pm_runtime_get_sync(pdata->dev);
+@@ -279,12 +279,9 @@ static int ti_sn_bridge_connector_get_modes(struct drm_connector *connector)
+ 	}
+ 
+ 	if (edid && drm_edid_is_valid(edid)) {
+-		ret = drm_connector_update_edid_property(connector, edid);
+-		if (!ret) {
+-			num = drm_add_edid_modes(connector, edid);
+-			if (num)
+-				return num;
+-		}
++		num = drm_add_edid_modes(connector, edid);
++		if (num)
++			return num;
+ 	}
+ 
+ 	return drm_panel_get_modes(pdata->panel, connector);
 -- 
 2.31.0.208.g409f899ff0-goog
 
