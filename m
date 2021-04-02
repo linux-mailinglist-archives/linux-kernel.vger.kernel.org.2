@@ -2,90 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A434353091
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 22:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35885353096
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 23:07:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235166AbhDBU7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 16:59:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231406AbhDBU7D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 16:59:03 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21B3FC0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 13:59:02 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 12so9008137lfq.13
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 13:59:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tTdEm2tpb1uFMpqXMMBZZX3zgE1KSNm/HS5Ntx5Zxhs=;
-        b=jT10piQv4Sh2pj3eu+JNADHkOwG5q9YXESwNjx4AaDVxm8KGuShQB8/i8kin6B+mdj
-         khMsiz1l3L/UoOWGetKh712BAxyEDx06mi5jRIAzOpgTENIwZID3XNI2MD/Bro0NHhqw
-         dmYl5RzzWLrLVTvkGRBupahzxYZ2gYLyV4sIUuNNHs+Jiqjt2HO9YUsJ2zB58gNtxunj
-         qnt25IGJV6m8+/xdLopSM4+yTkkoj4zzqdGSkavHiwnLd6o7gBcVhi1ZemXK36MFeRzl
-         Exv4vBaXjofktB/qzEmLPsbt59TZvh9KgfCPqcERGUqu92OTtPkLDZT8ZpX84DpCltf9
-         ypMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tTdEm2tpb1uFMpqXMMBZZX3zgE1KSNm/HS5Ntx5Zxhs=;
-        b=JTnPdAwdz/9DztZzvQOafM9QRcl4EDEnPEvaVV28ls1yFbUt3qfp7e54fY/5Ush2B0
-         BewxbhWRweh8Sb9wQFbA96cJgdhSfBxmlbqRzslvuKcdjWLVWo2NGgxfucS7DXqxl+ZQ
-         AjADGoTq5YsMVYxecnkAcJnNPRdHtYLQRcZloSuHtO+3iwc2vxLChhibcTOKVwPpZx7S
-         nocQkKYDKiS62oHGPJ9/t2kGvXZ4M3yt7LUhB+OSXBa85DR5VDVePcNK4Ark6pu9+7ib
-         yyvVsB61VDs7ADBLktKsHHB4z5vvt3xfM4Kgud7B5nWPftMLUOsep+HR5GPIvrpXkicY
-         wZCQ==
-X-Gm-Message-State: AOAM531cketsNggS6ZM+EtJ26DWER9aYBQCxFCJrzFUW6QVPbp5AO+CB
-        IMsw+noIu/i3iaJ8tvOfXaI=
-X-Google-Smtp-Source: ABdhPJwKyY99g/9nIZ2NYEC+XxlyS+8i9/ZQIBiTJFOiWqaIWBHj9BXzwfnWJuPSwFf3oyIyxWInDw==
-X-Received: by 2002:a19:ee0d:: with SMTP id g13mr10219250lfb.38.1617397140700;
-        Fri, 02 Apr 2021 13:59:00 -0700 (PDT)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id g3sm955374lfb.94.2021.04.02.13.58.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 13:59:00 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Fri, 2 Apr 2021 22:58:58 +0200
-To:     Souptick Joarder <jrdr.linux@gmail.com>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH-next 5/5] mm/vmalloc: remove an empty line
-Message-ID: <20210402205858.GA20418@pc638.lan>
-References: <20210402202237.20334-1-urezki@gmail.com>
- <20210402202237.20334-5-urezki@gmail.com>
- <CAFqt6zbszFZKpbOg7A5L_keqUwsXMNCxa91+S7sCUij70u8pDw@mail.gmail.com>
+        id S234857AbhDBVH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 17:07:56 -0400
+Received: from mga14.intel.com ([192.55.52.115]:17832 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231406AbhDBVHz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 17:07:55 -0400
+IronPort-SDR: vpI/AKc/jMvzfh4R7XqFnFcD5p9DGWGRCfoa+mlTqUhd+zy8x56B6EpidJiuUa5xxQfgCDHk81
+ jliZgfmQQPAg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9942"; a="192017127"
+X-IronPort-AV: E=Sophos;i="5.81,300,1610438400"; 
+   d="scan'208";a="192017127"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 14:07:53 -0700
+IronPort-SDR: hJ5K3+3GjSt2mxesegwSFijJTwqbTnFcp2R+z7jGeAZFT70vVsum1zpcG7kuNAaHV8SIpYDahi
+ h0xr9Y0SKWcw==
+X-IronPort-AV: E=Sophos;i="5.81,300,1610438400"; 
+   d="scan'208";a="413336770"
+Received: from otcwcpicx3.sc.intel.com ([172.25.55.73])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 14:07:53 -0700
+Date:   Fri, 2 Apr 2021 21:07:42 +0000
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Shuah Khan <shuah@kernel.org>, Tony Luck <tony.luck@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        linux-kselftest <linux-kselftest@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 00/21] Miscellaneous fixes for resctrl selftests
+Message-ID: <YGeHnkEnhNrXuYeL@otcwcpicx3.sc.intel.com>
+References: <20210317022255.2536745-1-fenghua.yu@intel.com>
+ <YF451jic7QNyUCVD@otcwcpicx3.sc.intel.com>
+ <b10f5509-5111-e3e4-c247-dde542c36358@linuxfoundation.org>
+ <YGdgDqyma+/VXNcc@otcwcpicx3.sc.intel.com>
+ <c2221c02-5646-0521-a501-87717d872b37@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFqt6zbszFZKpbOg7A5L_keqUwsXMNCxa91+S7sCUij70u8pDw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <c2221c02-5646-0521-a501-87717d872b37@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Sat, Apr 3, 2021 at 1:53 AM Uladzislau Rezki (Sony) <urezki@gmail.com> wrote:
-> >
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+On Fri, Apr 02, 2021 at 02:04:16PM -0600, Shuah Khan wrote:
+> On 4/2/21 12:18 PM, Fenghua Yu wrote:
+> > Hi, Shuah,
+> > 
+> > On Fri, Apr 02, 2021 at 12:17:17PM -0600, Shuah Khan wrote:
+> > > On 3/26/21 1:45 PM, Fenghua Yu wrote:
+> > > > Hi, Shuah,
+> > > > 
+> > > > On Wed, Mar 17, 2021 at 02:22:34AM +0000, Fenghua Yu wrote:
+> > > > > This patch set has several miscellaneous fixes to resctrl selftest tool
+> > > > > that are easily visible to user. V1 had fixes to CAT test and CMT test
+> > > > > but they were dropped in V2 because having them here made the patchset
+> > > > > humongous. So, changes to CAT test and CMT test will be posted in another
+> > > > > patchset.
+> > > > > 
+> > > > > Change Log:
+> > > > > v6:
+> > > > > - Add Tested-by: Babu Moger <babu.moger@amd.com>.
+> > > > > - Replace "cat" by CAT_STR etc (Babu).
+> > > > > - Capitalize the first letter of printed message (Babu).
+> > > > 
+> > > > Any comment on this series? Will you push it into linux-kselftest.git?
+> > > > 
+> > > Yes. Will apply for 5.13-rc1
+> > 
+> > Great! Thank you very much for your help!
+> > 
 > 
-> How about merging it with patch [4/5] ?
+> Done. Now applied to linux-selftest next.
 > 
-I had in mind such concern. Yes we can do a squashing with [4/5].
-If there are other comments i will rework whole series if not we
-can ask Andrew to merge it.
+> https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/
+> next
+> 
+> Ran sanity test and suggested a change in message for 12/21.
+> 
+> Please take a look other such messages and improve them as well
+> and send follow-on patches.
 
-Thank you.
+Sure. Will send a follow-on patch to change the messages.
 
---
-Vlad Rezki
+Thanks.
+
+-Fenghua
