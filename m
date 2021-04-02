@@ -2,160 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A828352447
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 02:13:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C30C5352448
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 02:16:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236152AbhDBANN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 20:13:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235296AbhDBANL (ORCPT
+        id S236186AbhDBAQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 20:16:35 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:5542 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233677AbhDBAQe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 20:13:11 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C374FC0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 17:13:09 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id m132so3575015ybf.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 17:13:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hHqIw7rwlLy52EhAj8Y5YIj9xb4HwP2k6pw7NNvVpTY=;
-        b=wMlWmeMUbG3ksG53fNAV62RO3KYm+XW2Jy/PkcB62I7y8EFBc0W0xa7PuwrmA7WG33
-         +s+m391aUoVeVt6tu9yTmJI97zVLUqWFSGGS5c/6QILy1GhNOXry1+MtRs0wRv4U3Xih
-         nwGyOtioUq9gJN5kIIDc4xQUoSGgbFKvFkqzMl22ftqWXG7DwoZ6mZdJFOFgE8d9bxsz
-         CpwV+yLabVHc3s1+i50LwNAzkf5ZwJlzdWmTgIZsSSA+dP24FlqsZX+cG5xV2BuLbOF4
-         HHlP0z85+Nt7Y8sds/kSRHqOUjIG+TZDhFvWEJ7VMIaC13h7U967EnWHHdfN66rGFZp2
-         dvsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hHqIw7rwlLy52EhAj8Y5YIj9xb4HwP2k6pw7NNvVpTY=;
-        b=a7l2YwyFdVUWgZwFdKIC7mObp300F7q4cqEqwjmYjvZqjemXuFjTyz44doXdggkhTv
-         6ShWpWy9eG2FIM3snwX3alYFbFxarWsNyoxV697ShfAqxXUq/uMy08Vf+bTmL1BY9LJD
-         8Tf4dyGZVibmI0/5DXcztRwkkfru2nnB/akD4EmxxpSwN+UQ8l3FuUAg7aGAAKg+qtQ9
-         SxHwKWkLlBPduWvzp5gkA357Sc0af/B2767+0XSOE1ESggO6qz5rJlOmb0DJwFHHujJh
-         Slzb94hhLxxFKtojFIAi76g690ovm6wPBj+84cLyZnzZL74mX1XYy9GcFpP/EBieanBz
-         FbBA==
-X-Gm-Message-State: AOAM532Sx+tl1zVVs2l38ENcUgsOSxzQwGAeOLIAU5WQc7WaVz5d7f5o
-        OrhmKgG/fhQhe5lqCaahmk07DyvMi56EOJg0ssHmAA==
-X-Google-Smtp-Source: ABdhPJxu0dT8nkXGyRm50Qls2b5F+9qxb4gCieCPj/ZRjbq6oQW2/8J4QHLhVlucS8uhbWZowdxRrfGeWDlRj0SVf28=
-X-Received: by 2002:a25:38c1:: with SMTP id f184mr16120789yba.84.1617322388880;
- Thu, 01 Apr 2021 17:13:08 -0700 (PDT)
+        Thu, 1 Apr 2021 20:16:34 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13204kNj059942;
+        Thu, 1 Apr 2021 20:13:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=yBP5NigmIF2O36fNEfbzAomeglOJ+Etoeytml3suDXI=;
+ b=gyfVcEAZ6VnzspY1+lIZdqBg/XaVkgjrR/bIZiBnKEXWiu5XRboCaH127eU4UvPpv6li
+ VL52bNvJCOrJ1WId4aat5UkCwOQUGRAOpvJWUK7CZ/V3bHagTIWjZ4CFBkuVQ50kveCu
+ oU8S66pfQ73/iOb2Ob5TyM/aKB88atMYSCC2YzWK27/QxCkoaEmAPXws7zV6CEI2gpug
+ fH6ff2OD6rAMvaUGrtNvbwdjPm92B8h4ttRYrbIdR9et0ohKozb3gjfQ/GLBiFCGFjZJ
+ GgNa9vtEzM01hOlv948P6x1ydKSy2Kpkv17zqyITlxDT29oVlVMo4picDz9may2YyyEc ag== 
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37n9mx19eh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 01 Apr 2021 20:13:28 -0400
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 1320D1Hr009780;
+        Fri, 2 Apr 2021 00:13:27 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma04wdc.us.ibm.com with ESMTP id 37n297yt6q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 02 Apr 2021 00:13:27 +0000
+Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1320DQG827590936
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 2 Apr 2021 00:13:26 GMT
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B12CF6E04E;
+        Fri,  2 Apr 2021 00:13:26 +0000 (GMT)
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7423B6E052;
+        Fri,  2 Apr 2021 00:13:26 +0000 (GMT)
+Received: from vios4361.aus.stglabs.ibm.com (unknown [9.3.43.61])
+        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Fri,  2 Apr 2021 00:13:26 +0000 (GMT)
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+To:     mpe@ellerman.id.au
+Cc:     benh@kernel.crashing.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, Tyrel Datwyler <tyreld@linux.ibm.com>
+Subject: [PATCH] powerpc/pseries: Add shutdown() to vio_driver and vio_bus
+Date:   Thu,  1 Apr 2021 18:13:25 -0600
+Message-Id: <20210402001325.939668-1-tyreld@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210401181741.168763-1-surenb@google.com> <CAHk-=wg8MDMLi8x+u-dee-ai0KiAavm6+JceV00gRXQRFG=Cgw@mail.gmail.com>
- <CAJuCfpE48zkcM_2GABBpXssjmivKLt+r8+CEeXafqK3VNMMjDw@mail.gmail.com> <20210401234720.GB628002@xz-x1>
-In-Reply-To: <20210401234720.GB628002@xz-x1>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 1 Apr 2021 17:12:57 -0700
-Message-ID: <CAJuCfpGYB10pActvGdtgrgEjNxuFOL4R9KYxMjFQoRK-k_+A1A@mail.gmail.com>
-Subject: Re: [PATCH 0/5] 4.14 backports of fixes for "CoW after fork() issue"
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        stable <stable@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jann Horn <jannh@google.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>, Shaohua Li <shli@fb.com>,
-        Nadav Amit <namit@vmware.com>, Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: EQMQz0O1F37Bn1eaeHgS5mTiZE8rnTPp
+X-Proofpoint-ORIG-GUID: EQMQz0O1F37Bn1eaeHgS5mTiZE8rnTPp
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-04-01_14:2021-04-01,2021-04-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 clxscore=1011 suspectscore=0 bulkscore=0 mlxlogscore=999
+ malwarescore=0 impostorscore=0 phishscore=0 spamscore=0 lowpriorityscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103310000 definitions=main-2104010156
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 4:47 PM Peter Xu <peterx@redhat.com> wrote:
->
-> Hi, Suren,
->
-> On Thu, Apr 01, 2021 at 12:43:51PM -0700, Suren Baghdasaryan wrote:
-> > On Thu, Apr 1, 2021 at 11:59 AM Linus Torvalds
-> > <torvalds@linux-foundation.org> wrote:
-> > >
-> > > On Thu, Apr 1, 2021 at 11:17 AM Suren Baghdasaryan <surenb@google.com> wrote:
-> > > >
-> > > > We received a report that the copy-on-write issue repored by Jann Horn in
-> > > > https://bugs.chromium.org/p/project-zero/issues/detail?id=2045 is still
-> > > > reproducible on 4.14 and 4.19 kernels (the first issue with the reproducer
-> > > > coded in vmsplice.c).
-> > >
-> > > Gaah.
-> > >
-> > > > I confirmed this and also that the issue was not
-> > > > reproducible with 5.10 kernel. I tracked the fix to the following patch
-> > > > introduced in 5.9 which changes the do_wp_page() logic:
-> > > >
-> > > > 09854ba94c6a 'mm: do_wp_page() simplification'
-> > >
-> > > The problem here is that there's a _lot_ more patches than the few you
-> > > found that fixed various other cases (THP etc).
-> > >
-> > > > I backported this patch (#2 in the series) along with 2 prerequisite patches
-> > > > (#1 and #4) that keep the backports clean and two followup fixes to the main
-> > > > patch (#3 and #5). I had to skip the following fix:
-> > > >
-> > > > feb889fb40fa 'mm: don't put pinned pages into the swap cache'
-> > > >
-> > > > because it uses page_maybe_dma_pinned() which does not exists in earlier
-> > > > kernels. Because pin_user_pages() does not exist there as well, I *think*
-> > > > we can safely skip this fix on older kernels, but I would appreciate if
-> > > > someone could confirm that claim.
-> > >
-> > > Hmm. I think this means that swap activity can now break the
-> > > connection to a GUP page (the whole pre-pinning model), but it
-> > > probably isn't a new problem for 4.9/4.19.
-> > >
-> > > I suspect the test there should be something like
-> > >
-> > >         /* Single mapper, more references than us and the map? */
-> > >         if (page_mapcount(page) == 1 && page_count(page) > 2)
-> > >                 goto keep_locked;
-> > >
-> > > in the pre-pinning days.
-> > >
-> > > But I really think that there are a number of other commits you're
-> > > missing too, because we had a whole series for THP fixes for the same
-> > > exact issue.
-> > >
-> > > Added Peter Xu to the cc, because he probably tracked those issues
-> > > better than I did.
-> > >
-> > > So NAK on this for now, I think this limited patch-set likely
-> > > introduces more problems than it fixes.
-> >
-> > Thanks for confirming my worries. I'll be happy to add additional
-> > backports if Peter can point me to them.
->
-> If for a full-alignment with current upstream, I can at least think of below
-> series:
->
-> Early cow for general pages:
-> https://lore.kernel.org/lkml/20200925222600.6832-1-peterx@redhat.com/
->
-> A race fix for copy_page and gup-fast:
-> https://lore.kernel.org/linux-mm/0-v4-908497cf359a+4782-gup_fork_jgg@nvidia.com/
->
-> Early cow for hugetlbfs (which is very recently):
-> https://lore.kernel.org/lkml/20210217233547.93892-1-peterx@redhat.com/
->
-> But I believe they'll bring a number of dependencies too like the page pinned
-> work; so seems not easy.
+Currently, neither the vio_bus or vio_driver structures provide support
+for a shutdown() routine.
 
-Thanks Peter. Let me try backporting these and I'll see if it's doable.
+Add support for shutdown() by allowing drivers to provide a
+implementation via function pointer in their vio_driver struct and
+provide a proper implementation in the driver template for the vio_bus
+that calls a vio drivers shutdown() if defined.
 
->
-> Btw, AFAICT you don't need patch 4/5 in this series for 4.14/4.19, since
-> those're only for uffd-wp and it doesn't exist until 5.7.
+In the case that no shutdown() is defined by a vio driver and a kexec is
+in progress we implement a big hammer that calls remove() to ensure no
+further DMA for the devices is possible.
 
-Got it. Will drop it from the next series.
-Thanks,
-Suren.
+Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+---
+ arch/powerpc/include/asm/vio.h       |  1 +
+ arch/powerpc/platforms/pseries/vio.c | 16 ++++++++++++++++
+ 2 files changed, 17 insertions(+)
 
->
-> Thanks,
->
-> --
-> Peter Xu
->
+diff --git a/arch/powerpc/include/asm/vio.h b/arch/powerpc/include/asm/vio.h
+index 721c0d6715ac..e7479a4abf96 100644
+--- a/arch/powerpc/include/asm/vio.h
++++ b/arch/powerpc/include/asm/vio.h
+@@ -114,6 +114,7 @@ struct vio_driver {
+ 	const struct vio_device_id *id_table;
+ 	int (*probe)(struct vio_dev *dev, const struct vio_device_id *id);
+ 	void (*remove)(struct vio_dev *dev);
++	void (*shutdown)(struct vio_dev *dev);
+ 	/* A driver must have a get_desired_dma() function to
+ 	 * be loaded in a CMO environment if it uses DMA.
+ 	 */
+diff --git a/arch/powerpc/platforms/pseries/vio.c b/arch/powerpc/platforms/pseries/vio.c
+index 9cb4fc839fd5..d122b8644319 100644
+--- a/arch/powerpc/platforms/pseries/vio.c
++++ b/arch/powerpc/platforms/pseries/vio.c
+@@ -22,6 +22,7 @@
+ #include <linux/mm.h>
+ #include <linux/dma-map-ops.h>
+ #include <linux/kobject.h>
++#include <linux/kexec.h>
+ 
+ #include <asm/iommu.h>
+ #include <asm/dma.h>
+@@ -1278,6 +1279,20 @@ static int vio_bus_remove(struct device *dev)
+ 	return 0;
+ }
+ 
++static void vio_bus_shutdown(struct device *dev)
++{
++	struct vio_dev *viodev = to_vio_dev(dev);
++	struct vio_driver *viodrv;
++
++	if (dev->driver) {
++		viodrv = to_vio_driver(dev->driver);
++		if (viodrv->shutdown)
++			viodrv->shutdown(viodev);
++		else if (kexec_in_progress)
++			vio_bus_remove(dev);
++	}
++}
++
+ /**
+  * vio_register_driver: - Register a new vio driver
+  * @viodrv:	The vio_driver structure to be registered.
+@@ -1613,6 +1628,7 @@ struct bus_type vio_bus_type = {
+ 	.match = vio_bus_match,
+ 	.probe = vio_bus_probe,
+ 	.remove = vio_bus_remove,
++	.shutdown = vio_bus_shutdown,
+ };
+ 
+ /**
+-- 
+2.27.0
+
