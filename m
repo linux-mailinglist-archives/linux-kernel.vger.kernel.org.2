@@ -2,124 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BFE83527AD
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 10:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CDDE3527B0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 10:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230387AbhDBI73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 04:59:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229742AbhDBI7U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 04:59:20 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F23C0613E6;
-        Fri,  2 Apr 2021 01:59:18 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id s17so4978043ljc.5;
-        Fri, 02 Apr 2021 01:59:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HywOIhb5prU0SvgCATKvH+ZBrrrzKF5XQkM0MZqr0LA=;
-        b=K58phw+IpQ//OZE32Gwyp+hDyT7tu3gNVxEMtandIn2kAiffLXdmEdS04bVlL12zRL
-         3Ll05xL2x9/Gk+5wivRKbqrgR3LpQX0vyVTpJ69ZwbzSUeBmc2PKqPI6MKznUgBhI/Z5
-         6ei4DP+DUVX4r6T4Cb+PdXQWv0olcT9mOewLrjdl4pA2deoUzXoSDrNBwAImjMo8/q/v
-         RlMq/+aPVcFbNJQjRQ7XrCzv6wcTnjmm2dpsciA1HKIKMp+qf36tyl4KBeDJIK1iwFCc
-         CBIe9O1zsPBiX7cYdtK+nVIP3tr2MzJS7DIaCW1+LORojLEFSCg9UKN1WXHWls0FqOkm
-         Ks2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HywOIhb5prU0SvgCATKvH+ZBrrrzKF5XQkM0MZqr0LA=;
-        b=KxIZG03I8U4sHiC8JIgaKrKcgsbOD6HkB7EjRJjXP4gviYymLGiWgnQyg4O+nSq7on
-         WDtxImH4qPsjp8PyOCarK4P1hhu/qv6JmfBlggVgwDW6LPEnrq6Ez1gnmC5sa6LkYrM3
-         QVG5SIcUhGLScfBTMKSCbT2b89iLC/5DakPdiGWAkAGMlaSFLxWKUP8pGbr5rhZoOqgK
-         F3fgQCSSg6OE1W7oirS2f5RpNmIC1Jo0Y8hSD5Y5XgfzZHrxH1fQGqkw0AZuSihjJSDs
-         7GLn2QOgvHfKQuELU5JP0WZJ7TotlX5Un6W3EV6POPygCmvAe1fy9MLgtxyl28lyi4JR
-         qiYg==
-X-Gm-Message-State: AOAM5318wHIn5zPT8IeCN66qB0ofMqbzhjvwSIWYihUEI9H7qJJuewBR
-        OoP2qO9rdO76M2oMiVbVvaStmXZw6W1QmbkgX9W1yWKQrjY=
-X-Google-Smtp-Source: ABdhPJw8cpfvx6+g3xC+Ja1aMlvho4dmtsu+dGUtAgfwKzdxVgHhaVnDtPlWS7DxXgJ74G2bNz/qvwTyG1+eZ5ifgLo=
-X-Received: by 2002:a05:651c:384:: with SMTP id e4mr7528065ljp.500.1617353956993;
- Fri, 02 Apr 2021 01:59:16 -0700 (PDT)
+        id S234306AbhDBI7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 04:59:38 -0400
+Received: from mout.gmx.net ([212.227.15.19]:48441 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229742AbhDBI7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 04:59:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1617353966;
+        bh=/LjJASVgOV0maQa24Uvuz0z3QL8rMLEvyUWzo5UmwUg=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=FgfmEnS/VDXHh/rD3LuU2aR0S92D4gBe3RFvC2mx/9m8dMBMokJcq4xWnB6dJ28o6
+         A/BhSgZrDsDD1USu/zunhlb8OaDQ19g8U/WlPnKDzjYqKECu3SYi8UTg8QU3l1hEGS
+         FmaM08z9J+81RQBqtTJp/ep+itvy8SwLRP0YdGMM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.215.134]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1N0oBr-1lnCJc3CmT-00wpBH; Fri, 02
+ Apr 2021 10:59:25 +0200
+Date:   Fri, 2 Apr 2021 10:59:25 +0200
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.ne@posteo.net>
+Subject: Re: [PATCH v2 3/3] Input: add driver for the Hycon HY46XX touchpanel
+ series
+Message-ID: <YGbc7Qbu6s659Mx4@latitude>
+References: <20210306194120.GA1075725@robh.at.kernel.org>
+ <20210401230358.2468618-1-giulio.benetti@benettiengineering.com>
+ <20210401230358.2468618-4-giulio.benetti@benettiengineering.com>
 MIME-Version: 1.0
-References: <alpine.DEB.2.21.2103302221590.18977@angie.orcam.me.uk>
- <mhng-08e5e4fb-8a42-4f7b-8ceb-ff549784100e@palmerdabbelt-glaptop> <CACT4Y+Z0PaAuUFrOBenztWkw8OV=J-qaeD1FASPM4ufcLg5a5A@mail.gmail.com>
-In-Reply-To: <CACT4Y+Z0PaAuUFrOBenztWkw8OV=J-qaeD1FASPM4ufcLg5a5A@mail.gmail.com>
-From:   David Abdurachmanov <david.abdurachmanov@gmail.com>
-Date:   Fri, 2 Apr 2021 11:58:40 +0300
-Message-ID: <CAEn-LTqTXCEC=bXTvGyo8SNL0JMWRKtiSwQB7R=Pc4uhxZUruA@mail.gmail.com>
-Subject: Re: [PATCH] riscv: Bump COMMAND_LINE_SIZE value to 1024
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>, macro@orcam.me.uk,
-        Alex Ghiti <alex@ghiti.fr>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="F4oZXRIuQxOUFdge"
+Content-Disposition: inline
+In-Reply-To: <20210401230358.2468618-4-giulio.benetti@benettiengineering.com>
+X-Provags-ID: V03:K1:3GJOwttnlBZYPjNdxhcwkJCPSeiGZav7VXEdvSBAqj1EC8/xUA/
+ 5/q6/bEM9DHyeXT+F1tOmpDMAuY+tr+nh9y8QgLYWDCYNgKU32gnHp+GGrPImr47+XQyzRI
+ VHylP5BfTvVSw4Jt08XbXj+E0nJG5mruymiemu4UHj0kYDgVquI/C51XISGL1au+YOxhZoF
+ 87pE9YiQxWL0hTArqehIA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:458nIHpDN6k=:YR51a7hCfisNAFzFG6HHwK
+ R7W76FjWFpVJ8qZAYtKoWchuM58Mam0j/hnf3HSPHDasDy1Ny7sKC/K8GuvuhFtBsGeQ7Q8vB
+ wcWETzfBh+kYcyHrjTgm8E2xj+jiudkA1e6y8ZfbFixpLjEdx0jMwzuKcl6rkTH6oDupbL8EZ
+ tgbZPo24F4wpkq3ZNxeR4YJttfUzhmue4BtuiXoTUKKgpNRjxtjtOYtsZ9Fo4eTkd30/YFb80
+ +3fxlF+8qzpe0MZezYw9Lzu92Amnpe9gjTjp/MeNdLSIbPbaQmpJplVy9aAdRuCblDAukkf9F
+ jMW4iDqLyQLjuckvUyBFZ+AaeQDK+pL3Qk7ghkYpfnOSFOzcW4L1U41OcAXWKmyZi/F2B1X+z
+ auSfa84Q+X14AHwhb03GJ+YuLlXMCVRUQzvhe7cboChkxb64qJSa0irtkBgVCaDJIrck1Ic7V
+ iKuj4wsAR5PHtnESSdmSHC0suQSLgfELF/5oG4/enWEp0qzPScagEYrQk/GPr0sKiC/gDHg0Z
+ 8oeCQ4B4DsunoQfUGASJyIHP6ZZhpL2iMq8j4+l/F87YoMQ8n5EFDWkG8idKWOTzL6yb45xNy
+ X2AcmTsswjJo5W5588XbkI0WZ21o5VmXhENy4AiBxA6lLwBtGjRwiUZxDudoq/19nlDfZ0tbU
+ D1P0t2vnfXCdBGqJ7AOJb2+iOYREt+CwHHyuvqzAUWjI0lzULSWO8XAc76T81QqVmjudj5LeW
+ DV7OWcy9WqVnAUxChk5vuxVvsAQ++zrQRpmOYJAZCfLsBPpBvSrwC1dCCyk9Nq5jTzm++o88P
+ LsbgmI/h0cNuinWsiFPHfF1FVMaTE0QHXvWwMeYOR4UZeLhiNpdYp7vw7c21/c0T54LlQlOss
+ Qbqg3ZGPIdmw155f6Mb3BPxH0/wSTeI4p0r4Qieta3+3GddNGUkB3zZ4QGes+7LWWS3CY60B2
+ ipmfy7O1ELP2ZXuWcwxATqD4kqFRVnJAaAa2+yxcasHNS7TDjNKANK5ImOT625y7PYDZ7N3oM
+ SaTxYEREYtQZI9eRul9W3bls7r4FCqFOHnF2QahK1NyGNHTKWytWkVwGn9ErcU76vbqE8Ic5U
+ e+jlKuQ0YUCtPQG5pWN89ybeNBdmha2Nkui3MRkTWfFdlrPYkiyVIH80v570eiAokvEWcIetD
+ XWIVLvqpNvecR27/8YBacfj0TQZffpleNFtvnYbDDg9rmOSXvCdkxGG5pQnFpo/Xv7sE6rbRE
+ oFrrMEKb4l1gSxSoc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 2, 2021 at 11:43 AM Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Fri, Apr 2, 2021 at 6:37 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
-> >
-> > On Tue, 30 Mar 2021 13:31:45 PDT (-0700), macro@orcam.me.uk wrote:
-> > > On Mon, 29 Mar 2021, Palmer Dabbelt wrote:
-> > >
-> > >> > --- /dev/null
-> > >> > +++ b/arch/riscv/include/uapi/asm/setup.h
-> > >> > @@ -0,0 +1,8 @@
-> > >> > +/* SPDX-License-Identifier: GPL-2.0-only WITH Linux-syscall-note */
-> > >> > +
-> > >> > +#ifndef _UAPI_ASM_RISCV_SETUP_H
-> > >> > +#define _UAPI_ASM_RISCV_SETUP_H
-> > >> > +
-> > >> > +#define COMMAND_LINE_SIZE 1024
-> > >> > +
-> > >> > +#endif /* _UAPI_ASM_RISCV_SETUP_H */
-> > >>
-> > >> I put this on fixes, but it seemes like this should really be a Kconfig
-> > >> enttry.  Either way, ours was quite a bit smaller than most architectures and
-> > >> it's great that syzbot has started to find bugs, so I'd rather get this in
-> > >> sooner.
-> > >
-> > >  This macro is exported as a part of the user API so it must not depend on
-> > > Kconfig.  Also changing it (rather than say adding COMMAND_LINE_SIZE_V2 or
-> > > switching to an entirely new data object that has its dimension set in a
-> > > different way) requires careful evaluation as external binaries have and
-> > > will have the value it expands to compiled in, so it's a part of the ABI
-> > > too.
-> >
-> > Thanks, I didn't realize this was part of the user BI.  In that case we
-> > really can't chage it, so we'll have to sort out some other way do fix
-> > whatever is going on.
-> >
-> > I've dropped this from fixes.
->
-> Does increasing COMMAND_LINE_SIZE break user-space binaries? I would
-> expect it to work the same way as adding new enum values, or adding
-> fields at the end of versioned structs, etc.
-> I would assume the old bootloaders/etc will only support up to the
-> old, smaller max command line size, while the kernel will support
-> larger command line size, which is fine.
-> However, if something copies /proc/cmdline into a fixed-size buffer
-> and expects that to work, that will break... that's quite unfortunate
-> user-space code... is it what we afraid of?
->
-> Alternatively, could expose the same COMMAND_LINE_SIZE, but internally
-> support a larger command line?
 
-Looking at kernel commit history I see PowerPC switched from 512 to
-2048, and I don't see complaints about the ABI on the mailing list.
+--F4oZXRIuQxOUFdge
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-If COMMAND_LINE_SIZE is used by user space applications and we
-increase it there shouldn't be problems. I would expect things to
-work, but just get truncated boot args? That is the application will
-continue only to look at the initial 512 chars.
+Hi,
 
-https://linuxppc-dev.ozlabs.narkive.com/m4cj8nBa/patch-1-1-powerpc-increase-command-line-size-to-2048-from-512
+a few remarks below.
+
+On Fri, Apr 02, 2021 at 01:03:58AM +0200, Giulio Benetti wrote:
+> This patch adds support for Hycon HY46XX.
+>=20
+> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+> ---
+> V1->V2:
+> * removed proximity-sensor-switch property according to previous patch
+> As suggested by Dmitry Torokhov
+> * moved i2c communaction to regmap use
+> * added macro to avoid magic number
+> * removed cmd variable that could uninitiliazed since we're using regmap =
+now
+> * removed useless byte masking
+> * removed useless struct hycon_hy46xx_i2c_chip_data
+> * used IRQF_ONESHOT only for isr
+> ---
+
+
+> +config TOUCHSCREEN_HYCON_HY46XX
+> +	tristate "Hycon hy46xx touchscreen support"
+> +	depends on I2C
+> +	help
+> +	  Say Y here if you have a touchscreen using Hycon hy46xx,
+> +	  or something similar enough.
+
+The "something similar enough" part doesn't seem relevant, because the
+driver only lists HY46xx chips (in the compatible strings), and no chips
+that are similar enough to work with the driver, but have a different
+part number.
+
+> +static void hycon_hy46xx_get_defaults(struct device *dev, struct hycon_h=
+y46xx_data *tsdata)
+> +{
+> +	bool val_bool;
+> +	int error;
+> +	u32 val;
+> +
+> +	error =3D device_property_read_u32(dev, "threshold", &val);
+
+This seems to follow the old version of the binding, where
+Hycon-specific properties didn't have the "hycon," prefix.
+Please check that the driver still works with a devicetree that follows
+the newest version of the binding.
+
+> +MODULE_AUTHOR("Giulio Benetti <giulio.benetti@micronovasrl.com>");
+
+This is a different email address than you used in the DT binding. If
+this is intentional, no problem (Just letting you know, in case it's
+unintentional).
+
+
+Thanks,
+Jonathan Neusch=C3=A4fer
+
+--F4oZXRIuQxOUFdge
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmBm3OUACgkQCDBEmo7z
+X9upNQ/8DWmEiVnx/iq6BM00GmeRFWSkwuLnvC1jVHjRJPHIhpa8f0SYBg9wbADt
+z3AjK4OyxECPBB0mf3tcBq8MO9dRQ7tXc6P4/UhBZqDkprxkZQoKKGogYxWwAmbP
+vaoDO6XO+iQ+3huy5Go0s0qWz1TOwX2cNsDM6Wh4ThHcL6OryofS+bqK7H3F8SW5
+Ej4OiubMxfQQ75ep6HNiDQpOZY8xFMxwsLh7nl6E1kGR93Q2lWy2FllgHQdx9tmY
+cJNzFFuFU2yZYCUsuDC/2/EOIV44Lrxe2/C5O+FQqJYo8fUrjB/CkmUadHjKpcJG
+R7NFuwl1SH1qf+yox9Pxgd4DFkR0fTNNCjkZU0efBA4cyq/V9QVdqFilImIYkTAD
+8jSjgJHGBBRxISz2QsAYMiWs2OU/CsEoX7e9S3uxy/XuIp6a+1yUwtAeZAlcfkX7
++Qc8uVHTkzw+isi3xojy7YCs8+x1I62oQWsN9j9r+TMt6souLc5jPiFHUHk+g4Yo
+S1HiHk0Jn5q9yIR2QblDK5kBJw4W2aNTcnMrmCh5lODk9LC6+qnisyDvX+B/PKVZ
+Qfol/vuaO1to+waAiigNua4egVpDcj7EO7jW74W5z+4rTV5iVF7X8E+pgd3XrVm2
+EJGGT7W41TFH0ueu/v2x7KN1p4Iq1VHO/DTqd/ho0Cv0IQooZIs=
+=yZTH
+-----END PGP SIGNATURE-----
+
+--F4oZXRIuQxOUFdge--
