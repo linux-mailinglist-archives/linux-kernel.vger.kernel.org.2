@@ -2,69 +2,714 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F596352865
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 11:18:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E8B635286C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 11:18:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234670AbhDBJRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 05:17:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55590 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229553AbhDBJRi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 05:17:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 577A861008;
-        Fri,  2 Apr 2021 09:17:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617355057;
-        bh=nNXmKyTHRFu5FEX84hqP3eIGOZ1pmAYpxndQn7fgYQ4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1bVRMjgYnmVMwuln9bkOhNMTJOytmbdU1QgJ5Dtjpb2LfVD+hbNtkvBbBZw8IA7w3
-         M/xh4gd+1KECR2HoShaNrE8pvZHCJ1wIkkdioSG/TrpGKy2E6tLztD7laPSepvqlaq
-         XqclZkejDnGUS8hOPj7hLv9X/OQIboeIhOwxWN18=
-Date:   Fri, 2 Apr 2021 11:17:35 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Carlis <zhangxuezhi3@gmail.com>
-Cc:     zhangxuezhi1@yulong.com, devel@driverdev.osuosl.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] staging: fbtft: change snprintf() to scnprintf()
-Message-ID: <YGbhLxwZO9k/330J@kroah.com>
-References: <20210402090501.152561-1-zhangxuezhi3@gmail.com>
+        id S234801AbhDBJSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 05:18:01 -0400
+Received: from relay06.th.seeweb.it ([5.144.164.167]:48071 "EHLO
+        relay06.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234764AbhDBJSA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 05:18:00 -0400
+Received: from [192.168.1.130] (bband-dyn159.178-41-239.t-com.sk [178.41.239.159])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id DDFC33F60A;
+        Fri,  2 Apr 2021 11:17:55 +0200 (CEST)
+Date:   Fri, 02 Apr 2021 11:17:49 +0200
+From:   Martin Botka <martin.botka@somainline.org>
+Subject: Re: [PATCH RESEND] arm64: dts: qcom: Add support for OnePlus 5/5T
+To:     Jami Kettunen <jamipkettunen@gmail.com>
+Cc:     phone-devel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        keescook@chromium.org, anton@enomsg.org, ccross@android.com,
+        tony.luck@intel.com, ~postmarketos/upstreaming@lists.sr.ht,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-Id: <P5JXQQ.IXVW8SES167S3@somainline.org>
+In-Reply-To: <20210322161648.14615-1-jamipkettunen@gmail.com>
+References: <20210322161648.14615-1-jamipkettunen@gmail.com>
+X-Mailer: geary/3.36.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210402090501.152561-1-zhangxuezhi3@gmail.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 09:05:01AM +0000, Carlis wrote:
-> From: Xuezhi Zhang <zhangxuezhi1@yulong.com>
-> 
-> show() must not use snprintf() when formatting the value to
-> be returned to user space.
 
-Why not?  The code is just fine as-is.
 
+On Mon, Mar 22, 2021 at 18:16, Jami Kettunen <jamipkettunen@gmail.com> 
+wrote:
+> Add device trees for OnePlus 5 (cheeseburger) and 5T (dumpling)
+> MSM8998 SoC smartphones with initial support included for:
 > 
-> Signed-off-by: Xuezhi Zhang <zhangxuezhi1@yulong.com>
+> - UFS internal storage
+> - USB peripheral mode
+> - Display
+> - Touch
+> - Bluetooth
+> - Hall effect sensor
+> - Power and volume buttons
+> - Capacitive keypad button backlight (on cheeseburger)
+> 
+> Signed-off-by: Jami Kettunen <jamipkettunen@gmail.com>
+> Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 > ---
->  drivers/staging/fbtft/fbtft-sysfs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/arm64/boot/dts/qcom/Makefile             |   2 +
+>  .../dts/qcom/msm8998-oneplus-cheeseburger.dts |  42 ++
+>  .../boot/dts/qcom/msm8998-oneplus-common.dtsi | 519 
+> ++++++++++++++++++
+>  .../dts/qcom/msm8998-oneplus-dumpling.dts     |  25 +
+>  4 files changed, 588 insertions(+)
+>  create mode 100644 
+> arch/arm64/boot/dts/qcom/msm8998-oneplus-cheeseburger.dts
+>  create mode 100644 
+> arch/arm64/boot/dts/qcom/msm8998-oneplus-common.dtsi
+>  create mode 100644 
+> arch/arm64/boot/dts/qcom/msm8998-oneplus-dumpling.dts
 > 
-> diff --git a/drivers/staging/fbtft/fbtft-sysfs.c b/drivers/staging/fbtft/fbtft-sysfs.c
-> index 26e52cc2de64..7df92db648d6 100644
-> --- a/drivers/staging/fbtft/fbtft-sysfs.c
-> +++ b/drivers/staging/fbtft/fbtft-sysfs.c
-> @@ -199,7 +199,7 @@ static ssize_t show_debug(struct device *device,
->  	struct fb_info *fb_info = dev_get_drvdata(device);
->  	struct fbtft_par *par = fb_info->par;
->  
-> -	return snprintf(buf, PAGE_SIZE, "%lu\n", par->debug);
-> +	return scnprintf(buf, PAGE_SIZE, "%lu\n", par->debug);
+> diff --git a/arch/arm64/boot/dts/qcom/Makefile 
+> b/arch/arm64/boot/dts/qcom/Makefile
+> index 549a7a2151d4..1beb73f564f7 100644
+> --- a/arch/arm64/boot/dts/qcom/Makefile
+> +++ b/arch/arm64/boot/dts/qcom/Makefile
+> @@ -27,6 +27,8 @@ dtb-$(CONFIG_ARCH_QCOM)	+= 
+> msm8998-asus-novago-tp370ql.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-hp-envy-x2.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-lenovo-miix-630.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-mtp.dtb
+> +dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-oneplus-cheeseburger.dtb
+> +dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-oneplus-dumpling.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= qcs404-evb-1000.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= qcs404-evb-4000.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= qrb5165-rb5.dtb
+> diff --git 
+> a/arch/arm64/boot/dts/qcom/msm8998-oneplus-cheeseburger.dts 
+> b/arch/arm64/boot/dts/qcom/msm8998-oneplus-cheeseburger.dts
+> new file mode 100644
+> index 000000000000..13b6b8ad4679
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/msm8998-oneplus-cheeseburger.dts
+> @@ -0,0 +1,42 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * OnePlus 5 (cheeseburger) device tree
+> + *
+> + * Copyright (c) 2021, Jami Kettunen <jamipkettunen@gmail.com>
+> + */
+> +
+> +#include <dt-bindings/leds/common.h>
+> +#include "msm8998-oneplus-common.dtsi"
+> +
+> +/ {
+> +	model = "OnePlus 5";
+> +	compatible = "oneplus,cheeseburger", "qcom,msm8998";
+> +	/* Required for bootloader to select correct board */
+> +	qcom,board-id = <8 0 16859 23>;
+> +
+> +	/* Capacitive keypad button backlight */
+> +	leds {
+> +		compatible = "gpio-leds";
+> +
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&button_backlight_default>;
+> +
+> +		button-backlight {
+> +			gpios = <&pmi8998_gpio 5 GPIO_ACTIVE_HIGH>;
+> +			color = <LED_COLOR_ID_WHITE>;
+> +			function = LED_FUNCTION_KBD_BACKLIGHT;
+> +			default-state = "off";
+> +		};
+> +	};
+> +};
+> +
+> +&pmi8998_gpio {
+> +	button_backlight_default: button-backlight-default {
+> +		pinconf {
+> +			pins = "gpio5";
+> +			function = "normal";
+> +			bias-pull-down;
+> +			qcom,drive-strength = <PMIC_GPIO_STRENGTH_NO>;
+> +		};
+> +	};
+> +};
+> diff --git a/arch/arm64/boot/dts/qcom/msm8998-oneplus-common.dtsi 
+> b/arch/arm64/boot/dts/qcom/msm8998-oneplus-common.dtsi
+> new file mode 100644
+> index 000000000000..1de4d19ed143
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/msm8998-oneplus-common.dtsi
+> @@ -0,0 +1,519 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * OnePlus 5(T) (cheeseburger / dumpling) common device tree source 
+> based on msm8998-mtp.dtsi
+> + *
+> + * Copyright (c) 2021, Jami Kettunen <jamipkettunen@gmail.com>
+> + * Copyright (c) 2016, The Linux Foundation. All rights reserved.
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+> +#include "msm8998.dtsi"
+> +#include "pm8998.dtsi"
+> +#include "pmi8998.dtsi"
+> +#include "pm8005.dtsi"
+> +
+> +/ {
+> +	/* Required for bootloader to select correct board */
+> +	qcom,msm-id = <292 0x20001>; /* 8998 v2.1 */
+> +
+> +	chosen {
+> +		#address-cells = <2>;
+> +		#size-cells = <2>;
+> +		ranges;
+> +
+> +		/* Use display framebuffer setup by the UEFI XBL bootloader for 
+> simplefb */
+> +		framebuffer0: framebuffer@9d400000 {
+> +			compatible = "simple-framebuffer";
+> +			reg = <0x0 0x9d400000 0x0 0x2400000>;
+> +			width = <1080>;
+> +			height = <1920>;
+> +			stride = <(1080 * 4)>;
+> +			format = "a8r8g8b8";
+> +		};
+> +	};
+> +
+> +	reserved-memory {
+> +		/* Bootloader display framebuffer region */
+> +		cont_splash_mem: memory@9d400000 {
+> +			reg = <0x0 0x9d400000 0x0 0x2400000>;
+> +			no-map;
+> +		};
+> +
+> +		/* For getting crash logs using Android downstream kernels */
+> +		ramoops@ac000000 {
+> +			compatible = "ramoops";
+> +			reg = <0x0 0xac000000 0x0 0x200000>;
+> +			console-size = <0x80000>;
+> +			pmsg-size = <0x40000>;
+> +			record-size = <0x8000>;
+> +			ftrace-size = <0x20000>;
+> +		};
+> +
+> +		/*
+> +		 * The following memory regions on downstream are "dynamically 
+> allocated"
+> +		 * but given the same addresses every time. Hard code them as 
+> these addresses
+> +		 * are where the OnePlus signed firmware expects them to be.
+> +		 */
+> +		ipa_fws_region: ipa@f6800000 {
+> +			compatible = "shared-dma-pool";
+> +			reg = <0x0 0xf6800000 0x0 0x5000>;
+> +			no-map;
+> +		};
+> +		zap_shader_region: gpu@f6900000 {
+> +			compatible = "shared-dma-pool";
+> +			reg = <0x0 0xf6900000 0x0 0x2000>;
+> +			no-map;
+> +		};
+> +	};
+> +
+> +	gpio-keys {
+> +		compatible = "gpio-keys";
+> +		label = "Volume buttons";
+> +		autorepeat;
+> +
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&vol_keys_default>;
+> +
+> +		vol-down {
+> +			label = "Volume down";
+> +			gpios = <&pm8998_gpio 5 GPIO_ACTIVE_LOW>;
+> +			linux,code = <KEY_VOLUMEDOWN>;
+> +			debounce-interval = <15>;
+> +			wakeup-source;
+> +		};
+> +
+> +		vol-up {
+> +			label = "Volume up";
+> +			gpios = <&pm8998_gpio 6 GPIO_ACTIVE_LOW>;
+> +			linux,code = <KEY_VOLUMEUP>;
+> +			debounce-interval = <15>;
+> +			wakeup-source;
+> +		};
+> +	};
+> +
+> +	gpio-hall-sensor {
+> +		compatible = "gpio-keys";
+> +		label = "Hall effect sensor";
+> +
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&hall_sensor_default>;
+> +
+> +		hall-sensor {
+> +			label = "Hall Effect Sensor";
+> +			gpios = <&tlmm 124 GPIO_ACTIVE_LOW>;
+> +			linux,input-type = <EV_SW>;
+> +			linux,code = <SW_LID>;
+> +			linux,can-disable;
+> +			wakeup-source;
+> +		};
+> +	};
+> +
+> +	vph_pwr: vph-pwr-regulator {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vph_pwr";
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +	};
+> +};
+> +
+> +/*
+> + * OnePlus' ADSP firmware requires 30 MiB in total, so increase the 
+> adsp_mem
+> + * region by 4 MiB to account for this while relocating the other now
+> + * conflicting memory nodes accordingly.
+> + */
+> +&adsp_mem {
+> +	reg = <0x0 0x8b200000 0x0 0x1e00000>;
+> +};
+> +&mpss_mem {
+> +	reg = <0x0 0x8d000000 0x0 0x7000000>;
+> +};
+> +&venus_mem {
+> +	reg = <0x0 0x94000000 0x0 0x500000>;
+> +};
+> +&mba_mem {
+> +	reg = <0x0 0x94500000 0x0 0x200000>;
+> +};
+> +&slpi_mem {
+> +	reg = <0x0 0x94700000 0x0 0xf00000>;
+> +};
+> +&ipa_fw_mem {
+> +	reg = <0x0 0x95600000 0x0 0x10000>;
+> +};
+> +&ipa_gsi_mem {
+> +	reg = <0x0 0x95610000 0x0 0x5000>;
+> +};
+> +&gpu_mem {
+> +	reg = <0x0 0x95615000 0x0 0x100000>;
+> +};
+> +&wlan_msa_mem {
+> +	reg = <0x0 0x95715000 0x0 0x100000>;
+> +};
+> +
+> +&blsp1_i2c5 {
+> +	status = "okay";
+> +
+> +	touchscreen@20 {
+> +		compatible = "syna,rmi4-i2c";
+> +		reg = <0x20>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		interrupt-parent = <&tlmm>;
+> +		interrupts = <125 IRQ_TYPE_EDGE_FALLING>;
+> +
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&ts_int_active &ts_reset_active>;
+> +
+> +		vdd-supply = <&vreg_l28_3p0>;
+> +		vio-supply = <&vreg_l6a_1p8>;
+> +
+> +		syna,reset-delay-ms = <20>;
+> +		syna,startup-delay-ms = <20>;
+> +
+> +		rmi4-f01@1 {
+> +			reg = <0x01>;
+> +			syna,nosleep-mode = <1>;
+> +		};
+> +
+> +		rmi4_f12: rmi4-f12@12 {
+> +			reg = <0x12>;
+> +			syna,rezero-wait-ms = <20>;
+> +			syna,sensor-type = <1>;
+> +			touchscreen-x-mm = <68>;
+> +			touchscreen-y-mm = <122>;
+> +		};
+> +	};
+> +};
+> +
+> +&blsp1_uart3 {
+> +	status = "okay";
+> +
+> +	bluetooth {
+> +		compatible = "qcom,wcn3990-bt";
+> +
+> +		vddio-supply = <&vreg_s4a_1p8>;
+> +		vddxo-supply = <&vreg_l7a_1p8>;
+> +		vddrf-supply = <&vreg_l17a_1p3>;
+> +		vddch0-supply = <&vreg_l25a_3p3>;
+> +		max-speed = <3200000>;
+> +	};
+> +};
+> +
+> +&blsp1_uart3_on {
+> +	rx {
+> +		/delete-property/ bias-disable;
+> +		/*
+> +		 * Configure a pull-up on 46 (RX). This is needed to
+> +		 * avoid garbage data when the TX pin of the Bluetooth
+> +		 * module is in tri-state (module powered off or not
+> +		 * driving the signal yet).
+> +		 */
+> +		bias-pull-up;
+> +	};
+> +
+> +	cts {
+> +		/delete-property/ bias-disable;
+> +		/*
+> +		 * Configure a pull-down on 47 (CTS) to match the pull
+> +		 * of the Bluetooth module.
+> +		 */
+> +		bias-pull-down;
+> +	};
+> +};
+> +
+> +&blsp2_uart1 {
+> +	status = "okay";
+> +};
+> +
+> +&pm8005_lsid1 {
+> +	pm8005-regulators {
+> +		compatible = "qcom,pm8005-regulators";
+> +
+> +		vdd_s1-supply = <&vph_pwr>;
+> +
+> +		pm8005_s1: s1 { /* VDD_GFX supply */
+> +			regulator-min-microvolt = <524000>;
+> +			regulator-max-microvolt = <1100000>;
+> +			regulator-enable-ramp-delay = <500>;
+> +
+> +			/* hack until we rig up the gpu consumer */
+> +			regulator-always-on;
+> +		};
+> +	};
+> +};
+> +
+> +&pm8998_gpio {
+> +	vol_keys_default: vol-keys-default {
+> +		pinconf {
+> +			pins = "gpio5", "gpio6";
+> +			function = "normal";
+> +			bias-pull-up;
+> +			input-enable;
+> +			qcom,drive-strength = <PMIC_GPIO_STRENGTH_NO>;
+> +		};
+> +	};
+> +};
+> +
+> +&qusb2phy {
+> +	status = "okay";
+> +
+> +	vdda-pll-supply = <&vreg_l12a_1p8>;
+> +	vdda-phy-dpdm-supply = <&vreg_l24a_3p075>;
+> +};
+> +
+> +/* Disable all remoteprocs for now until RPM XO clock is usable */
+> +&remoteproc_mss {
+> +	status = "disabled";
+> +};
+> +
+> +&rpm_requests {
+> +	pm8998-regulators {
+> +		compatible = "qcom,rpm-pm8998-regulators";
+> +
+> +		vdd_s1-supply = <&vph_pwr>;
+> +		vdd_s2-supply = <&vph_pwr>;
+> +		vdd_s3-supply = <&vph_pwr>;
+> +		vdd_s4-supply = <&vph_pwr>;
+> +		vdd_s5-supply = <&vph_pwr>;
+> +		vdd_s6-supply = <&vph_pwr>;
+> +		vdd_s7-supply = <&vph_pwr>;
+> +		vdd_s8-supply = <&vph_pwr>;
+> +		vdd_s9-supply = <&vph_pwr>;
+> +		vdd_s10-supply = <&vph_pwr>;
+> +		vdd_s11-supply = <&vph_pwr>;
+> +		vdd_s12-supply = <&vph_pwr>;
+> +		vdd_s13-supply = <&vph_pwr>;
+> +		vdd_l1_l27-supply = <&vreg_s7a_1p025>;
+> +		vdd_l2_l8_l17-supply = <&vreg_s3a_1p35>;
+> +		vdd_l3_l11-supply = <&vreg_s7a_1p025>;
+> +		vdd_l4_l5-supply = <&vreg_s7a_1p025>;
+> +		vdd_l6-supply = <&vreg_s5a_2p04>;
+> +		vdd_l7_l12_l14_l15-supply = <&vreg_s5a_2p04>;
+> +		vdd_l9-supply = <&vreg_bob>;
+> +		vdd_l10_l23_l25-supply = <&vreg_bob>;
+> +		vdd_l13_l19_l21-supply = <&vreg_bob>;
+> +		vdd_l16_l28-supply = <&vreg_bob>;
+> +		vdd_l18_l22-supply = <&vreg_bob>;
+> +		vdd_l20_l24-supply = <&vreg_bob>;
+> +		vdd_l26-supply = <&vreg_s3a_1p35>;
+> +		vdd_lvs1_lvs2-supply = <&vreg_s4a_1p8>;
+> +
+> +		vreg_s3a_1p35: s3 {
+> +			regulator-min-microvolt = <1352000>;
+> +			regulator-max-microvolt = <1352000>;
+> +		};
+> +		vreg_s4a_1p8: s4 {
+> +			regulator-min-microvolt = <1800000>;
+> +			regulator-max-microvolt = <1800000>;
+> +			regulator-allow-set-load;
+> +		};
+> +		vreg_s5a_2p04: s5 {
+> +			regulator-min-microvolt = <1904000>;
+> +			regulator-max-microvolt = <2040000>;
+> +		};
+> +		vreg_s7a_1p025: s7 {
+> +			regulator-min-microvolt = <900000>;
+> +			regulator-max-microvolt = <1028000>;
+> +		};
+> +		vreg_l1a_0p875: l1 {
+> +			regulator-min-microvolt = <880000>;
+> +			regulator-max-microvolt = <880000>;
+> +		};
+> +		vreg_l2a_1p2: l2 {
+> +			regulator-min-microvolt = <1200000>;
+> +			regulator-max-microvolt = <1200000>;
+> +		};
+> +		vreg_l3a_1p0: l3 {
+> +			regulator-min-microvolt = <1000000>;
+> +			regulator-max-microvolt = <1000000>;
+> +		};
+> +		vreg_l5a_0p8: l5 {
+> +			regulator-min-microvolt = <800000>;
+> +			regulator-max-microvolt = <800000>;
+> +		};
+> +		vreg_l6a_1p8: l6 {
+> +			regulator-min-microvolt = <1808000>;
+> +			regulator-max-microvolt = <1808000>;
+> +		};
+> +		vreg_l7a_1p8: l7 {
+> +			regulator-min-microvolt = <1800000>;
+> +			regulator-max-microvolt = <1800000>;
+> +		};
+> +		vreg_l8a_1p2: l8 {
+> +			regulator-min-microvolt = <1200000>;
+> +			regulator-max-microvolt = <1200000>;
+> +		};
+> +		vreg_l9a_1p8: l9 {
+> +			regulator-min-microvolt = <1808000>;
+> +			regulator-max-microvolt = <2960000>;
+> +		};
+> +		vreg_l10a_1p8: l10 {
+> +			regulator-min-microvolt = <1808000>;
+> +			regulator-max-microvolt = <2960000>;
+> +		};
+> +		vreg_l11a_1p0: l11 {
+> +			regulator-min-microvolt = <1000000>;
+> +			regulator-max-microvolt = <1000000>;
+> +		};
+> +		vreg_l12a_1p8: l12 {
+> +			regulator-min-microvolt = <1800000>;
+> +			regulator-max-microvolt = <1800000>;
+> +		};
+> +		vreg_l13a_2p95: l13 {
+> +			regulator-min-microvolt = <1808000>;
+> +			regulator-max-microvolt = <2960000>;
+> +		};
+> +		vreg_l14a_1p88: l14 {
+> +			regulator-min-microvolt = <1880000>;
+> +			regulator-max-microvolt = <1880000>;
+> +		};
+> +		vreg_l15a_1p8: l15 {
+> +			regulator-min-microvolt = <1800000>;
+> +			regulator-max-microvolt = <1800000>;
+> +		};
+> +		vreg_l16a_2p7: l16 {
+> +			regulator-min-microvolt = <2704000>;
+> +			regulator-max-microvolt = <2704000>;
+> +		};
+> +		vreg_l17a_1p3: l17 {
+> +			regulator-min-microvolt = <1304000>;
+> +			regulator-max-microvolt = <1304000>;
+> +		};
+> +		vreg_l18a_2p7: l18 {
+> +			regulator-min-microvolt = <2704000>;
+> +			regulator-max-microvolt = <2704000>;
+> +		};
+> +		vreg_l19a_3p0: l19 {
+> +			regulator-min-microvolt = <3008000>;
+> +			regulator-max-microvolt = <3008000>;
+> +		};
+> +		vreg_l20a_2p95: l20 {
+> +			regulator-min-microvolt = <2960000>;
+> +			regulator-max-microvolt = <2960000>;
+> +			regulator-allow-set-load;
+> +		};
+> +		vreg_l21a_2p95: l21 {
+> +			regulator-min-microvolt = <2960000>;
+> +			regulator-max-microvolt = <2960000>;
+> +			regulator-allow-set-load;
+> +			regulator-system-load = <800000>;
+> +		};
+> +		vreg_l22a_2p85: l22 {
+> +			regulator-min-microvolt = <2864000>;
+> +			regulator-max-microvolt = <2864000>;
+> +		};
+> +		vreg_l23a_3p3: l23 {
+> +			regulator-min-microvolt = <3312000>;
+> +			regulator-max-microvolt = <3312000>;
+> +		};
+> +		vreg_l24a_3p075: l24 {
+> +			regulator-min-microvolt = <3088000>;
+> +			regulator-max-microvolt = <3088000>;
+> +		};
+> +		vreg_l25a_3p3: l25 {
+> +			regulator-min-microvolt = <3104000>;
+> +			regulator-max-microvolt = <3312000>;
+> +		};
+> +		vreg_l26a_1p2: l26 {
+> +			regulator-min-microvolt = <1200000>;
+> +			regulator-max-microvolt = <1200000>;
+> +			regulator-allow-set-load;
+> +		};
+> +		vreg_l28_3p0: l28 {
+> +			regulator-min-microvolt = <3008000>;
+> +			regulator-max-microvolt = <3008000>;
+> +		};
+> +		vreg_lvs1a_1p8: lvs1 { };
+> +		vreg_lvs2a_1p8: lvs2 { };
+> +	};
+> +
+> +	pmi8998-regulators {
+> +		compatible = "qcom,rpm-pmi8998-regulators";
+> +
+> +		vdd_bob-supply = <&vph_pwr>;
+> +
+> +		vreg_bob: bob {
+> +			regulator-min-microvolt = <3312000>;
+> +			regulator-max-microvolt = <3600000>;
+> +		};
+> +	};
+> +};
+> +
+> +&tlmm {
+> +	gpio-reserved-ranges = <0 4>, <81 4>;
+> +
+> +	hall_sensor_default: hall-sensor-default {
+> +		pins = "gpio124";
+> +		function = "gpio";
+> +		drive-strength = <2>;
+> +		bias-disable;
+> +		input-enable;
+> +	};
+> +
+> +	ts_int_active: ts-int-active {
+> +		pins = "gpio125";
+> +		function = "gpio";
+> +		drive-strength = <8>;
+> +		bias-pull-up;
+> +	};
+> +
+> +	ts_reset_active: ts-reset-active {
+> +		pins = "gpio89";
+> +		function = "gpio";
+> +		drive-strength = <8>;
+> +		bias-pull-up;
+> +	};
+> +};
+> +
+> +&ufshc {
+> +	status = "okay";
+> +
+> +	vcc-supply = <&vreg_l20a_2p95>;
+> +	vccq-supply = <&vreg_l26a_1p2>;
+> +	vccq2-supply = <&vreg_s4a_1p8>;
+> +	vcc-max-microamp = <750000>;
+> +	vccq-max-microamp = <560000>;
+> +	vccq2-max-microamp = <750000>;
+> +};
+> +
+> +&ufsphy {
+> +	status = "okay";
+> +
+> +	vdda-phy-supply = <&vreg_l1a_0p875>;
+> +	vdda-pll-supply = <&vreg_l2a_1p2>;
+> +	vddp-ref-clk-supply = <&vreg_l26a_1p2>;
+> +	vdda-phy-max-microamp = <51400>;
+> +	vdda-pll-max-microamp = <14600>;
+> +	vddp-ref-clk-max-microamp = <100>;
+> +	vddp-ref-clk-always-on;
+> +};
+> +
+> +&usb3 {
+> +	status = "okay";
+> +
+> +	/* Disable USB3 clock requirement as the device only supports USB2 
+> */
+> +	qcom,select-utmi-as-pipe-clk;
+> +};
+> +
+> +&usb3_dwc3 {
+> +	/* Drop the unused USB 3 PHY */
+> +	phys = <&qusb2phy>;
+> +	phy-names = "usb2-phy";
+> +
+> +	/* Fastest mode for USB 2 */
+> +	maximum-speed = "high-speed";
+> +
+> +	/* Force to peripheral until we can switch modes */
+> +	dr_mode = "peripheral";
+> +};
+> +
+> +/* Hold off on WLAN enablement until MSS remoteproc and friends are 
+> brought up */
+> +&wifi {
+> +	vdd-0.8-cx-mx-supply = <&vreg_l5a_0p8>;
+> +	vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
+> +	vdd-1.3-rfa-supply = <&vreg_l17a_1p3>;
+> +	vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
+> +};
+> diff --git a/arch/arm64/boot/dts/qcom/msm8998-oneplus-dumpling.dts 
+> b/arch/arm64/boot/dts/qcom/msm8998-oneplus-dumpling.dts
+> new file mode 100644
+> index 000000000000..b46214a32478
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/msm8998-oneplus-dumpling.dts
+> @@ -0,0 +1,25 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * OnePlus 5T (dumpling) device tree
+> + *
+> + * Copyright (c) 2021, Jami Kettunen <jamipkettunen@gmail.com>
+> + */
+> +
+> +#include "msm8998-oneplus-common.dtsi"
+> +
+> +/ {
+> +	model = "OnePlus 5T";
+> +	compatible = "oneplus,dumpling", "qcom,msm8998";
+> +	/* Required for bootloader to select correct board */
+> +	qcom,board-id = <8 0 17801 43>;
+> +};
+> +
+> +/* Update the screen height values from 1920 to 2160 on the 5T */
+> +&framebuffer0 {
+> +	height = <2160>;
+> +};
+> +
+> +/* Adjust digitizer area height to match the 5T's taller panel */
+> +&rmi4_f12 {
+> +	touchscreen-y-mm = <137>;
+> +};
+> --
+> 2.30.1
+> 
+Only thing i would nit pick about it is to split it into 2 commits 
+maybe.
+Other than that nothing.
 
-If you really want to "fix" this, please just use sysfs_emit().  This
-change as-is, does nothing.
+Reviewed-by: Martin Botka <martin.botka@somainline.org>
 
-thanks,
 
-greg k-h
+
