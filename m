@@ -2,204 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD6D73525F7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 06:09:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A6C3525FD
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 06:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230017AbhDBEJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 00:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbhDBEJp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 00:09:45 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47950C06178A
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 21:09:45 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id o16so3693843wrn.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 21:09:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=meCY3g4ZddcaVFsiixJeKxINO9meMOC/HmZiu7pSnis=;
-        b=JbBObYJHzVzwWjRYrtVEvwWuBeATrp4It6u7NUrI90LOdM+HfoHmV+3Cvi1sb96OPI
-         D21x4RUhRG7GTbRhJYZBSUERMEl5wYrQteEPDtOz8xReUQwRPvrq956//qiakIsVMpjE
-         GuLs/mIehb/szAS4EHzdm089SS4+pgmwOJX0XG4qSmZU+qMtvrJkQ8/i8EsJyqZBeYj3
-         mSNZOrkFdJE4wskQEjbVErZtcpMueMUg/RsR35auYUwjCIwe1iu0aL+Dy4e34WVban3h
-         OduQYY0kFjCT1ETwZQgfn0o5ZeDeDbiAOgNHue6+HuvvRkuKfN5NM3fq+4p392TL+Cu4
-         sr9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=meCY3g4ZddcaVFsiixJeKxINO9meMOC/HmZiu7pSnis=;
-        b=ttE9RFf59dABnE4rN05kV/hABYzmKXN9fX9+w6F+E+GEXlR1ar2xw/rnvIweA626Ek
-         kCmBsU+S35Rp56wLV/N21MajiLwvj2Ut0j9JiFe12G4t+gL7Snz2xvSfcw1c5TgWlt8e
-         JXaTqjtz0Y5XwT/k8C2KMHW8f9feCtwQCzKsIIlUIT4Owv21WQDz0QvKXi4eOUDtp5C1
-         /nHZ3dAJ2iVE1XBWr4l6/AuGtGdtMKY5pNMXJnv0dYQykiKqKZco1CqN7GzBhpm3cWpP
-         1U5zDDE6lpF9PRbP11Kjbj30BEEGP6IYV33uNJEuH2dSRlpnmUa6rUYOgXpqt5MeYUEh
-         X7+w==
-X-Gm-Message-State: AOAM530qZzAHeMfNxjUQkck3jiFDO9dYDIvL3ZlgBwjXUViT42b0kc+J
-        StCtsg4/SQpr3vF4bDpQitbAnZcNi2lz9UJZnqK/xA==
-X-Google-Smtp-Source: ABdhPJxDjcPeZhhqphDAJyUV6xkBRwIEwREpi6+dv9r+XRHq/ftq4auQOWCKv0PCii8iWP0QH2ZDPwnwZjAUlOUXv9M=
-X-Received: by 2002:adf:9544:: with SMTP id 62mr12946985wrs.128.1617336583795;
- Thu, 01 Apr 2021 21:09:43 -0700 (PDT)
+        id S230301AbhDBELp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 00:11:45 -0400
+Received: from mga01.intel.com ([192.55.52.88]:29160 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229520AbhDBELn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 00:11:43 -0400
+IronPort-SDR: sGqeeNwgTVOKS5R6aEpX586nqfr35qRk65k/w5uX784Cq7sGGmFLF6HPZ6N0aSVfBD6hQdDxPv
+ 6j1ZdppZrwuw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="212657590"
+X-IronPort-AV: E=Sophos;i="5.81,298,1610438400"; 
+   d="scan'208";a="212657590"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 21:11:43 -0700
+IronPort-SDR: gwRFk/S63RtBXizcdLCvJ7Fh7FySATa2jvM1MbFQei3PbZOPc72iGdKcxH3inpUzLOX9GBM8mM
+ M1eNqi2/+Abw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,298,1610438400"; 
+   d="scan'208";a="439464419"
+Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 01 Apr 2021 21:11:41 -0700
+Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lSB9o-0006t2-U1; Fri, 02 Apr 2021 04:11:40 +0000
+Date:   Fri, 02 Apr 2021 12:10:53 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/core] BUILD SUCCESS
+ f31390437ce984118215169d75570e365457ec23
+Message-ID: <6066994d.9g5mn6uJf95RnC+y%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20210401002442.2fe56b88@xhacker> <20210401002551.0ddbacf9@xhacker>
-In-Reply-To: <20210401002551.0ddbacf9@xhacker>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Fri, 2 Apr 2021 09:39:32 +0530
-Message-ID: <CAAhSdy0N427hw6sK5NEbrs_bb2N9y6aDOrCLO+mcpysLvaaoPQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/9] riscv: Mark some global variables __ro_after_init
-To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        kasan-dev@googlegroups.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 10:01 PM Jisheng Zhang
-<jszhang3@mail.ustc.edu.cn> wrote:
->
-> From: Jisheng Zhang <jszhang@kernel.org>
->
-> All of these are never modified after init, so they can be
-> __ro_after_init.
->
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
+branch HEAD: f31390437ce984118215169d75570e365457ec23  objtool/x86: Rewrite retpoline thunk calls
 
-Looks good to me.
+elapsed time: 731m
 
-Reviewed-by: Anup Patel <anup@brainfault.org>
+configs tested: 189
+configs skipped: 2
 
-Regards,
-Anup
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> ---
->  arch/riscv/kernel/sbi.c  | 8 ++++----
->  arch/riscv/kernel/smp.c  | 4 ++--
->  arch/riscv/kernel/time.c | 2 +-
->  arch/riscv/kernel/vdso.c | 4 ++--
->  arch/riscv/mm/init.c     | 6 +++---
->  5 files changed, 12 insertions(+), 12 deletions(-)
->
-> diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
-> index d3bf756321a5..cbd94a72eaa7 100644
-> --- a/arch/riscv/kernel/sbi.c
-> +++ b/arch/riscv/kernel/sbi.c
-> @@ -11,14 +11,14 @@
->  #include <asm/smp.h>
->
->  /* default SBI version is 0.1 */
-> -unsigned long sbi_spec_version = SBI_SPEC_VERSION_DEFAULT;
-> +unsigned long sbi_spec_version __ro_after_init = SBI_SPEC_VERSION_DEFAULT;
->  EXPORT_SYMBOL(sbi_spec_version);
->
-> -static void (*__sbi_set_timer)(uint64_t stime);
-> -static int (*__sbi_send_ipi)(const unsigned long *hart_mask);
-> +static void (*__sbi_set_timer)(uint64_t stime) __ro_after_init;
-> +static int (*__sbi_send_ipi)(const unsigned long *hart_mask) __ro_after_init;
->  static int (*__sbi_rfence)(int fid, const unsigned long *hart_mask,
->                            unsigned long start, unsigned long size,
-> -                          unsigned long arg4, unsigned long arg5);
-> +                          unsigned long arg4, unsigned long arg5) __ro_after_init;
->
->  struct sbiret sbi_ecall(int ext, int fid, unsigned long arg0,
->                         unsigned long arg1, unsigned long arg2,
-> diff --git a/arch/riscv/kernel/smp.c b/arch/riscv/kernel/smp.c
-> index ea028d9e0d24..504284d49135 100644
-> --- a/arch/riscv/kernel/smp.c
-> +++ b/arch/riscv/kernel/smp.c
-> @@ -30,7 +30,7 @@ enum ipi_message_type {
->         IPI_MAX
->  };
->
-> -unsigned long __cpuid_to_hartid_map[NR_CPUS] = {
-> +unsigned long __cpuid_to_hartid_map[NR_CPUS] __ro_after_init = {
->         [0 ... NR_CPUS-1] = INVALID_HARTID
->  };
->
-> @@ -85,7 +85,7 @@ static void ipi_stop(void)
->                 wait_for_interrupt();
->  }
->
-> -static struct riscv_ipi_ops *ipi_ops;
-> +static struct riscv_ipi_ops *ipi_ops __ro_after_init;
->
->  void riscv_set_ipi_ops(struct riscv_ipi_ops *ops)
->  {
-> diff --git a/arch/riscv/kernel/time.c b/arch/riscv/kernel/time.c
-> index 1b432264f7ef..8217b0f67c6c 100644
-> --- a/arch/riscv/kernel/time.c
-> +++ b/arch/riscv/kernel/time.c
-> @@ -11,7 +11,7 @@
->  #include <asm/processor.h>
->  #include <asm/timex.h>
->
-> -unsigned long riscv_timebase;
-> +unsigned long riscv_timebase __ro_after_init;
->  EXPORT_SYMBOL_GPL(riscv_timebase);
->
->  void __init time_init(void)
-> diff --git a/arch/riscv/kernel/vdso.c b/arch/riscv/kernel/vdso.c
-> index 3f1d35e7c98a..25a3b8849599 100644
-> --- a/arch/riscv/kernel/vdso.c
-> +++ b/arch/riscv/kernel/vdso.c
-> @@ -20,8 +20,8 @@
->
->  extern char vdso_start[], vdso_end[];
->
-> -static unsigned int vdso_pages;
-> -static struct page **vdso_pagelist;
-> +static unsigned int vdso_pages __ro_after_init;
-> +static struct page **vdso_pagelist __ro_after_init;
->
->  /*
->   * The vDSO data page.
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index 76bf2de8aa59..719ec72ef069 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -149,11 +149,11 @@ void __init setup_bootmem(void)
->  }
->
->  #ifdef CONFIG_MMU
-> -static struct pt_alloc_ops pt_ops;
-> +static struct pt_alloc_ops pt_ops __ro_after_init;
->
-> -unsigned long va_pa_offset;
-> +unsigned long va_pa_offset __ro_after_init;
->  EXPORT_SYMBOL(va_pa_offset);
-> -unsigned long pfn_base;
-> +unsigned long pfn_base __ro_after_init;
->  EXPORT_SYMBOL(pfn_base);
->
->  pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
-> --
-> 2.31.0
->
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+sh                          rsk7203_defconfig
+arc                    vdk_hs38_smp_defconfig
+s390                             allmodconfig
+arm                           h5000_defconfig
+xtensa                generic_kc705_defconfig
+sh                            titan_defconfig
+arm                      footbridge_defconfig
+arm                             ezx_defconfig
+arm                        trizeps4_defconfig
+alpha                            alldefconfig
+arm                           sama5_defconfig
+sh                         apsh4a3a_defconfig
+arm                           omap1_defconfig
+powerpc                   bluestone_defconfig
+sh                          rsk7264_defconfig
+powerpc                      ppc64e_defconfig
+mips                         tb0226_defconfig
+powerpc                     tqm8548_defconfig
+sh                           se7619_defconfig
+mips                     cu1830-neo_defconfig
+mips                     cu1000-neo_defconfig
+mips                             allmodconfig
+mips                      pistachio_defconfig
+riscv                          rv32_defconfig
+powerpc                 mpc836x_mds_defconfig
+powerpc                     redwood_defconfig
+parisc                generic-32bit_defconfig
+mips                            gpr_defconfig
+powerpc                     tqm8540_defconfig
+sh                     magicpanelr2_defconfig
+arm                       omap2plus_defconfig
+arm                        spear6xx_defconfig
+arm                          pcm027_defconfig
+arm                        oxnas_v6_defconfig
+powerpc                  mpc866_ads_defconfig
+powerpc               mpc834x_itxgp_defconfig
+m68k                          atari_defconfig
+x86_64                           alldefconfig
+arm                          exynos_defconfig
+mips                        nlm_xlp_defconfig
+arm                         shannon_defconfig
+xtensa                  audio_kc705_defconfig
+powerpc                      acadia_defconfig
+powerpc                     mpc512x_defconfig
+sh                   rts7751r2dplus_defconfig
+arm                             pxa_defconfig
+mips                        workpad_defconfig
+nios2                         10m50_defconfig
+arm                          iop32x_defconfig
+ia64                             alldefconfig
+m68k                          hp300_defconfig
+powerpc                 mpc8540_ads_defconfig
+m68k                        mvme16x_defconfig
+arc                        nsim_700_defconfig
+arm                         lpc32xx_defconfig
+powerpc                     tqm8560_defconfig
+powerpc                      tqm8xx_defconfig
+mips                           ip27_defconfig
+m68k                       bvme6000_defconfig
+arm                        cerfcube_defconfig
+m68k                           sun3_defconfig
+arm                            pleb_defconfig
+mips                          malta_defconfig
+arm                        magician_defconfig
+ia64                      gensparse_defconfig
+arm                       spear13xx_defconfig
+h8300                       h8s-sim_defconfig
+arm                          badge4_defconfig
+mips                      loongson3_defconfig
+arc                     nsimosci_hs_defconfig
+arm                         cm_x300_defconfig
+sh                   sh7724_generic_defconfig
+powerpc                   lite5200b_defconfig
+arm                           viper_defconfig
+arm                          imote2_defconfig
+arm                     eseries_pxa_defconfig
+arm                     am200epdkit_defconfig
+h8300                    h8300h-sim_defconfig
+sh                          lboxre2_defconfig
+mips                        qi_lb60_defconfig
+mips                       rbtx49xx_defconfig
+arm                           tegra_defconfig
+powerpc                       maple_defconfig
+powerpc                     rainier_defconfig
+sh                        dreamcast_defconfig
+mips                            e55_defconfig
+mips                        vocore2_defconfig
+powerpc                 mpc8315_rdb_defconfig
+riscv                               defconfig
+s390                                defconfig
+sh                        edosk7760_defconfig
+sh                         ecovec24_defconfig
+mips                      maltaaprp_defconfig
+powerpc                       eiger_defconfig
+ia64                         bigsur_defconfig
+xtensa                       common_defconfig
+arm                          ixp4xx_defconfig
+mips                         tb0219_defconfig
+mips                malta_qemu_32r6_defconfig
+arm                           corgi_defconfig
+m68k                       m5208evb_defconfig
+mips                       capcella_defconfig
+powerpc                 mpc837x_rdb_defconfig
+ia64                             allyesconfig
+sh                           se7750_defconfig
+riscv                    nommu_k210_defconfig
+arm                         lpc18xx_defconfig
+arm                          moxart_defconfig
+s390                             allyesconfig
+um                               allmodconfig
+arm                         palmz72_defconfig
+sh                           sh2007_defconfig
+powerpc                  iss476-smp_defconfig
+arm                      jornada720_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+parisc                           allyesconfig
+i386                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+mips                             allyesconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20210401
+i386                 randconfig-a003-20210401
+i386                 randconfig-a001-20210401
+i386                 randconfig-a004-20210401
+i386                 randconfig-a002-20210401
+i386                 randconfig-a005-20210401
+i386                 randconfig-a006-20210402
+i386                 randconfig-a003-20210402
+i386                 randconfig-a001-20210402
+i386                 randconfig-a004-20210402
+i386                 randconfig-a005-20210402
+i386                 randconfig-a002-20210402
+x86_64               randconfig-a014-20210401
+x86_64               randconfig-a015-20210401
+x86_64               randconfig-a011-20210401
+x86_64               randconfig-a013-20210401
+x86_64               randconfig-a012-20210401
+x86_64               randconfig-a016-20210401
+i386                 randconfig-a014-20210401
+i386                 randconfig-a011-20210401
+i386                 randconfig-a016-20210401
+i386                 randconfig-a012-20210401
+i386                 randconfig-a013-20210401
+i386                 randconfig-a015-20210401
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a004-20210401
+x86_64               randconfig-a005-20210401
+x86_64               randconfig-a003-20210401
+x86_64               randconfig-a001-20210401
+x86_64               randconfig-a002-20210401
+x86_64               randconfig-a006-20210401
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
