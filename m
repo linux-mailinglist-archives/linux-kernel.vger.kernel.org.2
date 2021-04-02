@@ -2,70 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E38352837
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 11:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00EDB352853
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 11:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234849AbhDBJJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 05:09:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229553AbhDBJJu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 05:09:50 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 788CE61104;
-        Fri,  2 Apr 2021 09:09:47 +0000 (UTC)
-Date:   Fri, 2 Apr 2021 10:09:58 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 07/32] MAINTAINERS: update envelope-detector.yaml
- reference
-Message-ID: <20210402100958.08293b93@jic23-huawei>
-In-Reply-To: <d4ccc625ccb89730c03204b7aae98fd94ea97fc2.1617279355.git.mchehab+huawei@kernel.org>
-References: <cover.1617279355.git.mchehab+huawei@kernel.org>
-        <d4ccc625ccb89730c03204b7aae98fd94ea97fc2.1617279355.git.mchehab+huawei@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S234592AbhDBJNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 05:13:40 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15468 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234563AbhDBJNi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 05:13:38 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FBZ6n5wwXzyNNs;
+        Fri,  2 Apr 2021 17:11:29 +0800 (CST)
+Received: from huawei.com (10.67.165.24) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.498.0; Fri, 2 Apr 2021
+ 17:13:30 +0800
+From:   Longfang Liu <liulongfang@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <mathias.nyman@intel.com>,
+        <stern@rowland.harvard.edu>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <liulongfang@huawei.com>, <kong.kongxinwei@hisilicon.com>,
+        <yisen.zhuang@huawei.com>
+Subject: [PATCH] USB:ohci:fix ohci interruption problem
+Date:   Fri, 2 Apr 2021 17:11:00 +0800
+Message-ID: <1617354660-43964-1-git-send-email-liulongfang@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  1 Apr 2021 14:17:27 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+The operating method of the system entering S4 sleep mode:
+echo disk > /sys/power/state
 
-> Changeset 66a6dcc20e63 ("dt-bindings:iio:adc:envelope-detector: txt to yaml conversion.")
-> renamed: Documentation/devicetree/bindings/iio/adc/envelope-detector.txt
-> to: Documentation/devicetree/bindings/iio/adc/envelope-detector.yaml.
-> 
-> Update its cross-reference accordingly.
-> 
-> Fixes: 66a6dcc20e63 ("dt-bindings:iio:adc:envelope-detector: txt to yaml conversion.")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+When OHCI enters the S4 sleep state, the USB sleep process will call
+check_root_hub_suspend() and ohci_bus_suspend() instead of
+ohci_suspend() and ohci_bus_suspend(), this causes the OHCI interrupt
+to not be closed.
 
-Applied.
+At this time, if just one device interrupt is reported. Since rh_state
+has been changed to OHCI_RH_SUSPENDED after ohci_bus_suspend(), the
+driver will not process and close this device interrupt. It will cause
+the entire system to be stuck during sleep, causing the device to
+fail to respond.
 
-> ---
->  MAINTAINERS | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 52ce258fab37..82220a72eba2 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -8761,7 +8761,7 @@ M:	Peter Rosin <peda@axentia.se>
->  L:	linux-iio@vger.kernel.org
->  S:	Maintained
->  F:	Documentation/ABI/testing/sysfs-bus-iio-adc-envelope-detector
-> -F:	Documentation/devicetree/bindings/iio/adc/envelope-detector.txt
-> +F:	Documentation/devicetree/bindings/iio/adc/envelope-detector.yaml
->  F:	drivers/iio/adc/envelope-detector.c
->  
->  IIO MULTIPLEXER
+When the abnormal interruption reaches 100,000 times, the system will
+forcibly close the interruption and make the device unusable.
+
+Because the root cause of the problem is that ohci_suspend is not
+called to perform normal interrupt shutdown operations when the system
+enters S4 sleep mode.
+
+Therefore, our solution is to specify freeze interface in this mode to
+perform normal suspend_common() operations, and call ohci_suspend()
+after check_root_hub_suspend() is executed through the suspend_common()
+operation.
+After using this solution, it is verified by the stress test of sleep
+wake up in S4 mode for a long time that this problem no longer occurs.
+
+Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+---
+ drivers/usb/core/hcd-pci.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/usb/core/hcd-pci.c b/drivers/usb/core/hcd-pci.c
+index 1547aa6..78a56cd 100644
+--- a/drivers/usb/core/hcd-pci.c
++++ b/drivers/usb/core/hcd-pci.c
+@@ -509,6 +509,11 @@ static int resume_common(struct device *dev, int event)
+ 
+ #ifdef	CONFIG_PM_SLEEP
+ 
++static int hcd_pci_freeze(struct device *dev)
++{
++	return suspend_common(dev, device_may_wakeup(dev));
++}
++
+ static int hcd_pci_suspend(struct device *dev)
+ {
+ 	return suspend_common(dev, device_may_wakeup(dev));
+@@ -605,8 +610,8 @@ const struct dev_pm_ops usb_hcd_pci_pm_ops = {
+ 	.suspend_noirq	= hcd_pci_suspend_noirq,
+ 	.resume_noirq	= hcd_pci_resume_noirq,
+ 	.resume		= hcd_pci_resume,
+-	.freeze		= check_root_hub_suspended,
+-	.freeze_noirq	= check_root_hub_suspended,
++	.freeze		= hcd_pci_freeze,
++	.freeze_noirq	= hcd_pci_freeze,
+ 	.thaw_noirq	= NULL,
+ 	.thaw		= NULL,
+ 	.poweroff	= hcd_pci_suspend,
+-- 
+2.8.1
 
