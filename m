@@ -2,82 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C631352D19
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:10:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ABD2352D22
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236562AbhDBPyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 11:54:40 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:44666 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236270AbhDBPyA (ORCPT
+        id S235702AbhDBPzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 11:55:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236596AbhDBPyy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 11:54:00 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id ADFC282239;
-        Fri,  2 Apr 2021 18:53:55 +0300 (MSK)
+        Fri, 2 Apr 2021 11:54:54 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C546C0617A7
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 08:54:29 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id x16so5102868wrn.4
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 08:54:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1617378835;
-        bh=QYggjNAEuORv+xIIUh5jlhinTGCk2PDPCmtLnKFZA/s=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=UtFuy4ewk1/dRa0rjfgJlAd5YWLIsH7LL6QsuXBVgIWersn63t3BBo+z3raszG1RD
-         ZcwFh6+bOwv3iR3iTUV0zZljlDOvcfqWeShN7YJDCq0hYTSB5QezJ0NXHCyBBfqWqt
-         aC3jP4BdFb2yzWWHwjR8E65MeJ73EP/jWBexf2Ho=
-Received: from fsd-lkpg.ufsd.paragon-software.com (172.30.114.105) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 2 Apr 2021 18:53:55 +0300
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     <linux-fsdevel@vger.kernel.org>
-CC:     <viro@zeniv.linux.org.uk>, <linux-kernel@vger.kernel.org>,
-        <pali@kernel.org>, <dsterba@suse.cz>, <aaptel@suse.com>,
-        <willy@infradead.org>, <rdunlap@infradead.org>, <joe@perches.com>,
-        <mark@harmstone.com>, <nborisov@suse.com>,
-        <linux-ntfs-dev@lists.sourceforge.net>, <anton@tuxera.com>,
-        <dan.carpenter@oracle.com>, <hch@lst.de>, <ebiggers@kernel.org>,
-        <andy.lavr@gmail.com>, <kari.argillander@gmail.com>,
-        <oleksandr@natalenko.name>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Subject: [PATCH v26 10/10] fs/ntfs3: Add MAINTAINERS
-Date:   Fri, 2 Apr 2021 18:53:47 +0300
-Message-ID: <20210402155347.64594-11-almaz.alexandrovich@paragon-software.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20210402155347.64594-1-almaz.alexandrovich@paragon-software.com>
-References: <20210402155347.64594-1-almaz.alexandrovich@paragon-software.com>
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ti7CnZ58ioPvRJAxkKcVR48hDbgDyg23JEYsm8ZJBog=;
+        b=iSRjkTqLZUuJikPDzHYiXZ8jIF/uxsMAUYe4ao54ac2AYPnBjtwTdT3D7BomFgr1fe
+         q47RUynjmfMwBWCvyHhC7HwslAUPDbmvLOmE17nksDiLS+3JJxxM1DRJ0nwZRVlDmMWT
+         vm5HWYIyxaHdBCHzoBL66Shnbt0Zd52W88Lifkh1bFuydGOvx3lJU1Ed+zl55W33xRjF
+         IebEDt1lmKXGs92j7jZhJnwIKuDd03ALBk75RimAeFcqxcBs/u1aJWhV/jkPSvUfpx+e
+         os5TieoYDXBt6OrWbLDClxOabOCD237MiE1Vk59hOZlCVVr7ofnFC6E6KJfzLMKUpmNj
+         jVkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ti7CnZ58ioPvRJAxkKcVR48hDbgDyg23JEYsm8ZJBog=;
+        b=cPQDzoxTFMj3FHmA3LM8fT7XrrOIKI2PDTDAmpi3/vBKkc7Y06GVEntu3gbeF2xwws
+         LzDk3VHXf1YwRDlh0GQN4oJXkIHk63vmsXzdEgoOvBxOreGrDLZktehzqbsjvg8Cj+Zd
+         EBYxt49ZhPLzlBegITWayV+31ieysDYt15xWY+GoN1rSOxWKnShScoy9VUk8RpDHSOSP
+         Zp3VdztoMwJPGmxlaPVj4+RaFlDN8QXjjNh9RKRlCrnJimoDqIRr1qWsT/haToN0uNB5
+         LwPcpb0aMVcT0DpByV3vaTWT4V7pfzEdNs//3tHhGV3s8Tqk9xEshZY3g2YOfaWruO8d
+         p6LQ==
+X-Gm-Message-State: AOAM531sRt4z6o4FafvEgLti5CUMfYv61GwjXVQCH3DcKFrCZ98lZpmU
+        b9S0hVdPBOv1AOY9mhrzLXF4RA==
+X-Google-Smtp-Source: ABdhPJzaVDJiLDo9IUQhDeV/SCNHxTwjdoKMLCtOajCASmmDBBxLQozwfEAS3QNWgYqpTWJRTQho5A==
+X-Received: by 2002:adf:f742:: with SMTP id z2mr15552411wrp.130.1617378868075;
+        Fri, 02 Apr 2021 08:54:28 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:34f1:44bb:31bf:7aaf? ([2a01:e34:ed2f:f020:34f1:44bb:31bf:7aaf])
+        by smtp.googlemail.com with ESMTPSA id j123sm12943231wmb.1.2021.04.02.08.54.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Apr 2021 08:54:27 -0700 (PDT)
+Subject: Re: [PATCH 1/2] thermal: power_allocator: maintain the device
+ statistics from going stale
+To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org
+Cc:     linux-pm@vger.kernel.org, amitk@kernel.org, rui.zhang@intel.com
+References: <20210331163352.32416-1-lukasz.luba@arm.com>
+ <20210331163352.32416-2-lukasz.luba@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <b27e0c79-de27-f9b1-ad16-17825b302615@linaro.org>
+Date:   Fri, 2 Apr 2021 17:54:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210331163352.32416-2-lukasz.luba@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.30.114.105]
-X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds MAINTAINERS
+On 31/03/2021 18:33, Lukasz Luba wrote:
+> When the temperature is below the first activation trip point the cooling
+> devices are not checked, so they cannot maintain fresh statistics. It
+> leads into the situation, when temperature crosses first trip point, the
+> statistics are stale and show state for very long period. 
 
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
----
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+Can you elaborate the statistics you are referring to ?
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 38d823d72..498f7af01 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12926,6 +12926,13 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/aia21/ntfs.git
- F:	Documentation/filesystems/ntfs.rst
- F:	fs/ntfs/
- 
-+NTFS3 FILESYSTEM
-+M:	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-+S:	Supported
-+W:	http://www.paragon-software.com/
-+F:	Documentation/filesystems/ntfs3.rst
-+F:	fs/ntfs3/
-+
- NUBUS SUBSYSTEM
- M:	Finn Thain <fthain@telegraphics.com.au>
- L:	linux-m68k@lists.linux-m68k.org
+I can understand the pid controller needs temperature but I don't
+understand the statistics with the cooling device.
+
+
+> This has impact
+> on IPA algorithm calculation and wrong decisions. Thus, check the cooling
+> devices even when the temperature is low, to refresh these statistics.
+> 
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+>  drivers/thermal/gov_power_allocator.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
+> index 2802a0e13c88..0cbd10cab193 100644
+> --- a/drivers/thermal/gov_power_allocator.c
+> +++ b/drivers/thermal/gov_power_allocator.c
+> @@ -575,15 +575,27 @@ static void allow_maximum_power(struct thermal_zone_device *tz)
+>  {
+>  	struct thermal_instance *instance;
+>  	struct power_allocator_params *params = tz->governor_data;
+> +	u32 req_power;
+>  
+>  	mutex_lock(&tz->lock);
+>  	list_for_each_entry(instance, &tz->thermal_instances, tz_node) {
+> +		struct thermal_cooling_device *cdev = instance->cdev;
+> +
+>  		if ((instance->trip != params->trip_max_desired_temperature) ||
+>  		    (!cdev_is_power_actor(instance->cdev)))
+>  			continue;
+>  
+>  		instance->target = 0;
+>  		mutex_lock(&instance->cdev->lock);
+> +		/*
+> +		 * Call for updating the cooling devices local stats and avoid
+> +		 * periods of dozen of seconds when those have not been
+> +		 * maintained. The long period would come into the first check
+> +		 * when lower threshold is crossed. Thus, limit it to single
+> +		 * one longer polling period.
+> +		 */
+> +		cdev->ops->get_requested_power(cdev, &req_power);
+> +
+>  		instance->cdev->updated = false;
+>  		mutex_unlock(&instance->cdev->lock);
+>  		thermal_cdev_update(instance->cdev);
+> 
+
+
 -- 
-2.25.4
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
