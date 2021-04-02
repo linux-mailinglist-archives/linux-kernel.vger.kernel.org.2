@@ -2,127 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D9D353058
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 22:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBB5635305B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 22:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234759AbhDBUfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 16:35:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbhDBUfq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 16:35:46 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC58BC061788
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 13:35:42 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id j25so4247214pfe.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 13:35:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bYNefTtueRtbK9O76WmEEWHha/LaZSXchRlV45JIZY8=;
-        b=ECzeFdIxkBHD3YuCPbITfi9978+nZyYdB2UVcft7Fw5RKrXyQLUz9marixQu3+5aui
-         Fgijkbi2pQCLb6wq23xYFNjKmrJxj6s4Qvkq4DRJ3VFJMxo5C02xxeQ2os/qLQNKyzqE
-         IWNIujy4eiu4ixYhTF43C8aUNJHDCUSs7h7vg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bYNefTtueRtbK9O76WmEEWHha/LaZSXchRlV45JIZY8=;
-        b=Q2jS7CXqL2+FhrWfSG+NTP+xF5b1W34IkUpYWXDA708XLTcReUCEkJfZLaO5Xw+HYu
-         dybRXB2BMzpsPeAisUH8nu497GPck6y+/GG+Su1VMHaWQEtz3xKhQz+wLgRrTSanhMro
-         HaBvzhTIhh4di5wP/oVub5EfQXLNzqBUxCAayd2mocTzYiilKiGYqZOyBczxfiwVCS2i
-         QxlgHVzYP4RWLAxCn246inbHZLsZh4S9C4B9TH+3nitJ8oAMGpdxL+Wrgt+S7/nVWTvu
-         uUWMlVjxsHptfsm1TSjzEq2pjOM9GRij655QpK+Ws/b3D5VUkJbyyZbHV7krHOvMtLtJ
-         1OeQ==
-X-Gm-Message-State: AOAM5328GzCTyo8T+B4GAUc9PRrjQX28dFqxjteaSgPutwSk3vbgib1M
-        1q/AvaIcEOtlEZa8E7GpAxGAPQ==
-X-Google-Smtp-Source: ABdhPJxTz7TYSh6p4CoKhJAPlT3l2XcEh6VEdLMIe6/tWCfwXt3SK7RLev4FROoopZ5UmHf/w9E0xQ==
-X-Received: by 2002:a62:8ccc:0:b029:1f6:c5e2:69ff with SMTP id m195-20020a628ccc0000b02901f6c5e269ffmr13801935pfd.46.1617395742219;
-        Fri, 02 Apr 2021 13:35:42 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:581c:e04f:7c08:c602])
-        by smtp.gmail.com with UTF8SMTPSA id h18sm5277415pgj.51.2021.04.02.13.35.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Apr 2021 13:35:41 -0700 (PDT)
-Date:   Fri, 2 Apr 2021 13:35:40 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     satya priya <skakit@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, kgunda@codeaurora.org
-Subject: Re: [PATCH V2 1/5] arm64: dts: qcom: pm7325: Add PMIC peripherals
- for pm7325
-Message-ID: <YGeAHKOq65WBr9Yr@google.com>
-References: <1617268396-1837-1-git-send-email-skakit@codeaurora.org>
- <1617268396-1837-2-git-send-email-skakit@codeaurora.org>
- <YGdV+un4bGcF6jJH@google.com>
+        id S234650AbhDBUkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 16:40:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51376 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231149AbhDBUkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 16:40:19 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 407906115A;
+        Fri,  2 Apr 2021 20:40:16 +0000 (UTC)
+Date:   Fri, 2 Apr 2021 16:40:14 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Bharata B Rao <bharata@linux.vnet.ibm.com>,
+        Phil Auld <pauld@redhat.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] sched/debug: Use sched_debug_lock to serialize use
+ of cgroup_path[] only
+Message-ID: <20210402164014.53c84f05@gandalf.local.home>
+In-Reply-To: <20210401181030.7689-1-longman@redhat.com>
+References: <20210401181030.7689-1-longman@redhat.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YGdV+un4bGcF6jJH@google.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 10:35:54AM -0700, Matthias Kaehlcke wrote:
-> On Thu, Apr 01, 2021 at 02:43:12PM +0530, satya priya wrote:
-> 
-> > subject: arm64: dts: qcom: pm7325: Add PMIC peripherals for pm7325
-> 
-> nit: maybe just 'arm64: dts: qcom: Add pm7325 support/.dtsi' or similar?
-> 
-> > Add temp-alarm and GPIO support for pm7325.
-> 
-> nit: it's more than that, you are adding the .dtsi for the PMIC itself.
-> 
-> > Signed-off-by: satya priya <skakit@codeaurora.org>
-> > ---
-> >  arch/arm64/boot/dts/qcom/pm7325.dtsi | 53 ++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 53 insertions(+)
-> >  create mode 100644 arch/arm64/boot/dts/qcom/pm7325.dtsi
-> > 
-> > diff --git a/arch/arm64/boot/dts/qcom/pm7325.dtsi b/arch/arm64/boot/dts/qcom/pm7325.dtsi
-> > new file mode 100644
-> > index 0000000..1e0848a
-> > --- /dev/null
-> > +++ b/arch/arm64/boot/dts/qcom/pm7325.dtsi
-> > @@ -0,0 +1,53 @@
-> > +// SPDX-License-Identifier: BSD-3-Clause
-> > +// Copyright (c) 2021, The Linux Foundation. All rights reserved.
-> > +
-> > +#include <dt-bindings/interrupt-controller/irq.h>
-> > +#include <dt-bindings/spmi/spmi.h>
-> > +
-> > +&spmi_bus {
-> > +	pm7325: pmic@1 {
-> > +		compatible = "qcom,pm7325", "qcom,spmi-pmic";
-> 
-> I saw the patches that add the compatible strings for the GPIOs, but
-> can't find those that add the strings for the PMICs themselves. Could
-> you provide a link if they have been sent already?
-> 
-> > +		reg = <0x1 SPMI_USID>;
-> > +		#address-cells = <1>;
-> > +		#size-cells = <0>;
-> > +
-> > +		pm7325_temp_alarm: temp-alarm@a00 {
-> > +			compatible = "qcom,spmi-temp-alarm";
-> > +			reg = <0xa00>;
-> > +			interrupts = <0x1 0xa 0x0 IRQ_TYPE_EDGE_BOTH>;
-> > +			#thermal-sensor-cells = <0>;
-> > +		};
-> > +
-> > +		pm7325_gpios: gpios@8800 {
-> > +			compatible = "qcom,pm7325-gpio", "qcom,spmi-gpio";
-> > +			reg = <0x8800>;
-> > +			gpio-controller;
-> > +			gpio-ranges = <&pm7325_gpios 0 0 10>;
+On Thu,  1 Apr 2021 14:10:30 -0400
+Waiman Long <longman@redhat.com> wrote:
 
-The GPIO enumeration is a bit confusing. The pm7325 has GPIO_01 to
-GPIO_10, however IIUC they are mapped such that under Linux
-enumeration starts with 0. I guess it makes sense to start with 0 and
-it's done consistently for 'qcom,spmi-gpio', but it's something that must
-be taken into account when using/configuring those GPIOs.
+> The handling of sysrq key can be activated by echoing the key to
+> /proc/sysrq-trigger or via the magic key sequence typed into a terminal
+> that is connected to the system in some way (serial, USB or other mean).
+> In the former case, the handling is done in a user context. In the
+> latter case, it is likely to be in an interrupt context.
+> 
+> There should be no more than one instance of sysrq key processing via
+> a terminal, but multiple instances of /proc/sysrq-trigger is possible.
+> 
+> Currently in print_cpu() of kernel/sched/debug.c, sched_debug_lock is
+> taken with interrupt disabled for the whole duration of the calls to
+> print_*_stats() and print_rq() which could last for the quite some time
+> if the information dump happens on the serial console.
+> 
+> If the system has many cpus and the sched_debug_lock is somehow busy
+> (e.g. parallel sysrq-t), the system may hit a hard lockup panic
+> depending on the actually serial console implementation of the
+> system. For instance,
+
+Wouldn't placing strategically located "touch_nmi_watchdog()"s around fix
+this?
+
+-- Steve
