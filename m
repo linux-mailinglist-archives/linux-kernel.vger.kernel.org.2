@@ -2,96 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4256B3530DA
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 23:45:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2233530E1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 23:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235307AbhDBVpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 17:45:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56010 "EHLO
+        id S235336AbhDBVrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 17:47:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231406AbhDBVpm (ORCPT
+        with ESMTP id S231149AbhDBVrj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 17:45:42 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D40C1C061788
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 14:45:40 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id g24so4541422qts.6
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 14:45:40 -0700 (PDT)
+        Fri, 2 Apr 2021 17:47:39 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47A0CC061788
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 14:47:38 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id d2so5581127ilm.10
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 14:47:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=w/ZFqdPtGzDkqCBMP4OyjhCVZaJFf+dBQBfj22hpRiE=;
-        b=fR/uwETGDlv7x2KneEGWioUh5GnHXl6COTEbAPvUEKXqSO6DcbFhq6GmsakFHFfQb1
-         wliBhr4E8MsNOCDNkBhlQKCaO4VIM69RBeM5lAhTDxR2PyRbPdXlccDmkWf3i+hZ36ZY
-         wDCOxhUkM9o0Ddesn2NSw1F02JXvkyONIIoMk=
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tltgo4wOB5veD6Atp560I36vsQKrOOIkKptJK7NQ6JA=;
+        b=MlxLjTyMB0BGt61VkFDZIaswz3rwNGl9NBIthdNc3yRe2Gx/5RcXbAjLFyTFLwMOHi
+         UVzFur2AgcAjFtQuda4YkA97qQP2Y6v4Axhe178PTYWutusYVXSv/1lKJgbvAnS4Eq/1
+         9mZEVM+IEHJl9Be2cUj/tiuj51M6nFuDMjl1U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w/ZFqdPtGzDkqCBMP4OyjhCVZaJFf+dBQBfj22hpRiE=;
-        b=BfUK3v/wB0RDJ6lHIBoPqHsrdtGb8qQEgThl2NkCpR4J5IvoLu64tzqjb7uTkBRpWG
-         /3Emg3a1fLK+aKQlbW9O1xczeqCeKeSIgLSJgFphoTqL+OBC7XP3Fex8+PY7Wu28IarD
-         yTDrAtn2uvl/vWn+2ZBXmmSWyHzcHxcb3S3OP0vqAfKaOvJGzOFsd3P3YB83z9Q+/SYQ
-         lfGmgJi6JpOYtnvIucaacRvhislRM4UKfHrFBrhmUrVa69ur7kbGTFWik64N0a/3XUDa
-         JEzUUHeXSmsZ/yqwY4V90Ci9imECthCEOhlsbH85mOYJwjypq4WR0eepR3/g0zQnL4fO
-         Hm/w==
-X-Gm-Message-State: AOAM5334MFksIScVsRVCqoSQyRVBst9J2vx3sHVjhfS58myysYByOIEH
-        sJtZzyMxolesW5DfDi0m4r1TuC2fH1V2uA==
-X-Google-Smtp-Source: ABdhPJyx9dtyuOsTkdxkdBlGfdJCtkyZ9mx7U8zixITpG80p+0UL3Z7AfeLjl44YG6i4pU4Z8XyCjw==
-X-Received: by 2002:ac8:499a:: with SMTP id f26mr13056101qtq.162.1617399939894;
-        Fri, 02 Apr 2021 14:45:39 -0700 (PDT)
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
-        by smtp.gmail.com with ESMTPSA id j18sm8061605qtl.83.2021.04.02.14.45.38
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tltgo4wOB5veD6Atp560I36vsQKrOOIkKptJK7NQ6JA=;
+        b=jyLbk2U/jU/VkqEfjcZ0xfS+L/tR3gZM/j35XW4iTOs6u3WzZs5iBfPSvL7f+XLdAv
+         YAQYqhk9u9/NXgpOFcHLrntCWAF/Z7ca1TBbg2Uuoov09fE2ea5cVVgYZReLxvW9vGhm
+         5VgB84XpVqhQam9DJoCp7J55rPvlBPB2p95/jN87kwuTedqG0ncE2OvnTfoPikauNi5y
+         zfn3btfjeSgI53RNl8c2Ax9W6IUehxgbvFna/UjsdUGlnxQYptDl6PvUt9gtMN7zyTVg
+         ULSUMV0GkOGTiEV8pfoLzBaXrAJy1blFNl3IaeFGKe9HsDBnWpYZv5ShZfmp+lHdKKXs
+         7MdA==
+X-Gm-Message-State: AOAM531K6DCxkBpPj8ezf4EI8bxyZ1yjK+ovXmt8/xz5kJxdHoutuYvg
+        uYCU3W88zJbn/aasJwtkuTwyMg==
+X-Google-Smtp-Source: ABdhPJyiV8RC361hxU1a7DYCX4IVApwcK/UQylGOjeeE+KvzsMk/LHdjCX+7XEil5To3Z5Qt3oSg/A==
+X-Received: by 2002:a92:4452:: with SMTP id a18mr11548229ilm.46.1617400057568;
+        Fri, 02 Apr 2021 14:47:37 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id x3sm4734952ilg.2.2021.04.02.14.47.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Apr 2021 14:45:39 -0700 (PDT)
-Received: by mail-yb1-f169.google.com with SMTP id g38so6270832ybi.12
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 14:45:38 -0700 (PDT)
-X-Received: by 2002:a25:8712:: with SMTP id a18mr14891430ybl.79.1617399938583;
- Fri, 02 Apr 2021 14:45:38 -0700 (PDT)
+        Fri, 02 Apr 2021 14:47:37 -0700 (PDT)
+Subject: Re: [PATCH v4 1/2] kunit: support failure from dynamic analysis tools
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Uriel Guajardo <urielguajardo@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210311152314.3814916-1-dlatypov@google.com>
+ <20210311152314.3814916-2-dlatypov@google.com>
+ <CAFd5g46fy_9mPH6AihwUf5GW7aTJ=ecvmD0S266EKtNtweSOcg@mail.gmail.com>
+ <16fe1cc0-5819-986d-9065-433a80783edb@linuxfoundation.org>
+ <CAGS_qxozjVfeOa42Y+v7dB0s6Ucvf8yHhRxDpficEJ9MGE-orw@mail.gmail.com>
+ <3774e8c7-4183-d627-8c53-16bdc0bed6eb@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <570d4758-8891-2423-fd37-92f69fbb2e1d@linuxfoundation.org>
+Date:   Fri, 2 Apr 2021 15:47:36 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210402211226.875726-1-robdclark@gmail.com>
-In-Reply-To: <20210402211226.875726-1-robdclark@gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 2 Apr 2021 14:45:27 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Vm9CTmayrKjUoLNyObtQgejhBacvvP5aK5tFULmPWeNw@mail.gmail.com>
-Message-ID: <CAD=FV=Vm9CTmayrKjUoLNyObtQgejhBacvvP5aK5tFULmPWeNw@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/msm: Drop mm_lock in scan loop
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <3774e8c7-4183-d627-8c53-16bdc0bed6eb@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 4/2/21 3:44 PM, Shuah Khan wrote:
+> On 4/2/21 3:25 PM, Daniel Latypov wrote:
+>> On Fri, Apr 2, 2021 at 10:53 AM Shuah Khan <skhan@linuxfoundation.org> 
+>> wrote:
+>>>
+>>> On 4/2/21 2:55 AM, Brendan Higgins wrote:
+>>>> On Thu, Mar 11, 2021 at 7:23 AM Daniel Latypov <dlatypov@google.com> 
+>>>> wrote:
+>>>>>
+>>>>> From: Uriel Guajardo <urielguajardo@google.com>
+>>>>>
+>>>>> Add a kunit_fail_current_test() function to fail the currently running
+>>>>> test, if any, with an error message.
+>>>>>
+>>>>> This is largely intended for dynamic analysis tools like UBSAN and for
+>>>>> fakes.
+>>>>> E.g. say I had a fake ops struct for testing and I wanted my `free`
+>>>>> function to complain if it was called with an invalid argument, or
+>>>>> caught a double-free. Most return void and have no normal means of
+>>>>> signalling failure (e.g. super_operations, iommu_ops, etc.).
+>>>>>
+>>>>> Key points:
+>>>>> * Always update current->kunit_test so anyone can use it.
+>>>>>     * commit 83c4e7a0363b ("KUnit: KASAN Integration") only updated 
+>>>>> it for
+>>>>>     CONFIG_KASAN=y
+>>>>>
+>>>>> * Create a new header <kunit/test-bug.h> so non-test code doesn't have
+>>>>> to include all of <kunit/test.h> (e.g. lib/ubsan.c)
+>>>>>
+>>>>> * Forward the file and line number to make it easier to track down
+>>>>> failures
+>>>>>
+>>>>> * Declare the helper function for nice __printf() warnings about 
+>>>>> mismatched
+>>>>> format strings even when KUnit is not enabled.
+>>>>>
+>>>>> Example output from kunit_fail_current_test("message"):
+>>>>> [15:19:34] [FAILED] example_simple_test
+>>>>> [15:19:34]     # example_simple_test: initializing
+>>>>> [15:19:34]     # example_simple_test: 
+>>>>> lib/kunit/kunit-example-test.c:24: message
+>>>>> [15:19:34]     not ok 1 - example_simple_test
+>>>>>
+>>>>> Co-developed-by: Daniel Latypov <dlatypov@google.com>
+>>>>> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+>>>>> Signed-off-by: Uriel Guajardo <urielguajardo@google.com>
+>>>>> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+>>>>
+>>>> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+>>>>
+>>>
+>>> Please run checkpatch on your patches in the future. I am seeing
+>>> a few checkpatch readability type improvements that can be made.
+>>>
+>>> Please make changes and send v2 with Brendan's Reviewed-by.
+>>
+>> Thanks for the catch.
+>> checkpatch.pl --strict should now be happy (aside from complaining
+>> about line wrapping)
+>>
+>> v5 here: 
+>> https://lore.kernel.org/linux-kselftest/20210402212131.835276-1-dlatypov@google.com 
+>>
+>>
+>> Note: Brendan didn't give an explicit Reviewed-by on the second patch,
+>> not sure if that was intentional.
+>>
+> 
+> No worries. I applied this one as well. I was able to fix it with just
+> checkpatch --fix option.
+> 
 
-On Fri, Apr 2, 2021 at 2:08 PM Rob Clark <robdclark@gmail.com> wrote:
->
-> From: Rob Clark <robdclark@chromium.org>
->
-> lock_stat + mmm_donut[1] say that this reduces contention on mm_lock
-> significantly (~350x lower waittime-max, and ~100x lower waittime-avg)
->
-> [1] https://chromium.googlesource.com/chromiumos/platform/microbenchmarks/+/refs/heads/main/mmm_donut.py
->
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> ---
->  drivers/gpu/drm/msm/msm_drv.h          |  3 +-
->  drivers/gpu/drm/msm/msm_gem.c          |  2 +-
->  drivers/gpu/drm/msm/msm_gem_shrinker.c | 48 ++++++++++++++++++++++----
->  3 files changed, 45 insertions(+), 8 deletions(-)
+Clarification. Applied 1/2 - I will wait for Brendan's ack on 2/2
 
-Looks good to me now!
-
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+thanks,
+-- Shuah
