@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1179A3529EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 12:54:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49BB93529F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 12:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234955AbhDBKyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 06:54:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56008 "EHLO
+        id S235096AbhDBKyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 06:54:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbhDBKyN (ORCPT
+        with ESMTP id S234628AbhDBKy2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 06:54:13 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9752AC061788
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 03:54:11 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id f22-20020a7bc8d60000b029010c024a1407so4157159wml.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 03:54:11 -0700 (PDT)
+        Fri, 2 Apr 2021 06:54:28 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC2BC061788
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 03:54:27 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id b9so4403134wrt.8
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 03:54:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
         bh=qR3Y/pQ3iKdcYn1dnHBVpeHWq1US+Hbl+nSLawsbjwU=;
-        b=sz6zFcYtmrpm1jdkM3cQR+MBVCcQWt1uUObxKF4nf0BPq3HftfKsV5f6gNrH6J8MHk
-         Rf9asp2g7TuoanHE4J8p9cLYDm5+Q9sJjlAxDAfI3sZMYFfzRArqsTxKxiHD7bYElWng
-         EYzBVTx2tmYUtR0GM4Ut26WVYZLUv3Twz1Nk0AiOLtDBtD2v9jNcc+uK6UVFIac9SdJT
-         Fq8nBKgSJR1pHceSjfd/LjYtBy1RKAz2dOryCdOv2lj43BErbTYplTHuLgQOzE6p0Ml6
-         8o9bYrHkJX7O/0j+Ye+I9Phb0UQB/2PhYHCJErDBakApXhYTtCZBmfhk3EhzOG28Rz2i
-         OW/w==
+        b=twT2vrbqFmAZXeUPI1nfAb035BOgX4bEwyiHRWgXaXOJbJsBwGII6BD0bVACSU3hgU
+         7SkNv1OWiYSGtKsGovqMNpJ8St9PFg3awG/ydZkftko0wr2ebVvQBON0n7tbcuOvja56
+         HeClfafXLdRlX/yepCtw6tPMP0GZQZljOWudswAZ4ox96INmA4XlaR/GYlzhkxbIoJ5z
+         557WnwfyBw7ydq9PvJNHu+0rYNt0PBUmB+a09RxA++aWMpi6pNuHniCnFAmY3SRDYbTq
+         pV1VnvOF9mZJevrnHz7EeTRZzShTuYnN9sH98wutchdX2aOD1crApcVAfCq1cVpCLsD4
+         wlUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
         bh=qR3Y/pQ3iKdcYn1dnHBVpeHWq1US+Hbl+nSLawsbjwU=;
-        b=V/qqNTDcKBQVY0WJdwK5gaTixiRjYKPfrhK3jYeiTsFathTRiNO4ZIPr0z9iYl2Nf8
-         pY80qL0HiHUyRmX4Aho1ZhLCcx9kCGZATEVISAJJSH8ek/CE73kuvNK7jq0KtZsFoUma
-         oBPazxxR+6jCMqu89y7uWWPm6fErz8CYwEoCgMxG92DD9Mnqw4RgyQ36oePwVr942T4F
-         aDXsNn79uQaSogFCEz6Gad6T+lmAednJ5az3He/8XHDBTAKQx6yaSDPZl07YeTQBzu+9
-         fd3KipDgK60COjjH7kpiEXFYfTbwDQ9a0D2U88axLGAH8TRRTl2+845u5n0KJsgkqAl0
-         2j+Q==
-X-Gm-Message-State: AOAM531PudTbnOi80wbIpRQLpS9jPUGO6GQ3YjK4y4PEdKpiI0r20RZP
-        hTJMjLiQW11yjWlRipWi15RFgkrYKeNjDQ==
-X-Google-Smtp-Source: ABdhPJzNt9ON5Lr98AJbzOpCk7bEodVqJHbIvSzsrR+I3Hlup2gA3n3Hud/5PAGaf5dWDp6vpsEQhw==
-X-Received: by 2002:a7b:cb55:: with SMTP id v21mr12229721wmj.188.1617360850061;
-        Fri, 02 Apr 2021 03:54:10 -0700 (PDT)
+        b=GVt7OXAYlnZEN6JpX2c6uOZnv3qDkKcpgLHTns4VxU99nCq3tzfFls1Y33/nRvULVy
+         /8zfh/vVZ4uJo5g2lA9rdAfAZVhvsBAeFmdi1U7FGNToAmVkeoOlWK7KfWZhcZ02PDLC
+         QLM9ZYdZ2u+YuKV/VSj4nlU+I5iBPnWiLtst9kqkyQO2qPc1tNN6FaDQokS7X3dZtDa8
+         10QegEQM52X34diA2oxjA3BhvYl/B6tZ139sa/o/NGQp4F6f869XmEu4piv/UaQk0e66
+         LIwt1nwk65Zu4ZU5qFI08+EzbaOkolPdWp/+FSVv3yVxQn+PtTAuLpGeMB7TMGAkOJ/t
+         P9Zg==
+X-Gm-Message-State: AOAM533YiCWcpcazkKZOoicnEgl1zEm3PqJhWe1gBSt7E/n8JTiZ8uEG
+        Ue6dRF4tpibmrBZBtSzLHxX4HQ==
+X-Google-Smtp-Source: ABdhPJx44r/f06WsoxqUjxjFwI2qefInJEA+qqUn6GtWxCII+f5urhqpd7qB4QakQ5OgaNl1uCq8UA==
+X-Received: by 2002:a5d:6ca6:: with SMTP id a6mr14484806wra.179.1617360866337;
+        Fri, 02 Apr 2021 03:54:26 -0700 (PDT)
 Received: from ?IPv6:2a01:e34:ed2f:f020:c9d5:e4dc:e7c5:5fcf? ([2a01:e34:ed2f:f020:c9d5:e4dc:e7c5:5fcf])
-        by smtp.googlemail.com with ESMTPSA id m15sm13374681wrp.96.2021.04.02.03.54.08
+        by smtp.googlemail.com with ESMTPSA id b15sm14429493wmd.41.2021.04.02.03.54.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Apr 2021 03:54:09 -0700 (PDT)
+        Fri, 02 Apr 2021 03:54:25 -0700 (PDT)
 Subject: Re: [PATCH v6 7/7] powercap/drivers/dtpm: Allow dtpm node device
  creation through configfs
 To:     Greg KH <gregkh@linuxfoundation.org>
@@ -58,8 +58,8 @@ References: <20210401183654.27214-1-daniel.lezcano@linaro.org>
  <20210401183654.27214-7-daniel.lezcano@linaro.org>
  <YGYg6ZeZ1181/pXk@kroah.com>
 From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <ae246c6c-10cf-949e-c5b0-eff3d290c50b@linaro.org>
-Date:   Fri, 2 Apr 2021 12:54:08 +0200
+Message-ID: <d34bd0c8-f0fe-ada4-ebc8-433df51aaefa@linaro.org>
+Date:   Fri, 2 Apr 2021 12:54:24 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
