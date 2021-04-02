@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14F7E352D64
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58DC8352D67
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236065AbhDBP1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 11:27:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58500 "EHLO
+        id S235448AbhDBP1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 11:27:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235113AbhDBP1B (ORCPT
+        with ESMTP id S235248AbhDBP1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 2 Apr 2021 11:27:01 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23574C061788
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 314FCC06178A
         for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 08:27:00 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id b4so8052583lfi.6
+Received: by mail-lj1-x22f.google.com with SMTP id u4so5949140ljo.6
         for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 08:27:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZjsS1bI2uKq/2mrnLoFtUTJW7+/w5vjC+pfAdCGzd/4=;
-        b=sLsxFjLldrKmyHyURfqQVaKuUqWfHVD0j45vA/YcBUS7CK7j45ipCGAFB8I3JUaul7
-         EeEMeHuOsEsTv/LrV3rlZXAaQxWH6eHqX/HhMPc2amFnqgahdYRDYS01rQ3A3gNG09Q6
-         /wpQeMSCIKilbzP9PBU+7XDjS3/CKdHWx5T4wwUIHeCsLzuHQfv2lJ0sHOn2ypoBLhsr
-         ffP0o/FDsjV36uhUX+CKEbJ28/nBdgfXMNS+cPDy0ExO4c6D5sPQoPmVHZnpD4tMFq0A
-         jDdGh3Vgx9XQFa3JfbWE5j+nPUsokwi2vRJ+mCVB5TiW94Z81EUfv0ybUkXSh2ftQIiD
-         tN/g==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=WavDtTX6TrwFdeBmXF60wrPd9BJChmTHA9LJTzuJkoU=;
+        b=d48Z14vtQeTBnmY3KjiBOkvoSzWnEnzKL51lW9dQ/pvruzLz/a1kIWWaJwVfs6kDZs
+         YGsq19NufLNS7oWgqkvDcXDssbIfw5QE2wgM6Z8Xtyebjke6D3u0lD07g7N5QFnGS4KY
+         fVIcDYJaHOHIexJOKjE6YqJeJoksxdr+/9dYAc7bzG0GsfjphMTzDWIIgW2IKZzJpw6B
+         OJY7QQsDq4EPZgDVbNJGDJQC2pBkR9bhlitGvowGSfd9mGiQzse9TYr6jA6U/8lA/HEt
+         HILjBm4R6sWJxEx5Rmjyc0Y7wsAQRlTLqHAd0nesluCwm5hu1H1t/x1Qgxl1mWcxYvmQ
+         F2mA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZjsS1bI2uKq/2mrnLoFtUTJW7+/w5vjC+pfAdCGzd/4=;
-        b=TaDPUMG8Q2rJ/DsgGaplwC0zWLhxHWwvYU3Oqbg4SMnS1cCly9sNKlfUPrJ0YCwW7F
-         XRVIMit4QqBTM0XYYi9+h3KePVtMxg9RvWu6e+LbtYiZicDCRXMyRH3CeNTv5SfzaZc3
-         WJnayURMmNUIZfMdPxv6RtNmOiI2R5858rjjmxJgQQONwb8WaacV08r4Fp49LahzM6zt
-         8GkpFKOtIZ+kTPNhvlNtpLDbO7F63TNROOOQOJoDUUpBObdEvm8oPANpY+s08VEfmjj+
-         j3gW+kpbSna7BkkR3YAuS4hWAMTTafl3GLYgGgJbU4L+3kWCPj0hRNzO+i5cQrGLG1w6
-         9AvQ==
-X-Gm-Message-State: AOAM533XwNMo1aOEPdpxccQLp1QyA0IGYF5QCdpPKLaCeh/PlBGNNg9A
-        6XbK3vEcD5qIiLf9vXqbWTZtwA==
-X-Google-Smtp-Source: ABdhPJz8iSga8n37GQkADy+ssjbmrF28xrjeJGW7r3kmWl1I/wA1rNnTc3V3f/miI9fjdcL6UCQoyw==
-X-Received: by 2002:a05:6512:21a:: with SMTP id a26mr9409958lfo.507.1617377218429;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=WavDtTX6TrwFdeBmXF60wrPd9BJChmTHA9LJTzuJkoU=;
+        b=DHadNquOcNPM4krhPni4Iy0sFBYT/ge7h93lA+NUf4TtB5D5ZR8bPsiqfw/s+8jwsM
+         Kpa4WqMPDTD+kZYVmYSmuI5eQ0AoKe3m4INcWlWjzCC6fWI4xS3S5SLG4adYEw7MYwco
+         a4QcdfNurYOu9dkdJE0Y6ABRYFmsCVb0cwlDJwUsVBcaJNlAByhWjwt+zyscr2RNUTMd
+         eqWNCan3+YTcvR5NTvsR8U5xu5WlqT634I6zB4FuBCOWtSc2FFQy6rEUKWDfMHek7L3x
+         i3bSEoIMYlW8y0VDrozl67NtFWhq21PAjYZJasN/ncl5JP5KK7ju2mrungvykhWu6iBi
+         mLvA==
+X-Gm-Message-State: AOAM533RelEScH6l6j/oYSrZs6j5rSVitYkH0R5UMt1c++y/dwUBvsqi
+        w0YCHCxl8HgGLeSZ9UZD1JHxuQ==
+X-Google-Smtp-Source: ABdhPJyl7494iZYdytvBH3k7wfivOrumpFXeURKxUE8DWVLSKQoyXtMUpDn3OWXNrqBpjaPMpu1Dpg==
+X-Received: by 2002:a2e:509:: with SMTP id 9mr8710143ljf.170.1617377218622;
         Fri, 02 Apr 2021 08:26:58 -0700 (PDT)
 Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id o11sm950978ljg.42.2021.04.02.08.26.57
+        by smtp.gmail.com with ESMTPSA id o26sm952073ljc.138.2021.04.02.08.26.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 02 Apr 2021 08:26:57 -0700 (PDT)
 From:   "Kirill A. Shutemov" <kirill@shutemov.name>
 X-Google-Original-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 Received: by box.localdomain (Postfix, from userid 1000)
-        id 1E1E310257C; Fri,  2 Apr 2021 18:26:59 +0300 (+03)
+        id 246AB100A38; Fri,  2 Apr 2021 18:26:59 +0300 (+03)
 To:     Dave Hansen <dave.hansen@linux.intel.com>,
         Andy Lutomirski <luto@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -64,71 +64,184 @@ Cc:     David Rientjes <rientjes@google.com>,
         kvm@vger.kernel.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [RFCv1 0/7] TDX and guest memory unmapping
-Date:   Fri,  2 Apr 2021 18:26:38 +0300
-Message-Id: <20210402152645.26680-1-kirill.shutemov@linux.intel.com>
+Subject: [RFCv1 1/7] x86/mm: Move force_dma_unencrypted() to common code
+Date:   Fri,  2 Apr 2021 18:26:39 +0300
+Message-Id: <20210402152645.26680-2-kirill.shutemov@linux.intel.com>
 X-Mailer: git-send-email 2.26.3
+In-Reply-To: <20210402152645.26680-1-kirill.shutemov@linux.intel.com>
+References: <20210402152645.26680-1-kirill.shutemov@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TDX integrity check failures may lead to system shutdown host kernel must
-not allow any writes to TD-private memory. This requirment clashes with
-KVM design: KVM expects the guest memory to be mapped into host userspace
-(e.g. QEMU).
+force_dma_unencrypted() has to return true for KVM guest with the memory
+protected enabled. Move it out of AMD SME code.
 
-This patchset aims to start discussion on how we can approach the issue.
+Introduce new config option X86_MEM_ENCRYPT_COMMON that has to be
+selected by all x86 memory encryption features.
 
-The core of the change is in the last patch. Please see more detailed
-description of the issue and proposoal of the solution there.
+This is preparation for the following patches.
 
-The patchset can also be found here:
-
-git://git.kernel.org/pub/scm/linux/kernel/git/kas/linux.git kvm-unmapped-poison
-
-Kirill A. Shutemov (7):
-  x86/mm: Move force_dma_unencrypted() to common code
-  x86/kvm: Introduce KVM memory protection feature
-  x86/kvm: Make DMA pages shared
-  x86/kvm: Use bounce buffers for KVM memory protection
-  x86/kvmclock: Share hvclock memory with the host
-  x86/realmode: Share trampoline area if KVM memory protection enabled
-  KVM: unmap guest memory using poisoned pages
-
- arch/x86/Kconfig                     |   9 +-
- arch/x86/include/asm/cpufeatures.h   |   1 +
- arch/x86/include/asm/io.h            |   4 +-
- arch/x86/include/asm/kvm_para.h      |   5 +
- arch/x86/include/asm/mem_encrypt.h   |   7 +-
- arch/x86/include/uapi/asm/kvm_para.h |   3 +-
- arch/x86/kernel/kvm.c                |  20 ++++
- arch/x86/kernel/kvmclock.c           |   2 +-
- arch/x86/kernel/pci-swiotlb.c        |   3 +-
- arch/x86/kvm/Kconfig                 |   1 +
- arch/x86/kvm/cpuid.c                 |   3 +-
- arch/x86/kvm/mmu/mmu.c               |  15 ++-
- arch/x86/kvm/mmu/paging_tmpl.h       |  10 +-
- arch/x86/kvm/x86.c                   |   6 +
- arch/x86/mm/Makefile                 |   2 +
- arch/x86/mm/mem_encrypt.c            |  74 ------------
- arch/x86/mm/mem_encrypt_common.c     |  87 ++++++++++++++
- arch/x86/mm/pat/set_memory.c         |  10 ++
- arch/x86/realmode/init.c             |   7 +-
- include/linux/kvm_host.h             |  12 ++
- include/linux/swapops.h              |  20 ++++
- include/uapi/linux/kvm_para.h        |   5 +-
- mm/gup.c                             |  31 +++--
- mm/memory.c                          |  45 +++++++-
- mm/page_vma_mapped.c                 |   8 +-
- mm/rmap.c                            |   2 +-
- mm/shmem.c                           |   7 ++
- virt/kvm/Kconfig                     |   3 +
- virt/kvm/kvm_main.c                  | 164 ++++++++++++++++++++++++---
- 29 files changed, 442 insertions(+), 124 deletions(-)
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+---
+ arch/x86/Kconfig                 |  7 +++++-
+ arch/x86/include/asm/io.h        |  4 +++-
+ arch/x86/mm/Makefile             |  2 ++
+ arch/x86/mm/mem_encrypt.c        | 30 -------------------------
+ arch/x86/mm/mem_encrypt_common.c | 38 ++++++++++++++++++++++++++++++++
+ 5 files changed, 49 insertions(+), 32 deletions(-)
  create mode 100644 arch/x86/mm/mem_encrypt_common.c
 
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 21f851179ff0..2b4ce1722dbd 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1520,14 +1520,19 @@ config X86_CPA_STATISTICS
+ 	  helps to determine the effectiveness of preserving large and huge
+ 	  page mappings when mapping protections are changed.
+ 
++config X86_MEM_ENCRYPT_COMMON
++	select ARCH_HAS_FORCE_DMA_UNENCRYPTED
++	select DYNAMIC_PHYSICAL_MASK
++	def_bool n
++
+ config AMD_MEM_ENCRYPT
+ 	bool "AMD Secure Memory Encryption (SME) support"
+ 	depends on X86_64 && CPU_SUP_AMD
+ 	select DMA_COHERENT_POOL
+-	select DYNAMIC_PHYSICAL_MASK
+ 	select ARCH_USE_MEMREMAP_PROT
+ 	select ARCH_HAS_FORCE_DMA_UNENCRYPTED
+ 	select INSTRUCTION_DECODER
++	select X86_MEM_ENCRYPT_COMMON
+ 	help
+ 	  Say yes to enable support for the encryption of system memory.
+ 	  This requires an AMD processor that supports Secure Memory
+diff --git a/arch/x86/include/asm/io.h b/arch/x86/include/asm/io.h
+index d726459d08e5..6dc51b31cb0e 100644
+--- a/arch/x86/include/asm/io.h
++++ b/arch/x86/include/asm/io.h
+@@ -256,10 +256,12 @@ static inline void slow_down_io(void)
+ 
+ #endif
+ 
+-#ifdef CONFIG_AMD_MEM_ENCRYPT
+ #include <linux/jump_label.h>
+ 
+ extern struct static_key_false sev_enable_key;
++
++#ifdef CONFIG_AMD_MEM_ENCRYPT
++
+ static inline bool sev_key_active(void)
+ {
+ 	return static_branch_unlikely(&sev_enable_key);
+diff --git a/arch/x86/mm/Makefile b/arch/x86/mm/Makefile
+index 5864219221ca..b31cb52bf1bd 100644
+--- a/arch/x86/mm/Makefile
++++ b/arch/x86/mm/Makefile
+@@ -52,6 +52,8 @@ obj-$(CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS)	+= pkeys.o
+ obj-$(CONFIG_RANDOMIZE_MEMORY)			+= kaslr.o
+ obj-$(CONFIG_PAGE_TABLE_ISOLATION)		+= pti.o
+ 
++obj-$(CONFIG_X86_MEM_ENCRYPT_COMMON)	+= mem_encrypt_common.o
++
+ obj-$(CONFIG_AMD_MEM_ENCRYPT)	+= mem_encrypt.o
+ obj-$(CONFIG_AMD_MEM_ENCRYPT)	+= mem_encrypt_identity.o
+ obj-$(CONFIG_AMD_MEM_ENCRYPT)	+= mem_encrypt_boot.o
+diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+index c3d5f0236f35..9ca477b9b8ba 100644
+--- a/arch/x86/mm/mem_encrypt.c
++++ b/arch/x86/mm/mem_encrypt.c
+@@ -15,10 +15,6 @@
+ #include <linux/dma-direct.h>
+ #include <linux/swiotlb.h>
+ #include <linux/mem_encrypt.h>
+-#include <linux/device.h>
+-#include <linux/kernel.h>
+-#include <linux/bitops.h>
+-#include <linux/dma-mapping.h>
+ 
+ #include <asm/tlbflush.h>
+ #include <asm/fixmap.h>
+@@ -390,32 +386,6 @@ bool noinstr sev_es_active(void)
+ 	return sev_status & MSR_AMD64_SEV_ES_ENABLED;
+ }
+ 
+-/* Override for DMA direct allocation check - ARCH_HAS_FORCE_DMA_UNENCRYPTED */
+-bool force_dma_unencrypted(struct device *dev)
+-{
+-	/*
+-	 * For SEV, all DMA must be to unencrypted addresses.
+-	 */
+-	if (sev_active())
+-		return true;
+-
+-	/*
+-	 * For SME, all DMA must be to unencrypted addresses if the
+-	 * device does not support DMA to addresses that include the
+-	 * encryption mask.
+-	 */
+-	if (sme_active()) {
+-		u64 dma_enc_mask = DMA_BIT_MASK(__ffs64(sme_me_mask));
+-		u64 dma_dev_mask = min_not_zero(dev->coherent_dma_mask,
+-						dev->bus_dma_limit);
+-
+-		if (dma_dev_mask <= dma_enc_mask)
+-			return true;
+-	}
+-
+-	return false;
+-}
+-
+ void __init mem_encrypt_free_decrypted_mem(void)
+ {
+ 	unsigned long vaddr, vaddr_end, npages;
+diff --git a/arch/x86/mm/mem_encrypt_common.c b/arch/x86/mm/mem_encrypt_common.c
+new file mode 100644
+index 000000000000..dd791352f73f
+--- /dev/null
++++ b/arch/x86/mm/mem_encrypt_common.c
+@@ -0,0 +1,38 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * AMD Memory Encryption Support
++ *
++ * Copyright (C) 2016 Advanced Micro Devices, Inc.
++ *
++ * Author: Tom Lendacky <thomas.lendacky@amd.com>
++ */
++
++#include <linux/mm.h>
++#include <linux/mem_encrypt.h>
++#include <linux/dma-direct.h>
++
++/* Override for DMA direct allocation check - ARCH_HAS_FORCE_DMA_UNENCRYPTED */
++bool force_dma_unencrypted(struct device *dev)
++{
++	/*
++	 * For SEV, all DMA must be to unencrypted/shared addresses.
++	 */
++	if (sev_active())
++		return true;
++
++	/*
++	 * For SME, all DMA must be to unencrypted addresses if the
++	 * device does not support DMA to addresses that include the
++	 * encryption mask.
++	 */
++	if (sme_active()) {
++		u64 dma_enc_mask = DMA_BIT_MASK(__ffs64(sme_me_mask));
++		u64 dma_dev_mask = min_not_zero(dev->coherent_dma_mask,
++						dev->bus_dma_limit);
++
++		if (dma_dev_mask <= dma_enc_mask)
++			return true;
++	}
++
++	return false;
++}
 -- 
 2.26.3
 
