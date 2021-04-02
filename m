@@ -2,123 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E2B0352C7F
+	by mail.lfdr.de (Postfix) with ESMTP id 013D1352C85
 	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235918AbhDBPgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 11:36:19 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:19745 "EHLO pegase1.c-s.fr"
+        id S236049AbhDBPh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 11:37:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229553AbhDBPgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 11:36:17 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FBkfh6syMz9v2m9;
-        Fri,  2 Apr 2021 17:36:12 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id SsC2ob6kJi6G; Fri,  2 Apr 2021 17:36:12 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FBkfh5PDlz9v2m8;
-        Fri,  2 Apr 2021 17:36:12 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A97528BB77;
-        Fri,  2 Apr 2021 17:36:14 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id dzRgT34PMsr4; Fri,  2 Apr 2021 17:36:14 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id BA9038BB6F;
-        Fri,  2 Apr 2021 17:36:13 +0200 (CEST)
-Subject: Re: [PATCH v3 12/17] sh: Convert to GENERIC_CMDLINE
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     will@kernel.org, danielwa@cisco.com, robh@kernel.org,
-        daniel@gimpelevich.san-francisco.ca.us
-Cc:     linux-arch@vger.kernel.org, devicetree@vger.kernel.org,
-        microblaze <monstr@monstr.eu>, linux-xtensa@linux-xtensa.org,
-        linux-sh@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        nios2 <ley.foon.tan@intel.com>, linux-mips@vger.kernel.org,
-        openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org
-References: <cover.1616765869.git.christophe.leroy@csgroup.eu>
- <6b76649009943f2893fdfded22becd41db2fe1f7.1616765870.git.christophe.leroy@csgroup.eu>
-Message-ID: <d672dec1-6fcb-d5dc-a551-2a99e6dd6976@csgroup.eu>
-Date:   Fri, 2 Apr 2021 17:36:12 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S229553AbhDBPh1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 11:37:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F7DC61057;
+        Fri,  2 Apr 2021 15:37:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617377846;
+        bh=ioyAbsNNoGGXzGD1/C5Xleu3NV1KP8ccBCEkZhjdmsM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UkgsOfG2RhojvrNREIt+ny4CmVkZ60qQovPx1i42hvMZsTYtJHpufv9bVEL9KjskX
+         oDOEU4K1q3ilfG9DXHWwRUiJXQCDltpvmgeiXJUqBVOhZEfChN0ZW6898cNZc0VuaR
+         BEevPTWBaTjWDCf3gV1bLL3HR0Kjmf+BJDi1GCKs=
+Date:   Fri, 2 Apr 2021 17:37:23 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     mchehab+huawei@kernel.org, daniel.vetter@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] zero-fill colormap in drivers/video/fbdev/core/fbcmap.c
+Message-ID: <YGc6M4jao4ZbCqzJ@kroah.com>
+References: <20210331220719.1499743-1-phil@philpotter.co.uk>
 MIME-Version: 1.0
-In-Reply-To: <6b76649009943f2893fdfded22becd41db2fe1f7.1616765870.git.christophe.leroy@csgroup.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210331220719.1499743-1-phil@philpotter.co.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 26/03/2021 à 14:44, Christophe Leroy a écrit :
-> This converts the architecture to GENERIC_CMDLINE.
+On Wed, Mar 31, 2021 at 11:07:19PM +0100, Phillip Potter wrote:
+> Use kzalloc() rather than kmalloc() for the dynamically allocated parts
+> of the colormap in fb_alloc_cmap_gfp, to prevent a leak of random kernel
+> data to userspace under certain circumstances.
 > 
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Fixes a KMSAN-found infoleak bug reported by syzbot at:
+> https://syzkaller.appspot.com/bug?id=741578659feabd108ad9e06696f0c1f2e69c4b6e
+> 
+> Reported-by: syzbot+47fa9c9c648b765305b9@syzkaller.appspotmail.com
+> Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
 > ---
+>  drivers/video/fbdev/core/fbcmap.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 
-> diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-> index e798e55915c2..fab84f62448c 100644
-> --- a/arch/sh/Kconfig
-> +++ b/arch/sh/Kconfig
-> @@ -16,6 +16,7 @@ config SUPERH
->   	select CPU_NO_EFFICIENT_FFS
->   	select DMA_DECLARE_COHERENT
->   	select GENERIC_ATOMIC64
-> +	select GENERIC_CMDLINE
->   	select GENERIC_CMOS_UPDATE if SH_SH03 || SH_DREAMCAST
->   	select GENERIC_IDLE_POLL_SETUP
->   	select GENERIC_IRQ_SHOW
-> @@ -742,35 +743,6 @@ config ROMIMAGE_MMCIF
->   	  first part of the romImage which in turn loads the rest the kernel
->   	  image to RAM using the MMCIF hardware block.
->   
-> -choice
-> -	prompt "Kernel command line"
-> -	optional
-> -	default CMDLINE_OVERWRITE
-> -	help
-> -	  Setting this option allows the kernel command line arguments
-> -	  to be set.
-> -
-> -config CMDLINE_OVERWRITE
-> -	bool "Overwrite bootloader kernel arguments"
-> -	help
-> -	  Given string will overwrite any arguments passed in by
-> -	  a bootloader.
-> -
-> -config CMDLINE_EXTEND
-> -	bool "Extend bootloader kernel arguments"
-> -	help
-> -	  Given string will be concatenated with arguments passed in
-> -	  by a bootloader.
-> -
-> -endchoice
-> -
-> -config CMDLINE
-> -	string "Kernel command line arguments string"
-> -	depends on CMDLINE_OVERWRITE || CMDLINE_EXTEND
-> -	default "console=ttySC1,115200"
-> -
-> -endmenu
-> -
+Daniel, want me to take this?
 
-That "endmenu" shall not be removed.
+thanks,
 
-Fixed in v4,
-
-Thanks to Rob L. for the report.
-Christophe
-
->   menu "Bus options"
->   
->   config SUPERHYWAY
+greg k-h
