@@ -2,110 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D80352FEB
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 21:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 795E0352FED
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 21:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236270AbhDBTsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 15:48:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58826 "EHLO
+        id S236547AbhDBTsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 15:48:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbhDBTsJ (ORCPT
+        with ESMTP id S229553AbhDBTsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 15:48:09 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B128C061788
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 12:48:06 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id d2so5391360ilm.10
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 12:48:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=iHLXeOgoJJwmSWdDXV69tzMVoLXBDndScOXkQMnjrV0=;
-        b=doTIYLPGjaNwJWg0K4FVYoKIThZXXlTnrOdWyT6niRVVA1mwj+zdMm+nvUtCCUQ79h
-         y7uXKv1ARjZ+OHKF8ra7+X0IlgHtNWXCwKSvhSEztTezgo7UN7GXq+mbctTRDdFeZ604
-         TzFIqRUGw7c2MzttnuyFN2hMPjlnovSROTrnE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=iHLXeOgoJJwmSWdDXV69tzMVoLXBDndScOXkQMnjrV0=;
-        b=t1n+B1OKlogD5+o6uyqNpMXMKR/Ikw86Jc+S0NOA+araDNluD+iQNpv0YoO1E+Wqfp
-         0R67QEYBI1RB3gxvVy4Vosi3HT2HWQiPcrzxKQCkDwDO5/4yrxFtGWVGuX0fJQiuOBMV
-         5hljGxdbS4JnAZHkB3LaBz8vRsqHpvjXWnEMC9SnK/pvJ4YFgqhSjsbByvH/ycYsk8kj
-         3mv7oW1/yqSpOygQOBE8et9ZlkmwkCTWDnr6wUMSPNlAm3NfHi9rCccjyLjlaBS2C4h2
-         KSsJQUA+xYNdycdrrzKa0Fd+8GGpSVLtWqXGBJs9E7N1+eELaet0ZXNIBq4JVYsl7DHd
-         LKsw==
-X-Gm-Message-State: AOAM53090Q0YnIXjygxKrkmHCcGOnWVu71zFtgUhuHsoAqBtYHxB4GLg
-        gBXfbt8XI+hkfz4KnosA/zD06P37/GRs1Q==
-X-Google-Smtp-Source: ABdhPJzN3wsWL0RIK0m4BvHNYZy4gx6aSrgSJtQkhLgrH403uNNurZ0odS2hjHg5ZUG3tCPgAVgeqQ==
-X-Received: by 2002:a05:6e02:13e8:: with SMTP id w8mr12164264ilj.237.1617392885666;
-        Fri, 02 Apr 2021 12:48:05 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id h6sm3077512ilr.24.2021.04.02.12.48.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Apr 2021 12:48:05 -0700 (PDT)
-Subject: Re: [PATCH v6 12/21] selftests/resctrl: Check for resctrl mount point
- only if resctrl FS is supported
-To:     Fenghua Yu <fenghua.yu@intel.com>, Shuah Khan <shuah@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Cc:     linux-kselftest <linux-kselftest@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210317022255.2536745-1-fenghua.yu@intel.com>
- <20210317022255.2536745-13-fenghua.yu@intel.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <b25fa4eb-803c-dc44-421a-080668c54aff@linuxfoundation.org>
-Date:   Fri, 2 Apr 2021 13:48:04 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 2 Apr 2021 15:48:17 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CEECC0613E6
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 12:48:16 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lSPm6-0001fg-6A; Fri, 02 Apr 2021 21:48:10 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lSPm5-0008ML-NF; Fri, 02 Apr 2021 21:48:09 +0200
+Date:   Fri, 2 Apr 2021 21:48:05 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc:     linux-pwm@vger.kernel.org, Sven Van Asbroeck <TheSven73@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 4/7] pwm: pca9685: Support staggered output ON times
+Message-ID: <20210402194805.rj65qcdmzfgcbgri@pengutronix.de>
+References: <20210329125707.182732-1-clemens.gruber@pqgruber.com>
+ <20210329125707.182732-4-clemens.gruber@pqgruber.com>
+ <20210329170357.par7c3izvtmtovlj@pengutronix.de>
+ <YGILdjZBCc2vVlRd@workstation.tuxnet>
+ <20210329180206.rejl32uajslpvbgi@pengutronix.de>
+ <YGRqZsi4WApZcwIT@workstation.tuxnet>
+ <YGShjDE8R31LwAbi@orome.fritz.box>
 MIME-Version: 1.0
-In-Reply-To: <20210317022255.2536745-13-fenghua.yu@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="h3wxik5jkm2uo47v"
+Content-Disposition: inline
+In-Reply-To: <YGShjDE8R31LwAbi@orome.fritz.box>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/16/21 8:22 PM, Fenghua Yu wrote:
-> check_resctrlfs_support() does the following
-> 1. Checks if the platform supports resctrl file system or not by looking
->     for resctrl in /proc/filesystems
-> 2. Calls opendir() on default resctrl file system path
->     (i.e. /sys/fs/resctrl)
-> 3. Checks if resctrl file system is mounted or not by looking at
->     /proc/mounts
-> 
-> Steps 2 and 3 will fail if the platform does not support resctrl file
-> system. So, there is no need to check for them if step 1 fails.
-> 
-> Fix this by returning immediately if the platform does not support
-> resctrl file system.
-> 
-> Tested-by: Babu Moger <babu.moger@amd.com>
-> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-> ---
->   tools/testing/selftests/resctrl/resctrlfs.c | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
-> index 6b22a186790a..87195eb78356 100644
-> --- a/tools/testing/selftests/resctrl/resctrlfs.c
-> +++ b/tools/testing/selftests/resctrl/resctrlfs.c
-> @@ -570,6 +570,9 @@ bool check_resctrlfs_support(void)
->   	ksft_print_msg("%s kernel supports resctrl filesystem\n",
->   		       ret ? "Pass:" : "Fail:");
->   
 
-This message is a bit confusing. Please change this to read
-and send a follow-on patch on top of linux-kselftest next
+--h3wxik5jkm2uo47v
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-"Check kernel support for resctrl filesystem"
+Hello,
 
-thanks,
--- Shuah
+On Wed, Mar 31, 2021 at 06:21:32PM +0200, Thierry Reding wrote:
+> However, I'm a bit hesitant about this staggering output mode. From what
+> I understand what's going to happen for these is basically that overall
+> each PWM will be running at the requested duty cycle, but the on/off
+> times will be evenly spread out over the whole period. In other words,
+> the output *power* of the PWM signal will be the same as if the signal
+> was a single on/off cycle. That's not technically a PWM signal as the
+> PWM framework defines it. See the kerneldoc for enum pwm_polarity for
+> what signals are expected to look like.
+
+After reading this thread I had the impression that there is no
+(externally visible) difference between using ON =3D 0 plus programming a
+new setting when the counter is say 70 and using ON =3D 30 plus
+programming a new setting when the counter is 100. But that's not the
+case and I agree that defaulting to staggering is a bad idea.
+
+Having said that I doubt that adding a property to the device tree is a
+good solution, because it changes behaviour without the consumer being
+aware and additionally it's not really a hardware description.
+
+The solution I'd prefer is to change struct pwm_state to include the
+delay in it. (This would then make the polarity obsolete, because
+
+	.duty_cycle =3D 30
+	.period =3D 100
+	.polarity =3D POLARITY_INVERTED
+	.offset =3D 0
+
+is equivalent to
+
+	.duty_cycle =3D 30
+	.period =3D 100
+	.polarity =3D POLARITY_NORMAL
+	.offset =3D 70
+
+=2E Other inverted states can be modified similarily.) Then consumers can
+be coordinated to use different offsets.
+
+I'm aware changing this isn't trivial, and it's not thought out
+completely, but I think the end result is rechnically superior to the
+approach suggested in the patch under discussion.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--h3wxik5jkm2uo47v
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBndPIACgkQwfwUeK3K
+7Al2OQf/fo7xgkHJKYOh3gQC77XzTMMGFDbuSKGdRx/ojyJ2jy5wrs7Zp/ChKVIQ
+ZCi5nwUg06JYkWWPy+5vUtaIn9bIUXzClrHKz6kKNvLFmevoN4sT/g7jHwekTOqw
+SXlMM/gRiHn+m1Xcifn58xLs6W4XMaYWR3CZ/hGWIOqTvgpeVSDuU8eoIvdzb9HQ
+UQNr4ZT/BlfT7GSNILntVUitrx8/klmqE/sk3W+kVVVA47qL3UCgVXWiy9jzAiS+
+3N2GqdFciEackRGRR6oCiksrVtAeIQSeIf7uca9aEjme7lUZGRPGTnWkOKeT5yxF
+pWHNV/cOF85WHFL180aNw6CPROxomA==
+=FwRs
+-----END PGP SIGNATURE-----
+
+--h3wxik5jkm2uo47v--
