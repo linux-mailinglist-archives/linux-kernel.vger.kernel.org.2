@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF785353169
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 01:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A652353168
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 01:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235946AbhDBXKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 19:10:00 -0400
-Received: from mga17.intel.com ([192.55.52.151]:37560 "EHLO mga17.intel.com"
+        id S235821AbhDBXJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 19:09:57 -0400
+Received: from mga12.intel.com ([192.55.52.136]:33566 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235604AbhDBXJr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 19:09:47 -0400
-IronPort-SDR: /cYd5uAVcO8T+ZYS2b3zqANKhZFiXu81PQV9eZD49fCtq2M0Ccc7rpvKKJNHlsxTAzkHEU6m1q
- K7dv6sp8eAVA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9942"; a="172583761"
+        id S235366AbhDBXJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 19:09:46 -0400
+IronPort-SDR: eiq9GHxSz2sdXzhsSqf2IkFbFbPsK1eg/FQWcBf9TLmM2ps8u3KZbuae91q+2DNIUow4Q7b/KM
+ CvawW7UD3VcA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9942"; a="171969693"
 X-IronPort-AV: E=Sophos;i="5.81,300,1610438400"; 
-   d="scan'208";a="172583761"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 16:09:45 -0700
-IronPort-SDR: jOHbBa+H3Tq7H3cf2/ytdUIOVUrPV/klf9x0uH8Db0qHAY+7aj6+dLRhcjXseZ3ltd+JgT6K5r
- Cmi1iL3a4ntQ==
+   d="scan'208";a="171969693"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 16:09:44 -0700
+IronPort-SDR: oTbWN7Xnm3FNAH9cIPaI8iDu8xmkC0Bw2zpn6aTFbZMuMElAPuG0q/QK2E+DiATjMwhZEHI64n
+ gVaU4LNVFfEA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,300,1610438400"; 
-   d="scan'208";a="378236308"
+   d="scan'208";a="413379358"
 Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 02 Apr 2021 16:09:43 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 02 Apr 2021 16:09:42 -0700
 Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1lSSv8-0007Of-9d; Fri, 02 Apr 2021 23:09:42 +0000
-Date:   Sat, 03 Apr 2021 07:08:41 +0800
+        id 1lSSv8-0007Oa-7w; Fri, 02 Apr 2021 23:09:42 +0000
+Date:   Sat, 03 Apr 2021 07:08:47 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/core] BUILD SUCCESS
- b1f480bc0686e65d5413c035bd13af2ea4888784
-Message-ID: <6067a3f9.AdAWHUSMGBC4bTEO%lkp@intel.com>
+Subject: [tip:WIP.x86/core] BUILD SUCCESS
+ 9bc0bb50727c8ac69fbb33fb937431cf3518ff37
+Message-ID: <6067a3ff.ZuYl6m2SmtPr5vmc%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,12 +43,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
-branch HEAD: b1f480bc0686e65d5413c035bd13af2ea4888784  Merge branch 'x86/cpu' into WIP.x86/core, to merge the NOP changes & resolve a semantic conflict
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git WIP.x86/core
+branch HEAD: 9bc0bb50727c8ac69fbb33fb937431cf3518ff37  objtool/x86: Rewrite retpoline thunk calls
 
-elapsed time: 722m
+elapsed time: 723m
 
-configs tested: 198
+configs tested: 194
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -78,9 +78,10 @@ sh                            titan_defconfig
 arm                      footbridge_defconfig
 arm                             ezx_defconfig
 arm                        trizeps4_defconfig
-arm                       aspeed_g4_defconfig
-riscv                    nommu_k210_defconfig
-m68k                          amiga_defconfig
+arm                             rpc_defconfig
+xtensa                       common_defconfig
+powerpc                     ksi8560_defconfig
+arm                          lpd270_defconfig
 alpha                            alldefconfig
 arm                           sama5_defconfig
 sh                         apsh4a3a_defconfig
@@ -93,17 +94,11 @@ mips                      fuloong2e_defconfig
 powerpc                     sequoia_defconfig
 arm                          ixp4xx_defconfig
 arm                          pxa910_defconfig
-arm                          lpd270_defconfig
 powerpc                     redwood_defconfig
 parisc                generic-32bit_defconfig
 mips                            gpr_defconfig
 powerpc                     tqm8540_defconfig
 sh                     magicpanelr2_defconfig
-ia64                             allmodconfig
-m68k                         amcore_defconfig
-m68k                       bvme6000_defconfig
-arm                       spear13xx_defconfig
-powerpc                     ppa8548_defconfig
 arm                             pxa_defconfig
 mips                        workpad_defconfig
 nios2                         10m50_defconfig
@@ -116,9 +111,10 @@ arm                         lpc32xx_defconfig
 powerpc                     tqm8560_defconfig
 powerpc                      tqm8xx_defconfig
 mips                           ip27_defconfig
+m68k                       bvme6000_defconfig
 arm                        cerfcube_defconfig
 m68k                           sun3_defconfig
-powerpc                     ksi8560_defconfig
+powerpc                     ppa8548_defconfig
 powerpc                     tqm5200_defconfig
 powerpc                      katmai_defconfig
 m68k                        mvme147_defconfig
@@ -149,13 +145,11 @@ mips                        vocore2_defconfig
 s390                                defconfig
 powerpc                 mpc8315_rdb_defconfig
 sh                 kfr2r09-romimage_defconfig
-arm                             rpc_defconfig
 sparc64                             defconfig
 powerpc                 mpc834x_mds_defconfig
 mips                          malta_defconfig
 powerpc                       eiger_defconfig
 ia64                         bigsur_defconfig
-xtensa                       common_defconfig
 mips                           gcw0_defconfig
 mips                        omega2p_defconfig
 arm                         palmz72_defconfig
@@ -165,12 +159,14 @@ mips                         tb0219_defconfig
 mips                malta_qemu_32r6_defconfig
 powerpc                 mpc836x_mds_defconfig
 sh                           se7750_defconfig
+riscv                    nommu_k210_defconfig
 arm                         lpc18xx_defconfig
 arm                          moxart_defconfig
 s390                             allyesconfig
 sh                          urquell_defconfig
 sh                             sh03_defconfig
 sh                           se7712_defconfig
+ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
 m68k                             allmodconfig
@@ -191,9 +187,9 @@ sh                               allmodconfig
 parisc                              defconfig
 s390                             allmodconfig
 parisc                           allyesconfig
-i386                                defconfig
 sparc                            allyesconfig
 sparc                               defconfig
+i386                                defconfig
 mips                             allyesconfig
 mips                             allmodconfig
 powerpc                          allyesconfig
