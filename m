@@ -2,105 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33C703528A4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 11:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A5F83528A7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 11:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234560AbhDBJ1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 05:27:02 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15533 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231160AbhDBJ1C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 05:27:02 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FBZPZ2FRSzNsJt;
-        Fri,  2 Apr 2021 17:24:18 +0800 (CST)
-Received: from [10.67.102.118] (10.67.102.118) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 2 Apr 2021 17:26:50 +0800
-Subject: Re: [PATCH] USB:ohci:fix ohci interruption problem
-To:     <gregkh@linuxfoundation.org>, <mathias.nyman@intel.com>,
-        <stern@rowland.harvard.edu>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kong.kongxinwei@hisilicon.com>, <yisen.zhuang@huawei.com>
-References: <1617354660-43964-1-git-send-email-liulongfang@huawei.com>
-From:   liulongfang <liulongfang@huawei.com>
-Message-ID: <c1ce8b17-350f-8de4-5f9e-2282073916ad@huawei.com>
-Date:   Fri, 2 Apr 2021 17:26:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S234803AbhDBJ1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 05:27:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60060 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231160AbhDBJ1K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 05:27:10 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AEAF261105;
+        Fri,  2 Apr 2021 09:27:07 +0000 (UTC)
+Date:   Fri, 2 Apr 2021 10:27:20 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh@kernel.org>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 25/32] dt-bindings:iio:dac: update
+ microchip,mcp4725.yaml reference
+Message-ID: <20210402102720.537daedc@jic23-huawei>
+In-Reply-To: <82fb54974e8a22be15e64343260a6de39a18edda.1617279356.git.mchehab+huawei@kernel.org>
+References: <cover.1617279355.git.mchehab+huawei@kernel.org>
+        <82fb54974e8a22be15e64343260a6de39a18edda.1617279356.git.mchehab+huawei@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <1617354660-43964-1-git-send-email-liulongfang@huawei.com>
-Content-Type: text/plain; charset="gbk"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.118]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/2 17:11, Longfang Liu wrote:
-> The operating method of the system entering S4 sleep mode:
-> echo disk > /sys/power/state
+On Thu,  1 Apr 2021 14:17:45 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+
+> Changeset 6ced946a4bba ("dt-bindings:iio:dac:microchip,mcp4725 yaml conversion")
+> renamed: Documentation/devicetree/bindings/iio/dac/mcp4725.txt
+> to: Documentation/devicetree/bindings/iio/dac/microchip,mcp4725.yaml.
 > 
-> When OHCI enters the S4 sleep state, the USB sleep process will call
-> check_root_hub_suspend() and ohci_bus_suspend() instead of
-> ohci_suspend() and ohci_bus_suspend(), this causes the OHCI interrupt
-> to not be closed.
+> Update its cross-reference accordingly.
 > 
-> At this time, if just one device interrupt is reported. Since rh_state
-> has been changed to OHCI_RH_SUSPENDED after ohci_bus_suspend(), the
-> driver will not process and close this device interrupt. It will cause
-> the entire system to be stuck during sleep, causing the device to
-> fail to respond.
-> 
-> When the abnormal interruption reaches 100,000 times, the system will
-> forcibly close the interruption and make the device unusable.
-> 
-> Because the root cause of the problem is that ohci_suspend is not
-> called to perform normal interrupt shutdown operations when the system
-> enters S4 sleep mode.
-> 
-> Therefore, our solution is to specify freeze interface in this mode to
-> perform normal suspend_common() operations, and call ohci_suspend()
-> after check_root_hub_suspend() is executed through the suspend_common()
-> operation.
-> After using this solution, it is verified by the stress test of sleep
-> wake up in S4 mode for a long time that this problem no longer occurs.
-> 
-> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+> Fixes: 6ced946a4bba ("dt-bindings:iio:dac:microchip,mcp4725 yaml conversion")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+Applied thanks.
+
+Jonathan
+
 > ---
->  drivers/usb/core/hcd-pci.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
+>  include/linux/iio/dac/mcp4725.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/usb/core/hcd-pci.c b/drivers/usb/core/hcd-pci.c
-> index 1547aa6..78a56cd 100644
-> --- a/drivers/usb/core/hcd-pci.c
-> +++ b/drivers/usb/core/hcd-pci.c
-> @@ -509,6 +509,11 @@ static int resume_common(struct device *dev, int event)
->  
->  #ifdef	CONFIG_PM_SLEEP
->  
-> +static int hcd_pci_freeze(struct device *dev)
-> +{
-> +	return suspend_common(dev, device_may_wakeup(dev));
-> +}
-> +
->  static int hcd_pci_suspend(struct device *dev)
->  {
->  	return suspend_common(dev, device_may_wakeup(dev));
-> @@ -605,8 +610,8 @@ const struct dev_pm_ops usb_hcd_pci_pm_ops = {
->  	.suspend_noirq	= hcd_pci_suspend_noirq,
->  	.resume_noirq	= hcd_pci_resume_noirq,
->  	.resume		= hcd_pci_resume,
-> -	.freeze		= check_root_hub_suspended,
-> -	.freeze_noirq	= check_root_hub_suspended,
-> +	.freeze		= hcd_pci_freeze,
-> +	.freeze_noirq	= hcd_pci_freeze,
->  	.thaw_noirq	= NULL,
->  	.thaw		= NULL,
->  	.poweroff	= hcd_pci_suspend,
-> 
-Sorry, please ignore this patch, I will resend it.
-Thanks.
-Longfang.
+> diff --git a/include/linux/iio/dac/mcp4725.h b/include/linux/iio/dac/mcp4725.h
+> index e9801c8d49c0..1f7e53c506b6 100644
+> --- a/include/linux/iio/dac/mcp4725.h
+> +++ b/include/linux/iio/dac/mcp4725.h
+> @@ -15,7 +15,7 @@
+>   * @vref_buffered: Controls buffering of the external reference voltage.
+>   *
+>   * Vref related settings are available only on MCP4756. See
+> - * Documentation/devicetree/bindings/iio/dac/mcp4725.txt for more information.
+> + * Documentation/devicetree/bindings/iio/dac/microchip,mcp4725.yaml for more information.
+>   */
+>  struct mcp4725_platform_data {
+>  	bool use_vref;
+
