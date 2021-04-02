@@ -2,129 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB452352F89
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 21:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 827C3352F8E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 21:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236092AbhDBTKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 15:10:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50512 "EHLO
+        id S236073AbhDBTRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 15:17:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbhDBTKM (ORCPT
+        with ESMTP id S229553AbhDBTQ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 15:10:12 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4383CC0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 12:10:11 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id z9so5371889ilb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 12:10:11 -0700 (PDT)
+        Fri, 2 Apr 2021 15:16:58 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EEE4C0613E6;
+        Fri,  2 Apr 2021 12:16:55 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id g20so6118176qkk.1;
+        Fri, 02 Apr 2021 12:16:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7JlFDJAcRG6/Jm43XBCYYpnXYN2lAD9aQqAdSxiEkDs=;
-        b=EiHnux0s7dQ3PcMjGa8vxU7IIiN7Fa2B6iJ2AJ8c62lDKE+WYDkbJ8wzuU7+rZMWg0
-         rZhWkgCnFScZFTXIAf8bhzpZzyo42XSPgYl46t5KJutWanMHoD+oGba52PiINY5llUQ/
-         P1fKd+MNu+0svuIOIkEBjftL3rkMJS0dI/BG1b0j9rVh0S7xfco6DQeBz0/a0gPDORJh
-         vsd0g2rnBIRLR44G1rgrO+GNEkqRAkEEC2+/+OJ9W9ifsnXhUd+eqpuYqcqOz08AFkqa
-         kLJ9Y8FR7XHzoywVA2Z+i31hmpGeYKMYxGv3+9Poks7t2b04NlRIC0EXIIKBNSzDfdoH
-         iYYA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LnxM2dCsgefp2lTqtmiMsTgHl3EHT3phtkcM0CuctsU=;
+        b=sexUDEANAJW6Wcofc3gTufIIY3OVzBHVz66e60XJSMOYq0momOVoT1/oSTROjNQAyO
+         D8/s6Joupk3LV08oTkklRtksM5DRiYMbzCopEdPBUGrn8O3zoOAipt71aFRGv2ZanlBl
+         vO2GozZTnPskqZfhgTlFk95cwMNQU+m339bV7RkCZSySqCTRmQHot0CU2gqFG66di69J
+         NLYQSNDERUfyzQHXHoVwSYJHd/ZLxBf5wdfiYR1w8ySfWzTwxxMx3ryHMA+WgOWaXbWQ
+         HhzFx3Yldxiyuf0WWLuAGodViVzYnMi84D2KpIbOaqfNTgwTJ/LjUaGqp4slRUQ2cuam
+         kDig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7JlFDJAcRG6/Jm43XBCYYpnXYN2lAD9aQqAdSxiEkDs=;
-        b=Lbkfyp+LHru6P3pjlLNwsObFZgnSIvnJ4G7nYIdGW/jdDcBMRxYdseIKo+5lHZjkTY
-         Ji2eQ7nSsR7EdeRyItH0IFBxsryEuUVAgftnOl7g97iBm4qluY5tX9j+vAa0oiMRbLLH
-         GGaay6D7SnkmiAT7CBIUZ4xLoPYu/6U7s/4WSMlwgO2sGk8D/q4LhCFcNK/ComwgSQvU
-         QWCdScosJoKlDqUYf76csVLAQNzSVO2s5GjPHG3NIhVovpL8OurkzBAxDhg8c5Bvyfbn
-         yyMReM7BD0Ntsb594tuioNatPrtoWez1HKMiY0BxQ/ZcvGFko9gkGD21HK7hUWbk/oWj
-         1EUA==
-X-Gm-Message-State: AOAM532f9eb91UILhKS4s+pYcBKE8N8pYCPIhBadUT2hT7vl459+lVZE
-        BRudTcaanS/5NUKCGZNCM8TrvyLw8ghacOanyfkikQ==
-X-Google-Smtp-Source: ABdhPJzZlUx/qgHuq28bDzFofQxEcbrvDubBVZIrnqA7YzNDMQ14VSBDvffECtAMDc3TvMG18/ntODesGW/SmZtA+vc=
-X-Received: by 2002:a05:6e02:d52:: with SMTP id h18mr439861ilj.133.1617390610533;
- Fri, 02 Apr 2021 12:10:10 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LnxM2dCsgefp2lTqtmiMsTgHl3EHT3phtkcM0CuctsU=;
+        b=kn/o4wFAE2TSja/Z96NVRsXLZjW71paFPM9W/YP4Fwyzj3YbWZbDxFg7TC0q8YsNcW
+         TLolsgOnoQvgS19T4Op4zjYvhLIqKy74XQuFkE93xGtMzoVLx5FRQ9JKC8qzN6tIL49c
+         IFguNeMchQZFvo7q9ds9Mh4KDx/22LhPGfOaAADz242cavv9HRhD7a2VZNz9DuGcMziO
+         Juca2r0E07OnuVRtfoz3FNcXF27btlklznTdpr/JCEhEpNauMOTGBO78Xc0LlIrn3e3L
+         NV16XyzfPgZLXdAQhG7fmFy87fdPH7UMOMh47eTiGfseHQY5cpkZcm3EE8Y2oznXrWMd
+         3P5g==
+X-Gm-Message-State: AOAM5306qQEnXdXA4OIjAODxph8o3w1iPZGprR0YCSV8ub+eoyaM7SGC
+        qvhTsFLAhWbhn/rvjclOTAo=
+X-Google-Smtp-Source: ABdhPJwX8tAxkyjY8aBDhXkRVII0oYwE89H2KF7yGu+5YPIVNFwoLTbHccGDT2YUkcfkBge9vSr0rw==
+X-Received: by 2002:a05:620a:14ac:: with SMTP id x12mr14322165qkj.409.1617391014210;
+        Fri, 02 Apr 2021 12:16:54 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:ae82])
+        by smtp.gmail.com with ESMTPSA id w197sm7967261qkb.89.2021.04.02.12.16.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Apr 2021 12:16:53 -0700 (PDT)
+From:   Dan Schatzberg <schatzberg.dan@gmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        linux-block@vger.kernel.org (open list:BLOCK LAYER),
+        linux-kernel@vger.kernel.org (open list),
+        cgroups@vger.kernel.org (open list:CONTROL GROUP (CGROUP)),
+        linux-mm@kvack.org (open list:MEMORY MANAGEMENT)
+Subject: [PATCH V12 0/3] Charge loop device i/o to issuing cgroup
+Date:   Fri,  2 Apr 2021 12:16:31 -0700
+Message-Id: <20210402191638.3249835-1-schatzberg.dan@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210205221808.1966010-1-dlatypov@google.com> <CAFd5g44PL+DrN6+0bw-oYQCjCSR-f4Y0=QZL9DsSO-3hKLsFzw@mail.gmail.com>
- <9f5df593-6584-b7d4-3b6e-ad77ee6f8760@linuxfoundation.org>
-In-Reply-To: <9f5df593-6584-b7d4-3b6e-ad77ee6f8760@linuxfoundation.org>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Fri, 2 Apr 2021 12:09:59 -0700
-Message-ID: <CAGS_qxqE9btMn639uCgDoiqO6PNnNJzqyLA4Vj+b6Ccjhpkbfg@mail.gmail.com>
-Subject: Re: [PATCH] kunit: make KUNIT_EXPECT_STREQ() quote values, don't
- print literals
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        David Gow <davidgow@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 2, 2021 at 10:47 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
->
-> On 4/2/21 3:35 AM, Brendan Higgins wrote:
-> > On Fri, Feb 5, 2021 at 2:18 PM Daniel Latypov <dlatypov@google.com> wrote:
-> >>
-> >> Before:
-> >>>   Expected str == "world", but
-> >>>       str == hello
-> >>>       "world" == world
-> >>
-> >> After:
-> >>>   Expected str == "world", but
-> >>>       str == "hello"
-> >> <we don't need to tell the user that "world" == "world">
-> >>
-> >> Note: like the literal ellision for integers, this doesn't handle the
-> >> case of
-> >>    KUNIT_EXPECT_STREQ(test, "hello", "world")
-> >> since we don't expect it to realistically happen in checked in tests.
-> >> (If you really wanted a test to fail, KUNIT_FAIL("msg") exists)
-> >>
-> >> In that case, you'd get:
-> >>>   Expected "hello" == "world", but
-> >> <output for next failure>
-> >>
-> >> Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> >
-> > Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-> >
->
-> Hi Daniel,
->
-> Please run checkpatch on your patches in the future. I am seeing
-> a few checkpatch readability type improvements that can be made.
->
-> Please make changes and send v2 with Brendan's Reviewed-by.
+No major changes, rebased on top of latest mm tree
 
-Are there some flags you'd like me to pass to checkpatch?
+Changes since V12:
 
-$ ./scripts/checkpatch.pl --git HEAD
-total: 0 errors, 0 warnings, 42 lines checked
+* Small change to get_mem_cgroup_from_mm to avoid needing
+  get_active_memcg
 
-Commit f66884e8b831 ("kunit: make KUNIT_EXPECT_STREQ() quote values,
-don't print literals") has no obvious style problems and is ready for
-submission.
+Changes since V11:
 
-I just rebased onto linus/master again since I know checkpatch.pl's
-default behavior had changed recently, but I didn't see any errors
-there.
+* Removed WQ_MEM_RECLAIM flag from loop workqueue. Technically, this
+  can be driven by writeback, but this was causing a warning in xfs
+  and likely other filesystems aren't equipped to be driven by reclaim
+  at the VFS layer.
+* Included a small fix from Colin Ian King.
+* reworked get_mem_cgroup_from_mm to institute the necessary charge
+  priority.
 
-I know this commit made some lines go just over 80 characters, so
-$ ./scripts/checkpatch.pl --max-line-length=80 --git HEAD
-...
-total: 0 errors, 4 warnings, 42 lines checked
+Changes since V10:
 
-I can go and line wrap these but had figured they were more readable
-this way if checkpatch.pl no longer complained by default.
+* Added page-cache charging to mm: Charge active memcg when no mm is set
 
-Thanks,
-Daniel
+Changes since V9:
 
->
-> thanks,
-> -- Shuah
+* Rebased against linus's branch which now includes Roman Gushchin's
+  patch this series is based off of
+
+Changes since V8:
+
+* Rebased on top of Roman Gushchin's patch
+  (https://lkml.org/lkml/2020/8/21/1464) which provides the nesting
+  support for setting active memcg. Dropped the patch from this series
+  that did the same thing.
+
+Changes since V7:
+
+* Rebased against linus's branch
+
+Changes since V6:
+
+* Added separate spinlock for worker synchronization
+* Minor style changes
+
+Changes since V5:
+
+* Fixed a missing css_put when failing to allocate a worker
+* Minor style changes
+
+Changes since V4:
+
+Only patches 1 and 2 have changed.
+
+* Fixed irq lock ordering bug
+* Simplified loop detach
+* Added support for nesting memalloc_use_memcg
+
+Changes since V3:
+
+* Fix race on loop device destruction and deferred worker cleanup
+* Ensure charge on shmem_swapin_page works just like getpage
+* Minor style changes
+
+Changes since V2:
+
+* Deferred destruction of workqueue items so in the common case there
+  is no allocation needed
+
+Changes since V1:
+
+* Split out and reordered patches so cgroup charging changes are
+  separate from kworker -> workqueue change
+
+* Add mem_css to struct loop_cmd to simplify logic
+
+The loop device runs all i/o to the backing file on a separate kworker
+thread which results in all i/o being charged to the root cgroup. This
+allows a loop device to be used to trivially bypass resource limits
+and other policy. This patch series fixes this gap in accounting.
+
+A simple script to demonstrate this behavior on cgroupv2 machine:
+
+'''
+#!/bin/bash
+set -e
+
+CGROUP=/sys/fs/cgroup/test.slice
+LOOP_DEV=/dev/loop0
+
+if [[ ! -d $CGROUP ]]
+then
+    sudo mkdir $CGROUP
+fi
+
+grep oom_kill $CGROUP/memory.events
+
+# Set a memory limit, write more than that limit to tmpfs -> OOM kill
+sudo unshare -m bash -c "
+echo \$\$ > $CGROUP/cgroup.procs;
+echo 0 > $CGROUP/memory.swap.max;
+echo 64M > $CGROUP/memory.max;
+mount -t tmpfs -o size=512m tmpfs /tmp;
+dd if=/dev/zero of=/tmp/file bs=1M count=256" || true
+
+grep oom_kill $CGROUP/memory.events
+
+# Set a memory limit, write more than that limit through loopback
+# device -> no OOM kill
+sudo unshare -m bash -c "
+echo \$\$ > $CGROUP/cgroup.procs;
+echo 0 > $CGROUP/memory.swap.max;
+echo 64M > $CGROUP/memory.max;
+mount -t tmpfs -o size=512m tmpfs /tmp;
+truncate -s 512m /tmp/backing_file
+losetup $LOOP_DEV /tmp/backing_file
+dd if=/dev/zero of=$LOOP_DEV bs=1M count=256;
+losetup -D $LOOP_DEV" || true
+
+grep oom_kill $CGROUP/memory.events
+'''
+
+Naively charging cgroups could result in priority inversions through
+the single kworker thread in the case where multiple cgroups are
+reading/writing to the same loop device. This patch series does some
+minor modification to the loop driver so that each cgroup can make
+forward progress independently to avoid this inversion.
+
+With this patch series applied, the above script triggers OOM kills
+when writing through the loop device as expected.
+
+Dan Schatzberg (3):
+  loop: Use worker per cgroup instead of kworker
+  mm: Charge active memcg when no mm is set
+  loop: Charge i/o to mem and blk cg
+
+ drivers/block/loop.c       | 244 ++++++++++++++++++++++++++++++-------
+ drivers/block/loop.h       |  15 ++-
+ include/linux/memcontrol.h |   6 +
+ kernel/cgroup/cgroup.c     |   1 +
+ mm/filemap.c               |   2 +-
+ mm/memcontrol.c            |  49 +++++---
+ mm/shmem.c                 |   4 +-
+ 7 files changed, 253 insertions(+), 68 deletions(-)
+
+-- 
+2.30.2
+
