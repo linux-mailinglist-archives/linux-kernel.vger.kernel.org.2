@@ -2,89 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F36352E96
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 19:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A8D352E9A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 19:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235759AbhDBRkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 13:40:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235598AbhDBRka (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 13:40:30 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 58236C061788;
-        Fri,  2 Apr 2021 10:40:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=T7GJS3a/Td
-        +A1NfNY/x47Fp7WerJVUZTyDo0c21nDF8=; b=rXyRBfZrvBwVcybV/2xqZzfwIX
-        qrhU8CC7O2c/81x97E3GbttOujqOVsPO5J75rTta5ewUw2d4//ymsuKsNdf5Ddph
-        G9KgWha1vEHtzHMegOEsY+4sdrbkXTXfFCfCjCNMguDF4weZ1HBIk1U4EDoE43le
-        iV7BbU46sclr4vga8=
-Received: from ubuntu.localdomain (unknown [202.38.69.14])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygAXHUkFV2dg_WeMAA--.252S4;
-        Sat, 03 Apr 2021 01:40:21 +0800 (CST)
-From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To:     rafal@milecki.pl, bcm-kernel-feedback-list@broadcom.com,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH] net: broadcom: bcm4908enet: Fix a double free in bcm4908_enet_dma_alloc
-Date:   Fri,  2 Apr 2021 10:40:19 -0700
-Message-Id: <20210402174019.3679-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        id S234717AbhDBRmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 13:42:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234652AbhDBRma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 13:42:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F26136113E;
+        Fri,  2 Apr 2021 17:42:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617385349;
+        bh=YYpr5IaWCQsD7N7ywU8mjtGkvi9LGdVG8pQe6xdHBFc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kwGuZK+OavfMWRuZiKZKmvPq2vXhAZe7xsezIJP2dPOV8L67dJ0mVS1AIEvVXGJkZ
+         rQW+OwlBtd/qFsNFVdAhyBhplyQFsy+Loz2BBNs99SHFJD/qBcCen5YDbJ7ey4nBtf
+         T/TdIw8Q0JNaHOWFIlGfx0ajzLEGJ60cHQtEDzkhruLKHH+Z5lku5swAwrrfE1b0pP
+         kUoT8ggDq+casdOsXEiz8WW0+wARFq037ftfyvkyOsEbrvQ2HgNQbES2ViYalaiydo
+         91TXJy6p5gEVCKPodfQ9djdW7O4/S9z8a6qMFwBVs5SKW0kcHaXVEscqbc6cknLHxb
+         +ixPPZVKRE2gw==
+Date:   Fri, 2 Apr 2021 18:42:15 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-power@fi.rohmeurope.com
+Subject: Re: [PATCH v5 15/19] regulator: Support ROHM BD71815 regulators
+Message-ID: <20210402174215.GI5402@sirena.org.uk>
+References: <cover.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
+ <eb20a8f466a9ccbc26d261f0102d203718a32fa0.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygAXHUkFV2dg_WeMAA--.252S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrKFy8tF48GF48Cw4UKr4kZwb_yoWkCrb_Ga
-        45X3s7ur4DJryYka1IkrsrJryI9ayjvry8uFy09rWSqFy7ur1xXw4xAFn0qw17WrWktFy3
-        Ga43tFWDA348GjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbVkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
-        0_Cr1UM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
-        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
-        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI2
-        0VAGYxC7MxkIecxEwVAFwVW8MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
-        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-        67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAI
-        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
-        nxnUUI43ZEXa7VUj1E_JUUUUU==
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6lCXDTVICvIQMz0h"
+Content-Disposition: inline
+In-Reply-To: <eb20a8f466a9ccbc26d261f0102d203718a32fa0.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
+X-Cookie: Dammit Jim, I'm an actor, not a doctor.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In bcm4908_enet_dma_alloc, if callee bcm4908_dma_alloc_buf_descs() failed,
-it will free the ring->cpu_addr by dma_free_coherent() and return error.
-Then bcm4908_enet_dma_free() will be called, and free the same cpu_addr
-by dma_free_coherent() again.
 
-My patch set ring->cpu_addr to NULL after it is freed in
-bcm4908_dma_alloc_buf_descs() to avoid the double free.
+--6lCXDTVICvIQMz0h
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Fixes: 4feffeadbcb2e ("net: broadcom: bcm4908enet: add BCM4908 controller driver")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
----
- drivers/net/ethernet/broadcom/bcm4908_enet.c | 1 +
- 1 file changed, 1 insertion(+)
+On Mon, Mar 29, 2021 at 03:59:51PM +0300, Matti Vaittinen wrote:
 
-diff --git a/drivers/net/ethernet/broadcom/bcm4908_enet.c b/drivers/net/ethernet/broadcom/bcm4908_enet.c
-index 0b70e9e0ddad..32058386e74b 100644
---- a/drivers/net/ethernet/broadcom/bcm4908_enet.c
-+++ b/drivers/net/ethernet/broadcom/bcm4908_enet.c
-@@ -172,6 +172,7 @@ static int bcm4908_dma_alloc_buf_descs(struct bcm4908_enet *enet,
- 
- err_free_buf_descs:
- 	dma_free_coherent(dev, size, ring->cpu_addr, ring->dma_addr);
-+	ring->cpu_addr = NULL;
- 	return -ENOMEM;
- }
- 
--- 
-2.25.1
+Acked-by: Mark Brown <broonie@kernel.org>
 
+but...
 
+> @@ -0,0 +1,676 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright 2014 Embest Technology Co. Ltd. Inc.
+
+Please make the entire comment a C++ one so things look more
+intentional.
+
+> +#include <linux/regulator/driver.h>
+> +#include <linux/regulator/machine.h>
+
+A regulator driver generally shouldn't need machine interfaces...
+
+> +				ret = regulator_enable_regmap(rdev);
+> +			else
+> +				ret = regulator_disable_regmap(rdev);
+> +
+> +			if (ret)
+> +				dev_err(rdev_get_dev(rdev),
+> +					"LED status error\n");
+
+Better to print the error code, and that error message could be a bit
+more descriptive.
+
+--6lCXDTVICvIQMz0h
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBnV3YACgkQJNaLcl1U
+h9CG4wf+Ld2glQBnwDCew6b6vrM1TQ2QiVAzZAJ6it/rr9KPdem694P58K+TjiPQ
++xrTwHNQzxClt543Ojcnz/GgVNkzAX9EB+rryi4vd5dgIrflVFmVHIAcFRwdMm4G
+seyKLrNZMKjXrZYnsOWq8FBp9IQY8XHS3VTT+xZZ9bL9u7nwQLPRiTOw8pnO/Rm5
+bK+Z3nUUMjn1q/9qb7RxcJIoDdz4ZXHPBVeiXJHlH+Qte7uCX5DBwjCUUmYAd2js
+Aag6x5mNQQr1pu+c9EFgFHvpHwU7pf7tdHHlY6SDktsVUAgj3N8SKwJI5NAfSj7W
+lprOxHbcePNWLWGV/945wTEnsyFpJA==
+=KPCY
+-----END PGP SIGNATURE-----
+
+--6lCXDTVICvIQMz0h--
