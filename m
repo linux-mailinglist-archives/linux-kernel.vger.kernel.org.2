@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEFC6352552
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 04:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9BB6352556
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 04:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234065AbhDBCDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 22:03:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54682 "EHLO
+        id S233994AbhDBCOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 22:14:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231179AbhDBCDV (ORCPT
+        with ESMTP id S231836AbhDBCO3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 22:03:21 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 503FBC0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 19:03:21 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id l1so1879864plg.12
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 19:03:21 -0700 (PDT)
+        Thu, 1 Apr 2021 22:14:29 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B590C0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 19:14:28 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id i6so2762842pgs.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 19:14:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=x631UBvWaQTFZbKdIzadU0ErJ3cT01T22cqI9MuO2ds=;
-        b=YO0aeR2KAm4oHl65dBrcj2pu0x3laL2j5HstXUb41ZaefCjtm1pFNRCfmljeOCjnzv
-         ij3V8y69i+Rn/H9NeOMyQXT9esL741PS73VSiHWnpJEJvCAJwtM8h40azNeq0yO6kDaM
-         XXLj0ouNPze6C98I4WtTDhLeY3k/Hssvjqfto=
+        bh=JB5UehlmQzvZFx81WrZqpYM4CZPIjgwCICp/Q33dgPY=;
+        b=CiQCdaLNqItRdaQBOeJkErTv3n7PjSNnp+YvdQJ1ecNwMtUhwCi8shAehVOT7sxQpo
+         nP61ASpB1NgGt9ANL4exn/Z9n7DKxzMjicech11ff/+fm4VxApqGY66Vw5/l8MC+kRoI
+         zt+/uQlTX7cj6PZaFPDSywCRWFA6eFe3lXxPQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=x631UBvWaQTFZbKdIzadU0ErJ3cT01T22cqI9MuO2ds=;
-        b=U6gKXFQPjHOysFUifE6gG/YkAZmhbHvTelPCx2tI3DIzSTawRplZvpZ5AvE/Gn4h0B
-         zL/f2wUHXWeYxLe2CImxFVIjrp3KgjM1p8YzJuclgKCMrkwdwSv8ql3rElz02Kh9Tu/A
-         0+rtLIfTVD5XjBAsIVpnmBa5yvEL0qEVMtyZ4HFpY/ZSQ0i2RX70GX2LJv2ec/K5THK4
-         Lj1RJImFkMna1IKpfwMCreE50Giy1rpUBrixOdgNCljIoAtGKUASNQaymTUYL+QddG34
-         52xTBBUH766gs10wZCBiEvMOsDVM1dNAjOOs6hkw1icB3DKlfsNThjYEOLAX7j/prdqx
-         nhuA==
-X-Gm-Message-State: AOAM530tHmR7skmkVdPFTSSZviREbBeMv/1hmT7GlofXNqEDr6oiiPzU
-        2JKiBv7DUjU8Ysqf0hOH3HKY/FI89yxj6A==
-X-Google-Smtp-Source: ABdhPJwa/GL+/ds6BKU/X2WpORGxblOyJ1FDWuJaGlV60QcydBwiZrUigrTPAOohvsieL65ZG7My3Q==
-X-Received: by 2002:a17:902:c48d:b029:e6:f7d:a76d with SMTP id n13-20020a170902c48db02900e60f7da76dmr10561993plx.66.1617329000741;
-        Thu, 01 Apr 2021 19:03:20 -0700 (PDT)
+        bh=JB5UehlmQzvZFx81WrZqpYM4CZPIjgwCICp/Q33dgPY=;
+        b=bA90f9+++RFCV09LLOkl68oBR3wBzmogP5Sise+YYYkOpQgwBw8ZZRg9EFgAgplRJC
+         0Jr6HzwhpNMkwtx54iO2c2P3IJpqD0cwslciZ6Lb1OnMcAIZr7kzx6stA4o1QOubh7rR
+         fHNU4jizBu7h8BfVOry/EsODXzmJ3WLskkEthSpOkWpf8jTzHYo2HGgEy3+JFLMqkCZJ
+         oHJMuB6l/4sXRG/jS4aH5MfZTlYdQhKb9/YBJX5K91cFxuOl349Zs5bhSMxexL1YVK0g
+         Lf8kqojhZ4zizIys5BI5UROJSCJLpUYGempqJaVKcHUaEi3+gQaC/BLgd0yhJozls/eS
+         FzRQ==
+X-Gm-Message-State: AOAM533UPnM3kywzut2U/V5bsCy6D0ORuPGAhjJLyy0antAdKxQ2Yy7W
+        gkGiSorFTot6Eh/vuDybFKplWQ==
+X-Google-Smtp-Source: ABdhPJy0ejIbP6LV2LsRoOa1rVdM/WfylFauJ7ONnIZVqPdmEwYb/IrcKuqgQDFSQ2rNzG87UypcyQ==
+X-Received: by 2002:a65:6a0e:: with SMTP id m14mr10107450pgu.448.1617329667742;
+        Thu, 01 Apr 2021 19:14:27 -0700 (PDT)
 Received: from google.com ([2409:10:2e40:5100:918a:96e1:2fd5:8e77])
-        by smtp.gmail.com with ESMTPSA id e6sm6338000pfc.159.2021.04.01.19.03.18
+        by smtp.gmail.com with ESMTPSA id e65sm6959948pfe.9.2021.04.01.19.14.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 19:03:20 -0700 (PDT)
-Date:   Fri, 2 Apr 2021 11:03:15 +0900
+        Thu, 01 Apr 2021 19:14:27 -0700 (PDT)
+Date:   Fri, 2 Apr 2021 11:14:18 +0900
 From:   Sergey Senozhatsky <senozhatsky@chromium.org>
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     John Ogness <john.ogness@linutronix.de>,
@@ -53,32 +53,57 @@ Cc:     John Ogness <john.ogness@linutronix.de>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v2 1/5] printk: track/limit recursion
-Message-ID: <YGZ7YyLXMh1HFTs2@google.com>
+        linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Alistair Popple <alistair@popple.id.au>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Yue Hu <huyue2@yulong.com>, Rafael Aquini <aquini@redhat.com>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, kexec@lists.infradead.org
+Subject: Re: [PATCH printk v2 2/5] printk: remove safe buffers
+Message-ID: <YGZ9+kfQKxASmVDR@google.com>
 References: <20210330153512.1182-1-john.ogness@linutronix.de>
- <20210330153512.1182-2-john.ogness@linutronix.de>
- <YGWZpYE5diVLVzju@alley>
+ <20210330153512.1182-3-john.ogness@linutronix.de>
+ <YGW63/elFr/gYW1u@alley>
+ <87a6qiqgzr.fsf@jogness.linutronix.de>
+ <YGXV8LJarjUJDhvy@alley>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YGWZpYE5diVLVzju@alley>
+In-Reply-To: <YGXV8LJarjUJDhvy@alley>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/04/01 12:00), Petr Mladek wrote:
-> On Tue 2021-03-30 17:35:08, John Ogness wrote:
-> > Currently the printk safe buffers provide a form of recursion
-> > protection by redirecting to the safe buffers whenever printk() is
-> > recursively called.
-> > 
-> > In preparation for removal of the safe buffers, provide an alternate
-> > explicit recursion protection. Recursion is limited to 3 levels
-> > per-CPU and per-context.
-> > 
-> > Signed-off-by: John Ogness <john.ogness@linutronix.de>
+On (21/04/01 16:17), Petr Mladek wrote:
+> > For the long term, we should introduce a printk-context API that allows
+> > callers to perfectly pack their multi-line output into a single
+> > entry. We discussed [0][1] this back in August 2020.
 > 
-> Reviewed-by: Petr Mladek <pmladek@suse.com>
+> We need a "short" term solution. There are currently 3 solutions:
+> 
+> 1. Keep nmi_safe() and all the hacks around.
+> 
+> 2. Serialize nmi_cpu_backtrace() by a spin lock and later by
+>    the special lock used also by atomic consoles.
+> 
+> 3. Tell complaining people how to sort the messed logs.
 
-Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Are we talking about nmi_cpu_backtrace()->dump_stack() or some
+other path?
+
+dump_stack() seems to be already serialized by `dump_lock`. Hmm,
+show_regs() is not serialized, seems like it should be under the
+same `dump_lock` as dump_stack().
