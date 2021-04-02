@@ -2,144 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AF8C352B7C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 16:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07080352B7E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 16:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235768AbhDBOcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 10:32:19 -0400
-Received: from mail.hallyn.com ([178.63.66.53]:35770 "EHLO mail.hallyn.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229932AbhDBOcP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 10:32:15 -0400
-Received: by mail.hallyn.com (Postfix, from userid 1001)
-        id 93A94CD0; Fri,  2 Apr 2021 09:32:12 -0500 (CDT)
-Date:   Fri, 2 Apr 2021 09:32:12 -0500
-From:   "Serge E. Hallyn" <serge@hallyn.com>
-To:     Giuseppe Scrivano <gscrivan@redhat.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org, christian.brauner@ubuntu.com,
-        serge@hallyn.com,
-        Linux Containers <containers@lists.linux-foundation.org>
-Subject: Re: [PATCH] kernel: automatically split user namespace extent
-Message-ID: <20210402143212.GA18282@mail.hallyn.com>
-References: <20201126100839.381415-1-gscrivan@redhat.com>
- <87ft4pe7km.fsf@x220.int.ebiederm.org>
- <87pn3schlg.fsf@redhat.com>
+        id S235795AbhDBOeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 10:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229932AbhDBOeG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 10:34:06 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E56C061788
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 07:34:05 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id y17so4806004ila.6
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 07:34:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=AjhyAVgGqryXaOV6wEyhg6s+f795iKTiiY0ZANnHEuI=;
+        b=0+aP60MmXh/lyIkFPbC/qBTX2//RFk6NSzglhgEuuIW0z+OUXTJk+J8Qq0BSoTmZ8w
+         9VDBHN/Jww8Ws9B7ocx072oB3refdGHZgHjXXfOpncXsqM0tdQBteyVeHdUo1bKuuyPU
+         CxGmY38EsQ5xms7JuxpJhI3/4TQdBCFATKWE2nE68vSZmwTBRtO1Yb1Zq3uoBZ95D+Wt
+         NIJAPl+NCUs7Qw191UACDqQ2zGmGOOT+6r3Pp20Oyh9EFQPcKpl3dzZlpfQry6sdlC5Y
+         RSv36MfBmzRwXaFb55xTQPpXe8tTBR/msIR7/Od3WEgR7De9Us2f65Mj1d47ASe4OlmS
+         WN1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AjhyAVgGqryXaOV6wEyhg6s+f795iKTiiY0ZANnHEuI=;
+        b=AGdVDJrkOCigH3Zmdbh495ELNArtZxWv0LumBo6W0xTHR+iA8ktNb5YQZV0OydnaKz
+         BTkcGMVOwobxl1ckMzbnKpq6FWbuIP3vqbXGr7smTiAIz2IQRDQ5HGY8okx+RUFr34nr
+         Ozt1wZdVcX1ehDbOAxZeXEAkf+285hFItnbCAQE9/HgyN3AipxHlx88UUc/LU4HCsBwF
+         OdId0jrEIxEpw97UdBqu8sqtvSIle+jBX8ASEtU6BUcKdCLQpgRT72BPj2qaY+ZY/6Uh
+         N2PpmxeN/Jp0pWWrx0A2L2rc/wWtUncacN9WSvhkTGcIwvHbeLK30V0JisndxcFU0xLL
+         5fIQ==
+X-Gm-Message-State: AOAM533Kfxp95DInhQaVGQq6/k5INdBeqFcGcuTV+NwIvXIIbHSTWTpa
+        XK9pp9kfbEg3qVUtCHPf+ckQdSJ5/uZp/g==
+X-Google-Smtp-Source: ABdhPJzNU0PkHrmtkKATLk7AzsZsYJSh7nSsorriwppzp/uRJhf4RxRg+sizqjI3CL575b056Nvd+Q==
+X-Received: by 2002:a05:6e02:1522:: with SMTP id i2mr11132952ilu.252.1617374044096;
+        Fri, 02 Apr 2021 07:34:04 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id b9sm4586573iob.4.2021.04.02.07.34.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Apr 2021 07:34:03 -0700 (PDT)
+Subject: Re: [PATCH] block: don't ignore REQ_NOWAIT for direct IO
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <546c66d26ae71abc151aa2074c3dd75ff5efb529.1605892141.git.asml.silence@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <76ea3635-f750-4628-cfa0-1659a3a9376b@kernel.dk>
+Date:   Fri, 2 Apr 2021 08:34:03 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87pn3schlg.fsf@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <546c66d26ae71abc151aa2074c3dd75ff5efb529.1605892141.git.asml.silence@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 05:12:27PM +0100, Giuseppe Scrivano wrote:
-> Hi Eric,
-> 
-> ebiederm@xmission.com (Eric W. Biederman) writes:
-> 
-> > Nit: The tag should have been "userns:" rather than kernel.
-> >
-> > Giuseppe Scrivano <gscrivan@redhat.com> writes:
-> >
-> >> writing to the id map fails when an extent overlaps multiple mappings
-> >> in the parent user namespace, e.g.:
-> >>
-> >> $ cat /proc/self/uid_map
-> >>          0       1000          1
-> >>          1     100000      65536
-> >> $ unshare -U sleep 100 &
-> >> [1] 1029703
-> >> $ printf "0 0 100\n" | tee /proc/$!/uid_map
-> >> 0 0 100
-> >> tee: /proc/1029703/uid_map: Operation not permitted
-> >>
-> >> To prevent it from happening, automatically split an extent so that
-> >> each portion fits in one extent in the parent user namespace.
-> >
-> > I don't see anything fundamentally wrong with relaxing this
-> > restriction, but more code does have more room for bugs to hide.
-> >
-> > What is the advantage of relaxing this restriction?
-> 
-> we are running rootless containers in a namespace created with
-> newuidmap/newgidmap where the mappings look like:
-> 
-> $ cat /proc/self/uid_map
-> 0       1000          1
-> 1     110000      65536
-> 
-> users are allowed to create child user namespaces and specify the
-> mappings to use.  Doing so, they often hit the issue that the mappings
-> cannot overlap multiple extents in the parent user namespace.
-> 
-> The issue could be completely addressed in user space, but to me it
-> looks like an implementation detail that user space should not know
-> about.
-> In addition, it would also be slower (additional read of the current
-> uid_map and gid_map files) and must be implemented separately in each
-> container runtime.
-> 
-> >> $ cat /proc/self/uid_map
-> >>          0       1000          1
-> >>          1     110000      65536
-> >> $ unshare -U sleep 100 &
-> >> [1] 1552
-> >> $ printf "0 0 100\n" | tee /proc/$!/uid_map
-> >> 0 0 100
-> >> $ cat /proc/$!/uid_map
-> >>          0          0          1
-> >>          1          1         99
-> >>
-> >> Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
-> >> ---
-> >>  kernel/user_namespace.c | 62 ++++++++++++++++++++++++++++++++++-------
-> >>  1 file changed, 52 insertions(+), 10 deletions(-)
-> >>
-> >> diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
-> >> index 87804e0371fe..b5542be2bd0a 100644
-> >> --- a/kernel/user_namespace.c
-> >> +++ b/kernel/user_namespace.c
-> >> @@ -706,6 +706,41 @@ const struct seq_operations proc_projid_seq_operations = {
-> >>  	.show = projid_m_show,
-> >>  };
-> >>  
-> >> +static void split_overlapping_mappings(struct uid_gid_map *parent_map,
-> >> +				       struct uid_gid_extent *extent,
-> >> +				       struct uid_gid_extent *overflow_extent)
-> >> +{
-> >> +	unsigned int idx;
-> >> +
-> >> +	overflow_extent->first = (u32) -1;
-> >> +
-> >> +	/* Split extent if it not fully contained in an extent from parent_map.  */
-> >> +	for (idx = 0; idx < parent_map->nr_extents; idx++) {
-> >
-> > Ouch!
-> >
-> > For the larger tree we perform binary searches typically and
-> > here you are walking every entry unconditionally.
-> >
-> > It looks like this makes the write O(N^2) from O(NlogN)
-> > which for a user facing function is not desirable.
-> >
-> > I think something like insert_and_split_extent may be ok.
-> > Incorporating your loop and the part that inserts an element.
-> >
-> > As written this almost doubles the complexity of the code,
-> > as well as making it perform much worse.  Which is a problem.
-> 
-> I've attempted to implement the new functionality at input validation
-> time to not touch the existing security checks.
-> 
-> I've thought the pattern for iterating the extents was fine as I've
-> taken it from mappings_overlap (even if it is used differently on an
-> unsorted array).
-> 
-> Thanks for the hint, I'll move the new logic when map_id_range_down() is
-> used and I'll send a v2.
+On 11/20/20 10:10 AM, Pavel Begunkov wrote:
+> io_uring's direct nowait requests end up waiting on io_schedule() in
+> sbitmap, that's seems to be so because blkdev_direct_IO() fails to
+> propagate IOCB_NOWAIT to a bio and hence to blk-mq.
 
-Hi,
+Thanks, applied. This slipped through the cracks, and I didn't notice
+until I went and directly tested some of this...
 
-sorry if I miseed it.  Did you ever send a v2?
+iomap suffers from the same issue, fwiw.
+
+-- 
+Jens Axboe
+
