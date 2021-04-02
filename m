@@ -2,70 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D5DA352466
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 02:19:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A828352447
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 02:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236780AbhDBASf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 20:18:35 -0400
-Received: from mga12.intel.com ([192.55.52.136]:48424 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236672AbhDBASW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 20:18:22 -0400
-IronPort-SDR: Li5JxpTH2of4I/5mSuCdhXvDnlU1ORSyEu2OIHUXohrsxt5/V5iZJ5Nn0z+T0kzLwgDOC5GCGu
- MEQ8tPEVfmBw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="171775070"
-X-IronPort-AV: E=Sophos;i="5.81,298,1610438400"; 
-   d="scan'208";a="171775070"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 17:17:57 -0700
-IronPort-SDR: iGt63+ATg46WwFRy1K39gC6fBnCUAnEzvrcf0JrIa9ab74AiCPdI29KNRzC81WoH/xj2EntZL+
- 6Uw9WzhL+ZVw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,298,1610438400"; 
-   d="scan'208";a="528399421"
-Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by orsmga004.jf.intel.com with ESMTP; 01 Apr 2021 17:17:57 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     acme@kernel.org, tglx@linutronix.de, bp@alien8.de,
-        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
-        yao.jin@linux.intel.com, alexander.shishkin@linux.intel.com,
-        adrian.hunter@intel.com, Zhang Rui <rui.zhang@intel.com>
-Subject: [PATCH V4 25/25] perf/x86/rapl: Add support for Intel Alder Lake
-Date:   Thu,  1 Apr 2021 17:10:52 -0700
-Message-Id: <1617322252-154215-26-git-send-email-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1617322252-154215-1-git-send-email-kan.liang@linux.intel.com>
-References: <1617322252-154215-1-git-send-email-kan.liang@linux.intel.com>
+        id S236152AbhDBANN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 20:13:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235296AbhDBANL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 20:13:11 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C374FC0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 17:13:09 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id m132so3575015ybf.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 17:13:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hHqIw7rwlLy52EhAj8Y5YIj9xb4HwP2k6pw7NNvVpTY=;
+        b=wMlWmeMUbG3ksG53fNAV62RO3KYm+XW2Jy/PkcB62I7y8EFBc0W0xa7PuwrmA7WG33
+         +s+m391aUoVeVt6tu9yTmJI97zVLUqWFSGGS5c/6QILy1GhNOXry1+MtRs0wRv4U3Xih
+         nwGyOtioUq9gJN5kIIDc4xQUoSGgbFKvFkqzMl22ftqWXG7DwoZ6mZdJFOFgE8d9bxsz
+         CpwV+yLabVHc3s1+i50LwNAzkf5ZwJlzdWmTgIZsSSA+dP24FlqsZX+cG5xV2BuLbOF4
+         HHlP0z85+Nt7Y8sds/kSRHqOUjIG+TZDhFvWEJ7VMIaC13h7U967EnWHHdfN66rGFZp2
+         dvsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hHqIw7rwlLy52EhAj8Y5YIj9xb4HwP2k6pw7NNvVpTY=;
+        b=a7l2YwyFdVUWgZwFdKIC7mObp300F7q4cqEqwjmYjvZqjemXuFjTyz44doXdggkhTv
+         6ShWpWy9eG2FIM3snwX3alYFbFxarWsNyoxV697ShfAqxXUq/uMy08Vf+bTmL1BY9LJD
+         8Tf4dyGZVibmI0/5DXcztRwkkfru2nnB/akD4EmxxpSwN+UQ8l3FuUAg7aGAAKg+qtQ9
+         SxHwKWkLlBPduWvzp5gkA357Sc0af/B2767+0XSOE1ESggO6qz5rJlOmb0DJwFHHujJh
+         Slzb94hhLxxFKtojFIAi76g690ovm6wPBj+84cLyZnzZL74mX1XYy9GcFpP/EBieanBz
+         FbBA==
+X-Gm-Message-State: AOAM532Sx+tl1zVVs2l38ENcUgsOSxzQwGAeOLIAU5WQc7WaVz5d7f5o
+        OrhmKgG/fhQhe5lqCaahmk07DyvMi56EOJg0ssHmAA==
+X-Google-Smtp-Source: ABdhPJxu0dT8nkXGyRm50Qls2b5F+9qxb4gCieCPj/ZRjbq6oQW2/8J4QHLhVlucS8uhbWZowdxRrfGeWDlRj0SVf28=
+X-Received: by 2002:a25:38c1:: with SMTP id f184mr16120789yba.84.1617322388880;
+ Thu, 01 Apr 2021 17:13:08 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210401181741.168763-1-surenb@google.com> <CAHk-=wg8MDMLi8x+u-dee-ai0KiAavm6+JceV00gRXQRFG=Cgw@mail.gmail.com>
+ <CAJuCfpE48zkcM_2GABBpXssjmivKLt+r8+CEeXafqK3VNMMjDw@mail.gmail.com> <20210401234720.GB628002@xz-x1>
+In-Reply-To: <20210401234720.GB628002@xz-x1>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 1 Apr 2021 17:12:57 -0700
+Message-ID: <CAJuCfpGYB10pActvGdtgrgEjNxuFOL4R9KYxMjFQoRK-k_+A1A@mail.gmail.com>
+Subject: Re: [PATCH 0/5] 4.14 backports of fixes for "CoW after fork() issue"
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        stable <stable@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jann Horn <jannh@google.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>, Shaohua Li <shli@fb.com>,
+        Nadav Amit <namit@vmware.com>, Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Rui <rui.zhang@intel.com>
+On Thu, Apr 1, 2021 at 4:47 PM Peter Xu <peterx@redhat.com> wrote:
+>
+> Hi, Suren,
+>
+> On Thu, Apr 01, 2021 at 12:43:51PM -0700, Suren Baghdasaryan wrote:
+> > On Thu, Apr 1, 2021 at 11:59 AM Linus Torvalds
+> > <torvalds@linux-foundation.org> wrote:
+> > >
+> > > On Thu, Apr 1, 2021 at 11:17 AM Suren Baghdasaryan <surenb@google.com> wrote:
+> > > >
+> > > > We received a report that the copy-on-write issue repored by Jann Horn in
+> > > > https://bugs.chromium.org/p/project-zero/issues/detail?id=2045 is still
+> > > > reproducible on 4.14 and 4.19 kernels (the first issue with the reproducer
+> > > > coded in vmsplice.c).
+> > >
+> > > Gaah.
+> > >
+> > > > I confirmed this and also that the issue was not
+> > > > reproducible with 5.10 kernel. I tracked the fix to the following patch
+> > > > introduced in 5.9 which changes the do_wp_page() logic:
+> > > >
+> > > > 09854ba94c6a 'mm: do_wp_page() simplification'
+> > >
+> > > The problem here is that there's a _lot_ more patches than the few you
+> > > found that fixed various other cases (THP etc).
+> > >
+> > > > I backported this patch (#2 in the series) along with 2 prerequisite patches
+> > > > (#1 and #4) that keep the backports clean and two followup fixes to the main
+> > > > patch (#3 and #5). I had to skip the following fix:
+> > > >
+> > > > feb889fb40fa 'mm: don't put pinned pages into the swap cache'
+> > > >
+> > > > because it uses page_maybe_dma_pinned() which does not exists in earlier
+> > > > kernels. Because pin_user_pages() does not exist there as well, I *think*
+> > > > we can safely skip this fix on older kernels, but I would appreciate if
+> > > > someone could confirm that claim.
+> > >
+> > > Hmm. I think this means that swap activity can now break the
+> > > connection to a GUP page (the whole pre-pinning model), but it
+> > > probably isn't a new problem for 4.9/4.19.
+> > >
+> > > I suspect the test there should be something like
+> > >
+> > >         /* Single mapper, more references than us and the map? */
+> > >         if (page_mapcount(page) == 1 && page_count(page) > 2)
+> > >                 goto keep_locked;
+> > >
+> > > in the pre-pinning days.
+> > >
+> > > But I really think that there are a number of other commits you're
+> > > missing too, because we had a whole series for THP fixes for the same
+> > > exact issue.
+> > >
+> > > Added Peter Xu to the cc, because he probably tracked those issues
+> > > better than I did.
+> > >
+> > > So NAK on this for now, I think this limited patch-set likely
+> > > introduces more problems than it fixes.
+> >
+> > Thanks for confirming my worries. I'll be happy to add additional
+> > backports if Peter can point me to them.
+>
+> If for a full-alignment with current upstream, I can at least think of below
+> series:
+>
+> Early cow for general pages:
+> https://lore.kernel.org/lkml/20200925222600.6832-1-peterx@redhat.com/
+>
+> A race fix for copy_page and gup-fast:
+> https://lore.kernel.org/linux-mm/0-v4-908497cf359a+4782-gup_fork_jgg@nvidia.com/
+>
+> Early cow for hugetlbfs (which is very recently):
+> https://lore.kernel.org/lkml/20210217233547.93892-1-peterx@redhat.com/
+>
+> But I believe they'll bring a number of dependencies too like the page pinned
+> work; so seems not easy.
 
-Alder Lake RAPL support is the same as previous Sky Lake.
-Add Alder Lake model for RAPL.
+Thanks Peter. Let me try backporting these and I'll see if it's doable.
 
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Zhang Rui <rui.zhang@intel.com>
----
- arch/x86/events/rapl.c | 2 ++
- 1 file changed, 2 insertions(+)
+>
+> Btw, AFAICT you don't need patch 4/5 in this series for 4.14/4.19, since
+> those're only for uffd-wp and it doesn't exist until 5.7.
 
-diff --git a/arch/x86/events/rapl.c b/arch/x86/events/rapl.c
-index f42a704..84a1042 100644
---- a/arch/x86/events/rapl.c
-+++ b/arch/x86/events/rapl.c
-@@ -800,6 +800,8 @@ static const struct x86_cpu_id rapl_model_match[] __initconst = {
- 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X,		&model_hsx),
- 	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE_L,		&model_skl),
- 	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE,		&model_skl),
-+	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE,		&model_skl),
-+	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE_L,		&model_skl),
- 	X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X,	&model_spr),
- 	X86_MATCH_VENDOR_FAM(AMD,	0x17,		&model_amd_fam17h),
- 	X86_MATCH_VENDOR_FAM(HYGON,	0x18,		&model_amd_fam17h),
--- 
-2.7.4
+Got it. Will drop it from the next series.
+Thanks,
+Suren.
 
+>
+> Thanks,
+>
+> --
+> Peter Xu
+>
