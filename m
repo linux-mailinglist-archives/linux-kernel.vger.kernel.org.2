@@ -2,104 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13671352AD1
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 14:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79857352AAE
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 14:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235489AbhDBMu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 08:50:26 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:37168 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229932AbhDBMuX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 08:50:23 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 131DqGu0040293;
-        Thu, 1 Apr 2021 08:52:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1617285136;
-        bh=lVDHzX91Sk11Ck57RNIL8h0yHHmjpnWZIpiFJQIw4mA=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=lWOBR6vf3FbeYg1fc6P29N9DqjxHBXON/QGyoGdmCFWuaOClLuCW1/67+qVcOfk2u
-         Y/yOglNRS7W2kcDj6TnDmuzSYgUhz1KGF7MM5rK8CH2BRVA3XHlFug7qpu0Kjpb/hz
-         u9Pn7UmM6eZV7G/sUYI/giSf4n6rof/W/TQrbSQA=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 131DqGmD015312
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 1 Apr 2021 08:52:16 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 1 Apr
- 2021 08:52:16 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 1 Apr 2021 08:52:16 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 131DqGTr097711;
-        Thu, 1 Apr 2021 08:52:16 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     <linux-spi@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
-        Pratyush Yadav <p.yadav@ti.com>,
+        id S235333AbhDBMfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 08:35:19 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:60154 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229599AbhDBMfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 08:35:18 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lSJ0t-00EUtn-9j; Fri, 02 Apr 2021 14:34:59 +0200
+Date:   Fri, 2 Apr 2021 14:34:59 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "Voon, Weifeng" <weifeng.voon@intel.com>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        "Sit, Michael Wei Hong" <michael.wei.hong.sit@intel.com>,
+        "peppe.cavallaro@st.com" <peppe.cavallaro@st.com>,
+        "alexandre.torgue@st.com" <alexandre.torgue@st.com>,
+        "joabreu@synopsys.com" <joabreu@synopsys.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
+        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
+        "qiangqing.zhang@nxp.com" <qiangqing.zhang@nxp.com>,
+        "Wong, Vee Khee" <vee.khee.wong@intel.com>,
+        "fugang.duan@nxp.com" <fugang.duan@nxp.com>,
+        "Chuah, Kim Tatt" <kim.tatt.chuah@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
         <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Tero Kristo <kristo@kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: (subset) [PATCH 0/4] Convert Cadence QSPI bindings to yaml
-Date:   Thu, 1 Apr 2021 08:52:15 -0500
-Message-ID: <161728504983.2096.1063574920554874294.b4-ty@ti.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210326130034.15231-1-p.yadav@ti.com>
-References: <20210326130034.15231-1-p.yadav@ti.com>
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>
+Subject: Re: [PATCH net-next 1/2] net: stmmac: enable 2.5Gbps link speed
+Message-ID: <YGcPc3dan0ocRSG2@lunn.ch>
+References: <20210401150152.22444-1-michael.wei.hong.sit@intel.com>
+ <20210401150152.22444-2-michael.wei.hong.sit@intel.com>
+ <20210401151044.GZ1463@shell.armlinux.org.uk>
+ <SN6PR11MB3136F7A7ACA1A5C324031607887A9@SN6PR11MB3136.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SN6PR11MB3136F7A7ACA1A5C324031607887A9@SN6PR11MB3136.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Mar 2021 18:30:30 +0530, Pratyush Yadav wrote:
-> This series picks up Ramuthevar's effort on converting the Cadence QSPI
-> bindings to yaml [0]. During the conversion process, I discovered that
-> some TI device tree files were not using the compatible correctly. Those
-> are fixed in patches 1-3.
+On Fri, Apr 02, 2021 at 07:45:04AM +0000, Voon, Weifeng wrote:
+> > > +	/* 2.5G mode only support 2500baseT full duplex only */
+> > > +	if (priv->plat->has_gmac4 && priv->plat->speed_2500_en) {
+> > > +		phylink_set(mac_supported, 2500baseT_Full);
+> > > +		phylink_set(mask, 10baseT_Half);
+> > > +		phylink_set(mask, 10baseT_Full);
+> > > +		phylink_set(mask, 100baseT_Half);
+> > > +		phylink_set(mask, 100baseT_Full);
+> > > +		phylink_set(mask, 1000baseT_Half);
+> > > +		phylink_set(mask, 1000baseT_Full);
+> > > +		phylink_set(mask, 1000baseKX_Full);
+> > 
+> > Why? This seems at odds to the comment above?
 > 
-> [0] https://patchwork.kernel.org/project/spi-devel-general/patch/20201116031003.19062-6-vadivel.muruganx.ramuthevar@linux.intel.com/
+> > What about 2500baseX_Full ?
 > 
-> [...]
+> The comments explain that the PCS<->PHY link is in 2500BASE-X
+> and why 10/100/1000 link speed is mutually exclusive with 2500.
+> But the connected external PHY are twisted pair cable which only
+> supports 2500baseT_full.
 
-Hi Pratyush Yadav,
+The PHY should indicate what modes its supports. The PHY drivers
+get_features() call should set supported to only 2500baseT_Full, if
+that is all it supports.
 
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
+What modes are actually used should then be the intersect of what both
+the MAC and the PHY indicate they can do.
 
-[1/4] arm64: dts: ti: k3-j721e-mcu: Fix ospi compatible
-      commit: f1b6f6e7f595ed66ba5f5d628df3d259218d584b
-[2/4] arm64: dts: ti: k3-j7200-mcu: Fix ospi compatible
-      commit: 0e941f496a8bdc47d34199c17f81b09b0dbe14ae
-[3/4] arm64: dts: ti: k3-am64-main: Fix ospi compatible
-      commit: 112e5934ff3a7505e583365213a27f990922b76b
-
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-[1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
-
+     Andrew
