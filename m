@@ -2,231 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B0E352E2B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 19:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C255A352E2E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 19:22:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235993AbhDBRUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 13:20:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54974 "EHLO
+        id S235886AbhDBRWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 13:22:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234759AbhDBRUo (ORCPT
+        with ESMTP id S234759AbhDBRWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 13:20:44 -0400
-Received: from plekste.mt.lv (bute.mt.lv [IPv6:2a02:610:7501:2000::195])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E6CC0613E6;
-        Fri,  2 Apr 2021 10:20:43 -0700 (PDT)
-Received: from localhost ([127.0.0.1] helo=bute.mt.lv)
-        by plekste.mt.lv with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <gatis@mikrotik.com>)
-        id 1lSNTI-0004Hz-Vd; Fri, 02 Apr 2021 20:20:37 +0300
+        Fri, 2 Apr 2021 13:22:02 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED2EC0613E6
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 10:22:01 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id b17so274308pgh.7
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 10:22:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=SJQZRGQfDVHISSI0cWafHWjPGoBoA9z2oZ6ofvMIC2Q=;
+        b=ocV94QmEb8WHve6vi9dD9HSzUXWedb0p0T2GPCqbwTSgd7Qb0ffDTiqjEPcSR0sr/W
+         YqD+TyzLa9fRDDs7rmCriV7RrlbuP4pRE3lz4Cj75RjiBC9AJUOGSDD+os3kzOGY6M1G
+         K0dKzB1NDHh9KagaDm6XpqQngu4jfy6KpHzj4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=SJQZRGQfDVHISSI0cWafHWjPGoBoA9z2oZ6ofvMIC2Q=;
+        b=qm5zJ8Zkp1lH1Ni35LlwvRfak5qcFlxOdtfpy/JcKWgDU8XkGpDv70mqEMFRK77zL6
+         YFd9EE77+UO0KlqEketdVuKT9FEWxWnQfc6r+DPpBiKFGMK+FYWrzJtcKb9YBnb/hpNe
+         Xd5WmpfWZB+GkdZezByGEXfxWQnWYAgaev+v2NpdR6eGKF45B9CQCXjvmjbF+fkSjeVa
+         avTxbzyDCnuMroA64ro2rc2bwPgidHdsA2k8jvbGF6T0D3B7/9QH3FuBqZXuLzn10+nf
+         3700XV63dnZL9yqpA8KEuWPOugddlH3QnB+tC2CmrGQV0oaw8/BEfDGu/qDwyb614Gxb
+         dUgg==
+X-Gm-Message-State: AOAM530LAcxQsmgb5IH8ndyKVfh6HHUlqJ0zyDIrRKvwX7P7kNC7ClAj
+        Yj2+VOgdKJ71yJWRFxpeIE28Hd5RLXamnA==
+X-Google-Smtp-Source: ABdhPJycQ6o/WXNDqjnSReUssRoY2znK34XTff4rI9DvMf3gFUNdlCSyK1rU0QuaC1TBx0jHE7r0BQ==
+X-Received: by 2002:a63:5c07:: with SMTP id q7mr12755567pgb.52.1617384120737;
+        Fri, 02 Apr 2021 10:22:00 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:201:c090:e09d:927a:b4a8])
+        by smtp.gmail.com with ESMTPSA id bj15sm8519131pjb.9.2021.04.02.10.21.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Apr 2021 10:22:00 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Date:   Fri, 02 Apr 2021 20:20:36 +0300
-From:   Gatis Peisenieks <gatis@mikrotik.com>
-To:     chris.snook@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        hkallweit1@gmail.com, jesse.brandeburg@intel.com,
-        dchickles@marvell.com, tully@mikrotik.com, eric.dumazet@gmail.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net v2] atl1c: move tx cleanup processing out of interrupt
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <c6ea0a3d1bcf79bb1e319d1e99cfed9b@mikrotik.com>
-X-Sender: gatis@mikrotik.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YGbvXFrMg6X7q3qL@gerhold.net>
+References: <20210323224336.1311783-1-swboyd@chromium.org> <6ec0ca8d-85c7-53d6-acf2-22c4ac13e805@codeaurora.org> <161734672825.2260335.8472441215895199196@swboyd.mtv.corp.google.com> <YGbvXFrMg6X7q3qL@gerhold.net>
+Subject: Re: [PATCH v2] firmware: qcom_scm: Only compile legacy calls on ARM
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Elliot Berman <eberman@codeaurora.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Brian Masney <masneyb@onstation.org>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>
+To:     Stephan Gerhold <stephan@gerhold.net>
+Date:   Fri, 02 Apr 2021 10:21:58 -0700
+Message-ID: <161738411853.2260335.5107124874054215375@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tx queue cleanup happens in interrupt handler on same core as rx queue 
-processing.
-Both can take considerable amount of processing in high 
-packet-per-second scenarios.
+Quoting Stephan Gerhold (2021-04-02 03:18:04)
+> On Thu, Apr 01, 2021 at 11:58:48PM -0700, Stephen Boyd wrote:
+> > Quoting Elliot Berman (2021-04-01 18:12:14)
+> > >=20
+> > > It might be a good idea to wrap these lines from qcom_scm_call with #=
+if=20
+> > > IS_ENABLED(CONFIG_ARM), and the corresponding ones in qcom_scm_call_a=
+tomic:
+> > >=20
+> > >    case SMC_CONVENTION_LEGACY:
+> > >        return scm_legacy_call(dev, desc, res);
+> > >=20
+> > > If something is wrong with loaded firmware and LEGACY convention is=20
+> > > incorrectly selected, you would get a better hint about the problem: =
 
-Sending big amounts of packets can stall the rx processing which is 
-unfair
-and also can lead to to out-of-memory condition since 
-__dev_kfree_skb_irq
-queues the skbs for later kfree in softirq which is not allowed to 
-happen
-with heavy load in interrupt handler.
+> > > "Unknown current SCM calling convention." You would still get the hin=
+t=20
+> > > earlier from __get_convention, but that may not be obvious to someone=
+=20
+> > > unfamiliar with the SCM driver.
+> > >=20
+> > > I'll defer to your/Bjorn's preference:
+> > >=20
+> > > Acked-by: Elliot Berman <eberman@codeaurora.org>
+> > >=20
+> > > with or without modifying qcom_scm_call{_atomic}.
+> > >=20
+> >=20
+> > Maybe it would be better to catch that problem at the source and force
+> > arm64 calling convention to be safe? I'm thinking of this patch, but it
+> > could be even more fine tuned and probably the sc7180 check could be
+> > removed in the process if the rest of this email makes sense.
+> >=20
+> > If I understand correctly CONFIG_ARM64=3Dy should never use legacy
+> > convention (and never the 32-bit one either?), so we can figure that out
+> > pretty easily and just force it to use 64-bit if the architecture is
+> > arm64. If only the 64-bit convention is supported on arm64 then we
+> > really don't even need to call into the firmware to figure it out on
+> > arm64. We can do this convention detection stuff on arm32 (CONFIG_ARM)
+> > and always assume 64-bit convention on CONFIG_ARM64. Is that right?
+> >=20
+>=20
+> No, the detection is also needed on ARM64. On ARM32 there can be either
+> legacy or SMC32, but on ARM64 there can be either SMC32 or SMC64.
+> You cannot use SMC64 on 32-bit, but you can use SMC32 on ARM64 just
+> fine. SMC32 is used on MSM8916 for example.
+>=20
 
-This puts tx cleanup in its own napi and enables threaded napi to allow 
-the rx/tx
-queue processing to happen on different cores.
-
-The ability to sustain equal amounts of tx/rx traffic increased:
-from 280Kpps to 1130Kpps on Threadripper 3960X with upcoming Mikrotik 
-10/25G NIC,
-from 520Kpps to 850Kpps on Intel i3-3320 with Mikrotik RB44Ge adapter.
-
-Signed-off-by: Gatis Peisenieks <gatis@mikrotik.com>
----
-  drivers/net/ethernet/atheros/atl1c/atl1c.h    |  2 +
-  .../net/ethernet/atheros/atl1c/atl1c_main.c   | 43 +++++++++++++++++--
-  2 files changed, 41 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/atheros/atl1c/atl1c.h 
-b/drivers/net/ethernet/atheros/atl1c/atl1c.h
-index a0562a90fb6d..4404fa44d719 100644
---- a/drivers/net/ethernet/atheros/atl1c/atl1c.h
-+++ b/drivers/net/ethernet/atheros/atl1c/atl1c.h
-@@ -506,6 +506,7 @@ struct atl1c_adapter {
-  	struct net_device   *netdev;
-  	struct pci_dev      *pdev;
-  	struct napi_struct  napi;
-+	struct napi_struct  tx_napi;
-  	struct page         *rx_page;
-  	unsigned int	    rx_page_offset;
-  	unsigned int	    rx_frag_size;
-@@ -529,6 +530,7 @@ struct atl1c_adapter {
-  	u16 link_duplex;
-
-  	spinlock_t mdio_lock;
-+	spinlock_t irq_mask_lock;
-  	atomic_t irq_sem;
-
-  	struct work_struct common_task;
-diff --git a/drivers/net/ethernet/atheros/atl1c/atl1c_main.c 
-b/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-index 3f65f2b370c5..f51b28e8b6dc 100644
---- a/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-+++ b/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-@@ -813,6 +813,7 @@ static int atl1c_sw_init(struct atl1c_adapter 
-*adapter)
-  	atl1c_set_rxbufsize(adapter, adapter->netdev);
-  	atomic_set(&adapter->irq_sem, 1);
-  	spin_lock_init(&adapter->mdio_lock);
-+	spin_lock_init(&adapter->irq_mask_lock);
-  	set_bit(__AT_DOWN, &adapter->flags);
-
-  	return 0;
-@@ -1530,7 +1531,7 @@ static inline void atl1c_clear_phy_int(struct 
-atl1c_adapter *adapter)
-  	spin_unlock(&adapter->mdio_lock);
-  }
-
--static bool atl1c_clean_tx_irq(struct atl1c_adapter *adapter,
-+static unsigned atl1c_clean_tx_irq(struct atl1c_adapter *adapter,
-  				enum atl1c_trans_queue type)
-  {
-  	struct atl1c_tpd_ring *tpd_ring = &adapter->tpd_ring[type];
-@@ -1564,7 +1565,25 @@ static bool atl1c_clean_tx_irq(struct 
-atl1c_adapter *adapter,
-  		netif_wake_queue(adapter->netdev);
-  	}
-
--	return true;
-+	return total_packets;
-+}
-+
-+static int atl1c_clean_tx(struct napi_struct *napi, int budget)
-+{
-+	struct atl1c_adapter *adapter =
-+		container_of(napi, struct atl1c_adapter, tx_napi);
-+	unsigned long flags;
-+	int work_done = atl1c_clean_tx_irq(adapter, atl1c_trans_normal);
-+
-+	if (work_done < budget) {
-+		napi_complete_done(napi, work_done);
-+		spin_lock_irqsave(&adapter->irq_mask_lock, flags);
-+		adapter->hw.intr_mask |= ISR_TX_PKT;
-+		AT_WRITE_REG(&adapter->hw, REG_IMR, adapter->hw.intr_mask);
-+		spin_unlock_irqrestore(&adapter->irq_mask_lock, flags);
-+		return work_done;
-+	}
-+	return budget;
-  }
-
-  /**
-@@ -1599,13 +1618,22 @@ static irqreturn_t atl1c_intr(int irq, void 
-*data)
-  		AT_WRITE_REG(hw, REG_ISR, status | ISR_DIS_INT);
-  		if (status & ISR_RX_PKT) {
-  			if (likely(napi_schedule_prep(&adapter->napi))) {
-+				spin_lock(&adapter->irq_mask_lock);
-  				hw->intr_mask &= ~ISR_RX_PKT;
-  				AT_WRITE_REG(hw, REG_IMR, hw->intr_mask);
-+				spin_unlock(&adapter->irq_mask_lock);
-  				__napi_schedule(&adapter->napi);
-  			}
-  		}
--		if (status & ISR_TX_PKT)
--			atl1c_clean_tx_irq(adapter, atl1c_trans_normal);
-+		if (status & ISR_TX_PKT) {
-+			if (napi_schedule_prep(&adapter->tx_napi)) {
-+				spin_lock(&adapter->irq_mask_lock);
-+				hw->intr_mask &= ~ISR_TX_PKT;
-+				AT_WRITE_REG(hw, REG_IMR, hw->intr_mask);
-+				spin_unlock(&adapter->irq_mask_lock);
-+				__napi_schedule(&adapter->tx_napi);
-+			}
-+		}
-
-  		handled = IRQ_HANDLED;
-  		/* check if PCIE PHY Link down */
-@@ -1870,6 +1898,7 @@ static int atl1c_clean(struct napi_struct *napi, 
-int budget)
-  	struct atl1c_adapter *adapter =
-  			container_of(napi, struct atl1c_adapter, napi);
-  	int work_done = 0;
-+	unsigned long flags;
-
-  	/* Keep link state information with original netdev */
-  	if (!netif_carrier_ok(adapter->netdev))
-@@ -1880,8 +1909,10 @@ static int atl1c_clean(struct napi_struct *napi, 
-int budget)
-  	if (work_done < budget) {
-  quit_polling:
-  		napi_complete_done(napi, work_done);
-+		spin_lock_irqsave(&adapter->irq_mask_lock, flags);
-  		adapter->hw.intr_mask |= ISR_RX_PKT;
-  		AT_WRITE_REG(&adapter->hw, REG_IMR, adapter->hw.intr_mask);
-+		spin_unlock_irqrestore(&adapter->irq_mask_lock, flags);
-  	}
-  	return work_done;
-  }
-@@ -2319,6 +2350,7 @@ static int atl1c_up(struct atl1c_adapter *adapter)
-  	atl1c_check_link_status(adapter);
-  	clear_bit(__AT_DOWN, &adapter->flags);
-  	napi_enable(&adapter->napi);
-+	napi_enable(&adapter->tx_napi);
-  	atl1c_irq_enable(adapter);
-  	netif_start_queue(netdev);
-  	return err;
-@@ -2339,6 +2371,7 @@ static void atl1c_down(struct atl1c_adapter 
-*adapter)
-  	set_bit(__AT_DOWN, &adapter->flags);
-  	netif_carrier_off(netdev);
-  	napi_disable(&adapter->napi);
-+	napi_disable(&adapter->tx_napi);
-  	atl1c_irq_disable(adapter);
-  	atl1c_free_irq(adapter);
-  	/* disable ASPM if device inactive */
-@@ -2504,6 +2537,7 @@ static int atl1c_init_netdev(struct net_device 
-*netdev, struct pci_dev *pdev)
-  				NETIF_F_TSO6;
-  	netdev->features =	netdev->hw_features	|
-  				NETIF_F_HW_VLAN_CTAG_TX;
-+	netdev->threaded = true;
-  	return 0;
-  }
-
-@@ -2588,6 +2622,7 @@ static int atl1c_probe(struct pci_dev *pdev, const 
-struct pci_device_id *ent)
-  	adapter->mii.phy_id_mask = 0x1f;
-  	adapter->mii.reg_num_mask = MDIO_CTRL_REG_MASK;
-  	netif_napi_add(netdev, &adapter->napi, atl1c_clean, 64);
-+	netif_napi_add(netdev, &adapter->tx_napi, atl1c_clean_tx, 64);
-  	timer_setup(&adapter->phy_config_timer, atl1c_phy_config, 0);
-  	/* setup the private structure */
-  	err = atl1c_sw_init(adapter);
--- 
-2.28.0
----
-
-Resending the patch with threaded napi which does the trick as suggested 
-by Eric Dumazet.
-
-Regards,
-Gatis
+Ah right, the whole secure world running in 32-bit mode thing. Is
+msm8916 the only SoC that's using that? Or are there more? If only
+msm8916 is affected then we could use a combination of CONFIG_ARM64 and
+the compatible string to differentiate and then if more SoCs use 32-bit
+secure world then we could have a new compatible string like qcom,scm-32
+that tells us this fact. Maybe this was all discussed before and I
+missed it. Either way, I'm trying to get rid of this boot call so that
+we don't have to bounce to the firmware an extra time to figure out
+something we can figure out from the kernel arch and scm compatible
+string.
