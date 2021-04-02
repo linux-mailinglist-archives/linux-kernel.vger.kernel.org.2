@@ -2,79 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F2F352FA2
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 21:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34589352FAB
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 21:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236512AbhDBTUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 15:20:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231149AbhDBTUF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 15:20:05 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44DFCC0613E6;
-        Fri,  2 Apr 2021 12:20:04 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0a2000165287017d4f49d2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:2000:1652:8701:7d4f:49d2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E6F1B1EC04C2;
-        Fri,  2 Apr 2021 21:19:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1617391200;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=BBb1WFTTL1Y0lhiyA/54Ap1qMu86ye47+4aQrqQz0uk=;
-        b=VR1KOLwAW2D5e1sm93ntpGCzVUxIwm1OAZV4s4hwIN2+KprPvS3OkXNSV38pTBfNgWxYM5
-        nmkRIND+04d00MEqJsH40catVPs4tkph7ePmokb769pAs1f8/gHkHW0aC5e7VzSLWf1p0+
-        KJBWUTzzu5wWrgOoNVezgSgJXI914sA=
-Date:   Fri, 2 Apr 2021 21:19:57 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Kai Huang <kai.huang@intel.com>, kvm@vger.kernel.org,
-        linux-sgx@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com
-Subject: Re: [PATCH v3 07/25] x86/sgx: Initialize virtual EPC driver even
- when SGX driver is disabled
-Message-ID: <20210402191946.GL28499@zn.tnic>
-References: <cover.1616136307.git.kai.huang@intel.com>
- <d35d17a02bbf8feef83a536cec8b43746d4ea557.1616136308.git.kai.huang@intel.com>
- <20210402094816.GC28499@zn.tnic>
- <YGc7ezLWEu/ZvUOu@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YGc7ezLWEu/ZvUOu@google.com>
+        id S236548AbhDBTVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 15:21:17 -0400
+Received: from smtp-17.italiaonline.it ([213.209.10.17]:43618 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236255AbhDBTVG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 15:21:06 -0400
+Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
+ ([87.20.116.197])
+        by smtp-17.iol.local with ESMTPA
+        id SPLllsyFltpGHSPLpl2FsN; Fri, 02 Apr 2021 21:21:03 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1617391263; bh=R6GHCx3CerAOJ+ryJ+EbVwiXfLqRKvfStzoQSk5u4Z8=;
+        h=From;
+        b=PNpxoOPjsruurWBuIP4BWB+8sXnwBBhpLq6WSMpi1i8HX+YlU7REHjLC1NNMthbeM
+         7WRA01kYa4OYmU/dvxCy1YHm9Ik8T9LkSUcKs2FVWQ/8YMu+ikOjOgwXBzfahF3dbB
+         RvPrsEsdXqFWDyZQpLpiWprZD0IRiGFCQH0GNzllnh33CQuAlAtIG3PZunfZ2moISU
+         x8w22+hGzhf8v2c9yyqsufWTjY2Uy2rgCd8DTVlkVsmzaYl/9Pc80QYtydjyBG3NJZ
+         IfkFjm3fbmBADucPZrNj84LOpXvASE5gLRfAigz4oMEhZO2p/Jsba3lekk9IWY/Fg8
+         oGhQOT7qfGxVA==
+X-CNFS-Analysis: v=2.4 cv=Q7IXX66a c=1 sm=1 tr=0 ts=60676e9f cx=a_exe
+ a=AVqmXbCQpuNSdJmApS5GbQ==:117 a=AVqmXbCQpuNSdJmApS5GbQ==:17 a=voM4FWlXAAAA:8
+ a=pGLkceISAAAA:8 a=41Gc8jEUxQ3D8fAdJ3gA:9 a=IC2XNlieTeVoXbcui8wp:22
+From:   Dario Binacchi <dariobin@libero.it>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dario Binacchi <dariobin@libero.it>, Bin Meng <bmeng.cn@gmail.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Tero Kristo <kristo@kernel.org>, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-omap@vger.kernel.org
+Subject: [PATCH 0/2] fdt: translate address if #size-cells = <0>
+Date:   Fri,  2 Apr 2021 21:20:52 +0200
+Message-Id: <20210402192054.7934-1-dariobin@libero.it>
+X-Mailer: git-send-email 2.17.1
+X-CMAE-Envelope: MS4xfCtRTdCoLJ2l+ys7Y/9ueVP5NO0jLh0APftefEw44q51Um2Gxrttik/fbkAxgU+eAAceMxARlPUZC+g5WTy2N3TQgP/04rXbs9zGd7Ml7JQGhTHE0lzy
+ 9NgKitBC4BqWQVFXoTtbGmhyFto1sDlGm4xrUvu+OlsmMYkgFmPWvmEn+rFGroLXwTPIqkyM5FcIEgHDDHnehZZU2T34w8HlX51yV6TGeBn+Li9kqqeDXHRe
+ Ry68FpenD4x++rm4UctLu0GEQra0ZCRZQvpTDN0SZGFN414hlWgfoBf9Dp5pu0KtkHaC8bbbh41WqyIrgIK07RgJozeD69XGRd5hMgEWyB7K3QNNoq6MaHrR
+ nxHizmEFea+9Jkt5iUZrB07LRt6S/gKoJj8TguyDWLloa9eJvZGBYGGDLOkeKevpgGze4/ceayu5JFbUqV6NSMCGOTLWZxUtHGO6jB9weOehEqSTrguJrH8Z
+ ft1Giu73nX3amVkdkChwORPL810+qXMc60P3+WoXzi41b+WYDppUpszAoSW0u4+ave8hzYhqpW6i/SGDsUBpL+f2xzXaEFgbttCvRw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 03:42:51PM +0000, Sean Christopherson wrote:
-> Nope!  That's wrong, as sgx_epc_init() will not be called if sgx_drv_init()
-> succeeds.  And writing it as "if (sgx_drv_init() || sgx_vepc_init())" is also
-> wrong since that would kill SGX when one of the drivers is alive and well.
 
-Bah, right you are.
+The series comes from my commit in U-boot
+d64b9cdcd4 ("fdt: translate address if #size-cells = <0>")
+and from the subsequent exchange of emails at the end of which I was
+suggested to send the patch to the linux kernel
+(https://patchwork.ozlabs.org/project/uboot/patch/1614324949-61314-1-git-send-email-bmeng.cn@gmail.com/).
 
-How about:
+The second patch of the series aims to demonstrate that the first one, which
+enables the translation of addresses also for crossings of DT nodes
+with #size-cells = <0>, it really works.
 
-	/* Error out only if both fail to initialize. */
-        ret = sgx_drv_init();
 
-        if (sgx_vepc_init() && ret)
-                goto err_kthread;
+Dario Binacchi (2):
+  fdt: translate address if #size-cells = <0>
+  clk: ti: get register address from device tree
 
-And yah, this looks strange so it needs the comment to explain what's
-going on here.
-
-Thx.
+ drivers/clk/ti/clk.c     | 13 ++++++++++++-
+ drivers/of/Kconfig       | 13 +++++++++++++
+ drivers/of/address.c     |  8 +++++++-
+ drivers/of/fdt_address.c |  6 ++++--
+ 4 files changed, 36 insertions(+), 4 deletions(-)
 
 -- 
-Regards/Gruss,
-    Boris.
+2.17.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
