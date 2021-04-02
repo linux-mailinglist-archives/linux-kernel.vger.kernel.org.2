@@ -2,125 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AEA5352EC2
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 19:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A20E352EC3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 19:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235304AbhDBRxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 13:53:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33880 "EHLO
+        id S235220AbhDBRxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 13:53:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235111AbhDBRxG (ORCPT
+        with ESMTP id S235392AbhDBRxL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 13:53:06 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 246BFC061788
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 10:53:05 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id b10so6064120iot.4
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 10:53:05 -0700 (PDT)
+        Fri, 2 Apr 2021 13:53:11 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC230C0613E6
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 10:53:09 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id t5so2819488qvs.5
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 10:53:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=whRXq76gjLJkPVfSKotV9dDdRpnCQB8vQShEk4qBurw=;
-        b=F6SYbw6faTLWfI73meZgPfreP/nqSXtNQdx6iM1rVNVXrfabL9IhrVJ4FEOEYh60n0
-         F9G4345qX6aHJLhkwVqs/kHbWZaPG7iyykKqgO3E8BBog5ljCjILCfRpcgaU7M+F8sy/
-         UtWs5D2FQVzAGJG+mNgMPimOstbPg4rdg3T8I=
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nKflX5jMdNtO1G8b2MdcdLIZYhVve5XTRnZ5EPOMQY8=;
+        b=cokK/yHjMME0ZWlqRKtLC3Y8y4hkBEbEN2/vp7QXbMlYI0ptDC173WD+Sohx3R6n5A
+         BubMos0/s4sVyDFNuEVi2xEKs4JWSnq5x0HnL3G0rdC6W2F+b49WDpbnrZrKqYljDpCT
+         2aKsU7u9SFeL4P+i/JUHkv5dM/D0K8xYOKoOJSupV8kMHdGkQjDOFCFAdKVjYIMR2XRW
+         McrA8LsEN/drb5xNcJVm+GV6/vTtCilCWaK7rChKQxJDpZ4TQmaw2S/chVX7vJtmMZYF
+         lAkSuHplsZyZyQbAUiPEYT4qjdwdvkQMgnEf8ZMon9UGvxL1ljrfcSQQai47TIramF6y
+         KO5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=whRXq76gjLJkPVfSKotV9dDdRpnCQB8vQShEk4qBurw=;
-        b=D3olwo+aXkKji5lWCrA4R1gmDhklpJul9WrbRvuDipqxU92nRxfyP7gBezRanZvNB6
-         opskEXDrOQp4XSbvETsw03zmsUNy3emuG73t1sm/EbWBM712qDH3320SN7L9R40T7HFa
-         HYEl95WeZDPh5809rDv20QCG1ua0GEpir/vsExUe08gtQ2pYiixv/l+074KGShPTpCAB
-         IaBLF0D3c4PZ4HjwJA/qlZCxWWbjJ62XXoWCEKFSnAOqatdhQcY6iqUOI3rQ1rXTqkg/
-         e1GWEqM8DyDjAcN/bMmH9UEMDtdrwNaHr9zloqghWVgz6tqxaEHrPefv0SVQcOuR7aC5
-         fbHA==
-X-Gm-Message-State: AOAM530XOkARNPCf9tKZgCagRHwva0g8P2XdSsS+4YoMPidyf4U1SqAx
-        goudVWCoQq0yGoTtgTGYTBUMUg==
-X-Google-Smtp-Source: ABdhPJz1r1Ceyj+k6UwLlZGeWclgyMNhnV+pTsYoP1H/9iIhgVpTVY30rKYBtvBnCi89ACrcNGW83g==
-X-Received: by 2002:a5e:980e:: with SMTP id s14mr12260386ioj.63.1617385984539;
-        Fri, 02 Apr 2021 10:53:04 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id b9sm4848319iob.4.2021.04.02.10.53.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Apr 2021 10:53:04 -0700 (PDT)
-Subject: Re: [PATCH v4 1/2] kunit: support failure from dynamic analysis tools
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        Daniel Latypov <dlatypov@google.com>
-Cc:     David Gow <davidgow@google.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Uriel Guajardo <urielguajardo@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210311152314.3814916-1-dlatypov@google.com>
- <20210311152314.3814916-2-dlatypov@google.com>
- <CAFd5g46fy_9mPH6AihwUf5GW7aTJ=ecvmD0S266EKtNtweSOcg@mail.gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <16fe1cc0-5819-986d-9065-433a80783edb@linuxfoundation.org>
-Date:   Fri, 2 Apr 2021 11:53:03 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nKflX5jMdNtO1G8b2MdcdLIZYhVve5XTRnZ5EPOMQY8=;
+        b=B0mzYgi1pqJMsTbT7OPhprf6BZWeA8h/FnkHxRLM+0cvM6DrenHeIjVih11AU02Ud3
+         agP7Xr3iULhJ5cGVbVJD3qXLKkb1hwcu1VZYSXHy6vc9c7IuMbla/AvIcpFGkqccgz2Z
+         9VmgTetngglISNXRFdZKxeyqJM09wVUizs1nTl0ai7Ytx2oXy+7vwUjsCcvalFxjJfRz
+         a0cLY2HSglN2BJlWNIVcJgiuWhK7jLvRsDH08B44REzBGsllvW37GY9fdO1afxhTFvKS
+         6R4UwYFORvn2G2kilzcxNgRKYCNBwUAKCER3fcxUjMShdZf06nyNxTj7eKj0dLYUtULU
+         Hiew==
+X-Gm-Message-State: AOAM530xmJM4cgeBMYlMOD8Hg7vBnIWTLF9pQMrOvcANbScJvt6eiysb
+        wMp+4vpk+5qKOJmnNfBDa3njlw==
+X-Google-Smtp-Source: ABdhPJyxtsmMGesJxLMmulQYPLF1n6/A1aDon8C+mHGH/+m7wf+/Vle2HxXNMt4herG6EDZg40TdTg==
+X-Received: by 2002:a05:6214:2628:: with SMTP id gv8mr14106450qvb.19.1617385989081;
+        Fri, 02 Apr 2021 10:53:09 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:8ca7])
+        by smtp.gmail.com with ESMTPSA id r17sm7077362qtn.25.2021.04.02.10.53.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Apr 2021 10:53:08 -0700 (PDT)
+Date:   Fri, 2 Apr 2021 13:53:07 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Josh Hunt <johunt@akamai.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, ebiederm@xmission.com,
+        keescook@chromium.org
+Subject: Re: [PATCH v2] psi: allow unprivileged users with CAP_SYS_RESOURCE
+ to write psi files
+Message-ID: <YGdaA4EegXUACSA+@cmpxchg.org>
+References: <20210402025833.27599-1-johunt@akamai.com>
 MIME-Version: 1.0
-In-Reply-To: <CAFd5g46fy_9mPH6AihwUf5GW7aTJ=ecvmD0S266EKtNtweSOcg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210402025833.27599-1-johunt@akamai.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/2/21 2:55 AM, Brendan Higgins wrote:
-> On Thu, Mar 11, 2021 at 7:23 AM Daniel Latypov <dlatypov@google.com> wrote:
->>
->> From: Uriel Guajardo <urielguajardo@google.com>
->>
->> Add a kunit_fail_current_test() function to fail the currently running
->> test, if any, with an error message.
->>
->> This is largely intended for dynamic analysis tools like UBSAN and for
->> fakes.
->> E.g. say I had a fake ops struct for testing and I wanted my `free`
->> function to complain if it was called with an invalid argument, or
->> caught a double-free. Most return void and have no normal means of
->> signalling failure (e.g. super_operations, iommu_ops, etc.).
->>
->> Key points:
->> * Always update current->kunit_test so anyone can use it.
->>    * commit 83c4e7a0363b ("KUnit: KASAN Integration") only updated it for
->>    CONFIG_KASAN=y
->>
->> * Create a new header <kunit/test-bug.h> so non-test code doesn't have
->> to include all of <kunit/test.h> (e.g. lib/ubsan.c)
->>
->> * Forward the file and line number to make it easier to track down
->> failures
->>
->> * Declare the helper function for nice __printf() warnings about mismatched
->> format strings even when KUnit is not enabled.
->>
->> Example output from kunit_fail_current_test("message"):
->> [15:19:34] [FAILED] example_simple_test
->> [15:19:34]     # example_simple_test: initializing
->> [15:19:34]     # example_simple_test: lib/kunit/kunit-example-test.c:24: message
->> [15:19:34]     not ok 1 - example_simple_test
->>
->> Co-developed-by: Daniel Latypov <dlatypov@google.com>
->> Signed-off-by: Daniel Latypov <dlatypov@google.com>
->> Signed-off-by: Uriel Guajardo <urielguajardo@google.com>
->> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+On Thu, Apr 01, 2021 at 10:58:33PM -0400, Josh Hunt wrote:
+> Currently only root can write files under /proc/pressure. Relax this to
+> allow tasks running as unprivileged users with CAP_SYS_RESOURCE to be
+> able to write to these files.
 > 
-> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-> 
+> Signed-off-by: Josh Hunt <johunt@akamai.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-Please run checkpatch on your patches in the future. I am seeing
-a few checkpatch readability type improvements that can be made.
-
-Please make changes and send v2 with Brendan's Reviewed-by.
-
-thanks,
--- Shuah
+v2 looks good to me. Thanks
