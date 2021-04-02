@@ -2,63 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 776E3352698
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 08:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69613352699
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 08:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233418AbhDBGh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 02:37:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbhDBGh5 (ORCPT
+        id S233786AbhDBGie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 02:38:34 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:46487 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229522AbhDBGic (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 02:37:57 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF20C0613E6;
-        Thu,  1 Apr 2021 23:37:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=23JVev1P6hfZn75YYKAeRgCkKkBm6a8rfr6nXZM/23Y=; b=DidHl2sJes5CZndoc3Jq3dcebg
-        mHIG2+4LZPraKak5HEMoK0y5J2IN+LGspSYgcrDWzNKlc2hELMTpEx/cRtXNSteFzQC58hDAl/Zf7
-        FnMIDAJJhvKvxesv3o0OwP/BzOHYMsJyft0tWmRNf3lx4Lnyk1AquB6H2AutP63hjsWxrxBEumlcb
-        2rC3O68k8xLzsESDaHWYMzu3vLCyoQAMZNMXEUIEeRl6vkT8pgZBNaHnhTsDAG4+NgJGZOIlFY9Ky
-        bnP3x4iu02ItVcHPk1+J4B68TLe+1IqUgzG8yVAGE2P8dQQe9sbqQQ6wDpJxGuR2URuUn8LGWri3a
-        KUpOgXeA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lSDR6-007IGD-Qr; Fri, 02 Apr 2021 06:37:42 +0000
-Date:   Fri, 2 Apr 2021 07:37:40 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>, bpf@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v5 03/18] mm: add generic function_nocfi macro
-Message-ID: <20210402063740.GA1738362@infradead.org>
-References: <20210401233216.2540591-1-samitolvanen@google.com>
- <20210401233216.2540591-4-samitolvanen@google.com>
+        Fri, 2 Apr 2021 02:38:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1617345511; x=1648881511;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=6l2ewII7HZLUgDgNCceti4mGNoBgxO2BRjv+HTj5Vo0=;
+  b=k9ZUHu/gnd3Xcda9cKVdLCvHtgm9Ml7Fnd9o3Obk2BiZu3HKjolsyeRD
+   B/elLtxLOpnus4vmGmfBdNUpaYqrNy7Fb+25nXOkKXKCn+DGv1Y9o+TxO
+   evfbeb6B5fZ9s8qHKtr3Uofr9WXD1hREDIMBfKbpXEbtRYJlCnEvOcjK1
+   /xRGQETcclsviVSIfno0aAvN7hF475H3/4uNYQYDWlsSJ/nUV8CTohKbO
+   TwWw2hIk6zv25ODgqRcKk9uxG1psq1pe3/pt0ulOsc8Katjx0KAl4VFm9
+   4YdKyQ1XzPOqhc1m8GV0KhezfocwZ0+Ya+jcSngsktCk06Ya5DIYD5Dse
+   A==;
+IronPort-SDR: TL8ljy6RNMv79gk6EfenK6EHogV/VWqyTYuWBwjGus4XNPqosKJPBz5/IgG1Alq2Z/gY9c+5pq
+ 1sE8ZQkBBd3ENVOZxlbeeh8iMutspbv7+jMDJ/0pNEuwulky/FcrAmk57xB1MoNkEV8c3sALq3
+ PJjCIdigQXA3Q1tr24xFwfIfLRLEhcNkyxYkOpsJ4idJbSFcV4prfHaSrZtzdjRkpHlfMddxNU
+ GVFEo5QZnptklvXu3Lx1Xb+OFKYrkzz9Q/c8xLshwH7jmt9p92Xl2RS9ocIzMyFHZ3jdCHP2ji
+ hlQ=
+X-IronPort-AV: E=Sophos;i="5.81,299,1610434800"; 
+   d="scan'208";a="49777298"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Apr 2021 23:38:30 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 1 Apr 2021 23:38:30 -0700
+Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Thu, 1 Apr 2021 23:38:28 -0700
+From:   Tudor Ambarus <tudor.ambarus@microchip.com>
+To:     <linux-kernel@vger.kernel.org>, Michael Walle <michael@walle.cc>,
+        <linux-mtd@lists.infradead.org>
+CC:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v5 0/3] mtd: spi-nor: OTP support
+Date:   Fri, 2 Apr 2021 09:38:24 +0300
+Message-ID: <161734495497.5882.15333204001106333069.b4-ty@microchip.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210321235140.8308-1-michael@walle.cc>
+References: <20210321235140.8308-1-michael@walle.cc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401233216.2540591-4-samitolvanen@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks, this looks much better than the earlier naming:
+On Mon, 22 Mar 2021 00:51:37 +0100, Michael Walle wrote:
+> This patchset implements the MTD OTP functions to allow access to the SPI
+> OTP data. Specific support is added for Winbond flash chips.
+> 
+> In the past there was already an attempt by Rahul Bedarkar to add this, but
+> there was no response. These patches are slightly based on his work.
+> 
+> https://lore.kernel.org/linux-mtd/1489754636-21461-1-git-send-email-rahul.bedarkar@imgtec.com/
+> 
+> [...]
 
-Acked-by: Christoph Hellwig <hch@lst.de>
+Update 1/3: use div64_u64(), IS_ALIGNED, params->otp.org.
+unsigned int region, drop comment, add rlen local variable in spi_nor_mtd_otp_lock()
+
+Applied to spi-nor/next, thanks!
+
+[1/3] mtd: spi-nor: add OTP support
+      https://git.kernel.org/mtd/c/06d4bdf0a329
+[2/3] mtd: spi-nor: implement OTP support for Winbond and similar flashes
+      https://git.kernel.org/mtd/c/10488a53bdc4
+[3/3] mtd: spi-nor: winbond: add OTP support to w25q32fw/jw
+      https://git.kernel.org/mtd/c/5909dde2bc53
+
+Best regards,
+-- 
+Tudor Ambarus <tudor.ambarus@microchip.com>
