@@ -2,219 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF3F235276E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 10:28:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C9B2352776
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 10:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbhDBI2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 04:28:19 -0400
-Received: from mga07.intel.com ([134.134.136.100]:7943 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229522AbhDBI2S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 04:28:18 -0400
-IronPort-SDR: wRNeKGqvOPKFDsouhzdj5V9w1K8+h3ClV5ibX7F4K1FnoBY2i8PTOjJVA8uAsneJRcy8yjqfHY
- Sj7UQF0tSoXw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="256402014"
-X-IronPort-AV: E=Sophos;i="5.81,299,1610438400"; 
-   d="scan'208";a="256402014"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 01:28:15 -0700
-IronPort-SDR: 0wJoAzc6gjfasFU3rvjAdAhPBy68DaShgr1DQqHN12YWi4I3HN2bwy/omDa395wu+VF40RA1gL
- POrxedu1mSBA==
-X-IronPort-AV: E=Sophos;i="5.81,299,1610438400"; 
-   d="scan'208";a="419568265"
-Received: from yhuang6-desk1.sh.intel.com ([10.239.13.1])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 01:28:11 -0700
-From:   Huang Ying <ying.huang@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Huang Ying <ying.huang@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Peter Xu <peterx@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Matthew Wilcox" <willy@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Arjun Roy <arjunroy@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCH -V2] NUMA balancing: reduce TLB flush via delaying mapping on hint page fault
-Date:   Fri,  2 Apr 2021 16:27:17 +0800
-Message-Id: <20210402082717.3525316-1-ying.huang@intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S233827AbhDBIdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 04:33:55 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:59767 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229522AbhDBIdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 04:33:54 -0400
+Received: from [192.168.0.2] (ip5f5aef94.dynamic.kabel-deutschland.de [95.90.239.148])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 7B132206473D6;
+        Fri,  2 Apr 2021 10:33:51 +0200 (CEST)
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org
+Cc:     LKML <linux-kernel@vger.kernel.org>, Song Liu <song@kernel.org>,
+        linux-raid@vger.kernel.org, it+linux-x86@molgen.mpg.de
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Subject: =?UTF-8?B?W3JlZ3Jlc3Npb24gNS40Ljk3IOKGkiA1LjEwLjI0XTogcmFpZDYgYXZ4?=
+ =?UTF-8?Q?2x4_speed_drops_from_18429_MB/s_to_6155_MB/s?=
+Message-ID: <6a1b0110-07f1-8c2e-fc7f-379758dbd8ca@molgen.mpg.de>
+Date:   Fri, 2 Apr 2021 10:33:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With NUMA balancing, in hint page fault handler, the faulting page
-will be migrated to the accessing node if necessary.  During the
-migration, TLB will be shot down on all CPUs that the process has run
-on recently.  Because in the hint page fault handler, the PTE will be
-made accessible before the migration is tried.  The overhead of TLB
-shooting down can be high, so it's better to be avoided if possible.
-In fact, if we delay mapping the page until migration, that can be
-avoided.  This is what this patch doing.
+Dear Linux folks,
 
-For the multiple threads applications, it's possible that a page is
-accessed by multiple threads almost at the same time.  In the original
-implementation, because the first thread will install the accessible
-PTE before migrating the page, the other threads may access the page
-directly before the page is made inaccessible again during migration.
-While with the patch, the second thread will go through the page fault
-handler too. And because of the PageLRU() checking in the following
-code path,
 
-  migrate_misplaced_page()
-    numamigrate_isolate_page()
-      isolate_lru_page()
+On an two socket AMD EPYC 7601, we noticed a decrease in raid6 avx2x4 
+speed shown at the beginning of the boot.
 
-the migrate_misplaced_page() will return 0, and the PTE will be made
-accessible in the second thread.
+                        5.4.95        5.10.24
+----------------------------------------------
+raid6: avx2x4 gen()   18429 MB/s     6155 MB/s
+raid6: avx2x4 xor()    6644 MB/s     4274 MB/s
+raid6: avx2x2 gen()   17894 MB/s    18744 MB/s
+raid6: avx2x2 xor()   11642 MB/s    11950 MB/s
+raid6: avx2x1 gen()   13992 MB/s    17112 MB/s
+raid6: avx2x1 xor()   10855 MB/s    11143 MB/s
 
-This will introduce a little more overhead.  But we think the
-possibility for a page to be accessed by the multiple threads at the
-same time is low, and the overhead difference isn't too large.  If
-this becomes a problem in some workloads, we need to consider how to
-reduce the overhead.
+We are able to reproduce this with different models: Supermicro 
+AS-2023US-TR4/H11DSU-iN and Dell PowerEdge R7425 (with different 
+microcode versions).
 
-To test the patch, we run a test case as follows on a 2-socket Intel
-server (1 NUMA node per socket) with 128GB DRAM (64GB per socket).
+Can you reproduce this on your systems?
 
-1. Run a memory eater on NUMA node 1 to use 40GB memory before running
-   pmbench.
+Bisecting is going to be hard, so the systems are in production and also 
+take a while to boot. (Maybe kexec would help here.)
 
-2. Run pmbench (normal accessing pattern) with 8 processes, and 8
-   threads per process, so there are 64 threads in total.  The
-   working-set size of each process is 8960MB, so the total working-set
-   size is 8 * 8960MB = 70GB.  The CPU of all pmbench processes is bound
-   to node 1.  The pmbench processes will access some DRAM on node 0.
 
-3. After the pmbench processes run for 10 seconds, kill the memory
-   eater.  Now, some pages will be migrated from node 0 to node 1 via
-   NUMA balancing.
+Kind regards,
 
-Test results show that, with the patch, the pmbench throughput (page
-accesses/s) increases 5.5%.  The number of the TLB shootdowns
-interrupts reduces 98% (from ~4.7e7 to ~9.7e5) with about 9.2e6
-pages (35.8GB) migrated.  From the perf profile, it can be found that
-the CPU cycles spent by try_to_unmap() and its callees reduces from
-6.02% to 0.47%.  That is, the CPU cycles spent by TLB shooting down
-decreases greatly.
+Paul
 
-Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Peter Xu <peterx@redhat.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: "Matthew Wilcox" <willy@infradead.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: Michel Lespinasse <walken@google.com>
-Cc: Arjun Roy <arjunroy@google.com>
-Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
----
- mm/memory.c | 54 +++++++++++++++++++++++++++++++----------------------
- 1 file changed, 32 insertions(+), 22 deletions(-)
 
-diff --git a/mm/memory.c b/mm/memory.c
-index d3273bd69dbb..a00b39e81a25 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4148,29 +4148,17 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
- 		goto out;
- 	}
- 
--	/*
--	 * Make it present again, Depending on how arch implementes non
--	 * accessible ptes, some can allow access by kernel mode.
--	 */
--	old_pte = ptep_modify_prot_start(vma, vmf->address, vmf->pte);
-+	/* Get the normal PTE  */
-+	old_pte = ptep_get(vmf->pte);
- 	pte = pte_modify(old_pte, vma->vm_page_prot);
--	pte = pte_mkyoung(pte);
--	if (was_writable)
--		pte = pte_mkwrite(pte);
--	ptep_modify_prot_commit(vma, vmf->address, vmf->pte, old_pte, pte);
--	update_mmu_cache(vma, vmf->address, vmf->pte);
- 
- 	page = vm_normal_page(vma, vmf->address, pte);
--	if (!page) {
--		pte_unmap_unlock(vmf->pte, vmf->ptl);
--		return 0;
--	}
-+	if (!page)
-+		goto out_map;
- 
- 	/* TODO: handle PTE-mapped THP */
--	if (PageCompound(page)) {
--		pte_unmap_unlock(vmf->pte, vmf->ptl);
--		return 0;
--	}
-+	if (PageCompound(page))
-+		goto out_map;
- 
- 	/*
- 	 * Avoid grouping on RO pages in general. RO pages shouldn't hurt as
-@@ -4180,7 +4168,7 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
- 	 * pte_dirty has unpredictable behaviour between PTE scan updates,
- 	 * background writeback, dirty balancing and application behaviour.
- 	 */
--	if (!pte_write(pte))
-+	if (!was_writable)
- 		flags |= TNF_NO_GROUP;
- 
- 	/*
-@@ -4194,23 +4182,45 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
- 	page_nid = page_to_nid(page);
- 	target_nid = numa_migrate_prep(page, vma, vmf->address, page_nid,
- 			&flags);
--	pte_unmap_unlock(vmf->pte, vmf->ptl);
- 	if (target_nid == NUMA_NO_NODE) {
- 		put_page(page);
--		goto out;
-+		goto out_map;
- 	}
-+	pte_unmap_unlock(vmf->pte, vmf->ptl);
- 
- 	/* Migrate to the requested node */
- 	if (migrate_misplaced_page(page, vma, target_nid)) {
- 		page_nid = target_nid;
- 		flags |= TNF_MIGRATED;
--	} else
-+	} else {
- 		flags |= TNF_MIGRATE_FAIL;
-+		vmf->pte = pte_offset_map(vmf->pmd, vmf->address);
-+		spin_lock(vmf->ptl);
-+		if (unlikely(!pte_same(*vmf->pte, vmf->orig_pte))) {
-+			pte_unmap_unlock(vmf->pte, vmf->ptl);
-+			goto out;
-+		}
-+		goto out_map;
-+	}
- 
- out:
- 	if (page_nid != NUMA_NO_NODE)
- 		task_numa_fault(last_cpupid, page_nid, 1, flags);
- 	return 0;
-+out_map:
-+	/*
-+	 * Make it present again, Depending on how arch implementes non
-+	 * accessible ptes, some can allow access by kernel mode.
-+	 */
-+	old_pte = ptep_modify_prot_start(vma, vmf->address, vmf->pte);
-+	pte = pte_modify(old_pte, vma->vm_page_prot);
-+	pte = pte_mkyoung(pte);
-+	if (was_writable)
-+		pte = pte_mkwrite(pte);
-+	ptep_modify_prot_commit(vma, vmf->address, vmf->pte, old_pte, pte);
-+	update_mmu_cache(vma, vmf->address, vmf->pte);
-+	pte_unmap_unlock(vmf->pte, vmf->ptl);
-+	goto out;
- }
- 
- static inline vm_fault_t create_huge_pmd(struct vm_fault *vmf)
--- 
-2.30.2
+PS: Some more information:
 
+```
+[    0.000000] Linux version 5.4.97.mx64.368 
+(root@theinternet.molgen.mpg.de) (gcc version 7.5.0 (GCC
+)) #1 SMP Wed Feb 10 18:22:50 CET 2021
+[…]
+[    0.000000] DMI: Supermicro AS -2023US-TR4/H11DSU-iN, BIOS 1.1 02/07/2018
+[…]
+[    0.630603] raid6: avx2x4   gen() 18429 MB/s
+[    0.651607] raid6: avx2x4   xor()  6644 MB/s
+[    0.672605] raid6: avx2x2   gen() 17894 MB/s
+[    0.693603] raid6: avx2x2   xor() 11642 MB/s
+[    0.714605] raid6: avx2x1   gen() 13992 MB/s
+[    0.735604] raid6: avx2x1   xor() 10855 MB/s
+[    0.756607] raid6: sse2x4   gen() 12246 MB/s
+[    0.777605] raid6: sse2x4   xor()  5724 MB/s
+[    0.798605] raid6: sse2x2   gen() 10945 MB/s
+[    0.819603] raid6: sse2x2   xor()  8097 MB/s
+[    0.840606] raid6: sse2x1   gen()  5941 MB/s
+[    0.861606] raid6: sse2x1   xor()  5894 MB/s
+[    0.866565] raid6: using algorithm avx2x4 gen() 18429 MB/s
+[    0.871567] raid6: .... xor() 6644 MB/s, rmw enabled
+[    0.877566] raid6: using avx2x2 recovery algorithm
+[…]
+```
+
+
+```
+[    0.000000] Linux version 5.10.24.mx64.375 
+(root@theinternet.molgen.mpg.de) (gcc (GCC) 7.5.0, GNU ld (GNU Binutils) 
+2.32) #1 SMP Fri Mar 19 12:29:21 CET 2021
+[…]
+[    0.000000] DMI: Supermicro AS -2023US-TR4/H11DSU-iN, BIOS 1.1 02/07/2018
+[…]
+[    0.655382] raid6: avx2x4   gen()  6155 MB/s
+[    0.676382] raid6: avx2x4   xor()  4274 MB/s
+[    0.697380] raid6: avx2x2   gen() 18744 MB/s
+[    0.718380] raid6: avx2x2   xor() 11950 MB/s
+[    0.739380] raid6: avx2x1   gen() 17112 MB/s
+[    0.760380] raid6: avx2x1   xor() 11143 MB/s
+[    0.781381] raid6: sse2x4   gen() 11062 MB/s
+[    0.802380] raid6: sse2x4   xor()  5180 MB/s
+[    0.823380] raid6: sse2x2   gen() 12467 MB/s
+[    0.844380] raid6: sse2x2   xor()  7672 MB/s
+[    0.865381] raid6: sse2x1   gen()  9733 MB/s
+[    0.886380] raid6: sse2x1   xor()  5717 MB/s
+[    0.890674] raid6: using algorithm avx2x2 gen() 18744 MB/s
+[    0.895673] raid6: .... xor() 11950 MB/s, rmw enabled
+[    0.901673] raid6: using avx2x2 recovery algorithm
+```
+
+```
+$ lscpu
+Architecture:                    x86_64
+CPU op-mode(s):                  32-bit, 64-bit
+Byte Order:                      Little Endian
+Address sizes:                   48 bits physical, 48 bits virtual
+CPU(s):                          128
+On-line CPU(s) list:             0-127
+Thread(s) per core:              2
+Core(s) per socket:              32
+Socket(s):                       2
+NUMA node(s):                    8
+Vendor ID:                       AuthenticAMD
+CPU family:                      23
+Model:                           1
+Model name:                      AMD EPYC 7601 32-Core Processor
+Stepping:                        2
+Frequency boost:                 enabled
+CPU MHz:                         3100.798
+CPU max MHz:                     2200.0000
+CPU min MHz:                     1200.0000
+BogoMIPS:                        4399.53
+Virtualization:                  AMD-V
+L1d cache:                       2 MiB
+L1i cache:                       4 MiB
+L2 cache:                        32 MiB
+L3 cache:                        128 MiB
+NUMA node0 CPU(s):               0-7,64-71
+NUMA node1 CPU(s):               8-15,72-79
+NUMA node2 CPU(s):               16-23,80-87
+NUMA node3 CPU(s):               24-31,88-95
+NUMA node4 CPU(s):               32-39,96-103
+NUMA node5 CPU(s):               40-47,104-111
+NUMA node6 CPU(s):               48-55,112-119
+NUMA node7 CPU(s):               56-63,120-127
+Vulnerability Itlb multihit:     Not affected
+Vulnerability L1tf:              Not affected
+Vulnerability Mds:               Not affected
+Vulnerability Meltdown:          Not affected
+Vulnerability Spec store bypass: Mitigation; Speculative Store Bypass 
+disabled via prctl and seccomp
+Vulnerability Spectre v1:        Mitigation; usercopy/swapgs barriers 
+and __user pointer sanitization
+Vulnerability Spectre v2:        Mitigation; Full AMD retpoline, IBPB 
+conditional, STIBP disabled, RSB filling
+Vulnerability Srbds:             Not affected
+Vulnerability Tsx async abort:   Not affected
+Flags:                           fpu vme de pse tsc msr pae mce cx8 apic 
+sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx 
+mmxex
+                                  t fxsr_opt pdpe1gb rdtscp lm 
+constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid amd_dcm 
+aperfmperf pni pclmulqd
+                                  q monitor ssse3 fma cx16 sse4_1 sse4_2 
+movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic 
+cr8_lega
+                                  cy abm sse4a misalignsse 3dnowprefetch 
+osvw skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc 
+mwaitx c
+                                  pb hw_pstate ssbd ibpb vmmcall 
+fsgsbase bmi1 avx2 smep bmi2 rdseed adx smap clflushopt sha_ni xsaveopt 
+xsavec xgetbv1
+                                   xsaves clzero irperf xsaveerptr arat 
+npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid 
+decodeassists paus
+                                  efilter pfthreshold avic 
+v_vmsave_vmload vgif overflow_recov succor smca
+```
