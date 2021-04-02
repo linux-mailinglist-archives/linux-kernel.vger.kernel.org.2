@@ -2,82 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CA06352EE5
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 20:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4577D352EE7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 20:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235914AbhDBSDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 14:03:44 -0400
-Received: from mga04.intel.com ([192.55.52.120]:18756 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235797AbhDBSDl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 14:03:41 -0400
-IronPort-SDR: ZEpGtzEbGitHKyCIZoNMcNEiDin8jG1dAOHTrdiAwO2Vt+1A3PhCH8FkV9/tobKACKMw8WrUEG
- LHEPizgoYW7Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9942"; a="190280282"
-X-IronPort-AV: E=Sophos;i="5.81,300,1610438400"; 
-   d="scan'208";a="190280282"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 11:03:40 -0700
-IronPort-SDR: WumWdpleoF65p5ruzr1qyjb6z5Psmn/BDjvXG2Siymu/YdclJNW2Q/yBWJ7dtMdfOBbjc3vCUe
- y/FZqOLxOHJA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,300,1610438400"; 
-   d="scan'208";a="446891023"
-Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 02 Apr 2021 11:03:33 -0700
-Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lSO8r-0007HQ-1u; Fri, 02 Apr 2021 18:03:33 +0000
-Date:   Sat, 3 Apr 2021 02:03:11 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Loic Poulain <loic.poulain@linaro.org>, gregkh@linuxfoundation.org,
-        kuba@kernel.org, davem@davemloft.net
-Cc:     kbuild-all@lists.01.org, linux-arm-msm@vger.kernel.org,
-        aleksander@aleksander.es, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bjorn.andersson@linaro.org,
-        manivannan.sadhasivam@linaro.org,
-        Loic Poulain <loic.poulain@linaro.org>
-Subject: [PATCH] net: fix err_cast.cocci warnings
-Message-ID: <20210402180311.GA42695@0469b872480c>
-References: <1617372397-13988-1-git-send-email-loic.poulain@linaro.org>
+        id S236010AbhDBSD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 14:03:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23514 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235593AbhDBSD4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 14:03:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617386634;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bAM+9A25NtyyTvbHXHA330irTLzbAV1bvnKUfrqAzaM=;
+        b=iwjFko4Sa7R6/MUvmVRRttZFInNqqThNG4o5J6YPkwUElGezgLshoAulNvIneWiVA4y//7
+        IW71trvE3BmBdvtAisYIgHGvWP9hrKKJw3qDyfLAo0JLez/QIoIdeNcCFGEPkko/yYdAhQ
+        VY5t64jEKZsSbm7unqfKtyWXS4DUtQc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-192-UF8baMhyOQu9yBuOVvGdRw-1; Fri, 02 Apr 2021 14:03:53 -0400
+X-MC-Unique: UF8baMhyOQu9yBuOVvGdRw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 05264180FCA2;
+        Fri,  2 Apr 2021 18:03:52 +0000 (UTC)
+Received: from max.com (unknown [10.40.194.67])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A555E5D9DC;
+        Fri,  2 Apr 2021 18:03:47 +0000 (UTC)
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+To:     cluster-devel@redhat.com
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: Re: fs/gfs2/rgrp.c:1772:53: warning: Possible null pointer dereference: minext [nullPointer]
+Date:   Fri,  2 Apr 2021 20:03:45 +0200
+Message-Id: <20210402180345.2296163-1-agruenba@redhat.com>
+In-Reply-To: <20210329004759.GH4176174@shao2-debian>
+References: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617372397-13988-1-git-send-email-loic.poulain@linaro.org>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+gfs2: Silence possible null pointer dereference warning
 
-drivers/net/wwan/wwan_core.c:208:9-16: WARNING: ERR_CAST can be used with wwandev
+In gfs2_rbm_find, rs is always NULL when minext is NULL, so
+gfs2_reservation_check_and_update will never be called on a NULL minext.
+This isn't immediately obvious though, so also check for a NULL minext
+for better code readability.
 
-
- Use ERR_CAST inlined function instead of ERR_PTR(PTR_ERR(...))
-
-Generated by: scripts/coccinelle/api/err_cast.cocci
-
-CC: Loic Poulain <loic.poulain@linaro.org>
 Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 ---
-
-url:    https://github.com/0day-ci/linux/commits/Loic-Poulain/net-Add-a-WWAN-subsystem/20210402-220002
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git bd78980be1a68d14524c51c4b4170782fada622b
-
- wwan_core.c |    2 +-
+ fs/gfs2/rgrp.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/wwan/wwan_core.c
-+++ b/drivers/net/wwan/wwan_core.c
-@@ -205,7 +205,7 @@ struct wwan_port *wwan_create_port(struc
- 	 */
- 	wwandev = wwan_create_dev(parent);
- 	if (IS_ERR(wwandev))
--		return ERR_PTR(PTR_ERR(wwandev));
-+		return ERR_CAST(wwandev);
+diff --git a/fs/gfs2/rgrp.c b/fs/gfs2/rgrp.c
+index 89c37a845e64..2dab313442a7 100644
+--- a/fs/gfs2/rgrp.c
++++ b/fs/gfs2/rgrp.c
+@@ -1783,7 +1783,7 @@ static int gfs2_rbm_find(struct gfs2_rbm *rbm, u8 state, u32 *minext,
+ 			goto next_bitmap;
+ 		}
+ 		rbm->offset = offset;
+-		if (!rs)
++		if (!rs || !minext)
+ 			return 0;
  
- 	/* A port is exposed as character device, get a minor */
- 	minor = ida_alloc_range(&minors, 0, WWAN_MAX_MINORS - 1, GFP_KERNEL);
+ 		ret = gfs2_reservation_check_and_update(rbm, rs, *minext,
+-- 
+2.27.0
+
