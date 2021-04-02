@@ -2,81 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 446CD352C26
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 667D1352C29
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235384AbhDBPJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 11:09:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235327AbhDBPJO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 11:09:14 -0400
-Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1388C06178A
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 08:09:12 -0700 (PDT)
-Received: by mail-vs1-xe30.google.com with SMTP id l8so2879738vsj.13
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 08:09:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YgtLUE8tLw2Zk1N7ATFrtV7j3dv262lk75CYdDYHcbQ=;
-        b=kd9SvTxYOWxn37TZiIkBotQfbjom6BmDGK0QVftHGDvVKbWOFqt4n8MYddo3K4uEPz
-         GN/98Lwen7yHTB62wzUNAQz1jXtxtm1hMrk8ea95f9lVhuj6DLC0U+0fpRnyjZi/OVRe
-         Dc7pnlam/2yWvqj/HepMcxqxki9N5cJoV/mXsLrGUlG0j2rwfDuJ9p6uuGK5erg4WmS7
-         1GU5d7RE3sOtUkXxb6wpu9srfEvaZovXTqu3jIu1G3Jo26tk6ubAobk1V4hwM+GsJSm1
-         Z/eMDJLpSTQW8Ihc+u/t9FXiP583UEEdRdmZD6kem8ORj6oIdrLSzqWc+RGmPhl7i6Fx
-         psPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YgtLUE8tLw2Zk1N7ATFrtV7j3dv262lk75CYdDYHcbQ=;
-        b=N9qGeEsO1r1DF2UtZKcXPibPZOisFJBpLRXAp5E2RuVSnzZdQzDOCT8fXBgDKMujSk
-         q37dHJHed4EqwIC646ZbFQQ2X+ZZJozUPdhL/TOPm7OqSEfDtzmwOQiVotIi46Q5pNof
-         lUDRIrVA+lnsPgSI8JlYCosJUqPYGkgaVGHsB0FvcvITefHfkusUrF8pC0l9jI3R9GCS
-         RWnQP0IuFN26zcAJmU3JNbcpYBIcf0vSvPptjao1RA23iaELpGeyZ9yQCsEWc0PpNw/Y
-         lsaxCc2oQ2TXngfcLPrLq8g4W1ON3RftWOTcssPQ01/x+gYUBQoy8Ka/luG+8xcl/gB+
-         cylA==
-X-Gm-Message-State: AOAM533JuJosgUPfmjcu1gzPeFLJx0JdB/S0zTgXiFljJ+DAzocozn5/
-        GHQo4q5hUhFJJpNK5qKVXb7sDWsZnMZ2WtDdpYFwaw==
-X-Google-Smtp-Source: ABdhPJyt+vRGIldfMsc/6SAnW/nT0tZKLkIVaHdFuQ9H9NOultOR42/DlIuLdW9oxY84oBB0Iuz0jwbWHMBtVzSTD74=
-X-Received: by 2002:a67:3043:: with SMTP id w64mr9076775vsw.36.1617376151718;
- Fri, 02 Apr 2021 08:09:11 -0700 (PDT)
+        id S234867AbhDBPL0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 2 Apr 2021 11:11:26 -0400
+Received: from mga01.intel.com ([192.55.52.88]:27466 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229553AbhDBPLX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 11:11:23 -0400
+IronPort-SDR: VIbJHzIj600z04xqEBnV6sh94IlLTia97pCFb1pdi5fLsRR/p7dMlAH4phchGa3PgECxm8K4aj
+ rKjdBC+ohU+Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9942"; a="212756582"
+X-IronPort-AV: E=Sophos;i="5.81,300,1610438400"; 
+   d="scan'208";a="212756582"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 08:11:21 -0700
+IronPort-SDR: fDNVDH0s3pRZwuZZRDpNaxmawZyua+kIM+3N6rO31ooJ3nLmn+J30Tq1KdeHF8HZUg4qx25qdh
+ GhlHU9XaBOOQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,300,1610438400"; 
+   d="scan'208";a="446822902"
+Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
+  by fmsmga002.fm.intel.com with ESMTP; 02 Apr 2021 08:11:21 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 2 Apr 2021 08:11:21 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 2 Apr 2021 08:11:21 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.013;
+ Fri, 2 Apr 2021 08:11:21 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Aili Yao <yaoaili@kingsoft.com>
+CC:     =?iso-2022-jp?B?SE9SSUdVQ0hJIE5BT1lBKBskQktZOH0hIUQ+TGkbKEIp?= 
+        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
+        "david@redhat.com" <david@redhat.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
+        "sunhao2@kingsoft.com" <sunhao2@kingsoft.com>
+Subject: RE: [PATCH v3] mm,hwpoison: return -EHWPOISON when page already
+ poisoned
+Thread-Topic: [PATCH v3] mm,hwpoison: return -EHWPOISON when page already
+ poisoned
+Thread-Index: AQHXJiCcYSfsREicYE+l/w+vDcmt1aqfzHoAgAEYvwCAAHK6QA==
+Date:   Fri, 2 Apr 2021 15:11:20 +0000
+Message-ID: <a10c7838216e4a10b4fd5ebb0f1108a1@intel.com>
+References: <20210305093656.6c262b19@alex-virtual-machine>
+        <20210305221143.GA220893@agluck-desk2.amr.corp.intel.com>
+        <20210308064558.GA3617@hori.linux.bs1.fc.nec.co.jp>
+        <3690ece2101d428fb9067fcd2a423ff8@intel.com>
+        <20210308223839.GA21886@hori.linux.bs1.fc.nec.co.jp>
+        <20210308225504.GA233893@agluck-desk2.amr.corp.intel.com>
+        <20210309100421.3d09b6b1@alex-virtual-machine>
+        <20210309060440.GA29668@hori.linux.bs1.fc.nec.co.jp>
+        <20210309143534.6c1a8ec5@alex-virtual-machine>
+        <20210331192540.2141052f@alex-virtual-machine>
+        <20210401153320.GA426964@agluck-desk2.amr.corp.intel.com>
+ <20210402091820.04d7c3e0@alex-virtual-machine>
+In-Reply-To: <20210402091820.04d7c3e0@alex-virtual-machine>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20210402123959.5143-1-alobakin@pm.me>
-In-Reply-To: <20210402123959.5143-1-alobakin@pm.me>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Fri, 2 Apr 2021 08:09:00 -0700
-Message-ID: <CABCJKufH262ki4FCQJxSO-v+gQzPBsVntQWnNZY7h-cvt1KYTA@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: merge module sections under CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
- too
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     Kees Cook <keescook@chromium.org>, Jessica Yu <jeyu@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Emil Velikov <emil.l.velikov@gmail.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-hardening@vger.kernel.org,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 2, 2021 at 5:40 AM Alexander Lobakin <alobakin@pm.me> wrote:
->
-> When building with CONFIG_LD_DEAD_CODE_DATA_ELIMINATION,
-> -fdata-sections and -ffunction-sections are being enabled by the
-> top-level Makefile, and module section merging is also needed.
-> Expand the ifdef (and the comment block) to cover that case too.
->
-> Fixes: 6a3193cdd5e5 ("kbuild: lto: Merge module sections if and only if CONFIG_LTO_CLANG is enabled")
+>> Combined with my "mutex" patch (to get rid of races where 2nd process returns
+>> early, but first process is still looking for mappings to unmap and tasks
+>> to signal) this patch moves forward a bit. But I think it needs an
+>> additional change here in kill_me_maybe() to just "return" if there is a
+>> EHWPOISON return from memory_failure()
+>> 
+> Got this, Thanks for your reply!
+> I will dig into this!
 
-Wouldn't this trigger the ld.bfd bug described in the commit message
-when LD_DEAD_CODE_DATA_ELIMINATION is enabled? LTO_CLANG always uses
-LLD, so it won't have this issue.
+One problem with this approach is when the first task to find poison
+fails to complete actions. Then the poison pages are not unmapped,
+and just returning from kill_me_maybe() gets into a loop :-(
 
-Sami
+-Tony
