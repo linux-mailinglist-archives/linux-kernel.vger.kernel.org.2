@@ -2,281 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6E9352C3E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0159A352CA2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235869AbhDBPcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 11:32:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234723AbhDBPcy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 11:32:54 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC7CC061788
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 08:32:52 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id h20so2673910plr.4
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 08:32:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZVUCqeB8squVH+f3DRapJvDrw9dfzdIlYb5Csvyr0Vw=;
-        b=lflYTJra42Qkt8D0RfcCrbgVawXWj/6gv/A3OVI/qR4o01ftpDFQpV3uOf7P5v/J9J
-         7I5NE4jQYaswUbCcgHds5Q3CP6B9beUZo+JIxGLizXUOEt6QCjq8mVLDtlpzl742saiA
-         hgMyFi5nwaju6hYoB+g95nSo3j6A5MY2TKlTo3h0Fub6SuyETlGGqbcg+nCtN6qWjjLF
-         wi/B7iJRjj2x7bXjpRVA8ipVV8wj6oC2ibU8/ZIvkyFgIHLhNBYBb7sM6ue+ZJjeriWw
-         ZsJ7cWDYSvaP8rnpvsNIUV0Q95CX/3n6mIuIOQ+iWtNu3514arO6IDcub/nRKy37vaQn
-         9pTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZVUCqeB8squVH+f3DRapJvDrw9dfzdIlYb5Csvyr0Vw=;
-        b=XY3+h3BjXmxu6jus4IjvtjQxdW/y6tENiB8GQv/0YsSFr9qwO6viF5ZVHEOpfpX1Hs
-         drD69gMpRWbBGvne44vWxzfjJN3SmCUveulbiotQoPx8WCYDR2VSdFG3FgCANmHqN4hW
-         OJSvuKhA+LsyMHR502AVVcH4NaK+/V79WIKXWcJ6RF396/bxA9U60uBr1ZrUGRg8cyqn
-         0Av8kFBVvZOXHUAWiwo4NbAlXdyyO+W+D5wKAA4I+STIk1mw9ypRaDx9fMpiJT5D0jKd
-         0YWSZsuz98xDw0aIDue02I8e0kKIdcGXcxCTmlaV81gmCK8GV61sUO5CE8ZwVgwBv5rD
-         qHtw==
-X-Gm-Message-State: AOAM531m5GPFJmWICMYs8YmxJpcZoMTihyZhFcCawtdSxAk8mU5hQkhN
-        c8LJ3MIVXRCWUI3zoXrfQgBNXWFaHns7k1uU1bJndQ==
-X-Google-Smtp-Source: ABdhPJzZTlhtjJGmLKdzGQJuYb0PuTgimv2z5vfbCD+oMkIAGQWwUyFuTEQ1Q4Gu6b1DQ/BtqEM5LKd2XNUs9K8MSR8=
-X-Received: by 2002:a17:902:934c:b029:e6:a8b1:a4a5 with SMTP id
- g12-20020a170902934cb02900e6a8b1a4a5mr12938758plp.49.1617377572130; Fri, 02
- Apr 2021 08:32:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <1617372397-13988-1-git-send-email-loic.poulain@linaro.org>
- <1617372397-13988-2-git-send-email-loic.poulain@linaro.org> <YGckvGqSmmVjhZII@kroah.com>
-In-Reply-To: <YGckvGqSmmVjhZII@kroah.com>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Fri, 2 Apr 2021 17:41:01 +0200
-Message-ID: <CAMZdPi_yZARCzMcs1137UPWpLxjFzQfbMkmSMhuwnfKvAdKX6g@mail.gmail.com>
-Subject: Re: [PATCH net-next v8 2/2] net: Add Qcom WWAN control driver
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Aleksander Morgado <aleksander@aleksander.es>,
-        open list <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+        id S236180AbhDBPlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 11:41:20 -0400
+Received: from mga09.intel.com ([134.134.136.24]:22584 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234968AbhDBPlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 11:41:15 -0400
+IronPort-SDR: +/EaGOKsl8M3wEJL48PDp3dUI270GLCSzOE1BWuJe645/X+XcoAqMg1tmIKapJXWVAPoGWWZVE
+ VGp+397yqIXw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9942"; a="192591534"
+X-IronPort-AV: E=Sophos;i="5.81,300,1610438400"; 
+   d="scan'208";a="192591534"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 08:41:13 -0700
+IronPort-SDR: CSRdeiv7loZcXqkz+Z0Z6o9x9Np3CGWskx+eunoi1cUB57v/7NHCWqywiqANrtbYfH8Ob4Mw4d
+ DLc1P3FHCTbg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,300,1610438400"; 
+   d="scan'208";a="611336474"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga005.fm.intel.com with ESMTP; 02 Apr 2021 08:41:13 -0700
+Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.54.75.159])
+        by linux.intel.com (Postfix) with ESMTP id 03151580808;
+        Fri,  2 Apr 2021 08:41:13 -0700 (PDT)
+Message-ID: <a74fb028195a758c4cce6bab17cf4422b819ea48.camel@linux.intel.com>
+Subject: Re: [PATCH v4] platform/x86: intel_pmc_core: export platform
+ global_reset via sysfs.
+From:   "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To:     Tomas Winkler <tomas.winkler@intel.com>,
+        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        David E Box <david.e.box@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tamar Mashiah <tamar.mashiah@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        gayatri.kammela@intel.com
+Date:   Fri, 02 Apr 2021 08:41:12 -0700
+In-Reply-To: <20210402152113.1191796-1-tomas.winkler@intel.com>
+References: <20210402152113.1191796-1-tomas.winkler@intel.com>
+Organization: David E. Box
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2 Apr 2021 at 16:05, Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Fri, Apr 02, 2021 at 04:06:37PM +0200, Loic Poulain wrote:
-> > The MHI WWWAN control driver allows MHI QCOM-based modems to expose
-> > different modem control protocols/ports via the WWAN framework, so that
-> > userspace modem tools or daemon (e.g. ModemManager) can control WWAN
-> > config and state (APN config, SMS, provider selection...). A QCOM-based
-> > modem can expose one or several of the following protocols:
-> > - AT: Well known AT commands interactive protocol (microcom, minicom...)
-> > - MBIM: Mobile Broadband Interface Model (libmbim, mbimcli)
-> > - QMI: QCOM MSM/Modem Interface (libqmi, qmicli)
-> > - QCDM: QCOM Modem diagnostic interface (libqcdm)
-> > - FIREHOSE: XML-based protocol for Modem firmware management
-> >         (qmi-firmware-update)
-> >
-> > Note that this patch is mostly a rework of the earlier MHI UCI
-> > tentative that was a generic interface for accessing MHI bus from
-> > userspace. As suggested, this new version is WWAN specific and is
-> > dedicated to only expose channels used for controlling a modem, and
-> > for which related opensource userpace support exist.
-> >
-> > Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
-> > ---
-> >  v2: update copyright (2021)
-> >  v3: Move driver to dedicated drivers/net/wwan directory
-> >  v4: Rework to use wwan framework instead of self cdev management
-> >  v5: Fix errors/typos in Kconfig
-> >  v6: - Move to new wwan interface, No need dedicated call to wwan_dev_create
-> >      - Cleanup code (remove legacy from mhi_uci, unused defines/vars...)
-> >      - Remove useless write_lock mutex
-> >      - Add mhi_wwan_wait_writable and mhi_wwan_wait_dlqueue_lock_irq helpers
-> >      - Rework locking
-> >      - Add MHI_WWAN_TX_FULL flag
-> >      - Add support for NONBLOCK read/write
-> >  v7: Fix change log (mixed up 1/2 and 2/2)
-> >  v8: - Implement wwan_port_ops (instead of fops)
-> >      - Remove all mhi wwan data obsolete members (kref, lock, waitqueues)
-> >      - Add tracking of RX buffer budget
-> >      - Use WWAN TX flow control function to stop TX when MHI queue is full
-> >
-> >  drivers/net/wwan/Kconfig         |  14 +++
-> >  drivers/net/wwan/Makefile        |   2 +
-> >  drivers/net/wwan/mhi_wwan_ctrl.c | 253 +++++++++++++++++++++++++++++++++++++++
-> >  3 files changed, 269 insertions(+)
-> >  create mode 100644 drivers/net/wwan/mhi_wwan_ctrl.c
-> >
-> > diff --git a/drivers/net/wwan/Kconfig b/drivers/net/wwan/Kconfig
-> > index 545fe54..ce0bbfb 100644
-> > --- a/drivers/net/wwan/Kconfig
-> > +++ b/drivers/net/wwan/Kconfig
-> > @@ -19,4 +19,18 @@ config WWAN_CORE
-> >         To compile this driver as a module, choose M here: the module will be
-> >         called wwan.
-> >
-> > +config MHI_WWAN_CTRL
-> > +     tristate "MHI WWAN control driver for QCOM-based PCIe modems"
-> > +     select WWAN_CORE
-> > +     depends on MHI_BUS
-> > +     help
-> > +       MHI WWAN CTRL allows QCOM-based PCIe modems to expose different modem
-> > +       control protocols/ports to userspace, including AT, MBIM, QMI, DIAG
-> > +       and FIREHOSE. These protocols can be accessed directly from userspace
-> > +       (e.g. AT commands) or via libraries/tools (e.g. libmbim, libqmi,
-> > +       libqcdm...).
-> > +
-> > +       To compile this driver as a module, choose M here: the module will be
-> > +       called mhi_wwan_ctrl
-> > +
-> >  endif # WWAN
-> > diff --git a/drivers/net/wwan/Makefile b/drivers/net/wwan/Makefile
-> > index 934590b..556cd90 100644
-> > --- a/drivers/net/wwan/Makefile
-> > +++ b/drivers/net/wwan/Makefile
-> > @@ -5,3 +5,5 @@
-> >
-> >  obj-$(CONFIG_WWAN_CORE) += wwan.o
-> >  wwan-objs += wwan_core.o
-> > +
-> > +obj-$(CONFIG_MHI_WWAN_CTRL) += mhi_wwan_ctrl.o
-> > diff --git a/drivers/net/wwan/mhi_wwan_ctrl.c b/drivers/net/wwan/mhi_wwan_ctrl.c
-> > new file mode 100644
-> > index 0000000..f2fab23
-> > --- /dev/null
-> > +++ b/drivers/net/wwan/mhi_wwan_ctrl.c
-> > @@ -0,0 +1,253 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/* Copyright (c) 2021, Linaro Ltd <loic.poulain@linaro.org> */
-> > +#include <linux/kernel.h>
-> > +#include <linux/mhi.h>
-> > +#include <linux/mod_devicetable.h>
-> > +#include <linux/module.h>
-> > +#include <linux/wwan.h>
-> > +
-> > +/* MHI wwan flags */
-> > +#define MHI_WWAN_DL_CAP              BIT(0)
-> > +#define MHI_WWAN_UL_CAP              BIT(1)
-> > +#define MHI_WWAN_STARTED     BIT(2)
-> > +
-> > +#define MHI_WWAN_MAX_MTU     0x8000
-> > +
-> > +struct mhi_wwan_dev {
-> > +     /* Lower level is a mhi dev, upper level is a wwan port */
-> > +     struct mhi_device *mhi_dev;
-> > +     struct wwan_port *wwan_port;
-> > +
-> > +     /* State and capabilities */
-> > +     unsigned long flags;
-> > +     size_t mtu;
-> > +
-> > +     /* Protect against concurrent TX and TX-completion (bh) */
-> > +     spinlock_t tx_lock;
-> > +
-> > +     struct work_struct rx_refill;
-> > +     atomic_t rx_budget;
->
-> Why is this atomic if you have a real lock already?
+Hi Tomas,
 
-Access to rx_budget value is not under any locking protection and can
-be modified (dec/inc) from different and possibly concurrent places.
+I have a patch set that also adds the ETR3 register, although for an
+entirely different purpose. It doesn't touch the same bits. But your
+patch can be taken as is. I'll rebase on top of this one. Thanks.
 
->
->
-> > +};
-> > +
-> > +static bool mhi_wwan_ctrl_refill_needed(struct mhi_wwan_dev *mhiwwan)
-> > +{
-> > +     if (!test_bit(MHI_WWAN_STARTED, &mhiwwan->flags))
-> > +             return false;
-> > +
-> > +     if (!test_bit(MHI_WWAN_DL_CAP, &mhiwwan->flags))
-> > +             return false;
->
-> What prevents these bits from being changed right after reading them?
+Reviewed-by: David E Box <david.e.box@intel.com>
 
-Nothing, I've think (maybe wrongly) it's not a problem in the current code.
+On Fri, 2021-04-02 at 18:21 +0300, Tomas Winkler wrote:
+> From: Tamar Mashiah <tamar.mashiah@intel.com>
+> 
+> During PCH (platform/board) manufacturing process a global reset
+> has to be induced in order for configuration changes take the effect
+> upon following platform reset.
+> This setting was commonly done by accessing PMC registers via /dev/mem
+> but due to security concern /dev/mem access is much restricted, hence
+> the reason for exposing this setting via dedicated sysfs interface.
+> To prevent post manufacturing abuse the register is protected
+> by hardware locking.
+> 
+> The register in MMIO space is defined for Cannon Lake and newer PCHs.
+> 
+> Cc: David E Box <david.e.box@intel.com>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Tamar Mashiah <tamar.mashiah@intel.com>
+> Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+> ---
+> 2:
+> 1. Add locking for reading the ET3 register  (Andy)
+> 2. Fix few style issues (Andy)
+> V3:
+> 1. Resend
+> v4:
+> 1. Fix return statement (Andy) 
+> 2. Specify manufacturing process (Enrico)
+> 
+>  .../ABI/testing/sysfs-platform-intel-pmc      | 11 +++
+>  MAINTAINERS                                   |  1 +
+>  drivers/platform/x86/intel_pmc_core.c         | 97 +++++++++++++++++++
+>  drivers/platform/x86/intel_pmc_core.h         |  6 ++
+>  4 files changed, 115 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-platform-intel-pmc
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-platform-intel-pmc
+> b/Documentation/ABI/testing/sysfs-platform-intel-pmc
+> new file mode 100644
+> index 000000000000..7ce00e77fbcd
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-platform-intel-pmc
+> @@ -0,0 +1,11 @@
+> +What:          /sys/devices/platform/<platform>/global_reset
+> +Date:          Apr 2021
+> +KernelVersion: 5.13
+> +Contact:       "Tomas Winkler" <tomas.winkler@intel.com>
+> +Description:
+> +               Display global reset setting bits for PMC.
+> +                       * bit 31 - global reset is locked
+> +                       * bit 20 - global reset is set
+> +               Writing bit 20 value to the global_reset will induce
+> +               a platform global reset upon consequent platform reset.
+> +               in case the register is not locked.
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 04f68e0cda64..618676eba8c8 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -9166,6 +9166,7 @@ M:        Rajneesh Bhardwaj
+> <irenic.rajneesh@gmail.com>
+>  M:     David E Box <david.e.box@intel.com>
+>  L:     platform-driver-x86@vger.kernel.org
+>  S:     Maintained
+> +F:     Documentation/ABI/testing/sysfs-platform-intel-pmc
+>  F:     drivers/platform/x86/intel_pmc_core*
+>  
+>  INTEL PMIC GPIO DRIVERS
+> diff --git a/drivers/platform/x86/intel_pmc_core.c
+> b/drivers/platform/x86/intel_pmc_core.c
+> index ee2f757515b0..8afc198550a4 100644
+> --- a/drivers/platform/x86/intel_pmc_core.c
+> +++ b/drivers/platform/x86/intel_pmc_core.c
+> @@ -401,6 +401,7 @@ static const struct pmc_reg_map cnp_reg_map = {
+>         .pm_cfg_offset = CNP_PMC_PM_CFG_OFFSET,
+>         .pm_read_disable_bit = CNP_PMC_READ_DISABLE_BIT,
+>         .ltr_ignore_max = CNP_NUM_IP_IGN_ALLOWED,
+> +       .etr3_offset = ETR3_OFFSET,
+>  };
+>  
+>  static const struct pmc_reg_map icl_reg_map = {
+> @@ -418,6 +419,7 @@ static const struct pmc_reg_map icl_reg_map = {
+>         .pm_cfg_offset = CNP_PMC_PM_CFG_OFFSET,
+>         .pm_read_disable_bit = CNP_PMC_READ_DISABLE_BIT,
+>         .ltr_ignore_max = ICL_NUM_IP_IGN_ALLOWED,
+> +       .etr3_offset = ETR3_OFFSET,
+>  };
+>  
+>  static const struct pmc_bit_map tgl_clocksource_status_map[] = {
+> @@ -585,6 +587,7 @@ static const struct pmc_reg_map tgl_reg_map = {
+>         .lpm_sts = tgl_lpm_maps,
+>         .lpm_status_offset = TGL_LPM_STATUS_OFFSET,
+>         .lpm_live_status_offset = TGL_LPM_LIVE_STATUS_OFFSET,
+> +       .etr3_offset = ETR3_OFFSET,
+>  };
+>  
+>  static inline u32 pmc_core_reg_read(struct pmc_dev *pmcdev, int
+> reg_offset)
+> @@ -603,6 +606,99 @@ static inline u64
+> pmc_core_adjust_slp_s0_step(struct pmc_dev *pmcdev, u32 value)
+>         return (u64)value * pmcdev->map->slp_s0_res_counter_step;
+>  }
+>  
+> +static int set_global_reset(struct pmc_dev *pmcdev)
+> +{
+> +       const struct pmc_reg_map *map = pmcdev->map;
+> +       u32 reg;
+> +       int err;
+> +
+> +       if (!map->etr3_offset)
+> +               return -EOPNOTSUPP;
+> +
+> +       mutex_lock(&pmcdev->lock);
+> +
+> +       /* check if CF9 is locked */
+> +       reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
+> +       if (reg & ETR3_CF9LOCK) {
+> +               err = -EACCES;
+> +               goto out_unlock;
+> +       }
+> +
+> +       /* write CF9 global reset bit */
+> +       reg |= ETR3_CF9GR;
+> +       pmc_core_reg_write(pmcdev, map->etr3_offset, reg);
+> +
+> +       reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
+> +       if (!(reg & ETR3_CF9GR)) {
+> +               err = -EIO;
+> +               goto out_unlock;
+> +       }
+> +
+> +       err = 0;
+> +
+> +out_unlock:
+> +       mutex_unlock(&pmcdev->lock);
+> +       return err;
+> +}
+> +
+> +static ssize_t global_reset_show(struct device *dev,
+> +                                struct device_attribute *attr, char
+> *buf)
+> +{
+> +       struct pmc_dev *pmcdev = dev_get_drvdata(dev);
+> +       const struct pmc_reg_map *map = pmcdev->map;
+> +       u32 reg;
+> +
+> +       if (!map->etr3_offset)
+> +               return -EOPNOTSUPP;
+> +
+> +       mutex_lock(&pmcdev->lock);
+> +
+> +       reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
+> +       reg &= ETR3_CF9GR | ETR3_CF9LOCK;
+> +
+> +       mutex_unlock(&pmcdev->lock);
+> +
+> +       return sysfs_emit(buf, "0x%08x", reg);
+> +}
+> +
+> +static ssize_t global_reset_store(struct device *dev,
+> +                                 struct device_attribute *attr,
+> +                                 const char *buf, size_t len)
+> +{
+> +       struct pmc_dev *pmcdev = dev_get_drvdata(dev);
+> +       int err;
+> +       u32 reg;
+> +
+> +       err = kstrtouint(buf, 16, &reg);
+> +       if (err)
+> +               return err;
+> +
+> +       /* allow only CF9 writes */
+> +       if (reg != ETR3_CF9GR)
+> +               return -EINVAL;
+> +
+> +       err = set_global_reset(pmcdev);
+> +       if (err)
+> +               return err;
+> +
+> +       return len;
+> +}
+> +static DEVICE_ATTR_RW(global_reset);
+> +
+> +static struct attribute *pmc_attrs[] = {
+> +       &dev_attr_global_reset.attr,
+> +       NULL
+> +};
+> +
+> +static const struct attribute_group pmc_attr_group = {
+> +       .attrs = pmc_attrs,
+> +};
+> +
+> +static const struct attribute_group *pmc_dev_groups[] = {
+> +       &pmc_attr_group,
+> +       NULL
+> +};
+> +
+>  static int pmc_core_dev_state_get(void *data, u64 *val)
+>  {
+>         struct pmc_dev *pmcdev = data;
+> @@ -1364,6 +1460,7 @@ static struct platform_driver pmc_core_driver = {
+>                 .name = "intel_pmc_core",
+>                 .acpi_match_table = ACPI_PTR(pmc_core_acpi_ids),
+>                 .pm = &pmc_core_pm_ops,
+> +               .dev_groups = pmc_dev_groups,
+>         },
+>         .probe = pmc_core_probe,
+>         .remove = pmc_core_remove,
+> diff --git a/drivers/platform/x86/intel_pmc_core.h
+> b/drivers/platform/x86/intel_pmc_core.h
+> index f33cd2c34835..98ebdfe57138 100644
+> --- a/drivers/platform/x86/intel_pmc_core.h
+> +++ b/drivers/platform/x86/intel_pmc_core.h
+> @@ -200,6 +200,11 @@ enum ppfear_regs {
+>  #define TGL_LPM_STATUS_OFFSET                  0x1C3C
+>  #define TGL_LPM_LIVE_STATUS_OFFSET             0x1C5C
+>  
+> +/* Extended Test Mode Register 3 (CNL and later) */
+> +#define ETR3_OFFSET                            0x1048
+> +#define ETR3_CF9GR                             BIT(20)
+> +#define ETR3_CF9LOCK                           BIT(31)
+> +
+>  const char *tgl_lpm_modes[] = {
+>         "S0i2.0",
+>         "S0i2.1",
+> @@ -263,6 +268,7 @@ struct pmc_reg_map {
+>         const u32 lpm_residency_offset;
+>         const u32 lpm_status_offset;
+>         const u32 lpm_live_status_offset;
+> +       const u32 etr3_offset;
+>  };
+>  
+>  /**
 
->
-> > +
-> > +     if (!atomic_read(&mhiwwan->rx_budget))
-> > +             return false;
->
-> Why is this atomic?  What happens if it changes right after returning?
 
-
-If rx_budget was null and becomes non-null, it has been incremented by
-__mhi_skb_destructor() which will anyway call
-mhi_wwan_ctrl_refill_needed() again, so that's not a problem. On the
-other hand, if rx_budget was non-null and becomes null, the
-refill_work that will be unnecessarily scheduled will check the value
-again and will just return without doing anything.
-
->
-> This feels really odd.
->
-> > +
-> > +     return true;
-> > +}
-> > +
-> > +void __mhi_skb_destructor(struct sk_buff *skb)
-> > +{
-> > +     struct mhi_wwan_dev *mhiwwan = skb_shinfo(skb)->destructor_arg;
-> > +
-> > +     /* RX buffer has been consumed, increase the allowed budget */
-> > +     atomic_inc(&mhiwwan->rx_budget);
->
-> So this is a reference count?  What is this thing?
-
-This represents the remaining number of buffers that can be allocated
-for RX. It is decremented When a buffer is allocated/queued and
-incremented when a buffer is consumed (e.g. on WWAN port reading).
-
->
-> > +
-> > +     if (mhi_wwan_ctrl_refill_needed(mhiwwan))
-> > +             schedule_work(&mhiwwan->rx_refill);
->
-> What if refill is needed right after this check?  Did you just miss the
-> call?
-
-In running condition, refill is allowed when rx_budget is non-zero,
-and __mhi_skb_destructor() is the only path that increments the budget
-(and so allow refill) and schedules the refill,  so for this scenario
-to happen it would mean that a parallel  __mhi_skb_destructor() is
-executed (and incremented rx_budget), so this second parallel call
-will schedule the refill.
-
-I realize it's probably odd, but I don't see any scenario in which we
-can end badly (e.g. missing refill scheduling, queueing too many
-buffers), but I admit it would be certainly simpler and less
-error-prone with regular locking.
-
->
->
-> > +static const struct mhi_device_id mhi_wwan_ctrl_match_table[] = {
-> > +     { .chan = "DUN", .driver_data = WWAN_PORT_AT },
-> > +     { .chan = "MBIM", .driver_data = WWAN_PORT_MBIM },
-> > +     { .chan = "QMI", .driver_data = WWAN_PORT_QMI },
-> > +     { .chan = "DIAG", .driver_data = WWAN_PORT_QCDM },
-> > +     { .chan = "FIREHOSE", .driver_data = WWAN_PORT_FIREHOSE },
->
-> Wait, I thought these were all going to be separate somehow.  Now they
-> are all muxed back together?
-
-A WWAN 'port driver' abstracts the method for accessing WWAN control
-protocols, so that userspace can e.g. talk MBIM to the port without
-knowledge of the underlying bus. Here this is just about abstracting
-the MHI/PCI transport, a  MHI modem can support one or several of
-these protocols. So this MHI driver binds all MHI control devices, and
-each one is registered as a WWAN port. Other 'port drivers' can be
-created for different busses or vendors.
-
-Thanks,
-Loic
