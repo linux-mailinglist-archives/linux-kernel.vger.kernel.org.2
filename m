@@ -2,207 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD49352730
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 10:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3CE235273B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 10:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234356AbhDBICY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 04:02:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35190 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234139AbhDBICT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 04:02:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 351826100A;
-        Fri,  2 Apr 2021 08:02:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617350538;
-        bh=y9zmwC39301s/j2wc1CnDJrrb22WDqRqa+zGLorL9uY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=W5Bep2EaKXKBr8kXYw7cBBzTS8C1gbBx7f48rGyRyoVX+2zB8bQoWt5oTPz3lon6A
-         hiegsEUbDHXzp8EmDUsn/po/eAavEAvTR5JsH+uKNGMTkzNOcbKie4dlThrRW29tR4
-         47YRmiUXkurwhJz3/QhTB4Q1xYSngw8luGyks8iU=
-Date:   Fri, 2 Apr 2021 10:02:15 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lukasz.luba@arm.com, rafael@kernel.org,
-        Ram Chandrasekar <rkumbako@codeaurora.org>
-Subject: Re: [PATCH v6 2/7] powercap/drivers/dtpm: Create a registering system
-Message-ID: <YGbPh/QrFsgyJC6B@kroah.com>
-References: <20210401183654.27214-1-daniel.lezcano@linaro.org>
- <20210401183654.27214-2-daniel.lezcano@linaro.org>
- <YGYe9p3oyNpMnsBT@kroah.com>
- <d0f818c7-3262-268b-bcc2-8036ce559d7b@linaro.org>
+        id S234447AbhDBIMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 04:12:50 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:36402 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234139AbhDBIMn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 04:12:43 -0400
+Date:   Fri, 02 Apr 2021 08:12:41 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1617351162;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JFNkzJhprrvST0Ka6tlqiMl8VeVywkUQWHBwgVFVs30=;
+        b=G1dZTtq2bK3IpJueYJpdpfqls6JjV+7lA43qngugVCuNgT3MTBBiVWin9t9Kyfa9cOn+Jb
+        MT3bMD6E/3x1EatiPOuXoNfQDxT/UxOl3AQSS1OSFoxPmx++vfIpgjcmQdOik7M3USyBSz
+        X3vSQ45IC3ttVr7kGzQahFmoGHxV1UFQXF46m8OCVele3RBa3OyuGOdURPfMIiMbKOfIGI
+        v964pIqAPdTch17XrNLsDtJijn9V6HSVOJ3ASOBTVuBYNZ3pr0beM/yHTdyrRhwvSSA0Lt
+        K3WaF+ysqFx0H3XVtGG+EAXgBe5tWJkwWmpIUxs1qqD3MZLSKF5nMxpvvtgwZA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1617351162;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JFNkzJhprrvST0Ka6tlqiMl8VeVywkUQWHBwgVFVs30=;
+        b=3s/HsLUjFoLcDzsOXfXdqk3VHZVm0sYXRcQsNiI2m8zCrl0ZpvvXNZPB4br1DQZtFkWlR8
+        2gBVq59Hnjvtc9CQ==
+From:   "tip-bot2 for Kan Liang" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] perf/x86/intel/uncore: Generic support for the MMIO
+ type of uncore blocks
+Cc:     Kan Liang <kan.liang@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <1616003977-90612-6-git-send-email-kan.liang@linux.intel.com>
+References: <1616003977-90612-6-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d0f818c7-3262-268b-bcc2-8036ce559d7b@linaro.org>
+Message-ID: <161735116180.29796.17129715669203589919.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 12:08:49AM +0200, Daniel Lezcano wrote:
-> 
-> Hi Greg,
-> 
-> On 01/04/2021 21:28, Greg KH wrote:
-> > On Thu, Apr 01, 2021 at 08:36:49PM +0200, Daniel Lezcano wrote:
-> >> A SoC can be differently structured depending on the platform and the
-> >> kernel can not be aware of all the combinations, as well as the
-> >> specific tweaks for a particular board.
-> >>
-> >> The creation of the hierarchy must be delegated to userspace.
-> > 
-> > Why?  Isn't this what DT is for?
-> 
-> I've always been told the DT describes the hardware. Here we are more
-> describing a configuration, that is the reason why I've let the
-> userspace to handle that through configfs.
+The following commit has been merged into the perf/core branch of tip:
 
-DT does describe how the hardware configuration is to be used.  You are
-saying that the hardware description does not work and somehow you need
-a magic userspace tool to reconfigure things instead?
+Commit-ID:     c4c55e362a521d763356b9e02bc9a4348c71a471
+Gitweb:        https://git.kernel.org/tip/c4c55e362a521d763356b9e02bc9a4348c71a471
+Author:        Kan Liang <kan.liang@linux.intel.com>
+AuthorDate:    Wed, 17 Mar 2021 10:59:37 -07:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Fri, 02 Apr 2021 10:04:55 +02:00
 
-> > What "userspace tool" is going to be created to manage all of this?
-> > Pointers to that codebase?
-> 
-> You are certainly aware of most of it but let me give a bit more of context.
+perf/x86/intel/uncore: Generic support for the MMIO type of uncore blocks
 
-No, I am not aware of it at all, thanks :)
+The discovery table provides the generic uncore block information
+for the MMIO type of uncore blocks, which is good enough to provide
+basic uncore support.
 
-> The thermal framework has cooling devices which export their 'state', a
-> representation of their performance level, in sysfs. Unfortunately that
-> gives access from the user space to act on the performance as a power
-> limiter in total conflict with the in-kernel thermal governor decisions.
+The box control field is composed of the BAR address and box control
+offset. When initializing the uncore blocks, perf should ioremap the
+address from the box control field.
 
-Why not remove that conflict?
+Implement the generic support for the MMIO type of uncore block.
 
-> That is done from thermal daemon the different SoC vendors tweak for
-> their platform. Depending on the application running and identified as a
-> scenario, the daemon acts proactively on the different cooling devices
-> to ensure a skin temperature which is far below the thermal limit of the
-> components.
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/1616003977-90612-6-git-send-email-kan.liang@linux.intel.com
+---
+ arch/x86/events/intel/uncore.c           |  1 +-
+ arch/x86/events/intel/uncore.h           |  1 +-
+ arch/x86/events/intel/uncore_discovery.c | 98 +++++++++++++++++++++++-
+ arch/x86/events/intel/uncore_discovery.h |  1 +-
+ 4 files changed, 101 insertions(+)
 
-So userspace is going to try to manage power settings in order to keep
-thermal values under control?  Has no one learned from our past mistakes
-when we used to have to do this 10 years ago and it turned out so bad
-that it was just baked into the hardware instead?
-
-{sigh}
-
-> This usage of the cooling devices hijacked the real purpose of the
-> thermal framework which is to protect the silicon. Nobody to blame,
-> there is no alternative for userspace.
-
-Userspace should not care.
-
-> The use case falls under the power limitation framework prerogative and
-> that is the reason why we provided a new framework to limit the power
-> based on the powercap framework. The thermal daemon can then use it and
-> stop abusing the thermal framework.
-> 
-> This DTPM framework allows to read the power consumption and set a power
-> limit to a device.
-> 
-> While the powercap simple backend gives a single device entry, DTPM
-> aggregates the different devices power by summing their power and their
-> limits. The tree representation of the different DTPM nodes describe how
-> their limits are set and how the power is computed along the different
-> devices.
-
-That's all great, doing this in-kernel is fine, it's now the "userspace
-must set this up properly that I'm objecting to as no one will know how
-to do this.
-
-> For more info, we did a presentation at ELC [1] and Linux PM
-> microconference [2] and there is an article talking about it [3].
-> 
-> 
-> To answer your questions, there is a SoC vendor thermal daemon using
-> DTPM and there is a tool created to watch the thermal framework and read
-> the DTPM values, it is available at [4]. It is currently under
-> development with the goal of doing power rebalancing / capping across
-> the different nodes when there is a violation of the parent's power limit.
-
-Crazy ideas aside, your implementation of this is my main objection
-here.  You are creating a user/kernel api that you will have to support
-for 20+ years, without a real userspace user just yet (from what I can
-tell).  That's rough, and is going to mean that this gets messy over
-time.
-
-Also there's the whole "tying sysfs to configfs" mess and reference
-counting that I object to as well...
-
-> >> The next changes will provide an userspace interface to create
-> >> hierarchically the different nodes. Those will be created by name and
-> >> found via the list filled by the different subsystem.
-> >>
-> >> If a specified name is not found in the list, it is assumed to be a
-> >> virtual node which will have children and the default is to allocate
-> >> such node.
-> > 
-> > So userspace sets the name?
-> > 
-> > Why not use the name in the device itself?  I thought I asked that last
-> > time...
-> 
-> I probably missed it, sorry for that.
-> 
-> When the userspace creates the directory in the configfs, there is a
-> lookup with the name in the device list name. If it is found, then the
-> device is used, otherwise a virtual node is created instead, its power
-> consumption is equal to the sum of the children.
-> 
-> The different drivers register themselves with their name and the
-> associated dtpm structure. The userspace pick in this list to create a
-> hierarchy via configfs.
-> 
-> For example, a big.Little system.
-> 
-> - little CPUs power limiter will have the name cpu0-cpufreq
-> - big CPUs will have the name cpu4-cpufreq
-> - gpu will have the name ff9a0000.gpu-devfreq
-> - charger will have the name power-supply-charge
-> - DDR memory controller can have the name dmc-devfreq
-> 
-> Userspace may want to create this hierarchy:
-> 
-> soc
->  - package
->    - cluster0
->      - cpu0-cpufreq
->    - cluster1
->      - ff9a0000.gpu-devfreq
->    - dmc-devfreq
->  - battery
->    - power-supply-charge
-> 
-> It will do:
-> 
-> mkdir soc (virtual node)
-> mkdir soc/cluster0 (virtual node)
-> mkdir soc/cluster0/cpu0-cpufreq (real device)
-> etc ...
-> 
-> The configfs does not represent the layout of the sensors or the floor
-> plan of the devices but only the constraints we want to tie together.
-> 
-> That is the reason why I think using configfs instead of OF is more
-> adequate and flexible as userspace deals with the power numbers.
-> Moreover, we won't be facing issues with devices initialization priority
-> when the daemon starts.
-> 
-> I thought we can add OF later, when the framework has more users and
-> more devices. The configfs and OF can certainly co-exist or be mutually
-> exclusive via the Kconfig option.
-
-Kconfig options are not ok for this, you want to build a kernel that
-works everywhere.
-
-If you want to make virtual things, that's fine, but again, your tying
-of sysfs to configfs in odd ways, along with the reference counting
-bugs/nightmare the current implementation is creating, is a non-starter
-for me at the moment, sorry.
-
-thanks,
-
-greg k-h
+diff --git a/arch/x86/events/intel/uncore.c b/arch/x86/events/intel/uncore.c
+index 3109082..35b3470 100644
+--- a/arch/x86/events/intel/uncore.c
++++ b/arch/x86/events/intel/uncore.c
+@@ -1755,6 +1755,7 @@ static const struct intel_uncore_init_fun snr_uncore_init __initconst = {
+ static const struct intel_uncore_init_fun generic_uncore_init __initconst = {
+ 	.cpu_init = intel_uncore_generic_uncore_cpu_init,
+ 	.pci_init = intel_uncore_generic_uncore_pci_init,
++	.mmio_init = intel_uncore_generic_uncore_mmio_init,
+ };
+ 
+ static const struct x86_cpu_id intel_uncore_match[] __initconst = {
+diff --git a/arch/x86/events/intel/uncore.h b/arch/x86/events/intel/uncore.h
+index 76fc898..549cfb2 100644
+--- a/arch/x86/events/intel/uncore.h
++++ b/arch/x86/events/intel/uncore.h
+@@ -70,6 +70,7 @@ struct intel_uncore_type {
+ 	union {
+ 		unsigned *msr_offsets;
+ 		unsigned *pci_offsets;
++		unsigned *mmio_offsets;
+ 	};
+ 	unsigned *box_ids;
+ 	struct event_constraint unconstrainted;
+diff --git a/arch/x86/events/intel/uncore_discovery.c b/arch/x86/events/intel/uncore_discovery.c
+index 784d7b4..aba9bff 100644
+--- a/arch/x86/events/intel/uncore_discovery.c
++++ b/arch/x86/events/intel/uncore_discovery.c
+@@ -442,6 +442,90 @@ static struct intel_uncore_ops generic_uncore_pci_ops = {
+ 	.read_counter	= intel_generic_uncore_pci_read_counter,
+ };
+ 
++#define UNCORE_GENERIC_MMIO_SIZE		0x4000
++
++static unsigned int generic_uncore_mmio_box_ctl(struct intel_uncore_box *box)
++{
++	struct intel_uncore_type *type = box->pmu->type;
++
++	if (!type->box_ctls || !type->box_ctls[box->dieid] || !type->mmio_offsets)
++		return 0;
++
++	return type->box_ctls[box->dieid] + type->mmio_offsets[box->pmu->pmu_idx];
++}
++
++static void intel_generic_uncore_mmio_init_box(struct intel_uncore_box *box)
++{
++	unsigned int box_ctl = generic_uncore_mmio_box_ctl(box);
++	struct intel_uncore_type *type = box->pmu->type;
++	resource_size_t addr;
++
++	if (!box_ctl) {
++		pr_warn("Uncore type %d box %d: Invalid box control address.\n",
++			type->type_id, type->box_ids[box->pmu->pmu_idx]);
++		return;
++	}
++
++	addr = box_ctl;
++	box->io_addr = ioremap(addr, UNCORE_GENERIC_MMIO_SIZE);
++	if (!box->io_addr) {
++		pr_warn("Uncore type %d box %d: ioremap error for 0x%llx.\n",
++			type->type_id, type->box_ids[box->pmu->pmu_idx],
++			(unsigned long long)addr);
++		return;
++	}
++
++	writel(GENERIC_PMON_BOX_CTL_INT, box->io_addr);
++}
++
++static void intel_generic_uncore_mmio_disable_box(struct intel_uncore_box *box)
++{
++	if (!box->io_addr)
++		return;
++
++	writel(GENERIC_PMON_BOX_CTL_FRZ, box->io_addr);
++}
++
++static void intel_generic_uncore_mmio_enable_box(struct intel_uncore_box *box)
++{
++	if (!box->io_addr)
++		return;
++
++	writel(0, box->io_addr);
++}
++
++static void intel_generic_uncore_mmio_enable_event(struct intel_uncore_box *box,
++					     struct perf_event *event)
++{
++	struct hw_perf_event *hwc = &event->hw;
++
++	if (!box->io_addr)
++		return;
++
++	writel(hwc->config, box->io_addr + hwc->config_base);
++}
++
++static void intel_generic_uncore_mmio_disable_event(struct intel_uncore_box *box,
++					      struct perf_event *event)
++{
++	struct hw_perf_event *hwc = &event->hw;
++
++	if (!box->io_addr)
++		return;
++
++	writel(0, box->io_addr + hwc->config_base);
++}
++
++static struct intel_uncore_ops generic_uncore_mmio_ops = {
++	.init_box	= intel_generic_uncore_mmio_init_box,
++	.exit_box	= uncore_mmio_exit_box,
++	.disable_box	= intel_generic_uncore_mmio_disable_box,
++	.enable_box	= intel_generic_uncore_mmio_enable_box,
++	.disable_event	= intel_generic_uncore_mmio_disable_event,
++	.enable_event	= intel_generic_uncore_mmio_enable_event,
++	.read_counter	= uncore_mmio_read_counter,
++};
++
+ static bool uncore_update_uncore_type(enum uncore_access_type type_id,
+ 				      struct intel_uncore_type *uncore,
+ 				      struct intel_uncore_discovery_type *type)
+@@ -468,6 +552,15 @@ static bool uncore_update_uncore_type(enum uncore_access_type type_id,
+ 		uncore->box_ctls = type->box_ctrl_die;
+ 		uncore->pci_offsets = type->box_offset;
+ 		break;
++	case UNCORE_ACCESS_MMIO:
++		uncore->ops = &generic_uncore_mmio_ops;
++		uncore->perf_ctr = (unsigned int)type->ctr_offset;
++		uncore->event_ctl = (unsigned int)type->ctl_offset;
++		uncore->box_ctl = (unsigned int)type->box_ctrl;
++		uncore->box_ctls = type->box_ctrl_die;
++		uncore->mmio_offsets = type->box_offset;
++		uncore->mmio_map_size = UNCORE_GENERIC_MMIO_SIZE;
++		break;
+ 	default:
+ 		return false;
+ 	}
+@@ -522,3 +615,8 @@ int intel_uncore_generic_uncore_pci_init(void)
+ 
+ 	return 0;
+ }
++
++void intel_uncore_generic_uncore_mmio_init(void)
++{
++	uncore_mmio_uncores = intel_uncore_generic_init_uncores(UNCORE_ACCESS_MMIO);
++}
+diff --git a/arch/x86/events/intel/uncore_discovery.h b/arch/x86/events/intel/uncore_discovery.h
+index 1639ff7..1d65293 100644
+--- a/arch/x86/events/intel/uncore_discovery.h
++++ b/arch/x86/events/intel/uncore_discovery.h
+@@ -128,3 +128,4 @@ bool intel_uncore_has_discovery_tables(void);
+ void intel_uncore_clear_discovery_tables(void);
+ void intel_uncore_generic_uncore_cpu_init(void);
+ int intel_uncore_generic_uncore_pci_init(void);
++void intel_uncore_generic_uncore_mmio_init(void);
