@@ -2,94 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18278352A7B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 14:12:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB474352A7E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 14:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235265AbhDBMMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 08:12:12 -0400
-Received: from m12-11.163.com ([220.181.12.11]:59259 "EHLO m12-11.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229599AbhDBMMI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 08:12:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=mGoUT
-        l8kqayttdL1VREEMYNyzZHUEANXE7LVNQNMDNs=; b=FUXi5zgI050NW5QECdgpz
-        ptVIARKy0PxB24NpCRx5juqPreFr9Btm9Oz5MsAyIKezd4XsYohXD68CkaZElrL4
-        1x/VA0pz/3/SA/G2nfZPoVo3B7wb+JSFcCRZdRpE21Jia4wT3Pk98R01m8hPR6/j
-        kPgFCwNhxrP78jVk7Ddj6Q=
-Received: from COOL-20201210PM.ccdomain.com (unknown [218.94.48.178])
-        by smtp7 (Coremail) with SMTP id C8CowADHsorzCWdgsOdAVQ--.12928S2;
-        Fri, 02 Apr 2021 20:11:34 +0800 (CST)
-From:   zuoqilin1@163.com
-To:     gregkh@linuxfoundation.org, rafael@kernel.org
-Cc:     linux-kernel@vger.kernel.org, zuoqilin <zuoqilin@yulong.com>
-Subject: [PATCH] fs/debugfs: Convert to DEFINE_SHOW_ATTRIBUTE
-Date:   Fri,  2 Apr 2021 20:11:41 +0800
-Message-Id: <20210402121141.82-1-zuoqilin1@163.com>
-X-Mailer: git-send-email 2.28.0.windows.1
+        id S235288AbhDBMO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 08:14:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229599AbhDBMO2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 08:14:28 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99609C0613E6;
+        Fri,  2 Apr 2021 05:14:27 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 4EB681F46A50
+Received: by earth.universe (Postfix, from userid 1000)
+        id 2F4823C0C96; Fri,  2 Apr 2021 14:14:24 +0200 (CEST)
+Date:   Fri, 2 Apr 2021 14:14:24 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Timon Baetz <timon.baetz@protonmail.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH v2 0/1] charger-supply for max8997_charger
+Message-ID: <20210402121424.2imblhsxrkocjg7n@earth.universe>
+References: <20210329143715.806981-1-timon.baetz@protonmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: C8CowADHsorzCWdgsOdAVQ--.12928S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7ury5ZF18uw48AFW8JF4UXFb_yoW8WFyDpa
-        n5Ca45Kr4xArWDCryFkF1UZ34S9r93XF4kuF92v3ySyw1v9rn5tF4YyFWjyryjgry8Ww10
-        qw15KryUXF1rCr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jbsqXUUUUU=
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 52xr1xpolqiqqrwthudrp/1tbipRVniVUMdJmefwACsJ
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wbfo3p5zroxgn7zs"
+Content-Disposition: inline
+In-Reply-To: <20210329143715.806981-1-timon.baetz@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zuoqilin <zuoqilin@yulong.com>
 
-Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
+--wbfo3p5zroxgn7zs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: zuoqilin <zuoqilin@yulong.com>
----
- fs/debugfs/file.c | 16 +++-------------
- 1 file changed, 3 insertions(+), 13 deletions(-)
+Hi,
 
-diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
-index 686e0ad..d670ca3 100644
---- a/fs/debugfs/file.c
-+++ b/fs/debugfs/file.c
-@@ -1045,7 +1045,7 @@ void debugfs_print_regs32(struct seq_file *s, const struct debugfs_reg32 *regs,
- }
- EXPORT_SYMBOL_GPL(debugfs_print_regs32);
- 
--static int debugfs_show_regset32(struct seq_file *s, void *data)
-+static int regset32_show(struct seq_file *s, void *data)
- {
- 	struct debugfs_regset32 *regset = s->private;
- 
-@@ -1060,17 +1060,7 @@ static int debugfs_show_regset32(struct seq_file *s, void *data)
- 	return 0;
- }
- 
--static int debugfs_open_regset32(struct inode *inode, struct file *file)
--{
--	return single_open(file, debugfs_show_regset32, inode->i_private);
--}
--
--static const struct file_operations fops_regset32 = {
--	.open =		debugfs_open_regset32,
--	.read =		seq_read,
--	.llseek =	seq_lseek,
--	.release =	single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(regset32);
- 
- /**
-  * debugfs_create_regset32 - create a debugfs file that returns register values
-@@ -1091,7 +1081,7 @@ void debugfs_create_regset32(const char *name, umode_t mode,
- 			     struct dentry *parent,
- 			     struct debugfs_regset32 *regset)
- {
--	debugfs_create_file(name, mode, parent, regset, &fops_regset32);
-+	debugfs_create_file(name, mode, parent, regset, &regset32_fops);
- }
- EXPORT_SYMBOL_GPL(debugfs_create_regset32);
- 
--- 
-1.9.1
+On Mon, Mar 29, 2021 at 02:37:47PM +0000, Timon Baetz wrote:
+> Based on the discussion from [0] add an optional DT property to retrieve
+> the regulator used for charging control in the max8997_charger driver.
+>=20
+> [0] https://lore.kernel.org/lkml/20210118124505.GG4455@sirena.org.uk/
+>=20
+> Changes in v2:
+>=20
+> * drop accepted patches
+>=20
+> Timon Baetz (1):
+>   power: supply: max8997_charger: Switch to new binding
+>=20
+>  drivers/power/supply/max8997_charger.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
 
+Thanks, queued.
+
+-- Sebastian
+
+--wbfo3p5zroxgn7zs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBnCpoACgkQ2O7X88g7
++ppTag/+IkqQNu9jDkrBooJ96hNXWxts8q4CbwpUn7dknkpGC7Ti2OOWYaeG55lo
+BipXr6Seuiv4Ug9vasHK2PCy629aBfh6k/FbNus//iAgPl9dZH1OdPKJr6tw3NMf
+zpPQWC2LeVAAgchUo7OxGyEXWDJOIOd01IIjwx+7pqyIU0/IrBbLUvlsYKyE4OtK
+x1UQ2wZfE5j7ZTFiB/SXcJRUxBvESEURbvCY1fzVoFaMGEo+qDuE+21yDB0saJ2P
+wlCz4LhNuHm7CCX8XhWDaibFWpsu8i7i7SSTzJPmICg1gCrl8/px2AZCjoQWJ+o8
+SpyjZp6KmOHDUyirh4Ne9iFzrdNVLW97OvQ4aU5Z5cHBgtocbdhIH5sIHZHmJtbc
+jnd8stIMeSuyA8SpQ+yk/GcR1Wn7fdMO0EopZ2NMth29Mh4t6/XRta7IpVMt99kl
+3s+mAp3NCtkXNNzhrgVEvC9l2jb6D0NWsJaZPL///iuUcGbC7md+Y7KYzlR53QFg
+9u8kF292MxQ1oZphJP9uicrGC0PycuR/F/lIZbn9JXUphJNwTjAoAZ1wYGXnppzn
+YtKkzvxkcIbA0Jng9as00P5J1WphAElxkIrUmQl9EJO+mRMD7x2HoBkFPgd0ZX/j
+cHSYYLVsWz/clGfxHmoAab9qw40YqaazVbsdYCt/zh0RjZm0ZXg=
+=MzoX
+-----END PGP SIGNATURE-----
+
+--wbfo3p5zroxgn7zs--
