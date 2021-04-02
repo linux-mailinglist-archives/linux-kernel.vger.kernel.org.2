@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E1E35312B
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 00:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03E1235312C
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 00:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236392AbhDBW3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 18:29:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37280 "EHLO
+        id S236348AbhDBW34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 18:29:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235659AbhDBW3k (ORCPT
+        with ESMTP id S236035AbhDBW3k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 2 Apr 2021 18:29:40 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C2D3C06178C
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 15:29:38 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id f10so4307547pgl.9
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 15:29:38 -0700 (PDT)
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AECEC061788
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 15:29:39 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so3144709pjv.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 15:29:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=FtJPrWnxvy9nNmxs8bKL7DfV5E8REgE/CuweSYK12YI=;
-        b=ADz4iZI0UBUy5Wgf7Wwt/rhv7XZcSPwsjZ/BiPy3B3JDfBcLDHbctBQwLTNBbC1pz6
-         g4k+0i88k6d2fc8sNquHG/uIfTy/gd27MVhfmMN9ZddZa1EAbaRGkghaDmTziNgPp1Ro
-         8IXzOvLZDfwIo5UUfhzQmhgws3B/vfTnq9H90=
+        bh=MtWyTu8A+Bll3XZyYofmr3PZnBtQf0rbeehEFhIdO78=;
+        b=Ltxl2XhjD/ANgUYImu7Hfd2BJK5hAeBDH7r6rm/XM1PchLg6jFes8pOy+fpJ+d1xNF
+         mEi8EfXMnmaNGrqNPKLakjwlMXMrTeRPfxTjq/AkQhjFd8nhYHYHlNIdRaFnYkXxtc+y
+         wHQML8n9Eclh+k1XvOVHhvXRVVTKehp8QiIIQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=FtJPrWnxvy9nNmxs8bKL7DfV5E8REgE/CuweSYK12YI=;
-        b=lCcvp8CyECCHJBlVMVfq9CvVewX+l7S/TN+pUhy0JV7/i75+p/ZwZfYmTBr74HcEox
-         imhXVztMSZ1cxtE5IrpXGDCim/uoQJdQN3wvAg9fNL5oKu18mCaVZnsjY0QkA+rDObad
-         f19pE2IXtFEjoCe0PDv1hn7VWRzl4R9VQ4IYjA0SJd8j9SZvh0yRaj8UMXGsQsw0kD1+
-         elCASZYJJG3QfiL1P/1O1QL+fegkMxQRN6g/1k8Te7vo+B+CLJqGAb8n07YCt1YwVtV2
-         DpL1lPnvTlUz5ZwHsS7BPiRxWIJeiRF4lxXIu1nxs9OCVLZAJaNp4uud41bINtKNhRPm
-         2QMA==
-X-Gm-Message-State: AOAM533Zmk57eMFK0Hy3vCwAtAQhGInKKOJxNqEMmaUyHGk1YyRJl4ug
-        hv03oEVUuhkKs2KqXW5RCaNeVA==
-X-Google-Smtp-Source: ABdhPJxgA9idcvNYzBZWn5xNFxDlF2IAIYBIQdD07MjVFFMOqyHn9gYAPHAYrsH14tOnDwgGEQcmBw==
-X-Received: by 2002:a63:4415:: with SMTP id r21mr13635650pga.222.1617402577644;
-        Fri, 02 Apr 2021 15:29:37 -0700 (PDT)
+        bh=MtWyTu8A+Bll3XZyYofmr3PZnBtQf0rbeehEFhIdO78=;
+        b=BCK0gm76MLfDxImZ0qGOwOqqTHp09MVrWAWYDmJFLR+ja9P91FGB8/KBPps55F+yY5
+         3Qu2WbDApWCsdU3Pt27qwEdsoxg31WACEr4vPx8hRW9sfet0UBjxVvvpFaTotXAYrVu+
+         rkwqg77vYkT/XzrVSf+qFjE5rbx7oe04TLhUTB2QVWRxCar32aYqwOZHKs9HPFIf8Ixe
+         vJczbQLJekdrIC4BLwpyNUHJKp4E9LB7jFzLE9XHWIzaB19d+NK2wtbr9DdnzOdQQj0W
+         a0OK7N5KEvShjN40feBWjzfKC8WwBWKvhg0utYuSxadjUF8P9Yo6HtUfL6Tuo2y9Gk95
+         LzoA==
+X-Gm-Message-State: AOAM5324lHyvvkg2pfB+4bRrgK/tGzOssBycWGR+TIMzXqOSSFrL8lWl
+        q0ToRc50MflEM/Nx8LDmIo0ZPw==
+X-Google-Smtp-Source: ABdhPJxUVyK0tKS8MW57jWx2k1rvcrhHVw/btAMD+OvmUvahUSin882TSOsaAzGaGWOl39sdORxuew==
+X-Received: by 2002:a17:902:c94c:b029:e6:cd16:24ec with SMTP id i12-20020a170902c94cb02900e6cd1624ecmr14488649pla.27.1617402578767;
+        Fri, 02 Apr 2021 15:29:38 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:6c58:fab2:c5e2:f2d7])
-        by smtp.gmail.com with ESMTPSA id t16sm9233094pfc.204.2021.04.02.15.29.36
+        by smtp.gmail.com with ESMTPSA id t16sm9233094pfc.204.2021.04.02.15.29.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 15:29:37 -0700 (PDT)
+        Fri, 02 Apr 2021 15:29:38 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     Andrzej Hajda <a.hajda@samsung.com>,
         Neil Armstrong <narmstrong@baylibre.com>,
@@ -64,9 +64,9 @@ Cc:     Linus W <linus.walleij@linaro.org>,
         David Airlie <airlied@linux.ie>,
         Robert Foss <robert.foss@linaro.org>,
         dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 10/12] drm/bridge: ti-sn65dsi86: Read the EDID only if refclk was provided
-Date:   Fri,  2 Apr 2021 15:28:44 -0700
-Message-Id: <20210402152701.v3.10.I7a8708139ae993f30f51eec7d065a1906c31a4bc@changeid>
+Subject: [PATCH v3 11/12] drm/bridge: ti-sn65dsi86: Print an error if we fallback to panel modes
+Date:   Fri,  2 Apr 2021 15:28:45 -0700
+Message-Id: <20210402152701.v3.11.Ib4183a04e8698f60b67558f363fddbbaf33dd445@changeid>
 X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
 In-Reply-To: <20210402222846.2461042-1-dianders@chromium.org>
 References: <20210402222846.2461042-1-dianders@chromium.org>
@@ -76,66 +76,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Though I don't have access to any hardware that uses ti-sn65dsi86 and
-_doesn't_ provide a "refclk", I believe that we'll have trouble
-reading the EDID at bootup in that case. Specifically I believe that
-if there's no "refclk" we need the MIPI source clock to be active
-before we can successfully read the EDID. My evidence here is that, in
-testing, I couldn't read the EDID until I turned on the DPPLL in the
-bridge chip and that the DPPLL needs the input clock to be active.
-
-Since this is hard to support, let's punt trying to read the EDID if
-there's no "refclk".
-
-I don't believe there are any users of the ti-sn65dsi86 bridge chip
-that _don't_ use "refclk". The bridge chip is _very_ inflexible in
-that mode. The only time I've seen that mode used was for some really
-early prototype hardware that was thrown in the e-waste bin years ago
-when we realized how inflexible it was.
-
-Even if someone is using the bridge chip without the "refclk" they're
-in no worse shape than they were before the (fairly recent) commit
-58074b08c04a ("drm/bridge: ti-sn65dsi86: Read EDID blob over DDC").
+Now that we can properly read the EDID for modes there should be no
+reason to fallback to the fixed modes that our downstream panel driver
+provides us. Let's make that clear by:
+- Putting an error message in the logs if we fall back.
+- Putting a comment in saying what's going on.
 
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
 
 (no changes since v1)
 
- drivers/gpu/drm/bridge/ti-sn65dsi86.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/gpu/drm/bridge/ti-sn65dsi86.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-index a76cac93cb46..fb50f9f95b0f 100644
+index fb50f9f95b0f..3b61898cf9cb 100644
 --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
 +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-@@ -275,6 +275,18 @@ static int ti_sn_bridge_connector_get_modes(struct drm_connector *connector)
- 	bool was_enabled;
- 	int num;
- 
-+	/*
-+	 * Don't try to read the EDID if no refclk. In theory it is possible
-+	 * to make this work but it's tricky. I believe that we need to get
-+	 * our upstream MIPI source to provide a pixel clock before we can
-+	 * do AUX transations but we need to be able to read the EDID before
-+	 * we've picked a display mode. The bridge is already super limited
-+	 * if you try to use it without a refclk so presumably limiting to
-+	 * the fixed modes our downstream panel reports is fine.
-+	 */
-+	if (!pdata->refclk)
-+		goto exit;
-+
- 	if (!edid) {
- 		was_enabled = pdata->pre_enabled;
- 
-@@ -291,6 +303,7 @@ static int ti_sn_bridge_connector_get_modes(struct drm_connector *connector)
+@@ -303,6 +303,13 @@ static int ti_sn_bridge_connector_get_modes(struct drm_connector *connector)
  			return num;
  	}
  
-+exit:
++	/*
++	 * Ideally this should never happen and we could remove the fallback
++	 * but let's preserve old behavior.
++	 */
++	DRM_DEV_ERROR(pdata->dev,
++		      "Failed to read EDID; falling back to panel modes");
++
+ exit:
  	return drm_panel_get_modes(pdata->panel, connector);
  }
- 
 -- 
 2.31.0.208.g409f899ff0-goog
 
