@@ -2,112 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD52352A0B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 13:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A682352A0F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 13:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235027AbhDBLC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 07:02:56 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:55956 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234919AbhDBLCy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 07:02:54 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 93C081F46851
-Received: by earth.universe (Postfix, from userid 1000)
-        id 40A033C0C96; Fri,  2 Apr 2021 13:02:48 +0200 (CEST)
-Date:   Fri, 2 Apr 2021 13:02:48 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Dan Murphy <dmurphy@ti.com>, Len Brown <len.brown@intel.com>,
-        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH 28/32] dt-bindings: power: update battery.yaml reference
-Message-ID: <20210402110248.qhzeckgcqrksfwp7@earth.universe>
-References: <cover.1617279355.git.mchehab+huawei@kernel.org>
- <38d6c11d44570822931395dfe18ccaf7d72ac84e.1617279356.git.mchehab+huawei@kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="dgd2dysqbs7d4ujj"
-Content-Disposition: inline
-In-Reply-To: <38d6c11d44570822931395dfe18ccaf7d72ac84e.1617279356.git.mchehab+huawei@kernel.org>
+        id S234954AbhDBLIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 07:08:18 -0400
+Received: from mga09.intel.com ([134.134.136.24]:39097 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229599AbhDBLIR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 07:08:17 -0400
+IronPort-SDR: 3+Kdk1xmCRa5pSL/q/bOu+2xwf0kw/4H3ysUpSRamcTuLCNxnenk9vCERZmbBQFQOq/bV7DGBv
+ VIDnBV1jNiJw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="192555966"
+X-IronPort-AV: E=Sophos;i="5.81,299,1610438400"; 
+   d="scan'208";a="192555966"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 04:08:15 -0700
+IronPort-SDR: NwU8M5JlLTfotf2r12z+He4NyM1mN4GZsxhIruZUmM/XBhStJ4ig7gvf/Rn31aUDDdDFpZh/AB
+ 4Yf+aDfxVN5g==
+X-IronPort-AV: E=Sophos;i="5.81,299,1610438400"; 
+   d="scan'208";a="456395777"
+Received: from nnafsin-mobl1.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.255.231.190])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 04:08:12 -0700
+Date:   Sat, 3 Apr 2021 00:08:10 +1300
+From:   Kai Huang <kai.huang@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     kvm@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
+        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH v3 07/25] x86/sgx: Initialize virtual EPC driver even
+ when SGX driver is disabled
+Message-Id: <20210403000810.93638fb4b468ab28faaf11fd@intel.com>
+In-Reply-To: <20210402094816.GC28499@zn.tnic>
+References: <cover.1616136307.git.kai.huang@intel.com>
+        <d35d17a02bbf8feef83a536cec8b43746d4ea557.1616136308.git.kai.huang@intel.com>
+        <20210402094816.GC28499@zn.tnic>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 2 Apr 2021 11:48:16 +0200 Borislav Petkov wrote:
+> On Fri, Mar 19, 2021 at 08:23:02PM +1300, Kai Huang wrote:
+> > Modify sgx_init() to always try to initialize the virtual EPC driver,
+> > even if the SGX driver is disabled.  The SGX driver might be disabled
+> > if SGX Launch Control is in locked mode, or not supported in the
+> > hardware at all.  This allows (non-Linux) guests that support non-LC
+> > configurations to use SGX.
+> > 
+> > Acked-by: Dave Hansen <dave.hansen@intel.com>
+> > Reviewed-by: Sean Christopherson <seanjc@google.com>
+> > Signed-off-by: Kai Huang <kai.huang@intel.com>
+> > ---
+> >  arch/x86/kernel/cpu/sgx/main.c | 10 +++++++++-
+> >  1 file changed, 9 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> > index 6a734f484aa7..b73114150ff8 100644
+> > --- a/arch/x86/kernel/cpu/sgx/main.c
+> > +++ b/arch/x86/kernel/cpu/sgx/main.c
+> > @@ -743,7 +743,15 @@ static int __init sgx_init(void)
+> >  		goto err_page_cache;
+> >  	}
+> >  
+> > -	ret = sgx_drv_init();
+> > +	/*
+> > +	 * Always try to initialize the native *and* KVM drivers.
+> > +	 * The KVM driver is less picky than the native one and
+> > +	 * can function if the native one is not supported on the
+> > +	 * current system or fails to initialize.
+> > +	 *
+> > +	 * Error out only if both fail to initialize.
+> > +	 */
+> > +	ret = !!sgx_drv_init() & !!sgx_vepc_init();
+> 
+> This is a silly way of writing:
+> 
+>         if (sgx_drv_init() && sgx_vepc_init())
+>                 goto err_kthread;
+> 
+> methinks.
 
---dgd2dysqbs7d4ujj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Works for me. Thanks.
 
-Hi,
-
-On Thu, Apr 01, 2021 at 02:17:48PM +0200, Mauro Carvalho Chehab wrote:
-> Changesets: 70c23e62d20c ("dt-bindings: power: supply: Fix remaining batt=
-ery.txt links")
-> and: 471dec8023d1 ("dt-bindings: power: Convert battery.txt to battery.ya=
-ml")
-> renamed: Documentation/devicetree/bindings/power/supply/battery.txt
-> to: Documentation/devicetree/bindings/power/supply/battery.yaml.
->=20
-> Update its cross-reference accordingly.
->=20
-> Fixes: 70c23e62d20c ("dt-bindings: power: supply: Fix remaining battery.t=
-xt links")
-> Fixes: 471dec8023d1 ("dt-bindings: power: Convert battery.txt to battery.=
-yaml")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
-
-Thanks, queued.
-
--- Sebastian
-
->  Documentation/power/power_supply_class.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/Documentation/power/power_supply_class.rst b/Documentation/p=
-ower/power_supply_class.rst
-> index 7b8c42f8b1de..c04fabee0a58 100644
-> --- a/Documentation/power/power_supply_class.rst
-> +++ b/Documentation/power/power_supply_class.rst
-> @@ -233,7 +233,7 @@ Devicetree battery characteristics
->  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->  Drivers should call power_supply_get_battery_info() to obtain battery
->  characteristics from a devicetree battery node, defined in
-> -Documentation/devicetree/bindings/power/supply/battery.txt. This is
-> +Documentation/devicetree/bindings/power/supply/battery.yaml. This is
->  implemented in drivers/power/supply/bq27xxx_battery.c.
-> =20
->  Properties in struct power_supply_battery_info and their counterparts in=
- the
-> --=20
-> 2.30.2
->=20
-
---dgd2dysqbs7d4ujj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBm+dgACgkQ2O7X88g7
-+prIzw/+Mlb3ocO+CKzWoQvp0RF5mpf/7fdhZhxaJWstSMq5tSx+XAgyVTGUPBe4
-y1dnqi12rr5cVl4xQpmir0mS+FAbNhDdHpIJIVFjy0O4+GaPJ3vWniuWBbzfHMqW
-4L2tif53Nys9qTntt1zGpSEEE9Sg0TqyJutFqDbeNtJ+tXbCV6hcoV5S+CvKU4vt
-rle5Hodk+OYPuxarZSMbo2rFj4pbe3LDReO2pZIXmsFkU4GuihJAbvApjQt3Wnu2
-t/Lgm8yU0/YHUfMHx2/90L/7wuoItu1T395UFq9XRoftN0Xblp/p0RgMz/gvlh1M
-ld7pa8k7Lb3WKXruGbRcdeanqdfydzr6t0t/jSP6b5V/LCwEtuSVXBHsaeKD9YhV
-tSRMYaDVznPn3pRPA7k44GMv9czX0Yuew/TkPSY7FA6mlUYrHa6jPjQCfi4dlY2N
-6lEGMP+dbz7YcSF/4UIB9OuoZ9wy22Zows8Km3jLBFgrA8d5EBiaeLZyjUHll+7r
-5KsV4sh5gMpl4AF6b1XV06LTN01muGdBLaMclGOKBHJL1OGPUIfRplUrbEgcLGJR
-HXFQ4C4U2j+8L73ACKZaZADML6N03siLFZFKFgab04+dSGokV9i78C/2qZw7W8Ve
-ApeWwWaFMjCF1BkOlQEgOTWz2YKgQoWAXFzsOr6uLkl4BeZbSKo=
-=Wdzy
------END PGP SIGNATURE-----
-
---dgd2dysqbs7d4ujj--
+Do you want me to send updated patch?
