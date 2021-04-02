@@ -2,111 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E3335258E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 04:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 628DA352595
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 05:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234272AbhDBCvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 22:51:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36642 "EHLO
+        id S234089AbhDBC7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 22:59:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233665AbhDBCvB (ORCPT
+        with ESMTP id S233786AbhDBC7B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 22:51:01 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86AA1C061788
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 19:51:00 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id ap14so5737238ejc.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 19:51:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j6XxPke5LD1nAipEXvkY6x4mx+Z9DuUCRz1Jm7iuUKA=;
-        b=XxYgKbhyLhYwcqwHk/FPfahilkQhxmrZb04CQOEcZW2g6yH/Rovv91Y1IXHYuroxMb
-         eZTexywFtIq6AOm5m+eWt9EuD3vbTgAA84ftEirqTn81D9Ab3PKopF5yF2ftK8tGZAAx
-         XGgdYftYeFfWbKLDq7dEPaO72JdkPur/6H+rw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j6XxPke5LD1nAipEXvkY6x4mx+Z9DuUCRz1Jm7iuUKA=;
-        b=QdNkNt2J4MgnZ9lSxnr+9Gwitco+kIrZB6qYKvcwcbWiXqJ5XwS34V+Xkh+Ak3W+kO
-         PGHrX7oE+6SgSVtrbx/I/EwgqAKt2gI3U800a5/hHpjkbCDl7DPHX9wqCzlTCcfDlB5G
-         dbQe/j76Jvx/+TgmEcP1SQAZlFwxP9eHDxSJz6N3PvI+L3YnoisOKenNYw0LlB16u8W1
-         1TYzaKUT6+IDwIvzBnEp6G9CJNXX6EvHBmO4BRJZ8aESh+I/YNxG3YBEpD+2a7EPGbXi
-         hkygOTh+3Gc6MzUjcKKr8ngbVdHnWS1jtJ6tjp6E3HFKEuharQ8Io1cliewak0st8HT1
-         GazA==
-X-Gm-Message-State: AOAM533dq9rVTrxhQTB4f83GiImAKSVS4CUKYatSx2thGXKcb7+ZoH4O
-        4uGKpqxCeiGaqeuMZZWBJPw0tvEC2rFIhw==
-X-Google-Smtp-Source: ABdhPJwIk2+HvlJh9VRyczEjUc7KnKloJ5qOAPmutchp/m9SY9LFtMRxV0GotPMe8NDtJ7VB+5HOOA==
-X-Received: by 2002:a17:906:d291:: with SMTP id ay17mr11714246ejb.308.1617331858699;
-        Thu, 01 Apr 2021 19:50:58 -0700 (PDT)
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com. [209.85.221.54])
-        by smtp.gmail.com with ESMTPSA id r19sm4610215edp.52.2021.04.01.19.50.57
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Apr 2021 19:50:57 -0700 (PDT)
-Received: by mail-wr1-f54.google.com with SMTP id i18so102998wrm.5
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 19:50:57 -0700 (PDT)
-X-Received: by 2002:a05:6000:1549:: with SMTP id 9mr12962467wry.192.1617331856969;
- Thu, 01 Apr 2021 19:50:56 -0700 (PDT)
+        Thu, 1 Apr 2021 22:59:01 -0400
+Received: from mx0b-00190b01.pphosted.com (mx0b-00190b01.pphosted.com [IPv6:2620:100:9005:57f::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25DA7C0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 19:59:01 -0700 (PDT)
+Received: from pps.filterd (m0050102.ppops.net [127.0.0.1])
+        by m0050102.ppops.net-00190b01. (8.16.0.43/8.16.0.43) with SMTP id 1322ruwV007166;
+        Fri, 2 Apr 2021 03:58:54 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=jan2016.eng;
+ bh=JdtGzP2RAKQcmgO2yFSRC03nWS2GpEr7tRk7vHdRX00=;
+ b=Mz4TofVFkDve0qC3bmyqI8Ea3EDlJ0xO189OLnR/q2jaRAFT5ejRcG6eEkpw2fAG1j0q
+ 9UWj4Ogc5/PGrAVgIiK7EgD/5PinLFkDBd+ftv7FEPcTF5ZygilBTqDco0jvs8rc551z
+ urvPIULJS9PmlR8zGiwnCJif9NFaQJuwFUaWhOnehurLVpyMpL7bMU2c4hyWaYhdlk+3
+ W+TnKtqIHBp8W7SpJuYzvdIEnSOxe6fu8gWIQhXgymkrrFF2LsyLE4DGNj7JdhQ7Y0kw
+ 57sPYNexogKbPem+exyw0UfCMu1y/eAQOkoBpZyxHigUFD9f/ErjxQKb1ZFYBN7mJat8 nA== 
+Received: from prod-mail-ppoint6 (prod-mail-ppoint6.akamai.com [184.51.33.61] (may be forged))
+        by m0050102.ppops.net-00190b01. with ESMTP id 37n31869gm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 02 Apr 2021 03:58:54 +0100
+Received: from pps.filterd (prod-mail-ppoint6.akamai.com [127.0.0.1])
+        by prod-mail-ppoint6.akamai.com (8.16.0.43/8.16.0.43) with SMTP id 1322n4fa017691;
+        Thu, 1 Apr 2021 22:58:53 -0400
+Received: from email.msg.corp.akamai.com ([172.27.123.33])
+        by prod-mail-ppoint6.akamai.com with ESMTP id 37n2qd37nj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 01 Apr 2021 22:58:53 -0400
+Received: from USMA1EX-CAS2.msg.corp.akamai.com (172.27.123.31) by
+ usma1ex-dag3mb5.msg.corp.akamai.com (172.27.123.55) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Thu, 1 Apr 2021 22:58:52 -0400
+Received: from sjo-lpkf5.sanatclara.corp.akamai.com (172.28.3.202) by
+ USMA1EX-CAS2.msg.corp.akamai.com (172.27.123.31) with Microsoft SMTP Server
+ id 15.0.1497.2 via Frontend Transport; Thu, 1 Apr 2021 22:58:51 -0400
+Received: by sjo-lpkf5.sanatclara.corp.akamai.com (Postfix, from userid 30754)
+        id A286E1608E2; Thu,  1 Apr 2021 22:58:52 -0400 (EDT)
+From:   Josh Hunt <johunt@akamai.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        <linux-kernel@vger.kernel.org>, <ebiederm@xmission.com>,
+        <keescook@chromium.org>, <hannes@cmpxchg.org>
+CC:     Josh Hunt <johunt@akamai.com>
+Subject: [PATCH v2] psi: allow unprivileged users with CAP_SYS_RESOURCE to write psi files
+Date:   Thu, 1 Apr 2021 22:58:33 -0400
+Message-ID: <20210402025833.27599-1-johunt@akamai.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210326095840.364424-1-ribalda@chromium.org> <20210326095840.364424-23-ribalda@chromium.org>
-In-Reply-To: <20210326095840.364424-23-ribalda@chromium.org>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Fri, 2 Apr 2021 11:50:44 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5BCydvzYx4FGyNQSbrT9twGVcFGn2vTfsvLHKYdRhE8GQ@mail.gmail.com>
-Message-ID: <CAAFQd5BCydvzYx4FGyNQSbrT9twGVcFGn2vTfsvLHKYdRhE8GQ@mail.gmail.com>
-Subject: Re: [PATCH v9 22/22] uvc: use vb2 ioctl and fop helpers
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-04-01_14:2021-04-01,2021-04-01 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
+ suspectscore=0 bulkscore=0 mlxscore=0 phishscore=0 spamscore=0
+ mlxlogscore=928 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103310000 definitions=main-2104020020
+X-Proofpoint-GUID: -ZokyeBmT5CByyr2SpqbEMZB0GqRVYwJ
+X-Proofpoint-ORIG-GUID: -ZokyeBmT5CByyr2SpqbEMZB0GqRVYwJ
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-04-01_14:2021-04-01,2021-04-01 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 phishscore=0
+ clxscore=1011 bulkscore=0 adultscore=0 priorityscore=1501
+ lowpriorityscore=0 impostorscore=0 suspectscore=0 mlxscore=0
+ mlxlogscore=915 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103310000 definitions=main-2104020021
+X-Agari-Authentication-Results: mx.akamai.com; spf=${SPFResult} (sender IP is 184.51.33.61)
+ smtp.mailfrom=johunt@akamai.com smtp.helo=prod-mail-ppoint6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
+Currently only root can write files under /proc/pressure. Relax this to
+allow tasks running as unprivileged users with CAP_SYS_RESOURCE to be
+able to write to these files.
 
-On Fri, Mar 26, 2021 at 7:00 PM Ricardo Ribalda <ribalda@chromium.org> wrote:
->
-> From: Hans Verkuil <hverkuil@xs4all.nl>
->
-> When uvc was written the vb2 ioctl and file operation helpers didn't exist.
->
-> This patch switches uvc over to those helpers, which removes a lot of boilerplate
-> code and simplifies VIDIOC_G/S_PRIORITY handling and allows us to drop the
-> 'privileges' scheme, since that's now handled inside the vb2 helpers.
->
-> This makes it possible for uvc to pass the v4l2-compliance streaming tests.
->
-> Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Josh Hunt <johunt@akamai.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ kernel/sched/psi.c | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
 
-Thanks for the patch. Did you perhaps miss adding your sign-off?
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index b1b00e9bd7ed..d1212f17a898 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -1061,19 +1061,27 @@ static int psi_cpu_show(struct seq_file *m, void *v)
+ 	return psi_show(m, &psi_system, PSI_CPU);
+ }
+ 
++static int psi_open(struct file *file, int (*psi_show)(struct seq_file *, void *))
++{
++	if (file->f_mode & FMODE_WRITE && !capable(CAP_SYS_RESOURCE))
++		return -EPERM;
++
++	return single_open(file, psi_show, NULL);
++}
++
+ static int psi_io_open(struct inode *inode, struct file *file)
+ {
+-	return single_open(file, psi_io_show, NULL);
++	return psi_open(file, psi_io_show);
+ }
+ 
+ static int psi_memory_open(struct inode *inode, struct file *file)
+ {
+-	return single_open(file, psi_memory_show, NULL);
++	return psi_open(file, psi_memory_show);
+ }
+ 
+ static int psi_cpu_open(struct inode *inode, struct file *file)
+ {
+-	return single_open(file, psi_cpu_show, NULL);
++	return psi_open(file, psi_cpu_show);
+ }
+ 
+ struct psi_trigger *psi_trigger_create(struct psi_group *group,
+@@ -1353,9 +1361,9 @@ static int __init psi_proc_init(void)
+ {
+ 	if (psi_enable) {
+ 		proc_mkdir("pressure", NULL);
+-		proc_create("pressure/io", 0, NULL, &psi_io_proc_ops);
+-		proc_create("pressure/memory", 0, NULL, &psi_memory_proc_ops);
+-		proc_create("pressure/cpu", 0, NULL, &psi_cpu_proc_ops);
++		proc_create("pressure/io", 0666, NULL, &psi_io_proc_ops);
++		proc_create("pressure/memory", 0666, NULL, &psi_memory_proc_ops);
++		proc_create("pressure/cpu", 0666, NULL, &psi_cpu_proc_ops);
+ 	}
+ 	return 0;
+ }
+-- 
+2.17.1
 
-Also, see my comments inline.
-
-[snip]
-> @@ -1166,11 +969,6 @@ static int uvc_ioctl_s_parm(struct file *file, void *fh,
->  {
->         struct uvc_fh *handle = fh;
->         struct uvc_streaming *stream = handle->stream;
-> -       int ret;
-> -
-> -       ret = uvc_acquire_privileges(handle);
-> -       if (ret < 0)
-> -               return ret;
-
-Why is it okay not to acquire the privileges here?
-
->
->         return uvc_v4l2_set_streamparm(stream, parm);
->  }
-
-Best regards,
-Tomasz
