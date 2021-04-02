@@ -2,68 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F38B035297F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 12:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF9D352986
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 12:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234798AbhDBKGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 06:06:38 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:43196 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229553AbhDBKGc (ORCPT
+        id S234432AbhDBKHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 06:07:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234207AbhDBKHj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 06:06:32 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UUEJ78d_1617357989;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UUEJ78d_1617357989)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 02 Apr 2021 18:06:29 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     srinivas.pandruvada@linux.intel.com
-Cc:     jikos@kernel.org, benjamin.tissoires@redhat.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] HID: intel-ish-hid: Remove an unused variable 'ret'
-Date:   Fri,  2 Apr 2021 18:06:28 +0800
-Message-Id: <1617357988-108792-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 2 Apr 2021 06:07:39 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74C98C0613E6;
+        Fri,  2 Apr 2021 03:07:38 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id e186so4892622iof.7;
+        Fri, 02 Apr 2021 03:07:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SeOEv4eerfZMMN9wbPTmtUV41hsInB/cRaOxivaSmYg=;
+        b=B0meY3W3X5Y8YLebNNl4XcvfgWTq8mBvPURN1m3huvgOzYL1ZxdoeFGBzQ2RX1O2+X
+         Jmx9A8D7rA7yuuLrgmWLz8HRT23m9qJxtCK5dhpHhv59FulYkCJXM6IXl/ymFmntFKNA
+         icV+5K9OD4e/ReICmsl4QrcJA+ipoGVoU1ge/Zh4Z0vcE56hZJbgCaZuQD92WX2aqmLe
+         kjcEWqz3sv1a9PRo6OOtZZJCQ4rxgr1RSbb/U/9JYKqPLtcOBBzDIFUmktOyepk4+E6w
+         Qjd9KqdROlIz5q0DPEd12oMec8tpUuJTxcr3KKEhmLIyr0hGXgmcawD5qUng8F414OTB
+         /LeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SeOEv4eerfZMMN9wbPTmtUV41hsInB/cRaOxivaSmYg=;
+        b=lABBA9uwO2voppOvyz5ZyhEKlFabSd1rd5iGHGf4eXdKiHEbQC/by0WyzrIbGje9TP
+         dFGRB/YCR+jIptEoJtcDYChm3IjX2ZhmkQJUDlGZ8BPHUNN5E0VSVtC3wiyLwwKQmt4G
+         dXOMuEmY20TR6DIgxKGWSlTTlsAnK0bx0U1RBPg0+sV2VbS0CpJK3J1VGtVum5TYs6Ox
+         WxH+Pt6wh3jVN7eeTewzV2L5P/CABBKCSM585myBbsJnZpq6q3QG7Aupk8eGqjFQsHIU
+         rRJjiXylrwzaURlGbfSY/jceu46gDRLVPpkBtJaTubM1xnFr+XnClwtIl/spp369VDvz
+         iNUA==
+X-Gm-Message-State: AOAM532tno637S7LcdgD/iv0Y2U3heARYiMh0RAl4OyH0LpYpMneMcL7
+        rMi+3QyZ6N7K/U9e3J7PPm/36o/z670w5CTw+so=
+X-Google-Smtp-Source: ABdhPJzGJSd3y77/tYWERkflE7EwK2aNPKQZZnYP6DrG1spSrX7/cbJyzHUyyOK87SbC6l2f8o2iM1U/vAzvLJRTgJY=
+X-Received: by 2002:a02:c6c4:: with SMTP id r4mr11861455jan.77.1617358057544;
+ Fri, 02 Apr 2021 03:07:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=n
-Content-Transfer-Encoding: 8bit
+References: <cover.1615038553.git.syednwaris@gmail.com> <4c259d34b5943bf384fd3cb0d98eccf798a34f0f.1615038553.git.syednwaris@gmail.com>
+ <YGHxNFXAjcg4PfnE@smile.fi.intel.com>
+In-Reply-To: <YGHxNFXAjcg4PfnE@smile.fi.intel.com>
+From:   Syed Nayyar Waris <syednwaris@gmail.com>
+Date:   Fri, 2 Apr 2021 15:37:26 +0530
+Message-ID: <CACG_h5qV2g7GUKtktBydxfx2Z-o3_6Tssj_+Dt-xZxYKVo9YMw@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] gpio: xilinx: Utilize generic bitmap_get_value and _set_value
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Robert Richter <rrichter@marvell.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Zhang, Rui" <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+On Mon, Mar 29, 2021 at 8:54 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Sat, Mar 06, 2021 at 07:36:30PM +0530, Syed Nayyar Waris wrote:
+> > This patch reimplements the xgpio_set_multiple() function in
+> > drivers/gpio/gpio-xilinx.c to use the new generic functions:
+> > bitmap_get_value() and bitmap_set_value(). The code is now simpler
+> > to read and understand. Moreover, instead of looping for each bit
+> > in xgpio_set_multiple() function, now we can check each channel at
+> > a time and save cycles.
+>
+> ...
+>
+> > +     u32 *const state = chip->gpio_state;
+>
+> Looking at this... What's the point of the const here?
+>
+> Am I right that this tells: pointer is a const, while the data underneath
+> can be modified?
 
-drivers/hid/intel-ish-hid/ipc/pci-ish.c:264:6: warning: variable ‘ret’
-set but not used
+Yes you are right and the data underneath can be modified.
+I have removed the 'const' in v4
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/hid/intel-ish-hid/ipc/pci-ish.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> > +     unsigned int *const width = chip->gpio_width;
+>
+> Ditto.
+>
+> Putting const:s here and there for sake of the const is not good practice.
+> It makes code harder to read.
 
-diff --git a/drivers/hid/intel-ish-hid/ipc/pci-ish.c b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-index 06081cf..61efc30 100644
---- a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-+++ b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-@@ -261,7 +261,6 @@ static void __maybe_unused ish_resume_handler(struct work_struct *work)
- 	struct pci_dev *pdev = to_pci_dev(ish_resume_device);
- 	struct ishtp_device *dev = pci_get_drvdata(pdev);
- 	uint32_t fwsts = dev->ops->get_fw_status(dev);
--	int ret;
- 
- 	if (ish_should_leave_d0i3(pdev) && !dev->suspend_flag
- 			&& IPC_IS_ISH_ILUP(fwsts)) {
-@@ -273,7 +272,7 @@ static void __maybe_unused ish_resume_handler(struct work_struct *work)
- 
- 		/* Waiting to get resume response */
- 		if (dev->resume_flag)
--			ret = wait_event_interruptible_timeout(dev->resume_wait,
-+			wait_event_interruptible_timeout(dev->resume_wait,
- 				!dev->resume_flag,
- 				msecs_to_jiffies(WAIT_FOR_RESUME_ACK_MS));
- 
--- 
-1.8.3.1
+Okay.
 
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
