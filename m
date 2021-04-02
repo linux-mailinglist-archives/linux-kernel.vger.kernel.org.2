@@ -2,233 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE623525EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 06:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF843525F1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 06:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229998AbhDBEEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 00:04:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52238 "EHLO
+        id S229466AbhDBEIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 00:08:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229778AbhDBEEK (ORCPT
+        with ESMTP id S229507AbhDBEIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 00:04:10 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74087C061788
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 21:04:10 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id x22so8065280ybi.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 21:04:10 -0700 (PDT)
+        Fri, 2 Apr 2021 00:08:15 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 445CFC06178A
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 21:08:15 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id u5-20020a7bcb050000b029010e9316b9d5so1811340wmj.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 21:08:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bQUEFr5rjiykloK72ryUNlMyNvc1gykEq+SpiAVOKbI=;
-        b=BPWaV7E/Qgh+TtxH5uLr3h5mLsB8kCAm8QzF6/OLYUBqkDB2StpTD4/B2+2p7GKjfO
-         O5u2B9KBrUflejQJTSERMNivn8Mag99f+eWJFRz8ZgZ8Tb+ADiqd+cx4nDJVqOMRQOJT
-         ZbAa4SI8Ww2Q+ZY0SUeP6AWUfxS2mzhSUl5jwLtcgxubHj4d86K9f5zsWAr8Lq25dQxe
-         tC3JwkQttq75BqmcfddJ1HIgYyjWwDBHRT6jnbghygVjXOjCiWQ2SvjcRNmy89AFQY0/
-         JnsZtrMy1j2xW5Y5b/J3KH7GdWLdu52VFhRVk+/KEt+bPvLIomkDnaI2DPDdJCucN63Z
-         +YKw==
+        bh=r29s2NuB4h8xDuoc4V2TUkw3k2SQOmwLpoFzxMpsSfU=;
+        b=uO9cVaFbcLWG2qSj/V5Qkp9SImi/1O/PNF5uCdkXCUUYZJA9vpqlZt2zRX/qXJ+oah
+         rO4VamcAG68UI6cC43pmYE6l2QOlTbqrFGjbSxNuXrWd/OtmqO6rMnqhxjBVRyqFyxlC
+         OUKieCjk5HQ7Tftt13rMzjeAfydRy7xK+3jCFtWg8v5ll3hzus2DVE8HIb+pwdbsI7yC
+         QVCqXkHxo8PllGMMtIKKFuW4k/d3AriUj05NbOe4teBaYbR9X2E74zD2YaXYDn5M4r7L
+         PIglkR+DonJicpVCPf6bYjXpdXpqh5F3TGvDZnH7i+ffnm5eBtVnpMfc7h/1w6E2v96N
+         XOog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=bQUEFr5rjiykloK72ryUNlMyNvc1gykEq+SpiAVOKbI=;
-        b=lXPqwNRtOLF6tFozTUsPIuheMiux31IsKcltpiDXSd5w3pIJqTK1E6FEQuGbmnfhGZ
-         Q+jAKTneFCncQL2/TH+ffKI331UvabJZguI7T3cExs7slGVoyJAggainRt4kpf1O+e4X
-         8yZM84PVDitFYW99M0bzyB4a08PAhDT9zPxL9xRwbd+/gDxyNbfnKd9wkY3ZHIASlm19
-         MdC7yvLNnc/eNm+lfybiFIjWEuZq0GcUjcd33jQBQc7I8QzSXlEq5DI83T6Ui+Rtze9r
-         oIskepdtu3LgBitroPdmhJM2THPeP7MfElIUU8m9d3s1t/U3oTvI+vPfFIsMwcEOhsAB
-         GS5w==
-X-Gm-Message-State: AOAM531zErk0DTCIcjGcQcFGJktQqbwP+MpAqvYoq1IL25biFYqQOpe9
-        BzNDRQw5Si51TOXb6VoVt0J4Zk2cNdc0ps0=
-X-Google-Smtp-Source: ABdhPJxQDkerVzb0LsPKvv7C1ci4++IVbYtP0NJMXbO04t/aOY9xaR4VGYxMbHRKXw7q0GvFEJjwDDj0wa59Gi0=
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:4867:55c5:8fbb:da39])
- (user=saravanak job=sendgmr) by 2002:a25:b906:: with SMTP id
- x6mr15521751ybj.504.1617336249675; Thu, 01 Apr 2021 21:04:09 -0700 (PDT)
-Date:   Thu,  1 Apr 2021 21:03:41 -0700
-In-Reply-To: <20210402040342.2944858-1-saravanak@google.com>
-Message-Id: <20210402040342.2944858-3-saravanak@google.com>
-Mime-Version: 1.0
-References: <20210402040342.2944858-1-saravanak@google.com>
-X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
-Subject: [PATCH v1 2/2] driver core: Improve fw_devlink & deferred_probe_timeout
- interaction
-From:   Saravana Kannan <saravanak@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh@kernel.org>
-Cc:     Saravana Kannan <saravanak@google.com>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=r29s2NuB4h8xDuoc4V2TUkw3k2SQOmwLpoFzxMpsSfU=;
+        b=YjokvyaWnNxoE9nvruHsNAsikSSpdUtiWfAUF67Lz2fe1Bjgz/nH+xXoqF9kcs4VOi
+         wfFl5YSDE12XDJgacy53gVirwdpneCPV2M4anUGCcs3CG9VF3exDsKivQqlV54Y15GnE
+         OHw6XT514VQir2KBXxNyJeMUiZe9A5/qb9FE1hLRZPTyaLckzSes4grPJYuUTfp/kdBw
+         VwvXvrfvN2w02dPeLc7ywaOOVucPNQWsAV/aLV5WQO0Moh8rNnURhscNoUgyUoktaWVl
+         KmiapeSBlMwBCbl8gU/NVgIIPHWMtlSBg/sO2z0hYoNlIsnnKC4N2sUXcJmkzd/H7MW7
+         G8ww==
+X-Gm-Message-State: AOAM531aT1Z0hgwYK3GufmxnU1CFXYRxJnMtqwjyUvYX4x457XYa5kiL
+        67VVeBHieCKMWy+J+HuF7/udayvgy4/qzucv2xT3IQ==
+X-Google-Smtp-Source: ABdhPJzufLcR/4YtyTXgyOTuNyEx/ynwbR2Yl8q78bJ+i0nAQpDxD5IjgzH727vIE/K26GxxXakVKXJN8RA1Zji4Frc=
+X-Received: by 2002:a05:600c:9:: with SMTP id g9mr11022806wmc.134.1617336493632;
+ Thu, 01 Apr 2021 21:08:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210401002442.2fe56b88@xhacker> <20210401002518.5cf48e91@xhacker>
+In-Reply-To: <20210401002518.5cf48e91@xhacker>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Fri, 2 Apr 2021 09:38:02 +0530
+Message-ID: <CAAhSdy0CgxZj14Jx62CS=gRVzZs9c9NUysWi1iTTZ3BJvAOjPQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/9] riscv: add __init section marker to some functions
+To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        kasan-dev@googlegroups.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-deferred_probe_timeout kernel commandline parameter allows probing of
-consumer devices if the supplier devices don't have any drivers.
+On Wed, Mar 31, 2021 at 10:00 PM Jisheng Zhang
+<jszhang3@mail.ustc.edu.cn> wrote:
+>
+> From: Jisheng Zhang <jszhang@kernel.org>
+>
+> They are not needed after booting, so mark them as __init to move them
+> to the __init section.
+>
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> ---
+>  arch/riscv/kernel/traps.c  | 2 +-
+>  arch/riscv/mm/init.c       | 6 +++---
+>  arch/riscv/mm/kasan_init.c | 6 +++---
+>  arch/riscv/mm/ptdump.c     | 2 +-
+>  4 files changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+> index 1357abf79570..07fdded10c21 100644
+> --- a/arch/riscv/kernel/traps.c
+> +++ b/arch/riscv/kernel/traps.c
+> @@ -197,6 +197,6 @@ int is_valid_bugaddr(unsigned long pc)
+>  #endif /* CONFIG_GENERIC_BUG */
+>
+>  /* stvec & scratch is already set from head.S */
+> -void trap_init(void)
+> +void __init trap_init(void)
+>  {
+>  }
 
-fw_devlink=on will indefintely block probe() calls on a device if all
-its suppliers haven't probed successfully. This completely skips calls
-to driver_deferred_probe_check_state() since that's only called when a
-.probe() function calls framework APIs. So fw_devlink=on breaks
-deferred_probe_timeout.
+The trap_init() is unused currently so you can drop this change
+and remove trap_init() as a separate patch.
 
-deferred_probe_timeout in its current state also ignores a lot of
-information that's now available to the kernel. It assumes all suppliers
-that haven't probed when the timer expires (or when initcalls are done
-on a static kernel) will never probe and fails any calls to acquire
-resources from these unprobed suppliers.
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index 067583ab1bd7..76bf2de8aa59 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -57,7 +57,7 @@ static void __init zone_sizes_init(void)
+>         free_area_init(max_zone_pfns);
+>  }
+>
+> -static void setup_zero_page(void)
+> +static void __init setup_zero_page(void)
+>  {
+>         memset((void *)empty_zero_page, 0, PAGE_SIZE);
+>  }
+> @@ -75,7 +75,7 @@ static inline void print_mlm(char *name, unsigned long b, unsigned long t)
+>                   (((t) - (b)) >> 20));
+>  }
+>
+> -static void print_vm_layout(void)
+> +static void __init print_vm_layout(void)
+>  {
+>         pr_notice("Virtual kernel memory layout:\n");
+>         print_mlk("fixmap", (unsigned long)FIXADDR_START,
+> @@ -557,7 +557,7 @@ static inline void setup_vm_final(void)
+>  #endif /* CONFIG_MMU */
+>
+>  #ifdef CONFIG_STRICT_KERNEL_RWX
+> -void protect_kernel_text_data(void)
+> +void __init protect_kernel_text_data(void)
+>  {
+>         unsigned long text_start = (unsigned long)_start;
+>         unsigned long init_text_start = (unsigned long)__init_text_begin;
+> diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
+> index 4f85c6d0ddf8..e1d041ac1534 100644
+> --- a/arch/riscv/mm/kasan_init.c
+> +++ b/arch/riscv/mm/kasan_init.c
+> @@ -60,7 +60,7 @@ asmlinkage void __init kasan_early_init(void)
+>         local_flush_tlb_all();
+>  }
+>
+> -static void kasan_populate_pte(pmd_t *pmd, unsigned long vaddr, unsigned long end)
+> +static void __init kasan_populate_pte(pmd_t *pmd, unsigned long vaddr, unsigned long end)
+>  {
+>         phys_addr_t phys_addr;
+>         pte_t *ptep, *base_pte;
+> @@ -82,7 +82,7 @@ static void kasan_populate_pte(pmd_t *pmd, unsigned long vaddr, unsigned long en
+>         set_pmd(pmd, pfn_pmd(PFN_DOWN(__pa(base_pte)), PAGE_TABLE));
+>  }
+>
+> -static void kasan_populate_pmd(pgd_t *pgd, unsigned long vaddr, unsigned long end)
+> +static void __init kasan_populate_pmd(pgd_t *pgd, unsigned long vaddr, unsigned long end)
+>  {
+>         phys_addr_t phys_addr;
+>         pmd_t *pmdp, *base_pmd;
+> @@ -117,7 +117,7 @@ static void kasan_populate_pmd(pgd_t *pgd, unsigned long vaddr, unsigned long en
+>         set_pgd(pgd, pfn_pgd(PFN_DOWN(__pa(base_pmd)), PAGE_TABLE));
+>  }
+>
+> -static void kasan_populate_pgd(unsigned long vaddr, unsigned long end)
+> +static void __init kasan_populate_pgd(unsigned long vaddr, unsigned long end)
+>  {
+>         phys_addr_t phys_addr;
+>         pgd_t *pgdp = pgd_offset_k(vaddr);
+> diff --git a/arch/riscv/mm/ptdump.c b/arch/riscv/mm/ptdump.c
+> index ace74dec7492..3b7b6e4d025e 100644
+> --- a/arch/riscv/mm/ptdump.c
+> +++ b/arch/riscv/mm/ptdump.c
+> @@ -331,7 +331,7 @@ static int ptdump_show(struct seq_file *m, void *v)
+>
+>  DEFINE_SHOW_ATTRIBUTE(ptdump);
+>
+> -static int ptdump_init(void)
+> +static int __init ptdump_init(void)
+>  {
+>         unsigned int i, j;
+>
+> --
+> 2.31.0
+>
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
-However, this assumption by deferred_probe_timeout isn't true under many
-conditions. For example:
-- If the consumer happens to be before the supplier in the deferred
-  probe list.
-- If the supplier itself is waiting on its supplier to probe.
+Apart from above, looks good to me.
 
-This patch fixes both these issues by relaxing device links between
-devices only if the supplier doesn't have any driver that could match
-with (NOT bound to) the supplier device. This way, we only fail attempts
-to acquire resources from suppliers that truly don't have any driver vs
-suppliers that just happen to not have probed yet.
+Reviewed-by: Anup Patel <anup@brainfault.org>
 
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
- drivers/base/base.h |  1 +
- drivers/base/core.c | 64 ++++++++++++++++++++++++++++++++++++++++-----
- drivers/base/dd.c   |  5 ++++
- 3 files changed, 63 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/base/base.h b/drivers/base/base.h
-index 1b44ed588f66..e5f9b7e656c3 100644
---- a/drivers/base/base.h
-+++ b/drivers/base/base.h
-@@ -191,6 +191,7 @@ extern void device_links_driver_cleanup(struct device *dev);
- extern void device_links_no_driver(struct device *dev);
- extern bool device_links_busy(struct device *dev);
- extern void device_links_unbind_consumers(struct device *dev);
-+extern void fw_devlink_drivers_done(void);
- 
- /* device pm support */
- void device_pm_move_to_tail(struct device *dev);
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index de518178ac36..c05dae75b696 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -51,6 +51,7 @@ static LIST_HEAD(deferred_sync);
- static unsigned int defer_sync_state_count = 1;
- static DEFINE_MUTEX(fwnode_link_lock);
- static bool fw_devlink_is_permissive(void);
-+static bool fw_devlink_drv_reg_done;
- 
- /**
-  * fwnode_link_add - Create a link between two fwnode_handles.
-@@ -1598,6 +1599,52 @@ static void fw_devlink_parse_fwtree(struct fwnode_handle *fwnode)
- 		fw_devlink_parse_fwtree(child);
- }
- 
-+static void fw_devlink_relax_link(struct device_link *link)
-+{
-+	if (!(link->flags & DL_FLAG_INFERRED))
-+		return;
-+
-+	if (link->flags == (DL_FLAG_MANAGED | FW_DEVLINK_FLAGS_PERMISSIVE))
-+		return;
-+
-+	pm_runtime_drop_link(link);
-+	link->flags = DL_FLAG_MANAGED | FW_DEVLINK_FLAGS_PERMISSIVE;
-+	dev_dbg(link->consumer, "Relaxing link with %s\n",
-+		dev_name(link->supplier));
-+}
-+
-+static int fw_devlink_no_driver(struct device *dev, void *data)
-+{
-+	struct device_link *link = to_devlink(dev);
-+
-+	if (!link->supplier->can_match)
-+		fw_devlink_relax_link(link);
-+
-+	return 0;
-+}
-+
-+void fw_devlink_drivers_done(void)
-+{
-+	fw_devlink_drv_reg_done = true;
-+	device_links_write_lock();
-+	class_for_each_device(&devlink_class, NULL, NULL,
-+			      fw_devlink_no_driver);
-+	device_links_write_unlock();
-+}
-+
-+static void fw_devlink_unblock_consumers(struct device *dev)
-+{
-+	struct device_link *link;
-+
-+	if (!fw_devlink_flags || fw_devlink_is_permissive())
-+		return;
-+
-+	device_links_write_lock();
-+	list_for_each_entry(link, &dev->links.consumers, s_node)
-+		fw_devlink_relax_link(link);
-+	device_links_write_unlock();
-+}
-+
- /**
-  * fw_devlink_relax_cycle - Convert cyclic links to SYNC_STATE_ONLY links
-  * @con: Device to check dependencies for.
-@@ -1634,13 +1681,7 @@ static int fw_devlink_relax_cycle(struct device *con, void *sup)
- 
- 		ret = 1;
- 
--		if (!(link->flags & DL_FLAG_INFERRED))
--			continue;
--
--		pm_runtime_drop_link(link);
--		link->flags = DL_FLAG_MANAGED | FW_DEVLINK_FLAGS_PERMISSIVE;
--		dev_dbg(link->consumer, "Relaxing link with %s\n",
--			dev_name(link->supplier));
-+		fw_devlink_relax_link(link);
- 	}
- 	return ret;
- }
-@@ -3275,6 +3316,15 @@ int device_add(struct device *dev)
- 	}
- 
- 	bus_probe_device(dev);
-+
-+	/*
-+	 * If all driver registration is done and a newly added device doesn't
-+	 * match with any driver, don't block its consumers from probing in
-+	 * case the consumer device is able to operate without this supplier.
-+	 */
-+	if (dev->fwnode && fw_devlink_drv_reg_done && !dev->can_match)
-+		fw_devlink_unblock_consumers(dev);
-+
- 	if (parent)
- 		klist_add_tail(&dev->p->knode_parent,
- 			       &parent->p->klist_children);
-diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-index 28ad8afd87bc..ef988e04a287 100644
---- a/drivers/base/dd.c
-+++ b/drivers/base/dd.c
-@@ -293,6 +293,8 @@ static void deferred_probe_timeout_work_func(struct work_struct *work)
- {
- 	struct device_private *p;
- 
-+	fw_devlink_drivers_done();
-+
- 	driver_deferred_probe_timeout = 0;
- 	driver_deferred_probe_trigger();
- 	flush_work(&deferred_probe_work);
-@@ -323,6 +325,9 @@ static int deferred_probe_initcall(void)
- 	flush_work(&deferred_probe_work);
- 	initcalls_done = true;
- 
-+	if (!IS_ENABLED(CONFIG_MODULES))
-+		fw_devlink_drivers_done();
-+
- 	/*
- 	 * Trigger deferred probe again, this time we won't defer anything
- 	 * that is optional
--- 
-2.31.0.208.g409f899ff0-goog
-
+Regards,
+Anup
