@@ -2,128 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B92DC3529DA
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 12:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB683529DB
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 12:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234991AbhDBKjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 06:39:01 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:45166 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229599AbhDBKjA (ORCPT
+        id S229924AbhDBKjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 06:39:23 -0400
+Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:32977
+        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S229722AbhDBKjX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 06:39:00 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 971302C1;
-        Fri,  2 Apr 2021 12:38:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1617359937;
-        bh=sZR3sSwoDUoM230emJjHnzx6XJSMp3h9iknmHtUO+6o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PnzgGaeI8fPjY7zLqQdiAZL2gQRYwL1i95ib4yqkJ7OKrubESUo8UW3CMttNCmK29
-         ntUF9VYXsSqRUcUemNLmlWBwgd/RamQ8IbN2Z8g5To+DevHUPaBzPEbhKHxmtp49aZ
-         /cEt+POVga0378zGBuzX4DijdKe1QJXTZ8YYaSLc=
-Date:   Fri, 2 Apr 2021 13:38:13 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Benoit Parrot <bparrot@ti.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Michael Tretter <m.tretter@pengutronix.de>,
-        Peter Chen <peter.chen@nxp.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
-        dmaengine@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Subject: Re: [PATCH 03/16] phy: cdns-dphy: Allow setting mode
-Message-ID: <YGb0FSW5KRICftiK@pendragon.ideasonboard.com>
-References: <20210330173348.30135-1-p.yadav@ti.com>
- <20210330173348.30135-4-p.yadav@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210330173348.30135-4-p.yadav@ti.com>
+        Fri, 2 Apr 2021 06:39:23 -0400
+Received: from i-ujjfgxi5.pek3.qingcloud.com (unknown [139.198.0.165])
+        by mailapp1 (Coremail) with SMTP id A7CowAD3_xdA9GZgBXctAA--.3316S2;
+        Fri, 02 Apr 2021 18:39:17 +0800 (CST)
+From:   Neil Sun <neilsun@yunify.com>
+To:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Neil Sun <neilsun@yunify.com>
+Subject: [PATCH] mm/vmscan.c: drop_slab_node with task's memcg
+Date:   Fri,  2 Apr 2021 18:38:54 +0800
+Message-Id: <1617359934-7812-1-git-send-email-neilsun@yunify.com>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: A7CowAD3_xdA9GZgBXctAA--.3316S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7urWrCFWkJFWDWFWDGrW5Awb_yoW8Cr48pa
+        y7GFy5JrsYgr1vqrn8Xa1kZ3ySk39rAF1DCF1DZw17C343Cry3Cr1Fyw18ZFyxCayDWF42
+        kr1Fy3srZwn8AF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxG
+        rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
+        vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IY
+        x2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26c
+        xKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+        67AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfU5WlkUUUUU
+X-CM-SenderInfo: xqhlz21xq653pqli5hhfrp/1tbiAQAAClhaKs7qXwAAsY
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pratyush,
+This patch makes shrink_slab() with task's memcg in drop_slab_node(),
+so we can free reclaimable slab objects belongs to memcg /lxc/i-vbe1u8o7
+with following command:
 
-Thank you for the patch.
+cgexec -g memory:/lxc/i-vbe1u8o7 sysctl vm.drop_caches=2
 
-On Tue, Mar 30, 2021 at 11:03:35PM +0530, Pratyush Yadav wrote:
-> Allow callers to set the PHY mode. The main mode should always be
-> PHY_MODE_MIPI_DPHY but the submode can either be
-> PHY_MIPI_DPHY_SUBMODE_RX or PHY_MIPI_DPHY_SUBMODE_TX. Update the ops
-> based on the requested submode.
+Test with following steps:
 
-Isn't a given DPHY instance always meant to work in one particular mode
-? I can't really imagine a single instance of this IP core being
-integrated in a way that it can be used in either RX or TX mode. It
-seems better to select the mode through DT, by describing if the DPHY is
-an RX or TX (possibly through different compatible strings).
+root@i-yl0pwrt8:~# free -h
+              total        used        free      shared  buff/cache   available
+Mem:           62Gi       265Mi        62Gi       1.0Mi       290Mi        61Gi
+Swap:          31Gi          0B        31Gi
+root@i-yl0pwrt8:~# (cd /tmp && /root/generate_slab_cache)
+root@i-yl0pwrt8:~# free -h
+              total        used        free      shared  buff/cache   available
+Mem:           62Gi       266Mi        60Gi       1.0Mi       2.2Gi        61Gi
+Swap:          31Gi          0B        31Gi
+root@i-yl0pwrt8:~# cgcreate -g memory:/lxc/i-vbe1u8o7
+root@i-yl0pwrt8:~# cgexec -g memory:/lxc/i-vbe1u8o7 /root/generate_slab_cache
+root@i-yl0pwrt8:~# free -h
+              total        used        free      shared  buff/cache   available
+Mem:           62Gi       267Mi        58Gi       1.0Mi       4.1Gi        61Gi
+Swap:          31Gi          0B        31Gi
+root@i-yl0pwrt8:~# cgexec -g memory:/lxc/i-vbe1u8o7 sysctl vm.drop_caches=2
+vm.drop_caches = 2
+root@i-yl0pwrt8:~# free -h
+              total        used        free      shared  buff/cache   available
+Mem:           62Gi       268Mi        60Gi       1.0Mi       2.2Gi        61Gi
+Swap:          31Gi          0B        31Gi
+root@i-yl0pwrt8:~# sysctl vm.drop_caches=2
+vm.drop_caches = 2
+root@i-yl0pwrt8:~# free -h
+              total        used        free      shared  buff/cache   available
+Mem:           62Gi       267Mi        62Gi       1.0Mi       290Mi        61Gi
+Swap:          31Gi          0B        31Gi
 
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> ---
->  drivers/phy/cadence/cdns-dphy.c | 30 ++++++++++++++++++++++++++++++
->  1 file changed, 30 insertions(+)
-> 
-> diff --git a/drivers/phy/cadence/cdns-dphy.c b/drivers/phy/cadence/cdns-dphy.c
-> index 8656f2102a91..7d5f7b333893 100644
-> --- a/drivers/phy/cadence/cdns-dphy.c
-> +++ b/drivers/phy/cadence/cdns-dphy.c
-> @@ -365,11 +365,41 @@ static int cdns_dphy_configure(struct phy *phy, union phy_configure_opts *opts)
->  	return 0;
->  }
->  
-> +static int cdns_dphy_set_mode(struct phy *phy, enum phy_mode mode, int submode)
-> +{
-> +	struct cdns_dphy *dphy = phy_get_drvdata(phy);
-> +	const struct cdns_dphy_driver_data *ddata;
-> +
-> +	ddata = of_device_get_match_data(dphy->dev);
-> +	if (!ddata)
-> +		return -EINVAL;
-> +
-> +	if (mode != PHY_MODE_MIPI_DPHY)
-> +		return -EINVAL;
-> +
-> +	if (submode == PHY_MIPI_DPHY_SUBMODE_TX) {
-> +		if (!ddata->tx)
-> +			return -EOPNOTSUPP;
-> +
-> +		dphy->ops = ddata->tx;
-> +	} else if (submode == PHY_MIPI_DPHY_SUBMODE_RX) {
-> +		if (!ddata->rx)
-> +			return -EOPNOTSUPP;
-> +
-> +		dphy->ops = ddata->rx;
-> +	} else {
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static const struct phy_ops cdns_dphy_ops = {
->  	.configure	= cdns_dphy_configure,
->  	.validate	= cdns_dphy_validate,
->  	.power_on	= cdns_dphy_power_on,
->  	.power_off	= cdns_dphy_power_off,
-> +	.set_mode	= cdns_dphy_set_mode,
->  };
->  
->  static int cdns_dphy_probe(struct platform_device *pdev)
+Signed-off-by: Neil Sun <neilsun@yunify.com>
+---
+ mm/vmscan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 562e87cb..81d770a 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -702,7 +702,7 @@ void drop_slab_node(int nid)
+ 			return;
+ 
+ 		freed = 0;
+-		memcg = mem_cgroup_iter(NULL, NULL, NULL);
++		memcg = mem_cgroup_from_task(current);
+ 		do {
+ 			freed += shrink_slab(GFP_KERNEL, nid, memcg, 0);
+ 		} while ((memcg = mem_cgroup_iter(NULL, memcg, NULL)) != NULL);
 -- 
-Regards,
+2.7.4
 
-Laurent Pinchart
