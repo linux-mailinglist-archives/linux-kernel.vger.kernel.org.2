@@ -2,89 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68DC535246D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 02:22:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48BEF352471
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 02:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236360AbhDBAVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 20:21:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60976 "EHLO
+        id S236319AbhDBAYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 20:24:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233677AbhDBAVs (ORCPT
+        with ESMTP id S235296AbhDBAYq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 20:21:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D645C0613E6;
-        Thu,  1 Apr 2021 17:21:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=tK9RRSfqusQgz1icEOJWsLA3SmIH83lmC2fpYvSB7vo=; b=QAjP6bAQ9Hq+lEU0VSIQIUO1Cs
-        Epjo3LNjWvaRuAh6ijqjM65onjn5vEFdC0hMRj2UsUPKlbJkzkX0zueq1sLr6R1+XnZpfLQ6HAF4b
-        cdbGSklvqN9VjKExUNzjg+g61I7GTC/ViTNNqESoZ6QiLmVV0FNHeGj0+KP/drlyTn7VZnPsHvm+V
-        Ed4ETCBtqzSQLqNKThMTM5bDg7ykQHOC2vPK74OrAiAgpuBgEDkp5CVYnto2Sq12zEEGslROuJ0f4
-        U4+d+gjYUtO9keXXjSHp9r4R6EK53fk+45eNNV/I5y8fOAUVoOy0+6kRw/e7Ez8QFeDs2UQkyCF3M
-        NxiUOMIA==;
-Received: from [2601:1c0:6280:3f0::e0e1] (helo=smtpauth.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lS7Z3-006xwF-Tu; Fri, 02 Apr 2021 00:21:35 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Denis Turischev <denis@compulab.co.il>
-Subject: [PATCH -next] gpio: GPIO_SCH: depends on PCI same as LPC_SCH
-Date:   Thu,  1 Apr 2021 17:21:24 -0700
-Message-Id: <20210402002124.17207-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Thu, 1 Apr 2021 20:24:46 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95143C0613E6
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 17:24:46 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id w3so5368030ejc.4
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 17:24:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MXGKhNV99vGi9noKhiqmuk0ylgRK9SHFVWcAt0TKDv0=;
+        b=oYu/gSNHNSPVlrJDb/sLcS9bh2dKPmXtbcN8WC4i81uYplHsMJe5AM1oiCiUOUyQPG
+         ZBbQMAEsbW4MtfOvbTGoy3jGdseDTu0f9gF4x3XLoriFXAyXmmTkuHKo6iXY8wtksWmk
+         admyyzwspqYM+fKLXfEgA8YCEon27qQDMRbb/8jVipuseQyMOjRPIeJu+YnFZ0s2iAdD
+         SstyNHQ4nFv8UQjw1RHYXQnqvAS8ziWsh+NCTV21sTXJqclawZ7lp8nww8VuOGPdZ6PB
+         r396aSaDdAnIM/4nCIkwOiV85e1DPoSIewr2QwEA46oAi4BO+EfgwmIgSWh/pdEcpDTb
+         9fNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MXGKhNV99vGi9noKhiqmuk0ylgRK9SHFVWcAt0TKDv0=;
+        b=uBvOdMNzmufQ3Vxx2MztTalmGAtsup2By39iid2Nhq1UflsLNEz/MRGthTdrLcieRJ
+         MELOSYgFzGMkGh0PlTaxKW+EsGt4ByWjwE9UQrRoOX/JieMs7JaDZihEyxc/LOsDJ7IL
+         j/Ue1r34atiqutmcw/zw19sOTxgago1ykvWB+jpxaNTUB2c/ed//BalZ/U/qmC//QfMY
+         BOAoGFfU9KwQ6VuCek+H4GnRNXhNZig0NMmWF2th7E0RSjV4xRPD+22pmF6d2D21Av/K
+         fLKD5jgByvVf2B8HqCkxxLAQthXIlEZjAkN08t3i5ZGHgTty+Xl+ZBCaQE10hbSlUGXm
+         Ruvg==
+X-Gm-Message-State: AOAM533KxaMIl0wtzK7YgapvmDJGq3Sxln+YxNa7pCqHFByxrMW/oHDH
+        jDN6flSivEYE+l4htPS2E94BlXOnBwrlp780gZNiEPah++E=
+X-Google-Smtp-Source: ABdhPJybhlu8jhwm0o8Rz8mIwOGsIOK/RpJVJn2DA9fkiMBr694CAbu+fx1Zi8gLXNEUWMt5S29rsMrWSr83+dveUds=
+X-Received: by 2002:a17:906:3409:: with SMTP id c9mr11596318ejb.314.1617323085208;
+ Thu, 01 Apr 2021 17:24:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210331163816.11517-1-rppt@kernel.org> <CA+CK2bB7FuPV5z+j+8HS+wHOmNXAANYPLwo64ebV71AWNCjPSw@mail.gmail.com>
+ <20210401171705.9bd350411cdee0db91332c92@linux-foundation.org>
+In-Reply-To: <20210401171705.9bd350411cdee0db91332c92@linux-foundation.org>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Thu, 1 Apr 2021 20:24:09 -0400
+Message-ID: <CA+CK2bDhLboBCYL1BwxG2VzkrSnqzPMBx5NdrE==jJ-Do=_mSw@mail.gmail.com>
+Subject: Re: [PATCH] mm/hugeltb: fix renaming of PF_MEMALLOC_NOCMA to PF_MEMALLOC_PIN
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since LPC_SCH depends on PCI, GPIO_SCH must also depend on PCI
-to prevent kconfig warning and build errors:
+> > Andrew, since "mm cma: rename PF_MEMALLOC_NOCMA to PF_MEMALLOC_PIN" is
+> > not yet in the mainline, should I send a new version of this patch so
+> > we won't have bisecting problems in the future?
+>
+> I've already added Mike's fix, as
+> mm-cma-rename-pf_memalloc_nocma-to-pf_memalloc_pin-fix.patch.  It shall
+> fold it into mm-cma-rename-pf_memalloc_nocma-to-pf_memalloc_pin.patch
+> prior to upstreaming, so no bisection issue.
 
-WARNING: unmet direct dependencies detected for LPC_SCH
-  Depends on [n]: HAS_IOMEM [=y] && PCI [=n]
-  Selected by [y]:
-  - GPIO_SCH [=y] && GPIOLIB [=y] && X86 [=y] && (X86 [=y] || COMPILE_TEST [=n]) && ACPI [=y]
+Great, thank you!
 
-and
-
-../drivers/mfd/lpc_sch.c:204:1: warning: data definition has no type or storage class
- module_pci_driver(lpc_sch_driver);
- ^~~~~~~~~~~~~~~~~
-../drivers/mfd/lpc_sch.c:204:1: error: type defaults to ‘int’ in declaration of ‘module_pci_driver’ [-Werror=implicit-int]
-../drivers/mfd/lpc_sch.c:204:1: warning: parameter names (without types) in function declaration
-../drivers/mfd/lpc_sch.c:197:26: warning: ‘lpc_sch_driver’ defined but not used [-Wunused-variable]
- static struct pci_driver lpc_sch_driver = {
-                          ^~~~~~~~~~~~~~
-
-Fixes: 6c46215d6b62 ("gpio: sch: Hook into ACPI GPE handler to catch GPIO edge events")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-gpio@vger.kernel.org
-Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc: Denis Turischev <denis@compulab.co.il>
----
- drivers/gpio/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- linux-next-20210401.orig/drivers/gpio/Kconfig
-+++ linux-next-20210401/drivers/gpio/Kconfig
-@@ -860,7 +860,7 @@ config GPIO_IT87
- 
- config GPIO_SCH
- 	tristate "Intel SCH/TunnelCreek/Centerton/Quark X1000 GPIO"
--	depends on (X86 || COMPILE_TEST) && ACPI
-+	depends on (X86 || COMPILE_TEST) && ACPI && PCI
- 	select GPIOLIB_IRQCHIP
- 	select MFD_CORE
- 	select LPC_SCH
+Pasha
