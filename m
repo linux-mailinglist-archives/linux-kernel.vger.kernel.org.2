@@ -2,177 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C12A3525DE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 05:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45A903525E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 05:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234471AbhDBDzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 23:55:37 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:44988 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234197AbhDBDza (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 23:55:30 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1323p8YI144802;
-        Fri, 2 Apr 2021 03:54:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=irvCYtYwVouF3Pj4Y5c4ohC+K+gi91LvkZJbOcEeQII=;
- b=BDbqXwLzFJhDyeqTlWcnhZul5ECgiXUczw76cKL3+ex+otkoe2gm7/xJay0MXXvbm+0q
- ZGNB9Oj4wOH4bfdx7HaUznxdBIRCTJ6kh21b1P2/ZBGYBZ/rWqneiSG/oAni+jQFcXz1
- BqGsNP/gqmyC23pQbzOo6fdLajV69Qzx+Ps2gW9LY3mYAPAcRcmQwkdr0wH8yaLaaCO3
- /jVAQjFCWm/88fg4Nc0+CdQYbu6zW5gHNfIvtJdLtJXmKgMgvuoSBMBUeUIykkdf1R8I
- 30nTn1BFEpq0VGgL4rh3fvZGZW/OkdMmmmFe/23CnDOhRTLBt3DWfmMpcgw20fdR6vEa cQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 37n33dumsn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 02 Apr 2021 03:54:55 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1323njnZ111728;
-        Fri, 2 Apr 2021 03:54:54 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2104.outbound.protection.outlook.com [104.47.70.104])
-        by aserp3030.oracle.com with ESMTP id 37n2at2ng8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 02 Apr 2021 03:54:54 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fvaDrbA7W89YlxTSTDBmjCMiS1zbsz+4DegNGT+QxA5Mrz/FQigvfFSZNW+N9LajWNMO4Wka9yZS/HjyfFns2LST9zkbU0M4eyerKTVeZ65srljwjMI+OQKoNUDFT01VIwZZ+L9nSGsndxjAZei7M79NMxPM2iNFW9jBv22Ve11rhwP8Kc8vYDK5PmkPLUXvaKXX0LrkLYtdI+1SVieUyE6Iz0BynZblZ2vL0HvqbmZsRxgGuAhJVerH4nmqipdyZEeoePZMi8CexfQ0l9kFo6SGMDSqUHfLKjAHpvWz22dkSs8FHfasVuQBgIQ9uXK1nkbdjMT+w5vB1QZqNc06Mg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=irvCYtYwVouF3Pj4Y5c4ohC+K+gi91LvkZJbOcEeQII=;
- b=SAYUio1+07ZUJ9UoSHm1+327t23qS7lBa3Fj7bbJ9t7soJnz/Lpyzn3oApdW3Ly4to3+F2z1Hwk+lOh9tsx860ckTWUH6twAAD2ZDCMXAlkNAgVQzovpXOj1NWJ3t+BhqDNSl8p1wlNIL1BpRfs9XLjbudSwaktHOyaCfQugz234CA9RU5SPYmRv4kZqDZuYx0cH7jNfBMAfyXZsuz1mZLZwx38F9loG1Qn527rJD4HE/qS0xzPhdh09ZLQl64ewTRIZ8fNAgQv2TJ/GGTUxbHie/r95Lg9R3iYgK5SYOosEGkUFSU6Qw53xDpPMiaPXn9WNkBlxagxsgEC1olWfQQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=irvCYtYwVouF3Pj4Y5c4ohC+K+gi91LvkZJbOcEeQII=;
- b=H99PgnMzI2A/JgxsCMIcVypJ4Y4or2m8fq9fP7fST1awfV4c9cqpZlU6cYGRRN0fYpkaslwgq70AVh7S6N/3sfpKxVY7CvYhwfkPALhRiWeKSsXygF1bGxFFYHjyz1d7NzBNas6wpOeirqj5oSK29i6wurqncxaWWAR2KnJNcxg=
-Authentication-Results: microchip.com; dkim=none (message not signed)
- header.d=none;microchip.com; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB4680.namprd10.prod.outlook.com (2603:10b6:510:3e::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28; Fri, 2 Apr
- 2021 03:54:53 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::dc39:c9fa:7365:8c8e]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::dc39:c9fa:7365:8c8e%5]) with mapi id 15.20.3999.029; Fri, 2 Apr 2021
- 03:54:53 +0000
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     Scott Teel <scott.teel@microchip.com>, jszczype@redhat.com,
-        storagedev@microchip.com, Don Brace <don.brace@microchip.com>,
-        Sergei Trofimovich <slyfox@gentoo.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Scott Benesh <scott.benesh@microchip.com>, thenzl@redhat.com,
-        linux-ia64@vger.kernel.org, linux-scsi <linux-scsi@vger.kernel.org>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        id S234458AbhDBDzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 23:55:43 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:48790 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234314AbhDBDzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 23:55:42 -0400
+Received: from localhost.localdomain.localdomain (unknown [10.40.54.95])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Cx6cm1lWZgv4oDAA--.7461S2;
+        Fri, 02 Apr 2021 11:55:33 +0800 (CST)
+From:   Jianmin Lv <lvjianmin@loongson.cn>
+To:     Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>
+Cc:     linux-acpi@vger.kernel.org, devel@acpica.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] hpsa: use __packed on individual structs, not header-wide
-Date:   Thu,  1 Apr 2021 23:54:48 -0400
-Message-Id: <161733538518.31379.13275738935787597303.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210330071958.3788214-1-slyfox@gentoo.org>
-References: <yq1wntpgxxr.fsf@ca-mkp.ca.oracle.com> <20210330071958.3788214-1-slyfox@gentoo.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [138.3.201.9]
-X-ClientProxiedBy: BY5PR20CA0001.namprd20.prod.outlook.com
- (2603:10b6:a03:1f4::14) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.mkp.ca.oracle.com (138.3.201.9) by BY5PR20CA0001.namprd20.prod.outlook.com (2603:10b6:a03:1f4::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28 via Frontend Transport; Fri, 2 Apr 2021 03:54:51 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 080c6795-2191-42ee-a492-08d8f58b1245
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4680:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB4680FFA9DBD52B5134E093E28E7A9@PH0PR10MB4680.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1091;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sqPZOn1YJl5WrIXUQFLqFKbsuHpiqqyYsOe9XXe8H21dpvvU60OGpwkAHpRuF8AhnXOCB4z4aYJ6XStaNFYSVkp8Wo/htNFI9u+789VbG6MpB8Biavn4afDja3EbrvcF4obHdUQWpiLH76SgQ7NsaW7NF/MZCCqtrse3Lzz4IR/Blj3gnp0PknbZq/hTM4VWY1W0mtE0HusdyRmew/Fk/7CP39tCdnvVtWPWK1QAXPA1JOqxB5g/a8XOdBWRjKeyZx/n11vPVBoAPJ10UV78zJUT/00QeIb8lxer1BOehqkL0JwJJOH5by/hXe6ncx765d8FhDOxN5Y6ItZ9cELhe3QdZ664w3ICw1U9WG7E+9/yq2RhmVm1gBEjYI6ZqzMhNn7+bWIM9XKDhIIYBp+v+0mLYbFshcOLsOrTsnoe8H4QDHD0QZ/hg5n1kBZoSNPlldWxwA0jLcYU3vx3LpYwxmr7ctFqsM9pRyGd7IY6iKOekt2v1ThZwJaU1+cPaTEY+2oxW1yV8rRcJa/QnkMVnTTf7EodpEk9VAIC2XEQ3zXOCAdhPCIwo9EUQ/0cRxoBjN2PvxquYGBrys0jHASp9gjwzkShy7zMCPNOMvvvvMukmWU8lnSidV9A1s+elRBo9XBvRyxLDvQZPy0jmu0l7i6AeSWe8x8pxHqyr9PQLw8o/avxKre8NvWUg1e2aPoUSd/ILgc1JjmG61GgbG6dy5vMcFHyquIadKbbr3xirKtUc8vnFZ6PjxgpKV2512DY
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(346002)(396003)(39860400002)(366004)(26005)(2906002)(2616005)(38100700001)(956004)(921005)(16526019)(186003)(8676002)(36756003)(66476007)(66556008)(66946007)(86362001)(52116002)(7696005)(4744005)(103116003)(7416002)(6666004)(966005)(478600001)(4326008)(5660300002)(6486002)(8936002)(316002)(110136005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZFNwRklrT1JyV1IvVUxLbkoxdE1ORnRIYUVpWnBNY1YyanRTY1U5MUd3MlVF?=
- =?utf-8?B?QkNvYlNKME5CREszRUlVRGxxNERxS3puTFZjSWdvUG50SmU4M2pCR2tFTWpI?=
- =?utf-8?B?MjBsYjZGQWFVclczRTFCdnBpMllvMFExN2FYZW11TDdBVFlqRllCOXk3ZGJr?=
- =?utf-8?B?Y0lScUVkOE5hdlk5a21oNmhnL0lXd1F1QVZ1ZVFKTXJOUkFiUm5ObEg2ZS9O?=
- =?utf-8?B?KzdpU3BacU8rUjY5azEzYmd3OFZ5ek9vUlZ6SnZFVmF3SVNtOVNrV1E2RHdt?=
- =?utf-8?B?dUNSZHd2dHZ6NGRUOFozSXJDd2dCTERnWVB4NzZDRTB4V1orR2JZVEVJWnRz?=
- =?utf-8?B?YzBKMDhqZ2UxazAyUkpRRW5ZUmkyc01YK3IwZ0dnTVQ2K20wb3dCWFJ4K1RU?=
- =?utf-8?B?c0dHU2JxVk5WOTE1ODNpSVpaSEpKUTQ5bjA3Y29FWDBJcUtVUWlVM2poV1dI?=
- =?utf-8?B?ZytMcDhmZmRNTDF4N1dRTGxldzdXcTJZTmtuY1FYL1lTZFpEQ1BicThuOFlz?=
- =?utf-8?B?TDl6bmd2UFVRbjcyemVEVVgvbW90dlI5dDFoU1dtVjkyeGJIaGFLUEM3S3hu?=
- =?utf-8?B?SkNVeUxHb0ttTlEzZjVjQTZYVUlYUTI4dlV2SDV4WExGZEFzTC8vSjFFNmVJ?=
- =?utf-8?B?MFBhNFBTckh2L21rNkFnMnhEWUhjOXhIZFpZYTZwYnh5cmw4QklONlljK2s4?=
- =?utf-8?B?M2g4ZmpaSWgyMDNKclU5ZWhNaDVmTjkya3NaSUFSMTdrZUpRekpxeTRzRVE5?=
- =?utf-8?B?ZXhNNWZJMVBTSzdkNDNHdEJReTBNVjhsRnN4azJHdGFVUVhhUjRqTUNBNHpI?=
- =?utf-8?B?S0hqVlkzejdDMkJNQ3JOVnl2RHUvTXBlRUFHZkU4OUI3Tm93ZVJCbXlBS3kw?=
- =?utf-8?B?bFlIWDFKMHVhclRwNWRGWHg1b1VPVWZDMFI1bFNqNWJsNFpvQmxlcWVhVzRi?=
- =?utf-8?B?UlErZm95L0lXcmVLM1l5UTN4dlNPYWFYM1c5OHlQcG0rMzZKMDhvVXRpTThM?=
- =?utf-8?B?RVNhSElZTERwOUU3engvTm5hVkQ2aGk5T1hWT1RkeEYvQmNtSU45SjBoWnp4?=
- =?utf-8?B?TDdCTmhwZkNUUGFKVzFid2NRa3BtWjVLbERPTElsdVpXSi9JQ2EvNmVTS3kz?=
- =?utf-8?B?ZjJFakxkOU9zeVBwKzRjdkVuRzJMYmdjMW9YT3E4UG5BeUNOQ1M0ZjFtc3k3?=
- =?utf-8?B?c0ZOMkEzeGo5cGpvVU4vRDR4RC9vWmhUSUlPOSt6ck13UHliM0Ewcm5hVVkx?=
- =?utf-8?B?RHJqZEM2Ri9hYkN2NCtETW5RMU80OEk2ZHlSYW0rMlVRd29SRzRGWUZ1N3Vq?=
- =?utf-8?B?bURybkVvYXZOWXBVcHhkOThidFZmdzNTWVh0dWppSXRucXlBQW9kZ2tEMW9P?=
- =?utf-8?B?WkxnRHRNbU4vdUlCN2tSZTNpNjBCK2lkbXJzN3pENENicmsrNmxLaEcyejBj?=
- =?utf-8?B?eVlIY0VUQ1hwVW9kdjRWb3FBMkYwb2VHd2NPUWJQSkdUQVpDbzdwRmRtWTBz?=
- =?utf-8?B?Y1BGSDc2d3VrZVErUjk0aXR5RE1KOUpYbHJGNXhIZFpmdnZzOFFLMnhXRUdS?=
- =?utf-8?B?ZDZNLzM4Vjh0S2IrWlAwMSs1aFp5Nkx4NjAvTUdxOEZBNkpXYjdHMVhDb0tB?=
- =?utf-8?B?bUVvVmRyUW1QaVI0SnQ0MjhmU0V4bitSUCs1NVg0dm16WXhWbnhVZlRlU0VK?=
- =?utf-8?B?aFhFQkdDMk1ZNHlUK29waVJJZHk0MUZaSWw2RGg0Q3NCNkNiOGtRcXBlSmsx?=
- =?utf-8?Q?V2vUwh51y193AnkkWO3Ies1PnZ2wMFpOWc2x/QA?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 080c6795-2191-42ee-a492-08d8f58b1245
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Apr 2021 03:54:53.0291
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hdFvFyszydFqxr9bi+Yj7hI4FOH9LEzoq9LR14gr3XGsUijxNSlcUktH6347LPLkCKxDvxLKpHpbyG/nyzqiMCs6kiFj3jTA454D/E3Pjnc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4680
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9941 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=903 spamscore=0
- suspectscore=0 bulkscore=0 mlxscore=0 adultscore=0 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2103310000 definitions=main-2104020026
-X-Proofpoint-GUID: wHPQTr31_v_RgD0NZXSoQqFGXcXDRZyW
-X-Proofpoint-ORIG-GUID: wHPQTr31_v_RgD0NZXSoQqFGXcXDRZyW
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9941 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999 mlxscore=0
- lowpriorityscore=0 suspectscore=0 priorityscore=1501 phishscore=0
- clxscore=1015 impostorscore=0 malwarescore=0 bulkscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
- definitions=main-2104020026
+Subject: [PATCH v2] ACPICA: Events: support fixed pcie wake event
+Date:   Thu,  1 Apr 2021 23:55:33 -0400
+Message-Id: <1617335733-5942-1-git-send-email-lvjianmin@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Cx6cm1lWZgv4oDAA--.7461S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXF47GF47AFy3KrW5Ww15urg_yoWrGF13pF
+        yq93ySkrW7tF429rsrK3WUua45Way8Cr9rKrs7W347ZF4UCF1rXF4UKF15AFZ8Awsxua1I
+        ya4qy345Gay5AFJanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU90b7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_GcCE3s1ln4kS14v26r1Y6r17M2AIxVAIcxkEcVAq07x20xvE
+        ncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I
+        8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xS
+        Y4AK6svPMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14
+        v26r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+        17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+        IF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Zr0_Wr1U
+        MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
+        VFxhVjvjDU0xZFpf9x07bY0PhUUUUU=
+X-CM-SenderInfo: 5oymxthqpl0qxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 30 Mar 2021 08:19:56 +0100, Sergei Trofimovich wrote:
+Some chipsets support fixed pcie wake event which is
+defined in the PM1 block(related description can be found
+in 4.8.3.1.1 PM1 Status Registers, 4.8.3.2.1 PM1 Control
+Registers and 5.2.9 Fixed ACPI Description Table (FADT)),
+such as LS7A1000 of Loongson company, so we add code to
+handle it.
 
-> Some of the structs contain `atomic_t` values and are not intended to be
-> sent to IO controller as is.
-> 
-> The change adds __packed to every struct and union in the file.
-> Follow-up commits will fix `atomic_t` problems.
-> 
-> The commit is a no-op at least on ia64:
->     $ diff -u <(objdump -d -r old.o) <(objdump -d -r new.o)
+ACPI spec link:
+https://uefi.org/sites/default/files/resources/ACPI_6_3_May16.pdf
 
-Applied to 5.12/scsi-fixes, thanks!
+Signed-off-by: Jianmin Lv <lvjianmin@loongson.cn>
+---
+ drivers/acpi/acpica/evevent.c  |  8 ++++++--
+ drivers/acpi/acpica/hwsleep.c  | 12 ++++++++++++
+ drivers/acpi/acpica/utglobal.c |  4 ++++
+ include/acpi/actypes.h         |  3 ++-
+ 4 files changed, 24 insertions(+), 3 deletions(-)
 
-[1/3] hpsa: use __packed on individual structs, not header-wide
-      https://git.kernel.org/mkp/scsi/c/5482a9a1a8fd
-[2/3] hpsa: fix boot on ia64 (atomic_t alignment)
-      https://git.kernel.org/mkp/scsi/c/02ec144292bc
-[3/3] hpsa: add an assert to prevent from __packed reintroduction
-      https://git.kernel.org/mkp/scsi/c/e01a00ff62ad
-
+diff --git a/drivers/acpi/acpica/evevent.c b/drivers/acpi/acpica/evevent.c
+index 35385148fedb..08ba368beb2d 100644
+--- a/drivers/acpi/acpica/evevent.c
++++ b/drivers/acpi/acpica/evevent.c
+@@ -185,6 +185,10 @@ u32 acpi_ev_fixed_event_detect(void)
+ 		return (int_status);
+ 	}
+ 
++	if (fixed_enable & ACPI_BITMASK_PCIEXP_WAKE_DISABLE)
++		fixed_enable &= ~ACPI_BITMASK_PCIEXP_WAKE_DISABLE;
++	else
++		fixed_enable |= ACPI_BITMASK_PCIEXP_WAKE_DISABLE;
+ 	ACPI_DEBUG_PRINT((ACPI_DB_INTERRUPTS,
+ 			  "Fixed Event Block: Enable %08X Status %08X\n",
+ 			  fixed_enable, fixed_status));
+@@ -250,8 +254,8 @@ static u32 acpi_ev_fixed_event_dispatch(u32 event)
+ 	if (!acpi_gbl_fixed_event_handlers[event].handler) {
+ 		(void)acpi_write_bit_register(acpi_gbl_fixed_event_info[event].
+ 					      enable_register_id,
+-					      ACPI_DISABLE_EVENT);
+-
++						event == ACPI_EVENT_PCIE_WAKE ?
++						ACPI_ENABLE_EVENT : ACPI_DISABLE_EVENT);
+ 		ACPI_ERROR((AE_INFO,
+ 			    "No installed handler for fixed event - %s (%u), disabling",
+ 			    acpi_ut_get_event_name(event), event));
+diff --git a/drivers/acpi/acpica/hwsleep.c b/drivers/acpi/acpica/hwsleep.c
+index 14baa13bf848..7e7ea4c2e914 100644
+--- a/drivers/acpi/acpica/hwsleep.c
++++ b/drivers/acpi/acpica/hwsleep.c
+@@ -312,6 +312,18 @@ acpi_status acpi_hw_legacy_wake(u8 sleep_state)
+ 				    [ACPI_EVENT_SLEEP_BUTTON].
+ 				    status_register_id, ACPI_CLEAR_STATUS);
+ 
++	/* Enable pcie wake event if support */
++	if ((acpi_gbl_FADT.flags & ACPI_FADT_PCI_EXPRESS_WAKE)) {
++		(void)
++		acpi_write_bit_register(acpi_gbl_fixed_event_info
++				[ACPI_EVENT_PCIE_WAKE].
++				enable_register_id, ACPI_DISABLE_EVENT);
++		(void)
++		acpi_write_bit_register(acpi_gbl_fixed_event_info
++				[ACPI_EVENT_PCIE_WAKE].
++				status_register_id, ACPI_CLEAR_STATUS);
++	}
++
+ 	acpi_hw_execute_sleep_method(METHOD_PATHNAME__SST, ACPI_SST_WORKING);
+ 	return_ACPI_STATUS(status);
+ }
+diff --git a/drivers/acpi/acpica/utglobal.c b/drivers/acpi/acpica/utglobal.c
+index 59a48371a7bc..68baf16d8a02 100644
+--- a/drivers/acpi/acpica/utglobal.c
++++ b/drivers/acpi/acpica/utglobal.c
+@@ -186,6 +186,10 @@ struct acpi_fixed_event_info acpi_gbl_fixed_event_info[ACPI_NUM_FIXED_EVENTS] =
+ 					ACPI_BITREG_RT_CLOCK_ENABLE,
+ 					ACPI_BITMASK_RT_CLOCK_STATUS,
+ 					ACPI_BITMASK_RT_CLOCK_ENABLE},
++	/* ACPI_EVENT_PCIE_WAKE		*/ {ACPI_BITREG_PCIEXP_WAKE_STATUS,
++					ACPI_BITREG_PCIEXP_WAKE_DISABLE,
++					ACPI_BITMASK_PCIEXP_WAKE_STATUS,
++					ACPI_BITMASK_PCIEXP_WAKE_DISABLE},
+ };
+ #endif				/* !ACPI_REDUCED_HARDWARE */
+ 
+diff --git a/include/acpi/actypes.h b/include/acpi/actypes.h
+index 92c71dfce0d5..0b6c72033487 100644
+--- a/include/acpi/actypes.h
++++ b/include/acpi/actypes.h
+@@ -714,7 +714,8 @@ typedef u32 acpi_event_type;
+ #define ACPI_EVENT_POWER_BUTTON         2
+ #define ACPI_EVENT_SLEEP_BUTTON         3
+ #define ACPI_EVENT_RTC                  4
+-#define ACPI_EVENT_MAX                  4
++#define ACPI_EVENT_PCIE_WAKE            5
++#define ACPI_EVENT_MAX                  5
+ #define ACPI_NUM_FIXED_EVENTS           ACPI_EVENT_MAX + 1
+ 
+ /*
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.27.0
+
