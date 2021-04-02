@@ -2,128 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40DE2352A8C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 14:18:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B6FD352A88
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 14:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235414AbhDBMSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 08:18:41 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:64232 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229932AbhDBMSa (ORCPT
+        id S234902AbhDBMRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 08:17:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28564 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229932AbhDBMRw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 08:18:30 -0400
-Received: from fsav304.sakura.ne.jp (fsav304.sakura.ne.jp [153.120.85.135])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 132CHpXd086622;
-        Fri, 2 Apr 2021 21:17:51 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav304.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav304.sakura.ne.jp);
- Fri, 02 Apr 2021 21:17:51 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav304.sakura.ne.jp)
-Received: from localhost.localdomain (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 132CHgNE086600
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Fri, 2 Apr 2021 21:17:51 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [PATCH 2/2] misc: vmw_vmci: explicitly initialize vmci_datagram payload
-Date:   Fri,  2 Apr 2021 21:17:42 +0900
-Message-Id: <20210402121742.3917-2-penguin-kernel@I-love.SAKURA.ne.jp>
-X-Mailer: git-send-email 2.18.4
-In-Reply-To: <20210402121742.3917-1-penguin-kernel@I-love.SAKURA.ne.jp>
-References: <20210402121742.3917-1-penguin-kernel@I-love.SAKURA.ne.jp>
+        Fri, 2 Apr 2021 08:17:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617365870;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Muwx+qawsLcE0Xkj8kzlIVuDAwSyy9qsNyKVPtLvlps=;
+        b=HZSAyiwAUqB52KGI0S8JoX9rhjlNj2PlC8kb2tysRAKr2y5AEQ6DR2nMx+VwAPTfikc6hG
+        19ssD2UVmV1m8B0XoKnMpLw2KzRO0SHNZmBWTCtXa6G739mUWjyvV72CZv9V5BeLOiv1Ij
+        RCAPXJSxdHEHL70qBIry8+eXleMSFJE=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-61-Okfj461GPRe0DGjN2zj8dA-1; Fri, 02 Apr 2021 08:17:49 -0400
+X-MC-Unique: Okfj461GPRe0DGjN2zj8dA-1
+Received: by mail-wr1-f70.google.com with SMTP id p12so4272664wrn.18
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 05:17:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Muwx+qawsLcE0Xkj8kzlIVuDAwSyy9qsNyKVPtLvlps=;
+        b=lDTWWdXuDCN7j6r1Ckkx5TUivz4lDflhWmRjTLIXF0c2YH90GGhaEpS+bRxwmJahCC
+         gSr8p8kom8a7SR1nXFGymul/C8SYUkbJrgpmlM1BrG9V/IYWguOj1g6TXtSA8v63Teo8
+         o3kHPS28MuVECBt/s5Zr2kZw9EPzQEQqUUQMyDOm602OIqYNajf7sqmJbiRd0KAZCpvq
+         NxCKGvjDbUPacYw0gqjREpQLY8n/bymHxiCrNexPcSFsQ5TEHXrlYi737mWku+93/qb3
+         8yG3wlS/GfYGO2j5DYHBlNiEoIktNay56Sw42vjloXt26jBwoD9yy/4Hqmk25nmhaLBv
+         WlpQ==
+X-Gm-Message-State: AOAM530ldSVupalJ13QZWhg3oQdh5/9Kyd/K47PpRS8PFF7hpPdean8d
+        +K52axeXuJASNr8Mb3YXxWyJmB2gGKzQ4gRdssvBzNFT9V9U2McZSnX4A1buJQi2OWhfN2tOjsD
+        dBEXT2H3rDDM2fMQDgvkU9b5y
+X-Received: by 2002:a05:6000:362:: with SMTP id f2mr15172710wrf.141.1617365868265;
+        Fri, 02 Apr 2021 05:17:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzLaJxTI8QPBvKFmAdjnuuObyL8/ENWh8opXUP0PYyDWSCUQKuWQD6mlne9MO5n6MrTzGeeiQ==
+X-Received: by 2002:a05:6000:362:: with SMTP id f2mr15172680wrf.141.1617365868029;
+        Fri, 02 Apr 2021 05:17:48 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id n9sm14323662wrx.46.2021.04.02.05.17.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Apr 2021 05:17:47 -0700 (PDT)
+Subject: Re: [PATCH v2 00/10] KVM: Consolidate and optimize MMU notifiers
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>
+Cc:     James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ben Gardon <bgardon@google.com>
+References: <20210402005658.3024832-1-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <9376b453-be3a-f8b7-d53a-7e54c25161ce@redhat.com>
+Date:   Fri, 2 Apr 2021 14:17:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <20210402005658.3024832-1-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KMSAN complains that vmci_check_host_caps() left the payload part of
-check_msg uninitialized.
+On 02/04/21 02:56, Sean Christopherson wrote:
+> The end goal of this series is to optimize the MMU notifiers to take
+> mmu_lock if and only if the notification is relevant to KVM, i.e. the hva
+> range overlaps a memslot.   Large VMs (hundreds of vCPUs) are very
+> sensitive to mmu_lock being taken for write at inopportune times, and
+> such VMs also tend to be "static", e.g. backed by HugeTLB with minimal
+> page shenanigans.  The vast majority of notifications for these VMs will
+> be spurious (for KVM), and eliding mmu_lock for spurious notifications
+> avoids an otherwise unacceptable disruption to the guest.
+> 
+> To get there without potentially degrading performance, e.g. due to
+> multiple memslot lookups, especially on non-x86 where the use cases are
+> largely unknown (from my perspective), first consolidate the MMU notifier
+> logic by moving the hva->gfn lookups into common KVM.
+> 
+> Based on kvm/queue, commit 5f986f748438 ("KVM: x86: dump_vmcs should
+> include the autoload/autostore MSR lists").
+> 
+> Well tested on Intel and AMD.  Compile tested for arm64, MIPS, PPC,
+> PPC e500, and s390.  Absolutely needs to be tested for real on non-x86,
+> I give it even odds that I introduced an off-by-one bug somewhere.
+> 
+> v2:
+>   - Drop the patches that have already been pushed to kvm/queue.
+>   - Drop two selftest changes that had snuck in via "git commit -a".
+>   - Add a patch to assert that mmu_notifier_count is elevated when
+>     .change_pte() runs. [Paolo]
+>   - Split out moving KVM_MMU_(UN)LOCK() to __kvm_handle_hva_range() to a
+>     separate patch.  Opted not to squash it with the introduction of the
+>     common hva walkers (patch 02), as that prevented sharing code between
+>     the old and new APIs. [Paolo]
+>   - Tweak the comment in kvm_vm_destroy() above the smashing of the new
+>     slots lock. [Paolo]
+>   - Make mmu_notifier_slots_lock unconditional to avoid #ifdefs. [Paolo]
+> 
+> v1:
+>   - https://lkml.kernel.org/r/20210326021957.1424875-1-seanjc@google.com
+> 
+> Sean Christopherson (10):
+>    KVM: Assert that notifier count is elevated in .change_pte()
+>    KVM: Move x86's MMU notifier memslot walkers to generic code
+>    KVM: arm64: Convert to the gfn-based MMU notifier callbacks
+>    KVM: MIPS/MMU: Convert to the gfn-based MMU notifier callbacks
+>    KVM: PPC: Convert to the gfn-based MMU notifier callbacks
+>    KVM: Kill off the old hva-based MMU notifier callbacks
+>    KVM: Move MMU notifier's mmu_lock acquisition into common helper
+>    KVM: Take mmu_lock when handling MMU notifier iff the hva hits a
+>      memslot
+>    KVM: Don't take mmu_lock for range invalidation unless necessary
+>    KVM: x86/mmu: Allow yielding during MMU notifier unmap/zap, if
+>      possible
+> 
+>   arch/arm64/kvm/mmu.c                   | 117 +++------
+>   arch/mips/kvm/mmu.c                    |  97 ++------
+>   arch/powerpc/include/asm/kvm_book3s.h  |  12 +-
+>   arch/powerpc/include/asm/kvm_ppc.h     |   9 +-
+>   arch/powerpc/kvm/book3s.c              |  18 +-
+>   arch/powerpc/kvm/book3s.h              |  10 +-
+>   arch/powerpc/kvm/book3s_64_mmu_hv.c    |  98 ++------
+>   arch/powerpc/kvm/book3s_64_mmu_radix.c |  25 +-
+>   arch/powerpc/kvm/book3s_hv.c           |  12 +-
+>   arch/powerpc/kvm/book3s_pr.c           |  56 ++---
+>   arch/powerpc/kvm/e500_mmu_host.c       |  27 +-
+>   arch/x86/kvm/mmu/mmu.c                 | 127 ++++------
+>   arch/x86/kvm/mmu/tdp_mmu.c             | 245 +++++++------------
+>   arch/x86/kvm/mmu/tdp_mmu.h             |  14 +-
+>   include/linux/kvm_host.h               |  22 +-
+>   virt/kvm/kvm_main.c                    | 325 +++++++++++++++++++------
+>   16 files changed, 552 insertions(+), 662 deletions(-)
+> 
 
-  =====================================================
-  BUG: KMSAN: uninit-value in kmsan_check_memory+0xd/0x10
-  CPU: 1 PID: 1 Comm: swapper/0 Tainted: G    B             5.11.0-rc7+ #4
-  Hardware name: VMware, Inc. VMware Virtual Platform/440BX Desktop Reference Platform, BIOS 6.00 02/27/2020
-  Call Trace:
-   dump_stack+0x21c/0x280
-   kmsan_report+0xfb/0x1e0
-   kmsan_internal_check_memory+0x202/0x520
-   kmsan_check_memory+0xd/0x10
-   iowrite8_rep+0x86/0x380
-   vmci_guest_probe_device+0xf0b/0x1e70
-   pci_device_probe+0xab3/0xe70
-   really_probe+0xd16/0x24d0
-   driver_probe_device+0x29d/0x3a0
-   device_driver_attach+0x25a/0x490
-   __driver_attach+0x78c/0x840
-   bus_for_each_dev+0x210/0x340
-   driver_attach+0x89/0xb0
-   bus_add_driver+0x677/0xc40
-   driver_register+0x485/0x8e0
-   __pci_register_driver+0x1ff/0x350
-   vmci_guest_init+0x3e/0x41
-   vmci_drv_init+0x1d6/0x43f
-   do_one_initcall+0x39c/0x9a0
-   do_initcall_level+0x1d7/0x259
-   do_initcalls+0x127/0x1cb
-   do_basic_setup+0x33/0x36
-   kernel_init_freeable+0x29a/0x3ed
-   kernel_init+0x1f/0x840
-   ret_from_fork+0x1f/0x30
+For MIPS, I am going to post a series that simplifies TLB flushing 
+further.  I applied it, and rebased this one on top, to 
+kvm/mmu-notifier-queue.
 
-  Uninit was created at:
-   kmsan_internal_poison_shadow+0x5c/0xf0
-   kmsan_slab_alloc+0x8d/0xe0
-   kmem_cache_alloc+0x84f/0xe30
-   vmci_guest_probe_device+0xd11/0x1e70
-   pci_device_probe+0xab3/0xe70
-   really_probe+0xd16/0x24d0
-   driver_probe_device+0x29d/0x3a0
-   device_driver_attach+0x25a/0x490
-   __driver_attach+0x78c/0x840
-   bus_for_each_dev+0x210/0x340
-   driver_attach+0x89/0xb0
-   bus_add_driver+0x677/0xc40
-   driver_register+0x485/0x8e0
-   __pci_register_driver+0x1ff/0x350
-   vmci_guest_init+0x3e/0x41
-   vmci_drv_init+0x1d6/0x43f
-   do_one_initcall+0x39c/0x9a0
-   do_initcall_level+0x1d7/0x259
-   do_initcalls+0x127/0x1cb
-   do_basic_setup+0x33/0x36
-   kernel_init_freeable+0x29a/0x3ed
-   kernel_init+0x1f/0x840
-   ret_from_fork+0x1f/0x30
+Architecture maintainers, please look at the branch and review/test/ack 
+your parts.
 
-  Bytes 28-31 of 36 are uninitialized
-  Memory access of size 36 starts at ffff8881675e5f00
-  =====================================================
+Thanks!
 
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Fixes: 1f166439917b69d3 ("VMCI: guest side driver implementation.")
-Cc: <stable@vger.kernel.org>
----
- drivers/misc/vmw_vmci/vmci_guest.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/misc/vmw_vmci/vmci_guest.c b/drivers/misc/vmw_vmci/vmci_guest.c
-index cc8eeb361fcd..1018dc77269d 100644
---- a/drivers/misc/vmw_vmci/vmci_guest.c
-+++ b/drivers/misc/vmw_vmci/vmci_guest.c
-@@ -168,7 +168,7 @@ static int vmci_check_host_caps(struct pci_dev *pdev)
- 				VMCI_UTIL_NUM_RESOURCES * sizeof(u32);
- 	struct vmci_datagram *check_msg;
- 
--	check_msg = kmalloc(msg_size, GFP_KERNEL);
-+	check_msg = kzalloc(msg_size, GFP_KERNEL);
- 	if (!check_msg) {
- 		dev_err(&pdev->dev, "%s: Insufficient memory\n", __func__);
- 		return -ENOMEM;
--- 
-2.18.4
+Paolo
 
