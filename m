@@ -2,68 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 984EC352B7A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 16:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF8C352B7C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 16:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235616AbhDBOaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 10:30:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50614 "EHLO mail.kernel.org"
+        id S235768AbhDBOcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 10:32:19 -0400
+Received: from mail.hallyn.com ([178.63.66.53]:35770 "EHLO mail.hallyn.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229932AbhDBOaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 10:30:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA500610CB;
-        Fri,  2 Apr 2021 14:30:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617373810;
-        bh=wtlMjfPnqatXNqGUuL+0WIsehJgYzBBaSgLAJgTX/x4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m4FFftGgddVPRW+9y2ZdroAlTE2ivxD/3kPHt83U/ZRvb9k66LBq4ceJY55LQeQGD
-         LjvGceJ+Cqzfu7WFVSSs902eF1+78rYUR/z+fXC8040e9v/F8wwaAF2KRidIRsJsQa
-         PFvB7OjoGTUR3PCJMG5nO1sozOO/OkAce94DGYHo=
-Date:   Fri, 2 Apr 2021 16:30:08 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Dinh Nguyen <dinguyen@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        kernel test robot <lkp@intel.com>,
-        Richard Gong <richard.gong@linux.intel.com>
-Subject: Re: [PATCH] firmware: stratix10-svc: build only on 64-bit ARM
-Message-ID: <YGcqcDnjv8xqS0en@kroah.com>
-References: <20210401151329.606004-1-dinguyen@kernel.org>
+        id S229932AbhDBOcP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 10:32:15 -0400
+Received: by mail.hallyn.com (Postfix, from userid 1001)
+        id 93A94CD0; Fri,  2 Apr 2021 09:32:12 -0500 (CDT)
+Date:   Fri, 2 Apr 2021 09:32:12 -0500
+From:   "Serge E. Hallyn" <serge@hallyn.com>
+To:     Giuseppe Scrivano <gscrivan@redhat.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org, christian.brauner@ubuntu.com,
+        serge@hallyn.com,
+        Linux Containers <containers@lists.linux-foundation.org>
+Subject: Re: [PATCH] kernel: automatically split user namespace extent
+Message-ID: <20210402143212.GA18282@mail.hallyn.com>
+References: <20201126100839.381415-1-gscrivan@redhat.com>
+ <87ft4pe7km.fsf@x220.int.ebiederm.org>
+ <87pn3schlg.fsf@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210401151329.606004-1-dinguyen@kernel.org>
+In-Reply-To: <87pn3schlg.fsf@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 10:13:29AM -0500, Dinh Nguyen wrote:
-> From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+On Wed, Dec 02, 2020 at 05:12:27PM +0100, Giuseppe Scrivano wrote:
+> Hi Eric,
 > 
-> The Stratix10 service layer and RCU drivers are useful only on
-> Stratix10, so on ARMv8.  Compile testing the RCU driver on 32-bit ARM
-> fails:
+> ebiederm@xmission.com (Eric W. Biederman) writes:
 > 
->   drivers/firmware/stratix10-rsu.c: In function 'rsu_status_callback':
->   include/linux/compiler_types.h:320:38: error: call to '__compiletime_assert_179'
->     declared with attribute error: FIELD_GET: type of reg too small for mask
->     _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
->   ...
->   drivers/firmware/stratix10-rsu.c:96:26: note: in expansion of macro 'FIELD_GET'
->     priv->status.version = FIELD_GET(RSU_VERSION_MASK,
+> > Nit: The tag should have been "userns:" rather than kernel.
+> >
+> > Giuseppe Scrivano <gscrivan@redhat.com> writes:
+> >
+> >> writing to the id map fails when an extent overlaps multiple mappings
+> >> in the parent user namespace, e.g.:
+> >>
+> >> $ cat /proc/self/uid_map
+> >>          0       1000          1
+> >>          1     100000      65536
+> >> $ unshare -U sleep 100 &
+> >> [1] 1029703
+> >> $ printf "0 0 100\n" | tee /proc/$!/uid_map
+> >> 0 0 100
+> >> tee: /proc/1029703/uid_map: Operation not permitted
+> >>
+> >> To prevent it from happening, automatically split an extent so that
+> >> each portion fits in one extent in the parent user namespace.
+> >
+> > I don't see anything fundamentally wrong with relaxing this
+> > restriction, but more code does have more room for bugs to hide.
+> >
+> > What is the advantage of relaxing this restriction?
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Acked-by: Richard Gong <richard.gong@linux.intel.com>
-> Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
-> ---
->  drivers/firmware/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> we are running rootless containers in a namespace created with
+> newuidmap/newgidmap where the mappings look like:
+> 
+> $ cat /proc/self/uid_map
+> 0       1000          1
+> 1     110000      65536
+> 
+> users are allowed to create child user namespaces and specify the
+> mappings to use.  Doing so, they often hit the issue that the mappings
+> cannot overlap multiple extents in the parent user namespace.
+> 
+> The issue could be completely addressed in user space, but to me it
+> looks like an implementation detail that user space should not know
+> about.
+> In addition, it would also be slower (additional read of the current
+> uid_map and gid_map files) and must be implemented separately in each
+> container runtime.
+> 
+> >> $ cat /proc/self/uid_map
+> >>          0       1000          1
+> >>          1     110000      65536
+> >> $ unshare -U sleep 100 &
+> >> [1] 1552
+> >> $ printf "0 0 100\n" | tee /proc/$!/uid_map
+> >> 0 0 100
+> >> $ cat /proc/$!/uid_map
+> >>          0          0          1
+> >>          1          1         99
+> >>
+> >> Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
+> >> ---
+> >>  kernel/user_namespace.c | 62 ++++++++++++++++++++++++++++++++++-------
+> >>  1 file changed, 52 insertions(+), 10 deletions(-)
+> >>
+> >> diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
+> >> index 87804e0371fe..b5542be2bd0a 100644
+> >> --- a/kernel/user_namespace.c
+> >> +++ b/kernel/user_namespace.c
+> >> @@ -706,6 +706,41 @@ const struct seq_operations proc_projid_seq_operations = {
+> >>  	.show = projid_m_show,
+> >>  };
+> >>  
+> >> +static void split_overlapping_mappings(struct uid_gid_map *parent_map,
+> >> +				       struct uid_gid_extent *extent,
+> >> +				       struct uid_gid_extent *overflow_extent)
+> >> +{
+> >> +	unsigned int idx;
+> >> +
+> >> +	overflow_extent->first = (u32) -1;
+> >> +
+> >> +	/* Split extent if it not fully contained in an extent from parent_map.  */
+> >> +	for (idx = 0; idx < parent_map->nr_extents; idx++) {
+> >
+> > Ouch!
+> >
+> > For the larger tree we perform binary searches typically and
+> > here you are walking every entry unconditionally.
+> >
+> > It looks like this makes the write O(N^2) from O(NlogN)
+> > which for a user facing function is not desirable.
+> >
+> > I think something like insert_and_split_extent may be ok.
+> > Incorporating your loop and the part that inserts an element.
+> >
+> > As written this almost doubles the complexity of the code,
+> > as well as making it perform much worse.  Which is a problem.
+> 
+> I've attempted to implement the new functionality at input validation
+> time to not touch the existing security checks.
+> 
+> I've thought the pattern for iterating the extents was fine as I've
+> taken it from mappings_overlap (even if it is used differently on an
+> unsorted array).
+> 
+> Thanks for the hint, I'll move the new logic when map_id_range_down() is
+> used and I'll send a v2.
 
-What commit caused this error to happen?  Can you resend this with a
-"Fixes:" tag with that information in it?
+Hi,
 
-thanks,
-
-greg k-h
+sorry if I miseed it.  Did you ever send a v2?
