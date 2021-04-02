@@ -2,299 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CA6135294A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 12:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A6D352933
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 12:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235210AbhDBKDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 06:03:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234904AbhDBKCj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 06:02:39 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B7CC0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 03:02:38 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id b7so6795830ejv.1
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 03:02:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=a8N6t5aWQODVEgg7skr90pD3os2alJmLiUjHKfb51DM=;
-        b=WKdd+yljgdAEsZm8s16SoWVJomsiLyWnl/uSqg81JWutCkpM6s17MveYJBBScz/2xi
-         MhtWIOjTcM50GF817J2aSY1hsLYUISlb/dnG6vP5aFJDmB5JBicFChKpJ9RD8F5g8CeR
-         S16iaWQwh4VvfNdrhnk7C1aAncBwp6JJzqsnNXizUIDNmEtAzQhnq+oNRwiqXv/BVSRD
-         yiAloAx3SGf8HLEY6zIP0R7DlGMf/KV0lFmMybe12WKE2d3Jgle58YI09QIs/xGXWJtP
-         uIcIMBQCCFhkd9jdG1gN0QV4OZa01wOqpB8e/Iv5czA4p6DfykMrafJUxJbjU8V3Z9zX
-         i/dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=a8N6t5aWQODVEgg7skr90pD3os2alJmLiUjHKfb51DM=;
-        b=B+w3zqxVNcSQ/bPpKwJjn1tXtgSQAyGnX30yGreJnz5waeXDOl2Tv5JDgyosjp54TI
-         S6PB2AycKGMyLPCLIoFWjBtifmHdnsCLIM/X/SjvQBx8stqzt40Nt/AV4x9qZX0wPh8y
-         9vatDupMK2BpidLanDxj/LpJCqSRFLc0rJ3ZBZUycz2ypoL6Oy7znTm8YuVj+VDx1q7Y
-         r4ZcvW8MvAtraF3kX0INTA4e4i5G8fwgf27PoKTJ2UaUWo///QLjTEDigMZrVYjHBio7
-         8HW1iejhtDni+JlCNl+UXxhpWaimKmv+Dusm9Lv5L8LzbsoVwf2mC/L0chffA68RAi+H
-         fElQ==
-X-Gm-Message-State: AOAM531nJtX8xU4LG0oLQvM03eHLUL1JSpWpZzowqSYWke0inIV6lWYW
-        W5OXHV+VsGuNU7sx4W3Ju44=
-X-Google-Smtp-Source: ABdhPJzHcX0c9uyT+yr0z6cVQECp3bTQAoA6o/gz6IjL13K0CC+U/ywK32ZCDd0DCIlLhb2aWByxKA==
-X-Received: by 2002:a17:906:4407:: with SMTP id x7mr13105776ejo.546.1617357756810;
-        Fri, 02 Apr 2021 03:02:36 -0700 (PDT)
-Received: from agape ([5.171.72.128])
-        by smtp.gmail.com with ESMTPSA id q19sm3942088ejy.50.2021.04.02.03.02.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 03:02:36 -0700 (PDT)
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     dan.carpenter@oracle.com, joe@perches.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH 16/16] staging: rtl8723bs: remove RT_TRACE logs in core/rtw_ieee80211.c
-Date:   Fri,  2 Apr 2021 12:01:36 +0200
-Message-Id: <3eda84cb4bd3aa6748b21bfba766128b1fbea130.1617356821.git.fabioaiuto83@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1617356821.git.fabioaiuto83@gmail.com>
-References: <cover.1617356821.git.fabioaiuto83@gmail.com>
+        id S234217AbhDBKBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 06:01:48 -0400
+Received: from mga14.intel.com ([192.55.52.115]:38953 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229599AbhDBKBr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 06:01:47 -0400
+IronPort-SDR: 1uMCiC0ZCLwsm92s7Oj7KpW/A+gl5qigV+vB54WNW1LwrZXTQ3UfhT5hkczcaizWL/Taqksj+1
+ sk4/nYQGP6AQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="191918452"
+X-IronPort-AV: E=Sophos;i="5.81,299,1610438400"; 
+   d="scan'208";a="191918452"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 03:01:46 -0700
+IronPort-SDR: Mv53InbaPu7iauoCxnLkoAy81UkZZw7STIemxqq6sWKiUQi868nOIS5DkLRyhyA0kznLlHctlC
+ kfHhXh+NHXUQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,299,1610438400"; 
+   d="scan'208";a="607924696"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmsmga006.fm.intel.com with ESMTP; 02 Apr 2021 03:01:46 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 2 Apr 2021 03:01:45 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 2 Apr 2021 03:01:45 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
+ via Frontend Transport; Fri, 2 Apr 2021 03:01:45 -0700
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.48) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2106.2; Fri, 2 Apr 2021 03:01:45 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QxgfM650EBzax4m7Eq1GcDmoKRBPMXjkVWW5v6tDJJ2vZtWOeW5K5OE8phP6qaXayEZjZZqNhzp6eyD6RWldPw+/WtacmoDp2WLoj/RnVY/hrbEpRnOsD6ZnSFy+JxlSubzR6+Qwl1txPvc2gT/kE2tYxLnYnpoYClvHX50d8TasevzRsKlDDCx+GO3ObNTBi/T6lTh5/mJH4JujDF6fmjKMT91ckCHvV1XxG/5TWPUrSvjaIhejE0fIj0IiNdcfDWFl/dewWbcebELXzooSNBrMnDySxQmg5kZUXIzTVIemg+HuzEMyEnI8e510FQ8YKqh4O4l6O41x5R54ra8vkA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=y2+pUGcyJQZPzqywFMVsmg6lef56Lc7Hz+KF3cEc9iY=;
+ b=IdEuSIPoFUJ59L0z5i3EdkkiO0gt2+gNJxl+DGZysZB8vw0BzmqE4wxxsg2oESM1ygvp4ah/pRtjsWeCrVId4gorQk2oZib0WyMT3HC3HyyW/bpAyYF75uTzJb0kX3tK6t4PpYTVj/I4i1nXiJ8x0m8XH8REZTW64MQL4wVEofvRKCKguI3WDPnHgVe0Gp9aKkvcpOMXzyvQrIt95OV6pcOzeWr1BrfZvotnI+b890CtPMLtfSZZ0U0J5vP39Q1duQeqTOjZSPf47WKQlIt0H8+CPMCETegeljW5Zyt0Ga2pZpgjynsAxCudByFQ8uJxOBTZuDmJByG7U/imcU7Omg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=y2+pUGcyJQZPzqywFMVsmg6lef56Lc7Hz+KF3cEc9iY=;
+ b=UPNtXLDw52oZK/T4JsK20itUGfCqePaI+JOvSdpm8RnIlCj5FnNwkoc3JaL8Ik91AqQzubEpkAWzS7VSUwfrgDYzb4Pj7qyJRkIYGO8t0i8UahVpim1u3KL/r+oTEf+UW7HYUe+RQmbhIJjchZs8E3gMXcucAWHRBwTjGZEisMM=
+Received: from MWHPR11MB1886.namprd11.prod.outlook.com (2603:10b6:300:110::9)
+ by MWHPR11MB1472.namprd11.prod.outlook.com (2603:10b6:301:d::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28; Fri, 2 Apr
+ 2021 10:01:43 +0000
+Received: from MWHPR11MB1886.namprd11.prod.outlook.com
+ ([fe80::75b0:a8e9:60cb:7a29]) by MWHPR11MB1886.namprd11.prod.outlook.com
+ ([fe80::75b0:a8e9:60cb:7a29%9]) with mapi id 15.20.3999.030; Fri, 2 Apr 2021
+ 10:01:43 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>, "Liu, Yi L" <yi.l.liu@intel.com>
+CC:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Jean-Philippe Brucker" <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>
+Subject: RE: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
+ APIs
+Thread-Topic: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Thread-Index: AQHXDZub0CDG82VGXUmLEYgvMuPs4KqKkLIAgACg94CAAC72gIAAD04AgAADogCAAErUgIAETQEAgAOaswCAB7C3gIAAhxQwgADYDACAATCSAIAAVGMAgAELsQCAAHeZAIAAF3gAgAABVICAAAfXAIAAANyAgAEpdBCAACimEA==
+Date:   Fri, 2 Apr 2021 10:01:43 +0000
+Message-ID: <MWHPR11MB1886D080DDCF9B50CBDEAEEA8C7A9@MWHPR11MB1886.namprd11.prod.outlook.com>
+References: <20210329163147.GG2356281@nvidia.com>
+ <MWHPR11MB188639EE54B48B0E1321C8198C7D9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210330132830.GO2356281@nvidia.com>
+ <BN6PR11MB40688F5AA2323AB8CC8E65E7C37C9@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <20210331124038.GE1463678@nvidia.com>
+ <BN6PR11MB406854CAE9D7CE86BEAB3E23C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <20210401114648.GX1463678@nvidia.com>
+ <BN6PR11MB406858FAC3821B84CCC4D30DC37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <20210401131533.GD1463678@nvidia.com>
+ <BN6PR11MB4068C1A040FF61B4A9ABBD9BC37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <20210401134641.GG1463678@nvidia.com> 
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.198.147.211]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0b5ec106-c7d9-4e0c-4e5c-08d8f5be51aa
+x-ms-traffictypediagnostic: MWHPR11MB1472:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR11MB1472E31479201BE48CDB3CF78C7A9@MWHPR11MB1472.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: H1ILzkatdNufeMSV504M++a36u2GhUna9JsyPuSv25ZTP7ISaOSwAyTLjyqi+NW/K6GpTtvaAqQk4mPpYMHwIqoVeAnu502Zc+FpQHc3dxsdkN9breFCy8crMmlse+ougmDAl3O4jyLtU+USS2pN2RHd1xBT/Nmew70Y1lcC+QD+zz3xxoE2FJNDbphirzEhsaJj0KGoZ230coZft/2iuZ24czToaiRjpNiC6qzpxRcu5NKaFN/fcMeSl0g9l81rW0OFOlbnHUH2+4Yks2pPhap5uZKVI+FdY0JKHwldj5Nfz4xo5RTwk6ViT2WK+w0VVNQeBVC/bWdN48XJNWB70+EZBh2Q6K0IA6KZunM7psjl/ol63BJYoJ7kUlXr2zYBx4OgshwYb0MWpC5f2c42sXy48oj+H2mQd4srSlPNC4lDSwTmriWxzQnf/IJMDpFv5sai3pmvTVMxR5DApxah6/nt9OHMBiBzjV6JxP2zk1y4OvN29LvgtfkuQkYa/c2vILSDG7zAzIad5LJoLuo/owm4sfeaU91woa+K54apGLR+lbIKwYphsgTfBBHhqAsnNKJpwLRGjYiXz5D373kvb+o2mMtLEI/SmLr1vkDh4rgB1QH23zXdxKc/hqGdb39r+Lt5jr9lTON7kV+XUvshG754gZ1pPIJtv7/hNj4yV2E=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1886.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(39860400002)(366004)(136003)(396003)(5660300002)(33656002)(8936002)(54906003)(76116006)(38100700001)(316002)(71200400001)(7696005)(478600001)(110136005)(66946007)(26005)(55016002)(4326008)(7416002)(83380400001)(8676002)(86362001)(66446008)(64756008)(186003)(2906002)(52536014)(9686003)(6636002)(66556008)(66476007)(6506007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?8voTeBcwRMh5pdO2c8O9YLddNnNFmj+VuhqEn32/uNxlPl5+5fxjQjPFseXp?=
+ =?us-ascii?Q?gPfX66XhC39yrD6T3/fvu/aIl/gity1uXOTt3w3dTx1zZw6c+AKd3czNHype?=
+ =?us-ascii?Q?CMS3uDuJCSRCVUAbpNzwG6quRz4DiDjxtbF7jSMThC801ZbBDhON4WAQOVqC?=
+ =?us-ascii?Q?ZjaaCTGMpTMy6WwBgAMeQPzWCEyPqYBxq9gTKYSy/uMtI4NQeaka1lc+vVqe?=
+ =?us-ascii?Q?a2CzmBM8d3VMett1WD1lkMnrAagWFPI2COJfKZ8IG4+qGUHvFF/l3SWE1Xeg?=
+ =?us-ascii?Q?k9immBHxBBDJlgOyo5z7cuCZieMcW72/HInnEsVZMIAskmhSUaDXRRVLzfcr?=
+ =?us-ascii?Q?U+Ew6LnTv0Bk03oD29WVzpxxM2kykpi4LX1UcMv2Igzkb5DcLlwL+fGoqobF?=
+ =?us-ascii?Q?nEo6FBd0da9eOa6mO2LKMLUZS+0XrD8rkkLE45QAPlfcGb+jOrUbGeinrPM4?=
+ =?us-ascii?Q?22JaBgTiM4eIugsmjqBmrFtnjvOu2nyz7K1+l7WLSnT9twW+YMuLrkccb4pq?=
+ =?us-ascii?Q?DUj4BteZt9E4g9ti8UD8QO7GlIcLa0fQwEwtf70JidAxgsfrOYWL4yW8vher?=
+ =?us-ascii?Q?dJMwcDBggfbcaVGvZyZ7FR6pOa1CxihVVWaAzAlRf9rihxy4NOyoEehLPe/u?=
+ =?us-ascii?Q?Enyu7PT4iO1RMzzfyvyEtQVsvyyWJjpbVxnky+oeKX7FCR+JfEj/60yd2hZx?=
+ =?us-ascii?Q?j01lKV1lIaRlRhkd7RSeu+g2/1fBvDv8FGyMaoNi290DD+3df7R/8bLOQpua?=
+ =?us-ascii?Q?TLM5Ukxw/H1FlssaPiOnj2vALXEScr8FAlPstmGmbfBVlUE3Qa2LSjlBh26d?=
+ =?us-ascii?Q?bKsB8IGLqN3cQDtEpQH8qA5+9uhoSXPyGEkPOssV7eK9xNEHvzmToFPy/ikJ?=
+ =?us-ascii?Q?RnChV6bzgSN+F9GiPsMkaKVCFFuxk56S46HWrcL9xJrog7FQfhfqxMd3L0GK?=
+ =?us-ascii?Q?sHqqhPczueuKoMM1BDLvCkN6pyJeO/6H/UPzwmD95cBhyyZl27aVlafL/881?=
+ =?us-ascii?Q?MwRiFp6padrgj6QvWDQbT4096V5UJOU8n+KkRDYMAjwNFSfPtjxrXzym9jD+?=
+ =?us-ascii?Q?0Cedj/JgMnBj9JysKpki7F24b6XeYEFT5hpKEUxDFRWri7yyfkJSGQKNLSNR?=
+ =?us-ascii?Q?u/bScEmO2LQPTJlvbsFndwocDCwLueiPXJWKTVKtXE+CzNPY5s0FPiFfb3Yn?=
+ =?us-ascii?Q?bqo01HGXsr/aGNAjMJhas5xAScaPXYI5E4if+/AdMUnN3VjHxteZ7WwQ5Gjv?=
+ =?us-ascii?Q?K3RFwPoPqZq8jR2Kbh2VU2KqXKxMwa/7y6EDOPorY47LsfRzgIQpnNu8nBAV?=
+ =?us-ascii?Q?dFL8weTFb+bOZjChr4bTEDEa?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1886.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b5ec106-c7d9-4e0c-4e5c-08d8f5be51aa
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Apr 2021 10:01:43.3793
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 6Qop+08KwgIUDWQV9lsTwSHXjoYoiWoErdX3N/2FamSVAVZmB6eJU4dGpnCMDbMFAiTPxsRwzu0e+y+ZQLXcLg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1472
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove all RT_TRACE logs
+> From: Tian, Kevin
+> Sent: Friday, April 2, 2021 3:58 PM
+>=20
+> > From: Jason Gunthorpe <jgg@nvidia.com>
+> > Sent: Thursday, April 1, 2021 9:47 PM
+> >
+> > On Thu, Apr 01, 2021 at 01:43:36PM +0000, Liu, Yi L wrote:
+> > > > From: Jason Gunthorpe <jgg@nvidia.com>
+> > > > Sent: Thursday, April 1, 2021 9:16 PM
+> > > >
+> > > > On Thu, Apr 01, 2021 at 01:10:48PM +0000, Liu, Yi L wrote:
+> > > > > > From: Jason Gunthorpe <jgg@nvidia.com>
+> > > > > > Sent: Thursday, April 1, 2021 7:47 PM
+> > > > > [...]
+> > > > > > I'm worried Intel views the only use of PASID in a guest is wit=
+h
+> > > > > > ENQCMD, but that is not consistent with the industry. We need t=
+o
+> see
+> > > > > > normal nested PASID support with assigned PCI VFs.
+> > > > >
+> > > > > I'm not quire flow here. Intel also allows PASID usage in guest w=
+ithout
+> > > > > ENQCMD. e.g. Passthru a PF to guest, and use PASID on it without
+> > > > ENQCMD.
+> > > >
+> > > > Then you need all the parts, the hypervisor calls from the vIOMMU, =
+and
+> > > > you can't really use a vPASID.
+> > >
+> > > This is a diagram shows the vSVA setup.
+> >
+> > I'm not talking only about vSVA. Generic PASID support with arbitary
+> > mappings.
+> >
+> > And how do you deal with the vPASID vs pPASID issue if the system has
+> > a mix of physical devices and mdevs?
+> >
+>=20
+> We plan to support two schemes. One is vPASID identity-mapped to
+> pPASID then the mixed scenario just works, with the limitation of
+> lacking of live migration support. The other is non-identity-mapped
+> scheme, where live migration is supported but physical devices and
+> mdevs should not be mixed in one VM if both expose SVA capability
+> (requires some filtering check in Qemu). Although we have some
+> idea relaxing this restriction in the non-identity scheme, it requires
+> more thinking given how the vSVA uAPI is being refactored.
+>=20
+> In both cases the virtual VT-d will report a virtual capability to the gu=
+est,
+> indicating that the guest must request PASID through a vcmd register
+> instead of creating its own namespace. The vIOMMU returns a vPASID
+> to the guest upon request. The vPASID could be directly mapped to a
+> pPASID or allocated from a new namespace based on user configuration.
+>=20
+> We hope the /dev/ioasid can support both schemes, with the minimal
+> requirement of allowing userspace to tag a vPASID to a pPASID and
+> allowing mdev to translate vPASID into pPASID, i.e. not assuming that
+> the guest will always use pPASID.
+>=20
 
-fix patch-related checkpatch issues
+Per your comments in other threads I suppose this requirement should
+be implemented in VFIO_ALLOW_PASID command instead of going=20
+through /dev/ioasid which only needs to know pPASID and its pgtable
+management.
 
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
----
- .../staging/rtl8723bs/core/rtw_ieee80211.c    | 90 ++++---------------
- 1 file changed, 15 insertions(+), 75 deletions(-)
-
-diff --git a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c b/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
-index e931afc3ba22..a0d664e254a8 100644
---- a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
-@@ -488,11 +488,8 @@ int rtw_parse_wpa_ie(u8 *wpa_ie, int wpa_ie_len, int *group_cipher, int *pairwis
- 		pos += WPA_SELECTOR_LEN;
- 		left -= WPA_SELECTOR_LEN;
- 
--	} else if (left > 0) {
--		RT_TRACE(_module_rtl871x_mlme_c_, _drv_err_, ("%s: ie length mismatch, %u too much", __func__, left));
--
-+	} else if (left > 0)
- 		return _FAIL;
--	}
- 
- 	/* pairwise_cipher */
- 	if (left >= 2) {
-@@ -501,11 +498,8 @@ int rtw_parse_wpa_ie(u8 *wpa_ie, int wpa_ie_len, int *group_cipher, int *pairwis
- 		pos += 2;
- 		left -= 2;
- 
--		if (count == 0 || left < count * WPA_SELECTOR_LEN) {
--			RT_TRACE(_module_rtl871x_mlme_c_, _drv_err_, ("%s: ie count botch (pairwise), "
--						"count %u left %u", __func__, count, left));
-+		if (count == 0 || left < count * WPA_SELECTOR_LEN)
- 			return _FAIL;
--		}
- 
- 		for (i = 0; i < count; i++) {
- 			*pairwise_cipher |= rtw_get_wpa_cipher_suite(pos);
-@@ -514,16 +508,13 @@ int rtw_parse_wpa_ie(u8 *wpa_ie, int wpa_ie_len, int *group_cipher, int *pairwis
- 			left -= WPA_SELECTOR_LEN;
- 		}
- 
--	} else if (left == 1) {
--		RT_TRACE(_module_rtl871x_mlme_c_, _drv_err_, ("%s: ie too short (for key mgmt)",   __func__));
-+	} else if (left == 1)
- 		return _FAIL;
--	}
- 
- 	if (is_8021x) {
- 		if (left >= 6) {
- 			pos += 2;
- 			if (!memcmp(pos, SUITE_1X, 4)) {
--				RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("%s : there has 802.1x auth\n", __func__));
- 				*is_8021x = 1;
- 			}
- 		}
-@@ -559,10 +550,8 @@ int rtw_parse_wpa2_ie(u8 *rsn_ie, int rsn_ie_len, int *group_cipher, int *pairwi
- 		pos += RSN_SELECTOR_LEN;
- 		left -= RSN_SELECTOR_LEN;
- 
--	} else if (left > 0) {
--		RT_TRACE(_module_rtl871x_mlme_c_, _drv_err_, ("%s: ie length mismatch, %u too much", __func__, left));
-+	} else if (left > 0)
- 		return _FAIL;
--	}
- 
- 	/* pairwise_cipher */
- 	if (left >= 2) {
-@@ -571,11 +560,8 @@ int rtw_parse_wpa2_ie(u8 *rsn_ie, int rsn_ie_len, int *group_cipher, int *pairwi
- 		pos += 2;
- 		left -= 2;
- 
--		if (count == 0 || left < count * RSN_SELECTOR_LEN) {
--			RT_TRACE(_module_rtl871x_mlme_c_, _drv_err_, ("%s: ie count botch (pairwise), "
--						 "count %u left %u", __func__, count, left));
-+		if (count == 0 || left < count * RSN_SELECTOR_LEN)
- 			return _FAIL;
--		}
- 
- 		for (i = 0; i < count; i++) {
- 			*pairwise_cipher |= rtw_get_wpa2_cipher_suite(pos);
-@@ -584,19 +570,14 @@ int rtw_parse_wpa2_ie(u8 *rsn_ie, int rsn_ie_len, int *group_cipher, int *pairwi
- 			left -= RSN_SELECTOR_LEN;
- 		}
- 
--	} else if (left == 1) {
--		RT_TRACE(_module_rtl871x_mlme_c_, _drv_err_, ("%s: ie too short (for key mgmt)",  __func__));
--
-+	} else if (left == 1)
- 		return _FAIL;
--	}
- 
- 	if (is_8021x) {
- 		if (left >= 6) {
- 			pos += 2;
--			if (!memcmp(pos, SUITE_1X, 4)) {
--				RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("%s (): there has 802.1x auth\n", __func__));
-+			if (!memcmp(pos, SUITE_1X, 4))
- 				*is_8021x = 1;
--			}
- 		}
- 	}
- 
-@@ -607,7 +588,7 @@ int rtw_parse_wpa2_ie(u8 *rsn_ie, int rsn_ie_len, int *group_cipher, int *pairwi
- int rtw_get_wapi_ie(u8 *in_ie, uint in_len, u8 *wapi_ie, u16 *wapi_len)
- {
- 	int len = 0;
--	u8 authmode, i;
-+	u8 authmode;
- 	uint	cnt;
- 	u8 wapi_oui1[4] = {0x0, 0x14, 0x72, 0x01};
- 	u8 wapi_oui2[4] = {0x0, 0x14, 0x72, 0x02};
-@@ -626,16 +607,9 @@ int rtw_get_wapi_ie(u8 *in_ie, uint in_len, u8 *wapi_ie, u16 *wapi_len)
- 		/* if (authmode == WLAN_EID_BSS_AC_ACCESS_DELAY) */
- 		if (authmode == WLAN_EID_BSS_AC_ACCESS_DELAY && (!memcmp(&in_ie[cnt+6], wapi_oui1, 4) ||
- 					!memcmp(&in_ie[cnt+6], wapi_oui2, 4))) {
--			if (wapi_ie) {
-+			if (wapi_ie)
- 				memcpy(wapi_ie, &in_ie[cnt], in_ie[cnt+1]+2);
- 
--				for (i = 0; i < (in_ie[cnt+1]+2); i = i+8) {
--					RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("\n %2x,%2x,%2x,%2x,%2x,%2x,%2x,%2x\n",
--								wapi_ie[i], wapi_ie[i+1], wapi_ie[i+2], wapi_ie[i+3], wapi_ie[i+4],
--								wapi_ie[i+5], wapi_ie[i+6], wapi_ie[i+7]));
--				}
--			}
--
- 			if (wapi_len)
- 				*wapi_len = in_ie[cnt+1]+2;
- 
-@@ -654,7 +628,7 @@ int rtw_get_wapi_ie(u8 *in_ie, uint in_len, u8 *wapi_ie, u16 *wapi_len)
- 
- void rtw_get_sec_ie(u8 *in_ie, uint in_len, u8 *rsn_ie, u16 *rsn_len, u8 *wpa_ie, u16 *wpa_len)
- {
--	u8 authmode, sec_idx, i;
-+	u8 authmode, sec_idx;
- 	u8 wpa_oui[4] = {0x0, 0x50, 0xf2, 0x01};
- 	uint	cnt;
- 
-@@ -668,33 +642,15 @@ void rtw_get_sec_ie(u8 *in_ie, uint in_len, u8 *rsn_ie, u16 *rsn_len, u8 *wpa_ie
- 		authmode = in_ie[cnt];
- 
- 		if ((authmode == WLAN_EID_VENDOR_SPECIFIC) && (!memcmp(&in_ie[cnt+2], &wpa_oui[0], 4))) {
--				RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("\n rtw_get_wpa_ie: sec_idx =%d in_ie[cnt+1]+2 =%d\n", sec_idx, in_ie[cnt+1]+2));
--
--				if (wpa_ie) {
-+			if (wpa_ie)
- 				memcpy(wpa_ie, &in_ie[cnt], in_ie[cnt+1]+2);
- 
--				for (i = 0; i < (in_ie[cnt+1]+2); i = i+8) {
--						RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("\n %2x,%2x,%2x,%2x,%2x,%2x,%2x,%2x\n",
--									wpa_ie[i], wpa_ie[i+1], wpa_ie[i+2], wpa_ie[i+3], wpa_ie[i+4],
--									wpa_ie[i+5], wpa_ie[i+6], wpa_ie[i+7]));
--					}
--				}
--
--				*wpa_len = in_ie[cnt+1]+2;
--				cnt += in_ie[cnt+1]+2;  /* get next */
-+			*wpa_len = in_ie[cnt + 1] + 2;
-+			cnt += in_ie[cnt + 1] + 2;  /* get next */
- 		} else {
- 			if (authmode == WLAN_EID_RSN) {
--				RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("\n get_rsn_ie: sec_idx =%d in_ie[cnt+1]+2 =%d\n", sec_idx, in_ie[cnt+1]+2));
--
--				if (rsn_ie) {
--				memcpy(rsn_ie, &in_ie[cnt], in_ie[cnt+1]+2);
--
--				for (i = 0; i < (in_ie[cnt+1]+2); i = i+8) {
--						RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("\n %2x,%2x,%2x,%2x,%2x,%2x,%2x,%2x\n",
--									rsn_ie[i], rsn_ie[i+1], rsn_ie[i+2], rsn_ie[i+3], rsn_ie[i+4],
--									rsn_ie[i+5], rsn_ie[i+6], rsn_ie[i+7]));
--					}
--				}
-+				if (rsn_ie)
-+					memcpy(rsn_ie, &in_ie[cnt], in_ie[cnt + 1] + 2);
- 
- 				*rsn_len = in_ie[cnt+1]+2;
- 				cnt += in_ie[cnt+1]+2;  /* get next */
-@@ -1138,28 +1094,20 @@ static int rtw_get_cipher_info(struct wlan_network *pnetwork)
- 	pbuf = rtw_get_wpa_ie(&pnetwork->network.IEs[12], &wpa_ielen, pnetwork->network.IELength-12);
- 
- 	if (pbuf && (wpa_ielen > 0)) {
--		RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("rtw_get_cipher_info: wpa_ielen: %d", wpa_ielen));
- 		if (_SUCCESS == rtw_parse_wpa_ie(pbuf, wpa_ielen+2, &group_cipher, &pairwise_cipher, &is8021x)) {
- 			pnetwork->BcnInfo.pairwise_cipher = pairwise_cipher;
- 			pnetwork->BcnInfo.group_cipher = group_cipher;
- 			pnetwork->BcnInfo.is_8021x = is8021x;
--			RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("%s: pnetwork->pairwise_cipher: %d, is_8021x is %d",
--						__func__, pnetwork->BcnInfo.pairwise_cipher, pnetwork->BcnInfo.is_8021x));
- 			ret = _SUCCESS;
- 		}
- 	} else {
- 		pbuf = rtw_get_wpa2_ie(&pnetwork->network.IEs[12], &wpa_ielen, pnetwork->network.IELength-12);
- 
- 		if (pbuf && (wpa_ielen > 0)) {
--			RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("get RSN IE\n"));
- 			if (_SUCCESS == rtw_parse_wpa2_ie(pbuf, wpa_ielen+2, &group_cipher, &pairwise_cipher, &is8021x)) {
--				RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("get RSN IE  OK!!!\n"));
- 				pnetwork->BcnInfo.pairwise_cipher = pairwise_cipher;
- 				pnetwork->BcnInfo.group_cipher = group_cipher;
- 				pnetwork->BcnInfo.is_8021x = is8021x;
--				RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("%s: pnetwork->pairwise_cipher: %d,"
--							"pnetwork->group_cipher is %d, is_8021x is %d",	__func__, pnetwork->BcnInfo.pairwise_cipher,
--							pnetwork->BcnInfo.group_cipher, pnetwork->BcnInfo.is_8021x));
- 				ret = _SUCCESS;
- 			}
- 		}
-@@ -1189,10 +1137,6 @@ void rtw_get_bcn_info(struct wlan_network *pnetwork)
- 		pnetwork->BcnInfo.encryp_protocol = ENCRYP_PROTOCOL_OPENSYS;
- 	}
- 	rtw_get_sec_ie(pnetwork->network.IEs, pnetwork->network.IELength, NULL, &rsn_len, NULL, &wpa_len);
--	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("rtw_get_bcn_info: ssid =%s\n", pnetwork->network.Ssid.Ssid));
--	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("rtw_get_bcn_info: wpa_len =%d rsn_len =%d\n", wpa_len, rsn_len));
--	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("rtw_get_bcn_info: ssid =%s\n", pnetwork->network.Ssid.Ssid));
--	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("rtw_get_bcn_info: wpa_len =%d rsn_len =%d\n", wpa_len, rsn_len));
- 
- 	if (rsn_len > 0) {
- 		pnetwork->BcnInfo.encryp_protocol = ENCRYP_PROTOCOL_WPA2;
-@@ -1202,10 +1146,6 @@ void rtw_get_bcn_info(struct wlan_network *pnetwork)
- 		if (bencrypt)
- 			pnetwork->BcnInfo.encryp_protocol = ENCRYP_PROTOCOL_WEP;
- 	}
--	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("rtw_get_bcn_info: pnetwork->encryp_protocol is %x\n",
--				pnetwork->BcnInfo.encryp_protocol));
--	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("rtw_get_bcn_info: pnetwork->encryp_protocol is %x\n",
--				pnetwork->BcnInfo.encryp_protocol));
- 	rtw_get_cipher_info(pnetwork);
- 
- 	/* get bwmode and ch_offset */
--- 
-2.20.1
-
+Thanks
+Kevin
