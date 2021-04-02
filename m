@@ -2,109 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41051352EB2
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 19:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DABF7352EB5
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 19:49:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235122AbhDBRrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 13:47:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60932 "EHLO
+        id S235426AbhDBRs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 13:48:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234488AbhDBRrl (ORCPT
+        with ESMTP id S234488AbhDBRs4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 13:47:41 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF7AC061788
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 10:47:39 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id f5so1258914ilr.9
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 10:47:39 -0700 (PDT)
+        Fri, 2 Apr 2021 13:48:56 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77CC5C0613E6;
+        Fri,  2 Apr 2021 10:48:53 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id u17so2083815ejk.2;
+        Fri, 02 Apr 2021 10:48:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hlmY9ay0U3wvSCBCBDTvrY5xuHoevwZSGxKNN6WLYyo=;
-        b=KEfPNYX0hxEQJ5RSJw8sTTqF6SLMJBEFqjzuZSfSkkxsb+EmcaGWoiJP4mXe6Q8LjP
-         pTEjwWZP7ShClLA3I49+c7Due/puEiX4q1BohoYtKzmEQXFmFBGQv2Cy3fo64wdOM6UK
-         I9b1N4VD9teUD1gjp3wMDgzPX5ke3fqOJQ2QI=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=0owosgkyykKYDuIsHi10QhU2e22nKyvwNVjoqMdEnjs=;
+        b=Cb5PT3Hp3SOPJsk1LImYGcw8Nn0ud/sn3Smo2IhUs1op/As+hrOOOJp/gouWLNEb8h
+         Nrer/MmRIqVnP2dWbobYZwoFv4daWFaDKkFtPYGFo14lJk//iMlK9R/Ns3zYQ6HrpPER
+         9E7UZSBdi9MciIUNXlkdqOGHdZhxA+bR1/3+TbCLdVAHp4zFuvhWHuqRD1KY0DbbIp4K
+         HD5P+cOTFFlMBWFzJeZYB34ZHvQr1trGVW/vCDcm9l6bhieONt7KtuDsllgot60rWXRY
+         5gFpLBrEgwbPDmJKEAeo23aUT6ZAVDaeCvFY57ZcDwEBQ1WQJKlOlQlyIn+6bMoPMsUc
+         lI1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hlmY9ay0U3wvSCBCBDTvrY5xuHoevwZSGxKNN6WLYyo=;
-        b=bPoJsn/cbI1ellJ+YmxQF5ZjlIsTBKe5i85Ge6iydqnh6Pv+82XGzY9umMCh3V93Lk
-         sSZ2zg+Be3YfekY0YapIRaKPjmquUOlFZgZnvit7CssHldg+DX5PCHjBTpGyFopaVIlf
-         FmAwPF09Y9zufk2RuCeMhkABWOJConJhr21/0XDlzr8F1NT0hr88TmXx9h8kksvV1ZB8
-         WJbWkR3OdwjWk8NaGS418Eet+uYWnlS/IyKJG0rbOkcqPqeC/2dYdGDSrVtlYSFJsj2O
-         Pct232BqZLp9DJ2rvyqOYaX/qK82uMjhBhte4pkEF24qwQHcW9UatlDUdyzWO2Hzj4/A
-         K+aQ==
-X-Gm-Message-State: AOAM531AHD42yD46jrcwB+9Uf2gEZYc3Wje4fHzplmuJg7GC7kUGL0S5
-        FKmoIL6Wr6kB+nT668ueixvQCw==
-X-Google-Smtp-Source: ABdhPJyv/h+pcdXk22+CtdU5pG4KIhATDFSYSe1a1zZ/C6DXx8EzFnEFA3dU9NXzplHZrY+Q75UKQA==
-X-Received: by 2002:a92:c50c:: with SMTP id r12mr11991100ilg.52.1617385659329;
-        Fri, 02 Apr 2021 10:47:39 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id g16sm4424011ilk.22.2021.04.02.10.47.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Apr 2021 10:47:38 -0700 (PDT)
-Subject: Re: [PATCH] kunit: make KUNIT_EXPECT_STREQ() quote values, don't
- print literals
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        Daniel Latypov <dlatypov@google.com>
-Cc:     David Gow <davidgow@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210205221808.1966010-1-dlatypov@google.com>
- <CAFd5g44PL+DrN6+0bw-oYQCjCSR-f4Y0=QZL9DsSO-3hKLsFzw@mail.gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <9f5df593-6584-b7d4-3b6e-ad77ee6f8760@linuxfoundation.org>
-Date:   Fri, 2 Apr 2021 11:47:38 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=0owosgkyykKYDuIsHi10QhU2e22nKyvwNVjoqMdEnjs=;
+        b=RVWjRXLRr7Ez4ZidmXlYLWaHgBpcrGL6uP74zlGkPcNljS7Ml6kJhcEyOA3k01YDTQ
+         3EvZUBFcxfO8st1Phn+/3Qk10SKWf9o9YrYCR9bN3pnFwAe3Xy9wsFzmg+jxy2TlLxON
+         PYjnsyBEbGcvGlMF5djpmUB98D0QCkEnDN56o+cKYfXwMKrVspiIRJAk7n8EgH3dcQkL
+         IEC8bSVasu9vUKHgkDPo/iMdUxDv9T5T4GFQ/U7s8CuKOd3Xv4HWLFn2g/djD8DehYnn
+         MxGv5Tb4KqpoM8D5gN/SHKEMrDDjXQTsnPz/p9EWYWTca69H7mPzLwSaXukxp+ZmtfeM
+         Y89A==
+X-Gm-Message-State: AOAM531mMf3nxwAHHhh6c34+ItuqlzSC6BuEcWYp7WOqxd/B3TtQq62C
+        jS7J6Avq/f4teUJ2xuZhyEovT7DJ5RXwx8/5q8A=
+X-Google-Smtp-Source: ABdhPJxgzlz0K4m1J3BoAgiWsvQVCCYJ6YWYMf/U++AKWa+vazkMzqbpcAtLQHLYfR+hVx/z4N16fa2KOAyX3+5Ad3g=
+X-Received: by 2002:a17:907:7785:: with SMTP id ky5mr14646048ejc.133.1617385732116;
+ Fri, 02 Apr 2021 10:48:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAFd5g44PL+DrN6+0bw-oYQCjCSR-f4Y0=QZL9DsSO-3hKLsFzw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210402164506.520121-1-adrien.grassein@gmail.com> <20210402174228.wjl6paul5hxu7dnx@fsr-ub1664-175>
+In-Reply-To: <20210402174228.wjl6paul5hxu7dnx@fsr-ub1664-175>
+From:   Adrien Grassein <adrien.grassein@gmail.com>
+Date:   Fri, 2 Apr 2021 19:48:41 +0200
+Message-ID: <CABkfQAH+Gvu69UeDbxBGyQ1GroYuEqmrYFbkNE-qaLM2zpGRfQ@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] Add imx8m power domain driver
+To:     Abel Vesa <abel.vesa@nxp.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, arnd@arndb.de,
+        peng.fan@nxp.com, Anson.Huang@nxp.com,
+        DTML <devicetree@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/2/21 3:35 AM, Brendan Higgins wrote:
-> On Fri, Feb 5, 2021 at 2:18 PM Daniel Latypov <dlatypov@google.com> wrote:
->>
->> Before:
->>>   Expected str == "world", but
->>>       str == hello
->>>       "world" == world
->>
->> After:
->>>   Expected str == "world", but
->>>       str == "hello"
->> <we don't need to tell the user that "world" == "world">
->>
->> Note: like the literal ellision for integers, this doesn't handle the
->> case of
->>    KUNIT_EXPECT_STREQ(test, "hello", "world")
->> since we don't expect it to realistically happen in checked in tests.
->> (If you really wanted a test to fail, KUNIT_FAIL("msg") exists)
->>
->> In that case, you'd get:
->>>   Expected "hello" == "world", but
->> <output for next failure>
->>
->> Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> 
-> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-> 
+Hi,
 
-Hi Daniel,
+Le ven. 2 avr. 2021 =C3=A0 19:42, Abel Vesa <abel.vesa@nxp.com> a =C3=A9cri=
+t :
+>
+> On 21-04-02 18:45:04, Adrien Grassein wrote:
+> > Hi,
+> >
+> > this patch et aims to add the support of the i.MX 8 Power Domain driver=
+.
+> > Some devices (like usbotg2) can't work without this patch as their
+> > attached power domain are down.
+> >
+> > The original drivr was taken from le imx kernel and aapted to fit with
+> > the actual mainline (minor fixes).
+> >
+> > Thanks,
+> >
+>
+> Big NACK for the whole series.
+>
+> This approach has already been rejected upstream.
 
-Please run checkpatch on your patches in the future. I am seeing
-a few checkpatch readability type improvements that can be made.
+So what is the correct approach?
+At this point otg2 node of imx8mm is not working at all (and blocks the who=
+le
+boot of the kernel)
 
-Please make changes and send v2 with Brendan's Reviewed-by.
+>
+> Plus, you changed the original author, this work was originally done by J=
+acky Bai.
 
-thanks,
--- Shuah
+I have not changed this, the original author is not mentioned on the
+original patch.
+(Taken from https://github.com/Freescale/linux-fslc branch 5.4-2.2.x-imx)
+
+>
+> > Adrien Grassein (2):
+> >   dt-bindings: power: Add documentation for imx8m power domain driver
+> >   soc: imx: add Power Domain driver for i.MX8M(M|N|P)
+> >
+> >  .../bindings/power/fsl,imx-power-domain.yaml  |  89 +++++++
+> >  MAINTAINERS                                   |  10 +
+> >  drivers/soc/imx/Kconfig                       |   7 +
+> >  drivers/soc/imx/Makefile                      |   1 +
+> >  drivers/soc/imx/imx8m_pm_domains.c            | 233 ++++++++++++++++++
+> >  include/dt-bindings/power/imx8mm-power.h      |  21 ++
+> >  include/dt-bindings/power/imx8mn-power.h      |  15 ++
+> >  include/dt-bindings/power/imx8mp-power.h      |  28 +++
+> >  include/soc/imx/imx_sip.h                     |  12 +
+> >  9 files changed, 416 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/power/fsl,imx-pow=
+er-domain.yaml
+> >  create mode 100644 drivers/soc/imx/imx8m_pm_domains.c
+> >  create mode 100644 include/dt-bindings/power/imx8mm-power.h
+> >  create mode 100644 include/dt-bindings/power/imx8mn-power.h
+> >  create mode 100644 include/dt-bindings/power/imx8mp-power.h
+> >  create mode 100644 include/soc/imx/imx_sip.h
+> >
+> > --
+> > 2.25.1
+> >
+
+Thanks,
