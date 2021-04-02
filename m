@@ -2,177 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6346352541
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 03:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1306935254A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 03:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234145AbhDBBpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 21:45:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231168AbhDBBpl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 21:45:41 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65227C0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 18:45:39 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id t3so4197189qtp.23
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 18:45:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=B7WcpZ6OMWphpXj982R+9f98aP8oPdWyveFaKChJc9U=;
-        b=ShvmTpFEutpHpZUiSFstp1N4vq7foUYvHyUdFzMRaF7EisCH49QrnqUAoMyvnhnA6e
-         K5HKDMBtLDiR143ruaUn6/6D088D8A+RwRxGKLhSlG56lKFsw9Z9EzgB4Pozzcg1J6ev
-         jXTLXTSRs+GKpp/V6YULuy/GKwhDUt2XwELt2bHJcMdbOEZU6HCggtHyXe0EcpxhmXcH
-         ZHT596H618QJZEIZr5EoaJ+pCFaxkFxOSkgpsu68AW2Qn2d9DRurIpmYDgXwD/88WJS9
-         YZJ8xGqsXZgPsGAraPgOSnGQwKMtUOFOYa3tN80QRrNqWyA3XOyzeYr5nd3/Wruao94t
-         HRzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=B7WcpZ6OMWphpXj982R+9f98aP8oPdWyveFaKChJc9U=;
-        b=XirQZI2SSFHlHI5PwbpPk+cvchs2xOPnqpKBsAVb4JlwofZSTobOyElmgMeQH0/D2U
-         Y0w+kj0S8Nsptxatr7xhCOxsWNrx2AW2bVXOv4wfCUx2fj3XyLEl3nOWiWuvCa+qJV+H
-         0fyi//dBTcX2S+UNRIXAtuvyBF/a3bC2pC9C0/TL0WSG3vh8Afx0xyvQ0JKaJ4wUaRw3
-         fx51+JSO3ud+7shltc8VLApAeZD8QWiqPsEQoQo+owYlGdS3hAu5EvlaN2RDWN/MFmDi
-         RV9u95tuHIr26o+yX6Aji5b05s5omADSLLkS7UzrcZblVHmQc5sA4IDBY2AfYQWww6sI
-         3dnw==
-X-Gm-Message-State: AOAM531AFhgyBWBsZMCllD4a0Wxj153WIFLWE615/hRFfz9fGXnkaFEd
-        v/8gAL4HVuESo0bxLnfV0FibsT7KIYcztbukhQ==
-X-Google-Smtp-Source: ABdhPJw5qj6CWaSf0NeH4Vuwhk3KPzvrtiaesRG6UETXTQ2Z1/J4sPx9X350idkyGLf9t/JpnUmBYgHYpNO1kqOIxA==
-X-Received: from riemann.sea.corp.google.com ([2620:15c:158:202:68ed:8390:2860:e44a])
- (user=srutherford job=sendgmr) by 2002:a0c:e409:: with SMTP id
- o9mr1023699qvl.31.1617327938539; Thu, 01 Apr 2021 18:45:38 -0700 (PDT)
-Date:   Thu,  1 Apr 2021 18:44:38 -0700
-Message-Id: <20210402014438.1721086-1-srutherford@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
-Subject: [PATCH] KVM: SVM: Add support for KVM_SEV_SEND_CANCEL command
-From:   Steve Rutherford <srutherford@google.com>
-To:     kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, natet@google.com,
-        Ashish.Kalra@amd.com, brijesh.singh@amd.com, pbonzini@redhat.com,
-        Steve Rutherford <srutherford@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S234067AbhDBB6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 21:58:22 -0400
+Received: from mail.hallyn.com ([178.63.66.53]:40296 "EHLO mail.hallyn.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233258AbhDBB6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 21:58:20 -0400
+X-Greylist: delayed 505 seconds by postgrey-1.27 at vger.kernel.org; Thu, 01 Apr 2021 21:58:18 EDT
+Received: by mail.hallyn.com (Postfix, from userid 1001)
+        id F246D774; Thu,  1 Apr 2021 20:49:50 -0500 (CDT)
+Date:   Thu, 1 Apr 2021 20:49:50 -0500
+From:   "Serge E. Hallyn" <serge@hallyn.com>
+To:     James Bottomley <jejb@linux.ibm.com>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        David Gstir <david@sigma-star.at>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+Subject: Re: [PATCH v1 3/3] KEYS: trusted: Introduce support for NXP
+ CAAM-based trusted keys
+Message-ID: <20210402014950.GA6897@mail.hallyn.com>
+References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
+ <319e558e1bd19b80ad6447c167a2c3942bdafea2.1615914058.git-series.a.fatoum@pengutronix.de>
+ <01e6e13d-2968-0aa5-c4c8-7458b7bde462@nxp.com>
+ <45a9e159-2dcb-85bf-02bd-2993d50b5748@pengutronix.de>
+ <f9c0087d299be1b9b91b242f41ac6ef7b9ee3ef7.camel@linux.ibm.com>
+ <9ba89168d8c4f1e3d6797a0b3713e152ac6388fd.camel@linux.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9ba89168d8c4f1e3d6797a0b3713e152ac6388fd.camel@linux.ibm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After completion of SEND_START, but before SEND_FINISH, the source VMM can
-issue the SEND_CANCEL command to stop a migration. This is necessary so
-that a cancelled migration can restart with a new target later.
+On Wed, Mar 24, 2021 at 09:14:02AM -0700, James Bottomley wrote:
+> On Tue, 2021-03-23 at 14:07 -0400, Mimi Zohar wrote:
+> > On Tue, 2021-03-23 at 17:35 +0100, Ahmad Fatoum wrote:
+> > > Hello Horia,
+> > > 
+> > > On 21.03.21 21:48, Horia Geantă wrote:
+> > > > On 3/16/2021 7:02 PM, Ahmad Fatoum wrote:
+> > > > [...]
+> > > > > +struct trusted_key_ops caam_trusted_key_ops = {
+> > > > > +	.migratable = 0, /* non-migratable */
+> > > > > +	.init = trusted_caam_init,
+> > > > > +	.seal = trusted_caam_seal,
+> > > > > +	.unseal = trusted_caam_unseal,
+> > > > > +	.exit = trusted_caam_exit,
+> > > > > +};
+> > > > caam has random number generation capabilities, so it's worth
+> > > > using that
+> > > > by implementing .get_random.
+> > > 
+> > > If the CAAM HWRNG is already seeding the kernel RNG, why not use
+> > > the kernel's?
+> > > 
+> > > Makes for less code duplication IMO.
+> > 
+> > Using kernel RNG, in general, for trusted keys has been discussed
+> > before.   Please refer to Dave Safford's detailed explanation for not
+> > using it [1].
+> > 
+> > thanks,
+> > 
+> > Mimi
+> > 
+> > [1] 
+> > https://lore.kernel.org/linux-integrity/BCA04D5D9A3B764C9B7405BBA4D4A3C035F2A38B@ALPMBAPA12.e2k.ad.ge.com/
+> 
+> I still don't think relying on one source of randomness to be
+> cryptographically secure is a good idea.  The fear of bugs in the
+> kernel entropy pool is reasonable, but since it's widely used they're
+> unlikely to persist very long.
 
-Signed-off-by: Steve Rutherford <srutherford@google.com>
----
- .../virt/kvm/amd-memory-encryption.rst        |  9 +++++++
- arch/x86/kvm/svm/sev.c                        | 24 +++++++++++++++++++
- include/linux/psp-sev.h                       | 10 ++++++++
- include/uapi/linux/kvm.h                      |  2 ++
- 4 files changed, 45 insertions(+)
+I'm not sure I agree - remember
+https://www.schneier.com/blog/archives/2008/05/random_number_b.html ?  You'd
+surely expect that to have been found quickly.
 
-diff --git a/Documentation/virt/kvm/amd-memory-encryption.rst b/Documentation/virt/kvm/amd-memory-encryption.rst
-index 469a6308765b1..9e018a3eec03b 100644
---- a/Documentation/virt/kvm/amd-memory-encryption.rst
-+++ b/Documentation/virt/kvm/amd-memory-encryption.rst
-@@ -284,6 +284,15 @@ Returns: 0 on success, -negative on error
-                 __u32 len;
-         };
- 
-+16. KVM_SEV_SEND_CANCEL
-+------------------------
-+
-+After completion of SEND_START, but before SEND_FINISH, the source VMM can issue the
-+SEND_CANCEL command to stop a migration. This is necessary so that a cancelled
-+migration can restart with a new target later.
-+
-+Returns: 0 on success, -negative on error
-+
- References
- ==========
- 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 83e00e5245136..88e72102cb900 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -1110,6 +1110,27 @@ static int sev_get_attestation_report(struct kvm *kvm, struct kvm_sev_cmd *argp)
- 	return ret;
- }
- 
-+static int sev_send_cancel(struct kvm *kvm, struct kvm_sev_cmd *argp)
-+{
-+	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-+	struct sev_data_send_cancel *data;
-+	int ret;
-+
-+	if (!sev_guest(kvm))
-+		return -ENOTTY;
-+
-+	data = kzalloc(sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	data->handle = sev->handle;
-+	ret = sev_issue_cmd(kvm, SEV_CMD_SEND_CANCEL, data, &argp->error);
-+
-+	kfree(data);
-+	return ret;
-+}
-+
-+
- int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
- {
- 	struct kvm_sev_cmd sev_cmd;
-@@ -1163,6 +1184,9 @@ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
- 	case KVM_SEV_GET_ATTESTATION_REPORT:
- 		r = sev_get_attestation_report(kvm, &sev_cmd);
- 		break;
-+	case KVM_SEV_SEND_CANCEL:
-+		r = sev_send_cancel(kvm, &sev_cmd);
-+		break;
- 	default:
- 		r = -EINVAL;
- 		goto out;
-diff --git a/include/linux/psp-sev.h b/include/linux/psp-sev.h
-index b801ead1e2bb5..74f2babffc574 100644
---- a/include/linux/psp-sev.h
-+++ b/include/linux/psp-sev.h
-@@ -73,6 +73,7 @@ enum sev_cmd {
- 	SEV_CMD_SEND_UPDATE_DATA	= 0x041,
- 	SEV_CMD_SEND_UPDATE_VMSA	= 0x042,
- 	SEV_CMD_SEND_FINISH		= 0x043,
-+	SEV_CMD_SEND_CANCEL		= 0x044,
- 
- 	/* Guest migration commands (incoming) */
- 	SEV_CMD_RECEIVE_START		= 0x050,
-@@ -392,6 +393,15 @@ struct sev_data_send_finish {
- 	u32 handle;				/* In */
- } __packed;
- 
-+/**
-+ * struct sev_data_send_cancel - SEND_CANCEL command parameters
-+ *
-+ * @handle: handle of the VM to process
-+ */
-+struct sev_data_send_cancel {
-+	u32 handle;				/* In */
-+} __packed;
-+
- /**
-  * struct sev_data_receive_start - RECEIVE_START command parameters
-  *
-diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-index f6afee209620d..707469b6b7072 100644
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@ -1671,6 +1671,8 @@ enum sev_cmd_id {
- 	KVM_SEV_CERT_EXPORT,
- 	/* Attestation report */
- 	KVM_SEV_GET_ATTESTATION_REPORT,
-+	/* Guest Migration Extension */
-+	KVM_SEV_SEND_CANCEL,
- 
- 	KVM_SEV_NR_MAX,
- };
--- 
-2.31.0.208.g409f899ff0-goog
+>   Studies have shown that some TPMs
+> (notably the chinese manufactured ones) have suspicious failures in
+> their RNGs:
+> 
+> https://www.researchgate.net/publication/45934562_Benchmarking_the_True_Random_Number_Generator_of_TPM_Chips
+> 
+> And most cryptograhpers recommend using a TPM for entropy mixing rather
+> than directly:
+> 
+> https://blog.cryptographyengineering.com/category/rngs/
+> 
+> The TPMFail paper also shows that in spite of NIST certification
+> things can go wrong with a TPM:
+> 
+> https://tpm.fail/
 
+In this thread I've seen argument over "which is better" and "which is user api",
+but noone's mentioned fips.  Unfortunately, so long as kernel rng refuses to be
+fips-friendly (cf https://lkml.org/lkml/2020/9/21/157), making CAAM based trusted
+keys depend on kernel rng would make them impossible to use in fips certified
+applications without a forked kernel.
+
+So I definitely am in favor of a config or kernel command line option to drive
+which rng to use.
