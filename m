@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDA763531B1
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 01:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 830BB3531AD
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 01:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236067AbhDBXuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 19:50:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35742 "EHLO mail.kernel.org"
+        id S235802AbhDBXuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 19:50:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235256AbhDBXuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234908AbhDBXuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 2 Apr 2021 19:50:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 0AA2A61186;
-        Fri,  2 Apr 2021 23:50:09 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id EA9016112E;
+        Fri,  2 Apr 2021 23:50:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1617407409;
-        bh=3Bi7GR+aSkQtPpGZta6shYRhKPLMp8cHPLrhYjl9g1k=;
+        bh=GHU4ooGlVbVTMpAz4JEW57VIOLPeXfAUssnkK5ZlkWw=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=s4rCNm1km5QIzlNyWd1LZeN6CmssPqfeFmF6ViSlJmtRi3RpAmhGQKT+9eONFYT3s
-         TKcXjGE5AwLBvMSjLK3ssckN/6ppSTtmi4ODo4uouGp+jqYGW4S5dfUopzw4s7fy8i
-         2R111OgIpttv/rRQBh619EcAiRT7n4ehcVeX2ejrdYhXALYNaPtaCtrB5JFAgf6Yt6
-         1Qsuc5j0w9gyll2wulpIWafCpIH5jYru96RbQOW0Zvv3E69DAiKwWGmNLAf3vgM2Ss
-         1ZLNs61gYC6wRxF6Qu0HjNh9w1poZORpaNWndc6V6umDN/yzMT+9qx4kIuHqz6tiCJ
-         EKIKKio4pZ87Q==
+        b=GLfTQ21oHeNXx29ZxxXEJkrnboBYygJ1Z8EGIWDTDZyyllUYyp9UGq+IJ8jKzrWD7
+         qYeD09DXa1+esX7bWZ3rN7kYCt21kzAvwza/YluYsqq3xqC3YiLG3Ys/0FfG7oOtPS
+         yzw5TWhYRtCJzn3LxzL/LCBK4l2gqN7kvDciqQF7w5Tqx3Rjkg+wGJN7F63tfPuufk
+         i2YMWorMxuel4YLJgqfaddmW3QH5o5QOcrweVk3sZnEVyuiSwii5uq7BTsHmsFywBv
+         JDAa+ojj0t+fvet4+qNvMPPxj/fwogZF61xfUHjyzY66/ZpBVIlnsQM4ZGSraY40a0
+         mvsO2EBs9pbQw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id EFE49609D3;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DB288609CC;
         Fri,  2 Apr 2021 23:50:08 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] linux/bpf-cgroup.h: Delete repeated struct declaration
+Subject: Re: [PATCH] linux/bpf.h: Remove repeated struct declaration
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161740740897.27506.7716128219327085410.git-patchwork-notify@kernel.org>
+Message-Id: <161740740889.27506.15715239233278144317.git-patchwork-notify@kernel.org>
 Date:   Fri, 02 Apr 2021 23:50:08 +0000
-References: <20210401064637.993327-1-wanjiabing@vivo.com>
-In-Reply-To: <20210401064637.993327-1-wanjiabing@vivo.com>
+References: <20210401072037.995849-1-wanjiabing@vivo.com>
+In-Reply-To: <20210401072037.995849-1-wanjiabing@vivo.com>
 To:     Wan Jiabing <wanjiabing@vivo.com>
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
@@ -49,19 +49,18 @@ Hello:
 
 This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-On Thu,  1 Apr 2021 14:46:37 +0800 you wrote:
-> struct bpf_prog is declared twice. There is one declaration
-> which is independent on the MACRO at 18th line.
-> So the below one is not needed though. Remove the duplicate.
+On Thu,  1 Apr 2021 15:20:37 +0800 you wrote:
+> struct btf_type is declared twice. One is declared at 35th line.
+> The blew one is not needed. Remove the duplicate.
 > 
 > Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 > ---
->  include/linux/bpf-cgroup.h | 1 -
+>  include/linux/bpf.h | 1 -
 >  1 file changed, 1 deletion(-)
 
 Here is the summary with links:
-  - linux/bpf-cgroup.h: Delete repeated struct declaration
-    https://git.kernel.org/bpf/bpf-next/c/2daae89666ad
+  - linux/bpf.h: Remove repeated struct declaration
+    https://git.kernel.org/bpf/bpf-next/c/6ac4c6f887f5
 
 You are awesome, thank you!
 --
