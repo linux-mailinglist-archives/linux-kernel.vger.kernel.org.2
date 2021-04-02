@@ -2,210 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B1EA352B37
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 16:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6E9352B39
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 16:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235669AbhDBOFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 10:05:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42384 "EHLO mail.kernel.org"
+        id S235710AbhDBOF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 10:05:58 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:39516 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234161AbhDBOFv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 10:05:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1227461056;
-        Fri,  2 Apr 2021 14:05:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617372350;
-        bh=fVoUYNHohssOKVGn52qeT2TXNBN6FhnEZQHo90Vjhkg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SxI9WxpEmIFPGtnfLQikuNVa9vdqn1NkxPkmKFm0U0lQYj49ccvXCwTDPeDVe8Feo
-         R0UHNdSqX1K4p0KPgLhUNjN5LCihSdMT1+5BXRY91QKt/C89hhNRFupVyMLCtqOTpa
-         CRwzXfxvNgKragJK2T18mVBje3d/2LwJ9PXgQvNE=
-Date:   Fri, 2 Apr 2021 16:05:48 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Loic Poulain <loic.poulain@linaro.org>
-Cc:     kuba@kernel.org, davem@davemloft.net,
-        linux-arm-msm@vger.kernel.org, aleksander@aleksander.es,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bjorn.andersson@linaro.org, manivannan.sadhasivam@linaro.org
-Subject: Re: [PATCH net-next v8 2/2] net: Add Qcom WWAN control driver
-Message-ID: <YGckvGqSmmVjhZII@kroah.com>
-References: <1617372397-13988-1-git-send-email-loic.poulain@linaro.org>
- <1617372397-13988-2-git-send-email-loic.poulain@linaro.org>
+        id S235675AbhDBOF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 10:05:56 -0400
+Received: from zn.tnic (p200300ec2f0a200019ff857a83051552.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:2000:19ff:857a:8305:1552])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 935A91EC0301;
+        Fri,  2 Apr 2021 16:05:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1617372354;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=fawn1BZhXE7Mko9X0iWw+cF95ko4CyRJ+vlQBlaxIJw=;
+        b=BSEVff7uMXQkjtvCXSTN2lYFMSss+DdQpwycZJVLXucbyut+i73u/Iz6fnPFpjjI9S+cdR
+        g0J/dIxvOBJNnYJD1C4uBU7xXbR1+4qVhgtobBvEm8bhoKKdcTpqxrGer5t0VYkBmsACZe
+        vRUV/K5kURJWXfPSyzPU8fl2aMMwBlk=
+Date:   Fri, 2 Apr 2021 16:05:54 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, Song Liu <song@kernel.org>,
+        linux-raid@vger.kernel.org, it+linux-x86@molgen.mpg.de
+Subject: Re: [regression 5.4.97 =?utf-8?B?4oaSIDUu?= =?utf-8?B?MTAuMjRd?=
+ =?utf-8?Q?=3A?= raid6 avx2x4 speed drops from 18429 MB/s to 6155 MB/s
+Message-ID: <20210402140554.GG28499@zn.tnic>
+References: <6a1b0110-07f1-8c2e-fc7f-379758dbd8ca@molgen.mpg.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1617372397-13988-2-git-send-email-loic.poulain@linaro.org>
+In-Reply-To: <6a1b0110-07f1-8c2e-fc7f-379758dbd8ca@molgen.mpg.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 04:06:37PM +0200, Loic Poulain wrote:
-> The MHI WWWAN control driver allows MHI QCOM-based modems to expose
-> different modem control protocols/ports via the WWAN framework, so that
-> userspace modem tools or daemon (e.g. ModemManager) can control WWAN
-> config and state (APN config, SMS, provider selection...). A QCOM-based
-> modem can expose one or several of the following protocols:
-> - AT: Well known AT commands interactive protocol (microcom, minicom...)
-> - MBIM: Mobile Broadband Interface Model (libmbim, mbimcli)
-> - QMI: QCOM MSM/Modem Interface (libqmi, qmicli)
-> - QCDM: QCOM Modem diagnostic interface (libqcdm)
-> - FIREHOSE: XML-based protocol for Modem firmware management
->         (qmi-firmware-update)
+On Fri, Apr 02, 2021 at 10:33:51AM +0200, Paul Menzel wrote:
+> Dear Linux folks,
 > 
-> Note that this patch is mostly a rework of the earlier MHI UCI
-> tentative that was a generic interface for accessing MHI bus from
-> userspace. As suggested, this new version is WWAN specific and is
-> dedicated to only expose channels used for controlling a modem, and
-> for which related opensource userpace support exist.
 > 
-> Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
-> ---
->  v2: update copyright (2021)
->  v3: Move driver to dedicated drivers/net/wwan directory
->  v4: Rework to use wwan framework instead of self cdev management
->  v5: Fix errors/typos in Kconfig
->  v6: - Move to new wwan interface, No need dedicated call to wwan_dev_create
->      - Cleanup code (remove legacy from mhi_uci, unused defines/vars...)
->      - Remove useless write_lock mutex
->      - Add mhi_wwan_wait_writable and mhi_wwan_wait_dlqueue_lock_irq helpers
->      - Rework locking
->      - Add MHI_WWAN_TX_FULL flag
->      - Add support for NONBLOCK read/write
->  v7: Fix change log (mixed up 1/2 and 2/2)
->  v8: - Implement wwan_port_ops (instead of fops)
->      - Remove all mhi wwan data obsolete members (kref, lock, waitqueues)
->      - Add tracking of RX buffer budget
->      - Use WWAN TX flow control function to stop TX when MHI queue is full
+> On an two socket AMD EPYC 7601, we noticed a decrease in raid6 avx2x4 speed
+> shown at the beginning of the boot.
 > 
->  drivers/net/wwan/Kconfig         |  14 +++
->  drivers/net/wwan/Makefile        |   2 +
->  drivers/net/wwan/mhi_wwan_ctrl.c | 253 +++++++++++++++++++++++++++++++++++++++
->  3 files changed, 269 insertions(+)
->  create mode 100644 drivers/net/wwan/mhi_wwan_ctrl.c
-> 
-> diff --git a/drivers/net/wwan/Kconfig b/drivers/net/wwan/Kconfig
-> index 545fe54..ce0bbfb 100644
-> --- a/drivers/net/wwan/Kconfig
-> +++ b/drivers/net/wwan/Kconfig
-> @@ -19,4 +19,18 @@ config WWAN_CORE
->  	  To compile this driver as a module, choose M here: the module will be
->  	  called wwan.
->  
-> +config MHI_WWAN_CTRL
-> +	tristate "MHI WWAN control driver for QCOM-based PCIe modems"
-> +	select WWAN_CORE
-> +	depends on MHI_BUS
-> +	help
-> +	  MHI WWAN CTRL allows QCOM-based PCIe modems to expose different modem
-> +	  control protocols/ports to userspace, including AT, MBIM, QMI, DIAG
-> +	  and FIREHOSE. These protocols can be accessed directly from userspace
-> +	  (e.g. AT commands) or via libraries/tools (e.g. libmbim, libqmi,
-> +	  libqcdm...).
-> +
-> +	  To compile this driver as a module, choose M here: the module will be
-> +	  called mhi_wwan_ctrl
-> +
->  endif # WWAN
-> diff --git a/drivers/net/wwan/Makefile b/drivers/net/wwan/Makefile
-> index 934590b..556cd90 100644
-> --- a/drivers/net/wwan/Makefile
-> +++ b/drivers/net/wwan/Makefile
-> @@ -5,3 +5,5 @@
->  
->  obj-$(CONFIG_WWAN_CORE) += wwan.o
->  wwan-objs += wwan_core.o
-> +
-> +obj-$(CONFIG_MHI_WWAN_CTRL) += mhi_wwan_ctrl.o
-> diff --git a/drivers/net/wwan/mhi_wwan_ctrl.c b/drivers/net/wwan/mhi_wwan_ctrl.c
-> new file mode 100644
-> index 0000000..f2fab23
-> --- /dev/null
-> +++ b/drivers/net/wwan/mhi_wwan_ctrl.c
-> @@ -0,0 +1,253 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/* Copyright (c) 2021, Linaro Ltd <loic.poulain@linaro.org> */
-> +#include <linux/kernel.h>
-> +#include <linux/mhi.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/module.h>
-> +#include <linux/wwan.h>
-> +
-> +/* MHI wwan flags */
-> +#define MHI_WWAN_DL_CAP		BIT(0)
-> +#define MHI_WWAN_UL_CAP		BIT(1)
-> +#define MHI_WWAN_STARTED	BIT(2)
-> +
-> +#define MHI_WWAN_MAX_MTU	0x8000
-> +
-> +struct mhi_wwan_dev {
-> +	/* Lower level is a mhi dev, upper level is a wwan port */
-> +	struct mhi_device *mhi_dev;
-> +	struct wwan_port *wwan_port;
-> +
-> +	/* State and capabilities */
-> +	unsigned long flags;
-> +	size_t mtu;
-> +
-> +	/* Protect against concurrent TX and TX-completion (bh) */
-> +	spinlock_t tx_lock;
-> +
-> +	struct work_struct rx_refill;
-> +	atomic_t rx_budget;
+>                        5.4.95        5.10.24
+> ----------------------------------------------
+> raid6: avx2x4 gen()   18429 MB/s     6155 MB/s
+> raid6: avx2x4 xor()    6644 MB/s     4274 MB/s
+> raid6: avx2x2 gen()   17894 MB/s    18744 MB/s
+> raid6: avx2x2 xor()   11642 MB/s    11950 MB/s
+> raid6: avx2x1 gen()   13992 MB/s    17112 MB/s
+> raid6: avx2x1 xor()   10855 MB/s    11143 MB/s
 
-Why is this atomic if you have a real lock already?
+Looks like those two might help:
 
+49200d17d27d x86/fpu/64: Don't FNINIT in kernel_fpu_begin()
+e45122893a98 x86/fpu: Add kernel_fpu_begin_mask() to selectively initialize state
 
-> +};
-> +
-> +static bool mhi_wwan_ctrl_refill_needed(struct mhi_wwan_dev *mhiwwan)
-> +{
-> +	if (!test_bit(MHI_WWAN_STARTED, &mhiwwan->flags))
-> +		return false;
-> +
-> +	if (!test_bit(MHI_WWAN_DL_CAP, &mhiwwan->flags))
-> +		return false;
+-- 
+Regards/Gruss,
+    Boris.
 
-What prevents these bits from being changed right after reading them?
-
-> +
-> +	if (!atomic_read(&mhiwwan->rx_budget))
-> +		return false;
-
-Why is this atomic?  What happens if it changes right after returning?
-
-This feels really odd.
-
-> +
-> +	return true;
-> +}
-> +
-> +void __mhi_skb_destructor(struct sk_buff *skb)
-> +{
-> +	struct mhi_wwan_dev *mhiwwan = skb_shinfo(skb)->destructor_arg;
-> +
-> +	/* RX buffer has been consumed, increase the allowed budget */
-> +	atomic_inc(&mhiwwan->rx_budget);
-
-So this is a reference count?  What is this thing?
-
-> +
-> +	if (mhi_wwan_ctrl_refill_needed(mhiwwan))
-> +		schedule_work(&mhiwwan->rx_refill);
-
-What if refill is needed right after this check?  Did you just miss the
-call?
-
-
-> +static const struct mhi_device_id mhi_wwan_ctrl_match_table[] = {
-> +	{ .chan = "DUN", .driver_data = WWAN_PORT_AT },
-> +	{ .chan = "MBIM", .driver_data = WWAN_PORT_MBIM },
-> +	{ .chan = "QMI", .driver_data = WWAN_PORT_QMI },
-> +	{ .chan = "DIAG", .driver_data = WWAN_PORT_QCDM },
-> +	{ .chan = "FIREHOSE", .driver_data = WWAN_PORT_FIREHOSE },
-
-Wait, I thought these were all going to be separate somehow.  Now they
-are all muxed back together?
-
-totally confused,
-
-greg k-h
+https://people.kernel.org/tglx/notes-about-netiquette
