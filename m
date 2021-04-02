@@ -2,80 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4577D352EE7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 20:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1549352EEA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 20:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236010AbhDBSD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 14:03:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23514 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235593AbhDBSD4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 14:03:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617386634;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bAM+9A25NtyyTvbHXHA330irTLzbAV1bvnKUfrqAzaM=;
-        b=iwjFko4Sa7R6/MUvmVRRttZFInNqqThNG4o5J6YPkwUElGezgLshoAulNvIneWiVA4y//7
-        IW71trvE3BmBdvtAisYIgHGvWP9hrKKJw3qDyfLAo0JLez/QIoIdeNcCFGEPkko/yYdAhQ
-        VY5t64jEKZsSbm7unqfKtyWXS4DUtQc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-192-UF8baMhyOQu9yBuOVvGdRw-1; Fri, 02 Apr 2021 14:03:53 -0400
-X-MC-Unique: UF8baMhyOQu9yBuOVvGdRw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 05264180FCA2;
-        Fri,  2 Apr 2021 18:03:52 +0000 (UTC)
-Received: from max.com (unknown [10.40.194.67])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A555E5D9DC;
-        Fri,  2 Apr 2021 18:03:47 +0000 (UTC)
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-To:     cluster-devel@redhat.com
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: fs/gfs2/rgrp.c:1772:53: warning: Possible null pointer dereference: minext [nullPointer]
-Date:   Fri,  2 Apr 2021 20:03:45 +0200
-Message-Id: <20210402180345.2296163-1-agruenba@redhat.com>
-In-Reply-To: <20210329004759.GH4176174@shao2-debian>
-References: 
+        id S236096AbhDBSEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 14:04:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52300 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236045AbhDBSEP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 14:04:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C47861103;
+        Fri,  2 Apr 2021 18:04:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617386654;
+        bh=kFNql03iRJYWFFqCOpmJeMMhSwVZGro/bynT35/QM7Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YhfIqSv9ITyDPO8D/gVwv1tf48FBxjioByYJt+Ln6wAreHnm8sNKJ73WUwvKShrhM
+         Drl4OfahXF53Dhe+fsRyJSUJceNSw+Id9vMmmQ8nTyxLpye3bJISmcEfoORt3MyL6G
+         QJPiKZDBajUT1N7UwNzKz9tNE4kIVwol0zHrJrdSrnEnLdfUzIrbaQjw+pbcos7XOO
+         4dKe4oQje+7TkDwAFzULs5h5Cw7g3Xje+SYnxcMeS5ip3Oh8wEEwrU8pFf6pVe8I2W
+         lbX3/1yiFUJmqPUyi6dLVksyJnytuTi13SbJkvugJrCy7nKzeJ6WWmt2UEKpFCdCk0
+         q63exufmS2fMw==
+Date:   Fri, 2 Apr 2021 23:34:07 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/6] dt-bindings: soc: actions: Add Actions Semi Owl
+ socinfo binding
+Message-ID: <20210402180407.GA31906@thinkpad>
+References: <cover.1617110420.git.cristian.ciocaltea@gmail.com>
+ <15da0257b10aa62bfb7046437915d05a614c01ee.1617110420.git.cristian.ciocaltea@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <15da0257b10aa62bfb7046437915d05a614c01ee.1617110420.git.cristian.ciocaltea@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-gfs2: Silence possible null pointer dereference warning
+On Tue, Mar 30, 2021 at 04:48:17PM +0300, Cristian Ciocaltea wrote:
+> Add devicetree binding for the Actions Semi Owl socinfo driver.
+> 
 
-In gfs2_rbm_find, rs is always NULL when minext is NULL, so
-gfs2_reservation_check_and_update will never be called on a NULL minext.
-This isn't immediately obvious though, so also check for a NULL minext
-for better code readability.
+Devicetree binding shouldn't be added for a driver instead for an IP or hw.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
----
- fs/gfs2/rgrp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> ---
+>  .../bindings/soc/actions/owl-socinfo.yaml     | 57 +++++++++++++++++++
+>  1 file changed, 57 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/actions/owl-socinfo.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/soc/actions/owl-socinfo.yaml b/Documentation/devicetree/bindings/soc/actions/owl-socinfo.yaml
+> new file mode 100644
+> index 000000000000..01e4a8b4f5ac
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/actions/owl-socinfo.yaml
+> @@ -0,0 +1,57 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/soc/actions/owl-socinfo.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Actions Semi Owl SoC info module
+> +
+> +maintainers:
+> +  - Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> +
+> +description: |
+> +  Actions Semi Owl SoC info module provides access to various information
+> +  about the S500, S700 and S900 SoC variants, such as serial number or id.
+> +
 
-diff --git a/fs/gfs2/rgrp.c b/fs/gfs2/rgrp.c
-index 89c37a845e64..2dab313442a7 100644
---- a/fs/gfs2/rgrp.c
-+++ b/fs/gfs2/rgrp.c
-@@ -1783,7 +1783,7 @@ static int gfs2_rbm_find(struct gfs2_rbm *rbm, u8 state, u32 *minext,
- 			goto next_bitmap;
- 		}
- 		rbm->offset = offset;
--		if (!rs)
-+		if (!rs || !minext)
- 			return 0;
- 
- 		ret = gfs2_reservation_check_and_update(rbm, rs, *minext,
--- 
-2.27.0
+S700/S900 are not yet confirmed, so please avoid them.
 
+> +select:
+> +  properties:
+> +    compatible:
+> +      contains:
+> +        enum:
+> +          - actions,s500-soc
+> +          - actions,s700-soc
+> +          - actions,s900-soc
+> +  required:
+> +    - compatible
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - actions,s500-soc
+> +          - actions,s700-soc
+> +          - actions,s900-soc
+> +      - const: simple-bus
+> +
+> +required:
+> +  - compatible
+> +
+> +additionalProperties: true
+> +
+> +examples:
+> +  - |
+> +    / {
+> +        compatible = "roseapplepi,roseapplepi", "actions,s500";
+> +        model = "Roseapple Pi";
+> +        #address-cells = <1>;
+> +        #size-cells = <1>;
+> +
+> +        soc {
+> +            compatible = "actions,s500-soc", "simple-bus";
+
+No. This shouldn't fall under /soc. I think you should added a separate
+compatible for the reserved memory itself and add a corresponding socinfo
+driver under drivers/soc.
+
+This way it is obvious that the information is contained in a memory region and
+a driver is used for parsing that.
+
+Thanks,
+Mani
+
+> +            #address-cells = <1>;
+> +            #size-cells = <1>;
+> +            ranges;
+> +        };
+> +    };
+> +
+> +...
+> -- 
+> 2.31.1
+> 
