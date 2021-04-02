@@ -2,168 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60857352B1D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 15:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03AE9352B1F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 15:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235480AbhDBNs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 09:48:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37172 "EHLO
+        id S235569AbhDBNvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 09:51:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229932AbhDBNsz (ORCPT
+        with ESMTP id S229932AbhDBNvH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 09:48:55 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A61C0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 06:48:52 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id k25so5004898oic.4
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 06:48:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2yK7rm1SM45KlY6SqRkaMT4FE5qHsW5WepD3GZ3b0dU=;
-        b=RbLAOqMC7HszBDlNPOG98rxCTiJ0MRRhmMbiJ6qaA8mKqs5/DcrYmqqXOK8RzZ4HJ3
-         aqokeRryxpPWArZBT+2iiNBIgk2iTjtBcurGISZGHcwY5boBbIQd+URYFwBm1+CqD0+p
-         donP8z0PccPij0nfh8wIApUYKCHrzoBWFHSB4mTVhgrjsDh/AXzlGAz8dLZUgJzwRP+e
-         l6EWUvnudSvZTJLXcY6ERHmPip/MVufpsUSoUQTXDcnoX32oo3HZxk5cOa+76XU0dG7m
-         D/xOW839i4ND4Y2HTl9yahD2UngGyOQye/f8JKw8Xcbn+9JdegwN/17DzQyt5MufCYGi
-         Lcng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition:in-reply-to;
-        bh=2yK7rm1SM45KlY6SqRkaMT4FE5qHsW5WepD3GZ3b0dU=;
-        b=suy5T+3RU76bV0fJexMqeWuEGCWwD7Lxa/jWyeMpGrauWNTn9smHr4hf16GsyhryFm
-         +p9sXO8bt5YBpzDre6oNigOrsudzq6GK23mJvuZlinubhE1uYZbtIezyn4NkkULPLXFV
-         ugOaTXOJjkt+08+sWOKyAbOgPuRzBno5wYiJHrr1F1pnL7R70olsNzoYkUho6IHr+Flt
-         fldGW0Vg2/Xb1D672f3gSDmm+zJWjWlYtA4vlhjBTWGlLGywwE8PTbXe83tQd1P9Sh2O
-         ZEb+6B96hEFpjY4n3wievQIgr1lS71Ez8Oy3TRCesXl7oNQoOUZToIP8kNSsceYz+htt
-         gA/Q==
-X-Gm-Message-State: AOAM531CEFg+ocF+GKXnPireW7xay7faUJfRF2Sy/Zci93a0G9Pde/3D
-        qfK9fre7U+f4LQkeUCJL2rMupeXhRKM8
-X-Google-Smtp-Source: ABdhPJzz2l/ptU6vIEdESbU3tRX8OFHXfmSJreQs3EPCUXlS41PfBS8PHrITFJ+dzMVVYJLd77Kn4w==
-X-Received: by 2002:aca:1c18:: with SMTP id c24mr9609059oic.7.1617371331832;
-        Fri, 02 Apr 2021 06:48:51 -0700 (PDT)
-Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
-        by smtp.gmail.com with ESMTPSA id i4sm1816327otj.56.2021.04.02.06.48.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 06:48:51 -0700 (PDT)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:f99f:823a:495e:5af])
-        by serve.minyard.net (Postfix) with ESMTPSA id 56604180570;
-        Fri,  2 Apr 2021 13:48:50 +0000 (UTC)
-Date:   Fri, 2 Apr 2021 08:48:49 -0500
-From:   Corey Minyard <minyard@acm.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Corey Minyard <cminyard@mvista.com>,
-        openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 05/10] ipmi_si: Introduce panic_event_str array
-Message-ID: <20210402134849.GS507977@minyard.net>
-Reply-To: minyard@acm.org
-References: <20210330181649.66496-1-andriy.shevchenko@linux.intel.com>
- <20210330181649.66496-5-andriy.shevchenko@linux.intel.com>
+        Fri, 2 Apr 2021 09:51:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F132EC0613E6;
+        Fri,  2 Apr 2021 06:51:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Ojnb5AIvRYpHX3nwnaimhPwXRkxGFRq4anavZ06KIcI=; b=A9CmSiqJOUZw+FjiFGvjfONx76
+        7f9d8eSVn8bxnE1bFTz4yK2ITxpmhlxKrHZfGByE6RdDKzoUa96V+h6/70XUpdxHzuZQY/esWkEa/
+        zmpX0+bcTGAbxBOIPWgU1ckx/krtVPfz8jK11qb3At656T1LQ486yxUFYx9LHSWeX7JKs53wlMXst
+        5V4ktpU0iVkI+MR9gEPWsDCmchm/vOUUaQyNWwEr9E4id+dyu46pg6X1kQ777PpNALbjQwboGLkfR
+        gHQwdFzYJnXfhB91htKAJXkL+8RqW4elR1xFm/orVtWCMd3Bo02ynVxc2S4k2qkMNXB4hQb3U5Egp
+        N/SeSzuQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lSKC7-007hZo-0W; Fri, 02 Apr 2021 13:50:48 +0000
+Date:   Fri, 2 Apr 2021 14:50:38 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [RFC] Convert sysv filesystem to use folios exclusively
+Message-ID: <20210402135038.GN351017@casper.infradead.org>
+References: <20210325032202.GS1719932@casper.infradead.org>
+ <CAOQ4uxikP_GFNYzgatON2dRQyiHvTBP5iO4Xk091ruLUBDMt-w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210330181649.66496-5-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <CAOQ4uxikP_GFNYzgatON2dRQyiHvTBP5iO4Xk091ruLUBDMt-w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 09:16:44PM +0300, Andy Shevchenko wrote:
-> Instead of twice repeat the constant literals, introduce
-> panic_event_str array. It allows to simplify the code with
-> help of match_string() API.
+On Fri, Apr 02, 2021 at 09:19:36AM +0300, Amir Goldstein wrote:
+> On Thu, Mar 25, 2021 at 5:43 AM Matthew Wilcox <willy@infradead.org> wrote:
+> > I decided to see what a filesystem free from struct page would look
+> > like.  I chose sysv more-or-less at random; I wanted a relatively simple
+> > filesystem, but I didn't want a toy.  The advantage of sysv is that the
+> > maintainer is quite interested in folios ;-)
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/char/ipmi/ipmi_msghandler.c | 49 ++++++++++-------------------
->  1 file changed, 17 insertions(+), 32 deletions(-)
+> I would like to address only the social engineering aspect of the s/page/folio
+> conversion.
 > 
-> diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
-> index f19f0f967e28..c7d37366d7bb 100644
-> --- a/drivers/char/ipmi/ipmi_msghandler.c
-> +++ b/drivers/char/ipmi/ipmi_msghandler.c
-> @@ -52,8 +52,12 @@ static bool drvregistered;
->  enum ipmi_panic_event_op {
->  	IPMI_SEND_PANIC_EVENT_NONE,
->  	IPMI_SEND_PANIC_EVENT,
-> -	IPMI_SEND_PANIC_EVENT_STRING
-> +	IPMI_SEND_PANIC_EVENT_STRING,
-> +	IPMI_SEND_PANIC_EVENT_MAX
->  };
-
-This is a nice change.  Can you add a comment here so that readers know
-that the above enum and the following array are tied numerically?
-
--corey
-
-> +
-> +static const char *const panic_event_str[] = { "none", "event", "string", NULL };
-> +
->  #ifdef CONFIG_IPMI_PANIC_STRING
->  #define IPMI_PANIC_DEFAULT IPMI_SEND_PANIC_EVENT_STRING
->  #elif defined(CONFIG_IPMI_PANIC_EVENT)
-> @@ -68,46 +72,27 @@ static int panic_op_write_handler(const char *val,
->  				  const struct kernel_param *kp)
+> Personally, as a filesystem developer, I find the concept of the folio
+> abstraction very useful and I think that the word is short, clear and witty.
+> 
+> But the example above (writepage = sysv_write_folio) just goes to show
+> how deeply rooted the term 'page' is throughout the kernel and this is
+> just the tip of the iceberg. There are documents, comments and decades
+> of using 'page' in our language - those will be very hard to root out.
+> 
+> My first impression from looking at sample patches is that 90% of the churn
+> does not serve any good purpose and by that, I am referring to the
+> conversion of local variable names and struct field names s/page/folio.
+> 
+> Those conversions won't add any clarity to subsystems that only need to
+> deal with the simple page type (i.e. non-tail pages).
+> The compiler type checks will have already did that job already and changing
+> the name of the variables does not help in this case.
+> 
+> I think someone already proposed the "boring" name struct page_head as
+> a replacement for the "cool" name struct folio.
+> 
+> Whether it's page_head, page_ref or what not, anything that can
+> be written in a way that these sort of "thin" conversions make sense:
+> 
+> -static int sysv_readpage(struct file *file, struct page *page)
+> +static int sysv_readpage(struct file *file, struct page_head *page)
 >  {
->  	char valcp[16];
-> -	char *s;
-> -
-> -	strncpy(valcp, val, 15);
-> -	valcp[15] = '\0';
-> +	int e;
->  
-> -	s = strstrip(valcp);
-> -
-> -	if (strcmp(s, "none") == 0)
-> -		ipmi_send_panic_event = IPMI_SEND_PANIC_EVENT_NONE;
-> -	else if (strcmp(s, "event") == 0)
-> -		ipmi_send_panic_event = IPMI_SEND_PANIC_EVENT;
-> -	else if (strcmp(s, "string") == 0)
-> -		ipmi_send_panic_event = IPMI_SEND_PANIC_EVENT_STRING;
-> -	else
-> -		return -EINVAL;
-> +	strscpy(valcp, val, sizeof(valcp));
-> +	e = match_string(panic_event_str, -1, strstrip(valcp));
-> +	if (e < 0)
-> +		return e;
->  
-> +	ipmi_send_panic_event = e;
->  	return 0;
+>        return block_read_full_page(page, get_block);
 >  }
->  
->  static int panic_op_read_handler(char *buffer, const struct kernel_param *kp)
->  {
-> -	switch (ipmi_send_panic_event) {
-> -	case IPMI_SEND_PANIC_EVENT_NONE:
-> -		strcpy(buffer, "none\n");
-> -		break;
-> -
-> -	case IPMI_SEND_PANIC_EVENT:
-> -		strcpy(buffer, "event\n");
-> -		break;
-> -
-> -	case IPMI_SEND_PANIC_EVENT_STRING:
-> -		strcpy(buffer, "string\n");
-> -		break;
-> +	const char *event_str;
->  
-> -	default:
-> -		strcpy(buffer, "???\n");
-> -		break;
-> -	}
-> +	if (ipmi_send_panic_event >= IPMI_SEND_PANIC_EVENT_MAX)
-> +		event_str = "???";
-> +	else
-> +		event_str = panic_event_str[ipmi_send_panic_event];
->  
-> -	return strlen(buffer);
-> +	return sprintf(buffer, "%s\n", event_str);
->  }
->  
->  static const struct kernel_param_ops panic_op_ops = {
-> -- 
-> 2.30.2
 > 
+> So when a filesystem developer reviews your conversion patch
+> he goes: "Whatever, if the compiler says this is fine, it's fine".
+
+The problem with page_head is that head page already has a meaning,
+which is that there are definitely tail pages following it.  Hence
+'folio' for 'head or base page'.
+
+I think reasonable people can disagree on whether we should keep the
+address_space operation called readpage or rename it to read_folio.
+I agree with you that the word "page" is deeply ingrained in our
+vocabulary.  The problem is that we don't all agree on what it means.
+
+I am proposing splitting the two meanings, where page refers to the
+finest granularity at which things are mapped by the MMU and folio is
+used to refer to a group of pages which are managed together by the MM.
+This is necessarily going to be churn because we've been using 'page'
+for both for so very long.
+
+As far as "thin" conversions go, here's the commit where I do the readpage
+conversion to folio:
+
+https://git.infradead.org/users/willy/pagecache.git/commitdiff/a3912fc2313e5c249e3d5b85eefd3394b0745b8f
+
+Some really are as simple as you propose:
+
+diff --git a/fs/block_dev.c b/fs/block_dev.c
+index 974dd567e00fe73d1a7a414f3c5e9974e22b8a1e..1d2e228c49e756b55e8fe1ce166b64ca119ca96a 100644 (file)
+--- a/fs/block_dev.c
++++ b/fs/block_dev.c
+@@ -635,9 +635,9 @@ static int blkdev_writepage(struct page *page, struct writeback_control *wbc)
+        return block_write_full_page(page, blkdev_get_block, wbc);
+ }
+ 
+-static int blkdev_readpage(struct file * file, struct page * page)
++static int blkdev_readpage(struct file *file, struct folio *folio)
+ {
+-       return block_read_full_page(page, blkdev_get_block);
++       return block_read_full_page(folio, blkdev_get_block);
+ }
+ 
+ static void blkdev_readahead(struct readahead_control *rac)
+
+Arguably, I should also rename block_read_full_page() to block_read_folio()
+as part of this commit.  And I probably shouldn't be as enthusiastic about
+spreading folios around in the same commit, eg I do this to btrfs:
+
++++ b/fs/btrfs/free-space-cache.c
+@@ -450,15 +450,16 @@ static int io_ctl_prepare_pages(struct btrfs_io_ctl *io_ctl, bool uptodate)
+ 
+                io_ctl->pages[i] = page;
+                if (uptodate && !PageUptodate(page)) {
+-                       btrfs_readpage(NULL, page);
+-                       lock_page(page);
+-                       if (page->mapping != inode->i_mapping) {
++                       struct folio *folio = page_folio(page);
++                       btrfs_readpage(NULL, folio);
++                       lock_folio(folio);
++                       if (folio->page.mapping != inode->i_mapping) {
+                                btrfs_err(BTRFS_I(inode)->root->fs_info,
+                                          "free space cache page truncated");
+                                io_ctl_drop_pages(io_ctl);
+                                return -EIO;
+                        }
+-                       if (!PageUptodate(page)) {
++                       if (!FolioUptodate(folio)) {
+                                btrfs_err(BTRFS_I(inode)->root->fs_info,
+                                           "error reading free space cache");
+                                io_ctl_drop_pages(io_ctl);
+
+where it could just be:
+
+
+-                       btrfs_readpage(NULL, page);
++			btrfs_readpage(NULL, page_folio(page));
+
+and save all the benefits of using folios to a later patch.
+
+those kinds of things are why I haven't submitted that patch for
+review yet.
