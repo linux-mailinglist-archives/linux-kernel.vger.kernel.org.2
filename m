@@ -2,87 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8159335258D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 04:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2C5352589
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 04:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234235AbhDBCui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 22:50:38 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15525 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233665AbhDBCug (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 22:50:36 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FBPc95LznzNs6m;
-        Fri,  2 Apr 2021 10:47:53 +0800 (CST)
-Received: from huawei.com (10.67.165.24) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Fri, 2 Apr 2021
- 10:50:26 +0800
-From:   Kai Ye <yekai13@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <liulongfang@huawei.com>, <yekai13@huawei.com>
-Subject: [PATCH] crypto:hisilicon/sec - fixup checking the 3DES weak key
-Date:   Fri, 2 Apr 2021 10:47:57 +0800
-Message-ID: <1617331677-49794-1-git-send-email-yekai13@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S234004AbhDBCsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 22:48:55 -0400
+Received: from mga17.intel.com ([192.55.52.151]:43768 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233665AbhDBCsy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 22:48:54 -0400
+IronPort-SDR: wV529Fcw12XmVUumTuIDOmgvu6iCTC63Kbc8oBsKBlJ+H2bR0xC47fvAMFLNf53dVCzyAvWvEf
+ Js59GvyoWi8A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="172406896"
+X-IronPort-AV: E=Sophos;i="5.81,298,1610438400"; 
+   d="scan'208";a="172406896"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 19:48:53 -0700
+IronPort-SDR: 0cZxnLKxQ2igMPiF7I7ZOZm72ImAl9vnmvomzopHCqpBCB4r65MRotijuOEeJ+jhi8Q40bIsZR
+ uyFBoxn3nh0A==
+X-IronPort-AV: E=Sophos;i="5.81,298,1610438400"; 
+   d="scan'208";a="596570650"
+Received: from tassilo.jf.intel.com ([10.54.74.11])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 19:48:53 -0700
+Date:   Thu, 1 Apr 2021 19:48:52 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC v1 00/26] Add TDX Guest Support
+Message-ID: <20210402024852.GK1285835@tassilo.jf.intel.com>
+References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <95e97456-478b-c6a2-f851-3b19ce794262@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <95e97456-478b-c6a2-f851-3b19ce794262@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-skcipher: Add a verifying to check whether the triple DES key
-is weak.
+> I've heard things like "we need to harden the drivers" or "we need to do
+> audits" and that drivers might be "whitelisted".
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
----
- drivers/crypto/hisilicon/sec2/sec_crypto.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+The basic driver allow listing patches are already in the repository,
+but not currently posted or complete:
 
-diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-index 2eaa516..ee18c88 100644
---- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-@@ -7,6 +7,7 @@
- #include <crypto/des.h>
- #include <crypto/hash.h>
- #include <crypto/internal/aead.h>
-+#include <crypto/internal/des.h>
- #include <crypto/sha1.h>
- #include <crypto/sha2.h>
- #include <crypto/skcipher.h>
-@@ -573,10 +574,18 @@ static void sec_skcipher_uninit(struct crypto_skcipher *tfm)
- 	sec_ctx_base_uninit(ctx);
- }
- 
--static int sec_skcipher_3des_setkey(struct sec_cipher_ctx *c_ctx,
-+static int sec_skcipher_3des_setkey(struct crypto_skcipher *tfm, const u8 *key,
- 				    const u32 keylen,
- 				    const enum sec_cmode c_mode)
- {
-+	struct sec_ctx *ctx = crypto_skcipher_ctx(tfm);
-+	struct sec_cipher_ctx *c_ctx = &ctx->c_ctx;
-+	int ret;
-+
-+	ret = verify_skcipher_des3_key(tfm, key);
-+	if (ret)
-+		return ret;
-+
- 	switch (keylen) {
- 	case SEC_DES3_2KEY_SIZE:
- 		c_ctx->c_key_len = SEC_CKEY_3DES_2KEY;
-@@ -648,7 +657,7 @@ static int sec_skcipher_setkey(struct crypto_skcipher *tfm, const u8 *key,
- 
- 	switch (c_alg) {
- 	case SEC_CALG_3DES:
--		ret = sec_skcipher_3des_setkey(c_ctx, keylen, c_mode);
-+		ret = sec_skcipher_3des_setkey(tfm, key, keylen, c_mode);
- 		break;
- 	case SEC_CALG_AES:
- 	case SEC_CALG_SM4:
--- 
-2.8.1
+https://github.com/intel/tdx/commits/guest
+
+> 
+> What are we talking about specifically?  Which drivers?  How many
+> approximately?  Just virtio?  
+
+Right now just virtio, later other drivers that hypervisors need.
+
+> Are there any "real" hardware drivers
+> involved like how QEMU emulates an e1000 or rtl8139 device?  
+
+Not currently (but some later hypervisor might rely on one of those)
+
+> What about
+> the APIC or HPET?
+
+No IO-APIC, but the local APIC. No HPET.
+
+> 
+> How broadly across the kernel is this going to go?
+
+Not very broadly for drivers.
+
+> 
+> Without something concrete, it's really hard to figure out if we should
+> go full-blown paravirtualized MMIO, or do something like the #VE
+> trapping that's in this series currently.
+
+As Sean says the concern about MMIO is less drivers (which should
+be generally ok if they work on other architectures which require MMIO
+magic), but other odd code that only ran on x86 before.
+
+I really don't understand your crusade against #VE. It really
+isn't that bad if we can avoid the few corner cases.
+
+For me it would seem wrong to force all MMIO for all drivers to some
+complicated paravirt construct, blowing up code side everywhere
+and adding complicated self modifying code, when it's only needed for very
+few drivers. But we also don't want to patch every MMIO to be special cased
+even those few drivers.
+
+#VE based MMIO avoids all that cleanly while being nicely non intrusive.
+
+-Andi
 
