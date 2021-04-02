@@ -2,201 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FF843525F1
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 06:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 219A83525F4
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 06:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229466AbhDBEIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 00:08:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhDBEIP (ORCPT
+        id S229895AbhDBEJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 00:09:00 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:53029 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229507AbhDBEI7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 00:08:15 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 445CFC06178A
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 21:08:15 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id u5-20020a7bcb050000b029010e9316b9d5so1811340wmj.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 21:08:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r29s2NuB4h8xDuoc4V2TUkw3k2SQOmwLpoFzxMpsSfU=;
-        b=uO9cVaFbcLWG2qSj/V5Qkp9SImi/1O/PNF5uCdkXCUUYZJA9vpqlZt2zRX/qXJ+oah
-         rO4VamcAG68UI6cC43pmYE6l2QOlTbqrFGjbSxNuXrWd/OtmqO6rMnqhxjBVRyqFyxlC
-         OUKieCjk5HQ7Tftt13rMzjeAfydRy7xK+3jCFtWg8v5ll3hzus2DVE8HIb+pwdbsI7yC
-         QVCqXkHxo8PllGMMtIKKFuW4k/d3AriUj05NbOe4teBaYbR9X2E74zD2YaXYDn5M4r7L
-         PIglkR+DonJicpVCPf6bYjXpdXpqh5F3TGvDZnH7i+ffnm5eBtVnpMfc7h/1w6E2v96N
-         XOog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r29s2NuB4h8xDuoc4V2TUkw3k2SQOmwLpoFzxMpsSfU=;
-        b=YjokvyaWnNxoE9nvruHsNAsikSSpdUtiWfAUF67Lz2fe1Bjgz/nH+xXoqF9kcs4VOi
-         wfFl5YSDE12XDJgacy53gVirwdpneCPV2M4anUGCcs3CG9VF3exDsKivQqlV54Y15GnE
-         OHw6XT514VQir2KBXxNyJeMUiZe9A5/qb9FE1hLRZPTyaLckzSes4grPJYuUTfp/kdBw
-         VwvXvrfvN2w02dPeLc7ywaOOVucPNQWsAV/aLV5WQO0Moh8rNnURhscNoUgyUoktaWVl
-         KmiapeSBlMwBCbl8gU/NVgIIPHWMtlSBg/sO2z0hYoNlIsnnKC4N2sUXcJmkzd/H7MW7
-         G8ww==
-X-Gm-Message-State: AOAM531aT1Z0hgwYK3GufmxnU1CFXYRxJnMtqwjyUvYX4x457XYa5kiL
-        67VVeBHieCKMWy+J+HuF7/udayvgy4/qzucv2xT3IQ==
-X-Google-Smtp-Source: ABdhPJzufLcR/4YtyTXgyOTuNyEx/ynwbR2Yl8q78bJ+i0nAQpDxD5IjgzH727vIE/K26GxxXakVKXJN8RA1Zji4Frc=
-X-Received: by 2002:a05:600c:9:: with SMTP id g9mr11022806wmc.134.1617336493632;
- Thu, 01 Apr 2021 21:08:13 -0700 (PDT)
+        Fri, 2 Apr 2021 00:08:59 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=xlpang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UUC7cQt_1617336536;
+Received: from xunleideMacBook-Pro.local(mailfrom:xlpang@linux.alibaba.com fp:SMTPD_---0UUC7cQt_1617336536)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 02 Apr 2021 12:08:56 +0800
+Reply-To: xlpang@linux.alibaba.com
+Subject: Re: [PATCH 0/4] mm/page_reporting: Some knobs and fixes
+To:     Xunlei Pang <xlpang@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        David Hildenbrand <david@redhat.com>,
+        Alexander Duyck <alexanderduyck@fb.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <1616751898-58393-1-git-send-email-xlpang@linux.alibaba.com>
+From:   Xunlei Pang <xlpang@linux.alibaba.com>
+Message-ID: <e022da6b-4bc1-759e-ab81-dd3270a9ddde@linux.alibaba.com>
+Date:   Fri, 2 Apr 2021 12:08:55 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <20210401002442.2fe56b88@xhacker> <20210401002518.5cf48e91@xhacker>
-In-Reply-To: <20210401002518.5cf48e91@xhacker>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Fri, 2 Apr 2021 09:38:02 +0530
-Message-ID: <CAAhSdy0CgxZj14Jx62CS=gRVzZs9c9NUysWi1iTTZ3BJvAOjPQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/9] riscv: add __init section marker to some functions
-To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        kasan-dev@googlegroups.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1616751898-58393-1-git-send-email-xlpang@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 10:00 PM Jisheng Zhang
-<jszhang3@mail.ustc.edu.cn> wrote:
->
-> From: Jisheng Zhang <jszhang@kernel.org>
->
-> They are not needed after booting, so mark them as __init to move them
-> to the __init section.
->
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> ---
->  arch/riscv/kernel/traps.c  | 2 +-
->  arch/riscv/mm/init.c       | 6 +++---
->  arch/riscv/mm/kasan_init.c | 6 +++---
->  arch/riscv/mm/ptdump.c     | 2 +-
->  4 files changed, 8 insertions(+), 8 deletions(-)
->
-> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
-> index 1357abf79570..07fdded10c21 100644
-> --- a/arch/riscv/kernel/traps.c
-> +++ b/arch/riscv/kernel/traps.c
-> @@ -197,6 +197,6 @@ int is_valid_bugaddr(unsigned long pc)
->  #endif /* CONFIG_GENERIC_BUG */
->
->  /* stvec & scratch is already set from head.S */
-> -void trap_init(void)
-> +void __init trap_init(void)
->  {
->  }
+On 3/26/21 5:44 PM, Xunlei Pang wrote:
+> Add the following knobs in PATCH 1~3:
+>  /sys/kernel/mm/page_reporting/reported_kbytes
+>  /sys/kernel/mm/page_reporting/refault_kbytes
+>  /sys/kernel/mm/page_reporting/reporting_factor
+> 
+> Fix unexpected user OOM in PATCH 4.
+> 
+> Xunlei Pang (4):
+>   mm/page_reporting: Introduce free page reported counters
+>   mm/page_reporting: Introduce free page reporting factor
+>   mm/page_reporting: Introduce "page_reporting_factor=" boot parameter
+>   mm/page_reporting: Fix possible user allocation failure
+> 
+>  Documentation/admin-guide/kernel-parameters.txt |   3 +
+>  include/linux/mmzone.h                          |   3 +
+>  mm/page_alloc.c                                 |   6 +-
+>  mm/page_reporting.c                             | 268 ++++++++++++++++++++++--
+>  4 files changed, 260 insertions(+), 20 deletions(-)
+> 
 
-The trap_init() is unused currently so you can drop this change
-and remove trap_init() as a separate patch.
+Hi guys,
 
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index 067583ab1bd7..76bf2de8aa59 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -57,7 +57,7 @@ static void __init zone_sizes_init(void)
->         free_area_init(max_zone_pfns);
->  }
->
-> -static void setup_zero_page(void)
-> +static void __init setup_zero_page(void)
->  {
->         memset((void *)empty_zero_page, 0, PAGE_SIZE);
->  }
-> @@ -75,7 +75,7 @@ static inline void print_mlm(char *name, unsigned long b, unsigned long t)
->                   (((t) - (b)) >> 20));
->  }
->
-> -static void print_vm_layout(void)
-> +static void __init print_vm_layout(void)
->  {
->         pr_notice("Virtual kernel memory layout:\n");
->         print_mlk("fixmap", (unsigned long)FIXADDR_START,
-> @@ -557,7 +557,7 @@ static inline void setup_vm_final(void)
->  #endif /* CONFIG_MMU */
->
->  #ifdef CONFIG_STRICT_KERNEL_RWX
-> -void protect_kernel_text_data(void)
-> +void __init protect_kernel_text_data(void)
->  {
->         unsigned long text_start = (unsigned long)_start;
->         unsigned long init_text_start = (unsigned long)__init_text_begin;
-> diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
-> index 4f85c6d0ddf8..e1d041ac1534 100644
-> --- a/arch/riscv/mm/kasan_init.c
-> +++ b/arch/riscv/mm/kasan_init.c
-> @@ -60,7 +60,7 @@ asmlinkage void __init kasan_early_init(void)
->         local_flush_tlb_all();
->  }
->
-> -static void kasan_populate_pte(pmd_t *pmd, unsigned long vaddr, unsigned long end)
-> +static void __init kasan_populate_pte(pmd_t *pmd, unsigned long vaddr, unsigned long end)
->  {
->         phys_addr_t phys_addr;
->         pte_t *ptep, *base_pte;
-> @@ -82,7 +82,7 @@ static void kasan_populate_pte(pmd_t *pmd, unsigned long vaddr, unsigned long en
->         set_pmd(pmd, pfn_pmd(PFN_DOWN(__pa(base_pte)), PAGE_TABLE));
->  }
->
-> -static void kasan_populate_pmd(pgd_t *pgd, unsigned long vaddr, unsigned long end)
-> +static void __init kasan_populate_pmd(pgd_t *pgd, unsigned long vaddr, unsigned long end)
->  {
->         phys_addr_t phys_addr;
->         pmd_t *pmdp, *base_pmd;
-> @@ -117,7 +117,7 @@ static void kasan_populate_pmd(pgd_t *pgd, unsigned long vaddr, unsigned long en
->         set_pgd(pgd, pfn_pgd(PFN_DOWN(__pa(base_pmd)), PAGE_TABLE));
->  }
->
-> -static void kasan_populate_pgd(unsigned long vaddr, unsigned long end)
-> +static void __init kasan_populate_pgd(unsigned long vaddr, unsigned long end)
->  {
->         phys_addr_t phys_addr;
->         pgd_t *pgdp = pgd_offset_k(vaddr);
-> diff --git a/arch/riscv/mm/ptdump.c b/arch/riscv/mm/ptdump.c
-> index ace74dec7492..3b7b6e4d025e 100644
-> --- a/arch/riscv/mm/ptdump.c
-> +++ b/arch/riscv/mm/ptdump.c
-> @@ -331,7 +331,7 @@ static int ptdump_show(struct seq_file *m, void *v)
->
->  DEFINE_SHOW_ATTRIBUTE(ptdump);
->
-> -static int ptdump_init(void)
-> +static int __init ptdump_init(void)
->  {
->         unsigned int i, j;
->
-> --
-> 2.31.0
->
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+Looks "Alexander Duyck <alexander.h.duyck@linux.intel.com>" was not
+available, so Cced more, any comment?
 
-Apart from above, looks good to me.
-
-Reviewed-by: Anup Patel <anup@brainfault.org>
-
-Regards,
-Anup
+Thanks!
