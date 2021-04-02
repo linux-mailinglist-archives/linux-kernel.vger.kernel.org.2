@@ -2,179 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C0EB352FB4
+	by mail.lfdr.de (Postfix) with ESMTP id 3991E352FB5
 	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 21:26:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236487AbhDBT0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 15:26:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbhDBT0C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S236503AbhDBT0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 15:26:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36242 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236255AbhDBT0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 2 Apr 2021 15:26:02 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FB85C0613E6;
-        Fri,  2 Apr 2021 12:25:59 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id x21so6367031eds.4;
-        Fri, 02 Apr 2021 12:25:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eBa1l0nkkvfTf4uuzpNC8DhkE5lg+13JVTfQ5ud3GcE=;
-        b=A5owe0ywEifla9cqAwxdKeZzym4fxNR9UBjsxw86RxuLyevdtD34PPVnFCPX1XZDD8
-         97B1ynxpvQGkMusOuC2GvfxNZD666mpEf3EzauHUDxcBllWka/mZTCubSaZmPFi1YdQH
-         CS1GACuYXaOB4JHh1Titvx/SO6KfNDx3u80Hc8KRe7AP4Kngxul9MFdjW/ZyGu4in5mW
-         LGYQKbFegQEmaes5kRgHgCX3c/0eZ4KCXlkXadCj/rNDVvRb3SDI1hs31wiOmygCw+hr
-         r4c1XiCH6vVkxsoYbVyYFomUTjgQZeOc0vC5cX2ms5AA9DrjQ9vcEZaPOAf0bkSTA0V2
-         rd8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eBa1l0nkkvfTf4uuzpNC8DhkE5lg+13JVTfQ5ud3GcE=;
-        b=dhSEVyhKJ5CgyHgVbQzHrOrgVd+Ptvcp4WW+/xDXPb1f7P36zJFQ44VGB9dn/U+Mne
-         5K/KQQBr22ts1sPV0YrmPAWTcG5BxsQLNs3ghP/9NAXzniiJJ0a9eEfQ0OO5BhJ5Yhrz
-         bUf1xndllDmQLOGBTx7pJtw+2PXu306GHzkaZKzQGl5y8fJvvocZgolrYG9bk1kSQrYu
-         Z7OfGUt2x8uQEVTali9PrxnaBWZfO7dQF8s/Y1HCtdCP9TF0Zgkp8D1NKCpAnyHjX+OG
-         FlrCcYHpteWsw9HVHrInuBi5JK0Wukm2TzyfUF2u+D7J2rp+oi3CL+cMrKmUsGzKreVm
-         bbXA==
-X-Gm-Message-State: AOAM533hbrOLQJGyvFj7dV/L0KdoS/cHSPvONNHbKZA+QcjxrtKEW3pi
-        wNtKf9yUMd48Ij5MFnNGGDfxWImXhJg=
-X-Google-Smtp-Source: ABdhPJyavIkdyCjowSW48m9XSi0klJz2e7GZPVIBZdf7s99BueQwLG4v7nsfEpVUkPZMMnS81OZ3+g==
-X-Received: by 2002:a05:6402:2787:: with SMTP id b7mr1875410ede.225.1617391558402;
-        Fri, 02 Apr 2021 12:25:58 -0700 (PDT)
-Received: from BV030612LT ([188.24.140.160])
-        by smtp.gmail.com with ESMTPSA id x24sm754352edr.36.2021.04.02.12.25.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 12:25:57 -0700 (PDT)
-Date:   Fri, 2 Apr 2021 22:25:55 +0300
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Manivannan Sadhasivam <mani@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/6] dt-bindings: soc: actions: Add Actions Semi Owl
- socinfo binding
-Message-ID: <20210402192555.GA2052516@BV030612LT>
-References: <cover.1617110420.git.cristian.ciocaltea@gmail.com>
- <15da0257b10aa62bfb7046437915d05a614c01ee.1617110420.git.cristian.ciocaltea@gmail.com>
- <20210402180407.GA31906@thinkpad>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3018600D3;
+        Fri,  2 Apr 2021 19:25:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617391561;
+        bh=Ur/RPoLJAFNQ/xo2Az7wZnPpTvyn9qFxiOG6Tvgto4g=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=lrH9MHjapHs5Z13vdaZwdG2XD8TgjL8lBjyuLrGWX8mgyfBHW1ok+EJqooW/fN6M+
+         lvaV4XoalHG2L8tELTgrfSERJfwR6YSD+mNiI0XqWWig2I3GLvb1aEhTqrx5wgwt24
+         QBb6m6+tOXz0RT2a3NINiEa9AgtnD/FYsYlvLbYx6Pwq4X5rXxz3/Vwnr2oVzXUPIi
+         zAvxLWe9kaeJVsyrDAE2NdjPfIxOeeExM9aaCSFYpDvgtejq+31/aNrtpYZ24ExIgD
+         yuwvo73gDOCvptd18e3AESfzz2eSgY3zpW7BhI+5Xc3qPp+1+sT6oXPxWsJPna5DQT
+         20XxkPm2Cd6vA==
+Date:   Fri, 2 Apr 2021 21:25:56 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     John Fastabend <john.fastabend@gmail.com>
+cc:     Cong Wang <xiyou.wangcong@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Kehuan Feng <kehuan.feng@gmail.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Jike Song <albcamus@gmail.com>, Josh Hunt <johunt@akamai.com>,
+        Jonas Bonn <jonas.bonn@netrounds.com>,
+        Michael Zhivich <mzhivich@akamai.com>,
+        David Miller <davem@davemloft.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Netdev <netdev@vger.kernel.org>
+Subject: Re: Packet gets stuck in NOLOCK pfifo_fast qdisc
+In-Reply-To: <5f51cbad3cc2_3eceb208fc@john-XPS-13-9370.notmuch>
+Message-ID: <nycvar.YFH.7.76.2104022120050.12405@cbobk.fhfr.pm>
+References: <465a540e-5296-32e7-f6a6-79942dfe2618@netrounds.com> <20200822032800.16296-1-hdanton@sina.com> <CACS=qqKhsu6waaXndO5tQL_gC9TztuUQpqQigJA2Ac0y12czMQ@mail.gmail.com> <20200825032312.11776-1-hdanton@sina.com> <CACS=qqK-5g-QM_vczjY+A=3fi3gChei4cAkKweZ4Sn2L537DQA@mail.gmail.com>
+ <20200825162329.11292-1-hdanton@sina.com> <CACS=qqKgiwdCR_5+z-vkZ0X8DfzOPD7_ooJ_imeBnx+X1zw2qg@mail.gmail.com> <CACS=qqKptAQQGiMoCs1Zgs9S4ZppHhasy1AK4df2NxnCDR+vCw@mail.gmail.com> <5f46032e.1c69fb81.9880c.7a6cSMTPIN_ADDED_MISSING@mx.google.com>
+ <CACS=qq+Yw734DWhETNAULyBZiy_zyjuzzOL-NO30AB7fd2vUOQ@mail.gmail.com> <20200827125747.5816-1-hdanton@sina.com> <CACS=qq+a0H=e8yLFu95aE7Hr0bQ9ytCBBn2rFx82oJnPpkBpvg@mail.gmail.com> <CAM_iQpV-JMURzFApp-Zhxs3QN9j=Zdf6yqwOP=E42ERDHxe6Hw@mail.gmail.com>
+ <dd73f551d1fc89e457ffabd106cbf0bf401b747b.camel@redhat.com> <CAM_iQpXZMeAGkq_=rG6KEabFNykszpRU_Hnv65Qk7yesvbRDrw@mail.gmail.com> <5f51cbad3cc2_3eceb208fc@john-XPS-13-9370.notmuch>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210402180407.GA31906@thinkpad>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 11:34:07PM +0530, Manivannan Sadhasivam wrote:
-> On Tue, Mar 30, 2021 at 04:48:17PM +0300, Cristian Ciocaltea wrote:
-> > Add devicetree binding for the Actions Semi Owl socinfo driver.
+On Thu, 3 Sep 2020, John Fastabend wrote:
+
+> > > At this point I fear we could consider reverting the NOLOCK stuff.
+> > > I personally would hate doing so, but it looks like NOLOCK benefits are
+> > > outweighed by its issues.
 > > 
+> > I agree, NOLOCK brings more pains than gains. There are many race
+> > conditions hidden in generic qdisc layer, another one is enqueue vs.
+> > reset which is being discussed in another thread.
 > 
-> Devicetree binding shouldn't be added for a driver instead for an IP or hw.
-> 
-> > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> > ---
-> >  .../bindings/soc/actions/owl-socinfo.yaml     | 57 +++++++++++++++++++
-> >  1 file changed, 57 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/soc/actions/owl-socinfo.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/soc/actions/owl-socinfo.yaml b/Documentation/devicetree/bindings/soc/actions/owl-socinfo.yaml
-> > new file mode 100644
-> > index 000000000000..01e4a8b4f5ac
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/soc/actions/owl-socinfo.yaml
-> > @@ -0,0 +1,57 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/soc/actions/owl-socinfo.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Actions Semi Owl SoC info module
-> > +
-> > +maintainers:
-> > +  - Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> > +
-> > +description: |
-> > +  Actions Semi Owl SoC info module provides access to various information
-> > +  about the S500, S700 and S900 SoC variants, such as serial number or id.
-> > +
-> 
-> S700/S900 are not yet confirmed, so please avoid them.
-> 
-> > +select:
-> > +  properties:
-> > +    compatible:
-> > +      contains:
-> > +        enum:
-> > +          - actions,s500-soc
-> > +          - actions,s700-soc
-> > +          - actions,s900-soc
-> > +  required:
-> > +    - compatible
-> > +
-> > +properties:
-> > +  compatible:
-> > +    items:
-> > +      - enum:
-> > +          - actions,s500-soc
-> > +          - actions,s700-soc
-> > +          - actions,s900-soc
-> > +      - const: simple-bus
-> > +
-> > +required:
-> > +  - compatible
-> > +
-> > +additionalProperties: true
-> > +
-> > +examples:
-> > +  - |
-> > +    / {
-> > +        compatible = "roseapplepi,roseapplepi", "actions,s500";
-> > +        model = "Roseapple Pi";
-> > +        #address-cells = <1>;
-> > +        #size-cells = <1>;
-> > +
-> > +        soc {
-> > +            compatible = "actions,s500-soc", "simple-bus";
-> 
-> No. This shouldn't fall under /soc. I think you should added a separate
-> compatible for the reserved memory itself and add a corresponding socinfo
-> driver under drivers/soc.
-> 
-> This way it is obvious that the information is contained in a memory region and
-> a driver is used for parsing that.
+> Sure. Seems they crept in over time. I had some plans to write a
+> lockless HTB implementation. But with fq+EDT with BPF it seems that
+> it is no longer needed, we have a more generic/better solution.  So
+> I dropped it. Also most folks should really be using fq, fq_codel,
+> etc. by default anyways. Using pfifo_fast alone is not ideal IMO.
 
-I avoided on purpose to bind the driver on the reserved memory node
-in order to be able to handle also the S700 and S900 SoCs, for which
-we currently provide (only) the following information: machine, family,
-soc_id.
+Half a year later, we still have the NOLOCK implementation 
+present, and pfifo_fast still does set the TCQ_F_NOLOCK flag on itself. 
 
-I assumed the serial_number is not mandatory and we can use the driver
-as it is for all SoC variants. I don't know how the serial number for
-S700 and S900 could be read, but I think it is very likely they require
-a different access method.
+And we've just been bitten by this very same race which appears to be 
+still unfixed, with single packet being stuck in pfifo_fast qdisc 
+basically indefinitely due to this very race that this whole thread began 
+with back in 2019.
 
-Hence my intention was to keep the driver generic, not coupled strictly
-with the serial number information.
+Unless there are
 
-Regards,
-Cristi
+	(a) any nice ideas how to solve this in an elegant way without 
+	    (re-)introducing extra spinlock (Cong's fix) or
 
-> Thanks,
-> Mani
-> 
-> > +            #address-cells = <1>;
-> > +            #size-cells = <1>;
-> > +            ranges;
-> > +        };
-> > +    };
-> > +
-> > +...
-> > -- 
-> > 2.31.1
-> > 
+	(b) any objections to revert as per the argumentation above
+
+I'll be happy to send a revert of the whole NOLOCK implementation next 
+week.
+
+Thanks,
+
+-- 
+Jiri Kosina
+SUSE Labs
+
