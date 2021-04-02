@@ -2,96 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF19352799
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 10:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 259A435279B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 10:55:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234238AbhDBIx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 04:53:56 -0400
-Received: from mga01.intel.com ([192.55.52.88]:25624 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229599AbhDBIxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 04:53:55 -0400
-IronPort-SDR: jXuPEzP7zfuYveaBQpbs3Ao1UGt5ojiZdJKr1Dg/hpCQQ5LiB3J7xLUU3YJBsvyyK+nHuwTqFa
- 3nFM413yNEXg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="212700297"
-X-IronPort-AV: E=Sophos;i="5.81,299,1610438400"; 
-   d="scan'208";a="212700297"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 01:53:54 -0700
-IronPort-SDR: I2hhndY8aDp862URqE4nqmbdWusRQrd5TJ/1EyBo9aXLWAXK/91XfFNcLUK9pD8+3heZuTBliB
- 7GdIwv8hAfCQ==
-X-IronPort-AV: E=Sophos;i="5.81,299,1610438400"; 
-   d="scan'208";a="419579090"
-Received: from unknown (HELO [10.239.13.106]) ([10.239.13.106])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 01:53:50 -0700
-Subject: Re: [PATCH v2 1/3] KVM: X86: Rename DR6_INIT to DR6_ACTIVE_LOW
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Chenyi Qiang <chenyi.qiang@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210202090433.13441-1-chenyi.qiang@intel.com>
- <20210202090433.13441-2-chenyi.qiang@intel.com>
- <3db069ba-b4e0-1288-ec79-66ac44938682@redhat.com>
- <6678520f-e69e-6116-88c9-e9d6cd450934@intel.com>
- <ea9eaa84-999b-82cb-ef40-66fde361704d@redhat.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <dc22f0a2-97c5-d54d-a521-c02f802c2229@intel.com>
-Date:   Fri, 2 Apr 2021 16:53:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S234314AbhDBIy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 04:54:59 -0400
+Received: from mail-m17635.qiye.163.com ([59.111.176.35]:55114 "EHLO
+        mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229599AbhDBIy6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 04:54:58 -0400
+Received: from ubuntu.localdomain (unknown [36.152.145.181])
+        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id 9B78C40047D;
+        Fri,  2 Apr 2021 16:54:55 +0800 (CST)
+From:   Bernard Zhao <bernard@vivo.com>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Huang Rui <ray.huang@amd.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        Aaron Liu <aaron.liu@amd.com>, Likun Gao <Likun.Gao@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     Bernard Zhao <bernard@vivo.com>
+Subject: [PATCH] drm/amd: remove not needed conversion to bool
+Date:   Fri,  2 Apr 2021 01:54:02 -0700
+Message-Id: <20210402085454.76864-1-bernard@vivo.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-In-Reply-To: <ea9eaa84-999b-82cb-ef40-66fde361704d@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZSEhKQk0ZSx0ZSUNPVkpNSkxITkhNQk5CT09VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PVE6FAw6HT8OGioiKzpDCh05
+        DxUwClZVSlVKTUpMSE5ITUJNSUhLVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlITVVK
+        TklVSk9OVUpDSllXWQgBWUFJT09DNwY+
+X-HM-Tid: 0a7891cae284d991kuws9b78c40047d
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/3/2021 12:05 AM, Paolo Bonzini wrote:
-> On 02/02/21 16:02, Xiaoyao Li wrote:
->> On 2/2/2021 10:49 PM, Paolo Bonzini wrote:
->>> On 02/02/21 10:04, Chenyi Qiang wrote:
->>>>
->>>>  #define DR6_FIXED_1    0xfffe0ff0
->>>> -#define DR6_INIT    0xffff0ff0
->>>> +/*
->>>> + * DR6_ACTIVE_LOW is actual the result of DR6_FIXED_1 | 
->>>> ACTIVE_LOW_BITS.
->>>> + * We can regard all the current FIXED_1 bits as active_low bits even
->>>> + * though in no case they will be turned into 0. But if they are 
->>>> defined
->>>> + * in the future, it will require no code change.
->>>> + * At the same time, it can be served as the init/reset value for DR6.
->>>> + */
->>>> +#define DR6_ACTIVE_LOW    0xffff0ff0
->>>>  #define DR6_VOLATILE    0x0001e00f
->>>>
->>>
->>> Committed with some changes in the wording of the comment.
->>>
->>> Also, DR6_FIXED_1 is (DR6_ACTIVE_LOW & ~DR6_VOLATILE).
->>
->> Maybe we can add BUILD_BUG_ON() to make sure the correctness?
-> 
-> We can even
-> 
-> #define DR_FIXED_1  (DR6_ACTIVE_LOW & ~DR6_VOLATILE)
-> 
-> directly.  I have pushed this patch to kvm/queue, but the other two will 
-> have to wait for Fenghua's bare metal support.
-> 
+Fix coccicheck warning:
+drivers/gpu/drm/amd/amdgpu/mmhub_v2_3.c:573:39-44: WARNING: conversion to bool not needed here
+drivers/gpu/drm/amd/amdgpu/mmhub_v2_3.c:575:39-44: WARNING: conversion to bool not needed here
 
-Hi Paolo,
+Signed-off-by: Bernard Zhao <bernard@vivo.com>
+---
+ drivers/gpu/drm/amd/amdgpu/mmhub_v2_3.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Fenghua's bare metal support is in tip tree now.
-https://lore.kernel.org/lkml/20210322135325.682257-1-fenghua.yu@intel.com/
-
-Will the rest KVM patches get into 5.13 together?
-
-
+diff --git a/drivers/gpu/drm/amd/amdgpu/mmhub_v2_3.c b/drivers/gpu/drm/amd/amdgpu/mmhub_v2_3.c
+index ab9be5ad5a5f..0734e8ef5e41 100644
+--- a/drivers/gpu/drm/amd/amdgpu/mmhub_v2_3.c
++++ b/drivers/gpu/drm/amd/amdgpu/mmhub_v2_3.c
+@@ -570,9 +570,9 @@ static int mmhub_v2_3_set_clockgating(struct amdgpu_device *adev,
+ 		return 0;
+ 
+ 	mmhub_v2_3_update_medium_grain_clock_gating(adev,
+-			state == AMD_CG_STATE_GATE ? true : false);
++			(state == AMD_CG_STATE_GATE));
+ 	mmhub_v2_3_update_medium_grain_light_sleep(adev,
+-			state == AMD_CG_STATE_GATE ? true : false);
++			(state == AMD_CG_STATE_GATE));
+ 
+ 	return 0;
+ }
+-- 
+2.31.0
 
