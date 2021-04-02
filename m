@@ -2,99 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33A3352A5B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 13:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD20352A5D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 13:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235246AbhDBLrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 07:47:42 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:53146 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbhDBLrk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 07:47:40 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 132BcklS108604;
-        Fri, 2 Apr 2021 11:47:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=s86nNGXjuQO3BIkeVvSlQRzc9bKAV2oQ8jed6Z2e3HU=;
- b=XizUMFnRdxrvpdhLZZDNaT9Vr14PnUnxWqXc9xaUE8ob/WhP9XBptaWf4WiyKtM0+USM
- HV5pubFSSvTikTyTjnjqaHTdpKjyMiMH+ukDbbe6m4Ols7Bp9MC5JOXaYrGTM7C2ro63
- IDsIM4LEhtFadLDZeTlWavJhKygz631O8NbGLAK/MpWi+0526fvnLUHJSraLiaCiRtwk
- Eq00wVUQm0KYJwotwEhBwy2YfaK/bqIaZ4HRkZx6zd42T/walynPP8wzF01vAzmT8Xj9
- g//r0KY+28WVQeOfgGW6Yx0Aers6RNk9I/roHusQSd3U7hUoe+6nrIGk88VvN36+L4CA xg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 37n33dve46-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 02 Apr 2021 11:47:34 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 132Bdg3a037341;
-        Fri, 2 Apr 2021 11:47:32 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 37n2atyu24-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 02 Apr 2021 11:47:32 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 132BlVAO014148;
-        Fri, 2 Apr 2021 11:47:31 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 02 Apr 2021 11:47:30 +0000
-Date:   Fri, 2 Apr 2021 14:47:23 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Doug Ledford <dledford@redhat.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Mark Bloch <markb@mellanox.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] RDMA/addr: potential uninitialized variable in
- ib_nl_process_good_ip_rsep()
-Message-ID: <YGcES6MsXGnh83qi@mwanda>
+        id S235230AbhDBLsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 07:48:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38926 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229722AbhDBLso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 07:48:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C3A261055;
+        Fri,  2 Apr 2021 11:48:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617364122;
+        bh=QC9L+Y92QPrQRlMi/nwgcTIuFtD7a096q7lKpkbqBtE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gPKClQFVrEENpH6GYHa4AaHEm0Ui9YA7umMd5LkFmOU/8dS3w28Efgdy9RT5fLU/7
+         TCjujMqHq0422duaKe4FOtHlaEpedd4jPLFNhyzgPIA62wtjXHnWdqvQTTts8UBkhq
+         KwDOqcsmGr/8P1/iqVHoRk+kWawhakMzQeIkJGUs=
+Date:   Fri, 2 Apr 2021 13:48:39 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lukasz.luba@arm.com, rafael@kernel.org,
+        Ram Chandrasekar <rkumbako@codeaurora.org>
+Subject: Re: [PATCH v6 2/7] powercap/drivers/dtpm: Create a registering system
+Message-ID: <YGcEl8gsSIcmyLf1@kroah.com>
+References: <20210401183654.27214-1-daniel.lezcano@linaro.org>
+ <20210401183654.27214-2-daniel.lezcano@linaro.org>
+ <YGYe9p3oyNpMnsBT@kroah.com>
+ <d0f818c7-3262-268b-bcc2-8036ce559d7b@linaro.org>
+ <YGbPh/QrFsgyJC6B@kroah.com>
+ <c819700a-97b6-9993-491b-599b82842dc2@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9941 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0 spamscore=0
- mlxscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
- definitions=main-2104020086
-X-Proofpoint-GUID: x-PxymaAPF3LEccK0jkXjXt0TExl6ZHs
-X-Proofpoint-ORIG-GUID: x-PxymaAPF3LEccK0jkXjXt0TExl6ZHs
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9941 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999 mlxscore=0
- lowpriorityscore=0 suspectscore=0 priorityscore=1501 phishscore=0
- clxscore=1011 impostorscore=0 malwarescore=0 bulkscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
- definitions=main-2104020086
+In-Reply-To: <c819700a-97b6-9993-491b-599b82842dc2@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The nla_len() is less than or equal to 16.  If it's less than 16 then
-end of the "gid" buffer is uninitialized.
+On Fri, Apr 02, 2021 at 01:10:51PM +0200, Daniel Lezcano wrote:
+> >> To answer your questions, there is a SoC vendor thermal daemon using
+> >> DTPM and there is a tool created to watch the thermal framework and read
+> >> the DTPM values, it is available at [4]. It is currently under
+> >> development with the goal of doing power rebalancing / capping across
+> >> the different nodes when there is a violation of the parent's power limit.
+> > 
+> > Crazy ideas aside, your implementation of this is my main objection
+> > here.  You are creating a user/kernel api that you will have to support
+> > for 20+ years, without a real userspace user just yet (from what I can
+> > tell).  That's rough, and is going to mean that this gets messy over
+> > time.
+> 
+> I'm not sure to understand, the API already exists since v3.3, it is the
+> powercap and DTPM is its backend. AFAICT, there are already users of it
+> except they create their own way to build the hierarchy today.
 
-Fixes: ae43f8286730 ("IB/core: Add IP to GID netlink offload")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-I just spotted this in review.  I think it's a bug but I'm not 100%.
+The configfs api is what I am referring to here, the ones in this patch
+series...
 
- drivers/infiniband/core/addr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+thanks,
 
-diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
-index 0abce004a959..a037ba4424bf 100644
---- a/drivers/infiniband/core/addr.c
-+++ b/drivers/infiniband/core/addr.c
-@@ -98,7 +98,7 @@ static inline bool ib_nl_is_good_ip_resp(const struct nlmsghdr *nlh)
- static void ib_nl_process_good_ip_rsep(const struct nlmsghdr *nlh)
- {
- 	const struct nlattr *head, *curr;
--	union ib_gid gid;
-+	union ib_gid gid = {};
- 	struct addr_req *req;
- 	int len, rem;
- 	int found = 0;
--- 
-2.30.2
-
+greg k-h
