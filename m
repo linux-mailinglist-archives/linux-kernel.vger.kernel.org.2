@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D61E352DE4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94F66352DE2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235670AbhDBQpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 12:45:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47352 "EHLO
+        id S235597AbhDBQpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 12:45:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235523AbhDBQpS (ORCPT
+        with ESMTP id S229722AbhDBQpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 12:45:18 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71E95C0613E6;
-        Fri,  2 Apr 2021 09:45:15 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id j20-20020a05600c1914b029010f31e15a7fso4573320wmq.1;
-        Fri, 02 Apr 2021 09:45:15 -0700 (PDT)
+        Fri, 2 Apr 2021 12:45:17 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 567F5C061788;
+        Fri,  2 Apr 2021 09:45:16 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id b2-20020a7bc2420000b029010be1081172so2626422wmj.1;
+        Fri, 02 Apr 2021 09:45:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=uSob29oYaBD73CCB/j/clh43BRBqLKux2ktJmFxUmDk=;
-        b=YWUiNligtSscvw8SK/+E5pGBzy9YmR1T7zL5MsFponmfhhKa+DP7iyTuSLM4Y00nyw
-         KLD3e97DzlYyjE0E5zoOsPN7ZdqQ6PwRDpVn501qaj2tCI+ZwxOdhlCfP0ifEYQOerzZ
-         FswsYDM4SM9GXStD+ODGGY1eytGP5fNTqbxLVb77yGy59FI4hthM1QURMFyoAjpiJDRW
-         qGmr2ZOSWR9NVULpVuOKNAk7vXwNbntFcSx7DIg9Hh/vuSSAXIjKrFimoWDqSDyWUaGT
-         2FvcbLiy/ADBIGGp3O3x6KwZ9KnhpGNbWgakDN7EGggUc4r/Z9Yik3sCrnOGXZigEmwI
-         e9pw==
+        bh=925408bHy/+LQgNs14Jlis1++7uaZvDAVgRinaIEmNk=;
+        b=KjcucBnMtSk+rZFVqm08mze8ga8DfH+yj08WE/cNN1gnK5sE1MliUaTjWkfdW4lTTV
+         BvXD1Ls8JpRzFglG5GsM63DepfOxSMBIl3/MUGIoWucD/XQyjlagh/jgwrHv9HhacN2A
+         46VY3qGbpkejT/FoXYVgxQEyJOF0ZW9TlTVUwyLjvVg1/pa91BIJ54/DvbYCCppfgkJc
+         tLwQHoCQ+2cad2rYos7zvAePBTtm52cXfYx87DWXzND3psF2vbImxK8PDvtEARPOzHKK
+         z5X5IeISTO3Z16oDrUIkcBwG6U/b8bAz0Z4j3S+YOnSFNIUklkQxu4yYAp0EyIvyRDlR
+         pJdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=uSob29oYaBD73CCB/j/clh43BRBqLKux2ktJmFxUmDk=;
-        b=DAw+5vKUSiZ2Fba433Tlek+y+Yrj3rGZOSnP0oQ/IiF0IiYhSas6cXQOYrLcVmlb+U
-         +QryAYH44YQhML6cKOcx38DHAx2xtsYZ/Ni2wNzUSXG4yNqmqVB/e4CC1hcbgRLZn8LH
-         ZZLDCHKrlVSkzdP7IorUy7odTF0VcEV0Z/9layXQvEeOaxSbWV2iB8T8aiMedQF/8g0h
-         9gH0IlscFG+3yEIVYefD02lZfjQD4WbJbvzI8EKZ07IStr1XrNyIh46o7jF6unKemVIH
-         kBjXLpWClNYF8Yl3EfZaNMB8Tti8qzs9b2xeSxOyWpXsThcjuSNmh8Rrj9RXLiBvNJNz
-         mU5w==
-X-Gm-Message-State: AOAM532JpcOr6QFZSdDBFeOKMqiXmr/YSGKaPcs7OX7bA1OaxDiRG0z0
-        fUUkungSMcZULIlUSCDAY8g=
-X-Google-Smtp-Source: ABdhPJw+bObrUc5PBrW6wCAv4oDJgNnndWJkWiu323bncNMhXXU9t25IODtErVOy/Rh7lWH6az2HyQ==
-X-Received: by 2002:a05:600c:220d:: with SMTP id z13mr13525344wml.1.1617381914074;
+        bh=925408bHy/+LQgNs14Jlis1++7uaZvDAVgRinaIEmNk=;
+        b=jZuycD8Wyn66PVRMdAlJrjhxwf55T5od5XgK1y6z4lPaZ/SyZleumXkcjcDjppdnoA
+         nApNjucgfg8QcPjzzn+zEtZnBgWHoQRYP80lFYa3v89yjKbbFCdomskKc2Wveat3bLxx
+         jjZlsbTocJ6OJlWAP0ku/oIv0vjopIrcoxNDmx5orKbX6QEaGYQ/v6Hci+P2IbDJQGTG
+         +UGbiE4n4qFjQeBW7rYweItCH7HlHtxPNMDKOc0igahbcXBUhzH3GiT33CipF84KT8ER
+         B2eqCISX+skgRrhxguS7eJDlUiG9/v6fQX9/H1CmcYRbPiDpu4RTVdOELNqwV3mBNOAp
+         fi+w==
+X-Gm-Message-State: AOAM530IYnRT8zx6wmlVtgtuKSEtiDxvgN0l+v6uTlAC27ccLZkzSmRf
+        UzS7jC6MMl8Q5SvyOnTwM8M=
+X-Google-Smtp-Source: ABdhPJyO7Px3uvykmDmkXfhnIXwbIu58i9fP3qGTwqMG/eOo82EM2RJn7MGkt5/gfuCFpmRCpHOomw==
+X-Received: by 2002:a05:600c:3546:: with SMTP id i6mr13354593wmq.104.1617381914988;
         Fri, 02 Apr 2021 09:45:14 -0700 (PDT)
 Received: from adgra-XPS-15-9570.home (2a01cb0008bd2700dc0d270f04d57395.ipv6.abo.wanadoo.fr. [2a01:cb00:8bd:2700:dc0d:270f:4d5:7395])
-        by smtp.gmail.com with ESMTPSA id y10sm15027627wrl.19.2021.04.02.09.45.13
+        by smtp.gmail.com with ESMTPSA id y10sm15027627wrl.19.2021.04.02.09.45.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 09:45:13 -0700 (PDT)
+        Fri, 02 Apr 2021 09:45:14 -0700 (PDT)
 From:   Adrien Grassein <adrien.grassein@gmail.com>
 Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
         kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
@@ -55,9 +55,9 @@ Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
         peng.fan@nxp.com, Anson.Huang@nxp.com, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Adrien Grassein <adrien.grassein@gmail.com>
-Subject: [PATCH v1 1/2] dt-bindings: power: Add documentation for imx8m power domain driver
-Date:   Fri,  2 Apr 2021 18:45:05 +0200
-Message-Id: <20210402164506.520121-2-adrien.grassein@gmail.com>
+Subject: [PATCH v1 2/2] soc: imx: add Power Domain driver for i.MX8M(M|N|P)
+Date:   Fri,  2 Apr 2021 18:45:06 +0200
+Message-Id: <20210402164506.520121-3-adrien.grassein@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210402164506.520121-1-adrien.grassein@gmail.com>
 References: <20210402164506.520121-1-adrien.grassein@gmail.com>
@@ -68,217 +68,321 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add documentation for the imx8m(m|n|p) power domain driver.
+Add code allowing to control the power domain of some
+i.MX8 socs.
 
 Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
 ---
- .../bindings/power/fsl,imx-power-domain.yaml  | 89 +++++++++++++++++++
- MAINTAINERS                                   |  8 ++
- include/dt-bindings/power/imx8mm-power.h      | 21 +++++
- include/dt-bindings/power/imx8mn-power.h      | 15 ++++
- include/dt-bindings/power/imx8mp-power.h      | 28 ++++++
- 5 files changed, 161 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/power/fsl,imx-power-domain.yaml
- create mode 100644 include/dt-bindings/power/imx8mm-power.h
- create mode 100644 include/dt-bindings/power/imx8mn-power.h
- create mode 100644 include/dt-bindings/power/imx8mp-power.h
+ MAINTAINERS                        |   2 +
+ drivers/soc/imx/Kconfig            |   7 +
+ drivers/soc/imx/Makefile           |   1 +
+ drivers/soc/imx/imx8m_pm_domains.c | 233 +++++++++++++++++++++++++++++
+ include/soc/imx/imx_sip.h          |  12 ++
+ 5 files changed, 255 insertions(+)
+ create mode 100644 drivers/soc/imx/imx8m_pm_domains.c
+ create mode 100644 include/soc/imx/imx_sip.h
 
-diff --git a/Documentation/devicetree/bindings/power/fsl,imx-power-domain.yaml b/Documentation/devicetree/bindings/power/fsl,imx-power-domain.yaml
-new file mode 100644
-index 000000000000..8b4811aa80eb
---- /dev/null
-+++ b/Documentation/devicetree/bindings/power/fsl,imx-power-domain.yaml
-@@ -0,0 +1,89 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/power/fsl,imx-power-domain.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Freescale i.MX 8mm, 8mn and 8mp Power Domain
-+
-+maintainers:
-+  - Adrien Grassein <adrien.grassein@gmail.com>
-+
-+description: |+
-+  i.MX processors include support for multiple power domains which are used
-+  to gate power to one or more peripherals on the processor.
-+
-+allOf:
-+  - $ref: power-domain.yaml#
-+
-+properties:
-+  compatible:
-+    enum:
-+      - fsl,imx8mm-pm-domain
-+      - fsl,imx8mn-pm-domain
-+      - fsl,imx8mp-pm-domain
-+
-+  domain-name:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    description: |
-+      Human readable string with domain name. Will be visible in userspace
-+      to let user to distinguish between multiple domains in SoC.
-+
-+  domain-index:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      Power domain index. Valid values are defined in
-+      include/dt-bindings/power/imx8mm-power.h for i.MX 8mm
-+      include/dt-bindings/power/imx8mn-power.h for i.MX 8mn
-+      include/dt-bindings/power/imx8mp-power.h for i.MX 8mp
-+
-+    maxItems: 1
-+
-+  clocks:
-+    description: |
-+      A number of phandles to clocks that need to be enabled during domain
-+      power-up sequencing to ensure reset propagation into devices located
-+      inside this power domain.
-+    minItems: 1
-+    maxItems: 6
-+
-+  power-supply:
-+    description:
-+      A phandle to a supply to enable when powering on the domain.
-+
-+  fsl,active-wakeup:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Instructs genpd to keep the PM domain powered on.
-+
-+  fsl,rpm-always-on:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Instructs genpd to always keep the PM domain powered on except
-+      for system suspend.
-+
-+  "#power-domain-cells":
-+    const: 0
-+
-+  power-domains:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - domain-name
-+  - domain-index
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/power/imx8mm-power.h>
-+    #include <dt-bindings/clock/imx8mm-clock.h>
-+
-+    hsiomix_pd: power-domain-hsio {
-+        compatible = "fsl,imx8mm-pm-domain";
-+        domain-index = <IMX8MM_POWER_DOMAIN_HSIOMIX>;
-+        #power-domain-cells = <0>;
-+        domain-name = "hsiomix";
-+        clocks = <&clk IMX8MM_CLK_USB1_CTRL_ROOT>;
-+    };
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 38d823d72e52..97536afca0e1 100644
+index 97536afca0e1..06e1568d003b 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -13010,6 +13010,14 @@ L:	linux-imx@nxp.com
+@@ -13014,9 +13014,11 @@ NXP i.MX 8M(M|N|P) POWER DOMAIN DRIVER
+ M:	Adrien Grassein <adrien.grassein@gmail.com>
  S:	Maintained
- F:	drivers/clk/imx/
+ F:	Documentation/devicetree/bindings/power/fsl,imx-power-domain.yaml
++F:	drivers/soc/imx/imx8m_pm_domains.c
+ F:	include/dt-bindings/power/imx8mm-power.h
+ F:	include/dt-bindings/power/imx8mn-power.h
+ F:	include/dt-bindings/power/imx8mp-power.h
++F:	include/soc/imx/imx_sip.h
  
-+NXP i.MX 8M(M|N|P) POWER DOMAIN DRIVER
-+M:	Adrien Grassein <adrien.grassein@gmail.com>
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/power/fsl,imx-power-domain.yaml
-+F:	include/dt-bindings/power/imx8mm-power.h
-+F:	include/dt-bindings/power/imx8mn-power.h
-+F:	include/dt-bindings/power/imx8mp-power.h
-+
  NXP i.MX 8MQ DCSS DRIVER
  M:	Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
- R:	Lucas Stach <l.stach@pengutronix.de>
-diff --git a/include/dt-bindings/power/imx8mm-power.h b/include/dt-bindings/power/imx8mm-power.h
+diff --git a/drivers/soc/imx/Kconfig b/drivers/soc/imx/Kconfig
+index 05812f8ae734..02d93346fd4b 100644
+--- a/drivers/soc/imx/Kconfig
++++ b/drivers/soc/imx/Kconfig
+@@ -8,6 +8,13 @@ config IMX_GPCV2_PM_DOMAINS
+ 	select PM_GENERIC_DOMAINS
+ 	default y if SOC_IMX7D
+ 
++config IMX8M_PM_DOMAINS
++	bool "i.MX8M PM domains"
++	depends on ARCH_MXC || (COMPILE_TEST && OF)
++	depends on PM
++	select PM_GENERIC_DOMAINS
++	default y if SOC_IMX8M
++
+ config SOC_IMX8M
+ 	bool "i.MX8M SoC family support"
+ 	depends on ARCH_MXC || COMPILE_TEST
+diff --git a/drivers/soc/imx/Makefile b/drivers/soc/imx/Makefile
+index 078dc918f4f3..7387239aecec 100644
+--- a/drivers/soc/imx/Makefile
++++ b/drivers/soc/imx/Makefile
+@@ -4,4 +4,5 @@ obj-$(CONFIG_ARCH_MXC) += soc-imx.o
+ endif
+ obj-$(CONFIG_HAVE_IMX_GPC) += gpc.o
+ obj-$(CONFIG_IMX_GPCV2_PM_DOMAINS) += gpcv2.o
++obj-$(CONFIG_IMX8M_PM_DOMAINS) += imx8m_pm_domains.o
+ obj-$(CONFIG_SOC_IMX8M) += soc-imx8m.o
+diff --git a/drivers/soc/imx/imx8m_pm_domains.c b/drivers/soc/imx/imx8m_pm_domains.c
 new file mode 100644
-index 000000000000..bec25fd32394
+index 000000000000..3a039572b734
 --- /dev/null
-+++ b/include/dt-bindings/power/imx8mm-power.h
-@@ -0,0 +1,21 @@
-+/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
++++ b/drivers/soc/imx/imx8m_pm_domains.c
+@@ -0,0 +1,233 @@
++// SPDX-License-Identifier: GPL-2.0
 +/*
-+ *  Copyright (C) 2021 Adrien Grassein <adrien.grassein@gmail.com>
++ * Copyright 2019 NXP.
 + */
 +
-+#ifndef __DT_BINDINGS_IMX8MM_POWER_H__
-+#define __DT_BINDINGS_IMX8MM_POWER_H__
++#include <linux/arm-smccc.h>
++#include <linux/clk.h>
++#include <linux/delay.h>
++#include <linux/io.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/platform_device.h>
++#include <linux/pm_domain.h>
++#include <linux/regulator/consumer.h>
 +
-+#define IMX8MM_POWER_DOMAIN_HSIOMIX	0
-+#define IMX8MM_POWER_DOMAIN_PCIE1	1
-+#define IMX8MM_POWER_DOMAIN_USB_OTG1	2
-+#define IMX8MM_POWER_DOMAIN_USB_OTG2	3
-+#define IMX8MM_POWER_DOMAIN_GPU		4
-+#define IMX8MM_POWER_DOMAIN_VPU		5
-+#define IMX8MM_POWER_DOMAIN_VPU_G1	6
-+#define IMX8MM_POWER_DOMAIN_VPU_G2	7
-+#define IMX8MM_POWER_DOMAIN_VPU_H1	8
-+#define IMX8MM_POWER_DOMAIN_DISPLAY	9
-+#define IMX8MM_POWER_DOMAIN_MIPI	10
++#include <soc/imx/imx_sip.h>
 +
-+#endif
-diff --git a/include/dt-bindings/power/imx8mn-power.h b/include/dt-bindings/power/imx8mn-power.h
++#define MAX_CLK_NUM	6
++#define to_imx8m_pm_domain(_genpd) container_of(_genpd, struct imx8m_pm_domain, pd)
++
++struct imx8m_pm_domain {
++	struct device *dev;
++	struct generic_pm_domain pd;
++	u32 domain_index;
++	struct clk *clk[MAX_CLK_NUM];
++	unsigned int num_clks;
++	struct regulator *reg;
++};
++
++enum imx8m_pm_domain_state {
++	PD_STATE_OFF,
++	PD_STATE_ON,
++};
++
++static DEFINE_MUTEX(gpc_pd_mutex);
++
++static int imx8m_pd_power_on(struct generic_pm_domain *genpd)
++{
++	struct imx8m_pm_domain *domain = to_imx8m_pm_domain(genpd);
++	struct arm_smccc_res res;
++	int index, ret = 0;
++
++	/* power on the external supply */
++	if (!IS_ERR(domain->reg)) {
++		ret = regulator_enable(domain->reg);
++		if (ret) {
++			dev_warn(domain->dev, "failed to power up the reg%d\n", ret);
++			return ret;
++		}
++	}
++
++	/* enable the necessary clks needed by the power domain */
++	if (domain->num_clks) {
++		for (index = 0; index < domain->num_clks; index++)
++			clk_prepare_enable(domain->clk[index]);
++	}
++
++	mutex_lock(&gpc_pd_mutex);
++	arm_smccc_smc(IMX_SIP_GPC, IMX_SIP_CONFIG_GPC_PM_DOMAIN, domain->domain_index,
++		      PD_STATE_ON, 0, 0, 0, 0, &res);
++	mutex_unlock(&gpc_pd_mutex);
++
++	return 0;
++}
++
++static int imx8m_pd_power_off(struct generic_pm_domain *genpd)
++{
++	struct imx8m_pm_domain *domain = to_imx8m_pm_domain(genpd);
++	struct arm_smccc_res res;
++	int index, ret = 0;
++
++	mutex_lock(&gpc_pd_mutex);
++	arm_smccc_smc(IMX_SIP_GPC, IMX_SIP_CONFIG_GPC_PM_DOMAIN, domain->domain_index,
++		      PD_STATE_OFF, 0, 0, 0, 0, &res);
++	mutex_unlock(&gpc_pd_mutex);
++
++	/* power off the external supply */
++	if (!IS_ERR(domain->reg)) {
++		ret = regulator_disable(domain->reg);
++		if (ret) {
++			dev_warn(domain->dev, "failed to power off the reg%d\n", ret);
++			return ret;
++		}
++	}
++
++	/* disable clks when power domain is off */
++	if (domain->num_clks) {
++		for (index = 0; index < domain->num_clks; index++)
++			clk_disable_unprepare(domain->clk[index]);
++	}
++
++	return ret;
++};
++
++static int imx8m_pd_get_clocks(struct imx8m_pm_domain *domain)
++{
++	int i, ret;
++
++	for (i = 0; ; i++) {
++		struct clk *clk = of_clk_get(domain->dev->of_node, i);
++
++		if (IS_ERR(clk))
++			break;
++		if (i >= MAX_CLK_NUM) {
++			dev_err(domain->dev, "more than %d clocks\n",
++				MAX_CLK_NUM);
++			ret = -EINVAL;
++			goto clk_err;
++		}
++		domain->clk[i] = clk;
++	}
++	domain->num_clks = i;
++
++	return 0;
++
++clk_err:
++	while (i--)
++		clk_put(domain->clk[i]);
++
++	return ret;
++}
++
++static void imx8m_pd_put_clocks(struct imx8m_pm_domain *domain)
++{
++	int i;
++
++	for (i = domain->num_clks - 1; i >= 0; i--)
++		clk_put(domain->clk[i]);
++}
++
++static const struct of_device_id imx8m_pm_domain_ids[] = {
++	{.compatible = "fsl,imx8mm-pm-domain"},
++	{.compatible = "fsl,imx8mn-pm-domain"},
++	{.compatible = "fsl,imx8mn-pm-domain"},
++	{},
++};
++
++static int imx8m_pm_domain_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct device_node *np = dev->of_node;
++	struct imx8m_pm_domain *domain;
++	struct of_phandle_args parent, child;
++	int ret;
++
++	domain = devm_kzalloc(dev, sizeof(*domain), GFP_KERNEL);
++	if (!domain)
++		return -ENOMEM;
++
++	child.np = np;
++	domain->dev = dev;
++
++	ret = of_property_read_string(np, "domain-name", &domain->pd.name);
++	if (ret) {
++		dev_err(dev, "failed to get the domain name\n");
++		return -EINVAL;
++	}
++
++	ret = of_property_read_u32(np, "domain-index", &domain->domain_index);
++	if (ret) {
++		dev_err(dev, "failed to get the domain index\n");
++		return -EINVAL;
++	}
++
++	domain->reg = devm_regulator_get_optional(dev, "power");
++	if (IS_ERR(domain->reg)) {
++		if (PTR_ERR(domain->reg) != -ENODEV) {
++			if (PTR_ERR(domain->reg) != -EPROBE_DEFER)
++				dev_err(dev, "failed to get domain's regulator\n");
++			return PTR_ERR(domain->reg);
++		}
++	}
++
++	ret = imx8m_pd_get_clocks(domain);
++	if (ret) {
++		if (ret != -EPROBE_DEFER)
++			dev_err(dev, "failed to get domain's clocks\n");
++		return ret;
++	}
++
++	domain->pd.power_off = imx8m_pd_power_off;
++	domain->pd.power_on = imx8m_pd_power_on;
++	if (of_property_read_bool(np, "fsl,active-wakeup"))
++		domain->pd.flags |= GENPD_FLAG_ACTIVE_WAKEUP;
++	if (of_property_read_bool(np, "fsl,rpm-always-on"))
++		domain->pd.flags |= GENPD_FLAG_RPM_ALWAYS_ON;
++
++	pm_genpd_init(&domain->pd, NULL, !(domain->pd.flags & GENPD_FLAG_RPM_ALWAYS_ON));
++
++	ret = of_genpd_add_provider_simple(np, &domain->pd);
++	if (ret) {
++		dev_err(dev, "failed to add the domain provider\n");
++		pm_genpd_remove(&domain->pd);
++		imx8m_pd_put_clocks(domain);
++		return ret;
++	}
++
++	/* add it as subdomain if necessary */
++	if (!of_parse_phandle_with_args(np, "power-domains",
++					"#power-domain-cells",
++					0, &parent)) {
++		ret = of_genpd_add_subdomain(&parent, &child);
++		of_node_put(parent.np);
++
++		if (ret < 0) {
++			dev_dbg(dev, "failed to add the subdomain: %s: %d",
++				domain->pd.name, ret);
++			of_genpd_del_provider(np);
++			pm_genpd_remove(&domain->pd);
++			imx8m_pd_put_clocks(domain);
++			return driver_deferred_probe_check_state(dev);
++		}
++	}
++
++	return 0;
++}
++
++static struct platform_driver imx8m_pm_domain_driver = {
++	.driver = {
++		.name	= "imx8m_pm_domain",
++		.owner	= THIS_MODULE,
++		.of_match_table = imx8m_pm_domain_ids,
++	},
++	.probe = imx8m_pm_domain_probe,
++};
++module_platform_driver(imx8m_pm_domain_driver);
++
++MODULE_AUTHOR("NXP");
++/* Just for mainstreaming */
++MODULE_AUTHOR("Adrien Grassein <adrien.grassein@gmail.com>");
++MODULE_DESCRIPTION("NXP i.MX8M power domain driver");
++MODULE_LICENSE("GPL v2");
+diff --git a/include/soc/imx/imx_sip.h b/include/soc/imx/imx_sip.h
 new file mode 100644
-index 000000000000..dfa0711171cd
+index 000000000000..6b96b33c870e
 --- /dev/null
-+++ b/include/dt-bindings/power/imx8mn-power.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
++++ b/include/soc/imx/imx_sip.h
+@@ -0,0 +1,12 @@
++/* SPDX-License-Identifier: GPL-2.0 */
 +/*
-+ *  Copyright (C) 2021 Adrien Grassein <adrien.grassein@gmail.com>
++ * Copyright 2019 NXP
 + */
 +
-+#ifndef __DT_BINDINGS_IMX8MN_POWER_H__
-+#define __DT_BINDINGS_IMX8MN_POWER_H__
++#ifndef __IMX_SIP_H__
++#define __IMX_SIP_H__
 +
-+#define IMX8MN_POWER_DOMAIN_HSIOMIX	0
-+#define IMX8MN_POWER_DOMAIN_USB_OTG1	2
-+#define IMX8MN_POWER_DOMAIN_GPU		4
-+#define IMX8MN_POWER_DOMAIN_DISPLAY	9
-+#define IMX8MN_POWER_DOMAIN_MIPI	10
++#define IMX_SIP_GPC			0xC2000000
++#define IMX_SIP_CONFIG_GPC_PM_DOMAIN	0x03
 +
-+#endif
-diff --git a/include/dt-bindings/power/imx8mp-power.h b/include/dt-bindings/power/imx8mp-power.h
-new file mode 100644
-index 000000000000..660e6b7d6c69
---- /dev/null
-+++ b/include/dt-bindings/power/imx8mp-power.h
-@@ -0,0 +1,28 @@
-+/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
-+/*
-+ *  Copyright (C) 2021 Adrien Grassein <adrien.grassein@gmail.com>
-+ */
-+
-+#ifndef __DT_BINDINGS_IMX8MP_POWER_H__
-+#define __DT_BINDINGS_IMX8MP_POWER_H__
-+
-+#define IMX8MP_POWER_DOMAIN_HSIOMIX	0
-+#define IMX8MP_POWER_DOMAIN_PCIE1	1
-+#define IMX8MP_POWER_DOMAIN_USB_OTG1	2
-+#define IMX8MP_POWER_DOMAIN_USB_OTG2	3
-+#define IMX8MP_POWER_DOMAIN_MLMIX	4
-+#define IMX8MP_POWER_DOMAIN_AUDIOMIX	5
-+#define IMX8MP_POWER_DOMAIN_GPU_MIX	6
-+#define IMX8MP_POWER_DOMAIN_GPU_2D	7
-+#define IMX8MP_POWER_DOMAIN_GPU_3D	8
-+#define IMX8MP_POWER_DOMAIN_VPUMIX	9
-+#define IMX8MP_POWER_DOMAIN_G1		10
-+#define IMX8MP_POWER_DOMAIN_G2		11
-+#define IMX8MP_POWER_DOMAIN_H1		12
-+#define IMX8MP_POWER_MEDIAMIX		13
-+#define IMX8MP_ISP_DWP			14
-+#define IMX8MP_MIPI_PHY1		15
-+#define IMX8MP_MIPI_PHY2		16
-+#define IMX8MP_HDMI_MIX			17
-+#define IMX8MP_HDMI_PHY			18
-+#endif
++#endif /* __IMX_SIP_H__ */
 -- 
 2.25.1
 
