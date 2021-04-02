@@ -2,94 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44560352F08
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 20:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FD83352F0D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 20:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231526AbhDBSRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 14:17:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231160AbhDBSRU (ORCPT
+        id S236004AbhDBSRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 14:17:41 -0400
+Received: from mail-wm1-f54.google.com ([209.85.128.54]:37401 "EHLO
+        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235659AbhDBSRj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 14:17:20 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 683F3C061788
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 11:17:19 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id e8so6129765iok.5
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 11:17:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MppYn/UXCzXUeFQ9QuY+HhvUiGYS5v7hTH678naDMjo=;
-        b=Gccb48jTfp0xOqHNAxpElEa0vpUNrXs6dKypa8AfB5aImP8C9GxX4OhDLH53wZLNpK
-         YTCFqTUTtynvQmK9Du7XZ6P6dA8l/1Cy71QgHbWfVTZ+SiSxuf8M4ICEgoaAz2edp+P7
-         F9s0d8St5QYC6l1n2i2Z3nksfO3kB+kJx01Sc=
+        Fri, 2 Apr 2021 14:17:39 -0400
+Received: by mail-wm1-f54.google.com with SMTP id f22-20020a7bc8d60000b029010c024a1407so4669658wml.2;
+        Fri, 02 Apr 2021 11:17:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=MppYn/UXCzXUeFQ9QuY+HhvUiGYS5v7hTH678naDMjo=;
-        b=mUr0WRkJUbBpUio+qM3F9b7sm0U2ZaB+b8tKJyZc/33oVITM/URbvF5jVmv5s74AW0
-         lczTGbXCjOauBmmJNanKmlsH02uL/j6PGp0/j0OZF7se4yWuo0jSRajY4zdbxGz+CQ8G
-         9qbVRSpawAiPzazSkcbao3JtaPGGQwyXWJ0592rUWcbpO5SeBU29UtyclvFheq91/UqJ
-         uBBKcYCOmgCKXgax94UzI/lFLnvF50PExQooIYoT5XqRX9wYLYZLdh6GG7cWsXwRwQVi
-         RDEqPlCH5Twx81dfacovWVwege6djLAcePguRkh79l4Do1YHv4+FhHGHo+cJk+YavaEf
-         3TDQ==
-X-Gm-Message-State: AOAM530EbGfgSfbSRTgnar/H5KPKdcOne5Hi+hINvhAALieHYZL5Ledb
-        JQDCAbZcSfQCLXuDfexHcdMj7MnK8jJq+A==
-X-Google-Smtp-Source: ABdhPJxLL6rMb265VjtQLIAW8AiSzjaC4AqhYR5VsWhlA9YdsXu9H9vmhyFdBTn1HHm8qHg2Av2POg==
-X-Received: by 2002:a05:6638:3884:: with SMTP id b4mr13915229jav.18.1617387438725;
-        Fri, 02 Apr 2021 11:17:18 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id s15sm2583607ilv.13.2021.04.02.11.17.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Apr 2021 11:17:18 -0700 (PDT)
-Subject: Re: [PATCH v6 00/21] Miscellaneous fixes for resctrl selftests
-To:     Fenghua Yu <fenghua.yu@intel.com>, Shuah Khan <shuah@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Cc:     linux-kselftest <linux-kselftest@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210317022255.2536745-1-fenghua.yu@intel.com>
- <YF451jic7QNyUCVD@otcwcpicx3.sc.intel.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <b10f5509-5111-e3e4-c247-dde542c36358@linuxfoundation.org>
-Date:   Fri, 2 Apr 2021 12:17:17 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        bh=I1/j1JCKbYAjTheXlH22Tm2brD6BjaSfIOTEMjLXwo0=;
+        b=mUhY2i6YDpSe9/ANkWZ9awKnkrpETZeCX5TkMyjRHcmzZ46KhIfYg9pIEt3929Zd4C
+         KPCn3rlgxMvCiLmh1MOBu+L00vHcyt7asZoDrcoVne26fUNRixRjArdd1a6382j80bt4
+         p5z+LU3y+8tzAcV4ypOzg7CO3KuZanw0LKMCbFPKs7247q62ivke06VUW1TQhnmTw2l7
+         qhe515OkLT+KgI7MQHcHy26Dx7irDkr72dG9XlaVxRKvBG8QFP9FV8kSGMA8C9zijv43
+         3c8qjmo7GKNa9vyTAAeMJsENblRXSGypPrNzj1PvsnFC60v9Sgsd7LRdVF6NNB2vc17H
+         1z1w==
+X-Gm-Message-State: AOAM533pIU9Q/MkMCYG1mgrz5pg//ijJwfqujsqKHkLHISMfKaV+g7yA
+        GJjRPpGuaRO9mLgR6zLat5LmdAP4ARg=
+X-Google-Smtp-Source: ABdhPJzJ4yMg92UW8pr7VxN6+KU2EF36UWYUyzYTscFovmbgfsGyTxio6hQkI0SpB9ZV7Kte2yXyHQ==
+X-Received: by 2002:a1c:4e07:: with SMTP id g7mr13983194wmh.29.1617387456750;
+        Fri, 02 Apr 2021 11:17:36 -0700 (PDT)
+Received: from msft-t490s.teknoraver.net (net-2-34-63-208.cust.vodafonedsl.it. [2.34.63.208])
+        by smtp.gmail.com with ESMTPSA id l9sm11472831wmq.2.2021.04.02.11.17.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Apr 2021 11:17:36 -0700 (PDT)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        David Ahern <dsahern@gmail.com>,
+        Saeed Mahameed <saeed@kernel.org>, Andrew Lunn <andrew@lunn.ch>
+Subject: [PATCH net-next v2 0/5] page_pool: recycle buffers
+Date:   Fri,  2 Apr 2021 20:17:28 +0200
+Message-Id: <20210402181733.32250-1-mcroce@linux.microsoft.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <YF451jic7QNyUCVD@otcwcpicx3.sc.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/26/21 1:45 PM, Fenghua Yu wrote:
-> Hi, Shuah,
-> 
-> On Wed, Mar 17, 2021 at 02:22:34AM +0000, Fenghua Yu wrote:
->> This patch set has several miscellaneous fixes to resctrl selftest tool
->> that are easily visible to user. V1 had fixes to CAT test and CMT test
->> but they were dropped in V2 because having them here made the patchset
->> humongous. So, changes to CAT test and CMT test will be posted in another
->> patchset.
->>
->> Change Log:
->> v6:
->> - Add Tested-by: Babu Moger <babu.moger@amd.com>.
->> - Replace "cat" by CAT_STR etc (Babu).
->> - Capitalize the first letter of printed message (Babu).
-> 
-> Any comment on this series? Will you push it into linux-kselftest.git?
-> 
-Yes. Will apply for 5.13-rc1
+From: Matteo Croce <mcroce@microsoft.com>
 
-thanks,
--- Shuah
+This is a respin of [1]
+
+This  patchset shows the plans for allowing page_pool to handle and
+maintain DMA map/unmap of the pages it serves to the driver.  For this
+to work a return hook in the network core is introduced.
+
+The overall purpose is to simplify drivers, by providing a page
+allocation API that does recycling, such that each driver doesn't have
+to reinvent its own recycling scheme.  Using page_pool in a driver
+does not require implementing XDP support, but it makes it trivially
+easy to do so.  Instead of allocating buffers specifically for SKBs
+we now allocate a generic buffer and either wrap it on an SKB
+(via build_skb) or create an XDP frame.
+The recycling code leverages the XDP recycle APIs.
+
+The Marvell mvpp2 and mvneta drivers are used in this patchset to
+demonstrate how to use the API, and tested on a MacchiatoBIN
+and EspressoBIN boards respectively.
+
+[1] https://lore.kernel.org/netdev/154413868810.21735.572808840657728172.stgit@firesoul/
+
+v1 -> v2:
+- fix a commit message
+- avoid setting pp_recycle multiple times on mvneta
+- squash two patches to avoid breaking bisect
+
+Ilias Apalodimas (1):
+  page_pool: Allow drivers to hint on SKB recycling
+
+Jesper Dangaard Brouer (1):
+  xdp: reduce size of struct xdp_mem_info
+
+Matteo Croce (3):
+  mm: add a signature in struct page
+  mvpp2: recycle buffers
+  mvneta: recycle buffers
+
+ .../chelsio/inline_crypto/ch_ktls/chcr_ktls.c |  2 +-
+ drivers/net/ethernet/marvell/mvneta.c         |  7 ++-
+ .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 17 +++----
+ drivers/net/ethernet/marvell/sky2.c           |  2 +-
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  2 +-
+ include/linux/mm_types.h                      |  1 +
+ include/linux/skbuff.h                        | 35 ++++++++++++--
+ include/net/page_pool.h                       | 15 ++++++
+ include/net/xdp.h                             |  5 +-
+ net/core/page_pool.c                          | 47 +++++++++++++++++++
+ net/core/skbuff.c                             | 20 +++++++-
+ net/core/xdp.c                                | 14 ++++--
+ net/tls/tls_device.c                          |  2 +-
+ 13 files changed, 142 insertions(+), 27 deletions(-)
+
+-- 
+2.30.2
+
