@@ -2,89 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C55D3527D2
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 11:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F11E23527CE
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 11:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234508AbhDBJFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 05:05:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbhDBJFK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 05:05:10 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 777F7C0613E6;
-        Fri,  2 Apr 2021 02:05:08 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id l1so2253541plg.12;
-        Fri, 02 Apr 2021 02:05:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mCA52LnxgW5hjAvuxDGqbFSlZckDKlP65WIWKRvVIMU=;
-        b=TaCV4uSnwrBEc8SboS0N1TQdq8jwpEVYiDzgV5Q/c0YHQHpVCNRvIgyrdwveKwTU+I
-         ep4cMO5W2F4RfJnybDv/gK0MwddSRNWo3GTxLhM93agea/BZUqBwWd+16kJ7f2zrneDN
-         pHby7c88i1xudNizZfIzh8rTXHh89Ig0Aed2I8MOU2KGZptsPQIwpJ/pC0uDJ4Oun7h5
-         dUEw2bKQQ2UyyGrPs8FUCGQP2LVFfd32EODNdqmHiEGo/mqN+NmujuF6Lv1BeKFxLZDV
-         fwTQupw84ZmUQwqeKtiGxg+jtD4icdRuktt2nBedEQAja9maMTjJuussoT3C8USaR4Wb
-         5ojA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mCA52LnxgW5hjAvuxDGqbFSlZckDKlP65WIWKRvVIMU=;
-        b=SIJ4M8RZm7V0x7jcFTmlu2APzmIgSKUczbElWbng1Iq64vV0IQ9OqNyXkJXEztfAGm
-         lgwyI+sA8mwLstV4+rCCA7ugE/U8G89ZwgBEDae22xL3yHPq+YcumYjYCr+uVxDHGJuJ
-         8cl0BOdMd1v2Izkf+IFhvPb/6Q84jCOW50KQ1V4euxpfZhN4lcv7P0bNtCMO2lrL4rQS
-         oWo7aYJZVgzSize66ejx54WAjY2nkDXul5YPt5HTzJKx2SNfuoWqLzP/G6T08BX7Md8C
-         qHEcv29hUVc77PkwXn6ivqMsObc2I/b3bFPB8rJDCmhFn5G/QnchJbrByuUlia1HCv/G
-         uQwA==
-X-Gm-Message-State: AOAM532HZgF/B+Qtn9cVJdJE/jOERx5GcZn5MGeXQzd/Y0dbMasyLnXz
-        f89hCHGmIi9OUEiwaPxbGyG+wf1nwuOseWXX
-X-Google-Smtp-Source: ABdhPJwIE6dwJAZoV9M0FQR6LMsf6SjAEgt6wCg4eBQ8RCoATEiQSmZjb26E50hwZ7zQmqh0kHm3yg==
-X-Received: by 2002:a17:902:a585:b029:e7:3d46:660d with SMTP id az5-20020a170902a585b02900e73d46660dmr11634771plb.12.1617354308017;
-        Fri, 02 Apr 2021 02:05:08 -0700 (PDT)
-Received: from localhost.localdomain ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id js16sm7332353pjb.21.2021.04.02.02.05.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 02:05:07 -0700 (PDT)
-From:   Carlis <zhangxuezhi3@gmail.com>
-To:     gregkh@linuxfoundation.org, zhangxuezhi1@yulong.com
-Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org
-Subject: [PATCH] staging: fbtft: change snprintf() to scnprintf()
-Date:   Fri,  2 Apr 2021 09:05:01 +0000
-Message-Id: <20210402090501.152561-1-zhangxuezhi3@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S234424AbhDBJE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 05:04:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50498 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229553AbhDBJE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 05:04:57 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 944F160724;
+        Fri,  2 Apr 2021 09:04:54 +0000 (UTC)
+Date:   Fri, 2 Apr 2021 10:05:03 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/32] MAINTAINERS: update adi,ad5758.yaml reference
+Message-ID: <20210402100503.7d497d48@jic23-huawei>
+In-Reply-To: <ca35b929c098163cfda9682ce791572629b763e2.1617279355.git.mchehab+huawei@kernel.org>
+References: <cover.1617279355.git.mchehab+huawei@kernel.org>
+        <ca35b929c098163cfda9682ce791572629b763e2.1617279355.git.mchehab+huawei@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xuezhi Zhang <zhangxuezhi1@yulong.com>
+On Thu,  1 Apr 2021 14:17:21 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 
-show() must not use snprintf() when formatting the value to
-be returned to user space.
+> Changeset 1e6536ee349b ("dt-bindings:iio:dac:adi,ad5758 yaml conversion")
+> renamed: Documentation/devicetree/bindings/iio/dac/ad5758.txt
+> to: Documentation/devicetree/bindings/iio/dac/adi,ad5758.yaml.
+> 
+> Update its cross-reference accordingly.
+> 
+> Fixes: 1e6536ee349b ("dt-bindings:iio:dac:adi,ad5758 yaml conversion")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Hi Mauro,
 
-Signed-off-by: Xuezhi Zhang <zhangxuezhi1@yulong.com>
----
- drivers/staging/fbtft/fbtft-sysfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Oops. These have been on my todo list for a while to tidy up. I kind
+of forgot to check MAINTAINERS whilst doing the conversions.
 
-diff --git a/drivers/staging/fbtft/fbtft-sysfs.c b/drivers/staging/fbtft/fbtft-sysfs.c
-index 26e52cc2de64..7df92db648d6 100644
---- a/drivers/staging/fbtft/fbtft-sysfs.c
-+++ b/drivers/staging/fbtft/fbtft-sysfs.c
-@@ -199,7 +199,7 @@ static ssize_t show_debug(struct device *device,
- 	struct fb_info *fb_info = dev_get_drvdata(device);
- 	struct fbtft_par *par = fb_info->par;
- 
--	return snprintf(buf, PAGE_SIZE, "%lu\n", par->debug);
-+	return scnprintf(buf, PAGE_SIZE, "%lu\n", par->debug);
- }
- 
- static struct device_attribute debug_device_attr =
--- 
-2.25.1
+Ah well, thanks for tidying up.
+
+Applied to the togreg branch of iio.git and pushed out as testing for
+autobuilders to probably not notice.
+
+Thanks
+
+Jonathan
+
+p.s. For anything IIO related I'll notice more quickly in general
+if linux-iio@vger.kernel.org is cc'd.
+
+> ---
+>  MAINTAINERS | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 38d823d72e52..4c8a926ef201 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -1141,7 +1141,7 @@ W:	http://ez.analog.com/community/linux-device-drivers
+>  F:	Documentation/ABI/testing/sysfs-bus-iio-frequency-ad9523
+>  F:	Documentation/ABI/testing/sysfs-bus-iio-frequency-adf4350
+>  F:	Documentation/devicetree/bindings/iio/*/adi,*
+> -F:	Documentation/devicetree/bindings/iio/dac/ad5758.txt
+> +F:	Documentation/devicetree/bindings/iio/dac/adi,ad5758.yaml
+>  F:	drivers/iio/*/ad*
+>  F:	drivers/iio/adc/ltc249*
+>  F:	drivers/iio/amplifiers/hmc425a.c
 
