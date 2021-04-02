@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA496352940
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 12:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42B01352941
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 12:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234844AbhDBKCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 06:02:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44648 "EHLO
+        id S235031AbhDBKCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 06:02:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234832AbhDBKCC (ORCPT
+        with ESMTP id S234888AbhDBKCE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 06:02:02 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA65C0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 03:02:01 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id r12so6767831ejr.5
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 03:02:01 -0700 (PDT)
+        Fri, 2 Apr 2021 06:02:04 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2795C0613E6
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 03:02:02 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id bx7so4932485edb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 03:02:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=JAPYh3wLO5wVpTnW+OZ78M9DCvkkaloWIctMWkpD8UY=;
-        b=H7IbB81sFSE/r72039HgrP8rJYdRed9FialbbcCuV0LLtT3Ub2caoOOcq/mn7w9yAo
-         3tl5lsSM8iLU3X7HkyunAYmBqfMeg5gyvcqRusD1u7+GFOn7vC66meZ3S/QDQdVsqz4v
-         ZJ6wVuiVqCvPUh9gwNobFiEODcuXDwnOLiF2SbUdYuds5bSBs7d/94aC0iropPaokltU
-         wI3STTEdT4HURlu2gSTUd+Mzh5E+IsNm/+1Ytg679+NREkpI/Uv+5JBMP4HNKRqKJD7V
-         KNHMqUSW/ZV/Vy8o6NrLgsV+yk9t6gfYL/olL41ma/+D7F1XR+G7d9AZlx9B6ueNbEON
-         KWAw==
+        bh=nIY2sYvWAOKx6fw8woLxf3bCvMwVlUruJocGwJTs26M=;
+        b=jy2Mw6N2OtMTqqWNCYiUmujDxQcvQSauxMA4+dFGkDWSuuefLbdMzSEY2sr0q6m4/f
+         MxxfK5pjdEVxeqbjhYPiIOJANkNgp1B1IKBTwiR0AqIZCgMIpAc0ryRlHRx2Mf1bk1GZ
+         VZj94klGu8AP4NSXTu/jwo2nPqZKqV05U+FHByfxX0F57i7rICl7bDU/YcJYH5r1DpkB
+         xnlBJGM61oAeNlqHTkMIAKRc6o12kEPA2ZLD/qhD+mAQ5mpogMegYWKlVt0LulPCfpXD
+         mtWVCkbhOJFl0RdQSVZe7Zr9i8p5aERbwPA972gUzbaO5BgM1jJuDBz/4i38tSxwT5/8
+         /E2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=JAPYh3wLO5wVpTnW+OZ78M9DCvkkaloWIctMWkpD8UY=;
-        b=WR0gtQ+drgivWAMwQijkFgTfpMcTLb5NwA+v97b6gqGrNvebLkSeojI2ytzoE61jMX
-         Mij2+YyyUb1EXPmjkGTmdCh9Jsitl6ZKXVfHWXWYC49OM1fOJMa0laDqZsz6APdsUFwN
-         wWKvnOlleo21JhMMpRDyoxIS+iPsQ0AusILH+zSqYoq+tBUPOP8AjF1EbQhLe/sr+7cD
-         r30jRTJrbz9/Sw0tThHjHmo1ittgRV2PvElu3r3SmHIftr3pzQYmVFBEX7JFCMag0Bm7
-         Nydy//lvXCl/iyluRfIrNpUMRPfNPTrWQXjNKIbnUvmkmi8DiMFAWNQGj76qB07/Cut1
-         l+0g==
-X-Gm-Message-State: AOAM5327ALWtgopr9FhoqWmOSrfwpK48aYj5txM38aQG1HEKYlwfHhe0
-        PgMRaia630YOYUth3BUlons=
-X-Google-Smtp-Source: ABdhPJxqEzs4K39MM6JVgNxw+VAPU+ByhtPr6VE0CFEa9Zfq7afF0dFv0e+SXH5NHtMHwQ3/m/mDpg==
-X-Received: by 2002:a17:906:cecc:: with SMTP id si12mr13368786ejb.461.1617357720076;
-        Fri, 02 Apr 2021 03:02:00 -0700 (PDT)
+        bh=nIY2sYvWAOKx6fw8woLxf3bCvMwVlUruJocGwJTs26M=;
+        b=KBPSVW/ZF7bHuOlmYGVa1NENXwnDOUqBzGU4EpNwxBwJDoDVIbzLg1jevqFrJ7ubDn
+         29HNaMySTxXlURjN7dwnQx9Fy7Tphjt6ZysgiuYbTmKKYoL5nDJkya2Uf7KZxzMDzt8h
+         KhiIHotLaifnvA1/62ttz2wWBBudfhUkVTpzO8ti8y7CrDzavhhEugFooLpHFyIbKYeM
+         bTdLshttZ/mWz9pw9COejRwZOMe0oiZunrLthRomMbTLLIg8i64+jGHW/sbimUhas9NZ
+         cNrxRnL+NICeal9JDpiQKBiXSZfPpms7I9KsE20SAIT8VnGf95G6xSrJFHx9LjgZF51n
+         FA4w==
+X-Gm-Message-State: AOAM530dvBcQdCQqP+sV5UmHh8tPguh00bpIBAfglVa1mB/19iUrWuX0
+        v5gfibCT9FfVIKvZ59ePfRg=
+X-Google-Smtp-Source: ABdhPJyKQS6XyVhu70o5FLQQ6r2ltJgZs1wwIMhvIaxJ8wlh02iysGdEMLq0wajnJ6/VQmWjwP1r2Q==
+X-Received: by 2002:aa7:c312:: with SMTP id l18mr760224edq.190.1617357721631;
+        Fri, 02 Apr 2021 03:02:01 -0700 (PDT)
 Received: from agape ([5.171.72.128])
-        by smtp.gmail.com with ESMTPSA id t6sm5148814edq.48.2021.04.02.03.01.59
+        by smtp.gmail.com with ESMTPSA id x4sm4863867edd.58.2021.04.02.03.02.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 03:01:59 -0700 (PDT)
+        Fri, 02 Apr 2021 03:02:01 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     dan.carpenter@oracle.com, joe@perches.com,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH 08/16] staging: rtl8723bs: tidy up some error handling
-Date:   Fri,  2 Apr 2021 12:01:28 +0200
-Message-Id: <1d50d74e8d93f0db7124d3effb676b5405affc02.1617356821.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 09/16] staging: rtl8723bs: remove RT_TRACE logs in core/rtw_mlme_ext.c
+Date:   Fri,  2 Apr 2021 12:01:29 +0200
+Message-Id: <a6ed8753e63a95698657b7dcf0bbd81241c3a1a1.1617356821.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1617356821.git.fabioaiuto83@gmail.com>
 References: <cover.1617356821.git.fabioaiuto83@gmail.com>
@@ -65,77 +65,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-the RT_TRACE() output is not useful so we want to delete it. In this case
-there is no cleanup for rtw_cleanbss_cmd() required or even possible. I've
-deleted the RT_TRACE() output and added a goto unlock to show
-that we can't continue if rtw_createbss_cmd() fails.
+remove all RT_TRACE logs
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/core/rtw_mlme.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+ drivers/staging/rtl8723bs/core/rtw_mlme_ext.c | 39 +++----------------
+ 1 file changed, 5 insertions(+), 34 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme.c b/drivers/staging/rtl8723bs/core/rtw_mlme.c
-index e8a39519fed8..e6bced0269b1 100644
---- a/drivers/staging/rtl8723bs/core/rtw_mlme.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_mlme.c
-@@ -815,6 +815,7 @@ void rtw_surveydone_event_callback(struct adapter	*adapter, u8 *pbuf)
- 				if (rtw_select_and_join_from_scanned_queue(pmlmepriv) == _SUCCESS) {
- 					_set_timer(&pmlmepriv->assoc_timer, MAX_JOIN_TIMEOUT);
- 				} else {
-+					u8 ret = _SUCCESS;
- 					struct wlan_bssid_ex    *pdev_network = &(adapter->registrypriv.dev_network);
- 					u8 *pibss = adapter->registrypriv.dev_network.MacAddress;
+diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+index 8aadcf72a7ba..9855a77a5188 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
++++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+@@ -526,14 +526,8 @@ void mgt_dispatcher(struct adapter *padapter, union recv_frame *precv_frame)
+ 	struct dvobj_priv *psdpriv = padapter->dvobj;
+ 	struct debug_priv *pdbgpriv = &psdpriv->drv_dbg;
  
-@@ -828,10 +829,11 @@ void rtw_surveydone_event_callback(struct adapter	*adapter, u8 *pbuf)
- 
- 					pmlmepriv->fw_state = WIFI_ADHOC_MASTER_STATE;
- 
--					if (rtw_createbss_cmd(adapter) != _SUCCESS)
--						;
+-	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_,
+-		 ("+mgt_dispatcher: type(0x%x) subtype(0x%x)\n",
+-		  GetFrameType(pframe), GetFrameSubType(pframe)));
 -
- 					pmlmepriv->to_join = false;
+-	if (GetFrameType(pframe) != WIFI_MGT_TYPE) {
+-		RT_TRACE(_module_rtl871x_mlme_c_, _drv_err_, ("mgt_dispatcher: type(0x%x) error!\n", GetFrameType(pframe)));
++	if (GetFrameType(pframe) != WIFI_MGT_TYPE)
+ 		return;
+-	}
+ 
+ 	/* receive the frames that ra(a1) is my address or ra(a1) is bc address. */
+ 	if (memcmp(GetAddr1Ptr(pframe), myid(&padapter->eeprompriv), ETH_ALEN) &&
+@@ -545,10 +539,9 @@ void mgt_dispatcher(struct adapter *padapter, union recv_frame *precv_frame)
+ 
+ 	index = GetFrameSubType(pframe) >> 4;
+ 
+-	if (index >= ARRAY_SIZE(mlme_sta_tbl)) {
+-		RT_TRACE(_module_rtl871x_mlme_c_, _drv_err_, ("Currently we do not support reserved sub-fr-type =%d\n", index));
++	if (index >= ARRAY_SIZE(mlme_sta_tbl))
+ 		return;
+-	}
 +
-+					ret = rtw_createbss_cmd(adapter);
-+					if (ret != _SUCCESS)
-+						goto unlock;
- 				}
- 			}
- 		} else {
-@@ -877,7 +879,7 @@ void rtw_surveydone_event_callback(struct adapter	*adapter, u8 *pbuf)
- 	}
+ 	ptable += index;
  
- 	/* DBG_871X("scan complete in %dms\n", jiffies_to_msecs(jiffies - pmlmepriv->scan_start_time)); */
+ 	if (psta) {
+@@ -2675,8 +2668,6 @@ static int _issue_probereq(struct adapter *padapter,
+ 	int	bssrate_len = 0;
+ 	u8 bc_addr[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+ 
+-	RT_TRACE(_module_rtl871x_mlme_c_, _drv_notice_, ("+issue_probereq\n"));
 -
-+unlock:
- 	spin_unlock_bh(&pmlmepriv->lock);
+ 	pmgntframe = alloc_mgtxmitframe(pxmitpriv);
+ 	if (!pmgntframe)
+ 		goto exit;
+@@ -2743,8 +2734,6 @@ static int _issue_probereq(struct adapter *padapter,
  
- 	rtw_os_xmit_schedule(adapter);
-@@ -1564,6 +1566,7 @@ void rtw_stadel_event_callback(struct adapter *adapter, u8 *pbuf)
- 		rtw_free_stainfo(adapter,  psta);
+ 	pattrib->last_txcmdsz = pattrib->pktlen;
  
- 		if (adapter->stapriv.asoc_sta_count == 1) {/* a sta + bc/mc_stainfo (not Ibss_stainfo) */
-+			u8 ret = _SUCCESS;
- 			/* rtw_indicate_disconnect(adapter);removed@20091105 */
- 			spin_lock_bh(&(pmlmepriv->scanned_queue.lock));
- 			/* free old ibss network */
-@@ -1591,12 +1594,14 @@ void rtw_stadel_event_callback(struct adapter *adapter, u8 *pbuf)
- 				_clr_fwstate_(pmlmepriv, WIFI_ADHOC_STATE);
+-	RT_TRACE(_module_rtl871x_mlme_c_, _drv_notice_, ("issuing probe_req, tx_len =%d\n", pattrib->last_txcmdsz));
+-
+ 	if (wait_ack) {
+ 		ret = dump_mgntframe_and_wait_ack(padapter, pmgntframe);
+ 	} else {
+@@ -4441,8 +4430,6 @@ void start_create_ibss(struct adapter *padapter)
+ 
+ 		/* issue beacon */
+ 		if (send_beacon(padapter) == _FAIL) {
+-			RT_TRACE(_module_rtl871x_mlme_c_, _drv_err_, ("issuing beacon frame fail....\n"));
+-
+ 			report_join_res(padapter, -1);
+ 			pmlmeinfo->state = WIFI_FW_NULL_STATE;
+ 		} else {
+@@ -4622,8 +4609,6 @@ static void process_80211d(struct adapter *padapter, struct wlan_bssid_ex *bssid
+ 		memset(country, 0, 4);
+ 		memcpy(country, p, 3);
+ 		p += 3;
+-		RT_TRACE(_module_rtl871x_mlme_c_, _drv_notice_,
+-				("%s: 802.11d country =%s\n", __func__, country));
+ 
+ 		i = 0;
+ 		while ((ie - p) >= 3) {
+@@ -4813,9 +4798,6 @@ static void process_80211d(struct adapter *padapter, struct wlan_bssid_ex *bssid
+ 					break;
+ 
+ 				chplan_new[i].ScanType = SCAN_ACTIVE;
+-				RT_TRACE(_module_rtl871x_mlme_c_, _drv_notice_,
+-						 ("%s: change channel %d scan type from passive to active\n",
+-						  __func__, channel));
  			}
- 
--			if (rtw_createbss_cmd(adapter) != _SUCCESS)
--				;
-+			ret = rtw_createbss_cmd(adapter);
-+			if (ret != _SUCCESS)
-+				goto unlock;
+ 			break;
  		}
+@@ -6332,10 +6314,6 @@ u8 mlme_evt_hdl(struct adapter *padapter, unsigned char *pbuf)
+ 	#ifdef CHECK_EVENT_SEQ
+ 	/*  checking event sequence... */
+ 	if (evt_seq != (atomic_read(&pevt_priv->event_seq) & 0x7f)) {
+-		RT_TRACE(_module_rtl871x_cmd_c_, _drv_info_,
+-			 ("Event Seq Error! %d vs %d\n", (evt_seq & 0x7f),
+-			  (atomic_read(&pevt_priv->event_seq) & 0x7f)));
+-
+ 		pevt_priv->event_seq = (evt_seq+1)&0x7f;
  
- 	}
+ 		goto _abort_event_;
+@@ -6343,21 +6321,14 @@ u8 mlme_evt_hdl(struct adapter *padapter, unsigned char *pbuf)
+ 	#endif
  
-+unlock:
- 	spin_unlock_bh(&pmlmepriv->lock);
- }
+ 	/*  checking if event code is valid */
+-	if (evt_code >= MAX_C2HEVT) {
+-		RT_TRACE(_module_rtl871x_cmd_c_, _drv_err_, ("\nEvent Code(%d) mismatch!\n", evt_code));
++	if (evt_code >= MAX_C2HEVT)
+ 		goto _abort_event_;
+-	}
  
+ 	/*  checking if event size match the event parm size */
+ 	if ((wlanevents[evt_code].parmsize != 0) &&
+-			(wlanevents[evt_code].parmsize != evt_sz)) {
+-
+-		RT_TRACE(_module_rtl871x_cmd_c_, _drv_err_, ("\nEvent(%d) Parm Size mismatch (%d vs %d)!\n",
+-			evt_code, wlanevents[evt_code].parmsize, evt_sz));
++			(wlanevents[evt_code].parmsize != evt_sz))
+ 		goto _abort_event_;
+ 
+-	}
+-
+ 	atomic_inc(&pevt_priv->event_seq);
+ 
+ 	peventbuf += 2;
 -- 
 2.20.1
 
