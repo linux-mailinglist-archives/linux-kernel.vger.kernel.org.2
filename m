@@ -2,91 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 210383527CA
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 11:03:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72B6E3527CC
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 11:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234407AbhDBJDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 05:03:51 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:39118 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbhDBJDu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 05:03:50 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8E0972C1;
-        Fri,  2 Apr 2021 11:03:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1617354228;
-        bh=Kzbj82j6a5RIuhqwfbtA9bXvsFhNaTtuBCtplxFGb1Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Mg4cWSYr/Y24IuZbFVB601DItDd7WRI6xF576+OABSC0pu14BnvhI2VVK5xXvIMJW
-         BXSKYgw7VQhhzsAtiD26jEM3W3Lh5u+ZimdJhUhTrs8cbuotvH3p0NDyiRfs7dem/i
-         B+3XtTqFrpv0Q2ctrWkenZZopY+J9G282oT1+WcI=
-Date:   Fri, 2 Apr 2021 12:03:04 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Rob Herring <robh@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 24/32] MAINTAINERS: update imi,rdacm2x-gmsl.yaml reference
-Message-ID: <YGbdyLeLSFJ3uxcv@pendragon.ideasonboard.com>
-References: <cover.1617279355.git.mchehab+huawei@kernel.org>
- <b03a41b5051b6cb115b2aa9c3d610e75d84dcfea.1617279356.git.mchehab+huawei@kernel.org>
- <YGbdbL6Bf4293Pno@pendragon.ideasonboard.com>
+        id S234489AbhDBJEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 05:04:02 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:58930 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229553AbhDBJEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 05:04:01 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1lSFif-0002IM-40; Fri, 02 Apr 2021 20:03:58 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 02 Apr 2021 20:03:56 +1100
+Date:   Fri, 2 Apr 2021 20:03:56 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Theodore Ts'o <tytso@mit.edu>, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Jann Horn <jannh@google.com>, Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH RESEND] random: initialize ChaCha20 constants with
+ correct endianness
+Message-ID: <20210402090356.GA24509@gondor.apana.org.au>
+References: <20210322051347.266831-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YGbdbL6Bf4293Pno@pendragon.ideasonboard.com>
+In-Reply-To: <20210322051347.266831-1-ebiggers@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 12:01:35PM +0300, Laurent Pinchart wrote:
-> Hi Mauro,
+On Sun, Mar 21, 2021 at 10:13:47PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Thank you for the patch.
+> On big endian CPUs, the ChaCha20-based CRNG is using the wrong
+> endianness for the ChaCha20 constants.
 > 
-> On Thu, Apr 01, 2021 at 02:17:44PM +0200, Mauro Carvalho Chehab wrote:
-> > The file name: Documentation/devicetree/bindings/media/i2c/rdacm2x-gmsl.yaml
-> > should be, instead: Documentation/devicetree/bindings/media/i2c/imi,rdacm2x-gmsl.yaml.
+> This doesn't matter cryptographically, but technically it means it's not
+> ChaCha20 anymore.  Fix it to always use the standard constants.
 > 
-> While at it, shouldn't we also rename the file to imi,rdacm2x.yaml ?
+> Cc: linux-crypto@vger.kernel.org
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Jann Horn <jannh@google.com>
+> Cc: Theodore Ts'o <tytso@mit.edu>
+> Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
+> Acked-by: Ard Biesheuvel <ardb@kernel.org>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>  drivers/char/random.c   | 4 ++--
+>  include/crypto/chacha.h | 9 +++++++--
+>  2 files changed, 9 insertions(+), 4 deletions(-)
 
-I spoke too fast, sorry. There are RDACM2x cameras that use FPD-Link III
-(RDACM23, 24, 25, 28, 29).
-
-> > Update its cross-reference accordingly.
-> > 
-> > Fixes: 34009bffc1c6 ("media: i2c: Add RDACM20 driver")
-> > Fixes: e9f817689789 ("media: dt-bindings: media: i2c: Add bindings for IMI RDACM2x")
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> > ---
-> >  MAINTAINERS | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 1644b6e9697c..b405ee71f730 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -15258,7 +15258,7 @@ M:	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-> >  M:	Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-> >  L:	linux-media@vger.kernel.org
-> >  S:	Maintained
-> > -F:	Documentation/devicetree/bindings/media/i2c/rdacm2x-gmsl.yaml
-> > +F:	Documentation/devicetree/bindings/media/i2c/imi,rdacm2x-gmsl.yaml
-> >  F:	drivers/media/i2c/max9271.c
-> >  F:	drivers/media/i2c/max9271.h
-> >  F:	drivers/media/i2c/rdacm21.c
-
+Patch applied.  Thanks.
 -- 
-Regards,
-
-Laurent Pinchart
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
