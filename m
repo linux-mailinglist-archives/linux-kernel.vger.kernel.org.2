@@ -2,35 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA4A352473
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 02:27:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46087352477
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 02:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236295AbhDBA1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 20:27:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34462 "EHLO mail.kernel.org"
+        id S236269AbhDBAdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 20:33:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233677AbhDBA1P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 20:27:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77E6761132;
-        Fri,  2 Apr 2021 00:27:15 +0000 (UTC)
+        id S233677AbhDBAdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 20:33:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2111D6100C;
+        Fri,  2 Apr 2021 00:32:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1617323235;
-        bh=/Exqmsj4fbDXgH8gSPGLMJ8j4wuc+/oIkvYQ004EMXo=;
+        s=korg; t=1617323580;
+        bh=l5OBmZolqQt7kxKdrbukEJTSt9ja/UZ2NhAmGHQ3zxU=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=HQAWp0D1E2Kq+vHg51vvMsqRvT69fv2eapjK+P54tNoh23W9F4eMrRHZ3/ugCEKkR
-         OzWIoaxHzUUWV6EvXzV5nD9yGN1dfIbvEnQqk/2TbDQOJH5t8+C+yGYYoPxxRdI4sy
-         /SHTmek8WdU6Ihc3k2GIYlL7CsJiaGUZUi6VNEus=
-Date:   Thu, 1 Apr 2021 17:27:14 -0700
+        b=kG/JulKQ/j7q300El8hcUdl9djvCOTMS316bPRU5+zmo9B22mCs+usRR8Evbkkn3N
+         vA22n5vywmXywzyPXhGzM0UbJXdoQ9BA2ttE7BZclCb+sTtuAmm/YGdbm35L7i53EV
+         glVlMEwvdxswxe9y/dSTG3XBRgE8mCchA/H3Kpqg=
+Date:   Thu, 1 Apr 2021 17:32:58 -0700
 From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     linux-kernel@vger.kernel.org, kael_w@yeah.net,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Wan Jiabing <wanjiabing@vivo.com>
-Subject: Re: [PATCH] scripts: A new script for checking duplicate struct
- declaration
-Message-Id: <20210401172714.1bccb8623fbcbd02bba21bac@linux-foundation.org>
-In-Reply-To: <20210401110943.1010796-1-wanjiabing@vivo.com>
-References: <20210401110943.1010796-1-wanjiabing@vivo.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Yury Norov <yury.norov@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux-SH <linux-sh@vger.kernel.org>,
+        Alexey Klimov <aklimov@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.osdn.me>
+Subject: Re: [PATCH v6 00/12] lib/find_bit: fast path for small bitmaps
+Message-Id: <20210401173258.1f9a107ef13f210fb4896780@linux-foundation.org>
+In-Reply-To: <CAHp75VdTndAD1gyLE_e8m9AaxrRMCNpYEu22+tWe1xrAz8oKBw@mail.gmail.com>
+References: <20210401003153.97325-1-yury.norov@gmail.com>
+        <CAHp75VdzRXPsQ7Jvivm5UU+mfkgQ_0rmnegp04v-v9fwrjdrqg@mail.gmail.com>
+        <CAK8P3a2EGc4BS7UTyC6=ySgLEoyqbswh1Gh_=M21NmhRThssYQ@mail.gmail.com>
+        <CAHp75VdTndAD1gyLE_e8m9AaxrRMCNpYEu22+tWe1xrAz8oKBw@mail.gmail.com>
 X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -39,78 +58,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  1 Apr 2021 19:09:43 +0800 Wan Jiabing <wanjiabing@vivo.com> wrote:
+On Thu, 1 Apr 2021 12:50:31 +0300 Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 
-> checkdeclares: find struct declared more than once.
-> Inspired by checkincludes.pl.
-> This script checks for duplicate struct declares.
-> Note that this will not take into consideration macros, so
-> you should run this only if you know you do have real dups
-> and do not have them under #ifdef's.
-> You could also just review the results.
+> > I normally don't have a lot of material for asm-generic either, half
+> > the time there are no pull requests at all for a given release. I would
+> > expect future changes to the bitmap implementation to only need
+> > an occasional bugfix, which could go through either the asm-generic
+> > tree or through mm and doesn't need another separate pull request.
+> >
+> > If it turns out to be a tree that needs regular updates every time,
+> > then having a top level repository in linux-next would be appropriate.
+> 
+> Agree. asm-generic may serve for this. My worries are solely about how
+> much burden we add on Andrew's shoulders.
 
-include/linux/bpf-cgroup.h: struct bpf_prog is declared more than once.
-include/linux/bpf.h: struct xdp_buff is declared more than once.
-include/linux/bpf.h: struct sk_buff is declared more than once.
-include/linux/bpf.h: struct btf_type is declared more than once.
-include/linux/debug_locks.h: struct task_struct is declared more than once.
-include/linux/fs.h: struct iov_iter is declared more than once.
-include/linux/fs.h: struct files_struct is declared more than once.
-include/linux/gpio.h: struct device is declared more than once.
-include/linux/host1x.h: struct host1x is declared more than once.
-include/linux/intel_rapl.h: struct rapl_package is declared more than once.
-include/linux/libnvdimm.h: struct device is declared more than once.
-include/linux/lightnvm.h: struct nvm_rq is declared more than once.
-include/linux/memcontrol.h: struct mem_cgroup is declared more than once.
-include/linux/mount.h: struct path is declared more than once.
-include/linux/mutex.h: struct ww_acquire_ctx is declared more than once.
-include/linux/netfilter.h: struct flowi is declared more than once.
-include/linux/netfilter.h: struct nf_conntrack_tuple is declared more than once.
-include/linux/netfilter.h: struct nlattr is declared more than once.
-include/linux/netfilter.h: struct nf_conn is declared more than once.
-include/linux/profile.h: struct pt_regs is declared more than once.
-include/linux/trace_events.h: struct trace_array is declared more than once.
-
-Sigh.  I keep telling them - "put the forward declaration at
-top-of-file so it doesn't get duplicated later on".  Nobody listens to
-Andrew.
-
-> --- /dev/null
-> +++ b/scripts/checkdeclares.pl
-> @@ -0,0 +1,53 @@
-> +#!/usr/bin/env perl
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# checkdeclares: find struct declared more than once
-> +#
-> +# Copyright 2021 Wan Jiabing<wanjiabing@vivo.com>
-> +# Inspired by checkincludes.pl
-> +#
-> +# This script checks for duplicate struct declares.
-> +# Note that this will not take into consideration macros so
-> +# you should run this only if you know you do have real dups
-> +# and do not have them under #ifdef's.
-> +# You could also just review the results.
-> +
-> +use strict;
-> +
-> +sub usage {
-> +	print "Usage: checkdeclares.pl \n";
-> +	print "We just warn of struct declaration duplicates\n";
-
-Not quite accurate.  I added this fixup:
-
---- a/scripts/checkdeclares.pl~scripts-a-new-script-for-checking-duplicate-struct-declaration-fix
-+++ a/scripts/checkdeclares.pl
-@@ -15,8 +15,8 @@
- use strict;
- 
- sub usage {
--	print "Usage: checkdeclares.pl \n";
--	print "We just warn of struct declaration duplicates\n";
-+	print "Usage: checkdeclares.pl file1.h ...\n";
-+	print "Warns of struct declaration duplicates\n";
- 	exit 1;
- }
- 
+Is fine.  Saving other developers from having to maintain tiny trees is
+a thing I do.
 
