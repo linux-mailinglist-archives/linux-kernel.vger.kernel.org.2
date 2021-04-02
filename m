@@ -2,101 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2089A352D20
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F7E352D64
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235310AbhDBPVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 11:21:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57226 "EHLO
+        id S236065AbhDBP1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 11:27:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235435AbhDBPVJ (ORCPT
+        with ESMTP id S235113AbhDBP1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 11:21:09 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB958C0613E6;
-        Fri,  2 Apr 2021 08:21:07 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id d191so2654415wmd.2;
-        Fri, 02 Apr 2021 08:21:07 -0700 (PDT)
+        Fri, 2 Apr 2021 11:27:01 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23574C061788
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 08:27:00 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id b4so8052583lfi.6
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 08:27:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WP3VoNZ5+TpRVICeSpHKbkMESNKhKPPMgvYTDtFR2No=;
-        b=efsvJeDH4bfJGtQdkNbnC9ctwhORj113XksECOyNa6qnTIizlFnNbshKjAd28C9NlE
-         xYKFm+dLni/z0kazJRzB3W1BZ7WwvreVw++K3NB2znXjFCTIHack9TTS3IWOrlD55WuS
-         KPUXjY8jP9nKMcDlCNUenwEJitCZbY1qHUVO8VKFEXZBw6kY5W3CzArvXH36OXdqx8lB
-         TPnbpIqax2bgGz9IjKpSswkfw4szZXVHzbY9ovIAxw4Evghu24HGSx/RRS+UwLPUBtyH
-         348aIxdoekK6fHqAokkMLa+uY/BFgnigXlHeB+B51hmHiyhj4XYjJ4m7WdIcOcoAmXGT
-         IMfg==
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZjsS1bI2uKq/2mrnLoFtUTJW7+/w5vjC+pfAdCGzd/4=;
+        b=sLsxFjLldrKmyHyURfqQVaKuUqWfHVD0j45vA/YcBUS7CK7j45ipCGAFB8I3JUaul7
+         EeEMeHuOsEsTv/LrV3rlZXAaQxWH6eHqX/HhMPc2amFnqgahdYRDYS01rQ3A3gNG09Q6
+         /wpQeMSCIKilbzP9PBU+7XDjS3/CKdHWx5T4wwUIHeCsLzuHQfv2lJ0sHOn2ypoBLhsr
+         ffP0o/FDsjV36uhUX+CKEbJ28/nBdgfXMNS+cPDy0ExO4c6D5sPQoPmVHZnpD4tMFq0A
+         jDdGh3Vgx9XQFa3JfbWE5j+nPUsokwi2vRJ+mCVB5TiW94Z81EUfv0ybUkXSh2ftQIiD
+         tN/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WP3VoNZ5+TpRVICeSpHKbkMESNKhKPPMgvYTDtFR2No=;
-        b=fmpG8KdYupIN+VAnLqV14+U+tqtMCJsleNdg6eY5KvQj/Cc4Jpl57zgmz8KN9vQPD4
-         Txdz/UmTbE3wtjNoUdnMlErgUMAMyJnSZBaJkruLfQ1410M45BN/fvZRFzyIFSm17ej+
-         vbavpC6j5EFSI4KO6wyDvHM+YisKKrlWnNvco6nknY0pwP7Mh6FyXFQ5B2g418Kx1Iti
-         lUosIoT9wflgKSQZat+Ag5jdRNHZocOl9ScBVEdJDfFQv4i5Ky0LRl1ikkFktrI3S48T
-         jlWOYTBxTinpsAukhFCgmHcpvlAHBG/uUmRyj025grnC7GedtWk8umPgawYL2c2RcpwY
-         hcrg==
-X-Gm-Message-State: AOAM533SoJ3BK/BW8L7rPcZYQGeUvIfonYdVYW+Gu1cgh18KrA1bFdTX
-        w4YU7qglVK3syaUQZgaX2/aRDOSCY4picJXZmxM=
-X-Google-Smtp-Source: ABdhPJwbbQ7KmfS8gkvdcBnX8Vt1oOMeWn3SKmQPsX2LZHyur7qUbf39fZLg5ba9thU15fnffhc2jopzrJHXrPc2T/E=
-X-Received: by 2002:a1c:4b15:: with SMTP id y21mr13582268wma.94.1617376866612;
- Fri, 02 Apr 2021 08:21:06 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZjsS1bI2uKq/2mrnLoFtUTJW7+/w5vjC+pfAdCGzd/4=;
+        b=TaDPUMG8Q2rJ/DsgGaplwC0zWLhxHWwvYU3Oqbg4SMnS1cCly9sNKlfUPrJ0YCwW7F
+         XRVIMit4QqBTM0XYYi9+h3KePVtMxg9RvWu6e+LbtYiZicDCRXMyRH3CeNTv5SfzaZc3
+         WJnayURMmNUIZfMdPxv6RtNmOiI2R5858rjjmxJgQQONwb8WaacV08r4Fp49LahzM6zt
+         8GkpFKOtIZ+kTPNhvlNtpLDbO7F63TNROOOQOJoDUUpBObdEvm8oPANpY+s08VEfmjj+
+         j3gW+kpbSna7BkkR3YAuS4hWAMTTafl3GLYgGgJbU4L+3kWCPj0hRNzO+i5cQrGLG1w6
+         9AvQ==
+X-Gm-Message-State: AOAM533XwNMo1aOEPdpxccQLp1QyA0IGYF5QCdpPKLaCeh/PlBGNNg9A
+        6XbK3vEcD5qIiLf9vXqbWTZtwA==
+X-Google-Smtp-Source: ABdhPJz8iSga8n37GQkADy+ssjbmrF28xrjeJGW7r3kmWl1I/wA1rNnTc3V3f/miI9fjdcL6UCQoyw==
+X-Received: by 2002:a05:6512:21a:: with SMTP id a26mr9409958lfo.507.1617377218429;
+        Fri, 02 Apr 2021 08:26:58 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id o11sm950978ljg.42.2021.04.02.08.26.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Apr 2021 08:26:57 -0700 (PDT)
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+X-Google-Original-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 1E1E310257C; Fri,  2 Apr 2021 18:26:59 +0300 (+03)
+To:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Jim Mattson <jmattson@google.com>
+Cc:     David Rientjes <rientjes@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: [RFCv1 0/7] TDX and guest memory unmapping
+Date:   Fri,  2 Apr 2021 18:26:38 +0300
+Message-Id: <20210402152645.26680-1-kirill.shutemov@linux.intel.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-References: <1617364493-13518-1-git-send-email-kalyan_t@codeaurora.org>
-In-Reply-To: <1617364493-13518-1-git-send-email-kalyan_t@codeaurora.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Fri, 2 Apr 2021 08:24:31 -0700
-Message-ID: <CAF6AEGskP-TNTk33R=qSi39T3g=GttR8K_j+Qk4FQTo23Y7v-g@mail.gmail.com>
-Subject: Re: [v1] drm/msm/disp/dpu1: program 3d_merge only if block is attached
-To:     Kalyan Thota <kalyan_t@codeaurora.org>
-Cc:     y@qualcomm.com, dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Krishna Manikandan <mkrishn@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 2, 2021 at 4:55 AM Kalyan Thota <kalyan_t@codeaurora.org> wrote:
->
-> Update the 3d merge as active in the data path only if
-> the hw block is selected in the configuration.
->
-> Reported-by: Stephen Boyd <swboyd@chromium.org>
+TDX integrity check failures may lead to system shutdown host kernel must
+not allow any writes to TD-private memory. This requirment clashes with
+KVM design: KVM expects the guest memory to be mapped into host userspace
+(e.g. QEMU).
 
-Thanks, I've added:
+This patchset aims to start discussion on how we can approach the issue.
 
-Fixes: 73bfb790ac78 ("msm:disp:dpu1: setup display datapath for SC7180 target")
+The core of the change is in the last patch. Please see more detailed
+description of the issue and proposoal of the solution there.
 
-> Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-> index 8981cfa..92e6f1b 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-> @@ -496,7 +496,9 @@ static void dpu_hw_ctl_intf_cfg_v1(struct dpu_hw_ctl *ctx,
->
->         DPU_REG_WRITE(c, CTL_TOP, mode_sel);
->         DPU_REG_WRITE(c, CTL_INTF_ACTIVE, intf_active);
-> -       DPU_REG_WRITE(c, CTL_MERGE_3D_ACTIVE, BIT(cfg->merge_3d - MERGE_3D_0));
-> +       if (cfg->merge_3d)
-> +               DPU_REG_WRITE(c, CTL_MERGE_3D_ACTIVE,
-> +                             BIT(cfg->merge_3d - MERGE_3D_0));
->  }
->
->  static void dpu_hw_ctl_intf_cfg(struct dpu_hw_ctl *ctx,
-> --
-> 2.7.4
->
+The patchset can also be found here:
+
+git://git.kernel.org/pub/scm/linux/kernel/git/kas/linux.git kvm-unmapped-poison
+
+Kirill A. Shutemov (7):
+  x86/mm: Move force_dma_unencrypted() to common code
+  x86/kvm: Introduce KVM memory protection feature
+  x86/kvm: Make DMA pages shared
+  x86/kvm: Use bounce buffers for KVM memory protection
+  x86/kvmclock: Share hvclock memory with the host
+  x86/realmode: Share trampoline area if KVM memory protection enabled
+  KVM: unmap guest memory using poisoned pages
+
+ arch/x86/Kconfig                     |   9 +-
+ arch/x86/include/asm/cpufeatures.h   |   1 +
+ arch/x86/include/asm/io.h            |   4 +-
+ arch/x86/include/asm/kvm_para.h      |   5 +
+ arch/x86/include/asm/mem_encrypt.h   |   7 +-
+ arch/x86/include/uapi/asm/kvm_para.h |   3 +-
+ arch/x86/kernel/kvm.c                |  20 ++++
+ arch/x86/kernel/kvmclock.c           |   2 +-
+ arch/x86/kernel/pci-swiotlb.c        |   3 +-
+ arch/x86/kvm/Kconfig                 |   1 +
+ arch/x86/kvm/cpuid.c                 |   3 +-
+ arch/x86/kvm/mmu/mmu.c               |  15 ++-
+ arch/x86/kvm/mmu/paging_tmpl.h       |  10 +-
+ arch/x86/kvm/x86.c                   |   6 +
+ arch/x86/mm/Makefile                 |   2 +
+ arch/x86/mm/mem_encrypt.c            |  74 ------------
+ arch/x86/mm/mem_encrypt_common.c     |  87 ++++++++++++++
+ arch/x86/mm/pat/set_memory.c         |  10 ++
+ arch/x86/realmode/init.c             |   7 +-
+ include/linux/kvm_host.h             |  12 ++
+ include/linux/swapops.h              |  20 ++++
+ include/uapi/linux/kvm_para.h        |   5 +-
+ mm/gup.c                             |  31 +++--
+ mm/memory.c                          |  45 +++++++-
+ mm/page_vma_mapped.c                 |   8 +-
+ mm/rmap.c                            |   2 +-
+ mm/shmem.c                           |   7 ++
+ virt/kvm/Kconfig                     |   3 +
+ virt/kvm/kvm_main.c                  | 164 ++++++++++++++++++++++++---
+ 29 files changed, 442 insertions(+), 124 deletions(-)
+ create mode 100644 arch/x86/mm/mem_encrypt_common.c
+
+-- 
+2.26.3
+
