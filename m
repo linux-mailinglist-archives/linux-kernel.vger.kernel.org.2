@@ -2,74 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C2D352E1A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 19:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F23352E1E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 19:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235860AbhDBRSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 13:18:17 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:54980 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234759AbhDBRSP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 13:18:15 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.0.3)
- id b6f057814a45bb33; Fri, 2 Apr 2021 19:18:12 +0200
-Received: from kreacher.localnet (89-64-80-75.dynamic.chello.pl [89.64.80.75])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 42E5A6690CC;
-        Fri,  2 Apr 2021 19:18:12 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: linux-next: build warning after merge of the pm tree
-Date:   Fri, 02 Apr 2021 19:18:11 +0200
-Message-ID: <2597122.mvXUDI8C0e@kreacher>
-In-Reply-To: <87czvfu9j5.fsf@vitty.brq.redhat.com>
-References: <20210331112945.11aa88f5@canb.auug.org.au> <87czvfu9j5.fsf@vitty.brq.redhat.com>
+        id S235909AbhDBRSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 13:18:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40870 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234759AbhDBRSr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 13:18:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2648610FC;
+        Fri,  2 Apr 2021 17:18:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617383926;
+        bh=qRViIDtMdjeHpcLwGsNEWtbhJMS3plMZQpORW2GTlp0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Za6t8yhHKL3/XrJEgrXnsVUPYVL6Sba0QrJNBi37A2l9nW3ait0ssPax5CgrPZ0Lj
+         Bji0vESEFGs6WwBem9xr5MF+wfS1uuOWheX/Q8151xZKAlBZHia/RT4qfcCCLn+GnT
+         ZfSQp7j4byrHKY7epmkCqMZHYK2qqxd2EsS3lTG+9W4+ONjkqIvi0x2i8VZfUNFE1m
+         nf5g/imTkLGFasBuALyGchBQwV4iEebpStwbkzsDqw2zXPOyYMAvp6MwB1ciIX1cvV
+         sE4oYLvyxXENE+rDZoe5ECCFd+5dhZ69AiffgsYPRng2GR3LXb9ulf+p/+SXFLRjwx
+         dn3sYiVzdQteg==
+Date:   Fri, 2 Apr 2021 18:18:32 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     mazziesaccount@gmail.com, Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-power@fi.rohmeurope.com, linux-arm-msm@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: Re: [RFC PATCH v3 4/7] regulator: add property parsing and callbacks
+ to set protection limits
+Message-ID: <20210402171832.GC5402@sirena.org.uk>
+References: <cover.1615454845.git.matti.vaittinen@fi.rohmeurope.com>
+ <b949e8131ffd8775e46fc51d3a7558586a9a4be1.1615454845.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 89.64.80.75
-X-CLIENT-HOSTNAME: 89-64-80-75.dynamic.chello.pl
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrudeiiedguddtkecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdejlefghfeiudektdelkeekvddugfeghffggeejgfeukeejleevgffgvdeluddtnecukfhppeekledrieegrdektddrjeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedtrdejhedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehvkhhuiihnvghtshesrhgvughhrghtrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqnhgvgihtsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhfrhestggrnhgsrdgruhhughdrohhrghdrrghu
-X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7gGkHNMELEOhSGF6"
+Content-Disposition: inline
+In-Reply-To: <b949e8131ffd8775e46fc51d3a7558586a9a4be1.1615454845.git.matti.vaittinen@fi.rohmeurope.com>
+X-Cookie: Dammit Jim, I'm an actor, not a doctor.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, March 31, 2021 8:22:54 AM CEST Vitaly Kuznetsov wrote:
-> Stephen Rothwell <sfr@canb.auug.org.au> writes:
-> 
-> > Hi all,
-> >
-> > After merging the pm tree, today's linux-next build (x86_64 allmodconfig)
-> > produced this warning:
-> >
-> > drivers/acpi/processor_idle.c: In function 'acpi_idle_play_dead':
-> > drivers/acpi/processor_idle.c:542:15: warning: extra tokens at end of #ifdef directive
-> >   542 | #ifdef defined(CONFIG_X86) && defined(CONFIG_HOTPLUG_CPU)
-> >       |               ^
-> >
-> 
-> Sigh, smaller the patch, more iterations it will take to make it
-> right....
-> 
-> Rafael,
-> 
-> something went wrong when you folded in my "[PATCH] ACPI: processor: Fix
-> build when !CONFIG_HOTPLUG_CPU" here. This line should be:
-> 
-> #if defined(CONFIG_X86) && defined(CONFIG_HOTPLUG_CPU)
 
-Right, my mistake, sorry.  Fixed yesterday.
+--7gGkHNMELEOhSGF6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks!
+On Thu, Mar 11, 2021 at 12:23:02PM +0200, Matti Vaittinen wrote:
 
+> +	/*
+> +	 * Existing logic does not warn if over_current_protection is given as
+> +	 * a constraint but driver does not support that. I think we should
+> +	 * warn about this type of issues as it is possible someone changes
 
+The "existing logic" bit here is for a changelog, not the code - as soon
+as the patch is applied the comment becomes inaccurate.  This also seems
+like a separate patch.
 
+--7gGkHNMELEOhSGF6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBnUecACgkQJNaLcl1U
+h9Cp1Qf/Tzo9fwunOUHYhV5M9LcRlngHJ/qE9Wnk7ACDOaB2N/PzYWABcxPHQqLv
+lLf11Qs9QKr/5m5Od0reAZ96KcFLJUaDvLq1N1gHH9pWexn8JRt2kmpAJp6hJwoz
+ZS3QI3GCIjOxitwVZ824imKOQnRwgjQtwvPsvTrB2m4yq/kKhJg9JJVc/05UW8zl
+1aVAiAsOIzWv438tLYG9vkozrpY0W+CxHKZwWNBvP2ibSyIWr/WVh3TnW+Rj3TEl
+gB9yXRizoU1Zwye8rkqILPBPhKvL5RBraGEMyIDk1SusNi45Uwec2ACcEB2mTVtq
+KVl2yvrzLEYxEUdkycD+FMt1mZ1DCQ==
+=cAkm
+-----END PGP SIGNATURE-----
+
+--7gGkHNMELEOhSGF6--
