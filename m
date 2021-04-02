@@ -2,153 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62E5E352E82
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 19:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13065352E83
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 19:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235351AbhDBRgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 13:36:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58354 "EHLO
+        id S235343AbhDBRg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 13:36:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234821AbhDBRf6 (ORCPT
+        with ESMTP id S235134AbhDBRgZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 13:35:58 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E49C0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 10:35:56 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id x21-20020a17090a5315b029012c4a622e4aso2872287pjh.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 10:35:56 -0700 (PDT)
+        Fri, 2 Apr 2021 13:36:25 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81375C0613E6
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 10:36:22 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id o16so5333828wrn.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 10:36:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6yphnmbBHawP07rs28D4TVASXy1iDN0SAHVg/RCbgGw=;
-        b=fTSE0tGIVBQli5xgECb1c3YtQnQdzIATmTyASBCHwY0w1iUgAP1ZdVVk9VNC/Ipqud
-         KHG2toAPV40tAqSylh6q5r4w9BeTpgpUSlPYqMue19B8pIQ9jMAszXCMo4dpAeFRtyEf
-         awtOE63SQOs84KurOR87NM/Oi0I2RYYQv6MvI=
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0BEtX5LP70nyJG7ya7uvmx8BAaUk54UVHdYb+hbUjBs=;
+        b=QzyT0nwPq9hlb8VwH4ggoTbr7mhqKsQiDxFKCItRTgFQpRHrRCC5eIc3RAr3mwHONj
+         TWVJdo9T+M+otRaMnL/CAIOHmsi+8JaiYmyCYFF7B1QdNXtKy2N5hOJL5mZcmZBEyIrM
+         IdvGPF8LZMPE5GaOpqSGg90+4N/bC6o8qRQ20m0ceN6wr0NszNaeXSqeKJ3+JWcV+qem
+         iksvIY+cj9RLrxCEjrl64693mGdouMHEdIqf4EVP7H2d9zpiD730J0VWCG3rEeRu1//R
+         vMtkfFQLxdOtzq+jQmOpLmzlW4lH9wJUAK6olOkFwcUpls5JLYLfNujbWPDceoCeS5tH
+         FZvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6yphnmbBHawP07rs28D4TVASXy1iDN0SAHVg/RCbgGw=;
-        b=pjWwKGK7RrBedYdMMCVm9IE00B85TXkBzr6oHlYBpQWAwoYQh2i8s7WZGIhBg7Wxdh
-         YfB/0xZ6PGtoLYRW0d4TrIf3C+rAtRwMgOZlbO0gD7SHVwQ7pm8dpek3loGaCFcsmFco
-         fwlwTtcxheZtHoasVkJsCS69qmFjw1Pue9L9Tu6oUy6KgVsqRJMQ7MUnEDnHdQoao68W
-         DUhwQfGTNQcJgwXQPW7bCZS99zsVGpePHAbLmeHgiJ1XZ7B2Nf11HtAD8UgGV1zOtsAP
-         08a92FPWJMM3raXBYl8PyLDsF2LSAeedV77+kvaO5bFgx3D59PB1yCBuDuugh5yJcf3G
-         D42w==
-X-Gm-Message-State: AOAM532d8Ojl/TZxh1mZT3HeXwb6g4W5AbjvIJy7IDhkSytWJlbeQ//0
-        XGwFuU//hGwE7rVz5En2ZCPeuQ==
-X-Google-Smtp-Source: ABdhPJwpJcfoesHMdZYbEaX7By1bca37GeS8xAKreb0w71K97U0cTJN+EJblwv84hCl+dUWtukw9tA==
-X-Received: by 2002:a17:90b:4a81:: with SMTP id lp1mr14756118pjb.154.1617384955602;
-        Fri, 02 Apr 2021 10:35:55 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:581c:e04f:7c08:c602])
-        by smtp.gmail.com with UTF8SMTPSA id a18sm9430381pfa.18.2021.04.02.10.35.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Apr 2021 10:35:55 -0700 (PDT)
-Date:   Fri, 2 Apr 2021 10:35:54 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     satya priya <skakit@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, kgunda@codeaurora.org
-Subject: Re: [PATCH V2 1/5] arm64: dts: qcom: pm7325: Add PMIC peripherals
- for pm7325
-Message-ID: <YGdV+un4bGcF6jJH@google.com>
-References: <1617268396-1837-1-git-send-email-skakit@codeaurora.org>
- <1617268396-1837-2-git-send-email-skakit@codeaurora.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0BEtX5LP70nyJG7ya7uvmx8BAaUk54UVHdYb+hbUjBs=;
+        b=GFRiNRiIC1GIupv0Pmu3FzFAqSbcLM7ydq9aBgk6ZnQcVbPqcw5Qn+50c5CKK472l5
+         m7h8OdFWwghid4c44F3ALOY5hleEn5/3CFxV8/QxmvMtiOUe7Fxejv1G5/PFICAiVDSl
+         Hriu98QL0McxbGlZwpDtteyDTpsINJEM0iKxZRbcb/bioF2rYam/UoL9LivPxUCB7yzM
+         kz3mC+tQk11JE3BKV9VfSio6A9YyE691ByuL0oFauf2j19j6KrGS21I7OHX2fbHN5GSs
+         7XAqzFAsAKfCmjDrt+DX+0b5+BgV1oGbCyGXDdN85V2PF0W/DGzQnCw8i9yY582LlSlH
+         WB5w==
+X-Gm-Message-State: AOAM531TPygHT9y/aBxOZWT5dvOCRRz1c9feBinoOD3kLXVqwVYiGZBZ
+        VzQ62FdZ38c9E6qtxBHkszLMN+gCUAg+J62S4ac=
+X-Google-Smtp-Source: ABdhPJw36IoyUozGPz5B0NBKHhCpGWbRGV4z0TBLH3V+fiomyeu1Qa24ShXVDV2sdlY2fy4YjAW40g==
+X-Received: by 2002:a5d:6152:: with SMTP id y18mr16444764wrt.255.1617384981241;
+        Fri, 02 Apr 2021 10:36:21 -0700 (PDT)
+Received: from localhost.localdomain (2.0.5.1.1.6.3.8.5.c.c.3.f.b.d.3.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16:0:3dbf:3cc5:8361:1502])
+        by smtp.gmail.com with ESMTPSA id m5sm15616659wrq.15.2021.04.02.10.36.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Apr 2021 10:36:20 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     davem@davemloft.net
+Cc:     yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: initialize local variables in net/ipv6/mcast.c and net/ipv4/igmp.c
+Date:   Fri,  2 Apr 2021 18:36:17 +0100
+Message-Id: <20210402173617.895-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1617268396-1837-2-git-send-email-skakit@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 02:43:12PM +0530, satya priya wrote:
+Use memset to initialize two local buffers in net/ipv6/mcast.c,
+and another in net/ipv4/igmp.c. Fixes a KMSAN found uninit-value
+bug reported by syzbot at:
+https://syzkaller.appspot.com/bug?id=0766d38c656abeace60621896d705743aeefed51
 
-> subject: arm64: dts: qcom: pm7325: Add PMIC peripherals for pm7325
+Reported-by: syzbot+001516d86dbe88862cec@syzkaller.appspotmail.com
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+---
+ net/ipv4/igmp.c  | 2 ++
+ net/ipv6/mcast.c | 4 ++++
+ 2 files changed, 6 insertions(+)
 
-nit: maybe just 'arm64: dts: qcom: Add pm7325 support/.dtsi' or similar?
+diff --git a/net/ipv4/igmp.c b/net/ipv4/igmp.c
+index 7b272bbed2b4..bc8e358a9a2a 100644
+--- a/net/ipv4/igmp.c
++++ b/net/ipv4/igmp.c
+@@ -1131,6 +1131,8 @@ static void ip_mc_filter_add(struct in_device *in_dev, __be32 addr)
+ 	char buf[MAX_ADDR_LEN];
+ 	struct net_device *dev = in_dev->dev;
+ 
++	memset(buf, 0, sizeof(buf));
++
+ 	/* Checking for IFF_MULTICAST here is WRONG-WRONG-WRONG.
+ 	   We will get multicast token leakage, when IFF_MULTICAST
+ 	   is changed. This check should be done in ndo_set_rx_mode
+diff --git a/net/ipv6/mcast.c b/net/ipv6/mcast.c
+index 6c8604390266..ad90dc28f318 100644
+--- a/net/ipv6/mcast.c
++++ b/net/ipv6/mcast.c
+@@ -658,6 +658,8 @@ static void igmp6_group_added(struct ifmcaddr6 *mc)
+ 	struct net_device *dev = mc->idev->dev;
+ 	char buf[MAX_ADDR_LEN];
+ 
++	memset(buf, 0, sizeof(buf));
++
+ 	if (IPV6_ADDR_MC_SCOPE(&mc->mca_addr) <
+ 	    IPV6_ADDR_SCOPE_LINKLOCAL)
+ 		return;
+@@ -694,6 +696,8 @@ static void igmp6_group_dropped(struct ifmcaddr6 *mc)
+ 	struct net_device *dev = mc->idev->dev;
+ 	char buf[MAX_ADDR_LEN];
+ 
++	memset(buf, 0, sizeof(buf));
++
+ 	if (IPV6_ADDR_MC_SCOPE(&mc->mca_addr) <
+ 	    IPV6_ADDR_SCOPE_LINKLOCAL)
+ 		return;
+-- 
+2.30.2
 
-> Add temp-alarm and GPIO support for pm7325.
-
-nit: it's more than that, you are adding the .dtsi for the PMIC itself.
-
-> Signed-off-by: satya priya <skakit@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/pm7325.dtsi | 53 ++++++++++++++++++++++++++++++++++++
->  1 file changed, 53 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/qcom/pm7325.dtsi
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/pm7325.dtsi b/arch/arm64/boot/dts/qcom/pm7325.dtsi
-> new file mode 100644
-> index 0000000..1e0848a
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/pm7325.dtsi
-> @@ -0,0 +1,53 @@
-> +// SPDX-License-Identifier: BSD-3-Clause
-> +// Copyright (c) 2021, The Linux Foundation. All rights reserved.
-> +
-> +#include <dt-bindings/interrupt-controller/irq.h>
-> +#include <dt-bindings/spmi/spmi.h>
-> +
-> +&spmi_bus {
-> +	pm7325: pmic@1 {
-> +		compatible = "qcom,pm7325", "qcom,spmi-pmic";
-
-I saw the patches that add the compatible strings for the GPIOs, but
-can't find those that add the strings for the PMICs themselves. Could
-you provide a link if they have been sent already?
-
-> +		reg = <0x1 SPMI_USID>;
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +
-> +		pm7325_temp_alarm: temp-alarm@a00 {
-> +			compatible = "qcom,spmi-temp-alarm";
-> +			reg = <0xa00>;
-> +			interrupts = <0x1 0xa 0x0 IRQ_TYPE_EDGE_BOTH>;
-> +			#thermal-sensor-cells = <0>;
-> +		};
-> +
-> +		pm7325_gpios: gpios@8800 {
-> +			compatible = "qcom,pm7325-gpio", "qcom,spmi-gpio";
-> +			reg = <0x8800>;
-> +			gpio-controller;
-> +			gpio-ranges = <&pm7325_gpios 0 0 10>;
-> +			#gpio-cells = <2>;
-> +			interrupt-controller;
-> +			#interrupt-cells = <2>;
-> +		};
-> +	};
-> +};
-> +
-> +&thermal_zones {
-> +	pm7325_thermal: pm7325-thermal {
-> +		polling-delay-passive = <100>;
-> +		polling-delay = <0>;
-> +		thermal-sensors = <&pm7325_temp_alarm>;
-> +
-> +		trips {
-> +			pm7325_trip0: trip0 {
-> +				temperature = <95000>;
-> +				hysteresis = <0>;
-> +				type = "passive";
-> +			};
-> +
-> +			pm7325_trip1: trip1 {
-
-nit: the critical trip point is often named <name>-crit. One reason for
-this could be that it allows to add other non-critical trip points (in
-the .dtsi itself or the <board>.dts), without messing up the
-enumeration scheme.
-
-> +				temperature = <115000>;
-> +				hysteresis = <0>;
-> +				type = "critical";
-> +			};
-> +		};
-> +	};
-> +};
