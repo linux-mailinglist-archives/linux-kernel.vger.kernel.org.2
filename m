@@ -2,90 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4AAF352928
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 11:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13BA435292F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 11:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234755AbhDBJx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 05:53:58 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:46051 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231160AbhDBJx5 (ORCPT
+        id S234601AbhDBJ6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 05:58:45 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:15904 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229599AbhDBJ6o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 05:53:57 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UUEHCRZ_1617357233;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UUEHCRZ_1617357233)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 02 Apr 2021 17:53:53 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     ulf.hansson@linaro.org
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] mmc: moxart: Remove unused variable 'dma_time' and 'pio_time'
-Date:   Fri,  2 Apr 2021 17:53:51 +0800
-Message-Id: <1617357231-93064-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 2 Apr 2021 05:58:44 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FBb7G454zzkhMs;
+        Fri,  2 Apr 2021 17:56:58 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 2 Apr 2021 17:58:31 +0800
+From:   Meng Yu <yumeng18@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, <wangzhou1@hisilicon.com>,
+        <yumeng18@huawei.com>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] ecc: delete a useless function declaration
+Date:   Fri, 2 Apr 2021 17:55:57 +0800
+Message-ID: <1617357357-11828-1-git-send-email-yumeng18@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=n
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+This function declaration has been added in 'ecc_curve.h',
+delete it in 'crypto/ecc.h'.
 
-drivers/mmc/host/moxart-mmc.c:257:7: warning: variable ‘dma_time’ set
-but not used
-drivers/mmc/host/moxart-mmc.c:395:7: warning: variable ‘pio_time’ set
-but not used
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Fixes: 14bb76768275(crypto: ecc - expose ecc curves)
+Signed-off-by: Meng Yu <yumeng18@huawei.com>
 ---
- drivers/mmc/host/moxart-mmc.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ crypto/ecc.h | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/drivers/mmc/host/moxart-mmc.c b/drivers/mmc/host/moxart-mmc.c
-index 89bff4e..bde2988 100644
---- a/drivers/mmc/host/moxart-mmc.c
-+++ b/drivers/mmc/host/moxart-mmc.c
-@@ -257,7 +257,6 @@ static void moxart_dma_complete(void *param)
- static void moxart_transfer_dma(struct mmc_data *data, struct moxart_host *host)
- {
- 	u32 len, dir_slave;
--	long dma_time;
- 	struct dma_async_tx_descriptor *desc = NULL;
- 	struct dma_chan *dma_chan;
+diff --git a/crypto/ecc.h b/crypto/ecc.h
+index 46aa9bc..a006132 100644
+--- a/crypto/ecc.h
++++ b/crypto/ecc.h
+@@ -56,14 +56,6 @@ static inline void ecc_swap_digits(const u64 *in, u64 *out, unsigned int ndigits
+ }
  
-@@ -294,8 +293,8 @@ static void moxart_transfer_dma(struct mmc_data *data, struct moxart_host *host)
- 
- 	data->bytes_xfered += host->data_remain;
- 
--	dma_time = wait_for_completion_interruptible_timeout(
--		   &host->dma_complete, host->timeout);
-+	wait_for_completion_interruptible_timeout(&host->dma_complete,
-+						  host->timeout);
- 
- 	dma_unmap_sg(dma_chan->device->dev,
- 		     data->sg, data->sg_len,
-@@ -395,7 +394,6 @@ static void moxart_prepare_data(struct moxart_host *host)
- static void moxart_request(struct mmc_host *mmc, struct mmc_request *mrq)
- {
- 	struct moxart_host *host = mmc_priv(mmc);
--	long pio_time;
- 	unsigned long flags;
- 	u32 status;
- 
-@@ -431,8 +429,8 @@ static void moxart_request(struct mmc_host *mmc, struct mmc_request *mrq)
- 			spin_unlock_irqrestore(&host->lock, flags);
- 
- 			/* PIO transfers start from interrupt. */
--			pio_time = wait_for_completion_interruptible_timeout(
--				   &host->pio_complete, host->timeout);
-+			wait_for_completion_interruptible_timeout(&host->pio_complete,
-+								  host->timeout);
- 
- 			spin_lock_irqsave(&host->lock, flags);
- 		}
+ /**
+- * ecc_get_curve()  - Get a curve given its curve_id
+- * @curve_id:  Id of the curve
+- *
+- * Returns pointer to the curve data, NULL if curve is not available
+- */
+-const struct ecc_curve *ecc_get_curve(unsigned int curve_id);
+-
+-/**
+  * ecc_is_key_valid() - Validate a given ECDH private key
+  *
+  * @curve_id:		id representing the curve to use
 -- 
-1.8.3.1
+2.8.1
 
