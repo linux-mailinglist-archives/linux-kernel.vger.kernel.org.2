@@ -2,161 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A7F13529B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 12:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7205F3529BA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 12:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234692AbhDBK10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 06:27:26 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:49634 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229605AbhDBK1Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 06:27:25 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9CxycmI8WZgY6cDAA--.7636S2;
-        Fri, 02 Apr 2021 18:27:21 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH v3] MIPS: Check __clang__ to avoid performance influence with GCC in csum_tcpudp_nofold()
-Date:   Fri,  2 Apr 2021 18:27:20 +0800
-Message-Id: <1617359240-16609-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9CxycmI8WZgY6cDAA--.7636S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxKF4UJr17ZFW3Kr15Jr4rAFb_yoW7GF1kpF
-        nrtr18Wr4UXry5Ca40k3y8WFy5Ww45GrZxua4rAr9akr98Zr18X3ZYgFy5CrsFkrs2q3W7
-        ZrWrtrsrKFyDt3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkv14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_Gw1l
-        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
-        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAK
-        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
-        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
-        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUVHq7UUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S234868AbhDBK1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 06:27:49 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:35390 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229553AbhDBK1r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 06:27:47 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210402102745euoutp01d995110419290a9198362fa0b3d54707~yA67UIHk72607326073euoutp01G;
+        Fri,  2 Apr 2021 10:27:45 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210402102745euoutp01d995110419290a9198362fa0b3d54707~yA67UIHk72607326073euoutp01G
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1617359265;
+        bh=hrg9Zjh6wkEEq/WpL8UP5fUQYy13RF9DsNWtImnSqRA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=T7j3Yz3Y63KC8tOiBTsRCHnb4kwvrTO3g/A/iy9mo1cqJq5E9DSTOTIvVQoUXU/Ir
+         gnwcPHpFzkaG4plh3hYjAU1Si1gFMd9riHiLlT8BaFV+aeTxkH/g/nw80707IFJUDO
+         hYI7TXSdXADwY4dAjWpcz3YEtMTiIbxLsa1ujwU0=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210402102744eucas1p2d25bb06736a291b1958ebadf342f1b15~yA66tOazs2540125401eucas1p2q;
+        Fri,  2 Apr 2021 10:27:44 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 71.D8.09439.0A1F6606; Fri,  2
+        Apr 2021 11:27:44 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210402102743eucas1p23690e0df642a10fa0326a84fac6c0ed3~yA65WZYHO1494714947eucas1p2-;
+        Fri,  2 Apr 2021 10:27:43 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210402102743eusmtrp2f76589fe3676f2f9284d5114dbcdc14f~yA65VySOB2900629006eusmtrp2G;
+        Fri,  2 Apr 2021 10:27:43 +0000 (GMT)
+X-AuditID: cbfec7f5-c1bff700000024df-cb-6066f1a022a7
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id A0.B9.08696.F91F6606; Fri,  2
+        Apr 2021 11:27:43 +0100 (BST)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210402102743eusmtip1ef9cf1545f84519c1da193d21ebc4dc3~yA65Kvh1F0203102031eusmtip1Y;
+        Fri,  2 Apr 2021 10:27:43 +0000 (GMT)
+From:   =?utf-8?Q?=C5=81ukasz_Stelmach?= <l.stelmach@samsung.com>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     linux-rtc@vger.kernel.org,
+        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkiew?= =?utf-8?Q?icz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] rtc: ds1307: remove flags
+Date:   Fri, 02 Apr 2021 12:27:42 +0200
+In-Reply-To: <20210330000343.801566-2-alexandre.belloni@bootlin.com>
+        (Alexandre Belloni's message of "Tue, 30 Mar 2021 02:03:42 +0200")
+Message-ID: <dleftjr1jtdlr5.fsf%l.stelmach@samsung.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="=-=-="; micalg="pgp-sha256";
+        protocol="application/pgp-signature"
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprHKsWRmVeSWpSXmKPExsWy7djP87oLPqYlGOydZWrR/m4Zu8XGGetZ
+        LS7vmsNmcWz1FTaLtUfusjuwesxbU+3Rt2UVo8fnTXIBzFFcNimpOZllqUX6dglcGbNuvmEu
+        WMlTseCXTgPjFa4uRk4OCQETiamX+5m7GLk4hARWMEqc/z+bESQhJPCFUWLeHG8I+zOjxMce
+        VpiG7y23WCAaljNK3O86xwbhPAdyvv5mB6liE7CX6D+yjwXEFhEwlWht3AVWxCxwglHife80
+        sBXCAkYSxzqXATVwcLAIqEocmw92BqdAJ6PElNW/wdbxCphLfHy0DmyoqIClxJYX99kh4oIS
+        J2c+AVvALJArMfP8G0aI825wSMyYawxhu0gsfLqCBcIWlnh1fAs7hC0j8X/nfCaQvRIC9RKT
+        J5mB7JUQ6GGU2DbnB1S9tcSdc7/YIGxHiTv3mtgh6vkkbrwVhFjLJzFp23RmiDCvREebEES1
+        isS6/j1QU6Qkel+tgLrMQ2JFzyFWSIBOZ5T4uUBoAqPCLCTPzELyzCygqcwCmhLrd+lDhLUl
+        li18zQxh20qsW/eeZQEj6ypG8dTS4tz01GLjvNRyveLE3OLSvHS95PzcTYzAZHP63/GvOxhX
+        vPqod4iRiYPxEKMKUPOjDasvMEqx5OXnpSqJ8N7YkpogxJuSWFmVWpQfX1Sak1p8iFGag0VJ
+        nHfX1jXxQgLpiSWp2ampBalFMFkmDk6pBqbNr9VnX12l4CaxzuD68kNbDB7sCE9c7blUeyrD
+        YfXKinRd5Wlb5XmO372hHDltsl3tux3uRvEVmXuv/n6okFS2LG8fA9N/jqLlsqp/Ju2eLsQ/
+        teAl06arwvsX+NsVPlz+PSxyR52A4LaTUScX3pX1DGSVcbsXfnXbziumpRcsOV1uNWzwq/67
+        9UVX3vTfiq98XHQTVLruvP2S2FYsF8p/1rr56Oat5/9/3a6u/up2UUuQk8L3tY4pEzLZVBz1
+        fs0N7oi012JreLPpuvWGJoNXnYI/BUKWW+p7N16fYnJ349qoAxw1TRcmrOGQZgz8uq9w35Lc
+        yVz5R+cvach/8Z7pY9YCr/CHrRYzjk5ym/ZJiaU4I9FQi7moOBEAFmYn2LEDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJIsWRmVeSWpSXmKPExsVy+t/xu7rzP6YlGHxZIGnR/m4Zu8XGGetZ
+        LS7vmsNmcWz1FTaLtUfusjuwesxbU+3Rt2UVo8fnTXIBzFF6NkX5pSWpChn5xSW2StGGFkZ6
+        hpYWekYmlnqGxuaxVkamSvp2NimpOZllqUX6dgl6GbNuvmEuWMlTseCXTgPjFa4uRk4OCQET
+        ie8tt1i6GLk4hASWMkpM7l/P2MXIAZSQklg5Nx2iRljiz7UuNoiap4wSJ6asYgRJsAnYS/Qf
+        2ccCYosImEq0Nu4CK2IWOMEo8fPmfDaQhLCAkcSxzmXsILaQgLPE9Y8rwBawCKhKHJvPDFLP
+        KdDJKDFl9W9WkBpeAXOJj4/WgdWLClhKbHlxnx0iLihxcuYTsGXMAtkSX1c/Z57AKDALSWoW
+        ktQsoBXMApoS63fpQ4S1JZYtfM0MYdtKrFv3nmUBI+sqRpHU0uLc9NxiI73ixNzi0rx0veT8
+        3E2MwHjZduznlh2MK1991DvEyMTBeIhRBajz0YbVFxilWPLy81KVRHhvbElNEOJNSaysSi3K
+        jy8qzUktPsRoCvTaRGYp0eR8YCTnlcQbmhmYGpqYWRqYWpoZK4nzmhxZEy8kkJ5YkpqdmlqQ
+        WgTTx8TBKdXAVMS/dKpM4PWatCCxG/cVpr3ie6B3uqBv5/nw6UesO4NTvW3668ScPhqkaors
+        jwowX6owdcK3wDP8D6Yw3bosFORv+b7mxoIpS/VMeHcZbVg4+xt3W+0mJ/mkWFV5psOqzItu
+        vfjB6Mtkd7C4Q+Scps3UwDoT3+t3HviuZ5l4v2atK98OHsvNkpMvRJxp/l//Y+/0HTcvT2Hi
+        OzHTrSTLNvFr/HehvXdDf0vqlm1ylA1h0/mxUiIq+XAKU3LLjvmvzhgXRLlyHjfTrFz6K8nB
+        8frhf8E2nX6GETsb9s97vfDO9t0PVqx+3r7ZxyFnymfHahuh7aulGn7mR27vPGzHOeeV+dFJ
+        v6XKFxd9OXZspRJLcUaioRZzUXEiABHGno4sAwAA
+X-CMS-MailID: 20210402102743eucas1p23690e0df642a10fa0326a84fac6c0ed3
+X-Msg-Generator: CA
+X-RootMTR: 20210402102743eucas1p23690e0df642a10fa0326a84fac6c0ed3
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210402102743eucas1p23690e0df642a10fa0326a84fac6c0ed3
+References: <20210330000343.801566-2-alexandre.belloni@bootlin.com>
+        <CGME20210402102743eucas1p23690e0df642a10fa0326a84fac6c0ed3@eucas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The asm code in csum_tcpudp_nofold() is performance critical, I am sorry
-for the poorly considered implementation about the performance influence
-with GCC in the commit 198688edbf77 ("MIPS: Fix inline asm input/output
-type mismatch in checksum.h used with Clang").
+--=-=-=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-Using __clang__ instead of CC_IS_CLANG as check condition, because it
-still occurs build error under CC_IS_GCC when make M=samples/bpf which
-used with Clang compiler.
+It was <2021-03-30 wto 02:03>, when Alexandre Belloni wrote:
+> flags is now unused, drop it.
+>
+> Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> ---
+>  drivers/rtc/rtc-ds1307.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
 
-With this patch, we can build successfully by both GCC and Clang,
-at the same time, the logic is much clear to avoid the potential
-performance influence with GCC.
+Tested-by: =C5=81ukasz Stelmach <l.stelmach@samsung.com>
+Reviewed-by: =C5=81ukasz Stelmach <l.stelmach@samsung.com>
 
-Here are some test data, the config file is loongson3_defconfig, the gcc
-version is 10.2.1, we can see that the size has no differences between (1)
-and (3).
+> diff --git a/drivers/rtc/rtc-ds1307.c b/drivers/rtc/rtc-ds1307.c
+> index 76d67c419f7d..089509d0a3a0 100644
+> --- a/drivers/rtc/rtc-ds1307.c
+> +++ b/drivers/rtc/rtc-ds1307.c
+> @@ -169,8 +169,6 @@ enum ds_type {
+>=20=20
+>  struct ds1307 {
+>  	enum ds_type		type;
+> -	unsigned long		flags;
+> -#define HAS_NVRAM	0		/* bit 0 =3D=3D sysfs file active */
+>  	struct device		*dev;
+>  	struct regmap		*regmap;
+>  	const char		*name;
 
-(1) linux-5.12-rc5.nopatch:
-without commit 198688edbf77 ("MIPS: Fix inline asm input/output type
-mismatch in checksum.h used with Clang").
+=2D-=20
+=C5=81ukasz Stelmach
+Samsung R&D Institute Poland
+Samsung Electronics
 
-(2) linux-5.12-rc5:
-with commit 198688edbf77 ("MIPS: Fix inline asm input/output type
-mismatch in checksum.h used with Clang").
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
-(3) linux-5.12-rc5.newpatch:
-with this patch based on linux-5.12-rc5.
+-----BEGIN PGP SIGNATURE-----
 
-loongson@linux:~$ size --format=GNU linux-5.12-rc5.nopatch/vmlinux
-      text       data        bss      total filename
-  10273312    3489518   17865568   31628398 linux-5.12-rc5.nopatch/vmlinux
-
-loongson@linux:~$ size --format=GNU linux-5.12-rc5/vmlinux
-      text       data        bss      total filename
-  10273536    3489550   17865568   31628654 linux-5.12-rc5/vmlinux
-
-loongson@linux:~$ size --format=GNU linux-5.12-rc5.newpatch/vmlinux
-      text       data        bss      total filename
-  10273312    3489518   17865568   31628398 linux-5.12-rc5.newpatch/vmlinux
-
-As far as I can tell, the differences between (1) and (2) is due to the
-following affected objects:
-
-loongson@linux:~$ size --format=GNU linux-5.12-rc5.nopatch/net/ipv4/tcp_ipv4.o
-      text       data        bss      total filename
-     20684       2268        576      23528 linux-5.12-rc5.nopatch/net/ipv4/tcp_ipv4.o
-loongson@linux:~$ size --format=GNU linux-5.12-rc5/net/ipv4/tcp_ipv4.o
-      text       data        bss      total filename
-     20700       2268        576      23544 linux-5.12-rc5/net/ipv4/tcp_ipv4.o
-
-loongson@linux:~$ size --format=GNU linux-5.12-rc5.nopatch/net/ipv4/tcp_offload.o
-      text       data        bss      total filename
-      3584        167          0       3751 linux-5.12-rc5.nopatch/net/ipv4/tcp_offload.o
-loongson@linux:~$ size --format=GNU linux-5.12-rc5/net/ipv4/tcp_offload.o
-      text       data        bss      total filename
-      3600        167          0       3767 linux-5.12-rc5/net/ipv4/tcp_offload.o
-
-loongson@linux:~$ size --format=GNU linux-5.12-rc5.nopatch/net/ipv4/udp.o
-      text       data        bss      total filename
-     30068       3018         32      33118 linux-5.12-rc5.nopatch/net/ipv4/udp.o
-loongson@linux:~$ size --format=GNU linux-5.12-rc5/net/ipv4/udp.o
-      text       data        bss      total filename
-     30100       3018         32      33150 linux-5.12-rc5/net/ipv4/udp.o
-
-loongson@linux:~$ size --format=GNU linux-5.12-rc5.nopatch/net/ipv4/udp_offload.o
-      text       data        bss      total filename
-      6624        311          0       6935 linux-5.12-rc5.nopatch/net/ipv4/udp_offload.o
-loongson@linux:~$ size --format=GNU linux-5.12-rc5/net/ipv4/udp_offload.o
-      text       data        bss      total filename
-      6640        311          0       6951 linux-5.12-rc5/net/ipv4/udp_offload.o
-
-loongson@linux:~$ size --format=GNU linux-5.12-rc5.nopatch/net/netfilter/nf_nat.o
-      text       data        bss      total filename
-     20804       2102       4112      27018 linux-5.12-rc5.nopatch/net/netfilter/nf_nat.o
-loongson@linux:~$ size --format=GNU linux-5.12-rc5/net/netfilter/nf_nat.o
-      text       data        bss      total filename
-     20820       2102       4112      27034 linux-5.12-rc5/net/netfilter/nf_nat.o
-
-loongson@linux:~$ size --format=GNU linux-5.12-rc5.nopatch/net/netfilter/nf_nat_proto.o
-      text       data        bss      total filename
-      7392        770          0       8162 linux-5.12-rc5.nopatch/net/netfilter/nf_nat_proto.o
-loongson@linux:~$ size --format=GNU linux-5.12-rc5/net/netfilter/nf_nat_proto.o
-      text       data        bss      total filename
-      7408        770          0       8178 linux-5.12-rc5/net/netfilter/nf_nat_proto.o
-
-loongson@linux:~$ size --format=GNU linux-5.12-rc5.nopatch/net/ipv4/netfilter/nf_reject_ipv4.o
-      text       data        bss      total filename
-      3776        429          0       4205 linux-5.12-rc5.nopatch/net/ipv4/netfilter/nf_reject_ipv4.o
-loongson@linux:~$ size --format=GNU linux-5.12-rc5/net/ipv4/netfilter/nf_reject_ipv4.o
-      text       data        bss      total filename
-      3792        429          0       4221 linux-5.12-rc5/net/ipv4/netfilter/nf_reject_ipv4.o
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- arch/mips/include/asm/checksum.h | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/arch/mips/include/asm/checksum.h b/arch/mips/include/asm/checksum.h
-index 1e6c135..e1f80407 100644
---- a/arch/mips/include/asm/checksum.h
-+++ b/arch/mips/include/asm/checksum.h
-@@ -130,7 +130,11 @@ static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
- 					__u32 len, __u8 proto,
- 					__wsum sum)
- {
-+#ifdef __clang__
- 	unsigned long tmp = (__force unsigned long)sum;
-+#else
-+	__wsum tmp = sum;
-+#endif
- 
- 	__asm__(
- 	"	.set	push		# csum_tcpudp_nofold\n"
--- 
-2.1.0
-
+iQEzBAEBCAAdFiEEXpuyqjq9kGEVr9UQsK4enJilgBAFAmBm8Z4ACgkQsK4enJil
+gBDcmAf/bVClaqSUnXfrEE0vihyjzXryYII9Aqn3eOgLZiEginIJUp9nZrfHAtBM
++YYH4FDEdIzbSgeLol0cPTBYt7KK5P8cGW2LDsTyWmzZZEz+VJMn7pHb9E3oeS4J
+FJOwFoqHbi6AENUVN1qf668xHjKliZf3pPX9gkGMc4qHh8183km1P9OBGxzo17Wf
+7vV9PVrE/vGUE9kQa09nlZ0/HgB8YRLqis/CLjj6By5Ja8so87ojf91piYLAW/WS
+xGvZcUQFIc2aLrvxgrXwfl47ErQJQFJu6Q3t7qC9ddgGIFirF6/znl+aMdpRptLg
+uJ5x62QFb6mR4w28P9K3Bk8dX3rVmQ==
+=P0X9
+-----END PGP SIGNATURE-----
+--=-=-=--
