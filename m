@@ -2,182 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037F43529B1
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 12:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 397413529B3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 12:25:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234626AbhDBKYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 06:24:14 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:44926 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbhDBKYM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 06:24:12 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5FD252C1;
-        Fri,  2 Apr 2021 12:24:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1617359049;
-        bh=tkld6UVERd3oCk44uMV+QIoIlJrSO79ZF4RjmGPJcxw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iDm4EHpTx7uiNiABVNQbYuQZYE51oww2XBlvvVgvfvaZpgNm3HVdyjit3iSTvQVu7
-         to/Cdzu8WZ4K1g4PbxinpFsto/U5AAWvYnkXOaQcSwOdJ3fklD7txo7uIUUs5UXaXH
-         wdytP3eBHRN9xwptHjLnvmAmOaY0oixWKC4RGY5I=
-Date:   Fri, 2 Apr 2021 13:23:25 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Benoit Parrot <bparrot@ti.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Michael Tretter <m.tretter@pengutronix.de>,
-        Peter Chen <peter.chen@nxp.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
-        dmaengine@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Subject: Re: [PATCH 14/16] dt-bindings: phy: Convert Cadence DPHY binding to
- YAML
-Message-ID: <YGbwnTNiL6WYoxPF@pendragon.ideasonboard.com>
-References: <20210330173348.30135-1-p.yadav@ti.com>
- <20210330173348.30135-15-p.yadav@ti.com>
+        id S234796AbhDBKZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 06:25:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:34148 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229599AbhDBKZJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 06:25:09 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 097DBD6E;
+        Fri,  2 Apr 2021 03:25:08 -0700 (PDT)
+Received: from [10.57.24.15] (unknown [10.57.24.15])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5AF4B3F694;
+        Fri,  2 Apr 2021 03:25:06 -0700 (PDT)
+Subject: Re: [RESEND PATCH] MAINTAINERS: update thermal CPU cooling section
+To:     Viresh Kumar <viresh.kumar@linaro.org>, daniel.lezcano@linaro.org
+Cc:     linux-kernel@vger.kernel.org, javi.merino@kernel.org,
+        thara.gopinath@linaro.org, amitk@kernel.org, rui.zhang@intel.com
+References: <20210217115908.22547-1-lukasz.luba@arm.com>
+ <20210218041812.o2yksgbfdvbgtwc4@vireshk-i7>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <e3208461-f4ec-8c88-8af4-67c777f9382a@arm.com>
+Date:   Fri, 2 Apr 2021 11:25:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210330173348.30135-15-p.yadav@ti.com>
+In-Reply-To: <20210218041812.o2yksgbfdvbgtwc4@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pratyush,
+Hi Viresh, Daniel
 
-Thank you for the patch.
-
-On Tue, Mar 30, 2021 at 11:03:46PM +0530, Pratyush Yadav wrote:
-> Convert Cadence DPHY binding to YAML.
+On 2/18/21 4:18 AM, Viresh Kumar wrote:
+> On 17-02-21, 11:59, Lukasz Luba wrote:
+>> Update maintainers responsible for CPU cooling on Arm side.
+>>
+>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>> ---
+>> Hi Daniel,
+>>
+>> Please ignore the previous email and that this change with 'R'.
+>> Javi will ack it later.
+>>
+>> Regards,
+>> Lukasz
+>>
+>>   MAINTAINERS | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index f32ebcff37d2..fe34f56acb0f 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -17774,7 +17774,7 @@ THERMAL/CPU_COOLING
+>>   M:	Amit Daniel Kachhap <amit.kachhap@gmail.com>
+>>   M:	Daniel Lezcano <daniel.lezcano@linaro.org>
+>>   M:	Viresh Kumar <viresh.kumar@linaro.org>
+>> -M:	Javi Merino <javi.merino@kernel.org>
+>> +R:	Lukasz Luba <lukasz.luba@arm.com>
+>>   L:	linux-pm@vger.kernel.org
+>>   S:	Supported
+>>   F:	Documentation/driver-api/thermal/cpu-cooling-api.rst
 > 
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> ---
->  .../devicetree/bindings/phy/cdns,dphy.txt     | 20 --------
->  .../devicetree/bindings/phy/cdns,dphy.yaml    | 51 +++++++++++++++++++
->  2 files changed, 51 insertions(+), 20 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/phy/cdns,dphy.txt
->  create mode 100644 Documentation/devicetree/bindings/phy/cdns,dphy.yaml
+> Good that we have one more reviewer for this :)
 > 
-> diff --git a/Documentation/devicetree/bindings/phy/cdns,dphy.txt b/Documentation/devicetree/bindings/phy/cdns,dphy.txt
-> deleted file mode 100644
-> index 1095bc4e72d9..000000000000
-> --- a/Documentation/devicetree/bindings/phy/cdns,dphy.txt
-> +++ /dev/null
-> @@ -1,20 +0,0 @@
-> -Cadence DPHY
-> -============
-> -
-> -Cadence DPHY block.
-> -
-> -Required properties:
-> -- compatible: should be set to "cdns,dphy".
-> -- reg: physical base address and length of the DPHY registers.
-> -- clocks: DPHY reference clocks.
-> -- clock-names: must contain "psm" and "pll_ref".
-> -- #phy-cells: must be set to 0.
-> -
-> -Example:
-> -	dphy0: dphy@fd0e0000{
-> -		compatible = "cdns,dphy";
-> -		reg = <0x0 0xfd0e0000 0x0 0x1000>;
-> -		clocks = <&psm_clk>, <&pll_ref_clk>;
-> -		clock-names = "psm", "pll_ref";
-> -		#phy-cells = <0>;
-> -	};
-> diff --git a/Documentation/devicetree/bindings/phy/cdns,dphy.yaml b/Documentation/devicetree/bindings/phy/cdns,dphy.yaml
-> new file mode 100644
-> index 000000000000..d1bbf96a8250
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/phy/cdns,dphy.yaml
-> @@ -0,0 +1,51 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/phy/cdns,dphy.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Cadence DPHY Device Tree Bindings
-> +
-> +maintainers:
-> +  - Pratyush Yadav <p.yadav@ti.com>
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - const: cdns,dphy
-> +
-> +  reg:
-> +    maxItems: 1
-> +    description: Physical base address and length of the DPHY registers.
+> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+> 
 
-You can drop the description.
+I believe it has lost somewhere in people mailboxes.
 
-> +
-> +  clocks:
-> +    maxItems: 2
-> +    description: DPHY reference clocks.
+Thank you Viresh for the ACK.
 
-It's best to describe individual items, which will then allow dropping
-the maxItems property:
+Could you Daniel (or you Viresh) take this patch, please?
 
-  clocks:
-    items:
-      - description: Description of the psm clock
-      - description: Description of the pll_ref clock
-
-> +
-> +  clock-names:
-> +    items:
-> +      - const: psm
-> +      - const: pll_ref
-> +
-> +  "#phy-cells":
-> +    const: 0
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - "#phy-cells"
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +
-> +    dphy0: dphy@fd0e0000{
-
-This is copied verbatim from the existing description, but while at it,
-I'd rename the node from dphy@... to phy@..., as DT node are supposed to
-be named according to the class of devices, not the specific device
-type.
-
-With these small issues addressed,
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> +        compatible = "cdns,dphy";
-> +        reg = <0xfd0e0000 0x1000>;
-> +        clocks = <&psm_clk>, <&pll_ref_clk>;
-> +        clock-names = "psm", "pll_ref";
-> +        #phy-cells = <0>;
-> +    };
-
--- 
 Regards,
-
-Laurent Pinchart
+Lukasz
