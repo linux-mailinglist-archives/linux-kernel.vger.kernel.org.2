@@ -2,97 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2A46352F87
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 21:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB452352F89
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 21:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236384AbhDBTIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 15:08:39 -0400
-Received: from mga06.intel.com ([134.134.136.31]:2092 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236301AbhDBTIi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 15:08:38 -0400
-IronPort-SDR: 6V3AHgnvbbHADYhtMZ6NOE6Fs4NFcSZmbUHFTsgxueruuFBHtldxrLBttNnUoYUiDLZ5HrHGrU
- rsD59j7DJJ+g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9942"; a="253854155"
-X-IronPort-AV: E=Sophos;i="5.81,300,1610438400"; 
-   d="scan'208";a="253854155"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 12:08:36 -0700
-IronPort-SDR: QsxsuFpcnsvuimRxOw4HUitLjgOv8nzSOTJwS8XCg3d0mdhA/nj8aeEDhQzNpWTfaa4s/MJBAS
- pGXf9Qhuyg7w==
-X-IronPort-AV: E=Sophos;i="5.81,300,1610438400"; 
-   d="scan'208";a="446910313"
-Received: from hvijayak-mobl1.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.252.132.133])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 12:08:26 -0700
-Date:   Sat, 3 Apr 2021 08:08:24 +1300
-From:   Kai Huang <kai.huang@intel.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
-        linux-sgx@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com
-Subject: Re: [PATCH v3 07/25] x86/sgx: Initialize virtual EPC driver even
- when SGX driver is disabled
-Message-Id: <20210403080824.d8bdb4c8f3c826c934acc53d@intel.com>
-In-Reply-To: <YGc7ezLWEu/ZvUOu@google.com>
-References: <cover.1616136307.git.kai.huang@intel.com>
-        <d35d17a02bbf8feef83a536cec8b43746d4ea557.1616136308.git.kai.huang@intel.com>
-        <20210402094816.GC28499@zn.tnic>
-        <YGc7ezLWEu/ZvUOu@google.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S236092AbhDBTKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 15:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229722AbhDBTKM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 15:10:12 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4383CC0613E6
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 12:10:11 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id z9so5371889ilb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 12:10:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7JlFDJAcRG6/Jm43XBCYYpnXYN2lAD9aQqAdSxiEkDs=;
+        b=EiHnux0s7dQ3PcMjGa8vxU7IIiN7Fa2B6iJ2AJ8c62lDKE+WYDkbJ8wzuU7+rZMWg0
+         rZhWkgCnFScZFTXIAf8bhzpZzyo42XSPgYl46t5KJutWanMHoD+oGba52PiINY5llUQ/
+         P1fKd+MNu+0svuIOIkEBjftL3rkMJS0dI/BG1b0j9rVh0S7xfco6DQeBz0/a0gPDORJh
+         vsd0g2rnBIRLR44G1rgrO+GNEkqRAkEEC2+/+OJ9W9ifsnXhUd+eqpuYqcqOz08AFkqa
+         kLJ9Y8FR7XHzoywVA2Z+i31hmpGeYKMYxGv3+9Poks7t2b04NlRIC0EXIIKBNSzDfdoH
+         iYYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7JlFDJAcRG6/Jm43XBCYYpnXYN2lAD9aQqAdSxiEkDs=;
+        b=Lbkfyp+LHru6P3pjlLNwsObFZgnSIvnJ4G7nYIdGW/jdDcBMRxYdseIKo+5lHZjkTY
+         Ji2eQ7nSsR7EdeRyItH0IFBxsryEuUVAgftnOl7g97iBm4qluY5tX9j+vAa0oiMRbLLH
+         GGaay6D7SnkmiAT7CBIUZ4xLoPYu/6U7s/4WSMlwgO2sGk8D/q4LhCFcNK/ComwgSQvU
+         QWCdScosJoKlDqUYf76csVLAQNzSVO2s5GjPHG3NIhVovpL8OurkzBAxDhg8c5Bvyfbn
+         yyMReM7BD0Ntsb594tuioNatPrtoWez1HKMiY0BxQ/ZcvGFko9gkGD21HK7hUWbk/oWj
+         1EUA==
+X-Gm-Message-State: AOAM532f9eb91UILhKS4s+pYcBKE8N8pYCPIhBadUT2hT7vl459+lVZE
+        BRudTcaanS/5NUKCGZNCM8TrvyLw8ghacOanyfkikQ==
+X-Google-Smtp-Source: ABdhPJzZlUx/qgHuq28bDzFofQxEcbrvDubBVZIrnqA7YzNDMQ14VSBDvffECtAMDc3TvMG18/ntODesGW/SmZtA+vc=
+X-Received: by 2002:a05:6e02:d52:: with SMTP id h18mr439861ilj.133.1617390610533;
+ Fri, 02 Apr 2021 12:10:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210205221808.1966010-1-dlatypov@google.com> <CAFd5g44PL+DrN6+0bw-oYQCjCSR-f4Y0=QZL9DsSO-3hKLsFzw@mail.gmail.com>
+ <9f5df593-6584-b7d4-3b6e-ad77ee6f8760@linuxfoundation.org>
+In-Reply-To: <9f5df593-6584-b7d4-3b6e-ad77ee6f8760@linuxfoundation.org>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Fri, 2 Apr 2021 12:09:59 -0700
+Message-ID: <CAGS_qxqE9btMn639uCgDoiqO6PNnNJzqyLA4Vj+b6Ccjhpkbfg@mail.gmail.com>
+Subject: Re: [PATCH] kunit: make KUNIT_EXPECT_STREQ() quote values, don't
+ print literals
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2 Apr 2021 15:42:51 +0000 Sean Christopherson wrote:
-> On Fri, Apr 02, 2021, Borislav Petkov wrote:
-> > On Fri, Mar 19, 2021 at 08:23:02PM +1300, Kai Huang wrote:
-> > > Modify sgx_init() to always try to initialize the virtual EPC driver,
-> > > even if the SGX driver is disabled.  The SGX driver might be disabled
-> > > if SGX Launch Control is in locked mode, or not supported in the
-> > > hardware at all.  This allows (non-Linux) guests that support non-LC
-> > > configurations to use SGX.
-> > > 
-> > > Acked-by: Dave Hansen <dave.hansen@intel.com>
-> > > Reviewed-by: Sean Christopherson <seanjc@google.com>
-> > > Signed-off-by: Kai Huang <kai.huang@intel.com>
-> > > ---
-> > >  arch/x86/kernel/cpu/sgx/main.c | 10 +++++++++-
-> > >  1 file changed, 9 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> > > index 6a734f484aa7..b73114150ff8 100644
-> > > --- a/arch/x86/kernel/cpu/sgx/main.c
-> > > +++ b/arch/x86/kernel/cpu/sgx/main.c
-> > > @@ -743,7 +743,15 @@ static int __init sgx_init(void)
-> > >  		goto err_page_cache;
-> > >  	}
-> > >  
-> > > -	ret = sgx_drv_init();
-> > > +	/*
-> > > +	 * Always try to initialize the native *and* KVM drivers.
-> > > +	 * The KVM driver is less picky than the native one and
-> > > +	 * can function if the native one is not supported on the
-> > > +	 * current system or fails to initialize.
-> > > +	 *
-> > > +	 * Error out only if both fail to initialize.
-> > > +	 */
-> > > +	ret = !!sgx_drv_init() & !!sgx_vepc_init();
-> > 
-> > This is a silly way of writing:
-> > 
-> >         if (sgx_drv_init() && sgx_vepc_init())
-> >                 goto err_kthread;
-> > 
-> > methinks.
-> 
-> Nope!  That's wrong, as sgx_epc_init() will not be called if sgx_drv_init()
-> succeeds.  And writing it as "if (sgx_drv_init() || sgx_vepc_init())" is also
-> wrong since that would kill SGX when one of the drivers is alive and well.
+On Fri, Apr 2, 2021 at 10:47 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>
+> On 4/2/21 3:35 AM, Brendan Higgins wrote:
+> > On Fri, Feb 5, 2021 at 2:18 PM Daniel Latypov <dlatypov@google.com> wrote:
+> >>
+> >> Before:
+> >>>   Expected str == "world", but
+> >>>       str == hello
+> >>>       "world" == world
+> >>
+> >> After:
+> >>>   Expected str == "world", but
+> >>>       str == "hello"
+> >> <we don't need to tell the user that "world" == "world">
+> >>
+> >> Note: like the literal ellision for integers, this doesn't handle the
+> >> case of
+> >>    KUNIT_EXPECT_STREQ(test, "hello", "world")
+> >> since we don't expect it to realistically happen in checked in tests.
+> >> (If you really wanted a test to fail, KUNIT_FAIL("msg") exists)
+> >>
+> >> In that case, you'd get:
+> >>>   Expected "hello" == "world", but
+> >> <output for next failure>
+> >>
+> >> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> >
+> > Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+> >
+>
+> Hi Daniel,
+>
+> Please run checkpatch on your patches in the future. I am seeing
+> a few checkpatch readability type improvements that can be made.
+>
+> Please make changes and send v2 with Brendan's Reviewed-by.
 
-Right. Thanks for pointing out.
+Are there some flags you'd like me to pass to checkpatch?
+
+$ ./scripts/checkpatch.pl --git HEAD
+total: 0 errors, 0 warnings, 42 lines checked
+
+Commit f66884e8b831 ("kunit: make KUNIT_EXPECT_STREQ() quote values,
+don't print literals") has no obvious style problems and is ready for
+submission.
+
+I just rebased onto linus/master again since I know checkpatch.pl's
+default behavior had changed recently, but I didn't see any errors
+there.
+
+I know this commit made some lines go just over 80 characters, so
+$ ./scripts/checkpatch.pl --max-line-length=80 --git HEAD
+...
+total: 0 errors, 4 warnings, 42 lines checked
+
+I can go and line wrap these but had figured they were more readable
+this way if checkpatch.pl no longer complained by default.
+
+Thanks,
+Daniel
+
+>
+> thanks,
+> -- Shuah
