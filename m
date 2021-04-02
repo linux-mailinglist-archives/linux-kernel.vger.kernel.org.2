@@ -2,225 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71F7F3526B3
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 08:46:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BFB63526C2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 08:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234153AbhDBGpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 02:45:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58524 "EHLO
+        id S230110AbhDBG6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 02:58:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233665AbhDBGpf (ORCPT
+        with ESMTP id S229599AbhDBG6w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 02:45:35 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED6BC06178A;
-        Thu,  1 Apr 2021 23:45:33 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id v11so3873354wro.7;
-        Thu, 01 Apr 2021 23:45:33 -0700 (PDT)
+        Fri, 2 Apr 2021 02:58:52 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45829C061788
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 23:58:51 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id x126so3038545pfc.13
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 23:58:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=cn/8ILoD5s5Dh5zITptK5TboPaT+aFmsLGpYXHYpaB4=;
-        b=lCVwxWYdYrvt5VpIMzpbbsjyJE/IhxzWpoWKLnzRzXFCD1NsLQxrJY4Vi/oSc3nQ3o
-         wXETpL+cPaBi9tctu6tnR82Wu3XWyuWeJhrPP/pl6XeqhvP39nzkustBVFd/h9rNK/kV
-         L+HNPRFpIHvuz4dQz2zDAuA3nT702/mAxQaXz4LH6Wn/wU+I3j8PeFTgZIMWYlTshLM+
-         089x2x6hg9RsVAcDxj2nO0bYhdfFc7yEqDSqKFSJjpy5AeGEPcvz0lC/yBhJJembUCPw
-         eqb35g0Q9hOlraS05CPO9vcy+X+7ivxK8EVQmMLNHuhlDSuE44ZHZEIQuYwvoyVWyeKf
-         /X3Q==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=XZRZT667Wid4HC57Mpu8NBkTc3AaOv656vjU18nDRHw=;
+        b=BUlYZClbeEGqrEVrcqqqA1M4m9HriUGNVpMdA/UGitBCrU66v6s2DsgkOvimOcBe8C
+         a5tsbYuGCvxMgN8OFMpxDhpqxKY9Alc06P7o/8IvOjVwznvl+LjdT+1s6yCCYWVTzyaM
+         z2dscvHDDCakjPCLNgJUqp1RCyCEMqXQDztAM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=cn/8ILoD5s5Dh5zITptK5TboPaT+aFmsLGpYXHYpaB4=;
-        b=UsQqtd8nl+5vZRQBrfqTC0MdVTZw7mWcAL4vIhYeDFYNtkHmeuYJRo8H/GEg2xVtoW
-         m1X+VumeI+cdulCYGNiNS2aFKm06aHvvBQIgMR6pWrsgc4Fjis8If2SXGjN9Dh1Ivamh
-         VfzLUW2s1xg2mjVeCHipDo/gAUrWmoY8EkjaaCrCqQTQU0nwoj9evjYfrPi73pJB14ba
-         Q1S3uhStqYz7alRfqtA6LT10Gprvn927GMCQOvqARz2vNO47boJKAL8byLr/4g39MBnC
-         qK3qoKxFXqrC3U1nlERmMEOoenlwRHoNQCvcgOek5kmZjMLruX4nLGFekBa7uGUSFyXq
-         xtfw==
-X-Gm-Message-State: AOAM530sXL8mfwx10iwEefie4NtgBDQfrt7nBVpR/BaBl/UpR66pJ+0c
-        otdPqC3j9u9H7W1am9qrdqs=
-X-Google-Smtp-Source: ABdhPJzgo8cjX9IrWv3F8dhDtPbpi+1KVYJgtPO4Gga6YL7fp1SggBziC6OQA4O50jQABuaMOs8J5A==
-X-Received: by 2002:adf:fd48:: with SMTP id h8mr13840800wrs.229.1617345931798;
-        Thu, 01 Apr 2021 23:45:31 -0700 (PDT)
-Received: from localhost.localdomain ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id m17sm13627131wrx.92.2021.04.01.23.45.30
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=XZRZT667Wid4HC57Mpu8NBkTc3AaOv656vjU18nDRHw=;
+        b=gcqzl4NOS9JKwNxCC0R5wcT/85onoiIfTaUZFmaqx1gy0iyJLbakECkEsvAuG5MQke
+         kKD0DQwmApoEc7tOxK1Tt0MW4L6TkP5pv2F6YvsvsG1vSSn1fKxK+1TIg3hVokiQQmO3
+         lDk5WKa+Eav07pR+qxyqkXaIfhj+7KG70w4nhPX4TS6QSdQ5pPqrzwN1xy0V3IHgYEJ+
+         ZKeHSqo6GoKf8zb9pzYMfvU+J9ByshEsPvIqNxTddzOs+g03T2dAk0UcmwPzO0HOQVYe
+         MCyrlG53GSyOK2wK6WHXa5KIJcimvorRK+emKs+cCrB8Cevb9RkQTEMBrLrBf6h+2L6y
+         iE0w==
+X-Gm-Message-State: AOAM531+aYHdnebP5nm1S+RqGldrAcAccEet7HfUYZ5lye62FPIe1r56
+        WN+Bcv0M+aYNekALXBZlpcyClpDGNFJAcw==
+X-Google-Smtp-Source: ABdhPJz+YaNMb1Tcnu8b63PmmSjWugBp6WusD+nJrsLIxEGp30CDb8f4CdGPQiT4zFrm1oHe8C8KFg==
+X-Received: by 2002:a62:ee09:0:b029:211:1113:2e7c with SMTP id e9-20020a62ee090000b029021111132e7cmr10839774pfi.49.1617346730567;
+        Thu, 01 Apr 2021 23:58:50 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:201:450:f2a9:b3ca:879f])
+        by smtp.gmail.com with ESMTPSA id e3sm7242297pfm.43.2021.04.01.23.58.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 23:45:31 -0700 (PDT)
-From:   Christian Hewitt <christianshewitt@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Christian Hewitt <christianshewitt@gmail.com>
-Subject: [PATCH v2 3/3] arm64: dts: meson: add initial device-tree for MeCool KIII Pro
-Date:   Fri,  2 Apr 2021 06:45:21 +0000
-Message-Id: <20210402064521.30579-4-christianshewitt@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210402064521.30579-1-christianshewitt@gmail.com>
-References: <20210402064521.30579-1-christianshewitt@gmail.com>
+        Thu, 01 Apr 2021 23:58:49 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <6ec0ca8d-85c7-53d6-acf2-22c4ac13e805@codeaurora.org>
+References: <20210323224336.1311783-1-swboyd@chromium.org> <6ec0ca8d-85c7-53d6-acf2-22c4ac13e805@codeaurora.org>
+Subject: Re: [PATCH v2] firmware: qcom_scm: Only compile legacy calls on ARM
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Brian Masney <masneyb@onstation.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Elliot Berman <eberman@codeaurora.org>
+Date:   Thu, 01 Apr 2021 23:58:48 -0700
+Message-ID: <161734672825.2260335.8472441215895199196@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MeCool (Videostrong) KIII Pro is based on the Amlogic Q200 reference
-board with an S912 chip and the following specs:
+Quoting Elliot Berman (2021-04-01 18:12:14)
+>=20
+> It might be a good idea to wrap these lines from qcom_scm_call with #if=20
+> IS_ENABLED(CONFIG_ARM), and the corresponding ones in qcom_scm_call_atomi=
+c:
+>=20
+>    case SMC_CONVENTION_LEGACY:
+>        return scm_legacy_call(dev, desc, res);
+>=20
+> If something is wrong with loaded firmware and LEGACY convention is=20
+> incorrectly selected, you would get a better hint about the problem:=20
+> "Unknown current SCM calling convention." You would still get the hint=20
+> earlier from __get_convention, but that may not be obvious to someone=20
+> unfamiliar with the SCM driver.
+>=20
+> I'll defer to your/Bjorn's preference:
+>=20
+> Acked-by: Elliot Berman <eberman@codeaurora.org>
+>=20
+> with or without modifying qcom_scm_call{_atomic}.
+>=20
 
-- 3GB DDR3 RAM
-- 16GB eMMC
-- 10/100/1000 Base-T Ethernet
-- BCM4335 Wireless (802.11 b/g/n/ac, BT 4.0)
-- DVB-C/T/T2/S/S2 (AVL6862TA demod + R912 tuner)
-- HDMI 2.0a video
-- S/PDIF optical output
-- CVBS/Analogue output
-- 4x USB 2.0 ports
-- IR receiver
-- 1x Power button (with integrated blue LED)
-- 1x Update/Reset button (underside)
-- 1x micro SD card slot
+Maybe it would be better to catch that problem at the source and force
+arm64 calling convention to be safe? I'm thinking of this patch, but it
+could be even more fine tuned and probably the sc7180 check could be
+removed in the process if the rest of this email makes sense.
 
-Tested-by: Drazen Spio <drazsp@gmail.com>
-Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
----
- arch/arm64/boot/dts/amlogic/Makefile          |   1 +
- .../dts/amlogic/meson-gxm-mecool-kiii-pro.dts | 113 ++++++++++++++++++
- 2 files changed, 114 insertions(+)
- create mode 100644 arch/arm64/boot/dts/amlogic/meson-gxm-mecool-kiii-pro.dts
+If I understand correctly CONFIG_ARM64=3Dy should never use legacy
+convention (and never the 32-bit one either?), so we can figure that out
+pretty easily and just force it to use 64-bit if the architecture is
+arm64. If only the 64-bit convention is supported on arm64 then we
+really don't even need to call into the firmware to figure it out on
+arm64. We can do this convention detection stuff on arm32 (CONFIG_ARM)
+and always assume 64-bit convention on CONFIG_ARM64. Is that right?
 
-diff --git a/arch/arm64/boot/dts/amlogic/Makefile b/arch/arm64/boot/dts/amlogic/Makefile
-index f8f515c93055..a58ccecfcb55 100644
---- a/arch/arm64/boot/dts/amlogic/Makefile
-+++ b/arch/arm64/boot/dts/amlogic/Makefile
-@@ -39,6 +39,7 @@ dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s905w-p281.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s905w-tx3-mini.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s905d-libretech-pc.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-gxm-khadas-vim2.dtb
-+dtb-$(CONFIG_ARCH_MESON) += meson-gxm-mecool-kiii-pro.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-gxm-minix-neo-u9h.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-gxm-nexbox-a1.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-gxm-q200.dtb
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-mecool-kiii-pro.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-mecool-kiii-pro.dts
-new file mode 100644
-index 000000000000..0651756d7fb5
---- /dev/null
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxm-mecool-kiii-pro.dts
-@@ -0,0 +1,113 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+
-+/*
-+ * Author: Christian Hewitt <christianshewitt@gmail.com>
-+ */
-+
-+/dts-v1/;
-+
-+#include "meson-gxm.dtsi"
-+#include "meson-gx-p23x-q20x.dtsi"
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/leds/common.h>
-+
-+/ {
-+	compatible = "videostrong,gxm-kiii-pro", "amlogic,s912", "amlogic,meson-gxm";
-+	model = "MeCool KIII Pro";
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x0 0x0 0xC0000000>;
-+	};
-+
-+	adc-keys {
-+		compatible = "adc-keys";
-+		io-channels = <&saradc 0>;
-+		io-channel-names = "buttons";
-+		keyup-threshold-microvolt = <1710000>;
-+
-+		button-function {
-+			label = "Update";
-+			linux,code = <KEY_VENDOR>;
-+			press-threshold-microvolt = <10000>;
-+		};
-+	};
-+
-+	gpio-keys-polled {
-+		compatible = "gpio-keys-polled";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		poll-interval = <100>;
-+
-+		button@0 {
-+			label = "power";
-+			linux,code = <KEY_POWER>;
-+			gpios = <&gpio_ao GPIOAO_2 GPIO_ACTIVE_LOW>;
-+		};
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		blue {
-+			color = <LED_COLOR_ID_BLUE>;
-+			function = LED_FUNCTION_POWER;
-+			gpios = <&gpio GPIODV_24 GPIO_ACTIVE_HIGH>;
-+			default-state = "on";
-+			panic-indicator;
-+		};
-+	};
-+};
-+
-+&ethmac {
-+	pinctrl-0 = <&eth_pins>;
-+	pinctrl-names = "default";
-+
-+	phy-handle = <&external_phy>;
-+
-+	amlogic,tx-delay-ns = <2>;
-+
-+	phy-mode = "rgmii";
-+};
-+
-+&external_mdio {
-+	external_phy: ethernet-phy@0 {
-+		/* Realtek RTL8211F (0x001cc916) */
-+		reg = <0>;
-+		max-speed = <1000>;
-+
-+		reset-assert-us = <10000>;
-+		reset-deassert-us = <80000>;
-+		reset-gpios = <&gpio GPIOZ_14 GPIO_ACTIVE_LOW>;
-+
-+		interrupt-parent = <&gpio_intc>;
-+		/* MAC_INTR on GPIOZ_15 */
-+		interrupts = <25 IRQ_TYPE_LEVEL_LOW>;
-+	};
-+};
-+
-+&ir {
-+	linux,rc-map-name = "rc-mecool-kiii-pro";
-+};
-+
-+&sd_emmc_a {
-+	brcmf: wifi@1 {
-+		reg = <1>;
-+		compatible = "brcm,bcm4329-fmac";
-+	};
-+};
-+
-+&uart_A {
-+	status = "okay";
-+	pinctrl-0 = <&uart_a_pins>, <&uart_a_cts_rts_pins>;
-+	pinctrl-names = "default";
-+	uart-has-rtscts;
-+
-+	bluetooth {
-+		compatible = "brcm,bcm43438-bt";
-+		shutdown-gpios = <&gpio GPIOX_17 GPIO_ACTIVE_HIGH>;
-+		max-speed = <2000000>;
-+		clocks = <&wifi32k>;
-+		clock-names = "lpo";
-+	};
-+};
--- 
-2.17.1
-
+---8<---
+diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
+index 747808a8ddf4..22187ebc1678 100644
+--- a/drivers/firmware/qcom_scm.c
++++ b/drivers/firmware/qcom_scm.c
+@@ -140,7 +140,13 @@ static enum qcom_scm_convention __get_convention(void)
+ 	if (!ret && res.result[0] =3D=3D 1)
+ 		goto found;
+=20
+-	probed_convention =3D SMC_CONVENTION_LEGACY;
++	if (IS_ENABLED(CONFIG_ARM)) {
++		probed_convention =3D SMC_CONVENTION_LEGACY;
++	} else {
++		probed_convention =3D SMC_CONVENTION_ARM_64;
++		forced =3D true;
++		WARN(1, "qcom_scm: Detected legacy convention on arm64; firmware is brok=
+en\n");
++	}
+ found:
+ 	spin_lock_irqsave(&scm_query_lock, flags);
+ 	if (probed_convention !=3D qcom_scm_convention) {
