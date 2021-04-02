@@ -2,103 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50EDC352510
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 03:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3E88352515
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 03:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234286AbhDBBTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 21:19:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45366 "EHLO
+        id S234150AbhDBBWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 21:22:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233786AbhDBBTu (ORCPT
+        with ESMTP id S233786AbhDBBWJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 21:19:50 -0400
-Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B23BC0613E6;
-        Thu,  1 Apr 2021 18:19:50 -0700 (PDT)
-Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20::7c6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 077D4198;
-        Thu,  1 Apr 2021 18:19:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1617326389;
-        bh=G8rBZRZvYmpd8o2JnBLz+E9kxXF/0mTp2nuOMD0ePt4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HfKFGPOy/jqFi/BvkNmXkrnBaEFVbosfT3gvTTCGAShQzSfVHKvS8LGi909Oo6cjT
-         DjdjMlrA7IeRZLDE0t4Xq0nZrycHq1uarkkOLR+Z213w1EOBcqy1QseADj3NDeigjE
-         DnygHZ1rUPTyHGMr6FPzHpWt9aM8ljyDbZuG9XjQ=
-Date:   Thu, 1 Apr 2021 20:19:47 -0500
-From:   Zev Weiss <zev@bewilderbeest.net>
-To:     Andrew Jeffery <andrew@aj.id.au>
-Cc:     Joel Stanley <joel@jms.id.au>, openbmc@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        - <devicetree@vger.kernel.org>, linux-serial@vger.kernel.org
-Subject: Re: [PATCH v3 4/4] dt-bindings: serial: 8250: add aspeed,lpc-address
- and aspeed,sirq
-Message-ID: <YGZxM31x0All76gm@hatter.bewilderbeest.net>
-References: <20210402004716.15961-1-zev@bewilderbeest.net>
- <20210402004716.15961-5-zev@bewilderbeest.net>
- <639f957f-a0d7-4a06-8598-90da0e17820b@beta.fastmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <639f957f-a0d7-4a06-8598-90da0e17820b@beta.fastmail.com>
+        Thu, 1 Apr 2021 21:22:09 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47549C061788
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 18:22:05 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so5527034pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 18:22:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=E8ffoar+fL+fe86KQoUmq1Ih6v7wT3mkutZg4Ab/B60=;
+        b=BKJq2lRvnSp7bYePvIMNoaXQlSqt2NczPI67nUM8Phsv338pezrtymYoxZUYV5785W
+         Ngx4jbXKwdpfu8sE1XFA2ZhrQZnPELVOlZ8vse1JFEDlgM6Bgr0UJQbIoPZ6qXHXvedb
+         fAwlp1BeZosibu3VCnTl9Tr5hmOJmtEt0f6vdC8mv8IL0rRP3vMjk/a/LMQu9CPwGBsg
+         NONz6juJe6ztMnRrJrdg2A4wLuopsrlr4n80bui+neDT4H2Hv0KvD6g/9u++ATIaeCKT
+         JnAqWI0dWvVETGj83pakT2NfN4ijG6xAQXc+pe4R+b7hlp3CLfMGN5TiFnDSrFyVGpMc
+         pXYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=E8ffoar+fL+fe86KQoUmq1Ih6v7wT3mkutZg4Ab/B60=;
+        b=V925SY3AT10+QqcId4UgIOHX24heXLfSUGHgR7ZjDsKYhDm6ZSsPhBFKYdUwUKE/TU
+         anTBUZuE5+8Z4hcFR1be0xoG3YXtEOt3zhiGvGd+DaCvEng2nKGGA3jnm51ZmJxHEdzw
+         D3NTXOA3Ifjc7XfcxcZSABaOUmMY6X6uXiGpIu/Zxc/oLL3U9pDxprLmElZtd/53cfJH
+         X0ZpTMW9vdfD4dskFqmnCixbyRz8Ie7Pwinu8eWfTa5mBDqbrVxj+OruqYvx0sT8grpr
+         1NR7hj1ukYrRqPBGM21uqzVG6zBmUIvoBqEtGy4Rb5ypO0Bd8dWQHUtvzbVax+WVHB3n
+         jpcQ==
+X-Gm-Message-State: AOAM533vBNSSAGHkepTl+JGL5rEjFhQCH8g4YepPlydda+LObP6Ij1sX
+        13vZQndevEdn0TUbAWqq/0Uw7g==
+X-Google-Smtp-Source: ABdhPJyP53AWpACw5NsWYjVJsCYCxFJIlAs9di76cFB/bZeeUQr0RpaK5YaL6WLQaB6UB/nbXMkb+A==
+X-Received: by 2002:a17:90a:39cf:: with SMTP id k15mr1719719pjf.71.1617326524560;
+        Thu, 01 Apr 2021 18:22:04 -0700 (PDT)
+Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id k64sm6718934pgk.23.2021.04.01.18.22.02
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 01 Apr 2021 18:22:03 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <FC1C6625-2E89-4547-B2E4-2D992181309D@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_53BD9715-8557-487D-A7E2-C2F5CB7C369C";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v2] ext4: Fix ext4_error_err save negative errno into
+ superblock
+Date:   Thu, 1 Apr 2021 19:21:58 -0600
+In-Reply-To: <20210401074017.3382721-1-yebin10@huawei.com>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Liu Zhi Qiang <liuzhiqiang26@huawei.com>
+To:     Ye Bin <yebin10@huawei.com>
+References: <20210401074017.3382721-1-yebin10@huawei.com>
+X-Mailer: Apple Mail (2.3273)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 08:14:39PM CDT, Andrew Jeffery wrote:
->
->
->On Fri, 2 Apr 2021, at 11:17, Zev Weiss wrote:
->> These correspond to the existing lpc_address, sirq, and sirq_polarity
->> sysfs attributes; the second element of aspeed,sirq provides a
->> replacement for the deprecated aspeed,sirq-polarity-sense property.
->>
->> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
->> ---
->>  .../devicetree/bindings/serial/8250.yaml      | 27 ++++++++++++++++---
->>  1 file changed, 24 insertions(+), 3 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/serial/8250.yaml
->> b/Documentation/devicetree/bindings/serial/8250.yaml
->> index 491b9297432d..a6e01f9b745f 100644
->> --- a/Documentation/devicetree/bindings/serial/8250.yaml
->> +++ b/Documentation/devicetree/bindings/serial/8250.yaml
->> @@ -12,8 +12,13 @@ maintainers:
->>  allOf:
->>    - $ref: /schemas/serial.yaml#
->>    - if:
->> -      required:
->> -        - aspeed,sirq-polarity-sense
->> +      anyOf:
->> +        - required:
->> +            - aspeed,lpc-address
->
->Why not aspeed,lpc-io-reg like the KCS binding?
->
->There are some things we can do to improve it, but we shouldn't go and invent something different. I prefer aspeed,lpc-io-reg because it's name derives from the generic 'reg' property as does it's behaviour (if you assume a related `#size-cells = 0`).
->
->> +        - required:
->> +            - aspeed,sirq
->
->Why not aspeed,lpc-interrupts like the KCS binding?
->
->The generic IRQ property is 'interrupts', so like aspeed,lpc-io-reg the interrupts proposal for KCS follows in name and form. I'm hiding it behind the aspeed vendor prefix for now while I'm not satisfied that I understand the requirements of non-aspeed parts. Similarly, I added the lpc prefix because we don't tend to describe the host devicetree in the BMC devicetree (and so there's no parent interrupt controller that we can reference via a phandle) and we need a way to differentiate from the local interrupts property.
->
->I don't see a reason for either of them to differ from what we already have for KCS, and I don't see any reason to continue the sysfs naming scheme in the binding.
->
 
-Ah, OK -- I was aiming for consistency with the existing vuart sysfs 
-attributes, but if that's not a worthwhile concern I'm fine with 
-aspeed,lpc-io-reg & aspeed,lpc-interrupts.
+--Apple-Mail=_53BD9715-8557-487D-A7E2-C2F5CB7C369C
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
+
+On Apr 1, 2021, at 1:40 AM, Ye Bin <yebin10@huawei.com> wrote:
+>=20
+> As read_mmp_block return 1 when failed. read_mmp_block return -EIO =
+when buffer
+> isn't uptodate.
+
+Thank you for this second patch.  Unfortunately, the commit message
+is still confusing/incorrect because it references read_mmp_block()
+in the first usage but is actually changing write_mmp_block().
+
+With that change you could add a Reviewed-by label from me.
+
+Cheers, Andreas
+
+> Fixes: 54d3adbc29f0 ("ext4: save all error info in save_error_info() =
+and
+> drop ext4_set_errno()")
+> Reported-by: Liu Zhi Qiang <liuzhiqiang26@huawei.com>
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> ---
+> fs/ext4/mmp.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
+> index 795c3ff2907c..68fbeedd627b 100644
+> --- a/fs/ext4/mmp.c
+> +++ b/fs/ext4/mmp.c
+> @@ -56,7 +56,7 @@ static int write_mmp_block(struct super_block *sb, =
+struct buffer_head *bh)
+> 	wait_on_buffer(bh);
+> 	sb_end_write(sb);
+> 	if (unlikely(!buffer_uptodate(bh)))
+> -		return 1;
+> +		return -EIO;
+>=20
+> 	return 0;
+> }
+> --
+> 2.25.4
+>=20
 
 
-Zev
+Cheers, Andreas
 
+
+
+
+
+
+--Apple-Mail=_53BD9715-8557-487D-A7E2-C2F5CB7C369C
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmBmcbcACgkQcqXauRfM
+H+Bgzg//WtpR3UQKASYF8Bu8cj7yHzoJC9CQwMcpojKCwcxDHboEXX9z7c9ia0sf
+e6sr7nMOJygOL+rS3QdR78fDI3xvaK+wbR1qZNBbCLBffEJ/13ry5YI5YezRIdfe
+hz9dhlMwT0WiniB3CpF7fb0/Fs/p30ud7u59Y3yrEMMCdr/WMkMtDs6v2BMZwmMN
+K6aR4DaOC9+mF+KjyW25+l4eJgfzS7dja7WiewvP8xfmtSAISHQkIjh/EYRvf1lo
+dQ2SW0yDsYrTuefVukavHhKk3dBHBUkKpwBpThcyrfzNdejUJPnpTwQ0YdFNcqRx
+9fo9oiMbC4kvmTX4GrHPKYsnr9wYyDLp+uj64kikObUzoO0mDm3mT8c5drAC8vu3
+rtmiO4Nze3BpieQYVdgnBHsbxmUWt207gBn/6rjSnuzeWtFIsZFq/CNaFVphHotF
+Ma0TC7JDbimaJqusQZ6LGzFx5E0xOZ7Job6En3HVEmwDrbz7yP3ktqxAvwDM/hpZ
+V8Bd44OO09mYb73API7AFjVdAG6ZjE26AMfnR1ShIAyJP8EwLioNaanNu+MY4Lcs
++TvIbcZciWnVoCIlOwdLAMAUBqsc7w5AoXBNZ5qrZwRmqGRt4LvC9f7luRrZHiBl
+ZCYUjNcxG9s+slUO8MMwwQkA41rfWHYDAQs/uZSX7ZTMf72Sw44=
+=/tep
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_53BD9715-8557-487D-A7E2-C2F5CB7C369C--
