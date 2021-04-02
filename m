@@ -2,408 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD38352E49
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 19:30:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB0F352E47
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 19:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235200AbhDBRaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 13:30:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57064 "EHLO
+        id S234839AbhDBRaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 13:30:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234361AbhDBRaW (ORCPT
+        with ESMTP id S229553AbhDBRaS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 13:30:22 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D7C7C0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 10:30:20 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id v4so5272545wrp.13
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 10:30:20 -0700 (PDT)
+        Fri, 2 Apr 2021 13:30:18 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98153C0613E6
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 10:30:16 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id q3so5814501qkq.12
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 10:30:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3bElwPFidTP4wJ1F5AuWkvAVB2F23M5VVLOMUMTrjzs=;
-        b=K5ZH4Bam4Y2ZHOsV2KSNDS6y8MlKqhRrS53Darmt6zvWNiOfRzrwRH0nBmao6Eb22t
-         C01bIqgS/uJ5yrQmZ12H1cJlT3Haicm9H9ezV2YHXpbjTOraGIcJOhUtRnNa4woZ32fI
-         goa89Dyw7val05oLYOMN5p6hbJAjRiiWGvZJjyxF8L3RcKdNpEjEegiG7yWii00N+eEj
-         RtS2luhcU1hf0eeiHuUjKmykMTovMVZtLep4m5Kw3N/SBrajEBif0uH6Y9/++tBDVTGH
-         OXbs3OjLsN0GdMJ+9vRo8nOL0nLY0jAwmm79i3p/ASB25wCFntsQUUKRGkKbDji3mcL1
-         tL1A==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DRNvD2RZwkvfxZeMQahLHViX8Lbm4hnuuu0I+GZK54A=;
+        b=MTdGyVvrDep3yoWnXlj9PW8WZwL5t7qwsdbnOchYfmYvMB2HUQkpdBTfNKn6fJKQTY
+         2TDVRP82/IV2Fywygt2Dey0ONke+llzbJLktor50u+zzHL+XkfLcgfRMoXqlFyMfyfKy
+         YU/lXsmW/fa8KSoomYVtceqARiTNj6oDrKifhrKAYYoJiW6fnUWPwb0g954VBl7vL1/L
+         /EXlnc5uw9hmJnyO7a7pyJ/fnqyB4dtjoYXUGOSeXWubo9Fnthk2PLVIYOoIC6iiGe6X
+         at5ilZSWTgG/j417bvW0cyiQvdFx3CV08jt3+js+21fwiuL8HPuvWyzh+wQbfeAGzs89
+         jS1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3bElwPFidTP4wJ1F5AuWkvAVB2F23M5VVLOMUMTrjzs=;
-        b=snDJ9/mZ+ynE5m3+lc6tXwuEtquvayUxKHKN99za7pnHuKWyiqkM82WPWJG3JkTTUc
-         sdDCYSB0Z/3ATobqo6IzhgAmoKB/kdjUyUYFyeLHjW8J99Z8triq/ARHby2D9DN6Wg5C
-         Jrp08lLl/oEBF48mX1vr7TxUdQ8RInKlqpn6xDXBAP3zq3fRaKn2JsnBoGesEHht2mIu
-         3Pbt4Tz7UE4jSDyqcwWZ3lYmWCbpXwxEFYw6yRhbP5/fp7UiAhzQ9QPmnw94qrRBDI6x
-         9uTQVjv91nLfR72dIEY18m9rHHMHcex9OJJEyRwXZGJMAA8sqolIA6UPWqsxTktVApJo
-         PL1g==
-X-Gm-Message-State: AOAM533RBh1ke0oyWyMCbMa34iCY+72okCSUmueoOqjQAhHlEgKy2lpE
-        NfK6bkGOWbVqC3Md4AKuP0M=
-X-Google-Smtp-Source: ABdhPJxItYP5XSomFuSBDaoNjwOjVePZJAAbroQ7ELkEFln8ftQHnKyedgRggjzwJIr1UM64tzhSjA==
-X-Received: by 2002:a5d:6a86:: with SMTP id s6mr16778081wru.307.1617384619008;
-        Fri, 02 Apr 2021 10:30:19 -0700 (PDT)
-Received: from agape ([5.171.81.4])
-        by smtp.gmail.com with ESMTPSA id 64sm12653921wmz.7.2021.04.02.10.30.18
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DRNvD2RZwkvfxZeMQahLHViX8Lbm4hnuuu0I+GZK54A=;
+        b=oeRzsPtN5VkiHnWK/Vvd6R1wfMvpR02wMB8hvhTsJiuMDXERRWxvcpd9X6bR9PyDaL
+         FqUsbV9iuoY2ZFg+0z2tZI1HcaPb4BmHFznBxuGH5Hl7khJPo0eYX4o8uIWuxrUIDL4J
+         HEGA6H9pBqiQ6vyIwUoF1g1KYTEGzPh7NAnZuYLlX6j2kK/SCH7e8t7DPpzR0ydwBCEu
+         75hkiRTihZEQurQwdrZyF3jw8A2SwfpdtyNe4tC4uYR43r2tXyjpcGWpC0bb45mm1yB9
+         c0SHcdQPcILiH9Ytu9J2dUnK0yr2Gfg+Y/4qPbYDIP+tuehGrYv8sO40gcVI48j9dOD5
+         31IQ==
+X-Gm-Message-State: AOAM5310lNI3vbgl/n/+ACkwo31dWfe9+0TvJinZ1t/ZzV79CMeoKP9z
+        IugPVVfUaGX24Rj1Eqsxuxy2Gw==
+X-Google-Smtp-Source: ABdhPJyrSrnm5Q9XdnLTCYqtUFj82QUxNm5rK0YYwf4tJ6SJQd++2gJQRfp7gSQwdsMUzboInWu8iw==
+X-Received: by 2002:a05:620a:11a4:: with SMTP id c4mr13818945qkk.313.1617384615843;
+        Fri, 02 Apr 2021 10:30:15 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:8ca7])
+        by smtp.gmail.com with ESMTPSA id n140sm7682859qka.124.2021.04.02.10.30.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 10:30:18 -0700 (PDT)
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     dan.carpenter@oracle.com, joe@perches.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH v2 01/30] staging: rtl8723bs: remove RT_TRACE logs in core/rtw_xmit.c
-Date:   Fri,  2 Apr 2021 19:29:43 +0200
-Message-Id: <34b6f0b80cd3913722b258e9554dbc77268fb2bf.1617384172.git.fabioaiuto83@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1617384172.git.fabioaiuto83@gmail.com>
-References: <cover.1617384172.git.fabioaiuto83@gmail.com>
+        Fri, 02 Apr 2021 10:30:15 -0700 (PDT)
+Date:   Fri, 2 Apr 2021 13:30:13 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>,
+        Roman Gushchin <guro@fb.com>, Greg Thelen <gthelen@google.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>
+Subject: Re: [External] Re: [RFC PATCH 00/15] Use obj_cgroup APIs to charge
+ the LRU pages
+Message-ID: <YGdUpZMNNndEV5+9@cmpxchg.org>
+References: <20210330101531.82752-1-songmuchun@bytedance.com>
+ <CALvZod4xHNmTQMd+zg71s7uyXUHEfwnQ-zqRXSWphwi9RogeNg@mail.gmail.com>
+ <YGN0141iu5HTGiNJ@carbon.dhcp.thefacebook.com>
+ <YGOYYgWbwiYlKmzV@cmpxchg.org>
+ <YGOgth4IUflVE/Me@carbon.dhcp.thefacebook.com>
+ <YGSSemLLpiHJHanV@cmpxchg.org>
+ <CAMZfGtVYMDt_3CyH1g8d+Sey8J+W2HVY73xwCk_anm3UgHcr0w@mail.gmail.com>
+ <CALvZod6EeDeb8S-LT8BgFP=KqUKqGS-EnRTKCy+ajAthMC2Vfw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod6EeDeb8S-LT8BgFP=KqUKqGS-EnRTKCy+ajAthMC2Vfw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove all RT_TRACE logs
+On Thu, Apr 01, 2021 at 10:15:45AM -0700, Shakeel Butt wrote:
+> On Thu, Apr 1, 2021 at 9:08 AM Muchun Song <songmuchun@bytedance.com> wrote:
+> >
+> [...]
+> > > The zombie issue is a pretty urgent concern that has caused several
+> > > production emergencies now. It needs a fix sooner rather than later.
+> >
+> > Thank you very much for clarifying the problem for me. I do agree
+> > with you. This issue should be fixed ASAP. Using objcg is a good
+> > choice. Dying objcg should not be a problem. Because the size of
+> > objcg is so small compared to memcg.
+> >
+> 
+> Just wanted to say out loud that yes this patchset will reduce the
+> memcg zombie issue but this is not the final destination. We should
+> continue the discussions on sharing/reusing scenarios.
 
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
----
- drivers/staging/rtl8723bs/core/rtw_xmit.c | 82 ++---------------------
- 1 file changed, 7 insertions(+), 75 deletions(-)
+Absolutely. I think it's an important discussion to have.
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_xmit.c b/drivers/staging/rtl8723bs/core/rtw_xmit.c
-index 3fc4ea02bf15..beee87db85a5 100644
---- a/drivers/staging/rtl8723bs/core/rtw_xmit.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_xmit.c
-@@ -69,7 +69,6 @@ s32 _rtw_init_xmit_priv(struct xmit_priv *pxmitpriv, struct adapter *padapter)
- 
- 	if (!pxmitpriv->pallocated_frame_buf) {
- 		pxmitpriv->pxmit_frame_buf = NULL;
--		RT_TRACE(_module_rtl871x_xmit_c_, _drv_err_, ("alloc xmit_frame fail!\n"));
- 		res = _FAIL;
- 		goto exit;
- 	}
-@@ -105,7 +104,6 @@ s32 _rtw_init_xmit_priv(struct xmit_priv *pxmitpriv, struct adapter *padapter)
- 	pxmitpriv->pallocated_xmitbuf = vzalloc(NR_XMITBUFF * sizeof(struct xmit_buf) + 4);
- 
- 	if (!pxmitpriv->pallocated_xmitbuf) {
--		RT_TRACE(_module_rtl871x_xmit_c_, _drv_err_, ("alloc xmit_buf fail!\n"));
- 		res = _FAIL;
- 		goto exit;
- 	}
-@@ -155,7 +153,6 @@ s32 _rtw_init_xmit_priv(struct xmit_priv *pxmitpriv, struct adapter *padapter)
- 
- 	if (!pxmitpriv->xframe_ext_alloc_addr) {
- 		pxmitpriv->xframe_ext = NULL;
--		RT_TRACE(_module_rtl871x_xmit_c_, _drv_err_, ("alloc xframe_ext fail!\n"));
- 		res = _FAIL;
- 		goto exit;
- 	}
-@@ -188,7 +185,6 @@ s32 _rtw_init_xmit_priv(struct xmit_priv *pxmitpriv, struct adapter *padapter)
- 	pxmitpriv->pallocated_xmit_extbuf = vzalloc(NR_XMIT_EXTBUFF * sizeof(struct xmit_buf) + 4);
- 
- 	if (!pxmitpriv->pallocated_xmit_extbuf) {
--		RT_TRACE(_module_rtl871x_xmit_c_, _drv_err_, ("alloc xmit_extbuf fail!\n"));
- 		res = _FAIL;
- 		goto exit;
- 	}
-@@ -481,12 +477,9 @@ static s32 update_attrib_sec_info(struct adapter *padapter, struct pkt_attrib *p
- 	pattrib->mac_id = psta->mac_id;
- 
- 	if (psta->ieee8021x_blocked == true) {
--		RT_TRACE(_module_rtl871x_xmit_c_, _drv_err_, ("\n psta->ieee8021x_blocked == true\n"));
--
- 		pattrib->encrypt = 0;
- 
- 		if ((pattrib->ether_type != 0x888e) && (check_fwstate(pmlmepriv, WIFI_MP_STATE) == false)) {
--			RT_TRACE(_module_rtl871x_xmit_c_, _drv_err_, ("\npsta->ieee8021x_blocked == true,  pattrib->ether_type(%.4x) != 0x888e\n", pattrib->ether_type));
- 			#ifdef DBG_TX_DROP_FRAME
- 			DBG_871X("DBG_TX_DROP_FRAME %s psta->ieee8021x_blocked == true,  pattrib->ether_type(%04x) != 0x888e\n", __func__, pattrib->ether_type);
- 			#endif
-@@ -568,20 +561,11 @@ static s32 update_attrib_sec_info(struct adapter *padapter, struct pkt_attrib *p
- 	if (pattrib->encrypt > 0)
- 		memcpy(pattrib->dot118021x_UncstKey.skey, psta->dot118021x_UncstKey.skey, 16);
- 
--	RT_TRACE(_module_rtl871x_xmit_c_, _drv_info_,
--		("update_attrib: encrypt =%d  securitypriv.sw_encrypt =%d\n",
--		pattrib->encrypt, padapter->securitypriv.sw_encrypt));
--
- 	if (pattrib->encrypt &&
--		((padapter->securitypriv.sw_encrypt == true) || (psecuritypriv->hw_decrypted == false))) {
-+		((padapter->securitypriv.sw_encrypt == true) || (psecuritypriv->hw_decrypted == false)))
- 		pattrib->bswenc = true;
--		RT_TRACE(_module_rtl871x_xmit_c_, _drv_err_,
--			("update_attrib: encrypt =%d securitypriv.hw_decrypted =%d bswenc =true\n",
--			pattrib->encrypt, padapter->securitypriv.sw_encrypt));
--	} else {
-+	else
- 		pattrib->bswenc = false;
--		RT_TRACE(_module_rtl871x_xmit_c_, _drv_info_, ("update_attrib: bswenc =false\n"));
--	}
- 
- exit:
- 
-@@ -685,7 +669,6 @@ static s32 update_attrib(struct adapter *padapter, struct sk_buff *pkt, struct p
- 					((tmp[21] == 67) && (tmp[23] == 68))) {
- 					/*  68 : UDP BOOTP client */
- 					/*  67 : UDP BOOTP server */
--					RT_TRACE(_module_rtl871x_xmit_c_, _drv_err_, ("======================update_attrib: get DHCP Packet\n"));
- 					pattrib->dhcp_pkt = 1;
- 				}
- 			}
-@@ -720,7 +703,6 @@ static s32 update_attrib(struct adapter *padapter, struct sk_buff *pkt, struct p
- 	} else {
- 		psta = rtw_get_stainfo(pstapriv, pattrib->ra);
- 		if (!psta)	{ /*  if we cannot get psta => drop the pkt */
--			RT_TRACE(_module_rtl871x_xmit_c_, _drv_alert_, ("\nupdate_attrib => get sta_info fail, ra:%pM\n", MAC_ARG(pattrib->ra)));
- 			#ifdef DBG_TX_DROP_FRAME
- 			DBG_871X("DBG_TX_DROP_FRAME %s get sta_info fail, ra:%pM\n", __func__, MAC_ARG(pattrib->ra));
- 			#endif
-@@ -734,7 +716,6 @@ static s32 update_attrib(struct adapter *padapter, struct sk_buff *pkt, struct p
- 
- 	if (!psta) {
- 		/*  if we cannot get psta => drop the pkt */
--		RT_TRACE(_module_rtl871x_xmit_c_, _drv_alert_, ("\nupdate_attrib => get sta_info fail, ra:%pM\n", MAC_ARG(pattrib->ra)));
- 		#ifdef DBG_TX_DROP_FRAME
- 		DBG_871X("DBG_TX_DROP_FRAME %s get sta_info fail, ra:%pM\n", __func__, MAC_ARG(pattrib->ra));
- 		#endif
-@@ -842,11 +823,8 @@ static s32 xmitframe_addmic(struct adapter *padapter, struct xmit_frame *pxmitfr
- 
- 			for (curfragnum = 0; curfragnum < pattrib->nr_frags; curfragnum++) {
- 				payload = (u8 *)round_up((SIZE_PTR)(payload), 4);
--				RT_TRACE(_module_rtl871x_xmit_c_, _drv_err_, ("===curfragnum =%d, pframe = 0x%.2x, 0x%.2x, 0x%.2x, 0x%.2x, 0x%.2x, 0x%.2x, 0x%.2x, 0x%.2x,!!!\n",
--					curfragnum, *payload, *(payload+1), *(payload+2), *(payload+3), *(payload+4), *(payload+5), *(payload+6), *(payload+7)));
--
- 				payload = payload+pattrib->hdrlen+pattrib->iv_len;
--				RT_TRACE(_module_rtl871x_xmit_c_, _drv_err_, ("curfragnum =%d pattrib->hdrlen =%d pattrib->iv_len =%d", curfragnum, pattrib->hdrlen, pattrib->iv_len));
-+
- 				if ((curfragnum+1) == pattrib->nr_frags) {
- 					length = pattrib->last_txcmdsz-pattrib->hdrlen-pattrib->iv_len-((pattrib->bswenc) ? pattrib->icv_len : 0);
- 					rtw_secmicappend(&micdata, payload, length);
-@@ -855,26 +833,13 @@ static s32 xmitframe_addmic(struct adapter *padapter, struct xmit_frame *pxmitfr
- 					length = pxmitpriv->frag_len-pattrib->hdrlen-pattrib->iv_len-((pattrib->bswenc) ? pattrib->icv_len : 0);
- 					rtw_secmicappend(&micdata, payload, length);
- 					payload = payload+length+pattrib->icv_len;
--					RT_TRACE(_module_rtl871x_xmit_c_, _drv_err_, ("curfragnum =%d length =%d pattrib->icv_len =%d", curfragnum, length, pattrib->icv_len));
- 				}
- 			}
- 			rtw_secgetmic(&micdata, &mic[0]);
--			RT_TRACE(_module_rtl871x_xmit_c_, _drv_err_, ("xmitframe_addmic: before add mic code!!!\n"));
--			RT_TRACE(_module_rtl871x_xmit_c_, _drv_err_, ("xmitframe_addmic: pattrib->last_txcmdsz =%d!!!\n", pattrib->last_txcmdsz));
--			RT_TRACE(_module_rtl871x_xmit_c_, _drv_err_, ("xmitframe_addmic: mic[0]= 0x%.2x , mic[1]= 0x%.2x , mic[2]= 0x%.2x , mic[3]= 0x%.2x\n\
--  mic[4]= 0x%.2x , mic[5]= 0x%.2x , mic[6]= 0x%.2x , mic[7]= 0x%.2x !!!!\n",
--				mic[0], mic[1], mic[2], mic[3], mic[4], mic[5], mic[6], mic[7]));
- 			/* add mic code  and add the mic code length in last_txcmdsz */
- 
- 			memcpy(payload, &mic[0], 8);
- 			pattrib->last_txcmdsz += 8;
--
--			RT_TRACE(_module_rtl871x_xmit_c_, _drv_info_, ("\n ========last pkt ========\n"));
--			payload = payload-pattrib->last_txcmdsz+8;
--			for (curfragnum = 0; curfragnum < pattrib->last_txcmdsz; curfragnum = curfragnum+8)
--					RT_TRACE(_module_rtl871x_xmit_c_, _drv_info_, (" %.2x,  %.2x,  %.2x,  %.2x,  %.2x,  %.2x,  %.2x,  %.2x ",
--					*(payload+curfragnum), *(payload+curfragnum+1), *(payload+curfragnum+2), *(payload+curfragnum+3),
--					*(payload+curfragnum+4), *(payload+curfragnum+5), *(payload+curfragnum+6), *(payload+curfragnum+7)));
- 			}
- 	}
- 	return _SUCCESS;
-@@ -885,7 +850,6 @@ static s32 xmitframe_swencrypt(struct adapter *padapter, struct xmit_frame *pxmi
- 	struct	pkt_attrib	 *pattrib = &pxmitframe->attrib;
- 
- 	if (pattrib->bswenc) {
--		RT_TRACE(_module_rtl871x_xmit_c_, _drv_alert_, ("### xmitframe_swencrypt\n"));
- 		switch (pattrib->encrypt) {
- 		case _WEP40_:
- 		case _WEP104_:
-@@ -900,8 +864,6 @@ static s32 xmitframe_swencrypt(struct adapter *padapter, struct xmit_frame *pxmi
- 		default:
- 				break;
- 		}
--	} else {
--		RT_TRACE(_module_rtl871x_xmit_c_, _drv_notice_, ("### xmitframe_hwencrypt\n"));
- 	}
- 
- 	return _SUCCESS;
-@@ -955,7 +917,6 @@ s32 rtw_make_wlanhdr(struct adapter *padapter, u8 *hdr, struct pkt_attrib *pattr
- 			if (pattrib->qos_en)
- 				qos_option = true;
- 		} else {
--			RT_TRACE(_module_rtl871x_xmit_c_, _drv_err_, ("fw_state:%x is not allowed to xmit frame\n", get_fwstate(pmlmepriv)));
- 			res = _FAIL;
- 			goto exit;
- 		}
-@@ -1106,7 +1067,6 @@ s32 rtw_xmitframe_coalesce(struct adapter *padapter, struct sk_buff *pkt, struct
- 	mem_start = pbuf_start +	hw_hdr_offset;
- 
- 	if (rtw_make_wlanhdr(padapter, mem_start, pattrib) == _FAIL) {
--		RT_TRACE(_module_rtl871x_xmit_c_, _drv_err_, ("rtw_xmitframe_coalesce: rtw_make_wlanhdr fail; drop pkt\n"));
- 		DBG_8192C("rtw_xmitframe_coalesce: rtw_make_wlanhdr fail; drop pkt\n");
- 		res = _FAIL;
- 		goto exit;
-@@ -1134,10 +1094,6 @@ s32 rtw_xmitframe_coalesce(struct adapter *padapter, struct sk_buff *pkt, struct
- 		if (pattrib->iv_len) {
- 			memcpy(pframe, pattrib->iv, pattrib->iv_len);
- 
--			RT_TRACE(_module_rtl871x_xmit_c_, _drv_notice_,
--				 ("rtw_xmitframe_coalesce: keyid =%d pattrib->iv[3]=%.2x pframe =%.2x %.2x %.2x %.2x\n",
--				  padapter->securitypriv.dot11PrivacyKeyIndex, pattrib->iv[3], *pframe, *(pframe+1), *(pframe+2), *(pframe+3)));
--
- 			pframe += pattrib->iv_len;
- 
- 			mpdu_len -= pattrib->iv_len;
-@@ -1177,8 +1133,6 @@ s32 rtw_xmitframe_coalesce(struct adapter *padapter, struct sk_buff *pkt, struct
- 			ClearMFrag(mem_start);
- 
- 			break;
--		} else {
--			RT_TRACE(_module_rtl871x_xmit_c_, _drv_err_, ("%s: There're still something in packet!\n", __func__));
- 		}
- 
- 		addr = (SIZE_PTR)(pframe);
-@@ -1188,7 +1142,6 @@ s32 rtw_xmitframe_coalesce(struct adapter *padapter, struct sk_buff *pkt, struct
- 	}
- 
- 	if (xmitframe_addmic(padapter, pxmitframe) == _FAIL) {
--		RT_TRACE(_module_rtl871x_xmit_c_, _drv_err_, ("xmitframe_addmic(padapter, pxmitframe) == _FAIL\n"));
- 		DBG_8192C("xmitframe_addmic(padapter, pxmitframe) == _FAIL\n");
- 		res = _FAIL;
- 		goto exit;
-@@ -1712,7 +1665,6 @@ struct xmit_frame *rtw_alloc_xmitframe(struct xmit_priv *pxmitpriv)/* _queue *pf
- 	spin_lock_bh(&pfree_xmit_queue->lock);
- 
- 	if (list_empty(&pfree_xmit_queue->queue)) {
--		RT_TRACE(_module_rtl871x_xmit_c_, _drv_info_, ("rtw_alloc_xmitframe:%d\n", pxmitpriv->free_xmitframe_cnt));
- 		pxframe =  NULL;
- 	} else {
- 		phead = get_list_head(pfree_xmit_queue);
-@@ -1723,7 +1675,6 @@ struct xmit_frame *rtw_alloc_xmitframe(struct xmit_priv *pxmitpriv)/* _queue *pf
- 
- 		list_del_init(&pxframe->list);
- 		pxmitpriv->free_xmitframe_cnt--;
--		RT_TRACE(_module_rtl871x_xmit_c_, _drv_info_, ("rtw_alloc_xmitframe():free_xmitframe_cnt =%d\n", pxmitpriv->free_xmitframe_cnt));
- 	}
- 
- 	spin_unlock_bh(&pfree_xmit_queue->lock);
-@@ -1741,7 +1692,6 @@ struct xmit_frame *rtw_alloc_xmitframe_ext(struct xmit_priv *pxmitpriv)
- 	spin_lock_bh(&queue->lock);
- 
- 	if (list_empty(&queue->queue)) {
--		RT_TRACE(_module_rtl871x_xmit_c_, _drv_info_, ("rtw_alloc_xmitframe_ext:%d\n", pxmitpriv->free_xframe_ext_cnt));
- 		pxframe =  NULL;
- 	} else {
- 		phead = get_list_head(queue);
-@@ -1750,7 +1700,6 @@ struct xmit_frame *rtw_alloc_xmitframe_ext(struct xmit_priv *pxmitpriv)
- 
- 		list_del_init(&pxframe->list);
- 		pxmitpriv->free_xframe_ext_cnt--;
--		RT_TRACE(_module_rtl871x_xmit_c_, _drv_info_, ("rtw_alloc_xmitframe_ext():free_xmitframe_cnt =%d\n", pxmitpriv->free_xframe_ext_cnt));
- 	}
- 
- 	spin_unlock_bh(&queue->lock);
-@@ -1795,10 +1744,8 @@ s32 rtw_free_xmitframe(struct xmit_priv *pxmitpriv, struct xmit_frame *pxmitfram
- 	struct adapter *padapter = pxmitpriv->adapter;
- 	struct sk_buff *pndis_pkt = NULL;
- 
--	if (!pxmitframe) {
--		RT_TRACE(_module_rtl871x_xmit_c_, _drv_err_, ("======rtw_free_xmitframe():pxmitframe == NULL!!!!!!!!!!\n"));
-+	if (!pxmitframe)
- 		goto exit;
--	}
- 
- 	if (pxmitframe->pkt) {
- 		pndis_pkt = pxmitframe->pkt;
-@@ -1822,14 +1769,10 @@ s32 rtw_free_xmitframe(struct xmit_priv *pxmitpriv, struct xmit_frame *pxmitfram
- 
- 	list_del_init(&pxmitframe->list);
- 	list_add_tail(&pxmitframe->list, get_list_head(queue));
--	if (pxmitframe->ext_tag == 0) {
-+	if (pxmitframe->ext_tag == 0)
- 		pxmitpriv->free_xmitframe_cnt++;
--		RT_TRACE(_module_rtl871x_xmit_c_, _drv_debug_, ("rtw_free_xmitframe():free_xmitframe_cnt =%d\n", pxmitpriv->free_xmitframe_cnt));
--	} else if (pxmitframe->ext_tag == 1) {
-+	else if (pxmitframe->ext_tag == 1)
- 		pxmitpriv->free_xframe_ext_cnt++;
--		RT_TRACE(_module_rtl871x_xmit_c_, _drv_debug_, ("rtw_free_xmitframe():free_xframe_ext_cnt =%d\n", pxmitpriv->free_xframe_ext_cnt));
--	} else {
--	}
- 
- 	spin_unlock_bh(&queue->lock);
- 
-@@ -1864,11 +1807,8 @@ void rtw_free_xmitframe_queue(struct xmit_priv *pxmitpriv, struct __queue *pfram
- 
- s32 rtw_xmitframe_enqueue(struct adapter *padapter, struct xmit_frame *pxmitframe)
- {
--	if (rtw_xmit_classifier(padapter, pxmitframe) == _FAIL) {
--		RT_TRACE(_module_rtl871x_xmit_c_, _drv_err_,
--			 ("rtw_xmitframe_enqueue: drop xmit pkt for classifier fail\n"));
-+	if (rtw_xmit_classifier(padapter, pxmitframe) == _FAIL)
- 		return _FAIL;
--	}
- 
- 	return _SUCCESS;
- }
-@@ -1882,21 +1822,18 @@ struct tx_servq *rtw_get_sta_pending(struct adapter *padapter, struct sta_info *
- 	case 2:
- 		ptxservq = &psta->sta_xmitpriv.bk_q;
- 		*(ac) = 3;
--		RT_TRACE(_module_rtl871x_xmit_c_, _drv_info_, ("rtw_get_sta_pending : BK\n"));
- 		break;
- 
- 	case 4:
- 	case 5:
- 		ptxservq = &psta->sta_xmitpriv.vi_q;
- 		*(ac) = 1;
--		RT_TRACE(_module_rtl871x_xmit_c_, _drv_info_, ("rtw_get_sta_pending : VI\n"));
- 		break;
- 
- 	case 6:
- 	case 7:
- 		ptxservq = &psta->sta_xmitpriv.vo_q;
- 		*(ac) = 0;
--		RT_TRACE(_module_rtl871x_xmit_c_, _drv_info_, ("rtw_get_sta_pending : VO\n"));
- 		break;
- 
- 	case 0:
-@@ -1904,7 +1841,6 @@ struct tx_servq *rtw_get_sta_pending(struct adapter *padapter, struct sta_info *
- 	default:
- 		ptxservq = &psta->sta_xmitpriv.be_q;
- 		*(ac) = 2;
--		RT_TRACE(_module_rtl871x_xmit_c_, _drv_info_, ("rtw_get_sta_pending : BE\n"));
- 	break;
- 	}
- 
-@@ -1933,7 +1869,6 @@ s32 rtw_xmit_classifier(struct adapter *padapter, struct xmit_frame *pxmitframe)
- 	if (!psta) {
- 		res = _FAIL;
- 		DBG_8192C("rtw_xmit_classifier: psta == NULL\n");
--		RT_TRACE(_module_rtl871x_xmit_c_, _drv_err_, ("rtw_xmit_classifier: psta == NULL\n"));
- 		goto exit;
- 	}
- 
-@@ -2053,7 +1988,6 @@ static void do_queue_select(struct adapter	*padapter, struct pkt_attrib *pattrib
- 	u8 qsel;
- 
- 	qsel = pattrib->priority;
--	RT_TRACE(_module_rtl871x_xmit_c_, _drv_info_, ("### do_queue_select priority =%d , qsel = %d\n", pattrib->priority, qsel));
- 
- 	pattrib->qsel = qsel;
- }
-@@ -2090,14 +2024,12 @@ s32 rtw_xmit(struct adapter *padapter, struct sk_buff **ppkt)
- 
- 	if (!pxmitframe) {
- 		drop_cnt++;
--		RT_TRACE(_module_xmit_osdep_c_, _drv_err_, ("%s: no more pxmitframe\n", __func__));
- 		return -1;
- 	}
- 
- 	res = update_attrib(padapter, *ppkt, &pxmitframe->attrib);
- 
- 	if (res == _FAIL) {
--		RT_TRACE(_module_xmit_osdep_c_, _drv_err_, ("%s: update attrib fail\n", __func__));
- 		#ifdef DBG_TX_DROP_FRAME
- 		DBG_871X("DBG_TX_DROP_FRAME %s update attrib fail\n", __func__);
- 		#endif
--- 
-2.20.1
+My only concern is that Muchun's patches fix a regression, which
+admittedly has built over a few years, but is a regression nonetheless
+that can leave machines in undesirable states and may require reboots.
 
+The sharing and reuse semantics on the other hand have been the same
+since the beginning of cgroups. Users have had some time to structure
+their requirements around these semantics :-)
+
+If there were a concrete proposal or an RFC on the table for how
+sharing and reusing could be implemented, and this proposal would be
+in direct conflict with the reparenting patches, I would say let's try
+to figure out a way whether the bug could be fixed in a way that is
+compatible with such another imminent change.
+
+But we shouldn't hold up a bug fix to start planning a new feature.
