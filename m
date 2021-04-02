@@ -2,246 +2,427 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E96A2352B5B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 16:42:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79EED352B5F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 16:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235678AbhDBOPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 10:15:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235366AbhDBOPU (ORCPT
+        id S235723AbhDBOUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 10:20:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46715 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234161AbhDBOUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 10:15:20 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A11C0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 07:15:17 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id x7so4857437wrw.10
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 07:15:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kn+08Y+8syWf3BIq6nvfSf388zuVhuWp9zeWcCzqy7w=;
-        b=zpTd3fJufNsoqgF2kpXYRIbztSDSQ/kpIYpXrVGVQ70wAagZC31L4d2qpg5n6/NucQ
-         Gyqq9C6ruWvgPH5PNiEkM/cGx/rMpq/Ukz1aE51QrGunbgruXZQZmVC2eCopkU8o0i2t
-         oJhIArEfoEvLq4lrlWib/n6NRN9p+2+rLKKwlOPG+1KuYSGqvDdU4oPoJLah1lWrjpCQ
-         DeDp6/ZKAid5mMpyeI/LK69MOHMcQe62uWjItVaRan0N0fpIOnOxSDL5Az5ymvf2mqgL
-         7yWtWluw38tybfVmiWpy88tRwvBnMXAlUePNsZtxo57oJzZs2RvVlRX/C33mXb7T1mu8
-         tlxw==
+        Fri, 2 Apr 2021 10:20:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617373208;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DhzU5KDK0aI/Xg5UxNbhTqEeaUJh7MFKXwoOxCpGjPk=;
+        b=Wxfyn60KAjEj83HpI0Ze1GrZ3cU16SAjYPC/9jyKa/QGb1f2jHwUKDltzWkiMAuDasVAvD
+        JA3u+mBUd0sfEOq1JiYGXOokRsR5e1UGjsdsLiN3omMb/MeaQ1nl1v6YzLdviY79r7vcOk
+        FJGIv/dDqw20xBpPYtzJSWPuxFFSFGk=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-212-xIdergAdMCiqRlxqTqPLfw-1; Fri, 02 Apr 2021 10:20:06 -0400
+X-MC-Unique: xIdergAdMCiqRlxqTqPLfw-1
+Received: by mail-ej1-f72.google.com with SMTP id dv7so214901ejb.22
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 07:20:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=kn+08Y+8syWf3BIq6nvfSf388zuVhuWp9zeWcCzqy7w=;
-        b=reUyuIXnvcm2q7Qzd3AmdFYJsXm53BwzzgXkqCpROGsCrrL5EeqpsriLVooiefZxzH
-         YXWD31mooPVLn+xbw6Ovy77nrAhDUDuTcucibXLF7oi30n7j3+qr4pq6uHV7CPmsitPX
-         mvQkf7C0IyXN6h9GgO9aTHPfPiisXCwiLlcZYrnH7vRHopvL1Yz90vyvKrO7gfXyjjY6
-         yE/mKPvq9QwLJHB79ljRngIBHYB45AENoeT1yteAozmp12sxgQ7c1SrGK/BtGpX+oOQy
-         /FPaN2D23BR3+ljKA308ah9tApN2Qwf36Zf/G4j57FL8PMr/94mHdlQPVO/UwACNyo9j
-         jxpw==
-X-Gm-Message-State: AOAM532CTbUGLIt8dDs+jDbLgO6HqgIoy8epFCzwm6U3k36rtoq8HBV0
-        PkYwQUP3/Tr/EQAOg7sgVqvTyg==
-X-Google-Smtp-Source: ABdhPJxWqQxR/dWDzV5EyWMmMbTFOQb0j4pNLaNkp2JHQqv8+a27RS5SvuxtwmFPRbBy88+4e/Hlow==
-X-Received: by 2002:adf:e108:: with SMTP id t8mr15236750wrz.371.1617372915954;
-        Fri, 02 Apr 2021 07:15:15 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:34f1:44bb:31bf:7aaf? ([2a01:e34:ed2f:f020:34f1:44bb:31bf:7aaf])
-        by smtp.googlemail.com with ESMTPSA id c2sm14874504wrt.47.2021.04.02.07.15.14
+        bh=DhzU5KDK0aI/Xg5UxNbhTqEeaUJh7MFKXwoOxCpGjPk=;
+        b=b8wiORAQkJfrpCMRVbPJA4D4MTkMXspE4WbiPKmmm6xamYUIEGmPM2slxRmjDF6ONm
+         TFq9jThmScfNBqYKEBrRbWb4QQcJmJK32SIL7/2vfhZgWVhfVeLAuC7fM11XxYf9mqMp
+         grF9LHdpCRqJQj6XLkIVvXFyG6OlyZ5mh9UlXH4CF+YcBka/yyonOOwFF8ZnGK3dqvQ+
+         k3kLLUukZc+1nt5Lk1lqRnQwBwQHzqM0bbAvp3tc+QVuVbWjx29T0Xm3+CyUvz1M3UlQ
+         dgbrWvg5l+PF/0WOTStZxHmSoU3crnm1XOlt+74blRE0Lsj3BjTsBxYw9SvmMY8LnyBG
+         exRA==
+X-Gm-Message-State: AOAM532LTah3Whekf2cPNqWwrxRzZl0XO9uGRkzdTJTuiOeYJ9bTbXUV
+        JXfZ8kcb8l6ofA3tmnBu03gHDWialliWqlyd2+O86dS8+k71JtfDl33XwwtR+5cgmfyKMavoPp0
+        LlfT//9NkT+5hElKDOkN+Skm6
+X-Received: by 2002:a17:906:5646:: with SMTP id v6mr14781728ejr.126.1617373205650;
+        Fri, 02 Apr 2021 07:20:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwEEjmxjf3oyu5ioibvdHAx8CPMlowj2MYq2EepKI6gPtebDo+StvHt73vBopYWsBpG5EVpuA==
+X-Received: by 2002:a17:906:5646:: with SMTP id v6mr14781703ejr.126.1617373205363;
+        Fri, 02 Apr 2021 07:20:05 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id a17sm4252990ejf.20.2021.04.02.07.20.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Apr 2021 07:15:15 -0700 (PDT)
-Subject: Re: [PATCH v2] drivers/clocksource/mediatek: Ack and disable
- interrupts on shutdown
-To:     Evan Benn <evanbenn@gmail.com>
-Cc:     Evan Benn <evanbenn@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Alexey Klimov <alexey.klimov@linaro.org>,
-        Julia Lawall <Julia.Lawall@lip6.fr>,
-        Yingjoe Chen <yingjoe.chen@mediatek.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Fabien Parent <fparent@baylibre.com>
-References: <20210325123446.v2.1.I1d9917047de06715da16e1620759f703fcfdcbcb@changeid>
- <049946ac-5263-21ee-9651-7295f0bcf387@linaro.org>
- <CAP8nV8rv6bKARZ31fVqcjVgMe+5UyVG8UAyNsm1hDCP2BbRSgw@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <67eed9a2-2b97-be1b-3290-948da662ea65@linaro.org>
-Date:   Fri, 2 Apr 2021 16:15:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 02 Apr 2021 07:20:03 -0700 (PDT)
+Subject: Re: [RFC v2] KVM: x86: Support KVM VMs sharing SEV context
+To:     Ashish Kalra <ashish.kalra@amd.com>,
+        Nathan Tempelman <natet@google.com>
+Cc:     thomas.lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, srutherford@google.com,
+        seanjc@google.com, rientjes@google.com, brijesh.singh@amd.com,
+        dovmurik@linux.vnet.ibm.com, lersek@redhat.com, jejb@linux.ibm.com,
+        frankeh@us.ibm.com
+References: <20210316014027.3116119-1-natet@google.com>
+ <20210402115813.GB17630@ashkalra_ubuntu_server>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <87bdd3a6-f5eb-91e4-9442-97dfef231640@redhat.com>
+Date:   Fri, 2 Apr 2021 16:20:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <CAP8nV8rv6bKARZ31fVqcjVgMe+5UyVG8UAyNsm1hDCP2BbRSgw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210402115813.GB17630@ashkalra_ubuntu_server>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi Evan,
-
-On 27/03/2021 02:31, Evan Benn wrote:
-> Hi Daniel,
+On 02/04/21 13:58, Ashish Kalra wrote:
+> Hi Nathan,
 > 
-> That is a good point, and I did try that at first and it works fine. I
-> uploaded this version because the suspend/resume callbacks were
-> undocumented and mostly not used by other clocksource drivers. I
-> thought a smaller diff might be preferable.
-> I also thought it would be better to shut off the interrupt as soon as
-> it is not needed, avoiding any other potential bugs, instead of just
-> fixing the one we know about with suspend. I'm not sure how the other
-> driver / timer disable flows are intended to work for example
-> (shutdown, detach, etc).
+> Will you be posting a corresponding Qemu patch for this ?
+
+Hi Ashish,
+
+as far as I know IBM is working on QEMU patches for guest-based 
+migration helpers.
+
+However, it would be nice to collaborate on the low-level (SEC/PEI) 
+firmware patches to detect whether a CPU is part of the primary VM or 
+the mirror.  If Google has any OVMF patches already done for that, it 
+would be great to combine it with IBM's SEV migration code and merge it 
+into upstream OVMF.
+
+Thanks,
+
+Paolo
+
+> Thanks,
+> Ashish
 > 
-> That said I am happy to upload that version if people think it is better.
-
-IMO, it is not in the normal flow to disable/enable the interrupts.
-
-Does this timer belong to an always-on power domain ?
-
-
-
-> https://elixir.bootlin.com/linux/latest/source/include/linux/clockchips.h#L120
+> On Tue, Mar 16, 2021 at 01:40:27AM +0000, Nathan Tempelman wrote:
+>> Add a capability for userspace to mirror SEV encryption context from
+>> one vm to another. On our side, this is intended to support a
+>> Migration Helper vCPU, but it can also be used generically to support
+>> other in-guest workloads scheduled by the host. The intention is for
+>> the primary guest and the mirror to have nearly identical memslots.
+>>
+>> The primary benefits of this are that:
+>> 1) The VMs do not share KVM contexts (think APIC/MSRs/etc), so they
+>> can't accidentally clobber each other.
+>> 2) The VMs can have different memory-views, which is necessary for post-copy
+>> migration (the migration vCPUs on the target need to read and write to
+>> pages, when the primary guest would VMEXIT).
+>>
+>> This does not change the threat model for AMD SEV. Any memory involved
+>> is still owned by the primary guest and its initial state is still
+>> attested to through the normal SEV_LAUNCH_* flows. If userspace wanted
+>> to circumvent SEV, they could achieve the same effect by simply attaching
+>> a vCPU to the primary VM.
+>> This patch deliberately leaves userspace in charge of the memslots for the
+>> mirror, as it already has the power to mess with them in the primary guest.
+>>
+>> This patch does not support SEV-ES (much less SNP), as it does not
+>> handle handing off attested VMSAs to the mirror.
+>>
+>> For additional context, we need a Migration Helper because SEV PSP migration
+>> is far too slow for our live migration on its own. Using an in-guest
+>> migrator lets us speed this up significantly.
+>>
+>> Signed-off-by: Nathan Tempelman <natet@google.com>
+>> ---
+>>   Documentation/virt/kvm/api.rst  | 17 +++++++
+>>   arch/x86/include/asm/kvm_host.h |  1 +
+>>   arch/x86/kvm/svm/sev.c          | 88 +++++++++++++++++++++++++++++++++
+>>   arch/x86/kvm/svm/svm.c          |  2 +
+>>   arch/x86/kvm/svm/svm.h          |  2 +
+>>   arch/x86/kvm/x86.c              |  7 ++-
+>>   include/linux/kvm_host.h        |  1 +
+>>   include/uapi/linux/kvm.h        |  1 +
+>>   virt/kvm/kvm_main.c             |  6 +++
+>>   9 files changed, 124 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+>> index 482508ec7cc4..332ba8b5b6f4 100644
+>> --- a/Documentation/virt/kvm/api.rst
+>> +++ b/Documentation/virt/kvm/api.rst
+>> @@ -6213,6 +6213,23 @@ the bus lock vm exit can be preempted by a higher priority VM exit, the exit
+>>   notifications to userspace can be KVM_EXIT_BUS_LOCK or other reasons.
+>>   KVM_RUN_BUS_LOCK flag is used to distinguish between them.
+>>   
+>> +7.23 KVM_CAP_VM_COPY_ENC_CONTEXT_FROM
+>> +-------------------------------------
+>> +
+>> +Architectures: x86 SEV enabled
+>> +Type: vm
+>> +Parameters: args[0] is the fd of the source vm
+>> +Returns: 0 on success; ENOTTY on error
+>> +
+>> +This capability enables userspace to copy encryption context from the vm
+>> +indicated by the fd to the vm this is called on.
+>> +
+>> +This is intended to support in-guest workloads scheduled by the host. This
+>> +allows the in-guest workload to maintain its own NPTs and keeps the two vms
+>> +from accidentally clobbering each other with interrupts and the like (separate
+>> +APIC/MSRs/etc).
+>> +
+>> +
+>>   8. Other capabilities.
+>>   ======================
+>>   
+>> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+>> index 84499aad01a4..46df415a8e91 100644
+>> --- a/arch/x86/include/asm/kvm_host.h
+>> +++ b/arch/x86/include/asm/kvm_host.h
+>> @@ -1334,6 +1334,7 @@ struct kvm_x86_ops {
+>>   	int (*mem_enc_op)(struct kvm *kvm, void __user *argp);
+>>   	int (*mem_enc_reg_region)(struct kvm *kvm, struct kvm_enc_region *argp);
+>>   	int (*mem_enc_unreg_region)(struct kvm *kvm, struct kvm_enc_region *argp);
+>> +	int (*vm_copy_enc_context_from)(struct kvm *kvm, unsigned int source_fd);
+>>   
+>>   	int (*get_msr_feature)(struct kvm_msr_entry *entry);
+>>   
+>> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+>> index 874ea309279f..b2c90c67a0d9 100644
+>> --- a/arch/x86/kvm/svm/sev.c
+>> +++ b/arch/x86/kvm/svm/sev.c
+>> @@ -66,6 +66,11 @@ static int sev_flush_asids(void)
+>>   	return ret;
+>>   }
+>>   
+>> +static inline bool is_mirroring_enc_context(struct kvm *kvm)
+>> +{
+>> +	return to_kvm_svm(kvm)->sev_info.enc_context_owner;
+>> +}
+>> +
+>>   /* Must be called with the sev_bitmap_lock held */
+>>   static bool __sev_recycle_asids(int min_asid, int max_asid)
+>>   {
+>> @@ -1124,6 +1129,10 @@ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+>>   	if (copy_from_user(&sev_cmd, argp, sizeof(struct kvm_sev_cmd)))
+>>   		return -EFAULT;
+>>   
+>> +	/* enc_context_owner handles all memory enc operations */
+>> +	if (is_mirroring_enc_context(kvm))
+>> +		return -ENOTTY;
+>> +
+>>   	mutex_lock(&kvm->lock);
+>>   
+>>   	switch (sev_cmd.id) {
+>> @@ -1186,6 +1195,10 @@ int svm_register_enc_region(struct kvm *kvm,
+>>   	if (!sev_guest(kvm))
+>>   		return -ENOTTY;
+>>   
+>> +	/* If kvm is mirroring encryption context it isn't responsible for it */
+>> +	if (is_mirroring_enc_context(kvm))
+>> +		return -ENOTTY;
+>> +
+>>   	if (range->addr > ULONG_MAX || range->size > ULONG_MAX)
+>>   		return -EINVAL;
+>>   
+>> @@ -1252,6 +1265,10 @@ int svm_unregister_enc_region(struct kvm *kvm,
+>>   	struct enc_region *region;
+>>   	int ret;
+>>   
+>> +	/* If kvm is mirroring encryption context it isn't responsible for it */
+>> +	if (is_mirroring_enc_context(kvm))
+>> +		return -ENOTTY;
+>> +
+>>   	mutex_lock(&kvm->lock);
+>>   
+>>   	if (!sev_guest(kvm)) {
+>> @@ -1282,6 +1299,71 @@ int svm_unregister_enc_region(struct kvm *kvm,
+>>   	return ret;
+>>   }
+>>   
+>> +int svm_vm_copy_asid_from(struct kvm *kvm, unsigned int source_fd)
+>> +{
+>> +	struct file *source_kvm_file;
+>> +	struct kvm *source_kvm;
+>> +	struct kvm_sev_info *mirror_sev;
+>> +	unsigned int asid;
+>> +	int ret;
+>> +
+>> +	source_kvm_file = fget(source_fd);
+>> +	if (!file_is_kvm(source_kvm_file)) {
+>> +		ret = -EBADF;
+>> +		goto e_source_put;
+>> +	}
+>> +
+>> +	source_kvm = source_kvm_file->private_data;
+>> +	mutex_lock(&source_kvm->lock);
+>> +
+>> +	if (!sev_guest(source_kvm)) {
+>> +		ret = -ENOTTY;
+>> +		goto e_source_unlock;
+>> +	}
+>> +
+>> +	/* Mirrors of mirrors should work, but let's not get silly */
+>> +	if (is_mirroring_enc_context(source_kvm) || source_kvm == kvm) {
+>> +		ret = -ENOTTY;
+>> +		goto e_source_unlock;
+>> +	}
+>> +
+>> +	asid = to_kvm_svm(source_kvm)->sev_info.asid;
+>> +
+>> +	/*
+>> +	 * The mirror kvm holds an enc_context_owner ref so its asid can't
+>> +	 * disappear until we're done with it
+>> +	 */
+>> +	kvm_get_kvm(source_kvm);
+>> +
+>> +	fput(source_kvm_file);
+>> +	mutex_unlock(&source_kvm->lock);
+>> +	mutex_lock(&kvm->lock);
+>> +
+>> +	if (sev_guest(kvm)) {
+>> +		ret = -ENOTTY;
+>> +		goto e_mirror_unlock;
+>> +	}
+>> +
+>> +	/* Set enc_context_owner and copy its encryption context over */
+>> +	mirror_sev = &to_kvm_svm(kvm)->sev_info;
+>> +	mirror_sev->enc_context_owner = source_kvm;
+>> +	mirror_sev->asid = asid;
+>> +	mirror_sev->active = true;
+>> +
+>> +	mutex_unlock(&kvm->lock);
+>> +	return 0;
+>> +
+>> +e_mirror_unlock:
+>> +	mutex_unlock(&kvm->lock);
+>> +	kvm_put_kvm(source_kvm);
+>> +	return ret;
+>> +e_source_unlock:
+>> +	mutex_unlock(&source_kvm->lock);
+>> +e_source_put:
+>> +	fput(source_kvm_file);
+>> +	return ret;
+>> +}
+>> +
+>>   void sev_vm_destroy(struct kvm *kvm)
+>>   {
+>>   	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+>> @@ -1293,6 +1375,12 @@ void sev_vm_destroy(struct kvm *kvm)
+>>   
+>>   	mutex_lock(&kvm->lock);
+>>   
+>> +	/* If this is a mirror_kvm release the enc_context_owner and skip sev cleanup */
+>> +	if (is_mirroring_enc_context(kvm)) {
+>> +		kvm_put_kvm(sev->enc_context_owner);
+>> +		return;
+>> +	}
+>> +
+>>   	/*
+>>   	 * Ensure that all guest tagged cache entries are flushed before
+>>   	 * releasing the pages back to the system for use. CLFLUSH will
+>> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+>> index 42d4710074a6..9ffb2bcf5389 100644
+>> --- a/arch/x86/kvm/svm/svm.c
+>> +++ b/arch/x86/kvm/svm/svm.c
+>> @@ -4608,6 +4608,8 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
+>>   	.mem_enc_reg_region = svm_register_enc_region,
+>>   	.mem_enc_unreg_region = svm_unregister_enc_region,
+>>   
+>> +	.vm_copy_enc_context_from = svm_vm_copy_asid_from,
+>> +
+>>   	.can_emulate_instruction = svm_can_emulate_instruction,
+>>   
+>>   	.apic_init_signal_blocked = svm_apic_init_signal_blocked,
+>> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+>> index 39e071fdab0c..779009839f6a 100644
+>> --- a/arch/x86/kvm/svm/svm.h
+>> +++ b/arch/x86/kvm/svm/svm.h
+>> @@ -65,6 +65,7 @@ struct kvm_sev_info {
+>>   	unsigned long pages_locked; /* Number of pages locked */
+>>   	struct list_head regions_list;  /* List of registered regions */
+>>   	u64 ap_jump_table;	/* SEV-ES AP Jump Table address */
+>> +	struct kvm *enc_context_owner; /* Owner of copied encryption context */
+>>   };
+>>   
+>>   struct kvm_svm {
+>> @@ -561,6 +562,7 @@ int svm_register_enc_region(struct kvm *kvm,
+>>   			    struct kvm_enc_region *range);
+>>   int svm_unregister_enc_region(struct kvm *kvm,
+>>   			      struct kvm_enc_region *range);
+>> +int svm_vm_copy_asid_from(struct kvm *kvm, unsigned int source_fd);
+>>   void pre_sev_run(struct vcpu_svm *svm, int cpu);
+>>   void __init sev_hardware_setup(void);
+>>   void sev_hardware_teardown(void);
+>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>> index 3fa140383f5d..343cb05c2a24 100644
+>> --- a/arch/x86/kvm/x86.c
+>> +++ b/arch/x86/kvm/x86.c
+>> @@ -3753,6 +3753,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+>>   	case KVM_CAP_X86_USER_SPACE_MSR:
+>>   	case KVM_CAP_X86_MSR_FILTER:
+>>   	case KVM_CAP_ENFORCE_PV_FEATURE_CPUID:
+>> +	case KVM_CAP_VM_COPY_ENC_CONTEXT_FROM:
+>>   		r = 1;
+>>   		break;
+>>   	case KVM_CAP_XEN_HVM:
+>> @@ -4649,7 +4650,6 @@ static int kvm_vcpu_ioctl_enable_cap(struct kvm_vcpu *vcpu,
+>>   			kvm_update_pv_runtime(vcpu);
+>>   
+>>   		return 0;
+>> -
+>>   	default:
+>>   		return -EINVAL;
+>>   	}
+>> @@ -5321,6 +5321,11 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
+>>   			kvm->arch.bus_lock_detection_enabled = true;
+>>   		r = 0;
+>>   		break;
+>> +	case KVM_CAP_VM_COPY_ENC_CONTEXT_FROM:
+>> +		r = -ENOTTY;
+>> +		if (kvm_x86_ops.vm_copy_enc_context_from)
+>> +			r = kvm_x86_ops.vm_copy_enc_context_from(kvm, cap->args[0]);
+>> +		return r;
+>>   	default:
+>>   		r = -EINVAL;
+>>   		break;
+>> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+>> index e126ebda36d0..dc5a81115df7 100644
+>> --- a/include/linux/kvm_host.h
+>> +++ b/include/linux/kvm_host.h
+>> @@ -637,6 +637,7 @@ void kvm_exit(void);
+>>   
+>>   void kvm_get_kvm(struct kvm *kvm);
+>>   void kvm_put_kvm(struct kvm *kvm);
+>> +bool file_is_kvm(struct file *file);
+>>   void kvm_put_kvm_no_destroy(struct kvm *kvm);
+>>   
+>>   static inline struct kvm_memslots *__kvm_memslots(struct kvm *kvm, int as_id)
+>> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+>> index 63f8f6e95648..9dc00f9baf54 100644
+>> --- a/include/uapi/linux/kvm.h
+>> +++ b/include/uapi/linux/kvm.h
+>> @@ -1077,6 +1077,7 @@ struct kvm_ppc_resize_hpt {
+>>   #define KVM_CAP_SYS_HYPERV_CPUID 191
+>>   #define KVM_CAP_DIRTY_LOG_RING 192
+>>   #define KVM_CAP_X86_BUS_LOCK_EXIT 193
+>> +#define KVM_CAP_VM_COPY_ENC_CONTEXT_FROM 194
+>>   
+>>   #ifdef KVM_CAP_IRQ_ROUTING
+>>   
+>> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+>> index 001b9de4e727..5baf82b01e0c 100644
+>> --- a/virt/kvm/kvm_main.c
+>> +++ b/virt/kvm/kvm_main.c
+>> @@ -4041,6 +4041,12 @@ static struct file_operations kvm_vm_fops = {
+>>   	KVM_COMPAT(kvm_vm_compat_ioctl),
+>>   };
+>>   
+>> +bool file_is_kvm(struct file *file)
+>> +{
+>> +	return file && file->f_op == &kvm_vm_fops;
+>> +}
+>> +EXPORT_SYMBOL_GPL(file_is_kvm);
+>> +
+>>   static int kvm_dev_ioctl_create_vm(unsigned long type)
+>>   {
+>>   	int r;
+>> -- 
+>> 2.31.0.rc2.261.g7f71774620-goog
+>>
 > 
-> 
-> On Thu, 25 Mar 2021 at 19:10, Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->>
->> On 25/03/2021 02:35, Evan Benn wrote:
->>> set_state_shutdown is called during system suspend after interrupts have
->>> been disabled. If the timer has fired in the meantime, there will be
->>> a pending IRQ. So we ack that now and disable the timer. Without this
->>> ARM trusted firmware will abort the suspend due to the pending
->>> interrupt.
 
-
->>> Now always disable the IRQ in state transitions, and re-enable in
->>> set_periodic and next_event.
->>
->> Why not put add the suspend/resume callbacks and put there the specific
->> code and let the irq untouched in the normal flow ?
->>
->>> Signed-off-by: Evan Benn <evanbenn@chromium.org>
->>> ---
->>>
->>> Changes in v2:
->>> Remove the patch that splits the drivers into 2 files.
->>>
->>>  drivers/clocksource/timer-mediatek.c | 49 +++++++++++++++++-----------
->>>  1 file changed, 30 insertions(+), 19 deletions(-)
->>>
->>> diff --git a/drivers/clocksource/timer-mediatek.c b/drivers/clocksource/timer-mediatek.c
->>> index 9318edcd8963..fba2f9494d90 100644
->>> --- a/drivers/clocksource/timer-mediatek.c
->>> +++ b/drivers/clocksource/timer-mediatek.c
->>> @@ -132,13 +132,33 @@ static u64 notrace mtk_gpt_read_sched_clock(void)
->>>       return readl_relaxed(gpt_sched_reg);
->>>  }
->>>
->>> +static void mtk_gpt_disable_ack_interrupts(struct timer_of *to, u8 timer)
->>> +{
->>> +     u32 val;
->>> +
->>> +     /* Disable interrupts */
->>> +     val = readl(timer_of_base(to) + GPT_IRQ_EN_REG);
->>> +     writel(val & ~GPT_IRQ_ENABLE(timer), timer_of_base(to) +
->>> +            GPT_IRQ_EN_REG);
->>> +
->>> +     /* Ack interrupts */
->>> +     writel(GPT_IRQ_ACK(timer), timer_of_base(to) + GPT_IRQ_ACK_REG);
->>> +}
->>> +
->>>  static void mtk_gpt_clkevt_time_stop(struct timer_of *to, u8 timer)
->>>  {
->>>       u32 val;
->>>
->>> +     /* Disable timer */
->>>       val = readl(timer_of_base(to) + GPT_CTRL_REG(timer));
->>>       writel(val & ~GPT_CTRL_ENABLE, timer_of_base(to) +
->>>              GPT_CTRL_REG(timer));
->>> +
->>> +     /* This may be called with interrupts disabled,
->>> +      * so we need to ack any interrupt that is pending
->>> +      * Or for example ATF will prevent a suspend from completing.
->>> +      */
->>> +     mtk_gpt_disable_ack_interrupts(to, timer);
->>>  }
->>>
->>>  static void mtk_gpt_clkevt_time_setup(struct timer_of *to,
->>> @@ -152,8 +172,10 @@ static void mtk_gpt_clkevt_time_start(struct timer_of *to,
->>>  {
->>>       u32 val;
->>>
->>> -     /* Acknowledge interrupt */
->>> -     writel(GPT_IRQ_ACK(timer), timer_of_base(to) + GPT_IRQ_ACK_REG);
->>> +     /* Enable interrupts */
->>> +     val = readl(timer_of_base(to) + GPT_IRQ_EN_REG);
->>> +     writel(val | GPT_IRQ_ENABLE(timer),
->>> +            timer_of_base(to) + GPT_IRQ_EN_REG);
->>>
->>>       val = readl(timer_of_base(to) + GPT_CTRL_REG(timer));
->>>
->>> @@ -226,21 +248,6 @@ __init mtk_gpt_setup(struct timer_of *to, u8 timer, u8 option)
->>>              timer_of_base(to) + GPT_CTRL_REG(timer));
->>>  }
->>>
->>> -static void mtk_gpt_enable_irq(struct timer_of *to, u8 timer)
->>> -{
->>> -     u32 val;
->>> -
->>> -     /* Disable all interrupts */
->>> -     writel(0x0, timer_of_base(to) + GPT_IRQ_EN_REG);
->>> -
->>> -     /* Acknowledge all spurious pending interrupts */
->>> -     writel(0x3f, timer_of_base(to) + GPT_IRQ_ACK_REG);
->>> -
->>> -     val = readl(timer_of_base(to) + GPT_IRQ_EN_REG);
->>> -     writel(val | GPT_IRQ_ENABLE(timer),
->>> -            timer_of_base(to) + GPT_IRQ_EN_REG);
->>> -}
->>> -
->>>  static struct timer_of to = {
->>>       .flags = TIMER_OF_IRQ | TIMER_OF_BASE | TIMER_OF_CLOCK,
->>>
->>> @@ -292,6 +299,12 @@ static int __init mtk_gpt_init(struct device_node *node)
->>>       if (ret)
->>>               return ret;
->>>
->>> +     /* In case the firmware left the interrupts enabled
->>> +      * disable and ack those now
->>> +      */
->>> +     mtk_gpt_disable_ack_interrupts(&to, TIMER_CLK_SRC);
->>> +     mtk_gpt_disable_ack_interrupts(&to, TIMER_CLK_EVT);
->>> +
->>>       /* Configure clock source */
->>>       mtk_gpt_setup(&to, TIMER_CLK_SRC, GPT_CTRL_OP_FREERUN);
->>>       clocksource_mmio_init(timer_of_base(&to) + GPT_CNT_REG(TIMER_CLK_SRC),
->>> @@ -305,8 +318,6 @@ static int __init mtk_gpt_init(struct device_node *node)
->>>       clockevents_config_and_register(&to.clkevt, timer_of_rate(&to),
->>>                                       TIMER_SYNC_TICKS, 0xffffffff);
->>>
->>> -     mtk_gpt_enable_irq(&to, TIMER_CLK_EVT);
->>> -
->>>       return 0;
->>>  }
->>>  TIMER_OF_DECLARE(mtk_mt6577, "mediatek,mt6577-timer", mtk_gpt_init);
->>>
->>
->>
->> --
->> <http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
->>
->> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
->> <http://twitter.com/#!/linaroorg> Twitter |
->> <http://www.linaro.org/linaro-blog/> Blog
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
