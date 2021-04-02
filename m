@@ -2,81 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 160B83530C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 23:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2F953530C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 23:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235730AbhDBVbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 17:31:12 -0400
-Received: from smtp01.smtpout.orange.fr ([80.12.242.123]:31247 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234821AbhDBVbH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 17:31:07 -0400
-Received: from localhost.localdomain ([90.126.11.170])
-        by mwinf5d36 with ME
-        id nxX3240013g7mfN03xX31V; Fri, 02 Apr 2021 23:31:05 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 02 Apr 2021 23:31:05 +0200
-X-ME-IP: 90.126.11.170
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     chunkeey@googlemail.com, kvalo@codeaurora.org, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] carl9170: remove get_tid_h
-Date:   Fri,  2 Apr 2021 23:31:00 +0200
-Message-Id: <68efad7a597159e22771d37fc8b4a8a613866d60.1617399010.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.27.0
+        id S235657AbhDBVcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 17:32:25 -0400
+Received: from mga09.intel.com ([134.134.136.24]:26210 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231577AbhDBVcX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 17:32:23 -0400
+IronPort-SDR: RKpoHlX0iX+CgIZ+UKJsyMIF7Xm1/M5Zb0VMoX7u9kCEcwHH6x7KfKUtsRnRjzgQ+UuH6OHFC/
+ l0yNGq3gYFOA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9942"; a="192640760"
+X-IronPort-AV: E=Sophos;i="5.81,300,1610438400"; 
+   d="scan'208";a="192640760"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 14:32:21 -0700
+IronPort-SDR: vwzfe4oGMKxq040CuMrVtAUkUSOXaHDWevG0dFNC0y11lb4NDsxJ0TtTrFxMi6QoyZpBbnY6C9
+ LyR+bZ5n9T/Q==
+X-IronPort-AV: E=Sophos;i="5.81,300,1610438400"; 
+   d="scan'208";a="456574638"
+Received: from tassilo.jf.intel.com ([10.54.74.11])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 14:32:21 -0700
+Date:   Fri, 2 Apr 2021 14:32:19 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC v1 00/26] Add TDX Guest Support
+Message-ID: <20210402213219.GM1285835@tassilo.jf.intel.com>
+References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <95e97456-478b-c6a2-f851-3b19ce794262@intel.com>
+ <20210402024852.GK1285835@tassilo.jf.intel.com>
+ <9bfa74a5-6a56-a2e0-7432-d35766099d54@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9bfa74a5-6a56-a2e0-7432-d35766099d54@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'get_tid_h()' is the same as 'ieee80211_get_tid()'.
-So this function can be removed to save a few lines of code.
+> If we go this route, what are the rules and restrictions?  Do we have to
+> say "no MMIO in #VE"?
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/net/wireless/ath/carl9170/carl9170.h | 7 +------
- drivers/net/wireless/ath/carl9170/tx.c       | 2 +-
- 2 files changed, 2 insertions(+), 7 deletions(-)
+All we have to say is "No MMIO in #VE before getting thd TDVEINFO arguments"
+After that it can nest without problems.
 
-diff --git a/drivers/net/wireless/ath/carl9170/carl9170.h b/drivers/net/wireless/ath/carl9170/carl9170.h
-index 0d38100d6e4f..84a8ce0784b1 100644
---- a/drivers/net/wireless/ath/carl9170/carl9170.h
-+++ b/drivers/net/wireless/ath/carl9170/carl9170.h
-@@ -631,14 +631,9 @@ static inline u16 carl9170_get_seq(struct sk_buff *skb)
- 	return get_seq_h(carl9170_get_hdr(skb));
- }
- 
--static inline u16 get_tid_h(struct ieee80211_hdr *hdr)
--{
--	return (ieee80211_get_qos_ctl(hdr))[0] & IEEE80211_QOS_CTL_TID_MASK;
--}
--
- static inline u16 carl9170_get_tid(struct sk_buff *skb)
- {
--	return get_tid_h(carl9170_get_hdr(skb));
-+	return ieee80211_get_tid(carl9170_get_hdr(skb));
- }
- 
- static inline struct ieee80211_vif *
-diff --git a/drivers/net/wireless/ath/carl9170/tx.c b/drivers/net/wireless/ath/carl9170/tx.c
-index 6b8446ff48c8..88444fe6d1c6 100644
---- a/drivers/net/wireless/ath/carl9170/tx.c
-+++ b/drivers/net/wireless/ath/carl9170/tx.c
-@@ -394,7 +394,7 @@ static void carl9170_tx_status_process_ampdu(struct ar9170 *ar,
- 	if (unlikely(!sta))
- 		goto out_rcu;
- 
--	tid = get_tid_h(hdr);
-+	tid = ieee80211_get_tid(hdr);
- 
- 	sta_info = (void *) sta->drv_priv;
- 	tid_info = rcu_dereference(sta_info->agg[tid]);
--- 
-2.27.0
+If you nest before that the TDX will cause a triple fault.
 
+The code that cannot do it is a few lines in the early handler which
+runs with interrupts off.
+
+The TDX module also makes sure to not inject NMIs while we're in
+that region, so NMIs are of no concern.
+
+That was the whole point of avoiding the system call gap problem. We don't
+need to make it IST, so it can nest.
+
+I'm not aware of any other special rules.
+
+> Which brings up another related point: How do you debug TD guests?  Does
+> earlyprintk work?
+
+Today it works actually because serial ports are allowed. But I expect it to
+be closed eventually because serial code is a lot of code to audit. 
+But you can always disable the filtering with a command line option and
+then it will always work for debugging.
+
+-Andi
