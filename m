@@ -2,70 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BDF435289A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 11:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3E3352893
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 11:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234718AbhDBJYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 05:24:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59430 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231160AbhDBJYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 05:24:38 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C45E160FD9;
-        Fri,  2 Apr 2021 09:24:34 +0000 (UTC)
-Date:   Fri, 2 Apr 2021 10:24:46 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Ricardo Ribalda <ribalda@kernel.org>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 21/32] MAINTAINERS: update ti,dac7612.yaml reference
-Message-ID: <20210402102446.7ac6d921@jic23-huawei>
-In-Reply-To: <04039b6991838f0107a42ccb0d9774cb8873a61a.1617279355.git.mchehab+huawei@kernel.org>
-References: <cover.1617279355.git.mchehab+huawei@kernel.org>
-        <04039b6991838f0107a42ccb0d9774cb8873a61a.1617279355.git.mchehab+huawei@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S234682AbhDBJWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 05:22:16 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15469 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229599AbhDBJWP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 05:22:15 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FBZJk11jBzyNjd;
+        Fri,  2 Apr 2021 17:20:06 +0800 (CST)
+Received: from huawei.com (10.175.103.91) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Fri, 2 Apr 2021
+ 17:22:10 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <target-devel@vger.kernel.org>,
+        <linux-scsi@vger.kernel.org>
+CC:     <martin.petersen@oracle.com>
+Subject: [PATCH -next] scsi: target: iscsi: Switch to kmemdup_nul()
+Date:   Fri, 2 Apr 2021 17:25:17 +0800
+Message-ID: <20210402092517.2445595-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  1 Apr 2021 14:17:41 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+Use kmemdup_nul() helper instead of open-coding to
+simplify the code.
 
-> Changeset 8b74e06b0f4d ("dt-bindings:iio:dac:ti,dac7612 yaml conversion")
-> renamed: Documentation/devicetree/bindings/iio/dac/ti,dac7612.txt
-> to: Documentation/devicetree/bindings/iio/dac/ti,dac7612.yaml.
-> 
-> Update its cross-reference accordingly.
-> 
-> Fixes: 8b74e06b0f4d ("dt-bindings:iio:dac:ti,dac7612 yaml conversion")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ drivers/target/iscsi/iscsi_target_nego.c       | 4 +---
+ drivers/target/iscsi/iscsi_target_parameters.c | 4 +---
+ 2 files changed, 2 insertions(+), 6 deletions(-)
 
-Applied,
-
-> ---
->  MAINTAINERS | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 6b0a6f251e6b..2f63ebd2cfc8 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -17907,7 +17907,7 @@ TEXAS INSTRUMENTS' DAC7612 DAC DRIVER
->  M:	Ricardo Ribalda <ribalda@kernel.org>
->  L:	linux-iio@vger.kernel.org
->  S:	Supported
-> -F:	Documentation/devicetree/bindings/iio/dac/ti,dac7612.txt
-> +F:	Documentation/devicetree/bindings/iio/dac/ti,dac7612.yaml
->  F:	drivers/iio/dac/ti-dac7612.c
->  
->  TEXAS INSTRUMENTS DMA DRIVERS
+diff --git a/drivers/target/iscsi/iscsi_target_nego.c b/drivers/target/iscsi/iscsi_target_nego.c
+index 151e2949bb75..9a4a632f631d 100644
+--- a/drivers/target/iscsi/iscsi_target_nego.c
++++ b/drivers/target/iscsi/iscsi_target_nego.c
+@@ -1082,14 +1082,12 @@ int iscsi_target_locate_portal(
+ 	login_req = (struct iscsi_login_req *) login->req;
+ 	payload_length = ntoh24(login_req->dlength);
+ 
+-	tmpbuf = kzalloc(payload_length + 1, GFP_KERNEL);
++	tmpbuf = kmemdup_nul(login->req_buf, payload_length, GFP_KERNEL);
+ 	if (!tmpbuf) {
+ 		pr_err("Unable to allocate memory for tmpbuf.\n");
+ 		return -1;
+ 	}
+ 
+-	memcpy(tmpbuf, login->req_buf, payload_length);
+-	tmpbuf[payload_length] = '\0';
+ 	start = tmpbuf;
+ 	end = (start + payload_length);
+ 
+diff --git a/drivers/target/iscsi/iscsi_target_parameters.c b/drivers/target/iscsi/iscsi_target_parameters.c
+index 7a461fbb1566..6bc3aaf655fc 100644
+--- a/drivers/target/iscsi/iscsi_target_parameters.c
++++ b/drivers/target/iscsi/iscsi_target_parameters.c
+@@ -1357,14 +1357,12 @@ int iscsi_decode_text_input(
+ 	struct iscsi_param_list *param_list = conn->param_list;
+ 	char *tmpbuf, *start = NULL, *end = NULL;
+ 
+-	tmpbuf = kzalloc(length + 1, GFP_KERNEL);
++	tmpbuf = kmemdup_nul(textbuf, length, GFP_KERNEL);
+ 	if (!tmpbuf) {
+ 		pr_err("Unable to allocate %u + 1 bytes for tmpbuf.\n", length);
+ 		return -ENOMEM;
+ 	}
+ 
+-	memcpy(tmpbuf, textbuf, length);
+-	tmpbuf[length] = '\0';
+ 	start = tmpbuf;
+ 	end = (start + length);
+ 
+-- 
+2.25.1
 
