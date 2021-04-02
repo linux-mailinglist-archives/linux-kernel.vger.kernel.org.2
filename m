@@ -2,63 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1358353101
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 00:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AEC9353102
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 00:24:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235140AbhDBWWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 18:22:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35760 "EHLO
+        id S235513AbhDBWYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 18:24:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231443AbhDBWWp (ORCPT
+        with ESMTP id S231406AbhDBWYi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 18:22:45 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC68DC0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 15:22:43 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617402160;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=32K9Ik03e28YnDkSk7ke2VS2Eux8le3wwkUl1uhOBVM=;
-        b=FXJawQezMiikEi576mT+AJq4kdnHecwFFAnmBWLGGQDDXnrbjfOjl4zS3rS1yVeilzXphh
-        cTBP8iF4MfyJF+1FCyccHELCs7JPcP3jabviwCeACHbjsd5uqRr8P9qw/X4Rz+ABkFcVLs
-        nZAlS62seZeSzrKU62/hLhBIEcUR80ShYSjDrz1DjmUdGv3wCVlGwgm+Nm4vUCFJk4+fZQ
-        EVipaZvXcTksZqISoAZiLUnXC0UB/Yh4aIVKAZ2Fay7DhEQ+BjXI6AAd2fK2PNqvZKqOKc
-        TF2tvRGlTR5CJbnKSW5ReB/WnwOugnSviPAnZ3ApqKiKN/kSbF/Fft96d/Tavw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617402160;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=32K9Ik03e28YnDkSk7ke2VS2Eux8le3wwkUl1uhOBVM=;
-        b=bBRChUZZHUE0LeJNcg39ue62tYG+dm1ZWv+mVb7iZi0FJNKdYq1jrrc5nKxURoZ3oJqUqY
-        Ru5FZOKi+cPY71Cg==
-To:     paulmck@kernel.org, linux-kernel@vger.kernel.org
-Cc:     john.stultz@linaro.org, sboyd@kernel.org, corbet@lwn.net,
-        Mark.Rutland@arm.com, maz@kernel.org, kernel-team@fb.com,
-        neeraju@codeaurora.org, ak@linux.intel.com,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH v6 clocksource] Do not mark clocks unstable dueclocksource: Provide module parameters to inject delays in watchdog
-In-Reply-To: <20210402203137.22479-1-paulmck@kernel.org>
-References: <20210402202929.GA22273@paulmck-ThinkPad-P72> <20210402203137.22479-1-paulmck@kernel.org>
-Date:   Sat, 03 Apr 2021 00:22:40 +0200
-Message-ID: <87pmzc498v.ffs@nanos.tec.linutronix.de>
+        Fri, 2 Apr 2021 18:24:38 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1158AC061788
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 15:24:37 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id d10so5662663ils.5
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 15:24:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cfAC5/0xb+Ob/94h/cPLZqxJqw6PTF1yrJT99k9yIrA=;
+        b=f7iLkMD4V3aaQ9z58wMRUgiRX9NOAwSNtAUQaOoZ2LQBaf+2kxAjGSunXzqJUaiCYy
+         7KqTFfetLZhQzB2SksowbUue4OPkDu4YNFlYQ8coC8Y5/eDxz8p9J+Pc8xsC0OqWD44c
+         BAjtl+Or1Bqrenlh8uao02NOT/7cfRdJkKV2g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cfAC5/0xb+Ob/94h/cPLZqxJqw6PTF1yrJT99k9yIrA=;
+        b=CvMQFP0rs2DDU4Sh8/0LikvnPVeqfxJP/02iBZ32iR1mHGB6r9uib7ZUvKGDFVEiio
+         qBK3lf1m2VFWhUnD3/3YkNDcKgoZj0hR945tKyJxbcMA4o891KlTtkTxikfSIhRJQ6AI
+         n9sGnHyAoPGhvOUfC36EpEQzj0R/I3uAxt3cXbcgZumG78IQeO4vMxFbdNoykiA/3gJs
+         N6cPZe1rzQMKFkhmesKqw/CDzZFaLEaE+h0GO0xsDcLGgU33NZJXHIgzPmEu2gsMVlby
+         YuHUiWEXu125PEP4W0wsU7x89E7/soJSWAIRC3T2XKToHmsLYR576YwRRmX2d17EC2y9
+         CjfA==
+X-Gm-Message-State: AOAM5315f7mPIS0KuKuitJQYpkpe6vq8hkXfsRNtZuj+9dd0XqAmmD4z
+        gINyh1KhKSw4yaqL9S02cpWDKg==
+X-Google-Smtp-Source: ABdhPJyVIrAPQpIxRXmjmHQjE2YcFo7ZTjhqOd5uEeL0wph2NJoVYiyBQKvoqKz5rJDgfrWjFJZHjg==
+X-Received: by 2002:a92:c7a6:: with SMTP id f6mr6515299ilk.55.1617402276371;
+        Fri, 02 Apr 2021 15:24:36 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id p4sm952525ile.57.2021.04.02.15.24.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Apr 2021 15:24:36 -0700 (PDT)
+Subject: Re: [PATCH] firmware_loader: Remove unnecessary conversion to bool
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, shuah@kernel.org
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <1613639529-41139-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <27640831-b996-93f0-4a4f-5b5d2ae24554@linuxfoundation.org>
+Date:   Fri, 2 Apr 2021 16:24:35 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <1613639529-41139-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02 2021 at 13:31, paulmck wrote:
+On 2/18/21 2:12 AM, Jiapeng Chong wrote:
+> Fix the following coccicheck warnings:
+> 
+> ./tools/testing/selftests/firmware/fw_namespace.c:98:54-59: WARNING:
+> conversion to bool not needed here.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>   tools/testing/selftests/firmware/fw_namespace.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/firmware/fw_namespace.c b/tools/testing/selftests/firmware/fw_namespace.c
+> index 5ebc1ae..0e393cb 100644
+> --- a/tools/testing/selftests/firmware/fw_namespace.c
+> +++ b/tools/testing/selftests/firmware/fw_namespace.c
+> @@ -95,7 +95,7 @@ static bool test_fw_in_ns(const char *fw_name, const char *sys_path, bool block_
+>   		}
+>   		if (block_fw_in_parent_ns)
+>   			umount("/lib/firmware");
+> -		return WEXITSTATUS(status) == EXIT_SUCCESS ? true : false;
 
-The subsystem prefix does not parse:
+This looks right to me. test_fw_in_ns() returns true or false and
+test_fw_in_ns() callers print appropriate message.
 
-    [PATCH v6 clocksource] Do not mark clocks unstable dueclocksource: Provide module parameters to inject delays in watchdog
+I don't think this patch is necessary.
 
-I look at the actual code changes after the easter break.
-
-Thanks,
-
-        tglx
+thanks,
+-- Shuah
