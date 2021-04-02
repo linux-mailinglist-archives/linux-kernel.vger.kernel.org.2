@@ -2,93 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E9D352A08
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 13:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD52352A0B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 13:03:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234687AbhDBLCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 07:02:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229599AbhDBLCa (ORCPT
+        id S235027AbhDBLC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 07:02:56 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:55956 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234919AbhDBLCy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 07:02:30 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA22C0613E6;
-        Fri,  2 Apr 2021 04:02:29 -0700 (PDT)
+        Fri, 2 Apr 2021 07:02:54 -0400
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: sre)
-        with ESMTPSA id D5A0D1F467EE
+        with ESMTPSA id 93C081F46851
 Received: by earth.universe (Postfix, from userid 1000)
-        id 9C8973C0C96; Fri,  2 Apr 2021 13:02:25 +0200 (CEST)
-Date:   Fri, 2 Apr 2021 13:02:25 +0200
+        id 40A033C0C96; Fri,  2 Apr 2021 13:02:48 +0200 (CEST)
+Date:   Fri, 2 Apr 2021 13:02:48 +0200
 From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     David Lechner <david@lechnology.com>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 12/32] MAINTAINERS: update lego,ev3-battery.yaml reference
-Message-ID: <20210402110225.valyqjzsu7j3cbnl@earth.universe>
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Dan Murphy <dmurphy@ti.com>, Len Brown <len.brown@intel.com>,
+        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH 28/32] dt-bindings: power: update battery.yaml reference
+Message-ID: <20210402110248.qhzeckgcqrksfwp7@earth.universe>
 References: <cover.1617279355.git.mchehab+huawei@kernel.org>
- <be4e2f1c7f6b2cfbda4fc98ca2177b048a3ed575.1617279355.git.mchehab+huawei@kernel.org>
- <a727e107-a322-7720-3438-a165b3297a32@lechnology.com>
+ <38d6c11d44570822931395dfe18ccaf7d72ac84e.1617279356.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mi6rf72afdrsl3eq"
+        protocol="application/pgp-signature"; boundary="dgd2dysqbs7d4ujj"
 Content-Disposition: inline
-In-Reply-To: <a727e107-a322-7720-3438-a165b3297a32@lechnology.com>
+In-Reply-To: <38d6c11d44570822931395dfe18ccaf7d72ac84e.1617279356.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---mi6rf72afdrsl3eq
+--dgd2dysqbs7d4ujj
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
 Hi,
 
-On Thu, Apr 01, 2021 at 10:40:32AM -0500, David Lechner wrote:
-> On 4/1/21 7:17 AM, Mauro Carvalho Chehab wrote:
-> > Changeset 3004e581d92a ("dt-bindings: power: supply: lego-ev3-battery: =
-Convert to DT schema format")
-> > renamed: Documentation/devicetree/bindings/power/supply/lego_ev3_batter=
-y.txt
-> > to: Documentation/devicetree/bindings/power/supply/lego,ev3-battery.yam=
-l.
-> >=20
-> > Update its cross-reference accordingly.
-> >=20
-> > Fixes: 3004e581d92a ("dt-bindings: power: supply: lego-ev3-battery: Con=
-vert to DT schema format")
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---
+On Thu, Apr 01, 2021 at 02:17:48PM +0200, Mauro Carvalho Chehab wrote:
+> Changesets: 70c23e62d20c ("dt-bindings: power: supply: Fix remaining batt=
+ery.txt links")
+> and: 471dec8023d1 ("dt-bindings: power: Convert battery.txt to battery.ya=
+ml")
+> renamed: Documentation/devicetree/bindings/power/supply/battery.txt
+> to: Documentation/devicetree/bindings/power/supply/battery.yaml.
 >=20
-> Reviewed-by: David Lechner <david@lechnology.com>
+> Update its cross-reference accordingly.
+>=20
+> Fixes: 70c23e62d20c ("dt-bindings: power: supply: Fix remaining battery.t=
+xt links")
+> Fixes: 471dec8023d1 ("dt-bindings: power: Convert battery.txt to battery.=
+yaml")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
 
 Thanks, queued.
 
 -- Sebastian
 
---mi6rf72afdrsl3eq
+>  Documentation/power/power_supply_class.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/Documentation/power/power_supply_class.rst b/Documentation/p=
+ower/power_supply_class.rst
+> index 7b8c42f8b1de..c04fabee0a58 100644
+> --- a/Documentation/power/power_supply_class.rst
+> +++ b/Documentation/power/power_supply_class.rst
+> @@ -233,7 +233,7 @@ Devicetree battery characteristics
+>  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>  Drivers should call power_supply_get_battery_info() to obtain battery
+>  characteristics from a devicetree battery node, defined in
+> -Documentation/devicetree/bindings/power/supply/battery.txt. This is
+> +Documentation/devicetree/bindings/power/supply/battery.yaml. This is
+>  implemented in drivers/power/supply/bq27xxx_battery.c.
+> =20
+>  Properties in struct power_supply_battery_info and their counterparts in=
+ the
+> --=20
+> 2.30.2
+>=20
+
+--dgd2dysqbs7d4ujj
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBm+bYACgkQ2O7X88g7
-+poDWw//Xw9KYuw6rNRmZIBIba9FR4HexCMziSwG865vKL0x78jJN+TqYShB2O83
-lcLbgsbhs5EZrsRMfMCnP/NSPNO9BQE/XKDmySpUhH3maKcBDDqYIojANDbsTjuT
-chjzImvnHtcFkNjpWOxUB9axLtX82n3ePzukbMCLPzgDCe1oB40fMppLntjnF/hb
-gByzUIhsci/FNfTy0mF2iNsRGotNp1Suah/YyxqS8+MmEnDCd7cSmxEykyEoORSV
-KTdw6cHRZxvDGThQlzi0ktbr4jwxShwzzvv+orqwD9nlFrW7Z+m9V6z4wjcsurTs
-HBcxEe4eVHmhM+S02LNeiZfZypjXMOWitt5eQLx2Ymc8+x/ZlpoexS/yo36pyJCY
-7TOz5t0UeZj4mxK5h+9skiYsNMd1Et2K1fJwm42SDH67qQQ24mpWPR/w6bcsW8aG
-VRYL8DnzpLOOGt27xGCLfNAowwHIfJ0Qjg4vU0Sw5Wq7DD7lQJywETtERz6s/DSF
-QLFz1uLpDhRP876OLegq4HQPTzn3HwSU6z7qz2kY0+yT7H7zxV6kJTcP3RmY/VwX
-rh3MDkKVnADC1rC5kcMXXxSUYjOJsRurMWbP0A42T2QCBNL+2lnAcy0HTIgKvrMj
-y23dBXDFfUjxvbxZg/pu3QzHbiJ+/LV4mrIaUP5Tjg5s0ylOVIk=
-=EVmw
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBm+dgACgkQ2O7X88g7
++prIzw/+Mlb3ocO+CKzWoQvp0RF5mpf/7fdhZhxaJWstSMq5tSx+XAgyVTGUPBe4
+y1dnqi12rr5cVl4xQpmir0mS+FAbNhDdHpIJIVFjy0O4+GaPJ3vWniuWBbzfHMqW
+4L2tif53Nys9qTntt1zGpSEEE9Sg0TqyJutFqDbeNtJ+tXbCV6hcoV5S+CvKU4vt
+rle5Hodk+OYPuxarZSMbo2rFj4pbe3LDReO2pZIXmsFkU4GuihJAbvApjQt3Wnu2
+t/Lgm8yU0/YHUfMHx2/90L/7wuoItu1T395UFq9XRoftN0Xblp/p0RgMz/gvlh1M
+ld7pa8k7Lb3WKXruGbRcdeanqdfydzr6t0t/jSP6b5V/LCwEtuSVXBHsaeKD9YhV
+tSRMYaDVznPn3pRPA7k44GMv9czX0Yuew/TkPSY7FA6mlUYrHa6jPjQCfi4dlY2N
+6lEGMP+dbz7YcSF/4UIB9OuoZ9wy22Zows8Km3jLBFgrA8d5EBiaeLZyjUHll+7r
+5KsV4sh5gMpl4AF6b1XV06LTN01muGdBLaMclGOKBHJL1OGPUIfRplUrbEgcLGJR
+HXFQ4C4U2j+8L73ACKZaZADML6N03siLFZFKFgab04+dSGokV9i78C/2qZw7W8Ve
+ApeWwWaFMjCF1BkOlQEgOTWz2YKgQoWAXFzsOr6uLkl4BeZbSKo=
+=Wdzy
 -----END PGP SIGNATURE-----
 
---mi6rf72afdrsl3eq--
+--dgd2dysqbs7d4ujj--
