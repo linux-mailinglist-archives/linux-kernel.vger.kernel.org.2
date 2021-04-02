@@ -2,73 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A5F83528A7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 11:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 920AE3528AA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 11:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234803AbhDBJ1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 05:27:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60060 "EHLO mail.kernel.org"
+        id S234860AbhDBJ2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 05:28:04 -0400
+Received: from comms.puri.sm ([159.203.221.185]:47526 "EHLO comms.puri.sm"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231160AbhDBJ1K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 05:27:10 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AEAF261105;
-        Fri,  2 Apr 2021 09:27:07 +0000 (UTC)
-Date:   Fri, 2 Apr 2021 10:27:20 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh@kernel.org>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 25/32] dt-bindings:iio:dac: update
- microchip,mcp4725.yaml reference
-Message-ID: <20210402102720.537daedc@jic23-huawei>
-In-Reply-To: <82fb54974e8a22be15e64343260a6de39a18edda.1617279356.git.mchehab+huawei@kernel.org>
-References: <cover.1617279355.git.mchehab+huawei@kernel.org>
-        <82fb54974e8a22be15e64343260a6de39a18edda.1617279356.git.mchehab+huawei@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231160AbhDBJ2D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 05:28:03 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id E2C57E0440;
+        Fri,  2 Apr 2021 02:27:31 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id kz69dXS-f4HA; Fri,  2 Apr 2021 02:27:30 -0700 (PDT)
+Message-ID: <a7a6165055ea857a6e0f86591f9235671fb11d02.camel@puri.sm>
+Subject: Re: [PATCH] Revert "usb: dwc3: gadget: Prevent EP queuing while
+ stopping transfers"
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     Wesley Cheng <wcheng@codeaurora.org>, gregkh@linuxfoundation.org,
+        balbi@kernel.org
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Date:   Fri, 02 Apr 2021 11:27:25 +0200
+In-Reply-To: <57733e4d-7aad-4564-9ebf-8293a9a4d4e4@codeaurora.org>
+References: <20210322121932.478878424@linuxfoundation.org>
+         <20210401115558.2041768-1-martin.kepplinger@puri.sm>
+         <57733e4d-7aad-4564-9ebf-8293a9a4d4e4@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  1 Apr 2021 14:17:45 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
-
-> Changeset 6ced946a4bba ("dt-bindings:iio:dac:microchip,mcp4725 yaml conversion")
-> renamed: Documentation/devicetree/bindings/iio/dac/mcp4725.txt
-> to: Documentation/devicetree/bindings/iio/dac/microchip,mcp4725.yaml.
+Am Donnerstag, dem 01.04.2021 um 11:09 -0700 schrieb Wesley Cheng:
 > 
-> Update its cross-reference accordingly.
 > 
-> Fixes: 6ced946a4bba ("dt-bindings:iio:dac:microchip,mcp4725 yaml conversion")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-
-Applied thanks.
-
-Jonathan
-
-> ---
->  include/linux/iio/dac/mcp4725.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> On 4/1/2021 4:55 AM, Martin Kepplinger wrote:
+> > This reverts commit 9de499997c3737e0c0207beb03615b320cabe495.
+> > 
+> > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+> > ---
+> > 
+> > I more or less blindly report:
+> > commit 9de499997c ("usb: dwc3: gadget: Prevent EP queuing while
+> > stopping
+> > transfers") results in the below error every time I connect the
+> > type-c
+> > connector to the dwc3, configured with serial and ethernet gadgets.
+> > 
+> > fyi, I apply the following to dwc3 on this port:
+> > dr_mode =
+> > "otg";                                                        
+> > snps,dis_u3_susphy_quirk;                                          
+> >      
+> > hnp-
+> > disable;                                                           
+> > srp-
+> > disable;                                                           
+> > adp-
+> > disable;                                                           
+> > usb-role-switch;
+> > 
+> > v5.12-rc5 does not have this error so I'm not sure whether it's
+> > more appropriate to add something to dwc3 than reverting. I hope
+> > usb
+> > people to know better and maybe even see the problem.
+> > 
+> > thanks,
+> >                                martin
+> > 
+> Hi Martin,
 > 
-> diff --git a/include/linux/iio/dac/mcp4725.h b/include/linux/iio/dac/mcp4725.h
-> index e9801c8d49c0..1f7e53c506b6 100644
-> --- a/include/linux/iio/dac/mcp4725.h
-> +++ b/include/linux/iio/dac/mcp4725.h
-> @@ -15,7 +15,7 @@
->   * @vref_buffered: Controls buffering of the external reference voltage.
->   *
->   * Vref related settings are available only on MCP4756. See
-> - * Documentation/devicetree/bindings/iio/dac/mcp4725.txt for more information.
-> + * Documentation/devicetree/bindings/iio/dac/microchip,mcp4725.yaml for more information.
->   */
->  struct mcp4725_platform_data {
->  	bool use_vref;
+> This has been fixed with the below:
+> https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git/commit/?h=usb-linus&id=5aef629704ad4d983ecf5c8a25840f16e45b6d59
+> 
+> Can you pull that in and give it a try?
+> 
+> Thanks
+> Wesley Cheng
+
+yes, that's a fix for my problem (and what I secretly had hoped to get
+:). Thank you very much. In case it helps:
+
+Tested-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+
 
