@@ -2,116 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B0C352D36
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 222BD352D38
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236046AbhDBPVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 11:21:55 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:8919 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234968AbhDBPVy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 11:21:54 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FBkL51pq3z9v2lh;
-        Fri,  2 Apr 2021 17:21:49 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id OssVJYy-p_xH; Fri,  2 Apr 2021 17:21:49 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FBkL50gT0z9v2lf;
-        Fri,  2 Apr 2021 17:21:49 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 155BE8BB7D;
-        Fri,  2 Apr 2021 17:21:51 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 6n2Gg89KkRnV; Fri,  2 Apr 2021 17:21:51 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1C4F58BB7C;
-        Fri,  2 Apr 2021 17:21:50 +0200 (CEST)
-Subject: Re: [PATCH v3 11/17] riscv: Convert to GENERIC_CMDLINE
-To:     Rob Herring <robh@kernel.org>
-Cc:     Andreas Schwab <schwab@linux-m68k.org>,
-        Will Deacon <will@kernel.org>,
-        Daniel Walker <danielwa@cisco.com>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
-        <linux-arch@vger.kernel.org>, devicetree@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        microblaze <monstr@monstr.eu>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        nios2 <ley.foon.tan@intel.com>,
-        Openrisc <openrisc@lists.librecores.org>,
-        linux-hexagon@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        X86 ML <x86@kernel.org>, linux-xtensa@linux-xtensa.org,
-        SH-Linux <linux-sh@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>
-References: <cover.1616765869.git.christophe.leroy@csgroup.eu>
- <46745e07b04139a22b5bd01dc37df97e6981e643.1616765870.git.christophe.leroy@csgroup.eu>
- <87zgyqdn3d.fsf@igel.home> <81a7e63f-57d4-5c81-acc5-35278fe5bb04@csgroup.eu>
- <CAL_JsqK2TT=j1QjiRgTYQvwHqivE-3HgYo2JzxTJSWO2wvK69Q@mail.gmail.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <d71c83a8-cc10-b435-5a28-70ca4df6fdf9@csgroup.eu>
-Date:   Fri, 2 Apr 2021 17:21:51 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S236115AbhDBPWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 11:22:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236050AbhDBPWT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 11:22:19 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8BF7C061788
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 08:22:14 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id t16so2595008qvr.12
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 08:22:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HqOSSjP8VsKEgoLReA8Ec/GP45XGwwALUfgS/ucZBPM=;
+        b=KYQa9bztnFxv6sAzKeiaQcAYtIsQwZ0luHax+BysFvRuTXQu0GO2uAvJMu1kcAe36c
+         dmqdOJVSQeks1xf68at2nxJWx5Bbv6g05ah2X//bP3T2/Ys2vds1FRkHy246K/NVLbnM
+         kvwS9On3JQrzInxrmjnheYDibvhFzlMWVZWYRWzHFNPjD2xtv6fzwMfSeBJY57Rwj5Rb
+         4rq/LgPcjapkP3QXh/R1Bdn3mF14MtU3RM1iULXOGAgW3aGRen/B/4KC+LEualyEbHpK
+         bzDuM6gGk7zxYPKW3ywGAA6yhoCmNnDIDYFA6rKio700BVLIzZEpCsnbQmnY4ug2zimj
+         BsRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HqOSSjP8VsKEgoLReA8Ec/GP45XGwwALUfgS/ucZBPM=;
+        b=Nawh3k2s6cBNgXQXccLQi5OHNMt1dI0Jj6UieeMfgRc5VveiaCttoE5MYcNgaREUoA
+         MrA9kseIn/7a72tp0mY2Gpa4CCRYkEh9N09GxETyncX4cbvYiVLLnk+QMuz8sw/QEQHR
+         HtGbeuW6I1hgyUEz/Zu4liHZVYNHiKTn2TudUPVDRSsVfrpD2XqK2B0rvFGVR0DnkOL7
+         FaMFzkRdtrQ4eEAAwAR1bEUYVs0U8EdlZdEVX9M7xIX5RDlSQ3h1nLq1daW52ZKl9NYc
+         BJAyE1lis0R+f2Q3TUsKUhcQC8aFvOCDW7eRWWnbSuuWP/QgGPRBYNYLuJz7rtweDFKD
+         bxpg==
+X-Gm-Message-State: AOAM532Aay3PfvyzUBOiXfFcRhU5elibhuNG/d6Y29/OHK86wH9oUykt
+        j9YXNw63KYyShNNE5ZPnacvt2Q==
+X-Google-Smtp-Source: ABdhPJx0n2GqdaR7E5PJlOTvX1JWTrudxl2iL00LAIetmK8ViYSynmVhAhRg/LqLIFVhRXwRjiPedg==
+X-Received: by 2002:a0c:9cc2:: with SMTP id j2mr13569952qvf.2.1617376933225;
+        Fri, 02 Apr 2021 08:22:13 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:8ca7])
+        by smtp.gmail.com with ESMTPSA id t24sm6800763qto.23.2021.04.02.08.22.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Apr 2021 08:22:12 -0700 (PDT)
+Date:   Fri, 2 Apr 2021 11:22:11 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     guro@fb.com, mhocko@kernel.org, akpm@linux-foundation.org,
+        shakeelb@google.com, vdavydov.dev@gmail.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        duanxiongchun@bytedance.com
+Subject: Re: [RFC PATCH 03/15] mm: memcontrol: remove the pgdata parameter of
+ mem_cgroup_page_lruvec
+Message-ID: <YGc2ozMAYph04nm2@cmpxchg.org>
+References: <20210330101531.82752-1-songmuchun@bytedance.com>
+ <20210330101531.82752-4-songmuchun@bytedance.com>
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqK2TT=j1QjiRgTYQvwHqivE-3HgYo2JzxTJSWO2wvK69Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210330101531.82752-4-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 26/03/2021 à 16:26, Rob Herring a écrit :
-> On Fri, Mar 26, 2021 at 8:20 AM Christophe Leroy
-> <christophe.leroy@csgroup.eu> wrote:
->>
->>
->>
->> Le 26/03/2021 à 15:08, Andreas Schwab a écrit :
->>> On Mär 26 2021, Christophe Leroy wrote:
->>>
->>>> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
->>>> index f8f15332caa2..e7c91ee478d1 100644
->>>> --- a/arch/riscv/kernel/setup.c
->>>> +++ b/arch/riscv/kernel/setup.c
->>>> @@ -20,6 +20,7 @@
->>>>    #include <linux/swiotlb.h>
->>>>    #include <linux/smp.h>
->>>>    #include <linux/efi.h>
->>>> +#include <linux/cmdline.h>
->>>>
->>>>    #include <asm/cpu_ops.h>
->>>>    #include <asm/early_ioremap.h>
->>>> @@ -228,10 +229,8 @@ static void __init parse_dtb(void)
->>>>       }
->>>>
->>>>       pr_err("No DTB passed to the kernel\n");
->>>> -#ifdef CONFIG_CMDLINE_FORCE
->>>> -    strlcpy(boot_command_line, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
->>>> +    cmdline_build(boot_command_line, NULL, COMMAND_LINE_SIZE);
->>>>       pr_info("Forcing kernel command line to: %s\n", boot_command_line);
->>>
->>> Shouldn't that message become conditional in some way?
->>>
->>
->> You are right, I did something similar on ARM but looks like I missed it on RISCV.
+On Tue, Mar 30, 2021 at 06:15:19PM +0800, Muchun Song wrote:
+> All the callers of mem_cgroup_page_lruvec() just pass page_pgdat(page)
+> as the 2nd parameter to it (except isolate_migratepages_block()). But
+> for isolate_migratepages_block(), the page_pgdat(page) is also equal
+> to the local variable of @pgdat. So mem_cgroup_page_lruvec() do not
+> need the pgdat parameter. Just remove it to simplify the code.
 > 
-> How is this hunk even useful? Under what conditions can you boot
-> without a DTB? Even with a built-in DTB, the DT cmdline handling would
-> be called.
-> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-Don't know, I wanted to keep as is today.
+There is a minor benefit in not doing the page_pgdat() lookup twice.
+But I think it only really matters on 32-bit NUMA, where we have more
+than one node but not enough space in page->flags to store the nid,
+and so page_to_nid() is out-of-line and needs to go through section.
 
-Do you think the hunk should be completely removed ?
+Those setups aren't really around anymore, and certainly don't justify
+the hassle (and potential bugs) of the awkward interface.
 
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
