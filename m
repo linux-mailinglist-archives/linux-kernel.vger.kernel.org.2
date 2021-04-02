@@ -2,112 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C95F23530AE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 23:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A30E3530B7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 23:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235534AbhDBVVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 17:21:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50850 "EHLO
+        id S235584AbhDBVX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 17:23:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234161AbhDBVVp (ORCPT
+        with ESMTP id S234821AbhDBVXx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 17:21:45 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97570C06178C
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 14:21:42 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id f20so5627441pgj.6
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 14:21:42 -0700 (PDT)
+        Fri, 2 Apr 2021 17:23:53 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD8EC061793
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 14:23:51 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d8so2999816plh.11
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 14:23:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=UePj996uKa4lehiTow3eZigOHzjo+KgWqwcYD1BR4Xg=;
-        b=Y2BXC+V0hte2wealulibEqC6ISSDAkt6HxgwCE2RY/9/WcHg+JyAIv0J59F7K7wzti
-         jT3KdIWNeJypuM5604GIYxGvW1bJGE/mkrT66JHUxWJrvhfkwQAiE0FFKsNKafbARQVH
-         Y6oB7fY24l8P3LKBFxLBAQZNx9mrnnZQxepajPluNjyrIJAe3eNG7Yn2+1qXAQ1187qI
-         4M8iSe0OWH7uQo/oHpz5kHR8B3LRMV4/QDu8IWXnSGMe1bD1rlnohyZ9US4BBbZeG2Za
-         EJW2y5Qas9EytPOXm/vJfM/R88T3Nk9HOWelo2MyGmO35i4fOqFpkIE2do/pk2Cvhh1h
-         WI+g==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=08HQieGvJ5s4z39bQ9/VIsRPK3KWDyfUJY19CVcTpoA=;
+        b=ZZHUC404vOs5t/NKB0to6ybKeOuaagPe7GwEPz8E4aRbI9bzhmQ5eh2W3fmlGIAQ5G
+         Zt/fFdSLqRat7R08DbmWJyelbPm9NoUFsXTYln4CMBO6HfJXssG1Hr1HTZiCoU7Zt5xd
+         iPVcqhkNAIOTylk143rBaRMhzzLH4EjarZKoQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=UePj996uKa4lehiTow3eZigOHzjo+KgWqwcYD1BR4Xg=;
-        b=HUpCwy8ocoiEBrji+DlKoZ7SMC5au/DD0oaPODyrZGB+nn/f18i+l88MXiQ0hbyawv
-         DOxqD/dnDxDtJjVg8NvxaEdILnp09qC1vSIIiUMOKqRl/zdwZl5UQaCmX4Tzq77/Oqhl
-         7VDrlZ0S+j8CGF4/G7l2OdyaZwotb6v4ZJDyJ7ULrLX2Iqp08hIRBu+w3C80Phknhyd/
-         h9CmyoraRy3Wv2eMVaHx+qcVVbph3LwvqJvL/tloacM377+2VqBLJ9L85NBXXKRsSR5t
-         EyJ0/0OtpAROIbazZeOUNmtUQkO1mvnyx2urHyYCKyfqd6OdOHvRusTGDVmSN57qu+wo
-         UI7Q==
-X-Gm-Message-State: AOAM531DWeOI/sMtoKKkXnl70ODCMYRJiJ77KlOtUCGgllNlIj54aWZT
-        QNLHGIKQYJ+PPQAoLt9iqr6j5lKyMIisXw==
-X-Google-Smtp-Source: ABdhPJzRtcHkdUGKrnn+iO8bt2LHVQXJq4NUWncxSR3vHCZQZj07EyFLjkW/yuuPLVh68HcUYD5CbOXtKo0Qsg==
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:51c4:ce05:b8c5:b26b])
- (user=dlatypov job=sendgmr) by 2002:a17:902:7589:b029:e8:c011:1f28 with SMTP
- id j9-20020a1709027589b02900e8c0111f28mr4283459pll.35.1617398502159; Fri, 02
- Apr 2021 14:21:42 -0700 (PDT)
-Date:   Fri,  2 Apr 2021 14:21:31 -0700
-In-Reply-To: <20210402212131.835276-1-dlatypov@google.com>
-Message-Id: <20210402212131.835276-3-dlatypov@google.com>
-Mime-Version: 1.0
-References: <20210402212131.835276-1-dlatypov@google.com>
-X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
-Subject: [PATCH v5 2/2] kunit: ubsan integration
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com
-Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        skhan@linuxfoundation.org, alan.maguire@oracle.com,
-        Uriel Guajardo <urielguajardo@google.com>,
-        Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=08HQieGvJ5s4z39bQ9/VIsRPK3KWDyfUJY19CVcTpoA=;
+        b=GWL/4ykcEA+MF+D+d4nn7VKYDcBOx8QxfHiqoWb0gghAX4XUDtGvBfVnj+axcNIZjP
+         tx3WNOa8ddxeg/zJCRv8S+Qy8mHruk96/xt17Ept/TGteqwsX9ukc8xfjHlnvPQm7+8c
+         OaZtpJZoPLw6s9lSquOOW7fumAzGkRhuoyngyr5oFDsobxmbQCfq1I6CJ857WymD41VY
+         gLJDPJHPbR41KbPO7Yk/a40EzIeWAS3N0syoU0BXkC8wUxadL3orF/qY7rT+ScITPRbA
+         U8de2kyDcFwu3RJAA5Hv3pVQ4COwcdUJM9k6wzU67gAGAsekekDL4Imn2EaUNwmq3wDk
+         eIUw==
+X-Gm-Message-State: AOAM532ubmcBf8bTVaBja4KbYjPu9+p/UsFk6a09CYXRAvyh/2vVjH7b
+        Qdb58ang0CUQix8DgZf5WYhbgg==
+X-Google-Smtp-Source: ABdhPJzh1TjlfwSjwK/4Uhusa5K7hvHNWHdJg95xMTE30zaT3vWl2AH09tOC2m+ie/IgJcGERoPLbw==
+X-Received: by 2002:a17:90a:420d:: with SMTP id o13mr15596212pjg.61.1617398631259;
+        Fri, 02 Apr 2021 14:23:51 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id t3sm8999011pfg.176.2021.04.02.14.23.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Apr 2021 14:23:50 -0700 (PDT)
+Date:   Fri, 2 Apr 2021 14:23:48 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        clang-built-linux@googlegroups.com, Michal Hocko <mhocko@suse.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
+        Adam Nichols <adam@grimm-co.com>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v4 3/3] sysfs: Unconditionally use vmalloc for buffer
+Message-ID: <202104021421.97A06AE@keescook>
+References: <20210401221320.2717732-1-keescook@chromium.org>
+ <20210401221320.2717732-4-keescook@chromium.org>
+ <20210402063221.GA5260@lst.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210402063221.GA5260@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uriel Guajardo <urielguajardo@google.com>
+On Fri, Apr 02, 2021 at 08:32:21AM +0200, Christoph Hellwig wrote:
+> On Thu, Apr 01, 2021 at 03:13:20PM -0700, Kees Cook wrote:
+> > The sysfs interface to seq_file continues to be rather fragile
+> > (seq_get_buf() should not be used outside of seq_file), as seen with
+> > some recent exploits[1]. Move the seq_file buffer to the vmap area
+> > (while retaining the accounting flag), since it has guard pages that will
+> > catch and stop linear overflows. This seems justified given that sysfs's
+> > use of seq_file almost always already uses PAGE_SIZE allocations, has
+> > normally short-lived allocations, and is not normally on a performance
+> > critical path.
+> 
+> This looks completely weird to me.  In the end sysfs uses nothing
+> of the seq_file infrastructure, so why do we even pretend to use it?
+> Just switch sysfs_file_kfops_ro and sysfs_file_kfops_rw from using
+> ->seq_show to ->read and do the vmalloc there instead of pretending
+> this is a seq_file.
 
-Integrates UBSAN into the KUnit testing framework. It fails KUnit tests
-whenever it reports undefined behavior.
+As far as I can tell it's a result of kernfs using seq_file, but sysfs
+never converted all its callbacks to use seq_file.
 
-When CONFIG_KUNIT=n, nothing is printed or even formatted, so this has
-no behavioral impact outside of tests.
+> > Once seq_get_buf() has been removed (and all sysfs callbacks using
+> > seq_file directly), this change can also be removed.
+> 
+> And with sysfs out of the way I think kiling off the other few users
+> should be pretty easy as well.
 
-kunit_fail_current_test() effectively does a pr_err() as well, so
-there's some slight duplication, but it also ensures an error is
-recorded in the debugfs entry for the running KUnit test.
+Let me look at switching to "read" ... it is a twisty maze. :)
 
-Print a shorter version of the message to make it less spammy.
-
-Co-developed-by: Daniel Latypov <dlatypov@google.com>
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
-Signed-off-by: Uriel Guajardo <urielguajardo@google.com>
-Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
----
- lib/ubsan.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/lib/ubsan.c b/lib/ubsan.c
-index 26229973049d..bdc380ff5d5c 100644
---- a/lib/ubsan.c
-+++ b/lib/ubsan.c
-@@ -14,6 +14,7 @@
- #include <linux/types.h>
- #include <linux/sched.h>
- #include <linux/uaccess.h>
-+#include <kunit/test-bug.h>
- 
- #include "ubsan.h"
- 
-@@ -141,6 +142,8 @@ static void ubsan_prologue(struct source_location *loc, const char *reason)
- 		"========================================\n");
- 	pr_err("UBSAN: %s in %s:%d:%d\n", reason, loc->file_name,
- 		loc->line & LINE_MASK, loc->column & COLUMN_MASK);
-+
-+	kunit_fail_current_test("%s in %s", reason, loc->file_name);
- }
- 
- static void ubsan_epilogue(void)
 -- 
-2.31.0.208.g409f899ff0-goog
-
+Kees Cook
