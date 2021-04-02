@@ -2,127 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A74A35246B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 02:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68DC535246D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 02:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236302AbhDBAUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 20:20:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60622 "EHLO
+        id S236360AbhDBAVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 20:21:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233677AbhDBAUK (ORCPT
+        with ESMTP id S233677AbhDBAVs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 20:20:10 -0400
-Received: from www62.your-server.de (www62.your-server.de [IPv6:2a01:4f8:d0a:276a::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB528C0613E6;
-        Thu,  1 Apr 2021 17:20:10 -0700 (PDT)
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lS7X8-0008fS-Ef; Fri, 02 Apr 2021 02:19:30 +0200
-Received: from [85.7.101.30] (helo=pc-6.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lS7X7-0001gm-W8; Fri, 02 Apr 2021 02:19:30 +0200
-Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-References: <20210325120020.236504-1-memxor@gmail.com>
- <20210325120020.236504-4-memxor@gmail.com>
- <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
- <20210328080648.oorx2no2j6zslejk@apollo>
- <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
- <48b99ccc-8ef6-4ba9-00f9-d7e71ae4fb5d@iogearbox.net>
- <20210331094400.ldznoctli6fljz64@apollo>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <5d59b5ee-a21e-1860-e2e5-d03f89306fd8@iogearbox.net>
-Date:   Fri, 2 Apr 2021 02:19:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Thu, 1 Apr 2021 20:21:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D645C0613E6;
+        Thu,  1 Apr 2021 17:21:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=tK9RRSfqusQgz1icEOJWsLA3SmIH83lmC2fpYvSB7vo=; b=QAjP6bAQ9Hq+lEU0VSIQIUO1Cs
+        Epjo3LNjWvaRuAh6ijqjM65onjn5vEFdC0hMRj2UsUPKlbJkzkX0zueq1sLr6R1+XnZpfLQ6HAF4b
+        cdbGSklvqN9VjKExUNzjg+g61I7GTC/ViTNNqESoZ6QiLmVV0FNHeGj0+KP/drlyTn7VZnPsHvm+V
+        Ed4ETCBtqzSQLqNKThMTM5bDg7ykQHOC2vPK74OrAiAgpuBgEDkp5CVYnto2Sq12zEEGslROuJ0f4
+        U4+d+gjYUtO9keXXjSHp9r4R6EK53fk+45eNNV/I5y8fOAUVoOy0+6kRw/e7Ez8QFeDs2UQkyCF3M
+        NxiUOMIA==;
+Received: from [2601:1c0:6280:3f0::e0e1] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lS7Z3-006xwF-Tu; Fri, 02 Apr 2021 00:21:35 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Denis Turischev <denis@compulab.co.il>
+Subject: [PATCH -next] gpio: GPIO_SCH: depends on PCI same as LPC_SCH
+Date:   Thu,  1 Apr 2021 17:21:24 -0700
+Message-Id: <20210402002124.17207-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20210331094400.ldznoctli6fljz64@apollo>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26127/Thu Apr  1 13:11:26 2021)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/31/21 11:44 AM, Kumar Kartikeya Dwivedi wrote:
-> On Wed, Mar 31, 2021 at 02:55:47AM IST, Daniel Borkmann wrote:
->> Do we even need the _block variant? I would rather prefer to take the chance
->> and make it as simple as possible, and only iff really needed extend with
->> other APIs, for example:
-> 
-> The block variant can be dropped, I'll use the TC_BLOCK/TC_DEV alternative which
-> sets parent_id/ifindex properly.
-> 
->>    bpf_tc_attach(prog_fd, ifindex, {INGRESS,EGRESS});
->>
->> Internally, this will create the sch_clsact qdisc & cls_bpf filter instance
->> iff not present yet, and attach to a default prio 1 handle 1, and _always_ in
->> direct-action mode. This is /as simple as it gets/ and we don't need to bother
->> users with more complex tc/cls_bpf internals unless desired. For example,
->> extended APIs could add prio/parent so that multi-prog can be attached to a
->> single cls_bpf instance, but even that could be a second step, imho.
-> 
-> I am not opposed to clsact qdisc setup if INGRESS/EGRESS is supplied (not sure
-> how others feel about it).
+Since LPC_SCH depends on PCI, GPIO_SCH must also depend on PCI
+to prevent kconfig warning and build errors:
 
-What speaks against it? It would be 100% clear from API side where the prog is
-being attached. Same as with tc cmdline where you specify 'ingress'/'egress'.
+WARNING: unmet direct dependencies detected for LPC_SCH
+  Depends on [n]: HAS_IOMEM [=y] && PCI [=n]
+  Selected by [y]:
+  - GPIO_SCH [=y] && GPIOLIB [=y] && X86 [=y] && (X86 [=y] || COMPILE_TEST [=n]) && ACPI [=y]
 
-> We could make direct_action mode default, and similarly choose prio
+and
 
-To be honest, I wouldn't even support a mode from the lib/API side where direct_action
-is not set. It should always be forced to true. Everything else is rather broken
-setup-wise, imho, since it won't scale. We added direct_action a bit later to the
-kernel than original cls_bpf, but if I would do it again today, I'd make it the
-only available option. I don't see a reasonable use-case where you have it to false.
+../drivers/mfd/lpc_sch.c:204:1: warning: data definition has no type or storage class
+ module_pci_driver(lpc_sch_driver);
+ ^~~~~~~~~~~~~~~~~
+../drivers/mfd/lpc_sch.c:204:1: error: type defaults to ‘int’ in declaration of ‘module_pci_driver’ [-Werror=implicit-int]
+../drivers/mfd/lpc_sch.c:204:1: warning: parameter names (without types) in function declaration
+../drivers/mfd/lpc_sch.c:197:26: warning: ‘lpc_sch_driver’ defined but not used [-Wunused-variable]
+ static struct pci_driver lpc_sch_driver = {
+                          ^~~~~~~~~~~~~~
 
-> as 1 by default instead of letting the kernel do it. Then you can just pass in
-> NULL for bpf_tc_cls_opts and be close to what you're proposing. For protocol we
-> can choose ETH_P_ALL by default too if the user doesn't set it.
+Fixes: 6c46215d6b62 ("gpio: sch: Hook into ACPI GPE handler to catch GPIO edge events")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-gpio@vger.kernel.org
+Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc: Denis Turischev <denis@compulab.co.il>
+---
+ drivers/gpio/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Same here with ETH_P_ALL, I'm not sure anyone uses anything other than ETH_P_ALL,
-so yes, that should be default.
-
-> With these modifications, the equivalent would look like
-> 	bpf_tc_cls_attach(prog_fd, TC_DEV(ifindex, INGRESS), NULL, &id);
-
-Few things compared to bpf_tc_attach(prog_fd, ifindex, {INGRESS,EGRESS}):
-
-1) nit, but why even 'cls' in the name. I think we shouldn't expose such old-days
-    tc semantics to a user. Just bpf_tc_attach() is cleaner/simpler to understand.
-2) What's the 'TC_DEV(ifindex, INGRESS)' macro doing exactly? Looks unnecessary,
-    why not regular args to the API?
-3) Exposed bpf_tc_attach() API could internally call a bpf_tc_attach_opts() API
-    with preset defaults, and the latter could have all the custom bits if the user
-    needs to go beyond the simple API, so from your bpf_tc_cls_attach() I'd also
-    drop the NULL.
-4) For the simple API I'd likely also drop the id (you could have a query API if
-    needed).
-
-> So as long as the user doesn't care about other details, they can just pass opts
-> as NULL.
-
+--- linux-next-20210401.orig/drivers/gpio/Kconfig
++++ linux-next-20210401/drivers/gpio/Kconfig
+@@ -860,7 +860,7 @@ config GPIO_IT87
+ 
+ config GPIO_SCH
+ 	tristate "Intel SCH/TunnelCreek/Centerton/Quark X1000 GPIO"
+-	depends on (X86 || COMPILE_TEST) && ACPI
++	depends on (X86 || COMPILE_TEST) && ACPI && PCI
+ 	select GPIOLIB_IRQCHIP
+ 	select MFD_CORE
+ 	select LPC_SCH
