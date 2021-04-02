@@ -2,197 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57A4B3524B6
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 02:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72EA53524B9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 02:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233789AbhDBAz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 20:55:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39984 "EHLO
+        id S233961AbhDBA5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 20:57:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231168AbhDBAz0 (ORCPT
+        with ESMTP id S233665AbhDBA5C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 20:55:26 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 255A5C0613E6
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 17:55:26 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id t14so3589828ilu.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 17:55:26 -0700 (PDT)
+        Thu, 1 Apr 2021 20:57:02 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA364C06178C
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Apr 2021 17:57:01 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id u128so7587961ybf.12
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Apr 2021 17:57:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ggar240r8l1y1SR7kz5vR/iom4bN+ntyDx1BWqiKLWA=;
-        b=HfUsqhL+okD5Z6DtZAvlDomFb/eZX+9XmkHddnlgl6gSKyk8ihNeBFMl/o5/uKgLJT
-         kZJaw4s2Z++IPVOripdmiWATHKUmJLl4uP/dlVCoI595caniLn4znAZjDJf15XYwMCc+
-         CpgdD/nET0RYazA1I/7W712anpZmjGGROh+hqzUAQc9/AmPa/ZJTwuD0Hg/IHwagOE2H
-         hws/CVnk+C75Z0MceafmrdCVsUUz/rCzGJomdoI7qY6vzIfJ/nkrH7m8zBX3D67ma+dB
-         8xKxneQyjbNzgHX3LzohQC9Bu5zpuLktXOXGUhPSa9/no+mcL9inlPqvAmOvvpiiscGC
-         2f6g==
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=FViJNMuAQXVG92IcJ9ASyfw+gqYDqmookinTy4APMz8=;
+        b=tM5HW6/xk4O5sMn2fgKiWu76aEhiiETLruJpg/eDqJDR4WtSvS9+XoKICGLJgo/aR9
+         PHUygm3nt6Iyd9H+hRkE+aN2uWXSniHsrGAukhueCHEWKNiGLvDdvm/C35c51KL7qq/J
+         fgt3utJuyw2N+OiFjKc36bNdeTZMCG2OXJjHEkQxFIqyXipTvjAOsKRQR3H93WpjXiTJ
+         zZlKgCHu1/48AstcZ0TNb2v8J6l74NmyyCG68O3osE84/6JpVuFsdO2EgEGawRt1qn/R
+         MTRQMS94V9rHBAev+i0CHpGE75U1N9vbPoIhstygJ3ud1d//b6oFND6DleWTsUfEpKQo
+         REdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ggar240r8l1y1SR7kz5vR/iom4bN+ntyDx1BWqiKLWA=;
-        b=i/YXrhMy70WI7eMKCazUMzN799rfxSE7gZPX83IDdPaW1004iFD8T8DYkLoXYA4Lk+
-         dp4PMCFsK3pKCuIa11rgpllffFofuUTkwJyuW2iniqwYbAAZzpxjHLPEKzUHSqcsJAQL
-         iIcGIW5Lr/POj5GPe31Dac2JjU04FUnuuhrjPEJw5DXKgHaOJC6fbPx3P8I0H6jMaZBr
-         pEBgiBE6zp8zg2Js2kcfm2gq8Zn5atUEG2mr3AshIMy8MT2xa0/UTVUfFJrX7pHk9Txy
-         3ouno5S6iQb0ZoVmkvqo4KaV4w3BJAtpKtZZYq1QAccjFGHqCTHZGU2kCULEX7i17BFF
-         jolA==
-X-Gm-Message-State: AOAM532yIPz0BgAbpe5mfUAsfMlR+T7bpGmE94I8fN1cLxwa7aG0WfyY
-        zkVrGJXUlkOU3sc1BZ+PM3nnR+XPZB600NNgotEP0A==
-X-Google-Smtp-Source: ABdhPJz52Elpa8MCYcBQKr2vnBLDMM40OFRVlMe3SRA4T3HZnstJIwIud5WK6sp99a2jtfaldbUB2+UTIh7apFf1O5A=
-X-Received: by 2002:a05:6e02:154d:: with SMTP id j13mr6792790ilu.128.1617324925442;
- Thu, 01 Apr 2021 17:55:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210401183216.443C4443@viggo.jf.intel.com> <20210401183231.8485C83D@viggo.jf.intel.com>
-In-Reply-To: <20210401183231.8485C83D@viggo.jf.intel.com>
-From:   Wei Xu <weixugc@google.com>
-Date:   Thu, 1 Apr 2021 17:55:13 -0700
-Message-ID: <CAAPL-u-zQFRD=m3+vygesijsQT01H9BYtpDw9Q+80CUB=mdW1g@mail.gmail.com>
-Subject: Re: [PATCH 08/10] mm/vmscan: Consider anonymous pages without swap
-To:     Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kbusch@kernel.org, shy828301@gmail.com,
-        David Rientjes <rientjes@google.com>, ying.huang@intel.com,
-        Dan Williams <dan.j.williams@intel.com>, david@redhat.com,
-        osalvador@suse.de
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=FViJNMuAQXVG92IcJ9ASyfw+gqYDqmookinTy4APMz8=;
+        b=ncH4Aj6NR/bXts6tI0pNAqvb0pIUst/QB6Byld9ArU4SiSqspk/yIeP2TjBmF3cO8A
+         VD8Md2L5VFNXACJVPnutErxTmFuhvloYielFXhH759ykxxE1TstBBSm3AQkZg+LpCvld
+         LchaDJ2ug1jipwvVwsNaN7LstsPDzGuARzoPV3msbU5mIp3s9mxffmjFMLobnextqv/N
+         8hXwGCEz1FJK0QPUNRtXNbcjNZT96y/heHyssPWNIGn9SgRoWecIzxb6aUP1glHdviYd
+         vxCGrifaFKz87TpwFHmYb2oI78Ih/MRS0fWIuPTm4LwDvTCT75lJUFukNMmC1FKoMQuz
+         qyMA==
+X-Gm-Message-State: AOAM531WFc+A8Iul9w0JLTWamtJe/971+f+NncZz1HAfX1oqdFAyABvF
+        LGP8GbDdI50s7xK0zJNARnU5sw7PNEA=
+X-Google-Smtp-Source: ABdhPJzX9kzo85wBh2DvMcR2Y9UxX/gVfIA/wY1qXyxNt7lm9J3jjA4HAyWrYbcDrQf6yDOm390BaT3pn8k=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:c0b4:8b8:bb34:6a56])
+ (user=seanjc job=sendgmr) by 2002:a25:a187:: with SMTP id a7mr8464267ybi.377.1617325020964;
+ Thu, 01 Apr 2021 17:57:00 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Thu,  1 Apr 2021 17:56:48 -0700
+Message-Id: <20210402005658.3024832-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
+Subject: [PATCH v2 00/10] KVM: Consolidate and optimize MMU notifiers
+From:   Sean Christopherson <seanjc@google.com>
+To:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ben Gardon <bgardon@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 11:35 AM Dave Hansen <dave.hansen@linux.intel.com> wrote:
->
->
-> From: Keith Busch <kbusch@kernel.org>
->
-> Reclaim anonymous pages if a migration path is available now that
-> demotion provides a non-swap recourse for reclaiming anon pages.
->
-> Note that this check is subtly different from the
-> anon_should_be_aged() checks.  This mechanism checks whether a
-> specific page in a specific context *can* actually be reclaimed, given
-> current swap space and cgroup limits
->
-> anon_should_be_aged() is a much simpler and more preliminary check
-> which just says whether there is a possibility of future reclaim.
->
-> #Signed-off-by: Keith Busch <keith.busch@intel.com>
-> Cc: Keith Busch <kbusch@kernel.org>
-> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Reviewed-by: Yang Shi <shy828301@gmail.com>
-> Cc: Wei Xu <weixugc@google.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Huang Ying <ying.huang@intel.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: osalvador <osalvador@suse.de>
->
-> --
->
-> Changes from Dave 10/2020:
->  * remove 'total_swap_pages' modification
->
-> Changes from Dave 06/2020:
->  * rename reclaim_anon_pages()->can_reclaim_anon_pages()
->
-> Note: Keith's Intel SoB is commented out because he is no
-> longer at Intel and his @intel.com mail will bounce.
-> ---
->
->  b/mm/vmscan.c |   35 ++++++++++++++++++++++++++++++++---
->  1 file changed, 32 insertions(+), 3 deletions(-)
->
-> diff -puN mm/vmscan.c~0009-mm-vmscan-Consider-anonymous-pages-without-swap mm/vmscan.c
-> --- a/mm/vmscan.c~0009-mm-vmscan-Consider-anonymous-pages-without-swap  2021-03-31 15:17:19.388000242 -0700
-> +++ b/mm/vmscan.c       2021-03-31 15:17:19.407000242 -0700
-> @@ -287,6 +287,34 @@ static bool writeback_throttling_sane(st
->  }
->  #endif
->
-> +static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
-> +                                         int node_id)
-> +{
-> +       if (memcg == NULL) {
-> +               /*
-> +                * For non-memcg reclaim, is there
-> +                * space in any swap device?
-> +                */
-> +               if (get_nr_swap_pages() > 0)
-> +                       return true;
-> +       } else {
-> +               /* Is the memcg below its swap limit? */
-> +               if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
-> +                       return true;
-> +       }
-> +
-> +       /*
-> +        * The page can not be swapped.
-> +        *
-> +        * Can it be reclaimed from this node via demotion?
-> +        */
-> +       if (next_demotion_node(node_id) >= 0)
-> +               return true;
+The end goal of this series is to optimize the MMU notifiers to take
+mmu_lock if and only if the notification is relevant to KVM, i.e. the hva
+range overlaps a memslot.   Large VMs (hundreds of vCPUs) are very
+sensitive to mmu_lock being taken for write at inopportune times, and
+such VMs also tend to be "static", e.g. backed by HugeTLB with minimal
+page shenanigans.  The vast majority of notifications for these VMs will
+be spurious (for KVM), and eliding mmu_lock for spurious notifications
+avoids an otherwise unacceptable disruption to the guest.
 
-When neither swap space nor RECLAIM_MIGRATE is enabled, but
-next_demotion_node() is configured, inactive pages cannot be swapped out
-nor demoted.  However, this check can still cause these pages to be sent
-to shrink_page_list() (e.g., when can_reclaim_anon_pages() is called by
-get_scan_count()) and make the THP pages being unnecessarily split there.
+To get there without potentially degrading performance, e.g. due to
+multiple memslot lookups, especially on non-x86 where the use cases are
+largely unknown (from my perspective), first consolidate the MMU notifier
+logic by moving the hva->gfn lookups into common KVM.
 
-One fix would be to guard this next_demotion_node() check with the
-RECLAIM_MIGRATE node_reclaim_mode check.  This RECLAIM_MIGRATE
-check needs to be applied to other calls to next_demotion_node() in
-vmscan.c as well.
+Based on kvm/queue, commit 5f986f748438 ("KVM: x86: dump_vmcs should
+include the autoload/autostore MSR lists").
 
-> +
-> +       /* No way to reclaim anon pages */
-> +       return false;
-> +}
-> +
->  /*
->   * This misses isolated pages which are not accounted for to save counters.
->   * As the data only determines if reclaim or compaction continues, it is
-> @@ -298,7 +326,7 @@ unsigned long zone_reclaimable_pages(str
->
->         nr = zone_page_state_snapshot(zone, NR_ZONE_INACTIVE_FILE) +
->                 zone_page_state_snapshot(zone, NR_ZONE_ACTIVE_FILE);
-> -       if (get_nr_swap_pages() > 0)
-> +       if (can_reclaim_anon_pages(NULL, zone_to_nid(zone)))
->                 nr += zone_page_state_snapshot(zone, NR_ZONE_INACTIVE_ANON) +
->                         zone_page_state_snapshot(zone, NR_ZONE_ACTIVE_ANON);
->
-> @@ -2323,6 +2351,7 @@ enum scan_balance {
->  static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
->                            unsigned long *nr)
->  {
-> +       struct pglist_data *pgdat = lruvec_pgdat(lruvec);
->         struct mem_cgroup *memcg = lruvec_memcg(lruvec);
->         unsigned long anon_cost, file_cost, total_cost;
->         int swappiness = mem_cgroup_swappiness(memcg);
-> @@ -2333,7 +2362,7 @@ static void get_scan_count(struct lruvec
->         enum lru_list lru;
->
->         /* If we have no swap space, do not bother scanning anon pages. */
-> -       if (!sc->may_swap || mem_cgroup_get_nr_swap_pages(memcg) <= 0) {
-> +       if (!sc->may_swap || !can_reclaim_anon_pages(memcg, pgdat->node_id)) {
+Well tested on Intel and AMD.  Compile tested for arm64, MIPS, PPC,
+PPC e500, and s390.  Absolutely needs to be tested for real on non-x86,
+I give it even odds that I introduced an off-by-one bug somewhere.
 
-Demotion of anon pages still depends on sc->may_swap.  Any thoughts on
-decoupling
-demotion from swapping more completely?
+v2:
+ - Drop the patches that have already been pushed to kvm/queue.
+ - Drop two selftest changes that had snuck in via "git commit -a".
+ - Add a patch to assert that mmu_notifier_count is elevated when
+   .change_pte() runs. [Paolo]
+ - Split out moving KVM_MMU_(UN)LOCK() to __kvm_handle_hva_range() to a
+   separate patch.  Opted not to squash it with the introduction of the
+   common hva walkers (patch 02), as that prevented sharing code between
+   the old and new APIs. [Paolo]
+ - Tweak the comment in kvm_vm_destroy() above the smashing of the new
+   slots lock. [Paolo]
+ - Make mmu_notifier_slots_lock unconditional to avoid #ifdefs. [Paolo]
 
->                 scan_balance = SCAN_FILE;
->                 goto out;
->         }
-> @@ -2708,7 +2737,7 @@ static inline bool should_continue_recla
->          */
->         pages_for_compaction = compact_gap(sc->order);
->         inactive_lru_pages = node_page_state(pgdat, NR_INACTIVE_FILE);
-> -       if (get_nr_swap_pages() > 0)
-> +       if (can_reclaim_anon_pages(NULL, pgdat->node_id))
->                 inactive_lru_pages += node_page_state(pgdat, NR_INACTIVE_ANON);
->
->         return inactive_lru_pages > pages_for_compaction;
-> _
->
+v1:
+ - https://lkml.kernel.org/r/20210326021957.1424875-1-seanjc@google.com
+
+Sean Christopherson (10):
+  KVM: Assert that notifier count is elevated in .change_pte()
+  KVM: Move x86's MMU notifier memslot walkers to generic code
+  KVM: arm64: Convert to the gfn-based MMU notifier callbacks
+  KVM: MIPS/MMU: Convert to the gfn-based MMU notifier callbacks
+  KVM: PPC: Convert to the gfn-based MMU notifier callbacks
+  KVM: Kill off the old hva-based MMU notifier callbacks
+  KVM: Move MMU notifier's mmu_lock acquisition into common helper
+  KVM: Take mmu_lock when handling MMU notifier iff the hva hits a
+    memslot
+  KVM: Don't take mmu_lock for range invalidation unless necessary
+  KVM: x86/mmu: Allow yielding during MMU notifier unmap/zap, if
+    possible
+
+ arch/arm64/kvm/mmu.c                   | 117 +++------
+ arch/mips/kvm/mmu.c                    |  97 ++------
+ arch/powerpc/include/asm/kvm_book3s.h  |  12 +-
+ arch/powerpc/include/asm/kvm_ppc.h     |   9 +-
+ arch/powerpc/kvm/book3s.c              |  18 +-
+ arch/powerpc/kvm/book3s.h              |  10 +-
+ arch/powerpc/kvm/book3s_64_mmu_hv.c    |  98 ++------
+ arch/powerpc/kvm/book3s_64_mmu_radix.c |  25 +-
+ arch/powerpc/kvm/book3s_hv.c           |  12 +-
+ arch/powerpc/kvm/book3s_pr.c           |  56 ++---
+ arch/powerpc/kvm/e500_mmu_host.c       |  27 +-
+ arch/x86/kvm/mmu/mmu.c                 | 127 ++++------
+ arch/x86/kvm/mmu/tdp_mmu.c             | 245 +++++++------------
+ arch/x86/kvm/mmu/tdp_mmu.h             |  14 +-
+ include/linux/kvm_host.h               |  22 +-
+ virt/kvm/kvm_main.c                    | 325 +++++++++++++++++++------
+ 16 files changed, 552 insertions(+), 662 deletions(-)
+
+-- 
+2.31.0.208.g409f899ff0-goog
+
