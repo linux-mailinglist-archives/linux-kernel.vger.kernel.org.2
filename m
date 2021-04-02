@@ -2,79 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E61C352C21
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56208352C24
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235077AbhDBPIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 11:08:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54370 "EHLO
+        id S235193AbhDBPIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 11:08:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234671AbhDBPIL (ORCPT
+        with ESMTP id S229553AbhDBPIm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 11:08:11 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB3AC0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 08:08:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=1teqCTETeToKPn6a30tmZDLAJuMpZDlRxZ5TqucHjvM=; b=HvV8f2maAMpY8XKrmPEZNaT5t6
-        ICl9omA6tcHN+x1NLvy/4TA319DuhWFFQhJNtjj9ELZq7NrnxnyPQ9wZ0TyWThT4/jwfwRt997Zfu
-        JjJ091fNsoIDFCuUMdhJ6AAg6A0TZbS2DHJqsjyCbOeKfhIMKjegmw9skrzE9tyBfKejudqopWx4d
-        c906GGpfIF3XKaSA+TlbSxbwBC7DaJCrY4aK8expOONrOhXo9NXsPss7TrjqWRLfe/BKvHjPbm+Un
-        NipFFMGsiSNnGto0ncPF8leNY/LD3L6jHMwmp8+I2UEbLGAVKbnDpt/CycmyU2g7RWUtzZs4pHM2N
-        Cz5v79hw==;
-Received: from [2601:1c0:6280:3f0::e0e1]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lSLOz-007m4b-Oj; Fri, 02 Apr 2021 15:08:03 +0000
-Subject: Re: [PATCH] tools: Fix a typo in kernel-chktaint
-To:     Masanari Iida <standby24x7@gmail.com>,
-        linux-kernel@vger.kernel.org, corbet@lwn.net
-References: <20210402070514.336376-1-standby24x7@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <d12dfced-ab61-fe21-69ab-2210108e1dd6@infradead.org>
-Date:   Fri, 2 Apr 2021 08:07:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Fri, 2 Apr 2021 11:08:42 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 164CAC0613E6
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 08:08:41 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id by2so2593596qvb.11
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 08:08:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wQrnvPmgQ6qoU6cE/YM7bFQYQMf4u2P6Aw0WF5mGCKQ=;
+        b=soEf7o4uAGlR8/3IIWjii9z5BYCoxP8IMb+pEB5sAxBW1TtPlXWO1ZNG0c2iYhaLJc
+         zjYcTheQxWUm1rBlZ5sW6aoGr5KKX0DMFhR1zyIrgiZ1cvXlOrEsXPK4N5GHcMHqp2ko
+         E+kp4giH0V9+y1zHWlTaUz+xMoGf3VWxvKR4Pog75+WW27irDqxMGl77XrTswEj7qhd6
+         esa5NAvFzti7TUtLsN1fQZ/PtPgyWb3FaYwZp1McYHIjLpGAVz7jJXD/VxgVulu+4zXT
+         nJRU5Vg3bERufdWPlrA2ioFeIWmc+sZVgiwQMAn5ahKobritjRvdg2bJcrNn2KazmZxr
+         91Bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wQrnvPmgQ6qoU6cE/YM7bFQYQMf4u2P6Aw0WF5mGCKQ=;
+        b=Eb6u+XloguGbEG+zz0uu9jH/WOjuwnTx7yP3CDEO8x9yWKXccZZPeHbcDuqBfBtsSQ
+         gE+k7Xj3yM0TTE7F2v903F/o4W03fsWX3dhoDQFP7sCQSjl4jFBwe5bMmXw1AdGwcKAI
+         pUyuX6NiLRZwcu0k52QVpjQNfrNGz+WQsuqGK66tfV7SQpLT/hFcXHWdSJZGJaoIdgQm
+         V9RfS8x9P+pmvt60YbRCK/1fpYo7HUq7lEgET52ffPytN1XErqoAsGt3Xw1VTVFMiW0G
+         qV0zYsJssCJwpKxEty+OAewh+bpHD/2pSZw6APzLW5iCt8CyMUOd3SFHdF0AaCuytBBP
+         idmQ==
+X-Gm-Message-State: AOAM531LYkPLn7xhFDeYTCawPhOwsjUE2fmaxHXql1lCKxcoAd6/rspV
+        66caQyta0m8LonqDu3YFKMODWw==
+X-Google-Smtp-Source: ABdhPJxV9vtRuenDA6lHn0krwhP/45IY0QtV5dowvTXo/xtrDOWP+uFWfrbidICJYHaEHTk6XzpqZw==
+X-Received: by 2002:ad4:410d:: with SMTP id i13mr13015900qvp.44.1617376120417;
+        Fri, 02 Apr 2021 08:08:40 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:8ca7])
+        by smtp.gmail.com with ESMTPSA id 75sm7322604qkd.114.2021.04.02.08.08.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Apr 2021 08:08:39 -0700 (PDT)
+Date:   Fri, 2 Apr 2021 11:08:38 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     guro@fb.com, mhocko@kernel.org, akpm@linux-foundation.org,
+        shakeelb@google.com, vdavydov.dev@gmail.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        duanxiongchun@bytedance.com
+Subject: Re: [RFC PATCH 02/15] mm: memcontrol: bail out early when !mm in
+ get_mem_cgroup_from_mm
+Message-ID: <YGczdhFJNVphX8uj@cmpxchg.org>
+References: <20210330101531.82752-1-songmuchun@bytedance.com>
+ <20210330101531.82752-3-songmuchun@bytedance.com>
 MIME-Version: 1.0
-In-Reply-To: <20210402070514.336376-1-standby24x7@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210330101531.82752-3-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/2/21 12:05 AM, Masanari Iida wrote:
-> This patch fixes a spelling typo in kernel-chktaint
+On Tue, Mar 30, 2021 at 06:15:18PM +0800, Muchun Song wrote:
+> When mm is NULL, we do not need to hold rcu lock and call css_tryget for
+> the root memcg. And we also do not need to check !mm in every loop of
+> while. So bail out early when !mm.
 > 
-> Signed-off-by: Masanari Iida <standby24x7@gmail.com>
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Good observation.
 
-Thanks.
-
-> ---
->  tools/debugging/kernel-chktaint | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/debugging/kernel-chktaint b/tools/debugging/kernel-chktaint
-> index 607b2b280945..719f18b1edf0 100755
-> --- a/tools/debugging/kernel-chktaint
-> +++ b/tools/debugging/kernel-chktaint
-> @@ -25,7 +25,7 @@ if [ "$1"x != "x" ]; then
->  	elif  [ $1 -ge 0 ] 2>/dev/null ; then
->  		taint=$1
->  	else
-> -		echo "Error: Parameter '$1' not a positive interger. Aborting." >&2
-> +		echo "Error: Parameter '$1' not a positive integer. Aborting." >&2
->  		exit 1
->  	fi
->  else
-> 
-
-
--- 
-~Randy
-
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
