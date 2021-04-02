@@ -2,193 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44643352583
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 04:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D24352587
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 04:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234134AbhDBC37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Apr 2021 22:29:59 -0400
-Received: from mail-dm6nam12on2112.outbound.protection.outlook.com ([40.107.243.112]:56529
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233665AbhDBC35 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Apr 2021 22:29:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eNnQ9tJ7MjJksVa5eHt4K0mbaA9DhgE24sgkLRRy3A0gI12sjQB7YYzEDbgVUgGj8Vt8NGGtr4lDd5HGaXivQJoW0xEH+fv8eoRhsBykipNTIpM8oLMqAJAwG1HZYEsQKD36oTMeB4f06T/364yJfx/VlkxDzXjtnXLQoxXciKMxSWfqWt/Ve7a5Qe9gye9aGoXWpCbKTY+0hFaSfh5fTyOv9kKgU80JLF7G2fVhm0lfW5EFZkiNfRf+2b6Q/QGqU38Bzg3/y6R3EMIBBu98glIlIiTmUkhQjXIKpvRPOS+SOQi21VwRAgDDHLZgfyiWwXyyI5OXtbX/Srm62Uz2iw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MYWEJpnjiVn+kB4bTHhnq9Wx5Fg5jMwbzZ3LED/y7rM=;
- b=hW/X23jgbueoCYsgwLqz87OaMymPVppcoIFJqtaZYVU4qitsBW2afRNpcTxveI3jUd+GHzxyeTT5QnLuxv/B17teM3CwkZCa98BDODRH6e4XK1PfnFPmq2gD0wOrnoUy/3AX8NAiPY8lh1U4Kc5irvEuuYT6mKcrtVIrQL1trZphfrOFWwE5ibIkejwWRwzmpUqdnsPiwrD4frzH8WfPRYywMNMitQeV9TzRh9bimjiM4mJMx29BTDFz6coQ13Z0xEKWxohIxTbPBwEGcAJ0wbbC+WO//wbkebIDRGPb9PhQ4MtMdoU4Lasc2b0R0SdRE8lEuwmxUEHF2e0n7FhIzg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
- header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MYWEJpnjiVn+kB4bTHhnq9Wx5Fg5jMwbzZ3LED/y7rM=;
- b=Tuc4pZ1VonUgMACU0LU3UKB+reZVDqrT2aCCGgfup+P8SVvp155/QbXQXmUaOeD4F0/MGhBOM5ci8kt2M/d6bPVEgcvsO283Q5FQSYz+v8/yZ3oC4lrmw/vdPNG+m8JYFM1s83jqujpQymY2XGQXpbM2qTpKYRJg7tBCxdA3AuM=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=analogixsemi.com;
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
- by SJ0PR04MB7597.namprd04.prod.outlook.com (2603:10b6:a03:320::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28; Fri, 2 Apr
- 2021 02:29:54 +0000
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::6481:f617:8105:491f]) by BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::6481:f617:8105:491f%2]) with mapi id 15.20.3999.029; Fri, 2 Apr 2021
- 02:29:54 +0000
-Date:   Fri, 2 Apr 2021 10:29:47 +0800
-From:   Xin Ji <xji@analogixsemi.com>
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Ricardo =?iso-8859-1?Q?Ca=F1uelo?= 
-        <ricardo.canuelo@collabora.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Bernie Liang <bliang@analogixsemi.com>,
-        Sheng Pan <span@analogixsemi.com>,
-        Zhen Li <zhenli@analogixsemi.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 1/5] dt-bindings:drm/bridge:anx7625:add vendor define
- flags
-Message-ID: <20210402022947.GB2154388@anxtwsw-Precision-3640-Tower>
-References: <cover.1616135353.git.xji@analogixsemi.com>
- <4b09b40ce53c5b5fe7d2ba65a3c7a1b23f6eec04.1616135353.git.xji@analogixsemi.com>
- <YFc1ZlmSiNJOAoOl@pendragon.ideasonboard.com>
- <20210324075108.GA1466804@anxtwsw-Precision-3640-Tower>
- <CAG3jFyt8EigCBkZHXgy1E-XcfpfdC5FEWW4Gb8bZqMT1tFW3ow@mail.gmail.com>
+        id S234050AbhDBCio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Apr 2021 22:38:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46006 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233894AbhDBCin (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Apr 2021 22:38:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617331123;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Nov4TthvaPKXWEDlyg35jkHCWgK4XpWD0U3xOpZhgMA=;
+        b=hpPCxrZSlFWbP63wFYiywKlxVMYzkBIBeWX77dhzdeLWyuzmse96bSpdQjRgr9tFijdual
+        /6xaN1G2aJN+ja/DRcfdlSgCNET98yQl9/VqWAkA6eHSCLvB6xMt8g8WmaT+DTZbgGPF5r
+        5Kb5HBRJErrXaki1FlFR8pKCWCNIr/k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-459-_huYUYkPOL6rm_C4AqKzsA-1; Thu, 01 Apr 2021 22:38:39 -0400
+X-MC-Unique: _huYUYkPOL6rm_C4AqKzsA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A621F501F8;
+        Fri,  2 Apr 2021 02:38:37 +0000 (UTC)
+Received: from T590 (ovpn-12-86.pek2.redhat.com [10.72.12.86])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8AB4719C46;
+        Fri,  2 Apr 2021 02:38:29 +0000 (UTC)
+Date:   Fri, 2 Apr 2021 10:38:24 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Gulam Mohamed <gulam.mohamed@oracle.com>
+Cc:     "hch@infradead.org" <hch@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        Junxiao Bi <junxiao.bi@oracle.com>,
+        Martin Petersen <martin.petersen@oracle.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>
+Subject: Re: Race condition in Kernel
+Message-ID: <YGaDoIJHHe90+Jd5@T590>
+References: <CO1PR10MB4563A6404AD789EEF93F995798639@CO1PR10MB4563.namprd10.prod.outlook.com>
+ <YFvrZUzmdLpj7E4F@T590>
+ <CO1PR10MB4563673A20326DF5170CF60F987B9@CO1PR10MB4563.namprd10.prod.outlook.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAG3jFyt8EigCBkZHXgy1E-XcfpfdC5FEWW4Gb8bZqMT1tFW3ow@mail.gmail.com>
-X-Originating-IP: [60.251.58.79]
-X-ClientProxiedBy: HK2PR0401CA0022.apcprd04.prod.outlook.com
- (2603:1096:202:2::32) To BY5PR04MB6739.namprd04.prod.outlook.com
- (2603:10b6:a03:229::8)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from anxtwsw-Precision-3640-Tower (60.251.58.79) by HK2PR0401CA0022.apcprd04.prod.outlook.com (2603:1096:202:2::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28 via Frontend Transport; Fri, 2 Apr 2021 02:29:53 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7df83001-1f84-411d-d1d0-08d8f57f3312
-X-MS-TrafficTypeDiagnostic: SJ0PR04MB7597:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SJ0PR04MB75970EAD2ED69471B6080636C77A9@SJ0PR04MB7597.namprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +xPptzNZd0yIJQ2Igf1mBFTfC3b2slt28iDVUPowo2KsNx5y0DUxARKTYHHAZ3nua9U/WCTG4nAiouD/ATMUgM1g9oVT++IywXZ9nrMsnfPWeGz6Wx+H51S3VbIILEWSGgvSZHMJiNmrHy9OxgwZBurTa5lt9W1gYpqnJBM+CoBSiKIWicob8JJ8NyuOFJeoqBc2knVm9jbqi+hC2EMa+GLY6OEvzNlc7rhWC73wzKUghs1qmc9/ErLZncmP4rBqkdkRB/J2281Q690h2IS5T+W8A1XBgjNrl9ghoV46YUvYPjxkvDIWGu8zMAj8W1Loqj8snTr32s56y8YFuFkid1nMvFlul2cLmtDBOKXWgplKb7GrX/XoGtnEjvDkF0KYxhjSVnb9o5Cf7v/m9cGVHYxowhkGGUgBPb/wCxYhRLH7urc1usNqzB1DFRcxYUEV4NKarUIfmHlHulQ/t4LOceglvW6ko6011knJNvKDNNFmBd9rndiGUsGZBTAl6aoBEBxilvvcTxaT1bD0TteHh0AogKTm8gCxqV6mE2UMa4EjM1tChnC7wEdrO/xwW90OLaKsAXM+jm0h1JRpk1YP5uAV/gwgwn0TPIAy1atabGx7s5KP6C3q5np6OOcUAmPC4zQcYTxSBsZF484nJJ52uhujrWdPDiPnP7x+iPFep70=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(39840400004)(396003)(136003)(366004)(1076003)(5660300002)(7416002)(6666004)(316002)(55016002)(33656002)(83380400001)(52116002)(16526019)(55236004)(33716001)(26005)(8936002)(186003)(956004)(478600001)(4326008)(6916009)(6496006)(8676002)(86362001)(66476007)(54906003)(66556008)(66946007)(9686003)(2906002)(38100700001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?WFZRvtpnS/RVX2Mza9doNt15T5sDLgnDHiBvb+YPpkCRmQYDLy5qSk0u8Tnm?=
- =?us-ascii?Q?la/dWHt+/XBFYkib9rtbGylzFNq8de3iFN4pDGTANh54yGQIkwUeXQlARlpp?=
- =?us-ascii?Q?lmE7n0zeSS56gqDONDpDhdaomD/d67hbVdLLiI4T3XDme+fVRVlRO8nfflYd?=
- =?us-ascii?Q?eWMqyZqGnLI9g5KgioDaOLz280wU9zoFqyxLJA0iJgsGzvMWJkR7OdG/Bp50?=
- =?us-ascii?Q?2DsdAZCKzgSQZQKRptf11FiOTOV12EYdhIR8mWDxzO7Ee5FSDAv0nbWTTmmn?=
- =?us-ascii?Q?gEXpqx41ZBxufHp5/8tDzLmCPYc1ehWT3PeiVOXQ3tLOpkQhCD9UPl3vDh1R?=
- =?us-ascii?Q?M5VXuhaBp0wIc1ycROKCQjMJ9kuXU/QtyiMGju4T1V5KlQCOOIJvQNvjhZtS?=
- =?us-ascii?Q?yVVRidypxvkNe25EJMKSmVeUNm4urF69mAozGuV/5hzU7dc2i+lXZCZzkyC3?=
- =?us-ascii?Q?ri/B/5gi0NytgTs6Fjv02YMk1siMdysQL1md1k5bd+f3BAn8tWfr8Xgd9EK2?=
- =?us-ascii?Q?NJ4jwBO3GVqeXbiqZU1hYzeDinkB9Reo0rh0niUwknKtj6GQQfrjF4QE1Ha+?=
- =?us-ascii?Q?lr89RP1Bgu6MzO9jJl1wi0iUORSDkXGJ6PA3NVkXxeK1fdoRZt4StgoJYK26?=
- =?us-ascii?Q?bPJ57xqrTALSJaMW7wKpL7vC2/oUazIgV3y+feHdcaVfAIJ8AnjMk8KC1xPd?=
- =?us-ascii?Q?BvuVpP6YT8WAceL6bqFb2lUjwLZfmFhaTZrvJNtcURrnNcmhPx3j8Jtbu4u6?=
- =?us-ascii?Q?JFIBlLNwdau7rAsbgjZ5dSNcH6xYWGXIG5IALgWynyy1BkztUu61Zz3PY1FQ?=
- =?us-ascii?Q?mzz8E+FwFNxNolOpwi7OZpVo0KS3iv7NbdFEeDLImXdwa49Fzp9E9VJIv/5+?=
- =?us-ascii?Q?HEqrtUv2Ial2x4tl4ZHzTP+VuLwXty52lGma+ATbYlBXUnrADK2UvW1EySAD?=
- =?us-ascii?Q?bpU9Ty7kHHHCMuVHecopUCzypzcpPyhlegd22yWRnUO0nJt+ISxwTeMf6RNc?=
- =?us-ascii?Q?PTHG19bFSye5MRAtGaJvktwRtCGSartuGAVE9fkgVbpicB6cGxR5LJdPxhCd?=
- =?us-ascii?Q?aqm+ovC+gPcMrGme1Nsvo9PltXrZxQqRKV8d3Xw5se0VC0eAFi1WuIr/MJSg?=
- =?us-ascii?Q?MAhoYses8VfS84LzdnqD1f07PcghN5kuoleW3TlGmodOsDZv491YwFYUlqci?=
- =?us-ascii?Q?lH32hfWFVGx3lfHuwbVi8Pz1Y8I2cIHLvYINhD4FXOvE5IBUzjT9wfg4J/Ur?=
- =?us-ascii?Q?6EiWkve2AKO2W/C6xQLBnqwiqMSox0Owt1vtPfXUS0208KbkjVWDKSFKW/l8?=
- =?us-ascii?Q?DEjU/lqlb3RnttDd/TnDkgNh?=
-X-OriginatorOrg: analogixsemi.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7df83001-1f84-411d-d1d0-08d8f57f3312
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Apr 2021 02:29:54.3410
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RN5g9zXA25q448jGAmL5VQAit+ZKP6p14qx3AsZc0/IH9oszlyd+DWXmoxxiUYMf6XEEiijEhbhMfrPIOtgEUw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR04MB7597
+In-Reply-To: <CO1PR10MB4563673A20326DF5170CF60F987B9@CO1PR10MB4563.namprd10.prod.outlook.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 02:33:47PM +0200, Robert Foss wrote:
-> Hey Xin,
+On Thu, Apr 01, 2021 at 04:27:37PM +0000, Gulam Mohamed wrote:
+> Hi Ming,
 > 
-> This series no longer applies to drm-misc/drm-misc-next, please rebase it.
-Hi Robert Foss, OK, I'll rebase it on the drm-misc-next after confirmed
-HDCP patch with Sean Paul.
+>       Thanks for taking a look into this. Can you please see my inline comments in below mail?
+> 
+> Regards,
+> Gulam Mohamed.
+> 
+> -----Original Message-----
+> From: Ming Lei <ming.lei@redhat.com> 
+> Sent: Thursday, March 25, 2021 7:16 AM
+> To: Gulam Mohamed <gulam.mohamed@oracle.com>
+> Cc: hch@infradead.org; linux-kernel@vger.kernel.org; linux-block@vger.kernel.org; Junxiao Bi <junxiao.bi@oracle.com>; Martin Petersen <martin.petersen@oracle.com>; axboe@kernel.dk
+> Subject: Re: Race condition in Kernel
+> 
+> On Wed, Mar 24, 2021 at 12:37:03PM +0000, Gulam Mohamed wrote:
+> > Hi All,
+> > 
+> > We are facing a stale link (of the device) issue during the iscsi-logout process if we use parted command just before the iscsi logout. Here are the details:
+> > 	 	 
+> > As part of iscsi logout, the partitions and the disk will be removed. The parted command, used to list the partitions, will open the disk in RW mode which results in systemd-udevd re-reading the partitions. This will trigger the rescan partitions which will also delete and re-add the partitions. So, both iscsi logout processing and the parted (through systemd-udevd) will be involved in add/delete of partitions. In our case, the following sequence of operations happened (the iscsi device is /dev/sdb with partition sdb1):
+> > 	
+> > 	1. sdb1 was removed by PARTED
+> > 	2. kworker, as part of iscsi logout, couldn't remove sdb1 as it was already removed by PARTED
+> > 	3. sdb1 was added by parted
+> 
+> After kworker is started for logout, I guess all IOs are supposed to be failed at that time, so just wondering why 'sdb1' is still added by parted(systemd-udev)? 
+> ioctl(BLKRRPART) needs to read partition table for adding back partitions, if IOs are failed by iscsi logout, I guess the issue can be avoided too?
+> 
+> [GULAM]: Yes, the ioctl(BLKRRPART) reads the partition table for adding back the partitions. I kept a printk in the code just after the partition table is read. Noticed that the partition table was read before the iscsi-logout kworker started the logout processing.
+
+OK, I guess I understood your issue now, what you want is to not allow
+to add partitions since step 1, so can you remove disk just at the
+beginning of 2) if it is possible? then step 1) isn't needed any more
+
+For your issue, my patch of 'not drop partitions if partition table
+isn't changed' can't fix your issue completely since new real partition
+still may come from parted during the series.
+
+
 Thanks,
-Xin
-> 
-> On Wed, 24 Mar 2021 at 08:52, Xin Ji <xji@analogixsemi.com> wrote:
-> >
-> > On Sun, Mar 21, 2021 at 02:00:38PM +0200, Laurent Pinchart wrote:
-> > > Hi Xin,
-> > >
-> > > Thank you for the patch.
-> > >
-> > > On Fri, Mar 19, 2021 at 02:32:39PM +0800, Xin Ji wrote:
-> > > > Add 'bus-type' and 'data-lanes' define for port0. Define DP tx lane0,
-> > > > lane1 swing register array define, and audio enable flag.
-> > > >
-> > > > Signed-off-by: Xin Ji <xji@analogixsemi.com>
-> > > > ---
-> > > >  .../display/bridge/analogix,anx7625.yaml      | 58 ++++++++++++++++++-
-> > > >  1 file changed, 57 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-> > > > index c789784efe30..3f54d5876982 100644
-> > > > --- a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-> > > > +++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-> > > > @@ -34,6 +34,26 @@ properties:
-> > > >      description: used for reset chip control, RESET_N pin B7.
-> > > >      maxItems: 1
-> > > >
-> > > > +  analogix,lane0-swing:
-> > > > +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> > > > +    minItems: 1
-> > > > +    maxItems: 20
-> > > > +    description:
-> > > > +      an array of swing register setting for DP tx lane0 PHY, please don't
-> > > > +      add this property, or contact vendor.
-> > >
-> > > DT properties need to be documented. Contacting the vendor doesn't count
-> > > as documentation I'm afraid.
-> >
-> > Hi Laurent Pinchart, thanks for your comment. For the DP phy swing
-> > setting, it is hard to describe in here, needs to refer the anx7625
-> > datasheet and programming guide. Basically, no need to change the DP phy
-> > swing setting.
-> >
-> 
-> Laurent is right. But if the value practically is a constant, you can
-> move the swing register into the driver. It should still be documented
-> as well as possible, but we can be a little bit more flexible.
-> 
-> > > > @@ -73,6 +123,10 @@ examples:
-> > > >              enable-gpios = <&pio 45 GPIO_ACTIVE_HIGH>;
-> > > >              reset-gpios = <&pio 73 GPIO_ACTIVE_HIGH>;
-> > > >
-> > > > +            analogix,audio-enable;
-> > > > +            analogix,lane0-swing = <0x14 0x54 0x64 0x74 0x29 0x7b 0x77 0x5b>;
-> > > > +            analogix,lane1-swing = <0x14 0x54 0x64 0x74 0x29 0x7b 0x77 0x5b>;
-> > > > +
-> > > >              ports {
-> > > >                  #address-cells = <1>;
-> > > >                  #size-cells = <0>;
+Ming
+
