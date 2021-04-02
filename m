@@ -2,97 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74FFB352A24
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 13:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9833A352A2A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 13:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235143AbhDBLO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 07:14:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46940 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234919AbhDBLOz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 07:14:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617362092;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/fKJ2OSCFXizuU2U1MJ67BIOWCyNds4Q38dY2jX+k4E=;
-        b=IuTrGx2H4s5+2boY/qSzwSUi70bWbbG7kBZSN2vQIJlTxSfpW9QhF2e33+CzSihH9Cla2q
-        khTZPYErEx+FWFSKvMHUZZR5PpDBpUT2gO+CaWhgrlXoRtYzi0OR3urF1kL5tY36LEwLUS
-        DZn290JgXSodiN1gdbv69H7ONV+xnDM=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-361-_gTvTO5ZPRunHnlNVaKVJg-1; Fri, 02 Apr 2021 07:14:51 -0400
-X-MC-Unique: _gTvTO5ZPRunHnlNVaKVJg-1
-Received: by mail-wr1-f72.google.com with SMTP id z17so4212824wrv.23
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 04:14:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/fKJ2OSCFXizuU2U1MJ67BIOWCyNds4Q38dY2jX+k4E=;
-        b=QGBBFgarOkcX5GZAed6B3eZiLO1RmwUa2buZCix0sT1Aej2ONpDzFFCIrayeJLY1PP
-         Gm6zxyOZ2ZLbE9WFx4wYQvTWVhkULil0u66trs9y932d9c3dstWgVG9+rLWrY9pBtzvX
-         EglLFzf0iKFm/iIsL/worzJlltijv/ohYojS8Z7G/sz0LJnl8SSE5Ru1kzoLa9ITS4ba
-         EvF/evHeei/CHopUjcBO0uBNYB0kqkoQRoMWPqE/RDsV6fzxavRfxRrLZPj3f4YW0uA6
-         ZB2N6tZSQX44bgw7cBLdagSZMs2Y6oVeJxF7sSRYbtJmTvOUKwQmrkk/ahCBuxOyVf93
-         4vTw==
-X-Gm-Message-State: AOAM530Y9aIT9BGw9HthZEknTZFOhqptEaWjpjqrhcKlxWzV/cgy3Qh2
-        87NcPOZNfJRHcHJ7GczlMfxHWgedXnJ7JQ3w2axZ41uRaFWl0fqsFOCEN7L2Izg52/5uy6R5TJv
-        XhgKU6pAMUp0uEEStB6TT4PMr
-X-Received: by 2002:adf:fb05:: with SMTP id c5mr15230079wrr.302.1617362090123;
-        Fri, 02 Apr 2021 04:14:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyDC2lEkIz55o7/8zmXTfl7KMf2+IvXa4U8NcK872E7p5nXNoS/a2umf8IXffQu2cm+oMqeRQ==
-X-Received: by 2002:adf:fb05:: with SMTP id c5mr15230063wrr.302.1617362089964;
-        Fri, 02 Apr 2021 04:14:49 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id n1sm18076777wro.36.2021.04.02.04.14.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Apr 2021 04:14:49 -0700 (PDT)
-Subject: Re: [PATCH v2 10/13] KVM: x86/mmu: Allow zapping collapsible SPTEs to
- use MMU read lock
-To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-References: <20210401233736.638171-1-bgardon@google.com>
- <20210401233736.638171-11-bgardon@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <4140362f-92d5-5c5e-de8e-4e1e3a65b317@redhat.com>
-Date:   Fri, 2 Apr 2021 13:14:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <20210401233736.638171-11-bgardon@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S235076AbhDBLRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 07:17:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229599AbhDBLRN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 07:17:13 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1AB77610A0;
+        Fri,  2 Apr 2021 11:17:12 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lSHna-005Iba-1m; Fri, 02 Apr 2021 12:17:10 +0100
+Date:   Fri, 02 Apr 2021 12:17:09 +0100
+Message-ID: <87a6qhey16.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Tom Joseph <tjoseph@cadence.com>, <linux-omap@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+Subject: Re: [PATCH 3/4] PCI: j721e: Add PCIe support for j7200
+In-Reply-To: <20210325090936.9306-4-kishon@ti.com>
+References: <20210325090936.9306-1-kishon@ti.com>
+        <20210325090936.9306-4-kishon@ti.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: kishon@ti.com, bhelgaas@google.com, robh+dt@kernel.org, lorenzo.pieralisi@arm.com, tjoseph@cadence.com, linux-omap@vger.kernel.org, linux-pci@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, lokeshvutla@ti.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/04/21 01:37, Ben Gardon wrote:
-> To speed the process of disabling dirty logging, change the TDP MMU
-> function which zaps collapsible SPTEs to run under the MMU read lock.
+On Thu, 25 Mar 2021 09:09:35 +0000,
+Kishon Vijay Abraham I <kishon@ti.com> wrote:
+> 
+> J7200 has the same PCIe IP as in J721E with minor changes in the
+> wrapper. Add PCIe support for j7200 accounting for the wrapper
+> changes in pci-j721e.c
+> Changes from J721E:
+>  *) Allows byte access of bridge configuration space registers
+>  *) Changes in legacy interrupt register map
+> 
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> ---
+>  drivers/pci/controller/cadence/pci-j721e.c | 111 ++++++++++++++++++---
+>  1 file changed, 99 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
+> index 17db86a51ca8..f175f116abf6 100644
+> --- a/drivers/pci/controller/cadence/pci-j721e.c
+> +++ b/drivers/pci/controller/cadence/pci-j721e.c
+> @@ -27,6 +27,7 @@
+>  #define STATUS_REG_SYS_2	0x508
+>  #define STATUS_CLR_REG_SYS_2	0x708
+>  #define LINK_DOWN		BIT(1)
+> +#define J7200_LINK_DOWN		BIT(10)
+>  
+>  #define EOI_REG			0x10
+>  
+> @@ -35,6 +36,10 @@
+>  #define STATUS_CLR_REG_SYS_0	0x700
+>  #define INTx_EN(num)		(1 << (num))
+>  
+> +#define ENABLE_REG_SYS_1	0x104
+> +#define STATUS_REG_SYS_1	0x504
+> +#define SYS1_INTx_EN(num)	(1 << (22 + (num)))
+> +
+>  #define J721E_PCIE_USER_CMD_STATUS	0x4
+>  #define LINK_TRAINING_ENABLE		BIT(0)
+>  
+> @@ -48,6 +53,14 @@ enum link_status {
+>  	LINK_UP_DL_COMPLETED,
+>  };
+>  
+> +#define USER_EOI_REG		0xC8
+> +enum eoi_reg {
+> +	EOI_DOWNSTREAM_INTERRUPT,
+> +	EOI_FLR_INTERRUPT,
+> +	EOI_LEGACY_INTERRUPT,
+> +	EOI_POWER_STATE_INTERRUPT,
+> +};
+> +
+>  #define J721E_MODE_RC			BIT(7)
+>  #define LANE_COUNT_MASK			BIT(8)
+>  #define LANE_COUNT(n)			((n) << 8)
+> @@ -65,6 +78,8 @@ struct j721e_pcie {
+>  	void __iomem		*user_cfg_base;
+>  	void __iomem		*intd_cfg_base;
+>  	struct irq_domain	*legacy_irq_domain;
+> +	bool			is_intc_v1;
+> +	u32			link_irq_reg_field;
+>  };
+>  
+>  enum j721e_pcie_mode {
+> @@ -75,6 +90,9 @@ enum j721e_pcie_mode {
+>  struct j721e_pcie_data {
+>  	enum j721e_pcie_mode	mode;
+>  	bool quirk_retrain_flag;
+> +	bool			is_intc_v1;
+> +	bool			byte_access_allowed;
+> +	const struct cdns_pcie_ops *ops;
+>  };
+>  
+>  static inline u32 j721e_pcie_user_readl(struct j721e_pcie *pcie, u32 offset)
+> @@ -106,12 +124,12 @@ static irqreturn_t j721e_pcie_link_irq_handler(int irq, void *priv)
+>  	u32 reg;
+>  
+>  	reg = j721e_pcie_intd_readl(pcie, STATUS_REG_SYS_2);
+> -	if (!(reg & LINK_DOWN))
+> +	if (!(reg & pcie->link_irq_reg_field))
+>  		return IRQ_NONE;
+>  
+>  	dev_err(dev, "LINK DOWN!\n");
+>  
+> -	j721e_pcie_intd_writel(pcie, STATUS_CLR_REG_SYS_2, LINK_DOWN);
+> +	j721e_pcie_intd_writel(pcie, STATUS_CLR_REG_SYS_2, pcie->link_irq_reg_field);
+>  	return IRQ_HANDLED;
+>  }
+>  
+> @@ -119,12 +137,40 @@ static void j721e_pcie_config_link_irq(struct j721e_pcie *pcie)
+>  {
+>  	u32 reg;
+>  
+> +	pcie->link_irq_reg_field = J7200_LINK_DOWN;
+> +	if (pcie->is_intc_v1)
+> +		pcie->link_irq_reg_field = LINK_DOWN;
+> +
+>  	reg = j721e_pcie_intd_readl(pcie, ENABLE_REG_SYS_2);
+> -	reg |= LINK_DOWN;
+> +	reg |= pcie->link_irq_reg_field;
+>  	j721e_pcie_intd_writel(pcie, ENABLE_REG_SYS_2, reg);
+>  }
+>  
+>  static void j721e_pcie_legacy_irq_handler(struct irq_desc *desc)
+> +{
+> +	struct j721e_pcie *pcie = irq_desc_get_handler_data(desc);
+> +	struct irq_chip *chip = irq_desc_get_chip(desc);
+> +	int virq;
+> +	u32 reg;
+> +	int i;
+> +
+> +	chained_irq_enter(chip, desc);
+> +
+> +	for (i = 0; i < PCI_NUM_INTX; i++) {
+> +		reg = j721e_pcie_intd_readl(pcie, STATUS_REG_SYS_1);
+> +		if (!(reg & SYS1_INTx_EN(i)))
+> +			continue;
+> +
+> +		virq = irq_find_mapping(pcie->legacy_irq_domain, i);
+> +		generic_handle_irq(virq);
+> +		j721e_pcie_user_writel(pcie, USER_EOI_REG,
+> +				       EOI_LEGACY_INTERRUPT);
 
-Technically it only reduces the impact on the running VM; it doesn't
-speed it up right?  Something like:
+Exact same comment as in the previous patch: this EOI (which I assume
+is used to regenerate the GIC edge at after handling the INTx level
+interrupt) must be placed in a irq_eoi() callback.
 
-     To reduce the impact of disabling dirty logging, change the TDP MMU
-     function which zaps collapsible SPTEs to run under the MMU read lock.
-     This way, page faults on zapped SPTEs can proceed in parallel with
-     kvm_mmu_zap_collapsible_sptes.
+Thanks,
 
-Paolo
+	M.
 
+-- 
+Without deviation from the norm, progress is not possible.
