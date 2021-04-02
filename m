@@ -2,91 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 920AE3528AA
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 11:28:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B484D3528CB
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 11:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234860AbhDBJ2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 05:28:04 -0400
-Received: from comms.puri.sm ([159.203.221.185]:47526 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231160AbhDBJ2D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 05:28:03 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id E2C57E0440;
-        Fri,  2 Apr 2021 02:27:31 -0700 (PDT)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id kz69dXS-f4HA; Fri,  2 Apr 2021 02:27:30 -0700 (PDT)
-Message-ID: <a7a6165055ea857a6e0f86591f9235671fb11d02.camel@puri.sm>
-Subject: Re: [PATCH] Revert "usb: dwc3: gadget: Prevent EP queuing while
- stopping transfers"
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     Wesley Cheng <wcheng@codeaurora.org>, gregkh@linuxfoundation.org,
-        balbi@kernel.org
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Date:   Fri, 02 Apr 2021 11:27:25 +0200
-In-Reply-To: <57733e4d-7aad-4564-9ebf-8293a9a4d4e4@codeaurora.org>
-References: <20210322121932.478878424@linuxfoundation.org>
-         <20210401115558.2041768-1-martin.kepplinger@puri.sm>
-         <57733e4d-7aad-4564-9ebf-8293a9a4d4e4@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
-Content-Transfer-Encoding: 8bit
+        id S235088AbhDBJan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 05:30:43 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14685 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229553AbhDBJal (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 05:30:41 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FBZTp35DwznY7H;
+        Fri,  2 Apr 2021 17:27:58 +0800 (CST)
+Received: from huawei.com (10.67.165.24) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Fri, 2 Apr 2021
+ 17:30:29 +0800
+From:   Longfang Liu <liulongfang@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <mathias.nyman@intel.com>,
+        <stern@rowland.harvard.edu>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <liulongfang@huawei.com>, <kong.kongxinwei@hisilicon.com>,
+        <yisen.zhuang@huawei.com>
+Subject: [PATCH] USB:ohci:fix ohci interruption problem
+Date:   Fri, 2 Apr 2021 17:27:59 +0800
+Message-ID: <1617355679-9417-1-git-send-email-liulongfang@huawei.com>
+X-Mailer: git-send-email 2.8.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Donnerstag, dem 01.04.2021 um 11:09 -0700 schrieb Wesley Cheng:
-> 
-> 
-> On 4/1/2021 4:55 AM, Martin Kepplinger wrote:
-> > This reverts commit 9de499997c3737e0c0207beb03615b320cabe495.
-> > 
-> > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> > ---
-> > 
-> > I more or less blindly report:
-> > commit 9de499997c ("usb: dwc3: gadget: Prevent EP queuing while
-> > stopping
-> > transfers") results in the below error every time I connect the
-> > type-c
-> > connector to the dwc3, configured with serial and ethernet gadgets.
-> > 
-> > fyi, I apply the following to dwc3 on this port:
-> > dr_mode =
-> > "otg";                                                        
-> > snps,dis_u3_susphy_quirk;                                          
-> >      
-> > hnp-
-> > disable;                                                           
-> > srp-
-> > disable;                                                           
-> > adp-
-> > disable;                                                           
-> > usb-role-switch;
-> > 
-> > v5.12-rc5 does not have this error so I'm not sure whether it's
-> > more appropriate to add something to dwc3 than reverting. I hope
-> > usb
-> > people to know better and maybe even see the problem.
-> > 
-> > thanks,
-> >                                martin
-> > 
-> Hi Martin,
-> 
-> This has been fixed with the below:
-> https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git/commit/?h=usb-linus&id=5aef629704ad4d983ecf5c8a25840f16e45b6d59
-> 
-> Can you pull that in and give it a try?
-> 
-> Thanks
-> Wesley Cheng
+The operating method of the system entering S4 sleep mode:
+echo disk > /sys/power/state
 
-yes, that's a fix for my problem (and what I secretly had hoped to get
-:). Thank you very much. In case it helps:
+When OHCI enters the S4 sleep state, the USB sleep process will call
+check_root_hub_suspend() and ohci_bus_suspend() instead of
+ohci_suspend() and ohci_bus_suspend(), this causes the OHCI interrupt
+to not be closed.
 
-Tested-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+At this time, if just one device interrupt is reported. Since rh_state
+has been changed to OHCI_RH_SUSPENDED after ohci_bus_suspend(), the
+driver will not process and close this device interrupt. It will cause
+the entire system to be stuck during sleep, causing the device to
+fail to respond.
 
+When the abnormal interruption reaches 100,000 times, the system will
+forcibly close the interruption and make the device unusable.
+
+Because the root cause of the problem is that ohci_suspend is not
+called to perform normal interrupt shutdown operations when the system
+enters S4 sleep mode.
+
+Therefore, our solution is to specify freeze interface in this mode to
+perform normal suspend_common() operations, and call ohci_suspend()
+after check_root_hub_suspend() is executed through the suspend_common()
+operation.
+After using this solution, it is verified by the stress test of sleep
+wake up in S4 mode for a long time that this problem no longer occurs.
+
+Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+---
+ drivers/usb/core/hcd-pci.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/usb/core/hcd-pci.c b/drivers/usb/core/hcd-pci.c
+index 1547aa6..c5844a3 100644
+--- a/drivers/usb/core/hcd-pci.c
++++ b/drivers/usb/core/hcd-pci.c
+@@ -509,6 +509,11 @@ static int resume_common(struct device *dev, int event)
+ 
+ #ifdef	CONFIG_PM_SLEEP
+ 
++static int hcd_pci_freeze(struct device *dev)
++{
++	return suspend_common(dev, device_may_wakeup(dev));
++}
++
+ static int hcd_pci_suspend(struct device *dev)
+ {
+ 	return suspend_common(dev, device_may_wakeup(dev));
+@@ -605,7 +610,7 @@ const struct dev_pm_ops usb_hcd_pci_pm_ops = {
+ 	.suspend_noirq	= hcd_pci_suspend_noirq,
+ 	.resume_noirq	= hcd_pci_resume_noirq,
+ 	.resume		= hcd_pci_resume,
+-	.freeze		= check_root_hub_suspended,
++	.freeze		= hcd_pci_freeze,
+ 	.freeze_noirq	= check_root_hub_suspended,
+ 	.thaw_noirq	= NULL,
+ 	.thaw		= NULL,
+-- 
+2.8.1
 
