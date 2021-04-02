@@ -2,92 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22FFA352906
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 11:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A50352909
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 11:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234522AbhDBJsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 05:48:18 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:58162 "EHLO mail.skyhub.de"
+        id S234600AbhDBJsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 05:48:37 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:33770 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229924AbhDBJsR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 05:48:17 -0400
-Received: from zn.tnic (p200300ec2f0a2000e9f6c6f26a4b9205.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:2000:e9f6:c6f2:6a4b:9205])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2500C1EC0288;
-        Fri,  2 Apr 2021 11:48:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1617356895;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=29TNI45C4NuBpa0bXgLlOHCPu6BWYV1mLhtyhBM9p6A=;
-        b=PHf7dRCwGU84w0iZ+8UuNhap63do/D8O/PMPayQKe782m3m3ABsapJLegqVHNyM0q4DC3Z
-        umvNT1Bihx+wXJb1Pj4QFFyCgC07AKm99m2Yc/B8FpjG//a8JrMqwQCGSMium7TNcaE+Ne
-        UJqF/0B4IuiAs6MKxZkIhITcSkZ0bY0=
-Date:   Fri, 2 Apr 2021 11:48:16 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     kvm@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
-        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com
-Subject: Re: [PATCH v3 07/25] x86/sgx: Initialize virtual EPC driver even
- when SGX driver is disabled
-Message-ID: <20210402094816.GC28499@zn.tnic>
-References: <cover.1616136307.git.kai.huang@intel.com>
- <d35d17a02bbf8feef83a536cec8b43746d4ea557.1616136308.git.kai.huang@intel.com>
+        id S229722AbhDBJsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 05:48:36 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1lSGPl-0003Wm-T5; Fri, 02 Apr 2021 20:48:31 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 02 Apr 2021 20:48:29 +1100
+Date:   Fri, 2 Apr 2021 20:48:29 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Yang Shen <shenyang39@huawei.com>
+Cc:     davem@davemloft.net, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, wangzhou1@hisilicon.com
+Subject: Re: [PATCH v2 0/4] crypto: hisilicon/zip - support new 'sqe' type in
+ Kunpeng930
+Message-ID: <20210402094829.GH24509@gondor.apana.org.au>
+References: <1616830128-46827-1-git-send-email-shenyang39@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d35d17a02bbf8feef83a536cec8b43746d4ea557.1616136308.git.kai.huang@intel.com>
+In-Reply-To: <1616830128-46827-1-git-send-email-shenyang39@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 08:23:02PM +1300, Kai Huang wrote:
-> Modify sgx_init() to always try to initialize the virtual EPC driver,
-> even if the SGX driver is disabled.  The SGX driver might be disabled
-> if SGX Launch Control is in locked mode, or not supported in the
-> hardware at all.  This allows (non-Linux) guests that support non-LC
-> configurations to use SGX.
+On Sat, Mar 27, 2021 at 03:28:44PM +0800, Yang Shen wrote:
+> In Kunpeng930, some field meanings in 'sqe' are changed, so driver need to
+> distinguish the type on different platform.
 > 
-> Acked-by: Dave Hansen <dave.hansen@intel.com>
-> Reviewed-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Kai Huang <kai.huang@intel.com>
-> ---
->  arch/x86/kernel/cpu/sgx/main.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
+> To avoid checking the platform everytime when driver fills the 'sqe', add a
+> struct 'hisi_zip_sqe_ops' to describe the 'sqe' operations. The driver only
+> need to choose the 'ops' once when call 'hisi_zip_acomp_init'.
 > 
-> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> index 6a734f484aa7..b73114150ff8 100644
-> --- a/arch/x86/kernel/cpu/sgx/main.c
-> +++ b/arch/x86/kernel/cpu/sgx/main.c
-> @@ -743,7 +743,15 @@ static int __init sgx_init(void)
->  		goto err_page_cache;
->  	}
->  
-> -	ret = sgx_drv_init();
-> +	/*
-> +	 * Always try to initialize the native *and* KVM drivers.
-> +	 * The KVM driver is less picky than the native one and
-> +	 * can function if the native one is not supported on the
-> +	 * current system or fails to initialize.
-> +	 *
-> +	 * Error out only if both fail to initialize.
-> +	 */
-> +	ret = !!sgx_drv_init() & !!sgx_vepc_init();
+> v1 -> v2:
+> * fix a sparse warning
+> 
+> Yang Shen (4):
+>   crypto: hisilicon/zip - adjust functions location
+>   crypto: hisilicon/zip - add comments for 'hisi_zip_sqe'
+>   crypto: hisilicon/zip - initialize operations about 'sqe' in
+>     'acomp_alg.init'
+>   crypto: hisilicon/zip - support new 'sqe' type in Kunpeng930
+> 
+>  drivers/crypto/hisilicon/zip/zip.h        |  46 +-
+>  drivers/crypto/hisilicon/zip/zip_crypto.c | 706 +++++++++++++++++-------------
+>  2 files changed, 438 insertions(+), 314 deletions(-)
 
-This is a silly way of writing:
-
-        if (sgx_drv_init() && sgx_vepc_init())
-                goto err_kthread;
-
-methinks.
-
+All applied.  Thanks.
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
