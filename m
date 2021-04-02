@@ -2,81 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CBB4352AF6
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 15:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23B0C352AF7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 15:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235330AbhDBNQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 09:16:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33954 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229599AbhDBNQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 09:16:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0285610F7;
-        Fri,  2 Apr 2021 13:16:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617369413;
-        bh=/BQ5h0ZVqbqSFxqV9m02WcLc6Z8/u/Dvvd8g8cm6jrk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AZ1HioHCyhOvKy6l8tgnDAaxxkekkKPJ2t4X9sKEgqFiVyqGfLgx2YTHHFg1Ljg1r
-         UQtlNoH0hVgOd53joPR1v12rGxKuMjW2bzyU+ibaA1toVJUF+BlzT73Fmq4z4nJgUy
-         +n6jDk4kP/xECaDRf5rcxJYgSjkgC50QwxdhRJXs=
-Date:   Fri, 2 Apr 2021 15:16:50 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Longfang Liu <liulongfang@huawei.com>
-Cc:     mathias.nyman@intel.com, stern@rowland.harvard.edu,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kong.kongxinwei@hisilicon.com, yisen.zhuang@huawei.com
-Subject: Re: [PATCH] USB:ohci:fix ohci interruption problem
-Message-ID: <YGcZQiBx3mCzqkPd@kroah.com>
-References: <1617355679-9417-1-git-send-email-liulongfang@huawei.com>
+        id S235373AbhDBNUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 09:20:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234161AbhDBNUs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 09:20:48 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAA66C0613E6
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 06:20:46 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id gb6so2722053pjb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 06:20:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kLdprKH3JUUdGr7ySBcn8te3XSD2cxM3yHUQP/41LNg=;
+        b=iZO/Sz60fvZSP1X7hi/QAyidsD5/q31XvJNSztMxRT4IkSmTABBg21Q7rCgpR82sLY
+         D2KRo1ISsYtlgdMj6+pga89sHKhLquWCY+VDlFHCHfFIck/B6EdkWy+vqssNahtZitXC
+         O0oEESeycwdeE1c896XM6qNEwtZNDJJjXg1uVUwxT0NCsdwWYRsqDQljm7W4TnzDOzru
+         OJhhUi5buezdd1DMivtnltTFTXva+7M8LiGicSaRpvpGtcPJQtrmdi/fNPb3ZOmNn2tA
+         6KK7NDflS97wDwdR2nhvbYf4oFMcKZVoIdv63jacAYfo5/p8h32lHSenHNYcNNN+XPe0
+         etQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kLdprKH3JUUdGr7ySBcn8te3XSD2cxM3yHUQP/41LNg=;
+        b=KCyuQUjz+ObSotyu/m/DiZWBGttdk4zq5VlbmUpQvF4xJ43rqA+nDKtIKjsJjEhD1E
+         0sncXg4+BO+Q9V8GemuhYNuyRRfcGzPGucarvyGIsT4mQg6tripTzmkOJRgRo63dnQu/
+         HzE9N0p39A3ArNZMiw0jCWt/WqNLgYIqbIrBpg14GdyICJ8zdn8uZkr9A64YWhd1pRg6
+         0jdxy7OA6nmIJu2wy/N9bVqhclTU4QGekJCkz7Enw6NmG4eIY06w7HJs+M7An8Pit+at
+         ampLBbPJ9mE27koxXj1+xJZYcBWJBiHltVqsQYnSDvTp9jRaX7NsnOIYwFZ+WDVT58L/
+         xmng==
+X-Gm-Message-State: AOAM533VB7+fhp8oPglalm4Abyc3aVihZBSYHo2wEl5ocWyqV1B0G17K
+        a82AwSePpGN2tyW36T7oDLo=
+X-Google-Smtp-Source: ABdhPJyI6rASNXdFPM0KJCYnULg+XaX/RfaGhS4U8Dc2a3Rd9ryAHuQH5uTbCWdqS3Hft4uCRrrkrQ==
+X-Received: by 2002:a17:90a:df91:: with SMTP id p17mr13919057pjv.23.1617369646365;
+        Fri, 02 Apr 2021 06:20:46 -0700 (PDT)
+Received: from bobo.ozlabs.ibm.com ([1.128.190.224])
+        by smtp.gmail.com with ESMTPSA id h18sm4668935pgj.51.2021.04.02.06.20.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Apr 2021 06:20:45 -0700 (PDT)
+From:   Nicholas Piggin <npiggin@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] genirq: reduce irqdebug bouncing cachelines
+Date:   Fri,  2 Apr 2021 23:20:37 +1000
+Message-Id: <20210402132037.574661-1-npiggin@gmail.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617355679-9417-1-git-send-email-liulongfang@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 05:27:59PM +0800, Longfang Liu wrote:
-> The operating method of the system entering S4 sleep mode:
-> echo disk > /sys/power/state
-> 
-> When OHCI enters the S4 sleep state, the USB sleep process will call
-> check_root_hub_suspend() and ohci_bus_suspend() instead of
-> ohci_suspend() and ohci_bus_suspend(), this causes the OHCI interrupt
-> to not be closed.
-> 
-> At this time, if just one device interrupt is reported. Since rh_state
-> has been changed to OHCI_RH_SUSPENDED after ohci_bus_suspend(), the
-> driver will not process and close this device interrupt. It will cause
-> the entire system to be stuck during sleep, causing the device to
-> fail to respond.
-> 
-> When the abnormal interruption reaches 100,000 times, the system will
-> forcibly close the interruption and make the device unusable.
-> 
-> Because the root cause of the problem is that ohci_suspend is not
-> called to perform normal interrupt shutdown operations when the system
-> enters S4 sleep mode.
-> 
-> Therefore, our solution is to specify freeze interface in this mode to
-> perform normal suspend_common() operations, and call ohci_suspend()
-> after check_root_hub_suspend() is executed through the suspend_common()
-> operation.
-> After using this solution, it is verified by the stress test of sleep
-> wake up in S4 mode for a long time that this problem no longer occurs.
-> 
-> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
-> ---
->  drivers/usb/core/hcd-pci.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
+note_interrupt increments desc->irq_count for each interrupt even for
+percpu interrupt handlers, even when they are handled successfully. This
+causes cacheline bouncing and limits scalability.
 
-What changed from the previous version sent for this patch?  Always
-properly describe the changes below the --- line, and also version your
-subject line as documented.
+Instead of incrementing irq_count every time, only start incrementing it
+after seeing an unhandled irq, which should avoid the cache line
+bouncing in the common path.
 
-Please fix up and resend.
+This actually should give better consistency in handling misbehaving
+irqs too, because instead of the first unhandled irq arriving at an
+arbitrary point in the irq_count cycle, its arrival will begin the
+irq_count cycle.
 
-thanks,
+Cédric reports the result of his IPI throughput test:
 
-greg k-h
+               Millions of IPIs/s
+ -----------   --------------------------------------
+               upstream   upstream   patched
+ chips  cpus   default    noirqdebug default (irqdebug)
+ -----------   -----------------------------------------
+ 1      0-15     4.061      4.153      4.084
+        0-31     7.937      8.186      8.158
+        0-47    11.018     11.392     11.233
+        0-63    11.460     13.907     14.022
+ 2      0-79     8.376     18.105     18.084
+        0-95     7.338     22.101     22.266
+        0-111    6.716     25.306     25.473
+        0-127    6.223     27.814     28.029
+
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+---
+ kernel/irq/spurious.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/kernel/irq/spurious.c b/kernel/irq/spurious.c
+index f865e5f4d382..c481d8458325 100644
+--- a/kernel/irq/spurious.c
++++ b/kernel/irq/spurious.c
+@@ -403,6 +403,10 @@ void note_interrupt(struct irq_desc *desc, irqreturn_t action_ret)
+ 			desc->irqs_unhandled -= ok;
+ 	}
+ 
++	if (likely(!desc->irqs_unhandled))
++		return;
++
++	/* Now getting into unhandled irq detection */
+ 	desc->irq_count++;
+ 	if (likely(desc->irq_count < 100000))
+ 		return;
+-- 
+2.23.0
+
