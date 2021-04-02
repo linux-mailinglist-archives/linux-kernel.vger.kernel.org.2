@@ -2,175 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A093352DB4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BACFD352DBA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234029AbhDBQZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 12:25:55 -0400
-Received: from mail-co1nam11on2065.outbound.protection.outlook.com ([40.107.220.65]:10849
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229932AbhDBQZv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 12:25:51 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JltJTlX4U+nycgx1/fr6HArMo5KlfVJ6pQIjioViFq+HrwoOR1ppnNLJi1c5ztgE/CB4BOVsxCq2skH6ZhOMgJhOIKj2yawwfopKcxKhl8ryE0QLD0SM3sihg+nNDuqur/4HXGsRP7B5H3CJzPU2/2H2Lb6Quj4ihtlbAAOaoeNW9SgSMDrh9izBJamqEjVQBLaO0cs5SoAEr+IqNG4ThXMOSVOTx59Rvvu4xPJGTex8VW57YJDZNyR5SQH3ilQegqQ1fOw/HhVCZ5qfDChO31DjIoey/rx00bFh50oWuyjXC9nhUGGju129YjRjB5ZdBvkGrHv0N99HZNCDrulHtg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=P7DS9UEYuavuquQVLpiCzHbtQf7oRDdcccoV076hLVc=;
- b=OacZfc1e9zPwHo0BAywaGZosKVfYL3RbskQ1lb9US30q6z3NYXAGVFiyANx1rHaAsAFGOMsawpDxwnRFrlfejDjCvHg72SBJAOuZ9C6iPRYSd8TYqnskgmLYXzupAZM9Yie0aeSwHRj6ytz0pnqgbpXcjJy6ASRe9FYK2ONtgkL9vGjYkaCm1IzCf44jrsNMmpz9c8W3miVU71GQxV1xqwjuswaeX1SUILRAJeNtdyaFRpoiahy2OhgdLhErmQqM0Qwc8JgAiL0Tzjmm2r5uYo0Z25c5dackodd8pJDuP2cbaKfInaX8Eov7DQdVsvIMf3f2pmMTMtdPDMfTWZfWhg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=P7DS9UEYuavuquQVLpiCzHbtQf7oRDdcccoV076hLVc=;
- b=smkYpqGGk/sbT50rbtnG4Wv/SALhCQfFJzOnHryads0CcyPLkyzEs75VVgQ6GIRqvVMeHvMdDTtV3eiXLtta7aazGUy8aPQl2gaPAlbz6PAHVA1NxRV6YSmq4pHlcOirn4294hydDhLqDmC3h78jucSdS4Lh/pT63G9Q3d/7S2s=
-Authentication-Results: lists.linaro.org; dkim=none (message not signed)
- header.d=none;lists.linaro.org; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by BL0PR12MB4948.namprd12.prod.outlook.com (2603:10b6:208:1cc::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Fri, 2 Apr
- 2021 16:25:48 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::c1ff:dcf1:9536:a1f2]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::c1ff:dcf1:9536:a1f2%2]) with mapi id 15.20.3999.029; Fri, 2 Apr 2021
- 16:25:48 +0000
-Subject: Re: [PATCH] drm/amdgpu: Fix a potential sdma invalid access
-To:     Qu Huang <jinsdb@126.com>, alexander.deucher@amd.com,
-        airlied@linux.ie, daniel@ffwll.ch, sumit.semwal@linaro.org,
-        airlied@redhat.com, ray.huang@amd.com, Mihir.Patel@amd.com,
-        nirmoy.aiemd@gmail.com
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org
-References: <1617333527-89782-1-git-send-email-jinsdb@126.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <9b876791-7fa4-46da-7aec-1d1bfde83f4e@amd.com>
-Date:   Fri, 2 Apr 2021 18:25:41 +0200
+        id S234724AbhDBQ2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 12:28:14 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:43426 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234479AbhDBQ2H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 12:28:07 -0400
+Received: from mail-ed1-f72.google.com ([209.85.208.72])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lSMeT-00023n-C1
+        for linux-kernel@vger.kernel.org; Fri, 02 Apr 2021 16:28:05 +0000
+Received: by mail-ed1-f72.google.com with SMTP id w18so4787129edu.5
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 09:28:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=l5pH59VX/ksTw6Nw5DlDio0coKgCovudT1I3TQsyeWk=;
+        b=CSNPkhCjXUfE3QvdPDoq83o+1iKTJJL1wzjvcAaofxNaGGZYj6FCk+pLv9jOjWQGur
+         0kGquMAIpPZVx7W+MayL+lenzYcTCKBnwoe5oKWT4Y6komDHHxws334HyQnpyKaKTXrs
+         REpjqFaBd74k1SSpKUecIU804zWaCLRmG9YECd9gzjQf7Chsm//ghXHVweAd865FJzfx
+         Z7dR8xM6U8lMa2Fi08xMlD6iRyLxYXKbYpJ2M3ZVJgBmmOQHYJIuxqlNqMpnQ4VTCT31
+         OQF+AiyvnaYxEld153FcjeHz7BxXnM4WUCYTsPurQ/EdvM4iuXNwQYctNEOG3woCyMNW
+         5RZg==
+X-Gm-Message-State: AOAM530M9OWSoRGlhzO5xxq7h/7d1oD+uJ7gOpjMpwo697yzskPlix8M
+        Be2dJ4u6VKJTdmEglEMeG2URZ1sC6v2OpBHo3X/z9KAGHFxtpAM3Em5Qzl5DoLkEk8I4Sc9qRrU
+        AbvtRxHvbn5eHNhssrmvaZx8OLCzrUy/fI8zrRdDUHA==
+X-Received: by 2002:a05:6402:5255:: with SMTP id t21mr16441025edd.91.1617380885103;
+        Fri, 02 Apr 2021 09:28:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw9g2d4llc2lwvaUsr9cW/SpPKLMYQ3D0UiMnrkeKAcbMQ7aKl9IfvLpIbgjyCTD6YjNjFkaA==
+X-Received: by 2002:a05:6402:5255:: with SMTP id t21mr16441002edd.91.1617380884934;
+        Fri, 02 Apr 2021 09:28:04 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
+        by smtp.gmail.com with ESMTPSA id hd8sm4311138ejc.92.2021.04.02.09.28.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Apr 2021 09:28:04 -0700 (PDT)
+Subject: Re: [PATCH] nfc: s3fwrn5: remove unnecessary label
+To:     samirweng1979 <samirweng1979@163.com>, k.opasiak@samsung.com
+Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+References: <20210402121548.3260-1-samirweng1979@163.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <0dc19abe-28e6-69a6-40e6-ba03a09aa3ae@canonical.com>
+Date:   Fri, 2 Apr 2021 18:28:03 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
-In-Reply-To: <1617333527-89782-1-git-send-email-jinsdb@126.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [2a02:908:1252:fb60:242f:cf66:3716:ed]
-X-ClientProxiedBy: AM0PR08CA0035.eurprd08.prod.outlook.com
- (2603:10a6:208:d2::48) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:242f:cf66:3716:ed] (2a02:908:1252:fb60:242f:cf66:3716:ed) by AM0PR08CA0035.eurprd08.prod.outlook.com (2603:10a6:208:d2::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27 via Frontend Transport; Fri, 2 Apr 2021 16:25:45 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a23da487-dc06-42e1-841b-08d8f5f3f89e
-X-MS-TrafficTypeDiagnostic: BL0PR12MB4948:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL0PR12MB4948F86CC937477C1DE5777D837A9@BL0PR12MB4948.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Fs+w+m0aauqOKaKlxTGYSADsD2yHvTzijtIMkwN5b43G5AHhcIbbPXaBW8AZ3H4bjnw4aDiWK1bUqTmQx+CH8oLv8FanmwmivCOUfPwByeEAPgCs8XbA/hKxHU2e5a5Ze6CFGFdxjJlENPLlS/lNGY0e1tl+OaVRfRvuv+3Mxscg9jecnLq7iTuq0hfGDWQWtmDzlNrz2npt0SIJDifn4SPZM1xT3fGNG82t7LVkgs0jQWqBbhtAmmGpQorHKl+F39lOUX0ZG1+CP4TBAml/L4zeJmUAwVxDuvYY/iwlOYXFPXfKJZkXWL80XnL0qsMk/aiemQK807WNFDtIgPoB6RLQQbkpvaF++SNxXY4yG0miAZcsOa0Vj3eyi/zfsHFqK3L4+1vK+r6HBGEJqW4/+np4ZOFLqh/hEvqbRjN4U90WNYee1by6hvwaTVSRnbQMD3Ugm+puyXoTDjYEPpF5F5SqT17DP+YBUftORJu3/2XTfvK18uHG8HzluFyBQkxTPpK2ytzZ9FSOz2HQoHm0re0osm65vADCBOAual8iaTAoaunKeUjJdoUVW1cxCibkcYQAkshl3Cc41DTfJKuiVmdSXTGuBrFyQKv2Py+IrefQDuhyy89D1TeikgL9CYeG+eDDEO2Y7RHjE4n/JD7pp1tK7ZlUDIv2WDQ3V+flJmlvfddVBOqfLh1eyH2fGJ1d+WxXyaIdRz/L0paiFM3yq0F/vOvGngJgrnLD3GmxG7vrvlLW5+ulhS4UJohBOXNh
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(366004)(396003)(136003)(346002)(2906002)(186003)(38100700001)(8936002)(66476007)(66556008)(86362001)(36756003)(31696002)(31686004)(2616005)(5660300002)(52116002)(478600001)(6666004)(83380400001)(7416002)(16526019)(4326008)(8676002)(6486002)(316002)(66946007)(525324003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?WUs5SU4weXR3MzRrM3I0LzVDcWNhZHhtUXB3dHZwTW1CTnJNVUFtbXBrN2NE?=
- =?utf-8?B?YVBTSTVzYSs1NTlvNmZvQi80enVTZnlIdHhZQ1NxRkhLNnhWSGR5eVkwTGpJ?=
- =?utf-8?B?eGQ4K0FMdFZ5elBIOWVtaXpielJZbklQNmVtWmNqOGF6ZnU2aklNd2Y3S0E3?=
- =?utf-8?B?UkJSYVJLbkdxUU1mNDZjNjA5dkZwelRaRkhDNFpSbzZ3UERJcW90QTVGY0pa?=
- =?utf-8?B?ZGNyWXFRNEhVNFRFaTJlZ2xnV0s0clg3VXZ5d1BUYWhnaWEya200RGVLSWhm?=
- =?utf-8?B?dVFKelVrSHp3UjlxeXhUNHdLK2x0WjRYVXpNN0twditpUWZqajZHanNkaVNk?=
- =?utf-8?B?djFuUmlKQTF6SjM5ZGppRVF5SHI0dkxWdGt5OEVBMkZMRm5wYXhieFFoVHBs?=
- =?utf-8?B?Y0p4NHhRS3F3dm84THRMcVVhbElnTklwMFVZQ211amMraDBJNEhBQXl1VmVN?=
- =?utf-8?B?TCtPSTBJTTNxSFVlMkppUTBaWkVvTFFMbEVMNVB0NVp6ZWNrMWE4WEpTYnVh?=
- =?utf-8?B?ZjNMbGcxRjRFUE43dkFudCtMeDhDeUdZWEtlWnhTanpPdS8xWVdwRGxid2VJ?=
- =?utf-8?B?a3RYVDhjNzJURlBBT09FbkloL2d6MlN2NkQyWlc1REdRZzF5dlNlSHdCTHdK?=
- =?utf-8?B?QXFwS2x5N0ZhMUpuaDlZeHZmcVkrR2o5cXhRTmEzNkdHdUEyUlpGajZhWm41?=
- =?utf-8?B?U1VldGsxYm4yUU55WlBUTHhYaWRad096R0JZM1d3UGsyY0gzZmNvTTZXM3lF?=
- =?utf-8?B?VjIyTEZXY0xXRnVqSkVxWTM1QlhJdHBnOWg2bXNQaXBWT2ZFbW9zTUZoOTlO?=
- =?utf-8?B?RGdRRXkvdUxsVytRYWFYUGhOTHBGbXNMelFUOUliMTArV1VYYzJaSXVFbzlQ?=
- =?utf-8?B?TXhQUUZ2VkZ6Z2UySkRmOHBYSTdwaDA1TGFSTHkzWmhLeWRYTUVncHRsNmNJ?=
- =?utf-8?B?NWE1UWVXZWcyazJScmw0S3B5MWcxd2MwT2JmdGY4d08rVVlHeUQvbFZya1BW?=
- =?utf-8?B?dkhiWlU2UU8rZmxjOVdTL05yWGI0bXFRTklJa3ZNL0xEZmxTcUw0RzNkTnpS?=
- =?utf-8?B?THdRYXVYQ2I1Tk1KT1l6cUJpaFJnZ0FsNmU2S0tvdDQwU1FKRjcxYU1lWjdx?=
- =?utf-8?B?QTdIWUE2NmUrNjFxb01HN2lKQzAyTTBBMi9LVjNSVWp1ZVJ2N3E2K1NNNzhD?=
- =?utf-8?B?Q0pDVFgvQkFzWXhJOGpmU2luRmZ6OHlSQjVNWDljbjUrZXl5aXBXZkMyc0t1?=
- =?utf-8?B?TWdMWFg4WmloQzgwUWxnYlZwNEdoazV4ZTNnbUZpY1ZNSVF3SHRySTA1MGlB?=
- =?utf-8?B?ak90S0I4V09waEF0NkF2WlZ3MHd0V0Q2QzlCMGR3YXNNNlNDTnRrczdDLyt0?=
- =?utf-8?B?Q1dvZkIwdnRPTy92d2hJeEs2SlE2bW1Kc01TbC8rRjhzOHRWa1lTamZONlU3?=
- =?utf-8?B?ZDlmT2FXMkZwZmlGUndkc3JrN2ZIVERxalg2d1NlY0pyRmVZdFUxMGxoTWRr?=
- =?utf-8?B?aHZZV21lMWtNSG1YU012czBnSGtaUUdrb0FYNmwxbGJVZHZnR2lhSGw4VHRr?=
- =?utf-8?B?Zkd5d2pVMTR1Z3BEaHFOZnFCdUpJb3ZVZnpRakk4KzdOK2ZLSDJPem1ybERL?=
- =?utf-8?B?WlBxQ1AwaTdLbkE4clYwR3RZcXlLRndJdmtEYW5xMXNNUHA0c0xqU3hIZnlK?=
- =?utf-8?B?SGVZVkVpRzdSN0hBMFd3V1VFRlV0NjJLUUtLdm15c1lva2pEclFRWmhPYzg0?=
- =?utf-8?B?NlBsZnltZEt0c2pVb29MWkE5Z251cTBNVm0wYlo0Q09HTUxKMDBxK3FlYWVH?=
- =?utf-8?B?anpKOTJsVmRQVzE3Z1VsS3BiR2VGYlAwSlhZOSs5MmxXUXdwU1c4YnVCWktG?=
- =?utf-8?Q?Jo/27VCqyvvnc?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a23da487-dc06-42e1-841b-08d8f5f3f89e
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Apr 2021 16:25:47.9955
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SLgE9m6eOn3lEGVXDOo4fB23sa/YdGEz+jTbFoe56JXNJ0OKulnxP1ZYHvYOKgNV
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4948
+In-Reply-To: <20210402121548.3260-1-samirweng1979@163.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Qu,
+On 02/04/2021 14:15, samirweng1979 wrote:
+> From: wengjianfeng <wengjianfeng@yulong.com>
+> 
+> In function s3fwrn5_nci_post_setup, The variable ret is assigned to 0,
+> then goto out label, but just return ret in out label, so we use
+> return 0 to replace it. and other goto sentences are similar, we use
+> return sentences to replace it and delete out label.
 
-Am 02.04.21 um 05:18 schrieb Qu Huang:
-> Before dma_resv_lock(bo->base.resv, NULL) in amdgpu_bo_release_notify(),
-> the bo->base.resv lock may be held by ttm_mem_evict_first(),
+The message is difficult to understand - you created one long sentence
+with mixing tenses and subjects. "The" starts capital in the middle of
+sentence but "and" starts after full stop.
 
-That can't happen since when bo_release_notify is called the BO has not 
-more references and is therefore deleted.
+Please rephrase it.
 
-And we never evict a deleted BO, we just wait for it to become idle.
+The code itself looks ok.
 
-Regards,
-Christian.
-
-> and the VRAM mem will be evicted, mem region was replaced
-> by Gtt mem region. amdgpu_bo_release_notify() will then
-> hold the bo->base.resv lock, and SDMA will get an invalid
-> address in amdgpu_fill_buffer(), resulting in a VMFAULT
-> or memory corruption.
->
-> To avoid it, we have to hold bo->base.resv lock first, and
-> check whether the mem.mem_type is TTM_PL_VRAM.
->
-> Signed-off-by: Qu Huang <jinsdb@126.com>
-> ---
->   drivers/gpu/drm/amd/amdgpu/amdgpu_object.c | 8 ++++++--
->   1 file changed, 6 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
-> index 4b29b82..8018574 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
-> @@ -1300,12 +1300,16 @@ void amdgpu_bo_release_notify(struct ttm_buffer_object *bo)
->   	if (bo->base.resv == &bo->base._resv)
->   		amdgpu_amdkfd_remove_fence_on_pt_pd_bos(abo);
->
-> -	if (bo->mem.mem_type != TTM_PL_VRAM || !bo->mem.mm_node ||
-> -	    !(abo->flags & AMDGPU_GEM_CREATE_VRAM_WIPE_ON_RELEASE))
-> +	if (!(abo->flags & AMDGPU_GEM_CREATE_VRAM_WIPE_ON_RELEASE))
->   		return;
->
->   	dma_resv_lock(bo->base.resv, NULL);
->
-> +	if (bo->mem.mem_type != TTM_PL_VRAM || !bo->mem.mm_node) {
-> +		dma_resv_unlock(bo->base.resv);
-> +		return;
-> +	}
-> +
->   	r = amdgpu_fill_buffer(abo, AMDGPU_POISON, bo->base.resv, &fence);
->   	if (!WARN_ON(r)) {
->   		amdgpu_bo_fence(abo, fence, false);
-> --
-> 1.8.3.1
->
-
+Best regards,
+Krzysztof
