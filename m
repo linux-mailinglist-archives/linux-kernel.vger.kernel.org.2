@@ -2,139 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F9D6352B08
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 15:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4BBB352B0A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 15:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235541AbhDBNdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 09:33:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36458 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235459AbhDBNdS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 09:33:18 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3EBC2610D2;
-        Fri,  2 Apr 2021 13:33:17 +0000 (UTC)
-Date:   Fri, 2 Apr 2021 09:33:15 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: [GIT PULL] tracing: Fix stack trace event size
-Message-ID: <20210402093315.1b692cbf@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S235479AbhDBNea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 09:34:30 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:22050 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229932AbhDBNe2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 09:34:28 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 132DWvT2018019;
+        Fri, 2 Apr 2021 09:34:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=3O/oOdZbpaKyTAMpukLAT+byXF+1fN0uLjwb1ebzmbE=;
+ b=dLk/jRWkRL0fHc+cfyomZRFiYvl+LJCyjxC5++wBQCMrx2zwPKllbPAm1yvHvLms9mP/
+ hCFGZnyBsF9FiEJXOLzsZW4KES0maRgQz7Pe17R1xLmMM8Q1mtldhrxIRYfO0AJCVx6O
+ eoCC5Iy84QgzDNWA/ACwrqQLD1LrZNUYu1dyZZGQKLIjwkGWuQwjJEbgYNn2zNLsk1Or
+ Gic11fGV7hdcAO9Q8tdaS2sUnf0rPgPCdCH8FUgoO3NBYifFOZD1wkM+03zoA1Jpklvq
+ dRghm08wQi1cKmL2rnaO5Ub4Wpz8qnFe16H409rNUHc8b4hZBEABK71Jgz+PQ0FoxgHx aw== 
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37n95gxr15-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 02 Apr 2021 09:34:04 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 132DSDNU016920;
+        Fri, 2 Apr 2021 13:34:03 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma04dal.us.ibm.com with ESMTP id 37n28up3jq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 02 Apr 2021 13:34:03 +0000
+Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 132DY1Db24641852
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 2 Apr 2021 13:34:01 GMT
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CFDC46E04E;
+        Fri,  2 Apr 2021 13:34:01 +0000 (GMT)
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 99E356E04C;
+        Fri,  2 Apr 2021 13:34:01 +0000 (GMT)
+Received: from localhost (unknown [9.163.15.116])
+        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Fri,  2 Apr 2021 13:34:01 +0000 (GMT)
+From:   Nathan Lynch <nathanl@linux.ibm.com>
+To:     Laurent Dufour <ldufour@linux.ibm.com>
+Cc:     cheloha@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Subject: Re: [PATCH v2] pseries: prevent free CPU ids to be reused on
+ another node
+In-Reply-To: <20210325093512.57856-1-ldufour@linux.ibm.com>
+References: <20210325093512.57856-1-ldufour@linux.ibm.com>
+Date:   Fri, 02 Apr 2021 08:34:01 -0500
+Message-ID: <87a6qgbyk6.fsf@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: woBakMfSiXYnAuz5bjlwSNmEB1CmYyq8
+X-Proofpoint-GUID: woBakMfSiXYnAuz5bjlwSNmEB1CmYyq8
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-04-02_08:2021-04-01,2021-04-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ phishscore=0 mlxlogscore=999 impostorscore=0 bulkscore=0 mlxscore=0
+ malwarescore=0 suspectscore=0 spamscore=0 lowpriorityscore=0 adultscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103310000 definitions=main-2104020100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Laurent,
 
-Linus,
+Laurent Dufour <ldufour@linux.ibm.com> writes:
+> When a CPU is hot added, the CPU ids are taken from the available mask from
+> the lower possible set. If that set of values was previously used for CPU
+> attached to a different node, this seems to application like if these CPUs
+> have migrated from a node to another one which is not expected in real
+> life.
 
-Fix stack trace entry size to stop showing garbage
+This seems like a problem that could affect other architectures or
+platforms? I guess as long as arch code is responsible for placing new
+CPUs in cpu_present_mask, that code will have the responsibility of
+ensuring CPU IDs' NUMA assignments remain stable.
 
-The macro that creates both the structure and the format displayed
-to user space for the stack trace event was changed a while ago
-to fix the parsing by user space tooling. But this change also modified
-the structure used to store the stack trace event. It changed the
-caller array field from [0] to [8]. Even though the size in the ring
-buffer is dynamic and can be something other than 8 (user space knows
-how to handle this), the 8 extra words was not accounted for when
-reserving the event on the ring buffer, and added 8 more entries, due
-to the calculation of "sizeof(*entry) + nr_entries * sizeof(long)",
-as the sizeof(*entry) now contains 8 entries. The size of the caller
-field needs to be subtracted from the size of the entry to create
-the correct allocation size.
+[...]
+
+> The effect of this patch can be seen by removing and adding CPUs using the
+> Qemu monitor. In the following case, the first CPU from the node 2 is
+> removed, then the first one from the node 1 is removed too. Later, the
+> first CPU of the node 2 is added back. Without that patch, the kernel will
+> numbered these CPUs using the first CPU ids available which are the ones
+> freed when removing the second CPU of the node 0. This leads to the CPU ids
+> 16-23 to move from the node 1 to the node 2. With the patch applied, the
+> CPU ids 32-39 are used since they are the lowest free ones which have not
+> been used on another node.
+>
+> At boot time:
+> [root@vm40 ~]# numactl -H | grep cpus
+> node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+> node 1 cpus: 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+> node 2 cpus: 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47
+>
+> Vanilla kernel, after the CPU hot unplug/plug operations:
+> [root@vm40 ~]# numactl -H | grep cpus
+> node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+> node 1 cpus: 24 25 26 27 28 29 30 31
+> node 2 cpus: 16 17 18 19 20 21 22 23 40 41 42 43 44 45 46 47
+>
+> Patched kernel, after the CPU hot unplug/plug operations:
+> [root@vm40 ~]# numactl -H | grep cpus
+> node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+> node 1 cpus: 24 25 26 27 28 29 30 31
+> node 2 cpus: 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47
+
+Good demonstration of the problem. CPUs 16-23 "move" from node 1 to
+node 2.
 
 
-Please pull the latest trace-v5.12-rc5-2 tree, which can be found at:
+> diff --git a/arch/powerpc/platforms/pseries/hotplug-cpu.c b/arch/powerpc/platforms/pseries/hotplug-cpu.c
+> index 12cbffd3c2e3..48c7943b25b0 100644
+> --- a/arch/powerpc/platforms/pseries/hotplug-cpu.c
+> +++ b/arch/powerpc/platforms/pseries/hotplug-cpu.c
+> @@ -39,6 +39,8 @@
+>  /* This version can't take the spinlock, because it never returns */
+>  static int rtas_stop_self_token = RTAS_UNKNOWN_SERVICE;
+>  
+> +static cpumask_var_t node_recorded_ids_map[MAX_NUMNODES];
+
+I guess this should have documentation that it must be
+accessed/manipulated with cpu_add_remove_lock held?
 
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-trace-v5.12-rc5-2
+> +
+>  static void rtas_stop_self(void)
+>  {
+>  	static struct rtas_args args;
+> @@ -151,29 +153,61 @@ static void pseries_cpu_die(unsigned int cpu)
+>   */
+>  static int pseries_add_processor(struct device_node *np)
+>  {
+> -	unsigned int cpu;
+> +	unsigned int cpu, node;
+>  	cpumask_var_t candidate_mask, tmp;
+> -	int err = -ENOSPC, len, nthreads, i;
+> +	int err = -ENOSPC, len, nthreads, i, nid;
 
-Tag SHA1: cb39aeb904fb1dc0fff7e13799d9ad287fb4697f
-Head SHA1: 9deb193af69d3fd6dd8e47f292b67c805a787010
+From eight local vars to ten, and the two new variables' names are
+"node" and "nid". More distinctive names would help readers.
 
 
-Steven Rostedt (VMware) (1):
-      tracing: Fix stack trace event size
+>  	const __be32 *intserv;
+> +	bool force_reusing = false;
+>  
+>  	intserv = of_get_property(np, "ibm,ppc-interrupt-server#s", &len);
+>  	if (!intserv)
+>  		return 0;
+>  
+> -	zalloc_cpumask_var(&candidate_mask, GFP_KERNEL);
+> -	zalloc_cpumask_var(&tmp, GFP_KERNEL);
+> +	alloc_cpumask_var(&candidate_mask, GFP_KERNEL);
+> +	alloc_cpumask_var(&tmp, GFP_KERNEL);
+> +
+> +	/*
+> +	 * Fetch from the DT nodes read by dlpar_configure_connector() the NUMA
+> +	 * node id the added CPU belongs to.
+> +	 */
+> +	nid = of_node_to_nid(np);
+> +	if (nid < 0 || !node_possible(nid))
+> +		nid = first_online_node;
+>  
+>  	nthreads = len / sizeof(u32);
+> -	for (i = 0; i < nthreads; i++)
+> -		cpumask_set_cpu(i, tmp);
+>  
+>  	cpu_maps_update_begin();
+>  
+>  	BUG_ON(!cpumask_subset(cpu_present_mask, cpu_possible_mask));
+>  
+> +again:
+> +	cpumask_clear(candidate_mask);
+> +	cpumask_clear(tmp);
+> +	for (i = 0; i < nthreads; i++)
+> +		cpumask_set_cpu(i, tmp);
+> +
+>  	/* Get a bitmap of unoccupied slots. */
+>  	cpumask_xor(candidate_mask, cpu_possible_mask, cpu_present_mask);
+> +
+> +	/*
+> +	 * Remove free ids previously assigned on the other nodes. We can walk
+> +	 * only online nodes because once a node became online it is not turned
+> +	 * offlined back.
+> +	 */
+> +	if (!force_reusing)
+> +		for_each_online_node(node) {
+> +			if (node == nid) /* Keep our node's recorded ids */
+> +				continue;
+> +			cpumask_andnot(candidate_mask, candidate_mask,
+> +				       node_recorded_ids_map[node]);
+> +		}
+> +
+>  	if (cpumask_empty(candidate_mask)) {
+> +		if (!force_reusing) {
+> +			force_reusing = true;
+> +			goto again;
+> +		}
+> +
 
-----
- kernel/trace/trace.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
----------------------------
-commit 9deb193af69d3fd6dd8e47f292b67c805a787010
-Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Date:   Thu Apr 1 13:54:40 2021 -0400
+Hmm I'd encourage you to work toward a solution that doesn't involve
+adding backwards jumps and a bool flag to this code.
 
-    tracing: Fix stack trace event size
-    
-    Commit cbc3b92ce037 fixed an issue to modify the macros of the stack trace
-    event so that user space could parse it properly. Originally the stack
-    trace format to user space showed that the called stack was a dynamic
-    array. But it is not actually a dynamic array, in the way that other
-    dynamic event arrays worked, and this broke user space parsing for it. The
-    update was to make the array look to have 8 entries in it. Helper
-    functions were added to make it parse it correctly, as the stack was
-    dynamic, but was determined by the size of the event stored.
-    
-    Although this fixed user space on how it read the event, it changed the
-    internal structure used for the stack trace event. It changed the array
-    size from [0] to [8] (added 8 entries). This increased the size of the
-    stack trace event by 8 words. The size reserved on the ring buffer was the
-    size of the stack trace event plus the number of stack entries found in
-    the stack trace. That commit caused the amount to be 8 more than what was
-    needed because it did not expect the caller field to have any size. This
-    produced 8 entries of garbage (and reading random data) from the stack
-    trace event:
-    
-              <idle>-0       [002] d... 1976396.837549: <stack trace>
-     => trace_event_raw_event_sched_switch
-     => __traceiter_sched_switch
-     => __schedule
-     => schedule_idle
-     => do_idle
-     => cpu_startup_entry
-     => secondary_startup_64_no_verify
-     => 0xc8c5e150ffff93de
-     => 0xffff93de
-     => 0
-     => 0
-     => 0xc8c5e17800000000
-     => 0x1f30affff93de
-     => 0x00000004
-     => 0x200000000
-    
-    Instead, subtract the size of the caller field from the size of the event
-    to make sure that only the amount needed to store the stack trace is
-    reserved.
-    
-    Link: https://lore.kernel.org/lkml/your-ad-here.call-01617191565-ext-9692@work.hours/
-    
-    Cc: stable@vger.kernel.org
-    Fixes: cbc3b92ce037 ("tracing: Set kernel_stack's caller size properly")
-    Reported-by: Vasily Gorbik <gor@linux.ibm.com>
-    Tested-by: Vasily Gorbik <gor@linux.ibm.com>
-    Acked-by: Vasily Gorbik <gor@linux.ibm.com>
-    Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+The function already mixes concerns and this change makes it a bit more
+difficult to follow. I'd suggest that you first factor out into a
+separate function the parts that allocate a suitable range from
+cpu_possible_mask, and only then introduce the behavior change
+constraining the results.
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index eccb4e1187cc..5c777627212f 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -2984,7 +2984,8 @@ static void __ftrace_trace_stack(struct trace_buffer *buffer,
- 
- 	size = nr_entries * sizeof(unsigned long);
- 	event = __trace_buffer_lock_reserve(buffer, TRACE_STACK,
--					    sizeof(*entry) + size, trace_ctx);
-+				    (sizeof(*entry) - sizeof(entry->caller)) + size,
-+				    trace_ctx);
- 	if (!event)
- 		goto out;
- 	entry = ring_buffer_event_data(event);
+
+>  		/* If we get here, it most likely means that NR_CPUS is
+>  		 * less than the partition's max processors setting.
+>  		 */
+> @@ -191,12 +225,36 @@ static int pseries_add_processor(struct device_node *np)
+>  			cpumask_shift_left(tmp, tmp, nthreads);
+>  
+>  	if (cpumask_empty(tmp)) {
+> +		if (!force_reusing) {
+> +			force_reusing = true;
+> +			goto again;
+> +		}
+>  		printk(KERN_ERR "Unable to find space in cpu_present_mask for"
+>  		       " processor %pOFn with %d thread(s)\n", np,
+>  		       nthreads);
+>  		goto out_unlock;
+>  	}
+>  
+> +	/* Record the newly used CPU ids for the associate node. */
+> +	cpumask_or(node_recorded_ids_map[nid], node_recorded_ids_map[nid], tmp);
+> +
+> +	/*
+> +	 * If we force reusing the id, remove these ids from any node which was
+> +	 * previously using it.
+> +	 */
+> +	if (force_reusing) {
+> +		cpu = cpumask_first(tmp);
+> +		pr_warn("Reusing free CPU ids %d-%d from another node\n",
+> +			cpu, cpu + nthreads - 1);
+> +
+> +		for_each_online_node(node) {
+> +			if (node == nid)
+> +				continue;
+> +			cpumask_andnot(node_recorded_ids_map[node],
+> +				       node_recorded_ids_map[node], tmp);
+> +		}
+> +	}
+> +
+
+I don't know, should we not fail the request instead of doing the
+ABI-breaking thing the code in this change is trying to prevent? I don't
+think a warning in the kernel log is going to help any application that
+would be affected by this.
+
+
+>  	for_each_cpu(cpu, tmp) {
+>  		BUG_ON(cpu_present(cpu));
+>  		set_cpu_present(cpu, true);
+> @@ -889,6 +947,7 @@ static struct notifier_block pseries_smp_nb = {
+>  static int __init pseries_cpu_hotplug_init(void)
+>  {
+>  	int qcss_tok;
+> +	unsigned int node;
+>  
+>  #ifdef CONFIG_ARCH_CPU_PROBE_RELEASE
+>  	ppc_md.cpu_probe = dlpar_cpu_probe;
+> @@ -910,8 +969,18 @@ static int __init pseries_cpu_hotplug_init(void)
+>  	smp_ops->cpu_die = pseries_cpu_die;
+>  
+>  	/* Processors can be added/removed only on LPAR */
+> -	if (firmware_has_feature(FW_FEATURE_LPAR))
+> +	if (firmware_has_feature(FW_FEATURE_LPAR)) {
+> +		for_each_node(node) {
+> +			alloc_bootmem_cpumask_var(&node_recorded_ids_map[node]);
+> +
+> +			/* Record ids of CPU added at boot time */
+> +			cpumask_or(node_recorded_ids_map[node],
+> +				   node_recorded_ids_map[node],
+> +				   node_to_cpumask_map[node]);
+> +		}
+> +
+>  		of_reconfig_notifier_register(&pseries_smp_nb);
+> +	}
+
+This looks OK.
