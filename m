@@ -2,116 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F470352CAD
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FD92352CBA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:09:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236341AbhDBPnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 11:43:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235366AbhDBPm5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 11:42:57 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D4EEC061788
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 08:42:56 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id x21-20020a17090a5315b029012c4a622e4aso2742889pjh.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 08:42:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=948hixTMO4Bse84quoCDDTDU0D12jquiYBG/MaisshI=;
-        b=rOfzGVulAMSSNZLnXpdUSnMz9qp59WaXkf1bCdPbisSUQcE4FmyzPoa+HvgeMbj93l
-         //LpXDGPZI8qPxMgCAS6emI3JB6MgLd+ue+Goct+Ff5JnWOJ/IGdVtXmD0e4/Cc63KKG
-         t4yGRDQLmbduzsmnr5fiZ4St2SqOfotviZn9dnz2VJvtVIMUpcxdWoyKu3+VV18pB5wl
-         CX8dkPraIbgDYjb8M5mAPt5amM2hKhn76EoylG44tkrLJiAIVmlSNRwEThBmZKoE8JsK
-         54Ku+GKrgI+qkfOWbbS+65murE5mtumEh1yNijnkqVPO0ipQhRCl5n1kcSfY6MC+HWCc
-         A20g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=948hixTMO4Bse84quoCDDTDU0D12jquiYBG/MaisshI=;
-        b=EG2233byQf9XllURtX4/XWbfcVLv6WE0F8Ux12R4Lz+ogqiS753M3KDriKHvY27Iv/
-         cAhpgaWVEcNYik82c9CqODmPX0gP90JYHdXaQqvcdWFoRdDeP6WhlmPw/W3DnIzvTqzE
-         Ugf4GDGmgk0KJ2pmlj+50vaIWbqvbYGBV+XJ7f8e9Qnt7+tr55RJ2b13nl9xVGCXzN6g
-         qC0UApVshGWj494R0KrWtwDw8QGz5Z5uzGL0RFy/WQhdjRduqGW5wfs+NPB9+6PUZdhZ
-         mC09ZSf5mnWZxAkNuQTeH7DJYbVxBharY3eNr0qlsaXlnvXLsmdRwbBU2LpJ/wl0Fvau
-         Lgcg==
-X-Gm-Message-State: AOAM530FMdSKdDNjhnJBw2kk3SNTKD6kj9equBQf3gU7AJ6J3ENC+Xsf
-        bJUGDBpIGnJ1R5e3N7YFHb/HGA==
-X-Google-Smtp-Source: ABdhPJzEm9zD9QFj85ocvRmTmxRm0r8hRGMzuCeiZsQ/utPofnN/IZWYdnpG9T/w7AaWUS60aALNuA==
-X-Received: by 2002:a17:90b:201:: with SMTP id fy1mr14122204pjb.108.1617378175466;
-        Fri, 02 Apr 2021 08:42:55 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id v9sm9211979pfc.108.2021.04.02.08.42.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 08:42:54 -0700 (PDT)
-Date:   Fri, 2 Apr 2021 15:42:51 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Kai Huang <kai.huang@intel.com>, kvm@vger.kernel.org,
-        linux-sgx@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com
-Subject: Re: [PATCH v3 07/25] x86/sgx: Initialize virtual EPC driver even
- when SGX driver is disabled
-Message-ID: <YGc7ezLWEu/ZvUOu@google.com>
-References: <cover.1616136307.git.kai.huang@intel.com>
- <d35d17a02bbf8feef83a536cec8b43746d4ea557.1616136308.git.kai.huang@intel.com>
- <20210402094816.GC28499@zn.tnic>
+        id S236374AbhDBPnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 11:43:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41932 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235714AbhDBPnQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 11:43:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E43F60201;
+        Fri,  2 Apr 2021 15:43:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617378194;
+        bh=CCyYNrB4fCAm7lDyB601dmBYh9JrJ6bM/O4wfPiJbG8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RbzbFzJW3fJhDZNG76xCr5hvI2CE7abyGwVpgJJXt12GGxFEWX5zdks4l7XC9YJB8
+         7MlIZxysZ040d2W+gs8YfwdLhGywX1sssVseMQZ36sNy2LvWpfKyDef5es8vkwx5lz
+         IjbFr2KtB9tubYnE/k6Ku3w7MJ/lUGZ7DkBd6LxI=
+Date:   Fri, 2 Apr 2021 17:43:11 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Loic Poulain <loic.poulain@linaro.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Aleksander Morgado <aleksander@aleksander.es>,
+        open list <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: Re: [PATCH net-next v8 2/2] net: Add Qcom WWAN control driver
+Message-ID: <YGc7j1tOyKWA++7U@kroah.com>
+References: <1617372397-13988-1-git-send-email-loic.poulain@linaro.org>
+ <1617372397-13988-2-git-send-email-loic.poulain@linaro.org>
+ <YGckvGqSmmVjhZII@kroah.com>
+ <CAMZdPi_yZARCzMcs1137UPWpLxjFzQfbMkmSMhuwnfKvAdKX6g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210402094816.GC28499@zn.tnic>
+In-Reply-To: <CAMZdPi_yZARCzMcs1137UPWpLxjFzQfbMkmSMhuwnfKvAdKX6g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021, Borislav Petkov wrote:
-> On Fri, Mar 19, 2021 at 08:23:02PM +1300, Kai Huang wrote:
-> > Modify sgx_init() to always try to initialize the virtual EPC driver,
-> > even if the SGX driver is disabled.  The SGX driver might be disabled
-> > if SGX Launch Control is in locked mode, or not supported in the
-> > hardware at all.  This allows (non-Linux) guests that support non-LC
-> > configurations to use SGX.
-> > 
-> > Acked-by: Dave Hansen <dave.hansen@intel.com>
-> > Reviewed-by: Sean Christopherson <seanjc@google.com>
-> > Signed-off-by: Kai Huang <kai.huang@intel.com>
-> > ---
-> >  arch/x86/kernel/cpu/sgx/main.c | 10 +++++++++-
-> >  1 file changed, 9 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> > index 6a734f484aa7..b73114150ff8 100644
-> > --- a/arch/x86/kernel/cpu/sgx/main.c
-> > +++ b/arch/x86/kernel/cpu/sgx/main.c
-> > @@ -743,7 +743,15 @@ static int __init sgx_init(void)
-> >  		goto err_page_cache;
-> >  	}
-> >  
-> > -	ret = sgx_drv_init();
-> > +	/*
-> > +	 * Always try to initialize the native *and* KVM drivers.
-> > +	 * The KVM driver is less picky than the native one and
-> > +	 * can function if the native one is not supported on the
-> > +	 * current system or fails to initialize.
-> > +	 *
-> > +	 * Error out only if both fail to initialize.
-> > +	 */
-> > +	ret = !!sgx_drv_init() & !!sgx_vepc_init();
+On Fri, Apr 02, 2021 at 05:41:01PM +0200, Loic Poulain wrote:
+> On Fri, 2 Apr 2021 at 16:05, Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Fri, Apr 02, 2021 at 04:06:37PM +0200, Loic Poulain wrote:
+> > > The MHI WWWAN control driver allows MHI QCOM-based modems to expose
+> > > different modem control protocols/ports via the WWAN framework, so that
+> > > userspace modem tools or daemon (e.g. ModemManager) can control WWAN
+> > > config and state (APN config, SMS, provider selection...). A QCOM-based
+> > > modem can expose one or several of the following protocols:
+> > > - AT: Well known AT commands interactive protocol (microcom, minicom...)
+> > > - MBIM: Mobile Broadband Interface Model (libmbim, mbimcli)
+> > > - QMI: QCOM MSM/Modem Interface (libqmi, qmicli)
+> > > - QCDM: QCOM Modem diagnostic interface (libqcdm)
+> > > - FIREHOSE: XML-based protocol for Modem firmware management
+> > >         (qmi-firmware-update)
+> > >
+> > > Note that this patch is mostly a rework of the earlier MHI UCI
+> > > tentative that was a generic interface for accessing MHI bus from
+> > > userspace. As suggested, this new version is WWAN specific and is
+> > > dedicated to only expose channels used for controlling a modem, and
+> > > for which related opensource userpace support exist.
+> > >
+> > > Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
+> > > ---
+> > >  v2: update copyright (2021)
+> > >  v3: Move driver to dedicated drivers/net/wwan directory
+> > >  v4: Rework to use wwan framework instead of self cdev management
+> > >  v5: Fix errors/typos in Kconfig
+> > >  v6: - Move to new wwan interface, No need dedicated call to wwan_dev_create
+> > >      - Cleanup code (remove legacy from mhi_uci, unused defines/vars...)
+> > >      - Remove useless write_lock mutex
+> > >      - Add mhi_wwan_wait_writable and mhi_wwan_wait_dlqueue_lock_irq helpers
+> > >      - Rework locking
+> > >      - Add MHI_WWAN_TX_FULL flag
+> > >      - Add support for NONBLOCK read/write
+> > >  v7: Fix change log (mixed up 1/2 and 2/2)
+> > >  v8: - Implement wwan_port_ops (instead of fops)
+> > >      - Remove all mhi wwan data obsolete members (kref, lock, waitqueues)
+> > >      - Add tracking of RX buffer budget
+> > >      - Use WWAN TX flow control function to stop TX when MHI queue is full
+> > >
+> > >  drivers/net/wwan/Kconfig         |  14 +++
+> > >  drivers/net/wwan/Makefile        |   2 +
+> > >  drivers/net/wwan/mhi_wwan_ctrl.c | 253 +++++++++++++++++++++++++++++++++++++++
+> > >  3 files changed, 269 insertions(+)
+> > >  create mode 100644 drivers/net/wwan/mhi_wwan_ctrl.c
+> > >
+> > > diff --git a/drivers/net/wwan/Kconfig b/drivers/net/wwan/Kconfig
+> > > index 545fe54..ce0bbfb 100644
+> > > --- a/drivers/net/wwan/Kconfig
+> > > +++ b/drivers/net/wwan/Kconfig
+> > > @@ -19,4 +19,18 @@ config WWAN_CORE
+> > >         To compile this driver as a module, choose M here: the module will be
+> > >         called wwan.
+> > >
+> > > +config MHI_WWAN_CTRL
+> > > +     tristate "MHI WWAN control driver for QCOM-based PCIe modems"
+> > > +     select WWAN_CORE
+> > > +     depends on MHI_BUS
+> > > +     help
+> > > +       MHI WWAN CTRL allows QCOM-based PCIe modems to expose different modem
+> > > +       control protocols/ports to userspace, including AT, MBIM, QMI, DIAG
+> > > +       and FIREHOSE. These protocols can be accessed directly from userspace
+> > > +       (e.g. AT commands) or via libraries/tools (e.g. libmbim, libqmi,
+> > > +       libqcdm...).
+> > > +
+> > > +       To compile this driver as a module, choose M here: the module will be
+> > > +       called mhi_wwan_ctrl
+> > > +
+> > >  endif # WWAN
+> > > diff --git a/drivers/net/wwan/Makefile b/drivers/net/wwan/Makefile
+> > > index 934590b..556cd90 100644
+> > > --- a/drivers/net/wwan/Makefile
+> > > +++ b/drivers/net/wwan/Makefile
+> > > @@ -5,3 +5,5 @@
+> > >
+> > >  obj-$(CONFIG_WWAN_CORE) += wwan.o
+> > >  wwan-objs += wwan_core.o
+> > > +
+> > > +obj-$(CONFIG_MHI_WWAN_CTRL) += mhi_wwan_ctrl.o
+> > > diff --git a/drivers/net/wwan/mhi_wwan_ctrl.c b/drivers/net/wwan/mhi_wwan_ctrl.c
+> > > new file mode 100644
+> > > index 0000000..f2fab23
+> > > --- /dev/null
+> > > +++ b/drivers/net/wwan/mhi_wwan_ctrl.c
+> > > @@ -0,0 +1,253 @@
+> > > +// SPDX-License-Identifier: GPL-2.0-only
+> > > +/* Copyright (c) 2021, Linaro Ltd <loic.poulain@linaro.org> */
+> > > +#include <linux/kernel.h>
+> > > +#include <linux/mhi.h>
+> > > +#include <linux/mod_devicetable.h>
+> > > +#include <linux/module.h>
+> > > +#include <linux/wwan.h>
+> > > +
+> > > +/* MHI wwan flags */
+> > > +#define MHI_WWAN_DL_CAP              BIT(0)
+> > > +#define MHI_WWAN_UL_CAP              BIT(1)
+> > > +#define MHI_WWAN_STARTED     BIT(2)
+> > > +
+> > > +#define MHI_WWAN_MAX_MTU     0x8000
+> > > +
+> > > +struct mhi_wwan_dev {
+> > > +     /* Lower level is a mhi dev, upper level is a wwan port */
+> > > +     struct mhi_device *mhi_dev;
+> > > +     struct wwan_port *wwan_port;
+> > > +
+> > > +     /* State and capabilities */
+> > > +     unsigned long flags;
+> > > +     size_t mtu;
+> > > +
+> > > +     /* Protect against concurrent TX and TX-completion (bh) */
+> > > +     spinlock_t tx_lock;
+> > > +
+> > > +     struct work_struct rx_refill;
+> > > +     atomic_t rx_budget;
+> >
+> > Why is this atomic if you have a real lock already?
 > 
-> This is a silly way of writing:
-> 
->         if (sgx_drv_init() && sgx_vepc_init())
->                 goto err_kthread;
-> 
-> methinks.
+> Access to rx_budget value is not under any locking protection and can
+> be modified (dec/inc) from different and possibly concurrent places.
 
-Nope!  That's wrong, as sgx_epc_init() will not be called if sgx_drv_init()
-succeeds.  And writing it as "if (sgx_drv_init() || sgx_vepc_init())" is also
-wrong since that would kill SGX when one of the drivers is alive and well.
+Then use the lock you have instead of creating a "fake lock" with the
+atomic value.  If that's really even working (you can't check it and do
+something based on it as it could change right afterward).
+
+> > > +};
+> > > +
+> > > +static bool mhi_wwan_ctrl_refill_needed(struct mhi_wwan_dev *mhiwwan)
+> > > +{
+> > > +     if (!test_bit(MHI_WWAN_STARTED, &mhiwwan->flags))
+> > > +             return false;
+> > > +
+> > > +     if (!test_bit(MHI_WWAN_DL_CAP, &mhiwwan->flags))
+> > > +             return false;
+> >
+> > What prevents these bits from being changed right after reading them?
+> 
+> Nothing, I've think (maybe wrongly) it's not a problem in the current code.
+
+Why not?  Why isn't the lock being used here?
+
+Where is the lock used?
+
+> > > +
+> > > +     if (!atomic_read(&mhiwwan->rx_budget))
+> > > +             return false;
+> >
+> > Why is this atomic?  What happens if it changes right after returning?
+> 
+> 
+> If rx_budget was null and becomes non-null, it has been incremented by
+> __mhi_skb_destructor() which will anyway call
+> mhi_wwan_ctrl_refill_needed() again, so that's not a problem. On the
+> other hand, if rx_budget was non-null and becomes null, the
+> refill_work that will be unnecessarily scheduled will check the value
+> again and will just return without doing anything.
+
+You should document the heck out of this as it's not obvious :(
+
+> >
+> > This feels really odd.
+> >
+> > > +
+> > > +     return true;
+> > > +}
+> > > +
+> > > +void __mhi_skb_destructor(struct sk_buff *skb)
+> > > +{
+> > > +     struct mhi_wwan_dev *mhiwwan = skb_shinfo(skb)->destructor_arg;
+> > > +
+> > > +     /* RX buffer has been consumed, increase the allowed budget */
+> > > +     atomic_inc(&mhiwwan->rx_budget);
+> >
+> > So this is a reference count?  What is this thing?
+> 
+> This represents the remaining number of buffers that can be allocated
+> for RX. It is decremented When a buffer is allocated/queued and
+> incremented when a buffer is consumed (e.g. on WWAN port reading).
+
+Why have any budget at all?
+
+That being said, budgets are fine, but properly lock things please.
+
+> > > +
+> > > +     if (mhi_wwan_ctrl_refill_needed(mhiwwan))
+> > > +             schedule_work(&mhiwwan->rx_refill);
+> >
+> > What if refill is needed right after this check?  Did you just miss the
+> > call?
+> 
+> In running condition, refill is allowed when rx_budget is non-zero,
+> and __mhi_skb_destructor() is the only path that increments the budget
+> (and so allow refill) and schedules the refill,  so for this scenario
+> to happen it would mean that a parallel  __mhi_skb_destructor() is
+> executed (and incremented rx_budget), so this second parallel call
+> will schedule the refill.
+> 
+> I realize it's probably odd, but I don't see any scenario in which we
+> can end badly (e.g. missing refill scheduling, queueing too many
+> buffers), but I admit it would be certainly simpler and less
+> error-prone with regular locking.
+
+Document this all please.
+
+> > > +static const struct mhi_device_id mhi_wwan_ctrl_match_table[] = {
+> > > +     { .chan = "DUN", .driver_data = WWAN_PORT_AT },
+> > > +     { .chan = "MBIM", .driver_data = WWAN_PORT_MBIM },
+> > > +     { .chan = "QMI", .driver_data = WWAN_PORT_QMI },
+> > > +     { .chan = "DIAG", .driver_data = WWAN_PORT_QCDM },
+> > > +     { .chan = "FIREHOSE", .driver_data = WWAN_PORT_FIREHOSE },
+> >
+> > Wait, I thought these were all going to be separate somehow.  Now they
+> > are all muxed back together?
+> 
+> A WWAN 'port driver' abstracts the method for accessing WWAN control
+> protocols, so that userspace can e.g. talk MBIM to the port without
+> knowledge of the underlying bus. Here this is just about abstracting
+> the MHI/PCI transport, a  MHI modem can support one or several of
+> these protocols. So this MHI driver binds all MHI control devices, and
+> each one is registered as a WWAN port. Other 'port drivers' can be
+> created for different busses or vendors.
+
+ok, feels odd, I'll review it again for your next submission as this
+seems like just a "raw pipe" to the device and is not actually
+standardizing anything, but I could be totally wrong.
+
+thanks,
+
+greg k-h
