@@ -2,128 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D83B2352BEF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B12A352BF1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 18:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234618AbhDBOpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 10:45:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49416 "EHLO
+        id S234704AbhDBOps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 10:45:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234488AbhDBOpl (ORCPT
+        with ESMTP id S234488AbhDBOpr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 10:45:41 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3505C0613E6;
-        Fri,  2 Apr 2021 07:45:39 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id u10so5827057lju.7;
-        Fri, 02 Apr 2021 07:45:39 -0700 (PDT)
+        Fri, 2 Apr 2021 10:45:47 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47512C0613E6;
+        Fri,  2 Apr 2021 07:45:46 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id g8so7855361lfv.12;
+        Fri, 02 Apr 2021 07:45:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Rl/AH5bOU3o25vlCH5L0QV/2swJFfE1imy/Wnue8Qhk=;
-        b=M7NkqyA1ID0tT6z8DU66Gt8ajgUmfOAqC3szK++GrkOCNnAtfisJx9wSC1tmgtOR4S
-         gMw30FIL1OE/oS346jf5tcgLBLUy6YD86q6sXA9s7v89AqRwgkM1L7yHPUIU48wzymqk
-         p3HDTc5ClsByc1XYmr5egrGAQo9MlvGzLedNAx/1dskM+arkqBhZn3P+RLhZa50rCFa7
-         uJEpgGqd2m9MgqHVfLLHvw98szZdmD6/Dw9+H9yfnTnm71TScybBw1uxNQLnIrIX8l+D
-         vq7Yp/WAEVQIB6GdYYpPKAL+RMk+y3e5l2iW5aLWXdaifkrpjBL5s+GKPlwStA5C0aIV
-         kP/g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=4L8O9R+b3yxpyXZWZYDFuq/gdZ5zPognKIR1rH6oTng=;
+        b=l2MaDNhNcxkm/UMV/ZuFb/LtA5kV0diO7St9qdz8d8QmutyoPWqSLYJgIwxrpyoYAn
+         I0tGM2no+l8y3vFC/ygEwXOIqcebgVrH4IPM64mQjPrb3qsKWvN8XRft8P9anE9N+Iv/
+         fXG8aqs/4EmD30d1od/4EXag8dbe3pz18QvXBB+Pq/Kpu1GRsZT3jqgIv46geJ9WX3JI
+         2xqQxEd7AEKx9qlZ2ME6VKD5ssHk486e1piPr5arbT03XIDPj6ZrDdyCOo0zLZKt2T1J
+         6z0ENXcDcSijzDQHuUBNGwK8NgWIh2g7sWmgm+rChAQxe30Xu9GQa6vewnfYgVHnIX0p
+         t8zQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Rl/AH5bOU3o25vlCH5L0QV/2swJFfE1imy/Wnue8Qhk=;
-        b=ACxyLs9GtDakeDheIwERvX32Tt7qbgwsftXGSECSktbyvFUqO574pJusO6WdwCc00s
-         42GDwzlCQDgw83pAe+Aya8xBLk1PZ1V8s97rSd0oMmVddZr7eIemw5jnaOe/Sl421JLJ
-         KSPsrEepV5Lnup1duuGOBgYXgrJOJffFMc5hnnZUfTLSSLjB7kL12LPgnsfYbJlHwMR3
-         chZ+0tHwJ2NmY0HLSLSw3zHABNvqnrB8kvCsFha3hcXnTaRrJwmQ/XPGvZkoQBMtoztZ
-         VHrBzqc6k8k2iUQYuBz1FqntmBNuuTfeB18yAtglxzRSICJ6CtKtS8A483NcVwhob7QS
-         XOSg==
-X-Gm-Message-State: AOAM531OCNfwgaanYqXtpnAnk61XHy8iwoS7byjr0DCcukX6Ho92N4k5
-        YrNXFi6DHSW+ss1EG4lCERiTw8mzN7s=
-X-Google-Smtp-Source: ABdhPJy3qAkxvudbG0sXL/fImwxjqWcSzYdHSMMPTL/enfImSjgISBNXc/vNovsEgTv5hAmsQPS5uA==
-X-Received: by 2002:a2e:5315:: with SMTP id h21mr8254981ljb.299.1617374738142;
-        Fri, 02 Apr 2021 07:45:38 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-85.dynamic.spd-mgts.ru. [109.252.193.85])
-        by smtp.googlemail.com with ESMTPSA id j22sm883511lfr.37.2021.04.02.07.45.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Apr 2021 07:45:37 -0700 (PDT)
-Subject: Re: [PATCH v2 5/6] dt-bindings: memory: tegra20: emc: Convert to
- schema
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210330230445.26619-1-digetx@gmail.com>
- <20210330230445.26619-6-digetx@gmail.com>
- <1617198059.590387.2074856.nullmailer@robh.at.kernel.org>
- <b4f7c7fb-1332-8490-fb4f-293fd357338e@gmail.com>
- <20210401155506.GA498681@robh.at.kernel.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <a584f3b9-ba15-a027-2496-bf757cf7ca06@gmail.com>
-Date:   Fri, 2 Apr 2021 17:45:04 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4L8O9R+b3yxpyXZWZYDFuq/gdZ5zPognKIR1rH6oTng=;
+        b=YKN3c0J/oAADLXKa/rLn2N0EnmoioEAdzd3icR4HAU0lhJaKcO/FGun+FoNnLzCUzp
+         R/THDSnCsWK5+LD4PjOXJTHCEA6MYI0NfdyTsN39ZApztX9yYfvRaOX3Im9VXw6lkoVR
+         r0GKdHG2d9rhefKZwwDzSW+AcCVa5JsucEwpCbj6sOqkzyNLHoF/f/s7oVRQfaWtEAMW
+         jYieCI3cePQbyVAr7upipLherYfmr1LbYAsMw/gCsfXYt/G/U6QB/q5rVvZWjoV6FHNY
+         lhl/nR6L3wpwnVutDMUMVx8Vf2ztyK1yFQmxw2sHadpqS0iV7dTA/moGeyc2orgX/z/Q
+         YJAQ==
+X-Gm-Message-State: AOAM533nczesq09qCOdVhNhsYm/dXIAtduX7usr70SPDMje+smWOXuAK
+        rufUrBnj9gBDGxryrteVcv4zJdY6NB7ol+OnzVr4ULr5vJM=
+X-Google-Smtp-Source: ABdhPJy1+4Hin00DaqW1l//jBwnZzIPQeswhbDJmhR8PYzmFP0Z642KTd/28afaSvr4/Wl3Y7sNf4jbsUkemtteeztk=
+X-Received: by 2002:a19:6d0:: with SMTP id 199mr9207233lfg.18.1617374744738;
+ Fri, 02 Apr 2021 07:45:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210401155506.GA498681@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <16ceff73-1257-fc3d-aade-43656c7216e7@molgen.mpg.de>
+ <12e8f7f1-6655-9f0b-72b1-0908f229dcac@molgen.mpg.de> <b5eb567d-9866-8f0f-ea61-83ae97d4d21f@molgen.mpg.de>
+In-Reply-To: <b5eb567d-9866-8f0f-ea61-83ae97d4d21f@molgen.mpg.de>
+From:   Roger Heflin <rogerheflin@gmail.com>
+Date:   Fri, 2 Apr 2021 09:45:33 -0500
+Message-ID: <CAAMCDedmGUcWY=9Nb36gXoo0+F82rhq=-6yKZ1xPf74Gj0mq7Q@mail.gmail.com>
+Subject: Re: OT: Processor recommendation for RAID6
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     Linux RAID <linux-raid@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-01.04.2021 18:55, Rob Herring пишет:
-> On Wed, Mar 31, 2021 at 05:59:39PM +0300, Dmitry Osipenko wrote:
->> 31.03.2021 16:40, Rob Herring пишет:
->>> On Wed, 31 Mar 2021 02:04:44 +0300, Dmitry Osipenko wrote:
->>>> Convert Tegra20 External Memory Controller binding to schema.
->>>>
->>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>>> ---
->>>>  .../memory-controllers/nvidia,tegra20-emc.txt | 130 --------
->>>>  .../nvidia,tegra20-emc.yaml                   | 294 ++++++++++++++++++
->>>>  2 files changed, 294 insertions(+), 130 deletions(-)
->>>>  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
->>>>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
->>>>
->>>
->>> My bot found errors running 'make dt_binding_check' on your patch:
->>>
->>> yamllint warnings/errors:
->>>
->>> dtschema/dtc warnings/errors:
->>> Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.example.dts:33.26-55.15: Warning (unit_address_vs_reg): /example-0/external-memory-controller@7000f400/emc-tables@0: node has a unit name, but no reg or ranges property
->>>
->>> See https://patchwork.ozlabs.org/patch/1460288
->>>
->>> This check can fail if there are any dependencies. The base for a patch
->>> series is generally the most recent rc1.
->>>
->>> If you already ran 'make dt_binding_check' and didn't see the above
->>> error(s), then make sure 'yamllint' is installed and dt-schema is up to
->>> date:
->>>
->>> pip3 install dtschema --upgrade
->>>
->>> Please check and re-submit.
->>>
->>
->> FYI, I'm aware about this warning and I think it's fine to skip it in
->> the case of this binding. 
-> 
-> It's not because dt_binding_check should be warning free.
-> 
->> The dtbs_check doesn't bother with that warning.
-> 
-> With W=1 it will. It's off by default because there are too many of 
-> these warnings. Patches welcome.
+On Fri, Apr 2, 2021 at 4:13 AM Paul Menzel <pmenzel@molgen.mpg.de> wrote:
+>
+> Dear Linux folks,
+>
+>
 
-Such warning could be silenced with some kind of a new pragma option in
-schema which will tell what warnings are inappropriate.
+> > Are these values a good benchmark for comparing processors?
+>
+> After two years, yes they are. I created 16 10 GB files in `/dev/shm`,
+> set them up as loop devices, and created a RAID6. For resync speed it
+> makes difference.
+>
+> 2 x AMD EPYC 7601 32-Core Processor:    34671K/sec
+> 2 x Intel Xeon Gold 6248 CPU @ 2.50GHz: 87533K/sec
+>
+> So, the current state of affairs seems to be, that AVX512 instructions
+> do help for software RAIDs, if you want fast rebuild/resync times.
+> Getting, for example, a four core/eight thread Intel Xeon Gold 5222
+> might be useful.
+>
+> Now, the question remains, if AMD processors could make it up with
+> higher performance, or better optimized code, or if AVX512 instructions
+> are a must,
+>
+> [=E2=80=A6]
+>
+>
+> Kind regards,
+>
+> Paul
+>
+>
+> PS: Here are the commands on the AMD EPYC system:
+>
+> ```
+> $ for i in $(seq 1 16); do truncate -s 10G /dev/shm/vdisk$i.img; done
+> $ for i in /dev/shm/v*.img; do sudo losetup --find --show $i; done
+> /dev/loop0
+> /dev/loop1
+> /dev/loop2
+> /dev/loop3
+> /dev/loop4
+> /dev/loop5
+> /dev/loop6
+> /dev/loop7
+> /dev/loop8
+> /dev/loop9
+> /dev/loop10
+> /dev/loop11
+> /dev/loop12
+> /dev/loop13
+> /dev/loop14
+> /dev/loop15
+> $ sudo mdadm --create /dev/md1 --level=3D6 --raid-devices=3D16
+> /dev/loop{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15}
+> mdadm: Defaulting to version 1.2 metadata
+> mdadm: array /dev/md1 started.
+> $ more /proc/mdstat
+> Personalities : [linear] [raid0] [raid1] [raid6] [raid5] [raid4]
+> [multipath]
+> md1 : active raid6 loop15[15] loop14[14] loop13[13] loop12[12]
+> loop11[11] loop10[10] loop9[9] loop8[8] loop7[7] loop6[6] loop5[5]266
+> loop4[4] loop3[3] lo
+> op2[2] loop1[1] loop0[0]
+>        146671616 blocks super 1.2 level 6, 512k chunk, algorithm 276
+> [16/16] [UUUUUUUUUUUUUUUU]
+>        [>....................]  resync =3D  3.9% (416880/10476544)
+> finish=3D5.6min speed=3D29777K/sec
+>
+> unused devices: <none>
+> $ more /proc/mdstat
+> Personalities : [linear] [raid0] [raid1] [raid6] [raid5] [raid4]
+> [multipath]
+> md1 : active raid6 loop15[15] loop14[14] loop13[13] loop12[12]
+> loop11[11] loop10[10] loop9[9] loop8[8] loop7[7] loop6[6] loop5[5]
+> loop4[4] loop3[3] lo
+> op2[2] loop1[1] loop0[0]
+>        146671616 blocks super 1.2 level 6, 512k chunk, algorithm 2
+> [16/16] [UUUUUUUUUUUUUUUU]
+>        [>....................]  resync =3D  4.1% (439872/10476544)
+> finish=3D5.3min speed=3D31419K/sec
+> $ sudo mdadm -S /dev/md1
+> mdadm: stopped /dev/md1
+> $ sudo losetup -D
+> $ sudo rm /dev/shm/vdisk*.img
 
-But since there is no such option today, perhaps indeed should be better
-to just add a dummy reg property and fix the device-trees.
+
+I think you are testing something else.  Your speeds are way below
+what the raw processor can do. You are probably testing memory
+speed/numa arch differences between the 2.
+
+On the intel arch there are 2 numa nodes total with 4 channels, so the
+system  has 8 usable channels of bandwidth, but a allocation on a
+single numa node will only have 4 channels usable (ddr4-2933)
+
+On the epyc there are 8 numa nodes with 2 channels each (ddr4-2666),
+so any single memory allocation will have only 2 channels available
+and if the accesses are across the numa bus will be slower.
+
+So 4*2933/2*2666 =3D 2.20 * 34671 =3D 76286 (fairly close to your results).
+
+How the allocation for memory works depends a lot on how much ram you
+actually have per numa node and how much for the whole machine.  But
+any single block for any single device should be on a single numa node
+almost all of the time.
+
+You might want to drop the cache before the test, run numactl
+--hardware to see how much memory is free per numa node, then rerun
+the test and at the of the test before the stop run numactl --hardware
+again to see how it was spread across numa nodes.  Even if it spreads
+it across multiple numa nodes that may well mean that on the epyc case
+you are running with several numa nodes were the main raid processes
+are running against remote numa nodes, and because intel only has 2
+then there is a decent chance that it is only running on 1 most of the
+time (so no remote memory).  I have also seen in benchmarks I have run
+on 2P and 4P intel machines that interleaved on a 2P single thread job
+is faster than running on a single numa nodes memory (with the process
+pinned to a single cpu on one of the numa nodes, memory interleaved
+over both), but on a 4P/4numa node machine interleaving slows it down
+significantly.  And in the default case any single write/read of a
+block is likely only on a single numa node so that specific read/write
+is constrained by a single numa node bandwidth giving an advantage to
+fewer faster/bigger numa nodes and less remote memory.
+
+Outside of rebooting and forcing the entire machine to interleave I am
+not sure how to get shm to interleave.   It might be a good enough
+test to just force the epyc to interleave and see if the benchmark
+result changes in any way.  If the result does change repeat on the
+intel.  Overall for the most part the raid would not be able to use
+very many cpu anyway, so a bigger machine with more numa nodes may
+slow down the overall rate.
