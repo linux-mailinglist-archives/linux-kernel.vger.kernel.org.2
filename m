@@ -2,154 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1403C352689
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 08:18:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B2EF35268B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Apr 2021 08:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233863AbhDBGS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 02:18:28 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:34924 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233841AbhDBGSZ (ORCPT
+        id S230426AbhDBGTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 02:19:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229599AbhDBGTt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 02:18:25 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617344304; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=+fGTIpJoMrZer2FW4wtM/kmw4106dhSKX2a1plXyCSI=; b=rDb6cGq6wl9XsueUfRqXqGtoswfvxzZtqHHR61kRAR6rGSo4ERCUJBk6BKrAhZ6ooEHn3jvW
- VjNvIdOuoQe9x3pxsI8cb2szSoyzdnb8Hu8EjeVkRmbpYDbGAYobXYy4Z0hjklRTvZkBb3Sd
- 7i445LRWUWRryhDSGlx7PeXRo+w=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 6066b7308807bcde1d04b4ff (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 02 Apr 2021 06:18:24
- GMT
-Sender: deesin=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D88C6C43463; Fri,  2 Apr 2021 06:18:23 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from deesin-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: deesin)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7CF98C43462;
-        Fri,  2 Apr 2021 06:18:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7CF98C43462
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=deesin@codeaurora.org
-From:   Deepak Kumar Singh <deesin@codeaurora.org>
-To:     bjorn.andersson@linaro.org, clew@codeaurora.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org,
-        Deepak Kumar Singh <deesin@codeaurora.org>,
-        Andy Gross <agross@kernel.org>
-Subject: [PATCH V1 2/2] soc: qcom: aoss: Add debugfs entry
-Date:   Fri,  2 Apr 2021 11:47:18 +0530
-Message-Id: <1617344238-12137-3-git-send-email-deesin@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1617344238-12137-1-git-send-email-deesin@codeaurora.org>
-References: <1617344238-12137-1-git-send-email-deesin@codeaurora.org>
+        Fri, 2 Apr 2021 02:19:49 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB493C0613E6;
+        Thu,  1 Apr 2021 23:19:47 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id y17so3992021ila.6;
+        Thu, 01 Apr 2021 23:19:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=44Sen/sBOu6E6dI3+swHBDOOeHMhhOSYmQFra7wWgWM=;
+        b=A4p8Q5kjRHDn7T1INRDlx1CA46ppc5lqZ9Y5tR22QbUQE4JmcSLSlTgRavElqkFlPN
+         q2VqXolnBSooi3TAnCKxfmdmoeu+IDoWIDyk1qKyvMoAcqTT3maX/YrDW7W/IS3yJvwp
+         QkxUoA01apspYrU/jnabqO1W5aDfr+S4jaUwDhfbT5JwrYD9M1pF2bHwKyezTzloLyxO
+         OFrqpJ2ugJ6hUC5Nqv7TjX2lcd4mMQD3rnlX8FoA3NtAHoI7JdEIWG6WELjODpSiwsg+
+         QlocUunyDDwSHHrVpgI4zBj621hipJDLxF4+pUAvmXTG4mVm99szOgnj4Yf64ENg2Oej
+         Cihg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=44Sen/sBOu6E6dI3+swHBDOOeHMhhOSYmQFra7wWgWM=;
+        b=soxWOfQLLNWOxLuPYXjW35KnZhKQNcmq+aaJ3mqt4Hg+sfCeS//uLjJ9ulHafAYZyC
+         XsOAzw3xrnAeTN/+nn+43sdQ+Zmcx1HEqz4qRMWhXomJdPIrmwFk9yolRH9jzdlbrO5b
+         upRCOhm7s0D8ZneZkHk1kWttCXAKvTy6okfAFVjoVqGBPYTezSxAFScjs/L115lW4UJO
+         4520VimBjGsPMgBAAEX5D9pi2JBMfcksZxcC30oUOnNSYTFnJuTzuvO3srhSgYzTN+xr
+         v5przxZCvEX3ikrIMr4eOM+QqvrJrSoUHggZxzQ3mlmEdQHhEmF0P4/899HNSnxLqEEN
+         IaXA==
+X-Gm-Message-State: AOAM533z+SNuddo31JWswXjd6c6mIVRcT2LHdVaLeHXJk0u70LHD/43L
+        ySO1KsfK8pgSEOBr9IbkswDEBURA60gp2Xj8ngQ=
+X-Google-Smtp-Source: ABdhPJyzJEDKTydXW/A8QNmnZ8I6gAv437PMJVIRUEJjpmVTLK9+HqMwT5rc+FLlIgZfP19axW8IHW9mwXXEe+KHAAk=
+X-Received: by 2002:a92:2c08:: with SMTP id t8mr9814763ile.72.1617344387083;
+ Thu, 01 Apr 2021 23:19:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210325032202.GS1719932@casper.infradead.org>
+In-Reply-To: <20210325032202.GS1719932@casper.infradead.org>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Fri, 2 Apr 2021 09:19:36 +0300
+Message-ID: <CAOQ4uxikP_GFNYzgatON2dRQyiHvTBP5iO4Xk091ruLUBDMt-w@mail.gmail.com>
+Subject: Re: [RFC] Convert sysv filesystem to use folios exclusively
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It can be useful to control the different power states of various
-parts of hardware for device testing. Add a debugfs node for qmp so
-messages can be sent to aoss for debugging and testing purposes.
+On Thu, Mar 25, 2021 at 5:43 AM Matthew Wilcox <willy@infradead.org> wrote:
+>
+>
+> I decided to see what a filesystem free from struct page would look
+> like.  I chose sysv more-or-less at random; I wanted a relatively simple
+> filesystem, but I didn't want a toy.  The advantage of sysv is that the
+> maintainer is quite interested in folios ;-)
+>
+> $ git grep page fs/sysv
+> fs/sysv/dir.c:#include <linux/pagemap.h>
+> fs/sysv/dir.c:          if (offset_in_page(diter->pos)) {
+> fs/sysv/inode.c:        .get_link       = page_get_link,
+> fs/sysv/inode.c:        truncate_inode_pages_final(&inode->i_data);
+> fs/sysv/itree.c:        block_truncate_page(inode->i_mapping, inode->i_size, get_block);
+> fs/sysv/itree.c:                truncate_pagecache(inode, inode->i_size);
+> fs/sysv/itree.c:        .readpage = sysv_read_folio,
+> fs/sysv/itree.c:        .writepage = sysv_write_folio,
 
-Signed-off-by: Chris Lew <clew@codeaurora.org>
-Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
----
- drivers/soc/qcom/qcom_aoss.c | 41 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
+I would like to address only the social engineering aspect of the s/page/folio
+conversion.
 
-diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
-index 5c643f0..1789880 100644
---- a/drivers/soc/qcom/qcom_aoss.c
-+++ b/drivers/soc/qcom/qcom_aoss.c
-@@ -4,6 +4,7 @@
-  */
- #include <dt-bindings/power/qcom-aoss-qmp.h>
- #include <linux/clk-provider.h>
-+#include <linux/debugfs.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/mailbox_client.h>
-@@ -86,6 +87,9 @@ struct qmp {
- 	struct clk_hw qdss_clk;
- 	struct genpd_onecell_data pd_data;
- 	struct qmp_cooling_device *cooling_devs;
-+#if IS_ENABLED(CONFIG_DEBUG_FS)
-+	struct dentry *debugfs_file;
-+#endif /* CONFIG_DEBUG_FS */
- };
- 
- struct qmp_pd {
-@@ -549,6 +553,34 @@ struct qmp *qmp_get(struct device *dev)
+Personally, as a filesystem developer, I find the concept of the folio
+abstraction very useful and I think that the word is short, clear and witty.
+
+But the example above (writepage = sysv_write_folio) just goes to show
+how deeply rooted the term 'page' is throughout the kernel and this is
+just the tip of the iceberg. There are documents, comments and decades
+of using 'page' in our language - those will be very hard to root out.
+
+My first impression from looking at sample patches is that 90% of the churn
+does not serve any good purpose and by that, I am referring to the
+conversion of local variable names and struct field names s/page/folio.
+
+Those conversions won't add any clarity to subsystems that only need to
+deal with the simple page type (i.e. non-tail pages).
+The compiler type checks will have already did that job already and changing
+the name of the variables does not help in this case.
+
+I think someone already proposed the "boring" name struct page_head as
+a replacement for the "cool" name struct folio.
+
+Whether it's page_head, page_ref or what not, anything that can
+be written in a way that these sort of "thin" conversions make sense:
+
+-static int sysv_readpage(struct file *file, struct page *page)
++static int sysv_readpage(struct file *file, struct page_head *page)
+ {
+       return block_read_full_page(page, get_block);
  }
- EXPORT_SYMBOL(qmp_get);
- 
-+#if IS_ENABLED(CONFIG_DEBUG_FS)
-+static ssize_t aoss_dbg_write(struct file *file, const char __user *userstr,
-+			      size_t len, loff_t *pos)
-+{
-+	struct qmp *qmp = file->private_data;
-+	char buf[QMP_MSG_LEN] = {};
-+	int ret;
-+
-+	if (!len || len >= QMP_MSG_LEN)
-+		return len;
-+
-+	ret  = copy_from_user(buf, userstr, len);
-+	if (ret) {
-+		dev_err(qmp->dev, "copy from user failed, ret:%d\n", ret);
-+		return len;
-+	}
-+
-+	ret = qmp_send(qmp, buf, QMP_MSG_LEN);
-+
-+	return ret ? ret : len;
-+}
-+
-+static const struct file_operations aoss_dbg_fops = {
-+	.open = simple_open,
-+	.write = aoss_dbg_write,
-+};
-+#endif /* CONFIG_DEBUG_FS */
-+
- static int qmp_probe(struct platform_device *pdev)
- {
- 	struct resource *res;
-@@ -603,6 +635,11 @@ static int qmp_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, qmp);
- 
-+#if IS_ENABLED(CONFIG_DEBUG_FS)
-+	qmp->debugfs_file = debugfs_create_file("aoss_send_message", 0220, NULL,
-+						qmp, &aoss_dbg_fops);
-+#endif /* CONFIG_DEBUG_FS */
-+
- 	return 0;
- 
- err_remove_qdss_clk:
-@@ -619,6 +656,10 @@ static int qmp_remove(struct platform_device *pdev)
- {
- 	struct qmp *qmp = platform_get_drvdata(pdev);
- 
-+#if IS_ENABLED(CONFIG_DEBUG_FS)
-+	debugfs_remove(qmp->debugfs_file);
-+#endif /* CONFIG_DEBUG_FS */
-+
- 	qmp_qdss_clk_remove(qmp);
- 	qmp_pd_remove(qmp);
- 	qmp_cooling_devices_remove(qmp);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
 
+So when a filesystem developer reviews your conversion patch
+he goes: "Whatever, if the compiler says this is fine, it's fine".
+
+Thanks,
+Amir.
