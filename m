@@ -2,192 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3D13534DA
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 19:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C933534DE
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 19:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236936AbhDCRNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 13:13:51 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:55540 "EHLO pegase1.c-s.fr"
+        id S236944AbhDCRPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 13:15:21 -0400
+Received: from mout.gmx.net ([212.227.15.15]:42917 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236724AbhDCRNt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 13:13:49 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FCNml41kPz9v2DJ;
-        Sat,  3 Apr 2021 19:13:43 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 8DTnTeSpR-u2; Sat,  3 Apr 2021 19:13:43 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FCNml2tcJz9v2DC;
-        Sat,  3 Apr 2021 19:13:43 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 16DC78B76D;
-        Sat,  3 Apr 2021 19:13:45 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id YZX0c__H92mI; Sat,  3 Apr 2021 19:13:44 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 323038B76A;
-        Sat,  3 Apr 2021 19:13:44 +0200 (CEST)
-Subject: Re: [PATCH 3/5] crypto: ccp: Play nice with vmalloc'd memory for SEV
- command structs
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        John Allen <john.allen@amd.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>
-References: <20210402233702.3291792-1-seanjc@google.com>
- <20210402233702.3291792-4-seanjc@google.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <8a9c02a4-e17f-5191-bd93-6c8dd654a30a@csgroup.eu>
-Date:   Sat, 3 Apr 2021 19:13:42 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S236819AbhDCRPU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Apr 2021 13:15:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1617470100;
+        bh=JrV89Lo/xurYMRPkWpl1O0IqJxEWTwx1p8wZRHot3Tk=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=cOmkdq+7mvDKGLg+zGlgtPtlMu8zgGX/jZSScRKGuxkD9QIyYuZ+el3+qXXK3XSBl
+         CETSiUc7XzYi3sVtgYfp0fMTY7htPg3OD4ug7NlKTMDNnkhhYlHlu6YRQb4M38ZlJr
+         1PL9uFQOeAs0V4JIexz30y81hG9F70sMfyi2Rf5U=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.55] ([95.91.192.147]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MatVh-1m0Qmt2evj-00cNrs; Sat, 03
+ Apr 2021 19:15:00 +0200
+Subject: Re: [PATCH net-next v1 2/9] net: dsa: tag_ar9331: detect IGMP and MLD
+ packets
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+References: <20210403114848.30528-1-o.rempel@pengutronix.de>
+ <20210403114848.30528-3-o.rempel@pengutronix.de> <YGiAjngOfDVWz/D7@lunn.ch>
+From:   Oleksij Rempel <linux@rempel-privat.de>
+Message-ID: <f4856601-4219-09c7-2933-2161afd03abe@rempel-privat.de>
+Date:   Sat, 3 Apr 2021 19:14:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210402233702.3291792-4-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YGiAjngOfDVWz/D7@lunn.ch>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Gtx01aF/6gl4/c7myW4dDa77MMX4E5f7rZ2FRxZX8CruSrEy5ZP
+ ldPhJ0dUlDXXSMiJmc3cn7eu1lAxPgy6rOVuCc5jjJnyqEn8b91kNJuP/a6F8n7cNf606CH
+ qynwN1zRHnxJuaTyqzVIq30YCvcSBT5B17vdepDD9wtF/tQrOWHNxO5F4+9lAgKxxOVTTLN
+ WV1M0Zrcgq856HWp4zaoQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:dvXwZOyeFAw=:4WxPuj6fRWDf420c12wRU+
+ lf9oQsAXeYf+0nhIv/xMBe2feFjxWgToHawWgdcqj6P74EsnTvT8WMBU/s1+SWwHUdGy8sZ67
+ 5KU5x7WBxJDGiZDkXjZfcPPvdntOwjapLja+FVQmAp2nOh2VYV6XBuB0dW5s3AvqkQciIbLu2
+ pQfw/mxAro6nQJGv3a2NuObrvh5s14bRnuSNnjPyQFe5NEcsLhGhW/mOhCIykehjDvxG91OzJ
+ zradMsx0MA08SYBOKdY++rDrUAecbUuwc/RJ9v995/CaAPFmn36Pp2eQbCmiIVqswi5hTTuAO
+ 5sBuTZPOrbI8eJmR+wiooDudnVfhMRZ8G0x3Dx+V/v+2Qdkf++UViyY+Gop18zWl9G2yevxlr
+ UqK1+daEZfnb8oyj7oQ8dtpaMAxmQ28qyOd+aE+ndh45eIg6KdNd/oKNm/mVIzyF3DzB8Ljjh
+ 3clKiN74qvwCvYg32IhScbd/vK7xsyEz2WLsMsrpm5mxpPfA4fgF9id1rf+kIsmN9u9YggiOs
+ 2cuWJOpFQzkluXkY3b8HyNX+GcEfQ5hElYuKBSeSTfeUsco8lksMn95hqorYKyvjmGUXX2AKU
+ RBi6jm8T6SPvi445Au+tvUUObggj0JOKRvyb9Gr8VIdL5SousdH/C2uIh/bJsqhcx5jmJFNXx
+ 2Pzj8P5811I1FpZTG1aX3LuHVaVOgGZRwBzxfE3/6TToGefbv5yLkwUspod75kfe0b5PWa0wL
+ gR5cwjizmg1XupPR/OH0tXa+4g9QfxtYhKwy2HmLYiFHRO4RaPZJ516vHIKiuWW5PdN2Li14Z
+ Qk0I0w+JF3EaPVo6ROV2sLut7OHsz2afahhVTsNJy56HKh4xKV+asqDUsDOoJjraBSrM35ile
+ jAUSFdrL7ArY59reJNAyV2xNBt6SMlsWm9rXWVROy8D4nsTLEEd6+jjHN1dbawbpf3XcNzwu6
+ JLOoD+KStsxDY5wXo2Ip0bHnqA7zsGbBFfWZxMyUYKWGede91zzNAI40R+R7HoI99UGSkfBxk
+ ccfwHQ9XtUAkgzu6TjuyU2trVucYfYWv9d+7QPabTHta2eoKNqn5vTFiqOD7JQnmZc+89XklQ
+ 364bpXqnkovgAo1U+Ab7QkZKZ3vcqntsNl2LXSYvdhrBoJ2iyCyrF5gHCFTK5+EAVvd9HdWci
+ DXT44Lq8Ur4N/5MD4XSgql3GoMWQHIkgdoVbnfrMcMetvwLYpQ1UINQhTgGAbo7RLoMrRxGlt
+ dYQQwobR4eJJ6PtU/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am 03.04.21 um 16:49 schrieb Andrew Lunn:
+>> @@ -31,6 +96,13 @@ static struct sk_buff *ar9331_tag_xmit(struct sk_buf=
+f *skb,
+>>  	__le16 *phdr;
+>>  	u16 hdr;
+>>
+>> +	if (dp->stp_state =3D=3D BR_STATE_BLOCKING) {
+>> +		/* TODO: should we reflect it in the stats? */
+>> +		netdev_warn_once(dev, "%s:%i dropping blocking packet\n",
+>> +				 __func__, __LINE__);
+>> +		return NULL;
+>> +	}
+>> +
+>>  	phdr =3D skb_push(skb, AR9331_HDR_LEN);
+>>
+>>  	hdr =3D FIELD_PREP(AR9331_HDR_VERSION_MASK, AR9331_HDR_VERSION);
+>
+> Hi Oleksij
+>
+> This change does not seem to fit with what this patch is doing.
 
+done
 
-Le 03/04/2021 à 01:37, Sean Christopherson a écrit :
-> Copy vmalloc'd data to an internal buffer instead of rejecting outright
-> so that callers can put SEV command buffers on the stack without running
-> afoul of CONFIG_VMAP_STACK=y.  Currently, the largest supported command
-> takes a 68 byte buffer, i.e. pretty much every command can be put on the
-> stack.  Because sev_cmd_mutex is held for the entirety of a transaction,
-> only a single bounce buffer is required.
-> 
-> Use a flexible array for the buffer, sized to hold the largest known
-> command.   Alternatively, the buffer could be a union of all known
-> command structs, but that would incur a higher maintenance cost due to
-> the need to update the union for every command in addition to updating
-> the existing sev_cmd_buffer_len().
-> 
-> Align the buffer to an 8-byte boundary, mimicking the alignment that
-> would be provided by the compiler if any of the structs were embedded
-> directly.  Note, sizeof() correctly incorporates this alignment.
-> 
-> Cc: Brijesh Singh <brijesh.singh@amd.com>
-> Cc: Borislav Petkov <bp@suse.de>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   drivers/crypto/ccp/sev-dev.c | 33 +++++++++++++++++++++++++++------
->   drivers/crypto/ccp/sev-dev.h |  7 +++++++
->   2 files changed, 34 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-> index 4c513318f16a..6d5882290cfc 100644
-> --- a/drivers/crypto/ccp/sev-dev.c
-> +++ b/drivers/crypto/ccp/sev-dev.c
-> @@ -135,13 +135,14 @@ static int sev_cmd_buffer_len(int cmd)
->   	return 0;
->   }
->   
-> -static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
-> +static int __sev_do_cmd_locked(int cmd, void *__data, int *psp_ret)
->   {
->   	struct psp_device *psp = psp_master;
->   	struct sev_device *sev;
->   	unsigned int phys_lsb, phys_msb;
->   	unsigned int reg, ret = 0;
->   	int buf_len;
-> +	void *data;
->   
->   	if (!psp || !psp->sev_data)
->   		return -ENODEV;
-> @@ -152,11 +153,21 @@ static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
->   	sev = psp->sev_data;
->   
->   	buf_len = sev_cmd_buffer_len(cmd);
-> -	if (WARN_ON_ONCE(!!data != !!buf_len))
-> +	if (WARN_ON_ONCE(!!__data != !!buf_len))
+> I also think it is wrong. You still need BPDU to pass through a
+> blocked port, otherwise spanning tree protocol will be unstable.
 
-Why do you need a double !! ?
-I think !__data != !buf_len should be enough.
+We need a better filter, otherwise, in case of software based STP, we are =
+leaking packages on
+blocked port. For example DHCP do trigger lots of spam in the kernel log.
 
->   		return -EINVAL;
->   
-> -	if (WARN_ON_ONCE(data && is_vmalloc_addr(data)))
-> -		return -EINVAL;
-> +	if (__data && is_vmalloc_addr(__data)) {
-> +		/*
-> +		 * If the incoming buffer is virtually allocated, copy it to
-> +		 * the driver's scratch buffer as __pa() will not work for such
-> +		 * addresses, vmalloc_to_page() is not guaranteed to succeed,
-> +		 * and vmalloc'd data may not be physically contiguous.
-> +		 */
-> +		data = sev->cmd_buf;
-> +		memcpy(data, __data, buf_len);
-> +	} else {
-> +		data = __data;
-> +	}
->   
->   	/* Get the physical address of the command buffer */
->   	phys_lsb = data ? lower_32_bits(__psp_pa(data)) : 0;
-> @@ -204,6 +215,13 @@ static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
->   	print_hex_dump_debug("(out): ", DUMP_PREFIX_OFFSET, 16, 2, data,
->   			     buf_len, false);
->   
-> +	/*
-> +	 * Copy potential output from the PSP back to __data.  Do this even on
-> +	 * failure in case the caller wants to glean something from the error.
-> +	 */
-> +	if (__data && data != __data)
+I'll drop STP patch for now, it will be better to make a generic soft STP =
+for all switches without
+HW offloading. For example ksz9477 is doing SW based STP in similar way.
 
-IIUC, when __data is NULL, data is also NULL, so this double test is useless.
-
-Checking data != __data should be enough
-
-> +		memcpy(__data, data, buf_len);
-> +
->   	return ret;
->   }
->   
-> @@ -978,9 +996,12 @@ int sev_dev_init(struct psp_device *psp)
->   {
->   	struct device *dev = psp->dev;
->   	struct sev_device *sev;
-> -	int ret = -ENOMEM;
-> +	int ret = -ENOMEM, cmd_buf_size = 0, i;
->   
-> -	sev = devm_kzalloc(dev, sizeof(*sev), GFP_KERNEL);
-> +	for (i = 0; i < SEV_CMD_MAX; i++)
-> +		cmd_buf_size = max(cmd_buf_size, sev_cmd_buffer_len(i));
-> +
-> +	sev = devm_kzalloc(dev, sizeof(*sev) + cmd_buf_size, GFP_KERNEL);
->   	if (!sev)
->   		goto e_err;
->   
-> diff --git a/drivers/crypto/ccp/sev-dev.h b/drivers/crypto/ccp/sev-dev.h
-> index dd5c4fe82914..b43283ce2d73 100644
-> --- a/drivers/crypto/ccp/sev-dev.h
-> +++ b/drivers/crypto/ccp/sev-dev.h
-> @@ -52,6 +52,13 @@ struct sev_device {
->   	u8 api_major;
->   	u8 api_minor;
->   	u8 build;
-> +
-> +	/*
-> +	 * Buffer used for incoming commands whose physical address cannot be
-> +	 * resolved via __pa(), e.g. stack pointers when CONFIG_VMAP_STACK=y.
-> +	 * Note, alignment isn't strictly required.
-> +	 */
-> +	u8 cmd_buf[] __aligned(8);
->   };
->   
->   int sev_dev_init(struct psp_device *psp);
-> 
+=2D-
+Regards,
+Oleksij
