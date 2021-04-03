@@ -2,78 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D6F3531C9
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 02:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 186793531CB
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 02:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235996AbhDCAcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 20:32:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235341AbhDCAcA (ORCPT
+        id S235815AbhDCAec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 20:34:32 -0400
+Received: from bedivere.hansenpartnership.com ([96.44.175.130]:36658 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234821AbhDCAeb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 20:32:00 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DEB6C0613E6;
-        Fri,  2 Apr 2021 17:31:57 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id g20so6654864qkk.1;
-        Fri, 02 Apr 2021 17:31:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CvEaf7XI2+OL6Uz4F6ps4uPZx9GzX6Ggnfr2XHs6ui0=;
-        b=cQ76UQt6bfc3lHFMLCwEL6xlobK5LfSRA4GhciPgpgBNw7G2airbGbiO9wIGfKBJk0
-         lOUVkaBFfNxtWN2mGS5z4vIBSrsW8B2Qi+H3gTiRbUzbUAO/72Bj5oyEsn18Cv/emy/U
-         ixo5uFdMm8xFzNsjnfTea14UoFrBMWdwOmNaMkYr53u9g3lXezkyzJFrzbC9OgddjiY5
-         TV1ECNEQI17wsQ3TWxaf/at1ESD8mqE/28VrfwGvVChsgLD9YcokfbusaYmcCZ5DE0li
-         e2obDS9vsO7SqYYRPRMih1IJYa03zUbjzIdu1yd99iUUkQQHIY8fq1TV7n1hcX6gtN6L
-         aPRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CvEaf7XI2+OL6Uz4F6ps4uPZx9GzX6Ggnfr2XHs6ui0=;
-        b=t40A6HwIgB31MRNUlhpwpTT2vbPkraz9BxKjTXcp5YERxg903GtUy270ZyczfBfNld
-         hfwVbd4MEQib6+REWJv3IdL4PJ2/yifXkDHeVvWuCdEO117GRe9/A1FjOFhSt3no2PLt
-         n84U4X34FqRRVcAe7zqa2xsWzMfkBS9EojaDaGsbDg+BFLKVa4iUmE/HJa3BeRhYqjoF
-         wig1XrwkGqs9gvz0zihxsKnWjpAfjUVCtOk8OUR2PPjUB56I4cdAhzmezKraZ7RE/MTr
-         Z/RLC7/FyOhVfuGfK37E1dP091ddV112a4nNb4rFdQdRFet9rakMQJEPSd9WvsRXlpmf
-         tjVA==
-X-Gm-Message-State: AOAM532BOCXLWWFs1p2YhkSYmzqpmCVjvlEUVKZZ9UWJ+mG4BOGRjJ4v
-        ZWfxygE0vv4rt1QvklXTYg==
-X-Google-Smtp-Source: ABdhPJwHpcNhSbKtS1P/Tix+YFdtCPahhDLMiuyLXSp2OhNYqLKX4Kws1fIiT8qFDJe8lAAe2iLnww==
-X-Received: by 2002:a05:620a:134a:: with SMTP id c10mr15166572qkl.481.1617409916852;
-        Fri, 02 Apr 2021 17:31:56 -0700 (PDT)
-Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
-        by smtp.gmail.com with ESMTPSA id i25sm8253285qka.38.2021.04.02.17.31.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 17:31:56 -0700 (PDT)
-Date:   Fri, 2 Apr 2021 20:31:51 -0400
-From:   Kent Overstreet <kent.overstreet@gmail.com>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
-        linux-afs@lists.infradead.org
-Subject: Re: [PATCH v6 00/27] Memory Folios
-Message-ID: <YGe3dy5OmT12NVYK@moria.home.lan>
-References: <20210331184728.1188084-1-willy@infradead.org>
+        Fri, 2 Apr 2021 20:34:31 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 1394E1280398;
+        Fri,  2 Apr 2021 17:34:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1617410070;
+        bh=rlNH0yVuAuGR2mrl4bZ9TjpwdheZ+lwL1j7b+0NZA3k=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=oFu7+dVfijfxPVLY+ziFCPwtVfS/UPyX+z0eaCHlwLgDUbSG9gtnyw01Q5AzILUHQ
+         QoJTkto7EKS4vUFe3kGON+rsHyA08Y8awU6gKgizF06871zEY4sABUGiw2VjbdU7Ar
+         M4oaFf1snCcY3fv+WWVQydPa4Hb6nQVl2VuwCTzM=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id R9DrTCxj4oc2; Fri,  2 Apr 2021 17:34:30 -0700 (PDT)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id ABDC91280397;
+        Fri,  2 Apr 2021 17:34:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1617410069;
+        bh=rlNH0yVuAuGR2mrl4bZ9TjpwdheZ+lwL1j7b+0NZA3k=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=FKH8AKacgBWAV7/1CKc3eCOtL2eS4GNJ7FddLLndLdTwHblUQxr+GT9bP198uHwag
+         yszAs9WbCSyOSUQMdxm4z4/81GbEfRVlxOrZKwGOIrFA/DnIz9M13rWf1YptdiQOEM
+         yzaSfUSuHSuztbFrKzun3kPt3mEgn8WRopYWM4so=
+Message-ID: <9aa8b614478d74ee0cb37dec9e20270c94d7f7c4.camel@HansenPartnership.com>
+Subject: [GIT PULL] SCSI fixes for 5.12-rc
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Fri, 02 Apr 2021 17:34:28 -0700
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210331184728.1188084-1-willy@infradead.org>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 07:47:01PM +0100, Matthew Wilcox (Oracle) wrote:
-> The medium-term goal is to convert all filesystems and some device
-> drivers to work in terms of folios.  This series contains a lot of
-> explicit conversions, but it's important to realise it's removing a lot
-> of implicit conversions in some relatively hot paths.  There will be very
-> few conversions from folios when this work is completed; filesystems,
-> the page cache, the LRU and so on will generally only deal with folios.
+Single fix to iscsi for a rare race condition which can cause a kernel
+panic.
 
-I'm pretty excited for this to land - 4k page overhead has been a pain point for
-me for quite some time. I know this is going to be a lot of churn but I think
-leveraging the type system is exactly the right way to go about this, and I
-can't wait to start converting bcachefs.
+The patch is available here:
+
+git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+
+The short changelog is:
+
+Gulam Mohamed (1):
+      scsi: iscsi: Fix race condition between login and sync thread
+
+And the diffstat:
+
+ drivers/scsi/scsi_transport_iscsi.c | 14 +++++++++++++-
+ include/scsi/scsi_transport_iscsi.h |  1 +
+ 2 files changed, 14 insertions(+), 1 deletion(-)
+
+With full diff below.
+
+James
+
+---
+
+diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
+index 969d24d580e2..bebfb355abdf 100644
+--- a/drivers/scsi/scsi_transport_iscsi.c
++++ b/drivers/scsi/scsi_transport_iscsi.c
+@@ -2471,6 +2471,7 @@ static void iscsi_if_stop_conn(struct iscsi_cls_conn *conn, int flag)
+ 	 */
+ 	mutex_lock(&conn_mutex);
+ 	conn->transport->stop_conn(conn, flag);
++	conn->state = ISCSI_CONN_DOWN;
+ 	mutex_unlock(&conn_mutex);
+ 
+ }
+@@ -2894,6 +2895,13 @@ iscsi_set_param(struct iscsi_transport *transport, struct iscsi_uevent *ev)
+ 	default:
+ 		err = transport->set_param(conn, ev->u.set_param.param,
+ 					   data, ev->u.set_param.len);
++		if ((conn->state == ISCSI_CONN_BOUND) ||
++			(conn->state == ISCSI_CONN_UP)) {
++			err = transport->set_param(conn, ev->u.set_param.param,
++					data, ev->u.set_param.len);
++		} else {
++			return -ENOTCONN;
++		}
+ 	}
+ 
+ 	return err;
+@@ -2953,6 +2961,7 @@ static int iscsi_if_ep_disconnect(struct iscsi_transport *transport,
+ 		mutex_lock(&conn->ep_mutex);
+ 		conn->ep = NULL;
+ 		mutex_unlock(&conn->ep_mutex);
++		conn->state = ISCSI_CONN_DOWN;
+ 	}
+ 
+ 	transport->ep_disconnect(ep);
+@@ -3713,6 +3722,8 @@ iscsi_if_recv_msg(struct sk_buff *skb, struct nlmsghdr *nlh, uint32_t *group)
+ 		ev->r.retcode =	transport->bind_conn(session, conn,
+ 						ev->u.b_conn.transport_eph,
+ 						ev->u.b_conn.is_leading);
++		if (!ev->r.retcode)
++			conn->state = ISCSI_CONN_BOUND;
+ 		mutex_unlock(&conn_mutex);
+ 
+ 		if (ev->r.retcode || !transport->ep_connect)
+@@ -3944,7 +3955,8 @@ iscsi_conn_attr(local_ipaddr, ISCSI_PARAM_LOCAL_IPADDR);
+ static const char *const connection_state_names[] = {
+ 	[ISCSI_CONN_UP] = "up",
+ 	[ISCSI_CONN_DOWN] = "down",
+-	[ISCSI_CONN_FAILED] = "failed"
++	[ISCSI_CONN_FAILED] = "failed",
++	[ISCSI_CONN_BOUND] = "bound"
+ };
+ 
+ static ssize_t show_conn_state(struct device *dev,
+diff --git a/include/scsi/scsi_transport_iscsi.h b/include/scsi/scsi_transport_iscsi.h
+index 8a26a2ffa952..fc5a39839b4b 100644
+--- a/include/scsi/scsi_transport_iscsi.h
++++ b/include/scsi/scsi_transport_iscsi.h
+@@ -193,6 +193,7 @@ enum iscsi_connection_state {
+ 	ISCSI_CONN_UP = 0,
+ 	ISCSI_CONN_DOWN,
+ 	ISCSI_CONN_FAILED,
++	ISCSI_CONN_BOUND,
+ };
+ 
+ struct iscsi_cls_conn {
+
