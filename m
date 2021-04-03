@@ -2,98 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23657353298
+	by mail.lfdr.de (Postfix) with ESMTP id 6F503353299
 	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 06:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232182AbhDCErn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 00:47:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33182 "EHLO
+        id S232241AbhDCErp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 00:47:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229851AbhDCErm (ORCPT
+        with ESMTP id S229851AbhDCEro (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 00:47:42 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB6CC0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 21:47:38 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id v70so6913123qkb.8
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 21:47:38 -0700 (PDT)
+        Sat, 3 Apr 2021 00:47:44 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADEFAC0613E6
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 21:47:40 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id 7so6917376qka.7
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 21:47:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=zFzzeoYGIYM+Xfkak8/IpQyVsC5/nvHs2bkK5Oa/t/0=;
-        b=BeLySV4UP6e/bZzYcAGFuSRV2ttfncOLKCv7kCdyvqbToM6/3qN3MEpSI0suLKkAK0
-         L8nN+Ll6VW7JIeKt0QJ90ALS8+rBjNtpmIf14hSVHZUqzj1Udu82I6n98AZ7pkVr1xPA
-         mxgPAiu2iD/LAidHsrgh0imzbEWAKXaLr5isJTjkF+/4lLyg9BgLXt3g7f+3YEC/GWTc
-         oL92LzcdyfeWnxEfSUFvW3YhTGdv2vi1UCuh+A5npkdChv+fuMsF4i+RdVXBTByIn3Ln
-         1BhAcokZGJRFztDrBX9s67IYNUeEqUoH8sq8PESmDDZ13FI7LORAYFwGG3Me27nZurrI
-         mKDQ==
+        bh=IxUwJprpafXvqxQ24FtKstnVbwXECMiYhwtxCk/m/jg=;
+        b=HS/Jf+I77+YiYunNcfy/1iCa8bEIaz/Z3gfHneKly1ME8uSwZxMJo0MG86NjZ5THSF
+         6sBwJ2/JhKITyaY0eOId5yMdqFZojAPeFiT6+x/G4BQEMXWYXG/0tPsVh1I1V7JguaiF
+         dyj5JvTL1d++s1j4FpEVFbJUYM+rluEhC14+YlIC8I9/aEj4IExSQz6EMyWoADPOx6Pp
+         4GtHRNVZB810qJQE4cphgtWxBPLR/XE38BLy9SXPjo3MyHhL5WAqDQ7ozTiv0gGOd2gS
+         oSaMlWyW0OqNAduv9rGr4NO6vI2H0kKKHPo104FlPghn2cwheZLuN6t/vvc2Bg9XL6pn
+         cZXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zFzzeoYGIYM+Xfkak8/IpQyVsC5/nvHs2bkK5Oa/t/0=;
-        b=HQhTKpQCZBuCqUHBJaD+Sw2aZgdcqy6MEPtfaVAA4+MJzURHMCBltuQh2wDti6tFFO
-         xQtTYP8/Pf3ZDU6DC94Y7XUV0Iq6vDM3Nh3JxW8mggHxVE7JS7xqBGIQNGfw/MNgpbDn
-         4tvqsMOrPOu4hsDmeakYW1eoUo9AbXq3wxaYXOKr+WhSKL4akih/VKniCqcwGTDMmhDd
-         iUkXTSY1l0x16W7OMFaQmQwCOEWO/vlA3g+qzvfcVlJRU/V2BytBZI3yF/GK2SGUm5pU
-         zLm+eCbBqw77X/Yhn3kyZNtII1lYDHk4i5K23LFJ5h36y3AyeMTQPjORkl2mYRTK6+bZ
-         0zOw==
-X-Gm-Message-State: AOAM533TgJuXbhpcxGzKBFhYwdMxXE7tyWuAJBOk2trcMuw0823f9/t3
-        asKrOLWcawCZgXG2gnFgeZc=
-X-Google-Smtp-Source: ABdhPJzVmB5fMmygyRPBYzgXL0b39Kfow519VPYd+WzlXM9rPt1dCpEZvW1lnMiKnn4wVFuetyuRSg==
-X-Received: by 2002:a37:8cd:: with SMTP id 196mr15535425qki.434.1617425257870;
-        Fri, 02 Apr 2021 21:47:37 -0700 (PDT)
+        bh=IxUwJprpafXvqxQ24FtKstnVbwXECMiYhwtxCk/m/jg=;
+        b=SldZ89vUYgERZ9A4fTBCAWzvbF9PK5CDoBRNGyOogOlLrPRrAlEixVNnHUtGLBaYs/
+         pddIQOU2JK/hHxbVTdn55YhaP5gJtKDaVBG4vGUDzyHuwoG4VrqXU1Qpuw+TpCLOcLTH
+         sMpnGDpi1Hp4YTx5arFx7yN4Mo8VPtuIKZ9ZNadA1Z1MoPF2yZT8rBauGJ7N4TtjP1fu
+         n/F0hydqoolBY75gcVE7+vIp+Ytov/R2dY0WG3p0llVjMio0d61/QhMHdhCK9b/nIZD4
+         I+i6kaBrweUZ1MnJGU4T3ltMhbpzjcqyPnUIb8wzDHIPACAKA08foDU+7sZD4riUa61x
+         7Fgg==
+X-Gm-Message-State: AOAM531PDmabj+NTjjLR/34LE3aIvjopBSK2KrgfzLkNxA3TeY8QOCC0
+        XVGH8ye4QcEBwKjWa/YEQHQ=
+X-Google-Smtp-Source: ABdhPJwH/jmSl0qutvadOH6zkxpher8Fe/N0hLTkT7ypQ3JN5G0JyhCZasY3O4P9jqr7vF2H7RgGoQ==
+X-Received: by 2002:a37:9547:: with SMTP id x68mr14251701qkd.474.1617425260000;
+        Fri, 02 Apr 2021 21:47:40 -0700 (PDT)
 Received: from LuizSampaio-PC.localdomain ([2804:14d:5cd3:8f4f:bad9:1dc4:19d9:7ce3])
-        by smtp.gmail.com with ESMTPSA id k126sm8800598qkb.4.2021.04.02.21.47.35
+        by smtp.gmail.com with ESMTPSA id k126sm8800598qkb.4.2021.04.02.21.47.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 21:47:37 -0700 (PDT)
+        Fri, 02 Apr 2021 21:47:39 -0700 (PDT)
 From:   Luiz Sampaio <sampaio.ime@gmail.com>
 To:     zbr@ioremap.net
 Cc:     corbet@lwn.net, rikard.falkeborn@gmail.com,
         gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
         Luiz Sampaio <sampaio.ime@gmail.com>
-Subject: [PATCH v3 1/9] w1: ds2438: fixed a coding style issue
-Date:   Sat,  3 Apr 2021 01:48:13 -0300
-Message-Id: <20210403044821.390485-1-sampaio.ime@gmail.com>
+Subject: [PATCH v3 2/9] w1: ds2438: fixed a coding style issue
+Date:   Sat,  3 Apr 2021 01:48:14 -0300
+Message-Id: <20210403044821.390485-2-sampaio.ime@gmail.com>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210403044547.390226-1-sampaio.ime@gmail.com>
+In-Reply-To: <20210403044821.390485-1-sampaio.ime@gmail.com>
 References: <20210403044547.390226-1-sampaio.ime@gmail.com>
+ <20210403044821.390485-1-sampaio.ime@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is an if statement and, if the function goes into it, it returns.
-So, the next else is not required.
+Since there is only one statement inside the if clause, no brackets
+are required.
 
 Signed-off-by: Luiz Sampaio <sampaio.ime@gmail.com>
 ---
- drivers/w1/slaves/w1_ds2438.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/w1/slaves/w1_ds2438.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/w1/slaves/w1_ds2438.c b/drivers/w1/slaves/w1_ds2438.c
-index 5cfb0ae23e91..148921fb9702 100644
+index 148921fb9702..a5bb53042c93 100644
 --- a/drivers/w1/slaves/w1_ds2438.c
 +++ b/drivers/w1/slaves/w1_ds2438.c
-@@ -154,11 +154,11 @@ static int w1_ds2438_change_config_bit(struct w1_slave *sl, u8 mask, u8 value)
+@@ -287,9 +287,9 @@ static ssize_t iad_read(struct file *filp, struct kobject *kobj,
+ 	if (!buf)
+ 		return -EINVAL;
  
- 		if ((status & mask) == value)
- 			return 0;	/* already set as requested */
--		else {
--			/* changing bit */
--			status ^= mask;
--			perform_write = 1;
--		}
-+
-+		/* changing bit */
-+		status ^= mask;
-+		perform_write = 1;
-+
- 		break;
- 	}
+-	if (w1_ds2438_get_current(sl, &voltage) == 0) {
++	if (w1_ds2438_get_current(sl, &voltage) == 0)
+ 		ret = snprintf(buf, count, "%i\n", voltage);
+-	} else
++	else
+ 		ret = -EIO;
  
+ 	return ret;
 -- 
 2.30.1
 
