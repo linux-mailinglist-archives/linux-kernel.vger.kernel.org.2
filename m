@@ -2,194 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AF973531EC
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 03:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DFC73531F3
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 03:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236500AbhDCBYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 21:24:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46438 "EHLO
+        id S235559AbhDCBaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 21:30:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236361AbhDCBY0 (ORCPT
+        with ESMTP id S234488AbhDCBaA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 21:24:26 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB9D2C0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 18:24:23 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id x11so6655124qkp.11
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 18:24:23 -0700 (PDT)
+        Fri, 2 Apr 2021 21:30:00 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24222C0613E6
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 18:29:59 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id t20so3165721plr.13
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 18:29:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=N394ltjrSYvOAjfcVhp6r3YR4QO8szbb0CJdODmZAFI=;
-        b=SKxwoSHh7JgLGdXdFtneyU5rqsVrLT8JhbZvgd8aRs58CNoOVHjyncp4xkD8Zlzxe7
-         gPs6FHb7rW2fdms/K7Exo3nFrRNWs/pCNxmpMIgLllZA1fMYVIJm3+zJ5U3VuBVeg+d2
-         aqtMRZpu3Wa9bnmmMUFevsyf6ATn1UAgNIT64nWeWmXHaL5KHI2rGXcz2b6K0721AZ4y
-         ot7BZBgUsPeFc9dQGyOzxdvA1S8BNxLYsokq2Fu52+LiFsiuDGM+U/qFhJ2UZXgfRRN1
-         0hZ5q8qVBjiIjxJ/GVfDygjNW9fo9C5meSYxxZyUzAyLsmATydtkPxDh9LjZ4FYvGluq
-         3svQ==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=e2qTCTWRtt98zYQjob4A4IBP/hdRfq2CWqOcFYJH1gk=;
+        b=EqRbJp8vUMJGXbr17BRNz2nsRO4xaoAkNZtLabGOswgMC/ZN9rCRZmPMUb0AdEKewu
+         +RsFWmxqPWWrY+Al2jUBokfFcU1JdfEKIE2WqfveQEGt6wM80MHN/MTgMOMOqZpfrmvR
+         QAeNyBAhAT0+9I7SSq89pMB2HK+tJRO97wwnc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=N394ltjrSYvOAjfcVhp6r3YR4QO8szbb0CJdODmZAFI=;
-        b=WDEg4Uq1L0GicEruLTzhlbovjfrvJoEGEpmx1T+E+bypSO8LPzdtBkggfZ5CmNDpqj
-         s3RO52DLoqOlKnaq/Qkmytf4DbKKeaEqtHfnWABUCqrnEDYbJm+OaSoU/ia9rp6QKhxu
-         MwZJZ0P0qw4Pm27smdnFaMkmpsJsLl3IbIh2Pcixn8Phpr+/nJ/7KRNfGvmNPZ7nYHi1
-         ZPJ2Suc0yhNm0fpMuJgRzN8BHLa4+qBjUafJOhPzGif0UwWxziTQmfz+HjAc/zZ9K16x
-         1M0KVmMHcesy/ideB6iQgNRN8ZRZ9EBbeZFbJmUG/dkbUST2HENW3ikmSV9+KmG2lqgR
-         lANA==
-X-Gm-Message-State: AOAM531wLXVh4UIXT9tkzvWMPjJ7/bcXBQvyt+tHgHTqL49EwkHMGVsB
-        ekwtGooegKADVxvz51zbDok=
-X-Google-Smtp-Source: ABdhPJwtuZ/WHAa691ocnSUzMwbQcy8cdo9/nExX88jkkOPKdAuJE68ANGCfV2JIvNUJjw5x8m026w==
-X-Received: by 2002:a37:a785:: with SMTP id q127mr15171421qke.425.1617413063235;
-        Fri, 02 Apr 2021 18:24:23 -0700 (PDT)
-Received: from LuizSampaio-PC.localdomain ([2804:14d:5cd3:8f4f:bad9:1dc4:19d9:7ce3])
-        by smtp.gmail.com with ESMTPSA id h14sm7439818qtx.64.2021.04.02.18.24.21
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=e2qTCTWRtt98zYQjob4A4IBP/hdRfq2CWqOcFYJH1gk=;
+        b=uMTgq595btIlF1XQq4w3BxAPHmc+BZg/jKmTUA5p3uddn7qgdLOSsvaQ4CGj3vTJqB
+         +hDNDz9uIxN+R48qw/YstsUL/KTbOX+saZu8XXHpuAlEl/njnKRW8zgkDn0Q90KfhOMS
+         q2/+Cqj0JLzIqtRkBofcMuap4aanW0T6fIeoMSQFQ6G0CTednTMUmT9PT5wjKSKrlVdW
+         bxJlRUizzJqxwOyZgcX0YrbVy21mX8VkOm1DShtBojA6oy3aKD7sZOvVwlfUi0XriiBB
+         OiLVqn5yyxFpxTmo/0aTtuKBaO/E4WItOzeYhHqR8/M129Cy1lo5qrZX4l6FB7QviI8K
+         ap7Q==
+X-Gm-Message-State: AOAM5302IqZT5uDinrj+lHm/12SCCYsDAl+CTmdXvD2bAT3/+d9d3zrQ
+        0QpjRcnEc06c5O+uWhDlx/3zBw==
+X-Google-Smtp-Source: ABdhPJxKRvq+ao9XQxJWn30IPQ8sZBNEuZNIP+V72rxkFwJrIAKUyLBZkbNGwo6CCJ5NzfdTYYfmaw==
+X-Received: by 2002:a17:90a:bb81:: with SMTP id v1mr16752037pjr.123.1617413398512;
+        Fri, 02 Apr 2021 18:29:58 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id y29sm9476046pfp.206.2021.04.02.18.29.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 18:24:23 -0700 (PDT)
-From:   Luiz Sampaio <sampaio.ime@gmail.com>
-To:     zbr@ioremap.net
-Cc:     corbet@lwn.net, rikard.falkeborn@gmail.com,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        Luiz Sampaio <sampaio.ime@gmail.com>
-Subject: [PATCH v2 9/9] w1: ds2438: support for writing to offset register
-Date:   Fri,  2 Apr 2021 22:24:46 -0300
-Message-Id: <20210403012446.381516-10-sampaio.ime@gmail.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210403012446.381516-1-sampaio.ime@gmail.com>
-References: <20210403012446.381516-1-sampaio.ime@gmail.com>
+        Fri, 02 Apr 2021 18:29:57 -0700 (PDT)
+Date:   Fri, 2 Apr 2021 18:29:55 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Parav Pandit <parav@nvidia.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: CFI violation in drivers/infiniband/core/sysfs.c
+Message-ID: <202104021823.64FA6119@keescook>
+References: <20210402195241.gahc5w25gezluw7p@archlinux-ax161>
+ <202104021555.08B883C7@keescook>
+ <20210402233018.GA7721@ziepe.ca>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210402233018.GA7721@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added a sysfs entry to support writing to the offset register on page1.
-This register is used to calibrate the chip canceling offset errors in the
-current ADC. This means that, over time, reading the IAD register will not
-return the correct current measurement, it will have an offset. Writing to
-the offset register if the two's complement of the current register while
-passing zero current to the load will calibrate the measurements. This
-change was tested on real hardware and it was able to calibrate the chip
-correctly.
+On Fri, Apr 02, 2021 at 08:30:18PM -0300, Jason Gunthorpe wrote:
+> On Fri, Apr 02, 2021 at 04:03:30PM -0700, Kees Cook wrote:
+> 
+> > > relevant. It seems to me that the hw_counters 'struct attribute_group'
+> > > should probably be its own kobj within both of these structures so they
+> > > can have their own sysfs ops (unless there is some other way to do this
+> > > that I am missing).
+> 
+> Err, yes, every subclass of the attribute should be accompanied by a
+> distinct kobject type to relay the show methods with typesafety, this
+> is how this design pattern is intended to be used.
+> 
+> If I understand your report properly the hw_stats_attribute is being
+> assigned to a 'port_type' kobject and it only works by pure luck because
+> the show/store happens to overlap between port and hsa attributes?
 
-Signed-off-by: Luiz Sampaio <sampaio.ime@gmail.com>
----
- Documentation/w1/slaves/w1_ds2438.rst | 11 +++++-
- drivers/w1/slaves/w1_ds2438.c         | 49 +++++++++++++++++++++++++++
- 2 files changed, 59 insertions(+), 1 deletion(-)
+"happens to" :) Yeah, they're all like this, unfortunately:
+https://lore.kernel.org/lkml/202006112217.2E6CE093@keescook/
 
-diff --git a/Documentation/w1/slaves/w1_ds2438.rst b/Documentation/w1/slaves/w1_ds2438.rst
-index ac8d0d4b0d0e..5c5573991351 100644
---- a/Documentation/w1/slaves/w1_ds2438.rst
-+++ b/Documentation/w1/slaves/w1_ds2438.rst
-@@ -22,7 +22,7 @@ is also often used in weather stations and applications such as: rain gauge,
- wind speed/direction measuring, humidity sensing, etc.
- 
- Current support is provided through the following sysfs files (all files
--except "iad" are readonly):
-+except "iad" and "offset" are readonly):
- 
- "iad"
- -----
-@@ -52,6 +52,15 @@ Internally when this file is read, the additional CRC byte is also obtained
- from the slave device. If it is correct, the 8 bytes page data are passed
- to userspace, otherwise an I/O error is returned.
- 
-+"offset"
-+-------
-+This file controls the 2-byte Offset Register of the chip.
-+Writing a 2-byte value will change the Offset Register, which changes the
-+current measurement done by the chip. Changing this register to the two's complement
-+of the current register while forcing zero current through the load will calibrate
-+the chip, canceling offset errors in the current ADC.
-+
-+
- "temperature"
- -------------
- Opening and reading this file initiates the CONVERT_T (temperature conversion)
-diff --git a/drivers/w1/slaves/w1_ds2438.c b/drivers/w1/slaves/w1_ds2438.c
-index 2cfdfedb584f..223a9aae6e2d 100644
---- a/drivers/w1/slaves/w1_ds2438.c
-+++ b/drivers/w1/slaves/w1_ds2438.c
-@@ -193,6 +193,34 @@ static int w1_ds2438_change_config_bit(struct w1_slave *sl, u8 mask, u8 value)
- 	return -1;
- }
- 
-+static int w1_ds2438_change_offset_register(struct w1_slave *sl, u8 *value)
-+{
-+	unsigned int retries = W1_DS2438_RETRIES;
-+	u8 w1_buf[9];
-+	u8 w1_page1_buf[DS2438_PAGE_SIZE + 1 /*for CRC*/];
-+
-+	if (w1_ds2438_get_page(sl, 1, w1_page1_buf) == 0) {
-+		memcpy(&w1_buf[2], w1_page1_buf, DS2438_PAGE_SIZE - 1); /* register 7 is reserved */
-+		w1_buf[7] = value[0]; /* change only offset register */
-+		w1_buf[8] = value[1];
-+		while (retries--) {
-+			if (w1_reset_select_slave(sl))
-+				continue;
-+			w1_buf[0] = W1_DS2438_WRITE_SCRATCH;
-+			w1_buf[1] = 0x01; /* write to page 1 */
-+			w1_write_block(sl->master, w1_buf, 9);
-+
-+			if (w1_reset_select_slave(sl))
-+				continue;
-+			w1_buf[0] = W1_DS2438_COPY_SCRATCH;
-+			w1_buf[1] = 0x01;
-+			w1_write_block(sl->master, w1_buf, 2);
-+				return 0;
-+		}
-+	}
-+	return -1;
-+}
-+
- static int w1_ds2438_get_voltage(struct w1_slave *sl,
- 				 int adc_input, uint16_t *voltage)
- {
-@@ -364,6 +392,25 @@ static ssize_t page1_read(struct file *filp, struct kobject *kobj,
- 	return ret;
- }
- 
-+static ssize_t offset_write(struct file *filp, struct kobject *kobj,
-+			    struct bin_attribute *bin_attr, char *buf,
-+			    loff_t off, size_t count)
-+{
-+	struct w1_slave *sl = kobj_to_w1_slave(kobj);
-+	int ret;
-+
-+	mutex_lock(&sl->master->bus_mutex);
-+
-+	if (w1_ds2438_change_offset_register(sl, buf) == 0)
-+		ret = count;
-+	else
-+		ret = -EIO;
-+
-+	mutex_unlock(&sl->master->bus_mutex);
-+
-+	return ret;
-+}
-+
- static ssize_t temperature_read(struct file *filp, struct kobject *kobj,
- 				struct bin_attribute *bin_attr, char *buf,
- 				loff_t off, size_t count)
-@@ -430,6 +477,7 @@ static ssize_t vdd_read(struct file *filp, struct kobject *kobj,
- static BIN_ATTR(iad, 0664, iad_write, 0);
- static BIN_ATTR_RO(page0, DS2438_PAGE_SIZE);
- static BIN_ATTR_RO(page1, DS2438_PAGE_SIZE);
-+static BIN_ATTR_WO(offset, 2);
- static BIN_ATTR_RO(temperature, 0/* real length varies */);
- static BIN_ATTR_RO(vad, 0/* real length varies */);
- static BIN_ATTR_RO(vdd, 0/* real length varies */);
-@@ -438,6 +486,7 @@ static struct bin_attribute *w1_ds2438_bin_attrs[] = {
- 	&bin_attr_iad,
- 	&bin_attr_page0,
- 	&bin_attr_page1,
-+	&bin_attr_offset,
- 	&bin_attr_temperature,
- 	&bin_attr_vad,
- 	&bin_attr_vdd,
+This is the first that I've seen that crossed kobj_types in the same
+group, though. :)
+
+> > > I would appreciate someone else taking a look and seeing if I am off
+> > > base or if there is an easier way to solve this.
+> > 
+> > So, it seems that the reason for a custom kobj_type here is to use the
+> > .release callback. 
+> 
+> Every kobject should be associated with a specific, fixed, attribute
+> type. The purpose of the wrappers is to inject type safety so the
+> attribute implementations know they are working on the right stuff.
+
+Right -- though it's not specifically required to be a fixed attribute.
+It can just be a "generic" kobject. This seems to happen a lot when
+something wants to show up a global or const value in /sys
+
+> The answer is that the setup_hw_stats_() for port and device must
+> be split up and the attribute implementations for each of them have to
+> subclass starting from the correct type.
+
+I'm not convinced that just backing everything off to kobject isn't
+simpler?
+
+> And then two show/set functions that bounce through the correct types
+> to the data.
+
+I'd like to make these things compile-time safe (there is not type
+associated with use the __ATTR() macro, for example). That I haven't
+really figured out how to do right.
+
 -- 
-2.30.1
-
+Kees Cook
