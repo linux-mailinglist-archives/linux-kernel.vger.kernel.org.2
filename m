@@ -2,103 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B215353528
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 20:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5CB635352F
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 20:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237000AbhDCSJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 14:09:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236945AbhDCSJN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 14:09:13 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D52DC061793;
-        Sat,  3 Apr 2021 11:09:10 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id m12so11723480lfq.10;
-        Sat, 03 Apr 2021 11:09:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iakHsUyxM+lHRQnNUqoKM3RMjlnWm90jWJwLczQ8GBc=;
-        b=REKzfIMSxu75FMS0vPW083LBOEofNy1L0DSWLf2a5noReX7W/17BBYn2NrTC0THspE
-         uVRT++z4G1WbGhksXMAYh9pfZRKgkXifeWLYrNGgCE79MSjchNSejsM95AizztVWTWlO
-         cq8TvFGubvdRS8uwy/ZfOjIMGk0u4KINn/b9ilOX7wLYNkcqXPRXuGoWtGjJtndZWhzr
-         xUlsavfgmE6Aa2gQZkmmk3/w/bXXtZ+fVwp4L6nV68jXlyTuvVpwV1OyHX38P7jX/OOe
-         XFJNrg6USY2ytR5P84BXIP2W+sOqdPKXqKATR9CizWC6jWP1aLdcbOwQB9nrLpbt14p3
-         gbsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iakHsUyxM+lHRQnNUqoKM3RMjlnWm90jWJwLczQ8GBc=;
-        b=oT8J6A65O1y14NiU//6cddD/nWrglAuHy/X8VruUgiMeVJu3WC9nrrk3znxpVEDkFN
-         KY50rr09BcOiXCGHHqlZP3Ys5zplMjzAydj6/N3m5Nt7VIMbug5NqSDxejsOzk3KwW+H
-         Ajlw7/n4Jqe+S7GshfFwypQdTm9Sv5A9pk38/pIiHcMp3Gt13peZjbToCk+8WWwPrHHm
-         j2K4TidGrf2FQ589cHaYEYROCgfqyjc+68N2TLttCglJjGIn4FwMKNTKOisjulAfz+IW
-         F1Z8GiVqlhn2Qfidy63ckFzKJ2V6q7ZgYgye3jc6bAgzdHUQT/Ovabz2w0ipnpGeodWi
-         n6jQ==
-X-Gm-Message-State: AOAM533b4oQl5Ma6Bxfv7iLboPgz7gN0ho0KxBydrv6MW48zKsBy1Jik
-        ymw14VpWKcAZFmR+BRCDYi4=
-X-Google-Smtp-Source: ABdhPJxGKURadwPZE/A9QsTdOLUm5Sj8YjsPuCUpvktkrQE6uZl+lC0Io13dd5dN+A2uyhQs0zjbbg==
-X-Received: by 2002:a19:501b:: with SMTP id e27mr12726473lfb.584.1617473348592;
-        Sat, 03 Apr 2021 11:09:08 -0700 (PDT)
-Received: from zhans ([37.151.32.231])
-        by smtp.gmail.com with ESMTPSA id b28sm1204452lfo.219.2021.04.03.11.09.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Apr 2021 11:09:08 -0700 (PDT)
-Date:   Sun, 4 Apr 2021 00:09:07 +0600
-From:   Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
-To:     clabbe@baylibre.com, mchehab@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Subject: [PATCH 7/7] staging: media: zoran: Rename 'He' to 'he'
-Message-ID: <9982cf0d54cb0677519aa7f14d931fba65e023d3.1617472411.git.zhansayabagdaulet@gmail.com>
-References: <cover.1617472411.git.zhansayabagdaulet@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1617472411.git.zhansayabagdaulet@gmail.com>
+        id S236632AbhDCSSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 14:18:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59520 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230516AbhDCSSn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Apr 2021 14:18:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id D679061247;
+        Sat,  3 Apr 2021 18:18:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617473919;
+        bh=PY+a1N+fZF+1R0kW1kSHaP53kLviE/U+7+MGrM/eIwE=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=cjuF4ugfYdcyeQ43VZw1X8XGKYcLrarAG/dHsPTO05OYkihwS72ebYQvtMiRb4FB8
+         8pRMwiez7DYaap/fXEiPQ+pM4QUDvatqEyyHUKe3fnhj/p6ejgMwRJDPR10LTp5M3G
+         YloGJBnK7HUpPrw+Uet4zsTa+Da6n4/MPLp/yoN+L6Dq2ESWZdXveEcnJ9IYmVXkOU
+         MvQ0dxX7rB+kO6zrk0uC1GD8X58uXJn1zOvawJ8r57065ySwiL8bZWniZB+4ZJEVse
+         P821rTXoqlLMAjlKqFuN+kgt8djiPBo4KSyd0rcUBAH//t3h3I9QV7UfCnGfwjbuxQ
+         TNU4ldcTbMdhw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C2AD5600DF;
+        Sat,  3 Apr 2021 18:18:39 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.12-5 tag
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <871rbr1te5.fsf@mpe.ellerman.id.au>
+References: <871rbr1te5.fsf@mpe.ellerman.id.au>
+X-PR-Tracked-List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.lists.ozlabs.org>
+X-PR-Tracked-Message-Id: <871rbr1te5.fsf@mpe.ellerman.id.au>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.12-5
+X-PR-Tracked-Commit-Id: 53f1d31708f6240e4615b0927df31f182e389e2f
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 9c2ef23e4dae122d2b18e834d90f8bd4dda48fe6
+Message-Id: <161747391973.13474.14283872332789051789.pr-tracker-bot@kernel.org>
+Date:   Sat, 03 Apr 2021 18:18:39 +0000
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        nathanl@linux.ibm.com, aneesh.kumar@linux.ibm.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename variable 'He' to 'he' to eliminate camelcase.
-Reported by checkpatch.pl.
+The pull request you sent on Sat, 03 Apr 2021 22:48:02 +1100:
 
-Signed-off-by: Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
----
- drivers/staging/media/zoran/zoran_device.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.12-5
 
-diff --git a/drivers/staging/media/zoran/zoran_device.c b/drivers/staging/media/zoran/zoran_device.c
-index 007d8855178e..cf788d9cd1df 100644
---- a/drivers/staging/media/zoran/zoran_device.c
-+++ b/drivers/staging/media/zoran/zoran_device.c
-@@ -295,7 +295,7 @@ static void zr36057_set_vfe(struct zoran *zr, int video_width, int video_height,
- 	unsigned int disp_mode;
- 	unsigned int vid_win_wid, vid_win_ht;
- 	unsigned int hcrop1, hcrop2, vcrop1, vcrop2;
--	unsigned int wa, we, ha, He;
-+	unsigned int wa, we, ha, he;
- 	unsigned int X, Y, hor_dcm, ver_dcm;
- 	u32 reg;
- 
-@@ -344,10 +344,10 @@ static void zr36057_set_vfe(struct zoran *zr, int video_width, int video_height,
- 	disp_mode = !(video_height > BUZ_MAX_HEIGHT / 2);
- 	vid_win_ht = disp_mode ? video_height : video_height / 2;
- 	Y = DIV_ROUND_UP(vid_win_ht * 64 * 2, tvn->ha);
--	He = (vid_win_ht * 64) / Y;
-+	he = (vid_win_ht * 64) / Y;
- 	ver_dcm = 64 - Y;
--	vcrop1 = (tvn->ha / 2 - He) / 2;
--	vcrop2 = tvn->ha / 2 - He - vcrop1;
-+	vcrop1 = (tvn->ha / 2 - he) / 2;
-+	vcrop2 = tvn->ha / 2 - he - vcrop1;
- 	v_start = tvn->v_start;
- 	v_end = v_start + tvn->ha / 2;	// - 1; FIXME SnapShot times out with -1 in 768*576 on the DC10 - LP
- 	v_start += vcrop1;
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/9c2ef23e4dae122d2b18e834d90f8bd4dda48fe6
+
+Thank you!
+
 -- 
-2.25.1
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
