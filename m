@@ -2,112 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3883532CC
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 08:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB2F3532CF
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 08:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236237AbhDCGNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 02:13:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43158 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231282AbhDCGN2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 02:13:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 712C961003;
-        Sat,  3 Apr 2021 06:13:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617430406;
-        bh=Y19EdsrdhGf3x4JlBmdYqbFPHgo2MjSKRdLJLeg8Gh8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mczABvsMfhgjK6ovuwzaRpXDE1t3ZCGwGcKM0S5Zq1w2RIaq+DXk37t7xooFnNl10
-         xC98CfHncCIgN+o5kVrZPvTB5ts3Ej/J/wa/34HxJtEGvyBnVlhUdbUlwpNyw9ti2z
-         jBFfQQv8/gLlaBr+lQEO8NmejGFfiPW5uD+lQCVI=
-Date:   Sat, 3 Apr 2021 08:13:23 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Minchan Kim <minchan@kernel.org>, keescook@chromium.org,
-        dhowells@redhat.com, hch@infradead.org, mbenes@suse.com,
-        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
-        axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
- multistate
-Message-ID: <YGgHg7XCHD3rATIK@kroah.com>
-References: <YErOkGrvtQODXtB0@google.com>
- <20210312183238.GW4332@42.do-not-panic.com>
- <YEvA1dzDsFOuKdZ/@google.com>
- <20210319190924.GK4332@42.do-not-panic.com>
- <YFjHvUolScp3btJ9@google.com>
- <20210322204156.GM4332@42.do-not-panic.com>
- <YFkWMZ0m9nKCT69T@google.com>
- <20210401235925.GR4332@42.do-not-panic.com>
- <YGbNpLKXfWpy0ZZa@kroah.com>
- <20210402183016.GU4332@42.do-not-panic.com>
+        id S234518AbhDCGTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 02:19:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231282AbhDCGTU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Apr 2021 02:19:20 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227A7C0613E6;
+        Fri,  2 Apr 2021 23:19:18 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id f17so3405549plr.0;
+        Fri, 02 Apr 2021 23:19:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CBCIQHgUyAG2ZGSKzfcjypqTPr8Hjug+h1YTnKY5wjs=;
+        b=etTmaMG/X35UknYs65i78HG3uAez5LaE097mDlhRe4dJsujsEPlNTBIxs0GUv9ryCH
+         OJEAWEH2S58EBcd72jum8klzXCke0zQPaJlpFUqWhVpi1PZmyLNKlTWg1vHjZbVhsBhS
+         s/R3+5n3kp3pkF7EcWSDy7SswrKs927B4MJc0njNYDWX29PzixubDUq7ILsqNQU26/w4
+         95R1AW4amePmNvDCWkALRcziiR6g4edrsXhazDOwOqnjn2atSBDdRGH7UBL2q2mRxZjg
+         Bz5FEw9wj/wtu0EpXWk5HopwYbKxOFteyDd2u8YKIYR7IJxv17T8Dj1Tw16rhUHQidWd
+         GwHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CBCIQHgUyAG2ZGSKzfcjypqTPr8Hjug+h1YTnKY5wjs=;
+        b=KoO571I9A2WARUD/4kVXjhesBZ5nVYmLrx9V6Fu1orOCCWyvs6mQ7pcC8M82Ts5sZN
+         FkrpJUJtgtidBE3JHYOlRtAI5DlMWdvTXj0F4X1wZ0V2/fuAIz3hS8QFOHf7xeKYgfAN
+         yMXD/bkVLzPs8AcCgkDy5UJ+Tq/cLdJVbakwipkjWzFpAeCVq+ImkfxxulwfVpoiTz+9
+         uKsVsNR8Lh51c8Ck/2XVe07ZOaMwQwIHDPW9CS9l0+FdYqbR8x1hAgCedE8RXxJyUZkB
+         fjOdBnEQfh35dzPmIpp0jPZoJ8V4Q+AlgYRBp+3dTEB/6GT83BrxTbHNPU29NlhG1M88
+         2oKg==
+X-Gm-Message-State: AOAM531iZwFheb7ZNGSsBjjjLrApHtdUknhTkSJmg1OdwczF9COrWjXq
+        46AF+rCKGADkid9MUb4aJDk=
+X-Google-Smtp-Source: ABdhPJzBvu4vNX3rq+Sr9fLDESRf+liLR4Ve21s0wdbMVPiZ8RDtaz9hNeI6G66m9jvKmmkDEcRZeQ==
+X-Received: by 2002:a17:90b:3692:: with SMTP id mj18mr16606663pjb.44.1617430757530;
+        Fri, 02 Apr 2021 23:19:17 -0700 (PDT)
+Received: from z640-arch.lan ([2602:61:7344:f100::678])
+        by smtp.gmail.com with ESMTPSA id n25sm9436174pff.154.2021.04.02.23.19.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Apr 2021 23:19:16 -0700 (PDT)
+From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Wei Li <liwei391@huawei.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>
+Subject: [PATCH] MIPS: add support for buggy MT7621S core detection
+Date:   Fri,  2 Apr 2021 23:19:12 -0700
+Message-Id: <20210403061912.1012509-1-ilya.lipnitskiy@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210402183016.GU4332@42.do-not-panic.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 06:30:16PM +0000, Luis Chamberlain wrote:
-> On Fri, Apr 02, 2021 at 09:54:12AM +0200, Greg KH wrote:
-> > On Thu, Apr 01, 2021 at 11:59:25PM +0000, Luis Chamberlain wrote:
-> > > As for the syfs deadlock possible with drivers, this fixes it in a generic way:
-> > > 
-> > > commit fac43d8025727a74f80a183cc5eb74ed902a5d14
-> > > Author: Luis Chamberlain <mcgrof@kernel.org>
-> > > Date:   Sat Mar 27 14:58:15 2021 +0000
-> > > 
-> > >     sysfs: add optional module_owner to attribute
-> > >     
-> > >     This is needed as otherwise the owner of the attribute
-> > >     or group read/store might have a shared lock used on driver removal,
-> > >     and deadlock if we race with driver removal.
-> > >     
-> > >     Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> > 
-> > No, please no.  Module removal is a "best effort",
-> 
-> Not for live patching. I am not sure if I am missing any other valid
-> use case?
+Most MT7621 SoCs have 2 cores, which is detected and supported properly
+by CPS.
 
-live patching removes modules?  We have so many code paths that are
-"best effort" when it comes to module unloading, trying to resolve this
-one is a valiant try, but not realistic.
+Unfortunately, MT7621 SoC has a less common S variant with only one core.
+On MT7621S, GCR_CONFIG still reports 2 cores, which leads to hangs when
+starting SMP. CPULAUNCH registers can be used in that case to detect the
+absence of the second core and override the GCR_CONFIG PCORES field.
 
-> > if the system dies when it happens, that's on you. 
-> 
-> I think the better approach for now is simply to call testers / etc to
-> deal with this open coded. I cannot be sure that other than live
-> patching there may be other valid use cases for module removal, and for
-> races we really may care for where userspace *will* typically be mucking
-> with sysfs attributes. Monitoring my systems's sysfs attributes I am
-> actually quite surprised at the random pokes at them.
-> 
-> > I am not willing to expend extra energy
-> > and maintance of core things like sysfs for stuff like this that does
-> > not matter in any system other than a developer's box.
-> 
-> Should we document this as well? Without this it is unclear that tons of
-> random tests are sanely nullified. At least this dead lock I spotted can
-> be pretty common form on many drivers.
+Rework a long-standing OpenWrt patch to override the value of
+mips_cps_numcores on single-core MT7621 systems.
 
-What other drivers have this problem?
+Tested on a dual-core MT7621 device (Ubiquiti ER-X) and a single-core
+MT7621 device (Netgear R6220).
 
-> > Lock data, not code please.  Trying to tie data structure's lifespans
-> > to the lifespan of code is a tangled mess, and one that I do not want to
-> > add to in any form.
-> 
-> Driver developers will simply have to open code these protections. In
-> light of what I see on LTP / fuzzing, I suspect the use case will grow
-> and we'll have to revisit this in the future. But for now, sure, we can
-> just open code the required protections everywhere to not crash on module
-> removal.
+Original 4.14 OpenWrt patch:
+Link: https://git.openwrt.org/?p=openwrt/openwrt.git;a=commitdiff;h=4cdbc90a376dd0555201c1434a2081e055e9ceb7
+Current 5.10 OpenWrt patch:
+Link: https://git.openwrt.org/?p=openwrt/openwrt.git;a=blob;f=target/linux/ramips/patches-5.10/320-mt7621-core-detect-hack.patch;h=c63f0f4c1ec742e24d8480e80553863744b58f6a;hb=10267e17299806f9885d086147878f6c492cb904
 
-LTP and fuzzing too do not remove modules.  So I do not understand the
-root problem here, that's just something that does not happen on a real
-system.
+Suggested-by: Felix Fietkau <nbd@nbd.name>
+Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+---
+ arch/mips/include/asm/bugs.h | 18 ++++++++++++++++++
+ arch/mips/kernel/smp-cps.c   |  3 +++
+ 2 files changed, 21 insertions(+)
 
-thanks,
+diff --git a/arch/mips/include/asm/bugs.h b/arch/mips/include/asm/bugs.h
+index d72dc6e1cf3c..d32f0c4e61f7 100644
+--- a/arch/mips/include/asm/bugs.h
++++ b/arch/mips/include/asm/bugs.h
+@@ -16,6 +16,7 @@
+ 
+ #include <asm/cpu.h>
+ #include <asm/cpu-info.h>
++#include <asm/mips-boards/launch.h>
+ 
+ extern int daddiu_bug;
+ 
+@@ -50,4 +51,21 @@ static inline int r4k_daddiu_bug(void)
+ 	return daddiu_bug != 0;
+ }
+ 
++static inline void cm_gcr_pcores_bug(unsigned int *ncores)
++{
++	struct cpulaunch *launch;
++
++	if (!IS_ENABLED(CONFIG_SOC_MT7621) || !ncores)
++		return;
++
++	/*
++	 * Ralink MT7621S SoC is single core, but GCR_CONFIG always reports 2 cores.
++	 * Use legacy amon method to detect if the second core is missing.
++	 */
++	launch = (struct cpulaunch *)CKSEG0ADDR(CPULAUNCH);
++	launch += 2; /* MT7621 has 2 VPEs per core */
++	if (!(launch->flags & LAUNCH_FREADY))
++		*ncores = 1;
++}
++
+ #endif /* _ASM_BUGS_H */
+diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
+index bcd6a944b839..e1e9c11e8a7c 100644
+--- a/arch/mips/kernel/smp-cps.c
++++ b/arch/mips/kernel/smp-cps.c
+@@ -15,6 +15,7 @@
+ #include <linux/irq.h>
+ 
+ #include <asm/bcache.h>
++#include <asm/bugs.h>
+ #include <asm/mips-cps.h>
+ #include <asm/mips_mt.h>
+ #include <asm/mipsregs.h>
+@@ -60,6 +61,7 @@ static void __init cps_smp_setup(void)
+ 		pr_cont("{");
+ 
+ 		ncores = mips_cps_numcores(cl);
++		cm_gcr_pcores_bug(&ncores);
+ 		for (c = 0; c < ncores; c++) {
+ 			core_vpes = core_vpe_count(cl, c);
+ 
+@@ -170,6 +172,7 @@ static void __init cps_prepare_cpus(unsigned int max_cpus)
+ 
+ 	/* Allocate core boot configuration structs */
+ 	ncores = mips_cps_numcores(0);
++	cm_gcr_pcores_bug(&ncores);
+ 	mips_cps_core_bootcfg = kcalloc(ncores, sizeof(*mips_cps_core_bootcfg),
+ 					GFP_KERNEL);
+ 	if (!mips_cps_core_bootcfg) {
+-- 
+2.31.1
 
-greg k-h
