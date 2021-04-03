@@ -2,88 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 385E13534C0
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 18:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD5B63534C6
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 18:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236900AbhDCQiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 12:38:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236808AbhDCQiQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 12:38:16 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D6B0C0613E6;
-        Sat,  3 Apr 2021 09:38:13 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id mh7so1235327ejb.12;
-        Sat, 03 Apr 2021 09:38:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=r7z9PZUHOLRPlsyUlJgKqk0kSJfJAIYpWl69+JjFgoI=;
-        b=p8w9WxO9mvUwXBifb2jC2gia/2IL49GV/IWNE5RhAElRlHOgGbSXCqd1uAt1T/l/oi
-         E3sFN57uNk9+2vPl14W42U1SuSDkpsguH1laX6/SqMJR3fs8Vh8JhITNq0q0it5qIUqR
-         uTI9b4iohZCAhanWrLlDBSjLkp4mZBu+zfXTrxnHRzv0KTCEuyIQ7JUyLnOzKfRneOO4
-         uGMLS+ffJwPngqL7xw3QnhTxga+cO6HQgPpAXZXrtFrNBk2XPAamIF0jeUKygQcL8hGB
-         Oq/CJN9nFXtndK6CJUStRUy4SNQxBpP5RxqAoPbMuWOAcY5MJjBSnCncwiJOeewCl4Ij
-         34CA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=r7z9PZUHOLRPlsyUlJgKqk0kSJfJAIYpWl69+JjFgoI=;
-        b=fapy+BLT1Qx2a1NiOddrxjbEaK3S7hmau16mXPWFotWcIvJFIY7Eq6DKOa97qgRAEa
-         Si5lU603NluOJMw9vxYU2mr1IqeaZv3YiF6aa8k98z/XfK+CcSGkk9/urCiJc8UzjFHJ
-         Q5SfNDVmzW5+dr2PACOpaQCC/WJO1ILHNpKuPIlRggwNVCr9aIljTxgYbMD7+R01Edrc
-         Zs3AZJaB2/ZRD19YpJp00G87IiI+8RgCBR3Yq7n+AY9We+wmaztUukb3rkIcp4u+yVxN
-         aYe1UQhWW8qZS2g+Iny853+udWrayWO09uBTJvYltogJrVh1JTj1YtwlEKX0YGlHi3Cm
-         L8Hg==
-X-Gm-Message-State: AOAM531/6XLCJ8Wg9eeBT4a98uF2qI4RLvyfr9ZYkYO4jlg0o9NqdgZX
-        TDhxXGkUn63EStbonauzdgE=
-X-Google-Smtp-Source: ABdhPJwKerWFa1OIrj6ZrGjYJSLBWDSIIdqGH0oppIu0Bp8FChk2eAUw95BXiDLpqmFvTj8rh4zO2g==
-X-Received: by 2002:a17:906:7c4:: with SMTP id m4mr20098498ejc.63.1617467892122;
-        Sat, 03 Apr 2021 09:38:12 -0700 (PDT)
-Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
-        by smtp.gmail.com with ESMTPSA id r25sm7345698edv.78.2021.04.03.09.38.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Apr 2021 09:38:11 -0700 (PDT)
-Date:   Sat, 3 Apr 2021 19:38:10 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        linux-mips@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v1 2/9] net: dsa: tag_ar9331: detect IGMP and
- MLD packets
-Message-ID: <20210403163810.xut2oilz4d7zuqli@skbuf>
-References: <20210403114848.30528-1-o.rempel@pengutronix.de>
- <20210403114848.30528-3-o.rempel@pengutronix.de>
- <20210403130318.lqkd6id7gehg3bin@skbuf>
- <20210403132636.h7ghwk2eaekskx2b@pengutronix.de>
- <20210403134606.tm7dyy3gt2nop2sj@skbuf>
- <20210403152224.u7vbehkijg2wzxon@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210403152224.u7vbehkijg2wzxon@pengutronix.de>
+        id S236889AbhDCQpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 12:45:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58798 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236735AbhDCQpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Apr 2021 12:45:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1ED4761287;
+        Sat,  3 Apr 2021 16:45:34 +0000 (UTC)
+From:   Tom Zanussi <tom.zanussi@linux.intel.com>
+To:     vkoul@kernel.org
+Cc:     peterz@infradead.org, acme@kernel.org, mingo@kernel.org,
+        kan.liang@linux.intel.com, dave.jiang@intel.com,
+        tony.luck@intel.com, dan.j.williams@intel.com,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+Subject: [PATCH v2 0/1] dmaengine: idxd: IDXD pmu support
+Date:   Sat,  3 Apr 2021 11:45:30 -0500
+Message-Id: <cover.1617467772.git.zanussi@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 03, 2021 at 05:22:24PM +0200, Oleksij Rempel wrote:
-> Off-topic question, this patch set stops to work after rebasing against
-> latest netdev. I get following warning:
-> ip l s lan0 master test
-> RTNETLINK answers: Invalid argumen
-> 
-> Are there some API changes?
+From: Tom Zanussi <zanussi@kernel.org>
 
-Yes, it's likely that you are returning -EINVAL to some of the functions
-with which DSA calls you at .port_bridge_join time, see dsa_port_switchdev_sync.
+Hi,
+
+This is v2 of the IDXD pmu support patch, which is the same as v1 but
+removes a few assigned-but-unused variables reported by kernel test
+robot <lkp@intel.com>.
+
+Thanks,
+
+Tom
+
+
+ -- original v1 text --
+
+Hi,
+
+This patchset implements initial pmu support for the Intel DSA (Data
+Streaming Accelerator [1]), which I'm hoping can go into 5.13.
+
+I'm also hoping to supply a couple follow-on patches in the near
+future, but I'm not yet sure how much sense they make, so I thought
+I'd throw a couple ideas out there and maybe get some opinions before
+going forward with them:
+
+  - The perf userspace interface for this isn't exactly user-friedly,
+    in that you currently need to specify numeric values for field
+    values:
+
+     # perf stat -e dsa0/filter_wq=0x1,filter_tc=0x1,filter_sz=0x7,
+                    filter_eng=0x1,event=0x8,event_category=0x3/
+
+    It would be nicer to be able to specify those values symbolically
+    instead, and the way to do that seems to be via some JSON files in
+    perf userspace.
+
+  - Some of the DSA pmu support is patterned after existing uncore
+    code, and there seems to be at least some opportunity to
+    consolidate some of the things they both do into common code, such
+    as the cpumask device attributes and related cpu hotplug support.
+    At this point I'm not sure how much sense it makes to put any
+    effort into that, but would be willing to try if there would be
+    some interest in it, especially considering there will probably be
+    future pmu support added that could benefit from it.
+
+Thanks,
+
+Tom
+
+Tom Zanussi (1):
+  dmaengine: idxd: Add IDXD performance monitor support
+
+ drivers/dma/Kconfig          |  13 +
+ drivers/dma/idxd/Makefile    |   2 +
+ drivers/dma/idxd/idxd.h      |  45 +++
+ drivers/dma/idxd/init.c      |   9 +
+ drivers/dma/idxd/irq.c       |   5 +-
+ drivers/dma/idxd/perfmon.c   | 653 +++++++++++++++++++++++++++++++++++
+ drivers/dma/idxd/perfmon.h   | 119 +++++++
+ drivers/dma/idxd/registers.h | 108 ++++++
+ include/linux/cpuhotplug.h   |   1 +
+ 9 files changed, 951 insertions(+), 4 deletions(-)
+ create mode 100644 drivers/dma/idxd/perfmon.c
+ create mode 100644 drivers/dma/idxd/perfmon.h
+
+-- 
+2.17.1
+
