@@ -2,115 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C21353216
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 04:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B92F535321B
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 04:28:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235990AbhDCCWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 22:22:20 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:51993 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231256AbhDCCWT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 22:22:19 -0400
-Received: by mail-il1-f199.google.com with SMTP id y11so6822692ilc.18
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 19:22:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=yojHr0LL9tcz8C/ih+uZXwDOxxsE8tJwilH+vxkwGEU=;
-        b=YzKwqJZ87d5Vao3k4yZCCTwNeaad9146vLCnJp0wXARATXSDEJxG6iWGGNQ6T9IwSx
-         XoaiHUz2c20xFcbKeeEkugVp3hLw8YwjiFIGgiefnNdMAqeFbxc5g6e6FsIvSAKe3n+7
-         Fao9jY8GNlSiN4zFfwm4kyrtTgWBmyz3QNd14+KIkaXt0Chi7jAwSJLO0NTqWarJLnhc
-         8NPyJo2wmJFriEr8Bok946QZ3C6u6ei4epJ5HR8M5RCxajvz/nEUzJnEOrrv7MEof1IL
-         Eo2qq/V5xdDBswXE3/qQ/nQNb8jTECN5ApeW/Pq44aAWy/ao95eOFFRpth1ZTz7El0Z4
-         ozrQ==
-X-Gm-Message-State: AOAM530/ckGbTnWWZSu7K0x6FHou0H6YgGxr52kgfDK6eS3ykT3P8FTY
-        0ufC5cMHALERm/L/2xrTaqGDDYCN4/49cI7DLGyGBeUPcWuU
-X-Google-Smtp-Source: ABdhPJyBAx5lpsWCs2cfBehnz27AczKqw16RcM1me3OBSZwRId03i5qPHagW0vP7xRMo5UKXyafMcKO0ycDaUet4TolL/MQdcZaA
+        id S236216AbhDCC2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 22:28:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46592 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235598AbhDCC2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 22:28:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BA85611CC;
+        Sat,  3 Apr 2021 02:28:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617416898;
+        bh=oq6vr8YY/B+/RkR42rRprhRdAtANYREmsKpfBvtZsoY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=k+WHDjQ5PPIk5N3l6509ffX/czFyMEYniHyQKHYjc+bJ1uW8niBsRqMK2wXK0IdIG
+         hASmNADMF5CKxA/duRVuy3GfHAwbISra0/JjM6wNXSgxPKn5UTQy/htOSG+rXpy8w8
+         0+LlJfAvtu4n4GdnAiE/bsS1aULSxDGf6uLyf6y4/L+rGneJNuVO14CtdMeSueJC4l
+         F+LCEaH2Aw9VdCpe3lT/0UUgaz8y359orZ09CAsvpWtD4Cj+uXOxq3S+Qt7UJIW0dx
+         PN4lfZzhmXl3v7u+8GYxZ8xgdHVLK2bfIClMzcKqS8F6ual7RhH37oHfIGkaUOWEoP
+         nCHnUwQNcT6jw==
+Received: by mail-il1-f170.google.com with SMTP id r17so6002690ilt.0;
+        Fri, 02 Apr 2021 19:28:18 -0700 (PDT)
+X-Gm-Message-State: AOAM532Z/4EhN9E8Pzw1qznqPPeCBa9FzDFcgS1/cHFVtiT2frYO/Jnc
+        71/ZMepy6ckHXnLeG/b0ahL5pBHlq3yfkzgwu8A=
+X-Google-Smtp-Source: ABdhPJzB5/qn76EMf7QaKOqzT9W6sX0AEeXFk7rKego8k0wlVuG/wLf2PPeH+vJwOn1QlWb0FUCizh9UxYWiCEFJCKM=
+X-Received: by 2002:a05:6e02:1286:: with SMTP id y6mr12948678ilq.270.1617416897956;
+ Fri, 02 Apr 2021 19:28:17 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9917:: with SMTP id x23mr12821675iol.22.1617416537245;
- Fri, 02 Apr 2021 19:22:17 -0700 (PDT)
-Date:   Fri, 02 Apr 2021 19:22:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000028104905bf0822ce@google.com>
-Subject: [syzbot] WARNING: suspicious RCU usage in find_inlist_lock
-From:   syzbot <syzbot+b221933e5f9ad5b0e2fd@syzkaller.appspotmail.com>
-To:     bridge@lists.linux-foundation.org, coreteam@netfilter.org,
-        davem@davemloft.net, fw@strlen.de, kadlec@netfilter.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        nikolay@nvidia.com, pablo@netfilter.org, roopa@nvidia.com,
-        syzkaller-bugs@googlegroups.com
+References: <20210402155807.49976-1-pbonzini@redhat.com> <20210402155807.49976-2-pbonzini@redhat.com>
+In-Reply-To: <20210402155807.49976-2-pbonzini@redhat.com>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Sat, 3 Apr 2021 10:28:06 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H7Sr8V7A4DdXx158PJ1dT+9zSgUsFQa1LLuZnq+TFR0aw@mail.gmail.com>
+Message-ID: <CAAhV-H7Sr8V7A4DdXx158PJ1dT+9zSgUsFQa1LLuZnq+TFR0aw@mail.gmail.com>
+Subject: Re: [PATCH 1/4] KVM: constify kvm_arch_flush_remote_tlbs_memslot
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        seanjc@google.com, "open list:MIPS" <linux-mips@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Reviewed-by: Huacai Chen <chenhuacai@kernel.org>
 
-syzbot found the following issue on:
-
-HEAD commit:    1e43c377 Merge tag 'xtensa-20210329' of git://github.com/j..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=114cdd4ad00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=78ef1d159159890
-dashboard link: https://syzkaller.appspot.com/bug?extid=b221933e5f9ad5b0e2fd
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b221933e5f9ad5b0e2fd@syzkaller.appspotmail.com
-
-=============================
-WARNING: suspicious RCU usage
-5.12.0-rc5-syzkaller #0 Not tainted
------------------------------
-kernel/sched/core.c:8294 Illegal context switch in RCU-sched read-side critical section!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 2, debug_locks = 0
-no locks held by syz-executor.1/8425.
-
-stack backtrace:
-CPU: 1 PID: 8425 Comm: syz-executor.1 Not tainted 5.12.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- ___might_sleep+0x266/0x2c0 kernel/sched/core.c:8294
- __mutex_lock_common kernel/locking/mutex.c:928 [inline]
- __mutex_lock+0xa9/0x1120 kernel/locking/mutex.c:1096
- find_inlist_lock_noload net/bridge/netfilter/ebtables.c:316 [inline]
- find_inlist_lock.constprop.0+0x26/0x220 net/bridge/netfilter/ebtables.c:330
- find_table_lock net/bridge/netfilter/ebtables.c:339 [inline]
- do_ebt_get_ctl+0x208/0x790 net/bridge/netfilter/ebtables.c:2329
- nf_getsockopt+0x72/0xd0 net/netfilter/nf_sockopt.c:116
- ip_getsockopt net/ipv4/ip_sockglue.c:1777 [inline]
- ip_getsockopt+0x164/0x1c0 net/ipv4/ip_sockglue.c:1756
- tcp_getsockopt+0x86/0xd0 net/ipv4/tcp.c:4239
- __sys_getsockopt+0x21f/0x5f0 net/socket.c:2161
- __do_sys_getsockopt net/socket.c:2176 [inline]
- __se_sys_getsockopt net/socket.c:2173 [inline]
- __x64_sys_getsockopt+0xba/0x150 net/socket.c:2173
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x467a6a
-Code: 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 37 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe660d82f8 EFLAGS: 00000202 ORIG_RAX: 0000000000000037
-RAX: ffffffffffffffda RBX: 00000000005401a0 RCX: 0000000000467a6a
-RDX: 0000000000000081 RSI: 0000000000000000 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 00007ffe660d831c R09: 00007ffe660d83a0
-R10: 00007ffe660d8320 R11: 0000000000000202 R12: 0000000000000003
-R13: 00007ffe660d8320 R14: 0000000000540128 R15: 00007ffe660d831c
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+On Fri, Apr 2, 2021 at 11:58 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> memslots are stored in RCU and there should be no need to
+> change them.
+>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>  arch/arm64/kvm/arm.c     | 2 +-
+>  arch/mips/kvm/mips.c     | 2 +-
+>  arch/x86/kvm/mmu/mmu.c   | 2 +-
+>  include/linux/kvm_host.h | 2 +-
+>  4 files changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index 7f06ba76698d..9141730b7963 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -1268,7 +1268,7 @@ void kvm_arch_sync_dirty_log(struct kvm *kvm, struct kvm_memory_slot *memslot)
+>  }
+>
+>  void kvm_arch_flush_remote_tlbs_memslot(struct kvm *kvm,
+> -                                       struct kvm_memory_slot *memslot)
+> +                                       const struct kvm_memory_slot *memslot)
+>  {
+>         kvm_flush_remote_tlbs(kvm);
+>  }
+> diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
+> index 58a8812e2fa5..7db8234a4407 100644
+> --- a/arch/mips/kvm/mips.c
+> +++ b/arch/mips/kvm/mips.c
+> @@ -997,7 +997,7 @@ void kvm_arch_sync_dirty_log(struct kvm *kvm, struct kvm_memory_slot *memslot)
+>  }
+>
+>  void kvm_arch_flush_remote_tlbs_memslot(struct kvm *kvm,
+> -                                       struct kvm_memory_slot *memslot)
+> +                                       const struct kvm_memory_slot *memslot)
+>  {
+>         /* Let implementation handle TLB/GVA invalidation */
+>         kvm_mips_callbacks->flush_shadow_memslot(kvm, memslot);
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 0d92a269c5fa..f75c677910c9 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -5616,7 +5616,7 @@ void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
+>  }
+>
+>  void kvm_arch_flush_remote_tlbs_memslot(struct kvm *kvm,
+> -                                       struct kvm_memory_slot *memslot)
+> +                                       const struct kvm_memory_slot *memslot)
+>  {
+>         /*
+>          * All current use cases for flushing the TLBs for a specific memslot
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index e6d77353025c..34a974ffc882 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -894,7 +894,7 @@ void kvm_arch_sync_dirty_log(struct kvm *kvm, struct kvm_memory_slot *memslot);
+>
+>  #ifdef CONFIG_KVM_GENERIC_DIRTYLOG_READ_PROTECT
+>  void kvm_arch_flush_remote_tlbs_memslot(struct kvm *kvm,
+> -                                       struct kvm_memory_slot *memslot);
+> +                                       const struct kvm_memory_slot *memslot);
+>  #else /* !CONFIG_KVM_GENERIC_DIRTYLOG_READ_PROTECT */
+>  int kvm_vm_ioctl_get_dirty_log(struct kvm *kvm, struct kvm_dirty_log *log);
+>  int kvm_get_dirty_log(struct kvm *kvm, struct kvm_dirty_log *log,
+> --
+> 2.30.1
+>
+>
