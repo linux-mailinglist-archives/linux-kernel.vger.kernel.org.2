@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB2013533A1
+	by mail.lfdr.de (Postfix) with ESMTP id 605873533A0
 	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 13:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236734AbhDCLLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 07:11:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58566 "EHLO
+        id S236748AbhDCLLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 07:11:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236617AbhDCLLB (ORCPT
+        with ESMTP id S236628AbhDCLLB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 3 Apr 2021 07:11:01 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DEB2C061788;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B9DC06178C;
         Sat,  3 Apr 2021 04:10:57 -0700 (PDT)
-Date:   Sat, 03 Apr 2021 11:10:54 -0000
+Date:   Sat, 03 Apr 2021 11:10:55 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617448255;
+        s=2020; t=1617448256;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=GphrPHg3Wo8k6QTMoh1gT5anBp4sPNiSpal5tuVB+OY=;
-        b=mFZ4zDiN8VRqeOzhTnEgEZbmGo3u6bpApWDzaKff/ZSSUfA67RfL/ysPIHL/xExNXD34/0
-        khHCQ8B926Rt4bsYYtA0lNIxM1TgOWYoCMq0y98J2aTAA0wiW/R+lrCE0vZdU+qZgh6+qY
-        szD9LTqVyteOy37jr+Qr0fXpvig6SGJogSnF1EA1pW1W4O4ZP8gKwGeO7F5nIL5dG/XIH5
-        iQ/0RX0+R3NzW7HRRspBDWnt8NMG7QdiQTAInN53NM3faczNAexIpXwzcPohF5X0BFF9gW
-        w8tc8lL14SdI/v86Hq5S/JJ5C/l0OPUAFEN2c91JGX6HIR0+Vin2b2LHKyl2YQ==
+        bh=zPcpNtgz4KTIecjxvgdRjx7oVpP9waOBVtsW1QzwMUc=;
+        b=c+R8432JswXSiAD8MUx/KSt6qA6khOsrd8rGJeb8xW2l/0++WmW7Xfw7ReLE70anRyIgD0
+        uBAslzNCAC34bmVntXSffbtarQizFlVAduHk2a0YEXbX1VWDJQnm+hBBcM9+hg7sThy6lU
+        8JwHcfS2nmIupCUvbrwbsp6PnR3b1kJtNLcV1hqWFRIS/8odczIbsSo+aclWavcS5GdSR8
+        RODhwdpUPEJJf3Tj0uaHYX7Hj4GWwTRJN11NRYavEw1OqDU4TaxZY99XOjv6LrWstyhoB+
+        f2hgQKI3OK+RcBiYfdpG6QtxRguW23/IKSF1aS1I/tCXW4SuMYwYHiXzWGDIng==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617448255;
+        s=2020e; t=1617448256;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=GphrPHg3Wo8k6QTMoh1gT5anBp4sPNiSpal5tuVB+OY=;
-        b=c7Q6n/r+UBOBDiete3LEdeVMTOSSnTqmYpk8XXB6945kIs03n3CnhWbkNhvnNo2bDwNTcU
-        EgjJIvx0osJhYxCQ==
+        bh=zPcpNtgz4KTIecjxvgdRjx7oVpP9waOBVtsW1QzwMUc=;
+        b=mYHA3lbZzhXvemaQrfkdzTdt73X82K+FQ8Ou0kgBVqe1yzU6enrL4rJygDe7UExcsC5QZn
+        j74rWbXJhpLEQICg==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/core] objtool/x86: Rewrite retpoline thunk calls
+Subject: [tip: x86/core] objtool: Keep track of retpoline call sites
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
         Miroslav Benes <mbenes@suse.cz>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210326151300.320177914@infradead.org>
-References: <20210326151300.320177914@infradead.org>
+In-Reply-To: <20210326151300.130805730@infradead.org>
+References: <20210326151300.130805730@infradead.org>
 MIME-Version: 1.0
-Message-ID: <161744825465.29796.17213528057383430988.tip-bot2@tip-bot2>
+Message-ID: <161744825595.29796.16468442604173062127.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,268 +62,187 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/core branch of tip:
 
-Commit-ID:     9bc0bb50727c8ac69fbb33fb937431cf3518ff37
-Gitweb:        https://git.kernel.org/tip/9bc0bb50727c8ac69fbb33fb937431cf3518ff37
+Commit-ID:     43d5430ad74ef5156353af7aec352426ec7a8e57
+Gitweb:        https://git.kernel.org/tip/43d5430ad74ef5156353af7aec352426ec7a8e57
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Fri, 26 Mar 2021 16:12:15 +01:00
+AuthorDate:    Fri, 26 Mar 2021 16:12:12 +01:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 02 Apr 2021 12:47:28 +02:00
+CommitterDate: Fri, 02 Apr 2021 12:45:27 +02:00
 
-objtool/x86: Rewrite retpoline thunk calls
+objtool: Keep track of retpoline call sites
 
-When the compiler emits: "CALL __x86_indirect_thunk_\reg" for an
-indirect call, have objtool rewrite it to:
+Provide infrastructure for architectures to rewrite/augment compiler
+generated retpoline calls. Similar to what we do for static_call()s,
+keep track of the instructions that are retpoline calls.
 
-	ALTERNATIVE "call __x86_indirect_thunk_\reg",
-		    "call *%reg", ALT_NOT(X86_FEATURE_RETPOLINE)
-
-Additionally, in order to not emit endless identical
-.altinst_replacement chunks, use a global symbol for them, see
-__x86_indirect_alt_*.
-
-This also avoids objtool from having to do code generation.
+Use the same list_head, since a retpoline call cannot also be a
+static_call.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Borislav Petkov <bp@suse.de>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-Link: https://lkml.kernel.org/r/20210326151300.320177914@infradead.org
+Link: https://lkml.kernel.org/r/20210326151300.130805730@infradead.org
 ---
- arch/x86/include/asm/asm-prototypes.h |  12 ++-
- arch/x86/lib/retpoline.S              |  41 ++++++++-
- tools/objtool/arch/x86/decode.c       | 117 +++++++++++++++++++++++++-
- 3 files changed, 167 insertions(+), 3 deletions(-)
+ tools/objtool/check.c                   | 34 ++++++++++++++++++++----
+ tools/objtool/include/objtool/arch.h    |  2 +-
+ tools/objtool/include/objtool/check.h   |  2 +-
+ tools/objtool/include/objtool/objtool.h |  1 +-
+ tools/objtool/objtool.c                 |  1 +-
+ 5 files changed, 34 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/include/asm/asm-prototypes.h b/arch/x86/include/asm/asm-prototypes.h
-index 0545b07..4cb726c 100644
---- a/arch/x86/include/asm/asm-prototypes.h
-+++ b/arch/x86/include/asm/asm-prototypes.h
-@@ -19,11 +19,19 @@ extern void cmpxchg8b_emu(void);
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 600fa67..77074db 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -451,7 +451,7 @@ static int create_static_call_sections(struct objtool_file *file)
+ 		return 0;
  
- #ifdef CONFIG_RETPOLINE
+ 	idx = 0;
+-	list_for_each_entry(insn, &file->static_call_list, static_call_node)
++	list_for_each_entry(insn, &file->static_call_list, call_node)
+ 		idx++;
  
--#define DECL_INDIRECT_THUNK(reg) \
-+#undef GEN
-+#define GEN(reg) \
- 	extern asmlinkage void __x86_indirect_thunk_ ## reg (void);
-+#include <asm/GEN-for-each-reg.h>
+ 	sec = elf_create_section(file->elf, ".static_call_sites", SHF_WRITE,
+@@ -460,7 +460,7 @@ static int create_static_call_sections(struct objtool_file *file)
+ 		return -1;
+ 
+ 	idx = 0;
+-	list_for_each_entry(insn, &file->static_call_list, static_call_node) {
++	list_for_each_entry(insn, &file->static_call_list, call_node) {
+ 
+ 		site = (struct static_call_site *)sec->data->d_buf + idx;
+ 		memset(site, 0, sizeof(struct static_call_site));
+@@ -829,13 +829,16 @@ static int add_jump_destinations(struct objtool_file *file)
+ 			else
+ 				insn->type = INSN_JUMP_DYNAMIC_CONDITIONAL;
+ 
++			list_add_tail(&insn->call_node,
++				      &file->retpoline_call_list);
 +
-+#undef GEN
-+#define GEN(reg) \
-+	extern asmlinkage void __x86_indirect_alt_call_ ## reg (void);
-+#include <asm/GEN-for-each-reg.h>
+ 			insn->retpoline_safe = true;
+ 			continue;
+ 		} else if (insn->func) {
+ 			/* internal or external sibling call (with reloc) */
+ 			insn->call_dest = reloc->sym;
+ 			if (insn->call_dest->static_call_tramp) {
+-				list_add_tail(&insn->static_call_node,
++				list_add_tail(&insn->call_node,
+ 					      &file->static_call_list);
+ 			}
+ 			continue;
+@@ -897,7 +900,7 @@ static int add_jump_destinations(struct objtool_file *file)
+ 				/* internal sibling call (without reloc) */
+ 				insn->call_dest = insn->jump_dest->func;
+ 				if (insn->call_dest->static_call_tramp) {
+-					list_add_tail(&insn->static_call_node,
++					list_add_tail(&insn->call_node,
+ 						      &file->static_call_list);
+ 				}
+ 			}
+@@ -981,6 +984,9 @@ static int add_call_destinations(struct objtool_file *file)
+ 			insn->type = INSN_CALL_DYNAMIC;
+ 			insn->retpoline_safe = true;
  
- #undef GEN
--#define GEN(reg) DECL_INDIRECT_THUNK(reg)
-+#define GEN(reg) \
-+	extern asmlinkage void __x86_indirect_alt_jmp_ ## reg (void);
- #include <asm/GEN-for-each-reg.h>
++			list_add_tail(&insn->call_node,
++				      &file->retpoline_call_list);
++
+ 			remove_insn_ops(insn);
+ 			continue;
  
- #endif /* CONFIG_RETPOLINE */
-diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
-index d2c0d14..4d32cb0 100644
---- a/arch/x86/lib/retpoline.S
-+++ b/arch/x86/lib/retpoline.S
-@@ -10,6 +10,8 @@
- #include <asm/unwind_hints.h>
- #include <asm/frame.h>
+@@ -988,7 +994,7 @@ static int add_call_destinations(struct objtool_file *file)
+ 			insn->call_dest = reloc->sym;
  
-+	.section .text.__x86.indirect_thunk
-+
- .macro RETPOLINE reg
- 	ANNOTATE_INTRA_FUNCTION_CALL
- 	call    .Ldo_rop_\@
-@@ -25,9 +27,9 @@
- .endm
+ 		if (insn->call_dest && insn->call_dest->static_call_tramp) {
+-			list_add_tail(&insn->static_call_node,
++			list_add_tail(&insn->call_node,
+ 				      &file->static_call_list);
+ 		}
  
- .macro THUNK reg
--	.section .text.__x86.indirect_thunk
- 
- 	.align 32
-+
- SYM_FUNC_START(__x86_indirect_thunk_\reg)
- 
- 	ALTERNATIVE_2 __stringify(ANNOTATE_RETPOLINE_SAFE; jmp *%\reg), \
-@@ -39,6 +41,32 @@ SYM_FUNC_END(__x86_indirect_thunk_\reg)
- .endm
- 
- /*
-+ * This generates .altinstr_replacement symbols for use by objtool. They,
-+ * however, must not actually live in .altinstr_replacement since that will be
-+ * discarded after init, but module alternatives will also reference these
-+ * symbols.
-+ *
-+ * Their names matches the "__x86_indirect_" prefix to mark them as retpolines.
-+ */
-+.macro ALT_THUNK reg
-+
-+	.align 1
-+
-+SYM_FUNC_START_NOALIGN(__x86_indirect_alt_call_\reg)
-+	ANNOTATE_RETPOLINE_SAFE
-+1:	call	*%\reg
-+2:	.skip	5-(2b-1b), 0x90
-+SYM_FUNC_END(__x86_indirect_alt_call_\reg)
-+
-+SYM_FUNC_START_NOALIGN(__x86_indirect_alt_jmp_\reg)
-+	ANNOTATE_RETPOLINE_SAFE
-+1:	jmp	*%\reg
-+2:	.skip	5-(2b-1b), 0x90
-+SYM_FUNC_END(__x86_indirect_alt_jmp_\reg)
-+
-+.endm
-+
-+/*
-  * Despite being an assembler file we can't just use .irp here
-  * because __KSYM_DEPS__ only uses the C preprocessor and would
-  * only see one instance of "__x86_indirect_thunk_\reg" rather
-@@ -61,3 +89,14 @@ SYM_FUNC_END(__x86_indirect_thunk_\reg)
- #define GEN(reg) EXPORT_THUNK(reg)
- #include <asm/GEN-for-each-reg.h>
- 
-+#undef GEN
-+#define GEN(reg) ALT_THUNK reg
-+#include <asm/GEN-for-each-reg.h>
-+
-+#undef GEN
-+#define GEN(reg) __EXPORT_THUNK(__x86_indirect_alt_call_ ## reg)
-+#include <asm/GEN-for-each-reg.h>
-+
-+#undef GEN
-+#define GEN(reg) __EXPORT_THUNK(__x86_indirect_alt_jmp_ ## reg)
-+#include <asm/GEN-for-each-reg.h>
-diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
-index 782894e..7e8b5be 100644
---- a/tools/objtool/arch/x86/decode.c
-+++ b/tools/objtool/arch/x86/decode.c
-@@ -19,6 +19,7 @@
- #include <objtool/elf.h>
- #include <objtool/arch.h>
- #include <objtool/warn.h>
-+#include <arch/elf.h>
- 
- static unsigned char op_to_cfi_reg[][2] = {
- 	{CFI_AX, CFI_R8},
-@@ -613,6 +614,122 @@ const char *arch_nop_insn(int len)
- 	return nops[len-1];
+@@ -1714,6 +1720,11 @@ static void mark_rodata(struct objtool_file *file)
+ 	file->rodata = found;
  }
  
-+/* asm/alternative.h ? */
-+
-+#define ALTINSTR_FLAG_INV	(1 << 15)
-+#define ALT_NOT(feat)		((feat) | ALTINSTR_FLAG_INV)
-+
-+struct alt_instr {
-+	s32 instr_offset;	/* original instruction */
-+	s32 repl_offset;	/* offset to replacement instruction */
-+	u16 cpuid;		/* cpuid bit set for replacement */
-+	u8  instrlen;		/* length of original instruction */
-+	u8  replacementlen;	/* length of new instruction */
-+} __packed;
-+
-+static int elf_add_alternative(struct elf *elf,
-+			       struct instruction *orig, struct symbol *sym,
-+			       int cpuid, u8 orig_len, u8 repl_len)
++__weak int arch_rewrite_retpolines(struct objtool_file *file)
 +{
-+	const int size = sizeof(struct alt_instr);
-+	struct alt_instr *alt;
-+	struct section *sec;
-+	Elf_Scn *s;
-+
-+	sec = find_section_by_name(elf, ".altinstructions");
-+	if (!sec) {
-+		sec = elf_create_section(elf, ".altinstructions",
-+					 SHF_WRITE, size, 0);
-+
-+		if (!sec) {
-+			WARN_ELF("elf_create_section");
-+			return -1;
-+		}
-+	}
-+
-+	s = elf_getscn(elf->elf, sec->idx);
-+	if (!s) {
-+		WARN_ELF("elf_getscn");
-+		return -1;
-+	}
-+
-+	sec->data = elf_newdata(s);
-+	if (!sec->data) {
-+		WARN_ELF("elf_newdata");
-+		return -1;
-+	}
-+
-+	sec->data->d_size = size;
-+	sec->data->d_align = 1;
-+
-+	alt = sec->data->d_buf = malloc(size);
-+	if (!sec->data->d_buf) {
-+		perror("malloc");
-+		return -1;
-+	}
-+	memset(sec->data->d_buf, 0, size);
-+
-+	if (elf_add_reloc_to_insn(elf, sec, sec->sh.sh_size,
-+				  R_X86_64_PC32, orig->sec, orig->offset)) {
-+		WARN("elf_create_reloc: alt_instr::instr_offset");
-+		return -1;
-+	}
-+
-+	if (elf_add_reloc(elf, sec, sec->sh.sh_size + 4,
-+			  R_X86_64_PC32, sym, 0)) {
-+		WARN("elf_create_reloc: alt_instr::repl_offset");
-+		return -1;
-+	}
-+
-+	alt->cpuid = cpuid;
-+	alt->instrlen = orig_len;
-+	alt->replacementlen = repl_len;
-+
-+	sec->sh.sh_size += size;
-+	sec->changed = true;
-+
 +	return 0;
 +}
 +
-+#define X86_FEATURE_RETPOLINE                ( 7*32+12)
-+
-+int arch_rewrite_retpolines(struct objtool_file *file)
-+{
-+	struct instruction *insn;
-+	struct reloc *reloc;
-+	struct symbol *sym;
-+	char name[32] = "";
-+
-+	list_for_each_entry(insn, &file->retpoline_call_list, call_node) {
-+
-+		if (!strcmp(insn->sec->name, ".text.__x86.indirect_thunk"))
-+			continue;
-+
-+		reloc = insn->reloc;
-+
-+		sprintf(name, "__x86_indirect_alt_%s_%s",
-+			insn->type == INSN_JUMP_DYNAMIC ? "jmp" : "call",
-+			reloc->sym->name + 21);
-+
-+		sym = find_symbol_by_name(file->elf, name);
-+		if (!sym) {
-+			sym = elf_create_undef_symbol(file->elf, name);
-+			if (!sym) {
-+				WARN("elf_create_undef_symbol");
-+				return -1;
-+			}
-+		}
-+
-+		if (elf_add_alternative(file->elf, insn, sym,
-+					ALT_NOT(X86_FEATURE_RETPOLINE), 5, 5)) {
-+			WARN("elf_add_alternative");
-+			return -1;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- int arch_decode_hint_reg(struct instruction *insn, u8 sp_reg)
+ static int decode_sections(struct objtool_file *file)
  {
- 	struct cfi_reg *cfa = &insn->cfi.cfa;
+ 	int ret;
+@@ -1742,6 +1753,10 @@ static int decode_sections(struct objtool_file *file)
+ 	if (ret)
+ 		return ret;
+ 
++	/*
++	 * Must be before add_special_section_alts() as that depends on
++	 * jump_dest being set.
++	 */
+ 	ret = add_jump_destinations(file);
+ 	if (ret)
+ 		return ret;
+@@ -1778,6 +1793,15 @@ static int decode_sections(struct objtool_file *file)
+ 	if (ret)
+ 		return ret;
+ 
++	/*
++	 * Must be after add_special_section_alts(), since this will emit
++	 * alternatives. Must be after add_{jump,call}_destination(), since
++	 * those create the call insn lists.
++	 */
++	ret = arch_rewrite_retpolines(file);
++	if (ret)
++		return ret;
++
+ 	return 0;
+ }
+ 
+diff --git a/tools/objtool/include/objtool/arch.h b/tools/objtool/include/objtool/arch.h
+index bb30993..48b540a 100644
+--- a/tools/objtool/include/objtool/arch.h
++++ b/tools/objtool/include/objtool/arch.h
+@@ -88,4 +88,6 @@ int arch_decode_hint_reg(struct instruction *insn, u8 sp_reg);
+ 
+ bool arch_is_retpoline(struct symbol *sym);
+ 
++int arch_rewrite_retpolines(struct objtool_file *file);
++
+ #endif /* _ARCH_H */
+diff --git a/tools/objtool/include/objtool/check.h b/tools/objtool/include/objtool/check.h
+index f5be798..e5528ce 100644
+--- a/tools/objtool/include/objtool/check.h
++++ b/tools/objtool/include/objtool/check.h
+@@ -39,7 +39,7 @@ struct alt_group {
+ struct instruction {
+ 	struct list_head list;
+ 	struct hlist_node hash;
+-	struct list_head static_call_node;
++	struct list_head call_node;
+ 	struct list_head mcount_loc_node;
+ 	struct section *sec;
+ 	unsigned long offset;
+diff --git a/tools/objtool/include/objtool/objtool.h b/tools/objtool/include/objtool/objtool.h
+index e68e374..e4084af 100644
+--- a/tools/objtool/include/objtool/objtool.h
++++ b/tools/objtool/include/objtool/objtool.h
+@@ -18,6 +18,7 @@ struct objtool_file {
+ 	struct elf *elf;
+ 	struct list_head insn_list;
+ 	DECLARE_HASHTABLE(insn_hash, 20);
++	struct list_head retpoline_call_list;
+ 	struct list_head static_call_list;
+ 	struct list_head mcount_loc_list;
+ 	bool ignore_unreachables, c_file, hints, rodata;
+diff --git a/tools/objtool/objtool.c b/tools/objtool/objtool.c
+index 7b97ce4..3a3ea1b 100644
+--- a/tools/objtool/objtool.c
++++ b/tools/objtool/objtool.c
+@@ -61,6 +61,7 @@ struct objtool_file *objtool_open_read(const char *_objname)
+ 
+ 	INIT_LIST_HEAD(&file.insn_list);
+ 	hash_init(file.insn_hash);
++	INIT_LIST_HEAD(&file.retpoline_call_list);
+ 	INIT_LIST_HEAD(&file.static_call_list);
+ 	INIT_LIST_HEAD(&file.mcount_loc_list);
+ 	file.c_file = !vmlinux && find_section_by_name(file.elf, ".comment");
