@@ -2,102 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A40EC35347E
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 17:19:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E653635347F
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 17:21:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236796AbhDCPTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 11:19:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236364AbhDCPTC (ORCPT
+        id S236804AbhDCPVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 11:21:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31869 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236364AbhDCPVn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 11:19:02 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 840CEC0613E6;
-        Sat,  3 Apr 2021 08:18:59 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id d13so11359589lfg.7;
-        Sat, 03 Apr 2021 08:18:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LJMSco07kl6UgHcL4lI5BdZNbUDIYrJUOjySLJzHFcw=;
-        b=sEBxfjtVS3jSVCEFwhxfH7RjMIkNyDTkHmAKxhHX28Oq7cvSprBREUyQTVousYRTju
-         MZ3hIJPWFXF/gQ/JyXlCeS+R3CIsSpIfqJtDbTJAOOVyFya08iec3zsSIv4alskyAR6J
-         5LJE3OnMjPvDIsmEADZUX8LI+QImh4jWx6i5qbM0hvIxkG/Xy5vDcG3cZKwgFf4s6hJj
-         WXv5S2F8iTk1HND2alaWng6FUXjXLsWeDINEDrwK+VPHfL3KQj+VcUQmmzdj4YinjIji
-         y/GDKxQXV1JM/Dmcsu1LKsPQqr81FxyP+CwUaihk54uwojFex0zsGbg2QkpFEGBAUZCf
-         YDRQ==
+        Sat, 3 Apr 2021 11:21:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617463299;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0vsf++MBJa1jivteBPSF/34krmYzVn/gmykMb/mq8dg=;
+        b=ZaeKXpIB/7uNa+fqySsmiBOU3rzQcheQ4UfOsDOdYgfuNhjC7Nm54Mfacth+RLMgbMRSy+
+        9slgwrLyS/HaWfA9upIGqfZN9iN8oMLCwIGx+xBXHgvDxmll4TkWYyVUirLW/ttyzMOEmf
+        EtTgSjOKnoGL/ObFbtxFLzo45dM5T4c=
+Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
+ [209.85.219.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-547-0eOVKpLNMqGwNyrESsVB2w-1; Sat, 03 Apr 2021 11:21:37 -0400
+X-MC-Unique: 0eOVKpLNMqGwNyrESsVB2w-1
+Received: by mail-yb1-f200.google.com with SMTP id g7so5856614ybm.13
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Apr 2021 08:21:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LJMSco07kl6UgHcL4lI5BdZNbUDIYrJUOjySLJzHFcw=;
-        b=nacoH6iLp5Rp1omzEgkQdELXf4ElN570jnTSSr5v7juueP3Y7Vk9cyTPIUpNXT9mmK
-         gYNv1jFLkVQw4LmDS1TXzrVQ4vsr0enndoz021N2WN4c1jgztNFp35QiVrw1d1CCf2nO
-         mlzxSsDmpoV+C23tf/m+9sRUOPK2aUQu7KWNFZbsX8ytiea9N1H7+L2URFhfxTvyFUxl
-         qG6gy6Ah/gHpfGe4DBAOA5fe1wToIsDJMy1qzS/CaQeLX7gvf4AG5AFyl0Gf/VXIplLg
-         n4dZLeNtgwj7RcavMm0dvXfYBPxenWSadGrthmFatEQLNWmGc+7Q/CBHtiL/7qoWr2Ac
-         /4Kg==
-X-Gm-Message-State: AOAM531Wve45Q6eS/MW1lG9XyT2CRZSy0vec9SarwDtBRqgRsNgSeZh2
-        x0kDr6ZUqpWJlwVd0fT3RzA=
-X-Google-Smtp-Source: ABdhPJzdjHoTcKsPHbzfuMr6Zmj8CuysNF1elSXfZ86spAL44RsAs5/tD0AWZ81rKIrqlOWOFILuzA==
-X-Received: by 2002:a05:6512:104e:: with SMTP id c14mr11626975lfb.570.1617463137430;
-        Sat, 03 Apr 2021 08:18:57 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.229.149])
-        by smtp.gmail.com with ESMTPSA id a18sm1216549ljj.106.2021.04.03.08.18.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Apr 2021 08:18:57 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     alex.aring@gmail.com, stefan@datenfreihafen.org,
-        davem@davemloft.net
-Cc:     linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+ac5c11d2959a8b3c4806@syzkaller.appspotmail.com
-Subject: [PATCH] net: fix NULL ptr dereference in nl802154_del_llsec_key
-Date:   Sat,  3 Apr 2021 18:18:51 +0300
-Message-Id: <20210403151851.9437-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0vsf++MBJa1jivteBPSF/34krmYzVn/gmykMb/mq8dg=;
+        b=qDB+/n9cTnZMCvSNd9C3YPdhguMaJ0kFAO1R15SQsaKrwnRswlyBHHs7vKb23c6Vix
+         pHT34knMcqyU7v796r9pFarCim1cGSyA6KnYkNAhatMxhPSlQhl0GX9TbnsqRimDJ2hv
+         8eEt0/SNm3lcIRE/Q8CwXpFHvrnmP+DlrgyMoe8vSM5/qkjQ3c2rkh2jel6txyEQEgSc
+         6lhTZCq9p0VpyaP7p4i1pj0wXhKqpGUo0lBpq/n/tXn5uUxq/bHliYYaYDcDtcu+QUx0
+         mcGHv35qNpJ9O56Ooy4IlvAGVMrxYHlDurJ53FZ0dFv79JzRjGf0w5OLD0Bd1WVEYosv
+         l8bg==
+X-Gm-Message-State: AOAM530TLzF7I/cZnkYkDP/HPEYe9QHrp3noElOKkuKPCsgF91ARO45S
+        cAvbNIMJEMXlW1P4QPGNwUAectGwHUWd1yBJPGlWoQDRYq4a8DkfeU8r5ft+qV8Qr4i5DB5PKPU
+        dnzYisIMl2h2EdvPtdJg2cNHHOj9CcjZlSv3Nsdup
+X-Received: by 2002:a25:2f8a:: with SMTP id v132mr19737455ybv.227.1617463297368;
+        Sat, 03 Apr 2021 08:21:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJweNaoqZkAs/HxZilG78ocsi0GHzFpO5xzV+B11PkgNrpXgetqHqwaKaz2WcyDodNj7gqVjYaseQtUBh2TpXmg=
+X-Received: by 2002:a25:2f8a:: with SMTP id v132mr19737440ybv.227.1617463297156;
+ Sat, 03 Apr 2021 08:21:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <3c63e34b-e54f-9b01-bad4-8fde8528a64d@linux.microsoft.com> <CAHC9VhTD2iXw7CkxgwnOx1zNN_AqMV+x1Vy8FijdMQE1m4AOJA@mail.gmail.com>
+In-Reply-To: <CAHC9VhTD2iXw7CkxgwnOx1zNN_AqMV+x1Vy8FijdMQE1m4AOJA@mail.gmail.com>
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+Date:   Sat, 3 Apr 2021 17:21:24 +0200
+Message-ID: <CAFqZXNvZCiE=cKhjBqvxOmebDi3vNr0gS563cCMqTTwpcM6JAw@mail.gmail.com>
+Subject: Re: [BUG] Oops in sidtab_context_to_sid
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Vijay Balakrishna <vijayb@linux.microsoft.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot reported NULL ptr dereference in nl802154_del_llsec_key()[1]
-The problem was in case of info->attrs[NL802154_ATTR_SEC_KEY] == NULL.
-nla_parse_nested_deprecated()[2] doesn't check this condition before calling
-nla_len()[3]
+On Sat, Apr 3, 2021 at 4:33 PM Paul Moore <paul@paul-moore.com> wrote:
+> On Fri, Apr 2, 2021 at 6:35 PM Vijay Balakrishna
+> <vijayb@linux.microsoft.com> wrote:
+> >
+> > Seeing oops in 5.4.83 sidtab_context_to_sid().  I checked with Tyler (copied),  he said it might be
+> >
+> > https://lore.kernel.org/selinux/CAFqZXNu8s5edDbSZuSutetTsy58i08vPuP2h-n9=kT34HcPc4w@mail.gmail.com/
+> >
+> > Ondrej, can you confirm?  Unfortunately, we don't have a on demand repro.
+>
+> I'm guessing this may be the problem that Tyler reported earlier and
+> which appeared to be fixed by the patch below:
+>
+> https://lore.kernel.org/selinux/20210318215303.2578052-3-omosnace@redhat.com
 
-Call Trace:
- nla_len include/net/netlink.h:1148 [inline]                       [3]
- nla_parse_nested_deprecated include/net/netlink.h:1231 [inline]   [2]
- nl802154_del_llsec_key+0x16d/0x320 net/ieee802154/nl802154.c:1595 [1]
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+Nope, if that's really 5.4.83 with no extra backports, then it can't
+be this issue as it has been introduced only in v5.10.
 
-Reported-by: syzbot+ac5c11d2959a8b3c4806@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- net/ieee802154/nl802154.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Looking at the code in 5.4.83, my initial guess is that it could be a
+memory ordering race between
+sidtab_reverse_lookup()/sidtab_rcache_push() and
+sidtab_rcache_search(). I think the sidtab_rcache_push() call at
+security/selinux/ss/security.c:326 should in fact be after the
+smp_store_release() call. Note that the sidtab_rcache_*() functions
+have been replaced in commit 66f8e2f03c02 ("selinux: sidtab reverse
+lookup hash table") with a different mechanism, which AFAICT doesn't
+have the same issue.
 
-diff --git a/net/ieee802154/nl802154.c b/net/ieee802154/nl802154.c
-index 7c5a1aa5adb4..2f0a138bd5eb 100644
---- a/net/ieee802154/nl802154.c
-+++ b/net/ieee802154/nl802154.c
-@@ -1592,7 +1592,8 @@ static int nl802154_del_llsec_key(struct sk_buff *skb, struct genl_info *info)
- 	struct nlattr *attrs[NL802154_KEY_ATTR_MAX + 1];
- 	struct ieee802154_llsec_key_id id;
- 
--	if (nla_parse_nested_deprecated(attrs, NL802154_KEY_ATTR_MAX, info->attrs[NL802154_ATTR_SEC_KEY], nl802154_key_policy, info->extack))
-+	if (!info->attrs[NL802154_ATTR_SEC_KEY] ||
-+	    nla_parse_nested_deprecated(attrs, NL802154_KEY_ATTR_MAX, info->attrs[NL802154_ATTR_SEC_KEY], nl802154_key_policy, info->extack))
- 		return -EINVAL;
- 
- 	if (ieee802154_llsec_parse_key_id(attrs[NL802154_KEY_ATTR_ID], &id) < 0)
+If that's really it, it will likely be *very* hard to reproduce, so
+you may be unable to verify the fix.
+
 -- 
-2.30.2
+Ondrej Mosnacek
+Software Engineer, Linux Security - SELinux kernel
+Red Hat, Inc.
 
