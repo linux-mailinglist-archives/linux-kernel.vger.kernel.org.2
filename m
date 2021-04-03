@@ -2,157 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB2F3532CF
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 08:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7321B3532D1
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 08:20:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234518AbhDCGTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 02:19:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52730 "EHLO
+        id S236127AbhDCGUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 02:20:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231282AbhDCGTU (ORCPT
+        with ESMTP id S231282AbhDCGUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 02:19:20 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227A7C0613E6;
-        Fri,  2 Apr 2021 23:19:18 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id f17so3405549plr.0;
-        Fri, 02 Apr 2021 23:19:18 -0700 (PDT)
+        Sat, 3 Apr 2021 02:20:39 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B61FEC0613E6
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 23:20:36 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id s11so4844282pfm.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 23:20:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=CBCIQHgUyAG2ZGSKzfcjypqTPr8Hjug+h1YTnKY5wjs=;
-        b=etTmaMG/X35UknYs65i78HG3uAez5LaE097mDlhRe4dJsujsEPlNTBIxs0GUv9ryCH
-         OJEAWEH2S58EBcd72jum8klzXCke0zQPaJlpFUqWhVpi1PZmyLNKlTWg1vHjZbVhsBhS
-         s/R3+5n3kp3pkF7EcWSDy7SswrKs927B4MJc0njNYDWX29PzixubDUq7ILsqNQU26/w4
-         95R1AW4amePmNvDCWkALRcziiR6g4edrsXhazDOwOqnjn2atSBDdRGH7UBL2q2mRxZjg
-         Bz5FEw9wj/wtu0EpXWk5HopwYbKxOFteyDd2u8YKIYR7IJxv17T8Dj1Tw16rhUHQidWd
-         GwHw==
+        bh=P82zFEPVLjloJCBghkyeqygNmf39QVfUBEQdyGRPBwQ=;
+        b=IHVkZtJ9LjWvFjwbnsT2SVG/T1svuk11ngGUdj1RZnys5mMea2cS792kHddRjHHitg
+         lOu6vw3XM+32udOCuXloBx2FKbXvwW7SLAmokDBZPsVSJw7npup6qrLHAE78i4Tx/48M
+         ASmXIcJQ779N62Brc+K22l6MK59BUaHmuxJ/M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=CBCIQHgUyAG2ZGSKzfcjypqTPr8Hjug+h1YTnKY5wjs=;
-        b=KoO571I9A2WARUD/4kVXjhesBZ5nVYmLrx9V6Fu1orOCCWyvs6mQ7pcC8M82Ts5sZN
-         FkrpJUJtgtidBE3JHYOlRtAI5DlMWdvTXj0F4X1wZ0V2/fuAIz3hS8QFOHf7xeKYgfAN
-         yMXD/bkVLzPs8AcCgkDy5UJ+Tq/cLdJVbakwipkjWzFpAeCVq+ImkfxxulwfVpoiTz+9
-         uKsVsNR8Lh51c8Ck/2XVe07ZOaMwQwIHDPW9CS9l0+FdYqbR8x1hAgCedE8RXxJyUZkB
-         fjOdBnEQfh35dzPmIpp0jPZoJ8V4Q+AlgYRBp+3dTEB/6GT83BrxTbHNPU29NlhG1M88
-         2oKg==
-X-Gm-Message-State: AOAM531iZwFheb7ZNGSsBjjjLrApHtdUknhTkSJmg1OdwczF9COrWjXq
-        46AF+rCKGADkid9MUb4aJDk=
-X-Google-Smtp-Source: ABdhPJzBvu4vNX3rq+Sr9fLDESRf+liLR4Ve21s0wdbMVPiZ8RDtaz9hNeI6G66m9jvKmmkDEcRZeQ==
-X-Received: by 2002:a17:90b:3692:: with SMTP id mj18mr16606663pjb.44.1617430757530;
-        Fri, 02 Apr 2021 23:19:17 -0700 (PDT)
-Received: from z640-arch.lan ([2602:61:7344:f100::678])
-        by smtp.gmail.com with ESMTPSA id n25sm9436174pff.154.2021.04.02.23.19.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 23:19:16 -0700 (PDT)
-From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Wei Li <liwei391@huawei.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
-        Felix Fietkau <nbd@nbd.name>
-Subject: [PATCH] MIPS: add support for buggy MT7621S core detection
-Date:   Fri,  2 Apr 2021 23:19:12 -0700
-Message-Id: <20210403061912.1012509-1-ilya.lipnitskiy@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        bh=P82zFEPVLjloJCBghkyeqygNmf39QVfUBEQdyGRPBwQ=;
+        b=U0a/MnQNqtJxcgWugWYq4fnLSZDTAwsusms/Mi3nH/MGdrj2Fixgynf0lU9TwT+rPb
+         GyejNUH7FHbQVSVew4nrzgtKaKpQ9s24JoMAhWfkZYGaNYpYwkrVzFy4yzMdD0nxvvQS
+         Tpr4ZMkuOix3PvU6ER4h3eGt0OZ06dRUWoayZZ7GBp04Pt8lE6OlJfjLr/Qd9anZMkvY
+         AZR5cSFMpPji/cKznFiHskQOj9th+Z9phxTOSVTnMppRP8l9e8ywlaa0jo8iEJfQ4KQm
+         z26zD5kMAfHW3l2QrchMd8wOPiScfKO7cfcdxuJXVh/Ez0rM2S2qg7iBAZvZsi9sNQfL
+         kusQ==
+X-Gm-Message-State: AOAM531J5h6pbNx9pQJjQgjtAyAMqJkOhl/H/WRy6pzU15zZGf7GRK5/
+        Mu5UScvqy2cQO/42QrUc5P5XIw==
+X-Google-Smtp-Source: ABdhPJyf0QS+29adjYl0uILALc4Emw0cZu9QrzyGoKebLa83rZeosHM1suZLSn9K2T9A85AGoIYeDw==
+X-Received: by 2002:a62:7a09:0:b029:1f1:5cf4:3fd7 with SMTP id v9-20020a627a090000b02901f15cf43fd7mr14771041pfc.66.1617430836279;
+        Fri, 02 Apr 2021 23:20:36 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:298f:23e5:11f:e743])
+        by smtp.gmail.com with UTF8SMTPSA id d5sm9300387pjo.12.2021.04.02.23.20.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Apr 2021 23:20:35 -0700 (PDT)
+From:   Gwendal Grignou <gwendal@chromium.org>
+X-Google-Original-From: Gwendal Grignou <gwendal@google.com>
+To:     bleung@chromium.org, enric.balletbo@collabora.com,
+        groeck@chromium.org
+Cc:     linux-kernel@vger.kernel.org, Gwendal Grignou <gwendal@google.com>,
+        stable@vger.kernel.org
+Subject: [PATCH] platform/chrome: Update cros_ec sysfs attributes on sensors discovery
+Date:   Fri,  2 Apr 2021 23:20:31 -0700
+Message-Id: <20210403062031.1820582-1-gwendal@google.com>
+X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Most MT7621 SoCs have 2 cores, which is detected and supported properly
-by CPS.
+When cros_ec_sysfs probe is called before cros_ec_sensorhub probe
+routine, the |kb_wake_angle| attribute will not be displayed, even if
+there are two accelerometers in the chromebook.
 
-Unfortunately, MT7621 SoC has a less common S variant with only one core.
-On MT7621S, GCR_CONFIG still reports 2 cores, which leads to hangs when
-starting SMP. CPULAUNCH registers can be used in that case to detect the
-absence of the second core and override the GCR_CONFIG PCORES field.
+Call sysfs_update_group() when accelerometers are enumerated if the
+cros_ec sysfs attributes group has already been created.
 
-Rework a long-standing OpenWrt patch to override the value of
-mips_cps_numcores on single-core MT7621 systems.
-
-Tested on a dual-core MT7621 device (Ubiquiti ER-X) and a single-core
-MT7621 device (Netgear R6220).
-
-Original 4.14 OpenWrt patch:
-Link: https://git.openwrt.org/?p=openwrt/openwrt.git;a=commitdiff;h=4cdbc90a376dd0555201c1434a2081e055e9ceb7
-Current 5.10 OpenWrt patch:
-Link: https://git.openwrt.org/?p=openwrt/openwrt.git;a=blob;f=target/linux/ramips/patches-5.10/320-mt7621-core-detect-hack.patch;h=c63f0f4c1ec742e24d8480e80553863744b58f6a;hb=10267e17299806f9885d086147878f6c492cb904
-
-Suggested-by: Felix Fietkau <nbd@nbd.name>
-Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Fixes: d60ac88a62df ("mfd / platform / iio: cros_ec: Register sensor through sensorhub")
+Cc: stable@vger.kernel.org
+Signed-off-by: Gwendal Grignou <gwendal@google.com>
 ---
- arch/mips/include/asm/bugs.h | 18 ++++++++++++++++++
- arch/mips/kernel/smp-cps.c   |  3 +++
- 2 files changed, 21 insertions(+)
+ drivers/platform/chrome/cros_ec_sensorhub.c | 5 ++++-
+ drivers/platform/chrome/cros_ec_sysfs.c     | 2 ++
+ include/linux/platform_data/cros_ec_proto.h | 2 ++
+ 3 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/include/asm/bugs.h b/arch/mips/include/asm/bugs.h
-index d72dc6e1cf3c..d32f0c4e61f7 100644
---- a/arch/mips/include/asm/bugs.h
-+++ b/arch/mips/include/asm/bugs.h
-@@ -16,6 +16,7 @@
+diff --git a/drivers/platform/chrome/cros_ec_sensorhub.c b/drivers/platform/chrome/cros_ec_sensorhub.c
+index 9c4af76a9956e..78085ad362ca8 100644
+--- a/drivers/platform/chrome/cros_ec_sensorhub.c
++++ b/drivers/platform/chrome/cros_ec_sensorhub.c
+@@ -106,8 +106,11 @@ static int cros_ec_sensorhub_register(struct device *dev,
+ 		sensor_type[sensorhub->resp->info.type]++;
+ 	}
  
- #include <asm/cpu.h>
- #include <asm/cpu-info.h>
-+#include <asm/mips-boards/launch.h>
+-	if (sensor_type[MOTIONSENSE_TYPE_ACCEL] >= 2)
++	if (sensor_type[MOTIONSENSE_TYPE_ACCEL] >= 2) {
+ 		ec->has_kb_wake_angle = true;
++		if (ec->group)
++			sysfs_update_group(&ec->class_dev.kobj, ec->group);
++	}
  
- extern int daddiu_bug;
+ 	if (cros_ec_check_features(ec,
+ 				   EC_FEATURE_REFINED_TABLET_MODE_HYSTERESIS)) {
+diff --git a/drivers/platform/chrome/cros_ec_sysfs.c b/drivers/platform/chrome/cros_ec_sysfs.c
+index f07eabcf9494c..3838d5f51aadc 100644
+--- a/drivers/platform/chrome/cros_ec_sysfs.c
++++ b/drivers/platform/chrome/cros_ec_sysfs.c
+@@ -344,6 +344,8 @@ static int cros_ec_sysfs_probe(struct platform_device *pd)
+ 	ret = sysfs_create_group(&ec_dev->class_dev.kobj, &cros_ec_attr_group);
+ 	if (ret < 0)
+ 		dev_err(dev, "failed to create attributes. err=%d\n", ret);
++	else
++		ec_dev->group = &cros_ec_attr_group;
  
-@@ -50,4 +51,21 @@ static inline int r4k_daddiu_bug(void)
- 	return daddiu_bug != 0;
+ 	return ret;
  }
- 
-+static inline void cm_gcr_pcores_bug(unsigned int *ncores)
-+{
-+	struct cpulaunch *launch;
-+
-+	if (!IS_ENABLED(CONFIG_SOC_MT7621) || !ncores)
-+		return;
-+
-+	/*
-+	 * Ralink MT7621S SoC is single core, but GCR_CONFIG always reports 2 cores.
-+	 * Use legacy amon method to detect if the second core is missing.
-+	 */
-+	launch = (struct cpulaunch *)CKSEG0ADDR(CPULAUNCH);
-+	launch += 2; /* MT7621 has 2 VPEs per core */
-+	if (!(launch->flags & LAUNCH_FREADY))
-+		*ncores = 1;
-+}
-+
- #endif /* _ASM_BUGS_H */
-diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
-index bcd6a944b839..e1e9c11e8a7c 100644
---- a/arch/mips/kernel/smp-cps.c
-+++ b/arch/mips/kernel/smp-cps.c
-@@ -15,6 +15,7 @@
- #include <linux/irq.h>
- 
- #include <asm/bcache.h>
-+#include <asm/bugs.h>
- #include <asm/mips-cps.h>
- #include <asm/mips_mt.h>
- #include <asm/mipsregs.h>
-@@ -60,6 +61,7 @@ static void __init cps_smp_setup(void)
- 		pr_cont("{");
- 
- 		ncores = mips_cps_numcores(cl);
-+		cm_gcr_pcores_bug(&ncores);
- 		for (c = 0; c < ncores; c++) {
- 			core_vpes = core_vpe_count(cl, c);
- 
-@@ -170,6 +172,7 @@ static void __init cps_prepare_cpus(unsigned int max_cpus)
- 
- 	/* Allocate core boot configuration structs */
- 	ncores = mips_cps_numcores(0);
-+	cm_gcr_pcores_bug(&ncores);
- 	mips_cps_core_bootcfg = kcalloc(ncores, sizeof(*mips_cps_core_bootcfg),
- 					GFP_KERNEL);
- 	if (!mips_cps_core_bootcfg) {
+diff --git a/include/linux/platform_data/cros_ec_proto.h b/include/linux/platform_data/cros_ec_proto.h
+index 02599687770c5..4cd06f68bc536 100644
+--- a/include/linux/platform_data/cros_ec_proto.h
++++ b/include/linux/platform_data/cros_ec_proto.h
+@@ -191,6 +191,7 @@ struct cros_ec_platform {
+ /**
+  * struct cros_ec_dev - ChromeOS EC device entry point.
+  * @class_dev: Device structure used in sysfs.
++ * @group: sysfs attributes group for this EC.
+  * @ec_dev: cros_ec_device structure to talk to the physical device.
+  * @dev: Pointer to the platform device.
+  * @debug_info: cros_ec_debugfs structure for debugging information.
+@@ -200,6 +201,7 @@ struct cros_ec_platform {
+  */
+ struct cros_ec_dev {
+ 	struct device class_dev;
++	struct attribute_group *group;
+ 	struct cros_ec_device *ec_dev;
+ 	struct device *dev;
+ 	struct cros_ec_debugfs *debug_info;
 -- 
-2.31.1
+2.31.0.208.g409f899ff0-goog
 
