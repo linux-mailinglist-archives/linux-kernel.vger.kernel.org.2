@@ -2,189 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EFDF353291
+	by mail.lfdr.de (Postfix) with ESMTP id EB602353292
 	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 06:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236077AbhDCDwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 23:52:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234488AbhDCDwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 23:52:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EF4D61177;
-        Sat,  3 Apr 2021 03:52:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617421930;
-        bh=Gcbhjp2hTrSu3AA+Ysg1cwzwUzf7hrlEJ66hTxf6VcQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=dm/C09gZ05/a1nINUpO4C66J3RMOupdbfSmnHcjNbuvHkUUGDZvWrsHjksPNbMniU
-         TDoeuCFCR/kTB25ES/nYitGEQkPsoath3YU8zrk/SZoMJqoTr18mTBcF0iCqXn3GDA
-         SOc9LmfLvfAvA40okb0xrJv6HQJEXc7BCVXkbgP2pfV0wqV5XNxX3BCEFdaV+L3D1R
-         G9kzRfvEKF6y9jMZ0U0EYNljaAh5Ue5CGV8z92q/nKpO68vuK8YZ1s3yAoxp8kzHP6
-         wmiXJTSs4ofF2dARheR4xHhRMdydwZn4njkUrlccUq1bNdCL9So0GYvCqMLe2r9bwL
-         Dd9kKTKWlfwdw==
-Subject: Re: [PATCH v2 00/10] erofs: add big pcluster compression support
-To:     Gao Xiang <xiang@kernel.org>, linux-erofs@lists.ozlabs.org,
-        Chao Yu <yuchao0@huawei.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-References: <20210401032954.20555-1-xiang@kernel.org>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <18509211-374c-be19-bae7-f2ce852bfb15@kernel.org>
-Date:   Sat, 3 Apr 2021 11:52:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-MIME-Version: 1.0
-In-Reply-To: <20210401032954.20555-1-xiang@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S230211AbhDCEPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 00:15:00 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:52925 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229453AbhDCEO7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Apr 2021 00:14:59 -0400
+Received: from fsav401.sakura.ne.jp (fsav401.sakura.ne.jp [133.242.250.100])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 1334EtBN042147;
+        Sat, 3 Apr 2021 13:14:55 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav401.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav401.sakura.ne.jp);
+ Sat, 03 Apr 2021 13:14:55 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav401.sakura.ne.jp)
+Received: from localhost.localdomain (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 1334EkKp041831
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Sat, 3 Apr 2021 13:14:55 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: [PATCH] tty: use printk_safe context at tty_msg()
+Date:   Sat,  3 Apr 2021 13:14:44 +0900
+Message-Id: <20210403041444.4081-1-penguin-kernel@I-love.SAKURA.ne.jp>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/1 11:29, Gao Xiang wrote:
-> Hi folks,
-> 
-> This is the formal version of EROFS big pcluster support, which means
-> EROFS can compress data into more than 1 fs block after this patchset.
-> 
-> {l,p}cluster are EROFS-specific concepts, standing for `logical cluster'
-> and `physical cluster' correspondingly. Logical cluster is the basic unit
-> of compress indexes in file logical mapping, e.g. it can build compress
-> indexes in 2 blocks rather than 1 block (currently only 1 block lcluster
-> is supported). Physical cluster is a container of physical compressed
-> blocks which contains compressed data, the size of which is the multiple
-> of lclustersize.
-> 
-> Different from previous thoughts, which had fixed-sized pclusterblks
-> recorded in the on-disk compress index header, our on-disk design allows
-> variable-sized pclusterblks now. The main reasons are
->   - user data varies in compression ratio locally, so fixed-sized
->     clustersize approach is space-wasting and causes extra read
->     amplificationfor high CR cases;
-> 
->   - inplace decompression needs zero padding to guarantee its safe margin,
->     but we don't want to pad more than 1 fs block for big pcluster;
-> 
->   - end users can now customize the pcluster size according to data type
->     since various pclustersize can exist in a file, for example, using
->     different pcluster size for executable code and one-shot data. such
->     design should be more flexible than many other public compression fses
->     (Btw, each file in EROFS can have maximum 2 algorithms at the same time
->     by using HEAD1/2, which will be formally added with LZMA support.)
-> 
-> In brief, EROFS can now compress from variable-sized input to
-> variable-sized pcluster blocks, as illustrated below:
-> 
->    |<-_lcluster_->|________________________|<-_lcluster_->|
->    |____._________|_________ .. ___________|_______.______|
->          .                                        .
->           .                                     .
->            .__________________________________.
->            |______________| .. |______________|
->            |<-          pcluster            ->|
-> 
-> The next step would be how to record the compressed block count in
-> lclusters. In compress indexes, there are 2 concepts called HEAD and
-> NONHEAD lclusters. The difference is that HEAD lcluster starts a new
-> pcluster in the lcluster, but NONHEAD not. It's easy to understand
-> that big pclusters at least have 2 pclusters, thus at least 2 lclusters
-> as well.
-> 
-> Therefore, let the delta0 (distance to its HEAD lcluster) of first NONHEAD
-> compress index store the compressed block count with a special flag as a
-> new called CBLKCNT compress index. It's also easy to know its delta0 is
-> constantly 1, as illustrated below:
->    ________________________________________________________
->   |_HEAD_|_CBLKCNT_|_NONHEAD_|_..._|_NONHEAD_|_HEAD | HEAD |
->      |<------ a pcluster with CBLKCNT --------->|<-- -->|
->                                                     ^ a pcluster with 1
-> 
-> If another HEAD follows a HEAD lcluster, there is no room to record
-> CBLKCNT, but it's easy to know the size of pcluster will be 1.
-> 
-> More implementation details about this and compact indexes are in the
-> commit message.
-> 
-> On the runtime performance side, the current EROFS test results are:
->   ________________________________________________________________
-> |  file system  |   size    | seq read | rand read | rand9m read |
-> |_______________|___________|_ MiB/s __|__ MiB/s __|___ MiB/s ___|
-> |___erofs_4k____|_556879872_|_ 781.4 __|__ 55.3 ___|___ 25.3  ___|
-> |___erofs_16k___|_452509696_|_ 864.8 __|_ 123.2 ___|___ 20.8  ___|
-> |___erofs_32k___|_415223808_|_ 899.8 __|_ 105.8 _*_|___ 16.8 ____|
-> |___erofs_64k___|_393814016_|_ 906.6 __|__ 66.6 _*_|___ 11.8 ____|
-> |__squashfs_8k__|_556191744_|_  64.9 __|__ 19.3 ___|____ 9.1 ____|
-> |__squashfs_16k_|_502661120_|_  98.9 __|__ 38.0 ___|____ 9.8 ____|
-> |__squashfs_32k_|_458784768_|_ 115.4 __|__ 71.6 _*_|___ 10.0 ____|
-> |_squashfs_128k_|_398204928_|_ 257.2 __|_ 253.8 _*_|___ 10.9 ____|
-> |____ext4_4k____|____()_____|_ 786.6 __|__ 28.6 ___|___ 27.8 ____|
-> 
-> 
-> * Squashfs grabs more page cache to keep all decompressed data with
->    grab_cache_page_nowait() than the normal requested readahead (see
->    squashfs_copy_cache and squashfs_readpage_block).
->    In principle, EROFS can also cache such all decompressed data
->    if necessary, yet it's low priority for now and has little use
->    (rand9m is actually a better rand read workload, since the amount
->     of I/O is 9m rather than full-sized 1000m).
-> 
-> More details are in
-> https://lore.kernel.org/r/20210329053654.GA3281654@xiangao.remote.csb
-> 
-> Also it's easy to know EROFS is not a fixed pcluster design, so users
-> can make several optimized strategy according to data type when mkfs.
-> And there is still room to optimize runtime performance for big pcluster
-> even further.
-> 
-> Finally, it passes ro_fsstress and can also successfully boot buildroot
-> & Android system with android-mainline repo.
-> 
-> current mkfs repo for big pcluster:
-> https://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs-utils.git -b experimental-bigpcluster-compact
-> 
-> Thanks for your time on reading this!
+syzbot is reporting circular locking dependency due to calling printk()
+with port lock held [1]. When this problem was reported, we worried
+whether printk_safe context will remain available in future kernels [2],
+and then this problem was forgotten. But in order to utilize syzbot's
+resource for finding other bugs/reproducers by closing this one of top
+crashers, let's apply a patch which counts on availability of printk_safe
+context.
 
-Nice job!
+syzbot is also reporting same dependency due to memory allocation fault
+injection at tty_buffer_alloc(). Although __GFP_NOWARN cannot prevent
+memory allocation fault injection from calling printk(), let's use
+__GFP_NOWARN at tty_buffer_alloc() in addition to using printk_safe
+context, for generating many lines of messages due to warn_alloc() is
+annoying. If we want to report it, we can use pr_warn() instead.
 
-Acked-by: Chao Yu <yuchao0@huawei.com>
+[1] https://syzkaller.appspot.com/bug?id=39ea6caa479af471183997376dc7e90bc7d64a6a
+[2] https://lkml.kernel.org/r/20190218054649.GA26686@jagdpanzerIV
 
-Thanks,
+Reported-by: syzbot <syzbot+43e93968b964e369db0b@syzkaller.appspotmail.com>
+Reported-by: syzbot <syzbot+3ed715090790806d8b18@syzkaller.appspotmail.com>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Fixes: b6da31b2c07c46f2 ("tty: Fix data race in tty_insert_flip_string_fixed_flag")
+Cc: <stable@vger.kernel.org> # 4.18+
+---
+ drivers/tty/tty_buffer.c | 5 ++++-
+ include/linux/tty.h      | 9 ++++++++-
+ 2 files changed, 12 insertions(+), 2 deletions(-)
 
-> 
-> Thanks,
-> Gao Xiang
-> 
-> changes since v1:
->   - add a missing vunmap in erofs_pcpubuf_exit();
->   - refine comments and commit messages.
-> 
->   (btw, I'll apply this patchset for -next first for further integration
->    test, which will be aimed to 5.13-rc1.)
-> 
-> Gao Xiang (10):
->    erofs: reserve physical_clusterbits[]
->    erofs: introduce multipage per-CPU buffers
->    erofs: introduce physical cluster slab pools
->    erofs: fix up inplace I/O pointer for big pcluster
->    erofs: add big physical cluster definition
->    erofs: adjust per-CPU buffers according to max_pclusterblks
->    erofs: support parsing big pcluster compress indexes
->    erofs: support parsing big pcluster compact indexes
->    erofs: support decompress big pcluster for lz4 backend
->    erofs: enable big pcluster feature
-> 
->   fs/erofs/Kconfig        |  14 ---
->   fs/erofs/Makefile       |   2 +-
->   fs/erofs/decompressor.c | 216 +++++++++++++++++++++++++---------------
->   fs/erofs/erofs_fs.h     |  31 ++++--
->   fs/erofs/internal.h     |  31 ++----
->   fs/erofs/pcpubuf.c      | 134 +++++++++++++++++++++++++
->   fs/erofs/super.c        |   1 +
->   fs/erofs/utils.c        |  12 ---
->   fs/erofs/zdata.c        | 193 ++++++++++++++++++++++-------------
->   fs/erofs/zdata.h        |  14 +--
->   fs/erofs/zmap.c         | 155 ++++++++++++++++++++++------
->   11 files changed, 560 insertions(+), 243 deletions(-)
->   create mode 100644 fs/erofs/pcpubuf.c
-> 
+diff --git a/drivers/tty/tty_buffer.c b/drivers/tty/tty_buffer.c
+index 6d4995a5f318..d59f7873bc49 100644
+--- a/drivers/tty/tty_buffer.c
++++ b/drivers/tty/tty_buffer.c
+@@ -156,6 +156,7 @@ static struct tty_buffer *tty_buffer_alloc(struct tty_port *port, size_t size)
+ {
+ 	struct llist_node *free;
+ 	struct tty_buffer *p;
++	unsigned long flags;
+ 
+ 	/* Round the buffer size out */
+ 	size = __ALIGN_MASK(size, TTYB_ALIGN_MASK);
+@@ -172,7 +173,9 @@ static struct tty_buffer *tty_buffer_alloc(struct tty_port *port, size_t size)
+ 	   have queued and recycle that ? */
+ 	if (atomic_read(&port->buf.mem_used) > port->buf.mem_limit)
+ 		return NULL;
+-	p = kmalloc(sizeof(struct tty_buffer) + 2 * size, GFP_ATOMIC);
++	printk_safe_enter_irqsave(flags);
++	p = kmalloc(sizeof(struct tty_buffer) + 2 * size, GFP_ATOMIC | __GFP_NOWARN);
++	printk_safe_exit_irqrestore(flags);
+ 	if (p == NULL)
+ 		return NULL;
+ 
+diff --git a/include/linux/tty.h b/include/linux/tty.h
+index 95fc2f100f12..7ae8eb46fec3 100644
+--- a/include/linux/tty.h
++++ b/include/linux/tty.h
+@@ -14,6 +14,7 @@
+ #include <uapi/linux/tty.h>
+ #include <linux/rwsem.h>
+ #include <linux/llist.h>
++#include <../../kernel/printk/internal.h>
+ 
+ 
+ /*
+@@ -773,7 +774,13 @@ static inline void proc_tty_unregister_driver(struct tty_driver *d) {}
+ #endif
+ 
+ #define tty_msg(fn, tty, f, ...) \
+-	fn("%s %s: " f, tty_driver_name(tty), tty_name(tty), ##__VA_ARGS__)
++	do {						\
++		unsigned long flags;			\
++							\
++		printk_safe_enter_irqsave(flags);	\
++		fn("%s %s: " f, tty_driver_name(tty), tty_name(tty), ##__VA_ARGS__); \
++		printk_safe_exit_irqrestore(flags);	\
++	} while (0)
+ 
+ #define tty_debug(tty, f, ...)	tty_msg(pr_debug, tty, f, ##__VA_ARGS__)
+ #define tty_info(tty, f, ...)	tty_msg(pr_info, tty, f, ##__VA_ARGS__)
+-- 
+2.18.4
+
