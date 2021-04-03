@@ -2,133 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1DA353358
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 12:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FA49353359
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 12:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236440AbhDCKDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 06:03:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232178AbhDCKDg (ORCPT
+        id S232222AbhDCKFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 06:05:00 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:33720 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232178AbhDCKE7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 06:03:36 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C901C0613E6
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Apr 2021 03:03:32 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so6982362otk.5
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Apr 2021 03:03:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lzznQH22yWtsRp0zpmbNBDOhjWliTmLsMaUUCDRZqWU=;
-        b=WsTuNkJiHYcunUHGy+BKwjRs4cQUzngNneyv1SE4xitILHumSeFd48R4Bz7uuG7kFz
-         DqxlJADmyBJBgt1ShL1HFTGJVotJm5LG/VeDlNbJbuPAolpb3XPPNjhF477Rrcet7S6W
-         Ve8YVhoPyX6JIEuoGQUyQVlhiz4UVrM7FpS8poNuuMexsAKOdQ6jzJFwypHag/eSLTtI
-         A7Mtmt3H+Lu5yWU6HtGNUIqFd40t1GiJG6VhPJUGEEOPo0TQQZpaHGPJUwkvO3wN9U0i
-         50dmzUNDoH2rIoTRkfZkV0AkY/rVcZvDY4a8iUQPvA14oapHOytndQHkUKqXCLvxhmP9
-         DSoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lzznQH22yWtsRp0zpmbNBDOhjWliTmLsMaUUCDRZqWU=;
-        b=BupH8aqxS1gbToRKzPK2Q8Le98/P9A3dPHyY4D7Bur/bWukj/K1L/ddOU/XEhRfN/v
-         im5HwtulUsMLPTlf69+7wJNpJalUaVineXzSPbSmz5Oi1e0VJ5N6iGzNSiDpfBZuxKER
-         0kusWhdBee+j5dWdVgpaX/4we2tbCzZLLLHRoHAIrOJltc7dg5qtqmZ+7o+cDqhC6FFV
-         Dg83sbzI+2nIpq2I3ehTtoi+JNSxsWCzt/P1xQSS2PQvtn7t3UaaeFg2MAWUJ5UEEscB
-         JcALAy+15km42F06k2tcMxhDiaXBwBB+3vCHU2XSoXv3kocL3hPQqmzsQDm3Fd06MKPH
-         4eDw==
-X-Gm-Message-State: AOAM533RH/1yd3P5zp10/+VtJEYIdu9+IRpw/It9pHeaLd2YalqDgl0x
-        YgS9V1VrX+oIvIf5tnwXBXiTNUtF4FJ8PAKosWOExQ==
-X-Google-Smtp-Source: ABdhPJy9nRdJ1mOeryQNUqr84sASHWKsEkAqJ7k0iPlWW2IpEfJl7corCGDkV20S9TIdZ5xk8CMxWRvPS9Qhi0IiFiE=
-X-Received: by 2002:a05:6830:148c:: with SMTP id s12mr15142475otq.251.1617444211171;
- Sat, 03 Apr 2021 03:03:31 -0700 (PDT)
+        Sat, 3 Apr 2021 06:04:59 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 133A4j0o070930;
+        Sat, 3 Apr 2021 10:04:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=DR3kMcIERBD5ZDWaTiYiYYL6h7b0SaMEVWUxDGaiv7E=;
+ b=Ek8XPUZR0qeBlT3n2niXGvSrM6f1R6F5qWCTJjqlAvx3JVGXthfLDqqvVYjkTywV1x8j
+ Ab17hpjJKJKm33Cah043qJHkBw6c87egNSLNQOnGOKqUxY7qzWbmQVJRNfNMuBfUi7G3
+ yMhDCZzXCE8NR7MlFtc+plRnU69KdoXhdrLppQ0kP+CWW1nJiAgNbTKx+usKxdzIexKu
+ kZMru9cb2feP2WseDffO0OStx29VUIzxs39Y0uLAVw3TpQlUOy7HEDtiYPhZ05JCREQu
+ rlE7E/uEnvYP+ZhD2Z/v4akgCnGamvfWg5/WMXo5oiBBAF15xdY08uHNUmBOqsqFH4xb Yw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 37pgam8atr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 03 Apr 2021 10:04:45 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1339j3pl178658;
+        Sat, 3 Apr 2021 10:04:43 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 37pg616t0j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 03 Apr 2021 10:04:43 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 133A4gqb029456;
+        Sat, 3 Apr 2021 10:04:42 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 03 Apr 2021 10:04:42 +0000
+Date:   Sat, 3 Apr 2021 13:04:34 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc:     gregkh@linuxfoundation.org, joe@perches.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 16/30] staging: rtl8723bs: tidy up some error handling
+ in core/rtw_mlme.c
+Message-ID: <20210403100434.GX2065@kadam>
+References: <cover.1617440833.git.fabioaiuto83@gmail.com>
+ <d8ad88bef77430107f8593091770b6a514b6f0e2.1617440834.git.fabioaiuto83@gmail.com>
+ <20210403094247.GC1563@agape.jhs>
+ <20210403095029.GD1563@agape.jhs>
 MIME-Version: 1.0
-References: <20210403051325.683071-1-pcc@google.com>
-In-Reply-To: <20210403051325.683071-1-pcc@google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Sat, 3 Apr 2021 12:03:19 +0200
-Message-ID: <CANpmjNOzaOJY5K+Sq78AF5N1_6=1kv3rXZ6w+XPuEf9G+cd8iA@mail.gmail.com>
-Subject: Re: [PATCH] kfence: unpoison pool region before use
-To:     Peter Collingbourne <pcc@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210403095029.GD1563@agape.jhs>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9942 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0
+ mlxlogscore=999 phishscore=0 bulkscore=0 malwarescore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103310000 definitions=main-2104030064
+X-Proofpoint-ORIG-GUID: 1Id9So8mZg97cBxcupyyoWHxWhPhNhFo
+X-Proofpoint-GUID: 1Id9So8mZg97cBxcupyyoWHxWhPhNhFo
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9942 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 spamscore=0 bulkscore=0
+ clxscore=1015 phishscore=0 mlxscore=0 mlxlogscore=999 priorityscore=1501
+ malwarescore=0 lowpriorityscore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
+ definitions=main-2104030065
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 3 Apr 2021 at 07:13, Peter Collingbourne <pcc@google.com> wrote:
-> If the memory region allocated by KFENCE had previously been poisoned,
-> any validity checks done using kasan_byte_accessible() will fail. Fix
-> it by unpoisoning the memory before using it as the pool region.
->
-> Link: https://linux-review.googlesource.com/id/I0af99e9f1c25eaf7e1ec295836b5d148d76940c5
-> Signed-off-by: Peter Collingbourne <pcc@google.com>
+On Sat, Apr 03, 2021 at 11:50:30AM +0200, Fabio Aiuto wrote:
+> On Sat, Apr 03, 2021 at 11:42:47AM +0200, Fabio Aiuto wrote:
+> > On Sat, Apr 03, 2021 at 11:13:38AM +0200, Fabio Aiuto wrote:
+> > > the RT_TRACE() output is not useful so we want to delete it. In this case
+> > > there is no cleanup for rtw_cleanbss_cmd() required or even possible. I've
+> > > deleted the RT_TRACE() output and added a goto unlock to show
+> > > that we can't continue if rtw_createbss_cmd() fails.
+> > > 
+> > > Suggested-by: David Carpenter <dan.carpenter@oracle.org>
+> > > Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+> > > ---
+> > >  drivers/staging/rtl8723bs/core/rtw_mlme.c | 17 +++++++++++------
+> > >  1 file changed, 11 insertions(+), 6 deletions(-)
+> > 
+> > Hi Dan,
+> > 
+> > I put a Suggested-by tag on one patch in v3 patchset. But reading the docs
+> > on submitting patches I relaized later that maybe it requires your permission before.
+> > 
+> > It' written about Reviewed-by but not about Suggested-by, should I have asked you before, should I?
+> > 
+> > I'm sorry if I should have.
+> 
+> Found it, I'm really sorry
+> 
+> A Suggested-by: tag indicates that the patch idea is suggested by the person
+> named and ensures credit to the person for the idea. Please note that this
+> tag should not be added without the reporter's permission, especially if the
+> idea was not posted in a public forum. That said, if we diligently credit our
+> idea reporters, they will, hopefully, be inspired to help us again in the
+> future.
+> 
+> I wonder if in the case of this patch was needed this tag..
 
-Thanks, at a high level this seems reasonable, because we always want
-to ensure that KFENCE memory remains unpoisoned with KASAN on. FWIW I
-subjected a config with KFENCE+KASAN (generic, SW_TAGS, and HW_TAGS)
-to syzkaller testing and ran kfence_test:
+Yeah, it's fine.  It's all on a public list so it's not a secret.
 
-  Tested-by: Marco Elver <elver@google.com>
+regards,
+dan carpenter
 
-
-However, it is unclear to me under which circumstances we actually
-need this, i.e. something would grab some memblock memory, somehow
-poison it, and then release the memory back during early boot (note,
-kfence_alloc_pool() is called before slab setup). If we can somehow
-understand what actually did this, perhaps it'd help tell us if this
-actually needs fixing in KFENCE or it's the other thing that needs a
-fix.
-
-Given all this is happening during really early boot, I'd expect no or
-very few calls to kasan_poison() until kfence_alloc_pool() is called.
-We can probably debug it more by having kasan_poison() do a "if
-(!__kfence_pool) dump_stack();" somewhere. Can you try this on the
-system where you can repro the problem? I tried this just now on the
-latest mainline kernel, and saw 0 calls until kfence_alloc_pool().
-
-Thanks,
--- Marco
-
-> ---
->  mm/kfence/core.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
->
-> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
-> index d53c91f881a4..bb22b0cf77aa 100644
-> --- a/mm/kfence/core.c
-> +++ b/mm/kfence/core.c
-> @@ -633,13 +633,19 @@ static DECLARE_DELAYED_WORK(kfence_timer, toggle_allocation_gate);
->
->  void __init kfence_alloc_pool(void)
->  {
-> +       void *pool;
-> +
->         if (!kfence_sample_interval)
->                 return;
->
-> -       __kfence_pool = memblock_alloc(KFENCE_POOL_SIZE, PAGE_SIZE);
-> -
-> -       if (!__kfence_pool)
-> +       pool = memblock_alloc(KFENCE_POOL_SIZE, PAGE_SIZE);
-> +       if (!pool) {
->                 pr_err("failed to allocate pool\n");
-> +               return;
-> +       }
-> +
-> +       kasan_unpoison_range(pool, KFENCE_POOL_SIZE);
-> +       __kfence_pool = pool;
->  }
->
->  void __init kfence_init(void)
-> --
-> 2.31.0.208.g409f899ff0-goog
->
