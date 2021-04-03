@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B061A35329D
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 06:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 081A835329E
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 06:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236198AbhDCErx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 00:47:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33232 "EHLO
+        id S236358AbhDCEr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 00:47:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235942AbhDCErv (ORCPT
+        with ESMTP id S234624AbhDCEry (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 00:47:51 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61470C0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 21:47:49 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id y5so6906699qkl.9
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 21:47:49 -0700 (PDT)
+        Sat, 3 Apr 2021 00:47:54 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E9AFC0613E6
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 21:47:51 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id c6so4984280qtc.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 21:47:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=vYyE3mZbTCDzxA81uU/nO8mDAdIU/E4f/sVrNUxsbdg=;
-        b=Az+/FoHw9EQhIzLcQmuhI9NHSk86lbj2esWSz1avJsrYb3Vc8HeGgF54YHkzROAsx3
-         bI1RTgdP+OOZ99d4FY6/vo6kWAevnWAIYIy3jgOWwmTLvLMWtRQa9/rMEVxxLcmMJUv9
-         dQYmhFs4mZrJZzeBne8Z4fycS6MmpT5bibK3z0uHPrBrpmrVNavgBwb1bgrT/Wp3eD07
-         B4C6UlXmzBwYdMQLINcbkaNWUQ+yHiFy5JKNgqGi5CVJhyuTWmgjF0x/DP6lQ9ji/yf4
-         mm8ScJhuPJbEdbmMU8urnn9qq7PnbCRlLLf+06CyZPCDGGs4JDYUiW/CNcJ8MguvsXhN
-         vmBA==
+        bh=54Nec5iwCSagU+D8h6pLpuy7QchFo0Lir6iLHH9sio0=;
+        b=FHiBAjlxr/C6tGmWYxz7S+DKAm5/GOdxVRm5ocLl83+Eu5Ft1sit36qRr9SCwWfv8H
+         ty9FTHCkKnf3kIBrgXtrFl4nyOzfSGTJ1zIT0VXjbfwX6G2fZAo3olRabp9qxMJNxDFC
+         P6LQeNq739kds8gBe5YzV7HMk+dVDWnn/27C7M4Pg49QwM8hjjqM9bK/L5G7NP8EeWkm
+         QqB/Xa9rzTAJjKbSptZaG2606VU1PCJhoHzeWAnIf4cPlVMVejubsWkUO2p4RpfuGyqU
+         ILc+3UCs2vDJciZzaI9/VO5vxNyHcW2F7IfJTehHgZ0Ofzj6v47+t8D9ErYYkzq2mjWn
+         3GRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vYyE3mZbTCDzxA81uU/nO8mDAdIU/E4f/sVrNUxsbdg=;
-        b=hYqZ5EY3VcU7eYivzV2TDj4j2RusuWMc2B90b1ejkK4SODKcbGq+GAjoZgDkmZ9MzV
-         4oPorlizv8PMJ6bfKQQEpR6OdjtQ0yczHmQP4vj+VvPW5UcoUCdLjPDtGRbXwJLl1Oon
-         K49J5fAm8Kquf/N3AnNWvRtKKYSe91XMy2uacfMGs+m75vmuElB9hN8ASLS5q30KpOdC
-         cQCE6X76kbIrMVGoCzNabdThTTGFoGYyGAD01cP8c4hM9TGXRd07jrLFd2is9PZ3AtZY
-         l4ejfstP0CPy9qKKvsCq0N0lPakaVegjsBg83n1FBe34HgsCw6cDOn1XfH0E2JBhu3/+
-         DK0A==
-X-Gm-Message-State: AOAM531bZCveUYzdpauy5cDSPAujAPW0EA3h1CIwLNJG8cz1TPH1XIKa
-        RGeP631VJE3eQaVt0W3prIg=
-X-Google-Smtp-Source: ABdhPJyoTDn2DLNq2APS2cwRLNP1fMg8ERUsDg576eKKpxoVRnwrLAeHbDRNkosyY8nnSVbF5cEl5Q==
-X-Received: by 2002:a37:ef17:: with SMTP id j23mr15358251qkk.209.1617425268637;
-        Fri, 02 Apr 2021 21:47:48 -0700 (PDT)
+        bh=54Nec5iwCSagU+D8h6pLpuy7QchFo0Lir6iLHH9sio0=;
+        b=fhqyJ6duoLmNgeMCXoEn2td3qaxv+AawFucTni5cq9Y6/Wwt6R5jjTDyEafL0skfY2
+         A/v3dj3wie0rXDWa7N12Q+TBmhv1e8Qu1m0GdwER3fcosVyZ9264rEpj/mrxg15NJBP6
+         feVJYLpkKuMgnVTstb5WyKr+DTzSV+2nq/as8/jnaZb5mm0FOmnzAfjLyRstTMT9/SoC
+         c4BXCXh5oavKf7pOfKT9oSAh9pYpp+4ubWeufg6Nj4CXLabGZ1+Wy+2FlYshuyHWdMNW
+         LX9hPtjDaiNHWEcdAjjCyDSF5L2BWpJPPQwxMzjfR9pV+RjkO2K56C8VX3peeO2TKqiV
+         HSXQ==
+X-Gm-Message-State: AOAM53104t7cv0ZoH4cKOavzOtOzRJIjV2/5TmJ4GdtV+TKGUUMN2Bv6
+        CrYb/efww4FjIYjUAa/4a5E=
+X-Google-Smtp-Source: ABdhPJxHwncmw7M1qI+VkC3HNwVDnt6zS7YVxAA51QTTSFkarjoaWGbDkIGxd8s9DeI3IjKVXtYVAw==
+X-Received: by 2002:a05:622a:34b:: with SMTP id r11mr13987716qtw.121.1617425270782;
+        Fri, 02 Apr 2021 21:47:50 -0700 (PDT)
 Received: from LuizSampaio-PC.localdomain ([2804:14d:5cd3:8f4f:bad9:1dc4:19d9:7ce3])
-        by smtp.gmail.com with ESMTPSA id k126sm8800598qkb.4.2021.04.02.21.47.46
+        by smtp.gmail.com with ESMTPSA id k126sm8800598qkb.4.2021.04.02.21.47.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 21:47:48 -0700 (PDT)
+        Fri, 02 Apr 2021 21:47:50 -0700 (PDT)
 From:   Luiz Sampaio <sampaio.ime@gmail.com>
 To:     zbr@ioremap.net
 Cc:     corbet@lwn.net, rikard.falkeborn@gmail.com,
         gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
         Luiz Sampaio <sampaio.ime@gmail.com>
-Subject: [PATCH v3 6/9] w1: ds2438: fixed a coding style issue
-Date:   Sat,  3 Apr 2021 01:48:18 -0300
-Message-Id: <20210403044821.390485-6-sampaio.ime@gmail.com>
+Subject: [PATCH v3 7/9] w1: ds2438: fixing bug that would always get page0
+Date:   Sat,  3 Apr 2021 01:48:19 -0300
+Message-Id: <20210403044821.390485-7-sampaio.ime@gmail.com>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210403044821.390485-1-sampaio.ime@gmail.com>
 References: <20210403044547.390226-1-sampaio.ime@gmail.com>
@@ -66,26 +66,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changed the permissions to preferred octal style.
+The purpose of the w1_ds2438_get_page function is to get the register
+values at the page passed as the pageno parameter. However, the page0 was
+hardcoded, such that the function always returned the page0 contents. Fixed
+so that the function can retrieve any page.
 
 Signed-off-by: Luiz Sampaio <sampaio.ime@gmail.com>
 ---
- drivers/w1/slaves/w1_ds2438.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/w1/slaves/w1_ds2438.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/w1/slaves/w1_ds2438.c b/drivers/w1/slaves/w1_ds2438.c
-index 56e53a748059..ccb06b8c2d78 100644
+index ccb06b8c2d78..ef6217ecb1cb 100644
 --- a/drivers/w1/slaves/w1_ds2438.c
 +++ b/drivers/w1/slaves/w1_ds2438.c
-@@ -388,7 +388,7 @@ static ssize_t vdd_read(struct file *filp, struct kobject *kobj,
- 	return ret;
- }
+@@ -62,13 +62,13 @@ static int w1_ds2438_get_page(struct w1_slave *sl, int pageno, u8 *buf)
+ 		if (w1_reset_select_slave(sl))
+ 			continue;
+ 		w1_buf[0] = W1_DS2438_RECALL_MEMORY;
+-		w1_buf[1] = 0x00;
++		w1_buf[1] = (u8)pageno;
+ 		w1_write_block(sl->master, w1_buf, 2);
  
--static BIN_ATTR(iad, S_IRUGO | S_IWUSR | S_IWGRP, iad_read, iad_write, 0);
-+static BIN_ATTR(iad, 0664, iad_read, iad_write, 0);
- static BIN_ATTR_RO(page0, DS2438_PAGE_SIZE);
- static BIN_ATTR_RO(temperature, 0/* real length varies */);
- static BIN_ATTR_RO(vad, 0/* real length varies */);
+ 		if (w1_reset_select_slave(sl))
+ 			continue;
+ 		w1_buf[0] = W1_DS2438_READ_SCRATCH;
+-		w1_buf[1] = 0x00;
++		w1_buf[1] = (u8)pageno;
+ 		w1_write_block(sl->master, w1_buf, 2);
+ 
+ 		count = w1_read_block(sl->master, buf, DS2438_PAGE_SIZE + 1);
 -- 
 2.30.1
 
