@@ -2,111 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3499353432
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 15:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D684C353435
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 15:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236784AbhDCNqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 09:46:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35380 "EHLO
+        id S236498AbhDCNw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 09:52:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230440AbhDCNqM (ORCPT
+        with ESMTP id S230440AbhDCNwy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 09:46:12 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A023C0613E6;
-        Sat,  3 Apr 2021 06:46:09 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id ap14so10869422ejc.0;
-        Sat, 03 Apr 2021 06:46:09 -0700 (PDT)
+        Sat, 3 Apr 2021 09:52:54 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30169C0613E6;
+        Sat,  3 Apr 2021 06:52:52 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id w10so3665319pgh.5;
+        Sat, 03 Apr 2021 06:52:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gpqI5zaiSzdqgoMtsxH2Ghsa0ztJUbkC171IHtI+SVY=;
-        b=L2Olk9jQn5m43ENQrm08GiTxUgKIKgVrEiwG6Qi4jD9+eRxh0ub5R4iPZ8Hyx5LFLD
-         ELVGQIYoiKMJACTIVjtR8hTGs5J2fJwRYns8xCgGFRfyUAEwjAaSFO48EQz4z7ibXPp4
-         VROV7c7AlU+6k1sK8Knihmq+cTFLCVOOYBYlMvojNJscnZYWaTfWGqqHd42VmwP0kpyn
-         lnKWymHJF2//8XT8+Zu5u4Icu7d93h6XNdbtG3wpfI1D4rYk3eyyY7m9viICEylytIvn
-         ainTkzqxTE2es1yoorXyc4nfEeuvhQz1zEmtt1QlOz/7C4k35YxF9ANWc0epiiZ51C1F
-         BSXA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OitHGhp6e8IIJxCkTzKNVArz7Jaba2sg3X3U/T01B+w=;
+        b=cRNEbOK0myOFj3SrAfAn60lZ2ka8YUYGHUGGF//tbd48t4aeLzJhZzu8TMCSEmgv4O
+         o0tSasCptDsBBjHo5ARWXv9Kg1Aa5pv9Hs1L7rx5XtB0FDXNdcJXbhiG18Ql+WwssoLA
+         Pio6P4NE0zYooGNlhPv6gLJwH5Ah0G8HFzZXaAEWHJsxNmhbyS591L0pa3VP/wk0MwUb
+         226BUZXwfyPeC8v/OiPnhCfNVcCpFTCpr7G4NeTGW6UQ+m8ooI/XJPaJ8lYWk2EJr5hc
+         S7/nUxbkoMra4vPvQyFmeKDUeACVPM6Ygl8By8c78lht/RTespt2bomOP3sbjcJNmfCM
+         JS8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gpqI5zaiSzdqgoMtsxH2Ghsa0ztJUbkC171IHtI+SVY=;
-        b=pJaHnjiSb7VD45PqdhODc0qYo+KfFZRF0qzvowvkImzmZ2Mc4bQd4fGkgSkfD13v3u
-         K+ruBJCmme/pFHdIkOmGgMfk4Wn3VKJNZtJEtUbfiLwwYmUVPFpUwI/eXEC9aUtT9zqo
-         3N7mQNUIrTRqtiYvSfcZjCg3MYAtH1VPsZzpdoUWiS+0VHyEpfQrAksEC5E10Zu4yCqs
-         ZSRMgetiuBOGa5EvLWIGfo/kdX+lx4HLWP0PVLbMMGB6Zin1dHQpUoBbpv25l2qQCbsi
-         i+V0bghimrEgf5LrXMMnRLgFx0c2/ljy6Q5YsaT6r4rZHmXucop4KbOfComyQsgVL2Fn
-         ZqVA==
-X-Gm-Message-State: AOAM531+JKHGqJPogm2J56bK/7c1qNlSlGpfU3I6VLy8rIVu+6Fo2NW/
-        Zc8KZhATaX1lHFm6BQAI8Kc=
-X-Google-Smtp-Source: ABdhPJzvvus0cuipFF2oGyzlhKHLZ92KLvCVbO+lHDdDak7EeuNhjAD/FW+IfGXm+kFnfN9Gc22rHA==
-X-Received: by 2002:a17:906:14d4:: with SMTP id y20mr19104499ejc.190.1617457568030;
-        Sat, 03 Apr 2021 06:46:08 -0700 (PDT)
-Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
-        by smtp.gmail.com with ESMTPSA id lt22sm1823259ejb.115.2021.04.03.06.46.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Apr 2021 06:46:07 -0700 (PDT)
-Date:   Sat, 3 Apr 2021 16:46:06 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Jakub Kicinski <kuba@kernel.org>, linux-mips@vger.kernel.org,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v1 2/9] net: dsa: tag_ar9331: detect IGMP and
- MLD packets
-Message-ID: <20210403134606.tm7dyy3gt2nop2sj@skbuf>
-References: <20210403114848.30528-1-o.rempel@pengutronix.de>
- <20210403114848.30528-3-o.rempel@pengutronix.de>
- <20210403130318.lqkd6id7gehg3bin@skbuf>
- <20210403132636.h7ghwk2eaekskx2b@pengutronix.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OitHGhp6e8IIJxCkTzKNVArz7Jaba2sg3X3U/T01B+w=;
+        b=jZphhcYYJ3HoIES7Yy2vgt7gVFB4dTFpCRAgYmYMh9Wb800LfRrvm/VI2vWUfvLOzX
+         PO7QdRowVQaLfXIOtBwG/IHLC7ndw4dD7y8/QLmS6DJqrG0WAlow4c0+JSqfmMSqjFl3
+         Oi/S7VEPC3W/UchI8o//KOqqob9cZp/PGjCOu2LorVMMCpXI1ae8lthz5uN6qsCYYdHB
+         pGvezE0Dz9OuRewXP33vsaujKTQE/KVPpbmnE5M9ieJasPnCuXkegs1QYunoZcae1JPJ
+         dNWoHmQ2bWx1gXGuJ6AeqVm8G+ydCLQa20ZEmO19k5112adBW61pTKP0jaM/aJf9xJhH
+         azGA==
+X-Gm-Message-State: AOAM533R8HOBFPaRV4j9GRbil5v+GYcvUjGiMyd9xVitZF3jaiQfkSOO
+        8uO8pYY5VmmFnA03Kivu0ypwSekNiryYvJyt7Ic=
+X-Google-Smtp-Source: ABdhPJxE8/oeGODnBvCXWPVluy4mySdg0MiV8GEZXX1WTOiNR2yH504FRQ9C2HcDW4gn6yVAabAWMf+TZMcsSyixdkw=
+X-Received: by 2002:a62:e50f:0:b029:214:8e4a:ae46 with SMTP id
+ n15-20020a62e50f0000b02902148e4aae46mr16531089pff.73.1617457971115; Sat, 03
+ Apr 2021 06:52:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210403132636.h7ghwk2eaekskx2b@pengutronix.de>
+References: <20210401091648.87421-1-puranjay12@gmail.com> <20210401091648.87421-3-puranjay12@gmail.com>
+ <CAHp75Vcmyvi4V2D0cnmobTGHCS_ci2FC=cBF8tEoG9v51o8RmQ@mail.gmail.com> <0d2bce88-1c23-a711-6a37-118173066ab5@metafoo.de>
+In-Reply-To: <0d2bce88-1c23-a711-6a37-118173066ab5@metafoo.de>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 3 Apr 2021 16:52:34 +0300
+Message-ID: <CAHp75Vfu6B=p7XRx6Ca2tiwVzSgs8YOuyvYJ63cOrYZxDOYdSg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] iio: temperature: add driver support for ti tmp117
+To:     Lars-Peter Clausen <lars@metafoo.de>
+Cc:     Puranjay Mohan <puranjay12@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 03, 2021 at 03:26:36PM +0200, Oleksij Rempel wrote:
-> On Sat, Apr 03, 2021 at 04:03:18PM +0300, Vladimir Oltean wrote:
-> > Hi Oleksij,
-> > 
-> > On Sat, Apr 03, 2021 at 01:48:41PM +0200, Oleksij Rempel wrote:
-> > > The ar9331 switch is not forwarding IGMP and MLD packets if IGMP
-> > > snooping is enabled. This patch is trying to mimic the HW heuristic to take
-> > > same decisions as this switch would do to be able to tell the linux
-> > > bridge if some packet was prabably forwarded or not.
-> > > 
-> > > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> > > ---
-> > 
-> > I am not familiar with IGMP/MLD, therefore I don't really understand
-> > what problem you are trying to solve.
-> > 
-> > Your switch has packet traps for IGMP and MLD, ok. So it doesn't forward
-> > them. Must the IGMP/MLD packets be forwarded by an IGMP/MLD snooping
-> > bridge? Which ones and under what circumstances?
-> 
-> I'll better refer to the rfc:
-> https://tools.ietf.org/html/rfc4541
+On Fri, Apr 2, 2021 at 11:14 AM Lars-Peter Clausen <lars@metafoo.de> wrote:
+>
+> On 4/1/21 11:36 AM, Andy Shevchenko wrote:
+> > [...]
+> >> +       case IIO_CHAN_INFO_SCALE:
+> >> +               /* Conversion from 10s of uC to mC
+> >> +                * as IIO reports temperature in mC
+> >> +                */
+> >> +               *val = TMP117_RESOLUTION_10UC / 10000;
+> >> +               *val2 = (TMP117_RESOLUTION_10UC % 10000) * 100;
+> >> +               return IIO_VAL_INT_PLUS_MICRO;
+> > You use 10000 many times, can you give it an appropriate name (via #define)?
+> #define TENTHOUSAND 10000 ;)
 
-Ok, the question might have been a little bit dumb.
-I found this PDF:
-https://www.alliedtelesis.com/sites/default/files/documents/how-alliedware/howto_config_igmp1.pdf
-and it explains that:
-- a snooper floods the Membership Query messages from the network's
-  querier towards all ports that are not blocked by STP
-- a snooper forwards all Membership Report messages from a client
-  towards the All Groups port (which is how it reaches the querier).
+Actually, besides April fool's day, this can have a value if 1000 is
+defined as mC _PER_uC or so.
+Oh, wait. We have it already.
 
-I'm asking this because I just want to understand what the bridge code
-does. Does the code path for IGMP_HOST_MEMBERSHIP_REPORT (for example)
-for a snooper go through should_deliver -> nbp_switchdev_allowed_egress,
-which is what you are affecting here?
+#define MILLIDEGREE_PER_DEGREE 1000
+
+
+
+
+
+--
+With Best Regards,
+Andy Shevchenko
