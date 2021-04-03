@@ -2,380 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CEDF35323D
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 05:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EFDF353291
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 06:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235979AbhDCDkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 23:40:01 -0400
-Received: from mga11.intel.com ([192.55.52.93]:10035 "EHLO mga11.intel.com"
+        id S236077AbhDCDwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 23:52:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234488AbhDCDj7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 23:39:59 -0400
-IronPort-SDR: Sf0yqaoFpKiKWS1P1APSJrC18QpkuCHvscbDsW2tRTCLKY4oezJiZAyNJPT+np14aWYkWdvfOA
- Xq8ICwa5Yf1A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9942"; a="189316874"
-X-IronPort-AV: E=Sophos;i="5.81,301,1610438400"; 
-   d="gz'50?scan'50,208,50";a="189316874"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 20:39:57 -0700
-IronPort-SDR: HJ9Z+IzImgmP+ZFOQGHWs7wzmUBHyEGPn6orcYwyQaPZKFPwxgxXhI7L9BkXB0Z/rT3Tc/RPfZ
- rZxlQpLeBeVg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,301,1610438400"; 
-   d="gz'50?scan'50,208,50";a="447082484"
-Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 02 Apr 2021 20:39:56 -0700
-Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lSX8d-0007Vk-HA; Sat, 03 Apr 2021 03:39:55 +0000
-Date:   Sat, 3 Apr 2021 11:39:27 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
-Subject: /usr/bin/ld: ll_temac_main.c:undefined reference to `devm_of_iomap'
-Message-ID: <202104031122.l0ogMCut-lkp@intel.com>
+        id S234488AbhDCDwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 23:52:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EF4D61177;
+        Sat,  3 Apr 2021 03:52:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617421930;
+        bh=Gcbhjp2hTrSu3AA+Ysg1cwzwUzf7hrlEJ66hTxf6VcQ=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=dm/C09gZ05/a1nINUpO4C66J3RMOupdbfSmnHcjNbuvHkUUGDZvWrsHjksPNbMniU
+         TDoeuCFCR/kTB25ES/nYitGEQkPsoath3YU8zrk/SZoMJqoTr18mTBcF0iCqXn3GDA
+         SOc9LmfLvfAvA40okb0xrJv6HQJEXc7BCVXkbgP2pfV0wqV5XNxX3BCEFdaV+L3D1R
+         G9kzRfvEKF6y9jMZ0U0EYNljaAh5Ue5CGV8z92q/nKpO68vuK8YZ1s3yAoxp8kzHP6
+         wmiXJTSs4ofF2dARheR4xHhRMdydwZn4njkUrlccUq1bNdCL9So0GYvCqMLe2r9bwL
+         Dd9kKTKWlfwdw==
+Subject: Re: [PATCH v2 00/10] erofs: add big pcluster compression support
+To:     Gao Xiang <xiang@kernel.org>, linux-erofs@lists.ozlabs.org,
+        Chao Yu <yuchao0@huawei.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+References: <20210401032954.20555-1-xiang@kernel.org>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <18509211-374c-be19-bae7-f2ce852bfb15@kernel.org>
+Date:   Sat, 3 Apr 2021 11:52:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="ZPt4rx8FFjLCG7dd"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210401032954.20555-1-xiang@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021/4/1 11:29, Gao Xiang wrote:
+> Hi folks,
+> 
+> This is the formal version of EROFS big pcluster support, which means
+> EROFS can compress data into more than 1 fs block after this patchset.
+> 
+> {l,p}cluster are EROFS-specific concepts, standing for `logical cluster'
+> and `physical cluster' correspondingly. Logical cluster is the basic unit
+> of compress indexes in file logical mapping, e.g. it can build compress
+> indexes in 2 blocks rather than 1 block (currently only 1 block lcluster
+> is supported). Physical cluster is a container of physical compressed
+> blocks which contains compressed data, the size of which is the multiple
+> of lclustersize.
+> 
+> Different from previous thoughts, which had fixed-sized pclusterblks
+> recorded in the on-disk compress index header, our on-disk design allows
+> variable-sized pclusterblks now. The main reasons are
+>   - user data varies in compression ratio locally, so fixed-sized
+>     clustersize approach is space-wasting and causes extra read
+>     amplificationfor high CR cases;
+> 
+>   - inplace decompression needs zero padding to guarantee its safe margin,
+>     but we don't want to pad more than 1 fs block for big pcluster;
+> 
+>   - end users can now customize the pcluster size according to data type
+>     since various pclustersize can exist in a file, for example, using
+>     different pcluster size for executable code and one-shot data. such
+>     design should be more flexible than many other public compression fses
+>     (Btw, each file in EROFS can have maximum 2 algorithms at the same time
+>     by using HEAD1/2, which will be formally added with LZMA support.)
+> 
+> In brief, EROFS can now compress from variable-sized input to
+> variable-sized pcluster blocks, as illustrated below:
+> 
+>    |<-_lcluster_->|________________________|<-_lcluster_->|
+>    |____._________|_________ .. ___________|_______.______|
+>          .                                        .
+>           .                                     .
+>            .__________________________________.
+>            |______________| .. |______________|
+>            |<-          pcluster            ->|
+> 
+> The next step would be how to record the compressed block count in
+> lclusters. In compress indexes, there are 2 concepts called HEAD and
+> NONHEAD lclusters. The difference is that HEAD lcluster starts a new
+> pcluster in the lcluster, but NONHEAD not. It's easy to understand
+> that big pclusters at least have 2 pclusters, thus at least 2 lclusters
+> as well.
+> 
+> Therefore, let the delta0 (distance to its HEAD lcluster) of first NONHEAD
+> compress index store the compressed block count with a special flag as a
+> new called CBLKCNT compress index. It's also easy to know its delta0 is
+> constantly 1, as illustrated below:
+>    ________________________________________________________
+>   |_HEAD_|_CBLKCNT_|_NONHEAD_|_..._|_NONHEAD_|_HEAD | HEAD |
+>      |<------ a pcluster with CBLKCNT --------->|<-- -->|
+>                                                     ^ a pcluster with 1
+> 
+> If another HEAD follows a HEAD lcluster, there is no room to record
+> CBLKCNT, but it's easy to know the size of pcluster will be 1.
+> 
+> More implementation details about this and compact indexes are in the
+> commit message.
+> 
+> On the runtime performance side, the current EROFS test results are:
+>   ________________________________________________________________
+> |  file system  |   size    | seq read | rand read | rand9m read |
+> |_______________|___________|_ MiB/s __|__ MiB/s __|___ MiB/s ___|
+> |___erofs_4k____|_556879872_|_ 781.4 __|__ 55.3 ___|___ 25.3  ___|
+> |___erofs_16k___|_452509696_|_ 864.8 __|_ 123.2 ___|___ 20.8  ___|
+> |___erofs_32k___|_415223808_|_ 899.8 __|_ 105.8 _*_|___ 16.8 ____|
+> |___erofs_64k___|_393814016_|_ 906.6 __|__ 66.6 _*_|___ 11.8 ____|
+> |__squashfs_8k__|_556191744_|_  64.9 __|__ 19.3 ___|____ 9.1 ____|
+> |__squashfs_16k_|_502661120_|_  98.9 __|__ 38.0 ___|____ 9.8 ____|
+> |__squashfs_32k_|_458784768_|_ 115.4 __|__ 71.6 _*_|___ 10.0 ____|
+> |_squashfs_128k_|_398204928_|_ 257.2 __|_ 253.8 _*_|___ 10.9 ____|
+> |____ext4_4k____|____()_____|_ 786.6 __|__ 28.6 ___|___ 27.8 ____|
+> 
+> 
+> * Squashfs grabs more page cache to keep all decompressed data with
+>    grab_cache_page_nowait() than the normal requested readahead (see
+>    squashfs_copy_cache and squashfs_readpage_block).
+>    In principle, EROFS can also cache such all decompressed data
+>    if necessary, yet it's low priority for now and has little use
+>    (rand9m is actually a better rand read workload, since the amount
+>     of I/O is 9m rather than full-sized 1000m).
+> 
+> More details are in
+> https://lore.kernel.org/r/20210329053654.GA3281654@xiangao.remote.csb
+> 
+> Also it's easy to know EROFS is not a fixed pcluster design, so users
+> can make several optimized strategy according to data type when mkfs.
+> And there is still room to optimize runtime performance for big pcluster
+> even further.
+> 
+> Finally, it passes ro_fsstress and can also successfully boot buildroot
+> & Android system with android-mainline repo.
+> 
+> current mkfs repo for big pcluster:
+> https://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs-utils.git -b experimental-bigpcluster-compact
+> 
+> Thanks for your time on reading this!
 
---ZPt4rx8FFjLCG7dd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Nice job!
 
-Hi Andre,
+Acked-by: Chao Yu <yuchao0@huawei.com>
 
-FYI, the error/warning still remains.
+Thanks,
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   d93a0d43e3d0ba9e19387be4dae4a8d5b175a8d7
-commit: e8b6c54f6d57822e228027d41a1edb317034a08c net: xilinx: temac: Relax Kconfig dependencies
-date:   1 year ago
-config: um-randconfig-r004-20210403 (attached as .config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build):
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e8b6c54f6d57822e228027d41a1edb317034a08c
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout e8b6c54f6d57822e228027d41a1edb317034a08c
-        # save the attached .config to linux build tree
-        make W=1 ARCH=um 
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
-   /usr/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x8): undefined reference to `X86_FEATURE_XMM2'
-   /usr/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x15): undefined reference to `X86_FEATURE_XMM2'
-   /usr/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x22): undefined reference to `X86_FEATURE_XMM'
-   /usr/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x2f): undefined reference to `X86_FEATURE_XMM'
-   /usr/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x3c): undefined reference to `X86_FEATURE_XMM'
-   /usr/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x49): undefined reference to `X86_FEATURE_XMM'
-   /usr/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x56): undefined reference to `X86_FEATURE_XMM'
-   /usr/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x63): more undefined references to `X86_FEATURE_XMM' follow
-   /usr/bin/ld: drivers/net/ethernet/xilinx/ll_temac_main.o: in function `temac_probe':
-   ll_temac_main.c:(.text+0x13e7): undefined reference to `devm_ioremap'
->> /usr/bin/ld: ll_temac_main.c:(.text+0x151b): undefined reference to `devm_of_iomap'
-   /usr/bin/ld: ll_temac_main.c:(.text+0x1754): undefined reference to `devm_ioremap'
-   /usr/bin/ld: drivers/net/ethernet/xilinx/xilinx_axienet_main.o: in function `axienet_probe':
-   xilinx_axienet_main.c:(.text+0xf8d): undefined reference to `devm_ioremap_resource'
-   /usr/bin/ld: xilinx_axienet_main.c:(.text+0x1112): undefined reference to `devm_ioremap_resource'
-   /usr/bin/ld: xilinx_axienet_main.c:(.text+0x1315): undefined reference to `devm_ioremap_resource'
-   /usr/bin/ld: drivers/misc/altera-stapl/altera-lpt.o:(.altinstructions+0x8): undefined reference to `X86_FEATURE_XMM2'
-   /usr/bin/ld: drivers/misc/altera-stapl/altera-lpt.o:(.altinstructions+0x15): undefined reference to `X86_FEATURE_XMM'
-   /usr/bin/ld: drivers/misc/altera-stapl/altera-lpt.o:(.altinstructions+0x22): undefined reference to `X86_FEATURE_XMM'
-   /usr/bin/ld: drivers/misc/altera-stapl/altera-lpt.o:(.altinstructions+0x2f): undefined reference to `X86_FEATURE_XMM2'
-   /usr/bin/ld: drivers/misc/altera-stapl/altera-lpt.o:(.altinstructions+0x3c): undefined reference to `X86_FEATURE_XMM'
-   /usr/bin/ld: drivers/misc/altera-stapl/altera-lpt.o:(.altinstructions+0x49): undefined reference to `X86_FEATURE_XMM'
-   /usr/bin/ld: drivers/mtd/nand/raw/nand_legacy.o:(.altinstructions+0x8): undefined reference to `X86_FEATURE_XMM2'
-   /usr/bin/ld: drivers/mtd/nand/raw/nand_legacy.o:(.altinstructions+0x15): undefined reference to `X86_FEATURE_XMM2'
-   collect2: error: ld returned 1 exit status
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
---ZPt4rx8FFjLCG7dd
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
-
-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
-nN9EoK26TmkzxpBfWicQUTiK/g8u2DKMndUAAA==
-
---ZPt4rx8FFjLCG7dd--
+> 
+> Thanks,
+> Gao Xiang
+> 
+> changes since v1:
+>   - add a missing vunmap in erofs_pcpubuf_exit();
+>   - refine comments and commit messages.
+> 
+>   (btw, I'll apply this patchset for -next first for further integration
+>    test, which will be aimed to 5.13-rc1.)
+> 
+> Gao Xiang (10):
+>    erofs: reserve physical_clusterbits[]
+>    erofs: introduce multipage per-CPU buffers
+>    erofs: introduce physical cluster slab pools
+>    erofs: fix up inplace I/O pointer for big pcluster
+>    erofs: add big physical cluster definition
+>    erofs: adjust per-CPU buffers according to max_pclusterblks
+>    erofs: support parsing big pcluster compress indexes
+>    erofs: support parsing big pcluster compact indexes
+>    erofs: support decompress big pcluster for lz4 backend
+>    erofs: enable big pcluster feature
+> 
+>   fs/erofs/Kconfig        |  14 ---
+>   fs/erofs/Makefile       |   2 +-
+>   fs/erofs/decompressor.c | 216 +++++++++++++++++++++++++---------------
+>   fs/erofs/erofs_fs.h     |  31 ++++--
+>   fs/erofs/internal.h     |  31 ++----
+>   fs/erofs/pcpubuf.c      | 134 +++++++++++++++++++++++++
+>   fs/erofs/super.c        |   1 +
+>   fs/erofs/utils.c        |  12 ---
+>   fs/erofs/zdata.c        | 193 ++++++++++++++++++++++-------------
+>   fs/erofs/zdata.h        |  14 +--
+>   fs/erofs/zmap.c         | 155 ++++++++++++++++++++++------
+>   11 files changed, 560 insertions(+), 243 deletions(-)
+>   create mode 100644 fs/erofs/pcpubuf.c
+> 
