@@ -2,111 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C188E353343
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 11:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E99C35334A
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 11:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236846AbhDCJQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 05:16:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236602AbhDCJPF (ORCPT
+        id S236624AbhDCJUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 05:20:35 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15537 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236587AbhDCJUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 05:15:05 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 912A5C061793
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Apr 2021 02:15:02 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id a6so529292wrw.8
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Apr 2021 02:15:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=H7gV2Io75BmHpwhQaw6NovithxcDv0ix+Sn60I7HwJo=;
-        b=asIeDQEamcOTEZcUcmXrveR7Pg1uGOXeAPUsohxX1pNb4E3hk8BucbNyQY41n5RUwd
-         gwSwRXwD5/JwKZJgmePs0F01P5D17Cpd6cE88l/4kF/UGZXhQnoM1Y1NFARFRbM8o3IV
-         9r6y1T3Xw/1IPTey8dA8SGIiuWzgkMXrD0vsAhEzbA3t12MDXwHOtVSRpXQONHEYxCxm
-         xNDxt5+NkS1lhZVM/DLEDOwhCGWk8rRHgVKnuRbgAqlOOvMgFByp4CXsPmuVw2tVXqae
-         9e51udcInG361JliXefb8fpGHsz75zrgw7c2XaHOTH6Pie/QNrtVIUlpORDA9AhrhpW1
-         auog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=H7gV2Io75BmHpwhQaw6NovithxcDv0ix+Sn60I7HwJo=;
-        b=KSJdH6azGPAp8qNRI0DtZPwSpxHgXd5UyiroSoiA5MHxbU7/7lVrTgWJAklj8D1VgN
-         ar+Up2h2lB+EZDtY8f+gQec0U/G7lkpeDKiGyR4PugW+fKzvCQ87AoKPYbvVxAjfqqZH
-         MM5jfH0quml9IgvabdFCvRJanTdWItPn65c5SrjCbUjRn5PvaxP3qWLimiqlVApWBFQE
-         D3pzQk1V/fVZSbGDRzS+5vy9nbiMpG1G0I62v+9Qh0ZBEDLL3XjTqneucANpB3lBXHCr
-         11VdeXDbp67lnbRmys9BjKfLflC8sNmQrDPipDMJJ/xcqF57yfxNO5Zj/8ctpkUtA6/d
-         4Pgg==
-X-Gm-Message-State: AOAM531MwAMfEKkmzcd0ommY9qNPPJ0lPFz6XF901KG6mTJJlBmpOxyY
-        R7kKDyWeDmeHWFAz4+6Ns6c=
-X-Google-Smtp-Source: ABdhPJzepbrYuBB7nKXngRQiPe5TDMA4FBkptclD5AQlng/KkxFWZFxoagrXV+iLDG+Kbj+Sv9hMBA==
-X-Received: by 2002:adf:bc01:: with SMTP id s1mr19612218wrg.240.1617441301333;
-        Sat, 03 Apr 2021 02:15:01 -0700 (PDT)
-Received: from agape ([5.171.72.64])
-        by smtp.gmail.com with ESMTPSA id c9sm17419840wrr.78.2021.04.03.02.15.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Apr 2021 02:15:01 -0700 (PDT)
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     dan.carpenter@oracle.com, joe@perches.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH v3 30/30] staging: rtl8723bs: add spaces around operators in core/rtw_ieee80211.c
-Date:   Sat,  3 Apr 2021 11:13:52 +0200
-Message-Id: <33914c8c2b09ea2bcf845912dfe0ef04f2464856.1617440834.git.fabioaiuto83@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1617440833.git.fabioaiuto83@gmail.com>
-References: <cover.1617440833.git.fabioaiuto83@gmail.com>
+        Sat, 3 Apr 2021 05:20:25 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FCBCQ5t5kzNrcc;
+        Sat,  3 Apr 2021 17:17:38 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 3 Apr 2021 17:20:11 +0800
+From:   Zeng Tao <prime.zeng@hisilicon.com>
+To:     <kvm@vger.kernel.org>
+CC:     <pbonzini@redhat.com>, <raspl@de.ibm.com>, <linuxarm@huawei.com>,
+        Zeng Tao <prime.zeng@hisilicon.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] tools/kvm_stat: fix out of date aarch64 kvm_exit reason definations
+Date:   Sat, 3 Apr 2021 17:17:31 +0800
+Message-ID: <1617441453-15560-1-git-send-email-prime.zeng@hisilicon.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix post-commit hook checkpatch issues:
+Aarch64 kvm exit reason defination is out of date for some time, so in
+this patch:
+1. Sync some newly introduced or missing EC definations.
+2. Change the WFI to WFx.
+3. Fix the comment.
 
-CHECK: spaces preferred around that '+' (ctx:VxV)
-161: FILE: drivers/staging/rtl8723bs/core/rtw_ieee80211.c:648:
-+			*wpa_len = in_ie[cnt+1]+2;
- 			                    ^
+Not all the definations are used or usable for aarch64 kvm, but it's
+better to keep align across the whole kernel.
 
-CHECK: spaces preferred around that '+' (ctx:VxV)
-161: FILE: drivers/staging/rtl8723bs/core/rtw_ieee80211.c:648:
-+			*wpa_len = in_ie[cnt+1]+2;
- 			                       ^
-
-CHECK: spaces preferred around that '+' (ctx:VxV)
-162: FILE: drivers/staging/rtl8723bs/core/rtw_ieee80211.c:649:
-+			cnt += in_ie[cnt+1]+2;  /* get next */
- 			                ^
-
-CHECK: spaces preferred around that '+' (ctx:VxV)
-162: FILE: drivers/staging/rtl8723bs/core/rtw_ieee80211.c:649:
-+			cnt += in_ie[cnt+1]+2;  /* get next */
- 			                   ^
-
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+Signed-off-by: Zeng Tao <prime.zeng@hisilicon.com>
 ---
- drivers/staging/rtl8723bs/core/rtw_ieee80211.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/kvm/kvm_stat/kvm_stat | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c b/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
-index eb2058f2d139..a0d664e254a8 100644
---- a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
-@@ -645,8 +645,8 @@ void rtw_get_sec_ie(u8 *in_ie, uint in_len, u8 *rsn_ie, u16 *rsn_len, u8 *wpa_ie
- 			if (wpa_ie)
- 				memcpy(wpa_ie, &in_ie[cnt], in_ie[cnt+1]+2);
+diff --git a/tools/kvm/kvm_stat/kvm_stat b/tools/kvm/kvm_stat/kvm_stat
+index b0bf56c..63d87fd 100755
+--- a/tools/kvm/kvm_stat/kvm_stat
++++ b/tools/kvm/kvm_stat/kvm_stat
+@@ -154,17 +154,19 @@ SVM_EXIT_REASONS = {
+     'NPF':            0x400,
+ }
  
--			*wpa_len = in_ie[cnt+1]+2;
--			cnt += in_ie[cnt+1]+2;  /* get next */
-+			*wpa_len = in_ie[cnt + 1] + 2;
-+			cnt += in_ie[cnt + 1] + 2;  /* get next */
- 		} else {
- 			if (authmode == WLAN_EID_RSN) {
- 				if (rsn_ie)
+-# EC definition of HSR (from arch/arm64/include/asm/kvm_arm.h)
++# EC definition of HSR (from arch/arm64/include/asm/esr.h)
+ AARCH64_EXIT_REASONS = {
+     'UNKNOWN':      0x00,
+-    'WFI':          0x01,
++    'WFx':          0x01,
+     'CP15_32':      0x03,
+     'CP15_64':      0x04,
+     'CP14_MR':      0x05,
+     'CP14_LS':      0x06,
+     'FP_ASIMD':     0x07,
+     'CP10_ID':      0x08,
++    'PAC':          0x09,
+     'CP14_64':      0x0C,
++    'BTI':          0x0D,
+     'ILL_ISS':      0x0E,
+     'SVC32':        0x11,
+     'HVC32':        0x12,
+@@ -173,6 +175,10 @@ AARCH64_EXIT_REASONS = {
+     'HVC64':        0x16,
+     'SMC64':        0x17,
+     'SYS64':        0x18,
++    'SVE':          0x19,
++    'ERET':         0x1a,
++    'FPAC':         0x1c,
++    'IMP_DEF':      0x1f,
+     'IABT':         0x20,
+     'IABT_HYP':     0x21,
+     'PC_ALIGN':     0x22,
 -- 
-2.20.1
+2.8.1
 
