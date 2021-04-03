@@ -2,125 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB602353292
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 06:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E75B353296
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 06:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230211AbhDCEPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 00:15:00 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:52925 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbhDCEO7 (ORCPT
+        id S231361AbhDCEkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 00:40:19 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:32549 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229851AbhDCEkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 00:14:59 -0400
-Received: from fsav401.sakura.ne.jp (fsav401.sakura.ne.jp [133.242.250.100])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 1334EtBN042147;
-        Sat, 3 Apr 2021 13:14:55 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav401.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav401.sakura.ne.jp);
- Sat, 03 Apr 2021 13:14:55 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav401.sakura.ne.jp)
-Received: from localhost.localdomain (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 1334EkKp041831
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Sat, 3 Apr 2021 13:14:55 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [PATCH] tty: use printk_safe context at tty_msg()
-Date:   Sat,  3 Apr 2021 13:14:44 +0900
-Message-Id: <20210403041444.4081-1-penguin-kernel@I-love.SAKURA.ne.jp>
-X-Mailer: git-send-email 2.18.4
+        Sat, 3 Apr 2021 00:40:17 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617424815; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=gK4A2K32D1Y3oWUpSLtjeRrORpZI1YsVu6fUh7M1kq0=; b=FlNUMVP5CUDdw+dzbXE6SOM5WxzS0WIANLFyKC/wB4XVDSf8ATYruqRYVC9VIAx3YwyAWlR3
+ 0VPpqjkPIpZ2yxTgp0A8G3gA1ps1N0JvNtLYMHWpJjuLhjWVkadKCzrBmiW7CqtzzBjk5yfM
+ VKq/rlZNRAZMaGc9FYvajajHey0=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 6067f19d8166b7eff7e1f302 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 03 Apr 2021 04:39:57
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1F863C43463; Sat,  3 Apr 2021 04:39:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.105] (unknown [117.211.46.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BE00CC433CA;
+        Sat,  3 Apr 2021 04:39:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BE00CC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+Subject: Re: [PATCH] drm/msm/a6xx: fix for kernels without CONFIG_NVMEM
+To:     Rob Clark <robdclark@gmail.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>, Sean Paul <sean@poorly.run>
+References: <20210216200909.19039-1-jonathan@marek.ca>
+ <CAF6AEGv53nnzqMgTfSA6t2YpHx1dDW8UqnH9Gw0w3p8bf0mTLw@mail.gmail.com>
+ <775436ba-c94a-ab22-d65b-b2391047ec65@codeaurora.org>
+ <20210217190820.GA2229@jcrouse1-lnx.qualcomm.com>
+ <CAF6AEGsHws23ozeJ8G23LFQ8J=CVVrx5xvkSgBuE_uSwT4YurQ@mail.gmail.com>
+ <74d1277e-295f-0996-91c3-05cfce8d3a0e@marek.ca>
+ <e4b62857-bd4d-cca6-0d6b-b9cc960b52a2@codeaurora.org>
+ <CAF6AEGsWCrkOgMVxnx53k8b_o7xy3KWv9VaNRoY44+4GfXtWdg@mail.gmail.com>
+ <757b557a-b5f6-6018-caa4-34bffb1b60b7@codeaurora.org>
+ <CAF6AEGv-A5=4z7ZO-SytmivZTfKPYxhAjmRLVsQnrT7_pYCDtQ@mail.gmail.com>
+ <0f057c99-ec94-f3e3-796f-b73a609f735d@codeaurora.org>
+ <CAF6AEGvXYmcj0YuciZATveALJEP6DdFiwmtnYevrK2SEOJNZGg@mail.gmail.com>
+ <CAF6AEGs4sYOMgysg3FraKTDetqKTgMXT6RE700e-8uyE9Gs-9A@mail.gmail.com>
+ <CAA8EJpoL7Eox5WqnZQVvGF9M_4itA+2=U6QX=AreTk=AEfqyQg@mail.gmail.com>
+ <CAF6AEGu88VxfDYaMt1=FCYG0DVRfRT6=5QD78Qrk=S=M0gO+pw@mail.gmail.com>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+Message-ID: <fed21bb2-77ee-107c-a7fc-1f0965334da1@codeaurora.org>
+Date:   Sat, 3 Apr 2021 10:09:49 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <CAF6AEGu88VxfDYaMt1=FCYG0DVRfRT6=5QD78Qrk=S=M0gO+pw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot is reporting circular locking dependency due to calling printk()
-with port lock held [1]. When this problem was reported, we worried
-whether printk_safe context will remain available in future kernels [2],
-and then this problem was forgotten. But in order to utilize syzbot's
-resource for finding other bugs/reproducers by closing this one of top
-crashers, let's apply a patch which counts on availability of printk_safe
-context.
+On 4/2/2021 3:19 AM, Rob Clark wrote:
+> On Thu, Apr 1, 2021 at 2:03 PM Dmitry Baryshkov
+> <dmitry.baryshkov@linaro.org> wrote:
+>>
+>> On Thu, 1 Apr 2021 at 23:09, Rob Clark <robdclark@gmail.com> wrote:
+>>>
+>>> On Mon, Feb 22, 2021 at 8:06 AM Rob Clark <robdclark@gmail.com> wrote:
+>>>>
+>>>> On Mon, Feb 22, 2021 at 7:45 AM Akhil P Oommen <akhilpo@codeaurora.org> wrote:
+>>>>>
+>>>>> On 2/19/2021 9:30 PM, Rob Clark wrote:
+>>>>>> On Fri, Feb 19, 2021 at 2:44 AM Akhil P Oommen <akhilpo@codeaurora.org> wrote:
+>>>>>>>
+>>>>>>> On 2/18/2021 9:41 PM, Rob Clark wrote:
+>>>>>>>> On Thu, Feb 18, 2021 at 4:28 AM Akhil P Oommen <akhilpo@codeaurora.org> wrote:
+>>>>>>>>>
+>>>>>>>>> On 2/18/2021 2:05 AM, Jonathan Marek wrote:
+>>>>>>>>>> On 2/17/21 3:18 PM, Rob Clark wrote:
+>>>>>>>>>>> On Wed, Feb 17, 2021 at 11:08 AM Jordan Crouse
+>>>>>>>>>>> <jcrouse@codeaurora.org> wrote:
+>>>>>>>>>>>>
+>>>>>>>>>>>> On Wed, Feb 17, 2021 at 07:14:16PM +0530, Akhil P Oommen wrote:
+>>>>>>>>>>>>> On 2/17/2021 8:36 AM, Rob Clark wrote:
+>>>>>>>>>>>>>> On Tue, Feb 16, 2021 at 12:10 PM Jonathan Marek <jonathan@marek.ca>
+>>>>>>>>>>>>>> wrote:
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> Ignore nvmem_cell_get() EOPNOTSUPP error in the same way as a
+>>>>>>>>>>>>>>> ENOENT error,
+>>>>>>>>>>>>>>> to fix the case where the kernel was compiled without CONFIG_NVMEM.
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> Fixes: fe7952c629da ("drm/msm: Add speed-bin support to a618 gpu")
+>>>>>>>>>>>>>>> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+>>>>>>>>>>>>>>> ---
+>>>>>>>>>>>>>>>      drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 6 +++---
+>>>>>>>>>>>>>>>      1 file changed, 3 insertions(+), 3 deletions(-)
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+>>>>>>>>>>>>>>> b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+>>>>>>>>>>>>>>> index ba8e9d3cf0fe..7fe5d97606aa 100644
+>>>>>>>>>>>>>>> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+>>>>>>>>>>>>>>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+>>>>>>>>>>>>>>> @@ -1356,10 +1356,10 @@ static int a6xx_set_supported_hw(struct
+>>>>>>>>>>>>>>> device *dev, struct a6xx_gpu *a6xx_gpu,
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>             cell = nvmem_cell_get(dev, "speed_bin");
+>>>>>>>>>>>>>>>             /*
+>>>>>>>>>>>>>>> -        * -ENOENT means that the platform doesn't support
+>>>>>>>>>>>>>>> speedbin which is
+>>>>>>>>>>>>>>> -        * fine
+>>>>>>>>>>>>>>> +        * -ENOENT means no speed bin in device tree,
+>>>>>>>>>>>>>>> +        * -EOPNOTSUPP means kernel was built without CONFIG_NVMEM
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> very minor nit, it would be nice to at least preserve the gist of the
+>>>>>>>>>>>>>> "which is fine" (ie. some variation of "this is an optional thing and
+>>>>>>>>>>>>>> things won't catch fire without it" ;-))
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> (which is, I believe, is true, hopefully Akhil could confirm.. if not
+>>>>>>>>>>>>>> we should have a harder dependency on CONFIG_NVMEM..)
+>>>>>>>>>>>>> IIRC, if the gpu opp table in the DT uses the 'opp-supported-hw'
+>>>>>>>>>>>>> property,
+>>>>>>>>>>>>> we will see some error during boot up if we don't call
+>>>>>>>>>>>>> dev_pm_opp_set_supported_hw(). So calling "nvmem_cell_get(dev,
+>>>>>>>>>>>>> "speed_bin")"
+>>>>>>>>>>>>> is a way to test this.
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> If there is no other harm, we can put a hard dependency on
+>>>>>>>>>>>>> CONFIG_NVMEM.
+>>>>>>>>>>>>
+>>>>>>>>>>>> I'm not sure if we want to go this far given the squishiness about
+>>>>>>>>>>>> module
+>>>>>>>>>>>> dependencies. As far as I know we are the only driver that uses this
+>>>>>>>>>>>> seriously
+>>>>>>>>>>>> on QCOM SoCs and this is only needed for certain targets. I don't
+>>>>>>>>>>>> know if we
+>>>>>>>>>>>> want to force every target to build NVMEM and QFPROM on our behalf.
+>>>>>>>>>>>> But maybe
+>>>>>>>>>>>> I'm just saying that because Kconfig dependencies tend to break my
+>>>>>>>>>>>> brain (and
+>>>>>>>>>>>> then Arnd has to send a patch to fix it).
+>>>>>>>>>>>>
+>>>>>>>>>>>
+>>>>>>>>>>> Hmm, good point.. looks like CONFIG_NVMEM itself doesn't have any
+>>>>>>>>>>> other dependencies, so I suppose it wouldn't be the end of the world
+>>>>>>>>>>> to select that.. but I guess we don't want to require QFPROM
+>>>>>>>>>>>
+>>>>>>>>>>> I guess at the end of the day, what is the failure mode if you have a
+>>>>>>>>>>> speed-bin device, but your kernel config misses QFPROM (and possibly
+>>>>>>>>>>> NVMEM)?  If the result is just not having the highest clk rate(s)
+>>>>>>>>>
+>>>>>>>>> Atleast on sc7180's gpu, using an unsupported FMAX breaks gmu. It won't
+>>>>>>>>> be very obvious what went wrong when this happens!
+>>>>>>>>
+>>>>>>>> Ugg, ok..
+>>>>>>>>
+>>>>>>>> I suppose we could select NVMEM, but not QFPROM, and then the case
+>>>>>>>> where QFPROM is not enabled on platforms that have the speed-bin field
+>>>>>>>> in DT will fail gracefully and all other platforms would continue on
+>>>>>>>> happily?
+>>>>>>>>
+>>>>>>>> BR,
+>>>>>>>> -R
+>>>>>>>
+>>>>>>> Sounds good to me.
+>>>>>>>
+>>>>>>
+>>>>>> You probably should do a quick test with NVMEM enabled but QFPROM
+>>>>>> disabled to confirm my theory, but I *think* that should work
+>>>>>>
+>>>>>> BR,
+>>>>>> -R
+>>>>>>
+>>>>>
+>>>>> I tried it on an sc7180 device. The suggested combo (CONFIG_NVMEM + no
+>>>>> CONFIG_QCOM_QFPROM) makes the gpu probe fail with error "failed to read
+>>>>> speed-bin. Some OPPs may not be supported by hardware". This is good
+>>>>> enough clue for the developer that he should fix the broken speedbin
+>>>>> detection.
+>>>>>
+>>>>
+>>>> Ok, great.. then sounds like selecting NVMEM is a good approach
+>>>>
+>>>
+>>> btw, did anyone ever send a patch to select NVMEM?  I'm not seeing one
+>>> but I could be overlooking something
+I thought Jonathan would send it as the discussion was going on in his 
+patch. No problem, I will send it out. :)
 
-syzbot is also reporting same dependency due to memory allocation fault
-injection at tty_buffer_alloc(). Although __GFP_NOWARN cannot prevent
-memory allocation fault injection from calling printk(), let's use
-__GFP_NOWARN at tty_buffer_alloc() in addition to using printk_safe
-context, for generating many lines of messages due to warn_alloc() is
-annoying. If we want to report it, we can use pr_warn() instead.
+-Akhil.
 
-[1] https://syzkaller.appspot.com/bug?id=39ea6caa479af471183997376dc7e90bc7d64a6a
-[2] https://lkml.kernel.org/r/20190218054649.GA26686@jagdpanzerIV
-
-Reported-by: syzbot <syzbot+43e93968b964e369db0b@syzkaller.appspotmail.com>
-Reported-by: syzbot <syzbot+3ed715090790806d8b18@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Fixes: b6da31b2c07c46f2 ("tty: Fix data race in tty_insert_flip_string_fixed_flag")
-Cc: <stable@vger.kernel.org> # 4.18+
----
- drivers/tty/tty_buffer.c | 5 ++++-
- include/linux/tty.h      | 9 ++++++++-
- 2 files changed, 12 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/tty/tty_buffer.c b/drivers/tty/tty_buffer.c
-index 6d4995a5f318..d59f7873bc49 100644
---- a/drivers/tty/tty_buffer.c
-+++ b/drivers/tty/tty_buffer.c
-@@ -156,6 +156,7 @@ static struct tty_buffer *tty_buffer_alloc(struct tty_port *port, size_t size)
- {
- 	struct llist_node *free;
- 	struct tty_buffer *p;
-+	unsigned long flags;
- 
- 	/* Round the buffer size out */
- 	size = __ALIGN_MASK(size, TTYB_ALIGN_MASK);
-@@ -172,7 +173,9 @@ static struct tty_buffer *tty_buffer_alloc(struct tty_port *port, size_t size)
- 	   have queued and recycle that ? */
- 	if (atomic_read(&port->buf.mem_used) > port->buf.mem_limit)
- 		return NULL;
--	p = kmalloc(sizeof(struct tty_buffer) + 2 * size, GFP_ATOMIC);
-+	printk_safe_enter_irqsave(flags);
-+	p = kmalloc(sizeof(struct tty_buffer) + 2 * size, GFP_ATOMIC | __GFP_NOWARN);
-+	printk_safe_exit_irqrestore(flags);
- 	if (p == NULL)
- 		return NULL;
- 
-diff --git a/include/linux/tty.h b/include/linux/tty.h
-index 95fc2f100f12..7ae8eb46fec3 100644
---- a/include/linux/tty.h
-+++ b/include/linux/tty.h
-@@ -14,6 +14,7 @@
- #include <uapi/linux/tty.h>
- #include <linux/rwsem.h>
- #include <linux/llist.h>
-+#include <../../kernel/printk/internal.h>
- 
- 
- /*
-@@ -773,7 +774,13 @@ static inline void proc_tty_unregister_driver(struct tty_driver *d) {}
- #endif
- 
- #define tty_msg(fn, tty, f, ...) \
--	fn("%s %s: " f, tty_driver_name(tty), tty_name(tty), ##__VA_ARGS__)
-+	do {						\
-+		unsigned long flags;			\
-+							\
-+		printk_safe_enter_irqsave(flags);	\
-+		fn("%s %s: " f, tty_driver_name(tty), tty_name(tty), ##__VA_ARGS__); \
-+		printk_safe_exit_irqrestore(flags);	\
-+	} while (0)
- 
- #define tty_debug(tty, f, ...)	tty_msg(pr_debug, tty, f, ##__VA_ARGS__)
- #define tty_info(tty, f, ...)	tty_msg(pr_info, tty, f, ##__VA_ARGS__)
--- 
-2.18.4
+>>
+>> Judging by the amount of issues surrounding speed-bin, I might have a
+>> bold suggestion to revert these patches for now and get them once all
+>> the issues are sorted, so that we'd have a single working commit
+>> instead of scattered patch series breaking git bisect, having bad
+>> side-effects on non-sc7180 platforms, etc.
+>>
+> 
+> We do really need some pre-merge CI like we have on the mesa side of
+> things (and we at least have 845 devices in our CI farm, but it would
+> be useful to add more generations)..  but other than the config issue,
+> I *think* this fixes the last of the speedbin fallout?
+> 
+> https://patchwork.freedesktop.org/patch/426538/?series=88558&rev=1
+> 
+> Planning to include that in a -fixes pull req in the next day or two.
+> (And please have a look at msm-next-staging and let me know if you see
+> anything other fixes that would be good to get in, speedbin related or
+> otherwise.)
+> 
+> BR,
+> -R
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> 
 
