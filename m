@@ -2,101 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EC333533F9
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 14:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A28B23533FF
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 14:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236592AbhDCMJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 08:09:08 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:48893 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236629AbhDCMJH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 08:09:07 -0400
-X-Originating-IP: 2.7.49.219
-Received: from [192.168.1.100] (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 53949C0004;
-        Sat,  3 Apr 2021 12:09:02 +0000 (UTC)
-Subject: Re: [PATCH] driver: of: Properly truncate command line if too long
-To:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210316193820.3137-1-alex@ghiti.fr>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <ee702ff7-f43c-745c-4157-b1cba53bb0b2@ghiti.fr>
-Date:   Sat, 3 Apr 2021 08:09:01 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S236629AbhDCMXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 08:23:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59962 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230409AbhDCMXl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Apr 2021 08:23:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA78F6115A;
+        Sat,  3 Apr 2021 12:23:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617452614;
+        bh=j+qgLdFi7dSgQC2r74mI2QF8Cvo6wIoGFSrZBvP3pBQ=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=L2OBqespR4fZqSJPsdyVDJEBtsMPxWB7E86IoDqzp03YJ2nbQrhT6tuMe/fJBUwYO
+         yfqYYlkYQMyOkjiNc19YgZL9MBDf39k+/oFAREiEDwQjl0HvDCMJXObrqKejYIWL9/
+         Lwxdb6pfas05Lr+A2dEzAv+10jB1tRc0t1YKXM+vaJm1/IMLz7RoWgshSOoOBGZoHh
+         2kr2cLugb/eYRwpYTqRECKXXMDzDdeOpN7SY2qcnji8onbA2C+bnOXsNhFOYpypqmD
+         yUMSTrASlfaN5cn4RtUoLOZwwWHxvszTgN3snAPzasLOZHRjvo6uvpA2bvv3g2u8/a
+         6RQdJAoeU2wvg==
+Date:   Sat, 3 Apr 2021 14:23:29 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Hillf Danton <hdanton@sina.com>
+cc:     John Fastabend <john.fastabend@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Kehuan Feng <kehuan.feng@gmail.com>,
+        Jike Song <albcamus@gmail.com>,
+        Jonas Bonn <jonas.bonn@netrounds.com>,
+        Michael Zhivich <mzhivich@akamai.com>,
+        David Miller <davem@davemloft.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Netdev <netdev@vger.kernel.org>, Josh Hunt <johunt@akamai.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>
+Subject: Re: Packet gets stuck in NOLOCK pfifo_fast qdisc
+In-Reply-To: <20210403003537.2032-1-hdanton@sina.com>
+Message-ID: <nycvar.YFH.7.76.2104031420470.12405@cbobk.fhfr.pm>
+References: <465a540e-5296-32e7-f6a6-79942dfe2618@netrounds.com> <20200825032312.11776-1-hdanton@sina.com> <CACS=qqK-5g-QM_vczjY+A=3fi3gChei4cAkKweZ4Sn2L537DQA@mail.gmail.com> <20200825162329.11292-1-hdanton@sina.com> <CACS=qqKgiwdCR_5+z-vkZ0X8DfzOPD7_ooJ_imeBnx+X1zw2qg@mail.gmail.com>
+ <CACS=qqKptAQQGiMoCs1Zgs9S4ZppHhasy1AK4df2NxnCDR+vCw@mail.gmail.com> <5f46032e.1c69fb81.9880c.7a6cSMTPIN_ADDED_MISSING@mx.google.com> <CACS=qq+Yw734DWhETNAULyBZiy_zyjuzzOL-NO30AB7fd2vUOQ@mail.gmail.com> <20200827125747.5816-1-hdanton@sina.com>
+ <CACS=qq+a0H=e8yLFu95aE7Hr0bQ9ytCBBn2rFx82oJnPpkBpvg@mail.gmail.com> <CAM_iQpV-JMURzFApp-Zhxs3QN9j=Zdf6yqwOP=E42ERDHxe6Hw@mail.gmail.com> <dd73f551d1fc89e457ffabd106cbf0bf401b747b.camel@redhat.com> <CAM_iQpXZMeAGkq_=rG6KEabFNykszpRU_Hnv65Qk7yesvbRDrw@mail.gmail.com>
+ <5f51cbad3cc2_3eceb208fc@john-XPS-13-9370.notmuch> <nycvar.YFH.7.76.2104022120050.12405@cbobk.fhfr.pm> <20210403003537.2032-1-hdanton@sina.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <20210316193820.3137-1-alex@ghiti.fr>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sat, 3 Apr 2021, Hillf Danton wrote:
 
-Le 3/16/21 à 3:38 PM, Alexandre Ghiti a écrit :
-> In case the command line given by the user is too long, warn about it
-> and truncate it to the last full argument.
+> >>> Sure. Seems they crept in over time. I had some plans to write a
+> >>> lockless HTB implementation. But with fq+EDT with BPF it seems that
+> >>> it is no longer needed, we have a more generic/better solution.  So
+> >>> I dropped it. Also most folks should really be using fq, fq_codel,
+> >>> etc. by default anyways. Using pfifo_fast alone is not ideal IMO.
+> >> 
+> >> Half a year later, we still have the NOLOCK implementation
+> >> present, and pfifo_fast still does set the TCQ_F_NOLOCK flag on itself.
+> >> 
+> >> And we've just been bitten by this very same race which appears to be
+> >> still unfixed, with single packet being stuck in pfifo_fast qdisc
+> >> basically indefinitely due to this very race that this whole thread began
+> >> with back in 2019.
+> >> 
+> >> Unless there are
+> >> 
+> >> 	(a) any nice ideas how to solve this in an elegant way without
+> >> 	    (re-)introducing extra spinlock (Cong's fix) or
+> >> 
+> >> 	(b) any objections to revert as per the argumentation above
+> >> 
+> >> I'll be happy to send a revert of the whole NOLOCK implementation next
+> >> week.
+> >> 
+> >Jiri
+> >
 > 
-> This is what efi already does in commit 80b1bfe1cb2f ("efi/libstub:
-> Don't parse overlong command lines").
-> 
-> Reported-by: Dmitry Vyukov <dvyukov@google.com>
-> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
-> ---
->   drivers/of/fdt.c | 21 ++++++++++++++++++++-
->   1 file changed, 20 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-> index dcc1dd96911a..de4c6f9bac39 100644
-> --- a/drivers/of/fdt.c
-> +++ b/drivers/of/fdt.c
-> @@ -25,6 +25,7 @@
->   #include <linux/serial_core.h>
->   #include <linux/sysfs.h>
->   #include <linux/random.h>
-> +#include <linux/ctype.h>
->   
->   #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
->   #include <asm/page.h>
-> @@ -1050,9 +1051,27 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
->   
->   	/* Retrieve command line */
->   	p = of_get_flat_dt_prop(node, "bootargs", &l);
-> -	if (p != NULL && l > 0)
-> +	if (p != NULL && l > 0) {
->   		strlcpy(data, p, min(l, COMMAND_LINE_SIZE));
->   
-> +		/*
-> +		 * If the given command line size is larger than
-> +		 * COMMAND_LINE_SIZE, truncate it to the last complete
-> +		 * parameter.
-> +		 */
-> +		if (l > COMMAND_LINE_SIZE) {
-> +			char *cmd_p = (char *)data + COMMAND_LINE_SIZE - 1;
-> +
-> +			while (!isspace(*cmd_p))
-> +				cmd_p--;
-> +
-> +			*cmd_p = '\0';
-> +
-> +			pr_err("Command line is too long: truncated to %d bytes\n",
-> +			       (int)(cmd_p - (char *)data + 1));
-> +		}
-> +	}
-> +
->   	/*
->   	 * CONFIG_CMDLINE is meant to be a default in case nothing else
->   	 * managed to set the command line, unless CONFIG_CMDLINE_FORCE
-> 
+> Feel free to revert it as the scorch wont end without a deluge.
 
-Any thought about that ?
+I am still planning to have Yunsheng Lin's (CCing) fix [1] tested in the 
+coming days. If it works, then we can consider proceeding with it, 
+otherwise I am all for reverting the whole NOLOCK stuff.
 
-Thanks,
+[1] https://lore.kernel.org/linux-can/1616641991-14847-1-git-send-email-linyunsheng@huawei.com/T/#u
 
-Alex
+-- 
+Jiri Kosina
+SUSE Labs
+
