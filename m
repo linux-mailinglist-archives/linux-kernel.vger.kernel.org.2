@@ -2,170 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A3763531D2
+	by mail.lfdr.de (Postfix) with ESMTP id F18323531D3
 	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 03:09:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235689AbhDCBEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 21:04:41 -0400
-Received: from mga05.intel.com ([192.55.52.43]:53264 "EHLO mga05.intel.com"
+        id S235912AbhDCBE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 21:04:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234488AbhDCBEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 21:04:40 -0400
-IronPort-SDR: BfDYRQJXcN0GquLZvX8Lnvd5+m/5xkVTP1KhWfyyuMhsDTn4qgj4+G6Vj6izhl+VKeKrWMgAVv
- suvChSjG0dpQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9942"; a="277753829"
-X-IronPort-AV: E=Sophos;i="5.81,300,1610438400"; 
-   d="scan'208";a="277753829"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 18:04:36 -0700
-IronPort-SDR: j8GuiEv3ShdYN+WV1AhirlSuWppvNV9WY9hmhkpvuu1v/WxTHD14PCb+5GJQFm1Ghtu6F2ZCYr
- oWwMcohpmgZw==
-X-IronPort-AV: E=Sophos;i="5.81,300,1610438400"; 
-   d="scan'208";a="611474473"
-Received: from otcwcpicx3.sc.intel.com ([172.25.55.73])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2021 18:04:36 -0700
-Date:   Sat, 3 Apr 2021 01:04:35 +0000
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>
-Subject: Re: [PATCH v5 2/3] x86/bus_lock: Handle #DB for bus lock
-Message-ID: <YGe/IwJSNHnuhU2d@otcwcpicx3.sc.intel.com>
-References: <20210313054910.2503968-1-fenghua.yu@intel.com>
- <20210313054910.2503968-3-fenghua.yu@intel.com>
- <871rca6dbp.fsf@nanos.tec.linutronix.de>
- <YFUjVwBg133LN+kS@otcwcpicx3.sc.intel.com>
- <878s6iatdf.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <878s6iatdf.fsf@nanos.tec.linutronix.de>
+        id S235721AbhDCBE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 21:04:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C70E16117A;
+        Sat,  3 Apr 2021 01:04:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1617411895;
+        bh=9V7YVCG5U6KqDgGSJ8GVsJXXF4lwYY+bPLYhy58H9qY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BmpxYynUul8cO41nW9uTTAZmWIon8i+MoJji+1zno4/f9laEEgkGXcydJUqNaYATo
+         tgs1Kb11/OQX48uN0fpfLws44lwcQCECRqGG7kNZE372kpab+7n3X+yycm50ut2VzA
+         1eiusBpLTEPoOq6YY49Pvw30UBZPNSlt2SmW0ISM=
+Date:   Fri, 2 Apr 2021 18:04:54 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Miaohe Lin <linmiaohe@huawei.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <duanxiongchun@bytedance.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        <hannes@cmpxchg.org>, <mhocko@kernel.org>, <shakeelb@google.com>,
+        <vdavydov.dev@gmail.com>
+Subject: Re: [PATCH] mm: memcontrol: fix forget to obtain the ref to objcg
+ in split_page_memcg
+Message-Id: <20210402180454.c28395d38396b58659c15fcc@linux-foundation.org>
+In-Reply-To: <YGU/ZojpKXXK9AnU@carbon.DHCP.thefacebook.com>
+References: <20210401030141.37061-1-songmuchun@bytedance.com>
+        <5c183fe6-637f-151c-67f0-fe19a0ce3356@huawei.com>
+        <YGU/ZojpKXXK9AnU@carbon.DHCP.thefacebook.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Thomas,
+On Wed, 31 Mar 2021 20:35:02 -0700 Roman Gushchin <guro@fb.com> wrote:
 
-On Sat, Mar 20, 2021 at 01:42:52PM +0100, Thomas Gleixner wrote:
-> On Fri, Mar 19 2021 at 22:19, Fenghua Yu wrote:
-> > On Fri, Mar 19, 2021 at 10:30:50PM +0100, Thomas Gleixner wrote:
-> >> > +	if (sscanf(arg, "ratelimit:%d", &ratelimit) == 1 && ratelimit > 0) {
-> >> > +		bld_ratelimit = ratelimit;
-> >> 
-> >> So any rate up to INTMAX/s is valid here, right?
-> >
-> > Yes. I don't see smaller limitation than INTMX/s. Is that right?
+> On Thu, Apr 01, 2021 at 11:31:16AM +0800, Miaohe Lin wrote:
+> > On 2021/4/1 11:01, Muchun Song wrote:
+> > > Christian Borntraeger reported a warning about "percpu ref
+> > > (obj_cgroup_release) <= 0 (-1) after switching to atomic".
+> > > Because we forgot to obtain the reference to the objcg and
+> > > wrongly obtain the reference of memcg.
+> > > 
+> > > Reported-by: Christian Borntraeger <borntraeger@de.ibm.com>
+> > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > 
+> > Thanks for the patch.
+> > Is a Fixes tag needed?
 > 
-> That's a given, but what's the point of limits in that range?
-> 
-> A buslock access locks up the system for X cycles. So the total amount
-> of allowable damage in cycles per second is:
-> 
->    limit * stall_cycles_per_bus_lock
-> 
-> ergo the time (in seconds) which the system is locked up is:
-> 
->    limit * stall_cycles_per_bus_lock / cpufreq
-> 
-> Which means for ~INTMAX/2 on a 2 GHz CPU:
-> 
->    2 * 10^9 * $CYCLES  / 2 * 10^9  = $CYCLES seconds
-> 
-> Assumed the inflicted damage is only 1 cycle then #LOCK is pretty much
-> permanently on if there are enough threads. Sure #DB will slow them
-> down, but it still does not make any sense at all especially as the
-> damage is certainly greater than a single cycle.
-> 
-> And because the changelogs and the docs are void of numbers I just got
-> real numbers myself.
-> 
-> With a single thread doing a 'lock inc *mem' accross a cache line
-> boundary the workload which I measured with perf stat goes from:
-> 
->      5,940,985,091      instructions              #    0.88  insn per cycle         
->        2.780950806 seconds time elapsed
->        0.998480000 seconds user
->        4.202137000 seconds sys
-> to
-> 
->      7,467,979,504      instructions              #    0.10  insn per cycle         
->        5.110795917 seconds time elapsed
->        7.123499000 seconds user
->       37.266852000 seconds sys
-> 
-> The buslock injection rate is ~250k per second.
-> 
-> Even if I ratelimit the locked inc by a delay loop of ~5000 cycles
-> which is probably more than what the #DB will cost then this single task
-> still impacts the workload significantly:
-> 
->      6,496,994,537      instructions              #    0.39  insn per cycle         
->        3.043275473 seconds time elapsed
->        1.899852000 seconds user
->        8.957088000 seconds sys
-> 
-> The buslock injection rate is down to ~150k per second in this case.
-> 
-> And even with throttling the injection rate further down to 25k per
-> second the impact on the workload is still significant in the 10% range.
+> No, as the original patch hasn't been merged into the Linus's tree yet.
+> So the fix can be simply squashed.
 
-Thank you for your insight!
+Help.  Which is "the original patch"?
 
-So I can change the ratelimit to system wide and call usleep_range()
-to sleep: 
-               while (!__ratelimit(&global_bld_ratelimit))
-                       usleep_range(1000000 / bld_ratelimit,
-                                    1000000 / bld_ratelimit);
-
-The max bld_ratelimit is 1000,000/s because the max sleeping time is 1 usec.
-The min bld_ratelimit is 1/s.
-
+> Btw, the fix looks good to me.
 > 
-> And of course the documentation of the ratelimit parameter explains all
-> of this in great detail so the administrator has a trivial job to tune
-> that, right?
+> Acked-by: Roman Gushchin <guro@fb.com>
 
-I will explain how to tune the parameter in buslock.rst doc.
-
-> 
-> >> > +	case sld_ratelimit:
-> >> > +		/* Enforce no more than bld_ratelimit bus locks/sec. */
-> >> > +		while (!__ratelimit(&get_current_user()->bld_ratelimit))
-> >> > +			msleep(1000 / bld_ratelimit);
-> 
-> For any ratelimit > 1000 this will loop up to 1000 times with
-> CONFIG_HZ=1000.
-> 
-> Assume that the buslock producer has tons of threads which all end up
-> here pretty soon then you launch a mass wakeup in the worst case every
-> jiffy. Are you sure that the cure is better than the disease?
-
-if using usleep_range() to sleep, the threads will not sleep and wakeup,
-right? Maybe I can use msleep() for msec (bigger bld_ratelimit) and
-usleep_range() for usec (smaller bld_ratelimit)?
-
-Even if there is mass wakeup, throttling the threads can avoid the system
-wide performance degradation (e.g. 7x slower dd command in another user).
-Is that a good justification for throttling the threads?
-
-> 
-> > If I split this whole patch set into two patch sets:
-> > 1. Three patches in the first patch set: the enumeration patch, the warn
-> >    and fatal patch, and the documentation patch.
-> > 2. Two patches in the second patch set: the ratelimit patch and the
-> >    documentation patch.
-> >
-> > Then I will send the two patch sets separately, you will accept them one
-> > by one. Is that OK?
-> 
-> That's obviously the right thing to do because #1 should be ready and we
-> can sort out #2 seperately. See the conversation with Tony.
-
-Thank you for picking up the first patch set!
-
--Fenghua
