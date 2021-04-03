@@ -2,134 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E098353314
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 10:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8AE353315
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 10:12:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234436AbhDCIKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 04:10:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55381 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232157AbhDCIKi (ORCPT
+        id S235228AbhDCIMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 04:12:39 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:38420 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231575AbhDCIM2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 04:10:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617437435;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EEUUyQWVj0Di8OA7DVfsbpbP7S1zPziCDvrYaaf9VcI=;
-        b=Wv4huS8MGqbMDWNbPlesRaVAUanKaWLAvf1Cyy789nCh4mnJ2L/oeYM5ZXgER3P3W/fBuB
-        CAKSHixFCetTY7yA4Xmo/DOQy2xlVFM0dTBdU1hGJwI6KbnYYO0REhEtxlAZqCXmK9kf5y
-        ZLeWtq7qdHlDDT7Bg4W8W3lDQP6CARw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-593-X4rTPKBNPtqsjJhYawnRMQ-1; Sat, 03 Apr 2021 04:10:30 -0400
-X-MC-Unique: X4rTPKBNPtqsjJhYawnRMQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F2B63180FCA7;
-        Sat,  3 Apr 2021 08:10:28 +0000 (UTC)
-Received: from T590 (ovpn-12-28.pek2.redhat.com [10.72.12.28])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 306C35D9DC;
-        Sat,  3 Apr 2021 08:10:21 +0000 (UTC)
-Date:   Sat, 3 Apr 2021 16:10:16 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] block: shutdown blktrace in case of fatal signal
- pending
-Message-ID: <YGgi6FOr6cEiei+7@T590>
-References: <20210323081440.81343-1-ming.lei@redhat.com>
- <20210323081440.81343-2-ming.lei@redhat.com>
- <20210330165330.GA13829@lst.de>
- <YGO/cpalyGevAJjn@T590>
- <20210402172730.GA22923@lst.de>
+        Sat, 3 Apr 2021 04:12:28 -0400
+Received: by mail-il1-f200.google.com with SMTP id v2so7002256ilm.5
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Apr 2021 01:12:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=x0tb8aRwBMOB9wEzyPXDOs5wOe4Z+X9201R16LozKKg=;
+        b=rAxgyvLDkSgyHAEsrE837kgBid5QUCAr3MP4j6S7E70vLoYCLVSfH8/IoHeLKJHQkL
+         608HLk9iUUZqwWYhREaKh7k5PkFuJc8m2dDjqoxPt2LTze6IKzxuJJZLHJNjNlvJwd9X
+         TtEezxE4x8T9eW1ve/w3WA5UKtQZ4rSsWgZbLez/gt+iG5xh+qIW0QvTn/D8aYJLYmWo
+         0E2yZVXSZpnNxhbiZr+W0ZS7hLPTvPblj+huvm/UaqaOJ4IZTqnuUoLkM0/+38Svn+JP
+         0yNPmh6EzMLPnirupERwX6JYbeoF6TbheK214P/s29RBiYwlh7c7vKXrkzp5SwguYm+G
+         pksQ==
+X-Gm-Message-State: AOAM530PjVg8KUv7Bk93y8zx4edfSFJhjdSSfxbm0NxyHehqqUt4N+JN
+        /tEukpOXfpMRQphcBPd1KckdOMuP2flC8ql69ljTuqilkWnf
+X-Google-Smtp-Source: ABdhPJzuRQ/wN0qL1tGnfDgnztvoA2/kLcpzKz/2keSm7ccJneA32WTtYyQ3CoKWw3CRg8Qn5gtf3MYxMakDIHHQnIn17e5ZEmmG
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210402172730.GA22923@lst.de>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Received: by 2002:a5e:8610:: with SMTP id z16mr13232111ioj.57.1617437546427;
+ Sat, 03 Apr 2021 01:12:26 -0700 (PDT)
+Date:   Sat, 03 Apr 2021 01:12:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000066b6f405bf0d0660@google.com>
+Subject: [syzbot] WARNING: suspicious RCU usage in __schedule
+From:   syzbot <syzbot+be81a058b10931003a4a@syzkaller.appspotmail.com>
+To:     broonie@kernel.org, catalin.marinas@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, mbenes@suse.cz,
+        syzkaller-bugs@googlegroups.com, will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 07:27:30PM +0200, Christoph Hellwig wrote:
-> On Wed, Mar 31, 2021 at 08:16:50AM +0800, Ming Lei wrote:
-> > On Tue, Mar 30, 2021 at 06:53:30PM +0200, Christoph Hellwig wrote:
-> > > On Tue, Mar 23, 2021 at 04:14:39PM +0800, Ming Lei wrote:
-> > > > blktrace may allocate lots of memory, if the process is terminated
-> > > > by user or OOM, we need to provide one chance to remove the trace
-> > > > buffer, otherwise memory leak may be caused.
-> > > > 
-> > > > Fix the issue by shutdown blktrace in case of task exiting in
-> > > > blkdev_close().
-> > > > 
-> > > > Signed-off-by: Ming Lei <ming.lei@redhat.com>
-> > > 
-> > > This just seems weird.  blktrace has no relationship to open
-> > > block device instances.
-> > 
-> > blktrace still needs to open one blkdev, then send its own ioctl
-> > commands to block layer. In case of OOM, the allocated memory in
-> > these ioctl commands won't be released.
-> > 
-> > Or any other suggestion?
-> 
-> Not much we can do there I think.  If we want to autorelease memory
-> it needs to be an API that ties the memory allocation to an FD.
+Hello,
 
-We still may shutdown blktrace if current is the last opener, otherwise
-new blktrace can't be started and memory should be leaked forever, and
-what do you think of the revised version?
+syzbot found the following issue on:
 
-From de33ec85ee1ce2865aa04f2639e480ea4db4eebf Mon Sep 17 00:00:00 2001
-From: Ming Lei <ming.lei@redhat.com>
-Date: Tue, 23 Mar 2021 10:32:23 +0800
-Subject: [PATCH] block: shutdown blktrace in case of task exiting
+HEAD commit:    1e43c377 Merge tag 'xtensa-20210329' of git://github.com/j..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1432bd1ad00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=78a83786814e7724
+dashboard link: https://syzkaller.appspot.com/bug?extid=be81a058b10931003a4a
+userspace arch: arm
 
-blktrace may allocate lots of memory, if the process is terminated
-by user or OOM, we need to provide one chance to remove the trace
-buffer, otherwise memory leak may be caused. Also new blktrace
-instance can't be started too.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Fix the issue by shutdown blktrace in case of task exiting in
-blkdev_close() when it is the last opener.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+be81a058b10931003a4a@syzkaller.appspotmail.com
 
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
+=============================
+WARNING: suspicious RCU usage
+5.12.0-rc5-syzkaller-00003-g1e43c377a79f #0 Not tainted
+-----------------------------
+kernel/sched/core.c:4841 Illegal context switch in RCU-sched read-side critical section!
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 0
+no locks held by migration/1/17.
+
+stack backtrace:
+CPU: 1 PID: 17 Comm: migration/1 Not tainted 5.12.0-rc5-syzkaller-00003-g1e43c377a79f #0
+Hardware name: linux,dummy-virt (DT)
+Stopper: 0x0 <- 0x0
+Call trace:
+ dump_backtrace+0x0/0x3e0 arch/arm64/include/asm/pointer_auth.h:76
+ show_stack+0x18/0x24 arch/arm64/kernel/stacktrace.c:191
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x120/0x1a8 lib/dump_stack.c:120
+ lockdep_rcu_suspicious+0x130/0x148 kernel/locking/lockdep.c:6428
+ schedule_debug kernel/sched/core.c:4841 [inline]
+ __schedule+0x1244/0x1bc4 kernel/sched/core.c:4967
+ schedule+0xac/0x22c kernel/sched/core.c:5152
+ smpboot_thread_fn+0x278/0x7f4 kernel/smpboot.c:161
+ kthread+0x320/0x3bc kernel/kthread.c:292
+ ret_from_fork+0x10/0x3c arch/arm64/kernel/entry.S:958
+
+
 ---
- fs/block_dev.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/fs/block_dev.c b/fs/block_dev.c
-index 92ed7d5df677..8fa59cecce72 100644
---- a/fs/block_dev.c
-+++ b/fs/block_dev.c
-@@ -34,6 +34,7 @@
- #include <linux/part_stat.h>
- #include <linux/uaccess.h>
- #include <linux/suspend.h>
-+#include <linux/blktrace_api.h>
- #include "internal.h"
- 
- struct bdev_inode {
-@@ -1646,6 +1647,11 @@ EXPORT_SYMBOL(blkdev_put);
- static int blkdev_close(struct inode * inode, struct file * filp)
- {
- 	struct block_device *bdev = I_BDEV(bdev_file_inode(filp));
-+
-+	/* shutdown blktrace in case of exiting which may be from OOM */
-+	if ((current->flags & PF_EXITING) && (bdev->bd_openers == 1))
-+		blk_trace_shutdown(bdev->bd_disk->queue);
-+
- 	blkdev_put(bdev, filp->f_mode);
- 	return 0;
- }
--- 
-2.29.2
-
-
--- 
-Ming
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
