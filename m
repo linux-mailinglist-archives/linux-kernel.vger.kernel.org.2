@@ -2,94 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A28B23533FF
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 14:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CCD3353403
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 14:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236629AbhDCMXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 08:23:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59962 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230409AbhDCMXl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 08:23:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA78F6115A;
-        Sat,  3 Apr 2021 12:23:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617452614;
-        bh=j+qgLdFi7dSgQC2r74mI2QF8Cvo6wIoGFSrZBvP3pBQ=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=L2OBqespR4fZqSJPsdyVDJEBtsMPxWB7E86IoDqzp03YJ2nbQrhT6tuMe/fJBUwYO
-         yfqYYlkYQMyOkjiNc19YgZL9MBDf39k+/oFAREiEDwQjl0HvDCMJXObrqKejYIWL9/
-         Lwxdb6pfas05Lr+A2dEzAv+10jB1tRc0t1YKXM+vaJm1/IMLz7RoWgshSOoOBGZoHh
-         2kr2cLugb/eYRwpYTqRECKXXMDzDdeOpN7SY2qcnji8onbA2C+bnOXsNhFOYpypqmD
-         yUMSTrASlfaN5cn4RtUoLOZwwWHxvszTgN3snAPzasLOZHRjvo6uvpA2bvv3g2u8/a
-         6RQdJAoeU2wvg==
-Date:   Sat, 3 Apr 2021 14:23:29 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Hillf Danton <hdanton@sina.com>
-cc:     John Fastabend <john.fastabend@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Kehuan Feng <kehuan.feng@gmail.com>,
-        Jike Song <albcamus@gmail.com>,
-        Jonas Bonn <jonas.bonn@netrounds.com>,
-        Michael Zhivich <mzhivich@akamai.com>,
-        David Miller <davem@davemloft.net>,
+        id S236664AbhDCMbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 08:31:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230409AbhDCMbu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Apr 2021 08:31:50 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B4EC0613E6
+        for <linux-kernel@vger.kernel.org>; Sat,  3 Apr 2021 05:31:48 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id y1so8034161ljm.10
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Apr 2021 05:31:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=JhlDW8+W/+5mElmZOwadmaUF2DpTuY2UAaWBafoxcPM=;
+        b=kpPNY9PmZlM5Moo4l/KEvk4b/ohTkfoBS3pv8d2gIGBV6MsFjbmdcNzeJSipM/2+Li
+         58sLsawGWoWI/4IqIilwmRpoUs7FYUn16q3VH4tfTDDNjtO25BgHIZcVjpSmV8qTisJA
+         ULm6PElnAjXz25P2Di5UC9AYnVidSCNJubidL+CjDs0oJl/69mHtIN5vZwyNIMbEM5sD
+         Ps8hjDb0sGs0FxARwBCmAuJIFwQ6c2sjmxSNIchgZ8Qd9/9bIAbIblD8g9RCBcvVWU/T
+         mifLJbQlajcqDxJHMsyx/DyFOEPztVjqeetvjMcL1bAUQbD+3W4EkQq1QdqpblKPM2Ro
+         JIOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=JhlDW8+W/+5mElmZOwadmaUF2DpTuY2UAaWBafoxcPM=;
+        b=BxHn1DPIentcgSLcCukxknS5vk3mTHg/jAlDgzDQMAihbdV/j/O+KnDucyTPvde+8n
+         iAGL0rFcOVs72QGj/wvQuxDynMwqfDmGcv38UykZGupYPsxW4lbQ6T09LYJ55h2Sd9lx
+         qR0mxTE9De5102OymrQqT+mj/st8Ju7T/HsKe0x5hf/n2HN3vDrHyEECMQ7uo44xwigE
+         pf6+yyC5B7QDGn8ff7UrQIx02TJWOZCVZh/6bsLETHEzrlNPMvrs+mMFk+B32l6gZU/F
+         v8cNhspghXtnB+j6A6lYqH4URCdnm1ws0cpHzjldI8msCZ8a4liCTYEMcoOhAXN9ee/8
+         om6Q==
+X-Gm-Message-State: AOAM532Ha9mNv79Chem+wQ9uQ1PksQ41KI9IcIQ7Y7TPoDfBMB9YNHxn
+        u3kDi9lQ6RC6Fhx+GCirAoE=
+X-Google-Smtp-Source: ABdhPJwpclg9KoHYmWHg17yt0xp1Jtcx66PUSggulrktalxt4zvZXC3zSwynTJO/AVTyd9orh5rlUw==
+X-Received: by 2002:a05:651c:106e:: with SMTP id y14mr10743945ljm.418.1617453106424;
+        Sat, 03 Apr 2021 05:31:46 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id f22sm1137093lfc.68.2021.04.03.05.31.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Apr 2021 05:31:45 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Sat, 3 Apr 2021 14:31:43 +0200
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>, linux-mm@kvack.org,
         LKML <linux-kernel@vger.kernel.org>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Netdev <netdev@vger.kernel.org>, Josh Hunt <johunt@akamai.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>
-Subject: Re: Packet gets stuck in NOLOCK pfifo_fast qdisc
-In-Reply-To: <20210403003537.2032-1-hdanton@sina.com>
-Message-ID: <nycvar.YFH.7.76.2104031420470.12405@cbobk.fhfr.pm>
-References: <465a540e-5296-32e7-f6a6-79942dfe2618@netrounds.com> <20200825032312.11776-1-hdanton@sina.com> <CACS=qqK-5g-QM_vczjY+A=3fi3gChei4cAkKweZ4Sn2L537DQA@mail.gmail.com> <20200825162329.11292-1-hdanton@sina.com> <CACS=qqKgiwdCR_5+z-vkZ0X8DfzOPD7_ooJ_imeBnx+X1zw2qg@mail.gmail.com>
- <CACS=qqKptAQQGiMoCs1Zgs9S4ZppHhasy1AK4df2NxnCDR+vCw@mail.gmail.com> <5f46032e.1c69fb81.9880c.7a6cSMTPIN_ADDED_MISSING@mx.google.com> <CACS=qq+Yw734DWhETNAULyBZiy_zyjuzzOL-NO30AB7fd2vUOQ@mail.gmail.com> <20200827125747.5816-1-hdanton@sina.com>
- <CACS=qq+a0H=e8yLFu95aE7Hr0bQ9ytCBBn2rFx82oJnPpkBpvg@mail.gmail.com> <CAM_iQpV-JMURzFApp-Zhxs3QN9j=Zdf6yqwOP=E42ERDHxe6Hw@mail.gmail.com> <dd73f551d1fc89e457ffabd106cbf0bf401b747b.camel@redhat.com> <CAM_iQpXZMeAGkq_=rG6KEabFNykszpRU_Hnv65Qk7yesvbRDrw@mail.gmail.com>
- <5f51cbad3cc2_3eceb208fc@john-XPS-13-9370.notmuch> <nycvar.YFH.7.76.2104022120050.12405@cbobk.fhfr.pm> <20210403003537.2032-1-hdanton@sina.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        Hillf Danton <hdanton@sina.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH-next 2/5] lib/test_vmalloc.c: add a new 'nr_threads'
+ parameter
+Message-ID: <20210403123143.GA38147@pc638.lan>
+References: <20210402202237.20334-1-urezki@gmail.com>
+ <20210402202237.20334-2-urezki@gmail.com>
+ <20210402145934.719192be298eadbeecb321d2@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210402145934.719192be298eadbeecb321d2@linux-foundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 3 Apr 2021, Hillf Danton wrote:
-
-> >>> Sure. Seems they crept in over time. I had some plans to write a
-> >>> lockless HTB implementation. But with fq+EDT with BPF it seems that
-> >>> it is no longer needed, we have a more generic/better solution.  So
-> >>> I dropped it. Also most folks should really be using fq, fq_codel,
-> >>> etc. by default anyways. Using pfifo_fast alone is not ideal IMO.
-> >> 
-> >> Half a year later, we still have the NOLOCK implementation
-> >> present, and pfifo_fast still does set the TCQ_F_NOLOCK flag on itself.
-> >> 
-> >> And we've just been bitten by this very same race which appears to be
-> >> still unfixed, with single packet being stuck in pfifo_fast qdisc
-> >> basically indefinitely due to this very race that this whole thread began
-> >> with back in 2019.
-> >> 
-> >> Unless there are
-> >> 
-> >> 	(a) any nice ideas how to solve this in an elegant way without
-> >> 	    (re-)introducing extra spinlock (Cong's fix) or
-> >> 
-> >> 	(b) any objections to revert as per the argumentation above
-> >> 
-> >> I'll be happy to send a revert of the whole NOLOCK implementation next
-> >> week.
-> >> 
-> >Jiri
-> >
+> On Fri,  2 Apr 2021 22:22:34 +0200 "Uladzislau Rezki (Sony)" <urezki@gmail.com> wrote:
 > 
-> Feel free to revert it as the scorch wont end without a deluge.
+> > By using this parameter we can specify how many workers are
+> > created to perform vmalloc tests. By default it is one CPU.
+> > The maximum value is set to 1024.
+> > 
+> > As a result of this change a 'single_cpu_test' one becomes
+> > obsolete, therefore it is no longer needed.
+> > 
+> 
+> Why limit to 1024?  Maybe testers want more - what's the downside to
+> permitting that?
+>
+I was thinking mainly about if a tester issues enormous number of kthreads,
+so a system is not able to handle it. Therefore i clamped that value to 1024.
 
-I am still planning to have Yunsheng Lin's (CCing) fix [1] tested in the 
-coming days. If it works, then we can consider proceeding with it, 
-otherwise I am all for reverting the whole NOLOCK stuff.
+From the other hand we can give more wide permissions, in that case a
+user should think more carefully about what is passed. For example we
+can limit max value by USHRT_MAX what is 65536.
 
-[1] https://lore.kernel.org/linux-can/1616641991-14847-1-git-send-email-linyunsheng@huawei.com/T/#u
+> 
+> We may need to replaced that kcalloc() with kmvalloc() though...
+>
+Yep. If we limit to USHRT_MAX, the maximum amount of memory for
+internal data would be ~12MB. Something like below:
 
--- 
-Jiri Kosina
-SUSE Labs
+diff --git a/lib/test_vmalloc.c b/lib/test_vmalloc.c
+index d337985e4c5e..a5103e3461bf 100644
+--- a/lib/test_vmalloc.c
++++ b/lib/test_vmalloc.c
+@@ -24,7 +24,7 @@
+        MODULE_PARM_DESC(name, msg)                             \
 
+ __param(int, nr_threads, 0,
+-       "Number of workers to perform tests(min: 1 max: 1024)");
++       "Number of workers to perform tests(min: 1 max: 65536)");
+
+ __param(bool, sequential_test_order, false,
+        "Use sequential stress tests order");
+@@ -469,13 +469,13 @@ init_test_configurtion(void)
+ {
+        /*
+         * A maximum number of workers is defined as hard-coded
+-        * value and set to 1024. We add such gap just in case
++        * value and set to 65536. We add such gap just in case
+         * and for potential heavy stressing.
+         */
+-       nr_threads = clamp(nr_threads, 1, 1024);
++       nr_threads = clamp(nr_threads, 1, 65536);
+
+        /* Allocate the space for test instances. */
+-       tdriver = kcalloc(nr_threads, sizeof(*tdriver), GFP_KERNEL);
++       tdriver = kvcalloc(nr_threads, sizeof(*tdriver), GFP_KERNEL);
+        if (tdriver == NULL)
+                return -1;
+
+@@ -555,7 +555,7 @@ static void do_concurrent_test(void)
+                        i, t->stop - t->start);
+        }
+
+-       kfree(tdriver);
++       kvfree(tdriver);
+ }
+
+ static int vmalloc_test_init(void)
+
+Does it sound reasonable for you?
+
+--
+Vlad Rezki
