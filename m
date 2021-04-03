@@ -2,132 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A43353481
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 17:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF63B353484
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 17:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236831AbhDCPVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 11:21:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55806 "EHLO
+        id S236843AbhDCPWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 11:22:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236791AbhDCPVw (ORCPT
+        with ESMTP id S236825AbhDCPWg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 11:21:52 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 521F6C0613E6
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Apr 2021 08:21:48 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 12so3740520wmf.5
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Apr 2021 08:21:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Sfd8DudOIuGyL5rc9egOme31BdENe1jWkpbRM3j4vK4=;
-        b=jEDVz8cl2My814T63UzgroWd+kp0KmVUAkA7sgDtHGXGaNzmczXBRY8so0VSq3gC9I
-         TmXIUH6O+6g+HjLMoEP3uevChHVfWFlg21/wVlOEf/Hx6yReHEyK8NQO9x4egfSVi0X7
-         BpLJ3QDDJaDxzNYAoLPhKUbkfDwFExlsrWbmzGrKcThu2BGgCKy2HGYYJ2ehgIJRAxdv
-         jxk3bgzC10GmReX/E0wkq5fpYR1D3erjJ0MwgWyABxQxKfK+Nd0i5liGJbQZQPB008H6
-         5fz4ecQQ3U907EIZQx+0cDNxzKc4aKPvi5/xGR1DpU8GDkOlhN+/jqSWWweEthKZzi63
-         zMGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Sfd8DudOIuGyL5rc9egOme31BdENe1jWkpbRM3j4vK4=;
-        b=YhJZCaCZVh6FyuNNRQfs5KPosoYp2459fznbXGX1J8+HOifxOQnNxndF2tOzV1u0U9
-         tZZ24mlTv50iRfu5xrU2sOHMb5n7TVsHzPGYhj5JHfprL/d9JollpDsmhh8WPYLiteif
-         DAlTgYVdt5nNln59qzmcsflsENJ2NorXXWNwh9XH0zBXSh7CFKBkZVPOkmdSSwjOuoy4
-         IkJVLMZkx+vdBZG6iG5BGiB94XaOJR+agyh4JBeepq3IPc71qU9Y+NfPoYhFFbV7HaSU
-         DOGJFqi+MvifaKKklptYRIek4XQDnruBmitLbM+VrXRnliITbxEVRBI9qKemBjU1DxKZ
-         xOSA==
-X-Gm-Message-State: AOAM531F5Ui6BvXpch9OSaPUc5FE/q58llxDVssgk/eENvcqGiLDYN7M
-        aDlDEWbL4IX7TfIbG+GIKtbE3BSAD+yeGw==
-X-Google-Smtp-Source: ABdhPJwAEt0LVv6M0lFMPoOMwzxS7AjYpuF6d6KzLlofSUyjl/EAkv4Q1L4Kd3MPDM90iid9t3LZiA==
-X-Received: by 2002:a1c:a958:: with SMTP id s85mr18137514wme.4.1617463307078;
-        Sat, 03 Apr 2021 08:21:47 -0700 (PDT)
-Received: from agape.jhs ([5.171.80.6])
-        by smtp.gmail.com with ESMTPSA id v18sm20291660wru.85.2021.04.03.08.21.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Apr 2021 08:21:46 -0700 (PDT)
-Date:   Sat, 3 Apr 2021 17:21:44 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Joe Perches <joe@perches.com>, gregkh@linuxfoundation.org
-Cc:     dan.carpenter@oracle.com, linux-staging@lists.linux.dev,
+        Sat, 3 Apr 2021 11:22:36 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615DEC0613E6
+        for <linux-kernel@vger.kernel.org>; Sat,  3 Apr 2021 08:22:33 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lSi6U-0002Ox-8F; Sat, 03 Apr 2021 17:22:26 +0200
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lSi6T-0001nn-0T; Sat, 03 Apr 2021 17:22:25 +0200
+Date:   Sat, 3 Apr 2021 17:22:24 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        linux-mips@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 00/30] staging: rtl8723bs: remove RT_TRACE logs in
- core/*
-Message-ID: <20210403152143.GA1403@agape.jhs>
-References: <cover.1617440833.git.fabioaiuto83@gmail.com>
- <1cd79d781cdcccf621ce8e104a9cdf1e90e7f803.camel@perches.com>
+Subject: Re: [PATCH net-next v1 2/9] net: dsa: tag_ar9331: detect IGMP and
+ MLD packets
+Message-ID: <20210403152224.u7vbehkijg2wzxon@pengutronix.de>
+References: <20210403114848.30528-1-o.rempel@pengutronix.de>
+ <20210403114848.30528-3-o.rempel@pengutronix.de>
+ <20210403130318.lqkd6id7gehg3bin@skbuf>
+ <20210403132636.h7ghwk2eaekskx2b@pengutronix.de>
+ <20210403134606.tm7dyy3gt2nop2sj@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1cd79d781cdcccf621ce8e104a9cdf1e90e7f803.camel@perches.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210403134606.tm7dyy3gt2nop2sj@skbuf>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 16:03:23 up 122 days,  4:09, 42 users,  load average: 0.21, 0.07,
+ 0.02
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 03, 2021 at 08:02:25AM -0700, Joe Perches wrote:
-> On Sat, 2021-04-03 at 11:13 +0200, Fabio Aiuto wrote:
-> > This patchset removes all RT_TRACE usages in core/ files.
-> 
-> and hal and include and os_dep
-
-Hi, 
-
-I was just about to send the second patchset relative to hal/ files.
-The whole has been split up in directories in order to reduce the
-number of patch per patchset
-
-> 
+On Sat, Apr 03, 2021 at 04:46:06PM +0300, Vladimir Oltean wrote:
+> On Sat, Apr 03, 2021 at 03:26:36PM +0200, Oleksij Rempel wrote:
+> > On Sat, Apr 03, 2021 at 04:03:18PM +0300, Vladimir Oltean wrote:
+> > > Hi Oleksij,
+> > > 
+> > > On Sat, Apr 03, 2021 at 01:48:41PM +0200, Oleksij Rempel wrote:
+> > > > The ar9331 switch is not forwarding IGMP and MLD packets if IGMP
+> > > > snooping is enabled. This patch is trying to mimic the HW heuristic to take
+> > > > same decisions as this switch would do to be able to tell the linux
+> > > > bridge if some packet was prabably forwarded or not.
+> > > > 
+> > > > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> > > > ---
+> > > 
+> > > I am not familiar with IGMP/MLD, therefore I don't really understand
+> > > what problem you are trying to solve.
+> > > 
+> > > Your switch has packet traps for IGMP and MLD, ok. So it doesn't forward
+> > > them. Must the IGMP/MLD packets be forwarded by an IGMP/MLD snooping
+> > > bridge? Which ones and under what circumstances?
 > > 
-> > This is the first of a series aimed at removing RT_TRACE macro.
-> > 
-> > The whole private tracing system is not tied to a configuration
-> > symbol and the default behaviour is _trace nothing_. It's verbose
-> > and relies on a private log level tracing doomed to be
-> > removed.
+> > I'll better refer to the rfc:
+> > https://tools.ietf.org/html/rfc4541
 > 
-> It's nice, but individual patches per file done by hand are difficult
-> to review because you are interleaving removal patches with cleanup
-> patches.
+> Ok, the question might have been a little bit dumb.
+> I found this PDF:
+> https://www.alliedtelesis.com/sites/default/files/documents/how-alliedware/howto_config_igmp1.pdf
+> and it explains that:
+> - a snooper floods the Membership Query messages from the network's
+>   querier towards all ports that are not blocked by STP
+> - a snooper forwards all Membership Report messages from a client
+>   towards the All Groups port (which is how it reaches the querier).
 > 
-> I believe this should be a patch series with a single patch to remove
-> all RT_TRACE macro uses using coccinelle and then use separate patches
-> to do whatever cleanups around these removals you want to do.
+> I'm asking this because I just want to understand what the bridge code
+> does. Does the code path for IGMP_HOST_MEMBERSHIP_REPORT (for example)
+> for a snooper go through should_deliver -> nbp_switchdev_allowed_egress,
+> which is what you are affecting here?
 
-It's a good idea, but the patches relative to RT_TRACE removal
-could be huge
+yes.
 
-> 
-> All of these below should be done for all files in drivers/staging/rtl8723bs
-> at once instead of submitting per-file patches.
-> 
-> IMO something like:
-> 
-> Cover-letter: Explain why you are doing this
-> Patch 1 of N: Remove all RT_TRACE macro uses using a coccinelle script
->               and include the coccinelle script in the commit message
-> Patch 2 of N: Remove commented out RT_TRACE uses
-> Patch 3 of N: Remove RT_TRACE macro definition
-> Patch 4 of N: Cleanup coccinelle generated {} uses, if/else braces and
->               the now unnecessary if tests around the RT_TRACE removals
-> Patch 5 of N: Cleanup whitespace
-> Patcn x of N: Whatever else related to these RT_TRACE sites...
-> 
-> https://lore.kernel.org/lkml/c845d8ea7d0d8e7a613471edb53d780d660142a9.camel@perches.com/
-> 
-> Using a sequence like the above would be much easier to review and
-> would be a significant shorter patch set.
-> 
+the exact path should depend on this configuration option:
+/sys/devices/virtual/net/test/bridge/multicast_snooping
 
-moreover every non RT_TRACE deletion patch (clean up patch) is near 
-to the contextual deletion patch (parent patch or grand-parent)
+I assume, some optimization can be done by letting DSA know the state
+of multicast_snooping.
 
-but I do not have experience in code reviewing, so I will do like you
-say. Maybe I wait for other opinions, but what you say is good and
-elegant.
+Off-topic question, this patch set stops to work after rebasing against
+latest netdev. I get following warning:
+ip l s lan0 master test
+RTNETLINK answers: Invalid argumen
 
-thank you,
+Are there some API changes?
 
-fabio
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
