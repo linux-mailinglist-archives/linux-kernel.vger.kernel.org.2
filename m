@@ -2,138 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5179353409
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 14:38:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B5E35340D
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 14:43:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236506AbhDCMiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 08:38:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49030 "EHLO
+        id S236594AbhDCMnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 08:43:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231755AbhDCMh5 (ORCPT
+        with ESMTP id S231681AbhDCMns (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 08:37:57 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 584A5C0613E6
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Apr 2021 05:37:53 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id f17so3659579plr.0
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Apr 2021 05:37:53 -0700 (PDT)
+        Sat, 3 Apr 2021 08:43:48 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41331C0613E6;
+        Sat,  3 Apr 2021 05:43:45 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id h8so3630032plt.7;
+        Sat, 03 Apr 2021 05:43:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3znEsRlGP0N8fSB0MyPPdnv2DM9lRQ51vAjGcVokwdg=;
-        b=wcY4VKKuD29nmfwYrc2MSjfDEufxBo6ateTTtXPw2mWsv4qKh8DHBWzrJbb42qGyx9
-         tHDp5FrvWIESUQKiRlcTtc+QvWT80uq+FOcdaS6pOriq2VnDFYp71IBu3s17U09xO/aL
-         +oLFDW7T5+l9hEHzmXGd7AWajtoh1Te/3bEI7fMEiXazVlSYIWf4q2vDnv2hoaYRJwz+
-         vZMcrVQBzVNnKRfAYXiVQVuZ/27KAZXiJxBiFjdrF+iG7SwgxsIzHX9sCfR3puObgQZ6
-         CQfVA3bIFHZ/PASoqHkgzMDOATWEEkJOLCvLTdQSA69bie8e4RAgQ2biUS/BRBLf51gm
-         G82Q==
+        d=gmail.com; s=20161025;
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=l9J7Rrtr5vX5sTUcC2BnLF28M3UYe4/pHrGKjFh6MSM=;
+        b=rAvyolEtINNdsn5rcy3zoxvT4KgaWso521j7kK32Tou5ahiOGCzNYoJ/C4JX+3MyMz
+         RuO8HtjcUj6jQbZ0zPkrFOvwSHYK7c4sFBj0SALgClqXcSnkc625rREamCwz8icGWz8B
+         HdRZDnhHJ1gD6QFeGH17t+PXvSbMnVkJ5S6a6avakA5oVvrCmjXiEr2t0l6gzarNTf/v
+         lkqakN/ko91X4kdjY+DifBrSEwT74Hfi4Br6zngZ55TRS5PfVtAqWtouvQxlQqqOL/5g
+         01ZPIjSK4reAESN0t6s8FrUTYvIqqBhBflJQC3U9LL8HOYkMbRBHGVhY1VUJXYBe3J0R
+         T19w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3znEsRlGP0N8fSB0MyPPdnv2DM9lRQ51vAjGcVokwdg=;
-        b=Uk/FQf1fmRAqpIGqxV8j/+xpVC70kTnpmkB+C6WGPxoAJdyP8DrotGuUbj3YKOixID
-         JgGqzZlLRtdC3ydEINvGdwJchlL07D2lXyPM5xhR39dViNWzmepncddg3sWyZIJiwnUo
-         3A2os7rb/EI5D7mCXgb17etCHjJDY+1s1XPkPVRQjzsvWscB3H66lom4m73IHCzPgUpk
-         o3c2zZQkTHIOzBg5niRuNZncQYJxauCq0lXG3yod1V0W2/2jjuwQChiBstZqhhM0/0Mx
-         bqYZrPVPfT4asqXSiSBPRIlul+hGN5xg+U+GHt/+UwQeS4dH0UrzA/olgcsrwK4WkCeS
-         fgWw==
-X-Gm-Message-State: AOAM531xn0UiGRBY1Qi15T3EFBFBcJfJlCXKu92nf9KDzdmLT5DCapPc
-        7eLAY2XbKeVxOnoxFboRUKYq+Qxs4M+XEExDIGppNPl8y4cq91iY
-X-Google-Smtp-Source: ABdhPJxy2yRuBIGJm+2kp2+JUFXvhF8YEcntMLHSjum5mCfeO9d5gq1hLYRoZtEDGiqEuIhm07Norq+7E1pHt5Wp0Y8=
-X-Received: by 2002:a17:90b:14f:: with SMTP id em15mr5218709pjb.13.1617453472928;
- Sat, 03 Apr 2021 05:37:52 -0700 (PDT)
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=l9J7Rrtr5vX5sTUcC2BnLF28M3UYe4/pHrGKjFh6MSM=;
+        b=ATuJcP3S8Wp1GbjYNlaIWb3AYfymkVZYyftKGwFlFJFYd5hGWmku4YYQkUd9exV4s5
+         kz/E07hxYU5EiT3mpCRL9HLF0iG43Utb45bB+jWsqUPzRCUCLhTsChfVDX8HH4NpjiAj
+         un0/xgUUWTViquRM1ijIOJeKnZi4sSP59fLjeJYjn9YIJq9kTHT0on9XjMuxlr2HdwFh
+         fMhVg7cyFhJ/KYhjSkEvOqpKYDZih1i3LNhf58QKCRO0esTLNKr6Rbn8QQ6x9grjyJ1a
+         jeHZz71CXPh13l/MtdupSPg8bNRic1s9aQ3HP1R7qBMWQgG5oeNeAJg10l40KN7NgSju
+         XNfQ==
+X-Gm-Message-State: AOAM532/UwnKnMA/Db6o82cA3BwxBrs+e9OL0t6K9YOZP+vE7s5aGOoY
+        dr6Yfae8kahoRv94nTBa+VdROIVORqjZWQ==
+X-Google-Smtp-Source: ABdhPJw9MyAP3c9lzuu0qApDj+cYYiZVnB1RR6reKtnceMO8i0UaIlAmY2rHQmXQ9cZHZD59gERA2Q==
+X-Received: by 2002:a17:90a:1b0e:: with SMTP id q14mr17620107pjq.41.1617453824146;
+        Sat, 03 Apr 2021 05:43:44 -0700 (PDT)
+Received: from ?IPv6:2405:201:600d:a089:150c:a6c7:d4:6d35? ([2405:201:600d:a089:150c:a6c7:d4:6d35])
+        by smtp.gmail.com with ESMTPSA id g4sm11158310pgu.46.2021.04.03.05.43.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 03 Apr 2021 05:43:43 -0700 (PDT)
+From:   Aditya Srivastava <yashsri421@gmail.com>
+Subject: Re: [PATCH] scripts: kernel-doc: add warning for comment not
+ following kernel-doc syntax
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210329092945.13152-1-yashsri421@gmail.com>
+ <87czvit65m.fsf@meer.lwn.net>
+ <a35096d5-99e7-6b69-c959-1136d511a0ff@gmail.com>
+ <87mtujktl2.fsf@meer.lwn.net>
+Message-ID: <0b5cedae-d89e-e558-906d-846ed01f27ca@gmail.com>
+Date:   Sat, 3 Apr 2021 18:13:36 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210330101531.82752-1-songmuchun@bytedance.com>
- <20210330101531.82752-5-songmuchun@bytedance.com> <YGdEnN6WkKbNp1QJ@cmpxchg.org>
-In-Reply-To: <YGdEnN6WkKbNp1QJ@cmpxchg.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Sat, 3 Apr 2021 20:37:14 +0800
-Message-ID: <CAMZfGtWi7RCyqK4Ns1i4k2mVww8tJdV4LQfZUycRu2k_eXsp9g@mail.gmail.com>
-Subject: Re: [External] Re: [RFC PATCH 04/15] mm: memcontrol: use lruvec_memcg
- in lruvec_holds_page_lru_lock
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        Hugh Dickins <hughd@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87mtujktl2.fsf@meer.lwn.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 3, 2021 at 12:21 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+On 1/4/21 1:02 am, Jonathan Corbet wrote:
+> Aditya Srivastava <yashsri421@gmail.com> writes:
 >
-> On Tue, Mar 30, 2021 at 06:15:20PM +0800, Muchun Song wrote:
-> > We already have a helper lruvec_memcg() to get the memcg from lruvec, we
-> > do not need to do it ourselves in the lruvec_holds_page_lru_lock(). So use
-> > lruvec_memcg() instead.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  include/linux/memcontrol.h | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index a35a22994cf7..6e3283828391 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -744,20 +744,20 @@ static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page)
-> >       return mem_cgroup_lruvec(memcg, pgdat);
-> >  }
-> >
-> > +static inline struct mem_cgroup *lruvec_memcg(struct lruvec *lruvec);
+>> On 29/3/21 7:26 pm, Jonathan Corbet wrote:
+>>> Aditya Srivastava <yashsri421@gmail.com> writes:
+>>>
+>>>> Currently, kernel-doc start parsing the comment as a kernel-doc comment if
+>>>> it starts with '/**', but does not take into account if the content inside
+>>>> the comment too, adheres with the expected format.
+>>>> This results in unexpected and unclear warnings for the user.
+>>>>
+>>>> E.g., running scripts/kernel-doc -none mm/memcontrol.c emits:
+>>>> "mm/memcontrol.c:961: warning: expecting prototype for do not fallback to current(). Prototype was for get_mem_cgroup_from_current() instead"
+>>>>
+>>>> Here kernel-doc parses the corresponding comment as a kernel-doc comment
+>>>> and expects prototype for it in the next lines, and as a result causing
+>>>> this warning.
+>>>>
+>>>> Provide a clearer warning message to the users regarding the same, if the
+>>>> content inside the comment does not follow the kernel-doc expected format.
+>>>>
+>>>> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+>>>> ---
+>>>>  scripts/kernel-doc | 17 +++++++++++++----
+>>>>  1 file changed, 13 insertions(+), 4 deletions(-)
+>>>
+>>> This is definitely a capability we want, but I really don't think that
+>>> we can turn it on by default - for now.  Experience shows that if you
+>>> create a blizzard of warnings, nobody sees any of them.  How many
+>>> warnings does this add to a full docs build?
+>>>
+>>
+>> Hi Jonathan, here's the diff I have created for the warnings before
+>> and after the changes:
+>> https://github.com/AdityaSrivast/kernel-tasks/blob/master/random/kernel-doc/kernel_doc_comment_syntax.txt
+>>
+>> Around ~1320 new warnings of this type are added to the kernel tree,
+>> and around ~1580 warnings are removed.
 >
-> Please reorder the functions instead to avoid forward decls.
+> So I finally got around to looking at this again...  How did you
+> generate that file?
+>
 
-OK. Will fix it in the next version.
+I ran scripts/kernel-doc -none on all the files in the kernel tree
+before and after appying the changes, and then generated their diff to
+find the warnings removed and added.
 
+> I tried applying the patch and doing a normal full htmldocs build and
+> got all of four warnings:
+>
+>   ./include/linux/seqlock.h:829: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>    * DEFINE_SEQLOCK(sl) - Define a statically allocated seqlock_t
+>   ./fs/jbd2/journal.c:1391: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>    *  journal_t * jbd2_journal_init_dev() - creates and initialises a journal structure
+>   ./fs/jbd2/journal.c:1422: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>    *  journal_t * jbd2_journal_init_inode () - creates a journal which maps to a inode.
+>   ./include/linux/dcache.h:309: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>    *      dget, dget_dlock -      get a reference to a dentry
+>
 
->
-> >  static inline bool lruvec_holds_page_lru_lock(struct page *page,
-> >                                             struct lruvec *lruvec)
-> >  {
-> >       pg_data_t *pgdat = page_pgdat(page);
-> >       const struct mem_cgroup *memcg;
-> > -     struct mem_cgroup_per_node *mz;
-> >
-> >       if (mem_cgroup_disabled())
-> >               return lruvec == &pgdat->__lruvec;
-> >
-> > -     mz = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
-> >       memcg = page_memcg(page) ? : root_mem_cgroup;
-> >
-> > -     return lruvec->pgdat == pgdat && mz->memcg == memcg;
-> > +     return lruvec->pgdat == pgdat && lruvec_memcg(lruvec) == memcg;
->
-> Looks reasonable to me, but I wonder if there is more we can do.
->
-> lruvec_memcg() already handles CONFIG_MEMCG and mem_cgroup_disabled()
-> combinations, and there is also a lruvec_pgdat() which does.
->
-> One thing that is odd is page_memcg(page) ? : root_mem_cgroup. How can
-> lruvec pages not have a page_memcg()? mem_cgroup_page_lruvec() has:
+I think there should be more warnings. For e.g., running kernel-doc
+-none ./drivers/usb/mtu3/mtu3.h gives these warnings:
 
-You are right. page_memcg() cannot be NULL.
+./drivers/usb/mtu3/mtu3.h:75: warning: This comment starts with '/**',
+but isn't a kernel-doc comment. Refer
+Documentation/doc-guide/kernel-doc.rst
+./drivers/usb/mtu3/mtu3.h:86: warning: This comment starts with '/**',
+but isn't a kernel-doc comment. Refer
+Documentation/doc-guide/kernel-doc.rst
+./drivers/usb/mtu3/mtu3.h:143: warning: This comment starts with
+'/**', but isn't a kernel-doc comment. Refer
+Documentation/doc-guide/kernel-doc.rst
 
+> Two observations:
 >
->         memcg = page_memcg(page);
->         VM_WARN_ON_ONCE_PAGE(!memcg && !mem_cgroup_disabled(), page);
+>  - This is not an awful lot of warnings - not the blizzard I had
+>    feared.  At this level, I think we can just merge the patch and
+>    then, hopefully, fix those cases.
 >
-> Unless I'm missing something, we should be able to have a single
-> definition for this function that works for !CONFIG_MEMCG,
-> CONFIG_MEMCG + mem_cgroup_disabled() and CONFIG_MEMCG:
+>  - All of the warned-about places are *attempts* to write real kerneldoc
+>    comments, they just got the syntax wrong in one way or another.  It's
+>    probably not worth the effort to try to detect this case - the
+>    warning is enough to draw attention to the comment in question.
 >
-> lruvec_holds_page_lru_lock()
-> {
->         return lruvec_pgdat(lruvec) == page_pgdat(page) &&
->                 lruvec_memcg(lruvec) == page_memcg(page);
-> }
 
-Aha, how wonderful! It is simpler than mine. I will use this.
-Thanks for your suggestions.
+I agree. Above are some of the cases which are not getting detected by
+this patch.
+This may be so as I am only allowing the function syntax as mentioned
+in the rst file, i.e., "^\s*\*\s*([\w\s]+?)(\(\))?\s*([-:].*)?$" or
+("* foo(\(\))? - description")
+
+I probably need to check for pointers as well and other similar case(s).
+Maybe I should design a separate check for functions than assigning
+$decl_type = 'function' in the first check.
+
+What do you think?
+
+Thanks
+Aditya
