@@ -2,91 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D21F4353415
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 15:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DC47353417
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 15:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236737AbhDCND0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 09:03:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbhDCNDY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 09:03:24 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 122DBC0613E6;
-        Sat,  3 Apr 2021 06:03:22 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id r12so10722880ejr.5;
-        Sat, 03 Apr 2021 06:03:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=veRpL9tBr0pNWw7yRlNqrHJnx67HGYjm6FOr/5mrA9Q=;
-        b=ldkBwfZohSu2YLTPvfeMp4b2V4WFRBfhaBuYVITZzzsiQee+bo4nvWZFpyctuCUg+b
-         rL1H2+DLMtSG2nXxGRMY6j95UkINMaTI3stsNqortErMlK+Ht1x6u4Bd92XNC5K1RkWG
-         Hlot0wR7Lf3o87bg8E/TIXYFDq9kOgzYTsJeLf9bBmYmebCNLrcRigh5CWu+wrZPVG+k
-         ZZdOtBl/JRN13AcFytZQPL/hV9ZCBbHyEVf3rS3OHxhgsGMjJqnffmR0TEWnLX+ea4r5
-         9CxqpjfvZII5g3t+XExhSHyjCcOVKVWKSSfNYFVyShlpaQiZqChV7GclQor3QdW7jm0V
-         rN+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=veRpL9tBr0pNWw7yRlNqrHJnx67HGYjm6FOr/5mrA9Q=;
-        b=KpJPD0fPJGEz1u7xy1FEYCqCZWtjQjVk/WnF6Em8GUynyI63toHym3hW0q1JrTYqX4
-         h+MVOaYKRdmAc9feRJJ2ov4F5h/1bVxhCaiwSpQNc7ezYZAruYVdpvPsCvpcAzkDRhST
-         EmVq2uzJ27BsIPJkH/lhpq2vvS9/eKJIey4OhUDHjPZOIOAyAe5pDcrKpWxi6Q+8DXjH
-         /6UrB5McwaBT+TIrbCHqH/NVLQZQoCl7U1pmXYWRktjnfSxyTRa2zCfyQuZT0/0MF6e/
-         kPYeC3ihSsNvoCctW5TU2ple4jwxetbjOG5zYIVmV75alRMAcgMsMksgrwPegD8hxpBF
-         zLHA==
-X-Gm-Message-State: AOAM533Njj64OKhYREK4RDtij10jCi6/v/5LwGeRE0QDCgbWx2YDU/cJ
-        drjEqQyj3M5GwQWI9V7nThA=
-X-Google-Smtp-Source: ABdhPJwRTg/uNesR+yk1lrDveX1KcjTfNamVbpJvpSD7aa0tlnOgIBu2ews+mS2XUvfuqUJwjbHU2A==
-X-Received: by 2002:a17:906:4e91:: with SMTP id v17mr18749152eju.331.1617455000535;
-        Sat, 03 Apr 2021 06:03:20 -0700 (PDT)
-Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
-        by smtp.gmail.com with ESMTPSA id q25sm7097778edt.51.2021.04.03.06.03.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Apr 2021 06:03:20 -0700 (PDT)
-Date:   Sat, 3 Apr 2021 16:03:18 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH net-next v1 2/9] net: dsa: tag_ar9331: detect IGMP and
- MLD packets
-Message-ID: <20210403130318.lqkd6id7gehg3bin@skbuf>
-References: <20210403114848.30528-1-o.rempel@pengutronix.de>
- <20210403114848.30528-3-o.rempel@pengutronix.de>
+        id S236765AbhDCNEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 09:04:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37916 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230343AbhDCNEs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Apr 2021 09:04:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3354961003;
+        Sat,  3 Apr 2021 13:04:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617455085;
+        bh=aEvZ8An5fd9WWJ1+C/eoC5o1H8WT49ZOWyAaePYPi/I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bUFSNb7Sb1L6WYQs9Is5USeCkk48rOdMkAkf/MPtnkVf1bLyCcaODEy7+oyzAW1Ph
+         bWZxa9CqNstb8jwVVgwqodwnBtA4qGl4evXTd4zG0b05udogNvaMmWc4GO/w8CmuA8
+         2aJN/FKbmMpOIAqQA/Z/QHb2xYpjMEVBTyO6IvLo=
+Date:   Sat, 3 Apr 2021 15:04:42 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     corbet@lwn.net, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: driver-model: Update the documentation for device
+ class
+Message-ID: <YGhn6u3GrWZyrXuI@kroah.com>
+References: <20210403120050.4756-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210403114848.30528-3-o.rempel@pengutronix.de>
+In-Reply-To: <20210403120050.4756-1-manivannan.sadhasivam@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oleksij,
+On Sat, Apr 03, 2021 at 05:30:50PM +0530, Manivannan Sadhasivam wrote:
+> The current documentation about the device class is out of date such
+> that it refers to non-existent APIs and structures. This commit updates
+> them to the current device class APIs and structures, removes wordings
+> that no longer valid while trying to keep the original content intact.
 
-On Sat, Apr 03, 2021 at 01:48:41PM +0200, Oleksij Rempel wrote:
-> The ar9331 switch is not forwarding IGMP and MLD packets if IGMP
-> snooping is enabled. This patch is trying to mimic the HW heuristic to take
-> same decisions as this switch would do to be able to tell the linux
-> bridge if some packet was prabably forwarded or not.
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
+Thanks for working on this!
 
-I am not familiar with IGMP/MLD, therefore I don't really understand
-what problem you are trying to solve.
+One thing that instantly jumped out at me:
 
-Your switch has packet traps for IGMP and MLD, ok. So it doesn't forward
-them. Must the IGMP/MLD packets be forwarded by an IGMP/MLD snooping
-bridge? Which ones and under what circumstances?
+> -Class drivers can export attributes using the DEVCLASS_ATTR macro that works
+> -similarly to the DEVICE_ATTR macro for devices. For example, a definition
+> +Class drivers can export attributes using the CLASS_ATTR_* macros that works
+> +similarly to the DEVICE_ATTR_* macros for devices. For example, a definition
+>  like this::
+>  
+> -  static DEVCLASS_ATTR(debug,0644,show_debug,store_debug);
+> +  static CLASS_ATTR_RW(debug, 0644, show_debug, store_debug);
+
+CLASS_ATTR_RW(debug);
+is the correct way to write the above, what you added there will not
+build.
+
+But a meta-comment, should stuff like this go directly into the .c files
+itself so that the documentation is created automatically?  the fact
+that this lives so "far away" from the source ensures that it will
+always be out of date.  I know other subsystems (graphics, v4l2) have
+tied the documentation into their code files much better so I think the
+build and markup infrastructure is there today to do this.
+
+thanks,
+
+greg k-h
