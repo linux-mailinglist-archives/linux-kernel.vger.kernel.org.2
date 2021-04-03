@@ -2,108 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D52FD353226
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 04:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B87A435322A
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 05:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235844AbhDCCwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 22:52:21 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:56817 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231298AbhDCCwU (ORCPT
+        id S235924AbhDCDJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 23:09:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39953 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231256AbhDCDJY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 22:52:20 -0400
-Received: by mail-io1-f69.google.com with SMTP id y2so7201362ioa.23
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 19:52:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Ma7VF6roljBK4DbYwNgDU/vzAcnMAM5dtjvOWYDxWQM=;
-        b=SEjbqQuoHTTAYXpsyvNijtLPQKJWLXlsDRTkGnJVH2pJVbiPRLmjIG4EGX7XrhXaFW
-         WJhDkcDH994nh/XNX07obpGZCv7kSO4ExO3dKSP1nrf7MGKwcKcfozlcLzL9WBG0ZAQl
-         ZJOMDPMs8I+6MS4ZEcysNjumfMUI/fCRzpXKzJVBMKDYO25XyR0TSVtrbrbzNqlfHNii
-         SY0h7oxnUd1smOcra0tix81Pm325yaZWLdfNnvjIS6QEYZjDCFdBcSbA/36BwZ1+C8fh
-         59uULHHP8jx/lfRUBVpxntt6yxgOFOnkeOSOmKNE2IEPuhDpAm4YbhcaBS3qzk1o6mOv
-         Pyrw==
-X-Gm-Message-State: AOAM531yp9I7mxQwDzxmFSVX0CdSdgiCIBEGMsmqCD9Z+Dgmfrqzs9kA
-        1wVuPA1NbunkLnCIo3Jtu8c0+iP8tFIK3kVCqOKVD05H2uVX
-X-Google-Smtp-Source: ABdhPJyifBxl12tbnlmliX5i6Pxo8oIEa4JsMQJcBKfFcoEm2j0tTNbGQgi7MRNHas8zIxmM9CRioKZPrNuUcxktxwf+clAklYDB
+        Fri, 2 Apr 2021 23:09:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617419361;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ptqfLD7nf9lwZ1DI0I9d9pCCs4zevjixTE/Wl4UwTAc=;
+        b=B3bBHXKe30I+TenLTCfhPQ6h+u+9WC2n24eeOe9jDXj6Vxva2bV3vdnRQJ+bgfq5j7XzDE
+        coPdzvLlKYYZ3yrYpxM4fOA/UUo3DpsHQzboBxSvKVPhdRs/9InQ7Y4CijLtPZOXaOvSZg
+        sw8yvK4DlRM6I/nXddKZrwKpWS0Q49E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-477-IpaTvd3dNWyEC9V1OLh8og-1; Fri, 02 Apr 2021 23:09:20 -0400
+X-MC-Unique: IpaTvd3dNWyEC9V1OLh8og-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0996E801814;
+        Sat,  3 Apr 2021 03:09:18 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-112-142.rdu2.redhat.com [10.10.112.142])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 83D9F5D9DC;
+        Sat,  3 Apr 2021 03:09:09 +0000 (UTC)
+Subject: Re: [PATCH v3] sched/debug: Use sched_debug_lock to serialize use of
+ cgroup_path[] only
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Bharata B Rao <bharata@linux.vnet.ibm.com>,
+        Phil Auld <pauld@redhat.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        linux-kernel@vger.kernel.org
+References: <20210401181030.7689-1-longman@redhat.com>
+ <20210402164014.53c84f05@gandalf.local.home>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <b5d7e93f-c594-7678-eb8d-275ddd9cd8ce@redhat.com>
+Date:   Fri, 2 Apr 2021 23:09:09 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:184b:: with SMTP id b11mr12923820ilv.29.1617418337797;
- Fri, 02 Apr 2021 19:52:17 -0700 (PDT)
-Date:   Fri, 02 Apr 2021 19:52:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007a4aad05bf088d43@google.com>
-Subject: [syzbot] WARNING: suspicious RCU usage in dput
-From:   syzbot <syzbot+bdef67a6b28a89e6fe71@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210402164014.53c84f05@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 4/2/21 4:40 PM, Steven Rostedt wrote:
+> On Thu,  1 Apr 2021 14:10:30 -0400
+> Waiman Long <longman@redhat.com> wrote:
+>
+>> The handling of sysrq key can be activated by echoing the key to
+>> /proc/sysrq-trigger or via the magic key sequence typed into a terminal
+>> that is connected to the system in some way (serial, USB or other mean).
+>> In the former case, the handling is done in a user context. In the
+>> latter case, it is likely to be in an interrupt context.
+>>
+>> There should be no more than one instance of sysrq key processing via
+>> a terminal, but multiple instances of /proc/sysrq-trigger is possible.
+>>
+>> Currently in print_cpu() of kernel/sched/debug.c, sched_debug_lock is
+>> taken with interrupt disabled for the whole duration of the calls to
+>> print_*_stats() and print_rq() which could last for the quite some time
+>> if the information dump happens on the serial console.
+>>
+>> If the system has many cpus and the sched_debug_lock is somehow busy
+>> (e.g. parallel sysrq-t), the system may hit a hard lockup panic
+>> depending on the actually serial console implementation of the
+>> system. For instance,
+> Wouldn't placing strategically located "touch_nmi_watchdog()"s around fix
+> this?
+>
+> -- Steve
+>
+The main problem with sched_debug_lock is that under certain 
+circumstances, a lock waiter may wait a long time to acquire the lock 
+(in seconds). We can't insert touch_nmi_watchdog() while the cpu is 
+waiting for the spinlock.
 
-syzbot found the following issue on:
+Cheers,
+Longman
 
-HEAD commit:    1e43c377 Merge tag 'xtensa-20210329' of git://github.com/j..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16d76301d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=78ef1d159159890
-dashboard link: https://syzkaller.appspot.com/bug?extid=bdef67a6b28a89e6fe71
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+bdef67a6b28a89e6fe71@syzkaller.appspotmail.com
-
-=============================
-WARNING: suspicious RCU usage
-5.12.0-rc5-syzkaller #0 Not tainted
------------------------------
-kernel/sched/core.c:8294 Illegal context switch in RCU-bh read-side critical section!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 2, debug_locks = 0
-no locks held by systemd-udevd/4825.
-
-stack backtrace:
-CPU: 1 PID: 4825 Comm: systemd-udevd Not tainted 5.12.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- ___might_sleep+0x229/0x2c0 kernel/sched/core.c:8294
- dput+0x4d/0xbc0 fs/dcache.c:870
- step_into+0x2cf/0x1c80 fs/namei.c:1778
- walk_component+0x171/0x6a0 fs/namei.c:1945
- link_path_walk.part.0+0x712/0xc90 fs/namei.c:2266
- link_path_walk fs/namei.c:2190 [inline]
- path_lookupat+0xb7/0x830 fs/namei.c:2419
- filename_lookup+0x19f/0x560 fs/namei.c:2453
- do_readlinkat+0xcd/0x2f0 fs/stat.c:417
- __do_sys_readlinkat fs/stat.c:444 [inline]
- __se_sys_readlinkat fs/stat.c:441 [inline]
- __x64_sys_readlinkat+0x93/0xf0 fs/stat.c:441
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fb5a7e200ba
-Code: 48 8b 0d e1 bd 2b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 0b 01 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ae bd 2b 00 f7 d8 64 89 01 48
-RSP: 002b:00007ffc9c440e38 EFLAGS: 00000202 ORIG_RAX: 000000000000010b
-RAX: ffffffffffffffda RBX: 00005604089e4380 RCX: 00007fb5a7e200ba
-RDX: 00005604089e4380 RSI: 00007ffc9c440ec0 RDI: 00000000ffffff9c
-RBP: 0000000000000064 R08: 00007fb5a80dcbc8 R09: 0000000000000070
-R10: 0000000000000063 R11: 0000000000000202 R12: 00007ffc9c440ec0
-R13: 00000000ffffff9c R14: 00007ffc9c440e90 R15: 0000000000000063
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
