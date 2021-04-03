@@ -2,87 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D13D8353203
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 04:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C21353216
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 04:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235721AbhDCCFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 22:05:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231216AbhDCCFk (ORCPT
+        id S235990AbhDCCWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 22:22:20 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:51993 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231256AbhDCCWT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 22:05:40 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5441BC0613E6;
-        Fri,  2 Apr 2021 19:05:38 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id f29so2075539pgm.8;
-        Fri, 02 Apr 2021 19:05:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jDmDmlQgBZSIrU2MP/TQeW+PUwzt+cJeJDtCDLSCiHA=;
-        b=OnLcBdwBQB9Vwo7YGX1pIgbvtTMwzG6FHwLr9UoNKV46KyvOegmt53Y89NLsaQfN21
-         fO/kLXHWveE2Wi+Kx8n2b3A4NxSnHmieke1kKcPZtYxHYRBUhgL1/dp35kLQt2xUwKq7
-         v/LcjRAI3bjuBvzAWVn9d8cefGj1+/6d4CSLe+5OWPSeEek6jVH4s9LRDiDjQjpoVPft
-         e0ETlME1Hd6Lv5o61HHOrV1ne3BcyYxez3omCSEtdVKd1Hg7aKRh9FF7UMITMVrjrutu
-         XC3YfVpvI+44CvUkjpGZFnupEFjcIjnIMGwHEQo7VlcVW0c8m/f0BOUxLU/mUIGz9m2q
-         EfBQ==
+        Fri, 2 Apr 2021 22:22:19 -0400
+Received: by mail-il1-f199.google.com with SMTP id y11so6822692ilc.18
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 19:22:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jDmDmlQgBZSIrU2MP/TQeW+PUwzt+cJeJDtCDLSCiHA=;
-        b=Dzd+Qa0b7t7EOo4LJ+hxUxuYIkcyYnSY3bkzqgr36jdMMqW1EeBfFW7zZornc3h/4o
-         Yt1QVlTa4THKmVY7fKs5FSnHTB0MX5TXjOvkDlWJDE3pJivLyVL3gdJJBDPV6eZp9MU9
-         m2UZsYQY/d5X5smcrnE398DbNAl7LgrqcZgmIPHHYmowNuefM6IU2ebyNMvtHr1umyg9
-         vomr3qJGVyzFagd3IM0cicoRF5CXxjShFj/BUG5732EKD50gxgbSgZXCVlCRn1KNo24i
-         wVo7b60dQZQi1Moq19VnH8V51J1FiJ6EgnQk8p+bdNY5lD/FjFILNOYG5gFwaaboL3Lq
-         kdEQ==
-X-Gm-Message-State: AOAM530NUxzg6i9ocgAfrxcbAi7YIVSgJKvUt5/+zhPUmeOC6A+cko2I
-        goPQb+3moAXZMyxtb533QBc=
-X-Google-Smtp-Source: ABdhPJxTadWTrGSrAJoCwI5/jjrL5p9pjDpr4boVyEUsCc/P8xeQrl0bH2k+B/WyJY7knMMezBJqIQ==
-X-Received: by 2002:a05:6a00:80b:b029:22e:e873:7f0e with SMTP id m11-20020a056a00080bb029022ee8737f0emr14588464pfk.61.1617415537687;
-        Fri, 02 Apr 2021 19:05:37 -0700 (PDT)
-Received: from localhost.localdomain ([116.246.26.51])
-        by smtp.gmail.com with ESMTPSA id y29sm9513289pfp.206.2021.04.02.19.05.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 19:05:37 -0700 (PDT)
-From:   Youlin Song <syl.loop@gmail.com>
-To:     robh+dt@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org
-Cc:     devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, Youlin Song <syl.loop@gmail.com>
-Subject: [PATCH] powerpc/dts: fix not include DTC_FLAGS
-Date:   Sat,  3 Apr 2021 10:04:23 +0800
-Message-Id: <20210403020423.85278-1-syl.loop@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=yojHr0LL9tcz8C/ih+uZXwDOxxsE8tJwilH+vxkwGEU=;
+        b=YzKwqJZ87d5Vao3k4yZCCTwNeaad9146vLCnJp0wXARATXSDEJxG6iWGGNQ6T9IwSx
+         XoaiHUz2c20xFcbKeeEkugVp3hLw8YwjiFIGgiefnNdMAqeFbxc5g6e6FsIvSAKe3n+7
+         Fao9jY8GNlSiN4zFfwm4kyrtTgWBmyz3QNd14+KIkaXt0Chi7jAwSJLO0NTqWarJLnhc
+         8NPyJo2wmJFriEr8Bok946QZ3C6u6ei4epJ5HR8M5RCxajvz/nEUzJnEOrrv7MEof1IL
+         Eo2qq/V5xdDBswXE3/qQ/nQNb8jTECN5ApeW/Pq44aAWy/ao95eOFFRpth1ZTz7El0Z4
+         ozrQ==
+X-Gm-Message-State: AOAM530/ckGbTnWWZSu7K0x6FHou0H6YgGxr52kgfDK6eS3ykT3P8FTY
+        0ufC5cMHALERm/L/2xrTaqGDDYCN4/49cI7DLGyGBeUPcWuU
+X-Google-Smtp-Source: ABdhPJyBAx5lpsWCs2cfBehnz27AczKqw16RcM1me3OBSZwRId03i5qPHagW0vP7xRMo5UKXyafMcKO0ycDaUet4TolL/MQdcZaA
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a5d:9917:: with SMTP id x23mr12821675iol.22.1617416537245;
+ Fri, 02 Apr 2021 19:22:17 -0700 (PDT)
+Date:   Fri, 02 Apr 2021 19:22:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000028104905bf0822ce@google.com>
+Subject: [syzbot] WARNING: suspicious RCU usage in find_inlist_lock
+From:   syzbot <syzbot+b221933e5f9ad5b0e2fd@syzkaller.appspotmail.com>
+To:     bridge@lists.linux-foundation.org, coreteam@netfilter.org,
+        davem@davemloft.net, fw@strlen.de, kadlec@netfilter.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        nikolay@nvidia.com, pablo@netfilter.org, roopa@nvidia.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I wanted to build the fsl dts in my machine and found that
-the dtb have not extra space,so uboot will cause about
-FDT_ERR_NOSPACE issue.
+Hello,
 
-Signed-off-by: Youlin Song <syl.loop@gmail.com>
+syzbot found the following issue on:
+
+HEAD commit:    1e43c377 Merge tag 'xtensa-20210329' of git://github.com/j..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=114cdd4ad00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=78ef1d159159890
+dashboard link: https://syzkaller.appspot.com/bug?extid=b221933e5f9ad5b0e2fd
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b221933e5f9ad5b0e2fd@syzkaller.appspotmail.com
+
+=============================
+WARNING: suspicious RCU usage
+5.12.0-rc5-syzkaller #0 Not tainted
+-----------------------------
+kernel/sched/core.c:8294 Illegal context switch in RCU-sched read-side critical section!
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 0
+no locks held by syz-executor.1/8425.
+
+stack backtrace:
+CPU: 1 PID: 8425 Comm: syz-executor.1 Not tainted 5.12.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ ___might_sleep+0x266/0x2c0 kernel/sched/core.c:8294
+ __mutex_lock_common kernel/locking/mutex.c:928 [inline]
+ __mutex_lock+0xa9/0x1120 kernel/locking/mutex.c:1096
+ find_inlist_lock_noload net/bridge/netfilter/ebtables.c:316 [inline]
+ find_inlist_lock.constprop.0+0x26/0x220 net/bridge/netfilter/ebtables.c:330
+ find_table_lock net/bridge/netfilter/ebtables.c:339 [inline]
+ do_ebt_get_ctl+0x208/0x790 net/bridge/netfilter/ebtables.c:2329
+ nf_getsockopt+0x72/0xd0 net/netfilter/nf_sockopt.c:116
+ ip_getsockopt net/ipv4/ip_sockglue.c:1777 [inline]
+ ip_getsockopt+0x164/0x1c0 net/ipv4/ip_sockglue.c:1756
+ tcp_getsockopt+0x86/0xd0 net/ipv4/tcp.c:4239
+ __sys_getsockopt+0x21f/0x5f0 net/socket.c:2161
+ __do_sys_getsockopt net/socket.c:2176 [inline]
+ __se_sys_getsockopt net/socket.c:2173 [inline]
+ __x64_sys_getsockopt+0xba/0x150 net/socket.c:2173
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x467a6a
+Code: 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 37 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe660d82f8 EFLAGS: 00000202 ORIG_RAX: 0000000000000037
+RAX: ffffffffffffffda RBX: 00000000005401a0 RCX: 0000000000467a6a
+RDX: 0000000000000081 RSI: 0000000000000000 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 00007ffe660d831c R09: 00007ffe660d83a0
+R10: 00007ffe660d8320 R11: 0000000000000202 R12: 0000000000000003
+R13: 00007ffe660d8320 R14: 0000000000540128 R15: 00007ffe660d831c
+
+
 ---
- arch/powerpc/boot/dts/Makefile | 1 +
- 1 file changed, 1 insertion(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/powerpc/boot/dts/Makefile b/arch/powerpc/boot/dts/Makefile
-index fb335d05aae8..c21165c0cd76 100644
---- a/arch/powerpc/boot/dts/Makefile
-+++ b/arch/powerpc/boot/dts/Makefile
-@@ -2,5 +2,6 @@
- 
- subdir-y += fsl
- 
-+DTC_FLAGS   ?= -p 1024
- dtstree		:= $(srctree)/$(src)
- dtb-$(CONFIG_OF_ALL_DTBS) := $(patsubst $(dtstree)/%.dts,%.dtb, $(wildcard $(dtstree)/*.dts))
--- 
-2.25.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
