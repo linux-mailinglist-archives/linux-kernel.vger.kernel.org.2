@@ -2,172 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE0A23534A0
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 18:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 324843534A2
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 18:06:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236879AbhDCQAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 12:00:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28496 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230266AbhDCQAB (ORCPT
+        id S236825AbhDCQGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 12:06:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230266AbhDCQGE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 12:00:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617465597;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DUOJF2tENL+V20b7Norwu9+3fd7hFO0/P2ZvHDYWJZg=;
-        b=JzCR8Nm3B17cTubemJA+RFoF7zmXQYQ77UQOUNdLDdbjobLKhHMDX9R7JFvp80wz7L31l3
-        YAgFqg9kKirrzFyt53Skks22qMsBsCIT8mBu+uPLArOx9eJOz1bjR+O2eBQ1ToCCKdCnvv
-        pJcuH/JZ8KQZKB56TD3QKWHtV7dUFFE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-256-QhxR3gKIPF-XW4wD9-Z3JQ-1; Sat, 03 Apr 2021 11:59:55 -0400
-X-MC-Unique: QhxR3gKIPF-XW4wD9-Z3JQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A039D180FCA1;
-        Sat,  3 Apr 2021 15:59:54 +0000 (UTC)
-Received: from treble (ovpn-116-68.rdu2.redhat.com [10.10.116.68])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2428F5D9DC;
-        Sat,  3 Apr 2021 15:59:49 +0000 (UTC)
-Date:   Sat, 3 Apr 2021 10:59:48 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     madvenka@linux.microsoft.com
-Cc:     mark.rutland@arm.com, broonie@kernel.org, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 1/1] arm64: Implement stack trace termination
- record
-Message-ID: <20210403155948.ubbgtwmlsdyar7yp@treble>
-References: <659f3d5cc025896ba4c49aea431aa8b1abc2b741>
- <20210402032404.47239-1-madvenka@linux.microsoft.com>
- <20210402032404.47239-2-madvenka@linux.microsoft.com>
+        Sat, 3 Apr 2021 12:06:04 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93345C0613E6
+        for <linux-kernel@vger.kernel.org>; Sat,  3 Apr 2021 09:05:59 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id o10so11439487lfb.9
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Apr 2021 09:05:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gkdOqPqACzNXgbG1X/VVpsqAi1238gmmEATmwh5RCsU=;
+        b=aD7cJRRRnXDc0FES7rd9ZbmwQ2tVE9r5yiK7Eb1blcGjUjJtOGLrm1Vsl0Xs6m/FEk
+         dAZ/KETWZduO8tggiu8/g9TKmujxKiiTHNsAPkMeaIEDbob8rk27/COqf1LLG/mmdL8g
+         arx7nKdYBEo4+oNeap8wvP/vcjPBCs6JPQUrc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gkdOqPqACzNXgbG1X/VVpsqAi1238gmmEATmwh5RCsU=;
+        b=iobCZ5Qb4v8vlS55OD9aCiNrwxL8wqK0XEt6Wd3tfA6Aana7LElVVp1SfyHiytcR3v
+         xc0vdFRh3HpLOAQ1DEBAWkPIISceXa7NJ1c62RR9wbTwCJLZXysjioL8Ft+KpUq1bnWO
+         WqCqw3SrdhOc4lKK13cGv26Zqgwb1y2cOUNv1jNPYA2qaL1XHgvLho0cgtM9Q6hBD0yM
+         YsUuzzGBiiZCMCVFyNVW1qa5nVp1A0hyMJxIVvvJPHJlkyNdQDRAHyk8M72wxw/iMPMf
+         Vj+i54oY5BPObuHkSVzBKgNXXl30SnI4gZ4QA+aaDwFDkGAOegePapc27qHdYiFa/lh6
+         e/WQ==
+X-Gm-Message-State: AOAM532zezes4snRZeZnhan9Ml/bl2s3AdYzpsCTed3znUqyovESM987
+        54WEDtQizm5qlfo9vWPfX3IPveXbA6xE6A==
+X-Google-Smtp-Source: ABdhPJwnX737SdO9wwUbL41UCE222IPjhkKl95U3y+M7TV9GfxrBlDFy5Hr4B+I/97E9v7f7h0/zsA==
+X-Received: by 2002:ac2:4e6f:: with SMTP id y15mr12335546lfs.428.1617465957718;
+        Sat, 03 Apr 2021 09:05:57 -0700 (PDT)
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
+        by smtp.gmail.com with ESMTPSA id u19sm1272332ljl.49.2021.04.03.09.05.56
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 03 Apr 2021 09:05:56 -0700 (PDT)
+Received: by mail-lj1-f176.google.com with SMTP id s17so8449783ljc.5
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Apr 2021 09:05:56 -0700 (PDT)
+X-Received: by 2002:a05:651c:1117:: with SMTP id d23mr11823301ljo.220.1617465956597;
+ Sat, 03 Apr 2021 09:05:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210402032404.47239-2-madvenka@linux.microsoft.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <1617433116-5930-1-git-send-email-zheyuma97@gmail.com>
+In-Reply-To: <1617433116-5930-1-git-send-email-zheyuma97@gmail.com>
+From:   Linus Torvalds <torvalds@linuxfoundation.org>
+Date:   Sat, 3 Apr 2021 09:05:40 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh+sw_cYnL2XyuhknOpOh1jEPURg-W=jS2CyW2=ud+zog@mail.gmail.com>
+Message-ID: <CAHk-=wh+sw_cYnL2XyuhknOpOh1jEPURg-W=jS2CyW2=ud+zog@mail.gmail.com>
+Subject: Re: [PATCH] firewire: nosy: Fix a use-after-free bug in nosy_ioctl()
+To:     Zheyu Ma <zheyuma97@gmail.com>
+Cc:     stefanr@s5r6.in-berlin.de, linux1394-devel@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Security Officers <security@kernel.org>,
+        Greg Kroah-Hartman <greg@kroah.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 10:24:04PM -0500, madvenka@linux.microsoft.com wrote:
-> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-> @@ -447,9 +464,9 @@ SYM_FUNC_START_LOCAL(__primary_switched)
->  #endif
->  	bl	switch_to_vhe			// Prefer VHE if possible
->  	add	sp, sp, #16
-> -	mov	x29, #0
-> -	mov	x30, #0
-> -	b	start_kernel
-> +	setup_final_frame
-> +	bl	start_kernel
-> +	nop
->  SYM_FUNC_END(__primary_switched)
->  
->  	.pushsection ".rodata", "a"
-> @@ -606,14 +623,14 @@ SYM_FUNC_START_LOCAL(__secondary_switched)
->  	cbz	x2, __secondary_too_slow
->  	msr	sp_el0, x2
->  	scs_load x2, x3
-> -	mov	x29, #0
-> -	mov	x30, #0
-> +	setup_final_frame
->  
->  #ifdef CONFIG_ARM64_PTR_AUTH
->  	ptrauth_keys_init_cpu x2, x3, x4, x5
->  #endif
->  
-> -	b	secondary_start_kernel
-> +	bl	secondary_start_kernel
-> +	nop
->  SYM_FUNC_END(__secondary_switched)
+On Fri, Apr 2, 2021 at 11:59 PM Zheyu Ma <zheyuma97@gmail.com> wrote:
+>
+>         case NOSY_IOC_START:
+> +               list_for_each_entry(tmp, &client->lynx->client_list, link)
+> +                       if (tmp == client)
+> +                               return -EINVAL;
 
-I'm somewhat arm-ignorant, so take the following comments with a grain
-of salt.
+I don't think this is safe.
 
+You are doing this list traversal outside the lock that protects it,
+which it taken a line later:
 
-I don't think changing these to 'bl' is necessary, unless you wanted
-__primary_switched() and __secondary_switched() to show up in the
-stacktrace for some reason?  If so, that seems like a separate patch.
+>                 spin_lock_irq(client_list_lock);
+>                 list_add_tail(&client->link, &client->lynx->client_list);
+>                 spin_unlock_irq(client_list_lock);
 
+so the locking is wrong.
 
-Also, why are nops added after the calls?  My guess would be because,
-since these are basically tail calls to "noreturn" functions, the stack
-dump code would otherwise show the wrong function, i.e. whatever
-function happens to be after the 'bl'.
+However, I think that the proper fix is not just to move the code
+inside the locked region (which makes the error handling a bit more
+complex than just a return, of course), but to actually instead of
+traversing the list, just look if the "client->link" list is empty.
 
-We had the same issue for x86.  It can be fixed by using '%pB' instead
-of '%pS' when printing the address in dump_backtrace_entry().  See
-sprint_backtrace() for more details.
+That's what some other parts of that driver already do (ie
+nosy_poll()), so I think that ->link field is already always
+initialized properly (and it looks like all the list removal is using
+"list_del_init()" to initialize it after removing it from a list.
 
-BTW I think the same issue exists for GCC-generated code.  The following
-shows several such cases:
+So I think the patch should be something along the lines of
 
-  objdump -dr vmlinux |awk '/bl   / {bl=1;l=$0;next} bl == 1 && /^$/ {print l; print} // {bl=0}'
+    --- a/drivers/firewire/nosy.c
+    +++ b/drivers/firewire/nosy.c
+    @@ -346,6 +346,7 @@ nosy_ioctl(struct file *file, unsigned int
+cmd, unsigned long arg)
+        struct client *client = file->private_data;
+        spinlock_t *client_list_lock = &client->lynx->client_list_lock;
+        struct nosy_stats stats;
+    +   int ret;
 
+        switch (cmd) {
+        case NOSY_IOC_GET_STATS:
+    @@ -360,11 +361,15 @@ nosy_ioctl(struct file *file,
+                        return 0;
 
-However, looking at how arm64 unwinds through exceptions in kernel
-space, using '%pB' might have side effects when the exception LR
-(elr_el1) points to the beginning of a function.  Then '%pB' would show
-the end of the previous function, instead of the function which was
-interrupted.
+        case NOSY_IOC_START:
+    +           ret = -EBUSY;
+                spin_lock_irq(client_list_lock);
+    -           list_add_tail(&client->link, &client->lynx->client_list);
+    +           if (list_empty(&client->link)) {
+    +                   list_add_tail(&client->link,
+&client->lynx->client_list);
+    +                   ret = 0;
+    +           }
+                spin_unlock_irq(client_list_lock);
 
-So you may need to rethink how to unwind through in-kernel exceptions.
+    -           return 0;
+    +           return ret;
 
-Basically, when printing a stack return address, you want to use '%pB'
-for a call return address and '%pS' for an interrupted address.
+        case NOSY_IOC_STOP:
+                spin_lock_irq(client_list_lock);
 
-On x86, with the frame pointer unwinder, we encode the frame pointer by
-setting a bit in %rbp which tells the unwinder that it's a special
-pt_regs frame.  Then instead of treating it like a normal call frame,
-the stack dump code prints the registers, and the return address
-(regs->ip) gets printed with '%pS'.
+instead. The above is obviously white-space damaged (on purpose - I
+don't want to take credit for this patch, I didn't find the problem,
+and I have not tested the above in any shape or form).
 
->  SYM_FUNC_START_LOCAL(__secondary_too_slow)
-> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-> index 325c83b1a24d..906baa232a89 100644
-> --- a/arch/arm64/kernel/process.c
-> +++ b/arch/arm64/kernel/process.c
-> @@ -437,6 +437,11 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
->  	}
->  	p->thread.cpu_context.pc = (unsigned long)ret_from_fork;
->  	p->thread.cpu_context.sp = (unsigned long)childregs;
-> +	/*
-> +	 * For the benefit of the unwinder, set up childregs->stackframe
-> +	 * as the final frame for the new task.
-> +	 */
-> +	p->thread.cpu_context.fp = (unsigned long)childregs->stackframe;
->  
->  	ptrace_hw_copy_thread(p);
->  
-> diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-> index ad20981dfda4..72f5af8c69dc 100644
-> --- a/arch/arm64/kernel/stacktrace.c
-> +++ b/arch/arm64/kernel/stacktrace.c
-> @@ -44,16 +44,16 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
->  	unsigned long fp = frame->fp;
->  	struct stack_info info;
->  
-> -	/* Terminal record; nothing to unwind */
-> -	if (!fp)
-> +	if (!tsk)
-> +		tsk = current;
-> +
-> +	/* Final frame; nothing to unwind */
-> +	if (fp == (unsigned long) task_pt_regs(tsk)->stackframe)
->  		return -ENOENT;
+Zheyu Ma, does something like that work for you?
 
-As far as I can tell, the regs stackframe value is initialized to zero
-during syscall entry, so isn't this basically just 'if (fp == 0)'?
+Comments? Anybody else?
 
-Shouldn't it instead be comparing with the _address_ of the stackframe
-field to make sure it reached the end?
-
--- 
-Josh
-
+        Linus
