@@ -2,62 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C82353305
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 09:51:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2028353307
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 09:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232200AbhDCHvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 03:51:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54426 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232157AbhDCHvF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 03:51:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 349E361166;
-        Sat,  3 Apr 2021 07:51:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617436262;
-        bh=rGx2RlrFnBUXUoslVGAxfcreAkeLNxmJ3ZBe2T7O+SI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u4B1Cl2jnN0sUQVn588rlmSJ7DsE25M2ovtIok3HeV4cG5JOYY/OxrFfpR2U93QB+
-         2ty9IV7xphKmat8HHD6v+67GbjjDD0lC3CBg26O+7QBGLtZAkp74WTIPUbUg3L7taz
-         EnMYKyBFQp///Y4hiOCcYjj8aW4wt33o7wlC0XeI=
-Date:   Sat, 3 Apr 2021 09:50:59 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     dan.carpenter@oracle.com, joe@perches.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 01/30] staging: rtl8723bs: remove RT_TRACE logs in
- core/rtw_xmit.c
-Message-ID: <YGgeY4Q0MIvyx1FY@kroah.com>
-References: <cover.1617384172.git.fabioaiuto83@gmail.com>
- <34b6f0b80cd3913722b258e9554dbc77268fb2bf.1617384172.git.fabioaiuto83@gmail.com>
- <YGgb2Mtzyp79elQ6@kroah.com>
- <20210403074805.GB1563@agape.jhs>
+        id S234821AbhDCHwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 03:52:54 -0400
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:46069 "EHLO
+        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232157AbhDCHwx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Apr 2021 03:52:53 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 2155AEBD;
+        Sat,  3 Apr 2021 03:52:50 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Sat, 03 Apr 2021 03:52:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=LpBqOIn5u2gF3QrQ7oMvv1w2fD5
+        hVTILKFdHdVI/0ZA=; b=NWSmpFamykyRybFYcFvsqQiDu3T7iWMCotquAhhKfqB
+        JL7nAPupKvuBOS/w23+7oTAZFuPzcBi7CMQqBDFrOb2Pv2l5MjYh86GiTRb/lWYg
+        MhH8EYn5UEppGrOCnMWp0Ush6v4o45/ddH/8X5tZJFh8FFid+OA05eLVbvtSfpoU
+        dgEEuWdyqPV7HhWKKv9IEEI/pmQwT4qEZZrKxHbIa4ZxK1rHDxG3VtgoeV57k7Sf
+        UNDyySB1sQzvRjuaG+HZkLINWhkeHPowriWHcLLd55AUaEzPx28E52T805ZLicF1
+        oOq1S8rAI1/tcjf1k5D0k+kKGf3trtG4tnfsvagu55Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=LpBqOI
+        n5u2gF3QrQ7oMvv1w2fD5hVTILKFdHdVI/0ZA=; b=vf1GM1jHRohs+jFuKAkNyb
+        m2vqyMt3ys9z0ZrFcViVQR9kahYXFNlzHugLjDsfg6fMAwoxInznT/y1DInkkLgI
+        HQYrMuTw81zeVsUHhQWy2grcxCKdn0dINRJs2AGz4iHPTdoigh+OJhyEYchO0v8N
+        gAKjvOV/RiYf1y/ZL38jvCIgmvRGU8iRb5AoPLxG8uEwGxbb0hyzauEQhzvI+CEd
+        NQllDreWTQV1byNzRQKasGkz4nNrUFscDoFCIdtKJU7VO15kCRTJWT0alVeH5RWz
+        4zN9ec1+JXRV54yHScmD+kPffEp2aodI7AMfnTfjcXrJIqpaHlQQPxeZnM/theAA
+        ==
+X-ME-Sender: <xms:0R5oYHAPRRYUkgkSwEQKZ1OadfEIyZSg_tKkO8NcgP-crsj2RY4-Vg>
+    <xme:0R5oYNhOfCocdCx-w1qIOSchK2s1AZk6jFe2jWopQxUpUpfI_6kmIpB0kA6XrUi11
+    _UR4fQOfF9aMw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudeijedguddvgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuhe
+    ejgfffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeek
+    fedrkeeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:0R5oYCn6Q7xEoZrCin7o0ISzIU4_6J8Jvu-x9bmVDQ1IlSmBkiklTA>
+    <xmx:0R5oYJzFYazJpKMER6NcccQf2YguL1RnJ2cLduyLt8o290mnE-v3Fg>
+    <xmx:0R5oYMQPP-0QQK9Sg9oei8R2Sw5KXjawApsxx_y69uxF6EFnd5_3Wg>
+    <xmx:0R5oYCOhPs0vmP9gIrwl4cBayLQBL6l6IAPCIgFxD3GbAxeFibp2zw>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 334A81080064;
+        Sat,  3 Apr 2021 03:52:49 -0400 (EDT)
+Date:   Sat, 3 Apr 2021 09:52:46 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Gwendal Grignou <gwendal@chromium.org>
+Cc:     bleung@chromium.org, enric.balletbo@collabora.com,
+        groeck@chromium.org, linux-kernel@vger.kernel.org,
+        Gwendal Grignou <gwendal@google.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] platform/chrome: Update cros_ec sysfs attributes on
+ sensors discovery
+Message-ID: <YGgezmIRoxtVF4f7@kroah.com>
+References: <20210403062031.1820582-1-gwendal@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210403074805.GB1563@agape.jhs>
+In-Reply-To: <20210403062031.1820582-1-gwendal@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 03, 2021 at 09:48:06AM +0200, Fabio Aiuto wrote:
-> On Sat, Apr 03, 2021 at 09:40:08AM +0200, Greg KH wrote:
-> > On Fri, Apr 02, 2021 at 07:29:43PM +0200, Fabio Aiuto wrote:
-> > > remove all RT_TRACE logs
-> > > 
-> > 
-> > I don't mean to be a pain, but this changelog text needs some work.
-> > 
-> > This says _what_ it does, but not _why_ you are doing this.  The kernel
-> > documentation has a section on how to write a good changelog text, you
-> > might want to look at that.
+On Fri, Apr 02, 2021 at 11:20:31PM -0700, Gwendal Grignou wrote:
+> When cros_ec_sysfs probe is called before cros_ec_sensorhub probe
+> routine, the |kb_wake_angle| attribute will not be displayed, even if
+> there are two accelerometers in the chromebook.
 > 
-> you are right, I spent time writing the cover, but not the changelog which
-> will remain in kernel history
+> Call sysfs_update_group() when accelerometers are enumerated if the
+> cros_ec sysfs attributes group has already been created.
+> 
+> Fixes: d60ac88a62df ("mfd / platform / iio: cros_ec: Register sensor through sensorhub")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Gwendal Grignou <gwendal@google.com>
+> ---
+>  drivers/platform/chrome/cros_ec_sensorhub.c | 5 ++++-
+>  drivers/platform/chrome/cros_ec_sysfs.c     | 2 ++
+>  include/linux/platform_data/cros_ec_proto.h | 2 ++
+>  3 files changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/platform/chrome/cros_ec_sensorhub.c b/drivers/platform/chrome/cros_ec_sensorhub.c
+> index 9c4af76a9956e..78085ad362ca8 100644
+> --- a/drivers/platform/chrome/cros_ec_sensorhub.c
+> +++ b/drivers/platform/chrome/cros_ec_sensorhub.c
+> @@ -106,8 +106,11 @@ static int cros_ec_sensorhub_register(struct device *dev,
+>  		sensor_type[sensorhub->resp->info.type]++;
+>  	}
+>  
+> -	if (sensor_type[MOTIONSENSE_TYPE_ACCEL] >= 2)
+> +	if (sensor_type[MOTIONSENSE_TYPE_ACCEL] >= 2) {
+>  		ec->has_kb_wake_angle = true;
+> +		if (ec->group)
+> +			sysfs_update_group(&ec->class_dev.kobj, ec->group);
+> +	}
+>  
+>  	if (cros_ec_check_features(ec,
+>  				   EC_FEATURE_REFINED_TABLET_MODE_HYSTERESIS)) {
+> diff --git a/drivers/platform/chrome/cros_ec_sysfs.c b/drivers/platform/chrome/cros_ec_sysfs.c
+> index f07eabcf9494c..3838d5f51aadc 100644
+> --- a/drivers/platform/chrome/cros_ec_sysfs.c
+> +++ b/drivers/platform/chrome/cros_ec_sysfs.c
+> @@ -344,6 +344,8 @@ static int cros_ec_sysfs_probe(struct platform_device *pd)
+>  	ret = sysfs_create_group(&ec_dev->class_dev.kobj, &cros_ec_attr_group);
 
-Take portions of what you write in the cover letter, into the changelog
-for the patches.  Or the other way around is also good, depending on
-which you write first :)
+This is odd, the platform/driver core should be creating these files,
+you should never have to do this "by hand".  If you do it this way, you
+are racing with userspace and loosing.
+
+Please set the dev_groups field in the driver structure to be this group
+and then all will be fine automatically.
+
+>  	if (ret < 0)
+>  		dev_err(dev, "failed to create attributes. err=%d\n", ret);
+> +	else
+> +		ec_dev->group = &cros_ec_attr_group;
+>  
+>  	return ret;
+>  }
+> diff --git a/include/linux/platform_data/cros_ec_proto.h b/include/linux/platform_data/cros_ec_proto.h
+> index 02599687770c5..4cd06f68bc536 100644
+> --- a/include/linux/platform_data/cros_ec_proto.h
+> +++ b/include/linux/platform_data/cros_ec_proto.h
+> @@ -191,6 +191,7 @@ struct cros_ec_platform {
+>  /**
+>   * struct cros_ec_dev - ChromeOS EC device entry point.
+>   * @class_dev: Device structure used in sysfs.
+> + * @group: sysfs attributes group for this EC.
+>   * @ec_dev: cros_ec_device structure to talk to the physical device.
+>   * @dev: Pointer to the platform device.
+>   * @debug_info: cros_ec_debugfs structure for debugging information.
+> @@ -200,6 +201,7 @@ struct cros_ec_platform {
+>   */
+>  struct cros_ec_dev {
+>  	struct device class_dev;
+> +	struct attribute_group *group;
+
+This should not be needed.
 
 thanks,
 
