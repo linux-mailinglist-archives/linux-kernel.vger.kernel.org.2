@@ -2,95 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E32F3532C8
+	by mail.lfdr.de (Postfix) with ESMTP id 5ABF53532C9
 	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 08:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233497AbhDCGJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 02:09:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbhDCGJa (ORCPT
+        id S235942AbhDCGJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 02:09:39 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:26505 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230371AbhDCGJi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 02:09:30 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 32D80C0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 23:09:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=qvyDwjK3gB
-        UMTEGBVUtjhKDw8xoAbkmOgHLuEiQzyI0=; b=aDf5WqUXQcYzjU906LFwIrXNti
-        1V7A3eKqAQARjHrDn5lS745f2rvKBm01WsvzQJLaug4CmPMdnYZ7CAQ3X0RBWaqh
-        6I8R+hzb6yDq6iWYtVA4R9tMYZ7g+NY4hXwN78R7jjrZaCKXpdPyGZ10WwpNs9F0
-        A6IFLP1/41Q5HysZo=
-Received: from ubuntu.localdomain (unknown [202.38.69.14])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygC3vn6DBmhg3HGPAA--.1127S4;
-        Sat, 03 Apr 2021 14:09:07 +0800 (CST)
-From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To:     han.xu@nxp.com, miquel.raynal@bootlin.com, richard@nod.at,
-        vigneshr@ti.com, bbrezillon@kernel.org
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH] mtd: nand: gpmi: Fix a double free in gpmi_nand_init
-Date:   Fri,  2 Apr 2021 23:09:05 -0700
-Message-Id: <20210403060905.5251-1-lyl2019@mail.ustc.edu.cn>
+        Sat, 3 Apr 2021 02:09:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1617430176; x=1648966176;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=S6cdx9nJCphR+TuZTRATBfbVh4GtEZJtm8NrOBPj77k=;
+  b=LT6xA9spCl+mpP5KQy8KeukHy80vrO9YnQlOZz/OoeK4AU1mkvdqtQws
+   4k1Zst5G6mxS+MNWnrtWlzDP9jqg07SMcR8ZOULCDiLoWHEU3/rNm2vu8
+   eT92xGxZhV4ys1dwva+WNU91O75LXvgthSm37dboNEmdvypNCjp5LmrcR
+   ubqbr2wtyiwZGxz7Fn4U2F22mE9pLOj4vfHpZbfKrDapnqsbxfX5u3Yr5
+   2jYgDjSopU05f28tgClOBAFV/HiCOPpx56Os0anhWhWJKiGGTcqdlC0hv
+   xY83fuRSR71hj/eDfbJW7d/OkzfIy4vAPxugM5yCPhvWQY2lMILeJMADh
+   w==;
+IronPort-SDR: tDiyfH90o6toY1GOMttHv1wU3XvcfgGv/YjWKlCw3xhQqWsL3wMW6VPxQ6S/u8aSzSWxJgaFvj
+ q8Lyuw1/8vn7whAfQS2jGdq89CUb92Jhp8Av+Vnlg5a1nwok1abFyNgo0+ixGqg1d2+zAHqiQr
+ LUi+Uh1I1HrFssyNxo9tYn9iP88lrBmxZTgYUmTO/s2YQ4NzLTos/p8LzcgsOF+4b6ha1cIln+
+ 5+2lakB/o0wAS9z0T6IVJK2QDHCDXAvCIViM+ZRD+uC3hICAlyT4NBVVko5VVdyd1AzZcjG1r4
+ FE4=
+X-IronPort-AV: E=Sophos;i="5.81,302,1610434800"; 
+   d="scan'208";a="115168349"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 02 Apr 2021 23:09:36 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 2 Apr 2021 23:09:35 -0700
+Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Fri, 2 Apr 2021 23:09:33 -0700
+From:   Tudor Ambarus <tudor.ambarus@microchip.com>
+To:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <kyungmin.park@samsung.com>
+CC:     <michael@walle.cc>, <p.yadav@ti.com>, <jean-philippe@linaro.org>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        "Tudor Ambarus" <tudor.ambarus@microchip.com>
+Subject: [PATCH] mtd: core: Constify buf in mtd_write_user_prot_reg()
+Date:   Sat, 3 Apr 2021 09:09:31 +0300
+Message-ID: <20210403060931.7119-1-tudor.ambarus@microchip.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygC3vn6DBmhg3HGPAA--.1127S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7KrWDGF45Wry7WFy7WF4fGrg_yoW8GrWDpr
-        Wa9anrGF4qqrWkt3ZrZa1rZr15Aan5Wry8GFW5W34rZFnIqr4j9F9rtF12vF47uF4UtF4x
-        Xrn8Wwn8Ar4UAFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
-        0_GcWlnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
-        648v4I1lc2xSY4AK67AK6r47MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
-        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAI
-        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
-        nxnUUI43ZEXa7VUjylk7UUUUU==
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the callee gpmi_alloc_dma_buffer() failed to alloc memory for
-this->raw_buffer, gpmi_free_dma_buffer() will be called to free
-this->auxiliary_virt. But this->auxiliary_virt is still a non-NULL
-and valid ptr.
+The write buffer comes from user and should be const.
+Constify write buffer in mtd core and across all _write_user_prot_reg()
+users. cfi_cmdset_{0001, 0002} and onenand_base will pay the cost of an
+explicit cast to discard the const qualifier since the beginning, since
+they are using an otp_op_t function prototype that is used for both reads
+and writes. mtd_dataflash and SPI NOR will benefit of the const buffer
+because they are using different paths for writes and reads.
 
-Then gpmi_alloc_dma_buffer() returns err and gpmi_free_dma_buffer()
-is called again to free this->auxiliary_virt in err_out. This causes
-a double free.
-
-As gpmi_free_dma_buffer() has already called in gpmi_alloc_dma_buffer's
-error path, so it should return err directly instead of releasing the dma
-buffer again.
-
-Fixes: 4d02423e9afe6 ("mtd: nand: gpmi: Fix gpmi_nand_init() error path")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/chips/cfi_cmdset_0001.c     | 7 ++++---
+ drivers/mtd/chips/cfi_cmdset_0002.c     | 6 +++---
+ drivers/mtd/devices/mtd_dataflash.c     | 2 +-
+ drivers/mtd/mtdcore.c                   | 2 +-
+ drivers/mtd/nand/onenand/onenand_base.c | 5 +++--
+ drivers/mtd/spi-nor/core.h              | 6 ++++--
+ drivers/mtd/spi-nor/otp.c               | 9 +++++----
+ include/linux/mtd/mtd.h                 | 5 +++--
+ 8 files changed, 24 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index 3fa8c22d3f36..4d08e4ab5c1b 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -2449,7 +2449,7 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
- 	this->bch_geometry.auxiliary_size = 128;
- 	ret = gpmi_alloc_dma_buffer(this);
- 	if (ret)
--		goto err_out;
-+		return ret;
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index 42001c49833b..87f29c84bea9 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -72,7 +72,8 @@ static int cfi_intelext_is_locked(struct mtd_info *mtd, loff_t ofs,
+ #ifdef CONFIG_MTD_OTP
+ static int cfi_intelext_read_fact_prot_reg (struct mtd_info *, loff_t, size_t, size_t *, u_char *);
+ static int cfi_intelext_read_user_prot_reg (struct mtd_info *, loff_t, size_t, size_t *, u_char *);
+-static int cfi_intelext_write_user_prot_reg (struct mtd_info *, loff_t, size_t, size_t *, u_char *);
++static int cfi_intelext_write_user_prot_reg(struct mtd_info *, loff_t, size_t,
++					    size_t *, const u_char *);
+ static int cfi_intelext_lock_user_prot_reg (struct mtd_info *, loff_t, size_t);
+ static int cfi_intelext_get_fact_prot_info(struct mtd_info *, size_t,
+ 					   size_t *, struct otp_info *);
+@@ -2447,10 +2448,10 @@ static int cfi_intelext_read_user_prot_reg(struct mtd_info *mtd, loff_t from,
  
- 	nand_controller_init(&this->base);
- 	this->base.ops = &gpmi_nand_controller_ops;
+ static int cfi_intelext_write_user_prot_reg(struct mtd_info *mtd, loff_t from,
+ 					    size_t len, size_t *retlen,
+-					     u_char *buf)
++					    const u_char *buf)
+ {
+ 	return cfi_intelext_otp_walk(mtd, from, len, retlen,
+-				     buf, do_otp_write, 1);
++				     (u_char *)buf, do_otp_write, 1);
+ }
+ 
+ static int cfi_intelext_lock_user_prot_reg(struct mtd_info *mtd,
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index a1f3e1031c3d..46fac266ceb8 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -80,7 +80,7 @@ static int cfi_amdstd_read_fact_prot_reg(struct mtd_info *, loff_t, size_t,
+ static int cfi_amdstd_read_user_prot_reg(struct mtd_info *, loff_t, size_t,
+ 					 size_t *, u_char *);
+ static int cfi_amdstd_write_user_prot_reg(struct mtd_info *, loff_t, size_t,
+-					  size_t *, u_char *);
++					  size_t *, const u_char *);
+ static int cfi_amdstd_lock_user_prot_reg(struct mtd_info *, loff_t, size_t);
+ 
+ static int cfi_amdstd_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
+@@ -1630,9 +1630,9 @@ static int cfi_amdstd_read_user_prot_reg(struct mtd_info *mtd, loff_t from,
+ 
+ static int cfi_amdstd_write_user_prot_reg(struct mtd_info *mtd, loff_t from,
+ 					  size_t len, size_t *retlen,
+-					  u_char *buf)
++					  const u_char *buf)
+ {
+-	return cfi_amdstd_otp_walk(mtd, from, len, retlen, buf,
++	return cfi_amdstd_otp_walk(mtd, from, len, retlen, (u_char *)buf,
+ 				   do_otp_write, 1);
+ }
+ 
+diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
+index 6d1eefe94106..9802e265fca8 100644
+--- a/drivers/mtd/devices/mtd_dataflash.c
++++ b/drivers/mtd/devices/mtd_dataflash.c
+@@ -527,7 +527,7 @@ static int dataflash_read_user_otp(struct mtd_info *mtd,
+ }
+ 
+ static int dataflash_write_user_otp(struct mtd_info *mtd,
+-		loff_t from, size_t len, size_t *retlen, u_char *buf)
++		loff_t from, size_t len, size_t *retlen, const u_char *buf)
+ {
+ 	struct spi_message	m;
+ 	const size_t		l = 4 + 64;
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 2d6423d89a17..0c02789e94b6 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -1884,7 +1884,7 @@ int mtd_read_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len,
+ EXPORT_SYMBOL_GPL(mtd_read_user_prot_reg);
+ 
+ int mtd_write_user_prot_reg(struct mtd_info *mtd, loff_t to, size_t len,
+-			    size_t *retlen, u_char *buf)
++			    size_t *retlen, const u_char *buf)
+ {
+ 	struct mtd_info *master = mtd_get_master(mtd);
+ 	int ret;
+diff --git a/drivers/mtd/nand/onenand/onenand_base.c b/drivers/mtd/nand/onenand/onenand_base.c
+index a9fdea26ea46..958bac54b190 100644
+--- a/drivers/mtd/nand/onenand/onenand_base.c
++++ b/drivers/mtd/nand/onenand/onenand_base.c
+@@ -3167,9 +3167,10 @@ static int onenand_read_user_prot_reg(struct mtd_info *mtd, loff_t from,
+  * Write user OTP area.
+  */
+ static int onenand_write_user_prot_reg(struct mtd_info *mtd, loff_t from,
+-			size_t len, size_t *retlen, u_char *buf)
++			size_t len, size_t *retlen, const u_char *buf)
+ {
+-	return onenand_otp_walk(mtd, from, len, retlen, buf, do_otp_write, MTD_OTP_USER);
++	return onenand_otp_walk(mtd, from, len, retlen, (u_char *)buf,
++				do_otp_write, MTD_OTP_USER);
+ }
+ 
+ /**
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index e9b6b2e76cdb..28a2e0be97a3 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -211,7 +211,8 @@ struct spi_nor_otp_organization {
+  */
+ struct spi_nor_otp_ops {
+ 	int (*read)(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
+-	int (*write)(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
++	int (*write)(struct spi_nor *nor, loff_t addr, size_t len,
++		     const u8 *buf);
+ 	int (*lock)(struct spi_nor *nor, unsigned int region);
+ 	int (*is_locked)(struct spi_nor *nor, unsigned int region);
+ };
+@@ -504,7 +505,8 @@ ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
+ 			   const u8 *buf);
+ 
+ int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
+-int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
++int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len,
++			   const u8 *buf);
+ int spi_nor_otp_lock_sr2(struct spi_nor *nor, unsigned int region);
+ int spi_nor_otp_is_locked_sr2(struct spi_nor *nor, unsigned int region);
+ 
+diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
+index 5021d40dffbf..fcf38d260345 100644
+--- a/drivers/mtd/spi-nor/otp.c
++++ b/drivers/mtd/spi-nor/otp.c
+@@ -70,7 +70,8 @@ int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf)
+  *
+  * Return: number of bytes written successfully, -errno otherwise
+  */
+-int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf)
++int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len,
++			   const u8 *buf)
+ {
+ 	enum spi_nor_protocol write_proto;
+ 	struct spi_mem_dirmap_desc *wdesc;
+@@ -241,7 +242,7 @@ static int spi_nor_mtd_otp_info(struct mtd_info *mtd, size_t len,
+ 
+ static int spi_nor_mtd_otp_read_write(struct mtd_info *mtd, loff_t ofs,
+ 				      size_t total_len, size_t *retlen,
+-				      u8 *buf, bool is_write)
++				      const u8 *buf, bool is_write)
+ {
+ 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+ 	const struct spi_nor_otp_ops *ops = nor->params->otp.ops;
+@@ -285,7 +286,7 @@ static int spi_nor_mtd_otp_read_write(struct mtd_info *mtd, loff_t ofs,
+ 		if (is_write)
+ 			ret = ops->write(nor, rstart + rofs, len, buf);
+ 		else
+-			ret = ops->read(nor, rstart + rofs, len, buf);
++			ret = ops->read(nor, rstart + rofs, len, (u8 *)buf);
+ 		if (ret == 0)
+ 			ret = -EIO;
+ 		if (ret < 0)
+@@ -310,7 +311,7 @@ static int spi_nor_mtd_otp_read(struct mtd_info *mtd, loff_t from, size_t len,
+ }
+ 
+ static int spi_nor_mtd_otp_write(struct mtd_info *mtd, loff_t to, size_t len,
+-				 size_t *retlen, u8 *buf)
++				 size_t *retlen, const u8 *buf)
+ {
+ 	return spi_nor_mtd_otp_read_write(mtd, to, len, retlen, buf, true);
+ }
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 157357ec1441..7a1806962fc5 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -333,7 +333,8 @@ struct mtd_info {
+ 	int (*_read_user_prot_reg) (struct mtd_info *mtd, loff_t from,
+ 				    size_t len, size_t *retlen, u_char *buf);
+ 	int (*_write_user_prot_reg) (struct mtd_info *mtd, loff_t to,
+-				     size_t len, size_t *retlen, u_char *buf);
++				     size_t len, size_t *retlen,
++				     const u_char *buf);
+ 	int (*_lock_user_prot_reg) (struct mtd_info *mtd, loff_t from,
+ 				    size_t len);
+ 	int (*_writev) (struct mtd_info *mtd, const struct kvec *vecs,
+@@ -515,7 +516,7 @@ int mtd_get_user_prot_info(struct mtd_info *mtd, size_t len, size_t *retlen,
+ int mtd_read_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len,
+ 			   size_t *retlen, u_char *buf);
+ int mtd_write_user_prot_reg(struct mtd_info *mtd, loff_t to, size_t len,
+-			    size_t *retlen, u_char *buf);
++			    size_t *retlen, const u_char *buf);
+ int mtd_lock_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len);
+ 
+ int mtd_writev(struct mtd_info *mtd, const struct kvec *vecs,
 -- 
 2.25.1
-
 
