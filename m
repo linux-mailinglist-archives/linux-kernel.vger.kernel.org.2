@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 223C1353531
+	by mail.lfdr.de (Postfix) with ESMTP id BF5A7353534
 	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 20:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236662AbhDCSSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 14:18:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59554 "EHLO mail.kernel.org"
+        id S236763AbhDCSSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 14:18:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236397AbhDCSSn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236442AbhDCSSn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 3 Apr 2021 14:18:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 743906124C;
+Received: by mail.kernel.org (Postfix) with ESMTPS id B7DEC61286;
         Sat,  3 Apr 2021 18:18:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1617473920;
-        bh=nWwSp0+o/gzk9BtBj+7lGolbkLFnsr+EfXfNj3lDqVU=;
+        bh=FywnJxMdr1k3pQ1HeIhFN0gSdsokC74HndvCOCCRrQ4=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=FQ26KWO3DGVK0FTlUjhEmK37CcnluimIzUAYAXdHb1BpnACSufc+oIHrEa4wtYSpG
-         S9CpwF7RncBkLajwiX4xqKDS7ERphiOoxiMUQiq+vXCoTwHB4R9LIrEl2wY9dhYE3J
-         JU6uoawyZt4LzCjHJlLVMjh1el4E8oY+Ro3vkYR4kppAJIX+wjaW/OO8VHgdVp91IW
-         7LVMZEbGaCoszOoDT5Pvm4Rz8GLkPpI3G+8/iIQxnnDEA/tHzd5DAQFav5ToEl1PnI
-         M3y1WbrusJPljaQtXr3cmUbQJHd2Cw3IgYNh3YlNUR/HiQQye5hBplD0ZTM8etWxSm
-         y9PsAzLCZrm5g==
+        b=kS1YbHDeqm7mpXNvzjM0THgRxSvgNcPonBg/hmHU3F4MYhMkX0f0uVuDA2fFN23Vz
+         UmBpViOq6oJlY5ni7vv+YvtmS11T1pBUMj/U8saA6+VzvF7Y7D1eyvZhcu8NkPaJTC
+         HB8j38h7FkETdcrDZhqqNHLfC54xcDWAaZGCO6MOqEhKHAHRO1LyewUeaAYUjLHmWd
+         aUMDk/ezA1SQ/buH4LnJPyfdOBKlZAt5/nwpob2utZ/IIeyKUnNHqr+Hk6fJVktAOb
+         cBBxYRlnB9phKJ4IpvG+jvozXZuZ33kkV75iGUeTJOpEsdr2eUSkaI/szAEJoGdvFQ
+         BC0glAq0uB+eA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6BAF860075;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B201B600DF;
         Sat,  3 Apr 2021 18:18:40 +0000 (UTC)
-Subject: Re: [GIT PULL] Hyper-V fixes for 5.12-rc6
+Subject: Re: [GIT PULL] Staging driver fix for 5.12-rc6
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210402215533.56z6kk56s6wxannw@liuwe-devbox-debian-v2>
-References: <20210402215533.56z6kk56s6wxannw@liuwe-devbox-debian-v2>
+In-Reply-To: <YGhIsWHsP474a+dE@kroah.com>
+References: <YGhIsWHsP474a+dE@kroah.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210402215533.56z6kk56s6wxannw@liuwe-devbox-debian-v2>
-X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed-20210402
-X-PR-Tracked-Commit-Id: 37df9f3fedb6aeaff5564145e8162aab912c9284
+X-PR-Tracked-Message-Id: <YGhIsWHsP474a+dE@kroah.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-5.12-rc6
+X-PR-Tracked-Commit-Id: e78836ae76d20f38eed8c8c67f21db97529949da
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: fa16199500c8863da145870f01d61617d967b6c3
-Message-Id: <161747392043.13474.15297761635305854325.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 3e707eb6b8aa715847c17279f9c17c8dca2d639b
+Message-Id: <161747392072.13474.11297671042251072132.pr-tracker-bot@kernel.org>
 Date:   Sat, 03 Apr 2021 18:18:40 +0000
-To:     Wei Liu <wei.liu@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Wei Liu <wei.liu@kernel.org>, kys@microsoft.com,
-        sthemmin@microsoft.com, haiyangz@microsoft.com,
-        Michael Kelley <mikelley@microsoft.com>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        devel@linuxdriverproject.org, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 2 Apr 2021 21:55:33 +0000:
+The pull request you sent on Sat, 3 Apr 2021 12:51:29 +0200:
 
-> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed-20210402
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-5.12-rc6
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/fa16199500c8863da145870f01d61617d967b6c3
+https://git.kernel.org/torvalds/c/3e707eb6b8aa715847c17279f9c17c8dca2d639b
 
 Thank you!
 
