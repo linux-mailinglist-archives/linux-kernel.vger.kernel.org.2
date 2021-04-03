@@ -2,360 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0D43531F5
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 03:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 770753531F6
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 03:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235961AbhDCBbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Apr 2021 21:31:51 -0400
-Received: from mail-pf1-f182.google.com ([209.85.210.182]:40591 "EHLO
-        mail-pf1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234488AbhDCBbs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Apr 2021 21:31:48 -0400
-Received: by mail-pf1-f182.google.com with SMTP id a12so4551251pfc.7
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 18:31:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4U6y5+ZHgTsyXtMrV5RiGiXPXpiApEmd6ovMOj1v7xM=;
-        b=MPmixpQ2y7SMTjKNEvrhl/hl9hPftDJpUW4aE/waCDcsJ30Se1+o18BI5TukYdo4yQ
-         +HQsmIohhiKxfRThp2x812eF8eIORALOq3IOdKKxACK99kVXsjh6Gmtz0xqj43y2evxa
-         L9VcVrQLQoDq3FDwbW79ZOOfwATEwPlcjwSMmw7tZT+YkFy1vOundtk0F2u9MMUsdZ8K
-         HjcC07xw5MGR9xGqsIfnOLWRx7d14Pn46LnpHV9UrTBc7JvOw6xrts2Hzvq6yrxkbJRb
-         hRiQb8TZOyCnRXsIfWJ03zcmUiaTPhmE8nbsXXrEsbf28uEdcA4HR6tQCn5WmvobJCpg
-         Z6qg==
-X-Gm-Message-State: AOAM530wDny4LVXrsIM1UxRb7EngWvM/zeQ/ByshybxYVJTnD10I809U
-        3WwPSzrtVowUhUxQkcZg29DBTQG+bqHBYw==
-X-Google-Smtp-Source: ABdhPJx8qcerw3YBvpAmbbGU8RnBJCI6+pemKf80EM0JcisJfzNJRxJbvU7/smzsJgwrO1QP5pVSQg==
-X-Received: by 2002:a63:1402:: with SMTP id u2mr13780228pgl.417.1617413505221;
-        Fri, 02 Apr 2021 18:31:45 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id d20sm9065878pfn.166.2021.04.02.18.31.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 18:31:44 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 4A9BA404D5; Sat,  3 Apr 2021 01:31:43 +0000 (UTC)
-Date:   Sat, 3 Apr 2021 01:31:43 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     syzbot <syzbot+9b91d635e2b51efd6371@syzkaller.appspotmail.com>,
-        Martin Fuzzey <mfuzzey@parkeon.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        rafael@kernel.org, sunjunyong@xiaomi.com, sunjy516@gmail.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] KASAN: use-after-free Read in fw_load_sysfs_fallback
-Message-ID: <20210403013143.GV4332@42.do-not-panic.com>
-References: <000000000000721b1305bf043595@google.com>
+        id S235473AbhDCBeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Apr 2021 21:34:03 -0400
+Received: from mail-bn7nam10on2138.outbound.protection.outlook.com ([40.107.92.138]:35155
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234488AbhDCBeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Apr 2021 21:34:01 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VwRoMVwPhH/G0pMy8TRh/emvTf9BdaMeQlnZyoiYx0uE/nrgmndP/iLR87ovOaL1I40o/eY3J4Hxw5JD6b7i3zKpDSx8pkGgKVwLfGCsbsq6YREqX5h5xbS2darXpscXMT4LeoAtKhsaJTF4XnHNxwDc7DdlJih7/wdjTPopnIGv17j3jpa5KFkw/NSQOhGZ762kG2O52L/I13XOHd1m9C8cerMOa3rUb+yuyeZNInXI0q6HHjw0F5uljXV3ikkMGhUuXCPu14LmLW06mte6UX+sOQxweb72GKY7hOnMAC4hs62zgdapPszvw5OGhsY8LJQmOfHzYHJlFOGf56NfCA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ym5JkBys+sZiqh8tuwf9vB1nqBeyHgtlzuMnHqvRVe4=;
+ b=P+nC5DOJkttFMRh8Inr4QUcfnAEMX1nSIbqG/NeBgukHxYI6Q+vufXIiKkStI4Ab8CMmFbLf70OHgHZsCaR/cdFzWXpjYwMwCmVfefk+l8VQBpXzSJ7tSehYrQUuf3j3KpgAqfOoxEuOVaTO83qOsaK9GHlsFiA2NBK05KPucRTE4CWwyTt1j5uroSLqBSH8HECTpE8Ez0Ag0SfcXY6q78NPpA4Bcl6h+UVOqFYugH+bDC4svjKaUvX3i1Lu3DBJg4VqcyF3wjo25z9cE/Cz6kBm/BKiGeNS9YC5OE0bMeR4Eoqzx7BUVKQEemgG5Qv3tuRyG+7qbiXWUObcEQJyEA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=maximintegrated.com; dmarc=pass action=none
+ header.from=maximintegrated.com; dkim=pass header.d=maximintegrated.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=maximintegrated.onmicrosoft.com;
+ s=selector2-maximintegrated-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ym5JkBys+sZiqh8tuwf9vB1nqBeyHgtlzuMnHqvRVe4=;
+ b=EOHDzoNxkOxRugGuTtZyD0ufIQ2TKVWIqdHdFyKitLS23X1ibG+Y75Nfiek6shh6A0MjLyBPRsTtP/8V0MYAPvyCQ/LJHOmYIJVooBKpDfaFqTb9t9ZBCuRs/1S4dFPDOq0+uXvqLQp0dhP7Ebv40O4uBed6lisej+9IYup8704=
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
+ by MWHPR11MB1344.namprd11.prod.outlook.com (2603:10b6:300:23::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28; Sat, 3 Apr
+ 2021 01:33:55 +0000
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::cc39:7519:2fa6:cc8b]) by CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::cc39:7519:2fa6:cc8b%3]) with mapi id 15.20.3999.029; Sat, 3 Apr 2021
+ 01:33:54 +0000
+From:   Steve Lee <SteveS.Lee@maximintegrated.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "perex@perex.cz" <perex@perex.cz>,
+        "tiwai@suse.com" <tiwai@suse.com>,
+        "ckeepax@opensource.cirrus.com" <ckeepax@opensource.cirrus.com>,
+        "geert@linux-m68k.org" <geert@linux-m68k.org>,
+        "rf@opensource.wolfsonmicro.com" <rf@opensource.wolfsonmicro.com>,
+        "shumingf@realtek.com" <shumingf@realtek.com>,
+        "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
+        "krzk@kernel.org" <krzk@kernel.org>,
+        "dmurphy@ti.com" <dmurphy@ti.com>,
+        "jack.yu@realtek.com" <jack.yu@realtek.com>,
+        "nuno.sa@analog.com" <nuno.sa@analog.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "ryan.lee.maxim@gmail.com" <ryan.lee.maxim@gmail.com>,
+        "steves.lee.maxim@gmail.com" <steves.lee.maxim@gmail.com>
+Subject: RE: [EXTERNAL] Re: [PATCH] ASoC: max98390: Add controls for tx path
+Thread-Topic: [EXTERNAL] Re: [PATCH] ASoC: max98390: Add controls for tx path
+Thread-Index: AQHXJ3HIPe95Vf5oskirMR52I5vc/qqhWV0AgACqjsA=
+Date:   Sat, 3 Apr 2021 01:33:54 +0000
+Message-ID: <CO1PR11MB5089B8E8108E13E9FE6D965192799@CO1PR11MB5089.namprd11.prod.outlook.com>
+References: <20210402033643.12259-1-steves.lee@maximintegrated.com>
+ <20210402152326.GA5402@sirena.org.uk>
+In-Reply-To: <20210402152326.GA5402@sirena.org.uk>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none
+ header.from=maximintegrated.com;
+x-originating-ip: [125.129.66.126]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: cf5a6b43-b7e2-43e0-7bf2-08d8f6408b50
+x-ms-traffictypediagnostic: MWHPR11MB1344:
+x-microsoft-antispam-prvs: <MWHPR11MB13448D56B2791A74A6A9664B92799@MWHPR11MB1344.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1824;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: AlJl1NDVeag+ArIbIxzY/I4X68RZUMn3SxUHuRsQrfrr84kNoNyzj3KkvWJ3SWndim3gCh+yfEaiRSZt/44vIjo51ow/b9RM9/3KyjgpcDUCpgd63lpMhAMS/Q8vwRtIbqr291cU4ieAgkKNir21tq6FF27sJZWVOD6tMMMCzNuqorHKXbmsAu0g4jX3nir9S7c7tMmpdFaumPDx1nf+togB+QDaRwoAjijjNH07ml/N/i7KLq/VHI4dew4HAfbP9JycwoNTX9wsd+kZvHE+HXzNsW0B/Xs6MYIYqbEshwuljDp9Rf9jvbxXVGMbLy1Xg8Yd8sjocRFrvWRnBRx+QhlRRWKHZExk0PBf82aqYY1jxgLtabCpRDeG9+KfwjH6Cd+QQBGR0pCM1l5Pk3Z206wp3VJdZzQFCN0kCeTKzG80EKJsPHlkC0IRn5i60hsus7zw6G2g6n9G1CTxW0IU9yvEH/q2o3WeH2ls9GEfhQIYudxtsTBZN0Qb4tIW87hsBUekfol5JtTTrTiZFonQIZoZ1jjN6CTwt/sq8Pk/+arZ0q2svl5L1OltZuZPbBjRHu2x/9vuCu0Hd0jSwq0Q4HXV9Zz1QWfDSdgO77Gjl3ojoBAURkNZKucDKF0pzyuFRfv8Jyykm5xkznMFSLSmn0jg5IxrpNMhS4FmKj3sSr0=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(366004)(346002)(396003)(136003)(54906003)(7696005)(6506007)(53546011)(83380400001)(478600001)(71200400001)(66446008)(33656002)(52536014)(64756008)(316002)(66476007)(76116006)(66946007)(4326008)(38100700001)(66556008)(26005)(2906002)(7416002)(9686003)(186003)(8936002)(86362001)(6916009)(8676002)(5660300002)(55016002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?KjhenBbJ7ZMv9YJ5JTBAb/jYU7hpybkxIX/37Xz6pCzP4t8CAe9ErgykNmOt?=
+ =?us-ascii?Q?rhl2O4FZlCx8EoJjG2g//3PzN2tTBRkC7FLk0ZMpVFDQLBfxIp39F1X2i19q?=
+ =?us-ascii?Q?txNwiXRv7QD8tO2Q20gOwZe8W58um1yYgwGm9n5xD9WyqQ8Dt2EJjVodF66u?=
+ =?us-ascii?Q?0xY1fRjEHVbYXGoqOp2Flf2LVjSLXbpRlfh6wZ4uHfoUGFwlVAs0vgARAU82?=
+ =?us-ascii?Q?gf2UeURZ2BydJ0yYmF+3UPrHUihDZ+TeKPJz3o78lwQcDKSGjDnY0rGIo2ei?=
+ =?us-ascii?Q?IQgQkO+c8+TJMwagtHXMH97FBddkiYfK/NODUCNmvkdT6Qm6lz1lj1reeQ11?=
+ =?us-ascii?Q?BEW7sqinqT0CCk10ujixeB7xiC9j05/dBNpMUcUvOuynfLVYbHUlTtZT6yrC?=
+ =?us-ascii?Q?83R367R3OOI+5PvjlHffkvx9CpGS8WDevvXdkm6+e7ES4K2Mmy508S3GqOiA?=
+ =?us-ascii?Q?mvusjxI48C18x4eS2UZOeT1xAzE530akgLXL1s4tGjPID7oodb2HyDBhhs16?=
+ =?us-ascii?Q?41QB7pK6c+OD+sk04FprvAy2z/va+32L/z6KhJmQ48rHv9FgH4y2mdqI1bWk?=
+ =?us-ascii?Q?A2sik87hw4arXoyYG8JwA4/Mu0DsdQVWxTtfGXhPmOQ44FMhKUZg2kPPRkjd?=
+ =?us-ascii?Q?1ch/hvjZx4o6f/xe86+0R3cV0/F7G0HGNaOVLwXyQfFxSmAImCyU+urTQlqc?=
+ =?us-ascii?Q?tyJlbSrnYXOwpXI3J+aJF8EWXd5ENulfP9pcFZEDne1IaGrX5Xg2XsXH44xo?=
+ =?us-ascii?Q?KZ510Fre5XVgvhDMRoHwWwcPF6P9gj0Yr++GWa/nAaFobthEGfCO44QMfHuB?=
+ =?us-ascii?Q?TDPf8VgxHL1p0Jf3NDoOnzMsCYQ4T/fD+YARQzx6lkcvdQLhXB37/P/o4YgE?=
+ =?us-ascii?Q?vpnUb8FRr+wno26duKHwr6zJxemCyaZIa31Lq/qNZX2A8tj6vKKuBsnwxbGl?=
+ =?us-ascii?Q?NH+5LWVtpMN9NMIc1DQIsC2lPjOM84QVivvcZL8BZSf20q7Jfv+DyWxL2kuU?=
+ =?us-ascii?Q?UQxVjYZIvqasDuE0RpKRFcFJ4u1X//aH/8Ox6u+hYqKB6+ZP4o9vTImL0BMn?=
+ =?us-ascii?Q?vRGx6MqtLrcYaXAJtRqTGfwVOaAUP9X9xFQ2FM7epe06OULKjVUtJmDjlEXK?=
+ =?us-ascii?Q?UZ9Vj1cyYzO+y2dikc6dyo1zKioH+WfjLYBgTwyHDCDtjVH3YFMs8ttp3Pj3?=
+ =?us-ascii?Q?91B9iBqO6A+i7WBnStHgnWBELlXrZ8M8K2Z/ppc7HBuOTqs0NdUaS0UqKDak?=
+ =?us-ascii?Q?syRw2gr1NqGIBj86Z5fZIdKaHyBYKT2/Tw3afKKaYD07nkLxRF1z28Rq1p0s?=
+ =?us-ascii?Q?MowtDQgyeBxkqidcSlCiydlT?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000721b1305bf043595@google.com>
+X-OriginatorOrg: maximintegrated.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cf5a6b43-b7e2-43e0-7bf2-08d8f6408b50
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Apr 2021 01:33:54.7138
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: fbd909df-ea69-4788-a554-f24b7854ad03
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wi7ZfilqW03mbwB0LVTUId9RFz73NG8gGkirLuJLmM2ZE1om7szhceuaxdgmU9SU3pK4GRifVfFeVOxwo8Nv4h+w03AyWWuTwkCPuCgvAf8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1344
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 02:41:20PM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    5ee96fa9 Merge tag 'irq-urgent-2021-03-21' of git://git.ke..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1028d621d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=c51293a9ca630f6d
-> dashboard link: https://syzkaller.appspot.com/bug?extid=9b91d635e2b51efd6371
-> compiler:       Debian clang version 11.0.1-2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1794dad6d00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11f7afe6d00000
-> 
-> The issue was bisected to:
-> 
-> commit bcfbd3523f3c6eea51a74d217a8ebc5463bcb7f4
-> Author: Junyong Sun <sunjy516@gmail.com>
-> Date:   Tue Mar 3 02:36:08 2020 +0000
-> 
->     firmware: fix a double abort case with fw_load_sysfs_fallback
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17e4778ad00000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=1414778ad00000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1014778ad00000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+9b91d635e2b51efd6371@syzkaller.appspotmail.com
-> Fixes: bcfbd3523f3c ("firmware: fix a double abort case with fw_load_sysfs_fallback")
-> 
-> platform regulatory.0: Direct firmware load for regulatory.db failed with error -2
-> platform regulatory.0: Falling back to sysfs fallback for: regulatory.db
-> ==================================================================
-> BUG: KASAN: use-after-free in __list_add_valid+0x36/0xc0 lib/list_debug.c:23
-> Read of size 8 at addr ffff888014188ac8 by task syz-executor310/9819
-> 
-> CPU: 0 PID: 9819 Comm: syz-executor310 Not tainted 5.12.0-rc3-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack+0x176/0x24e lib/dump_stack.c:120
->  print_address_description+0x5f/0x3a0 mm/kasan/report.c:232
->  __kasan_report mm/kasan/report.c:399 [inline]
->  kasan_report+0x15c/0x200 mm/kasan/report.c:416
->  __list_add_valid+0x36/0xc0 lib/list_debug.c:23
->  __list_add include/linux/list.h:67 [inline]
->  list_add include/linux/list.h:86 [inline]
->  fw_load_sysfs_fallback+0x110/0x720 drivers/base/firmware_loader/fallback.c:516
->  fw_load_from_user_helper+0x242/0x320 drivers/base/firmware_loader/fallback.c:581
->  _request_firmware+0x2c5/0x4c0 drivers/base/firmware_loader/main.c:831
->  request_firmware+0x35/0x50 drivers/base/firmware_loader/main.c:875
->  reg_reload_regdb+0x3a/0x1b0 net/wireless/reg.c:1095
->  genl_family_rcv_msg_doit net/netlink/genetlink.c:739 [inline]
->  genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
->  genl_rcv_msg+0xe4e/0x1280 net/netlink/genetlink.c:800
->  netlink_rcv_skb+0x190/0x3a0 net/netlink/af_netlink.c:2502
->  genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
->  netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
->  netlink_unicast+0x786/0x940 net/netlink/af_netlink.c:1338
->  netlink_sendmsg+0x9ae/0xd50 net/netlink/af_netlink.c:1927
->  sock_sendmsg_nosec net/socket.c:654 [inline]
->  sock_sendmsg net/socket.c:674 [inline]
->  ____sys_sendmsg+0x519/0x800 net/socket.c:2350
->  ___sys_sendmsg net/socket.c:2404 [inline]
->  __sys_sendmsg+0x2bf/0x370 net/socket.c:2433
->  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x44ab59
-> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 01 16 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007fa2b8ba9318 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-> RAX: ffffffffffffffda RBX: 00000000004d62a8 RCX: 000000000044ab59
-> RDX: 0000000000000000 RSI: 00000000200001c0 RDI: 0000000000000003
-> RBP: 00000000004d62a0 R08: 0000000000000099 R09: 0000000000000000
-> R10: 000000000000000c R11: 0000000000000246 R12: 0031313230386c6e
-> R13: 00007ffeeaba390f R14: 00007fa2b8ba9400 R15: 0000000000022000
-> 
-> Allocated by task 9818:
->  kasan_save_stack mm/kasan/common.c:38 [inline]
->  kasan_set_track mm/kasan/common.c:46 [inline]
->  set_alloc_info mm/kasan/common.c:427 [inline]
->  ____kasan_kmalloc+0xc2/0xf0 mm/kasan/common.c:506
->  kasan_kmalloc include/linux/kasan.h:233 [inline]
->  kmem_cache_alloc_trace+0x21b/0x350 mm/slub.c:2934
->  kmalloc include/linux/slab.h:554 [inline]
->  kzalloc include/linux/slab.h:684 [inline]
->  __allocate_fw_priv+0x98/0x340 drivers/base/firmware_loader/main.c:186
->  alloc_lookup_fw_priv+0x1c3/0x380 drivers/base/firmware_loader/main.c:250
->  _request_firmware_prepare+0x23c/0x5b0 drivers/base/firmware_loader/main.c:744
->  _request_firmware+0xd9/0x4c0 drivers/base/firmware_loader/main.c:806
->  request_firmware+0x35/0x50 drivers/base/firmware_loader/main.c:875
->  reg_reload_regdb+0x3a/0x1b0 net/wireless/reg.c:1095
->  genl_family_rcv_msg_doit net/netlink/genetlink.c:739 [inline]
->  genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
->  genl_rcv_msg+0xe4e/0x1280 net/netlink/genetlink.c:800
->  netlink_rcv_skb+0x190/0x3a0 net/netlink/af_netlink.c:2502
->  genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
->  netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
->  netlink_unicast+0x786/0x940 net/netlink/af_netlink.c:1338
->  netlink_sendmsg+0x9ae/0xd50 net/netlink/af_netlink.c:1927
->  sock_sendmsg_nosec net/socket.c:654 [inline]
->  sock_sendmsg net/socket.c:674 [inline]
->  ____sys_sendmsg+0x519/0x800 net/socket.c:2350
->  ___sys_sendmsg net/socket.c:2404 [inline]
->  __sys_sendmsg+0x2bf/0x370 net/socket.c:2433
->  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> Freed by task 9815:
->  kasan_save_stack mm/kasan/common.c:38 [inline]
->  kasan_set_track+0x3d/0x70 mm/kasan/common.c:46
->  kasan_set_free_info+0x1f/0x40 mm/kasan/generic.c:357
->  ____kasan_slab_free+0x100/0x140 mm/kasan/common.c:360
->  kasan_slab_free include/linux/kasan.h:199 [inline]
->  slab_free_hook mm/slub.c:1562 [inline]
->  slab_free_freelist_hook+0x171/0x270 mm/slub.c:1600
->  slab_free mm/slub.c:3161 [inline]
->  kfree+0xcf/0x2d0 mm/slub.c:4213
->  kref_put include/linux/kref.h:65 [inline]
->  free_fw_priv drivers/base/firmware_loader/main.c:289 [inline]
->  firmware_free_data drivers/base/firmware_loader/main.c:584 [inline]
->  release_firmware+0x139/0x1b0 drivers/base/firmware_loader/main.c:1053
->  _request_firmware+0x3e1/0x4c0 drivers/base/firmware_loader/main.c:839
->  request_firmware+0x35/0x50 drivers/base/firmware_loader/main.c:875
->  reg_reload_regdb+0x3a/0x1b0 net/wireless/reg.c:1095
->  genl_family_rcv_msg_doit net/netlink/genetlink.c:739 [inline]
->  genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
->  genl_rcv_msg+0xe4e/0x1280 net/netlink/genetlink.c:800
->  netlink_rcv_skb+0x190/0x3a0 net/netlink/af_netlink.c:2502
->  genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
->  netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
->  netlink_unicast+0x786/0x940 net/netlink/af_netlink.c:1338
->  netlink_sendmsg+0x9ae/0xd50 net/netlink/af_netlink.c:1927
->  sock_sendmsg_nosec net/socket.c:654 [inline]
->  sock_sendmsg net/socket.c:674 [inline]
->  ____sys_sendmsg+0x519/0x800 net/socket.c:2350
->  ___sys_sendmsg net/socket.c:2404 [inline]
->  __sys_sendmsg+0x2bf/0x370 net/socket.c:2433
->  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> Last potentially related work creation:
->  kasan_save_stack+0x27/0x50 mm/kasan/common.c:38
->  kasan_record_aux_stack+0xee/0x120 mm/kasan/generic.c:345
->  __call_rcu kernel/rcu/tree.c:3039 [inline]
->  call_rcu+0x130/0x8e0 kernel/rcu/tree.c:3114
->  fib6_info_release include/net/ip6_fib.h:337 [inline]
->  ip6_route_info_create+0xf84/0x17f0 net/ipv6/route.c:3736
->  ip6_route_add+0x22/0x120 net/ipv6/route.c:3746
->  addrconf_prefix_route net/ipv6/addrconf.c:2415 [inline]
->  inet6_addr_add+0x99e/0x11a0 net/ipv6/addrconf.c:2948
->  inet6_rtm_newaddr+0x754/0x2890 net/ipv6/addrconf.c:4869
->  rtnetlink_rcv_msg+0x895/0xd50 net/core/rtnetlink.c:5553
->  netlink_rcv_skb+0x190/0x3a0 net/netlink/af_netlink.c:2502
->  netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
->  netlink_unicast+0x786/0x940 net/netlink/af_netlink.c:1338
->  netlink_sendmsg+0x9ae/0xd50 net/netlink/af_netlink.c:1927
->  sock_sendmsg_nosec net/socket.c:654 [inline]
->  sock_sendmsg net/socket.c:674 [inline]
->  __sys_sendto+0x438/0x5c0 net/socket.c:1977
->  __do_sys_sendto net/socket.c:1989 [inline]
->  __se_sys_sendto net/socket.c:1985 [inline]
->  __x64_sys_sendto+0xda/0xf0 net/socket.c:1985
->  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> The buggy address belongs to the object at ffff888014188a00
->  which belongs to the cache kmalloc-256 of size 256
-> The buggy address is located 200 bytes inside of
->  256-byte region [ffff888014188a00, ffff888014188b00)
-> The buggy address belongs to the page:
-> page:ffffea0000506200 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x14188
-> head:ffffea0000506200 order:1 compound_mapcount:0
-> flags: 0xfff00000010200(slab|head)
-> raw: 00fff00000010200 0000000000000000 0000000100000001 ffff888010841b40
-> raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
-> page dumped because: kasan: bad access detected
-> 
-> Memory state around the buggy address:
->  ffff888014188980: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->  ffff888014188a00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> >ffff888014188a80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->                                               ^
->  ffff888014188b00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->  ffff888014188b80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-> ==================================================================
-
-Although the patch did introduce the issue, it is perhaps just easier
-to reproduce now, so I don't think it's still not possible without the
-patch.
-
-This code is a bit of a mess. Let's clean this up for good.
-
-The issue in the Use-after-free above seems to be the list
-is already cleared. And the commit which is referenced just
-did an optimization to avoide an abort if we don't need one in
-one situation.
-
-The error codes is something we should consider... the signal situation
-reported by Martin should not be forgotten. He wanted to ensure that
-userspace can tell that the *issue* they might have been debugging was
-caused due to a signal. In their case the android init process issued
-the store and got a SIGCHLD and erronously caused a wait for the
-firmware to never load. So we added commit 76098b36b5db1 ("firmware:
-send -EINTR on signal abort on fallback mechanism") for that.
-
-The race we are seeing now is userspace races to cancel earlier,
-and so we want to also detect that and just bail earlier, avoiding
-the UAF. That requires a new fix actually.
-
-Shua's commit 0542ad88fbdd81bb ("firmware loader: Fix
-_request_firmware_load() return val for fw load abort") also wanted to
-distinguish the timeout vs -ENOMEM, but for some reason in the timeout
-case -EAGAIN was being sent back to userspace. I am no longer sure if
-that is a good idea, but since we started doing that at some point I
-guess we want to keep that behaviour.
-
-So help me bikeshed / test, how about this, the optimization is kept
-by now just checking for abort on __fw_load_abort() so it can be
-re-entrant. The rest is just trying to document a bit more of the
-motivations for the error codes, as otherwise we'd loose this
-information easily.
-
-diff --git a/drivers/base/firmware_loader/fallback.c b/drivers/base/firmware_loader/fallback.c
-index 91899d185e31..0798f6351d02 100644
---- a/drivers/base/firmware_loader/fallback.c
-+++ b/drivers/base/firmware_loader/fallback.c
-@@ -70,7 +70,32 @@ static inline bool fw_sysfs_loading(struct fw_priv *fw_priv)
- 
- static inline int fw_sysfs_wait_timeout(struct fw_priv *fw_priv,  long timeout)
- {
--	return __fw_state_wait_common(fw_priv, timeout);
-+	int ret;
-+
-+	ret = __fw_state_wait_common(fw_priv, timeout);
-+
-+	/*
-+	 * A signal could be sent to abort a wait. Consider Android's init
-+	 * gettting a SIGCHLD, which in turn was the same process issuing the
-+	 * syfs store call for the fallback. In such cases we want to be able
-+	 * to tell apart in userspace when a signal caused a failure on the
-+	 * wait. In such cases we'd get -ERESTARTSYS.
-+	 *
-+	 * Likewise though another race can happen and abort the load earlier.
-+	 *
-+	 * In either case the situation is interrupted so we just inform
-+	 * userspace of that and we end things right away.
-+	 *
-+	 * When we really time out just tell userspace it should try again,
-+	 * perhaps later.
-+	 */
-+	if (retval == -ERESTARTSYS || fw_state_is_aborted(fw_priv))
-+		ret = -EINTR;
-+	else if (ret == -ETIMEDOUT)
-+		ret = -EAGAIN
-+	else if (fw_priv->is_paged_buf && !fw_priv->data)
-+		ret = -ENOMEM;
-+	return ret;
- }
- 
- struct fw_sysfs {
-@@ -91,7 +116,7 @@ static void __fw_load_abort(struct fw_priv *fw_priv)
- 	 * There is a small window in which user can write to 'loading'
- 	 * between loading done and disappearance of 'loading'
- 	 */
--	if (fw_sysfs_done(fw_priv))
-+	if (fw_state_is_aborted(fw_priv) || fw_sysfs_done(fw_priv))
- 		return;
- 
- 	list_del_init(&fw_priv->pending_list);
-@@ -513,6 +538,11 @@ static int fw_load_sysfs_fallback(struct fw_sysfs *fw_sysfs, long timeout)
- 	}
- 
- 	mutex_lock(&fw_lock);
-+	if (fw_state_aborted(fw_priv)) {
-+		retval = -EINTR;
-+		mutex_unlock(&fw_lock);
-+		goto out;
-+	}
- 	list_add(&fw_priv->pending_list, &pending_fw_head);
- 	mutex_unlock(&fw_lock);
- 
-@@ -526,20 +556,12 @@ static int fw_load_sysfs_fallback(struct fw_sysfs *fw_sysfs, long timeout)
- 	}
- 
- 	retval = fw_sysfs_wait_timeout(fw_priv, timeout);
--	if (retval < 0 && retval != -ENOENT) {
-+	if (retval < 0) {
- 		mutex_lock(&fw_lock);
- 		fw_load_abort(fw_sysfs);
- 		mutex_unlock(&fw_lock);
- 	}
--
--	if (fw_state_is_aborted(fw_priv)) {
--		if (retval == -ERESTARTSYS)
--			retval = -EINTR;
--		else
--			retval = -EAGAIN;
--	} else if (fw_priv->is_paged_buf && !fw_priv->data)
--		retval = -ENOMEM;
--
-+out:
- 	device_del(f_dev);
- err_put_dev:
- 	put_device(f_dev);
+> -----Original Message-----
+> From: Mark Brown <broonie@kernel.org>
+> Sent: Saturday, April 3, 2021 12:23 AM
+> To: Steve Lee <SteveS.Lee@maximintegrated.com>
+> Cc: lgirdwood@gmail.com; perex@perex.cz; tiwai@suse.com;
+> ckeepax@opensource.cirrus.com; geert@linux-m68k.org;
+> rf@opensource.wolfsonmicro.com; shumingf@realtek.com;
+> srinivas.kandagatla@linaro.org; krzk@kernel.org; dmurphy@ti.com;
+> jack.yu@realtek.com; nuno.sa@analog.com; linux-kernel@vger.kernel.org;
+> alsa-devel@alsa-project.org; ryan.lee.maxim@gmail.com;
+> steves.lee.maxim@gmail.com
+> Subject: [EXTERNAL] Re: [PATCH] ASoC: max98390: Add controls for tx path
+>=20
+> On Fri, Apr 02, 2021 at 12:36:43PM +0900, Steve Lee wrote:
+>=20
+> > +	SOC_SINGLE("Tx Enable Selection", MAX98390_PCM_TX_EN_A,
+> > +		0, 255, 0),
+>=20
+> I'm not clear what this is (especially given the source selection below) =
+but it
+> looks like it should be a mute control?
+Yes, each channel of enable and disable control.=20
+I will update this also configured by TDM slot configuration. =20
+>=20
+> > +	SOC_SINGLE("Tx Hiz Selection", MAX98390_PCM_TX_HIZ_CTRL_A,
+> > +		0, 255, 0),
+>=20
+> This I'd expect to be tied into machine driver configuration, either DT p=
+roperties
+> or TDM slot configuration - it's not something that looks like it's somet=
+hing
+> you'd want to control at runtime.
+I will update this with either TDM slot configuration and DT properties.
+>=20
+> > +	SOC_SINGLE("Tx Source Selection", MAX98390_PCM_CH_SRC_2,
+> > +		0, 255, 0),
+>=20
+> This looks like it should be a DAPM control or possibly a TDM slot config=
+uration -
+> look at how the Arizona devices handle routing from multiple TDM slots fo=
+r the
+> DAPM version.
+This is for Current Sensing and Voltage sensing slot selection. I will upda=
+te this as DT properties.
