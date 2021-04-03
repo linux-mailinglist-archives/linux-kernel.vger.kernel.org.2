@@ -2,156 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F86C3535F3
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 01:49:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6615C3535F4
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 01:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236923AbhDCXs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 19:48:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50928 "EHLO
+        id S236938AbhDCXwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 19:52:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236621AbhDCXsz (ORCPT
+        with ESMTP id S236621AbhDCXwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 19:48:55 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B282BC061756;
-        Sat,  3 Apr 2021 16:48:50 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id ap14so12126989ejc.0;
-        Sat, 03 Apr 2021 16:48:50 -0700 (PDT)
+        Sat, 3 Apr 2021 19:52:21 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA5D6C061756
+        for <linux-kernel@vger.kernel.org>; Sat,  3 Apr 2021 16:52:16 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id b16so8989693eds.7
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Apr 2021 16:52:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KaKARgWuxTwlkppdVccis1BMVVCVCv4wnEn6AAlkMvQ=;
-        b=bV6mo24MkR5Vjt2jpDr/R3eI1lkwj9D855nBHgYnTvdXDYxoyaLquVtX2+Xp+oQuol
-         2ll79TTdNOSBzxUKXbiKH3H9foZW0DpOEQF9+0DK+TY/jaUeTKgW/G47b5hZdO+GGfjJ
-         KjLIhfQezmwaUtI1OTflICfAYo8i2GvJ/8zcJTOSXgB86ucIR7DeVvFa1OvuD8Tgt+fY
-         qH98yUJFDsG5EXD24crX6AiY/2NqJ5YPNtvuw0BjIRUBNW5gdKxM6o5yppfk0Q3bD9YR
-         X7Cb5/Puom3g44GMHEdWvprNjgnhlSVoLF+9p8INc4NYY4B6+5jLhi9wDk3O4PxToElv
-         C8Xw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qslKCvwXbzOJ0dkzl5lj4jMLTkdwognZQlXTLjB2Jz4=;
+        b=EJdOq7MtZY97RF3QlCvNh3iCGm945ySKJ1DdpH1xiPNoTD7Ab6dOpHAGSAI3imDxEs
+         k8L+6AA8HkMklqJtG6C0n9p8Y8h8x7P4jLqkOaNpxygaSxGmzffZ6jYD9dnMf1g/51XZ
+         8/o6KY6hv4pscx/SpouTfv8Xx1YNvVelWSBonWeV0Jb4i8ffmcntVhN2uxXqtNTRw1fH
+         ThM20xZskt1MfXuNeH1mtlaWxVBgXAgr5vSMirjTuTOTXQlp6w0bYFh1odzmX+xo8y9d
+         dQUtcO5FnDANnFLdYgfQNIh/JePqDuXkmOij1BvVzW0j/ujJTkLfObUQWNRLZI+Ja+U8
+         ChfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KaKARgWuxTwlkppdVccis1BMVVCVCv4wnEn6AAlkMvQ=;
-        b=hKh9KyL6RvCaS6Q8i7ls383gIWNGZUo6wwyrz/2utpuT9FX08aQCZ7a82xgulu/llL
-         zP7neYDxtc6bf/ANrThKGLiDnfm+YwXuxPG7Wgx1s+sScijE/X/knqYtEqa2I9gVFIkg
-         r7whPlfmjvYH3ByBx0TvIsjfJSeawK6lHus9D+o8el75b5wxNBByR9TyaWZoLeEMy708
-         k2DVWon/lzCDUfSfMtK2xS/Vx/Tg/Ok0c2aPqGjxrPVZAtrzTnLDz4sMSE0Lutfl1pvb
-         u1a8Yt/hgiGRPrCgGJ0+HhCNX4Xf81Dj0vd0Vctl7aofKeB5iP7MyfT2+Vs+oNAw31cJ
-         F1Aw==
-X-Gm-Message-State: AOAM533+0noLjjtnZNp3r3eef/XADf+hk1UPVN11Cx9OpKk85syeNNnX
-        TLKjdAuespy9rMWUB95E5QU=
-X-Google-Smtp-Source: ABdhPJz+wEQSSijU464niYswj3Jge9/J9JNiiGO5gK3B8k6o6FfMxa0YZORd3vLVlOHvHzudgWF+bA==
-X-Received: by 2002:a17:907:929:: with SMTP id au9mr20842655ejc.28.1617493729399;
-        Sat, 03 Apr 2021 16:48:49 -0700 (PDT)
-Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
-        by smtp.gmail.com with ESMTPSA id r13sm7858082edy.3.2021.04.03.16.48.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Apr 2021 16:48:48 -0700 (PDT)
-Date:   Sun, 4 Apr 2021 02:48:47 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH net-next v1 5/9] net: dsa: qca: ar9331: add forwarding
- database support
-Message-ID: <20210403234847.jceg4ubljdq3g7n5@skbuf>
-References: <20210403114848.30528-1-o.rempel@pengutronix.de>
- <20210403114848.30528-6-o.rempel@pengutronix.de>
- <YGiI3JtqU7Ezlbxb@lunn.ch>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qslKCvwXbzOJ0dkzl5lj4jMLTkdwognZQlXTLjB2Jz4=;
+        b=UEmYBZNWDB9WXryyU0Qu1U6/Tak3DmbCARn1cF35TI5dICnVQycofneTgvg23Yo/JG
+         mT/ju3VW9POftpJtYx2d6WwkEr/ZjzSyWR1n54i1G20tnzVAmv9v8Is9qwumiFCI1aFV
+         Q1d9iO3C2/p5EZxXfzswba5GRpfdLFz6V4CyGYHZdbl/Zi5ipssVQCn2fpQmLmNaaIDB
+         trHynghS8Vm2P3EmtPkS3dCxfGie6ZE1mwoumiX0WmIYcxkyImrSc4o6CJ5laHmQtJsx
+         BlU6sf/4nkQfNOo6yuT0Bf7NN9aQvBrU9jpd4LE5sEMhaeuynL12xHYNCBBYo53oyr2h
+         R1ZA==
+X-Gm-Message-State: AOAM531sCBxD8G2uKJODXntAFr2zyIwJI6hHDyYow/ajRpH8uMMUA3pT
+        bRWpzXTe+iZQYZApbzMmKWVCgvXtCsn1cb0Rdk07pOgZomBPRg==
+X-Google-Smtp-Source: ABdhPJwhMQBrFoqDS11xvrKwoYHY/cTTRSFQJkyVchSYtGYqx46aa0KCsf1PuGgd0Juzt5H8J0j3NVU979DEuSgB2xQ=
+X-Received: by 2002:aa7:cf17:: with SMTP id a23mr24185964edy.30.1617493935384;
+ Sat, 03 Apr 2021 16:52:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YGiI3JtqU7Ezlbxb@lunn.ch>
+References: <20210403051325.683071-1-pcc@google.com> <CANpmjNOzaOJY5K+Sq78AF5N1_6=1kv3rXZ6w+XPuEf9G+cd8iA@mail.gmail.com>
+ <CAMn1gO5mQ2WPs9B9jN91T90Qxf3k6eK-GeBUhs=YqmkZu4NKFg@mail.gmail.com> <CANpmjNM__Dk_MVd-9fPT=TbPw=a1giicUcFS+RwCfQ7yue8Xdw@mail.gmail.com>
+In-Reply-To: <CANpmjNM__Dk_MVd-9fPT=TbPw=a1giicUcFS+RwCfQ7yue8Xdw@mail.gmail.com>
+From:   Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Sun, 4 Apr 2021 01:52:04 +0200
+Message-ID: <CA+fCnZd4BaejuyyWuT4xeiEyY1J0-6RWiyP3_u+w-xdOrALd9w@mail.gmail.com>
+Subject: Re: [PATCH] kfence: unpoison pool region before use
+To:     Marco Elver <elver@google.com>,
+        Peter Collingbourne <pcc@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 03, 2021 at 05:25:16PM +0200, Andrew Lunn wrote:
-> > +static int ar9331_sw_port_fdb_rmw(struct ar9331_sw_priv *priv,
-> > +				  const unsigned char *mac,
-> > +				  u8 port_mask_set,
-> > +				  u8 port_mask_clr)
-> > +{
-> > +	port_mask = FIELD_GET(AR9331_SW_AT_DES_PORT, f2);
-> > +	status = FIELD_GET(AR9331_SW_AT_STATUS, f2);
-> > +	if (status > 0 && status < AR9331_SW_AT_STATUS_STATIC) {
-> > +		dev_err_ratelimited(priv->dev, "%s: found existing dynamic entry on %x\n",
-> > +				    __func__, port_mask);
-> > +
-> > +		if (port_mask_set && port_mask_set != port_mask)
-> > +			dev_err_ratelimited(priv->dev, "%s: found existing dynamic entry on %x, replacing it with static on %x\n",
-> > +					    __func__, port_mask, port_mask_set);
-> > +		port_mask = 0;
-> > +	} else if (!status && !port_mask_set) {
-> > +		return 0;
-> > +	}
-> 
-> As a generate rule of thumb, use rate limiting where you have no
-> control of the number of prints, e.g. it is triggered by packet
-> processing, and there is potentially a lot of them, which could DOS
-> the box by a remote or unprivileged attacker.
-> 
-> FDB changes should not happen often. Yes, root my be able to DOS the
-> box by doing bridge fdb add commands in a loop, but only root should
-> be able to do that.
+On Sun, Apr 4, 2021 at 12:31 AM Marco Elver <elver@google.com> wrote:
+>
+> However, given the above, I think we need to explain this in the
+> commit message (which also makes the dependency between these 2
+> patches clear) and add a comment above the new kasan_unpoison_range().
+> That is, if we still think this is the right fix -- I'm not entirely
+> sure it is.
+>
+> Because what I gather from "kasan: initialize shadow to TAG_INVALID
+> for SW_TAGS", is the requirement that "0xFF pointer tag is a match-all
+> tag, it doesn't matter what tag the accessed memory has".
+>
+> While KFENCE memory is accessible through the slab API, and in this
+> case ksize() calling kasan_check_byte() leading to a failure, the
+> kasan_check_byte() call is part of the public KASAN API. Which means
+> that if some subsystem decides to memblock_alloc() some memory, and
+> wishes to use kasan_check_byte() on that memory but with an untagged
+> pointer, will get the same problem as KFENCE: with generic and HW_TAGS
+> mode everything is fine, but with SW_TAGS mode things break.
 
-+1
-The way I see it, rate limiting should only be done when the user can't
-stop the printing from spamming the console, and they just go "argh,
-kill it with fire!!!" and throw the box away. As a side note, most of
-the time when I can't stop the kernel from printing in a loop, the rate
-limit isn't enough to stop me from wanting to throw the box out the
-window, but I digress.
+It makes sense to allow this function to operate on any kind of
+memory, including memory that hasn't been previously marked by KASAN.
 
-> Plus, i'm not actually sure we should be issuing warnings here. What
-> does the bridge code do in this case? Is it silent and just does it,
-> or does it issue a warning?
+> To me this indicates the fix is not with KFENCE, but should be in
+> mm/kasan/sw_tags.c:kasan_byte_accessible(), which should not load the
+> shadow when the pointer is untagged.
 
-:D
+The problem isn't in accessing shadow per se. Looking at
+kasan_byte_accessible() (in both sw_tags.c and kasan.h), the return
+statement there seems just wrong and redundant. The KASAN_TAG_KERNEL
+check should come first:
 
-What Oleksij doesn't know, I bet, is that he's using the bridge bypass
-commands:
+return tag == KASAN_TAG_KERNEL || (shadow_byte != KASAN_TAG_INVALID &&
+tag == shadow_byte);
 
-bridge fdb add dev lan0 00:01:02:03:04:05
+This way, if the pointer tag is KASAN_TAG_KERNEL, the memory is
+accessible no matter what the memory tag is.
 
-That is the deprecated way of managing FDB entries, and has several
-disadvantages such as:
-- the bridge software FDB never gets updated with this entry, so other
-  drivers which might be subscribed to DSA's FDB (imagine a non-DSA
-  driver having the same logic as our ds->assisted_learning_on_cpu_port)
-  will never see these FDB entries
-- you have to manage duplicates yourself
+But then the KASAN_TAG_INVALID check isn't needed, as this value is
+never assigned to a pointer tag. Which brings us to:
 
-The correct way to install a static bridge FDB entry is:
+return tag == KASAN_TAG_KERNEL || tag == shadow_byte;
 
-bridge fdb add dev lan0 00:01:02:03:04:05 master static
+Which is essentially the same check that kasan_check_range() performs.
 
-That will error out on duplicates for you.
+Although, kasan_check_range() also checks that the shadow is <
+KASAN_SHADOW_START. It makes makes sense to add this check into
+kasan_byte_accessible() as well, before accessing shadow.
 
-From my side I would even go as far as deleting the bridge bypass
-operations (.ndo_fdb_add and .ndo_fdb_del). The more integration we add
-between DSA and the bridge/switchdev, the worse it will be when users
-just keep using the bridge bypass. To start that process, I guess we
-should start emitting a deprecation warning and then pull the trigger
-after a few kernel release cycles.
-
-> > +
-> > +	port_mask_new = port_mask & ~port_mask_clr;
-> > +	port_mask_new |= port_mask_set;
-> > +
-> > +	if (port_mask_new == port_mask &&
-> > +	    status == AR9331_SW_AT_STATUS_STATIC) {
-> > +		dev_info(priv->dev, "%s: no need to overwrite existing valid entry on %x\n",
-> > +				    __func__, port_mask_new);
-> 
-> This one should probably be dev_dbg().
-
-Or deleted, along with the overwrite logic.
+Thanks!
