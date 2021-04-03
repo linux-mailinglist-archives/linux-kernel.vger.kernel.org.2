@@ -2,159 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FD5335346A
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 16:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9647635346D
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 17:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236697AbhDCO6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 10:58:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231821AbhDCO6m (ORCPT
+        id S236661AbhDCPCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 11:02:36 -0400
+Received: from smtprelay0195.hostedemail.com ([216.40.44.195]:54202 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231821AbhDCPCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 10:58:42 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41CCCC0613E6;
-        Sat,  3 Apr 2021 07:58:39 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id d12so11278303lfv.11;
-        Sat, 03 Apr 2021 07:58:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ofez9QQkjbGfabnkHUsDerilVQ8cXc1rXhIvZTSlqfA=;
-        b=VcH+WX0DiySUQJLr1aarBlCe/aFgiAQ5l2FY+K/U12KXDyaEuZ/fItdbjl27O1yId3
-         /PE+2O8GkJC9Ia2SFNzIFxoMjpr+4a91m8myGxsqWVp07TFly26EU/ho+I+GX/SHxmDz
-         fDUf3X2ufiDtkewdhCqYkk1prfgOglggJ3VV1KQYd1S/bPEJekdQOg+hfWmk1A7DY9gd
-         s5DyeTLT3NDWRQ1xKuS8H9Tt5DSxCZ1iUeRHlekpRNsGuAiEI/me7P+x1Lz59GBCOU9m
-         yJIDP9sO0UYDEg3/o5WSaQDiFdlRs8JCXVQIZRLnWNkg2T5/4texofTWtTaTrmQWH8XQ
-         Vp5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ofez9QQkjbGfabnkHUsDerilVQ8cXc1rXhIvZTSlqfA=;
-        b=Dz8VETysctiBp6fGZ105olxnL9qGhFY4FntaOFAFmE12eeWuyTv3b+7uyb1bQfsZCF
-         6Ci6z8LsjIE/o2VrhDbiu3XFXX0ibDXZSWj4n5siHXZwcQdK3bBuGXxsxsnPt2SEn+wr
-         OfGpRcPXskdLacQX5NTxvx1LLC+rohEIk6ExDhh7ihky+7hcV4/mnmvzb4IG/knO4A4W
-         6KONcJQ++puIOyjRemLQAhMrDFD6loSiUb/m+ExXoUxeUgjIiFfsw6f2jRf01Oy+Ue9F
-         8otcv5MdRUPv/BdBCoM8UxAjLIafhUGO8YNPbK+b1zZX9fpWq5+850LpjTQdNPvLdjbQ
-         pvfg==
-X-Gm-Message-State: AOAM531flb/4dhuELboErYTippmDXkDF4dOg1QjjLFzSxgJShS7edQKq
-        P1I2nlto2m1rRyGkaEKtsGhC4XgYduOhstSjciPzZ66Cr1U=
-X-Google-Smtp-Source: ABdhPJwMsPdGA9tjvCjHqW0Bj3pR7PYcV5DMkFP1eW0WLL/4zc10iqXAL7UERRmctJ5dfqx9U98LfQ1Pgk9YxfaBEAY=
-X-Received: by 2002:ac2:5a11:: with SMTP id q17mr12219631lfn.354.1617461917675;
- Sat, 03 Apr 2021 07:58:37 -0700 (PDT)
+        Sat, 3 Apr 2021 11:02:33 -0400
+Received: from omf19.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id EEBBB184558E0;
+        Sat,  3 Apr 2021 15:02:27 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf19.hostedemail.com (Postfix) with ESMTPA id 0F57520D756;
+        Sat,  3 Apr 2021 15:02:26 +0000 (UTC)
+Message-ID: <1cd79d781cdcccf621ce8e104a9cdf1e90e7f803.camel@perches.com>
+Subject: Re: [PATCH v3 00/30] staging: rtl8723bs: remove RT_TRACE logs in
+ core/*
+From:   Joe Perches <joe@perches.com>
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>, gregkh@linuxfoundation.org
+Cc:     dan.carpenter@oracle.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Date:   Sat, 03 Apr 2021 08:02:25 -0700
+In-Reply-To: <cover.1617440833.git.fabioaiuto83@gmail.com>
+References: <cover.1617440833.git.fabioaiuto83@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-References: <20210401091648.87421-1-puranjay12@gmail.com> <20210401091648.87421-3-puranjay12@gmail.com>
- <7a9097bf-9f8d-0fe7-7b5e-84643bcff760@metafoo.de>
-In-Reply-To: <7a9097bf-9f8d-0fe7-7b5e-84643bcff760@metafoo.de>
-From:   Puranjay Mohan <puranjay12@gmail.com>
-Date:   Sat, 3 Apr 2021 20:28:25 +0530
-Message-ID: <CANk7y0gwSZgxzmxtOZayyy_TrUP+rbjtN4WXZAsZE7E46UmUDg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] iio: temperature: add driver support for ti tmp117
-To:     Lars-Peter Clausen <lars@metafoo.de>
-Cc:     alexandru.ardelean@analog.com, Jonathan Cameron <jic23@kernel.org>,
-        devicetree@vger.kernel.org, knaack.h@gmx.de,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=0.10
+X-Stat-Signature: f8y8xwjzigh8njpx8b1i1a3yycqrrokd
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 0F57520D756
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/4QJLtXCTzaD3/uBcvaBOi2jxvHRsyFM4=
+X-HE-Tag: 1617462146-363510
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 2, 2021 at 1:43 PM Lars-Peter Clausen <lars@metafoo.de> wrote:
->
-> On 4/1/21 11:16 AM, Puranjay Mohan wrote:
-> > TMP117 is a Digital temperature sensor with integrated NV memory.
-> >
-> > Add support for tmp117 driver in iio subsystem.
-> > Datasheet:-https://www.ti.com/lit/gpn/tmp117
-> >
-> > Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
->
-> Nice and clean driver. Just some comments about the CALIBBIAS.
->
-> > [...]
-> > +#define TMP117_RESOLUTION_10UC               78125
-> Isn't the unit here 100 uC?
+On Sat, 2021-04-03 at 11:13 +0200, Fabio Aiuto wrote:
+> This patchset removes all RT_TRACE usages in core/ files.
 
-it is 7.8125 milli degrees_C so 78125 x 10^-4 milli degrees_C
-which is 78125 x 10^-4 x 10^3 micro degrees_C
-so it becomes 78125 x 10^-1 micro degrees_C = 78125 10_microdegrees_C.
-Did it in detail so I remember it in the future. I guess you thought
-it as 0.78125 millidegrees_C?
+and hal and include and os_dep
 
-> > +#define TMP117_DEVICE_ID             0x0117
-> > +
-> > +struct tmp117_data {
-> > +     struct i2c_client *client;
-> > +};
-> > +
-> > +static int tmp117_read_raw(struct iio_dev *indio_dev,
-> > +             struct iio_chan_spec const *channel, int *val,
-> > +             int *val2, long mask)
-> > +{
-> > [...]
-> > +     case IIO_CHAN_INFO_CALIBBIAS:
-> > +             ret = i2c_smbus_read_word_swapped(data->client,
-> > +                                     TMP117_REG_TEMP_OFFSET);
-> > +             if (ret < 0)
-> > +                     return ret;
-> > +             *val = ((int16_t)ret * (int32_t)TMP117_RESOLUTION_10UC)
-> > +                                                             / 10000;
-> > +             *val2 = ((int16_t)ret * (int32_t)TMP117_RESOLUTION_10UC)
-> > +                                                             % 10000;
->
-> If I understand this right CALBBIAS is written in one unit, but read in
-> another unit. E.g. if you do `echo 100 > ..._calibbias` and then `cat
-> ..._calibbias` you'd read a different value back.
->
-yes, reading it will return the value in milli degrees_C. but to write
-it should be in the register format according to the datasheet.
+> 
+> This is the first of a series aimed at removing RT_TRACE macro.
+> 
+> The whole private tracing system is not tied to a configuration
+> symbol and the default behaviour is _trace nothing_. It's verbose
+> and relies on a private log level tracing doomed to be
+> removed.
 
-> I think that would be quite unexpected behavior. The unit should be the
-> same. Here in the read function you can just return the register value.
+It's nice, but individual patches per file done by hand are difficult
+to review because you are interleaving removal patches with cleanup
+patches.
 
-Okay, if you feel that would be right then I will do it.
-> Just make sure to properly sign extend like for the RAW property.
->
-> > +             return IIO_VAL_INT_PLUS_MICRO;
-> > [...]
-> > +}
-> > +
-> > +static int tmp117_write_raw(struct iio_dev *indio_dev,
-> > +             struct iio_chan_spec const *channel, int val,
-> > +             int val2, long mask)
-> > +{
-> > +     struct tmp117_data *data = iio_priv(indio_dev);
-> > +     s16 off;
-> > +
-> > +     switch (mask) {
-> > +     case IIO_CHAN_INFO_CALIBBIAS:
-> > +             off = (s16)val;
-> This should have some input validation to avoid writing bogus values to
-> the register when the value is out of range. You can either reject out
-> of range values or clamp them into the valid range (using the clamp()
-> macro).
-the maximum value which this register takes is 0xffff, so it should
-get clamped automatically when casting to s16?
-I might be wrong here.
+I believe this should be a patch series with a single patch to remove
+all RT_TRACE macro uses using coccinelle and then use separate patches
+to do whatever cleanups around these removals you want to do.
 
-> > +             return i2c_smbus_write_word_swapped(data->client,
-> > +                                             TMP117_REG_TEMP_OFFSET, off);
-> > +
-> > +     default:
-> > +             return -EINVAL;
-> > +     }
-> > +}
-> > +
-> [...]
+All of these below should be done for all files in drivers/staging/rtl8723bs
+at once instead of submitting per-file patches.
 
+IMO something like:
 
+Cover-letter: Explain why you are doing this
+Patch 1 of N: Remove all RT_TRACE macro uses using a coccinelle script
+              and include the coccinelle script in the commit message
+Patch 2 of N: Remove commented out RT_TRACE uses
+Patch 3 of N: Remove RT_TRACE macro definition
+Patch 4 of N: Cleanup coccinelle generated {} uses, if/else braces and
+              the now unnecessary if tests around the RT_TRACE removals
+Patch 5 of N: Cleanup whitespace
+Patcn x of N: Whatever else related to these RT_TRACE sites...
 
--- 
-Thanks and Regards
+https://lore.kernel.org/lkml/c845d8ea7d0d8e7a613471edb53d780d660142a9.camel@perches.com/
 
-Yours Truly,
+Using a sequence like the above would be much easier to review and
+would be a significant shorter patch set.
 
-Puranjay Mohan
