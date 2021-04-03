@@ -2,187 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C643534D3
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 19:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 955853534D7
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 19:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236929AbhDCRFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 13:05:24 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:13543 "EHLO pegase1.c-s.fr"
+        id S236901AbhDCRNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 13:13:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236918AbhDCRFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 13:05:22 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FCNb06bB4z9v2Ch;
-        Sat,  3 Apr 2021 19:05:16 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id hny0ZdS1jIdX; Sat,  3 Apr 2021 19:05:16 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FCNb04fv3z9v2Cg;
-        Sat,  3 Apr 2021 19:05:16 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 555818B76D;
-        Sat,  3 Apr 2021 19:05:18 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 5Y5ip5-gsMdr; Sat,  3 Apr 2021 19:05:18 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 714218B76A;
-        Sat,  3 Apr 2021 19:05:17 +0200 (CEST)
-Subject: Re: [PATCH 3/5] crypto: ccp: Play nice with vmalloc'd memory for SEV
- command structs
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        John Allen <john.allen@amd.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>
-References: <20210402233702.3291792-1-seanjc@google.com>
- <20210402233702.3291792-4-seanjc@google.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <6a87996d-3e0c-4a23-8c43-3fcbdadcc861@csgroup.eu>
-Date:   Sat, 3 Apr 2021 19:05:08 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S236724AbhDCRNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Apr 2021 13:13:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FD1861003;
+        Sat,  3 Apr 2021 17:13:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617470006;
+        bh=Nd6uTIGhCXcJKk8v6p+Bb0Q/Jf5ZPkK6R1hzVemWUAw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tNt9ucV3xJHIuOWyaSAkF4Le0iaUBjP286O/50x1qFcyDUA0AV4ZOl5eI5GSo5xV1
+         D7Y++MVmBBtLT0NUBTILDpZNuHr/SXxFIkxiNo7ZWWJKm0Fk16dwBgA4Ew+zXR87na
+         hT7DQ3C27NxxUy4nQf6iibLA1TDXUmbStqK+rS4x/y9itzoXpNArR1afTKIiHt4Z31
+         U+5bgsJcKcOwoUyZvNu/jKcxH5hvp+eWRm5aYl9PjJTFCVRp/mXvXVzc43/sdQGFit
+         TTpO9ZtwvfSk0oWewO16DhBD25PNSv0U038NXo88Wzztg2D6c3V81vB1VB9OdnQW4q
+         hnQrkQT8rfMZw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id AAECB40647; Sat,  3 Apr 2021 14:13:24 -0300 (-03)
+Date:   Sat, 3 Apr 2021 14:13:24 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Alexey Alexandrov <aalexand@google.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH] perf record: Disallow -c and -F option at the same time
+Message-ID: <YGiiNDzHIm5oxT9n@kernel.org>
+References: <20210402094020.28164-1-namhyung@kernel.org>
+ <YGcd/vz3KyOUReOh@kernel.org>
+ <CANtFmmo6Wq_u=D89hkfmS8yMtKhk+6pm_4YawpO-6MvS_4noaw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210402233702.3291792-4-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANtFmmo6Wq_u=D89hkfmS8yMtKhk+6pm_4YawpO-6MvS_4noaw@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Fri, Apr 02, 2021 at 08:25:30PM -0700, Alexey Alexandrov escreveu:
+> A warning can be missed when the tool is run by some kind of automation.
+> Backward compatibility aside, I think conflicting flags should result in an
+> early exit to avoid later surprises.
 
+Sure, I agree with you in principle, but having erred out in the past,
+i.e. in making this be accepted, now making this out of the blue finally
+be considered what it always should have been considered, an error,
+feels like an error.
 
-Le 03/04/2021 à 01:37, Sean Christopherson a écrit :
-> Copy vmalloc'd data to an internal buffer instead of rejecting outright
-> so that callers can put SEV command buffers on the stack without running
-> afoul of CONFIG_VMAP_STACK=y.  Currently, the largest supported command
-> takes a 68 byte buffer, i.e. pretty much every command can be put on the
-> stack.  Because sev_cmd_mutex is held for the entirety of a transaction,
-> only a single bounce buffer is required.
-> 
-> Use a flexible array for the buffer, sized to hold the largest known
-> command.   Alternatively, the buffer could be a union of all known
-> command structs, but that would incur a higher maintenance cost due to
-> the need to update the union for every command in addition to updating
-> the existing sev_cmd_buffer_len().
-> 
-> Align the buffer to an 8-byte boundary, mimicking the alignment that
-> would be provided by the compiler if any of the structs were embedded
-> directly.  Note, sizeof() correctly incorporates this alignment.
-> 
-> Cc: Brijesh Singh <brijesh.singh@amd.com>
-> Cc: Borislav Petkov <bp@suse.de>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   drivers/crypto/ccp/sev-dev.c | 33 +++++++++++++++++++++++++++------
->   drivers/crypto/ccp/sev-dev.h |  7 +++++++
->   2 files changed, 34 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-> index 4c513318f16a..6d5882290cfc 100644
-> --- a/drivers/crypto/ccp/sev-dev.c
-> +++ b/drivers/crypto/ccp/sev-dev.c
-> @@ -135,13 +135,14 @@ static int sev_cmd_buffer_len(int cmd)
->   	return 0;
->   }
->   
-> -static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
-> +static int __sev_do_cmd_locked(int cmd, void *__data, int *psp_ret)
->   {
->   	struct psp_device *psp = psp_master;
->   	struct sev_device *sev;
->   	unsigned int phys_lsb, phys_msb;
->   	unsigned int reg, ret = 0;
->   	int buf_len;
-> +	void *data;
->   
->   	if (!psp || !psp->sev_data)
->   		return -ENODEV;
-> @@ -152,11 +153,21 @@ static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
->   	sev = psp->sev_data;
->   
->   	buf_len = sev_cmd_buffer_len(cmd);
-> -	if (WARN_ON_ONCE(!!data != !!buf_len))
-> +	if (WARN_ON_ONCE(!!__data != !!buf_len))
->   		return -EINVAL;
->   
-> -	if (WARN_ON_ONCE(data && is_vmalloc_addr(data)))
-> -		return -EINVAL;
-> +	if (__data && is_vmalloc_addr(__data)) {
+I sent this message after merging the change, but before pushing it out
+publicly I felt some (more) discussion would be in order.
 
-I think you want to use !virt_addr_valid() here, because not only vmalloc addresses are a problem. 
-For instance, module addresses are a problem as well.
+Are you sure that potentially breaking existing scripts is ok in this
+case?
 
-> +		/*
-> +		 * If the incoming buffer is virtually allocated, copy it to
-> +		 * the driver's scratch buffer as __pa() will not work for such
-> +		 * addresses, vmalloc_to_page() is not guaranteed to succeed,
-> +		 * and vmalloc'd data may not be physically contiguous.
-> +		 */
-> +		data = sev->cmd_buf;
-> +		memcpy(data, __data, buf_len);
-> +	} else {
-> +		data = __data;
-> +	}
->   
->   	/* Get the physical address of the command buffer */
->   	phys_lsb = data ? lower_32_bits(__psp_pa(data)) : 0;
-> @@ -204,6 +215,13 @@ static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
->   	print_hex_dump_debug("(out): ", DUMP_PREFIX_OFFSET, 16, 2, data,
->   			     buf_len, false);
->   
-> +	/*
-> +	 * Copy potential output from the PSP back to __data.  Do this even on
-> +	 * failure in case the caller wants to glean something from the error.
-> +	 */
-> +	if (__data && data != __data)
-> +		memcpy(__data, data, buf_len);
-> +
->   	return ret;
->   }
->   
-> @@ -978,9 +996,12 @@ int sev_dev_init(struct psp_device *psp)
->   {
->   	struct device *dev = psp->dev;
->   	struct sev_device *sev;
-> -	int ret = -ENOMEM;
-> +	int ret = -ENOMEM, cmd_buf_size = 0, i;
->   
-> -	sev = devm_kzalloc(dev, sizeof(*sev), GFP_KERNEL);
-> +	for (i = 0; i < SEV_CMD_MAX; i++)
-> +		cmd_buf_size = max(cmd_buf_size, sev_cmd_buffer_len(i));
-> +
-> +	sev = devm_kzalloc(dev, sizeof(*sev) + cmd_buf_size, GFP_KERNEL);
->   	if (!sev)
->   		goto e_err;
->   
-> diff --git a/drivers/crypto/ccp/sev-dev.h b/drivers/crypto/ccp/sev-dev.h
-> index dd5c4fe82914..b43283ce2d73 100644
-> --- a/drivers/crypto/ccp/sev-dev.h
-> +++ b/drivers/crypto/ccp/sev-dev.h
-> @@ -52,6 +52,13 @@ struct sev_device {
->   	u8 api_major;
->   	u8 api_minor;
->   	u8 build;
-> +
-> +	/*
-> +	 * Buffer used for incoming commands whose physical address cannot be
-> +	 * resolved via __pa(), e.g. stack pointers when CONFIG_VMAP_STACK=y.
-> +	 * Note, alignment isn't strictly required.
-> +	 */
-> +	u8 cmd_buf[] __aligned(8);
->   };
->   
->   int sev_dev_init(struct psp_device *psp);
+Up to you, frankly.
+
+- Arnaldo
+ 
+> On Fri, Apr 2, 2021 at 6:37 AM Arnaldo Carvalho de Melo <acme@kernel.org>
+> wrote:
 > 
+> > Em Fri, Apr 02, 2021 at 06:40:20PM +0900, Namhyung Kim escreveu:
+> > > It's confusing which one is effective when the both options are given.
+> > > The current code happens to use -c in this case but users might not be
+> > > aware of it.  We can change it to complain about that instead of
+> > > relying on the implicit priority.
+> > >
+> > > Before:
+> > >   $ perf record -c 111111 -F 99 true
+> > >   [ perf record: Woken up 1 times to write data ]
+> > >   [ perf record: Captured and wrote 0.031 MB perf.data (8 samples) ]
+> > >
+> > >   $ perf evlist -F
+> > >   cycles: sample_period=111111
+> > >
+> > > After:
+> > >   $ perf record -c 111111 -F 99 true
+> > >   cannot set frequency and period at the same time
+> > >
+> > > So this change can break existing usages, but I think it's rare to
+> > > have both options and it'd be better changing them.
+> >
+> > Humm, perhaps we can just make that an warning stating that -c is used
+> > if both are specified?
+> >
+> > $ perf record -c 111111 -F 99 true
+> > Frequency and period can't be used the same time, -c 11111 will be used.
+> >
+> > - Arnaldo
+> >
+> > > Suggested-by: Alexey Alexandrov <aalexand@google.com>
+> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > > ---
+> > >  tools/perf/util/record.c | 8 +++++++-
+> > >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
+> > > index f99852d54b14..43e5b563dee8 100644
+> > > --- a/tools/perf/util/record.c
+> > > +++ b/tools/perf/util/record.c
+> > > @@ -157,9 +157,15 @@ static int get_max_rate(unsigned int *rate)
+> > >  static int record_opts__config_freq(struct record_opts *opts)
+> > >  {
+> > >       bool user_freq = opts->user_freq != UINT_MAX;
+> > > +     bool user_interval = opts->user_interval != ULLONG_MAX;
+> > >       unsigned int max_rate;
+> > >
+> > > -     if (opts->user_interval != ULLONG_MAX)
+> > > +     if (user_interval && user_freq) {
+> > > +             pr_err("cannot set frequency and period at the same
+> > time\n");
+> > > +             return -1;
+> > > +     }
+> > > +
+> > > +     if (user_interval)
+> > >               opts->default_interval = opts->user_interval;
+> > >       if (user_freq)
+> > >               opts->freq = opts->user_freq;
+> > > --
+> > > 2.31.0.208.g409f899ff0-goog
+> > >
+> >
+> > --
+> >
+> > - Arnaldo
+> >
+
+-- 
+
+- Arnaldo
