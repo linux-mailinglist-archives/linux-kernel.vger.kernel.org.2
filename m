@@ -2,130 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E96293532AF
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 07:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CBA63532B0
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 07:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232234AbhDCFMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 01:12:06 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:24225 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbhDCFMF (ORCPT
+        id S234488AbhDCFNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 01:13:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230371AbhDCFNk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 01:12:05 -0400
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 1335BiLj018210;
-        Sat, 3 Apr 2021 14:11:44 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 1335BiLj018210
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1617426705;
-        bh=6ZV4zN2J2YGsnMVtam1aocwXNCuTiUeEo/jlCKDEurM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=y3yFoZEGTt/rz3s/8n2kBohyUyPst/3jIhYq6eVpw03WaBTnRVROG7TTnS8DzmCA9
-         nXcCUAwtMUaUb73WoR7ix0Nj8kgC0qzjcQ+XIacpE8Gpdxzvb2uAUmZsIiYwXUjUvQ
-         EvRlKAr/85ABJFt5bkcGtJT4/hUjRcQDIv2GcZ1emRUdpoGyuZxuaKmQRJL52G21GS
-         VmPrc/VVUqLC5OgNgJ/CIQjLBj1d4j+CIQPQ6X+JQSbBx0Yg+iOW4+T1QaqoaCx7tw
-         tnpDy6KXodTywH8mBX3SCTCY+c8psi4A/qf/fgd8xtD1/BEL3dsEBP3XILFshfDbSu
-         rxZC/9ze4gikA==
-X-Nifty-SrcIP: [209.85.215.179]
-Received: by mail-pg1-f179.google.com with SMTP id f29so2253288pgm.8;
-        Fri, 02 Apr 2021 22:11:44 -0700 (PDT)
-X-Gm-Message-State: AOAM530G+XwU+I4WZ1hgV0bGW7anhfo4WSTMmJflF7So4iFvLSFXc1pj
-        /8soYUsPg5z4JGlTmWh4dIcSn1Q8tSa6LAvXUW0=
-X-Google-Smtp-Source: ABdhPJycTmd93+HaOjmWXjjwlRXRxWWNhEzCN8H2tET+ZE2GCj4DrychZ1QHz9Rlc1PioRXcnyWnEkD4YN5TKIR/U3w=
-X-Received: by 2002:aa7:956d:0:b029:1f1:5ba6:2a58 with SMTP id
- x13-20020aa7956d0000b02901f15ba62a58mr15061132pfq.63.1617426704037; Fri, 02
- Apr 2021 22:11:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <1617317072-26770-1-git-send-email-eberman@codeaurora.org>
-In-Reply-To: <1617317072-26770-1-git-send-email-eberman@codeaurora.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 3 Apr 2021 14:11:07 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARoXksBwxU_UH92n7mg0XtFKrSBzFRqmWXXnze1dx-B0g@mail.gmail.com>
-Message-ID: <CAK7LNARoXksBwxU_UH92n7mg0XtFKrSBzFRqmWXXnze1dx-B0g@mail.gmail.com>
-Subject: Re: [PATCH] Kbuild: Update config_data.gz only if KCONFIG_CONFIG
- materially changed
-To:     Elliot Berman <eberman@codeaurora.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Matthias Maennich <maennich@google.com>,
-        Trilok Soni <tsoni@codeaurora.org>
+        Sat, 3 Apr 2021 01:13:40 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 224AEC0613E6
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 22:13:38 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id m11so5993468qtx.19
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 22:13:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=5e19wUdjdODQtGD2+GvA+Yzt0Qe0WeByd74Ygcf0qpo=;
+        b=RSLGuy7Kh37CaGR59OvN4TwyzsJg7oifTMmm9Nxlu2Ybw6NQiYdi+9tHOptypt1958
+         j2fehMNyvamzGtEfEKt+mFLdy/eQ9ekiTaTVZ9XbAaXNpjUYBslWwogJlOz1Ie+sJ6J6
+         LG7JiHDC1Ko7EKqax9gNaStHYCMS2hMagAVPX5bli60EN4ycotVrfugd2bbo7AIRddR1
+         11ntZ+a+0I4nGoHiIzAV3dA9vFD9lypn6ncRdNP/d3SxBmDBPer9Nwa/MhqmuJHWo4uH
+         VrX7GxFpP4xjPIhy38IwB1h4B2Xj6ZVl9FIWFwIYFpe4MYLQKEeZ/NUL12bEfZ2/S9oh
+         bu5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=5e19wUdjdODQtGD2+GvA+Yzt0Qe0WeByd74Ygcf0qpo=;
+        b=NdlIbJytzve5q/gEbFXUDMezjyhVf0FpCHFQkA+Z4hxJuIvwiDvGxNIV0+sUSbjeGP
+         eJMUx3ApMX57OuQ00qAjE962t0eSWXxqEM5lb9e/Z7CbxRDpXZMvdT7/CTFodC1S8CX/
+         vYKL62SsQF1RVHdoGj4AE8P6d0ZI53P4fOnotDZIVELRwxhP3tQJg/kI9oNBLOTuo+I1
+         9m7AYycpSWgwNLYcQtLYjeglJVoV6WQGwL3znKs0cJTapePd2esISiYr/uQ2451BeHRL
+         fvhWeEnJCGXZJkBU1ei+rywsrL1XUGCB26+2066z5+uSFYV96LU24SVcmb+EilpHKQNQ
+         IeIg==
+X-Gm-Message-State: AOAM531+yRTjXjNoTjL5eeS0xb+aV8FITWU0+jnCp9o++a/B7Wjw+Xb5
+        wuAp4/v+Ts8lh1I1Gqg69of/xfo=
+X-Google-Smtp-Source: ABdhPJx9AF7tORTLtgPQIRGaLKtq7413l8Z76aS59E00uak73td2NPgBTs1wu4w51hdbRBwQ2QC89RE=
+X-Received: from pcc-desktop.svl.corp.google.com ([2620:15c:2ce:0:7898:24e2:b0bc:77e6])
+ (user=pcc job=sendgmr) by 2002:a0c:f805:: with SMTP id r5mr15630966qvn.45.1617426816378;
+ Fri, 02 Apr 2021 22:13:36 -0700 (PDT)
+Date:   Fri,  2 Apr 2021 22:13:25 -0700
+Message-Id: <20210403051325.683071-1-pcc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
+Subject: [PATCH] kfence: unpoison pool region before use
+From:   Peter Collingbourne <pcc@google.com>
+To:     Marco Elver <elver@google.com>, Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>
+Cc:     Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 2, 2021 at 7:45 AM Elliot Berman <eberman@codeaurora.org> wrote:
->
-> If you update the timestamp of KCONFIG_CONFIG without actually changing
-> anything, config_data.gz is re-generated and causes vmlinux to re-link.
-> When Link Time Optimization is enabled, unnecessary re-linking of
-> vmlinux is highly desirable since it adds several minutes to build time.
->
-> Avoid touching config_data.gz by using filechk to compare the existing
-> config_data.gz and update only if it changed.
->
-> The .config can be touched, for instance, by a build script which
-> installs the default defconfig and then applies a defconfig fragment on
-> top.
->
-> For a simple example on my x86 machine, I modified x86 default defconfig to set
-> CONFIG_IKCONFIG=y and run:
->   make -j50 defconfig tiny.config vmlinux
->   make -j50 defconfig tiny.config vmlinux
-> With this patch, vmlinux is not re-built as a result of config_data.gz
-> change.
->
-> Signed-off-by: Elliot Berman <eberman@codeaurora.org>
-> ---
->  kernel/Makefile      | 2 +-
->  scripts/Makefile.lib | 2 ++
->  2 files changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/Makefile b/kernel/Makefile
-> index 320f1f3..bd4e558 100644
-> --- a/kernel/Makefile
-> +++ b/kernel/Makefile
-> @@ -140,7 +140,7 @@ $(obj)/configs.o: $(obj)/config_data.gz
->
->  targets += config_data.gz
->  $(obj)/config_data.gz: $(KCONFIG_CONFIG) FORCE
-> -       $(call if_changed,gzip)
-> +       $(call filechk,gzip)
+If the memory region allocated by KFENCE had previously been poisoned,
+any validity checks done using kasan_byte_accessible() will fail. Fix
+it by unpoisoning the memory before using it as the pool region.
 
+Link: https://linux-review.googlesource.com/id/I0af99e9f1c25eaf7e1ec295836b5d148d76940c5
+Signed-off-by: Peter Collingbourne <pcc@google.com>
+---
+ mm/kfence/core.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-I do not think this is the right approach
-because gzip is executed every time, even
-if the time stamp is not changed.
-
-
-
-
-
-
-
->
->  $(obj)/kheaders.o: $(obj)/kheaders_data.tar.xz
->
-> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-> index a4fbaf8..81d3ec1 100644
-> --- a/scripts/Makefile.lib
-> +++ b/scripts/Makefile.lib
-> @@ -282,6 +282,8 @@ cmd_objcopy = $(OBJCOPY) $(OBJCOPYFLAGS) $(OBJCOPYFLAGS_$(@F)) $< $@
->  quiet_cmd_gzip = GZIP    $@
->        cmd_gzip = cat $(real-prereqs) | $(KGZIP) -n -f -9 > $@
->
-> +filechk_gzip = cat $(real-prereqs) | $(KGZIP) -n -f -9
-> +
->  # DTC
->  # ---------------------------------------------------------------------------
->  DTC ?= $(objtree)/scripts/dtc/dtc
-> --
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
->
-
-
+diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+index d53c91f881a4..bb22b0cf77aa 100644
+--- a/mm/kfence/core.c
++++ b/mm/kfence/core.c
+@@ -633,13 +633,19 @@ static DECLARE_DELAYED_WORK(kfence_timer, toggle_allocation_gate);
+ 
+ void __init kfence_alloc_pool(void)
+ {
++	void *pool;
++
+ 	if (!kfence_sample_interval)
+ 		return;
+ 
+-	__kfence_pool = memblock_alloc(KFENCE_POOL_SIZE, PAGE_SIZE);
+-
+-	if (!__kfence_pool)
++	pool = memblock_alloc(KFENCE_POOL_SIZE, PAGE_SIZE);
++	if (!pool) {
+ 		pr_err("failed to allocate pool\n");
++		return;
++	}
++
++	kasan_unpoison_range(pool, KFENCE_POOL_SIZE);
++	__kfence_pool = pool;
+ }
+ 
+ void __init kfence_init(void)
 -- 
-Best Regards
-Masahiro Yamada
+2.31.0.208.g409f899ff0-goog
+
