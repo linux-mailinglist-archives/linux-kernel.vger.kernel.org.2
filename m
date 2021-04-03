@@ -2,84 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9647635346D
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 17:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDCBD353470
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 17:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236661AbhDCPCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 11:02:36 -0400
-Received: from smtprelay0195.hostedemail.com ([216.40.44.195]:54202 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231821AbhDCPCd (ORCPT
+        id S236758AbhDCPD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 11:03:26 -0400
+Received: from www381.your-server.de ([78.46.137.84]:45268 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231821AbhDCPDX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 11:02:33 -0400
-Received: from omf19.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id EEBBB184558E0;
-        Sat,  3 Apr 2021 15:02:27 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf19.hostedemail.com (Postfix) with ESMTPA id 0F57520D756;
-        Sat,  3 Apr 2021 15:02:26 +0000 (UTC)
-Message-ID: <1cd79d781cdcccf621ce8e104a9cdf1e90e7f803.camel@perches.com>
-Subject: Re: [PATCH v3 00/30] staging: rtl8723bs: remove RT_TRACE logs in
- core/*
-From:   Joe Perches <joe@perches.com>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>, gregkh@linuxfoundation.org
-Cc:     dan.carpenter@oracle.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Date:   Sat, 03 Apr 2021 08:02:25 -0700
-In-Reply-To: <cover.1617440833.git.fabioaiuto83@gmail.com>
-References: <cover.1617440833.git.fabioaiuto83@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Sat, 3 Apr 2021 11:03:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=Aw1UNqJ5vEutFfUOJuRXblyd5gG8qhauQ3xAU2OtKaI=; b=NRu1djl1A64MiXCAr9ExVVzg0R
+        i+m2b9VDizmYjavQjAgDC2rgfbnOGfqL4b/zXi7yVMW91ayYM3RDOCcDKQqKXnc5/yjKjP4x5ZLks
+        noSSK0wHYWfh8GHe8OqZFvJ/+CPfCLcIqMPDiKGKf2yvNA+tCrFvlNRx1+rxLtjuhQ4GQweCFLMIt
+        EQx8C9eqU5bEQtL7edP0TZC3HkFfBJ8Ra18xG7dOXWPOd3DHAYNGI/Vm8RCj4b8nyN/qpIAlSyR3h
+        XCpKoKkWFFdUSQCCluYNJOoLYXPkYROIbKjk3W8i7p+CwK7zvE4TrRUX3VRzzM5vPogMkHx84OLNj
+        7WqR4tDA==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1lShnx-000B0U-Cz; Sat, 03 Apr 2021 17:03:17 +0200
+Received: from [2001:a61:2aa1:1e01:9e5c:8eff:fe01:8578]
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <lars@metafoo.de>)
+        id 1lShnx-000PvC-8K; Sat, 03 Apr 2021 17:03:17 +0200
+Subject: Re: [PATCH v2 2/2] iio: temperature: add driver support for ti tmp117
+To:     Puranjay Mohan <puranjay12@gmail.com>
+Cc:     alexandru.ardelean@analog.com, Jonathan Cameron <jic23@kernel.org>,
+        devicetree@vger.kernel.org, knaack.h@gmx.de,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210401091648.87421-1-puranjay12@gmail.com>
+ <20210401091648.87421-3-puranjay12@gmail.com>
+ <7a9097bf-9f8d-0fe7-7b5e-84643bcff760@metafoo.de>
+ <CANk7y0gwSZgxzmxtOZayyy_TrUP+rbjtN4WXZAsZE7E46UmUDg@mail.gmail.com>
+From:   Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <e76fbb33-f0d9-6067-0a44-aa7e7646595e@metafoo.de>
+Date:   Sat, 3 Apr 2021 17:03:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
+In-Reply-To: <CANk7y0gwSZgxzmxtOZayyy_TrUP+rbjtN4WXZAsZE7E46UmUDg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=0.10
-X-Stat-Signature: f8y8xwjzigh8njpx8b1i1a3yycqrrokd
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 0F57520D756
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/4QJLtXCTzaD3/uBcvaBOi2jxvHRsyFM4=
-X-HE-Tag: 1617462146-363510
+Content-Language: en-US
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26129/Sat Apr  3 13:05:44 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-04-03 at 11:13 +0200, Fabio Aiuto wrote:
-> This patchset removes all RT_TRACE usages in core/ files.
-
-and hal and include and os_dep
-
-> 
-> This is the first of a series aimed at removing RT_TRACE macro.
-> 
-> The whole private tracing system is not tied to a configuration
-> symbol and the default behaviour is _trace nothing_. It's verbose
-> and relies on a private log level tracing doomed to be
-> removed.
-
-It's nice, but individual patches per file done by hand are difficult
-to review because you are interleaving removal patches with cleanup
-patches.
-
-I believe this should be a patch series with a single patch to remove
-all RT_TRACE macro uses using coccinelle and then use separate patches
-to do whatever cleanups around these removals you want to do.
-
-All of these below should be done for all files in drivers/staging/rtl8723bs
-at once instead of submitting per-file patches.
-
-IMO something like:
-
-Cover-letter: Explain why you are doing this
-Patch 1 of N: Remove all RT_TRACE macro uses using a coccinelle script
-              and include the coccinelle script in the commit message
-Patch 2 of N: Remove commented out RT_TRACE uses
-Patch 3 of N: Remove RT_TRACE macro definition
-Patch 4 of N: Cleanup coccinelle generated {} uses, if/else braces and
-              the now unnecessary if tests around the RT_TRACE removals
-Patch 5 of N: Cleanup whitespace
-Patcn x of N: Whatever else related to these RT_TRACE sites...
-
-https://lore.kernel.org/lkml/c845d8ea7d0d8e7a613471edb53d780d660142a9.camel@perches.com/
-
-Using a sequence like the above would be much easier to review and
-would be a significant shorter patch set.
+On 4/3/21 4:58 PM, Puranjay Mohan wrote:
+> On Fri, Apr 2, 2021 at 1:43 PM Lars-Peter Clausen <lars@metafoo.de> wrote:
+>> On 4/1/21 11:16 AM, Puranjay Mohan wrote:
+>>> TMP117 is a Digital temperature sensor with integrated NV memory.
+>>>
+>>> Add support for tmp117 driver in iio subsystem.
+>>> Datasheet:-https://www.ti.com/lit/gpn/tmp117
+>>>
+>>> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+>> Nice and clean driver. Just some comments about the CALIBBIAS.
+>>
+>>> [...]
+>>> +#define TMP117_RESOLUTION_10UC               78125
+>> Isn't the unit here 100 uC?
+> it is 7.8125 milli degrees_C so 78125 x 10^-4 milli degrees_C
+> which is 78125 x 10^-4 x 10^3 micro degrees_C
+> so it becomes 78125 x 10^-1 micro degrees_C = 78125 10_microdegrees_C.
+> Did it in detail so I remember it in the future. I guess you thought
+> it as 0.78125 millidegrees_C?
+Ah, I get it, it is a tenth micro degree, not tens of micro degrees, 
+sorry got confused.
+> [...]
+>
+>> I think that would be quite unexpected behavior. The unit should be the
+>> same. Here in the read function you can just return the register value.
+> Okay, if you feel that would be right then I will do it.
+Yea, I think reading and writing in different units would be a bit 
+confusing.
+>> Just make sure to properly sign extend like for the RAW property.
+>>
+>>> +             return IIO_VAL_INT_PLUS_MICRO;
+>>> [...]
+>>> +}
+>>> +
+>>> +static int tmp117_write_raw(struct iio_dev *indio_dev,
+>>> +             struct iio_chan_spec const *channel, int val,
+>>> +             int val2, long mask)
+>>> +{
+>>> +     struct tmp117_data *data = iio_priv(indio_dev);
+>>> +     s16 off;
+>>> +
+>>> +     switch (mask) {
+>>> +     case IIO_CHAN_INFO_CALIBBIAS:
+>>> +             off = (s16)val;
+>> This should have some input validation to avoid writing bogus values to
+>> the register when the value is out of range. You can either reject out
+>> of range values or clamp them into the valid range (using the clamp()
+>> macro).
+> the maximum value which this register takes is 0xffff, so it should
+> get clamped automatically when casting to s16?
+> I might be wrong here.
+Casting will truncate the upper bits. So something like 0x12345 gets 
+turned into 0x2345.
+>
+>>> +             return i2c_smbus_write_word_swapped(data->client,
+>>> +                                             TMP117_REG_TEMP_OFFSET, off);
+>>> +
+>>> +     default:
+>>> +             return -EINVAL;
+>>> +     }
+>>> +}
+>>> +
+>> [...]
+>
+>
 
