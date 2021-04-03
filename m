@@ -2,189 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A26353323
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 11:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9ADC353325
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 11:25:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236452AbhDCJFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 05:05:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34159 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235604AbhDCJFD (ORCPT
+        id S234624AbhDCJOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 05:14:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231575AbhDCJOS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 05:05:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617440700;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GHdvJGYwSTRvs/+kkZxZ2UvghQjRHwXsjaQRu47DCMY=;
-        b=TjV7Pix6UClayzvp9RTHL3p550R6LqfO7APgZWbbht1V8p0RfoW++XK+OhBwjCIxj9lTVD
-        iHqmwwXw4s39JJwZi8iukhAyvxySvAefJy7FK7/Cmd2upQi5r0E7FyMPIr972YL/N5iGTS
-        9Hs4FH2qWUk4n+ggZvwHBGqK56vax1c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-568-l4C8PxvPN9yU2QMMY8PFUA-1; Sat, 03 Apr 2021 05:04:59 -0400
-X-MC-Unique: l4C8PxvPN9yU2QMMY8PFUA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1F122107ACCA;
-        Sat,  3 Apr 2021 09:04:58 +0000 (UTC)
-Received: from T590 (ovpn-12-28.pek2.redhat.com [10.72.12.28])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id CECDD19D61;
-        Sat,  3 Apr 2021 09:04:51 +0000 (UTC)
-Date:   Sat, 3 Apr 2021 17:04:47 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] block: shutdown blktrace in case of fatal signal
- pending
-Message-ID: <YGgvrxiQUTQMfUeN@T590>
-References: <20210323081440.81343-1-ming.lei@redhat.com>
- <20210323081440.81343-2-ming.lei@redhat.com>
- <20210330165330.GA13829@lst.de>
- <YGO/cpalyGevAJjn@T590>
- <20210402172730.GA22923@lst.de>
- <YGgi6FOr6cEiei+7@T590>
+        Sat, 3 Apr 2021 05:14:18 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB876C0613E6
+        for <linux-kernel@vger.kernel.org>; Sat,  3 Apr 2021 02:14:15 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id d191so3451401wmd.2
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Apr 2021 02:14:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LT97JimwWqdXkAjZA44yEtpuv0qlddxSSVFYHgByYgg=;
+        b=oi6J5+9AivKOGGQkPiS2NjT6E3b5tlBVNQ8f66A4cFo6s7Zv1teiCw6xoXswUustom
+         stuwJJuyf4kBtYV4Gi1kpNK9xoPS5nRuOmYGVIqi5wqrvSecqgyB4nee+Ps1+WfDsgZn
+         m87D6jUBz7ieFS28bkd8rJLjB4Uu9dvOoz635PHpdqcuWRKAWyTFgG4VPX+HxvpnXcZH
+         M9geuZDPPeTVumuOT1/lGsY9llkxWDKv+Du74QwrMsJEkMcbLBi8HSsTEgAY9YCBRoDg
+         nnj9KKadlatrpXtJi9Jh2Z2vi5wSs45LDPNqaSKE9GMtj6Yu/QZu0WN/HU65tXPjtuuX
+         zL9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LT97JimwWqdXkAjZA44yEtpuv0qlddxSSVFYHgByYgg=;
+        b=Q4KtvGoduRBUxV/kEApOB3E2FNOzVdjgtdM3WFgUR8YBxw2fwMBo99hZ7NtGJFNC09
+         EkfmDehjFtt6fMxo5mIqzF4oX9haSuqgEBBpSDsMSJyhYTebfJ4G1HRteS91Y0Bnuc5Y
+         XxTwA/GXiXl+g5Ui1z+qZELamRQp6n0jZrURvK3FpExiWGCoM6UXxN24yTtXmA6z61j5
+         jVqhEDjPU/zHLuCdJe91DT5Srg/bqwzVLfdLF5w24Wr0qI8UiLTGchCrS39IRvxQQPhI
+         udlJqzUrXfuJy0Ks6obrxvBjidXxdJwFWPJrrGzGCoOq26U2ZcYRb7o2IiNGx8TGEhGM
+         Y8FQ==
+X-Gm-Message-State: AOAM530JLz+h9OE78z9bpzejtSVR6iLId4DmXVCEznWOrWPpjuM/GL6T
+        kMnaPTghLXYyq9Rz5RkdewA=
+X-Google-Smtp-Source: ABdhPJwWNyxVlAq39t9pBVAgGw5NoNNuFliOakVPT+rcoHoC6vmn5y7r4tcuXxfmc9Bst/O+jiry5g==
+X-Received: by 2002:a1c:a5c7:: with SMTP id o190mr16592788wme.172.1617441254306;
+        Sat, 03 Apr 2021 02:14:14 -0700 (PDT)
+Received: from agape ([5.171.72.64])
+        by smtp.gmail.com with ESMTPSA id v189sm15801645wme.39.2021.04.03.02.14.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Apr 2021 02:14:13 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     dan.carpenter@oracle.com, joe@perches.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Fabio Aiuto <fabioaiuto83@gmail.com>
+Subject: [PATCH v3 00/30] staging: rtl8723bs: remove RT_TRACE logs in core/*
+Date:   Sat,  3 Apr 2021 11:13:22 +0200
+Message-Id: <cover.1617440833.git.fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YGgi6FOr6cEiei+7@T590>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 03, 2021 at 04:10:16PM +0800, Ming Lei wrote:
-> On Fri, Apr 02, 2021 at 07:27:30PM +0200, Christoph Hellwig wrote:
-> > On Wed, Mar 31, 2021 at 08:16:50AM +0800, Ming Lei wrote:
-> > > On Tue, Mar 30, 2021 at 06:53:30PM +0200, Christoph Hellwig wrote:
-> > > > On Tue, Mar 23, 2021 at 04:14:39PM +0800, Ming Lei wrote:
-> > > > > blktrace may allocate lots of memory, if the process is terminated
-> > > > > by user or OOM, we need to provide one chance to remove the trace
-> > > > > buffer, otherwise memory leak may be caused.
-> > > > > 
-> > > > > Fix the issue by shutdown blktrace in case of task exiting in
-> > > > > blkdev_close().
-> > > > > 
-> > > > > Signed-off-by: Ming Lei <ming.lei@redhat.com>
-> > > > 
-> > > > This just seems weird.  blktrace has no relationship to open
-> > > > block device instances.
-> > > 
-> > > blktrace still needs to open one blkdev, then send its own ioctl
-> > > commands to block layer. In case of OOM, the allocated memory in
-> > > these ioctl commands won't be released.
-> > > 
-> > > Or any other suggestion?
-> > 
-> > Not much we can do there I think.  If we want to autorelease memory
-> > it needs to be an API that ties the memory allocation to an FD.
-> 
-> We still may shutdown blktrace if current is the last opener, otherwise
-> new blktrace can't be started and memory should be leaked forever, and
-> what do you think of the revised version?
+This patchset removes all RT_TRACE usages in core/ files.
 
-This way seems not good enough, another better one is to use
-file->private_data for such purpose since blkdev fs doesn't use
-file->privete_data, then we can shutdown blktrace just for the
-blktrace FD:
+This is the first of a series aimed at removing RT_TRACE macro.
 
-From 191dff30abfd48c38a78dec78e011a39a3b606ca Mon Sep 17 00:00:00 2001
-From: Ming Lei <ming.lei@redhat.com>
-Date: Tue, 23 Mar 2021 10:32:23 +0800
-Subject: [PATCH] block: shutdown blktrace in case of task exiting
+The whole private tracing system is not tied to a configuration
+symbol and the default behaviour is _trace nothing_. It's verbose
+and relies on a private log level tracing doomed to be
+removed.
 
-blktrace may allocate lots of memory, if the process is terminated
-by user or OOM, we need to provide one chance to remove the trace
-buffer, otherwise memory leak may be caused. Also new blktrace
-instance can't be started too.
+-------------------------------
+Changes in v3:
+	- written better changelog in single patches
 
-Fix the issue by shutdown blktrace in bdev_close() if blktrace
-was setup on this FD.
+Changes in v2:
+        - isolate checkpatch fixes in separate patches
+        - removed two if conditions in core/rtw_wlan_util.c
 
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
----
- block/ioctl.c                |  2 ++
- fs/block_dev.c               | 12 ++++++++++++
- include/linux/blktrace_api.h | 11 +++++++++++
- 3 files changed, 25 insertions(+)
+Fabio Aiuto (30):
+  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_xmit.c
+  staging: rtl8723bs: fix condition in if statement in core/rtw_xmit.c
+  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_security.c
+  staging: rtl8723bs: fix line exceed warning in core/rtw_security.c
+  staging: rtl8723bs: fix spaces around operator issues in
+    core/rtw_security.c
+  staging: rtl8723bs: remove all RT_TRACE logs in core/rtw_eeprom.c
+  staging: rtl8723bs: fix error prone if conditions in core/rtw_eeprom.c
+  staging: rtl8723bs: remove all RT_TRACE logs in core/rtw_pwrctrl.c
+  staging: rtl8723bs: fix logical continuation issue in
+    core/rtw_pwrctrl.c
+  staging: rtl8723bs: remove unnecessary parentheses in if-condition in
+    core/rtw_pwrctrl.c
+  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_cmd.c
+  staging: rtl8723bs: fix null check conditions in core/rtw_cmd.c
+  staging: rtl8723bs: remove unnecessary parentheses in if condition in
+    core/rtw_cmd.c
+  staging: rtl8723bs: remove commented RT_TRACE calls in core/rtw_mlme.c
+  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_mlme.c
+  staging: rtl8723bs: tidy up some error handling in core/rtw_mlme.c
+  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_mlme_ext.c
+  staging: rtl8723bs: remove commented RT_TRACE calls in core/rtw_recv.c
+  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_recv.c
+  staging: rtl8723bs: added spaces around operator in core/rtw_recv.c
+  staging: rtl8723bs: split long line in core/rtw_recv.c
+  staging: rtl8723bs: remove unnecessary parentheses in core/rtw_recv.c
+  staging: rtl8723bs: fix comparison in if condition in core/rtw_recv.c
+  staging: rtl8723bs: remove commented RT_TRACE call in
+    core/rtw_ioctl_set.c
+  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_ioctl_set.c
+  staging: rtl8723bs: place constant on the right side of the test in
+    core/rtw_ioctl_set.c
+  staging: rtl8723bs: remove all RT_TRACE logs in core/rtw_wlan_util.c
+  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_sta_mgt.c
+  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_ieee80211.c
+  staging: rtl8723bs: add spaces around operators in
+    core/rtw_ieee80211.c
 
-diff --git a/block/ioctl.c b/block/ioctl.c
-index ff241e663c01..7dad4a546db3 100644
---- a/block/ioctl.c
-+++ b/block/ioctl.c
-@@ -611,6 +611,8 @@ long compat_blkdev_ioctl(struct file *file, unsigned cmd, unsigned long arg)
- 	else
- 		mode &= ~FMODE_NDELAY;
- 
-+	blkdev_mark_blktrace(file, cmd);
-+
- 	switch (cmd) {
- 	/* These need separate implementations for the data structure */
- 	case HDIO_GETGEO:
-diff --git a/fs/block_dev.c b/fs/block_dev.c
-index 92ed7d5df677..aaa7d7d1e5a4 100644
---- a/fs/block_dev.c
-+++ b/fs/block_dev.c
-@@ -34,6 +34,7 @@
- #include <linux/part_stat.h>
- #include <linux/uaccess.h>
- #include <linux/suspend.h>
-+#include <linux/blktrace_api.h>
- #include "internal.h"
- 
- struct bdev_inode {
-@@ -1646,6 +1647,15 @@ EXPORT_SYMBOL(blkdev_put);
- static int blkdev_close(struct inode * inode, struct file * filp)
- {
- 	struct block_device *bdev = I_BDEV(bdev_file_inode(filp));
-+
-+	/*
-+	 * The task running blktrace is supposed to shutdown blktrace
-+	 * by ioctl. If they forget to shutdown or can't do it because
-+	 * of OOM or sort of situation, we shutdown for them.
-+	 */
-+	if (blkdev_has_run_blktrace(filp))
-+		blk_trace_shutdown(bdev->bd_disk->queue);
-+
- 	blkdev_put(bdev, filp->f_mode);
- 	return 0;
- }
-@@ -1664,6 +1674,8 @@ static long block_ioctl(struct file *file, unsigned cmd, unsigned long arg)
- 	else
- 		mode &= ~FMODE_NDELAY;
- 
-+	blkdev_mark_blktrace(file, cmd);
-+
- 	return blkdev_ioctl(bdev, mode, cmd, arg);
- }
- 
-diff --git a/include/linux/blktrace_api.h b/include/linux/blktrace_api.h
-index a083e15df608..754058c1965c 100644
---- a/include/linux/blktrace_api.h
-+++ b/include/linux/blktrace_api.h
-@@ -135,4 +135,15 @@ static inline unsigned int blk_rq_trace_nr_sectors(struct request *rq)
- 	return blk_rq_is_passthrough(rq) ? 0 : blk_rq_sectors(rq);
- }
- 
-+static inline void blkdev_mark_blktrace(struct file *file, unsigned int cmd)
-+{
-+	if (cmd == BLKTRACESETUP)
-+		file->private_data = (void *)-1;
-+}
-+
-+static inline bool blkdev_has_run_blktrace(struct file *file)
-+{
-+	return file->private_data == (void *)-1;
-+}
-+
- #endif
--- 
-2.29.2
-
+ drivers/staging/rtl8723bs/core/rtw_cmd.c      |  53 +------
+ drivers/staging/rtl8723bs/core/rtw_eeprom.c   |  56 +++----
+ .../staging/rtl8723bs/core/rtw_ieee80211.c    |  90 ++---------
+ .../staging/rtl8723bs/core/rtw_ioctl_set.c    |  79 +---------
+ drivers/staging/rtl8723bs/core/rtw_mlme.c     | 124 +++------------
+ drivers/staging/rtl8723bs/core/rtw_mlme_ext.c |  39 +----
+ drivers/staging/rtl8723bs/core/rtw_pwrctrl.c  |  56 +------
+ drivers/staging/rtl8723bs/core/rtw_recv.c     | 147 +-----------------
+ drivers/staging/rtl8723bs/core/rtw_security.c |  41 +----
+ drivers/staging/rtl8723bs/core/rtw_sta_mgt.c  |  25 ---
+ .../staging/rtl8723bs/core/rtw_wlan_util.c    |  24 +--
+ drivers/staging/rtl8723bs/core/rtw_xmit.c     |  82 +---------
+ 12 files changed, 101 insertions(+), 715 deletions(-)
 
 -- 
-Ming
+2.20.1
 
