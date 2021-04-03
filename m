@@ -2,143 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1EFE353304
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 09:49:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC86353303
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 09:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236249AbhDCHsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 03:48:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43462 "EHLO
+        id S236174AbhDCHsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 03:48:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232200AbhDCHsX (ORCPT
+        with ESMTP id S232146AbhDCHsQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 03:48:23 -0400
-Received: from smtp.gentoo.org (dev.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8AFBC0613E6;
-        Sat,  3 Apr 2021 00:48:18 -0700 (PDT)
-Received: by sf.home (Postfix, from userid 1000)
-        id A18425A22061; Sat,  3 Apr 2021 08:48:10 +0100 (BST)
-From:   Sergei Trofimovich <slyfox@gentoo.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Sergei Trofimovich <slyfox@gentoo.org>,
-        linux-ia64@vger.kernel.org
-Subject: [PATCH] ia64: module: fix symbolizer crash on fdescr
-Date:   Sat,  3 Apr 2021 08:48:03 +0100
-Message-Id: <20210403074803.3309096-1-slyfox@gentoo.org>
-X-Mailer: git-send-email 2.31.1
+        Sat, 3 Apr 2021 03:48:16 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47750C0613E6
+        for <linux-kernel@vger.kernel.org>; Sat,  3 Apr 2021 00:48:10 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id x16so6413901wrn.4
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Apr 2021 00:48:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=4lpY5m1izQotM0ewusQVcTKKtwLD9dtbUV/NQkwNeL4=;
+        b=YmYRAcqnkO5URm9rIbRF+SV1xi0/eoxRjqqneyoNVgV7Gmqr/2qwfPTnbP4l4S/nu+
+         rV4qh+xZZM9YH8PVD7Nnt9sVvN4/d1ZT8mG8dIx/y542opZkLvgQCyAWiG7Usoet5KXc
+         GJrgk/oLlSBijwiBse1Ppn7i0Y3rAbFcXrA0XgJd48fe3u2+2vPCtSCbdz+9GtRsIdKI
+         64BAjzZTVTt/5SEZK/EsfxdKfA+kSMYDdoIKde4qwTeGAf6Ovi/7GVT++8Jn2jO96j4g
+         BnzL8Ny0PRGQC1thiEMfSOwjyG1CC947Tu5YaUzu+jfVjm5rwhuPCiQOPY8S7TGFqgRC
+         3pGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4lpY5m1izQotM0ewusQVcTKKtwLD9dtbUV/NQkwNeL4=;
+        b=eCMVa6VnVN3GKEXUoSs1G86foAMBQ536Y2zuPcyIDxW/YE7eBb5a0ky6VeDbC1/9f/
+         bpUCD5oc2cFugzvDQ20NU6j7BZWAsRcp7d9Bojedbe5iL74wpY6WEe6aHZlxH6hYgwZ5
+         eVxwOius2G1qQZ44v+YwB469lLOl6Fu/aY4gmmuZ4nO0cltT+ULFZe97sZ8Moby/Aycx
+         vGxfYkmg7aLnCl65G67FDzS2yxoqo6rLDlK4t78F8c1vCw64BlxfWJmUcrxVBPTsTUwq
+         nQWovm6vJ6T50J0Eryo/wXr58G523Xl0V8euk/j5DGwM+Vpd/aS30t9AW8T4j2m1GZq7
+         6F6w==
+X-Gm-Message-State: AOAM530ay8cmY1r+eiNDxtkzrNNqQX5LNGutMbGkBSVS8cvdCmBZPKic
+        AqiMN45ntwkHw76x3sd9xCafk0EsY84=
+X-Google-Smtp-Source: ABdhPJwiAwsa7XwNFRUPdxjlgRcmq0VvwRYZuAb7wTIB0ElsuLkkNLyDzJOBbhc04/bVhe4jYL6WMA==
+X-Received: by 2002:adf:e4c7:: with SMTP id v7mr19128293wrm.245.1617436089480;
+        Sat, 03 Apr 2021 00:48:09 -0700 (PDT)
+Received: from agape.jhs ([5.171.72.64])
+        by smtp.gmail.com with ESMTPSA id e23sm1042092wmk.15.2021.04.03.00.48.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Apr 2021 00:48:09 -0700 (PDT)
+Date:   Sat, 3 Apr 2021 09:48:06 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     dan.carpenter@oracle.com, joe@perches.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 01/30] staging: rtl8723bs: remove RT_TRACE logs in
+ core/rtw_xmit.c
+Message-ID: <20210403074805.GB1563@agape.jhs>
+References: <cover.1617384172.git.fabioaiuto83@gmail.com>
+ <34b6f0b80cd3913722b258e9554dbc77268fb2bf.1617384172.git.fabioaiuto83@gmail.com>
+ <YGgb2Mtzyp79elQ6@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YGgb2Mtzyp79elQ6@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Noticed failure as a crash on ia64 when tried to symbolize all
-backtraces collected by page_owner=on:
+On Sat, Apr 03, 2021 at 09:40:08AM +0200, Greg KH wrote:
+> On Fri, Apr 02, 2021 at 07:29:43PM +0200, Fabio Aiuto wrote:
+> > remove all RT_TRACE logs
+> > 
+> 
+> I don't mean to be a pain, but this changelog text needs some work.
+> 
+> This says _what_ it does, but not _why_ you are doing this.  The kernel
+> documentation has a section on how to write a good changelog text, you
+> might want to look at that.
 
-    $ cat /sys/kernel/debug/page_owner
-    <oops>
+you are right, I spent time writing the cover, but not the changelog which
+will remain in kernel history
 
-    CPU: 1 PID: 2074 Comm: cat Not tainted 5.12.0-rc4 #226
-    Hardware name: hp server rx3600, BIOS 04.03 04/08/2008
-    ip is at dereference_module_function_descriptor+0x41/0x100
+> 
+> For this type of series, this could be as simple as:
+> 	Remove all of the RT_TRACE_LOGs in the rtx_xmit.c file as they
+> 	currently do nothing as they require the code to be modified by
+> 	hand in order to be turned on.  This obviously has not happened
+> 	since the code was merged, so just remove them as they are
+> 	unused.
+> 
+> 
+> Or something like that.
+> 
+> Most of the time, writing the changelog can take more work than the
+> actual code change itself, but it's important as we need to know what is
+> happening both for the reviewers, as well as people in the future who
+> might have to look back and try to understand the reason for specific
+> changes.
+> 
+> Can you fix up this series based on this and resend?
+> 
+> thanks,
+> 
+> greg k-h
 
-Crash happens at dereference_module_function_descriptor() due to
-use-after-free when dereferencing ".opd" section header.
+Thank you Greg, I will do and resend it.
 
-All section headers are already freed after module is laoded
-successfully.
-
-To keep symbolizer working the change stores ".opd" address
-and size after module is relocated to a new place and before
-section headers are discarded.
-
-To make similar errors less obscure module_finalize() now
-zeroes out all variables relevant to module loading only.
-
-CC: Andrew Morton <akpm@linux-foundation.org>
-CC: linux-ia64@vger.kernel.org
-Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
----
- arch/ia64/include/asm/module.h |  6 +++++-
- arch/ia64/kernel/module.c      | 29 +++++++++++++++++++++++++----
- 2 files changed, 30 insertions(+), 5 deletions(-)
-
-diff --git a/arch/ia64/include/asm/module.h b/arch/ia64/include/asm/module.h
-index 5a29652e6def..7271b9c5fc76 100644
---- a/arch/ia64/include/asm/module.h
-+++ b/arch/ia64/include/asm/module.h
-@@ -14,16 +14,20 @@
- struct elf64_shdr;			/* forward declration */
- 
- struct mod_arch_specific {
-+	/* Used only at module load time. */
- 	struct elf64_shdr *core_plt;	/* core PLT section */
- 	struct elf64_shdr *init_plt;	/* init PLT section */
- 	struct elf64_shdr *got;		/* global offset table */
- 	struct elf64_shdr *opd;		/* official procedure descriptors */
- 	struct elf64_shdr *unwind;	/* unwind-table section */
- 	unsigned long gp;		/* global-pointer for module */
-+	unsigned int next_got_entry;	/* index of next available got entry */
- 
-+	/* Used at module run and cleanup time. */
- 	void *core_unw_table;		/* core unwind-table cookie returned by unwinder */
- 	void *init_unw_table;		/* init unwind-table cookie returned by unwinder */
--	unsigned int next_got_entry;	/* index of next available got entry */
-+	void *opd_addr;			/* symbolize uses .opd to get to actual function */
-+	unsigned long opd_size;
- };
- 
- #define ARCH_SHF_SMALL	SHF_IA_64_SHORT
-diff --git a/arch/ia64/kernel/module.c b/arch/ia64/kernel/module.c
-index 00a496cb346f..f3385fe6e37e 100644
---- a/arch/ia64/kernel/module.c
-+++ b/arch/ia64/kernel/module.c
-@@ -905,9 +905,31 @@ register_unwind_table (struct module *mod)
- int
- module_finalize (const Elf_Ehdr *hdr, const Elf_Shdr *sechdrs, struct module *mod)
- {
-+	struct mod_arch_specific *mas = &mod->arch;
-+
- 	DEBUGP("%s: init: entry=%p\n", __func__, mod->init);
--	if (mod->arch.unwind)
-+	if (mas->unwind)
- 		register_unwind_table(mod);
-+
-+	/*
-+	 * ".opd" was already relocated to the final destination. Store
-+	 * it's address for use in symbolizer.
-+	 */
-+	mas->opd_addr = (void *)mas->opd->sh_addr;
-+	mas->opd_size = mas->opd->sh_size;
-+
-+	/*
-+	 * Module relocation was already done at this point. Section
-+	 * headers are about to be deleted. Wipe out load-time context.
-+	 */
-+	mas->core_plt = NULL;
-+	mas->init_plt = NULL;
-+	mas->got = NULL;
-+	mas->opd = NULL;
-+	mas->unwind = NULL;
-+	mas->gp = 0;
-+	mas->next_got_entry = 0;
-+
- 	return 0;
- }
- 
-@@ -926,10 +948,9 @@ module_arch_cleanup (struct module *mod)
- 
- void *dereference_module_function_descriptor(struct module *mod, void *ptr)
- {
--	Elf64_Shdr *opd = mod->arch.opd;
-+	struct mod_arch_specific *mas = &mod->arch;
- 
--	if (ptr < (void *)opd->sh_addr ||
--			ptr >= (void *)(opd->sh_addr + opd->sh_size))
-+	if (ptr < mas->opd_addr || ptr >= mas->opd_addr + mas->opd_size)
- 		return ptr;
- 
- 	return dereference_function_descriptor(ptr);
--- 
-2.31.1
-
+fabio
