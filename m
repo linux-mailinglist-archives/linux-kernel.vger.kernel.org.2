@@ -2,90 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24942353595
+	by mail.lfdr.de (Postfix) with ESMTP id A312A353596
 	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 23:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236794AbhDCV3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 17:29:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49644 "EHLO
+        id S236842AbhDCVbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 17:31:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236649AbhDCV3v (ORCPT
+        with ESMTP id S236812AbhDCVbE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 17:29:51 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A00F2C061756
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Apr 2021 14:29:48 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id c17so5756553pfn.6
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Apr 2021 14:29:48 -0700 (PDT)
+        Sat, 3 Apr 2021 17:31:04 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE2DBC061756
+        for <linux-kernel@vger.kernel.org>; Sat,  3 Apr 2021 14:31:00 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id d12so12136843lfv.11
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Apr 2021 14:31:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=C2W7sSHQpp01hEDFBVNMnmEDRVDgq5uaUIb7w4hRpj8=;
-        b=CfMwjQxIhUqiG71/LMDXkKpKiI+InZgxVD+eNajtZOXcri4hfo3Dxd9mt/qKYUSjOa
-         Ne6RzYGd0NuVQtEAOajWmpfpWNA1mM5+qI/Duh08Tq1m2qYxNP+wAjIkmKMqkWJL+TGb
-         I1IF6nGd//Ojld+kLuOOspSnB1vVudUZNljS4Y02r2pYH6395Nx15795icl2N9q0k24o
-         mzDLz++Xx38emD+ctczWJBm+9FCBlSJkiVWdaHwZ9rHcvCaFZGzwQ9bfkF4XYOfIYtRX
-         GE+ifDE1HyeGa90FWjE0vbLzyqLrQHlYPgJA9vU6r2X/V+zKIQ4sqZMiiw3jd6vwmFM8
-         HANg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wAwaa9LP0wQ209XA7qPfB41Svfic7ft68qPsbT5JtIM=;
+        b=Oh55ya+pPEbtZQ9V4bd/ADzwbAatOuoslLhY3grU0ZF6RzeyXh4m+pLQS4sGLViUn5
+         lexWhNpBBTNesiz5n+awTqXn140ClJm7RBaZasq6eJPEJuML9e6uKOZYRlMsaqEYql2q
+         P/YsMcj39SRNPQQzosmP9VVnP4siJQNOqvbmJgtxuA+OWgbRWsmyFI4TXtYJuev3n7uz
+         GvrDHJl+LnFi3L/Xo+LuUV/9w8VFInsCjMoP7492T4JrlqBx0KACo5xEI7+YeAdhfq+l
+         nPNNxGlMSGd7asUKlnEiv+qO+ApnfQzEXkxe1r4MG9PnjrWNm8eeLN1zGAAAck1FJr/A
+         VR6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=C2W7sSHQpp01hEDFBVNMnmEDRVDgq5uaUIb7w4hRpj8=;
-        b=VvnXahtO7Kojad7OT+cBfLKdSyBTlUmKYX7vY69gugrJA9FZeMw+U692sdOhYHo2pM
-         KKqudp8wrJdeGiFflflGC4rkyha6bJT5Pw5ucpRKEAApjwnQBp8Ezo3MDAOYL05sUjGx
-         +leCNr5llZnkbC6XjtOgSB7rPovkXoBMBg2V+10/68jTGKSiF53TvSCFIy7nSwTcxQY9
-         AwC4F2FXKbMnlXF5OexGFM5dg04wxPSkrzZ+1AWX0NCYJ+kaGve3DAw1hPs4GtzKV2oY
-         47r9aiSpR4aF/r11rsuHOEvVjVDnVaBXk7pqs932d9nGY7eUV9cOWqWADUstmBSav7tc
-         bAGg==
-X-Gm-Message-State: AOAM532F2jgLmfz/9cOcagsQWfhYocSdVgpX1w4gB3YX4DzLHf4WJh8l
-        WQs8pqQJV7LBDT9TgIopMook9YQAl4E=
-X-Google-Smtp-Source: ABdhPJyXs1avsc2uG9jG5DPYAat8SjzS7ToEXJO649FmsQ6vds4Lo4tcrhU0UBjBD/AjY2iXuLwF4w==
-X-Received: by 2002:a62:2742:0:b029:222:b711:3324 with SMTP id n63-20020a6227420000b0290222b7113324mr17423214pfn.7.1617485387897;
-        Sat, 03 Apr 2021 14:29:47 -0700 (PDT)
-Received: from localhost (g139.124-45-193.ppp.wakwak.ne.jp. [124.45.193.139])
-        by smtp.gmail.com with ESMTPSA id i21sm1411388pjv.22.2021.04.03.14.29.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Apr 2021 14:29:47 -0700 (PDT)
-Date:   Sun, 4 Apr 2021 06:29:44 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Mateusz Holenko <mholenko@antmicro.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] OpenRISC fixes for 5.12-rc5
-Message-ID: <20210403212944.GC3288043@lianli.shorne-pla.net>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wAwaa9LP0wQ209XA7qPfB41Svfic7ft68qPsbT5JtIM=;
+        b=VbpGuYAyaL2NCFb6L4ECiM92hG/uFWvueCajT7O7WW+4VerhMD1IdJCubRFaBv00hJ
+         kDX5aFrwEArATPpizObaptwjkq42nwVgOh7ouBr9kWsy+cWXmdMtC/dumZDp/DuikNfz
+         evVBFgD9AcpvwoXs4CmvRq9Shw+rXAF0QcKImvxFRAHwCn9vZ2IWH9jgFCt5eKY08roe
+         fLEhCeP+q4yQH83l5AihE9q4UH3KGVVYkoFQCcGOp8MUKL2PwNbO8QD0d5l5JTsymF2J
+         /3Xlhlu5P7uUVMcZPLfIBok21zs02NexPd2SREeT03s7rrXUsJT122UVP70Nvz2e02Xz
+         5+vg==
+X-Gm-Message-State: AOAM53217bM2AreCEmXA5TCVSHYPUWXpXYHzv/7gpw3IzNCiyeLLeYNO
+        ze42aqbvHlQsBSuv7FSmGC60PPOcpbc=
+X-Google-Smtp-Source: ABdhPJxpSa3m+3fSh7iJM4XPELlxclT+nVjh5P3ZCQ4osmltScszpMNni9Z53zHpZCNjo0Z01Jkd2A==
+X-Received: by 2002:a19:5e14:: with SMTP id s20mr13132692lfb.110.1617485459165;
+        Sat, 03 Apr 2021 14:30:59 -0700 (PDT)
+Received: from [192.168.0.160] (10.177.smarthome.spb.ru. [109.71.177.10])
+        by smtp.gmail.com with ESMTPSA id h7sm1240676lfg.246.2021.04.03.14.30.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 03 Apr 2021 14:30:58 -0700 (PDT)
+Subject: Re: [PATCH 2/2] staging:r8188eu: remove dummy handlers from
+ OnAction()
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Michael Straube <straube.linux@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210328163323.53163-1-insafonov@gmail.com>
+ <20210328163323.53163-2-insafonov@gmail.com> <YGcWTOUl8OtAHTT4@kroah.com>
+From:   Ivan Safonov <insafonov@gmail.com>
+Message-ID: <8955077a-94b6-9ffb-d2f6-b611845b6cfc@gmail.com>
+Date:   Sun, 4 Apr 2021 00:30:41 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <YGcWTOUl8OtAHTT4@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 4/2/21 4:04 PM, Greg Kroah-Hartman wrote:
+> On Sun, Mar 28, 2021 at 07:33:25PM +0300, Ivan Safonov wrote:
+>> on_action_spct() do nothing, because rtw_get_stainfo() has no side
+>> effects. Other action handlers are trivial.
+>>
+>> Signed-off-by: Ivan Safonov <insafonov@gmail.com>
+> 
+> Same here, wrong driver name :(
+> 
 
-Please consider for pull,
+Driver name is "r8188eu"...
 
-The following changes since commit a5e13c6df0e41702d2b2c77c8ad41677ebb065b3:
+$ grep 'r8188eu' drivers/staging/rtl8188eu/include/drv_types.h
+#define DRV_NAME "r8188eu"
 
-  Linux 5.12-rc5 (2021-03-28 15:48:16 -0700)
+$ grep 'r8188eu' drivers/staging/rtl8188eu/os_dep/usb_intf.c -B1 -A7
+static struct usb_driver rtl8188e_usb_drv = {
+         .name = "r8188eu",
+         .probe = rtw_drv_init,
+         .disconnect = rtw_dev_remove,
+         .id_table = rtw_usb_id_tbl,
+         .suspend =  rtw_suspend,
+         .resume = rtw_resume,
+         .reset_resume = rtw_resume,
+};
 
-are available in the Git repository at:
+$ cat drivers/staging/rtl8188eu/Kconfig
+# SPDX-License-Identifier: GPL-2.0
+config R8188EU
+         tristate "Realtek RTL8188EU Wireless LAN NIC driver"
+         depends on WLAN && USB && CFG80211
+         depends on m
+         select WIRELESS_EXT
+         select WEXT_PRIV
+         select LIB80211
+         select LIB80211_CRYPT_WEP
+         select LIB80211_CRYPT_CCMP
+         help
+         This option adds the Realtek RTL8188EU USB device such as 
+TP-Link TL-WN725N.
+         If built as a module, it will be called r8188eu.
 
-  git://github.com/openrisc/linux.git tags/for-linus
+if R8188EU
 
-for you to fetch changes up to 1683f7de65dbf0a2c6a7d639173fe92430a28930:
+config 88EU_AP_MODE
+         bool "Realtek RTL8188EU AP mode"
+         default y
+         help
+         This option enables Access Point mode. Unless you know that 
+your system
+         will never be used as an AP, or the target system has limited 
+memory,
+         "Y" should be selected.
 
-  soc: litex: Remove duplicated header file inclusion (2021-04-04 05:46:46 +0900)
-
-----------------------------------------------------------------
-OpenRISC fix for 5.12
-
-Includes:
- - Fix duplicate header include in Litex SOC driver
-
-----------------------------------------------------------------
-Zhen Lei (1):
-      soc: litex: Remove duplicated header file inclusion
-
- drivers/soc/litex/litex_soc_ctrl.c | 1 -
- 1 file changed, 1 deletion(-)
+endif
