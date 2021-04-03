@@ -2,61 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F1E3534A9
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 18:10:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D213534B2
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 18:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236882AbhDCQKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 12:10:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50296 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230516AbhDCQKp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 12:10:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 38D626124B;
-        Sat,  3 Apr 2021 16:10:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617466242;
-        bh=57qukBiF7YIUSpERUhYhDeqxB1WYMSI82WkJQHI2uTA=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Om4oVlU0JwxODBS2ox9tVk1B/JWnNSAuY+ASSX6mklsIlEHlEfSvaGSWmSwPJsvZ5
-         UgGCBncqBzePO1QIWAfgiuG1Z8uaE0kQ4dGtE0Q4XSNpcc9W50m2GT/5EhIXlQgr5f
-         IY0JR2dKetzagUCNspdvGr/DklRKkvx9FCZGEXaE0fZtHwHXEyeWLpB6eZAQHhU6FR
-         NxJTm5FD5fSj2vPVKz3n5htYaQUjCH7njffEr7p7C+mAoHq/bJ2hI1S8KYmUyzaJkV
-         2i+wC+sjUAY3olPXAvdeuAkkomxNjRJnVvHaaC5vEGsOmv9okpQffpdJduGLOi7uV5
-         dVmWDAtioEDkA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 27AFB60953;
-        Sat,  3 Apr 2021 16:10:42 +0000 (UTC)
-Subject: Re: [GIT PULL] SCSI fixes for 5.12-rc
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <9aa8b614478d74ee0cb37dec9e20270c94d7f7c4.camel@HansenPartnership.com>
-References: <9aa8b614478d74ee0cb37dec9e20270c94d7f7c4.camel@HansenPartnership.com>
-X-PR-Tracked-List-Id: <linux-scsi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <9aa8b614478d74ee0cb37dec9e20270c94d7f7c4.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-X-PR-Tracked-Commit-Id: 9e67600ed6b8565da4b85698ec659b5879a6c1c6
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 57fbdb15ec427ca3a6f35d4b71fc90ca9af301ea
-Message-Id: <161746624210.28218.15590403217710872547.pr-tracker-bot@kernel.org>
-Date:   Sat, 03 Apr 2021 16:10:42 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        id S236835AbhDCQRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 12:17:44 -0400
+Received: from smtprelay0055.hostedemail.com ([216.40.44.55]:36610 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230450AbhDCQRn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Apr 2021 12:17:43 -0400
+Received: from omf18.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id E4E811843912D;
+        Sat,  3 Apr 2021 16:17:39 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf18.hostedemail.com (Postfix) with ESMTPA id F0E622EBFA4;
+        Sat,  3 Apr 2021 16:17:38 +0000 (UTC)
+Message-ID: <7120836b08b680d54c15fd89b8630ccc67a53116.camel@perches.com>
+Subject: Re: [PATCH v3 00/30] staging: rtl8723bs: remove RT_TRACE logs in
+ core/*
+From:   Joe Perches <joe@perches.com>
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>, gregkh@linuxfoundation.org
+Cc:     dan.carpenter@oracle.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Date:   Sat, 03 Apr 2021 09:17:37 -0700
+In-Reply-To: <20210403152143.GA1403@agape.jhs>
+References: <cover.1617440833.git.fabioaiuto83@gmail.com>
+         <1cd79d781cdcccf621ce8e104a9cdf1e90e7f803.camel@perches.com>
+         <20210403152143.GA1403@agape.jhs>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=0.10
+X-Rspamd-Server: rspamout02
+X-Stat-Signature: cb67t64hhuz36xmx6sthh6axymjb9wwg
+X-Rspamd-Queue-Id: F0E622EBFA4
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/d0bwAguyxvRO74mFrz/saWwALiEImrkc=
+X-HE-Tag: 1617466658-753426
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 02 Apr 2021 17:34:28 -0700:
+On Sat, 2021-04-03 at 17:21 +0200, Fabio Aiuto wrote:
+> On Sat, Apr 03, 2021 at 08:02:25AM -0700, Joe Perches wrote:
+> > On Sat, 2021-04-03 at 11:13 +0200, Fabio Aiuto wrote:
+> > > This patchset removes all RT_TRACE usages in core/ files.
+> > 
+> > and hal and include and os_dep
+> 
+> Hi, 
+> 
+> I was just about to send the second patchset relative to hal/ files.
+> The whole has been split up in directories in order to reduce the
+> number of patch per patchset
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+> It's a good idea, but the patches relative to RT_TRACE removal
+> could be huge
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/57fbdb15ec427ca3a6f35d4b71fc90ca9af301ea
+That's really not a significant issue.
+Simplicity in review is also important.
+Mechanization of patch creation can reduce review efforts.
 
-Thank you!
+Few people are actively working on this particular codebase.
+As far as I can tell no logical defect is being corrected here.
+None of this is likely to be backported.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Applying each individual patch has a 'cost' in maintainer time
+and review effort.
+
+Fewer patches create lower overall costs.
+
+Good luck...
+
