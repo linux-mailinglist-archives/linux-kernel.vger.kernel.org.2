@@ -2,76 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D213534B2
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 18:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C86843534B5
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 18:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236835AbhDCQRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 12:17:44 -0400
-Received: from smtprelay0055.hostedemail.com ([216.40.44.55]:36610 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230450AbhDCQRn (ORCPT
+        id S236880AbhDCQ0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 12:26:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236364AbhDCQ0P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 12:17:43 -0400
-Received: from omf18.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id E4E811843912D;
-        Sat,  3 Apr 2021 16:17:39 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf18.hostedemail.com (Postfix) with ESMTPA id F0E622EBFA4;
-        Sat,  3 Apr 2021 16:17:38 +0000 (UTC)
-Message-ID: <7120836b08b680d54c15fd89b8630ccc67a53116.camel@perches.com>
-Subject: Re: [PATCH v3 00/30] staging: rtl8723bs: remove RT_TRACE logs in
- core/*
-From:   Joe Perches <joe@perches.com>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>, gregkh@linuxfoundation.org
-Cc:     dan.carpenter@oracle.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Date:   Sat, 03 Apr 2021 09:17:37 -0700
-In-Reply-To: <20210403152143.GA1403@agape.jhs>
-References: <cover.1617440833.git.fabioaiuto83@gmail.com>
-         <1cd79d781cdcccf621ce8e104a9cdf1e90e7f803.camel@perches.com>
-         <20210403152143.GA1403@agape.jhs>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Sat, 3 Apr 2021 12:26:15 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCA5FC0613E6;
+        Sat,  3 Apr 2021 09:26:12 -0700 (PDT)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1lSj65-0070RZ-Az; Sat, 03 Apr 2021 18:26:05 +0200
+Message-ID: <b8a83042f83af92e87550085175da5c1d95cc4b0.camel@sipsolutions.net>
+Subject: Re: [PATCH] net: netlink: fix error check in
+ genl_family_rcv_msg_doit
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Pavel Skripkin <paskripkin@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Sat, 03 Apr 2021 18:26:04 +0200
+In-Reply-To: <20210403151312.31796-1-paskripkin@gmail.com>
+References: <20210403151312.31796-1-paskripkin@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=0.10
-X-Rspamd-Server: rspamout02
-X-Stat-Signature: cb67t64hhuz36xmx6sthh6axymjb9wwg
-X-Rspamd-Queue-Id: F0E622EBFA4
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/d0bwAguyxvRO74mFrz/saWwALiEImrkc=
-X-HE-Tag: 1617466658-753426
+Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-04-03 at 17:21 +0200, Fabio Aiuto wrote:
-> On Sat, Apr 03, 2021 at 08:02:25AM -0700, Joe Perches wrote:
-> > On Sat, 2021-04-03 at 11:13 +0200, Fabio Aiuto wrote:
-> > > This patchset removes all RT_TRACE usages in core/ files.
-> > 
-> > and hal and include and os_dep
+On Sat, 2021-04-03 at 15:13 +0000, Pavel Skripkin wrote:
+> genl_family_rcv_msg_attrs_parse() can return NULL
+> pointer:
 > 
-> Hi, 
+>         if (!ops->maxattr)
+>                 return NULL;
 > 
-> I was just about to send the second patchset relative to hal/ files.
-> The whole has been split up in directories in order to reduce the
-> number of patch per patchset
+> But this condition doesn't cause an error in
+> genl_family_rcv_msg_doit
 
-> It's a good idea, but the patches relative to RT_TRACE removal
-> could be huge
+And I'm almost certain that in fact it shouldn't cause an error!
 
-That's really not a significant issue.
-Simplicity in review is also important.
-Mechanization of patch creation can reduce review efforts.
+If the family doesn't set maxattr then it doesn't want to have generic
+netlink doing the parsing, but still it should be possible to call the
+ops. Look at fs/dlm/netlink.c for example, it doesn't even have
+attributes. You're breaking it with this patch.
 
-Few people are actively working on this particular codebase.
-As far as I can tell no logical defect is being corrected here.
-None of this is likely to be backported.
+Also, the (NULL) pointer is not actually _used_ anywhere, so why would
+it matter?
 
-Applying each individual patch has a 'cost' in maintainer time
-and review effort.
-
-Fewer patches create lower overall costs.
-
-Good luck...
+johannes
 
