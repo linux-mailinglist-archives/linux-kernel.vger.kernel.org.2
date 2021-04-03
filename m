@@ -2,279 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F363A3533AB
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 13:12:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BFEA3533AE
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 13:23:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236838AbhDCLMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 07:12:00 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:42382 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236666AbhDCLLD (ORCPT
+        id S236614AbhDCLXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 07:23:24 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:47047 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236484AbhDCLXX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 07:11:03 -0400
-Date:   Sat, 03 Apr 2021 11:11:00 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617448260;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Sw5SWcZaNEYt/atcDm0MKLyq8G8CX8OdatczcRboxQE=;
-        b=CvHAuEmWYNAQdub2gdn1QRy7ne04D1HmrlVNLaJ1sA8pKc/nej1BSWVUyKnY7u/b7aW3If
-        uwziSKhTYuuMAAb4QjhaTH7EmTP1SFT9/UOTuj65XoTNCtdVHzDxA52jiCiYkkKEOI9D/i
-        jNIWHYG1gEe4FRG+Zv/vN3HKUkwQUjHk0DoGtuGk3Aj3fkATXlQjVhDe4P45kR7l+xyV0G
-        DnyeisfzLa46zos1ytMFzzHa1bpdzOVXLVCalRC+1G0nSnafNH/vcK5e2wNe46TBnLa2sZ
-        N5IE17fu6BH+TDu5rx9IicUG6+4cyHv6Dr6N7+6pOd+bo6Ws937syYdSHe8Q/Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617448260;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Sw5SWcZaNEYt/atcDm0MKLyq8G8CX8OdatczcRboxQE=;
-        b=vfpV6uvW8qW0+53wZeTLsnccwxEOksbg6EpPyf0AWwK85WMPoPSoR/FFGyU97C+jZzf/9i
-        ZELFUTrVTRTmn6AA==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/core] x86/alternatives: Optimize optimize_nops()
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210326151259.442992235@infradead.org>
-References: <20210326151259.442992235@infradead.org>
+        Sat, 3 Apr 2021 07:23:23 -0400
+Received: by mail-il1-f200.google.com with SMTP id y19so7067616ilj.13
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Apr 2021 04:23:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=yeRQFI8Gl127o5/dIF17sXG4THHWwvrXPCKQMBsecGE=;
+        b=qXpLsFMZFk7WRcf5EyLNsB02+TZPFAfyCokSMcVHvJwrwqy0nW4bJnBgXPb+ltVZh1
+         FuTODSg54qJYHSrgj0AOkhRmvdMD/Y0Kz7kFt8YBQOoEkGWsKAJwBhP03u9nKGSPoHQN
+         21xsR7i5w7TzxMEiWJxnUdP/BZ7EbSOEJwHpJVAlA3V4Ms7PF4YyOjRSpV5lCvMMaMkK
+         u6dB1GAWzGK7PDj0hW3GJBc0bBWnaXeZbddedRD/HyGKxR12hNdjM2+VL6qFblyxth/w
+         PJhljRD9B6y8hK0XwHxBxyA46JCZfuIv6YGfm22INNyUQa9EtRCs5w3AYvHGsGU33TN1
+         QFnA==
+X-Gm-Message-State: AOAM531md/WhICaok97aiZXgom9XwBWhcCv392Y1fV5T+/OELe4ozqZn
+        NiL8xU2UvDNtram8YPbNogiIVJhfxuQqU/BP2Ds04ojyagE6
+X-Google-Smtp-Source: ABdhPJyPK02eCVdBJsppCkZs11EWhT5WcOlLPPA9GUU5X/9CT8ZsUqAUmDURt8eyeSemwQpfUY96Ttk2YG2WKsDqlrCTRMp0OCUY
 MIME-Version: 1.0
-Message-ID: <161744826012.29796.9456292190751496112.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:12a9:: with SMTP id f9mr14140087ilr.12.1617449000176;
+ Sat, 03 Apr 2021 04:23:20 -0700 (PDT)
+Date:   Sat, 03 Apr 2021 04:23:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000019114805bf0fb1bc@google.com>
+Subject: [syzbot] WARNING: suspicious RCU usage in remove_vma (2)
+From:   syzbot <syzbot+26ad5e106ca477175819@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/core branch of tip:
+Hello,
 
-Commit-ID:     23c1ad538f4f371bdb67d8a112314842d5db7e5a
-Gitweb:        https://git.kernel.org/tip/23c1ad538f4f371bdb67d8a112314842d5db7e5a
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Fri, 26 Mar 2021 16:12:01 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 02 Apr 2021 12:41:17 +02:00
+syzbot found the following issue on:
 
-x86/alternatives: Optimize optimize_nops()
+HEAD commit:    1e43c377 Merge tag 'xtensa-20210329' of git://github.com/j..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1052e1d6d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d1a3d65a48dbd1bc
+dashboard link: https://syzkaller.appspot.com/bug?extid=26ad5e106ca477175819
 
-Currently, optimize_nops() scans to see if the alternative starts with
-NOPs. However, the emit pattern is:
+Unfortunately, I don't have any reproducer for this issue yet.
 
-  141:	\oldinstr
-  142:	.skip (len-(142b-141b)), 0x90
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+26ad5e106ca477175819@syzkaller.appspotmail.com
 
-That is, when 'oldinstr' is short, the tail is padded with NOPs. This case
-never gets optimized.
+=============================
+WARNING: suspicious RCU usage
+5.12.0-rc5-syzkaller #0 Not tainted
+-----------------------------
+kernel/sched/core.c:8294 Illegal context switch in RCU-bh read-side critical section!
 
-Rewrite optimize_nops() to replace any trailing string of NOPs inside
-the alternative to larger NOPs. Also run it irrespective of patching,
-replacing NOPs in both the original and replaced code.
+other info that might help us debug this:
 
-A direct consequence is that 'padlen' becomes superfluous, so remove it.
 
- [ bp:
-   - Adjust commit message
-   - remove a stale comment about needing to pad
-   - add a comment in optimize_nops()
-   - exit early if the NOP verif. loop catches a mismatch - function
-     should not not add NOPs in that case
-   - fix the "optimized NOPs" offsets output ]
+rcu_scheduler_active = 2, debug_locks = 0
+no locks held by syz-executor.0/29105.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lkml.kernel.org/r/20210326151259.442992235@infradead.org
+stack backtrace:
+CPU: 0 PID: 29105 Comm: syz-executor.0 Not tainted 5.12.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ ___might_sleep+0x229/0x2c0 kernel/sched/core.c:8294
+ remove_vma+0x44/0x170 mm/mmap.c:178
+ exit_mmap+0x33f/0x590 mm/mmap.c:3229
+ __mmput+0x122/0x470 kernel/fork.c:1090
+ mmput+0x58/0x60 kernel/fork.c:1111
+ exit_mm kernel/exit.c:501 [inline]
+ do_exit+0xb0a/0x2a60 kernel/exit.c:812
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ get_signal+0x47f/0x2150 kernel/signal.c:2781
+ arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:789
+ handle_signal_work kernel/entry/common.c:147 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
+ exit_to_user_mode_prepare+0x148/0x250 kernel/entry/common.c:208
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x466459
+Code: Unable to access opcode bytes at RIP 0x46642f.
+RSP: 002b:00007fdfaa117218 EFLAGS: 00000246
+ ORIG_RAX: 00000000000000ca
+RAX: 0000000000000000 RBX: 000000000056bf68 RCX: 0000000000466459
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000056bf68
+RBP: 000000000056bf60 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf6c
+R13: 00007fff64c569cf R14: 00007fdfaa117300 R15: 0000000000022000
+
+
 ---
- arch/x86/include/asm/alternative.h            | 17 +-----
- arch/x86/kernel/alternative.c                 | 49 +++++++++++-------
- tools/objtool/arch/x86/include/arch/special.h |  2 +-
- 3 files changed, 37 insertions(+), 31 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/x86/include/asm/alternative.h b/arch/x86/include/asm/alternative.h
-index 17b3609..a3c2315 100644
---- a/arch/x86/include/asm/alternative.h
-+++ b/arch/x86/include/asm/alternative.h
-@@ -65,7 +65,6 @@ struct alt_instr {
- 	u16 cpuid;		/* cpuid bit set for replacement */
- 	u8  instrlen;		/* length of original instruction */
- 	u8  replacementlen;	/* length of new instruction */
--	u8  padlen;		/* length of build-time padding */
- } __packed;
- 
- /*
-@@ -104,7 +103,6 @@ static inline int alternatives_text_reserved(void *start, void *end)
- 
- #define alt_end_marker		"663"
- #define alt_slen		"662b-661b"
--#define alt_pad_len		alt_end_marker"b-662b"
- #define alt_total_slen		alt_end_marker"b-661b"
- #define alt_rlen(num)		e_replacement(num)"f-"b_replacement(num)"f"
- 
-@@ -151,8 +149,7 @@ static inline int alternatives_text_reserved(void *start, void *end)
- 	" .long " b_replacement(num)"f - .\n"		/* new instruction */ \
- 	" .word " __stringify(feature) "\n"		/* feature bit     */ \
- 	" .byte " alt_total_slen "\n"			/* source len      */ \
--	" .byte " alt_rlen(num) "\n"			/* replacement len */ \
--	" .byte " alt_pad_len "\n"			/* pad len */
-+	" .byte " alt_rlen(num) "\n"			/* replacement len */
- 
- #define ALTINSTR_REPLACEMENT(newinstr, num)		/* replacement */	\
- 	"# ALT: replacement " #num "\n"						\
-@@ -224,9 +221,6 @@ static inline int alternatives_text_reserved(void *start, void *end)
-  * Peculiarities:
-  * No memory clobber here.
-  * Argument numbers start with 1.
-- * Best is to use constraints that are fixed size (like (%1) ... "r")
-- * If you use variable sized constraints like "m" or "g" in the
-- * replacement make sure to pad to the worst case length.
-  * Leaving an unused argument 0 to keep API compatibility.
-  */
- #define alternative_input(oldinstr, newinstr, feature, input...)	\
-@@ -315,13 +309,12 @@ static inline int alternatives_text_reserved(void *start, void *end)
-  * enough information for the alternatives patching code to patch an
-  * instruction. See apply_alternatives().
-  */
--.macro altinstruction_entry orig alt feature orig_len alt_len pad_len
-+.macro altinstruction_entry orig alt feature orig_len alt_len
- 	.long \orig - .
- 	.long \alt - .
- 	.word \feature
- 	.byte \orig_len
- 	.byte \alt_len
--	.byte \pad_len
- .endm
- 
- /*
-@@ -338,7 +331,7 @@ static inline int alternatives_text_reserved(void *start, void *end)
- 142:
- 
- 	.pushsection .altinstructions,"a"
--	altinstruction_entry 140b,143f,\feature,142b-140b,144f-143f,142b-141b
-+	altinstruction_entry 140b,143f,\feature,142b-140b,144f-143f
- 	.popsection
- 
- 	.pushsection .altinstr_replacement,"ax"
-@@ -375,8 +368,8 @@ static inline int alternatives_text_reserved(void *start, void *end)
- 142:
- 
- 	.pushsection .altinstructions,"a"
--	altinstruction_entry 140b,143f,\feature1,142b-140b,144f-143f,142b-141b
--	altinstruction_entry 140b,144f,\feature2,142b-140b,145f-144f,142b-141b
-+	altinstruction_entry 140b,143f,\feature1,142b-140b,144f-143f
-+	altinstruction_entry 140b,144f,\feature2,142b-140b,145f-144f
- 	.popsection
- 
- 	.pushsection .altinstr_replacement,"ax"
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index 80adf5a..84ec0ba 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -189,19 +189,35 @@ done:
- static void __init_or_module noinline optimize_nops(struct alt_instr *a, u8 *instr)
- {
- 	unsigned long flags;
--	int i;
-+	struct insn insn;
-+	int nop, i = 0;
-+
-+	/*
-+	 * Jump over the non-NOP insns, the remaining bytes must be single-byte
-+	 * NOPs, optimize them.
-+	 */
-+	for (;;) {
-+		if (insn_decode_kernel(&insn, &instr[i]))
-+			return;
-+
-+		if (insn.length == 1 && insn.opcode.bytes[0] == 0x90)
-+			break;
-+
-+		if ((i += insn.length) >= a->instrlen)
-+			return;
-+	}
- 
--	for (i = 0; i < a->padlen; i++) {
--		if (instr[i] != 0x90)
-+	for (nop = i; i < a->instrlen; i++) {
-+		if (WARN_ONCE(instr[i] != 0x90, "Not a NOP at 0x%px\n", &instr[i]))
- 			return;
- 	}
- 
- 	local_irq_save(flags);
--	add_nops(instr + (a->instrlen - a->padlen), a->padlen);
-+	add_nops(instr + nop, i - nop);
- 	local_irq_restore(flags);
- 
- 	DUMP_BYTES(instr, a->instrlen, "%px: [%d:%d) optimized NOPs: ",
--		   instr, a->instrlen - a->padlen, a->padlen);
-+		   instr, nop, a->instrlen);
- }
- 
- /*
-@@ -247,19 +263,15 @@ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
- 		 * - feature not present but ALTINSTR_FLAG_INV is set to mean,
- 		 *   patch if feature is *NOT* present.
- 		 */
--		if (!boot_cpu_has(feature) == !(a->cpuid & ALTINSTR_FLAG_INV)) {
--			if (a->padlen > 1)
--				optimize_nops(a, instr);
--
--			continue;
--		}
-+		if (!boot_cpu_has(feature) == !(a->cpuid & ALTINSTR_FLAG_INV))
-+			goto next;
- 
--		DPRINTK("feat: %s%d*32+%d, old: (%pS (%px) len: %d), repl: (%px, len: %d), pad: %d",
-+		DPRINTK("feat: %s%d*32+%d, old: (%pS (%px) len: %d), repl: (%px, len: %d)",
- 			(a->cpuid & ALTINSTR_FLAG_INV) ? "!" : "",
- 			feature >> 5,
- 			feature & 0x1f,
- 			instr, instr, a->instrlen,
--			replacement, a->replacementlen, a->padlen);
-+			replacement, a->replacementlen);
- 
- 		DUMP_BYTES(instr, a->instrlen, "%px: old_insn: ", instr);
- 		DUMP_BYTES(replacement, a->replacementlen, "%px: rpl_insn: ", replacement);
-@@ -283,14 +295,15 @@ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
- 		if (a->replacementlen && is_jmp(replacement[0]))
- 			recompute_jump(a, instr, replacement, insn_buff);
- 
--		if (a->instrlen > a->replacementlen) {
--			add_nops(insn_buff + a->replacementlen,
--				 a->instrlen - a->replacementlen);
--			insn_buff_sz += a->instrlen - a->replacementlen;
--		}
-+		for (; insn_buff_sz < a->instrlen; insn_buff_sz++)
-+			insn_buff[insn_buff_sz] = 0x90;
-+
- 		DUMP_BYTES(insn_buff, insn_buff_sz, "%px: final_insn: ", instr);
- 
- 		text_poke_early(instr, insn_buff, insn_buff_sz);
-+
-+next:
-+		optimize_nops(a, instr);
- 	}
- }
- 
-diff --git a/tools/objtool/arch/x86/include/arch/special.h b/tools/objtool/arch/x86/include/arch/special.h
-index d818b2b..14271cc 100644
---- a/tools/objtool/arch/x86/include/arch/special.h
-+++ b/tools/objtool/arch/x86/include/arch/special.h
-@@ -10,7 +10,7 @@
- #define JUMP_ORIG_OFFSET	0
- #define JUMP_NEW_OFFSET		4
- 
--#define ALT_ENTRY_SIZE		13
-+#define ALT_ENTRY_SIZE		12
- #define ALT_ORIG_OFFSET		0
- #define ALT_NEW_OFFSET		4
- #define ALT_FEATURE_OFFSET	8
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
