@@ -2,195 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F8233532A0
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 06:53:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0B7A3532A2
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Apr 2021 06:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236402AbhDCEsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 00:48:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236361AbhDCEr6 (ORCPT
+        id S231563AbhDCEyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 00:54:09 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:48860 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229740AbhDCEyF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 00:47:58 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB441C0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Apr 2021 21:47:55 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id o5so7011762qkb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Apr 2021 21:47:55 -0700 (PDT)
+        Sat, 3 Apr 2021 00:54:05 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1334qgU2057828;
+        Sat, 3 Apr 2021 04:54:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-type : mime-version;
+ s=corp-2020-01-29; bh=s9k6TQZ+88BTvPkUL8syVOoVm+0P0bmKfiaxFKklAfg=;
+ b=gF3U6iet/xnWpXmhjrds7Ot7EcsdwmAgemi2dd9ltYQsoxj7rn2+0uoX8QzhPAXnsDf/
+ EQufqg1k8S/QchxrJyzNyokQ5hYYLbw254XIz++na1d48a9NofbbA+p4ReYxo6cj5dX2
+ wDbv1cQiyiCpjFS7R0sDT55Hoty17zBlIicjj+HSPrdO7v6IOZ2Xs14PxP026eLh9xNJ
+ owSqB/lOR6G6lND/cFPh6gKWOcrjo+jbYLp0H4AwPTy/jodShwzW2/iazNXhqUPdrqzy
+ bppFCn+OSyuTgesTD2/dJNeVu3N1f2PkzpmCPOEYraV3FQTovNlGEZEUq92WeSd/1C/R FA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 37pgam81nn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 03 Apr 2021 04:54:00 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1334p1hI146372;
+        Sat, 3 Apr 2021 04:53:59 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2108.outbound.protection.outlook.com [104.47.70.108])
+        by aserp3020.oracle.com with ESMTP id 37pg611y6f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 03 Apr 2021 04:53:59 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RF2yskH8elrzNUVBGXuLYCt6ExHC1ORLPQSZQtckADI+0Y8bHeBNsY9kiNwH0GmsrOlUoC7kKSdB4KEj+EHrvOLMn3tjMbLnIr6BsEoyMpBpFeplXtPwsxzTSPdOVRRLy85fR8OuSVWDfXMnGU/Hn6Ly7LlaqONn0HOxtWGWpliAQUDrNJtv/9hxZXpu0hEsLputZTViWiDviPx4465dAZhN0L5Z/9oLA2EfW18vIUoov2NhlKYU4ZQft1IDu4OVz/yP0G8mL2OLuvXxi4E/O9QSbTghahSj8Z2dCFGR7i2sObuPZZqHoRwx2m1o/4PhK9wEBvl2aSi9sw9JJ9GCsA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s9k6TQZ+88BTvPkUL8syVOoVm+0P0bmKfiaxFKklAfg=;
+ b=lyvihyOyLsI9Q5TjhJhAHc5NXise33LiJH7CGt59kI7q0cS8KdycrKTCyfp6Xj182jxkCDanMC35TKrqMhxES/wAm1YS2eZDAdPPkV40K4ySgZDDMD3If4KTQrWoPpP0LC3BGbKqgyGdIUcFxCKd5oZtpWXW+eEDVg/uuDdeKfM6/l+hJbKDGlOLUlWWCczXhH/7lzWhp9UzBW3c+VdjlhS7QPUn+A5pLqYIlEBnyiir++CAhY4LiOYQEKs0WiwRh54dHEk4UQbfmWqyqBD4iEG9DA7l5pMcN/3ALIIut8WIQFVCKYHuAT+NasMJ/iy01P2fsGhbjK+TQ79cNQGKnQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Ct0KqhECfaQPeqAmFu0by9DQtEz5Znm3fSMIKLGYhYE=;
-        b=qNNGgftYPJm6jYC4aK1zEzAx3amCRrO1t4lGqigb3MaqK50sFC8eWTRJcmmTFhhwF9
-         K/svan4maNTMdfAVPcVXjofivLhOG9VG86DUshBexyrFWvtvMVbe2zVIMygDvp6XWHQP
-         aqNTyWwGFQuMKrOubgccMaj1ikF/DmDCr/aeLj6kIQ79un3gCEa/rBTrlDfV9AxU+qju
-         x/U+tEToDEBsja5ySy0d5ArcOAOrH4us0+H0jXbRvrMsVhB5MEsbvYFmqIyRI3ajA2nq
-         t7JjESGzHRKMVqPOlmCeWcsDamQxKBiPywqdK+NQENCVVVpk5Q8Pinc9oiPXc7CF9vFQ
-         Hgsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Ct0KqhECfaQPeqAmFu0by9DQtEz5Znm3fSMIKLGYhYE=;
-        b=OUerLrcMCBGIJlJiQyb4Hb2MEJqWio8vZpKrWX6bb5QOs3RIIzhFKce6qr7SeS8gtj
-         PhiJcKySfDxHuNyy9zyk9IifF+cnDCEba3WsdRNjphjaEAo4VKR5/s153THr0YJNxDnz
-         LilkTnh/Re6jQlQMxy4DzO/iqflGLDIP4PJ2TIZjqoG4cZ66YUnHMs6Ft0ligyoaSLtw
-         ooUyQYCRjS3AVi5H/x/4MTXRzPEFzQAZ7iDu7FCOT0M4bpFpHPiJMBdvXOv/soJwqsuD
-         1QjbJqtu7K0G2Yh5atEsvyTCK5wES1PxgkPyaJHzlCAwNofbEsONNe9chIWf/1naucEg
-         o0vg==
-X-Gm-Message-State: AOAM5323BDPn4xogp4UhaxmZ4YFNZ2K3LHpS4xr48JG64ZBnkF7/2JvJ
-        bGmEc9FzZtmA2yKnliEvP1c=
-X-Google-Smtp-Source: ABdhPJyJR5rJCXrFWQKo1y5X5m4jH2FgQRvBXgLU7+VwqJ1TIj0kKyu+wSojUBOB4j8i+w6oMF9ucQ==
-X-Received: by 2002:a05:620a:16b1:: with SMTP id s17mr15928466qkj.302.1617425275095;
-        Fri, 02 Apr 2021 21:47:55 -0700 (PDT)
-Received: from LuizSampaio-PC.localdomain ([2804:14d:5cd3:8f4f:bad9:1dc4:19d9:7ce3])
-        by smtp.gmail.com with ESMTPSA id k126sm8800598qkb.4.2021.04.02.21.47.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 21:47:54 -0700 (PDT)
-From:   Luiz Sampaio <sampaio.ime@gmail.com>
-To:     zbr@ioremap.net
-Cc:     corbet@lwn.net, rikard.falkeborn@gmail.com,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        Luiz Sampaio <sampaio.ime@gmail.com>
-Subject: [PATCH v3 9/9] w1: ds2438: support for writing to offset register
-Date:   Sat,  3 Apr 2021 01:48:21 -0300
-Message-Id: <20210403044821.390485-9-sampaio.ime@gmail.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210403044821.390485-1-sampaio.ime@gmail.com>
-References: <20210403044547.390226-1-sampaio.ime@gmail.com>
- <20210403044821.390485-1-sampaio.ime@gmail.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s9k6TQZ+88BTvPkUL8syVOoVm+0P0bmKfiaxFKklAfg=;
+ b=jVXVgAGEtqP2Iw1iS4n/Sw9+Z4rEHI7AlagWTdOMaGWA5Of+A9cZHLSlBWvwrbu/A3EbQT747Oc+E1SY7r7Ncoxh6m9mH+OTtUXxpb4SE794MzevaxTbIStqffkvZVMa0dNM+kdmUlryhh05a8vJi2Hoz3Ul1JEPof6LciaLFSU=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from CY4PR10MB1448.namprd10.prod.outlook.com (2603:10b6:903:27::12)
+ by CY4PR10MB1894.namprd10.prod.outlook.com (2603:10b6:903:11a::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.29; Sat, 3 Apr
+ 2021 04:53:58 +0000
+Received: from CY4PR10MB1448.namprd10.prod.outlook.com
+ ([fe80::69eb:33a1:2d07:8554]) by CY4PR10MB1448.namprd10.prod.outlook.com
+ ([fe80::69eb:33a1:2d07:8554%5]) with mapi id 15.20.3977.033; Sat, 3 Apr 2021
+ 04:53:58 +0000
+From:   Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
+To:     leon@kernel.org, dledford@redhat.com, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rajesh.sivaramasubramaniom@oracle.com,
+        rama.nichanamatlu@oracle.com, aruna.ramakrishna@oracle.com,
+        jeffery.yoder@oracle.com,
+        Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
+Subject: [PATCH v3] IB/mlx5: Reduce max order of memory allocated for xlt update
+Date:   Sat,  3 Apr 2021 04:53:55 +0000
+Message-Id: <1617425635-35631-1-git-send-email-praveen.kannoju@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.42]
+X-ClientProxiedBy: SJ0PR05CA0195.namprd05.prod.outlook.com
+ (2603:10b6:a03:330::20) To CY4PR10MB1448.namprd10.prod.outlook.com
+ (2603:10b6:903:27::12)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pkannoju-vm.us.oracle.com (138.3.200.42) by SJ0PR05CA0195.namprd05.prod.outlook.com (2603:10b6:a03:330::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.8 via Frontend Transport; Sat, 3 Apr 2021 04:53:57 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 48f6b070-812b-4b19-3be2-08d8f65c7d96
+X-MS-TrafficTypeDiagnostic: CY4PR10MB1894:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CY4PR10MB1894B09E7F0D7EDB67C232778C799@CY4PR10MB1894.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1443;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tq63A2Bz3JE+eb60ZTv+IiskjDU7K4wRAFLFH0u6mGlqttjhPIapiIKN+4cJKEJmzTK+o1tuyAqK0IcNxNbafsiHeKT4Dh79NA0PGYEX0eDEqxcLxB/HlnyFKJqyTg6rA6UUjb6OARojsAYD1aEUqlBMfLc39hUIjqOH38qZqkl8Uz1yfXpHZUilNkQeYu7tJamQP1oNxQwuc+6z7HLQdClCv6c/KmZ9JrE9FnpWksTFcfO/m+nH0NdJAY4sis1eswxPRaKHY7qjcKQtpNTXAPmhb115t20iRPQi2g8qHJYXgnLQkJvs/tvOGxjJNn5xR0LO+Lh2eE0URUN1cFLUbi9KyGfRJTLPh3+nAkBrYBzBogDqqOc99YuqHNa9DbOM/uqytYrWYf+/LL+jToYwXr6dD1g+zOv/Lsj+GsL6WsXDUpzkanqT2ZIzlYWa4reay5eXm4gWk9H94xfw/bvJBrBb1UrKAQhlbrHYWFpPFBk8kJKufmvj9yfIgPtghl8wbh9LFStpq1MmNZCUya4BApEUf/kK50f6rpLnID5rOtzDFx+wNyFgDjFBKxAw/teK1DFZJq25C0zQg6lO3PHuV3qCKg38zldd5W987PgTj9+ztd4xY6vdOt+LHQm2VIsHM0t5hn+xyaegQXgeLmS+3xLoF/+dbv+8Yi3k2Hc8KW8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR10MB1448.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(366004)(346002)(39860400002)(396003)(186003)(8676002)(8936002)(86362001)(956004)(107886003)(7696005)(66946007)(16526019)(83380400001)(6486002)(52116002)(15650500001)(36756003)(2906002)(26005)(478600001)(4326008)(38100700001)(66556008)(2616005)(316002)(5660300002)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?iTwbtjts+uiXZVV5oSFGXrDLCTJzG+gLTHw28X/4dFJqtIqFhlLZMPc/9ydN?=
+ =?us-ascii?Q?XTUUI5gQ0+GEsJWkdB4Jw5b4LXhZ8SyA31qAxp7Rj3chiH9FTyREJrGYY0Hz?=
+ =?us-ascii?Q?tONz+bQB3mUf2JekwRgOpcc0jscjEk7KLNy7FZGKKc98CNQe2ZbfUSCyr0C7?=
+ =?us-ascii?Q?j9Qs/EtcfrpBz0bQ60mWY1sILS4A+wlMD72DvPQ5yQXaTWYWYdJ7/j+syTBG?=
+ =?us-ascii?Q?nEzW2j2avhdBmCEi8SR+/rQeStC30FfaZHOjCL1sKOI5btrKTeaPXJ6NGsb7?=
+ =?us-ascii?Q?ZcWa8hqIAzTSZMQZ++/n4I0ElMcbkdFIEdtuhOSDgDhGFQzMTv2yzkf9NE4t?=
+ =?us-ascii?Q?w/7KwPD+hjAikb1KBC76hYg6511FV6VL7RMeh8OVPlqB2CJrQVEii/sCznX6?=
+ =?us-ascii?Q?nv1i22yxEMNR1k1wTUhwO7MXItsrl2w3eGEX8DPPzIOhiEfdXerCYRNdrrZD?=
+ =?us-ascii?Q?KzeV7Np/IHWV70S8CL0UL2eJnYCqV9/aeNSy0xhv9gk1lu+wxjCZnykgAsHz?=
+ =?us-ascii?Q?kQHzG5jm8CBzL75J1O4zIJ4PObeCdf884yNhEAHVESB8xMr05wIiugl9+0JK?=
+ =?us-ascii?Q?XJhck8ojM/B2nyt/L1LWNjxFUHRQaFYsoAmZsd/TfcNzRMKeinDPNU5XsQ6M?=
+ =?us-ascii?Q?qIiQNCyjkQ/WS9MaqYtRfgy7YMWFGrczZnf9PfVsbmhNKNgQvfUio4f6sBrX?=
+ =?us-ascii?Q?1fKhWO/KnTzBfdYRYoQAJQ5lHujh82r8reLNTVp0rsOlRw//kEPFhjvwpUkb?=
+ =?us-ascii?Q?o0w7C4aCoMkWHLNaUlfkkZK0oPp5qgwnfgROEki5HdIYKYoaQZ5CQB0vWAyI?=
+ =?us-ascii?Q?hK9sn2AivqT6FFWukUfzSr5iEeHv9Nt2YKKj1NReCAUZye4SXQF2Af0lX8us?=
+ =?us-ascii?Q?e/JUlrk24E4wybu+YqDWeVfLwwAkidVGvv46tK5SCn13cKTDsYS+jZYkgY37?=
+ =?us-ascii?Q?MGWwo4PCWQOOV/6mizDZ7Oiv+euf4EBfebMllk1iGu+CIiCDTkHn4aCiuXGa?=
+ =?us-ascii?Q?BXDgLt8K6zB7iVBfa3nxptfiWO4hJRhWy1PVtqEXMP7WA1fXCNn6f5iVqLhG?=
+ =?us-ascii?Q?ULRlF4zOQYkyBg/Wel78ukFr9+x2bkoTo3vkSqmr5zmqFWTVXjqEnkM6vVN5?=
+ =?us-ascii?Q?ysR9v4ZDshHMmyOiL3+mB59cXRjIgFbDNbhu3214oJvrVxjKlTC8ZaljCpNr?=
+ =?us-ascii?Q?jvrLvVoGgXcxGfOU5rDMHmJx8wRb4zDcJJz/iR/WDPCLfgaHgKMZsmhvIPXy?=
+ =?us-ascii?Q?umf/OO6jTR8nAfsFEkvrfPfgDYvNC6aSc+au+YEwIp7HXqlmAaAZ+4B7Nlvb?=
+ =?us-ascii?Q?UI53uo6wQYQ6EzJTJT8UaCuK?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 48f6b070-812b-4b19-3be2-08d8f65c7d96
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR10MB1448.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Apr 2021 04:53:57.8886
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2FeQaFKR4G7pYazFmvbSP+6zNs0ky5tP6RYHhxkkSt1+LNza0R+RPduqha1TdbZVJJWD3W1yjk4v9DkzYYah8PrdFFp9B9Am55/vYdNLtGg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR10MB1894
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9942 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0
+ mlxlogscore=999 phishscore=0 bulkscore=0 malwarescore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103310000 definitions=main-2104030032
+X-Proofpoint-ORIG-GUID: MhecNsImB-kntY2_8C-euwgFhXgZuDVi
+X-Proofpoint-GUID: MhecNsImB-kntY2_8C-euwgFhXgZuDVi
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9942 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 spamscore=0 bulkscore=0
+ clxscore=1015 phishscore=0 mlxscore=0 mlxlogscore=999 priorityscore=1501
+ malwarescore=0 lowpriorityscore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
+ definitions=main-2104030032
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added a sysfs entry to support writing to the offset register on page1.
-This register is used to calibrate the chip canceling offset errors in the
-current ADC. This means that, over time, reading the IAD register will not
-return the correct current measurement, it will have an offset. Writing to
-the offset register if the two's complement of the current register while
-passing zero current to the load will calibrate the measurements. This
-change was tested on real hardware and it was able to calibrate the chip
-correctly.
+To update xlt (during mlx5_ib_reg_user_mr()), the driver can request up to
+1 MB (order-8) memory, depending on the size of the MR. This costly
+allocation can sometimes take very long to return (a few seconds). This
+causes the calling application to hang for a long time, especially when the
+system is fragmented.  To avoid these long latency spikes, the calls the
+higher order allocations need to fail faster in case they are not
+available. In order to acheive this we need __GFP_NORETRY flag in the
+gfp_mask before during fetching the free pages. This patch adds this flag
+to the mask.
 
-Signed-off-by: Luiz Sampaio <sampaio.ime@gmail.com>
+Signed-off-by: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
 ---
- Documentation/w1/slaves/w1_ds2438.rst | 11 +++++-
- drivers/w1/slaves/w1_ds2438.c         | 49 +++++++++++++++++++++++++++
- 2 files changed, 59 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/mlx5/mr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/w1/slaves/w1_ds2438.rst b/Documentation/w1/slaves/w1_ds2438.rst
-index ac8d0d4b0d0e..5c5573991351 100644
---- a/Documentation/w1/slaves/w1_ds2438.rst
-+++ b/Documentation/w1/slaves/w1_ds2438.rst
-@@ -22,7 +22,7 @@ is also often used in weather stations and applications such as: rain gauge,
- wind speed/direction measuring, humidity sensing, etc.
+diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+index db05b0e..429e7aa6 100644
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@ -1028,7 +1028,7 @@ static void *mlx5_ib_alloc_xlt(size_t *nents, size_t ent_size, gfp_t gfp_mask)
+ 	 */
+ 	might_sleep();
  
- Current support is provided through the following sysfs files (all files
--except "iad" are readonly):
-+except "iad" and "offset" are readonly):
+-	gfp_mask |= __GFP_ZERO;
++	gfp_mask |= __GFP_ZERO | __GFP_NORETRY;
  
- "iad"
- -----
-@@ -52,6 +52,15 @@ Internally when this file is read, the additional CRC byte is also obtained
- from the slave device. If it is correct, the 8 bytes page data are passed
- to userspace, otherwise an I/O error is returned.
- 
-+"offset"
-+-------
-+This file controls the 2-byte Offset Register of the chip.
-+Writing a 2-byte value will change the Offset Register, which changes the
-+current measurement done by the chip. Changing this register to the two's complement
-+of the current register while forcing zero current through the load will calibrate
-+the chip, canceling offset errors in the current ADC.
-+
-+
- "temperature"
- -------------
- Opening and reading this file initiates the CONVERT_T (temperature conversion)
-diff --git a/drivers/w1/slaves/w1_ds2438.c b/drivers/w1/slaves/w1_ds2438.c
-index 2cfdfedb584f..223a9aae6e2d 100644
---- a/drivers/w1/slaves/w1_ds2438.c
-+++ b/drivers/w1/slaves/w1_ds2438.c
-@@ -193,6 +193,34 @@ static int w1_ds2438_change_config_bit(struct w1_slave *sl, u8 mask, u8 value)
- 	return -1;
- }
- 
-+static int w1_ds2438_change_offset_register(struct w1_slave *sl, u8 *value)
-+{
-+	unsigned int retries = W1_DS2438_RETRIES;
-+	u8 w1_buf[9];
-+	u8 w1_page1_buf[DS2438_PAGE_SIZE + 1 /*for CRC*/];
-+
-+	if (w1_ds2438_get_page(sl, 1, w1_page1_buf) == 0) {
-+		memcpy(&w1_buf[2], w1_page1_buf, DS2438_PAGE_SIZE - 1); /* register 7 is reserved */
-+		w1_buf[7] = value[0]; /* change only offset register */
-+		w1_buf[8] = value[1];
-+		while (retries--) {
-+			if (w1_reset_select_slave(sl))
-+				continue;
-+			w1_buf[0] = W1_DS2438_WRITE_SCRATCH;
-+			w1_buf[1] = 0x01; /* write to page 1 */
-+			w1_write_block(sl->master, w1_buf, 9);
-+
-+			if (w1_reset_select_slave(sl))
-+				continue;
-+			w1_buf[0] = W1_DS2438_COPY_SCRATCH;
-+			w1_buf[1] = 0x01;
-+			w1_write_block(sl->master, w1_buf, 2);
-+				return 0;
-+		}
-+	}
-+	return -1;
-+}
-+
- static int w1_ds2438_get_voltage(struct w1_slave *sl,
- 				 int adc_input, uint16_t *voltage)
- {
-@@ -364,6 +392,25 @@ static ssize_t page1_read(struct file *filp, struct kobject *kobj,
- 	return ret;
- }
- 
-+static ssize_t offset_write(struct file *filp, struct kobject *kobj,
-+			    struct bin_attribute *bin_attr, char *buf,
-+			    loff_t off, size_t count)
-+{
-+	struct w1_slave *sl = kobj_to_w1_slave(kobj);
-+	int ret;
-+
-+	mutex_lock(&sl->master->bus_mutex);
-+
-+	if (w1_ds2438_change_offset_register(sl, buf) == 0)
-+		ret = count;
-+	else
-+		ret = -EIO;
-+
-+	mutex_unlock(&sl->master->bus_mutex);
-+
-+	return ret;
-+}
-+
- static ssize_t temperature_read(struct file *filp, struct kobject *kobj,
- 				struct bin_attribute *bin_attr, char *buf,
- 				loff_t off, size_t count)
-@@ -430,6 +477,7 @@ static ssize_t vdd_read(struct file *filp, struct kobject *kobj,
- static BIN_ATTR(iad, 0664, iad_read, iad_write, 0);
- static BIN_ATTR_RO(page0, DS2438_PAGE_SIZE);
- static BIN_ATTR_RO(page1, DS2438_PAGE_SIZE);
-+static BIN_ATTR_WO(offset, 2);
- static BIN_ATTR_RO(temperature, 0/* real length varies */);
- static BIN_ATTR_RO(vad, 0/* real length varies */);
- static BIN_ATTR_RO(vdd, 0/* real length varies */);
-@@ -438,6 +486,7 @@ static struct bin_attribute *w1_ds2438_bin_attrs[] = {
- 	&bin_attr_iad,
- 	&bin_attr_page0,
- 	&bin_attr_page1,
-+	&bin_attr_offset,
- 	&bin_attr_temperature,
- 	&bin_attr_vad,
- 	&bin_attr_vdd,
+ 	/*
+ 	 * If the system already has a suitable high order page then just use
 -- 
-2.30.1
+1.8.3.1
 
