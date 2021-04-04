@@ -2,116 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958CE35394B
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 19:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 621E735393B
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 19:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231329AbhDDR7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 13:59:51 -0400
-Received: from fgw23-7.mail.saunalahti.fi ([62.142.5.84]:53168 "EHLO
-        fgw23-7.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229861AbhDDR7t (ORCPT
+        id S231152AbhDDRud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 13:50:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229861AbhDDRub (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 13:59:49 -0400
-X-Greylist: delayed 962 seconds by postgrey-1.27 at vger.kernel.org; Sun, 04 Apr 2021 13:59:48 EDT
-Received: from localhost (88-115-248-186.elisa-laajakaista.fi [88.115.248.186])
-        by fgw23.mail.saunalahti.fi (Halon) with ESMTP
-        id 4a7f91e6-956d-11eb-8ccd-005056bdfda7;
-        Sun, 04 Apr 2021 20:43:40 +0300 (EEST)
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Ard Biesheuvel <ardb@kernel.org>, Lukas Wunner <lukas@wunner.de>
-Subject: [PATCH v1 1/1] efi/dev-path-parser: Switch to use for_each_acpi_dev_match()
-Date:   Sun,  4 Apr 2021 20:43:18 +0300
-Message-Id: <20210404174318.1441996-1-andy.shevchenko@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Sun, 4 Apr 2021 13:50:31 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB5C4C061756
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Apr 2021 10:50:26 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id d10so1938278pgf.12
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Apr 2021 10:50:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xtS4t+nQto3HTF/gGAoZaki1HLvMbnu+fb1pzmfFsTk=;
+        b=gxuY/Ho+fio8UKkm58hhbutA59hrxcwYogTlDgzFAFZBfDofrmoEF3NJFjIZBoxvzX
+         7pB+el5Hl38VT0jd2lPfV8qb4eojStdphvaO/NWYF96uFtTwTRdIWCJoEXzXOHRuohMf
+         2zYpVNQFHBOMoKhxh6GPjf9TORowZE2t5kPo5l9IxK+6wEZuXgiqOLftYs0a0GiVH2rt
+         AlK1rloVQTghbTpP/4/p6RUY1d/iItnPJnzXBaCiooEB0VP0nUxZ2eHbPqLeimrGXRlK
+         bP5cjdI9PZJoNZdZQaYpfFl4ImTlrfFsTfZaYRhjgluITBTcfI+IUy16YOlt6bLAOUBi
+         3V+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xtS4t+nQto3HTF/gGAoZaki1HLvMbnu+fb1pzmfFsTk=;
+        b=jLYnueXGM6+qF8CwjwONRtE5bAKHKzUIpLfI5wIRoZjomfUp/IacFxW3b4xabmX9oQ
+         ChTndDc87UPCyoo9j9BA9O5f/aAvv+DW7FyiuPM5qD6kuuG9rywGAfpXS8T+MPFvAyfI
+         0iFk0WwkO4f16cXjvIE3nt9Qiz78NgqCDm6//1YK24ZqitDH6KDJ/SDqDkkdOXD/tOKF
+         XxjuImm5PUH7VNykZfg2uvHRfWoyVWxsnSuLx1+hoKc6Dff0nSeDAzYDPVfo4/+Mi5CE
+         vWc+dcWdJidyWXgxEWjW2+n9l5uC8ZOHkzpoUber3TAFkKuNZ/rxtJsUuS4l+kDqcu3p
+         DbpQ==
+X-Gm-Message-State: AOAM533OufVVenQ5699JlQDc/INLNAcrD1PjTmrpyhNdwBgLwT08LJOY
+        OsaOhWy5HUERXjKPH+WKkv17tek09r+hxqj43uA=
+X-Google-Smtp-Source: ABdhPJxfE2Yq/BhlJLoNRWfL/eplfcKO+kVcP/6urwHqUpCdVKegNuAtRzaKGCYMfTizuqaKQs5Hn8AlCLkI/cdRbq8=
+X-Received: by 2002:a63:e5d:: with SMTP id 29mr19863954pgo.450.1617558624758;
+ Sun, 04 Apr 2021 10:50:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <e948dc1de2c7de246c81728248d7c6cdca7b4fd6.1617539357.git.sylphrenadin@gmail.com>
+ <202104042357.O0wCwDE8-lkp@intel.com>
+In-Reply-To: <202104042357.O0wCwDE8-lkp@intel.com>
+From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
+Date:   Sun, 4 Apr 2021 23:20:13 +0530
+Message-ID: <CACAkLuruDeYjnWOb8o+8HFfTNZXuHWm8O+xLTiLgtLU5j8=A+g@mail.gmail.com>
+Subject: Re: [PATCH V3 1/2] drm/vkms: Refactor vkms_composer_worker() to prep
+ for virtual_hw mode
+To:     kernel test robot <lkp@intel.com>
+Cc:     Melissa Wen <melissa.srw@gmail.com>, kbuild-all@lists.01.org,
+        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+        Haneen Mohammed <hamohammed.sa@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch to use for_each_acpi_dev_match() instead of home grown analogue.
-No functional change intended.
+On Sun, Apr 4, 2021 at 9:19 PM kernel test robot <lkp@intel.com> wrote:
+>
+> Hi Sumera,
+>
+> Thank you for the patch! Perhaps something to improve:
+>
+> [auto build test WARNING on linus/master]
+> [also build test WARNING on v5.12-rc5 next-20210401]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+>
+> url:    https://github.com/0day-ci/linux/commits/Sumera-Priyadarsini/Add-virtual-hardware-module/20210404-211300
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 2023a53bdf41b7646b1d384b6816af06309f73a5
+> config: mips-randconfig-r025-20210404 (attached as .config)
+> compiler: mipsel-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://github.com/0day-ci/linux/commit/4bd5c27357dd86b6099f3f28db5db722ceeed582
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Sumera-Priyadarsini/Add-virtual-hardware-module/20210404-211300
+>         git checkout 4bd5c27357dd86b6099f3f28db5db722ceeed582
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=mips
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All warnings (new ones prefixed by >>):
+>
+>    drivers/gpu/drm/vkms/vkms_composer.c: In function 'vkms_composer_worker':
+> >> drivers/gpu/drm/vkms/vkms_composer.c:226:20: warning: variable 'wb_pending' set but not used [-Wunused-but-set-variable]
+>      226 |  bool crc_pending, wb_pending;
+>          |                    ^~~~~~~~~~
+>
+>
+> vim +/wb_pending +226 drivers/gpu/drm/vkms/vkms_composer.c
+>
+> 4bd5c27357dd86 drivers/gpu/drm/vkms/vkms_composer.c Sumera Priyadarsini 2021-04-04  209
+> 0ca33adb91c0a9 drivers/gpu/drm/vkms/vkms_crc.c      Haneen Mohammed     2018-09-04  210  /**
+> a4e7e98e90ebd9 drivers/gpu/drm/vkms/vkms_composer.c Rodrigo Siqueira    2019-06-25  211   * vkms_composer_worker - ordered work_struct to compute CRC
+> 0ca33adb91c0a9 drivers/gpu/drm/vkms/vkms_crc.c      Haneen Mohammed     2018-09-04  212   *
+> 0ca33adb91c0a9 drivers/gpu/drm/vkms/vkms_crc.c      Haneen Mohammed     2018-09-04  213   * @work: work_struct
+> 0ca33adb91c0a9 drivers/gpu/drm/vkms/vkms_crc.c      Haneen Mohammed     2018-09-04  214   *
+> a4e7e98e90ebd9 drivers/gpu/drm/vkms/vkms_composer.c Rodrigo Siqueira    2019-06-25  215   * Work handler for composing and computing CRCs. work_struct scheduled in
+> 0ca33adb91c0a9 drivers/gpu/drm/vkms/vkms_crc.c      Haneen Mohammed     2018-09-04  216   * an ordered workqueue that's periodically scheduled to run by
+> 0ca33adb91c0a9 drivers/gpu/drm/vkms/vkms_crc.c      Haneen Mohammed     2018-09-04  217   * _vblank_handle() and flushed at vkms_atomic_crtc_destroy_state().
+> 0ca33adb91c0a9 drivers/gpu/drm/vkms/vkms_crc.c      Haneen Mohammed     2018-09-04  218   */
+> a4e7e98e90ebd9 drivers/gpu/drm/vkms/vkms_composer.c Rodrigo Siqueira    2019-06-25  219  void vkms_composer_worker(struct work_struct *work)
+> 6c234fe37c5762 drivers/gpu/drm/vkms/vkms_crc.c      Haneen Mohammed     2018-08-02  220  {
+> 6c234fe37c5762 drivers/gpu/drm/vkms/vkms_crc.c      Haneen Mohammed     2018-08-02  221         struct vkms_crtc_state *crtc_state = container_of(work,
+> 6c234fe37c5762 drivers/gpu/drm/vkms/vkms_crc.c      Haneen Mohammed     2018-08-02  222                                                 struct vkms_crtc_state,
+> a4e7e98e90ebd9 drivers/gpu/drm/vkms/vkms_composer.c Rodrigo Siqueira    2019-06-25  223                                                 composer_work);
+> 6c234fe37c5762 drivers/gpu/drm/vkms/vkms_crc.c      Haneen Mohammed     2018-08-02  224         struct drm_crtc *crtc = crtc_state->base.crtc;
+> 6c234fe37c5762 drivers/gpu/drm/vkms/vkms_crc.c      Haneen Mohammed     2018-08-02  225         struct vkms_output *out = drm_crtc_to_vkms_output(crtc);
+> dbd9d80c1b2e03 drivers/gpu/drm/vkms/vkms_composer.c Rodrigo Siqueira    2020-08-30 @226         bool crc_pending, wb_pending;
+> 0ca33adb91c0a9 drivers/gpu/drm/vkms/vkms_crc.c      Haneen Mohammed     2018-09-04  227         u64 frame_start, frame_end;
+> 4bd5c27357dd86 drivers/gpu/drm/vkms/vkms_composer.c Sumera Priyadarsini 2021-04-04  228         u32 crc32 = 0;
+> 953025763d1421 drivers/gpu/drm/vkms/vkms_composer.c Rodrigo Siqueira    2020-08-30  229         int ret;
+> 0ca33adb91c0a9 drivers/gpu/drm/vkms/vkms_crc.c      Haneen Mohammed     2018-09-04  230
+> a4e7e98e90ebd9 drivers/gpu/drm/vkms/vkms_composer.c Rodrigo Siqueira    2019-06-25  231         spin_lock_irq(&out->composer_lock);
+> 0ca33adb91c0a9 drivers/gpu/drm/vkms/vkms_crc.c      Haneen Mohammed     2018-09-04  232         frame_start = crtc_state->frame_start;
+> 0ca33adb91c0a9 drivers/gpu/drm/vkms/vkms_crc.c      Haneen Mohammed     2018-09-04  233         frame_end = crtc_state->frame_end;
+> 18d0952a838ba5 drivers/gpu/drm/vkms/vkms_crc.c      Daniel Vetter       2019-06-07  234         crc_pending = crtc_state->crc_pending;
+> dbd9d80c1b2e03 drivers/gpu/drm/vkms/vkms_composer.c Rodrigo Siqueira    2020-08-30  235         wb_pending = crtc_state->wb_pending;
+> 18d0952a838ba5 drivers/gpu/drm/vkms/vkms_crc.c      Daniel Vetter       2019-06-07  236         crtc_state->frame_start = 0;
+> 18d0952a838ba5 drivers/gpu/drm/vkms/vkms_crc.c      Daniel Vetter       2019-06-07  237         crtc_state->frame_end = 0;
+> 18d0952a838ba5 drivers/gpu/drm/vkms/vkms_crc.c      Daniel Vetter       2019-06-07  238         crtc_state->crc_pending = false;
+> a4e7e98e90ebd9 drivers/gpu/drm/vkms/vkms_composer.c Rodrigo Siqueira    2019-06-25  239         spin_unlock_irq(&out->composer_lock);
+> 0ca33adb91c0a9 drivers/gpu/drm/vkms/vkms_crc.c      Haneen Mohammed     2018-09-04  240
+> 18d0952a838ba5 drivers/gpu/drm/vkms/vkms_crc.c      Daniel Vetter       2019-06-07  241         /*
+> 18d0952a838ba5 drivers/gpu/drm/vkms/vkms_crc.c      Daniel Vetter       2019-06-07  242          * We raced with the vblank hrtimer and previous work already computed
+> 18d0952a838ba5 drivers/gpu/drm/vkms/vkms_crc.c      Daniel Vetter       2019-06-07  243          * the crc, nothing to do.
+> 18d0952a838ba5 drivers/gpu/drm/vkms/vkms_crc.c      Daniel Vetter       2019-06-07  244          */
+> 18d0952a838ba5 drivers/gpu/drm/vkms/vkms_crc.c      Daniel Vetter       2019-06-07  245         if (!crc_pending)
+> 18d0952a838ba5 drivers/gpu/drm/vkms/vkms_crc.c      Daniel Vetter       2019-06-07  246                 return;
+> 6c234fe37c5762 drivers/gpu/drm/vkms/vkms_crc.c      Haneen Mohammed     2018-08-02  247
+> 4bd5c27357dd86 drivers/gpu/drm/vkms/vkms_composer.c Sumera Priyadarsini 2021-04-04  248         ret = vkms_composer_common(crtc_state, out, crtc_state->wb_pending, &crc32);
+> 4bd5c27357dd86 drivers/gpu/drm/vkms/vkms_composer.c Sumera Priyadarsini 2021-04-04  249         if (ret == -EINVAL)
+> 953025763d1421 drivers/gpu/drm/vkms/vkms_composer.c Rodrigo Siqueira    2020-08-30  250                 return;
+> 18d0952a838ba5 drivers/gpu/drm/vkms/vkms_crc.c      Daniel Vetter       2019-06-07  251         /*
+> 18d0952a838ba5 drivers/gpu/drm/vkms/vkms_crc.c      Daniel Vetter       2019-06-07  252          * The worker can fall behind the vblank hrtimer, make sure we catch up.
+> 0ca33adb91c0a9 drivers/gpu/drm/vkms/vkms_crc.c      Haneen Mohammed     2018-09-04  253          */
+> 0ca33adb91c0a9 drivers/gpu/drm/vkms/vkms_crc.c      Haneen Mohammed     2018-09-04  254         while (frame_start <= frame_end)
+> 0ca33adb91c0a9 drivers/gpu/drm/vkms/vkms_crc.c      Haneen Mohammed     2018-09-04  255                 drm_crtc_add_crc_entry(crtc, true, frame_start++, &crc32);
+> 6c234fe37c5762 drivers/gpu/drm/vkms/vkms_crc.c      Haneen Mohammed     2018-08-02  256  }
+> 6c234fe37c5762 drivers/gpu/drm/vkms/vkms_crc.c      Haneen Mohammed     2018-08-02  257
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
----
- drivers/firmware/efi/dev-path-parser.c | 47 +++++++++-----------------
- 1 file changed, 16 insertions(+), 31 deletions(-)
-
-diff --git a/drivers/firmware/efi/dev-path-parser.c b/drivers/firmware/efi/dev-path-parser.c
-index 5c9625e552f4..e898013fd2a4 100644
---- a/drivers/firmware/efi/dev-path-parser.c
-+++ b/drivers/firmware/efi/dev-path-parser.c
-@@ -12,52 +12,37 @@
- #include <linux/efi.h>
- #include <linux/pci.h>
- 
--struct acpi_hid_uid {
--	struct acpi_device_id hid[2];
--	char uid[11]; /* UINT_MAX + null byte */
--};
--
--static int __init match_acpi_dev(struct device *dev, const void *data)
--{
--	struct acpi_hid_uid hid_uid = *(const struct acpi_hid_uid *)data;
--	struct acpi_device *adev = to_acpi_device(dev);
--
--	if (acpi_match_device_ids(adev, hid_uid.hid))
--		return 0;
--
--	if (adev->pnp.unique_id)
--		return !strcmp(adev->pnp.unique_id, hid_uid.uid);
--	else
--		return !strcmp("0", hid_uid.uid);
--}
--
- static long __init parse_acpi_path(const struct efi_dev_path *node,
- 				   struct device *parent, struct device **child)
- {
--	struct acpi_hid_uid hid_uid = {};
-+	char hid[ACPI_ID_LEN], uid[11]; /* UINT_MAX + null byte */
-+	struct acpi_device *adev;
- 	struct device *phys_dev;
- 
- 	if (node->header.length != 12)
- 		return -EINVAL;
- 
--	sprintf(hid_uid.hid[0].id, "%c%c%c%04X",
-+	sprintf(hid, "%c%c%c%04X",
- 		'A' + ((node->acpi.hid >> 10) & 0x1f) - 1,
- 		'A' + ((node->acpi.hid >>  5) & 0x1f) - 1,
- 		'A' + ((node->acpi.hid >>  0) & 0x1f) - 1,
- 			node->acpi.hid >> 16);
--	sprintf(hid_uid.uid, "%u", node->acpi.uid);
-+	sprintf(uid, "%u", node->acpi.uid);
- 
--	*child = bus_find_device(&acpi_bus_type, NULL, &hid_uid,
--				 match_acpi_dev);
--	if (!*child)
-+	for_each_acpi_dev_match(adev, hid, NULL, -1) {
-+		if (adev->pnp.unique_id && !strcmp(adev->pnp.unique_id, uid))
-+			break;
-+		if (!adev->pnp.unique_id && node->acpi.uid == 0)
-+			break;
-+	}
-+	if (!adev)
- 		return -ENODEV;
- 
--	phys_dev = acpi_get_first_physical_node(to_acpi_device(*child));
--	if (phys_dev) {
--		get_device(phys_dev);
--		put_device(*child);
--		*child = phys_dev;
--	}
-+	phys_dev = acpi_get_first_physical_node(adev);
-+	if (phys_dev)
-+		*child = get_device(phys_dev);
-+	else
-+		*child = get_device(&adev->dev);
- 
- 	return 0;
- }
--- 
-2.31.1
-
+This error seems to have creeped in again. I am not sure why I didn't
+get any warning for this.
+I will submit a revised patch, sorry for the noise. :/
