@@ -2,181 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0183539EE
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 22:36:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D9913539C6
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 22:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231591AbhDDUgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 16:36:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35436 "EHLO
+        id S231532AbhDDUdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 16:33:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231639AbhDDUf3 (ORCPT
+        with ESMTP id S230169AbhDDUdh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 16:35:29 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70805C061797;
-        Sun,  4 Apr 2021 13:35:21 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id ap14so14395069ejc.0;
-        Sun, 04 Apr 2021 13:35:21 -0700 (PDT)
+        Sun, 4 Apr 2021 16:33:37 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C229C061756
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Apr 2021 13:33:31 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id c8so9262763wrq.11
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Apr 2021 13:33:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=21TRq5T7n/YlJzaiHd/rYW7/ONn9U06XAcWKZPDtNYI=;
-        b=M4eDEHA7l9wyZKJKdkZ3+WB+zAsyqVMa09C0V4FY+OtPURMur+wQEEu556G6Vr60aE
-         JHYzgsAezfJLn4gGjtWhb5HOtAsNhd4RKEaZJ7R72PJNNC5hv7+1jEBoTArQvhd5nv3o
-         d4/yEs0fGzaJGecJ0yYA8b/MjPUFNst42iBh1Vku40ntMYrw7SyUFbAJQuz0m1uawdwo
-         zSFXgjFfm7ChRDZ3prphxFwfglmu3y80bJJ295zfk8diP14mvMKOcvAfbddFAaNum2tI
-         3rnGtbyuJF0ZOXeFiWVr7x1jO7uEVo+7XExUfzmroDb+OsbfcEhox7RmWMHca/13+F3+
-         I5GQ==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qLAy95bvS1zAnYuhC/w4xxxlm+O0tzNR1N2BJpqbw5w=;
+        b=Uj0Y5h5dAclSEpTTchKZoN6d6/X2/jxuIIdiY2TiTyk3Va6KgXWEIR7nXrbx2G6DmG
+         DEj8NTV0WHUfrymtdaelg8IdCSbFubY9BkAoUgH6qQf8EqAg7oNdPZikt1hBXz6v20zs
+         A8AaPWXWp0Z2jemWr2KvX3VEPPGU3IlyIZPwCyiC+SenicBH6/PCmHtanTK6GQ1U+Ifg
+         VY2SBWvWpq0G2yymbRGsBY5fsQ3VQ4aGS/FzsLk9krR6A4W7hb8uudpCoMiP1AUhW51x
+         KAc2oi6Fi2BSvj3YthT1WKevVUyAKnRg3u5L4ySofPzK4gqEB2ss/pH/Whz46Pfeo62Z
+         VcVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=21TRq5T7n/YlJzaiHd/rYW7/ONn9U06XAcWKZPDtNYI=;
-        b=cqMlfzxDY+W3WIaamf7rik0PZ0ucZcXsqnpku7VwUzPI3Vzo5DFi30r6ykI/c7O5+8
-         Dx4tMILNceEJTKIWyCNw4YyckMHeUqSh1ixh5rLyWJ/cfYCIOKRI/iLx4zLfr5tfQsCN
-         ZdFp3ywQd+9TcPO6kI3dVFMEOS59+3rBaxuOEBX8mL6j6jcdlF+SMY3tkQhZxJNPXONY
-         xO2VOi04osvvF5JY3MrzZdn0J6C/As6KccGm6P0nyhSYAka0O0FH2rdS27XfB5m0e3dR
-         mylOS+Vhl63iXJp5AabKbIYis5fJZ88VH8Omll8guaGuafsiOEwGPOawctWzGKwn7GG0
-         oqgA==
-X-Gm-Message-State: AOAM531axKRuECrKuTQ0oB0Q6d2Rl9NY86dQxAvNC4KbublNaS1xCtw9
-        qKlAUDN7rL7qpslzCCMXuo8hHQzatkU=
-X-Google-Smtp-Source: ABdhPJyNXcRjlippyXIMc/+PnZGk2e+9H+1Uy7aUEKqxmoGDzV/o/WLhyc7AWbrwvZr1LTAO9WqoBw==
-X-Received: by 2002:a17:906:814a:: with SMTP id z10mr11054668ejw.476.1617568520142;
-        Sun, 04 Apr 2021 13:35:20 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (host-79-52-251-187.retail.telecomitalia.it. [79.52.251.187])
-        by smtp.googlemail.com with ESMTPSA id s4sm7191140ejf.108.2021.04.04.13.35.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Apr 2021 13:35:19 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>, Rob Herring <robh@kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v14 9/9] dt-bindings: thermal: tsens: Document ipq8064 bindings
-Date:   Sun,  4 Apr 2021 16:48:23 +0200
-Message-Id: <20210404144823.31867-10-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210404144823.31867-1-ansuelsmth@gmail.com>
-References: <20210404144823.31867-1-ansuelsmth@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qLAy95bvS1zAnYuhC/w4xxxlm+O0tzNR1N2BJpqbw5w=;
+        b=i5Frb948Un75095H46JllF5/yt9/5dCWU1VU8wWdZaB1rNY3PdrVsflyP9fAMStt/b
+         h+6IIdQRdxRgk3Z/IK91w/oTjDNF5eBc2mPT6sW7yFiOza/MNAcK+vaac9njnBCk5jUB
+         +VEmIjDqtdH/uohQ3o5AL95jHdBbZzII7rbvNUwkZFBeKfgOrhGtbSx9oYvUSH3Yak1Y
+         fgaD8eTspO/LqsUOJmPC0exZUSYlhS6q+LL9yNwsXvrx4dBPfKUd0bc1VF8pqzEAM4f0
+         meNw4vbRa6hasYqBzmVj+MWrUzb+josEy8XcxpqVtzSzG1DqCMJw50eI3LK+9npQ7Lo4
+         NfoQ==
+X-Gm-Message-State: AOAM530skN7gYuiRYjoLsYAvkQYID19VxLeIhhMTTnNBBow9vR6mbtOF
+        bCaf78EXaUbpnkvHmk7Q6KhdEA==
+X-Google-Smtp-Source: ABdhPJyhT6Ya2IgUD2RMKPgOE6BwHgGaUQpbUoSsELec3O9UxvF/KjbQKc6zYs03mvxBXK/bekFFsg==
+X-Received: by 2002:a05:6000:10c4:: with SMTP id b4mr8456271wrx.386.1617568410016;
+        Sun, 04 Apr 2021 13:33:30 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:6d68:6b9a:7a3c:4a9f? ([2a01:e34:ed2f:f020:6d68:6b9a:7a3c:4a9f])
+        by smtp.googlemail.com with ESMTPSA id u19sm8383785wml.28.2021.04.04.13.33.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Apr 2021 13:33:29 -0700 (PDT)
+Subject: Re: [PATCH v2 1/8] dt-bindings: timer: Add compatible for Mediatek
+ MT8195
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fabien Parent <fparent@baylibre.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Zhiyong Tao <zhiyong.tao@mediatek.com>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Wenbin Mei <wenbin.mei@mediatek.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-serial@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, srv_heupstream@mediatek.com
+References: <20210319023427.16711-1-seiya.wang@mediatek.com>
+ <20210319023427.16711-3-seiya.wang@mediatek.com>
+ <bf7ad31e-974a-3e0a-12bd-32973c7c3cbd@gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <11bf6761-8902-bfa5-8577-d397846e7638@linaro.org>
+Date:   Sun, 4 Apr 2021 22:33:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <bf7ad31e-974a-3e0a-12bd-32973c7c3cbd@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the use of bindings used for msm8960 tsens based devices.
-msm8960 use the same gcc regs and is set as a child of the qcom gcc.
+On 29/03/2021 13:52, Matthias Brugger wrote:
+> 
+> 
+> On 19/03/2021 03:34, Seiya Wang wrote:
+>> This commit adds dt-binding documentation of timer for Mediatek MT8195 SoC
+>> Platform.
+>>
+>> Signed-off-by: Seiya Wang <seiya.wang@mediatek.com>
+> 
+> Applied to v5.12-next/dts64
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- .../bindings/thermal/qcom-tsens.yaml          | 56 ++++++++++++++++---
- 1 file changed, 48 insertions(+), 8 deletions(-)
+Usually bindings go through the subsystem maintainer.
 
-diff --git a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-index 95462e071ab4..1785b1c75a3c 100644
---- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-+++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-@@ -19,6 +19,11 @@ description: |
- properties:
-   compatible:
-     oneOf:
-+      - description: msm9860 TSENS based
-+        items:
-+          - enum:
-+              - qcom,ipq8064-tsens
-+
-       - description: v0.1 of TSENS
-         items:
-           - enum:
-@@ -73,7 +78,9 @@ properties:
-     maxItems: 2
-     items:
-       - const: calib
--      - const: calib_sel
-+      - enum:
-+          - calib_backup
-+          - calib_sel
- 
-   "#qcom,sensors":
-     description:
-@@ -88,12 +95,20 @@ properties:
-       Number of cells required to uniquely identify the thermal sensors. Since
-       we have multiple sensors this is set to 1
- 
-+required:
-+  - compatible
-+  - interrupts
-+  - interrupt-names
-+  - "#thermal-sensor-cells"
-+  - "#qcom,sensors"
-+
- allOf:
-   - if:
-       properties:
-         compatible:
-           contains:
-             enum:
-+              - qcom,ipq8064-tsens
-               - qcom,msm8916-tsens
-               - qcom,msm8974-tsens
-               - qcom,msm8976-tsens
-@@ -114,17 +129,42 @@ allOf:
-         interrupt-names:
-           minItems: 2
- 
--required:
--  - compatible
--  - reg
--  - "#qcom,sensors"
--  - interrupts
--  - interrupt-names
--  - "#thermal-sensor-cells"
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,tsens-v0_1
-+              - qcom,tsens-v1
-+              - qcom,tsens-v2
-+
-+    then:
-+      required:
-+        - reg
- 
- additionalProperties: false
- 
- examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    // Example msm9860 based SoC (ipq8064):
-+    gcc: clock-controller {
-+
-+           /* ... */
-+
-+           tsens: thermal-sensor {
-+                compatible = "qcom,ipq8064-tsens";
-+
-+                 nvmem-cells = <&tsens_calib>, <&tsens_calib_backup>;
-+                 nvmem-cell-names = "calib", "calib_backup";
-+                 interrupts = <GIC_SPI 178 IRQ_TYPE_LEVEL_HIGH>;
-+                 interrupt-names = "uplow";
-+
-+                 #qcom,sensors = <11>;
-+                 #thermal-sensor-cells = <1>;
-+          };
-+    };
-+
-   - |
-     #include <dt-bindings/interrupt-controller/arm-gic.h>
-     // Example 1 (legacy: for pre v1 IP):
+
 -- 
-2.30.2
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
