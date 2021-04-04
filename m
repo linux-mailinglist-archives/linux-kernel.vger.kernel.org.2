@@ -2,177 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56A6A3538F6
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 18:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C263E3538FA
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 19:05:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231254AbhDDQ75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 12:59:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231144AbhDDQ74 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 12:59:56 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E0ABC061788
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Apr 2021 09:59:52 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id s16-20020a0568301490b02901b83efc84a0so503660otq.10
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Apr 2021 09:59:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hiTjEIXnFtxjVW2OYzhXcq2+uKAg/SMDNbyy/FBgm1A=;
-        b=ak2De3We9oa2zeT2NhySjCdqaW5U7HzWoB4gNPMOD6Vu3Vxqq68yr7hxDGUB9sQCDH
-         lLkUIbQmu8MRJjTwNhTFfF3vPL8RrtDlitX9s/Jocw/bNVKhEWX5x+D4WWqa0b/g0jF9
-         A17NnPtQIFCjy3Ktmr7ni/9Sv2eKOCblHTcYKS/ylUEfSoHkfl2aMWvyvkMJP+2nl85N
-         OghiDwD45edBXGR2PVxgRjBjtfkapyGXtKZ+HXVrXbtmFcXhbuRC5yAb5ZaX758kcCf5
-         i5UineOhy9V2svPssvdPSH78bXSV5Uov6ZqcpGOphA+QSqnWY3i2MaI9mjO5e7q2iqhi
-         szoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hiTjEIXnFtxjVW2OYzhXcq2+uKAg/SMDNbyy/FBgm1A=;
-        b=p9H82/4Eg3rHdccsZNt4nRx3r4aMeADtcLUQtde+3R3WCMh6EzMGF83rrn0PP0DICt
-         r+vTSnZQB3OF6H91lfIAf3idUbR+yqGAXrDFj0lfCstD+T0OQA5KenP5oqTcmI2o0kBH
-         G9h+UEoHUMQius4efQdepE7eBjm0XntJdO/oBxsSHghp0UHx0Eh1yrUJA9r/VHbDzYib
-         9wdxK1iat32NalzrK+DxjNKqsoATKkJ3mGBWsFvQk/G9rarmf5MFLMLqVb09N4vuaFbZ
-         CRfy1ltxA8GJmn7VCfspDYZiDdXCPDvM4Btd8zn5gDBKtHPQubJyXayMcXATpBml2KLV
-         aKhw==
-X-Gm-Message-State: AOAM532Ign592fH8rIiRSQhCTC+qi5Cs0omE2QIAUPpvxemGRVIynKah
-        V8T93OXBVzo9PtzxO7KAszBjcA==
-X-Google-Smtp-Source: ABdhPJwTgTvn9zUeRbv3NxxhEK4AYYUs3dcMkqfaR3Bn1JYFmZ0ILkHe1gCd485jcEn73OOAOBshFA==
-X-Received: by 2002:a9d:7f8a:: with SMTP id t10mr18726017otp.239.1617555591660;
-        Sun, 04 Apr 2021 09:59:51 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id m129sm2689059oif.34.2021.04.04.09.59.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Apr 2021 09:59:51 -0700 (PDT)
-Date:   Sun, 4 Apr 2021 11:59:49 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Deepak Kumar Singh <deesin@codeaurora.org>
-Cc:     clew@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        Andy Gross <agross@kernel.org>
-Subject: Re: [PATCH V1 2/2] soc: qcom: aoss: Add debugfs entry
-Message-ID: <YGnwhSYxHMvmxBRS@builder.lan>
-References: <1617344238-12137-1-git-send-email-deesin@codeaurora.org>
- <1617344238-12137-3-git-send-email-deesin@codeaurora.org>
+        id S231213AbhDDRF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 13:05:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60100 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229861AbhDDRFY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Apr 2021 13:05:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CDBC96128B;
+        Sun,  4 Apr 2021 17:05:16 +0000 (UTC)
+Date:   Sun, 4 Apr 2021 19:05:13 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        syzbot <syzbot+c88a7030da47945a3cc3@syzkaller.appspotmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, io-uring@vger.kernel.org
+Subject: Re: [syzbot] WARNING in mntput_no_expire (2)
+Message-ID: <20210404170513.mfl5liccdaxjnpls@wittgenstein>
+References: <20210401154515.k24qdd2lzhtneu47@wittgenstein>
+ <90e7e339-eaec-adb2-cfed-6dc058a117a3@kernel.dk>
+ <20210401174613.vymhhrfsemypougv@wittgenstein>
+ <20210401175919.jpiylhfrlb4xb67u@wittgenstein>
+ <YGYa0B4gabEYi2Tx@zeniv-ca.linux.org.uk>
+ <YGkloJhMFc4hEatk@zeniv-ca.linux.org.uk>
+ <20210404113445.xo6ntgfpxigcb3x6@wittgenstein>
+ <YGnhkoTfVfMSMPpK@zeniv-ca.linux.org.uk>
+ <20210404164040.vtxdcfzgliuzghwk@wittgenstein>
+ <YGns1iPBHeeMAtn8@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1617344238-12137-3-git-send-email-deesin@codeaurora.org>
+In-Reply-To: <YGns1iPBHeeMAtn8@zeniv-ca.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 02 Apr 01:17 CDT 2021, Deepak Kumar Singh wrote:
-
-> It can be useful to control the different power states of various
-> parts of hardware for device testing. Add a debugfs node for qmp so
-> messages can be sent to aoss for debugging and testing purposes.
+On Sun, Apr 04, 2021 at 04:44:06PM +0000, Al Viro wrote:
+> On Sun, Apr 04, 2021 at 06:40:40PM +0200, Christian Brauner wrote:
 > 
-> Signed-off-by: Chris Lew <clew@codeaurora.org>
-> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
-> ---
->  drivers/soc/qcom/qcom_aoss.c | 41 +++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 41 insertions(+)
+> > > Very interesting.  What happens if you call loop() twice?  And now I wonder
+> > > whether it's root or cwd, actually...  Hmm...
+> > > 
+> > > How about this:
+> > > 	fd = open("/proc/self/mountinfo", 0);
+> > > 	mkdir("./newroot/foo", 0777);
+> > > 	mount("./newroot/foo", "./newroot/foo", 0, MS_BIND, NULL);
+> > > 	chroot("./newroot");
+> > > 	chdir("/foo");
+> > > 	while (1) {
+> > > 		static char buf[4096];
+> > > 		int n = read(fd, buf, 4096);
+> > > 		if (n <= 0)
+> > > 			break;
+> > > 		write(1, buf, n);
+> > > 	}
+> > > 	close(fd);
+> > > 	drop_caps();
+> > > 	loop();
+> > > as the end of namespace_sandbox_proc(), instead of
+> > > 	chroot("./newroot");
+> > > 	chdir("/");
+> > > 	drop_caps();
+> > > 	loop();
+> > > sequence we have there?
+> > 
+> > Uhum, well then we oops properly with a null-deref.
 > 
-> diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
-> index 5c643f0..1789880 100644
-> --- a/drivers/soc/qcom/qcom_aoss.c
-> +++ b/drivers/soc/qcom/qcom_aoss.c
-> @@ -4,6 +4,7 @@
->   */
->  #include <dt-bindings/power/qcom-aoss-qmp.h>
->  #include <linux/clk-provider.h>
-> +#include <linux/debugfs.h>
->  #include <linux/interrupt.h>
->  #include <linux/io.h>
->  #include <linux/mailbox_client.h>
-> @@ -86,6 +87,9 @@ struct qmp {
->  	struct clk_hw qdss_clk;
->  	struct genpd_onecell_data pd_data;
->  	struct qmp_cooling_device *cooling_devs;
-> +#if IS_ENABLED(CONFIG_DEBUG_FS)
-> +	struct dentry *debugfs_file;
-> +#endif /* CONFIG_DEBUG_FS */
->  };
->  
->  struct qmp_pd {
-> @@ -549,6 +553,34 @@ struct qmp *qmp_get(struct device *dev)
->  }
->  EXPORT_SYMBOL(qmp_get);
->  
-> +#if IS_ENABLED(CONFIG_DEBUG_FS)
-> +static ssize_t aoss_dbg_write(struct file *file, const char __user *userstr,
-> +			      size_t len, loff_t *pos)
-> +{
-> +	struct qmp *qmp = file->private_data;
-> +	char buf[QMP_MSG_LEN] = {};
-> +	int ret;
-> +
-> +	if (!len || len >= QMP_MSG_LEN)
-> +		return len;
+> Cute...  Could you dump namei.o (ideally - with namei.s) from your build
+> someplace public?
 
-If len >= QMP_MSG_LEN we shouldn't lie to the caller and say that all
-went well, better return -EINVAL in this case.
+Yeah, I have at least namei.o
 
-> +
-> +	ret  = copy_from_user(buf, userstr, len);
-> +	if (ret) {
-> +		dev_err(qmp->dev, "copy from user failed, ret:%d\n", ret);
-> +		return len;
+https://drive.google.com/file/d/1AvO1St0YltIrA86DXjp1Xg3ojtS9owGh/view?usp=sharing
 
-		return -EFAULT;
-
-And you don't have to print here.
-
-The rest looks good.
-
-Regards,
-Bjorn
-
-> +	}
-> +
-> +	ret = qmp_send(qmp, buf, QMP_MSG_LEN);
-> +
-> +	return ret ? ret : len;
-> +}
-> +
-> +static const struct file_operations aoss_dbg_fops = {
-> +	.open = simple_open,
-> +	.write = aoss_dbg_write,
-> +};
-> +#endif /* CONFIG_DEBUG_FS */
-> +
->  static int qmp_probe(struct platform_device *pdev)
->  {
->  	struct resource *res;
-> @@ -603,6 +635,11 @@ static int qmp_probe(struct platform_device *pdev)
->  
->  	platform_set_drvdata(pdev, qmp);
->  
-> +#if IS_ENABLED(CONFIG_DEBUG_FS)
-> +	qmp->debugfs_file = debugfs_create_file("aoss_send_message", 0220, NULL,
-> +						qmp, &aoss_dbg_fops);
-> +#endif /* CONFIG_DEBUG_FS */
-> +
->  	return 0;
->  
->  err_remove_qdss_clk:
-> @@ -619,6 +656,10 @@ static int qmp_remove(struct platform_device *pdev)
->  {
->  	struct qmp *qmp = platform_get_drvdata(pdev);
->  
-> +#if IS_ENABLED(CONFIG_DEBUG_FS)
-> +	debugfs_remove(qmp->debugfs_file);
-> +#endif /* CONFIG_DEBUG_FS */
-> +
->  	qmp_qdss_clk_remove(qmp);
->  	qmp_pd_remove(qmp);
->  	qmp_cooling_devices_remove(qmp);
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+Christian
