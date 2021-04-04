@@ -2,196 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2469353811
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 14:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A3C353813
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 14:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbhDDMeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 08:34:05 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:63379 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229709AbhDDMeE (ORCPT
+        id S230378AbhDDMm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 08:42:56 -0400
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:25011 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230168AbhDDMmy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 08:34:04 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AXFkxo6B84EHIPpflHelM55DYdL4zR+YMi2QD?=
- =?us-ascii?q?/UZ3VBBTb4ikh9mj9c576TbYgCscMUtKpfmuI6+FKEm3ybdQwa08eYivRxPnvm?=
- =?us-ascii?q?zAFu9fxK/v2SfpFSG71sM178tdWpNzAtHxElR25PySiDWQKcoqw9WM7cmT6tv2?=
- =?us-ascii?q?8nZ3QQlmL4Fm4gtpYzzrcHFeeQhcCZI1UKeb/8pMzgDQHEg/U8LTPBQ4dtmGg9?=
- =?us-ascii?q?XKkZ78CCR2ZCIP2U2pljOn6LnzDhie0FM/alp0oYsfzQ=3D=3D?=
-X-IronPort-AV: E=Sophos;i="5.81,304,1610406000"; 
-   d="scan'208";a="501516764"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 04 Apr 2021 14:33:59 +0200
-Date:   Sun, 4 Apr 2021 14:33:58 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Denis Efremov <efremov@linux.com>
-cc:     Julia Lawall <julia.lawall@inria.fr>, cocci@systeme.lip6.fr,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] coccinelle: misc: add swap script
-In-Reply-To: <afb06bbc-5c28-8a92-f205-c9a1c87c707c@linux.com>
-Message-ID: <alpine.DEB.2.22.394.2104041433430.2958@hadrien>
-References: <20210216080133.455456-1-efremov@linux.com> <20210305100956.6222-1-efremov@linux.com> <afb06bbc-5c28-8a92-f205-c9a1c87c707c@linux.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Sun, 4 Apr 2021 08:42:54 -0400
+Received: from localhost.localdomain ([90.126.11.170])
+        by mwinf5d25 with ME
+        id ocin2400D3g7mfN03cinKc; Sun, 04 Apr 2021 14:42:49 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 04 Apr 2021 14:42:49 +0200
+X-ME-IP: 90.126.11.170
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     aelior@marvell.com, GR-everest-linux-l2@marvell.com,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 1/2] qede: Remove a erroneous ++ in 'qede_rx_build_jumbo()'
+Date:   Sun,  4 Apr 2021 14:42:44 +0200
+Message-Id: <1c27abb938a430e58bd644729597015b3414d4aa.1617540100.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This ++ is confusing. It looks duplicated with the one already performed in
+'skb_fill_page_desc()'.
 
+In fact, it is harmless. 'nr_frags' is written twice with the same value.
+Once, because of the nr_frags++, and once because of the 'nr_frags = i + 1'
+in 'skb_fill_page_desc()'.
 
-On Sun, 28 Mar 2021, Denis Efremov wrote:
+So axe this post-increment to avoid confusion.
 
-> Ping?
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/net/ethernet/qlogic/qede/qede_fp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Applied.  Thanks.
+diff --git a/drivers/net/ethernet/qlogic/qede/qede_fp.c b/drivers/net/ethernet/qlogic/qede/qede_fp.c
+index 102d0e0808d5..ee3e45e38cb7 100644
+--- a/drivers/net/ethernet/qlogic/qede/qede_fp.c
++++ b/drivers/net/ethernet/qlogic/qede/qede_fp.c
+@@ -1209,7 +1209,7 @@ static int qede_rx_build_jumbo(struct qede_dev *edev,
+ 		dma_unmap_page(rxq->dev, bd->mapping,
+ 			       PAGE_SIZE, DMA_FROM_DEVICE);
+ 
+-		skb_fill_page_desc(skb, skb_shinfo(skb)->nr_frags++,
++		skb_fill_page_desc(skb, skb_shinfo(skb)->nr_frags,
+ 				   bd->data, rxq->rx_headroom, cur_size);
+ 
+ 		skb->truesize += PAGE_SIZE;
+-- 
+2.27.0
 
->
-> On 3/5/21 1:09 PM, Denis Efremov wrote:
-> > Check for opencoded swap() implementation.
-> >
-> > Signed-off-by: Denis Efremov <efremov@linux.com>
-> > ---
-> > Changes in v2:
-> >   - additional patch rule to drop excessive {}
-> >   - fix indentation in patch mode by anchoring ;
-> > Changes in v3:
-> >   - Rule added for simple (without var init) swap highlighting in !patch
-> > mode
-> >   - "depends on patch && (rpvar || rp)" fixed
-> >
-> >   scripts/coccinelle/misc/swap.cocci | 122 +++++++++++++++++++++++++++++
-> >   1 file changed, 122 insertions(+)
-> >   create mode 100644 scripts/coccinelle/misc/swap.cocci
-> >
-> > diff --git a/scripts/coccinelle/misc/swap.cocci
-> > b/scripts/coccinelle/misc/swap.cocci
-> > new file mode 100644
-> > index 000000000000..c5e71b7ef7f5
-> > --- /dev/null
-> > +++ b/scripts/coccinelle/misc/swap.cocci
-> > @@ -0,0 +1,122 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +///
-> > +/// Check for opencoded swap() implementation.
-> > +///
-> > +// Confidence: High
-> > +// Copyright: (C) 2021 Denis Efremov ISPRAS
-> > +// Options: --no-includes --include-headers
-> > +//
-> > +// Keywords: swap
-> > +//
-> > +
-> > +virtual patch
-> > +virtual org
-> > +virtual report
-> > +virtual context
-> > +
-> > +@rvar depends on !patch@
-> > +identifier tmp;
-> > +expression a, b;
-> > +type T;
-> > +position p;
-> > +@@
-> > +
-> > +(
-> > +* T tmp;
-> > +|
-> > +* T tmp = 0;
-> > +|
-> > +* T *tmp = NULL;
-> > +)
-> > +... when != tmp
-> > +* tmp = a;
-> > +* a = b;@p
-> > +* b = tmp;
-> > +... when != tmp
-> > +
-> > +@r depends on !patch@
-> > +identifier tmp;
-> > +expression a, b;
-> > +position p != rvar.p;
-> > +@@
-> > +
-> > +* tmp = a;
-> > +* a = b;@p
-> > +* b = tmp;
-> > +
-> > +@rpvar depends on patch@
-> > +identifier tmp;
-> > +expression a, b;
-> > +type T;
-> > +@@
-> > +
-> > +(
-> > +- T tmp;
-> > +|
-> > +- T tmp = 0;
-> > +|
-> > +- T *tmp = NULL;
-> > +)
-> > +... when != tmp
-> > +- tmp = a;
-> > +- a = b;
-> > +- b = tmp
-> > ++ swap(a, b)
-> > +  ;
-> > +... when != tmp
-> > +
-> > +@rp depends on patch@
-> > +identifier tmp;
-> > +expression a, b;
-> > +@@
-> > +
-> > +- tmp = a;
-> > +- a = b;
-> > +- b = tmp
-> > ++ swap(a, b)
-> > +  ;
-> > +
-> > +@depends on patch && (rpvar || rp)@
-> > +@@
-> > +
-> > +(
-> > +  for (...;...;...)
-> > +- {
-> > +	swap(...);
-> > +- }
-> > +|
-> > +  while (...)
-> > +- {
-> > +	swap(...);
-> > +- }
-> > +|
-> > +  if (...)
-> > +- {
-> > +	swap(...);
-> > +- }
-> > +)
-> > +
-> > +
-> > +@script:python depends on report@
-> > +p << r.p;
-> > +@@
-> > +
-> > +coccilib.report.print_report(p[0], "WARNING opportunity for swap()")
-> > +
-> > +@script:python depends on org@
-> > +p << r.p;
-> > +@@
-> > +
-> > +coccilib.org.print_todo(p[0], "WARNING opportunity for swap()")
-> > +
-> > +@script:python depends on report@
-> > +p << rvar.p;
-> > +@@
-> > +
-> > +coccilib.report.print_report(p[0], "WARNING opportunity for swap()")
-> > +
-> > +@script:python depends on org@
-> > +p << rvar.p;
-> > +@@
-> > +
-> > +coccilib.org.print_todo(p[0], "WARNING opportunity for swap()")
-> >
->
