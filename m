@@ -2,75 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D2B353897
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 17:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAB1E353898
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 17:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230515AbhDDPUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 11:20:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45092 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229861AbhDDPUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 11:20:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 218F461168;
-        Sun,  4 Apr 2021 15:20:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617549628;
-        bh=fon5VpF7W4i/Q3VcfvR2vAk69Nk2HsItFV8D45jYR2s=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=h1X+Qw+EKIKcjrnkJI77Wz28jXNfr4D1V1voS0+SzZ614DAmPTRzWazpS4BU56qV6
-         XGKffL3mePWSH0IGcU29pWsKbyT7FXgsloewXPlDJf0/Nl8psZrK1O2efLzRUJ8kSm
-         GrquvaNz/+MZ+gVndEBJ2t7ncJk+2l3bMVl0NlHkdVZMVxHL/E6ae8DKxJ19FV5hAw
-         WX2tSErrBiInH288/lIchnoXOd5uS5x02YpFKHSowaT0+iTfZRu6QUKPsBuxGSs0a7
-         XHgUk0fgYnEddfqGsfoTIyr43LHFJmhJJPG1yOLWOSja3iFm4+LR+9WZvBsTqUy/Sr
-         5sY4J+KcZ6eqg==
-Subject: Re: [PATCHv2 RESEND] firmware: stratix10-svc: build only on 64-bit
- ARM
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        kernel test robot <lkp@intel.com>,
-        Richard Gong <richard.gong@linux.intel.com>
-References: <20210404124609.122377-1-dinguyen@kernel.org>
- <YGnIdZ5mbTJnREGB@kroah.com>
-From:   Dinh Nguyen <dinguyen@kernel.org>
-Message-ID: <943c4179-409d-24f5-4324-7f2242920cc5@kernel.org>
-Date:   Sun, 4 Apr 2021 10:20:26 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230435AbhDDP00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 11:26:26 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:29546
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229861AbhDDP0Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Apr 2021 11:26:25 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AY2d9Ga8XTmD/lIU2x9Ruk+AYI+orLtY04lQ7?=
+ =?us-ascii?q?vn1ZYxpTb8CeioSSjO0WvCWE6go5dXk8lbm7U5Wobmjb8fdOi7U5GZeHcE3YtH?=
+ =?us-ascii?q?CzLIdkhLGSoAHIPyHl7OZS2eNBXsFFaeHYNlRxgcbk7ATQKb9J/PC87Kuqie3C?=
+ =?us-ascii?q?pk0CcShWbchbgztRNhyWCQlfSgVAGPMCdKa014534wCtfnkada2Aa0UtVeKrnb?=
+ =?us-ascii?q?L2qK4=3D?=
+X-IronPort-AV: E=Sophos;i="5.81,304,1610406000"; 
+   d="scan'208";a="377727877"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 04 Apr 2021 17:26:19 +0200
+Date:   Sun, 4 Apr 2021 17:26:19 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Sven Peter <sven@svenpeter.dev>
+cc:     Marc Zyngier <maz@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kbuild-all@lists.01.org
+Subject: [PATCH] iommu: dart: fix call_kern.cocci warnings
+Message-ID: <alpine.DEB.2.22.394.2104041724340.2958@hadrien>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-In-Reply-To: <YGnIdZ5mbTJnREGB@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: kernel test robot <lkp@intel.com>
 
+Function apple_dart_attach_stream called on line 519 inside
+lock on line 509 but uses GFP_KERNEL
 
-On 4/4/21 9:08 AM, Greg KH wrote:
-> On Sun, Apr 04, 2021 at 07:46:09AM -0500, Dinh Nguyen wrote:
->> From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->>
->> The Stratix10 service layer and RCU drivers are useful only on
->> Stratix10, so on ARMv8.  Compile testing the RCU driver on 32-bit ARM
->> fails:
->>
->>    drivers/firmware/stratix10-rsu.c: In function 'rsu_status_callback':
->>    include/linux/compiler_types.h:320:38: error: call to '__compiletime_assert_179'
->>      declared with attribute error: FIELD_GET: type of reg too small for mask
->>      _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
->>    ...
->>    drivers/firmware/stratix10-rsu.c:96:26: note: in expansion of macro 'FIELD_GET'
->>      priv->status.version = FIELD_GET(RSU_VERSION_MASK,
->>
->> Fixes: 4483397b0353 ("ARM: socfpga: drop ARCH_SOCFPGA")
-> 
-> Where is this commit id?  I don't see it in Linus's tree, is it
-> somewhere else?
-> 
+Generated by: scripts/coccinelle/locks/call_kern.cocci
 
-It's in the for-next branch in the soc tree. This patch fixes a patch 
-that was just recently submitted by Krzysztof.
+Fixes: ce67d3b3ef37 ("iommu: dart: Add DART iommu driver")
+CC: Sven Peter <sven@svenpeter.dev>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+---
 
-Dinh
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git hack/m1-pcie
+head:   1fd2c9634dd24fba323baba52200de18e4d3f4ee
+commit: ce67d3b3ef3734925631ec65deb1cf8078d826cf [14/15] iommu: dart: Add DART iommu driver
+:::::: branch date: 8 hours ago
+:::::: commit date: 8 hours ago
+
+Please take the patch only if it's a positive warning. Thanks!
+
+ apple-dart-iommu.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/drivers/iommu/apple-dart-iommu.c
++++ b/drivers/iommu/apple-dart-iommu.c
+@@ -435,7 +435,7 @@ static int apple_dart_attach_stream(stru
+ 		goto error;
+ 	}
+
+-	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
++	stream = kzalloc(sizeof(*stream), GFP_ATOMIC);
+ 	if (!stream) {
+ 		ret = -ENOMEM;
+ 		goto error;
