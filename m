@@ -2,150 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5A85353737
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 09:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8B3535374A
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 10:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbhDDHe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 03:34:29 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44654 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229675AbhDDHe0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 03:34:26 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1347XRKR142409;
-        Sun, 4 Apr 2021 03:34:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=2R8reBzTetkARKhf+wUoL3rELP7Dnxr7IKA7hJpDfDs=;
- b=ISI9H4Bf2li3WkVobfOXqVEbilXmV06xH1NDYUoXXhyOlg1o/1KBAKCCq6ZX4CQPWh1T
- TobEJBOSQ9EXk1Two7Ka/SFXdDmfx/GYB65Xm3LiwW+Ej2nhyXVekCTBZAoy7uRPRzsp
- KgBMFPbll9NUZFrL3aukaUV+mCT9I3QEcV/ZJLwQ+u2CmXZR5WHsK/DGhrMnriRihjgc
- +5gm6StV5jdrzgcQ6Vkdsd3uT9bXBUh0jJPRzUFKmPsLQhX7ioj632u8DoO3emMIqEtq
- sf6pQfRcJxGXRT8Ylupz6hOPSu2b033JOZ2DozV8AxkffgSKCMf3Up+RzipkCrsRi9TT +g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37q5p93e7g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 04 Apr 2021 03:34:17 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1347YHdr143347;
-        Sun, 4 Apr 2021 03:34:17 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37q5p93e74-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 04 Apr 2021 03:34:16 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 1347Rtov000606;
-        Sun, 4 Apr 2021 07:34:15 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 37q2n2r714-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 04 Apr 2021 07:34:14 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1347YClC45351374
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 4 Apr 2021 07:34:12 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A0A84AE045;
-        Sun,  4 Apr 2021 07:34:12 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0CEC6AE051;
-        Sun,  4 Apr 2021 07:34:11 +0000 (GMT)
-Received: from [9.85.90.174] (unknown [9.85.90.174])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Sun,  4 Apr 2021 07:34:10 +0000 (GMT)
-Subject: Re: [RFC v2 2/2] selftest/cpuidle: Add support for cpuidle latency
- measurement
-To:     Doug Smythies <dsmythies@telus.net>
-Cc:     rjw@rjwysocki.net, Daniel Lezcano <daniel.lezcano@linaro.org>,
-        shuah@kernel.org, ego@linux.vnet.ibm.com, svaidy@linux.ibm.com,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, pratik.r.sampat@gmail.com
-References: <20210401114504.13466-1-psampat@linux.ibm.com>
- <20210401114504.13466-3-psampat@linux.ibm.com>
- <CAAYoRsWKw2eXXoXGhdaM2pqhvDGXz8o=hV5K5HmYaZvetxv96w@mail.gmail.com>
-From:   Pratik Sampat <psampat@linux.ibm.com>
-Message-ID: <b6d19fec-d9c9-817f-0ba1-4445d53e9616@linux.ibm.com>
-Date:   Sun, 4 Apr 2021 13:04:10 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229567AbhDDIEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 04:04:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52206 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229483AbhDDIEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Apr 2021 04:04:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A89CC61364;
+        Sun,  4 Apr 2021 08:04:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617523476;
+        bh=QwQ84hqpcIgiF2zv4DdJwrZZPEsHfSUejq2MMXbuMi4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nqOq9BqyLhdUAACGv5fJaNRjeuYco+pQJaQsPFwYJNVZZMRbQs7YpAoL2S1Dydpns
+         JYyBFMDPqrinBiIucuHcgNypsTRUuSRFpdiS5KrJ4pA89JWn5LIyorKJj3ErUt56Rk
+         SGibGiK/VBXHEodyyCd0jyMxnuQ9UMUEh9QCfIZpff5PnVVejPWp5E0AVFGurDDYHJ
+         9gz9Abiqlr6mcsiA1M82frTeoP+PdiwqOU4cv+vn2RPrEd/0Zg9NjS7FBBPZC3pOCz
+         ZhJ2sTA+UrlfVpWwixo6VE7DAfF72VsuJL2ednQVTW2H50s5bsn09igD1wk8WoBmrQ
+         1YpkFS0Z/LmRA==
+Date:   Sun, 4 Apr 2021 11:04:32 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ameynarkhede03@gmail.com" <ameynarkhede03@gmail.com>
+Subject: Re: [PATCH] PCI: merge slot and bus reset implementations
+Message-ID: <YGlzEA5HL6ZvNsB8@unreal>
+References: <20210401053656.16065-1-raphael.norwitz@nutanix.com>
+ <YGW8Oe9jn+n9sVsw@unreal>
+ <20210401105616.71156d08@omen>
 MIME-Version: 1.0
-In-Reply-To: <CAAYoRsWKw2eXXoXGhdaM2pqhvDGXz8o=hV5K5HmYaZvetxv96w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: da90MTzAnjH_JKePqHot8qQuC7FFtz8X
-X-Proofpoint-GUID: 2Zfd0OdT5tlkWOm_GLjKbCPRcOfwTw71
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-04-04_01:2021-04-01,2021-04-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 adultscore=0 mlxscore=0 spamscore=0 lowpriorityscore=0
- malwarescore=0 phishscore=0 mlxlogscore=999 bulkscore=0 impostorscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104030000 definitions=main-2104040050
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401105616.71156d08@omen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Doug,
+On Thu, Apr 01, 2021 at 10:56:16AM -0600, Alex Williamson wrote:
+> On Thu, 1 Apr 2021 15:27:37 +0300
+> Leon Romanovsky <leon@kernel.org> wrote:
+> 
+> > On Thu, Apr 01, 2021 at 05:37:16AM +0000, Raphael Norwitz wrote:
+> > > Slot resets are bus resets with additional logic to prevent a device
+> > > from being removed during the reset. Currently slot and bus resets have
+> > > separate implementations in pci.c, complicating higher level logic. As
+> > > discussed on the mailing list, they should be combined into a generic
+> > > function which performs an SBR. This change adds a function,
+> > > pci_reset_bus_function(), which first attempts a slot reset and then
+> > > attempts a bus reset if -ENOTTY is returned, such that there is now a
+> > > single device agnostic function to perform an SBR.
+> > > 
+> > > This new function is also needed to add SBR reset quirks and therefore
+> > > is exposed in pci.h.
+> > > 
+> > > Link: https://lkml.org/lkml/2021/3/23/911
+> > > 
+> > > Suggested-by: Alex Williamson <alex.williamson@redhat.com>
+> > > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> > > Signed-off-by: Raphael Norwitz <raphael.norwitz@nutanix.com>
+> > > ---
+> > >  drivers/pci/pci.c   | 17 +++++++++--------
+> > >  include/linux/pci.h |  1 +
+> > >  2 files changed, 10 insertions(+), 8 deletions(-)
+> > > 
+> > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > > index 16a17215f633..12a91af2ade4 100644
+> > > --- a/drivers/pci/pci.c
+> > > +++ b/drivers/pci/pci.c
+> > > @@ -4982,6 +4982,13 @@ static int pci_dev_reset_slot_function(struct pci_dev *dev, int probe)
+> > >  	return pci_reset_hotplug_slot(dev->slot->hotplug, probe);
+> > >  }
+> > >  
+> > > +int pci_reset_bus_function(struct pci_dev *dev, int probe)
+> > > +{
+> > > +	int rc = pci_dev_reset_slot_function(dev, probe);
+> > > +
+> > > +	return (rc == -ENOTTY) ? pci_parent_bus_reset(dev, probe) : rc;  
+> > 
+> > The previous coding style is preferable one in the Linux kernel.
+> > int rc = pci_dev_reset_slot_function(dev, probe);
+> > if (rc != -ENOTTY)
+> >   return rc;
+> > return pci_parent_bus_reset(dev, probe);
+> 
+> 
+> That'd be news to me, do you have a reference?  I've never seen
+> complaints for ternaries previously.  Thanks,
 
-Thanks for your review.
+The complaint is not to ternaries, but to the function call as one of
+the parameters, that makes it harder to read.
 
-On 02/04/21 4:57 am, Doug Smythies wrote:
-> Hi Pratik,
->
-> On Thu, Apr 1, 2021 at 4:45 AM Pratik Rajesh Sampat
-> <psampat@linux.ibm.com> wrote:
-> ...
->
->> To run this test specifically:
->> $ make -C tools/testing/selftests TARGETS="cpuidle" run_tests
-> I have not become any smarter than I was with version 1,
-> and still assumed that the "$" meant regular user.
-> Please put it as "#" or separate the two steps, compile and run.
+Thanks
 
-Apologies, I missed incorporating the root user discussion we had.
-I'll add a sudo past the "$" symbol.
-
->> There are a few optinal arguments too that the script can take
-> optional
->
-> Suggest to also specifically mention how to run without re-compile,
->
-> # ./cpuidle.sh -v
-
-Sure thing, I'll add a comment specifying this.
-
-> Note also that the test still leaves all idle states disabled when done.
-
-Yes, I missed out enabling all the idle states after the tests are done.
-I'll spin a new version where I enable idle states at the end of the experiment
-so that the system stays coherent.
-
->>          [-h <help>]
->>          [-i <run timer tests>]
->>          [-m <location of the module>]
->>          [-o <location of the output>]
->>          [-v <verbose> (run on all cpus)]
->> Default Output location in: tools/testing/selftest/cpuidle/cpuidle.log
-> ...
->
->> +cpu_is_online()
->> +{
->> +       cpu=$1
->> +       if [ ! -f "/sys/devices/system/cpu/cpu$cpu/online" ]; then
->> +               echo 0
-> incorrect. should be:
->
->> +               echo 1
-
-Right! Thanks for catching this.
-
-> ... Doug
-
-Thank you,
-Pratik
-
+> 
+> Alex
+> 
