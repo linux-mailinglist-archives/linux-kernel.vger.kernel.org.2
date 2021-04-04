@@ -2,116 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D8735387C
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 16:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76CD635388C
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 17:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230488AbhDDOqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 10:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45212 "EHLO
+        id S230446AbhDDPAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 11:00:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230168AbhDDOqL (ORCPT
+        with ESMTP id S229788AbhDDPAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 10:46:11 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D952C0613E6
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Apr 2021 07:46:05 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so9288676otn.1
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Apr 2021 07:46:05 -0700 (PDT)
+        Sun, 4 Apr 2021 11:00:13 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D419C061756;
+        Sun,  4 Apr 2021 08:00:09 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id f5so4361342ilr.9;
+        Sun, 04 Apr 2021 08:00:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/LaNflTLlNyLNnfybNeALEmO1QkTG5j1xdulmReRjoc=;
-        b=CZM2rMQSwB2owpt42AvT2FwrK2kKavTNZW2qXqPm40A9XNcHC0qd3HPkMx8GmkhDg0
-         I2HWKqyPeMPUr528I9raDod/WGbwejghrYK7Pxr1dc95XxjEy2uOFKB/WtqoOWrKotQW
-         LnEgRS7NBlf+QZOz6cj/ImQzlXWTyjOHzVpEdk8T+2laECuM0dKXDvjREmNt1q+Nb7La
-         KgTAxtDCCCelkVqOC9oag1gQWPuJ0SYnUy9fjIsyggISYFESRLeH8+NH+F0l/FzOdpEg
-         aAHEU2J823upnfeAmfOfinMWhedQR8q3oAwKbJ3c4H3VSFUjM5h4JXaG32sLI+3a+zEO
-         y8yg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=9FrXMbErno7+UYPolFaJfl1BWKDlG9+WhG9WCIdSW3Y=;
+        b=onvXjgrBqg12q0WD25RWxGBE6z4XpdAN/W674nyzW+tqaZt03LW8VeZBpi9Fg6L+EC
+         P/kadJcTybKoLavNo7fkP8w2fqke1pRvxPu9MQYAxESLZqtuwv2cZJwR6ZUGVI2HiuUW
+         uKxuG7lJDzJ1RCWgTrXGGCk4jTBL1nXPyZ/X7mpsrJVLxsxd43RktbFouwmiN94OlbHQ
+         L0rsl915ydoh1YO74xQR45FlIJoz7rOKgKV1KL1v75iLRayADwmdgNXTQLeHN6zXImZy
+         /M5KzVkEcTkLKvltNfCMwLVlVEHmVgng3jk0rVK/czUdRFkD7L1tnp9HRQsFCbub6XNd
+         GD9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/LaNflTLlNyLNnfybNeALEmO1QkTG5j1xdulmReRjoc=;
-        b=ayf2w5yJseNWwcjimbKvQFGJ75SZONS+9fxwH0Ex8aHpAFLmMZL9qDkirXddfwI2AR
-         rnNMwGzxzBKoefGqFQK7iph4sD0fBJpxWUgUnaZVGtFTKlg/m4k/qb4eJLVosuDlFsPM
-         w4dWm3WSnhgROFwr4G2rmILeB5M98UfH4Z7rE8u+9vc7xSS2NgYHwGB3GWEuBRXFLisn
-         DU3Bni3kGs2V1tPt6Kh7laOL9eAMxqqxuan9wIAoJMLzQ3dLBFcsWMB42AKtD2kTA/P2
-         rkGkGd2VSNWMy5u3IJ/ZwB34Oh7OiIKhhCDN4xagyVs0l4iPEwV1k+zmRZVqfU/XG5YD
-         wU2Q==
-X-Gm-Message-State: AOAM5338rGqVqRyhO17yU6G9PH9UOHHcLBXYP+quIWQuzYWK2sME5LHI
-        5i0qdISF/jURDxjnYvv7S7qlXkYxZOd7VA==
-X-Google-Smtp-Source: ABdhPJyp7sIs73IWuqvjliAsiqBoC6b7KWxE8kmcQ6qGxXGJJkEpwC7cBxVPha62YNwSjCkVGUFyMw==
-X-Received: by 2002:a9d:39ca:: with SMTP id y68mr19355517otb.84.1617547564520;
-        Sun, 04 Apr 2021 07:46:04 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id w2sm2963328oov.23.2021.04.04.07.46.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Apr 2021 07:46:04 -0700 (PDT)
-Date:   Sun, 4 Apr 2021 09:46:02 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     zhuguangqing83@gmail.com
-Cc:     Amit Kucheria <amitk@kernel.org>, Andy Gross <agross@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] thermal/drivers/tsens: fix missing put_device error
-Message-ID: <20210404144602.GV904837@yoga>
-References: <20210404125431.12208-1-zhuguangqing83@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=9FrXMbErno7+UYPolFaJfl1BWKDlG9+WhG9WCIdSW3Y=;
+        b=mplG8fFs3mxuWD17uRf7curWyLXAuhn9k44I4GDbwCvS65XYrDPqtoxXhhCZcIvSrJ
+         bdBUCgLmisATEc9XY2UOAB64Ntuy2J61+HETBqiSW6M3XCQ61NYlCX18rrobBKDhU6/U
+         AgjytXhX+jcq1zoGSmJJrhPKMwRMiBEq1qjunbfdS5XWguw8obqKhd7o5eHhjzyQ6y5F
+         I6qq2QyCm7rlbt8dhq5nD2ut/ePJlu4l7x+uyOOSm62QSANdbuaes6FEA61H0K2n8Gg1
+         Vv6hzmIUtFG6f5KBwJlbWWi8C06WfERFzD4SplbTHKV0wF59fhECrTIn1S1KUHhRzZfb
+         AeJA==
+X-Gm-Message-State: AOAM530Od8Nf6X7R8nLNwYXyr3khp2DAZyA8yp9glYG4gaTm+Qzli4On
+        6iIh/NpjeQN7P7OMny08Ua18vTgySGoo3OIvTd0=
+X-Google-Smtp-Source: ABdhPJxUTt+pEOsKbPqgbHjkw0y9uyAGt6YEvM5dlBAPGx/1R+pdO8shyQsqjSkZ/v6Hdk/Xbog9PnM7LoJim+SjGi4=
+X-Received: by 2002:a05:6e02:12cc:: with SMTP id i12mr17423767ilm.10.1617548408261;
+ Sun, 04 Apr 2021 08:00:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210404125431.12208-1-zhuguangqing83@gmail.com>
+References: <20210403184158.2834387-1-yhs@fb.com>
+In-Reply-To: <20210403184158.2834387-1-yhs@fb.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Sun, 4 Apr 2021 16:59:33 +0200
+Message-ID: <CA+icZUVxpkCJVnibqm3+OYdfdh5U=eU_u7pPKUZMoPm3XzZWPQ@mail.gmail.com>
+Subject: Usage of CXX in tools directory
+To:     Masahiro Yamada <masahiroy@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        David Blaikie <dblaikie@gmail.com>,
+        Bill Wendling <morbo@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>
+Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 04 Apr 07:54 CDT 2021, zhuguangqing83@gmail.com wrote:
+[ Please CC me I am not subscribed to all mailing-lists ]
+[ Please CC some more folks if you like ]
 
-> From: Guangqing Zhu <zhuguangqing83@gmail.com>
-> 
-> Fixes coccicheck error:
-> 
-> drivers/thermal/qcom/tsens.c:759:4-10: ERROR: missing put_device; call
-> of_find_device_by_node on line 715, but without a corresponding object
-> release within this function.
-> 
-> Fixes: a7ff82976122 ("drivers: thermal: tsens: Merge tsens-common.c into
-> tsens.c")
-> 
-> Signed-off-by: Guangqing Zhu <zhuguangqing83@gmail.com>
+Hi,
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+when dealing/experimenting with BPF together with pahole/dwarves and
+dwarf-v5 and clang-lto I fell over that there is usage of CXX in tools
+directory.
+Especially,  I wanted to build and run test_progs from BPF selftests.
+One BPF selftest called "test_cpp" used GNU/g++ (and even /usr/bin/ld)
+and NOT LLVM/clang++.
+
+For details see the linux-bpf/dwarves thread "[PATCH dwarves]
+dwarf_loader: handle DWARF5 DW_OP_addrx properly" in [1].
+
+Lemme check:
+
+$ git grep CXX tools/
+tools/build/Build.include:cxx_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@
+$(CXXFLAGS) -D"BUILD_STR(s)=\#s" $(CXXFLAGS_$(basetarget).o)
+$(CXXFLAGS_$(obj))
+tools/build/Makefile.build:quiet_cmd_cxx_o_c = CXX      $@
+tools/build/Makefile.build:      cmd_cxx_o_c = $(CXX) $(cxx_flags) -c -o $@ $<
+tools/build/Makefile.feature:  feature-$(1) := $(shell $(MAKE)
+OUTPUT=$(OUTPUT_FEATURES) CC="$(CC)" CXX="$(CXX)"
+CFLAGS="$(EXTRA_CFLAGS) $(FEATURE_CHECK_CFLAGS-$(1))"
+CXXFLAGS="$(EXTRA_CXXFLAGS) $(FEATURE_CHECK_CXXFLAGS-$(1))"
+LDFLAGS="$(LDFLAGS) $(FEATURE_CHECK_LDFLAGS-$(1))" -C $(feature_dir)
+$(OUTPUT_FEATURES)test-$1.bin >/dev/nu
+ll 2>/dev/null && echo 1 || echo 0)
+tools/build/feature/Makefile:__BUILDXX = $(CXX) $(CXXFLAGS) -MD -Wall
+-Werror -o $@ $(patsubst %.bin,%.cpp,$(@F)) $(LDFLAGS)
+...
+tools/perf/Makefile.config:USE_CXX = 0
+tools/perf/Makefile.config:        CXXFLAGS +=
+-DHAVE_LIBCLANGLLVM_SUPPORT -I$(shell $(LLVM_CONFIG) --includedir)
+tools/perf/Makefile.config:        $(call detected,CONFIG_CXX)
+tools/perf/Makefile.config:     USE_CXX = 1
+tools/perf/Makefile.perf:export srctree OUTPUT RM CC CXX LD AR CFLAGS
+CXXFLAGS V BISON FLEX AWK
+tools/perf/Makefile.perf:ifeq ($(USE_CXX), 1)
+tools/perf/util/Build:perf-$(CONFIG_CXX) += c++/
+...
+tools/scripts/Makefile.include:$(call allow-override,CXX,$(CROSS_COMPILE)g++)
+...
+tools/testing/selftests/bpf/Makefile:CXX ?= $(CROSS_COMPILE)g++
+tools/testing/selftests/bpf/Makefile:   $(call msg,CXX,,$@)
+tools/testing/selftests/bpf/Makefile:   $(Q)$(CXX) $(CFLAGS) $^ $(LDLIBS) -o $@
+
+The problem is if you pass LLVM=1 there is no clang(++) assigned to
+CXX automagically.
+
+[2] says:
+
+LLVM has substitutes for GNU binutils utilities. Kbuild supports
+LLVM=1 to enable them.
+
+make LLVM=1
+They can be enabled individually. The full list of the parameters:
+
+make CC=clang LD=ld.lld AR=llvm-ar NM=llvm-nm STRIP=llvm-strip \
+  OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump READELF=llvm-readelf \
+  HOSTCC=clang HOSTCXX=clang++ HOSTAR=llvm-ar HOSTLD=ld.lld
+
+[ EndOfQuote  ]
+
+So you need to pass CXX=clang++ manually when playing in tools directory:
+
+MAKE="make V=1
+MAKE_OPTS="HOSTCC=clang HOSTCXX=clang++ HOSTLD=ld.lld CC=clang
+CXX=clang++ LD=ld.lld LLVM=1 LLVM_IAS=1"
+MAKE_OPTS="MAKE_OPTS $PAHOLE=/opt/pahole/bin/pahole"
+
+$ LC_ALL=C $MAKE $MAKE_OPTS -C tools/testing/selftests/bpf/ clean
+$ LC_ALL=C $MAKE $MAKE_OPTS -C tools/testing/selftests/bpf/
+
+Unsure, if tools needs a special treatment in things of CXX or LLVM=1
+needs to be enhanced with CCX=clang++.
+If we have HOSTCXX why not have a CXX in toplevel Makefile?
+
+In "tools: Factor Clang, LLC and LLVM utils definitions" (see [3]) I
+did some factor-ing.
+
+For the records: Here Linus Git is my base.
+
+Ideas?
+
+Thanks.
 
 Regards,
-Bjorn
+- Sedat -
 
-> ---
-> v2:
->   - Fix a error(missing a bracket) in v1.
-> 
-> ---
->  drivers/thermal/qcom/tsens.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
-> index d8ce3a687b80..3c4c0516e58a 100644
-> --- a/drivers/thermal/qcom/tsens.c
-> +++ b/drivers/thermal/qcom/tsens.c
-> @@ -755,8 +755,10 @@ int __init init_common(struct tsens_priv *priv)
->  		for (i = VER_MAJOR; i <= VER_STEP; i++) {
->  			priv->rf[i] = devm_regmap_field_alloc(dev, priv->srot_map,
->  							      priv->fields[i]);
-> -			if (IS_ERR(priv->rf[i]))
-> -				return PTR_ERR(priv->rf[i]);
-> +			if (IS_ERR(priv->rf[i])) {
-> +				ret = PTR_ERR(priv->rf[i]);
-> +				goto err_put_device;
-> +			}
->  		}
->  		ret = regmap_field_read(priv->rf[VER_MINOR], &ver_minor);
->  		if (ret)
-> -- 
-> 2.17.1
-> 
+P.S.: Just a small note: I know there is less usage of CXX code in the
+linux-kernel.
+
+[1] https://lore.kernel.org/bpf/CA+icZUWh6YOkCKG72SndqUbQNwG+iottO4=cPyRRVjaHD2=0qw@mail.gmail.com/T/#m22907f838d2d27be24e8959a53473a62f21cecea
+[2] https://www.kernel.org/doc/html/latest/kbuild/llvm.html#llvm-utilities
+[3] https://git.kernel.org/linus/211a741cd3e124bffdc13ee82e7e65f204e53f60
