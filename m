@@ -2,93 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 928F6353895
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 17:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D2B353897
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 17:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhDDPUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 11:20:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229861AbhDDPUA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 11:20:00 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39ED4C061756;
-        Sun,  4 Apr 2021 08:19:56 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id d2so8300294ilm.10;
-        Sun, 04 Apr 2021 08:19:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=oorif4U10p1gj+stQZVhVCmGelEmfcPvRUrY2NK3cBI=;
-        b=Ke22id8kLBs/PUWYVt4iPvjCEzkv3Zmrm4jW556d+JfonPDxnvkVY9CVPOaYPKt8kB
-         XdM3a31BCfRHuFpuYLI4dhCFX+QFCEJe3Y7G/Oo+6Qk05mHADOtf/PQRu24gqvVc+Z9u
-         RhLHm8/4SUgpD3r3R8q7Th+c70k7ScHvglrd1ZYRxlZ7cvouz3HmEN+3FXpjTjJaBM2T
-         0+Mp08+v3le+h4kTCiXuMOvan7Sq4gbtG30UuUMgT1fJftOiayUzGGpNlN+1D9ZD3W7s
-         WJjyqF9C6bFcuH9ZGO7aJVCkHh5Z1WXQ02d1fCq2wVOAhrXXf5V08DbXo4+AP0e/wCxg
-         SPhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=oorif4U10p1gj+stQZVhVCmGelEmfcPvRUrY2NK3cBI=;
-        b=cGIwtxctkvhjubC2dexCfo8ffdfXK+9eXDcNjFT2pKUjch8DnLHZqSa7yQPq3UjnXq
-         4qB5BW+HfN9m9vf8iJvGUy/05VmQomn9190fUkJOiKYA+Kanj54KZOpnWnyMQbE4GJXL
-         OxUKATRKrSE1d+e5LzC4Hte0C7G5EhB5pqxwWMO/y4HocIIDACa7eUmKg3pmlyhvN3ZT
-         ibQN1whTHT19KeTfe73hlJWo9HM1Tcb6uFl/qBJNmGNYbuyus/QvI3jE9AIabd0Xq+CY
-         MnRv/+jWDzHWP7hiB+5xD8grcCwmwGQa8gH4a6l6pt7YLD8aJOXaHxoJ48621GSzKYvn
-         1Pjg==
-X-Gm-Message-State: AOAM531VbMoXp9kvrIQLici2MphripCyhQUoOSsv/GFOtELTJUn6XGiF
-        EszCsDrh+d3QNwVupmLWydSMBZRbSAkXKHGRGzc=
-X-Google-Smtp-Source: ABdhPJw0pdYejVqgApJAzWgx+VMZlo91fE4WGuG7sobiTNRSM2WLMukNsmccAh3Q0ezElkLpbM0PcAyUioMmtIGbhbo=
-X-Received: by 2002:a05:6e02:12cc:: with SMTP id i12mr17468978ilm.10.1617549595570;
- Sun, 04 Apr 2021 08:19:55 -0700 (PDT)
+        id S230515AbhDDPUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 11:20:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45092 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229861AbhDDPUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Apr 2021 11:20:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 218F461168;
+        Sun,  4 Apr 2021 15:20:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617549628;
+        bh=fon5VpF7W4i/Q3VcfvR2vAk69Nk2HsItFV8D45jYR2s=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=h1X+Qw+EKIKcjrnkJI77Wz28jXNfr4D1V1voS0+SzZ614DAmPTRzWazpS4BU56qV6
+         XGKffL3mePWSH0IGcU29pWsKbyT7FXgsloewXPlDJf0/Nl8psZrK1O2efLzRUJ8kSm
+         GrquvaNz/+MZ+gVndEBJ2t7ncJk+2l3bMVl0NlHkdVZMVxHL/E6ae8DKxJ19FV5hAw
+         WX2tSErrBiInH288/lIchnoXOd5uS5x02YpFKHSowaT0+iTfZRu6QUKPsBuxGSs0a7
+         XHgUk0fgYnEddfqGsfoTIyr43LHFJmhJJPG1yOLWOSja3iFm4+LR+9WZvBsTqUy/Sr
+         5sY4J+KcZ6eqg==
+Subject: Re: [PATCHv2 RESEND] firmware: stratix10-svc: build only on 64-bit
+ ARM
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        kernel test robot <lkp@intel.com>,
+        Richard Gong <richard.gong@linux.intel.com>
+References: <20210404124609.122377-1-dinguyen@kernel.org>
+ <YGnIdZ5mbTJnREGB@kroah.com>
+From:   Dinh Nguyen <dinguyen@kernel.org>
+Message-ID: <943c4179-409d-24f5-4324-7f2242920cc5@kernel.org>
+Date:   Sun, 4 Apr 2021 10:20:26 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210403184158.2834387-1-yhs@fb.com> <CA+icZUVxpkCJVnibqm3+OYdfdh5U=eU_u7pPKUZMoPm3XzZWPQ@mail.gmail.com>
-In-Reply-To: <CA+icZUVxpkCJVnibqm3+OYdfdh5U=eU_u7pPKUZMoPm3XzZWPQ@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Sun, 4 Apr 2021 17:19:21 +0200
-Message-ID: <CA+icZUVYiX0PrxPddfv-RfGnkOUTFW_Xbv9LvPkuu+ZH3X_MCA@mail.gmail.com>
-Subject: Re: Usage of CXX in tools directory
-To:     Masahiro Yamada <masahiroy@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        David Blaikie <dblaikie@gmail.com>,
-        Bill Wendling <morbo@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YGnIdZ5mbTJnREGB@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> So you need to pass CXX=clang++ manually when playing in tools directory:
->
-> MAKE="make V=1
-> MAKE_OPTS="HOSTCC=clang HOSTCXX=clang++ HOSTLD=ld.lld CC=clang
-> CXX=clang++ LD=ld.lld LLVM=1 LLVM_IAS=1"
-> MAKE_OPTS="MAKE_OPTS $PAHOLE=/opt/pahole/bin/pahole"
->
-> $ LC_ALL=C $MAKE $MAKE_OPTS -C tools/testing/selftests/bpf/ clean
-> $ LC_ALL=C $MAKE $MAKE_OPTS -C tools/testing/selftests/bpf/
->
 
-Correct:
 
-MAKE="make V=1"
-MAKE_OPTS="HOSTCC=clang HOSTCXX=clang++ HOSTLD=ld.lld CC=clang
-CXX=clang++ LD=ld.lld LLVM=1 LLVM_IAS=1"
-MAKE_OPTS="$MAKE_OPTS PAHOLE=/opt/pahole/bin/pahole"
+On 4/4/21 9:08 AM, Greg KH wrote:
+> On Sun, Apr 04, 2021 at 07:46:09AM -0500, Dinh Nguyen wrote:
+>> From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>>
+>> The Stratix10 service layer and RCU drivers are useful only on
+>> Stratix10, so on ARMv8.  Compile testing the RCU driver on 32-bit ARM
+>> fails:
+>>
+>>    drivers/firmware/stratix10-rsu.c: In function 'rsu_status_callback':
+>>    include/linux/compiler_types.h:320:38: error: call to '__compiletime_assert_179'
+>>      declared with attribute error: FIELD_GET: type of reg too small for mask
+>>      _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>>    ...
+>>    drivers/firmware/stratix10-rsu.c:96:26: note: in expansion of macro 'FIELD_GET'
+>>      priv->status.version = FIELD_GET(RSU_VERSION_MASK,
+>>
+>> Fixes: 4483397b0353 ("ARM: socfpga: drop ARCH_SOCFPGA")
+> 
+> Where is this commit id?  I don't see it in Linus's tree, is it
+> somewhere else?
+> 
 
-- Sedat -
+It's in the for-next branch in the soc tree. This patch fixes a patch 
+that was just recently submitted by Krzysztof.
+
+Dinh
