@@ -2,90 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5018B353949
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 19:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFFF935394E
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 20:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231316AbhDDR7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 13:59:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35756 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229861AbhDDR7g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 13:59:36 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 63C2361103;
-        Sun,  4 Apr 2021 17:59:29 +0000 (UTC)
-Date:   Sun, 4 Apr 2021 18:59:43 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <aardelean@deviqon.com>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH] iio: buffer: use sysfs_attr_init() on allocated attrs
-Message-ID: <20210404185943.63496d87@jic23-huawei>
-In-Reply-To: <20210402174226.630346-1-aardelean@deviqon.com>
-References: <20210402174226.630346-1-aardelean@deviqon.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231341AbhDDSBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 14:01:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229861AbhDDSBd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Apr 2021 14:01:33 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5885BC0617A7;
+        Sun,  4 Apr 2021 11:01:28 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id v70so9693778qkb.8;
+        Sun, 04 Apr 2021 11:01:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vqjTFrhw8is34xFbRLeJBk6zObb/0KU6NDcwEfDwcS0=;
+        b=l2AjGlLTHKa6vPsOcVT9lSv7QAhpNb1GX7xYJ2agOybHNczEtfkCFH8OmOx33qjzej
+         L6xkIjeDjGig1AIJjUxg7Zv9XNbsXefdFb/GnHKcBFfR3lkSLUneOAcvXaHhrYkavZDR
+         l/1VzqmAJTa1mBLECjiapkDCpOVKextkWwD/NeNFYta2KRsWyFlWCydm6JrL9XIX7l/t
+         tEZ3s5KlbhZUintD0sutFq6ELuQLeRTKm3hDFLgIXbbed6LmFHu2E34lM9aqBH+O9c/c
+         oxBGdJ2W2vmqB3jtvaYAUpZ6aOnrYV0B0m1Hlo9F14NlA5Avj4YQEzZTSp16hWhl0z4e
+         QI7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=vqjTFrhw8is34xFbRLeJBk6zObb/0KU6NDcwEfDwcS0=;
+        b=V7VCtEQ9xjw5WfKl9e+nj50qbwLAGyifXZcqWWj8URFCgbBtpHlsdsqQ3zTQ5J9Skb
+         lQgiB3cIWGNoRT9tMujwH2H4uvfh+ArBq43It87SYWc5+EfBeARgG7OhrLbgRrZzGF2f
+         BUpW064n/IYqEtNsAY1sb44YOp5kjakkqQ4kkPqEnh57QEhLjy0QUU9HMNIjRWgM72jz
+         qpfAfUL24xT4Vsqq4spcv2Z5AH5Tis3DMnz44BgsUweAdgPxd2opjqTgzvIp/kg4gxlR
+         b+BLqkCDYoNvDSjeCza+tl1WPuSSI295V6bNMoK9DOVjq4wng4TRiDFwxL2jPK4ItRYq
+         XFVg==
+X-Gm-Message-State: AOAM5335gWjoXoo/8VRFuWL4oXmWTC/lfPJNGnNcbXOLwyHUWtXCXoMp
+        zpXVAPLYS1WF6jLmpOnfMUqmTdjBrG5E3w==
+X-Google-Smtp-Source: ABdhPJzLNUaqWgD1Wf964A7EQG9L1i3NH/sayvR0/nfYb5WNXuZR+X12deaHWKWkor/+gKkJqRNq2g==
+X-Received: by 2002:a05:620a:527:: with SMTP id h7mr21428959qkh.108.1617559287424;
+        Sun, 04 Apr 2021 11:01:27 -0700 (PDT)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
+        by smtp.gmail.com with ESMTPSA id 79sm12220473qki.37.2021.04.04.11.01.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Apr 2021 11:01:27 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Sun, 4 Apr 2021 14:01:26 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     viro@zeniv.linux.org.uk, axboe@fb.com, willy@infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        duanxiongchun@bytedance.com, Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH v3] writeback: fix obtain a reference to a freeing memcg
+ css
+Message-ID: <YGn+9gY/VAc6YI/q@mtj.duckdns.org>
+References: <20210402091145.80635-1-songmuchun@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210402091145.80635-1-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  2 Apr 2021 20:42:26 +0300
-Alexandru Ardelean <aardelean@deviqon.com> wrote:
+On Fri, Apr 02, 2021 at 05:11:45PM +0800, Muchun Song wrote:
+> The caller of wb_get_create() should pin the memcg, because
+> wb_get_create() relies on this guarantee. The rcu read lock
+> only can guarantee that the memcg css returned by css_from_id()
+> cannot be released, but the reference of the memcg can be zero.
+> 
+>   rcu_read_lock()
+>   memcg_css = css_from_id()
+>   wb_get_create(memcg_css)
+>       cgwb_create(memcg_css)
+>           // css_get can change the ref counter from 0 back to 1
+>           css_get(memcg_css)
+>   rcu_read_unlock()
+> 
+> Fix it by holding a reference to the css before calling
+> wb_get_create(). This is not a problem I encountered in the
+> real world. Just the result of a code review.
+> 
+> Fixes: 682aa8e1a6a1 ("writeback: implement unlocked_inode_to_wb transaction and use it for stat updates")
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Acked-by: Michal Hocko <mhocko@suse.com>
 
-> When dynamically allocating sysfs attributes, it's a good idea to call
-> sysfs_attr_init() on them to initialize lock_class_keys.
-> This change does that.
-> 
-> The lock_class_keys are set when the CONFIG_DEBUG_LOCK_ALLOC symbol is
-> enabled. Which is [likely] one reason why I did not see this during
-> development.
-> 
-> I also am not able to see this even with CONFIG_DEBUG_LOCK_ALLOC enabled,
-> so this may [likely] be reproduce-able on some system configurations.
-> 
-> This was reported via:
->   https://lore.kernel.org/linux-iio/CA+U=DsrsvGgXEF30-vXuXS_k=-mjSjiBwEEzwKb1hJVn1P98OA@mail.gmail.com/T/#u
-> 
-> Fixes: 15097c7a1adc ("iio: buffer: wrap all buffer attributes into iio_dev_attr")
-> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com> 
-> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
-> ---
-> 
-> @Marek: could you maybe test this on your setup?
-> 
-> I haven't been able to reproduce this on mine.
+Acked-by: Tejun Heo <tj@kernel.org>
 
-I'm fairly sure this is the right fix, and 'should' resolve the issue Marek
-saw so I'm going to queue it up.
+Thanks.
 
-Applied to the togreg branch of iio.git and pushed out as testing for
-the autobuilders to poke at it and see if we missed anything.
-
-Thanks,
-
-Jonathan
-
-> 
-> Thanks
-> Alex
-> 
->  drivers/iio/industrialio-buffer.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> index ee5aab9d4a23..06b2ea087408 100644
-> --- a/drivers/iio/industrialio-buffer.c
-> +++ b/drivers/iio/industrialio-buffer.c
-> @@ -1309,6 +1309,7 @@ static struct attribute *iio_buffer_wrap_attr(struct iio_buffer *buffer,
->  	iio_attr->buffer = buffer;
->  	memcpy(&iio_attr->dev_attr, dattr, sizeof(iio_attr->dev_attr));
->  	iio_attr->dev_attr.attr.name = kstrdup_const(attr->name, GFP_KERNEL);
-> +	sysfs_attr_init(&iio_attr->dev_attr.attr);
->  
->  	list_add(&iio_attr->l, &buffer->buffer_attr_list);
->  
-
+-- 
+tejun
