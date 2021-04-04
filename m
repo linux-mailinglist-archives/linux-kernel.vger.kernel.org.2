@@ -2,67 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 352333538C5
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 18:02:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C02D53538C6
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 18:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231151AbhDDQCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 12:02:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48164 "EHLO mail.kernel.org"
+        id S231173AbhDDQEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 12:04:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229861AbhDDQCi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 12:02:38 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CBF9C61368;
-        Sun,  4 Apr 2021 16:02:32 +0000 (UTC)
-Date:   Sun, 4 Apr 2021 12:02:31 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Bharata B Rao <bharata@linux.vnet.ibm.com>,
-        Phil Auld <pauld@redhat.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] sched/debug: Use sched_debug_lock to serialize use
- of cgroup_path[] only
-Message-ID: <20210404120231.13843854@oasis.local.home>
-In-Reply-To: <b5d7e93f-c594-7678-eb8d-275ddd9cd8ce@redhat.com>
-References: <20210401181030.7689-1-longman@redhat.com>
-        <20210402164014.53c84f05@gandalf.local.home>
-        <b5d7e93f-c594-7678-eb8d-275ddd9cd8ce@redhat.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229861AbhDDQE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Apr 2021 12:04:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD4566136A;
+        Sun,  4 Apr 2021 16:04:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617552261;
+        bh=sEaItNntg9/E1pYVhYET1DAxvEy36SMyXpldPmdXlak=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kz6EoBcQwIMtC6ODI2PQujs3LKKx+BluYOuLVAPa3lazHbRrrJYqCeo0TWkaNkPjV
+         nS3r4QLXsfkln8zsQ/OlK06mZLqyNVMiqZ8W9GZJxIqBvEra+nylwPfrykJsUB8Hoo
+         t8AZf7wWGbLIAmkcG1wgS3jE4tAtLDbUMkRWlRsF0pqQ9wh6swyGPnDkEVCN6yysxT
+         lGY4EcMIH2KBeQT4dhYQeFqMe4hzswaEWDSi6+pW2iS9kYq1b5z5Oh2HlEogswewCS
+         o3ezocXKZlXDgshT6VME3SPX0iAjQlA0bVbX7Qdl6YKeWTA21qSIXM8w/yqmCTxAAw
+         8OYCnrMSq+P6w==
+Date:   Sun, 4 Apr 2021 19:04:18 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Jethro Beekman <jethro@fortanix.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Raoul Strackx <raoul.strackx@fortanix.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND 0/3] x86/sgx: eextend ioctl
+Message-ID: <YGnjgkAQjiS8QcS7@kernel.org>
+References: <9688abee-6ba7-e1d9-701e-a5cabac36269@fortanix.com>
+ <c7b19652-3b5a-e864-1e0e-3e3d26944398@intel.com>
+ <ece49a38-c84d-dba7-6039-b409511e7303@fortanix.com>
+ <0498080e-6fdc-ed6d-8efa-d9c3265fe7e5@intel.com>
+ <9d15aae0-078a-ed72-6c14-155cd1bf27c5@fortanix.com>
+ <247ffbee-0ef6-1b6f-75aa-2dc06df42d5d@intel.com>
+ <f94e05f7-e6d0-9253-d74c-09cd200702af@fortanix.com>
+ <4a122198-054f-609e-e96c-b69ff941c8a7@intel.com>
+ <9a841584-65e8-31e9-6bd4-0140b33434e8@fortanix.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9a841584-65e8-31e9-6bd4-0140b33434e8@fortanix.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2 Apr 2021 23:09:09 -0400
-Waiman Long <longman@redhat.com> wrote:
+On Fri, Apr 02, 2021 at 08:31:19PM +0200, Jethro Beekman wrote:
+> On 2021-04-02 17:53, Dave Hansen wrote:
+> > On 4/2/21 1:38 AM, Jethro Beekman wrote:
+> >>> So, we're talking here about pages that have been EEADDED, but for
+> >>> which we do not want to include the entire contents of the page?
+> >>> Do these contents always include the beginning of the page, or can
+> >>> the holes be anywhere?
+> >> Holes can be anywhere, and EEXTEND calls need not be sequential in
+> >> memory address or even relate to the most recently EADDed page.
+> > 
+> > I think you're referring to the SGX architecture itself here.  The
+> > architecture permits this, right?
+> 
+> Yes.
+> 
+> > But, why would an enclave loader application ever do this? 
+> 
+> e.g. to save space
+> 
+> > Is this something we want to support in Linux?
+> 
+> Why not? Is there a good reason to not fully support this part of the CPU architecture?
 
-> The main problem with sched_debug_lock is that under certain 
-> circumstances, a lock waiter may wait a long time to acquire the lock 
-> (in seconds). We can't insert touch_nmi_watchdog() while the cpu is 
-> waiting for the spinlock.
+Yes, in generic sense :-)
 
-The problem I have with the patch is that it seems to be a hack (as it
-doesn't fix the issue in all cases). Since sched_debug_lock is
-"special", perhaps we can add wrappers to take it, and instead of doing
-the spin_lock_irqsave(), do a trylock loop. Add lockdep annotation to
-tell lockdep that this is not a try lock (so that it can still detect
-deadlocks).
+If one would disagree, that would be same as saying that everything should
+execute in ring-0 because that only gives "full support".
 
-Then have the strategically placed touch_nmi_watchdog() also increment
-a counter. Then in that trylock loop, if it sees the counter get
-incremented, it knows that forward progress is being made by the lock
-holder, and it too can call touch_nmi_watchdog().
-
--- Steve
+/Jarkko
