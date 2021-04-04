@@ -2,136 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F1F83536FB
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 07:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A35C53536FC
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 07:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236644AbhDDFfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 01:35:54 -0400
-Received: from mout.gmx.net ([212.227.15.18]:45531 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229517AbhDDFfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 01:35:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1617514530;
-        bh=spnXF9bitaRpIdUoYH0Zqs8FB9jy9Hn4K39Rt8w46BY=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=Bq17cyiE51QPI5XOTEe2o70zo8e8Q32XJItNhcRqbfCfp0p5W+57SXhUppr1HwTX3
-         0anlTczL6KDRU9BRpkZe8LOkUVpImFjImQR1pFsyHMH9oe+HgwaNgWATPGRVDceZkN
-         ywTtcvB89oWd12LF7krT9igJfIBmoF9jNLFlD55g=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.44] ([95.91.192.147]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Md6Mj-1m2XU92nz9-00aEC7; Sun, 04
- Apr 2021 07:35:30 +0200
-Subject: Re: [PATCH net-next v1 2/9] net: dsa: tag_ar9331: detect IGMP and MLD
- packets
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-References: <20210403114848.30528-1-o.rempel@pengutronix.de>
- <20210403114848.30528-3-o.rempel@pengutronix.de> <YGiAjngOfDVWz/D7@lunn.ch>
- <f4856601-4219-09c7-2933-2161afd03abe@rempel-privat.de>
- <20210404000204.kujappopdi3aqjsn@skbuf>
-From:   Oleksij Rempel <linux@rempel-privat.de>
-Message-ID: <ab493cae-e8a5-e03a-3929-649e9ff46816@rempel-privat.de>
-Date:   Sun, 4 Apr 2021 07:35:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <20210404000204.kujappopdi3aqjsn@skbuf>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:9p/coZq9wZCmxGXl0mqGGX+ODJYTNv+5wpDnyDKmzh/QY3x7NYq
- Y7zm8poDMRy1j/cGtHaffrWn/f+2uRyfmlIFLrXN6IQ3Hq1nuwNfDcME1+yO3ybxSXx4OSn
- aHK7aQVyn5pfyDWr5Z+YsvjMSqRDJ+LAOqtOaXiPjgjwx9EazjC87/q0Yt7QPEYAqYQRflo
- vD5dLzJi6d8q653VrF7rA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:h0x5UH8Rwxs=:7gDkdZV1X2owpN2qm5xMaT
- 5Q/CNaiW5CNCPTcXP/7yltdtUK601fXnXLQPS+XJXQJFhb7tn6zeIw4eEdVomvC3Aq4/9qIC+
- RpbPuD9XfGIJTd1j/GJ8o+8vxOrhMPViJYKfRGSJ7jV0PNZqlsUKlQxX0hYAssJD82i8hYvLD
- 7/OJaXmJVUfKxSUUriMuG2gzVVdHSBuel/W1eTzRWmSZeAql8E8vtdN6mo/ZI9mVTYnGGPRDg
- mKzPcHytXTamUOWxbyjncFAMbtoGyByahh9o2Loz7KcuYFGzwCF5s7brmca5GyG2yVWms9CEz
- qofNUUAV4UydgVEGiZI4qiIJrsE5aoY/uJRgVKanvdr14o9SqXYPjoPelZFwDQnCbllogRc0A
- 7a4occ333cqv/Irqcyet+KzXi1vJZbSSPHsddUTenY7dVs80TaOeKk4YLKdHIlaUj1Z/jr/gB
- mffXLZQ5vjOVqJN2x2BtuMUnH6Km4O0YundpVXfQi9hdkDd9ku3g+ghZDMGc134jed7JUBNC7
- IupzVJ4ER/IzPIAjteTS8VNTZbfkDYt4W5yqQO4F8KnQAcAP2ETafzYLSetxDwwKrFEaFe2EH
- aYETczAeDq+A8a96FLpVq1FSd1pnCxy+wnhdDgIlr6oCMpCUvuk+VHXuWBDzyHksYaOxdkZav
- Sd70TIfBfYvuifNoBHXJiPF7GLcYHJopyqS0S+z9cERMPjlqf7pflYL2qnNciZTDPqqNThiMN
- EPj1fgPkrm1c3BOYsuC5RJpObFlyVOYepQnXeqYo7UH8Fy7Bd/Tsp8jyvRpjkYEheOUALo2x4
- vV4TjT381aWjkF5/caS2pl/FJuDqhkw3JN8Kbnu5yvPsRCJ29G0Vi15fgR1gwrm3GYAFwcrzQ
- Fm8WetD83xLmSKMc8iqhvkvYpODFsS59yHWOswg5yM4naPlCxWPkFqJoI/gAEqU++xBuXyFvl
- R0Ta5sSQjmNGzCaDriM4+hBHKwA/8qnKKHEnRxZFRSsJqIVNkKYW7JGCkG2dikHtOL6RL1unO
- Fadn06CU57BkqCbyx5yAkIFleZOxezPI7eMzV/VH+dChN4ezbj7Shc7Ie2aPOS02yVyHEy7JB
- 076zIPDOzHHny7RbDo54D8V6azKh67tgvmi7RCPI3jXnA/g4+ZwVOj/M7mRnTmdvArKcwcdn6
- NyEwbfKNQTOSx2c0RmmT4RUDpw9v+7c14DbPquLZGXBpJzOG0upQlPElaIVXdCDk6sjEs6bOA
- C2CsfZ3T1gATQypsM
+        id S230123AbhDDFkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 01:40:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229562AbhDDFki (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Apr 2021 01:40:38 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC4BC061756
+        for <linux-kernel@vger.kernel.org>; Sat,  3 Apr 2021 22:40:32 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id b8-20020a17090a5508b029014d0fbe9b64so631343pji.5
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Apr 2021 22:40:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=KxyeeXYM+0996CFKfGwExxixHCD5JVGi5ipPAcYMkSg=;
+        b=Njl5EIu18L7UlpKpxbxVVOfMtbUa6XdKE32KhTWr8XmZeibmo+CqL73CX0Ka7pzrDU
+         bhLaJ4YXoBFtqzuhFMwxgVShCIsXdn0Jj62uKWLrZitzhfRA/RKwvQFjf8BMKBupU5GV
+         BIq1Izg3MhnDwt1vq01sLkGhKxuKI9p2rbIrWN7aSlOjgtmdvVfeNPlzuObtNqeGXWzF
+         z2ijBHognMmIVt3iRVzKLxxCrzpZXm42a32+mNlOWACUpHey/f/IVTFhAY1ZNtehyd2B
+         iunxT7L/KeLfyj85rvvZLkX6LRVdRm/6b2EGJJhT0VyBF0kuXmGDAmQB75egoNGAF+0H
+         RFmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=KxyeeXYM+0996CFKfGwExxixHCD5JVGi5ipPAcYMkSg=;
+        b=Un0Xkhm9OCF8MqkoTVGWWG8/tjuEgVxo5YebOSIYajzWSh6zQAAYZh3SztyFviGsME
+         g9JWkQwoKhvhcrlFnmTNdly+A9+i/O3yd6Lw6PZoeg0kBuY5m7Y2kKyNu0NyIF26XITC
+         O8uU1qqjm0CujnO/zZ2l1JQir/bjzdf/wUKf9madF3znS6KDaVBkjFHXTBdC6QsXojrc
+         0M4KbXvcbQ2X9OROU9Zr0rLT44H9mfNlpkmZQlcSlKWRxbX9hnpi+MYGbkVwgnCe83oK
+         fdbvIfVbXtKGiL83L0gRiuAzECcs5Ux9cBolPM5elYXuCjmkgvdHZy3n0mFSexmX7LzD
+         8dcQ==
+X-Gm-Message-State: AOAM533NgAKFLnbegZnKM+eJidmCTIIs6flAPmYXWqB8Z/bYBvSYSspm
+        nW8Yv6Mts6PUhHoMJzeyNOY=
+X-Google-Smtp-Source: ABdhPJwTY1G+qMQ0x1XLtf9HBFsor12CoiNfQtUtMDCoE+gLtjOl3HnvSXaAguMpmiMF09X2CbEMSA==
+X-Received: by 2002:a17:902:8218:b029:e6:190e:48e with SMTP id x24-20020a1709028218b02900e6190e048emr19130071pln.33.1617514831530;
+        Sat, 03 Apr 2021 22:40:31 -0700 (PDT)
+Received: from djbComp.hitronhub.home (S0106ac202ecb0523.gv.shawcable.net. [70.67.120.89])
+        by smtp.gmail.com with ESMTPSA id y7sm11759877pja.25.2021.04.03.22.40.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Apr 2021 22:40:31 -0700 (PDT)
+From:   Deborah Brouwer <deborahbrouwer3563@gmail.com>
+To:     Larry.Finger@lwfinger.net, gregkh@linuxfoundation.org,
+        straube.linux@gmail.com, unixbhaskar@gmail.com
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com,
+        Deborah Brouwer <deborahbrouwer3563@gmail.com>
+Subject: [PATCH] staging: rtl8188eu: replace goto with direct return
+Date:   Sat,  3 Apr 2021 22:40:08 -0700
+Message-Id: <20210404054008.23525-1-deborahbrouwer3563@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 04.04.21 um 02:02 schrieb Vladimir Oltean:
-> On Sat, Apr 03, 2021 at 07:14:56PM +0200, Oleksij Rempel wrote:
->> Am 03.04.21 um 16:49 schrieb Andrew Lunn:
->>>> @@ -31,6 +96,13 @@ static struct sk_buff *ar9331_tag_xmit(struct sk_b=
-uff *skb,
->>>>  	__le16 *phdr;
->>>>  	u16 hdr;
->>>>
->>>> +	if (dp->stp_state =3D=3D BR_STATE_BLOCKING) {
->>>> +		/* TODO: should we reflect it in the stats? */
->>>> +		netdev_warn_once(dev, "%s:%i dropping blocking packet\n",
->>>> +				 __func__, __LINE__);
->>>> +		return NULL;
->>>> +	}
->>>> +
->>>>  	phdr =3D skb_push(skb, AR9331_HDR_LEN);
->>>>
->>>>  	hdr =3D FIELD_PREP(AR9331_HDR_VERSION_MASK, AR9331_HDR_VERSION);
->>>
->>> Hi Oleksij
->>>
->>> This change does not seem to fit with what this patch is doing.
->>
->> done
->>
->>> I also think it is wrong. You still need BPDU to pass through a
->>> blocked port, otherwise spanning tree protocol will be unstable.
->>
->> We need a better filter, otherwise, in case of software based STP, we a=
-re leaking packages on
->> blocked port. For example DHCP do trigger lots of spam in the kernel lo=
-g.
->
-> I have no idea whatsoever what 'software based STP' is, if you have
-> hardware-accelerated forwarding.
+To conform with Linux kernel coding style, replace goto statement that
+does no cleanup with a direct return.  To preserve meaning, copy comments
+from the original goto statement to the return statement.  Identified by
+the checkpatch warning: WARNING: void function return statements are not
+generally useful.
 
-I do not mean hardware-accelerated forwarding, i mean
-hardware-accelerated STP port state helpers.
+Signed-off-by: Deborah Brouwer <deborahbrouwer3563@gmail.com>
+---
+ drivers/staging/rtl8188eu/hal/rtl8188e_dm.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
->> I'll drop STP patch for now, it will be better to make a generic soft S=
-TP for all switches without
->> HW offloading. For example ksz9477 is doing SW based STP in similar way=
-.
->
-> How about we discuss first about what your switch is not doing properly?
-> Have you debugged more than just watching the bridge change port states?
-> As Andrew said, a port needs to accept and send link-local frames
-> regardless of the STP state. In the BLOCKING state it must send no other
-> frames and have address learning disabled. Is this what's happening, is
-> the switch forwarding frames towards a BLOCKING port?
+diff --git a/drivers/staging/rtl8188eu/hal/rtl8188e_dm.c b/drivers/staging/rtl8188eu/hal/rtl8188e_dm.c
+index 391c59490718..d21f21857c20 100644
+--- a/drivers/staging/rtl8188eu/hal/rtl8188e_dm.c
++++ b/drivers/staging/rtl8188eu/hal/rtl8188e_dm.c
+@@ -139,7 +139,9 @@ void rtw_hal_dm_watchdog(struct adapter *Adapter)
+ 	hw_init_completed = Adapter->hw_init_completed;
+ 
+ 	if (!hw_init_completed)
+-		goto skip_dm;
++		/*  Check GPIO to determine current RF on/off and Pbc status. */
++		/*  Check Hardware Radio ON/OFF or not */
++		return;
+ 
+ 	/* ODM */
+ 	pmlmepriv = &Adapter->mlmepriv;
+@@ -156,10 +158,8 @@ void rtw_hal_dm_watchdog(struct adapter *Adapter)
+ 
+ 	Adapter->HalData->odmpriv.bLinked = bLinked;
+ 	ODM_DMWatchdog(&Adapter->HalData->odmpriv);
+-skip_dm:
+ 	/*  Check GPIO to determine current RF on/off and Pbc status. */
+ 	/*  Check Hardware Radio ON/OFF or not */
+-	return;
+ }
+ 
+ void rtw_hal_dm_init(struct adapter *Adapter)
+-- 
+2.17.1
 
-The switch is not forwarding BPDU frame to the CPU port. So, the linux
-bridge will stack by cycling different state of the port where loop was
-detected.
-
-=2D-
-Regards,
-Oleksij
