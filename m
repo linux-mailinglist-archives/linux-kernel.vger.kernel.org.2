@@ -2,111 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB13E353870
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 16:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4940353872
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 16:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231417AbhDDOLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 10:11:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37610 "EHLO
+        id S230212AbhDDORx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 10:17:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231394AbhDDOKr (ORCPT
+        with ESMTP id S229633AbhDDORx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 10:10:47 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F67FC0613A6
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Apr 2021 07:10:41 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id v11so8761859wro.7
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Apr 2021 07:10:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=H7gV2Io75BmHpwhQaw6NovithxcDv0ix+Sn60I7HwJo=;
-        b=OLM2g/sC2sRgrL6by+LFbhGXdMOYTRlVRGpBoL1+C0iyDrogXbbaegNmL9t6KMH7Yl
-         Qw+agDzmfHlOYLB8JNgtxFYns7e9hVcQR+kG5kdM5n4owFIl58uQwZUC1Ic9UZa4a5O+
-         p+oNXA9OcABwM9tqgXThGTAS6nuAyNYqnSkayHHbO81NkWIdyOBK0JEXCBVDr0LM+egN
-         7m6JbGiWscQnHOZrR+4lg5acJcV7ib0Z9LB71tlk0/0yOfBXV7hGERR7/TMRU3RbiQoF
-         GkwHbQLUq6uDjauhfZHPMZ5LzWnsUG7bS/WgzkvqXhtxFaWBBNlAwZzQO7ngaRlOVLv9
-         PCow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=H7gV2Io75BmHpwhQaw6NovithxcDv0ix+Sn60I7HwJo=;
-        b=diAgPDktmFWPnkEZH2LQVAF2WjgtKAzqVyfKEGmhjaoPeunAkfIuqKGUX6rLw77l3t
-         rcFgpI1wBwiaWBGeKXmQhIca63GWItXLu1Nm5efGcoBwEfYENK5Od6exY/I4Uj+DZSvv
-         VE878+k+aUiGAYCEzbS+mvN7jwWw0vDMW2vN1CC4NtDErTw71Beqy49E1rn6IYSbDumF
-         y6IIRWttiKoNbgq3QsQbhPPuszdfq+6kgXsUPZu/KQCerKSL3QcWn6aZW/6QcjlNR/BB
-         ERP8J+hSE9x93vxIq/fCKXuh8oEHwoDxor0yXkHPW0I8GEgjux21NUNFvsYzYTPJLgXd
-         /JZA==
-X-Gm-Message-State: AOAM5306Nwf314RMnjZFPRD26AKI5G8aW/kP8UrOZ2GEm4B9NRd+3l1C
-        kIXmrt9isl+hT2IqZnveV8A=
-X-Google-Smtp-Source: ABdhPJwaQt8xyr7nbxAYdSdpj0FhMdHLQbMIHGVqXd3bc8zOuEeXtqbmLHVhcNoSle4KUC4xFCUXgg==
-X-Received: by 2002:adf:fbc8:: with SMTP id d8mr25080769wrs.94.1617545440071;
-        Sun, 04 Apr 2021 07:10:40 -0700 (PDT)
-Received: from agape ([5.171.81.112])
-        by smtp.gmail.com with ESMTPSA id k13sm28725987wri.27.2021.04.04.07.10.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Apr 2021 07:10:39 -0700 (PDT)
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     dan.carpenter@oracle.com, joe@perches.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH v4 30/30] staging: rtl8723bs: add spaces around operators in core/rtw_ieee80211.c
-Date:   Sun,  4 Apr 2021 16:09:46 +0200
-Message-Id: <1b5ee3d974c336e20f034d5de449fc29967a6213.1617545239.git.fabioaiuto83@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1617545239.git.fabioaiuto83@gmail.com>
-References: <cover.1617545239.git.fabioaiuto83@gmail.com>
+        Sun, 4 Apr 2021 10:17:53 -0400
+Received: from smtp.gentoo.org (mail.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E9ABC061756
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Apr 2021 07:17:48 -0700 (PDT)
+Received: by sf.home (Postfix, from userid 1000)
+        id 6D96E5A22061; Sun,  4 Apr 2021 15:17:39 +0100 (BST)
+From:   Sergei Trofimovich <slyfox@gentoo.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Sergei Trofimovich <slyfox@gentoo.org>, linux-mm@kvack.org
+Subject: [PATCH] mm: page_poison: print page owner info when corruption is caught
+Date:   Sun,  4 Apr 2021 15:17:35 +0100
+Message-Id: <20210404141735.2152984-1-slyfox@gentoo.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix post-commit hook checkpatch issues:
+When page_poison detects page corruption it's useful to see who
+freed a page recently to have a guess where write-after-free
+corruption happens.
 
-CHECK: spaces preferred around that '+' (ctx:VxV)
-161: FILE: drivers/staging/rtl8723bs/core/rtw_ieee80211.c:648:
-+			*wpa_len = in_ie[cnt+1]+2;
- 			                    ^
+After this change corruption report has extra page_owner data.
+Example report from real corruption:
 
-CHECK: spaces preferred around that '+' (ctx:VxV)
-161: FILE: drivers/staging/rtl8723bs/core/rtw_ieee80211.c:648:
-+			*wpa_len = in_ie[cnt+1]+2;
- 			                       ^
+    pagealloc: memory corruption
+    e00000014cd61d10: 11 00 00 00 00 00 00 00 30 1d d2 ff ff 0f 00 60
+    e00000014cd61d20: b0 1d d2 ff ff 0f 00 60 90 fe 1c 00 08 00 00 20
+    ...
+    CPU: 1 PID: 220402 Comm: cc1plus Not tainted 5.12.0-rc5-00107-g9720c6f59ecf #245
+    Hardware name: hp server rx3600, BIOS 04.03 04/08/2008
+    ...
+    Call Trace:
+     [<a000000100015210>] show_stack+0x90/0xc0
+     [<a000000101163390>] dump_stack+0x150/0x1c0
+     [<a0000001003f1e90>] __kernel_unpoison_pages+0x410/0x440
+     [<a0000001003c2460>] get_page_from_freelist+0x1460/0x2ca0
+     [<a0000001003c6be0>] __alloc_pages_nodemask+0x3c0/0x660
+     [<a0000001003ed690>] alloc_pages_vma+0xb0/0x500
+     [<a00000010037deb0>] __handle_mm_fault+0x1230/0x1fe0
+     [<a00000010037ef70>] handle_mm_fault+0x310/0x4e0
+     [<a00000010005dc70>] ia64_do_page_fault+0x1f0/0xb80
+     [<a00000010000ca00>] ia64_leave_kernel+0x0/0x270
+    page_owner tracks the page as freed
+    page allocated via order 0, migratetype Movable,
+      gfp_mask 0x100dca(GFP_HIGHUSER_MOVABLE|__GFP_ZERO), pid 37, ts 8173444098740
+     __reset_page_owner+0x40/0x200
+     free_pcp_prepare+0x4d0/0x600
+     free_unref_page+0x20/0x1c0
+     __put_page+0x110/0x1a0
+     migrate_pages+0x16d0/0x1dc0
+     compact_zone+0xfc0/0x1aa0
+     proactive_compact_node+0xd0/0x1e0
+     kcompactd+0x550/0x600
+     kthread+0x2c0/0x2e0
+     call_payload+0x50/0x80
 
-CHECK: spaces preferred around that '+' (ctx:VxV)
-162: FILE: drivers/staging/rtl8723bs/core/rtw_ieee80211.c:649:
-+			cnt += in_ie[cnt+1]+2;  /* get next */
- 			                ^
+Here we can see that page was freed by page migration but something
+managed to write to it afterwards.
 
-CHECK: spaces preferred around that '+' (ctx:VxV)
-162: FILE: drivers/staging/rtl8723bs/core/rtw_ieee80211.c:649:
-+			cnt += in_ie[cnt+1]+2;  /* get next */
- 			                   ^
-
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+CC: Andrew Morton <akpm@linux-foundation.org>
+CC: linux-mm@kvack.org
+Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
 ---
- drivers/staging/rtl8723bs/core/rtw_ieee80211.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ mm/page_poison.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c b/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
-index eb2058f2d139..a0d664e254a8 100644
---- a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
-@@ -645,8 +645,8 @@ void rtw_get_sec_ie(u8 *in_ie, uint in_len, u8 *rsn_ie, u16 *rsn_len, u8 *wpa_ie
- 			if (wpa_ie)
- 				memcpy(wpa_ie, &in_ie[cnt], in_ie[cnt+1]+2);
+diff --git a/mm/page_poison.c b/mm/page_poison.c
+index 65cdf844c8ad..ef2a1eab13d7 100644
+--- a/mm/page_poison.c
++++ b/mm/page_poison.c
+@@ -4,6 +4,7 @@
+ #include <linux/mm.h>
+ #include <linux/highmem.h>
+ #include <linux/page_ext.h>
++#include <linux/page_owner.h>
+ #include <linux/poison.h>
+ #include <linux/ratelimit.h>
+ #include <linux/kasan.h>
+@@ -45,7 +46,7 @@ static bool single_bit_flip(unsigned char a, unsigned char b)
+ 	return error && !(error & (error - 1));
+ }
  
--			*wpa_len = in_ie[cnt+1]+2;
--			cnt += in_ie[cnt+1]+2;  /* get next */
-+			*wpa_len = in_ie[cnt + 1] + 2;
-+			cnt += in_ie[cnt + 1] + 2;  /* get next */
- 		} else {
- 			if (authmode == WLAN_EID_RSN) {
- 				if (rsn_ie)
+-static void check_poison_mem(unsigned char *mem, size_t bytes)
++static void check_poison_mem(struct page *page, unsigned char *mem, size_t bytes)
+ {
+ 	static DEFINE_RATELIMIT_STATE(ratelimit, 5 * HZ, 10);
+ 	unsigned char *start;
+@@ -70,6 +71,7 @@ static void check_poison_mem(unsigned char *mem, size_t bytes)
+ 	print_hex_dump(KERN_ERR, "", DUMP_PREFIX_ADDRESS, 16, 1, start,
+ 			end - start + 1, 1);
+ 	dump_stack();
++	dump_page_owner(page);
+ }
+ 
+ static void unpoison_page(struct page *page)
+@@ -82,7 +84,7 @@ static void unpoison_page(struct page *page)
+ 	 * that is freed to buddy. Thus no extra check is done to
+ 	 * see if a page was poisoned.
+ 	 */
+-	check_poison_mem(addr, PAGE_SIZE);
++	check_poison_mem(page, addr, PAGE_SIZE);
+ 	kunmap_atomic(addr);
+ }
+ 
 -- 
-2.20.1
+2.31.1
 
