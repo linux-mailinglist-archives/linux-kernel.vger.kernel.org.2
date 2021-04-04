@@ -2,82 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91CA13536B5
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 06:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A53453536F6
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 07:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbhDDEk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 00:40:58 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:45828 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhDDEk5 (ORCPT
+        id S230124AbhDDFPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 01:15:33 -0400
+Received: from fallback21.m.smailru.net ([94.100.176.131]:58346 "EHLO
+        fallback21.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229517AbhDDFPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 00:40:57 -0400
-Received: from [192.168.254.32] (unknown [47.187.194.202])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 8B49220B5680;
-        Sat,  3 Apr 2021 21:40:52 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8B49220B5680
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1617511253;
-        bh=fCDUNY4RnNwMr8Xnv+6+5QOYhCKjx6Ej87nkMtaPNcI=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
-        b=qqKB0cyZSgUYk7HOv+KJkS5rhlZ0iNPmm5LXaVnNmBodZu5B23jedf/4AEo1HXcep
-         ss9uBWRVyijOZ+A0zoJfUBwbrY+F/sGeWA9qkCbhOdNgfns6c10HBlK516049kqCQd
-         wxldRpbrujAk9Ku35HvfkhJYrJj98L8wajD5h2DY=
-Subject: Re: [RFC PATCH v2 1/1] arm64: Implement stack trace termination
- record
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     mark.rutland@arm.com, broonie@kernel.org, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <659f3d5cc025896ba4c49aea431aa8b1abc2b741>
- <20210402032404.47239-1-madvenka@linux.microsoft.com>
- <20210402032404.47239-2-madvenka@linux.microsoft.com>
- <20210403155948.ubbgtwmlsdyar7yp@treble>
- <171fef08-17d3-2c2e-dad8-6caf4c0c7f15@linux.microsoft.com>
-Message-ID: <49790505-f611-b4a2-c804-b779060601a9@linux.microsoft.com>
-Date:   Sat, 3 Apr 2021 23:40:51 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Sun, 4 Apr 2021 01:15:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bk.ru; s=mail3;
+        h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From; bh=vODOyMMQrQwIWK970nuT0VSVrPY7/ao58k+25UVV+3U=;
+        b=gzd9pIlyjX+mFUCIS9uIsBQHuyjS/TQI+2WactepYfBgADoFPH6RXza/sysc4+2rfbIS4nMbRIv5hYpotx0KO2d2jVvSrM0xfeQI7rHqmhBs2tw372FhQukn9Fk+2ASlQCb7iZTpJ3kS8inKg8ZnLOQpsMPtJxn26gqfuoipPRM=;
+Received: from [10.161.64.58] (port=52844 helo=smtp50.i.mail.ru)
+        by fallback21.m.smailru.net with esmtp (envelope-from <dev.dragon@bk.ru>)
+        id 1lSv6b-0006uQ-DM; Sun, 04 Apr 2021 08:15:25 +0300
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bk.ru; s=mail3;
+        h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=vODOyMMQrQwIWK970nuT0VSVrPY7/ao58k+25UVV+3U=;
+        b=0o4RKbI7P4Rt78e+C+NOnTF9G50y7zsTL5t+uf7tXDd4gHmQteNruq7lF514QaHSyDWp6Zkl1NYEXuve/KUY7C/8d2mvHmvl6S6LD68RBgP3TcbQOwWwXCaKTQuZBJIgm0Hy3Du420O1U9SOkeZV+u4TaERwZ5m+QQzkO9NjJEs=;
+Received: by smtp50.i.mail.ru with esmtpa (envelope-from <dev.dragon@bk.ru>)
+        id 1lSv6U-0008NY-3e; Sun, 04 Apr 2021 08:15:18 +0300
+From:   dev.dragon@bk.ru
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Dmitrii Wolf <dev.dragon@bk.ru>
+Subject: [PATCH] Staging: rtl8192u: ieee80211: fixed a trailing statements coding style issue.
+Date:   Sun,  4 Apr 2021 08:15:00 +0300
+Message-Id: <20210404051500.6644-1-dev.dragon@bk.ru>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <171fef08-17d3-2c2e-dad8-6caf4c0c7f15@linux.microsoft.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-7564579A: 646B95376F6C166E
+X-77F55803: 4F1203BC0FB41BD9ED7173E37F4E32947287414FD1D04A09E656A5F3377C994A182A05F5380850401631DEEA721502D9F90D94D8807B2E0C7CC4E50287A61A9BA30829E9EAF806C7
+X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE77C1346FE4B18DC51EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F790063716A4A39B750036BB8638F802B75D45FF914D58D5BE9E6BC131B5C99E7648C95C7B5A45DDF210A4CFD002B3FC504A19172310B58CFF9FA30BA471835C12D1D9774AD6D5ED66289B5278DA827A17800CE746CC513BB44FBA1D9FA2833FD35BB23D2EF20D2F80756B5F868A13BD56FB6657A471835C12D1D977725E5C173C3A84C3F5E532225D4D775B117882F4460429728AD0CFFFB425014E868A13BD56FB6657D81D268191BDAD3DC09775C1D3CA48CFB1B85B2539DF5BE3BA3038C0950A5D36C8A9BA7A39EFB766EC990983EF5C0329BA3038C0950A5D36D5E8D9A59859A8B6D46C0F1BFA22653176E601842F6C81A1F004C906525384307823802FF610243DF43C7A68FF6260569E8FC8737B5C2249EC8D19AE6D49635B68655334FD4449CB9ECD01F8117BC8BEAAAE862A0553A3920E30A4C9C8E338DACAF32FB7AB05475F43847C11F186F3C59DAA53EE0834AAEE
+X-C1DE0DAB: C20DE7B7AB408E4181F030C43753B8186998911F362727C414F749A5E30D975C7B5A45DDF210A4CFD002B3FC504A19172310B58CFF9FA30B9C2B6934AE262D3EE7EAB7254005DCED246B04B1A760E0861E0A4E2319210D9B64D260DF9561598F01A9E91200F654B02E4E6844585584458E8E86DC7131B365E7726E8460B7C23C
+X-C8649E89: 4E36BF7865823D7055A7F0CF078B5EC49A30900B95165D3429499E429979B7C798062227321C16DF7D6F7C8A0CA6C09E4027549D4EFD237A351BC1519B42F95B1D7E09C32AA3244C298E8D877306A9184A1D556EB13272D1A995755A1445935E927AC6DF5659F194
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojt47dm/981n5I+ZaT6x+mHg==
+X-Mailru-Sender: 3A338A78718AEC5AA85B3E7661095C1EF6C936A70B6C087246227CBBF7A866895718A935A427C5FD3833C6AC539110AEA432B8CD90067B65A6C5C4E98768B51D7AA22088860DD9FF5CDEF9E650933936342CD0BA774DB6A9AE208404248635DF
+X-Mras: Ok
+X-7564579A: 646B95376F6C166E
+X-77F55803: 6242723A09DB00B4DF7173A40FF1347DA6106AACE9855D4976ED1A9D65780DFF049FFFDB7839CE9E750848576F542D0E8EB837B7FF7DEC847DCE5CB3672AF29E56EAEF0F0DD5C092
+X-7FA49CB5: 0D63561A33F958A56A6726E9426957F4722A41DC75417935F62A39754CBC0F618941B15DA834481FA18204E546F3947C5D2C5C0A547CD2CBF6B57BC7E64490618DEB871D839B7333395957E7521B51C2DFABB839C843B9C08941B15DA834481F8AA50765F79006379CB0AA5F2FC3A5BC389733CBF5DBD5E9B5C8C57E37DE458BD9DD9810294C998ED8FC6C240DEA76428AA50765F79006373BD29FA120C2C537D81D268191BDAD3DBD4B6F7A4D31EC0BEA7A3FFF5B025636AAAE862A0553A3920E30A4C9C8E338DACAF32FB7AB05475F43847C11F186F3C59DAA53EE0834AAEE
+X-C1DE0DAB: C20DE7B7AB408E4181F030C43753B8186998911F362727C414F749A5E30D975C7B5A45DDF210A4CFB878721915A393540EF4E8556AE47A7B9C2B6934AE262D3EE7EAB7254005DCED246B04B1A760E086699F904B3F4130E343918A1A30D5E7FCCB5012B2E24CD356
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojt47dm/981n5FXm8FOx/Bwg==
+X-Mailru-MI: 800
+X-Mailru-Sender: A5480F10D64C90054F94DD2E9EA85DB6F1A6D316C6F9163D484E56D8614A87AFAB4789D4C62FB0A1CD4CDAD98BDCABE8DDBB79867CC2C1EC846E85FF75DBDC4983CE97D6EC8C31C553326A0E03014151EAB4BC95F72C04283CDA0F3B3F5B9367
+X-Mras: Ok
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Dmitrii Wolf <dev.dragon@bk.ru>
 
+Signed-off-by: Dmitrii Wolf <dev.dragon@bk.ru>
+---
+ drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-On 4/3/21 10:46 PM, Madhavan T. Venkataraman wrote:
->> I'm somewhat arm-ignorant, so take the following comments with a grain
->> of salt.
->>
->>
->> I don't think changing these to 'bl' is necessary, unless you wanted
->> __primary_switched() and __secondary_switched() to show up in the
->> stacktrace for some reason?  If so, that seems like a separate patch.
->>
-> The problem is with __secondary_switched. If you trace the code back to where
-> a secondary CPU is started, I don't see any calls anywhere. There are only
-> branches if I am not mistaken. So, the return address register never gets
-> set up with a proper address. The stack trace shows some hexadecimal value
-> instead of a symbol name.
-> 
+diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
+index 690b664df8fa..29a6ce20e2bd 100644
+--- a/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
++++ b/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
+@@ -2048,12 +2048,12 @@ void ieee80211_softmac_xmit(struct ieee80211_txb *txb, struct ieee80211_device *
+ 	/* if xmit available, just xmit it immediately, else just insert it to the wait queue */
+ 	for (i = 0; i < txb->nr_frags; i++) {
+ #ifdef USB_TX_DRIVER_AGGREGATION_ENABLE
+-		if ((skb_queue_len(&ieee->skb_drv_aggQ[queue_index]) != 0) ||
++		if ((skb_queue_len(&ieee->skb_drv_aggQ[queue_index]) != 0)
+ #else
+-		if ((skb_queue_len(&ieee->skb_waitQ[queue_index]) != 0) ||
++		if ((skb_queue_len(&ieee->skb_waitQ[queue_index]) != 0)
+ #endif
+-		    (!ieee->check_nic_enough_desc(ieee->dev, queue_index)) || \
+-		    (ieee->queue_stop)) {
++		 || (!ieee->check_nic_enough_desc(ieee->dev, queue_index)) \
++		 || (ieee->queue_stop)) {
+ 			/* insert the skb packet to the wait queue */
+ 			/* as for the completion function, it does not need
+ 			 * to check it any more.
+-- 
+2.25.1
 
-Actually, I take that back. There are calls in that code path. But I did only
-see some hexadecimal value instead of a proper address in the stack trace.
-Sorry about that confusion.
-
-My reason to convert the branches to calls is this - the value of the return
-address register at that point is the return PC of the previous branch and link
-instruction wherever that happens to be. I think that is a little arbitrary.
-
-Instead, if I call start_kernel() and secondary_start_kernel(), the return address
-gets set up to the next instruction which, IMHO, is better.
-
-But I am open to other suggestions.
-
-Madhavan
