@@ -2,127 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D06335390B
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 19:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 037E7353913
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 19:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231304AbhDDRVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 13:21:00 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:63707 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231272AbhDDRU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 13:20:56 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FD0tP1t4vz9tymG;
-        Sun,  4 Apr 2021 19:20:45 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id ffq992l6CBkv; Sun,  4 Apr 2021 19:20:45 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FD0tP0d2fz9tymF;
-        Sun,  4 Apr 2021 19:20:45 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9F2F08B78E;
-        Sun,  4 Apr 2021 19:20:48 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id b-KtXSnASDF0; Sun,  4 Apr 2021 19:20:48 +0200 (CEST)
-Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4454D8B76A;
-        Sun,  4 Apr 2021 19:20:48 +0200 (CEST)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 06D3A67685; Sun,  4 Apr 2021 17:20:48 +0000 (UTC)
-Message-Id: <34d20d1dbb88f26d418b33985557b0475374a1a5.1617556785.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [RFC PATCH v6 1/1] cmdline: Add capability to both append and prepend at
- the same time
-To:     will@kernel.org, danielwa@cisco.com, robh@kernel.org,
-        daniel@gimpelevich.san-francisco.ca.us, arnd@kernel.org,
-        akpm@linux-foundation.org
-Cc:     linux-arch@vger.kernel.org, devicetree@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org,
-        microblaze <monstr@monstr.eu>, linux-mips@vger.kernel.org,
-        nios2 <ley.foon.tan@intel.com>, openrisc@lists.librecores.org,
-        linux-hexagon@vger.kernel.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-mm@kvack.org
-Date:   Sun,  4 Apr 2021 17:20:48 +0000 (UTC)
+        id S231272AbhDDRXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 13:23:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25006 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230237AbhDDRXB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Apr 2021 13:23:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617556974;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=z/5mnwgHoJFvBDEZfnGzqOhpdJGRGjyKr6Angp44t5I=;
+        b=SRSBAANefCYnv38BHL1xbdwnzVWJKcMSe7fsIe3dbudm/pNjLnWdb1HBhZs1kavelYHqOf
+        vjVts0GkhVfR0G8xUfe2rIDUnGizBsZy/VMbQIxBJ5NcldTR+uJDlseShi3aksVx25Vw4N
+        Blzy+CDWbckEZgITdR5KtUzuDZHRBRM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-480-kFJXmbNwMNq8Zw9RyNMDGA-1; Sun, 04 Apr 2021 13:22:53 -0400
+X-MC-Unique: kFJXmbNwMNq8Zw9RyNMDGA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D41CD8030A1;
+        Sun,  4 Apr 2021 17:22:51 +0000 (UTC)
+Received: from laptop.redhat.com (ovpn-112-13.ams2.redhat.com [10.36.112.13])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 24D1D10027C4;
+        Sun,  4 Apr 2021 17:22:44 +0000 (UTC)
+From:   Eric Auger <eric.auger@redhat.com>
+To:     eric.auger.pro@gmail.com, eric.auger@redhat.com,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, maz@kernel.org, drjones@redhat.com,
+        alexandru.elisei@arm.com
+Cc:     james.morse@arm.com, suzuki.poulose@arm.com, shuah@kernel.org,
+        pbonzini@redhat.com
+Subject: [PATCH v5 0/8] KVM/ARM: Some vgic fixes and init sequence KVM selftests
+Date:   Sun,  4 Apr 2021 19:22:35 +0200
+Message-Id: <20210404172243.504309-1-eric.auger@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-One user has expressed the need to both append and prepend some
-built-in parameters to the command line provided by the bootloader.
+While writting vgic v3 init sequence KVM selftests I noticed some
+relatively minor issues. This was also the opportunity to try to
+fix the issue laterly reported by Zenghui, related to the RDIST_TYPER
+last bit emulation. The final patch is a first batch of VGIC init
+sequence selftests. Of course they can be augmented with a lot more
+register access tests, but let's try to move forward incrementally ...
 
-Allthough it is a corner case, it is easy to implement so let's do it.
+Best Regards
 
-When the user chooses to prepend the bootloader provided command line
-with the built-in command line, he is offered the possibility to enter
-an additionnal built-in command line to be appended after the
-bootloader provided command line.
+Eric
 
-It is a complementary feature which has no impact on the already
-existing ones and/or the existing defconfig.
+This series can be found at:
+https://github.com/eauger/linux/tree/vgic_kvmselftests_v5
 
-Suggested-by: Daniel Walker <danielwa@cisco.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-Sending this out as an RFC, applies on top of the series
-("Implement GENERIC_CMDLINE"). I will add it to the series next spin
-unless someone is against it.
----
- include/linux/cmdline.h |  3 +++
- init/Kconfig            | 12 +++++++++++-
- 2 files changed, 14 insertions(+), 1 deletion(-)
+History:
+v4 -> v5:
+- rewrite the last bit detection according to Marc's
+  interpretation of the spec and modify the kvm selftests
+  accordingly
+v3 -> v4:
+- take into account Drew's comment on the kvm selftests. No
+  change to the KVM related patches compared to v3
+v2 ->v3:
+- reworked last bit read accessor to handle contiguous redist
+  regions and rdist not registered in ascending order
+- removed [PATCH 5/9] KVM: arm: move has_run_once after the
+  map_resources
+v1 -> v2:
+- Took into account all comments from Marc and Alexandru's except
+  the has_run_once still after the map_resources (this would oblige
+  me to revisit in depth the selftests)
 
-diff --git a/include/linux/cmdline.h b/include/linux/cmdline.h
-index 020028e2bdf0..fb274a4d5519 100644
---- a/include/linux/cmdline.h
-+++ b/include/linux/cmdline.h
-@@ -36,6 +36,9 @@ static __always_inline bool __cmdline_build(char *dst, const char *src)
- 
- 	len = cmdline_strlcat(dst, src, COMMAND_LINE_SIZE);
- 
-+	if (IS_ENABLED(CONFIG_CMDLINE_PREPEND))
-+		len = cmdline_strlcat(dst, " " CONFIG_CMDLINE_MORE, COMMAND_LINE_SIZE);
-+
- 	if (IS_ENABLED(CONFIG_CMDLINE_APPEND))
- 		len = cmdline_strlcat(dst, " " CONFIG_CMDLINE, COMMAND_LINE_SIZE);
- 
-diff --git a/init/Kconfig b/init/Kconfig
-index fa002e3765ab..cd3087ff4f28 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -128,6 +128,14 @@ config CMDLINE
- 	  If this string is not empty, additional choices are proposed
- 	  below to determine how it will be used by the kernel.
- 
-+config CMDLINE_MORE
-+	string "Additional default kernel command string" if GENERIC_CMDLINE && CMDLINE_PREPEND
-+	default ""
-+	help
-+	  Defines an additional default kernel command string.
-+	  If this string is not empty, it is appended to the
-+	  command-line arguments provided by the bootloader
-+
- choice
- 	prompt "Kernel command line type" if CMDLINE != ""
- 	default CMDLINE_PREPEND if ARCH_WANT_CMDLINE_PREPEND_BY_DEFAULT
-@@ -154,7 +162,9 @@ config CMDLINE_PREPEND
- 	bool "Prepend to the bootloader kernel arguments"
- 	help
- 	  The default kernel command string will be prepended to the
--	  command-line arguments provided by the bootloader.
-+	  command-line arguments provided by the bootloader. When this
-+	  option is selected, another string can be added which will
-+	  be appended.
- 
- config CMDLINE_FORCE
- 	bool "Always use the default kernel command string"
+
+Eric Auger (8):
+  KVM: arm64: Fix KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION read
+  KVM: arm64: vgic-v3: Fix error handling in vgic_v3_set_redist_base()
+  KVM: arm/arm64: vgic: Reset base address on kvm_vgic_dist_destroy()
+  docs: kvm: devices/arm-vgic-v3: enhance KVM_DEV_ARM_VGIC_CTRL_INIT doc
+  KVM: arm64: Simplify argument passing to vgic_uaccess_[read|write]
+  kvm: arm64: vgic-v3: Introduce vgic_v3_free_redist_region()
+  KVM: arm64: vgic-v3: Expose GICR_TYPER.Last for userspace
+  KVM: selftests: aarch64/vgic-v3 init sequence tests
+
+ .../virt/kvm/devices/arm-vgic-v3.rst          |   2 +-
+ arch/arm64/kvm/vgic/vgic-init.c               |  12 +-
+ arch/arm64/kvm/vgic/vgic-kvm-device.c         |   3 +
+ arch/arm64/kvm/vgic/vgic-mmio-v3.c            |  79 ++-
+ arch/arm64/kvm/vgic/vgic-mmio.c               |  10 +-
+ arch/arm64/kvm/vgic/vgic.h                    |   1 +
+ include/kvm/arm_vgic.h                        |   1 +
+ tools/testing/selftests/kvm/.gitignore        |   1 +
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../testing/selftests/kvm/aarch64/vgic_init.c | 585 ++++++++++++++++++
+ .../testing/selftests/kvm/include/kvm_util.h  |   9 +
+ tools/testing/selftests/kvm/lib/kvm_util.c    |  77 +++
+ 12 files changed, 739 insertions(+), 42 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/aarch64/vgic_init.c
+
 -- 
-2.25.0
+2.26.3
 
