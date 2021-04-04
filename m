@@ -2,75 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B3B635392C
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 19:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 689D3353933
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 19:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231206AbhDDR15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 13:27:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51718 "EHLO
+        id S231293AbhDDRfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 13:35:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229861AbhDDR1v (ORCPT
+        with ESMTP id S229861AbhDDRfb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 13:27:51 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68132C061756
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Apr 2021 10:27:46 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id i19so7049364qtv.7
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Apr 2021 10:27:46 -0700 (PDT)
+        Sun, 4 Apr 2021 13:35:31 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77543C061756;
+        Sun,  4 Apr 2021 10:35:24 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id i9so9696949qka.2;
+        Sun, 04 Apr 2021 10:35:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Et1pca22Rg6d/lGnAY2sJzq7rHmXVlBp3eJBVJWY0FY=;
-        b=BEKMcjmZ/ELTAhqoIDaBgoDkF/HxeJih8TW0aGen3UPq8Ri7bqaPeyd6+oaHbmICJr
-         +AKTraEqumwXYyJ0qyePUC62K6KYe/Y8gs3C99SqldmWpjCRjD7pgYGVhqAkEqgBK5ex
-         olbRxsiRs+j6ivP3oQe+1uCSPOmG1OaJjBrcjuIh13V5RqnYjbYsMGo1fEHxoki2lAz6
-         3Wc6nxwxrFNUNYKvZ+n6FQ7eUBEOrclLSSq2c0MOspOLPIWKNyiuRlr6nonpdTBrjaH+
-         8HOGQxzgSEoeKAEz0za1iL25hNpoWSrhLpPwXY1fBoKqml8eGKnqGCM2Mvw7S1rkSB8b
-         4QOg==
+        bh=33J8OtutelowSioLnJ+BV370Ve8/xBpuUEz5H46uwPQ=;
+        b=DpC5OcjNicGSE5IHLbNl9o0O/n6y7SZQIRP1OF7pZYWEW8TYxgpEXUHI0e7ZPfxSEm
+         A+O7GebbfT58u7Lpmiv6sBL3Yk+EujsWCCzrB3aDx97xfLrwLc7CEIA8SeXMDdCVwmsY
+         BPqIQTgWEwBURoGagdqHuCG92UlwBGsrjntu1SWK8cLpRmxtUAgouhJt3WpC0vh9OdW9
+         /I9txAgZWSB1mY1LSilQo4XMQDZA+0riwckuXe5LjY1cgRMODU/Q+/YhfbHA3JSSUHSn
+         Ns1fZL7rLbr7viGLe8jOTv5XiK3tpOFOFQJ5gwIh9kukMUGZbtQgthNUDTrY1AdaBS8H
+         2Dkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=Et1pca22Rg6d/lGnAY2sJzq7rHmXVlBp3eJBVJWY0FY=;
-        b=l6XH+rVe/P5hoMbMjmVCOktXqd2zw8I8kzIYXd3ddoHsuoGN71aCVo1K0OwzAVmTC2
-         r7ntEEHtY+5C/PMdM1o2xaspofpJwRygjv+EZrjYMWyp7vfq/tXgNvVF0n/npZNqBWXf
-         9omW1V4bSeTgP0NRl1yqmg9ppr03kclcNkwa1RgRddG/EhXfp1iFSQIzsXYm5nziXNc1
-         dg3z3Ld0WvN7zYkSK968mgnGtXQmDzeogHLnu1ku4JBjdwFapW8dwx/2bxuF5YgiGejg
-         p8bjFTD/BdP5VGGrWRqAA8oP821AW1p8V2dutn1fKiZDqgly2LpUtasvzfodIqSuC4RQ
-         TJiA==
-X-Gm-Message-State: AOAM5334cOcYySHIN/QsUQ9JvmrBFnZ5T+oIHLzJxPi4+FRuksOhrh+0
-        K5qmvDny4rYLSNMnwDMwL34=
-X-Google-Smtp-Source: ABdhPJzwiWG/hjgQ19Kce3jXWbtxfzWYnV0jUsEo907kRJmeo0pHxZ7c71+qNpNtRiNhrHwkSE4Rzw==
-X-Received: by 2002:ac8:5847:: with SMTP id h7mr19346858qth.108.1617557265566;
-        Sun, 04 Apr 2021 10:27:45 -0700 (PDT)
+        bh=33J8OtutelowSioLnJ+BV370Ve8/xBpuUEz5H46uwPQ=;
+        b=lahu8UBP+wAlQNbXaTnty0HzuPumwn1j963aHKGjtUzkgd3zo3js0O7n74sRrMq7yw
+         nL6GxG3mi+jSxSwBD8/B4xjZRnw3OA7GE0mieggtWoHilIkpL6BER5ZTiaayYahWGfSE
+         Gxgmr8H5BVGHmRA6UgNDTShWhhTgeQiEz3FKlxcu5qaZ+rHtJZ0AYtTtJFzv5YQn0kuL
+         0hG+9fz+2/KtQgPlAfp8topDJCA7Iim3soM6F2q6GFaS8yMQIaNS1yITErah+izfxnVD
+         upfdfazB2h58wHG5lKpmo3hHzv14MBr4KkX/OmDgHLt/AtfF2HABEDkzVBKleKXV7it+
+         tfYw==
+X-Gm-Message-State: AOAM531C/ff+++GgUF3IBQab2MP9E6XE86ctgWoFyuFCdQx/MPoUAKfE
+        2A5npCrxLr86kTfY/NV0cy8=
+X-Google-Smtp-Source: ABdhPJzymD6qe59ckoaxT0GUwxUpiC8bP3gyvGuaN3f4jU+CgDo/aeVmQ14oOVOMQ13+4UWZAekMYA==
+X-Received: by 2002:a05:620a:14f:: with SMTP id e15mr21094562qkn.315.1617557723397;
+        Sun, 04 Apr 2021 10:35:23 -0700 (PDT)
 Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
-        by smtp.gmail.com with ESMTPSA id j6sm10092921qtx.14.2021.04.04.10.27.45
+        by smtp.gmail.com with ESMTPSA id w5sm11732174qkc.85.2021.04.04.10.35.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Apr 2021 10:27:45 -0700 (PDT)
+        Sun, 04 Apr 2021 10:35:22 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Sun, 4 Apr 2021 13:27:44 -0400
+Date:   Sun, 4 Apr 2021 13:35:21 -0400
 From:   Tejun Heo <tj@kernel.org>
-To:     Wang Qing <wangqing@vivo.com>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        Andrey Ignatov <rdna@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Santosh Sivaraj <santosh@fossix.org>,
+To:     Vipin Sharma <vipinsh@google.com>
+Cc:     mkoutny@suse.com, jacob.jun.pan@intel.com, rdunlap@infradead.org,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
+        eric.vantassell@amd.com, pbonzini@redhat.com, hannes@cmpxchg.org,
+        frankja@linux.ibm.com, borntraeger@de.ibm.com, corbet@lwn.net,
+        seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
+        rientjes@google.com, kvm@vger.kernel.org, x86@kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3,RESEND] workqueue/watchdog: Make unbound workqueues
- aware of touch_softlockup_watchdog()
-Message-ID: <YGn3ECSJ6zPLMbnX@mtj.duckdns.org>
-References: <1616586031-31809-1-git-send-email-wangqing@vivo.com>
+Subject: Re: [PATCH v4 0/3] cgroup: New misc cgroup controller
+Message-ID: <YGn42SKCPg2HWtQc@mtj.duckdns.org>
+References: <20210330044206.2864329-1-vipinsh@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1616586031-31809-1-git-send-email-wangqing@vivo.com>
+In-Reply-To: <20210330044206.2864329-1-vipinsh@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied to wq/for-5.12-fixes w/ minor description update.
+Applied to cgroup/for-5.13. If there are further issues, let's address them
+incrementally.
 
 Thanks.
 
