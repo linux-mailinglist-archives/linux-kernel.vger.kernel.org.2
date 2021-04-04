@@ -2,103 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE878353A12
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 00:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A249B353A17
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 00:51:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231638AbhDDW0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 18:26:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58918 "EHLO
+        id S231627AbhDDWtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 18:49:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230286AbhDDWZw (ORCPT
+        with ESMTP id S230052AbhDDWtN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 18:25:52 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFF50C061756
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Apr 2021 15:25:47 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id d8so4798851plh.11
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Apr 2021 15:25:47 -0700 (PDT)
+        Sun, 4 Apr 2021 18:49:13 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07C1BC061756;
+        Sun,  4 Apr 2021 15:49:05 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id k8so3392041edn.6;
+        Sun, 04 Apr 2021 15:49:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=F/7g2yV6C0TwPD0bZdc4Di1ysJWXNJ5iWAZlkKHzvSA=;
-        b=nL1c30ebIdWauZnz3Lpr2bZvGu96omS5WWVM+2LqIZG9rDqd27Ib5sNh6Ddc23E81u
-         9VqfUx7Amwv1TGw16o5cAG1wuOY0j1C0xcmiYAqduOSPegj1ke/PJWOYHYMueygFZXog
-         MJ0iC8dyi3RSlRLtOSRJc5iO4mH8iXC1aeDWsafr+2bQnYaV/rKQZ0lO+acaEBE0hTYK
-         /3A9FrwOmn0bmN3Wno2l3Saev8ArzwzU7ApaAbTsRbIO2mL7stLhEdQwI4c+0zHlqK0j
-         Vd+9szex07PUeKZNSi7bk7E4BrQxMC5KYRO5IhcaI3th+dpVLkHnft324AGn15atPtJg
-         o30Q==
+        h=from:to:cc:references:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dXl+ZSripteSPphiSM7KqQ+zInzo0PRRkYyrWUfZl+A=;
+        b=etZmb2hc/jwkn9EZP9JMcrVMCtnfR6IIN4dhackbTiCawa1hyj0y31HP38k2kSFPxE
+         YYziDtu5ToSZ9n8A0ux1dPE+yVbI+T4KRIDI0uEtv9Th4fC2GvZ7xB092dTt8C1QGBOm
+         jvN18s2ytY1SaVhEqrWhBkmCxRSw/M5hE8lD4vf5lzq1Y/thkH21iqKkXsu43h1q1i4l
+         uJJZrNnl2Qx3EWPL2up8uGczpNvYhlUin6dTa3E0w82u2QYxegKsRbTkjpIzkykyjsWJ
+         0flNG7w+RNaoQqcC9X5Tt9jxprR0EeewNCD1kcYMbCx+Gi0lyJ47B4M4Z49DFoeKDAfZ
+         0dug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=F/7g2yV6C0TwPD0bZdc4Di1ysJWXNJ5iWAZlkKHzvSA=;
-        b=nI3lApHAQhjitmtryWhn1LjaOPkZTQ2p4P5CZ3cHKoheaNHHdwEKB5l//BSmwgWTya
-         AEFabvvCqTQcr6mIFAp06BqHEijek+5qtywASP4VLewZi8STgyOqlCJNxjm8v9LY368j
-         +IGXqjb0PAZHE8PuN5TBGYgOAjUIuaQhpg8bK/W7xAQqlwdOQwUen8kKocl69WMi+Ahg
-         0bVU+Lts6+j5vfVA0lkIM7WdpCLbClSqHw2Ly/ffNKgVXOJIEHEjIZ4bpzxZgOHPjgjG
-         fwudNaRHjzeX9Flci3mj9hVOjXW0najJVdrzcsSt2Zyb8BkZ7s1R6A0eiG0ivZC0bn/S
-         pbTg==
-X-Gm-Message-State: AOAM53342qTJDgZ7rCIC8QFm4TcfjgCjn1HcK5t360SpNK5UjuN4Vu9n
-        Fd/hAg9vLYV8NfaxZk56aUpPlqmDPwayQA==
-X-Google-Smtp-Source: ABdhPJztRI1GKQ6cBjL7nuv43wzB8EfdESuPd2pfW2tM0FExBRveKn68qybiF6350Z5puzNTFR4GrQ==
-X-Received: by 2002:a17:90b:3615:: with SMTP id ml21mr23515091pjb.72.1617575147253;
-        Sun, 04 Apr 2021 15:25:47 -0700 (PDT)
-Received: from djbComp (S0106ac202ecb0523.gv.shawcable.net. [70.67.120.89])
-        by smtp.gmail.com with ESMTPSA id bx2sm2327191pjb.32.2021.04.04.15.25.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Apr 2021 15:25:47 -0700 (PDT)
-Date:   Sun, 4 Apr 2021 15:25:45 -0700
-From:   Deborah Brouwer <deborahbrouwer3563@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Larry.Finger@lwfinger.net, straube.linux@gmail.com,
-        unixbhaskar@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Subject: Re: [PATCH] staging: rtl8188eu: replace goto with direct return
-Message-ID: <20210404222545.GA7267@djbComp>
-References: <20210404054008.23525-1-deborahbrouwer3563@gmail.com>
- <YGmM4FTVZ/FIQ7lj@kroah.com>
+        h=x-gm-message-state:from:to:cc:references:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dXl+ZSripteSPphiSM7KqQ+zInzo0PRRkYyrWUfZl+A=;
+        b=Civ+8mvfeI/1/dJZXnSFbznNFvXCVoUEbFCfrwcsPbS3Umycu8MdveCn60NRw7fZjC
+         3hUoZ6d9D+Bp/iX2uX+yDku1gK+gEwaCi/2Pr5KVs1lbgaxnqXgClbHGMV5k+CLo589j
+         dU5E4oaGkeIb3x9tVWZGvfBkai+Q9Fp9Y1JjXPto8cKjtSR1sP5BdOh6IPG6D6S7EyVL
+         OlxxN8VGhjsZH+VGi9p5rC64y3c033mtkYGR3mKIL3eu3ALvHppO7r8CSga18MqRjBRm
+         C6DFDyI/aXACMFbiFv0ziWmVKgPYbBzTKwt3sTsiOM/v/KpTgWDklohydmp68/UNqbf3
+         kncg==
+X-Gm-Message-State: AOAM531Ch3nYs4qbBugpo9Z0VAkqJ3rqhpkC0MvP2JvlAi+ooDQcP82b
+        fle8qiZn9NQkovwfyo76d80=
+X-Google-Smtp-Source: ABdhPJzZqDwfun5lGdihL/MSUS/8Sxm3ipiFN0dTOr55yWXzqcycCOFpG9PSprzlj43NnX15QcCVog==
+X-Received: by 2002:aa7:da46:: with SMTP id w6mr28667852eds.40.1617576544586;
+        Sun, 04 Apr 2021 15:49:04 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f1f:bb00:4523:8396:f5be:75e8? (p200300ea8f1fbb0045238396f5be75e8.dip0.t-ipconnect.de. [2003:ea:8f1f:bb00:4523:8396:f5be:75e8])
+        by smtp.googlemail.com with ESMTPSA id p20sm1373667eds.92.2021.04.04.15.49.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Apr 2021 15:49:03 -0700 (PDT)
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>, andrew@lunn.ch,
+        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com, christian.melki@t2data.com
+References: <20210404100701.6366-1-qiangqing.zhang@nxp.com>
+ <97e486f8-372a-896f-6549-67b8fb34e623@gmail.com>
+Subject: Re: [PATCH] net: phy: fix PHY possibly unwork after MDIO bus resume
+ back
+Message-ID: <ed600136-2222-a261-bf08-522cc20fc141@gmail.com>
+Date:   Mon, 5 Apr 2021 00:48:58 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YGmM4FTVZ/FIQ7lj@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <97e486f8-372a-896f-6549-67b8fb34e623@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 04, 2021 at 11:54:40AM +0200, Greg KH wrote:
-> On Sat, Apr 03, 2021 at 10:40:08PM -0700, Deborah Brouwer wrote:
-> > To conform with Linux kernel coding style, replace goto statement that
-> > does no cleanup with a direct return.  To preserve meaning, copy comments
-> > from the original goto statement to the return statement.  Identified by
-> > the checkpatch warning: WARNING: void function return statements are not
-> > generally useful.
-> > 
-> > Signed-off-by: Deborah Brouwer <deborahbrouwer3563@gmail.com>
-> > ---
-> >  drivers/staging/rtl8188eu/hal/rtl8188e_dm.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/staging/rtl8188eu/hal/rtl8188e_dm.c b/drivers/staging/rtl8188eu/hal/rtl8188e_dm.c
-> > index 391c59490718..d21f21857c20 100644
-> > --- a/drivers/staging/rtl8188eu/hal/rtl8188e_dm.c
-> > +++ b/drivers/staging/rtl8188eu/hal/rtl8188e_dm.c
-> > @@ -139,7 +139,9 @@ void rtw_hal_dm_watchdog(struct adapter *Adapter)
-> >  	hw_init_completed = Adapter->hw_init_completed;
-> >  
-> >  	if (!hw_init_completed)
-> > -		goto skip_dm;
-> > +		/*  Check GPIO to determine current RF on/off and Pbc status. */
-> > +		/*  Check Hardware Radio ON/OFF or not */
-> > +		return;
+On 04.04.2021 16:09, Heiner Kallweit wrote:
+> On 04.04.2021 12:07, Joakim Zhang wrote:
+>> commit 4c0d2e96ba055 ("net: phy: consider that suspend2ram may cut
+>> off PHY power") invokes phy_init_hw() when MDIO bus resume, it will
+>> soft reset PHY if PHY driver implements soft_reset callback.
+>> commit 764d31cacfe4 ("net: phy: micrel: set soft_reset callback to
+>> genphy_soft_reset for KSZ8081") adds soft_reset for KSZ8081. After these
+>> two patches, I found i.MX6UL 14x14 EVK which connected to KSZ8081RNB doesn't
+>> work any more when system resume back, MAC driver is fec_main.c.
+>>
+>> It's obvious that initializing PHY hardware when MDIO bus resume back
+>> would introduce some regression when PHY implements soft_reset. When I
 > 
-> It does not make sense to have the comments in two places here.  The
-> original code is just fine, there's nothing wrong with the goto
-> statement here.
+> Why is this obvious? Please elaborate on why a soft reset should break
+> something.
 > 
-> thanks,
+>> am debugging, I found PHY works fine if MAC doesn't support suspend/resume
+>> or phy_stop()/phy_start() doesn't been called during suspend/resume. This
+>> let me realize, PHY state machine phy_state_machine() could do something
+>> breaks the PHY.
+>>
+>> As we known, MAC resume first and then MDIO bus resume when system
+>> resume back from suspend. When MAC resume, usually it will invoke
+>> phy_start() where to change PHY state to PHY_UP, then trigger the stat> machine to run now. In phy_state_machine(), it will start/config
+>> auto-nego, then change PHY state to PHY_NOLINK, what to next is
+>> periodically check PHY link status. When MDIO bus resume, it will
+>> initialize PHY hardware, including soft_reset, what would soft_reset
+>> affect seems various from different PHYs. For KSZ8081RNB, when it in
+>> PHY_NOLINK state and then perform a soft reset, it will never complete
+>> auto-nego.
 > 
-> greg k-h
+> Why? That would need to be checked in detail. Maybe chip errata
+> documentation provides a hint.
+> 
 
-Ok, thanks for this feedback.
+The KSZ8081 spec says the following about bit BMCR_PDOWN:
+
+If software reset (Register 0.15) is
+used to exit power-down mode
+(Register 0.11 = 1), two software
+reset writes (Register 0.15 = 1) are
+required. The first write clears
+power-down mode; the second
+write resets the chip and re-latches
+the pin strapping pin values.
+
+Maybe this causes the issue you see and genphy_soft_reset() isn't
+appropriate for this PHY. Please re-test with the KSZ8081 soft reset
+following the spec comment.
+
+
+>>
+>> This patch changes PHY state to PHY_UP when MDIO bus resume back, it
+>> should be reasonable after PHY hardware re-initialized. Also give state
+>> machine a chance to start/config auto-nego again.
+>>
+> 
+> If the MAC driver calls phy_stop() on suspend, then phydev->suspended
+> is true and mdio_bus_phy_may_suspend() returns false. As a consequence
+> phydev->suspended_by_mdio_bus is false and mdio_bus_phy_resume()
+> skips the PHY hw initialization.
+> Please also note that mdio_bus_phy_suspend() calls phy_stop_machine()
+> that sets the state to PHY_UP.
+> 
+
+Forgot that MDIO bus suspend is done before MAC driver suspend.
+Therefore disregard this part for now.
+
+> Having said that the current argumentation isn't convincing. I'm not
+> aware of such issues on other systems, therefore it's likely that
+> something is system-dependent.
+> 
+> Please check the exact call sequence on your system, maybe it
+> provides a hint.
+> 
+>> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+>> ---
+>>  drivers/net/phy/phy_device.c | 7 +++++++
+>>  1 file changed, 7 insertions(+)
+>>
+>> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+>> index cc38e326405a..312a6f662481 100644
+>> --- a/drivers/net/phy/phy_device.c
+>> +++ b/drivers/net/phy/phy_device.c
+>> @@ -306,6 +306,13 @@ static __maybe_unused int mdio_bus_phy_resume(struct device *dev)
+>>  	ret = phy_resume(phydev);
+>>  	if (ret < 0)
+>>  		return ret;
+>> +
+>> +	/* PHY state could be changed to PHY_NOLINK from MAC controller resume
+>> +	 * rounte with phy_start(), here change to PHY_UP after re-initializing
+>> +	 * PHY hardware, let PHY state machine to start/config auto-nego again.
+>> +	 */
+>> +	phydev->state = PHY_UP;
+>> +
+>>  no_resume:
+>>  	if (phydev->attached_dev && phydev->adjust_link)
+>>  		phy_start_machine(phydev);
+>>
+> 
+
