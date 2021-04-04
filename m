@@ -2,78 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 246363539F2
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 22:42:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 442CA3539F6
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 23:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231493AbhDDUmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 16:42:19 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:46134 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231453AbhDDUmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 16:42:19 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id CD1BA202DE6;
-        Sun,  4 Apr 2021 22:42:12 +0200 (CEST)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id C06322014E2;
-        Sun,  4 Apr 2021 22:42:12 +0200 (CEST)
-Received: from fsr-ub1664-175.ea.freescale.net (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 8D33520329;
-        Sun,  4 Apr 2021 22:42:12 +0200 (CEST)
-From:   Abel Vesa <abel.vesa@nxp.com>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>
-Subject: [GIT PULL] clk: imx: Updates for v5.13
-Date:   Sun,  4 Apr 2021 23:40:24 +0300
-Message-Id: <1617568824-2311-1-git-send-email-abel.vesa@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S231562AbhDDUwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 16:52:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230286AbhDDUwB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Apr 2021 16:52:01 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FAAEC061756
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Apr 2021 13:51:55 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id z8so10793161ljm.12
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Apr 2021 13:51:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=nd2uOMxAh5X4a/nY+KPVcgXpJ+Zppj7YeUaSujV7w+E=;
+        b=q42M4a3ki91Ecw3m+TFxNzm+HK46z6MYd8UeYQSI8qzPU0LKX8smzmYn+VS8qNXyBf
+         MUJEV8WEXLgE/nz+QAotTlNh8ZeuqGtZWZ/hH9H0FX7ymD7ObTmxEJfgUVq8zdx/2mkG
+         4BJjcWOIp5zch/A0CMVOHZOBw2YA6z0G/fmZd5mNSHOOUqlqHvGdr4ugNmDveee19SbY
+         EueX+XYsk131jzy6+ZGMmsNPBxLky2kHeh0K3iKO6qJzt/7g1nVm7pEseSRleYCrTmou
+         MGBGJm6d/tYCv77DuQt2KxIA9cacZb5DRHBVNYiqw55OJaFH8bbztOayhAMgxv4NflP7
+         tviA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=nd2uOMxAh5X4a/nY+KPVcgXpJ+Zppj7YeUaSujV7w+E=;
+        b=Z4Ulgdb5pBj0DkKmO9TduaRtvm4jGNdvxhDyJ4zDpW4A30sCHgu7q+lpPKM4uVOW09
+         U4rc1y6AJk+peJTCojJ9fmCjHSLSqRCJsJeHHh6M2J85xEag23FTS+H8XaP1/Mbqbv+S
+         RJKeMt2PmSbhfs2Rp8h0tmTLbjCprsbL9vvcL+p4CKTQVoUsXUn9eI80OUjcX1JkN2er
+         P83QG26ApPZxWSWNszSdahVmdBIcWTNYF2skUMx5cGHaHy5xulIknjVZfiCa05JiIMfQ
+         AO8fcDFvHqvNQUXndCDOqEHa8VAijIA5G4HxxIKWKE6WBSR1TTb1F1OpDOsdTiWySIpI
+         d+vQ==
+X-Gm-Message-State: AOAM530woG7njQSYwaaEEgvN0JgHBf88pqOcMrMbCZ1tZob+ToeLwFJM
+        Pxj8lYAN7PNvOFwBFidSasw=
+X-Google-Smtp-Source: ABdhPJwYjg/AbYdzaP6/dh2LxXbEpTxXmVOVDwF1+jNLsypxJTuaG6InH7aDkNMdMZmm3HHkY3cfcg==
+X-Received: by 2002:a2e:b178:: with SMTP id a24mr14114441ljm.329.1617569513722;
+        Sun, 04 Apr 2021 13:51:53 -0700 (PDT)
+Received: from zhans ([37.151.32.231])
+        by smtp.gmail.com with ESMTPSA id x17sm1546124lfg.164.2021.04.04.13.51.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Apr 2021 13:51:53 -0700 (PDT)
+Date:   Mon, 5 Apr 2021 02:51:51 +0600
+From:   Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
+To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+        gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com
+Subject: [PATCH 0/2] staging: rtl8712: add blank lines after declarations and
+ remove extra blank lines
+Message-ID: <cover.1617568354.git.zhansayabagdaulet@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+This patchset adds blank lines after function/struct/union/enum declarations and removes extra blank lines.
+Reported by checkpatch.
 
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+Zhansaya Bagdauletkyzy (2):
+  staging: rtl8712: add blank lines after declarations
+  staging: rtl8712: remove extra blank lines
 
-are available in the Git repository at:
+ drivers/staging/rtl8712/rtl8712_recv.h     |  2 +-
+ drivers/staging/rtl8712/rtl871x_cmd.h      | 10 ++++++++++
+ drivers/staging/rtl8712/rtl871x_event.h    |  1 +
+ drivers/staging/rtl8712/rtl871x_mlme.c     |  3 ---
+ drivers/staging/rtl8712/rtl871x_mp.c       |  1 +
+ drivers/staging/rtl8712/rtl871x_mp.h       |  1 +
+ drivers/staging/rtl8712/rtl871x_mp_ioctl.c |  3 +++
+ drivers/staging/rtl8712/rtl871x_pwrctrl.h  |  3 ---
+ drivers/staging/rtl8712/rtl871x_recv.c     |  1 +
+ drivers/staging/rtl8712/rtl871x_recv.h     |  1 -
+ 10 files changed, 18 insertions(+), 8 deletions(-)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/abelvesa/linux.git clk/imx
+-- 
+2.25.1
 
-for you to fetch changes up to 054ef44ea3ef2883e0f63c9a54c91c07f321a0b4:
-
-  clk: imx: Reference preceded by free (2021-04-04 22:39:05 +0300)
-
-----------------------------------------------------------------
-Adam Ford (1):
-      clk: imx: Fix reparenting of UARTs not associated with stdout
-
-Jian Dong (1):
-      clk: imx: Reference preceded by free
-
-Richard Zhu (2):
-      clk: imx8mp: Remove the none exist pcie clocks
-      clk: imx8mq: Correct the pcie1 sels
-
- drivers/clk/imx/clk-imx25.c              | 12 +---------
- drivers/clk/imx/clk-imx27.c              | 13 +---------
- drivers/clk/imx/clk-imx35.c              | 10 +-------
- drivers/clk/imx/clk-imx5.c               | 30 +++--------------------
- drivers/clk/imx/clk-imx6q.c              | 16 +------------
- drivers/clk/imx/clk-imx6sl.c             | 16 +------------
- drivers/clk/imx/clk-imx6sll.c            | 24 +------------------
- drivers/clk/imx/clk-imx6sx.c             | 16 +------------
- drivers/clk/imx/clk-imx7d.c              | 22 +----------------
- drivers/clk/imx/clk-imx7ulp.c            | 31 ++----------------------
- drivers/clk/imx/clk-imx8mm.c             | 18 ++------------
- drivers/clk/imx/clk-imx8mn.c             | 18 ++------------
- drivers/clk/imx/clk-imx8mp.c             | 32 +------------------------
- drivers/clk/imx/clk-imx8mq.c             | 22 ++++-------------
- drivers/clk/imx/clk-lpcg-scu.c           |  1 +
- drivers/clk/imx/clk-scu.c                |  1 +
- drivers/clk/imx/clk.c                    | 41 +++++++++++++++++++++++++-------
- drivers/clk/imx/clk.h                    |  4 ++--
- include/dt-bindings/clock/imx8mp-clock.h |  3 ---
- 19 files changed, 58 insertions(+), 272 deletions(-)
