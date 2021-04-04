@@ -2,105 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C9F635380B
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 14:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2469353811
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 14:42:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230397AbhDDMJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 08:09:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229801AbhDDMJp (ORCPT
+        id S230122AbhDDMeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 08:34:05 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:63379 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229709AbhDDMeE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 08:09:45 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B715C061756
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Apr 2021 05:09:39 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id h10so9858346edt.13
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Apr 2021 05:09:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OaMFsbeZljHFsoFceRfAAsq8fgsEN4iEOOo7+En5IZw=;
-        b=IWljy0fft69im/Ah1nmA66ZFRzB0kByVqMsethL6i35h022kg5iRlEVYkTUSzslxr2
-         1ylGmYNZMiXv8LomNlazGz8Ohgh6B9+o0U593Fr6qRDtMBiOhRAk7W8VnFlvO2X6akBi
-         lEEW5wBmnV78OzFeLumUYq0/UYS2TM0UvQ1u41TyXGUI6A/3erwS07Hn/EKjfmy6AGs3
-         OQCHyNy6/dIjn/pWd5lNYkW6z5eAuSSAdMKM9LJ2YGi9AdfyMQNXO9619FnSAKN5YGkC
-         dDwZ5K+UOU5XowqnhKHRaY2cfmWUEMlN4V7gP01DKocoNbOi7zdMaVhUNAHIYdWKTfmH
-         wpQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OaMFsbeZljHFsoFceRfAAsq8fgsEN4iEOOo7+En5IZw=;
-        b=HfEZjQeU+naHkZ3pa9YEGoHwdIMX05EEvSi7ai2aK+u/rY7vz2Z4Ev8bsLashFSjOl
-         PnboHRI4Xp1Sjqb0VMYYq/uAEK1IlVqRKBt43VbtVkkscaormJtaHj25zeDoJ+S/Gj2w
-         rax3frQ/XJA9h7mx5eB2MHyzjiU+undx3XiMKlrPwLm0TqnxEEe2SuxvQostDaRRRdso
-         Pt/9+neK5R95OCNp9iOgo9vTHXj+NJ9vD4lTQXI0e3wgLt5wGJN4PJW8Ow66rL2fizqk
-         JIX1ivO8UPQZB/Qfu40U8uf6PAC6OFyyVDwlqdZEztd27352OZa5Rx9M82zwZHX0LkGi
-         yUhA==
-X-Gm-Message-State: AOAM530LlC04Om67SmIji1Fe4d3F+uxzIYe91TkH8E69IMmQ1xTc+sBo
-        s0lyycNvuQJqfQVr8fSH1UyuLgHIEKmO6TNZXgQ=
-X-Google-Smtp-Source: ABdhPJz+P0N0ZRbkc9ejsvZK/JouNLhl438CcVRM4YSO5hbmGTILuEx6oH+u3MM04oWH5soC7dsykqqVK2knfbyPqQo=
-X-Received: by 2002:aa7:c312:: with SMTP id l18mr12025131edq.190.1617538178310;
- Sun, 04 Apr 2021 05:09:38 -0700 (PDT)
+        Sun, 4 Apr 2021 08:34:04 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AXFkxo6B84EHIPpflHelM55DYdL4zR+YMi2QD?=
+ =?us-ascii?q?/UZ3VBBTb4ikh9mj9c576TbYgCscMUtKpfmuI6+FKEm3ybdQwa08eYivRxPnvm?=
+ =?us-ascii?q?zAFu9fxK/v2SfpFSG71sM178tdWpNzAtHxElR25PySiDWQKcoqw9WM7cmT6tv2?=
+ =?us-ascii?q?8nZ3QQlmL4Fm4gtpYzzrcHFeeQhcCZI1UKeb/8pMzgDQHEg/U8LTPBQ4dtmGg9?=
+ =?us-ascii?q?XKkZ78CCR2ZCIP2U2pljOn6LnzDhie0FM/alp0oYsfzQ=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.81,304,1610406000"; 
+   d="scan'208";a="501516764"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 04 Apr 2021 14:33:59 +0200
+Date:   Sun, 4 Apr 2021 14:33:58 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Denis Efremov <efremov@linux.com>
+cc:     Julia Lawall <julia.lawall@inria.fr>, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] coccinelle: misc: add swap script
+In-Reply-To: <afb06bbc-5c28-8a92-f205-c9a1c87c707c@linux.com>
+Message-ID: <alpine.DEB.2.22.394.2104041433430.2958@hadrien>
+References: <20210216080133.455456-1-efremov@linux.com> <20210305100956.6222-1-efremov@linux.com> <afb06bbc-5c28-8a92-f205-c9a1c87c707c@linux.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-References: <20210403051325.683071-1-pcc@google.com> <CANpmjNOzaOJY5K+Sq78AF5N1_6=1kv3rXZ6w+XPuEf9G+cd8iA@mail.gmail.com>
- <CAMn1gO5mQ2WPs9B9jN91T90Qxf3k6eK-GeBUhs=YqmkZu4NKFg@mail.gmail.com>
- <CANpmjNM__Dk_MVd-9fPT=TbPw=a1giicUcFS+RwCfQ7yue8Xdw@mail.gmail.com> <CA+fCnZd4BaejuyyWuT4xeiEyY1J0-6RWiyP3_u+w-xdOrALd9w@mail.gmail.com>
-In-Reply-To: <CA+fCnZd4BaejuyyWuT4xeiEyY1J0-6RWiyP3_u+w-xdOrALd9w@mail.gmail.com>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Sun, 4 Apr 2021 14:09:27 +0200
-Message-ID: <CA+fCnZeYpBx5KwjBTr7H_kU=kSYhxiFdG9r=Wn0dBJ-fiV_9oA@mail.gmail.com>
-Subject: Re: [PATCH] kfence: unpoison pool region before use
-To:     Marco Elver <elver@google.com>,
-        Peter Collingbourne <pcc@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 4, 2021 at 1:52 AM Andrey Konovalov <andreyknvl@gmail.com> wrote:
->
-> On Sun, Apr 4, 2021 at 12:31 AM Marco Elver <elver@google.com> wrote:
-> >
-> > However, given the above, I think we need to explain this in the
-> > commit message (which also makes the dependency between these 2
-> > patches clear) and add a comment above the new kasan_unpoison_range().
-> > That is, if we still think this is the right fix -- I'm not entirely
-> > sure it is.
-> >
-> > Because what I gather from "kasan: initialize shadow to TAG_INVALID
-> > for SW_TAGS", is the requirement that "0xFF pointer tag is a match-all
-> > tag, it doesn't matter what tag the accessed memory has".
-> >
-> > While KFENCE memory is accessible through the slab API, and in this
-> > case ksize() calling kasan_check_byte() leading to a failure, the
-> > kasan_check_byte() call is part of the public KASAN API. Which means
-> > that if some subsystem decides to memblock_alloc() some memory, and
-> > wishes to use kasan_check_byte() on that memory but with an untagged
-> > pointer, will get the same problem as KFENCE: with generic and HW_TAGS
-> > mode everything is fine, but with SW_TAGS mode things break.
->
-> It makes sense to allow this function to operate on any kind of
-> memory, including memory that hasn't been previously marked by KASAN.
->
-> > To me this indicates the fix is not with KFENCE, but should be in
-> > mm/kasan/sw_tags.c:kasan_byte_accessible(), which should not load the
-> > shadow when the pointer is untagged.
->
-> The problem isn't in accessing shadow per se. Looking at
-> kasan_byte_accessible() (in both sw_tags.c and kasan.h), the return
-> statement there seems just wrong and redundant.
 
-(Technically, it's not wrong. But it was written under the assumption
-that no accesses to KASAN_TAG_INVALID memory are valid. It's not the
-case with KFENCE (without built-in KASAN annotations). And there might
-be other places where this isn't the case as well, though we haven't
-encountered any yet.)
+
+On Sun, 28 Mar 2021, Denis Efremov wrote:
+
+> Ping?
+
+Applied.  Thanks.
+
+>
+> On 3/5/21 1:09 PM, Denis Efremov wrote:
+> > Check for opencoded swap() implementation.
+> >
+> > Signed-off-by: Denis Efremov <efremov@linux.com>
+> > ---
+> > Changes in v2:
+> >   - additional patch rule to drop excessive {}
+> >   - fix indentation in patch mode by anchoring ;
+> > Changes in v3:
+> >   - Rule added for simple (without var init) swap highlighting in !patch
+> > mode
+> >   - "depends on patch && (rpvar || rp)" fixed
+> >
+> >   scripts/coccinelle/misc/swap.cocci | 122 +++++++++++++++++++++++++++++
+> >   1 file changed, 122 insertions(+)
+> >   create mode 100644 scripts/coccinelle/misc/swap.cocci
+> >
+> > diff --git a/scripts/coccinelle/misc/swap.cocci
+> > b/scripts/coccinelle/misc/swap.cocci
+> > new file mode 100644
+> > index 000000000000..c5e71b7ef7f5
+> > --- /dev/null
+> > +++ b/scripts/coccinelle/misc/swap.cocci
+> > @@ -0,0 +1,122 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +///
+> > +/// Check for opencoded swap() implementation.
+> > +///
+> > +// Confidence: High
+> > +// Copyright: (C) 2021 Denis Efremov ISPRAS
+> > +// Options: --no-includes --include-headers
+> > +//
+> > +// Keywords: swap
+> > +//
+> > +
+> > +virtual patch
+> > +virtual org
+> > +virtual report
+> > +virtual context
+> > +
+> > +@rvar depends on !patch@
+> > +identifier tmp;
+> > +expression a, b;
+> > +type T;
+> > +position p;
+> > +@@
+> > +
+> > +(
+> > +* T tmp;
+> > +|
+> > +* T tmp = 0;
+> > +|
+> > +* T *tmp = NULL;
+> > +)
+> > +... when != tmp
+> > +* tmp = a;
+> > +* a = b;@p
+> > +* b = tmp;
+> > +... when != tmp
+> > +
+> > +@r depends on !patch@
+> > +identifier tmp;
+> > +expression a, b;
+> > +position p != rvar.p;
+> > +@@
+> > +
+> > +* tmp = a;
+> > +* a = b;@p
+> > +* b = tmp;
+> > +
+> > +@rpvar depends on patch@
+> > +identifier tmp;
+> > +expression a, b;
+> > +type T;
+> > +@@
+> > +
+> > +(
+> > +- T tmp;
+> > +|
+> > +- T tmp = 0;
+> > +|
+> > +- T *tmp = NULL;
+> > +)
+> > +... when != tmp
+> > +- tmp = a;
+> > +- a = b;
+> > +- b = tmp
+> > ++ swap(a, b)
+> > +  ;
+> > +... when != tmp
+> > +
+> > +@rp depends on patch@
+> > +identifier tmp;
+> > +expression a, b;
+> > +@@
+> > +
+> > +- tmp = a;
+> > +- a = b;
+> > +- b = tmp
+> > ++ swap(a, b)
+> > +  ;
+> > +
+> > +@depends on patch && (rpvar || rp)@
+> > +@@
+> > +
+> > +(
+> > +  for (...;...;...)
+> > +- {
+> > +	swap(...);
+> > +- }
+> > +|
+> > +  while (...)
+> > +- {
+> > +	swap(...);
+> > +- }
+> > +|
+> > +  if (...)
+> > +- {
+> > +	swap(...);
+> > +- }
+> > +)
+> > +
+> > +
+> > +@script:python depends on report@
+> > +p << r.p;
+> > +@@
+> > +
+> > +coccilib.report.print_report(p[0], "WARNING opportunity for swap()")
+> > +
+> > +@script:python depends on org@
+> > +p << r.p;
+> > +@@
+> > +
+> > +coccilib.org.print_todo(p[0], "WARNING opportunity for swap()")
+> > +
+> > +@script:python depends on report@
+> > +p << rvar.p;
+> > +@@
+> > +
+> > +coccilib.report.print_report(p[0], "WARNING opportunity for swap()")
+> > +
+> > +@script:python depends on org@
+> > +p << rvar.p;
+> > +@@
+> > +
+> > +coccilib.org.print_todo(p[0], "WARNING opportunity for swap()")
+> >
+>
