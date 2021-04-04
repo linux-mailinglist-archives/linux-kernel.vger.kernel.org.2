@@ -2,103 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61446353824
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 14:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A77B353829
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 14:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230525AbhDDMyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 08:54:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49596 "EHLO
+        id S230329AbhDDM6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 08:58:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230209AbhDDMyn (ORCPT
+        with ESMTP id S229569AbhDDM63 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 08:54:43 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 349B5C061756;
-        Sun,  4 Apr 2021 05:54:39 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id s11so6583888pfm.1;
-        Sun, 04 Apr 2021 05:54:39 -0700 (PDT)
+        Sun, 4 Apr 2021 08:58:29 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 612A7C061756;
+        Sun,  4 Apr 2021 05:58:25 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id o19so9967539edc.3;
+        Sun, 04 Apr 2021 05:58:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=3oqOwhJCX0s27Ox3xrRvrMgiNViAP3JTYOAUiH/1rlk=;
-        b=bPWFe9t0iinZFEw/jbZRy16fVoJDxis4esCSCSTEDH+5DSS+aYMPyYgijSBohRlIlg
-         MD594GCY1K3BIQ75UUSvv1SwGPccKtLH4v4d06rcvEKtle7m2eXUcj3sIheaezGpSkma
-         tLDfkrKj86t0bxdThqiJk6j5GxeZ6nd4sKCxFh4RZNz0PHkQC5ceY/00mCDeIc17k8Mr
-         4LCeHJtmQlNDm6qt9/uRd9UYhGl/wOqH3UaFiDP1FVkDzw2OAsrZpmsJL0W4tQ3rBwY3
-         JcTu2X9bW39Zge+Zpg+NCDMWdDxbWl3fN3GoCPRIlLnYhLPgArJ9mUvksYT4jJgajdgs
-         Iixw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ay9dt9s+rxe7/URKnqqWaJeeSbzYzuIksXL2L2LVjNQ=;
+        b=Jvak9k8nNNVLT9LAYa4z8166l+W02ZeGsWYjzOVYzcphx8RkXEb29qxrUPxm1D96Mx
+         4QQOMHppKQlvplvcjHvFydvToarvMXcErPy3us8vKENqkRU2qyDsB2cJ/VXCSydK4h2a
+         XH5L6GfzJZkL0jKMxOwKRz+mgCG0/r8dWYhNNdVzTnONyvDLfBilceypoTSxxXnktwdC
+         jYZJL9Q4yvACiXkfNemgSfPYIp6zvxL8rJvo7HBswD43AbPELrtzTHhxK26yZifTbsAx
+         mvoFdlRwsQXuVydo0/Uwn62gywqOrQWtW0ZYvbElaWV6vL9ViPvTyYUBUO2JmeXPGo4m
+         mT1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=3oqOwhJCX0s27Ox3xrRvrMgiNViAP3JTYOAUiH/1rlk=;
-        b=OB0m8UuN8LuarLE4IGHBXaGutykpf3lFGCXHQ7ZR61AIjgl2V/0GayDNaFjMAu2h6b
-         wmcIdXseWeCzqcziE++vKNACSNK+hIB/Fq3ApJispxvkveQJZb2PZzuTQ3AtGba20Bos
-         45JkYNQKRBjf6l7aoE4pd90qR541q7Ojf9ZskhxZMkVdSurT70tuKfZavpgFt7ThL0XW
-         AuEL2R5QQJqQVJD3Vhf60UDpfZH1/Ay+x1Vb/Q6hJsMkLnio3mqsmRu0Cqh0S4YHeB52
-         +VJDVI4BpKMJRNvmwtWptU6lsbUH2QgieMmLdabqjwaHFOYQTHxNBLeAhpDFrmRwD9Zw
-         if9A==
-X-Gm-Message-State: AOAM533wLlBY4uDq4tNf0kqaPqO09Vxq2SuVwFSAFplfhtW6QRzasUaq
-        /mI0BpAV4eKw/KIUBI3XIwM=
-X-Google-Smtp-Source: ABdhPJx4CQlpMuKJ8oQRXZq2ZvsTW/x1ic1qPDqbBG/uCPhFCXR7h0xz9jT0lJu21Svjf0GhWuxIKA==
-X-Received: by 2002:aa7:9aac:0:b029:21a:d3b4:ac with SMTP id x12-20020aa79aac0000b029021ad3b400acmr19412518pfi.12.1617540878819;
-        Sun, 04 Apr 2021 05:54:38 -0700 (PDT)
-Received: from localhost.localdomain ([124.108.22.4])
-        by smtp.gmail.com with ESMTPSA id y189sm12938819pfy.8.2021.04.04.05.54.35
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ay9dt9s+rxe7/URKnqqWaJeeSbzYzuIksXL2L2LVjNQ=;
+        b=Mjl+zXZuNjuIvIFrjYjlAlJ1nZztCjllVsp0YArfOPXSoYUQEKOINvIeuB5R0ixMNS
+         N45KtlZ0p2V39TUmHgCPTFapjijsulRxGEdxqHKPA/3uOySzuGV6WXogBKGS4El4tjED
+         Dw+050d+IWr5RchBbNY6LOQOLNJhZJxcXTtbqY3D3C6oWY+cmX3p1Bm8ikRuXrX/jxjZ
+         N7znL5zBcG6DmOl/sX+NL1Bd8iTqsDj2lJiVHW2rK6DBIDalh/x+lTJImCebw0zhgf9x
+         sSN0tK7/G/R9j5kAqolTcW87FHhmG1TgfWkVHTnwMIMYGh+0XWEj/STg8vVzWLwAOwrw
+         xUqQ==
+X-Gm-Message-State: AOAM53361oe2t9t4VzZZ3eid1sZWG3EKgv1kAr+B/lGp4LPLIYSCGgoJ
+        eL8ud7TFeSOSmC0wrtsI5Nw=
+X-Google-Smtp-Source: ABdhPJyOrZmCwxPKnAcnjqfpM5XQRpIy2A3RIqUxDaSkVjCUofI8UcnEP5sdQKOUvi1tNGsjm05Kuw==
+X-Received: by 2002:a05:6402:3592:: with SMTP id y18mr25566610edc.360.1617541103947;
+        Sun, 04 Apr 2021 05:58:23 -0700 (PDT)
+Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
+        by smtp.gmail.com with ESMTPSA id p24sm8634745edt.5.2021.04.04.05.58.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Apr 2021 05:54:38 -0700 (PDT)
-From:   zhuguangqing83@gmail.com
-To:     Amit Kucheria <amitk@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Guangqing Zhu <zhuguangqing83@gmail.com>
-Subject: [PATCH v2] thermal/drivers/tsens: fix missing put_device error
-Date:   Sun,  4 Apr 2021 20:54:31 +0800
-Message-Id: <20210404125431.12208-1-zhuguangqing83@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Sun, 04 Apr 2021 05:58:23 -0700 (PDT)
+Date:   Sun, 4 Apr 2021 15:58:22 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Oleksij Rempel <linux@rempel-privat.de>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH net-next v1 2/9] net: dsa: tag_ar9331: detect IGMP and
+ MLD packets
+Message-ID: <20210404125822.yr6tsrxxvskkvuq6@skbuf>
+References: <20210403114848.30528-1-o.rempel@pengutronix.de>
+ <20210403114848.30528-3-o.rempel@pengutronix.de>
+ <YGiAjngOfDVWz/D7@lunn.ch>
+ <f4856601-4219-09c7-2933-2161afd03abe@rempel-privat.de>
+ <20210404000204.kujappopdi3aqjsn@skbuf>
+ <ab493cae-e8a5-e03a-3929-649e9ff46816@rempel-privat.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ab493cae-e8a5-e03a-3929-649e9ff46816@rempel-privat.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangqing Zhu <zhuguangqing83@gmail.com>
+On Sun, Apr 04, 2021 at 07:35:26AM +0200, Oleksij Rempel wrote:
+> Am 04.04.21 um 02:02 schrieb Vladimir Oltean:
+> > On Sat, Apr 03, 2021 at 07:14:56PM +0200, Oleksij Rempel wrote:
+> >> Am 03.04.21 um 16:49 schrieb Andrew Lunn:
+> >>>> @@ -31,6 +96,13 @@ static struct sk_buff *ar9331_tag_xmit(struct sk_buff *skb,
+> >>>>  	__le16 *phdr;
+> >>>>  	u16 hdr;
+> >>>>
+> >>>> +	if (dp->stp_state == BR_STATE_BLOCKING) {
+> >>>> +		/* TODO: should we reflect it in the stats? */
+> >>>> +		netdev_warn_once(dev, "%s:%i dropping blocking packet\n",
+> >>>> +				 __func__, __LINE__);
+> >>>> +		return NULL;
+> >>>> +	}
+> >>>> +
+> >>>>  	phdr = skb_push(skb, AR9331_HDR_LEN);
+> >>>>
+> >>>>  	hdr = FIELD_PREP(AR9331_HDR_VERSION_MASK, AR9331_HDR_VERSION);
+> >>>
+> >>> Hi Oleksij
+> >>>
+> >>> This change does not seem to fit with what this patch is doing.
+> >>
+> >> done
+> >>
+> >>> I also think it is wrong. You still need BPDU to pass through a
+> >>> blocked port, otherwise spanning tree protocol will be unstable.
+> >>
+> >> We need a better filter, otherwise, in case of software based STP, we are leaking packages on
+> >> blocked port. For example DHCP do trigger lots of spam in the kernel log.
+> >
+> > I have no idea whatsoever what 'software based STP' is, if you have
+> > hardware-accelerated forwarding.
+> 
+> I do not mean hardware-accelerated forwarding, i mean
+> hardware-accelerated STP port state helpers.
 
-Fixes coccicheck error:
+Still no clue what you mean, sorry.
 
-drivers/thermal/qcom/tsens.c:759:4-10: ERROR: missing put_device; call
-of_find_device_by_node on line 715, but without a corresponding object
-release within this function.
+> >> I'll drop STP patch for now, it will be better to make a generic soft STP for all switches without
+> >> HW offloading. For example ksz9477 is doing SW based STP in similar way.
+> >
+> > How about we discuss first about what your switch is not doing properly?
+> > Have you debugged more than just watching the bridge change port states?
+> > As Andrew said, a port needs to accept and send link-local frames
+> > regardless of the STP state. In the BLOCKING state it must send no other
+> > frames and have address learning disabled. Is this what's happening, is
+> > the switch forwarding frames towards a BLOCKING port?
+> 
+> The switch is not forwarding BPDU frame to the CPU port. So, the linux
+> bridge will stack by cycling different state of the port where loop was
+> detected.
 
-Fixes: a7ff82976122 ("drivers: thermal: tsens: Merge tsens-common.c into
-tsens.c")
-
-Signed-off-by: Guangqing Zhu <zhuguangqing83@gmail.com>
----
-v2:
-  - Fix a error(missing a bracket) in v1.
-
----
- drivers/thermal/qcom/tsens.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
-index d8ce3a687b80..3c4c0516e58a 100644
---- a/drivers/thermal/qcom/tsens.c
-+++ b/drivers/thermal/qcom/tsens.c
-@@ -755,8 +755,10 @@ int __init init_common(struct tsens_priv *priv)
- 		for (i = VER_MAJOR; i <= VER_STEP; i++) {
- 			priv->rf[i] = devm_regmap_field_alloc(dev, priv->srot_map,
- 							      priv->fields[i]);
--			if (IS_ERR(priv->rf[i]))
--				return PTR_ERR(priv->rf[i]);
-+			if (IS_ERR(priv->rf[i])) {
-+				ret = PTR_ERR(priv->rf[i]);
-+				goto err_put_device;
-+			}
- 		}
- 		ret = regmap_field_read(priv->rf[VER_MINOR], &ver_minor);
- 		if (ret)
--- 
-2.17.1
-
+The switch should not be 'forwarding' BPDU frames to the CPU port, it
+should be 'trapping' them. The difference is subtle but important. Often
+times switches have an Access Control List which allows them to steal
+packets from the normal FDB-based forwarding path. It is probably the
+case that your switch needs to be told to treat STP BPDUs specially and
+not just 'forward' them.
+To confirm whether I'm right or wrong, if you disable STP and send a
+packet with MAC DA 01:80:c2:00:00:00 to the switch, will it flood it
+towards all ports or will it only send them to the CPU?
