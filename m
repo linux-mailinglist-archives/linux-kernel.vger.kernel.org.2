@@ -2,243 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6169E3538F3
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 18:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56A6A3538F6
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 18:59:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231240AbhDDQzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 12:55:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59618 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230237AbhDDQzR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 12:55:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B18861368;
-        Sun,  4 Apr 2021 16:55:10 +0000 (UTC)
-Date:   Sun, 4 Apr 2021 18:55:07 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        syzbot <syzbot+c88a7030da47945a3cc3@syzkaller.appspotmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, io-uring@vger.kernel.org
-Subject: Re: [syzbot] WARNING in mntput_no_expire (2)
-Message-ID: <20210404165507.gbgtvxkfhyd3urb6@wittgenstein>
-References: <20210401154515.k24qdd2lzhtneu47@wittgenstein>
- <90e7e339-eaec-adb2-cfed-6dc058a117a3@kernel.dk>
- <20210401174613.vymhhrfsemypougv@wittgenstein>
- <20210401175919.jpiylhfrlb4xb67u@wittgenstein>
- <YGYa0B4gabEYi2Tx@zeniv-ca.linux.org.uk>
- <YGkloJhMFc4hEatk@zeniv-ca.linux.org.uk>
- <20210404113445.xo6ntgfpxigcb3x6@wittgenstein>
- <YGnhkoTfVfMSMPpK@zeniv-ca.linux.org.uk>
- <20210404164040.vtxdcfzgliuzghwk@wittgenstein>
- <20210404165202.2v24vaeyngowqdln@wittgenstein>
+        id S231254AbhDDQ75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 12:59:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231144AbhDDQ74 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Apr 2021 12:59:56 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E0ABC061788
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Apr 2021 09:59:52 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id s16-20020a0568301490b02901b83efc84a0so503660otq.10
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Apr 2021 09:59:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hiTjEIXnFtxjVW2OYzhXcq2+uKAg/SMDNbyy/FBgm1A=;
+        b=ak2De3We9oa2zeT2NhySjCdqaW5U7HzWoB4gNPMOD6Vu3Vxqq68yr7hxDGUB9sQCDH
+         lLkUIbQmu8MRJjTwNhTFfF3vPL8RrtDlitX9s/Jocw/bNVKhEWX5x+D4WWqa0b/g0jF9
+         A17NnPtQIFCjy3Ktmr7ni/9Sv2eKOCblHTcYKS/ylUEfSoHkfl2aMWvyvkMJP+2nl85N
+         OghiDwD45edBXGR2PVxgRjBjtfkapyGXtKZ+HXVrXbtmFcXhbuRC5yAb5ZaX758kcCf5
+         i5UineOhy9V2svPssvdPSH78bXSV5Uov6ZqcpGOphA+QSqnWY3i2MaI9mjO5e7q2iqhi
+         szoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hiTjEIXnFtxjVW2OYzhXcq2+uKAg/SMDNbyy/FBgm1A=;
+        b=p9H82/4Eg3rHdccsZNt4nRx3r4aMeADtcLUQtde+3R3WCMh6EzMGF83rrn0PP0DICt
+         r+vTSnZQB3OF6H91lfIAf3idUbR+yqGAXrDFj0lfCstD+T0OQA5KenP5oqTcmI2o0kBH
+         G9h+UEoHUMQius4efQdepE7eBjm0XntJdO/oBxsSHghp0UHx0Eh1yrUJA9r/VHbDzYib
+         9wdxK1iat32NalzrK+DxjNKqsoATKkJ3mGBWsFvQk/G9rarmf5MFLMLqVb09N4vuaFbZ
+         CRfy1ltxA8GJmn7VCfspDYZiDdXCPDvM4Btd8zn5gDBKtHPQubJyXayMcXATpBml2KLV
+         aKhw==
+X-Gm-Message-State: AOAM532Ign592fH8rIiRSQhCTC+qi5Cs0omE2QIAUPpvxemGRVIynKah
+        V8T93OXBVzo9PtzxO7KAszBjcA==
+X-Google-Smtp-Source: ABdhPJwTgTvn9zUeRbv3NxxhEK4AYYUs3dcMkqfaR3Bn1JYFmZ0ILkHe1gCd485jcEn73OOAOBshFA==
+X-Received: by 2002:a9d:7f8a:: with SMTP id t10mr18726017otp.239.1617555591660;
+        Sun, 04 Apr 2021 09:59:51 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id m129sm2689059oif.34.2021.04.04.09.59.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Apr 2021 09:59:51 -0700 (PDT)
+Date:   Sun, 4 Apr 2021 11:59:49 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Deepak Kumar Singh <deesin@codeaurora.org>
+Cc:     clew@codeaurora.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        Andy Gross <agross@kernel.org>
+Subject: Re: [PATCH V1 2/2] soc: qcom: aoss: Add debugfs entry
+Message-ID: <YGnwhSYxHMvmxBRS@builder.lan>
+References: <1617344238-12137-1-git-send-email-deesin@codeaurora.org>
+ <1617344238-12137-3-git-send-email-deesin@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210404165202.2v24vaeyngowqdln@wittgenstein>
+In-Reply-To: <1617344238-12137-3-git-send-email-deesin@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 04, 2021 at 06:52:08PM +0200, Christian Brauner wrote:
-> On Sun, Apr 04, 2021 at 06:40:40PM +0200, Christian Brauner wrote:
-> > On Sun, Apr 04, 2021 at 03:56:02PM +0000, Al Viro wrote:
-> > > On Sun, Apr 04, 2021 at 01:34:45PM +0200, Christian Brauner wrote:
-> > > 
-> > > > Sorry for not replying to your earlier mail but I've been debugging this
-> > > > too. My current theory is that it's related to LOOKUP_ROOT_GRABBED when
-> > > > LOOKUP_CACHED is specified _possibly_ with an interaction how
-> > > > create_io_thread() is created with CLONE_FS. The reproducer requires you
-> > > > either have called pivot_root() or chroot() in order for the failure to
-> > > > happen. So I think the fact that we skip legitimize_root() when
-> > > > LOOKUP_CACHED is set might figure into this. I can keep digging.
-> > > > 
-> > > 
-> > > > Funny enough I already placed a printk statement into the place you
-> > > > wanted one too so I just amended mine. Here's what you get:
-> > > > 
-> > > > If pivot pivot_root() is used before the chroot() you get:
-> > > > 
-> > > > [  637.464555] AAAA: count(-1) | mnt_mntpoint(/) | mnt->mnt.mnt_root(/) | id(579) | dev(tmpfs)
-> > > > 
-> > > > if you only call chroot, i.e. make the pivot_root() branch a simple
-> > > > if (true) you get:
-> > > > 
-> > > > [  955.206117] AAAA: count(-2) | mnt_mntpoint(/) | mnt->mnt.mnt_root(/) | id(580) | dev(tmpfs)
-> > > 
-> > > Very interesting.  What happens if you call loop() twice?  And now I wonder
-> > > whether it's root or cwd, actually...  Hmm...
-> > > 
-> > > How about this:
-> > > 	fd = open("/proc/self/mountinfo", 0);
-> > > 	mkdir("./newroot/foo", 0777);
-> > > 	mount("./newroot/foo", "./newroot/foo", 0, MS_BIND, NULL);
-> > > 	chroot("./newroot");
-> > > 	chdir("/foo");
-> > > 	while (1) {
-> > > 		static char buf[4096];
-> > > 		int n = read(fd, buf, 4096);
-> > > 		if (n <= 0)
-> > > 			break;
-> > > 		write(1, buf, n);
-> > > 	}
-> > > 	close(fd);
-> > > 	drop_caps();
-> > > 	loop();
-> > > as the end of namespace_sandbox_proc(), instead of
-> > > 	chroot("./newroot");
-> > > 	chdir("/");
-> > > 	drop_caps();
-> > > 	loop();
-> > > sequence we have there?
-> > 
-> > Uhum, well then we oops properly with a null-deref.
+On Fri 02 Apr 01:17 CDT 2021, Deepak Kumar Singh wrote:
+
+> It can be useful to control the different power states of various
+> parts of hardware for device testing. Add a debugfs node for qmp so
+> messages can be sent to aoss for debugging and testing purposes.
 > 
-> And note that the reproducer also requires CLONE_NEWNS which causes the
-> fs_struct to be unshared as well. I'm not completely in the clear what
-> would happen if a new io worker thread were to be created after the
-> caller has called unshare(CLONE_NEWNS).
+> Signed-off-by: Chris Lew <clew@codeaurora.org>
+> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
+> ---
+>  drivers/soc/qcom/qcom_aoss.c | 41 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 41 insertions(+)
+> 
+> diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
+> index 5c643f0..1789880 100644
+> --- a/drivers/soc/qcom/qcom_aoss.c
+> +++ b/drivers/soc/qcom/qcom_aoss.c
+> @@ -4,6 +4,7 @@
+>   */
+>  #include <dt-bindings/power/qcom-aoss-qmp.h>
+>  #include <linux/clk-provider.h>
+> +#include <linux/debugfs.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/io.h>
+>  #include <linux/mailbox_client.h>
+> @@ -86,6 +87,9 @@ struct qmp {
+>  	struct clk_hw qdss_clk;
+>  	struct genpd_onecell_data pd_data;
+>  	struct qmp_cooling_device *cooling_devs;
+> +#if IS_ENABLED(CONFIG_DEBUG_FS)
+> +	struct dentry *debugfs_file;
+> +#endif /* CONFIG_DEBUG_FS */
+>  };
+>  
+>  struct qmp_pd {
+> @@ -549,6 +553,34 @@ struct qmp *qmp_get(struct device *dev)
+>  }
+>  EXPORT_SYMBOL(qmp_get);
+>  
+> +#if IS_ENABLED(CONFIG_DEBUG_FS)
+> +static ssize_t aoss_dbg_write(struct file *file, const char __user *userstr,
+> +			      size_t len, loff_t *pos)
+> +{
+> +	struct qmp *qmp = file->private_data;
+> +	char buf[QMP_MSG_LEN] = {};
+> +	int ret;
+> +
+> +	if (!len || len >= QMP_MSG_LEN)
+> +		return len;
 
-And here's a non-null-deref version:
+If len >= QMP_MSG_LEN we shouldn't lie to the caller and say that all
+went well, better return -EINVAL in this case.
 
-[  647.257107] AAAA: count(-1) | mnt_mntpoint(foo) | mnt->mnt.mnt_root(foo) | id(1358) | dev(tmpfs)
+> +
+> +	ret  = copy_from_user(buf, userstr, len);
+> +	if (ret) {
+> +		dev_err(qmp->dev, "copy from user failed, ret:%d\n", ret);
+> +		return len;
 
-which is
+		return -EFAULT;
 
-1358 1326 0:66 /newroot/foo /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/foo rw,relatime - tmpfs  rw
+And you don't have to print here.
 
-Just for kicks, here's the full mount table:
+The rest looks good.
 
-1224 513 8:2 / / rw,relatime - ext4 /dev/sda2 rw
-1225 1224 0:5 / /dev rw,nosuid,noexec,relatime - devtmpfs udev rw,size=302716k,nr_inodes=75679,mode=755
-1226 1225 0:26 / /dev/pts rw,nosuid,noexec,relatime - devpts devpts rw,gid=5,mode=620,ptmxmode=000
-1227 1225 0:28 / /dev/shm rw,nosuid,nodev - tmpfs tmpfs rw
-1228 1225 0:48 / /dev/hugepages rw,relatime - hugetlbfs hugetlbfs rw,pagesize=2M
-1229 1225 0:21 / /dev/mqueue rw,nosuid,nodev,noexec,relatime - mqueue mqueue rw
-1230 1224 0:27 / /run rw,nosuid,nodev,noexec,relatime - tmpfs tmpfs rw,size=62152k,mode=755
-1231 1230 0:29 / /run/lock rw,nosuid,nodev,noexec,relatime - tmpfs tmpfs rw,size=5120k
-1232 1230 0:49 / /run/lxd_agent rw,relatime - tmpfs tmpfs rw,size=51200k,mode=700
-1233 1230 0:59 / /run/user/1000 rw,nosuid,nodev,relatime - tmpfs tmpfs rw,size=62148k,nr_inodes=15537,mode=700,uid=1000,gid=1000
-1234 1224 0:24 / /sys rw,nosuid,nodev,noexec,relatime - sysfs sysfs rw
-1235 1234 0:6 / /sys/kernel/security rw,nosuid,nodev,noexec,relatime - securityfs securityfs rw
-1236 1234 0:30 / /sys/fs/cgroup ro,nosuid,nodev,noexec - tmpfs tmpfs ro,size=4096k,nr_inodes=1024,mode=755
-1237 1236 0:31 /../../.. /sys/fs/cgroup/unified rw,nosuid,nodev,noexec,relatime - cgroup2 cgroup2 rw
-1238 1236 0:32 /../../.. /sys/fs/cgroup/systemd rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,xattr,name=systemd
-1239 1236 0:36 / /sys/fs/cgroup/perf_event rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,perf_event
-1240 1236 0:37 /.. /sys/fs/cgroup/blkio rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,blkio
-1241 1236 0:38 / /sys/fs/cgroup/rdma rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,rdma
-1242 1236 0:39 /.. /sys/fs/cgroup/cpu,cpuacct rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,cpu,cpuacct
-1243 1236 0:40 / /sys/fs/cgroup/net_cls,net_prio rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,net_cls,net_prio
-1244 1236 0:41 /.. /sys/fs/cgroup/devices rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,devices
-1245 1236 0:42 /../../.. /sys/fs/cgroup/memory rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,memory
-1246 1236 0:43 / /sys/fs/cgroup/hugetlb rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,hugetlb
-1247 1236 0:44 / /sys/fs/cgroup/cpuset rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,cpuset,clone_children
-1248 1236 0:45 /../../.. /sys/fs/cgroup/pids rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,pids
-1249 1236 0:46 /../../.. /sys/fs/cgroup/freezer rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,freezer
-1250 1234 0:33 / /sys/fs/pstore rw,nosuid,nodev,noexec,relatime - pstore pstore rw
-1251 1234 0:34 / /sys/firmware/efi/efivars rw,nosuid,nodev,noexec,relatime - efivarfs efivarfs rw
-1252 1234 0:35 / /sys/fs/bpf rw,nosuid,nodev,noexec,relatime - bpf none rw,mode=700
-1253 1234 0:7 / /sys/kernel/debug rw,nosuid,nodev,noexec,relatime - debugfs debugfs rw
-1254 1234 0:12 / /sys/kernel/tracing rw,nosuid,nodev,noexec,relatime - tracefs tracefs rw
-1255 1234 0:51 / /sys/fs/fuse/connections rw,nosuid,nodev,noexec,relatime - fusectl fusectl rw
-1256 1234 0:20 / /sys/kernel/config rw,nosuid,nodev,noexec,relatime - configfs configfs rw
-1257 1224 0:25 / /proc rw,nosuid,nodev,noexec,relatime - proc proc rw
-1258 1257 0:47 / /proc/sys/fs/binfmt_misc rw,relatime - autofs systemd-1 rw,fd=29,pgrp=0,timeout=0,minproto=5,maxproto=5,direct,pipe_ino=34137
-1259 1258 0:52 / /proc/sys/fs/binfmt_misc rw,nosuid,nodev,noexec,relatime - binfmt_misc binfmt_misc rw
-1260 1224 0:50 / /home/ubuntu/src/compiled rw,relatime - virtiofs lxd_lxc rw
-1261 1224 8:1 / /boot/efi rw,relatime - vfat /dev/sda1 rw,fmask=0022,dmask=0022,codepage=437,iocharset=iso8859-1,shortname=mixed,errors=remount-ro
-1262 1224 0:57 / /var/lib/lxcfs rw,nosuid,nodev,relatime - fuse.lxcfs lxcfs rw,user_id=0,group_id=0,allow_other
-1263 1224 0:60 / /home/ubuntu/syzkaller.qO1bUT/syz-tmp rw,relatime - tmpfs  rw
-1264 1263 0:5 / /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/dev rw,nosuid,noexec,relatime - devtmpfs udev rw,size=302716k,nr_inodes=75679,mode=755
-1265 1264 0:26 / /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/dev/pts rw,nosuid,noexec,relatime - devpts devpts rw,gid=5,mode=620,ptmxmode=000
-1266 1264 0:28 / /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/dev/shm rw,nosuid,nodev - tmpfs tmpfs rw
-1267 1264 0:48 / /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/dev/hugepages rw,relatime - hugetlbfs hugetlbfs rw,pagesize=2M
-1268 1264 0:21 / /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/dev/mqueue rw,nosuid,nodev,noexec,relatime - mqueue mqueue rw
-1269 1263 0:61 / /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/proc rw,relatime - proc none rw
-1270 1263 0:24 / /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/sys rw,nosuid,nodev,noexec,relatime - sysfs sysfs rw
-1271 1270 0:6 / /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/sys/kernel/security rw,nosuid,nodev,noexec,relatime - securityfs securityfs rw
-1272 1270 0:30 / /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/sys/fs/cgroup ro,nosuid,nodev,noexec - tmpfs tmpfs ro,size=4096k,nr_inodes=1024,mode=755
-1273 1272 0:31 /../../.. /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/sys/fs/cgroup/unified rw,nosuid,nodev,noexec,relatime - cgroup2 cgroup2 rw
-1274 1272 0:32 /../../.. /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/sys/fs/cgroup/systemd rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,xattr,name=systemd
-1275 1272 0:36 / /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/sys/fs/cgroup/perf_event rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,perf_event
-1276 1272 0:37 /.. /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/sys/fs/cgroup/blkio rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,blkio
-1277 1272 0:38 / /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/sys/fs/cgroup/rdma rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,rdma
-1278 1272 0:39 /.. /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/sys/fs/cgroup/cpu,cpuacct rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,cpu,cpuacct
-1279 1272 0:40 / /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/sys/fs/cgroup/net_cls,net_prio rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,net_cls,net_prio
-1280 1272 0:41 /.. /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/sys/fs/cgroup/devices rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,devices
-1281 1272 0:42 /../../.. /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/sys/fs/cgroup/memory rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,memory
-1282 1272 0:43 / /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/sys/fs/cgroup/hugetlb rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,hugetlb
-1283 1272 0:44 / /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/sys/fs/cgroup/cpuset rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,cpuset,clone_children
-1284 1272 0:45 /../../.. /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/sys/fs/cgroup/pids rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,pids
-1285 1272 0:46 /../../.. /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/sys/fs/cgroup/freezer rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,freezer
-1286 1270 0:33 / /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/sys/fs/pstore rw,nosuid,nodev,noexec,relatime - pstore pstore rw
-1287 1270 0:34 / /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/sys/firmware/efi/efivars rw,nosuid,nodev,noexec,relatime - efivarfs efivarfs rw
-1288 1270 0:35 / /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/sys/fs/bpf rw,nosuid,nodev,noexec,relatime - bpf none rw,mode=700
-1289 1270 0:7 / /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/sys/kernel/debug rw,nosuid,nodev,noexec,relatime - debugfs debugfs rw
-1290 1270 0:12 / /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/sys/kernel/tracing rw,nosuid,nodev,noexec,relatime - tracefs tracefs rw
-1291 1270 0:51 / /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/sys/fs/fuse/connections rw,nosuid,nodev,noexec,relatime - fusectl fusectl rw
-1292 1270 0:20 / /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/sys/kernel/config rw,nosuid,nodev,noexec,relatime - configfs configfs rw
-1293 1263 0:60 /newroot/foo /home/ubuntu/syzkaller.qO1bUT/syz-tmp/newroot/foo rw,relatime - tmpfs  rw
-1294 1224 0:62 / /home/ubuntu/syzkaller.AVk8bL/syz-tmp rw,relatime - tmpfs  rw
-1295 1294 0:5 / /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/dev rw,nosuid,noexec,relatime - devtmpfs udev rw,size=302716k,nr_inodes=75679,mode=755
-1296 1295 0:26 / /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/dev/pts rw,nosuid,noexec,relatime - devpts devpts rw,gid=5,mode=620,ptmxmode=000
-1297 1295 0:28 / /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/dev/shm rw,nosuid,nodev - tmpfs tmpfs rw
-1298 1295 0:48 / /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/dev/hugepages rw,relatime - hugetlbfs hugetlbfs rw,pagesize=2M
-1299 1295 0:21 / /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/dev/mqueue rw,nosuid,nodev,noexec,relatime - mqueue mqueue rw
-1300 1294 0:63 / /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/proc rw,relatime - proc none rw
-1301 1294 0:24 / /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/sys rw,nosuid,nodev,noexec,relatime - sysfs sysfs rw
-1302 1301 0:6 / /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/sys/kernel/security rw,nosuid,nodev,noexec,relatime - securityfs securityfs rw
-1303 1301 0:30 / /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/sys/fs/cgroup ro,nosuid,nodev,noexec - tmpfs tmpfs ro,size=4096k,nr_inodes=1024,mode=755
-1304 1303 0:31 /../../.. /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/sys/fs/cgroup/unified rw,nosuid,nodev,noexec,relatime - cgroup2 cgroup2 rw
-1305 1303 0:32 /../../.. /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/sys/fs/cgroup/systemd rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,xattr,name=systemd
-1306 1303 0:36 / /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/sys/fs/cgroup/perf_event rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,perf_event
-1307 1303 0:37 /.. /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/sys/fs/cgroup/blkio rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,blkio
-1308 1303 0:38 / /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/sys/fs/cgroup/rdma rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,rdma
-1309 1303 0:39 /.. /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/sys/fs/cgroup/cpu,cpuacct rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,cpu,cpuacct
-1310 1303 0:40 / /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/sys/fs/cgroup/net_cls,net_prio rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,net_cls,net_prio
-1311 1303 0:41 /.. /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/sys/fs/cgroup/devices rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,devices
-1312 1303 0:42 /../../.. /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/sys/fs/cgroup/memory rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,memory
-1313 1303 0:43 / /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/sys/fs/cgroup/hugetlb rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,hugetlb
-1314 1303 0:44 / /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/sys/fs/cgroup/cpuset rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,cpuset,clone_children
-1315 1303 0:45 /../../.. /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/sys/fs/cgroup/pids rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,pids
-1316 1303 0:46 /../../.. /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/sys/fs/cgroup/freezer rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,freezer
-1317 1301 0:33 / /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/sys/fs/pstore rw,nosuid,nodev,noexec,relatime - pstore pstore rw
-1318 1301 0:34 / /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/sys/firmware/efi/efivars rw,nosuid,nodev,noexec,relatime - efivarfs efivarfs rw
-1319 1301 0:35 / /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/sys/fs/bpf rw,nosuid,nodev,noexec,relatime - bpf none rw,mode=700
-1320 1301 0:7 / /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/sys/kernel/debug rw,nosuid,nodev,noexec,relatime - debugfs debugfs rw
-1321 1301 0:12 / /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/sys/kernel/tracing rw,nosuid,nodev,noexec,relatime - tracefs tracefs rw
-1322 1301 0:51 / /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/sys/fs/fuse/connections rw,nosuid,nodev,noexec,relatime - fusectl fusectl rw
-1323 1301 0:20 / /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/sys/kernel/config rw,nosuid,nodev,noexec,relatime - configfs configfs rw
-1324 1294 0:62 /newroot/foo /home/ubuntu/syzkaller.AVk8bL/syz-tmp/newroot/foo rw,relatime - tmpfs  rw
-1326 1224 0:66 / /home/ubuntu/syzkaller.Wgqj6W/syz-tmp rw,relatime - tmpfs  rw
-1327 1326 0:5 / /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/dev rw,nosuid,noexec,relatime - devtmpfs udev rw,size=302716k,nr_inodes=75679,mode=755
-1328 1327 0:26 / /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/dev/pts rw,nosuid,noexec,relatime - devpts devpts rw,gid=5,mode=620,ptmxmode=000
-1329 1327 0:28 / /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/dev/shm rw,nosuid,nodev - tmpfs tmpfs rw
-1330 1327 0:48 / /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/dev/hugepages rw,relatime - hugetlbfs hugetlbfs rw,pagesize=2M
-1331 1327 0:21 / /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/dev/mqueue rw,nosuid,nodev,noexec,relatime - mqueue mqueue rw
-1332 1326 0:67 / /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/proc rw,relatime - proc none rw
-1333 1326 0:24 / /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/sys rw,nosuid,nodev,noexec,relatime - sysfs sysfs rw
-1334 1333 0:6 / /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/sys/kernel/security rw,nosuid,nodev,noexec,relatime - securityfs securityfs rw
-1335 1333 0:30 / /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/sys/fs/cgroup ro,nosuid,nodev,noexec - tmpfs tmpfs ro,size=4096k,nr_inodes=1024,mode=755
-1336 1335 0:31 /../../.. /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/sys/fs/cgroup/unified rw,nosuid,nodev,noexec,relatime - cgroup2 cgroup2 rw
-1337 1335 0:32 /../../.. /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/sys/fs/cgroup/systemd rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,xattr,name=systemd
-1338 1335 0:36 / /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/sys/fs/cgroup/perf_event rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,perf_event
-1339 1335 0:37 /.. /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/sys/fs/cgroup/blkio rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,blkio
-1340 1335 0:38 / /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/sys/fs/cgroup/rdma rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,rdma
-1341 1335 0:39 /.. /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/sys/fs/cgroup/cpu,cpuacct rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,cpu,cpuacct
-1342 1335 0:40 / /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/sys/fs/cgroup/net_cls,net_prio rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,net_cls,net_prio
-1343 1335 0:41 /.. /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/sys/fs/cgroup/devices rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,devices
-1344 1335 0:42 /../../.. /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/sys/fs/cgroup/memory rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,memory
-1345 1335 0:43 / /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/sys/fs/cgroup/hugetlb rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,hugetlb
-1346 1335 0:44 / /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/sys/fs/cgroup/cpuset rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,cpuset,clone_children
-1347 1335 0:45 /../../.. /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/sys/fs/cgroup/pids rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,pids
-1348 1335 0:46 /../../.. /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/sys/fs/cgroup/freezer rw,nosuid,nodev,noexec,relatime - cgroup cgroup rw,freezer
-1349 1333 0:33 / /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/sys/fs/pstore rw,nosuid,nodev,noexec,relatime - pstore pstore rw
-1350 1333 0:34 / /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/sys/firmware/efi/efivars rw,nosuid,nodev,noexec,relatime - efivarfs efivarfs rw
-1351 1333 0:35 / /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/sys/fs/bpf rw,nosuid,nodev,noexec,relatime - bpf none rw,mode=700
-1352 1333 0:7 / /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/sys/kernel/debug rw,nosuid,nodev,noexec,relatime - debugfs debugfs rw
-1353 1333 0:12 / /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/sys/kernel/tracing rw,nosuid,nodev,noexec,relatime - tracefs tracefs rw
-1354 1333 0:51 / /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/sys/fs/fuse/connections rw,nosuid,nodev,noexec,relatime - fusectl fusectl rw
-1355 1333 0:20 / /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/sys/kernel/config rw,nosuid,nodev,noexec,relatime - configfs configfs rw
-1358 1326 0:66 /newroot/foo /home/ubuntu/syzkaller.Wgqj6W/syz-tmp/newroot/foo rw,relatime - tmpfs  rw
-OPCODE(18) | fd(-100) | path(./file0)
+Regards,
+Bjorn
+
+> +	}
+> +
+> +	ret = qmp_send(qmp, buf, QMP_MSG_LEN);
+> +
+> +	return ret ? ret : len;
+> +}
+> +
+> +static const struct file_operations aoss_dbg_fops = {
+> +	.open = simple_open,
+> +	.write = aoss_dbg_write,
+> +};
+> +#endif /* CONFIG_DEBUG_FS */
+> +
+>  static int qmp_probe(struct platform_device *pdev)
+>  {
+>  	struct resource *res;
+> @@ -603,6 +635,11 @@ static int qmp_probe(struct platform_device *pdev)
+>  
+>  	platform_set_drvdata(pdev, qmp);
+>  
+> +#if IS_ENABLED(CONFIG_DEBUG_FS)
+> +	qmp->debugfs_file = debugfs_create_file("aoss_send_message", 0220, NULL,
+> +						qmp, &aoss_dbg_fops);
+> +#endif /* CONFIG_DEBUG_FS */
+> +
+>  	return 0;
+>  
+>  err_remove_qdss_clk:
+> @@ -619,6 +656,10 @@ static int qmp_remove(struct platform_device *pdev)
+>  {
+>  	struct qmp *qmp = platform_get_drvdata(pdev);
+>  
+> +#if IS_ENABLED(CONFIG_DEBUG_FS)
+> +	debugfs_remove(qmp->debugfs_file);
+> +#endif /* CONFIG_DEBUG_FS */
+> +
+>  	qmp_qdss_clk_remove(qmp);
+>  	qmp_pd_remove(qmp);
+>  	qmp_cooling_devices_remove(qmp);
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
