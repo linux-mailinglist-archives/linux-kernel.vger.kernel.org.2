@@ -2,147 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DAFE353A07
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 23:36:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1649353A08
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 23:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231617AbhDDVgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 17:36:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60726 "EHLO mail.kernel.org"
+        id S231615AbhDDVkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 17:40:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229940AbhDDVgK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 17:36:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E24E6135F;
-        Sun,  4 Apr 2021 21:36:05 +0000 (UTC)
+        id S230169AbhDDVkf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Apr 2021 17:40:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2F5A61369;
+        Sun,  4 Apr 2021 21:40:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617572165;
-        bh=H4Ds74LWsoA/BwpIQgOpltuAShIQTfCXQfyXi0DuRRI=;
+        s=k20201202; t=1617572430;
+        bh=pbbwnT8tLsRNCOwidX4Wub9TFkFe0anvKnMxl4TAop0=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=uUUXBt9hiCCJ2UdfMZLkoU4HZITMSkkzHxQjGOMUa8FJbXWhBQqe1+k7qnGm0W8LV
-         It2vEqClpcieXhDt+TN9LB381+hggUaZa9vuFPl50VvQOkC13ist+GcdoGKVECC6iC
-         U5OcDlP9jZzUQOn7BHi+EGY5LStrn9hPyDs0G/KYhWXK9pjGdVgE5yqCsAcHWcA4iG
-         kk1qg++knK9Kiqjpm1ySSOcDPlzm15F1fGcLjkj99t/tL+QS/IBzymv+cfOHLjuX32
-         Rafcr9exBl4GHsfJTRI1AInhM/MuTekhjsgn1wSjsTu4C4wnT+bcJLtozh/XPEkM9P
-         RhqiKIgsWdXQQ==
+        b=TUKAQ0xCi3ix0puQ8299n1RVrv5TulEPj+P75La09OjHP3j8//MNFwsQm4v1soeGi
+         fbIGI1F4FQg3+zlihYbIuMOUkEzx567wri0ci2GS5Tswtc7oWB1u8k4pss4f2t4LCx
+         5w4k3aVLmQ2FpUYUcDS5i2WMcS8LpzD03DoW+WizU8uuCQkOyJgYyBBmPh59EfFhxz
+         +BrjPVxV7MFC7i94Y2Iz+4dw94nPyUkzvp+0+8kKoQ/1ntU8oFiYWs/vdAQb6xvwhl
+         rQ1eKXcDQGckyA/0ZOmtl6y5V+K44+r6+gctDg9dEigDQygQW7SaNdjwd0CnqJIs32
+         sxGkKvQWAiFkA==
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 619F23522F84; Sun,  4 Apr 2021 14:36:05 -0700 (PDT)
-Date:   Sun, 4 Apr 2021 14:36:05 -0700
+        id A70113522F84; Sun,  4 Apr 2021 14:40:30 -0700 (PDT)
+Date:   Sun, 4 Apr 2021 14:40:30 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     syzbot <syzbot+dde0cc33951735441301@syzkaller.appspotmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
-        netdev@vger.kernel.org, tglx@linutronix.de, peterz@infradead.org,
-        frederic@kernel.org
-Subject: Re: Something is leaking RCU holds from interrupt context
-Message-ID: <20210404213605.GA2696@paulmck-ThinkPad-P72>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     syzbot <syzbot+88e4f02896967fe1ab0d@syzkaller.appspotmail.com>,
+        john.stultz@linaro.org, linux-kernel@vger.kernel.org,
+        sboyd@kernel.org, syzkaller-bugs@googlegroups.com,
+        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
+        willy@infradead.org
+Subject: Re: [syzbot] WARNING: suspicious RCU usage in get_timespec64
+Message-ID: <20210404214030.GB2696@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <00000000000025a67605bf1dd4ab@google.com>
- <20210404102457.GS351017@casper.infradead.org>
- <20210404164808.GZ2696@paulmck-ThinkPad-P72>
- <20210404182453.GT351017@casper.infradead.org>
+References: <0000000000000e025b05bf2a430b@google.com>
+ <87mtud4wfi.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210404182453.GT351017@casper.infradead.org>
+In-Reply-To: <87mtud4wfi.ffs@nanos.tec.linutronix.de>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 04, 2021 at 07:24:53PM +0100, Matthew Wilcox wrote:
-> On Sun, Apr 04, 2021 at 09:48:08AM -0700, Paul E. McKenney wrote:
-> > On Sun, Apr 04, 2021 at 11:24:57AM +0100, Matthew Wilcox wrote:
-> > > On Sat, Apr 03, 2021 at 09:15:17PM -0700, syzbot wrote:
-> > > > HEAD commit:    2bb25b3a Merge tag 'mips-fixes_5.12_3' of git://git.kernel..
-> > > > git tree:       upstream
-> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=1284cc31d00000
-> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=78ef1d159159890
-> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=dde0cc33951735441301
-> > > > 
-> > > > Unfortunately, I don't have any reproducer for this issue yet.
-> > > > 
-> > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > Reported-by: syzbot+dde0cc33951735441301@syzkaller.appspotmail.com
-> > > > 
-> > > > WARNING: suspicious RCU usage
-> > > > 5.12.0-rc5-syzkaller #0 Not tainted
-> > > > -----------------------------
-> > > > kernel/sched/core.c:8294 Illegal context switch in RCU-bh read-side critical section!
-> > > > 
-> > > > other info that might help us debug this:
-> > > > 
-> > > > 
-> > > > rcu_scheduler_active = 2, debug_locks = 0
-> > > > no locks held by systemd-udevd/4825.
-> > > 
-> > > I think we have something that's taking the RCU read lock in
-> > > (soft?) interrupt context and not releasing it properly in all
-> > > situations.  This thread doesn't have any locks recorded, but
-> > > lock_is_held(&rcu_bh_lock_map) is true.
-> > > 
-> > > Is there some debugging code that could find this?  eg should
-> > > lockdep_softirq_end() check that rcu_bh_lock_map is not held?
-> > > (if it's taken in process context, then BHs can't run, so if it's
-> > > held at softirq exit, then there's definitely a problem).
-> > 
-> > Something like the (untested) patch below?
+On Sun, Apr 04, 2021 at 10:38:41PM +0200, Thomas Gleixner wrote:
+> On Sun, Apr 04 2021 at 12:05, syzbot wrote:
 > 
-> Maybe?  Will this tell us who took the lock?  I was really trying to
-> throw out a suggestion in the hope that somebody who knows this area
-> better than I do would tell me I was wrong.
+> Cc + ...
 
-No idea.  If it is reproducible, hopefully someone will try it.  If it
-is not reproducible, so it goes!
+And a couple more...
 
-And hey, it is not my fault that you sounded like you knew what you were
-talking about!  ;-)
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    5e46d1b7 reiserfs: update reiserfs_xattrs_initialized() co..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=1125f831d00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=78ef1d159159890
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=88e4f02896967fe1ab0d
+> >
+> > Unfortunately, I don't have any reproducer for this issue yet.
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+88e4f02896967fe1ab0d@syzkaller.appspotmail.com
+> >
+> > =============================
+> > WARNING: suspicious RCU usage
+> > 5.12.0-rc5-syzkaller #0 Not tainted
+> > -----------------------------
+> > kernel/sched/core.c:8294 Illegal context switch in RCU-sched read-side critical section!
+> >
+> > other info that might help us debug this:
+> >
+> >
+> > rcu_scheduler_active = 2, debug_locks = 0
+> > 3 locks held by syz-executor.4/8418:
+> >  #0: 
+> > ffff8880751d2b28
+> >  (
+> > &p->pi_lock
+> > ){-.-.}-{2:2}
+> > , at: try_to_wake_up+0x98/0x14a0 kernel/sched/core.c:3345
+> >  #1: 
+> > ffff8880b9d35258
+> >  (
+> > &rq->lock
+> > ){-.-.}-{2:2}
+> > , at: rq_lock kernel/sched/sched.h:1321 [inline]
+> > , at: ttwu_queue kernel/sched/core.c:3184 [inline]
+> > , at: try_to_wake_up+0x5e6/0x14a0 kernel/sched/core.c:3464
+> >  #2: ffff8880b9d1f948 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_change+0x142/0x220 kernel/sched/psi.c:807
 
-But yes, now that you mention it, it is odd that rcu_sleep_check()
-thought that rcu_bh_lock_map was held, but lockdep_rcu_suspicious()
-does not.  One clue might be that rcu_sleep_check() is looking at
-rcu_bh_lock_map() itself, while lockdep_rcu_suspicious() and its callee,
-lockdep_print_held_locks(), rely on current->lockdep_depth.
-
-Maybe these have gotten out of sync.
-
-> > Please note that it does not make sense to also check for
-> > either rcu_lock_map or rcu_sched_lock_map because either of
-> > these might be held by the interrupted code.
-> 
-> Yes!  Although if we do it somewhere like tasklet_action_common(),
-> we could do something like:
-> 
-> +++ b/kernel/softirq.c
-> @@ -774,6 +774,7 @@ static void tasklet_action_common(struct softirq_action *a,
->  
->         while (list) {
->                 struct tasklet_struct *t = list;
-> +               unsigned long rcu_lockdep = rcu_get_lockdep_state();
->  
->                 list = list->next;
->  
-> @@ -790,6 +791,10 @@ static void tasklet_action_common(struct softirq_action *a,
->                         }
->                         tasklet_unlock(t);
->                 }
-> +               if (rcu_lockdep != rcu_get_lockdep_state()) {
-> +                       printk(something useful about t);
-> +                       RCU_LOCKDEP_WARN(... something else useful ...);
-> +               }
->  
->                 local_irq_disable();
-> 
-> where rcu_get_lockdep_state() returns a bitmap of whether the four rcu
-> lockdep maps are held.
-> 
-> We might also need something similar in __do_softirq(), in case it's
-> not a tasklet that's the problem.
-
-The rcu_get_lockdep_state() function would just set bits based on RCU's
-various lockdep maps, but the comparison would need to take at least
-debug_lockdep_rcu_enabled() into account.  Just in case there is a
-lockdep report between the sampling and comparison.
-
-But first let's see what the lockdep experts have to say.
+This looks similar to syzbot+dde0cc33951735441301@syzkaller.appspotmail.com
+in that rcu_sleep_check() sees an RCU lock held, but the later call to
+lockdep_print_held_locks() does not.  Did something change recently that
+could let the ->lockdep_depth counter get out of sync with the actual
+number of locks held?
 
 							Thanx, Paul
+
+> > stack backtrace:
+> > CPU: 0 PID: 8418 Comm: syz-executor.4 Not tainted 5.12.0-rc5-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > Call Trace:
+> >  __dump_stack lib/dump_stack.c:79 [inline]
+> >  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+> >  ___might_sleep+0x266/0x2c0 kernel/sched/core.c:8294
+> >  __might_fault+0x6e/0x180 mm/memory.c:5018
+> >  _copy_from_user+0x27/0x180 lib/usercopy.c:13
+> >  copy_from_user include/linux/uaccess.h:192 [inline]
+> >  get_timespec64+0x75/0x220 kernel/time/time.c:787
+> >  __do_sys_clock_nanosleep kernel/time/posix-timers.c:1257 [inline]
+> >  __se_sys_clock_nanosleep kernel/time/posix-timers.c:1245 [inline]
+> >  __x64_sys_clock_nanosleep+0x1bb/0x430 kernel/time/posix-timers.c:1245
+> >  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > RIP: 0033:0x48a621
+> > Code: 24 0c 89 3c 24 48 89 4c 24 18 e8 aa e7 ff ff 4c 8b 54 24 18 48 8b 54 24 10 41 89 c0 8b 74 24 0c 8b 3c 24 b8 e6 00 00 00 0f 05 <44> 89 c7 48 89 04 24 e8 e3 e7 ff ff 48 8b 04 24 eb 97 66 2e 0f 1f
+> > RSP: 002b:00007fffe59fbd50 EFLAGS: 00000293 ORIG_RAX: 00000000000000e6
+> > RAX: ffffffffffffffda RBX: 0000000000000294 RCX: 000000000048a621
+> > RDX: 00007fffe59fbd90 RSI: 0000000000000000 RDI: 0000000000000000
+> > RBP: 00007fffe59fbe2c R08: 0000000000000000 R09: 00007fffe5b8a090
+> > R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000032
+> > R13: 000000000005717a R14: 0000000000000003 R15: 00007fffe59fbe90
+> >
+> >
+> > ---
+> > This report is generated by a bot. It may contain errors.
+> > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> >
+> > syzbot will keep track of this issue. See:
+> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
