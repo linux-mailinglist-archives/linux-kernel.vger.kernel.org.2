@@ -2,98 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8922E3538BB
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 17:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52FC43538C4
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 18:01:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbhDDP4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 11:56:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230495AbhDDP4L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 11:56:11 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B70C061756;
-        Sun,  4 Apr 2021 08:56:06 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lT56Y-002UUF-A9; Sun, 04 Apr 2021 15:56:02 +0000
-Date:   Sun, 4 Apr 2021 15:56:02 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        syzbot <syzbot+c88a7030da47945a3cc3@syzkaller.appspotmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, io-uring@vger.kernel.org
-Subject: Re: [syzbot] WARNING in mntput_no_expire (2)
-Message-ID: <YGnhkoTfVfMSMPpK@zeniv-ca.linux.org.uk>
-References: <0000000000003a565e05bee596f2@google.com>
- <20210401154515.k24qdd2lzhtneu47@wittgenstein>
- <90e7e339-eaec-adb2-cfed-6dc058a117a3@kernel.dk>
- <20210401174613.vymhhrfsemypougv@wittgenstein>
- <20210401175919.jpiylhfrlb4xb67u@wittgenstein>
- <YGYa0B4gabEYi2Tx@zeniv-ca.linux.org.uk>
- <YGkloJhMFc4hEatk@zeniv-ca.linux.org.uk>
- <20210404113445.xo6ntgfpxigcb3x6@wittgenstein>
+        id S230512AbhDDQBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 12:01:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48050 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229861AbhDDQBN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Apr 2021 12:01:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7D9E60232;
+        Sun,  4 Apr 2021 16:01:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617552069;
+        bh=Gv7SsSaMsWSBL4LjRskRhkx3N1krNPvmb86FOM3wQwQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qtypswkjiKTBU9PCGvU2Tj82l63EbqTlt+FzdtcGR3o/dNLtcZGGXM+3ci7IQDgiw
+         tvYadMBqgpsDE3uPlonZiwRXnRjQaooq1LekVhgnKvib2Zne3ptduEluQKie35gEsr
+         it2iMyufLPxkKEagr86HaB+ysp/ZnIcrFdk7CIFW8TT6uH/BNqofayyifEclqL/fv0
+         ibFAHgfWTSIBdZyXHX38oW9gJN5KLfXZA3bsL2HZiazRFLYcXVSesRL7yC1huXEw88
+         cbKcYdMbNrweHK2JrRNnlXeVP9P0X7jDYupBxV32kptvuyZB8nFGVmQnpAkNeGGxHG
+         Es4tmXZgEdJHg==
+Date:   Sun, 4 Apr 2021 19:01:06 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, jejb@linux.ibm.com
+Subject: Re: [PATCH -next] KEYS: trusted: Switch to kmemdup_nul()
+Message-ID: <YGniwpyGNPLvn3Mf@kernel.org>
+References: <20210402092346.2444932-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210404113445.xo6ntgfpxigcb3x6@wittgenstein>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20210402092346.2444932-1-yangyingliang@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 04, 2021 at 01:34:45PM +0200, Christian Brauner wrote:
-
-> Sorry for not replying to your earlier mail but I've been debugging this
-> too. My current theory is that it's related to LOOKUP_ROOT_GRABBED when
-> LOOKUP_CACHED is specified _possibly_ with an interaction how
-> create_io_thread() is created with CLONE_FS. The reproducer requires you
-> either have called pivot_root() or chroot() in order for the failure to
-> happen. So I think the fact that we skip legitimize_root() when
-> LOOKUP_CACHED is set might figure into this. I can keep digging.
+On Fri, Apr 02, 2021 at 05:23:46PM +0800, Yang Yingliang wrote:
+> Use kmemdup_nul() helper instead of open-coding to
+> simplify the code.
 > 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>  security/keys/trusted-keys/trusted_tpm1.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 
-> Funny enough I already placed a printk statement into the place you
-> wanted one too so I just amended mine. Here's what you get:
-> 
-> If pivot pivot_root() is used before the chroot() you get:
-> 
-> [  637.464555] AAAA: count(-1) | mnt_mntpoint(/) | mnt->mnt.mnt_root(/) | id(579) | dev(tmpfs)
-> 
-> if you only call chroot, i.e. make the pivot_root() branch a simple
-> if (true) you get:
-> 
-> [  955.206117] AAAA: count(-2) | mnt_mntpoint(/) | mnt->mnt.mnt_root(/) | id(580) | dev(tmpfs)
 
-Very interesting.  What happens if you call loop() twice?  And now I wonder
-whether it's root or cwd, actually...  Hmm...
+Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-How about this:
-	fd = open("/proc/self/mountinfo", 0);
-	mkdir("./newroot/foo", 0777);
-	mount("./newroot/foo", "./newroot/foo", 0, MS_BIND, NULL);
-	chroot("./newroot");
-	chdir("/foo");
-	while (1) {
-		static char buf[4096];
-		int n = read(fd, buf, 4096);
-		if (n <= 0)
-			break;
-		write(1, buf, n);
-	}
-	close(fd);
-	drop_caps();
-	loop();
-as the end of namespace_sandbox_proc(), instead of
-	chroot("./newroot");
-	chdir("/");
-	drop_caps();
-	loop();
-sequence we have there?
+/Jarkko
 
-> The cat /proc/self/mountinfo is for the id(579) below:
-... and it misses the damn thing, since we call it before the mount
-in question had been created ;-/  So we'd probably be better off not
-trying to be clever and just doing that as explicit (and completely
-untested) read-write loop above.
+> 
+> diff --git a/security/keys/trusted-keys/trusted_tpm1.c b/security/keys/trusted-keys/trusted_tpm1.c
+> index 493eb91ed017..90ded4757e79 100644
+> --- a/security/keys/trusted-keys/trusted_tpm1.c
+> +++ b/security/keys/trusted-keys/trusted_tpm1.c
+> @@ -978,11 +978,9 @@ static int trusted_instantiate(struct key *key,
+>  	if (datalen <= 0 || datalen > 32767 || !prep->data)
+>  		return -EINVAL;
+>  
+> -	datablob = kmalloc(datalen + 1, GFP_KERNEL);
+> +	datablob = kmemdup_nul(prep->data, datalen, GFP_KERNEL);
+>  	if (!datablob)
+>  		return -ENOMEM;
+> -	memcpy(datablob, prep->data, datalen);
+> -	datablob[datalen] = '\0';
+>  
+>  	options = trusted_options_alloc();
+>  	if (!options) {
+> -- 
+> 2.25.1
+> 
+> 
