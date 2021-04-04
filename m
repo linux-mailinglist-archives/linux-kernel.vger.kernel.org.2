@@ -2,118 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00C8035388E
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 17:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A392353892
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 17:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230482AbhDDPCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 11:02:21 -0400
-Received: from mga01.intel.com ([192.55.52.88]:10801 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229788AbhDDPCU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 11:02:20 -0400
-IronPort-SDR: p24Q1rfQTa1myG1quMnQJjPVZdz6qpp/7e+UUTPHnRRWiLizO6gFokaHMhUoShRj68UCXs+3L3
- hAqUK5UsOy4g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9944"; a="213021971"
-X-IronPort-AV: E=Sophos;i="5.81,304,1610438400"; 
-   d="scan'208";a="213021971"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2021 08:02:16 -0700
-IronPort-SDR: dJOmUoIJoJC3qBnWfQla5sBK6PEDQuJaXnzwCXrx73tbOVgHuNBMgCZ+neewHUFmovJL4NJpvh
- 8+mnA64j3/1g==
-X-IronPort-AV: E=Sophos;i="5.81,304,1610438400"; 
-   d="scan'208";a="518319765"
-Received: from draleman-mobl1.amr.corp.intel.com (HELO [10.209.18.92]) ([10.209.18.92])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2021 08:02:14 -0700
-Subject: Re: [RFC v1 00/26] Add TDX Guest Support
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org
-References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <2f386325-58f5-6f4d-060e-f0261b6f19ee@intel.com>
-Date:   Sun, 4 Apr 2021 08:02:13 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230369AbhDDPPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 11:15:23 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:52516 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229861AbhDDPPT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Apr 2021 11:15:19 -0400
+Received: by mail-io1-f70.google.com with SMTP id d4so9528767iop.19
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Apr 2021 08:15:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=dxD0Hg0qysVOsDo3bqgEGmetC7jdDlc6pL/RNn78V90=;
+        b=qZ632KS0PifrMCi8IebZx8XH0DsFFbhMH2AxJRVlml7fhdiN8KzE9naZA6b1W+tw4t
+         q2ccaZ7L6TYoNcrGvgvjfwnfYwUXE1Nixis37qITDI6foA/5sHEPliIAX35PVRQ24mtI
+         9+tndG2FAXi8YEazdVO3BHIDADaLpXjs4ZQoPbYvkswaWaDp07Ow3tKga3/nRDp+YdVI
+         WGsOMzyy+neiT33Ie/KMBvuKG8QnSs+vtvll+xz2oBAqvWEdqmK7I9ZHkZ2BJopegCOH
+         2fIgvEOC7ZiGGq1xGzq9RjVHTu8wajkozwftqcJ2cOuLMmp76Gcgt33aYJbHhC1nziqh
+         YZWg==
+X-Gm-Message-State: AOAM531rNpLwb+CcSnKPB5BdZU/bUYpElu5r1KvrLb/6qvgE52M3OVp2
+        4gWvgniTGL0yrImP18TNIASBXVFE/O1GIpoDeFAR16M/Kobv
+X-Google-Smtp-Source: ABdhPJzVQjsJDUibxgnfqxPohifHOtt7o3aW3XOo1HD1pnjGDI9XFknYFRBJTAwNYD8USisEec6RGddqZ2Y4Cla2IahmipYMa8yY
 MIME-Version: 1.0
-In-Reply-To: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:7b05:: with SMTP id w5mr16393092ilc.232.1617549313028;
+ Sun, 04 Apr 2021 08:15:13 -0700 (PDT)
+Date:   Sun, 04 Apr 2021 08:15:13 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000035b58705bf270c19@google.com>
+Subject: [syzbot] WARNING: suspicious RCU usage in list_lru_destroy
+From:   syzbot <syzbot+d7dd989878658902c6d6@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It occurred to me that I've been doing a lot of digging in the TDX spec
-lately.  I think we can all agree that the "Architecture Specification"
-is not the world's easiest, most disgestable reading.  It's hard to
-figure out what the Linux relation to the spec is.
+Hello,
 
-One bit of Documentation we need for TDX is a description of the memory
-states.  For instance, it would be nice to spell out the different
-classes of memory, how they are selected, who selects them, and who
-enforces the selection.  What faults are generated on each type and who
-can induce those?
+syzbot found the following issue on:
 
-For instance:
+HEAD commit:    5e46d1b7 reiserfs: update reiserfs_xattrs_initialized() co..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15556cced00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=71a75beb62b62a34
+dashboard link: https://syzkaller.appspot.com/bug?extid=d7dd989878658902c6d6
+compiler:       Debian clang version 11.0.1-2
 
-TD-Private memory is selected by the Shared/Private bit in Present=1
-guest PTEs.  When the hardware page walker sees that bit, it walk the
-secure EPT.  The secure EPT entries can only be written by the TDX
-module, although they are written at the request of the VMM.  The TDX
-module enforces rules like ensuring that the memory mapped by secure EPT
-is not mapped multiple times.  The VMM can remove entries.  From the
-guest perspective, all private memory accesses are either successful, or
-result in a #VE.  Private memory access does not cause VMExits.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Would that be useful to folks?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d7dd989878658902c6d6@syzkaller.appspotmail.com
+
+EXT4-fs (loop0): mount failed
+=============================
+WARNING: suspicious RCU usage
+5.12.0-rc5-syzkaller #0 Not tainted
+-----------------------------
+kernel/sched/core.c:8294 Illegal context switch in RCU-bh read-side critical section!
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 0
+no locks held by syz-executor.0/10672.
+
+stack backtrace:
+CPU: 0 PID: 10672 Comm: syz-executor.0 Not tainted 5.12.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x176/0x24e lib/dump_stack.c:120
+ ___might_sleep+0x6e/0x530 kernel/sched/core.c:8294
+ down_read+0x17/0x50 kernel/locking/rwsem.c:1352
+ list_lru_destroy+0x49/0x390 mm/list_lru.c:628
+ deactivate_locked_super+0xbf/0xf0 fs/super.c:343
+ mount_bdev+0x288/0x3a0 fs/super.c:1369
+ legacy_get_tree+0xea/0x180 fs/fs_context.c:592
+ vfs_get_tree+0x86/0x270 fs/super.c:1497
+ do_new_mount fs/namespace.c:2903 [inline]
+ path_mount+0x188a/0x29a0 fs/namespace.c:3233
+ do_mount fs/namespace.c:3246 [inline]
+ __do_sys_mount fs/namespace.c:3454 [inline]
+ __se_sys_mount+0x28c/0x320 fs/namespace.c:3431
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x46797a
+Code: 48 c7 c2 bc ff ff ff f7 d8 64 89 02 b8 ff ff ff ff eb d2 e8 b8 04 00 00 0f 1f 84 00 00 00 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f77bde01fa8 EFLAGS: 00000206 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 0000000020000200 RCX: 000000000046797a
+RDX: 0000000020000300 RSI: 0000000020000100 RDI: 00007f77bde02000
+RBP: 00007f77bde02040 R08: 00007f77bde02040 R09: 0000000020000300
+R10: 0000000000000000 R11: 0000000000000206 R12: 0000000020000300
+R13: 0000000020000100 R14: 00007f77bde02000 R15: 00000000200000c0
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
