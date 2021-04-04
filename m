@@ -2,74 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B4C35383B
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 15:18:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44C4335383F
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 15:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230298AbhDDNSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 09:18:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54774 "EHLO
+        id S230204AbhDDNZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 09:25:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbhDDNSy (ORCPT
+        with ESMTP id S230494AbhDDNX5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 09:18:54 -0400
+        Sun, 4 Apr 2021 09:23:57 -0400
 Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E62EEC061756;
-        Sun,  4 Apr 2021 06:18:49 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id w28so13852628lfn.2;
-        Sun, 04 Apr 2021 06:18:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB548C061756;
+        Sun,  4 Apr 2021 06:23:51 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id w28so13862780lfn.2;
+        Sun, 04 Apr 2021 06:23:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
+        h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=E7aNZvCUDgiEjUhfnA4glDPpLYVUgb36VhtZ187jO8I=;
-        b=FBIhlLRuKT2iOCtYms9q3RJ9cRnINvZIlcX78ZKu1og0SfU+hYGrx2RLUB5CNVaSgU
-         RdZ/vYPssH6vSbf+DqcoUHzGqbHA3Eu1sxj6gp9IyyjRo3IAaOOjZ510oSc5jugvio6N
-         +sZkftL81xYjnacVRynT/MRyYka8TqS44k8E7p3lh/hi8g8LU7pKOmcQco2FMayU1Qw3
-         itIFo0zWyMLYW1vAs9lP8EDRlFs75/bqhhd/N58P47nS6BeqdGTxnrO8iRPakL72z+hy
-         3YrR2aBaQK5lBdv6PCA6tL/G0xeqxWEp+TwflD9iDNRrLhWQSay/v/O51dexk1hrBLy8
-         QZ/w==
+        bh=Nzpd4Vuf3kote7U8VoWNZRV+1cO2k+CwPl3bjJUX7L4=;
+        b=jTGiv/ltH6tXMRh1sa9l53S3rlQ36ZEyoAOJ0OFYDQD4lcg1DYLAt4HMH2OfaFb3Ks
+         7WfrNF6HtYqm80fkl2TWUk8vMxTKf3Ar7OO2WTIkf6XTIX6NdezwR+8/Os8zSc1DN2EV
+         bYcOlHYmIxM1LcR2Ea36+G8e4oscGJLSsCMsqrxki62wsaz2fGRAbdmtdeMjcn2TRzUQ
+         4cnNPvo+xch76Yu/9jPc7rRBVEj8ZWJUUYnmEyvVPr1MPtuwSSIwpCodv2MSpoIM+ut0
+         yoC5XaNHHYwZ2+W963Jq4TgMSvAyN3dEYO/S0jydgxJrGnMBw6fe28dpCLbnhPPkqE2o
+         nZ9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=E7aNZvCUDgiEjUhfnA4glDPpLYVUgb36VhtZ187jO8I=;
-        b=fXoDA99jFAMVPQDb5nOpKhnK8rX1+CjgFMkyEUjS3dt7Jt0LQNAFLVfWdLduNOtsTy
-         GUkTx9oU/5usnSsVx96op4AOD/q2nJbBCr75760w7d2ho4eBhdQwPhSQF9/MgKXCJKf0
-         /lg5LfT9spAffX2IjE9bEcw7ClPVkTVln9JoXKLK0sINIHAitzvf2SSRCAuSFIq+jrN6
-         yP8ja+tYXNMAgmM3Z/nbXq0TmjpCYBzjw6wDcB/cF75TW4tvUTknvTYjlGeBRfcQCQ8Y
-         YTBHDAHRuBxGnSEzLALfrgithfLK/VBpegvfwJTI5jMOsNGAa5DepvtZEIxV8/5mdoNY
-         k6Bw==
-X-Gm-Message-State: AOAM530t/9YOaUHqvSzUCSWuC21SgF1buFvcZZX0R1/TZeTDWKu89TX8
-        P+LmQGDrIQ/00CSWoSFiMFbecVfOw1M=
-X-Google-Smtp-Source: ABdhPJxm2VHeLRHi4vimnBIFgT5n3NMnfwmEkQ+Zgo7nj1yXGdOBWJFLPpBrbbd60hnzFXffArcwWQ==
-X-Received: by 2002:ac2:5a1b:: with SMTP id q27mr13917243lfn.189.1617542328210;
-        Sun, 04 Apr 2021 06:18:48 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-85.dynamic.spd-mgts.ru. [109.252.193.85])
-        by smtp.googlemail.com with ESMTPSA id t11sm1505856ljk.65.2021.04.04.06.18.47
+        bh=Nzpd4Vuf3kote7U8VoWNZRV+1cO2k+CwPl3bjJUX7L4=;
+        b=SyuakGJZ1QkzekchGXIym+eNPaXgZaFy3ZkX9VdoI4X1AW6e1i3+FZPGoQWBTFQNes
+         /W9Sbg9ckgp0R2/LA+n3vFnD1a5BxcONPdWtJmkDGGyrudFFTVFVCpnqyVUuUrFz1QTw
+         vaBfPP2QtkHz2HrA0wIiCnbq4dpfuqp8p5TaDGFto0coVHE3XdKk1ZIyzMgDj1PXPwmA
+         6iC9q6b/OvJsIekzi2C6b9AFmA9LUQHj4N6r37wGcqpRzrcWMf7e3ZknCl6YzL/tABY2
+         C64KngVWqyaVvjMn2/iwarSan8XqHeXaoTN7zwHVLyTGTCD8ZdH47/h6J9jHLEIpBZW+
+         ikyg==
+X-Gm-Message-State: AOAM530JQXnVpW+NDj943iJyEfkKfI31ly0q52AHtUT258s1SSnvAiFE
+        2Rf5sviHdTFi4ekLTqOvNzk=
+X-Google-Smtp-Source: ABdhPJwHUBVB8eEUjrJWD4onehy9Mey9+WSE1xcAdji3JR12pymm1dFCr3aamwRwRGniVZLgXGLsOQ==
+X-Received: by 2002:ac2:4471:: with SMTP id y17mr14574843lfl.307.1617542630157;
+        Sun, 04 Apr 2021 06:23:50 -0700 (PDT)
+Received: from [10.0.0.42] (91-157-86-200.elisa-laajakaista.fi. [91.157.86.200])
+        by smtp.gmail.com with ESMTPSA id y22sm1441965lfg.133.2021.04.04.06.23.48
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Apr 2021 06:18:47 -0700 (PDT)
-Subject: Re: [PATCH v2 5/6] dt-bindings: memory: tegra20: emc: Convert to
- schema
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210330230445.26619-1-digetx@gmail.com>
- <20210330230445.26619-6-digetx@gmail.com>
- <1617198059.590387.2074856.nullmailer@robh.at.kernel.org>
- <b4f7c7fb-1332-8490-fb4f-293fd357338e@gmail.com>
- <20210401155506.GA498681@robh.at.kernel.org>
- <a584f3b9-ba15-a027-2496-bf757cf7ca06@gmail.com>
-Message-ID: <c5e6028e-1732-5e0e-a11d-d8e4c645cf83@gmail.com>
-Date:   Sun, 4 Apr 2021 16:18:47 +0300
+        Sun, 04 Apr 2021 06:23:49 -0700 (PDT)
+Subject: Re: [PATCH 11/16] dmaengine: ti: k3-psil-j721e: Add entry for CSI2RX
+To:     Pratyush Yadav <p.yadav@ti.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Benoit Parrot <bparrot@ti.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Michael Tretter <m.tretter@pengutronix.de>,
+        Peter Chen <peter.chen@nxp.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
+        dmaengine@vger.kernel.org
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+References: <20210330173348.30135-1-p.yadav@ti.com>
+ <20210330173348.30135-12-p.yadav@ti.com>
+From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+Message-ID: <78a5983c-04c8-4a4c-04fe-bb1f31e87375@gmail.com>
+Date:   Sun, 4 Apr 2021 16:24:47 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <a584f3b9-ba15-a027-2496-bf757cf7ca06@gmail.com>
+In-Reply-To: <20210330173348.30135-12-p.yadav@ti.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -77,61 +86,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-02.04.2021 17:45, Dmitry Osipenko пишет:
-> 01.04.2021 18:55, Rob Herring пишет:
->> On Wed, Mar 31, 2021 at 05:59:39PM +0300, Dmitry Osipenko wrote:
->>> 31.03.2021 16:40, Rob Herring пишет:
->>>> On Wed, 31 Mar 2021 02:04:44 +0300, Dmitry Osipenko wrote:
->>>>> Convert Tegra20 External Memory Controller binding to schema.
->>>>>
->>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>>>> ---
->>>>>  .../memory-controllers/nvidia,tegra20-emc.txt | 130 --------
->>>>>  .../nvidia,tegra20-emc.yaml                   | 294 ++++++++++++++++++
->>>>>  2 files changed, 294 insertions(+), 130 deletions(-)
->>>>>  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
->>>>>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
->>>>>
->>>>
->>>> My bot found errors running 'make dt_binding_check' on your patch:
->>>>
->>>> yamllint warnings/errors:
->>>>
->>>> dtschema/dtc warnings/errors:
->>>> Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.example.dts:33.26-55.15: Warning (unit_address_vs_reg): /example-0/external-memory-controller@7000f400/emc-tables@0: node has a unit name, but no reg or ranges property
->>>>
->>>> See https://patchwork.ozlabs.org/patch/1460288
->>>>
->>>> This check can fail if there are any dependencies. The base for a patch
->>>> series is generally the most recent rc1.
->>>>
->>>> If you already ran 'make dt_binding_check' and didn't see the above
->>>> error(s), then make sure 'yamllint' is installed and dt-schema is up to
->>>> date:
->>>>
->>>> pip3 install dtschema --upgrade
->>>>
->>>> Please check and re-submit.
->>>>
->>>
->>> FYI, I'm aware about this warning and I think it's fine to skip it in
->>> the case of this binding. 
->>
->> It's not because dt_binding_check should be warning free.
->>
->>> The dtbs_check doesn't bother with that warning.
->>
->> With W=1 it will. It's off by default because there are too many of 
->> these warnings. Patches welcome.
+Hi Pratyush,
+
+On 3/30/21 8:33 PM, Pratyush Yadav wrote:
+> The CSI2RX subsystem uses PSI-L DMA to transfer frames to memory. It can
+> have up to 32 threads but the current driver only supports using one. So
+> add an entry for that one thread.
+
+If you are absolutely sure that the other threads are not going to be
+used, then:
+Acked-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+
+but I would consider adding the other threads if there is a chance that
+the cs2rx will need to support it in the future.
+
+> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> ---
+>  drivers/dma/ti/k3-psil-j721e.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
 > 
-> Such warning could be silenced with some kind of a new pragma option in
-> schema which will tell what warnings are inappropriate.
-> 
-> But since there is no such option today, perhaps indeed should be better
-> to just add a dummy reg property and fix the device-trees.
+> diff --git a/drivers/dma/ti/k3-psil-j721e.c b/drivers/dma/ti/k3-psil-j721e.c
+> index 7580870ed746..19ffa31e6dc6 100644
+> --- a/drivers/dma/ti/k3-psil-j721e.c
+> +++ b/drivers/dma/ti/k3-psil-j721e.c
+> @@ -58,6 +58,14 @@
+>  		},					\
+>  	}
+>  
+> +#define PSIL_CSI2RX(x)					\
+> +	{						\
+> +		.thread_id = x,				\
+> +		.ep_config = {				\
+> +			.ep_type = PSIL_EP_NATIVE,	\
+> +		},					\
+> +	}
+> +
+>  /* PSI-L source thread IDs, used for RX (DMA_DEV_TO_MEM) */
+>  static struct psil_ep j721e_src_ep_map[] = {
+>  	/* SA2UL */
+> @@ -138,6 +146,8 @@ static struct psil_ep j721e_src_ep_map[] = {
+>  	PSIL_PDMA_XY_PKT(0x4707),
+>  	PSIL_PDMA_XY_PKT(0x4708),
+>  	PSIL_PDMA_XY_PKT(0x4709),
+> +	/* CSI2RX */
+> +	PSIL_CSI2RX(0x4940),
+>  	/* CPSW9 */
+>  	PSIL_ETHERNET(0x4a00),
+>  	/* CPSW0 */
 > 
 
-This actually was my bad, the reg property is already specified in this
-version of binding as required. Apparently I got confused while was
-looking at some device-tree that doesn't have the reg property and it
-should be corrected.
+-- 
+Péter
