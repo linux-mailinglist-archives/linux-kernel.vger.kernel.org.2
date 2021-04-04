@@ -2,149 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB307353850
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 16:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44680353851
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 16:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230523AbhDDOJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 10:09:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37322 "EHLO
+        id S231137AbhDDOKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 10:10:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbhDDOJ2 (ORCPT
+        with ESMTP id S229633AbhDDOJ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 10:09:28 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36FDC061756;
-        Sun,  4 Apr 2021 07:09:23 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id k8so8783135wrc.3;
-        Sun, 04 Apr 2021 07:09:23 -0700 (PDT)
+        Sun, 4 Apr 2021 10:09:58 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23208C061756
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Apr 2021 07:09:52 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id b9so895710wrs.1
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Apr 2021 07:09:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KaLjoMTJs+V7O/0droUw15vxLGVtPQgDn+xESZ/hCEc=;
-        b=tq7OABs750SH+ulUbQfaB841KmjFOVm54KtAp+7yVb5R9jYXNR+4Ma6PYcJlg1WhNZ
-         uqXQgzZQl8y8BMfkVn5GSUgn1P55AVunKpJP0lpUePpjQX5ltHKjWbs1oK9GRqGlQi0+
-         llUGoNN+m8Jnd/aWAOuCGWE64EQlw3e6tIkW5WDjOjQAqr3VXGLP6NgUwFrYwmgKWKgn
-         PJlTt/Jxf0O+5KB6xHxI4glnC0QaBRaIitd/eD94mqIgPvCJ7ePVzSy0sS6Zm24UzJ0/
-         ZQm39q1hf33Oqc5QW5QWvVH6TAJ1N8eVclPus2QcYDjzW1SFGbaF29rwAT31Dvc6xodN
-         K/+w==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TcLF+WCv0M4wIqTfEUJhCyuPrAeNDbmNX5DkS26TIY8=;
+        b=Vgz3KZa9eMWbWMRoa9HkH6mx86HoCm6NjAVUjwqUlOkgm3fcGAYrC3JWUbKqyP3LWk
+         7wZg/nwIBbA8ef9o+XzxBiDsQY+50tHemJh+/wTcaUDjtjTIr6MDtf+RyUCS3xeIWGP5
+         oL0JanyLiqXKgfUmYZF+mIrTnK3DzyDNaEWlGJIWPNTYLqEtC/J7M2RFCCT/EiJjndcT
+         sWq4Pdm6AQzHRW789FzzYAITBJ1dYk0DdS/lE1WilOwIsSfgjDRfHrFGLQf1f01nwNV7
+         SGaIpsIuLHDOihPrqAwRkLY48tZExvT0AlrL0nneBofEANazlf40ak0oSEKQ6ZqCYyLk
+         IuPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=KaLjoMTJs+V7O/0droUw15vxLGVtPQgDn+xESZ/hCEc=;
-        b=Rm9gd+mbNLLzwGz+Wey14YhXaRm5OgASjgfgXqYi6+ZbtwY8NQDfRkY9mzlRxjYMAe
-         H7ddkrZ6t0mijRnFo7SmOxXoU7aQgx/WCanDfzNcurovxG6LXseg5MYrGjEpXuxsabRf
-         yKwHYqXQZ7WIxCjJh9u3H8lxi0/N9R9M+joHwnsCSCFw/QvvYm3RJ91OIO/5siP3g0h8
-         oeQcC7Pc8Sr/AJVDNvPfkUqQFu8fMiZZ8jStMmwDMGZBh+8ZlbPiA02M+Jz2c41FfXnG
-         Db/5UyeWyV5FPf8N1tDreIann8pkDVy0YmVlqGeY4kgq90Ddut1hWRiWdYDo+R4C4qGY
-         vf+g==
-X-Gm-Message-State: AOAM533b0gCXDWGPorw1QSlFrTeEUY/uVL75QyToA18+QtRWIkZutcrG
-        vfS2GkIGGg0kuK9VpqiaogcK8XsF0jVw4A==
-X-Google-Smtp-Source: ABdhPJyrVng+8BqGipMSJOA4uqdo5oICwUORWqws0Q9Tkire93WwVWc+znv5YhLs2V1K+whXEsLOUw==
-X-Received: by 2002:a05:6000:14f:: with SMTP id r15mr522940wrx.166.1617545362323;
-        Sun, 04 Apr 2021 07:09:22 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f1f:bb00:4523:8396:f5be:75e8? (p200300ea8f1fbb0045238396f5be75e8.dip0.t-ipconnect.de. [2003:ea:8f1f:bb00:4523:8396:f5be:75e8])
-        by smtp.googlemail.com with ESMTPSA id k13sm28720690wri.27.2021.04.04.07.09.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Apr 2021 07:09:21 -0700 (PDT)
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>, andrew@lunn.ch,
-        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com, christian.melki@t2data.com
-References: <20210404100701.6366-1-qiangqing.zhang@nxp.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [PATCH] net: phy: fix PHY possibly unwork after MDIO bus resume
- back
-Message-ID: <97e486f8-372a-896f-6549-67b8fb34e623@gmail.com>
-Date:   Sun, 4 Apr 2021 16:09:16 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        bh=TcLF+WCv0M4wIqTfEUJhCyuPrAeNDbmNX5DkS26TIY8=;
+        b=geYmp5QZ5d/ducYbATf7FAfPJEfZSjiYUo+hMvAU+YJibFoduNRBmPqzdKCPN2i82m
+         ddRSLcVwvJlCvm/StIQpG0J74i+jYRhdGqt6Zvlc4ltqhbMicxfYYRunVNtJgsGFr/ke
+         C4aASJZfASMHYHMVVDAI39Vy4OBCSgN2YKulUAngwwqO90BOP+hspccJtCuyvEyKlCfE
+         1tcFoBjBZreuhV6feJzjyfEdpRWVZmMPyHxJAdUZ1f0t2JSa1tnhHYHN1TudjHX8Qoz9
+         qpl8pfaUYMMrtZaeDvGL9UIEIwUirkdPbCqkqqWjVF+0mCcwPlz/fs2aykCC+v+oiTnC
+         bBng==
+X-Gm-Message-State: AOAM530fBa4+kYhzy0qUXk8B+WczAW5c6zKVN8zx56HRxejf9L7p2AWe
+        IW3qL6AtN/YvmYuLqqtV9gM=
+X-Google-Smtp-Source: ABdhPJy1RATGo/LYhD1xiVQyUD4S++zSSES6oN8H0nwoHiiljngyMvSAmRZY/QT2U7l7OvN5XWo1Aw==
+X-Received: by 2002:a5d:4751:: with SMTP id o17mr12818998wrs.219.1617545390898;
+        Sun, 04 Apr 2021 07:09:50 -0700 (PDT)
+Received: from agape ([5.171.81.112])
+        by smtp.gmail.com with ESMTPSA id z17sm12320797wrv.59.2021.04.04.07.09.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Apr 2021 07:09:50 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     dan.carpenter@oracle.com, joe@perches.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Fabio Aiuto <fabioaiuto83@gmail.com>
+Subject: [PATCH v4 00/30] staging: rtl8723bs: remove RT_TRACE logs in core/*
+Date:   Sun,  4 Apr 2021 16:09:16 +0200
+Message-Id: <cover.1617545239.git.fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20210404100701.6366-1-qiangqing.zhang@nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.04.2021 12:07, Joakim Zhang wrote:
-> commit 4c0d2e96ba055 ("net: phy: consider that suspend2ram may cut
-> off PHY power") invokes phy_init_hw() when MDIO bus resume, it will
-> soft reset PHY if PHY driver implements soft_reset callback.
-> commit 764d31cacfe4 ("net: phy: micrel: set soft_reset callback to
-> genphy_soft_reset for KSZ8081") adds soft_reset for KSZ8081. After these
-> two patches, I found i.MX6UL 14x14 EVK which connected to KSZ8081RNB doesn't
-> work any more when system resume back, MAC driver is fec_main.c.
-> 
-> It's obvious that initializing PHY hardware when MDIO bus resume back
-> would introduce some regression when PHY implements soft_reset. When I
+This patchset removes all RT_TRACE usages in core/ files.
 
-Why is this obvious? Please elaborate on why a soft reset should break
-something.
+This is the first of a series aimed at removing RT_TRACE macro.
 
-> am debugging, I found PHY works fine if MAC doesn't support suspend/resume
-> or phy_stop()/phy_start() doesn't been called during suspend/resume. This
-> let me realize, PHY state machine phy_state_machine() could do something
-> breaks the PHY.
-> 
-> As we known, MAC resume first and then MDIO bus resume when system
-> resume back from suspend. When MAC resume, usually it will invoke
-> phy_start() where to change PHY state to PHY_UP, then trigger the stat> machine to run now. In phy_state_machine(), it will start/config
-> auto-nego, then change PHY state to PHY_NOLINK, what to next is
-> periodically check PHY link status. When MDIO bus resume, it will
-> initialize PHY hardware, including soft_reset, what would soft_reset
-> affect seems various from different PHYs. For KSZ8081RNB, when it in
-> PHY_NOLINK state and then perform a soft reset, it will never complete
-> auto-nego.
+The whole private tracing system is not tied to a configuration
+symbol and the default behaviour is _trace nothing_. It's verbose
+and relies on a private log level tracing doomed to be
+removed.
 
-Why? That would need to be checked in detail. Maybe chip errata
-documentation provides a hint.
+-------------------------------
+Changes in v4:
+	- completed checkpatch fix in if condition
+	- fix reference in Suggested-by: tag
+ 
+Changes in v3:
+        - written better changelog in single patches
 
-> 
-> This patch changes PHY state to PHY_UP when MDIO bus resume back, it
-> should be reasonable after PHY hardware re-initialized. Also give state
-> machine a chance to start/config auto-nego again.
-> 
+Changes in v2:
+        - isolate checkpatch fixes in separate patches
+        - removed two if conditions in core/rtw_wlan_util.c
 
-If the MAC driver calls phy_stop() on suspend, then phydev->suspended
-is true and mdio_bus_phy_may_suspend() returns false. As a consequence
-phydev->suspended_by_mdio_bus is false and mdio_bus_phy_resume()
-skips the PHY hw initialization.
-Please also note that mdio_bus_phy_suspend() calls phy_stop_machine()
-that sets the state to PHY_UP.
 
-Having said that the current argumentation isn't convincing. I'm not
-aware of such issues on other systems, therefore it's likely that
-something is system-dependent.
+Fabio Aiuto (30):
+  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_xmit.c
+  staging: rtl8723bs: fix condition in if statement in core/rtw_xmit.c
+  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_security.c
+  staging: rtl8723bs: fix line exceed warning in core/rtw_security.c
+  staging: rtl8723bs: fix spaces around operator issues in
+    core/rtw_security.c
+  staging: rtl8723bs: remove all RT_TRACE logs in core/rtw_eeprom.c
+  staging: rtl8723bs: fix error prone if conditions in core/rtw_eeprom.c
+  staging: rtl8723bs: remove all RT_TRACE logs in core/rtw_pwrctrl.c
+  staging: rtl8723bs: fix logical continuation issue in
+    core/rtw_pwrctrl.c
+  staging: rtl8723bs: remove unnecessary parentheses in if-condition in
+    core/rtw_pwrctrl.c
+  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_cmd.c
+  staging: rtl8723bs: fix null check conditions in core/rtw_cmd.c
+  staging: rtl8723bs: remove unnecessary parentheses in if condition in
+    core/rtw_cmd.c
+  staging: rtl8723bs: remove commented RT_TRACE calls in core/rtw_mlme.c
+  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_mlme.c
+  staging: rtl8723bs: tidy up some error handling in core/rtw_mlme.c
+  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_mlme_ext.c
+  staging: rtl8723bs: remove commented RT_TRACE calls in core/rtw_recv.c
+  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_recv.c
+  staging: rtl8723bs: added spaces around operator in core/rtw_recv.c
+  staging: rtl8723bs: split long line in core/rtw_recv.c
+  staging: rtl8723bs: remove unnecessary parentheses in core/rtw_recv.c
+  staging: rtl8723bs: fix comparison in if condition in core/rtw_recv.c
+  staging: rtl8723bs: remove commented RT_TRACE call in
+    core/rtw_ioctl_set.c
+  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_ioctl_set.c
+  staging: rtl8723bs: place constant on the right side of the test in
+    core/rtw_ioctl_set.c
+  staging: rtl8723bs: remove all RT_TRACE logs in core/rtw_wlan_util.c
+  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_sta_mgt.c
+  staging: rtl8723bs: remove RT_TRACE logs in core/rtw_ieee80211.c
+  staging: rtl8723bs: add spaces around operators in
+    core/rtw_ieee80211.c
 
-Please check the exact call sequence on your system, maybe it
-provides a hint.
+ drivers/staging/rtl8723bs/core/rtw_cmd.c      |  53 +------
+ drivers/staging/rtl8723bs/core/rtw_eeprom.c   |  56 +++----
+ .../staging/rtl8723bs/core/rtw_ieee80211.c    |  90 ++---------
+ .../staging/rtl8723bs/core/rtw_ioctl_set.c    |  79 +---------
+ drivers/staging/rtl8723bs/core/rtw_mlme.c     | 124 +++------------
+ drivers/staging/rtl8723bs/core/rtw_mlme_ext.c |  39 +----
+ drivers/staging/rtl8723bs/core/rtw_pwrctrl.c  |  56 +------
+ drivers/staging/rtl8723bs/core/rtw_recv.c     | 147 +-----------------
+ drivers/staging/rtl8723bs/core/rtw_security.c |  41 +----
+ drivers/staging/rtl8723bs/core/rtw_sta_mgt.c  |  25 ---
+ .../staging/rtl8723bs/core/rtw_wlan_util.c    |  24 +--
+ drivers/staging/rtl8723bs/core/rtw_xmit.c     |  82 +---------
+ 12 files changed, 101 insertions(+), 715 deletions(-)
 
-> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-> ---
->  drivers/net/phy/phy_device.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-> index cc38e326405a..312a6f662481 100644
-> --- a/drivers/net/phy/phy_device.c
-> +++ b/drivers/net/phy/phy_device.c
-> @@ -306,6 +306,13 @@ static __maybe_unused int mdio_bus_phy_resume(struct device *dev)
->  	ret = phy_resume(phydev);
->  	if (ret < 0)
->  		return ret;
-> +
-> +	/* PHY state could be changed to PHY_NOLINK from MAC controller resume
-> +	 * rounte with phy_start(), here change to PHY_UP after re-initializing
-> +	 * PHY hardware, let PHY state machine to start/config auto-nego again.
-> +	 */
-> +	phydev->state = PHY_UP;
-> +
->  no_resume:
->  	if (phydev->attached_dev && phydev->adjust_link)
->  		phy_start_machine(phydev);
-> 
+-- 
+2.20.1
 
