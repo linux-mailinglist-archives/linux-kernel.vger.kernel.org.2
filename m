@@ -2,103 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12BCF353664
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 06:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10AB43536B1
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 06:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbhDDEPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 00:15:22 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:38809 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbhDDEPV (ORCPT
+        id S229602AbhDDEcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 00:32:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229487AbhDDEca (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 00:15:21 -0400
-Received: by mail-io1-f69.google.com with SMTP id x9so8804904iob.5
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Apr 2021 21:15:18 -0700 (PDT)
+        Sun, 4 Apr 2021 00:32:30 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA27C061756;
+        Sat,  3 Apr 2021 21:32:27 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id q5so6117924pfh.10;
+        Sat, 03 Apr 2021 21:32:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=B74+pCF36od4K/ybosaLY+s77x1n5114fK05sPXpTnw=;
+        b=Vfxcf6GDu5TykSAhDMWLPTa3KvfmONLbZ3wjKDqAHBz6unAUfddWA6M/Ez7kkDrtKW
+         FccS4nNth6X461jjOfTe2KR/7fOigSrM4WFeqCkKswkrc1/C4wDgGznXHh0i1lNbUS7l
+         gO95eM5V6CkwuFDsuBfdYxkIT5UXC1WhrJYckAqyAbE4t1ONfADtnoAz7glp6SgP6DCB
+         Xbat+Zbn0AthfFKZNpUD6eXoU6edG8oSVU4EF7pjUzXZCOkzFF5gFQo3b2g29hDrOBtc
+         5EWwQUs+6gjgtH5pGM7bkEyf/YVvxGijcIqcdN0OEvukg9a7gNRBHaMliRxeUE1NowQ0
+         CCww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=XwVdYv6tSytCkwcKFS5bJFOKjHMNQE78mO+cN9dKetk=;
-        b=nzrlREtit/BSZW+jmFIqnTszTdhIB0U7kBN4cnqgx57vh3pstmCFxyDrxt2BZbEG+A
-         qyDonbRCDeNAZCaxDVgKnGRoCShbSvoJZ38edvBFat7Dap5Ig/bxMihF9DqiWTheGgIE
-         C9Y2/iiqo17/t4dPHxiQYDXgdOXbqdq+sqbtbDLrnMWKPeoeyBbd+NFeJV5bsghrOL3d
-         +ICdmBPIxAoVTOpa1cJ4ypCYm/K4QVz5eT9ORHx8kIsMXfaL011C31mJRiZJwzYi+WbJ
-         lB+IDo0LWfd/BcshSd4jQ9gX+dplH9+7CMx2DjIcrwGTX0ToqsOLzYO7GUB3BgTCZhYF
-         H1Ng==
-X-Gm-Message-State: AOAM531mlgQ3vtKpDp/anfEGc+wIrRBVF6DYzWZEo/Je5d/SLgo2mS3H
-        5qvwdD+2z60EJZHaPQKe/Y8N3nEXsw0B63w3wWTO1qZqN/Sg
-X-Google-Smtp-Source: ABdhPJwZ5MI4HfRYIWlxcFFiKKZ8XNsKwjvwjNOfdJbs9wONLYMscwaLif5HPLDBuoHFWo8Wij6/bUkvBGLK6ccaUihclvJA5NAM
-MIME-Version: 1.0
-X-Received: by 2002:a5e:990f:: with SMTP id t15mr15230556ioj.180.1617509717745;
- Sat, 03 Apr 2021 21:15:17 -0700 (PDT)
-Date:   Sat, 03 Apr 2021 21:15:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000025a67605bf1dd4ab@google.com>
-Subject: [syzbot] WARNING: suspicious RCU usage in getname_flags
-From:   syzbot <syzbot+dde0cc33951735441301@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=B74+pCF36od4K/ybosaLY+s77x1n5114fK05sPXpTnw=;
+        b=UMyazcDJs/D26zXqYfhQHDIkWVmrrnu9xJ6Hg/DEcr5C0oHOzvnCzdO2sZkn6cDSws
+         TVq+n8VH/d3xrms/rGYU7UTL1sn22vNBvS10E1GUle9E9FvZtY92quKDE8ZmqUuOJhRJ
+         V1oLETSaHYmHoJSaES8VyAWSzdSq0/bbhUVxLx/q+p26VJiQXomRlAoKy2ByNFmm4yPZ
+         RervYLuE+5f9kpbNZsLBFJLOf1x4pfoJa0vXqj2E7KHEkg229aWj8CxRqi7TevmFqec/
+         Yuez7jIjnjiTtn9kFfNXl9XMb+4JJFwr5jF8jrYPKt0S+j+2wIwi8vBaVKwzdmdnOKdc
+         XJ/A==
+X-Gm-Message-State: AOAM532F+YGqy0E/eFUeGfMqyh4pxQyzdoRLB89sp1eN6aJENoDqi0vK
+        lCXd9Z0xc5pDo3WuOymf19s=
+X-Google-Smtp-Source: ABdhPJysvBz25i1d4OqyDpvH2pSSsYSd+Y3X/iTSWruDDCNFhCghqxmR8b1HsnXsr7X9cZEisvnNKw==
+X-Received: by 2002:a63:e903:: with SMTP id i3mr13201266pgh.374.1617510746254;
+        Sat, 03 Apr 2021 21:32:26 -0700 (PDT)
+Received: from localhost.localdomain ([124.108.22.4])
+        by smtp.gmail.com with ESMTPSA id n6sm8948285pfq.214.2021.04.03.21.32.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Apr 2021 21:32:25 -0700 (PDT)
+From:   zhuguangqing83@gmail.com
+To:     Amit Kucheria <amitk@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Guangqing Zhu <zhuguangqing83@gmail.com>
+Subject: [PATCH] thermal/drivers/tsens: fix missing put_device error
+Date:   Sun,  4 Apr 2021 12:32:19 +0800
+Message-Id: <20210404043219.11334-1-zhuguangqing83@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Guangqing Zhu <zhuguangqing83@gmail.com>
 
-syzbot found the following issue on:
+Fixes coccicheck error:
 
-HEAD commit:    2bb25b3a Merge tag 'mips-fixes_5.12_3' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1284cc31d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=78ef1d159159890
-dashboard link: https://syzkaller.appspot.com/bug?extid=dde0cc33951735441301
+drivers/thermal/qcom/tsens.c:759:4-10: ERROR: missing put_device; call
+of_find_device_by_node on line 715, but without a corresponding object
+release within this function.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Fixes: a7ff82976122 ("drivers: thermal: tsens: Merge tsens-common.c into
+tsens.c")
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+dde0cc33951735441301@syzkaller.appspotmail.com
-
-WARNING: suspicious RCU usage
-5.12.0-rc5-syzkaller #0 Not tainted
------------------------------
-kernel/sched/core.c:8294 Illegal context switch in RCU-bh read-side critical section!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 2, debug_locks = 0
-no locks held by systemd-udevd/4825.
-
-stack backtrace:
-CPU: 0 PID: 4825 Comm: systemd-udevd Not tainted 5.12.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- ___might_sleep+0x229/0x2c0 kernel/sched/core.c:8294
- __might_fault+0x6e/0x180 mm/memory.c:5018
- strncpy_from_user+0x2f/0x3e0 lib/strncpy_from_user.c:117
- getname_flags.part.0+0x95/0x4f0 fs/namei.c:149
- getname_flags fs/namei.c:2733 [inline]
- user_path_at_empty+0xa1/0x100 fs/namei.c:2733
- user_path_at include/linux/namei.h:60 [inline]
- do_faccessat+0x127/0x850 fs/open.c:425
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f840445f9c7
-Code: 83 c4 08 48 3d 01 f0 ff ff 73 01 c3 48 8b 0d c8 d4 2b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 b8 15 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d a1 d4 2b 00 f7 d8 64 89 01 48
-RSP: 002b:00007ffdc40178d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000015
-RAX: ffffffffffffffda RBX: 0000564d558c9760 RCX: 00007f840445f9c7
-RDX: 00746e657665752f RSI: 0000000000000000 RDI: 00007ffdc40178e0
-RBP: 00007ffdc4017960 R08: 0000000000004400 R09: 0000000000001010
-R10: 0000000000000020 R11: 0000000000000246 R12: 0000564d557b1856
-R13: 0000564d558ed190 R14: 00007ffdc40178e0 R15: 0000564d558fe590
-
-
+Signed-off-by: Guangqing Zhu <zhuguangqing83@gmail.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/thermal/qcom/tsens.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
+index d8ce3a687b80..cc4c6a9853a4 100644
+--- a/drivers/thermal/qcom/tsens.c
++++ b/drivers/thermal/qcom/tsens.c
+@@ -755,9 +755,10 @@ int __init init_common(struct tsens_priv *priv)
+ 		for (i = VER_MAJOR; i <= VER_STEP; i++) {
+ 			priv->rf[i] = devm_regmap_field_alloc(dev, priv->srot_map,
+ 							      priv->fields[i]);
+-			if (IS_ERR(priv->rf[i]))
+-				return PTR_ERR(priv->rf[i]);
+-		}
++			if (IS_ERR(priv->rf[i])) {
++				ret = PTR_ERR(priv->rf[i]);
++				goto err_put_device;
++			}
+ 		ret = regmap_field_read(priv->rf[VER_MINOR], &ver_minor);
+ 		if (ret)
+ 			goto err_put_device;
+-- 
+2.17.1
+
