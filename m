@@ -2,78 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84CBA353978
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 21:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C1135397A
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 21:26:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231433AbhDDTYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 15:24:13 -0400
-Received: from hs01.dk-develop.de ([173.249.23.66]:46914 "EHLO
-        hs01.dk-develop.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231284AbhDDTYJ (ORCPT
+        id S231401AbhDDT0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 15:26:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230495AbhDDT0p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 15:24:09 -0400
-Date:   Sun, 4 Apr 2021 21:23:55 +0200
-From:   Danilo Krummrich <danilokrummrich@dk-develop.de>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
-        hkallweit1@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jeremy.linton@arm.com
-Subject: Re: [PATCH 2/2] net: mdio: support c45 peripherals on c22 busses
-Message-ID: <YGoSS7llrl5K6D+/@arch-linux>
-References: <20210331141755.126178-1-danilokrummrich@dk-develop.de>
- <20210331141755.126178-3-danilokrummrich@dk-develop.de>
- <YGSi+b/r4zlq9rm8@lunn.ch>
- <6f1dfc28368d098ace9564e53ed92041@dk-develop.de>
- <20210331183524.GV1463@shell.armlinux.org.uk>
- <2f0ea3c3076466e197ca2977753b07f3@dk-develop.de>
- <20210401084857.GW1463@shell.armlinux.org.uk>
- <YGZvGfNSBBq/92D+@arch-linux>
- <20210402125858.GB1463@shell.armlinux.org.uk>
+        Sun, 4 Apr 2021 15:26:45 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B4E4C061756
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Apr 2021 12:26:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=3pF1jOma3Z1mWr7uQzP/TbmpInXypLLHfdO7biubeG0=; b=KcAI/2B7QYcwQmHemGdmiqb/22
+        WcJqCV7Xvce5EAv/H5X8WlaIg3QuzN8y25lrJlQ/3d7qzRAkEpo0nJAJa/q178R8IHwFZn2d2aINk
+        z6o4zqaMPeQ+UTz4GSEjTpER76QhKd7vwVWN2tSHg9tWAbFQAsNfUCy+7bncfgWhE9vOK2MW8rdd3
+        gRRzCLG3vE49nX3BRLL6U0ZQ84ywIvtED6rKb0R4AYItT8Dj4aRkCFMVoHSZPiDVen2vkgs5ODVM1
+        fAaxeHMgu0F9kV3cxJu0iQX5buaI/KzlLXApVlOEJfpidLMJ7K9VpL//l9b+GDeupHcN6ubY5LdP+
+        zTYq3qBQ==;
+Received: from [2601:1c0:6280:3f0::e0e1] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lT8OB-00ATM1-M4; Sun, 04 Apr 2021 19:26:30 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org, Anton Blanchard <anton@samba.org>
+Subject: [PATCH v2] powerpc: iommu: fix build when neither PCI or IBMVIO is set
+Date:   Sun,  4 Apr 2021 12:26:23 -0700
+Message-Id: <20210404192623.10697-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210402125858.GB1463@shell.armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 01:58:58PM +0100, Russell King - ARM Linux admin wrote:
-> On Fri, Apr 02, 2021 at 03:10:49AM +0200, Danilo Krummrich wrote:
-> > On Thu, Apr 01, 2021 at 09:48:58AM +0100, Russell King - ARM Linux admin wrote:
-> > > One could also argue this is a feature, and it allows userspace to
-> > > know whether C45 cycles are supported or not.
-> > >
-> > No, if the userspace requests such a transfer although the MDIO controller
-> > does not support real c45 framing the kernel will call mdiobus_c45_addr() to
-> > join the devaddr and  and regaddr in one parameter and pass it to
-> > mdiobus_read() or mdiobus_write(). A bus driver not supporting c45 framing
-> > will not care and just mask/shift the joined value and write it to the
-> > particular register. Obviously, this will result into complete garbage being
-> > read or (even worse) written.
-> 
-> 
-> We have established that MDIO drivers need to reject accesses for
-> reads/writes that they do not support - this isn't something that
-> they have historically checked for because it is only recent that
-> phylib has really started to support clause 45 PHYs.
-> 
-I see, that's why you consider it a feature - because it is.
-What do you think about adding a flag MDIO_PHY_ID_MMD (or similar) analog to
-MDIO_PHY_ID_C45 for phy_mii_ioctl() to check for, such that userspace can ask
-for an indirect access in order to save userspace doing the indirect access
-itself. A nice side effect would be saving 3 syscalls per request.
-> More modern MDIO drivers check the requested access type and error
-> out - we need the older MDIO drivers to do the same.
-> 
-So currently every driver should check for the flag MII_ADDR_C45 and report an
-error in case it's unsupported.
+When neither CONFIG_PCI nor CONFIG_IBMVIO is set/enabled, iommu.c has a
+build error. The fault injection code is not useful in that kernel config,
+so make the FAIL_IOMMU option depend on PCI || IBMVIO.
 
-What do you think about checking the bus' capabilities instead in
-mdiobus_c45_*()? This way the check if C45 is supported can even happen before
-calling the driver at all. I think that would be a little cleaner than having
-two places where information of the bus' capabilities are stored (return value
-of read/write functions and the capabilities field).
+Prevents this build error (warning escalated to error):
+../arch/powerpc/kernel/iommu.c:178:30: error: 'fail_iommu_bus_notifier' defined but not used [-Werror=unused-variable]
+  178 | static struct notifier_block fail_iommu_bus_notifier = {
 
-I think there are not too many drivers setting their capabilities though, but
-it should be easy to derive this information from how and if they handle the
-MII_ADDR_C45 flag.
+Fixes: d6b9a81b2a45 ("powerpc: IOMMU fault injection")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: Anton Blanchard <anton@samba.org>
+---
+I was supposed to update this about one month ago, but then I lost
+some email and also took a break for a few weeks, then I remembered,
+so here it is.
+
+ arch/powerpc/Kconfig.debug |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- lnx-512-rc1.orig/arch/powerpc/Kconfig.debug
++++ lnx-512-rc1/arch/powerpc/Kconfig.debug
+@@ -353,6 +353,7 @@ config PPC_EARLY_DEBUG_CPM_ADDR
+ config FAIL_IOMMU
+ 	bool "Fault-injection capability for IOMMU"
+ 	depends on FAULT_INJECTION
++	depends on PCI || IBMVIO
+ 	help
+ 	  Provide fault-injection capability for IOMMU. Each device can
+ 	  be selectively enabled via the fail_iommu property.
