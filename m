@@ -2,63 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D49353953
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 20:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1330435395B
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 20:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231362AbhDDSGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 14:06:37 -0400
-Received: from vps-vb.mhejs.net ([37.28.154.113]:54356 "EHLO vps-vb.mhejs.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229918AbhDDSGe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 14:06:34 -0400
-Received: from MUA
-        by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.93.0.4)
-        (envelope-from <mail@maciej.szmigiero.name>)
-        id 1lT78W-0003qW-Qq; Sun, 04 Apr 2021 20:06:12 +0200
-Subject: Re: rtlwifi/rtl8192cu AP mode broken with PS STA
-From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-To:     Ping-Ke Shih <pkshih@realtek.com>
-Cc:     Johannes Berg <johannes@sipsolutions.net>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>
-References: <e2924d81-0e30-2dd0-292b-428fea199484@maciej.szmigiero.name>
-Message-ID: <846f6166-c570-01fc-6bbc-3e3b44e51327@maciej.szmigiero.name>
-Date:   Sun, 4 Apr 2021 20:06:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S231337AbhDDSMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 14:12:33 -0400
+Received: from fgw20-7.mail.saunalahti.fi ([62.142.5.81]:53553 "EHLO
+        fgw20-7.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229918AbhDDSM0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Apr 2021 14:12:26 -0400
+Received: from localhost (88-115-248-186.elisa-laajakaista.fi [88.115.248.186])
+        by fgw20.mail.saunalahti.fi (Halon) with ESMTP
+        id 4baa567f-9571-11eb-ba24-005056bd6ce9;
+        Sun, 04 Apr 2021 21:12:20 +0300 (EEST)
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Ard Biesheuvel <ardb@kernel.org>, Lukas Wunner <lukas@wunner.de>
+Subject: [PATCH v2 1/1] efi/dev-path-parser: Switch to use for_each_acpi_dev_match()
+Date:   Sun,  4 Apr 2021 21:12:16 +0300
+Message-Id: <20210404181216.1450776-1-andy.shevchenko@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <e2924d81-0e30-2dd0-292b-428fea199484@maciej.szmigiero.name>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.03.2021 00:54, Maciej S. Szmigiero wrote:
-> Hi,
-> 
-> It looks like rtlwifi/rtl8192cu AP mode is broken when a STA is using PS,
-> since the driver does not update its beacon to account for TIM changes,
-> so a station that is sleeping will never learn that it has packets
-> buffered at the AP.
-> 
-> Looking at the code, the rtl8192cu driver implements neither the set_tim()
-> callback, nor does it explicitly update beacon data periodically, so it
-> has no way to learn that it had changed.
-> 
-> This results in the AP mode being virtually unusable with STAs that do
-> PS and don't allow for it to be disabled (IoT devices, mobile phones,
-> etc.).
-> 
-> I think the easiest fix here would be to implement set_tim() for example
-> the way rt2x00 driver does: queue a work or schedule a tasklet to update
-> the beacon data on the device.
+Switch to use for_each_acpi_dev_match() instead of home grown analogue.
+No functional change intended.
 
-Are there any plans to fix this?
-The driver is listed as maintained by Ping-Ke.
+Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+---
+v2: fixed refcounting
+    (example from which I took the v1 approach has been broken, fix is sent :-)
+ drivers/firmware/efi/dev-path-parser.c | 49 ++++++++++----------------
+ 1 file changed, 18 insertions(+), 31 deletions(-)
 
-Thanks,
-Maciej
+diff --git a/drivers/firmware/efi/dev-path-parser.c b/drivers/firmware/efi/dev-path-parser.c
+index 5c9625e552f4..10d4457417a4 100644
+--- a/drivers/firmware/efi/dev-path-parser.c
++++ b/drivers/firmware/efi/dev-path-parser.c
+@@ -12,52 +12,39 @@
+ #include <linux/efi.h>
+ #include <linux/pci.h>
+ 
+-struct acpi_hid_uid {
+-	struct acpi_device_id hid[2];
+-	char uid[11]; /* UINT_MAX + null byte */
+-};
+-
+-static int __init match_acpi_dev(struct device *dev, const void *data)
+-{
+-	struct acpi_hid_uid hid_uid = *(const struct acpi_hid_uid *)data;
+-	struct acpi_device *adev = to_acpi_device(dev);
+-
+-	if (acpi_match_device_ids(adev, hid_uid.hid))
+-		return 0;
+-
+-	if (adev->pnp.unique_id)
+-		return !strcmp(adev->pnp.unique_id, hid_uid.uid);
+-	else
+-		return !strcmp("0", hid_uid.uid);
+-}
+-
+ static long __init parse_acpi_path(const struct efi_dev_path *node,
+ 				   struct device *parent, struct device **child)
+ {
+-	struct acpi_hid_uid hid_uid = {};
++	char hid[ACPI_ID_LEN], uid[11]; /* UINT_MAX + null byte */
++	struct acpi_device *adev;
+ 	struct device *phys_dev;
+ 
+ 	if (node->header.length != 12)
+ 		return -EINVAL;
+ 
+-	sprintf(hid_uid.hid[0].id, "%c%c%c%04X",
++	sprintf(hid, "%c%c%c%04X",
+ 		'A' + ((node->acpi.hid >> 10) & 0x1f) - 1,
+ 		'A' + ((node->acpi.hid >>  5) & 0x1f) - 1,
+ 		'A' + ((node->acpi.hid >>  0) & 0x1f) - 1,
+ 			node->acpi.hid >> 16);
+-	sprintf(hid_uid.uid, "%u", node->acpi.uid);
+-
+-	*child = bus_find_device(&acpi_bus_type, NULL, &hid_uid,
+-				 match_acpi_dev);
+-	if (!*child)
++	sprintf(uid, "%u", node->acpi.uid);
++
++	for_each_acpi_dev_match(adev, hid, NULL, -1) {
++		if (adev->pnp.unique_id && !strcmp(adev->pnp.unique_id, uid))
++			break;
++		if (!adev->pnp.unique_id && node->acpi.uid == 0)
++			break;
++		acpi_dev_put(adev);
++	}
++	if (!adev)
+ 		return -ENODEV;
+ 
+-	phys_dev = acpi_get_first_physical_node(to_acpi_device(*child));
++	phys_dev = acpi_get_first_physical_node(adev);
+ 	if (phys_dev) {
+-		get_device(phys_dev);
+-		put_device(*child);
+-		*child = phys_dev;
+-	}
++		*child = get_device(phys_dev);
++		acpi_dev_put(adev);
++	} else
++		*child = &adev->dev;
+ 
+ 	return 0;
+ }
+-- 
+2.31.1
+
