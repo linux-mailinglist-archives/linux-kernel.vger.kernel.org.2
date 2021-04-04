@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98960353860
+	by mail.lfdr.de (Postfix) with ESMTP id E531C353861
 	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 16:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231381AbhDDOKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 10:10:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37508 "EHLO
+        id S231409AbhDDOKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 10:10:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231233AbhDDOKS (ORCPT
+        with ESMTP id S231249AbhDDOKT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 10:10:18 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 397A2C061756
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Apr 2021 07:10:13 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id m20-20020a7bcb940000b029010cab7e5a9fso6418653wmi.3
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Apr 2021 07:10:13 -0700 (PDT)
+        Sun, 4 Apr 2021 10:10:19 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E6B4C061788
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Apr 2021 07:10:14 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id w203-20020a1c49d40000b029010c706d0642so6523130wma.0
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Apr 2021 07:10:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=vXCLvI8TEyAmbBcLdMXgq4ObYns8B8WMiEotpUKpaLI=;
-        b=h09SrG+r+5CWjgigGT0BYGHjCzEwKi9mzCR2/48D2LF+znv236NDVYDzokxR7YrGwZ
-         YSpEIcDzYxtR3XMR62416DflGpVuxe0aphmwNYjVoOYyTpPiLetpYjW0tm1aTw9eRNBD
-         1HVKba+p5cHJ7/b/r6+e1UE55uP+m9aJo70jNpvZiIOB/TjP/7SvckO6ObEIRrwwipHH
-         czPibnUzdxlLX+n//pyom/p+h5rXkotiqGqGm0mEnmjimYRjzlivkQ3k3Lu/eL3JQ0pB
-         ZtILhv0HvNx1906e97kyvEyrbfJw7IaWdHbBKTmv0bgUn273l3MrVeP4+1V+cvoBkO5b
-         Vc6g==
+        bh=aKJMQyibGkbhT7wVDkcAwfnXuo5IWQYiwpzUD+I1No0=;
+        b=YIICI1EnDAQIG+agmEPc7Vd6BcInQyeh8NdLLT6IK3ebjBBOe0wbRmrO7hdAibVo1o
+         9xs13W91sV5RNdYzRD+KO4ADal9ieTMjWqo+wwRyUo3Y0huiYPugWBKcgWy8wFVego3g
+         6a6RWR31YefMweeUV9O2iTEvZL9djiA40qUIipPJEwbFVhCpYziOZ6hdNZpMytpMGOn8
+         27BMcIDTXWC2EbR1KOEo1lqDy+5spNX46iDZtZJKBlDsh87sccE28bCRUjoRcTnt7fv4
+         ZLVA5LQtZPhbvnmAoAKd7+1TSKdx59nAygH00KOXPLT6ru8RtdLsZT4nUPBhF/9Jyb5N
+         TVjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vXCLvI8TEyAmbBcLdMXgq4ObYns8B8WMiEotpUKpaLI=;
-        b=f+xx6v5xJHMXxns7h24lC2vNZTiP4H/upRjq1jM3EbKZPN+qHPS2bnswFZ1hKHQyUp
-         gK+lgvuotaney3fBFM/eXgu0WmykCnoI68P6KADyo3G2yEWqA978yX5AUY1Gpa1hTHti
-         zJAKfwrm3ri8sQJIFv4lxyvkm44igN1P117P8dkMGzzR53tV8GbnAuJ9d6+mNaOmyp9r
-         3nr7gfguVHhnd3cFazFC2rIZh685PtQN2BzP8GUlSbArtDqIX5e9NO3bS5i9+mJNCa5O
-         4Kx4wABHYp8na8KqILbltzWSWEO1C4poJ20+sopJMkli4yZ+lrwA+7ua3jxLcVId9lG3
-         qlGA==
-X-Gm-Message-State: AOAM532/TL0INjR/t5EVtxuxAVYVm4z7GgPGzu35bTuYaYH7F6sNGnnG
-        +hQCRGqPuDbIdGjhfyyVG6Q=
-X-Google-Smtp-Source: ABdhPJwpr3wIitZZJ4lIhFVwC/axsTBKKp2IXt1abjIudRj2qB48XB6qJs2ZNtaZh7tbTyUz5e9WXQ==
-X-Received: by 2002:a1c:bd55:: with SMTP id n82mr21034711wmf.3.1617545411881;
-        Sun, 04 Apr 2021 07:10:11 -0700 (PDT)
+        bh=aKJMQyibGkbhT7wVDkcAwfnXuo5IWQYiwpzUD+I1No0=;
+        b=TmUomjTtW/9ager4tokgW8bKe4lGpPujOuSNXFMeyVqgPmre/QcsL+5t4FSqTcwkcP
+         S9OcrJi40eHHPcflEp8QnNL/UBoQv4fkDDzYXXo/UjbSQQQL5xHjJTfg5nXZasK8CgXI
+         NQHugtuTAscx6RppxTqzMhKDnPTkn0PiCG/nWxKs/v8NkAe8DZT8BQnBSB5VjYEO850B
+         WmTJfNDmy7dW5bFtUiH32aaCylZw+qTmiaW2fWG/Bw5f74AtHDAENVkltLcUmaXMumfI
+         myhy9BlvDwykQfGBeWKhpQ1icrkdeJgOxcjBpVbhnAiujG9AXldV47buVp853BKatFEO
+         op4Q==
+X-Gm-Message-State: AOAM531jMGJfXMPzVIIzhU+jVAunieafU0N/yNPeHEKIE892A8+hxoxg
+        p/gkxBJtIz2MA6uz+yZTLdk=
+X-Google-Smtp-Source: ABdhPJzrmDQybCU4L7MRdcfzVHuGRBl+4WwLhK81JhCpklUz02zwylAGQcuO2b58pmxVvhqBmZfFig==
+X-Received: by 2002:a7b:cbc4:: with SMTP id n4mr21931659wmi.153.1617545413455;
+        Sun, 04 Apr 2021 07:10:13 -0700 (PDT)
 Received: from agape ([5.171.81.112])
-        by smtp.gmail.com with ESMTPSA id k16sm11319725wro.11.2021.04.04.07.10.11
+        by smtp.gmail.com with ESMTPSA id h10sm23472217wrp.22.2021.04.04.07.10.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Apr 2021 07:10:11 -0700 (PDT)
+        Sun, 04 Apr 2021 07:10:13 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     dan.carpenter@oracle.com, joe@perches.com,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH v4 13/30] staging: rtl8723bs: remove unnecessary parentheses in if condition in core/rtw_cmd.c
-Date:   Sun,  4 Apr 2021 16:09:29 +0200
-Message-Id: <04aa9d68d6d28d295001dde7cc14f33ef83f8046.1617545239.git.fabioaiuto83@gmail.com>
+Subject: [PATCH v4 14/30] staging: rtl8723bs: remove commented RT_TRACE calls in core/rtw_mlme.c
+Date:   Sun,  4 Apr 2021 16:09:30 +0200
+Message-Id: <09862e8783366045a08fd97523595710a08df918.1617545239.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1617545239.git.fabioaiuto83@gmail.com>
 References: <cover.1617545239.git.fabioaiuto83@gmail.com>
@@ -65,30 +65,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix post-commit hook checkpatch issue:
+Remove commented RT_TRACE calls in core/rtw_mlme.c
 
-WARNING: Unnecessary parentheses
-166: FILE: drivers/staging/rtl8723bs/core/rtw_cmd.c:2000:
-+	if ((pcmd->res != H2C_SUCCESS))
+Remove all of the RT_TRACE logs in the core/rtw_mlme.c file as they
+currently do nothing as they require the code to be modified by
+hand in order to be turned on. This obviously has not happened
+since the code was merged. Moreover it relies on an unneeded
+private log level tracing which overrides the in-kernel public one,
+so just remove them as they are unused.
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/core/rtw_cmd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/rtl8723bs/core/rtw_mlme.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-index 840b9da9f2d9..77c583c60343 100644
---- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-@@ -1997,7 +1997,7 @@ void rtw_createbss_cmd_callback(struct adapter *padapter, struct cmd_obj *pcmd)
- 	if (pcmd->parmbuf == NULL)
- 		goto exit;
+diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme.c b/drivers/staging/rtl8723bs/core/rtw_mlme.c
+index 29d4b7493784..4289bf40aa73 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_mlme.c
++++ b/drivers/staging/rtl8723bs/core/rtw_mlme.c
+@@ -356,7 +356,6 @@ static struct	wlan_network *rtw_dequeue_network(struct __queue *queue)
+ void rtw_free_network_nolock(struct adapter *padapter, struct wlan_network *pnetwork);
+ void rtw_free_network_nolock(struct adapter *padapter, struct wlan_network *pnetwork)
+ {
+-	/* RT_TRACE(_module_rtl871x_mlme_c_, _drv_err_, ("rtw_free_network ==> ssid = %s\n\n" , pnetwork->network.Ssid.Ssid)); */
+ 	_rtw_free_network_nolock(&(padapter->mlmepriv), pnetwork);
+ 	rtw_cfg80211_unlink_bss(padapter, pnetwork);
+ }
+@@ -393,8 +392,6 @@ int rtw_is_same_ibss(struct adapter *adapter, struct wlan_network *pnetwork)
  
--	if ((pcmd->res != H2C_SUCCESS))
-+	if (pcmd->res != H2C_SUCCESS)
- 		_set_timer(&pmlmepriv->assoc_timer, 1);
+ inline int is_same_ess(struct wlan_bssid_ex *a, struct wlan_bssid_ex *b)
+ {
+-	/* RT_TRACE(_module_rtl871x_mlme_c_, _drv_err_, ("(%s,%d)(%s,%d)\n", */
+-	/* 		a->Ssid.Ssid, a->Ssid.SsidLength, b->Ssid.Ssid, b->Ssid.SsidLength)); */
+ 	return (a->Ssid.SsidLength == b->Ssid.SsidLength)
+ 		&&  !memcmp(a->Ssid.Ssid, b->Ssid.Ssid, a->Ssid.SsidLength);
+ }
+@@ -551,8 +548,6 @@ static void update_current_network(struct adapter *adapter, struct wlan_bssid_ex
+ 		&(pmlmepriv->cur_network.network));
  
- 	del_timer_sync(&pmlmepriv->assoc_timer);
+ 	if ((check_fwstate(pmlmepriv, _FW_LINKED) == true) && (is_same_network(&(pmlmepriv->cur_network.network), pnetwork, 0))) {
+-		/* RT_TRACE(_module_rtl871x_mlme_c_, _drv_err_,"Same Network\n"); */
+-
+ 		/* if (pmlmepriv->cur_network.network.IELength<= pnetwork->IELength) */
+ 		{
+ 			update_network(&(pmlmepriv->cur_network.network), pnetwork, adapter, true);
+@@ -778,7 +773,6 @@ void rtw_survey_event_callback(struct adapter	*adapter, u8 *pbuf)
+ 
+ 	/*  update IBSS_network 's timestamp */
+ 	if ((check_fwstate(pmlmepriv, WIFI_ADHOC_MASTER_STATE)) == true) {
+-		/* RT_TRACE(_module_rtl871x_mlme_c_, _drv_err_,"rtw_survey_event_callback : WIFI_ADHOC_MASTER_STATE\n\n"); */
+ 		if (!memcmp(&(pmlmepriv->cur_network.network.MacAddress), pnetwork->MacAddress, ETH_ALEN)) {
+ 			struct wlan_network *ibss_wlan = NULL;
+ 
 -- 
 2.20.1
 
