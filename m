@@ -2,109 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3127335370F
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 08:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1910D353714
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 08:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbhDDGcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 02:32:01 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:30496 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229557AbhDDGcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 02:32:00 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FCkTg6gdbz9v3gc;
-        Sun,  4 Apr 2021 08:31:51 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id Wu3DjiSg0knV; Sun,  4 Apr 2021 08:31:51 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FCkTg5Rd4z9v3gb;
-        Sun,  4 Apr 2021 08:31:51 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 435258B76F;
-        Sun,  4 Apr 2021 08:31:54 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id b4wLpnXD92A7; Sun,  4 Apr 2021 08:31:54 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 92D088B76A;
-        Sun,  4 Apr 2021 08:31:53 +0200 (CEST)
-Subject: Re: [PATCH 1/5] crypto: ccp: Detect and reject vmalloc addresses
- destined for PSP
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        John Allen <john.allen@amd.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>
-References: <20210402233702.3291792-1-seanjc@google.com>
- <20210402233702.3291792-2-seanjc@google.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <f731c2f3-7a51-47d6-bdb2-cfefd07b6abd@csgroup.eu>
-Date:   Sun, 4 Apr 2021 08:31:46 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S230100AbhDDGd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 02:33:56 -0400
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:41509 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229550AbhDDGdz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Apr 2021 02:33:55 -0400
+Received: from localhost.localdomain ([90.126.11.170])
+        by mwinf5d04 with ME
+        id oWZo240023g7mfN03WZoWv; Sun, 04 Apr 2021 08:33:49 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 04 Apr 2021 08:33:49 +0200
+X-ME-IP: 90.126.11.170
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     chris.snook@gmail.com, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] net: ag71xx: Slightly simplify 'ag71xx_rx_packets()'
+Date:   Sun,  4 Apr 2021 08:33:44 +0200
+Message-Id: <7fadf8e80b7fea5e5bc8ce606f3aec8cd7bd60e8.1617517935.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20210402233702.3291792-2-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+There is no need to use 'list_for_each_entry_safe' here, as nothing is
+removed from the list in the 'for' loop.
+Use 'list_for_each_entry' instead, it is slightly less verbose.
 
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/net/ethernet/atheros/ag71xx.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Le 03/04/2021 à 01:36, Sean Christopherson a écrit :
-> Explicitly reject vmalloc'd data as the source for SEV commands that are
-> sent to the PSP.  The PSP works with physical addresses, and __pa() will
-> not return the correct address for a vmalloc'd pionter, which at best
-> will cause the command to fail, and at worst lead to system instability.
-> 
-> While it's unlikely that callers will deliberately use vmalloc() for SEV
-> buffers, a caller can easily use a vmalloc'd pointer unknowingly when
-> running with CONFIG_VMAP_STACK=y as it's not obvious that putting the
-> command buffers on the stack would be bad.  The command buffers are
-> relative small and easily fit on the stack, and the APIs to do not
-> document that the incoming pointer must be a physically contiguous,
-> __pa() friendly pointer.
-> 
-> Cc: Brijesh Singh <brijesh.singh@amd.com>
-> Cc: Borislav Petkov <bp@suse.de>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Fixes: 200664d5237f ("crypto: ccp: Add Secure Encrypted Virtualization (SEV) command support")
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   drivers/crypto/ccp/sev-dev.c | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-> index cb9b4c4e371e..6556d220713b 100644
-> --- a/drivers/crypto/ccp/sev-dev.c
-> +++ b/drivers/crypto/ccp/sev-dev.c
-> @@ -150,6 +150,9 @@ static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
->   
->   	sev = psp->sev_data;
->   
-> +	if (data && WARN_ON_ONCE(is_vmalloc_addr(data)))
-> +		return -EINVAL;
-> +
+diff --git a/drivers/net/ethernet/atheros/ag71xx.c b/drivers/net/ethernet/atheros/ag71xx.c
+index a60ce9030581..7352f98123c7 100644
+--- a/drivers/net/ethernet/atheros/ag71xx.c
++++ b/drivers/net/ethernet/atheros/ag71xx.c
+@@ -1658,9 +1658,9 @@ static int ag71xx_rx_packets(struct ag71xx *ag, int limit)
+ 	struct net_device *ndev = ag->ndev;
+ 	int ring_mask, ring_size, done = 0;
+ 	unsigned int pktlen_mask, offset;
+-	struct sk_buff *next, *skb;
+ 	struct ag71xx_ring *ring;
+ 	struct list_head rx_list;
++	struct sk_buff *skb;
+ 
+ 	ring = &ag->rx_ring;
+ 	pktlen_mask = ag->dcfg->desc_pktlen_mask;
+@@ -1725,7 +1725,7 @@ static int ag71xx_rx_packets(struct ag71xx *ag, int limit)
+ 
+ 	ag71xx_ring_rx_refill(ag);
+ 
+-	list_for_each_entry_safe(skb, next, &rx_list, list)
++	list_for_each_entry(skb, &rx_list, list)
+ 		skb->protocol = eth_type_trans(skb, ndev);
+ 	netif_receive_skb_list(&rx_list);
+ 
+-- 
+2.27.0
 
-I hadn't seen this patch when I commented the 2 other ones, I received it only this night.
-
-As commented in the other patches, is_vmalloc_addr() is not the best way to test that __pa() can be 
-safely used.
-
-For that, you have virt_addr_valid()
-
->   	/* Get the physical address of the command buffer */
->   	phys_lsb = data ? lower_32_bits(__psp_pa(data)) : 0;
->   	phys_msb = data ? upper_32_bits(__psp_pa(data)) : 0;
-> 
