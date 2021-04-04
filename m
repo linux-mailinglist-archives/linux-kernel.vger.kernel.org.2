@@ -2,76 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8F335370B
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 08:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3127335370F
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 08:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229842AbhDDGZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 02:25:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33986 "EHLO mail.kernel.org"
+        id S229873AbhDDGcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 02:32:01 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:30496 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229501AbhDDGZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 02:25:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CFFA61247;
-        Sun,  4 Apr 2021 06:25:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617517548;
-        bh=K8HD8TX5u2dUALpuFYyYEWSZqL/EoPe6tfx8ELwXFf0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Xc+CE5MOqDbvKOCtNGOGZhCsys3oh+mCInui9+p62ULYFPQyuGvlmfTWW5xUE2TqA
-         ZbY5xvcaLBPUEYz7AYWGu8eTkuzbDnlu4Ky6SPZoJh3txEnnyGbMZg3xb4IZhlRaqU
-         VIpQpb74V7QZFe5Np6Z+942p4nlFAuYOL4+LczWG3fO7zW782B4SlK0lSA9IXygiUe
-         fUvfwMbiTYzTP+1vKcJl0mkwSkLPHGckrq6v56bMy+tATRDN17H5oTI2NmPDH3Kan1
-         HF2CMR6Z2UCmx/mt3Er4GV/uRTcjnKYq3Q4Fe1O3t3aTuvbXzoHEYveWLXL7+Pdktm
-         v58FdYSqjA1SA==
-Date:   Sun, 4 Apr 2021 09:25:44 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Salil Mehta <salil.mehta@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-        linuxarm@openeuler.org
-Subject: Re: [PATCH net 1/2] net: hns3: Remove the left over redundant check
- & assignment
-Message-ID: <YGlb6CgaW5r4lwaC@unreal>
-References: <20210403013520.22108-1-salil.mehta@huawei.com>
- <20210403013520.22108-2-salil.mehta@huawei.com>
+        id S229557AbhDDGcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Apr 2021 02:32:00 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FCkTg6gdbz9v3gc;
+        Sun,  4 Apr 2021 08:31:51 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id Wu3DjiSg0knV; Sun,  4 Apr 2021 08:31:51 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FCkTg5Rd4z9v3gb;
+        Sun,  4 Apr 2021 08:31:51 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 435258B76F;
+        Sun,  4 Apr 2021 08:31:54 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id b4wLpnXD92A7; Sun,  4 Apr 2021 08:31:54 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 92D088B76A;
+        Sun,  4 Apr 2021 08:31:53 +0200 (CEST)
+Subject: Re: [PATCH 1/5] crypto: ccp: Detect and reject vmalloc addresses
+ destined for PSP
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        John Allen <john.allen@amd.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Borislav Petkov <bp@suse.de>
+References: <20210402233702.3291792-1-seanjc@google.com>
+ <20210402233702.3291792-2-seanjc@google.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <f731c2f3-7a51-47d6-bdb2-cfefd07b6abd@csgroup.eu>
+Date:   Sun, 4 Apr 2021 08:31:46 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210403013520.22108-2-salil.mehta@huawei.com>
+In-Reply-To: <20210402233702.3291792-2-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 03, 2021 at 02:35:19AM +0100, Salil Mehta wrote:
-> This removes the left over check and assignment which is no longer used
-> anywhere in the function and should have been removed as part of the
-> below mentioned patch.
+
+
+Le 03/04/2021 à 01:36, Sean Christopherson a écrit :
+> Explicitly reject vmalloc'd data as the source for SEV commands that are
+> sent to the PSP.  The PSP works with physical addresses, and __pa() will
+> not return the correct address for a vmalloc'd pionter, which at best
+> will cause the command to fail, and at worst lead to system instability.
 > 
-> Fixes: 012fcb52f67c ("net: hns3: activate reset timer when calling reset_event")
-> Signed-off-by: Salil Mehta <salil.mehta@huawei.com>
+> While it's unlikely that callers will deliberately use vmalloc() for SEV
+> buffers, a caller can easily use a vmalloc'd pointer unknowingly when
+> running with CONFIG_VMAP_STACK=y as it's not obvious that putting the
+> command buffers on the stack would be bad.  The command buffers are
+> relative small and easily fit on the stack, and the APIs to do not
+> document that the incoming pointer must be a physically contiguous,
+> __pa() friendly pointer.
+> 
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: Borislav Petkov <bp@suse.de>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Fixes: 200664d5237f ("crypto: ccp: Add Secure Encrypted Virtualization (SEV) command support")
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 > ---
->  drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c | 2 --
->  1 file changed, 2 deletions(-)
+>   drivers/crypto/ccp/sev-dev.c | 3 +++
+>   1 file changed, 3 insertions(+)
 > 
-> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-> index e3f81c7e0ce7..7ad0722383f5 100644
-> --- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-> @@ -3976,8 +3976,6 @@ static void hclge_reset_event(struct pci_dev *pdev, struct hnae3_handle *handle)
->  	 * want to make sure we throttle the reset request. Therefore, we will
->  	 * not allow it again before 3*HZ times.
->  	 */
-> -	if (!handle)
-> -		handle = &hdev->vport[0].nic;
+> diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+> index cb9b4c4e371e..6556d220713b 100644
+> --- a/drivers/crypto/ccp/sev-dev.c
+> +++ b/drivers/crypto/ccp/sev-dev.c
+> @@ -150,6 +150,9 @@ static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
+>   
+>   	sev = psp->sev_data;
+>   
+> +	if (data && WARN_ON_ONCE(is_vmalloc_addr(data)))
+> +		return -EINVAL;
+> +
 
-The comment above should be updated too, and probably the signature of
-hclge_reset_event() worth to be changed.
+I hadn't seen this patch when I commented the 2 other ones, I received it only this night.
 
-Thanks
+As commented in the other patches, is_vmalloc_addr() is not the best way to test that __pa() can be 
+safely used.
 
->  
->  	if (time_before(jiffies, (hdev->last_reset_time +
->  				  HCLGE_RESET_INTERVAL))) {
-> -- 
-> 2.17.1
+For that, you have virt_addr_valid()
+
+>   	/* Get the physical address of the command buffer */
+>   	phys_lsb = data ? lower_32_bits(__psp_pa(data)) : 0;
+>   	phys_msb = data ? upper_32_bits(__psp_pa(data)) : 0;
 > 
