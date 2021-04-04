@@ -2,160 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38580353637
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 04:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E5835363A
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 04:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236848AbhDDCdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Apr 2021 22:33:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57666 "EHLO
+        id S236808AbhDDCee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Apr 2021 22:34:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236618AbhDDCdN (ORCPT
+        with ESMTP id S236621AbhDDCed (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Apr 2021 22:33:13 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B89D5C061756;
-        Sat,  3 Apr 2021 19:33:09 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id i81so8609042oif.6;
-        Sat, 03 Apr 2021 19:33:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9kK4JLftKzlx8Dd9WsCAD10DkpUFDpGIS6PjT+XywEg=;
-        b=B6gGGFGhaC1KefgVKVBye+qwFkxvOzewH3KW6fIbSLw2tLYGss+OPaUlkLzTuWpoOb
-         Jbm3dHMKyeJnIOlzZiD9OFEYswE5tPps4NJsQMoRDpElr+mfAxGp2UjMb9Lr+IUWQVIg
-         p7v6xjerEfqhnr/pcy6Zh7Cdnx7bIrQIeVTnoq/J+Dg6No3iDHnmxTmDeZY68WcQmCt9
-         Udr9R8EOTLoE2Q+e3D84imq+Z8y2vXsziBiOiKJZod1I4u3FtU6MSJ9nJ11NCLAt5Lbl
-         FJ/MrX2E6Q2v4KdAJnnZ9Nr4Z3rDY79rYk371iZJoVfJuhWeQJCOELeO/kDYQpO3F16v
-         1+ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9kK4JLftKzlx8Dd9WsCAD10DkpUFDpGIS6PjT+XywEg=;
-        b=eCUFEpNuZqkIIe+R720kXC2+EZaLTYNDBtFtNwxu5YKvcc+Efwx9Dys7/IUUG3Wnjy
-         ag2br44LqInScWnlFnr48q9sKKQONARRwQ+01I/E3BCxbZPPSboF4SFgm9K+dkhE8OJ7
-         mP3jQcvrJGKItc+jvXX3rKCerNk4s55QNwN3pbLQodHc5Z7OaqZdVWUK6iV88qZtBOjm
-         aLItdqF9iEVqJPyKTk9LuyD8oJ3qPD2hZ4uMG3Yq11Gc9LMNKiqA44PkEMKo+NelaIrA
-         2c4gCqvOyBeO22DjYW8SDxoF1p03U/g2lfNReUdQV40Y/8viepX86OjtRA+xjXEdETNA
-         CyRw==
-X-Gm-Message-State: AOAM533xIbOurgdVe2giEToErsFIeQNLHV68n/Pxnsjj3mkNz42otvdH
-        bzqkneSB9+65n1P6BSPzDLMTbRdc3fE=
-X-Google-Smtp-Source: ABdhPJzC3HWE2ylpgtXM5qJiE/qVb1ttVbl9OIJRl6FWVl814rQ0ZMfEcz+952a3lS4sYl5pV2HHHw==
-X-Received: by 2002:aca:4e83:: with SMTP id c125mr13911341oib.38.1617503588787;
-        Sat, 03 Apr 2021 19:33:08 -0700 (PDT)
-Received: from ?IPv6:2600:1700:dfe0:49f0:d9ea:8934:6811:fd93? ([2600:1700:dfe0:49f0:d9ea:8934:6811:fd93])
-        by smtp.gmail.com with ESMTPSA id n10sm2940225otj.36.2021.04.03.19.32.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 03 Apr 2021 19:33:08 -0700 (PDT)
-Subject: Re: [PATCH net-next v1 1/9] net: dsa: add rcv_post call back
-To:     Vladimir Oltean <olteanv@gmail.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-References: <20210403114848.30528-1-o.rempel@pengutronix.de>
- <20210403114848.30528-2-o.rempel@pengutronix.de>
- <20210403140534.c4ydlgu5hqh7bmcq@skbuf>
- <20210403232116.knf6d7gdrvamk2lj@skbuf>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <53d84140-c072-f4ab-2f5c-af5c62abce2d@gmail.com>
-Date:   Sat, 3 Apr 2021 19:32:48 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Sat, 3 Apr 2021 22:34:33 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C618FC061756;
+        Sat,  3 Apr 2021 19:34:29 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lSsaW-002Ng2-6V; Sun, 04 Apr 2021 02:34:08 +0000
+Date:   Sun, 4 Apr 2021 02:34:08 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        syzbot <syzbot+c88a7030da47945a3cc3@syzkaller.appspotmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, io-uring@vger.kernel.org
+Subject: Re: [syzbot] WARNING in mntput_no_expire (2)
+Message-ID: <YGkloJhMFc4hEatk@zeniv-ca.linux.org.uk>
+References: <0000000000003a565e05bee596f2@google.com>
+ <20210401154515.k24qdd2lzhtneu47@wittgenstein>
+ <90e7e339-eaec-adb2-cfed-6dc058a117a3@kernel.dk>
+ <20210401174613.vymhhrfsemypougv@wittgenstein>
+ <20210401175919.jpiylhfrlb4xb67u@wittgenstein>
+ <YGYa0B4gabEYi2Tx@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20210403232116.knf6d7gdrvamk2lj@skbuf>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YGYa0B4gabEYi2Tx@zeniv-ca.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 01, 2021 at 07:11:12PM +0000, Al Viro wrote:
 
+> > I _think_ I see what the issue is. It seems that an assumption made in
+> > this commit might be wrong and we're missing a mnt_add_count() bump that
+> > we would otherwise have gotten if we've moved the failure handling into
+> > the unlazy helpers themselves.
+> > 
+> > Al, does that sound plausible?
+> 
+> mnt_add_count() on _what_?  Failure in legitimize_links() ends up with
+> nd->path.mnt zeroed, in both callers.  So which vfsmount would be
+> affected?
 
-On 4/3/2021 16:21, Vladimir Oltean wrote:
-> On Sat, Apr 03, 2021 at 05:05:34PM +0300, Vladimir Oltean wrote:
->> On Sat, Apr 03, 2021 at 01:48:40PM +0200, Oleksij Rempel wrote:
->>> Some switches (for example ar9331) do not provide enough information
->>> about forwarded packets. If the switch decision was made based on IPv4
->>> or IPv6 header, we need to analyze it and set proper flag.
->>>
->>> Potentially we can do it in existing rcv path, on other hand we can
->>> avoid part of duplicated work and let the dsa framework set skb header
->>> pointers and then use preprocessed skb one step later withing the rcv_post
->>> call back.
->>>
->>> This patch is needed for ar9331 switch.
->>>
->>> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
->>> ---
->>
->> I don't necessarily disagree with this, perhaps we can even move
->> Florian's dsa_untag_bridge_pvid() call inside a rcv_post() method
->> implemented by the DSA_TAG_PROTO_BRCM_LEGACY, DSA_TAG_PROTO_BRCM_PREPEND
->> and DSA_TAG_PROTO_BRCM taggers. Or even better, because Oleksij's
->> rcv_post is already prototype-compatible with dsa_untag_bridge_pvid, we
->> can already do:
->>
->> 	.rcv_post = dsa_untag_bridge_pvid,
->>
->> This should be generally useful for stuff that DSA taggers need to do
->> which is easiest done after eth_type_trans() was called.
-> 
-> I had some fun with an alternative method of parsing the frame for IGMP
-> so that you can clear skb->offload_fwd_mark, which doesn't rely on the
-> introduction of a new method in DSA. It should also have several other
-> advantages compared to your solution such as the fact that it should
-> work with VLAN-tagged packets.
-> 
-> Background: we made Receive Packet Steering work on DSA master interfaces
-> (echo 3 > /sys/class/net/eth0/queues/rx-1/rps_cpus) even when the DSA
-> tag shifts to the right the IP headers and everything that comes
-> afterwards. The flow dissector had to be patched for that, just grep for
-> DSA in net/core/flow_dissector.c.
-> 
-> The problem you're facing is that you can't parse the IP and IGMP
-> headers in the tagger's rcv() method, since the network header,
-> transport header offsets and skb->protocol are all messed up, since
-> eth_type_trans hasn't been called yet.
-> 
-> And that's the trick right there, you're between a rock and a hard
-> place: too early because eth_type_trans wasn't called yet, and too late
-> because skb->dev was changed and no longer points to the DSA master, so
-> the flow dissector adjustment we made doesn't apply.
-> 
-> But if you call the flow dissector _before_ you call "skb->dev =
-> dsa_master_find_slave" (and yes, while the DSA tag is still there), then
-> it's virtually as if you had called that while the skb belonged to the
-> DSA master, so it should work with __skb_flow_dissect.
-> 
-> In fact I prototyped this idea below. I wanted to check whether I can
-> match something as fine-grained as an IGMPv2 Membership Report message,
-> and I could.
-> 
-> I prototyped it inside the ocelot tagging protocol driver because that's
-> what I had handy. I used __skb_flow_dissect with my own flow dissector
-> which had to be initialized at the tagger module_init time, even though
-> I think I could have probably just called skb_flow_dissect_flow_keys
-> with a standard dissector, and that would have removed the need for the
-> custom module_init in tag_ocelot.c. One thing that is interesting is
-> that I had to add the bits for IGMP parsing to the flow dissector
-> myself (based on the existing ICMP code). I was too lazy to do that for
-> MLD as well, but it is really not hard. Or even better, if you don't
-> need to look at all inside the IGMP/MLD header, I think you can even
-> omit adding this parsing code to the flow dissector and just look at
-> basic.n_proto and basic.ip_proto.
-> 
-> See the snippet below. Hope it helps.
+Could you turn that WARN_ON(count < 0) into
+	if (WARN_ON(count < 0))
+		printk(KERN_ERR "id = %d, dev = %s, count = %d\n",
+				mnt->mnt_id,
+				mnt->mnt_sb->s_id,
+				count);
+add system("cat /proc/self/mountinfo"); right after sandbox_common()
+call and try to reproduce that?
 
-This looks a lot better than introducing hooks at various points in 
-dsa_switch_rcv().
--- 
-Florian
+I really wonder what mount is it happening to.  BTW, how painful would
+it be to teach syzcaller to turn those cascades of
+	NONFAILING(*(uint8_t*)0x20000080 = 0x12);
+	NONFAILING(*(uint8_t*)0x20000081 = 0);
+	NONFAILING(*(uint16_t*)0x20000082 = 0);
+	NONFAILING(*(uint32_t*)0x20000084 = 0xffffff9c);
+	NONFAILING(*(uint64_t*)0x20000088 = 0);
+	NONFAILING(*(uint64_t*)0x20000090 = 0x20000180);
+	NONFAILING(memcpy((void*)0x20000180, "./file0\000", 8));
+	NONFAILING(*(uint32_t*)0x20000098 = 0);
+	NONFAILING(*(uint32_t*)0x2000009c = 0x80);
+	NONFAILING(*(uint64_t*)0x200000a0 = 0x23456);
+	....
+	NONFAILING(syz_io_uring_submit(r[1], r[2], 0x20000080, 0));
+into something more readable?  Bloody annoyance every time...  Sure, I can
+manually translate it into
+	struct io_uring_sqe *sqe = (void *)0x20000080;
+	char *s = (void *)0x20000180;
+	memset(sqe, '\0', sizeof(*sqe));
+	sqe->opcode = 0x12; // IORING_OP_OPENAT?
+	sqe->fd = -100;	// AT_FDCWD?
+	sqe->addr = s;
+	strcpy(s, "./file0");
+	sqe->open_flags = 0x80;	// O_EXCL???
+	sqe->user_data = 0x23456;	// random tag?
+	syz_io_uring_submit(r[1], r[2], (unsigned long)p, 0);
+but it's really annoying as hell, especially since syz_io_uring_submit()
+comes from syzcaller and the damn thing _knows_ that the third argument
+is sodding io_uring_sqe, and never passed to anything other than
+memcpy() in there, at that, so the exact address can't matter.
+
+Incidentally, solitary O_EXCL (without O_CREAT) is... curious.  Does that
+sucker still trigger without it?  I.e. with store to 0x2000009c replaced
+with storing 0?
