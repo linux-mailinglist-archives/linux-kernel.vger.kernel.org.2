@@ -2,267 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF6F353831
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 15:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE70353834
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 15:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbhDDNLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 09:11:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229884AbhDDNLn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 09:11:43 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B48EC061756
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Apr 2021 06:11:39 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so6643167pjh.1
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Apr 2021 06:11:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KnebAHcN/54k3ocGY8IQZpxhBTA+JacuxCbZLGW2F6M=;
-        b=Li2cZni4nYxYD6cqEmLVm1aWoEAK832A3V50Vctw4FdEbdKpa9wShi4ok2BHprbfmN
-         aSzkiPszs538asJAJCovXbuYgPxMDhEAFS+qd6jyjd7SKo4B7qy0FegsWsVZBKSJbQB4
-         Al3iTzrT+VuOJc4G8PSSx7D/RVN8EMCVfsoYpe/e4bM2EVTV27Nj9q3zzw8QOYZmLwo8
-         aiVA3+mpM9FQot3E7cGhHPS4C3jaY5t0gHjsr89itV8Q/KpWSDfrDEZtgByF40/acOTx
-         orC40+h+CNi6NIpNn1lwBUP3ReNiQJ/5uwK2T2aF0gSs4RITLbEnsmlNFaTvstXRegsD
-         xDZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KnebAHcN/54k3ocGY8IQZpxhBTA+JacuxCbZLGW2F6M=;
-        b=ajnZ/Qmp0zCh8O5goOnb1FxUapow/zvVb/HQ0kQkC9XzApBJgYHU1RGGUmM+jekQQw
-         hu55qbDGssMrZ7odvmD0rEO574XSzXVqSPQeZLBV/P39gK+FlRINvqptxbfnM07lcpaB
-         HxSv0KhUZaSemX/sumtRWbYQrkfULdJHFNh2KaFHKlja+0688i9xeo/MUC4thnB805iq
-         g3+FXOhF+MzuTIhlw5hTtKGYSUWnjor/urz5lFAvF4MbSONzVUQVjde5XEX9OYpHOWnh
-         XyQORmE/ezm7Al87JW4AqAeMV/DMeMN1rVo0M85Y5lizFauh6VeEljCHeF4WbK97rkCg
-         yDBA==
-X-Gm-Message-State: AOAM531BxPy1NhOJhDdO8mouiTxWNw4RCnVV1fVYfjsx5UNoMSEsKo14
-        ten8Cx1ZsLxUfmIV5KXP+ctUZYHLWGYo5Q==
-X-Google-Smtp-Source: ABdhPJyh8403X6e7XydMhfm/1/9zvX5I4uspsZ57Hl99gOjpF45cW5huoubbhj9Tx9tBlwYY2j3pog==
-X-Received: by 2002:a17:90a:ce03:: with SMTP id f3mr21994579pju.195.1617541898795;
-        Sun, 04 Apr 2021 06:11:38 -0700 (PDT)
-Received: from adolin ([49.207.202.237])
-        by smtp.gmail.com with ESMTPSA id k127sm13347994pfd.63.2021.04.04.06.11.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Apr 2021 06:11:38 -0700 (PDT)
-Date:   Sun, 4 Apr 2021 18:41:33 +0530
-From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
-To:     melissa.srw@gmail.com
-Cc:     rodrigosiqueiramelo@gmail.com, hamohammed.sa@gmail.com,
-        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V3 2/2] drm/vkms: Add support for virtual hardware mode
-Message-ID: <67941611d8ac9264d1b2c0178aa26008e07b311c.1617539357.git.sylphrenadin@gmail.com>
-References: <cover.1617539357.git.sylphrenadin@gmail.com>
+        id S230462AbhDDNNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 09:13:33 -0400
+Received: from mail-bn8nam12on2057.outbound.protection.outlook.com ([40.107.237.57]:52353
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229665AbhDDNNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Apr 2021 09:13:30 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JXlv31mlZQ+zQRlabsd9ZWvMexCG9oxsmQjcVqAZ0r2D8fEkJBtY/wlWHMuZWs9GZ9w7Xs04+fy4vRpUitfYa3dpL6iLMvgLwJu0WQHYD/BbesW+Hu2Bbo1oM6Iiawvy6yDK308phY0YCo1K6A6bM6lSunWiuvr0ShETlEPVlDD4rePULIhCvI8OPNLU1zwjKGZ87RwTUhXplSBNbYZoczT9Q2m2EpMVz4DWKxMAAaI1UOiKU4qWDB9wEwHbXfaMolVg/lrSTQ+IFBYFES08ZHvzA9kqPI8b104dQWlo5LRTf35NMFHLOZJh1FFeVnuPiMybDS0Ig/NM9JOGaNjlcA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AX652wdziohLaQvFpyla357/IN8BarMBqYi34C0p1j0=;
+ b=jwjGhyCihfudOr1s4PtbI9EA7Iosa55ulhn72MJQyC3p7Fk+tJFvfjaPCuEiNDfTwAuoP4m4AlOdNrS6A5nsF9qeqLWMwCeu/b/mhUI2sPTozyzjECxdbmOX/43Mn5Es5NTS/kA8cGd6xso7YR4+fSRWwxUuspNrGg1OxshPaemYNztrAisYSu706mKyPoUHvsiWZWUTtDS5YBeyhKjGskrcQM08kkKb1CEORL+Y9mPuQ3RXra/dmUcd1Fd9CwqoE+x2nSxOgU1G1lSb+vVD0IaLdHsanOWU3OAFXwLf4HXWxwDa+qD8YIPYc1qCFhit08ig2Vi0RUL3PiqajLuINQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AX652wdziohLaQvFpyla357/IN8BarMBqYi34C0p1j0=;
+ b=Zb7FnPPx+qiCZtuRp3GvA4618Rl3I5klyFfkPynWjiqoHv0BpXsc7pojUCjGM9+hJAF8+7oUSvBxKnWQCD8LfN/z5gz3/9ODsHsGlOnrT5DW48OxxubE9yEk1E/nQkJ4dddpqkl6sCtGMmo4pvEwnxlVqo1HMLwSQ0SzoJib07DbDZ5UfpX6qGSq6dJ3FxQO4V2xUTLJ/NFCTJCTJ/ORoKw+ufsBaKbQNLHkl+ZuWwp9xxWYrXAMeBBG4x6QJRlyfSH23JPXUV5Ogi0ZeTZ4GuNae8wh7KxGMvLtEtoxMzSkFLuQJLtAwU+/5Ui3o3UnJdT7UjMcsv7NM19J55Vlqw==
+Received: from BN9PR03CA0005.namprd03.prod.outlook.com (2603:10b6:408:fa::10)
+ by DM4PR12MB5037.namprd12.prod.outlook.com (2603:10b6:5:388::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28; Sun, 4 Apr
+ 2021 13:13:24 +0000
+Received: from BN8NAM11FT066.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:fa:cafe::6c) by BN9PR03CA0005.outlook.office365.com
+ (2603:10b6:408:fa::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.26 via Frontend
+ Transport; Sun, 4 Apr 2021 13:13:24 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT066.mail.protection.outlook.com (10.13.177.138) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3999.28 via Frontend Transport; Sun, 4 Apr 2021 13:13:24 +0000
+Received: from [10.26.74.19] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 4 Apr
+ 2021 13:13:20 +0000
+Subject: Re: [PATCH] RDMA/addr: potential uninitialized variable in
+ ib_nl_process_good_ip_rsep()
+To:     Leon Romanovsky <leon@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+CC:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        "Mark Bloch" <markb@mellanox.com>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
+References: <YGcES6MsXGnh83qi@mwanda> <YGmWB4fT/8IFeiZf@unreal>
+From:   Mark Bloch <mbloch@nvidia.com>
+Message-ID: <1b21be94-bf14-9e73-68a3-c503bb79f683@nvidia.com>
+Date:   Sun, 4 Apr 2021 16:13:17 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1617539357.git.sylphrenadin@gmail.com>
+In-Reply-To: <YGmWB4fT/8IFeiZf@unreal>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c65d9d2d-74cf-4fcf-6013-08d8f76b6d92
+X-MS-TrafficTypeDiagnostic: DM4PR12MB5037:
+X-Microsoft-Antispam-PRVS: <DM4PR12MB503794624A6C850FFC48C1EFAF789@DM4PR12MB5037.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PeNp1e1a+hk7HIg2Oj2xZriiosjtCqL2OOUa9/GJqBUVhHlPTQhVj/OIghuLqlDw11j206zynxCZFH+/3MoVq4IP9gVD8P8aGAOurI2oRKOEPq+ceWeZ7MzjfzKna/aT3K01uOuGics9uEXqE2a7JLTZagNxKljwH/meeFNFIaJXREXXpHhY4FvFQKBNbTQMUA5YtRwTBQIF1uWjjFbMtCoj+HiO2CRd1TY67z46IiXWumrlumPgBNc7nV/8Ava8owBGkBy+8b6YN5sxH1VidnBNNkQ4mio+MltytiPdpVPx+ubkPkop5NiFi6lj8BADgKrUbKOGl2tbqU0ibTouAJez5+DEbFeMz4jZByGIq4O2GtIUVW7H8uyk40gSnEFKujToV/5EhPyv1MwDHKTte6isRspR5eDnISsW0bbldR5kOLrrg63O8ciHLpd4EAberjwfDfL7sx0eBG1djilpJhhhQhbR6EqExm+XsbR89EMd+k3rAlIOGGjXWVxjw0BONVuHpSPTjvP7C8fbSD+TLhFdjgAT5Wgz8QpWFOSEYV2r4+DXLSU7Mns7surC4MzJr7IyMwElNrqagPohXP66eQVWfci2Z6TmYOZo3wnBNldUdap9aH6dKP2bxpdu9tovBdrRSv+g1HzJR3ESgaWAUJJtuOzs87et1/z3sidp628uLG8wI0LM07AP4Oz2sail
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(376002)(39860400002)(136003)(346002)(36840700001)(46966006)(336012)(8676002)(426003)(110136005)(8936002)(83380400001)(54906003)(70586007)(26005)(70206006)(31696002)(36860700001)(36756003)(36906005)(186003)(86362001)(316002)(16576012)(2616005)(2906002)(5660300002)(478600001)(53546011)(31686004)(7636003)(47076005)(16526019)(356005)(82310400003)(6666004)(82740400003)(4326008)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Apr 2021 13:13:24.3236
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: c65d9d2d-74cf-4fcf-6013-08d8f76b6d92
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT066.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5037
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a virtual hardware or vblank-less mode as a module to
-enable VKMS to emulate virtual graphic drivers.
+On 4/4/21 1:33 PM, Leon Romanovsky wrote:
+> On Fri, Apr 02, 2021 at 02:47:23PM +0300, Dan Carpenter wrote:
+>> The nla_len() is less than or equal to 16.  If it's less than 16 then
+>> end of the "gid" buffer is uninitialized.
+>>
+>> Fixes: ae43f8286730 ("IB/core: Add IP to GID netlink offload")
+>> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+>> ---
+>> I just spotted this in review.  I think it's a bug but I'm not 100%.
+> 
+> I tend to agree with you, that it is a bug.
+> 
+> LS_NLA_TYPE_DGID is declared as NLA_BINARY which doesn't complain if
+> data is less than declared ".len". However, the fix needs to be in
+> ib_nl_is_good_ip_resp(), it shouldn't return "true" if length not equal
+> to 16.
 
-Add a new drm_crtc_helper_funcs struct,
-vkms_virtual_crtc_helper_funcs() which holds the atomic helpers
-for virtual hardware mode. Change the existing
-vkms_crtc_helper_funcs struct to vkms_vblank_crtc_helper_funcs
-which holds atomic helpers for the vblank mode.
-This makes the code flow clearer and easier to test
-virtual hardware mode.
+What about just updating the policy? The bellow diff should work I believe.
 
-The first patch of this patchset added the function vkms_crtc_composer()
-for plane composition which is used in case of vblank-less mode and
-is directly called in the atomic hook in vkms_crtc_atomic_begin().
-However, some crc captures still use vblanks which causes the crc-based
-igt tests to crash. Currently, I am unsure about how to approach the
-one-shot implementation of crc reads so I am still working on that.
-
-This patchset has been tested with the igt tests- kms_writeback, kms_atomic,
-kms_lease, kms_flip, kms_pipe_get_crc and preserves results except for
-subtests related to crc reads and skips tests that rely on vertical
-blanking. This patchset must be tested after incorporating the
-igt-tests patch:
-https://lists.freedesktop.org/archives/igt-dev/2021-February/029355.html .
-
-The patch is based on Rodrigo Siqueira's
-patch(https://patchwork.freedesktop.org/patch/316851/?series=48469&rev=3)
-and the ensuing review.
-
-Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
----
-Changes in V3:
-- Refactor patchset(Melissa)
-Changes in V2:
-- Add atomic helper functions in a separate struct for virtual hardware
-mode (Daniel)
-- Remove spinlock across 'vkms_output->lock' in vkms_crtc.c(Daniel)
-- Add vkms_composer_common() (Daniel)
----
- drivers/gpu/drm/vkms/vkms_crtc.c | 51 +++++++++++++++++++++++---------
- drivers/gpu/drm/vkms/vkms_drv.c  | 18 +++++++----
- drivers/gpu/drm/vkms/vkms_drv.h  |  1 +
- 3 files changed, 51 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/gpu/drm/vkms/vkms_crtc.c b/drivers/gpu/drm/vkms/vkms_crtc.c
-index 57bbd32e9beb..e6286f98d5b6 100644
---- a/drivers/gpu/drm/vkms/vkms_crtc.c
-+++ b/drivers/gpu/drm/vkms/vkms_crtc.c
-@@ -222,20 +222,20 @@ static int vkms_crtc_atomic_check(struct drm_crtc *crtc,
- 	return 0;
- }
+diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
+index 0abce004a959..65e3e7df8a4b 100644
+--- a/drivers/infiniband/core/addr.c
++++ b/drivers/infiniband/core/addr.c
+@@ -76,7 +76,9 @@ static struct workqueue_struct *addr_wq;
  
--static void vkms_crtc_atomic_enable(struct drm_crtc *crtc,
--				    struct drm_atomic_state *state)
-+static void vkms_vblank_crtc_atomic_enable(struct drm_crtc *crtc,
-+					   struct drm_atomic_state *state)
- {
- 	drm_crtc_vblank_on(crtc);
- }
- 
--static void vkms_crtc_atomic_disable(struct drm_crtc *crtc,
--				     struct drm_atomic_state *state)
-+static void vkms_vblank_crtc_atomic_disable(struct drm_crtc *crtc,
-+		struct drm_atomic_state *state)
- {
- 	drm_crtc_vblank_off(crtc);
- }
- 
--static void vkms_crtc_atomic_begin(struct drm_crtc *crtc,
--				   struct drm_atomic_state *state)
-+static void vkms_vblank_crtc_atomic_begin(struct drm_crtc *crtc,
-+		struct drm_atomic_state *state)
- {
- 	struct vkms_output *vkms_output = drm_crtc_to_vkms_output(crtc);
- 
-@@ -245,8 +245,8 @@ static void vkms_crtc_atomic_begin(struct drm_crtc *crtc,
- 	spin_lock_irq(&vkms_output->lock);
- }
- 
--static void vkms_crtc_atomic_flush(struct drm_crtc *crtc,
--				   struct drm_atomic_state *state)
-+static void vkms_vblank_crtc_atomic_flush(struct drm_crtc *crtc,
-+		struct drm_atomic_state *state)
- {
- 	struct vkms_output *vkms_output = drm_crtc_to_vkms_output(crtc);
- 
-@@ -268,18 +268,38 @@ static void vkms_crtc_atomic_flush(struct drm_crtc *crtc,
- 	spin_unlock_irq(&vkms_output->lock);
- }
- 
--static const struct drm_crtc_helper_funcs vkms_crtc_helper_funcs = {
-+/*
-+ * Crtc functions for virtual hardware/vblankless mode
-+ */
-+static void vkms_virtual_crtc_atomic_flush(struct drm_crtc *crtc,
-+		struct drm_atomic_state *state)
-+{
-+	struct vkms_output *vkms_output = drm_crtc_to_vkms_output(crtc);
-+	struct vkms_crtc_state *vkms_state = to_vkms_crtc_state(crtc->state);
-+
-+	vkms_crtc_composer(vkms_state);
-+
-+	vkms_output->composer_state = to_vkms_crtc_state(crtc->state);
-+}
-+
-+static const struct drm_crtc_helper_funcs vkms_vblank_crtc_helper_funcs = {
- 	.atomic_check	= vkms_crtc_atomic_check,
--	.atomic_begin	= vkms_crtc_atomic_begin,
--	.atomic_flush	= vkms_crtc_atomic_flush,
--	.atomic_enable	= vkms_crtc_atomic_enable,
--	.atomic_disable	= vkms_crtc_atomic_disable,
-+	.atomic_begin	= vkms_vblank_crtc_atomic_begin,
-+	.atomic_flush	= vkms_vblank_crtc_atomic_flush,
-+	.atomic_enable	= vkms_vblank_crtc_atomic_enable,
-+	.atomic_disable	= vkms_vblank_crtc_atomic_disable,
-+};
-+
-+static const struct drm_crtc_helper_funcs vkms_virtual_crtc_helper_funcs = {
-+	.atomic_check	= vkms_crtc_atomic_check,
-+	.atomic_flush	= vkms_virtual_crtc_atomic_flush,
+ static const struct nla_policy ib_nl_addr_policy[LS_NLA_TYPE_MAX] = {
+        [LS_NLA_TYPE_DGID] = {.type = NLA_BINARY,
+-               .len = sizeof(struct rdma_nla_ls_gid)},
++               .len = sizeof(struct rdma_nla_ls_gid),
++               .validation_type = NLA_VALIDATE_MIN,
++               .min = sizeof(struct rdma_nla_ls_gid)},
  };
  
- int vkms_crtc_init(struct drm_device *dev, struct drm_crtc *crtc,
- 		   struct drm_plane *primary, struct drm_plane *cursor)
- {
- 	struct vkms_output *vkms_out = drm_crtc_to_vkms_output(crtc);
-+	struct vkms_device *vkmsdev = drm_device_to_vkms_device(dev);
- 	int ret;
- 
- 	ret = drm_crtc_init_with_planes(dev, crtc, primary, cursor,
-@@ -289,7 +309,10 @@ int vkms_crtc_init(struct drm_device *dev, struct drm_crtc *crtc,
- 		return ret;
- 	}
- 
--	drm_crtc_helper_add(crtc, &vkms_crtc_helper_funcs);
-+	if (vkmsdev->config->virtual_hw)
-+		drm_crtc_helper_add(crtc, &vkms_virtual_crtc_helper_funcs);
-+	else
-+		drm_crtc_helper_add(crtc, &vkms_vblank_crtc_helper_funcs);
- 
- 	spin_lock_init(&vkms_out->lock);
- 	spin_lock_init(&vkms_out->composer_lock);
-diff --git a/drivers/gpu/drm/vkms/vkms_drv.c b/drivers/gpu/drm/vkms/vkms_drv.c
-index 2173b82606f6..945c4495d62a 100644
---- a/drivers/gpu/drm/vkms/vkms_drv.c
-+++ b/drivers/gpu/drm/vkms/vkms_drv.c
-@@ -44,6 +44,11 @@ static bool enable_writeback = true;
- module_param_named(enable_writeback, enable_writeback, bool, 0444);
- MODULE_PARM_DESC(enable_writeback, "Enable/Disable writeback connector support");
- 
-+static bool enable_virtual_hw = false;
-+module_param_named(enable_virtual_hw, enable_virtual_hw, bool, 0444);
-+MODULE_PARM_DESC(enable_virtual_hw, "Enable/Disable virtual hardware mode(virtual \
-+hardware mode disables vblank interrupts)");
-+
- DEFINE_DRM_GEM_FOPS(vkms_driver_fops);
- 
- static void vkms_release(struct drm_device *dev)
-@@ -159,12 +164,14 @@ static int vkms_create(struct vkms_config *config)
- 		goto out_devres;
- 	}
- 
--	vkms_device->drm.irq_enabled = true;
-+	vkms_device->drm.irq_enabled = !vkms_device->config->virtual_hw;
- 
--	ret = drm_vblank_init(&vkms_device->drm, 1);
--	if (ret) {
--		DRM_ERROR("Failed to vblank\n");
--		goto out_devres;
-+	if (!vkms_device->config->virtual_hw) {
-+		ret = drm_vblank_init(&vkms_device->drm, 1);
-+		if (ret) {
-+			DRM_ERROR("Failed to vblank\n");
-+			goto out_devres;
-+		}
- 	}
- 
- 	ret = vkms_modeset_init(vkms_device);
-@@ -198,6 +205,7 @@ static int __init vkms_init(void)
- 
- 	config->cursor = enable_cursor;
- 	config->writeback = enable_writeback;
-+	config->virtual_hw = enable_virtual_hw;
- 
- 	return vkms_create(config);
- }
-diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
-index 538315140585..a44f530ffaf0 100644
---- a/drivers/gpu/drm/vkms/vkms_drv.h
-+++ b/drivers/gpu/drm/vkms/vkms_drv.h
-@@ -85,6 +85,7 @@ struct vkms_device;
- struct vkms_config {
- 	bool writeback;
- 	bool cursor;
-+	bool virtual_hw;
- 	/* only set when instantiated */
- 	struct vkms_device *dev;
- };
--- 
-2.25.1
+ static inline bool ib_nl_is_good_ip_resp(const struct nlmsghdr *nlh)
 
+> 
+> Thanks
+> 
+
+Mark
