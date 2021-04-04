@@ -2,63 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2AD3537CC
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 12:38:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70EE33537D0
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 12:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230420AbhDDKiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 06:38:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53798 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229678AbhDDKiD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 06:38:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2770C61364;
-        Sun,  4 Apr 2021 10:37:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617532678;
-        bh=V25n7n438uf2ugxUDPB9a9+bPTmE0/0C8xQOOxJ6MLo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PGxH1Xr/PROEzkwiePjXMtzq0P7Xofq23LiqAY1u4+sacaRIjrBOxwwk+Mnpzlh5C
-         yBYat4y2a1iVTJaciM32lz/ni12N3V6y/8x3yhgmTfXzTIsNebN+8WfPhezZgeXGt/
-         5WRYy/zi5/NmNKsFgZ+PEmY/9WW53pFCeiabfjYWwdPZvvoFqWIK/Xt1EFKhnLOpAI
-         T0cvjUUruahAvmrAo/dQPAaqwRbQK7483uD3vUmGZLM191yl5O7sSpyqsp+Io1b/T8
-         1Jpy2dl01lxDUkxjaiwGKdiA51Pfu7ktRbvhq5C0kC/LWAI8o6l3ppWu7HDJrTzTHV
-         6G2iJ6jzak8gw==
-Date:   Sun, 4 Apr 2021 13:37:55 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
-Cc:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        rajesh.sivaramasubramaniom@oracle.com,
-        rama.nichanamatlu@oracle.com, aruna.ramakrishna@oracle.com,
-        jeffery.yoder@oracle.com
-Subject: Re: [PATCH v3] IB/mlx5: Reduce max order of memory allocated for xlt
- update
-Message-ID: <YGmXAyANXwRGosIe@unreal>
-References: <1617425635-35631-1-git-send-email-praveen.kannoju@oracle.com>
-MIME-Version: 1.0
+        id S230402AbhDDKtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 06:49:19 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:21356 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230180AbhDDKtR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Apr 2021 06:49:17 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1617533335; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=s4c01B07/RhoUvJFk1cotrGf78MvDnZt2J45oRrQHmMT3REktuMZPzykKyam/8ToZA
+    fox6bznPW6GC37Pvcv8Yjj+oTxd50BXb1yeypO/a5HR1OKd/rYhc5rspxu/X3+9tKOWQ
+    lJw0GBkWMMtFH/wpTqOt/e9SAMmdx0HCDePi9N7ts2oEnRG4kACrt4ED2VM4AExBmdUC
+    fkr9k67qkNbW3mUatKxxBZkJiKk86bzWJSoOa3vLD09WJSV8eH1w18TxK3REs8uRdbyW
+    nyGiZ3UxWDusbbs/dyCX6P1U1cA41if4vpThyvDhOhb1qDE8F9gwJJYblOvBVV/NP3/A
+    0haQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1617533335;
+    s=strato-dkim-0002; d=strato.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=s5PVkddlY0K6VSMM9MdjDmhjZRWQAJNTN3edLUaADU0=;
+    b=iAxA/SiAqi/9mps8OY2wXzh8boEi2GNy5nnsrvNPRJwPR/Jb4tMw7Rao09jnRB8qxo
+    lMr0fstECFAJD7B7777cf2SHXMBuNg37eAaZsNX98rzxPMjW53+HqkArwiC677skMI6d
+    ZsWeqLugMbFleN49mIg8OnTI91oqG5e9N7gDupUg7SYLemNOYis2H7CzayNhGZOWm57V
+    PjM8V/FslEs5ww3zphhM7tz+6kH1KhdoNhWRQY4xk0NbyW1VEMfWRaORymYAx6DU1k+x
+    EnexH/VhMzeYgwOLYN/k/u5bMf5jpnIfUxPv6RjXqnHJFTPKL275kUMrzBmhia7fEmUz
+    PDiA==
+ARC-Authentication-Results: i=1; strato.com;
+    dkim=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1617533335;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=s5PVkddlY0K6VSMM9MdjDmhjZRWQAJNTN3edLUaADU0=;
+    b=hv6aGr3ZUW0wLtqHMe8sElZEL24V9aBcU8g9xPqMsCYnQMQ9mAmQE6DhXLiR9BNDMV
+    EizYRfpKT+AmjEQ/NieJmv7PcPkFPaW1wRPbPmdXw63xMYCNhP6lvWDCOCRs3wdBwPXA
+    xvSBct7OIQ41wBn4nBOtk5LB8T4fPzFyprMNvwu4vr/UcZmvNMJLEPmO2P6UDBnRpikF
+    dDq60FPYIlCtbD1B3fQjw1FUwXRb5Nlk8cHe8fSn6nXJIgbzlhw8sXS84Pr85rdOKldP
+    77fl5E2ZkpWKmEsFgHegkYvw4hxHyx2EOxo04LlsPRHO+lgCwMjEG075KGEvXYYnznQT
+    cGew==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7wpz8NMGH/zuwDOioLY="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.23.1 DYNA|AUTH)
+    with ESMTPSA id h03350x34Amtbnp
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Sun, 4 Apr 2021 12:48:55 +0200 (CEST)
+Subject: Re: [BUG]: usb: dwc3: gadget: Prevent EP queuing while stopping transfers
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617425635-35631-1-git-send-email-praveen.kannoju@oracle.com>
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <YGmOiV7yiQtdaXqD@kroah.com>
+Date:   Sun, 4 Apr 2021 12:48:53 +0200
+Cc:     Wesley Cheng <wcheng@codeaurora.org>,
+        Felipe Balbi <balbi@kernel.org>, stable@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        kernel@pyra-handheld.com,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>, linux-usb@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <7C22FB47-C34A-4E59-89E4-F1854ED737DA@goldelico.com>
+References: <DF98BCBA-E13B-4E33-98AD-216816625F3B@goldelico.com> <YGmOiV7yiQtdaXqD@kroah.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+X-Mailer: Apple Mail (2.3124)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 03, 2021 at 04:53:55AM +0000, Praveen Kumar Kannoju wrote:
-> To update xlt (during mlx5_ib_reg_user_mr()), the driver can request up to
-> 1 MB (order-8) memory, depending on the size of the MR. This costly
-> allocation can sometimes take very long to return (a few seconds). This
-> causes the calling application to hang for a long time, especially when the
-> system is fragmented.  To avoid these long latency spikes, the calls the
-> higher order allocations need to fail faster in case they are not
-> available. In order to acheive this we need __GFP_NORETRY flag in the
-> gfp_mask before during fetching the free pages. This patch adds this flag
-> to the mask.
-> 
-> Signed-off-by: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
-> ---
->  drivers/infiniband/hw/mlx5/mr.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
 
-Thanks a lot,
-Acked-by: Leon Romanovsky <leonro@nvidia.com>
+> Am 04.04.2021 um 12:01 schrieb Greg KH <gregkh@linuxfoundation.org>:
+>=20
+> On Sun, Apr 04, 2021 at 11:29:00AM +0200, H. Nikolaus Schaller wrote:
+>> it seems as if the patch
+>>=20
+>> 	9de499997c37 ("usb: dwc3: gadget: Prevent EP queuing while =
+stopping transfers") in v5.11.y
+>> 	f09ddcfcb8c5 ("usb: dwc3: gadget: Prevent EP queuing while =
+stopping transfers") in v5.12-rc5
+>>=20
+>> reproducible breaks dwc3 RNDIS gadget, at least on the Pyra Handheld =
+(OMAP5).
+>>=20
+>> The symptom of having this patch in tree (v5.11.10 or v5.12) is that
+>> rndis/gadget initially works after boot.
+>=20
+> Should be fixed now by 5aef629704ad ("usb: dwc3: gadget: Clear DEP =
+flags
+> after stop transfers in ep disable").  Can you test and verify this?
+
+Yes it works. I was no longer able to reproduce the console log.
+
+Thanks for the quick response!
+
+BR,
+Nikolaus Schaller
+
