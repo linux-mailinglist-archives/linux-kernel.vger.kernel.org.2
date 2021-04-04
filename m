@@ -2,77 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52FC43538C4
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 18:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 352333538C5
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 18:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbhDDQBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 12:01:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48050 "EHLO mail.kernel.org"
+        id S231151AbhDDQCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 12:02:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229861AbhDDQBN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 12:01:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7D9E60232;
-        Sun,  4 Apr 2021 16:01:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617552069;
-        bh=Gv7SsSaMsWSBL4LjRskRhkx3N1krNPvmb86FOM3wQwQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qtypswkjiKTBU9PCGvU2Tj82l63EbqTlt+FzdtcGR3o/dNLtcZGGXM+3ci7IQDgiw
-         tvYadMBqgpsDE3uPlonZiwRXnRjQaooq1LekVhgnKvib2Zne3ptduEluQKie35gEsr
-         it2iMyufLPxkKEagr86HaB+ysp/ZnIcrFdk7CIFW8TT6uH/BNqofayyifEclqL/fv0
-         ibFAHgfWTSIBdZyXHX38oW9gJN5KLfXZA3bsL2HZiazRFLYcXVSesRL7yC1huXEw88
-         cbKcYdMbNrweHK2JrRNnlXeVP9P0X7jDYupBxV32kptvuyZB8nFGVmQnpAkNeGGxHG
-         Es4tmXZgEdJHg==
-Date:   Sun, 4 Apr 2021 19:01:06 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, jejb@linux.ibm.com
-Subject: Re: [PATCH -next] KEYS: trusted: Switch to kmemdup_nul()
-Message-ID: <YGniwpyGNPLvn3Mf@kernel.org>
-References: <20210402092346.2444932-1-yangyingliang@huawei.com>
+        id S229861AbhDDQCi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Apr 2021 12:02:38 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CBF9C61368;
+        Sun,  4 Apr 2021 16:02:32 +0000 (UTC)
+Date:   Sun, 4 Apr 2021 12:02:31 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Bharata B Rao <bharata@linux.vnet.ibm.com>,
+        Phil Auld <pauld@redhat.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] sched/debug: Use sched_debug_lock to serialize use
+ of cgroup_path[] only
+Message-ID: <20210404120231.13843854@oasis.local.home>
+In-Reply-To: <b5d7e93f-c594-7678-eb8d-275ddd9cd8ce@redhat.com>
+References: <20210401181030.7689-1-longman@redhat.com>
+        <20210402164014.53c84f05@gandalf.local.home>
+        <b5d7e93f-c594-7678-eb8d-275ddd9cd8ce@redhat.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210402092346.2444932-1-yangyingliang@huawei.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 05:23:46PM +0800, Yang Yingliang wrote:
-> Use kmemdup_nul() helper instead of open-coding to
-> simplify the code.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
->  security/keys/trusted-keys/trusted_tpm1.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+On Fri, 2 Apr 2021 23:09:09 -0400
+Waiman Long <longman@redhat.com> wrote:
 
+> The main problem with sched_debug_lock is that under certain 
+> circumstances, a lock waiter may wait a long time to acquire the lock 
+> (in seconds). We can't insert touch_nmi_watchdog() while the cpu is 
+> waiting for the spinlock.
 
-Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+The problem I have with the patch is that it seems to be a hack (as it
+doesn't fix the issue in all cases). Since sched_debug_lock is
+"special", perhaps we can add wrappers to take it, and instead of doing
+the spin_lock_irqsave(), do a trylock loop. Add lockdep annotation to
+tell lockdep that this is not a try lock (so that it can still detect
+deadlocks).
 
-/Jarkko
+Then have the strategically placed touch_nmi_watchdog() also increment
+a counter. Then in that trylock loop, if it sees the counter get
+incremented, it knows that forward progress is being made by the lock
+holder, and it too can call touch_nmi_watchdog().
 
-> 
-> diff --git a/security/keys/trusted-keys/trusted_tpm1.c b/security/keys/trusted-keys/trusted_tpm1.c
-> index 493eb91ed017..90ded4757e79 100644
-> --- a/security/keys/trusted-keys/trusted_tpm1.c
-> +++ b/security/keys/trusted-keys/trusted_tpm1.c
-> @@ -978,11 +978,9 @@ static int trusted_instantiate(struct key *key,
->  	if (datalen <= 0 || datalen > 32767 || !prep->data)
->  		return -EINVAL;
->  
-> -	datablob = kmalloc(datalen + 1, GFP_KERNEL);
-> +	datablob = kmemdup_nul(prep->data, datalen, GFP_KERNEL);
->  	if (!datablob)
->  		return -ENOMEM;
-> -	memcpy(datablob, prep->data, datalen);
-> -	datablob[datalen] = '\0';
->  
->  	options = trusted_options_alloc();
->  	if (!options) {
-> -- 
-> 2.25.1
-> 
-> 
+-- Steve
