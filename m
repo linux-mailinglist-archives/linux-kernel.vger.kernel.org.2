@@ -2,137 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87EEF3538CF
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 18:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B97923538D6
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 18:25:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231208AbhDDQJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 12:09:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229861AbhDDQJg (ORCPT
+        id S231158AbhDDQZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 12:25:17 -0400
+Received: from mail-lf1-f42.google.com ([209.85.167.42]:44010 "EHLO
+        mail-lf1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230202AbhDDQZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 12:09:36 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB5D8C061756;
-        Sun,  4 Apr 2021 09:09:31 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id f12so6972235qtq.4;
-        Sun, 04 Apr 2021 09:09:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+IdKWx2ZVFrKT8K7Fl0vAas4WcyOSUW1ErabAnFzPiY=;
-        b=jX96hJMhziC36OYDoWoeDNXvIA7cggPk7CorJz2BxjjrMbtNIlwlpylAvnWF+ZOTyX
-         R7O0Tb1FjmEEOmOFKybqkuX8uLYt2kbD46H7Y9fQHbW5Kw+U3x2WI3624GWsb+cyX1Qm
-         cJvWe7RpsV9BTo+zcEeHuunv76O9aeTVuLBEnsy91UoYI9wl35bYLsG/WBzjtikXWIVS
-         s3A+KOz6W63YHWWmCPXPcHspclrqJ5KPq1reYAn/NMAUpaawH35cptaHti0MVdvLFkFj
-         TCHTZmHAnWMdCuEb7ak9yytBgKRMd0BPNOVa3yfL8Ywmf86oBtWf6FmATEivJzIPJXX6
-         O0uw==
+        Sun, 4 Apr 2021 12:25:15 -0400
+Received: by mail-lf1-f42.google.com with SMTP id m12so14238819lfq.10;
+        Sun, 04 Apr 2021 09:25:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=+IdKWx2ZVFrKT8K7Fl0vAas4WcyOSUW1ErabAnFzPiY=;
-        b=Socbm3r9KuqQ4SBeGo8Xx2dumgZ4jB6AfjRVSdNh3Sf93xW2BZVbYkB02E+Sk8/CTh
-         kEBHCwK1TRERC9vtTzcTt8w204dAxhhdgXwo0gtQ1XjbjqtO+pRn5iEWEoNk0tsZkM+i
-         dd1ZdR//GPK6QwaO+UrLFCKk88CJaljsEyY1aKiq9IbIeGnyINi7m3jaIuRVgGBPJBQd
-         GXyx837doZxkBwgs+ROdVA0iLQGK2qseCplqnQVLy751CsGrZ3mZDd1CxCrzKnhCaQpM
-         ssStDwFleWIL0b4qxp991m6ku+VoIhwTrRDMQPCS0pswqmtxdFuUHMghAl1w983dwNFW
-         k4YA==
-X-Gm-Message-State: AOAM530btToySqh5JZjoEvSs8Lz3KZgcMsl44x7DZvlb82082fZWJ//Y
-        WIKfYWxPhGWjnJDW+lwMQb8=
-X-Google-Smtp-Source: ABdhPJxLgpABQNDDleoUVLspcpb59HfOkiFZYe1ChYhDNTx9EajnuFa8PHaF1K9LiqotRZ7N06ViAA==
-X-Received: by 2002:ac8:4e10:: with SMTP id c16mr18973833qtw.268.1617552570980;
-        Sun, 04 Apr 2021 09:09:30 -0700 (PDT)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
-        by smtp.gmail.com with ESMTPSA id 21sm11876324qkv.12.2021.04.04.09.09.30
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
+         :in-reply-to:references:mime-version:date:user-agent
+         :content-transfer-encoding;
+        bh=Cc9OZ3/HdSn1w5+QMW7ijody6XT1pbnxnHm8ChXhshQ=;
+        b=a7yw9NQ2LN9NhQTWR0+FHreisYU7xmyNIRRiw4VEDKbvMrYHIUy4Bbj06TsiX3mg0e
+         prgwnIiYfX64jsV2Y8YsFojW10EIx2lS/tgKJn6fK4m45qTl5dZNNOy1xFnBS2bAg8bZ
+         ygI4zrSI5doV9piArMpJPQeWZSt9tgaqnhfA+AjnQhCcakFLWWHDialoqrMg1oFG5BtM
+         vogTo4O8JT88agpyRXFXqYyCy65J4fXgHZGk6gSvrVNETmTrB3bCBi8V/iPj9elI9Lvj
+         syWet4DTFbRBHX+LIKRDiTqzj3ZeTA7G4dJo3huDHZYwSmrY72tSJ2eEz67etH4ryRYG
+         Ar4Q==
+X-Gm-Message-State: AOAM532zmLJNNuikrXagYXv1tOz7IUbAh4HxoJ5ZB2JDNwTfjR3L+yre
+        rFCLDwrScy5gWKvbc+DKb2w=
+X-Google-Smtp-Source: ABdhPJxk4cwLvVS6RMIMc0MFzuh8DsyfON1dX7i3o9nR4Zqode/DpW8+nP7EdHsyzJZM1KCcELMyDA==
+X-Received: by 2002:a05:6512:3996:: with SMTP id j22mr14708771lfu.267.1617553508518;
+        Sun, 04 Apr 2021 09:25:08 -0700 (PDT)
+Received: from dc7vkhyyyyyyyyyyyyydy-3.rev.dnainternet.fi (dc7vkhyyyyyyyyyyyyydy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::6])
+        by smtp.gmail.com with ESMTPSA id h62sm1484015lfd.234.2021.04.04.09.25.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Apr 2021 09:09:30 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Sun, 4 Apr 2021 12:09:29 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     brookxu <brookxu.cn@gmail.com>
-Cc:     paolo.valente@linaro.org, axboe@kernel.dk,
-        linux-block@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 00/14] bfq: introduce bfq.ioprio for cgroup
-Message-ID: <YGnkuWYKeK7C8/Za@mtj.duckdns.org>
-References: <cover.1616649216.git.brookxu@tencent.com>
+        Sun, 04 Apr 2021 09:25:07 -0700 (PDT)
+Message-ID: <46d07779766f80162ab42ad20b529973df293cc8.camel@fi.rohmeurope.com>
+Subject: Re: [PATCH v5 16/19] regulator: bd71815: use ramp-delay helper
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Reply-To: matti.vaittinen@fi.rohmeurope.com
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-power@fi.rohmeurope.com
+In-Reply-To: <20210402190211.GJ5402@sirena.org.uk>
+References: <cover.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
+         <31db9c2bf1e9e1883d8caf4bf3b90475a8a1166e.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
+         <20210402190211.GJ5402@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1616649216.git.brookxu@tencent.com>
+Date:   Sun, 04 Apr 2021 19:19:21 +0300
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-On Thu, Mar 25, 2021 at 02:57:44PM +0800, brookxu wrote:
-> INTERFACE:
+On Fri, 2021-04-02 at 20:02 +0100, Mark Brown wrote:
+> On Mon, Mar 29, 2021 at 04:00:13PM +0300, Matti Vaittinen wrote:
+> > Use generic regamp ramp-delay helper function instead of
+> > implementing own.
 > 
-> The bfq.ioprio interface now is available for cgroup v1 and cgroup
-> v2. Users can configure the ioprio for cgroup through this
-> interface, as shown below:
+> This is patching something which was just added in the previous
+> patch...
 > 
-> echo "1 2"> blkio.bfq.ioprio
-> 
-> The above two values respectively represent the values of ioprio
-> class and ioprio for cgroup.
-> 
-> EXPERIMENT:
-> 
-> The test process is as follows:
-> # prepare data disk
-> mount /dev/sdb /data1
-> 
-> # prepare IO scheduler
-> echo bfq > /sys/block/sdb/queue/scheduler
-> echo 0 > /sys/block/sdb/queue/iosched/low_latency
-> echo 1 > /sys/block/sdb/queue/iosched/better_fairness
-> 
-> It is worth noting here that nr_requests limits the number of
-> requests, and it does not perceive priority. If nr_requests is
-> too small, it may cause a serious priority inversion problem.
-> Therefore, we can increase the size of nr_requests based on
-> the actual situation.
-> 
-> # create cgroup v1 hierarchy
-> cd /sys/fs/cgroup/blkio
-> mkdir rt be0 be1 be2 idle
-> 
-> # prepare cgroup
-> echo "1 0" > rt/blkio.bfq.ioprio
-> echo "2 0" > be0/blkio.bfq.ioprio
-> echo "2 4" > be1/blkio.bfq.ioprio
-> echo "2 7" > be2/blkio.bfq.ioprio
-> echo "3 0" > idle/blkio.bfq.ioprio
+> Acked-by: Mark Brown <broonie@kernel.org>
 
-Here are some concerns:
+Correct. Reason was that I weren't sure if the idea of adding ramp-
+delay helper was accepted. If it was seen as bad idea, then just
+dropping this patch would have left the BD71815 with in-driver helper.
 
-* The main benefit of bfq compared to cfq at least was that the behavior
-  model was defined in a clearer way. It was possible to describe what the
-  control model was in a way which makes semantic sense. The main problem I
-  see with this proposal is that it's an interface which grew out of the
-  current implementation specifics and I'm having a hard time understanding
-  what the end results should be with different configuration combinations.
+Best Regards
+	Matti Vaittinen
 
-* While this might work around some scheduling latency issues but I have a
-  hard time imagining it being able to address actual QoS issues. e.g. on a
-  lot of SSDs, without absolute throttling, device side latencies can spike
-  by multiple orders of magnitude and no prioritization on the scheduler
-  side is gonna help once such state is reached. Here, there's no robust
-  mechanisms or measurement/control units defined to address that. In fact,
-  the above direction to increase nr_requests limit will make priority
-  inversions on the device and post-elevator side way more likely and
-  severe.
-
-So, maybe it helps with specific scenarios on some hardware, but given the
-ad-hoc nature, I don't think it justifies all the extra interface additions.
-My suggestion would be slimming it down to bare essentials and making the
-user interface part as minimal as possible.
-
-Thanks.
-
--- 
-tejun
