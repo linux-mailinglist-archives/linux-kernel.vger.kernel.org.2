@@ -2,75 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0C8C353840
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 15:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E67C4353845
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 15:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230214AbhDDN0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 09:26:41 -0400
-Received: from smtp30.i.mail.ru ([94.100.177.90]:54618 "EHLO smtp30.i.mail.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229762AbhDDN0k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 09:26:40 -0400
-X-Greylist: delayed 29476 seconds by postgrey-1.27 at vger.kernel.org; Sun, 04 Apr 2021 09:26:39 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bk.ru; s=mail3;
-        h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=LETLziB89uAsZr/rmV4CuXtr79aw/vQw4ui4/Ykg9Uc=;
-        b=glPOtMyTc1maVspYGvt5XkL3G4zmZSsitREZFcdOBFwOP1dMkj6uFUmlt1tFBgfEjEvE87XHnVAEa1nzjMeZRJY2dDCUuyVSurpwCi6PpTsen2eX2c5dP+CYiArZrb40h394HAkVLmMdYUkjaItCSP+Kn2CdscWzBQK4c8VO5ss=;
-Received: by smtp30.i.mail.ru with esmtpa (envelope-from <dev.dragon@bk.ru>)
-        id 1lT2lt-0005U2-6l; Sun, 04 Apr 2021 16:26:33 +0300
-From:   dev.dragon@bk.ru
-To:     gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Dmitrii Wolf <dev.dragon@bk.ru>
-Subject: [PATCH] Staging: rtl8192u: ieee80211: fixed a trailing statements of condition.
-Date:   Sun,  4 Apr 2021 16:26:14 +0300
-Message-Id: <20210404132613.5464-1-dev.dragon@bk.ru>
-X-Mailer: git-send-email 2.25.1
+        id S230373AbhDDNhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 09:37:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhDDNhi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Apr 2021 09:37:38 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DD96C061756;
+        Sun,  4 Apr 2021 06:37:34 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id m12so13889221lfq.10;
+        Sun, 04 Apr 2021 06:37:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+HyYmPnuWFFMIB7SpjIfrjeRJ9UQQxny2FWb69wvVv0=;
+        b=FJXzDuwGBEUuCTztCBPIrjJlZA/CX7RI25lUHFo/GsEUXKQFlfYchi//lxsK0mr8Rb
+         XDAo+BY11DGZU3N5MT+lEhXwApPQtYWQKztQRj/m1NfZmIMjvV8Bd6wdm4NCPs4uHnZ6
+         8GHsJw55eUWb4w34EymYDs2FqPzLUQ73BqOWyS2RUGS3jfhRL0TBrEEeEtVNqqHrNb6l
+         he+5GH5gA8bElV5/eeCRnZMyDpojqwFWYdsMsh4Urw6/RUsZGmzdjzJhZRD3LHug1owe
+         XPmRMFS6K1Nx3CbbYI4gjVY7jz6a8g7PW6aRmBiIqGC8Wsp3fDg9uyCO38+uUhHFv3Kq
+         wn1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+HyYmPnuWFFMIB7SpjIfrjeRJ9UQQxny2FWb69wvVv0=;
+        b=eED5AcfRsoGaseg4fUFH/u5bAFAQJjth4YnLrTbk8JgiFhKN6oXc0u7kYtUm6PWaa1
+         5YqRjtkVRP8fA08dOzl3MXGjB6EqRuh3kV4tJz2VNZz6AuO/gVmLCZgOQPOPJEewbnm3
+         yaF209wYSAIuganG65kF4EC2lmiEjKxOaufPT0KCasXPjF8GSSAP8jh3EXZ/oGJ7EULZ
+         XuP9umX2m+A3FB9sBjtXdBicrYMjLlnTqV5S1wWxyMYlHkOqI9U4y+4x63Ppr/TdCPn8
+         RYp8BIj1eekXJ/noYjCenk8k/dp/cFosXyWL7vp4KdDTH4OluwJN9KBNEB03btYHllBQ
+         SxOA==
+X-Gm-Message-State: AOAM530Yhf/WwdEvqCcs0hn3v4Lz9R9q1i7595dkIfvYfvoo9qyqemi+
+        Kw2cxKt1WRhUupof3sfChRs=
+X-Google-Smtp-Source: ABdhPJy30HYImZBK03kv3X4L6uVNJSkQ/Jz4VRA2vHp4FEqO8UBKLgdvEBu1k3f9zBhXIHxmDW0p9g==
+X-Received: by 2002:a05:6512:ac9:: with SMTP id n9mr15012614lfu.186.1617543452694;
+        Sun, 04 Apr 2021 06:37:32 -0700 (PDT)
+Received: from [10.0.0.42] (91-157-86-200.elisa-laajakaista.fi. [91.157.86.200])
+        by smtp.gmail.com with ESMTPSA id t10sm1451535lfk.58.2021.04.04.06.37.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Apr 2021 06:37:32 -0700 (PDT)
+To:     Pratyush Yadav <p.yadav@ti.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Benoit Parrot <bparrot@ti.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Michael Tretter <m.tretter@pengutronix.de>,
+        Peter Chen <peter.chen@nxp.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
+        dmaengine@vger.kernel.org
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+References: <20210330173348.30135-1-p.yadav@ti.com>
+ <20210330173348.30135-14-p.yadav@ti.com>
+From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+Subject: Re: [PATCH 13/16] media: ti-vpe: csi2rx: Add CSI2RX support
+Message-ID: <1983f3dd-d157-900f-b72f-c8e6987f7ec6@gmail.com>
+Date:   Sun, 4 Apr 2021 16:38:30 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
+In-Reply-To: <20210330173348.30135-14-p.yadav@ti.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp30.i.mail.ru; auth=pass smtp.auth=dev.dragon@bk.ru smtp.mailfrom=dev.dragon@bk.ru
-X-7564579A: 646B95376F6C166E
-X-77F55803: 4F1203BC0FB41BD9ED7173E37F4E32947A0146560F8BA709E798FFD99D1B1662182A05F5380850403967E96E3DE147F8331AD8EC2CB116954496268119EDB3AD14DD9F9E918497C5
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE70EEC24FFE855BCBBC2099A533E45F2D0395957E7521B51C2CFCAF695D4D8E9FCEA1F7E6F0F101C6778DA827A17800CE7A3295C83650092F9EA1F7E6F0F101C67CDEEF6D7F21E0D1D174C73DBBBFC7664701A8C483038278B45BC77A840DD08DAC7F7CB36A5DC4E70389733CBF5DBD5E913377AFFFEAFD269176DF2183F8FC7C06CDB2E15ACB7FB748941B15DA834481FCF19DD082D7633A0EF3E4896CB9E6436389733CBF5DBD5E9D5E8D9A59859A8B6F657401E1635F1D7CC7F00164DA146DA6F5DAA56C3B73B237318B6A418E8EAB8D32BA5DBAC0009BE9E8FC8737B5C224929E57CDFA355096D76E601842F6C81A12EF20D2F80756B5F7E9C4E3C761E06A776E601842F6C81A127C277FBC8AE2E8B00B2ECFB950381B23AA81AA40904B5D9DBF02ECDB25306B2201CA6A4E26CD07C3BBE47FD9DD3FB595F5C1EE8F4F765FC72CEEB2601E22B093A03B725D353964B0B7D0EA88DDEDAC722CA9DD8327EE493B89ED3C7A6281781AD05CC21270DE0F1C4224003CC83647689D4C264860C145E
-X-B7AD71C0: 2623F767319EFA42AC98609FCEE262F9192335DD689A58EBAE0174B7F1092AFBF63472D858672956A8BD931D03E43403
-X-C1DE0DAB: C20DE7B7AB408E4181F030C43753B8186998911F362727C414F749A5E30D975C16EE06F5A270FE6A004883401E3217AA749839F795C915209C2B6934AE262D3EE7EAB7254005DCED246B04B1A760E0861E0A4E2319210D9B64D260DF9561598F01A9E91200F654B01098AAFFB0A1231D8E8E86DC7131B365E7726E8460B7C23C
-X-C8649E89: 4E36BF7865823D7055A7F0CF078B5EC49A30900B95165D342E8FEDBD32DECB6DCE105F9E184D158104676EC26861AE2B017C6C7D7991F9E4213AF6172ED321DC1D7E09C32AA3244C1E4426A78A9BC1B2A183BDA071234B61250262A5EE9971B0927AC6DF5659F194
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojt47dm/981n61iGJGd7Ky2w==
-X-Mailru-Sender: 3A338A78718AEC5AA85B3E7661095C1E3A251DAE66DFBBCB3DCDCC9E291E8445BCBED4EBA2EB499A3833C6AC539110AEA432B8CD90067B65A6C5C4E98768B51D7AA22088860DD9FF5CDEF9E650933936342CD0BA774DB6A9AE208404248635DF
-X-Mras: Ok
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitrii Wolf <dev.dragon@bk.ru>
+Hi Pratyush,
 
-Fixed a coding style issue.
++1 from me also to the points Tomi raised.
 
-Signed-off-by: Dmitrii Wolf <dev.dragon@bk.ru>
----
- drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+few minor comments on the DMAengie side.
 
-diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
-index 690b664df8fa..29a6ce20e2bd 100644
---- a/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
-+++ b/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
-@@ -2048,12 +2048,12 @@ void ieee80211_softmac_xmit(struct ieee80211_txb *txb, struct ieee80211_device *
- 	/* if xmit available, just xmit it immediately, else just insert it to the wait queue */
- 	for (i = 0; i < txb->nr_frags; i++) {
- #ifdef USB_TX_DRIVER_AGGREGATION_ENABLE
--		if ((skb_queue_len(&ieee->skb_drv_aggQ[queue_index]) != 0) ||
-+		if ((skb_queue_len(&ieee->skb_drv_aggQ[queue_index]) != 0)
- #else
--		if ((skb_queue_len(&ieee->skb_waitQ[queue_index]) != 0) ||
-+		if ((skb_queue_len(&ieee->skb_waitQ[queue_index]) != 0)
- #endif
--		    (!ieee->check_nic_enough_desc(ieee->dev, queue_index)) || \
--		    (ieee->queue_stop)) {
-+		 || (!ieee->check_nic_enough_desc(ieee->dev, queue_index)) \
-+		 || (ieee->queue_stop)) {
- 			/* insert the skb packet to the wait queue */
- 			/* as for the completion function, it does not need
- 			 * to check it any more.
+On 3/30/21 8:33 PM, Pratyush Yadav wrote:
+> TI's J721E uses the Cadence CSI2RX and DPHY peripherals to facilitate
+> capture over a CSI-2 bus.
+> 
+> The Cadence CSI2RX IP acts as a bridge between the TI specific parts and
+> the CSI-2 protocol parts. TI then has a wrapper on top of this bridge
+> called the SHIM layer. It takes in data from stream 0, repacks it, and
+> sends it to memory over PSI-L DMA.
+> 
+> This driver acts as the "front end" to V4L2 client applications. It
+> implements the required ioctls and buffer operations, passes the
+> necessary calls on to the bridge, programs the SHIM layer, and performs
+> DMA via the dmaengine API to finally return the data to a buffer
+> supplied by the application.
+> 
+> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> ---
+>  MAINTAINERS                               |   7 +
+>  drivers/media/platform/Kconfig            |  11 +
+>  drivers/media/platform/ti-vpe/Makefile    |   1 +
+>  drivers/media/platform/ti-vpe/ti-csi2rx.c | 964 ++++++++++++++++++++++
+>  4 files changed, 983 insertions(+)
+>  create mode 100644 drivers/media/platform/ti-vpe/ti-csi2rx.c
+
+...
+
+> diff --git a/drivers/media/platform/ti-vpe/ti-csi2rx.c b/drivers/media/platform/ti-vpe/ti-csi2rx.c
+> new file mode 100644
+> index 000000000000..355204ae473b
+> --- /dev/null
+> +++ b/drivers/media/platform/ti-vpe/ti-csi2rx.c
+
+...
+
+> +static int ti_csi2rx_init_vb2q(struct ti_csi2rx_dev *csi)
+> +{
+> +	struct vb2_queue *q = &csi->vidq;
+> +	int ret;
+> +
+> +	q->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+> +	q->io_modes = VB2_MMAP | VB2_USERPTR | VB2_DMABUF | VB2_READ;
+> +	q->drv_priv = csi;
+> +	q->buf_struct_size = sizeof(struct ti_csi2rx_buffer);
+> +	q->ops = &csi_vb2_qops;
+> +	q->mem_ops = &vb2_dma_contig_memops;
+> +	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+> +	q->dev = csi->dma->device->dev;
+
+q->dev = dmaengine_get_dma_device(csi->dma);
+
+> +	q->lock = &csi->mutex;
+> +
+> +	ret = vb2_queue_init(q);
+> +	if (ret)
+> +		return ret;
+> +
+> +	csi->vdev.queue = q;
+> +
+> +	return 0;
+> +}
+> +
+> +static int ti_csi2rx_init_dma(struct ti_csi2rx_dev *csi)
+> +{
+> +	struct dma_slave_config cfg;
+> +	int ret;
+> +
+> +	INIT_LIST_HEAD(&csi->dmaq.list);
+> +
+> +	csi->dma = NULL;
+> +
+> +	csi->dma = dma_request_chan(csi->dev, "rx0");
+> +	if (IS_ERR(csi->dma))
+> +		return PTR_ERR(csi->dma);
+> +
+> +	memset(&cfg, 0, sizeof(cfg));
+> +
+> +	cfg.src_addr_width = DMA_SLAVE_BUSWIDTH_16_BYTES;
+> +	cfg.dst_addr_width = DMA_SLAVE_BUSWIDTH_16_BYTES;
+
+No need to set the dst_addr_width as you only support RX.
+
+Another note: UDMA with PSI-L native peripherals ignores this
+cofniguration, only used for PDMAs, but I can remain to future proof the
+driver and to keep it generic.
+
+> +
+> +	ret = dmaengine_slave_config(csi->dma, &cfg);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return 0;
+> +}
+
 -- 
-2.25.1
-
+Péter
