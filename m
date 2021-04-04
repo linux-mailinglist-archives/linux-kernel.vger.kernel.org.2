@@ -2,80 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C263E3538FA
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 19:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3A67353900
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 19:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231213AbhDDRF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 13:05:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60100 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229861AbhDDRFY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 13:05:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDBC96128B;
-        Sun,  4 Apr 2021 17:05:16 +0000 (UTC)
-Date:   Sun, 4 Apr 2021 19:05:13 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        syzbot <syzbot+c88a7030da47945a3cc3@syzkaller.appspotmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, io-uring@vger.kernel.org
-Subject: Re: [syzbot] WARNING in mntput_no_expire (2)
-Message-ID: <20210404170513.mfl5liccdaxjnpls@wittgenstein>
-References: <20210401154515.k24qdd2lzhtneu47@wittgenstein>
- <90e7e339-eaec-adb2-cfed-6dc058a117a3@kernel.dk>
- <20210401174613.vymhhrfsemypougv@wittgenstein>
- <20210401175919.jpiylhfrlb4xb67u@wittgenstein>
- <YGYa0B4gabEYi2Tx@zeniv-ca.linux.org.uk>
- <YGkloJhMFc4hEatk@zeniv-ca.linux.org.uk>
- <20210404113445.xo6ntgfpxigcb3x6@wittgenstein>
- <YGnhkoTfVfMSMPpK@zeniv-ca.linux.org.uk>
- <20210404164040.vtxdcfzgliuzghwk@wittgenstein>
- <YGns1iPBHeeMAtn8@zeniv-ca.linux.org.uk>
+        id S231221AbhDDRSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 13:18:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229861AbhDDRSA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Apr 2021 13:18:00 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EDCEC061756
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Apr 2021 10:17:55 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so9443278otk.5
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Apr 2021 10:17:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=c1CessPpLzgh2a5AVf24K9ZsL30ILYIkWayYu/yt2/8=;
+        b=ck/WMVXA3KQLbKNqUo4rGtmw+NgI8GSy5h2pThn9Nok952defCUZsftf4pI32pvsC3
+         5gB3i1LoDHBKKQiJvr97nV+7uUguQt9+9++o2aucuSNcjDx6Lz+euO4jvv6nm3FqY9N9
+         BR7PiMIb3wd0PBKapUQD0aisJyh+NMP0AcCWD7zvOKk5yDSApSrkqz6sAbGeZDc/zQWx
+         vS6QTsToqKlH+AJ7kYuz6vIYSV7yG6RG3a0T7uO7XfYy9y6kDuau18+SjMK7+EaKdvgS
+         AYxV9PHBOuz1h8z8Hi7W5KaC1w0QWRux4+lznR283yUIpL7R7jM0gRrBLWvGlvVwcb0v
+         I1Lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=c1CessPpLzgh2a5AVf24K9ZsL30ILYIkWayYu/yt2/8=;
+        b=IFP5lhC2mTwObxiU26RLfvdPuVhWPlWXUs2/NJtW3bUSW7EQ1PO1VwUvi1n2OoTk/T
+         DX/lJtplC0OCS3ntDK3fQp0ML3b5dRYjGxpHKBFx7Bi2cnsLQV9Ph5jjSfHC4xBFhhTS
+         SCigAkTzV35qwD6BV6qGsBAj9MReYXvU+74sODOAEeIwXk4qEAY1EGt9+GF36VKBOWag
+         qilusTirBR7z3fweKrQgvNUOGKSlrTqgqUH5DVVnzUCkBCqID8xhTIci2ty3cr8dKr9b
+         Oh0p3Fo6aWj1fIPBS5rFY3LfivNF+Ex0/tioan5lpup70lq4CQdJe4uRn7vyQjCkhMGM
+         z8WA==
+X-Gm-Message-State: AOAM530Fl1HJK4l+19RnMaykDwtEIjD5NKetJABLg/VBkp9FufPMNgXC
+        kpuSYddGqKDVJiryoBY0o/XEbQ==
+X-Google-Smtp-Source: ABdhPJxChdfmhvt6D0eurGCCAP5+geqvhI7qaRQwc+qIUUf3jf1Z7EhiJi+4MKW17HZ7xkrqZKbeJg==
+X-Received: by 2002:a9d:3e10:: with SMTP id a16mr19783276otd.261.1617556675225;
+        Sun, 04 Apr 2021 10:17:55 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id s83sm2646719oif.43.2021.04.04.10.17.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Apr 2021 10:17:54 -0700 (PDT)
+Date:   Sun, 4 Apr 2021 12:17:52 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Deepak Kumar Singh <deesin@codeaurora.org>
+Cc:     clew@codeaurora.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        Andy Gross <agross@kernel.org>
+Subject: Re: [PATCH V1 1/2] soc: qcom: aoss: Expose send for generic usecase
+Message-ID: <YGn0wBkOOILgaq5w@builder.lan>
+References: <1617344238-12137-1-git-send-email-deesin@codeaurora.org>
+ <1617344238-12137-2-git-send-email-deesin@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YGns1iPBHeeMAtn8@zeniv-ca.linux.org.uk>
+In-Reply-To: <1617344238-12137-2-git-send-email-deesin@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 04, 2021 at 04:44:06PM +0000, Al Viro wrote:
-> On Sun, Apr 04, 2021 at 06:40:40PM +0200, Christian Brauner wrote:
+On Fri 02 Apr 01:17 CDT 2021, Deepak Kumar Singh wrote:
+
+> Not all upcoming usecases will have an interface to allow the aoss
+> driver to hook onto. Expose the send api and create a get function to
+> enable drivers to send their own messages to aoss.
 > 
-> > > Very interesting.  What happens if you call loop() twice?  And now I wonder
-> > > whether it's root or cwd, actually...  Hmm...
-> > > 
-> > > How about this:
-> > > 	fd = open("/proc/self/mountinfo", 0);
-> > > 	mkdir("./newroot/foo", 0777);
-> > > 	mount("./newroot/foo", "./newroot/foo", 0, MS_BIND, NULL);
-> > > 	chroot("./newroot");
-> > > 	chdir("/foo");
-> > > 	while (1) {
-> > > 		static char buf[4096];
-> > > 		int n = read(fd, buf, 4096);
-> > > 		if (n <= 0)
-> > > 			break;
-> > > 		write(1, buf, n);
-> > > 	}
-> > > 	close(fd);
-> > > 	drop_caps();
-> > > 	loop();
-> > > as the end of namespace_sandbox_proc(), instead of
-> > > 	chroot("./newroot");
-> > > 	chdir("/");
-> > > 	drop_caps();
-> > > 	loop();
-> > > sequence we have there?
-> > 
-> > Uhum, well then we oops properly with a null-deref.
+> Signed-off-by: Chris Lew <clew@codeaurora.org>
+> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
+> ---
+>  drivers/soc/qcom/qcom_aoss.c | 36 +++++++++++++++++++++++++++++++++++-
+>  1 file changed, 35 insertions(+), 1 deletion(-)
 > 
-> Cute...  Could you dump namei.o (ideally - with namei.s) from your build
-> someplace public?
+> diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
+> index 53acb94..5c643f0 100644
+> --- a/drivers/soc/qcom/qcom_aoss.c
+> +++ b/drivers/soc/qcom/qcom_aoss.c
+> @@ -8,10 +8,12 @@
+>  #include <linux/io.h>
+>  #include <linux/mailbox_client.h>
+>  #include <linux/module.h>
+> +#include <linux/of_platform.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_domain.h>
+>  #include <linux/thermal.h>
+>  #include <linux/slab.h>
+> +#include <linux/soc/qcom/qcom_aoss.h>
 
-Yeah, I have at least namei.o
+I believe you forgot to 'git add' this.
 
-https://drive.google.com/file/d/1AvO1St0YltIrA86DXjp1Xg3ojtS9owGh/view?usp=sharing
+>  
+>  #define QMP_DESC_MAGIC			0x0
+>  #define QMP_DESC_VERSION		0x4
+> @@ -223,11 +225,14 @@ static bool qmp_message_empty(struct qmp *qmp)
+>   *
+>   * Return: 0 on success, negative errno on failure
+>   */
+> -static int qmp_send(struct qmp *qmp, const void *data, size_t len)
+> +int qmp_send(struct qmp *qmp, const void *data, size_t len)
+>  {
+>  	long time_left;
+>  	int ret;
+>  
+> +	if (!qmp || !data)
 
-Christian
+I don't see a legit use case where these are NULL, so there's probably a
+developer staring at the kernel log wondering why their code isn't
+working. So better wrap this in a WARN_ON() to help him/her.
+
+
+Also, a developer failing to check the return value of qmp_get() would
+get here with qmp being -ENODEV, -EINVAL or -EPROBE_DEFER. Which we
+would gladly dereference in the next conditional. So rather than !qmp,
+IS_ERR_OR_NULL(qmp) would be useful.
+
+> +		return -EINVAL;
+> +
+>  	if (WARN_ON(len + sizeof(u32) > qmp->size))
+>  		return -EINVAL;
+>  
+> @@ -261,6 +266,7 @@ static int qmp_send(struct qmp *qmp, const void *data, size_t len)
+>  
+>  	return ret;
+>  }
+> +EXPORT_SYMBOL(qmp_send);
+>  
+>  static int qmp_qdss_clk_prepare(struct clk_hw *hw)
+>  {
+> @@ -515,6 +521,34 @@ static void qmp_cooling_devices_remove(struct qmp *qmp)
+>  		thermal_cooling_device_unregister(qmp->cooling_devs[i].cdev);
+>  }
+>  
+> +/**
+> + * qmp_get() - get a qmp handle from a device
+> + * @dev: client device pointer
+> + *
+> + * Return: handle to qmp device on success, ERR_PTR() on failure
+> + */
+> +struct qmp *qmp_get(struct device *dev)
+> +{
+> +	struct platform_device *pdev;
+> +	struct device_node *np;
+> +	struct qmp *qmp;
+> +
+> +	if (!dev || !dev->of_node)
+> +		return ERR_PTR(-ENODEV);
+
+Value of @dev is an invalid argument, so I think -EINVAL is suitable.
+
+> +
+> +	np = of_parse_phandle(dev->of_node, "qcom,qmp", 0);
+> +	if (!np)
+> +		return ERR_PTR(-ENODEV);
+> +
+> +	pdev = of_find_device_by_node(np);
+
+of_find_device_by_node() will increment the refcount of the underlying
+struct device of pdev, so you need to platform_device_put() once you're
+done with it.
+
+As a side effect of not putting the struct device, the devm_kzalloc'ed
+qmp pointer will remain valid. So care is needed to make sure that the
+client doesn't end up with a dangling pointer if the qmp device is
+removed.
+
+My suggestion is that you add a "qmp_put()" function, which invokes
+platform_device_put() and that you add some sort of tracking ("bool
+orphan"?) to the struct qmp and make qmp_send() fail if this is set.
+
+That way if someone unbinds the aoss device, the client will still have
+a "valid" pointer, but won't be able to qmp_send() after qmp_close() has
+been called in the aoss remove function.
+
+Regards,
+Bjorn
+
+> +	if (!pdev)
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	qmp = platform_get_drvdata(pdev);
+> +	return qmp ? qmp : ERR_PTR(-EPROBE_DEFER);
+> +}
+> +EXPORT_SYMBOL(qmp_get);
+> +
+>  static int qmp_probe(struct platform_device *pdev)
+>  {
+>  	struct resource *res;
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
