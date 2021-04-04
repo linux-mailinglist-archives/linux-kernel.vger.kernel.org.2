@@ -2,61 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F23B13537BD
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 12:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67DBD3537C4
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 12:27:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230394AbhDDKI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 06:08:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51078 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230399AbhDDKIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 06:08:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8BE761380;
-        Sun,  4 Apr 2021 10:08:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617530926;
-        bh=tmz2ngPlpmeSZ+3lRmqvtJnXqzdaApgAxpvCzTnHM/s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1PjpmpW8X7Fgj+r8uZ2nG2DWk8b93KCOJI3jwPg1S5Eq+WoMSs6MHiemHsVJ7452a
-         N3cLNs3GJ236N21sulLXe286uo0MEC1w3tvzU3eZ8m7CBuiCZr9CeApT6lLpGXwdUy
-         oprI+H4VNGfev/HGZCp/2Q0vuq/Z0Jt9PdxGZxW8=
-Date:   Sun, 4 Apr 2021 12:08:43 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     min.li.xe@renesas.com
-Cc:     derek.kiernan@xilinx.com, dragan.cvetic@xilinx.com, arnd@arndb.de,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH next 2/2] misc: Add Renesas Synchronization Management
- Unit (SMU) support
-Message-ID: <YGmQKyweNi3lWoGM@kroah.com>
-References: <1617487714-8312-1-git-send-email-min.li.xe@renesas.com>
- <1617487714-8312-2-git-send-email-min.li.xe@renesas.com>
+        id S230436AbhDDKZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 06:25:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229483AbhDDKZF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Apr 2021 06:25:05 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D7C5C061756;
+        Sun,  4 Apr 2021 03:25:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=WSf1ZcBtiuY+N1FqIxR0B2fClvFN9W6AWwRWELkXbQ0=; b=sCMSYiGXQn4+RRQyQAvrCQ5p5x
+        AhkCCk+BQTk0bpflPpg0g1DDfJ9Cq6vrRBvuBwtjI/vduSb6To1fMD8gfGPYwQMK80yWTALv6mkkb
+        gEbSAJtamdJ9TU6PZzSBXwQHYBbHoEgGnkNtz88VdqWMb0ZhxMuyF5UtQD6HyFmg2eDM9cKi2Fb/N
+        FNtCwj3AD+1KyFS/YXwyn4u/xZM9ZME3Ypy2dm1x3L97fgl2wAUd88IcRpD/NO2/cTnouGP3LT/+m
+        EOW5CWR4Dj7n7uS59ofiNOc941oTHju11Z68JVElsfrksKLjxruEBPhP9HO0AyU6qfqrJsQXMbuig
+        G0+rRJeg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lSzw9-00A0vq-4g; Sun, 04 Apr 2021 10:24:57 +0000
+Date:   Sun, 4 Apr 2021 11:24:57 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     syzbot <syzbot+dde0cc33951735441301@syzkaller.appspotmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+        netdev@vger.kernel.org, tglx@linutronix.de, peterz@infradead.org,
+        frederic@kernel.org, paulmck@kernel.org
+Subject: Something is leaking RCU holds from interrupt context
+Message-ID: <20210404102457.GS351017@casper.infradead.org>
+References: <00000000000025a67605bf1dd4ab@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1617487714-8312-2-git-send-email-min.li.xe@renesas.com>
+In-Reply-To: <00000000000025a67605bf1dd4ab@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 03, 2021 at 06:08:34PM -0400, min.li.xe@renesas.com wrote:
-> From: Min Li <min.li.xe@renesas.com>
+On Sat, Apr 03, 2021 at 09:15:17PM -0700, syzbot wrote:
+> HEAD commit:    2bb25b3a Merge tag 'mips-fixes_5.12_3' of git://git.kernel..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1284cc31d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=78ef1d159159890
+> dashboard link: https://syzkaller.appspot.com/bug?extid=dde0cc33951735441301
 > 
-> This driver is developed for the IDT ClockMatrix(TM) and 82P33xxx families
-> of timing and synchronization devices.It will be used by Renesas PTP Clock
-> Manager for Linux (pcm4l) software to provide support to GNSS assisted
-> partial timing support (APTS) and other networking timing functions.
+> Unfortunately, I don't have any reproducer for this issue yet.
 > 
-> Current version provides kernel API's to support the following functions
-> -set combomode to enable SYNCE clock support
-> -read dpll's state to determine if the dpll is locked to the GNSS channel
-> -read dpll's ffo (fractional frequency offset) in ppqt
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+dde0cc33951735441301@syzkaller.appspotmail.com
 > 
-> Signed-off-by: Min Li <min.li.xe@renesas.com>
+> WARNING: suspicious RCU usage
+> 5.12.0-rc5-syzkaller #0 Not tainted
+> -----------------------------
+> kernel/sched/core.c:8294 Illegal context switch in RCU-bh read-side critical section!
+> 
+> other info that might help us debug this:
+> 
+> 
+> rcu_scheduler_active = 2, debug_locks = 0
+> no locks held by systemd-udevd/4825.
 
-Any specific reason you are not using the misc_device api?  That would
-clean up this driver a lot, there's no need to create a whole class just
-for a single driver.
+I think we have something that's taking the RCU read lock in
+(soft?) interrupt context and not releasing it properly in all
+situations.  This thread doesn't have any locks recorded, but
+lock_is_held(&rcu_bh_lock_map) is true.
 
-thanks,
+Is there some debugging code that could find this?  eg should
+lockdep_softirq_end() check that rcu_bh_lock_map is not held?
+(if it's taken in process context, then BHs can't run, so if it's
+held at softirq exit, then there's definitely a problem).
 
-greg k-h
+> stack backtrace:
+> CPU: 0 PID: 4825 Comm: systemd-udevd Not tainted 5.12.0-rc5-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+>  ___might_sleep+0x229/0x2c0 kernel/sched/core.c:8294
+>  __might_fault+0x6e/0x180 mm/memory.c:5018
+>  strncpy_from_user+0x2f/0x3e0 lib/strncpy_from_user.c:117
+>  getname_flags.part.0+0x95/0x4f0 fs/namei.c:149
+>  getname_flags fs/namei.c:2733 [inline]
+>  user_path_at_empty+0xa1/0x100 fs/namei.c:2733
+>  user_path_at include/linux/namei.h:60 [inline]
+>  do_faccessat+0x127/0x850 fs/open.c:425
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+
+Nothing in this path calls rcu_read_lock_bh().  It's almost exclusively
+used by the networking code.
