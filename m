@@ -2,116 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D9913539C6
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 22:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 001CE3539F0
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 22:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231532AbhDDUdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 16:33:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230169AbhDDUdh (ORCPT
+        id S231592AbhDDUix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 16:38:53 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:48094 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231453AbhDDUit (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 16:33:37 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C229C061756
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Apr 2021 13:33:31 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id c8so9262763wrq.11
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Apr 2021 13:33:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qLAy95bvS1zAnYuhC/w4xxxlm+O0tzNR1N2BJpqbw5w=;
-        b=Uj0Y5h5dAclSEpTTchKZoN6d6/X2/jxuIIdiY2TiTyk3Va6KgXWEIR7nXrbx2G6DmG
-         DEj8NTV0WHUfrymtdaelg8IdCSbFubY9BkAoUgH6qQf8EqAg7oNdPZikt1hBXz6v20zs
-         A8AaPWXWp0Z2jemWr2KvX3VEPPGU3IlyIZPwCyiC+SenicBH6/PCmHtanTK6GQ1U+Ifg
-         VY2SBWvWpq0G2yymbRGsBY5fsQ3VQ4aGS/FzsLk9krR6A4W7hb8uudpCoMiP1AUhW51x
-         KAc2oi6Fi2BSvj3YthT1WKevVUyAKnRg3u5L4ySofPzK4gqEB2ss/pH/Whz46Pfeo62Z
-         VcVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qLAy95bvS1zAnYuhC/w4xxxlm+O0tzNR1N2BJpqbw5w=;
-        b=i5Frb948Un75095H46JllF5/yt9/5dCWU1VU8wWdZaB1rNY3PdrVsflyP9fAMStt/b
-         h+6IIdQRdxRgk3Z/IK91w/oTjDNF5eBc2mPT6sW7yFiOza/MNAcK+vaac9njnBCk5jUB
-         +VEmIjDqtdH/uohQ3o5AL95jHdBbZzII7rbvNUwkZFBeKfgOrhGtbSx9oYvUSH3Yak1Y
-         fgaD8eTspO/LqsUOJmPC0exZUSYlhS6q+LL9yNwsXvrx4dBPfKUd0bc1VF8pqzEAM4f0
-         meNw4vbRa6hasYqBzmVj+MWrUzb+josEy8XcxpqVtzSzG1DqCMJw50eI3LK+9npQ7Lo4
-         NfoQ==
-X-Gm-Message-State: AOAM530skN7gYuiRYjoLsYAvkQYID19VxLeIhhMTTnNBBow9vR6mbtOF
-        bCaf78EXaUbpnkvHmk7Q6KhdEA==
-X-Google-Smtp-Source: ABdhPJyhT6Ya2IgUD2RMKPgOE6BwHgGaUQpbUoSsELec3O9UxvF/KjbQKc6zYs03mvxBXK/bekFFsg==
-X-Received: by 2002:a05:6000:10c4:: with SMTP id b4mr8456271wrx.386.1617568410016;
-        Sun, 04 Apr 2021 13:33:30 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:6d68:6b9a:7a3c:4a9f? ([2a01:e34:ed2f:f020:6d68:6b9a:7a3c:4a9f])
-        by smtp.googlemail.com with ESMTPSA id u19sm8383785wml.28.2021.04.04.13.33.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Apr 2021 13:33:29 -0700 (PDT)
-Subject: Re: [PATCH v2 1/8] dt-bindings: timer: Add compatible for Mediatek
- MT8195
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Seiya Wang <seiya.wang@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fabien Parent <fparent@baylibre.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Zhiyong Tao <zhiyong.tao@mediatek.com>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Wenbin Mei <wenbin.mei@mediatek.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-serial@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, srv_heupstream@mediatek.com
-References: <20210319023427.16711-1-seiya.wang@mediatek.com>
- <20210319023427.16711-3-seiya.wang@mediatek.com>
- <bf7ad31e-974a-3e0a-12bd-32973c7c3cbd@gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <11bf6761-8902-bfa5-8577-d397846e7638@linaro.org>
-Date:   Sun, 4 Apr 2021 22:33:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 4 Apr 2021 16:38:49 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1617568722;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RKJOVw49h8LPa1c5z5Qs/Q0pL2+AWkIVuAy0NwtgdHY=;
+        b=KDQYJd2P4atFmXEh7pGIsauueG9uEzg6bw5pL17rkaASxtR9Q00u17I815CMkvCukIQxIk
+        Ya4xMsuKk9wN9zwk3sPYVGLz/V7qPg8sX3/kaJF98JzrBy+bBu5dw2coIbyNbQEFlB3Mwv
+        PKCaT8EzFSxW/xK+f2HboNfuBDFSyxk6ya5y4DbXRVLV31smQJKt8a0Rf4JpG0/yu7zDxY
+        5eIYoIXGK81beV+rvgA6z7sgvDhCvKJzYVLhOEadrlCR+udQ+jtF6JmmvT6CjwVv8iiei5
+        WzC2PJgKl/7NyCAHKPAu0aHKI5U3O0J6wi7x7VcpzCc86xi7+qIK9lGUBw5mCw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1617568722;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RKJOVw49h8LPa1c5z5Qs/Q0pL2+AWkIVuAy0NwtgdHY=;
+        b=kZFbhVKKO5yVfSuOtEYd9bPBB2QhiOhqwJWEQfCoKWrZBDVhCq3N8kJSqf/UvEl1M95ECD
+        Ebn8DJjofUvRsXCA==
+To:     syzbot <syzbot+88e4f02896967fe1ab0d@syzkaller.appspotmail.com>
+Cc:     john.stultz@linaro.org, linux-kernel@vger.kernel.org,
+        sboyd@kernel.org, syzkaller-bugs@googlegroups.com,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [syzbot] WARNING: suspicious RCU usage in get_timespec64
+In-Reply-To: <0000000000000e025b05bf2a430b@google.com>
+References: <0000000000000e025b05bf2a430b@google.com>
+Date:   Sun, 04 Apr 2021 22:38:41 +0200
+Message-ID: <87mtud4wfi.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <bf7ad31e-974a-3e0a-12bd-32973c7c3cbd@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/03/2021 13:52, Matthias Brugger wrote:
-> 
-> 
-> On 19/03/2021 03:34, Seiya Wang wrote:
->> This commit adds dt-binding documentation of timer for Mediatek MT8195 SoC
->> Platform.
->>
->> Signed-off-by: Seiya Wang <seiya.wang@mediatek.com>
-> 
-> Applied to v5.12-next/dts64
+On Sun, Apr 04 2021 at 12:05, syzbot wrote:
 
-Usually bindings go through the subsystem maintainer.
+Cc + ...
 
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    5e46d1b7 reiserfs: update reiserfs_xattrs_initialized() co..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1125f831d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=78ef1d159159890
+> dashboard link: https://syzkaller.appspot.com/bug?extid=88e4f02896967fe1ab0d
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+88e4f02896967fe1ab0d@syzkaller.appspotmail.com
+>
+> =============================
+> WARNING: suspicious RCU usage
+> 5.12.0-rc5-syzkaller #0 Not tainted
+> -----------------------------
+> kernel/sched/core.c:8294 Illegal context switch in RCU-sched read-side critical section!
+>
+> other info that might help us debug this:
+>
+>
+> rcu_scheduler_active = 2, debug_locks = 0
+> 3 locks held by syz-executor.4/8418:
+>  #0: 
+> ffff8880751d2b28
+>  (
+> &p->pi_lock
+> ){-.-.}-{2:2}
+> , at: try_to_wake_up+0x98/0x14a0 kernel/sched/core.c:3345
+>  #1: 
+> ffff8880b9d35258
+>  (
+> &rq->lock
+> ){-.-.}-{2:2}
+> , at: rq_lock kernel/sched/sched.h:1321 [inline]
+> , at: ttwu_queue kernel/sched/core.c:3184 [inline]
+> , at: try_to_wake_up+0x5e6/0x14a0 kernel/sched/core.c:3464
+>  #2: ffff8880b9d1f948 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_change+0x142/0x220 kernel/sched/psi.c:807
+>
+> stack backtrace:
+> CPU: 0 PID: 8418 Comm: syz-executor.4 Not tainted 5.12.0-rc5-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+>  ___might_sleep+0x266/0x2c0 kernel/sched/core.c:8294
+>  __might_fault+0x6e/0x180 mm/memory.c:5018
+>  _copy_from_user+0x27/0x180 lib/usercopy.c:13
+>  copy_from_user include/linux/uaccess.h:192 [inline]
+>  get_timespec64+0x75/0x220 kernel/time/time.c:787
+>  __do_sys_clock_nanosleep kernel/time/posix-timers.c:1257 [inline]
+>  __se_sys_clock_nanosleep kernel/time/posix-timers.c:1245 [inline]
+>  __x64_sys_clock_nanosleep+0x1bb/0x430 kernel/time/posix-timers.c:1245
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x48a621
+> Code: 24 0c 89 3c 24 48 89 4c 24 18 e8 aa e7 ff ff 4c 8b 54 24 18 48 8b 54 24 10 41 89 c0 8b 74 24 0c 8b 3c 24 b8 e6 00 00 00 0f 05 <44> 89 c7 48 89 04 24 e8 e3 e7 ff ff 48 8b 04 24 eb 97 66 2e 0f 1f
+> RSP: 002b:00007fffe59fbd50 EFLAGS: 00000293 ORIG_RAX: 00000000000000e6
+> RAX: ffffffffffffffda RBX: 0000000000000294 RCX: 000000000048a621
+> RDX: 00007fffe59fbd90 RSI: 0000000000000000 RDI: 0000000000000000
+> RBP: 00007fffe59fbe2c R08: 0000000000000000 R09: 00007fffe5b8a090
+> R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000032
+> R13: 000000000005717a R14: 0000000000000003 R15: 00007fffe59fbe90
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
