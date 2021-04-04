@@ -2,83 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D163537A7
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 11:45:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB5D3537A9
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 11:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229530AbhDDJpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 05:45:22 -0400
-Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:56778 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229483AbhDDJpT (ORCPT
+        id S230333AbhDDJtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 05:49:24 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:22567 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229578AbhDDJtX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 05:45:19 -0400
-Received: from localhost.localdomain ([90.126.11.170])
-        by mwinf5d76 with ME
-        id oZlD2400B3g7mfN03ZlDM8; Sun, 04 Apr 2021 11:45:14 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 04 Apr 2021 11:45:14 +0200
-X-ME-IP: 90.126.11.170
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     ecree.xilinx@gmail.com, habetsm.xilinx@gmail.com,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] sfc: Use 'skb_add_rx_frag()' instead of hand coding it
-Date:   Sun,  4 Apr 2021 11:45:11 +0200
-Message-Id: <6fadc5ae05b05d9d8ab545e51ee3dcbdaa561393.1617529446.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.27.0
+        Sun, 4 Apr 2021 05:49:23 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AD8yUR6pWVhvFbSZEUUvkrlMaV5qReYIsi2QD?=
+ =?us-ascii?q?101hICF9WMqeisyogbAnzhfykjkcQzUNntqHNamGTxrnmqJdy48XILukQU3aqH?=
+ =?us-ascii?q?KlRbsD0aLO4R3FXxf/+OlUyLt6f8FFY+HYIFBmga/BkW2FOvk6xt3vytHKuc77?=
+ =?us-ascii?q?71NACT5ncLth6QARMGqmO2l7XhNPC5Z8NJf03KR6jgGtc3gWcci3b0NtN4Kvm/?=
+ =?us-ascii?q?TwiJnkbRQabiRXjTWmsDXA0s+ZLzGomjsYTjNT0fMD3AH+4nXEz5Tmid/+5j/w?=
+ =?us-ascii?q?vlWjiKh+qZ/a5J9iKaW3+64oAwSptg2lf8BAVtS53QwInA=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.81,304,1610406000"; 
+   d="scan'208";a="501509798"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 04 Apr 2021 11:49:18 +0200
+Date:   Sun, 4 Apr 2021 11:49:18 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Deborah Brouwer <deborahbrouwer3563@gmail.com>
+cc:     Larry.Finger@lwfinger.net, gregkh@linuxfoundation.org,
+        straube.linux@gmail.com, unixbhaskar@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com
+Subject: Re: [Outreachy kernel] [PATCH] staging: rtl8188eu: replace goto with
+ direct return
+In-Reply-To: <20210404054008.23525-1-deborahbrouwer3563@gmail.com>
+Message-ID: <alpine.DEB.2.22.394.2104041148590.2958@hadrien>
+References: <20210404054008.23525-1-deborahbrouwer3563@gmail.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some lines of code can be merged into an equivalent 'skb_add_rx_frag()'
-call which is less verbose.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-UNTESTED. Compile tested only
 
-The 'skb->truesize' computation is likely to be slightly slower (n
-additions hidden in 'skb_add_rx_frag' instead of 1 multiplication), but I
-don't think that it is an issue here.
----
- drivers/net/ethernet/sfc/rx.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+On Sat, 3 Apr 2021, Deborah Brouwer wrote:
 
-diff --git a/drivers/net/ethernet/sfc/rx.c b/drivers/net/ethernet/sfc/rx.c
-index 89c5c75f479f..17b8119c48e5 100644
---- a/drivers/net/ethernet/sfc/rx.c
-+++ b/drivers/net/ethernet/sfc/rx.c
-@@ -94,12 +94,11 @@ static struct sk_buff *efx_rx_mk_skb(struct efx_channel *channel,
- 		rx_buf->len -= hdr_len;
- 
- 		for (;;) {
--			skb_fill_page_desc(skb, skb_shinfo(skb)->nr_frags,
--					   rx_buf->page, rx_buf->page_offset,
--					   rx_buf->len);
-+			skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags,
-+					rx_buf->page, rx_buf->page_offset,
-+					rx_buf->len, efx->rx_buffer_truesize);
- 			rx_buf->page = NULL;
--			skb->len += rx_buf->len;
--			skb->data_len += rx_buf->len;
-+
- 			if (skb_shinfo(skb)->nr_frags == n_frags)
- 				break;
- 
-@@ -111,8 +110,6 @@ static struct sk_buff *efx_rx_mk_skb(struct efx_channel *channel,
- 		n_frags = 0;
- 	}
- 
--	skb->truesize += n_frags * efx->rx_buffer_truesize;
--
- 	/* Move past the ethernet header */
- 	skb->protocol = eth_type_trans(skb, efx->net_dev);
- 
--- 
-2.27.0
+> To conform with Linux kernel coding style, replace goto statement that
+> does no cleanup with a direct return.  To preserve meaning, copy comments
+> from the original goto statement to the return statement.  Identified by
+> the checkpatch warning: WARNING: void function return statements are not
+> generally useful.
 
+Maybe the comments are meant as TODO items?
+
+julia
+
+>
+> Signed-off-by: Deborah Brouwer <deborahbrouwer3563@gmail.com>
+> ---
+>  drivers/staging/rtl8188eu/hal/rtl8188e_dm.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/staging/rtl8188eu/hal/rtl8188e_dm.c b/drivers/staging/rtl8188eu/hal/rtl8188e_dm.c
+> index 391c59490718..d21f21857c20 100644
+> --- a/drivers/staging/rtl8188eu/hal/rtl8188e_dm.c
+> +++ b/drivers/staging/rtl8188eu/hal/rtl8188e_dm.c
+> @@ -139,7 +139,9 @@ void rtw_hal_dm_watchdog(struct adapter *Adapter)
+>  	hw_init_completed = Adapter->hw_init_completed;
+>
+>  	if (!hw_init_completed)
+> -		goto skip_dm;
+> +		/*  Check GPIO to determine current RF on/off and Pbc status. */
+> +		/*  Check Hardware Radio ON/OFF or not */
+> +		return;
+>
+>  	/* ODM */
+>  	pmlmepriv = &Adapter->mlmepriv;
+> @@ -156,10 +158,8 @@ void rtw_hal_dm_watchdog(struct adapter *Adapter)
+>
+>  	Adapter->HalData->odmpriv.bLinked = bLinked;
+>  	ODM_DMWatchdog(&Adapter->HalData->odmpriv);
+> -skip_dm:
+>  	/*  Check GPIO to determine current RF on/off and Pbc status. */
+>  	/*  Check Hardware Radio ON/OFF or not */
+> -	return;
+>  }
+>
+>  void rtw_hal_dm_init(struct adapter *Adapter)
+> --
+> 2.17.1
+>
+> --
+> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/20210404054008.23525-1-deborahbrouwer3563%40gmail.com.
+>
