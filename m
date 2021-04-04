@@ -2,90 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5F8353837
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 15:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0B4C35383B
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 15:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbhDDNPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 09:15:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229665AbhDDNPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 09:15:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A63DD61210;
-        Sun,  4 Apr 2021 13:15:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617542139;
-        bh=F5BU3c8ulrHcngMnkVKeevAYqz8+ly+plYwNP3IB6/o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A95bpsJLF1e1zeYJritmas9caa2EDZ7d05RQ62dppYaJzCri14JpYc+j9Yri/VXgF
-         2km8HtKKbQa1D12E4IeAnCcNenUoqC3vsYwiuZ3oppJR8IJBfZQJb41eMpDikQizeH
-         CWPlZTN5fRrT/lCt7ewOV1eGnze5vaqocLgMDCvcW/LRhOsG2jDLQNPQ+eAwmStj7M
-         jyo9oiycs1SwbWLPxVEXi5ZFWWvaaKr4TVGCVotQsRaTMcVr1vCqtgCC4L3xfm3LDS
-         A+q9FssaN9GLk5GTukkAuckzpdOq+WETXuG/c/UkqEaGFcuvtAo6PpcZSI/4P51Lni
-         3B04ALmRsUjvw==
-Date:   Sun, 4 Apr 2021 16:15:35 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Mark Bloch <mbloch@nvidia.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Mark Bloch <markb@mellanox.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] RDMA/addr: potential uninitialized variable in
- ib_nl_process_good_ip_rsep()
-Message-ID: <YGm798Im61n+2/mb@unreal>
-References: <YGcES6MsXGnh83qi@mwanda>
- <YGmWB4fT/8IFeiZf@unreal>
- <1b21be94-bf14-9e73-68a3-c503bb79f683@nvidia.com>
+        id S230298AbhDDNSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 09:18:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhDDNSy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Apr 2021 09:18:54 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E62EEC061756;
+        Sun,  4 Apr 2021 06:18:49 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id w28so13852628lfn.2;
+        Sun, 04 Apr 2021 06:18:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=E7aNZvCUDgiEjUhfnA4glDPpLYVUgb36VhtZ187jO8I=;
+        b=FBIhlLRuKT2iOCtYms9q3RJ9cRnINvZIlcX78ZKu1og0SfU+hYGrx2RLUB5CNVaSgU
+         RdZ/vYPssH6vSbf+DqcoUHzGqbHA3Eu1sxj6gp9IyyjRo3IAaOOjZ510oSc5jugvio6N
+         +sZkftL81xYjnacVRynT/MRyYka8TqS44k8E7p3lh/hi8g8LU7pKOmcQco2FMayU1Qw3
+         itIFo0zWyMLYW1vAs9lP8EDRlFs75/bqhhd/N58P47nS6BeqdGTxnrO8iRPakL72z+hy
+         3YrR2aBaQK5lBdv6PCA6tL/G0xeqxWEp+TwflD9iDNRrLhWQSay/v/O51dexk1hrBLy8
+         QZ/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=E7aNZvCUDgiEjUhfnA4glDPpLYVUgb36VhtZ187jO8I=;
+        b=fXoDA99jFAMVPQDb5nOpKhnK8rX1+CjgFMkyEUjS3dt7Jt0LQNAFLVfWdLduNOtsTy
+         GUkTx9oU/5usnSsVx96op4AOD/q2nJbBCr75760w7d2ho4eBhdQwPhSQF9/MgKXCJKf0
+         /lg5LfT9spAffX2IjE9bEcw7ClPVkTVln9JoXKLK0sINIHAitzvf2SSRCAuSFIq+jrN6
+         yP8ja+tYXNMAgmM3Z/nbXq0TmjpCYBzjw6wDcB/cF75TW4tvUTknvTYjlGeBRfcQCQ8Y
+         YTBHDAHRuBxGnSEzLALfrgithfLK/VBpegvfwJTI5jMOsNGAa5DepvtZEIxV8/5mdoNY
+         k6Bw==
+X-Gm-Message-State: AOAM530t/9YOaUHqvSzUCSWuC21SgF1buFvcZZX0R1/TZeTDWKu89TX8
+        P+LmQGDrIQ/00CSWoSFiMFbecVfOw1M=
+X-Google-Smtp-Source: ABdhPJxm2VHeLRHi4vimnBIFgT5n3NMnfwmEkQ+Zgo7nj1yXGdOBWJFLPpBrbbd60hnzFXffArcwWQ==
+X-Received: by 2002:ac2:5a1b:: with SMTP id q27mr13917243lfn.189.1617542328210;
+        Sun, 04 Apr 2021 06:18:48 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-85.dynamic.spd-mgts.ru. [109.252.193.85])
+        by smtp.googlemail.com with ESMTPSA id t11sm1505856ljk.65.2021.04.04.06.18.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Apr 2021 06:18:47 -0700 (PDT)
+Subject: Re: [PATCH v2 5/6] dt-bindings: memory: tegra20: emc: Convert to
+ schema
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210330230445.26619-1-digetx@gmail.com>
+ <20210330230445.26619-6-digetx@gmail.com>
+ <1617198059.590387.2074856.nullmailer@robh.at.kernel.org>
+ <b4f7c7fb-1332-8490-fb4f-293fd357338e@gmail.com>
+ <20210401155506.GA498681@robh.at.kernel.org>
+ <a584f3b9-ba15-a027-2496-bf757cf7ca06@gmail.com>
+Message-ID: <c5e6028e-1732-5e0e-a11d-d8e4c645cf83@gmail.com>
+Date:   Sun, 4 Apr 2021 16:18:47 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1b21be94-bf14-9e73-68a3-c503bb79f683@nvidia.com>
+In-Reply-To: <a584f3b9-ba15-a027-2496-bf757cf7ca06@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 04, 2021 at 04:13:17PM +0300, Mark Bloch wrote:
-> On 4/4/21 1:33 PM, Leon Romanovsky wrote:
-> > On Fri, Apr 02, 2021 at 02:47:23PM +0300, Dan Carpenter wrote:
-> >> The nla_len() is less than or equal to 16.  If it's less than 16 then
-> >> end of the "gid" buffer is uninitialized.
-> >>
-> >> Fixes: ae43f8286730 ("IB/core: Add IP to GID netlink offload")
-> >> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> >> ---
-> >> I just spotted this in review.  I think it's a bug but I'm not 100%.
-> > 
-> > I tend to agree with you, that it is a bug.
-> > 
-> > LS_NLA_TYPE_DGID is declared as NLA_BINARY which doesn't complain if
-> > data is less than declared ".len". However, the fix needs to be in
-> > ib_nl_is_good_ip_resp(), it shouldn't return "true" if length not equal
-> > to 16.
+02.04.2021 17:45, Dmitry Osipenko пишет:
+> 01.04.2021 18:55, Rob Herring пишет:
+>> On Wed, Mar 31, 2021 at 05:59:39PM +0300, Dmitry Osipenko wrote:
+>>> 31.03.2021 16:40, Rob Herring пишет:
+>>>> On Wed, 31 Mar 2021 02:04:44 +0300, Dmitry Osipenko wrote:
+>>>>> Convert Tegra20 External Memory Controller binding to schema.
+>>>>>
+>>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>>>> ---
+>>>>>  .../memory-controllers/nvidia,tegra20-emc.txt | 130 --------
+>>>>>  .../nvidia,tegra20-emc.yaml                   | 294 ++++++++++++++++++
+>>>>>  2 files changed, 294 insertions(+), 130 deletions(-)
+>>>>>  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
+>>>>>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
+>>>>>
+>>>>
+>>>> My bot found errors running 'make dt_binding_check' on your patch:
+>>>>
+>>>> yamllint warnings/errors:
+>>>>
+>>>> dtschema/dtc warnings/errors:
+>>>> Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.example.dts:33.26-55.15: Warning (unit_address_vs_reg): /example-0/external-memory-controller@7000f400/emc-tables@0: node has a unit name, but no reg or ranges property
+>>>>
+>>>> See https://patchwork.ozlabs.org/patch/1460288
+>>>>
+>>>> This check can fail if there are any dependencies. The base for a patch
+>>>> series is generally the most recent rc1.
+>>>>
+>>>> If you already ran 'make dt_binding_check' and didn't see the above
+>>>> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+>>>> date:
+>>>>
+>>>> pip3 install dtschema --upgrade
+>>>>
+>>>> Please check and re-submit.
+>>>>
+>>>
+>>> FYI, I'm aware about this warning and I think it's fine to skip it in
+>>> the case of this binding. 
+>>
+>> It's not because dt_binding_check should be warning free.
+>>
+>>> The dtbs_check doesn't bother with that warning.
+>>
+>> With W=1 it will. It's off by default because there are too many of 
+>> these warnings. Patches welcome.
 > 
-> What about just updating the policy? The bellow diff should work I believe.
+> Such warning could be silenced with some kind of a new pragma option in
+> schema which will tell what warnings are inappropriate.
+> 
+> But since there is no such option today, perhaps indeed should be better
+> to just add a dummy reg property and fix the device-trees.
+> 
 
-I didn't know about ".validation_type", but yes this change will be enough.
-
-> 
-> diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
-> index 0abce004a959..65e3e7df8a4b 100644
-> --- a/drivers/infiniband/core/addr.c
-> +++ b/drivers/infiniband/core/addr.c
-> @@ -76,7 +76,9 @@ static struct workqueue_struct *addr_wq;
->  
->  static const struct nla_policy ib_nl_addr_policy[LS_NLA_TYPE_MAX] = {
->         [LS_NLA_TYPE_DGID] = {.type = NLA_BINARY,
-> -               .len = sizeof(struct rdma_nla_ls_gid)},
-> +               .len = sizeof(struct rdma_nla_ls_gid),
-> +               .validation_type = NLA_VALIDATE_MIN,
-> +               .min = sizeof(struct rdma_nla_ls_gid)},
->  };
->  
->  static inline bool ib_nl_is_good_ip_resp(const struct nlmsghdr *nlh)
-> 
-> > 
-> > Thanks
-> > 
-> 
-> Mark
+This actually was my bad, the reg property is already specified in this
+version of binding as required. Apparently I got confused while was
+looking at some device-tree that doesn't have the reg property and it
+should be corrected.
