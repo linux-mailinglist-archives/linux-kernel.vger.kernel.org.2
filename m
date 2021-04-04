@@ -2,110 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A392353892
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 17:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 928F6353895
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Apr 2021 17:19:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230369AbhDDPPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 11:15:23 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:52516 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229861AbhDDPPT (ORCPT
+        id S230500AbhDDPUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 11:20:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229861AbhDDPUA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 11:15:19 -0400
-Received: by mail-io1-f70.google.com with SMTP id d4so9528767iop.19
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Apr 2021 08:15:13 -0700 (PDT)
+        Sun, 4 Apr 2021 11:20:00 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39ED4C061756;
+        Sun,  4 Apr 2021 08:19:56 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id d2so8300294ilm.10;
+        Sun, 04 Apr 2021 08:19:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=oorif4U10p1gj+stQZVhVCmGelEmfcPvRUrY2NK3cBI=;
+        b=Ke22id8kLBs/PUWYVt4iPvjCEzkv3Zmrm4jW556d+JfonPDxnvkVY9CVPOaYPKt8kB
+         XdM3a31BCfRHuFpuYLI4dhCFX+QFCEJe3Y7G/Oo+6Qk05mHADOtf/PQRu24gqvVc+Z9u
+         RhLHm8/4SUgpD3r3R8q7Th+c70k7ScHvglrd1ZYRxlZ7cvouz3HmEN+3FXpjTjJaBM2T
+         0+Mp08+v3le+h4kTCiXuMOvan7Sq4gbtG30UuUMgT1fJftOiayUzGGpNlN+1D9ZD3W7s
+         WJjyqF9C6bFcuH9ZGO7aJVCkHh5Z1WXQ02d1fCq2wVOAhrXXf5V08DbXo4+AP0e/wCxg
+         SPhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=dxD0Hg0qysVOsDo3bqgEGmetC7jdDlc6pL/RNn78V90=;
-        b=qZ632KS0PifrMCi8IebZx8XH0DsFFbhMH2AxJRVlml7fhdiN8KzE9naZA6b1W+tw4t
-         q2ccaZ7L6TYoNcrGvgvjfwnfYwUXE1Nixis37qITDI6foA/5sHEPliIAX35PVRQ24mtI
-         9+tndG2FAXi8YEazdVO3BHIDADaLpXjs4ZQoPbYvkswaWaDp07Ow3tKga3/nRDp+YdVI
-         WGsOMzyy+neiT33Ie/KMBvuKG8QnSs+vtvll+xz2oBAqvWEdqmK7I9ZHkZ2BJopegCOH
-         2fIgvEOC7ZiGGq1xGzq9RjVHTu8wajkozwftqcJ2cOuLMmp76Gcgt33aYJbHhC1nziqh
-         YZWg==
-X-Gm-Message-State: AOAM531rNpLwb+CcSnKPB5BdZU/bUYpElu5r1KvrLb/6qvgE52M3OVp2
-        4gWvgniTGL0yrImP18TNIASBXVFE/O1GIpoDeFAR16M/Kobv
-X-Google-Smtp-Source: ABdhPJzVQjsJDUibxgnfqxPohifHOtt7o3aW3XOo1HD1pnjGDI9XFknYFRBJTAwNYD8USisEec6RGddqZ2Y4Cla2IahmipYMa8yY
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=oorif4U10p1gj+stQZVhVCmGelEmfcPvRUrY2NK3cBI=;
+        b=cGIwtxctkvhjubC2dexCfo8ffdfXK+9eXDcNjFT2pKUjch8DnLHZqSa7yQPq3UjnXq
+         4qB5BW+HfN9m9vf8iJvGUy/05VmQomn9190fUkJOiKYA+Kanj54KZOpnWnyMQbE4GJXL
+         OxUKATRKrSE1d+e5LzC4Hte0C7G5EhB5pqxwWMO/y4HocIIDACa7eUmKg3pmlyhvN3ZT
+         ibQN1whTHT19KeTfe73hlJWo9HM1Tcb6uFl/qBJNmGNYbuyus/QvI3jE9AIabd0Xq+CY
+         MnRv/+jWDzHWP7hiB+5xD8grcCwmwGQa8gH4a6l6pt7YLD8aJOXaHxoJ48621GSzKYvn
+         1Pjg==
+X-Gm-Message-State: AOAM531VbMoXp9kvrIQLici2MphripCyhQUoOSsv/GFOtELTJUn6XGiF
+        EszCsDrh+d3QNwVupmLWydSMBZRbSAkXKHGRGzc=
+X-Google-Smtp-Source: ABdhPJw0pdYejVqgApJAzWgx+VMZlo91fE4WGuG7sobiTNRSM2WLMukNsmccAh3Q0ezElkLpbM0PcAyUioMmtIGbhbo=
+X-Received: by 2002:a05:6e02:12cc:: with SMTP id i12mr17468978ilm.10.1617549595570;
+ Sun, 04 Apr 2021 08:19:55 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a92:7b05:: with SMTP id w5mr16393092ilc.232.1617549313028;
- Sun, 04 Apr 2021 08:15:13 -0700 (PDT)
-Date:   Sun, 04 Apr 2021 08:15:13 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000035b58705bf270c19@google.com>
-Subject: [syzbot] WARNING: suspicious RCU usage in list_lru_destroy
-From:   syzbot <syzbot+d7dd989878658902c6d6@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+References: <20210403184158.2834387-1-yhs@fb.com> <CA+icZUVxpkCJVnibqm3+OYdfdh5U=eU_u7pPKUZMoPm3XzZWPQ@mail.gmail.com>
+In-Reply-To: <CA+icZUVxpkCJVnibqm3+OYdfdh5U=eU_u7pPKUZMoPm3XzZWPQ@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Sun, 4 Apr 2021 17:19:21 +0200
+Message-ID: <CA+icZUVYiX0PrxPddfv-RfGnkOUTFW_Xbv9LvPkuu+ZH3X_MCA@mail.gmail.com>
+Subject: Re: Usage of CXX in tools directory
+To:     Masahiro Yamada <masahiroy@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        David Blaikie <dblaikie@gmail.com>,
+        Bill Wendling <morbo@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>
+Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+> So you need to pass CXX=clang++ manually when playing in tools directory:
+>
+> MAKE="make V=1
+> MAKE_OPTS="HOSTCC=clang HOSTCXX=clang++ HOSTLD=ld.lld CC=clang
+> CXX=clang++ LD=ld.lld LLVM=1 LLVM_IAS=1"
+> MAKE_OPTS="MAKE_OPTS $PAHOLE=/opt/pahole/bin/pahole"
+>
+> $ LC_ALL=C $MAKE $MAKE_OPTS -C tools/testing/selftests/bpf/ clean
+> $ LC_ALL=C $MAKE $MAKE_OPTS -C tools/testing/selftests/bpf/
+>
 
-syzbot found the following issue on:
+Correct:
 
-HEAD commit:    5e46d1b7 reiserfs: update reiserfs_xattrs_initialized() co..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15556cced00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=71a75beb62b62a34
-dashboard link: https://syzkaller.appspot.com/bug?extid=d7dd989878658902c6d6
-compiler:       Debian clang version 11.0.1-2
+MAKE="make V=1"
+MAKE_OPTS="HOSTCC=clang HOSTCXX=clang++ HOSTLD=ld.lld CC=clang
+CXX=clang++ LD=ld.lld LLVM=1 LLVM_IAS=1"
+MAKE_OPTS="$MAKE_OPTS PAHOLE=/opt/pahole/bin/pahole"
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d7dd989878658902c6d6@syzkaller.appspotmail.com
-
-EXT4-fs (loop0): mount failed
-=============================
-WARNING: suspicious RCU usage
-5.12.0-rc5-syzkaller #0 Not tainted
------------------------------
-kernel/sched/core.c:8294 Illegal context switch in RCU-bh read-side critical section!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 2, debug_locks = 0
-no locks held by syz-executor.0/10672.
-
-stack backtrace:
-CPU: 0 PID: 10672 Comm: syz-executor.0 Not tainted 5.12.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x176/0x24e lib/dump_stack.c:120
- ___might_sleep+0x6e/0x530 kernel/sched/core.c:8294
- down_read+0x17/0x50 kernel/locking/rwsem.c:1352
- list_lru_destroy+0x49/0x390 mm/list_lru.c:628
- deactivate_locked_super+0xbf/0xf0 fs/super.c:343
- mount_bdev+0x288/0x3a0 fs/super.c:1369
- legacy_get_tree+0xea/0x180 fs/fs_context.c:592
- vfs_get_tree+0x86/0x270 fs/super.c:1497
- do_new_mount fs/namespace.c:2903 [inline]
- path_mount+0x188a/0x29a0 fs/namespace.c:3233
- do_mount fs/namespace.c:3246 [inline]
- __do_sys_mount fs/namespace.c:3454 [inline]
- __se_sys_mount+0x28c/0x320 fs/namespace.c:3431
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x46797a
-Code: 48 c7 c2 bc ff ff ff f7 d8 64 89 02 b8 ff ff ff ff eb d2 e8 b8 04 00 00 0f 1f 84 00 00 00 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f77bde01fa8 EFLAGS: 00000206 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 0000000020000200 RCX: 000000000046797a
-RDX: 0000000020000300 RSI: 0000000020000100 RDI: 00007f77bde02000
-RBP: 00007f77bde02040 R08: 00007f77bde02040 R09: 0000000020000300
-R10: 0000000000000000 R11: 0000000000000206 R12: 0000000020000300
-R13: 0000000020000100 R14: 00007f77bde02000 R15: 00000000200000c0
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+- Sedat -
