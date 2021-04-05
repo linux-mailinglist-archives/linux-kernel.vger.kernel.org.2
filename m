@@ -2,151 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E725F354197
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 13:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 015103541A0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 13:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234924AbhDELgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 07:36:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232735AbhDELgF (ORCPT
+        id S234016AbhDELkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 07:40:23 -0400
+Received: from mail-lf1-f43.google.com ([209.85.167.43]:44642 "EHLO
+        mail-lf1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232755AbhDELkW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 07:36:05 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 931BCC061756
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 04:35:59 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id e18so10669952wrt.6
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 04:35:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+de4bA16tFNApc6KdSUL7+Dp8lUiHF1huxsLEUsK9F4=;
-        b=d2AaZ2XVp368bf6/eSoHTVhHsAqTTpvO8u2K0EtMrYoHrXOWkIeofBrlB3h95iHdDN
-         LDXb1nxGf/ZmWKFBEWehu/UQi9sYQGjC3fR747gNbkuv7GVH7lpCXfr6VLgUieVmJlrx
-         sE9EwIOKP8qyIyxehZdko9juThNsI6/tYWT6z6U94zj3ijzIMHeQeiP5CwSVGIBAkU17
-         OUzb1ptQL2e69V5XngUoVK05ZJLz0NXByaUGykTnz+pQgIxtUtHk9t3AzJX37CiUl1e4
-         tOQ7+1FE0qVgkgAnWNNnPK/nHsQDsWgJu/nnND3BwIdhrmOe5QvQyuQj3J7psbKaAx6F
-         yhjA==
+        Mon, 5 Apr 2021 07:40:22 -0400
+Received: by mail-lf1-f43.google.com with SMTP id d12so16929100lfv.11;
+        Mon, 05 Apr 2021 04:40:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+de4bA16tFNApc6KdSUL7+Dp8lUiHF1huxsLEUsK9F4=;
-        b=HvvQP+0I/gFvh31qyz+RO2fvwaxXsfg0ZlBlmdAr7FX6sf6Wl+WNPN4DH7fnQcaM5a
-         tt3zH4XdlFdH6zQSfDl7NrmPHUWRtMjIMgulXcQYISMrUNSgSGYGkO7Zy5ooQp/Sr4aT
-         uRBgojOQyI58hZvDm/sMPQmUiGjDZ1IIUboEao+wllgS2AYRophMDehE3+nHGZT3ued9
-         /eWkNx8R65aPPWRYPfJIy1LVXcxGsy7aXDBdg+2TDiYlXfgXfYs88CUxeNqlhZCo9b2s
-         rl4yvVy+zNu9h76bT7VxndDUTPWqQNqFczgMewAkpy2Dwzj3mREEHrDUPrdirdk8p2hw
-         Qcnw==
-X-Gm-Message-State: AOAM531BZpsxt3ZzxOuFRrecxqCzhMa5coP4nPQ05aUs7Jr7uiHrpsmY
-        DdeOC4oIIRi72GCo83yimsWG4w==
-X-Google-Smtp-Source: ABdhPJzbtmOLyrxyBDXU+xSuOLy3nR0O2iDyPnivaun+pPt9LEq2QED6euUZRhQ506E/iiNAxAVwBA==
-X-Received: by 2002:a05:6000:191:: with SMTP id p17mr29348547wrx.154.1617622558353;
-        Mon, 05 Apr 2021 04:35:58 -0700 (PDT)
-Received: from localhost.localdomain (2.0.5.1.1.6.3.8.5.c.c.3.f.b.d.3.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16:0:3dbf:3cc5:8361:1502])
-        by smtp.gmail.com with ESMTPSA id m5sm12681107wrx.83.2021.04.05.04.35.57
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=zIXXSCqMXDob1DAPG5CCbwNP2i92dYCSQ1Gjx9Ia5QE=;
+        b=A6NrUmbdslsnvgPJDt5MOGd/dgX7GjJe8s579FSpuKS/dRImVc1umbgc2OhsaifYAZ
+         vKJ8HnlFd+p6XubGdI14PE64cPqeTcipDoZ88+ah44qVsaTsXxRUZjiv1Rln242T0axz
+         1BxUEG4cap3HxW2ju/O1dRRyKBOwhaDxFNncBM/ioK126pcka1ReQd33O3twTNeOccSr
+         jMjPXqgttjtftmK9Ni/G4XLdYbGkxBPLt/7B3FC6XWrdSrkU+Ltiqklonm+5m2JIYWlR
+         5zQCzCIwgT9frDt76lQNWbRJU3G8WLx/SjYTCDfd9jqB6hw/v6eisAO1ajd8h9uVcpwW
+         XL/A==
+X-Gm-Message-State: AOAM532ad7FP4z2P42DdyYVAtUchHRRxG8cmyRcC3z8xub8EZ8cIaSnX
+        ilBi+P3EPz/pvp9aiwH5PHQ=
+X-Google-Smtp-Source: ABdhPJwKaAC8+FP0vP4kjp8sh+KI9jXnex5lyylHDRAC4RmeaqgtD6ACmuyVwhKzaUDsF/vFYgb2NA==
+X-Received: by 2002:a05:6512:504:: with SMTP id o4mr16628598lfb.438.1617622814783;
+        Mon, 05 Apr 2021 04:40:14 -0700 (PDT)
+Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyydy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::6])
+        by smtp.gmail.com with ESMTPSA id r3sm1842666ljn.13.2021.04.05.04.40.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Apr 2021 04:35:57 -0700 (PDT)
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] net: tun: set tun->dev->addr_len during TUNSETLINK processing
-Date:   Mon,  5 Apr 2021 12:35:55 +0100
-Message-Id: <20210405113555.9419-1-phil@philpotter.co.uk>
-X-Mailer: git-send-email 2.30.2
+        Mon, 05 Apr 2021 04:40:13 -0700 (PDT)
+Date:   Mon, 5 Apr 2021 14:40:06 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-power@fi.rohmeurope.com, linux-clk@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org
+Subject: [PATCH v6 00/16] Support ROHM BD71815 PMIC
+Message-ID: <cover.1617616855.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When changing type with TUNSETLINK ioctl command, set tun->dev->addr_len
-to match the appropriate type, using new tun_get_addr_len utility function
-which returns appropriate address length for given type. Fixes a
-KMSAN-found uninit-value bug reported by syzbot at:
-https://syzkaller.appspot.com/bug?id=0766d38c656abeace60621896d705743aeefed51
+Patch series introducing support for ROHM BD71815 PMIC
 
-Reported-by: syzbot+001516d86dbe88862cec@syzkaller.appspotmail.com
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
----
- drivers/net/tun.c | 48 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
+ROHM BD71815 is a power management IC used in some battery powered
+systems. It contains regulators, GPO(s), charger + coulomb counter, RTC
+and a clock gate.
 
-diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-index 978ac0981d16..56c26339ee3b 100644
---- a/drivers/net/tun.c
-+++ b/drivers/net/tun.c
-@@ -69,6 +69,14 @@
- #include <linux/bpf.h>
- #include <linux/bpf_trace.h>
- #include <linux/mutex.h>
-+#include <linux/ieee802154.h>
-+#include <linux/if_ltalk.h>
-+#include <uapi/linux/if_fddi.h>
-+#include <uapi/linux/if_hippi.h>
-+#include <uapi/linux/if_fc.h>
-+#include <net/ax25.h>
-+#include <net/rose.h>
-+#include <net/6lowpan.h>
- 
- #include <linux/uaccess.h>
- #include <linux/proc_fs.h>
-@@ -2925,6 +2933,45 @@ static int tun_set_ebpf(struct tun_struct *tun, struct tun_prog __rcu **prog_p,
- 	return __tun_set_ebpf(tun, prog_p, prog);
- }
- 
-+/* Return correct value for tun->dev->addr_len based on tun->dev->type. */
-+static inline unsigned char tun_get_addr_len(unsigned short type)
-+{
-+	switch (type) {
-+	case ARPHRD_IP6GRE:
-+	case ARPHRD_TUNNEL6:
-+		return sizeof(struct in6_addr);
-+	case ARPHRD_IPGRE:
-+	case ARPHRD_TUNNEL:
-+	case ARPHRD_SIT:
-+		return 4;
-+	case ARPHRD_ETHER:
-+		return ETH_ALEN;
-+	case ARPHRD_IEEE802154:
-+	case ARPHRD_IEEE802154_MONITOR:
-+		return IEEE802154_EXTENDED_ADDR_LEN;
-+	case ARPHRD_PHONET_PIPE:
-+	case ARPHRD_PPP:
-+	case ARPHRD_NONE:
-+		return 0;
-+	case ARPHRD_6LOWPAN:
-+		return EUI64_ADDR_LEN;
-+	case ARPHRD_FDDI:
-+		return FDDI_K_ALEN;
-+	case ARPHRD_HIPPI:
-+		return HIPPI_ALEN;
-+	case ARPHRD_IEEE802:
-+		return FC_ALEN;
-+	case ARPHRD_ROSE:
-+		return ROSE_ADDR_LEN;
-+	case ARPHRD_NETROM:
-+		return AX25_ADDR_LEN;
-+	case ARPHRD_LOCALTLK:
-+		return LTALK_ALEN;
-+	default:
-+		return 0;
-+	}
-+}
-+
- static long __tun_chr_ioctl(struct file *file, unsigned int cmd,
- 			    unsigned long arg, int ifreq_len)
- {
-@@ -3088,6 +3135,7 @@ static long __tun_chr_ioctl(struct file *file, unsigned int cmd,
- 				break;
- 			}
- 			tun->dev->type = (int) arg;
-+			tun->dev->addr_len = tun_get_addr_len(tun->dev->type);
- 			netif_info(tun, drv, tun->dev, "linktype set to %d\n",
- 				   tun->dev->type);
- 			call_netdevice_notifiers(NETDEV_POST_TYPE_CHANGE,
+All regulators can be controlled via I2C. LDO4 can additionally be set to
+be enabled/disabled by a GPIO. LDO3 voltage could be selected from two
+voltages written into separate VSEL reisters using GPIO but this mode is
+not supported by driver. On top of that the PMIC has the typical HW
+state machine which is present also on many other ROHM PMICs.
+
+IC contains two GPOs - but one of the GPOs is marked as GND in
+data-sheet. Thus the driver by default only exposes one GPO. The second
+GPO can be enabled by special DT property.
+
+RTC is almost similar to what is on BD71828. For currently used features
+only the register address offset to RTC block differs.
+
+The charger driver is not included in this series. ROHM has a charger
+driver with some fuel-gauging logig written in but this is not included
+here. I am working on separating the logic from HW specific driver and
+supporting both BD71815 and BD71828 chargers in separate patch series.
+
+Changelog v6:
+  Rebased on v5.12-rc6
+  Regulator:
+   - Fixed few minor issues pointer by Mark
+   - Dropped the helper patches which were applied to regulator tree.
+     Please note, there is compile-time dependency to those helpers so
+     regulator helpers should be pulled in from:
+     https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git
+     tags/regulator-list-ramp-helpers
+  GPIO:
+   - Corrected change log spelling
+   - Fixes some styling issues pointed by Andy.
+Changelog v5:
+  Regulator:
+  - Added regmap helper for regulator ramp-delay and taken it in use
+    (patches 13, 14, 16 - they can be just dropped if ramp-delay helper is not
+    a good idea. Patch 15 implements old-fashioned ramp-delay)
+  GPIO:
+  - styling changes to GPIO (Mostly suggested by Andy)
+  - implemented init_valid_mask (but can't count on it yet)
+Changelog v4:
+  - Sorted ROHM chip ID enum
+  - Statcized DVS structures in regulator driver
+  - Minor styling for regulator driver
+  - rebased on v5.12-rc4
+Changelog v3:
+  - GPIO clean-up as suggested by Bartosz
+  - MFD clean-up as suggested by Lee
+  - clk-mode dt-binding handling in MFD driver corrected to reflect new
+    property values.
+  - Dropped already applied patches
+  - Rebased on v5.12-rc2
+Changelog v2:
+  - Rebased on top of v5.11-rc3
+  - Added another "preliminary patch" which fixes HW-dvs voltage
+    handling (patch 1)
+  - split regulator patch to two.
+  - changed dt-binding patch ordering.
+  regulators:
+    - staticized probe
+    - removed some unnecessary defines
+    - updated comments
+    - split rohm-regulator patch adding SNVS and supporting simple
+      linear mapping into two - one adding support for mapping, other
+      adding SNVS.
+  GPIO:
+    - removed unnecessary headers
+    - clarified dev/parent->dev usage
+    - removed forgotten #define DEBUG
+  dt-bindings:
+    - changed patch order to meet ref-dependencies
+    - added missing regulator nodes
+    - changed string property for clk mode to tristated
+  MFD:
+    - header cleanups.
+  CLK:
+    - fixed commit message
+
+--
+
+Matti Vaittinen (16):
+  rtc: bd70528: Do not require parent data
+  mfd: bd718x7: simplify by cleaning unnecessary device data
+  dt_bindings: bd71828: Add clock output mode
+  dt_bindings: regulator: Add ROHM BD71815 PMIC regulators
+  dt_bindings: mfd: Add ROHM BD71815 PMIC
+  mfd: Add ROHM BD71815 ID
+  mfd: Sort ROHM chip ID list for better readability
+  mfd: Support for ROHM BD71815 PMIC core
+  gpio: support ROHM BD71815 GPOs
+  regulator: rohm-regulator: linear voltage support
+  regulator: rohm-regulator: Support SNVS HW state.
+  regulator: bd718x7, bd71828: Use ramp-delay helper
+  regulator: Support ROHM BD71815 regulators
+  clk: bd718x7: Add support for clk gate on ROHM BD71815 PMIC
+  rtc: bd70528: Support RTC on ROHM BD71815
+  MAINTAINERS: Add ROHM BD71815AGW
+
+ .../bindings/mfd/rohm,bd71815-pmic.yaml       | 201 ++++++
+ .../bindings/mfd/rohm,bd71828-pmic.yaml       |   6 +
+ .../regulator/rohm,bd71815-regulator.yaml     | 116 ++++
+ MAINTAINERS                                   |   3 +
+ drivers/clk/clk-bd718x7.c                     |   9 +-
+ drivers/gpio/Kconfig                          |  10 +
+ drivers/gpio/Makefile                         |   1 +
+ drivers/gpio/gpio-bd71815.c                   | 185 +++++
+ drivers/mfd/Kconfig                           |  15 +-
+ drivers/mfd/rohm-bd71828.c                    | 486 +++++++++----
+ drivers/mfd/rohm-bd718x7.c                    |  43 +-
+ drivers/regulator/Kconfig                     |  11 +
+ drivers/regulator/Makefile                    |   1 +
+ drivers/regulator/bd71815-regulator.c         | 652 ++++++++++++++++++
+ drivers/regulator/bd71828-regulator.c         |  51 +-
+ drivers/regulator/bd718x7-regulator.c         |  60 +-
+ drivers/regulator/rohm-regulator.c            |  23 +-
+ drivers/rtc/Kconfig                           |   6 +-
+ drivers/rtc/rtc-bd70528.c                     | 104 +--
+ include/linux/mfd/rohm-bd71815.h              | 562 +++++++++++++++
+ include/linux/mfd/rohm-bd71828.h              |   3 +
+ include/linux/mfd/rohm-bd718x7.h              |  13 -
+ include/linux/mfd/rohm-generic.h              |  15 +-
+ 23 files changed, 2286 insertions(+), 290 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/rohm,bd71815-pmic.yaml
+ create mode 100644 Documentation/devicetree/bindings/regulator/rohm,bd71815-regulator.yaml
+ create mode 100644 drivers/gpio/gpio-bd71815.c
+ create mode 100644 drivers/regulator/bd71815-regulator.c
+ create mode 100644 include/linux/mfd/rohm-bd71815.h
+
+
+base-commit: e49d033bddf5b565044e2abe4241353959bc9120
 -- 
-2.30.2
+2.25.4
 
+
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
