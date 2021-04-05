@@ -2,145 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF413541ED
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 14:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1225A3541F0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 14:07:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239789AbhDEMDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 08:03:54 -0400
-Received: from pv50p00im-ztdg10021201.me.com ([17.58.6.45]:44419 "EHLO
-        pv50p00im-ztdg10021201.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237064AbhDEMDw (ORCPT
+        id S239870AbhDEMH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 08:07:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234148AbhDEMHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 08:03:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-        t=1617624216; bh=zbF4bJv+okmaRpcsURN+JW+pNyKoocTcBKUgS4a18Hc=;
-        h=Content-Type:Mime-Version:Subject:From:Date:Message-Id:To;
-        b=PmeIf0GME7jJepzAtJJYVKd0Ht5dVlxqCQv4+KijQIqPhULu47rZJkCh0oO/BrQRa
-         WWFV77wGsaS8HOdo+p8I3YsYJK7XuM5ElI0++uELcya9AFfT9vDyrjHqaU/nJNM7c3
-         BIdJEMd6Ze+fOt6lgP5guE2Ia4YEtoULln0p/1J1kh7lOeDSOo+7vBlw1qZ++Sl7dg
-         W4PuGmUxT5f9sx17hQq9Uu4SfbN4DJVIm3h1aip0gJnTmKCmi1CKUSeLTVWR8VasRV
-         PYH1M6saouboGal6oSRlFjRl6mX6z3z3ukxluB99xR6A4y/7vi38KkFcstR3lBR4/D
-         jiZ0zO3rYwNQA==
-Received: from 192.168.1.3 (unknown [120.245.2.39])
-        by pv50p00im-ztdg10021201.me.com (Postfix) with ESMTPSA id 5CAFEA401FF;
-        Mon,  5 Apr 2021 12:03:28 +0000 (UTC)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH v2] powerpc/traps: Enhance readability for trap types
-From:   Xiongwei Song <sxwjean@me.com>
-In-Reply-To: <20210401161131.GE13863@gate.crashing.org>
-Date:   Mon, 5 Apr 2021 20:03:25 +0800
-Cc:     Xiongwei Song <sxwjean@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        benh@kernel.crashing.org, paulus@samba.org, oleg@redhat.com,
-        npiggin@gmail.com, Christophe Leroy <christophe.leroy@csgroup.eu>,
-        msuchanek@suse.de, aneesh.kumar@linux.ibm.com,
-        ravi.bangoria@linux.ibm.com, mikey@neuling.org,
-        haren@linux.ibm.com, alistair@popple.id.au, jniethe5@gmail.com,
-        peterz@infradead.org, leobras.c@gmail.com,
-        akpm@linux-foundation.org, rppt@kernel.org, peterx@redhat.com,
-        atrajeev@linux.vnet.ibm.com, maddy@linux.ibm.com,
-        kjain@linux.ibm.com, kan.liang@linux.intel.com, aik@ozlabs.ru,
-        pmladek@suse.com, john.ogness@linutronix.de,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kvm-ppc@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <DC60E115-166B-47AC-ACEE-7FEBB48AF5E6@me.com>
-References: <20210330150425.10145-1-sxwjean@me.com>
- <875z17y79i.fsf@mpe.ellerman.id.au>
- <20210331212550.GD13863@gate.crashing.org>
- <CAEVVKH8XDiEGHjXj6sJAHynhwqKWpNqj_Ws03AqwNjR8OmHf5w@mail.gmail.com>
- <20210401161131.GE13863@gate.crashing.org>
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-04-05_08:2021-04-01,2021-04-05 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1011 mlxscore=0
- mlxlogscore=921 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2009150000 definitions=main-2104050083
+        Mon, 5 Apr 2021 08:07:54 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9899BC061756;
+        Mon,  5 Apr 2021 05:06:13 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id hq27so16453276ejc.9;
+        Mon, 05 Apr 2021 05:06:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4rSfRvLWrKrxqOWFWFbi1dZLa9tAVnjrn923CZO/U4g=;
+        b=Ma/2dT10LaCxunfVJKFCuXhGAXK8K97CAw0pfQ1qHNkE4Ul9XOGU3qS+cKtNWFWOCv
+         s7wmsUZXtu0U73/t1YOdIVJKMh890U2UQOckB8H6GsfeC/lIX525nESn4F/tu25R2DU5
+         XJ+RTS6iKZOwj6wHFfKDQ88+qjACpwYjvGxTWNjDep2MrnNZrVrf5EZ6TpYk1SUIuFJv
+         USQI+ad3RLfBQV4edo/hSV2qHzP+5DlY4FJxZv2cMrqBHWZy+q9I5sGCVnsjPdWo1kpT
+         Rb50TsVdQPJsQ2E7UpCURBJHUqQ0cbAHRGAbXgkQCJU9c4V4ePmkOf2MXCxOpgxxdaJo
+         4rLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4rSfRvLWrKrxqOWFWFbi1dZLa9tAVnjrn923CZO/U4g=;
+        b=lq0wCyLwADkOdCJz4Q9iup9exl4gikQIF2lobDtFJsWPas8X9LjJsKSdt7J2at/iCo
+         n1Y8+0Qd1fEhPTA7oEE8Z+bANiJaT4EoLQPda2jrBQ1N3cKDrJs9bBtYbDEpFKvzWKha
+         wXi069ui9BGBEcmKWeV7SAJt8H7q6lHQcoYpCwva6Zi/vAYycSM9iMzfjgf7o0pyq0Kl
+         RTCTuOksEgkk4EBz6qVZ7lXp297ObC+/c6EvK+twJdbmX9vKm/LPCAfS8JihpNzTSew/
+         k8oxDp/YadZQyq8Q0ZTO3xzlLtEO6jhblEYxoWZL9LkNZ99Ms9+hj3QvvJH3WcXIcIn2
+         PNgA==
+X-Gm-Message-State: AOAM532dAujeyBTOeNcPgxV0SQ0HQSVXFxYUmAqZBHqjmo4LoOpU/fv6
+        ztr8JFHN3LMDvNWeOZZkSH/LUMqZLpnFGA==
+X-Google-Smtp-Source: ABdhPJyHCrBP9yUQFBO7FgOBG7YXEFb6sEQFEXhIIiXi/+6S+EKx9/fBFD7RGOaVQLDPa6CdqSG2sg==
+X-Received: by 2002:a17:906:2704:: with SMTP id z4mr10264061ejc.137.1617624372271;
+        Mon, 05 Apr 2021 05:06:12 -0700 (PDT)
+Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id d19sm10914090edr.45.2021.04.05.05.06.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Apr 2021 05:06:11 -0700 (PDT)
+Subject: Re: [PATCH v6 1/4] usb: dwc3: of-simple: bail probe if no dwc3 child
+ node
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     heiko@sntech.de, robh+dt@kernel.org, balbi@kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
+References: <20210401213652.14676-1-jbx6244@gmail.com>
+ <20210401213652.14676-2-jbx6244@gmail.com> <YGq2IaygRQaAcLli@kroah.com>
+From:   Johan Jonker <jbx6244@gmail.com>
+Message-ID: <abd513bc-dee9-d87b-6841-338bfb2f30d0@gmail.com>
+Date:   Mon, 5 Apr 2021 14:06:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <YGq2IaygRQaAcLli@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 4/5/21 9:02 AM, Greg KH wrote:
+> On Thu, Apr 01, 2021 at 11:36:49PM +0200, Johan Jonker wrote:
+>> For some of the dwc3-of-simple compatible SoCs we
+>> don't want to bind this driver to a dwc3 node,
+>> but bind that node to the 'snps,dwc3' driver instead.
+>> The kernel has no logic to decide which driver to bind
+>> to if there are 2 matching drivers, so bail probe if no
+>> dwc3 child node.
+>>
+>> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+>> ---
+>>  drivers/usb/dwc3/dwc3-of-simple.c | 4 ++++
+>>  1 file changed, 4 insertions(+)
+>>
+>> diff --git a/drivers/usb/dwc3/dwc3-of-simple.c b/drivers/usb/dwc3/dwc3-of-simple.c
+>> index 71fd620c5..8d3baa5df 100644
+>> --- a/drivers/usb/dwc3/dwc3-of-simple.c
+>> +++ b/drivers/usb/dwc3/dwc3-of-simple.c
+>> @@ -38,6 +38,10 @@ static int dwc3_of_simple_probe(struct platform_device *pdev)
+>>  
+>>  	int			ret;
+>>  
+>> +	/* Bail probe if no dwc3 child node. */
+>> +	if (!of_get_compatible_child(dev->of_node, "snps,dwc3"))
+>> +		return -ENODEV;
+> 
 
-> On Apr 2, 2021, at 12:11 AM, Segher Boessenkool =
-<segher@kernel.crashing.org> wrote:
->=20
-> On Thu, Apr 01, 2021 at 10:55:58AM +0800, Xiongwei Song wrote:
->> Segher Boessenkool <segher@kernel.crashing.org> =
-=E4=BA=8E2021=E5=B9=B44=E6=9C=881=E6=97=A5=E5=91=A8=E5=9B=9B =
-=E4=B8=8A=E5=8D=886:15=E5=86=99=E9=81=93=EF=BC=9A
->>=20
->>> On Wed, Mar 31, 2021 at 08:58:17PM +1100, Michael Ellerman wrote:
->>>> So perhaps:
->>>>=20
->>>>  EXC_SYSTEM_RESET
->>>>  EXC_MACHINE_CHECK
->>>>  EXC_DATA_STORAGE
->>>>  EXC_DATA_SEGMENT
->>>>  EXC_INST_STORAGE
->>>>  EXC_INST_SEGMENT
->>>>  EXC_EXTERNAL_INTERRUPT
->>>>  EXC_ALIGNMENT
->>>>  EXC_PROGRAM_CHECK
->>>>  EXC_FP_UNAVAILABLE
->>>>  EXC_DECREMENTER
->>>>  EXC_HV_DECREMENTER
->>>>  EXC_SYSTEM_CALL
->>>>  EXC_HV_DATA_STORAGE
->>>>  EXC_PERF_MONITOR
->>>=20
->>> These are interrupt (vectors), not exceptions.  It doesn't matter =
-all
->>> that much, but confusing things more isn't useful either!  There can =
-be
->>> multiple exceptions that all can trigger the same interrupt.
->>>=20
->>> When looking at the reference manual of e500 and e600 from NXP
->> official, they call them as interrupts.While looking at the "The
->> Programming Environments"
->> that is also from NXP, they call them exceptions. Looks like there is
->> no explicit distinction between interrupts and exceptions.
->=20
-> The architecture documents have always called it interrupts.  The PEM
-> says it calls them exceptions instead, but they are called interrupts =
-in
-> the architecture (and the PEM says that, too).
->=20
->> Here is the "The Programming Environments" link:
->> https://www.nxp.com.cn/docs/en/user-guide/MPCFPE_AD_R1.pdf
->=20
-> That document is 24 years old.  The architecture is still published,
-> new versions regularly.
->=20
->> As far as I know, the values of interrupts or exceptions above are =
-defined
->> explicitly in reference manual or the programming environments.
->=20
-> They are defined in the architecture.
->=20
->> Could
->> you please provide more details about multiple exceptions with the =
-same
->> interrupts?
->=20
-> The simplest example is 700, program interrupt.  There are many causes
-> for it, including all the exceptions in FPSCR: VX, ZX, OX, UX, XX, and
-> VX is actually divided into nine separate cases itself.  There also =
-are
-> the various causes of privileged instruction type program interrupts,
-> and  the trap type program interrupt, but the FEX ones are most =
-obvious
-> here.
+> Why is this part of the "convert to yaml" patch series?  Shouldn't this
+> be a separate, independant patch?
+independent
 
-Thanks for the explanation.
 
-Regards,
-Xiongwei
+Hi Greg,
 
->=20
->=20
-> Segher
+As pointed out by Rob in the v3 review process the YAML conversion has
+some side effects for new dt files. A good habit is to fix things before
+they become in effect. That's why this patch is placed before the dtsi
+changes and why Heiko asked to have a look at it.
+
+For the sake of completeness there are other less optimal options:
+- remove rk3399 support from dwc3-of-simple.c
+- unselect CONFIG_USB_DWC3_OF_SIMPLE for new rk3399 device trees
+
+In that case at least have it on record why USB maintainers didn't apply
+it in case someone else start to complain about it later when Heiko goes
+ahead with it.
+
+Johan Jonker
+
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
