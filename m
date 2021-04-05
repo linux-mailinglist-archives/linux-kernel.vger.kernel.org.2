@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 261C7353EC7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1EBC3540D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238531AbhDEJIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:08:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50344 "EHLO mail.kernel.org"
+        id S240917AbhDEJX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:23:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237887AbhDEJF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:05:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 15A0161394;
-        Mon,  5 Apr 2021 09:05:50 +0000 (UTC)
+        id S239839AbhDEJRw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:17:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1560D61398;
+        Mon,  5 Apr 2021 09:17:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613551;
-        bh=35/dROHV2ANHJel4dRyq7Yb8FcwXvHaen4nqbCzvkjU=;
+        s=korg; t=1617614266;
+        bh=PHvG2PGnmRPfeKpjbouAXG3dfkE/eJaN2EL+bFGjspo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OIa1iXbcC7ylqArAFak56/RqhIvA+IKadVgEioBV3fU8Fz5DVTVg8rrKmazcrS8ew
-         9Rd89g2GlokBLvZX5HTM9zBy9ON7blx055arvcmzy9sHy+CzIKJZwSuunWIIfzIZOy
-         YwAjGddTHlyK7jEMNsLphmdO3CIqJdbDki9ZNigU=
+        b=e+GfYoIqG6HZTk57TZJt2LqWQex2ZpHy0hfdebNZCW32K2tppfrpz1/vTO4GyKj/n
+         AV2Dx/CTaoZwUB/nbzMqqR1TV1GCH1uJxp71IKWt8b0qxPOTc69tTPy0HB1QmMf6jB
+         0jswy6DgtFHCQ1Sew2BCLUX849MzvpQyundelNDs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>
-Subject: [PATCH 5.4 54/74] drm/tegra: sor: Grab runtime PM reference across reset
+        stable@vger.kernel.org, Peter Feiner <pfeiner@google.com>,
+        Ben Gardon <bgardon@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 109/152] KVM: x86/mmu: Yield in TDU MMU iter even if no SPTES changed
 Date:   Mon,  5 Apr 2021 10:54:18 +0200
-Message-Id: <20210405085026.492199861@linuxfoundation.org>
+Message-Id: <20210405085037.773852726@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
-References: <20210405085024.703004126@linuxfoundation.org>
+In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
+References: <20210405085034.233917714@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,57 +41,137 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thierry Reding <treding@nvidia.com>
+From: Ben Gardon <bgardon@google.com>
 
-commit ac097aecfef0bb289ca53d2fe0b73fc7e1612a05 upstream.
+[ Upstream commit 1af4a96025b33587ca953c7ef12a1b20c6e70412 ]
 
-The SOR resets are exclusively shared with the SOR power domain. This
-means that exclusive access can only be granted temporarily and in order
-for that to work, a rigorous sequence must be observed. To ensure that a
-single consumer gets exclusive access to a reset, each consumer must
-implement a rigorous protocol using the reset_control_acquire() and
-reset_control_release() functions.
+Given certain conditions, some TDP MMU functions may not yield
+reliably / frequently enough. For example, if a paging structure was
+very large but had few, if any writable entries, wrprot_gfn_range
+could traverse many entries before finding a writable entry and yielding
+because the check for yielding only happens after an SPTE is modified.
 
-However, these functions alone don't provide any guarantees at the
-system level. Drivers need to ensure that the only a single consumer has
-access to the reset at the same time. In order for the SOR to be able to
-exclusively access its reset, it must therefore ensure that the SOR
-power domain is not powered off by holding on to a runtime PM reference
-to that power domain across the reset assert/deassert operation.
+Fix this issue by moving the yield to the beginning of the loop.
 
-This used to work fine by accident, but was revealed when recently more
-devices started to rely on the SOR power domain.
+Fixes: a6a0b05da9f3 ("kvm: x86/mmu: Support dirty logging for the TDP MMU")
+Reviewed-by: Peter Feiner <pfeiner@google.com>
+Signed-off-by: Ben Gardon <bgardon@google.com>
 
-Fixes: 11c632e1cfd3 ("drm/tegra: sor: Implement acquire/release for reset")
-Reported-by: Jonathan Hunter <jonathanh@nvidia.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Message-Id: <20210202185734.1680553-15-bgardon@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/tegra/sor.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/x86/kvm/mmu/tdp_mmu.c | 32 ++++++++++++++++++++++----------
+ 1 file changed, 22 insertions(+), 10 deletions(-)
 
---- a/drivers/gpu/drm/tegra/sor.c
-+++ b/drivers/gpu/drm/tegra/sor.c
-@@ -2871,6 +2871,12 @@ static int tegra_sor_init(struct host1x_
- 	 * kernel is possible.
- 	 */
- 	if (sor->rst) {
-+		err = pm_runtime_resume_and_get(sor->dev);
-+		if (err < 0) {
-+			dev_err(sor->dev, "failed to get runtime PM: %d\n", err);
-+			return err;
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index a07d37abb63f..0567286fba39 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -470,6 +470,12 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+ 	bool flush_needed = false;
+ 
+ 	tdp_root_for_each_pte(iter, root, start, end) {
++		if (can_yield &&
++		    tdp_mmu_iter_cond_resched(kvm, &iter, flush_needed)) {
++			flush_needed = false;
++			continue;
 +		}
 +
- 		err = reset_control_acquire(sor->rst);
- 		if (err < 0) {
- 			dev_err(sor->dev, "failed to acquire SOR reset: %d\n",
-@@ -2904,6 +2910,7 @@ static int tegra_sor_init(struct host1x_
- 		}
+ 		if (!is_shadow_present_pte(iter.old_spte))
+ 			continue;
  
- 		reset_control_release(sor->rst);
-+		pm_runtime_put(sor->dev);
+@@ -484,9 +490,7 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+ 			continue;
+ 
+ 		tdp_mmu_set_spte(kvm, &iter, 0);
+-
+-		flush_needed = !(can_yield &&
+-				 tdp_mmu_iter_cond_resched(kvm, &iter, true));
++		flush_needed = true;
+ 	}
+ 	return flush_needed;
+ }
+@@ -850,6 +854,9 @@ static bool wrprot_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+ 
+ 	for_each_tdp_pte_min_level(iter, root->spt, root->role.level,
+ 				   min_level, start, end) {
++		if (tdp_mmu_iter_cond_resched(kvm, &iter, false))
++			continue;
++
+ 		if (!is_shadow_present_pte(iter.old_spte) ||
+ 		    !is_last_spte(iter.old_spte, iter.level))
+ 			continue;
+@@ -858,8 +865,6 @@ static bool wrprot_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+ 
+ 		tdp_mmu_set_spte_no_dirty_log(kvm, &iter, new_spte);
+ 		spte_set = true;
+-
+-		tdp_mmu_iter_cond_resched(kvm, &iter, false);
+ 	}
+ 	return spte_set;
+ }
+@@ -903,6 +908,9 @@ static bool clear_dirty_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+ 	bool spte_set = false;
+ 
+ 	tdp_root_for_each_leaf_pte(iter, root, start, end) {
++		if (tdp_mmu_iter_cond_resched(kvm, &iter, false))
++			continue;
++
+ 		if (spte_ad_need_write_protect(iter.old_spte)) {
+ 			if (is_writable_pte(iter.old_spte))
+ 				new_spte = iter.old_spte & ~PT_WRITABLE_MASK;
+@@ -917,8 +925,6 @@ static bool clear_dirty_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+ 
+ 		tdp_mmu_set_spte_no_dirty_log(kvm, &iter, new_spte);
+ 		spte_set = true;
+-
+-		tdp_mmu_iter_cond_resched(kvm, &iter, false);
+ 	}
+ 	return spte_set;
+ }
+@@ -1026,6 +1032,9 @@ static bool set_dirty_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+ 	bool spte_set = false;
+ 
+ 	tdp_root_for_each_pte(iter, root, start, end) {
++		if (tdp_mmu_iter_cond_resched(kvm, &iter, false))
++			continue;
++
+ 		if (!is_shadow_present_pte(iter.old_spte))
+ 			continue;
+ 
+@@ -1033,8 +1042,6 @@ static bool set_dirty_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+ 
+ 		tdp_mmu_set_spte(kvm, &iter, new_spte);
+ 		spte_set = true;
+-
+-		tdp_mmu_iter_cond_resched(kvm, &iter, false);
  	}
  
- 	err = clk_prepare_enable(sor->clk_safe);
+ 	return spte_set;
+@@ -1075,6 +1082,11 @@ static void zap_collapsible_spte_range(struct kvm *kvm,
+ 	bool spte_set = false;
+ 
+ 	tdp_root_for_each_pte(iter, root, start, end) {
++		if (tdp_mmu_iter_cond_resched(kvm, &iter, spte_set)) {
++			spte_set = false;
++			continue;
++		}
++
+ 		if (!is_shadow_present_pte(iter.old_spte) ||
+ 		    !is_last_spte(iter.old_spte, iter.level))
+ 			continue;
+@@ -1087,7 +1099,7 @@ static void zap_collapsible_spte_range(struct kvm *kvm,
+ 
+ 		tdp_mmu_set_spte(kvm, &iter, 0);
+ 
+-		spte_set = !tdp_mmu_iter_cond_resched(kvm, &iter, true);
++		spte_set = true;
+ 	}
+ 
+ 	if (spte_set)
+-- 
+2.30.1
+
 
 
