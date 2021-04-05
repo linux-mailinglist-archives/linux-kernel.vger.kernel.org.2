@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17BC9353EC3
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 140D6353D94
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238388AbhDEJH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:07:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50282 "EHLO mail.kernel.org"
+        id S237204AbhDEJAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:00:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238706AbhDEJFy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:05:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A09A613A0;
-        Mon,  5 Apr 2021 09:05:48 +0000 (UTC)
+        id S236524AbhDEI7z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:59:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C1B43613B0;
+        Mon,  5 Apr 2021 08:59:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613548;
-        bh=uW6oDUm5OGgrAlcJAqE/N3uUNnNkdl5IGSMnsyGW+o0=;
+        s=korg; t=1617613189;
+        bh=dB2GI0K51dN1Sl0JccgDDEk+G5HBCHCUHclBpalLCxI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HY32JicAiO6btfoSjo1TCxagLU7/EOj8RSuC8RYlenDj9YBPeEZ+Pai3wRxj/YucX
-         xcqqacRqKwq/hdpF3oMJk58Mo7WFTKK1FpalzyTC0lMQfnC7oLjrlVn23o/+I1qjsY
-         XCD936WmcdFLZ+yjIcNXZ7Px34U1u0YHijgAacmI=
+        b=XrR8b78km1Y74qoJxYqW1dAYvpZ64f6jhe9I8QbAolceEPOhGy4ll53msUqH5OWWx
+         Q1f66jElCe6M9e2oHWlSoQv/590D5CyhR+dFlQfuNNCh98PbdrRgsKnckPSQDFnnth
+         tyLZh/cJZ6hrosg+0jm6kP5uIbKkrnqwV4qNIczs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Jeff Mahoney <jeffm@suse.com>, Jan Kara <jack@suse.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        syzbot <syzbot+690cb1e51970435f9775@syzkaller.appspotmail.com>
-Subject: [PATCH 5.4 53/74] reiserfs: update reiserfs_xattrs_initialized() condition
-Date:   Mon,  5 Apr 2021 10:54:17 +0200
-Message-Id: <20210405085026.462964923@linuxfoundation.org>
+        syzbot+b67aaae8d3a927f68d20@syzkaller.appspotmail.com,
+        Du Cheng <ducheng2@gmail.com>
+Subject: [PATCH 4.14 52/52] drivers: video: fbcon: fix NULL dereference in fbcon_cursor()
+Date:   Mon,  5 Apr 2021 10:54:18 +0200
+Message-Id: <20210405085023.681659437@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
-References: <20210405085024.703004126@linuxfoundation.org>
+In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
+References: <20210405085021.996963957@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,52 +40,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+From: Du Cheng <ducheng2@gmail.com>
 
-commit 5e46d1b78a03d52306f21f77a4e4a144b6d31486 upstream.
+commit 01faae5193d6190b7b3aa93dae43f514e866d652 upstream.
 
-syzbot is reporting NULL pointer dereference at reiserfs_security_init()
-[1], for commit ab17c4f02156c4f7 ("reiserfs: fixup xattr_root caching")
-is assuming that REISERFS_SB(s)->xattr_root != NULL in
-reiserfs_xattr_jcreate_nblocks() despite that commit made
-REISERFS_SB(sb)->priv_root != NULL && REISERFS_SB(s)->xattr_root == NULL
-case possible.
+add null-check on function pointer before dereference on ops->cursor
 
-I guess that commit 6cb4aff0a77cc0e6 ("reiserfs: fix oops while creating
-privroot with selinux enabled") wanted to check xattr_root != NULL
-before reiserfs_xattr_jcreate_nblocks(), for the changelog is talking
-about the xattr root.
-
-  The issue is that while creating the privroot during mount
-  reiserfs_security_init calls reiserfs_xattr_jcreate_nblocks which
-  dereferences the xattr root. The xattr root doesn't exist, so we get
-  an oops.
-
-Therefore, update reiserfs_xattrs_initialized() to check both the
-privroot and the xattr root.
-
-Link: https://syzkaller.appspot.com/bug?id=8abaedbdeb32c861dc5340544284167dd0e46cde # [1]
-Reported-and-tested-by: syzbot <syzbot+690cb1e51970435f9775@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Fixes: 6cb4aff0a77c ("reiserfs: fix oops while creating privroot with selinux enabled")
-Acked-by: Jeff Mahoney <jeffm@suse.com>
-Acked-by: Jan Kara <jack@suse.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reported-by: syzbot+b67aaae8d3a927f68d20@syzkaller.appspotmail.com
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Du Cheng <ducheng2@gmail.com>
+Link: https://lore.kernel.org/r/20210312081421.452405-1-ducheng2@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/reiserfs/xattr.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/video/fbdev/core/fbcon.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/fs/reiserfs/xattr.h
-+++ b/fs/reiserfs/xattr.h
-@@ -43,7 +43,7 @@ void reiserfs_security_free(struct reise
+--- a/drivers/video/fbdev/core/fbcon.c
++++ b/drivers/video/fbdev/core/fbcon.c
+@@ -1284,6 +1284,9 @@ static void fbcon_cursor(struct vc_data
  
- static inline int reiserfs_xattrs_initialized(struct super_block *sb)
- {
--	return REISERFS_SB(sb)->priv_root != NULL;
-+	return REISERFS_SB(sb)->priv_root && REISERFS_SB(sb)->xattr_root;
+ 	ops->cursor_flash = (mode == CM_ERASE) ? 0 : 1;
+ 
++	if (!ops->cursor)
++		return;
++
+ 	ops->cursor(vc, info, mode, get_color(vc, info, c, 1),
+ 		    get_color(vc, info, c, 0));
  }
- 
- #define xattr_size(size) ((size) + sizeof(struct reiserfs_xattr_header))
 
 
