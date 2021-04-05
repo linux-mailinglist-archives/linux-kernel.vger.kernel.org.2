@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A55354043
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE41353EF3
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239787AbhDEJQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:16:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60310 "EHLO mail.kernel.org"
+        id S238921AbhDEJJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:09:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239346AbhDEJNC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:13:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 130A461394;
-        Mon,  5 Apr 2021 09:12:52 +0000 (UTC)
+        id S238493AbhDEJGx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:06:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90FFD613A3;
+        Mon,  5 Apr 2021 09:06:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613973;
-        bh=jJEBhcO/vA4oZutc7Isaeq+TqEhLLnKnc+/Jmo7DM34=;
+        s=korg; t=1617613607;
+        bh=XB3Zr8/U7yRow4f0pbzmMWpUNZwwVag6BHCiUN/zyEY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dhER7hNzKVSDSS8hHD9/lq77rcMG3dA5F9MFaAZIhwzLvqGdffFC/RvEpdn3O4/c8
-         IYzygXKSYwHGO+fJ5FfE5m1ClcXx9prik6RjWuiRA7bJlC9QAU95vwDIunuHqk0yvq
-         g+bk/JUeN5iXfJymeFvI6QTqjDz/w3ItdiSH86Uc=
+        b=u4toOjc2+cLI4yngnRiWrodTMUkm5csLF3TH/Lu7WyPgGH7Gi/MIL9iprm/p2xZv2
+         Jr/0zqotY3QSY+8Weul6ei19yzT6s8qUPso/dg1WyffEg9s3LNlBWtrITWlTIDeiOL
+         2EzZCgGgFC1BFlSQSq0BbhoUIFIgfGf/iPsJemBI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
+        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>,
+        Tong Zhang <ztong0001@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 037/152] static_call: Align static_call_is_init() patching condition
-Date:   Mon,  5 Apr 2021 10:53:06 +0200
-Message-Id: <20210405085035.476176403@linuxfoundation.org>
+Subject: [PATCH 5.10 025/126] staging: comedi: cb_pcidas: fix request_irq() warn
+Date:   Mon,  5 Apr 2021 10:53:07 +0200
+Message-Id: <20210405085031.871586669@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
-References: <20210405085034.233917714@linuxfoundation.org>
+In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
+References: <20210405085031.040238881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,67 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit 698bacefe993ad2922c9d3b1380591ad489355e9 ]
+[ Upstream commit 2e5848a3d86f03024ae096478bdb892ab3d79131 ]
 
-The intent is to avoid writing init code after init (because the text
-might have been freed). The code is needlessly different between
-jump_label and static_call and not obviously correct.
+request_irq() wont accept a name which contains slash so we need to
+repalce it with something else -- otherwise it will trigger a warning
+and the entry in /proc/irq/ will not be created
+since the .name might be used by userspace and we don't want to break
+userspace, so we are changing the parameters passed to request_irq()
 
-The existing code relies on the fact that the module loader clears the
-init layout, such that within_module_init() always fails, while
-jump_label relies on the module state which is more obvious and
-matches the kernel logic.
+[    1.630764] name 'pci-das1602/16'
+[    1.630950] WARNING: CPU: 0 PID: 181 at fs/proc/generic.c:180 __xlate_proc_name+0x93/0xb0
+[    1.634009] RIP: 0010:__xlate_proc_name+0x93/0xb0
+[    1.639441] Call Trace:
+[    1.639976]  proc_mkdir+0x18/0x20
+[    1.641946]  request_threaded_irq+0xfe/0x160
+[    1.642186]  cb_pcidas_auto_attach+0xf4/0x610 [cb_pcidas]
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
-Tested-by: Sumit Garg <sumit.garg@linaro.org>
-Link: https://lkml.kernel.org/r/20210318113610.636651340@infradead.org
+Suggested-by: Ian Abbott <abbotti@mev.co.uk>
+Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Link: https://lore.kernel.org/r/20210315195914.4801-1-ztong0001@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/static_call.c | 14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
+ drivers/staging/comedi/drivers/cb_pcidas.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/static_call.c b/kernel/static_call.c
-index 49efbdc5b480..f59089a12231 100644
---- a/kernel/static_call.c
-+++ b/kernel/static_call.c
-@@ -149,6 +149,7 @@ void __static_call_update(struct static_call_key *key, void *tramp, void *func)
- 	};
+diff --git a/drivers/staging/comedi/drivers/cb_pcidas.c b/drivers/staging/comedi/drivers/cb_pcidas.c
+index d740c4782775..2f20bd56ec6c 100644
+--- a/drivers/staging/comedi/drivers/cb_pcidas.c
++++ b/drivers/staging/comedi/drivers/cb_pcidas.c
+@@ -1281,7 +1281,7 @@ static int cb_pcidas_auto_attach(struct comedi_device *dev,
+ 	     devpriv->amcc + AMCC_OP_REG_INTCSR);
  
- 	for (site_mod = &first; site_mod; site_mod = site_mod->next) {
-+		bool init = system_state < SYSTEM_RUNNING;
- 		struct module *mod = site_mod->mod;
- 
- 		if (!site_mod->sites) {
-@@ -168,6 +169,7 @@ void __static_call_update(struct static_call_key *key, void *tramp, void *func)
- 		if (mod) {
- 			stop = mod->static_call_sites +
- 			       mod->num_static_call_sites;
-+			init = mod->state == MODULE_STATE_COMING;
- 		}
- #endif
- 
-@@ -175,16 +177,8 @@ void __static_call_update(struct static_call_key *key, void *tramp, void *func)
- 		     site < stop && static_call_key(site) == key; site++) {
- 			void *site_addr = static_call_addr(site);
- 
--			if (static_call_is_init(site)) {
--				/*
--				 * Don't write to call sites which were in
--				 * initmem and have since been freed.
--				 */
--				if (!mod && system_state >= SYSTEM_RUNNING)
--					continue;
--				if (mod && !within_module_init((unsigned long)site_addr, mod))
--					continue;
--			}
-+			if (!init && static_call_is_init(site))
-+				continue;
- 
- 			if (!kernel_text_address((unsigned long)site_addr)) {
- 				/*
+ 	ret = request_irq(pcidev->irq, cb_pcidas_interrupt, IRQF_SHARED,
+-			  dev->board_name, dev);
++			  "cb_pcidas", dev);
+ 	if (ret) {
+ 		dev_dbg(dev->class_dev, "unable to allocate irq %d\n",
+ 			pcidev->irq);
 -- 
 2.30.1
 
