@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D17E7353D02
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 527CB353D03
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:59:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233384AbhDEI5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 04:57:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37022 "EHLO mail.kernel.org"
+        id S233209AbhDEI5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 04:57:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233232AbhDEI5c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 04:57:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A1CEE61393;
-        Mon,  5 Apr 2021 08:57:26 +0000 (UTC)
+        id S233248AbhDEI5f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:57:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E68CF61245;
+        Mon,  5 Apr 2021 08:57:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613047;
-        bh=Zna8MsVGd8jIF5ImYQKHoirKHkeAX+SNgNmY9pwAG/0=;
+        s=korg; t=1617613049;
+        bh=pUgfcfV9R52OTDWeLkB9VsgDR1MbXEY2TAGWmNU8SDo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XgGo990j8xZQb0E8mUMdOz5W9Xr7C7+IPl7cRPp85rWKMu4KS1Hyz+Os4Wb4jox7o
-         b1i2QRTF44D/oGmsfgtvN/bMHBgiS1/Nwx2RUbBlD85v+Df4eovYYe84+9RoJUUz4c
-         RNQ4ksR3A3PBYXW3Dxn1qZ1xSnptv3ptaihYuqS8=
+        b=ZFJPdV8MykKrgFTac+tsjiRtHO5Upp1yZhYLkQyb9kgaE5BhZ7G+cvRfEcfS90A+l
+         bakCzqggA+yjuE8fY5Yw6KWnQrUTNUGjn8U2VRqAnXVjTV6M6CICMyxhUTVj1KACEy
+         whMNja+n9ytuqaGyng7szEQBsJRZomQfDkLE9sxU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "J. Bruce Fields" <bfields@redhat.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 04/35] rpc: fix NULL dereference on kmalloc failure
-Date:   Mon,  5 Apr 2021 10:53:39 +0200
-Message-Id: <20210405085019.010467008@linuxfoundation.org>
+Subject: [PATCH 4.9 05/35] ASoC: rt5640: Fix dac- and adc- vol-tlv values being off by a factor of 10
+Date:   Mon,  5 Apr 2021 10:53:40 +0200
+Message-Id: <20210405085019.039575227@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210405085018.871387942@linuxfoundation.org>
 References: <20210405085018.871387942@linuxfoundation.org>
@@ -40,62 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: J. Bruce Fields <bfields@redhat.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 0ddc942394013f08992fc379ca04cffacbbe3dae ]
+[ Upstream commit cfa26ed1f9f885c2fd8f53ca492989d1e16d0199 ]
 
-I think this is unlikely but possible:
+The adc_vol_tlv volume-control has a range from -17.625 dB to +30 dB,
+not -176.25 dB to + 300 dB. This wrong scale is esp. a problem in userspace
+apps which translate the dB scale to a linear scale. With the logarithmic
+dB scale being of by a factor of 10 we loose all precision in the lower
+area of the range when apps translate things to a linear scale.
 
-svc_authenticate sets rq_authop and calls svcauth_gss_accept.  The
-kmalloc(sizeof(*svcdata), GFP_KERNEL) fails, leaving rq_auth_data NULL,
-and returning SVC_DENIED.
+E.g. the 0 dB default, which corresponds with a value of 47 of the
+0 - 127 range for the control, would be shown as 0/100 in alsa-mixer.
 
-This causes svc_process_common to go to err_bad_auth, and eventually
-call svc_authorise.  That calls ->release == svcauth_gss_release, which
-tries to dereference rq_auth_data.
+Since the centi-dB values used in the TLV struct cannot represent the
+0.375 dB step size used by these controls, change the TLV definition
+for them to specify a min and max value instead of min + stepsize.
 
-Signed-off-by: J. Bruce Fields <bfields@redhat.com>
-Link: https://lore.kernel.org/linux-nfs/3F1B347F-B809-478F-A1E9-0BE98E22B0F0@oracle.com/T/#t
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Note this mirrors commit 3f31f7d9b540 ("ASoC: rt5670: Fix dac- and adc-
+vol-tlv values being off by a factor of 10") which made the exact same
+change to the rt5670 codec driver.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20210226143817.84287-2-hdegoede@redhat.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sunrpc/auth_gss/svcauth_gss.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ sound/soc/codecs/rt5640.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/sunrpc/auth_gss/svcauth_gss.c b/net/sunrpc/auth_gss/svcauth_gss.c
-index fd897d900d12..85ad23d9a8a9 100644
---- a/net/sunrpc/auth_gss/svcauth_gss.c
-+++ b/net/sunrpc/auth_gss/svcauth_gss.c
-@@ -1705,11 +1705,14 @@ static int
- svcauth_gss_release(struct svc_rqst *rqstp)
- {
- 	struct gss_svc_data *gsd = (struct gss_svc_data *)rqstp->rq_auth_data;
--	struct rpc_gss_wire_cred *gc = &gsd->clcred;
-+	struct rpc_gss_wire_cred *gc;
- 	struct xdr_buf *resbuf = &rqstp->rq_res;
- 	int stat = -EINVAL;
- 	struct sunrpc_net *sn = net_generic(SVC_NET(rqstp), sunrpc_net_id);
- 
-+	if (!gsd)
-+		goto out;
-+	gc = &gsd->clcred;
- 	if (gc->gc_proc != RPC_GSS_PROC_DATA)
- 		goto out;
- 	/* Release can be called twice, but we only wrap once. */
-@@ -1750,10 +1753,10 @@ out_err:
- 	if (rqstp->rq_cred.cr_group_info)
- 		put_group_info(rqstp->rq_cred.cr_group_info);
- 	rqstp->rq_cred.cr_group_info = NULL;
--	if (gsd->rsci)
-+	if (gsd && gsd->rsci) {
- 		cache_put(&gsd->rsci->h, sn->rsc_cache);
--	gsd->rsci = NULL;
--
-+		gsd->rsci = NULL;
-+	}
- 	return stat;
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index 3cc1135fc2cd..81fbbcaf8121 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -341,9 +341,9 @@ static bool rt5640_readable_register(struct device *dev, unsigned int reg)
  }
  
+ static const DECLARE_TLV_DB_SCALE(out_vol_tlv, -4650, 150, 0);
+-static const DECLARE_TLV_DB_SCALE(dac_vol_tlv, -65625, 375, 0);
++static const DECLARE_TLV_DB_MINMAX(dac_vol_tlv, -6562, 0);
+ static const DECLARE_TLV_DB_SCALE(in_vol_tlv, -3450, 150, 0);
+-static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -17625, 375, 0);
++static const DECLARE_TLV_DB_MINMAX(adc_vol_tlv, -1762, 3000);
+ static const DECLARE_TLV_DB_SCALE(adc_bst_tlv, 0, 1200, 0);
+ 
+ /* {0, +20, +24, +30, +35, +40, +44, +50, +52} dB */
 -- 
 2.30.1
 
