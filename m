@@ -2,199 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D1A53545C5
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 19:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 195813545C8
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 19:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233041AbhDERDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 13:03:18 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:46632 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232938AbhDERDR (ORCPT
+        id S233408AbhDERDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 13:03:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233231AbhDERDW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 13:03:17 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lTSd3-00HQE2-Tq; Mon, 05 Apr 2021 11:03:10 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lTSd2-0000VS-UE; Mon, 05 Apr 2021 11:03:09 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Alexey Gladkov <gladkov.alexey@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        linux-mm@kvack.org, Alexey Gladkov <legion@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>
-References: <cover.1616533074.git.gladkov.alexey@gmail.com>
-Date:   Mon, 05 Apr 2021 12:03:05 -0500
-In-Reply-To: <cover.1616533074.git.gladkov.alexey@gmail.com> (Alexey Gladkov's
-        message of "Tue, 23 Mar 2021 21:59:09 +0100")
-Message-ID: <m17dlgll4m.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Mon, 5 Apr 2021 13:03:22 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B117C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 10:03:15 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id x26so1815869pfn.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 10:03:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=H6rn7p+vVu7v3cm9ggHsAaaGPQfvah3STH9aVY90oQ0=;
+        b=sPm3lazYQmNyXZyNZwqe3R9UHhfNsl5/ShT7hPs3TtJJhgVVYq8UgkcXx2rAi/Dcfa
+         V/fxOlwOjx3j/UhDO8hOJfR9dFnx+psTIUzKtGNIzps+yoYpP5ruuljEl4pGNCcWXYOh
+         iImfIRnO/mX63IgjMHuI8b6cZ+ajICxv/9f+e+eAgCyE40Pjl+/09AEP7xxNg4o09aY9
+         SASbcyBaPTgS0V0iwbtvXB8XKL5AfBauJR+IAqlDbtnvo76br0fAQOGODJK+zcEMnKrA
+         GTzev8aA0OHMthRZQRn6Ip5JNcVHZ8atYPOYVn4qB+K2yFZJcKFwv0KQSg3glhzvhsMw
+         OY6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=H6rn7p+vVu7v3cm9ggHsAaaGPQfvah3STH9aVY90oQ0=;
+        b=VA94xqzLWYpFkwjMg3Tl6EmzAZLcD29k9dDUMhPah7d+LUGy288w0cOpLLpphrcDwM
+         6PxLpN6VN5tCNXeyFbW8UnHP6z/cIfGt1CSTazl24I73HhPM+0yqeh1xFRrd+I7vWc5G
+         IUEv6ipO2FCeWpqKa60ZH9+7Gm9/oZm9rt0g/QnI1jbiWBfVccqp4aTU/auL85kaxlvw
+         obL2gLM8oYEifqJe6bLCREhM8erYZdfLXW8VzM5i7csY7wGYkpVG18+CguSdONR41a+J
+         mgGqZZm70WJa/TZ2fkEAVd+Xdmcnwb/fMjWNzX7xmsCd7vAS74IAfgD3DfSJIKfPmO1z
+         SBTQ==
+X-Gm-Message-State: AOAM533ISwUl6UJN81kFUxa4KN8JLqdeQTlthEnTw018YY+TBgfqizXD
+        mW3TdUI6ff5C6L9GFCSAEneD0g==
+X-Google-Smtp-Source: ABdhPJzHaUJR34DNX2bq1apPA9eX7C5JcfO8192VNXCy3QSvBk/c9bga925ePSoKMGO8XMoOp5DIGA==
+X-Received: by 2002:a63:4547:: with SMTP id u7mr6253524pgk.351.1617642194450;
+        Mon, 05 Apr 2021 10:03:14 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id h19sm16586915pfc.172.2021.04.05.10.03.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Apr 2021 10:03:13 -0700 (PDT)
+Date:   Mon, 5 Apr 2021 17:03:10 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Jim Mattson <jmattson@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH 3/6] KVM: x86: introduce kvm_register_clear_available
+Message-ID: <YGtCzhDbnAQVgI+8@google.com>
+References: <20210401141814.1029036-1-mlevitsk@redhat.com>
+ <20210401141814.1029036-4-mlevitsk@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lTSd2-0000VS-UE;;;mid=<m17dlgll4m.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18auhi4AyUcfdr4Byj9mZr34hCEOOzN8aw=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
-        version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa01 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa01 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Alexey Gladkov <gladkov.alexey@gmail.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 705 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 3.5 (0.5%), b_tie_ro: 2.4 (0.3%), parse: 1.17
-        (0.2%), extract_message_metadata: 15 (2.1%), get_uri_detail_list: 3.9
-        (0.5%), tests_pri_-1000: 14 (1.9%), tests_pri_-950: 1.55 (0.2%),
-        tests_pri_-900: 1.19 (0.2%), tests_pri_-90: 258 (36.6%), check_bayes:
-        256 (36.2%), b_tokenize: 15 (2.1%), b_tok_get_all: 11 (1.6%),
-        b_comp_prob: 3.5 (0.5%), b_tok_touch_all: 223 (31.6%), b_finish: 0.72
-        (0.1%), tests_pri_0: 400 (56.8%), check_dkim_signature: 0.48 (0.1%),
-        check_dkim_adsp: 2.3 (0.3%), poll_dns_idle: 0.78 (0.1%), tests_pri_10:
-        1.67 (0.2%), tests_pri_500: 5 (0.8%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v9 0/8] Count rlimits in each user namespace
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401141814.1029036-4-mlevitsk@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexey Gladkov <gladkov.alexey@gmail.com> writes:
+On Thu, Apr 01, 2021, Maxim Levitsky wrote:
+> Small refactoring that will be used in the next patch.
+> 
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> ---
+>  arch/x86/kvm/kvm_cache_regs.h | 7 +++++++
+>  arch/x86/kvm/svm/svm.c        | 6 ++----
+>  2 files changed, 9 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/kvm_cache_regs.h b/arch/x86/kvm/kvm_cache_regs.h
+> index 2e11da2f5621..07d607947805 100644
+> --- a/arch/x86/kvm/kvm_cache_regs.h
+> +++ b/arch/x86/kvm/kvm_cache_regs.h
+> @@ -55,6 +55,13 @@ static inline void kvm_register_mark_available(struct kvm_vcpu *vcpu,
+>  	__set_bit(reg, (unsigned long *)&vcpu->arch.regs_avail);
+>  }
+>  
+> +static inline void kvm_register_clear_available(struct kvm_vcpu *vcpu,
 
-> Preface
-> -------
-> These patches are for binding the rlimit counters to a user in user namespace.
-> This patch set can be applied on top of:
->
-> git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git v5.12-rc4
->
-> Problem
-> -------
-> The RLIMIT_NPROC, RLIMIT_MEMLOCK, RLIMIT_SIGPENDING, RLIMIT_MSGQUEUE rlimits
-> implementation places the counters in user_struct [1]. These limits are global
-> between processes and persists for the lifetime of the process, even if
-> processes are in different user namespaces.
->
-> To illustrate the impact of rlimits, let's say there is a program that does not
-> fork. Some service-A wants to run this program as user X in multiple containers.
-> Since the program never fork the service wants to set RLIMIT_NPROC=1.
->
-> service-A
->  \- program (uid=1000, container1, rlimit_nproc=1)
->  \- program (uid=1000, container2, rlimit_nproc=1)
->
-> The service-A sets RLIMIT_NPROC=1 and runs the program in container1. When the
-> service-A tries to run a program with RLIMIT_NPROC=1 in container2 it fails
-> since user X already has one running process.
->
-> The problem is not that the limit from container1 affects container2. The
-> problem is that limit is verified against the global counter that reflects
-> the number of processes in all containers.
->
-> This problem can be worked around by using different users for each container
-> but in this case we face a different problem of uid mapping when transferring
-> files from one container to another.
->
-> Eric W. Biederman mentioned this issue [2][3].
->
-> Introduced changes
-> ------------------
-> To address the problem, we bind rlimit counters to user namespace. Each counter
-> reflects the number of processes in a given uid in a given user namespace. The
-> result is a tree of rlimit counters with the biggest value at the root (aka
-> init_user_ns). The limit is considered exceeded if it's exceeded up in the tree.
->
-> [1]: https://lore.kernel.org/containers/87imd2incs.fsf@x220.int.ebiederm.org/
-> [2]: https://lists.linuxfoundation.org/pipermail/containers/2020-August/042096.html
-> [3]: https://lists.linuxfoundation.org/pipermail/containers/2020-October/042524.html
->
-> Changelog
-> ---------
-> v9:
-> * Used a negative value to check that the ucounts->count is close to overflow.
-> * Rebased onto v5.12-rc4.
->
-> v8:
-> * Used atomic_t for ucounts reference counting. Also added counter overflow
->   check (thanks to Linus Torvalds for the idea).
-> * Fixed other issues found by lkp-tests project in the patch that Reimplements
->   RLIMIT_MEMLOCK on top of ucounts.
->
-> v7:
-> * Fixed issues found by lkp-tests project in the patch that Reimplements
->   RLIMIT_MEMLOCK on top of ucounts.
->
-> v6:
-> * Fixed issues found by lkp-tests project.
-> * Rebased onto v5.11.
->
-> v5:
-> * Split the first commit into two commits: change ucounts.count type to atomic_long_t
->   and add ucounts to cred. These commits were merged by mistake during the rebase.
-> * The __get_ucounts() renamed to alloc_ucounts().
-> * The cred.ucounts update has been moved from commit_creds() as it did not allow
->   to handle errors.
-> * Added error handling of set_cred_ucounts().
->
-> v4:
-> * Reverted the type change of ucounts.count to refcount_t.
-> * Fixed typo in the kernel/cred.c
->
-> v3:
-> * Added get_ucounts() function to increase the reference count. The existing
->   get_counts() function renamed to __get_ucounts().
-> * The type of ucounts.count changed from atomic_t to refcount_t.
-> * Dropped 'const' from set_cred_ucounts() arguments.
-> * Fixed a bug with freeing the cred structure after calling cred_alloc_blank().
-> * Commit messages have been updated.
-> * Added selftest.
->
-> v2:
-> * RLIMIT_MEMLOCK, RLIMIT_SIGPENDING and RLIMIT_MSGQUEUE are migrated to ucounts.
-> * Added ucounts for pair uid and user namespace into cred.
-> * Added the ability to increase ucount by more than 1.
->
-> v1:
-> * After discussion with Eric W. Biederman, I increased the size of ucounts to
->   atomic_long_t.
-> * Added ucount_max to avoid the fork bomb.
->
-> --
->
-> Alexey Gladkov (8):
->   Increase size of ucounts to atomic_long_t
->   Add a reference to ucounts for each cred
->   Use atomic_t for ucounts reference counting
->   Reimplement RLIMIT_NPROC on top of ucounts
->   Reimplement RLIMIT_MSGQUEUE on top of ucounts
->   Reimplement RLIMIT_SIGPENDING on top of ucounts
->   Reimplement RLIMIT_MEMLOCK on top of ucounts
->   kselftests: Add test to check for rlimit changes in different user namespaces
->
+I don't love the name, because it makes me think too hard about available vs.
+dirty.  :-)   If we drop the optimizations, what if we also drop this patch to
+avoid bikeshedding the name?
 
-Overall this looks good, and it is a very good sign that the automatic
-testing bots have not found anything.  I found a few little nits.
-But thing are looking very good.
-
-Eric
-
+> +					       enum kvm_reg reg)
+> +{
+> +	__clear_bit(reg, (unsigned long *)&vcpu->arch.regs_avail);
+> +	__clear_bit(reg, (unsigned long *)&vcpu->arch.regs_dirty);
+> +}
+> +
+>  static inline void kvm_register_mark_dirty(struct kvm_vcpu *vcpu,
+>  					   enum kvm_reg reg)
+>  {
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 271196400495..2843732299a2 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -3880,10 +3880,8 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
+>  		vcpu->arch.apf.host_apf_flags =
+>  			kvm_read_and_reset_apf_flags();
+>  
+> -	if (npt_enabled) {
+> -		vcpu->arch.regs_avail &= ~(1 << VCPU_EXREG_PDPTR);
+> -		vcpu->arch.regs_dirty &= ~(1 << VCPU_EXREG_PDPTR);
+> -	}
+> +	if (npt_enabled)
+> +		kvm_register_clear_available(vcpu, VCPU_EXREG_PDPTR);
+>  
+>  	/*
+>  	 * We need to handle MC intercepts here before the vcpu has a chance to
+> -- 
+> 2.26.2
+> 
