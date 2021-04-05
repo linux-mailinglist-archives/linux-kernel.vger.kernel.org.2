@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FFED354086
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C61C3353F53
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240001AbhDEJSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:18:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34218 "EHLO mail.kernel.org"
+        id S238948AbhDEJLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:11:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240099AbhDEJOp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:14:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC61B61002;
-        Mon,  5 Apr 2021 09:14:37 +0000 (UTC)
+        id S238658AbhDEJIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:08:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDA5561393;
+        Mon,  5 Apr 2021 09:08:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617614078;
-        bh=Wf5fiTYI8CUTKxQHc/AdUaXj3BEdDoSEDRJK0A2bmD0=;
+        s=korg; t=1617613713;
+        bh=4eEG1cSiehEqlu1PAct8oDkEDjtzotjqI7q4UfC9n8I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QX+WuiRM2t2pvWyh00wODQ70rku8SMBZSbQaSqhpOkv1a5hDONmKJJHjoMlw3Dukg
-         g+QCSxQK4WHBgZf0ktn3DFOENo10PLVIe1HMWkPg5DcCqvwLc+y8eqfba/mV829CcK
-         xjWY2BobEL0WbDgE3qpbHIm+jy8NuG4wBXzUGAUs=
+        b=ctGDpQ26kqffx+vFfAsw8k2i3/L6vMRPA+dtlGDSaLj4ht5Av8/pTYV1hAqRHhHy4
+         apGwJyliNQnvkGEm9WX+PKDwCAzgu/l6A1OEllse9xIYBkf1YE83AtVdDsJfVOiN4G
+         sPJ86KxjakgKxnptVgdGEapTsHIGoQQfmOQ4bvVQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeremy Szu <jeremy.szu@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.11 076/152] ALSA: hda/realtek: fix mute/micmute LEDs for HP 640 G8
+        stable@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Max Filippov <jcmvbkbc@gmail.com>
+Subject: [PATCH 5.10 063/126] xtensa: fix uaccess-related livelock in do_page_fault
 Date:   Mon,  5 Apr 2021 10:53:45 +0200
-Message-Id: <20210405085036.737179035@linuxfoundation.org>
+Message-Id: <20210405085033.151157085@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
-References: <20210405085034.233917714@linuxfoundation.org>
+In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
+References: <20210405085031.040238881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,32 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeremy Szu <jeremy.szu@canonical.com>
+From: Max Filippov <jcmvbkbc@gmail.com>
 
-commit 417eadfdd9e25188465280edf3668ed163fda2d0 upstream.
+commit 7b9acbb6aad4f54623dcd4bd4b1a60fe0c727b09 upstream.
 
-The HP EliteBook 640 G8 Notebook PC is using ALC236 codec which is
-using 0x02 to control mute LED and 0x01 to control micmute LED.
-Therefore, add a quirk to make it works.
+If a uaccess (e.g. get_user()) triggers a fault and there's a
+fault signal pending, the handler will return to the uaccess without
+having performed a uaccess fault fixup, and so the CPU will immediately
+execute the uaccess instruction again, whereupon it will livelock
+bouncing between that instruction and the fault handler.
 
-Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210330114428.40490-1-jeremy.szu@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+https://lore.kernel.org/lkml/20210121123140.GD48431@C02TD0UTHF1T.local/
+
+Cc: stable@vger.kernel.org
+Reported-by: Mark Rutland <mark.rutland@arm.com>
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/xtensa/mm/fault.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8058,6 +8058,7 @@ static const struct snd_pci_quirk alc269
- 		      ALC285_FIXUP_HP_GPIO_AMP_INIT),
- 	SND_PCI_QUIRK(0x103c, 0x87c8, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87e5, "HP ProBook 440 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x87f2, "HP ProBook 640 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f7, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
+--- a/arch/xtensa/mm/fault.c
++++ b/arch/xtensa/mm/fault.c
+@@ -112,8 +112,11 @@ good_area:
+ 	 */
+ 	fault = handle_mm_fault(vma, address, flags, regs);
+ 
+-	if (fault_signal_pending(fault, regs))
++	if (fault_signal_pending(fault, regs)) {
++		if (!user_mode(regs))
++			goto bad_page_fault;
+ 		return;
++	}
+ 
+ 	if (unlikely(fault & VM_FAULT_ERROR)) {
+ 		if (fault & VM_FAULT_OOM)
 
 
