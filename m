@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6686D353D08
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AF51353D14
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233389AbhDEI6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 04:58:00 -0400
-Received: from mailgate.ics.forth.gr ([139.91.1.2]:56901 "EHLO
+        id S233574AbhDEI6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 04:58:17 -0400
+Received: from mailgate.ics.forth.gr ([139.91.1.2]:56902 "EHLO
         mailgate.ics.forth.gr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233279AbhDEI5k (ORCPT
+        with ESMTP id S233280AbhDEI5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 5 Apr 2021 04:57:40 -0400
 Received: from av3.ics.forth.gr (av3in.ics.forth.gr [139.91.1.77])
-        by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 1358vWaV079891
+        by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 1358vWaW079891
         for <linux-kernel@vger.kernel.org>; Mon, 5 Apr 2021 11:57:32 +0300 (EEST)
 DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
         q=dns/txt; i=@ics.forth.gr; t=1617613047; x=1620205047;
@@ -21,90 +21,69 @@ DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
         Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
         Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
         List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=EfKmC1JuJT8Zu2DDNgq2xg0tTemOVFs2FYglazg4zNM=;
-        b=LD8mGRYATXub8N7uRNlngMhpde9Wv65ySPWbYJjSpTaoRfRatLFPabOycpTq8yoc
-        Yvg5gfQ6w7bs5A1nRXY97iDJhC3M3pOews9QJqvzU46nixj+nWs1eGo2HoSOfgNO
-        C87ai6HyNiO0uOhupSXyEpL1ETubOnAjmeQRytwYUhXEiEGuDlQOxm4jGeewCZqy
-        zpRjvJLzyfn4QmrRIDDWoJoYvL62ei2gtlGOKRBVrYetWMTcYLbq6ts9zmyteN6Q
-        OGn2Q4dkqce8J3Mer2gKssqJDE2kny/ewtkhMtcpf21QJ4/UUZjoR7kNEnbFNL+Q
-        /oo5xHIZSm2wm1QghREYiA==;
-X-AuditID: 8b5b014d-a70347000000209f-d7-606ad0f75597
+        bh=mIPpwtuqwCFbpjCfBOR3TLBkCrvCUYLFEkh8taAhOfc=;
+        b=pwwaSblYBhSSJSM7pAEj6oqeUc+/LE/kltnkrlydWZUSTmzm0l992cgtYjeUWPEX
+        Lw04Vpaj5gumdjg/r4CJBK9iapw+bIOsJxulMn+xPRrC9E6Rzzw3+WBIAtlBxiEN
+        ATEQH0lYhrn0KzuBJxsgmuoFBu6Vx5PNHlmoeLY+CHh0Tl4We40901L7vkPOeHVB
+        G7HRFSQm6qBYOa7g4qCkY2hnIIoVlkzg907ZTXE4DpPUXsuMtD3POHYnyEL/K0aT
+        atqCL3aa6/fb/SBPGluvRDhRkX6B4yoBEpkZkxWmcG+VsJkK2hM/KPJDX03LbO0+
+        qJ+BZYBLZY1/1V73ZvnxWg==;
+X-AuditID: 8b5b014d-a4c337000000209f-d8-606ad0f7e44b
 Received: from enigma.ics.forth.gr (enigma.ics.forth.gr [139.91.151.35])
-        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id 77.77.08351.7F0DA606; Mon,  5 Apr 2021 11:57:27 +0300 (EEST)
+        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id 87.77.08351.7F0DA606; Mon,  5 Apr 2021 11:57:27 +0300 (EEST)
 X-ICS-AUTH-INFO: Authenticated user: mick@ics.forth.gr at ics.forth.gr
 From:   Nick Kossifidis <mick@ics.forth.gr>
 To:     linux-riscv@lists.infradead.org, palmer@dabbelt.com
 Cc:     paul.walmsley@sifive.com, linux-kernel@vger.kernel.org,
         Nick Kossifidis <mick@ics.forth.gr>
-Subject: [PATCH v3 0/5] RISC-V: Add kexec/kdump support
-Date:   Mon,  5 Apr 2021 11:57:07 +0300
-Message-Id: <20210405085712.1953848-1-mick@ics.forth.gr>
+Subject: [PATCH v3 1/5] RISC-V: Add EM_RISCV to kexec UAPI header
+Date:   Mon,  5 Apr 2021 11:57:08 +0300
+Message-Id: <20210405085712.1953848-2-mick@ics.forth.gr>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210405085712.1953848-1-mick@ics.forth.gr>
+References: <20210405085712.1953848-1-mick@ics.forth.gr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgluLIzCtJLcpLzFFi42Lpjp6urPv9QlaCwYd5khaXd81hs9j2uYXN
-        ovndOXaLl5d7mC3aZvE7sHq8efmSxePhpktMHpuX1Htcar7O7vF5k1wAaxSXTUpqTmZZapG+
-        XQJXRuPm20wF2/kqnp9Rb2Bcy93FyMkhIWAi0d33gbGLkYtDSOAoo8SDCWvYIBJuErfv72QF
-        sdkENCXmXzrIAmKLCJhLNM98zQhiMwtkSBzd94sdxBYGiq+e/44ZxGYRUJU48uo2WA2vgIXE
-        /50LWCFmyku0L9/OBhEXlDg58wkLxBx5ieats5knMPLMQpKahSS1gJFpFaNAYpmxXmZysV5a
-        flFJhl560SZGcCAx+u5gvL35rd4hRiYOxkOMEhzMSiK8DxuyEoR4UxIrq1KL8uOLSnNSiw8x
-        SnOwKInz8upNiBcSSE8sSc1OTS1ILYLJMnFwSjUwOW9hCXKIsGKuPzo37mG4kbmnSnr4HsP0
-        11uWZp0IVZq7K8he9OU0GZMAxusLYnwez2E+1Bx5wdPtx0w+y8Bybf/+WwLRezLfZVuzLuid
-        Zsy1t6hl+9H+Hpk0uadX79yXUWHMmi24smT/49uxFdP3Pav7vf8Wd8SrPzJLO6f3bHJWybV8
-        q3XKfUrj+5hXZ6af29um3Neyeao9+4NWI8dZkyMyFr5wbeBgij0zlfurVUTLP/nzm5ZVb7Nc
-        NfV2TI3b8Yqw7uUd5uv/zqu/sVTmsKF8XYuxwRkbpV1lBpqZ01YZSj7h5chsN7jPoFT0vU29
-        dFdGpHam/86XSjnXOkr3VOzxuCG09EqIlv7vKAslluKMREMt5qLiRAA1iB7CkwIAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJLMWRmVeSWpSXmKPExsXSHT1dWff7hawEg1l3pCwu75rDZrHtcwub
+        RfO7c+wWLy/3MFu0zeJ3YPV48/Ili8fDTZeYPDYvqfe41Hyd3ePzJrkA1igum5TUnMyy1CJ9
+        uwSujJnt5xgLHrJVLPrTztbAeJ61i5GTQ0LARGJJ4yT2LkYuDiGBo4wSf7eAOCAJN4nb93eC
+        FbEJaErMv3SQBcQWETCXaJ75mhHEZhbIkDi67xdYvbCAo0R3wzwmEJtFQFXiRetxsHpeAQuJ
+        358XQS2Tl2hfvp0NxOYUsJTYdn4RWL0QUM31Yz2MEPWCEidnPmGBmC8v0bx1NvMERr5ZSFKz
+        kKQWMDKtYhRILDPWy0wu1kvLLyrJ0Esv2sQIDj1G3x2Mtze/1TvEyMTBeIhRgoNZSYT3YUNW
+        ghBvSmJlVWpRfnxRaU5q8SFGaQ4WJXFeXr0J8UIC6YklqdmpqQWpRTBZJg5OqQam7VeuK5dt
+        vSrOeO7NxCVM3H6HnAIrF0ioG17u6n9x+5v20xl/22Z6vLdhbJHe5Phx6dqVh9Qj8wp/OTgk
+        5lldMYzj+CUpvda10PXFERunXF4ld89Pqh/ZYg/USIXsFFTxONz4IviLgdx+Hf32jZvs6g3N
+        vk7JD3s6aW3IwiXHZ8j/v/kw1ZtF7DHjvbvucxLC1Crk79maRUrNeK+0eIOo0aUIJb3Eyhv6
+        n5jYjif4pq7bz6d+Kn+LJ8+NzrM9iWIiD4JKf7E28q+LvdH6/g+n5SLrpKK51y9/Lyk6zDkr
+        vmqicXJC8/c3B3dMfjzF9bfe9ls3newbU189rzmaqPbe113367NtkZVSu+t8/99RYinOSDTU
+        Yi4qTgQAgxNljqwCAAA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series adds kexec/kdump and crash kernel
-support on RISC-V. For testing the patches a patched
-version of kexec-tools is needed (still a work in
-progress) which can be found at:
+Add RISC-V to the list of supported kexec architecturs, we need to
+add the definition early-on so that later patches can use it.
 
-https://riscv.ics.forth.gr/kexec-tools-patched.tar.xz
+EM_RISCV is 243 as per ELF psABI specification here:
+https://github.com/riscv/riscv-elf-psabi-doc/blob/master/riscv-elf.md
 
-v3:
- * Rebase on newer kernel tree
- * Minor cleanups
- * Split UAPI changes to a separate patch
- * Improve / cleanup init_resources
- * Resolve Palmer's comments
+Signed-off-by: Nick Kossifidis <mick@ics.forth.gr>
+---
+ include/uapi/linux/kexec.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-v2:
- * Rebase on newer kernel tree
- * Minor cleanups
- * Properly populate the ioresources tre, so that it
-   can be used later on for implementing strict /dev/mem
- * Use linux,usable-memory on /memory instead of a new binding
- * USe a reserved-memory node for ELF core header
-
-Nick Kossifidis (5):
-  RISC-V: Add EM_RISCV to kexec UAPI header
-  RISC-V: Add kexec support
-  RISC-V: Improve init_resources
-  RISC-V: Add kdump support
-  RISC-V: Add crash kernel support
-
- arch/riscv/Kconfig                  |  25 ++++
- arch/riscv/include/asm/elf.h        |   6 +
- arch/riscv/include/asm/kexec.h      |  54 +++++++
- arch/riscv/kernel/Makefile          |   6 +
- arch/riscv/kernel/crash_dump.c      |  46 ++++++
- arch/riscv/kernel/crash_save_regs.S |  56 +++++++
- arch/riscv/kernel/kexec_relocate.S  | 222 ++++++++++++++++++++++++++++
- arch/riscv/kernel/machine_kexec.c   | 193 ++++++++++++++++++++++++
- arch/riscv/kernel/setup.c           | 113 ++++++++------
- arch/riscv/mm/init.c                | 110 ++++++++++++++
- include/uapi/linux/kexec.h          |   1 +
- 11 files changed, 787 insertions(+), 45 deletions(-)
- create mode 100644 arch/riscv/include/asm/kexec.h
- create mode 100644 arch/riscv/kernel/crash_dump.c
- create mode 100644 arch/riscv/kernel/crash_save_regs.S
- create mode 100644 arch/riscv/kernel/kexec_relocate.S
- create mode 100644 arch/riscv/kernel/machine_kexec.c
-
+diff --git a/include/uapi/linux/kexec.h b/include/uapi/linux/kexec.h
+index 05669c87a..778dc191c 100644
+--- a/include/uapi/linux/kexec.h
++++ b/include/uapi/linux/kexec.h
+@@ -42,6 +42,7 @@
+ #define KEXEC_ARCH_MIPS_LE (10 << 16)
+ #define KEXEC_ARCH_MIPS    ( 8 << 16)
+ #define KEXEC_ARCH_AARCH64 (183 << 16)
++#define KEXEC_ARCH_RISCV   (243 << 16)
+ 
+ /* The artificial cap on the number of segments passed to kexec_load. */
+ #define KEXEC_SEGMENT_MAX 16
 -- 
 2.26.2
 
