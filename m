@@ -2,240 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BDAD354257
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 15:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 447A835425E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 15:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235779AbhDENYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 09:24:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50518 "EHLO mail.kernel.org"
+        id S237433AbhDENeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 09:34:09 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:33976 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232694AbhDENYr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 09:24:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10402613AE;
-        Mon,  5 Apr 2021 13:24:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617629081;
-        bh=GzWTUhTx84OO6tFHIPGCur+SXJJT4/XuNd0dfMshivk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=IyrWktd318uIivJ0IVfbgXFxBMRf9+ExIuSaTczkDVyTiupeD80JchSKL87ANUnz3
-         Z4CADXCMDvop88DheFKaXCxUo3IZyH7lU156eeM6FzY8+mbwSqWfDWMTpctlptWaKn
-         pP5L9rMm5Lft01htPEf6nRwnydyg2HxsPrAEJppcMYiNbIqsuP5aoxncAMXccJcjFM
-         PYz7K1l+kn7gpc166AJJcG6tGDCYyLA2fnyU/zzsrxLoHSv5ByESvuxvjxz+/frEhB
-         /hLP1kItUca2mR+Pv7dLMJOLV/wjR//JxFZIFGx49EldxFycEX9S9qXw6wh6LT8S0h
-         3Ik5LpEX7+hew==
-Date:   Mon, 5 Apr 2021 22:24:36 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, mark.rutland@arm.com,
-        broonie@kernel.org, jthierry@redhat.com, catalin.marinas@arm.com,
-        will@kernel.org, linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [RFC PATCH v1 0/4] arm64: Implement stack trace reliability
- checks
-Message-Id: <20210405222436.4fda9a930676d95e862744af@kernel.org>
-In-Reply-To: <bd13a433-c060-c501-8e76-5e856d77a225@linux.microsoft.com>
-References: <77bd5edeea72d44533c769b1e8c0fea7a9d7eb3a>
-        <20210330190955.13707-1-madvenka@linux.microsoft.com>
-        <20210403170159.gegqjrsrg7jshlne@treble>
-        <bd13a433-c060-c501-8e76-5e856d77a225@linux.microsoft.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232694AbhDENeH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 09:34:07 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lTPMZ-00EvmM-Ns; Mon, 05 Apr 2021 15:33:55 +0200
+Date:   Mon, 5 Apr 2021 15:33:55 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Danilo Krummrich <danilokrummrich@dk-develop.de>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        davem@davemloft.net, hkallweit1@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jeremy.linton@arm.com
+Subject: Re: [PATCH 2/2] net: mdio: support c45 peripherals on c22 busses
+Message-ID: <YGsRwxwXILC1Tp2S@lunn.ch>
+References: <20210331141755.126178-1-danilokrummrich@dk-develop.de>
+ <20210331141755.126178-3-danilokrummrich@dk-develop.de>
+ <YGSi+b/r4zlq9rm8@lunn.ch>
+ <6f1dfc28368d098ace9564e53ed92041@dk-develop.de>
+ <20210331183524.GV1463@shell.armlinux.org.uk>
+ <2f0ea3c3076466e197ca2977753b07f3@dk-develop.de>
+ <20210401084857.GW1463@shell.armlinux.org.uk>
+ <YGZvGfNSBBq/92D+@arch-linux>
+ <20210402125858.GB1463@shell.armlinux.org.uk>
+ <YGoSS7llrl5K6D+/@arch-linux>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YGoSS7llrl5K6D+/@arch-linux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Madhaven,
-
-On Sat, 3 Apr 2021 22:29:12 -0500
-"Madhavan T. Venkataraman" <madvenka@linux.microsoft.com> wrote:
-
-
-> >> Check for kretprobe
-> >> ===================
-> >>
-> >> For functions with a kretprobe set up, probe code executes on entry
-> >> to the function and replaces the return address in the stack frame with a
-> >> kretprobe trampoline. Whenever the function returns, control is
-> >> transferred to the trampoline. The trampoline eventually returns to the
-> >> original return address.
-> >>
-> >> A stack trace taken while executing in the function (or in functions that
-> >> get called from the function) will not show the original return address.
-> >> Similarly, a stack trace taken while executing in the trampoline itself
-> >> (and functions that get called from the trampoline) will not show the
-> >> original return address. This means that the caller of the probed function
-> >> will not show. This makes the stack trace unreliable.
-> >>
-> >> Add the kretprobe trampoline to special_functions[].
-> >>
-> >> FYI, each task contains a task->kretprobe_instances list that can
-> >> theoretically be consulted to find the orginal return address. But I am
-> >> not entirely sure how to safely traverse that list for stack traces
-> >> not on the current process. So, I have taken the easy way out.
+On Sun, Apr 04, 2021 at 09:23:55PM +0200, Danilo Krummrich wrote:
+> On Fri, Apr 02, 2021 at 01:58:58PM +0100, Russell King - ARM Linux admin wrote:
+> > On Fri, Apr 02, 2021 at 03:10:49AM +0200, Danilo Krummrich wrote:
+> > > On Thu, Apr 01, 2021 at 09:48:58AM +0100, Russell King - ARM Linux admin wrote:
+> > > > One could also argue this is a feature, and it allows userspace to
+> > > > know whether C45 cycles are supported or not.
+> > > >
+> > > No, if the userspace requests such a transfer although the MDIO controller
+> > > does not support real c45 framing the kernel will call mdiobus_c45_addr() to
+> > > join the devaddr and  and regaddr in one parameter and pass it to
+> > > mdiobus_read() or mdiobus_write(). A bus driver not supporting c45 framing
+> > > will not care and just mask/shift the joined value and write it to the
+> > > particular register. Obviously, this will result into complete garbage being
+> > > read or (even worse) written.
 > > 
-> > For kretprobes, unwinding from the trampoline or kretprobe handler
-> > shouldn't be a reliability concern for live patching, for similar
-> > reasons as above.
 > > 
-> 
-> Please see previous answer.
-> 
-> > Otherwise, when unwinding from a blocked task which has
-> > 'kretprobe_trampoline' on the stack, the unwinder needs a way to get the
-> > original return address.  Masami has been working on an interface to
-> > make that possible for x86.  I assume something similar could be done
-> > for arm64.
+> > We have established that MDIO drivers need to reject accesses for
+> > reads/writes that they do not support - this isn't something that
+> > they have historically checked for because it is only recent that
+> > phylib has really started to support clause 45 PHYs.
 > > 
+> I see, that's why you consider it a feature - because it is.
+> What do you think about adding a flag MDIO_PHY_ID_MMD (or similar) analog to
+> MDIO_PHY_ID_C45 for phy_mii_ioctl() to check for, such that userspace can ask
+> for an indirect access in order to save userspace doing the indirect access
+> itself. A nice side effect would be saving 3 syscalls per request.
+
+We don't care about the performance of this IOCTL interface. It is for
+debug only, and you need to be very careful how you use it, because
+you can very easily shoot yourself in the foot.
+
+> So currently every driver should check for the flag MII_ADDR_C45 and report an
+> error in case it's unsupported.
 > 
-> OK. Until that is available, this case needs to be addressed.
+> What do you think about checking the bus' capabilities instead in
+> mdiobus_c45_*()? This way the check if C45 is supported can even happen before
+> calling the driver at all. I think that would be a little cleaner than having
+> two places where information of the bus' capabilities are stored (return value
+> of read/write functions and the capabilities field).
+> 
+> I think there are not too many drivers setting their capabilities though, but
+> it should be easy to derive this information from how and if they handle the
+> MII_ADDR_C45 flag.
 
-Actually, I've done that on arm64 :) See below patch.
-(and I also have a similar code for arm32, what I'm considering is how
-to unify x86/arm/arm64 kretprobe_find_ret_addr(), since those are very
-similar.)
+I actually don't think anything needs to change. The Marvell PHY
+probably probes due to its C22 IDs. The driver will then requests C45
+access which automagically get converted into C45 over C22 for your
+hardware, but remain C45 access for bus drivers which support C45.
 
-This is applicable on my x86 series v5
-
-https://lore.kernel.org/bpf/161676170650.330141.6214727134265514123.stgit@devnote2/
-
-Thank you,
-
-
-From 947cf6cf1fd4154edd5533d18c2f8dfedc8d993d Mon Sep 17 00:00:00 2001
-From: Masami Hiramatsu <mhiramat@kernel.org>
-Date: Sat, 20 Mar 2021 00:14:29 +0900
-Subject: [PATCH] arm64: Recover kretprobe modified return address in
- stacktrace
-
-Since the kretprobe replaces the function return address with
-the kretprobe_trampoline on the stack, arm64 unwinder shows it
-instead of the correct return address.
-
-This finds the correct return address from the per-task
-kretprobe_instances list and verify it is in between the
-caller fp and callee fp.
-
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- arch/arm64/include/asm/stacktrace.h |  2 ++
- arch/arm64/kernel/probes/kprobes.c  | 28 ++++++++++++++++++++++++++++
- arch/arm64/kernel/stacktrace.c      |  3 +++
- kernel/kprobes.c                    |  8 ++++----
- 4 files changed, 37 insertions(+), 4 deletions(-)
-
-diff --git a/arch/arm64/include/asm/stacktrace.h b/arch/arm64/include/asm/stacktrace.h
-index eb29b1fe8255..50ebc9e9dba9 100644
---- a/arch/arm64/include/asm/stacktrace.h
-+++ b/arch/arm64/include/asm/stacktrace.h
-@@ -9,6 +9,7 @@
- #include <linux/sched.h>
- #include <linux/sched/task_stack.h>
- #include <linux/types.h>
-+#include <linux/llist.h>
- 
- #include <asm/memory.h>
- #include <asm/ptrace.h>
-@@ -59,6 +60,7 @@ struct stackframe {
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
- 	int graph;
- #endif
-+	struct llist_node *kr_cur;
- };
- 
- extern int unwind_frame(struct task_struct *tsk, struct stackframe *frame);
-diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
-index fce681fdfce6..204e475cbff3 100644
---- a/arch/arm64/kernel/probes/kprobes.c
-+++ b/arch/arm64/kernel/probes/kprobes.c
-@@ -410,6 +410,34 @@ int __init arch_populate_kprobe_blacklist(void)
- 	return ret;
- }
- 
-+unsigned long __kretprobe_find_ret_addr(struct task_struct *tsk,
-+					struct llist_node **cur);
-+
-+unsigned long kretprobe_find_ret_addr(struct task_struct *tsk,
-+				void *fp, struct llist_node **cur)
-+{
-+	struct kretprobe_instance *ri;
-+	unsigned long ret;
-+
-+	do {
-+		ret = __kretprobe_find_ret_addr(tsk, cur);
-+		if (!ret)
-+			return ret;
-+		ri = container_of(*cur, struct kretprobe_instance, llist);
-+		/*
-+		 * Since arm64 stores the stack pointer of the entry of target
-+		 * function (callee) to ri->fp, the given real @fp must be
-+		 * smaller than ri->fp, but bigger than the previous ri->fp.
-+		 *
-+		 * callee sp (prev ri->fp)
-+		 * fp (and *saved_lr)
-+		 * caller sp (ri->fp)
-+		 */
-+	} while (ri->fp <= fp);
-+
-+	return ret;
-+}
-+
- void __kprobes __used *trampoline_probe_handler(struct pt_regs *regs)
- {
- 	return (void *)kretprobe_trampoline_handler(regs, (void *)kernel_stack_pointer(regs));
-diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-index ad20981dfda4..956486d4ac10 100644
---- a/arch/arm64/kernel/stacktrace.c
-+++ b/arch/arm64/kernel/stacktrace.c
-@@ -105,6 +105,8 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
- 		frame->pc = ret_stack->ret;
- 	}
- #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
-+	if (is_kretprobe_trampoline(frame->pc))
-+		frame->pc = kretprobe_find_ret_addr(tsk, (void *)fp, &frame->kr_cur);
- 
- 	frame->pc = ptrauth_strip_insn_pac(frame->pc);
- 
-@@ -199,6 +201,7 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
- {
- 	struct stackframe frame;
- 
-+	memset(&frame, 0, sizeof(frame));
- 	if (regs)
- 		start_backtrace(&frame, regs->regs[29], regs->pc);
- 	else if (task == current)
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 4ce3e6f5d28d..12677a463561 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1859,8 +1859,8 @@ static struct notifier_block kprobe_exceptions_nb = {
- #ifdef CONFIG_KRETPROBES
- 
- /* This assumes the tsk is current or the task which is not running. */
--static unsigned long __kretprobe_find_ret_addr(struct task_struct *tsk,
--					       struct llist_node **cur)
-+unsigned long __kretprobe_find_ret_addr(struct task_struct *tsk,
-+					struct llist_node **cur)
- {
- 	struct kretprobe_instance *ri = NULL;
- 	struct llist_node *node = *cur;
-@@ -1882,8 +1882,8 @@ static unsigned long __kretprobe_find_ret_addr(struct task_struct *tsk,
- }
- NOKPROBE_SYMBOL(__kretprobe_find_ret_addr);
- 
--unsigned long kretprobe_find_ret_addr(struct task_struct *tsk, void *fp,
--				      struct llist_node **cur)
-+unsigned long __weak kretprobe_find_ret_addr(struct task_struct *tsk,
-+				void *fp, struct llist_node **cur)
- {
- 	struct kretprobe_instance *ri = NULL;
- 	unsigned long ret;
--- 
-2.25.1
-
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+	  Andrew
