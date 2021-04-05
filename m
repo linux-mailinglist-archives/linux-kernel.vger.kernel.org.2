@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40CC353DF7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE6B3540BE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237606AbhDEJDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:03:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43938 "EHLO mail.kernel.org"
+        id S239939AbhDEJVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:21:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38552 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237347AbhDEJCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:02:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68C8C613AB;
-        Mon,  5 Apr 2021 09:01:45 +0000 (UTC)
+        id S240427AbhDEJQx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:16:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 49DBB60FE4;
+        Mon,  5 Apr 2021 09:16:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613305;
-        bh=KlE8lWoA7F6dX9H+/W8BC2YHc0HDwdG+vOL1hNm62rs=;
+        s=korg; t=1617614207;
+        bh=w94Exbj3wG+x8FDGSMLZjc53rRP9qW1ZFPlGSj6EVLg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pgkNwsJNcA1zFH8S5gTu5qo41XLqWEsJHQ+aAHJ+lbzxk/DRpcQqv7GDQVeCkco3Z
-         CzQH2nJIz5DnyLYQJCerZEqTEPojFKOby3GsT4yy4+pj+TAtIUNoljUy3CXzuZYeMl
-         WwW9p8l/Rd+TG71Obn4Np6WwRkKpyTleqYQA9fi0=
+        b=Rd96NulIpUdDvuRo8Jic4TYstYwMw3esSYERul8FoU5Ii7+3uRriPrZoBcdQLcl69
+         32PD3DfW5Y7tUa193rFZZuvidDB6LD3GJG1kXkfJtJNqyoe3DaRPsiJBMwCpdiGfVY
+         9GKTPJSEmYppeHn+nNUmTuh0wRjkprdzljt8ao6o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vincent Palatin <vpalatin@chromium.org>
-Subject: [PATCH 4.19 44/56] USB: quirks: ignore remote wake-up on Fibocom L850-GL LTE modem
+        stable@vger.kernel.org, Ben Gardon <bgardon@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 106/152] KVM: x86/mmu: Merge flush and non-flush tdp_mmu_iter_cond_resched
 Date:   Mon,  5 Apr 2021 10:54:15 +0200
-Message-Id: <20210405085023.934982391@linuxfoundation.org>
+Message-Id: <20210405085037.681910678@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085022.562176619@linuxfoundation.org>
-References: <20210405085022.562176619@linuxfoundation.org>
+In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
+References: <20210405085034.233917714@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,42 +40,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Palatin <vpalatin@chromium.org>
+From: Ben Gardon <bgardon@google.com>
 
-commit 0bd860493f81eb2a46173f6f5e44cc38331c8dbd upstream.
+[ Upstream commit e139a34ef9d5627a41e1c02210229082140d1f92 ]
 
-This LTE modem (M.2 card) has a bug in its power management:
-there is some kind of race condition for U3 wake-up between the host and
-the device. The modem firmware sometimes crashes/locks when both events
-happen at the same time and the modem fully drops off the USB bus (and
-sometimes re-enumerates, sometimes just gets stuck until the next
-reboot).
+The flushing and non-flushing variants of tdp_mmu_iter_cond_resched have
+almost identical implementations. Merge the two functions and add a
+flush parameter.
 
-Tested with the modem wired to the XHCI controller on an AMD 3015Ce
-platform. Without the patch, the modem dropped of the USB bus 5 times in
-3 days. With the quirk, it stayed connected for a week while the
-'runtime_suspended_time' counter incremented as excepted.
-
-Signed-off-by: Vincent Palatin <vpalatin@chromium.org>
-Link: https://lore.kernel.org/r/20210319124802.2315195-1-vpalatin@chromium.org
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ben Gardon <bgardon@google.com>
+Message-Id: <20210202185734.1680553-12-bgardon@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/core/quirks.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ arch/x86/kvm/mmu/tdp_mmu.c | 42 ++++++++++++--------------------------
+ 1 file changed, 13 insertions(+), 29 deletions(-)
 
---- a/drivers/usb/core/quirks.c
-+++ b/drivers/usb/core/quirks.c
-@@ -498,6 +498,10 @@ static const struct usb_device_id usb_qu
- 	/* DJI CineSSD */
- 	{ USB_DEVICE(0x2ca3, 0x0031), .driver_info = USB_QUIRK_NO_LPM },
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index abdd89771b9b..0dd27767c770 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -412,33 +412,13 @@ static inline void tdp_mmu_set_spte_no_dirty_log(struct kvm *kvm,
+ 	for_each_tdp_pte(_iter, __va(_mmu->root_hpa),		\
+ 			 _mmu->shadow_root_level, _start, _end)
  
-+	/* Fibocom L850-GL LTE Modem */
-+	{ USB_DEVICE(0x2cb7, 0x0007), .driver_info =
-+			USB_QUIRK_IGNORE_REMOTE_WAKEUP },
+-/*
+- * Flush the TLB and yield if the MMU lock is contended or this thread needs to
+- * return control to the scheduler.
+- *
+- * If this function yields, it will also reset the tdp_iter's walk over the
+- * paging structure and the calling function should allow the iterator to
+- * continue its traversal from the paging structure root.
+- *
+- * Return true if this function yielded, the TLBs were flushed, and the
+- * iterator's traversal was reset. Return false if a yield was not needed.
+- */
+-static bool tdp_mmu_iter_flush_cond_resched(struct kvm *kvm, struct tdp_iter *iter)
+-{
+-	if (need_resched() || spin_needbreak(&kvm->mmu_lock)) {
+-		kvm_flush_remote_tlbs(kvm);
+-		cond_resched_lock(&kvm->mmu_lock);
+-		tdp_iter_refresh_walk(iter);
+-		return true;
+-	}
+-
+-	return false;
+-}
+-
+ /*
+  * Yield if the MMU lock is contended or this thread needs to return control
+  * to the scheduler.
+  *
++ * If this function should yield and flush is set, it will perform a remote
++ * TLB flush before yielding.
++ *
+  * If this function yields, it will also reset the tdp_iter's walk over the
+  * paging structure and the calling function should allow the iterator to
+  * continue its traversal from the paging structure root.
+@@ -446,9 +426,13 @@ static bool tdp_mmu_iter_flush_cond_resched(struct kvm *kvm, struct tdp_iter *it
+  * Return true if this function yielded and the iterator's traversal was reset.
+  * Return false if a yield was not needed.
+  */
+-static bool tdp_mmu_iter_cond_resched(struct kvm *kvm, struct tdp_iter *iter)
++static inline bool tdp_mmu_iter_cond_resched(struct kvm *kvm,
++					     struct tdp_iter *iter, bool flush)
+ {
+ 	if (need_resched() || spin_needbreak(&kvm->mmu_lock)) {
++		if (flush)
++			kvm_flush_remote_tlbs(kvm);
 +
- 	/* INTEL VALUE SSD */
- 	{ USB_DEVICE(0x8086, 0xf1a5), .driver_info = USB_QUIRK_RESET_RESUME },
+ 		cond_resched_lock(&kvm->mmu_lock);
+ 		tdp_iter_refresh_walk(iter);
+ 		return true;
+@@ -491,7 +475,7 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+ 		tdp_mmu_set_spte(kvm, &iter, 0);
  
+ 		flush_needed = !can_yield ||
+-			       !tdp_mmu_iter_flush_cond_resched(kvm, &iter);
++			       !tdp_mmu_iter_cond_resched(kvm, &iter, true);
+ 	}
+ 	return flush_needed;
+ }
+@@ -864,7 +848,7 @@ static bool wrprot_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+ 		tdp_mmu_set_spte_no_dirty_log(kvm, &iter, new_spte);
+ 		spte_set = true;
+ 
+-		tdp_mmu_iter_cond_resched(kvm, &iter);
++		tdp_mmu_iter_cond_resched(kvm, &iter, false);
+ 	}
+ 	return spte_set;
+ }
+@@ -923,7 +907,7 @@ static bool clear_dirty_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+ 		tdp_mmu_set_spte_no_dirty_log(kvm, &iter, new_spte);
+ 		spte_set = true;
+ 
+-		tdp_mmu_iter_cond_resched(kvm, &iter);
++		tdp_mmu_iter_cond_resched(kvm, &iter, false);
+ 	}
+ 	return spte_set;
+ }
+@@ -1039,7 +1023,7 @@ static bool set_dirty_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+ 		tdp_mmu_set_spte(kvm, &iter, new_spte);
+ 		spte_set = true;
+ 
+-		tdp_mmu_iter_cond_resched(kvm, &iter);
++		tdp_mmu_iter_cond_resched(kvm, &iter, false);
+ 	}
+ 
+ 	return spte_set;
+@@ -1092,7 +1076,7 @@ static void zap_collapsible_spte_range(struct kvm *kvm,
+ 
+ 		tdp_mmu_set_spte(kvm, &iter, 0);
+ 
+-		spte_set = !tdp_mmu_iter_flush_cond_resched(kvm, &iter);
++		spte_set = !tdp_mmu_iter_cond_resched(kvm, &iter, true);
+ 	}
+ 
+ 	if (spte_set)
+-- 
+2.30.1
+
 
 
