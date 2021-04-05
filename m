@@ -2,120 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 683853548A1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 00:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF2EA3548A5
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 00:34:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242804AbhDEWdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 18:33:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32842 "EHLO
+        id S242812AbhDEWem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 18:34:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233086AbhDEWc5 (ORCPT
+        with ESMTP id S233071AbhDEWei (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 18:32:57 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA79C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 15:32:50 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso12811256otq.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 15:32:50 -0700 (PDT)
+        Mon, 5 Apr 2021 18:34:38 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DADDC06174A;
+        Mon,  5 Apr 2021 15:34:31 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id x21so14180909eds.4;
+        Mon, 05 Apr 2021 15:34:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yjPJwTgEEcZdNSuKzyQlQgPz3fsRy1o33yFNzxrrfac=;
-        b=xAXIV4X/g6BfggIfAFOUMGYh4Qis6ID9Rp+nCu/5HpbbtRmk6sgPyzhuH4imjBuSuc
-         fkAoiT0P5ZaihDOaUgy8Us/d+uAMpOK4jdAmqB2Z60vp6DcHXNtN5CjXKR6SCbXdUzpB
-         wurVZZTQpQRh0/laCKet/OfkyPE/OLoYGkRlq6YYKnckWX8e55KmI6svRADScEezsa6U
-         PJOzu214E5nYo4x13XzJfhBaDzFGPm/TwUKxX101NWVuwyCpLaJ+5t475irN19ApFsx3
-         usqcx8L95XSar3XRjpLBWl+4Ugbm2eL46ndGRWW4TjTmSevdo5Ow/5+1MBkw5Re60gj0
-         hu6Q==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=U4kgsl4taTd1spNjzfQOZDGCoWUhUf9MRTnGCPFFMsE=;
+        b=ZvoT/L8gxJTUL3ZAmf3cRL6PMJy8DnmORY4t9HA2ir5euBGkYIDa13xBoLtIIEbJMs
+         Ge1eBIG31wglXosAAB81s+aBD2GU1AN+Ojqc3Thu6oVna7f1gXR9Pb/p6MEfDAj2qPQo
+         gWqmIsE79pQnosXxLGVea6VE717+2RV4XmZjE5N9/wYX9PJm9P7aw1Of+ukfT49K/gti
+         10fzBPafx1fRI9QE8PoedNGHEcJgj+VXVFJMWkHG/QvtbnKDG59a8MYAnSvzQnpiTGA2
+         MJfVREkAvk6etqNNmwp4JJ5VBfU4eE6D0oCyET1lOvpV5cImp6lNNl++WZlXEA1hrbG+
+         RcRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yjPJwTgEEcZdNSuKzyQlQgPz3fsRy1o33yFNzxrrfac=;
-        b=mrkVABRUqkRip6D35cl12pdiBCSyynmLmbWfQgT3vWqnrthWFwpjMy3Tgsgdwdv8ad
-         Lv2FsvsHdE5T7h1Arff4/158CX3KU15f7hiT7PVHW0DPoFADK7XlmYwwISyHbc0olZzg
-         4HlVsefCwdjSwAetT8vbyVPxRLcH/MEqMu3KxlNVrRBWnUc1dSUPuvI/38Z0oxiHtC74
-         lZw5Ni8ZqFUlZ03wLyJKf/FnidA15AIM704dLf0cZyWD5sQxK/rvJRoekeAP3xO3L7vt
-         I0ZwgXkI/YqqnxOEjuEVNSycIQrdx616+v4gEhEw8jlBISWuPjF8ZhRdUDP0J5LeveJM
-         cJow==
-X-Gm-Message-State: AOAM533KoE80G4zcv/CfASUOE2njyMDpxMPVS8Q4hDo5uTswnVRXLTHY
-        gBYZiq89r9ZMzYJB/GNPNK49IA==
-X-Google-Smtp-Source: ABdhPJw8JfV6bWrAR19dcf37Wd/Jg1+1EQEokY3+VsHwPAew4dvfVPqK2ZNPlzNagWez4h8f76SNNA==
-X-Received: by 2002:a05:6830:2248:: with SMTP id t8mr23660323otd.211.1617661970066;
-        Mon, 05 Apr 2021 15:32:50 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id z14sm3293523oid.12.2021.04.05.15.32.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Apr 2021 15:32:49 -0700 (PDT)
-Date:   Mon, 5 Apr 2021 17:32:47 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/7] crypto: qce: Add mode for rfc4309
-Message-ID: <20210405223247.GC904837@yoga>
-References: <20210225182716.1402449-1-thara.gopinath@linaro.org>
- <20210225182716.1402449-4-thara.gopinath@linaro.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=U4kgsl4taTd1spNjzfQOZDGCoWUhUf9MRTnGCPFFMsE=;
+        b=UWi6seZbp4m0x3Dkggwagb4B4juGSOtIZeK6zvlWevE8sYYBPJbAmvLjmBhQIiS83h
+         qkBiciFRAcbb29R0w/aIOlAzAnOQCBrohIecjatgyDI56K/L9yT9y+IZIpXQNHlq160l
+         4GBvcyNZ7U66tZLztyYott+shxc9Ca+C5vuMIbgUO8qWQcaOpQkxjmHfOUW38twuNPMD
+         +KvbEd1gP+Dkm7402oFhsF6Z0tbYPhpgeIIpxWxuDdlvR7bkatuivvJcKAS+VAyzMeaX
+         Oq6lnJRIrLvuRpjVm2k+DUqVGotGBxjcPV8SulLTGTA1fnHIwKxdMja1xSyo1eQQJ7Jp
+         5+gA==
+X-Gm-Message-State: AOAM532hgA4x+88Wowklp6WAyvW05QrpLzS+xWho9AMmURwO7n0GO/gv
+        Kmf7xXRkIAnCzR0tOKF2RqqAGhT2WwM=
+X-Google-Smtp-Source: ABdhPJzW61Z5BJ7peH2efSGSBPH2NdvgItcx620zaEhMIzn4Lm4XK05hGl6LkhaoPC/ppxRpeNIEkA==
+X-Received: by 2002:a05:6402:3493:: with SMTP id v19mr35136604edc.355.1617662070060;
+        Mon, 05 Apr 2021 15:34:30 -0700 (PDT)
+Received: from [10.18.0.9] ([37.58.58.229])
+        by smtp.gmail.com with ESMTPSA id pg2sm9603384ejb.49.2021.04.05.15.34.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Apr 2021 15:34:29 -0700 (PDT)
+Subject: Re: [PATCH 1/2] power: supply: Add battery driver for Surface
+ Aggregator Module
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>, linux-pm@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210309000530.2165752-1-luzmaximilian@gmail.com>
+ <20210309000530.2165752-2-luzmaximilian@gmail.com>
+ <20210405153752.2r4ii5lguogchgl4@earth.universe>
+ <046f6149-55fd-431e-d582-cc5915d10e20@gmail.com>
+ <20210405213241.r6xhtbaf4qkzylz2@earth.universe>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <5e6692b9-d043-8a18-8d76-afb235caddbb@gmail.com>
+Date:   Tue, 6 Apr 2021 00:34:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210225182716.1402449-4-thara.gopinath@linaro.org>
+In-Reply-To: <20210405213241.r6xhtbaf4qkzylz2@earth.universe>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 25 Feb 12:27 CST 2021, Thara Gopinath wrote:
+Hi,
 
-> rf4309 is the specification that uses aes ccm algorithms with IPsec
-> security packets. Add a submode to identify rfc4309 ccm(aes) algorithm
-> in the crypto driver.
+On 4/5/21 11:32 PM, Sebastian Reichel wrote:
+> [...]
+>>>> +static void spwr_battery_unregister(struct spwr_battery_device *bat)
+>>>> +{
+>>>> +	ssam_notifier_unregister(bat->sdev->ctrl, &bat->notif);
+>>>> +	cancel_delayed_work_sync(&bat->update_work);
+>>>> +	device_remove_file(&bat->psy->dev, &alarm_attr);
+>>>> +	power_supply_unregister(bat->psy);
+>>>
+>>> power_supply_unregister being the last function call is a clear
+>>> sign, that devm_power_supply_register can be used instead.
+>>
+>> Right, that works here. I normally try to not mix devm code with
+>> non-devm code (apart from maybe allocations).
 > 
-> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
-> ---
->  drivers/crypto/qce/common.h | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+> well allocations are usually done first and free'd last making
+> them the first targets in the conversion and pretty much a no
+> brainer.
 > 
-> diff --git a/drivers/crypto/qce/common.h b/drivers/crypto/qce/common.h
-> index 3bc244bcca2d..3ffe719b79e4 100644
-> --- a/drivers/crypto/qce/common.h
-> +++ b/drivers/crypto/qce/common.h
-> @@ -51,9 +51,11 @@
->  #define QCE_MODE_CCM			BIT(12)
->  #define QCE_MODE_MASK			GENMASK(12, 8)
->  
-> +#define QCE_MODE_CCM_RFC4309		BIT(13)
-> +
->  /* cipher encryption/decryption operations */
-> -#define QCE_ENCRYPT			BIT(13)
-> -#define QCE_DECRYPT			BIT(14)
-> +#define QCE_ENCRYPT			BIT(14)
-> +#define QCE_DECRYPT			BIT(15)
+> Next merge window it's possible to easily go to full devm by
+> using devm_delayed_work_autocancel(), which has been merged
+> by Greg two weeks ago. Then last but not least do the ssam
+> notifier unregister via devm_add_action_or_reset and its fully
+> converted :)
 
-Can't we move these further up, so that next time we want to add
-something it doesn't require that we also move the ENC/DEC bits?
+Neat, I'll have a look at maybe adding some devm versions for the
+SSAM notifiers. Should help in at least one other driver apart from
+these two.
 
->  
->  #define IS_DES(flags)			(flags & QCE_ALG_DES)
->  #define IS_3DES(flags)			(flags & QCE_ALG_3DES)
-> @@ -73,6 +75,7 @@
->  #define IS_CTR(mode)			(mode & QCE_MODE_CTR)
->  #define IS_XTS(mode)			(mode & QCE_MODE_XTS)
->  #define IS_CCM(mode)			(mode & QCE_MODE_CCM)
-> +#define IS_CCM_RFC4309(mode)		((mode) & QCE_MODE_CCM_RFC4309)
-
-While leaving room for the typical macro issues, none of the other
-macros wrap the argument in parenthesis. Please follow the style of the
-driver, and perhaps follow up with a cleanup patch that just wraps them
-all in parenthesis?
-
-Regards,
-Bjorn
-
->  
->  #define IS_ENCRYPT(dir)			(dir & QCE_ENCRYPT)
->  #define IS_DECRYPT(dir)			(dir & QCE_DECRYPT)
-> -- 
-> 2.25.1
-> 
+Thanks,
+Max
