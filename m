@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43178353FD3
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DACAC3540C2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240036AbhDEJOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:14:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58150 "EHLO mail.kernel.org"
+        id S240645AbhDEJWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:22:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238719AbhDEJLJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:11:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25CD0613A3;
-        Mon,  5 Apr 2021 09:11:00 +0000 (UTC)
+        id S240789AbhDEJRB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:17:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F04A61002;
+        Mon,  5 Apr 2021 09:16:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613861;
-        bh=Vc5k0RGmfhgCwOgqXqo0y2ZlrWMWi4ngE+017w1Qqec=;
+        s=korg; t=1617614215;
+        bh=3/NahcVERyTwRV01NBCmclz3lMQXroZGy7L7zyEmRAo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vzV/xYk3Na0XUVikP3aTho6zREE5vqpsMq9NdBws0ZU4x8EbNb904r8SOK+1qs75k
-         F93gJjsRGrNrk34p9fTPSI3fxXzC4DUnUkcnqTjjiaPJiwkQK10Pk8edye+pKfq92m
-         85BPbgjqSA+s/T1sdTLnu4k1Rs2l7g1Nlxg2G9Us=
+        b=j9C+LgCft+A5D4xqpKthJslCkm6KaZKC8OIGPIlDyeNqCgEjlfPY615Na4XgYbFVy
+         +yNB01PZgUw4keofjnehnose287w7WQwqHP9Bla5I6hU3Pd2GV3j3Kbt3aWIAa9PVA
+         0LJ71tqlt0tPQn6lLxo7DXdMYi6MqDQIMwOqJqJw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jaejoong Kim <climbbb.kim@gmail.com>,
-        Oliver Neukum <oneukum@suse.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.10 112/126] USB: cdc-acm: fix double free on probe failure
-Date:   Mon,  5 Apr 2021 10:54:34 +0200
-Message-Id: <20210405085034.739264829@linuxfoundation.org>
+        stable@vger.kernel.org, Serge Semin <fancer.lancer@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 126/152] usb: dwc3: pci: Enable dis_uX_susphy_quirk for Intel Merrifield
+Date:   Mon,  5 Apr 2021 10:54:35 +0200
+Message-Id: <20210405085038.323696423@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
-References: <20210405085031.040238881@linuxfoundation.org>
+In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
+References: <20210405085034.233917714@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-commit 7180495cb3d0e2a2860d282a468b4146c21da78f upstream.
+[ Upstream commit b522f830d35189e0283fa4d5b4b3ef8d7a78cfcb ]
 
-If tty-device registration fails the driver copy of any Country
-Selection functional descriptor would end up being freed twice; first
-explicitly in the error path and then again in the tty-port destructor.
+It seems that on Intel Merrifield platform the USB PHY shouldn't be suspended.
+Otherwise it can't be enabled by simply change the cable in the connector.
 
-Drop the first erroneous free that was left when fixing a tty-port
-resource leak.
+Enable corresponding quirk for the platform in question.
 
-Fixes: cae2bc768d17 ("usb: cdc-acm: Decrement tty port's refcount if probe() fail")
-Cc: stable@vger.kernel.org      # 4.19
-Cc: Jaejoong Kim <climbbb.kim@gmail.com>
-Acked-by: Oliver Neukum <oneukum@suse.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210322155318.9837-2-johan@kernel.org
+Fixes: e5f4ca3fce90 ("usb: dwc3: ulpi: Fix USB2.0 HS/FS/LS PHY suspend regression")
+Suggested-by: Serge Semin <fancer.lancer@gmail.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20210322125244.79407-1-andriy.shevchenko@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/class/cdc-acm.c |    1 -
- 1 file changed, 1 deletion(-)
+ drivers/usb/dwc3/dwc3-pci.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/usb/class/cdc-acm.c
-+++ b/drivers/usb/class/cdc-acm.c
-@@ -1521,7 +1521,6 @@ alloc_fail6:
- 				&dev_attr_wCountryCodes);
- 		device_remove_file(&acm->control->dev,
- 				&dev_attr_iCountryCodeRelDate);
--		kfree(acm->country_codes);
- 	}
- 	device_remove_file(&acm->control->dev, &dev_attr_bmCapabilities);
- alloc_fail5:
+diff --git a/drivers/usb/dwc3/dwc3-pci.c b/drivers/usb/dwc3/dwc3-pci.c
+index bae6a70664c8..598daed8086f 100644
+--- a/drivers/usb/dwc3/dwc3-pci.c
++++ b/drivers/usb/dwc3/dwc3-pci.c
+@@ -118,6 +118,8 @@ static const struct property_entry dwc3_pci_intel_properties[] = {
+ static const struct property_entry dwc3_pci_mrfld_properties[] = {
+ 	PROPERTY_ENTRY_STRING("dr_mode", "otg"),
+ 	PROPERTY_ENTRY_STRING("linux,extcon-name", "mrfld_bcove_pwrsrc"),
++	PROPERTY_ENTRY_BOOL("snps,dis_u3_susphy_quirk"),
++	PROPERTY_ENTRY_BOOL("snps,dis_u2_susphy_quirk"),
+ 	PROPERTY_ENTRY_BOOL("linux,sysdev_is_parent"),
+ 	{}
+ };
+-- 
+2.30.2
+
 
 
