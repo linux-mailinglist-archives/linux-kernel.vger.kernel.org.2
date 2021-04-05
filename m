@@ -2,161 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E23A235427B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 15:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1920354281
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 15:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237451AbhDENu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 09:50:27 -0400
-Received: from mail-eopbgr1410042.outbound.protection.outlook.com ([40.107.141.42]:45408
-        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
+        id S237539AbhDENxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 09:53:22 -0400
+Received: from mail-eopbgr20076.outbound.protection.outlook.com ([40.107.2.76]:63209
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233806AbhDENu0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 09:50:26 -0400
+        id S237460AbhDENxV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 09:53:21 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h9Ov9vEu9zDfbjNcW/lTrbdMIBCUum5YKOqUlqETic82CtaIRePTO0TOmNPwTTp15FXiL63P199SwWTapBZSR1OGH8LStznPMtDu9VYp77UmZk3D+c7pWTnebwzsa93fEcRBPLT8v2ZF9WSSBnETmFEHzZEGmdUTfAYjiIQk3opOFeRiKdqIeHyAYxfAxbAkzHQJubFfXInNOp29giPPIvJljwbI2dD4QzmEaAYUpYwxaeLXXdVIpeXrKHDXiBRk7vY0JGFg34AJ31uf/iSbIue5jLQIve/zp52vG+XDdxBrHVg6PJocOp7up3IduMW/bKqgPbUrQZMYwrJpLxvK6A==
+ b=WDgQOHa2haq7TnoYCh3EY3QbnYZ/+QHXsamQXiKaNEymN7dSN2dcNZspDp7fyCqNXAgi9ZJ58QHE0+W3IITFnv6EJWmZaXfeWsHDRcrOZsaAKXH4SGvYpLJ8RfuxO83Dz66j9UDiXvMxtqSEECsHwZwz9eix/5O9SmT5js2qhwBD3g3Sz5/4veEFvQ6qb/ci407fTuuZianqqngjN64za8YsMMA0VuORzQJcW9l1D5kCGBDXrxxSNBB3So/bk/Fxnro5BMEKEsoKA1DxxpVk+G2TAghjMsdbQnN3D6fkFkfxPBrt2Zc5FGkaOhr9CEs8tuIRkwiA+0sZRYVAs2tBaQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xlKe2wTzpnM+NS8o7XuoQteF1ui2DgQSCI+mFzgCLlw=;
- b=Cj8I6KpSTFkdJ9WFjY1qcPZgDUB+w3iR5ddLFzfect0dVcXoAjd5Vbe4vuvUVuB+F11e+C0oqZJkUEadqbMw9oAu+6mNDSnPZqvTdAdyybpyJXCIFZctb2bs3kCyLco50Yu7VVVF0oZh6qFuzm3RV4NyRInnXOGo5TG/0oSf09O8vu/l60yqwABbPrH7HewhTZOW/+vrwkB3dltbpTbX20YHrLBzDUReieDAZsS4fmgPijy1XSIJwQHsY3lZ73kns/OSDIb/0AH8p5LDzuMQDtiC6UMRXOIG61Efdem6kYEg/dBczi4HCLkeZ9x5OBzGmDsfLJr7X9N/E96Nlk8PbQ==
+ bh=escwcWEpi5D4xYk+79ucuk+RALohbc03RhEjfY8wv2M=;
+ b=BfoEHsio1tlLjSljFGIFyw7zY0RFfBBKR+ArhYH9+8Xjcl+Sgdf0uiUm+RZcJ7ehtTrtnlGnG1dkX2bxjSUJxMZ1zj0wTcauLZoANdd69gahy2vyWhisWUBYJTPR9a/oTqZL853qhhS0YZwY2pLWCVqkig2spqLjphHEBzWcJhSOpd5dE09zl+L1qMfvTJ2tQacdGakaNttMZs1JmcgGhjsxWk4Fan8LpvrHwxOz1zty8dcz11Uq7uIm3cVICGOrrK0RAUFB8+ia92BggTpq6sKR0Uk8PHF56I8E34R0lCq3yOlJJXqprtTykPoNMFxth+iJjWE401RHx4Pa/a3wBQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
- header.d=nec.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nec.com; s=selector1;
+ smtp.mailfrom=t2data.com; dmarc=pass action=none header.from=t2data.com;
+ dkim=pass header.d=t2data.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=t2datacom.onmicrosoft.com; s=selector1-t2datacom-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xlKe2wTzpnM+NS8o7XuoQteF1ui2DgQSCI+mFzgCLlw=;
- b=XZt2fzuY8Mh6ya0gEF6EiChwx51LntJo+NMbqj2HO+sEIwZk57I3tfghVoy46e4T2+XEG6cdiKwsZrTaIXEZE1cOqPoGki+rDbRo90VtBUr+GzGxu38ZD/U8gmKl3KuonxV7vPwjFVqb39ZUjofMJsDaVocKLHZBIAaF7Guorlc=
-Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com (2603:1096:403:8::12)
- by TYCPR01MB6445.jpnprd01.prod.outlook.com (2603:1096:400:9a::10) with
+ bh=escwcWEpi5D4xYk+79ucuk+RALohbc03RhEjfY8wv2M=;
+ b=RFeFBOnxA1VChew/+VWwF1OW5FhY8I+h1Vb1vdiSShazWcCcVwKH/9CQjXNpupFXGeNSWYAifGgZuuJr7og8Sl0au8k2o9scKRE8K02JziHpkufOVaINxm6aJg2scLAzV6CSiHHzO9msZF951EcdYjEqkaf5PeqhTi8XUIljTM0=
+Authentication-Results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=t2data.com;
+Received: from HE1PR0602MB2858.eurprd06.prod.outlook.com (2603:10a6:3:da::10)
+ by HE1PR0601MB2587.eurprd06.prod.outlook.com (2603:10a6:3:53::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28; Mon, 5 Apr
- 2021 13:50:18 +0000
-Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com
- ([fe80::1552:1791:e07c:1f72]) by TY1PR01MB1852.jpnprd01.prod.outlook.com
- ([fe80::1552:1791:e07c:1f72%7]) with mapi id 15.20.3999.032; Mon, 5 Apr 2021
- 13:50:18 +0000
-From:   =?utf-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPo+OAgOebtOS5nyk=?= 
-        <naoya.horiguchi@nec.com>
-To:     "Luck, Tony" <tony.luck@intel.com>
-CC:     Aili Yao <yaoaili@kingsoft.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        "david@redhat.com" <david@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
-        "sunhao2@kingsoft.com" <sunhao2@kingsoft.com>
-Subject: Re: [PATCH v3] mm,hwpoison: return -EHWPOISON when page already
- poisoned
-Thread-Topic: [PATCH v3] mm,hwpoison: return -EHWPOISON when page already
- poisoned
-Thread-Index: AQHXJiCdggusTB+xD0Gxw5Y8NXSvk6qfzG4AgACjcwCAAOi9AIAEoFmA
-Date:   Mon, 5 Apr 2021 13:50:18 +0000
-Message-ID: <20210405135017.GA6504@hori.linux.bs1.fc.nec.co.jp>
-References: <3690ece2101d428fb9067fcd2a423ff8@intel.com>
- <20210308223839.GA21886@hori.linux.bs1.fc.nec.co.jp>
- <20210308225504.GA233893@agluck-desk2.amr.corp.intel.com>
- <20210309100421.3d09b6b1@alex-virtual-machine>
- <20210309060440.GA29668@hori.linux.bs1.fc.nec.co.jp>
- <20210309143534.6c1a8ec5@alex-virtual-machine>
- <20210331192540.2141052f@alex-virtual-machine>
- <20210401153320.GA426964@agluck-desk2.amr.corp.intel.com>
- <20210402091820.04d7c3e0@alex-virtual-machine>
- <a10c7838216e4a10b4fd5ebb0f1108a1@intel.com>
-In-Reply-To: <a10c7838216e4a10b4fd5ebb0f1108a1@intel.com>
-Accept-Language: ja-JP, en-US
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27; Mon, 5 Apr
+ 2021 13:53:11 +0000
+Received: from HE1PR0602MB2858.eurprd06.prod.outlook.com
+ ([fe80::409f:a235:de54:364e]) by HE1PR0602MB2858.eurprd06.prod.outlook.com
+ ([fe80::409f:a235:de54:364e%8]) with mapi id 15.20.3999.032; Mon, 5 Apr 2021
+ 13:53:11 +0000
+Reply-To: christian.melki@t2data.com
+Subject: Re: [PATCH] net: phy: fix PHY possibly unwork after MDIO bus resume
+ back
+To:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>, andrew@lunn.ch,
+        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com
+References: <20210404100701.6366-1-qiangqing.zhang@nxp.com>
+ <97e486f8-372a-896f-6549-67b8fb34e623@gmail.com>
+ <ed600136-2222-a261-bf08-522cc20fc141@gmail.com>
+ <ff5719b4-acd7-cd27-2f07-d8150e2690c8@t2data.com>
+ <010f896e-befb-4238-5219-01969f3581e3@gmail.com>
+From:   Christian Melki <christian.melki@t2data.com>
+Message-ID: <1ded1438-b3cf-19d2-c3f4-1c1da3505295@t2data.com>
+Date:   Mon, 5 Apr 2021 15:53:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+In-Reply-To: <010f896e-befb-4238-5219-01969f3581e3@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nec.com;
-x-originating-ip: [165.225.110.205]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 88e70bc0-dd87-4cf1-664b-08d8f839bf92
-x-ms-traffictypediagnostic: TYCPR01MB6445:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <TYCPR01MB64451DEF20F93B84BDAB5E83E7779@TYCPR01MB6445.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 3qqBJQiGKVyn4iKAnWWv9lEWAdZt2gG7XL+6xe5LUf4hHCHA4BaIAIe9qsryOXa/Yjp6Ze4+WYs3ADBxQqs9/jpAvYwrpXHvwgR7niu3TrFdUY1xVH0ogg5UBKcHnj9zWDU+e0JVR6JS72EP0bzMKGOR5TtuOG4fPxcW8rlHWoJpLVWFn27rBLw0DbXIJoulIWNrPUlwTxgJEnQJvpmb9JN9Gb6RIj2fa4bZVpNa5cUHQxAcy/4XJVWVq37GY+f3u8JsbjCxfuBvGq6IApDqmLZi8t80qCPzp/3ousdZoD1grbVu+E3r3+9ADOBMzvcmqgvqo2i4lJWnXbYs5sO9w0PuEzQtAgp4P+C9Ivmt/x6m+akz7o0LsuiqC971PtjtCwOjYPLzDX4AmDRuCPLHJ62gaZO8/KAkvs/kijb9TLnhKVUs02x5QfZT7ZwX4P3hun1B6ysNi0am5pl2JgEmpC1FSgVKfVaZtPPcSuydsXbY6/udRNQYYt1q0boeFuRriOejhPTkA8uKnzLaKHZnvOTcAVAk1wNZAW50sGGNQEWzm6qx95c3nzxqVLLLVSNf7sgr1L8svwVWpIqZu0Z8LRJVCh7FhDuo2ReFu36AQtfFBvwWtVlzZ0KgkDWi3ceQCS3acouEQsIV83K8kakNAJiX9PyBY2zVLKbb6t5GACI=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY1PR01MB1852.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(376002)(39850400004)(346002)(136003)(86362001)(71200400001)(83380400001)(1076003)(9686003)(6512007)(54906003)(6916009)(66446008)(5660300002)(8936002)(6486002)(76116006)(316002)(55236004)(6506007)(66476007)(186003)(64756008)(66556008)(8676002)(478600001)(2906002)(66946007)(33656002)(85182001)(4326008)(26005)(38100700001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?U3F0SHE4ZS8rNncyNkVGalQ3ckN3Sk53ZVAwb0JWMk9iMElvVDF2N3pNWENr?=
- =?utf-8?B?UGdCbXFZQks5bTEzWGJZcEgwbFdRbTZNaVNXZWJ5NFl4Q202OEw3eUhNdnBI?=
- =?utf-8?B?SU9lZGFndFV0RFkvRkw2SGlpRHRPZ2tNNkc3VnUvZHc0WDNFQXBrTGRici9B?=
- =?utf-8?B?SnZKWXlzb0pWdXhlQmF5eGsrRktlZkkwbWtOdlhGTDV6M2tqL1FyRk01eGpZ?=
- =?utf-8?B?S0c3NjBkT20zTVkxZkpEYnFTa0Zqa2ZpTDRwQzQvSEZVSnZsMitPUEl0ZGsz?=
- =?utf-8?B?Rm1ySEFDcS9VbUpxeEllV1V5b2VTSFQyays0VjZwZmVBWXZCelJtTGxCYTdI?=
- =?utf-8?B?M1cwZ3BGMDRxWjBhY1MxeUZhN0xwU0NoRStsZVhyK3g1dUxWclZSdDVKV3JL?=
- =?utf-8?B?MzhxT3FVUG9tNFBDdXQxQ0ptK3R5UVZtV1FGTGR5c3gybTIvbGtWWkJaSEo3?=
- =?utf-8?B?enVqLzkzdHM1TVBPaVNNUVhnYUhBSVZ4OVUzNXFKbzZ3RjRxdGlCdnZCT1Fq?=
- =?utf-8?B?a0xpaGdMU3ZjSjEycUZHNElnRFZudzdZUnYwSDFsNHhMd05VRHpZQTAvdGNn?=
- =?utf-8?B?dUpBeUx2UHFLTlZrZmNpSzlSWS9LR255MHZROG0zcHNVaWdXenVQZjBUWXc0?=
- =?utf-8?B?RkwzYXduMVh2ejVpdFJDeVJtMTJJbCtRQXZaUmVoSzFNUlNsaWQ3dmpVTlll?=
- =?utf-8?B?NWJPMEc1dXNhNUk0QWFiRGhaZ21jeWp0Z0tPbDZBc291cHBSQm1OblVBUkt4?=
- =?utf-8?B?RldsbStjZjdHWXpVQUt5R2l2ZEJ1UHhGYjEzUFoyVk5Gb0tOMS8zVXFKL1Rn?=
- =?utf-8?B?c0E4bERpblppQ1daUmdreU94elFTMVE2N3hMSzYzK3pTSVNzNFBRenFPRzVk?=
- =?utf-8?B?Zm5JbVhvbHVYbFowMDJzQ2FEb2RoOG1JdmdhK2ZLc3lKVER5RW1CMXpYR3JQ?=
- =?utf-8?B?SDNnRVpUdXVzN0pJWUF3QUhIenpUd3lXejFLdHBONFRsRGZuNlgyTmdISkZi?=
- =?utf-8?B?MWczVUxGbmdiMjZRNEFBM1RSUUlVRXVrWEVRZklPbVV1NE05TjEwcSsxWG5w?=
- =?utf-8?B?Qk95Y1QxbnhkVnU3RDB2eVlGMmV3bmdjbGRDWFJVei9qWjl1WGZwa3ZHelZP?=
- =?utf-8?B?T2s5MnZvblZvOWdNVkdYM1JHKzVTbGRZNkw0TFF4b1F2U3dUN3BQNGMxbjJL?=
- =?utf-8?B?SE1nNmI1UTVFYXJnWGt0TEVOdGtMaDl1UHljdVpZMDdLTjk5TTUxUXpBUTF6?=
- =?utf-8?B?eE5Zcm5YdXBZd2VlbmJyVGVJU3k2QkszdGxkVmZtVGlBV3VBM2pRenVnZkt4?=
- =?utf-8?B?MjNGTVYrRG1CVGJTcnU5NzhPMXNhQ2s1TmtDZFpvVVNCd05FZ0o3Skdqak5l?=
- =?utf-8?B?akNDNllFakczU1hWM0FxamQ3OWl2MzRPMGJKTzh4cmxITWVKUll6OTVJZXUr?=
- =?utf-8?B?dTdxQ2loL2ZlOXdhaXhIeDFNTXcrYlFBeHRJbGVnMGlvSHRoL3ZhOFFZNWRR?=
- =?utf-8?B?bVI2QkRHbkI2NXB3Zk5IVmZEVHRxcktZNzZjMzBLMHdDNDFldWtjNHEwanNs?=
- =?utf-8?B?OUJHUTVLbStIK0l2WXJoTDJiY1Y3UjVEYlNwVVlyZERQRlJ3bTF0dVFlOUZi?=
- =?utf-8?B?aWlWVVRzb2VvRWdSdW55ejFRblZSMkNTZkZ6bGFoNHNxWGRjaWpkUURrU05U?=
- =?utf-8?B?aE83aC96eW5lYnNaaVdEOTFPaFlYZW9ITkJJYlJFU0g2R3JSWHZwWjBrRDJp?=
- =?utf-8?B?UjZJNm14Q0hGUE1HN05YRlBqbUFCZEdUVjZQdktsMmc1MS8wdjBaQ1I3cWlU?=
- =?utf-8?B?cVI5aFRkK2JZdzRhTnBPQT09?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <EBC5D431E9E93F45BBF9C07017CA6FC3@jpnprd01.prod.outlook.com>
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [81.234.39.46]
+X-ClientProxiedBy: HE1PR08CA0076.eurprd08.prod.outlook.com
+ (2603:10a6:7:2a::47) To HE1PR0602MB2858.eurprd06.prod.outlook.com
+ (2603:10a6:3:da::10)
 MIME-Version: 1.0
-X-OriginatorOrg: nec.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.7.217] (81.234.39.46) by HE1PR08CA0076.eurprd08.prod.outlook.com (2603:10a6:7:2a::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.26 via Frontend Transport; Mon, 5 Apr 2021 13:53:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2d0161e7-3c35-493c-4399-08d8f83a2657
+X-MS-TrafficTypeDiagnostic: HE1PR0601MB2587:
+X-Microsoft-Antispam-PRVS: <HE1PR0601MB2587ED769250C91FF2A3C657DA779@HE1PR0601MB2587.eurprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YWysbDapb7JPIbiYyGCx8vdewDwBV4BZ9zHUMW36YTi4QXh1MIYFLE6ELvk+dLe7KKYUnqgaMYf9LfWpRrsLpPChdFE8ry/3N/MhwQtJJmLSRXQVunkuRAHeP+RwkhusyiA6+QGsJehZSj4yRqEIMkWQOP1uOXTkCwtRTUP410jUWC+38PNMjxN4mhy4n2rIdpot9ZrTblLgDjHhryzfcwgi5E2IPGWZ5lsKdy41Tj3oA1gwUxnCvBzZO8rFbtpYGyGDeUbZUTNvbyqZLCy72o5/J5qB6v5t8v0z5tILac35tbMZVuYkl1YbdoctqIHLiFIpPahWe5I6VBgi0xwzymvbKxBNfyMAoQhe3K08AcoZqtaRMQjRmt00rd6Z9pXx4TEBTDiLL03PTyI3pygJMrGxpGWs5Qk8RBOgHcvk7W5S9pAQHX1yyajfWAk4wqDrLSZ5JpjIPRmgNonDwDy7PzDywVPY4Hc+t2L3uezY98/CG+qKXaX/9RYqCxOe2f1xz2yIxvPVd2o4BfCBnbtF45kDUFq+7sDVIJBvl/PSBjxxDN034mk4g8ZEOuoSULp5N+ZHMpKBzIEtr3hAA3QRwLETK10MsYMLl1Hhw1OkGOLpacW925Lsnl/O7PdfHijEbpxfZOXbopYRlurLX8L1CzUYZnGQkAurVPiPsp3HthfcMBakxKQRTxI3E9TpT4jqwZs5Hp0UJ3qCalSq1j5DdQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0602MB2858.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39830400003)(366004)(376002)(42606007)(346002)(396003)(86362001)(31696002)(5660300002)(8676002)(53546011)(66556008)(2906002)(44832011)(8936002)(83380400001)(36756003)(66946007)(956004)(4326008)(31686004)(2616005)(316002)(16576012)(16526019)(186003)(38100700001)(6486002)(478600001)(26005)(66476007)(52116002)(110136005)(3450700001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?Yk5Fak1oc2M2d2NGMHFwZFFxM01UblpCUjVLODRTMzZNL3p1ZDcrRlF3OXdF?=
+ =?utf-8?B?bEMzTDNMYS9MYkQrdmZhYjNVa0toSER2dVR2UHZlOXBIbGNmakxKYlJYSHpE?=
+ =?utf-8?B?dnJFZ3lCWEZlV0NWS0h1b0kvRWFTQ3U0Wit0N3pBcnFmU1FUajQxV0dqUHlN?=
+ =?utf-8?B?MTJwbExpOTlnYS9heEVVQjdmcVlWRFk3MVR6UVVwa2Z4Q1ZTeEhid3NzbnFI?=
+ =?utf-8?B?MVVKWUtIbGFnN0R6d01Ha2dFWjFEL2FzM3VneDF3Q2dZTXVTeERkYmlJeDkx?=
+ =?utf-8?B?SVF0SmY4REhnalBVRHJBa2Y2aFlyT2g0eHR0RnpYYlFwY1M1MjlhaU8yT240?=
+ =?utf-8?B?R3QxTitHSmtDOXBkemRNdnRhaGVOTVN4VjI2VUxFbFhhcGx0RW9EcUNvb3ZC?=
+ =?utf-8?B?SHNLNVNQaTFqQ3h2cHRZN2Q1bTREMWhDNDZiMkJIbG9JQWNSZGpBVDVKeVRU?=
+ =?utf-8?B?THN1RjU1aGQ4OFVzVjFlYWFVK0VuakxEUnU2YWpyTnVlMnRXRzRsV2pEWHZ0?=
+ =?utf-8?B?bEhaVVZtcFRuWlNIMW56ZjEwUno0WkE0Tks2RFFONzhaU25OYVJKWXptTmpr?=
+ =?utf-8?B?N2tYa2JGTzFJbCsvS0VlcW05Mkg3cTRhZDdkaFRKSDBIRFFHcy9LSG90Z3hC?=
+ =?utf-8?B?MW40VkFTYzM3QmhuZjh0SjJVMFFTQmJYWVFMWTdXZ0R6SHBUTGc1WlhOS29O?=
+ =?utf-8?B?TjQrVDVsUStIKzdLcXIyZFJBUWV3dDk5V29CVHhpSC9uVFQ2clFRdmpVeDdm?=
+ =?utf-8?B?cVFqaENUMFpFbnM3cG9PVTlodisvc2wzeCszaXN4Z2JvKyt2WTAvQitkSmU2?=
+ =?utf-8?B?ZjZXSDhCNXZaeHBOaGtGc0xObC85S0lFMzFBWGhPVktLTkFtVmd1bDZOK2oz?=
+ =?utf-8?B?TlhYTXVDbjVvTW1RaUpzTWNocGhmOWdNYyt1bnhySERiRU1tbUJaSHB2UWxU?=
+ =?utf-8?B?RktWYmxQNlhacDJSdzB3ZXpIem1UeDh3RFlobTVsN2UwSHZMOUZKb0VrT29r?=
+ =?utf-8?B?dGs5QlZPOWFUOW5ESUpleVJLbUhvTnNXQ3l2dGpHSnpsTTR3LzVVRG40VHZJ?=
+ =?utf-8?B?c04vWWFxM0RSbXZXSzJJYUlZMmZnNERRdllDd0VXam9QcHREN3Fmak9vSmxG?=
+ =?utf-8?B?cXpPZTFpTjgvM040WkpEWjd3VFluVDh5RE9Ob2I5SDBBSkl5c0VwMTBGVTN0?=
+ =?utf-8?B?YkRQUjhKbWVWRGJnVWdmZzZTU0dWdG1JY3BoNFRrOWRaSDc2ZHIzYTNMdGR4?=
+ =?utf-8?B?clNqYzVTeCtLVEtZbGNMUnBkamRQUFNDRWl2NUZrN1NVaTlCdE1EL3Bnbm1E?=
+ =?utf-8?B?dXJkdjFNSFExeXpwY3picFZKcmxLT0IwOVZtTnpNc3FnVy85Qnh3ZUdFVURr?=
+ =?utf-8?B?L1hQYUo0LzFyRnh6ZGdoazU2OHhkQ2UwUGUvQzFGcTN1TUhTUWxLZkpOV0ZP?=
+ =?utf-8?B?b3h0RDdtczFjTEdaRkZSMXRzamk4RDY5RGREd05aNThGYTkwWVptUUNHa1Vo?=
+ =?utf-8?B?d3IzMmJwZnhsUzBRTzJ2ajhhUjBTNFJ4SlAzY29yS2ZpTm1URU9HN3M0Qk8y?=
+ =?utf-8?B?RDBBOVRpdXJhWWZ1WDZWS1RpcG5lQzR2TkN1aUJnZmppU2NkcEZ3cFpHYlVN?=
+ =?utf-8?B?Nmt2OWhqcFlsTzV5WlpjR2loQVROYmxCVlN0dUdaU3NvVnhoV3ZxRFVTTGF4?=
+ =?utf-8?B?VE5GUDMzOWp3alRzdW03cTlUMXR4WHlFd2MzbWR5NmNyUVU5WnRjbVRaSTFF?=
+ =?utf-8?Q?3QqBua1VPz2caEB7bAobdVoHk3TKp0aRzlEzEPl?=
+X-OriginatorOrg: t2data.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2d0161e7-3c35-493c-4399-08d8f83a2657
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR0602MB2858.eurprd06.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY1PR01MB1852.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 88e70bc0-dd87-4cf1-664b-08d8f839bf92
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Apr 2021 13:50:18.2522
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Apr 2021 13:53:10.9809
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 84hwZzpwUKAwl31UVyqGS4L6SeLqPE1JZmkNoWxOvhmNBTLokx+UtSTdE/HSGvKo1/bb+PD2hYMX7WccAcOSCQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB6445
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 27928da5-aacd-4ba1-9566-c748a6863e6c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2ef5KPop+uStEAxWcpSAFjWpjgJ+ZqXI19ghyoIWpwv9S3qIfoVFEmLj1NA/2fbQcV3YECLrQlq3mjGSwTyDnUY/+7hnvDjTAlxrYwqyTTM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0601MB2587
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCBBcHIgMDIsIDIwMjEgYXQgMDM6MTE6MjBQTSArMDAwMCwgTHVjaywgVG9ueSB3cm90
-ZToNCj4gPj4gQ29tYmluZWQgd2l0aCBteSAibXV0ZXgiIHBhdGNoICh0byBnZXQgcmlkIG9mIHJh
-Y2VzIHdoZXJlIDJuZCBwcm9jZXNzIHJldHVybnMNCj4gPj4gZWFybHksIGJ1dCBmaXJzdCBwcm9j
-ZXNzIGlzIHN0aWxsIGxvb2tpbmcgZm9yIG1hcHBpbmdzIHRvIHVubWFwIGFuZCB0YXNrcw0KPiA+
-PiB0byBzaWduYWwpIHRoaXMgcGF0Y2ggbW92ZXMgZm9yd2FyZCBhIGJpdC4gQnV0IEkgdGhpbmsg
-aXQgbmVlZHMgYW4NCj4gPj4gYWRkaXRpb25hbCBjaGFuZ2UgaGVyZSBpbiBraWxsX21lX21heWJl
-KCkgdG8ganVzdCAicmV0dXJuIiBpZiB0aGVyZSBpcyBhDQo+ID4+IEVIV1BPSVNPTiByZXR1cm4g
-ZnJvbSBtZW1vcnlfZmFpbHVyZSgpDQo+ID4+IA0KPiA+IEdvdCB0aGlzLCBUaGFua3MgZm9yIHlv
-dXIgcmVwbHkhDQo+ID4gSSB3aWxsIGRpZyBpbnRvIHRoaXMhDQo+IA0KPiBPbmUgcHJvYmxlbSB3
-aXRoIHRoaXMgYXBwcm9hY2ggaXMgd2hlbiB0aGUgZmlyc3QgdGFzayB0byBmaW5kIHBvaXNvbg0K
-PiBmYWlscyB0byBjb21wbGV0ZSBhY3Rpb25zLiBUaGVuIHRoZSBwb2lzb24gcGFnZXMgYXJlIG5v
-dCB1bm1hcHBlZCwNCj4gYW5kIGp1c3QgcmV0dXJuaW5nIGZyb20ga2lsbF9tZV9tYXliZSgpIGdl
-dHMgaW50byBhIGxvb3AgOi0oDQoNClllcywgdGhhdCdzIHRoZSBwYWluIHBvaW50LiAgV2UgbmVl
-ZCBzZW5kIFNJR0JVUyB0byB0aGUgY3VycmVudCBwcm9jZXNzIGluDQoiYWxyZWFkeSBoYXJlZHdh
-cmUgcG9pc29uZWQiIGNhc2Ugb2YgbWVtb3J5X2ZhaWx1cmUoKS4gIFNJR0JVUyBzaG91bGQNCmNv
-bnRhaW4gdGhlIGVycm9yIHZpcnR1YWwgYWRkcmVzcywgYnV0IHVuZm9ydHVuYXRlbHkgd2Fsa2lu
-ZyB0aGUgcGFnZSB0YWJsZQ0Kb3IgdXNpbmcgcC0+bWNlX3ZhZGRyIGlzIG5vdCBhbHdheXMgcmVs
-aWFibGUgbm93Lg0KDQpTbyBhcyBhIHNlY29uZC1iZXN0IGFwcHJvYWNoLCB3ZSBjYW4gZXh0ZW5k
-IHRoZSAid2Fsa2luZyBwYWdlIHRhYmxlIg0KYXBwcm9hY2ggc3VjaCB0aGF0IHdlIHdhbGsgb3Zl
-ciB0aGUgd2hvbGUgdmlydHVhbCBhZGRyZXNzIHNwYWNlIHRvIG1ha2Ugc3VyZQ0KdGhhdCB0aGUg
-bnVtYmVyIG9mIGVudHJpZXMgcG9pbnRpbmcgdG8gdGhlIGVycm9yIHBhZ2UgaXMgZXhhY3RseSAx
-Lg0KSWYgdGhhdCdzIHRoZSBjYXNlLCB0aGVuIHdlIGNhbiBjb25maWRlbnRseSBzZW5kIFNJR0JV
-UyB3aXRoIGl0LiAgSWYgd2UgZmluZA0KbXVsdGlwbGUgZW50cmllcyBwb2ludGluZyB0byB0aGUg
-ZXJyb3IgcGFnZSwgdGhlbiB3ZSBnaXZlIHVwIGd1ZXNzaW5nLCB0aGVuDQpzZW5kIGEgbm9tcmFs
-IFNJR0JVUyB0byB0aGUgY3VycmVudCBwcm9jZXNzLiAgVGhhdCdzIG5vdCB3b3JzZSB0aGFuIG5v
-dywNCmFuZCBJIHRoaW5rIHdlIG5lZWQgd2FpdCBpbiB0aGUgaG9wZSB0aGF0IHRoZSB2aXJ0dWFs
-IGFkZHJlc3Mgd2lsbCBiZQ0KYXZhaWxhYmxlIGluIE1DRSBoYW5kbGVyLg0KDQpBbnl3YXkgSSds
-bCB0cnkgdG8gd3JpdGUgYSBwYXRjaCBmb3IgdGhpcy4NCg0KVGhhbmtzLA0KTmFveWEgSG9yaWd1
-Y2hp
+On 4/5/21 2:09 PM, Heiner Kallweit wrote:
+> On 05.04.2021 10:43, Christian Melki wrote:
+>> On 4/5/21 12:48 AM, Heiner Kallweit wrote:
+>>> On 04.04.2021 16:09, Heiner Kallweit wrote:
+>>>> On 04.04.2021 12:07, Joakim Zhang wrote:
+>>>>> commit 4c0d2e96ba055 ("net: phy: consider that suspend2ram may cut
+>>>>> off PHY power") invokes phy_init_hw() when MDIO bus resume, it will
+>>>>> soft reset PHY if PHY driver implements soft_reset callback.
+>>>>> commit 764d31cacfe4 ("net: phy: micrel: set soft_reset callback to
+>>>>> genphy_soft_reset for KSZ8081") adds soft_reset for KSZ8081. After these
+>>>>> two patches, I found i.MX6UL 14x14 EVK which connected to KSZ8081RNB doesn't
+>>>>> work any more when system resume back, MAC driver is fec_main.c.
+>>>>>
+>>>>> It's obvious that initializing PHY hardware when MDIO bus resume back
+>>>>> would introduce some regression when PHY implements soft_reset. When I
+>>>>
+>>>> Why is this obvious? Please elaborate on why a soft reset should break
+>>>> something.
+>>>>
+>>>>> am debugging, I found PHY works fine if MAC doesn't support suspend/resume
+>>>>> or phy_stop()/phy_start() doesn't been called during suspend/resume. This
+>>>>> let me realize, PHY state machine phy_state_machine() could do something
+>>>>> breaks the PHY.
+>>>>>
+>>>>> As we known, MAC resume first and then MDIO bus resume when system
+>>>>> resume back from suspend. When MAC resume, usually it will invoke
+>>>>> phy_start() where to change PHY state to PHY_UP, then trigger the stat> machine to run now. In phy_state_machine(), it will start/config
+>>>>> auto-nego, then change PHY state to PHY_NOLINK, what to next is
+>>>>> periodically check PHY link status. When MDIO bus resume, it will
+>>>>> initialize PHY hardware, including soft_reset, what would soft_reset
+>>>>> affect seems various from different PHYs. For KSZ8081RNB, when it in
+>>>>> PHY_NOLINK state and then perform a soft reset, it will never complete
+>>>>> auto-nego.
+>>>>
+>>>> Why? That would need to be checked in detail. Maybe chip errata
+>>>> documentation provides a hint.
+>>>>
+>>>
+>>> The KSZ8081 spec says the following about bit BMCR_PDOWN:
+>>>
+>>> If software reset (Register 0.15) is
+>>> used to exit power-down mode
+>>> (Register 0.11 = 1), two software
+>>> reset writes (Register 0.15 = 1) are
+>>> required. The first write clears
+>>> power-down mode; the second
+>>> write resets the chip and re-latches
+>>> the pin strapping pin values.
+>>>
+>>> Maybe this causes the issue you see and genphy_soft_reset() isn't
+>>> appropriate for this PHY. Please re-test with the KSZ8081 soft reset
+>>> following the spec comment.
+>>>
+>>
+>> Interesting. Never expected that behavior.
+>> Thanks for catching it. Skimmed through the datasheets/erratas.
+>> This is what I found (micrel.c):
+>>
+>> 10/100:
+>> 8001 - Unaffected?
+>> 8021/8031 - Double reset after PDOWN.
+>> 8041 - Errata. PDOWN broken. Recommended do not use. Unclear if reset
+>> solves the issue since errata says no error after reset but is also
+>> claiming that only toggling PDOWN (may) or power will help.
+>> 8051 - Double reset after PDOWN.
+>> 8061 - Double reset after PDOWN.
+>> 8081 - Double reset after PDOWN.
+>> 8091 - Double reset after PDOWN.
+>>
+>> 10/100/1000:
+>> Nothing in gigabit afaics.
+>>
+>> Switches:
+>> 8862 - Not affected?
+>> 8863 - Errata. PDOWN broken. Reset will not help. Workaround exists.
+>> 8864 - Not affected?
+>> 8873 - Errata. PDOWN broken. Reset will not help. Workaround exists.
+>> 9477 - Errata. PDOWN broken. Will randomly cause link failure on
+>> adjacent links. Do not use.
+>>
+>> This certainly explains a lot.
+>>
+>>>>>
+>>>>> This patch changes PHY state to PHY_UP when MDIO bus resume back, it
+>>>>> should be reasonable after PHY hardware re-initialized. Also give state
+>>>>> machine a chance to start/config auto-nego again.
+>>>>>
+>>>>
+>>>> If the MAC driver calls phy_stop() on suspend, then phydev->suspended
+>>>> is true and mdio_bus_phy_may_suspend() returns false. As a consequence
+>>>> phydev->suspended_by_mdio_bus is false and mdio_bus_phy_resume()
+>>>> skips the PHY hw initialization.
+>>>> Please also note that mdio_bus_phy_suspend() calls phy_stop_machine()
+>>>> that sets the state to PHY_UP.
+>>>>
+>>>
+>>> Forgot that MDIO bus suspend is done before MAC driver suspend.
+>>> Therefore disregard this part for now.
+>>>
+>>>> Having said that the current argumentation isn't convincing. I'm not
+>>>> aware of such issues on other systems, therefore it's likely that
+>>>> something is system-dependent.
+>>>>
+>>>> Please check the exact call sequence on your system, maybe it
+>>>> provides a hint.
+>>>>
+>>>>> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+>>>>> ---
+>>>>>  drivers/net/phy/phy_device.c | 7 +++++++
+>>>>>  1 file changed, 7 insertions(+)
+>>>>>
+>>>>> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+>>>>> index cc38e326405a..312a6f662481 100644
+>>>>> --- a/drivers/net/phy/phy_device.c
+>>>>> +++ b/drivers/net/phy/phy_device.c
+>>>>> @@ -306,6 +306,13 @@ static __maybe_unused int mdio_bus_phy_resume(struct device *dev)
+>>>>>  	ret = phy_resume(phydev);
+>>>>>  	if (ret < 0)
+>>>>>  		return ret;
+>>>>> +
+>>>>> +	/* PHY state could be changed to PHY_NOLINK from MAC controller resume
+>>>>> +	 * rounte with phy_start(), here change to PHY_UP after re-initializing
+>>>>> +	 * PHY hardware, let PHY state machine to start/config auto-nego again.
+>>>>> +	 */
+>>>>> +	phydev->state = PHY_UP;
+>>>>> +
+>>>>>  no_resume:
+>>>>>  	if (phydev->attached_dev && phydev->adjust_link)
+>>>>>  		phy_start_machine(phydev);
+>>>>>
+>>>>
+>>>
+>>
+> 
+> This is a quick draft of the modified soft reset for KSZ8081.
+> Some tests would be appreciated.
+> 
+> 
+> diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+> index a14a00328..4902235a8 100644
+> --- a/drivers/net/phy/micrel.c
+> +++ b/drivers/net/phy/micrel.c
+> @@ -1091,6 +1091,42 @@ static void kszphy_get_stats(struct phy_device *phydev,
+>  		data[i] = kszphy_get_stat(phydev, i);
+>  }
+>  
+> +int ksz8081_soft_reset(struct phy_device *phydev)
+> +{
+> +	int bmcr, ret, val;
+> +
+> +	phy_lock_mdio_bus(phydev);
+> +
+> +	bmcr = __phy_read(phydev, MII_BMCR);
+> +	if (bmcr < 0)
+> +		return bmcr;
+> +
+> +	bmcr |= BMCR_RESET;
+> +
+> +	if (bmcr & BMCR_PDOWN)
+> +		__phy_write(phydev, MII_BMCR, bmcr);
+> +
+> +	if (phydev->autoneg == AUTONEG_ENABLE)
+> +		bmcr |= BMCR_ANRESTART;
+> +
+> +	__phy_write(phydev, MII_BMCR, bmcr & ~BMCR_ISOLATE);
+> +
+
+Wouldn't this re-set BMCR_PDOWN?
+Since this is probably required by a few other micrel phys,
+maybe a kszphy_type flag and continue with genphy_soft_reset?
+
+> +	phy_unlock_mdio_bus(phydev);
+> +
+> +	phydev->suspended = 0;
+> +
+> +	ret = phy_read_poll_timeout(phydev, MII_BMCR, val, !(val & BMCR_RESET),
+> +				    50000, 600000, true);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* BMCR may be reset to defaults */
+> +	if (phydev->autoneg == AUTONEG_DISABLE)
+> +		ret = genphy_setup_forced(phydev);
+> +
+> +	return ret;
+> +}
+> +
+>  static int kszphy_suspend(struct phy_device *phydev)
+>  {
+>  	/* Disable PHY Interrupts */
+> @@ -1303,7 +1339,7 @@ static struct phy_driver ksphy_driver[] = {
+>  	.driver_data	= &ksz8081_type,
+>  	.probe		= kszphy_probe,
+>  	.config_init	= ksz8081_config_init,
+> -	.soft_reset	= genphy_soft_reset,
+> +	.soft_reset	= ksz8081_soft_reset,
+>  	.config_intr	= kszphy_config_intr,
+>  	.handle_interrupt = kszphy_handle_interrupt,
+>  	.get_sset_count = kszphy_get_sset_count,
+> 
+
