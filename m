@@ -2,114 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7DB354223
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 14:43:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46794354225
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 14:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240198AbhDEMnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 08:43:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44342 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235651AbhDEMnX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 08:43:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5527561396;
-        Mon,  5 Apr 2021 12:43:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617626597;
-        bh=aO8jOlowOVFX3yCLeTiPa9zFKgY8EJS3aehcnkAtI4Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G+Nk4tMBjWHvOnlDpesCw0SVkpsk9zTB0BAjqs2nImZzhwM7sTMvKMx3Uf03+uvC7
-         uf4sKP8GvY4eD7d2BWDPeEgjV+vCH7xkT5ZwXlVkVOLgn/dufth/lpiYkjXib6EOrC
-         iErkKoJLa1aMsDXBzu9s1vWopulBDnuuWaDsn7NS5JM0NABi8Ya2bf4++EhvncKkSb
-         r1a2ncUNWgyTMA30Go5kueQQLh2L/SRdzbw2S8CZRhJJjbgJYhFK+5RDl8uTOsnzY/
-         +Xv6lwBdrh8frMkPQkFkRdWC3AaObm6E+z0HtJMyc6vRoBPDVuqnYKtQgn+zvChPm3
-         IzY5174v/k+sw==
-Date:   Mon, 5 Apr 2021 15:43:13 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Salil Mehta <salil.mehta@huawei.com>
-Cc:     "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Subject: Re: [PATCH net 1/2] net: hns3: Remove the left over redundant check
- & assignment
-Message-ID: <YGsF4Q4XlvpoBUJY@unreal>
-References: <20210403013520.22108-1-salil.mehta@huawei.com>
- <20210403013520.22108-2-salil.mehta@huawei.com>
- <YGlb6CgaW5r4lwaC@unreal>
- <09176e61b8ca495f8c20b94845d26ba0@huawei.com>
+        id S240345AbhDEMn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 08:43:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235651AbhDEMn0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 08:43:26 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2856FC061756
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 05:43:18 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id u3so3203437qvj.8
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 05:43:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=27LE2Ab+DwuXiCctANbrfB/R0MKC/0shhR8iWWbc1qw=;
+        b=iYfmtsbUb2utwv4OERkYS3rcPIUtA6maeVENLlTMIHyWOwPLhiVsscFxbRss+7bgmU
+         ybqymjgr+ZKuT07vNQD+A/qXCoIDsaVEweDYw7Z2BIgGVbEFdanY6q4qKkB+cax2Hnrg
+         vJmt+e8MaISX/QuM+EyOzFU4sgayR8EBNcDLkW457cijLKuGBZa3W+7HOnsxGXvGY5Wl
+         dUwtJXBpckYvQb2XuDl6qidg/Jqb/luIncyfC9MiCICM2gDgncinPNHjuraTOrRPGdSZ
+         jHWE6rN9VjnBepF9OY8J+zpE2DI9ajarDWJh1S5uzkDsiatgIStkPcorNLoAn7s5nLeY
+         3klQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=27LE2Ab+DwuXiCctANbrfB/R0MKC/0shhR8iWWbc1qw=;
+        b=aq7iWVQp8PkgI6TIz5xR0j38n2fzzoQUXMGsdYeTY9EL30MJyPnuSFktgOzzxTKaXQ
+         aMSSzKeyqqY63ZeiIZ7og9RRjiLxwYbW+NUx5UAr6YJ1CHyC5BCEZ0WzTYhSQrp01oUw
+         ICk8Vglu+SuqDS87C8epnttRkEcheQ/a/wsL3KhSW1EAcWLOHqN/6tye35MzJhRG4Fpy
+         q+AZfJIPsyZ+G01CQorsRshjbq3wRInHyE0tKcfqcqupU3anXePbXS7cycmelNsNtebY
+         hgCPRkcj8W6gmBs+gmkEQO6v0/AzDkDTP8kistNOzUc+dlaQZ8lNfXwH2tGTUROLgP1v
+         I+uQ==
+X-Gm-Message-State: AOAM531sb84VrVOcd74GibCXiR2+NI6LXhV+oCKyJ4iL7/mKgoODiZyy
+        O2g8xMvp/WhFVHn1wJ+Y41s=
+X-Google-Smtp-Source: ABdhPJwKvm/UYnL6pBW3vZkg4yd1Zd3nttNg6BJUBM2CvLIXfnrmL5YVNASx0vb8Z6rnQeZcarl+EA==
+X-Received: by 2002:a05:6214:164e:: with SMTP id f14mr9341356qvw.60.1617626597402;
+        Mon, 05 Apr 2021 05:43:17 -0700 (PDT)
+Received: from LuizSampaio-PC.localdomain ([2804:214:8167:5000:d94c:b1e1:5a07:101c])
+        by smtp.gmail.com with ESMTPSA id 184sm13452991qki.97.2021.04.05.05.43.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Apr 2021 05:43:17 -0700 (PDT)
+Date:   Mon, 5 Apr 2021 09:44:01 -0300
+From:   Luiz Sampaio <sampaio.ime@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     zbr@lwn.net, rikard.falkeborn@gmail.com,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 9/9] w1: ds2438: support for writing to offset register
+Message-ID: <20210405124401.mvkoxs2girygv7f2@LuizSampaio-PC.localdomain>
+References: <20210403044821.390485-1-sampaio.ime@gmail.com>
+ <20210405105009.420924-1-sampaio.ime@gmail.com>
+ <20210405105009.420924-10-sampaio.ime@gmail.com>
+ <YGru2+hI6fgE/v3J@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <09176e61b8ca495f8c20b94845d26ba0@huawei.com>
+In-Reply-To: <YGru2+hI6fgE/v3J@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 12:26:37PM +0000, Salil Mehta wrote:
-> Hi Leon,
-> Thanks for the review.
-> 
-> > From: Leon Romanovsky [mailto:leon@kernel.org]
-> > Sent: Sunday, April 4, 2021 7:26 AM
-> > To: Salil Mehta <salil.mehta@huawei.com>
-> > Cc: davem@davemloft.net; kuba@kernel.org; netdev@vger.kernel.org;
-> > linux-kernel@vger.kernel.org; Linuxarm <linuxarm@huawei.com>;
-> > linuxarm@openeuler.org
-> > Subject: Re: [PATCH net 1/2] net: hns3: Remove the left over redundant check
-> > & assignment
+On Mon, Apr 05, 2021 at 01:04:59PM +0200, Greg KH wrote:
+> On Mon, Apr 05, 2021 at 07:50:09AM -0300, Luiz Sampaio wrote:
+> > Added a sysfs entry to support writing to the offset register on page1.
+> > This register is used to calibrate the chip canceling offset errors in the
+> > current ADC. This means that, over time, reading the IAD register will not
+> > return the correct current measurement, it will have an offset. Writing to
+> > the offset register if the two's complement of the current register while
+> > passing zero current to the load will calibrate the measurements. This
+> > change was tested on real hardware and it was able to calibrate the chip
+> > correctly.
 > > 
-> > On Sat, Apr 03, 2021 at 02:35:19AM +0100, Salil Mehta wrote:
-> > > This removes the left over check and assignment which is no longer used
-> > > anywhere in the function and should have been removed as part of the
-> > > below mentioned patch.
-> > >
-> > > Fixes: 012fcb52f67c ("net: hns3: activate reset timer when calling
-> > reset_event")
-> > > Signed-off-by: Salil Mehta <salil.mehta@huawei.com>
-> > > ---
-> > >  drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c | 2 --
-> > >  1 file changed, 2 deletions(-)
-> > >
-> > > diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-> > b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-> > > index e3f81c7e0ce7..7ad0722383f5 100644
-> > > --- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-> > > +++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-> > > @@ -3976,8 +3976,6 @@ static void hclge_reset_event(struct pci_dev *pdev,
-> > struct hnae3_handle *handle)
-> > >  	 * want to make sure we throttle the reset request. Therefore, we will
-> > >  	 * not allow it again before 3*HZ times.
-> > >  	 */
-> > > -	if (!handle)
-> > > -		handle = &hdev->vport[0].nic;
-> > 
-> > The comment above should be updated too, and probably the signature of
-> > hclge_reset_event() worth to be changed.
+> > Signed-off-by: Luiz Sampaio <sampaio.ime@gmail.com>
+> > ---
+> >  Documentation/w1/slaves/w1_ds2438.rst | 11 +++++-
+> >  drivers/w1/slaves/w1_ds2438.c         | 49 +++++++++++++++++++++++++++
+> >  2 files changed, 59 insertions(+), 1 deletion(-)
 > 
+> In this, and the previous patch, you added new sysfs files, but no
+> update to Documentation/ABI/ for them.  Please fix that up.
 > 
-> Yes, true. Both the comment and the prototype will be updated in near future.
-> I can assure you this did not go un-noticed during the change. There are
-> some internal subtleties which I am trying to sort out. Those might come
-> as part of different patch-set which deals with other related changes as well.
+> thanks,
+> 
+> greg k-h
 
-I can buy such explanation for the change in function signature, but have hard
-time to believe that extra commit is needed to change comment above.
+Hello! I'm sorry about some errors, this is my first patch and I'm not sure about some things in the documentation. I really appreciate the responses and guidance.
+The file I need to add to Documentation/ABI/ is going to be in testing or stable? And the file I need to create can be called, for instance, sysfs-driver-w1_ds2438?
 
-Thanks
-
-> 
-> The current change(and some other) will pave the way for necessary refactoring
-> Of the code being done.
-> 
-> 
-> > 
-> > Thanks
-> > 
-> > >
-> > >  	if (time_before(jiffies, (hdev->last_reset_time +
-> > >  				  HCLGE_RESET_INTERVAL))) {
-> > > --
-> > > 2.17.1
-> > >
+Thanks!
