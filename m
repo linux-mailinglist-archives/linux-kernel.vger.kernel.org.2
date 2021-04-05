@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF10C353EE6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6BCE35405E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237916AbhDEJIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:08:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51144 "EHLO mail.kernel.org"
+        id S239739AbhDEJRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:17:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238034AbhDEJGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:06:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 870BA6139D;
-        Mon,  5 Apr 2021 09:06:23 +0000 (UTC)
+        id S239599AbhDEJNz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:13:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 086DF611C1;
+        Mon,  5 Apr 2021 09:13:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613584;
-        bh=CDd15vNGaWLUqR63Q6Okm9EKlIgZ1VWYnN7Vj1s12aI=;
+        s=korg; t=1617614029;
+        bh=ym85RzS/JUtaS267Olck5OzQXWkc+gY0qQ3k0DdlQ2E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DnObmxRIUdfd3LbpN0836SkDMuH8BeF7mZ8creRRBaRm5dJns2wVr8MqkLDwTQBbr
-         7QLSv0vCoknjRDNu/Dtpic1T/ninIUn28PqleEm2MFwoA2ss6g6Xtk0eFMC2rOiwzT
-         yUJYW3hFkmjlDez5YYvLm+fpSMToTB1rBCtlApK8=
+        b=T/GxnsEg2UV/Ln0hykMSwy60uH+T40GZz6OAepKA3RWYUG+5lhrr9tatjz4r2K4vj
+         +XavHJ7SwYPzkcRU8a+c0f3oBrHEtaswVcgVL+R8+6VYz76Oh7MJYtm/akN/Zx42UF
+         3Y9rjMGw81lrnBLuhZMf9XcZ3qKeGB9MSxRpF92k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Lucas Tanure <tanureal@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
+        Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 017/126] ASoC: cs42l42: Fix mixer volume control
+Subject: [PATCH 5.11 030/152] thermal/core: Add NULL pointer check before using cooling device stats
 Date:   Mon,  5 Apr 2021 10:52:59 +0200
-Message-Id: <20210405085031.604268783@linuxfoundation.org>
+Message-Id: <20210405085035.230677721@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
-References: <20210405085031.040238881@linuxfoundation.org>
+In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
+References: <20210405085034.233917714@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lucas Tanure <tanureal@opensource.cirrus.com>
+From: Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
 
-[ Upstream commit 72d904763ae6a8576e7ad034f9da4f0e3c44bf24 ]
+[ Upstream commit 2046a24ae121cd107929655a6aaf3b8c5beea01f ]
 
-The minimum value is 0x3f (-63dB), which also is mute
+There is a possible chance that some cooling device stats buffer
+allocation fails due to very high cooling device max state value.
+Later cooling device update sysfs can try to access stats data
+for the same cooling device. It will lead to NULL pointer
+dereference issue.
 
-Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20210305173442.195740-4-tanureal@opensource.cirrus.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Add a NULL pointer check before accessing thermal cooling device
+stats data. It fixes the following bug
+
+[ 26.812833] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000004
+[ 27.122960] Call trace:
+[ 27.122963] do_raw_spin_lock+0x18/0xe8
+[ 27.122966] _raw_spin_lock+0x24/0x30
+[ 27.128157] thermal_cooling_device_stats_update+0x24/0x98
+[ 27.128162] cur_state_store+0x88/0xb8
+[ 27.128166] dev_attr_store+0x40/0x58
+[ 27.128169] sysfs_kf_write+0x50/0x68
+[ 27.133358] kernfs_fop_write+0x12c/0x1c8
+[ 27.133362] __vfs_write+0x54/0x160
+[ 27.152297] vfs_write+0xcc/0x188
+[ 27.157132] ksys_write+0x78/0x108
+[ 27.162050] ksys_write+0xf8/0x108
+[ 27.166968] __arm_smccc_hvc+0x158/0x4b0
+[ 27.166973] __arm_smccc_hvc+0x9c/0x4b0
+[ 27.186005] el0_svc+0x8/0xc
+
+Signed-off-by: Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/1607367181-24589-1-git-send-email-manafm@codeaurora.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs42l42.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/thermal/thermal_sysfs.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 4f9ad9547929..d5078ce79fad 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -401,7 +401,7 @@ static const struct regmap_config cs42l42_regmap = {
- };
+diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
+index 0866e949339b..9b73532464e5 100644
+--- a/drivers/thermal/thermal_sysfs.c
++++ b/drivers/thermal/thermal_sysfs.c
+@@ -754,6 +754,9 @@ void thermal_cooling_device_stats_update(struct thermal_cooling_device *cdev,
+ {
+ 	struct cooling_dev_stats *stats = cdev->stats;
  
- static DECLARE_TLV_DB_SCALE(adc_tlv, -9600, 100, false);
--static DECLARE_TLV_DB_SCALE(mixer_tlv, -6200, 100, false);
-+static DECLARE_TLV_DB_SCALE(mixer_tlv, -6300, 100, true);
++	if (!stats)
++		return;
++
+ 	spin_lock(&stats->lock);
  
- static const char * const cs42l42_hpf_freq_text[] = {
- 	"1.86Hz", "120Hz", "235Hz", "466Hz"
-@@ -458,7 +458,7 @@ static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
- 				CS42L42_DAC_HPF_EN_SHIFT, true, false),
- 	SOC_DOUBLE_R_TLV("Mixer Volume", CS42L42_MIXER_CHA_VOL,
- 			 CS42L42_MIXER_CHB_VOL, CS42L42_MIXER_CH_VOL_SHIFT,
--				0x3e, 1, mixer_tlv)
-+				0x3f, 1, mixer_tlv)
- };
- 
- static int cs42l42_hpdrv_evt(struct snd_soc_dapm_widget *w,
+ 	if (stats->state == new_state)
 -- 
 2.30.1
 
