@@ -2,165 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37DF9354402
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 18:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9203835440A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 18:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241866AbhDEQBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 12:01:33 -0400
-Received: from mail-eopbgr700058.outbound.protection.outlook.com ([40.107.70.58]:33066
-        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238034AbhDEQBa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 12:01:30 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PxhVZZIWhKYRoWjMFxz7WFOBXkfUc15Xfj5dSAbJ0/8IvWb4QqFYtlVHI2Zd8rpyTBXMypB3EJzKdKfUikUzlwhPRYr/qLO+CwpUQTuF11zDTVzSL5RH9dXrfo+iF0t9VRpDsC7FbjBUMfW75yYtkZBrO3eXePencN1m3n9XJlCYFSNDgvwJNAeXp9apgVQCDh/rBd0E/VVw9WshrPynGbfp2cH4ANmczt6R2FIBoqX1SNxB8y27ylBBcR1b4rZBsVzeKEKdgtnDpiCLTeXdRP4121y6c3PagZhcMevHqn5olRiolYyVnrB8DQMmLo87srSD+A8Fj1UZrInZVvdhFg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YpAo+xVJUdWDAEyOtjhYoA3jnp0ykdwOFhsJGf/ZLX4=;
- b=HKgleTKf0HvcmdWgIjbdjUl0Hks+BhAMtKQMqabd9f1aamR6I0u3hlnb6GseWWsNvbNmw+ZEvWk+TIqx2TZsUEqzVhU1VMaH5cW4ELdBugPZR5suORLN+SxrydQqVcNpyVzBkYEWltP0Puhjt6EXHuAhN6weTMu7YqtNhNwEju5d7GozqxnDraoNUziutdYpZ/omRTwHRwsUnta6Na2NegqBwPRcae7HPJYaqHtfTX/gqFAUExEoecslaeVpg1G0B3lyIz1sneaYKr+VLqNBHEe0tNPFAL6oJcYR/VJ+6tyi04MsLTB42Unxz170+vVPlqHmXO8Qi8gp9DxKy4I9zw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YpAo+xVJUdWDAEyOtjhYoA3jnp0ykdwOFhsJGf/ZLX4=;
- b=dgy3aVw6puh0z+irzWW+YuAV+jR63dt57NfmVNXIL7rN9FMsznvF5ZZAw166w9wRbfMbsZU/MHVH9rKtwJ3Z1EgOqLmX7oy86a37f1TpMrKhmZ0xPUvmMhnDU8BD9gBkIGVsRBjgB4TOSFofjTTUmHG7ueZBfrLK5OkzRTnvapA=
-Authentication-Results: suse.de; dkim=none (message not signed)
- header.d=none;suse.de; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
- by SN6PR12MB2720.namprd12.prod.outlook.com (2603:10b6:805:70::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.29; Mon, 5 Apr
- 2021 16:01:22 +0000
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::9898:5b48:a062:db94]) by SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::9898:5b48:a062:db94%6]) with mapi id 15.20.3999.032; Mon, 5 Apr 2021
- 16:01:22 +0000
-Cc:     brijesh.singh@amd.com, Paolo Bonzini <pbonzini@redhat.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        John Allen <john.allen@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>
-Subject: Re: [PATCH 3/5] crypto: ccp: Play nice with vmalloc'd memory for SEV
- command structs
-To:     Sean Christopherson <seanjc@google.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-References: <20210402233702.3291792-1-seanjc@google.com>
- <20210402233702.3291792-4-seanjc@google.com>
- <8ea3744f-fdf7-1704-2860-40c2b8fb47e1@csgroup.eu>
- <YGsnjqFLoqXTrAHo@google.com>
-From:   Brijesh Singh <brijesh.singh@amd.com>
-Message-ID: <72d52bd3-453c-e6fa-4209-e2296ee34829@amd.com>
-Date:   Mon, 5 Apr 2021 11:01:20 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.0
-In-Reply-To: <YGsnjqFLoqXTrAHo@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [70.112.153.56]
-X-ClientProxiedBy: SN7PR04CA0185.namprd04.prod.outlook.com
- (2603:10b6:806:126::10) To SN6PR12MB2718.namprd12.prod.outlook.com
- (2603:10b6:805:6f::22)
+        id S241876AbhDEQDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 12:03:49 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:34313 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241868AbhDEQDs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 12:03:48 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id CA0DD22205;
+        Mon,  5 Apr 2021 18:03:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1617638621;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2ZfqeNGyzqUDKZMxr8tUac4KbrzJTM57ysOqdQMXrOA=;
+        b=Rwroboqc7+ROi893umJeMMCBBHp6rOn0jaS5KkgXRV/HMdtSvJcGxXSnDrMFwrS1u9b9Aw
+        JqkBcM7MXv6R1FOfJR3UM+AzFBBExH9nBVwLQ0rZemU55+kwGULArGdAJGyhj6knRIV7hP
+        p2298NNvnzl9MikQ34qS90NdMxJcfjo=
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Brijeshs-MacBook-Pro.local (70.112.153.56) by SN7PR04CA0185.namprd04.prod.outlook.com (2603:10b6:806:126::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27 via Frontend Transport; Mon, 5 Apr 2021 16:01:21 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 199aab80-56d8-406b-f38f-08d8f84c0ec9
-X-MS-TrafficTypeDiagnostic: SN6PR12MB2720:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR12MB27206584B222CC7ED7A8E478E5779@SN6PR12MB2720.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xC7A5L5w1wExwRiyobJWYnogqr6yeDqQDt2gMsP4968FQH6pyj9vAVUqH+g28eyWM2/VvmKKod7/P//kJSJyc2JW6gSJu9e2kxB/ODnARjgEPMFtxZ9oD2Kf0Hsvgwz3pcCPGiDp8yk/9basy2+e/YkIG6bVe3/4KvZ0qq3JX+mXmK0xkjjrhoY+o1n/0YLuAzDWNjDPHT4WVStP9oFbeErUjH/za18fXBeCVSVkCiwJrV2noicSogqrFqdmQa4R7OTZrHvh9K1xHg1bWpAjoaT44bjRoekuHAztu4pVoKk8+btZLWhvPJZhzR+yGjQUs1NJQucpahYN8/YmaHczm6N40wGTwLDBSdcrQAGLBCrb55nzRoO2yTMm5KvUQVuVIs/qazm0YDqcHuJ5Si8Cj5N8yqhYzzYkOg68T/qIiKNWbsad7ucZyd443mabpoqJRQ5b9D2/IzSwqlK6FKX0TlXYn8LZPC8L0ESGmzTYzLDzqwsDmHC9aBB9k+IExMP3Eny5+RgukPzWjM0tbsJyZ3uU8dPy08Q6Wur/umdG4CrmqpLH26vz59UAb47TTqfEHb7esb05drrD2YfUYl8n7zacf1yq+modHsLOdGEClM04VGcetw5nCYYuOg5eczkJaEjIjHsDqTfK06pZ8KExT2aTBSTP8f8XlQagCZZu3HvX+I/3DPaIDHBFYNfG+0hzT1oqGsESngINIl5uOhSF/r9NFJ7BR+8yXid1t4XKzLG9VnJXNb/JsLK/wNalDuox
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(346002)(366004)(376002)(136003)(86362001)(54906003)(7416002)(66574015)(52116002)(6512007)(16526019)(186003)(26005)(8936002)(6486002)(5660300002)(110136005)(66476007)(31696002)(83380400001)(38100700001)(31686004)(478600001)(66946007)(316002)(66556008)(2616005)(956004)(44832011)(36756003)(6506007)(4326008)(8676002)(53546011)(2906002)(45980500001)(43740500002)(309714004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?b045V2ZhRVZFeHR1cjlDS2VOZGRnOUZ3S3NER2M1ZUlHbmJ0S0NGb0lUTFNF?=
- =?utf-8?B?b1NSR3QzbHdBTDM3VHFidXp5dExtc1MxTTdMVmhnS1g3dHV5YjROTlp5SlJQ?=
- =?utf-8?B?WUh0cXZ4cHRCZzV6U1VYNUcyUWtHOGRweTBoSjQ5M0lqV2hMRjMrUHdLZ3gx?=
- =?utf-8?B?RVZJb1pZTlR6T3VMaVd1YzNmY2FmVWNreWxZV0tKdkU4bmFQcXNwQWxOZjVz?=
- =?utf-8?B?dHI0c1Z1VmxqOU8yb1hseStmUXppaGJ2RVEzS1lCNVJ4UDNKMDJUR1VUUTJh?=
- =?utf-8?B?S0YxaTJyR0ROVVQ4WkUvZnRBUy9iT0swTmw2ektZNEwrbjQ1dUdVVEZHWTF0?=
- =?utf-8?B?UkNKTEs4UTRSMnIwWVIyS0Frd3JYaGVzYUpYZ1dXVklKUzdRRVdPL1p1bytX?=
- =?utf-8?B?L2N5eTBkZXYxVzVlVWtmemJtdy9panhUSWkvSFNOUHd3RHgrZEZsdmpvaG1P?=
- =?utf-8?B?cDR1WEs1MEI3OXFtcUt5SHpyblkvTlp2bmdCN2prcHU1cTVXZzZLMjQ1OXBx?=
- =?utf-8?B?K2lMQkt6OWQ0bjFxQkk0K202UTVCaVBBUGdiZXlrWHM4L09IUVh0dVhrNXV3?=
- =?utf-8?B?bXpDMkNMamY3RUhUWmtvTzB1QVdiZkp5VEFoZEdjOWMxNU9uTzBzdko5NUk0?=
- =?utf-8?B?b2dKVEUxbDNBNU5yc2RaUXNnUUJlanZBUFgrd29EWWJhYXQyOVp1bG8rZ2dD?=
- =?utf-8?B?L2VhWHd0SUZBOFpFYnhSR2JHVVBDZE9DcEdHK2dPZGNITkxQVEJDbUROY1VO?=
- =?utf-8?B?cTJBMHhCUW9QYzk0ZHhJeXZCekZybVFXc1Jrc0lPaDcyYmc1b01VUkYwbGNh?=
- =?utf-8?B?V21XNzBxL2RvdjdsbUhvaWJDY2xSOW52SFA1c0hOd3hFbjZZaHY3a01BS0VV?=
- =?utf-8?B?N1JnbWlsNE82YnZBbHBaa2lEeUFqbGVYMEZsamZGT2doRGhpNGIxSHo0SFJ4?=
- =?utf-8?B?THpWcTAxU050Y3ovZnJvQ1FUR2NseDd1RzRwMm9ZSFlMR0V4eG9PWU91N24x?=
- =?utf-8?B?ZzBaSGdkaDhBeWdGVmFob2QzZHNSSFJKNlNNMUlkcHJLTWNubnpHSXgvRWEy?=
- =?utf-8?B?bE9vUWNGVTllSkphZ3phTjdvQi9ON0hOR3FqbmtNZ0pZZ1ZQbGJBNkhsVmIz?=
- =?utf-8?B?ZlowaGIveEFMWHN5bkpyMm1tTGZkOHN5bllUQnJZbUFUeEpDVDBuWmdmbFhk?=
- =?utf-8?B?V3ZOUjFya2wrby9EbU51M2JERUoxZnU5bDFRMlgyMlptV1hIUzIxSk56c1JP?=
- =?utf-8?B?dHdhK1pUSHk2ZXVFVHNyL3k0MjNuMkMyRWVEMmhPT2JpdEVrVGFCbytCaEtI?=
- =?utf-8?B?N1lxa3JRN1NNUTZ5eTh1RE5TSTJ0V3lmSUx5L2g2N1ZDaTl6alJWOHZtZC9o?=
- =?utf-8?B?NU9ManRwM1puaWRhV2hmTnpIYjBOcGV2T1JXdDhPNUIzamp6c2hvVjl2eElq?=
- =?utf-8?B?OGk5enRBeGU1MWkwa2pKQkphbnhzYkJ2WEJEcEFHTGF3K1JwNlkyakRVWDVE?=
- =?utf-8?B?YVE1eExDeVQyek9VMVVtQjFyTE5qSkp2eVBiUDFBa3cyN0lmdUFYTUZTdVht?=
- =?utf-8?B?ZGZ1S05JdUpwa1FsczM0YjNJUng5TitmWXpkY3hReXI0RlFyQXkvV2JqckhV?=
- =?utf-8?B?T0EzVVBsUVN4OTJtaVhiWjRDai9Da1RnODQzSTcxb3grSkFXYWg1T3UraEhi?=
- =?utf-8?B?NzQzMlA2THVGOXpkV3JKa25ZbmxJcUZZZE1PM1VGWDg2aHV5SVVTUjVpM1R4?=
- =?utf-8?Q?+8KFq6JRtfm8vCeAH08NYYdYzVkn7fPo1peUeBR?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 199aab80-56d8-406b-f38f-08d8f84c0ec9
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Apr 2021 16:01:22.6102
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jQjcke9fZp2FnkN9VlAEzoUzOcvKOdun1kMyjUvrH4ubplpKnXEOgFrmD4cHB9O6QGbW1dMH2WYunnd5GGu/iQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2720
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Mon, 05 Apr 2021 18:03:40 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Tudor.Ambarus@microchip.com
+Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        p.yadav@ti.com, miquel.raynal@bootlin.com, richard@nod.at,
+        vigneshr@ti.com
+Subject: Re: [PATCH 1/2] mtd: spi-nor: sfdp: save a copy of the SFDP data
+In-Reply-To: <d14cbc96-43ab-8f1e-82e6-e1999a1972c5@microchip.com>
+References: <20210318092406.5340-1-michael@walle.cc>
+ <20210318092406.5340-2-michael@walle.cc>
+ <e28e7cd3-9728-3428-1bae-9cda258174bc@microchip.com>
+ <5359aa6ade80ff6d39e969c3be2957dd@walle.cc>
+ <d14cbc96-43ab-8f1e-82e6-e1999a1972c5@microchip.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <50f2c48caea79df169f38f7345fd405f@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am 2021-04-05 17:42, schrieb Tudor.Ambarus@microchip.com:
+> On 4/5/21 6:07 PM, Michael Walle wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know 
+>> the content is safe
+>> 
+>> Hi,
+>> 
+>> Am 2021-04-05 15:11, schrieb Tudor.Ambarus@microchip.com:
+>>> On 3/18/21 11:24 AM, Michael Walle wrote:
+>>>> EXTERNAL EMAIL: Do not click links or open attachments unless you 
+>>>> know
+>>>> the content is safe
+>>>> 
+>>>> Due to possible mode switching to 8D-8D-8D, it might not be possible
+>>>> to
+>>>> read the SFDP after the initial probe. To be able to dump the SFDP 
+>>>> via
+>>>> sysfs afterwards, make a complete copy of it.
+>>>> 
+>>>> Signed-off-by: Michael Walle <michael@walle.cc>
+>>>> ---
+>>>>  drivers/mtd/spi-nor/core.h  | 10 ++++++++
+>>>>  drivers/mtd/spi-nor/sfdp.c  | 49
+>>>> +++++++++++++++++++++++++++++++++++++
+>>>>  include/linux/mtd/spi-nor.h |  3 +++
+>>>>  3 files changed, 62 insertions(+)
+>>>> 
+>>>> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+>>>> index 4a3f7f150b5d..668f22011b1d 100644
+>>>> --- a/drivers/mtd/spi-nor/core.h
+>>>> +++ b/drivers/mtd/spi-nor/core.h
+>>>> @@ -407,6 +407,16 @@ struct spi_nor_manufacturer {
+>>>>         const struct spi_nor_fixups *fixups;
+>>>>  };
+>>>> 
+>>>> +/**
+>>>> + * struct sfdp - SFDP data
+>>>> + * @num_dwords: number of entries in the dwords array
+>>>> + * @dwords: array of double words of the SFDP data
+>>>> + */
+>>>> +struct sfdp {
+>>>> +       size_t  num_dwords;
+>>>> +       u32     *dwords;
+>>>> +};
+>>>> +
+>>>>  /* Manufacturer drivers. */
+>>>>  extern const struct spi_nor_manufacturer spi_nor_atmel;
+>>>>  extern const struct spi_nor_manufacturer spi_nor_catalyst;
+>>>> diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+>>>> index 25142ec4737b..2b6c96e02532 100644
+>>>> --- a/drivers/mtd/spi-nor/sfdp.c
+>>>> +++ b/drivers/mtd/spi-nor/sfdp.c
+>>>> @@ -16,6 +16,7 @@
+>>>>         (((p)->parameter_table_pointer[2] << 16) | \
+>>>>          ((p)->parameter_table_pointer[1] <<  8) | \
+>>>>          ((p)->parameter_table_pointer[0] <<  0))
+>>>> +#define SFDP_PARAM_HEADER_PARAM_LEN(p) ((p)->length * 4)
+>>>> 
+>>>>  #define SFDP_BFPT_ID           0xff00  /* Basic Flash Parameter 
+>>>> Table
+>>>> */
+>>>>  #define SFDP_SECTOR_MAP_ID     0xff81  /* Sector Map Table */
+>>>> @@ -1263,6 +1264,8 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
+>>>>         struct sfdp_parameter_header *param_headers = NULL;
+>>>>         struct sfdp_header header;
+>>>>         struct device *dev = nor->dev;
+>>>> +       struct sfdp *sfdp;
+>>>> +       size_t sfdp_size;
+>>>>         size_t psize;
+>>>>         int i, err;
+>>>> 
+>>>> @@ -1285,6 +1288,9 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
+>>>>             bfpt_header->major != SFDP_JESD216_MAJOR)
+>>>>                 return -EINVAL;
+>>>> 
+>>>> +       sfdp_size = SFDP_PARAM_HEADER_PTP(bfpt_header) +
+>>>> +                   SFDP_PARAM_HEADER_PARAM_LEN(bfpt_header);
+>>>> +
+>>>>         /*
+>>>>          * Allocate memory then read all parameter headers with a
+>>>> single
+>>>>          * Read SFDP command. These parameter headers will actually 
+>>>> be
+>>>> parsed
+>>>> @@ -1311,6 +1317,49 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
+>>>>                 }
+>>>>         }
+>>>> 
+>>>> +       /*
+>>>> +        * Cache the complete SFDP data. It is not (easily) possible
+>>>> to fetch
+>>>> +        * SFDP after probe time and we need it for the sysfs 
+>>>> access.
+>>>> +        */
+>>>> +       for (i = 0; i < header.nph; i++) {
+>>>> +               param_header = &param_headers[i];
+>>>> +               sfdp_size = max_t(size_t, sfdp_size,
+>>>> +                                 
+>>>> SFDP_PARAM_HEADER_PTP(param_header)
+>>>> +
+>>>> +
+>>>> SFDP_PARAM_HEADER_PARAM_LEN(param_header));
+>>>> +       }
+>>> 
+>>> Michael, I like the idea of saving the SFDP data, but I think this 
+>>> can
+>>> be
+>>> improved a little. For example, it is not mandatory for the tables to
+>>> be
+>>> continuous in memory, there can be some gaps between BFPT and SMPT 
+>>> for
+>>> example,
+>>> thus we can improve the memory allocation logic.
+>> 
+>> I want to parse the SFDP as little as possible. Keep in mind, that 
+>> this
+>> should
+>> help to debug SFDP (errors). Therefore, I don't want to rely on the 
+>> SFDP
+>> saying
+>> "hey there is a hole, please skip it". Who knows if there is some 
+>> useful
+>> data?
+> 
+> What kind of useful data? Do we care about data that doesn't follow the 
+> jesd216
+> standard?
 
-On 4/5/21 10:06 AM, Sean Christopherson wrote:
-> On Sun, Apr 04, 2021, Christophe Leroy wrote:
->> Le 03/04/2021 à 01:37, Sean Christopherson a écrit :
->>> @@ -152,11 +153,21 @@ static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
->>>   	sev = psp->sev_data;
->>>   	buf_len = sev_cmd_buffer_len(cmd);
->>> -	if (WARN_ON_ONCE(!!data != !!buf_len))
->>> +	if (WARN_ON_ONCE(!!__data != !!buf_len))
->>>   		return -EINVAL;
->>> -	if (WARN_ON_ONCE(data && is_vmalloc_addr(data)))
->>> -		return -EINVAL;
->>> +	if (__data && is_vmalloc_addr(__data)) {
->>> +		/*
->>> +		 * If the incoming buffer is virtually allocated, copy it to
->>> +		 * the driver's scratch buffer as __pa() will not work for such
->>> +		 * addresses, vmalloc_to_page() is not guaranteed to succeed,
->>> +		 * and vmalloc'd data may not be physically contiguous.
->>> +		 */
->>> +		data = sev->cmd_buf;
->>> +		memcpy(data, __data, buf_len);
->>> +	} else {
->>> +		data = __data;
->>> +	}
->> I don't know how big commands are, but if they are small, it would probably
->> be more efficient to inconditionnally copy them to the buffer rather then
->> doing the test.
-> Brijesh, I assume SNP support will need to copy the commands unconditionally? If
-> yes, it probably makes sense to do so now and avoid vmalloc dependencies
-> completely.  And I think that would allow for the removal of status_cmd_buf and
-> init_cmd_buf, or is there another reason those dedicated buffers exist?
+Yes because, it should be a raw dump of the SFDP data (of whatever
+the flash vendor thinks is valid). You want to be able to debug
+non-compliant SFDP data. Otherwise, this doesn't make any sense to
+have it in the first place.
 
+>>> Also, we can make the saved sfdp
+>>> data table-agnostic so that we don't duplicate the reads in
+>>> parse_bfpt/smpt/4bait.
+>> 
+>> This falls into the same category as above. While it might be reused,
+>> the
+>> primary use case is to have the SFDP data available to a 
+>> developer/user.
+>> Eg.
+>> what will you do with some holes in the sysfs read()? Return zeros?
+> 
+> We don't have to have gaps in our internal buffer, we just allocate as 
+> much
+> as we need and we write into our internal buffer just the sfdp tables, 
+> without
+> the gaps.
 
-Yes, we need to copy the commands unconditionally for the SNP support.
-It makes sense to avoid the vmalloc dependencies. I can't think of any
-reason why we would need the status_cmd_buf and init_cmd_buf after those
-changes.
+There are two use cases:
+  (1) cache the data for the SFDP table parsing
+  (2) provide a raw dump of the SFDP
 
+This patch targets (2). So first, you'd need to allocate multiple
+buffers, then you'd have to combine them again for the raw SFDP dump
+and finally you'd need to fill the gaps for the dump again. Because
+what I expect is to have a contiguous "sfdp" sysfs file.
 
+-michael
