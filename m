@@ -2,212 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2065354640
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 19:42:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B801B354647
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 19:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239566AbhDERml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 13:42:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239474AbhDERm3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 13:42:29 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93B3DC061794;
-        Mon,  5 Apr 2021 10:42:21 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id y32so5382693pga.11;
-        Mon, 05 Apr 2021 10:42:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7MWEztFYREaj4EaJg4EzCQLWGTSCEwCslvK3LYOeVzE=;
-        b=HRjGZS1QILkvNMmvQmZn3S40Na/kBwIbA6WVXDpnPh/VerF7PjPRJvpl7/XN6W4A6M
-         a6HWcvDmChgM4WL36FgQdBqTKbrpTyboqYE4Xmyqz2Pn6p/U2nwbYpYx4imr9/9Vt9Jo
-         zGbSNQyGZlO4ootd5yQAv1i/dW4Z6+ljPnr9sODOK3Mw/0gywldqHIhPcpIMg74ctZA5
-         SMR/IzvOskt2Jmcru/JsesJCc+kr7QGaxjRDXPGDMqcdYYygeTWfjbQtl/44xeaUv4mr
-         yPI8790q3HzS5SHk29h+3MdFMPyGngH1C+67AN53DJzLb9x14igyzbSZX+k6UQ+hRhbT
-         Ha5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7MWEztFYREaj4EaJg4EzCQLWGTSCEwCslvK3LYOeVzE=;
-        b=b4bMdsSG+eC8VugbmpFuD8xaOi18ngLRVEK2oryn2qKS/gYzs2AgxVQyTMjHfjChwx
-         dTYbg2JUw3wNgFh1OKti09S7qhrFqttQapqWXnS9/qUWzQDNzklLUYH7/D+/1Yv8ldiu
-         L7BOm24fXveO0kxvwP/Bu77UlwboDDhJS0DrkCgRSUsVtyrdXRsd5jlkjhVKcqFCwmH6
-         djyI2fMfZYIJs7gY7sA/ooDHmycXY1Z9IkLJ8wgs59sZkUQkqYEHZ7DBM+JAE1opR2XO
-         tqyKQY9VPbIFrZJXMofEK9ff7BOW+PUxsdqKj4KUGfcZz/4IA71AbZNEBe52IIxDR3E6
-         WRrQ==
-X-Gm-Message-State: AOAM532Fnm+tHtZvsFIW0z/tB05MZhsC8ANd35d7YmwtqklFdpkehBqg
-        0bS3hIgtYezfZvTAAsO88G8=
-X-Google-Smtp-Source: ABdhPJxibT+j7asrrFr4/LyBfYOx3cjIw334LA6mEIfzkJ/SSj8fWZ8XoVuGuulT8c8TGoH9q2eLPg==
-X-Received: by 2002:a65:68d3:: with SMTP id k19mr23989185pgt.44.1617644541208;
-        Mon, 05 Apr 2021 10:42:21 -0700 (PDT)
-Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
-        by smtp.gmail.com with ESMTPSA id b7sm2441194pgs.62.2021.04.05.10.42.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Apr 2021 10:42:19 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     Jordan Crouse <jordan@cosmicpenguin.net>,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
-        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 8/8] drm/msm: Support evicting GEM objects to swap
-Date:   Mon,  5 Apr 2021 10:45:31 -0700
-Message-Id: <20210405174532.1441497-9-robdclark@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210405174532.1441497-1-robdclark@gmail.com>
-References: <20210405174532.1441497-1-robdclark@gmail.com>
+        id S236488AbhDERqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 13:46:02 -0400
+Received: from mail-mw2nam12on2111.outbound.protection.outlook.com ([40.107.244.111]:57760
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233140AbhDERqA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 13:46:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hVP93PaFjYFXnb2GU0irnnTitaNFJflZ13ZDJDt/tPQ3tcr4VmmKV7heIvcHml+8BpmBv71SsMo3RNyLYO3CRYQn/A/8v1UyMpml/5TwpmYIDMqoGPHAJIIikNal8bADyzti4gDl+n0KvgOw22xaSNu3R6zMCl8QoOz9PnKAFRZB8uJqHSa1CBgHBJUIm3NatV3DrLXSVe1+VQoDc6xoGBAhwi/3ITyr4TUR85TdfvvI/hNUNl2vOGKhtUjrrIr4KwzqM2vHh7gPLaEw8kex7PZdFRUfn6Bw1TpMsdql4rCuvfDw6Yqk8r5gch1s7CMGVSv5ENTXoYfX4vzYbH6afA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/qRPECD5vB+c6skWEi/wOCMyeJpY8HWlEY5pE40rSz8=;
+ b=OyiHbJtgWP2oIzYkgjH2YdkZNpfQSYplMAxcAY+tXw+WuXyQMHs794WsnakXdCGYphB3AtGdQkKLn9QBNRDMunmgB1oE3R/KiyTsSIbTOBaPFXbZ3NnokbYDS4r6Bm9mbhQtXY1V5p22PWqMuUAcGXpasHwqMCYgGlyh6zL05TTiPJHz+/6aKQdI0hPsm1ySaPU7/x1QlGdewL98sEOcW107pgMZgG7XpiCV0u6B/vbfRyRGRrDEFY4ssjUIHvTDuSj8lfSSojHg/E1JMNhNBieFcnzVOafGrk05S3em1M+MIu98X3RQVw+5I16SQb4TA8JXE5GbRVeiUkgLEHRDZA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/qRPECD5vB+c6skWEi/wOCMyeJpY8HWlEY5pE40rSz8=;
+ b=M4jzcwL9UxS73jI2iQDWHPd0bmg1IGU8/7Ccox1CVPYE0Y9RiK1QCqh2V6bTNMo1iytKwTM6+IDG1fGca+Qy+JfPvWp7f/tALZ8QrbwtWZ2SAkc9YiTruZaUBQCWbUSqOlKQEYMeWNIb2q0KM+9c3n0mz1YLupkvxmZ7LRDX3ow=
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
+ by MW4PR21MB1875.namprd21.prod.outlook.com (2603:10b6:303:72::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.4; Mon, 5 Apr
+ 2021 17:45:53 +0000
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::5874:413c:8f1b:6b0b]) by MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::5874:413c:8f1b:6b0b%3]) with mapi id 15.20.4042.004; Mon, 5 Apr 2021
+ 17:45:53 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     Michael Kelley <mikelley@microsoft.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>
+CC:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
+        KY Srinivasan <kys@microsoft.com>
+Subject: RE: [PATCH v9 0/7] Enable Linux guests on Hyper-V on ARM64
+Thread-Topic: [PATCH v9 0/7] Enable Linux guests on Hyper-V on ARM64
+Thread-Index: AQHXFFVaB5wOH2JbNEut11B5j7WvKqqTYJ2ggBL8mAA=
+Date:   Mon, 5 Apr 2021 17:45:52 +0000
+Message-ID: <MWHPR21MB1593C7CFE86E45374FCB4839D7779@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <1615233439-23346-1-git-send-email-mikelley@microsoft.com>
+ <MWHPR21MB1593E68A0032D7344A42BD0DD7639@MWHPR21MB1593.namprd21.prod.outlook.com>
+In-Reply-To: <MWHPR21MB1593E68A0032D7344A42BD0DD7639@MWHPR21MB1593.namprd21.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-03-24T15:54:56Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=6488edde-ca30-4fab-ada2-e40fa988c40f;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
+authentication-results: microsoft.com; dkim=none (message not signed)
+ header.d=none;microsoft.com; dmarc=none action=none
+ header.from=microsoft.com;
+x-originating-ip: [24.22.167.197]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 85afa98e-ac57-4e12-b39a-08d8f85aa87b
+x-ms-traffictypediagnostic: MW4PR21MB1875:
+x-ms-exchange-transport-forked: True
+x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+x-microsoft-antispam-prvs: <MW4PR21MB1875359F8D993424D6C07385D7779@MW4PR21MB1875.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 0voqwSFMD2YgAyAMGDx6+2fTm+xbvH80j3/0TE9WRXiBM4E0TiuP0cOR8lKGAE9OGqDRXjXnzy93P6IrmCxWfj1tjxe/unsz5pmQHFayIysihuVbJrzMlKdl+wLq7ODLiXlr52dz4QjOWD+7JHLUtzzxkUaYMDCQxWYp0IinagOe9XQvk0Ln37DbX1hoKtgoJKhHTP+6BaMGMnIghjQdE/F9AUkkNi3D3SlRn2OCS2oOKDwE53wYEH1fxy45US2furAtCqAKGdiweRfScR59jwVOz6GbyWaCQ4KmKZ83v7l86uBZeZON0yScr8xR9K83zU4J1HbgjrweWl6YjImOrdygE/lZqRbxXpbNFeW8Tg1XsgL8LGv0lKU1WS0ZhO8qWjcF8xHtFfCrw98VALDPEONP8R9Cm9Or79HgffKz22716Y4dvvypY3fbTDKKALfNEca7LOZMlrx/q0awWWmfVjQ+YyhSxNMrQUge0n0NeFqUF6PC6grXZndSd9JO+mntuOGWs6I4Y/RSoN2mA92d86EwdBPkOz/S2XjCb1z8WiOaYdtQsxW1wNU+/vU+yn+bk0JVwdQxkw0zKzRcmasQieY20GDi+LUiJOE3CG7ZX8IOJ6zVBTvG36bIrEwZbvPkC+ycAWYLmctcl2QgpV3/RKiIQyzCYCvlKjso7ZVw220=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(346002)(136003)(39860400002)(376002)(9686003)(8990500004)(71200400001)(55016002)(82960400001)(82950400001)(107886003)(26005)(86362001)(6506007)(316002)(54906003)(2906002)(110136005)(53546011)(10290500003)(52536014)(478600001)(64756008)(66476007)(5660300002)(66556008)(76116006)(38100700001)(8676002)(66946007)(186003)(4326008)(7416002)(8936002)(33656002)(7696005)(66446008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?scBepA2o1r7dImKAoXY3Rrybcz6DvayWQuVZGu2S3F56aslxQZ3PHj5ckjEU?=
+ =?us-ascii?Q?7dc+2HHw8FSwiNcSQ2qUzeukKxrZT4KfXEm0Hy8PEBw+hnFNmgZuhJ9Gppz9?=
+ =?us-ascii?Q?poOx1GCQFrl3cdYdemdDvL5OLloL1699OqVLHYdx1TJeIoCcQqAY63IqjNyK?=
+ =?us-ascii?Q?EsqvUiwTlfb+mTGYkJEQo0izZFR7ltJHAlG+oKkEqcyQ0/bxB149O9eA8Kgg?=
+ =?us-ascii?Q?/j/DkX5MVoGljCe8d8Fh0+9cICZl42SKhO65TkN45/TXCW0Dq8HK3jkNMNtm?=
+ =?us-ascii?Q?IxdjCowFpK0/owHPqZuv6ff6GS9Sb+WDV0UDocIRu0l3laLKyRZA1py7Uq//?=
+ =?us-ascii?Q?C/4Fed0aTtc3f3ZqBF93NieR5GtnB3aUSSFSUaIrCMZ7kUl3+VyV6bVXJK5P?=
+ =?us-ascii?Q?dOEr3cCsPn9kTOdY3EScUXN1dQS01P/KFimYQ/2r2kfNOoiIi+Uh5wQdZEdE?=
+ =?us-ascii?Q?mLZBMj+1F5xNkhNf2WGBURmNJXN9iazUqv75JHb0qFg20VxtXU/4jA5HF2z7?=
+ =?us-ascii?Q?MwzHcYYeOX5M/IQzJRm/Wz3uJTNzeimnyXeB6lrQVuQX4XismEoGFYnQ6uUE?=
+ =?us-ascii?Q?e1m1DflEE6xE+7513Lt1bTOIzbehMeE/tT36a+92ROVpdJGJGhyXl63RQn1E?=
+ =?us-ascii?Q?OxqfF/lhmxr+gPOgz8A/wnEbv9u1zGY8O1JyCCqFd6LuHxr/WJMxxD6OeY4B?=
+ =?us-ascii?Q?2QaVkuzJGD7VKkbNZykTBg7+obBfyLyb0eGCabDebOgWIYGvqO6iQQmP0zn9?=
+ =?us-ascii?Q?xDiPUgzz15HtfOeWT6kMEQujSRca2V4zE31DD2AawVQnI7QXor3V0YuwXLt5?=
+ =?us-ascii?Q?2S3wmF2BwIuEeBB3neRMWs0k25zXK/GyPX0+EMH7y+8CnpVbWsviob8wTeiH?=
+ =?us-ascii?Q?/+oADtlLBj3gpu6oLI2YTJ2pmYFdjihHVh7A/acdLIJwYZaZKHUH3Sf4tgtB?=
+ =?us-ascii?Q?Bbd64xVo6lQe84cC3XaCiuJi8gZ2HfsSEp2kHsJNlQUC7n+NoO3diJf3l9rA?=
+ =?us-ascii?Q?6tA2iwiN4yk7QLJEM3/RQ7ZMN4sCKPdtU9yRHw3TjlP6fSfR9eNelmTzDtrh?=
+ =?us-ascii?Q?UZIiGkiuq0qtGYIG5oVuwOYH0KmHvc93mTLrMBPs/4DcqmccQJkI8o72Z+zC?=
+ =?us-ascii?Q?73roZf/y02bJWxDucelbAKbW/sLI9p0Q0VjndpASm1R/sV0L/swJaQ9uV+83?=
+ =?us-ascii?Q?VMZJNBzm7hG8Wanbt1kJzjcgfFKWJY7DMLAYilKYJGBnhXrQipGaMbUvK35h?=
+ =?us-ascii?Q?0vjbyP2kg6WTp4yql5W0tn4lH2JM9ImDuv09rACHQHrOsygLmrS8jEjfQhRs?=
+ =?us-ascii?Q?QtYx3/O5Q1bLZHJB+SAqkWj9?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 85afa98e-ac57-4e12-b39a-08d8f85aa87b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Apr 2021 17:45:52.6881
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: AP0JGToLLCQNSvxCGwrXKOXCrWFNmb0eJEtkiiAJ+yelLQfzX32kx28ciY1SiT3cUYBBMGDKyRNhwnUpFIErSxwx55MaRzKcNyoxwM4wuxM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB1875
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+From: Michael Kelley <mikelley@microsoft.com>
+> Sent: Wednesday, March 24, 2021 8:55 AM
+> To: will@kernel.org; catalin.marinas@arm.com; Mark Rutland <Mark.Rutland@=
+arm.com>;
+> lorenzo.pieralisi@arm.com; sudeep.holla@arm.com
+> Cc: linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org; l=
+inux-
+> hyperv@vger.kernel.org; linux-efi@vger.kernel.org; arnd@arndb.de; wei.liu=
+@kernel.org;
+> ardb@kernel.org; daniel.lezcano@linaro.org; KY Srinivasan <kys@microsoft.=
+com>
+> Subject: RE: [PATCH v9 0/7] Enable Linux guests on Hyper-V on ARM64
+>=20
+> From: Michael Kelley <mikelley@microsoft.com> Sent: Monday, March 8, 2021=
+ 11:57 AM
+> >
+> > This series enables Linux guests running on Hyper-V on ARM64
+> > hardware. New ARM64-specific code in arch/arm64/hyperv initializes
+> > Hyper-V, including its interrupts and hypercall mechanism.
+> > Existing architecture independent drivers for Hyper-V's VMbus and
+> > synthetic devices just work when built for ARM64. Hyper-V code is
+> > built and included in the image and modules only if CONFIG_HYPERV
+> > is enabled.
+>=20
+> ARM64 maintainers --
+>=20
+> What are the prospects for getting your review and Ack on this patch set?
+> We're wanting to get the Hyper-V support on ARM64 finally accepted upstre=
+am.
+> Previous comments should be addressed in this revision, with perhaps a
+> remaining discussion point around the alternate SMCCC hypercall interface
+> in Patch 1 that makes use of changes in v1.2 of the SMCCC spec.  There ar=
+e
+> several viable approaches that I've noted in the patch, depending on
+> your preferences.
+>=20
+> Michael
 
-Now that tracking is wired up for potentially evictable GEM objects,
-wire up shrinker and the remaining GEM bits for unpinning backing pages
-of inactive objects.
+Thanks, Mark, for jumping in on the SMCCC hypercall interface.  But I'm sti=
+ll
+looking for feedback or ACKs on the other patches in the series.  There's o=
+nly
+one place in Patch 2 of the series that needs the SMCCC v1.2 interface, and=
+ I'd
+like to be able to respond to any remaining issues with the other patches
+while the SMCCC details are finished up.
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- drivers/gpu/drm/msm/msm_gem.c          | 23 ++++++++++++++++
- drivers/gpu/drm/msm/msm_gem_shrinker.c | 37 +++++++++++++++++++++++++-
- drivers/gpu/drm/msm/msm_gpu_trace.h    | 13 +++++++++
- 3 files changed, 72 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
-index 163a1d30b5c9..2b731cf42294 100644
---- a/drivers/gpu/drm/msm/msm_gem.c
-+++ b/drivers/gpu/drm/msm/msm_gem.c
-@@ -759,6 +759,29 @@ void msm_gem_purge(struct drm_gem_object *obj)
- 			0, (loff_t)-1);
- }
- 
-+/**
-+ * Unpin the backing pages and make them available to be swapped out.
-+ */
-+void msm_gem_evict(struct drm_gem_object *obj)
-+{
-+	struct drm_device *dev = obj->dev;
-+	struct msm_gem_object *msm_obj = to_msm_bo(obj);
-+
-+	GEM_WARN_ON(!msm_gem_is_locked(obj));
-+	GEM_WARN_ON(is_unevictable(msm_obj));
-+	GEM_WARN_ON(!msm_obj->evictable);
-+	GEM_WARN_ON(msm_obj->active_count);
-+
-+	/* Get rid of any iommu mapping(s): */
-+	put_iova_spaces(obj, false);
-+
-+	drm_vma_node_unmap(&obj->vma_node, dev->anon_inode->i_mapping);
-+
-+	put_pages(obj);
-+
-+	update_inactive(msm_obj);
-+}
-+
- void msm_gem_vunmap(struct drm_gem_object *obj)
- {
- 	struct msm_gem_object *msm_obj = to_msm_bo(obj);
-diff --git a/drivers/gpu/drm/msm/msm_gem_shrinker.c b/drivers/gpu/drm/msm/msm_gem_shrinker.c
-index 38bf919f8508..52828028b9d4 100644
---- a/drivers/gpu/drm/msm/msm_gem_shrinker.c
-+++ b/drivers/gpu/drm/msm/msm_gem_shrinker.c
-@@ -9,12 +9,26 @@
- #include "msm_gpu.h"
- #include "msm_gpu_trace.h"
- 
-+bool enable_swap = true;
-+MODULE_PARM_DESC(enable_swap, "Enable swappable GEM buffers");
-+module_param(enable_swap, bool, 0600);
-+
-+static bool can_swap(void)
-+{
-+	return enable_swap && get_nr_swap_pages() > 0;
-+}
-+
- static unsigned long
- msm_gem_shrinker_count(struct shrinker *shrinker, struct shrink_control *sc)
- {
- 	struct msm_drm_private *priv =
- 		container_of(shrinker, struct msm_drm_private, shrinker);
--	return priv->shrinkable_count;
-+	unsigned count = priv->shrinkable_count;
-+
-+	if (can_swap())
-+		count += priv->evictable_count;
-+
-+	return count;
- }
- 
- static bool
-@@ -32,6 +46,17 @@ purge(struct msm_gem_object *msm_obj)
- 	return true;
- }
- 
-+static bool
-+evict(struct msm_gem_object *msm_obj)
-+{
-+	if (is_unevictable(msm_obj))
-+		return false;
-+
-+	msm_gem_evict(&msm_obj->base);
-+
-+	return true;
-+}
-+
- static unsigned long
- scan(struct msm_drm_private *priv, unsigned nr_to_scan, struct list_head *list,
- 		bool (*shrink)(struct msm_gem_object *msm_obj))
-@@ -104,6 +129,16 @@ msm_gem_shrinker_scan(struct shrinker *shrinker, struct shrink_control *sc)
- 	if (freed > 0)
- 		trace_msm_gem_purge(freed << PAGE_SHIFT);
- 
-+	if (can_swap() && freed < sc->nr_to_scan) {
-+		int evicted = scan(priv, sc->nr_to_scan - freed,
-+				&priv->inactive_willneed, evict);
-+
-+		if (evicted > 0)
-+			trace_msm_gem_evict(evicted << PAGE_SHIFT);
-+
-+		freed += evicted;
-+	}
-+
- 	return (freed > 0) ? freed : SHRINK_STOP;
- }
- 
-diff --git a/drivers/gpu/drm/msm/msm_gpu_trace.h b/drivers/gpu/drm/msm/msm_gpu_trace.h
-index 03e0c2536b94..ca0b08d7875b 100644
---- a/drivers/gpu/drm/msm/msm_gpu_trace.h
-+++ b/drivers/gpu/drm/msm/msm_gpu_trace.h
-@@ -128,6 +128,19 @@ TRACE_EVENT(msm_gem_purge,
- );
- 
- 
-+TRACE_EVENT(msm_gem_evict,
-+		TP_PROTO(u32 bytes),
-+		TP_ARGS(bytes),
-+		TP_STRUCT__entry(
-+			__field(u32, bytes)
-+			),
-+		TP_fast_assign(
-+			__entry->bytes = bytes;
-+			),
-+		TP_printk("Evicting %u bytes", __entry->bytes)
-+);
-+
-+
- TRACE_EVENT(msm_gem_purge_vmaps,
- 		TP_PROTO(u32 unmapped),
- 		TP_ARGS(unmapped),
--- 
-2.30.2
-
+Michael
