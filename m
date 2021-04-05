@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 274D3353CA0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB067353CDF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232711AbhDEIzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 04:55:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33896 "EHLO mail.kernel.org"
+        id S232418AbhDEI5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 04:57:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232676AbhDEIzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 04:55:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DC4F61245;
-        Mon,  5 Apr 2021 08:55:40 +0000 (UTC)
+        id S232987AbhDEI45 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:56:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB32E613B5;
+        Mon,  5 Apr 2021 08:56:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617612941;
-        bh=+G1nIWpSHU94vCQ9fb72m3Rs0yzzURXDuCG2wYhjzNU=;
+        s=korg; t=1617613011;
+        bh=CnytMMlamSSDI88KRF94+xnuLCXvknLltQnHqR2UV5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pjds1HdHH5irVHbthuR3Lk1qh0ZXnz8I0geD2acGx7h0e7dbLO86L19tZKVUCzR4j
-         6auzPl1FKw0pHIzARxAPcyp/Qdwuln8UxN9FghNBjlOYNdv8Itx0F6PcUFbhZRypgy
-         RXdGpGYSxZkMpbfG0xjVqDFBAc+S9mw4o2N7r/+k=
+        b=UL9jK3gdajMvV3LZqJo2/E2YW26cgYPYYlsBTllt9JETL88hr7AkPcRmKtxDuj08k
+         h/X4chf/lnX0zqnSoeVsHRwc63LDpwGEAzQLK8daCJtPZYPfK8HFMBrpUXNm0od4DL
+         sCqbr7fKJhHfBIgWeoyEy2rvf6gIxN91saecLy7Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Jeff Mahoney <jeffm@suse.com>, Jan Kara <jack@suse.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        syzbot <syzbot+690cb1e51970435f9775@syzkaller.appspotmail.com>
-Subject: [PATCH 4.4 19/28] reiserfs: update reiserfs_xattrs_initialized() condition
-Date:   Mon,  5 Apr 2021 10:53:53 +0200
-Message-Id: <20210405085017.627051799@linuxfoundation.org>
+        stable@vger.kernel.org, Ikjoon Jang <ikjn@chromium.org>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.9 19/35] ALSA: usb-audio: Apply sample rate quirk to Logitech Connect
+Date:   Mon,  5 Apr 2021 10:53:54 +0200
+Message-Id: <20210405085019.488419359@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085017.012074144@linuxfoundation.org>
-References: <20210405085017.012074144@linuxfoundation.org>
+In-Reply-To: <20210405085018.871387942@linuxfoundation.org>
+References: <20210405085018.871387942@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,52 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+From: Ikjoon Jang <ikjn@chromium.org>
 
-commit 5e46d1b78a03d52306f21f77a4e4a144b6d31486 upstream.
+commit 625bd5a616ceda4840cd28f82e957c8ced394b6a upstream.
 
-syzbot is reporting NULL pointer dereference at reiserfs_security_init()
-[1], for commit ab17c4f02156c4f7 ("reiserfs: fixup xattr_root caching")
-is assuming that REISERFS_SB(s)->xattr_root != NULL in
-reiserfs_xattr_jcreate_nblocks() despite that commit made
-REISERFS_SB(sb)->priv_root != NULL && REISERFS_SB(s)->xattr_root == NULL
-case possible.
+Logitech ConferenceCam Connect is a compound USB device with UVC and
+UAC. Not 100% reproducible but sometimes it keeps responding STALL to
+every control transfer once it receives get_freq request.
 
-I guess that commit 6cb4aff0a77cc0e6 ("reiserfs: fix oops while creating
-privroot with selinux enabled") wanted to check xattr_root != NULL
-before reiserfs_xattr_jcreate_nblocks(), for the changelog is talking
-about the xattr root.
+This patch adds 046d:0x084c to a snd_usb_get_sample_rate_quirk list.
 
-  The issue is that while creating the privroot during mount
-  reiserfs_security_init calls reiserfs_xattr_jcreate_nblocks which
-  dereferences the xattr root. The xattr root doesn't exist, so we get
-  an oops.
-
-Therefore, update reiserfs_xattrs_initialized() to check both the
-privroot and the xattr root.
-
-Link: https://syzkaller.appspot.com/bug?id=8abaedbdeb32c861dc5340544284167dd0e46cde # [1]
-Reported-and-tested-by: syzbot <syzbot+690cb1e51970435f9775@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Fixes: 6cb4aff0a77c ("reiserfs: fix oops while creating privroot with selinux enabled")
-Acked-by: Jeff Mahoney <jeffm@suse.com>
-Acked-by: Jan Kara <jack@suse.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=203419
+Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210324105153.2322881-1-ikjn@chromium.org
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/reiserfs/xattr.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/usb/quirks.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/reiserfs/xattr.h
-+++ b/fs/reiserfs/xattr.h
-@@ -42,7 +42,7 @@ void reiserfs_security_free(struct reise
- 
- static inline int reiserfs_xattrs_initialized(struct super_block *sb)
- {
--	return REISERFS_SB(sb)->priv_root != NULL;
-+	return REISERFS_SB(sb)->priv_root && REISERFS_SB(sb)->xattr_root;
- }
- 
- #define xattr_size(size) ((size) + sizeof(struct reiserfs_xattr_header))
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1154,6 +1154,7 @@ bool snd_usb_get_sample_rate_quirk(struc
+ 	case USB_ID(0x21B4, 0x0081): /* AudioQuest DragonFly */
+ 	case USB_ID(0x2912, 0x30c8): /* Audioengine D1 */
+ 	case USB_ID(0x413c, 0xa506): /* Dell AE515 sound bar */
++	case USB_ID(0x046d, 0x084c): /* Logitech ConferenceCam Connect */
+ 		return true;
+ 	}
+ 	return false;
 
 
