@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DB60353E85
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C49A353FB6
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237919AbhDEJGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:06:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48224 "EHLO mail.kernel.org"
+        id S239584AbhDEJNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:13:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238430AbhDEJE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:04:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C970C6138D;
-        Mon,  5 Apr 2021 09:04:48 +0000 (UTC)
+        id S238824AbhDEJKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:10:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F15261398;
+        Mon,  5 Apr 2021 09:10:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613489;
-        bh=GLFewNetAnV4tzQxjDLbtdKDcB2+LI5quZYj8vPOXiI=;
+        s=korg; t=1617613809;
+        bh=Aq/iOP35TU7qVV07rAM5PkHvhY58SEyEeMHiACCpSz0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m47lSlmIJ9OrwEz+UCGPEsTEnmCbqus4oPD1HIB6JGzBkM5hxT6QBV+spxsGgnjRK
-         1CxFw+7ZnT7TaeYNcXkzlkMrrqVUaHc+A1DC1PdUC+zzv8vSMDSbl2znOeMXCJRVt6
-         RpIO6DfQlshfTDeEMLu9yC9ISrWxTOYj9OEw/BfU=
+        b=B9PdLrwTCWe6XFVQbq9Q/c0rysn+1lnq3iHLwfWI9XekuGJdbxopD1O34nSHTTjXR
+         imo1yWdx6vQvD76sqBUyM98TGIz3WTkVmVzYkZ0/08xRy2OYLeox83ULO6K16PS2sE
+         acbAe9BYLAGVHZv7D4+vzx+FUGxV1aw0aSQO+gKc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Chanwoo Choi <cw00.choi@samsung.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 57/74] extcon: Add stubs for extcon_register_notifier_all() functions
+Subject: [PATCH 5.10 099/126] extcon: Add stubs for extcon_register_notifier_all() functions
 Date:   Mon,  5 Apr 2021 10:54:21 +0200
-Message-Id: <20210405085026.579711908@linuxfoundation.org>
+Message-Id: <20210405085034.326009968@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
-References: <20210405085024.703004126@linuxfoundation.org>
+In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
+References: <20210405085031.040238881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -59,7 +59,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 23 insertions(+)
 
 diff --git a/include/linux/extcon.h b/include/linux/extcon.h
-index 2bdf643d8593..47d3e19a49ae 100644
+index fd183fb9c20f..0c19010da77f 100644
 --- a/include/linux/extcon.h
 +++ b/include/linux/extcon.h
 @@ -271,6 +271,29 @@ static inline  void devm_extcon_unregister_notifier(struct device *dev,
