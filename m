@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9AD353F40
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 231A63540AB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239447AbhDEJKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:10:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53378 "EHLO mail.kernel.org"
+        id S239704AbhDEJUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:20:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238409AbhDEJIQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:08:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C6B6613A1;
-        Mon,  5 Apr 2021 09:08:09 +0000 (UTC)
+        id S240659AbhDEJQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:16:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9F2761394;
+        Mon,  5 Apr 2021 09:16:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613690;
-        bh=1VrBdJ01bGjkMK2OO/JZFdkPjxn7zUwNflApGOU++l8=;
+        s=korg; t=1617614162;
+        bh=tjAx589bEBE8kYkGljzJjJZgmpAQkko+RWmcPds6/R8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pAPPL/uqrAt+QXaiphg5CzehV7AoEz6ABrqfr0kzdkluqKcnhbBCA8VCehwARkcnL
-         xRztCsy7z87XcSvi+7vnB/sFBUDVvzutMtuTNiAy5hNH1iDLFihmkUVFFqbQWpEZIE
-         +3PygmvivjZR0AeeUQNQ4r1lwIpEAM0KFFbYWAL0=
+        b=B5zEVdHYzGnfw0i6kXya0n9lKMLfddw9rB3jdiBUs+PUbHqoxhchNjE4iCxpTK37V
+         /6nHNEYdwJXaOUy2LBL0zyVMzlRZydoA2TNXwlQVbrkq5TUYLI+9kB1dZBtzd7Awym
+         RTgCV5RiCfc4U7vFVdl0WASeBftxMjx8hksMQuFw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
+        stable@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
         "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.10 056/126] ACPI: processor: Fix CPU0 wakeup in acpi_idle_play_dead()
-Date:   Mon,  5 Apr 2021 10:53:38 +0200
-Message-Id: <20210405085032.897099810@linuxfoundation.org>
+Subject: [PATCH 5.11 070/152] ACPI: scan: Fix _STA getting called on devices with unmet dependencies
+Date:   Mon,  5 Apr 2021 10:53:39 +0200
+Message-Id: <20210405085036.546779290@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
-References: <20210405085031.040238881@linuxfoundation.org>
+In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
+References: <20210405085034.233917714@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,96 +40,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vitaly Kuznetsov <vkuznets@redhat.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit 8cdddd182bd7befae6af49c5fd612893f55d6ccb upstream.
+commit 3e759425cc3cf9a43392309819d34c65a3644c59 upstream.
 
-Commit 496121c02127 ("ACPI: processor: idle: Allow probing on platforms
-with one ACPI C-state") broke CPU0 hotplug on certain systems, e.g.
-I'm observing the following on AWS Nitro (e.g r5b.xlarge but other
-instance types are affected as well):
+Commit 71da201f38df ("ACPI: scan: Defer enumeration of devices with
+_DEP lists") dropped the following 2 lines from acpi_init_device_object():
 
- # echo 0 > /sys/devices/system/cpu/cpu0/online
- # echo 1 > /sys/devices/system/cpu/cpu0/online
- <10 seconds delay>
- -bash: echo: write error: Input/output error
+	/* Assume there are unmet deps until acpi_device_dep_initialize() runs */
+	device->dep_unmet = 1;
 
-In fact, the above mentioned commit only revealed the problem and did
-not introduce it. On x86, to wakeup CPU an NMI is being used and
-hlt_play_dead()/mwait_play_dead() loops are prepared to handle it:
+Leaving the initial value of dep_unmet at the 0 from the kzalloc(). This
+causes the acpi_bus_get_status() call in acpi_add_single_object() to
+actually call _STA, even though there maybe unmet deps, leading to errors
+like these:
 
-	/*
-	 * If NMI wants to wake up CPU0, start CPU0.
-	 */
-	if (wakeup_cpu0())
-		start_cpu0();
+[    0.123579] ACPI Error: No handler for Region [ECRM] (00000000ba9edc4c)
+               [GenericSerialBus] (20170831/evregion-166)
+[    0.123601] ACPI Error: Region GenericSerialBus (ID=9) has no handler
+               (20170831/exfldio-299)
+[    0.123618] ACPI Error: Method parse/execution failed
+               \_SB.I2C1.BAT1._STA, AE_NOT_EXIST (20170831/psparse-550)
 
-cpuidle_play_dead() -> acpi_idle_play_dead() (which is now being called on
-systems where it wasn't called before the above mentioned commit) serves
-the same purpose but it doesn't have a path for CPU0. What happens now on
-wakeup is:
- - NMI is sent to CPU0
- - wakeup_cpu0_nmi() works as expected
- - we get back to while (1) loop in acpi_idle_play_dead()
- - safe_halt() puts CPU0 to sleep again.
+Fix this by re-adding the dep_unmet = 1 initialization to
+acpi_init_device_object() and modifying acpi_bus_check_add() to make sure
+that dep_unmet always gets setup there, overriding the initial 1 value.
 
-The straightforward/minimal fix is add the special handling for CPU0 on x86
-and that's what the patch is doing.
+This re-fixes the issue initially fixed by
+commit 63347db0affa ("ACPI / scan: Use acpi_bus_get_status() to initialize
+ACPI_TYPE_DEVICE devs"), which introduced the removed
+"device->dep_unmet = 1;" statement.
 
-Fixes: 496121c02127 ("ACPI: processor: idle: Allow probing on platforms with one ACPI C-state")
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc: 5.10+ <stable@vger.kernel.org> # 5.10+
+This issue was noticed; and the fix tested on a Dell Venue 10 Pro 5055.
+
+Fixes: 71da201f38df ("ACPI: scan: Defer enumeration of devices with _DEP lists")
+Suggested-by: Rafael J. Wysocki <rafael@kernel.org>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Cc: 5.11+ <stable@vger.kernel.org> # 5.11+
 Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/include/asm/smp.h    |    1 +
- arch/x86/kernel/smpboot.c     |    2 +-
- drivers/acpi/processor_idle.c |    7 +++++++
- 3 files changed, 9 insertions(+), 1 deletion(-)
+ drivers/acpi/scan.c |   12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
---- a/arch/x86/include/asm/smp.h
-+++ b/arch/x86/include/asm/smp.h
-@@ -132,6 +132,7 @@ void native_play_dead(void);
- void play_dead_common(void);
- void wbinvd_on_cpu(int cpu);
- int wbinvd_on_all_cpus(void);
-+bool wakeup_cpu0(void);
- 
- void native_smp_send_reschedule(int cpu);
- void native_send_call_func_ipi(const struct cpumask *mask);
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -1655,7 +1655,7 @@ void play_dead_common(void)
- 	local_irq_disable();
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -1669,6 +1669,8 @@ void acpi_init_device_object(struct acpi
+ 	device_initialize(&device->dev);
+ 	dev_set_uevent_suppress(&device->dev, true);
+ 	acpi_init_coherency(device);
++	/* Assume there are unmet deps to start with. */
++	device->dep_unmet = 1;
  }
  
--static bool wakeup_cpu0(void)
-+bool wakeup_cpu0(void)
+ void acpi_device_add_finalize(struct acpi_device *device)
+@@ -1934,6 +1936,8 @@ static void acpi_scan_dep_init(struct ac
  {
- 	if (smp_processor_id() == 0 && enable_start_cpu0)
- 		return true;
---- a/drivers/acpi/processor_idle.c
-+++ b/drivers/acpi/processor_idle.c
-@@ -29,6 +29,7 @@
-  */
- #ifdef CONFIG_X86
- #include <asm/apic.h>
-+#include <asm/cpu.h>
- #endif
+ 	struct acpi_dep_data *dep;
  
- #define ACPI_PROCESSOR_CLASS            "processor"
-@@ -542,6 +543,12 @@ static int acpi_idle_play_dead(struct cp
- 			wait_for_freeze();
- 		} else
- 			return -ENODEV;
++	adev->dep_unmet = 0;
 +
-+#if defined(CONFIG_X86) && defined(CONFIG_HOTPLUG_CPU)
-+		/* If NMI wants to wake up CPU0, start CPU0. */
-+		if (wakeup_cpu0())
-+			start_cpu0();
-+#endif
- 	}
+ 	mutex_lock(&acpi_dep_list_lock);
  
- 	/* Never reached */
+ 	list_for_each_entry(dep, &acpi_dep_list, node) {
+@@ -1981,7 +1985,13 @@ static acpi_status acpi_bus_check_add(ac
+ 		return AE_CTRL_DEPTH;
+ 
+ 	acpi_scan_init_hotplug(device);
+-	if (!check_dep)
++	/*
++	 * If check_dep is true at this point, the device has no dependencies,
++	 * or the creation of the device object would have been postponed above.
++	 */
++	if (check_dep)
++		device->dep_unmet = 0;
++	else
+ 		acpi_scan_dep_init(device);
+ 
+ out:
 
 
