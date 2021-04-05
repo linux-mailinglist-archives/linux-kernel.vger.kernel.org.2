@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F759353F4D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22AB13540B1
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238844AbhDEJLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:11:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54112 "EHLO mail.kernel.org"
+        id S240215AbhDEJVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:21:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238606AbhDEJI3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:08:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 885D6613A0;
-        Mon,  5 Apr 2021 09:08:21 +0000 (UTC)
+        id S240683AbhDEJQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:16:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CC1E611C1;
+        Mon,  5 Apr 2021 09:16:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613702;
+        s=korg; t=1617614172;
         bh=3y6gV7abTaiMEVM0s/CrvK3mwG9M62wV1EKPJAHJzK8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wsAhaBVrwlBowQOESBDVNn0U4RsZ/8fspJMc2POJ9ESpzy38OZzjgB6LstIiYTWqa
-         0n1vn7P3tsHW7vBiFGbz8xZDPtRgUq27oteu2qscsN5NJPkcTEwNGXAlkk90gH+IB0
-         1kcTBS3XmjIrDIDizzNXas9mY/Ct6EyYbHVSdU+o=
+        b=i7JrRdUHOLmjDRPGafKtNR27atuDOClIF55dZFZZzEheXkkDnLQdtQyIyHQihtB5q
+         d819d3Y6iwHnLnd9BcjUHlCEKpyEvMYqGk+TakkudrNaGJNF8iFDVU5GWNvvQ6BUw1
+         AjZM3ffCkr5PMqfDh6E5U2f4PwFB8bioY4JxCr/E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
         Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 060/126] ALSA: hda/realtek: fix a determine_headset_type issue for a Dell AIO
-Date:   Mon,  5 Apr 2021 10:53:42 +0200
-Message-Id: <20210405085033.036763839@linuxfoundation.org>
+Subject: [PATCH 5.11 074/152] ALSA: hda/realtek: fix a determine_headset_type issue for a Dell AIO
+Date:   Mon,  5 Apr 2021 10:53:43 +0200
+Message-Id: <20210405085036.672608883@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
-References: <20210405085031.040238881@linuxfoundation.org>
+In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
+References: <20210405085034.233917714@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
