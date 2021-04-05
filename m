@@ -2,57 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5DCC354177
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 13:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA6835416E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 13:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234121AbhDELQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 07:16:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56778 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229639AbhDELQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 07:16:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09EF9613AD;
-        Mon,  5 Apr 2021 11:16:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617621394;
-        bh=ZgX5FuV/d1B88HMRXIpFcIpEF91kBI/1grIvpM3ISU8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yKCjUSF2qmT3zjArYOV07BK0ubsSA+Garp1PiqqswEfpSwcNPrJ8ezbHPgFY/09hP
-         5EZCoLV6XwhMFDGpte12URD+aICjSxvbTJPAnmA2X7gIxqeLRfPRe/2/j3tGQwkF1c
-         0dZsOZJamg5yiCjchaboGSy15gmzbcWuzarex9pA=
-Date:   Mon, 5 Apr 2021 13:16:32 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-Cc:     linux-doc@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        id S235034AbhDELJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 07:09:11 -0400
+Received: from mail-dm6nam12on2043.outbound.protection.outlook.com ([40.107.243.43]:57440
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235001AbhDELJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 07:09:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b784qMXnFJKDEOYH3CDx57v5D9DqCBDpcwAj+aFkMrdBJ/VrnlXv4ZYnqp8h03UZWKJyzl4XLfSmlPZ//zKwuySuKhoib5foM8GwRBqPUY3XeO4XivYQZM+dRxANPzIdUrVd2JhqhUHOeBbsYxT1ssyUuHBwUc3lBMjbvn40OHTs5IKdQNwYn9dBEFJvyRm+j8Ruwut7cTcr1n4xfVYKCqqin3m1RsQYG5daky4SeMXHNCQOBm/zPilROYslcyNAYMm/McLTxNlNCwutsEgsQUvO7dimsC/FFrkSqDinwvEpAd4DhpAtQ64v2R83iqpQ9Mw6t0lV6fpv1Ttma2NPFg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=V5mAq0ftgjECUYrGxp6GN5vYqJ+BCZQ9mChqhe7ZpMY=;
+ b=GoehpyyQOD0rmgQY1744eY/wyoWLdStMoAOG2UMkgSBhl0FMlipUOI0EULf7COu2jEAT6p/gsUOR02POD6OHej5PDUyLkOUdLAfmN9Fc4qwxDw+v2kC3jOIbgpFnNbj9oDx2PsrTVmBNG8GrLxIkWn79BA2wCfEDrxzJ6FfyzfwSnEChStFJL4jzJjGY2+uT/Vy2Oa9snjefrd5sHVAyT/wATBnuDRqO94c+m2uBOMrsmkD5+w5j3FkpNsjeNxo/gFLRfGiPeB+/gBjmm6p9GUoh7zKwf7mtJI4KQdKWa421wd7isHZ9HhBEWuRbX9q5xQjWxJyTtQ6Vv3fOPltiqA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=V5mAq0ftgjECUYrGxp6GN5vYqJ+BCZQ9mChqhe7ZpMY=;
+ b=0epg20Hu1Cp+bldulBVH3EbY4jwnUd9lZHRCxuY0vKTOkyqhC3zSjpWdUhi42thEwYHCxo+EuaYBPaS5Ucr2hAsfip5spsbvwdeRLwO82oCooWrBetH/WumXxhMUf5ej/QTRZb/RI28w/6vM5Lfu/uVIG+ig7WN3JXlIkuFlY0Y=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
+ (2603:10b6:300:e4::23) by MW3PR12MB4361.namprd12.prod.outlook.com
+ (2603:10b6:303:5a::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.29; Mon, 5 Apr
+ 2021 11:08:58 +0000
+Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
+ ([fe80::c977:4e9:66b8:a7e]) by MWHPR1201MB2557.namprd12.prod.outlook.com
+ ([fe80::c977:4e9:66b8:a7e%11]) with mapi id 15.20.3999.032; Mon, 5 Apr 2021
+ 11:08:58 +0000
+Subject: Re: [PATCH] ASoC: amd: Add support for ALC1015P codec in acp3x
+ machine driver
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     alsa-devel@alsa-project.org, shumingf@realtek.com,
+        flove@realtek.com, kent_chen@realtek.com, jack.yu@realtek.com,
+        Alexander.Deucher@amd.com, Basavaraj.Hiregoudar@amd.com,
+        Sunil-kumar.Dommati@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Ravulapati Vishnu vardhan rao 
+        <Vishnuvardhanrao.Ravulapati@amd.com>,
         Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-Subject: Re: [PATCH v10 0/4] misc: Add Synopsys DesignWare xData IP driver
-Message-ID: <YGrxkJCxb683PP2O@kroah.com>
-References: <cover.1617016509.git.gustavo.pimentel@synopsys.com>
+        Akshu Agrawal <akshu.agrawal@amd.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1617095628-8324-1-git-send-email-Vijendar.Mukunda@amd.com>
+ <82817878-a30d-2b0c-07f8-48bcca3ebc80@linux.intel.com>
+ <a55c7a75-22ab-31fc-81b3-ed8fa24027f4@amd.com>
+ <20210330153534.GF4976@sirena.org.uk>
+ <cd0d87e0-caa5-b671-9c91-1c5f35c2f017@linux.intel.com>
+From:   "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+Message-ID: <972d38d8-39c8-66d7-292d-37c1f0e027bd@amd.com>
+Date:   Mon, 5 Apr 2021 16:56:05 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <cd0d87e0-caa5-b671-9c91-1c5f35c2f017@linux.intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [165.204.159.242]
+X-ClientProxiedBy: PN2PR01CA0092.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:27::7) To MWHPR1201MB2557.namprd12.prod.outlook.com
+ (2603:10b6:300:e4::23)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1617016509.git.gustavo.pimentel@synopsys.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.252.93.39] (165.204.159.242) by PN2PR01CA0092.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c01:27::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.26 via Frontend Transport; Mon, 5 Apr 2021 11:08:52 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2780d0b8-c8aa-40df-dc69-08d8f823358c
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4361:
+X-LD-Processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MW3PR12MB436163482BE06BD229804B6A97779@MW3PR12MB4361.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pxwxzcRngWlqoSCLyvEPC+4qSXZ4bxzzRwCX4G57HmNr8Z48Dw7zImOovQ/ziaqeM41pJUMGplJPqHJf5DgUyOB3GHK4s+9xz0/CGjxTHmlzVpcMjnKMXStRqHXWmiOFbOBFpNaIZ1q0MhUcTcCGtc2kvc3LEXF/7cf4Wu3fiDOxNLwZMCIZ3fF87jbPUKokLMdXT/numxVpOWNESbSoKomUOuL5c8j2f/rsBXcvmRCR7mKLk38Leu3QT7aIMIsBWZGCbMlukidbc1rl1CJMzmLKCbQyjfWV/SZ4lMhoL4JwXmgUaNGfyYIDuOWNnT9HLpuLAS46tIgEgDGmc1oLrecxN+NSAgf+Radx03uAyNMGFbZe70GZz0mrLfHzKmgxwU756s41yZvZvJ7Sexni5+ykXlcgRxdRYoaI0U7fu2VB6x48Yo7FzoB+ZkXlWxnmwr5M8dOX4jNVFK0oAzL9YDuEhIwa2RDgb5zRdHCTfvJmQdeR3FbQRNJdHqnXjrHVeyd7Yu4rCj23lcmg1ggOZajHPNrs6myxmsMQa3xkn6Ju3leStrND5BrugxY1C407yUV772Im9h6AbI4vzoSu2DSeLrEp7H5d4+VgyTHFpM9gMoRYg1luVjxgZcIJ4C0azdgyzFfEsYlmo10ezOOF2rOZh/fyqyR+0HUd0Y4r50ahGxpXawx49x8rsvr5eNE950+A1Sp/wAsljMX4TEAEzgY8LQi/nE/2YCUFoNA3w6Ybg3TKu6nEiZjHODJaGGY1aIr4zZdfb4K90U4ACVjiIA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB2557.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(396003)(366004)(39860400002)(31686004)(38100700001)(8676002)(2616005)(16526019)(8936002)(316002)(52116002)(6666004)(110136005)(5660300002)(7416002)(86362001)(31696002)(186003)(54906003)(4326008)(66476007)(66556008)(6486002)(478600001)(66946007)(53546011)(956004)(36756003)(2906002)(16576012)(26005)(42413003)(32563001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?cdVltmO8isHGPCQXK6cEllHYDzo3boDEyPR4Oh3yoBacZYSJMF+4zi3A?=
+ =?Windows-1252?Q?9GScRYaAe4eF1HI4N5S/KFVTQYu+/UCcLmcsg95ekQEe3g8xELnAkJ7n?=
+ =?Windows-1252?Q?oINddutIOGpcsSHVZeDCvkQ7LtGFL1ykkIX0NWmVhJPt5eJFTtXSUknB?=
+ =?Windows-1252?Q?/MUHvJk0jUlVKt0PtuVWgdXm8ekSR1n9pBqO95mib1TN/uG7XjrzTebd?=
+ =?Windows-1252?Q?VLvO556f1xYQsjN7ovd6oeNHd2adxQ5dLK+zX0mhL440oCRofrK9n+Xi?=
+ =?Windows-1252?Q?ExQy4bGWgkVaVWISVee2kYuQQkT3uD90UiqG1kC8R6Q4B1PoTqH30TCA?=
+ =?Windows-1252?Q?aqDdRyzVA0BTD7jOqS2E0aDobULdcSSDTS1T/EjP5rolYO4hgxR25Lgg?=
+ =?Windows-1252?Q?98IOYoWitnVuJeSF2pod7PtOq/pAohfB2LRDYaWYRt7GQp4XPzFpnPHh?=
+ =?Windows-1252?Q?3OSAJngPtvqneafsMNIK+2c1bp0mDHb1i/k2IeDtVxLmaLo49kFL67vM?=
+ =?Windows-1252?Q?/qeDnHIj+4PATftVyZ8mMdi3NzQsVv1xFju7wMj2Eybq9PXq45XMigYn?=
+ =?Windows-1252?Q?SBK7XBXP5j6/fzNd7KM8pUwLaaHsfC1hJ4mU3rfGkgQqc9ECR3njSNPJ?=
+ =?Windows-1252?Q?apeBWQSTLfgPO5WSXoDJdHD3lRjWE/McWzXpVLSA29wwzBvTY7d4cL9o?=
+ =?Windows-1252?Q?Ti6KwE0yJ+EJhBLG/m7ZWEKErJMLbHGelGjO5yoQHm6Dp9fQCiPItvdw?=
+ =?Windows-1252?Q?DjuV/Y+Nbs5C/1xnCS7eG2Oe4Ca1CxPa83JE2XOnmxTnate858UauqSo?=
+ =?Windows-1252?Q?++H1+FWxjB5P7MTOcoP6K3Febkb/l07VIypyh/zUrrNS2UYXKz8cecg1?=
+ =?Windows-1252?Q?rDmK8VIZ/YjOGXJiP73cAal5+Ndl4MCGmhEV75qU3D8TiNPE1mxn+A5v?=
+ =?Windows-1252?Q?CzBmYyVZ53fAOo3xu7KNAJ8F8Hk6r3QbaDBJQNb+ju7/OKzI4bjkGCGU?=
+ =?Windows-1252?Q?v5SvNp+odRPaKD2+eJIRCkBJi4xZoOtRpXjGKENoMQUXuzXhrtQjIwQL?=
+ =?Windows-1252?Q?q2nt/MB7qSD1HKZ1a04yIH2yOZBjgEbpgwJvankuMt47pBrO+5i0Nklw?=
+ =?Windows-1252?Q?YEtJLU40xL95W/qqHtirdxkv30kYeCyhAGBBKKzizFZo3Sno7ti1zjOz?=
+ =?Windows-1252?Q?dMYuAdrgzuV2HI6/IDbEfZC123XXeS6v26uclg+oZ65a+LyL0kYwYQnT?=
+ =?Windows-1252?Q?jCQJdTzOBIirsjKg1g1xqc9nmgIKtce0nqALhc4bYw6tjz+qa9pvn7+K?=
+ =?Windows-1252?Q?/aYShoKXp3INB3ZWTQuWANLns5pZppfrHlyXID1TTUn6oXuN1ow0/0Hn?=
+ =?Windows-1252?Q?FLOl7wOe73cvbqERn7kbpXt3MrhO4Umed6ApFPvvjRqLuJ28Xxt4TMnN?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2780d0b8-c8aa-40df-dc69-08d8f823358c
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB2557.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Apr 2021 11:08:58.2471
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3/iXvqzFKW0jp+deJbXbOT/8Gr8DsqDxIx6bQKoUpQGztyI8InpL4eQNAHli+gG1sxOaWKFjjRrB1ZwA7g92FQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4361
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 01:17:44PM +0200, Gustavo Pimentel wrote:
-> This patch series adds a new driver called xData-pcie for the Synopsys
-> DesignWare PCIe prototype.
+
+
+On 3/30/21 9:57 PM, Pierre-Louis Bossart wrote:
 > 
-> The driver configures and enables the Synopsys DesignWare PCIe traffic
-> generator IP inside of prototype Endpoint which will generate upstream
-> and downstream PCIe traffic. This allows to quickly test the PCIe link
-> throughput speed and check is the prototype solution has some limitation
-> or not.
+> 
+> On 3/30/21 10:35 AM, Mark Brown wrote:
+>> On Tue, Mar 30, 2021 at 09:12:11PM +0530, Mukunda,Vijendar wrote:
+>>> On 3/30/21 7:52 PM, Pierre-Louis Bossart wrote:
+>>
+>>>>>    static const struct acpi_device_id acp3x_audio_acpi_match[] = {
+>>>>>        { "AMDI5682", (unsigned long)&acp3x_5682},
+>>>>>        { "AMDI1015", (unsigned long)&acp3x_1015},
+>>>>> +    { "AMDP1015", (unsigned long)&acp3x_1015p},
+>>
+>>>> This isn't a valid ACPI ID. AMDP does not exist in
+>>
+>> ...
+>>
+>>>> There was a similar issue with Intel platforms using this part, we had
+>>>> to use a different HID.
+>>
+>>> Is it okay if i use "AMDI1016" for ALC1015P?
+>>
+>> That's valid, though obviously you might regret that later on if someone
+>> releases a CODEC with a 1016 name (equally well ACPI being what it is
+>> there's no good options for naming).
+> 
+> wish granted, the 1016 already exists :-)
+> you may want to align with what we did for Intel and use the same HID: 
+> RTL1015
 
-Looks good, all now queued up.
+As per RTK team inputs, "RTL1015" ACPI HID is in use for RT1015p codec 
+driver.
+RTK team suggested us to use "RTL1015A" as ACPI HID.
+Let us know, if we can use "RTL1015A" as an ACPI HID?
 
-greg k-h
+-
+Vijendar
+
+
