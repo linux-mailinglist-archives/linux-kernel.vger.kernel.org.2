@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28368353F3C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16308353F39
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239434AbhDEJKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:10:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53726 "EHLO mail.kernel.org"
+        id S239420AbhDEJKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:10:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238554AbhDEJIN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238511AbhDEJIN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 5 Apr 2021 05:08:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B01F661399;
-        Mon,  5 Apr 2021 09:08:04 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D251613A3;
+        Mon,  5 Apr 2021 09:08:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613685;
-        bh=S0Vfaw5rbZr012OmTUTy7ewL1yKR2z1XwDNrD6hVT/Q=;
+        s=korg; t=1617613687;
+        bh=/bYk+VP949FICyI/rdYAkebQmCBsns+YucdRSnEP8pI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uPKDKqolsG0mgFYwWNYRqG+sVNHli3tv4xC4/P3478v4nSgdxW5h2DpZrMn28ZVSM
-         7mNtjaMZvmyYOLf+Za6GvjBLlLYg798GDzNXaYQW7DMpLB5W7XtrXx0lH19GwlrxLW
-         cddiL78AACVYRqtNedSOlVN7xmG1RVaaBQoN78Uo=
+        b=CCe+BpI9dFQ4vqTi0lycYCpNIJrEgOvGa4Hc1ZDobLuriJqI2S59UE2vhHkP73rC+
+         k8raVMJtrGF5ntyvKWnGzuNSSlQd2cw6E6UGEtOw4RioJoKHS7suG8clqbVoGd6S6u
+         syCWxRjUxG+/dOf8X4dmk9RGPsPvXn0Kb7waDjRk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jesper Dangaard Brouer <brouer@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: [PATCH 5.10 054/126] bpf: Remove MTU check in __bpf_skb_max_len
-Date:   Mon,  5 Apr 2021 10:53:36 +0200
-Message-Id: <20210405085032.816572861@linuxfoundation.org>
+        stable@vger.kernel.org, George Kennedy <george.kennedy@oracle.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Subject: [PATCH 5.10 055/126] ACPI: tables: x86: Reserve memory occupied by ACPI tables
+Date:   Mon,  5 Apr 2021 10:53:37 +0200
+Message-Id: <20210405085032.856731891@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
 References: <20210405085031.040238881@linuxfoundation.org>
@@ -40,83 +40,225 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jesper Dangaard Brouer <brouer@redhat.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit 6306c1189e77a513bf02720450bb43bd4ba5d8ae upstream.
+commit 1a1c130ab7575498eed5bcf7220037ae09cd1f8a upstream.
 
-Multiple BPF-helpers that can manipulate/increase the size of the SKB uses
-__bpf_skb_max_len() as the max-length. This function limit size against
-the current net_device MTU (skb->dev->mtu).
+The following problem has been reported by George Kennedy:
 
-When a BPF-prog grow the packet size, then it should not be limited to the
-MTU. The MTU is a transmit limitation, and software receiving this packet
-should be allowed to increase the size. Further more, current MTU check in
-__bpf_skb_max_len uses the MTU from ingress/current net_device, which in
-case of redirects uses the wrong net_device.
+ Since commit 7fef431be9c9 ("mm/page_alloc: place pages to tail
+ in __free_pages_core()") the following use after free occurs
+ intermittently when ACPI tables are accessed.
 
-This patch keeps a sanity max limit of SKB_MAX_ALLOC (16KiB). The real limit
-is elsewhere in the system. Jesper's testing[1] showed it was not possible
-to exceed 8KiB when expanding the SKB size via BPF-helper. The limiting
-factor is the define KMALLOC_MAX_CACHE_SIZE which is 8192 for
-SLUB-allocator (CONFIG_SLUB) in-case PAGE_SIZE is 4096. This define is
-in-effect due to this being called from softirq context see code
-__gfp_pfmemalloc_flags() and __do_kmalloc_node(). Jakub's testing showed
-that frames above 16KiB can cause NICs to reset (but not crash). Keep this
-sanity limit at this level as memory layer can differ based on kernel
-config.
+ BUG: KASAN: use-after-free in ibft_init+0x134/0xc49
+ Read of size 4 at addr ffff8880be453004 by task swapper/0/1
+ CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc1-7a7fd0d #1
+ Call Trace:
+  dump_stack+0xf6/0x158
+  print_address_description.constprop.9+0x41/0x60
+  kasan_report.cold.14+0x7b/0xd4
+  __asan_report_load_n_noabort+0xf/0x20
+  ibft_init+0x134/0xc49
+  do_one_initcall+0xc4/0x3e0
+  kernel_init_freeable+0x5af/0x66b
+  kernel_init+0x16/0x1d0
+  ret_from_fork+0x22/0x30
 
-[1] https://github.com/xdp-project/bpf-examples/tree/master/MTU-tests
+ ACPI tables mapped via kmap() do not have their mapped pages
+ reserved and the pages can be "stolen" by the buddy allocator.
 
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Link: https://lore.kernel.org/bpf/161287788936.790810.2937823995775097177.stgit@firesoul
+Apparently, on the affected system, the ACPI table in question is
+not located in "reserved" memory, like ACPI NVS or ACPI Data, that
+will not be used by the buddy allocator, so the memory occupied by
+that table has to be explicitly reserved to prevent the buddy
+allocator from using it.
+
+In order to address this problem, rearrange the initialization of the
+ACPI tables on x86 to locate the initial tables earlier and reserve
+the memory occupied by them.
+
+The other architectures using ACPI should not be affected by this
+change.
+
+Link: https://lore.kernel.org/linux-acpi/1614802160-29362-1-git-send-email-george.kennedy@oracle.com/
+Reported-by: George Kennedy <george.kennedy@oracle.com>
+Tested-by: George Kennedy <george.kennedy@oracle.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+Cc: 5.10+ <stable@vger.kernel.org> # 5.10+
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/core/filter.c |   12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ arch/x86/kernel/acpi/boot.c |   25 ++++++++++++-------------
+ arch/x86/kernel/setup.c     |    8 +++-----
+ drivers/acpi/tables.c       |   42 +++++++++++++++++++++++++++++++++++++++---
+ include/linux/acpi.h        |    9 ++++++++-
+ 4 files changed, 62 insertions(+), 22 deletions(-)
 
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -3552,11 +3552,7 @@ static int bpf_skb_net_shrink(struct sk_
+--- a/arch/x86/kernel/acpi/boot.c
++++ b/arch/x86/kernel/acpi/boot.c
+@@ -1554,10 +1554,18 @@ void __init acpi_boot_table_init(void)
+ 	/*
+ 	 * Initialize the ACPI boot-time table parser.
+ 	 */
+-	if (acpi_table_init()) {
++	if (acpi_locate_initial_tables())
+ 		disable_acpi();
+-		return;
+-	}
++	else
++		acpi_reserve_initial_tables();
++}
++
++int __init early_acpi_boot_init(void)
++{
++	if (acpi_disabled)
++		return 1;
++
++	acpi_table_init_complete();
+ 
+ 	acpi_table_parse(ACPI_SIG_BOOT, acpi_parse_sbf);
+ 
+@@ -1570,18 +1578,9 @@ void __init acpi_boot_table_init(void)
+ 		} else {
+ 			printk(KERN_WARNING PREFIX "Disabling ACPI support\n");
+ 			disable_acpi();
+-			return;
++			return 1;
+ 		}
+ 	}
+-}
+-
+-int __init early_acpi_boot_init(void)
+-{
+-	/*
+-	 * If acpi_disabled, bail out
+-	 */
+-	if (acpi_disabled)
+-		return 1;
+ 
+ 	/*
+ 	 * Process the Multiple APIC Description Table (MADT), if present
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -1051,6 +1051,9 @@ void __init setup_arch(char **cmdline_p)
+ 
+ 	cleanup_highmap();
+ 
++	/* Look for ACPI tables and reserve memory occupied by them. */
++	acpi_boot_table_init();
++
+ 	memblock_set_current_limit(ISA_END_ADDRESS);
+ 	e820__memblock_setup();
+ 
+@@ -1136,11 +1139,6 @@ void __init setup_arch(char **cmdline_p)
+ 
+ 	early_platform_quirks();
+ 
+-	/*
+-	 * Parse the ACPI tables for possible boot-time SMP configuration.
+-	 */
+-	acpi_boot_table_init();
+-
+ 	early_acpi_boot_init();
+ 
+ 	initmem_init();
+--- a/drivers/acpi/tables.c
++++ b/drivers/acpi/tables.c
+@@ -780,7 +780,7 @@ acpi_status acpi_os_table_override(struc
+ }
+ 
+ /*
+- * acpi_table_init()
++ * acpi_locate_initial_tables()
+  *
+  * find RSDP, find and checksum SDT/XSDT.
+  * checksum all tables, print SDT/XSDT
+@@ -788,7 +788,7 @@ acpi_status acpi_os_table_override(struc
+  * result: sdt_entry[] is initialized
+  */
+ 
+-int __init acpi_table_init(void)
++int __init acpi_locate_initial_tables(void)
+ {
+ 	acpi_status status;
+ 
+@@ -803,9 +803,45 @@ int __init acpi_table_init(void)
+ 	status = acpi_initialize_tables(initial_tables, ACPI_MAX_TABLES, 0);
+ 	if (ACPI_FAILURE(status))
+ 		return -EINVAL;
+-	acpi_table_initrd_scan();
+ 
++	return 0;
++}
++
++void __init acpi_reserve_initial_tables(void)
++{
++	int i;
++
++	for (i = 0; i < ACPI_MAX_TABLES; i++) {
++		struct acpi_table_desc *table_desc = &initial_tables[i];
++		u64 start = table_desc->address;
++		u64 size = table_desc->length;
++
++		if (!start || !size)
++			break;
++
++		pr_info("Reserving %4s table memory at [mem 0x%llx-0x%llx]\n",
++			table_desc->signature.ascii, start, start + size - 1);
++
++		memblock_reserve(start, size);
++	}
++}
++
++void __init acpi_table_init_complete(void)
++{
++	acpi_table_initrd_scan();
+ 	check_multiple_madt();
++}
++
++int __init acpi_table_init(void)
++{
++	int ret;
++
++	ret = acpi_locate_initial_tables();
++	if (ret)
++		return ret;
++
++	acpi_table_init_complete();
++
  	return 0;
  }
  
--static u32 __bpf_skb_max_len(const struct sk_buff *skb)
--{
--	return skb->dev ? skb->dev->mtu + skb->dev->hard_header_len :
--			  SKB_MAX_ALLOC;
--}
-+#define BPF_SKB_MAX_LEN SKB_MAX_ALLOC
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -222,10 +222,14 @@ void __iomem *__acpi_map_table(unsigned
+ void __acpi_unmap_table(void __iomem *map, unsigned long size);
+ int early_acpi_boot_init(void);
+ int acpi_boot_init (void);
++void acpi_boot_table_prepare (void);
+ void acpi_boot_table_init (void);
+ int acpi_mps_check (void);
+ int acpi_numa_init (void);
  
- BPF_CALL_4(sk_skb_adjust_room, struct sk_buff *, skb, s32, len_diff,
- 	   u32, mode, u64, flags)
-@@ -3605,7 +3601,7 @@ BPF_CALL_4(bpf_skb_adjust_room, struct s
- {
- 	u32 len_cur, len_diff_abs = abs(len_diff);
- 	u32 len_min = bpf_skb_net_base_len(skb);
--	u32 len_max = __bpf_skb_max_len(skb);
-+	u32 len_max = BPF_SKB_MAX_LEN;
- 	__be16 proto = skb->protocol;
- 	bool shrink = len_diff < 0;
- 	u32 off;
-@@ -3688,7 +3684,7 @@ static int bpf_skb_trim_rcsum(struct sk_
- static inline int __bpf_skb_change_tail(struct sk_buff *skb, u32 new_len,
- 					u64 flags)
- {
--	u32 max_len = __bpf_skb_max_len(skb);
-+	u32 max_len = BPF_SKB_MAX_LEN;
- 	u32 min_len = __bpf_skb_min_len(skb);
- 	int ret;
++int acpi_locate_initial_tables (void);
++void acpi_reserve_initial_tables (void);
++void acpi_table_init_complete (void);
+ int acpi_table_init (void);
+ int acpi_table_parse(char *id, acpi_tbl_table_handler handler);
+ int __init acpi_table_parse_entries(char *id, unsigned long table_size,
+@@ -807,9 +811,12 @@ static inline int acpi_boot_init(void)
+ 	return 0;
+ }
  
-@@ -3764,7 +3760,7 @@ static const struct bpf_func_proto sk_sk
- static inline int __bpf_skb_change_head(struct sk_buff *skb, u32 head_room,
- 					u64 flags)
++static inline void acpi_boot_table_prepare(void)
++{
++}
++
+ static inline void acpi_boot_table_init(void)
  {
--	u32 max_len = __bpf_skb_max_len(skb);
-+	u32 max_len = BPF_SKB_MAX_LEN;
- 	u32 new_len = skb->len + head_room;
- 	int ret;
+-	return;
+ }
  
+ static inline int acpi_mps_check(void)
 
 
