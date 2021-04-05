@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 549013540D9
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C62E353E8B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241027AbhDEJXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:23:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40272 "EHLO mail.kernel.org"
+        id S238072AbhDEJGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:06:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232529AbhDEJSD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:18:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DBAC16139D;
-        Mon,  5 Apr 2021 09:17:56 +0000 (UTC)
+        id S238501AbhDEJFC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:05:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 700826139D;
+        Mon,  5 Apr 2021 09:04:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617614277;
-        bh=C4VUF+Qpl1xiNSAGeR3mPOLfwI6zyTsVilv7iay51p8=;
+        s=korg; t=1617613495;
+        bh=n+xJmCDSVXvBQULx+GnFO8Z5eb7mV3X7wFPrmp1fb1M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UUv9NU9EzPmmPulDUGv+M5EBeEAQucbpolP9BLPOuGAyzbovzGF122zo2HfodyUVN
-         2sAxxtZcdjr42BsZsOLuXo9NSf+qxgUizr/+jULJJW/kTwrt62HpWH43esRj/rcmKg
-         20kwgbBsHfFjLx+qaNC6ggebV8dBZEoWrLGk+vBs=
+        b=2k+TxyqT4UsFoisVLSRjgFtINA8R3ppZi/jQsBHs4f2C9PHrLzQpMt9IlfRY+ca2Y
+         /3yRqz42xe4vSfdbfsVb9JfH3iQzMHq8O4VDejdqfyyScZKKsTPbeOHRX3dhdHdOHo
+         cukEXWFy0UMYmY6rB2Jj2LgiqbMrc9nicYOOuVJw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ben Gardon <bgardon@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 113/152] KVM: x86/mmu: Ensure TLBs are flushed when yielding during GFN range zap
-Date:   Mon,  5 Apr 2021 10:54:22 +0200
-Message-Id: <20210405085037.905514557@linuxfoundation.org>
+Subject: [PATCH 5.4 59/74] firewire: nosy: Fix a use-after-free bug in nosy_ioctl()
+Date:   Mon,  5 Apr 2021 10:54:23 +0200
+Message-Id: <20210405085026.641053879@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
-References: <20210405085034.233917714@linuxfoundation.org>
+In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
+References: <20210405085024.703004126@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,113 +42,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-[ Upstream commit a835429cda91621fca915d80672a157b47738afb ]
+[ Upstream commit 829933ef05a951c8ff140e814656d73e74915faf ]
 
-When flushing a range of GFNs across multiple roots, ensure any pending
-flush from a previous root is honored before yielding while walking the
-tables of the current root.
+For each device, the nosy driver allocates a pcilynx structure.
+A use-after-free might happen in the following scenario:
 
-Note, kvm_tdp_mmu_zap_gfn_range() now intentionally overwrites its local
-"flush" with the result to avoid redundant flushes.  zap_gfn_range()
-preserves and return the incoming "flush", unless of course the flush was
-performed prior to yielding and no new flush was triggered.
+ 1. Open nosy device for the first time and call ioctl with command
+    NOSY_IOC_START, then a new client A will be malloced and added to
+    doubly linked list.
+ 2. Open nosy device for the second time and call ioctl with command
+    NOSY_IOC_START, then a new client B will be malloced and added to
+    doubly linked list.
+ 3. Call ioctl with command NOSY_IOC_START for client A, then client A
+    will be readded to the doubly linked list. Now the doubly linked
+    list is messed up.
+ 4. Close the first nosy device and nosy_release will be called. In
+    nosy_release, client A will be unlinked and freed.
+ 5. Close the second nosy device, and client A will be referenced,
+    resulting in UAF.
 
-Fixes: 1af4a96025b3 ("KVM: x86/mmu: Yield in TDU MMU iter even if no SPTES changed")
-Cc: stable@vger.kernel.org
-Reviewed-by: Ben Gardon <bgardon@google.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210325200119.1359384-2-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+The root cause of this bug is that the element in the doubly linked list
+is reentered into the list.
+
+Fix this bug by adding a check before inserting a client.  If a client
+is already in the linked list, don't insert it.
+
+The following KASAN report reveals it:
+
+   BUG: KASAN: use-after-free in nosy_release+0x1ea/0x210
+   Write of size 8 at addr ffff888102ad7360 by task poc
+   CPU: 3 PID: 337 Comm: poc Not tainted 5.12.0-rc5+ #6
+   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+   Call Trace:
+     nosy_release+0x1ea/0x210
+     __fput+0x1e2/0x840
+     task_work_run+0xe8/0x180
+     exit_to_user_mode_prepare+0x114/0x120
+     syscall_exit_to_user_mode+0x1d/0x40
+     entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+   Allocated by task 337:
+     nosy_open+0x154/0x4d0
+     misc_open+0x2ec/0x410
+     chrdev_open+0x20d/0x5a0
+     do_dentry_open+0x40f/0xe80
+     path_openat+0x1cf9/0x37b0
+     do_filp_open+0x16d/0x390
+     do_sys_openat2+0x11d/0x360
+     __x64_sys_open+0xfd/0x1a0
+     do_syscall_64+0x33/0x40
+     entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+   Freed by task 337:
+     kfree+0x8f/0x210
+     nosy_release+0x158/0x210
+     __fput+0x1e2/0x840
+     task_work_run+0xe8/0x180
+     exit_to_user_mode_prepare+0x114/0x120
+     syscall_exit_to_user_mode+0x1d/0x40
+     entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+   The buggy address belongs to the object at ffff888102ad7300 which belongs to the cache kmalloc-128 of size 128
+   The buggy address is located 96 bytes inside of 128-byte region [ffff888102ad7300, ffff888102ad7380)
+
+[ Modified to use 'list_empty()' inside proper lock  - Linus ]
+
+Link: https://lore.kernel.org/lkml/1617433116-5930-1-git-send-email-zheyuma97@gmail.com/
+Reported-and-tested-by: 马哲宇 (Zheyu Ma) <zheyuma97@gmail.com>
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Cc: Greg Kroah-Hartman <greg@kroah.com>
+Cc: Stefan Richter <stefanr@s5r6.in-berlin.de>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/mmu/tdp_mmu.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ drivers/firewire/nosy.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 65c9172dcdf9..50c088a41dee 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -111,7 +111,7 @@ bool is_tdp_mmu_root(struct kvm *kvm, hpa_t hpa)
- }
+diff --git a/drivers/firewire/nosy.c b/drivers/firewire/nosy.c
+index 0cc746673677..9ee747a85ee4 100644
+--- a/drivers/firewire/nosy.c
++++ b/drivers/firewire/nosy.c
+@@ -346,6 +346,7 @@ nosy_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	struct client *client = file->private_data;
+ 	spinlock_t *client_list_lock = &client->lynx->client_list_lock;
+ 	struct nosy_stats stats;
++	int ret;
  
- static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
--			  gfn_t start, gfn_t end, bool can_yield);
-+			  gfn_t start, gfn_t end, bool can_yield, bool flush);
+ 	switch (cmd) {
+ 	case NOSY_IOC_GET_STATS:
+@@ -360,11 +361,15 @@ nosy_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 			return 0;
  
- void kvm_tdp_mmu_free_root(struct kvm *kvm, struct kvm_mmu_page *root)
- {
-@@ -124,7 +124,7 @@ void kvm_tdp_mmu_free_root(struct kvm *kvm, struct kvm_mmu_page *root)
+ 	case NOSY_IOC_START:
++		ret = -EBUSY;
+ 		spin_lock_irq(client_list_lock);
+-		list_add_tail(&client->link, &client->lynx->client_list);
++		if (list_empty(&client->link)) {
++			list_add_tail(&client->link, &client->lynx->client_list);
++			ret = 0;
++		}
+ 		spin_unlock_irq(client_list_lock);
  
- 	list_del(&root->link);
+-		return 0;
++		return ret;
  
--	zap_gfn_range(kvm, root, 0, max_gfn, false);
-+	zap_gfn_range(kvm, root, 0, max_gfn, false, false);
- 
- 	free_page((unsigned long)root->spt);
- 	kmem_cache_free(mmu_page_header_cache, root);
-@@ -506,20 +506,21 @@ static inline bool tdp_mmu_iter_cond_resched(struct kvm *kvm,
-  * scheduler needs the CPU or there is contention on the MMU lock. If this
-  * function cannot yield, it will not release the MMU lock or reschedule and
-  * the caller must ensure it does not supply too large a GFN range, or the
-- * operation can cause a soft lockup.
-+ * operation can cause a soft lockup.  Note, in some use cases a flush may be
-+ * required by prior actions.  Ensure the pending flush is performed prior to
-+ * yielding.
-  */
- static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
--			  gfn_t start, gfn_t end, bool can_yield)
-+			  gfn_t start, gfn_t end, bool can_yield, bool flush)
- {
- 	struct tdp_iter iter;
--	bool flush_needed = false;
- 
- 	rcu_read_lock();
- 
- 	tdp_root_for_each_pte(iter, root, start, end) {
- 		if (can_yield &&
--		    tdp_mmu_iter_cond_resched(kvm, &iter, flush_needed)) {
--			flush_needed = false;
-+		    tdp_mmu_iter_cond_resched(kvm, &iter, flush)) {
-+			flush = false;
- 			continue;
- 		}
- 
-@@ -537,11 +538,11 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
- 			continue;
- 
- 		tdp_mmu_set_spte(kvm, &iter, 0);
--		flush_needed = true;
-+		flush = true;
- 	}
- 
- 	rcu_read_unlock();
--	return flush_needed;
-+	return flush;
- }
- 
- /*
-@@ -556,7 +557,7 @@ bool kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start, gfn_t end)
- 	bool flush = false;
- 
- 	for_each_tdp_mmu_root_yield_safe(kvm, root)
--		flush |= zap_gfn_range(kvm, root, start, end, true);
-+		flush = zap_gfn_range(kvm, root, start, end, true, flush);
- 
- 	return flush;
- }
-@@ -759,7 +760,7 @@ static int zap_gfn_range_hva_wrapper(struct kvm *kvm,
- 				     struct kvm_mmu_page *root, gfn_t start,
- 				     gfn_t end, unsigned long unused)
- {
--	return zap_gfn_range(kvm, root, start, end, false);
-+	return zap_gfn_range(kvm, root, start, end, false, false);
- }
- 
- int kvm_tdp_mmu_zap_hva_range(struct kvm *kvm, unsigned long start,
+ 	case NOSY_IOC_STOP:
+ 		spin_lock_irq(client_list_lock);
 -- 
-2.30.1
+2.30.2
 
 
 
