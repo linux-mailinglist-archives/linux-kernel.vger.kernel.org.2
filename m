@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 688DF353E34
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0811F353DD8
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238117AbhDEJE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:04:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46030 "EHLO mail.kernel.org"
+        id S237500AbhDEJCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:02:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237596AbhDEJDO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:03:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC0B861002;
-        Mon,  5 Apr 2021 09:03:06 +0000 (UTC)
+        id S237271AbhDEJBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:01:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0628361394;
+        Mon,  5 Apr 2021 09:00:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613387;
-        bh=QHdcJTezi9bvA14StpNy4bsRWJsJICWDl/4yxaAs0+Y=;
+        s=korg; t=1617613254;
+        bh=AHro/VPxImJ4sVTOIy7ZhzB8W9koRddp7QCdU74msOQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UO5y6SC5ui5r6TxI2ntA+Bg9yfJ57D9rVZOgv1PtOPNcBkDoHEy0mLOhXpRunPH26
-         3gWL9G8DEf90B/BO/y9p01i3iNfY2JbiAe9d+Fi2ni63SP/AzuWoIKHLwMfriX952V
-         /vaK1tqnUwiW9EgjkJbe3IDUJ+zPKwNdgMBT7RuY=
+        b=Z/EkF190Nifmy0HHe7NeOQE4Yi6qkCLjxQ/W7uQmlrksLs5+RCULxrv9M7Rkqd8kR
+         3ok0dxIEaoTuwwU3U+bWUrDjDhY3ehW6bljKFoNF6/H8V8AVWUl8hLCiqyIGrQ2tlW
+         muPv8SK35HoaxOXYXVbjCOYsymoFo7E5ZAgMpdac=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ritesh Harjani <riteshh@linux.ibm.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 10/74] iomap: Fix negative assignment to unsigned sis->pages in iomap_swapfile_activate
-Date:   Mon,  5 Apr 2021 10:53:34 +0200
-Message-Id: <20210405085025.065661001@linuxfoundation.org>
+        stable@vger.kernel.org, Zhaolong Zhang <zhangzl2013@126.com>,
+        Theodore Tso <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 04/56] ext4: fix bh ref count on error paths
+Date:   Mon,  5 Apr 2021 10:53:35 +0200
+Message-Id: <20210405085022.699165432@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
-References: <20210405085024.703004126@linuxfoundation.org>
+In-Reply-To: <20210405085022.562176619@linuxfoundation.org>
+References: <20210405085022.562176619@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,88 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ritesh Harjani <riteshh@linux.ibm.com>
+From: Zhaolong Zhang <zhangzl2013@126.com>
 
-[ Upstream commit 5808fecc572391867fcd929662b29c12e6d08d81 ]
+[ Upstream commit c915fb80eaa6194fa9bd0a4487705cd5b0dda2f1 ]
 
-In case if isi.nr_pages is 0, we are making sis->pages (which is
-unsigned int) a huge value in iomap_swapfile_activate() by assigning -1.
-This could cause a kernel crash in kernel v4.18 (with below signature).
-Or could lead to unknown issues on latest kernel if the fake big swap gets
-used.
+__ext4_journalled_writepage should drop bhs' ref count on error paths
 
-Fix this issue by returning -EINVAL in case of nr_pages is 0, since it
-is anyway a invalid swapfile. Looks like this issue will be hit when
-we have pagesize < blocksize type of configuration.
-
-I was able to hit the issue in case of a tiny swap file with below
-test script.
-https://raw.githubusercontent.com/riteshharjani/LinuxStudy/master/scripts/swap-issue.sh
-
-kernel crash analysis on v4.18
-==============================
-On v4.18 kernel, it causes a kernel panic, since sis->pages becomes
-a huge value and isi.nr_extents is 0. When 0 is returned it is
-considered as a swapfile over NFS and SWP_FILE is set (sis->flags |= SWP_FILE).
-Then when swapoff was getting called it was calling a_ops->swap_deactivate()
-if (sis->flags & SWP_FILE) is true. Since a_ops->swap_deactivate() is
-NULL in case of XFS, it causes below panic.
-
-Panic signature on v4.18 kernel:
-=======================================
-root@qemu:/home/qemu# [ 8291.723351] XFS (loop2): Unmounting Filesystem
-[ 8292.123104] XFS (loop2): Mounting V5 Filesystem
-[ 8292.132451] XFS (loop2): Ending clean mount
-[ 8292.263362] Adding 4294967232k swap on /mnt1/test/swapfile.  Priority:-2 extents:1 across:274877906880k
-[ 8292.277834] Unable to handle kernel paging request for instruction fetch
-[ 8292.278677] Faulting instruction address: 0x00000000
-cpu 0x19: Vector: 400 (Instruction Access) at [c0000009dd5b7ad0]
-    pc: 0000000000000000
-    lr: c0000000003eb9dc: destroy_swap_extents+0xfc/0x120
-    sp: c0000009dd5b7d50
-   msr: 8000000040009033
-  current = 0xc0000009b6710080
-  paca    = 0xc00000003ffcb280   irqmask: 0x03   irq_happened: 0x01
-    pid   = 5604, comm = swapoff
-Linux version 4.18.0 (riteshh@xxxxxxx) (gcc version 8.4.0 (Ubuntu 8.4.0-1ubuntu1~18.04)) #57 SMP Wed Mar 3 01:33:04 CST 2021
-enter ? for help
-[link register   ] c0000000003eb9dc destroy_swap_extents+0xfc/0x120
-[c0000009dd5b7d50] c0000000025a7058 proc_poll_event+0x0/0x4 (unreliable)
-[c0000009dd5b7da0] c0000000003f0498 sys_swapoff+0x3f8/0x910
-[c0000009dd5b7e30] c00000000000bbe4 system_call+0x5c/0x70
-Exception: c01 (System Call) at 00007ffff7d208d8
-
-Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-[djwong: rework the comment to provide more details]
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-Signed-off-by: Darrick J. Wong <djwong@kernel.org>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Zhaolong Zhang <zhangzl2013@126.com>
+Link: https://lore.kernel.org/r/1614678151-70481-1-git-send-email-zhangzl2013@126.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/iomap/swapfile.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ fs/ext4/inode.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/iomap/swapfile.c b/fs/iomap/swapfile.c
-index 152a230f668d..bd0cc3dcc980 100644
---- a/fs/iomap/swapfile.c
-+++ b/fs/iomap/swapfile.c
-@@ -169,6 +169,16 @@ int iomap_swapfile_activate(struct swap_info_struct *sis,
- 			return ret;
- 	}
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 1c6fd526ea97..7959aae4857e 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -2072,13 +2072,13 @@ static int __ext4_journalled_writepage(struct page *page,
+ 	if (!ret)
+ 		ret = err;
  
-+	/*
-+	 * If this swapfile doesn't contain even a single page-aligned
-+	 * contiguous range of blocks, reject this useless swapfile to
-+	 * prevent confusion later on.
-+	 */
-+	if (isi.nr_pages == 0) {
-+		pr_warn("swapon: Cannot find a single usable page in file.\n");
-+		return -EINVAL;
-+	}
-+
- 	*pagespan = 1 + isi.highest_ppage - isi.lowest_ppage;
- 	sis->max = isi.nr_pages;
- 	sis->pages = isi.nr_pages - 1;
+-	if (!ext4_has_inline_data(inode))
+-		ext4_walk_page_buffers(NULL, page_bufs, 0, len,
+-				       NULL, bput_one);
+ 	ext4_set_inode_state(inode, EXT4_STATE_JDATA);
+ out:
+ 	unlock_page(page);
+ out_no_pagelock:
++	if (!inline_data && page_bufs)
++		ext4_walk_page_buffers(NULL, page_bufs, 0, len,
++				       NULL, bput_one);
+ 	brelse(inode_bh);
+ 	return ret;
+ }
 -- 
 2.30.1
 
