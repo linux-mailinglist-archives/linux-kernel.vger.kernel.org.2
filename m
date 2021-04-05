@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC011353FBC
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E250353FBE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239607AbhDEJOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:14:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56532 "EHLO mail.kernel.org"
+        id S239637AbhDEJOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:14:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238893AbhDEJKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:10:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 706C3613A1;
-        Mon,  5 Apr 2021 09:10:14 +0000 (UTC)
+        id S239229AbhDEJKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:10:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90BD3613AD;
+        Mon,  5 Apr 2021 09:10:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613815;
-        bh=WOFnRVbIdQDdvsjuUNmXBLwRkqJufNr/tLKtBWOjZL8=;
+        s=korg; t=1617613820;
+        bh=3/NahcVERyTwRV01NBCmclz3lMQXroZGy7L7zyEmRAo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dm8S0YovdA6ua1sKqmTHDnYTIAzRVzugrzg6j6shPz2WUCULg6lFCEJ1DD1W+QIVl
-         ZPGmO5zHu79GSux1xsB2cYhno11MdhiJWNoIbGOvLlqB9BQ4vwAt2nuulR8FcfC6Ux
-         51XtpAX/5InymOT0zdFMl1+X775Y9ZdmqhyiFN1g=
+        b=Yv5tvIz3Ouo34f21yd55Bi4W5DuimZNn4WYN65wzqj3QMi7gniN7e50zeOKtErMd5
+         kX2+QiI4RPiDBI5UIAdJbBfqoVEZlGybK7z3kA510iuO3sTYX2KzpQaYZt2Eg4vp23
+         +1jkkaVwgmzRjoQQ/4PYiXJCl/zYW28cH+AxsCrI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Richard Gong <richard.gong@intel.com>,
-        Tom Rix <trix@redhat.com>, Moritz Fischer <mdf@kernel.org>,
+        stable@vger.kernel.org, Serge Semin <fancer.lancer@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 101/126] firmware: stratix10-svc: reset COMMAND_RECONFIG_FLAG_PARTIAL to 0
-Date:   Mon,  5 Apr 2021 10:54:23 +0200
-Message-Id: <20210405085034.386672665@linuxfoundation.org>
+Subject: [PATCH 5.10 102/126] usb: dwc3: pci: Enable dis_uX_susphy_quirk for Intel Merrifield
+Date:   Mon,  5 Apr 2021 10:54:24 +0200
+Message-Id: <20210405085034.417508050@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
 References: <20210405085031.040238881@linuxfoundation.org>
@@ -40,35 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Gong <richard.gong@intel.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 2e8496f31d0be8f43849b2980b069f3a9805d047 ]
+[ Upstream commit b522f830d35189e0283fa4d5b4b3ef8d7a78cfcb ]
 
-Clean up COMMAND_RECONFIG_FLAG_PARTIAL flag by resetting it to 0, which
-aligns with the firmware settings.
+It seems that on Intel Merrifield platform the USB PHY shouldn't be suspended.
+Otherwise it can't be enabled by simply change the cable in the connector.
 
-Fixes: 36847f9e3e56 ("firmware: stratix10-svc: correct reconfig flag and timeout values")
-Signed-off-by: Richard Gong <richard.gong@intel.com>
-Reviewed-by: Tom Rix <trix@redhat.com>
-Signed-off-by: Moritz Fischer <mdf@kernel.org>
+Enable corresponding quirk for the platform in question.
+
+Fixes: e5f4ca3fce90 ("usb: dwc3: ulpi: Fix USB2.0 HS/FS/LS PHY suspend regression")
+Suggested-by: Serge Semin <fancer.lancer@gmail.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20210322125244.79407-1-andriy.shevchenko@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/firmware/intel/stratix10-svc-client.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/dwc3/dwc3-pci.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/include/linux/firmware/intel/stratix10-svc-client.h b/include/linux/firmware/intel/stratix10-svc-client.h
-index a93d85932eb9..f843c6a10cf3 100644
---- a/include/linux/firmware/intel/stratix10-svc-client.h
-+++ b/include/linux/firmware/intel/stratix10-svc-client.h
-@@ -56,7 +56,7 @@
-  * COMMAND_RECONFIG_FLAG_PARTIAL:
-  * Set to FPGA configuration type (full or partial).
-  */
--#define COMMAND_RECONFIG_FLAG_PARTIAL	1
-+#define COMMAND_RECONFIG_FLAG_PARTIAL	0
- 
- /**
-  * Timeout settings for service clients:
+diff --git a/drivers/usb/dwc3/dwc3-pci.c b/drivers/usb/dwc3/dwc3-pci.c
+index bae6a70664c8..598daed8086f 100644
+--- a/drivers/usb/dwc3/dwc3-pci.c
++++ b/drivers/usb/dwc3/dwc3-pci.c
+@@ -118,6 +118,8 @@ static const struct property_entry dwc3_pci_intel_properties[] = {
+ static const struct property_entry dwc3_pci_mrfld_properties[] = {
+ 	PROPERTY_ENTRY_STRING("dr_mode", "otg"),
+ 	PROPERTY_ENTRY_STRING("linux,extcon-name", "mrfld_bcove_pwrsrc"),
++	PROPERTY_ENTRY_BOOL("snps,dis_u3_susphy_quirk"),
++	PROPERTY_ENTRY_BOOL("snps,dis_u2_susphy_quirk"),
+ 	PROPERTY_ENTRY_BOOL("linux,sysdev_is_parent"),
+ 	{}
+ };
 -- 
 2.30.2
 
