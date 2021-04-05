@@ -2,68 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C461354124
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:38:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6331354118
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234703AbhDEKSr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 5 Apr 2021 06:18:47 -0400
-Received: from smail03.liguriadigitale.it ([81.23.93.204]:56373 "EHLO
-        smail03.liguriadigitale.it" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232124AbhDEKSq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 06:18:46 -0400
-X-Greylist: delayed 631 seconds by postgrey-1.27 at vger.kernel.org; Mon, 05 Apr 2021 06:18:46 EDT
-Received: from smail03.liguriadigitale.it (localhost.localdomain [127.0.0.1])
-        by localhost (Email Security Appliance) with SMTP id 75B2BAAA53_6AE187B;
-        Mon,  5 Apr 2021 10:08:07 +0000 (GMT)
-Received: from owa.asl3.liguria.it (asl3mb02.usl3.it [10.100.192.112])
-        by smail03.liguriadigitale.it (Sophos Email Appliance) with ESMTP id 1C789A97F8_6AE186F;
-        Mon,  5 Apr 2021 10:08:05 +0000 (GMT)
-Received: from Asl3mb02.usl3.it (10.100.192.112) by Asl3mb02.usl3.it
- (10.100.192.112) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Mon, 5 Apr 2021
- 12:08:05 +0200
-Received: from Asl3mb02.usl3.it ([fe80::748f:1b42:d83e:d18f]) by
- Asl3mb02.usl3.it ([fe80::748f:1b42:d83e:d18f%8]) with mapi id 15.01.2242.004;
- Mon, 5 Apr 2021 12:08:05 +0200
-From:   <Rosa.Lombardo@asl3.liguria.it>
-To:     <NO-REPLY@MICROSOFT.NET>
-Subject: =?iso-8859-1?Q?Om_du_inte_verifierar_ditt_konto_inom_n=E4sta_timme_fr=E5n?=
- =?iso-8859-1?Q?_och_med_nu_kommer_ditt_konto_att_st=E4ngas_av?=
-Thread-Topic: =?iso-8859-1?Q?Om_du_inte_verifierar_ditt_konto_inom_n=E4sta_timme_fr=E5n?=
- =?iso-8859-1?Q?_och_med_nu_kommer_ditt_konto_att_st=E4ngas_av?=
-Thread-Index: AQHXKgLp7SSXRj+HaUyDA1Udgh8giA==
-Date:   Mon, 5 Apr 2021 10:08:03 +0000
-Message-ID: <197ad509de3c4133b32bc73eec2ac5ea@asl3.liguria.it>
-Accept-Language: it-IT, en-US
-Content-Language: it-IT
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [212.102.54.109]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+        id S241037AbhDEKKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 06:10:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50016 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232456AbhDEKKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 06:10:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91E1E61278;
+        Mon,  5 Apr 2021 10:10:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617617405;
+        bh=Je/iwEPKGmWwfpx6j9nU8e8Cx0cbV02FGR+9cImDvtU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=F9FTALqjBFbtV7oQpMRcYa2WpyX4RL+k+DoVQsoXjFO+qSHpnXlFc1YIro5ohuikj
+         0EgGr4bYUBdrCigV1+t4BXBLDRKiBrY75DTptvrBqSlGKT6w8ShM4LqfsDUeKwbW7k
+         mhk/Kbnxf4/G29RZajcgxDFBdqZnDRpJOA8alYWo=
+Date:   Mon, 5 Apr 2021 12:10:02 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     David Villasana =?iso-8859-1?Q?Jim=E9nez?= 
+        <davidvillasana14@gmail.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com
+Subject: Re: [PATCH] kpc2000: kpc2000: Removed extra blank line
+Message-ID: <YGrh+jxGDczfqoeB@kroah.com>
+References: <YGpCij8SVkJwO9AN@fedora>
 MIME-Version: 1.0
-X-SASI-RCODE: 200
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YGpCij8SVkJwO9AN@fedora>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MICROSOFT VERIFIKATION BEHÖVS
+On Sun, Apr 04, 2021 at 05:49:46PM -0500, David Villasana Jiménez wrote:
+> Fix checkpatch warning:
+> CHECK: Please don't use multiple blank lines
+> 
+> Signed-off-by: David Villasana Jiménez <davidvillasana14@gmail.com>
+> ---
+>  drivers/staging/kpc2000/kpc2000/pcie.h | 1 -
+>  1 file changed, 1 deletion(-)
 
-Vi har uppgraderat vårt e-postsystem till Microsoft Outlook Web Access 2021.
-Denna tjänst ger mer utrymme och gör e-post enklare att använda. Klicka på länken
-nedan för att uppdatera ditt konto och ta emot avstängningsinlägg
+Shouldn't the subject line something like:
+	[PATCH] staging: kpc2000: pcie.h: Remove extra blank line
 
-Klicka för att uppdatera ditt konto: Verifiera<https://con610.wixsite.com/owa-auth-logon>
+?
 
-Om du inte anger nödvändiga uppgifter som e-post användarnamn
-och lösenord ditt konto kommer att stängas av, tack.
+Please fix up and try again.
 
-supporttjänst (@) 2021 Med ensamrätt
+thanks,
 
-
-
-
-
-
-Le informazioni contenute in questo messaggio di posta elettronica e nei files allegati sono da considerarsi strettamente riservate. Qualora riceveste questo messaggio senza esserne il destinatario, vi preghiamo cortesemente di darcene notizia via e-mail e di procedere alla cancellazione del messaggio stesso eliminandolo dal vostro sistema. Costituisce comportamento contrario ai principi dettati dal Regolamento UE 2016/679 trattenere il messaggio stesso, divulgarlo anche in parte, distribuirlo ad altri soggetti, copiarlo od utilizzarlo per finalità diverse. Portiamo inoltre alla Vostra attenzione che il presente messaggio, così come ogni risposta e/o altro/messaggio inviata all'account mittente saranno considerati di natura lavorativa e - come tali - possono essere conosciuti da altri soggetti appartenenti all'organizzazione cui appartiene il mittente
+greg k-h
