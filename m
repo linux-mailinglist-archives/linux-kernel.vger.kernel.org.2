@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC30D353CC8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A22A7353D32
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232502AbhDEI4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 04:56:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34792 "EHLO mail.kernel.org"
+        id S234248AbhDEI67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 04:58:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232909AbhDEI4Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 04:56:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A807B610E8;
-        Mon,  5 Apr 2021 08:56:17 +0000 (UTC)
+        id S233666AbhDEI6T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:58:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8919860238;
+        Mon,  5 Apr 2021 08:58:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617612978;
-        bh=kPHWAkUxrG8FymUtRS+p4OnqtwHyUCmrfDk9wyyS04Y=;
+        s=korg; t=1617613094;
+        bh=pvBf/YINN+E8y4O0oiMRslXg0ySwZRGzzI2+yh2S1eU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ywhUOTMU8OMsVh2MFjE6HtJ9nJlQqSjNROmUgoxPHiFy26nU9Xx8GHwyGZphUzaHr
-         uxBg4bHiQKN5CeD0LW5dM0YvCTWhMyS39xxu3PUhFRUTYjLK41h9/r76x9xMUWDynz
-         WB0u4KPn459VzKMxErko7z4Lj+qDbwE7q9UYEV7I=
+        b=EQ+TumKwWAywwi2CcPY+gqIE0dWiGsSlNIqRKLllGKyMqjeghzJIshiDQ8+MHP9Q3
+         oCmNxb3fvZbNBb+P1EOyGQeC8VgLg+y4naj1wJyip+ff0jrFsb2VW2v1KIPLm4Fasg
+         91RznS9e8oQv0bvkx1z0NO5D1TUO/vwHYjleyoqc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Kai=20M=C3=A4kisara?= <kai.makisara@kolumbus.fi>,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Sameer Pujar <spujar@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 08/28] scsi: st: Fix a use after free in st_open()
-Date:   Mon,  5 Apr 2021 10:53:42 +0200
-Message-Id: <20210405085017.288255572@linuxfoundation.org>
+Subject: [PATCH 4.14 17/52] ASoC: rt5659: Update MCLK rate in set_sysclk()
+Date:   Mon,  5 Apr 2021 10:53:43 +0200
+Message-Id: <20210405085022.565860015@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085017.012074144@linuxfoundation.org>
-References: <20210405085017.012074144@linuxfoundation.org>
+In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
+References: <20210405085021.996963957@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,37 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+From: Sameer Pujar <spujar@nvidia.com>
 
-[ Upstream commit c8c165dea4c8f5ad67b1240861e4f6c5395fa4ac ]
+[ Upstream commit dbf54a9534350d6aebbb34f5c1c606b81a4f35dd ]
 
-In st_open(), if STp->in_use is true, STp will be freed by
-scsi_tape_put(). However, STp is still used by DEBC_printk() after. It is
-better to DEBC_printk() before scsi_tape_put().
+Simple-card/audio-graph-card drivers do not handle MCLK clock when it
+is specified in the codec device node. The expectation here is that,
+the codec should actually own up the MCLK clock and do necessary setup
+in the driver.
 
-Link: https://lore.kernel.org/r/20210311064636.10522-1-lyl2019@mail.ustc.edu.cn
-Acked-by: Kai Mäkisara <kai.makisara@kolumbus.fi>
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Suggested-by: Mark Brown <broonie@kernel.org>
+Suggested-by: Michael Walle <michael@walle.cc>
+Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+Link: https://lore.kernel.org/r/1615829492-8972-3-git-send-email-spujar@nvidia.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/st.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/rt5659.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/scsi/st.c b/drivers/scsi/st.c
-index 088a68ab4246..3a3876091a9d 100644
---- a/drivers/scsi/st.c
-+++ b/drivers/scsi/st.c
-@@ -1267,8 +1267,8 @@ static int st_open(struct inode *inode, struct file *filp)
- 	spin_lock(&st_use_lock);
- 	if (STp->in_use) {
- 		spin_unlock(&st_use_lock);
--		scsi_tape_put(STp);
- 		DEBC_printk(STp, "Device already in use.\n");
-+		scsi_tape_put(STp);
- 		return (-EBUSY);
- 	}
+diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
+index fa66b11df8d4..ae626d57c1ad 100644
+--- a/sound/soc/codecs/rt5659.c
++++ b/sound/soc/codecs/rt5659.c
+@@ -3391,12 +3391,17 @@ static int rt5659_set_dai_sysclk(struct snd_soc_dai *dai,
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
+ 	unsigned int reg_val = 0;
++	int ret;
  
+ 	if (freq == rt5659->sysclk && clk_id == rt5659->sysclk_src)
+ 		return 0;
+ 
+ 	switch (clk_id) {
+ 	case RT5659_SCLK_S_MCLK:
++		ret = clk_set_rate(rt5659->mclk, freq);
++		if (ret)
++			return ret;
++
+ 		reg_val |= RT5659_SCLK_SRC_MCLK;
+ 		break;
+ 	case RT5659_SCLK_S_PLL1:
 -- 
 2.30.1
 
