@@ -2,209 +2,382 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67501354687
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 20:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0CE35468C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 20:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232651AbhDESG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 14:06:26 -0400
-Received: from mga11.intel.com ([192.55.52.93]:57773 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232098AbhDESGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 14:06:25 -0400
-IronPort-SDR: D7FmQOSSR6hDgFfbXIWmF76t6Guqv5dKHOADRjV3cgUduVIInvJqu/fAqTx34c4KwtOTiRAceX
- Cn+Yuy/DlMLA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="189678685"
-X-IronPort-AV: E=Sophos;i="5.81,307,1610438400"; 
-   d="scan'208";a="189678685"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2021 11:06:18 -0700
-IronPort-SDR: Wid4jYaT7iR6HusUhyJU8OHYpweLwxHkvGEIKF/czBO21TFa9pS7R7o0IijhvU/hbFOGZVgyF5
- CHymeLuWBqvA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,307,1610438400"; 
-   d="scan'208";a="448153126"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by fmsmga002.fm.intel.com with ESMTP; 05 Apr 2021 11:06:18 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 5 Apr 2021 11:06:17 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
- via Frontend Transport; Mon, 5 Apr 2021 11:06:17 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.109)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2106.2; Mon, 5 Apr 2021 11:06:17 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ixW3BVbb7pWZA3y3UMbGaalN88sS0tD4ovb7w9KPo6xif45Z9seY7kn7idLfh0OBCrYQC8S+ObYEYEOIpY34bq+1ynqXteHERvbhemFlrVLogqKC5LuKoPLKtAuIhecnDXvk7gJsns8dGUj39y8boDvP1Ng0L92wE/FJLtmefJk85TH6wsOAmP0xJsu5zJxSWhnJUSb2xPFSPB5Bk/H2k133Q4AJU9mkZRoKqBSvhPq/33paDdrd47W+BqslLCtA+cgRDozVH6epqRZXzWJHZYEkRaBObAqYvHkcVDvrYG4p/96bLin/RdaQQXy0zUQrBSp7ixVFjUHvgcmOybrlkQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gZxD7zKCAT195Qz69Etwna9smxfz8LfXOF1XyWDYbHI=;
- b=ltO0VI/uMFzCLqTP8/N19uJOWUPTmsEO6nhEiCYe6Px4sxwiDYSrXYbkfnFNhliBpL0cpLgpD+Gr6rhF4ebyTXxEj5jTIVeD9EkAUl8NEpELB+r1QtqW0PHgTYrID7TXvQMpXuXCf+vzVtkjsgCChXhGDpOzRtVUrseokTgTuVDhT6FkhWBz89V5NDynHduN73c8LFirmxEs+bo1cLFFISmzYXcbuUypygD4tcMFBRyT+I8IHwHpqupHe+rXWhJ8iwZg3Z85FJ4Ub/EpuPMWuLROymau1dXocT/WoS+bHu91ep8wLybg7E+okWC6gHvU85E/RPtDAgpQNCVTvGBHqA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gZxD7zKCAT195Qz69Etwna9smxfz8LfXOF1XyWDYbHI=;
- b=rrgKZm26OsB82q1zFQ5rvvtvG21XclQjE11kiSq6LkbQTQFh12JUQ3NcmSDvZMbce/RuS8vwxr7joru65syx73UiSaPHjaqQlQN5CkPsxA4faSUyW21kT1n75TTizXHc2XlmqEcDc5UtJQYr4cRAfNe4hl1qVDYS0bmKdn9h1Rs=
-Received: from BYAPR11MB2870.namprd11.prod.outlook.com (2603:10b6:a02:cb::12)
- by SJ0PR11MB4989.namprd11.prod.outlook.com (2603:10b6:a03:2d9::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.26; Mon, 5 Apr
- 2021 18:06:16 +0000
-Received: from BYAPR11MB2870.namprd11.prod.outlook.com
- ([fe80::e9ed:af43:83bb:e111]) by BYAPR11MB2870.namprd11.prod.outlook.com
- ([fe80::e9ed:af43:83bb:e111%5]) with mapi id 15.20.3999.032; Mon, 5 Apr 2021
- 18:06:16 +0000
-From:   "Wong, Vee Khee" <vee.khee.wong@intel.com>
-To:     "Voon, Weifeng" <weifeng.voon@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "Ong, Boon Leong" <boon.leong.ong@intel.com>
-Subject: RE: [PATCH net-next] net: intel: Enable SERDES PHY rx clk for PSE
-Thread-Topic: [PATCH net-next] net: intel: Enable SERDES PHY rx clk for PSE
-Thread-Index: AQHXKjl+rky0JfTKSkKXgsaYG/rI46qmN/cg
-Date:   Mon, 5 Apr 2021 18:06:16 +0000
-Message-ID: <BYAPR11MB28702C161D1C95E0D5C3A64AAB779@BYAPR11MB2870.namprd11.prod.outlook.com>
-References: <20210405163357.30902-1-weifeng.voon@intel.com>
-In-Reply-To: <20210405163357.30902-1-weifeng.voon@intel.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-authentication-results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [218.111.199.186]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ed84d6be-37d7-455d-775f-08d8f85d81f2
-x-ms-traffictypediagnostic: SJ0PR11MB4989:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SJ0PR11MB4989AD54179C264ED8BA12B4AB779@SJ0PR11MB4989.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:334;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /pBv9re0HLdDluenldANEbX03p0i6tHJ0i5ugkgtrPtezHfX9XTzaiF9rsK+MaKs8e9kp1WuffXIDLsqQcPSGgMiUtfIIDi69f0dAyAaSMXBF2pKqb3x8oPS0DjcdoR0SH7Ix6Q0Um2BC/WjOayTxNmvHu9SvtUQH2ApgKMQTvR1WkK1EB+vK75IuYGYeW8o9l+HETGPuZtlTd6uD3s97A/Npmu73YoJRNv0RNhAeR6b2Qg+PtnDeS+hxMKUJDPspdrm1NfZa8b/1IUpE+IFsF271m9TIj6p0B9ZkRlk6jlgUxYcQCCse0+mNqBPqf1r60TEtgriF1kn8HmzTJFBQBP/M+laKliPO9hUOgcGGDEBHOsm6SE6NyoGvN7OBRA652AsooJcVLpfcegtZaE/l1JtBoF7SFtqMbXCuIGQh0eReLCAVWNtwRiQ0YErrpY1yPwvoXurp3luDqyA9Y8VW+TaX01cyYF7psW4XIBi1uQ8ykJzb4sdjOXr8cIC/pBN/4VDHgRGwOIOvZLUZ5G5Qe2vR4l6N7ug26/uV8M9fhFzQ2c5VVfu1GwXJzxLN2M0A1n3jfS606ZneXj2Z0Znp2HzlI3v/UZpeeGKjWOPXKePys/I0eU/aF1GNBPWLFifG0Aol+v03dJqWNKQK7a/o2IuIhXSB15N+zZF+ToXTMA=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2870.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(376002)(366004)(396003)(346002)(136003)(8676002)(5660300002)(8936002)(66476007)(110136005)(52536014)(316002)(55016002)(4326008)(86362001)(2906002)(9686003)(38100700001)(66446008)(66946007)(7416002)(76116006)(478600001)(186003)(33656002)(66556008)(71200400001)(26005)(107886003)(83380400001)(64756008)(7696005)(6506007)(54906003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?E92luENUnEVJZO8w39/38gH+0q+RuEKeeHTiBO2kvMKjZLoREEOC/s6szKTm?=
- =?us-ascii?Q?YmbDFhzTQ1hPU4n2WoyVobAzCWjTXEZFi/rUz1OcO3IMXQe0ToqefJs03Cdh?=
- =?us-ascii?Q?H/1pErxpOQlX+WOi+xQnvbiPgJkXFSKiOJmGdh5bG3nS5W0zg4i7uusSQ15x?=
- =?us-ascii?Q?x8mgFoXSN7go33MauRnNmK+GvsbMHzH9juSdZfXv6IWmIVQzx0i5gJeLoIl1?=
- =?us-ascii?Q?O36k8suUNf0kuGlYikrZfYDras1EdVhy+nJLk2w6pjCZKUrd39u9V7FiGEnw?=
- =?us-ascii?Q?oAd4dMrLT2Fg1gc+2IqJbQW4uu/QeZr4N3QviCtt2PhKNK50m2pqhSl6E2vf?=
- =?us-ascii?Q?8XIbGyixQUikuqFoy5fyPMvMl2kwyLbuOQ7nMVoKO7od8iJ5miRwREiFRPp1?=
- =?us-ascii?Q?D6zPuv72sHBvi1Iv0dVHs5x3CnXjQIFqgui2KYEhX7/XeX5SlKciaByM4Mc5?=
- =?us-ascii?Q?IXEyw2T9AH7CGdjxc9ApGPyVrqgDNn+YpujWqooFMlRWrMj6cepdEjd2SGEV?=
- =?us-ascii?Q?u36oog5jwsfQMyjBKHQOBQnH24DHsWXLJqtcb8oys/prN53NG73/M60dnCkp?=
- =?us-ascii?Q?a+gZb9YhYhTaoSShV6hlmgkSTvtd5yigmApXEXv8s+pWSY0pP6QsHbOEcHXO?=
- =?us-ascii?Q?XDnM22Q9Pg8DdxRdMF4GER63CGWqUZJ2YkDF4dl3iKZT5l1Z7+r7tLKGenLc?=
- =?us-ascii?Q?ZLKk9AKHAffWrQqyLnPmDCR3+Qcn4ar/avfluGtSpllV+RLY95M6DVC8cCUN?=
- =?us-ascii?Q?EmwsZusFThXV57l4EOOO6N4pzeKzfGYM4OOf1hVcTgqmm99U4Lsmsi0zCxCl?=
- =?us-ascii?Q?UZ0dcaw4Rr5OUzs5qOcjnmq5yxZ3KRYPJQK5zFouOXcfnFcLhgzwWAxUEgjx?=
- =?us-ascii?Q?8dfL+jPxU+unSdoTTaD9qcLz0EZ/v9zR4BF2RKYnk0J7r3XmrzrLbcMPrPoE?=
- =?us-ascii?Q?ojLKVWCwVjZ0Rd3BqbL9a5HeEH0GdqJyguKqFzo/ODKplVj6PLf6a36G0r4N?=
- =?us-ascii?Q?2otMWi9bhXhSRDoWC44/S6yvl4jQS5i/+SqXMxkFa7PJTqZ/CFTiA8awD6fj?=
- =?us-ascii?Q?ZU1h5gErXqfBqrtK9lYN63KzHTKDMP/UbGZ5pS1rHgV5O/ckZsYU4kzsqUE8?=
- =?us-ascii?Q?eduaKqj7QuLNcCNimMH1j2ePNVbGHvUQTpUAGYTf94o6Mg/nTYkidJBCaqB4?=
- =?us-ascii?Q?9SKoFMVBqd+u8ei0Sh2zcymEtLj6++VX97HzWF3s0t/4wMkMY16A8CcNzRbE?=
- =?us-ascii?Q?2t7oAbPDTvQYKDyW+Tq4of/KbDos15uQlu3TAfij2bMp7UGc579+7d0jYcAe?=
- =?us-ascii?Q?JYBZtm9WY3LCgUoPLfj8Hh3V?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S232952AbhDESIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 14:08:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230337AbhDESIq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 14:08:46 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAAD9C061788;
+        Mon,  5 Apr 2021 11:08:39 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id f8so9462515edd.11;
+        Mon, 05 Apr 2021 11:08:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Tmgk94hGPMJZ0DJfUDyT8lY/33hyIlSDNP2Z5DjB0u0=;
+        b=g9Wap+Q15k1ReSr/I3Z3xioAF+6JrjhlTY46wJOQLoUkgoIkcC3jseuWKhtuyEzEQV
+         +9J7uCxdixfj/IxgT5yTJWXHKYUsMEyh3M9FJkPXKKxGQnFlb2zpsF6CGXUQmttByLNR
+         cvvMZlQdS89AmAASB7yBBayHxD2/H8Vikk9lvVRJcVS+ywSwmGsEuzH2H6hxChkMmaMJ
+         kQ8VGsT2DgCVljwdCaoyJCt/e4otenG/fTghHCnuodhClFRtEu+1sjCBP/H7IJQXsRZ0
+         TIbTtSHbw5wdtwJsNHE3SqvxowrDNo63opL9OOvAkYlKgndjlxiHF7ENxLRwbr06QJmB
+         6KuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Tmgk94hGPMJZ0DJfUDyT8lY/33hyIlSDNP2Z5DjB0u0=;
+        b=A0jIeQcn+rUsQfRZQZM2h//DpgyFoQgn8StZ74blLUuF0RbMMULNjuex/qjjvXLc3P
+         lf9mJHERG4opbXsJvfRnLgsas3t6WvN23XoaVKHyoRS9gJ7zqFS2ndefjazudKDjw471
+         V5ilM5QJTthFtrjGNQ6qpEYb3GIzP8/1FI7U+LUZqhlmLX1WW9sWfvKpPlOIRwjXBjDL
+         DDBuNSm3KG/XTf8pmJtPy2b1mMR54atTFx6IdOP5Me5W1pccfhsDUsIAb340q98TCAc0
+         Tz+pkOJx/ZIv/T80OVcEJPQtbKIa4P6oiQogfSFvxk4y/nQ3sYNEu9l54M7ef6rEioV+
+         m3ow==
+X-Gm-Message-State: AOAM532LZSUxpbMvM6wE54F/qyEWhg3RRqH4mR1hr/UxVe1l0woj+Fmr
+        XaIOCxtvVAxb1pIhWgxJ0HyG8s5mPEHGvioscrM=
+X-Google-Smtp-Source: ABdhPJzFh/IEaJgbODhBxizGE6MiP5lU8uPS6w3cunO1s+x7Za/pdEjnP6iPzLURd12FFiEAJHwYl6VNuGG+G4FHpn4=
+X-Received: by 2002:a05:6402:518d:: with SMTP id q13mr33136364edd.313.1617646118553;
+ Mon, 05 Apr 2021 11:08:38 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2870.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed84d6be-37d7-455d-775f-08d8f85d81f2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Apr 2021 18:06:16.7553
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: rxDb8y6kv1m9hk2GueKo00nbzKl33s+TDEEr81QecKRSYFSoMs2I6TC41HKFqj4JtuyD/87LeY9O8+eqX9+MLw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4989
-X-OriginatorOrg: intel.com
+References: <20210405054848.GA1077931@in.ibm.com>
+In-Reply-To: <20210405054848.GA1077931@in.ibm.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 5 Apr 2021 11:08:26 -0700
+Message-ID: <CAHbLzko-17bUWdxmOi-p2_MLSbsMCvhjKS1ktnBysC5dN_W90A@mail.gmail.com>
+Subject: Re: High kmalloc-32 slab cache consumption with 10k containers
+To:     Bharata B Rao <bharata@linux.ibm.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        aneesh.kumar@linux.ibm.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 12:33:57AM +0800, Voon Weifeng wrote:=20
+On Sun, Apr 4, 2021 at 10:49 PM Bharata B Rao <bharata@linux.ibm.com> wrote:
 >
-> EHL PSE SGMII mode requires to ungate the SERDES PHY rx clk for power up
-> sequence and vice versa.
->=20
-> Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
+> Hi,
+>
+> When running 10000 (more-or-less-empty-)containers on a bare-metal Power9
+> server(160 CPUs, 2 NUMA nodes, 256G memory), it is seen that memory
+> consumption increases quite a lot (around 172G) when the containers are
+> running. Most of it comes from slab (149G) and within slab, the majority of
+> it comes from kmalloc-32 cache (102G)
+>
+> The major allocator of kmalloc-32 slab cache happens to be the list_head
+> allocations of list_lru_one list. These lists are created whenever a
+> FS mount happens. Specially two such lists are registered by alloc_super(),
+> one for dentry and another for inode shrinker list. And these lists
+> are created for all possible NUMA nodes and for all given memcgs
+> (memcg_nr_cache_ids to be particular)
+>
+> If,
+>
+> A = Nr allocation request per mount: 2 (one for dentry and inode list)
+> B = Nr NUMA possible nodes
+> C = memcg_nr_cache_ids
+> D = size of each kmalloc-32 object: 32 bytes,
+>
+> then for every mount, the amount of memory consumed by kmalloc-32 slab
+> cache for list_lru creation is A*B*C*D bytes.
+
+Yes, this is exactly what the current implementation does.
+
+>
+> Following factors contribute to the excessive allocations:
+>
+> - Lists are created for possible NUMA nodes.
+
+Yes, because filesystem caches (dentry and inode) are NUMA aware.
+
+> - memcg_nr_cache_ids grows in bulk (see memcg_alloc_cache_id() and additional
+>   list_lrus are created when it grows. Thus we end up creating list_lru_one
+>   list_heads even for those memcgs which are yet to be created.
+>   For example, when 10000 memcgs are created, memcg_nr_cache_ids reach
+>   a value of 12286.
+> - When a memcg goes offline, the list elements are drained to the parent
+>   memcg, but the list_head entry remains.
+> - The lists are destroyed only when the FS is unmounted. So list_heads
+>   for non-existing memcgs remain and continue to contribute to the
+>   kmalloc-32 allocation. This is presumably done for performance
+>   reason as they get reused when new memcgs are created, but they end up
+>   consuming slab memory until then.
+
+The current implementation has list_lrus attached with super_block. So
+the list can't be freed until the super block is unmounted.
+
+I'm looking into consolidating list_lrus more closely with memcgs. It
+means the list_lrus will have the same life cycles as memcgs rather
+than filesystems. This may be able to improve some. But I'm supposed
+the filesystem will be unmounted once the container exits and the
+memcgs will get offlined for your usecase.
+
+> - In case of containers, a few file systems get mounted and are specific
+>   to the container namespace and hence to a particular memcg, but we
+>   end up creating lists for all the memcgs.
+
+Yes, because the kernel is *NOT* aware of containers.
+
+>   As an example, if 7 FS mounts are done for every container and when
+>   10k containers are created, we end up creating 2*7*12286 list_lru_one
+>   lists for each NUMA node. It appears that no elements will get added
+>   to other than 2*7=14 of them in the case of containers.
+>
+> One straight forward way to prevent this excessive list_lru_one
+> allocations is to limit the list_lru_one creation only to the
+> relevant memcg. However I don't see an easy way to figure out
+> that relevant memcg from FS mount path (alloc_super())
+>
+> As an alternative approach, I have this below hack that does lazy
+> list_lru creation. The memcg-specific list is created and initialized
+> only when there is a request to add an element to that particular
+> list. Though I am not sure about the full impact of this change
+> on the owners of the lists and also the performance impact of this,
+> the overall savings look good.
+
+It is fine to reduce the memory consumption for your usecase, but I'm
+not sure if this would incur any noticeable overhead for vfs
+operations since list_lru_add() should be called quite often, but it
+just needs to allocate the list for once (for each memcg +
+filesystem), so the overhead might be fine.
+
+And I'm wondering how much memory can be saved for real life workload.
+I don't expect most containers are idle in production environments.
+
+Added some more memcg/list_lru experts in this loop, they may have better ideas.
+
+>
+> Used memory
+>                 Before          During          After
+> W/o patch       23G             172G            40G
+> W/  patch       23G             69G             29G
+>
+> Slab consumption
+>                 Before          During          After
+> W/o patch       1.5G            149G            22G
+> W/  patch       1.5G            45G             10G
+>
+> Number of kmalloc-32 allocations
+>                 Before          During          After
+> W/o patch       178176          3442409472      388933632
+> W/  patch       190464          468992          468992
+>
+> Any thoughts on other approaches to address this scenario and
+> any specific comments about the approach that I have taken is
+> appreciated. Meanwhile the patch looks like below:
+>
+> From 9444a0c6734c2853057b1f486f85da2c409fdc84 Mon Sep 17 00:00:00 2001
+> From: Bharata B Rao <bharata@linux.ibm.com>
+> Date: Wed, 31 Mar 2021 18:21:45 +0530
+> Subject: [PATCH 1/1] mm: list_lru: Allocate list_lru_one only when required.
+>
+> Don't pre-allocate list_lru_one list heads for all memcg_cache_ids.
+> Instead allocate and initialize it only when required.
+>
+> Signed-off-by: Bharata B Rao <bharata@linux.ibm.com>
 > ---
->  drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c | 10 ++++++++++
->  drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h |  1 +
->  2 files changed, 11 insertions(+)
->=20
-
-Why not use "stmmac: intel" for the commit message header?
-
-
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-> b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-> index add95e20548d..a4fec5fe0779 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-> @@ -153,6 +153,11 @@ static int intel_serdes_powerup(struct net_device
-> *ndev, void *priv_data)
->  		return data;
->  	}
->=20
-> +	/* PSE only - ungate SGMII PHY Rx Clock */
-> +	if (intel_priv->is_pse)
-> +		mdiobus_modify(priv->mii, serdes_phy_addr, SERDES_GCR0,
-> +			       0, SERDES_PHY_RX_CLK);
-> +
->  	return 0;
+>  mm/list_lru.c | 79 +++++++++++++++++++++++++--------------------------
+>  1 file changed, 38 insertions(+), 41 deletions(-)
+>
+> diff --git a/mm/list_lru.c b/mm/list_lru.c
+> index 6f067b6b935f..b453fa5008cc 100644
+> --- a/mm/list_lru.c
+> +++ b/mm/list_lru.c
+> @@ -112,16 +112,32 @@ list_lru_from_kmem(struct list_lru_node *nlru, void *ptr,
 >  }
->=20
-> @@ -168,6 +173,11 @@ static void intel_serdes_powerdown(struct
-> net_device *ndev, void *intel_data)
->=20
->  	serdes_phy_addr =3D intel_priv->mdio_adhoc_addr;
->=20
-> +	/* PSE only - gate SGMII PHY Rx Clock */
-> +	if (intel_priv->is_pse)
-> +		mdiobus_modify(priv->mii, serdes_phy_addr, SERDES_GCR0,
-> +			       SERDES_PHY_RX_CLK, 0);
+>  #endif /* CONFIG_MEMCG_KMEM */
+>
+> +static void init_one_lru(struct list_lru_one *l)
+> +{
+> +       INIT_LIST_HEAD(&l->list);
+> +       l->nr_items = 0;
+> +}
 > +
->  	/*  move power state to P3 */
->  	data =3D mdiobus_read(priv->mii, serdes_phy_addr, SERDES_GCR0);
->=20
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-> b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-> index e723096c0b15..542acb8ce467 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-> @@ -14,6 +14,7 @@
->=20
->  /* SERDES defines */
->  #define SERDES_PLL_CLK		BIT(0)		/* PLL clk valid signal
-> */
-> +#define SERDES_PHY_RX_CLK	BIT(1)		/* PSE SGMII PHY rx clk */
->  #define SERDES_RST		BIT(2)		/* Serdes Reset */
->  #define SERDES_PWR_ST_MASK	GENMASK(6, 4)	/* Serdes Power
-> state*/
->  #define SERDES_PWR_ST_SHIFT	4
+>  bool list_lru_add(struct list_lru *lru, struct list_head *item)
+>  {
+>         int nid = page_to_nid(virt_to_page(item));
+>         struct list_lru_node *nlru = &lru->node[nid];
+>         struct mem_cgroup *memcg;
+>         struct list_lru_one *l;
+> +       struct list_lru_memcg *memcg_lrus;
+>
+>         spin_lock(&nlru->lock);
+>         if (list_empty(item)) {
+>                 l = list_lru_from_kmem(nlru, item, &memcg);
+> +               if (!l) {
+> +                       l = kmalloc(sizeof(struct list_lru_one), GFP_ATOMIC);
+> +                       if (!l)
+> +                               goto out;
+> +
+> +                       init_one_lru(l);
+> +                       memcg_lrus = rcu_dereference_protected(nlru->memcg_lrus, true);
+> +                       memcg_lrus->lru[memcg_cache_id(memcg)] = l;
+> +               }
+>                 list_add_tail(item, &l->list);
+>                 /* Set shrinker bit if the first element was added */
+>                 if (!l->nr_items++)
+> @@ -131,6 +147,7 @@ bool list_lru_add(struct list_lru *lru, struct list_head *item)
+>                 spin_unlock(&nlru->lock);
+>                 return true;
+>         }
+> +out:
+>         spin_unlock(&nlru->lock);
+>         return false;
+>  }
+> @@ -176,11 +193,12 @@ unsigned long list_lru_count_one(struct list_lru *lru,
+>  {
+>         struct list_lru_node *nlru = &lru->node[nid];
+>         struct list_lru_one *l;
+> -       unsigned long count;
+> +       unsigned long count = 0;
+>
+>         rcu_read_lock();
+>         l = list_lru_from_memcg_idx(nlru, memcg_cache_id(memcg));
+> -       count = READ_ONCE(l->nr_items);
+> +       if (l)
+> +               count = READ_ONCE(l->nr_items);
+>         rcu_read_unlock();
+>
+>         return count;
+> @@ -207,6 +225,9 @@ __list_lru_walk_one(struct list_lru_node *nlru, int memcg_idx,
+>         unsigned long isolated = 0;
+>
+>         l = list_lru_from_memcg_idx(nlru, memcg_idx);
+> +       if (!l)
+> +               goto out;
+> +
+>  restart:
+>         list_for_each_safe(item, n, &l->list) {
+>                 enum lru_status ret;
+> @@ -251,6 +272,7 @@ __list_lru_walk_one(struct list_lru_node *nlru, int memcg_idx,
+>                         BUG();
+>                 }
+>         }
+> +out:
+>         return isolated;
+>  }
+>
+> @@ -312,12 +334,6 @@ unsigned long list_lru_walk_node(struct list_lru *lru, int nid,
+>  }
+>  EXPORT_SYMBOL_GPL(list_lru_walk_node);
+>
+> -static void init_one_lru(struct list_lru_one *l)
+> -{
+> -       INIT_LIST_HEAD(&l->list);
+> -       l->nr_items = 0;
+> -}
+> -
+>  #ifdef CONFIG_MEMCG_KMEM
+>  static void __memcg_destroy_list_lru_node(struct list_lru_memcg *memcg_lrus,
+>                                           int begin, int end)
+> @@ -328,41 +344,16 @@ static void __memcg_destroy_list_lru_node(struct list_lru_memcg *memcg_lrus,
+>                 kfree(memcg_lrus->lru[i]);
+>  }
+>
+> -static int __memcg_init_list_lru_node(struct list_lru_memcg *memcg_lrus,
+> -                                     int begin, int end)
+> -{
+> -       int i;
+> -
+> -       for (i = begin; i < end; i++) {
+> -               struct list_lru_one *l;
+> -
+> -               l = kmalloc(sizeof(struct list_lru_one), GFP_KERNEL);
+> -               if (!l)
+> -                       goto fail;
+> -
+> -               init_one_lru(l);
+> -               memcg_lrus->lru[i] = l;
+> -       }
+> -       return 0;
+> -fail:
+> -       __memcg_destroy_list_lru_node(memcg_lrus, begin, i);
+> -       return -ENOMEM;
+> -}
+> -
+>  static int memcg_init_list_lru_node(struct list_lru_node *nlru)
+>  {
+>         struct list_lru_memcg *memcg_lrus;
+>         int size = memcg_nr_cache_ids;
+>
+> -       memcg_lrus = kvmalloc(sizeof(*memcg_lrus) +
+> +       memcg_lrus = kvzalloc(sizeof(*memcg_lrus) +
+>                               size * sizeof(void *), GFP_KERNEL);
+>         if (!memcg_lrus)
+>                 return -ENOMEM;
+>
+> -       if (__memcg_init_list_lru_node(memcg_lrus, 0, size)) {
+> -               kvfree(memcg_lrus);
+> -               return -ENOMEM;
+> -       }
+>         RCU_INIT_POINTER(nlru->memcg_lrus, memcg_lrus);
+>
+>         return 0;
+> @@ -389,15 +380,10 @@ static int memcg_update_list_lru_node(struct list_lru_node *nlru,
+>
+>         old = rcu_dereference_protected(nlru->memcg_lrus,
+>                                         lockdep_is_held(&list_lrus_mutex));
+> -       new = kvmalloc(sizeof(*new) + new_size * sizeof(void *), GFP_KERNEL);
+> +       new = kvzalloc(sizeof(*new) + new_size * sizeof(void *), GFP_KERNEL);
+>         if (!new)
+>                 return -ENOMEM;
+>
+> -       if (__memcg_init_list_lru_node(new, old_size, new_size)) {
+> -               kvfree(new);
+> -               return -ENOMEM;
+> -       }
+> -
+>         memcpy(&new->lru, &old->lru, old_size * sizeof(void *));
+>
+>         /*
+> @@ -526,6 +512,7 @@ static void memcg_drain_list_lru_node(struct list_lru *lru, int nid,
+>         struct list_lru_node *nlru = &lru->node[nid];
+>         int dst_idx = dst_memcg->kmemcg_id;
+>         struct list_lru_one *src, *dst;
+> +       struct list_lru_memcg *memcg_lrus;
+>
+>         /*
+>          * Since list_lru_{add,del} may be called under an IRQ-safe lock,
+> @@ -534,7 +521,17 @@ static void memcg_drain_list_lru_node(struct list_lru *lru, int nid,
+>         spin_lock_irq(&nlru->lock);
+>
+>         src = list_lru_from_memcg_idx(nlru, src_idx);
+> +       if (!src)
+> +               goto out;
+> +
+>         dst = list_lru_from_memcg_idx(nlru, dst_idx);
+> +       if (!dst) {
+> +               /* TODO: Use __GFP_NOFAIL? */
+> +               dst = kmalloc(sizeof(struct list_lru_one), GFP_ATOMIC);
+> +               init_one_lru(dst);
+> +               memcg_lrus = rcu_dereference_protected(nlru->memcg_lrus, true);
+> +               memcg_lrus->lru[dst_idx] = dst;
+> +       }
+>
+>         list_splice_init(&src->list, &dst->list);
+>
+> @@ -543,7 +540,7 @@ static void memcg_drain_list_lru_node(struct list_lru *lru, int nid,
+>                 memcg_set_shrinker_bit(dst_memcg, nid, lru_shrinker_id(lru));
+>                 src->nr_items = 0;
+>         }
+> -
+> +out:
+>         spin_unlock_irq(&nlru->lock);
+>  }
+>
 > --
-> 2.17.1
-
+> 2.26.2
+>
+>
