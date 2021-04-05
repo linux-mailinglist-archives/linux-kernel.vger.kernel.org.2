@@ -2,34 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA31353E05
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17BC9353EC3
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237678AbhDEJDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:03:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43944 "EHLO mail.kernel.org"
+        id S238388AbhDEJH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:07:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237350AbhDEJCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:02:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09FA2613B0;
-        Mon,  5 Apr 2021 09:01:50 +0000 (UTC)
+        id S238706AbhDEJFy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:05:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A09A613A0;
+        Mon,  5 Apr 2021 09:05:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613311;
-        bh=/LxPOv87S/8t9bOxBcPfB/7Zy6vE/voIU97EchOUKZo=;
+        s=korg; t=1617613548;
+        bh=uW6oDUm5OGgrAlcJAqE/N3uUNnNkdl5IGSMnsyGW+o0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kJeqNeq15ozaKfb7DaOXZsKp+QH2VfHwpp7Xe1hqrP3RUlOsQl/3Z6EDFlL+/rDAj
-         6ZVPYOYsE23AxX7XJ0CFg2naGTqk4OnlIJQmWNezcuxfWCoMsLrEgKYeSHrpKW9kOO
-         SlBMd5K4aC/7bgjwN8jVfLGD7DICj2lmmj7JsBLA=
+        b=HY32JicAiO6btfoSjo1TCxagLU7/EOj8RSuC8RYlenDj9YBPeEZ+Pai3wRxj/YucX
+         xcqqacRqKwq/hdpF3oMJk58Mo7WFTKK1FpalzyTC0lMQfnC7oLjrlVn23o/+I1qjsY
+         XCD936WmcdFLZ+yjIcNXZ7Px34U1u0YHijgAacmI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chunfeng Yun <chunfeng.yun@mediatek.com>
-Subject: [PATCH 4.19 46/56] usb: xhci-mtk: fix broken streams issue on 0.96 xHCI
+        stable@vger.kernel.org,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Jeff Mahoney <jeffm@suse.com>, Jan Kara <jack@suse.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        syzbot <syzbot+690cb1e51970435f9775@syzkaller.appspotmail.com>
+Subject: [PATCH 5.4 53/74] reiserfs: update reiserfs_xattrs_initialized() condition
 Date:   Mon,  5 Apr 2021 10:54:17 +0200
-Message-Id: <20210405085023.997389542@linuxfoundation.org>
+Message-Id: <20210405085026.462964923@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085022.562176619@linuxfoundation.org>
-References: <20210405085022.562176619@linuxfoundation.org>
+In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
+References: <20210405085024.703004126@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,49 +42,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunfeng Yun <chunfeng.yun@mediatek.com>
+From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
 
-commit 6f978a30c9bb12dab1302d0f06951ee290f5e600 upstream.
+commit 5e46d1b78a03d52306f21f77a4e4a144b6d31486 upstream.
 
-The MediaTek 0.96 xHCI controller on some platforms does not
-support bulk stream even HCCPARAMS says supporting, due to MaxPSASize
-is set a default value 1 by mistake, here use XHCI_BROKEN_STREAMS
-quirk to fix it.
+syzbot is reporting NULL pointer dereference at reiserfs_security_init()
+[1], for commit ab17c4f02156c4f7 ("reiserfs: fixup xattr_root caching")
+is assuming that REISERFS_SB(s)->xattr_root != NULL in
+reiserfs_xattr_jcreate_nblocks() despite that commit made
+REISERFS_SB(sb)->priv_root != NULL && REISERFS_SB(s)->xattr_root == NULL
+case possible.
 
-Fixes: 94a631d91ad3 ("usb: xhci-mtk: check hcc_params after adding primary hcd")
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-Link: https://lore.kernel.org/r/1616482975-17841-4-git-send-email-chunfeng.yun@mediatek.com
+I guess that commit 6cb4aff0a77cc0e6 ("reiserfs: fix oops while creating
+privroot with selinux enabled") wanted to check xattr_root != NULL
+before reiserfs_xattr_jcreate_nblocks(), for the changelog is talking
+about the xattr root.
+
+  The issue is that while creating the privroot during mount
+  reiserfs_security_init calls reiserfs_xattr_jcreate_nblocks which
+  dereferences the xattr root. The xattr root doesn't exist, so we get
+  an oops.
+
+Therefore, update reiserfs_xattrs_initialized() to check both the
+privroot and the xattr root.
+
+Link: https://syzkaller.appspot.com/bug?id=8abaedbdeb32c861dc5340544284167dd0e46cde # [1]
+Reported-and-tested-by: syzbot <syzbot+690cb1e51970435f9775@syzkaller.appspotmail.com>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Fixes: 6cb4aff0a77c ("reiserfs: fix oops while creating privroot with selinux enabled")
+Acked-by: Jeff Mahoney <jeffm@suse.com>
+Acked-by: Jan Kara <jack@suse.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/xhci-mtk.c |   10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ fs/reiserfs/xattr.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/host/xhci-mtk.c
-+++ b/drivers/usb/host/xhci-mtk.c
-@@ -395,6 +395,13 @@ static void xhci_mtk_quirks(struct devic
- 	xhci->quirks |= XHCI_SPURIOUS_SUCCESS;
- 	if (mtk->lpm_support)
- 		xhci->quirks |= XHCI_LPM_SUPPORT;
-+
-+	/*
-+	 * MTK xHCI 0.96: PSA is 1 by default even if doesn't support stream,
-+	 * and it's 3 when support it.
-+	 */
-+	if (xhci->hci_version < 0x100 && HCC_MAX_PSA(xhci->hcc_params) == 4)
-+		xhci->quirks |= XHCI_BROKEN_STREAMS;
+--- a/fs/reiserfs/xattr.h
++++ b/fs/reiserfs/xattr.h
+@@ -43,7 +43,7 @@ void reiserfs_security_free(struct reise
+ 
+ static inline int reiserfs_xattrs_initialized(struct super_block *sb)
+ {
+-	return REISERFS_SB(sb)->priv_root != NULL;
++	return REISERFS_SB(sb)->priv_root && REISERFS_SB(sb)->xattr_root;
  }
  
- /* called during probe() after chip reset completes */
-@@ -551,7 +558,8 @@ static int xhci_mtk_probe(struct platfor
- 	if (ret)
- 		goto put_usb3_hcd;
- 
--	if (HCC_MAX_PSA(xhci->hcc_params) >= 4)
-+	if (HCC_MAX_PSA(xhci->hcc_params) >= 4 &&
-+	    !(xhci->quirks & XHCI_BROKEN_STREAMS))
- 		xhci->shared_hcd->can_do_streams = 1;
- 
- 	ret = usb_add_hcd(xhci->shared_hcd, irq, IRQF_SHARED);
+ #define xattr_size(size) ((size) + sizeof(struct reiserfs_xattr_header))
 
 
