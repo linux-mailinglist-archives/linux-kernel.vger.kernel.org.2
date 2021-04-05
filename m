@@ -2,107 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3AD4353A67
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 02:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4ED3353A6B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 02:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231731AbhDEAoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 20:44:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60160 "EHLO
+        id S231745AbhDEAui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 20:50:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230052AbhDEAoD (ORCPT
+        with ESMTP id S231539AbhDEAuf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 20:44:03 -0400
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41478C061756;
-        Sun,  4 Apr 2021 17:43:57 -0700 (PDT)
-Received: by mail-oo1-xc2a.google.com with SMTP id q127-20020a4a33850000b02901b646aa81b1so2534934ooq.8;
-        Sun, 04 Apr 2021 17:43:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JzhYsG+9twiks5ZAsr193ta04sndTLexylNjWAKj+Cs=;
-        b=UNZXPaoA3Ox7ykfGZSVoS56Q4uXYqfHxXBqR+WhOSpSIp2GKjHEGea/xG7a8AcZ2S6
-         WbOXjHPtJUOJnUnHrFhIVNdmThfXUjQbHHOqxQSUsGmYr5l5awG3C2bowKMx9LlDqsfh
-         rhnI6MrZMK9HQhEQFTKw0QpNBJBcnbVQKF79x+1FWPEvxZQ9x4mQdmhdH4EEkpCHU/xd
-         rYKt+eouZPGDTQ3yHF+QvIi05nBBqVA1lcnwttonWILlH7qD0rNmjZPsCjda6Lb+yNzV
-         S9t3TVQtwoeTIbCa65V3/5g3j50WK3BGK63Zi7mp+oOf4B5NfD5qiANqjTv4PPemZnTx
-         QFpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JzhYsG+9twiks5ZAsr193ta04sndTLexylNjWAKj+Cs=;
-        b=eznskGqHdWlAS2V/v38dB33AiixuCDKBALodZIPZEukVddrR7EF5fHuage5PBXQUCM
-         RMXGEsIroxneBkRK2jbuBMH2Pox25bjken6dTuWnJsDIj3tQDjSLlTNm0/sLAqx88F5O
-         z7H6XA+Fzl28wHWjz1MwQKW/ooMoVtNyNYJ4gTa8dkbSrdBCGPncocB3qTdPn/HwzITy
-         +OWvD5ONdB3vEsEeMFRSduB6hWZx1myFQbsK3XoYUA8Z8wIAkljxxzHwMMLg0huRtgoi
-         D248OzyBToOlFXVwPqLJGkdbZKrZIzDWDqowWnuwfrwG2COii22VFk5F0tZltOLCQ14S
-         84fg==
-X-Gm-Message-State: AOAM530a0n/CMk/8rBNY0fJhh0H7UDthoa1e70qdGPkL8wexkVytUjIl
-        CU/iEgokYK6oxJtEJ/hLtK6u4f7m6Mc5H2X1YZc=
-X-Google-Smtp-Source: ABdhPJwzPSlnMlxIkAvgRm9cQ3GiNrONcWgeWyie01ncsqtBQtgP410Tnk2T2ovpdMJRUwSnfsbx2DjeOIf2Be/cU28=
-X-Received: by 2002:a05:6820:3c8:: with SMTP id s8mr20392380ooj.49.1617583436702;
- Sun, 04 Apr 2021 17:43:56 -0700 (PDT)
+        Sun, 4 Apr 2021 20:50:35 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEDF7C061756;
+        Sun,  4 Apr 2021 17:50:28 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D9351D40;
+        Mon,  5 Apr 2021 02:50:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1617583825;
+        bh=gBtmkYGClgERNSI4TslDSDr4bEyMle1yAbKvhAur19s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c4TsRYkjVzzNCstpAvd/2HQnB4iqOyeVvzQRymPS/eRcpxs1kqAkp7WKxS9FWUh37
+         f8Ybh1IbYAaS6S9hExP5kCQDa/4Atde89dfhGNTZ3Iep18DxzhUPUSxovZiwoqZxdF
+         YHGkEFxDxGqn2EQRbm+g8+UKmSzeg0OO8nHn97tg=
+Date:   Mon, 5 Apr 2021 03:49:39 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linus W <linus.walleij@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        robdclark@chromium.org, Stephen Boyd <swboyd@chromium.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        linux-arm-msm@vger.kernel.org,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 01/12] drm/bridge: Fix the stop condition of
+ drm_bridge_chain_pre_enable()
+Message-ID: <YGpeo9LV4uAh1B7u@pendragon.ideasonboard.com>
+References: <20210402222846.2461042-1-dianders@chromium.org>
+ <20210402152701.v3.1.If62a003f76a2bc4ccc6c53565becc05d2aad4430@changeid>
 MIME-Version: 1.0
-References: <CAB_54W7v1Dk9KjytfO8hAGfiqPJ6qO0SdgwDQ-s4ybA2yvuoCg@mail.gmail.com>
- <20210304152125.1052825-1-paskripkin@gmail.com>
-In-Reply-To: <20210304152125.1052825-1-paskripkin@gmail.com>
-From:   Alexander Aring <alex.aring@gmail.com>
-Date:   Sun, 4 Apr 2021 20:43:45 -0400
-Message-ID: <CAB_54W6BmSuRo5pwGEH_Xug3Fo5cBMjmMAGjd3aaWJaGZpSsHQ@mail.gmail.com>
-Subject: Re: [PATCH v2] net: mac802154: Fix general protection fault
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     Stefan Schmidt <stefan@datenfreihafen.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-wpan - ML <linux-wpan@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        syzbot+9ec037722d2603a9f52e@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210402152701.v3.1.If62a003f76a2bc4ccc6c53565becc05d2aad4430@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Doug,
 
-On Thu, 4 Mar 2021 at 10:25, Pavel Skripkin <paskripkin@gmail.com> wrote:
->
-> syzbot found general protection fault in crypto_destroy_tfm()[1].
-> It was caused by wrong clean up loop in llsec_key_alloc().
-> If one of the tfm array members is in IS_ERR() range it will
-> cause general protection fault in clean up function [1].
->
-> Call Trace:
->  crypto_free_aead include/crypto/aead.h:191 [inline] [1]
->  llsec_key_alloc net/mac802154/llsec.c:156 [inline]
->  mac802154_llsec_key_add+0x9e0/0xcc0 net/mac802154/llsec.c:249
->  ieee802154_add_llsec_key+0x56/0x80 net/mac802154/cfg.c:338
->  rdev_add_llsec_key net/ieee802154/rdev-ops.h:260 [inline]
->  nl802154_add_llsec_key+0x3d3/0x560 net/ieee802154/nl802154.c:1584
->  genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
->  genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
->  genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
->  netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
->  genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
->  netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
->  netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
->  netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
->  sock_sendmsg_nosec net/socket.c:654 [inline]
->  sock_sendmsg+0xcf/0x120 net/socket.c:674
->  ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
->  ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
->  __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
->  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
->
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> Reported-by: syzbot+9ec037722d2603a9f52e@syzkaller.appspotmail.com
-> Change-Id: I29f7ac641a039096d63d1e6070bb32cb5a3beb07
+Thank you for the patch.
 
-I am sorry, I don't know the tag "Change-Id", I was doing a whole grep
-on Documentation/ without any luck.
+On Fri, Apr 02, 2021 at 03:28:35PM -0700, Douglas Anderson wrote:
+> The drm_bridge_chain_pre_enable() is not the proper opposite of
+> drm_bridge_chain_post_disable(). It continues along the chain to
+> _before_ the starting bridge. Let's fix that.
+> 
+> Fixes: 05193dc38197 ("drm/bridge: Make the bridge chain a double-linked list")
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
+> ---
+> 
+> (no changes since v1)
+> 
+>  drivers/gpu/drm/drm_bridge.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
+> index 64f0effb52ac..044acd07c153 100644
+> --- a/drivers/gpu/drm/drm_bridge.c
+> +++ b/drivers/gpu/drm/drm_bridge.c
+> @@ -522,6 +522,9 @@ void drm_bridge_chain_pre_enable(struct drm_bridge *bridge)
+>  	list_for_each_entry_reverse(iter, &encoder->bridge_chain, chain_node) {
+>  		if (iter->funcs->pre_enable)
+>  			iter->funcs->pre_enable(iter);
+> +
+> +		if (iter == bridge)
+> +			break;
 
-Dumb question: What is the meaning of it?
+This looks good as it matches drm_atomic_bridge_chain_disable().
 
-- Alex
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+I'm curious though, given that the bridge passed to the function should
+be the one closest to the encoder, does this make a difference ?
+
+>  	}
+>  }
+>  EXPORT_SYMBOL(drm_bridge_chain_pre_enable);
+
+-- 
+Regards,
+
+Laurent Pinchart
