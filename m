@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 656A1353CD3
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BBC0353D36
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232993AbhDEI45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 04:56:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35146 "EHLO mail.kernel.org"
+        id S237033AbhDEI7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 04:59:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231991AbhDEI4k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 04:56:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 63B0961393;
-        Mon,  5 Apr 2021 08:56:33 +0000 (UTC)
+        id S233790AbhDEI6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:58:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BBDFE6124C;
+        Mon,  5 Apr 2021 08:58:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617612994;
-        bh=ZXXW/k7cTS+S5VFAlsQf8Nid+9xzg5C/OEezLtOHqNA=;
+        s=korg; t=1617613107;
+        bh=eGZ6m/uVWoRASlnaJghtEG/qLbZLh8SCbSVDqp+OP7A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1PwCejnVRZ/eiDn1vxOWfw3Kc2VQoV7J3tIUEVFO0QL8oodlaFtI2nVWa8yYXT/1a
-         TzVD77xWoVUcOVEieVSsZQDjmyLkuFyI4ig0gy9F7UJFHLyssTend/DcVa4pLWVtRp
-         212xkyXZqQxbiV9XOdkfC1Q3FTPHWCEtWqe/CWaw=
+        b=m6AEY050plFBa+L+zPeUO4CjujSzN72Z1PBtISz+8olwDHG15laXXxVEanYhtvDt+
+         DbXK20+r/DD8Sx0F4AOm5KqZEcQj8oH5qJ/UK9GjV9JmUS+Mlvm096CSl7ZzJFC5nF
+         GzxhkYSoHS99ps9iik0nc1i/tiq7+HE2i04JH0fE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>,
-        Tong Zhang <ztong0001@gmail.com>,
+        stable@vger.kernel.org, Doug Brown <doug@schmorgal.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 12/35] staging: comedi: cb_pcidas: fix request_irq() warn
+Subject: [PATCH 4.14 21/52] appletalk: Fix skb allocation size in loopback case
 Date:   Mon,  5 Apr 2021 10:53:47 +0200
-Message-Id: <20210405085019.262055335@linuxfoundation.org>
+Message-Id: <20210405085022.686963431@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085018.871387942@linuxfoundation.org>
-References: <20210405085018.871387942@linuxfoundation.org>
+In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
+References: <20210405085021.996963957@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +40,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tong Zhang <ztong0001@gmail.com>
+From: Doug Brown <doug@schmorgal.com>
 
-[ Upstream commit 2e5848a3d86f03024ae096478bdb892ab3d79131 ]
+[ Upstream commit 39935dccb21c60f9bbf1bb72d22ab6fd14ae7705 ]
 
-request_irq() wont accept a name which contains slash so we need to
-repalce it with something else -- otherwise it will trigger a warning
-and the entry in /proc/irq/ will not be created
-since the .name might be used by userspace and we don't want to break
-userspace, so we are changing the parameters passed to request_irq()
+If a DDP broadcast packet is sent out to a non-gateway target, it is
+also looped back. There is a potential for the loopback device to have a
+longer hardware header length than the original target route's device,
+which can result in the skb not being created with enough room for the
+loopback device's hardware header. This patch fixes the issue by
+determining that a loopback will be necessary prior to allocating the
+skb, and if so, ensuring the skb has enough room.
 
-[    1.630764] name 'pci-das1602/16'
-[    1.630950] WARNING: CPU: 0 PID: 181 at fs/proc/generic.c:180 __xlate_proc_name+0x93/0xb0
-[    1.634009] RIP: 0010:__xlate_proc_name+0x93/0xb0
-[    1.639441] Call Trace:
-[    1.639976]  proc_mkdir+0x18/0x20
-[    1.641946]  request_threaded_irq+0xfe/0x160
-[    1.642186]  cb_pcidas_auto_attach+0xf4/0x610 [cb_pcidas]
+This was discovered while testing a new driver that creates a LocalTalk
+network interface (LTALK_HLEN = 1). It caused an skb_under_panic.
 
-Suggested-by: Ian Abbott <abbotti@mev.co.uk>
-Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-Link: https://lore.kernel.org/r/20210315195914.4801-1-ztong0001@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Doug Brown <doug@schmorgal.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/comedi/drivers/cb_pcidas.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/appletalk/ddp.c | 33 +++++++++++++++++++++------------
+ 1 file changed, 21 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/staging/comedi/drivers/cb_pcidas.c b/drivers/staging/comedi/drivers/cb_pcidas.c
-index 3ea15bb0e56e..15b9cc8531f0 100644
---- a/drivers/staging/comedi/drivers/cb_pcidas.c
-+++ b/drivers/staging/comedi/drivers/cb_pcidas.c
-@@ -1290,7 +1290,7 @@ static int cb_pcidas_auto_attach(struct comedi_device *dev,
- 	     devpriv->amcc + AMCC_OP_REG_INTCSR);
+diff --git a/net/appletalk/ddp.c b/net/appletalk/ddp.c
+index b4268bd2e557..36a67e62710c 100644
+--- a/net/appletalk/ddp.c
++++ b/net/appletalk/ddp.c
+@@ -1575,8 +1575,8 @@ static int atalk_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
+ 	struct sk_buff *skb;
+ 	struct net_device *dev;
+ 	struct ddpehdr *ddp;
+-	int size;
+-	struct atalk_route *rt;
++	int size, hard_header_len;
++	struct atalk_route *rt, *rt_lo = NULL;
+ 	int err;
  
- 	ret = request_irq(pcidev->irq, cb_pcidas_interrupt, IRQF_SHARED,
--			  dev->board_name, dev);
-+			  "cb_pcidas", dev);
- 	if (ret) {
- 		dev_dbg(dev->class_dev, "unable to allocate irq %d\n",
- 			pcidev->irq);
+ 	if (flags & ~(MSG_DONTWAIT|MSG_CMSG_COMPAT))
+@@ -1639,7 +1639,22 @@ static int atalk_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
+ 	SOCK_DEBUG(sk, "SK %p: Size needed %d, device %s\n",
+ 			sk, size, dev->name);
+ 
+-	size += dev->hard_header_len;
++	hard_header_len = dev->hard_header_len;
++	/* Leave room for loopback hardware header if necessary */
++	if (usat->sat_addr.s_node == ATADDR_BCAST &&
++	    (dev->flags & IFF_LOOPBACK || !(rt->flags & RTF_GATEWAY))) {
++		struct atalk_addr at_lo;
++
++		at_lo.s_node = 0;
++		at_lo.s_net  = 0;
++
++		rt_lo = atrtr_find(&at_lo);
++
++		if (rt_lo && rt_lo->dev->hard_header_len > hard_header_len)
++			hard_header_len = rt_lo->dev->hard_header_len;
++	}
++
++	size += hard_header_len;
+ 	release_sock(sk);
+ 	skb = sock_alloc_send_skb(sk, size, (flags & MSG_DONTWAIT), &err);
+ 	lock_sock(sk);
+@@ -1647,7 +1662,7 @@ static int atalk_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
+ 		goto out;
+ 
+ 	skb_reserve(skb, ddp_dl->header_length);
+-	skb_reserve(skb, dev->hard_header_len);
++	skb_reserve(skb, hard_header_len);
+ 	skb->dev = dev;
+ 
+ 	SOCK_DEBUG(sk, "SK %p: Begin build.\n", sk);
+@@ -1698,18 +1713,12 @@ static int atalk_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
+ 		/* loop back */
+ 		skb_orphan(skb);
+ 		if (ddp->deh_dnode == ATADDR_BCAST) {
+-			struct atalk_addr at_lo;
+-
+-			at_lo.s_node = 0;
+-			at_lo.s_net  = 0;
+-
+-			rt = atrtr_find(&at_lo);
+-			if (!rt) {
++			if (!rt_lo) {
+ 				kfree_skb(skb);
+ 				err = -ENETUNREACH;
+ 				goto out;
+ 			}
+-			dev = rt->dev;
++			dev = rt_lo->dev;
+ 			skb->dev = dev;
+ 		}
+ 		ddp_dl->request(ddp_dl, skb, dev->dev_addr);
 -- 
 2.30.1
 
