@@ -2,114 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A213541D2
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 13:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6623541DA
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 13:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236855AbhDELpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 07:45:35 -0400
-Received: from mail-lf1-f49.google.com ([209.85.167.49]:40534 "EHLO
-        mail-lf1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232791AbhDELpX (ORCPT
+        id S237105AbhDELun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 07:50:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235438AbhDELum (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 07:45:23 -0400
-Received: by mail-lf1-f49.google.com with SMTP id d13so16985053lfg.7;
-        Mon, 05 Apr 2021 04:45:16 -0700 (PDT)
+        Mon, 5 Apr 2021 07:50:42 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79CBDC061756;
+        Mon,  5 Apr 2021 04:50:36 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id ap14so16498655ejc.0;
+        Mon, 05 Apr 2021 04:50:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HDc06TXRZz6iT2prsg6SqhlvlXBakTlGgShoP1ZWD7A=;
+        b=oJyiNJPibQVsUQJK5yL3M0rRUvBQqyufzDicChoo1SOfSTl4nv/bbj4BOQePOb/3sy
+         MsQaEj2WuCvYwYRJSM4Gw1czh+5zd+1Ae4dY7h1e6Sx7ufqkLNEpEDNaGd8iu1cDriAN
+         iow8k5LE40hOvrc+XwSi9F9/kHW16/YQg+vliq5UZqv/BFZfs5bmOaKPWTXqR9bDDokR
+         RDpR8IM9C8JIXniqTJP8/OTnZDJCm+uc1XlkrqtKjTRExLzEM4AQU8YoQCXiyCmdiqaI
+         XRPFd1N2rLcr5NyGosWBF8qsRLMESiNWAAaf1xaxkXy2VsAqkW/WarAeAGizruLiZYUj
+         Pb/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=l508csWiRPsHhhFkiDj4WKmXTzwbXTp4twwhNiGLm5s=;
-        b=a4KnRb7xuusyaoQ9NQquwFuWst70XBhpZHR6UmRX1ynuP6/x4ej/6Y95bXbrc3OK+j
-         c04yqAElBL7OlbgcELIl9SnwEx/YiVjTU2f0/dAZCt0RczgZQ742ROMSTW8LyLjEK1ea
-         2rSmpVekt0wf1YZOZxFS5rGn+MCHHmFP6XzLpxVZPl4uwK24OkRXk3+OxBstOjP4xm6q
-         di21RKFCQbe5iFkYGHWjmhTgpYb0tDXmOC1PqwQTcLyTu8YxiPVPZR7W+58zMIDy/x/M
-         gZWxl1vdVg0V5lEINXgTKgbIses661nwgMZe2eVIqlk0NB1xF6MrYdWVrTeYWIM+g2rZ
-         5vrg==
-X-Gm-Message-State: AOAM5335PSvs0r5EV29Zl+WK6eLzrlK60x7ua9J7tFEEU67yUqSJAtMV
-        /g8Y7jZGlgF+5r2S+OoDxLw=
-X-Google-Smtp-Source: ABdhPJwOBXlWO51mNBcMv+/SkalTVJR70Sugq/7ja2aEXJ//BuyZMDd+OtoEsomPBcIJczn+6u9rZg==
-X-Received: by 2002:a19:23c7:: with SMTP id j190mr17339229lfj.148.1617623115513;
-        Mon, 05 Apr 2021 04:45:15 -0700 (PDT)
-Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyydy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::6])
-        by smtp.gmail.com with ESMTPSA id p10sm1877391ljg.99.2021.04.05.04.45.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Apr 2021 04:45:14 -0700 (PDT)
-Date:   Mon, 5 Apr 2021 14:45:09 +0300
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-clk@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org
-Subject: [PATCH v6 16/16] MAINTAINERS: Add ROHM BD71815AGW
-Message-ID: <c71f80a7b34d3ee09d0ef928a3d2803786ce0fe1.1617616855.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1617616855.git.matti.vaittinen@fi.rohmeurope.com>
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HDc06TXRZz6iT2prsg6SqhlvlXBakTlGgShoP1ZWD7A=;
+        b=oBEmdqxuF7CO9FV38rNM6Z+d6YHpNFkf8MfGAbeXMs3oI6haE2UO7splTj0uZBRiY4
+         a8iZIlRvq0h1PkSTAX5sTsn3JcWftc+9yG6Ynx4irTPex2Lgh61Pdpp9WV/GIH2wypmN
+         Ld4+txzPHgra0clk7dmHWEXMOEHVqF9iPR7n8j98odTlD9jofHpQgRr1m9pldJUcRLsE
+         k/+d6vOAq6rnJO3+FUGxMR8jLRXJt7NwxiIAbTiTskIze1deRdy3Rz3oJZHVJN2TAEvN
+         vbets9eWR5zrRlFfeAjNM1MdMkfrAVwxmfe86ldvBh5h57B+p/di0l4zsZzAGIZyQLmY
+         zR5Q==
+X-Gm-Message-State: AOAM533wTRSkqBzJwbj7meFh35jGtsq6hno8Zo3ta3H8c1fVgluTDjf6
+        q5H/okuqYpQHvPyezNFAf0I=
+X-Google-Smtp-Source: ABdhPJzk23k2wDpV20axj4RtQE1Rsz/6Nb9j26a1UWGvArx48/xyxA8EAGF2ZR3KgjjgER2PMlBCEA==
+X-Received: by 2002:a17:906:8242:: with SMTP id f2mr10624939ejx.478.1617623435263;
+        Mon, 05 Apr 2021 04:50:35 -0700 (PDT)
+Received: from ?IPv6:2001:a61:2553:a401:cfc6:2039:a9ec:21ff? ([2001:a61:2553:a401:cfc6:2039:a9ec:21ff])
+        by smtp.gmail.com with ESMTPSA id bm21sm8581469ejb.36.2021.04.05.04.50.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Apr 2021 04:50:34 -0700 (PDT)
+Cc:     mtk.manpages@gmail.com, Axel Rasmussen <axelrasmussen@google.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v5 0/4] man2: udpate mm/userfaultfd manpages to latest
+To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
+        Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-man@vger.kernel.org
+References: <20210329221833.517923-1-peterx@redhat.com>
+ <76f5d3a7-626e-563b-c1bd-d318a476a8ed@gmail.com>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <09da1b57-14c9-58f4-dd35-0b9aba2d944a@gmail.com>
+Date:   Mon, 5 Apr 2021 13:50:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1617616855.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <76f5d3a7-626e-563b-c1bd-d318a476a8ed@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add maintainer entries for ROHM BD71815AGW drivers.
-New regulator and GPIO drivers were introduced for these PMICs.
+Hi Alex,
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
-Changes since v3:
- - No changes
- MAINTAINERS | 3 +++
- 1 file changed, 3 insertions(+)
+> I applied all 4 patches (with a few minor fixes to 1/4 and 4/4 (cosmetic 
+> fixes; some of them about the 80-col right margin)): 
+> <https://github.com/alejandro-colomar/man-pages/tree/eb8f2001d493d458d08b9b87605ed2ac453c7f5f>
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index c80ad735b384..4176880a4eee 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15446,18 +15446,21 @@ F:	Documentation/devicetree/bindings/mfd/rohm,bd70528-pmic.txt
- F:	Documentation/devicetree/bindings/regulator/rohm,bd70528-regulator.txt
- F:	drivers/clk/clk-bd718x7.c
- F:	drivers/gpio/gpio-bd70528.c
-+F:	drivers/gpio/gpio-bd71815.c
- F:	drivers/gpio/gpio-bd71828.c
- F:	drivers/mfd/rohm-bd70528.c
- F:	drivers/mfd/rohm-bd71828.c
- F:	drivers/mfd/rohm-bd718x7.c
- F:	drivers/power/supply/bd70528-charger.c
- F:	drivers/regulator/bd70528-regulator.c
-+F:	drivers/regulator/bd71815-regulator.c
- F:	drivers/regulator/bd71828-regulator.c
- F:	drivers/regulator/bd718x7-regulator.c
- F:	drivers/regulator/rohm-regulator.c
- F:	drivers/rtc/rtc-bd70528.c
- F:	drivers/watchdog/bd70528_wdt.c
- F:	include/linux/mfd/rohm-bd70528.h
-+F:	include/linux/mfd/rohm-bd71815.h
- F:	include/linux/mfd/rohm-bd71828.h
- F:	include/linux/mfd/rohm-bd718x7.h
- F:	include/linux/mfd/rohm-generic.h
--- 
-2.25.4
+How big is your current queue of pending patches from others?
+
+Thanks,
+
+Michael
 
 
 -- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
