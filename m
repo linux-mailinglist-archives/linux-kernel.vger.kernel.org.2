@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91045353D4C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF1E353D23
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236949AbhDEI7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 04:59:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39656 "EHLO mail.kernel.org"
+        id S233942AbhDEI6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 04:58:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234141AbhDEI7B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 04:59:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 349CB6124C;
-        Mon,  5 Apr 2021 08:58:55 +0000 (UTC)
+        id S233459AbhDEI6B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:58:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 133D561245;
+        Mon,  5 Apr 2021 08:57:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613135;
-        bh=23kLld7vC2edAg0gR/TXLd//rfdBEkphcIlKJdwOYNI=;
+        s=korg; t=1617613075;
+        bh=UFjtXGfMkx8GBJhmElNVLGQq4L9FRPjeQOHTH9erKlQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IHJ1Tp6iEoCHmcM+Id6cAl2PkCnC5WfTy/CPq2o68PR/tmJE+Cx5OUMLgxojaQMbX
-         SIEhNEqZZQvkWFE8R0BH7cSGqLIVJxYi2rL+lbnZDQLRRQXhixCFqolYKWAmxKLYpa
-         4pevdkrPjllQ5E6RalAyVbnKLIWZ+L2tmPRO+iRk=
+        b=RHo2gdkjL7vMtoC9Uu+91nZVD+d7UpdO0S37NWFYoRuhLDfyEyefJSbs87KPwG5zl
+         m87eAQgTKX4iEEHEVT2LRopKGk6WMD3ce3mzUVzq2WATcnpfs/ni89bS32GIRPffHF
+         cYLq+YFeHOcxopFcPjP/7wm6ACie4yG+PRliBJPI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Lucas Tanure <tanureal@opensource.cirrus.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 09/52] ASoC: cs42l42: Fix mixer volume control
-Date:   Mon,  5 Apr 2021 10:53:35 +0200
-Message-Id: <20210405085022.306684365@linuxfoundation.org>
+Subject: [PATCH 4.14 10/52] ASoC: cs42l42: Always wait at least 3ms after reset
+Date:   Mon,  5 Apr 2021 10:53:36 +0200
+Message-Id: <20210405085022.337043554@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
 References: <20210405085021.996963957@linuxfoundation.org>
@@ -43,40 +43,53 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lucas Tanure <tanureal@opensource.cirrus.com>
 
-[ Upstream commit 72d904763ae6a8576e7ad034f9da4f0e3c44bf24 ]
+[ Upstream commit 19325cfea04446bc79b36bffd4978af15f46a00e ]
 
-The minimum value is 0x3f (-63dB), which also is mute
+This delay is part of the power-up sequence defined in the datasheet.
+A runtime_resume is a power-up so must also include the delay.
 
 Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20210305173442.195740-4-tanureal@opensource.cirrus.com
+Link: https://lore.kernel.org/r/20210305173442.195740-6-tanureal@opensource.cirrus.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs42l42.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/cs42l42.c | 3 ++-
+ sound/soc/codecs/cs42l42.h | 1 +
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index a2324a0e72ee..ec322fda3c18 100644
+index ec322fda3c18..39adb2fdd003 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -405,7 +405,7 @@ static const struct regmap_config cs42l42_regmap = {
- };
+@@ -1809,7 +1809,7 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client,
+ 		dev_dbg(&i2c_client->dev, "Found reset GPIO\n");
+ 		gpiod_set_value_cansleep(cs42l42->reset_gpio, 1);
+ 	}
+-	mdelay(3);
++	usleep_range(CS42L42_BOOT_TIME_US, CS42L42_BOOT_TIME_US * 2);
  
- static DECLARE_TLV_DB_SCALE(adc_tlv, -9600, 100, false);
--static DECLARE_TLV_DB_SCALE(mixer_tlv, -6200, 100, false);
-+static DECLARE_TLV_DB_SCALE(mixer_tlv, -6300, 100, true);
+ 	/* Request IRQ */
+ 	ret = devm_request_threaded_irq(&i2c_client->dev,
+@@ -1936,6 +1936,7 @@ static int cs42l42_runtime_resume(struct device *dev)
+ 	}
  
- static const char * const cs42l42_hpf_freq_text[] = {
- 	"1.86Hz", "120Hz", "235Hz", "466Hz"
-@@ -462,7 +462,7 @@ static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
- 				CS42L42_DAC_HPF_EN_SHIFT, true, false),
- 	SOC_DOUBLE_R_TLV("Mixer Volume", CS42L42_MIXER_CHA_VOL,
- 			 CS42L42_MIXER_CHB_VOL, CS42L42_MIXER_CH_VOL_SHIFT,
--				0x3e, 1, mixer_tlv)
-+				0x3f, 1, mixer_tlv)
- };
+ 	gpiod_set_value_cansleep(cs42l42->reset_gpio, 1);
++	usleep_range(CS42L42_BOOT_TIME_US, CS42L42_BOOT_TIME_US * 2);
  
- static int cs42l42_hpdrv_evt(struct snd_soc_dapm_widget *w,
+ 	regcache_cache_only(cs42l42->regmap, false);
+ 	regcache_sync(cs42l42->regmap);
+diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
+index d87a0a5322d5..3d5fa343db96 100644
+--- a/sound/soc/codecs/cs42l42.h
++++ b/sound/soc/codecs/cs42l42.h
+@@ -743,6 +743,7 @@
+ #define CS42L42_FRAC2_VAL(val)	(((val) & 0xff0000) >> 16)
+ 
+ #define CS42L42_NUM_SUPPLIES	5
++#define CS42L42_BOOT_TIME_US	3000
+ 
+ static const char *const cs42l42_supply_names[CS42L42_NUM_SUPPLIES] = {
+ 	"VA",
 -- 
 2.30.1
 
