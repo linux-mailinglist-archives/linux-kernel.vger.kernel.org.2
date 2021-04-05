@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA041353FCF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8524F35409F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239967AbhDEJOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:14:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57836 "EHLO mail.kernel.org"
+        id S240982AbhDEJTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:19:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238899AbhDEJK5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:10:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E0F8E61002;
-        Mon,  5 Apr 2021 09:10:50 +0000 (UTC)
+        id S239424AbhDEJPf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:15:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3620861002;
+        Mon,  5 Apr 2021 09:15:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613851;
-        bh=cq7RFyQrAvQ12App5cGcCe7rP1QlP9h9XdWi9AAusmE=;
+        s=korg; t=1617614124;
+        bh=fIM3T8xvP16U0gI9QGzCA8L2mFV4G3KBVAzxTCxtmdw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V5Q6rqEKPMjmZqVf4KRHfAOc11FFRnP74LmVAfeJgwV031mjit9awr83xqS0NApco
-         G69pNpN090DCup3yzQCudlA4R81vpSoAqMp6+Uo9+cKHls7yFirT29f3JGobjm+Xp2
-         h4RWrwIzorKk4UzbwBhPBdyvj9wKKYGk++AIby4I=
+        b=FUeEiWpMOIFbu6MVx3CAKS9MV6JA6ZV3cZcFNSFMeIPLKAU/Hk3JcZMhnzQgpCD7j
+         SZRKrRcuQxh1gtX5O/uFKJZbvNmKzsZcDMAijbdOwZB4QwPKVF9fDbcbT7ITft1x7A
+         kMk5tML9g9av4Mhpt1qs2TL5A1DqXP2qUcF0bViE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>
-Subject: [PATCH 5.10 079/126] drm/tegra: sor: Grab runtime PM reference across reset
+        stable@vger.kernel.org, Rui Wang <wangr@lemote.com>,
+        Huacai Chen <chenhc@lemote.com>,
+        Xi Ruoyao <xry111@mengyan1223.wang>,
+        =?UTF-8?q?Dan=20Hor=C3=A1k?= <dan@danny.cz>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.11 092/152] drm/amdgpu: Set a suitable dev_info.gart_page_size
 Date:   Mon,  5 Apr 2021 10:54:01 +0200
-Message-Id: <20210405085033.686284735@linuxfoundation.org>
+Message-Id: <20210405085037.242060466@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
-References: <20210405085031.040238881@linuxfoundation.org>
+In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
+References: <20210405085034.233917714@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,57 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thierry Reding <treding@nvidia.com>
+From: Huacai Chen <chenhc@lemote.com>
 
-commit ac097aecfef0bb289ca53d2fe0b73fc7e1612a05 upstream.
+commit 566c6e25f957ebdb0b6e8073ee291049118f47fb upstream.
 
-The SOR resets are exclusively shared with the SOR power domain. This
-means that exclusive access can only be granted temporarily and in order
-for that to work, a rigorous sequence must be observed. To ensure that a
-single consumer gets exclusive access to a reset, each consumer must
-implement a rigorous protocol using the reset_control_acquire() and
-reset_control_release() functions.
+In Mesa, dev_info.gart_page_size is used for alignment and it was
+set to AMDGPU_GPU_PAGE_SIZE(4KB). However, the page table of AMDGPU
+driver requires an alignment on CPU pages.  So, for non-4KB page system,
+gart_page_size should be max_t(u32, PAGE_SIZE, AMDGPU_GPU_PAGE_SIZE).
 
-However, these functions alone don't provide any guarantees at the
-system level. Drivers need to ensure that the only a single consumer has
-access to the reset at the same time. In order for the SOR to be able to
-exclusively access its reset, it must therefore ensure that the SOR
-power domain is not powered off by holding on to a runtime PM reference
-to that power domain across the reset assert/deassert operation.
-
-This used to work fine by accident, but was revealed when recently more
-devices started to rely on the SOR power domain.
-
-Fixes: 11c632e1cfd3 ("drm/tegra: sor: Implement acquire/release for reset")
-Reported-by: Jonathan Hunter <jonathanh@nvidia.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Rui Wang <wangr@lemote.com>
+Signed-off-by: Huacai Chen <chenhc@lemote.com>
+Link: https://github.com/loongson-community/linux-stable/commit/caa9c0a1
+[Xi: rebased for drm-next, use max_t for checkpatch,
+     and reworded commit message.]
+Signed-off-by: Xi Ruoyao <xry111@mengyan1223.wang>
+BugLink: https://gitlab.freedesktop.org/drm/amd/-/issues/1549
+Tested-by: Dan Horák <dan@danny.cz>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/tegra/sor.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/gpu/drm/tegra/sor.c
-+++ b/drivers/gpu/drm/tegra/sor.c
-@@ -3115,6 +3115,12 @@ static int tegra_sor_init(struct host1x_
- 	 * kernel is possible.
- 	 */
- 	if (sor->rst) {
-+		err = pm_runtime_resume_and_get(sor->dev);
-+		if (err < 0) {
-+			dev_err(sor->dev, "failed to get runtime PM: %d\n", err);
-+			return err;
-+		}
-+
- 		err = reset_control_acquire(sor->rst);
- 		if (err < 0) {
- 			dev_err(sor->dev, "failed to acquire SOR reset: %d\n",
-@@ -3148,6 +3154,7 @@ static int tegra_sor_init(struct host1x_
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+@@ -780,9 +780,9 @@ int amdgpu_info_ioctl(struct drm_device
+ 			dev_info->high_va_offset = AMDGPU_GMC_HOLE_END;
+ 			dev_info->high_va_max = AMDGPU_GMC_HOLE_END | vm_size;
  		}
- 
- 		reset_control_release(sor->rst);
-+		pm_runtime_put(sor->dev);
- 	}
- 
- 	err = clk_prepare_enable(sor->clk_safe);
+-		dev_info->virtual_address_alignment = max((int)PAGE_SIZE, AMDGPU_GPU_PAGE_SIZE);
++		dev_info->virtual_address_alignment = max_t(u32, PAGE_SIZE, AMDGPU_GPU_PAGE_SIZE);
+ 		dev_info->pte_fragment_size = (1 << adev->vm_manager.fragment_size) * AMDGPU_GPU_PAGE_SIZE;
+-		dev_info->gart_page_size = AMDGPU_GPU_PAGE_SIZE;
++		dev_info->gart_page_size = max_t(u32, PAGE_SIZE, AMDGPU_GPU_PAGE_SIZE);
+ 		dev_info->cu_active_number = adev->gfx.cu_info.number;
+ 		dev_info->cu_ao_mask = adev->gfx.cu_info.ao_cu_mask;
+ 		dev_info->ce_ram_size = adev->gfx.ce_ram_size;
 
 
