@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA49335403E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D41A353EFB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239728AbhDEJQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:16:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60704 "EHLO mail.kernel.org"
+        id S239111AbhDEJJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:09:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239375AbhDEJNS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:13:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0D9760FE4;
-        Mon,  5 Apr 2021 09:13:11 +0000 (UTC)
+        id S238192AbhDEJHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:07:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC26C613A0;
+        Mon,  5 Apr 2021 09:07:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613992;
-        bh=r3I5WQMZlWTKxoKByZxDKviWFewVW04oiDP9IKaoL0M=;
+        s=korg; t=1617613629;
+        bh=/9ujew30/khoYdl8uTOuMTpa+/+vYu2kig65Xjphl34=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0HfhDhZgD45ZuGXkIKiMdUFWbf3hueHtEX/Avlx0n6DtjBZThOuUbMoxKl8k/1Aa8
-         sIlUWqm01QGKHWl6v+F+8Hx6JFO9B/ExD2m2DRDt3LnAa6dKHUQlEL9HkX2kLmBkGc
-         DKXW2iUbu9U2L7N5sC14gA04jvjS1ha9roMnlNbA=
+        b=l/YP5qgIfUXnlfJjEg7sIPBZ1430zOMVgnTbs86nxTrS4e7+8Ebe8ptafk6I5qv/F
+         D2kKsRtOfu9McJes9U33B/HS+vtiLgzE8BZAw5C0N86M5e9Q18/Wh6cQ7Dy4jjNHBE
+         fTWl0nTBHC5vzEZO2t2uza5PLWjCTYaUfFcPZ+0o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 044/152] mptcp: add a missing retransmission timer scheduling
-Date:   Mon,  5 Apr 2021 10:53:13 +0200
-Message-Id: <20210405085035.708563743@linuxfoundation.org>
+        stable@vger.kernel.org, Elad Grupi <elad.grupi@dell.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 032/126] nvmet-tcp: fix kmap leak when data digest in use
+Date:   Mon,  5 Apr 2021 10:53:14 +0200
+Message-Id: <20210405085032.102660351@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
-References: <20210405085034.233917714@linuxfoundation.org>
+In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
+References: <20210405085031.040238881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,56 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Abeni <pabeni@redhat.com>
+From: Elad Grupi <elad.grupi@dell.com>
 
-[ Upstream commit d09d818ec2ed31bce94fdcfcc4700233e01f8498 ]
+[ Upstream commit bac04454ef9fada009f0572576837548b190bf94 ]
 
-Currently we do not schedule the MPTCP retransmission
-timer after pushing the data when such action happens
-in the subflow context.
+When data digest is enabled we should unmap pdu iovec before handling
+the data digest pdu.
 
-This may cause hang-up on active-backup scenarios, or
-even when only single subflow msks are involved, if we lost
-some peer's ack.
-
-Fixes: 6e628cd3a8f7 ("mptcp: use mptcp release_cb for delayed tasks")
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-Signed-off-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Elad Grupi <elad.grupi@dell.com>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mptcp/options.c  | 3 +--
- net/mptcp/protocol.c | 3 +++
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ drivers/nvme/target/tcp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/mptcp/options.c b/net/mptcp/options.c
-index 37ef0bf098f6..9e86c601093f 100644
---- a/net/mptcp/options.c
-+++ b/net/mptcp/options.c
-@@ -885,8 +885,7 @@ static void ack_update_msk(struct mptcp_sock *msk,
- 		msk->wnd_end = new_wnd_end;
+diff --git a/drivers/nvme/target/tcp.c b/drivers/nvme/target/tcp.c
+index 8b0485ada315..d658c6e8263a 100644
+--- a/drivers/nvme/target/tcp.c
++++ b/drivers/nvme/target/tcp.c
+@@ -1098,11 +1098,11 @@ static int nvmet_tcp_try_recv_data(struct nvmet_tcp_queue *queue)
+ 		cmd->rbytes_done += ret;
+ 	}
  
- 	/* this assumes mptcp_incoming_options() is invoked after tcp_ack() */
--	if (after64(msk->wnd_end, READ_ONCE(msk->snd_nxt)) &&
--	    sk_stream_memory_free(ssk))
-+	if (after64(msk->wnd_end, READ_ONCE(msk->snd_nxt)))
- 		__mptcp_check_push(sk, ssk);
++	nvmet_tcp_unmap_pdu_iovec(cmd);
+ 	if (queue->data_digest) {
+ 		nvmet_tcp_prep_recv_ddgst(cmd);
+ 		return 0;
+ 	}
+-	nvmet_tcp_unmap_pdu_iovec(cmd);
  
- 	if (after64(new_snd_una, old_snd_una)) {
-diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
-index 44b8868f0607..67483e561b37 100644
---- a/net/mptcp/protocol.c
-+++ b/net/mptcp/protocol.c
-@@ -1568,6 +1568,9 @@ out:
- 		mptcp_set_timeout(sk, ssk);
- 		tcp_push(ssk, 0, info.mss_now, tcp_sk(ssk)->nonagle,
- 			 info.size_goal);
-+		if (!mptcp_timer_pending(sk))
-+			mptcp_reset_timer(sk);
-+
- 		if (msk->snd_data_fin_enable &&
- 		    msk->snd_nxt + 1 == msk->write_seq)
- 			mptcp_schedule_work(sk);
+ 	if (!(cmd->flags & NVMET_TCP_F_INIT_FAILED) &&
+ 	    cmd->rbytes_done == cmd->req.transfer_len) {
 -- 
 2.30.1
 
