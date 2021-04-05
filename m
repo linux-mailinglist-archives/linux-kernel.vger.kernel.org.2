@@ -2,168 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE82F353CE1
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6686D353D08
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233120AbhDEI5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 04:57:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35960 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233005AbhDEI47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 04:56:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8AF3613AE;
-        Mon,  5 Apr 2021 08:56:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617613013;
-        bh=kr/6sN8tuduA4F6HDFz4zOQ0J1pE2XlaVrY2dUMgOng=;
-        h=References:In-Reply-To:Reply-To:From:Date:Subject:To:Cc:From;
-        b=ggtKbw9Uu6ZqDi+Rns7FtXn8vDCMPLT3dMIrKmY69X8P0lx8S6jnmlUGLj7+JZdS9
-         wa9adIq+dlI/Zrj3OQD3fZdvYkd3DFHdx4/fx9bGsjtDaFFPJaGN29A+Z0+f+eA0KI
-         dmIauMgP7WuQ4dCJNZx90jQedY9ak0pvL+CML75oeODCMI4ATG1JSDqBS7EsHrSi0k
-         V0B5HPUijP5QykKJSD5TrG60R23FPBc/mHSdJMQfwp7C/d2gHd7bTKLSRAlWm1jaT9
-         1+piAASBaCEDvxrz5/MMy1FfParUoxsMh18qp6FLSh2iRgTVGahcyjjpsH91v55nui
-         uuAzgVAPd75uQ==
-Received: by mail-lj1-f177.google.com with SMTP id 184so11990778ljf.9;
-        Mon, 05 Apr 2021 01:56:52 -0700 (PDT)
-X-Gm-Message-State: AOAM530w1d5fYEEZHx4Nyr5eNPzX8T6SofMUcF0Jjn9YtdTxmsqaLbjm
-        xoE2GRdUKsCvQlXumVGF76Rqr4AayLiAWCysW7g=
-X-Google-Smtp-Source: ABdhPJxBkA9pgGCG626Kz6QwB6SBWAuWEQdgmh+HthBulgeoakBIc6Jr6MojiArKUKaWgfDKYu15IWLAc8QdS2mq990=
-X-Received: by 2002:a2e:7d04:: with SMTP id y4mr16080522ljc.94.1617613011247;
- Mon, 05 Apr 2021 01:56:51 -0700 (PDT)
+        id S233389AbhDEI6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 04:58:00 -0400
+Received: from mailgate.ics.forth.gr ([139.91.1.2]:56901 "EHLO
+        mailgate.ics.forth.gr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233279AbhDEI5k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:57:40 -0400
+Received: from av3.ics.forth.gr (av3in.ics.forth.gr [139.91.1.77])
+        by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 1358vWaV079891
+        for <linux-kernel@vger.kernel.org>; Mon, 5 Apr 2021 11:57:32 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
+        q=dns/txt; i=@ics.forth.gr; t=1617613047; x=1620205047;
+        h=From:Sender:Reply-To:Subject:Date:Message-Id:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=EfKmC1JuJT8Zu2DDNgq2xg0tTemOVFs2FYglazg4zNM=;
+        b=LD8mGRYATXub8N7uRNlngMhpde9Wv65ySPWbYJjSpTaoRfRatLFPabOycpTq8yoc
+        Yvg5gfQ6w7bs5A1nRXY97iDJhC3M3pOews9QJqvzU46nixj+nWs1eGo2HoSOfgNO
+        C87ai6HyNiO0uOhupSXyEpL1ETubOnAjmeQRytwYUhXEiEGuDlQOxm4jGeewCZqy
+        zpRjvJLzyfn4QmrRIDDWoJoYvL62ei2gtlGOKRBVrYetWMTcYLbq6ts9zmyteN6Q
+        OGn2Q4dkqce8J3Mer2gKssqJDE2kny/ewtkhMtcpf21QJ4/UUZjoR7kNEnbFNL+Q
+        /oo5xHIZSm2wm1QghREYiA==;
+X-AuditID: 8b5b014d-a70347000000209f-d7-606ad0f75597
+Received: from enigma.ics.forth.gr (enigma.ics.forth.gr [139.91.151.35])
+        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id 77.77.08351.7F0DA606; Mon,  5 Apr 2021 11:57:27 +0300 (EEST)
+X-ICS-AUTH-INFO: Authenticated user: mick@ics.forth.gr at ics.forth.gr
+From:   Nick Kossifidis <mick@ics.forth.gr>
+To:     linux-riscv@lists.infradead.org, palmer@dabbelt.com
+Cc:     paul.walmsley@sifive.com, linux-kernel@vger.kernel.org,
+        Nick Kossifidis <mick@ics.forth.gr>
+Subject: [PATCH v3 0/5] RISC-V: Add kexec/kdump support
+Date:   Mon,  5 Apr 2021 11:57:07 +0300
+Message-Id: <20210405085712.1953848-1-mick@ics.forth.gr>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210405074459.4217-1-cnsztl@gmail.com> <CAGb2v66K3SFSkm9T_D6X5o7jSYOoYpYeS_yMp1k6nMonmjiHZA@mail.gmail.com>
- <CAOP2_Th4+ZXtYfrr2kWnnuuzzS-HdNvN6FVtMj=5-nk4QTOvnQ@mail.gmail.com>
-In-Reply-To: <CAOP2_Th4+ZXtYfrr2kWnnuuzzS-HdNvN6FVtMj=5-nk4QTOvnQ@mail.gmail.com>
-Reply-To: wens@kernel.org
-From:   Chen-Yu Tsai <wens@kernel.org>
-Date:   Mon, 5 Apr 2021 16:56:38 +0800
-X-Gmail-Original-Message-ID: <CAGb2v65c2jFQCuAg_PhqJA+_m5Vi-cX=f8yHZ41P=_XnhBvKNQ@mail.gmail.com>
-Message-ID: <CAGb2v65c2jFQCuAg_PhqJA+_m5Vi-cX=f8yHZ41P=_XnhBvKNQ@mail.gmail.com>
-Subject: Re: [PATCH] rockchip: enabled LAN port on NanoPi R2S
-To:     Tianling Shen <cnsztl@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
-        Johan Jonker <jbx6244@gmail.com>,
-        David Bauer <mail@david-bauer.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgluLIzCtJLcpLzFFi42Lpjp6urPv9QlaCwYd5khaXd81hs9j2uYXN
+        ovndOXaLl5d7mC3aZvE7sHq8efmSxePhpktMHpuX1Htcar7O7vF5k1wAaxSXTUpqTmZZapG+
+        XQJXRuPm20wF2/kqnp9Rb2Bcy93FyMkhIWAi0d33gbGLkYtDSOAoo8SDCWvYIBJuErfv72QF
+        sdkENCXmXzrIAmKLCJhLNM98zQhiMwtkSBzd94sdxBYGiq+e/44ZxGYRUJU48uo2WA2vgIXE
+        /50LWCFmyku0L9/OBhEXlDg58wkLxBx5ieats5knMPLMQpKahSS1gJFpFaNAYpmxXmZysV5a
+        flFJhl560SZGcCAx+u5gvL35rd4hRiYOxkOMEhzMSiK8DxuyEoR4UxIrq1KL8uOLSnNSiw8x
+        SnOwKInz8upNiBcSSE8sSc1OTS1ILYLJMnFwSjUwOW9hCXKIsGKuPzo37mG4kbmnSnr4HsP0
+        11uWZp0IVZq7K8he9OU0GZMAxusLYnwez2E+1Bx5wdPtx0w+y8Bybf/+WwLRezLfZVuzLuid
+        Zsy1t6hl+9H+Hpk0uadX79yXUWHMmi24smT/49uxFdP3Pav7vf8Wd8SrPzJLO6f3bHJWybV8
+        q3XKfUrj+5hXZ6af29um3Neyeao9+4NWI8dZkyMyFr5wbeBgij0zlfurVUTLP/nzm5ZVb7Nc
+        NfV2TI3b8Yqw7uUd5uv/zqu/sVTmsKF8XYuxwRkbpV1lBpqZ01YZSj7h5chsN7jPoFT0vU29
+        dFdGpHam/86XSjnXOkr3VOzxuCG09EqIlv7vKAslluKMREMt5qLiRAA1iB7CkwIAAA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 5, 2021 at 4:53 PM Tianling Shen <cnsztl@gmail.com> wrote:
->
-> Hi Chen-Yu,
->
-> On 2021-04-05 16:14, Chen-Yu Tsai <wens@kernel.org> wrote:
-> >
-> > Hi,
-> >
-> > On Mon, Apr 5, 2021 at 3:46 PM Tianling Shen <cnsztl@gmail.com> wrote:
-> > >
-> > > From: David Bauer <mail@david-bauer.net>
-> > >
-> > > Enable the USB3 port on the FriendlyARM NanoPi R2S.
-> > > This is required for the USB3 attached LAN port to work.
-> > >
-> > > Signed-off-by: David Bauer <mail@david-bauer.net>
-> > > Signed-off-by: Tianling Shen <cnsztl@gmail.com>
-> > > ---
-> > >  .../boot/dts/rockchip/rk3328-nanopi-r2s.dts   | 23 +++++++++++++++++++
-> > >  1 file changed, 23 insertions(+)
-> > >
-> > > diff --git a/arch/arm64/boot/dts/rockchip/rk3328-nanopi-r2s.dts b/arch/arm64/boot/dts/rockchip/rk3328-nanopi-r2s.dts
-> > > index faf496d789cf..6ba9799a95c5 100644
-> > > --- a/arch/arm64/boot/dts/rockchip/rk3328-nanopi-r2s.dts
-> > > +++ b/arch/arm64/boot/dts/rockchip/rk3328-nanopi-r2s.dts
-> > > @@ -37,6 +37,18 @@
-> > >                 };
-> > >         };
-> > >
-> > > +       vcc_rtl8153: vcc-rtl8153-regulator {
-> > > +               compatible = "regulator-fixed";
-> > > +               gpio = <&gpio2 RK_PC6 GPIO_ACTIVE_HIGH>;
-> > > +               pinctrl-names = "default";
-> > > +               pinctrl-0 = <&rtl8153_en_drv>;
-> > > +               regulator-always-on;
-> > > +               regulator-name = "vcc_rtl8153";
-> > > +               regulator-min-microvolt = <5000000>;
-> > > +               regulator-max-microvolt = <5000000>;
-> >
-> > This is just a simple switch, not an actual regulator.
-> > It would make more sense to drop the voltage range and
-> > instead have the implementation pass-through voltage
-> > constraints from its parent.
->
-> Thanks, I'll remove them in v2.
->
-> >
-> > > +               enable-active-high;
-> > > +       };
-> > > +
-> > >         leds {
-> > >                 compatible = "gpio-leds";
-> > >                 pinctrl-0 = <&lan_led_pin>,  <&sys_led_pin>, <&wan_led_pin>;
-> > > @@ -265,6 +277,12 @@
-> > >                         };
-> > >                 };
-> > >         };
-> > > +
-> > > +       usb {
-> > > +               rtl8153_en_drv: rtl8153-en-drv {
-> > > +                       rockchip,pins = <2 RK_PC6 RK_FUNC_GPIO &pcfg_pull_none>;
-> > > +               };
-> > > +       };
-> > >  };
-> > >
-> > >  &io_domains {
-> > > @@ -364,6 +382,11 @@
-> > >         dr_mode = "host";
-> > >  };
-> > >
-> > > +&usbdrd3 {
-> > > +       dr_mode = "host";
-> > > +       status = "okay";
-> >
-> > Please also add a device node for the actual Ethernet controller, and
-> > set up an aliases node for it, so that the bootloader has some place
-> > to fill in a MAC address.
->
-> But there's no valid (unique) MAC address for both this or on-board ethernet...
-> They're non-existent in design.
+This patch series adds kexec/kdump and crash kernel
+support on RISC-V. For testing the patches a patched
+version of kexec-tools is needed (still a work in
+progress) which can be found at:
 
-Correct. And thanks for confirming that it's not just me and Robin that
-got boards without the MAC address EEPROM...
+https://riscv.ics.forth.gr/kexec-tools-patched.tar.xz
 
-If the user sets some MAC address in the bootloader environment by hand,
-the bootloader could still potentially pass that MAC address to Linux
-through the device tree. Whether the board has a valid address or not
-is beside the point.
+v3:
+ * Rebase on newer kernel tree
+ * Minor cleanups
+ * Split UAPI changes to a separate patch
+ * Improve / cleanup init_resources
+ * Resolve Palmer's comments
 
+v2:
+ * Rebase on newer kernel tree
+ * Minor cleanups
+ * Properly populate the ioresources tre, so that it
+   can be used later on for implementing strict /dev/mem
+ * Use linux,usable-memory on /memory instead of a new binding
+ * USe a reserved-memory node for ELF core header
 
-ChenYu
+Nick Kossifidis (5):
+  RISC-V: Add EM_RISCV to kexec UAPI header
+  RISC-V: Add kexec support
+  RISC-V: Improve init_resources
+  RISC-V: Add kdump support
+  RISC-V: Add crash kernel support
 
+ arch/riscv/Kconfig                  |  25 ++++
+ arch/riscv/include/asm/elf.h        |   6 +
+ arch/riscv/include/asm/kexec.h      |  54 +++++++
+ arch/riscv/kernel/Makefile          |   6 +
+ arch/riscv/kernel/crash_dump.c      |  46 ++++++
+ arch/riscv/kernel/crash_save_regs.S |  56 +++++++
+ arch/riscv/kernel/kexec_relocate.S  | 222 ++++++++++++++++++++++++++++
+ arch/riscv/kernel/machine_kexec.c   | 193 ++++++++++++++++++++++++
+ arch/riscv/kernel/setup.c           | 113 ++++++++------
+ arch/riscv/mm/init.c                | 110 ++++++++++++++
+ include/uapi/linux/kexec.h          |   1 +
+ 11 files changed, 787 insertions(+), 45 deletions(-)
+ create mode 100644 arch/riscv/include/asm/kexec.h
+ create mode 100644 arch/riscv/kernel/crash_dump.c
+ create mode 100644 arch/riscv/kernel/crash_save_regs.S
+ create mode 100644 arch/riscv/kernel/kexec_relocate.S
+ create mode 100644 arch/riscv/kernel/machine_kexec.c
 
-> Thanks,
-> Tianling.
->
-> >
-> >
-> > ChenYu
-> >
-> > > +};
-> > > +
-> > >  &usb_host0_ehci {
-> > >         status = "okay";
-> > >  };
-> > > --
-> > > 2.17.1
-> > >
-> > >
-> > > _______________________________________________
-> > > linux-arm-kernel mailing list
-> > > linux-arm-kernel@lists.infradead.org
-> > > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+-- 
+2.26.2
+
