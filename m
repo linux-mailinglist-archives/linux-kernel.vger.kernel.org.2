@@ -2,63 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4BF3546D0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 20:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6AD13546D4
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 20:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235423AbhDESuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 14:50:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234032AbhDESut (ORCPT
+        id S235420AbhDES6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 14:58:43 -0400
+Received: from hs01.dk-develop.de ([173.249.23.66]:48088 "EHLO
+        hs01.dk-develop.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234913AbhDES6i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 14:50:49 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C54C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 11:50:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=pRQfujLgDot1kiIem/5XbHyxFit7Ph17hs4/MTFlKFY=; b=bUrNcXqsJSoO/Qd1ABZk/AFEM5
-        HilEtcXnE82Q1HyOP0leHdMZuQExMd7XF5OCVKUh4DlDt0dQRZYqLfl3PdOIo8XJjU7esXMVOa9xs
-        9c+kUNzO19s5k6GGMLq/lM+2nR46Z8Mi6xuEeOYFg9E2pZ0Z0gLTvdotHFzpdxTSppzmfogGh+M84
-        T1pQHU1MVhQrmkcftynMysoSJlHGWRapfOpUmP24PWRMoVINFE8iXH6796qny5ALjqbnhVmqlWIaV
-        YpzqonteKQSbTeRcAqCD7w7+824JwNonOr/HIAzUZx8IizTTVcfeSI93f4TimofSz0iyRG0mxnivM
-        MXZcFsww==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lTUIn-00BkwH-Gv; Mon, 05 Apr 2021 18:50:27 +0000
-Date:   Mon, 5 Apr 2021 19:50:21 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] minor cleanups of include/linux/mm.h
-Message-ID: <20210405185021.GK2531743@casper.infradead.org>
-References: <20210405151355.9867-1-rppt@kernel.org>
+        Mon, 5 Apr 2021 14:58:38 -0400
+Date:   Mon, 5 Apr 2021 20:58:07 +0200
+From:   Danilo Krummrich <danilokrummrich@dk-develop.de>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        davem@davemloft.net, hkallweit1@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jeremy.linton@arm.com
+Subject: Re: [PATCH 2/2] net: mdio: support c45 peripherals on c22 busses
+Message-ID: <YGtdv++nv3H5K43E@arch-linux>
+References: <20210331141755.126178-3-danilokrummrich@dk-develop.de>
+ <YGSi+b/r4zlq9rm8@lunn.ch>
+ <6f1dfc28368d098ace9564e53ed92041@dk-develop.de>
+ <20210331183524.GV1463@shell.armlinux.org.uk>
+ <2f0ea3c3076466e197ca2977753b07f3@dk-develop.de>
+ <20210401084857.GW1463@shell.armlinux.org.uk>
+ <YGZvGfNSBBq/92D+@arch-linux>
+ <20210402125858.GB1463@shell.armlinux.org.uk>
+ <YGoSS7llrl5K6D+/@arch-linux>
+ <YGsRwxwXILC1Tp2S@lunn.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210405151355.9867-1-rppt@kernel.org>
+In-Reply-To: <YGsRwxwXILC1Tp2S@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 06:13:53PM +0300, Mike Rapoport wrote:
-> I've also noticed that except page_mapping_file() we have somewhat similar
-> page_file_mapping(), which seems superfluous, but I didn't dig further to
-> see how one of them can be dropped. 
+On Mon, Apr 05, 2021 at 03:33:55PM +0200, Andrew Lunn wrote:
+> On Sun, Apr 04, 2021 at 09:23:55PM +0200, Danilo Krummrich wrote:
+> > So currently every driver should check for the flag MII_ADDR_C45 and report an
+> > error in case it's unsupported.
+> > 
+> > What do you think about checking the bus' capabilities instead in
+> > mdiobus_c45_*()? This way the check if C45 is supported can even happen before
+> > calling the driver at all. I think that would be a little cleaner than having
+> > two places where information of the bus' capabilities are stored (return value
+> > of read/write functions and the capabilities field).
+> > 
+> > I think there are not too many drivers setting their capabilities though, but
+> > it should be easy to derive this information from how and if they handle the
+> > MII_ADDR_C45 flag.
+> 
+> I actually don't think anything needs to change. The Marvell PHY
+> probably probes due to its C22 IDs. The driver will then requests C45
+> access which automagically get converted into C45 over C22 for your
+> hardware, but remain C45 access for bus drivers which support C45.
+> 
+Thanks Andrew - I agree, for the Marvell PHY to work I likly don't need any
+change, since I also expect that it will probe with the C22 IDs. I'll try
+this soon.
 
-They can't ;-(  I looked at it, and they do different things.
+However, this was about something else - Russell wrote:
+> > > We have established that MDIO drivers need to reject accesses for
+> > > reads/writes that they do not support [..]
+The MDIO drivers do this by checking the MII_ADDR_C45 flag if it's a C45 bus
+request. In case they don't support it they return -EOPNOTSUPP. So basically,
+the bus drivers read/write functions (should) encode the capability of doing
+C45 transfers.
 
-+ * folio_file_mapping - Find the mapping this folio belongs to.
-+ * @folio: The folio.
-+ *
-+ * For folios which are in the page cache, return the mapping that this
-+ * page belongs to.  Folios in the swap cache return the mapping of the
-+ * swap file or swap device where the data is stored.  This is different
-+ * from the mapping returned by folio_mapping().  The only reason to
-+ * use it is if, like NFS, you return 0 from ->activate_swapfile.
+I just noted that this is redundant to the bus' capabilities field of
+struct mii_bus which also encodes the bus' capabilities of doing C22 and/or C45
+transfers.
 
-page_mapping_file() returns NULL for pages which are in the swap cache,
-as they no longer need the dcache flushed.
+Now, instead of encoding this information of the bus' capabilities at both
+places, I'd propose just checking the mii_bus->capabilities field in the
+mdiobus_c45_*() functions. IMHO this would be a little cleaner, than having two
+places where this information is stored. What do you think about that?
+> 	  Andrew
