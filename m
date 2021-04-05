@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CADF13540BB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 624AB353EAD
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240538AbhDEJVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:21:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38382 "EHLO mail.kernel.org"
+        id S238373AbhDEJHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:07:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239939AbhDEJQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:16:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 054DF60FE4;
-        Mon,  5 Apr 2021 09:16:38 +0000 (UTC)
+        id S237843AbhDEJFY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:05:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82E78613BD;
+        Mon,  5 Apr 2021 09:05:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617614199;
-        bh=Aq/iOP35TU7qVV07rAM5PkHvhY58SEyEeMHiACCpSz0=;
+        s=korg; t=1617613519;
+        bh=6p8KUa9P0jPEfgI04vvoeeGuue6cvOqYeE5lFxLLyPY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t33QzqG3VkRf5L3/Nl7+E38vWBP0VnsON57EIluQn2BY8c++GFV0AkFPiJ6Amp9xv
-         b92p67yU+HOEFW1xS4z4T+b/Hz1FcxnuG+0zbMjo2OfWTlYBYb4JSTf+Y06TwqER+x
-         eMi9ZJzwmzKakOR1+IofC9Vp9koTP0qB17AHsyiE=
+        b=1Zm2/VLB0mbfFHt9XP9VWjETz/j+FAdgZFRiSOysQ83cA+37J2Xs400/s47j7k+VZ
+         zPyE5KaX1uJeIWCmPRE/xA2UPf5O3tJNumsnafnr+7AfUelgneZq7Xy4kc/4RVoelZ
+         2RYXbm5gcULgu6F9je5RNnt8SRsLtEehMdwwwEHk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 121/152] extcon: Add stubs for extcon_register_notifier_all() functions
-Date:   Mon,  5 Apr 2021 10:54:30 +0200
-Message-Id: <20210405085038.171056429@linuxfoundation.org>
+        stable@vger.kernel.org, Jaejoong Kim <climbbb.kim@gmail.com>,
+        Oliver Neukum <oneukum@suse.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.4 67/74] USB: cdc-acm: fix double free on probe failure
+Date:   Mon,  5 Apr 2021 10:54:31 +0200
+Message-Id: <20210405085026.921090332@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
-References: <20210405085034.233917714@linuxfoundation.org>
+In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
+References: <20210405085024.703004126@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,59 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit c9570d4a5efd04479b3cd09c39b571eb031d94f4 ]
+commit 7180495cb3d0e2a2860d282a468b4146c21da78f upstream.
 
-Add stubs for extcon_register_notifier_all() function for !CONFIG_EXTCON
-case.  This is useful for compile testing and for drivers which use
-EXTCON but do not require it (therefore do not depend on CONFIG_EXTCON).
+If tty-device registration fails the driver copy of any Country
+Selection functional descriptor would end up being freed twice; first
+explicitly in the error path and then again in the tty-port destructor.
 
-Fixes: 815429b39d94 ("extcon: Add new extcon_register_notifier_all() to monitor all external connectors")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Drop the first erroneous free that was left when fixing a tty-port
+resource leak.
+
+Fixes: cae2bc768d17 ("usb: cdc-acm: Decrement tty port's refcount if probe() fail")
+Cc: stable@vger.kernel.org      # 4.19
+Cc: Jaejoong Kim <climbbb.kim@gmail.com>
+Acked-by: Oliver Neukum <oneukum@suse.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20210322155318.9837-2-johan@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/extcon.h | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ drivers/usb/class/cdc-acm.c |    1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/include/linux/extcon.h b/include/linux/extcon.h
-index fd183fb9c20f..0c19010da77f 100644
---- a/include/linux/extcon.h
-+++ b/include/linux/extcon.h
-@@ -271,6 +271,29 @@ static inline  void devm_extcon_unregister_notifier(struct device *dev,
- 				struct extcon_dev *edev, unsigned int id,
- 				struct notifier_block *nb) { }
- 
-+static inline int extcon_register_notifier_all(struct extcon_dev *edev,
-+					       struct notifier_block *nb)
-+{
-+	return 0;
-+}
-+
-+static inline int extcon_unregister_notifier_all(struct extcon_dev *edev,
-+						 struct notifier_block *nb)
-+{
-+	return 0;
-+}
-+
-+static inline int devm_extcon_register_notifier_all(struct device *dev,
-+						    struct extcon_dev *edev,
-+						    struct notifier_block *nb)
-+{
-+	return 0;
-+}
-+
-+static inline void devm_extcon_unregister_notifier_all(struct device *dev,
-+						       struct extcon_dev *edev,
-+						       struct notifier_block *nb) { }
-+
- static inline struct extcon_dev *extcon_get_extcon_dev(const char *extcon_name)
- {
- 	return ERR_PTR(-ENODEV);
--- 
-2.30.2
-
+--- a/drivers/usb/class/cdc-acm.c
++++ b/drivers/usb/class/cdc-acm.c
+@@ -1534,7 +1534,6 @@ alloc_fail6:
+ 				&dev_attr_wCountryCodes);
+ 		device_remove_file(&acm->control->dev,
+ 				&dev_attr_iCountryCodeRelDate);
+-		kfree(acm->country_codes);
+ 	}
+ 	device_remove_file(&acm->control->dev, &dev_attr_bmCapabilities);
+ alloc_fail5:
 
 
