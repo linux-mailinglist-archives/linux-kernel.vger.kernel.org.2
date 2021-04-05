@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3C39353EB5
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5ACE353FE0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:36:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238348AbhDEJHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:07:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49676 "EHLO mail.kernel.org"
+        id S240267AbhDEJO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:14:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237878AbhDEJFg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:05:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EDF44613A7;
-        Mon,  5 Apr 2021 09:05:28 +0000 (UTC)
+        id S239022AbhDEJLs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:11:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1E8A613BD;
+        Mon,  5 Apr 2021 09:11:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613529;
-        bh=PrvXvLexksylJ5hd1iSur2YhtvHzTqsiS9WEgISJ7Qc=;
+        s=korg; t=1617613880;
+        bh=WL1ZxEQxzl/JQBs3FER3IAxgsvUr28RtXr896Fwniew=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z20R3dAwdigg/D2wSbxjHqIzKkVcJxdrH3HNi/HvNh4BzQtigX12rQZP2uAY8PFMZ
-         n8paFEjhQ6M1+PiIQxg5zEvxZhlf1wz0GhM30unv7FHSyOnIAuNFQkmVd4RjzfVH+N
-         7S64T3cEHM9xEGbBk9sqGyLtfkVe2CSB4351D96o=
+        b=2oHLVlGw0css2ztE6VB9K5Z6Leoi7f2lEvV8naxhDVDwPokpCloVbACMG80dJjfBa
+         SwnFXB9gtjCdYfoadmASuY78+EO6wq2mssmemhGvDhwHXBoVSxLWPQTD5wl6mFVP0u
+         iIV1BQXNtQlXqwyFdjc4+WIzm4bvUavqbm2pXiYM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
-Subject: [PATCH 5.4 71/74] usb: dwc2: Prevent core suspend when port connection flag is 0
+        stable@vger.kernel.org, Alexey Khoroshilov <khoroshilov@ispras.ru>,
+        Oliver Neukum <oneukum@suse.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.10 113/126] USB: cdc-acm: fix use-after-free after probe failure
 Date:   Mon,  5 Apr 2021 10:54:35 +0200
-Message-Id: <20210405085027.047740968@linuxfoundation.org>
+Message-Id: <20210405085034.775817263@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
-References: <20210405085024.703004126@linuxfoundation.org>
+In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
+References: <20210405085031.040238881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,37 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 93f672804bf2d7a49ef3fd96827ea6290ca1841e upstream.
+commit 4e49bf376c0451ad2eae2592e093659cde12be9a upstream.
 
-In host mode port connection status flag is "0" when loading
-the driver. After loading the driver system asserts suspend
-which is handled by "_dwc2_hcd_suspend()" function. Before
-the system suspend the port connection status is "0". As
-result need to check the "port_connect_status" if it is "0",
-then skipping entering to suspend.
+If tty-device registration fails the driver would fail to release the
+data interface. When the device is later disconnected, the disconnect
+callback would still be called for the data interface and would go about
+releasing already freed resources.
 
-Cc: <stable@vger.kernel.org> # 5.2
-Fixes: 6f6d70597c15 ("usb: dwc2: bus suspend/resume for hosts with DWC2_POWER_DOWN_PARAM_NONE")
-Signed-off-by: Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
-Link: https://lore.kernel.org/r/20210326102510.BDEDEA005D@mailhost.synopsys.com
+Fixes: c93d81955005 ("usb: cdc-acm: fix error handling in acm_probe()")
+Cc: stable@vger.kernel.org      # 3.9
+Cc: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Acked-by: Oliver Neukum <oneukum@suse.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20210322155318.9837-3-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/dwc2/hcd.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/usb/class/cdc-acm.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/usb/dwc2/hcd.c
-+++ b/drivers/usb/dwc2/hcd.c
-@@ -4322,7 +4322,8 @@ static int _dwc2_hcd_suspend(struct usb_
- 	if (hsotg->op_state == OTG_STATE_B_PERIPHERAL)
- 		goto unlock;
+--- a/drivers/usb/class/cdc-acm.c
++++ b/drivers/usb/class/cdc-acm.c
+@@ -1516,6 +1516,11 @@ skip_countries:
  
--	if (hsotg->params.power_down > DWC2_POWER_DOWN_PARAM_PARTIAL)
-+	if (hsotg->params.power_down != DWC2_POWER_DOWN_PARAM_PARTIAL ||
-+	    hsotg->flags.b.port_connect_status == 0)
- 		goto skip_power_saving;
- 
- 	/*
+ 	return 0;
+ alloc_fail6:
++	if (!acm->combined_interfaces) {
++		/* Clear driver data so that disconnect() returns early. */
++		usb_set_intfdata(data_interface, NULL);
++		usb_driver_release_interface(&acm_driver, data_interface);
++	}
+ 	if (acm->country_codes) {
+ 		device_remove_file(&acm->control->dev,
+ 				&dev_attr_wCountryCodes);
 
 
