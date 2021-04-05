@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A22A7353D32
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F144353D10
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234248AbhDEI67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 04:58:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38472 "EHLO mail.kernel.org"
+        id S233595AbhDEI6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 04:58:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37318 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233666AbhDEI6T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 04:58:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8919860238;
-        Mon,  5 Apr 2021 08:58:13 +0000 (UTC)
+        id S233296AbhDEI5m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:57:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 943FB61394;
+        Mon,  5 Apr 2021 08:57:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613094;
-        bh=pvBf/YINN+E8y4O0oiMRslXg0ySwZRGzzI2+yh2S1eU=;
+        s=korg; t=1617613056;
+        bh=T8twyrasx4l19CUuEcFnhOqaYQqq+ba8U0BTnRQo/ds=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EQ+TumKwWAywwi2CcPY+gqIE0dWiGsSlNIqRKLllGKyMqjeghzJIshiDQ8+MHP9Q3
-         oCmNxb3fvZbNBb+P1EOyGQeC8VgLg+y4naj1wJyip+ff0jrFsb2VW2v1KIPLm4Fasg
-         91RznS9e8oQv0bvkx1z0NO5D1TUO/vwHYjleyoqc=
+        b=EPNI+01UNqeDE2yJ4h033RMbw197d+7LoKOVJpHFijVuNDqFub+Q2cnTzvgbsEVyZ
+         3sTrAU2yZxhdi1fxLLwjNLd6NTsBjuzWTgHOSlSicYeIXF3FD47TSCJG6UpuNUVcm1
+         WzW+dCljLPPMh1ytu5LSxRnTv6gBhwQp4datb/vQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Sameer Pujar <spujar@nvidia.com>,
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 17/52] ASoC: rt5659: Update MCLK rate in set_sysclk()
+Subject: [PATCH 4.9 08/35] powerpc: Force inlining of cpu_has_feature() to avoid build failure
 Date:   Mon,  5 Apr 2021 10:53:43 +0200
-Message-Id: <20210405085022.565860015@linuxfoundation.org>
+Message-Id: <20210405085019.137640199@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
-References: <20210405085021.996963957@linuxfoundation.org>
+In-Reply-To: <20210405085018.871387942@linuxfoundation.org>
+References: <20210405085018.871387942@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sameer Pujar <spujar@nvidia.com>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-[ Upstream commit dbf54a9534350d6aebbb34f5c1c606b81a4f35dd ]
+[ Upstream commit eed5fae00593ab9d261a0c1ffc1bdb786a87a55a ]
 
-Simple-card/audio-graph-card drivers do not handle MCLK clock when it
-is specified in the codec device node. The expectation here is that,
-the codec should actually own up the MCLK clock and do necessary setup
-in the driver.
+The code relies on constant folding of cpu_has_feature() based
+on possible and always true values as defined per
+CPU_FTRS_ALWAYS and CPU_FTRS_POSSIBLE.
 
-Suggested-by: Mark Brown <broonie@kernel.org>
-Suggested-by: Michael Walle <michael@walle.cc>
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-Link: https://lore.kernel.org/r/1615829492-8972-3-git-send-email-spujar@nvidia.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Build failure is encountered with for instance
+book3e_all_defconfig on kisskb in the AMDGPU driver which uses
+cpu_has_feature(CPU_FTR_VSX_COMP) to decide whether calling
+kernel_enable_vsx() or not.
+
+The failure is due to cpu_has_feature() not being inlined with
+that configuration with gcc 4.9.
+
+In the same way as commit acdad8fb4a15 ("powerpc: Force inlining of
+mmu_has_feature to fix build failure"), for inlining of
+cpu_has_feature().
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/b231dfa040ce4cc37f702f5c3a595fdeabfe0462.1615378209.git.christophe.leroy@csgroup.eu
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5659.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/powerpc/include/asm/cpu_has_feature.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
-index fa66b11df8d4..ae626d57c1ad 100644
---- a/sound/soc/codecs/rt5659.c
-+++ b/sound/soc/codecs/rt5659.c
-@@ -3391,12 +3391,17 @@ static int rt5659_set_dai_sysclk(struct snd_soc_dai *dai,
- 	struct snd_soc_codec *codec = dai->codec;
- 	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
- 	unsigned int reg_val = 0;
-+	int ret;
+diff --git a/arch/powerpc/include/asm/cpu_has_feature.h b/arch/powerpc/include/asm/cpu_has_feature.h
+index 6e834caa3720..7b10b3ef7739 100644
+--- a/arch/powerpc/include/asm/cpu_has_feature.h
++++ b/arch/powerpc/include/asm/cpu_has_feature.h
+@@ -6,7 +6,7 @@
+ #include <linux/bug.h>
+ #include <asm/cputable.h>
  
- 	if (freq == rt5659->sysclk && clk_id == rt5659->sysclk_src)
- 		return 0;
- 
- 	switch (clk_id) {
- 	case RT5659_SCLK_S_MCLK:
-+		ret = clk_set_rate(rt5659->mclk, freq);
-+		if (ret)
-+			return ret;
-+
- 		reg_val |= RT5659_SCLK_SRC_MCLK;
- 		break;
- 	case RT5659_SCLK_S_PLL1:
+-static inline bool early_cpu_has_feature(unsigned long feature)
++static __always_inline bool early_cpu_has_feature(unsigned long feature)
+ {
+ 	return !!((CPU_FTRS_ALWAYS & feature) ||
+ 		  (CPU_FTRS_POSSIBLE & cur_cpu_spec->cpu_features & feature));
+@@ -45,7 +45,7 @@ static __always_inline bool cpu_has_feature(unsigned long feature)
+ 	return static_branch_likely(&cpu_feature_keys[i]);
+ }
+ #else
+-static inline bool cpu_has_feature(unsigned long feature)
++static __always_inline bool cpu_has_feature(unsigned long feature)
+ {
+ 	return early_cpu_has_feature(feature);
+ }
 -- 
 2.30.1
 
