@@ -2,126 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5872353A27
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 01:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A9B353A2D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 02:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231663AbhDDXjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 19:39:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46320 "EHLO
+        id S231645AbhDEAC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 20:02:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231643AbhDDXjK (ORCPT
+        with ESMTP id S230286AbhDEACX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 19:39:10 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85DF3C061756
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Apr 2021 16:39:05 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id j7so7413213qtx.5
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Apr 2021 16:39:05 -0700 (PDT)
+        Sun, 4 Apr 2021 20:02:23 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F88C061756
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Apr 2021 17:02:18 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id s21so5206794pjq.1
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Apr 2021 17:02:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZmQ6lUbCDIme35q2pCJjSmVR9obrBu1GS0FA+sZ71gE=;
-        b=Mxc5uUEEcQ3Hk+J/GXgw807i2HkPNGdxyWW0jxo9ecUKUwPdyofzTUQSr2nmXC+GTD
-         fTxqc1qs0WecZCjOTs2BazBifn9FvqjgmKSQrTZKo/BmJxQIp7dgV4ZWfBmiq5Gp/m1E
-         b86UZ2fccWmDpoQwfg3cBTEAUTsYP6fhqPGEWKBoM+q+J7yNEkAxDQApclcZ2RU/CCOs
-         5/YMS3VV8/KjEyH4jDl42pW2iH9sOQz5lAaQUhx+h/IjlkvTLat24HdIBbj7q8oJiEnR
-         irazsDt8Slb0qassMoRGvCWenJY2ux912bOZlPT90EztD6Qji6rTWn48Dj0Dm578mAiX
-         BhMQ==
+        h=date:from:to:cc:message-id:mime-version:content-disposition;
+        bh=wCxcfmyN+uyu2EuDS2MM3DeNALMCF932/5FQyU6Gi3E=;
+        b=pW1LFy3z+aGibN9XcvUaCpLdBNrk7Z5AQjCvKHmlFvMBayizkOw/+QGI86OSrHVQvf
+         IoQXZjXmHiSrHdPUChgBU7FZ2melVICdLW5bLgkANGlvnqRGbs4RzgPoHH16ZQaM63Il
+         FsD4QOV2q4PZzWzyikp4DYe/jzyJ0JsktZPyPspmr7tE1RmrU1I3FCmeW5eQbHPjK0Lg
+         zcNi4MLXxOZe4f2UazQQLSTyyteKnJPhdwlNFRYDxzoBYo08Cz5M4eHBmz1430jZbOWy
+         LzIaBQiHvXrbQ25LmePYrN8vUJDC3wuMXorRqhm0n1z96IGO2TT0XkBjbTppSMKqAuKn
+         nF6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=ZmQ6lUbCDIme35q2pCJjSmVR9obrBu1GS0FA+sZ71gE=;
-        b=OYZkRE0JPx6zvbEUi5ugHW5Uy35yxETJMWXstEbM/4qTZZV+iPvHNxINYJoS8r2MLR
-         fxoyWhDgkJJbgsDLvtOQyY7liGUt36F2AZ/VQt4/UuIHBS1Abo9klXS1LjnhQi7OaKk7
-         us/8R+ruO39RPuUlS43qwojobS8hj670ZIhczp218ZSAcyidLoIuRPQMAUKX3S4ZrO+u
-         u6vdz9DeMriTlXIJviayQ/4pCIc6SiIee3B3PN3sPtjvxZN4kvT4+ZR7/0w0z0rGtbHC
-         HWFHnahw8bbK7OkA8ovDu8DWaCkolFCp6kSsGGmQEDd3eeA5+JgZIRoaAP+qggbKwbxe
-         zUCw==
-X-Gm-Message-State: AOAM530xvQFMoe0zdfY9OERZdCMLSRf4kKjyzND+qxeQowCZ1K3w6KVP
-        Z2srwlNnQVJnd84i3GzvfnM=
-X-Google-Smtp-Source: ABdhPJzgFZNUnvD5lQ1awMTq/VpAcJZuwfALMTQgQ9cMaUdcULGFPM+7+BxlYrZd/ZPmRWyhicUNyA==
-X-Received: by 2002:ac8:4415:: with SMTP id j21mr20195004qtn.87.1617579544571;
-        Sun, 04 Apr 2021 16:39:04 -0700 (PDT)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
-        by smtp.gmail.com with ESMTPSA id y14sm10908059qtw.70.2021.04.04.16.39.03
+        h=x-gm-message-state:date:from:to:cc:message-id:mime-version
+         :content-disposition;
+        bh=wCxcfmyN+uyu2EuDS2MM3DeNALMCF932/5FQyU6Gi3E=;
+        b=qxTbp97POv+uK5mOZ+Rb6GPg5Tx+auQ8kRs+Cpc2PZwx70sAf2bDv0t3ap6tOqAFrs
+         Aml+2tZ0G0ng9EuFM3h13NLpq27zCdFLfRHk25YmBxQHhJRA5OYRy25rVTJc8Zqzvrm5
+         BdYBgsQBNCwTFW6do9gInV3H0Ij0VG0+xERe9EmYrFay9D66+vH6ZKXSgponGx94i3lc
+         Za+4PGLAMIiwk8KIHI8U55udOkN7BYugXQgn1PK31qy+CoipdgBS3L8XXTgyBRZGOa9U
+         DnYXtrrMeD/Z+yddF963+T656I+wW9MRNLfNEgVfiLk99bx+8TgpAD7W4Zrudzz2q1C+
+         THjg==
+X-Gm-Message-State: AOAM532a6dAzVQpOdbaYJk9DGIgBWYMdk01Ge3egHBqAbCpPGKu1IB30
+        HcRM+ReH9xYeepoSI5f2+WDQF6nBbF0XYQ==
+X-Google-Smtp-Source: ABdhPJxpPazXdKfvMEld3hWN/kGBTCn2ZuS94vfE3AVfI/3g+TS9JM/zSr1c9/sCgTSxL04DPYy1lg==
+X-Received: by 2002:a17:902:7612:b029:e5:f0dd:8667 with SMTP id k18-20020a1709027612b02900e5f0dd8667mr21654982pll.59.1617580936970;
+        Sun, 04 Apr 2021 17:02:16 -0700 (PDT)
+Received: from kali ([2409:4042:4d84:a21:5e54:ca6d:ddda:81d3])
+        by smtp.gmail.com with ESMTPSA id 195sm13571179pge.7.2021.04.04.17.02.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Apr 2021 16:39:04 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Sun, 4 Apr 2021 19:39:03 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     joel@joelfernandes.org, chris.hyser@oracle.com, joshdon@google.com,
-        mingo@kernel.org, vincent.guittot@linaro.org,
-        valentin.schneider@arm.com, mgorman@suse.de,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Zefan Li <lizefan.x@bytedance.com>
-Subject: Re: [PATCH 0/9] sched: Core scheduling interfaces
-Message-ID: <YGpOF6f0YcMkWy1u@mtj.duckdns.org>
-References: <20210401131012.395311786@infradead.org>
+        Sun, 04 Apr 2021 17:02:16 -0700 (PDT)
+Date:   Mon, 5 Apr 2021 05:31:17 +0530
+From:   Mitali Borkar <mitaliborkar810@gmail.com>
+To:     manish@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Message-ID: <YGpTTbWENcr1EejC@kali>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210401131012.395311786@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cc'ing Michal and Christian who've been spending some time on cgroup
-interface issues recently and Li Zefan for cpuset.
+outreachy-kernel@googlegroups.com, mitaliborkar810@gmail.com 
+Bcc: 
+Subject: [PATCH] staging: qlge:remove else after break
+Reply-To: 
 
-On Thu, Apr 01, 2021 at 03:10:12PM +0200, Peter Zijlstra wrote:
-> The cgroup interface now uses a 'core_sched' file, which still takes 0,1. It is
-> however changed such that you can have nested tags. The for any given task, the
-> first parent with a cookie is the effective one. The rationale is that this way
-> you can delegate subtrees and still allow them some control over grouping.
+Fixed Warning:- else is not needed after break
+break terminates the loop if encountered. else is unnecessary and
+increases indenatation
 
-I find it difficult to like the proposed interface from the name (the term
-"core" is really confusing given how the word tends to be used internally)
-to the semantics (it isn't like anything else) and even the functionality
-(we're gonna have fixed processors at some point, right?).
+Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+---
+ drivers/staging/qlge/qlge_mpi.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Here are some preliminary thoughts:
-
-* Are both prctl and cgroup based interfaces really necessary? I could be
-  being naive but given that we're (hopefully) working around hardware
-  deficiencies which will go away in time, I think there's a strong case for
-  minimizing at least the interface to the bare minimum.
-
-  Given how cgroups are set up (membership operations happening only for
-  seeding, especially with the new clone interface), it isn't too difficult
-  to synchronize process tree and cgroup hierarchy where it matters - ie.
-  given the right per-process level interface, restricting configuration for
-  a cgroup sub-hierarchy may not need any cgroup involvement at all. This
-  also nicely gets rid of the interaction between prctl and cgroup bits.
-
-* If we *have* to have cgroup interface, I wonder whether this would fit a
-  lot better as a part of cpuset. If you squint just right, this can be
-  viewed as some dynamic form of cpuset. Implementation-wise, it probably
-  won't integrate with the rest but I think the feature will be less jarring
-  as a part of cpuset, which already is a bit of kitchensink anyway.
-
-> The cgroup thing also '(ab)uses' cgroup_mutex for serialization because it
-> needs to ensure continuity between ss->can_attach() and ss->attach() for the
-> memory allocation. If the prctl() were allowed to interleave it might steal the
-> memory.
-> 
-> Using cgroup_mutex feels icky, but is not without precedent,
-> kernel/bpf/cgroup.c does the same thing afaict.
-> 
-> TJ, can you please have a look at this?
-
-Yeah, using cgroup_mutex for stabilizing cgroup hierarchy for consecutive
-operations is fine. It might be worthwhile to break that out into a proper
-interface but that's the least of concerns here.
-
-Can someone point me to a realistic and concrete usage scenario for this
-feature?
-
-Thanks.
-
+diff --git a/drivers/staging/qlge/qlge_mpi.c b/drivers/staging/qlge/qlge_mpi.c
+index 2630ebf50341..3a49f187203b 100644
+--- a/drivers/staging/qlge/qlge_mpi.c
++++ b/drivers/staging/qlge/qlge_mpi.c
+@@ -935,13 +935,11 @@ static int qlge_idc_wait(struct qlge_adapter *qdev)
+ 			netif_err(qdev, drv, qdev->ndev, "IDC Success.\n");
+ 			status = 0;
+ 			break;
+-		} else {
+-			netif_err(qdev, drv, qdev->ndev,
++		}	netif_err(qdev, drv, qdev->ndev,
+ 				  "IDC: Invalid State 0x%.04x.\n",
+ 				  mbcp->mbox_out[0]);
+ 			status = -EIO;
+ 			break;
+-		}
+ 	}
+ 
+ 	return status;
 -- 
-tejun
+2.30.2
+
