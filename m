@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB163540C8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED41C3540C9
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240866AbhDEJWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:22:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39220 "EHLO mail.kernel.org"
+        id S240356AbhDEJWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:22:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240817AbhDEJRR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:17:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37C4A61002;
-        Mon,  5 Apr 2021 09:17:10 +0000 (UTC)
+        id S239667AbhDEJRW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:17:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F284B61398;
+        Mon,  5 Apr 2021 09:17:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617614231;
-        bh=yQ+twztYdwMdlRtYYpF/SQFOGJckwi/vS+KiKIrgkNo=;
+        s=korg; t=1617614234;
+        bh=M9+FyKDDxWybLpveXohnyQnitMwfkNk55tDlTEZ3Uec=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aijqfucpF8beK+1SpkcqiHmIBwb790w05PAfa4RWLu7US8k8M1r5bZi0pqvc4+yuU
-         ThanAl15ALAHWw+tC687pGKoZZda/DTmZ+fHNwmdeA6ileaoH1f+sV6SRSNbIsppif
-         TUgXDvEDU+mQLJdqo2xraQg7wXvU4OfwgzTmAK9c=
+        b=mGZ0Y6gDqar/nm7Uc7q3oIBEKN5Qc7qoTxNPmngzKUxk7AvHzP8bB8lIzrRvjfpRv
+         PeA7IHcOIve9MjJEmaMKcoykUVS+6fmLWzMGQ3DNyJ40QinxZx52IuGdYKlHia3LLz
+         qdfKF03V6Tvwrgo23YjYwtXMdaKxJ5yt+WRTJldw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bhushan Shah <bshah@kde.org>,
-        Tony Lindgren <tony@atomide.com>
-Subject: [PATCH 5.11 132/152] usb: musb: Fix suspend with devices connected for a64
-Date:   Mon,  5 Apr 2021 10:54:41 +0200
-Message-Id: <20210405085038.518677667@linuxfoundation.org>
+        stable@vger.kernel.org, Chunfeng Yun <chunfeng.yun@mediatek.com>
+Subject: [PATCH 5.11 133/152] usb: xhci-mtk: fix broken streams issue on 0.96 xHCI
+Date:   Mon,  5 Apr 2021 10:54:42 +0200
+Message-Id: <20210405085038.550910539@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
 References: <20210405085034.233917714@linuxfoundation.org>
@@ -39,49 +38,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Chunfeng Yun <chunfeng.yun@mediatek.com>
 
-commit 92af4fc6ec331228aca322ca37c8aea7b150a151 upstream.
+commit 6f978a30c9bb12dab1302d0f06951ee290f5e600 upstream.
 
-Pinephone running on Allwinner A64 fails to suspend with USB devices
-connected as reported by Bhushan Shah <bshah@kde.org>. Reverting
-commit 5fbf7a253470 ("usb: musb: fix idling for suspend after
-disconnect interrupt") fixes the issue.
+The MediaTek 0.96 xHCI controller on some platforms does not
+support bulk stream even HCCPARAMS says supporting, due to MaxPSASize
+is set a default value 1 by mistake, here use XHCI_BROKEN_STREAMS
+quirk to fix it.
 
-Let's add suspend checks also for suspend after disconnect interrupt
-quirk handling like we already do elsewhere.
-
-Fixes: 5fbf7a253470 ("usb: musb: fix idling for suspend after disconnect interrupt")
-Reported-by: Bhushan Shah <bshah@kde.org>
-Tested-by: Bhushan Shah <bshah@kde.org>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Link: https://lore.kernel.org/r/20210324071142.42264-1-tony@atomide.com
+Fixes: 94a631d91ad3 ("usb: xhci-mtk: check hcc_params after adding primary hcd")
 Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+Link: https://lore.kernel.org/r/1616482975-17841-4-git-send-email-chunfeng.yun@mediatek.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/musb/musb_core.c |   12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ drivers/usb/host/xhci-mtk.c |   10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/musb/musb_core.c
-+++ b/drivers/usb/musb/musb_core.c
-@@ -2004,10 +2004,14 @@ static void musb_pm_runtime_check_sessio
- 		MUSB_DEVCTL_HR;
- 	switch (devctl & ~s) {
- 	case MUSB_QUIRK_B_DISCONNECT_99:
--		musb_dbg(musb, "Poll devctl in case of suspend after disconnect\n");
--		schedule_delayed_work(&musb->irq_work,
--				      msecs_to_jiffies(1000));
--		break;
-+		if (musb->quirk_retries && !musb->flush_irq_work) {
-+			musb_dbg(musb, "Poll devctl in case of suspend after disconnect\n");
-+			schedule_delayed_work(&musb->irq_work,
-+					      msecs_to_jiffies(1000));
-+			musb->quirk_retries--;
-+			break;
-+		}
-+		fallthrough;
- 	case MUSB_QUIRK_B_INVALID_VBUS_91:
- 		if (musb->quirk_retries && !musb->flush_irq_work) {
- 			musb_dbg(musb,
+--- a/drivers/usb/host/xhci-mtk.c
++++ b/drivers/usb/host/xhci-mtk.c
+@@ -397,6 +397,13 @@ static void xhci_mtk_quirks(struct devic
+ 	xhci->quirks |= XHCI_SPURIOUS_SUCCESS;
+ 	if (mtk->lpm_support)
+ 		xhci->quirks |= XHCI_LPM_SUPPORT;
++
++	/*
++	 * MTK xHCI 0.96: PSA is 1 by default even if doesn't support stream,
++	 * and it's 3 when support it.
++	 */
++	if (xhci->hci_version < 0x100 && HCC_MAX_PSA(xhci->hcc_params) == 4)
++		xhci->quirks |= XHCI_BROKEN_STREAMS;
+ }
+ 
+ /* called during probe() after chip reset completes */
+@@ -548,7 +555,8 @@ static int xhci_mtk_probe(struct platfor
+ 	if (ret)
+ 		goto put_usb3_hcd;
+ 
+-	if (HCC_MAX_PSA(xhci->hcc_params) >= 4)
++	if (HCC_MAX_PSA(xhci->hcc_params) >= 4 &&
++	    !(xhci->quirks & XHCI_BROKEN_STREAMS))
+ 		xhci->shared_hcd->can_do_streams = 1;
+ 
+ 	ret = usb_add_hcd(xhci->shared_hcd, irq, IRQF_SHARED);
 
 
