@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9E9353E47
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B02354093
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237870AbhDEJFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:05:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47242 "EHLO mail.kernel.org"
+        id S240061AbhDEJS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:18:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237767AbhDEJDu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:03:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 75FF9610E8;
-        Mon,  5 Apr 2021 09:03:44 +0000 (UTC)
+        id S240513AbhDEJPO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:15:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1474C61393;
+        Mon,  5 Apr 2021 09:15:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613425;
-        bh=yxu2rLt+McGZIGTsBpwbaF7LLcSMCtjstZfCs6BxFOk=;
+        s=korg; t=1617614108;
+        bh=KTvRSqI9mu9nKjVPHJNP+VYjO8sA3acTXCdGexO4q9k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hfsUVKeLMUfyUNtcta5Z3lOZLGRl4870Mk3rxQAxE1G3qTPck5qggU31YEYYOpQaj
-         4+TLcdBnG8Z2qHlw5nksZTK2G5dn+9sBZamT94+q/sqOA0lL2Plm4zLPhDYhGrig8W
-         0a31WOoOFH0bBXyqjbQjMS+cLM9MPjDp0ku5QGWk=
+        b=k4cONqUff6JHmO4On/DyriG/j3EwEChTF0lha9W7UoGCUxtaArwh2i8k03Fa0k/X5
+         GAA8ImxngpY3KikXuX7Kgqf6Ne8Iuy5R6NpeJVAifLARoSPbO0yzczREQ+M+nRaFoE
+         ssM7bbrhJ9jsmWV2EAfYOu4omNmNSDQ0mRr3vknM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shuang Li <shuali@redhat.com>,
-        Davide Caratti <dcaratti@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 31/74] flow_dissector: fix TTL and TOS dissection on IPv4 fragments
+        stable@vger.kernel.org,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Matthew Auld <matthew.auld@intel.com>
+Subject: [PATCH 5.11 086/152] drm/ttm: make ttm_bo_unpin more defensive
 Date:   Mon,  5 Apr 2021 10:53:55 +0200
-Message-Id: <20210405085025.750786068@linuxfoundation.org>
+Message-Id: <20210405085037.051552291@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
-References: <20210405085024.703004126@linuxfoundation.org>
+In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
+References: <20210405085034.233917714@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,114 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Davide Caratti <dcaratti@redhat.com>
+From: Christian König <christian.koenig@amd.com>
 
-[ Upstream commit d2126838050ccd1dadf310ffb78b2204f3b032b9 ]
+commit 6c5403173a13a08ff61dbdafa4c0ed4a9dedbfe0 upstream.
 
-the following command:
+We seem to have some more driver bugs than thought.
 
- # tc filter add dev $h2 ingress protocol ip pref 1 handle 101 flower \
-   $tcflags dst_ip 192.0.2.2 ip_ttl 63 action drop
-
-doesn't drop all IPv4 packets that match the configured TTL / destination
-address. In particular, if "fragment offset" or "more fragments" have non
-zero value in the IPv4 header, setting of FLOW_DISSECTOR_KEY_IP is simply
-ignored. Fix this dissecting IPv4 TTL and TOS before fragment info; while
-at it, add a selftest for tc flower's match on 'ip_ttl' that verifies the
-correct behavior.
-
-Fixes: 518d8a2e9bad ("net/flow_dissector: add support for dissection of misc ip header fields")
-Reported-by: Shuang Li <shuali@redhat.com>
-Signed-off-by: Davide Caratti <dcaratti@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Christian König <christian.koenig@amd.com>
+Fixes: deb0814b43f3 ("drm/ttm: add ttm_bo_pin()/ttm_bo_unpin() v2")
+Acked-by: Matthew Auld <matthew.auld@intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210312093810.2202-1-christian.koenig@amd.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/core/flow_dissector.c                     |  6 +--
- .../selftests/net/forwarding/tc_flower.sh     | 38 ++++++++++++++++++-
- 2 files changed, 40 insertions(+), 4 deletions(-)
+ include/drm/ttm/ttm_bo_api.h |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
-index e3bdd859c895..da86c0e1b677 100644
---- a/net/core/flow_dissector.c
-+++ b/net/core/flow_dissector.c
-@@ -1028,6 +1028,9 @@ proto_again:
- 			key_control->addr_type = FLOW_DISSECTOR_KEY_IPV4_ADDRS;
- 		}
- 
-+		__skb_flow_dissect_ipv4(skb, flow_dissector,
-+					target_container, data, iph);
-+
- 		if (ip_is_fragment(iph)) {
- 			key_control->flags |= FLOW_DIS_IS_FRAGMENT;
- 
-@@ -1044,9 +1047,6 @@ proto_again:
- 			}
- 		}
- 
--		__skb_flow_dissect_ipv4(skb, flow_dissector,
--					target_container, data, iph);
--
- 		break;
- 	}
- 	case htons(ETH_P_IPV6): {
-diff --git a/tools/testing/selftests/net/forwarding/tc_flower.sh b/tools/testing/selftests/net/forwarding/tc_flower.sh
-index 058c746ee300..b11d8e6b5bc1 100755
---- a/tools/testing/selftests/net/forwarding/tc_flower.sh
-+++ b/tools/testing/selftests/net/forwarding/tc_flower.sh
-@@ -3,7 +3,7 @@
- 
- ALL_TESTS="match_dst_mac_test match_src_mac_test match_dst_ip_test \
- 	match_src_ip_test match_ip_flags_test match_pcp_test match_vlan_test \
--	match_ip_tos_test match_indev_test"
-+	match_ip_tos_test match_indev_test match_ip_ttl_test"
- NUM_NETIFS=2
- source tc_common.sh
- source lib.sh
-@@ -310,6 +310,42 @@ match_ip_tos_test()
- 	log_test "ip_tos match ($tcflags)"
+--- a/include/drm/ttm/ttm_bo_api.h
++++ b/include/drm/ttm/ttm_bo_api.h
+@@ -612,8 +612,10 @@ static inline void ttm_bo_pin(struct ttm
+ static inline void ttm_bo_unpin(struct ttm_buffer_object *bo)
+ {
+ 	dma_resv_assert_held(bo->base.resv);
+-	WARN_ON_ONCE(!bo->pin_count);
+-	--bo->pin_count;
++	if (bo->pin_count)
++		--bo->pin_count;
++	else
++		WARN_ON_ONCE(true);
  }
  
-+match_ip_ttl_test()
-+{
-+	RET=0
-+
-+	tc filter add dev $h2 ingress protocol ip pref 1 handle 101 flower \
-+		$tcflags dst_ip 192.0.2.2 ip_ttl 63 action drop
-+	tc filter add dev $h2 ingress protocol ip pref 2 handle 102 flower \
-+		$tcflags dst_ip 192.0.2.2 action drop
-+
-+	$MZ $h1 -c 1 -p 64 -a $h1mac -b $h2mac -A 192.0.2.1 -B 192.0.2.2 \
-+		-t ip "ttl=63" -q
-+
-+	$MZ $h1 -c 1 -p 64 -a $h1mac -b $h2mac -A 192.0.2.1 -B 192.0.2.2 \
-+		-t ip "ttl=63,mf,frag=256" -q
-+
-+	tc_check_packets "dev $h2 ingress" 102 1
-+	check_fail $? "Matched on the wrong filter (no check on ttl)"
-+
-+	tc_check_packets "dev $h2 ingress" 101 2
-+	check_err $? "Did not match on correct filter (ttl=63)"
-+
-+	$MZ $h1 -c 1 -p 64 -a $h1mac -b $h2mac -A 192.0.2.1 -B 192.0.2.2 \
-+		-t ip "ttl=255" -q
-+
-+	tc_check_packets "dev $h2 ingress" 101 3
-+	check_fail $? "Matched on a wrong filter (ttl=63)"
-+
-+	tc_check_packets "dev $h2 ingress" 102 1
-+	check_err $? "Did not match on correct filter (no check on ttl)"
-+
-+	tc filter del dev $h2 ingress protocol ip pref 2 handle 102 flower
-+	tc filter del dev $h2 ingress protocol ip pref 1 handle 101 flower
-+
-+	log_test "ip_ttl match ($tcflags)"
-+}
-+
- match_indev_test()
- {
- 	RET=0
--- 
-2.30.1
-
+ int ttm_mem_evict_first(struct ttm_bo_device *bdev,
 
 
