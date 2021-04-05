@@ -2,111 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D585F35437A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 17:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0087D35437C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 17:35:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238339AbhDEPet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 11:34:49 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38720 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238291AbhDEPer (ORCPT
+        id S238395AbhDEPfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 11:35:01 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:47818 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238291AbhDEPfA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 11:34:47 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 135FXEes169467;
-        Mon, 5 Apr 2021 11:33:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=i59gJf6QV5OOFLztYOzO62bClKSZvoUaFbvj6IBLlJU=;
- b=V+OrkvfU+Ux94324RKrQzIVP1+NnjWliTCS35VdPOLiaqMQKd+wwb7s/XwaxZ5PStRLU
- 0WbEe2sD6v+tHcHeuSYp/IJ6MkfAyu1dX5DgVnM8FVB+g/1nAQ0VZIa+pwHbrh6rF8eB
- yFQzrrpqeQFxqZxqV7XqCby7cqz2Deb5JZphnT2yHD83oxBsiWcHCe52TOEn0EclzG+L
- 0orIPFFDIfoexVM0y8S0qejuZp2dgpST+3vFnFOhCp4dqct7UmSwcWnTqmg9Fw5ki40v
- cC0eswXZ4f4Qt9uWdX03Lo89AEw02vJuNbKdRf1j+y7DnTZ8KnNV7LgLMEFYmprNW/Id vw== 
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37q5vucukw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 05 Apr 2021 11:33:57 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 135FRW2n016716;
-        Mon, 5 Apr 2021 15:33:56 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma04dal.us.ibm.com with ESMTP id 37q2n63xgj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 05 Apr 2021 15:33:56 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 135FXtkk19071380
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 5 Apr 2021 15:33:55 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 72BD36A057;
-        Mon,  5 Apr 2021 15:33:55 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 110DF6A04D;
-        Mon,  5 Apr 2021 15:33:54 +0000 (GMT)
-Received: from v0005c16 (unknown [9.211.34.122])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon,  5 Apr 2021 15:33:54 +0000 (GMT)
-Message-ID: <38abb74465bacad2ab4a62424d7cef06f344dc4c.camel@linux.ibm.com>
-Subject: Re: [PATCH 0/4] occ: fsi and hwmon: Fixes for polling
- un-initialized OCC
-From:   Eddie James <eajames@linux.ibm.com>
-To:     joel@jms.id.au
-Cc:     linux-fsi@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        jk@ozlabs.org, alistair@popple.id.au, jdelvare@suse.com,
-        linux@roeck-us.net, linux-hwmon@vger.kernel.org
-Date:   Mon, 05 Apr 2021 10:33:54 -0500
-In-Reply-To: <20210209171235.20624-1-eajames@linux.ibm.com>
-References: <20210209171235.20624-1-eajames@linux.ibm.com>
-Organization: IBM
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: AlvOtbRQOb80Bu-CwsIOw6WQCyzSgFyg
-X-Proofpoint-ORIG-GUID: AlvOtbRQOb80Bu-CwsIOw6WQCyzSgFyg
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-04-05_13:2021-04-01,2021-04-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- mlxscore=0 priorityscore=1501 phishscore=0 bulkscore=0 spamscore=0
- mlxlogscore=937 impostorscore=0 clxscore=1011 lowpriorityscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104030000 definitions=main-2104050106
+        Mon, 5 Apr 2021 11:35:00 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 2AFE51C0B7D; Mon,  5 Apr 2021 17:34:53 +0200 (CEST)
+Date:   Mon, 5 Apr 2021 17:34:52 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 047/126] ath10k: hold RCU lock when calling
+ ieee80211_find_sta_by_ifaddr()
+Message-ID: <20210405153452.GC32232@amd>
+References: <20210405085031.040238881@linuxfoundation.org>
+ <20210405085032.596054465@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="9Ek0hoCL9XbhcSqy"
+Content-Disposition: inline
+In-Reply-To: <20210405085032.596054465@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-02-09 at 11:12 -0600, Eddie James wrote:
-> In the event that the OCC is not initialized when the driver sends a
-> poll
-> command, the driver may receive an invalid response. This isn't an
-> error
-> condition unless there is no valid response before the timeout
-> expires. So
-> change the starting sequence number and check for the un-initialized
-> OCC
-> state before returning the response in order to detect this condition
-> and
-> continue waiting if necessary.
 
-Hi Joel,
+--9Ek0hoCL9XbhcSqy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Do you have any comments on the FSI side of this series?
+Hi!
 
-Thanks,
-Eddie
+> Fix ath10k_wmi_tlv_op_pull_peer_stats_info() to hold RCU lock before it
+> calls ieee80211_find_sta_by_ifaddr() and release it when the resulting
+> pointer is no longer needed.
 
-> 
-> Eddie James (4):
->   fsi: occ: Don't accept response from un-initialized OCC
->   fsi: occ: Log error for checksum failure
->   hwmon: (occ) Start sequence number at one
->   hwmon: (occ) Print response status in first poll error message
-> 
->  drivers/fsi/fsi-occ.c      | 11 ++++++++---
->  drivers/hwmon/occ/common.c |  7 +++++--
->  2 files changed, 13 insertions(+), 5 deletions(-)
-> 
+It does that. But is also does the unlock even if it did not take the
+lock:
 
+> +++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+> @@ -576,13 +576,13 @@ static void ath10k_wmi_event_tdls_peer(struct ath10=
+k *ar, struct sk_buff *skb)
+>  	case WMI_TDLS_TEARDOWN_REASON_TX:
+>  	case WMI_TDLS_TEARDOWN_REASON_RSSI:
+>  	case WMI_TDLS_TEARDOWN_REASON_PTR_TIMEOUT:
+> +		rcu_read_lock();
+>  		station =3D ieee80211_find_sta_by_ifaddr(ar->hw,
+>  						       ev->peer_macaddr.addr,
+>  						       NULL);
+>  		if (!station) {
+>  			ath10k_warn(ar, "did not find station from tdls peer event");
+> -			kfree(tb);
+> -			return;
+> +			goto exit;
+>  		}
+>  		arvif =3D ath10k_get_arvif(ar, __le32_to_cpu(ev->vdev_id));
+>  		ieee80211_tdls_oper_request(
+> @@ -593,6 +593,9 @@ static void ath10k_wmi_event_tdls_peer(struct ath10k =
+*ar, struct sk_buff *skb)
+>  					);
+>  		break;
+>  	}
+> +
+> +exit:
+> +	rcu_read_unlock();
+>  	kfree(tb);
+>  }
+
+The switch only takes the lock in 3 branches, but it is released
+unconditionally at the end.
+
+Something like this?
+
+Best regards,
+								Pavel
+
+Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wirele=
+ss/ath/ath10k/wmi-tlv.c
+index e7072fc4f487..e03ff56d938b 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -582,20 +582,19 @@ static void ath10k_wmi_event_tdls_peer(struct ath10k =
+*ar, struct sk_buff *skb)
+ 						       NULL);
+ 		if (!station) {
+ 			ath10k_warn(ar, "did not find station from tdls peer event");
+-			goto exit;
+-		}
+-		arvif =3D ath10k_get_arvif(ar, __le32_to_cpu(ev->vdev_id));
+-		ieee80211_tdls_oper_request(
++		} else {
++			arvif =3D ath10k_get_arvif(ar, __le32_to_cpu(ev->vdev_id));
++			ieee80211_tdls_oper_request(
+ 					arvif->vif, station->addr,
+ 					NL80211_TDLS_TEARDOWN,
+ 					WLAN_REASON_TDLS_TEARDOWN_UNREACHABLE,
+ 					GFP_ATOMIC
+ 					);
++		}
++		rcu_read_unlock();
+ 		break;
+ 	}
+=20
+-exit:
+-	rcu_read_unlock();
+ 	kfree(tb);
+ }
+=20
+
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--9Ek0hoCL9XbhcSqy
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmBrLhwACgkQMOfwapXb+vKkJACfX2IZWhZgB25cUE0Z9ij0EH75
+eOAAnAnqYgGWEgn9M4c0O1zko9JRR4DE
+=QVpV
+-----END PGP SIGNATURE-----
+
+--9Ek0hoCL9XbhcSqy--
