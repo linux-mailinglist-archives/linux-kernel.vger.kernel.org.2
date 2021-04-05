@@ -2,161 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A19A354751
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 22:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7171135475A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 22:08:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240452AbhDEUEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 16:04:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240448AbhDEUEH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 16:04:07 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0F22C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 13:04:00 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id e18so11882017wrt.6
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 13:04:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Iq6sk4M0ER3Zgi3ABFpbJFrQaqzKVp7U7JBAXlyNsPU=;
-        b=yNG4gsb3MPsFf6S7doVmfsjzSXPpXEGo0eLReJl60qPeOlc9PC4EqkVMFF9OIi2Y7X
-         uI/JL5kRwpb1nCbVfE42nsXO9vtdob9Qw1MTZlen3S3ivgWPQV48F751vi/agdDx3P8J
-         sXssXEwk+dWNYe3pyPRi94QmCk7ePtJv4nY/8+wCHnUw3QGENDaKpufffxz/yggfx7i3
-         +BY5LOciFL4D3IQbzsy+3tT+VF8SaVlwombozEiO6g5Wa2EQAp5ayueKjgTHRWF8fAE7
-         r+yMrEbTB2lcfofdPfpQyAPreTU4+s/WED+roBn6iIxSRqCwuAzgapKsEdAF/8nZsWTp
-         UCpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Iq6sk4M0ER3Zgi3ABFpbJFrQaqzKVp7U7JBAXlyNsPU=;
-        b=YTux6TLc6b0/Ci+jkjTNq3GIJG5lY96Top72XUd1RVQFBRuVHWGi7imxdRv+9t5m3Y
-         hNS7m45bXVnZw+KXLdU/9MnauqiZuFsc4VTysNtdFV+pLiCQxQg7TjpJo5k+mW200eeu
-         LjkWj1Z7kgf8yAn5sybgo7HVokLHBOvwJBqs/PO5+AIPo1T5HZGSB+5n6MKuuAzEbm8I
-         KesCMBssi2LziFvRpOuTMrDob88SqD7Akd54jP63Jq0TFJo2Oxi8MRSA9sArrPOBB2xz
-         I9uL0ZOO6jIOZuYFtQyQoeEszTW1aREvMS5lCEcTAjzpP6pc8E2J8pccSwsVwkRqt0V5
-         798w==
-X-Gm-Message-State: AOAM531x0zHjQZgpfpbvbqPMkpUjLrOCoLbCmTsNjkIrGgNOM2S1jRck
-        2MXW70i2spjTVVuDLENECF2U7ECPJB8VmyXZ
-X-Google-Smtp-Source: ABdhPJwL/GfhUNJgnX1/PyHGr2s1okb14TrKuliA5RPUs5s3fGatDI+r4aJgQDjX2DYgwcTu8ridgQ==
-X-Received: by 2002:a5d:5046:: with SMTP id h6mr8570852wrt.265.1617653039583;
-        Mon, 05 Apr 2021 13:03:59 -0700 (PDT)
-Received: from localhost.localdomain ([88.160.162.107])
-        by smtp.gmail.com with ESMTPSA id i26sm657406wmb.18.2021.04.05.13.03.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Apr 2021 13:03:59 -0700 (PDT)
-From:   Fabien Parent <fparent@baylibre.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     mkorpershoek@baylibre.com, Fabien Parent <fparent@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH v2 2/2] soc: mediatek: mmsys: Add support for MT8167 SoC
-Date:   Mon,  5 Apr 2021 22:03:53 +0200
-Message-Id: <20210405200354.2194930-2-fparent@baylibre.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210405200354.2194930-1-fparent@baylibre.com>
-References: <20210405200354.2194930-1-fparent@baylibre.com>
+        id S240550AbhDEUH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 16:07:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45204 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239120AbhDEUHt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 16:07:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85237613C2;
+        Mon,  5 Apr 2021 20:07:40 +0000 (UTC)
+Date:   Mon, 5 Apr 2021 22:07:37 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        syzbot <syzbot+c88a7030da47945a3cc3@syzkaller.appspotmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, io-uring@vger.kernel.org
+Subject: Re: [syzbot] WARNING in mntput_no_expire (2)
+Message-ID: <20210405200737.qurhkqitoxweousx@wittgenstein>
+References: <20210404164040.vtxdcfzgliuzghwk@wittgenstein>
+ <YGns1iPBHeeMAtn8@zeniv-ca.linux.org.uk>
+ <20210404170513.mfl5liccdaxjnpls@wittgenstein>
+ <YGoKYktYPA86Qwju@zeniv-ca.linux.org.uk>
+ <YGoe0VPs/Qmz/RxC@zeniv-ca.linux.org.uk>
+ <20210405114437.hjcojekyp5zt6huu@wittgenstein>
+ <YGs4clcRhyoXX8D0@zeniv-ca.linux.org.uk>
+ <20210405170801.zrdhnon6g4ggb6c7@wittgenstein>
+ <YGtVtfbYXck3qPRl@zeniv-ca.linux.org.uk>
+ <YGtW5g6EFFArtevk@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YGtW5g6EFFArtevk@zeniv-ca.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add routing table for DSI on MT8167 SoC. The registers are mostly
-incompatible with the current defines, so new one for MT8167 are added.
+On Mon, Apr 05, 2021 at 06:28:54PM +0000, Al Viro wrote:
+> On Mon, Apr 05, 2021 at 06:23:49PM +0000, Al Viro wrote:
+> > On Mon, Apr 05, 2021 at 07:08:01PM +0200, Christian Brauner wrote:
+> > 
+> > > Ah dentry count of -127 looks... odd.
+> > 
+> > dead + 1...
+> > 
+> > void lockref_mark_dead(struct lockref *lockref)
+> > {
+> >         assert_spin_locked(&lockref->lock);
+> > 	lockref->count = -128;
+> > }
+> > 
+> > IOW, a leaked (uncounted) reference to dentry, that got dget() called on
+> > it after dentry had been freed.
+> > 
+> > 	IOW, current->fs->pwd.dentry happens to point to an already freed
+> > struct dentry here.  Joy...
+> > 
+> > 	Could you slap
+> > 
+> > spin_lock(&current->fs->lock);
+> > WARN_ON(d_count(current->fs->pwd.dentry) < 0);
+> > spin_unlock(&current->fs->lock);
+> > 
+> > before and after calls of io_issue_sqe() and see if it triggers?  We definitely
+> > are seeing buggered dentry refcounting here.
+> 
+> Check if this helps, please.
+> 
+> diff --git a/fs/namei.c b/fs/namei.c
+> index 216f16e74351..82344f1139ff 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -2289,6 +2289,9 @@ static const char *path_init(struct nameidata *nd, unsigned flags)
+>  	int error;
+>  	const char *s = nd->name->name;
+>  
+> +	nd->path.mnt = NULL;
+> +	nd->path.dentry = NULL;
+> +
+>  	/* LOOKUP_CACHED requires RCU, ask caller to retry */
+>  	if ((flags & (LOOKUP_RCU | LOOKUP_CACHED)) == LOOKUP_CACHED)
+>  		return ERR_PTR(-EAGAIN);
+> @@ -2322,8 +2325,6 @@ static const char *path_init(struct nameidata *nd, unsigned flags)
+>  	}
+>  
+>  	nd->root.mnt = NULL;
+> -	nd->path.mnt = NULL;
+> -	nd->path.dentry = NULL;
+>  
+>  	/* Absolute pathname -- fetch the root (LOOKUP_IN_ROOT uses nd->dfd). */
+>  	if (*s == '/' && !(flags & LOOKUP_IN_ROOT)) {
 
-Signed-off-by: Fabien Parent <fparent@baylibre.com>
----
-
-V2: Rebased on top of [0]
-
-[0] https://git.kernel.org/pub/scm/linux/kernel/git/matthias.bgg/linux.git/log/?h=for-next
-
- drivers/soc/mediatek/mt8167-mmsys.h | 35 +++++++++++++++++++++++++++++
- drivers/soc/mediatek/mtk-mmsys.c    | 11 +++++++++
- 2 files changed, 46 insertions(+)
- create mode 100644 drivers/soc/mediatek/mt8167-mmsys.h
-
-diff --git a/drivers/soc/mediatek/mt8167-mmsys.h b/drivers/soc/mediatek/mt8167-mmsys.h
-new file mode 100644
-index 000000000000..2772ef5e3934
---- /dev/null
-+++ b/drivers/soc/mediatek/mt8167-mmsys.h
-@@ -0,0 +1,35 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+
-+#ifndef __SOC_MEDIATEK_MT8167_MMSYS_H
-+#define __SOC_MEDIATEK_MT8167_MMSYS_H
-+
-+#define MT8167_DISP_REG_CONFIG_DISP_OVL0_MOUT_EN	0x030
-+#define MT8167_DISP_REG_CONFIG_DISP_DITHER_MOUT_EN	0x038
-+#define MT8167_DISP_REG_CONFIG_DISP_COLOR0_SEL_IN	0x058
-+#define MT8167_DISP_REG_CONFIG_DISP_DSI0_SEL_IN		0x064
-+#define MT8167_DISP_REG_CONFIG_DISP_RDMA0_SOUT_SEL_IN	0x06c
-+
-+#define MT8167_DITHER_MOUT_EN_RDMA0			0x1
-+#define MT8167_RDMA0_SOUT_DSI0				0x2
-+#define MT8167_DSI0_SEL_IN_RDMA0			0x1
-+
-+static const struct mtk_mmsys_routes mt8167_mmsys_routing_table[] = {
-+	{
-+		DDP_COMPONENT_OVL0, DDP_COMPONENT_COLOR0,
-+		MT8167_DISP_REG_CONFIG_DISP_OVL0_MOUT_EN, OVL0_MOUT_EN_COLOR0,
-+	}, {
-+		DDP_COMPONENT_DITHER, DDP_COMPONENT_RDMA0,
-+		MT8167_DISP_REG_CONFIG_DISP_DITHER_MOUT_EN, MT8167_DITHER_MOUT_EN_RDMA0
-+	}, {
-+		DDP_COMPONENT_OVL0, DDP_COMPONENT_COLOR0,
-+		MT8167_DISP_REG_CONFIG_DISP_COLOR0_SEL_IN, COLOR0_SEL_IN_OVL0
-+	}, {
-+		DDP_COMPONENT_RDMA0, DDP_COMPONENT_DSI0,
-+		MT8167_DISP_REG_CONFIG_DISP_DSI0_SEL_IN, MT8167_DSI0_SEL_IN_RDMA0
-+	}, {
-+		DDP_COMPONENT_RDMA0, DDP_COMPONENT_DSI0,
-+		MT8167_DISP_REG_CONFIG_DISP_RDMA0_SOUT_SEL_IN, MT8167_RDMA0_SOUT_DSI0
-+	},
-+};
-+
-+#endif /* __SOC_MEDIATEK_MT8167_MMSYS_H */
-diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-mmsys.c
-index 79e55150210e..080660ef11bf 100644
---- a/drivers/soc/mediatek/mtk-mmsys.c
-+++ b/drivers/soc/mediatek/mtk-mmsys.c
-@@ -11,6 +11,7 @@
- #include <linux/soc/mediatek/mtk-mmsys.h>
- 
- #include "mtk-mmsys.h"
-+#include "mt8167-mmsys.h"
- #include "mt8183-mmsys.h"
- 
- static const struct mtk_mmsys_driver_data mt2701_mmsys_driver_data = {
-@@ -33,6 +34,12 @@ static const struct mtk_mmsys_driver_data mt6797_mmsys_driver_data = {
- 	.clk_driver = "clk-mt6797-mm",
- };
- 
-+static const struct mtk_mmsys_driver_data mt8167_mmsys_driver_data = {
-+	.clk_driver = "clk-mt8167-mm",
-+	.routes = mt8167_mmsys_routing_table,
-+	.num_routes = ARRAY_SIZE(mt8167_mmsys_routing_table),
-+};
-+
- static const struct mtk_mmsys_driver_data mt8173_mmsys_driver_data = {
- 	.clk_driver = "clk-mt8173-mm",
- 	.routes = mmsys_default_routing_table,
-@@ -138,6 +145,10 @@ static const struct of_device_id of_match_mtk_mmsys[] = {
- 		.compatible = "mediatek,mt6797-mmsys",
- 		.data = &mt6797_mmsys_driver_data,
- 	},
-+	{
-+		.compatible = "mediatek,mt8167-mmsys",
-+		.data = &mt8167_mmsys_driver_data,
-+	},
- 	{
- 		.compatible = "mediatek,mt8173-mmsys",
- 		.data = &mt8173_mmsys_driver_data,
--- 
-2.31.0
-
+Bingo. That fixes it.
