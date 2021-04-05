@@ -2,99 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F79E3540FB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 918913540FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240453AbhDEJ5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:57:37 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:22537 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232447AbhDEJ5f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:57:35 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FDR0M4f3Xz9v3hn;
-        Mon,  5 Apr 2021 11:57:23 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id FPUeFE4d_Vc3; Mon,  5 Apr 2021 11:57:23 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FDR0M3cQKz9v3hm;
-        Mon,  5 Apr 2021 11:57:23 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 47EC98B790;
-        Mon,  5 Apr 2021 11:57:28 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id XJQP_1IQcNdF; Mon,  5 Apr 2021 11:57:28 +0200 (CEST)
-Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 144608B75B;
-        Mon,  5 Apr 2021 11:57:28 +0200 (CEST)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id CD38367692; Mon,  5 Apr 2021 09:57:27 +0000 (UTC)
-Message-Id: <e43d133bf52fa19e577f64f3a3a38cedc570377d.1617616601.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/32: Remove powerpc specific definition of 'ptrdiff_t'
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon,  5 Apr 2021 09:57:27 +0000 (UTC)
+        id S237609AbhDEJ7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:59:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232063AbhDEJ7U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:59:20 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF0D3C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 02:59:13 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id x16so5171144qvk.3
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 02:59:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=T6yzdWQr/Ij2ROB484FaLONk34Ozk8SWfjeOsTlnQUo=;
+        b=W/C70YWm0qTK2+Mh+E+C9Yy6XR0vw7hMxt6ousGRWV/8L8LKqa4wtVD+sLm0R+VKXF
+         80hy0xQWkKgFjyzsQznrbkj7IPECDCJUD2hwGC6sXS/4yERly3xmBuTpinV4KSTlRers
+         o9bPRHANQUIjHxsqdX3tmTnbIcNV+eSfuZBAswGZNo74Bnedj+P9NDIsavqGtDEkHDcy
+         PiGGHupdBe9uFvBmc9SXNuDjmYB9Ubm8Y9PgrnCKGWBB7A3JKQlnQRcP/64RJQ8s7ufh
+         wuoIGITZLsC6BYttEFRSUjzRbRd0nbbj3Xma1HX4dsj2QfR7DpMTWk4mzgEQECA8FSDX
+         3scw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=T6yzdWQr/Ij2ROB484FaLONk34Ozk8SWfjeOsTlnQUo=;
+        b=bjJy0vZH+Xyctfrf4LK/GenjscmgfknnGHbjn0XyC2v9+jH7Fi4rafiGo77VsVqwQg
+         k7AKwKn7CY0oniXobGBBxALtuf4S8b2KCPxF9xjW1q8/W8qlLBmS8FSsRcCg272gD5dI
+         4zGFmkZmClQARdAKX44HlSJzjbmcI3Xkhis6jglnATpSKM3GcYw6PfYDa7iXVOpgNT94
+         RHavZExpUAq8uPpIln1QKuxmslR5yjoG8Kt2+xLCIhAvLLvwdFErn0FadIK9osILQqFt
+         83EigngaLDGgWsGlNnaB0mKaNL+GElxs/j1NblwJSQ03O/8yISmOXQ4WiFRRe/IVTrNk
+         hBeA==
+X-Gm-Message-State: AOAM532v4k8Wt/O526jne+/3d/P8FO2cbCivR5EPTIz8mzVkdexT8tIh
+        wA65HuPTAMBDwXGQCYVV6RavWSbGdXnv6A==
+X-Google-Smtp-Source: ABdhPJw10IbT5l8Uxwar/5WNjOYl2zvdsAO+ESEx/6MYR2O2itg6oM9d2+GsxKtHp4rjUQrmJD5AvA==
+X-Received: by 2002:ad4:538a:: with SMTP id i10mr22935471qvv.9.1617616753015;
+        Mon, 05 Apr 2021 02:59:13 -0700 (PDT)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
+        by smtp.gmail.com with ESMTPSA id b12sm12301185qti.43.2021.04.05.02.59.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Apr 2021 02:59:12 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 5 Apr 2021 05:59:11 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [GIT PULL] wq fixes for v5.12-rc6
+Message-ID: <YGrfb6lPelb7Gcbv@slm.duckdns.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For unknown reason, old commit d27dfd388715 ("Import pre2.0.8")
-changed 'ptrdiff_t' from 'int' to 'long'.
+Hello, Linus.
 
-GCC expects it as 'int' really, and this leads to the following
-warning when building KFENCE:
+Two workqueue fixes. One is around debugobj and poses no risk. The other is
+to prevent the stall watchdog from firing spuriously in certain conditions.
+Not as trivial as debugobj change but is still fairly low risk.
 
-  CC      mm/kfence/report.o
-In file included from ./include/linux/printk.h:7,
-                 from ./include/linux/kernel.h:16,
-                 from mm/kfence/report.c:10:
-mm/kfence/report.c: In function 'kfence_report_error':
-./include/linux/kern_levels.h:5:18: warning: format '%td' expects argument of type 'ptrdiff_t', but argument 6 has type 'long int' [-Wformat=]
-    5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
-      |                  ^~~~~~
-./include/linux/kern_levels.h:11:18: note: in expansion of macro 'KERN_SOH'
-   11 | #define KERN_ERR KERN_SOH "3" /* error conditions */
-      |                  ^~~~~~~~
-./include/linux/printk.h:343:9: note: in expansion of macro 'KERN_ERR'
-  343 |  printk(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
-      |         ^~~~~~~~
-mm/kfence/report.c:213:3: note: in expansion of macro 'pr_err'
-  213 |   pr_err("Out-of-bounds %s at 0x%p (%luB %s of kfence-#%td):\n",
-      |   ^~~~~~
+Thanks.
 
-<asm-generic/uapi/posix-types.h> defines it as 'int', and
-defines 'size_t' and 'ssize_t' exactly as powerpc do, so
-remove the powerpc specific definitions and fallback on
-generic ones.
+The following changes since commit 2023a53bdf41b7646b1d384b6816af06309f73a5:
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/include/uapi/asm/posix_types.h | 5 -----
- 1 file changed, 5 deletions(-)
+  Merge tag 'for-linus' of git://github.com/openrisc/linux (2021-04-03 15:42:45 -0700)
 
-diff --git a/arch/powerpc/include/uapi/asm/posix_types.h b/arch/powerpc/include/uapi/asm/posix_types.h
-index f698400e4bb0..9c0342312544 100644
---- a/arch/powerpc/include/uapi/asm/posix_types.h
-+++ b/arch/powerpc/include/uapi/asm/posix_types.h
-@@ -12,11 +12,6 @@
- typedef unsigned long	__kernel_old_dev_t;
- #define __kernel_old_dev_t __kernel_old_dev_t
- #else
--typedef unsigned int	__kernel_size_t;
--typedef int		__kernel_ssize_t;
--typedef long		__kernel_ptrdiff_t;
--#define __kernel_size_t __kernel_size_t
--
- typedef short		__kernel_ipc_pid_t;
- #define __kernel_ipc_pid_t __kernel_ipc_pid_t
- #endif
--- 
-2.25.0
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git for-5.12-fixes
+
+for you to fetch changes up to 89e28ce60cb65971c73359c66d076aa20a395cd5:
+
+  workqueue/watchdog: Make unbound workqueues aware of touch_softlockup_watchdog() 84;0;0c84;0;0c There are two workqueue-specific watchdog timestamps: (2021-04-04 13:26:49 -0400)
+
+----------------------------------------------------------------
+Wang Qing (1):
+      workqueue/watchdog: Make unbound workqueues aware of touch_softlockup_watchdog() 84;0;0c84;0;0c There are two workqueue-specific watchdog timestamps:
+
+Zqiang (1):
+      workqueue: Move the position of debug_work_activate() in __queue_work()
+
+ kernel/watchdog.c  |  5 +++--
+ kernel/workqueue.c | 19 +++++++------------
+ 2 files changed, 10 insertions(+), 14 deletions(-)
