@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1FE5353D96
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72A35353F85
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237206AbhDEJAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:00:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41178 "EHLO mail.kernel.org"
+        id S239287AbhDEJMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:12:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237101AbhDEI75 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 04:59:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5652F6124C;
-        Mon,  5 Apr 2021 08:59:51 +0000 (UTC)
+        id S239031AbhDEJJX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:09:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C1FC61398;
+        Mon,  5 Apr 2021 09:09:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613191;
-        bh=D+3gd6YR+wUOu0FLBNxzwPKWqhrQkSkF8rqmIOhMurk=;
+        s=korg; t=1617613757;
+        bh=XMxBi5221lobiKAKQd8b8jGYcz6l9cP+PtERazfHlDE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u4e67I6XrsL6c5LK7pxkIdggAlBQMLYCw65RNh+DELX9u4Ki+E+zX0nqR5bOgZbfr
-         jVmMZheuQe+IabYuFivoM3KAwvWNdS2CG7SteEBh8yxW+dFDFniy7ZgO3eYnOrMC0Y
-         IKucPN/ViG3Uqyix5HeWhGU/STviBWGlKmZ6Zzt8=
+        b=h4SDacqW730qN5RRR/GHNPrfyFLnhDrmGcPu2RNZzDncuTvgt9870LbQth8+vXsxP
+         M6SfqtMf3bEGbenDUZ7urxYQHE1MH64eXGQ//ksLiJIHfTy9+Zh9PvOf4VWh/gcYAT
+         5yHKAHQQv73hw5QrAqAPMfxWnyO5rvDXazZnViF4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nirmoy Das <nirmoy.das@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        stable@vger.kernel.org, Qu Huang <jinsdb@126.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 4.14 29/52] drm/amdgpu: fix offset calculation in amdgpu_vm_bo_clear_mappings()
+Subject: [PATCH 5.10 073/126] drm/amdkfd: dqm fence memory corruption
 Date:   Mon,  5 Apr 2021 10:53:55 +0200
-Message-Id: <20210405085022.937617437@linuxfoundation.org>
+Message-Id: <20210405085033.476940450@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
-References: <20210405085021.996963957@linuxfoundation.org>
+In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
+References: <20210405085031.040238881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,32 +40,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nirmoy Das <nirmoy.das@amd.com>
+From: Qu Huang <jinsdb@126.com>
 
-commit 5e61b84f9d3ddfba73091f9fbc940caae1c9eb22 upstream.
+commit e92049ae4548ba09e53eaa9c8f6964b07ea274c9 upstream.
 
-Offset calculation wasn't correct as start addresses are in pfn
-not in bytes.
+Amdgpu driver uses 4-byte data type as DQM fence memory,
+and transmits GPU address of fence memory to microcode
+through query status PM4 message. However, query status
+PM4 message definition and microcode processing are all
+processed according to 8 bytes. Fence memory only allocates
+4 bytes of memory, but microcode does write 8 bytes of memory,
+so there is a memory corruption.
 
-CC: stable@vger.kernel.org
-Signed-off-by: Nirmoy Das <nirmoy.das@amd.com>
-Reviewed-by: Christian König <christian.koenig@amd.com>
+Changes since v1:
+  * Change dqm->fence_addr as a u64 pointer to fix this issue,
+also fix up query_status and amdkfd_fence_wait_timeout function
+uses 64 bit fence value to make them consistent.
+
+Signed-off-by: Qu Huang <jinsdb@126.com>
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Signed-off-by: Felix Kuehling <Felix.Kuehling@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdkfd/kfd_dbgdev.c               |    2 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c |    6 +++---
+ drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.h |    2 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_packet_manager.c       |    2 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_packet_manager_v9.c    |    2 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_packet_manager_vi.c    |    2 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_priv.h                 |    8 ++++----
+ 7 files changed, 12 insertions(+), 12 deletions(-)
 
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-@@ -2285,7 +2285,7 @@ int amdgpu_vm_bo_clear_mappings(struct a
- 			after->start = eaddr + 1;
- 			after->last = tmp->last;
- 			after->offset = tmp->offset;
--			after->offset += after->start - tmp->start;
-+			after->offset += (after->start - tmp->start) << PAGE_SHIFT;
- 			after->flags = tmp->flags;
- 			list_add(&after->list, &tmp->list);
- 		}
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_dbgdev.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_dbgdev.c
+@@ -155,7 +155,7 @@ static int dbgdev_diq_submit_ib(struct k
+ 
+ 	/* Wait till CP writes sync code: */
+ 	status = amdkfd_fence_wait_timeout(
+-			(unsigned int *) rm_state,
++			rm_state,
+ 			QUEUESTATE__ACTIVE, 1500);
+ 
+ 	kfd_gtt_sa_free(dbgdev->dev, mem_obj);
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+@@ -1167,7 +1167,7 @@ static int start_cpsch(struct device_que
+ 	if (retval)
+ 		goto fail_allocate_vidmem;
+ 
+-	dqm->fence_addr = dqm->fence_mem->cpu_ptr;
++	dqm->fence_addr = (uint64_t *)dqm->fence_mem->cpu_ptr;
+ 	dqm->fence_gpu_addr = dqm->fence_mem->gpu_addr;
+ 
+ 	init_interrupts(dqm);
+@@ -1340,8 +1340,8 @@ out:
+ 	return retval;
+ }
+ 
+-int amdkfd_fence_wait_timeout(unsigned int *fence_addr,
+-				unsigned int fence_value,
++int amdkfd_fence_wait_timeout(uint64_t *fence_addr,
++				uint64_t fence_value,
+ 				unsigned int timeout_ms)
+ {
+ 	unsigned long end_jiffies = msecs_to_jiffies(timeout_ms) + jiffies;
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.h
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.h
+@@ -192,7 +192,7 @@ struct device_queue_manager {
+ 	uint16_t		vmid_pasid[VMID_NUM];
+ 	uint64_t		pipelines_addr;
+ 	uint64_t		fence_gpu_addr;
+-	unsigned int		*fence_addr;
++	uint64_t		*fence_addr;
+ 	struct kfd_mem_obj	*fence_mem;
+ 	bool			active_runlist;
+ 	int			sched_policy;
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_packet_manager.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_packet_manager.c
+@@ -345,7 +345,7 @@ fail_create_runlist_ib:
+ }
+ 
+ int pm_send_query_status(struct packet_manager *pm, uint64_t fence_address,
+-			uint32_t fence_value)
++			uint64_t fence_value)
+ {
+ 	uint32_t *buffer, size;
+ 	int retval = 0;
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_packet_manager_v9.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_packet_manager_v9.c
+@@ -283,7 +283,7 @@ static int pm_unmap_queues_v9(struct pac
+ }
+ 
+ static int pm_query_status_v9(struct packet_manager *pm, uint32_t *buffer,
+-			uint64_t fence_address,	uint32_t fence_value)
++			uint64_t fence_address,	uint64_t fence_value)
+ {
+ 	struct pm4_mes_query_status *packet;
+ 
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_packet_manager_vi.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_packet_manager_vi.c
+@@ -263,7 +263,7 @@ static int pm_unmap_queues_vi(struct pac
+ }
+ 
+ static int pm_query_status_vi(struct packet_manager *pm, uint32_t *buffer,
+-			uint64_t fence_address,	uint32_t fence_value)
++			uint64_t fence_address,	uint64_t fence_value)
+ {
+ 	struct pm4_mes_query_status *packet;
+ 
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
+@@ -1006,8 +1006,8 @@ int pqm_get_wave_state(struct process_qu
+ 		       u32 *ctl_stack_used_size,
+ 		       u32 *save_area_used_size);
+ 
+-int amdkfd_fence_wait_timeout(unsigned int *fence_addr,
+-			      unsigned int fence_value,
++int amdkfd_fence_wait_timeout(uint64_t *fence_addr,
++			      uint64_t fence_value,
+ 			      unsigned int timeout_ms);
+ 
+ /* Packet Manager */
+@@ -1043,7 +1043,7 @@ struct packet_manager_funcs {
+ 			uint32_t filter_param, bool reset,
+ 			unsigned int sdma_engine);
+ 	int (*query_status)(struct packet_manager *pm, uint32_t *buffer,
+-			uint64_t fence_address,	uint32_t fence_value);
++			uint64_t fence_address,	uint64_t fence_value);
+ 	int (*release_mem)(uint64_t gpu_addr, uint32_t *buffer);
+ 
+ 	/* Packet sizes */
+@@ -1065,7 +1065,7 @@ int pm_send_set_resources(struct packet_
+ 				struct scheduling_resources *res);
+ int pm_send_runlist(struct packet_manager *pm, struct list_head *dqm_queues);
+ int pm_send_query_status(struct packet_manager *pm, uint64_t fence_address,
+-				uint32_t fence_value);
++				uint64_t fence_value);
+ 
+ int pm_send_unmap_queue(struct packet_manager *pm, enum kfd_queue_type type,
+ 			enum kfd_unmap_queues_filter mode,
 
 
