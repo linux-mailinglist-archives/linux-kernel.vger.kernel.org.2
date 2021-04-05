@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A730E353CFF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 779F7353D01
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233350AbhDEI5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 04:57:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36882 "EHLO mail.kernel.org"
+        id S233346AbhDEI5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 04:57:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232671AbhDEI52 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 04:57:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2A6161393;
-        Mon,  5 Apr 2021 08:57:21 +0000 (UTC)
+        id S233209AbhDEI5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:57:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5631E613B5;
+        Mon,  5 Apr 2021 08:57:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613042;
-        bh=jkpm1jRPbd6eolbAWaB0SK4IN7tLnQeelbZ+bKD1WK8=;
+        s=korg; t=1617613044;
+        bh=hKo/TBZ/MC7/qBDco0ALJkAEnklNF0WW5HtsZsyuGFA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QR0hULOU+i2j1QebqGU56OOK8ulM2OBYgBu6FsfKifTRIkGHM0jrujLpyFSkfqdNG
-         bDLfLXcyP7A3twh3EEcHjtnyTaApt+7LY+/32zkNr2Mn6E3PhwHBtx1QoMy4l34C1l
-         GGOdT2SC2gVsy1XPWwtPhILMw9+2XxS6/z9kOFE0=
+        b=we82lu/1u+lFGEcXwxnYJ+VasyXcBllvNcKvPrMyDzO3oDx7GSYWSGqpo8Bey15Gf
+         fc7FankJMldAZO5sqqiFA+IOXYxC63TB8X0WO1GLBXu5qVUO1RoWd6yd3/sa0NQIB2
+         SB8CfPELNzx4SDKQbN9GSKoGyuXtulh6c0/1/Sn0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bruno Thomsen <bruno.thomsen@gmail.com>,
-        Oliver Neukum <oneukum@suse.com>
-Subject: [PATCH 4.9 30/35] USB: cdc-acm: downgrade message to debug
-Date:   Mon,  5 Apr 2021 10:54:05 +0200
-Message-Id: <20210405085019.818603234@linuxfoundation.org>
+        stable@vger.kernel.org, Alexey Khoroshilov <khoroshilov@ispras.ru>,
+        Oliver Neukum <oneukum@suse.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.9 31/35] USB: cdc-acm: fix use-after-free after probe failure
+Date:   Mon,  5 Apr 2021 10:54:06 +0200
+Message-Id: <20210405085019.850347871@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210405085018.871387942@linuxfoundation.org>
 References: <20210405085018.871387942@linuxfoundation.org>
@@ -39,33 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Neukum <oneukum@suse.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit e4c77070ad45fc940af1d7fb1e637c349e848951 upstream.
+commit 4e49bf376c0451ad2eae2592e093659cde12be9a upstream.
 
-This failure is so common that logging an error here amounts
-to spamming log files.
+If tty-device registration fails the driver would fail to release the
+data interface. When the device is later disconnected, the disconnect
+callback would still be called for the data interface and would go about
+releasing already freed resources.
 
-Reviewed-by: Bruno Thomsen <bruno.thomsen@gmail.com>
-Signed-off-by: Oliver Neukum <oneukum@suse.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210311130126.15972-2-oneukum@suse.com
+Fixes: c93d81955005 ("usb: cdc-acm: fix error handling in acm_probe()")
+Cc: stable@vger.kernel.org      # 3.9
+Cc: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Acked-by: Oliver Neukum <oneukum@suse.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20210322155318.9837-3-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/class/cdc-acm.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/usb/class/cdc-acm.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
 --- a/drivers/usb/class/cdc-acm.c
 +++ b/drivers/usb/class/cdc-acm.c
-@@ -543,7 +543,8 @@ static void acm_port_dtr_rts(struct tty_
+@@ -1460,6 +1460,11 @@ skip_countries:
  
- 	res = acm_set_control(acm, val);
- 	if (res && (acm->ctrl_caps & USB_CDC_CAP_LINE))
--		dev_err(&acm->control->dev, "failed to set dtr/rts\n");
-+		/* This is broken in too many devices to spam the logs */
-+		dev_dbg(&acm->control->dev, "failed to set dtr/rts\n");
- }
- 
- static int acm_port_activate(struct tty_port *port, struct tty_struct *tty)
+ 	return 0;
+ alloc_fail8:
++	if (!acm->combined_interfaces) {
++		/* Clear driver data so that disconnect() returns early. */
++		usb_set_intfdata(data_interface, NULL);
++		usb_driver_release_interface(&acm_driver, data_interface);
++	}
+ 	if (acm->country_codes) {
+ 		device_remove_file(&acm->control->dev,
+ 				&dev_attr_wCountryCodes);
 
 
