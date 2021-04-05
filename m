@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90762353E8A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4F8C353FB9
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237864AbhDEJGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:06:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48248 "EHLO mail.kernel.org"
+        id S239608AbhDEJN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:13:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238472AbhDEJE7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:04:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CEF36138D;
-        Mon,  5 Apr 2021 09:04:51 +0000 (UTC)
+        id S238845AbhDEJKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:10:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AA8461399;
+        Mon,  5 Apr 2021 09:10:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613492;
-        bh=NfB4N4aKNWhN78uZ+mC2b+jfDrotxt9yUoEeeVLS9+c=;
+        s=korg; t=1617613812;
+        bh=L/ouUvXPcjfupPz+rGsjZl+tj2CS6fb8QU4+/3xAreY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kweftV0Pm3STsHIN+dn0qNVQIJAGNrV6SjLe3xyFmwHuTGe2qQA5sCLc21Nv/p0qf
-         osKrd+xA5JC/2aBRmYZR5/r02OsFX1gxdCeoa4x8ZaYIL06S1xEsUwTHxG/TckTRrN
-         wdqzNxskM1zy0dPZHlk14cGsOF0dEvXUUJK3/kzM=
+        b=Uodi+R9mYEUgnpdGJR0InQDdQMLnzxOMFazrxbkYhIGR4dcOhtiP+eO45PKNCDMNd
+         lMDCx5JYXvuw0S+p831xMjTYgahg0IlyRAFPDCFAidzaSOgdi1kHkYziyxkZEzVwz+
+         dcWwzg6Yz+dvArXKyEOxaLu/FSORh7QodwgJkT+w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
         Chanwoo Choi <cw00.choi@samsung.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 58/74] extcon: Fix error handling in extcon_dev_register
+Subject: [PATCH 5.10 100/126] extcon: Fix error handling in extcon_dev_register
 Date:   Mon,  5 Apr 2021 10:54:22 +0200
-Message-Id: <20210405085026.610669031@linuxfoundation.org>
+Message-Id: <20210405085034.357047941@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
-References: <20210405085024.703004126@linuxfoundation.org>
+In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
+References: <20210405085031.040238881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,7 +56,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/drivers/extcon/extcon.c b/drivers/extcon/extcon.c
-index e055893fd5c3..5c9e156cd086 100644
+index 0a6438cbb3f3..e7a9561a826d 100644
 --- a/drivers/extcon/extcon.c
 +++ b/drivers/extcon/extcon.c
 @@ -1241,6 +1241,7 @@ int extcon_dev_register(struct extcon_dev *edev)
