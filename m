@@ -2,140 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1FD354876
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 00:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2B8B354877
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 00:11:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242658AbhDEWFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 18:05:37 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:54446 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241367AbhDEWFX (ORCPT
+        id S237636AbhDEWHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 18:07:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235944AbhDEWHL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 18:05:23 -0400
-Received: by mail-il1-f200.google.com with SMTP id f14so10314313ilr.21
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 15:05:16 -0700 (PDT)
+        Mon, 5 Apr 2021 18:07:11 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B767C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 15:07:04 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id o14so9251200qvn.18
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 15:07:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=oq7Q6pke93drxQnu1FB4iss8DOMmcIhW1Wkw424yBvw=;
+        b=NRFQ6rj28/xEiBVJhnJ5Nnf+cyw92Ho+867IcELNhmGQ4+uXfTLnWmKGyWuMpvx8d2
+         hVW/m44biQO5BanHKtxpm20AilrGgaDrd7c+dsDMETy682svLhebVHc3ytpPjo1ZLpJS
+         iUX0LzE7lkkTCZhsIsKMNPg3EkrfL/DLGCnuYgghRYSMvjLXYQcIaaBxuAj4xTxJV2/N
+         hirYZNpY3eDkimpFFDagiuGtIinpX9Hl2z/b1d4c0DyKVOhH/ralGT3OtpBh9c5GmfaO
+         GzeUWnN12GRR3bSxenr81uObWpiNoQvLfl4FgwMnWMTkGxHrLTdcO270a4xg9u46Er9F
+         A1+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=rE9Lgt+L6rHEa2lPaIz2LAbklGrZ/8/l6OV+XVfhjIQ=;
-        b=sq29r8/jLomFqkC1uXJpyg7Uhh/eO4j9L9kaQO9xJGtTkoaKUGOjy3QsrEqwfSRWaV
-         VmFXgOmoY1rOmoJKdgxZ0jxyfnXoNIll835CsUjM2jhnEyoEFISq6SbuL5s9UtDcs4MF
-         NCtOuroNzgbw9i4wfxAmhs2K7IlVMpPPtQfp1WuVycPTXVkGi3Mjc8p6l/5zjbt4bDm7
-         Ijr0OmOiaM2nEfIl2A238SEZArokyH84bZuY6Y/Nt0DL6qBqkianSHOh/658pqq48oy4
-         DaqNoIgMrWpMQZO/cm5lldfyUWK8Z3qk4c+ZFBBIqocQWztapOOeh3S0enWPKTQCNN1x
-         diaA==
-X-Gm-Message-State: AOAM5337vL/hvJy9K5SUMM8+Iwg5AoKy01LGC0jZEHGHRrHCIepKRqNJ
-        C9w+eOufwdHoS3/HMdh5+fWCoxSQEOv3+elqexrC7JTPERSf
-X-Google-Smtp-Source: ABdhPJwsl00yvfIuD6YEyJZUif+FP4TrNvNVIATDR9q3M8i0uQFmnaAG/Sm5oszwt4k13naHE6JC49fHrNIzBfixsVl0+UduvZNv
-MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a87:: with SMTP id k7mr19967967ilv.69.1617660316511;
- Mon, 05 Apr 2021 15:05:16 -0700 (PDT)
-Date:   Mon, 05 Apr 2021 15:05:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008872ff05bf40e4db@google.com>
-Subject: [syzbot] WARNING: suspicious RCU usage in tcp_bpf_update_proto
-From:   syzbot <syzbot+320a3bc8d80f478c37e4@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, andrii@kernel.org, anton@tuxera.com,
-        ast@kernel.org, bp@alien8.de, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hpa@zytor.com,
-        jakub@cloudflare.com, jmattson@google.com,
-        john.fastabend@gmail.com, joro@8bytes.org, kafai@fb.com,
-        kpsingh@kernel.org, kuba@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lmb@cloudflare.com, mingo@redhat.com,
-        netdev@vger.kernel.org, pbonzini@redhat.com, rkovhaev@gmail.com,
-        seanjc@google.com, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        torvalds@linux-foundation.org, vkuznets@redhat.com,
-        wanpengli@tencent.com, x86@kernel.org, yhs@fb.com
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=oq7Q6pke93drxQnu1FB4iss8DOMmcIhW1Wkw424yBvw=;
+        b=dsej1MKwUTAs6jLRCIFT7bSZqGOoWRPEpfjnAqR0OUSdimffgAfJT81zLbKQkSRg0o
+         D9L5/U8nA8FnwO+Y8OU9uUYmXeQh44k7ZRphZER8rNZJ+lu6dyF5/XSccSpInrOEz2aV
+         CRp3XJMKaKZ4IH6DmM4szDfHTMFF3iRcRsh6kfTt93baKsQDzX+XtNhuUBhi1BbWDNQE
+         t73v0lY7zUeRsfEqTzjvWH+xCH4JIqu3EvR/fQ1cwpjYHrYzf9e3rK758flnnbyDMu+j
+         G46EiJXfq9EqH3+KW9Kib0F12A0QOE1NhDioqmWTabMfBBkyIoifC1oiiAXKuIIDrsIu
+         6GeQ==
+X-Gm-Message-State: AOAM532dz7QE4E8lPnxB3qcqRvzx5xfwLHmx1jqWunX/vd8bMf89/mDD
+        sNBMlmxT55szk/CzPP+O2Ljwlug=
+X-Google-Smtp-Source: ABdhPJw/FvdKrezus0FvdqjuqO/coYz385HNHw4xQdJZ1V8k6AvPYHweCxZ2pWvNtYectV06sdsvtdo=
+X-Received: from pcc-desktop.svl.corp.google.com ([2620:15c:2ce:0:8495:4fdf:186d:cc80])
+ (user=pcc job=sendgmr) by 2002:a0c:d7ca:: with SMTP id g10mr25290130qvj.16.1617660423429;
+ Mon, 05 Apr 2021 15:07:03 -0700 (PDT)
+Date:   Mon,  5 Apr 2021 15:06:47 -0700
+Message-Id: <20210405220647.1965262-1-pcc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
+Subject: [PATCH v2] kasan: fix kasan_byte_accessible() to be consistent with
+ actual checks
+From:   Peter Collingbourne <pcc@google.com>
+To:     Marco Elver <elver@google.com>, Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>
+Cc:     Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+We can sometimes end up with kasan_byte_accessible() being called
+on non-slab memory. For example ksize() and krealloc() may end up
+calling it on KFENCE allocated memory. In this case the memory will
+be tagged with KASAN_SHADOW_INIT, which a subsequent patch ("kasan:
+initialize shadow to TAG_INVALID for SW_TAGS") will set to the same
+value as KASAN_TAG_INVALID, causing kasan_byte_accessible() to fail
+when called on non-slab memory.
 
-syzbot found the following issue on:
+This highlighted the fact that the check in kasan_byte_accessible()
+was inconsistent with checks as implemented for loads and stores
+(kasan_check_range() in SW tags mode and hardware-implemented
+checks in HW tags mode). kasan_check_range() does not have a
+check for KASAN_TAG_INVALID, and instead has a comparison against
+KASAN_SHADOW_START. In HW tags mode, we do not have either, but we
+do set TCR_EL1.TCMA which corresponds with the comparison against
+KASAN_TAG_KERNEL.
 
-HEAD commit:    514e1150 net: x25: Queue received packets in the drivers i..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=112a8831d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7eff0f22b8563a5f
-dashboard link: https://syzkaller.appspot.com/bug?extid=320a3bc8d80f478c37e4
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1532d711d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15f44c5ed00000
+Therefore, update kasan_byte_accessible() for both SW and HW tags
+modes to correspond with the respective checks on loads and stores.
 
-The issue was bisected to:
-
-commit 4dfe6bd94959222e18d512bdf15f6bf9edb9c27c
-Author: Rustam Kovhaev <rkovhaev@gmail.com>
-Date:   Wed Feb 24 20:00:30 2021 +0000
-
-    ntfs: check for valid standard information attribute
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16207a81d00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=15207a81d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=11207a81d00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+320a3bc8d80f478c37e4@syzkaller.appspotmail.com
-Fixes: 4dfe6bd94959 ("ntfs: check for valid standard information attribute")
-
-=============================
-WARNING: suspicious RCU usage
-5.12.0-rc4-syzkaller #0 Not tainted
------------------------------
-include/linux/skmsg.h:286 suspicious rcu_dereference_check() usage!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 2, debug_locks = 1
-1 lock held by syz-executor383/8454:
- #0: ffff888013a99b48 (clock-AF_INET){++..}-{2:2}, at: sk_psock_drop+0x2c/0x460 net/core/skmsg.c:788
-
-stack backtrace:
-CPU: 1 PID: 8454 Comm: syz-executor383 Not tainted 5.12.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- sk_psock include/linux/skmsg.h:286 [inline]
- tcp_bpf_update_proto+0x530/0x5f0 net/ipv4/tcp_bpf.c:504
- sk_psock_restore_proto include/linux/skmsg.h:408 [inline]
- sk_psock_drop+0xdf/0x460 net/core/skmsg.c:789
- sk_psock_put include/linux/skmsg.h:446 [inline]
- tcp_bpf_recvmsg+0x42d/0x480 net/ipv4/tcp_bpf.c:208
- inet_recvmsg+0x11b/0x5d0 net/ipv4/af_inet.c:852
- sock_recvmsg_nosec net/socket.c:888 [inline]
- sock_recvmsg net/socket.c:906 [inline]
- sock_recvmsg net/socket.c:902 [inline]
- ____sys_recvmsg+0x2c4/0x600 net/socket.c:2569
- ___sys_recvmsg+0x127/0x200 net/socket.c:2611
- do_recvmmsg+0x24d/0x6d0 net/socket.c:2705
- __sys_recvmmsg net/socket.c:2784 [inline]
- __do_sys_recvmmsg net/socket.c:2807 [inline]
- __se_sys_recvmmsg net/socket.c:2800 [inline]
- __x64_sys_recvmmsg+0x20b/0x260 net/socket.c:2800
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4468e9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 a1 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f010b0cc318 EFLAGS: 00000246 ORIG_RAX: 000000000000012b
-RAX: ffffffffffffffda RBX: 00000000004cb4e8 RCX: 00000000004468e9
-RDX: 0000000000000422 RSI: 0000000020000540 RDI: 0000000000000004
-RBP: 00000000004cb4e0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000049b270
-R13: 00007ffe3829a5bf R14: 00007f010b0cc400 R15: 0000000000022000
-
-
+Link: https://linux-review.googlesource.com/id/Ic6d40803c57dcc6331bd97fbb9a60b0d38a65a36
+Signed-off-by: Peter Collingbourne <pcc@google.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ mm/kasan/kasan.h   |  3 +--
+ mm/kasan/sw_tags.c | 10 +++++++---
+ 2 files changed, 8 insertions(+), 5 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+index 8c55634d6edd..e18e8da35255 100644
+--- a/mm/kasan/kasan.h
++++ b/mm/kasan/kasan.h
+@@ -368,8 +368,7 @@ static inline bool kasan_byte_accessible(const void *addr)
+ 	u8 ptr_tag = get_tag(addr);
+ 	u8 mem_tag = hw_get_mem_tag((void *)addr);
+ 
+-	return (mem_tag != KASAN_TAG_INVALID) &&
+-		(ptr_tag == KASAN_TAG_KERNEL || ptr_tag == mem_tag);
++	return ptr_tag == KASAN_TAG_KERNEL || ptr_tag == mem_tag;
+ }
+ 
+ #else /* CONFIG_KASAN_HW_TAGS */
+diff --git a/mm/kasan/sw_tags.c b/mm/kasan/sw_tags.c
+index 94c2d33be333..00ae8913fc74 100644
+--- a/mm/kasan/sw_tags.c
++++ b/mm/kasan/sw_tags.c
+@@ -121,10 +121,14 @@ bool kasan_check_range(unsigned long addr, size_t size, bool write,
+ bool kasan_byte_accessible(const void *addr)
+ {
+ 	u8 tag = get_tag(addr);
+-	u8 shadow_byte = READ_ONCE(*(u8 *)kasan_mem_to_shadow(kasan_reset_tag(addr)));
++	void *untagged_addr = kasan_reset_tag(addr);
++	u8 shadow_byte;
+ 
+-	return (shadow_byte != KASAN_TAG_INVALID) &&
+-		(tag == KASAN_TAG_KERNEL || tag == shadow_byte);
++	if (untagged_addr < kasan_shadow_to_mem((void *)KASAN_SHADOW_START))
++		return false;
++
++	shadow_byte = READ_ONCE(*(u8 *)kasan_mem_to_shadow(untagged_addr));
++	return tag == KASAN_TAG_KERNEL || tag == shadow_byte;
+ }
+ 
+ #define DEFINE_HWASAN_LOAD_STORE(size)					\
+-- 
+2.31.0.208.g409f899ff0-goog
+
