@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A093540C3
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ABC3353EB6
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240699AbhDEJWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:22:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38894 "EHLO mail.kernel.org"
+        id S238363AbhDEJHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:07:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240801AbhDEJRE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:17:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0519160FE4;
-        Mon,  5 Apr 2021 09:16:57 +0000 (UTC)
+        id S238679AbhDEJFi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:05:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B002613A4;
+        Mon,  5 Apr 2021 09:05:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617614218;
-        bh=b1u0xQ3xOw06czjnFgcm5d/aVKgUd2RJ+TU+aMfNJKY=;
+        s=korg; t=1617613532;
+        bh=1FlLlzjcLm0GeT7D8m4KQAXu/GrkAdfaWvVzN3j0/p4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w5lHioECdWskRxJWYHs0Yy+8oTspMZuROdEnRs9Bg6PtydHJnFXpvaVJKZSdqSw4U
-         nae/VDya4rNkehpDqQfYmSXwqnjtE9Jm4RMmgo0TAMsQ7cvs/QS3RhCD82UCTYJKdc
-         K1KdkfZI2wu+70giVFmYxj6FcDFmiN6zurtOTyzI=
+        b=pkj99TnXwM77ey9l3CkvUr31ZC+lC8LUZFtDDljVO8KZDa3ALUS87QtYe61WFF7U6
+         tYVJTDJgwHPpSmY8key68CAT7IAAfVUpAPqr9UYaaKOhmH3jOVge1sj/Q+BZNWrg37
+         uut1YnpVHn6uwwxpVg1qxAKIFsQ5ljAoQ3vfcmXo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 127/152] video: hyperv_fb: Fix a double free in hvfb_probe
+        stable@vger.kernel.org, Atul Gopinathan <atulgopinathan@gmail.com>
+Subject: [PATCH 5.4 72/74] staging: rtl8192e: Fix incorrect source in memcpy()
 Date:   Mon,  5 Apr 2021 10:54:36 +0200
-Message-Id: <20210405085038.354961062@linuxfoundation.org>
+Message-Id: <20210405085027.087688941@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
-References: <20210405085034.233917714@linuxfoundation.org>
+In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
+References: <20210405085024.703004126@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,60 +38,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+From: Atul Gopinathan <atulgopinathan@gmail.com>
 
-[ Upstream commit 37df9f3fedb6aeaff5564145e8162aab912c9284 ]
+commit 72ad25fbbb78930f892b191637359ab5b94b3190 upstream.
 
-Function hvfb_probe() calls hvfb_getmem(), expecting upon return that
-info->apertures is either NULL or points to memory that should be freed
-by framebuffer_release().  But hvfb_getmem() is freeing the memory and
-leaving the pointer non-NULL, resulting in a double free if an error
-occurs or later if hvfb_remove() is called.
+The variable "info_element" is of the following type:
 
-Fix this by removing all kfree(info->apertures) calls in hvfb_getmem().
-This will allow framebuffer_release() to free the memory, which follows
-the pattern of other fbdev drivers.
+	struct rtllib_info_element *info_element
 
-Fixes: 3a6fb6c4255c ("video: hyperv: hyperv_fb: Use physical memory for fb on HyperV Gen 1 VMs.")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-Link: https://lore.kernel.org/r/20210324103724.4189-1-lyl2019@mail.ustc.edu.cn
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+defined in drivers/staging/rtl8192e/rtllib.h:
+
+	struct rtllib_info_element {
+		u8 id;
+		u8 len;
+		u8 data[];
+	} __packed;
+
+The "len" field defines the size of the "data[]" array. The code is
+supposed to check if "info_element->len" is greater than 4 and later
+equal to 6. If this is satisfied then, the last two bytes (the 4th and
+5th element of u8 "data[]" array) are copied into "network->CcxRmState".
+
+Right now the code uses "memcpy()" with the source as "&info_element[4]"
+which would copy in wrong and unintended information. The struct
+"rtllib_info_element" has a size of 2 bytes for "id" and "len",
+therefore indexing will be done in interval of 2 bytes. So,
+"info_element[4]" would point to data which is beyond the memory
+allocated for this pointer (that is, at x+8, while "info_element" has
+been allocated only from x to x+7 (2 + 6 => 8 bytes)).
+
+This patch rectifies this error by using "&info_element->data[4]" which
+correctly copies the last two bytes of "data[]".
+
+NOTE: The faulty line of code came from the following commit:
+
+commit ecdfa44610fa ("Staging: add Realtek 8192 PCI wireless driver")
+
+The above commit created the file `rtl8192e/ieee80211/ieee80211_rx.c`
+which had the faulty line of code. This file has been deleted (or
+possibly renamed) with the contents copied in to a new file
+`rtl8192e/rtllib_rx.c` along with additional code in the commit
+94a799425eee (tagged in Fixes).
+
+Fixes: 94a799425eee ("From: wlanfae <wlanfae@realtek.com> [PATCH 1/8] rtl8192e: Import new version of driver from realtek")
+Cc: stable@vger.kernel.org
+Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
+Link: https://lore.kernel.org/r/20210323113413.29179-1-atulgopinathan@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/video/fbdev/hyperv_fb.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/staging/rtl8192e/rtllib_rx.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/video/fbdev/hyperv_fb.c b/drivers/video/fbdev/hyperv_fb.c
-index c8b0ae676809..4dc9077dd2ac 100644
---- a/drivers/video/fbdev/hyperv_fb.c
-+++ b/drivers/video/fbdev/hyperv_fb.c
-@@ -1031,7 +1031,6 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
- 			PCI_DEVICE_ID_HYPERV_VIDEO, NULL);
- 		if (!pdev) {
- 			pr_err("Unable to find PCI Hyper-V video\n");
--			kfree(info->apertures);
- 			return -ENODEV;
- 		}
- 
-@@ -1129,7 +1128,6 @@ getmem_done:
- 	} else {
- 		pci_dev_put(pdev);
- 	}
--	kfree(info->apertures);
- 
- 	return 0;
- 
-@@ -1141,7 +1139,6 @@ err2:
- err1:
- 	if (!gen2vm)
- 		pci_dev_put(pdev);
--	kfree(info->apertures);
- 
- 	return -ENOMEM;
- }
--- 
-2.30.2
-
+--- a/drivers/staging/rtl8192e/rtllib_rx.c
++++ b/drivers/staging/rtl8192e/rtllib_rx.c
+@@ -1968,7 +1968,7 @@ static void rtllib_parse_mife_generic(st
+ 	    info_element->data[2] == 0x96 &&
+ 	    info_element->data[3] == 0x01) {
+ 		if (info_element->len == 6) {
+-			memcpy(network->CcxRmState, &info_element[4], 2);
++			memcpy(network->CcxRmState, &info_element->data[4], 2);
+ 			if (network->CcxRmState[0] != 0)
+ 				network->bCcxRmEnable = true;
+ 			else
 
 
