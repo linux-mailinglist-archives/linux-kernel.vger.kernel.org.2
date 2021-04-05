@@ -2,264 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA28354181
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 13:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CBEC35418D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 13:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234654AbhDEL2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 07:28:09 -0400
-Received: from gateway21.websitewelcome.com ([192.185.45.228]:23842 "EHLO
-        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230032AbhDEL2I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 07:28:08 -0400
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway21.websitewelcome.com (Postfix) with ESMTP id F0AA9400D5C84
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 06:28:00 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id TNOiltQL6L7DmTNOilEGLt; Mon, 05 Apr 2021 06:28:00 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=HaWJIx9QeSqGp2WKMyVfEtnUrLjEtHZaXIhZVm4fNpc=; b=eHKvRnIe33xRix7VMunTV+PXV3
-        okw/dXK3ZaF5dNLdTBX2EYLAaLi8U0w5t9m0i5mvBgjTF3IO9o6XAMeuc+ZaMwll0JPbzN9ULFuo6
-        p97YiDoosS94JVaqI64vktrUYTNRZGwthrI0QOiv1zeccTo8ES1//QtPBVkLyaBf/Z4VBRMhIvsxg
-        sOl/nPQXgtWFyqU9e/0clGT167Ix7T0jUnhs+ivFAc+N1TnfmQtZQMtHD2kci58tujgH9MdqVFpSY
-        zHFLa4ILMzjEtSLZzjZjEuMM+azESedOZKTKeKq/bucDtGXyFJmeOSwxspIW9Wt2eTkCEEFfGCZCf
-        hHTlwm6Q==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:55772 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lTNOi-0010hM-Fz; Mon, 05 Apr 2021 06:28:00 -0500
-Subject: Re: [PATCH][next] scsi: ufs: Fix out-of-bounds warnings in
- ufshcd_exec_raw_upiu_cmd
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-References: <20210331224338.GA347171@embeddedor>
- <DM6PR04MB65751397A9CCA9B677875B3EFC799@DM6PR04MB6575.namprd04.prod.outlook.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <60291521-2f71-8933-e90d-95b84c5f0be8@embeddedor.com>
-Date:   Mon, 5 Apr 2021 06:27:58 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <DM6PR04MB65751397A9CCA9B677875B3EFC799@DM6PR04MB6575.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lTNOi-0010hM-Fz
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:55772
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 7
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+        id S234795AbhDELfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 07:35:44 -0400
+Received: from mga06.intel.com ([134.134.136.31]:35073 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233431AbhDELfn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 07:35:43 -0400
+IronPort-SDR: vMK0n5+Ef8Ueq2qkpEA5hMEk3A80yZuZbE2mYZ/OBOIu8ajR9u59GPFsshJyPwTfTzfVzy9xUs
+ yj5v+CSPYs9w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9944"; a="254169324"
+X-IronPort-AV: E=Sophos;i="5.81,306,1610438400"; 
+   d="scan'208";a="254169324"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2021 04:35:36 -0700
+IronPort-SDR: TH5332Obysrd576bvhDuX4G61pJrWOIGOPgjXXKzhsGeuYxOzI3cwwEVNUTpUN+a1TOvETpiaM
+ Pvpcw7po8nKQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,306,1610438400"; 
+   d="scan'208";a="378939399"
+Received: from mike-ilbpg1.png.intel.com ([10.88.227.76])
+  by orsmga003.jf.intel.com with ESMTP; 05 Apr 2021 04:35:28 -0700
+From:   Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
+To:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
+        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
+        mcoquelin.stm32@gmail.com, linux@armlinux.org.uk,
+        weifeng.voon@intel.com, boon.leong.ong@intel.com,
+        qiangqing.zhang@nxp.com, vee.khee.wong@intel.com,
+        fugang.duan@nxp.com, kim.tatt.chuah@intel.com,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        andrew@lunn.ch, hkallweit1@gmail.com
+Subject: [PATCH net-next v2 0/2] Enable 2.5Gbps speed for stmmac
+Date:   Mon,  5 Apr 2021 19:29:51 +0800
+Message-Id: <20210405112953.26008-1-michael.wei.hong.sit@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patchset enables 2.5Gbps speed mode for stmmac.
+Link speed mode is detected and configured at serdes power up sequence.
+For 2.5G, we do not use SGMII in-band AN, we check the link speed mode
+in the serdes and disable the in-band AN accordingly.
 
+Changes:
+v1 -> v2
+ patch 1/2
+ -Remove MAC supported link speed masking
 
-On 4/3/21 14:44, Avri Altman wrote:
->>
->> Fix the following out-of-bounds warnings by enclosing
->> some structure members into new structure objects upiu_req
->> and upiu_rsp:
->>
->> include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [29,
->> 48] from the object at 'treq' is out of the bounds of referenced subobject
->> 'req_header' with type 'struct utp_upiu_header' at offset 16 [-Warray-bounds]
->> include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [61,
->> 80] from the object at 'treq' is out of the bounds of referenced subobject
->> 'rsp_header' with type 'struct utp_upiu_header' at offset 48 [-Warray-bounds]
->> arch/m68k/include/asm/string.h:72:25: warning: '__builtin_memcpy' offset
->> [29, 48] from the object at 'treq' is out of the bounds of referenced subobject
->> 'req_header' with type 'struct utp_upiu_header' at offset 16 [-Warray-bounds]
->> arch/m68k/include/asm/string.h:72:25: warning: '__builtin_memcpy' offset
->> [61, 80] from the object at 'treq' is out of the bounds of referenced subobject
->> 'rsp_header' with type 'struct utp_upiu_header' at offset 48 [-Warray-bounds]
->>
->> Refactor the code by making it more structured.
->>
->> The problem is that the original code is trying to copy data into a
->> bunch of struct members adjacent to each other in a single call to
->> memcpy(). Now that a new struct _upiu_req_ enclosing all those adjacent
->> members is introduced, memcpy() doesn't overrun the length of
->> &treq.req_header, because the address of the new struct object
->> _upiu_req_ is used as the destination, instead. The same problem
->> is present when memcpy() overruns the length of the source
->> &treq.rsp_header; in this case the address of the new struct
->> object _upiu_rsp_ is used, instead.
->>
->> Also, this helps with the ongoing efforts to enable -Warray-bounds
->> and avoid confusing the compiler.
->>
->> Link: https://github.com/KSPP/linux/issues/109
->> Reported-by: kernel test robot <lkp@intel.com>
->> Build-tested-by: kernel test robot <lkp@intel.com>
->> Link:
->> https://lore.kernel.org/lkml/60640558.lsAxiK6otPwTo9rv%25lkp@intel.com/
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Reviewed-by: Avri Altman <avri.altman@wdc.com>
+ patch 2/2
+ -Add supported link speed masking in the PCS
 
-Thanks, Avri. :)
+iperf3 and ping for 2.5Gbps and regression test on 10M/100M/1000Mbps
+is done to prevent regresson issues.
 
---
-Gustavo
+10Mbps
+host@EHL$ ethtool -s enp0s30f4 duplex full speed 10
+[  310.132264] intel-eth-pci 0000:00:1e.4 enp0s30f4: Link is Down
+[  312.438102] intel-eth-pci 0000:00:1e.4 enp0s30f4: Link is Up - 10Mbps/Full - flow control off
+[  312.447652] IPv6: ADDRCONF(NETDEV_CHANGE): enp0s30f4: link becomes ready
+host@EHL$ iperf3 -c 192.168.1.1
+Connecting to host 192.168.1.1, port 5201
+[  5] local 192.168.1.2 port 60706 connected to 192.168.1.1 port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec  1.26 MBytes  10.6 Mbits/sec    0   29.7 KBytes
+[  5]   1.00-2.00   sec  1.09 MBytes  9.17 Mbits/sec    0   29.7 KBytes
+[  5]   2.00-3.00   sec  1.09 MBytes  9.17 Mbits/sec    0   29.7 KBytes
+[  5]   3.00-4.00   sec  1.15 MBytes  9.68 Mbits/sec    0   29.7 KBytes
+[  5]   4.00-5.00   sec  1.09 MBytes  9.17 Mbits/sec    0   29.7 KBytes
+[  5]   5.00-6.00   sec  1.09 MBytes  9.17 Mbits/sec    0   29.7 KBytes
+[  5]   6.00-7.00   sec  1.15 MBytes  9.68 Mbits/sec    0   29.7 KBytes
+[  5]   7.00-8.00   sec  1.09 MBytes  9.17 Mbits/sec    0   29.7 KBytes
+[  5]   8.00-9.00   sec  1.09 MBytes  9.17 Mbits/sec    0   29.7 KBytes
+[  5]   9.00-10.00  sec  1.15 MBytes  9.68 Mbits/sec    0   29.7 KBytes
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  11.3 MBytes  9.47 Mbits/sec    0             sender
+[  5]   0.00-10.01  sec  11.1 MBytes  9.34 Mbits/sec                  receiver
 
-> 
-> Thanks,
-> Avri
-> 
->> ---
->>  drivers/scsi/ufs/ufshcd.c | 28 ++++++++++++++++------------
->>  drivers/scsi/ufs/ufshci.h | 22 +++++++++++++---------
->>  2 files changed, 29 insertions(+), 21 deletions(-)
->>
->> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->> index 7539a4ee9494..324eb641e66f 100644
->> --- a/drivers/scsi/ufs/ufshcd.c
->> +++ b/drivers/scsi/ufs/ufshcd.c
->> @@ -336,11 +336,15 @@ static void ufshcd_add_tm_upiu_trace(struct
->> ufs_hba *hba, unsigned int tag,
->>                 return;
->>
->>         if (str_t == UFS_TM_SEND)
->> -               trace_ufshcd_upiu(dev_name(hba->dev), str_t, &descp->req_header,
->> -                                 &descp->input_param1, UFS_TSF_TM_INPUT);
->> +               trace_ufshcd_upiu(dev_name(hba->dev), str_t,
->> +                                 &descp->upiu_req.req_header,
->> +                                 &descp->upiu_req.input_param1,
->> +                                 UFS_TSF_TM_INPUT);
->>         else
->> -               trace_ufshcd_upiu(dev_name(hba->dev), str_t, &descp->rsp_header,
->> -                                 &descp->output_param1, UFS_TSF_TM_OUTPUT);
->> +               trace_ufshcd_upiu(dev_name(hba->dev), str_t,
->> +                                 &descp->upiu_rsp.rsp_header,
->> +                                 &descp->upiu_rsp.output_param1,
->> +                                 UFS_TSF_TM_OUTPUT);
->>  }
->>
->>  static void ufshcd_add_uic_command_trace(struct ufs_hba *hba,
->> @@ -6420,7 +6424,7 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba
->> *hba,
->>         spin_lock_irqsave(host->host_lock, flags);
->>         task_tag = hba->nutrs + free_slot;
->>
->> -       treq->req_header.dword_0 |= cpu_to_be32(task_tag);
->> +       treq->upiu_req.req_header.dword_0 |= cpu_to_be32(task_tag);
->>
->>         memcpy(hba->utmrdl_base_addr + free_slot, treq, sizeof(*treq));
->>         ufshcd_vops_setup_task_mgmt(hba, free_slot, tm_function);
->> @@ -6493,16 +6497,16 @@ static int ufshcd_issue_tm_cmd(struct ufs_hba
->> *hba, int lun_id, int task_id,
->>         treq.header.dword_2 = cpu_to_le32(OCS_INVALID_COMMAND_STATUS);
->>
->>         /* Configure task request UPIU */
->> -       treq.req_header.dword_0 = cpu_to_be32(lun_id << 8) |
->> +       treq.upiu_req.req_header.dword_0 = cpu_to_be32(lun_id << 8) |
->>                                   cpu_to_be32(UPIU_TRANSACTION_TASK_REQ << 24);
->> -       treq.req_header.dword_1 = cpu_to_be32(tm_function << 16);
->> +       treq.upiu_req.req_header.dword_1 = cpu_to_be32(tm_function << 16);
->>
->>         /*
->>          * The host shall provide the same value for LUN field in the basic
->>          * header and for Input Parameter.
->>          */
->> -       treq.input_param1 = cpu_to_be32(lun_id);
->> -       treq.input_param2 = cpu_to_be32(task_id);
->> +       treq.upiu_req.input_param1 = cpu_to_be32(lun_id);
->> +       treq.upiu_req.input_param2 = cpu_to_be32(task_id);
->>
->>         err = __ufshcd_issue_tm_cmd(hba, &treq, tm_function);
->>         if (err == -ETIMEDOUT)
->> @@ -6513,7 +6517,7 @@ static int ufshcd_issue_tm_cmd(struct ufs_hba *hba,
->> int lun_id, int task_id,
->>                 dev_err(hba->dev, "%s: failed, ocs = 0x%x\n",
->>                                 __func__, ocs_value);
->>         else if (tm_response)
->> -               *tm_response = be32_to_cpu(treq.output_param1) &
->> +               *tm_response = be32_to_cpu(treq.upiu_rsp.output_param1) &
->>                                 MASK_TM_SERVICE_RESP;
->>         return err;
->>  }
->> @@ -6693,7 +6697,7 @@ int ufshcd_exec_raw_upiu_cmd(struct ufs_hba
->> *hba,
->>                 treq.header.dword_0 = cpu_to_le32(UTP_REQ_DESC_INT_CMD);
->>                 treq.header.dword_2 =
->> cpu_to_le32(OCS_INVALID_COMMAND_STATUS);
->>
->> -               memcpy(&treq.req_header, req_upiu, sizeof(*req_upiu));
->> +               memcpy(&treq.upiu_req, req_upiu, sizeof(*req_upiu));
->>
->>                 err = __ufshcd_issue_tm_cmd(hba, &treq, tm_f);
->>                 if (err == -ETIMEDOUT)
->> @@ -6706,7 +6710,7 @@ int ufshcd_exec_raw_upiu_cmd(struct ufs_hba
->> *hba,
->>                         break;
->>                 }
->>
->> -               memcpy(rsp_upiu, &treq.rsp_header, sizeof(*rsp_upiu));
->> +               memcpy(rsp_upiu, &treq.upiu_rsp, sizeof(*rsp_upiu));
->>
->>                 break;
->>         default:
->> diff --git a/drivers/scsi/ufs/ufshci.h b/drivers/scsi/ufs/ufshci.h
->> index 6795e1f0e8f8..235236859285 100644
->> --- a/drivers/scsi/ufs/ufshci.h
->> +++ b/drivers/scsi/ufs/ufshci.h
->> @@ -482,17 +482,21 @@ struct utp_task_req_desc {
->>         struct request_desc_header header;
->>
->>         /* DW 4-11 - Task request UPIU structure */
->> -       struct utp_upiu_header  req_header;
->> -       __be32                  input_param1;
->> -       __be32                  input_param2;
->> -       __be32                  input_param3;
->> -       __be32                  __reserved1[2];
->> +       struct {
->> +               struct utp_upiu_header  req_header;
->> +               __be32                  input_param1;
->> +               __be32                  input_param2;
->> +               __be32                  input_param3;
->> +               __be32                  __reserved1[2];
->> +       } upiu_req;
->>
->>         /* DW 12-19 - Task Management Response UPIU structure */
->> -       struct utp_upiu_header  rsp_header;
->> -       __be32                  output_param1;
->> -       __be32                  output_param2;
->> -       __be32                  __reserved2[3];
->> +       struct {
->> +               struct utp_upiu_header  rsp_header;
->> +               __be32                  output_param1;
->> +               __be32                  output_param2;
->> +               __be32                  __reserved2[3];
->> +       } upiu_rsp;
->>  };
->>
->>  #endif /* End of Header */
->> --
->> 2.27.0
-> 
+iperf Done.
+host@EHL$ ping 192.168.1.1
+PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
+64 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=0.557 ms
+64 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.528 ms
+64 bytes from 192.168.1.1: icmp_seq=3 ttl=64 time=0.535 ms
+64 bytes from 192.168.1.1: icmp_seq=4 ttl=64 time=0.525 ms
+64 bytes from 192.168.1.1: icmp_seq=5 ttl=64 time=0.527 ms
+64 bytes from 192.168.1.1: icmp_seq=6 ttl=64 time=0.555 ms
+64 bytes from 192.168.1.1: icmp_seq=7 ttl=64 time=0.539 ms
+64 bytes from 192.168.1.1: icmp_seq=8 ttl=64 time=0.588 ms
+64 bytes from 192.168.1.1: icmp_seq=9 ttl=64 time=0.570 ms
+64 bytes from 192.168.1.1: icmp_seq=10 ttl=64 time=0.540 ms
+
+--- 192.168.1.1 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 9194ms
+rtt min/avg/max/mdev = 0.525/0.546/0.588/0.019 ms
+host@EHL$
+
+100Mbps
+host@EHL$ ethtool -s enp0s30f4 duplex full speed 100
+[  204.178572] intel-eth-pci 0000:00:1e.4 enp0s30f4: Link is Down
+[  207.990094] intel-eth-pci 0000:00:1e.4 enp0s30f4: Link is Up - 100Mbps/Full - flow control off
+[  207.999744] IPv6: ADDRCONF(NETDEV_CHANGE): enp0s30f4: link becomes ready
+host@EHL$ iperf3 -c 192.168.1.1
+Connecting to host 192.168.1.1, port 5201
+[  5] local 192.168.1.2 port 60702 connected to 192.168.1.1 port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec  11.6 MBytes  97.0 Mbits/sec    1    102 KBytes
+[  5]   1.00-2.00   sec  10.9 MBytes  91.7 Mbits/sec    0    102 KBytes
+[  5]   2.00-3.00   sec  10.8 MBytes  90.5 Mbits/sec    0    102 KBytes
+[  5]   3.00-4.00   sec  11.0 MBytes  92.6 Mbits/sec    0    102 KBytes
+[  5]   4.00-5.00   sec  10.8 MBytes  90.6 Mbits/sec    0    102 KBytes
+[  5]   5.00-6.00   sec  11.0 MBytes  92.6 Mbits/sec    0    102 KBytes
+[  5]   6.00-7.00   sec  11.0 MBytes  92.6 Mbits/sec    0    102 KBytes
+[  5]   7.00-8.00   sec  10.8 MBytes  90.6 Mbits/sec    0    102 KBytes
+[  5]   8.00-9.00   sec  11.0 MBytes  92.6 Mbits/sec    0    102 KBytes
+[  5]   9.00-10.00  sec  11.0 MBytes  92.6 Mbits/sec    0    102 KBytes
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec   110 MBytes  92.3 Mbits/sec    1             sender
+[  5]   0.00-10.00  sec   109 MBytes  91.8 Mbits/sec                  receiver
+
+iperf Done.
+host@EHL$ ping 192.168.1.1
+PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
+64 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=0.331 ms
+64 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.322 ms
+64 bytes from 192.168.1.1: icmp_seq=3 ttl=64 time=0.315 ms
+64 bytes from 192.168.1.1: icmp_seq=4 ttl=64 time=0.315 ms
+64 bytes from 192.168.1.1: icmp_seq=5 ttl=64 time=0.295 ms
+64 bytes from 192.168.1.1: icmp_seq=6 ttl=64 time=0.300 ms
+64 bytes from 192.168.1.1: icmp_seq=7 ttl=64 time=0.307 ms
+64 bytes from 192.168.1.1: icmp_seq=8 ttl=64 time=0.294 ms
+64 bytes from 192.168.1.1: icmp_seq=9 ttl=64 time=0.292 ms
+64 bytes from 192.168.1.1: icmp_seq=10 ttl=64 time=0.297 ms
+
+--- 192.168.1.1 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 9215ms
+rtt min/avg/max/mdev = 0.292/0.306/0.331/0.012 ms
+
+1G speed
+host@EHL$ iperf3 -c 192.168.1.1
+Connecting to host 192.168.1.1, port 5201
+[  5] local 192.168.1.2 port 60698 connected to 192.168.1.1 port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec   114 MBytes   954 Mbits/sec    0    533 KBytes
+[  5]   1.00-2.00   sec   112 MBytes   942 Mbits/sec    0    591 KBytes
+[  5]   2.00-3.00   sec   113 MBytes   945 Mbits/sec    0    621 KBytes
+[  5]   3.00-4.00   sec   112 MBytes   941 Mbits/sec    0    621 KBytes
+[  5]   4.00-5.00   sec   112 MBytes   942 Mbits/sec    0    764 KBytes
+[  5]   5.00-6.00   sec   112 MBytes   944 Mbits/sec    0    764 KBytes
+[  5]   6.00-7.00   sec   111 MBytes   933 Mbits/sec    0    803 KBytes
+[  5]   7.00-8.00   sec   112 MBytes   944 Mbits/sec    0    803 KBytes
+[  5]   8.00-9.00   sec   112 MBytes   944 Mbits/sec    0    843 KBytes
+[  5]   9.00-10.00  sec   112 MBytes   944 Mbits/sec    0    843 KBytes
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  1.10 GBytes   943 Mbits/sec    0             sender
+[  5]   0.00-10.00  sec  1.09 GBytes   940 Mbits/sec                  receiver
+
+iperf Done.
+host@EHL$ ping 192.168.1.1
+PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
+64 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=0.299 ms
+64 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.277 ms
+64 bytes from 192.168.1.1: icmp_seq=3 ttl=64 time=0.277 ms
+64 bytes from 192.168.1.1: icmp_seq=4 ttl=64 time=0.286 ms
+64 bytes from 192.168.1.1: icmp_seq=5 ttl=64 time=0.330 ms
+64 bytes from 192.168.1.1: icmp_seq=6 ttl=64 time=0.276 ms
+64 bytes from 192.168.1.1: icmp_seq=7 ttl=64 time=0.296 ms
+64 bytes from 192.168.1.1: icmp_seq=8 ttl=64 time=0.272 ms
+64 bytes from 192.168.1.1: icmp_seq=9 ttl=64 time=0.276 ms
+64 bytes from 192.168.1.1: icmp_seq=10 ttl=64 time=0.274 ms
+
+--- 192.168.1.1 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 9196ms
+rtt min/avg/max/mdev = 0.272/0.286/0.330/0.017 ms
+
+2.5G speed
+host@EHL$ iperf3 -c 192.168.1.1
+Connecting to host 192.168.1.1, port 5201
+[  5] local 192.168.1.2 port 55160 connected to 192.168.1.1 port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec   175 MBytes  1.47 Gbits/sec   17    683 KBytes
+[  5]   1.00-2.00   sec   202 MBytes  1.70 Gbits/sec    0    707 KBytes
+[  5]   2.00-3.00   sec   204 MBytes  1.71 Gbits/sec    0    751 KBytes
+[  5]   3.00-4.00   sec   204 MBytes  1.71 Gbits/sec    0    773 KBytes
+[  5]   4.00-5.00   sec   202 MBytes  1.70 Gbits/sec    0    773 KBytes
+[  5]   5.00-6.00   sec   204 MBytes  1.71 Gbits/sec    0    798 KBytes
+[  5]   6.00-7.00   sec   204 MBytes  1.71 Gbits/sec    0    807 KBytes
+[  5]   7.00-8.00   sec   204 MBytes  1.71 Gbits/sec    0    807 KBytes
+[  5]   8.00-9.00   sec   204 MBytes  1.71 Gbits/sec    0    807 KBytes
+[  5]   9.00-10.00  sec   202 MBytes  1.70 Gbits/sec    0    807 KBytes
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  1.96 GBytes  1.68 Gbits/sec   17             sender
+[  5]   0.00-10.00  sec  1.96 GBytes  1.68 Gbits/sec                  receiver
+
+iperf Done.
+host@EHL$ ping 192.168.1.1
+PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
+64 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=0.671 ms
+64 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.300 ms
+64 bytes from 192.168.1.1: icmp_seq=3 ttl=64 time=0.300 ms
+64 bytes from 192.168.1.1: icmp_seq=4 ttl=64 time=0.291 ms
+64 bytes from 192.168.1.1: icmp_seq=5 ttl=64 time=0.296 ms
+64 bytes from 192.168.1.1: icmp_seq=6 ttl=64 time=0.301 ms
+64 bytes from 192.168.1.1: icmp_seq=7 ttl=64 time=0.328 ms
+64 bytes from 192.168.1.1: icmp_seq=8 ttl=64 time=0.306 ms
+64 bytes from 192.168.1.1: icmp_seq=9 ttl=64 time=0.299 ms
+64 bytes from 192.168.1.1: icmp_seq=10 ttl=64 time=0.293 ms
+
+--- 192.168.1.1 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 9251ms
+rtt min/avg/max/mdev = 0.291/0.338/0.671/0.111 ms
+
+Voon Weifeng (2):
+  net: stmmac: enable 2.5Gbps link speed
+  net: pcs: configure xpcs 2.5G speed mode
+
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 44 ++++++++++++++++++-
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.h | 13 ++++++
+ .../net/ethernet/stmicro/stmmac/dwmac4_core.c |  1 +
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 20 ++++++++-
+ drivers/net/pcs/pcs-xpcs.c                    | 39 ++++++++++++++++
+ include/linux/pcs/pcs-xpcs.h                  |  1 +
+ include/linux/stmmac.h                        |  2 +
+ 7 files changed, 117 insertions(+), 3 deletions(-)
+
+-- 
+2.17.1
+
