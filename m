@@ -2,116 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC922354273
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 15:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9210354279
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 15:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241234AbhDENqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 09:46:40 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:38312 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234370AbhDENqi (ORCPT
+        id S241244AbhDENru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 09:47:50 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:31961 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241242AbhDENrt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 09:46:38 -0400
-Received: from [192.168.254.32] (unknown [47.187.194.202])
-        by linux.microsoft.com (Postfix) with ESMTPSA id BF21F20B5680;
-        Mon,  5 Apr 2021 06:46:31 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BF21F20B5680
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1617630392;
-        bh=mfFXVOtba3ncfAFXQnaH/4f2gUVkhGmFdDMee2De2aI=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=aA0jBlh89QQf6RrYXD8Azqv+RnNSLgNxm2+2chKzT8G7hB1Nc33YXx8pYyp3g4zRL
-         yOtkKIPyIvJnqAoAznVQt83KEiS6OHqIET49ogrIjpphXTCNkx6VBGqgdpKEe4i0dS
-         vEcumkZdnVdhSo/aMxU0fh99bhz7gYDUwgPOuPEg=
-Subject: Re: [RFC PATCH v1 0/4] arm64: Implement stack trace reliability
- checks
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, mark.rutland@arm.com,
-        broonie@kernel.org, jthierry@redhat.com, catalin.marinas@arm.com,
-        will@kernel.org, linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <77bd5edeea72d44533c769b1e8c0fea7a9d7eb3a>
- <20210330190955.13707-1-madvenka@linux.microsoft.com>
- <20210403170159.gegqjrsrg7jshlne@treble>
- <bd13a433-c060-c501-8e76-5e856d77a225@linux.microsoft.com>
- <20210405222436.4fda9a930676d95e862744af@kernel.org>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <7db94d60-3cb5-625a-a90b-d843e88f4533@linux.microsoft.com>
-Date:   Mon, 5 Apr 2021 08:46:30 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <20210405222436.4fda9a930676d95e862744af@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Mon, 5 Apr 2021 09:47:49 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617630463; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=LkXe1ru5QkypL7XJEXPXj4uLzUbzidHGT/01ds7D8L0=; b=vB2rm4HKpyVP3F7r/bQxQH1WtNZ/FtUFHTgaPVDeXQgvcpxLY0QthjOFuBvPSQIT+/bbSjGk
+ 5oiS1/g/IxDOwoj/9rU+fqJtGrTolGHlKDQVqEmvekM+o0idSuJE+sVoj+eU5MBYi6KBJj+A
+ yzoeH2MwiJ4NlUjNVxwSBxPfmAw=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 606b14ed8166b7eff7b1a7c4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 05 Apr 2021 13:47:25
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5DB73C43463; Mon,  5 Apr 2021 13:47:24 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from hyd-lnxbld559.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E747AC433CA;
+        Mon,  5 Apr 2021 13:47:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E747AC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+To:     freedreno@lists.freedesktop.org
+Cc:     dri-devel@freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jordan@cosmicpenguin.net,
+        eric@anholt.net, jonathan@marek.ca, robdclark@gmail.com,
+        dianders@chromium.org
+Subject: [PATCH 1/2] drm/msm/a6xx: Fix perfcounter oob timeout
+Date:   Mon,  5 Apr 2021 19:17:12 +0530
+Message-Id: <1617630433-36506-1-git-send-email-akhilpo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+We were not programing the correct bit while clearing the perfcounter oob.
+So, clear it correctly using the new 'clear' bit. This fixes the below
+error:
 
+[drm:a6xx_gmu_set_oob] *ERROR* Timeout waiting for GMU OOB set PERFCOUNTER: 0x80000000
 
-On 4/5/21 8:24 AM, Masami Hiramatsu wrote:
-> Hi Madhaven,
-> 
-> On Sat, 3 Apr 2021 22:29:12 -0500
-> "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com> wrote:
-> 
-> 
->>>> Check for kretprobe
->>>> ===================
->>>>
->>>> For functions with a kretprobe set up, probe code executes on entry
->>>> to the function and replaces the return address in the stack frame with a
->>>> kretprobe trampoline. Whenever the function returns, control is
->>>> transferred to the trampoline. The trampoline eventually returns to the
->>>> original return address.
->>>>
->>>> A stack trace taken while executing in the function (or in functions that
->>>> get called from the function) will not show the original return address.
->>>> Similarly, a stack trace taken while executing in the trampoline itself
->>>> (and functions that get called from the trampoline) will not show the
->>>> original return address. This means that the caller of the probed function
->>>> will not show. This makes the stack trace unreliable.
->>>>
->>>> Add the kretprobe trampoline to special_functions[].
->>>>
->>>> FYI, each task contains a task->kretprobe_instances list that can
->>>> theoretically be consulted to find the orginal return address. But I am
->>>> not entirely sure how to safely traverse that list for stack traces
->>>> not on the current process. So, I have taken the easy way out.
->>>
->>> For kretprobes, unwinding from the trampoline or kretprobe handler
->>> shouldn't be a reliability concern for live patching, for similar
->>> reasons as above.
->>>
->>
->> Please see previous answer.
->>
->>> Otherwise, when unwinding from a blocked task which has
->>> 'kretprobe_trampoline' on the stack, the unwinder needs a way to get the
->>> original return address.  Masami has been working on an interface to
->>> make that possible for x86.  I assume something similar could be done
->>> for arm64.
->>>
->>
->> OK. Until that is available, this case needs to be addressed.
-> 
-> Actually, I've done that on arm64 :) See below patch.
-> (and I also have a similar code for arm32, what I'm considering is how
-> to unify x86/arm/arm64 kretprobe_find_ret_addr(), since those are very
-> similar.)
-> 
-> This is applicable on my x86 series v5
-> 
-> https://lore.kernel.org/bpf/161676170650.330141.6214727134265514123.stgit@devnote2/
-> 
-> Thank you,
-> 
-> 
+Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+---
+ drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-OK. I will take a look.
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+index 863047b..6a86cd0 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+@@ -246,7 +246,7 @@ static int a6xx_gmu_hfi_start(struct a6xx_gmu *gmu)
+ }
+ 
+ struct a6xx_gmu_oob_bits {
+-	int set, ack, set_new, ack_new;
++	int set, ack, set_new, ack_new, clear, clear_new;
+ 	const char *name;
+ };
+ 
+@@ -260,6 +260,8 @@ static const struct a6xx_gmu_oob_bits a6xx_gmu_oob_bits[] = {
+ 		.ack = 24,
+ 		.set_new = 30,
+ 		.ack_new = 31,
++		.clear = 24,
++		.clear_new = 31,
+ 	},
+ 
+ 	[GMU_OOB_PERFCOUNTER_SET] = {
+@@ -268,18 +270,22 @@ static const struct a6xx_gmu_oob_bits a6xx_gmu_oob_bits[] = {
+ 		.ack = 25,
+ 		.set_new = 28,
+ 		.ack_new = 30,
++		.clear = 25,
++		.clear_new = 29,
+ 	},
+ 
+ 	[GMU_OOB_BOOT_SLUMBER] = {
+ 		.name = "BOOT_SLUMBER",
+ 		.set = 22,
+ 		.ack = 30,
++		.clear = 30,
+ 	},
+ 
+ 	[GMU_OOB_DCVS_SET] = {
+ 		.name = "GPU_DCVS",
+ 		.set = 23,
+ 		.ack = 31,
++		.clear = 31,
+ 	},
+ };
+ 
+@@ -335,9 +341,9 @@ void a6xx_gmu_clear_oob(struct a6xx_gmu *gmu, enum a6xx_gmu_oob_state state)
+ 		return;
+ 
+ 	if (gmu->legacy)
+-		bit = a6xx_gmu_oob_bits[state].ack;
++		bit = a6xx_gmu_oob_bits[state].clear;
+ 	else
+-		bit = a6xx_gmu_oob_bits[state].ack_new;
++		bit = a6xx_gmu_oob_bits[state].clear_new;
+ 
+ 	gmu_write(gmu, REG_A6XX_GMU_HOST2GMU_INTR_SET, 1 << bit);
+ }
+-- 
+2.7.4
 
-Thanks.
-
-Madhavan
