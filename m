@@ -2,99 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6718835489D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 00:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3102835489F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 00:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242787AbhDEW3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 18:29:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60320 "EHLO
+        id S242799AbhDEWaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 18:30:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233086AbhDEW3b (ORCPT
+        with ESMTP id S233086AbhDEWaT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 18:29:31 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC0AAC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 15:29:22 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id v70so13062686qkb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 15:29:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RwkgDCMjAFVJZLleFiMJUr9vgTjXkXjMnykXo/QokeM=;
-        b=QVB6sBSLuPtIgw1bBIx0B9ARKghOSsS+doviRxtNnR1cQ8ar7A+zCkCYFw8rx00tK7
-         XAAXnVfpMUQxINBXwIQcQV0/ibBpFCGlK9Klb04uVLDcgWRi/czgk1aia/6CotCMNwM6
-         rM+nWAHw07J/BTdEG3NK13U9zjdkeOwt5KW5nWd8H3zKefwnGPRuxIj9ZST3vjVVQz3c
-         WW8jzB+hYbGwZDZj5Ja7SCaPeVLmjLATPyOJ9IF9r1n2POvu3c34mvAn8Iqux0+UHD1g
-         pf4tPtqh76KFD2rcRXESPzcDjysiZWq2iJ1kufBJAGdpQMl2YSftl2LWVJ8qhliVlPNK
-         UWmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RwkgDCMjAFVJZLleFiMJUr9vgTjXkXjMnykXo/QokeM=;
-        b=pL/b3uiHnMcu5TvBhLcQM3K06FHzBGaNAK4/Z5IuuuI+CPMGHwFOrDv2jeGsl9ySQ0
-         mUDjUjw6etX1n6AjWMiPzuqHx9UHK19dmfVZapDUkkV/OnKj/Z8ckwzK4+Uoof7l5Juk
-         VoU9xOdVLOOnAhHISNQy6rh8cHSQJuCXGyR1OsAoN7nfrry+y4BU9u0pjcFz34AvNpPf
-         HNeKQCP7+y0z28Nc2Q/qfgWRgcHtFTU6o+tw6AabXsAHB4B+HSk4Sncqr46ff6YtI6Qt
-         ENd7zlFVK7m70tKzlGHFS3AnmHIMSybHaYXHTZhi9gEWoe3UEvOx/aoJNF4vmNHqXob4
-         pqgg==
-X-Gm-Message-State: AOAM530t86AHfYOJvTxxK3kwIWKurBv5UqZz/DQA14aVaUr6PxsNv87i
-        nVny3BUGh7qiR0n7ji9fpSxCF1zAC54=
-X-Google-Smtp-Source: ABdhPJwqilHOfodqTf996DCBzX879+tEW/OsTyV1wsHvJBOSJm1EAhS4e403GVZxczMS+Yme7n5siQ==
-X-Received: by 2002:ae9:df46:: with SMTP id t67mr26461636qkf.269.1617661762116;
-        Mon, 05 Apr 2021 15:29:22 -0700 (PDT)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id k26sm10564139qkg.120.2021.04.05.15.29.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Apr 2021 15:29:21 -0700 (PDT)
-Subject: Re: Linux 5.12-rc6
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <CAHk-=whK9=wafv+cSLCGqFGPBbgp67Dut3jKCnWB--8y7Lxonw@mail.gmail.com>
- <20210405171011.GA72391@roeck-us.net>
- <CAHk-=wjG=y+sXAaW=L5369Sd0pjZ_iJEKiuUGCuR6QqQQYk0ug@mail.gmail.com>
- <39c15fa7-2dfd-ed21-4882-049560e6e032@roeck-us.net>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <82843e8f-2129-118b-fa74-d7126727ed63@gmail.com>
-Date:   Mon, 5 Apr 2021 17:29:20 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 5 Apr 2021 18:30:19 -0400
+Received: from hs01.dk-develop.de (hs01.dk-develop.de [IPv6:2a02:c207:3002:6234::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92A8AC06174A;
+        Mon,  5 Apr 2021 15:30:12 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 00:30:08 +0200
+From:   Danilo Krummrich <danilokrummrich@dk-develop.de>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        davem@davemloft.net, hkallweit1@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jeremy.linton@arm.com
+Subject: Re: [PATCH 2/2] net: mdio: support c45 peripherals on c22 busses
+Message-ID: <YGuPcNPXiQZkEehh@arch-linux>
+References: <6f1dfc28368d098ace9564e53ed92041@dk-develop.de>
+ <20210331183524.GV1463@shell.armlinux.org.uk>
+ <2f0ea3c3076466e197ca2977753b07f3@dk-develop.de>
+ <20210401084857.GW1463@shell.armlinux.org.uk>
+ <YGZvGfNSBBq/92D+@arch-linux>
+ <20210402125858.GB1463@shell.armlinux.org.uk>
+ <YGoSS7llrl5K6D+/@arch-linux>
+ <YGsRwxwXILC1Tp2S@lunn.ch>
+ <YGtdv++nv3H5K43E@arch-linux>
+ <YGtksD5p5JVpnazu@lunn.ch>
 MIME-Version: 1.0
-In-Reply-To: <39c15fa7-2dfd-ed21-4882-049560e6e032@roeck-us.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YGtksD5p5JVpnazu@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding Rob, so that he will be in the loop.
+On Mon, Apr 05, 2021 at 09:27:44PM +0200, Andrew Lunn wrote:
+> > Now, instead of encoding this information of the bus' capabilities at both
+> > places, I'd propose just checking the mii_bus->capabilities field in the
+> > mdiobus_c45_*() functions. IMHO this would be a little cleaner, than having two
+> > places where this information is stored. What do you think about that?
+> 
+> You will need to review all the MDIO bus drivers to make sure they
+> correctly set the capabilities. There is something like 55 using
+> of_mdiobus_register() and 45 using mdiobus_register(). So you have 100
+> drivers to review.
+Yes, but I think it would be enough to look at the drivers handling the
+MII_ADDR_C45 flag, because those are either
+- actually capable to do C45 bus transfers or
+- do properly return -EOPNOTSUPP.
 
--Frank
+I counted 27 drivers handling the MII_ADDR_C45 flag. Setting the capabilities
+for those should be pretty easy.
 
-On 4/5/21 12:28 PM, Guenter Roeck wrote:
-> On 4/5/21 10:14 AM, Linus Torvalds wrote:
->> On Mon, Apr 5, 2021 at 10:10 AM Guenter Roeck <linux@roeck-us.net> wrote:
->>>
->>> No change in test results since last week [..]
->>
->> Let's ping Frank for the alignment issue.  If that promised patch
->> isn't timely (and trivial), I really think that removing the alignment
->> check is by now the way forward for that libftd failure.
->>
+The remaining ones, which should be about 73 then, could be left untouched,
+because the default capability MDIOBUS_NO_CAP would indicate they can C22 only.
+Since they don't handle the MII_ADDR_C45 flag at all, this should be the
+correct assumption.
 > 
-> Frank sent a patch with a fix/workaround yesterday, and I added my
-> Tested-by: an hour or so ago.
+> 	Andrew
 > 
-> https://lore.kernel.org/patchwork/patch/1407418/
-> 
-> Hmm, my reply isn't there (yet). I'll monitor and resend if needed.
-> 
-> Thanks,
-> Guenter
-> 
-
