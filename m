@@ -2,140 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8611354843
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 23:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46258354847
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 23:47:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241316AbhDEVo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 17:44:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241285AbhDEVo4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 17:44:56 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8EA1C061756;
-        Mon,  5 Apr 2021 14:44:49 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 5DB6B1F4469E
-Received: by earth.universe (Postfix, from userid 1000)
-        id 7CEDA3C0C96; Mon,  5 Apr 2021 23:44:46 +0200 (CEST)
-Date:   Mon, 5 Apr 2021 23:44:46 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>, Ian Ray <ian.ray@ge.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCHv4] serial: imx: Add DMA buffer configuration via sysfs
-Message-ID: <20210405214446.zhidvtvahcfp4wxa@earth.universe>
-References: <20210305115058.92284-1-sebastian.reichel@collabora.com>
- <YEIetFdcuYZU98s/@kroah.com>
- <20210305124252.c3ffgca6wjqpkn45@earth.universe>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jyl37mmk7opoozsa"
-Content-Disposition: inline
-In-Reply-To: <20210305124252.c3ffgca6wjqpkn45@earth.universe>
+        id S241412AbhDEVrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 17:47:02 -0400
+Received: from mga17.intel.com ([192.55.52.151]:64591 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241284AbhDEVrA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 17:47:00 -0400
+IronPort-SDR: /dBplj1ylxTHTMmey/ZaKyEIsoNuPpcFUdsLQAdOt7h+BIJhvse0gIuY16yKL12mzG3/uz+a/c
+ 9cWqiF4SWkzQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="173001649"
+X-IronPort-AV: E=Sophos;i="5.81,307,1610438400"; 
+   d="scan'208";a="173001649"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2021 14:46:39 -0700
+IronPort-SDR: YjOMnsFhrCglXG2g//O3Z+n6Da8xWPYYfk3ApwPh2xIvW2W1JbnuogdzuJ8+jxLd7AtSpTlo3d
+ /4KF75vNK+kA==
+X-IronPort-AV: E=Sophos;i="5.81,307,1610438400"; 
+   d="scan'208";a="457568941"
+Received: from lddickin-mobl1.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.254.112.181])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2021 14:46:36 -0700
+Date:   Tue, 6 Apr 2021 09:46:34 +1200
+From:   Kai Huang <kai.huang@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
+        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH v3 05/25] x86/sgx: Introduce virtual EPC for use by KVM
+ guests
+Message-Id: <20210406094634.9f5e8c9d6bd2b61690c887cf@intel.com>
+In-Reply-To: <20210405090151.GA19485@zn.tnic>
+References: <cover.1616136307.git.kai.huang@intel.com>
+        <0c38ced8c8e5a69872db4d6a1c0dabd01e07cad7.1616136308.git.kai.huang@intel.com>
+        <20210405090151.GA19485@zn.tnic>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 5 Apr 2021 11:01:51 +0200 Borislav Petkov wrote:
+> On Fri, Mar 19, 2021 at 08:22:21PM +1300, Kai Huang wrote:
+> > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> > index 35391e94bd22..007912f67a06 100644
+> > --- a/arch/x86/Kconfig
+> > +++ b/arch/x86/Kconfig
+> > @@ -1942,6 +1942,18 @@ config X86_SGX
+> >  
+> >  	  If unsure, say N.
+> >  
+> > +config X86_SGX_KVM
+> > +	bool "Software Guard eXtensions (SGX) Virtualization"
+> > +	depends on X86_SGX && KVM_INTEL
+> > +	help
+> 
+> It seems to me this would fit better under "Virtualization" because even
+> if I want to enable it, I have to go enable KVM_INTEL first and then
+> return back here to turn it on too.
+> 
+> And under "Virtualization" is where we enable all kinds of aspects which
+> belong to it.
 
---jyl37mmk7opoozsa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Fri, Mar 05, 2021 at 01:42:52PM +0100, Sebastian Reichel wrote:
-> On Fri, Mar 05, 2021 at 01:06:12PM +0100, Greg Kroah-Hartman wrote:
-> > On Fri, Mar 05, 2021 at 12:50:58PM +0100, Sebastian Reichel wrote:
-> > > From: Fabien Lahoudere <fabien.lahoudere@collabora.com>
-> > >=20
-> > > In order to optimize serial communication (performance/throughput VS
-> > > latency), we may need to tweak DMA period number and size. This adds
-> > > sysfs attributes to configure those values before initialising DMA.
-> > > The defaults will stay the same as before (16 buffers with a size of
-> > > 1024 bytes). Afterwards the values can be read/write with the
-> > > following sysfs files:
-> > >=20
-> > > /sys/class/tty/ttymxc*/dma_buffer_size
-> > > /sys/class/tty/ttymxc*/dma_buffer_count
-> >=20
-> > Ick no.  Custom sysfs attributes for things like serial ports are crazy.
-> >=20
-> > > This is mainly needed for GEHC CS ONE (arch/arm/boot/dts/imx53-ppd.dt=
-s),
-> > > which has multiple microcontrollers connected via UART controlling. O=
-ne
-> > > of the UARTs is connected to an on-board microcontroller at 19200 bau=
-d,
-> > > which constantly pushes critical data (so aging character detect
-> > > interrupt will never trigger). This data must be processed at 50-200 =
-Hz,
-> > > so UART should return data in less than 5-20ms. With 1024 byte DMA
-> > > buffer (and a constant data stream) the read operation instead needs
-> > > 1024 byte / 19200 baud =3D 53.333ms, which is way too long (note: Wor=
-st
-> > > Case would be remote processor sending data with short pauses <=3D 7
-> > > characters, which would further increase this number). The current
-> > > downstream kernel instead configures 24 bytes resulting in 1.25ms,
-> > > but that is obviously not sensible for normal UART use cases and cann=
-ot
-> > > be used as new default.
-> >=20
-> > Why can't this be a device tree attribute? Why does this have to be a
-> > sysfs thing that no one will know how to tune and set over time.  This
-> > hardware should not force a user to manually tune it to get it to work
-> > properly, this isn't the 1990's anymore :(
-> >=20
-> > Please never force a user to choose stuff like this, they never will
-> > know what to do.
->=20
-> This used to be a DT attribute in PATCHv1. It has been moved over to
-> sysfs since PATCHv2, since it does not describe the hardware, but
-> configuration. Unfortunately lore.kernel.org does not have the full
-> thread, but this is the discussion:
->=20
-> https://lore.kernel.org/linux-serial/20170629182618.jpahpmuq364ldcv2@peng=
-utronix.de/
->=20
-> From downstream POV this can be done either by adding a DT property
-> to the UART node, or by adding a udev rule.
->=20
-> From my POV there is not a huge difference. In both cases we will
-> be bound by an ABI afterwards, in both cases people will usually
-> stick to the default value and in both cases people that do deviate
-> from the default probably ran into problems and started to look
-> for a solution.
-
-ping? It's not very nice to get a rejected in cycles :(
-
--- Sebastian
-
---jyl37mmk7opoozsa
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBrhMgACgkQ2O7X88g7
-+pqyWhAAqargM2/F1Rs/EcL2QbtjVCapugkkOIjeMaC2QKgTPfrPYkmVUrfeHNbS
-HhLKLND5sZnmEfsgu3/y1acGUR0QDbn9HbiI0VrSr1YfLK7us9D7DxeorlW1QLfV
-6ZfI1m/xDVdF8Rj216hSb3uawdcUvfbF5jGlXeMN24ZqKPd1wT5paM+sHp6UJO/7
-eLfTnD5VdNQT7u/tRFNv3G4SawrEWut0LtFOdP8RXF/kDc+cGSuGRNLojoIeCm8B
-X1oKBNPergkXnr5A56bqB6suHrwVOT1BEOstKMZ5VpF1gJDKODu4X5XRMAFNotsV
-9WVYDInY3LfVekEtQzQMI/4sCAP48TW5mtoyPJjBgFZRmQAQyviWZZ437EeasFSh
-WVtisky1Ure4r0Qes7OdvlITrxh/3TzqiOvqN0gjKjVhwzU5XHGIU1BZ0tfvYvP2
-6Z8uVk0sy4JrsB2Gaf5ka2OBB18bzBNNZ0/fPVGlfqinG/Uk8r7U1IwQE6jfj8X7
-BL6qXTxB//oWKE5YaeGsQW9Xn7PN3riAZgqV3+NKBoxLPB5rvXuLRY0lNotH6vyY
-uWsJm+AD2LwFhuRbfoUUGsnA9fQQy2/NPMubJvvK6LaTPPxShdtSHn6fx4od+pux
-gn44W2kG1AzJC0pRCIr4I5UjtqXCWW81W8Wji3AUUJ16GJveUeU=
-=pCYr
------END PGP SIGNATURE-----
-
---jyl37mmk7opoozsa--
+Fine to me. Please let me know if you want me to resend patches. Thanks.
