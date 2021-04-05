@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA66353FE6
+	by mail.lfdr.de (Postfix) with ESMTP id 55A2B353FE7
 	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240399AbhDEJPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:15:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58942 "EHLO mail.kernel.org"
+        id S240417AbhDEJPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:15:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238841AbhDEJL4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:11:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 23FFF61393;
-        Mon,  5 Apr 2021 09:11:50 +0000 (UTC)
+        id S239050AbhDEJL6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:11:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A05B61399;
+        Mon,  5 Apr 2021 09:11:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613910;
-        bh=KtmsC9HXqP6iYRKpMA/dcq7ZYWgWJI8JVT0f7dUZJiI=;
+        s=korg; t=1617613912;
+        bh=5mITberqG7UgwW6RZuOELf841627VhEq59zXJ/OyvFo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OBwJMq6b2wNI+bTOim+9a+7Bb/GI8KT1MuElZ4R2igS6c060qs6BHmHFyiKvyUIrh
-         WDu0GF3hNeYq9EjtocTJAFcusdz5zMztv23ija18FOex+qFdyuan9uzCbTOKg5+fJa
-         QVwuYBJ6329ksmLqHH5XXKHdH2Yg8ZPC7g3x6HPQ=
+        b=UqOZGBogzWX+pU7PR58APk4PvXMrgxzKCcEnGlZyyxZ4m4U8XtqwLzLSTxuhCE7Wi
+         h8H6x1q/I7GVdJyhD0f2ZzWhAMGTo2zWMIVkD4emFQ/PjrdTiTCgehNUuEjEtMFYoq
+         DmfDd22n/ATe+aK/FR48GFmh1nrP4FSMWxE1onZw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 012/152] ASoC: es8316: Simplify adc_pga_gain_tlv table
-Date:   Mon,  5 Apr 2021 10:52:41 +0200
-Message-Id: <20210405085034.625216980@linuxfoundation.org>
+Subject: [PATCH 5.11 013/152] ASoC: soc-core: Prevent warning if no DMI table is present
+Date:   Mon,  5 Apr 2021 10:52:42 +0200
+Message-Id: <20210405085034.653802195@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
 References: <20210405085034.233917714@linuxfoundation.org>
@@ -40,46 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Jon Hunter <jonathanh@nvidia.com>
 
-[ Upstream commit bb18c678754ce1514100fb4c0bf6113b5af36c48 ]
+[ Upstream commit 7de14d581dbed57c2b3c6afffa2c3fdc6955a3cd ]
 
-Most steps in this table are steps of 3dB (300 centi-dB), so we can
-simplify the table.
+Many systems do not use ACPI and hence do not provide a DMI table. On
+non-ACPI systems a warning, such as the following, is printed on boot.
 
-This not only reduces the amount of space it takes inside the kernel,
-this also makes alsa-lib's mixer code actually accept the table, where
-as before this change alsa-lib saw the "ADC PGA Gain" control as a
-control without a dB scale.
+ WARNING KERN tegra-audio-graph-card sound: ASoC: no DMI vendor name!
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20210228160441.241110-1-hdegoede@redhat.com
+The variable 'dmi_available' is not exported and so currently cannot be
+used by kernel modules without adding an accessor. However, it is
+possible to use the function is_acpi_device_node() to determine if the
+sound card is an ACPI device and hence indicate if we expect a DMI table
+to be present. Therefore, call is_acpi_device_node() to see if we are
+using ACPI and only parse the DMI table if we are booting with ACPI.
+
+Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+Link: https://lore.kernel.org/r/20210303115526.419458-1-jonathanh@nvidia.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/es8316.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ sound/soc/soc-core.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
-index f9ec5cf82599..ec2f11ff8a84 100644
---- a/sound/soc/codecs/es8316.c
-+++ b/sound/soc/codecs/es8316.c
-@@ -63,13 +63,8 @@ static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(adc_pga_gain_tlv,
- 	1, 1, TLV_DB_SCALE_ITEM(0, 0, 0),
- 	2, 2, TLV_DB_SCALE_ITEM(250, 0, 0),
- 	3, 3, TLV_DB_SCALE_ITEM(450, 0, 0),
--	4, 4, TLV_DB_SCALE_ITEM(700, 0, 0),
--	5, 5, TLV_DB_SCALE_ITEM(1000, 0, 0),
--	6, 6, TLV_DB_SCALE_ITEM(1300, 0, 0),
--	7, 7, TLV_DB_SCALE_ITEM(1600, 0, 0),
--	8, 8, TLV_DB_SCALE_ITEM(1800, 0, 0),
--	9, 9, TLV_DB_SCALE_ITEM(2100, 0, 0),
--	10, 10, TLV_DB_SCALE_ITEM(2400, 0, 0),
-+	4, 7, TLV_DB_SCALE_ITEM(700, 300, 0),
-+	8, 10, TLV_DB_SCALE_ITEM(1800, 300, 0),
- );
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index f6d4e99b590c..0cffc9527e28 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -31,6 +31,7 @@
+ #include <linux/of.h>
+ #include <linux/of_graph.h>
+ #include <linux/dmi.h>
++#include <linux/acpi.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -1573,6 +1574,9 @@ int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour)
+ 	if (card->long_name)
+ 		return 0; /* long name already set by driver or from DMI */
  
- static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(hpout_vol_tlv,
++	if (!is_acpi_device_node(card->dev->fwnode))
++		return 0;
++
+ 	/* make up dmi long name as: vendor-product-version-board */
+ 	vendor = dmi_get_system_info(DMI_BOARD_VENDOR);
+ 	if (!vendor || !is_dmi_valid(vendor)) {
 -- 
 2.30.1
 
