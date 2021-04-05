@@ -2,125 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6055A3547C1
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 22:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6533547C3
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 22:45:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241068AbhDEUn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 16:43:56 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:36200 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241086AbhDEUne (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 16:43:34 -0400
-Received: from x64host.home (unknown [47.187.194.202])
-        by linux.microsoft.com (Postfix) with ESMTPSA id AC7E720B5682;
-        Mon,  5 Apr 2021 13:43:26 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AC7E720B5682
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1617655407;
-        bh=yDT+jIiz7wCIuh3VIPo6ld85uNay301YWbDV3aNDMqA=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=Z3vvbfm2TSebdVOzNIyJPrBIuoK2e4oDYd4pX+TzUmv8aTa6WhM+DfGi7lPSbeSau
-         iz9eqWtr5gH0YNqIM1GkGRPgCvO9PEtA+1Q85m39nfPdLSVY3shJ9AV3BuDTbPbOMX
-         t6PyC99bx8VfaJ1iV0yeonsrX9fjxzhw2MIu8CTg=
-From:   madvenka@linux.microsoft.com
-To:     mark.rutland@arm.com, broonie@kernel.org, jpoimboe@redhat.com,
-        jthierry@redhat.com, catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        madvenka@linux.microsoft.com
-Subject: [RFC PATCH v2 4/4] arm64: Mark stack trace as unreliable if kretprobed functions are present
-Date:   Mon,  5 Apr 2021 15:43:13 -0500
-Message-Id: <20210405204313.21346-5-madvenka@linux.microsoft.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210405204313.21346-1-madvenka@linux.microsoft.com>
-References: <705993ccb34a611c75cdae0a8cb1b40f9b218ebd>
- <20210405204313.21346-1-madvenka@linux.microsoft.com>
+        id S235785AbhDEUpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 16:45:31 -0400
+Received: from sauhun.de ([88.99.104.3]:44088 "EHLO pokefinder.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232694AbhDEUp3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 16:45:29 -0400
+Received: from localhost (p54b33022.dip0.t-ipconnect.de [84.179.48.34])
+        by pokefinder.org (Postfix) with ESMTPSA id 00E7F2C02FD;
+        Mon,  5 Apr 2021 22:45:20 +0200 (CEST)
+Date:   Mon, 5 Apr 2021 22:45:17 +0200
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Bence =?utf-8?B?Q3PDs2vDoXM=?= <bence98@sch.bme.hu>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] i2c: Add I2C_AQ_NO_REP_START adapter quirk
+Message-ID: <20210405204517.GA3945@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
+        Bence =?utf-8?B?Q3PDs2vDoXM=?= <bence98@sch.bme.hu>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210331191921.1066172-1-bence98@sch.bme.hu>
+ <20210331191921.1066172-2-bence98@sch.bme.hu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wRRV7LY7NUeQGEoC"
+Content-Disposition: inline
+In-Reply-To: <20210331191921.1066172-2-bence98@sch.bme.hu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
 
-When a kretprobe is active for a function, the function's return address
-in its stack frame is modified to point to the kretprobe trampoline. When
-the function returns, the frame is popped and control is transferred
-to the trampoline. The trampoline eventually returns to the original return
-address.
+--wRRV7LY7NUeQGEoC
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-If a stack walk is done within the function (or any functions that get
-called from there), the stack trace will only show the trampoline and the
-not the original caller.
+On Wed, Mar 31, 2021 at 07:19:20PM +0000, Bence Cs=C3=B3k=C3=A1s wrote:
+> This quirk signifies that the adapter cannot do a repeated
+> START, it always issues a STOP condition after transfers.
+>=20
+> Suggested-by: Wolfram Sang <wsa@the-dreams.de>
+> Signed-off-by: Bence Cs=C3=B3k=C3=A1s <bence98@sch.bme.hu>
 
-Also, if the trampoline itself and the functions it calls do a stack trace,
-that stack trace will also have the same problem. Detect this as well.
+Applied to for-next, thanks!
 
-If the trampoline is detected in the stack trace, mark the stack trace
-as unreliable.
 
-Reviewed-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
----
- arch/arm64/kernel/stacktrace.c | 37 ++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+--wRRV7LY7NUeQGEoC
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-index 7a3c638d4aeb..926bd91ffb3f 100644
---- a/arch/arm64/kernel/stacktrace.c
-+++ b/arch/arm64/kernel/stacktrace.c
-@@ -97,6 +97,36 @@ struct function_range {
-  *     if return_to_handler is detected on the stack.
-  *
-  * NOTE: The unwinder must do (1) before (2).
-+ *
-+ * KPROBES
-+ * =======
-+ *
-+ * There are two types of kprobes:
-+ *
-+ * (1) Regular kprobes that are placed anywhere in a probed function.
-+ *     This is implemented by replacing the probed instruction with a
-+ *     breakpoint. When the breakpoint is hit, the kprobe code emulates
-+ *     the original instruction in-situ and returns to the next
-+ *     instruction.
-+ *
-+ *     Breakpoints are EL1 exceptions. When the unwinder detects them,
-+ *     the stack trace is marked as unreliable as it does not know where
-+ *     exactly the exception happened. Detection of EL1 exceptions in
-+ *     a stack trace will be done separately.
-+ *
-+ * (2) Return kprobes that are placed on the return of a probed function.
-+ *     In this case, Kprobes sets up an initial breakpoint at the
-+ *     beginning of the probed function. When the breakpoint is hit,
-+ *     Kprobes replaces the return address in the stack frame with the
-+ *     kretprobe_trampoline and records the original return address.
-+ *     When the probed function returns, control goes to the trampoline
-+ *     which eventually returns to the original return address.
-+ *
-+ *     Stack traces taken while in the probed function or while in the
-+ *     trampoline will show kretprobe_trampoline instead of the original
-+ *     return address. Detect this and mark the stack trace unreliable.
-+ *     The detection is done by checking if the return PC falls anywhere
-+ *     in kretprobe_trampoline.
-  */
- static struct function_range	special_functions[] = {
- 	/*
-@@ -125,6 +155,13 @@ static struct function_range	special_functions[] = {
- 	{ (unsigned long) return_to_handler, 0 },
- #endif
- 
-+	/*
-+	 * Kprobe trampolines.
-+	 */
-+#ifdef CONFIG_KRETPROBES
-+	{ (unsigned long) kretprobe_trampoline, 0 },
-+#endif
-+
- 	{ /* sentinel */ }
- };
- 
--- 
-2.25.1
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBrdtkACgkQFA3kzBSg
+KbagBQ//eMdL3Ke9iAzQo/7w7XlDU4DJkwVvhLwi0oPQxe4yNHN5EhBw3bCZG5NS
++hzLzxgVJ0JabUsdMSn8V6cRvEvefW3vipgEjMuPbYnBLOJ0OrVRlJLAbNLX5fgD
+N4ZPorTEnPU9XiNkNb/7uwb1g7dD+m+sPzyopZbVo4/49hQN3QMMX29MfLTy8eaf
+JLvP91cBdG7G8/n/6LYvylaOVyTH2lsFMkFtbQ9BxGEjFXiisSEC2dCZXaO5k2PR
+J8kqxW4ZGTxcpyudy6yl15EJusBtdryhxQOpjldUTwA50xriJ430EaTKF0G/vpSE
+SvP194a9/NCeuHIzEijbPEvmGRK7GC0NJEHdGghXxabHhDfsCANHyYBlc9JA14SX
+0r9XUvQ/JsmxH8wdFmn/a8eyvDFKtPkkiS6khNcUybRc/R8dVV9jJNJ32NWvz+2b
+yZe53LSGkvplnwEp+Z62FqmKYGPaKD8ic3Vax6fF0aapfYbaLEqsqOyrJCUL6hyX
+OkEgKWeVZS7MTcvygV2E2NOJ7SPIw9LSVDMVTnuQSRYWevGQ/B15lCxX1qZQhlW7
+RohEC6fy0TCnHZDQx5naBDPT76gtz2a+rL2PLigs6UdZ0mKFixks/MZBEXC22BXd
++CW/OyTLgIkuRzro8a51AB76Dx7/Xe0imq0wxbcBVM0cMM3FuEQ=
+=T4+o
+-----END PGP SIGNATURE-----
+
+--wRRV7LY7NUeQGEoC--
