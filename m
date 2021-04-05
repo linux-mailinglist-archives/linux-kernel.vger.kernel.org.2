@@ -2,87 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC53353B64
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 06:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E41C353B69
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 06:53:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229824AbhDEEoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 00:44:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54972 "EHLO
+        id S231230AbhDEEx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 00:53:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbhDEEop (ORCPT
+        with ESMTP id S230036AbhDEExY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 00:44:45 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 894D0C061756
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Apr 2021 21:44:38 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id a8so10637910oic.11
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Apr 2021 21:44:38 -0700 (PDT)
+        Mon, 5 Apr 2021 00:53:24 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C77C2C061756;
+        Sun,  4 Apr 2021 21:53:17 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id v8so5101319plz.10;
+        Sun, 04 Apr 2021 21:53:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=Oe9VRbWEPMBZ8NOVdcyGNPKTIJKCMCotV6HIMWTK3Ks=;
-        b=lXMNU8mj5OBNGWrh1xB8TOr7btrAs3NNsdALUDJOV0D2UsO7l7iIdDjGuUx1Xq9h60
-         7hbwi7e350o2GYnubG/CeFLf2xAjBrPmjxJTu7VzRCt/wC7+ROAn/vKEH/fXW0CG917d
-         cfnwAmCmxPl9PieCKGXxrLjD7LEWKdxIYzXbR5g0ZyQRfPPHkDUJPWC7+WMYh7klgzFk
-         jxjobnjWeWzMtdqwGuASZm7wKtVeYaHsgPX6hWk2h8XxCxdk905vWtl/DYJn0yN3R2Z6
-         2vfcZ9dKfyojaqM+xGVbbsTSiPvc96KO5EHf34qDk0HE7aQwnPc+Myr9kbnMPc0b59zy
-         JMAw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZCE8DXq6AXOhvGcnEbPdIGiWxGR0DNPB4En9zD417Mo=;
+        b=AjR104ethb/rIHzSnVpqVgi6EsTCzJaaUxnLpilWzQbcoMJU/+9r0Z9QHCdn842aO9
+         agRr0cv9hjGTOhgosz26MQTAtZBwKLcvl0/7TkCsMnauaLGbmBS9EkD+SfteNM6H9huV
+         c3uylhufMbXhGp6wnqw23rb6O3v4/+/gsrGBqbRHvHv40zCUbw9mTB/aT35baR6+SAUL
+         dyiKy4friYGOoIxeN6pAwk/wVbwrvwFAwxD5B39n/Wz8aS7nvnSbmxahArC1dKFbdmUg
+         l0aoUQxOsWkhvHwfrHeku6rWzWHCw3yr8/q4Oe6vqfCDHrEwoFPB83ECQVsc4mDQsX5r
+         FewA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=Oe9VRbWEPMBZ8NOVdcyGNPKTIJKCMCotV6HIMWTK3Ks=;
-        b=B/KdTgBy8twNgFZs36LvMlfZ6imJxz4rysPEnnqU7ZyyntmEVYcaRM2o7kZZQtNEdr
-         b3erfxh+cCIP5EsBv2y+zAs6sFUayGXToQr2CLMzbIBXtuiF6KTxuRHMwWr00fXROI3E
-         lDdEJPeA5C8arlgp28a4MnFtAhmTmTB5ye3oLIyR1fJqrs1N68NwAHy8Zkkl8ukJa390
-         2qcQu5d5MmRo0vQ3JSrE0iWp66gbP8UqQvolRwdE/NVZRDsvdqCelJxUXPNk/ahLSG6f
-         6WmOXYFoyCj3E2NvnD9mjzfI1Si+sz6+Z6lxHoP4v+XYLrf9InhR6mXgF3o58QFQirKB
-         5mgA==
-X-Gm-Message-State: AOAM531MoQGVhMHhsAamPwIvOwIvF5cPBK6Z9Rk2gD50lX+VAGrRtrUt
-        QIBC9Ud6S4KetuCZQTxPU1lJDFJzZEoZxC22krs=
-X-Google-Smtp-Source: ABdhPJxr9wWbeGduyXLA/FUtCd8TY5aoXru1pzDSA8+SKTeivM2f9+guEB6v+u8zhQuTbCj57T+Zf3Mars56ajHkc74=
-X-Received: by 2002:a54:4494:: with SMTP id v20mr17219271oiv.147.1617597877998;
- Sun, 04 Apr 2021 21:44:37 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZCE8DXq6AXOhvGcnEbPdIGiWxGR0DNPB4En9zD417Mo=;
+        b=ikA1T+W2VOKTTsvEZPkK567/LDTzjjNWL63PeEni9WDb8GlLA6RMUQQfES9dUgtzwm
+         gnYynwgEQWADEZdqjJmOetzl80LeXwSQD2yx+1yZICu6RdCIKg2hKi0JonAVdXwb7GbA
+         VPXNKHkx0erbRHD0BjUru/eQWw6TdydLPNzXQzAdWW2fDlHBilQl0TPtYQKI9yYiVeC1
+         jqtYnvKsEkdRYwJaGEG2tpny3wbmYPuAn0efLqRj/UKVWP5c0ad/skIhBOXQ9shrRNMX
+         rsoVTyC874F0GHnTnDydT6THKytkYdypipmP9+jz2fUn/HVm82BgXASzwZEf+j4VkhhP
+         uB6w==
+X-Gm-Message-State: AOAM531KqV/flUv0eWyboh/2iAFRI7EMfJb/dpsBOXwM545TUcOkffes
+        Zt4OUeJwghrEPSJqrUIYlV8kEfH5CSsOUg==
+X-Google-Smtp-Source: ABdhPJzfg2ojOFwwEAtuSC96RYvGRpvmKRNH0XexWPQ2Qhe5nU1HK9MGimRyUq/fHwj0Fqunx6onqA==
+X-Received: by 2002:a17:90a:a108:: with SMTP id s8mr24898984pjp.199.1617598397085;
+        Sun, 04 Apr 2021 21:53:17 -0700 (PDT)
+Received: from gmail.com ([2601:600:8500:5f14:d627:c51e:516e:a105])
+        by smtp.gmail.com with ESMTPSA id gm10sm14102358pjb.4.2021.04.04.21.53.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Apr 2021 21:53:16 -0700 (PDT)
+Date:   Sun, 4 Apr 2021 21:50:50 -0700
+From:   Andrei Vagin <avagin@gmail.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        dima@arista.com, arnd@arndb.de, tglx@linutronix.de,
+        vincenzo.frascino@arm.com, luto@kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: [PATCH RESEND v1 4/4] powerpc/vdso: Add support for time
+ namespaces
+Message-ID: <YGqXKkLDwDb589Qg@gmail.com>
+References: <cover.1617209141.git.christophe.leroy@csgroup.eu>
+ <1a15495f80ec19a87b16cf874dbf7c3fa5ec40fe.1617209142.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-Received: by 2002:aca:b609:0:0:0:0:0 with HTTP; Sun, 4 Apr 2021 21:44:37 -0700 (PDT)
-Reply-To: barki.diya200@gmail.com
-From:   Barki Diya <barki.diya2000@gmail.com>
-Date:   Sun, 4 Apr 2021 21:44:37 -0700
-Message-ID: <CAKsVKJyhE=XNuoQLHQUJFW5QiKvMpmFwEXNBi5wQ4NZspLnRSw@mail.gmail.com>
-Subject: YOUR COMPENSATION MONEY
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=koi8-r
+Content-Disposition: inline
+In-Reply-To: <1a15495f80ec19a87b16cf874dbf7c3fa5ec40fe.1617209142.git.christophe.leroy@csgroup.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On Wed, Mar 31, 2021 at 04:48:47PM +0000, Christophe Leroy wrote:
+> This patch adds the necessary glue to provide time namespaces.
+> 
+> Things are mainly copied from ARM64.
+> 
+> __arch_get_timens_vdso_data() calculates timens vdso data position
+> based on the vdso data position, knowing it is the next page in vvar.
+> This avoids having to redo the mflr/bcl/mflr/mtlr dance to locate
+> the page relative to running code position.
+>
 
-I'm sorry but happy to inform you about my success in getting those
-funds transferred under the cooperation of a new partner from Vietnam
-though i tried my best to involve you in the business but God decided
-the whole situations. Presently i'm in Vietnam for investment projects
-with my own share of the total sum. Meanwhile, i didn't forget your
-past efforts and attempts to assist me in transferring those funds
-despite that it failed us some how.
-
-Now contact my secretary  her name is Ms.Aisha Atan on her e-mail
-address here: ( aishaatansecretary2@gmail.com ) Ask her to
-send you the total of ( Hundred thousand united states dollars,
-$100.000.00 ) which i kept for your compensation for all the past
-efforts and attempts to assist me in this matter. I appreciated your
-efforts at that time very much. so feel free and get in touched with
-my secretary Ms.Aisha Atan and instruct her where to send the amount
-to you. Please do let me know immediately you receive it so that we
-can share the joy after all the sufferer at that time.
-
-In the moment, I=E2=80=99m very busy here because of the investment project=
-s
-which I and the new partner are having at hand, finally, remembers
-that I had forwarded instruction to the secretary on your behalf to
-receive that money, so feel free to get in touch with Ms.Aisha
-Atan.She will send the amount to you without any delay.
-
-Regards
+Acked-by: Andrei Vagin <avagin@gmail.com>
+ 
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
