@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA18A353CF8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A730E353CFF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233324AbhDEI5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 04:57:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36692 "EHLO mail.kernel.org"
+        id S233350AbhDEI5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 04:57:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233175AbhDEI5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 04:57:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 259FC61394;
-        Mon,  5 Apr 2021 08:57:17 +0000 (UTC)
+        id S232671AbhDEI52 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:57:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2A6161393;
+        Mon,  5 Apr 2021 08:57:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613037;
-        bh=2dstsEngq7u3qcpS5E8RZsHMGQ51sMsJ66fsv2qsyQQ=;
+        s=korg; t=1617613042;
+        bh=jkpm1jRPbd6eolbAWaB0SK4IN7tLnQeelbZ+bKD1WK8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N4q3elFvsuGUEvdQP8OSYbsaMtgZLkC55Noq56rh+4BGjaJQMBb2kXSwEqIZqfMK5
-         A/1QrmwCsemr4QuN+NUAl2uz75y29EK/+lqCTZHuTOUOpOlaAvl0f0bXoDgtva+Ocq
-         SyTOmMWuZPuPsVUYUoBU8wAz0bd3dvwxrHjSNIF4=
+        b=QR0hULOU+i2j1QebqGU56OOK8ulM2OBYgBu6FsfKifTRIkGHM0jrujLpyFSkfqdNG
+         bDLfLXcyP7A3twh3EEcHjtnyTaApt+7LY+/32zkNr2Mn6E3PhwHBtx1QoMy4l34C1l
+         GGOdT2SC2gVsy1XPWwtPhILMw9+2XxS6/z9kOFE0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>
-Subject: [PATCH 4.9 29/35] cdc-acm: fix BREAK rx code path adding necessary calls
-Date:   Mon,  5 Apr 2021 10:54:04 +0200
-Message-Id: <20210405085019.789016380@linuxfoundation.org>
+        stable@vger.kernel.org, Bruno Thomsen <bruno.thomsen@gmail.com>,
+        Oliver Neukum <oneukum@suse.com>
+Subject: [PATCH 4.9 30/35] USB: cdc-acm: downgrade message to debug
+Date:   Mon,  5 Apr 2021 10:54:05 +0200
+Message-Id: <20210405085019.818603234@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210405085018.871387942@linuxfoundation.org>
 References: <20210405085018.871387942@linuxfoundation.org>
@@ -40,33 +41,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Oliver Neukum <oneukum@suse.com>
 
-commit 08dff274edda54310d6f1cf27b62fddf0f8d146e upstream.
+commit e4c77070ad45fc940af1d7fb1e637c349e848951 upstream.
 
-Counting break events is nice but we should actually report them to
-the tty layer.
+This failure is so common that logging an error here amounts
+to spamming log files.
 
-Fixes: 5a6a62bdb9257 ("cdc-acm: add TIOCMIWAIT")
+Reviewed-by: Bruno Thomsen <bruno.thomsen@gmail.com>
 Signed-off-by: Oliver Neukum <oneukum@suse.com>
-Link: https://lore.kernel.org/r/20210311133714.31881-1-oneukum@suse.com
 Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210311130126.15972-2-oneukum@suse.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/class/cdc-acm.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/usb/class/cdc-acm.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 --- a/drivers/usb/class/cdc-acm.c
 +++ b/drivers/usb/class/cdc-acm.c
-@@ -335,8 +335,10 @@ static void acm_ctrl_irq(struct urb *urb
- 			acm->iocount.dsr++;
- 		if (difference & ACM_CTRL_DCD)
- 			acm->iocount.dcd++;
--		if (newctrl & ACM_CTRL_BRK)
-+		if (newctrl & ACM_CTRL_BRK) {
- 			acm->iocount.brk++;
-+			tty_insert_flip_char(&acm->port, 0, TTY_BREAK);
-+		}
- 		if (newctrl & ACM_CTRL_RI)
- 			acm->iocount.rng++;
- 		if (newctrl & ACM_CTRL_FRAMING)
+@@ -543,7 +543,8 @@ static void acm_port_dtr_rts(struct tty_
+ 
+ 	res = acm_set_control(acm, val);
+ 	if (res && (acm->ctrl_caps & USB_CDC_CAP_LINE))
+-		dev_err(&acm->control->dev, "failed to set dtr/rts\n");
++		/* This is broken in too many devices to spam the logs */
++		dev_dbg(&acm->control->dev, "failed to set dtr/rts\n");
+ }
+ 
+ static int acm_port_activate(struct tty_port *port, struct tty_struct *tty)
 
 
