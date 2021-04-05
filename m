@@ -2,131 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C416E353B0C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 05:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CD4A353B10
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 05:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231922AbhDEDPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 23:15:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35874 "EHLO
+        id S231929AbhDED3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 23:29:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230240AbhDEDPA (ORCPT
+        with ESMTP id S230089AbhDED27 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 23:15:00 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06056C061756;
-        Sun,  4 Apr 2021 20:14:50 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id cl21-20020a17090af695b02900c61ac0f0e9so7703869pjb.1;
-        Sun, 04 Apr 2021 20:14:50 -0700 (PDT)
+        Sun, 4 Apr 2021 23:28:59 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36BD0C061756;
+        Sun,  4 Apr 2021 20:28:54 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id x14so10408402qki.10;
+        Sun, 04 Apr 2021 20:28:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=GceNoV8TahQ5tN9ED1/8GY0CKdqmMX+dizORs2wOPsI=;
-        b=oonZHvVjrqKGsVfVWgbSh45r1gbAqGTpubcxSoGv0u2cP96yTsOIQhWkqMLQEOVXQr
-         O+/mCU4+0I8R5v9ZgUEGMVKhG0hbXLB/pzpACTWW48BxWaLq21bxB9R4wwKHEZV0fC7m
-         jKLdmwNFtmtYi/Z00HiWkOnhKFYl9+tmwu0ex+70eij4dIoNhMYoT8nyteiAmYQTcW2y
-         /IgjTnOY78+D1foGeDG925vTBhzK+Q2WgvRI06/IvfP/w/qUokr+iZqO8nunN+gajuQL
-         84JoEv3DrvM8m0mQLAW29kHisyX41fGeToWyWD4Qkn/yXxoLzpjoF8yOAj8p0QRtGiaG
-         +h1Q==
+        bh=5zoCpQQgqYkNOGYJOccBJdCJJ5AFJ90QjvmwK7K4GtA=;
+        b=M2WFkMiiSMsNOC1tr/AXr89zcG54uiSPWUj527kuiVCVfUs5XlbnMa+rejVUIjzssu
+         wcPBsv+LmyIJwCu92Esx1Gtl4rK1P3yPSaX0GVqtYadvJr99u2OJngNEzcgZCTvYknRz
+         kpFmJbL/Mx5ROBltLPRRZsN8x2AqZr4QCrnHTAz03qXsyF5cAI0m2E4YJB2AySIL/XIg
+         NYt3ibfQuCpawOT+aa7fYRy31fO5aTiRJZkeKZ8qAlGYwUf1OmU86yZIgzR8qGiBjrrY
+         WNCHeXgRW1m8josbe65DAxNBCtwZDllGvGLcdWt/gFiDOLOvm7iQJwjBH6f/mAzpJ3bz
+         bplg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=GceNoV8TahQ5tN9ED1/8GY0CKdqmMX+dizORs2wOPsI=;
-        b=lnYx5UB/7FRLBBUREaRj2Jo98vXERKFKI2RnseBEPajuVKHE5Fu8azKHd7kMXXbe5O
-         jCDtlvQuUSUPyFln/KdJxBNO2hrIa8uKrdB0WvOIZKx4RH0u7XhQhYx+yHmqWQyJ0t8c
-         V5sGohaz+b01o4nRWjcwfGtBu+143uNQ+o0M/sJDxz8aZZf6NqYqZWhMQrpHr5PP0wFJ
-         QDYUU1CSEK7g2RB7sgmO1cwXmKqy7gkzZbGf7PsbLtxrqnNTcuYHtEAJswbQvI37qsXq
-         f9o5BhgeFrD7TW3CAdLlKELBv+dv+qc8m3npcxmYO9y6nlmpy1IgjMiMc6m4KOpX8zzc
-         rIiA==
-X-Gm-Message-State: AOAM530c7fGr6AEnwk0crzAmsGOk87j4FswgaL8owpyyYavgvCbSGBMc
-        Nb1MtgKnvFXY7UbT2nXIsVc=
-X-Google-Smtp-Source: ABdhPJx62jtib582/bFqAeaS2CUsNz1xMeq1v3YYPikqmnk+wjAN1aJARvS2nqB0757Y+1j8r+IfHg==
-X-Received: by 2002:a17:902:7883:b029:e7:32bd:6b97 with SMTP id q3-20020a1709027883b02900e732bd6b97mr22335934pll.0.1617592490431;
-        Sun, 04 Apr 2021 20:14:50 -0700 (PDT)
-Received: from z640-arch.lan ([2602:61:7344:f100::678])
-        by smtp.gmail.com with ESMTPSA id ot17sm13835918pjb.50.2021.04.04.20.14.49
+        bh=5zoCpQQgqYkNOGYJOccBJdCJJ5AFJ90QjvmwK7K4GtA=;
+        b=quZ3Wa2ikOBzwhnfbXIhduukjXdWS5qX1a1zxwyTlIUMDyRChJclro8of8RqCasGtF
+         bM5o1AmvgEW70Hzj3EXy/Vg40gR4CwC62fwSl421QT0r4m+ZaAv+Y8d/MQcApr9zQDLw
+         DIBkXRY2y0lMj8vXD48OFHSebSW6uKNVcN015PBfa2JbZpKPz9tKuptehz72VrPDOCH3
+         /KstXBNgoHpNe+zZ7cHJ2DGBAbCEQx8JAb7OFy5CVH7Lo+qGtLsDLdC88T9C8pt+qW8J
+         MomuiNXVGw1IVl9NeWya/+0PGyKUE/fZ0/oElt5ZAFb6N2yup71poZp5FIFizqa1ULm0
+         HJnA==
+X-Gm-Message-State: AOAM530TM3OgxEE0/cG7mBH5J44/JnbFWQvu8cDxSll+kj93VUSSAeGm
+        Fo11Cfj6NVQwI24Uk0XJadg=
+X-Google-Smtp-Source: ABdhPJzXeldqkRXnmVvc0Rfmw2UoOgpCcPgXbcs9rB5mLkfwUQfAbhYuxfa2QnQwRiqoaxGsTy7d1g==
+X-Received: by 2002:a37:a48a:: with SMTP id n132mr21899027qke.359.1617593333181;
+        Sun, 04 Apr 2021 20:28:53 -0700 (PDT)
+Received: from localhost.localdomain (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id a20sm12680402qkg.61.2021.04.04.20.28.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Apr 2021 20:14:50 -0700 (PDT)
-From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+        Sun, 04 Apr 2021 20:28:52 -0700 (PDT)
+From:   frowand.list@gmail.com
 To:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
-        Saravana Kannan <saravanak@google.com>, stable@vger.kernel.org
-Subject: [PATCH] of: property: do not create device links from *nr-gpios
-Date:   Sun,  4 Apr 2021 20:14:36 -0700
-Message-Id: <20210405031436.2465475-1-ilya.lipnitskiy@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        devicetree@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1] of: properly check for error returned by fdt_get_name()
+Date:   Sun,  4 Apr 2021 22:28:45 -0500
+Message-Id: <20210405032845.1942533-1-frowand.list@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[<vendor>,]nr-gpios property is used by some GPIO drivers[0] to indicate
-the number of GPIOs present on a system, not define a GPIO. nr-gpios is
-not configured by #gpio-cells and can't be parsed along with other
-"*-gpios" properties.
+From: Frank Rowand <frank.rowand@sony.com>
 
-scripts/dtc/checks.c also has a special case for nr-gpio{s}. However,
-nr-gpio is not really special, so we only need to fix nr-gpios suffix
-here.
+fdt_get_name() returns error values via a parameter pointer
+instead of in function return.  Fix check for this error value
+in populate_node() and callers of populate_node().
 
-[0]: nr-gpios is referenced in Documentation/devicetree/bindings/gpio:
- - gpio-adnp.txt
- - gpio-xgene-sb.txt
- - gpio-xlp.txt
- - snps,dw-apb-gpio.yaml
+Chasing up the caller tree showed callers of various functions
+failing to initialize the value of pointer parameters that
+can return error values.  Initialize those values to NULL.
 
-Fixes errors such as:
-  OF: /palmbus@300000/gpio@600: could not find phandle
+The bug was introduced by
+commit e6a6928c3ea1 ("of/fdt: Convert FDT functions to use libfdt")
+but this patch can not be backported directly to that commit
+because the relevant code has further been restructured by
+commit dfbd4c6eff35 ("drivers/of: Split unflatten_dt_node()")
 
-Call Trace:
-  of_phandle_iterator_next+0x8c/0x16c
-  __of_parse_phandle_with_args+0x38/0xb8
-  of_parse_phandle_with_args+0x28/0x3c
-  parse_suffix_prop_cells+0x80/0xac
-  parse_gpios+0x20/0x2c
-  of_link_to_suppliers+0x18c/0x288
-  of_link_to_suppliers+0x1fc/0x288
-  device_add+0x4e0/0x734
-  of_platform_device_create_pdata+0xb8/0xfc
-  of_platform_bus_create+0x170/0x214
-  of_platform_populate+0x88/0xf4
-  __dt_register_buses+0xbc/0xf0
-  plat_of_setup+0x1c/0x34
+The bug became visible by triggering a crash on openrisc with:
+commit 79edff12060f ("scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9")
+as reported in:
+https://lore.kernel.org/lkml/20210327224116.69309-1-linux@roeck-us.net/
 
-Fixes: 7f00be96f125 ("of: property: Add device link support for interrupt-parent, dmas and -gpio(s)")
-Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc: Saravana Kannan <saravanak@google.com>
-Cc: <stable@vger.kernel.org> # 5.5.x
+Fixes: commit 79edff12060f ("scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9")
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Frank Rowand <frank.rowand@sony.com>
+
 ---
- drivers/of/property.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/of/property.c b/drivers/of/property.c
-index 2bb3158c9e43..24672c295603 100644
---- a/drivers/of/property.c
-+++ b/drivers/of/property.c
-@@ -1271,7 +1271,16 @@ DEFINE_SIMPLE_PROP(pinctrl8, "pinctrl-8", NULL)
- DEFINE_SIMPLE_PROP(remote_endpoint, "remote-endpoint", NULL)
- DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
- DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
--DEFINE_SUFFIX_PROP(gpios, "-gpios", "#gpio-cells")
+This patch papers over the unaligned pointer passed to
+of_fdt_unflatten_tree() bug that Guenter reported in
+https://lore.kernel.org/lkml/20210327224116.69309-1-linux@roeck-us.net/
+
+I will create a separate patch to fix that problem.
+
+ drivers/of/fdt.c      | 36 +++++++++++++++++++++++-------------
+ drivers/of/overlay.c  |  2 +-
+ drivers/of/unittest.c | 15 ++++++++++-----
+ 3 files changed, 34 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+index dcc1dd96911a..adb26aff481d 100644
+--- a/drivers/of/fdt.c
++++ b/drivers/of/fdt.c
+@@ -205,7 +205,7 @@ static void populate_properties(const void *blob,
+ 		*pprev = NULL;
+ }
+ 
+-static bool populate_node(const void *blob,
++static int populate_node(const void *blob,
+ 			  int offset,
+ 			  void **mem,
+ 			  struct device_node *dad,
+@@ -214,24 +214,24 @@ static bool populate_node(const void *blob,
+ {
+ 	struct device_node *np;
+ 	const char *pathp;
+-	unsigned int l, allocl;
++	int len;
+ 
+-	pathp = fdt_get_name(blob, offset, &l);
++	pathp = fdt_get_name(blob, offset, &len);
+ 	if (!pathp) {
+ 		*pnp = NULL;
+-		return false;
++		return len;
+ 	}
+ 
+-	allocl = ++l;
++	len++;
+ 
+-	np = unflatten_dt_alloc(mem, sizeof(struct device_node) + allocl,
++	np = unflatten_dt_alloc(mem, sizeof(struct device_node) + len,
+ 				__alignof__(struct device_node));
+ 	if (!dryrun) {
+ 		char *fn;
+ 		of_node_init(np);
+ 		np->full_name = fn = ((char *)np) + sizeof(*np);
+ 
+-		memcpy(fn, pathp, l);
++		memcpy(fn, pathp, len);
+ 
+ 		if (dad != NULL) {
+ 			np->parent = dad;
+@@ -295,6 +295,7 @@ static int unflatten_dt_nodes(const void *blob,
+ 	struct device_node *nps[FDT_MAX_DEPTH];
+ 	void *base = mem;
+ 	bool dryrun = !base;
++	int ret;
+ 
+ 	if (nodepp)
+ 		*nodepp = NULL;
+@@ -322,9 +323,10 @@ static int unflatten_dt_nodes(const void *blob,
+ 		    !of_fdt_device_is_available(blob, offset))
+ 			continue;
+ 
+-		if (!populate_node(blob, offset, &mem, nps[depth],
+-				   &nps[depth+1], dryrun))
+-			return mem - base;
++		ret = populate_node(blob, offset, &mem, nps[depth],
++				   &nps[depth+1], dryrun);
++		if (ret < 0)
++			return ret;
+ 
+ 		if (!dryrun && nodepp && !*nodepp)
+ 			*nodepp = nps[depth+1];
+@@ -372,6 +374,10 @@ void *__unflatten_device_tree(const void *blob,
+ {
+ 	int size;
+ 	void *mem;
++	int ret;
 +
-+static struct device_node *parse_gpios(struct device_node *np,
-+				       const char *prop_name, int index)
-+{
-+	if (!strcmp_suffix(prop_name, "nr-gpios"))
++	if (mynodes)
++		*mynodes = NULL;
+ 
+ 	pr_debug(" -> unflatten_device_tree()\n");
+ 
+@@ -392,7 +398,7 @@ void *__unflatten_device_tree(const void *blob,
+ 
+ 	/* First pass, scan for size */
+ 	size = unflatten_dt_nodes(blob, NULL, dad, NULL);
+-	if (size < 0)
++	if (size <= 0)
+ 		return NULL;
+ 
+ 	size = ALIGN(size, 4);
+@@ -410,12 +416,16 @@ void *__unflatten_device_tree(const void *blob,
+ 	pr_debug("  unflattening %p...\n", mem);
+ 
+ 	/* Second pass, do actual unflattening */
+-	unflatten_dt_nodes(blob, mem, dad, mynodes);
++	ret = unflatten_dt_nodes(blob, mem, dad, mynodes);
++
+ 	if (be32_to_cpup(mem + size) != 0xdeadbeef)
+ 		pr_warn("End of tree marker overwritten: %08x\n",
+ 			be32_to_cpup(mem + size));
+ 
+-	if (detached && mynodes) {
++	if (ret <= 0)
 +		return NULL;
 +
-+	return parse_suffix_prop_cells(np, prop_name, index, "-gpios",
-+				       "#gpio-cells");
-+}
++	if (detached && mynodes && *mynodes) {
+ 		of_node_set_flag(*mynodes, OF_DETACHED);
+ 		pr_debug("unflattened tree is detached\n");
+ 	}
+diff --git a/drivers/of/overlay.c b/drivers/of/overlay.c
+index 50bbe0edf538..e12c643b6ba8 100644
+--- a/drivers/of/overlay.c
++++ b/drivers/of/overlay.c
+@@ -1017,7 +1017,7 @@ int of_overlay_fdt_apply(const void *overlay_fdt, u32 overlay_fdt_size,
+ 	const void *new_fdt;
+ 	int ret;
+ 	u32 size;
+-	struct device_node *overlay_root;
++	struct device_node *overlay_root = NULL;
  
- static struct device_node *parse_iommu_maps(struct device_node *np,
- 					    const char *prop_name, int index)
+ 	*ovcs_id = 0;
+ 	ret = 0;
+diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
+index eb100627c186..f9b5b698249f 100644
+--- a/drivers/of/unittest.c
++++ b/drivers/of/unittest.c
+@@ -1408,7 +1408,7 @@ static void attach_node_and_children(struct device_node *np)
+ static int __init unittest_data_add(void)
+ {
+ 	void *unittest_data;
+-	struct device_node *unittest_data_node, *np;
++	struct device_node *unittest_data_node = NULL, *np;
+ 	/*
+ 	 * __dtb_testcases_begin[] and __dtb_testcases_end[] are magically
+ 	 * created by cmd_dt_S_dtb in scripts/Makefile.lib
+@@ -1417,10 +1417,10 @@ static int __init unittest_data_add(void)
+ 	extern uint8_t __dtb_testcases_end[];
+ 	const int size = __dtb_testcases_end - __dtb_testcases_begin;
+ 	int rc;
++	void *ret;
+ 
+ 	if (!size) {
+-		pr_warn("%s: No testcase data to attach; not running tests\n",
+-			__func__);
++		pr_warn("%s: testcases is empty\n", __func__);
+ 		return -ENODATA;
+ 	}
+ 
+@@ -1429,9 +1429,14 @@ static int __init unittest_data_add(void)
+ 	if (!unittest_data)
+ 		return -ENOMEM;
+ 
+-	of_fdt_unflatten_tree(unittest_data, NULL, &unittest_data_node);
++	ret = of_fdt_unflatten_tree(unittest_data, NULL, &unittest_data_node);
++	if (!ret) {
++		pr_warn("%s: unflatten testcases tree failed\n", __func__);
++		kfree(unittest_data);
++		return -ENODATA;
++	}
+ 	if (!unittest_data_node) {
+-		pr_warn("%s: No tree to attach; not running tests\n", __func__);
++		pr_warn("%s: testcases tree is empty\n", __func__);
+ 		kfree(unittest_data);
+ 		return -ENODATA;
+ 	}
 -- 
-2.31.1
+Frank Rowand <frank.rowand@sony.com>
 
