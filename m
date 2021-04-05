@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A01BC353F77
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E7AC354059
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239122AbhDEJMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:12:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54406 "EHLO mail.kernel.org"
+        id S240822AbhDEJRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:17:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238874AbhDEJJK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:09:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47B9A61399;
-        Mon,  5 Apr 2021 09:09:03 +0000 (UTC)
+        id S239561AbhDEJNo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:13:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C81E61393;
+        Mon,  5 Apr 2021 09:13:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613743;
-        bh=vU0jM8+JXpsJm/XiYycEjCCjTURJEmL8Rn8aMTOCA2c=;
+        s=korg; t=1617614019;
+        bh=TjrbE5iDZEU9XsV5Ikrh7AvPDUTzdS8K4Ek3QibHjCM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fDLMSuujUijSeIzppZfMDOMV8PI/ZKqCneNH9/GdgEdAx8NLCrFyyL6itVYdBVf9t
-         JJl5RkDbAcQ56OqNstGwYibCMqVitP6AHHum2TLxp6zZm9Pz2cvxEWjUTsmscUH1KE
-         Ff61zRS2AHuogoqQd6zA1JUDzuaE/Us/E33vzNFk=
+        b=Dti5p4piK4tzvDR7aHRAk8AaGEiaaN7WiGVyr8EyaVhEw7tjOghly3gEA5jfkeftD
+         wlmYJg/hBOuUqV5CVAghRnKeCr8VVuCANiPlbCjeMgSKUtvfQtOXecOEfuaO/9mLaC
+         /hR4oNMTTQhPUo/wuTuY7vqED/LhZyIVOSmBZX7w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        stable@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+        Sean Nyekjaer <sean@geanix.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 039/126] can: dev: move driver related infrastructure into separate subdir
-Date:   Mon,  5 Apr 2021 10:53:21 +0200
-Message-Id: <20210405085032.339701089@linuxfoundation.org>
+Subject: [PATCH 5.11 053/152] can: tcan4x5x: fix max register value
+Date:   Mon,  5 Apr 2021 10:53:22 +0200
+Message-Id: <20210405085036.000807387@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
-References: <20210405085031.040238881@linuxfoundation.org>
+In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
+References: <20210405085034.233917714@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,66 +41,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+[ Upstream commit 6e1caaf8ed22eb700cc47ec353816eee33186c1c ]
 
-[ Upstream commit 3e77f70e734584e0ad1038e459ed3fd2400f873a ]
+This patch fixes the max register value for the regmap.
 
-This patch moves the CAN driver related infrastructure into a separate subdir.
-It will be split into more files in the coming patches.
-
-Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Link: https://lore.kernel.org/r/20210111141930.693847-3-mkl@pengutronix.de
+Reviewed-by: Dan Murphy <dmurphy@ti.com>
+Tested-by: Sean Nyekjaer <sean@geanix.com>
+Link: https://lore.kernel.org/r/20201215231746.1132907-12-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/Makefile               | 7 +------
- drivers/net/can/dev/Makefile           | 7 +++++++
- drivers/net/can/{ => dev}/dev.c        | 0
- drivers/net/can/{ => dev}/rx-offload.c | 0
- 4 files changed, 8 insertions(+), 6 deletions(-)
- create mode 100644 drivers/net/can/dev/Makefile
- rename drivers/net/can/{ => dev}/dev.c (100%)
- rename drivers/net/can/{ => dev}/rx-offload.c (100%)
+ drivers/net/can/m_can/tcan4x5x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/Makefile b/drivers/net/can/Makefile
-index 22164300122d..a2b4463d8480 100644
---- a/drivers/net/can/Makefile
-+++ b/drivers/net/can/Makefile
-@@ -7,12 +7,7 @@ obj-$(CONFIG_CAN_VCAN)		+= vcan.o
- obj-$(CONFIG_CAN_VXCAN)		+= vxcan.o
- obj-$(CONFIG_CAN_SLCAN)		+= slcan.o
+diff --git a/drivers/net/can/m_can/tcan4x5x.c b/drivers/net/can/m_can/tcan4x5x.c
+index 4920de09ffb7..aeac3ce7bfc8 100644
+--- a/drivers/net/can/m_can/tcan4x5x.c
++++ b/drivers/net/can/m_can/tcan4x5x.c
+@@ -88,7 +88,7 @@
  
--obj-$(CONFIG_CAN_DEV)		+= can-dev.o
--can-dev-y			+= dev.o
--can-dev-y			+= rx-offload.o
--
--can-dev-$(CONFIG_CAN_LEDS)	+= led.o
--
-+obj-y				+= dev/
- obj-y				+= rcar/
- obj-y				+= spi/
- obj-y				+= usb/
-diff --git a/drivers/net/can/dev/Makefile b/drivers/net/can/dev/Makefile
-new file mode 100644
-index 000000000000..cba92e6bcf6f
---- /dev/null
-+++ b/drivers/net/can/dev/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+obj-$(CONFIG_CAN_DEV)		+= can-dev.o
-+can-dev-y			+= dev.o
-+can-dev-y			+= rx-offload.o
-+
-+can-dev-$(CONFIG_CAN_LEDS)	+= led.o
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev/dev.c
-similarity index 100%
-rename from drivers/net/can/dev.c
-rename to drivers/net/can/dev/dev.c
-diff --git a/drivers/net/can/rx-offload.c b/drivers/net/can/dev/rx-offload.c
-similarity index 100%
-rename from drivers/net/can/rx-offload.c
-rename to drivers/net/can/dev/rx-offload.c
+ #define TCAN4X5X_MRAM_START 0x8000
+ #define TCAN4X5X_MCAN_OFFSET 0x1000
+-#define TCAN4X5X_MAX_REGISTER 0x8fff
++#define TCAN4X5X_MAX_REGISTER 0x8ffc
+ 
+ #define TCAN4X5X_CLEAR_ALL_INT 0xffffffff
+ #define TCAN4X5X_SET_ALL_INT 0xffffffff
 -- 
 2.30.1
 
