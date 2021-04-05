@@ -2,119 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6589E35429D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 16:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C513542A0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 16:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241277AbhDEOIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 10:08:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55574 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237431AbhDEOIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 10:08:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D99C613B1;
-        Mon,  5 Apr 2021 14:08:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617631717;
-        bh=LF0+zRsEi7jGYk/Bg8vQa1eqOiMQAgaqbYGUkXrouMw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I6k7K+GugdLkntOIS/XDUjVAG89FAmzBko1fER7cc3uE9NDtxEXpfu2Xnwtq/0NxL
-         ckDn8FJGtmNFigRJklJ7KJ88kfm6kTIfkzu3K1al8GZ7hrG/NbQzaebZPrLuRPMKeV
-         AptGe6e5kFiM39xIw5oZeLhyTwrYwxKuFNMZKvbh6T+PyVEguwKyGNPBgMTiuZrCtk
-         1J4xCIyRWGlQcLyexllVaPJpVxprEGXSRehfPLV3q2bRKrFBLmzp+wrTu00d0Soctr
-         YYj1Q6Vs4W+Ds4QlJ6sIRBcayMiU899q/lysRyhZ5ut6I4xryD2Pm4kvUfyk5iXnMH
-         E6a7i+TLCgJHQ==
-Date:   Mon, 5 Apr 2021 17:08:33 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Adit Ranadive <aditr@vmware.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Avihai Horon <avihaih@nvidia.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Jens Axboe <axboe@fb.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Keith Busch <kbusch@kernel.org>, Lijun Ou <oulijun@huawei.com>,
-        linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Michael Guralnik <michaelgur@nvidia.com>,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        netdev@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>,
-        rds-devel@oss.oracle.com, Sagi Grimberg <sagi@grimberg.me>,
-        samba-technical@lists.samba.org,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        Steve French <sfrench@samba.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next 00/10] Enable relaxed ordering for ULPs
-Message-ID: <YGsZ4Te1+DQODj34@unreal>
-References: <20210405052404.213889-1-leon@kernel.org>
- <20210405134115.GA22346@lst.de>
+        id S237271AbhDEOLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 10:11:23 -0400
+Received: from mxout02.lancloud.ru ([45.84.86.82]:46566 "EHLO
+        mxout02.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235763AbhDEOLW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 10:11:22 -0400
+Received: from LanCloud
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxout02.lancloud.ru B65C4233D681
+Received: from LanCloud
+Received: from LanCloud
+Received: from LanCloud
+Subject: Re: [PATCH 5.4 03/74] module: merge repetitive strings in
+ module_sig_check()
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
+        Joe Perches <joe@perches.com>, Miroslav Benes <mbenes@suse.cz>,
+        Jessica Yu <jeyu@kernel.org>, Sasha Levin <sashal@kernel.org>
+References: <20210405085024.703004126@linuxfoundation.org>
+ <20210405085024.812932452@linuxfoundation.org>
+ <35560933-d158-76ee-0034-0b5f43d9a3c2@omprussia.ru>
+ <YGsTZrlUSYufOk9N@kroah.com>
+From:   Sergey Shtylyov <s.shtylyov@omprussia.ru>
+Organization: Open Mobile Platform, LLC
+Message-ID: <b54f4a70-60df-be44-c88f-1f60f338ff12@omprussia.ru>
+Date:   Mon, 5 Apr 2021 17:11:13 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210405134115.GA22346@lst.de>
+In-Reply-To: <YGsTZrlUSYufOk9N@kroah.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.11.198]
+X-ClientProxiedBy: LFEXT02.lancloud.ru (fd00:f066::142) To
+ LFEX1908.lancloud.ru (fd00:f066::208)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 03:41:15PM +0200, Christoph Hellwig wrote:
-> On Mon, Apr 05, 2021 at 08:23:54AM +0300, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> > 
-> > >From Avihai,
-> > 
-> > Relaxed Ordering is a PCIe mechanism that relaxes the strict ordering
-> > imposed on PCI transactions, and thus, can improve performance.
-> > 
-> > Until now, relaxed ordering could be set only by user space applications
-> > for user MRs. The following patch series enables relaxed ordering for the
-> > kernel ULPs as well. Relaxed ordering is an optional capability, and as
-> > such, it is ignored by vendors that don't support it.
-> > 
-> > The following test results show the performance improvement achieved
-> > with relaxed ordering. The test was performed on a NVIDIA A100 in order
-> > to check performance of storage infrastructure over xprtrdma:
+On 4/5/21 4:40 PM, Greg Kroah-Hartman wrote:
+
+[...]
+>>> [ Upstream commit 705e9195187d85249fbb0eaa844b1604a98fbc9a ]
+>>>
+>>> The 'reason' variable in module_sig_check() points to 3 strings across
+>>> the *switch* statement, all needlessly starting with the same text.
+>>> Let's put the starting text into the pr_notice() call -- it saves 21
+>>> bytes of the object code (x86 gcc 10.2.1).
+>>>
+>>> Suggested-by: Joe Perches <joe@perches.com>
+>>> Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+>>> Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+>>> Signed-off-by: Jessica Yu <jeyu@kernel.org>
+>>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>>> ---
+>>>  kernel/module.c | 9 +++++----
+>>>  1 file changed, 5 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/kernel/module.c b/kernel/module.c
+>>> index ab1f97cfe18d..9fe3e9b85348 100644
+>>> --- a/kernel/module.c
+>>> +++ b/kernel/module.c
+>>> @@ -2908,16 +2908,17 @@ static int module_sig_check(struct load_info *info, int flags)
+>>>  		 * enforcing, certain errors are non-fatal.
+>>>  		 */
+>>>  	case -ENODATA:
+>>> -		reason = "Loading of unsigned module";
+>>> +		reason = "unsigned module";
+>>>  		goto decide;
+>>>  	case -ENOPKG:
+>>> -		reason = "Loading of module with unsupported crypto";
+>>> +		reason = "module with unsupported crypto";
+>>>  		goto decide;
+>>>  	case -ENOKEY:
+>>> -		reason = "Loading of module with unavailable key";
+>>> +		reason = "module with unavailable key";
+>>>  	decide:
+>>>  		if (is_module_sig_enforced()) {
+>>> -			pr_notice("%s is rejected\n", reason);
+>>> +			pr_notice("%s: loading of %s is rejected\n",
+>>> +				  info->name, reason);
+>>
+>>    Mhm, in 5.4 there was no printing of 'info->name'...
 > 
-> Isn't the Nvidia A100 a GPU not actually supported by Linux at all?
-> What does that have to do with storage protocols?
+> Is that now a problem?
 
-This system is in use by our storage oriented customer who performed the
-test. He runs drivers/infiniband/* stack from the upstream, simply backported
-to specific kernel version.
+   Looking at 5.4.y, it probably shouldn't be a problem... but I had to go and look. :-)
+   I've found a simple commit that added 'info->name' printing (perhaps should also be
+considered for inclusion?):
 
-The performance boost is seen in other systems too.
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e9f35f634e099894f4d6c3b039cd3de5281ee637
 
+
+> thanks,
 > 
-> Also if you enable this for basically all kernel ULPs, why not have
-> an opt-out into strict ordering for the cases that need it (if there are
-> any).
+> greg k-h
 
-The RO property is optional, it can only improve. In addition, all in-kernel ULPs
-don't need strict ordering. I can be mistaken here and Jason will correct me, it
-is because of two things: ULP doesn't touch data before CQE and DMA API prohibits it.
-
-Thanks
+MBR, Sergey
