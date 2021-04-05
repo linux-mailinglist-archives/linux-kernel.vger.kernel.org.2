@@ -2,44 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3147F3546E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 21:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C203546E1
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 21:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236837AbhDETAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 15:00:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37378 "EHLO mail.kernel.org"
+        id S237092AbhDETAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 15:00:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234063AbhDETAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233944AbhDETAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 5 Apr 2021 15:00:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id DEAF16128A;
+Received: by mail.kernel.org (Postfix) with ESMTPS id E657F61382;
         Mon,  5 Apr 2021 19:00:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1617649208;
-        bh=OeEzPTq+1eWjCXb/NofZTNTh0T36O0z2OIw1nH+R8Q0=;
+        bh=QAYG2oDGH6IwESBp+z1+0d6mRJaFS4NTFWaTgUWc1l8=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=c0XImX0IgP3ld8PDj5mFcm3HMB2v7PeT4nBq/y6/s9n5a4bMXfdhNJIhCQxXDLEQU
-         uj+2bnlCkkl/IXkMWZGmRwPz8DA1y5x2CeWLbPZg1zSXhNsngUZQXMkVnwnJAPyLBW
-         ZGHp2yFo8fdDTkfZ2764Ua4KVDYFKPm800gpwkGYjNEbieVrbt5W4fmXptAPRndQqw
-         y+9GL5PRa4ZRa3vRjuYhy/B4AzdbthYhRQV47W1kCqvxxkGPVaP/1VGv9jevo0IDGH
-         GjEAWTLqH1jBaNWLqj3Rs3FQziKqlSWbNsKEviU43RTUj5LyeTSL2kz6jpuT8hTkme
-         53OeNdLC8jGdw==
+        b=WiUH0apLyb7JKiEQU7DmYhjg+RGdXTtWJq18vZGlbhAIB1YJXn7CUZzkLbLzk5zx+
+         SU0OTuAVLGzGyw5/XdcKL0tmEXNAvMqDmNeOlduhmV8gFQ/ufQM6ikTtx5zjoJUGTf
+         0UMfHo5GEniiOcMX/sF4t9D5PDo1to/30V4cDGFds3QkY2eS6F4AYPWSXR7Y+WsJcm
+         B4KORIxA4ZGzWdWEdEnuwQDyu/2+ZyDcOjG5zzOfLDPv3EXMnkYnCOqDTfU7nr1QFH
+         Rv+GvfPuCKqVvdprr3mPw5uXO4gXiqwhLqAyu8pOUaCw2o51oP9NrZYno7tFotHMJC
+         K3Ps7TN3vJ2Ww==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C931560A19;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D630660A00;
         Mon,  5 Apr 2021 19:00:08 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] ibmvnic: Use 'skb_frag_address()' instead of hand coding it
+Subject: Re: [PATCH] sfc: Use 'skb_add_rx_frag()' instead of hand coding it
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161764920881.15280.15774493910120301088.git-patchwork-notify@kernel.org>
+Message-Id: <161764920887.15280.10929018264231653068.git-patchwork-notify@kernel.org>
 Date:   Mon, 05 Apr 2021 19:00:08 +0000
-References: <1638085135ee32d5699983981b6a54a11c49ff23.1617526369.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <1638085135ee32d5699983981b6a54a11c49ff23.1617526369.git.christophe.jaillet@wanadoo.fr>
+References: <6fadc5ae05b05d9d8ab545e51ee3dcbdaa561393.1617529446.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <6fadc5ae05b05d9d8ab545e51ee3dcbdaa561393.1617529446.git.christophe.jaillet@wanadoo.fr>
 To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        drt@linux.ibm.com, ljp@linux.ibm.com, sukadev@linux.ibm.com,
-        tlfalcon@linux.ibm.com, davem@davemloft.net, kuba@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+Cc:     ecree.xilinx@gmail.com, habetsm.xilinx@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -49,18 +47,19 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Sun,  4 Apr 2021 10:54:37 +0200 you wrote:
-> 'page_address(skb_frag_page()) + skb_frag_off()' can be replaced by an
-> equivalent 'skb_frag_address()' which is less verbose.
+On Sun,  4 Apr 2021 11:45:11 +0200 you wrote:
+> Some lines of code can be merged into an equivalent 'skb_add_rx_frag()'
+> call which is less verbose.
 > 
 > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > ---
->  drivers/net/ethernet/ibm/ibmvnic.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+> UNTESTED. Compile tested only
+> 
+> [...]
 
 Here is the summary with links:
-  - ibmvnic: Use 'skb_frag_address()' instead of hand coding it
-    https://git.kernel.org/netdev/net-next/c/c3105f848577
+  - sfc: Use 'skb_add_rx_frag()' instead of hand coding it
+    https://git.kernel.org/netdev/net-next/c/c438a801e0bb
 
 You are awesome, thank you!
 --
