@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E804F353EEF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:34:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62FF335407D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238794AbhDEJJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:09:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51420 "EHLO mail.kernel.org"
+        id S239932AbhDEJSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:18:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238283AbhDEJGn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:06:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B2C08613B9;
-        Mon,  5 Apr 2021 09:06:35 +0000 (UTC)
+        id S239948AbhDEJOa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:14:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 92B8361393;
+        Mon,  5 Apr 2021 09:14:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613596;
-        bh=lQLmD8mWJ5lbA1jcQr4LGTtmStNrM7Wj2L0lbI7A420=;
+        s=korg; t=1617614064;
+        bh=3BvR0ffp7+3mRB0vqYFJ4S/UdIIp26m/T6ItaId+zvc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uczhTHBGMzsaBHpcLM+SDhzjX6TSFOLnTzRLHJuMpgYZ+531uArF/UhOwxtO3WBlr
-         WGmpMP8PPK+lNiW4ETPCTIAknLhFCGTchS97vmEnQAu9Oc/q2NvX3UpNy5s7Kzh1ue
-         tAGddfU7qpXXvjrMzS20f72+gb8+zL1G1p0gC1m0=
+        b=G8CIEhuuLXK3JAOXQb0aW6qwWeYG33jfzEB6p+Xv/nBw1eASbYzrQwgEt8RXjlRwO
+         ltq2RrE7t5u7IBTjFGiiuK+XoxT7jlKM4R/8UwVl1a1xxQxX62ZQdlgLibuwIrEZgI
+         T+rNe3nmqNb334yK4ukED8EnqPdUXjodbS95r8XI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Laurent Vivier <lvivier@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
+        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 021/126] vhost: Fix vhost_vq_reset()
-Date:   Mon,  5 Apr 2021 10:53:03 +0200
-Message-Id: <20210405085031.726964194@linuxfoundation.org>
+Subject: [PATCH 5.11 035/152] Revert "PM: ACPI: reboot: Use S5 for reboot"
+Date:   Mon,  5 Apr 2021 10:53:04 +0200
+Message-Id: <20210405085035.400511931@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
-References: <20210405085031.040238881@linuxfoundation.org>
+In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
+References: <20210405085034.233917714@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurent Vivier <lvivier@redhat.com>
+From: Josef Bacik <josef@toxicpanda.com>
 
-[ Upstream commit beb691e69f4dec7bfe8b81b509848acfd1f0dbf9 ]
+[ Upstream commit 9d3fcb28f9b9750b474811a2964ce022df56336e ]
 
-vhost_reset_is_le() is vhost_init_is_le(), and in the case of
-cross-endian legacy, vhost_init_is_le() depends on vq->user_be.
+This reverts commit d60cd06331a3566d3305b3c7b566e79edf4e2095.
 
-vq->user_be is set by vhost_disable_cross_endian().
+This patch causes a panic when rebooting my Dell Poweredge r440.  I do
+not have the full panic log as it's lost at that stage of the reboot and
+I do not have a serial console.  Reverting this patch makes my system
+able to reboot again.
 
-But in vhost_vq_reset(), we have:
-
-    vhost_reset_is_le(vq);
-    vhost_disable_cross_endian(vq);
-
-And so user_be is used before being set.
-
-To fix that, reverse the lines order as there is no other dependency
-between them.
-
-Signed-off-by: Laurent Vivier <lvivier@redhat.com>
-Link: https://lore.kernel.org/r/20210312140913.788592-1-lvivier@redhat.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vhost/vhost.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/reboot.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-index a262e12c6dc2..5ccb0705beae 100644
---- a/drivers/vhost/vhost.c
-+++ b/drivers/vhost/vhost.c
-@@ -332,8 +332,8 @@ static void vhost_vq_reset(struct vhost_dev *dev,
- 	vq->error_ctx = NULL;
- 	vq->kick = NULL;
- 	vq->log_ctx = NULL;
--	vhost_reset_is_le(vq);
- 	vhost_disable_cross_endian(vq);
-+	vhost_reset_is_le(vq);
- 	vq->busyloop_timeout = 0;
- 	vq->umem = NULL;
- 	vq->iotlb = NULL;
+diff --git a/kernel/reboot.c b/kernel/reboot.c
+index eb1b15850761..a6ad5eb2fa73 100644
+--- a/kernel/reboot.c
++++ b/kernel/reboot.c
+@@ -244,8 +244,6 @@ void migrate_to_reboot_cpu(void)
+ void kernel_restart(char *cmd)
+ {
+ 	kernel_restart_prepare(cmd);
+-	if (pm_power_off_prepare)
+-		pm_power_off_prepare();
+ 	migrate_to_reboot_cpu();
+ 	syscore_shutdown();
+ 	if (!cmd)
 -- 
 2.30.1
 
