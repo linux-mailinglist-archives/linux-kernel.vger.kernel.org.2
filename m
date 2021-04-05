@@ -2,135 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE8F0353B77
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 07:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5474D353BC5
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 07:26:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231966AbhDEFOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 01:14:22 -0400
-Received: from mail-eopbgr40046.outbound.protection.outlook.com ([40.107.4.46]:52805
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229540AbhDEFOU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 01:14:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F7EqW6dIHi5OlehPh4oaG2oNZkaoAyJovLeBRHhFu3VAwkCCREA1VYK+L0YBZwkAytZ6ULSo67967SCb8zyThSquvez42sr78vmuOkIsJYgvhMTjueoYjKaWCPoqBtTZl6jWH4ti7yrM0yfceoZK4/F/Rp1k9fVxN02Ysh4pLhA3RifP1HetEFhu2bNM1dmSwbWi0/513Zx+QVbdGdUMIjPDD8KD5D+jjAskxT+kPP2VPUGSVlv/ysUs7StuPhi17s47LpY6+NCke+cCcKifrEgUAU5/xuwp7twzbJ4+FNALNxraXux3R+aht4uP3DQaI8qKupkH4zol7NEt7xqeNA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=drC8Mnd9fhTWiHP3O9ncBBesquqrzSOt1dHTKiShJdA=;
- b=LYonYi9mpnSqJD+lrmXVgl6oEapPEV3/MsUgpHn9317hm+X9pU7XJNkzX/SJB4eZZT7UPp6Ft0yNFRVpfC/52hvM+NMtgDeFhKcn8ZTg+zbeZUjyZXZlKbEtyxpbH85HEheNHbLrElQLdgZr8p82t69Z7F4837J33pO0V49YkoZYDT/28pEGD2M86Iesnv/DTrsJB2ZzwHeeXVCldI8slpBZxD/d01Amhfd02D/tyXenccf5nnYLj4p6d1l2I/zOV0emRdtKsORMYbrkxFGODnFPb+Jh9ihtD3os4+2mFLZowFlVROfvoJmqu70d1vPKViFWauHi5fK+/zY1R9bvkA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fi.rohmeurope.com; dmarc=pass action=none
- header.from=fi.rohmeurope.com; dkim=pass header.d=fi.rohmeurope.com; arc=none
+        id S232371AbhDEFY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 01:24:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232277AbhDEFYq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 01:24:46 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC6BC061756
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Apr 2021 22:24:40 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id i19so7769636qtv.7
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Apr 2021 22:24:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=rohmsemiconductoreurope.onmicrosoft.com;
- s=selector1-rohmsemiconductoreurope-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=drC8Mnd9fhTWiHP3O9ncBBesquqrzSOt1dHTKiShJdA=;
- b=t0DhYmwSVd4YhTL5BYidDGXeNPam5OwtnkLVAbdtlV+9LBuzhwoXhCKP01nOcZyCARqe1osU9PjV3i7lGoUwuaxuVlWVsRpgHebt9qiida+IoYBu4ts37kevaoI3dFBFCo9JBZD9EB9psUl0Z40jTxh5B9v6lBK5ZhJlf9ghb20=
-Received: from HE1PR03MB3162.eurprd03.prod.outlook.com (2603:10a6:7:55::20) by
- HE1PR0302MB2587.eurprd03.prod.outlook.com (2603:10a6:3:f1::23) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3999.28; Mon, 5 Apr 2021 05:14:09 +0000
-Received: from HE1PR03MB3162.eurprd03.prod.outlook.com
- ([fe80::f4d0:ee66:d5fb:9cdd]) by HE1PR03MB3162.eurprd03.prod.outlook.com
- ([fe80::f4d0:ee66:d5fb:9cdd%3]) with mapi id 15.20.3999.032; Mon, 5 Apr 2021
- 05:14:09 +0000
-From:   "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-To:     "broonie@kernel.org" <broonie@kernel.org>
-CC:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-Subject: Re: [PATCH v5 15/19] regulator: Support ROHM BD71815 regulators
-Thread-Topic: [PATCH v5 15/19] regulator: Support ROHM BD71815 regulators
-Thread-Index: AQHXJJt1XmMiZln9KkGiE9saW20FG6qhhdKAgAMOFQCAANfkAA==
-Date:   Mon, 5 Apr 2021 05:14:09 +0000
-Message-ID: <969e9b15a7f8da9d49950a0f78323e48467229c4.camel@fi.rohmeurope.com>
-References: <cover.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
-         <eb20a8f466a9ccbc26d261f0102d203718a32fa0.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
-         <20210402174215.GI5402@sirena.org.uk>
-         <a387f856d3a5d4b01124eb54c5b9476bbd61c86e.camel@fi.rohmeurope.com>
-In-Reply-To: <a387f856d3a5d4b01124eb54c5b9476bbd61c86e.camel@fi.rohmeurope.com>
-Reply-To: "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-Accept-Language: fi-FI, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none
- header.from=fi.rohmeurope.com;
-x-originating-ip: [2001:14ba:16e2:8300::6]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 00e096d7-5dd3-4691-04f4-08d8f7f1a4d5
-x-ms-traffictypediagnostic: HE1PR0302MB2587:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HE1PR0302MB2587E4CE80DAE66720E636B0AD779@HE1PR0302MB2587.eurprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2512;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qRKJ1ITmJr2cnlQw50JPyDCjF4gr1Bt407mrC2IzMztky2voCqbeBmoIZQ3Gujc85xZfb4vqXDeMv8kqQuHWiai5a6fcV+QOYe90Hboo7qEEeZsvH+7DkAm69Dehe/dp2Ki8+MweM6MyMFyABP+yA+zxVudmZijrlgkgtG0SJ5iPHRwXRMyH7xJOYWs4ma2YBhBvLtYyPSwZHyzgch2u9oz5/mJAy9BdzNZ1SO/ckA/icmigNYDqpNOP898E/Tpl5x4Jh/nzdyDxYp61dNac6ZuJPMPSaoXPs62zR7/m/hgNWjXqfmKN4+zMyAz+O/bqGINTY6t3IsjlHZIC92fvyvph4IeLuVxzRfanXcI5IySBygajfuAC6coIOnIz6ok7ViM5qO4odzDbTv69OiB3OZhxXAJd0sPoyMYq3BdW/UOw73Rk1BMpJkWxIKs7VZbdw2pRSN8NEPLgy8GzTjde6UoY/TYUrUTaivBGfWQhczHuN4UQW1shdxP+UyWfkb7WxOiALQdXnwKUTni59kdRmhIbUd2KPBsFgLXXejBI5NUICUWaTDrj66nTk/BTdbBjBgHhE31M3qwWmq+/fl72mqrUWHobgXNwH1SO7Y4ygd3NYo69zc41y3S/grkrJk+bD7gy4xkNPcc6eBh1RHBx6WPq1aoh+3Kl8ySuqoN5esk=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR03MB3162.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(396003)(39840400004)(366004)(6486002)(6512007)(3450700001)(478600001)(86362001)(4326008)(316002)(186003)(6916009)(71200400001)(6506007)(38100700001)(64756008)(54906003)(66476007)(66946007)(66556008)(4744005)(66446008)(76116006)(2616005)(8936002)(5660300002)(2906002)(8676002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?T21JbVZOY3VWdzlUMVhYRm1adjlxeGJHR1Bkek91S2Z4cGpONC9USkVwRzhu?=
- =?utf-8?B?Ymd0NlJVZ2kwZkFXRWlpMUhJbjY1LzJ5cnI0ZWJRdllyRk1tdGZKU2x5aTAy?=
- =?utf-8?B?UWxuc2dxZlVudFR3RndRMkxaUXVnV3NLemVJWk9GdDF4aG80aFdSYTgxbHYv?=
- =?utf-8?B?VnMvSTdOTHgydE1JV05mZk5BTklCczFpUkkvSmgwUU00OVU2U3BSR1B0dFVj?=
- =?utf-8?B?bU9HSnE3UDY0QzArRXhDczlqVTY5SUs2M3VLN2hPelVuQzZQUjd4Ri9YNkt3?=
- =?utf-8?B?M0F5Mm1kcXhPTUlSWVdMTlJSMURWZ1hQcFRNdHdMZG5sRzhueXFaY0FhKzVQ?=
- =?utf-8?B?d2dJVzUxNHJ6NWNhcnB0K1dXVDhwRHVEbk5SNEZacjkydy91K011NEs0UnRy?=
- =?utf-8?B?cm9aTDFOWHU2Z2Z4U1A1QzFwVXcrVkpVTmo5bU5ES0grTjFwU2NMNUZZbGpK?=
- =?utf-8?B?R2Vza1NLbzlHNHd0eFVuaTUzT2JOUmxhWEh3c1BFWHZrOGdaMlMyelhlaExo?=
- =?utf-8?B?QzR6NEttSTVpVG1pVVFoZ0VNSDlPRkdDNWdTc1UxcWE3NFFWL2RBNTYzV1k0?=
- =?utf-8?B?V0RJV3dNQk9jWlZ0cWYwTm9TbitCOElOVUtNZENnb1lOQkkwUXlXMzY1akY3?=
- =?utf-8?B?TzlGaTZhRmNudll4MHdFRkpRQ2dqRzlJSzN2TFNMRlNnZXBhNjY2UDBQaldN?=
- =?utf-8?B?UGN0K0Z1eVk1UzRMSkZlRVFtajZJQlFBRzdTajNCblRQYW9iTlVXUGdBSFJm?=
- =?utf-8?B?Q2pSTTZzVG1tTE9PWDlab1lYSzBLcEhCNmtMaUFHQkl2RWFmaHV6YzlzL2Vt?=
- =?utf-8?B?T3Y5OThPT2RiYWYyOXVnUXBFOXluaERyOGZDQWhmWU1abVIvdWhpTERFWFJi?=
- =?utf-8?B?aERRY044NFRDYWhyR0w3djFjTUhWSE5UMmpNUVp0MDJkL2k5YW10Y3ZyKzY1?=
- =?utf-8?B?bkJhOWdQMFR5ek41VlIvd1RwUDhBY0I2b1MxMkx4eU44N1doalVhVE1PZlNr?=
- =?utf-8?B?ZG5kRjJSYzRNdVJLOExNeHFkelNPSTMvbG5DUG0xdmVHR0VTS0NHOWVJQm4v?=
- =?utf-8?B?K0NpVHpXVWg0S01Day9iTE9BbThQYmRrTVJ5MGxjUTBHbmc3OTBPQXpudzRV?=
- =?utf-8?B?T1I1RnBtTXhZQW9OQ3FLdGZ4bzhVR0JKaitFUHdoOGxST0ZpcjI4S2x2TFht?=
- =?utf-8?B?NmVabkQ2alNxeXVCRk9oTnV3OXF0elIxUDNDU0oyL1N3SXJSb1I2TExxM1du?=
- =?utf-8?B?OHUxeS9RVUM5Z3l4MnBlQXJzWFZ0WjduOEdURHVybFVuRmdIbnNtQ2VKaGNk?=
- =?utf-8?B?ektqY01JUjRvcFR2WmNxR3lEOUdYL1FGVVQ2eDJnT1BCaWJMOXdNUFhyMEt2?=
- =?utf-8?B?OTY4MGF4S1lLWjlxV3daMGpqVlRMYnltTzVYZGNVSVVxbEtOUmZzaU5nQWlj?=
- =?utf-8?B?STdEY0xBRDB1TkNXbDVORTNoaWg5ZGRZMzNBdjJNUmtXMTEyTVEzVC9ZMWVl?=
- =?utf-8?B?TlNkdkFSajdYbUd0QU54NVZqa0RMa2RKc0tvRURGSEtGcnJYOXRWSW9yazBI?=
- =?utf-8?B?cUZWMVhTbDhQalZJdDNmTktFMEcrRHBOTjg0aUY4REEvMHB5ZHI2bzgyYzZK?=
- =?utf-8?B?V2tsNU5WVWJ0K0JxWjByOTZHS25OUXdvMGg1ZDBIdjZVZDFONEwvVDErZFZE?=
- =?utf-8?B?eDU3d3NoV202aUpsbWJBajdyak51czlKZnoxNkkzVTVPSGNldjlhRzBITEsr?=
- =?utf-8?B?THRkaWhnOHkxNUxaREgrRGg3UlRJaStGYjV4aEo1M0s3MWRadzNZbThrNDF4?=
- =?utf-8?Q?BVOwAbnpbhxte1Ob1sYVilLgeGF8c6DKT7PgQ=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <19B867084CBE0842BFD944234CABAE80@eurprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/TGChMkFQ46rLA5yA4GyAxtAf3NiUmoal4ss6ih3tCM=;
+        b=ikuPUxlDd8VuAtbtMkgEpUWCO/c/ZJv6oxcWZ43rdO2/MAD3fgvxeNV0iL+zrNeuXh
+         opVW8RrWOQuzG4bMN3XzZ2LYbOUDsum4IBXGG15xpXJZs66YVCF/7Wg3SpOd+venJQvG
+         dbrg7mB98pprNqKpJd8kFM4A4kaEvVxJ02c+w9atTP7PZmj151O4kHwTJt9amX8O1xRt
+         J/l6/RXf0RAUl8sHvzYajRnOGXOPcyVtRCKlUmDHWsZpnZGM39JpApjMqXIpEGsdj1Ca
+         9le3EiHHE30GLf5sU87eNgliPKTcKDIJXSRbHX3mYxhI+sZrVyBvTVykfywEk3c92D50
+         Ehmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/TGChMkFQ46rLA5yA4GyAxtAf3NiUmoal4ss6ih3tCM=;
+        b=AhTHLcAAO5VAvTAMMBkAoT8TrBFPWI3h2PgUwkBlsqpELT6+QDAw+uErxUKIHF7G+9
+         oFyq+6oNedsSQgUywabwjKWji8VJdskLvCFUXclRN4mlcVONlNws3e34/8vHhBi8Zx1x
+         V3wgCaIpkaCVZj9mzky5/4k+fumJLYN6MjOtQ3vejd652mODpBjt9KJzCW7byLsB39/7
+         3F8mHf4LOQBP3wwQiulX6768twgduDC1Kd3v61CU/yq+qInPB+lWsjaLqgHRAMNItT7q
+         QHqkRscUHfdFuUX04dtQKxyeuvKDrdsQj1WwH3xKNO+JPXI3HVIUHMhcghwV4rkzpSf1
+         u/GA==
+X-Gm-Message-State: AOAM531sHXTsDFTo6hiFRMsjdL2OXhKL8HbqptanUNafE00kECPV3kHU
+        /Kk0H2mQveeKNck6JQHb4g8=
+X-Google-Smtp-Source: ABdhPJxW9iLyfivvMDPLB/T1C4Q27O1k2RS6sbsq+VnKMT6n85S3/a8EaBHLcLJGn7PiZB7wxWvzaQ==
+X-Received: by 2002:ac8:6913:: with SMTP id e19mr20903441qtr.78.1617600279744;
+        Sun, 04 Apr 2021 22:24:39 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id a19sm12884747qkl.126.2021.04.04.22.24.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Apr 2021 22:24:39 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 8B89C27C0054;
+        Mon,  5 Apr 2021 01:24:38 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Mon, 05 Apr 2021 01:24:38 -0400
+X-ME-Sender: <xms:FZ9qYNNIZyd-i0EMgWp38U4dmTlk7ioBxW1NrR0okZCcgrFpp-Dvkg>
+    <xme:FZ9qYP-v4fZaJ4POvecAYrDZHh5uFh2LysCfJWYZxSNPB9LbnPc30J-WY3FwXn_2P
+    -PlzPzl4CbSPDW3Ew>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudejuddgleehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    goufhushhpvggtthffohhmrghinhculdegledmnecujfgurhepfffhvffukfhfgggtuggj
+    sehttdertddttddvnecuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvg
+    hnghesghhmrghilhdrtghomheqnecuggftrfgrthhtvghrnhepfeduhfegieeufeeukeef
+    ffehjedvhfeuveekgedthfeuleefjeefleeutddtvdegnecuffhomhgrihhnpehshiiikh
+    grlhhlvghrrdgrphhpshhpohhtrdgtohhmpdhgohhoghhlvgdrtghomhenucfkphepudef
+    uddruddtjedruddrvdehgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
+    grihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithih
+    qdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrih
+    hlrdgtohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:FZ9qYMRhqzpHSCf7u7YieswUG9xPhSo4CYQVdb54BWurJ8SYOsMt1A>
+    <xmx:FZ9qYJskYlIgqYeQTJfhwMdzR5adMOlHu-f2t2FPL5doxz0o6wbEkg>
+    <xmx:FZ9qYFec1KV2nMAC8fPSNeAM3FCK0bC29HeeX4GoX466_zviP2jo9A>
+    <xmx:Fp9qYPs3o8Td4c6De5rJ0ZmliYutQCMv3q51Rkk1V6OU7My2dBzGcAWNdh8>
+Received: from localhost (unknown [131.107.1.254])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 75F15240054;
+        Mon,  5 Apr 2021 01:24:37 -0400 (EDT)
+Date:   Mon, 5 Apr 2021 13:23:30 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        syzbot <syzbot+88e4f02896967fe1ab0d@syzkaller.appspotmail.com>,
+        john.stultz@linaro.org, linux-kernel@vger.kernel.org,
+        sboyd@kernel.org, syzkaller-bugs@googlegroups.com,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [syzbot] WARNING: suspicious RCU usage in get_timespec64
+Message-ID: <YGqe0tRRpibv3/Bd@boqun-archlinux>
+References: <0000000000000e025b05bf2a430b@google.com>
+ <87mtud4wfi.ffs@nanos.tec.linutronix.de>
+ <20210404214030.GB2696@paulmck-ThinkPad-P72>
+ <20210405030855.GG2531743@casper.infradead.org>
+ <20210405040125.GF2696@paulmck-ThinkPad-P72>
+ <20210405043038.GA31091@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-X-OriginatorOrg: fi.rohmeurope.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR03MB3162.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 00e096d7-5dd3-4691-04f4-08d8f7f1a4d5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Apr 2021 05:14:09.5179
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 94f2c475-a538-4112-b5dd-63f17273d67a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tLoGUTZXaPtfiTvSJxF8Yfr2lXJEdnfJ4w54ScNzTm71oqWTnKzI3+ZhpXFSuKeTFWjd2fOhCIZypUccgukC3O96YIWFDcbJMiaUt1KQwvQQZbJMOEqEqpiJ9qMBJo4r
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0302MB2587
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210405043038.GA31091@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiBTdW4sIDIwMjEtMDQtMDQgYXQgMTk6MjEgKzAzMDAsIE1hdHRpIFZhaXR0aW5lbiB3cm90
-ZToNCj4gT24gRnJpLCAyMDIxLTA0LTAyIGF0IDE4OjQyICswMTAwLCBNYXJrIEJyb3duIHdyb3Rl
-Og0KPiA+IE9uIE1vbiwgTWFyIDI5LCAyMDIxIGF0IDAzOjU5OjUxUE0gKzAzMDAsIE1hdHRpIFZh
-aXR0aW5lbiB3cm90ZToNCj4gPiANCj4gPiBBY2tlZC1ieTogTWFyayBCcm93biA8YnJvb25pZUBr
-ZXJuZWwub3JnPg0KPiA+IA0KPiA+IGJ1dC4uLg0KPiANCj4gRG8geW91IHdhbnQgbWUgdG8gcmVz
-cGluIHRoZSBzZXJpZXMgb3IgZG8geW91IHRoaW5rIHRoaXMgY2FuIGJlDQo+IGFwcGxpZWQNCj4g
-YXMtaXMgYW5kIGZpeGVkIGJ5IGEgZm9sbG93LXVwPw0KDQpBY3R1YWxseSwgdGhpcyB3YXMgYSBi
-aXQgc3R1cGlkIHF1ZXN0aW9uLiBJIHdpbGwgcmVzZW5kIHRoZSBzZXJpZXMgYXMgSQ0KaGF2ZSBh
-bHNvIHNvbWUgc21hbGwgZml4ZXMgdG8gdGhlIEdQSU8uIA0KDQpCZXN0IFJlZ2FyZHMNCglNYXR0
-aSBWYWl0dGluZW4NCg0K
+On Sun, Apr 04, 2021 at 09:30:38PM -0700, Paul E. McKenney wrote:
+> On Sun, Apr 04, 2021 at 09:01:25PM -0700, Paul E. McKenney wrote:
+> > On Mon, Apr 05, 2021 at 04:08:55AM +0100, Matthew Wilcox wrote:
+> > > On Sun, Apr 04, 2021 at 02:40:30PM -0700, Paul E. McKenney wrote:
+> > > > On Sun, Apr 04, 2021 at 10:38:41PM +0200, Thomas Gleixner wrote:
+> > > > > On Sun, Apr 04 2021 at 12:05, syzbot wrote:
+> > > > > 
+> > > > > Cc + ...
+> > > > 
+> > > > And a couple more...
+> > > > 
+> > > > > > Hello,
+> > > > > >
+> > > > > > syzbot found the following issue on:
+> > > > > >
+> > > > > > HEAD commit:    5e46d1b7 reiserfs: update reiserfs_xattrs_initialized() co..
+> > > > > > git tree:       upstream
+> > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=1125f831d00000
+> > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=78ef1d159159890
+> > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=88e4f02896967fe1ab0d
+> > > > > >
+> > > > > > Unfortunately, I don't have any reproducer for this issue yet.
+> > > > > >
+> > > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > > > Reported-by: syzbot+88e4f02896967fe1ab0d@syzkaller.appspotmail.com
+> > > > > >
+> > > > > > =============================
+> > > > > > WARNING: suspicious RCU usage
+> > > > > > 5.12.0-rc5-syzkaller #0 Not tainted
+> > > > > > -----------------------------
+> > > > > > kernel/sched/core.c:8294 Illegal context switch in RCU-sched read-side critical section!
+> > > > > >
+> > > > > > other info that might help us debug this:
+> > > > > >
+> > > > > >
+> > > > > > rcu_scheduler_active = 2, debug_locks = 0
+> > > > > > 3 locks held by syz-executor.4/8418:
+> > > > > >  #0: 
+> > > > > > ffff8880751d2b28
+> > > > > >  (
+> > > > > > &p->pi_lock
+> > > > > > ){-.-.}-{2:2}
+> > > > > > , at: try_to_wake_up+0x98/0x14a0 kernel/sched/core.c:3345
+> > > > > >  #1: 
+> > > > > > ffff8880b9d35258
+> > > > > >  (
+> > > > > > &rq->lock
+> > > > > > ){-.-.}-{2:2}
+> > > > > > , at: rq_lock kernel/sched/sched.h:1321 [inline]
+> > > > > > , at: ttwu_queue kernel/sched/core.c:3184 [inline]
+> > > > > > , at: try_to_wake_up+0x5e6/0x14a0 kernel/sched/core.c:3464
+> > > > > >  #2: ffff8880b9d1f948 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_change+0x142/0x220 kernel/sched/psi.c:807
+> > > > 
+> > > > This looks similar to syzbot+dde0cc33951735441301@syzkaller.appspotmail.com
+> > > > in that rcu_sleep_check() sees an RCU lock held, but the later call to
+> > > > lockdep_print_held_locks() does not.  Did something change recently that
+> > > > could let the ->lockdep_depth counter get out of sync with the actual
+> > > > number of locks held?
+> > > 
+> > > Dmitri had a different theory here:
+> > > 
+> > > https://groups.google.com/g/syzkaller-bugs/c/FmYvfZCZzqA/m/nc2CXUgsAgAJ
+> > 
+> > There is always room for more than one bug.  ;-)
+> > 
+> > He says "one-off false positives".  I was afraid of that...
+> 
+> And both the examples I have been copied on today are consistent with
+> debug_locks getting zeroed (e.g., via a call to __debug_locks_off())
+> in the midst of a call to rcu_sleep_check().  But I would expect to see
+> a panic or another splat if that were to happen.
+> 
+> Dmitry's example did have an additional splat, but I would expect the
+> RCU-related one to come second.  Again, there is always room for more
+> than one bug.
+> 
+> On the other hand, there are a lot more callers to debug_locks_off()
+> than there were last I looked into this.  And both of these splats
+> are consistent with an interrupt in the middle of rcu_sleep_check(),
+> and that interrupt's handler invoking debug_locks_off(), but without
+> printing anything to the console.  Does that sequence of events ring a
+> bell for anyone?
+> 
+> If this is the new normal, I could make RCU_LOCKDEP_WARN() recheck
+> debug_lockdep_rcu_enabled() after evaluating the condition, but with
+> a memory barrier immediately before the recheck.  But I am not at all
+> excited by doing this on speculation.  Especially given that doing
+> so might be covering up some other bug.
+> 
+
+Just check the original console log and find:
+
+[  356.696686][ T8418] =============================
+[  356.696692][ T8418] WARNING: suspicious RCU usage
+[  356.700193][T14782] ====================================
+[  356.704548][ T8418] 5.12.0-rc5-syzkaller #0 Not tainted
+[  356.729981][ T8418] -----------------------------
+[  356.732473][T14782] WARNING: iou-sqp-14780/14782 still has locks held!
+
+, so there are two warnnings here, one is from lockdep_rcu_suspisous()
+and the other is from print_held_locks_bug(). I think this is what
+happened:
+
+in RCU_LOCKDEP_WARN():
+
+	if (debug_lockdep_rcu_enabled() // this is true and at this time debug_locks = 1
+	<interrupted>
+	// lockdep detects a lock bug, set debug_locks = 0
+	<swicth back>
+	    && !__warned // true
+	    && (c))      // "c" is a lock_is_held(), which will always returns true if debug_locks == 0!
+
+the cause of the problem is that RCU_LOCKDEP_WARN() in fact read
+debug_locks twice and get different values.
+
+But if you change the ordering of two reads, probably can avoid the
+problem:
+	
+First read:
+	lock_is_held(); // true if 1) lock is really held or 2) lockdep is off
+
+Second read:
+	debug_lockdep_rcu_enabled(); // if lockdep is not off, we know
+				     // that the first read got correct
+				     // value, otherwise we just ignore
+				     // the first read, because either
+				     // there is a bug reported between
+				     // two reads, or lockdep is already
+				     // off when the first read happens.
+
+So maybe something below:
+
+Regards,
+Boqun
+
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index bd04f722714f..d11bee5d9347 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -315,7 +315,7 @@ static inline int rcu_read_lock_any_held(void)
+ #define RCU_LOCKDEP_WARN(c, s)						\
+ 	do {								\
+ 		static bool __section(".data.unlikely") __warned;	\
+-		if (debug_lockdep_rcu_enabled() && !__warned && (c)) {	\
++		if ((c) && debug_lockdep_rcu_enabled() && !__warned) {	\
+ 			__warned = true;				\
+ 			lockdep_rcu_suspicious(__FILE__, __LINE__, s);	\
+ 		}							\
+
+> 							Thanx, Paul
