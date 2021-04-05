@@ -2,101 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858C73545D8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 19:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E482B3545DC
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 19:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234070AbhDERK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 13:10:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230125AbhDERKV (ORCPT
+        id S236993AbhDERMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 13:12:17 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:37752 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230125AbhDERMQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 13:10:21 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E650BC061756
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 10:10:13 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id i81so12255761oif.6
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 10:10:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tqy0qtW2fBA0Y5rqk0Bik8PQVnC8hERiXdq7a+DHWsE=;
-        b=GHe8XKx6DrdvD66XotWuUbBvifLyu/1wNC5dr9HZUmuw27yI8jJCkNgByNJjdmPQQi
-         Eq0orfHoqCCM2RflV0raqRqGx7caNdMhSl1iqXLswAtRnllCR3q2bgRfPcXT35BC+H5V
-         p+tWuyUjjPtxF1HigfpGHcIb31HRFPMx4bSIsMVUSdG0WhOOGGCAAlEZaFv//N2ML70c
-         vhNEPfcJIg4KHUAMT/KFisDeRUgvVRQSoGYYWaF2wykszXIHHI+V5HtifBnmwN9Igrf9
-         Ifzs9T0lijErEPab5Ee1LUYUnTOmGmR/5TUEcaQXEBScZVmaugEr31tKtcXYcPdNP+qX
-         Niqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tqy0qtW2fBA0Y5rqk0Bik8PQVnC8hERiXdq7a+DHWsE=;
-        b=q4YHHlmZusW5XhrzNathLkUZH8/95H+uNjKWQWysQR4a7iK16q5UHHIcnD3MxHfRBr
-         CjoHaF0+PWBCR9onOIiOmRUJX8Pq/22Y92b4wKsFWnO8LOGeEDgsLiOUIGP2WnkZ3Dwq
-         euKAJyimYtvPxqcw/atdDM+fvYfkG0wlyY8oXraUtX5VrRrbfuQ6sWuOyyG/hUJvgHkq
-         oFBGiZ6xv40BdqTstRMRJm2RF3EDqqaeNdXct5+T9r749L3X54nTwBWR4/KugBQzxaCg
-         XhIEvzNOkv2piGBFhPxTzVYoBBD9UoH76xbapuWzkExwpetpxONZ3upDsvhZrty4ZI4O
-         rkrg==
-X-Gm-Message-State: AOAM533EHIvPcKOlnod5rhhGFnJ6I38fxaIwzsGerYBqowiTS8VTD9XO
-        xroIpI+YyOuhsCiEJg+n+UYFtcVw490=
-X-Google-Smtp-Source: ABdhPJye/h+zxPhISybnzZFxZmWdl5Vd+EfyYcpTFJ+qKClX3HFSj6BVX/wHne9k6G+cCaqvQwB+Lw==
-X-Received: by 2002:aca:d90a:: with SMTP id q10mr83716oig.63.1617642613393;
-        Mon, 05 Apr 2021 10:10:13 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id o6sm4172009otj.81.2021.04.05.10.10.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 05 Apr 2021 10:10:12 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 5 Apr 2021 10:10:11 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.12-rc6
-Message-ID: <20210405171011.GA72391@roeck-us.net>
-References: <CAHk-=whK9=wafv+cSLCGqFGPBbgp67Dut3jKCnWB--8y7Lxonw@mail.gmail.com>
+        Mon, 5 Apr 2021 13:12:16 -0400
+Received: from [192.168.254.32] (unknown [47.187.194.202])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 5CD0020B5680;
+        Mon,  5 Apr 2021 10:12:09 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5CD0020B5680
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1617642730;
+        bh=sNMllT8fzuh8ksLBf7aMDeEp5JlrHJXdX0KqLI/95kA=;
+        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
+        b=BzNUEzFTBlDMEOQNcp2WryF1y8o7yaJCZFX+lZm3NsX84rHSHjRW0bfFctqoZbYn3
+         lZ6pEnMtS9R0CNESQCNq4fqUPIewl1vNeYTr4HqSvbi4kxQOMUPq9e+0srDUjhbN19
+         4Dzshb0ypyXSruCCiwrPF7KzkhP8FNMVkHawROkE=
+Subject: Re: [RFC PATCH v1 0/4] arm64: Implement stack trace reliability
+ checks
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, mark.rutland@arm.com,
+        broonie@kernel.org, jthierry@redhat.com, catalin.marinas@arm.com,
+        will@kernel.org, linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <77bd5edeea72d44533c769b1e8c0fea7a9d7eb3a>
+ <20210330190955.13707-1-madvenka@linux.microsoft.com>
+ <20210403170159.gegqjrsrg7jshlne@treble>
+ <bd13a433-c060-c501-8e76-5e856d77a225@linux.microsoft.com>
+ <20210405222436.4fda9a930676d95e862744af@kernel.org>
+ <7dda9af3-1ecf-5e6f-1e46-8870a2a5e550@linux.microsoft.com>
+Message-ID: <380d0437-e205-5eab-3664-f17aa9adc3eb@linux.microsoft.com>
+Date:   Mon, 5 Apr 2021 12:12:08 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whK9=wafv+cSLCGqFGPBbgp67Dut3jKCnWB--8y7Lxonw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <7dda9af3-1ecf-5e6f-1e46-8870a2a5e550@linux.microsoft.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 04, 2021 at 02:30:58PM -0700, Linus Torvalds wrote:
-> Well, if rc5 was bigger than usual, and I worried about what that
-> meant for this release, rc6 is positively tiny.
+
+
+On 4/5/21 9:56 AM, Madhavan T. Venkataraman wrote:
 > 
-> So I think it was just due to the usual random timing fluctuations,
-> probably mainly networking updates (which were in rc5, but not in
-> rc6). Which means that unless things change in the next two weeks, the
-> schedule for this release is going to be the usual one.
 > 
-> Most of the changes here are drivers (gpu and usb stand out, that's
-> not because of any huge changes, it's mainly because everything else
-> is even smaller) and some arch updates (mainly x86 kvm, but some
-> arm64, powerpc, s390, xtensa and RISC-V too).
+> On 4/5/21 8:24 AM, Masami Hiramatsu wrote:
+>> Hi Madhaven,
+>>
+>> On Sat, 3 Apr 2021 22:29:12 -0500
+>> "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com> wrote:
+>>
+>>
+>>>>> Check for kretprobe
+>>>>> ===================
+>>>>>
+>>>>> For functions with a kretprobe set up, probe code executes on entry
+>>>>> to the function and replaces the return address in the stack frame with a
+>>>>> kretprobe trampoline. Whenever the function returns, control is
+>>>>> transferred to the trampoline. The trampoline eventually returns to the
+>>>>> original return address.
+>>>>>
+>>>>> A stack trace taken while executing in the function (or in functions that
+>>>>> get called from the function) will not show the original return address.
+>>>>> Similarly, a stack trace taken while executing in the trampoline itself
+>>>>> (and functions that get called from the trampoline) will not show the
+>>>>> original return address. This means that the caller of the probed function
+>>>>> will not show. This makes the stack trace unreliable.
+>>>>>
+>>>>> Add the kretprobe trampoline to special_functions[].
+>>>>>
+>>>>> FYI, each task contains a task->kretprobe_instances list that can
+>>>>> theoretically be consulted to find the orginal return address. But I am
+>>>>> not entirely sure how to safely traverse that list for stack traces
+>>>>> not on the current process. So, I have taken the easy way out.
+>>>>
+>>>> For kretprobes, unwinding from the trampoline or kretprobe handler
+>>>> shouldn't be a reliability concern for live patching, for similar
+>>>> reasons as above.
+>>>>
+>>>
+>>> Please see previous answer.
+>>>
+>>>> Otherwise, when unwinding from a blocked task which has
+>>>> 'kretprobe_trampoline' on the stack, the unwinder needs a way to get the
+>>>> original return address.  Masami has been working on an interface to
+>>>> make that possible for x86.  I assume something similar could be done
+>>>> for arm64.
+>>>>
+>>>
+>>> OK. Until that is available, this case needs to be addressed.
+>>
+>> Actually, I've done that on arm64 :) See below patch.
+>> (and I also have a similar code for arm32, what I'm considering is how
+>> to unify x86/arm/arm64 kretprobe_find_ret_addr(), since those are very
+>> similar.)
+>>
+>> This is applicable on my x86 series v5
+>>
+>> https://lore.kernel.org/bpf/161676170650.330141.6214727134265514123.stgit@devnote2/
+>>
+>> Thank you,
+>>
+>>
 > 
-> The rest is random other stuff (with io_uring showing up again, but
-> much smaller this time).
+> I took a brief look at your changes. Looks reasonable.
 > 
-> The shortlog is appended - small and easy to scan if you care about the details.
+> However, for now, I am going to include the kretprobe_trampoline in the special_functions[]
+> array until your changes are merged. At that point, it is just a matter of deleting
+> kretprobe_trampoline from the special_functions[] array. That is all.
 > 
-> So hey, in between all those extra helpings of memma - it is Easter,
-> after all - go ahead and do some more testing as we approach the final
-> weeks of the release,
+> I hope that is fine with everyone.
 > 
 
-No change in test results since last week, except that I added a number
-of network interface sanity tests which all pass.
+Actually, there may still be a problem to solve.
 
-Build results:
-	total: 151 pass: 151 fail: 0
-Qemu test results:
-	total: 460 pass: 459 fail: 1
-Failed tests:
-	openrisc:or1ksim_defconfig
+If arch_stack_walk_reliable() is ever called from within kretprobe_trampoline() for debugging or
+other purposes after the instance is deleted from the task instance list, it would not be able
+to retrieve the original return address.
 
-Guenter
+The stack trace would be unreliable in that case, would it not?
+
+Madhavan
+
