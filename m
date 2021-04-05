@@ -2,504 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD0513546F6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 21:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60FEB35470B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 21:16:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239957AbhDETJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 15:09:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45106 "EHLO
+        id S239300AbhDETQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 15:16:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239304AbhDETIx (ORCPT
+        with ESMTP id S232387AbhDETQA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 15:08:53 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4571C061756;
-        Mon,  5 Apr 2021 12:08:44 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a7so18233700ejs.3;
-        Mon, 05 Apr 2021 12:08:44 -0700 (PDT)
+        Mon, 5 Apr 2021 15:16:00 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98556C061756;
+        Mon,  5 Apr 2021 12:15:52 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id j20-20020a05600c1914b029010f31e15a7fso8071141wmq.1;
+        Mon, 05 Apr 2021 12:15:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
+        h=subject:to:references:from:autocrypt:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0QHNXbaTwsfV7jLzNxr19KZRs0HIlfTov9iWUs+upXI=;
-        b=K+DUF5gw8r6nKsV0tNbOlg+H1Ur9B4kf/X+ffat7G/31mHHx0MeCCdJOLKjpsrIpfc
-         qbMQcg5ttE3c7nIehjVgrapcvkbAr47437eh2cgL+FMzOhAoJi+bd6r3PXiDLZ7dLr0D
-         2sfh0eNXF0V3m64gA3vYoHZkqx/tf7jZnOvGazRrty6+B2dVXEBJUu/jvCS7MwYkPErV
-         hjwkL8giU5nHTBjP3XOlLQvnnIV76qYnjYyEb6cfYQ3nAE6TLhuZllcPpGbEN+7TFe+s
-         apPyfcwpGp845oxy2Q6UiFNeKbpeqUaf8FOAzEtUybWiuXOPjMruCBHvBCA9sNbdUL7Z
-         GJEQ==
+        bh=tTzu5TiHnkfh02XAu6W17RTC/YFyRAf2y0hTYY+SROo=;
+        b=FzlyMnZql1TMowAFRF4apbcHKPFpThyga7uj8P5uIewSXdpLmIN3G6VzwwNd5FLie7
+         uf4ybyZqM1BDryokDHmAvw9NZJViKx0Q99PGVURyXm2HVbQG99iqO0Qr4IQZ2N9U+SPx
+         7vFrt5jxl/3UERVinlhQZ5jQFxN2Zn6R4//IgnYa5pRpIDuhu/7AZOKJ/rILvPFkjn6n
+         tipB2mVEzZRBWbkKKzVWVQ6US4Edha77FG/KuR5U29ezDm8Nk/EQzn20VoWFx+g6m9VT
+         dIJPuNg+DXGWNJ13K2tSwpFZVMsqKJnv8UwMlEsUV9vG/6bsl8I2kScSSk7q48a1ct0X
+         zb1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=0QHNXbaTwsfV7jLzNxr19KZRs0HIlfTov9iWUs+upXI=;
-        b=NO8ga0fEpJUROvg1hoxuzuvoOGul22X1z0NvESTwwCJM5du/aijEnikSYAPVaLARYF
-         b5R2iJuTNA3bUt7IN8JMoiriFX0fljs+QpRsPFlHHLQKdYYbQUkizvzJ74U+g/wjxiG5
-         fnfJfBiAcTsN6Tbl5s1dwMSdY0Iquu51nSU/PgkCsSv0kJAXWOXSaX+6erQQR75Rayko
-         OtSq5dUsVzASkjelKjxS8i/nl+gloC3mslVKVHDtpN5XyFz8SL3oiWzfFFNT8WNv7C5U
-         5CMIDB/3AqHUCAC3Qhu+OWV9kltl5ve2/ZIdnaGclFYrmhy+bjanqCxro1nhhO16g04J
-         2Jbg==
-X-Gm-Message-State: AOAM531OvXWamueqHo5E031fDrHg1McdK0x0OJ2eA4H9HXPEnCRGdAok
-        zT9xb8QrBVhvKXRZc7hzp8Tf0nzk3ak=
-X-Google-Smtp-Source: ABdhPJxuRW4ice3UncXEZxZr9CP/PdlqGhCZ0NVqAS0NkMNR06axwvD+ecIxmcQ4XkiMwf6n4lylPQ==
-X-Received: by 2002:a17:907:105c:: with SMTP id oy28mr11627437ejb.552.1617649722988;
-        Mon, 05 Apr 2021 12:08:42 -0700 (PDT)
-Received: from [10.18.0.9] ([37.58.58.229])
-        by smtp.gmail.com with ESMTPSA id a3sm9356936ejv.40.2021.04.05.12.08.42
+        bh=tTzu5TiHnkfh02XAu6W17RTC/YFyRAf2y0hTYY+SROo=;
+        b=RNQkM+BrgTkIC8agLZXFc0bjR8WOri4rN6a+5tNHpBN7//KQUl6ysvkVv+hVfX78rE
+         vhqoBbSAbr8+hLauKTUxgMXul4JcDI1/sDZoLoYv9M6LcbFx5Vzy7ZfhSfCFlAKUYwcG
+         rqsKfznOn0hjUCx8eo46K6WhYXb2fW4rW5wxL1xHy56wZhJmBfxflkmkuo92rmEgfdTY
+         hF2rNWvSxQvgSKqeG6bswE2rQk2DJplWCATFuRw/a61iuPRm6Gn3O5npURcI5UD4Y0h3
+         DJ8qSqqEVwcUiifM0HmJGjmTYqz/H85/x8wSffnnoSYP9LExv6EInvn2ddsR6GTPOO2o
+         /BEA==
+X-Gm-Message-State: AOAM531p7YphBawDvKRl5eRz1+a8NN9f9R5gwu9SrxZDqz+h3XABOy/E
+        FljVskiBE68DwwWW05Ovp8Q=
+X-Google-Smtp-Source: ABdhPJx4bQ8DdGEXvpkrP5u+lLZiUlAepYZ0MpDwK1scFWvrk7dihxYlxKi+pc3WzMgtuVsa8Yl5kA==
+X-Received: by 2002:a05:600c:4b86:: with SMTP id e6mr532917wmp.78.1617650151331;
+        Mon, 05 Apr 2021 12:15:51 -0700 (PDT)
+Received: from [192.168.8.142] ([185.69.145.134])
+        by smtp.gmail.com with ESMTPSA id h63sm575688wmh.13.2021.04.05.12.15.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Apr 2021 12:08:42 -0700 (PDT)
-Subject: Re: [PATCH 2/2] power: supply: Add AC driver for Surface Aggregator
- Module
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>, linux-pm@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210309000530.2165752-1-luzmaximilian@gmail.com>
- <20210309000530.2165752-3-luzmaximilian@gmail.com>
- <20210405154730.3ezemy7jcnmooget@earth.universe>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <5a4b2bea-42ee-8516-bb90-c398238b31aa@gmail.com>
-Date:   Mon, 5 Apr 2021 21:08:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Mon, 05 Apr 2021 12:15:50 -0700 (PDT)
+Subject: Re: [syzbot] INFO: task hung in io_ring_exit_work
+To:     syzbot <syzbot+93f72b3885406bb09e0d@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <0000000000008aed3505bf362671@google.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Message-ID: <9bf45acd-39f8-8c4c-5450-76f3c2b0116e@gmail.com>
+Date:   Mon, 5 Apr 2021 20:11:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <20210405154730.3ezemy7jcnmooget@earth.universe>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <0000000000008aed3505bf362671@google.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 05/04/2021 10:16, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    e49d033b Linux 5.12-rc6
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=16217d16d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=9320464bf47598bd
+> dashboard link: https://syzkaller.appspot.com/bug?extid=93f72b3885406bb09e0d
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15741cfcd00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14c10a96d00000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+93f72b3885406bb09e0d@syzkaller.appspotmail.com
 
-On 4/5/21 5:47 PM, Sebastian Reichel wrote:
-> Hi,
-> 
-> On Tue, Mar 09, 2021 at 01:05:30AM +0100, Maximilian Luz wrote:
->> On newer Microsoft Surface models (specifically 7th-generation, i.e.
->> Surface Pro 7, Surface Book 3, Surface Laptop 3, and Surface Laptop Go),
->> battery and AC status/information is no longer handled via standard ACPI
->> devices, but instead directly via the Surface System Aggregator Module
->> (SSAM), i.e. the embedded controller on those devices.
->>
->> While on previous generation models, AC status is also handled via SSAM,
->> an ACPI shim was present to translate the standard ACPI AC interface to
->> SSAM requests. The SSAM interface itself, which is modeled closely after
->> the ACPI interface, has not changed.
->>
->> This commit introduces a new SSAM client device driver to support AC
->> status/information via the aforementioned interface on said Surface
->> models.
->>
->> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
->> ---
->>
->> Note: This patch depends on the
->>
->>      platform/surface: Add Surface Aggregator device registry
->>
->> series. More specifically patch
->>
->>      platform/surface: Set up Surface Aggregator device registry
->>
->> The full series has been merged into the for-next branch of the
->> platform-drivers-x86 tree [1]. The commit in question can be found at
->> [2].
->>
->> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=for-next
->> [2]: https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/commit/?h=for-next&id=fc622b3d36e6d91330fb21506b9ad1e3206a4dde
->>
->> ---
->>   MAINTAINERS                            |   1 +
->>   drivers/power/supply/Kconfig           |  16 ++
->>   drivers/power/supply/Makefile          |   1 +
->>   drivers/power/supply/surface_charger.c | 296 +++++++++++++++++++++++++
->>   4 files changed, 314 insertions(+)
->>   create mode 100644 drivers/power/supply/surface_charger.c
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index f44521abe8bf..d6651ba93997 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -11867,6 +11867,7 @@ L:	linux-pm@vger.kernel.org
->>   L:	platform-driver-x86@vger.kernel.org
->>   S:	Maintained
->>   F:	drivers/power/supply/surface_battery.c
->> +F:	drivers/power/supply/surface_charger.c
->>   
->>   MICROSOFT SURFACE GPE LID SUPPORT DRIVER
->>   M:	Maximilian Luz <luzmaximilian@gmail.com>
->> diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
->> index cebeff10d543..91f7cf425ac9 100644
->> --- a/drivers/power/supply/Kconfig
->> +++ b/drivers/power/supply/Kconfig
->> @@ -817,4 +817,20 @@ config BATTERY_SURFACE
->>   	  Microsoft Surface devices, i.e. Surface Pro 7, Surface Laptop 3,
->>   	  Surface Book 3, and Surface Laptop Go.
->>   
->> +config CHARGER_SURFACE
->> +	tristate "AC driver for 7th-generation Microsoft Surface devices"
->> +	depends on SURFACE_AGGREGATOR_REGISTRY
->> +	help
->> +	  Driver for AC devices connected via/managed by the Surface System
->> +	  Aggregator Module (SSAM).
->> +
->> +	  This driver provides AC-information and -status support for Surface
->> +	  devices where said data is not exposed via the standard ACPI devices.
->> +	  On those models (7th-generation), AC-information is instead handled
->> +	  directly via a SSAM client device and this driver.
->> +
->> +	  Say M or Y here to include AC status support for 7th-generation
->> +	  Microsoft Surface devices, i.e. Surface Pro 7, Surface Laptop 3,
->> +	  Surface Book 3, and Surface Laptop Go.
->> +
->>   endif # POWER_SUPPLY
->> diff --git a/drivers/power/supply/Makefile b/drivers/power/supply/Makefile
->> index 134041538d2c..a7309a3d1a47 100644
->> --- a/drivers/power/supply/Makefile
->> +++ b/drivers/power/supply/Makefile
->> @@ -102,3 +102,4 @@ obj-$(CONFIG_CHARGER_WILCO)	+= wilco-charger.o
->>   obj-$(CONFIG_RN5T618_POWER)	+= rn5t618_power.o
->>   obj-$(CONFIG_BATTERY_ACER_A500)	+= acer_a500_battery.o
->>   obj-$(CONFIG_BATTERY_SURFACE)	+= surface_battery.o
->> +obj-$(CONFIG_CHARGER_SURFACE)	+= surface_charger.o
->> diff --git a/drivers/power/supply/surface_charger.c b/drivers/power/supply/surface_charger.c
->> new file mode 100644
->> index 000000000000..fe484523a2c2
->> --- /dev/null
->> +++ b/drivers/power/supply/surface_charger.c
->> @@ -0,0 +1,296 @@
->> +// SPDX-License-Identifier: GPL-2.0+
->> +/*
->> + * AC driver for 7th-generation Microsoft Surface devices via Surface System
->> + * Aggregator Module (SSAM).
->> + *
->> + * Copyright (C) 2019-2021 Maximilian Luz <luzmaximilian@gmail.com>
->> + */
->> +
->> +#include <asm/unaligned.h>
->> +#include <linux/kernel.h>
->> +#include <linux/module.h>
->> +#include <linux/mutex.h>
->> +#include <linux/power_supply.h>
->> +#include <linux/types.h>
->> +
->> +#include <linux/surface_aggregator/device.h>
->> +
->> +
->> +/* -- SAM interface. -------------------------------------------------------- */
->> +
->> +enum sam_event_cid_bat {
->> +	SAM_EVENT_CID_BAT_ADP   = 0x17,
->> +};
->> +
->> +enum sam_battery_sta {
->> +	SAM_BATTERY_STA_OK      = 0x0f,
->> +	SAM_BATTERY_STA_PRESENT	= 0x10,
->> +};
->> +
->> +/* Get battery status (_STA). */
->> +SSAM_DEFINE_SYNC_REQUEST_CL_R(ssam_bat_get_sta, __le32, {
->> +	.target_category = SSAM_SSH_TC_BAT,
->> +	.command_id      = 0x01,
->> +});
->> +
->> +/* Get platform power source for battery (_PSR / DPTF PSRC). */
->> +SSAM_DEFINE_SYNC_REQUEST_CL_R(ssam_bat_get_psrc, __le32, {
->> +	.target_category = SSAM_SSH_TC_BAT,
->> +	.command_id      = 0x0d,
->> +});
->> +
->> +
->> +/* -- Device structures. ---------------------------------------------------- */
->> +
->> +struct spwr_psy_properties {
->> +	const char *name;
->> +	struct ssam_event_registry registry;
->> +};
->> +
->> +struct spwr_ac_device {
->> +	struct ssam_device *sdev;
->> +
->> +	char name[32];
->> +	struct power_supply *psy;
->> +	struct power_supply_desc psy_desc;
->> +
->> +	struct ssam_event_notifier notif;
->> +
->> +	struct mutex lock;  /* Guards access to state below. */
->> +
->> +	__le32 state;
->> +};
->> +
->> +
->> +/* -- State management. ----------------------------------------------------- */
->> +
->> +static int spwr_ac_update_unlocked(struct spwr_ac_device *ac)
->> +{
->> +	u32 old = ac->state;
->> +	int status;
->> +
->> +	lockdep_assert_held(&ac->lock);
->> +
->> +	status = ssam_retry(ssam_bat_get_psrc, ac->sdev, &ac->state);
->> +	if (status < 0)
->> +		return status;
->> +
->> +	return old != ac->state;
->> +}
->> +
->> +static int spwr_ac_update(struct spwr_ac_device *ac)
->> +{
->> +	int status;
->> +
->> +	mutex_lock(&ac->lock);
->> +	status = spwr_ac_update_unlocked(ac);
->> +	mutex_unlock(&ac->lock);
->> +
->> +	return status;
->> +}
->> +
->> +static int spwr_ac_recheck(struct spwr_ac_device *ac)
->> +{
->> +	int status;
->> +
->> +	status = spwr_ac_update(ac);
->> +	if (status > 0)
->> +		power_supply_changed(ac->psy);
->> +
->> +	return status >= 0 ? 0 : status;
->> +}
->> +
->> +static u32 spwr_notify_ac(struct ssam_event_notifier *nf, const struct ssam_event *event)
->> +{
->> +	struct spwr_ac_device *ac;
->> +	int status;
->> +
->> +	ac = container_of(nf, struct spwr_ac_device, notif);
->> +
->> +	dev_dbg(&ac->sdev->dev, "power event (cid = %#04x, iid = %#04x, tid = %#04x)\n",
->> +		event->command_id, event->instance_id, event->target_id);
->> +
->> +	/*
->> +	 * Allow events of all targets/instances here. Global adapter status
->> +	 * seems to be handled via target=1 and instance=1, but events are
->> +	 * reported on all targets/instances in use.
->> +	 *
->> +	 * While it should be enough to just listen on 1/1, listen everywhere to
->> +	 * make sure we don't miss anything.
->> +	 */
->> +
->> +	switch (event->command_id) {
->> +	case SAM_EVENT_CID_BAT_ADP:
->> +		status = spwr_ac_recheck(ac);
->> +		return ssam_notifier_from_errno(status) | SSAM_NOTIF_HANDLED;
->> +
->> +	default:
->> +		return 0;
->> +	}
->> +}
->> +
->> +
->> +/* -- Properties. ----------------------------------------------------------- */
->> +
->> +static enum power_supply_property spwr_ac_props[] = {
->> +	POWER_SUPPLY_PROP_ONLINE,
->> +};
->> +
->> +static int spwr_ac_get_property(struct power_supply *psy, enum power_supply_property psp,
->> +				union power_supply_propval *val)
->> +{
->> +	struct spwr_ac_device *ac = power_supply_get_drvdata(psy);
->> +	int status;
->> +
->> +	mutex_lock(&ac->lock);
->> +
->> +	status = spwr_ac_update_unlocked(ac);
->> +	if (status)
->> +		goto out;
->> +
->> +	switch (psp) {
->> +	case POWER_SUPPLY_PROP_ONLINE:
->> +		val->intval = !!le32_to_cpu(ac->state);
->> +		break;
->> +
->> +	default:
->> +		status = -EINVAL;
->> +		goto out;
->> +	}
->> +
->> +out:
->> +	mutex_unlock(&ac->lock);
->> +	return status;
->> +}
->> +
->> +
->> +/* -- Device setup. --------------------------------------------------------- */
->> +
->> +static void spwr_ac_init(struct spwr_ac_device *ac, struct ssam_device *sdev,
->> +			 struct ssam_event_registry registry, const char *name)
->> +{
->> +	mutex_init(&ac->lock);
->> +	strncpy(ac->name, name, ARRAY_SIZE(ac->name) - 1);
->> +
->> +	ac->sdev = sdev;
->> +
->> +	ac->notif.base.priority = 1;
->> +	ac->notif.base.fn = spwr_notify_ac;
->> +	ac->notif.event.reg = registry;
->> +	ac->notif.event.id.target_category = sdev->uid.category;
->> +	ac->notif.event.id.instance = 0;
->> +	ac->notif.event.mask = SSAM_EVENT_MASK_NONE;
->> +	ac->notif.event.flags = SSAM_EVENT_SEQUENCED;
->> +
->> +	ac->psy_desc.name = ac->name;
->> +	ac->psy_desc.type = POWER_SUPPLY_TYPE_MAINS;
->> +	ac->psy_desc.properties = spwr_ac_props;
->> +	ac->psy_desc.num_properties = ARRAY_SIZE(spwr_ac_props);
->> +	ac->psy_desc.get_property = spwr_ac_get_property;
->> +}
->> +
->> +static void spwr_ac_destroy(struct spwr_ac_device *ac)
->> +{
->> +	mutex_destroy(&ac->lock);
-> 
-> same as battery driver - use devm_add_action_or_reset or
-> just drop it. It's not very useful at the end of remove().
 
-Right, I'll drop that.
-
->> +}
-> 
-> static char *battery_supplied_to[] = {
->      "BAT1",
->      "BAT2",
-> };
-> 
->> +static int spwr_ac_register(struct spwr_ac_device *ac)
->> +{
->> +	struct power_supply_config psy_cfg = {};
->> +	__le32 sta;
->> +	int status;
->> +
->> +	/* Make sure the device is there and functioning properly. */
->> +	status = ssam_retry(ssam_bat_get_sta, ac->sdev, &sta);
->> +	if (status)
->> +		return status;
->> +
->> +	if ((le32_to_cpu(sta) & SAM_BATTERY_STA_OK) != SAM_BATTERY_STA_OK)
->> +		return -ENODEV;
->> +
->> +	psy_cfg.drv_data = ac;
-> 
-> psy_cfg.supplied_to = battery_supplied_to;
-> psy_cfg.num_supplicants = 2;
-
-Thanks, I'll add that.
+#syz test: https://github.com/isilence/linux.git iowq_cancel_unbounded
 
 > 
->> +	ac->psy = power_supply_register(&ac->sdev->dev, &ac->psy_desc, &psy_cfg);
->> +	if (IS_ERR(ac->psy))
->> +		return PTR_ERR(ac->psy);
->> +
->> +	status = ssam_notifier_register(ac->sdev->ctrl, &ac->notif);
->> +	if (status)
->> +		power_supply_unregister(ac->psy);
->> +
->> +	return status;
->> +}
->> +
->> +static int spwr_ac_unregister(struct spwr_ac_device *ac)
->> +{
->> +	ssam_notifier_unregister(ac->sdev->ctrl, &ac->notif);
->> +	power_supply_unregister(ac->psy);
+> INFO: task kworker/u4:6:3091 blocked for more than 143 seconds.
+>       Not tainted 5.12.0-rc6-syzkaller #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:kworker/u4:6    state:D stack:24792 pid: 3091 ppid:     2 flags:0x00004000
+> Workqueue: events_unbound io_ring_exit_work
+> Call Trace:
+>  context_switch kernel/sched/core.c:4322 [inline]
+>  __schedule+0x911/0x21b0 kernel/sched/core.c:5073
+>  schedule+0xcf/0x270 kernel/sched/core.c:5152
+>  schedule_timeout+0x1db/0x250 kernel/time/timer.c:1868
+>  do_wait_for_common kernel/sched/completion.c:85 [inline]
+>  __wait_for_common kernel/sched/completion.c:106 [inline]
+>  wait_for_common kernel/sched/completion.c:117 [inline]
+>  wait_for_completion+0x168/0x270 kernel/sched/completion.c:138
+>  io_ring_exit_work+0x4e8/0x12d0 fs/io_uring.c:8596
+>  process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
+>  worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+>  kthread+0x3b1/0x4a0 kernel/kthread.c:292
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 > 
-> This driver can also use devm_power_supply_register :)
+> Showing all locks held in the system:
+> 2 locks held by kworker/u4:5/235:
+>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x871/0x1600 kernel/workqueue.c:2246
+>  #1: ffffc900019bfda8 ((work_completion)(&ctx->exit_work)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x1600 kernel/workqueue.c:2250
+> 1 lock held by khungtaskd/1630:
+>  #0: ffffffff8bf74320 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6327
+> 2 locks held by kworker/u4:6/3091:
+>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x871/0x1600 kernel/workqueue.c:2246
+>  #1: ffffc90001cbfda8 ((work_completion)(&ctx->exit_work)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x1600 kernel/workqueue.c:2250
+> 1 lock held by in:imklog/8101:
+>  #0: ffff88801523b270 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:961
+> 2 locks held by kworker/u4:1/11499:
+>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x871/0x1600 kernel/workqueue.c:2246
+>  #1: ffffc9000d957da8 ((work_completion)(&ctx->exit_work)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x1600 kernel/workqueue.c:2250
+> 2 locks held by syz-executor633/15066:
+>  #0: ffff8880b9d35198 (&rq->lock){-.-.}-{2:2}, at: rq_lock kernel/sched/sched.h:1321 [inline]
+>  #0: ffff8880b9d35198 (&rq->lock){-.-.}-{2:2}, at: __schedule+0x21c/0x21b0 kernel/sched/core.c:4990
+>  #1: ffff8880b9d1f948 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_switch+0x305/0x440 kernel/sched/psi.c:833
+> 1 lock held by syz-executor633/15068:
+>  #0: ffffffff8bf7cee8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:290 [inline]
+>  #0: ffffffff8bf7cee8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x4fa/0x620 kernel/rcu/tree_exp.h:836
+> 
+> =============================================
+> 
+> NMI backtrace for cpu 1
+> CPU: 1 PID: 1630 Comm: khungtaskd Not tainted 5.12.0-rc6-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+>  nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
+>  nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
+>  trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+>  check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
+>  watchdog+0xd48/0xfb0 kernel/hung_task.c:294
+>  kthread+0x3b1/0x4a0 kernel/kthread.c:292
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+> Sending NMI from CPU 1 to CPUs 0:
+> NMI backtrace for cpu 0
+> CPU: 0 PID: 8393 Comm: syz-executor633 Not tainted 5.12.0-rc6-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:wait_consider_task+0x99/0x3b40 kernel/exit.c:1288
+> Code: 28 00 00 00 48 89 84 24 f0 00 00 00 31 c0 e8 ae 8e 2f 00 49 8d 8f ec 04 00 00 48 89 c8 48 89 4c 24 10 48 c1 e8 03 0f b6 14 28 <48> 89 c8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 4b 1d 00 00 45
+> RSP: 0018:ffffc9000146fb20 EFLAGS: 00000a07
+> RAX: 1ffff11015477b35 RBX: 0000000000000000 RCX: ffff8880aa3bd9ac
+> RDX: 0000000000000000 RSI: ffffffff814462a2 RDI: ffffc9000146fd20
+> RBP: dffffc0000000000 R08: 0000000000000000 R09: ffffffff8bc0a083
+> R10: ffffffff8144a0e2 R11: 0000000000000001 R12: ffffc9000146fd20
+> R13: ffff888020ff9c40 R14: 0000000000000000 R15: ffff8880aa3bd4c0
+> FS:  0000000001688300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f42f9b4c000 CR3: 0000000025681000 CR4: 00000000001506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  do_wait_thread kernel/exit.c:1397 [inline]
+>  do_wait+0x376/0xa00 kernel/exit.c:1468
+>  kernel_wait4+0x14c/0x260 kernel/exit.c:1630
+>  __do_sys_wait4+0x13f/0x150 kernel/exit.c:1658
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x444d06
+> Code: 0f 1f 40 00 31 c9 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 49 89 ca 64 8b 04 25 18 00 00 00 85 c0 75 11 b8 3d 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 5a c3 90 48 83 ec 28 89 54 24 14 48 89 74 24
+> RSP: 002b:00007ffe758f7cb8 EFLAGS: 00000246 ORIG_RAX: 000000000000003d
+> RAX: ffffffffffffffda RBX: 00000000000d35a7 RCX: 0000000000444d06
+> RDX: 0000000040000001 RSI: 00007ffe758f7ce4 RDI: 00000000ffffffff
+> RBP: 00000000000019f2 R08: 0000000000000000 R09: 00007ffe75923090
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffe758f7ce4
+> R13: 00007ffe758f7d40 R14: 000000000000028f R15: 00007ffe758f7d20
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> syzbot can test patches for this issue, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
+> 
 
-I'll switch to that.
-  
->> +	return 0;
->> +}
->> +
->> +
->> +/* -- Driver setup. --------------------------------------------------------- */
->> +
->> +static int __maybe_unused surface_ac_resume(struct device *dev)
->> +{
->> +	return spwr_ac_recheck(dev_get_drvdata(dev));
->> +}
->> +SIMPLE_DEV_PM_OPS(surface_ac_pm_ops, NULL, surface_ac_resume);
->> +
->> +static int surface_ac_probe(struct ssam_device *sdev)
->> +{
->> +	const struct spwr_psy_properties *p;
->> +	struct spwr_ac_device *ac;
->> +	int status;
->> +
->> +	p = ssam_device_get_match_data(sdev);
->> +	if (!p)
->> +		return -ENODEV;
->> +
->> +	ac = devm_kzalloc(&sdev->dev, sizeof(*ac), GFP_KERNEL);
->> +	if (!ac)
->> +		return -ENOMEM;
->> +
->> +	spwr_ac_init(ac, sdev, p->registry, p->name);
->> +	ssam_device_set_drvdata(sdev, ac);
->> +
->> +	status = spwr_ac_register(ac);
->> +	if (status)
->> +		spwr_ac_destroy(ac);
->> +
->> +	return status;
->> +}
->> +
->> +static void surface_ac_remove(struct ssam_device *sdev)
->> +{
->> +	struct spwr_ac_device *ac = ssam_device_get_drvdata(sdev);
->> +
->> +	spwr_ac_unregister(ac);
->> +	spwr_ac_destroy(ac);
->> +}
->> +
->> +static const struct spwr_psy_properties spwr_psy_props_adp1 = {
->> +	.name = "ADP1",
->> +	.registry = SSAM_EVENT_REGISTRY_SAM,
->> +};
->> +
->> +static const struct ssam_device_id surface_ac_match[] = {
->> +	{ SSAM_SDEV(BAT, 0x01, 0x01, 0x01), (unsigned long)&spwr_psy_props_adp1 },
->> +	{ },
->> +};
->> +MODULE_DEVICE_TABLE(ssam, surface_ac_match);
->> +
->> +static struct ssam_device_driver surface_ac_driver = {
->> +	.probe = surface_ac_probe,
->> +	.remove = surface_ac_remove,
->> +	.match_table = surface_ac_match,
->> +	.driver = {
->> +		.name = "surface_ac",
->> +		.pm = &surface_ac_pm_ops,
->> +		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
->> +	},
->> +};
->> +module_ssam_device_driver(surface_ac_driver);
->> +
->> +MODULE_AUTHOR("Maximilian Luz <luzmaximilian@gmail.com>");
->> +MODULE_DESCRIPTION("AC driver for Surface System Aggregator Module");
->> +MODULE_LICENSE("GPL");
-> 
-> Otherwise LGTM.
-> 
-> Thanks,
-> 
-> -- Sebastian
-> 
-
-Thanks for the review!
-
-I'll start working on v2 right away.
-
-Regards,
-Max
+-- 
+Pavel Begunkov
