@@ -2,75 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0640B3548FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 00:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB04354904
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 00:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238672AbhDEWu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 18:50:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49104 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230437AbhDEWuZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 18:50:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C60B610F7;
-        Mon,  5 Apr 2021 22:50:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617663018;
-        bh=jwG/SVA70p3cCFjxeo1Cc4nwxlx4YQ4mgj/uqTiKhzM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SyXg+H61jDxehfGJrvMJx/iqfyWBFXFGaOqH4c5vN189apZMeIoT5+41PIVQm0dS8
-         Unby9nu9GA98/c5cj/jWidXatuzD3LD62GhBs/5IPlvmmsdVEks00LDkFBnex5XvAc
-         /kHrrmUDzJ3X6Nldye06AaEkYkCV24HvD/fx5OietwSDrdcAmf3z2zU+S3cd4mLL7x
-         WJrUszXA9v1O6A76lCzXthNWQ2rUAx/sEK2zXLe0F/n9Pd3o8pfTNINiWY5oVSeGNu
-         OLXoIn1oIHh3S1GSyx48+fgRAjw9ErWxbrirP67W11/goPiiCkg3pYhR+ye2B52KH5
-         C7+7BCNiaLhPg==
-Date:   Mon, 5 Apr 2021 15:50:16 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Julian Braha <julianbraha@gmail.com>
-Cc:     herbert@gondor.apana.org.au, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, fazilyildiran@gmail.com
-Subject: Re: [PATCH] crypto: fix CRYPTO_LIB_* dependencies on CRYPTO
-Message-ID: <YGuUKBPHRqjmjdQd@gmail.com>
-References: <20210405150438.177783-1-julianbraha@gmail.com>
+        id S232179AbhDEW5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 18:57:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230401AbhDEW5R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 18:57:17 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA85CC06174A;
+        Mon,  5 Apr 2021 15:57:08 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id f22-20020a7bc8d60000b029010c024a1407so8293526wml.2;
+        Mon, 05 Apr 2021 15:57:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ahEu8z0vUMVkxOegfIt5zu5B+kqlAEalk9M2770ihhE=;
+        b=GgFpge24iqCrsuwb+69+A8uCNhg0moPbGEIgk9A5pxtveR2JKuqrGaopILlmET3Pkg
+         gJ3wTgxiDqnjQdrCzaSFpkbh8hpO/7OyiJHN4Q5sjd3ddNqemvz9D7h94E1tQ0H9Cyg2
+         g+ldes38snqKPlqIvVCIRzo+fDKYQTmuDBiM20yNG9ZRGH88BTOBQH6fKWzxJDUxKdhB
+         FusP+FYZz96Ex3zA/kXne6T6gagZzxvIeSxoI+pfn0vlaza9pbRTqcfWvvft2tvGd3HI
+         n9OlJlX0JPKu5UHrKQudrXEuflWFHM1RzxtyFkAtoCi1gCcFm8EU2/P4DvF4uIcowBeY
+         FpoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ahEu8z0vUMVkxOegfIt5zu5B+kqlAEalk9M2770ihhE=;
+        b=Y/1GYGoqZcabWaJLT+b4/Fs1sQyKVO8nuoKBahk2TlAfKsIArDt14ZCRGMkmzZoqSq
+         F0oa20M3FqIlvrxBFsjLW8foxXOjfWFY7ljPPjkdAt2ojmsRzmvYZPNJwHQ8pNi3MWOe
+         UyavpskQ67kfDh3JQT+8yH49SsNc12PQ+5vhm2yBnCj/nqV5uWLzzMPICMT6in5h9MFD
+         sHw2yuNtIpy4P4pILxC8xyzRmauL5GoHLpKk64lji8rxXfwjx5HZD5env+sZp43MAIcw
+         grFF1ZKEtPWWOXhR2ajqEVl48/kbzbmlJH76CHxuyVsPNWJVk1t6XnIWmTAD/T+biCgU
+         i4uQ==
+X-Gm-Message-State: AOAM533+wAPvhozfJAJIh6nW8TxDNzyaHcBijGz3jA/e4VO2Ir6GcEik
+        WZHKCbOF5ItPa8rukN+xFZ4E+XmpbUceWA==
+X-Google-Smtp-Source: ABdhPJyG4NRvBC0GEXD+hEK08aMsut5LnPbZNkMZO8XPuBeZhSIMzyWcsbj4nhMJHv6Y5h+jS4zLOQ==
+X-Received: by 2002:a05:600c:4e92:: with SMTP id f18mr1225546wmq.115.1617663427505;
+        Mon, 05 Apr 2021 15:57:07 -0700 (PDT)
+Received: from valhalla.home ([2.29.208.21])
+        by smtp.gmail.com with ESMTPSA id s10sm20173361wrt.90.2021.04.05.15.57.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Apr 2021 15:57:06 -0700 (PDT)
+From:   Daniel Scally <djrscally@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        mchehab@kernel.org, yong.zhi@intel.com,
+        sakari.ailus@linux.intel.com, bingbu.cao@intel.com
+Cc:     tian.shu.qiu@intel.com, kieran.bingham+renesas@ideasonboard.com,
+        laurent.pinchart@ideasonboard.com, jacopo+renesas@jmondi.org,
+        dongchun.zhu@mediatek.com, niklas.soderlund+renesas@ragnatech.se,
+        me@fabwu.ch, luzmaximilian@gmail.com,
+        jeanmichel.hautbois@ideasonboard.com, kitakar@gmail.com
+Subject: [PATCH v2 0/2] Add support for OV5693 Sensor
+Date:   Mon,  5 Apr 2021 23:56:52 +0100
+Message-Id: <20210405225654.126916-1-djrscally@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210405150438.177783-1-julianbraha@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 11:04:38AM -0400, Julian Braha wrote:
-> Currently, when a config option selects a
-> CRYPTO_LIB_* option while CRYPTO is disabled,
-> Kbuild gives an unmet dependency. However,
-> these config options do not actually need to
-> depend on CRYPTO.
-> 
-> Signed-off-by: Julian Braha <julianbraha@gmail.com>
-> ---
->  crypto/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/crypto/Kconfig b/crypto/Kconfig
-> index 5809cc198fa7..fb7eca5cb8c6 100644
-> --- a/crypto/Kconfig
-> +++ b/crypto/Kconfig
-> @@ -1870,9 +1870,9 @@ config CRYPTO_STATS
->  config CRYPTO_HASH_INFO
->  	bool
->  
-> -source "lib/crypto/Kconfig"
->  source "drivers/crypto/Kconfig"
->  source "crypto/asymmetric_keys/Kconfig"
->  source "certs/Kconfig"
->  
->  endif	# if CRYPTO
-> +source "lib/crypto/Kconfig"
-> -- 
+Hello all
 
-Actually some of the files in lib/crypto/ do depend on CRYPTO.  For example,
-there are calls to crypto_xor_cpy() and crypto_memneq(), which call functions
-defined in crypto/algapi.c and crypto/memneq.c.  These helper functions would
-need to be moved into lib/crypto/ for this to work.
+Previous version here:
+https://lore.kernel.org/linux-media/20210312103239.279523-1-djrscally@gmail.com/
 
-- Eric
+Patch #1 updates the CIO2 driver to call s_stream() for the current sensor
+when runtime .suspend() and .resume() ops fire, which should mean the sensor
+drivers can pause and restart streaming without having those ops implemented
+themselves.
+
+Patch #2 adds support for the OV5693 sensor found as the front camera in
+many Microsoft Surface devices, along with a number of similar style laptops.
+It is a heavily adapted derivative of the atomisp-ov5693 driver in staging,
+which retains most of the global register settings and some of the other
+functions from that driver, but otherwise uses the "normal" v4l2
+infrastructure.
+
+Daniel Scally (2):
+  media: ipu3-cio2: Toggle sensor streaming in pm runtime ops
+  media: i2c: Add support for ov5693 sensor
+
+ MAINTAINERS                                   |    7 +
+ drivers/media/i2c/Kconfig                     |   11 +
+ drivers/media/i2c/Makefile                    |    1 +
+ drivers/media/i2c/ov5693.c                    | 1557 +++++++++++++++++
+ drivers/media/pci/intel/ipu3/ipu3-cio2-main.c |   15 +-
+ 5 files changed, 1590 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/media/i2c/ov5693.c
+
+-- 
+2.25.1
+
