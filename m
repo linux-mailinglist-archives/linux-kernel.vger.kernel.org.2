@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03483354095
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3DC353E0C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239679AbhDEJTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:19:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34514 "EHLO mail.kernel.org"
+        id S237686AbhDEJDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:03:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240568AbhDEJPV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:15:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8668B61398;
-        Mon,  5 Apr 2021 09:15:13 +0000 (UTC)
+        id S237346AbhDEJCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:02:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A4F04613AC;
+        Mon,  5 Apr 2021 09:01:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617614114;
-        bh=66WVbx2Csa6fUN4Oy7yoaGe6Ecc2ydG5s5vhxDsQW9k=;
+        s=korg; t=1617613303;
+        bh=Gw7fn6xvqKTV6LbCBP5C7QjVISwl7qFN3emiHurn6Ks=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PpYDQnY0t8jrGtM0hxhUnj5FxPS8j3lIqCSkT3IcxuFZejvCc9kktYe90ZmqOI9Zk
-         6/cdtxzmTc0lAabtuYmpImBNP+2EcBn7UtSSpBaRUQ6cdGzu9nx/1S2Modn05Lcmn0
-         kwYG5FxFUIGRqqQe6D/Yg5pMvUT+q1goRsBE0rdc=
+        b=pTXEWT8GdP5TucAyGyskeA+gnKPCPRWkJYhzYF4CVNNeylMdaT6gr57zto+USp8Ks
+         +Ma7KLahzlsIE3brIHpLq7TRhCI0H2u9FaLN6cGrZFcidYgaz6CP41R2b0g/7ZSwiK
+         5+8tPdco6TGxZoQxts/Fn+qQs2cB7DZXKyh1ucxg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qu Huang <jinsdb@126.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.11 088/152] drm/amdkfd: dqm fence memory corruption
+        stable@vger.kernel.org, Doug Brown <doug@schmorgal.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 26/56] appletalk: Fix skb allocation size in loopback case
 Date:   Mon,  5 Apr 2021 10:53:57 +0200
-Message-Id: <20210405085037.113739625@linuxfoundation.org>
+Message-Id: <20210405085023.376835496@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
-References: <20210405085034.233917714@linuxfoundation.org>
+In-Reply-To: <20210405085022.562176619@linuxfoundation.org>
+References: <20210405085022.562176619@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,146 +40,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Huang <jinsdb@126.com>
+From: Doug Brown <doug@schmorgal.com>
 
-commit e92049ae4548ba09e53eaa9c8f6964b07ea274c9 upstream.
+[ Upstream commit 39935dccb21c60f9bbf1bb72d22ab6fd14ae7705 ]
 
-Amdgpu driver uses 4-byte data type as DQM fence memory,
-and transmits GPU address of fence memory to microcode
-through query status PM4 message. However, query status
-PM4 message definition and microcode processing are all
-processed according to 8 bytes. Fence memory only allocates
-4 bytes of memory, but microcode does write 8 bytes of memory,
-so there is a memory corruption.
+If a DDP broadcast packet is sent out to a non-gateway target, it is
+also looped back. There is a potential for the loopback device to have a
+longer hardware header length than the original target route's device,
+which can result in the skb not being created with enough room for the
+loopback device's hardware header. This patch fixes the issue by
+determining that a loopback will be necessary prior to allocating the
+skb, and if so, ensuring the skb has enough room.
 
-Changes since v1:
-  * Change dqm->fence_addr as a u64 pointer to fix this issue,
-also fix up query_status and amdkfd_fence_wait_timeout function
-uses 64 bit fence value to make them consistent.
+This was discovered while testing a new driver that creates a LocalTalk
+network interface (LTALK_HLEN = 1). It caused an skb_under_panic.
 
-Signed-off-by: Qu Huang <jinsdb@126.com>
-Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
-Signed-off-by: Felix Kuehling <Felix.Kuehling@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Doug Brown <doug@schmorgal.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdkfd/kfd_dbgdev.c               |    2 +-
- drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c |    6 +++---
- drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.h |    2 +-
- drivers/gpu/drm/amd/amdkfd/kfd_packet_manager.c       |    2 +-
- drivers/gpu/drm/amd/amdkfd/kfd_packet_manager_v9.c    |    2 +-
- drivers/gpu/drm/amd/amdkfd/kfd_packet_manager_vi.c    |    2 +-
- drivers/gpu/drm/amd/amdkfd/kfd_priv.h                 |    8 ++++----
- 7 files changed, 12 insertions(+), 12 deletions(-)
+ net/appletalk/ddp.c | 33 +++++++++++++++++++++------------
+ 1 file changed, 21 insertions(+), 12 deletions(-)
 
---- a/drivers/gpu/drm/amd/amdkfd/kfd_dbgdev.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_dbgdev.c
-@@ -155,7 +155,7 @@ static int dbgdev_diq_submit_ib(struct k
+diff --git a/net/appletalk/ddp.c b/net/appletalk/ddp.c
+index 2880ac470379..20ec8e7f9423 100644
+--- a/net/appletalk/ddp.c
++++ b/net/appletalk/ddp.c
+@@ -1573,8 +1573,8 @@ static int atalk_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
+ 	struct sk_buff *skb;
+ 	struct net_device *dev;
+ 	struct ddpehdr *ddp;
+-	int size;
+-	struct atalk_route *rt;
++	int size, hard_header_len;
++	struct atalk_route *rt, *rt_lo = NULL;
+ 	int err;
  
- 	/* Wait till CP writes sync code: */
- 	status = amdkfd_fence_wait_timeout(
--			(unsigned int *) rm_state,
-+			rm_state,
- 			QUEUESTATE__ACTIVE, 1500);
+ 	if (flags & ~(MSG_DONTWAIT|MSG_CMSG_COMPAT))
+@@ -1637,7 +1637,22 @@ static int atalk_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
+ 	SOCK_DEBUG(sk, "SK %p: Size needed %d, device %s\n",
+ 			sk, size, dev->name);
  
- 	kfd_gtt_sa_free(dbgdev->dev, mem_obj);
---- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-@@ -1167,7 +1167,7 @@ static int start_cpsch(struct device_que
- 	if (retval)
- 		goto fail_allocate_vidmem;
+-	size += dev->hard_header_len;
++	hard_header_len = dev->hard_header_len;
++	/* Leave room for loopback hardware header if necessary */
++	if (usat->sat_addr.s_node == ATADDR_BCAST &&
++	    (dev->flags & IFF_LOOPBACK || !(rt->flags & RTF_GATEWAY))) {
++		struct atalk_addr at_lo;
++
++		at_lo.s_node = 0;
++		at_lo.s_net  = 0;
++
++		rt_lo = atrtr_find(&at_lo);
++
++		if (rt_lo && rt_lo->dev->hard_header_len > hard_header_len)
++			hard_header_len = rt_lo->dev->hard_header_len;
++	}
++
++	size += hard_header_len;
+ 	release_sock(sk);
+ 	skb = sock_alloc_send_skb(sk, size, (flags & MSG_DONTWAIT), &err);
+ 	lock_sock(sk);
+@@ -1645,7 +1660,7 @@ static int atalk_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
+ 		goto out;
  
--	dqm->fence_addr = dqm->fence_mem->cpu_ptr;
-+	dqm->fence_addr = (uint64_t *)dqm->fence_mem->cpu_ptr;
- 	dqm->fence_gpu_addr = dqm->fence_mem->gpu_addr;
+ 	skb_reserve(skb, ddp_dl->header_length);
+-	skb_reserve(skb, dev->hard_header_len);
++	skb_reserve(skb, hard_header_len);
+ 	skb->dev = dev;
  
- 	init_interrupts(dqm);
-@@ -1340,8 +1340,8 @@ out:
- 	return retval;
- }
- 
--int amdkfd_fence_wait_timeout(unsigned int *fence_addr,
--				unsigned int fence_value,
-+int amdkfd_fence_wait_timeout(uint64_t *fence_addr,
-+				uint64_t fence_value,
- 				unsigned int timeout_ms)
- {
- 	unsigned long end_jiffies = msecs_to_jiffies(timeout_ms) + jiffies;
---- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.h
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.h
-@@ -192,7 +192,7 @@ struct device_queue_manager {
- 	uint16_t		vmid_pasid[VMID_NUM];
- 	uint64_t		pipelines_addr;
- 	uint64_t		fence_gpu_addr;
--	unsigned int		*fence_addr;
-+	uint64_t		*fence_addr;
- 	struct kfd_mem_obj	*fence_mem;
- 	bool			active_runlist;
- 	int			sched_policy;
---- a/drivers/gpu/drm/amd/amdkfd/kfd_packet_manager.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_packet_manager.c
-@@ -347,7 +347,7 @@ fail_create_runlist_ib:
- }
- 
- int pm_send_query_status(struct packet_manager *pm, uint64_t fence_address,
--			uint32_t fence_value)
-+			uint64_t fence_value)
- {
- 	uint32_t *buffer, size;
- 	int retval = 0;
---- a/drivers/gpu/drm/amd/amdkfd/kfd_packet_manager_v9.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_packet_manager_v9.c
-@@ -283,7 +283,7 @@ static int pm_unmap_queues_v9(struct pac
- }
- 
- static int pm_query_status_v9(struct packet_manager *pm, uint32_t *buffer,
--			uint64_t fence_address,	uint32_t fence_value)
-+			uint64_t fence_address,	uint64_t fence_value)
- {
- 	struct pm4_mes_query_status *packet;
- 
---- a/drivers/gpu/drm/amd/amdkfd/kfd_packet_manager_vi.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_packet_manager_vi.c
-@@ -263,7 +263,7 @@ static int pm_unmap_queues_vi(struct pac
- }
- 
- static int pm_query_status_vi(struct packet_manager *pm, uint32_t *buffer,
--			uint64_t fence_address,	uint32_t fence_value)
-+			uint64_t fence_address,	uint64_t fence_value)
- {
- 	struct pm4_mes_query_status *packet;
- 
---- a/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
-@@ -1003,8 +1003,8 @@ int pqm_get_wave_state(struct process_qu
- 		       u32 *ctl_stack_used_size,
- 		       u32 *save_area_used_size);
- 
--int amdkfd_fence_wait_timeout(unsigned int *fence_addr,
--			      unsigned int fence_value,
-+int amdkfd_fence_wait_timeout(uint64_t *fence_addr,
-+			      uint64_t fence_value,
- 			      unsigned int timeout_ms);
- 
- /* Packet Manager */
-@@ -1040,7 +1040,7 @@ struct packet_manager_funcs {
- 			uint32_t filter_param, bool reset,
- 			unsigned int sdma_engine);
- 	int (*query_status)(struct packet_manager *pm, uint32_t *buffer,
--			uint64_t fence_address,	uint32_t fence_value);
-+			uint64_t fence_address,	uint64_t fence_value);
- 	int (*release_mem)(uint64_t gpu_addr, uint32_t *buffer);
- 
- 	/* Packet sizes */
-@@ -1062,7 +1062,7 @@ int pm_send_set_resources(struct packet_
- 				struct scheduling_resources *res);
- int pm_send_runlist(struct packet_manager *pm, struct list_head *dqm_queues);
- int pm_send_query_status(struct packet_manager *pm, uint64_t fence_address,
--				uint32_t fence_value);
-+				uint64_t fence_value);
- 
- int pm_send_unmap_queue(struct packet_manager *pm, enum kfd_queue_type type,
- 			enum kfd_unmap_queues_filter mode,
+ 	SOCK_DEBUG(sk, "SK %p: Begin build.\n", sk);
+@@ -1696,18 +1711,12 @@ static int atalk_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
+ 		/* loop back */
+ 		skb_orphan(skb);
+ 		if (ddp->deh_dnode == ATADDR_BCAST) {
+-			struct atalk_addr at_lo;
+-
+-			at_lo.s_node = 0;
+-			at_lo.s_net  = 0;
+-
+-			rt = atrtr_find(&at_lo);
+-			if (!rt) {
++			if (!rt_lo) {
+ 				kfree_skb(skb);
+ 				err = -ENETUNREACH;
+ 				goto out;
+ 			}
+-			dev = rt->dev;
++			dev = rt_lo->dev;
+ 			skb->dev = dev;
+ 		}
+ 		ddp_dl->request(ddp_dl, skb, dev->dev_addr);
+-- 
+2.30.1
+
 
 
