@@ -2,71 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2299354360
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 17:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D529E354336
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 17:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237805AbhDEPTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 11:19:08 -0400
-Received: from mga18.intel.com ([134.134.136.126]:43448 "EHLO mga18.intel.com"
+        id S241453AbhDEPOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 11:14:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44512 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241569AbhDEPSh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 11:18:37 -0400
-IronPort-SDR: Y6w+rVJi1fd+WbAOnmUIajJE8SXj4JukcJKUh3rTCda3qRNsIpyJN2BUemirvit9v7S7wh8Jqq
- +tSdFhZrCpIA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="180402996"
-X-IronPort-AV: E=Sophos;i="5.81,306,1610438400"; 
-   d="scan'208";a="180402996"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2021 08:18:31 -0700
-IronPort-SDR: VP0VDhJwf16ndv9VhRvfoqpexkpBnf1JxYz8HEQx1EJocWwNppDUQSX0mcW8oOJX/SEgwtkCXE
- xj9Hagct1/YA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,306,1610438400"; 
-   d="scan'208";a="379006418"
-Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by orsmga003.jf.intel.com with ESMTP; 05 Apr 2021 08:18:31 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@kernel.org,
+        id S237769AbhDEPOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 11:14:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C681A613B1;
+        Mon,  5 Apr 2021 15:13:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617635641;
+        bh=Ih0Qe9Pw8gSPYjAQO3XkaRxgLzp5k35Ll7cQMaUbUdE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WMRAdAy5g5ahZMYLsLN/xZ0Y/Ycm8viWE0DCXDAqByInIN+sYsjFaWdMWkpGxW14e
+         mlA0gZpDeHHme8/0zoBU9X6qFPgXyOgFPRk6MAdSXLiQD7R6OZDfQ7CWF8UFLwvVt6
+         7FFHjiFSCz/bJOJ3zG8wiy+feqIensoNEP+VS8h2n31n5V8s/ygSHpsQj7Ur5JHYdI
+         bmT6sQInv3wLDAyr2+69Vz4gB8F0C9CvbtGBO4jJT4rkPKPc9mn9UALlogklPfbHKi
+         I26dZfNdGWiItdszDTukvPUuvl1ciU2kORTlak3EY9qefILTpM8Fyq1TQY9RXYkKEC
+         7OYKGxu+UUYvw==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Cc:     acme@kernel.org, tglx@linutronix.de, bp@alien8.de,
-        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
-        yao.jin@linux.intel.com, alexander.shishkin@linux.intel.com,
-        adrian.hunter@intel.com, ricardo.neri-calderon@linux.intel.com,
-        Zhang Rui <rui.zhang@intel.com>
-Subject: [PATCH V5 25/25] perf/x86/rapl: Add support for Intel Alder Lake
-Date:   Mon,  5 Apr 2021 08:11:07 -0700
-Message-Id: <1617635467-181510-26-git-send-email-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1617635467-181510-1-git-send-email-kan.liang@linux.intel.com>
-References: <1617635467-181510-1-git-send-email-kan.liang@linux.intel.com>
+Subject: [PATCH 0/2] minor cleanups of include/linux/mm.h
+Date:   Mon,  5 Apr 2021 18:13:53 +0300
+Message-Id: <20210405151355.9867-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Rui <rui.zhang@intel.com>
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-Alder Lake RAPL support is the same as previous Sky Lake.
-Add Alder Lake model for RAPL.
+Hi,
 
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Zhang Rui <rui.zhang@intel.com>
----
- arch/x86/events/rapl.c | 2 ++
- 1 file changed, 2 insertions(+)
+While looking at recent page_mapping_file() changes I've noticed that
+page_rmapping() and page_anon_vma() could be moved from include/linux/mm.h
+and we don't need two forward declarations of page_mapping().
 
-diff --git a/arch/x86/events/rapl.c b/arch/x86/events/rapl.c
-index f42a704..84a1042 100644
---- a/arch/x86/events/rapl.c
-+++ b/arch/x86/events/rapl.c
-@@ -800,6 +800,8 @@ static const struct x86_cpu_id rapl_model_match[] __initconst = {
- 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X,		&model_hsx),
- 	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE_L,		&model_skl),
- 	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE,		&model_skl),
-+	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE,		&model_skl),
-+	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE_L,		&model_skl),
- 	X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X,	&model_spr),
- 	X86_MATCH_VENDOR_FAM(AMD,	0x17,		&model_amd_fam17h),
- 	X86_MATCH_VENDOR_FAM(HYGON,	0x18,		&model_amd_fam17h),
+I've also noticed that except page_mapping_file() we have somewhat similar
+page_file_mapping(), which seems superfluous, but I didn't dig further to
+see how one of them can be dropped. 
+
+The patches are vs v5.12-rc5-mmots-2021-03-31-22-26.
+
+Mike Rapoport (2):
+  mm: move page_rmapping() and page_anon_vma() to mm/internal.h
+  include/linux/mm.h: remove duplicated declaration of page_mapping()
+
+ include/linux/mm.h | 4 ----
+ mm/internal.h      | 3 +++
+ 2 files changed, 3 insertions(+), 4 deletions(-)
+
 -- 
-2.7.4
+2.28.0
 
