@@ -2,260 +2,349 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EAE135495F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 01:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F4023354960
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 01:43:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242046AbhDEXmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 19:42:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34843 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241961AbhDEXmm (ORCPT
+        id S242034AbhDEXn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 19:43:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230421AbhDEXnZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 19:42:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617666155;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=NNHMSBQaRieLc4dNuOzG7rtghujWeXt8EkzxE1Qx9x8=;
-        b=fxsVzKYOvz1xLAemMf4IAV+BrrkJ6MnGNE9ay+jRBKN+fDH0RBlTJPEOP2qydVzuM8B9ng
-        elrgw/JZaGrpbkOjMNGnKoflDwzOGpfoIz3tYRznnqMMIQecnTBn3YGWL2rlbLuQEItEnT
-        1UkOi/XHtO5tkTm6Tw81SGS5VRi7JCk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-211-_gDRS--5PuuiTxGJtj2GlA-1; Mon, 05 Apr 2021 19:42:31 -0400
-X-MC-Unique: _gDRS--5PuuiTxGJtj2GlA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9C75A180FCA4;
-        Mon,  5 Apr 2021 23:42:29 +0000 (UTC)
-Received: from llong.com (ovpn-112-77.rdu2.redhat.com [10.10.112.77])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DD54114108;
-        Mon,  5 Apr 2021 23:42:14 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     Bharata B Rao <bharata@linux.vnet.ibm.com>,
-        Phil Auld <pauld@redhat.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        linux-kernel@vger.kernel.org, Waiman Long <longman@redhat.com>
-Subject: [PATCH v4] sched/debug: Use sched_debug_lock to serialize use of cgroup_path[] only
-Date:   Mon,  5 Apr 2021 19:42:03 -0400
-Message-Id: <20210405234203.23526-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        Mon, 5 Apr 2021 19:43:25 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 448F4C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 16:43:18 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id q26so13208269qkm.6
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 16:43:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jEUKJ/PIyMMKDAfTExQ02LL0Z2PCIXS5Q8oCaM3FZfI=;
+        b=cq+CnIL+5EcETuhClIuesXGkPk/HZx67gKReX0hzfe2bfSv81ph/hpZyZHGj+E20DS
+         Fzr4/H3ZHwYbjZtg9aQzf/QVWuIgjrLyMuf6iChp9Fs3wyHjudPnZLlAxHKikBC55MuK
+         +5FDOgFiBjP7vYF/BXdCom541fk2Map8vO+2diN2Z5zYm7R6So3VDScWYBw7vT6sAgFt
+         3lKVPQ4gh0eVxlMxz7BGGN/Auq1Cy906//UuT7jzBr5m3yfFrdjwaddULb7pn8J/sx8B
+         nI5cuAdmreznicc2gszXwejzPFpweHPEqA8Xl1GVlNL1iX3zxFyx9SbOgAoQ0FHN0NXq
+         9Y1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jEUKJ/PIyMMKDAfTExQ02LL0Z2PCIXS5Q8oCaM3FZfI=;
+        b=PXIRlnsgWHr3xEl1DTYENNPKpcoBiFhwxeks/N1gusVeRwUwSG+948R5Twbl3u2xAz
+         ieFadR0imJ3yDVIhAfO3nUjaVBKoAq11jAnOZYpcZXKl/wZcCFCO8lDO2wCC/zNwByDC
+         ldi7IlNjZyr2JFk3FIVIq++gd7WUlpRZMA1BH5ihgeIvhQHsM3Kj4zWb6/qns5NkbY9G
+         8rqxWPZd7ovA9dzslrCgeK6CJsleAtGv/VHPVYhqEsD5l3UI6GhxbEKUr9UYNKvzfKpe
+         IXoISnqD8TF7rOLtgVJuhCkImNtjjJt6uHkOgCbttdUYDSkUPeR8BTAON4lREjS0IzNc
+         /aeQ==
+X-Gm-Message-State: AOAM532pLrgfZz8do8HIVxJO1QwomjXIGshYsqZkBuLdeDV2eebG7WNh
+        SAIquVMvgY6KurzrPSnQ7vs=
+X-Google-Smtp-Source: ABdhPJzUGGar2mauwtHgLHD4t42J2+NAUau6D6XbaCC5mvB+VoSm9ZKNBpxTCnfXmPiTEt3XCpJGuA==
+X-Received: by 2002:a37:ae44:: with SMTP id x65mr26591806qke.9.1617666197415;
+        Mon, 05 Apr 2021 16:43:17 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id m16sm14439904qkm.100.2021.04.05.16.43.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Apr 2021 16:43:17 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 8C8E227C0054;
+        Mon,  5 Apr 2021 19:43:16 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Mon, 05 Apr 2021 19:43:16 -0400
+X-ME-Sender: <xms:k6BrYD6UqCeYGhRG66mt3AFrEkZCFh9FWl_ddLS2zWMwzg88wvduzg>
+    <xme:k6BrYGeuYrADVMVoHmDMlwdwZBKu7z1Idk7_MlDpuaGefGNqe2h6A0dVfUBaTzL5k
+    _Ok90C39Yz81Rnxbw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudejfedgvdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    goufhushhpvggtthffohhmrghinhculdegledmnecujfgurhepfffhvffukfhfgggtuggj
+    sehttdertddttddvnecuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvg
+    hnghesghhmrghilhdrtghomheqnecuggftrfgrthhtvghrnhepfeduhfegieeufeeukeef
+    ffehjedvhfeuveekgedthfeuleefjeefleeutddtvdegnecuffhomhgrihhnpehshiiikh
+    grlhhlvghrrdgrphhpshhpohhtrdgtohhmpdhgohhoghhlvgdrtghomhenucfkphepudef
+    uddruddtjedrudegjedruddvieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhi
+    thihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmh
+    grihhlrdgtohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:lKBrYA46WGrd9ePwBCq5ASnx3kr0NPQnJhjKfm3bFftNOmlFB8ANyw>
+    <xmx:lKBrYFsgVnzVkVNgHjfcUfsXPA8ZiTVXlITQv_KH6YuzrO6UYUEo2A>
+    <xmx:lKBrYIjo7mEqo98-CDxotGI4051J_0ErJzt47p88x7QxSLuKY4EVzQ>
+    <xmx:lKBrYJFTCj00IZBcNBAm3WfzPb4nGiL8LGrPrrnfWmtAfJqjVUgrJsDUj-U>
+Received: from localhost (unknown [131.107.147.126])
+        by mail.messagingengine.com (Postfix) with ESMTPA id BCC84108005F;
+        Mon,  5 Apr 2021 19:43:15 -0400 (EDT)
+Date:   Tue, 6 Apr 2021 07:42:06 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        syzbot <syzbot+88e4f02896967fe1ab0d@syzkaller.appspotmail.com>,
+        john.stultz@linaro.org, linux-kernel@vger.kernel.org,
+        sboyd@kernel.org, syzkaller-bugs@googlegroups.com,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [syzbot] WARNING: suspicious RCU usage in get_timespec64
+Message-ID: <YGugTjEWCCyul/iv@boqun-archlinux>
+References: <0000000000000e025b05bf2a430b@google.com>
+ <87mtud4wfi.ffs@nanos.tec.linutronix.de>
+ <20210404214030.GB2696@paulmck-ThinkPad-P72>
+ <20210405030855.GG2531743@casper.infradead.org>
+ <20210405040125.GF2696@paulmck-ThinkPad-P72>
+ <20210405043038.GA31091@paulmck-ThinkPad-P72>
+ <YGqe0tRRpibv3/Bd@boqun-archlinux>
+ <20210405172752.GK2696@paulmck-ThinkPad-P72>
+ <YGuceETAscvhhnqT@boqun-archlinux>
+ <20210405233807.GO2696@paulmck-ThinkPad-P72>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210405233807.GO2696@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The handling of sysrq key can be activated by echoing the key to
-/proc/sysrq-trigger or via the magic key sequence typed into a terminal
-that is connected to the system in some way (serial, USB or other mean).
-In the former case, the handling is done in a user context. In the
-latter case, it is likely to be in an interrupt context.
+On Mon, Apr 05, 2021 at 04:38:07PM -0700, Paul E. McKenney wrote:
+> On Tue, Apr 06, 2021 at 07:25:44AM +0800, Boqun Feng wrote:
+> > On Mon, Apr 05, 2021 at 10:27:52AM -0700, Paul E. McKenney wrote:
+> > > On Mon, Apr 05, 2021 at 01:23:30PM +0800, Boqun Feng wrote:
+> > > > On Sun, Apr 04, 2021 at 09:30:38PM -0700, Paul E. McKenney wrote:
+> > > > > On Sun, Apr 04, 2021 at 09:01:25PM -0700, Paul E. McKenney wrote:
+> > > > > > On Mon, Apr 05, 2021 at 04:08:55AM +0100, Matthew Wilcox wrote:
+> > > > > > > On Sun, Apr 04, 2021 at 02:40:30PM -0700, Paul E. McKenney wrote:
+> > > > > > > > On Sun, Apr 04, 2021 at 10:38:41PM +0200, Thomas Gleixner wrote:
+> > > > > > > > > On Sun, Apr 04 2021 at 12:05, syzbot wrote:
+> > > > > > > > > 
+> > > > > > > > > Cc + ...
+> > > > > > > > 
+> > > > > > > > And a couple more...
+> > > > > > > > 
+> > > > > > > > > > Hello,
+> > > > > > > > > >
+> > > > > > > > > > syzbot found the following issue on:
+> > > > > > > > > >
+> > > > > > > > > > HEAD commit:    5e46d1b7 reiserfs: update reiserfs_xattrs_initialized() co..
+> > > > > > > > > > git tree:       upstream
+> > > > > > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=1125f831d00000
+> > > > > > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=78ef1d159159890
+> > > > > > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=88e4f02896967fe1ab0d
+> > > > > > > > > >
+> > > > > > > > > > Unfortunately, I don't have any reproducer for this issue yet.
+> > > > > > > > > >
+> > > > > > > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > > > > > > > Reported-by: syzbot+88e4f02896967fe1ab0d@syzkaller.appspotmail.com
+> > > > > > > > > >
+> > > > > > > > > > =============================
+> > > > > > > > > > WARNING: suspicious RCU usage
+> > > > > > > > > > 5.12.0-rc5-syzkaller #0 Not tainted
+> > > > > > > > > > -----------------------------
+> > > > > > > > > > kernel/sched/core.c:8294 Illegal context switch in RCU-sched read-side critical section!
+> > > > > > > > > >
+> > > > > > > > > > other info that might help us debug this:
+> > > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > > rcu_scheduler_active = 2, debug_locks = 0
+> > > > > > > > > > 3 locks held by syz-executor.4/8418:
+> > > > > > > > > >  #0: 
+> > > > > > > > > > ffff8880751d2b28
+> > > > > > > > > >  (
+> > > > > > > > > > &p->pi_lock
+> > > > > > > > > > ){-.-.}-{2:2}
+> > > > > > > > > > , at: try_to_wake_up+0x98/0x14a0 kernel/sched/core.c:3345
+> > > > > > > > > >  #1: 
+> > > > > > > > > > ffff8880b9d35258
+> > > > > > > > > >  (
+> > > > > > > > > > &rq->lock
+> > > > > > > > > > ){-.-.}-{2:2}
+> > > > > > > > > > , at: rq_lock kernel/sched/sched.h:1321 [inline]
+> > > > > > > > > > , at: ttwu_queue kernel/sched/core.c:3184 [inline]
+> > > > > > > > > > , at: try_to_wake_up+0x5e6/0x14a0 kernel/sched/core.c:3464
+> > > > > > > > > >  #2: ffff8880b9d1f948 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_change+0x142/0x220 kernel/sched/psi.c:807
+> > > > > > > > 
+> > > > > > > > This looks similar to syzbot+dde0cc33951735441301@syzkaller.appspotmail.com
+> > > > > > > > in that rcu_sleep_check() sees an RCU lock held, but the later call to
+> > > > > > > > lockdep_print_held_locks() does not.  Did something change recently that
+> > > > > > > > could let the ->lockdep_depth counter get out of sync with the actual
+> > > > > > > > number of locks held?
+> > > > > > > 
+> > > > > > > Dmitri had a different theory here:
+> > > > > > > 
+> > > > > > > https://groups.google.com/g/syzkaller-bugs/c/FmYvfZCZzqA/m/nc2CXUgsAgAJ
+> > > > > > 
+> > > > > > There is always room for more than one bug.  ;-)
+> > > > > > 
+> > > > > > He says "one-off false positives".  I was afraid of that...
+> > > > > 
+> > > > > And both the examples I have been copied on today are consistent with
+> > > > > debug_locks getting zeroed (e.g., via a call to __debug_locks_off())
+> > > > > in the midst of a call to rcu_sleep_check().  But I would expect to see
+> > > > > a panic or another splat if that were to happen.
+> > > > > 
+> > > > > Dmitry's example did have an additional splat, but I would expect the
+> > > > > RCU-related one to come second.  Again, there is always room for more
+> > > > > than one bug.
+> > > > > 
+> > > > > On the other hand, there are a lot more callers to debug_locks_off()
+> > > > > than there were last I looked into this.  And both of these splats
+> > > > > are consistent with an interrupt in the middle of rcu_sleep_check(),
+> > > > > and that interrupt's handler invoking debug_locks_off(), but without
+> > > > > printing anything to the console.  Does that sequence of events ring a
+> > > > > bell for anyone?
+> > > > > 
+> > > > > If this is the new normal, I could make RCU_LOCKDEP_WARN() recheck
+> > > > > debug_lockdep_rcu_enabled() after evaluating the condition, but with
+> > > > > a memory barrier immediately before the recheck.  But I am not at all
+> > > > > excited by doing this on speculation.  Especially given that doing
+> > > > > so might be covering up some other bug.
+> > > > > 
+> > > > 
+> > > > Just check the original console log and find:
+> > > > 
+> > > > [  356.696686][ T8418] =============================
+> > > > [  356.696692][ T8418] WARNING: suspicious RCU usage
+> > > > [  356.700193][T14782] ====================================
+> > > > [  356.704548][ T8418] 5.12.0-rc5-syzkaller #0 Not tainted
+> > > > [  356.729981][ T8418] -----------------------------
+> > > > [  356.732473][T14782] WARNING: iou-sqp-14780/14782 still has locks held!
+> > > > 
+> > > > , so there are two warnnings here, one is from lockdep_rcu_suspisous()
+> > > > and the other is from print_held_locks_bug(). I think this is what
+> > > > happened:
+> > > > 
+> > > > in RCU_LOCKDEP_WARN():
+> > > > 
+> > > > 	if (debug_lockdep_rcu_enabled() // this is true and at this time debug_locks = 1
+> > > > 	<interrupted>
+> > > > 	// lockdep detects a lock bug, set debug_locks = 0
+> > > > 	<swicth back>
+> > > > 	    && !__warned // true
+> > > > 	    && (c))      // "c" is a lock_is_held(), which will always returns true if debug_locks == 0!
+> > > > 
+> > > > the cause of the problem is that RCU_LOCKDEP_WARN() in fact read
+> > > > debug_locks twice and get different values.
+> > > > 
+> > > > But if you change the ordering of two reads, probably can avoid the
+> > > > problem:
+> > > > 	
+> > > > First read:
+> > > > 	lock_is_held(); // true if 1) lock is really held or 2) lockdep is off
+> > > > 
+> > > > Second read:
+> > > > 	debug_lockdep_rcu_enabled(); // if lockdep is not off, we know
+> > > > 				     // that the first read got correct
+> > > > 				     // value, otherwise we just ignore
+> > > > 				     // the first read, because either
+> > > > 				     // there is a bug reported between
+> > > > 				     // two reads, or lockdep is already
+> > > > 				     // off when the first read happens.
+> > > > 
+> > > > So maybe something below:
+> > > > 
+> > > > Regards,
+> > > > Boqun
+> > > > 
+> > > > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> > > > index bd04f722714f..d11bee5d9347 100644
+> > > > --- a/include/linux/rcupdate.h
+> > > > +++ b/include/linux/rcupdate.h
+> > > > @@ -315,7 +315,7 @@ static inline int rcu_read_lock_any_held(void)
+> > > >  #define RCU_LOCKDEP_WARN(c, s)						\
+> > > >  	do {								\
+> > > >  		static bool __section(".data.unlikely") __warned;	\
+> > > > -		if (debug_lockdep_rcu_enabled() && !__warned && (c)) {	\
+> > > > +		if ((c) && debug_lockdep_rcu_enabled() && !__warned) {	\
+> > > >  			__warned = true;				\
+> > > >  			lockdep_rcu_suspicious(__FILE__, __LINE__, s);	\
+> > > >  		}							\
+> > > 
+> > > Good point -- if we check debug_lockdep_rcu_enabled() after the condition,
+> > > then we will reject false positives in cases where debug_locks was switched
+> > > to zero out from under us.
+> > > 
+> > > However, we do need ordering.  The "c" usually contains lock_is_held(),
+> > > which also checks debug_locks, but from some other translation unit.
+> > > Back in the day, the translation-unit boundaries would provide the needed
+> > > ordering, but LTO...
+> > > 
+> > > In addition, the "debug_locks = 0" was originally supposed to be a hint
+> > > that the report might be a false positive.  It is clear that this needs
+> > > to be made explicit.
+> > > 
+> > > Taking all this together, how about the following?  (The intent is
+> > > that the changes to lockdep_rcu_suspicious() will be in a separate
+> > > commit.)
+> > 
+> > Looks good to me ;-)
+> 
+> Whew!  May I add your Reviewed-by?
+> 
 
-There should be no more than one instance of sysrq key processing via
-a terminal, but multiple instances of /proc/sysrq-trigger is possible.
+Of course ;-)
 
-Currently in print_cpu() of kernel/sched/debug.c, sched_debug_lock is
-taken with interrupt disabled for the whole duration of the calls to
-print_*_stats() and print_rq() which could last for the quite some time
-if the information dump happens on the serial console.
+Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
 
-If the system has many cpus and the sched_debug_lock is somehow busy
-(e.g. parallel sysrq-t), the system may hit a hard lockup panic
-depending on the actually serial console implementation of the
-system. For instance,
+Regards,
+Boqun
 
-[ 7809.796262] Kernel panic - not syncing: Hard LOCKUP
-[ 7809.796264] CPU: 13 PID: 79867 Comm: reproducer.sh Kdump: loaded Tainted: G          I      --------- -  - 4.18.0-301.el8.x86_64 #1
-[ 7809.796264] Hardware name: Dell Inc. PowerEdge R640/0W23H8, BIOS 1.4.9 06/29/2018
-[ 7809.796265] Call Trace:
-[ 7809.796265]  <NMI>
-[ 7809.796266]  dump_stack+0x5c/0x80
-[ 7809.796266]  panic+0xe7/0x2a9
-[ 7809.796267]  nmi_panic.cold.9+0xc/0xc
-[ 7809.796267]  watchdog_overflow_callback.cold.7+0x5c/0x70
-[ 7809.796268]  __perf_event_overflow+0x52/0xf0
-[ 7809.796268]  handle_pmi_common+0x204/0x2a0
-[ 7809.796269]  ? __set_pte_vaddr+0x32/0x50
-[ 7809.796269]  ? __native_set_fixmap+0x24/0x30
-[ 7809.796270]  ? ghes_copy_tofrom_phys+0xd3/0x1c0
-[ 7809.796271]  intel_pmu_handle_irq+0xbf/0x160
-[ 7809.796271]  perf_event_nmi_handler+0x2d/0x50
-[ 7809.796272]  nmi_handle+0x63/0x110
-[ 7809.796272]  default_do_nmi+0x49/0x100
-[ 7809.796273]  do_nmi+0x17e/0x1e0
-[ 7809.796273]  end_repeat_nmi+0x16/0x6f
-[ 7809.796274] RIP: 0010:native_queued_spin_lock_slowpath+0x5b/0x1d0
-[ 7809.796275] Code: 6d f0 0f ba 2f 08 0f 92 c0 0f b6 c0 c1 e0 08 89 c2 8b 07 30 e4 09 d0 a9 00 01 ff ff 75 47 85 c0 74 0e 8b 07 84 c0 74 08 f3 90 <8b> 07 84 c0 75 f8 b8 01 00 00 00 66 89 07 c3 8b 37 81 fe 00 01 00
-[ 7809.796276] RSP: 0018:ffffaa54cd887df8 EFLAGS: 00000002
-[ 7809.796277] RAX: 0000000000000101 RBX: 0000000000000246 RCX: 0000000000000000
-[ 7809.796278] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff936b66d0
-[ 7809.796278] RBP: ffffffff9301fb40 R08: 0000000000000004 R09: 000000000000004f
-[ 7809.796279] R10: 0000000000000000 R11: ffffaa54cd887cc0 R12: ffff907fd0a29ec0
-[ 7809.796280] R13: 0000000000000000 R14: ffffffff926ab7c0 R15: 0000000000000000
-[ 7809.796280]  ? native_queued_spin_lock_slowpath+0x5b/0x1d0
-[ 7809.796281]  ? native_queued_spin_lock_slowpath+0x5b/0x1d0
-[ 7809.796281]  </NMI>
-[ 7809.796282]  _raw_spin_lock_irqsave+0x32/0x40
-[ 7809.796283]  print_cpu+0x261/0x7c0
-[ 7809.796283]  sysrq_sched_debug_show+0x34/0x50
-[ 7809.796284]  sysrq_handle_showstate+0xc/0x20
-[ 7809.796284]  __handle_sysrq.cold.11+0x48/0xfb
-[ 7809.796285]  write_sysrq_trigger+0x2b/0x30
-[ 7809.796285]  proc_reg_write+0x39/0x60
-[ 7809.796286]  vfs_write+0xa5/0x1a0
-[ 7809.796286]  ksys_write+0x4f/0xb0
-[ 7809.796287]  do_syscall_64+0x5b/0x1a0
-[ 7809.796287]  entry_SYSCALL_64_after_hwframe+0x65/0xca
-[ 7809.796288] RIP: 0033:0x7fabe4ceb648
-
-The purpose of sched_debug_lock is to serialize the use of the global
-cgroup_path[] buffer in print_cpu(). The rests of the printk calls don't
-need serialization from sched_debug_lock.
-
-Calling printk() with interrupt disabled can still be problematic if
-multiple instances are running. Allocating a stack buffer of PATH_MAX
-bytes is not feasible because of the limited size of the kernel stack.
-
-The print_cpu() function has two callers - sched_debug_show() and
-sysrq_sched_debug_show(). The solution implemented in this patch is to
-allow all sched_debug_show() callers to contend for sched_debug_lock and
-use the full size group_path[] as their SEQ_printf() calls will be much
-faster. However only one sysrq_sched_debug_show() caller that output to
-the slow console will be allowed to use group_path[]. Another parallel
-console writer will have to use a shorter stack buffer instead. Since
-the console output will be garbled anyway, truncation of some cgroup
-paths shouldn't be a big issue.
-
-Fixes: efe25c2c7b3a ("sched: Reinstate group names in /proc/sched_debug")
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- kernel/sched/debug.c | 54 +++++++++++++++++++++++++++++++++-----------
- 1 file changed, 41 insertions(+), 13 deletions(-)
-
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index 486f403a778b..5d021b247998 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -8,8 +8,6 @@
-  */
- #include "sched.h"
- 
--static DEFINE_SPINLOCK(sched_debug_lock);
--
- /*
-  * This allows printing both to /proc/sched_debug and
-  * to the console
-@@ -470,16 +468,49 @@ static void print_cfs_group_stats(struct seq_file *m, int cpu, struct task_group
- #endif
- 
- #ifdef CONFIG_CGROUP_SCHED
-+static DEFINE_SPINLOCK(sched_debug_lock);
- static char group_path[PATH_MAX];
-+static enum {
-+	TOKEN_NONE,
-+	TOKEN_ACQUIRED,
-+	TOKEN_NA	/* Not applicable */
-+} console_token = TOKEN_ACQUIRED;
- 
--static char *task_group_path(struct task_group *tg)
-+static void task_group_path(struct task_group *tg, char *path, int plen)
- {
--	if (autogroup_path(tg, group_path, PATH_MAX))
--		return group_path;
-+	if (autogroup_path(tg, path, plen))
-+		return;
- 
--	cgroup_path(tg->css.cgroup, group_path, PATH_MAX);
-+	cgroup_path(tg->css.cgroup, path, plen);
-+}
- 
--	return group_path;
-+/*
-+ * All the print_cpu() callers from sched_debug_show() will be allowed
-+ * to contend for sched_debug_lock and use group_path[] as their SEQ_printf()
-+ * calls will be much faster. However only one print_cpu() caller from
-+ * sysrq_sched_debug_show() which outputs to the console will be allowed
-+ * to use group_path[]. Another parallel console writer will have to use
-+ * a shorter stack buffer instead. Since the console output will be garbled
-+ * anyway, truncation of some cgroup paths shouldn't be a big issue.
-+ */
-+#define SEQ_printf_task_group_path(m, tg, fmt...)			\
-+{									\
-+	unsigned long flags;						\
-+	int token = m ? TOKEN_NA					\
-+		      : xchg_acquire(&console_token, TOKEN_NONE);	\
-+									\
-+	if (token == TOKEN_NONE) {					\
-+		char buf[128];						\
-+		task_group_path(tg, buf, sizeof(buf));			\
-+		SEQ_printf(m, fmt, buf);				\
-+	} else {							\
-+		spin_lock_irqsave(&sched_debug_lock, flags);		\
-+		task_group_path(tg, group_path, sizeof(group_path));	\
-+		SEQ_printf(m, fmt, group_path);				\
-+		spin_unlock_irqrestore(&sched_debug_lock, flags);	\
-+		if (token == TOKEN_ACQUIRED)				\
-+			smp_store_release(&console_token, token);	\
-+	}								\
- }
- #endif
- 
-@@ -506,7 +537,7 @@ print_task(struct seq_file *m, struct rq *rq, struct task_struct *p)
- 	SEQ_printf(m, " %d %d", task_node(p), task_numa_group_id(p));
- #endif
- #ifdef CONFIG_CGROUP_SCHED
--	SEQ_printf(m, " %s", task_group_path(task_group(p)));
-+	SEQ_printf_task_group_path(m, task_group(p), " %s")
- #endif
- 
- 	SEQ_printf(m, "\n");
-@@ -543,7 +574,7 @@ void print_cfs_rq(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq)
- 
- #ifdef CONFIG_FAIR_GROUP_SCHED
- 	SEQ_printf(m, "\n");
--	SEQ_printf(m, "cfs_rq[%d]:%s\n", cpu, task_group_path(cfs_rq->tg));
-+	SEQ_printf_task_group_path(m, cfs_rq->tg, "cfs_rq[%d]:%s\n", cpu);
- #else
- 	SEQ_printf(m, "\n");
- 	SEQ_printf(m, "cfs_rq[%d]:\n", cpu);
-@@ -614,7 +645,7 @@ void print_rt_rq(struct seq_file *m, int cpu, struct rt_rq *rt_rq)
- {
- #ifdef CONFIG_RT_GROUP_SCHED
- 	SEQ_printf(m, "\n");
--	SEQ_printf(m, "rt_rq[%d]:%s\n", cpu, task_group_path(rt_rq->tg));
-+	SEQ_printf_task_group_path(m, rt_rq->tg, "rt_rq[%d]:%s\n", cpu);
- #else
- 	SEQ_printf(m, "\n");
- 	SEQ_printf(m, "rt_rq[%d]:\n", cpu);
-@@ -666,7 +697,6 @@ void print_dl_rq(struct seq_file *m, int cpu, struct dl_rq *dl_rq)
- static void print_cpu(struct seq_file *m, int cpu)
- {
- 	struct rq *rq = cpu_rq(cpu);
--	unsigned long flags;
- 
- #ifdef CONFIG_X86
- 	{
-@@ -717,13 +747,11 @@ do {									\
- 	}
- #undef P
- 
--	spin_lock_irqsave(&sched_debug_lock, flags);
- 	print_cfs_stats(m, cpu);
- 	print_rt_stats(m, cpu);
- 	print_dl_stats(m, cpu);
- 
- 	print_rq(m, rq, cpu);
--	spin_unlock_irqrestore(&sched_debug_lock, flags);
- 	SEQ_printf(m, "\n");
- }
- 
--- 
-2.18.1
-
+> 							Thanx, Paul
+> 
+> > Regards,
+> > Boqun
+> > 
+> > > 							Thanx, Paul
+> > > 
+> > > ------------------------------------------------------------------------
+> > > 
+> > > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> > > index 9455476..1199ffd 100644
+> > > --- a/include/linux/rcupdate.h
+> > > +++ b/include/linux/rcupdate.h
+> > > @@ -315,7 +315,7 @@ static inline int rcu_read_lock_any_held(void)
+> > >  #define RCU_LOCKDEP_WARN(c, s)						\
+> > >  	do {								\
+> > >  		static bool __section(".data.unlikely") __warned;	\
+> > > -		if (debug_lockdep_rcu_enabled() && !__warned && (c)) {	\
+> > > +		if ((c) && debug_lockdep_rcu_enabled() && !__warned) {	\
+> > >  			__warned = true;				\
+> > >  			lockdep_rcu_suspicious(__FILE__, __LINE__, s);	\
+> > >  		}							\
+> > > diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+> > > index c6d0c1dc..80065cd 100644
+> > > --- a/kernel/locking/lockdep.c
+> > > +++ b/kernel/locking/lockdep.c
+> > > @@ -6387,6 +6387,7 @@ asmlinkage __visible void lockdep_sys_exit(void)
+> > >  void lockdep_rcu_suspicious(const char *file, const int line, const char *s)
+> > >  {
+> > >  	struct task_struct *curr = current;
+> > > +	int dl = READ_ONCE(debug_locks);
+> > >  
+> > >  	/* Note: the following can be executed concurrently, so be careful. */
+> > >  	pr_warn("\n");
+> > > @@ -6396,11 +6397,12 @@ void lockdep_rcu_suspicious(const char *file, const int line, const char *s)
+> > >  	pr_warn("-----------------------------\n");
+> > >  	pr_warn("%s:%d %s!\n", file, line, s);
+> > >  	pr_warn("\nother info that might help us debug this:\n\n");
+> > > -	pr_warn("\n%srcu_scheduler_active = %d, debug_locks = %d\n",
+> > > +	pr_warn("\n%srcu_scheduler_active = %d, debug_locks = %d\n%s",
+> > >  	       !rcu_lockdep_current_cpu_online()
+> > >  			? "RCU used illegally from offline CPU!\n"
+> > >  			: "",
+> > > -	       rcu_scheduler_active, debug_locks);
+> > > +	       rcu_scheduler_active, dl,
+> > > +	       dl ? "" : "Possible false positive due to lockdep disabling via debug_locks = 0\n");
+> > >  
+> > >  	/*
+> > >  	 * If a CPU is in the RCU-free window in idle (ie: in the section
+> > > diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+> > > index b95ae86..dd94a60 100644
+> > > --- a/kernel/rcu/update.c
+> > > +++ b/kernel/rcu/update.c
+> > > @@ -277,7 +277,7 @@ EXPORT_SYMBOL_GPL(rcu_callback_map);
+> > >  
+> > >  noinstr int notrace debug_lockdep_rcu_enabled(void)
+> > >  {
+> > > -	return rcu_scheduler_active != RCU_SCHEDULER_INACTIVE && debug_locks &&
+> > > +	return rcu_scheduler_active != RCU_SCHEDULER_INACTIVE && READ_ONCE(debug_locks) &&
+> > >  	       current->lockdep_recursion == 0;
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(debug_lockdep_rcu_enabled);
