@@ -2,202 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75F72354157
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 13:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A90B535415C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 13:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233281AbhDELD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 07:03:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232355AbhDELD5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 07:03:57 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A9ECC061756;
-        Mon,  5 Apr 2021 04:03:51 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id e7so12103661edu.10;
-        Mon, 05 Apr 2021 04:03:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CVqkD3AatIpXd53BFyXyyzJdd7n0kKZfEfddTgAIcf8=;
-        b=KuJD2F8msRNqfeOT3+a1Pgux00oPtqxE2cAqS4reEwbAwzT2UavpbsydpH599R2SBQ
-         kuY/0uvZse0/p57ykkczCurI1r0mlLS/i7HprIxCjlREhV8j8eUKWtrpuIWoisivdhQj
-         sid40fOfhRpkpV4wI4BmqLISeU98m9co3gXjYNTOmwJPdKuB5LsDV+k2yy/kAZd+8CuC
-         eCrjMzmG+I4NooaGYEkWohkBbUEcZdK/BiMEEhHmHZ52KPN9nPZBInGctJdSu+snqUzP
-         UuTUlHBOYfdho5c8OAaix8VNTzj/HNCOZ0YHaIZ5SMA69LW7Y+eNC2MQnMBpLkqiFiCT
-         SX4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CVqkD3AatIpXd53BFyXyyzJdd7n0kKZfEfddTgAIcf8=;
-        b=XODi/oGCiK2rMGD7R+7LzPMGGNwK4u/6ffbz6yMVKcTL8jWWxHtZ3c9mqYnagQBgOV
-         yznNqeQSxE49njqYvEOUoEsIjRLsiB6EFmPkAWY3ALp1srQVqoaW1gT1sDtHKxTlwVhl
-         3Mldx+ERJ+n00/n34eHWXDgba14SZT2ghpR8GzJg9JStV6Z/JIEIsEFKPaif5zGynHfO
-         0dbN6QTuiyCUyXwDdQeiPoA/SSmZ1P5sUCnhjJawloSWGkOM7LA38lsb5XWrHsqwMNGB
-         emuvgMUrhBaPx1SHdOaH7j3ltwcTTKtewSqqvJSUz/1DvLYdIJPEBBq77LAw/carj1T9
-         XzxQ==
-X-Gm-Message-State: AOAM530M5v6GcgwZTCn4KPMS72elsz1t/W/bTDxFEhnKJZZQviaQE3xp
-        oU1mBJ7oC3EwbXCWqgpH9R8QBUVW/fj4nA==
-X-Google-Smtp-Source: ABdhPJzbTGWEO3xL3cM0NMU0xLRnQ1CoUFtXI2zfKTRgSn7BR69n+VrvGMGcQo6esEMLvyrIjU3B0g==
-X-Received: by 2002:aa7:c6d2:: with SMTP id b18mr30554061eds.183.1617620629736;
-        Mon, 05 Apr 2021 04:03:49 -0700 (PDT)
-Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id lm24sm8555756ejb.53.2021.04.05.04.03.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Apr 2021 04:03:49 -0700 (PDT)
-Subject: Re: [PATCH v2] rockchip: enabled LAN port on NanoPi R2S
-To:     Tianling Shen <cnsztl@gmail.com>, Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        David Bauer <mail@david-bauer.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Chen-Yu Tsai <wens@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210405093423.16149-1-cnsztl@gmail.com>
-From:   Johan Jonker <jbx6244@gmail.com>
-Message-ID: <c12341c8-8590-8314-d59b-3d5903041491@gmail.com>
-Date:   Mon, 5 Apr 2021 13:03:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S233358AbhDELEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 07:04:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59846 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232355AbhDELEu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 07:04:50 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6B79CB03C;
+        Mon,  5 Apr 2021 11:04:43 +0000 (UTC)
+Message-ID: <8f147485af325181c57bdf0dd3b0e3dd54000ac8.camel@suse.de>
+Subject: Re: [PATCH] clk: Mark fwnodes when their clock provider is added
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Stephen Boyd <sboyd@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        "Rafael J.Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        DOCUMENTATION <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS "
+         "<devicetree@vger.ke rnel.org>, ACPI Devel Maling List "
+         "<linux-acpi@vger.kernel.org>, Android Kernel Team "
+         "<kernel-team@android.com>, linux-rpi-kernel" 
+        <linux-rpi-kernel@lists.infradead.org>
+Date:   Mon, 05 Apr 2021 13:04:40 +0200
+In-Reply-To: <161721871083.2260335.2392646934517115770@swboyd.mtv.corp.google.com>
+References: <20210205222644.2357303-9-saravanak@google.com>
+         <9b206c4d00dfe8b7f941260f18909914b2b2eecb.camel@suse.de>
+         <161678243444.3012082.5031467952132861429@swboyd.mtv.corp.google.com>
+         <CAMuHMdV5PGUujsFP2TXMxij4UxVnrrurh_qVhq8+480w21jJAg@mail.gmail.com>
+         <161705310317.3012082.15148238105608149214@swboyd.mtv.corp.google.com>
+         <CAGETcx8reqKoPoJ8dV7f9=SHYKmNhcVpkNHoCS-0L4UHCBahoA@mail.gmail.com>
+         <161706920822.3012082.10047587064612237296@swboyd.mtv.corp.google.com>
+         <CAMuHMdX7OxTjwQmdP8xDbVkjtZ5442qFao8K6bNpDQ5S3GPSgQ@mail.gmail.com>
+         <161715734080.2260335.881350237641202575@swboyd.mtv.corp.google.com>
+         <CAMuHMdXMhiOBSSwrC2A_ijXCaekBMfC8h9PFhqLtNGhtPDba=A@mail.gmail.com>
+         <161721871083.2260335.2392646934517115770@swboyd.mtv.corp.google.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-ffRO6YGGlkKiYOjSl+0D"
+User-Agent: Evolution 3.40.0 
 MIME-Version: 1.0
-In-Reply-To: <20210405093423.16149-1-cnsztl@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tianling,
 
-On 4/5/21 11:34 AM, Tianling Shen wrote:
-> From: David Bauer <mail@david-bauer.net>
-> 
-> Enable the USB3 port on the FriendlyARM NanoPi R2S.
-> This is required for the USB3 attached LAN port to work.
-> 
-> Signed-off-by: David Bauer <mail@david-bauer.net>
-> [added device node for USB Ethernet controller]
-> Signed-off-by: Tianling Shen <cnsztl@gmail.com>
-> ---
->  .../boot/dts/rockchip/rk3328-nanopi-r2s.dts   | 32 +++++++++++++++++++
->  1 file changed, 32 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3328-nanopi-r2s.dts b/arch/arm64/boot/dts/rockchip/rk3328-nanopi-r2s.dts
-> index faf496d789cf..18936b393d9d 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3328-nanopi-r2s.dts
-> +++ b/arch/arm64/boot/dts/rockchip/rk3328-nanopi-r2s.dts
-> @@ -13,6 +13,10 @@
->  	model = "FriendlyElec NanoPi R2S";
->  	compatible = "friendlyarm,nanopi-r2s", "rockchip,rk3328";
->  
-> +	aliases {
-> +		ethernet1 = &r8153;
-> +	};
-> +
->  	chosen {
->  		stdout-path = "serial2:1500000n8";
->  	};
-> @@ -37,6 +41,16 @@
->  		};
->  	};
->  
+--=-ffRO6YGGlkKiYOjSl+0D
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> +	vcc_rtl8153: vcc-rtl8153-regulator {
+On Wed, 2021-03-31 at 12:25 -0700, Stephen Boyd wrote:
+> Quoting Geert Uytterhoeven (2021-03-31 00:05:00)
+> > On Wed, Mar 31, 2021 at 4:22 AM Stephen Boyd <sboyd@kernel.org> wrote:
+> > > > > Does it have any use?
+> > > >=20
+> > > > of_clk_del_provider() removes the first provider found with node =
+=3D=3D NULL.
+> > > > If there are two drivers calling of_clk_add_hw_provider(), and one =
+of
+> > > > hem calls of_clk_del_provider() later, the wrong provider may be
+> > > > removed from the list.
+> > > >=20
+> > >=20
+> > > So you're saying we shouldn't add a NULL device node pointer to the l=
+ist
+> > > so that this can't happen? That doesn't mean returning an error from
+> > > of_clk_add_hw_provider() would be useful though.
+> > > of_clk_add_hw_provider() can return 0 if np =3D=3D NULL and
+> > > of_clk_del_provider() can return early if np =3D=3D NULL too.
+> >=20
+> > I don't know if I grasp all meanings of the above.
+> >=20
+> > The main question is if it is valid for a driver to call
+> > of_clk_add_hw_provider()
+> > with np =3D=3D NULL.
+> > =C2=A0=C2=A0- If yes, should that register the provider?
+>=20
+> No it should not register the provider. That would be bad as you pointed
+> out.
+>=20
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0- If yes, how to handle two drivers=
+ calling of_clk_add_hw_provider()
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0with np =3D NULL, as th=
+eir unregistration order is not guaranteed to
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0be correct.
+> >=20
+> > If no, is that something to ignore (0), or a bug (error)?
+>=20
+> This is my question above. Is there a use to having
+> of_clk_add_hw_provider() return an error value when np =3D=3D NULL? I dou=
+bt
+> it.
+>=20
+> Returning 0 would reduce the if conditions in driver code in this case
+> and be consistent with the CONFIG_OF=3Dn inline stub that returns 0 when
+> CONFIG_OF is disabled. The only case an error would be returned is if we
+> couldn't allocate memory or if the assigned clocks code failed. Seems
+> sane to me. The downside is that drivers would maybe register clkdev
+> lookups when they don't need to and waste some memory. I'm fine with
+> that until we have some sort of non-DT based clk provider lookup
+> mechanism that could unify the two methods.
 
-sort nodename
+What about devm_of_clk_add_hw_provider() users, do we care that a seemingly
+empty managed resource will be created?
 
-> +		compatible = "regulator-fixed";
-> +		gpio = <&gpio2 RK_PC6 GPIO_ACTIVE_HIGH>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&rtl8153_en_drv>;
-> +		regulator-always-on;
+Regards,
+Nicolas
 
-> +		regulator-name = "vcc_rtl8153";
 
-exception to the sort rule
-sort regulator-name above all other regulator properties
+--=-ffRO6YGGlkKiYOjSl+0D
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-> +		enable-active-high;
+-----BEGIN PGP SIGNATURE-----
 
-sort
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmBq7sgACgkQlfZmHno8
+x/5ZSwf9HS5H+QT20eiJRWn3bELAv3sRiJTSXv7nkK9YBffB4RHKSH28Ocj04LdC
+75oUWS2K08zuwHEK78YAo3wnD95KNIWq4Q3iNtkkmHxvm+DA/1fwbljVilKAtF0O
++HwypDjA3TMJm37VgB6AL9VKrO4/fQHdkq89m4WRl/ui9TP+LMpUfmpGMOT2g5KZ
+r4OA+AsGfAjJpEOjvc+O+BAjfFaw53bDX2BqdWAodMSF5iAOYi+6/jQftxKRym4y
+yw9x+YWxx6cG/I5rXJAC6es5foHtjHxgY9vL3BE7vN3ClQ5ZwcJmMq+gS/SKGopu
+CY4Wm2CjB1YMigXfwLmvYxpMW5ubbw==
+=EzAP
+-----END PGP SIGNATURE-----
 
-----
-Heiko's sort rules:
-
-compatible
-reg
-interrupts
-[alphabetical]
-status [if needed]
-
-----
-
-> +	};
-> +
->  	leds {
->  		compatible = "gpio-leds";
->  		pinctrl-0 = <&lan_led_pin>,  <&sys_led_pin>, <&wan_led_pin>;
-> @@ -265,6 +279,12 @@
->  			};
->  		};
->  	};
-> +
-> +	usb {
-> +		rtl8153_en_drv: rtl8153-en-drv {
-> +			rockchip,pins = <2 RK_PC6 RK_FUNC_GPIO &pcfg_pull_none>;
-> +		};
-> +	};
->  };
->  
->  &io_domains {
-> @@ -364,6 +384,18 @@
->  	dr_mode = "host";
->  };
->  
-> +&usbdrd3 {
-> +	dr_mode = "host";
-> +	status = "okay";
-> +
-
-> +	r8153: usb-eth@2 {
-
-With YAML undocumented additional properties and nodes generate
-notifications.
-We need a change in the documents below for that.
-rockchip,dwc3.yaml > usb-drd.yaml > usb.yaml
-
-Is there a standard for the usb-eth nodename?
-
-> +		compatible = "realtek,rtl8153";
-
-Since a while Rob has improved has scripts.
-There's no escape anymore.
-Add a YAML document to this serie for "realtek,rtl8153".
-
-Improve checking for undocumented compatible strings
-https://github.com/devicetree-org/dt-schema/commit/93e7ada8d53af099074cb5d53f7caa12835784e0
-
-> +		reg = <2>;
-
-Why 2 ?
-
-> +
-
-> +		local-mac-address = [ 00 00 00 00 00 00 ]; /* Filled in by U-Boot */
-
-This is a private property.
-In a generic dts that's up to the user.
-
-> +	};
-> +};
-> +
->  &usb_host0_ehci {
->  	status = "okay";
->  };
-> 
+--=-ffRO6YGGlkKiYOjSl+0D--
 
