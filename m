@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BBAF353E54
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03483354095
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238428AbhDEJFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:05:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47354 "EHLO mail.kernel.org"
+        id S239679AbhDEJTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:19:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234042AbhDEJD5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:03:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CCD46138A;
-        Mon,  5 Apr 2021 09:03:49 +0000 (UTC)
+        id S240568AbhDEJPV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:15:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8668B61398;
+        Mon,  5 Apr 2021 09:15:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613430;
-        bh=FPycTE7V9ycxMA+Y34ehg9ACmUPHQi8PzdEBva+FnKs=;
+        s=korg; t=1617614114;
+        bh=66WVbx2Csa6fUN4Oy7yoaGe6Ecc2ydG5s5vhxDsQW9k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tsggI3sp+6+jVQAQStZK7CPRvDwT8pOvsE0vTWEVVf8WYYtDWKMCNW+2+uYIrVEf2
-         LEtjWyp706JU9XlfbQ5t/IYiHvxX6/leycqeuu4ZL1BRWJpMgRwHTVcIHlC5UgmhwP
-         w2KClhbY94dXPnu3NQ/T3dNc0K90GVIE+u89lxKc=
+        b=PpYDQnY0t8jrGtM0hxhUnj5FxPS8j3lIqCSkT3IcxuFZejvCc9kktYe90ZmqOI9Zk
+         6/cdtxzmTc0lAabtuYmpImBNP+2EcBn7UtSSpBaRUQ6cdGzu9nx/1S2Modn05Lcmn0
+         kwYG5FxFUIGRqqQe6D/Yg5pMvUT+q1goRsBE0rdc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+5138c4dd15a0401bec7b@syzkaller.appspotmail.com,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 33/74] net: introduce CAN specific pointer in the struct net_device
+        stable@vger.kernel.org, Qu Huang <jinsdb@126.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.11 088/152] drm/amdkfd: dqm fence memory corruption
 Date:   Mon,  5 Apr 2021 10:53:57 +0200
-Message-Id: <20210405085025.813914903@linuxfoundation.org>
+Message-Id: <20210405085037.113739625@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
-References: <20210405085024.703004126@linuxfoundation.org>
+In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
+References: <20210405085034.233917714@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,456 +40,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+From: Qu Huang <jinsdb@126.com>
 
-[ Upstream commit 4e096a18867a5a989b510f6999d9c6b6622e8f7b ]
+commit e92049ae4548ba09e53eaa9c8f6964b07ea274c9 upstream.
 
-Since 20dd3850bcf8 ("can: Speed up CAN frame receiption by using
-ml_priv") the CAN framework uses per device specific data in the AF_CAN
-protocol. For this purpose the struct net_device->ml_priv is used. Later
-the ml_priv usage in CAN was extended for other users, one of them being
-CAN_J1939.
+Amdgpu driver uses 4-byte data type as DQM fence memory,
+and transmits GPU address of fence memory to microcode
+through query status PM4 message. However, query status
+PM4 message definition and microcode processing are all
+processed according to 8 bytes. Fence memory only allocates
+4 bytes of memory, but microcode does write 8 bytes of memory,
+so there is a memory corruption.
 
-Later in the kernel ml_priv was converted to an union, used by other
-drivers. E.g. the tun driver started storing it's stats pointer.
+Changes since v1:
+  * Change dqm->fence_addr as a u64 pointer to fix this issue,
+also fix up query_status and amdkfd_fence_wait_timeout function
+uses 64 bit fence value to make them consistent.
 
-Since tun devices can claim to be a CAN device, CAN specific protocols
-will wrongly interpret this pointer, which will cause system crashes.
-Mostly this issue is visible in the CAN_J1939 stack.
-
-To fix this issue, we request a dedicated CAN pointer within the
-net_device struct.
-
-Reported-by: syzbot+5138c4dd15a0401bec7b@syzkaller.appspotmail.com
-Fixes: 20dd3850bcf8 ("can: Speed up CAN frame receiption by using ml_priv")
-Fixes: ffd956eef69b ("can: introduce CAN midlayer private and allocate it automatically")
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Fixes: 497a5757ce4e ("tun: switch to net core provided statistics counters")
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://lore.kernel.org/r/20210223070127.4538-1-o.rempel@pengutronix.de
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Qu Huang <jinsdb@126.com>
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Signed-off-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/can/dev/dev.c  |  4 +++-
- drivers/net/can/slcan.c    |  4 +++-
- drivers/net/can/vcan.c     |  2 +-
- drivers/net/can/vxcan.c    |  6 +++++-
- include/linux/can/can-ml.h | 12 ++++++++++++
- include/linux/netdevice.h  | 34 +++++++++++++++++++++++++++++++++-
- net/can/af_can.c           | 34 ++--------------------------------
- net/can/j1939/main.c       | 22 ++++++++--------------
- net/can/j1939/socket.c     | 13 ++++---------
- net/can/proc.c             | 19 +++++++++++++------
- 10 files changed, 84 insertions(+), 66 deletions(-)
+ drivers/gpu/drm/amd/amdkfd/kfd_dbgdev.c               |    2 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c |    6 +++---
+ drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.h |    2 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_packet_manager.c       |    2 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_packet_manager_v9.c    |    2 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_packet_manager_vi.c    |    2 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_priv.h                 |    8 ++++----
+ 7 files changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
-index 1e0c1a05df82..322da89cb9c6 100644
---- a/drivers/net/can/dev/dev.c
-+++ b/drivers/net/can/dev/dev.c
-@@ -718,6 +718,7 @@ EXPORT_SYMBOL_GPL(alloc_can_err_skb);
- struct net_device *alloc_candev_mqs(int sizeof_priv, unsigned int echo_skb_max,
- 				    unsigned int txqs, unsigned int rxqs)
- {
-+	struct can_ml_priv *can_ml;
- 	struct net_device *dev;
- 	struct can_priv *priv;
- 	int size;
-@@ -749,7 +750,8 @@ struct net_device *alloc_candev_mqs(int sizeof_priv, unsigned int echo_skb_max,
- 	priv = netdev_priv(dev);
- 	priv->dev = dev;
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_dbgdev.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_dbgdev.c
+@@ -155,7 +155,7 @@ static int dbgdev_diq_submit_ib(struct k
  
--	dev->ml_priv = (void *)priv + ALIGN(sizeof_priv, NETDEV_ALIGN);
-+	can_ml = (void *)priv + ALIGN(sizeof_priv, NETDEV_ALIGN);
-+	can_set_ml_priv(dev, can_ml);
+ 	/* Wait till CP writes sync code: */
+ 	status = amdkfd_fence_wait_timeout(
+-			(unsigned int *) rm_state,
++			rm_state,
+ 			QUEUESTATE__ACTIVE, 1500);
  
- 	if (echo_skb_max) {
- 		priv->echo_skb_max = echo_skb_max;
-diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
-index 4dfa459ef5c7..95fefb1eef36 100644
---- a/drivers/net/can/slcan.c
-+++ b/drivers/net/can/slcan.c
-@@ -519,6 +519,7 @@ static struct slcan *slc_alloc(void)
- 	int i;
- 	char name[IFNAMSIZ];
- 	struct net_device *dev = NULL;
-+	struct can_ml_priv *can_ml;
- 	struct slcan       *sl;
- 	int size;
+ 	kfd_gtt_sa_free(dbgdev->dev, mem_obj);
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+@@ -1167,7 +1167,7 @@ static int start_cpsch(struct device_que
+ 	if (retval)
+ 		goto fail_allocate_vidmem;
  
-@@ -541,7 +542,8 @@ static struct slcan *slc_alloc(void)
+-	dqm->fence_addr = dqm->fence_mem->cpu_ptr;
++	dqm->fence_addr = (uint64_t *)dqm->fence_mem->cpu_ptr;
+ 	dqm->fence_gpu_addr = dqm->fence_mem->gpu_addr;
  
- 	dev->base_addr  = i;
- 	sl = netdev_priv(dev);
--	dev->ml_priv = (void *)sl + ALIGN(sizeof(*sl), NETDEV_ALIGN);
-+	can_ml = (void *)sl + ALIGN(sizeof(*sl), NETDEV_ALIGN);
-+	can_set_ml_priv(dev, can_ml);
- 
- 	/* Initialize channel control data */
- 	sl->magic = SLCAN_MAGIC;
-diff --git a/drivers/net/can/vcan.c b/drivers/net/can/vcan.c
-index 39ca14b0585d..067705e2850b 100644
---- a/drivers/net/can/vcan.c
-+++ b/drivers/net/can/vcan.c
-@@ -153,7 +153,7 @@ static void vcan_setup(struct net_device *dev)
- 	dev->addr_len		= 0;
- 	dev->tx_queue_len	= 0;
- 	dev->flags		= IFF_NOARP;
--	dev->ml_priv		= netdev_priv(dev);
-+	can_set_ml_priv(dev, netdev_priv(dev));
- 
- 	/* set flags according to driver capabilities */
- 	if (echo)
-diff --git a/drivers/net/can/vxcan.c b/drivers/net/can/vxcan.c
-index b1baa4ac1d53..7000c6cd1e48 100644
---- a/drivers/net/can/vxcan.c
-+++ b/drivers/net/can/vxcan.c
-@@ -141,6 +141,8 @@ static const struct net_device_ops vxcan_netdev_ops = {
- 
- static void vxcan_setup(struct net_device *dev)
- {
-+	struct can_ml_priv *can_ml;
-+
- 	dev->type		= ARPHRD_CAN;
- 	dev->mtu		= CANFD_MTU;
- 	dev->hard_header_len	= 0;
-@@ -149,7 +151,9 @@ static void vxcan_setup(struct net_device *dev)
- 	dev->flags		= (IFF_NOARP|IFF_ECHO);
- 	dev->netdev_ops		= &vxcan_netdev_ops;
- 	dev->needs_free_netdev	= true;
--	dev->ml_priv		= netdev_priv(dev) + ALIGN(sizeof(struct vxcan_priv), NETDEV_ALIGN);
-+
-+	can_ml = netdev_priv(dev) + ALIGN(sizeof(struct vxcan_priv), NETDEV_ALIGN);
-+	can_set_ml_priv(dev, can_ml);
+ 	init_interrupts(dqm);
+@@ -1340,8 +1340,8 @@ out:
+ 	return retval;
  }
  
- /* forward declaration for rtnl_create_link() */
-diff --git a/include/linux/can/can-ml.h b/include/linux/can/can-ml.h
-index 2f5d731ae251..8afa92d15a66 100644
---- a/include/linux/can/can-ml.h
-+++ b/include/linux/can/can-ml.h
-@@ -44,6 +44,7 @@
- 
- #include <linux/can.h>
- #include <linux/list.h>
-+#include <linux/netdevice.h>
- 
- #define CAN_SFF_RCV_ARRAY_SZ (1 << CAN_SFF_ID_BITS)
- #define CAN_EFF_RCV_HASH_BITS 10
-@@ -65,4 +66,15 @@ struct can_ml_priv {
- #endif
- };
- 
-+static inline struct can_ml_priv *can_get_ml_priv(struct net_device *dev)
-+{
-+	return netdev_get_ml_priv(dev, ML_PRIV_CAN);
-+}
-+
-+static inline void can_set_ml_priv(struct net_device *dev,
-+				   struct can_ml_priv *ml_priv)
-+{
-+	netdev_set_ml_priv(dev, ml_priv, ML_PRIV_CAN);
-+}
-+
- #endif /* CAN_ML_H */
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index db1b9623977c..11a52f2fa35d 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -1555,6 +1555,12 @@ enum netdev_priv_flags {
- #define IFF_L3MDEV_RX_HANDLER		IFF_L3MDEV_RX_HANDLER
- #define IFF_LIVE_RENAME_OK		IFF_LIVE_RENAME_OK
- 
-+/* Specifies the type of the struct net_device::ml_priv pointer */
-+enum netdev_ml_priv_type {
-+	ML_PRIV_NONE,
-+	ML_PRIV_CAN,
-+};
-+
- /**
-  *	struct net_device - The DEVICE structure.
-  *
-@@ -1732,6 +1738,7 @@ enum netdev_priv_flags {
-  * 	@nd_net:		Network namespace this network device is inside
-  *
-  * 	@ml_priv:	Mid-layer private
-+ *	@ml_priv_type:  Mid-layer private type
-  * 	@lstats:	Loopback statistics
-  * 	@tstats:	Tunnel statistics
-  * 	@dstats:	Dummy statistics
-@@ -2019,8 +2026,10 @@ struct net_device {
- 	possible_net_t			nd_net;
- 
- 	/* mid-layer private */
-+	void				*ml_priv;
-+	enum netdev_ml_priv_type	ml_priv_type;
-+
- 	union {
--		void					*ml_priv;
- 		struct pcpu_lstats __percpu		*lstats;
- 		struct pcpu_sw_netstats __percpu	*tstats;
- 		struct pcpu_dstats __percpu		*dstats;
-@@ -2167,6 +2176,29 @@ static inline void netdev_reset_rx_headroom(struct net_device *dev)
- 	netdev_set_rx_headroom(dev, -1);
+-int amdkfd_fence_wait_timeout(unsigned int *fence_addr,
+-				unsigned int fence_value,
++int amdkfd_fence_wait_timeout(uint64_t *fence_addr,
++				uint64_t fence_value,
+ 				unsigned int timeout_ms)
+ {
+ 	unsigned long end_jiffies = msecs_to_jiffies(timeout_ms) + jiffies;
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.h
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.h
+@@ -192,7 +192,7 @@ struct device_queue_manager {
+ 	uint16_t		vmid_pasid[VMID_NUM];
+ 	uint64_t		pipelines_addr;
+ 	uint64_t		fence_gpu_addr;
+-	unsigned int		*fence_addr;
++	uint64_t		*fence_addr;
+ 	struct kfd_mem_obj	*fence_mem;
+ 	bool			active_runlist;
+ 	int			sched_policy;
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_packet_manager.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_packet_manager.c
+@@ -347,7 +347,7 @@ fail_create_runlist_ib:
  }
  
-+static inline void *netdev_get_ml_priv(struct net_device *dev,
-+				       enum netdev_ml_priv_type type)
-+{
-+	if (dev->ml_priv_type != type)
-+		return NULL;
-+
-+	return dev->ml_priv;
-+}
-+
-+static inline void netdev_set_ml_priv(struct net_device *dev,
-+				      void *ml_priv,
-+				      enum netdev_ml_priv_type type)
-+{
-+	WARN(dev->ml_priv_type && dev->ml_priv_type != type,
-+	     "Overwriting already set ml_priv_type (%u) with different ml_priv_type (%u)!\n",
-+	     dev->ml_priv_type, type);
-+	WARN(!dev->ml_priv_type && dev->ml_priv,
-+	     "Overwriting already set ml_priv and ml_priv_type is ML_PRIV_NONE!\n");
-+
-+	dev->ml_priv = ml_priv;
-+	dev->ml_priv_type = type;
-+}
-+
- /*
-  * Net namespace inlines
-  */
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index 306d3584a441..c758a12ffe46 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -304,8 +304,8 @@ static struct can_dev_rcv_lists *can_dev_rcv_lists_find(struct net *net,
- 							struct net_device *dev)
+ int pm_send_query_status(struct packet_manager *pm, uint64_t fence_address,
+-			uint32_t fence_value)
++			uint64_t fence_value)
  {
- 	if (dev) {
--		struct can_ml_priv *ml_priv = dev->ml_priv;
--		return &ml_priv->dev_rcv_lists;
-+		struct can_ml_priv *can_ml = can_get_ml_priv(dev);
-+		return &can_ml->dev_rcv_lists;
- 	} else {
- 		return net->can.rx_alldev_list;
- 	}
-@@ -788,25 +788,6 @@ void can_proto_unregister(const struct can_proto *cp)
- }
- EXPORT_SYMBOL(can_proto_unregister);
- 
--/* af_can notifier to create/remove CAN netdevice specific structs */
--static int can_notifier(struct notifier_block *nb, unsigned long msg,
--			void *ptr)
--{
--	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
--
--	if (dev->type != ARPHRD_CAN)
--		return NOTIFY_DONE;
--
--	switch (msg) {
--	case NETDEV_REGISTER:
--		WARN(!dev->ml_priv,
--		     "No CAN mid layer private allocated, please fix your driver and use alloc_candev()!\n");
--		break;
--	}
--
--	return NOTIFY_DONE;
--}
--
- static int can_pernet_init(struct net *net)
- {
- 	spin_lock_init(&net->can.rcvlists_lock);
-@@ -874,11 +855,6 @@ static const struct net_proto_family can_family_ops = {
- 	.owner  = THIS_MODULE,
- };
- 
--/* notifier block for netdevice event */
--static struct notifier_block can_netdev_notifier __read_mostly = {
--	.notifier_call = can_notifier,
--};
--
- static struct pernet_operations can_pernet_ops __read_mostly = {
- 	.init = can_pernet_init,
- 	.exit = can_pernet_exit,
-@@ -909,17 +885,12 @@ static __init int can_init(void)
- 	err = sock_register(&can_family_ops);
- 	if (err)
- 		goto out_sock;
--	err = register_netdevice_notifier(&can_netdev_notifier);
--	if (err)
--		goto out_notifier;
- 
- 	dev_add_pack(&can_packet);
- 	dev_add_pack(&canfd_packet);
- 
- 	return 0;
- 
--out_notifier:
--	sock_unregister(PF_CAN);
- out_sock:
- 	unregister_pernet_subsys(&can_pernet_ops);
- out_pernet:
-@@ -933,7 +904,6 @@ static __exit void can_exit(void)
- 	/* protocol unregister */
- 	dev_remove_pack(&canfd_packet);
- 	dev_remove_pack(&can_packet);
--	unregister_netdevice_notifier(&can_netdev_notifier);
- 	sock_unregister(PF_CAN);
- 
- 	unregister_pernet_subsys(&can_pernet_ops);
-diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
-index 137054bff9ec..e52330f628c9 100644
---- a/net/can/j1939/main.c
-+++ b/net/can/j1939/main.c
-@@ -140,9 +140,9 @@ static struct j1939_priv *j1939_priv_create(struct net_device *ndev)
- static inline void j1939_priv_set(struct net_device *ndev,
- 				  struct j1939_priv *priv)
- {
--	struct can_ml_priv *can_ml_priv = ndev->ml_priv;
-+	struct can_ml_priv *can_ml = can_get_ml_priv(ndev);
- 
--	can_ml_priv->j1939_priv = priv;
-+	can_ml->j1939_priv = priv;
+ 	uint32_t *buffer, size;
+ 	int retval = 0;
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_packet_manager_v9.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_packet_manager_v9.c
+@@ -283,7 +283,7 @@ static int pm_unmap_queues_v9(struct pac
  }
  
- static void __j1939_priv_release(struct kref *kref)
-@@ -211,12 +211,9 @@ static void __j1939_rx_release(struct kref *kref)
- /* get pointer to priv without increasing ref counter */
- static inline struct j1939_priv *j1939_ndev_to_priv(struct net_device *ndev)
+ static int pm_query_status_v9(struct packet_manager *pm, uint32_t *buffer,
+-			uint64_t fence_address,	uint32_t fence_value)
++			uint64_t fence_address,	uint64_t fence_value)
  {
--	struct can_ml_priv *can_ml_priv = ndev->ml_priv;
-+	struct can_ml_priv *can_ml = can_get_ml_priv(ndev);
+ 	struct pm4_mes_query_status *packet;
  
--	if (!can_ml_priv)
--		return NULL;
--
--	return can_ml_priv->j1939_priv;
-+	return can_ml->j1939_priv;
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_packet_manager_vi.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_packet_manager_vi.c
+@@ -263,7 +263,7 @@ static int pm_unmap_queues_vi(struct pac
  }
  
- static struct j1939_priv *j1939_priv_get_by_ndev_locked(struct net_device *ndev)
-@@ -225,9 +222,6 @@ static struct j1939_priv *j1939_priv_get_by_ndev_locked(struct net_device *ndev)
- 
- 	lockdep_assert_held(&j1939_netdev_lock);
- 
--	if (ndev->type != ARPHRD_CAN)
--		return NULL;
--
- 	priv = j1939_ndev_to_priv(ndev);
- 	if (priv)
- 		j1939_priv_get(priv);
-@@ -348,15 +342,16 @@ static int j1939_netdev_notify(struct notifier_block *nb,
- 			       unsigned long msg, void *data)
+ static int pm_query_status_vi(struct packet_manager *pm, uint32_t *buffer,
+-			uint64_t fence_address,	uint32_t fence_value)
++			uint64_t fence_address,	uint64_t fence_value)
  {
- 	struct net_device *ndev = netdev_notifier_info_to_dev(data);
-+	struct can_ml_priv *can_ml = can_get_ml_priv(ndev);
- 	struct j1939_priv *priv;
+ 	struct pm4_mes_query_status *packet;
  
-+	if (!can_ml)
-+		goto notify_done;
-+
- 	priv = j1939_priv_get_by_ndev(ndev);
- 	if (!priv)
- 		goto notify_done;
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
+@@ -1003,8 +1003,8 @@ int pqm_get_wave_state(struct process_qu
+ 		       u32 *ctl_stack_used_size,
+ 		       u32 *save_area_used_size);
  
--	if (ndev->type != ARPHRD_CAN)
--		goto notify_put;
--
- 	switch (msg) {
- 	case NETDEV_DOWN:
- 		j1939_cancel_active_session(priv, NULL);
-@@ -365,7 +360,6 @@ static int j1939_netdev_notify(struct notifier_block *nb,
- 		break;
- 	}
+-int amdkfd_fence_wait_timeout(unsigned int *fence_addr,
+-			      unsigned int fence_value,
++int amdkfd_fence_wait_timeout(uint64_t *fence_addr,
++			      uint64_t fence_value,
+ 			      unsigned int timeout_ms);
  
--notify_put:
- 	j1939_priv_put(priv);
+ /* Packet Manager */
+@@ -1040,7 +1040,7 @@ struct packet_manager_funcs {
+ 			uint32_t filter_param, bool reset,
+ 			unsigned int sdma_engine);
+ 	int (*query_status)(struct packet_manager *pm, uint32_t *buffer,
+-			uint64_t fence_address,	uint32_t fence_value);
++			uint64_t fence_address,	uint64_t fence_value);
+ 	int (*release_mem)(uint64_t gpu_addr, uint32_t *buffer);
  
- notify_done:
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index 047090960539..d57475c8ba07 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -12,6 +12,7 @@
+ 	/* Packet sizes */
+@@ -1062,7 +1062,7 @@ int pm_send_set_resources(struct packet_
+ 				struct scheduling_resources *res);
+ int pm_send_runlist(struct packet_manager *pm, struct list_head *dqm_queues);
+ int pm_send_query_status(struct packet_manager *pm, uint64_t fence_address,
+-				uint32_t fence_value);
++				uint64_t fence_value);
  
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
-+#include <linux/can/can-ml.h>
- #include <linux/can/core.h>
- #include <linux/can/skb.h>
- #include <linux/errqueue.h>
-@@ -453,6 +454,7 @@ static int j1939_sk_bind(struct socket *sock, struct sockaddr *uaddr, int len)
- 		j1939_jsk_del(priv, jsk);
- 		j1939_local_ecu_put(priv, jsk->addr.src_name, jsk->addr.sa);
- 	} else {
-+		struct can_ml_priv *can_ml;
- 		struct net_device *ndev;
- 
- 		ndev = dev_get_by_index(net, addr->can_ifindex);
-@@ -461,15 +463,8 @@ static int j1939_sk_bind(struct socket *sock, struct sockaddr *uaddr, int len)
- 			goto out_release_sock;
- 		}
- 
--		if (ndev->type != ARPHRD_CAN) {
--			dev_put(ndev);
--			ret = -ENODEV;
--			goto out_release_sock;
--		}
--
--		if (!ndev->ml_priv) {
--			netdev_warn_once(ndev,
--					 "No CAN mid layer private allocated, please fix your driver and use alloc_candev()!\n");
-+		can_ml = can_get_ml_priv(ndev);
-+		if (!can_ml) {
- 			dev_put(ndev);
- 			ret = -ENODEV;
- 			goto out_release_sock;
-diff --git a/net/can/proc.c b/net/can/proc.c
-index 077af42c26ba..a5fc63c78370 100644
---- a/net/can/proc.c
-+++ b/net/can/proc.c
-@@ -329,8 +329,11 @@ static int can_rcvlist_proc_show(struct seq_file *m, void *v)
- 
- 	/* receive list for registered CAN devices */
- 	for_each_netdev_rcu(net, dev) {
--		if (dev->type == ARPHRD_CAN && dev->ml_priv)
--			can_rcvlist_proc_show_one(m, idx, dev, dev->ml_priv);
-+		struct can_ml_priv *can_ml = can_get_ml_priv(dev);
-+
-+		if (can_ml)
-+			can_rcvlist_proc_show_one(m, idx, dev,
-+						  &can_ml->dev_rcv_lists);
- 	}
- 
- 	rcu_read_unlock();
-@@ -382,8 +385,10 @@ static int can_rcvlist_sff_proc_show(struct seq_file *m, void *v)
- 
- 	/* sff receive list for registered CAN devices */
- 	for_each_netdev_rcu(net, dev) {
--		if (dev->type == ARPHRD_CAN && dev->ml_priv) {
--			dev_rcv_lists = dev->ml_priv;
-+		struct can_ml_priv *can_ml = can_get_ml_priv(dev);
-+
-+		if (can_ml) {
-+			dev_rcv_lists = &can_ml->dev_rcv_lists;
- 			can_rcvlist_proc_show_array(m, dev, dev_rcv_lists->rx_sff,
- 						    ARRAY_SIZE(dev_rcv_lists->rx_sff));
- 		}
-@@ -413,8 +418,10 @@ static int can_rcvlist_eff_proc_show(struct seq_file *m, void *v)
- 
- 	/* eff receive list for registered CAN devices */
- 	for_each_netdev_rcu(net, dev) {
--		if (dev->type == ARPHRD_CAN && dev->ml_priv) {
--			dev_rcv_lists = dev->ml_priv;
-+		struct can_ml_priv *can_ml = can_get_ml_priv(dev);
-+
-+		if (can_ml) {
-+			dev_rcv_lists = &can_ml->dev_rcv_lists;
- 			can_rcvlist_proc_show_array(m, dev, dev_rcv_lists->rx_eff,
- 						    ARRAY_SIZE(dev_rcv_lists->rx_eff));
- 		}
--- 
-2.30.1
-
+ int pm_send_unmap_queue(struct packet_manager *pm, enum kfd_queue_type type,
+ 			enum kfd_unmap_queues_filter mode,
 
 
