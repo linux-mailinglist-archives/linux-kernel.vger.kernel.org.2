@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4180353D41
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64CE8353C9C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236807AbhDEI7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 04:59:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39106 "EHLO mail.kernel.org"
+        id S232691AbhDEIzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 04:55:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233775AbhDEI6l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 04:58:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B2FBC6124C;
-        Mon,  5 Apr 2021 08:58:34 +0000 (UTC)
+        id S230305AbhDEIzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:55:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42BE66138A;
+        Mon,  5 Apr 2021 08:55:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613115;
-        bh=HRuoW2dVtv27GDDlzddUzMep4juDYy2j12HKLEGAdN4=;
+        s=korg; t=1617612936;
+        bh=n+WTyXrqjrsOLXQL37TrAHfXUymKT+wLmQfWBU0EJkg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d63wE+XotPN4qI5DZGlAd2OnQidn59XBGUHaA2fDhb09ecIyCCzy4phrGMMGxh6wa
-         w8Z5vwWTtT5ri03wWT5yLxjUD5NeFV3Idy37Rvtf3xkrZpxzCrvdpQ3R2UXfgdVhJ/
-         x7iRdn5szgcaZ1d814urKab3QC5wAg0lW+uvniFA=
+        b=yBTMDb92HCNa9kT8tI9BahRbAD++h5exAjMzW2VxJIbeDthPFezqOqQCTKQbtYsjZ
+         8xLJk7NJL9un5FYIffphU/xTer2cORiLZGlJFsTqMe2o7qmP2lZFdLcMPg3hHWMFQX
+         5UzeOVuEMrySsqPdf+k2x0jYUO/yBIuSO/BlWp7s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ikjoon Jang <ikjn@chromium.org>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.14 24/52] ALSA: usb-audio: Apply sample rate quirk to Logitech Connect
-Date:   Mon,  5 Apr 2021 10:53:50 +0200
-Message-Id: <20210405085022.782150210@linuxfoundation.org>
+        stable@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 4.4 17/28] tracing: Fix stack trace event size
+Date:   Mon,  5 Apr 2021 10:53:51 +0200
+Message-Id: <20210405085017.559460915@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
-References: <20210405085021.996963957@linuxfoundation.org>
+In-Reply-To: <20210405085017.012074144@linuxfoundation.org>
+References: <20210405085017.012074144@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,35 +39,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ikjoon Jang <ikjn@chromium.org>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-commit 625bd5a616ceda4840cd28f82e957c8ced394b6a upstream.
+commit 9deb193af69d3fd6dd8e47f292b67c805a787010 upstream.
 
-Logitech ConferenceCam Connect is a compound USB device with UVC and
-UAC. Not 100% reproducible but sometimes it keeps responding STALL to
-every control transfer once it receives get_freq request.
+Commit cbc3b92ce037 fixed an issue to modify the macros of the stack trace
+event so that user space could parse it properly. Originally the stack
+trace format to user space showed that the called stack was a dynamic
+array. But it is not actually a dynamic array, in the way that other
+dynamic event arrays worked, and this broke user space parsing for it. The
+update was to make the array look to have 8 entries in it. Helper
+functions were added to make it parse it correctly, as the stack was
+dynamic, but was determined by the size of the event stored.
 
-This patch adds 046d:0x084c to a snd_usb_get_sample_rate_quirk list.
+Although this fixed user space on how it read the event, it changed the
+internal structure used for the stack trace event. It changed the array
+size from [0] to [8] (added 8 entries). This increased the size of the
+stack trace event by 8 words. The size reserved on the ring buffer was the
+size of the stack trace event plus the number of stack entries found in
+the stack trace. That commit caused the amount to be 8 more than what was
+needed because it did not expect the caller field to have any size. This
+produced 8 entries of garbage (and reading random data) from the stack
+trace event:
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=203419
-Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210324105153.2322881-1-ikjn@chromium.org
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+          <idle>-0       [002] d... 1976396.837549: <stack trace>
+ => trace_event_raw_event_sched_switch
+ => __traceiter_sched_switch
+ => __schedule
+ => schedule_idle
+ => do_idle
+ => cpu_startup_entry
+ => secondary_startup_64_no_verify
+ => 0xc8c5e150ffff93de
+ => 0xffff93de
+ => 0
+ => 0
+ => 0xc8c5e17800000000
+ => 0x1f30affff93de
+ => 0x00000004
+ => 0x200000000
+
+Instead, subtract the size of the caller field from the size of the event
+to make sure that only the amount needed to store the stack trace is
+reserved.
+
+Link: https://lore.kernel.org/lkml/your-ad-here.call-01617191565-ext-9692@work.hours/
+
+Cc: stable@vger.kernel.org
+Fixes: cbc3b92ce037 ("tracing: Set kernel_stack's caller size properly")
+Reported-by: Vasily Gorbik <gor@linux.ibm.com>
+Tested-by: Vasily Gorbik <gor@linux.ibm.com>
+Acked-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/usb/quirks.c |    1 +
- 1 file changed, 1 insertion(+)
+ kernel/trace/trace.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1156,6 +1156,7 @@ bool snd_usb_get_sample_rate_quirk(struc
- 	case USB_ID(0x21B4, 0x0081): /* AudioQuest DragonFly */
- 	case USB_ID(0x2912, 0x30c8): /* Audioengine D1 */
- 	case USB_ID(0x413c, 0xa506): /* Dell AE515 sound bar */
-+	case USB_ID(0x046d, 0x084c): /* Logitech ConferenceCam Connect */
- 		return true;
- 	}
- 	return false;
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -1867,7 +1867,8 @@ static void __ftrace_trace_stack(struct
+ 	size *= sizeof(unsigned long);
+ 
+ 	event = trace_buffer_lock_reserve(buffer, TRACE_STACK,
+-					  sizeof(*entry) + size, flags, pc);
++				    (sizeof(*entry) - sizeof(entry->caller)) + size,
++				    flags, pc);
+ 	if (!event)
+ 		goto out;
+ 	entry = ring_buffer_event_data(event);
 
 
