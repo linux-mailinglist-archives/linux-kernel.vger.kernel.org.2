@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5437E353B15
+	by mail.lfdr.de (Postfix) with ESMTP id 060D9353B14
 	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 05:37:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231971AbhDEDhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 23:37:16 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15596 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230334AbhDEDhK (ORCPT
+        id S231960AbhDEDhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 23:37:13 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:15907 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231934AbhDEDhK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 4 Apr 2021 23:37:10 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FDGW20DhNz1BFWR;
-        Mon,  5 Apr 2021 11:34:54 +0800 (CST)
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FDGWT6n8Gzkhb9;
+        Mon,  5 Apr 2021 11:35:17 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
  14.3.498.0; Mon, 5 Apr 2021 11:36:56 +0800
@@ -22,9 +22,9 @@ From:   Xiaofei Tan <tanxiaofei@huawei.com>
 To:     <gregkh@linuxfoundation.org>, <jirislaby@kernel.org>
 CC:     <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
         Xiaofei Tan <tanxiaofei@huawei.com>
-Subject: [PATCH 02/10] tty/sysrq: Fix issues of code indent should use tabs
-Date:   Mon, 5 Apr 2021 11:34:14 +0800
-Message-ID: <1617593662-25900-3-git-send-email-tanxiaofei@huawei.com>
+Subject: [PATCH 03/10] tty: tty_jobctrl: Add a blank line after declarations
+Date:   Mon, 5 Apr 2021 11:34:15 +0800
+Message-ID: <1617593662-25900-4-git-send-email-tanxiaofei@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1617593662-25900-1-git-send-email-tanxiaofei@huawei.com>
 References: <1617593662-25900-1-git-send-email-tanxiaofei@huawei.com>
@@ -36,88 +36,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix issues of code indent should use tabs, reported by checkpatch.pl.
+Add a blank line after declarations, reported by checkpatch.pl.
 
 Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
 ---
- drivers/tty/sysrq.c | 34 +++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
+ drivers/tty/tty_jobctrl.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
-index 0372ed7..1ece100 100644
---- a/drivers/tty/sysrq.c
-+++ b/drivers/tty/sysrq.c
-@@ -548,22 +548,22 @@ static int sysrq_key_table_key2index(int key)
-  */
- static const struct sysrq_key_op *__sysrq_get_key_op(int key)
+diff --git a/drivers/tty/tty_jobctrl.c b/drivers/tty/tty_jobctrl.c
+index 4b751b9..86070f7 100644
+--- a/drivers/tty/tty_jobctrl.c
++++ b/drivers/tty/tty_jobctrl.c
+@@ -75,6 +75,7 @@ void proc_clear_tty(struct task_struct *p)
  {
--        const struct sysrq_key_op *op_p = NULL;
--        int i;
-+	const struct sysrq_key_op *op_p = NULL;
-+	int i;
+ 	unsigned long flags;
+ 	struct tty_struct *tty;
++
+ 	spin_lock_irqsave(&p->sighand->siglock, flags);
+ 	tty = p->signal->tty;
+ 	p->signal->tty = NULL;
+@@ -173,6 +174,7 @@ EXPORT_SYMBOL_GPL(get_current_tty);
+ void session_clear_tty(struct pid *session)
+ {
+ 	struct task_struct *p;
++
+ 	do_each_pid_task(session, PIDTYPE_SID, p) {
+ 		proc_clear_tty(p);
+ 	} while_each_pid_task(session, PIDTYPE_SID, p);
+@@ -269,6 +271,7 @@ void disassociate_ctty(int on_exit)
+ 			tty_vhangup_session(tty);
+ 		} else {
+ 			struct pid *tty_pgrp = tty_get_pgrp(tty);
++
+ 			if (tty_pgrp) {
+ 				kill_pgrp(tty_pgrp, SIGHUP, on_exit);
+ 				if (!on_exit)
+@@ -280,6 +283,7 @@ void disassociate_ctty(int on_exit)
  
- 	i = sysrq_key_table_key2index(key);
- 	if (i != -1)
--	        op_p = sysrq_key_table[i];
-+		op_p = sysrq_key_table[i];
- 
--        return op_p;
-+		return op_p;
+ 	} else if (on_exit) {
+ 		struct pid *old_pgrp;
++
+ 		spin_lock_irq(&current->sighand->siglock);
+ 		old_pgrp = current->signal->tty_old_pgrp;
+ 		current->signal->tty_old_pgrp = NULL;
+@@ -328,6 +332,7 @@ void no_tty(void)
+ 	   between a new association and proc_clear_tty but possible we need
+ 	   to protect against this anyway */
+ 	struct task_struct *tsk = current;
++
+ 	disassociate_ctty(0);
+ 	proc_clear_tty(tsk);
  }
- 
- static void __sysrq_put_key_op(int key, const struct sysrq_key_op *op_p)
- {
--        int i = sysrq_key_table_key2index(key);
-+	int i = sysrq_key_table_key2index(key);
- 
--        if (i != -1)
--                sysrq_key_table[i] = op_p;
-+	if (i != -1)
-+		sysrq_key_table[i] = op_p;
- }
- 
- void __handle_sysrq(int key, bool check_mask)
-@@ -587,8 +587,8 @@ void __handle_sysrq(int key, bool check_mask)
- 	orig_log_level = console_loglevel;
- 	console_loglevel = CONSOLE_LOGLEVEL_DEFAULT;
- 
--        op_p = __sysrq_get_key_op(key);
--        if (op_p) {
-+	op_p = __sysrq_get_key_op(key);
-+	if (op_p) {
- 		/*
- 		 * Should we check for enabled operations (/proc/sysrq-trigger
- 		 * should not) and is the invoked operation enabled?
-@@ -637,13 +637,13 @@ static int sysrq_reset_downtime_ms;
- 
- /* Simple translation table for the SysRq keys */
- static const unsigned char sysrq_xlate[KEY_CNT] =
--        "\000\0331234567890-=\177\t"                    /* 0x00 - 0x0f */
--        "qwertyuiop[]\r\000as"                          /* 0x10 - 0x1f */
--        "dfghjkl;'`\000\\zxcv"                          /* 0x20 - 0x2f */
--        "bnm,./\000*\000 \000\201\202\203\204\205"      /* 0x30 - 0x3f */
--        "\206\207\210\211\212\000\000789-456+1"         /* 0x40 - 0x4f */
--        "230\177\000\000\213\214\000\000\000\000\000\000\000\000\000\000" /* 0x50 - 0x5f */
--        "\r\000/";                                      /* 0x60 - 0x6f */
-+	"\000\0331234567890-=\177\t"                    /* 0x00 - 0x0f */
-+	"qwertyuiop[]\r\000as"                          /* 0x10 - 0x1f */
-+	"dfghjkl;'`\000\\zxcv"                          /* 0x20 - 0x2f */
-+	"bnm,./\000*\000 \000\201\202\203\204\205"      /* 0x30 - 0x3f */
-+	"\206\207\210\211\212\000\000789-456+1"         /* 0x40 - 0x4f */
-+	"230\177\000\000\213\214\000\000\000\000\000\000\000\000\000\000" /* 0x50 - 0x5f */
-+	"\r\000/";                                      /* 0x60 - 0x6f */
- 
- struct sysrq_state {
- 	struct input_handle handle;
-@@ -1108,7 +1108,7 @@ int sysrq_toggle_support(int enable_mask)
- EXPORT_SYMBOL_GPL(sysrq_toggle_support);
- 
- static int __sysrq_swap_key_ops(int key, const struct sysrq_key_op *insert_op_p,
--                                const struct sysrq_key_op *remove_op_p)
-+				const struct sysrq_key_op *remove_op_p)
- {
- 	int retval;
- 
 -- 
 2.8.1
 
