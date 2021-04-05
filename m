@@ -2,82 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10592354802
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 23:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D50C354812
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 23:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241264AbhDEVD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 17:03:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59490 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241232AbhDEVDO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 17:03:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 592316117A;
-        Mon,  5 Apr 2021 21:03:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617656588;
-        bh=hgMdEZfKlgTEAMlXGXhRkerARCNyZcju+QslGwOa0+w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CuiKqK6svPBMbgSzIV0swbko66D/AF3rArVuHPgVfs8zqbZ51XIxJoy5Rms5WZocO
-         FdYtsFXO+pJiN0boea7dUBCuru/Ppj7hCkZvlBTQPQIfsyxkmjMEnLpEkqjCeFErmK
-         7EpAnv4PnrCvNumPAGB7HknxP3HYlm5Ax6dKvd42s3HK5Me+cUeHeS9wKzP4TA/bqL
-         Y0NATtShghJzuuh7wddqqFX5j/56G8uYm8IHj6ymVW36jgxBSKqfOYDNWAWBPCjueh
-         ZDOcVgP4W7mVhE9V1M6efpa/VZa+NDvNpFJ9eQSLD8mLfMhSDgKZUu4PcT3/oPgWSl
-         I32DbOIUEpepg==
-Date:   Mon, 5 Apr 2021 23:03:05 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     linux-i2c@vger.kernel.org
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFT 2/2] i2c: tegra-bpmp: make some functions void
-Message-ID: <20210405210305.GH3945@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210331075141.22227-1-wsa@kernel.org>
- <20210331075141.22227-3-wsa@kernel.org>
+        id S232606AbhDEVNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 17:13:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230071AbhDEVM7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 17:12:59 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905C3C061756;
+        Mon,  5 Apr 2021 14:12:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=FlPVL2YW6cfbH1aHkcHb+iJRRts6aM1QDTsGgGRCbVw=; b=0Ez7DmPL312HANuE/cltuMCSM
+        XYqoy13BFbjcq+g9TH1D+F6h0qwDgNcvrmqdxoNy4qMdwBaxR9vV7dXkuYTfoNNQA/3jFk9SDusSr
+        M1U74AOfqWoU2fPmVSxkqhtB1rUrF0w8wbSLc36ILAxSCpCBp27Y85qCQiDhXbigbOHpPefXkEc71
+        X1I1THeEzBdz+YHcgb3i+uRbOul9m37JOx8KTSbVMl1THZLA21+xLNpnV4nc5s/C//fr9gUFFf1cZ
+        2kxZsG9Hvi2ZW0W5NqQ6/qG98MZLOgqJqMev+uCyaPE79GcSsKZ1kLaAM6gEIl8wbUeIV3EpsalKj
+        dHHdERn+w==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52130)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lTWWU-0006k4-IG; Mon, 05 Apr 2021 22:12:38 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lTWWS-0000RI-U4; Mon, 05 Apr 2021 22:12:36 +0100
+Date:   Mon, 5 Apr 2021 22:12:36 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Danilo Krummrich <danilokrummrich@dk-develop.de>
+Cc:     Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
+        hkallweit1@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jeremy.linton@arm.com
+Subject: Re: [PATCH 2/2] net: mdio: support c45 peripherals on c22 busses
+Message-ID: <20210405211236.GD1463@shell.armlinux.org.uk>
+References: <YGSi+b/r4zlq9rm8@lunn.ch>
+ <6f1dfc28368d098ace9564e53ed92041@dk-develop.de>
+ <20210331183524.GV1463@shell.armlinux.org.uk>
+ <2f0ea3c3076466e197ca2977753b07f3@dk-develop.de>
+ <20210401084857.GW1463@shell.armlinux.org.uk>
+ <YGZvGfNSBBq/92D+@arch-linux>
+ <20210402125858.GB1463@shell.armlinux.org.uk>
+ <YGoSS7llrl5K6D+/@arch-linux>
+ <YGsRwxwXILC1Tp2S@lunn.ch>
+ <YGtdv++nv3H5K43E@arch-linux>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="y9PDtDHaFrXNoMPU"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210331075141.22227-3-wsa@kernel.org>
+In-Reply-To: <YGtdv++nv3H5K43E@arch-linux>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Apr 05, 2021 at 08:58:07PM +0200, Danilo Krummrich wrote:
+> On Mon, Apr 05, 2021 at 03:33:55PM +0200, Andrew Lunn wrote:
+> However, this was about something else - Russell wrote:
+> > > > We have established that MDIO drivers need to reject accesses for
+> > > > reads/writes that they do not support [..]
+> The MDIO drivers do this by checking the MII_ADDR_C45 flag if it's a C45 bus
+> request. In case they don't support it they return -EOPNOTSUPP. So basically,
+> the bus drivers read/write functions (should) encode the capability of doing
+> C45 transfers.
+> 
+> I just noted that this is redundant to the bus' capabilities field of
+> struct mii_bus which also encodes the bus' capabilities of doing C22 and/or C45
+> transfers.
+> 
+> Now, instead of encoding this information of the bus' capabilities at both
+> places, I'd propose just checking the mii_bus->capabilities field in the
+> mdiobus_c45_*() functions. IMHO this would be a little cleaner, than having two
+> places where this information is stored. What do you think about that?
 
---y9PDtDHaFrXNoMPU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It would be good to clean that up, but that's a lot of work given the
+number of drivers - not only in terms of making the changes but also
+making sure that the changes are as correct as would be sensibly
+achievable... then there's the problem of causing regressions by doing
+so.
 
-On Wed, Mar 31, 2021 at 09:51:41AM +0200, Wolfram Sang wrote:
-> They return 0 always, so save some lines and code.
->=20
-> Signed-off-by: Wolfram Sang <wsa@kernel.org>
+The two ways were introduced at different times to do two different
+things: the checking in the read/write methods in each driver was the
+first method, which was being added to newer drivers. Then more
+recently came the ->capabilities field.
 
-Applied to for-next, thanks!
+So now we have some drivers that:
+- do no checks and don't fill in ->capabilities either (some of which
+  are likely C22-only.)
+- check in their read/write methods for access types they don't support
+  (e.g. drivers/net/ethernet/marvell/mvmdio.c) and don't fill in
+  ->capabilities. Note, mvmdio supports both C22-only and C45-only
+  interfaces with no C22-and-C45 interfaces.
+- do fill in ->capabilities with MDIOBUS_C22_C45 (and hence have no
+  checks in their read/write functions).
 
+Sometimes, its best to leave stuff alone... if it ain't broke, don't
+make regressions.
 
---y9PDtDHaFrXNoMPU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIyBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBrewkACgkQFA3kzBSg
-KbYD5Q/4yRzQqwhyuGPyBrn+LjCcl54QozSdFBOpPGtnsq0ZxeTQxqk6E2D04DA2
-nIinuPWGXvrxGU2S7zI9GgLyoheobAaHrLl7mBZtB7RZhVfPDupALN6BCUtsRi8q
-Tn3CIL2rehKkcwykwvVzluVZ45Ko4PdNVqZLqKNc2+I9B8eyK8K5lAZ9k+SSTtLs
-Lctp2pDvzktlf6cotzhCXR6Hv6K9gNenSsC10VvJ0Meme3cGWBcFKTCiWa0bz5aQ
-HISoDgjo+ySNrt7JntzT1Xd1WFwFS4BO1lh/IlljP1ppFXRE9L79UUTSYXPfzL3x
-z/QFhs134/cqrxqMcx2tVOm93eg9lPa6/Q1Gd4vYNzepWTrrNE5i+yz7MKd3nzfz
-/KjxwSwS/aLfQLe/zeEhT8CKgrWXBdaDoC1ZgS7/UECJPcUOrcujE3nQpQ2ZHN5C
-0o5gjc4Enf7oKCv6goOzG1xKf7jEbNPEwsc0tjmNo0dCOZ/nwPuP6jj8JN0Ox0Tk
-s3VTvk0NZdiAfaPwhlR3BAZACAc1N+hLV4f4tchHDJw2UZfFqwxhosXwYbvujWHw
-OYQ0BKTc7otuz7kZj30cVkyBYEJITYStk99F/PHw6KV7zfs260xTJ0SuyMyV0pZt
-SY3UMsowpNuPhdQ4n0mFgv6VBOxOjy3Tvj7qCsZVh6pmJSk9OA==
-=bObP
------END PGP SIGNATURE-----
-
---y9PDtDHaFrXNoMPU--
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
