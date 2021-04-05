@@ -2,198 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C5A35488E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 00:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 699D8354890
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 00:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237706AbhDEWPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 18:15:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41428 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236113AbhDEWPg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 18:15:36 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3897D613D6;
-        Mon,  5 Apr 2021 22:15:29 +0000 (UTC)
-Date:   Mon, 5 Apr 2021 18:15:25 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        peterz@infradead.org
-Subject: Re: [PATCH v2 4/5] tracing: Unify the logic for function tracing
- options
-Message-ID: <20210405181525.0d4a724e@gandalf.local.home>
-In-Reply-To: <20210329130533.199507-5-y.karadz@gmail.com>
-References: <20210329130533.199507-1-y.karadz@gmail.com>
-        <20210329130533.199507-5-y.karadz@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S241392AbhDEWQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 18:16:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236135AbhDEWQh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 18:16:37 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05001C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 15:16:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=DceUy+2NUnlC8ur/URFEkVm8PqULS5zh5pj+vzZYRL4=; b=U0kZ9bQ7SmB9OarOU1kip/YGbo
+        1WwN48ETUBqjEmaghnpJ2dZVC53HTCtUIOLlqzsc5HnR6U8cT6RmAGc/1UjQXxAB9/DUeGrgsZtrr
+        ImbvaEtSoxHj0kDIQbl8IzB+OWHt4mr3fGNWtXykIfpGquDw3XGgm1+p+jrjWllT8OFA=;
+Received: from p200300ccff0b410002133bfffe9baf32.dip0.t-ipconnect.de ([2003:cc:ff0b:4100:213:3bff:fe9b:af32] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1lTXWF-0002sy-EY; Tue, 06 Apr 2021 00:16:27 +0200
+Received: from andi by aktux with local (Exim 4.92)
+        (envelope-from <andreas@kemnade.info>)
+        id 1lTXWF-0007q1-3t; Tue, 06 Apr 2021 00:16:27 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     lee.jones@linaro.org, andreas@kemnade.info,
+        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org
+Subject: [PATCH] mfd: rn5t618: fix IRQ trigger by changing it to level mode
+Date:   Tue,  6 Apr 2021 00:15:58 +0200
+Message-Id: <20210405221558.30046-1-andreas@kemnade.info>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Mar 2021 16:05:32 +0300
-"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
+During more massive generation of interrupts, the IRQ got stuck,
+and the subdevices did not see any new interrupts. That happens
+especially at wonky USB supply in combination with ADC reads.
+To fix that trigger the IRQ at level low instead of falling edge.
 
-> Currently the logic for dealing with the options for function tracing
-> has two different implementations. One is used when we set the flags
-> (in "static int func_set_flag()") and another used when we initialize
-> the tracer (in "static int function_trace_init()"). Those two
-> implementations are meant to do essentially the same thing and they
-> are both not very convenient for adding new options. In this patch
-> we add a helper function that provides a single implementation of
-> the logic for dealing with the options and we make it such that new
-> options can be easily added.
-> 
-> Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-> ---
->  kernel/trace/trace_functions.c | 66 ++++++++++++++++++++--------------
->  1 file changed, 40 insertions(+), 26 deletions(-)
-> 
-> diff --git a/kernel/trace/trace_functions.c b/kernel/trace/trace_functions.c
-> index f93723ca66bc..6c912eb0508a 100644
-> --- a/kernel/trace/trace_functions.c
-> +++ b/kernel/trace/trace_functions.c
-> @@ -27,13 +27,17 @@ function_trace_call(unsigned long ip, unsigned long parent_ip,
->  static void
->  function_stack_trace_call(unsigned long ip, unsigned long parent_ip,
->  			  struct ftrace_ops *op, struct ftrace_regs *fregs);
-> +static ftrace_func_t select_trace_function(u32 flags_val);
->  static struct tracer_flags func_flags;
->  
->  /* Our option */
->  enum {
-> +	TRACE_FUNC_NO_OPTS	= 0x0, /* No flags set. */
->  	TRACE_FUNC_OPT_STACK	= 0x1,
->  };
->  
-> +#define TRACE_FUNC_OPT_MASK	(TRACE_FUNC_OPT_STACK)
-> +
->  int ftrace_allocate_ftrace_ops(struct trace_array *tr)
->  {
->  	struct ftrace_ops *ops;
-> @@ -97,12 +101,9 @@ static int function_trace_init(struct trace_array *tr)
->  	if (!tr->ops)
->  		return -ENOMEM;
->  
-> -	/* Currently only the global instance can do stack tracing */
-> -	if (tr->flags & TRACE_ARRAY_FL_GLOBAL &&
-> -	    func_flags.val & TRACE_FUNC_OPT_STACK)
-> -		func = function_stack_trace_call;
-> -	else
-> -		func = function_trace_call;
-> +	func = select_trace_function(func_flags.val);
-> +	if (!func)
-> +		return -EINVAL;
->  
->  	ftrace_init_array_ops(tr, func);
->  
-> @@ -205,6 +206,18 @@ function_stack_trace_call(unsigned long ip, unsigned long parent_ip,
->  	local_irq_restore(flags);
->  }
->  
-> +static ftrace_func_t select_trace_function(u32 flags_val)
-> +{
-> +	switch (flags_val & TRACE_FUNC_OPT_MASK) {
-> +	case TRACE_FUNC_NO_OPTS:
-> +		return function_trace_call;
-> +	case TRACE_FUNC_OPT_STACK:
-> +		return function_stack_trace_call;
-> +	default:
-> +		return NULL;
-> +	}
-> +}
+Fixes: 0c81604516af ("mfd: rn5t618: Add IRQ support")
+Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+---
+ drivers/mfd/rn5t618.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Is there a reason why you defined this function here and not before its
-first use? When defining functions, I tend to try to define them before
-their first use to not need to declare the static prototype above.
-
-The reasons for doing the static prototype and using a static function is
-usually because of #ifdef around the first use, and keeping the function
-from being hidden by the #ifdef, or the static function already exists, and
-then gets used in a function before it, where it's just easier to add the
-static declaration than moving the function.
-
-
-> +
->  static struct tracer_opt func_opts[] = {
->  #ifdef CONFIG_STACKTRACE
->  	{ TRACER_OPT(func_stack_trace, TRACE_FUNC_OPT_STACK) },
-> @@ -213,7 +226,7 @@ static struct tracer_opt func_opts[] = {
->  };
->  
->  static struct tracer_flags func_flags = {
-> -	.val = 0, /* By default: all flags disabled */
-> +	.val = TRACE_FUNC_NO_OPTS, /* By default: all flags disabled */
->  	.opts = func_opts
->  };
->  
-> @@ -235,30 +248,31 @@ static struct tracer function_trace;
->  static int
->  func_set_flag(struct trace_array *tr, u32 old_flags, u32 bit, int set)
->  {
-> -	switch (bit) {
-> -	case TRACE_FUNC_OPT_STACK:
-> -		/* do nothing if already set */
-> -		if (!!set == !!(func_flags.val & TRACE_FUNC_OPT_STACK))
-> -			break;
-> +	ftrace_func_t func;
-> +	u32 new_flags_val;
-
-Nit, but the variable should just be "new_flags", which is consistent with
-old_flags. In the kernel we don't need to the variable names to be so
-verbose.
-
->  
-> -		/* We can change this flag when not running. */
-> -		if (tr->current_trace != &function_trace)
-> -			break;
-> +	/* Do nothing if already set. */
-> +	if (!!set == !!(func_flags.val & bit))
-> +		return 0;
->  
-> -		unregister_ftrace_function(tr->ops);
-> +	/* We can change this flag only when not running. */
-> +	if (tr->current_trace != &function_trace)
-> +		return 0;
->  
-> -		if (set) {
-> -			tr->ops->func = function_stack_trace_call;
-> -			register_ftrace_function(tr->ops);
-> -		} else {
-> -			tr->ops->func = function_trace_call;
-> -			register_ftrace_function(tr->ops);
-> -		}
-> +	new_flags_val = (func_flags.val & ~(1UL << (bit - 1)));
-> +	new_flags_val |= (set << (bit - 1));
-
-bit is already the mask, no need to shift it, nor there's no reason for the
-extra set of parenthesis. And the above can be done in one line.
-
-	new_flags = (func_flags.val & ~bit) | (set ? bit : 0);
-
--- Steve
-
-
->  
-> -		break;
-> -	default:
-> +	func = select_trace_function(new_flags_val);
-> +	if (!func)
->  		return -EINVAL;
-> -	}
-> +
-> +	/* Check if there's anything to change. */
-> +	if (tr->ops->func == func)
-> +		return 0;
-> +
-> +	unregister_ftrace_function(tr->ops);
-> +	tr->ops->func = func;
-> +	register_ftrace_function(tr->ops);
->  
->  	return 0;
->  }
+diff --git a/drivers/mfd/rn5t618.c b/drivers/mfd/rn5t618.c
+index ecddd7b6500e..a852eef1f4d2 100644
+--- a/drivers/mfd/rn5t618.c
++++ b/drivers/mfd/rn5t618.c
+@@ -109,7 +109,7 @@ static int rn5t618_irq_init(struct rn5t618 *rn5t618)
+ 
+ 	ret = devm_regmap_add_irq_chip(rn5t618->dev, rn5t618->regmap,
+ 				       rn5t618->irq,
+-				       IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
++				       IRQF_TRIGGER_LOW | IRQF_ONESHOT,
+ 				       0, irq_chip, &rn5t618->irq_data);
+ 	if (ret)
+ 		dev_err(rn5t618->dev, "Failed to register IRQ chip\n");
+-- 
+2.29.2
 
