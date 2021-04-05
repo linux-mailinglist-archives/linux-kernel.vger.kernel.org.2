@@ -2,72 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 566B13546BF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 20:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A4C33546C2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 20:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235126AbhDESYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 14:24:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35460 "EHLO
+        id S235137AbhDES1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 14:27:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232740AbhDESYB (ORCPT
+        with ESMTP id S234686AbhDES1s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 14:24:01 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EED7CC061788;
-        Mon,  5 Apr 2021 11:23:54 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lTTt7-002nw9-Sh; Mon, 05 Apr 2021 18:23:49 +0000
-Date:   Mon, 5 Apr 2021 18:23:49 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        syzbot <syzbot+c88a7030da47945a3cc3@syzkaller.appspotmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, io-uring@vger.kernel.org
-Subject: Re: [syzbot] WARNING in mntput_no_expire (2)
-Message-ID: <YGtVtfbYXck3qPRl@zeniv-ca.linux.org.uk>
-References: <20210404113445.xo6ntgfpxigcb3x6@wittgenstein>
- <YGnhkoTfVfMSMPpK@zeniv-ca.linux.org.uk>
- <20210404164040.vtxdcfzgliuzghwk@wittgenstein>
- <YGns1iPBHeeMAtn8@zeniv-ca.linux.org.uk>
- <20210404170513.mfl5liccdaxjnpls@wittgenstein>
- <YGoKYktYPA86Qwju@zeniv-ca.linux.org.uk>
- <YGoe0VPs/Qmz/RxC@zeniv-ca.linux.org.uk>
- <20210405114437.hjcojekyp5zt6huu@wittgenstein>
- <YGs4clcRhyoXX8D0@zeniv-ca.linux.org.uk>
- <20210405170801.zrdhnon6g4ggb6c7@wittgenstein>
+        Mon, 5 Apr 2021 14:27:48 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41BEFC061756
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 11:27:40 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id w2so7949376ilj.12
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 11:27:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WCxby3Jp5TDKJXrr4ksAkJ+LF8mSCwQ/NlCo5Zzkrdo=;
+        b=IUDndj+NlOsbnvqLrJrA4zHuJt9Vs7IworFD6VxxbROtpkqg0l2ynBlNto+4cLzSjv
+         CBqCXCrn7WDsHK41/JMb2NgQwLVmTdMQTnrxCAXmS8Qdqk1W5NnVnKJWYrVMMN6mJ8sE
+         Sd4VQc3CyR1Po4veid4ACzu0WGqPi+dh7nmptm7mxALpp5JyCX4c3QAX5eLlfGADiWCo
+         BWDXyf8f38hNv/BaDmFZp61lDr0ByYbljch++BE2NJPOHMahZF7ygmcfYx2H9aKCnhRN
+         Aycyc1u6/yoa6o5urIRmSi+f+7FAXxJN3oiSyUEyRw7LA7cQtMgqqMIw4/VK6b6bK/ys
+         FGSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WCxby3Jp5TDKJXrr4ksAkJ+LF8mSCwQ/NlCo5Zzkrdo=;
+        b=pgRo81dFyR5YNnzemj2ZR2VZbJDI7Fgp0bRpo23SoulYRRxVkcOqBdM28k5KPwePC5
+         HchRb0oUV3YgkJshWyt/CJuYwJi84ErYkwV2pmoxdinD5fOwePBpOIvSUxVsJb5BogVA
+         FLOzcOkLfkhCY8ILiICWQc0wYLbGWYK3WSSnbapD0sQagJ3FYXh6Jps0e0DDRdTV3fh/
+         Hr492lMIcywddzHUkfK11LAkCbMNtrdx5RcbUvvhuegTFnObIvpUQA5ad1sO7E9Iaf7v
+         bMt4g0tybjXNCat/+/GPOjB1eNzcWJbOUExoSdtNg6i1SF9wHRvXdgC3YY0F7Aw8yna8
+         tMLA==
+X-Gm-Message-State: AOAM5307ZoJb6Ip2oW69Z8yHAfRDfUh4K9ztRIaf8XDKwzxoE5wxAk2/
+        jvgwIa7qEufiQ6mnGNl/XGE2aFt5aS97EnZT5vYveg==
+X-Google-Smtp-Source: ABdhPJxS8I/5yEmMhDbQWAaiuF3BBv1UnvC6mGDWjwLfslnVX8VqYQJmI6QNB80ecemQTE2HG6SIkG+u1KcaJimmJtQ=
+X-Received: by 2002:a05:6e02:792:: with SMTP id q18mr8124507ils.212.1617647259435;
+ Mon, 05 Apr 2021 11:27:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210405170801.zrdhnon6g4ggb6c7@wittgenstein>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+References: <cover.1617302792.git.ashish.kalra@amd.com> <CAMkAt6oWF23YFiOGW_h+iyhjkaAp6uaMNjYKDXNxvNCWR=vyWw@mail.gmail.com>
+In-Reply-To: <CAMkAt6oWF23YFiOGW_h+iyhjkaAp6uaMNjYKDXNxvNCWR=vyWw@mail.gmail.com>
+From:   Steve Rutherford <srutherford@google.com>
+Date:   Mon, 5 Apr 2021 11:27:03 -0700
+Message-ID: <CABayD+dDFMEBTzSxEax=wJLwg7-xQi2C5smPiOh=Ak6pi72ocw@mail.gmail.com>
+Subject: Re: [PATCH v11 00/13] Add AMD SEV guest live migration support
+To:     Peter Gonda <pgonda@google.com>
+Cc:     Ashish Kalra <Ashish.Kalra@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@suse.de>,
+        "Lendacky, Thomas" <thomas.lendacky@amd.com>,
+        X86 ML <x86@kernel.org>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Venu Busireddy <venu.busireddy@oracle.com>,
+        "Singh, Brijesh" <brijesh.singh@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 07:08:01PM +0200, Christian Brauner wrote:
-
-> Ah dentry count of -127 looks... odd.
-
-dead + 1...
-
-void lockref_mark_dead(struct lockref *lockref)
-{
-        assert_spin_locked(&lockref->lock);
-	lockref->count = -128;
-}
-
-IOW, a leaked (uncounted) reference to dentry, that got dget() called on
-it after dentry had been freed.
-
-	IOW, current->fs->pwd.dentry happens to point to an already freed
-struct dentry here.  Joy...
-
-	Could you slap
-
-spin_lock(&current->fs->lock);
-WARN_ON(d_count(current->fs->pwd.dentry) < 0);
-spin_unlock(&current->fs->lock);
-
-before and after calls of io_issue_sqe() and see if it triggers?  We definitely
-are seeing buggered dentry refcounting here.
+On Mon, Apr 5, 2021 at 8:17 AM Peter Gonda <pgonda@google.com> wrote:
+>
+> Could this patch set include support for the SEND_CANCEL command?
+>
+That's separate from this patchset. I sent up an implementation last week.
