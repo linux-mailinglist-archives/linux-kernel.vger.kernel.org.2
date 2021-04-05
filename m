@@ -2,142 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8407354841
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 23:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8611354843
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 23:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241304AbhDEVop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 17:44:45 -0400
-Received: from mga03.intel.com ([134.134.136.65]:22464 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241285AbhDEVof (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 17:44:35 -0400
-IronPort-SDR: AS/V0asYt8r4Z/kjetnJ2P5fDFYZ57Z7JiqIFrzoaBIukpp68LSRhCnl9FB4noqErhRDaAZ2S8
- wQ1C9ucsfJDA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="192969212"
-X-IronPort-AV: E=Sophos;i="5.81,307,1610438400"; 
-   d="scan'208";a="192969212"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2021 14:44:27 -0700
-IronPort-SDR: NL/8LNdLPJM1vO+5NCSHPWI4yacFrkBLuzlr9BGpbNHWAJbCL2tqrMIQxkty5FjOca8Ym8kP6R
- x8CtHID2LyhQ==
-X-IronPort-AV: E=Sophos;i="5.81,307,1610438400"; 
-   d="scan'208";a="518763072"
-Received: from lddickin-mobl1.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.254.112.181])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2021 14:44:24 -0700
-Date:   Tue, 6 Apr 2021 09:44:21 +1200
-From:   Kai Huang <kai.huang@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     kvm@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
-        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com
-Subject: Re: [PATCH v3 13/25] x86/sgx: Add helpers to expose ECREATE and
- EINIT to KVM
-Message-Id: <20210406094421.4fdfbb6c4c11e7ee64c3b0a3@intel.com>
-In-Reply-To: <20210405090759.GB19485@zn.tnic>
-References: <cover.1616136307.git.kai.huang@intel.com>
-        <20e09daf559aa5e9e680a0b4b5fba940f1bad86e.1616136308.git.kai.huang@intel.com>
-        <20210405090759.GB19485@zn.tnic>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S241316AbhDEVo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 17:44:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241285AbhDEVo4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 17:44:56 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8EA1C061756;
+        Mon,  5 Apr 2021 14:44:49 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 5DB6B1F4469E
+Received: by earth.universe (Postfix, from userid 1000)
+        id 7CEDA3C0C96; Mon,  5 Apr 2021 23:44:46 +0200 (CEST)
+Date:   Mon, 5 Apr 2021 23:44:46 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>, Ian Ray <ian.ray@ge.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        kernel@collabora.com
+Subject: Re: [PATCHv4] serial: imx: Add DMA buffer configuration via sysfs
+Message-ID: <20210405214446.zhidvtvahcfp4wxa@earth.universe>
+References: <20210305115058.92284-1-sebastian.reichel@collabora.com>
+ <YEIetFdcuYZU98s/@kroah.com>
+ <20210305124252.c3ffgca6wjqpkn45@earth.universe>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="jyl37mmk7opoozsa"
+Content-Disposition: inline
+In-Reply-To: <20210305124252.c3ffgca6wjqpkn45@earth.universe>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Apr 2021 11:07:59 +0200 Borislav Petkov wrote:
-> On Fri, Mar 19, 2021 at 08:23:08PM +1300, Kai Huang wrote:
-> > +	/*
-> > +	 * @secs is an untrusted, userspace-provided address.  It comes from
-> > +	 * KVM and is assumed to be a valid pointer which points somewhere in
-> > +	 * userspace.  This can fault and call SGX or other fault handlers when
-> > +	 * userspace mapping @secs doesn't exist.
-> > +	 *
-> > +	 * Add a WARN() to make sure @secs is already valid userspace pointer
-> > +	 * from caller (KVM), who should already have handled invalid pointer
-> > +	 * case (for instance, made by malicious guest).  All other checks,
-> > +	 * such as alignment of @secs, are deferred to ENCLS itself.
-> > +	 */
-> > +	WARN_ON_ONCE(!access_ok(secs, PAGE_SIZE));
-> 
-> So why do we continue here then? IOW:
 
-The intention was to catch KVM bug, since KVM is the only caller, and in current
-implementation KVM won't call this function if @secs is not a valid userspace
-pointer. But yes we can also return here, but in this case an exception number
-must also be specified to *trapnr so that KVM can inject to guest. It's not that
-straightforward to decide which exception should we inject, but I think #GP
-should be OK. Please see below.
+--jyl37mmk7opoozsa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> diff --git a/arch/x86/kernel/cpu/sgx/virt.c b/arch/x86/kernel/cpu/sgx/virt.c
-> index fdfc21263a95..497b06fc6f7f 100644
-> --- a/arch/x86/kernel/cpu/sgx/virt.c
-> +++ b/arch/x86/kernel/cpu/sgx/virt.c
-> @@ -270,7 +270,7 @@ int __init sgx_vepc_init(void)
->   *
->   * Return:
->   * - 0:		ECREATE was successful.
-> - * - -EFAULT:	ECREATE returned error.
-> + * - <0:	ECREATE returned error.
->   */
->  int sgx_virt_ecreate(struct sgx_pageinfo *pageinfo, void __user *secs,
->  		     int *trapnr)
-> @@ -288,7 +288,9 @@ int sgx_virt_ecreate(struct sgx_pageinfo *pageinfo, void __user *secs,
->  	 * case (for instance, made by malicious guest).  All other checks,
->  	 * such as alignment of @secs, are deferred to ENCLS itself.
->  	 */
-> -	WARN_ON_ONCE(!access_ok(secs, PAGE_SIZE));
-> +	if (WARN_ON_ONCE(!access_ok(secs, PAGE_SIZE)))
-> +		return -EINVAL;
-> +
+Hi,
 
-*trapnr should also be set to an exception before return -EINVAL. It's not
-possible to get it from ENCLS_TRAPNR(ret) like below, since ENCLS hasn't been
-run yet. I think it makes sense to just set it to #GP(X86_TRAP_GP), since
-above error basically means SECS is not pointing to an valid EPC address, and
-in such case #GP should happen based on SDM (SDM 40.3 ECREATE).
+On Fri, Mar 05, 2021 at 01:42:52PM +0100, Sebastian Reichel wrote:
+> On Fri, Mar 05, 2021 at 01:06:12PM +0100, Greg Kroah-Hartman wrote:
+> > On Fri, Mar 05, 2021 at 12:50:58PM +0100, Sebastian Reichel wrote:
+> > > From: Fabien Lahoudere <fabien.lahoudere@collabora.com>
+> > >=20
+> > > In order to optimize serial communication (performance/throughput VS
+> > > latency), we may need to tweak DMA period number and size. This adds
+> > > sysfs attributes to configure those values before initialising DMA.
+> > > The defaults will stay the same as before (16 buffers with a size of
+> > > 1024 bytes). Afterwards the values can be read/write with the
+> > > following sysfs files:
+> > >=20
+> > > /sys/class/tty/ttymxc*/dma_buffer_size
+> > > /sys/class/tty/ttymxc*/dma_buffer_count
+> >=20
+> > Ick no.  Custom sysfs attributes for things like serial ports are crazy.
+> >=20
+> > > This is mainly needed for GEHC CS ONE (arch/arm/boot/dts/imx53-ppd.dt=
+s),
+> > > which has multiple microcontrollers connected via UART controlling. O=
+ne
+> > > of the UARTs is connected to an on-board microcontroller at 19200 bau=
+d,
+> > > which constantly pushes critical data (so aging character detect
+> > > interrupt will never trigger). This data must be processed at 50-200 =
+Hz,
+> > > so UART should return data in less than 5-20ms. With 1024 byte DMA
+> > > buffer (and a constant data stream) the read operation instead needs
+> > > 1024 byte / 19200 baud =3D 53.333ms, which is way too long (note: Wor=
+st
+> > > Case would be remote processor sending data with short pauses <=3D 7
+> > > characters, which would further increase this number). The current
+> > > downstream kernel instead configures 24 bytes resulting in 1.25ms,
+> > > but that is obviously not sensible for normal UART use cases and cann=
+ot
+> > > be used as new default.
+> >=20
+> > Why can't this be a device tree attribute? Why does this have to be a
+> > sysfs thing that no one will know how to tune and set over time.  This
+> > hardware should not force a user to manually tune it to get it to work
+> > properly, this isn't the 1990's anymore :(
+> >=20
+> > Please never force a user to choose stuff like this, they never will
+> > know what to do.
+>=20
+> This used to be a DT attribute in PATCHv1. It has been moved over to
+> sysfs since PATCHv2, since it does not describe the hardware, but
+> configuration. Unfortunately lore.kernel.org does not have the full
+> thread, but this is the discussion:
+>=20
+> https://lore.kernel.org/linux-serial/20170629182618.jpahpmuq364ldcv2@peng=
+utronix.de/
+>=20
+> From downstream POV this can be done either by adding a DT property
+> to the UART node, or by adding a udev rule.
+>=20
+> From my POV there is not a huge difference. In both cases we will
+> be bound by an ABI afterwards, in both cases people will usually
+> stick to the default value and in both cases people that do deviate
+> from the default probably ran into problems and started to look
+> for a solution.
 
->  	__uaccess_begin();
->  	ret = __ecreate(pageinfo, (void *)secs);
->  	__uaccess_end();
-> 
-> > +	__uaccess_begin();
-> > +	ret = __ecreate(pageinfo, (void *)secs);
-> > +	__uaccess_end();
-> > +
-> > +	if (encls_faulted(ret)) {
-> > +		*trapnr = ENCLS_TRAPNR(ret);
-> > +		return -EFAULT;
-> > +	}
-> > +
-> > +	/* ECREATE doesn't return an error code, it faults or succeeds. */
-> > +	WARN_ON_ONCE(ret);
-> > +	return 0;
-> > +}
-> > +EXPORT_SYMBOL_GPL(sgx_virt_ecreate);
-> > +
-> > +static int __sgx_virt_einit(void __user *sigstruct, void __user *token,
-> > +			    void __user *secs)
-> > +{
-> > +	int ret;
-> > +
-> > +	/*
-> > +	 * Make sure all userspace pointers from caller (KVM) are valid.
-> > +	 * All other checks deferred to ENCLS itself.  Also see comment
-> > +	 * for @secs in sgx_virt_ecreate().
-> > +	 */
-> > +#define SGX_EINITTOKEN_SIZE	304
-> > +	WARN_ON_ONCE(!access_ok(sigstruct, sizeof(struct sgx_sigstruct)) ||
-> > +		     !access_ok(token, SGX_EINITTOKEN_SIZE) ||
-> > +		     !access_ok(secs, PAGE_SIZE));
-> 
-> Ditto.
+ping? It's not very nice to get a rejected in cycles :(
 
-The same as above, *trapnr should be set to X86_TRAP_GP before return
--EINVAL, although for sigstruct, token, they are just normal memory, but not
-EPC.
+-- Sebastian
 
-Sean, do you have comments?
+--jyl37mmk7opoozsa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBrhMgACgkQ2O7X88g7
++pqyWhAAqargM2/F1Rs/EcL2QbtjVCapugkkOIjeMaC2QKgTPfrPYkmVUrfeHNbS
+HhLKLND5sZnmEfsgu3/y1acGUR0QDbn9HbiI0VrSr1YfLK7us9D7DxeorlW1QLfV
+6ZfI1m/xDVdF8Rj216hSb3uawdcUvfbF5jGlXeMN24ZqKPd1wT5paM+sHp6UJO/7
+eLfTnD5VdNQT7u/tRFNv3G4SawrEWut0LtFOdP8RXF/kDc+cGSuGRNLojoIeCm8B
+X1oKBNPergkXnr5A56bqB6suHrwVOT1BEOstKMZ5VpF1gJDKODu4X5XRMAFNotsV
+9WVYDInY3LfVekEtQzQMI/4sCAP48TW5mtoyPJjBgFZRmQAQyviWZZ437EeasFSh
+WVtisky1Ure4r0Qes7OdvlITrxh/3TzqiOvqN0gjKjVhwzU5XHGIU1BZ0tfvYvP2
+6Z8uVk0sy4JrsB2Gaf5ka2OBB18bzBNNZ0/fPVGlfqinG/Uk8r7U1IwQE6jfj8X7
+BL6qXTxB//oWKE5YaeGsQW9Xn7PN3riAZgqV3+NKBoxLPB5rvXuLRY0lNotH6vyY
+uWsJm+AD2LwFhuRbfoUUGsnA9fQQy2/NPMubJvvK6LaTPPxShdtSHn6fx4od+pux
+gn44W2kG1AzJC0pRCIr4I5UjtqXCWW81W8Wji3AUUJ16GJveUeU=
+=pCYr
+-----END PGP SIGNATURE-----
+
+--jyl37mmk7opoozsa--
