@@ -2,99 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C65E353A64
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 02:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3AD4353A67
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 02:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231667AbhDEAnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 20:43:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59896 "EHLO
+        id S231731AbhDEAoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 20:44:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230052AbhDEAnB (ORCPT
+        with ESMTP id S230052AbhDEAoD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 20:43:01 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3934C061756
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Apr 2021 17:42:43 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id ha17so5236377pjb.2
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Apr 2021 17:42:43 -0700 (PDT)
+        Sun, 4 Apr 2021 20:44:03 -0400
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41478C061756;
+        Sun,  4 Apr 2021 17:43:57 -0700 (PDT)
+Received: by mail-oo1-xc2a.google.com with SMTP id q127-20020a4a33850000b02901b646aa81b1so2534934ooq.8;
+        Sun, 04 Apr 2021 17:43:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=IroJdoAcq5zAI1honZ3ThwMkWQDS5Bqq0q4OifWOrBY=;
-        b=i3C6WhOMU0EGF4ZLXdWYwphURgSehOFih2BYREbGOAokXJ7mN1DWHHZcFPF3r3lAZU
-         zekilOVO0OAJ/QLe/J1Q/dLt0NqTBP8TxHNnDvo4ECHR9o1QCvRwkFwt/DGH6taUAchR
-         ModzHy0esq9zd2fKxkn/lD7HhWA6zfnk/xgt+Y9piYPpkJkA5fQcj4Utz+gM1MztnT0v
-         uiqfpOaJoReWJ91Q+7RJWbhs/3vyObiVvGEccB8zkM54rtOCS3a3Z1hUEQyNIGHQuzqm
-         h2FPvaLt5rJl47YRSqAcO724h10Ns+UA0p8hb8vDhft8U8DcuX60ZICALDosO6Wsn2EI
-         W21g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JzhYsG+9twiks5ZAsr193ta04sndTLexylNjWAKj+Cs=;
+        b=UNZXPaoA3Ox7ykfGZSVoS56Q4uXYqfHxXBqR+WhOSpSIp2GKjHEGea/xG7a8AcZ2S6
+         WbOXjHPtJUOJnUnHrFhIVNdmThfXUjQbHHOqxQSUsGmYr5l5awG3C2bowKMx9LlDqsfh
+         rhnI6MrZMK9HQhEQFTKw0QpNBJBcnbVQKF79x+1FWPEvxZQ9x4mQdmhdH4EEkpCHU/xd
+         rYKt+eouZPGDTQ3yHF+QvIi05nBBqVA1lcnwttonWILlH7qD0rNmjZPsCjda6Lb+yNzV
+         S9t3TVQtwoeTIbCa65V3/5g3j50WK3BGK63Zi7mp+oOf4B5NfD5qiANqjTv4PPemZnTx
+         QFpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=IroJdoAcq5zAI1honZ3ThwMkWQDS5Bqq0q4OifWOrBY=;
-        b=FtVjzKWqJ1dMD/q68la04/86/DvJmNBY5sf0zi64vi8hqio6OiDx3V34nK9xyXW9KE
-         F+2+OcQPjwb1ZP+IrvKseIMmFlf6ONJe+Rk9amRKVsswbi/DHN2sIGfiPQdewroGxn/I
-         zG3JKFyBn8iwm9o/4745FZdo3Kdj23AyCelkmJK9V1u4uLAklCaqyadPVspPXZMi/rl2
-         qI3ow/AZkTYZsggo7gYbrBIoN11diZ90/dxwvmsjlr3thpHdZErn8qXM8Mw+s/S14wGk
-         mdGXUGKYNKeuyumNr9my2BCriehnZY6o2HiUNxxaG+F0azbqMISXN+sqofjcMLuu4QhC
-         KYjA==
-X-Gm-Message-State: AOAM530PExgWI4BzKImLC16RAQfdD1lb/L+1WVBfLk3c4jPiPwP82FID
-        z7mydDBJ019ugqtTf0Dj9lw=
-X-Google-Smtp-Source: ABdhPJwNpsGO0DHC2BtRNKlK9V+ctRoirx70WYVOQGZUY22wzasZXkjbc84kRaSHg7nHtSBl2Oyyvw==
-X-Received: by 2002:a17:902:ec06:b029:e8:e57f:680 with SMTP id l6-20020a170902ec06b02900e8e57f0680mr6438673pld.8.1617583362893;
-        Sun, 04 Apr 2021 17:42:42 -0700 (PDT)
-Received: from kali ([2409:4042:4d84:a21:5e54:ca6d:ddda:81d3])
-        by smtp.gmail.com with ESMTPSA id q19sm13364813pgv.38.2021.04.04.17.42.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Apr 2021 17:42:42 -0700 (PDT)
-Date:   Mon, 5 Apr 2021 06:11:43 +0530
-From:   Mitali Borkar <mitaliborkar810@gmail.com>
-To:     manish@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        gregkh@linuxfoundation.org
-Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, mitaliborkar810@gmail.com
-Subject: [PATCH] staging: qlge: remove else after break
-Message-ID: <YGpcx9MZuZJFy0Z/@kali>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JzhYsG+9twiks5ZAsr193ta04sndTLexylNjWAKj+Cs=;
+        b=eznskGqHdWlAS2V/v38dB33AiixuCDKBALodZIPZEukVddrR7EF5fHuage5PBXQUCM
+         RMXGEsIroxneBkRK2jbuBMH2Pox25bjken6dTuWnJsDIj3tQDjSLlTNm0/sLAqx88F5O
+         z7H6XA+Fzl28wHWjz1MwQKW/ooMoVtNyNYJ4gTa8dkbSrdBCGPncocB3qTdPn/HwzITy
+         +OWvD5ONdB3vEsEeMFRSduB6hWZx1myFQbsK3XoYUA8Z8wIAkljxxzHwMMLg0huRtgoi
+         D248OzyBToOlFXVwPqLJGkdbZKrZIzDWDqowWnuwfrwG2COii22VFk5F0tZltOLCQ14S
+         84fg==
+X-Gm-Message-State: AOAM530a0n/CMk/8rBNY0fJhh0H7UDthoa1e70qdGPkL8wexkVytUjIl
+        CU/iEgokYK6oxJtEJ/hLtK6u4f7m6Mc5H2X1YZc=
+X-Google-Smtp-Source: ABdhPJwzPSlnMlxIkAvgRm9cQ3GiNrONcWgeWyie01ncsqtBQtgP410Tnk2T2ovpdMJRUwSnfsbx2DjeOIf2Be/cU28=
+X-Received: by 2002:a05:6820:3c8:: with SMTP id s8mr20392380ooj.49.1617583436702;
+ Sun, 04 Apr 2021 17:43:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <CAB_54W7v1Dk9KjytfO8hAGfiqPJ6qO0SdgwDQ-s4ybA2yvuoCg@mail.gmail.com>
+ <20210304152125.1052825-1-paskripkin@gmail.com>
+In-Reply-To: <20210304152125.1052825-1-paskripkin@gmail.com>
+From:   Alexander Aring <alex.aring@gmail.com>
+Date:   Sun, 4 Apr 2021 20:43:45 -0400
+Message-ID: <CAB_54W6BmSuRo5pwGEH_Xug3Fo5cBMjmMAGjd3aaWJaGZpSsHQ@mail.gmail.com>
+Subject: Re: [PATCH v2] net: mac802154: Fix general protection fault
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     Stefan Schmidt <stefan@datenfreihafen.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-wpan - ML <linux-wpan@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        syzbot+9ec037722d2603a9f52e@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-linux-staging@lists,linux-kernel@vger.kernel.org
-Bcc: 
-Subject: [PATCH] staging: qlge:remove else after break
-Reply-To: 
+Hi,
 
-Fixed Warning:- else is not needed after break
-break terminates the loop if encountered. else is unnecessary and
-increases indenatation
+On Thu, 4 Mar 2021 at 10:25, Pavel Skripkin <paskripkin@gmail.com> wrote:
+>
+> syzbot found general protection fault in crypto_destroy_tfm()[1].
+> It was caused by wrong clean up loop in llsec_key_alloc().
+> If one of the tfm array members is in IS_ERR() range it will
+> cause general protection fault in clean up function [1].
+>
+> Call Trace:
+>  crypto_free_aead include/crypto/aead.h:191 [inline] [1]
+>  llsec_key_alloc net/mac802154/llsec.c:156 [inline]
+>  mac802154_llsec_key_add+0x9e0/0xcc0 net/mac802154/llsec.c:249
+>  ieee802154_add_llsec_key+0x56/0x80 net/mac802154/cfg.c:338
+>  rdev_add_llsec_key net/ieee802154/rdev-ops.h:260 [inline]
+>  nl802154_add_llsec_key+0x3d3/0x560 net/ieee802154/nl802154.c:1584
+>  genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
+>  genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+>  genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+>  netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+>  genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+>  netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+>  netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+>  netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+>  sock_sendmsg_nosec net/socket.c:654 [inline]
+>  sock_sendmsg+0xcf/0x120 net/socket.c:674
+>  ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+>  ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+>  __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+>
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> Reported-by: syzbot+9ec037722d2603a9f52e@syzkaller.appspotmail.com
+> Change-Id: I29f7ac641a039096d63d1e6070bb32cb5a3beb07
 
-Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
----
- drivers/staging/qlge/qlge_mpi.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+I am sorry, I don't know the tag "Change-Id", I was doing a whole grep
+on Documentation/ without any luck.
 
-diff --git a/drivers/staging/qlge/qlge_mpi.c b/drivers/staging/qlge/qlge_mpi.c
-index 2630ebf50341..3a49f187203b 100644
---- a/drivers/staging/qlge/qlge_mpi.c
-+++ b/drivers/staging/qlge/qlge_mpi.c
-@@ -935,13 +935,11 @@ static int qlge_idc_wait(struct qlge_adapter *qdev)
- 			netif_err(qdev, drv, qdev->ndev, "IDC Success.\n");
- 			status = 0;
- 			break;
--		} else {
--			netif_err(qdev, drv, qdev->ndev,
-+		}	netif_err(qdev, drv, qdev->ndev,
- 				  "IDC: Invalid State 0x%.04x.\n",
- 				  mbcp->mbox_out[0]);
- 			status = -EIO;
- 			break;
--		}
- 	}
- 
- 	return status;
--- 
-2.30.2
+Dumb question: What is the meaning of it?
 
+- Alex
