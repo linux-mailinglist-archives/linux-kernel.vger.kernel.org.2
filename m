@@ -2,33 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E472353E17
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B472353E1A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237752AbhDEJDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:03:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43758 "EHLO mail.kernel.org"
+        id S237770AbhDEJDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:03:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237310AbhDEJCQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:02:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C51CB60238;
-        Mon,  5 Apr 2021 09:02:09 +0000 (UTC)
+        id S237174AbhDEJCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:02:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6927E613A0;
+        Mon,  5 Apr 2021 09:02:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613330;
-        bh=JMQqpmH2GVDMDBiZT10RiNv1wdhPPSz452g7VOmohJo=;
+        s=korg; t=1617613336;
+        bh=0ebjN4qmRkCnER2i7q8+mmD/rP379wDy7xvCeeFgChc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OnIfCO0suUanBozDtezPnzW6nKj8X9PPSPNI2X7XlvB9hURU1cVB8/vz5UAvITR9C
-         iAfDgedqkg8JSp7tfyiR8/yJ0Oot3SKitsJYjdXfcEJGIGA2eJ9yvT4ztkWv9/XKv6
-         8PdDc4FWv2rOOM78PWMLROEd1H97NmiTCHRLBuY0=
+        b=xsUyRDWand9jDiWnDkgCxZrqS+b7/nmW+8gzOAPqKcYHBqD8C055KroPpE3wPDasf
+         VHQHwjQY56nz9cuoxLtdWvs5xxULxkD6MTq8TnaskBXzFGc+ewgz762ySKlji4KtKe
+         AO5hVQCmgIj8SpsVJZDX+/dsxgBfW/3OyZYeEL34=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Artur Petrosyan <Arthur.Petrosyan@synopsys.com>,
-        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
-Subject: [PATCH 4.19 53/56] usb: dwc2: Fix HPRT0.PrtSusp bit setting for HiKey 960 board.
-Date:   Mon,  5 Apr 2021 10:54:24 +0200
-Message-Id: <20210405085024.221811393@linuxfoundation.org>
+        stable@vger.kernel.org, Atul Gopinathan <atulgopinathan@gmail.com>
+Subject: [PATCH 4.19 54/56] staging: rtl8192e: Fix incorrect source in memcpy()
+Date:   Mon,  5 Apr 2021 10:54:25 +0200
+Message-Id: <20210405085024.252311750@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210405085022.562176619@linuxfoundation.org>
 References: <20210405085022.562176619@linuxfoundation.org>
@@ -40,34 +38,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
+From: Atul Gopinathan <atulgopinathan@gmail.com>
 
-commit 5e3bbae8ee3d677a0aa2919dc62b5c60ea01ba61 upstream.
+commit 72ad25fbbb78930f892b191637359ab5b94b3190 upstream.
 
-Increased the waiting timeout for HPRT0.PrtSusp register field
-to be set, because on HiKey 960 board HPRT0.PrtSusp wasn't
-generated with the existing timeout.
+The variable "info_element" is of the following type:
 
-Cc: <stable@vger.kernel.org> # 4.18
-Fixes: 22bb5cfdf13a ("usb: dwc2: Fix host exit from hibernation flow.")
-Signed-off-by: Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
-Acked-by: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
-Link: https://lore.kernel.org/r/20210326102447.8F7FEA005D@mailhost.synopsys.com
+	struct rtllib_info_element *info_element
+
+defined in drivers/staging/rtl8192e/rtllib.h:
+
+	struct rtllib_info_element {
+		u8 id;
+		u8 len;
+		u8 data[];
+	} __packed;
+
+The "len" field defines the size of the "data[]" array. The code is
+supposed to check if "info_element->len" is greater than 4 and later
+equal to 6. If this is satisfied then, the last two bytes (the 4th and
+5th element of u8 "data[]" array) are copied into "network->CcxRmState".
+
+Right now the code uses "memcpy()" with the source as "&info_element[4]"
+which would copy in wrong and unintended information. The struct
+"rtllib_info_element" has a size of 2 bytes for "id" and "len",
+therefore indexing will be done in interval of 2 bytes. So,
+"info_element[4]" would point to data which is beyond the memory
+allocated for this pointer (that is, at x+8, while "info_element" has
+been allocated only from x to x+7 (2 + 6 => 8 bytes)).
+
+This patch rectifies this error by using "&info_element->data[4]" which
+correctly copies the last two bytes of "data[]".
+
+NOTE: The faulty line of code came from the following commit:
+
+commit ecdfa44610fa ("Staging: add Realtek 8192 PCI wireless driver")
+
+The above commit created the file `rtl8192e/ieee80211/ieee80211_rx.c`
+which had the faulty line of code. This file has been deleted (or
+possibly renamed) with the contents copied in to a new file
+`rtl8192e/rtllib_rx.c` along with additional code in the commit
+94a799425eee (tagged in Fixes).
+
+Fixes: 94a799425eee ("From: wlanfae <wlanfae@realtek.com> [PATCH 1/8] rtl8192e: Import new version of driver from realtek")
+Cc: stable@vger.kernel.org
+Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
+Link: https://lore.kernel.org/r/20210323113413.29179-1-atulgopinathan@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/dwc2/hcd.c |    2 +-
+ drivers/staging/rtl8192e/rtllib_rx.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/dwc2/hcd.c
-+++ b/drivers/usb/dwc2/hcd.c
-@@ -5560,7 +5560,7 @@ int dwc2_host_enter_hibernation(struct d
- 	dwc2_writel(hsotg, hprt0, HPRT0);
- 
- 	/* Wait for the HPRT0.PrtSusp register field to be set */
--	if (dwc2_hsotg_wait_bit_set(hsotg, HPRT0, HPRT0_SUSP, 3000))
-+	if (dwc2_hsotg_wait_bit_set(hsotg, HPRT0, HPRT0_SUSP, 5000))
- 		dev_warn(hsotg->dev, "Suspend wasn't generated\n");
- 
- 	/*
+--- a/drivers/staging/rtl8192e/rtllib_rx.c
++++ b/drivers/staging/rtl8192e/rtllib_rx.c
+@@ -1978,7 +1978,7 @@ static void rtllib_parse_mife_generic(st
+ 	    info_element->data[2] == 0x96 &&
+ 	    info_element->data[3] == 0x01) {
+ 		if (info_element->len == 6) {
+-			memcpy(network->CcxRmState, &info_element[4], 2);
++			memcpy(network->CcxRmState, &info_element->data[4], 2);
+ 			if (network->CcxRmState[0] != 0)
+ 				network->bCcxRmEnable = true;
+ 			else
 
 
