@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A35353F85
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE3C354094
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239287AbhDEJMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:12:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55214 "EHLO mail.kernel.org"
+        id S239648AbhDEJTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:19:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239031AbhDEJJX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:09:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C1FC61398;
-        Mon,  5 Apr 2021 09:09:16 +0000 (UTC)
+        id S240549AbhDEJPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:15:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4D6861393;
+        Mon,  5 Apr 2021 09:15:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613757;
-        bh=XMxBi5221lobiKAKQd8b8jGYcz6l9cP+PtERazfHlDE=;
+        s=korg; t=1617614111;
+        bh=c489M/+1dRocyyjFIWmCDQRJV1jzQJ61lEA3Li+T3r8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h4SDacqW730qN5RRR/GHNPrfyFLnhDrmGcPu2RNZzDncuTvgt9870LbQth8+vXsxP
-         M6SfqtMf3bEGbenDUZ7urxYQHE1MH64eXGQ//ksLiJIHfTy9+Zh9PvOf4VWh/gcYAT
-         5yHKAHQQv73hw5QrAqAPMfxWnyO5rvDXazZnViF4=
+        b=0BUZisL2T0ik4PBPUEzXwNRSMcND46Om2/CpHXZw3NKSQl2yYFM2p8dnjz0kSxT4X
+         Fc9FfJraHBNnyOTgmLg39cXFceW0L6HgYGNR3r34sGLkvCqUaFJrKkc7KGPflrwa50
+         CzAvgJ+eVzaLyOx2pSt4wwdHHLNo1RU94tcFcMXo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qu Huang <jinsdb@126.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.10 073/126] drm/amdkfd: dqm fence memory corruption
-Date:   Mon,  5 Apr 2021 10:53:55 +0200
-Message-Id: <20210405085033.476940450@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20 ?= 
+        <zhouyanjie@wanyeetech.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.11 087/152] mm: fix race by making init_zero_pfn() early_initcall
+Date:   Mon,  5 Apr 2021 10:53:56 +0200
+Message-Id: <20210405085037.083212607@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
-References: <20210405085031.040238881@linuxfoundation.org>
+In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
+References: <20210405085034.233917714@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,146 +44,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Huang <jinsdb@126.com>
+From: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
 
-commit e92049ae4548ba09e53eaa9c8f6964b07ea274c9 upstream.
+commit e720e7d0e983bf05de80b231bccc39f1487f0f16 upstream.
 
-Amdgpu driver uses 4-byte data type as DQM fence memory,
-and transmits GPU address of fence memory to microcode
-through query status PM4 message. However, query status
-PM4 message definition and microcode processing are all
-processed according to 8 bytes. Fence memory only allocates
-4 bytes of memory, but microcode does write 8 bytes of memory,
-so there is a memory corruption.
+There are code paths that rely on zero_pfn to be fully initialized
+before core_initcall.  For example, wq_sysfs_init() is a core_initcall
+function that eventually results in a call to kernel_execve, which
+causes a page fault with a subsequent mmput.  If zero_pfn is not
+initialized by then it may not get cleaned up properly and result in an
+error:
 
-Changes since v1:
-  * Change dqm->fence_addr as a u64 pointer to fix this issue,
-also fix up query_status and amdkfd_fence_wait_timeout function
-uses 64 bit fence value to make them consistent.
+  BUG: Bad rss-counter state mm:(ptrval) type:MM_ANONPAGES val:1
 
-Signed-off-by: Qu Huang <jinsdb@126.com>
-Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
-Signed-off-by: Felix Kuehling <Felix.Kuehling@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Here is an analysis of the race as seen on a MIPS device. On this
+particular MT7621 device (Ubiquiti ER-X), zero_pfn is PFN 0 until
+initialized, at which point it becomes PFN 5120:
+
+  1. wq_sysfs_init calls into kobject_uevent_env at core_initcall:
+       kobject_uevent_env+0x7e4/0x7ec
+       kset_register+0x68/0x88
+       bus_register+0xdc/0x34c
+       subsys_virtual_register+0x34/0x78
+       wq_sysfs_init+0x1c/0x4c
+       do_one_initcall+0x50/0x1a8
+       kernel_init_freeable+0x230/0x2c8
+       kernel_init+0x10/0x100
+       ret_from_kernel_thread+0x14/0x1c
+
+  2. kobject_uevent_env() calls call_usermodehelper_exec() which executes
+     kernel_execve asynchronously.
+
+  3. Memory allocations in kernel_execve cause a page fault, bumping the
+     MM reference counter:
+       add_mm_counter_fast+0xb4/0xc0
+       handle_mm_fault+0x6e4/0xea0
+       __get_user_pages.part.78+0x190/0x37c
+       __get_user_pages_remote+0x128/0x360
+       get_arg_page+0x34/0xa0
+       copy_string_kernel+0x194/0x2a4
+       kernel_execve+0x11c/0x298
+       call_usermodehelper_exec_async+0x114/0x194
+
+  4. In case zero_pfn has not been initialized yet, zap_pte_range does
+     not decrement the MM_ANONPAGES RSS counter and the BUG message is
+     triggered shortly afterwards when __mmdrop checks the ref counters:
+       __mmdrop+0x98/0x1d0
+       free_bprm+0x44/0x118
+       kernel_execve+0x160/0x1d8
+       call_usermodehelper_exec_async+0x114/0x194
+       ret_from_kernel_thread+0x14/0x1c
+
+To avoid races such as described above, initialize init_zero_pfn at
+early_initcall level.  Depending on the architecture, ZERO_PAGE is
+either constant or gets initialized even earlier, at paging_init, so
+there is no issue with initializing zero_pfn earlier.
+
+Link: https://lkml.kernel.org/r/CALCv0x2YqOXEAy2Q=hafjhHCtTHVodChv1qpM=niAXOpqEbt7w@mail.gmail.com
+Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>
 Cc: stable@vger.kernel.org
+Tested-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/amdkfd/kfd_dbgdev.c               |    2 +-
- drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c |    6 +++---
- drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.h |    2 +-
- drivers/gpu/drm/amd/amdkfd/kfd_packet_manager.c       |    2 +-
- drivers/gpu/drm/amd/amdkfd/kfd_packet_manager_v9.c    |    2 +-
- drivers/gpu/drm/amd/amdkfd/kfd_packet_manager_vi.c    |    2 +-
- drivers/gpu/drm/amd/amdkfd/kfd_priv.h                 |    8 ++++----
- 7 files changed, 12 insertions(+), 12 deletions(-)
+ mm/memory.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/amdkfd/kfd_dbgdev.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_dbgdev.c
-@@ -155,7 +155,7 @@ static int dbgdev_diq_submit_ib(struct k
- 
- 	/* Wait till CP writes sync code: */
- 	status = amdkfd_fence_wait_timeout(
--			(unsigned int *) rm_state,
-+			rm_state,
- 			QUEUESTATE__ACTIVE, 1500);
- 
- 	kfd_gtt_sa_free(dbgdev->dev, mem_obj);
---- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-@@ -1167,7 +1167,7 @@ static int start_cpsch(struct device_que
- 	if (retval)
- 		goto fail_allocate_vidmem;
- 
--	dqm->fence_addr = dqm->fence_mem->cpu_ptr;
-+	dqm->fence_addr = (uint64_t *)dqm->fence_mem->cpu_ptr;
- 	dqm->fence_gpu_addr = dqm->fence_mem->gpu_addr;
- 
- 	init_interrupts(dqm);
-@@ -1340,8 +1340,8 @@ out:
- 	return retval;
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -154,7 +154,7 @@ static int __init init_zero_pfn(void)
+ 	zero_pfn = page_to_pfn(ZERO_PAGE(0));
+ 	return 0;
  }
+-core_initcall(init_zero_pfn);
++early_initcall(init_zero_pfn);
  
--int amdkfd_fence_wait_timeout(unsigned int *fence_addr,
--				unsigned int fence_value,
-+int amdkfd_fence_wait_timeout(uint64_t *fence_addr,
-+				uint64_t fence_value,
- 				unsigned int timeout_ms)
+ void mm_trace_rss_stat(struct mm_struct *mm, int member, long count)
  {
- 	unsigned long end_jiffies = msecs_to_jiffies(timeout_ms) + jiffies;
---- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.h
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.h
-@@ -192,7 +192,7 @@ struct device_queue_manager {
- 	uint16_t		vmid_pasid[VMID_NUM];
- 	uint64_t		pipelines_addr;
- 	uint64_t		fence_gpu_addr;
--	unsigned int		*fence_addr;
-+	uint64_t		*fence_addr;
- 	struct kfd_mem_obj	*fence_mem;
- 	bool			active_runlist;
- 	int			sched_policy;
---- a/drivers/gpu/drm/amd/amdkfd/kfd_packet_manager.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_packet_manager.c
-@@ -345,7 +345,7 @@ fail_create_runlist_ib:
- }
- 
- int pm_send_query_status(struct packet_manager *pm, uint64_t fence_address,
--			uint32_t fence_value)
-+			uint64_t fence_value)
- {
- 	uint32_t *buffer, size;
- 	int retval = 0;
---- a/drivers/gpu/drm/amd/amdkfd/kfd_packet_manager_v9.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_packet_manager_v9.c
-@@ -283,7 +283,7 @@ static int pm_unmap_queues_v9(struct pac
- }
- 
- static int pm_query_status_v9(struct packet_manager *pm, uint32_t *buffer,
--			uint64_t fence_address,	uint32_t fence_value)
-+			uint64_t fence_address,	uint64_t fence_value)
- {
- 	struct pm4_mes_query_status *packet;
- 
---- a/drivers/gpu/drm/amd/amdkfd/kfd_packet_manager_vi.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_packet_manager_vi.c
-@@ -263,7 +263,7 @@ static int pm_unmap_queues_vi(struct pac
- }
- 
- static int pm_query_status_vi(struct packet_manager *pm, uint32_t *buffer,
--			uint64_t fence_address,	uint32_t fence_value)
-+			uint64_t fence_address,	uint64_t fence_value)
- {
- 	struct pm4_mes_query_status *packet;
- 
---- a/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
-@@ -1006,8 +1006,8 @@ int pqm_get_wave_state(struct process_qu
- 		       u32 *ctl_stack_used_size,
- 		       u32 *save_area_used_size);
- 
--int amdkfd_fence_wait_timeout(unsigned int *fence_addr,
--			      unsigned int fence_value,
-+int amdkfd_fence_wait_timeout(uint64_t *fence_addr,
-+			      uint64_t fence_value,
- 			      unsigned int timeout_ms);
- 
- /* Packet Manager */
-@@ -1043,7 +1043,7 @@ struct packet_manager_funcs {
- 			uint32_t filter_param, bool reset,
- 			unsigned int sdma_engine);
- 	int (*query_status)(struct packet_manager *pm, uint32_t *buffer,
--			uint64_t fence_address,	uint32_t fence_value);
-+			uint64_t fence_address,	uint64_t fence_value);
- 	int (*release_mem)(uint64_t gpu_addr, uint32_t *buffer);
- 
- 	/* Packet sizes */
-@@ -1065,7 +1065,7 @@ int pm_send_set_resources(struct packet_
- 				struct scheduling_resources *res);
- int pm_send_runlist(struct packet_manager *pm, struct list_head *dqm_queues);
- int pm_send_query_status(struct packet_manager *pm, uint64_t fence_address,
--				uint32_t fence_value);
-+				uint64_t fence_value);
- 
- int pm_send_unmap_queue(struct packet_manager *pm, enum kfd_queue_type type,
- 			enum kfd_unmap_queues_filter mode,
 
 
