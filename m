@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36BEE353E61
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDB92353FCD
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238691AbhDEJFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:05:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47552 "EHLO mail.kernel.org"
+        id S239930AbhDEJO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:14:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237810AbhDEJEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:04:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CD6A61394;
-        Mon,  5 Apr 2021 09:03:55 +0000 (UTC)
+        id S239454AbhDEJKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:10:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 195A061399;
+        Mon,  5 Apr 2021 09:10:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613435;
-        bh=SofwptDwmawKpzRux5oyNGLuRIqI0uy71tt49NpI7g4=;
+        s=korg; t=1617613846;
+        bh=8tOAUDm/Lf22WRBS8h+MiR8qbiTrV9llhrSBXL/QJTY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MNFLNaXYOYPKhboheOXOfW8MFnj3CYMT5agFubKEvmhvb87iXKwrfeBZroRSsAAwk
-         sIyPllIOjaPDLJsWljItE/DcMZHDbD5dsmyQusXG5mapLSCJvfujkHFkzOT4PELfsn
-         S9sqK+5Jgya3yltWyLwxUph+Q2yFc/a3zgbQqH9M=
+        b=WXzKNeXwrcb8GRZzccSoZAfHeX5wTAbroDsOersT7DC/mgUXql7uUOcaFl/KBoKPF
+         b6w8ovHuP+TzgPsoxEZltWPHuZxK3K7E2jNiw0QoEIP4V4B6t7TxAIRdbnCYvdn6wP
+         OgVD6ArWu5YqmV3OURf/Z/B2nHY7WpDTmrjFi6i0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luca Pesce <luca.pesce@vimar.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 35/74] brcmfmac: clear EAP/association status bits on linkdown events
+        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Subject: [PATCH 5.10 077/126] drm/imx: fix memory leak when fails to init
 Date:   Mon,  5 Apr 2021 10:53:59 +0200
-Message-Id: <20210405085025.881382859@linuxfoundation.org>
+Message-Id: <20210405085033.620798351@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
-References: <20210405085024.703004126@linuxfoundation.org>
+In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
+References: <20210405085031.040238881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,63 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luca Pesce <luca.pesce@vimar.com>
+From: Pan Bian <bianpan2016@163.com>
 
-[ Upstream commit e862a3e4088070de352fdafe9bd9e3ae0a95a33c ]
+commit 69c3ed7282a143439bbc2d03dc00d49c68fcb629 upstream.
 
-This ensure that previous association attempts do not leave stale statuses
-on subsequent attempts.
+Put DRM device on initialization failure path rather than directly
+return error code.
 
-This fixes the WARN_ON(!cr->bss)) from __cfg80211_connect_result() when
-connecting to an AP after a previous connection failure (e.g. where EAP fails
-due to incorrect psk but association succeeded). In some scenarios, indeed,
-brcmf_is_linkup() was reporting a link up event too early due to stale
-BRCMF_VIF_STATUS_ASSOC_SUCCESS bit, thus reporting to cfg80211 a connection
-result with a zeroed bssid (vif->profile.bssid is still empty), causing the
-WARN_ON due to the call to cfg80211_get_bss() with the empty bssid.
-
-Signed-off-by: Luca Pesce <luca.pesce@vimar.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1608807119-21785-1-git-send-email-luca.pesce@vimar.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: a67d5088ceb8 ("drm/imx: drop explicit drm_mode_config_cleanup")
+Signed-off-by: Pan Bian <bianpan2016@163.com>
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- .../net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c    | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/imx/imx-drm-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-index 4ca50353538e..cd813c69a178 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-@@ -5382,7 +5382,8 @@ static bool brcmf_is_linkup(struct brcmf_cfg80211_vif *vif,
- 	return false;
- }
+diff --git a/drivers/gpu/drm/imx/imx-drm-core.c b/drivers/gpu/drm/imx/imx-drm-core.c
+index d1a9841adeed..e6a88c8cbd69 100644
+--- a/drivers/gpu/drm/imx/imx-drm-core.c
++++ b/drivers/gpu/drm/imx/imx-drm-core.c
+@@ -215,7 +215,7 @@ static int imx_drm_bind(struct device *dev)
  
--static bool brcmf_is_linkdown(const struct brcmf_event_msg *e)
-+static bool brcmf_is_linkdown(struct brcmf_cfg80211_vif *vif,
-+			    const struct brcmf_event_msg *e)
- {
- 	u32 event = e->event_code;
- 	u16 flags = e->flags;
-@@ -5391,6 +5392,8 @@ static bool brcmf_is_linkdown(const struct brcmf_event_msg *e)
- 	    (event == BRCMF_E_DISASSOC_IND) ||
- 	    ((event == BRCMF_E_LINK) && (!(flags & BRCMF_EVENT_MSG_LINK)))) {
- 		brcmf_dbg(CONN, "Processing link down\n");
-+		clear_bit(BRCMF_VIF_STATUS_EAP_SUCCESS, &vif->sme_state);
-+		clear_bit(BRCMF_VIF_STATUS_ASSOC_SUCCESS, &vif->sme_state);
- 		return true;
- 	}
- 	return false;
-@@ -5683,7 +5686,7 @@ brcmf_notify_connect_status(struct brcmf_if *ifp,
- 		} else
- 			brcmf_bss_connect_done(cfg, ndev, e, true);
- 		brcmf_net_setcarrier(ifp, true);
--	} else if (brcmf_is_linkdown(e)) {
-+	} else if (brcmf_is_linkdown(ifp->vif, e)) {
- 		brcmf_dbg(CONN, "Linkdown\n");
- 		if (!brcmf_is_ibssmode(ifp->vif)) {
- 			brcmf_bss_connect_done(cfg, ndev, e, false);
+ 	ret = drmm_mode_config_init(drm);
+ 	if (ret)
+-		return ret;
++		goto err_kms;
+ 
+ 	ret = drm_vblank_init(drm, MAX_CRTC);
+ 	if (ret)
 -- 
-2.30.1
+2.31.1
 
 
 
