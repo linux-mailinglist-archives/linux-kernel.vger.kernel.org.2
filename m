@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E1743540BF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC3A353EB1
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:34:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240320AbhDEJVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:21:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38636 "EHLO mail.kernel.org"
+        id S238393AbhDEJHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:07:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240774AbhDEJQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:16:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F36D661002;
-        Mon,  5 Apr 2021 09:16:49 +0000 (UTC)
+        id S238658AbhDEJFe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:05:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D055613A0;
+        Mon,  5 Apr 2021 09:05:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617614210;
-        bh=N+CSAYy1zGMVjbnAPkfmD7wBZE7bLj/mVqEwwm1YubY=;
+        s=korg; t=1617613526;
+        bh=olnoqY4RSvvcll1Lt7jxoHHmhvFq5T45mZKtg4kwdwc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cpok/Cd4EDBeTtmEA+sIfP8pW0VMA3S+gJVwS8f9Ph8o92LdmKBC3Q1sEJv/g2Ie5
-         UlqMrj6/G8EoDoX+3hsQQ9sXf8LLuXi8dnKQK+LRVXYwmYRzAsPgNr5V5kTqipCoMZ
-         eoJKoLFyCT77hyDYVDubGvt8ub8GC7JOsy1NV27A=
+        b=ifgDqvsJIrNwXE8EDbKGaz+1bjMxKK5SlqpIorpkw8OViFHFzqwTFD7SOVmBFZl7Q
+         AOOdfhxujha4Tc9EIIaiuNuj8hIADVIZl8F7AXcqYMGL04LN29M2p8tbK8DHVbq1ua
+         oJZ1VqXqVZRb8HTSYiutoOc7Tt7xAv/B0i0ozIrA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 124/152] powerpc/pseries/mobility: use struct for shared state
-Date:   Mon,  5 Apr 2021 10:54:33 +0200
-Message-Id: <20210405085038.264786120@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Artur Petrosyan <Arthur.Petrosyan@synopsys.com>,
+        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
+Subject: [PATCH 5.4 70/74] usb: dwc2: Fix HPRT0.PrtSusp bit setting for HiKey 960 board.
+Date:   Mon,  5 Apr 2021 10:54:34 +0200
+Message-Id: <20210405085027.016824786@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
-References: <20210405085034.233917714@linuxfoundation.org>
+In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
+References: <20210405085024.703004126@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,70 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Lynch <nathanl@linux.ibm.com>
+From: Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
 
-[ Upstream commit e834df6cfc71d8e5ce2c27a0184145ea125c3f0f ]
+commit 5e3bbae8ee3d677a0aa2919dc62b5c60ea01ba61 upstream.
 
-The atomic_t counter is the only shared state for the join/suspend
-sequence so far, but that will change. Contain it in a
-struct (pseries_suspend_info), and document its intended use. No
-functional change.
+Increased the waiting timeout for HPRT0.PrtSusp register field
+to be set, because on HiKey 960 board HPRT0.PrtSusp wasn't
+generated with the existing timeout.
 
-Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210315080045.460331-2-nathanl@linux.ibm.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: <stable@vger.kernel.org> # 4.18
+Fixes: 22bb5cfdf13a ("usb: dwc2: Fix host exit from hibernation flow.")
+Signed-off-by: Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
+Acked-by: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
+Link: https://lore.kernel.org/r/20210326102447.8F7FEA005D@mailhost.synopsys.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/platforms/pseries/mobility.c | 22 +++++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
+ drivers/usb/dwc2/hcd.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/platforms/pseries/mobility.c b/arch/powerpc/platforms/pseries/mobility.c
-index ea4d6a660e0d..a6739ce9feac 100644
---- a/arch/powerpc/platforms/pseries/mobility.c
-+++ b/arch/powerpc/platforms/pseries/mobility.c
-@@ -452,9 +452,21 @@ static int do_suspend(void)
- 	return ret;
- }
+--- a/drivers/usb/dwc2/hcd.c
++++ b/drivers/usb/dwc2/hcd.c
+@@ -5398,7 +5398,7 @@ int dwc2_host_enter_hibernation(struct d
+ 	dwc2_writel(hsotg, hprt0, HPRT0);
  
-+/**
-+ * struct pseries_suspend_info - State shared between CPUs for join/suspend.
-+ * @counter: Threads are to increment this upon resuming from suspend
-+ *           or if an error is received from H_JOIN. The thread which performs
-+ *           the first increment (i.e. sets it to 1) is responsible for
-+ *           waking the other threads.
-+ */
-+struct pseries_suspend_info {
-+	atomic_t counter;
-+};
-+
- static int do_join(void *arg)
- {
--	atomic_t *counter = arg;
-+	struct pseries_suspend_info *info = arg;
-+	atomic_t *counter = &info->counter;
- 	long hvrc;
- 	int ret;
+ 	/* Wait for the HPRT0.PrtSusp register field to be set */
+-	if (dwc2_hsotg_wait_bit_set(hsotg, HPRT0, HPRT0_SUSP, 3000))
++	if (dwc2_hsotg_wait_bit_set(hsotg, HPRT0, HPRT0_SUSP, 5000))
+ 		dev_warn(hsotg->dev, "Suspend wasn't generated\n");
  
-@@ -535,11 +547,15 @@ static int pseries_suspend(u64 handle)
- 	int ret;
- 
- 	while (true) {
--		atomic_t counter = ATOMIC_INIT(0);
-+		struct pseries_suspend_info info;
- 		unsigned long vasi_state;
- 		int vasi_err;
- 
--		ret = stop_machine(do_join, &counter, cpu_online_mask);
-+		info = (struct pseries_suspend_info) {
-+			.counter = ATOMIC_INIT(0),
-+		};
-+
-+		ret = stop_machine(do_join, &info, cpu_online_mask);
- 		if (ret == 0)
- 			break;
- 		/*
--- 
-2.30.2
-
+ 	/*
 
 
