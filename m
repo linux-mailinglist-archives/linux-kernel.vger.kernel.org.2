@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B34B353D67
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9477354088
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236918AbhDEI7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 04:59:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38794 "EHLO mail.kernel.org"
+        id S240304AbhDEJSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:18:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233609AbhDEI6a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 04:58:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F40F6610E8;
-        Mon,  5 Apr 2021 08:58:23 +0000 (UTC)
+        id S240120AbhDEJOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:14:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EF0C60FE4;
+        Mon,  5 Apr 2021 09:14:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613104;
-        bh=qiE3yZjvyD3V5Y0zET/MNOpr2H+hzMsRcDF6CDasm5w=;
+        s=korg; t=1617614081;
+        bh=4eEG1cSiehEqlu1PAct8oDkEDjtzotjqI7q4UfC9n8I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zsScZ8eU3PKv+sbi+7kbDWfjFk+SehmS4xRd4jEPyakVRSemjakyQnTEQPeVOJQPU
-         P8orK58rMp+IJAD2toTMGIZJGqSHJ5DCaHwUG3gWCOnocOmNU9OBwaupqBfj7uz8VK
-         ec+2Vma1FW0pbwTaQvi7xs7r/k06Ap4qOsCVL538=
+        b=s5eQGrblVrUIx6FFidAX/mNkIcYRqE5C8Eq/ivsmfMNe/sZoLhhIedWN3GSUH9Ih5
+         9I7nYtoqSwru+oSCl39U7bSWc9fOJkdhRdkw/W1IcDFZXhU1g7CvpnZlAuJON04GiB
+         EFaimxWt4UaL/oEirI7pvZRAPgLorAEK2O6bESXk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Rossi <nathan.rossi@digi.com>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 20/52] net: ethernet: aquantia: Handle error cleanup of start on open
+        stable@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Max Filippov <jcmvbkbc@gmail.com>
+Subject: [PATCH 5.11 077/152] xtensa: fix uaccess-related livelock in do_page_fault
 Date:   Mon,  5 Apr 2021 10:53:46 +0200
-Message-Id: <20210405085022.656266065@linuxfoundation.org>
+Message-Id: <20210405085036.766048617@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
-References: <20210405085021.996963957@linuxfoundation.org>
+In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
+References: <20210405085034.233917714@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,50 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Rossi <nathan.rossi@digi.com>
+From: Max Filippov <jcmvbkbc@gmail.com>
 
-[ Upstream commit 8a28af7a3e85ddf358f8c41e401a33002f7a9587 ]
+commit 7b9acbb6aad4f54623dcd4bd4b1a60fe0c727b09 upstream.
 
-The aq_nic_start function can fail in a variety of cases which leaves
-the device in broken state.
+If a uaccess (e.g. get_user()) triggers a fault and there's a
+fault signal pending, the handler will return to the uaccess without
+having performed a uaccess fault fixup, and so the CPU will immediately
+execute the uaccess instruction again, whereupon it will livelock
+bouncing between that instruction and the fault handler.
 
-An example case where the start function fails is the
-request_threaded_irq which can be interrupted, resulting in a EINTR
-result. This can be manually triggered by bringing the link up (e.g. ip
-link set up) and triggering a SIGINT on the initiating process (e.g.
-Ctrl+C). This would put the device into a half configured state.
-Subsequently bringing the link up again would cause the napi_enable to
-BUG.
+https://lore.kernel.org/lkml/20210121123140.GD48431@C02TD0UTHF1T.local/
 
-In order to correctly clean up the failed attempt to start a device call
-aq_nic_stop.
-
-Signed-off-by: Nathan Rossi <nathan.rossi@digi.com>
-Reviewed-by: Igor Russkikh <irusskikh@marvell.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Reported-by: Mark Rutland <mark.rutland@arm.com>
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/aquantia/atlantic/aq_main.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/xtensa/mm/fault.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_main.c b/drivers/net/ethernet/aquantia/atlantic/aq_main.c
-index 5d6c40d86775..2fb532053d6d 100644
---- a/drivers/net/ethernet/aquantia/atlantic/aq_main.c
-+++ b/drivers/net/ethernet/aquantia/atlantic/aq_main.c
-@@ -60,8 +60,10 @@ static int aq_ndev_open(struct net_device *ndev)
- 	if (err < 0)
- 		goto err_exit;
- 	err = aq_nic_start(aq_nic);
--	if (err < 0)
-+	if (err < 0) {
-+		aq_nic_stop(aq_nic);
- 		goto err_exit;
+--- a/arch/xtensa/mm/fault.c
++++ b/arch/xtensa/mm/fault.c
+@@ -112,8 +112,11 @@ good_area:
+ 	 */
+ 	fault = handle_mm_fault(vma, address, flags, regs);
+ 
+-	if (fault_signal_pending(fault, regs))
++	if (fault_signal_pending(fault, regs)) {
++		if (!user_mode(regs))
++			goto bad_page_fault;
+ 		return;
 +	}
  
- err_exit:
- 	if (err < 0)
--- 
-2.30.1
-
+ 	if (unlikely(fault & VM_FAULT_ERROR)) {
+ 		if (fault & VM_FAULT_OOM)
 
 
