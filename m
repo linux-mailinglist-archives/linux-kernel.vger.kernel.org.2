@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5044D353EAA
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 918AA353FA7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238302AbhDEJHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:07:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48612 "EHLO mail.kernel.org"
+        id S239514AbhDEJNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:13:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237836AbhDEJFX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:05:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FF38613A9;
-        Mon,  5 Apr 2021 09:05:15 +0000 (UTC)
+        id S239354AbhDEJJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:09:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4457061393;
+        Mon,  5 Apr 2021 09:09:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613516;
-        bh=ogBNOLnzdqZhhc74vgJX+cTFHvEdTeKq9V92f9LWiSo=;
+        s=korg; t=1617613785;
+        bh=6LPeolNlHI+0JREf+xrum12fwofLfxMTazazS8w0K8I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gnvGsvwahJ9UQNc4pp9Pwj6v8KJdPkbxNZK7RAkZRSzDu4yS9kuAWqZxPQ4x0A1l8
-         Zb8jrrk+aMgduWksSNF0e6ouOw/wTf03u+bNIpHUkWK+anPXMsxRHPO4NpgK+V7pL5
-         dRoOvbtQXTKP+a8tj36YWTpITKAQnHqGeTbID3U4=
+        b=EtbfWv8yJlO8aq4DOTKJagoO7El7TETTGPZAGf02SjM47xR+yjbFb5VRXUnovw0oB
+         tiTeJZ4p8kgHldWto/+vkDeN6JQdArueU30Xdg4AucvIs3OrJw8PEDidvm5+HB/NJi
+         PugiyPKmEAmmYXlRWcqpyZ46SpVeVIaT1rT1Cy/Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5.4 49/74] tracing: Fix stack trace event size
+        stable@vger.kernel.org, Ben Gardon <bgardon@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 091/126] KVM: x86/mmu: Ensure TLBs are flushed when yielding during GFN range zap
 Date:   Mon,  5 Apr 2021 10:54:13 +0200
-Message-Id: <20210405085026.331685598@linuxfoundation.org>
+Message-Id: <20210405085034.075409532@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
-References: <20210405085024.703004126@linuxfoundation.org>
+In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
+References: <20210405085031.040238881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,74 +41,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+From: Sean Christopherson <seanjc@google.com>
 
-commit 9deb193af69d3fd6dd8e47f292b67c805a787010 upstream.
+[ Upstream commit a835429cda91621fca915d80672a157b47738afb ]
 
-Commit cbc3b92ce037 fixed an issue to modify the macros of the stack trace
-event so that user space could parse it properly. Originally the stack
-trace format to user space showed that the called stack was a dynamic
-array. But it is not actually a dynamic array, in the way that other
-dynamic event arrays worked, and this broke user space parsing for it. The
-update was to make the array look to have 8 entries in it. Helper
-functions were added to make it parse it correctly, as the stack was
-dynamic, but was determined by the size of the event stored.
+When flushing a range of GFNs across multiple roots, ensure any pending
+flush from a previous root is honored before yielding while walking the
+tables of the current root.
 
-Although this fixed user space on how it read the event, it changed the
-internal structure used for the stack trace event. It changed the array
-size from [0] to [8] (added 8 entries). This increased the size of the
-stack trace event by 8 words. The size reserved on the ring buffer was the
-size of the stack trace event plus the number of stack entries found in
-the stack trace. That commit caused the amount to be 8 more than what was
-needed because it did not expect the caller field to have any size. This
-produced 8 entries of garbage (and reading random data) from the stack
-trace event:
+Note, kvm_tdp_mmu_zap_gfn_range() now intentionally overwrites its local
+"flush" with the result to avoid redundant flushes.  zap_gfn_range()
+preserves and return the incoming "flush", unless of course the flush was
+performed prior to yielding and no new flush was triggered.
 
-          <idle>-0       [002] d... 1976396.837549: <stack trace>
- => trace_event_raw_event_sched_switch
- => __traceiter_sched_switch
- => __schedule
- => schedule_idle
- => do_idle
- => cpu_startup_entry
- => secondary_startup_64_no_verify
- => 0xc8c5e150ffff93de
- => 0xffff93de
- => 0
- => 0
- => 0xc8c5e17800000000
- => 0x1f30affff93de
- => 0x00000004
- => 0x200000000
-
-Instead, subtract the size of the caller field from the size of the event
-to make sure that only the amount needed to store the stack trace is
-reserved.
-
-Link: https://lore.kernel.org/lkml/your-ad-here.call-01617191565-ext-9692@work.hours/
-
+Fixes: 1af4a96025b3 ("KVM: x86/mmu: Yield in TDU MMU iter even if no SPTES changed")
 Cc: stable@vger.kernel.org
-Fixes: cbc3b92ce037 ("tracing: Set kernel_stack's caller size properly")
-Reported-by: Vasily Gorbik <gor@linux.ibm.com>
-Tested-by: Vasily Gorbik <gor@linux.ibm.com>
-Acked-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Ben Gardon <bgardon@google.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20210325200119.1359384-2-seanjc@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/trace.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/x86/kvm/mmu/tdp_mmu.c | 23 ++++++++++++-----------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
 
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -2857,7 +2857,8 @@ static void __ftrace_trace_stack(struct
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index a54a9ed979d1..34ef3e1a0f84 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -111,7 +111,7 @@ bool is_tdp_mmu_root(struct kvm *kvm, hpa_t hpa)
+ }
  
- 	size = nr_entries * sizeof(unsigned long);
- 	event = __trace_buffer_lock_reserve(buffer, TRACE_STACK,
--					    sizeof(*entry) + size, flags, pc);
-+				    (sizeof(*entry) - sizeof(entry->caller)) + size,
-+				    flags, pc);
- 	if (!event)
- 		goto out;
- 	entry = ring_buffer_event_data(event);
+ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+-			  gfn_t start, gfn_t end, bool can_yield);
++			  gfn_t start, gfn_t end, bool can_yield, bool flush);
+ 
+ void kvm_tdp_mmu_free_root(struct kvm *kvm, struct kvm_mmu_page *root)
+ {
+@@ -124,7 +124,7 @@ void kvm_tdp_mmu_free_root(struct kvm *kvm, struct kvm_mmu_page *root)
+ 
+ 	list_del(&root->link);
+ 
+-	zap_gfn_range(kvm, root, 0, max_gfn, false);
++	zap_gfn_range(kvm, root, 0, max_gfn, false, false);
+ 
+ 	free_page((unsigned long)root->spt);
+ 	kmem_cache_free(mmu_page_header_cache, root);
+@@ -504,20 +504,21 @@ static inline bool tdp_mmu_iter_cond_resched(struct kvm *kvm,
+  * scheduler needs the CPU or there is contention on the MMU lock. If this
+  * function cannot yield, it will not release the MMU lock or reschedule and
+  * the caller must ensure it does not supply too large a GFN range, or the
+- * operation can cause a soft lockup.
++ * operation can cause a soft lockup.  Note, in some use cases a flush may be
++ * required by prior actions.  Ensure the pending flush is performed prior to
++ * yielding.
+  */
+ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+-			  gfn_t start, gfn_t end, bool can_yield)
++			  gfn_t start, gfn_t end, bool can_yield, bool flush)
+ {
+ 	struct tdp_iter iter;
+-	bool flush_needed = false;
+ 
+ 	rcu_read_lock();
+ 
+ 	tdp_root_for_each_pte(iter, root, start, end) {
+ 		if (can_yield &&
+-		    tdp_mmu_iter_cond_resched(kvm, &iter, flush_needed)) {
+-			flush_needed = false;
++		    tdp_mmu_iter_cond_resched(kvm, &iter, flush)) {
++			flush = false;
+ 			continue;
+ 		}
+ 
+@@ -535,11 +536,11 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+ 			continue;
+ 
+ 		tdp_mmu_set_spte(kvm, &iter, 0);
+-		flush_needed = true;
++		flush = true;
+ 	}
+ 
+ 	rcu_read_unlock();
+-	return flush_needed;
++	return flush;
+ }
+ 
+ /*
+@@ -554,7 +555,7 @@ bool kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start, gfn_t end)
+ 	bool flush = false;
+ 
+ 	for_each_tdp_mmu_root_yield_safe(kvm, root)
+-		flush |= zap_gfn_range(kvm, root, start, end, true);
++		flush = zap_gfn_range(kvm, root, start, end, true, flush);
+ 
+ 	return flush;
+ }
+@@ -757,7 +758,7 @@ static int zap_gfn_range_hva_wrapper(struct kvm *kvm,
+ 				     struct kvm_mmu_page *root, gfn_t start,
+ 				     gfn_t end, unsigned long unused)
+ {
+-	return zap_gfn_range(kvm, root, start, end, false);
++	return zap_gfn_range(kvm, root, start, end, false, false);
+ }
+ 
+ int kvm_tdp_mmu_zap_hva_range(struct kvm *kvm, unsigned long start,
+-- 
+2.30.1
+
 
 
