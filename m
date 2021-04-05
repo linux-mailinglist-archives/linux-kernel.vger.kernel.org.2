@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80FC33540A9
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FD1E3540DA
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241185AbhDEJTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:19:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37050 "EHLO mail.kernel.org"
+        id S240137AbhDEJXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:23:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240645AbhDEJQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:16:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D5AD61399;
-        Mon,  5 Apr 2021 09:15:56 +0000 (UTC)
+        id S239885AbhDEJSG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:18:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC61A61399;
+        Mon,  5 Apr 2021 09:17:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617614157;
-        bh=1fuiurojnUPQsjxxcxSuO+G0KIY/p02YA7hhZUTF0nk=;
+        s=korg; t=1617614280;
+        bh=gt79QrYPFtr8VapyR20UI2g3woguhfoqsTW7aWmv72E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vUi8kmVrcVDk3NI2jXPDHamdXydmZwIuPqpv/HbgGMCFzc8qSFYGQqwJre8GCbbta
-         7xhvfSfVcOg+OlE9bTxtsYse1hWAICYGCIro8QfgKZjaJQsiHtdq5+pz4qdDy/tcvk
-         SfuLBbQWbmzfx2mKtVNwMooGQOjj7mtBpLdM+1qE=
+        b=Lc0aI8SbQPhYbGumyCLlQslE9lw6lJpGSNg7LtNrMYDxvHWT/kgbeqsqtFKHprTTf
+         lbTmghs5BdT6sB3UG/CtiU5yvdUM1+eESw/31aD4VUrB46UMlucGIHL5guPz7ezmWN
+         zv9pGQFXpiemnrwBtUTk7734PSqYBFuAcd52n6bI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Jonathan Marek <jonathan@marek.ca>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Nathan Chancellor <nathan@kernel.org>,
         Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 5.11 103/152] pinctrl: qcom: lpass lpi: use default pullup/strength values
-Date:   Mon,  5 Apr 2021 10:54:12 +0200
-Message-Id: <20210405085037.587810700@linuxfoundation.org>
+Subject: [PATCH 5.11 104/152] pinctrl: qcom: fix unintentional string concatenation
+Date:   Mon,  5 Apr 2021 10:54:13 +0200
+Message-Id: <20210405085037.617290106@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
 References: <20210405085034.233917714@linuxfoundation.org>
@@ -43,40 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Marek <jonathan@marek.ca>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 2a9be38099e338f597c14d3cb851849b01db05f6 upstream.
+commit 58b5ada8c465b5f1300bc021ebd3d3b8149124b4 upstream.
 
-If these fields are not set in dts, the driver will use these variables
-uninitialized to set the fields. Not only will it set garbage values for
-these fields, but it can overflow into other fields and break those.
+clang is clearly correct to point out a typo in a silly
+array of strings:
 
-In the current sm8250 dts, the dmic01 entries do not have a pullup setting,
-and might not work without this change.
+drivers/pinctrl/qcom/pinctrl-sdx55.c:426:61: error: suspicious concatenation of string literals in an array initialization; did you mean to separate the elements with a comma? [-Werror,-Wstring-concatenation]
+        "gpio14", "gpio15", "gpio16", "gpio17", "gpio18", "gpio19" "gpio20", "gpio21", "gpio22",
+                                                                   ^
+Add the missing comma that must have accidentally been removed.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Fixes: 6e261d1090d6 ("pinctrl: qcom: Add sm8250 lpass lpi pinctrl driver")
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+Fixes: ac43c44a7a37 ("pinctrl: qcom: Add SDX55 pincontrol driver")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20210304194816.3843-1-jonathan@marek.ca
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Link: https://lore.kernel.org/r/20210323131728.2702789-1-arnd@kernel.org
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pinctrl/qcom/pinctrl-lpass-lpi.c |    2 +-
+ drivers/pinctrl/qcom/pinctrl-sdx55.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
-+++ b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
-@@ -392,7 +392,7 @@ static int lpi_config_set(struct pinctrl
- 			  unsigned long *configs, unsigned int nconfs)
- {
- 	struct lpi_pinctrl *pctrl = dev_get_drvdata(pctldev->dev);
--	unsigned int param, arg, pullup, strength;
-+	unsigned int param, arg, pullup = LPI_GPIO_BIAS_DISABLE, strength = 2;
- 	bool value, output_enabled = false;
- 	const struct lpi_pingroup *g;
- 	unsigned long sval;
+--- a/drivers/pinctrl/qcom/pinctrl-sdx55.c
++++ b/drivers/pinctrl/qcom/pinctrl-sdx55.c
+@@ -423,7 +423,7 @@ static const char * const gpio_groups[]
+ 
+ static const char * const qdss_stm_groups[] = {
+ 	"gpio0", "gpio1", "gpio2", "gpio3", "gpio4", "gpio5", "gpio6", "gpio7", "gpio12", "gpio13",
+-	"gpio14", "gpio15", "gpio16", "gpio17", "gpio18", "gpio19" "gpio20", "gpio21", "gpio22",
++	"gpio14", "gpio15", "gpio16", "gpio17", "gpio18", "gpio19", "gpio20", "gpio21", "gpio22",
+ 	"gpio23", "gpio44", "gpio45", "gpio52", "gpio53", "gpio56", "gpio57", "gpio61", "gpio62",
+ 	"gpio63", "gpio64", "gpio65", "gpio66",
+ };
 
 
