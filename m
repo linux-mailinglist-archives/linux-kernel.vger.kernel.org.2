@@ -2,93 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1CAF3547CB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 22:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D66F33547D7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 22:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235983AbhDEUux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 16:50:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55884 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232860AbhDEUuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 16:50:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52752613AD;
-        Mon,  5 Apr 2021 20:50:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617655844;
-        bh=+wGRlzta/c+bjiOYd0eragT1f7GQIkNEGJwhNvEisXA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T7tkwCweFIZZQHILi2ONZGvApGW1bJSGb9h8KJSwBZXmDtbZJwgliGS/2Tadj+ia+
-         QMdXCIRSwsfFb1J5ErA3T90ZEadlPoSsihzT1Kk8kw9Cd3XkVdf7R+AgGIDbh+V8En
-         8SsvpeIsmGuiH4KaXgoDGUOg7CJLpbuhIS1s6u99kBoqAQf1C+4cKFSrZtdUBWHayY
-         ycwjL89EjSzSJG16AAdlVXkjf9j90w6yDw19zRGku2Ih5qwf6cSArn+weCDfLkJPu+
-         yYYYCTW4OPm2cQjVeXeyAALD9rAOvsItpKX1mR5+y4zDfJc2rdKBbS6zxrLmlKOLau
-         xYAC8252NMdUQ==
-Date:   Mon, 5 Apr 2021 22:50:40 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-Subject: Re: [PATCH v1 1/1] i2c: designware: Adjust bus_freq_hz when refuse
- high speed mode set
-Message-ID: <20210405205040.GC3945@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-References: <20210331110510.67523-1-andriy.shevchenko@linux.intel.com>
+        id S237324AbhDEUwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 16:52:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237144AbhDEUwe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 16:52:34 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70C88C061756;
+        Mon,  5 Apr 2021 13:52:26 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id a6so5973581wrw.8;
+        Mon, 05 Apr 2021 13:52:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=7C13XlUdOgzQF9sLGdJgUoIrOgcp/sITEfTitDZiIdc=;
+        b=Rb0mNRmGnTqpOkvNQ3ypJ//C+oH+JTE77MmLtNerx1gz8lpqfS3w/FpotN9eMElTK1
+         5s1YM9rg69RanWIoObVijLEX2ZXvtS3xh3s7gXl/0Wpwi/ka9gaDgbIw968Nupzdg+s8
+         0meS+b2N5AmzOuGK8e9Aj3uzxD5WsGnebHbLuMmqEV/dTEZEizGNRmcaPXCK2J3YMYf/
+         5QdnalUNF+IEHJpKvhNpTD3fVkrwgfnfBV/mknETE13sjBXBo/hmdiOLY4iWnj7mZyM+
+         sujyhmJx/sqhwn9VxTPFlITbOnGrRscCoTEAwJYMez8ePvgt1IYCMUjaZcYCZyj3RTkV
+         HWIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=7C13XlUdOgzQF9sLGdJgUoIrOgcp/sITEfTitDZiIdc=;
+        b=sbD3XifXb3B+xz1Rhlx0iuA5CdMF3aOKT1T+f1f1dCJgeLYN30bRmSA8BHGDsX1LCD
+         OMAHEUnM8QIw/T5DnEDK8t57NdDeVaEDMMEdYZ6dbiTK27yAPuoZXtQEvdqLM4tAg05g
+         1hN5TbSb+Sbxwtom94g0T0/yt99YBw8h3EW5Igc4P4lmk6P4m+NAl/0s0ftVikurNtmH
+         oim+pHNG00iulq9iYpIunCcfX951/Pzw7VRNLWDHIP+MtUNULccB+Hc8xRUYGPniKrTL
+         r7AsIpNyAKYfEp5Aq2XUCjXifoXc/PWoF1qvYjTKYgc951RI0tavBn1oFZkSZucOKP1D
+         8hbA==
+X-Gm-Message-State: AOAM532hGr5PVK6K2EA9mLGRF2q1ulQ+dOH0GXBuKt6HCUxgSc6Cjm8h
+        0Nq1YE0yOZ95P1jKc/dWUYZ8FDK1i2q5Hg==
+X-Google-Smtp-Source: ABdhPJxSaXmM69ki950ZgNjz250o54xGZUeAdsgGMVuD5hSefBTuPhvsiW+81TLLy1bZ+hHNZYQrUw==
+X-Received: by 2002:a05:6000:181:: with SMTP id p1mr30779028wrx.73.1617655945220;
+        Mon, 05 Apr 2021 13:52:25 -0700 (PDT)
+Received: from LEGION ([39.46.7.73])
+        by smtp.gmail.com with ESMTPSA id x11sm674939wmi.3.2021.04.05.13.52.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Apr 2021 13:52:24 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 01:52:19 +0500
+From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "open list:SIANO DVB DRIVER" <linux-media@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        zhengyongjun3@huawei.com, kernel-janitors@vger.kernel.org,
+        colin.king@canonical.com, dan.carpenter@oracle.com
+Cc:     musamaanjum@gmail.com
+Subject: [PATCH] media: siano: use DEFINE_MUTEX() for mutex lock
+Message-ID: <20210405205219.GA687366@LEGION>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="+xNpyl7Qekk2NvDX"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210331110510.67523-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+mutex lock can be initialized with DEFINE_MUTEX() rather than
+explicitly calling mutex_init().
 
---+xNpyl7Qekk2NvDX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+---
+ drivers/media/common/siano/smscoreapi.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-On Wed, Mar 31, 2021 at 02:05:10PM +0300, Andy Shevchenko wrote:
-> When hardware doesn't support High Speed Mode, we forget bus_freq_hz
-> timing adjustment. This makes the timings and real registers being
-> unsynchronized. Adjust bus_freq_hz when refuse high speed mode set.
->=20
-> Fixes: b6e67145f149 ("i2c: designware: Enable high speed mode")
-> Reported-by: "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+diff --git a/drivers/media/common/siano/smscoreapi.c b/drivers/media/common/siano/smscoreapi.c
+index 410cc3ac6f94..7f5b638d2458 100644
+--- a/drivers/media/common/siano/smscoreapi.c
++++ b/drivers/media/common/siano/smscoreapi.c
+@@ -414,10 +414,10 @@ struct smscore_registry_entry_t {
+ 
+ static struct list_head g_smscore_notifyees;
+ static struct list_head g_smscore_devices;
+-static struct mutex g_smscore_deviceslock;
++static DEFINE_MUTEX(g_smscore_deviceslock);
+ 
+ static struct list_head g_smscore_registry;
+-static struct mutex g_smscore_registrylock;
++static DEFINE_MUTEX(g_smscore_registrylock);
+ 
+ static int default_mode = DEVICE_MODE_NONE;
+ 
+@@ -2123,10 +2123,7 @@ static int __init smscore_module_init(void)
+ {
+ 	INIT_LIST_HEAD(&g_smscore_notifyees);
+ 	INIT_LIST_HEAD(&g_smscore_devices);
+-	mutex_init(&g_smscore_deviceslock);
+-
+ 	INIT_LIST_HEAD(&g_smscore_registry);
+-	mutex_init(&g_smscore_registrylock);
+ 
+ 	return 0;
+ }
+-- 
+2.25.1
 
-Applied to for-current, thanks!
-
-
---+xNpyl7Qekk2NvDX
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBreCAACgkQFA3kzBSg
-KbZijA//XZg/kk/T3SObfzobXjACtyQNCYADrtrwzsso66VX+KoWn030w+vq39pm
-5kNYak5j8pY0aFESyx5UCtbI3e4KN2uPR81LfUIFPtxFCTV6NSmo2FrAUktvHgvH
-AWgkDYFEvxYWQQlbeKnobFgYbAFd1r37ZTRyVxUC2fyibJAIiFWsp6XnuMOErgXZ
-Ni8SlRTOLKEOw5X+810qii9cIVy2mQvyESyTOcAynw7as491s1DB3afPAYY0j/rt
-Gq6vxg+GyfihOG6Mn99ML/Iu+z2b0xle1J/2Nxe5IAUSNydOOZMvyy0OUXdUYFo7
-ddUQXUbTxD1BW+VPn9S0lw853dwBvB2HTrzJATBD/qjqrp43LU8yq9zWZwBZhw7w
-utg7agYkrwMgdV6jeCpF/REFRh8Xk3p+fgtvZxGvOjf6OEBYkh+qi7+PFqKTxF3w
-TJ2746Hxwt7M8Oi24EinaMP39r5tLwDdstMvnB5/HdK4WqMMR5ISezR2iM3WKjIO
-bimQkDkTPyuwHEqtQ2rBLN95ROmmZeLIP2528+qI4IXQDCkaQJ98aeCG/o6xsSqz
-jXw+47XyDPWCQFhbh9MT+3U5MhPaWkCcIKEXo6XJ4E8cpYQrEe+h202dCpWOwIFT
-Rv6BUu9qZHtW7T5v0E+S1nMPwQ9gYj04Ken8FFXGjM50FtsFtTU=
-=k6+i
------END PGP SIGNATURE-----
-
---+xNpyl7Qekk2NvDX--
