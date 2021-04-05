@@ -2,143 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAE16354730
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 21:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 196CB354737
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 21:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236114AbhDETlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 15:41:10 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:61889
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232942AbhDETlH (ORCPT
+        id S240247AbhDETtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 15:49:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232942AbhDETtU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 15:41:07 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AKjwsRKgO6mRS1bbdAwFfnsDbaHBQXjsji2hD?=
- =?us-ascii?q?6mlwRA09T+WzkceykPMHkSLlkTp5YgBFpfmsMLSNKEm2ybdb+o8UVI3JYCDHvy?=
- =?us-ascii?q?+SIJhm/c/exVTbehHW0s54+eNef7NlCNv2ZGIK6PrSxAWjCd4vzJ2m3cmT5dv2?=
- =?us-ascii?q?9HtmQQF0Z6wI1W4QNi+hHkJ7XwVAD5YifaDshfZvnSaqengcc62AaEUtYu6rnb?=
- =?us-ascii?q?H2va79bQVDLxAq7xTmt0LL1JfKVynd5BsYXj9VqI1OzUHOmWXCiZmejw=3D=3D?=
-X-IronPort-AV: E=Sophos;i="5.81,307,1610406000"; 
-   d="scan'208";a="377792127"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 05 Apr 2021 21:41:00 +0200
-Date:   Mon, 5 Apr 2021 21:40:59 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
-cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Subject: Re: [Outreachy kernel] [PATCH 4/4] staging: rtl8723bs: core: align
- arguments with open parenthesis
-In-Reply-To: <00250c746ed850f6a73ff0ad4c1735cbd019b58f.1617641790.git.martinsdecarvalhobeatriz@gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2104052138230.2981@hadrien>
-References: <cover.1617641790.git.martinsdecarvalhobeatriz@gmail.com> <00250c746ed850f6a73ff0ad4c1735cbd019b58f.1617641790.git.martinsdecarvalhobeatriz@gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Mon, 5 Apr 2021 15:49:20 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 486B2C061756;
+        Mon,  5 Apr 2021 12:49:12 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id n11-20020a05600c4f8bb029010e5cf86347so76685wmq.1;
+        Mon, 05 Apr 2021 12:49:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=4Yv5TTCQDxO5XD01tjK/2+OvbO6WA2NVomW+QKng34w=;
+        b=dHjd0c2UwLoBATwVjRwkWNMnX/N6X/N5145A6kqBvvAoX3Be80Gv9Wr9TyONgx519K
+         WjqRY6fcgdV/MfZOC8plPwcjivO2BoSc2zIgYG93YuZa+rb7Yn2w4ToaQvAd7YUEO0F1
+         UbEUaZrjk74Fqd19QEVPzuWxsFNX4VdaVfNrVU1s/achNPqZhtOMxbQiaKRjZiS8QQHq
+         kXGZVHOVS1E5ZvC8OkBEJemE6h8NtrVO6Oa7Fy/cNcCAiAcXI+kzh8lqei+Uhj61OphF
+         CwzKp0lJuYug89uu0uLJkDZwwfA6MMjAOQY2sEriE24Anyf8CzFlJ5reS1obc8B1+jZT
+         ongA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=4Yv5TTCQDxO5XD01tjK/2+OvbO6WA2NVomW+QKng34w=;
+        b=AENxgkiWw9sPmOF2AaJyJtpLCFBVJmEDGbMZ2/DFW5gvuCknckKSadoRQ0CAv1wq8v
+         YYpth7CQjjyj6fW9NKisNdG88bB+e76td17J82Zd+hKLJKetCQrbfmW3nC2FITUTmj6s
+         lQJzopTcycnBtZjb0MfhFfQP2lX2Z6TK8OxSyqDYQ8HklvoK0kj8WgkN9o10D9cR9Mlg
+         Meut+aIeXZ9qInrEHY1icvk6OcEzmt2ZOJpsIXF9O7J6Qt5rx9RE/HfXQ4pL5PNEvmpY
+         2/sk8CFwqyuqwvgna/cAk6LvAGlv2EcIhuPIRgb3bfdsC7kBwghGF79UHohRqujMmpV9
+         NcRg==
+X-Gm-Message-State: AOAM530hkx6CWV230mifohmk7w30xmquBsysryOSdIcscCMudiMXQJZK
+        gd+uemy1Gcm9oA/3sUhRLL4=
+X-Google-Smtp-Source: ABdhPJzZWiZGvFQ/OPU40ZbIlle2chvzd7qE3EkIxEutAvLwP7WB9xN6dmRcgMO/TqAFHmPqZNlT7A==
+X-Received: by 2002:a05:600c:22d9:: with SMTP id 25mr615978wmg.108.1617652151084;
+        Mon, 05 Apr 2021 12:49:11 -0700 (PDT)
+Received: from LEGION ([39.46.7.73])
+        by smtp.gmail.com with ESMTPSA id n7sm29474267wrv.71.2021.04.05.12.49.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Apr 2021 12:49:10 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 00:49:04 +0500
+From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
+        zhengyongjun3@huawei.com, dan.carpenter@oracle.com
+Cc:     musamaanjum@gmail.com
+Subject: [PATCH] inode: Remove second initialization of the bpf_preload_lock
+Message-ID: <20210405194904.GA148013@LEGION>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+bpf_preload_lock is already defined with DEFINE_MUTEX. There is no need
+to initialize it again. Remove the extraneous initialization.
 
+Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+---
+ kernel/bpf/inode.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-On Mon, 5 Apr 2021, Beatriz Martins de Carvalho wrote:
+diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
+index 1576ff331ee4..f441d521ef77 100644
+--- a/kernel/bpf/inode.c
++++ b/kernel/bpf/inode.c
+@@ -816,8 +816,6 @@ static int __init bpf_init(void)
+ {
+ 	int ret;
+ 
+-	mutex_init(&bpf_preload_lock);
+-
+ 	ret = sysfs_create_mount_point(fs_kobj, "bpf");
+ 	if (ret)
+ 		return ret;
+-- 
+2.25.1
 
-> Cleans up checks of "Alignment should match open parenthesis"
-> in file rtw_ap.c
->
-> Signed-off-by: Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
-> ---
->  drivers/staging/rtl8723bs/core/rtw_ap.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_ap.c b/drivers/staging/rtl8723bs/core/rtw_ap.c
-> index ca6fec52d213..73a35b3320fe 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_ap.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_ap.c
-> @@ -439,7 +439,7 @@ void add_RATid(struct adapter *padapter, struct sta_info *psta, u8 rssi_level)
->  		arg[3] = psta->init_rate;
->
->  		DBG_871X("%s => mac_id:%d , raid:%d , shortGIrate =%d, bitmap = 0x%x\n",
-> -			__func__, psta->mac_id, psta->raid, shortGIrate, tx_ra_bitmap);
-> +			 __func__, psta->mac_id, psta->raid, shortGIrate, tx_ra_bitmap);
->
->  		rtw_hal_add_ra_tid(padapter, tx_ra_bitmap, arg, rssi_level);
->  	} else {
-> @@ -512,7 +512,7 @@ void update_bmc_sta(struct adapter *padapter)
->  			arg[3] = psta->init_rate;
->
->  			DBG_871X("%s => mac_id:%d , raid:%d , bitmap = 0x%x\n",
-> -				__func__, psta->mac_id, psta->raid, tx_ra_bitmap);
-> +				 __func__, psta->mac_id, psta->raid, tx_ra_bitmap);
->
->  			rtw_hal_add_ra_tid(padapter, tx_ra_bitmap, arg, 0);
->  		}
-> @@ -605,14 +605,14 @@ void update_sta_info_apmode(struct adapter *padapter, struct sta_info *psta)
->
->  		/*  B0 Config LDPC Coding Capability */
->  		if (TEST_FLAG(phtpriv_ap->ldpc_cap, LDPC_HT_ENABLE_TX) &&
-> -			GET_HT_CAPABILITY_ELE_LDPC_CAP((u8 *)(&phtpriv_sta->ht_cap))) {
-> +			      GET_HT_CAPABILITY_ELE_LDPC_CAP((u8 *)(&phtpriv_sta->ht_cap))) {
->  			SET_FLAG(cur_ldpc_cap, (LDPC_HT_ENABLE_TX | LDPC_HT_CAP_TX));
->  			DBG_871X("Enable HT Tx LDPC for STA(%d)\n", psta->aid);
->  		}
-
-TEST_FLAG and SET_FLAG are not standard for the kernel, don't do anything
-very interesting, and aren't even used consistently in this file.  Maybe
-you could get rid of them completely from the driver.  In another patch,
-of course.
-
-julia
-
-
->  		/*  B7 B8 B9 Config STBC setting */
->  		if (TEST_FLAG(phtpriv_ap->stbc_cap, STBC_HT_ENABLE_TX) &&
-> -			GET_HT_CAPABILITY_ELE_RX_STBC((u8 *)(&phtpriv_sta->ht_cap))) {
-> +			      GET_HT_CAPABILITY_ELE_RX_STBC((u8 *)(&phtpriv_sta->ht_cap))) {
->  			SET_FLAG(cur_stbc_cap, (STBC_HT_ENABLE_TX | STBC_HT_CAP_TX));
->  			DBG_871X("Enable HT Tx STBC for STA(%d)\n", psta->aid);
->  		}
-> @@ -1176,7 +1176,7 @@ int rtw_check_beacon_data(struct adapter *padapter, u8 *pbuf,  int len)
->  		);
->
->  		if ((psecuritypriv->wpa_pairwise_cipher & WPA_CIPHER_CCMP) ||
-> -			(psecuritypriv->wpa2_pairwise_cipher & WPA_CIPHER_CCMP)) {
-> +		     (psecuritypriv->wpa2_pairwise_cipher & WPA_CIPHER_CCMP)) {
->  			pht_cap->ampdu_params_info |= (IEEE80211_HT_CAP_AMPDU_DENSITY & (0x07 << 2));
->  		} else {
->  			pht_cap->ampdu_params_info |= (IEEE80211_HT_CAP_AMPDU_DENSITY & 0x00);
-> @@ -1233,7 +1233,7 @@ int rtw_check_beacon_data(struct adapter *padapter, u8 *pbuf,  int len)
->  	pmlmepriv->htpriv.ht_option = false;
->
->  	if ((psecuritypriv->wpa2_pairwise_cipher & WPA_CIPHER_TKIP) ||
-> -		      (psecuritypriv->wpa_pairwise_cipher & WPA_CIPHER_TKIP)) {
-> +	     (psecuritypriv->wpa_pairwise_cipher & WPA_CIPHER_TKIP)) {
->  		/* todo: */
->  		/* ht_cap = false; */
->  	}
-> @@ -1820,7 +1820,7 @@ static int rtw_ht_operation_update(struct adapter *padapter)
->  	}
->
->  	DBG_871X("%s new operation mode = 0x%X changes =%d\n",
-> -		   __func__, pmlmepriv->ht_op_mode, op_mode_changes);
-> +		 __func__, pmlmepriv->ht_op_mode, op_mode_changes);
->
->  	return op_mode_changes;
->  }
-> @@ -1865,7 +1865,7 @@ void bss_cap_update_on_sta_join(struct adapter *padapter, struct sta_info *psta)
->  			pmlmepriv->num_sta_no_short_preamble++;
->
->  			if ((pmlmeext->cur_wireless_mode > WIRELESS_11B) &&
-> -				(pmlmepriv->num_sta_no_short_preamble == 1)) {
-> +			    (pmlmepriv->num_sta_no_short_preamble == 1)) {
->  				beacon_updated = true;
->  				update_beacon(padapter, 0xFF, NULL, true);
->  			}
-> --
-> 2.25.1
->
-> --
-> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/00250c746ed850f6a73ff0ad4c1735cbd019b58f.1617641790.git.martinsdecarvalhobeatriz%40gmail.com.
->
