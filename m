@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B23353F07
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC9DF353E2D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239353AbhDEJJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:09:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51660 "EHLO mail.kernel.org"
+        id S237967AbhDEJEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:04:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238486AbhDEJHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:07:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2F9A613A1;
-        Mon,  5 Apr 2021 09:07:37 +0000 (UTC)
+        id S237480AbhDEJC5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:02:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B97EB61393;
+        Mon,  5 Apr 2021 09:02:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613658;
-        bh=KzpBzB5jzXIAlm8LNzxeMPwwJU+1sCRGbDujFcS8dLE=;
+        s=korg; t=1617613371;
+        bh=Vz7DeXI+vyBpNCdgCRe4YNYy+HjPdbOLdzL2DofiBMg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oxumx4gjxAh1zMOEnpFVCnrku0UcbzOAEWfXRaMOwaOHHtX3ElGqVn8SfrG0wr3SG
-         a3dK0NhFpJfdYt4cH2fDumr+YPvs+a+zgOrFEY557Z9TKd9WFDTFOy+1zfWpX3Jdb6
-         Py2Vfx9eowyHyMD1PMahDKpv76A+j1EALHrrtn7Q=
+        b=0JirdM1lja1iiMonl9CDAxJaUWwVX0vOj2HQo/jG4kCvdMRlabodc0SWo+6WhgZ0b
+         AW2hnJJzYum6GqQ8UAzXyLMXyGTBnNSORgO8MbI3Kx2Q4bx04RO15/HZyIHNRlrvwB
+         Sfaug5/s8AlVB6DGKENIncUQ8JJInMoWfb4Fv3d4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amit Cohen <amcohen@nvidia.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 045/126] netdevsim: dev: Initialize FIB module after debugfs
-Date:   Mon,  5 Apr 2021 10:53:27 +0200
-Message-Id: <20210405085032.537384810@linuxfoundation.org>
+        stable@vger.kernel.org, Joe Perches <joe@perches.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Sergey Shtylyov <s.shtylyov@omprussia.ru>,
+        Jessica Yu <jeyu@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 04/74] module: avoid *goto*s in module_sig_check()
+Date:   Mon,  5 Apr 2021 10:53:28 +0200
+Message-Id: <20210405085024.851797884@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
-References: <20210405085031.040238881@linuxfoundation.org>
+In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
+References: <20210405085024.703004126@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,136 +41,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ido Schimmel <idosch@nvidia.com>
+From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 
-[ Upstream commit f57ab5b75f7193e194c83616cd104f41c8350f68 ]
+[ Upstream commit 10ccd1abb808599a6dc7c9389560016ea3568085 ]
 
-Initialize the dummy FIB offload module after debugfs, so that the FIB
-module could create its own directory there.
+Let's move the common handling of the non-fatal errors after the *switch*
+statement -- this avoids *goto*s inside that *switch*...
 
-Signed-off-by: Amit Cohen <amcohen@nvidia.com>
-Signed-off-by: Ido Schimmel <idosch@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Suggested-by: Joe Perches <joe@perches.com>
+Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+Signed-off-by: Jessica Yu <jeyu@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/netdevsim/dev.c | 40 +++++++++++++++++++------------------
- 1 file changed, 21 insertions(+), 19 deletions(-)
+ kernel/module.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/netdevsim/dev.c b/drivers/net/netdevsim/dev.c
-index e7972e88ffe0..9bbecf4d159b 100644
---- a/drivers/net/netdevsim/dev.c
-+++ b/drivers/net/netdevsim/dev.c
-@@ -1008,23 +1008,25 @@ static int nsim_dev_reload_create(struct nsim_dev *nsim_dev,
- 	nsim_dev->fw_update_status = true;
- 	nsim_dev->fw_update_overwrite_mask = 0;
- 
--	nsim_dev->fib_data = nsim_fib_create(devlink, extack);
--	if (IS_ERR(nsim_dev->fib_data))
--		return PTR_ERR(nsim_dev->fib_data);
+diff --git a/kernel/module.c b/kernel/module.c
+index 9fe3e9b85348..8d1def62a415 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -2909,20 +2909,13 @@ static int module_sig_check(struct load_info *info, int flags)
+ 		 */
+ 	case -ENODATA:
+ 		reason = "unsigned module";
+-		goto decide;
++		break;
+ 	case -ENOPKG:
+ 		reason = "module with unsupported crypto";
+-		goto decide;
++		break;
+ 	case -ENOKEY:
+ 		reason = "module with unavailable key";
+-	decide:
+-		if (is_module_sig_enforced()) {
+-			pr_notice("%s: loading of %s is rejected\n",
+-				  info->name, reason);
+-			return -EKEYREJECTED;
+-		}
 -
- 	nsim_devlink_param_load_driverinit_values(devlink);
+-		return security_locked_down(LOCKDOWN_MODULE_SIGNATURE);
++		break;
  
- 	err = nsim_dev_dummy_region_init(nsim_dev, devlink);
- 	if (err)
--		goto err_fib_destroy;
-+		return err;
- 
- 	err = nsim_dev_traps_init(devlink);
- 	if (err)
- 		goto err_dummy_region_exit;
- 
-+	nsim_dev->fib_data = nsim_fib_create(devlink, extack);
-+	if (IS_ERR(nsim_dev->fib_data)) {
-+		err = PTR_ERR(nsim_dev->fib_data);
-+		goto err_traps_exit;
+ 		/* All other errors are fatal, including nomem, unparseable
+ 		 * signatures and signature check failures - even if signatures
+@@ -2931,6 +2924,13 @@ static int module_sig_check(struct load_info *info, int flags)
+ 	default:
+ 		return err;
+ 	}
++
++	if (is_module_sig_enforced()) {
++		pr_notice("%s: loading of %s is rejected\n", info->name, reason);
++		return -EKEYREJECTED;
 +	}
 +
- 	err = nsim_dev_health_init(nsim_dev, devlink);
- 	if (err)
--		goto err_traps_exit;
-+		goto err_fib_destroy;
- 
- 	err = nsim_dev_port_add_all(nsim_dev, nsim_bus_dev->port_count);
- 	if (err)
-@@ -1039,12 +1041,12 @@ static int nsim_dev_reload_create(struct nsim_dev *nsim_dev,
- 
- err_health_exit:
- 	nsim_dev_health_exit(nsim_dev);
-+err_fib_destroy:
-+	nsim_fib_destroy(devlink, nsim_dev->fib_data);
- err_traps_exit:
- 	nsim_dev_traps_exit(devlink);
- err_dummy_region_exit:
- 	nsim_dev_dummy_region_exit(nsim_dev);
--err_fib_destroy:
--	nsim_fib_destroy(devlink, nsim_dev->fib_data);
- 	return err;
++	return security_locked_down(LOCKDOWN_MODULE_SIGNATURE);
  }
- 
-@@ -1076,15 +1078,9 @@ int nsim_dev_probe(struct nsim_bus_dev *nsim_bus_dev)
- 	if (err)
- 		goto err_devlink_free;
- 
--	nsim_dev->fib_data = nsim_fib_create(devlink, NULL);
--	if (IS_ERR(nsim_dev->fib_data)) {
--		err = PTR_ERR(nsim_dev->fib_data);
--		goto err_resources_unregister;
--	}
--
- 	err = devlink_register(devlink, &nsim_bus_dev->dev);
- 	if (err)
--		goto err_fib_destroy;
-+		goto err_resources_unregister;
- 
- 	err = devlink_params_register(devlink, nsim_devlink_params,
- 				      ARRAY_SIZE(nsim_devlink_params));
-@@ -1104,9 +1100,15 @@ int nsim_dev_probe(struct nsim_bus_dev *nsim_bus_dev)
- 	if (err)
- 		goto err_traps_exit;
- 
-+	nsim_dev->fib_data = nsim_fib_create(devlink, NULL);
-+	if (IS_ERR(nsim_dev->fib_data)) {
-+		err = PTR_ERR(nsim_dev->fib_data);
-+		goto err_debugfs_exit;
-+	}
-+
- 	err = nsim_dev_health_init(nsim_dev, devlink);
- 	if (err)
--		goto err_debugfs_exit;
-+		goto err_fib_destroy;
- 
- 	err = nsim_bpf_dev_init(nsim_dev);
- 	if (err)
-@@ -1124,6 +1126,8 @@ err_bpf_dev_exit:
- 	nsim_bpf_dev_exit(nsim_dev);
- err_health_exit:
- 	nsim_dev_health_exit(nsim_dev);
-+err_fib_destroy:
-+	nsim_fib_destroy(devlink, nsim_dev->fib_data);
- err_debugfs_exit:
- 	nsim_dev_debugfs_exit(nsim_dev);
- err_traps_exit:
-@@ -1135,8 +1139,6 @@ err_params_unregister:
- 				  ARRAY_SIZE(nsim_devlink_params));
- err_dl_unregister:
- 	devlink_unregister(devlink);
--err_fib_destroy:
--	nsim_fib_destroy(devlink, nsim_dev->fib_data);
- err_resources_unregister:
- 	devlink_resources_unregister(devlink, NULL);
- err_devlink_free:
-@@ -1153,10 +1155,10 @@ static void nsim_dev_reload_destroy(struct nsim_dev *nsim_dev)
- 	debugfs_remove(nsim_dev->take_snapshot);
- 	nsim_dev_port_del_all(nsim_dev);
- 	nsim_dev_health_exit(nsim_dev);
-+	nsim_fib_destroy(devlink, nsim_dev->fib_data);
- 	nsim_dev_traps_exit(devlink);
- 	nsim_dev_dummy_region_exit(nsim_dev);
- 	mutex_destroy(&nsim_dev->port_list_lock);
--	nsim_fib_destroy(devlink, nsim_dev->fib_data);
- }
- 
- void nsim_dev_remove(struct nsim_bus_dev *nsim_bus_dev)
+ #else /* !CONFIG_MODULE_SIG */
+ static int module_sig_check(struct load_info *info, int flags)
 -- 
 2.30.1
 
