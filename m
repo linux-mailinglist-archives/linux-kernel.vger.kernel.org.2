@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 684C0353E2E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBAD635406B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237987AbhDEJES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:04:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45584 "EHLO mail.kernel.org"
+        id S240146AbhDEJRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:17:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237543AbhDEJDA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:03:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F6A461398;
-        Mon,  5 Apr 2021 09:02:53 +0000 (UTC)
+        id S239677AbhDEJOI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:14:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 30B4261002;
+        Mon,  5 Apr 2021 09:14:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613374;
-        bh=QIkw+eqK7O6QEVTQBLHRL1R2Er/077M5E3/fAeKm96A=;
+        s=korg; t=1617614042;
+        bh=ZSrdWFiSIH5aePo1/X0Kj2L2Z3fiHDk0mpjR7keKoD0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eljUyyWbvreA096TrLxEM6fas9ArDbjrEAnO8ZF0TsC/PBpDTLLx6BXI0TO2IaPXj
-         lb1BkByjXKmcr13ha5kJYJ+OyY5xyL+aDd2qZrE0IdyUs7+YTPex0Nv6fte60ViI0V
-         BwlGJV7He9p4sKf9EAwE1oXlVZsN2rcdJQiEl4OY=
+        b=QV7Kf3WXfNmK7dQAx5E1D948bX6V2TKDXTH9tzk9Ge56njuGC614MBsvqFRkyA+P6
+         hjVh+6j9suXhiI7zc7fe7n8DgC0ayaNq6M7YRi0yoLGY/+/4rlC35ZC/ln050UQyB4
+         tgJXR6vbuOja6RhcOYHzftyh0OLpRJ1PtQ5aHx7E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Frank van der Linden <fllinden@amazon.com>,
-        Jessica Yu <jeyu@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 05/74] module: harden ELF info handling
-Date:   Mon,  5 Apr 2021 10:53:29 +0200
-Message-Id: <20210405085024.881993743@linuxfoundation.org>
+        stable@vger.kernel.org, Doug Brown <doug@schmorgal.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 061/152] appletalk: Fix skb allocation size in loopback case
+Date:   Mon,  5 Apr 2021 10:53:30 +0200
+Message-Id: <20210405085036.263440616@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
-References: <20210405085024.703004126@linuxfoundation.org>
+In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
+References: <20210405085034.233917714@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,293 +40,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frank van der Linden <fllinden@amazon.com>
+From: Doug Brown <doug@schmorgal.com>
 
-[ Upstream commit ec2a29593c83ed71a7f16e3243941ebfcf75fdf6 ]
+[ Upstream commit 39935dccb21c60f9bbf1bb72d22ab6fd14ae7705 ]
 
-5fdc7db644 ("module: setup load info before module_sig_check()")
-moved the ELF setup, so that it was done before the signature
-check. This made the module name available to signature error
-messages.
+If a DDP broadcast packet is sent out to a non-gateway target, it is
+also looped back. There is a potential for the loopback device to have a
+longer hardware header length than the original target route's device,
+which can result in the skb not being created with enough room for the
+loopback device's hardware header. This patch fixes the issue by
+determining that a loopback will be necessary prior to allocating the
+skb, and if so, ensuring the skb has enough room.
 
-However, the checks for ELF correctness in setup_load_info
-are not sufficient to prevent bad memory references due to
-corrupted offset fields, indices, etc.
+This was discovered while testing a new driver that creates a LocalTalk
+network interface (LTALK_HLEN = 1). It caused an skb_under_panic.
 
-So, there's a regression in behavior here: a corrupt and unsigned
-(or badly signed) module, which might previously have been rejected
-immediately, can now cause an oops/crash.
-
-Harden ELF handling for module loading by doing the following:
-
-- Move the signature check back up so that it comes before ELF
-  initialization. It's best to do the signature check to see
-  if we can trust the module, before using the ELF structures
-  inside it. This also makes checks against info->len
-  more accurate again, as this field will be reduced by the
-  length of the signature in mod_check_sig().
-
-  The module name is now once again not available for error
-  messages during the signature check, but that seems like
-  a fair tradeoff.
-
-- Check if sections have offset / size fields that at least don't
-  exceed the length of the module.
-
-- Check if sections have section name offsets that don't fall
-  outside the section name table.
-
-- Add a few other sanity checks against invalid section indices,
-  etc.
-
-This is not an exhaustive consistency check, but the idea is to
-at least get through the signature and blacklist checks without
-crashing because of corrupted ELF info, and to error out gracefully
-for most issues that would have caused problems later on.
-
-Fixes: 5fdc7db6448a ("module: setup load info before module_sig_check()")
-Signed-off-by: Frank van der Linden <fllinden@amazon.com>
-Signed-off-by: Jessica Yu <jeyu@kernel.org>
+Signed-off-by: Doug Brown <doug@schmorgal.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/module.c           | 143 +++++++++++++++++++++++++++++++++-----
- kernel/module_signature.c |   2 +-
- kernel/module_signing.c   |   2 +-
- 3 files changed, 127 insertions(+), 20 deletions(-)
+ net/appletalk/ddp.c | 33 +++++++++++++++++++++------------
+ 1 file changed, 21 insertions(+), 12 deletions(-)
 
-diff --git a/kernel/module.c b/kernel/module.c
-index 8d1def62a415..c60559b5bf10 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -2926,7 +2926,7 @@ static int module_sig_check(struct load_info *info, int flags)
- 	}
+diff --git a/net/appletalk/ddp.c b/net/appletalk/ddp.c
+index ca1a0d07a087..ebda397fa95a 100644
+--- a/net/appletalk/ddp.c
++++ b/net/appletalk/ddp.c
+@@ -1577,8 +1577,8 @@ static int atalk_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
+ 	struct sk_buff *skb;
+ 	struct net_device *dev;
+ 	struct ddpehdr *ddp;
+-	int size;
+-	struct atalk_route *rt;
++	int size, hard_header_len;
++	struct atalk_route *rt, *rt_lo = NULL;
+ 	int err;
  
- 	if (is_module_sig_enforced()) {
--		pr_notice("%s: loading of %s is rejected\n", info->name, reason);
-+		pr_notice("Loading of %s is rejected\n", reason);
- 		return -EKEYREJECTED;
- 	}
+ 	if (flags & ~(MSG_DONTWAIT|MSG_CMSG_COMPAT))
+@@ -1641,7 +1641,22 @@ static int atalk_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
+ 	SOCK_DEBUG(sk, "SK %p: Size needed %d, device %s\n",
+ 			sk, size, dev->name);
  
-@@ -2939,9 +2939,33 @@ static int module_sig_check(struct load_info *info, int flags)
- }
- #endif /* !CONFIG_MODULE_SIG */
- 
--/* Sanity checks against invalid binaries, wrong arch, weird elf version. */
--static int elf_header_check(struct load_info *info)
-+static int validate_section_offset(struct load_info *info, Elf_Shdr *shdr)
- {
-+	unsigned long secend;
+-	size += dev->hard_header_len;
++	hard_header_len = dev->hard_header_len;
++	/* Leave room for loopback hardware header if necessary */
++	if (usat->sat_addr.s_node == ATADDR_BCAST &&
++	    (dev->flags & IFF_LOOPBACK || !(rt->flags & RTF_GATEWAY))) {
++		struct atalk_addr at_lo;
 +
-+	/*
-+	 * Check for both overflow and offset/size being
-+	 * too large.
-+	 */
-+	secend = shdr->sh_offset + shdr->sh_size;
-+	if (secend < shdr->sh_offset || secend > info->len)
-+		return -ENOEXEC;
++		at_lo.s_node = 0;
++		at_lo.s_net  = 0;
 +
-+	return 0;
-+}
++		rt_lo = atrtr_find(&at_lo);
 +
-+/*
-+ * Sanity checks against invalid binaries, wrong arch, weird elf version.
-+ *
-+ * Also do basic validity checks against section offsets and sizes, the
-+ * section name string table, and the indices used for it (sh_name).
-+ */
-+static int elf_validity_check(struct load_info *info)
-+{
-+	unsigned int i;
-+	Elf_Shdr *shdr, *strhdr;
-+	int err;
-+
- 	if (info->len < sizeof(*(info->hdr)))
- 		return -ENOEXEC;
- 
-@@ -2951,11 +2975,78 @@ static int elf_header_check(struct load_info *info)
- 	    || info->hdr->e_shentsize != sizeof(Elf_Shdr))
- 		return -ENOEXEC;
- 
-+	/*
-+	 * e_shnum is 16 bits, and sizeof(Elf_Shdr) is
-+	 * known and small. So e_shnum * sizeof(Elf_Shdr)
-+	 * will not overflow unsigned long on any platform.
-+	 */
- 	if (info->hdr->e_shoff >= info->len
- 	    || (info->hdr->e_shnum * sizeof(Elf_Shdr) >
- 		info->len - info->hdr->e_shoff))
- 		return -ENOEXEC;
- 
-+	info->sechdrs = (void *)info->hdr + info->hdr->e_shoff;
-+
-+	/*
-+	 * Verify if the section name table index is valid.
-+	 */
-+	if (info->hdr->e_shstrndx == SHN_UNDEF
-+	    || info->hdr->e_shstrndx >= info->hdr->e_shnum)
-+		return -ENOEXEC;
-+
-+	strhdr = &info->sechdrs[info->hdr->e_shstrndx];
-+	err = validate_section_offset(info, strhdr);
-+	if (err < 0)
-+		return err;
-+
-+	/*
-+	 * The section name table must be NUL-terminated, as required
-+	 * by the spec. This makes strcmp and pr_* calls that access
-+	 * strings in the section safe.
-+	 */
-+	info->secstrings = (void *)info->hdr + strhdr->sh_offset;
-+	if (info->secstrings[strhdr->sh_size - 1] != '\0')
-+		return -ENOEXEC;
-+
-+	/*
-+	 * The code assumes that section 0 has a length of zero and
-+	 * an addr of zero, so check for it.
-+	 */
-+	if (info->sechdrs[0].sh_type != SHT_NULL
-+	    || info->sechdrs[0].sh_size != 0
-+	    || info->sechdrs[0].sh_addr != 0)
-+		return -ENOEXEC;
-+
-+	for (i = 1; i < info->hdr->e_shnum; i++) {
-+		shdr = &info->sechdrs[i];
-+		switch (shdr->sh_type) {
-+		case SHT_NULL:
-+		case SHT_NOBITS:
-+			continue;
-+		case SHT_SYMTAB:
-+			if (shdr->sh_link == SHN_UNDEF
-+			    || shdr->sh_link >= info->hdr->e_shnum)
-+				return -ENOEXEC;
-+			fallthrough;
-+		default:
-+			err = validate_section_offset(info, shdr);
-+			if (err < 0) {
-+				pr_err("Invalid ELF section in module (section %u type %u)\n",
-+					i, shdr->sh_type);
-+				return err;
-+			}
-+
-+			if (shdr->sh_flags & SHF_ALLOC) {
-+				if (shdr->sh_name >= strhdr->sh_size) {
-+					pr_err("Invalid ELF section name in module (section %u type %u)\n",
-+					       i, shdr->sh_type);
-+					return -ENOEXEC;
-+				}
-+			}
-+			break;
-+		}
++		if (rt_lo && rt_lo->dev->hard_header_len > hard_header_len)
++			hard_header_len = rt_lo->dev->hard_header_len;
 +	}
 +
- 	return 0;
- }
++	size += hard_header_len;
+ 	release_sock(sk);
+ 	skb = sock_alloc_send_skb(sk, size, (flags & MSG_DONTWAIT), &err);
+ 	lock_sock(sk);
+@@ -1649,7 +1664,7 @@ static int atalk_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
+ 		goto out;
  
-@@ -3052,11 +3143,6 @@ static int rewrite_section_headers(struct load_info *info, int flags)
+ 	skb_reserve(skb, ddp_dl->header_length);
+-	skb_reserve(skb, dev->hard_header_len);
++	skb_reserve(skb, hard_header_len);
+ 	skb->dev = dev;
  
- 	for (i = 1; i < info->hdr->e_shnum; i++) {
- 		Elf_Shdr *shdr = &info->sechdrs[i];
--		if (shdr->sh_type != SHT_NOBITS
--		    && info->len < shdr->sh_offset + shdr->sh_size) {
--			pr_err("Module len %lu truncated\n", info->len);
--			return -ENOEXEC;
--		}
- 
- 		/* Mark all sections sh_addr with their address in the
- 		   temporary image. */
-@@ -3088,11 +3174,6 @@ static int setup_load_info(struct load_info *info, int flags)
- {
- 	unsigned int i;
- 
--	/* Set up the convenience variables */
--	info->sechdrs = (void *)info->hdr + info->hdr->e_shoff;
--	info->secstrings = (void *)info->hdr
--		+ info->sechdrs[info->hdr->e_shstrndx].sh_offset;
+ 	SOCK_DEBUG(sk, "SK %p: Begin build.\n", sk);
+@@ -1700,18 +1715,12 @@ static int atalk_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
+ 		/* loop back */
+ 		skb_orphan(skb);
+ 		if (ddp->deh_dnode == ATADDR_BCAST) {
+-			struct atalk_addr at_lo;
 -
- 	/* Try to find a name early so we can log errors with a module name */
- 	info->index.info = find_sec(info, ".modinfo");
- 	if (info->index.info)
-@@ -3820,23 +3901,49 @@ static int load_module(struct load_info *info, const char __user *uargs,
- 	long err = 0;
- 	char *after_dashes;
- 
--	err = elf_header_check(info);
-+	/*
-+	 * Do the signature check (if any) first. All that
-+	 * the signature check needs is info->len, it does
-+	 * not need any of the section info. That can be
-+	 * set up later. This will minimize the chances
-+	 * of a corrupt module causing problems before
-+	 * we even get to the signature check.
-+	 *
-+	 * The check will also adjust info->len by stripping
-+	 * off the sig length at the end of the module, making
-+	 * checks against info->len more correct.
-+	 */
-+	err = module_sig_check(info, flags);
- 	if (err)
- 		goto free_copy;
- 
-+	/*
-+	 * Do basic sanity checks against the ELF header and
-+	 * sections.
-+	 */
-+	err = elf_validity_check(info);
-+	if (err) {
-+		pr_err("Module has invalid ELF structures\n");
-+		goto free_copy;
-+	}
-+
-+	/*
-+	 * Everything checks out, so set up the section info
-+	 * in the info structure.
-+	 */
- 	err = setup_load_info(info, flags);
- 	if (err)
- 		goto free_copy;
- 
-+	/*
-+	 * Now that we know we have the correct module name, check
-+	 * if it's blacklisted.
-+	 */
- 	if (blacklisted(info->name)) {
- 		err = -EPERM;
- 		goto free_copy;
- 	}
- 
--	err = module_sig_check(info, flags);
--	if (err)
--		goto free_copy;
+-			at_lo.s_node = 0;
+-			at_lo.s_net  = 0;
 -
- 	err = rewrite_section_headers(info, flags);
- 	if (err)
- 		goto free_copy;
-diff --git a/kernel/module_signature.c b/kernel/module_signature.c
-index 4224a1086b7d..00132d12487c 100644
---- a/kernel/module_signature.c
-+++ b/kernel/module_signature.c
-@@ -25,7 +25,7 @@ int mod_check_sig(const struct module_signature *ms, size_t file_len,
- 		return -EBADMSG;
- 
- 	if (ms->id_type != PKEY_ID_PKCS7) {
--		pr_err("%s: Module is not signed with expected PKCS#7 message\n",
-+		pr_err("%s: not signed with expected PKCS#7 message\n",
- 		       name);
- 		return -ENOPKG;
- 	}
-diff --git a/kernel/module_signing.c b/kernel/module_signing.c
-index 9d9fc678c91d..8723ae70ea1f 100644
---- a/kernel/module_signing.c
-+++ b/kernel/module_signing.c
-@@ -30,7 +30,7 @@ int mod_verify_sig(const void *mod, struct load_info *info)
- 
- 	memcpy(&ms, mod + (modlen - sizeof(ms)), sizeof(ms));
- 
--	ret = mod_check_sig(&ms, modlen, info->name);
-+	ret = mod_check_sig(&ms, modlen, "module");
- 	if (ret)
- 		return ret;
- 
+-			rt = atrtr_find(&at_lo);
+-			if (!rt) {
++			if (!rt_lo) {
+ 				kfree_skb(skb);
+ 				err = -ENETUNREACH;
+ 				goto out;
+ 			}
+-			dev = rt->dev;
++			dev = rt_lo->dev;
+ 			skb->dev = dev;
+ 		}
+ 		ddp_dl->request(ddp_dl, skb, dev->dev_addr);
 -- 
 2.30.1
 
