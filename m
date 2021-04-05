@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D383540A3
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8994D353D74
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241061AbhDEJTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:19:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35820 "EHLO mail.kernel.org"
+        id S233157AbhDEI7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 04:59:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240603AbhDEJPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:15:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AE5860FE4;
-        Mon,  5 Apr 2021 09:15:37 +0000 (UTC)
+        id S236524AbhDEI7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:59:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9819660238;
+        Mon,  5 Apr 2021 08:59:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617614138;
-        bh=FFmaELydv2AGLZRe35Kl2b4qsf94M1QYABM91tFKrNc=;
+        s=korg; t=1617613152;
+        bh=66NytWylD9lmLqa1wjrS8dKcQVHdDfz+W8+bC0b4FzU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MPqYkvZ3jUGUVVZKTJPvjNd5ji58G+aEtTT1oB53cIn8XhX8U4jjm4Q+HKuB9Md6L
-         KUTDAwQ6n/H3jcEeK+X2deUdMdjK8wrEWI/+2qhil5jevIwBjaAFj1WQWhRfdJnF5o
-         yAYk/q1cThK8K8DYlC93YO9XmCCbsxkRPzhKCBAo=
+        b=MYXhjuktxTbwo2fffQkgaO5+wsQ/7h5RlAgbyBRLkapOvKu5IroOwSIodMc1COHLa
+         51ZUqggaSHZu56ZLRr/SBR+tntB82+CiImyvlwxMd2Tm1DjWCJNLUJY2ONI/lbY1Sh
+         XdPymyfKCtEU965tZU2slpn6RxDUq10AUGFqzzuw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
-        Paul Fertser <fercerpav@gmail.com>,
-        Thierry Reding <treding@nvidia.com>
-Subject: [PATCH 5.11 096/152] drm/tegra: dc: Restore coupling of display controllers
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 39/52] extcon: Fix error handling in extcon_dev_register
 Date:   Mon,  5 Apr 2021 10:54:05 +0200
-Message-Id: <20210405085037.366337143@linuxfoundation.org>
+Message-Id: <20210405085023.258199008@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
-References: <20210405085034.233917714@linuxfoundation.org>
+In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
+References: <20210405085021.996963957@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,61 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thierry Reding <treding@nvidia.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-commit a31500fe7055451ed9043c8fff938dfa6f70ee37 upstream.
+[ Upstream commit d3bdd1c3140724967ca4136755538fa7c05c2b4e ]
 
-Coupling of display controllers used to rely on runtime PM to take the
-companion controller out of reset. Commit fd67e9c6ed5a ("drm/tegra: Do
-not implement runtime PM") accidentally broke this when runtime PM was
-removed.
+When devm_kcalloc() fails, we should execute device_unregister()
+to unregister edev->dev from system.
 
-Restore this functionality by reusing the hierarchical host1x client
-suspend/resume infrastructure that's similar to runtime PM and which
-perfectly fits this use-case.
-
-Fixes: fd67e9c6ed5a ("drm/tegra: Do not implement runtime PM")
-Reported-by: Dmitry Osipenko <digetx@gmail.com>
-Reported-by: Paul Fertser <fercerpav@gmail.com>
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 046050f6e623e ("extcon: Update the prototype of extcon_register_notifier() with enum extcon")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/tegra/dc.c |   20 ++++++++------------
- 1 file changed, 8 insertions(+), 12 deletions(-)
+ drivers/extcon/extcon.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/gpu/drm/tegra/dc.c
-+++ b/drivers/gpu/drm/tegra/dc.c
-@@ -2501,22 +2501,18 @@ static int tegra_dc_couple(struct tegra_
- 	 * POWER_CONTROL registers during CRTC enabling.
- 	 */
- 	if (dc->soc->coupled_pm && dc->pipe == 1) {
--		u32 flags = DL_FLAG_PM_RUNTIME | DL_FLAG_AUTOREMOVE_CONSUMER;
--		struct device_link *link;
--		struct device *partner;
-+		struct device *companion;
-+		struct tegra_dc *parent;
- 
--		partner = driver_find_device(dc->dev->driver, NULL, NULL,
--					     tegra_dc_match_by_pipe);
--		if (!partner)
-+		companion = driver_find_device(dc->dev->driver, NULL, (const void *)0,
-+					       tegra_dc_match_by_pipe);
-+		if (!companion)
- 			return -EPROBE_DEFER;
- 
--		link = device_link_add(dc->dev, partner, flags);
--		if (!link) {
--			dev_err(dc->dev, "failed to link controllers\n");
--			return -EINVAL;
--		}
-+		parent = dev_get_drvdata(companion);
-+		dc->client.parent = &parent->client;
- 
--		dev_dbg(dc->dev, "coupled to %s\n", dev_name(partner));
-+		dev_dbg(dc->dev, "coupled to %s\n", dev_name(companion));
+diff --git a/drivers/extcon/extcon.c b/drivers/extcon/extcon.c
+index 95e96f04bf6f..e9fe3e3bac2b 100644
+--- a/drivers/extcon/extcon.c
++++ b/drivers/extcon/extcon.c
+@@ -1252,6 +1252,7 @@ int extcon_dev_register(struct extcon_dev *edev)
+ 				sizeof(*edev->nh), GFP_KERNEL);
+ 	if (!edev->nh) {
+ 		ret = -ENOMEM;
++		device_unregister(&edev->dev);
+ 		goto err_dev;
  	}
  
- 	return 0;
+-- 
+2.30.2
+
 
 
