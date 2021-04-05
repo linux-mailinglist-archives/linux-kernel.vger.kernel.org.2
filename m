@@ -2,149 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D23354747
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 22:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18015354750
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 22:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240388AbhDEUB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 16:01:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56388 "EHLO
+        id S234934AbhDEUEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 16:04:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233196AbhDEUBZ (ORCPT
+        with ESMTP id S233253AbhDEUEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 16:01:25 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1687EC061788
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 13:01:18 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id g38so13647056ybi.12
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 13:01:18 -0700 (PDT)
+        Mon, 5 Apr 2021 16:04:06 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B837C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 13:03:59 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id r14-20020a05600c35ceb029010fe0f81519so4667379wmq.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 13:03:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pIFMsp1xtnQm4fljPPOMNWkY8KrPxBHkP5mmYwWGYOg=;
-        b=mAbehSQyEDZIVj209oPai5x0WzcM3FBJI+fXL28yXmj51FYUXWIfYHCDhQNPeK/eBV
-         33oYC4LCRTZylzp6DhIYO40quEbp+B97DRda5Td/KiYCfZA6W0h5BaEZaMwm6i4ONeCw
-         CKWzvz6dXtwRR9nbUg0F1RSYy8T/beXJb99VRaJrqqL1O5ovi8KGf8nPUDevefJuyFMP
-         W3ff45YKrKvpkmEtrFA0Dw4hyi8R+pCP+REF4Rz48wVZs1aSMdK2zW2PlFl9aRS1CMZS
-         MJ90HeVpgtNCVIZKOL9bZx+ynL+MEwYCsN47pHtICQbRdIYUp2rELGgS4+gaz4DwZySZ
-         SFVg==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JoeUTxMIo7LMD3N8t52A8FukB5jFgXLkXXTJN8fbj+g=;
+        b=g73AJIK25WP7XEAoyKc7uRpenUTjoxW84YeeUt/evdm9XIRXr69JfRXYFkGMqzV5Zc
+         GLOq1FHgWcnsdC99b/QWDG3U5HDN2zu5WBLYCpn85QVnMBfA8sXYpyDCPsAIxI0tLYIa
+         XgkpOommHHa+TIbX4L+25NYFLckVmXa+WcFXhq5IcdTiUFiWSp65ukjESs2uvBCel5Ii
+         jdG4lRVNtnm6815RFBeOE/lNW5XkI1JajH7PLM4cKaDqqVcPNwgmI2qFUpqHAWgjjE81
+         8CPbdEWde5U89020coWs3O8nXg5Mdy0kAGsghHkIzD4h5RMOpJkA2+HtP6qmDRjC0Yjt
+         p8XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pIFMsp1xtnQm4fljPPOMNWkY8KrPxBHkP5mmYwWGYOg=;
-        b=nF4falUsRspIQMVbRfTW8slJ1XdZz9DXRa/mbqOySzZ62xUQZP/PjIwPl6SYdEjYPH
-         noNDIGsGP+5ClXevwe37pbxlL2cYD5ggAjjX/ulkjta6UyrgxACEUsglucdkp/9E4d/5
-         6/Uyz5bGY0OvuvT7XUumFDeh5qiLquFZxxMDeaqWGO6iK4deC3HRY4Zj/maRkzbkzCCQ
-         5HkvHZTe6FeXDNpFKGyxV8MQhOxMxPbfrVpKlM1/AgEe62LGV6X20mfbF6Wq7FFkm64U
-         zXqN+0YJjiyfeLJqtffYAf7GIlM8pkGPErmmBJ7TBFRf1ZT27G4Ql/ZlsDoxgwzOU3Ly
-         PBrg==
-X-Gm-Message-State: AOAM531XgiRePawiJVKVZIPpt91ziOwFCSLKaHqLdVRpd7jK5wqHd5s5
-        1LYZhJ7wiJvVYgpaFhRpagzWW6baDRdqc6XXSariAA==
-X-Google-Smtp-Source: ABdhPJzEz4Bacy1Qyh6foMuxZWgQ4WwrTvcePdu/RGd29dTLOPzSZhs71CTh5wKDRXclrsHmhYPATlDOgex29PQYZD4=
-X-Received: by 2002:a25:c985:: with SMTP id z127mr40988055ybf.20.1617652876933;
- Mon, 05 Apr 2021 13:01:16 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JoeUTxMIo7LMD3N8t52A8FukB5jFgXLkXXTJN8fbj+g=;
+        b=LGkX5TX9rBtgrGixOF31gK/NXny9hLv8eC1ckA2CyC1DMCiQ7n8j6vnK7ADtk9mPay
+         3mHlYblkTq4KxZcjcEAfbm67HE3mgIxuCLd7jA7RMSYsagVJm2B92AU3G3hjeshkpqem
+         OilReLjlpYekHkb2ae/E4sw36qU65gSrJgVEi8te7kbQYicgWqikb5g02vNEb57cfFDN
+         6kytSbyUzn7bDVr9aLl3xI7jAEBLCmwUhi0xErpXFhoaVpPhwa8Re5x6WbHAb/t6PCi4
+         sEgsiWznFQvxDKHjt5nUgWWv4dYvrnxehFqlARMVZjKBE0CGpjs6CXCXgOz+hwRlQX4o
+         KWUg==
+X-Gm-Message-State: AOAM530SATVy3jir9BqNNXofvMzA7qbi4+1tP1r29tt4xa+ksGEBiB6D
+        fnB8hBsSue/CZY5lzR0KCxonPw==
+X-Google-Smtp-Source: ABdhPJy+F/Eu8jOmRExeF5RKu7rRF45ePmTNcKbmTRjD6JUofz2BXs66rVi7VFML/IEm1eiXtHzCBA==
+X-Received: by 2002:a1c:7406:: with SMTP id p6mr645945wmc.103.1617653038083;
+        Mon, 05 Apr 2021 13:03:58 -0700 (PDT)
+Received: from localhost.localdomain ([88.160.162.107])
+        by smtp.gmail.com with ESMTPSA id i26sm657406wmb.18.2021.04.05.13.03.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Apr 2021 13:03:57 -0700 (PDT)
+From:   Fabien Parent <fparent@baylibre.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     mkorpershoek@baylibre.com, Fabien Parent <fparent@baylibre.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH v2 1/2] dt-bindings: mediatek: mmsys: add mt8167 binding
+Date:   Mon,  5 Apr 2021 22:03:52 +0200
+Message-Id: <20210405200354.2194930-1-fparent@baylibre.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-References: <20210405031436.2465475-1-ilya.lipnitskiy@gmail.com>
-In-Reply-To: <20210405031436.2465475-1-ilya.lipnitskiy@gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 5 Apr 2021 13:00:40 -0700
-Message-ID: <CAGETcx9ifDoWeBN1KR4zKfs-q73iGo9C-joz4UqayeE3euDQWg@mail.gmail.com>
-Subject: Re: [PATCH] of: property: do not create device links from *nr-gpios
-To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 4, 2021 at 8:14 PM Ilya Lipnitskiy
-<ilya.lipnitskiy@gmail.com> wrote:
->
-> [<vendor>,]nr-gpios property is used by some GPIO drivers[0] to indicate
-> the number of GPIOs present on a system, not define a GPIO. nr-gpios is
-> not configured by #gpio-cells and can't be parsed along with other
-> "*-gpios" properties.
->
-> scripts/dtc/checks.c also has a special case for nr-gpio{s}. However,
-> nr-gpio is not really special, so we only need to fix nr-gpios suffix
-> here.
+Add binding documentation for MT8167 SoC.
 
-The only example of this that I see is "snps,nr-gpios". I personally
-would like to deprecate such overlapping/ambiguous definitions.
+Signed-off-by: Fabien Parent <fparent@baylibre.com>
+Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+V2: Rebased + fix typo in commit message.
 
-Maybe fix up the DT? This warning is a nice reminder that the DT needs
-to be updated (if it can be). Outside of that, it's not causing any
-issues that I know of.
+ .../devicetree/bindings/arm/mediatek/mediatek,mmsys.txt          | 1 +
+ 1 file changed, 1 insertion(+)
 
-If they are, then we can pick up a patch similar to this. I'd also
-limit this fix to "snps,nr-gpios" so that future attempts to use
--gpios for anything other than listing GPIOs triggers a warning.
+diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.txt b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.txt
+index d8c9108c3b4a..78c50733985c 100644
+--- a/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.txt
++++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.txt
+@@ -13,6 +13,7 @@ Required Properties:
+ 	- "mediatek,mt6779-mmsys", "syscon"
+ 	- "mediatek,mt6797-mmsys", "syscon"
+ 	- "mediatek,mt7623-mmsys", "mediatek,mt2701-mmsys", "syscon"
++	- "mediatek,mt8167-mmsys", "syscon"
+ 	- "mediatek,mt8173-mmsys", "syscon"
+ 	- "mediatek,mt8183-mmsys", "syscon"
+ - #clock-cells: Must be 1
+-- 
+2.31.0
 
-Rob, thoughts?
-
-Thanks,
-Saravana
-
->
-> [0]: nr-gpios is referenced in Documentation/devicetree/bindings/gpio:
->  - gpio-adnp.txt
->  - gpio-xgene-sb.txt
->  - gpio-xlp.txt
->  - snps,dw-apb-gpio.yaml
->
-> Fixes errors such as:
->   OF: /palmbus@300000/gpio@600: could not find phandle
->
-> Call Trace:
->   of_phandle_iterator_next+0x8c/0x16c
->   __of_parse_phandle_with_args+0x38/0xb8
->   of_parse_phandle_with_args+0x28/0x3c
->   parse_suffix_prop_cells+0x80/0xac
->   parse_gpios+0x20/0x2c
->   of_link_to_suppliers+0x18c/0x288
->   of_link_to_suppliers+0x1fc/0x288
->   device_add+0x4e0/0x734
->   of_platform_device_create_pdata+0xb8/0xfc
->   of_platform_bus_create+0x170/0x214
->   of_platform_populate+0x88/0xf4
->   __dt_register_buses+0xbc/0xf0
->   plat_of_setup+0x1c/0x34
->
-> Fixes: 7f00be96f125 ("of: property: Add device link support for interrupt-parent, dmas and -gpio(s)")
-> Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-> Cc: Saravana Kannan <saravanak@google.com>
-> Cc: <stable@vger.kernel.org> # 5.5.x
-> ---
->  drivers/of/property.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/of/property.c b/drivers/of/property.c
-> index 2bb3158c9e43..24672c295603 100644
-> --- a/drivers/of/property.c
-> +++ b/drivers/of/property.c
-> @@ -1271,7 +1271,16 @@ DEFINE_SIMPLE_PROP(pinctrl8, "pinctrl-8", NULL)
->  DEFINE_SIMPLE_PROP(remote_endpoint, "remote-endpoint", NULL)
->  DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
->  DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
-> -DEFINE_SUFFIX_PROP(gpios, "-gpios", "#gpio-cells")
-> +
-> +static struct device_node *parse_gpios(struct device_node *np,
-> +                                      const char *prop_name, int index)
-> +{
-> +       if (!strcmp_suffix(prop_name, "nr-gpios"))
-> +               return NULL;
-> +
-> +       return parse_suffix_prop_cells(np, prop_name, index, "-gpios",
-> +                                      "#gpio-cells");
-> +}
->
->  static struct device_node *parse_iommu_maps(struct device_node *np,
->                                             const char *prop_name, int index)
-> --
-> 2.31.1
->
