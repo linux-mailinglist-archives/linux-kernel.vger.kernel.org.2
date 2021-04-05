@@ -2,312 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0C4E3547B7
+	by mail.lfdr.de (Postfix) with ESMTP id EDF433547B9
 	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 22:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240681AbhDEUn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 16:43:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237190AbhDEUn0 (ORCPT
+        id S241045AbhDEUnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 16:43:31 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:36148 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237190AbhDEUna (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 16:43:26 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3CDAC061756
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 13:43:18 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id x17so13249038iog.2
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 13:43:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NHI+xqVLK4P6n38OCQkQ71p7tX2h5LIjFaJxt/ywqAg=;
-        b=QDoJDXFcXsGFtpr2QfWzapOPvj3qJp7sdt8z8WaT9c2hyMzs3om0SfT8iB2vhH3CoS
-         uZXJYtmr53CRHh/P9NFM0rrjOQlu7NSWXq6oSYGLd1jzijfEp3DbwebDY5FjGD9wRNpJ
-         Me+7RNcvmoCUW6vdHocDjlIdYX8O9Zqng2jowTcoSJhfhIvFD+1dkjt2awtOK29Wb/VK
-         a7htutSZ9CJvQcmy1dGe5HK0hd85nYnOgLpr3hlH/vk99MzSXPqEtH9VrjsNOJIjz7T5
-         QVegaxE8XauiWVHWbSIUr9vQtOmR9+GvD90/i/DASmD/ty7mVOq3L/R2LeTPNnRWTEFx
-         Cpyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NHI+xqVLK4P6n38OCQkQ71p7tX2h5LIjFaJxt/ywqAg=;
-        b=nl4jrZM7JaKLHfKijfpjRwbOjdIDz3Nq6wMmM6Ko5wEaMms4/+A91+6v92pnyqHbwm
-         0ZNO7vrR3ihjYEWWjKqogz21kEuBA4cr7sLaU5tI0vguZNPbQNcVW9ifXtBIOECi6pEv
-         lRq/Yf2S8WBKMUWx/mKzx4b9GULCcpBcXDJMQM0Z10AfPwsY/5CyfallRJQQSwM1TLcR
-         ScSkMG2+p5xqpR/bK0z9EQdTrcCMUCs3uzylzafKmd3XDh0qNmvlcRuUHnEB6+VnQSKh
-         6VRT4GgruQsRLAWZyHfPB/a2JYryRMT1w5JjvDeIGqapma4JCDa6dwcmdrXR6bgtZ3tu
-         +JDQ==
-X-Gm-Message-State: AOAM530XXUql3lM4ZDocrSBr/n2xOxyCP/YXLt/s1+XJWcQbBJaUrO4I
-        rqK5nU45a8HLzXMfqb7YA6hoY1Kppx5iIEBqfIfgVg==
-X-Google-Smtp-Source: ABdhPJz6j0NEV6Exhmgjdz5KYswxalLHNoIEjFX2w5h3qnx5aeRqcblXA2aADyITeiVQb4Fk9lhZ6XBMHdrZboUM8BM=
-X-Received: by 2002:a02:c6c4:: with SMTP id r4mr24939912jan.77.1617655398273;
- Mon, 05 Apr 2021 13:43:18 -0700 (PDT)
+        Mon, 5 Apr 2021 16:43:30 -0400
+Received: from x64host.home (unknown [47.187.194.202])
+        by linux.microsoft.com (Postfix) with ESMTPSA id DB99020B39FD;
+        Mon,  5 Apr 2021 13:43:22 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DB99020B39FD
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1617655403;
+        bh=SlDME/9AuFX8jUD0WBWKSnHjXALRVZ6WWaOd9ahbIJo=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=np/oZhF1XminpmGJ1kSAIvtqvuaQks9cmc361zoDOtbswfFD7vY5b94TPyFuJSckK
+         DNCSlYsiJBYJMQpIP1Fr8Ub8OfjkITmnDtvcbLiy1uXhsVY2ZW6EC2UDaEfMPG0sip
+         aUmxAhFcPXvlbfuymGpkPWLkpbOOCR8Wg7+utI1w=
+From:   madvenka@linux.microsoft.com
+To:     mark.rutland@arm.com, broonie@kernel.org, jpoimboe@redhat.com,
+        jthierry@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        madvenka@linux.microsoft.com
+Subject: [RFC PATCH v2 0/4] arm64: Implement stack trace reliability checks
+Date:   Mon,  5 Apr 2021 15:43:09 -0500
+Message-Id: <20210405204313.21346-1-madvenka@linux.microsoft.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <705993ccb34a611c75cdae0a8cb1b40f9b218ebd>
+References: <705993ccb34a611c75cdae0a8cb1b40f9b218ebd>
 MIME-Version: 1.0
-References: <cover.1617302792.git.ashish.kalra@amd.com> <4da0d40c309a21ba3952d06f346b6411930729c9.1617302792.git.ashish.kalra@amd.com>
-In-Reply-To: <4da0d40c309a21ba3952d06f346b6411930729c9.1617302792.git.ashish.kalra@amd.com>
-From:   Steve Rutherford <srutherford@google.com>
-Date:   Mon, 5 Apr 2021 13:42:42 -0700
-Message-ID: <CABayD+fF7+sn444rMuE_SNwN-SYSPwJr1mrW3qRYw4H7ryi-aw@mail.gmail.com>
-Subject: Re: [PATCH v11 08/13] KVM: X86: Introduce KVM_HC_PAGE_ENC_STATUS hypercall
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Venu Busireddy <venu.busireddy@oracle.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Will Deacon <will@kernel.org>, maz@kernel.org,
-        Quentin Perret <qperret@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 5, 2021 at 7:28 AM Ashish Kalra <Ashish.Kalra@amd.com> wrote:
->
-> From: Ashish Kalra <ashish.kalra@amd.com>
->
-> This hypercall is used by the SEV guest to notify a change in the page
-> encryption status to the hypervisor. The hypercall should be invoked
-> only when the encryption attribute is changed from encrypted -> decrypted
-> and vice versa. By default all guest pages are considered encrypted.
->
-> The hypercall exits to userspace to manage the guest shared regions and
-> integrate with the userspace VMM's migration code.
->
-> The patch integrates and extends DMA_SHARE/UNSHARE hypercall to
-> userspace exit functionality (arm64-specific) patch from Marc Zyngier,
-> to avoid arch-specific stuff and have a common interface
-> from the guest back to the VMM and sharing of the host handling of the
-> hypercall to support use case for a guest to share memory with a host.
->
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Borislav Petkov <bp@suse.de>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Cc: x86@kernel.org
-> Cc: kvm@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> ---
->  Documentation/virt/kvm/api.rst        | 18 ++++++++
->  Documentation/virt/kvm/hypercalls.rst | 15 +++++++
->  arch/x86/include/asm/kvm_host.h       |  2 +
->  arch/x86/kvm/svm/sev.c                | 61 +++++++++++++++++++++++++++
->  arch/x86/kvm/svm/svm.c                |  2 +
->  arch/x86/kvm/svm/svm.h                |  2 +
->  arch/x86/kvm/vmx/vmx.c                |  1 +
->  arch/x86/kvm/x86.c                    | 12 ++++++
->  include/uapi/linux/kvm.h              |  8 ++++
->  include/uapi/linux/kvm_para.h         |  1 +
->  10 files changed, 122 insertions(+)
->
-> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-> index 307f2fcf1b02..52bd7e475fd6 100644
-> --- a/Documentation/virt/kvm/api.rst
-> +++ b/Documentation/virt/kvm/api.rst
-> @@ -5475,6 +5475,24 @@ Valid values for 'type' are:
->      Userspace is expected to place the hypercall result into the appropriate
->      field before invoking KVM_RUN again.
->
-> +::
-> +
-> +               /* KVM_EXIT_DMA_SHARE / KVM_EXIT_DMA_UNSHARE */
-> +               struct {
-> +                       __u64 addr;
-> +                       __u64 len;
-> +                       __u64 ret;
-> +               } dma_sharing;
-> +
-> +This defines a common interface from the guest back to the KVM to support
-> +use case for a guest to share memory with a host.
-> +
-> +The addr and len fields define the starting address and length of the
-> +shared memory region.
-> +
-> +Userspace is expected to place the hypercall result into the "ret" field
-> +before invoking KVM_RUN again.
-> +
->  ::
->
->                 /* Fix the size of the union. */
-> diff --git a/Documentation/virt/kvm/hypercalls.rst b/Documentation/virt/kvm/hypercalls.rst
-> index ed4fddd364ea..7aff0cebab7c 100644
-> --- a/Documentation/virt/kvm/hypercalls.rst
-> +++ b/Documentation/virt/kvm/hypercalls.rst
-> @@ -169,3 +169,18 @@ a0: destination APIC ID
->
->  :Usage example: When sending a call-function IPI-many to vCPUs, yield if
->                 any of the IPI target vCPUs was preempted.
-> +
-> +
-> +8. KVM_HC_PAGE_ENC_STATUS
-> +-------------------------
-> +:Architecture: x86
-> +:Status: active
-> +:Purpose: Notify the encryption status changes in guest page table (SEV guest)
-> +
-> +a0: the guest physical address of the start page
-> +a1: the number of pages
-> +a2: encryption attribute
-> +
-> +   Where:
-> +       * 1: Encryption attribute is set
-> +       * 0: Encryption attribute is cleared
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 3768819693e5..78284ebbbee7 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1352,6 +1352,8 @@ struct kvm_x86_ops {
->         int (*complete_emulated_msr)(struct kvm_vcpu *vcpu, int err);
->
->         void (*vcpu_deliver_sipi_vector)(struct kvm_vcpu *vcpu, u8 vector);
-> +       int (*page_enc_status_hc)(struct kvm_vcpu *vcpu, unsigned long gpa,
-> +                                 unsigned long sz, unsigned long mode);
->  };
->
->  struct kvm_x86_nested_ops {
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index c9795a22e502..fb3a315e5827 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -1544,6 +1544,67 @@ static int sev_receive_finish(struct kvm *kvm, struct kvm_sev_cmd *argp)
->         return ret;
->  }
->
-> +static int sev_complete_userspace_page_enc_status_hc(struct kvm_vcpu *vcpu)
-> +{
-> +       vcpu->run->exit_reason = 0;
-I don't believe you need to clear exit_reason: it's universally set on exit.
+From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
 
-> +       kvm_rax_write(vcpu, vcpu->run->dma_sharing.ret);
-> +       ++vcpu->stat.hypercalls;
-> +       return kvm_skip_emulated_instruction(vcpu);
-> +}
-> +
-> +int svm_page_enc_status_hc(struct kvm_vcpu *vcpu, unsigned long gpa,
-> +                          unsigned long npages, unsigned long enc)
-> +{
-> +       kvm_pfn_t pfn_start, pfn_end;
-> +       struct kvm *kvm = vcpu->kvm;
-> +       gfn_t gfn_start, gfn_end;
-> +
-> +       if (!sev_guest(kvm))
-> +               return -EINVAL;
-> +
-> +       if (!npages)
-> +               return 0;
-> +
-> +       gfn_start = gpa_to_gfn(gpa);
-> +       gfn_end = gfn_start + npages;
-> +
-> +       /* out of bound access error check */
-> +       if (gfn_end <= gfn_start)
-> +               return -EINVAL;
-> +
-> +       /* lets make sure that gpa exist in our memslot */
-> +       pfn_start = gfn_to_pfn(kvm, gfn_start);
-> +       pfn_end = gfn_to_pfn(kvm, gfn_end);
-> +
-> +       if (is_error_noslot_pfn(pfn_start) && !is_noslot_pfn(pfn_start)) {
-> +               /*
-> +                * Allow guest MMIO range(s) to be added
-> +                * to the shared pages list.
-> +                */
-> +               return -EINVAL;
-> +       }
-> +
-> +       if (is_error_noslot_pfn(pfn_end) && !is_noslot_pfn(pfn_end)) {
-> +               /*
-> +                * Allow guest MMIO range(s) to be added
-> +                * to the shared pages list.
-> +                */
-> +               return -EINVAL;
-> +       }
-> +
-> +       if (enc)
-> +               vcpu->run->exit_reason = KVM_EXIT_DMA_UNSHARE;
-> +       else
-> +               vcpu->run->exit_reason = KVM_EXIT_DMA_SHARE;
-> +
-> +       vcpu->run->dma_sharing.addr = gfn_start;
-> +       vcpu->run->dma_sharing.len = npages * PAGE_SIZE;
-> +       vcpu->arch.complete_userspace_io =
-> +               sev_complete_userspace_page_enc_status_hc;
-> +
-> +       return 0;
-> +}
-> +
->  int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
->  {
->         struct kvm_sev_cmd sev_cmd;
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 58a45bb139f8..3cbf000beff1 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -4620,6 +4620,8 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
->         .complete_emulated_msr = svm_complete_emulated_msr,
->
->         .vcpu_deliver_sipi_vector = svm_vcpu_deliver_sipi_vector,
-> +
-> +       .page_enc_status_hc = svm_page_enc_status_hc,
->  };
->
->  static struct kvm_x86_init_ops svm_init_ops __initdata = {
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 39e071fdab0c..9cc16d2c0b8f 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -451,6 +451,8 @@ int nested_svm_check_exception(struct vcpu_svm *svm, unsigned nr,
->                                bool has_error_code, u32 error_code);
->  int nested_svm_exit_special(struct vcpu_svm *svm);
->  void sync_nested_vmcb_control(struct vcpu_svm *svm);
-> +int svm_page_enc_status_hc(struct kvm_vcpu *vcpu, unsigned long gpa,
-> +                          unsigned long npages, unsigned long enc);
->
->  extern struct kvm_x86_nested_ops svm_nested_ops;
->
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 32cf8287d4a7..2c98a5ed554b 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -7748,6 +7748,7 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
->         .can_emulate_instruction = vmx_can_emulate_instruction,
->         .apic_init_signal_blocked = vmx_apic_init_signal_blocked,
->         .migrate_timers = vmx_migrate_timers,
-> +       .page_enc_status_hc = NULL,
->
->         .msr_filter_changed = vmx_msr_filter_changed,
->         .complete_emulated_msr = kvm_complete_insn_gp,
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index f7d12fca397b..ef5c77d59651 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -8273,6 +8273,18 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
->                 kvm_sched_yield(vcpu->kvm, a0);
->                 ret = 0;
->                 break;
-> +       case KVM_HC_PAGE_ENC_STATUS: {
-> +               int r;
-> +
-> +               ret = -KVM_ENOSYS;
-> +               if (kvm_x86_ops.page_enc_status_hc) {
-> +                       r = kvm_x86_ops.page_enc_status_hc(vcpu, a0, a1, a2);
-> +                       if (r >= 0)
-> +                               return r;
-> +                       ret = r;
-Style nit: Why not just set ret, and return ret if ret >=0?
+There are a number of places in kernel code where the stack trace is not
+reliable. Enhance the unwinder to check for those cases and mark the
+stack trace as unreliable. Once all of the checks are in place, the unwinder
+can provide a reliable stack trace. But before this can be used for livepatch,
+some other entity needs to guarantee that the frame pointers are all set up
+correctly in kernel functions. objtool is currently being worked on to
+fill that gap.
 
-This looks good. I just had a few nitpicks.
-Reviewed-by: Steve Rutherford <srutherford@google.com>
+Except for the return address check, all the other checks involve checking
+the return PC of every frame against certain kernel functions. To do this,
+implement some infrastructure code:
+
+	- Define a special_functions[] array and populate the array with
+	  the special functions
+
+	- Using kallsyms_lookup(), lookup the symbol table entries for the
+	  functions and record their address ranges
+
+	- Define an is_reliable_function(pc) to match a return PC against
+	  the special functions.
+
+The unwinder calls is_reliable_function(pc) for every return PC and marks
+the stack trace as reliable or unreliable accordingly.
+
+Return address check
+====================
+
+Check the return PC of every stack frame to make sure that it is a valid
+kernel text address (and not some generated code, for example).
+
+Detect EL1 exception frame
+==========================
+
+EL1 exceptions can happen on any instruction including instructions in
+the frame pointer prolog or epilog. Depending on where exactly they happen,
+they could render the stack trace unreliable.
+
+Add all of the EL1 exception handlers to special_functions[].
+
+	- el1_sync()
+	- el1_irq()
+	- el1_error()
+	- el1_sync_invalid()
+	- el1_irq_invalid()
+	- el1_fiq_invalid()
+	- el1_error_invalid()
+
+Detect ftrace frame
+===================
+
+When FTRACE executes at the beginning of a traced function, it creates two
+frames and calls the tracer function:
+
+	- One frame for the traced function
+
+	- One frame for the caller of the traced function
+
+That gives a sensible stack trace while executing in the tracer function.
+When FTRACE returns to the traced function, the frames are popped and
+everything is back to normal.
+
+However, in cases like live patch, the tracer function redirects execution
+to a different function. When FTRACE returns, control will go to that target
+function. A stack trace taken in the tracer function will not show the target
+function. The target function is the real function that we want to track.
+So, the stack trace is unreliable.
+
+To detect stack traces from a tracer function, add the following to
+special_functions[]:
+
+	- ftrace_call + 4
+
+ftrace_call is the label at which the tracer function is patched in. So,
+ftrace_call + 4 is its return address. This is what will show up in a
+stack trace taken from the tracer function.
+
+When Function Graph Tracing is on, ftrace_graph_caller is patched in
+at the label ftrace_graph_call. If a tracer function called before it has
+redirected execution as mentioned above, the stack traces taken from within
+ftrace_graph_caller will also be unreliable for the same reason as mentioned
+above. So, add ftrace_graph_caller to special_functions[] as well.
+
+Also, the Function Graph Tracer modifies the return address of a traced
+function to a return trampoline (return_to_handler()) to gather tracing
+data on function return. Stack traces taken from the traced function and
+functions it calls will not show the original caller of the traced function.
+The unwinder handles this case by getting the original caller from FTRACE.
+
+However, stack traces taken from the trampoline itself and functions it calls
+are unreliable as the original return address may not be available in
+that context. This is because the trampoline calls FTRACE to gather trace
+data as well as to obtain the actual return address and FTRACE discards the
+record of the original return address along the way.
+
+Add return_to_handler() to special_functions[].
+
+Check for kretprobe
+===================
+
+For functions with a kretprobe set up, probe code executes on entry
+to the function and replaces the return address in the stack frame with a
+kretprobe trampoline. Whenever the function returns, control is
+transferred to the trampoline. The trampoline eventually returns to the
+original return address.
+
+A stack trace taken while executing in the function (or in functions that
+get called from the function) will not show the original return address.
+Similarly, a stack trace taken while executing in the trampoline itself
+(and functions that get called from the trampoline) will not show the
+original return address. This means that the caller of the probed function
+will not show. This makes the stack trace unreliable.
+
+Add the kretprobe trampoline to special_functions[].
+
+Optprobes
+=========
+
+Optprobes may be implemented in the future for arm64. For optprobes,
+the relevant trampoline(s) can be added to special_functions[].
+---
+Changelog:
+
+v1
+	- Define a bool field in struct stackframe. This will indicate if
+	  a stack trace is reliable.
+
+	- Implement a special_functions[] array that will be populated
+	  with special functions in which the stack trace is considered
+	  unreliable.
+	
+	- Using kallsyms_lookup(), get the address ranges for the special
+	  functions and record them.
+
+	- Implement an is_reliable_function(pc). This function will check
+	  if a given return PC falls in any of the special functions. If
+	  it does, the stack trace is unreliable.
+
+	- Implement check_reliability() function that will check if a
+	  stack frame is reliable. Call is_reliable_function() from
+	  check_reliability().
+
+	- Before a return PC is checked against special_funtions[], it
+	  must be validates as a proper kernel text address. Call
+	  __kernel_text_address() from check_reliability().
+
+	- Finally, call check_reliability() from unwind_frame() for
+	  each stack frame.
+
+	- Add EL1 exception handlers to special_functions[].
+
+		el1_sync();
+		el1_irq();
+		el1_error();
+		el1_sync_invalid();
+		el1_irq_invalid();
+		el1_fiq_invalid();
+		el1_error_invalid();
+
+	- The above functions are currently defined as LOCAL symbols.
+	  Make them global so that they can be referenced from the
+	  unwinder code.
+
+	- Add FTRACE trampolines to special_functions[]:
+
+		ftrace_graph_call()
+		ftrace_graph_caller()
+		return_to_handler()
+
+	- Add the kretprobe trampoline to special functions[]:
+
+		kretprobe_trampoline()
+
+v2
+	- Removed the terminating entry { 0, 0 } in special_functions[]
+	  and replaced it with the idiom { /* sentinel */ }.
+
+	- Change the ftrace trampoline entry ftrace_graph_call in
+	  special_functions[] to ftrace_call + 4 and added explanatory
+	  comments.
+
+	- Unnested #ifdefs in special_functions[] for FTRACE.
+
+Madhavan T. Venkataraman (4):
+  arm64: Implement infrastructure for stack trace reliability checks
+  arm64: Mark a stack trace unreliable if an EL1 exception frame is
+    detected
+  arm64: Detect FTRACE cases that make the stack trace unreliable
+  arm64: Mark stack trace as unreliable if kretprobed functions are
+    present
+
+ arch/arm64/include/asm/exception.h  |   8 ++
+ arch/arm64/include/asm/stacktrace.h |   2 +
+ arch/arm64/kernel/entry-ftrace.S    |  12 ++
+ arch/arm64/kernel/entry.S           |  14 +-
+ arch/arm64/kernel/stacktrace.c      | 215 ++++++++++++++++++++++++++++
+ 5 files changed, 244 insertions(+), 7 deletions(-)
+
+
+base-commit: 0d02ec6b3136c73c09e7859f0d0e4e2c4c07b49b
+-- 
+2.25.1
+
