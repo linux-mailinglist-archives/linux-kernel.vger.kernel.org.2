@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D6B7354880
+	by mail.lfdr.de (Postfix) with ESMTP id E4E75354882
 	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 00:11:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242718AbhDEWKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 18:10:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40674 "EHLO mail.kernel.org"
+        id S242776AbhDEWKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 18:10:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242661AbhDEWKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S242678AbhDEWKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 5 Apr 2021 18:10:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id BAB3B613DB;
+Received: by mail.kernel.org (Postfix) with ESMTPS id C699A613DC;
         Mon,  5 Apr 2021 22:10:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1617660609;
-        bh=b8E5F2uI+ocb1JEnAxXaFV65R3Uq7rf0HaDvcqfzn6g=;
+        bh=JNJYD9b52dFWU2LT48z84lhgV/FbvuYQdrZmTYOkicQ=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=OQbXd2bJNmKQTiGl7Ipy/ikbSc+qSNGP/XHeRRI9Xtmw27weNlP6c9PIhpkbsbVK3
-         Agy22M88XhO10TLD0EZATTQp9iIVdjIjVBMYVR/Ev5ugHTjTh/PI71tSDdn54XdqZu
-         8U34UgkjZ6Ejz3akaZt4IgwBj91JG0pB1SZLCygOa1gqs729lJ6AIpnvZL65fbvf3g
-         c0It4a3KvZIRKf71lQuFBUuB2b1zGvly7Sm89/eD0ryFsrzOIjZL2TK94uxLPKWUDb
-         tYYvdXWQSzfDhw7uAtiLb5Ig+fVBokN41NAt9jXusRoUv2zgKnbY0GnyoaB/NgFuZs
-         2EoQJZSixu71g==
+        b=BpOirhVigPLeoNDVJAtJwnd39gosS74Jb7lMxdOwsu0ZG9iDa3hEzhgtVQZnhJvJ/
+         qDsudyMt9VFYceWUY9nWdka5OTtvb9RuRsmgZMaRMTASv64TnHEtVwWqf5omgPz+sQ
+         k/Yl0+Ld00YDni2wSJ+uhuumjyCLGuqvK9t4M/pdjVYQZF/GrOhr93l4CqwufZAwYI
+         YAZHP9XtdihUf9txPa8o86ZO07WOzPH+NTmz+aqvb4cfx0TlHToe8XBcP7Pnn1YGPX
+         DNA3RKj4/TYaGYUcxlszOEoxWwsKJllxwtf1kKLqfcLQlsOL4z2QVPYsoaCRN67Ud+
+         RxwdgVJybARnw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B590C60A2A;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BED2C60A19;
         Mon,  5 Apr 2021 22:10:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net: hns3: Limiting the scope of vector_ring_chain
- variable
+Subject: Re: [PATCH] net: smsc911x: skip acpi_device_id table when !CONFIG_ACPI
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161766060973.24414.1256394756703505340.git-patchwork-notify@kernel.org>
+Message-Id: <161766060977.24414.13288647159413382781.git-patchwork-notify@kernel.org>
 Date:   Mon, 05 Apr 2021 22:10:09 +0000
-References: <20210405172825.28380-1-salil.mehta@huawei.com>
-In-Reply-To: <20210405172825.28380-1-salil.mehta@huawei.com>
-To:     Salil Mehta <salil.mehta@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-        linuxarm@openeuler.org
+References: <20210405181548.52501-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210405181548.52501-1-krzysztof.kozlowski@canonical.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     steve.glendinning@shawell.net, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -48,19 +47,20 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Mon, 5 Apr 2021 18:28:25 +0100 you wrote:
-> Limiting the scope of the variable vector_ring_chain to the block where it
-> is used.
+On Mon,  5 Apr 2021 20:15:48 +0200 you wrote:
+> The driver can match via multiple methods.  Its acpi_device_id table is
+> referenced via ACPI_PTR() so it will be unused for !CONFIG_ACPI builds:
 > 
-> Fixes: 424eb834a9be ("net: hns3: Unified HNS3 {VF|PF} Ethernet Driver for hip08 SoC")
-> Signed-off-by: Salil Mehta <salil.mehta@huawei.com>
-> ---
->  drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>   drivers/net/ethernet/smsc/smsc911x.c:2652:36: warning:
+>     ‘smsc911x_acpi_match’ defined but not used [-Wunused-const-variable=]
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> 
+> [...]
 
 Here is the summary with links:
-  - [net] net: hns3: Limiting the scope of vector_ring_chain variable
-    https://git.kernel.org/netdev/net-next/c/d392ecd1bc29
+  - net: smsc911x: skip acpi_device_id table when !CONFIG_ACPI
+    https://git.kernel.org/netdev/net-next/c/cc0626c2aaed
 
 You are awesome, thank you!
 --
