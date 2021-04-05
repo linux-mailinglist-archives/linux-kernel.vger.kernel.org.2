@@ -2,117 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4998354938
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 01:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D5C035493C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 01:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241608AbhDEX1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 19:27:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54212 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238911AbhDEX1I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 19:27:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4465B613D7;
-        Mon,  5 Apr 2021 23:27:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617665221;
-        bh=Y886IjyRX5aP5hJlazZkcZYOJ7hRgAHc76XKZogWyYI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S2sJDiGViqNvl2AJ9NLgbY/wq3AYq5j/nFPhd5FTR8AVL+VZAgfJLdURYVeLtuSY8
-         fVt/ZZEoDPAVAQlUWUBYLmXeeYc4tHCCzmWiUv/63Irgs9ztvPt2mf8IfqUMLomV86
-         rCsBeeuEUvDk4MhxtEgjIG+flFe0KfiHV1asGwzGAeRrfe9sDO87zAXEt4Tao7WwvH
-         /tjp11v36JOg6PCv7PxJLb+/rGi6kEy2E4O/FgokSCA/Lgz4PP/1oE1TItvZSDhBTW
-         iu7CoAEBYoeUd4lnzSoAc0CPyiRVjA0cUo2YayAb6iOPNzN6bnJmZmgCkNKR1j1a+O
-         RZk6ShD/ha98g==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     linux-sgx@vger.kernel.org
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] x86/sgx: Add sgx_nr_{all, free}_pages to the debugfs
-Date:   Tue,  6 Apr 2021 02:26:53 +0300
-Message-Id: <20210405232653.33680-2-jarkko@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405232653.33680-1-jarkko@kernel.org>
-References: <20210405232653.33680-1-jarkko@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S241750AbhDEXdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 19:33:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237964AbhDEXdc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 19:33:32 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8250CC061788
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 16:33:25 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id d18so2151475qtn.16
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 16:33:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=iix/v2cJC9b8/wrwd7EH/KvNJQF53WPoD5HVyQhNhJI=;
+        b=PWuWgElMYtHYjSyuGEO6ucZsbDjGBg7VQEFwyAtX2nPGC8Vq0mnFEpGdifIavZomsW
+         KtYUty/PgMrBszumWX5Pd9hQlLOcqfnC4nJ/k8VozzFM3wf46mfWNmPTIWz8RVbmz7j/
+         0TIOT5d5MM+uLoK/sdcUVoK6bC99T8N66r9Gb80vAkxpLFpsa7eBWKTawWBNroI9dD3H
+         ol/+q4GLB7tapCPX0l6i2ApVWfZ4sSLvDRba62WcQV05+Hc8/2NVGMSxl1BqzsB4aOKy
+         JK3xNkaun8XA2gHy64xxqFfD2EhkIMLAcgv+S7TgLbhzHkvdSJEIKamhFa5bSiX9UGze
+         0VwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=iix/v2cJC9b8/wrwd7EH/KvNJQF53WPoD5HVyQhNhJI=;
+        b=FxbLEWQjlBsc41G764a/c/o3OCXIEccdWVF3/MmCz3iR+8wRDZiYXoXm7AhqJqAhxS
+         SDtpu44eqZ5Z2GQGUIRf3eqLC5bgeyHXJ8RgryU44U/l+lUi1ZcryGsZQ4TEPGvEKHfJ
+         d0Gg0ijri54JCdTroqxRXEeNAJl4paVPYKFrROtV8VaImUc2UF2TKN8iCUppY4+ZvHOx
+         fuldFfH/ZBeNj3KTivELV4zzpz8jQVMTsjgY20goWIM9aZEFyqGqmDpBlkm62umcR9XU
+         CpPaoHgGpYr/MwnbYTxY4QCQlVTo41RcqtF60jWSIHswIPTOc1xOjYODmVy/AQ/Lskra
+         8KKw==
+X-Gm-Message-State: AOAM532luJfL9EDr7j8G3jwp58xdhbCah6GcTJ/yYgnJ12vxckEwThrb
+        azU/MIIiOmR8g6ul5S+kpXgYBGTqillkqOE/CVP6
+X-Google-Smtp-Source: ABdhPJypo2nkY7qRmSPpYGVr8CAc+F+j4KKJ9X64kRJ8m77Hhve8ftYeL3Ovp7Ik4xyLMd3LH/sq+B9C27XwwHPyBDD+
+X-Received: from danielwinkler-linux.mtv.corp.google.com ([2620:15c:202:201:1cb3:ad22:2ed6:7c62])
+ (user=danielwinkler job=sendgmr) by 2002:ad4:5593:: with SMTP id
+ e19mr14604643qvx.52.1617665604297; Mon, 05 Apr 2021 16:33:24 -0700 (PDT)
+Date:   Mon,  5 Apr 2021 16:33:03 -0700
+Message-Id: <20210405233305.92431-1-danielwinkler@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
+Subject: [PATCH 0/2] Bluetooth: Avoid centralized adv handle tracking for
+ extended features
+From:   Daniel Winkler <danielwinkler@google.com>
+To:     marcel@holtmann.org, linux-bluetooth@vger.kernel.org
+Cc:     chromeos-bluetooth-upstreaming@chromium.org,
+        Daniel Winkler <danielwinkler@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add two debugs attributes:
+Hi Maintainers,
 
-* /sys/kernel/debug/x86/sgx_nr_all_pages
-* /sys/kernel/debug/x86/sgx_nr_free_pages
+This series addresses a race condition where an advertisement
+registration can conflict with a software rotation advertisement
+refresh. I found that this issue was only occurring with the new
+extended MGMT advertising interface. A bad use of the
+hdev->cur_adv_instance caused every new instance to be immediately sent
+to the controller rather than queued for software rotation, opening a
+path for the race to occur.
 
-These provide useful statistics for testing purposes.
+This series improves the way new extended advertising hci callbacks
+track the relevant adv handle, removing the need for the
+cur_adv_instance use. In a separate patch, the incorrect usage of
+cur_adv_instance is removed, to align the extended MGMT commands to the
+original add_advertising usage. The series was tested on both extended
+and non-extended bluetooth controllers to confirm that the race
+condition is resolved, and that multi- and single-advertising automated
+test scenarios are still successful.
 
-E.g. on a NUC7CJYH2, when no enclaves are running, and EPC set to 32 MB:
+Thanks in advance,
+Daniel
 
-$ sudo cat /sys/kernel/debug/x86/sgx_nr_all_pages
-5632
 
-$ sudo cat /sys/kernel/debug/x86/sgx_nr_free_pages
-5632
+Daniel Winkler (2):
+  Bluetooth: Use ext adv handle from requests in CCs
+  Bluetooth: Do not set cur_adv_instance in adv param MGMT request
 
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
----
+ net/bluetooth/hci_event.c | 16 +++++++---------
+ net/bluetooth/mgmt.c      |  1 -
+ 2 files changed, 7 insertions(+), 10 deletions(-)
 
-v2:
-* Use debugfs_create_ulong():
-  https://lore.kernel.org/linux-sgx/57c18e08-3e36-b5b3-aaba-9a21b75a1613@intel.com/
-
- arch/x86/kernel/cpu/sgx/main.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index 7df7048cb1c9..07bad864c531 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- /*  Copyright(c) 2016-20 Intel Corporation. */
- 
-+#include <linux/debugfs.h>
- #include <linux/freezer.h>
- #include <linux/highmem.h>
- #include <linux/kthread.h>
-@@ -25,7 +26,10 @@ static DECLARE_WAIT_QUEUE_HEAD(ksgxd_waitq);
- static LIST_HEAD(sgx_active_page_list);
- static DEFINE_SPINLOCK(sgx_reclaimer_lock);
- 
--/* The free page list lock protected variables prepend the lock. */
-+/* The number of EPC pages in total in all nodes. */
-+static unsigned long sgx_nr_all_pages;
-+
-+/* The number of free EPC pages in all nodes. */
- static unsigned long sgx_nr_free_pages;
- 
- /* Nodes with one or more EPC sections. */
-@@ -657,6 +661,8 @@ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
- 		list_add_tail(&section->pages[i].list, &sgx_dirty_page_list);
- 	}
- 
-+	sgx_nr_all_pages += nr_pages;
-+
- 	return true;
- }
- 
-@@ -750,6 +756,11 @@ static int __init sgx_init(void)
- 	if (ret)
- 		goto err_kthread;
- 
-+#ifdef CONFIG_DEBUG_FS
-+	debugfs_create_ulong("sgx_nr_all_pages", 0400, arch_debugfs_dir, NULL, &sgx_nr_all_pages);
-+	debugfs_create_ulong("sgx_nr_free_pages", 0400, arch_debugfs_dir, NULL, &sgx_nr_free_pages);
-+#endif /* CONFIG_DEBUG_FS */
-+
- 	return 0;
- 
- err_kthread:
 -- 
-2.31.1
+2.31.0.208.g409f899ff0-goog
 
