@@ -2,68 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A85DE35487E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 00:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7337935487B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 00:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242708AbhDEWK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 18:10:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40620 "EHLO mail.kernel.org"
+        id S242690AbhDEWKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 18:10:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232696AbhDEWKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232628AbhDEWKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 5 Apr 2021 18:10:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 0DDA361241;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 14643613D4;
         Mon,  5 Apr 2021 22:10:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1617660609;
-        bh=qUnyiLfCtx7AT0eJT24/4KZxQ/bPdYD6/1vODc9n84Q=;
+        bh=z28x4DHRRmuF6Tht7yn/Q8NaIZ/Q/w1JgBUS/5pRB6Y=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=qBWC1F60EjAaPP0/AcA/vGUBjUvLKpkkHgaskFf7XFVRvAz/GKUwAOMVGf+eB23fa
-         IF7dJJJMSgHmMIZoJ1tb6oZpHfzQd8fPXK6GxUzLhHM/doJCIRoUtr+fp9Y5h/8uJI
-         3VAs+w93tOCPbRyHoL/Sq+DG+p158rJBZ74oPH+Mcy8+D6aeEQWXZ/Nt0haDm7nd6y
-         4Sa1VqtTjY00+Ivb0XbzLByAUxXWH7vtDQd3QMz0nm4GfbesHF1G8KctVKuVPDL2Js
-         Qg5fQBR/YPBbIopYV+Q/dzl1FZlpiGI2DDizwOAJxjGeovf8w5ULW9P2w+OSXtlpp+
-         LjHz0TOdSJoCQ==
+        b=X0cB4e4qvSmoqlD8j2SgEVxPjfyJuAnzwMKN1rG9tTWbvuw5RNTP8dDTDfv77Qsdh
+         R5ijZ+1t1b0mo8MpQ8KppfCwxmzDwk6haVtPaxQXB/DwzuVyo7JbLmz56fF7NXLY3u
+         mGlI6XzZSyhDsgBu/i0BRqcWf7fmebJJ/14aAETJJV3cZXDwathxOVH9mK477yz8Pa
+         5wRJrt1PCmBp8o4/t7xlhJpYNJ611St7nKLHTeFITBTgE3/NyM8EueodNBZH30tbKV
+         MPN5b0qgPuvqqEmF9RahdEgUA3d2kMnxDizL4Qs8BGqjvkKPi9ZrZ2FuLV359xA5TR
+         XrghdFZ0tI3EA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id F012760A19;
-        Mon,  5 Apr 2021 22:10:08 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 054A760A00;
+        Mon,  5 Apr 2021 22:10:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH V2 net 0/2] Misc. fixes for hns3 driver
+Subject: Re: [PATCH net] openvswitch: fix send of uninitialized stack memory in ct
+ limit reply
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161766060897.24414.11853477881014511196.git-patchwork-notify@kernel.org>
-Date:   Mon, 05 Apr 2021 22:10:08 +0000
-References: <20210405170645.29620-1-salil.mehta@huawei.com>
-In-Reply-To: <20210405170645.29620-1-salil.mehta@huawei.com>
-To:     Salil Mehta <salil.mehta@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-        linuxarm@openeuler.org
+Message-Id: <161766060901.24414.14462323309343322855.git-patchwork-notify@kernel.org>
+Date:   Mon, 05 Apr 2021 22:10:09 +0000
+References: <20210404175031.3834734-1-i.maximets@ovn.org>
+In-Reply-To: <20210404175031.3834734-1-i.maximets@ovn.org>
+To:     Ilya Maximets <i.maximets@ovn.org>
+Cc:     pshelar@ovn.org, davem@davemloft.net, kuba@kernel.org,
+        yihung.wei@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This series was applied to netdev/net.git (refs/heads/master):
+This patch was applied to netdev/net.git (refs/heads/master):
 
-On Mon, 5 Apr 2021 18:06:43 +0100 you wrote:
-> Fixes for the miscellaneous problems found during the review of the code.
+On Sun,  4 Apr 2021 19:50:31 +0200 you wrote:
+> 'struct ovs_zone_limit' has more members than initialized in
+> ovs_ct_limit_get_default_limit().  The rest of the memory is a random
+> kernel stack content that ends up being sent to userspace.
 > 
-> Change Summary:
->  Patch 1/2, Change V1->V2:
->    [1] Fixed comments from Leon Romanovsky
->        Link: https://lkml.org/lkml/2021/4/4/14
->  Patch 2/2, Change V1->V2:
->    None
+> Fix that by using designated initializer that will clear all
+> non-specified fields.
 > 
 > [...]
 
 Here is the summary with links:
-  - [V2,net,1/2] net: hns3: Remove the left over redundant check & assignment
-    https://git.kernel.org/netdev/net/c/9a6aaf61487e
-  - [V2,net,2/2] net: hns3: Remove un-necessary 'else-if' in the hclge_reset_event()
-    https://git.kernel.org/netdev/net/c/0600771fa6b2
+  - [net] openvswitch: fix send of uninitialized stack memory in ct limit reply
+    https://git.kernel.org/netdev/net/c/4d51419d4993
 
 You are awesome, thank you!
 --
