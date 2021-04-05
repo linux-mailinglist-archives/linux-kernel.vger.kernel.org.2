@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 933AC3540AC
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9AD353F40
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232366AbhDEJU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:20:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37158 "EHLO mail.kernel.org"
+        id S239447AbhDEJKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:10:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240657AbhDEJQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:16:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 49A0261393;
-        Mon,  5 Apr 2021 09:15:59 +0000 (UTC)
+        id S238409AbhDEJIQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:08:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C6B6613A1;
+        Mon,  5 Apr 2021 09:08:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617614159;
-        bh=LHJhRKtGuhAP0AC7zVLtWa1yo3jUXb3KMXbK0V6mqDc=;
+        s=korg; t=1617613690;
+        bh=1VrBdJ01bGjkMK2OO/JZFdkPjxn7zUwNflApGOU++l8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a/OneMvQraOlSP9ze0TQR0duD08Qz9YcH2iq0psT9XmoPMHNXKsrp4LsgU6dKFCe7
-         D818RGp8PTKZsOi76i+phEQ11R6JWB7MBn+Xqs2nbUL4UjvuaSn60iTG5Xat2L6XLt
-         pJDBfrDXHYCLsvGogG/U1DfN/lOCcRWx7B0ltHlk=
+        b=pAPPL/uqrAt+QXaiphg5CzehV7AoEz6ABrqfr0kzdkluqKcnhbBCA8VCehwARkcnL
+         xRztCsy7z87XcSvi+7vnB/sFBUDVvzutMtuTNiAy5hNH1iDLFihmkUVFFqbQWpEZIE
+         +3PygmvivjZR0AeeUQNQ4r1lwIpEAM0KFFbYWAL0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
         "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.11 069/152] ACPI: processor: Fix CPU0 wakeup in acpi_idle_play_dead()
+Subject: [PATCH 5.10 056/126] ACPI: processor: Fix CPU0 wakeup in acpi_idle_play_dead()
 Date:   Mon,  5 Apr 2021 10:53:38 +0200
-Message-Id: <20210405085036.517059465@linuxfoundation.org>
+Message-Id: <20210405085032.897099810@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
-References: <20210405085034.233917714@linuxfoundation.org>
+In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
+References: <20210405085031.040238881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -98,7 +98,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  void native_send_call_func_ipi(const struct cpumask *mask);
 --- a/arch/x86/kernel/smpboot.c
 +++ b/arch/x86/kernel/smpboot.c
-@@ -1659,7 +1659,7 @@ void play_dead_common(void)
+@@ -1655,7 +1655,7 @@ void play_dead_common(void)
  	local_irq_disable();
  }
  
@@ -116,8 +116,8 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 +#include <asm/cpu.h>
  #endif
  
- #define _COMPONENT              ACPI_PROCESSOR_COMPONENT
-@@ -541,6 +542,12 @@ static int acpi_idle_play_dead(struct cp
+ #define ACPI_PROCESSOR_CLASS            "processor"
+@@ -542,6 +543,12 @@ static int acpi_idle_play_dead(struct cp
  			wait_for_freeze();
  		} else
  			return -ENODEV;
