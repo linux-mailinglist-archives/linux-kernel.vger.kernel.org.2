@@ -2,67 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3102835489F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 00:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 683853548A1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 00:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242799AbhDEWaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 18:30:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60502 "EHLO
+        id S242804AbhDEWdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 18:33:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233086AbhDEWaT (ORCPT
+        with ESMTP id S233086AbhDEWc5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 18:30:19 -0400
-Received: from hs01.dk-develop.de (hs01.dk-develop.de [IPv6:2a02:c207:3002:6234::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92A8AC06174A;
-        Mon,  5 Apr 2021 15:30:12 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 00:30:08 +0200
-From:   Danilo Krummrich <danilokrummrich@dk-develop.de>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        davem@davemloft.net, hkallweit1@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jeremy.linton@arm.com
-Subject: Re: [PATCH 2/2] net: mdio: support c45 peripherals on c22 busses
-Message-ID: <YGuPcNPXiQZkEehh@arch-linux>
-References: <6f1dfc28368d098ace9564e53ed92041@dk-develop.de>
- <20210331183524.GV1463@shell.armlinux.org.uk>
- <2f0ea3c3076466e197ca2977753b07f3@dk-develop.de>
- <20210401084857.GW1463@shell.armlinux.org.uk>
- <YGZvGfNSBBq/92D+@arch-linux>
- <20210402125858.GB1463@shell.armlinux.org.uk>
- <YGoSS7llrl5K6D+/@arch-linux>
- <YGsRwxwXILC1Tp2S@lunn.ch>
- <YGtdv++nv3H5K43E@arch-linux>
- <YGtksD5p5JVpnazu@lunn.ch>
+        Mon, 5 Apr 2021 18:32:57 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA79C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 15:32:50 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso12811256otq.3
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 15:32:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yjPJwTgEEcZdNSuKzyQlQgPz3fsRy1o33yFNzxrrfac=;
+        b=xAXIV4X/g6BfggIfAFOUMGYh4Qis6ID9Rp+nCu/5HpbbtRmk6sgPyzhuH4imjBuSuc
+         fkAoiT0P5ZaihDOaUgy8Us/d+uAMpOK4jdAmqB2Z60vp6DcHXNtN5CjXKR6SCbXdUzpB
+         wurVZZTQpQRh0/laCKet/OfkyPE/OLoYGkRlq6YYKnckWX8e55KmI6svRADScEezsa6U
+         PJOzu214E5nYo4x13XzJfhBaDzFGPm/TwUKxX101NWVuwyCpLaJ+5t475irN19ApFsx3
+         usqcx8L95XSar3XRjpLBWl+4Ugbm2eL46ndGRWW4TjTmSevdo5Ow/5+1MBkw5Re60gj0
+         hu6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yjPJwTgEEcZdNSuKzyQlQgPz3fsRy1o33yFNzxrrfac=;
+        b=mrkVABRUqkRip6D35cl12pdiBCSyynmLmbWfQgT3vWqnrthWFwpjMy3Tgsgdwdv8ad
+         Lv2FsvsHdE5T7h1Arff4/158CX3KU15f7hiT7PVHW0DPoFADK7XlmYwwISyHbc0olZzg
+         4HlVsefCwdjSwAetT8vbyVPxRLcH/MEqMu3KxlNVrRBWnUc1dSUPuvI/38Z0oxiHtC74
+         lZw5Ni8ZqFUlZ03wLyJKf/FnidA15AIM704dLf0cZyWD5sQxK/rvJRoekeAP3xO3L7vt
+         I0ZwgXkI/YqqnxOEjuEVNSycIQrdx616+v4gEhEw8jlBISWuPjF8ZhRdUDP0J5LeveJM
+         cJow==
+X-Gm-Message-State: AOAM533KoE80G4zcv/CfASUOE2njyMDpxMPVS8Q4hDo5uTswnVRXLTHY
+        gBYZiq89r9ZMzYJB/GNPNK49IA==
+X-Google-Smtp-Source: ABdhPJw8JfV6bWrAR19dcf37Wd/Jg1+1EQEokY3+VsHwPAew4dvfVPqK2ZNPlzNagWez4h8f76SNNA==
+X-Received: by 2002:a05:6830:2248:: with SMTP id t8mr23660323otd.211.1617661970066;
+        Mon, 05 Apr 2021 15:32:50 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id z14sm3293523oid.12.2021.04.05.15.32.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Apr 2021 15:32:49 -0700 (PDT)
+Date:   Mon, 5 Apr 2021 17:32:47 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/7] crypto: qce: Add mode for rfc4309
+Message-ID: <20210405223247.GC904837@yoga>
+References: <20210225182716.1402449-1-thara.gopinath@linaro.org>
+ <20210225182716.1402449-4-thara.gopinath@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YGtksD5p5JVpnazu@lunn.ch>
+In-Reply-To: <20210225182716.1402449-4-thara.gopinath@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 09:27:44PM +0200, Andrew Lunn wrote:
-> > Now, instead of encoding this information of the bus' capabilities at both
-> > places, I'd propose just checking the mii_bus->capabilities field in the
-> > mdiobus_c45_*() functions. IMHO this would be a little cleaner, than having two
-> > places where this information is stored. What do you think about that?
-> 
-> You will need to review all the MDIO bus drivers to make sure they
-> correctly set the capabilities. There is something like 55 using
-> of_mdiobus_register() and 45 using mdiobus_register(). So you have 100
-> drivers to review.
-Yes, but I think it would be enough to look at the drivers handling the
-MII_ADDR_C45 flag, because those are either
-- actually capable to do C45 bus transfers or
-- do properly return -EOPNOTSUPP.
+On Thu 25 Feb 12:27 CST 2021, Thara Gopinath wrote:
 
-I counted 27 drivers handling the MII_ADDR_C45 flag. Setting the capabilities
-for those should be pretty easy.
-
-The remaining ones, which should be about 73 then, could be left untouched,
-because the default capability MDIOBUS_NO_CAP would indicate they can C22 only.
-Since they don't handle the MII_ADDR_C45 flag at all, this should be the
-correct assumption.
+> rf4309 is the specification that uses aes ccm algorithms with IPsec
+> security packets. Add a submode to identify rfc4309 ccm(aes) algorithm
+> in the crypto driver.
 > 
-> 	Andrew
+> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+> ---
+>  drivers/crypto/qce/common.h | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/crypto/qce/common.h b/drivers/crypto/qce/common.h
+> index 3bc244bcca2d..3ffe719b79e4 100644
+> --- a/drivers/crypto/qce/common.h
+> +++ b/drivers/crypto/qce/common.h
+> @@ -51,9 +51,11 @@
+>  #define QCE_MODE_CCM			BIT(12)
+>  #define QCE_MODE_MASK			GENMASK(12, 8)
+>  
+> +#define QCE_MODE_CCM_RFC4309		BIT(13)
+> +
+>  /* cipher encryption/decryption operations */
+> -#define QCE_ENCRYPT			BIT(13)
+> -#define QCE_DECRYPT			BIT(14)
+> +#define QCE_ENCRYPT			BIT(14)
+> +#define QCE_DECRYPT			BIT(15)
+
+Can't we move these further up, so that next time we want to add
+something it doesn't require that we also move the ENC/DEC bits?
+
+>  
+>  #define IS_DES(flags)			(flags & QCE_ALG_DES)
+>  #define IS_3DES(flags)			(flags & QCE_ALG_3DES)
+> @@ -73,6 +75,7 @@
+>  #define IS_CTR(mode)			(mode & QCE_MODE_CTR)
+>  #define IS_XTS(mode)			(mode & QCE_MODE_XTS)
+>  #define IS_CCM(mode)			(mode & QCE_MODE_CCM)
+> +#define IS_CCM_RFC4309(mode)		((mode) & QCE_MODE_CCM_RFC4309)
+
+While leaving room for the typical macro issues, none of the other
+macros wrap the argument in parenthesis. Please follow the style of the
+driver, and perhaps follow up with a cleanup patch that just wraps them
+all in parenthesis?
+
+Regards,
+Bjorn
+
+>  
+>  #define IS_ENCRYPT(dir)			(dir & QCE_ENCRYPT)
+>  #define IS_DECRYPT(dir)			(dir & QCE_DECRYPT)
+> -- 
+> 2.25.1
 > 
