@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD3735409A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B49BB353E3B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240879AbhDEJTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:19:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34304 "EHLO mail.kernel.org"
+        id S238276AbhDEJEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:04:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240276AbhDEJO5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:14:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5693561002;
-        Mon,  5 Apr 2021 09:14:51 +0000 (UTC)
+        id S237684AbhDEJDf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:03:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 893BA61002;
+        Mon,  5 Apr 2021 09:03:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617614091;
-        bh=N35o62fbSEOSuqmsqry1AgPULNdNIjR4VW3kwET2dVk=;
+        s=korg; t=1617613409;
+        bh=A4B6XbbT7KvxAU19tiURSpZujePNokG7twiWWsRMR8o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y+9CwQ78O16TlTV7Fg99iNK8cdcuadNG87LX69UITMX/kRz43IucYQHsi1nJZZM/x
-         LS3NWpiK239I3ioAFQWi8wHF+WCByoI328KV3pW/xtSj1ONoJkxoylakGEcHITJ0BY
-         DXTt76ysdOvfL128w14txviN7K6X+IjcBjtV4bbE=
+        b=l1iNzetG2l5gu5Pzn510lG4I2jMGMez9ZVR6j/xcM22d+BSBtCZ8d/RbRXStrJCTJ
+         uPpJycehXUCa2K3c9BT1BO2jMCs6p7ZWswUYI52M9gt1EHEhZQ1MtBuQ0A9OkWMd7v
+         ULMEfKK2Cs+2cn/94kEeUqkmCqKqC7u9xXiEpPH4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Asutosh Das <asutoshd@codeaurora.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.11 081/152] PM: runtime: Fix race getting/putting suppliers at probe
+        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Sameer Pujar <spujar@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 26/74] ASoC: rt5659: Update MCLK rate in set_sysclk()
 Date:   Mon,  5 Apr 2021 10:53:50 +0200
-Message-Id: <20210405085036.885059022@linuxfoundation.org>
+Message-Id: <20210405085025.578234003@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
-References: <20210405085034.233917714@linuxfoundation.org>
+In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
+References: <20210405085024.703004126@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,93 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adrian Hunter <adrian.hunter@intel.com>
+From: Sameer Pujar <spujar@nvidia.com>
 
-commit 9dfacc54a8661bc8be6e08cffee59596ec59f263 upstream.
+[ Upstream commit dbf54a9534350d6aebbb34f5c1c606b81a4f35dd ]
 
-pm_runtime_put_suppliers() must not decrement rpm_active unless the
-consumer is suspended. That is because, otherwise, it could suspend
-suppliers for an active consumer.
+Simple-card/audio-graph-card drivers do not handle MCLK clock when it
+is specified in the codec device node. The expectation here is that,
+the codec should actually own up the MCLK clock and do necessary setup
+in the driver.
 
-That can happen as follows:
-
- static int driver_probe_device(struct device_driver *drv, struct device *dev)
- {
-	int ret = 0;
-
-	if (!device_is_registered(dev))
-		return -ENODEV;
-
-	dev->can_match = true;
-	pr_debug("bus: '%s': %s: matched device %s with driver %s\n",
-		 drv->bus->name, __func__, dev_name(dev), drv->name);
-
-	pm_runtime_get_suppliers(dev);
-	if (dev->parent)
-		pm_runtime_get_sync(dev->parent);
-
- At this point, dev can runtime suspend so rpm_put_suppliers() can run,
- rpm_active becomes 1 (the lowest value).
-
-	pm_runtime_barrier(dev);
-	if (initcall_debug)
-		ret = really_probe_debug(dev, drv);
-	else
-		ret = really_probe(dev, drv);
-
- Probe callback can have runtime resumed dev, and then runtime put
- so dev is awaiting autosuspend, but rpm_active is 2.
-
-	pm_request_idle(dev);
-
-	if (dev->parent)
-		pm_runtime_put(dev->parent);
-
-	pm_runtime_put_suppliers(dev);
-
- Now pm_runtime_put_suppliers() will put the supplier
- i.e. rpm_active 2 -> 1, but consumer can still be active.
-
-	return ret;
- }
-
-Fix by checking the runtime status. For any status other than
-RPM_SUSPENDED, rpm_active can be considered to be "owned" by
-rpm_[get/put]_suppliers() and pm_runtime_put_suppliers() need do nothing.
-
-Reported-by: Asutosh Das <asutoshd@codeaurora.org>
-Fixes: 4c06c4e6cf63 ("driver core: Fix possible supplier PM-usage counter imbalance")
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Cc: 5.1+ <stable@vger.kernel.org> # 5.1+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Mark Brown <broonie@kernel.org>
+Suggested-by: Michael Walle <michael@walle.cc>
+Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+Link: https://lore.kernel.org/r/1615829492-8972-3-git-send-email-spujar@nvidia.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/power/runtime.c |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt5659.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/base/power/runtime.c
-+++ b/drivers/base/power/runtime.c
-@@ -1704,6 +1704,8 @@ void pm_runtime_get_suppliers(struct dev
- void pm_runtime_put_suppliers(struct device *dev)
+diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
+index e66d08398f74..afd61599d94c 100644
+--- a/sound/soc/codecs/rt5659.c
++++ b/sound/soc/codecs/rt5659.c
+@@ -3463,12 +3463,17 @@ static int rt5659_set_component_sysclk(struct snd_soc_component *component, int
  {
- 	struct device_link *link;
-+	unsigned long flags;
-+	bool put;
- 	int idx;
+ 	struct rt5659_priv *rt5659 = snd_soc_component_get_drvdata(component);
+ 	unsigned int reg_val = 0;
++	int ret;
  
- 	idx = device_links_read_lock();
-@@ -1712,7 +1714,11 @@ void pm_runtime_put_suppliers(struct dev
- 				device_links_read_lock_held())
- 		if (link->supplier_preactivated) {
- 			link->supplier_preactivated = false;
--			if (refcount_dec_not_one(&link->rpm_active))
-+			spin_lock_irqsave(&dev->power.lock, flags);
-+			put = pm_runtime_status_suspended(dev) &&
-+			      refcount_dec_not_one(&link->rpm_active);
-+			spin_unlock_irqrestore(&dev->power.lock, flags);
-+			if (put)
- 				pm_runtime_put(link->supplier);
- 		}
+ 	if (freq == rt5659->sysclk && clk_id == rt5659->sysclk_src)
+ 		return 0;
  
+ 	switch (clk_id) {
+ 	case RT5659_SCLK_S_MCLK:
++		ret = clk_set_rate(rt5659->mclk, freq);
++		if (ret)
++			return ret;
++
+ 		reg_val |= RT5659_SCLK_SRC_MCLK;
+ 		break;
+ 	case RT5659_SCLK_S_PLL1:
+-- 
+2.30.1
+
 
 
