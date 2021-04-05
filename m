@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA1573540A7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B154E353D7B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241143AbhDEJTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:19:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36522 "EHLO mail.kernel.org"
+        id S237111AbhDEJAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:00:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239119AbhDEJPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:15:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E7A161427;
-        Mon,  5 Apr 2021 09:15:48 +0000 (UTC)
+        id S234151AbhDEI73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:59:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BA0B613B5;
+        Mon,  5 Apr 2021 08:59:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617614148;
-        bh=7AuWsnj/tw+RkTigsDxavoaeOgH0YxJSvw9BwjsED4A=;
+        s=korg; t=1617613162;
+        bh=gVj4Mj9DlSzrMbe5wvgdaCs0hGEtc008BQXV4tO4Yg0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LAmN5s1Hh8Af0XJCuyYhEKtz8qUKDhNF7JN7oo6CUZ/fiN8DdVsUOLXRmTY2W17pe
-         jLaXvjgK5AZqxBj/fbX111jM/Q0a5lnW3a0zoSPW8+v/YW6CiVy3DdLXELzn0Etl6H
-         syrSKsMjudLktW9KTVh0TEJjSZgCo0gDIvMDZp30=
+        b=B1BaSO2OMPQijwkr0gs+yCAZAg2fSpGz0gVpOGbZifWkuDNdW6KC3Uq2C3gFBkawB
+         ogMJq0oHqlXFwn5XKCqmR4Q28zKogzUR6DpLiTBf82vy/2moy99q3PRW2Xb3VnofpY
+         qAS3iXeDmup0h/2ltBjvc4sZFzgkt0yld+tRXlX4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jianqun Xu <jay.xu@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Wang Panzhenzhuan <randy.wang@rock-chips.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 5.11 100/152] pinctrl: rockchip: fix restore error in resume
+        stable@vger.kernel.org, Bhushan Shah <bshah@kde.org>,
+        Tony Lindgren <tony@atomide.com>
+Subject: [PATCH 4.14 43/52] usb: musb: Fix suspend with devices connected for a64
 Date:   Mon,  5 Apr 2021 10:54:09 +0200
-Message-Id: <20210405085037.493828572@linuxfoundation.org>
+Message-Id: <20210405085023.377716208@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
-References: <20210405085034.233917714@linuxfoundation.org>
+In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
+References: <20210405085021.996963957@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +39,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Panzhenzhuan <randy.wang@rock-chips.com>
+From: Tony Lindgren <tony@atomide.com>
 
-commit c971af25cda94afe71617790826a86253e88eab0 upstream.
+commit 92af4fc6ec331228aca322ca37c8aea7b150a151 upstream.
 
-The restore in resume should match to suspend which only set for RK3288
-SoCs pinctrl.
+Pinephone running on Allwinner A64 fails to suspend with USB devices
+connected as reported by Bhushan Shah <bshah@kde.org>. Reverting
+commit 5fbf7a253470 ("usb: musb: fix idling for suspend after
+disconnect interrupt") fixes the issue.
 
-Fixes: 8dca933127024 ("pinctrl: rockchip: save and restore gpio6_c6 pinmux in suspend/resume")
-Reviewed-by: Jianqun Xu <jay.xu@rock-chips.com>
-Reviewed-by: Heiko Stuebner <heiko@sntech.de>
-Signed-off-by: Wang Panzhenzhuan <randy.wang@rock-chips.com>
-Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
-Link: https://lore.kernel.org/r/20210223100725.269240-1-jay.xu@rock-chips.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Let's add suspend checks also for suspend after disconnect interrupt
+quirk handling like we already do elsewhere.
+
+Fixes: 5fbf7a253470 ("usb: musb: fix idling for suspend after disconnect interrupt")
+Reported-by: Bhushan Shah <bshah@kde.org>
+Tested-by: Bhushan Shah <bshah@kde.org>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Link: https://lore.kernel.org/r/20210324071142.42264-1-tony@atomide.com
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pinctrl/pinctrl-rockchip.c |   13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/usb/musb/musb_core.c |   12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
---- a/drivers/pinctrl/pinctrl-rockchip.c
-+++ b/drivers/pinctrl/pinctrl-rockchip.c
-@@ -3727,12 +3727,15 @@ static int __maybe_unused rockchip_pinct
- static int __maybe_unused rockchip_pinctrl_resume(struct device *dev)
- {
- 	struct rockchip_pinctrl *info = dev_get_drvdata(dev);
--	int ret = regmap_write(info->regmap_base, RK3288_GRF_GPIO6C_IOMUX,
--			       rk3288_grf_gpio6c_iomux |
--			       GPIO6C6_SEL_WRITE_ENABLE);
-+	int ret;
- 
--	if (ret)
--		return ret;
-+	if (info->ctrl->type == RK3288) {
-+		ret = regmap_write(info->regmap_base, RK3288_GRF_GPIO6C_IOMUX,
-+				   rk3288_grf_gpio6c_iomux |
-+				   GPIO6C6_SEL_WRITE_ENABLE);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	return pinctrl_force_default(info->pctl_dev);
- }
+--- a/drivers/usb/musb/musb_core.c
++++ b/drivers/usb/musb/musb_core.c
+@@ -1864,10 +1864,14 @@ static void musb_pm_runtime_check_sessio
+ 		MUSB_DEVCTL_HR;
+ 	switch (devctl & ~s) {
+ 	case MUSB_QUIRK_B_DISCONNECT_99:
+-		musb_dbg(musb, "Poll devctl in case of suspend after disconnect\n");
+-		schedule_delayed_work(&musb->irq_work,
+-				      msecs_to_jiffies(1000));
+-		break;
++		if (musb->quirk_retries && !musb->flush_irq_work) {
++			musb_dbg(musb, "Poll devctl in case of suspend after disconnect\n");
++			schedule_delayed_work(&musb->irq_work,
++					      msecs_to_jiffies(1000));
++			musb->quirk_retries--;
++			break;
++		}
++		/* fall through */
+ 	case MUSB_QUIRK_B_INVALID_VBUS_91:
+ 		if (musb->quirk_retries && !musb->flush_irq_work) {
+ 			musb_dbg(musb,
 
 
