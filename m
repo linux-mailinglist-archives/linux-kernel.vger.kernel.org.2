@@ -2,130 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 195813545C8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 19:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F07553545D4
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 19:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233408AbhDERDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 13:03:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233231AbhDERDW (ORCPT
+        id S234784AbhDERI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 13:08:29 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:16339 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234031AbhDERIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 13:03:22 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B117C061788
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 10:03:15 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id x26so1815869pfn.0
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 10:03:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=H6rn7p+vVu7v3cm9ggHsAaaGPQfvah3STH9aVY90oQ0=;
-        b=sPm3lazYQmNyXZyNZwqe3R9UHhfNsl5/ShT7hPs3TtJJhgVVYq8UgkcXx2rAi/Dcfa
-         V/fxOlwOjx3j/UhDO8hOJfR9dFnx+psTIUzKtGNIzps+yoYpP5ruuljEl4pGNCcWXYOh
-         iImfIRnO/mX63IgjMHuI8b6cZ+ajICxv/9f+e+eAgCyE40Pjl+/09AEP7xxNg4o09aY9
-         SASbcyBaPTgS0V0iwbtvXB8XKL5AfBauJR+IAqlDbtnvo76br0fAQOGODJK+zcEMnKrA
-         GTzev8aA0OHMthRZQRn6Ip5JNcVHZ8atYPOYVn4qB+K2yFZJcKFwv0KQSg3glhzvhsMw
-         OY6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=H6rn7p+vVu7v3cm9ggHsAaaGPQfvah3STH9aVY90oQ0=;
-        b=VA94xqzLWYpFkwjMg3Tl6EmzAZLcD29k9dDUMhPah7d+LUGy288w0cOpLLpphrcDwM
-         6PxLpN6VN5tCNXeyFbW8UnHP6z/cIfGt1CSTazl24I73HhPM+0yqeh1xFRrd+I7vWc5G
-         IUEv6ipO2FCeWpqKa60ZH9+7Gm9/oZm9rt0g/QnI1jbiWBfVccqp4aTU/auL85kaxlvw
-         obL2gLM8oYEifqJe6bLCREhM8erYZdfLXW8VzM5i7csY7wGYkpVG18+CguSdONR41a+J
-         mgGqZZm70WJa/TZ2fkEAVd+Xdmcnwb/fMjWNzX7xmsCd7vAS74IAfgD3DfSJIKfPmO1z
-         SBTQ==
-X-Gm-Message-State: AOAM533ISwUl6UJN81kFUxa4KN8JLqdeQTlthEnTw018YY+TBgfqizXD
-        mW3TdUI6ff5C6L9GFCSAEneD0g==
-X-Google-Smtp-Source: ABdhPJzHaUJR34DNX2bq1apPA9eX7C5JcfO8192VNXCy3QSvBk/c9bga925ePSoKMGO8XMoOp5DIGA==
-X-Received: by 2002:a63:4547:: with SMTP id u7mr6253524pgk.351.1617642194450;
-        Mon, 05 Apr 2021 10:03:14 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id h19sm16586915pfc.172.2021.04.05.10.03.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Apr 2021 10:03:13 -0700 (PDT)
-Date:   Mon, 5 Apr 2021 17:03:10 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Jim Mattson <jmattson@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH 3/6] KVM: x86: introduce kvm_register_clear_available
-Message-ID: <YGtCzhDbnAQVgI+8@google.com>
-References: <20210401141814.1029036-1-mlevitsk@redhat.com>
- <20210401141814.1029036-4-mlevitsk@redhat.com>
+        Mon, 5 Apr 2021 13:08:18 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FDcVs1KHvz9wyg;
+        Tue,  6 Apr 2021 01:05:57 +0800 (CST)
+Received: from A190218597.china.huawei.com (10.47.69.183) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 6 Apr 2021 01:07:58 +0800
+From:   Salil Mehta <salil.mehta@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <salil.mehta@huawei.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <linuxarm@openeuler.org>
+Subject: [PATCH V2 net 0/2] Misc. fixes for hns3 driver
+Date:   Mon, 5 Apr 2021 18:06:43 +0100
+Message-ID: <20210405170645.29620-1-salil.mehta@huawei.com>
+X-Mailer: git-send-email 2.8.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401141814.1029036-4-mlevitsk@redhat.com>
+Content-Type: text/plain
+X-Originating-IP: [10.47.69.183]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021, Maxim Levitsky wrote:
-> Small refactoring that will be used in the next patch.
-> 
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> ---
->  arch/x86/kvm/kvm_cache_regs.h | 7 +++++++
->  arch/x86/kvm/svm/svm.c        | 6 ++----
->  2 files changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/kvm_cache_regs.h b/arch/x86/kvm/kvm_cache_regs.h
-> index 2e11da2f5621..07d607947805 100644
-> --- a/arch/x86/kvm/kvm_cache_regs.h
-> +++ b/arch/x86/kvm/kvm_cache_regs.h
-> @@ -55,6 +55,13 @@ static inline void kvm_register_mark_available(struct kvm_vcpu *vcpu,
->  	__set_bit(reg, (unsigned long *)&vcpu->arch.regs_avail);
->  }
->  
-> +static inline void kvm_register_clear_available(struct kvm_vcpu *vcpu,
+Fixes for the miscellaneous problems found during the review of the code.
 
-I don't love the name, because it makes me think too hard about available vs.
-dirty.  :-)   If we drop the optimizations, what if we also drop this patch to
-avoid bikeshedding the name?
+Change Summary:
+ Patch 1/2, Change V1->V2:
+   [1] Fixed comments from Leon Romanovsky
+       Link: https://lkml.org/lkml/2021/4/4/14
+ Patch 2/2, Change V1->V2:
+   None
 
-> +					       enum kvm_reg reg)
-> +{
-> +	__clear_bit(reg, (unsigned long *)&vcpu->arch.regs_avail);
-> +	__clear_bit(reg, (unsigned long *)&vcpu->arch.regs_dirty);
-> +}
-> +
->  static inline void kvm_register_mark_dirty(struct kvm_vcpu *vcpu,
->  					   enum kvm_reg reg)
->  {
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 271196400495..2843732299a2 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -3880,10 +3880,8 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
->  		vcpu->arch.apf.host_apf_flags =
->  			kvm_read_and_reset_apf_flags();
->  
-> -	if (npt_enabled) {
-> -		vcpu->arch.regs_avail &= ~(1 << VCPU_EXREG_PDPTR);
-> -		vcpu->arch.regs_dirty &= ~(1 << VCPU_EXREG_PDPTR);
-> -	}
-> +	if (npt_enabled)
-> +		kvm_register_clear_available(vcpu, VCPU_EXREG_PDPTR);
->  
->  	/*
->  	 * We need to handle MC intercepts here before the vcpu has a chance to
-> -- 
-> 2.26.2
-> 
+Salil Mehta (2):
+  net: hns3: Remove the left over redundant check & assignment
+  net: hns3: Remove un-necessary 'else-if' in the hclge_reset_event()
+
+ drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+-- 
+2.17.1
+
