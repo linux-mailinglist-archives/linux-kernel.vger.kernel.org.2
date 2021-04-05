@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 771D3353E72
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E16D353DF0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238702AbhDEJGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:06:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47942 "EHLO mail.kernel.org"
+        id S237574AbhDEJDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:03:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238119AbhDEJE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:04:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D431F6138D;
-        Mon,  5 Apr 2021 09:04:18 +0000 (UTC)
+        id S237287AbhDEJB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:01:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CFD89613A0;
+        Mon,  5 Apr 2021 09:01:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613459;
-        bh=ywmWI70xJ5ohq05THjb0e1GZcrlA6Y5cTtRiIFB8xE4=;
+        s=korg; t=1617613281;
+        bh=g0qZpeSPtzZVibiraWCZWalUtxFApgC2P7j26wf8bcM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EQoprQrpCp91psMxxnlDTutKVe0WseinDY6+4vlWxfUKB6ob4MO2ZxVht7pSmdBj5
-         4CylVkZ5S7BUy1ewmI2qlUCEDtgvTYCSltVT0lvfB8kp7cQrzITbbt+WfFIqBzjPL4
-         XTkKnjeczcrbdqD/p5u2Pchymg/IweyBBAgi56IY=
+        b=mmfz2GppDmDlt2EzdLUZ6t+UBCZik0VX+88ilkcrxUxyt4CrEGGnLpq6wz+2V0fvr
+         kqpdPbdMxQIDf0es/J30Pa7zas0N0aZkyEjTBxCOoiGFTBn8g/re9FEqumTfWSpACC
+         dFMNf4M13ElFfNo0DOqVlo8WS87UHd+4Yz1YVAT0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 43/74] ALSA: hda: Add missing sanity checks in PM prepare/complete callbacks
+        stable@vger.kernel.org, Nirmoy Das <nirmoy.das@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 4.19 36/56] drm/amdgpu: fix offset calculation in amdgpu_vm_bo_clear_mappings()
 Date:   Mon,  5 Apr 2021 10:54:07 +0200
-Message-Id: <20210405085026.130706267@linuxfoundation.org>
+Message-Id: <20210405085023.687164208@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
-References: <20210405085024.703004126@linuxfoundation.org>
+In-Reply-To: <20210405085022.562176619@linuxfoundation.org>
+References: <20210405085022.562176619@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,47 +40,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Nirmoy Das <nirmoy.das@amd.com>
 
-commit 66affb7bb0dc0905155a1b2475261aa704d1ddb5 upstream.
+commit 5e61b84f9d3ddfba73091f9fbc940caae1c9eb22 upstream.
 
-The recently added PM prepare and complete callbacks don't have the
-sanity check whether the card instance has been properly initialized,
-which may potentially lead to Oops.
+Offset calculation wasn't correct as start addresses are in pfn
+not in bytes.
 
-This patch adds the azx_is_pm_ready() call in each place
-appropriately like other PM callbacks.
-
-Fixes: f5dac54d9d93 ("ALSA: hda: Separate runtime and system suspend")
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210329113059.25035-2-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+CC: stable@vger.kernel.org
+Signed-off-by: Nirmoy Das <nirmoy.das@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/hda_intel.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1022,6 +1022,9 @@ static int azx_prepare(struct device *de
- 	struct snd_card *card = dev_get_drvdata(dev);
- 	struct azx *chip;
- 
-+	if (!azx_is_pm_ready(card))
-+		return 0;
-+
- 	chip = card->private_data;
- 	chip->pm_prepared = 1;
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
-@@ -1039,6 +1042,9 @@ static void azx_complete(struct device *
- 	struct snd_card *card = dev_get_drvdata(dev);
- 	struct azx *chip;
- 
-+	if (!azx_is_pm_ready(card))
-+		return;
-+
- 	chip = card->private_data;
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
- 	chip->pm_prepared = 0;
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+@@ -2286,7 +2286,7 @@ int amdgpu_vm_bo_clear_mappings(struct a
+ 			after->start = eaddr + 1;
+ 			after->last = tmp->last;
+ 			after->offset = tmp->offset;
+-			after->offset += after->start - tmp->start;
++			after->offset += (after->start - tmp->start) << PAGE_SHIFT;
+ 			after->flags = tmp->flags;
+ 			after->bo_va = tmp->bo_va;
+ 			list_add(&after->list, &tmp->bo_va->invalids);
 
 
