@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 055CF353D75
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53392353DEF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233645AbhDEI76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 04:59:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40112 "EHLO mail.kernel.org"
+        id S237560AbhDEJDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:03:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236431AbhDEI7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 04:59:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68E996138A;
-        Mon,  5 Apr 2021 08:59:14 +0000 (UTC)
+        id S237316AbhDEJB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:01:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E71E613A1;
+        Mon,  5 Apr 2021 09:01:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613154;
-        bh=teHUG3InJy7OYJvmr2kg+wS5qfOI8ycdVjxF0yfQmvs=;
+        s=korg; t=1617613278;
+        bh=fk0CpbvYKGTCgyObhHOqABeY4+98Y/Acm4saB4fiq7Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mfoKWuRpW2jR6ZMpbs49TwvwkbI19/OkUhtSVhMWITU+KUJ1f0vZT/2CEEh4YSXzH
-         Pq7Ry+o8Z2M/+DtKoaOnwLhTTwOkERxGFOKrNVnXTMswXkGPurxOzduqRKFeOO/zo0
-         Mcw74RR0KfyvAoeZSKogpbsbbk4M+5uWHmv6H4wI=
+        b=ibeNKkZyKc9/7BDARRq7aXPnkUc9ZZXlb7SerUKbfH9mh0rCSiKKoWC1/PRNFPNjp
+         v/DeC3JEn27bR0X6tBCcrVEJzb27iJP69EHO6tU9XRVxvFXIVaw3y/SbppDraXbfDl
+         1n3rUoLqgu+OX4tLFdoWCaeGkvAzryXPoPAeqHOs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        Stefan Richter <stefanr@s5r6.in-berlin.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 40/52] firewire: nosy: Fix a use-after-free bug in nosy_ioctl()
+        stable@vger.kernel.org,
+        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20 ?= 
+        <zhouyanjie@wanyeetech.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 35/56] mm: fix race by making init_zero_pfn() early_initcall
 Date:   Mon,  5 Apr 2021 10:54:06 +0200
-Message-Id: <20210405085023.287968422@linuxfoundation.org>
+Message-Id: <20210405085023.658580585@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
-References: <20210405085021.996963957@linuxfoundation.org>
+In-Reply-To: <20210405085022.562176619@linuxfoundation.org>
+References: <20210405085022.562176619@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,116 +44,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheyu Ma <zheyuma97@gmail.com>
+From: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
 
-[ Upstream commit 829933ef05a951c8ff140e814656d73e74915faf ]
+commit e720e7d0e983bf05de80b231bccc39f1487f0f16 upstream.
 
-For each device, the nosy driver allocates a pcilynx structure.
-A use-after-free might happen in the following scenario:
+There are code paths that rely on zero_pfn to be fully initialized
+before core_initcall.  For example, wq_sysfs_init() is a core_initcall
+function that eventually results in a call to kernel_execve, which
+causes a page fault with a subsequent mmput.  If zero_pfn is not
+initialized by then it may not get cleaned up properly and result in an
+error:
 
- 1. Open nosy device for the first time and call ioctl with command
-    NOSY_IOC_START, then a new client A will be malloced and added to
-    doubly linked list.
- 2. Open nosy device for the second time and call ioctl with command
-    NOSY_IOC_START, then a new client B will be malloced and added to
-    doubly linked list.
- 3. Call ioctl with command NOSY_IOC_START for client A, then client A
-    will be readded to the doubly linked list. Now the doubly linked
-    list is messed up.
- 4. Close the first nosy device and nosy_release will be called. In
-    nosy_release, client A will be unlinked and freed.
- 5. Close the second nosy device, and client A will be referenced,
-    resulting in UAF.
+  BUG: Bad rss-counter state mm:(ptrval) type:MM_ANONPAGES val:1
 
-The root cause of this bug is that the element in the doubly linked list
-is reentered into the list.
+Here is an analysis of the race as seen on a MIPS device. On this
+particular MT7621 device (Ubiquiti ER-X), zero_pfn is PFN 0 until
+initialized, at which point it becomes PFN 5120:
 
-Fix this bug by adding a check before inserting a client.  If a client
-is already in the linked list, don't insert it.
+  1. wq_sysfs_init calls into kobject_uevent_env at core_initcall:
+       kobject_uevent_env+0x7e4/0x7ec
+       kset_register+0x68/0x88
+       bus_register+0xdc/0x34c
+       subsys_virtual_register+0x34/0x78
+       wq_sysfs_init+0x1c/0x4c
+       do_one_initcall+0x50/0x1a8
+       kernel_init_freeable+0x230/0x2c8
+       kernel_init+0x10/0x100
+       ret_from_kernel_thread+0x14/0x1c
 
-The following KASAN report reveals it:
+  2. kobject_uevent_env() calls call_usermodehelper_exec() which executes
+     kernel_execve asynchronously.
 
-   BUG: KASAN: use-after-free in nosy_release+0x1ea/0x210
-   Write of size 8 at addr ffff888102ad7360 by task poc
-   CPU: 3 PID: 337 Comm: poc Not tainted 5.12.0-rc5+ #6
-   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-   Call Trace:
-     nosy_release+0x1ea/0x210
-     __fput+0x1e2/0x840
-     task_work_run+0xe8/0x180
-     exit_to_user_mode_prepare+0x114/0x120
-     syscall_exit_to_user_mode+0x1d/0x40
-     entry_SYSCALL_64_after_hwframe+0x44/0xae
+  3. Memory allocations in kernel_execve cause a page fault, bumping the
+     MM reference counter:
+       add_mm_counter_fast+0xb4/0xc0
+       handle_mm_fault+0x6e4/0xea0
+       __get_user_pages.part.78+0x190/0x37c
+       __get_user_pages_remote+0x128/0x360
+       get_arg_page+0x34/0xa0
+       copy_string_kernel+0x194/0x2a4
+       kernel_execve+0x11c/0x298
+       call_usermodehelper_exec_async+0x114/0x194
 
-   Allocated by task 337:
-     nosy_open+0x154/0x4d0
-     misc_open+0x2ec/0x410
-     chrdev_open+0x20d/0x5a0
-     do_dentry_open+0x40f/0xe80
-     path_openat+0x1cf9/0x37b0
-     do_filp_open+0x16d/0x390
-     do_sys_openat2+0x11d/0x360
-     __x64_sys_open+0xfd/0x1a0
-     do_syscall_64+0x33/0x40
-     entry_SYSCALL_64_after_hwframe+0x44/0xae
+  4. In case zero_pfn has not been initialized yet, zap_pte_range does
+     not decrement the MM_ANONPAGES RSS counter and the BUG message is
+     triggered shortly afterwards when __mmdrop checks the ref counters:
+       __mmdrop+0x98/0x1d0
+       free_bprm+0x44/0x118
+       kernel_execve+0x160/0x1d8
+       call_usermodehelper_exec_async+0x114/0x194
+       ret_from_kernel_thread+0x14/0x1c
 
-   Freed by task 337:
-     kfree+0x8f/0x210
-     nosy_release+0x158/0x210
-     __fput+0x1e2/0x840
-     task_work_run+0xe8/0x180
-     exit_to_user_mode_prepare+0x114/0x120
-     syscall_exit_to_user_mode+0x1d/0x40
-     entry_SYSCALL_64_after_hwframe+0x44/0xae
+To avoid races such as described above, initialize init_zero_pfn at
+early_initcall level.  Depending on the architecture, ZERO_PAGE is
+either constant or gets initialized even earlier, at paging_init, so
+there is no issue with initializing zero_pfn earlier.
 
-   The buggy address belongs to the object at ffff888102ad7300 which belongs to the cache kmalloc-128 of size 128
-   The buggy address is located 96 bytes inside of 128-byte region [ffff888102ad7300, ffff888102ad7380)
-
-[ Modified to use 'list_empty()' inside proper lock  - Linus ]
-
-Link: https://lore.kernel.org/lkml/1617433116-5930-1-git-send-email-zheyuma97@gmail.com/
-Reported-and-tested-by: 马哲宇 (Zheyu Ma) <zheyuma97@gmail.com>
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
-Cc: Greg Kroah-Hartman <greg@kroah.com>
-Cc: Stefan Richter <stefanr@s5r6.in-berlin.de>
+Link: https://lkml.kernel.org/r/CALCv0x2YqOXEAy2Q=hafjhHCtTHVodChv1qpM=niAXOpqEbt7w@mail.gmail.com
+Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: stable@vger.kernel.org
+Tested-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/firewire/nosy.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ mm/memory.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/firewire/nosy.c b/drivers/firewire/nosy.c
-index 180f0a96528c..646dca0a8d73 100644
---- a/drivers/firewire/nosy.c
-+++ b/drivers/firewire/nosy.c
-@@ -359,6 +359,7 @@ nosy_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	struct client *client = file->private_data;
- 	spinlock_t *client_list_lock = &client->lynx->client_list_lock;
- 	struct nosy_stats stats;
-+	int ret;
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -148,7 +148,7 @@ static int __init init_zero_pfn(void)
+ 	zero_pfn = page_to_pfn(ZERO_PAGE(0));
+ 	return 0;
+ }
+-core_initcall(init_zero_pfn);
++early_initcall(init_zero_pfn);
  
- 	switch (cmd) {
- 	case NOSY_IOC_GET_STATS:
-@@ -373,11 +374,15 @@ nosy_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 			return 0;
  
- 	case NOSY_IOC_START:
-+		ret = -EBUSY;
- 		spin_lock_irq(client_list_lock);
--		list_add_tail(&client->link, &client->lynx->client_list);
-+		if (list_empty(&client->link)) {
-+			list_add_tail(&client->link, &client->lynx->client_list);
-+			ret = 0;
-+		}
- 		spin_unlock_irq(client_list_lock);
- 
--		return 0;
-+		return ret;
- 
- 	case NOSY_IOC_STOP:
- 		spin_lock_irq(client_list_lock);
--- 
-2.30.2
-
+ #if defined(SPLIT_RSS_COUNTING)
 
 
