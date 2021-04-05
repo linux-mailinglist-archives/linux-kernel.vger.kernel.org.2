@@ -2,289 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC0E353B1E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 05:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DBEB353B28
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 06:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232008AbhDEDhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 23:37:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231972AbhDEDho (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 23:37:44 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D686C061756;
-        Sun,  4 Apr 2021 20:37:38 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id v70so10436656qkb.8;
-        Sun, 04 Apr 2021 20:37:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8sKqbk/HMfa5h0Tc67tWj6z14YtgCiGDTbUQAa4H8yc=;
-        b=J5tBidVmEYBwQ1lbuexidoWFUlmaKcPoWY8Vr2WEE5XAneGgxH65jByobtXmr37rPK
-         +wSRnVVC2rQrjqfhAQ91ErcC62/DYU+SELQbeJhA8cFyEWEFiGnWJRzcij9p1wzWJNc5
-         WlbgdGxDwdQTKwCUSctgLLWFM6ar+bOC4O9GN1MnUZM9l+9UuJHGEBACB6AnOJCbseQ3
-         iez3m7yeBpM8NnKuW4i1FTtemKwyYucGhzYyWVHbC+HcDXQPU61/hLDR4pk1ufSotg5K
-         7DKxSmQOz65/6rn/EqMze/AaUI9FV2YqEIiKUUOVsdcImRhfG73aR3aRsd86oGZa+aG9
-         lCPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8sKqbk/HMfa5h0Tc67tWj6z14YtgCiGDTbUQAa4H8yc=;
-        b=WH8tIGkkk0wFYNUegaMZgDFdZ21G6uPstSlCn9s6ipkIZ5fBl3JHCFRCtwyqYdUH9h
-         L8qj5gpKte/QtOjRuQdjG9FazMLUiqyRhPElXjCOvT1kdiGfQ79oliH1QHmp0WZo99t4
-         JkD9wRg74ldrMIxfUwS2r3TjiPuhlCO8/ty443QPF7lL1ECbn/IBdSG1S7z568zPoqsJ
-         Y3FASyd9c3nMVP/1tSfIaVrYxYMbgqwAUztelhbzpUVsvdV/9Td1Hvym1tET4CsAvxDI
-         HcPl66Rmy85qbOO1vUl/t48m6Z4LNbWU3lA24WWJ6nNbZbV9Qwac9QyVAjfIZJviEqm2
-         cDVA==
-X-Gm-Message-State: AOAM533xo03JwHbBBtZN+mGvck7owUkZAM4v1xHuUQojiuGX5FyB/gf9
-        SkSfz8vVuXN8SJYeYCqtvZE=
-X-Google-Smtp-Source: ABdhPJwC41z+xwD8B7CO8ogpGt3jzHqmcGMquwvwtkK5fkmUggL8J+uLivZkWm6VmGfuk7j3n9l2Ag==
-X-Received: by 2002:a05:620a:20c7:: with SMTP id f7mr22413272qka.156.1617593857838;
-        Sun, 04 Apr 2021 20:37:37 -0700 (PDT)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id d84sm12662025qke.53.2021.04.04.20.37.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Apr 2021 20:37:37 -0700 (PDT)
-Subject: Re: [PATCH 1/1] of: properly check for error returned by
- fdt_get_name()
-From:   Frank Rowand <frowand.list@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        devicetree@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-kernel@vger.kernel.org
-References: <20210405032845.1942533-1-frowand.list@gmail.com>
-Message-ID: <8b16b504-83b5-9d36-eade-f7b375c0535b@gmail.com>
-Date:   Sun, 4 Apr 2021 22:37:35 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229584AbhDEEBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 00:01:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39494 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229454AbhDEEBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 00:01:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AD6C61168;
+        Mon,  5 Apr 2021 04:01:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617595286;
+        bh=P0/wh5klN9eqxU+CsYPBxmd0+kYwIVxALJ6gVSKuCIY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=jzfxOO6wEPzYToCKvvsm+0XRdwDgRNAyj375i5pY0o4aePqCRBz/PXyghwB8GXwBJ
+         D6EI8UNmquwYa3k+jJkraszzqcrP36mfCCJGgezZ+7cBjHYu+OSSwQnMsergZD3JIc
+         l1ZzYeIV5pIGloP6067pqXfpk95Ox45luV7b6bM9OHeX3+/peOc+1S3xp7nRxreca8
+         7yZgVZOYnsFlZDT8ESK7zR+aidasjv7xSWXH+BRNmXNXo0hbWSRg5yZUK1BOQIhE/j
+         y7FigkpKHLKnV54h3eJN+gmkfvj0nS8lqyWQLpOXRBmSY8gM3r2uW4GTi3v9HORxnr
+         hblW/wuE8CXaQ==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id C28793522A4E; Sun,  4 Apr 2021 21:01:25 -0700 (PDT)
+Date:   Sun, 4 Apr 2021 21:01:25 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        syzbot <syzbot+88e4f02896967fe1ab0d@syzkaller.appspotmail.com>,
+        john.stultz@linaro.org, linux-kernel@vger.kernel.org,
+        sboyd@kernel.org, syzkaller-bugs@googlegroups.com,
+        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com
+Subject: Re: [syzbot] WARNING: suspicious RCU usage in get_timespec64
+Message-ID: <20210405040125.GF2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <0000000000000e025b05bf2a430b@google.com>
+ <87mtud4wfi.ffs@nanos.tec.linutronix.de>
+ <20210404214030.GB2696@paulmck-ThinkPad-P72>
+ <20210405030855.GG2531743@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210405032845.1942533-1-frowand.list@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210405030855.GG2531743@casper.infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guenter,
+On Mon, Apr 05, 2021 at 04:08:55AM +0100, Matthew Wilcox wrote:
+> On Sun, Apr 04, 2021 at 02:40:30PM -0700, Paul E. McKenney wrote:
+> > On Sun, Apr 04, 2021 at 10:38:41PM +0200, Thomas Gleixner wrote:
+> > > On Sun, Apr 04 2021 at 12:05, syzbot wrote:
+> > > 
+> > > Cc + ...
+> > 
+> > And a couple more...
+> > 
+> > > > Hello,
+> > > >
+> > > > syzbot found the following issue on:
+> > > >
+> > > > HEAD commit:    5e46d1b7 reiserfs: update reiserfs_xattrs_initialized() co..
+> > > > git tree:       upstream
+> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=1125f831d00000
+> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=78ef1d159159890
+> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=88e4f02896967fe1ab0d
+> > > >
+> > > > Unfortunately, I don't have any reproducer for this issue yet.
+> > > >
+> > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > Reported-by: syzbot+88e4f02896967fe1ab0d@syzkaller.appspotmail.com
+> > > >
+> > > > =============================
+> > > > WARNING: suspicious RCU usage
+> > > > 5.12.0-rc5-syzkaller #0 Not tainted
+> > > > -----------------------------
+> > > > kernel/sched/core.c:8294 Illegal context switch in RCU-sched read-side critical section!
+> > > >
+> > > > other info that might help us debug this:
+> > > >
+> > > >
+> > > > rcu_scheduler_active = 2, debug_locks = 0
+> > > > 3 locks held by syz-executor.4/8418:
+> > > >  #0: 
+> > > > ffff8880751d2b28
+> > > >  (
+> > > > &p->pi_lock
+> > > > ){-.-.}-{2:2}
+> > > > , at: try_to_wake_up+0x98/0x14a0 kernel/sched/core.c:3345
+> > > >  #1: 
+> > > > ffff8880b9d35258
+> > > >  (
+> > > > &rq->lock
+> > > > ){-.-.}-{2:2}
+> > > > , at: rq_lock kernel/sched/sched.h:1321 [inline]
+> > > > , at: ttwu_queue kernel/sched/core.c:3184 [inline]
+> > > > , at: try_to_wake_up+0x5e6/0x14a0 kernel/sched/core.c:3464
+> > > >  #2: ffff8880b9d1f948 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_change+0x142/0x220 kernel/sched/psi.c:807
+> > 
+> > This looks similar to syzbot+dde0cc33951735441301@syzkaller.appspotmail.com
+> > in that rcu_sleep_check() sees an RCU lock held, but the later call to
+> > lockdep_print_held_locks() does not.  Did something change recently that
+> > could let the ->lockdep_depth counter get out of sync with the actual
+> > number of locks held?
+> 
+> Dmitri had a different theory here:
+> 
+> https://groups.google.com/g/syzkaller-bugs/c/FmYvfZCZzqA/m/nc2CXUgsAgAJ
 
-Can you please test this patch to see if it prevents the crash on
-openrisc that you reported in
-https://lore.kernel.org/lkml/20210327224116.69309-1-linux@roeck-us.net/
+There is always room for more than one bug.  ;-)
 
-Just after start of unittest you should see a warning about
-testcases.
+He says "one-off false positives".  I was afraid of that...
 
-Thanks,
-
-Frank
-
-
-On 4/4/21 10:28 PM, frowand.list@gmail.com wrote:
-> From: Frank Rowand <frank.rowand@sony.com>
-> 
-> fdt_get_name() returns error values via a parameter pointer
-> instead of in function return.  Fix check for this error value
-> in populate_node() and callers of populate_node().
-> 
-> Chasing up the caller tree showed callers of various functions
-> failing to initialize the value of pointer parameters that
-> can return error values.  Initialize those values to NULL.
-> 
-> The bug was introduced by
-> commit e6a6928c3ea1 ("of/fdt: Convert FDT functions to use libfdt")
-> but this patch can not be backported directly to that commit
-> because the relevant code has further been restructured by
-> commit dfbd4c6eff35 ("drivers/of: Split unflatten_dt_node()")
-> 
-> The bug became visible by triggering a crash on openrisc with:
-> commit 79edff12060f ("scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9")
-> as reported in:
-> https://lore.kernel.org/lkml/20210327224116.69309-1-linux@roeck-us.net/
-> 
-> Fixes: commit 79edff12060f ("scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9")
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Frank Rowand <frank.rowand@sony.com>
-> 
-> ---
-> 
-> This patch papers over the unaligned pointer passed to
-> of_fdt_unflatten_tree() bug that Guenter reported in
-> https://lore.kernel.org/lkml/20210327224116.69309-1-linux@roeck-us.net/
-> 
-> I will create a separate patch to fix that problem.
-> 
->  drivers/of/fdt.c      | 36 +++++++++++++++++++++++-------------
->  drivers/of/overlay.c  |  2 +-
->  drivers/of/unittest.c | 15 ++++++++++-----
->  3 files changed, 34 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-> index dcc1dd96911a..adb26aff481d 100644
-> --- a/drivers/of/fdt.c
-> +++ b/drivers/of/fdt.c
-> @@ -205,7 +205,7 @@ static void populate_properties(const void *blob,
->  		*pprev = NULL;
->  }
->  
-> -static bool populate_node(const void *blob,
-> +static int populate_node(const void *blob,
->  			  int offset,
->  			  void **mem,
->  			  struct device_node *dad,
-> @@ -214,24 +214,24 @@ static bool populate_node(const void *blob,
->  {
->  	struct device_node *np;
->  	const char *pathp;
-> -	unsigned int l, allocl;
-> +	int len;
->  
-> -	pathp = fdt_get_name(blob, offset, &l);
-> +	pathp = fdt_get_name(blob, offset, &len);
->  	if (!pathp) {
->  		*pnp = NULL;
-> -		return false;
-> +		return len;
->  	}
->  
-> -	allocl = ++l;
-> +	len++;
->  
-> -	np = unflatten_dt_alloc(mem, sizeof(struct device_node) + allocl,
-> +	np = unflatten_dt_alloc(mem, sizeof(struct device_node) + len,
->  				__alignof__(struct device_node));
->  	if (!dryrun) {
->  		char *fn;
->  		of_node_init(np);
->  		np->full_name = fn = ((char *)np) + sizeof(*np);
->  
-> -		memcpy(fn, pathp, l);
-> +		memcpy(fn, pathp, len);
->  
->  		if (dad != NULL) {
->  			np->parent = dad;
-> @@ -295,6 +295,7 @@ static int unflatten_dt_nodes(const void *blob,
->  	struct device_node *nps[FDT_MAX_DEPTH];
->  	void *base = mem;
->  	bool dryrun = !base;
-> +	int ret;
->  
->  	if (nodepp)
->  		*nodepp = NULL;
-> @@ -322,9 +323,10 @@ static int unflatten_dt_nodes(const void *blob,
->  		    !of_fdt_device_is_available(blob, offset))
->  			continue;
->  
-> -		if (!populate_node(blob, offset, &mem, nps[depth],
-> -				   &nps[depth+1], dryrun))
-> -			return mem - base;
-> +		ret = populate_node(blob, offset, &mem, nps[depth],
-> +				   &nps[depth+1], dryrun);
-> +		if (ret < 0)
-> +			return ret;
->  
->  		if (!dryrun && nodepp && !*nodepp)
->  			*nodepp = nps[depth+1];
-> @@ -372,6 +374,10 @@ void *__unflatten_device_tree(const void *blob,
->  {
->  	int size;
->  	void *mem;
-> +	int ret;
-> +
-> +	if (mynodes)
-> +		*mynodes = NULL;
->  
->  	pr_debug(" -> unflatten_device_tree()\n");
->  
-> @@ -392,7 +398,7 @@ void *__unflatten_device_tree(const void *blob,
->  
->  	/* First pass, scan for size */
->  	size = unflatten_dt_nodes(blob, NULL, dad, NULL);
-> -	if (size < 0)
-> +	if (size <= 0)
->  		return NULL;
->  
->  	size = ALIGN(size, 4);
-> @@ -410,12 +416,16 @@ void *__unflatten_device_tree(const void *blob,
->  	pr_debug("  unflattening %p...\n", mem);
->  
->  	/* Second pass, do actual unflattening */
-> -	unflatten_dt_nodes(blob, mem, dad, mynodes);
-> +	ret = unflatten_dt_nodes(blob, mem, dad, mynodes);
-> +
->  	if (be32_to_cpup(mem + size) != 0xdeadbeef)
->  		pr_warn("End of tree marker overwritten: %08x\n",
->  			be32_to_cpup(mem + size));
->  
-> -	if (detached && mynodes) {
-> +	if (ret <= 0)
-> +		return NULL;
-> +
-> +	if (detached && mynodes && *mynodes) {
->  		of_node_set_flag(*mynodes, OF_DETACHED);
->  		pr_debug("unflattened tree is detached\n");
->  	}
-> diff --git a/drivers/of/overlay.c b/drivers/of/overlay.c
-> index 50bbe0edf538..e12c643b6ba8 100644
-> --- a/drivers/of/overlay.c
-> +++ b/drivers/of/overlay.c
-> @@ -1017,7 +1017,7 @@ int of_overlay_fdt_apply(const void *overlay_fdt, u32 overlay_fdt_size,
->  	const void *new_fdt;
->  	int ret;
->  	u32 size;
-> -	struct device_node *overlay_root;
-> +	struct device_node *overlay_root = NULL;
->  
->  	*ovcs_id = 0;
->  	ret = 0;
-> diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
-> index eb100627c186..f9b5b698249f 100644
-> --- a/drivers/of/unittest.c
-> +++ b/drivers/of/unittest.c
-> @@ -1408,7 +1408,7 @@ static void attach_node_and_children(struct device_node *np)
->  static int __init unittest_data_add(void)
->  {
->  	void *unittest_data;
-> -	struct device_node *unittest_data_node, *np;
-> +	struct device_node *unittest_data_node = NULL, *np;
->  	/*
->  	 * __dtb_testcases_begin[] and __dtb_testcases_end[] are magically
->  	 * created by cmd_dt_S_dtb in scripts/Makefile.lib
-> @@ -1417,10 +1417,10 @@ static int __init unittest_data_add(void)
->  	extern uint8_t __dtb_testcases_end[];
->  	const int size = __dtb_testcases_end - __dtb_testcases_begin;
->  	int rc;
-> +	void *ret;
->  
->  	if (!size) {
-> -		pr_warn("%s: No testcase data to attach; not running tests\n",
-> -			__func__);
-> +		pr_warn("%s: testcases is empty\n", __func__);
->  		return -ENODATA;
->  	}
->  
-> @@ -1429,9 +1429,14 @@ static int __init unittest_data_add(void)
->  	if (!unittest_data)
->  		return -ENOMEM;
->  
-> -	of_fdt_unflatten_tree(unittest_data, NULL, &unittest_data_node);
-> +	ret = of_fdt_unflatten_tree(unittest_data, NULL, &unittest_data_node);
-> +	if (!ret) {
-> +		pr_warn("%s: unflatten testcases tree failed\n", __func__);
-> +		kfree(unittest_data);
-> +		return -ENODATA;
-> +	}
->  	if (!unittest_data_node) {
-> -		pr_warn("%s: No tree to attach; not running tests\n", __func__);
-> +		pr_warn("%s: testcases tree is empty\n", __func__);
->  		kfree(unittest_data);
->  		return -ENODATA;
->  	}
-> 
-
+							Thanx, Paul
