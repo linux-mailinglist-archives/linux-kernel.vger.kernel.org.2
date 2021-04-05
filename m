@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E62F353E39
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA02353FC8
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238227AbhDEJEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:04:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46562 "EHLO mail.kernel.org"
+        id S239837AbhDEJOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:14:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237675AbhDEJDa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:03:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3578861002;
-        Mon,  5 Apr 2021 09:03:23 +0000 (UTC)
+        id S238625AbhDEJIr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:08:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D37E061394;
+        Mon,  5 Apr 2021 09:08:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613403;
-        bh=TtjDfljzF3YuQqvLSCfdBTg8d35CJEcQSOiW7F+Pg9U=;
+        s=korg; t=1617613721;
+        bh=LV41LDCalf+lhf7+brGjrHYjKlCa8yvA5VltfFIJ0Gs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j8mYyPaXhRckA6pZUqsN9UhrSO0KRsB/qqGWn/HpqiDgDWnomZbj0T9f9BI04CX0T
-         SAA5C23m6nK7JCF6CxaShiDhQtBA2ZnwkjjczLVwiG2m2n2hJ1nTvM5/nOwaEUtWWr
-         icJXcX9JX95nnvDTDJdGfUr2YxZqEUHrYkRczb0E=
+        b=agMhvTsmFY26QhoITdqzTZa3Kh8wf8BmlGQH7iG9/2xGBhUHgoBzU6AvRBkRyGu1I
+         Mb/+p01rJiTsi+MqncqipkhkDjYdGeiW0WZXNDNzM2oVx8YcXih8DqDNHtuck9M8aM
+         yPVTlz0rLUx3XwqB/22SIVgHOIkVZgIqgrnNM/yo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>,
-        Tong Zhang <ztong0001@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 24/74] staging: comedi: cb_pcidas: fix request_irq() warn
+        stable@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.10 066/126] KVM: SVM: ensure that EFER.SVME is set when running nested guest or on nested vmexit
 Date:   Mon,  5 Apr 2021 10:53:48 +0200
-Message-Id: <20210405085025.507701683@linuxfoundation.org>
+Message-Id: <20210405085033.244097394@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
-References: <20210405085024.703004126@linuxfoundation.org>
+In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
+References: <20210405085031.040238881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +38,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tong Zhang <ztong0001@gmail.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-[ Upstream commit 2e5848a3d86f03024ae096478bdb892ab3d79131 ]
+commit 3c346c0c60ab06a021d1c0884a0ef494bc4ee3a7 upstream.
 
-request_irq() wont accept a name which contains slash so we need to
-repalce it with something else -- otherwise it will trigger a warning
-and the entry in /proc/irq/ will not be created
-since the .name might be used by userspace and we don't want to break
-userspace, so we are changing the parameters passed to request_irq()
+Fixing nested_vmcb_check_save to avoid all TOC/TOU races
+is a bit harder in released kernels, so do the bare minimum
+by avoiding that EFER.SVME is cleared.  This is problematic
+because svm_set_efer frees the data structures for nested
+virtualization if EFER.SVME is cleared.
 
-[    1.630764] name 'pci-das1602/16'
-[    1.630950] WARNING: CPU: 0 PID: 181 at fs/proc/generic.c:180 __xlate_proc_name+0x93/0xb0
-[    1.634009] RIP: 0010:__xlate_proc_name+0x93/0xb0
-[    1.639441] Call Trace:
-[    1.639976]  proc_mkdir+0x18/0x20
-[    1.641946]  request_threaded_irq+0xfe/0x160
-[    1.642186]  cb_pcidas_auto_attach+0xf4/0x610 [cb_pcidas]
+Also check that EFER.SVME remains set after a nested vmexit;
+clearing it could happen if the bit is zero in the save area
+that is passed to KVM_SET_NESTED_STATE (the save area of the
+nested state corresponds to the nested hypervisor's state
+and is restored on the next nested vmexit).
 
-Suggested-by: Ian Abbott <abbotti@mev.co.uk>
-Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-Link: https://lore.kernel.org/r/20210315195914.4801-1-ztong0001@gmail.com
+Cc: stable@vger.kernel.org
+Fixes: 2fcf4876ada ("KVM: nSVM: implement on demand allocation of the nested state")
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/comedi/drivers/cb_pcidas.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/svm/nested.c |   18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/staging/comedi/drivers/cb_pcidas.c b/drivers/staging/comedi/drivers/cb_pcidas.c
-index 1893c70de0b9..10f097a7d847 100644
---- a/drivers/staging/comedi/drivers/cb_pcidas.c
-+++ b/drivers/staging/comedi/drivers/cb_pcidas.c
-@@ -1281,7 +1281,7 @@ static int cb_pcidas_auto_attach(struct comedi_device *dev,
- 	     devpriv->amcc + AMCC_OP_REG_INTCSR);
+--- a/arch/x86/kvm/svm/nested.c
++++ b/arch/x86/kvm/svm/nested.c
+@@ -251,6 +251,13 @@ static bool nested_vmcb_check_save(struc
+ 	struct kvm_vcpu *vcpu = &svm->vcpu;
+ 	bool vmcb12_lma;
  
- 	ret = request_irq(pcidev->irq, cb_pcidas_interrupt, IRQF_SHARED,
--			  dev->board_name, dev);
-+			  "cb_pcidas", dev);
- 	if (ret) {
- 		dev_dbg(dev->class_dev, "unable to allocate irq %d\n",
- 			pcidev->irq);
--- 
-2.30.1
-
++	/*
++	 * FIXME: these should be done after copying the fields,
++	 * to avoid TOC/TOU races.  For these save area checks
++	 * the possible damage is limited since kvm_set_cr0 and
++	 * kvm_set_cr4 handle failure; EFER_SVME is an exception
++	 * so it is force-set later in nested_prepare_vmcb_save.
++	 */
+ 	if ((vmcb12->save.efer & EFER_SVME) == 0)
+ 		return false;
+ 
+@@ -396,7 +403,14 @@ static void nested_prepare_vmcb_save(str
+ 	svm->vmcb->save.gdtr = vmcb12->save.gdtr;
+ 	svm->vmcb->save.idtr = vmcb12->save.idtr;
+ 	kvm_set_rflags(&svm->vcpu, vmcb12->save.rflags);
+-	svm_set_efer(&svm->vcpu, vmcb12->save.efer);
++
++	/*
++	 * Force-set EFER_SVME even though it is checked earlier on the
++	 * VMCB12, because the guest can flip the bit between the check
++	 * and now.  Clearing EFER_SVME would call svm_free_nested.
++	 */
++	svm_set_efer(&svm->vcpu, vmcb12->save.efer | EFER_SVME);
++
+ 	svm_set_cr0(&svm->vcpu, vmcb12->save.cr0);
+ 	svm_set_cr4(&svm->vcpu, vmcb12->save.cr4);
+ 	svm->vmcb->save.cr2 = svm->vcpu.arch.cr2 = vmcb12->save.cr2;
+@@ -1207,6 +1221,8 @@ static int svm_set_nested_state(struct k
+ 	 */
+ 	if (!(save->cr0 & X86_CR0_PG))
+ 		goto out_free;
++	if (!(save->efer & EFER_SVME))
++		goto out_free;
+ 
+ 	/*
+ 	 * All checks done, we can enter guest mode.  L1 control fields
 
 
