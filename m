@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D24353D8C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F40CC353DF7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237198AbhDEJA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:00:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40880 "EHLO mail.kernel.org"
+        id S237606AbhDEJDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:03:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237062AbhDEI7r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 04:59:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92A1D6138A;
-        Mon,  5 Apr 2021 08:59:40 +0000 (UTC)
+        id S237347AbhDEJCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:02:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68C8C613AB;
+        Mon,  5 Apr 2021 09:01:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613181;
-        bh=x49tOg8/oBJkUev6pP4Yx2NL3Qoo8OltRSJJaYuL9+M=;
+        s=korg; t=1617613305;
+        bh=KlE8lWoA7F6dX9H+/W8BC2YHc0HDwdG+vOL1hNm62rs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zld3Fiua+7AR1cdKZR2QFTxx12zIY5y4iORFs4C3EwvUqKHu+F7NKJcErXw1DEhH5
-         pNYd3xkQMeexIgT4kDbcBrhQyVbVbuIXP3YUf8ehoZ4Gbv+hjxsjt0QXPsOBNivm3y
-         DJnsflMM/+5ef+s3rO11nYbl/L5N/0jxV2u7ztgc=
+        b=pgkNwsJNcA1zFH8S5gTu5qo41XLqWEsJHQ+aAHJ+lbzxk/DRpcQqv7GDQVeCkco3Z
+         CzQH2nJIz5DnyLYQJCerZEqTEPojFKOby3GsT4yy4+pj+TAtIUNoljUy3CXzuZYeMl
+         WwW9p8l/Rd+TG71Obn4Np6WwRkKpyTleqYQA9fi0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>
-Subject: [PATCH 4.14 49/52] usb: gadget: udc: amd5536udc_pci fix null-ptr-dereference
+        stable@vger.kernel.org, Vincent Palatin <vpalatin@chromium.org>
+Subject: [PATCH 4.19 44/56] USB: quirks: ignore remote wake-up on Fibocom L850-GL LTE modem
 Date:   Mon,  5 Apr 2021 10:54:15 +0200
-Message-Id: <20210405085023.579085787@linuxfoundation.org>
+Message-Id: <20210405085023.934982391@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
-References: <20210405085021.996963957@linuxfoundation.org>
+In-Reply-To: <20210405085022.562176619@linuxfoundation.org>
+References: <20210405085022.562176619@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,55 +38,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tong Zhang <ztong0001@gmail.com>
+From: Vincent Palatin <vpalatin@chromium.org>
 
-commit 72035f4954f0bca2d8c47cf31b3629c42116f5b7 upstream.
+commit 0bd860493f81eb2a46173f6f5e44cc38331c8dbd upstream.
 
-init_dma_pools() calls dma_pool_create(...dev->dev) to create dma pool.
-however, dev->dev is actually set after calling init_dma_pools(), which
-effectively makes dma_pool_create(..NULL) and cause crash.
-To fix this issue, init dma only after dev->dev is set.
+This LTE modem (M.2 card) has a bug in its power management:
+there is some kind of race condition for U3 wake-up between the host and
+the device. The modem firmware sometimes crashes/locks when both events
+happen at the same time and the modem fully drops off the USB bus (and
+sometimes re-enumerates, sometimes just gets stuck until the next
+reboot).
 
-[    1.317993] RIP: 0010:dma_pool_create+0x83/0x290
-[    1.323257] Call Trace:
-[    1.323390]  ? pci_write_config_word+0x27/0x30
-[    1.323626]  init_dma_pools+0x41/0x1a0 [snps_udc_core]
-[    1.323899]  udc_pci_probe+0x202/0x2b1 [amd5536udc_pci]
+Tested with the modem wired to the XHCI controller on an AMD 3015Ce
+platform. Without the patch, the modem dropped of the USB bus 5 times in
+3 days. With the quirk, it stayed connected for a week while the
+'runtime_suspended_time' counter incremented as excepted.
 
-Fixes: 7c51247a1f62 (usb: gadget: udc: Provide correct arguments for 'dma_pool_create')
+Signed-off-by: Vincent Palatin <vpalatin@chromium.org>
+Link: https://lore.kernel.org/r/20210319124802.2315195-1-vpalatin@chromium.org
 Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-Link: https://lore.kernel.org/r/20210317230400.357756-1-ztong0001@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/udc/amd5536udc_pci.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/usb/core/quirks.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/usb/gadget/udc/amd5536udc_pci.c
-+++ b/drivers/usb/gadget/udc/amd5536udc_pci.c
-@@ -158,6 +158,11 @@ static int udc_pci_probe(
- 	pci_set_master(pdev);
- 	pci_try_set_mwi(pdev);
+--- a/drivers/usb/core/quirks.c
++++ b/drivers/usb/core/quirks.c
+@@ -498,6 +498,10 @@ static const struct usb_device_id usb_qu
+ 	/* DJI CineSSD */
+ 	{ USB_DEVICE(0x2ca3, 0x0031), .driver_info = USB_QUIRK_NO_LPM },
  
-+	dev->phys_addr = resource;
-+	dev->irq = pdev->irq;
-+	dev->pdev = pdev;
-+	dev->dev = &pdev->dev;
++	/* Fibocom L850-GL LTE Modem */
++	{ USB_DEVICE(0x2cb7, 0x0007), .driver_info =
++			USB_QUIRK_IGNORE_REMOTE_WAKEUP },
 +
- 	/* init dma pools */
- 	if (use_dma) {
- 		retval = init_dma_pools(dev);
-@@ -165,11 +170,6 @@ static int udc_pci_probe(
- 			goto err_dma;
- 	}
+ 	/* INTEL VALUE SSD */
+ 	{ USB_DEVICE(0x8086, 0xf1a5), .driver_info = USB_QUIRK_RESET_RESUME },
  
--	dev->phys_addr = resource;
--	dev->irq = pdev->irq;
--	dev->pdev = pdev;
--	dev->dev = &pdev->dev;
--
- 	/* general probing */
- 	if (udc_probe(dev)) {
- 		retval = -ENODEV;
 
 
