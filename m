@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21B7B353FC3
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1EC353E1D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239738AbhDEJOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:14:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56930 "EHLO mail.kernel.org"
+        id S237778AbhDEJDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:03:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239392AbhDEJKi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:10:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54682613A0;
-        Mon,  5 Apr 2021 09:10:22 +0000 (UTC)
+        id S237441AbhDEJCY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:02:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48DED6138A;
+        Mon,  5 Apr 2021 09:02:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613822;
-        bh=b1u0xQ3xOw06czjnFgcm5d/aVKgUd2RJ+TU+aMfNJKY=;
+        s=korg; t=1617613338;
+        bh=wX/fpNQiUvj6q9tk+n+PbQKIH9s4Vpeagy7RLrNXehU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wuCRTxtQdZ/yRTBjKHM+It+X2sftWg7+xw0o30v9ZhcVi5n1zZemIePdgChQHPC/8
-         qLZF2NkUazkvfqxcGpIoUJ/4VyVUXPwQHsOzh+w7kVRrnJK5xd0RYRdvdHwCDZ+Kdd
-         OGNR41P/2YMiprFtOCxM0ezmizOJwZiOZ1D/nAhg=
+        b=oatDMwX2m1M7nqodwqLj/N7g2Zum51zshXNc0MbQpKkAfSXv/s3/NPsasJI1PXWZx
+         r2h0bVHwTFg+wW5fdBtopUwvSR0XavUvQXFzZvXATl/5OUrIdwGuBHkzvpx700X8XK
+         dspzIeFuC9/pSewpQuO1mTl14rfWfFwAic6rIxJQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 103/126] video: hyperv_fb: Fix a double free in hvfb_probe
-Date:   Mon,  5 Apr 2021 10:54:25 +0200
-Message-Id: <20210405085034.449202446@linuxfoundation.org>
+        stable@vger.kernel.org, Atul Gopinathan <atulgopinathan@gmail.com>
+Subject: [PATCH 4.19 55/56] staging: rtl8192e: Change state information from u16 to u8
+Date:   Mon,  5 Apr 2021 10:54:26 +0200
+Message-Id: <20210405085024.281363850@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
-References: <20210405085031.040238881@linuxfoundation.org>
+In-Reply-To: <20210405085022.562176619@linuxfoundation.org>
+References: <20210405085022.562176619@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,60 +38,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+From: Atul Gopinathan <atulgopinathan@gmail.com>
 
-[ Upstream commit 37df9f3fedb6aeaff5564145e8162aab912c9284 ]
+commit e78836ae76d20f38eed8c8c67f21db97529949da upstream.
 
-Function hvfb_probe() calls hvfb_getmem(), expecting upon return that
-info->apertures is either NULL or points to memory that should be freed
-by framebuffer_release().  But hvfb_getmem() is freeing the memory and
-leaving the pointer non-NULL, resulting in a double free if an error
-occurs or later if hvfb_remove() is called.
+The "u16 CcxRmState[2];" array field in struct "rtllib_network" has 4
+bytes in total while the operations performed on this array through-out
+the code base are only 2 bytes.
 
-Fix this by removing all kfree(info->apertures) calls in hvfb_getmem().
-This will allow framebuffer_release() to free the memory, which follows
-the pattern of other fbdev drivers.
+The "CcxRmState" field is fed only 2 bytes of data using memcpy():
 
-Fixes: 3a6fb6c4255c ("video: hyperv: hyperv_fb: Use physical memory for fb on HyperV Gen 1 VMs.")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-Link: https://lore.kernel.org/r/20210324103724.4189-1-lyl2019@mail.ustc.edu.cn
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+(In rtllib_rx.c:1972)
+	memcpy(network->CcxRmState, &info_element->data[4], 2)
+
+With "info_element->data[]" being a u8 array, if 2 bytes are written
+into "CcxRmState" (whose one element is u16 size), then the 2 u8
+elements from "data[]" gets squashed and written into the first element
+("CcxRmState[0]") while the second element ("CcxRmState[1]") is never
+fed with any data.
+
+Same in file rtllib_rx.c:2522:
+	 memcpy(dst->CcxRmState, src->CcxRmState, 2);
+
+The above line duplicates "src" data to "dst" but only writes 2 bytes
+(and not 4, which is the actual size). Again, only 1st element gets the
+value while the 2nd element remains uninitialized.
+
+This later makes operations done with CcxRmState unpredictable in the
+following lines as the 1st element is having a squashed number while the
+2nd element is having an uninitialized random number.
+
+rtllib_rx.c:1973:    if (network->CcxRmState[0] != 0)
+rtllib_rx.c:1977:    network->MBssidMask = network->CcxRmState[1] & 0x07;
+
+network->MBssidMask is also of type u8 and not u16.
+
+Fix this by changing the type of "CcxRmState" from u16 to u8 so that the
+data written into this array and read from it make sense and are not
+random values.
+
+NOTE: The wrong initialization of "CcxRmState" can be seen in the
+following commit:
+
+commit ecdfa44610fa ("Staging: add Realtek 8192 PCI wireless driver")
+
+The above commit created a file `rtl8192e/ieee80211.h` which used to
+have the faulty line. The file has been deleted (or possibly renamed)
+with the contents copied in to a new file `rtl8192e/rtllib.h` along with
+additional code in the commit 94a799425eee (tagged in Fixes).
+
+Fixes: 94a799425eee ("From: wlanfae <wlanfae@realtek.com> [PATCH 1/8] rtl8192e: Import new version of driver from realtek")
+Cc: stable@vger.kernel.org
+Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
+Link: https://lore.kernel.org/r/20210323113413.29179-2-atulgopinathan@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/video/fbdev/hyperv_fb.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/staging/rtl8192e/rtllib.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/video/fbdev/hyperv_fb.c b/drivers/video/fbdev/hyperv_fb.c
-index c8b0ae676809..4dc9077dd2ac 100644
---- a/drivers/video/fbdev/hyperv_fb.c
-+++ b/drivers/video/fbdev/hyperv_fb.c
-@@ -1031,7 +1031,6 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
- 			PCI_DEVICE_ID_HYPERV_VIDEO, NULL);
- 		if (!pdev) {
- 			pr_err("Unable to find PCI Hyper-V video\n");
--			kfree(info->apertures);
- 			return -ENODEV;
- 		}
- 
-@@ -1129,7 +1128,6 @@ getmem_done:
- 	} else {
- 		pci_dev_put(pdev);
- 	}
--	kfree(info->apertures);
- 
- 	return 0;
- 
-@@ -1141,7 +1139,6 @@ err2:
- err1:
- 	if (!gen2vm)
- 		pci_dev_put(pdev);
--	kfree(info->apertures);
- 
- 	return -ENOMEM;
- }
--- 
-2.30.2
-
+--- a/drivers/staging/rtl8192e/rtllib.h
++++ b/drivers/staging/rtl8192e/rtllib.h
+@@ -1110,7 +1110,7 @@ struct rtllib_network {
+ 	bool	bWithAironetIE;
+ 	bool	bCkipSupported;
+ 	bool	bCcxRmEnable;
+-	u16	CcxRmState[2];
++	u8	CcxRmState[2];
+ 	bool	bMBssidValid;
+ 	u8	MBssidMask;
+ 	u8	MBssid[ETH_ALEN];
 
 
