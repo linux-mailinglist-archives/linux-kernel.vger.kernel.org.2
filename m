@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA14353FC9
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F5F353DD4
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239857AbhDEJOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:14:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54960 "EHLO mail.kernel.org"
+        id S237391AbhDEJCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:02:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238788AbhDEJJB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:09:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA616613A1;
-        Mon,  5 Apr 2021 09:08:54 +0000 (UTC)
+        id S236851AbhDEJAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:00:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7C3F60238;
+        Mon,  5 Apr 2021 09:00:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613735;
-        bh=OlbEFK3BpN3B46KeN0vztaAzXu3uxhzaVe32rMiOsJ8=;
+        s=korg; t=1617613246;
+        bh=AV/wOrxnF/5vbmy5v8Z0zvI9q7wb9WqlssRbGwDsn84=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EdxyHVBijE8oOoxqmFtCbuG/X7gMAWX6jfQ96VEjlEcIue+4cQUfRjdD97tu0EFmc
-         4UYUdLYIbJQwzt26/9FIxSlFvCykWCAF2R8tBXVNmAy+KH7S1V5srLiD+QLyzFlSaq
-         nNrHJf5YAQOxtmAYARxiaL1zXfxku24eyGy6vejY=
+        b=mL7+Vl4DJIgt5kTlBpfjKwYYPRifn3YeMBp5YRz4WOSKEW0cPWUYkIdBkAoIidNcv
+         9TRxOuDLujHv6DhFxy10Ir8ohfbDCHYOCfUKoRZhPREF4GMNVb2GIVVVrwfOpvfnkM
+         c0yincLYKRsygM5Fnnv2sHqBc7+IIPnayA2Lfzkk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>
-Subject: [PATCH 5.10 071/126] s390/vdso: fix tod_steering_delta type
+        stable@vger.kernel.org, "zhangyi (F)" <yi.zhang@huawei.com>,
+        Theodore Tso <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 22/56] ext4: do not iput inode under running transaction in ext4_rename()
 Date:   Mon,  5 Apr 2021 10:53:53 +0200
-Message-Id: <20210405085033.406160113@linuxfoundation.org>
+Message-Id: <20210405085023.246560383@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
-References: <20210405085031.040238881@linuxfoundation.org>
+In-Reply-To: <20210405085022.562176619@linuxfoundation.org>
+References: <20210405085022.562176619@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,45 +39,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Carstens <hca@linux.ibm.com>
+From: zhangyi (F) <yi.zhang@huawei.com>
 
-commit b24bacd67ffddd9192c4745500fd6f73dbfe565e upstream.
+[ Upstream commit 5dccdc5a1916d4266edd251f20bbbb113a5c495f ]
 
-The s390 specific vdso function __arch_get_hw_counter() is supposed to
-consider tod clock steering.
+In ext4_rename(), when RENAME_WHITEOUT failed to add new entry into
+directory, it ends up dropping new created whiteout inode under the
+running transaction. After commit <9b88f9fb0d2> ("ext4: Do not iput inode
+under running transaction"), we follow the assumptions that evict() does
+not get called from a transaction context but in ext4_rename() it breaks
+this suggestion. Although it's not a real problem, better to obey it, so
+this patch add inode to orphan list and stop transaction before final
+iput().
 
-If a tod clock steering event happens and the tod clock is set to a
-new value __arch_get_hw_counter() will not return the real tod clock
-value but slowly drift it from the old delta until the returned value
-finally matches the real tod clock value again.
-
-Unfortunately the type of tod_steering_delta unsigned while it is
-supposed to be signed. It depends on if tod_steering_delta is negative
-or positive in which direction the vdso code drifts the clock value.
-
-Worst case is now that instead of drifting the clock slowly it will
-jump into the opposite direction by a factor of two.
-
-Fix this by simply making tod_steering_delta signed.
-
-Fixes: 4bff8cb54502 ("s390: convert to GENERIC_VDSO")
-Cc: <stable@vger.kernel.org> # 5.10
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+Link: https://lore.kernel.org/r/20210303131703.330415-2-yi.zhang@huawei.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/include/asm/vdso/data.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ext4/namei.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
---- a/arch/s390/include/asm/vdso/data.h
-+++ b/arch/s390/include/asm/vdso/data.h
-@@ -6,7 +6,7 @@
- #include <vdso/datapage.h>
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index 5f701d8dce47..358f6378882f 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -3624,14 +3624,14 @@ static int ext4_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 	 */
+ 	retval = -ENOENT;
+ 	if (!old.bh || le32_to_cpu(old.de->inode) != old.inode->i_ino)
+-		goto end_rename;
++		goto release_bh;
  
- struct arch_vdso_data {
--	__u64 tod_steering_delta;
-+	__s64 tod_steering_delta;
- 	__u64 tod_steering_end;
- };
+ 	new.bh = ext4_find_entry(new.dir, &new.dentry->d_name,
+ 				 &new.de, &new.inlined);
+ 	if (IS_ERR(new.bh)) {
+ 		retval = PTR_ERR(new.bh);
+ 		new.bh = NULL;
+-		goto end_rename;
++		goto release_bh;
+ 	}
+ 	if (new.bh) {
+ 		if (!new.inode) {
+@@ -3648,15 +3648,13 @@ static int ext4_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 		handle = ext4_journal_start(old.dir, EXT4_HT_DIR, credits);
+ 		if (IS_ERR(handle)) {
+ 			retval = PTR_ERR(handle);
+-			handle = NULL;
+-			goto end_rename;
++			goto release_bh;
+ 		}
+ 	} else {
+ 		whiteout = ext4_whiteout_for_rename(&old, credits, &handle);
+ 		if (IS_ERR(whiteout)) {
+ 			retval = PTR_ERR(whiteout);
+-			whiteout = NULL;
+-			goto end_rename;
++			goto release_bh;
+ 		}
+ 	}
  
+@@ -3764,16 +3762,18 @@ end_rename:
+ 			ext4_resetent(handle, &old,
+ 				      old.inode->i_ino, old_file_type);
+ 			drop_nlink(whiteout);
++			ext4_orphan_add(handle, whiteout);
+ 		}
+ 		unlock_new_inode(whiteout);
++		ext4_journal_stop(handle);
+ 		iput(whiteout);
+-
++	} else {
++		ext4_journal_stop(handle);
+ 	}
++release_bh:
+ 	brelse(old.dir_bh);
+ 	brelse(old.bh);
+ 	brelse(new.bh);
+-	if (handle)
+-		ext4_journal_stop(handle);
+ 	return retval;
+ }
+ 
+-- 
+2.30.1
+
 
 
