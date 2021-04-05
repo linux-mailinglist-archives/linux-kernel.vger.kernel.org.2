@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA22353D80
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9486F353E80
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237146AbhDEJAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:00:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40440 "EHLO mail.kernel.org"
+        id S238000AbhDEJGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:06:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236841AbhDEI7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 04:59:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 15D9C610E8;
-        Mon,  5 Apr 2021 08:59:26 +0000 (UTC)
+        id S238400AbhDEJEx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:04:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B172613A0;
+        Mon,  5 Apr 2021 09:04:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613167;
-        bh=T3+hdNBhYshHi2hkgR6N2wWj4BaklXfdyEQ59LcYNt4=;
+        s=korg; t=1617613486;
+        bh=a8Kb9Xf8LuO6+W+hPON8tDpCxxbUb/pMtetHiKm7N90=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DtV3x45BJNREtlSedRJlOTduzmZSfs+uj1RffnjGbqGECPLKAfm1omNxK3yZMUKIu
-         CVlekMlYcjrzNr/LXEzlrCXtGusisVI2UzXv3teLwoM6K8HhqgK7TTtBT65CnTBe2v
-         W5e21hAH18A4+RronaUmTYjqlYKzJiGFmjSJqB8E=
+        b=vrqY3ImPhDjvCQ63TANPVUVz3FCAZiYsQore7vpUqHrOXzmioIU6mvPpfkiUDnn2p
+         V/ijG3iF0MkLwODmaXwMSBO2WPDq0JLhUyN7s71BN8+lEGkGAl3ai/FocemJciGWHI
+         FnadgVRpKZyvM/7ed9RZk2YWj/FgwzsHwS7kGyQw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>
-Subject: [PATCH 4.14 45/52] cdc-acm: fix BREAK rx code path adding necessary calls
-Date:   Mon,  5 Apr 2021 10:54:11 +0200
-Message-Id: <20210405085023.445432032@linuxfoundation.org>
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 5.4 48/74] PM: runtime: Fix ordering in pm_runtime_get_suppliers()
+Date:   Mon,  5 Apr 2021 10:54:12 +0200
+Message-Id: <20210405085026.299268888@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
-References: <20210405085021.996963957@linuxfoundation.org>
+In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
+References: <20210405085024.703004126@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,35 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Neukum <oneukum@suse.com>
+From: Adrian Hunter <adrian.hunter@intel.com>
 
-commit 08dff274edda54310d6f1cf27b62fddf0f8d146e upstream.
+commit c0c33442f7203704aef345647e14c2fb86071001 upstream.
 
-Counting break events is nice but we should actually report them to
-the tty layer.
+rpm_active indicates how many times the supplier usage_count has been
+incremented. Consequently it must be updated after pm_runtime_get_sync() of
+the supplier, not before.
 
-Fixes: 5a6a62bdb9257 ("cdc-acm: add TIOCMIWAIT")
-Signed-off-by: Oliver Neukum <oneukum@suse.com>
-Link: https://lore.kernel.org/r/20210311133714.31881-1-oneukum@suse.com
-Cc: stable <stable@vger.kernel.org>
+Fixes: 4c06c4e6cf63 ("driver core: Fix possible supplier PM-usage counter imbalance")
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Cc: 5.1+ <stable@vger.kernel.org> # 5.1+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/class/cdc-acm.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/base/power/runtime.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/class/cdc-acm.c
-+++ b/drivers/usb/class/cdc-acm.c
-@@ -324,8 +324,10 @@ static void acm_process_notification(str
- 			acm->iocount.dsr++;
- 		if (difference & ACM_CTRL_DCD)
- 			acm->iocount.dcd++;
--		if (newctrl & ACM_CTRL_BRK)
-+		if (newctrl & ACM_CTRL_BRK) {
- 			acm->iocount.brk++;
-+			tty_insert_flip_char(&acm->port, 0, TTY_BREAK);
-+		}
- 		if (newctrl & ACM_CTRL_RI)
- 			acm->iocount.rng++;
- 		if (newctrl & ACM_CTRL_FRAMING)
+--- a/drivers/base/power/runtime.c
++++ b/drivers/base/power/runtime.c
+@@ -1663,8 +1663,8 @@ void pm_runtime_get_suppliers(struct dev
+ 				device_links_read_lock_held())
+ 		if (link->flags & DL_FLAG_PM_RUNTIME) {
+ 			link->supplier_preactivated = true;
+-			refcount_inc(&link->rpm_active);
+ 			pm_runtime_get_sync(link->supplier);
++			refcount_inc(&link->rpm_active);
+ 		}
+ 
+ 	device_links_read_unlock(idx);
 
 
