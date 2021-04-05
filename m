@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A40C35460A
+	by mail.lfdr.de (Postfix) with ESMTP id 85E9B35460B
 	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 19:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238369AbhDER3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 13:29:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51754 "EHLO
+        id S238406AbhDER3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 13:29:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238199AbhDER3c (ORCPT
+        with ESMTP id S238299AbhDER3f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 13:29:32 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 700FDC061756
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 10:29:26 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id f6so5451001wrv.12
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 10:29:26 -0700 (PDT)
+        Mon, 5 Apr 2021 13:29:35 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B971C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 10:29:27 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id x15so2334342wrq.3
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 10:29:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=YfIIHnV0A9du9ORGwoOsInV843q39HnrSsHUhvGVWnc=;
-        b=LKLZaJMdbTLWBZcTbbPQK4lBcGeN6boliJnrSn+vv0siO3oWjizfBhcsBHe3/UD0kS
-         s/cvopt2lCV35yVYbPvfv6daJE/PtEsAlG/OOrdEfXZAXYVFhcm70feIhmAjfsEJmTm0
-         3C9alVqtEqcOf3eWkYxL3FvHy/5WtbaeloNKo69Cwwf2lxim6WbdSef0hxcMC6tV/ISV
-         5XHJdyS+dcdg8/zSsZEA+3oISNcRuk9MD24+4tLHi2hoTQ4ip31oLKMqAmfMqAq0SEx/
-         XMXV33B+ivxgiI9CcvcEMpD4e0Bj0AACcNdbrnIVAAOAv/pEhBNeBTFwl19ePO3TMnem
-         4nPw==
+        bh=rcUgpTqj2kdU+YBskPn+v5vQYu9sPyQVI1xkvuqXoSs=;
+        b=Pcn1mDLVtc2ZToBS3hq3liVHxCZozL7WAC8eAFCcnnfpjQxtun1OD7nOkWsg03hmR8
+         YHOTEuom5dqrubW9YGhKDojT24v1KNUi7RFLDcG0onDJ0xg698AImgstOFj3uBWqsDKo
+         fb9pEqFiSeSpuIVxNPqlkiWuowNSFNJnK4celRjZHFYKsgdhpoyqWYzXyL/hQ+gkkkad
+         Uu9RSmDuvVT7fBMD9j8K3gKjaj7Vk/hFUISjnRq2kVO6HS48WYwVDoUUUuaFI5CoXUk1
+         CAhiLz3ym6DgWEx3EwDOP2h+ruEGSTgz6YXl+XTFCFfzCL1tPWDzxpGGaiK7uks61+jT
+         ojUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=YfIIHnV0A9du9ORGwoOsInV843q39HnrSsHUhvGVWnc=;
-        b=fTUF7ZWRKavcCL8HSyBBzt+3g4B4V0uQ4cY6hcP6K2de6dOcLOAs+TQHuM1aZndPmO
-         rmDfduD9N5F1slgP3qlnc6O3tauvqrVNrZRIMx1VA++j05dYwOBbL3MfLG2ybUN6bA+s
-         Kw/J1oKXcooh8J+UX1L85W8ZrtNm3x8yd+nUm72d4gaxdnTrBFX5IaDnhWBOFX26ugXc
-         vIdTpIY3Nc3LErObbOVs2GsovaKfpVfq0c6jqbtDcrHLl4Hz/bKX1W2/rB6Q31Ho7e8G
-         itkYy4MOVvKSF09rExh+5uM3Z7ctvqF7Zg6hXMg5WsWosrDelpiJdvnpV1quH/qIZ+sV
-         2XAA==
-X-Gm-Message-State: AOAM532kFMIOCFdRYk76IfKVcIMp2zwKqmB9upRs53EnnvvasmsF+LqI
-        AHMj20u0gESTue8Fx4FUYOA=
-X-Google-Smtp-Source: ABdhPJzp9kXYeJCL511uqQsVUlYTR/QWqXI9QFE4xftYXspIxxShaEwjoe0FJ9Fi8CJo+woSvtFUow==
-X-Received: by 2002:a5d:64af:: with SMTP id m15mr29754671wrp.231.1617643765186;
+        bh=rcUgpTqj2kdU+YBskPn+v5vQYu9sPyQVI1xkvuqXoSs=;
+        b=SlZv16lX90btQtNSZbFAcFklTMkZn6rwh+cQebVe/my4KZQnbPa/3k3rnD4q5lMl4E
+         aM819EsA8T8QrUmA5ZSPumriXcjNRXxUUTMSZ3luELNCXqkPssDHspZINXr/pIHsGeCy
+         Bi+eIS4pIlBSZm+gqzCpg1hs+crhdcu8PnbCxQougk0a2GYVeqZuFQxja26hobtA0I/e
+         uKQXitWL3AO4S73Ny9HGwqUyR33IRg9zq1d04IDyRI7zKse9sGA0zno39R0DGo1i7tI4
+         I4vK3J0sxj2Bs2e5FhjnRtVLMpaA32YoieTy9DermreBRdLaZ29QwLA61LPFwTMRmbE/
+         +iVg==
+X-Gm-Message-State: AOAM532G122Ju/ixnBf6oyKm2Sv+WPTwMVMjCr9XpoRseDQtMYP5zbQ1
+        H730PsqhLiA/ZcD81Y9Vrng=
+X-Google-Smtp-Source: ABdhPJy7Ct4lChRU7qyUfTa66278O83sBZDYlZ5pKVDoGqpu9qC5ZlV99o2ANuG4EsRwmS4uvAYu5w==
+X-Received: by 2002:a05:6000:c9:: with SMTP id q9mr3496265wrx.17.1617643765979;
         Mon, 05 Apr 2021 10:29:25 -0700 (PDT)
 Received: from bcarvalho-Ubuntu.lan ([2001:818:de85:7e00:9a5b:98e6:2174:bf29])
-        by smtp.gmail.com with ESMTPSA id x1sm17858699wro.66.2021.04.05.10.29.24
+        by smtp.gmail.com with ESMTPSA id x1sm17858699wro.66.2021.04.05.10.29.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Apr 2021 10:29:24 -0700 (PDT)
+        Mon, 05 Apr 2021 10:29:25 -0700 (PDT)
 From:   Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
 To:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Subject: [PATCH 3/4] staging: rtl8723bs: core: reorganize characters so the lines are under 100 ch
-Date:   Mon,  5 Apr 2021 18:29:19 +0100
-Message-Id: <6ce5f20399f2bea9f08bb37150fc67fe3c2b2a55.1617641790.git.martinsdecarvalhobeatriz@gmail.com>
+Subject: [PATCH 4/4] staging: rtl8723bs: core: align arguments with open parenthesis
+Date:   Mon,  5 Apr 2021 18:29:20 +0100
+Message-Id: <00250c746ed850f6a73ff0ad4c1735cbd019b58f.1617641790.git.martinsdecarvalhobeatriz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1617641790.git.martinsdecarvalhobeatriz@gmail.com>
 References: <cover.1617641790.git.martinsdecarvalhobeatriz@gmail.com>
@@ -63,85 +63,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cleans up warnings of "line over 100 characters" but avoinding
-more than 90 characters in file rtw_ap.c
+Cleans up checks of "Alignment should match open parenthesis"
+in file rtw_ap.c
 
 Signed-off-by: Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
 ---
- drivers/staging/rtl8723bs/core/rtw_ap.c | 22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
+ drivers/staging/rtl8723bs/core/rtw_ap.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/staging/rtl8723bs/core/rtw_ap.c b/drivers/staging/rtl8723bs/core/rtw_ap.c
-index 4dab4d741675..ca6fec52d213 100644
+index ca6fec52d213..73a35b3320fe 100644
 --- a/drivers/staging/rtl8723bs/core/rtw_ap.c
 +++ b/drivers/staging/rtl8723bs/core/rtw_ap.c
-@@ -278,11 +278,13 @@ void expire_timeout_chk(struct adapter *padapter)
+@@ -439,7 +439,7 @@ void add_RATid(struct adapter *padapter, struct sta_info *psta, u8 rssi_level)
+ 		arg[3] = psta->init_rate;
  
- 			if (psta->state & WIFI_SLEEP_STATE) {
- 				if (!(psta->state & WIFI_STA_ALIVE_CHK_STATE)) {
--					/* to check if alive by another methods if station is at ps mode. */
-+					/* to check if alive by another methods */
-+					/* if station is at ps mode. */
- 					psta->expire_to = pstapriv->expire_to;
- 					psta->state |= WIFI_STA_ALIVE_CHK_STATE;
+ 		DBG_871X("%s => mac_id:%d , raid:%d , shortGIrate =%d, bitmap = 0x%x\n",
+-			__func__, psta->mac_id, psta->raid, shortGIrate, tx_ra_bitmap);
++			 __func__, psta->mac_id, psta->raid, shortGIrate, tx_ra_bitmap);
  
--					/* DBG_871X("alive chk, sta:%pM is at ps mode!\n", MAC_ARG(psta->hwaddr)); */
-+					/* DBG_871X("alive chk, sta:%pM is at ps */
-+					/* mode!\n", MAC_ARG(psta->hwaddr)); */
+ 		rtw_hal_add_ra_tid(padapter, tx_ra_bitmap, arg, rssi_level);
+ 	} else {
+@@ -512,7 +512,7 @@ void update_bmc_sta(struct adapter *padapter)
+ 			arg[3] = psta->init_rate;
  
- 					/* to update bcn with tim_bitmap for this station */
- 					pstapriv->tim_bitmap |= BIT(psta->aid);
-@@ -309,7 +311,8 @@ void expire_timeout_chk(struct adapter *padapter)
- 			);
- 			updated = ap_free_sta(padapter, psta, false, WLAN_REASON_DEAUTH_LEAVING);
- 		} else {
--			/* TODO: Aging mechanism to digest frames in sleep_q to avoid running out of xmitframe */
-+			/* TODO: Aging mechanism to digest frames in sleep_q to */
-+			/* avoid running out of xmitframe */
- 			if (psta->sleepq_len > (NR_XMITFRAME / pstapriv->asoc_list_cnt)
- 				&& padapter->xmitpriv.free_xmitframe_cnt < ((
- 					NR_XMITFRAME / pstapriv->asoc_list_cnt
-@@ -375,7 +378,8 @@ void expire_timeout_chk(struct adapter *padapter)
- 			if (list_empty(&psta->asoc_list) == false) {
- 				list_del_init(&psta->asoc_list);
- 				pstapriv->asoc_list_cnt--;
--				updated = ap_free_sta(padapter, psta, false, WLAN_REASON_DEAUTH_LEAVING);
-+				updated = ap_free_sta(padapter, psta, false,
-+						      WLAN_REASON_DEAUTH_LEAVING);
- 			}
- 			spin_unlock_bh(&pstapriv->asoc_list_lock);
+ 			DBG_871X("%s => mac_id:%d , raid:%d , bitmap = 0x%x\n",
+-				__func__, psta->mac_id, psta->raid, tx_ra_bitmap);
++				 __func__, psta->mac_id, psta->raid, tx_ra_bitmap);
+ 
+ 			rtw_hal_add_ra_tid(padapter, tx_ra_bitmap, arg, 0);
  		}
-@@ -469,7 +473,8 @@ void update_bmc_sta(struct adapter *padapter)
+@@ -605,14 +605,14 @@ void update_sta_info_apmode(struct adapter *padapter, struct sta_info *psta)
  
- 		memset((void *)&psta->sta_stats, 0, sizeof(struct stainfo_stats));
+ 		/*  B0 Config LDPC Coding Capability */
+ 		if (TEST_FLAG(phtpriv_ap->ldpc_cap, LDPC_HT_ENABLE_TX) &&
+-			GET_HT_CAPABILITY_ELE_LDPC_CAP((u8 *)(&phtpriv_sta->ht_cap))) {
++			      GET_HT_CAPABILITY_ELE_LDPC_CAP((u8 *)(&phtpriv_sta->ht_cap))) {
+ 			SET_FLAG(cur_ldpc_cap, (LDPC_HT_ENABLE_TX | LDPC_HT_CAP_TX));
+ 			DBG_871X("Enable HT Tx LDPC for STA(%d)\n", psta->aid);
+ 		}
  
--		/* psta->dot118021XPrivacy = _NO_PRIVACY_;//!!! remove it, because it has been set before this. */
-+		/* psta->dot118021XPrivacy = _NO_PRIVACY_;//!!! remove it, */
-+		/* because it has been set before this. */
+ 		/*  B7 B8 B9 Config STBC setting */
+ 		if (TEST_FLAG(phtpriv_ap->stbc_cap, STBC_HT_ENABLE_TX) &&
+-			GET_HT_CAPABILITY_ELE_RX_STBC((u8 *)(&phtpriv_sta->ht_cap))) {
++			      GET_HT_CAPABILITY_ELE_RX_STBC((u8 *)(&phtpriv_sta->ht_cap))) {
+ 			SET_FLAG(cur_stbc_cap, (STBC_HT_ENABLE_TX | STBC_HT_CAP_TX));
+ 			DBG_871X("Enable HT Tx STBC for STA(%d)\n", psta->aid);
+ 		}
+@@ -1176,7 +1176,7 @@ int rtw_check_beacon_data(struct adapter *padapter, u8 *pbuf,  int len)
+ 		);
  
- 		/* prepare for add_RATid */
- 		supportRateNum = rtw_get_rateset_len((u8 *)&pcur_network->SupportedRates);
-@@ -748,8 +753,8 @@ void start_bss_network(struct adapter *padapter, u8 *pbuf)
- 	cur_ch_offset = HAL_PRIME_CHNL_OFFSET_DONT_CARE;
+ 		if ((psecuritypriv->wpa_pairwise_cipher & WPA_CIPHER_CCMP) ||
+-			(psecuritypriv->wpa2_pairwise_cipher & WPA_CIPHER_CCMP)) {
++		     (psecuritypriv->wpa2_pairwise_cipher & WPA_CIPHER_CCMP)) {
+ 			pht_cap->ampdu_params_info |= (IEEE80211_HT_CAP_AMPDU_DENSITY & (0x07 << 2));
+ 		} else {
+ 			pht_cap->ampdu_params_info |= (IEEE80211_HT_CAP_AMPDU_DENSITY & 0x00);
+@@ -1233,7 +1233,7 @@ int rtw_check_beacon_data(struct adapter *padapter, u8 *pbuf,  int len)
+ 	pmlmepriv->htpriv.ht_option = false;
  
- 	/* check if there is wps ie, */
--	/* if there is wpsie in beacon, the hostapd will update beacon twice when stating hostapd, */
--	/* and at first time the security ie (RSN/WPA IE) will not include in beacon. */
-+	/* if there is wpsie in beacon, the hostapd will update beacon twice when stating */
-+	/* hostapd, and at first time the security ie (RSN/WPA IE) will not include in beacon. */
- 	if (!rtw_get_wps_ie(pnetwork->IEs + _FIXED_IE_LENGTH_,
- 			    pnetwork->IELength - _FIXED_IE_LENGTH_, NULL, NULL))
- 		pmlmeext->bstart_bss = true;
-@@ -1117,7 +1122,8 @@ int rtw_check_beacon_data(struct adapter *padapter, u8 *pbuf,  int len)
+ 	if ((psecuritypriv->wpa2_pairwise_cipher & WPA_CIPHER_TKIP) ||
+-		      (psecuritypriv->wpa_pairwise_cipher & WPA_CIPHER_TKIP)) {
++	     (psecuritypriv->wpa_pairwise_cipher & WPA_CIPHER_TKIP)) {
+ 		/* todo: */
+ 		/* ht_cap = false; */
+ 	}
+@@ -1820,7 +1820,7 @@ static int rtw_ht_operation_update(struct adapter *padapter)
+ 	}
  
- 				*(p + 8) |= BIT(7);/* QoS Info, support U-APSD */
+ 	DBG_871X("%s new operation mode = 0x%X changes =%d\n",
+-		   __func__, pmlmepriv->ht_op_mode, op_mode_changes);
++		 __func__, pmlmepriv->ht_op_mode, op_mode_changes);
  
--				/* disable all ACM bits since the WMM admission control is not supported */
-+				/* disable all ACM bits since the WMM admission */
-+				/* control is not supported */
- 				*(p + 10) &= ~BIT(4); /* BE */
- 				*(p + 14) &= ~BIT(4); /* BK */
- 				*(p + 18) &= ~BIT(4); /* VI */
+ 	return op_mode_changes;
+ }
+@@ -1865,7 +1865,7 @@ void bss_cap_update_on_sta_join(struct adapter *padapter, struct sta_info *psta)
+ 			pmlmepriv->num_sta_no_short_preamble++;
+ 
+ 			if ((pmlmeext->cur_wireless_mode > WIRELESS_11B) &&
+-				(pmlmepriv->num_sta_no_short_preamble == 1)) {
++			    (pmlmepriv->num_sta_no_short_preamble == 1)) {
+ 				beacon_updated = true;
+ 				update_beacon(padapter, 0xFF, NULL, true);
+ 			}
 -- 
 2.25.1
 
