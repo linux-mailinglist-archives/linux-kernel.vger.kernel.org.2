@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C379A353EF7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B323D353FEB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239030AbhDEJJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:09:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51420 "EHLO mail.kernel.org"
+        id S240495AbhDEJPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:15:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238161AbhDEJHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:07:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CED1613A5;
-        Mon,  5 Apr 2021 09:07:00 +0000 (UTC)
+        id S239108AbhDEJMI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:12:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EEF4261394;
+        Mon,  5 Apr 2021 09:12:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613621;
-        bh=sv2npbch/fm+Qb1D2o9pjkfxFI9GqFDf7UDnay+PbO4=;
+        s=korg; t=1617613922;
+        bh=L3NRVQFzOmKFOR61LZK7HBF3n7Wrvuw1pzKN9hGnFNw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y8GBkRZXERKZQ9GqwEFTKYM8KUq2U4T1VoBsuaVkL8DJBO4IKDgdMG4wZ7PTHZGkE
-         1FCnBYGk5doHh+9Y5raqCf5gR3itSek8pxVM03JfQcxHi3MiztgowD48/62MB5Q8ez
-         RJgmlK2P3BX/aY/sWyyGk6C2a/P+G1qMiXERUZ84=
+        b=1jUHa8uncTWt4gWwwdRjpRrHN7tdZi2w5rh0W6hUheNPuDbT8JsHtXe+Rx42LvUlA
+         khADUeDtSbSKmHTMCvPN/49LUDF1aGkQUXkUgLva8sP3vVk/4MKnVPKLOMzpFRcdBU
+         UFbWOAGeG6oWT8ngLoO0EOW4jFZN1Lwz+qECG4hQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vivek Goyal <vgoyal@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
+        stable@vger.kernel.org,
+        Lucas Tanure <tanureal@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 003/126] virtiofs: Fail dax mount if device does not support it
-Date:   Mon,  5 Apr 2021 10:52:45 +0200
-Message-Id: <20210405085031.160465045@linuxfoundation.org>
+Subject: [PATCH 5.11 017/152] ASoC: cs42l42: Always wait at least 3ms after reset
+Date:   Mon,  5 Apr 2021 10:52:46 +0200
+Message-Id: <20210405085034.800186144@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
-References: <20210405085031.040238881@linuxfoundation.org>
+In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
+References: <20210405085034.233917714@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,49 +41,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vivek Goyal <vgoyal@redhat.com>
+From: Lucas Tanure <tanureal@opensource.cirrus.com>
 
-[ Upstream commit 3f9b9efd82a84f27e95d0414f852caf1fa839e83 ]
+[ Upstream commit 19325cfea04446bc79b36bffd4978af15f46a00e ]
 
-Right now "mount -t virtiofs -o dax myfs /mnt/virtiofs" succeeds even
-if filesystem deivce does not have a cache window and hence DAX can't
-be supported.
+This delay is part of the power-up sequence defined in the datasheet.
+A runtime_resume is a power-up so must also include the delay.
 
-This gives a false sense to user that they are using DAX with virtiofs
-but fact of the matter is that they are not.
-
-Fix this by returning error if dax can't be supported and user has asked
-for it.
-
-Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
-Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20210305173442.195740-6-tanureal@opensource.cirrus.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/fuse/virtio_fs.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ sound/soc/codecs/cs42l42.c | 3 ++-
+ sound/soc/codecs/cs42l42.h | 1 +
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
-index d2c0e58c6416..3d83c9e12848 100644
---- a/fs/fuse/virtio_fs.c
-+++ b/fs/fuse/virtio_fs.c
-@@ -1324,8 +1324,15 @@ static int virtio_fs_fill_super(struct super_block *sb, struct fs_context *fsc)
+diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
+index d5078ce79fad..4d82d24c7828 100644
+--- a/sound/soc/codecs/cs42l42.c
++++ b/sound/soc/codecs/cs42l42.c
+@@ -1794,7 +1794,7 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client,
+ 		dev_dbg(&i2c_client->dev, "Found reset GPIO\n");
+ 		gpiod_set_value_cansleep(cs42l42->reset_gpio, 1);
+ 	}
+-	mdelay(3);
++	usleep_range(CS42L42_BOOT_TIME_US, CS42L42_BOOT_TIME_US * 2);
  
- 	/* virtiofs allocates and installs its own fuse devices */
- 	ctx->fudptr = NULL;
--	if (ctx->dax)
-+	if (ctx->dax) {
-+		if (!fs->dax_dev) {
-+			err = -EINVAL;
-+			pr_err("virtio-fs: dax can't be enabled as filesystem"
-+			       " device does not support it.\n");
-+			goto err_free_fuse_devs;
-+		}
- 		ctx->dax_dev = fs->dax_dev;
-+	}
- 	err = fuse_fill_super_common(sb, ctx);
- 	if (err < 0)
- 		goto err_free_fuse_devs;
+ 	/* Request IRQ */
+ 	ret = devm_request_threaded_irq(&i2c_client->dev,
+@@ -1919,6 +1919,7 @@ static int cs42l42_runtime_resume(struct device *dev)
+ 	}
+ 
+ 	gpiod_set_value_cansleep(cs42l42->reset_gpio, 1);
++	usleep_range(CS42L42_BOOT_TIME_US, CS42L42_BOOT_TIME_US * 2);
+ 
+ 	regcache_cache_only(cs42l42->regmap, false);
+ 	regcache_sync(cs42l42->regmap);
+diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
+index 9b017b76828a..866d7c873e3c 100644
+--- a/sound/soc/codecs/cs42l42.h
++++ b/sound/soc/codecs/cs42l42.h
+@@ -740,6 +740,7 @@
+ #define CS42L42_FRAC2_VAL(val)	(((val) & 0xff0000) >> 16)
+ 
+ #define CS42L42_NUM_SUPPLIES	5
++#define CS42L42_BOOT_TIME_US	3000
+ 
+ static const char *const cs42l42_supply_names[CS42L42_NUM_SUPPLIES] = {
+ 	"VA",
 -- 
 2.30.1
 
