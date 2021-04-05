@@ -2,105 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C513542A0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 16:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64E8F3542AB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 16:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237271AbhDEOLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 10:11:23 -0400
-Received: from mxout02.lancloud.ru ([45.84.86.82]:46566 "EHLO
-        mxout02.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235763AbhDEOLW (ORCPT
+        id S241281AbhDEOSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 10:18:04 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:55599 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237537AbhDEOSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 10:11:22 -0400
-Received: from LanCloud
-DKIM-Filter: OpenDKIM Filter v2.11.0 mxout02.lancloud.ru B65C4233D681
-Received: from LanCloud
-Received: from LanCloud
-Received: from LanCloud
-Subject: Re: [PATCH 5.4 03/74] module: merge repetitive strings in
- module_sig_check()
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
-        Joe Perches <joe@perches.com>, Miroslav Benes <mbenes@suse.cz>,
-        Jessica Yu <jeyu@kernel.org>, Sasha Levin <sashal@kernel.org>
-References: <20210405085024.703004126@linuxfoundation.org>
- <20210405085024.812932452@linuxfoundation.org>
- <35560933-d158-76ee-0034-0b5f43d9a3c2@omprussia.ru>
- <YGsTZrlUSYufOk9N@kroah.com>
-From:   Sergey Shtylyov <s.shtylyov@omprussia.ru>
-Organization: Open Mobile Platform, LLC
-Message-ID: <b54f4a70-60df-be44-c88f-1f60f338ff12@omprussia.ru>
-Date:   Mon, 5 Apr 2021 17:11:13 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 5 Apr 2021 10:18:03 -0400
+Received: from mail-wm1-f72.google.com ([209.85.128.72])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lTQ3A-0006KN-2G
+        for linux-kernel@vger.kernel.org; Mon, 05 Apr 2021 14:17:56 +0000
+Received: by mail-wm1-f72.google.com with SMTP id a3so1598313wmm.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 07:17:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=VEUY8j6GwwY9LYVNRBDFe9nrh9WQ2A0mUlbgiGIRVY8=;
+        b=EeL/VOvjCkHt9F/267EgsSR5Wg5uldB3xCnoVuvVW0t9Pi7kKV5v5gxKmXNs+ZOl7T
+         0tB10o7wBUZ8bERTk574sWFUFBOmjBbgOvQbJ8Y8LvmlT3TgydUsIn6WGw2PlGnrZ7sW
+         NePmnT75HVlXvbdvK8AXls+freacvCcHqGRgzZpto5o1hskrVUdTsp6Fh4rrZ9PGQmxM
+         Q30wtw0qeQWibEtDCuDSRipX5avKL7HFCCoP7yZaVdp1kCeL+rwldTqq9jsakCfPyGft
+         ThtPbcX+v14AusucsQFWFaG5oz9T4h8f6K1oqxszm2g3/eOSemTfSBkEP+oTP8I6u7wY
+         tnRw==
+X-Gm-Message-State: AOAM530NOLVUw77Fc5q9bpP5b3Dm6G+48ToBRmi/osdJxBD1yUc9V1Dl
+        9SN+dijKxka8uknSofld637fldNiQv9bwVm6pl3ppbqOSI/llEG/dRAxtR5+BfevzUWLLN0O9os
+        TlIpK4ecfIsMwcRn/YNlpBcSNCsP3SFvdD8clTiIx+A==
+X-Received: by 2002:a5d:684d:: with SMTP id o13mr30503372wrw.235.1617632275866;
+        Mon, 05 Apr 2021 07:17:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyJpC4y+Mv7D5WzFkfsNYGYusWKBiIFcsP7OKSAbcVO8fQa4AYnetwolYmB0sIAzoNSKQesWg==
+X-Received: by 2002:a5d:684d:: with SMTP id o13mr30503357wrw.235.1617632275715;
+        Mon, 05 Apr 2021 07:17:55 -0700 (PDT)
+Received: from localhost.localdomain (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
+        by smtp.gmail.com with ESMTPSA id u2sm10319094wmc.22.2021.04.05.07.17.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Apr 2021 07:17:55 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     krzk@kernel.org, gexueyuan <gexueyuan@gmail.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] memory: pl353: fix macro definition of ecc page_size for arm pl353 static memory controller
+Date:   Mon,  5 Apr 2021 16:17:53 +0200
+Message-Id: <161763208380.19793.10152389628099577320.b4-ty@canonical.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210331031056.5326-1-gexueyuan@gmail.com>
+References: <20210331031056.5326-1-gexueyuan@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YGsTZrlUSYufOk9N@kroah.com>
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.11.198]
-X-ClientProxiedBy: LFEXT02.lancloud.ru (fd00:f066::142) To
- LFEX1908.lancloud.ru (fd00:f066::208)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/5/21 4:40 PM, Greg Kroah-Hartman wrote:
+On Wed, 31 Mar 2021 11:10:56 +0800, gexueyuan wrote:
+>     the macro "PL353_SMC_ECC_MEMCFG_PGSIZE_MASK" should be 0x3,
+> according to  the datasheet of pl353 smc
 
-[...]
->>> [ Upstream commit 705e9195187d85249fbb0eaa844b1604a98fbc9a ]
->>>
->>> The 'reason' variable in module_sig_check() points to 3 strings across
->>> the *switch* statement, all needlessly starting with the same text.
->>> Let's put the starting text into the pr_notice() call -- it saves 21
->>> bytes of the object code (x86 gcc 10.2.1).
->>>
->>> Suggested-by: Joe Perches <joe@perches.com>
->>> Reviewed-by: Miroslav Benes <mbenes@suse.cz>
->>> Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
->>> Signed-off-by: Jessica Yu <jeyu@kernel.org>
->>> Signed-off-by: Sasha Levin <sashal@kernel.org>
->>> ---
->>>  kernel/module.c | 9 +++++----
->>>  1 file changed, 5 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/kernel/module.c b/kernel/module.c
->>> index ab1f97cfe18d..9fe3e9b85348 100644
->>> --- a/kernel/module.c
->>> +++ b/kernel/module.c
->>> @@ -2908,16 +2908,17 @@ static int module_sig_check(struct load_info *info, int flags)
->>>  		 * enforcing, certain errors are non-fatal.
->>>  		 */
->>>  	case -ENODATA:
->>> -		reason = "Loading of unsigned module";
->>> +		reason = "unsigned module";
->>>  		goto decide;
->>>  	case -ENOPKG:
->>> -		reason = "Loading of module with unsupported crypto";
->>> +		reason = "module with unsupported crypto";
->>>  		goto decide;
->>>  	case -ENOKEY:
->>> -		reason = "Loading of module with unavailable key";
->>> +		reason = "module with unavailable key";
->>>  	decide:
->>>  		if (is_module_sig_enforced()) {
->>> -			pr_notice("%s is rejected\n", reason);
->>> +			pr_notice("%s: loading of %s is rejected\n",
->>> +				  info->name, reason);
->>
->>    Mhm, in 5.4 there was no printing of 'info->name'...
-> 
-> Is that now a problem?
+Applied, with fixes in commit msg and adding Fixes tag. Please do not forget
+about Fixes tag and start new sentences with capital letter. Thanks.
 
-   Looking at 5.4.y, it probably shouldn't be a problem... but I had to go and look. :-)
-   I've found a simple commit that added 'info->name' printing (perhaps should also be
-considered for inclusion?):
+[1/1] memory: pl353: fix macro definition of ecc page_size for arm pl353 static memory controller
+      commit: 25dcca7fedcd4e31cb368ad846bfd738c0c6307c
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e9f35f634e099894f4d6c3b039cd3de5281ee637
-
-
-> thanks,
-> 
-> greg k-h
-
-MBR, Sergey
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
