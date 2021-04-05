@@ -2,62 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0875354229
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 14:44:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65D71354228
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 14:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240641AbhDEMoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 08:44:13 -0400
-Received: from gate.crashing.org ([63.228.1.57]:41042 "EHLO gate.crashing.org"
+        id S240620AbhDEMnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 08:43:37 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:33904 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233550AbhDEMoL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 08:44:11 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 135CcSjg014265;
-        Mon, 5 Apr 2021 07:38:28 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 135CcRoo014264;
-        Mon, 5 Apr 2021 07:38:27 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Mon, 5 Apr 2021 07:38:27 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] powerpc/32: Remove powerpc specific definition of 'ptrdiff_t'
-Message-ID: <20210405123827.GM13863@gate.crashing.org>
-References: <e43d133bf52fa19e577f64f3a3a38cedc570377d.1617616601.git.christophe.leroy@csgroup.eu>
-Mime-Version: 1.0
+        id S237209AbhDEMng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 08:43:36 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lTOZV-00EvHl-4V; Mon, 05 Apr 2021 14:43:13 +0200
+Date:   Mon, 5 Apr 2021 14:43:13 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "Voon, Weifeng" <weifeng.voon@intel.com>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        "Sit, Michael Wei Hong" <michael.wei.hong.sit@intel.com>,
+        "peppe.cavallaro@st.com" <peppe.cavallaro@st.com>,
+        "alexandre.torgue@st.com" <alexandre.torgue@st.com>,
+        "joabreu@synopsys.com" <joabreu@synopsys.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
+        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
+        "qiangqing.zhang@nxp.com" <qiangqing.zhang@nxp.com>,
+        "Wong, Vee Khee" <vee.khee.wong@intel.com>,
+        "fugang.duan@nxp.com" <fugang.duan@nxp.com>,
+        "Chuah, Kim Tatt" <kim.tatt.chuah@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>
+Subject: Re: [PATCH net-next 1/2] net: stmmac: enable 2.5Gbps link speed
+Message-ID: <YGsF4aGguqsfaQQ3@lunn.ch>
+References: <20210401150152.22444-1-michael.wei.hong.sit@intel.com>
+ <20210401150152.22444-2-michael.wei.hong.sit@intel.com>
+ <20210401151044.GZ1463@shell.armlinux.org.uk>
+ <SN6PR11MB3136F7A7ACA1A5C324031607887A9@SN6PR11MB3136.namprd11.prod.outlook.com>
+ <YGcPc3dan0ocRSG2@lunn.ch>
+ <SN6PR11MB3136C4F44116EC909186742C88779@SN6PR11MB3136.namprd11.prod.outlook.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e43d133bf52fa19e577f64f3a3a38cedc570377d.1617616601.git.christophe.leroy@csgroup.eu>
-User-Agent: Mutt/1.4.2.3i
+In-Reply-To: <SN6PR11MB3136C4F44116EC909186742C88779@SN6PR11MB3136.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 09:57:27AM +0000, Christophe Leroy wrote:
-> For unknown reason, old commit d27dfd388715 ("Import pre2.0.8")
-> changed 'ptrdiff_t' from 'int' to 'long'.
+On Mon, Apr 05, 2021 at 09:07:34AM +0000, Voon, Weifeng wrote:
+> > On Fri, Apr 02, 2021 at 07:45:04AM +0000, Voon, Weifeng wrote:
+> > > > > +	/* 2.5G mode only support 2500baseT full duplex only */
+> > > > > +	if (priv->plat->has_gmac4 && priv->plat->speed_2500_en) {
+> > > > > +		phylink_set(mac_supported, 2500baseT_Full);
+> > > > > +		phylink_set(mask, 10baseT_Half);
+> > > > > +		phylink_set(mask, 10baseT_Full);
+> > > > > +		phylink_set(mask, 100baseT_Half);
+> > > > > +		phylink_set(mask, 100baseT_Full);
+> > > > > +		phylink_set(mask, 1000baseT_Half);
+> > > > > +		phylink_set(mask, 1000baseT_Full);
+> > > > > +		phylink_set(mask, 1000baseKX_Full);
+> > > >
+> > > > Why? This seems at odds to the comment above?
+> > >
+> > > > What about 2500baseX_Full ?
+> > >
+> > > The comments explain that the PCS<->PHY link is in 2500BASE-X and why
+> > > 10/100/1000 link speed is mutually exclusive with 2500.
+> > > But the connected external PHY are twisted pair cable which only
+> > > supports 2500baseT_full.
+> > 
+> > The PHY should indicate what modes its supports. The PHY drivers
+> > get_features() call should set supported to only 2500baseT_Full, if that is
+> > all it supports.
+> > 
+> > What modes are actually used should then be the intersect of what both the
+> > MAC and the PHY indicate they can do.
 > 
-> GCC expects it as 'int' really,
+> Noted Andrew. Instead of masking the 10/100/1000 mode support in the MAC, we will
+> set the supported modes in the PCS.
 
-It isn't actually defined in the ABI as far as I can see (neither the
-old document or the new one), but GCC has defined it as "int" since
-forever (which was in 1995), for anything using the SYSV ABI (which
-includes powerpc-linux).
+PCS?
 
-> <asm-generic/uapi/posix-types.h> defines it as 'int', and
-> defines 'size_t' and 'ssize_t' exactly as powerpc do, so
-> remove the powerpc specific definitions and fallback on
-> generic ones.
-> 
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+You said:
 
-Thanks!
+> > > But the connected external PHY are twisted pair cable which only
+> > > supports 2500baseT_full.
 
-Acked-by: Segher Boessenkool <segher@kernel.crashing.org>
+So it should be the PHY, not the PCS, which indicates it only supports
+2500baseT_full.
 
-
-Segher
+	Andrew
