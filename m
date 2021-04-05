@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AE96353D8F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84813353E12
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237211AbhDEJAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:00:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40930 "EHLO mail.kernel.org"
+        id S237728AbhDEJDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:03:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237049AbhDEI7u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 04:59:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7227460238;
-        Mon,  5 Apr 2021 08:59:43 +0000 (UTC)
+        id S237348AbhDEJCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:02:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F0E3613AE;
+        Mon,  5 Apr 2021 09:01:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613184;
-        bh=diM6It5E7UCmROdwlQZyjDQqpu4vcXZq88LiZnYlkJI=;
+        s=korg; t=1617613308;
+        bh=01X+ZlqpsSMrBWtoBB43At5ms1yK6F8ZDglb7QSOXhY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xEb1gchftEzfRV2XdId6FeWP2TY3I/KqFQDwfjWvNfg9EeRedFnmZ7xVmlPGNXAdZ
-         IKDVZ/cG1rSCdAt4Facund9KP+Cmi8zOd+FyOUoszOT1WFkzaEmtVPU/6HC/Bk33Vx
-         2rjsXVBjlJtflbtBitWenOW8cLkExiuXjGg6MC7g=
+        b=dytfBcwkq8zrHsxESNq6Tr475qRQTOl7dbwEUit/KfmMZbjhvk4ktK1F8ncTB/NFa
+         bLqFXyHFJZm9TnH8OJX4IL1SV1tjmb75mF3IfHKzl8dHrS/PCSfYgCJ4SOiF30uFTf
+         ERWvgZsbPY/SzvSt/tk9O5jM+ZGsoa+6+T0gzvxg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Atul Gopinathan <atulgopinathan@gmail.com>
-Subject: [PATCH 4.14 50/52] staging: rtl8192e: Fix incorrect source in memcpy()
+        stable@vger.kernel.org, Bhushan Shah <bshah@kde.org>,
+        Tony Lindgren <tony@atomide.com>
+Subject: [PATCH 4.19 45/56] usb: musb: Fix suspend with devices connected for a64
 Date:   Mon,  5 Apr 2021 10:54:16 +0200
-Message-Id: <20210405085023.608316474@linuxfoundation.org>
+Message-Id: <20210405085023.965967943@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
-References: <20210405085021.996963957@linuxfoundation.org>
+In-Reply-To: <20210405085022.562176619@linuxfoundation.org>
+References: <20210405085022.562176619@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,67 +39,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Atul Gopinathan <atulgopinathan@gmail.com>
+From: Tony Lindgren <tony@atomide.com>
 
-commit 72ad25fbbb78930f892b191637359ab5b94b3190 upstream.
+commit 92af4fc6ec331228aca322ca37c8aea7b150a151 upstream.
 
-The variable "info_element" is of the following type:
+Pinephone running on Allwinner A64 fails to suspend with USB devices
+connected as reported by Bhushan Shah <bshah@kde.org>. Reverting
+commit 5fbf7a253470 ("usb: musb: fix idling for suspend after
+disconnect interrupt") fixes the issue.
 
-	struct rtllib_info_element *info_element
+Let's add suspend checks also for suspend after disconnect interrupt
+quirk handling like we already do elsewhere.
 
-defined in drivers/staging/rtl8192e/rtllib.h:
-
-	struct rtllib_info_element {
-		u8 id;
-		u8 len;
-		u8 data[];
-	} __packed;
-
-The "len" field defines the size of the "data[]" array. The code is
-supposed to check if "info_element->len" is greater than 4 and later
-equal to 6. If this is satisfied then, the last two bytes (the 4th and
-5th element of u8 "data[]" array) are copied into "network->CcxRmState".
-
-Right now the code uses "memcpy()" with the source as "&info_element[4]"
-which would copy in wrong and unintended information. The struct
-"rtllib_info_element" has a size of 2 bytes for "id" and "len",
-therefore indexing will be done in interval of 2 bytes. So,
-"info_element[4]" would point to data which is beyond the memory
-allocated for this pointer (that is, at x+8, while "info_element" has
-been allocated only from x to x+7 (2 + 6 => 8 bytes)).
-
-This patch rectifies this error by using "&info_element->data[4]" which
-correctly copies the last two bytes of "data[]".
-
-NOTE: The faulty line of code came from the following commit:
-
-commit ecdfa44610fa ("Staging: add Realtek 8192 PCI wireless driver")
-
-The above commit created the file `rtl8192e/ieee80211/ieee80211_rx.c`
-which had the faulty line of code. This file has been deleted (or
-possibly renamed) with the contents copied in to a new file
-`rtl8192e/rtllib_rx.c` along with additional code in the commit
-94a799425eee (tagged in Fixes).
-
-Fixes: 94a799425eee ("From: wlanfae <wlanfae@realtek.com> [PATCH 1/8] rtl8192e: Import new version of driver from realtek")
-Cc: stable@vger.kernel.org
-Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
-Link: https://lore.kernel.org/r/20210323113413.29179-1-atulgopinathan@gmail.com
+Fixes: 5fbf7a253470 ("usb: musb: fix idling for suspend after disconnect interrupt")
+Reported-by: Bhushan Shah <bshah@kde.org>
+Tested-by: Bhushan Shah <bshah@kde.org>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Link: https://lore.kernel.org/r/20210324071142.42264-1-tony@atomide.com
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/rtl8192e/rtllib_rx.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/musb/musb_core.c |   12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
---- a/drivers/staging/rtl8192e/rtllib_rx.c
-+++ b/drivers/staging/rtl8192e/rtllib_rx.c
-@@ -1979,7 +1979,7 @@ static void rtllib_parse_mife_generic(st
- 	    info_element->data[2] == 0x96 &&
- 	    info_element->data[3] == 0x01) {
- 		if (info_element->len == 6) {
--			memcpy(network->CcxRmState, &info_element[4], 2);
-+			memcpy(network->CcxRmState, &info_element->data[4], 2);
- 			if (network->CcxRmState[0] != 0)
- 				network->bCcxRmEnable = true;
- 			else
+--- a/drivers/usb/musb/musb_core.c
++++ b/drivers/usb/musb/musb_core.c
+@@ -1868,10 +1868,14 @@ static void musb_pm_runtime_check_sessio
+ 		MUSB_DEVCTL_HR;
+ 	switch (devctl & ~s) {
+ 	case MUSB_QUIRK_B_DISCONNECT_99:
+-		musb_dbg(musb, "Poll devctl in case of suspend after disconnect\n");
+-		schedule_delayed_work(&musb->irq_work,
+-				      msecs_to_jiffies(1000));
+-		break;
++		if (musb->quirk_retries && !musb->flush_irq_work) {
++			musb_dbg(musb, "Poll devctl in case of suspend after disconnect\n");
++			schedule_delayed_work(&musb->irq_work,
++					      msecs_to_jiffies(1000));
++			musb->quirk_retries--;
++			break;
++		}
++		/* fall through */
+ 	case MUSB_QUIRK_B_INVALID_VBUS_91:
+ 		if (musb->quirk_retries && !musb->flush_irq_work) {
+ 			musb_dbg(musb,
 
 
