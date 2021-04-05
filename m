@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0600353FD7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A19753540C4
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240113AbhDEJOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:14:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58691 "EHLO mail.kernel.org"
+        id S234579AbhDEJWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:22:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238945AbhDEJLt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:11:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB7B861399;
-        Mon,  5 Apr 2021 09:11:24 +0000 (UTC)
+        id S240806AbhDEJRH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:17:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF77E611C1;
+        Mon,  5 Apr 2021 09:17:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613885;
-        bh=olnoqY4RSvvcll1Lt7jxoHHmhvFq5T45mZKtg4kwdwc=;
+        s=korg; t=1617614221;
+        bh=hnCyp1pY3A5BEjmo/pO28QU4NIJS5GIogwo0akaMA6Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h3BbhQagSAGAx0hby9J3WofVszolMZYO+H6OL3o950xYygodRnfTrlk4zDBR47/ba
-         pT69eMg3Y+Vws/ULU08FBRS3uadaiZjTqztji5SVbCHTLa+eELVyXAKoznb+sRM2aT
-         OfjtACaqoXZBB/f7gB7zvBHRVCDiCW4w3wnD72VA=
+        b=S4r45/O582q1uuB/Q2Zqo+etR9+ngjVcbzbi+8t3rxfxiHaJIG9TkJ+FZx+5zczOq
+         WnJYBJCaoDBCyLTGyS2AgxlgVNDTBEYKbFNFebmqNmbLF+VCqBZfEdvRRqMxup+m8p
+         zBc4Mn9rkHFiD7cDF0piNSNA8EGCEYCwYrKQH98M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Artur Petrosyan <Arthur.Petrosyan@synopsys.com>,
-        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
-Subject: [PATCH 5.10 115/126] usb: dwc2: Fix HPRT0.PrtSusp bit setting for HiKey 960 board.
+        Murilo Opsfelder Araujo <muriloo@linux.ibm.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 128/152] powerpc/mm/book3s64: Use the correct storage key value when calling H_PROTECT
 Date:   Mon,  5 Apr 2021 10:54:37 +0200
-Message-Id: <20210405085034.845290850@linuxfoundation.org>
+Message-Id: <20210405085038.386202343@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
-References: <20210405085031.040238881@linuxfoundation.org>
+In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
+References: <20210405085034.233917714@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +42,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
+From: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
 
-commit 5e3bbae8ee3d677a0aa2919dc62b5c60ea01ba61 upstream.
+[ Upstream commit 53f1d31708f6240e4615b0927df31f182e389e2f ]
 
-Increased the waiting timeout for HPRT0.PrtSusp register field
-to be set, because on HiKey 960 board HPRT0.PrtSusp wasn't
-generated with the existing timeout.
+H_PROTECT expects the flag value to include flags:
+  AVPN, pp0, pp1, pp2, key0-key4, Noexec, CMO Option flags
 
-Cc: <stable@vger.kernel.org> # 4.18
-Fixes: 22bb5cfdf13a ("usb: dwc2: Fix host exit from hibernation flow.")
-Signed-off-by: Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
-Acked-by: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
-Link: https://lore.kernel.org/r/20210326102447.8F7FEA005D@mailhost.synopsys.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This patch updates hpte_updatepp() to fetch the storage key value from
+the linux page table and use the same in H_PROTECT hcall.
+
+native_hpte_updatepp() is not updated because the kernel doesn't clear
+the existing storage key value there. The kernel also doesn't use
+hpte_updatepp() callback for updating storage keys.
+
+This fixes the below kernel crash observed with KUAP enabled.
+
+  BUG: Unable to handle kernel data access on write at 0xc009fffffc440000
+  Faulting instruction address: 0xc0000000000b7030
+  Key fault AMR: 0xfcffffffffffffff IAMR: 0xc0000077bc498100
+  Found HPTE: v = 0x40070adbb6fffc05 r = 0x1ffffffffff1194
+  Oops: Kernel access of bad area, sig: 11 [#1]
+  LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
+  ...
+  CFAR: c000000000010100 DAR: c009fffffc440000 DSISR: 02200000 IRQMASK: 0
+  ...
+  NIP memset+0x68/0x104
+  LR  pcpu_alloc+0x54c/0xb50
+  Call Trace:
+    pcpu_alloc+0x55c/0xb50 (unreliable)
+    blk_stat_alloc_callback+0x94/0x150
+    blk_mq_init_allocated_queue+0x64/0x560
+    blk_mq_init_queue+0x54/0xb0
+    scsi_mq_alloc_queue+0x30/0xa0
+    scsi_alloc_sdev+0x1cc/0x300
+    scsi_probe_and_add_lun+0xb50/0x1020
+    __scsi_scan_target+0x17c/0x790
+    scsi_scan_channel+0x90/0xe0
+    scsi_scan_host_selected+0x148/0x1f0
+    do_scan_async+0x2c/0x2a0
+    async_run_entry_fn+0x78/0x220
+    process_one_work+0x264/0x540
+    worker_thread+0xa8/0x600
+    kthread+0x190/0x1a0
+    ret_from_kernel_thread+0x5c/0x6c
+
+With KUAP enabled the kernel uses storage key 3 for all its
+translations. But as shown by the debug print, in this specific case we
+have the hash page table entry created with key value 0.
+
+  Found HPTE: v = 0x40070adbb6fffc05 r = 0x1ffffffffff1194
+
+and DSISR indicates a key fault.
+
+This can happen due to parallel fault on the same EA by different CPUs:
+
+  CPU 0					CPU 1
+  fault on X
+
+  H_PAGE_BUSY set
+  					fault on X
+
+  finish fault handling and
+  clear H_PAGE_BUSY
+  					check for H_PAGE_BUSY
+  					continue with fault handling.
+
+This implies CPU1 will end up calling hpte_updatepp for address X and
+the kernel updated the hash pte entry with key 0
+
+Fixes: d94b827e89dc ("powerpc/book3s64/kuap: Use Key 3 for kernel mapping with hash translation")
+Reported-by: Murilo Opsfelder Araujo <muriloo@linux.ibm.com>
+Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Debugged-by: Michael Ellerman <mpe@ellerman.id.au>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210326070755.304625-1-aneesh.kumar@linux.ibm.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc2/hcd.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/platforms/pseries/lpar.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/dwc2/hcd.c
-+++ b/drivers/usb/dwc2/hcd.c
-@@ -5398,7 +5398,7 @@ int dwc2_host_enter_hibernation(struct d
- 	dwc2_writel(hsotg, hprt0, HPRT0);
+diff --git a/arch/powerpc/platforms/pseries/lpar.c b/arch/powerpc/platforms/pseries/lpar.c
+index 764170fdb0f7..3805519a6469 100644
+--- a/arch/powerpc/platforms/pseries/lpar.c
++++ b/arch/powerpc/platforms/pseries/lpar.c
+@@ -887,7 +887,8 @@ static long pSeries_lpar_hpte_updatepp(unsigned long slot,
  
- 	/* Wait for the HPRT0.PrtSusp register field to be set */
--	if (dwc2_hsotg_wait_bit_set(hsotg, HPRT0, HPRT0_SUSP, 3000))
-+	if (dwc2_hsotg_wait_bit_set(hsotg, HPRT0, HPRT0_SUSP, 5000))
- 		dev_warn(hsotg->dev, "Suspend wasn't generated\n");
+ 	want_v = hpte_encode_avpn(vpn, psize, ssize);
  
- 	/*
+-	flags = (newpp & 7) | H_AVPN;
++	flags = (newpp & (HPTE_R_PP | HPTE_R_N | HPTE_R_KEY_LO)) | H_AVPN;
++	flags |= (newpp & HPTE_R_KEY_HI) >> 48;
+ 	if (mmu_has_feature(MMU_FTR_KERNEL_RO))
+ 		/* Move pp0 into bit 8 (IBM 55) */
+ 		flags |= (newpp & HPTE_R_PP0) >> 55;
+-- 
+2.30.2
+
 
 
