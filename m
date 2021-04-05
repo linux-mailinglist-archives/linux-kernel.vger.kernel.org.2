@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 245E6353F8F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 421AC353DE6
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239369AbhDEJNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:13:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55260 "EHLO mail.kernel.org"
+        id S237519AbhDEJCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:02:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239106AbhDEJJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:09:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B706161399;
-        Mon,  5 Apr 2021 09:09:22 +0000 (UTC)
+        id S237262AbhDEJB3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:01:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67CAE610E8;
+        Mon,  5 Apr 2021 09:01:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613763;
-        bh=TLkT/hMV1t1RdOh3n+d4kC0RCv+UaeDxsLuz+og7kyk=;
+        s=korg; t=1617613276;
+        bh=GDA/V174sJWMf+BaEEszQCXILyZ5LI9jMZfXs7HDUOk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hCd50xEDMVPzKFZ9dY6ZKHkSryyriWQRVuMyDuRMk3Mjz3el5lnnZHGTP3c+CCfNl
-         IYje2rV3AMKbmbMZ7w4TXw9DUa5GD5gHw0JA8LAw3+tyqafwvn23628uZiBDzmGLGe
-         f6htCqkAWKC80iy2M8GPO5UR+yNWCNZTKutUqxRg=
+        b=g+YQ881oT8Lr4sAE5JDX/uew/y8AyQxqchUBZvdPqTKM3HMTOMtXLdUB38GiysjVH
+         qefHA9EuA/O1jvpWnNOqBQXtYxTs+kooMM633yXSYIRkP2v1nbFpeESfkJi41ZllGW
+         BX1e9m5DFID9yVanweSUK3/S7x47oDUL7g82oGrI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ben Gardon <bgardon@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 083/126] KVM: x86/mmu: Merge flush and non-flush tdp_mmu_iter_cond_resched
+        stable@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 4.19 34/56] tracing: Fix stack trace event size
 Date:   Mon,  5 Apr 2021 10:54:05 +0200
-Message-Id: <20210405085033.817399912@linuxfoundation.org>
+Message-Id: <20210405085023.627967648@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
-References: <20210405085031.040238881@linuxfoundation.org>
+In-Reply-To: <20210405085022.562176619@linuxfoundation.org>
+References: <20210405085022.562176619@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,125 +39,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Gardon <bgardon@google.com>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-[ Upstream commit e139a34ef9d5627a41e1c02210229082140d1f92 ]
+commit 9deb193af69d3fd6dd8e47f292b67c805a787010 upstream.
 
-The flushing and non-flushing variants of tdp_mmu_iter_cond_resched have
-almost identical implementations. Merge the two functions and add a
-flush parameter.
+Commit cbc3b92ce037 fixed an issue to modify the macros of the stack trace
+event so that user space could parse it properly. Originally the stack
+trace format to user space showed that the called stack was a dynamic
+array. But it is not actually a dynamic array, in the way that other
+dynamic event arrays worked, and this broke user space parsing for it. The
+update was to make the array look to have 8 entries in it. Helper
+functions were added to make it parse it correctly, as the stack was
+dynamic, but was determined by the size of the event stored.
 
-Signed-off-by: Ben Gardon <bgardon@google.com>
-Message-Id: <20210202185734.1680553-12-bgardon@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Although this fixed user space on how it read the event, it changed the
+internal structure used for the stack trace event. It changed the array
+size from [0] to [8] (added 8 entries). This increased the size of the
+stack trace event by 8 words. The size reserved on the ring buffer was the
+size of the stack trace event plus the number of stack entries found in
+the stack trace. That commit caused the amount to be 8 more than what was
+needed because it did not expect the caller field to have any size. This
+produced 8 entries of garbage (and reading random data) from the stack
+trace event:
+
+          <idle>-0       [002] d... 1976396.837549: <stack trace>
+ => trace_event_raw_event_sched_switch
+ => __traceiter_sched_switch
+ => __schedule
+ => schedule_idle
+ => do_idle
+ => cpu_startup_entry
+ => secondary_startup_64_no_verify
+ => 0xc8c5e150ffff93de
+ => 0xffff93de
+ => 0
+ => 0
+ => 0xc8c5e17800000000
+ => 0x1f30affff93de
+ => 0x00000004
+ => 0x200000000
+
+Instead, subtract the size of the caller field from the size of the event
+to make sure that only the amount needed to store the stack trace is
+reserved.
+
+Link: https://lore.kernel.org/lkml/your-ad-here.call-01617191565-ext-9692@work.hours/
+
+Cc: stable@vger.kernel.org
+Fixes: cbc3b92ce037 ("tracing: Set kernel_stack's caller size properly")
+Reported-by: Vasily Gorbik <gor@linux.ibm.com>
+Tested-by: Vasily Gorbik <gor@linux.ibm.com>
+Acked-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/mmu/tdp_mmu.c | 42 ++++++++++++--------------------------
- 1 file changed, 13 insertions(+), 29 deletions(-)
+ kernel/trace/trace.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 22efd016f05e..3b14d0008f92 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -404,33 +404,13 @@ static inline void tdp_mmu_set_spte_no_dirty_log(struct kvm *kvm,
- 	for_each_tdp_pte(_iter, __va(_mmu->root_hpa),		\
- 			 _mmu->shadow_root_level, _start, _end)
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -2645,7 +2645,8 @@ static void __ftrace_trace_stack(struct
+ 	size *= sizeof(unsigned long);
  
--/*
-- * Flush the TLB and yield if the MMU lock is contended or this thread needs to
-- * return control to the scheduler.
-- *
-- * If this function yields, it will also reset the tdp_iter's walk over the
-- * paging structure and the calling function should allow the iterator to
-- * continue its traversal from the paging structure root.
-- *
-- * Return true if this function yielded, the TLBs were flushed, and the
-- * iterator's traversal was reset. Return false if a yield was not needed.
-- */
--static bool tdp_mmu_iter_flush_cond_resched(struct kvm *kvm, struct tdp_iter *iter)
--{
--	if (need_resched() || spin_needbreak(&kvm->mmu_lock)) {
--		kvm_flush_remote_tlbs(kvm);
--		cond_resched_lock(&kvm->mmu_lock);
--		tdp_iter_refresh_walk(iter);
--		return true;
--	}
--
--	return false;
--}
--
- /*
-  * Yield if the MMU lock is contended or this thread needs to return control
-  * to the scheduler.
-  *
-+ * If this function should yield and flush is set, it will perform a remote
-+ * TLB flush before yielding.
-+ *
-  * If this function yields, it will also reset the tdp_iter's walk over the
-  * paging structure and the calling function should allow the iterator to
-  * continue its traversal from the paging structure root.
-@@ -438,9 +418,13 @@ static bool tdp_mmu_iter_flush_cond_resched(struct kvm *kvm, struct tdp_iter *it
-  * Return true if this function yielded and the iterator's traversal was reset.
-  * Return false if a yield was not needed.
-  */
--static bool tdp_mmu_iter_cond_resched(struct kvm *kvm, struct tdp_iter *iter)
-+static inline bool tdp_mmu_iter_cond_resched(struct kvm *kvm,
-+					     struct tdp_iter *iter, bool flush)
- {
- 	if (need_resched() || spin_needbreak(&kvm->mmu_lock)) {
-+		if (flush)
-+			kvm_flush_remote_tlbs(kvm);
-+
- 		cond_resched_lock(&kvm->mmu_lock);
- 		tdp_iter_refresh_walk(iter);
- 		return true;
-@@ -483,7 +467,7 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
- 		tdp_mmu_set_spte(kvm, &iter, 0);
- 
- 		flush_needed = !can_yield ||
--			       !tdp_mmu_iter_flush_cond_resched(kvm, &iter);
-+			       !tdp_mmu_iter_cond_resched(kvm, &iter, true);
- 	}
- 	return flush_needed;
- }
-@@ -852,7 +836,7 @@ static bool wrprot_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
- 		tdp_mmu_set_spte_no_dirty_log(kvm, &iter, new_spte);
- 		spte_set = true;
- 
--		tdp_mmu_iter_cond_resched(kvm, &iter);
-+		tdp_mmu_iter_cond_resched(kvm, &iter, false);
- 	}
- 	return spte_set;
- }
-@@ -911,7 +895,7 @@ static bool clear_dirty_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
- 		tdp_mmu_set_spte_no_dirty_log(kvm, &iter, new_spte);
- 		spte_set = true;
- 
--		tdp_mmu_iter_cond_resched(kvm, &iter);
-+		tdp_mmu_iter_cond_resched(kvm, &iter, false);
- 	}
- 	return spte_set;
- }
-@@ -1027,7 +1011,7 @@ static bool set_dirty_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
- 		tdp_mmu_set_spte(kvm, &iter, new_spte);
- 		spte_set = true;
- 
--		tdp_mmu_iter_cond_resched(kvm, &iter);
-+		tdp_mmu_iter_cond_resched(kvm, &iter, false);
- 	}
- 
- 	return spte_set;
-@@ -1080,7 +1064,7 @@ static void zap_collapsible_spte_range(struct kvm *kvm,
- 
- 		tdp_mmu_set_spte(kvm, &iter, 0);
- 
--		spte_set = !tdp_mmu_iter_flush_cond_resched(kvm, &iter);
-+		spte_set = !tdp_mmu_iter_cond_resched(kvm, &iter, true);
- 	}
- 
- 	if (spte_set)
--- 
-2.30.1
-
+ 	event = __trace_buffer_lock_reserve(buffer, TRACE_STACK,
+-					    sizeof(*entry) + size, flags, pc);
++				    (sizeof(*entry) - sizeof(entry->caller)) + size,
++				    flags, pc);
+ 	if (!event)
+ 		goto out;
+ 	entry = ring_buffer_event_data(event);
 
 
