@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 181B635407C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E485B354098
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240827AbhDEJSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:18:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34060 "EHLO mail.kernel.org"
+        id S240841AbhDEJTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:19:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239872AbhDEJOY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:14:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 324C6611C1;
-        Mon,  5 Apr 2021 09:14:18 +0000 (UTC)
+        id S239929AbhDEJO2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:14:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D83AB60FE4;
+        Mon,  5 Apr 2021 09:14:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617614058;
-        bh=/9ujew30/khoYdl8uTOuMTpa+/+vYu2kig65Xjphl34=;
+        s=korg; t=1617614061;
+        bh=ssoKzKFC+66OBKC5z+OK6y19dVXJjX1i3Snn7lGXxfI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XBj8eccL6BA4BAKSZsdg9LCq/NXfGHN8USYLA+czUWnXRXCQrQgH8zgkWMY9sLrFq
-         4yY56/BJ3ZoXwOAakD80twjim814x/MWGrDBhLmBjQT0VSI1DfARyEF5J32k3BxwxF
-         hrI2RKlPcX7BxznuCj/Fjam5FvFkC+jpoQb7wc5Y=
+        b=SnFxbhuUc/TPyL6uxEX1RQ6907lpdLqzfZcp8bO2TzFDtuotKD9MR80m9W5p6IIKf
+         HvPNbtYvkQWD/4gqZ2UVk6T2kBvqGHGqze4MsUaY2KDIuqIA1OYRG5mZTawZec4CGL
+         mUI+rbO84IIfb2B83Xd6xh4Cp/GnKDxcPI8UObCw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Elad Grupi <elad.grupi@dell.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 033/152] nvmet-tcp: fix kmap leak when data digest in use
-Date:   Mon,  5 Apr 2021 10:53:02 +0200
-Message-Id: <20210405085035.329432506@linuxfoundation.org>
+        stable@vger.kernel.org, Stefan Metzmacher <metze@samba.org>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 034/152] io_uring: imply MSG_NOSIGNAL for send[msg]()/recv[msg]() calls
+Date:   Mon,  5 Apr 2021 10:53:03 +0200
+Message-Id: <20210405085035.360327580@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
 References: <20210405085034.233917714@linuxfoundation.org>
@@ -40,38 +39,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Elad Grupi <elad.grupi@dell.com>
+From: Stefan Metzmacher <metze@samba.org>
 
-[ Upstream commit bac04454ef9fada009f0572576837548b190bf94 ]
+[ Upstream commit 76cd979f4f38a27df22efb5773a0d567181a9392 ]
 
-When data digest is enabled we should unmap pdu iovec before handling
-the data digest pdu.
+We never want to generate any SIGPIPE, -EPIPE only is much better.
 
-Signed-off-by: Elad Grupi <elad.grupi@dell.com>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Stefan Metzmacher <metze@samba.org>
+Link: https://lore.kernel.org/r/38961085c3ec49fd21550c7788f214d1ff02d2d4.1615908477.git.metze@samba.org
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/target/tcp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/io_uring.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/nvme/target/tcp.c b/drivers/nvme/target/tcp.c
-index 8b0485ada315..d658c6e8263a 100644
---- a/drivers/nvme/target/tcp.c
-+++ b/drivers/nvme/target/tcp.c
-@@ -1098,11 +1098,11 @@ static int nvmet_tcp_try_recv_data(struct nvmet_tcp_queue *queue)
- 		cmd->rbytes_done += ret;
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index aaf9b5d49c17..26b4af9831da 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -4648,7 +4648,7 @@ static int io_sendmsg(struct io_kiocb *req, bool force_nonblock,
+ 		kmsg = &iomsg;
  	}
  
-+	nvmet_tcp_unmap_pdu_iovec(cmd);
- 	if (queue->data_digest) {
- 		nvmet_tcp_prep_recv_ddgst(cmd);
- 		return 0;
- 	}
--	nvmet_tcp_unmap_pdu_iovec(cmd);
+-	flags = req->sr_msg.msg_flags;
++	flags = req->sr_msg.msg_flags | MSG_NOSIGNAL;
+ 	if (flags & MSG_DONTWAIT)
+ 		req->flags |= REQ_F_NOWAIT;
+ 	else if (force_nonblock)
+@@ -4692,7 +4692,7 @@ static int io_send(struct io_kiocb *req, bool force_nonblock,
+ 	msg.msg_controllen = 0;
+ 	msg.msg_namelen = 0;
  
- 	if (!(cmd->flags & NVMET_TCP_F_INIT_FAILED) &&
- 	    cmd->rbytes_done == cmd->req.transfer_len) {
+-	flags = req->sr_msg.msg_flags;
++	flags = req->sr_msg.msg_flags | MSG_NOSIGNAL;
+ 	if (flags & MSG_DONTWAIT)
+ 		req->flags |= REQ_F_NOWAIT;
+ 	else if (force_nonblock)
+@@ -4886,7 +4886,7 @@ static int io_recvmsg(struct io_kiocb *req, bool force_nonblock,
+ 				1, req->sr_msg.len);
+ 	}
+ 
+-	flags = req->sr_msg.msg_flags;
++	flags = req->sr_msg.msg_flags | MSG_NOSIGNAL;
+ 	if (flags & MSG_DONTWAIT)
+ 		req->flags |= REQ_F_NOWAIT;
+ 	else if (force_nonblock)
+@@ -4944,7 +4944,7 @@ static int io_recv(struct io_kiocb *req, bool force_nonblock,
+ 	msg.msg_iocb = NULL;
+ 	msg.msg_flags = 0;
+ 
+-	flags = req->sr_msg.msg_flags;
++	flags = req->sr_msg.msg_flags | MSG_NOSIGNAL;
+ 	if (flags & MSG_DONTWAIT)
+ 		req->flags |= REQ_F_NOWAIT;
+ 	else if (force_nonblock)
 -- 
 2.30.1
 
