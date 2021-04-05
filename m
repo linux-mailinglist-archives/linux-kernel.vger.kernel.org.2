@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 430AF35405F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4476F353E28
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239753AbhDEJRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:17:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33710 "EHLO mail.kernel.org"
+        id S237854AbhDEJEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:04:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239606AbhDEJN5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:13:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 906DE60FE4;
-        Mon,  5 Apr 2021 09:13:51 +0000 (UTC)
+        id S237493AbhDEJCv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:02:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82FCF613A4;
+        Mon,  5 Apr 2021 09:02:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617614032;
-        bh=tCNla3+2PHUFCElDaycALAjYMZUrNU0v4ZgFdr1DPI0=;
+        s=korg; t=1617613366;
+        bh=iMB4+sramzLNQW6LQXQgjx7+Y2P5eRqlg+r5lUi6eSs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MQ+Kw2Wxn6CaLMdwcokcz5tOrFoaNsNAKPpOVQJ07ezlTwzpntbvitb+Ob9e2I3tE
-         sofK2OYmnMw1WQIxLOQm11MtR7rjCwl6YzP6nhuEI630GoBHFrJGKAHbdiPENtomvI
-         x8tDiAnpT5WiaUvWtEhxNC5ia+zzybiLc/OHnxeY=
+        b=B8CQtM8RV1Wmv/6sWksU7akArP7m5Y6w9oZyt3GyM5pM7MZpaUUPOh2DJIsnF0BfF
+         xo7BVzjrD5cAMSM/o2hMvkDjgIyw0DLTY4frepat9RDKEM+3ttUSFBdY7SXJdBhKxt
+         QSmE7jechBHbEqdByhgErxY/KnWaU+rueznxNq6s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amit Cohen <amcohen@nvidia.com>,
-        Ido Schimmel <idosch@nvidia.com>,
+        stable@vger.kernel.org, Sunyi Shao <sunyishao@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Eric Dumazet <edumazet@google.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 057/152] netdevsim: dev: Initialize FIB module after debugfs
+Subject: [PATCH 5.4 02/74] ipv6: weaken the v4mapped source check
 Date:   Mon,  5 Apr 2021 10:53:26 +0200
-Message-Id: <20210405085036.125264153@linuxfoundation.org>
+Message-Id: <20210405085024.782808332@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
-References: <20210405085034.233917714@linuxfoundation.org>
+In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
+References: <20210405085024.703004126@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,136 +43,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ido Schimmel <idosch@nvidia.com>
+From: Jakub Kicinski <kuba@kernel.org>
 
-[ Upstream commit f57ab5b75f7193e194c83616cd104f41c8350f68 ]
+[ Upstream commit dcc32f4f183ab8479041b23a1525d48233df1d43 ]
 
-Initialize the dummy FIB offload module after debugfs, so that the FIB
-module could create its own directory there.
+This reverts commit 6af1799aaf3f1bc8defedddfa00df3192445bbf3.
 
-Signed-off-by: Amit Cohen <amcohen@nvidia.com>
-Signed-off-by: Ido Schimmel <idosch@nvidia.com>
+Commit 6af1799aaf3f ("ipv6: drop incoming packets having a v4mapped
+source address") introduced an input check against v4mapped addresses.
+Use of such addresses on the wire is indeed questionable and not
+allowed on public Internet. As the commit pointed out
+
+  https://tools.ietf.org/html/draft-itojun-v6ops-v4mapped-harmful-02
+
+lists potential issues.
+
+Unfortunately there are applications which use v4mapped addresses,
+and breaking them is a clear regression. For example v4mapped
+addresses (or any semi-valid addresses, really) may be used
+for uni-direction event streams or packet export.
+
+Since the issue which sparked the addition of the check was with
+TCP and request_socks in particular push the check down to TCPv6
+and DCCP. This restores the ability to receive UDPv6 packets with
+v4mapped address as the source.
+
+Keep using the IPSTATS_MIB_INHDRERRORS statistic to minimize the
+user-visible changes.
+
+Fixes: 6af1799aaf3f ("ipv6: drop incoming packets having a v4mapped source address")
+Reported-by: Sunyi Shao <sunyishao@fb.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Acked-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/netdevsim/dev.c | 40 +++++++++++++++++++------------------
- 1 file changed, 21 insertions(+), 19 deletions(-)
+ net/dccp/ipv6.c      |  5 +++++
+ net/ipv6/ip6_input.c | 10 ----------
+ net/ipv6/tcp_ipv6.c  |  5 +++++
+ 3 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/netdevsim/dev.c b/drivers/net/netdevsim/dev.c
-index 816af1f55e2c..dbeb29fa16e8 100644
---- a/drivers/net/netdevsim/dev.c
-+++ b/drivers/net/netdevsim/dev.c
-@@ -1012,23 +1012,25 @@ static int nsim_dev_reload_create(struct nsim_dev *nsim_dev,
- 	nsim_dev->fw_update_status = true;
- 	nsim_dev->fw_update_overwrite_mask = 0;
+diff --git a/net/dccp/ipv6.c b/net/dccp/ipv6.c
+index 1e5e08cc0bfc..9f73ccf46c9b 100644
+--- a/net/dccp/ipv6.c
++++ b/net/dccp/ipv6.c
+@@ -319,6 +319,11 @@ static int dccp_v6_conn_request(struct sock *sk, struct sk_buff *skb)
+ 	if (!ipv6_unicast_destination(skb))
+ 		return 0;	/* discard, don't send a reset here */
  
--	nsim_dev->fib_data = nsim_fib_create(devlink, extack);
--	if (IS_ERR(nsim_dev->fib_data))
--		return PTR_ERR(nsim_dev->fib_data);
--
- 	nsim_devlink_param_load_driverinit_values(devlink);
- 
- 	err = nsim_dev_dummy_region_init(nsim_dev, devlink);
- 	if (err)
--		goto err_fib_destroy;
-+		return err;
- 
- 	err = nsim_dev_traps_init(devlink);
- 	if (err)
- 		goto err_dummy_region_exit;
- 
-+	nsim_dev->fib_data = nsim_fib_create(devlink, extack);
-+	if (IS_ERR(nsim_dev->fib_data)) {
-+		err = PTR_ERR(nsim_dev->fib_data);
-+		goto err_traps_exit;
++	if (ipv6_addr_v4mapped(&ipv6_hdr(skb)->saddr)) {
++		__IP6_INC_STATS(sock_net(sk), NULL, IPSTATS_MIB_INHDRERRORS);
++		return 0;
 +	}
 +
- 	err = nsim_dev_health_init(nsim_dev, devlink);
- 	if (err)
--		goto err_traps_exit;
-+		goto err_fib_destroy;
+ 	if (dccp_bad_service_code(sk, service)) {
+ 		dcb->dccpd_reset_code = DCCP_RESET_CODE_BAD_SERVICE_CODE;
+ 		goto drop;
+diff --git a/net/ipv6/ip6_input.c b/net/ipv6/ip6_input.c
+index 3d71c7d6102c..7e5df23cbe7b 100644
+--- a/net/ipv6/ip6_input.c
++++ b/net/ipv6/ip6_input.c
+@@ -223,16 +223,6 @@ static struct sk_buff *ip6_rcv_core(struct sk_buff *skb, struct net_device *dev,
+ 	if (ipv6_addr_is_multicast(&hdr->saddr))
+ 		goto err;
  
- 	err = nsim_dev_port_add_all(nsim_dev, nsim_bus_dev->port_count);
- 	if (err)
-@@ -1043,12 +1045,12 @@ static int nsim_dev_reload_create(struct nsim_dev *nsim_dev,
- 
- err_health_exit:
- 	nsim_dev_health_exit(nsim_dev);
-+err_fib_destroy:
-+	nsim_fib_destroy(devlink, nsim_dev->fib_data);
- err_traps_exit:
- 	nsim_dev_traps_exit(devlink);
- err_dummy_region_exit:
- 	nsim_dev_dummy_region_exit(nsim_dev);
--err_fib_destroy:
--	nsim_fib_destroy(devlink, nsim_dev->fib_data);
- 	return err;
- }
- 
-@@ -1080,15 +1082,9 @@ int nsim_dev_probe(struct nsim_bus_dev *nsim_bus_dev)
- 	if (err)
- 		goto err_devlink_free;
- 
--	nsim_dev->fib_data = nsim_fib_create(devlink, NULL);
--	if (IS_ERR(nsim_dev->fib_data)) {
--		err = PTR_ERR(nsim_dev->fib_data);
--		goto err_resources_unregister;
--	}
+-	/* While RFC4291 is not explicit about v4mapped addresses
+-	 * in IPv6 headers, it seems clear linux dual-stack
+-	 * model can not deal properly with these.
+-	 * Security models could be fooled by ::ffff:127.0.0.1 for example.
+-	 *
+-	 * https://tools.ietf.org/html/draft-itojun-v6ops-v4mapped-harmful-02
+-	 */
+-	if (ipv6_addr_v4mapped(&hdr->saddr))
+-		goto err;
 -
- 	err = devlink_register(devlink, &nsim_bus_dev->dev);
- 	if (err)
--		goto err_fib_destroy;
-+		goto err_resources_unregister;
+ 	skb->transport_header = skb->network_header + sizeof(*hdr);
+ 	IP6CB(skb)->nhoff = offsetof(struct ipv6hdr, nexthdr);
  
- 	err = devlink_params_register(devlink, nsim_devlink_params,
- 				      ARRAY_SIZE(nsim_devlink_params));
-@@ -1108,9 +1104,15 @@ int nsim_dev_probe(struct nsim_bus_dev *nsim_bus_dev)
- 	if (err)
- 		goto err_traps_exit;
+diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
+index b42fa41cfceb..2f061a911bc2 100644
+--- a/net/ipv6/tcp_ipv6.c
++++ b/net/ipv6/tcp_ipv6.c
+@@ -1093,6 +1093,11 @@ static int tcp_v6_conn_request(struct sock *sk, struct sk_buff *skb)
+ 	if (!ipv6_unicast_destination(skb))
+ 		goto drop;
  
-+	nsim_dev->fib_data = nsim_fib_create(devlink, NULL);
-+	if (IS_ERR(nsim_dev->fib_data)) {
-+		err = PTR_ERR(nsim_dev->fib_data);
-+		goto err_debugfs_exit;
++	if (ipv6_addr_v4mapped(&ipv6_hdr(skb)->saddr)) {
++		__IP6_INC_STATS(sock_net(sk), NULL, IPSTATS_MIB_INHDRERRORS);
++		return 0;
 +	}
 +
- 	err = nsim_dev_health_init(nsim_dev, devlink);
- 	if (err)
--		goto err_debugfs_exit;
-+		goto err_fib_destroy;
+ 	return tcp_conn_request(&tcp6_request_sock_ops,
+ 				&tcp_request_sock_ipv6_ops, sk, skb);
  
- 	err = nsim_bpf_dev_init(nsim_dev);
- 	if (err)
-@@ -1128,6 +1130,8 @@ err_bpf_dev_exit:
- 	nsim_bpf_dev_exit(nsim_dev);
- err_health_exit:
- 	nsim_dev_health_exit(nsim_dev);
-+err_fib_destroy:
-+	nsim_fib_destroy(devlink, nsim_dev->fib_data);
- err_debugfs_exit:
- 	nsim_dev_debugfs_exit(nsim_dev);
- err_traps_exit:
-@@ -1139,8 +1143,6 @@ err_params_unregister:
- 				  ARRAY_SIZE(nsim_devlink_params));
- err_dl_unregister:
- 	devlink_unregister(devlink);
--err_fib_destroy:
--	nsim_fib_destroy(devlink, nsim_dev->fib_data);
- err_resources_unregister:
- 	devlink_resources_unregister(devlink, NULL);
- err_devlink_free:
-@@ -1157,10 +1159,10 @@ static void nsim_dev_reload_destroy(struct nsim_dev *nsim_dev)
- 	debugfs_remove(nsim_dev->take_snapshot);
- 	nsim_dev_port_del_all(nsim_dev);
- 	nsim_dev_health_exit(nsim_dev);
-+	nsim_fib_destroy(devlink, nsim_dev->fib_data);
- 	nsim_dev_traps_exit(devlink);
- 	nsim_dev_dummy_region_exit(nsim_dev);
- 	mutex_destroy(&nsim_dev->port_list_lock);
--	nsim_fib_destroy(devlink, nsim_dev->fib_data);
- }
- 
- void nsim_dev_remove(struct nsim_bus_dev *nsim_bus_dev)
 -- 
 2.30.1
 
