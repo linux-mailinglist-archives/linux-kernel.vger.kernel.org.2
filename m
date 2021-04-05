@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D94B353CED
+	by mail.lfdr.de (Postfix) with ESMTP id A1F4E353CEE
 	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:58:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233178AbhDEI51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 04:57:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36326 "EHLO mail.kernel.org"
+        id S233212AbhDEI5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 04:57:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233085AbhDEI5I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 04:57:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 12ECE613C1;
-        Mon,  5 Apr 2021 08:57:01 +0000 (UTC)
+        id S232518AbhDEI5L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:57:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DE6661394;
+        Mon,  5 Apr 2021 08:57:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613022;
-        bh=+G1nIWpSHU94vCQ9fb72m3Rs0yzzURXDuCG2wYhjzNU=;
+        s=korg; t=1617613024;
+        bh=A4Ev3rsh+10sLAdNk5zWl9n9T5YWpez7mU5IgvbvWRU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nRqJg3qAsZ4HGKbEV5qUOcV/sFyy1Chj7FOLn6V8mXHWV0Ky63UJfbcxLuQUtHfZf
-         V6T2ZKn6lfdfUHAr6RyhJnYFQgelVekx8PUMZGgYMlYk5sv5NDZCgCNO0NJLp8Rtv6
-         ZLDMwg94dA2WtFUO4JFhpMPto7nlHTL/cRnv4sVg=
+        b=tjqPMvsw/IHhnCDqBmhAPleyfnOqqsV52dERUy8h8kP8l4xd6QXnKOY8TrTQIvJor
+         C7bp6307SAA0L24zu91+rxKQ/m3H54EueJmHy95NjtocUn102c1cBAbV21moYwwH0I
+         G5MhgJbD1nZIX3V6xS1FI5ap7fKuC6PzR37yFAUM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Jeff Mahoney <jeffm@suse.com>, Jan Kara <jack@suse.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        syzbot <syzbot+690cb1e51970435f9775@syzkaller.appspotmail.com>
-Subject: [PATCH 4.9 23/35] reiserfs: update reiserfs_xattrs_initialized() condition
-Date:   Mon,  5 Apr 2021 10:53:58 +0200
-Message-Id: <20210405085019.610664575@linuxfoundation.org>
+        stable@vger.kernel.org, Jianqun Xu <jay.xu@rock-chips.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Wang Panzhenzhuan <randy.wang@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 4.9 24/35] pinctrl: rockchip: fix restore error in resume
+Date:   Mon,  5 Apr 2021 10:53:59 +0200
+Message-Id: <20210405085019.641171953@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210405085018.871387942@linuxfoundation.org>
 References: <20210405085018.871387942@linuxfoundation.org>
@@ -42,52 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+From: Wang Panzhenzhuan <randy.wang@rock-chips.com>
 
-commit 5e46d1b78a03d52306f21f77a4e4a144b6d31486 upstream.
+commit c971af25cda94afe71617790826a86253e88eab0 upstream.
 
-syzbot is reporting NULL pointer dereference at reiserfs_security_init()
-[1], for commit ab17c4f02156c4f7 ("reiserfs: fixup xattr_root caching")
-is assuming that REISERFS_SB(s)->xattr_root != NULL in
-reiserfs_xattr_jcreate_nblocks() despite that commit made
-REISERFS_SB(sb)->priv_root != NULL && REISERFS_SB(s)->xattr_root == NULL
-case possible.
+The restore in resume should match to suspend which only set for RK3288
+SoCs pinctrl.
 
-I guess that commit 6cb4aff0a77cc0e6 ("reiserfs: fix oops while creating
-privroot with selinux enabled") wanted to check xattr_root != NULL
-before reiserfs_xattr_jcreate_nblocks(), for the changelog is talking
-about the xattr root.
-
-  The issue is that while creating the privroot during mount
-  reiserfs_security_init calls reiserfs_xattr_jcreate_nblocks which
-  dereferences the xattr root. The xattr root doesn't exist, so we get
-  an oops.
-
-Therefore, update reiserfs_xattrs_initialized() to check both the
-privroot and the xattr root.
-
-Link: https://syzkaller.appspot.com/bug?id=8abaedbdeb32c861dc5340544284167dd0e46cde # [1]
-Reported-and-tested-by: syzbot <syzbot+690cb1e51970435f9775@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Fixes: 6cb4aff0a77c ("reiserfs: fix oops while creating privroot with selinux enabled")
-Acked-by: Jeff Mahoney <jeffm@suse.com>
-Acked-by: Jan Kara <jack@suse.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 8dca933127024 ("pinctrl: rockchip: save and restore gpio6_c6 pinmux in suspend/resume")
+Reviewed-by: Jianqun Xu <jay.xu@rock-chips.com>
+Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+Signed-off-by: Wang Panzhenzhuan <randy.wang@rock-chips.com>
+Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+Link: https://lore.kernel.org/r/20210223100725.269240-1-jay.xu@rock-chips.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/reiserfs/xattr.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pinctrl/pinctrl-rockchip.c |   13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
---- a/fs/reiserfs/xattr.h
-+++ b/fs/reiserfs/xattr.h
-@@ -42,7 +42,7 @@ void reiserfs_security_free(struct reise
- 
- static inline int reiserfs_xattrs_initialized(struct super_block *sb)
+--- a/drivers/pinctrl/pinctrl-rockchip.c
++++ b/drivers/pinctrl/pinctrl-rockchip.c
+@@ -2367,12 +2367,15 @@ static int __maybe_unused rockchip_pinct
+ static int __maybe_unused rockchip_pinctrl_resume(struct device *dev)
  {
--	return REISERFS_SB(sb)->priv_root != NULL;
-+	return REISERFS_SB(sb)->priv_root && REISERFS_SB(sb)->xattr_root;
- }
+ 	struct rockchip_pinctrl *info = dev_get_drvdata(dev);
+-	int ret = regmap_write(info->regmap_base, RK3288_GRF_GPIO6C_IOMUX,
+-			       rk3288_grf_gpio6c_iomux |
+-			       GPIO6C6_SEL_WRITE_ENABLE);
++	int ret;
  
- #define xattr_size(size) ((size) + sizeof(struct reiserfs_xattr_header))
+-	if (ret)
+-		return ret;
++	if (info->ctrl->type == RK3288) {
++		ret = regmap_write(info->regmap_base, RK3288_GRF_GPIO6C_IOMUX,
++				   rk3288_grf_gpio6c_iomux |
++				   GPIO6C6_SEL_WRITE_ENABLE);
++		if (ret)
++			return ret;
++	}
+ 
+ 	return pinctrl_force_default(info->pctl_dev);
+ }
 
 
