@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D56F353CF7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA24C353D52
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233245AbhDEI5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 04:57:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36676 "EHLO mail.kernel.org"
+        id S233448AbhDEI7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 04:59:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233172AbhDEI5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 04:57:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB4D861245;
-        Mon,  5 Apr 2021 08:57:14 +0000 (UTC)
+        id S237032AbhDEI7M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:59:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C085561394;
+        Mon,  5 Apr 2021 08:59:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613035;
-        bh=UZiW33abR/6L1RvNnT01660ObmQ00zE4o8XIMWVBfR8=;
+        s=korg; t=1617613146;
+        bh=MyXsjwCyvQ1P/UsY5y8jL+kDB20NLOqjycyVR5KC4TM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=urtfvBw2IUd2M22GDiXORZhrCE63gVs6Lse3ZO3EKGO9mMk5oRp+BH6OZ+PCDA/wy
-         0HOwmRfZFW9tA8cIT6usrLhutghHRpLR8IYbO+sVOu6tc2IAp3Oqz54DTxiZ3K8NmW
-         xGrDewXjK4cpeVV+pn+CmcyuzyImVfyJBNo5es5o=
+        b=ETogErnWxrgW76sVIlI1x9JuJVV0E1kMGZ6FG/dapdeHWlUfqPC1ntlqVZQOUGxrX
+         3thw6lS8F7zuJxj/8V+cncPQxHjx521nN5tha+A9VN81b26AIWi4hB81ysDs2jbEg+
+         Ma3oOIYJdpGvTFN5nhbyNHsQk0BjKioW80AJmGig=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chunfeng Yun <chunfeng.yun@mediatek.com>
-Subject: [PATCH 4.9 28/35] usb: xhci-mtk: fix broken streams issue on 0.96 xHCI
+        stable@vger.kernel.org, Jianqun Xu <jay.xu@rock-chips.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Wang Panzhenzhuan <randy.wang@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 4.14 37/52] pinctrl: rockchip: fix restore error in resume
 Date:   Mon,  5 Apr 2021 10:54:03 +0200
-Message-Id: <20210405085019.760631943@linuxfoundation.org>
+Message-Id: <20210405085023.197997947@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085018.871387942@linuxfoundation.org>
-References: <20210405085018.871387942@linuxfoundation.org>
+In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
+References: <20210405085021.996963957@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,49 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunfeng Yun <chunfeng.yun@mediatek.com>
+From: Wang Panzhenzhuan <randy.wang@rock-chips.com>
 
-commit 6f978a30c9bb12dab1302d0f06951ee290f5e600 upstream.
+commit c971af25cda94afe71617790826a86253e88eab0 upstream.
 
-The MediaTek 0.96 xHCI controller on some platforms does not
-support bulk stream even HCCPARAMS says supporting, due to MaxPSASize
-is set a default value 1 by mistake, here use XHCI_BROKEN_STREAMS
-quirk to fix it.
+The restore in resume should match to suspend which only set for RK3288
+SoCs pinctrl.
 
-Fixes: 94a631d91ad3 ("usb: xhci-mtk: check hcc_params after adding primary hcd")
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-Link: https://lore.kernel.org/r/1616482975-17841-4-git-send-email-chunfeng.yun@mediatek.com
+Fixes: 8dca933127024 ("pinctrl: rockchip: save and restore gpio6_c6 pinmux in suspend/resume")
+Reviewed-by: Jianqun Xu <jay.xu@rock-chips.com>
+Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+Signed-off-by: Wang Panzhenzhuan <randy.wang@rock-chips.com>
+Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+Link: https://lore.kernel.org/r/20210223100725.269240-1-jay.xu@rock-chips.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/xhci-mtk.c |   10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/pinctrl/pinctrl-rockchip.c |   13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
---- a/drivers/usb/host/xhci-mtk.c
-+++ b/drivers/usb/host/xhci-mtk.c
-@@ -470,6 +470,13 @@ static void xhci_mtk_quirks(struct devic
- 	xhci->quirks |= XHCI_SPURIOUS_SUCCESS;
- 	if (mtk->lpm_support)
- 		xhci->quirks |= XHCI_LPM_SUPPORT;
-+
-+	/*
-+	 * MTK xHCI 0.96: PSA is 1 by default even if doesn't support stream,
-+	 * and it's 3 when support it.
-+	 */
-+	if (xhci->hci_version < 0x100 && HCC_MAX_PSA(xhci->hcc_params) == 4)
-+		xhci->quirks |= XHCI_BROKEN_STREAMS;
+--- a/drivers/pinctrl/pinctrl-rockchip.c
++++ b/drivers/pinctrl/pinctrl-rockchip.c
+@@ -3121,12 +3121,15 @@ static int __maybe_unused rockchip_pinct
+ static int __maybe_unused rockchip_pinctrl_resume(struct device *dev)
+ {
+ 	struct rockchip_pinctrl *info = dev_get_drvdata(dev);
+-	int ret = regmap_write(info->regmap_base, RK3288_GRF_GPIO6C_IOMUX,
+-			       rk3288_grf_gpio6c_iomux |
+-			       GPIO6C6_SEL_WRITE_ENABLE);
++	int ret;
+ 
+-	if (ret)
+-		return ret;
++	if (info->ctrl->type == RK3288) {
++		ret = regmap_write(info->regmap_base, RK3288_GRF_GPIO6C_IOMUX,
++				   rk3288_grf_gpio6c_iomux |
++				   GPIO6C6_SEL_WRITE_ENABLE);
++		if (ret)
++			return ret;
++	}
+ 
+ 	return pinctrl_force_default(info->pctl_dev);
  }
- 
- /* called during probe() after chip reset completes */
-@@ -636,7 +643,8 @@ static int xhci_mtk_probe(struct platfor
- 	if (ret)
- 		goto put_usb3_hcd;
- 
--	if (HCC_MAX_PSA(xhci->hcc_params) >= 4)
-+	if (HCC_MAX_PSA(xhci->hcc_params) >= 4 &&
-+	    !(xhci->quirks & XHCI_BROKEN_STREAMS))
- 		xhci->shared_hcd->can_do_streams = 1;
- 
- 	ret = usb_add_hcd(xhci->shared_hcd, irq, IRQF_SHARED);
 
 
