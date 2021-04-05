@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00FFD3540A0
+	by mail.lfdr.de (Postfix) with ESMTP id BC0A23540A2
 	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241001AbhDEJTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:19:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35330 "EHLO mail.kernel.org"
+        id S241044AbhDEJTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:19:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239616AbhDEJPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:15:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FC1C613A9;
-        Mon,  5 Apr 2021 09:15:29 +0000 (UTC)
+        id S240314AbhDEJPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:15:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2F0061393;
+        Mon,  5 Apr 2021 09:15:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617614130;
-        bh=uW6oDUm5OGgrAlcJAqE/N3uUNnNkdl5IGSMnsyGW+o0=;
+        s=korg; t=1617614135;
+        bh=mAe0AMo/Vz3uUUPI3lRQeA7kElFgeIoVf38DfeJpueQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aA0UIUuCdUMhtM3da4eo+TgzKDdesikdU1SA3JfFD1XLAQwgg1UDUPQPMBLvyd82Z
-         5k5gaXfr3XhVvkzn83YyGeaAncjRJwhigN64V96OlxHj0zb0qPvhtUnnQ+ZJpIDyGe
-         v+j65YwmSzQl5ODKhpmvLabQd813UHk1qOIQD6Bg=
+        b=jSo4NAVJMaXLgOuBI4CfX6++yb0xnre6O6Ny9BEDDQhTXdUqfFRo5w9KGQOQqTibE
+         itbykmZ1841X/VS49L8hTUvmzztdkooIeciIMGs/YSUpXOn/Zt6xVtwL5sAQeEsdj0
+         zADR3W+lrs7ULzADrmQO5rF19yyTKF7mhMGKwAhM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Jeff Mahoney <jeffm@suse.com>, Jan Kara <jack@suse.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        syzbot <syzbot+690cb1e51970435f9775@syzkaller.appspotmail.com>
-Subject: [PATCH 5.11 094/152] reiserfs: update reiserfs_xattrs_initialized() condition
-Date:   Mon,  5 Apr 2021 10:54:03 +0200
-Message-Id: <20210405085037.303774073@linuxfoundation.org>
+        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Subject: [PATCH 5.11 095/152] drm/imx: fix memory leak when fails to init
+Date:   Mon,  5 Apr 2021 10:54:04 +0200
+Message-Id: <20210405085037.335242081@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
 References: <20210405085034.233917714@linuxfoundation.org>
@@ -42,52 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+From: Pan Bian <bianpan2016@163.com>
 
-commit 5e46d1b78a03d52306f21f77a4e4a144b6d31486 upstream.
+commit 69c3ed7282a143439bbc2d03dc00d49c68fcb629 upstream.
 
-syzbot is reporting NULL pointer dereference at reiserfs_security_init()
-[1], for commit ab17c4f02156c4f7 ("reiserfs: fixup xattr_root caching")
-is assuming that REISERFS_SB(s)->xattr_root != NULL in
-reiserfs_xattr_jcreate_nblocks() despite that commit made
-REISERFS_SB(sb)->priv_root != NULL && REISERFS_SB(s)->xattr_root == NULL
-case possible.
+Put DRM device on initialization failure path rather than directly
+return error code.
 
-I guess that commit 6cb4aff0a77cc0e6 ("reiserfs: fix oops while creating
-privroot with selinux enabled") wanted to check xattr_root != NULL
-before reiserfs_xattr_jcreate_nblocks(), for the changelog is talking
-about the xattr root.
-
-  The issue is that while creating the privroot during mount
-  reiserfs_security_init calls reiserfs_xattr_jcreate_nblocks which
-  dereferences the xattr root. The xattr root doesn't exist, so we get
-  an oops.
-
-Therefore, update reiserfs_xattrs_initialized() to check both the
-privroot and the xattr root.
-
-Link: https://syzkaller.appspot.com/bug?id=8abaedbdeb32c861dc5340544284167dd0e46cde # [1]
-Reported-and-tested-by: syzbot <syzbot+690cb1e51970435f9775@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Fixes: 6cb4aff0a77c ("reiserfs: fix oops while creating privroot with selinux enabled")
-Acked-by: Jeff Mahoney <jeffm@suse.com>
-Acked-by: Jan Kara <jack@suse.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: a67d5088ceb8 ("drm/imx: drop explicit drm_mode_config_cleanup")
+Signed-off-by: Pan Bian <bianpan2016@163.com>
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/reiserfs/xattr.h |    2 +-
+ drivers/gpu/drm/imx/imx-drm-core.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/reiserfs/xattr.h
-+++ b/fs/reiserfs/xattr.h
-@@ -43,7 +43,7 @@ void reiserfs_security_free(struct reise
+--- a/drivers/gpu/drm/imx/imx-drm-core.c
++++ b/drivers/gpu/drm/imx/imx-drm-core.c
+@@ -215,7 +215,7 @@ static int imx_drm_bind(struct device *d
  
- static inline int reiserfs_xattrs_initialized(struct super_block *sb)
- {
--	return REISERFS_SB(sb)->priv_root != NULL;
-+	return REISERFS_SB(sb)->priv_root && REISERFS_SB(sb)->xattr_root;
- }
+ 	ret = drmm_mode_config_init(drm);
+ 	if (ret)
+-		return ret;
++		goto err_kms;
  
- #define xattr_size(size) ((size) + sizeof(struct reiserfs_xattr_header))
+ 	ret = drm_vblank_init(drm, MAX_CRTC);
+ 	if (ret)
 
 
