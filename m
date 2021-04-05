@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5269354149
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C90F35414A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238064AbhDEKts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 06:49:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49394 "EHLO
+        id S233215AbhDEKtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 06:49:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234612AbhDEKtr (ORCPT
+        with ESMTP id S234612AbhDEKtu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 06:49:47 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8288C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 03:49:41 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id i19so8139901qtv.7
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 03:49:41 -0700 (PDT)
+        Mon, 5 Apr 2021 06:49:50 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D0CAC061756
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 03:49:44 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id g20so11033802qkk.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 03:49:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=54Nec5iwCSagU+D8h6pLpuy7QchFo0Lir6iLHH9sio0=;
-        b=AAa1Gt07MFDtB6UhuBKQnpm//yBxBir0r37aKfOKzJz29r8naMYj15wPYxKrha7dt0
-         8to/4YnJSQX+yxurqkUUv6p8bHws6etGMeK775bcrSiMc6X6kAWaKI8EZMvhGjXdrl/1
-         5U9vFmteLdLXL6AtKbSuAkgVJPbkq1m1u7miMyKzgBNUtu6mHoBL8Y2HIil5QbJVMKmR
-         bZRx1sz/X/9ktwKYz9MhVImXdeNzzqV1T8z959Y2UuwGzbZxu5BW+eCur4VE8TrVOXFD
-         BwU7MzA4JOqTuzBxnYKmXVLOxi0mE7XlW1CEjo08v1i9WVWh1h3GIMjDDqmwesBpDBiL
-         iiCg==
+        bh=YtQ+rBpGR8emFNv+2pInaqsN6Vcqx8BsiWr4G6jFMQs=;
+        b=tkBlrCQeZH6CXg71kGRcNJk+XU8Qb0C8xs3rD3nOmsJE2C7ga2n5Qsg+xNK0Iog2Op
+         KB3p34nmF7/pGRgQba+T5sDrZ4Ft1//eifXQMyEPx6/WBSx8pQrJ/yZ1+mIHnleEQU4h
+         4QxVc7TBI5gqFx24TaCSEhg67IXC1enfWr/M8ybr+9i52BMuUGw+mjbaF8waEoqZTBi6
+         db8xAr23pBk+yRaSYTlwxb/kd0Srz9K0V/MPHTSWVYmfCcSeDG1lRKpTmQ/Hh7pifLIg
+         ZT+CvSiksHXueVQ0pcb5+SxTVdQHAYflSkhdJ/XyskzDyTcpuFaspNEWNjNgSnoSsmt7
+         rtjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=54Nec5iwCSagU+D8h6pLpuy7QchFo0Lir6iLHH9sio0=;
-        b=Xa0WvmctCAKcMOLcaHfsZbxTBU7Q9O9gmrvjmeixJrxjACLRzqy7D5HUw80AUhX329
-         z8EfiT9kl/Wl5Ll3lu59x+U8w5j+AOn6+iszhlXA1Tc7L5c2bXb0H1owBN3jOrJL9Ins
-         I4S/MvB/JsSHhk5ksiu3djV71ypWtFHNZ+qxFRLDacV8aDiyDfN6yU6YV1xjYPP7/piN
-         DpaWIfyhnGMvFNTcQm/oiAVQGgYw6IO9Ws269pZJXgcHcqqnuXxHE6L7vUI7rJYvRYmK
-         rxFqn4/k8ZsAEJPdEM1ClA6S3XZW6sJFqISFob6wnQtJe7rlXEkv8mU244LxrKyrQa5u
-         QKOw==
-X-Gm-Message-State: AOAM53397XjTzzfvsTo8alFrhvw/eYdl9ba9Lf4C2I3zN7f99/2H8eHE
-        GY2h0+BZnRJWiW/reodEiPo=
-X-Google-Smtp-Source: ABdhPJy1BJCL6BmiTZV5PHI2kWLEVQwQeD9lqxcAw5f85R3OwAWChCVbHsKRNa91qi7iA5WwHn5prQ==
-X-Received: by 2002:a05:622a:447:: with SMTP id o7mr22300829qtx.72.1617619781165;
-        Mon, 05 Apr 2021 03:49:41 -0700 (PDT)
+        bh=YtQ+rBpGR8emFNv+2pInaqsN6Vcqx8BsiWr4G6jFMQs=;
+        b=LDCgEW455L+65H8pBBeaoA6w+iixoSMtSBEwmDCSyUb4vm5xfSyWIqLaCHdA99nz9x
+         h489RWTKBrwIiLc7clXkKnZJo/h0nVFxMIdg+Cnr+K6o2b1gXkW8Cc3TNt+OdI5JVlJr
+         g0GHySdZ/zdCbRx/QXoXu7sTv+jEISh+UCRr0LR1/dpOYxoi2zZvPa+MO35eDSBXaDXo
+         ALfjFr92yMgjMbRFdG52rLpeFKb8IFuodMIFknfETcUmK1ASfzJJV08705rLF4g4AV5B
+         sgBXwai6K3gaK7XP3gRotccn4bITenZxUJvhAxPG2shWiU5KzD7/RHvPx/tnJ4CLMoYq
+         Vyjg==
+X-Gm-Message-State: AOAM532gLhu2k1BHWdNSBP5YSrf6s6DOU75iRStlhYoXx22OKkSkXzsa
+        2thLia4efez+GM79edfPFLC1aM6q8mTID4qa
+X-Google-Smtp-Source: ABdhPJxoPh/mkZcpQWtajUVCjUnKd1/ZCo1kzcxKFPCczroPj7YIosQY9cvUA+z7ENde5MDCvmbuNg==
+X-Received: by 2002:a37:6348:: with SMTP id x69mr23053833qkb.154.1617619783725;
+        Mon, 05 Apr 2021 03:49:43 -0700 (PDT)
 Received: from LuizSampaio-PC.localdomain ([2804:214:8290:6b95:72bd:5607:9b84:56df])
-        by smtp.gmail.com with ESMTPSA id p66sm13349634qka.108.2021.04.05.03.49.39
+        by smtp.gmail.com with ESMTPSA id p66sm13349634qka.108.2021.04.05.03.49.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Apr 2021 03:49:41 -0700 (PDT)
+        Mon, 05 Apr 2021 03:49:43 -0700 (PDT)
 From:   Luiz Sampaio <sampaio.ime@gmail.com>
 To:     zbr@ioremap.net
 Cc:     corbet@lwn.net, rikard.falkeborn@gmail.com,
         gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
         Luiz Sampaio <sampaio.ime@gmail.com>
-Subject: [PATCH v4 7/9] w1: ds2438: fixing bug that would always get page0
-Date:   Mon,  5 Apr 2021 07:50:07 -0300
-Message-Id: <20210405105009.420924-8-sampaio.ime@gmail.com>
+Subject: [PATCH v4 8/9] w1: ds2438: adding support for reading page1
+Date:   Mon,  5 Apr 2021 07:50:08 -0300
+Message-Id: <20210405105009.420924-9-sampaio.ime@gmail.com>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210405105009.420924-1-sampaio.ime@gmail.com>
 References: <20210403044821.390485-1-sampaio.ime@gmail.com>
@@ -66,36 +66,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The purpose of the w1_ds2438_get_page function is to get the register
-values at the page passed as the pageno parameter. However, the page0 was
-hardcoded, such that the function always returned the page0 contents. Fixed
-so that the function can retrieve any page.
+Added a sysfs entry to support reading the page1 registers. This registers
+contain Elapsed Time Meter (ETM) data, which shows for how long the chip is
+on, as well as an Offset Register data, which can be used to calibrate the
+current measurement of the chip.
 
 Signed-off-by: Luiz Sampaio <sampaio.ime@gmail.com>
 ---
- drivers/w1/slaves/w1_ds2438.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ Documentation/w1/slaves/w1_ds2438.rst |  8 ++++++
+ drivers/w1/slaves/w1_ds2438.c         | 41 +++++++++++++++++++++++++++
+ 2 files changed, 49 insertions(+)
 
+diff --git a/Documentation/w1/slaves/w1_ds2438.rst b/Documentation/w1/slaves/w1_ds2438.rst
+index a29309a3f8e5..ac8d0d4b0d0e 100644
+--- a/Documentation/w1/slaves/w1_ds2438.rst
++++ b/Documentation/w1/slaves/w1_ds2438.rst
+@@ -44,6 +44,14 @@ Internally when this file is read, the additional CRC byte is also obtained
+ from the slave device. If it is correct, the 8 bytes page data are passed
+ to userspace, otherwise an I/O error is returned.
+ 
++"page1"
++-------
++This file provides full 8 bytes of the chip Page 1 (01h).
++This page contains the ICA, elapsed time meter and current offset data of the DS2438.
++Internally when this file is read, the additional CRC byte is also obtained
++from the slave device. If it is correct, the 8 bytes page data are passed
++to userspace, otherwise an I/O error is returned.
++
+ "temperature"
+ -------------
+ Opening and reading this file initiates the CONVERT_T (temperature conversion)
 diff --git a/drivers/w1/slaves/w1_ds2438.c b/drivers/w1/slaves/w1_ds2438.c
-index ccb06b8c2d78..ef6217ecb1cb 100644
+index ef6217ecb1cb..2cfdfedb584f 100644
 --- a/drivers/w1/slaves/w1_ds2438.c
 +++ b/drivers/w1/slaves/w1_ds2438.c
-@@ -62,13 +62,13 @@ static int w1_ds2438_get_page(struct w1_slave *sl, int pageno, u8 *buf)
- 		if (w1_reset_select_slave(sl))
- 			continue;
- 		w1_buf[0] = W1_DS2438_RECALL_MEMORY;
--		w1_buf[1] = 0x00;
-+		w1_buf[1] = (u8)pageno;
- 		w1_write_block(sl->master, w1_buf, 2);
+@@ -49,6 +49,15 @@
+ #define DS2438_CURRENT_MSB		0x06
+ #define DS2438_THRESHOLD		0x07
  
- 		if (w1_reset_select_slave(sl))
- 			continue;
- 		w1_buf[0] = W1_DS2438_READ_SCRATCH;
--		w1_buf[1] = 0x00;
-+		w1_buf[1] = (u8)pageno;
- 		w1_write_block(sl->master, w1_buf, 2);
++/* Page #1 definitions */
++#define DS2438_ETM_0			0x00
++#define DS2438_ETM_1			0x01
++#define DS2438_ETM_2			0x02
++#define DS2438_ETM_3			0x03
++#define DS2438_ICA			0x04
++#define DS2438_OFFSET_LSB		0x05
++#define DS2438_OFFSET_MSB		0x06
++
+ static int w1_ds2438_get_page(struct w1_slave *sl, int pageno, u8 *buf)
+ {
+ 	unsigned int retries = W1_DS2438_RETRIES;
+@@ -325,6 +334,36 @@ static ssize_t page0_read(struct file *filp, struct kobject *kobj,
+ 	return ret;
+ }
  
- 		count = w1_read_block(sl->master, buf, DS2438_PAGE_SIZE + 1);
++static ssize_t page1_read(struct file *filp, struct kobject *kobj,
++			  struct bin_attribute *bin_attr, char *buf,
++			  loff_t off, size_t count)
++{
++	struct w1_slave *sl = kobj_to_w1_slave(kobj);
++	int ret;
++	u8 w1_buf[DS2438_PAGE_SIZE + 1 /*for CRC*/];
++
++	if (off != 0)
++		return 0;
++	if (!buf)
++		return -EINVAL;
++
++	mutex_lock(&sl->master->bus_mutex);
++
++	/* Read no more than page1 size */
++	if (count > DS2438_PAGE_SIZE)
++		count = DS2438_PAGE_SIZE;
++
++	if (w1_ds2438_get_page(sl, 1, w1_buf) == 0) {
++		memcpy(buf, &w1_buf, count);
++		ret = count;
++	} else
++		ret = -EIO;
++
++	mutex_unlock(&sl->master->bus_mutex);
++
++	return ret;
++}
++
+ static ssize_t temperature_read(struct file *filp, struct kobject *kobj,
+ 				struct bin_attribute *bin_attr, char *buf,
+ 				loff_t off, size_t count)
+@@ -390,6 +429,7 @@ static ssize_t vdd_read(struct file *filp, struct kobject *kobj,
+ 
+ static BIN_ATTR(iad, 0664, iad_read, iad_write, 0);
+ static BIN_ATTR_RO(page0, DS2438_PAGE_SIZE);
++static BIN_ATTR_RO(page1, DS2438_PAGE_SIZE);
+ static BIN_ATTR_RO(temperature, 0/* real length varies */);
+ static BIN_ATTR_RO(vad, 0/* real length varies */);
+ static BIN_ATTR_RO(vdd, 0/* real length varies */);
+@@ -397,6 +437,7 @@ static BIN_ATTR_RO(vdd, 0/* real length varies */);
+ static struct bin_attribute *w1_ds2438_bin_attrs[] = {
+ 	&bin_attr_iad,
+ 	&bin_attr_page0,
++	&bin_attr_page1,
+ 	&bin_attr_temperature,
+ 	&bin_attr_vad,
+ 	&bin_attr_vdd,
 -- 
 2.30.1
 
