@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BDA1353E31
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2153E353D70
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238054AbhDEJEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:04:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45830 "EHLO mail.kernel.org"
+        id S237077AbhDEI7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 04:59:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237515AbhDEJDH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:03:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CDCB61393;
-        Mon,  5 Apr 2021 09:03:01 +0000 (UTC)
+        id S233720AbhDEI6x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:58:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65AE76138A;
+        Mon,  5 Apr 2021 08:58:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613382;
-        bh=HOOFgjuNG52MhBAbzvySEYqeaHi0a9pEDTm9vIu8bVw=;
+        s=korg; t=1617613127;
+        bh=OpEccYSIEvDifJWbaGyRKbJQ280uBLcrokr4+CzDmsY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ImETL+ByvHncUilJ7eN9+gG1A8wMIu4TnEm1t9uG9VeWi0AFOy/6t4X28bnxpWuhe
-         fp4e2h1AJvYQOpUMX95G9i+pou/sooyNur+xZ513bRJk1aOvSbCRQNZYpuXtLBneYe
-         nV43FK4oWkRbaO76Dtz1f4O+Rj8vqFyE7wQMacY4=
+        b=DPEmS5/F2KQe4wK2yhWtm27r4OHbXhUVm0y0t/o7ZGUC/p+F+gsa+b2wcPcxaVXw3
+         0V0kFQd1o3TuFkt9BMWRPlDOAnT6m7ToL/sEIf3jDr3a+i8Jm4geeeGOjApwBXVv7X
+         8W93dAo8VkBYYF4ywTa0t8GIR7d3mgL3ad1uPbWE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julian Braha <julianbraha@gmail.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 08/74] fs: nfsd: fix kconfig dependency warning for NFSD_V4
+Subject: [PATCH 4.14 06/52] ASoC: rt5651: Fix dac- and adc- vol-tlv values being off by a factor of 10
 Date:   Mon,  5 Apr 2021 10:53:32 +0200
-Message-Id: <20210405085024.996764926@linuxfoundation.org>
+Message-Id: <20210405085022.207133755@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
-References: <20210405085024.703004126@linuxfoundation.org>
+In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
+References: <20210405085021.996963957@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julian Braha <julianbraha@gmail.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 7005227369079963d25fb2d5d736d0feb2c44cf6 ]
+[ Upstream commit eee51df776bd6cac10a76b2779a9fdee3f622b2b ]
 
-When NFSD_V4 is enabled and CRYPTO is disabled,
-Kbuild gives the following warning:
+The adc_vol_tlv volume-control has a range from -17.625 dB to +30 dB,
+not -176.25 dB to + 300 dB. This wrong scale is esp. a problem in userspace
+apps which translate the dB scale to a linear scale. With the logarithmic
+dB scale being of by a factor of 10 we loose all precision in the lower
+area of the range when apps translate things to a linear scale.
 
-WARNING: unmet direct dependencies detected for CRYPTO_SHA256
-  Depends on [n]: CRYPTO [=n]
-  Selected by [y]:
-  - NFSD_V4 [=y] && NETWORK_FILESYSTEMS [=y] && NFSD [=y] && PROC_FS [=y]
+E.g. the 0 dB default, which corresponds with a value of 47 of the
+0 - 127 range for the control, would be shown as 0/100 in alsa-mixer.
 
-WARNING: unmet direct dependencies detected for CRYPTO_MD5
-  Depends on [n]: CRYPTO [=n]
-  Selected by [y]:
-  - NFSD_V4 [=y] && NETWORK_FILESYSTEMS [=y] && NFSD [=y] && PROC_FS [=y]
+Since the centi-dB values used in the TLV struct cannot represent the
+0.375 dB step size used by these controls, change the TLV definition
+for them to specify a min and max value instead of min + stepsize.
 
-This is because NFSD_V4 selects CRYPTO_MD5 and CRYPTO_SHA256,
-without depending on or selecting CRYPTO, despite those config options
-being subordinate to CRYPTO.
+Note this mirrors commit 3f31f7d9b540 ("ASoC: rt5670: Fix dac- and adc-
+vol-tlv values being off by a factor of 10") which made the exact same
+change to the rt5670 codec driver.
 
-Signed-off-by: Julian Braha <julianbraha@gmail.com>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20210226143817.84287-3-hdegoede@redhat.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfsd/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/rt5651.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/nfsd/Kconfig b/fs/nfsd/Kconfig
-index f2f81561ebb6..4d6e71335bce 100644
---- a/fs/nfsd/Kconfig
-+++ b/fs/nfsd/Kconfig
-@@ -73,6 +73,7 @@ config NFSD_V4
- 	select NFSD_V3
- 	select FS_POSIX_ACL
- 	select SUNRPC_GSS
-+	select CRYPTO
- 	select CRYPTO_MD5
- 	select CRYPTO_SHA256
- 	select GRACE_PERIOD
+diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
+index 57c2add323c4..38510fd06458 100644
+--- a/sound/soc/codecs/rt5651.c
++++ b/sound/soc/codecs/rt5651.c
+@@ -287,9 +287,9 @@ static bool rt5651_readable_register(struct device *dev, unsigned int reg)
+ }
+ 
+ static const DECLARE_TLV_DB_SCALE(out_vol_tlv, -4650, 150, 0);
+-static const DECLARE_TLV_DB_SCALE(dac_vol_tlv, -65625, 375, 0);
++static const DECLARE_TLV_DB_MINMAX(dac_vol_tlv, -6562, 0);
+ static const DECLARE_TLV_DB_SCALE(in_vol_tlv, -3450, 150, 0);
+-static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -17625, 375, 0);
++static const DECLARE_TLV_DB_MINMAX(adc_vol_tlv, -1762, 3000);
+ static const DECLARE_TLV_DB_SCALE(adc_bst_tlv, 0, 1200, 0);
+ 
+ /* {0, +20, +24, +30, +35, +40, +44, +50, +52} dB */
 -- 
 2.30.1
 
