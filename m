@@ -2,134 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6751F35452D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 18:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A88BE354532
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 18:33:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242391AbhDEQc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 12:32:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39004 "EHLO
+        id S242398AbhDEQdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 12:33:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238474AbhDEQc0 (ORCPT
+        with ESMTP id S238558AbhDEQdN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 12:32:26 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2C8C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 09:32:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=WlZlrre6xzixEo2giGUl6pFbTjNx7pniG1L/BRwxIwU=; b=tDA3jodwCZQinL1j+mqzmDIbMI
-        5x9ANZXMUUVi7C+9PvXqBExh+5JA5lXzeFMV3qWB/f+e1Hr51A3Y4LJ7GR4c2ydyce3q2z8siPx7X
-        7ytVHJajPFoNofR1z7SAxarTPpdtMVxwA1xbH9ln5e953zaaalkGsPXW0lvBPe8dVLbbuz8NfsJ4L
-        fOBu5fjjaLIn//r9LFSgMjg4PBUt3+KhLPUDij3prUeeFUS8Z7mm10RG4LpIwTof6d0cbaq6WOxrj
-        weRUDDc3tx360RWB9BvDsjkbWc/EcQycrIqf9TKhspUCRtTEmKW/EP5xuWzsR63VcddqMXedVMj9X
-        lyEvvBCA==;
-Received: from [2601:1c0:6280:3f0::e0e1]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lTS8c-00Bc7S-Uq; Mon, 05 Apr 2021 16:31:50 +0000
-Subject: Re: [PATCH v2] powerpc: iommu: fix build when neither PCI or IBMVIO
- is set
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org
-Cc:     linuxppc-dev@lists.ozlabs.org, kernel test robot <lkp@intel.com>,
-        Anton Blanchard <anton@samba.org>
-References: <20210404192623.10697-1-rdunlap@infradead.org>
- <135d33bc-5520-d49b-dd1c-582c7d8e3bac@csgroup.eu>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <dbe0b77b-df0b-8477-cc78-3e0c392680e8@infradead.org>
-Date:   Mon, 5 Apr 2021 09:31:38 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Mon, 5 Apr 2021 12:33:13 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CDFFC061788
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 09:33:07 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so6130973pjv.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 09:33:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qFylozrlyKKCpuFovX6HAhcTBeCnPIKKmkJLUGerBIo=;
+        b=P7OJP3yWJ32c95Ql6kBfLhVR4ZyxMoPCoYPGS3TPZmhhEje9aNWcjnT4VFuzpD/Som
+         RTZ1PTZmHHDzit+q3mN6so/tOrFovHhdBcRqFxz9DcHeTl9G9XsDt25xq2iZPyuhEx/C
+         BhmDoTXoJCNxoLJ9uhl3T5k6yoH48+oC7BThxzjARs2AcKUoIH+RAa4RdClIYtPrhlyD
+         yj4hW7BMHPn4Ug3J6YwsfkZMxHosFZwH+i3+J1BvxXhpYET0W28pPlxYoYXEFMviQer7
+         Kjx81OaLs3wDg/f05pRMc160V45mFZbMEkiXwTakXkqJxpqxw2laujVycQbqLldeuLHz
+         Hx0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qFylozrlyKKCpuFovX6HAhcTBeCnPIKKmkJLUGerBIo=;
+        b=jcCvIDV4xR6oS5Uzw18yPnDxL4rlhDcK4SK+izKd8xsv9U1c7pvV3NkSHBJ5z9MZ+V
+         10bOTMa25AidYpzaastfzihT6/+3ml+vVpOzOpTgC7NMnMFazYf82IAdGnzYype+T16r
+         WiT07PAAtRB+Mn1kxASmMnSZil47kXRLCBDwOZbpQ4us/bFEZ3IIskMFs96YzBA889ZX
+         m3PKtPVE/GYd6G+ewetCWcMMPgWeeVmEHP6ZFphvDH9XtBr74JO4fCVam24nGJpIrOAc
+         3DWLeHVN8DbkTQSZp+ajzVgU9T6wlZkIhu71dxNMJzZ3VRGN7ANgWmXu8rges4+rAVse
+         Oiiw==
+X-Gm-Message-State: AOAM530jTsKREaXpsXNNLSJCXl/pMk7wKTSiAjCoRF5OTfCevAICnU8u
+        MotK3oCo82f0mbAyoE4r/Xnrdw==
+X-Google-Smtp-Source: ABdhPJyVqmt9XH5YGpvHjpubvqt/qVhOP3UrqTiRCe44LbhrbARmsVhpjt3fOrn0uLJLW1Yk1+SR2g==
+X-Received: by 2002:a17:902:ff0b:b029:e8:eb46:1566 with SMTP id f11-20020a170902ff0bb02900e8eb461566mr8956141plj.24.1617640386562;
+        Mon, 05 Apr 2021 09:33:06 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id r184sm16214515pfc.107.2021.04.05.09.33.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Apr 2021 09:33:06 -0700 (PDT)
+Date:   Mon, 5 Apr 2021 16:33:02 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        John Allen <john.allen@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Borislav Petkov <bp@suse.de>
+Subject: Re: [PATCH 2/5] crypto: ccp: Reject SEV commands with mismatching
+ command buffer
+Message-ID: <YGs7vioH8TVzyckx@google.com>
+References: <20210402233702.3291792-1-seanjc@google.com>
+ <20210402233702.3291792-3-seanjc@google.com>
+ <bc82825c-03ff-1b3f-7166-f6e5671f0a4f@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <135d33bc-5520-d49b-dd1c-582c7d8e3bac@csgroup.eu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bc82825c-03ff-1b3f-7166-f6e5671f0a4f@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/5/21 2:04 AM, Christophe Leroy wrote:
+On Mon, Apr 05, 2021, Tom Lendacky wrote:
+> On 4/2/21 6:36 PM, Sean Christopherson wrote:
+> > diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+> > index 6556d220713b..4c513318f16a 100644
+> > --- a/drivers/crypto/ccp/sev-dev.c
+> > +++ b/drivers/crypto/ccp/sev-dev.c
+> > @@ -141,6 +141,7 @@ static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
+> >  	struct sev_device *sev;
+> >  	unsigned int phys_lsb, phys_msb;
+> >  	unsigned int reg, ret = 0;
+> > +	int buf_len;
+> >  
+> >  	if (!psp || !psp->sev_data)
+> >  		return -ENODEV;
+> > @@ -150,7 +151,11 @@ static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
+> >  
+> >  	sev = psp->sev_data;
+> >  
+> > -	if (data && WARN_ON_ONCE(is_vmalloc_addr(data)))
+> > +	buf_len = sev_cmd_buffer_len(cmd);
+> > +	if (WARN_ON_ONCE(!!data != !!buf_len))
 > 
+> Seems a bit confusing to me.  Can this just be:
 > 
-> Le 04/04/2021 à 21:26, Randy Dunlap a écrit :
->> When neither CONFIG_PCI nor CONFIG_IBMVIO is set/enabled, iommu.c has a
->> build error. The fault injection code is not useful in that kernel config,
->> so make the FAIL_IOMMU option depend on PCI || IBMVIO.
->>
->> Prevents this build error (warning escalated to error):
->> ../arch/powerpc/kernel/iommu.c:178:30: error: 'fail_iommu_bus_notifier' defined but not used [-Werror=unused-variable]
->>    178 | static struct notifier_block fail_iommu_bus_notifier = {
->>
->> Fixes: d6b9a81b2a45 ("powerpc: IOMMU fault injection")
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
->> Cc: Michael Ellerman <mpe@ellerman.id.au>
->> Cc: linuxppc-dev@lists.ozlabs.org
->> Cc: Anton Blanchard <anton@samba.org>
->> ---
->> I was supposed to update this about one month ago, but then I lost
->> some email and also took a break for a few weeks, then I remembered,
->> so here it is.
->>
->>   arch/powerpc/Kconfig.debug |    1 +
->>   1 file changed, 1 insertion(+)
-> 
-> Wouldn't it be cleaner to get rid of those two horid #ifdefs ?
-> Of course we can do both.
+> 	if (WARN_ON_ONCE(data && !buf_len))
 
-Sure, that works. Thanks.
+Or as Christophe pointed out, "!data != !buf_len".
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+> Or is this also trying to catch the case where buf_len is non-zero but
+> data is NULL?
 
-
-> diff --git a/arch/powerpc/kernel/iommu.c b/arch/powerpc/kernel/iommu.c
-> index 216871414434..d691afa8acf8 100644
-> --- a/arch/powerpc/kernel/iommu.c
-> +++ b/arch/powerpc/kernel/iommu.c
-> @@ -180,12 +180,10 @@ static struct notifier_block fail_iommu_bus_notifier = {
-> 
->  static int __init fail_iommu_setup(void)
->  {
-> -#ifdef CONFIG_PCI
-> -    bus_register_notifier(&pci_bus_type, &fail_iommu_bus_notifier);
-> -#endif
-> -#ifdef CONFIG_IBMVIO
-> -    bus_register_notifier(&vio_bus_type, &fail_iommu_bus_notifier);
-> -#endif
-> +    if (IS_ENABLED(CONFIG_PCI))
-> +        bus_register_notifier(&pci_bus_type, &fail_iommu_bus_notifier);
-> +    if (IS_ENABLED(CONFIG_IBMVIO))
-> +        bus_register_notifier(&vio_bus_type, &fail_iommu_bus_notifier);
-> 
->      return 0;
->  }
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index 86c799c97b77..361f4f255911 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -964,6 +964,8 @@ enum {
->  #define PCI_IRQ_MSIX        (1 << 2) /* Allow MSI-X interrupts */
->  #define PCI_IRQ_AFFINITY    (1 << 3) /* Auto-assign affinity */
-> 
-> +extern struct bus_type pci_bus_type;
-> +
->  /* These external functions are only available when PCI support is enabled */
->  #ifdef CONFIG_PCI
-> 
-> @@ -986,8 +988,6 @@ enum pcie_bus_config_types {
-> 
->  extern enum pcie_bus_config_types pcie_bus_config;
-> 
-> -extern struct bus_type pci_bus_type;
-> -
->  /* Do NOT directly access these two variables, unless you are arch-specific PCI
->   * code, or PCI core code. */
->  extern struct list_head pci_root_buses;    /* List of all known PCI buses */
-
-
--- 
-~Randy
+Ya.  It's not necessary to detect "buf_len && !data", but it doesn't incur
+additional cost.  Is there a reason _not_ to disallow that?
 
