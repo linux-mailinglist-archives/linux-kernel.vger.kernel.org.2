@@ -2,33 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29107353D86
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28D24353D8C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237189AbhDEJA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:00:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40782 "EHLO mail.kernel.org"
+        id S237198AbhDEJA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:00:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40880 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237034AbhDEI7o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 04:59:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E505860238;
-        Mon,  5 Apr 2021 08:59:37 +0000 (UTC)
+        id S237062AbhDEI7r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:59:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 92A1D6138A;
+        Mon,  5 Apr 2021 08:59:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613178;
-        bh=F+tCI9jiNp1M/yvFYeNy9DRakJYCmpkSN3y1yNBWCGw=;
+        s=korg; t=1617613181;
+        bh=x49tOg8/oBJkUev6pP4Yx2NL3Qoo8OltRSJJaYuL9+M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MPaJFIwO2Iulu36qOguCcgucGYWAIOCRcva5jL8HN8otOGxRkWuco/UDpYcQB9GaF
-         iU/+Q6URZFz1ec3pVAiS8fasycgWi2GqJUQEoV0FOcjMlCWFRDqUA9EP464EKCOdSl
-         fj5Wylj/ufiFQ2Xr7HGeKa9cS93yJrg46dOixxKc=
+        b=zld3Fiua+7AR1cdKZR2QFTxx12zIY5y4iORFs4C3EwvUqKHu+F7NKJcErXw1DEhH5
+         pNYd3xkQMeexIgT4kDbcBrhQyVbVbuIXP3YUf8ehoZ4Gbv+hjxsjt0QXPsOBNivm3y
+         DJnsflMM/+5ef+s3rO11nYbl/L5N/0jxV2u7ztgc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        Oliver Neukum <oneukum@suse.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.14 48/52] USB: cdc-acm: fix use-after-free after probe failure
-Date:   Mon,  5 Apr 2021 10:54:14 +0200
-Message-Id: <20210405085023.547130572@linuxfoundation.org>
+        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>
+Subject: [PATCH 4.14 49/52] usb: gadget: udc: amd5536udc_pci fix null-ptr-dereference
+Date:   Mon,  5 Apr 2021 10:54:15 +0200
+Message-Id: <20210405085023.579085787@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
 References: <20210405085021.996963957@linuxfoundation.org>
@@ -40,39 +38,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Tong Zhang <ztong0001@gmail.com>
 
-commit 4e49bf376c0451ad2eae2592e093659cde12be9a upstream.
+commit 72035f4954f0bca2d8c47cf31b3629c42116f5b7 upstream.
 
-If tty-device registration fails the driver would fail to release the
-data interface. When the device is later disconnected, the disconnect
-callback would still be called for the data interface and would go about
-releasing already freed resources.
+init_dma_pools() calls dma_pool_create(...dev->dev) to create dma pool.
+however, dev->dev is actually set after calling init_dma_pools(), which
+effectively makes dma_pool_create(..NULL) and cause crash.
+To fix this issue, init dma only after dev->dev is set.
 
-Fixes: c93d81955005 ("usb: cdc-acm: fix error handling in acm_probe()")
-Cc: stable@vger.kernel.org      # 3.9
-Cc: Alexey Khoroshilov <khoroshilov@ispras.ru>
-Acked-by: Oliver Neukum <oneukum@suse.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210322155318.9837-3-johan@kernel.org
+[    1.317993] RIP: 0010:dma_pool_create+0x83/0x290
+[    1.323257] Call Trace:
+[    1.323390]  ? pci_write_config_word+0x27/0x30
+[    1.323626]  init_dma_pools+0x41/0x1a0 [snps_udc_core]
+[    1.323899]  udc_pci_probe+0x202/0x2b1 [amd5536udc_pci]
+
+Fixes: 7c51247a1f62 (usb: gadget: udc: Provide correct arguments for 'dma_pool_create')
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Link: https://lore.kernel.org/r/20210317230400.357756-1-ztong0001@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/class/cdc-acm.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/usb/gadget/udc/amd5536udc_pci.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- a/drivers/usb/class/cdc-acm.c
-+++ b/drivers/usb/class/cdc-acm.c
-@@ -1572,6 +1572,11 @@ skip_countries:
+--- a/drivers/usb/gadget/udc/amd5536udc_pci.c
++++ b/drivers/usb/gadget/udc/amd5536udc_pci.c
+@@ -158,6 +158,11 @@ static int udc_pci_probe(
+ 	pci_set_master(pdev);
+ 	pci_try_set_mwi(pdev);
  
- 	return 0;
- alloc_fail8:
-+	if (!acm->combined_interfaces) {
-+		/* Clear driver data so that disconnect() returns early. */
-+		usb_set_intfdata(data_interface, NULL);
-+		usb_driver_release_interface(&acm_driver, data_interface);
-+	}
- 	if (acm->country_codes) {
- 		device_remove_file(&acm->control->dev,
- 				&dev_attr_wCountryCodes);
++	dev->phys_addr = resource;
++	dev->irq = pdev->irq;
++	dev->pdev = pdev;
++	dev->dev = &pdev->dev;
++
+ 	/* init dma pools */
+ 	if (use_dma) {
+ 		retval = init_dma_pools(dev);
+@@ -165,11 +170,6 @@ static int udc_pci_probe(
+ 			goto err_dma;
+ 	}
+ 
+-	dev->phys_addr = resource;
+-	dev->irq = pdev->irq;
+-	dev->pdev = pdev;
+-	dev->dev = &pdev->dev;
+-
+ 	/* general probing */
+ 	if (udc_probe(dev)) {
+ 		retval = -ENODEV;
 
 
