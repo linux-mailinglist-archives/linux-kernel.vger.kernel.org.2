@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F1F353E37
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF245353DB1
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238183AbhDEJEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:04:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46376 "EHLO mail.kernel.org"
+        id S237291AbhDEJCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:02:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237386AbhDEJDY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:03:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1BB4610E8;
-        Mon,  5 Apr 2021 09:03:17 +0000 (UTC)
+        id S232702AbhDEJAc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:00:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6F7E6124C;
+        Mon,  5 Apr 2021 09:00:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613398;
-        bh=2Wpx2np5tw9vl12QBdhv2gWRgG+wisPIEuXm3/ti/fo=;
+        s=korg; t=1617613227;
+        bh=dYFPrqF9QeI9Yq5VHdYVsI4HQn3dS2qEKnFI0wciVnA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y/MS/uJ5o9uexYbo6yAeaqCtkQq7OCY4OI5wOVhiVUvobNFlIi31/saB2tRY++l7S
-         TtSQnZQB37JQR5prI4g8sKl2D6/zAXSsih5fOBP3yJ/8E+HvDZDIIVKPSg1yLm6qX6
-         ce4ucq8g/UnAAN9b+8UNkmr8d9kxw2mzpYsn8YKA=
+        b=KLKFxrOY28kvIJ1RSxPbPbhZCuBZmeL6bauYDwqdqz52Dri+T3vYauz27HajYKnG2
+         6lQ0z4fotQJirMs5rkXVND9I3xKWik3D3tUschhri0+VEAJh1yw+wrFF74qOf7UauA
+         VTqZV5GRwaF70h4cWvVOj+otN2/sOoFk/flBSvbo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,12 +28,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 22/74] scsi: st: Fix a use after free in st_open()
+Subject: [PATCH 4.19 15/56] scsi: st: Fix a use after free in st_open()
 Date:   Mon,  5 Apr 2021 10:53:46 +0200
-Message-Id: <20210405085025.440284067@linuxfoundation.org>
+Message-Id: <20210405085023.033176752@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
-References: <20210405085024.703004126@linuxfoundation.org>
+In-Reply-To: <20210405085022.562176619@linuxfoundation.org>
+References: <20210405085022.562176619@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -60,10 +60,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/scsi/st.c b/drivers/scsi/st.c
-index e3266a64a477..2121e44c342f 100644
+index 307df2fa39a3..5078db7743cd 100644
 --- a/drivers/scsi/st.c
 +++ b/drivers/scsi/st.c
-@@ -1267,8 +1267,8 @@ static int st_open(struct inode *inode, struct file *filp)
+@@ -1265,8 +1265,8 @@ static int st_open(struct inode *inode, struct file *filp)
  	spin_lock(&st_use_lock);
  	if (STp->in_use) {
  		spin_unlock(&st_use_lock);
