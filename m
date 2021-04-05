@@ -2,121 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D4935489B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 00:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6718835489D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 00:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242785AbhDEW0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 18:26:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59584 "EHLO
+        id S242787AbhDEW3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 18:29:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233086AbhDEW0G (ORCPT
+        with ESMTP id S233086AbhDEW3b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 18:26:06 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 122D9C06174A;
-        Mon,  5 Apr 2021 15:26:00 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id g35so4242789pgg.9;
-        Mon, 05 Apr 2021 15:26:00 -0700 (PDT)
+        Mon, 5 Apr 2021 18:29:31 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC0AAC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 15:29:22 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id v70so13062686qkb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 15:29:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KMtwWkQkvXCG9ApdI46fa9X/Y5SNl/moZ1tKhqcTtCI=;
-        b=luWp4ZYaJWIjExW6V5nfUsxeMIFtJ2h95wCvaOpCUnYrxat4soAUDpW+h+/WYydO/F
-         5wS/H/Pjm8Y8LFepCf+hnogpLQOCrtxISHZkS8KvjZgUAWPDfFdaC31SLIhioqLfN8gs
-         0lO3qy3G5VvW74JRihM9R4dYO350Y+Hl56jhp8t/4i9nf2Xaq/HhJns+QsZI2Ml5hC3Z
-         Cl3HrVjemhIytsv0dLIaaJ/JeeZbn5lbUf9FCVE6KGEgZ7WpHmUF+UotbYdhE1sgJO5m
-         LqEHUbI73aAupJBp48WoLemUuPlFSV0afJxZkevGCxMecQHV08wvpxBZOOWDXBi53F6u
-         EJsA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RwkgDCMjAFVJZLleFiMJUr9vgTjXkXjMnykXo/QokeM=;
+        b=QVB6sBSLuPtIgw1bBIx0B9ARKghOSsS+doviRxtNnR1cQ8ar7A+zCkCYFw8rx00tK7
+         XAAXnVfpMUQxINBXwIQcQV0/ibBpFCGlK9Klb04uVLDcgWRi/czgk1aia/6CotCMNwM6
+         rM+nWAHw07J/BTdEG3NK13U9zjdkeOwt5KW5nWd8H3zKefwnGPRuxIj9ZST3vjVVQz3c
+         WW8jzB+hYbGwZDZj5Ja7SCaPeVLmjLATPyOJ9IF9r1n2POvu3c34mvAn8Iqux0+UHD1g
+         pf4tPtqh76KFD2rcRXESPzcDjysiZWq2iJ1kufBJAGdpQMl2YSftl2LWVJ8qhliVlPNK
+         UWmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KMtwWkQkvXCG9ApdI46fa9X/Y5SNl/moZ1tKhqcTtCI=;
-        b=P7ekDQQHdl3wUytHUhVgieOv1HXh8+Y8Yo52AnyvZHg2eeTWchGrEw1NU7mFj1oDxs
-         ZEgSlfqpcSOt2BhctzXQsvSFjymzFPETAbajZn0nR+mEieNkq8OqqQyFTNoW0bbRN+B+
-         SObCtni7RmOaJZ9YzhSJH+XFQ1xLUmGiM4a2Bw3TMhy9XQ9HWju/50/43w308+5gOAkM
-         ohA0/Q53fHfRewSJ9f96xYYLsyZIIiHSDUQIChSXL0xuklxtMjN3I2v7KZ9gqsLRB9Rl
-         /gq5SCANmhUMFjj3p2sd84T7+Zz2giIZDJf5b8te4Ssshlp+Qv1VFQMsqi2pBYz2Sn+7
-         Kw1w==
-X-Gm-Message-State: AOAM533zGxRTYkwsrN/pd/glzHBOR14HPXddInHtVDCMEYuEKpjZuyBC
-        E8ASN2r1jJbO0tUhZWARTavzyBvdp1RiiCdU
-X-Google-Smtp-Source: ABdhPJxrG+16+yVU1OTDjqemXx3rOSKG1agMiShN2dHf6cAloz4l15x/3kvXKKfKYrY45Qf2nljHvQ==
-X-Received: by 2002:a63:c807:: with SMTP id z7mr24337260pgg.363.1617661559642;
-        Mon, 05 Apr 2021 15:25:59 -0700 (PDT)
-Received: from ilya-fury.hpicorp.net ([2602:61:7344:f100::b87])
-        by smtp.gmail.com with ESMTPSA id 15sm16430919pfx.167.2021.04.05.15.25.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Apr 2021 15:25:59 -0700 (PDT)
-From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
-        Saravana Kannan <saravanak@google.com>, stable@vger.kernel.org
-Subject: [PATCH v2] of: property: fw_devlink: do not link ".*,nr-gpios"
-Date:   Mon,  5 Apr 2021 15:25:40 -0700
-Message-Id: <20210405222540.18145-1-ilya.lipnitskiy@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405031436.2465475-1-ilya.lipnitskiy@gmail.com>
-References: <20210405031436.2465475-1-ilya.lipnitskiy@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RwkgDCMjAFVJZLleFiMJUr9vgTjXkXjMnykXo/QokeM=;
+        b=pL/b3uiHnMcu5TvBhLcQM3K06FHzBGaNAK4/Z5IuuuI+CPMGHwFOrDv2jeGsl9ySQ0
+         mUDjUjw6etX1n6AjWMiPzuqHx9UHK19dmfVZapDUkkV/OnKj/Z8ckwzK4+Uoof7l5Juk
+         VoU9xOdVLOOnAhHISNQy6rh8cHSQJuCXGyR1OsAoN7nfrry+y4BU9u0pjcFz34AvNpPf
+         HNeKQCP7+y0z28Nc2Q/qfgWRgcHtFTU6o+tw6AabXsAHB4B+HSk4Sncqr46ff6YtI6Qt
+         ENd7zlFVK7m70tKzlGHFS3AnmHIMSybHaYXHTZhi9gEWoe3UEvOx/aoJNF4vmNHqXob4
+         pqgg==
+X-Gm-Message-State: AOAM530t86AHfYOJvTxxK3kwIWKurBv5UqZz/DQA14aVaUr6PxsNv87i
+        nVny3BUGh7qiR0n7ji9fpSxCF1zAC54=
+X-Google-Smtp-Source: ABdhPJwqilHOfodqTf996DCBzX879+tEW/OsTyV1wsHvJBOSJm1EAhS4e403GVZxczMS+Yme7n5siQ==
+X-Received: by 2002:ae9:df46:: with SMTP id t67mr26461636qkf.269.1617661762116;
+        Mon, 05 Apr 2021 15:29:22 -0700 (PDT)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id k26sm10564139qkg.120.2021.04.05.15.29.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Apr 2021 15:29:21 -0700 (PDT)
+Subject: Re: Linux 5.12-rc6
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CAHk-=whK9=wafv+cSLCGqFGPBbgp67Dut3jKCnWB--8y7Lxonw@mail.gmail.com>
+ <20210405171011.GA72391@roeck-us.net>
+ <CAHk-=wjG=y+sXAaW=L5369Sd0pjZ_iJEKiuUGCuR6QqQQYk0ug@mail.gmail.com>
+ <39c15fa7-2dfd-ed21-4882-049560e6e032@roeck-us.net>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <82843e8f-2129-118b-fa74-d7126727ed63@gmail.com>
+Date:   Mon, 5 Apr 2021 17:29:20 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <39c15fa7-2dfd-ed21-4882-049560e6e032@roeck-us.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[<vendor>,]nr-gpios property is used by some GPIO drivers[0] to indicate
-the number of GPIOs present on a system, not define a GPIO. nr-gpios is
-not configured by #gpio-cells and can't be parsed along with other
-"*-gpios" properties.
+Adding Rob, so that he will be in the loop.
 
-nr-gpios without the "<vendor>," prefix is not allowed by the DT
-spec[1], so only add exception for the ",nr-gpios" suffix and let the
-error message continue being printed for non-compliant implementations.
+-Frank
 
-[0]: nr-gpios is referenced in Documentation/devicetree/bindings/gpio:
- - gpio-adnp.txt
- - gpio-xgene-sb.txt
- - gpio-xlp.txt
- - snps,dw-apb-gpio.yaml
-
-[1]:
-Link: https://github.com/devicetree-org/dt-schema/blob/cb53a16a1eb3e2169ce170c071e47940845ec26e/schemas/gpio/gpio-consumer.yaml#L20
-
-Fixes errors such as:
-  OF: /palmbus@300000/gpio@600: could not find phandle
-
-Fixes: 7f00be96f125 ("of: property: Add device link support for interrupt-parent, dmas and -gpio(s)")
-Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc: Saravana Kannan <saravanak@google.com>
-Cc: <stable@vger.kernel.org> # 5.5.x
----
- drivers/of/property.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/of/property.c b/drivers/of/property.c
-index 2046ae311322..1793303e84ac 100644
---- a/drivers/of/property.c
-+++ b/drivers/of/property.c
-@@ -1281,7 +1281,16 @@ DEFINE_SIMPLE_PROP(pinctrl7, "pinctrl-7", NULL)
- DEFINE_SIMPLE_PROP(pinctrl8, "pinctrl-8", NULL)
- DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
- DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
--DEFINE_SUFFIX_PROP(gpios, "-gpios", "#gpio-cells")
-+
-+static struct device_node *parse_gpios(struct device_node *np,
-+				       const char *prop_name, int index)
-+{
-+	if (!strcmp_suffix(prop_name, ",nr-gpios"))
-+		return NULL;
-+
-+	return parse_suffix_prop_cells(np, prop_name, index, "-gpios",
-+				       "#gpio-cells");
-+}
- 
- static struct device_node *parse_iommu_maps(struct device_node *np,
- 					    const char *prop_name, int index)
--- 
-2.31.1
+On 4/5/21 12:28 PM, Guenter Roeck wrote:
+> On 4/5/21 10:14 AM, Linus Torvalds wrote:
+>> On Mon, Apr 5, 2021 at 10:10 AM Guenter Roeck <linux@roeck-us.net> wrote:
+>>>
+>>> No change in test results since last week [..]
+>>
+>> Let's ping Frank for the alignment issue.  If that promised patch
+>> isn't timely (and trivial), I really think that removing the alignment
+>> check is by now the way forward for that libftd failure.
+>>
+> 
+> Frank sent a patch with a fix/workaround yesterday, and I added my
+> Tested-by: an hour or so ago.
+> 
+> https://lore.kernel.org/patchwork/patch/1407418/
+> 
+> Hmm, my reply isn't there (yet). I'll monitor and resend if needed.
+> 
+> Thanks,
+> Guenter
+> 
 
