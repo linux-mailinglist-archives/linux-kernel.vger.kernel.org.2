@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1224B353E16
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 353C1353F98
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237745AbhDEJDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:03:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43802 "EHLO mail.kernel.org"
+        id S239440AbhDEJNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:13:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236753AbhDEJCC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:02:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9704D61394;
-        Mon,  5 Apr 2021 09:01:23 +0000 (UTC)
+        id S239236AbhDEJJl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:09:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02C0561398;
+        Mon,  5 Apr 2021 09:09:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613284;
-        bh=3YldFbS0jeDrOqBvwJCNGPj6AF3aTcml6rBFENGn7ao=;
+        s=korg; t=1617613774;
+        bh=aDOT4DkhX4cM/LM+ZYyGObU2dDtzu0yIuWO3HQ25LNQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nhlGwFNT66t7ZRbgxuj99oz1nKuGZQViSmwtF2/2XIR9NYHNo0dkyFauocxyMZazd
-         V2/8D5sSkcKCHEdZ1Dki8EfcjAIGRi+huxSuvGvVOtWiAFglgKJjQYP1pd/sq9KSk8
-         kLNsbzXukvsCFi0YJN6UvW/SBRNamas1K3GzE6PQ=
+        b=vqD3QfEBpGdncZRMajbP44tODszPiumHMftxvOtxmYvJzio1imvbth4nNw5ZD0Ni7
+         AbhM8tgAJZYB9ri19Uy0WCZBh9TCI196AoxDWEr0t0uFKevq9cCv9Hz0DOWnZ+9EcN
+         ewcUhu7csGsiuF3cGzi438UD6LWadztd5bRlQ0VM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Xi Ruoyao <xry111@mengyan1223.wang>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 4.19 37/56] drm/amdgpu: check alignment on CPU page for bo map
-Date:   Mon,  5 Apr 2021 10:54:08 +0200
-Message-Id: <20210405085023.716805033@linuxfoundation.org>
+        stable@vger.kernel.org, Ben Gardon <bgardon@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 087/126] kvm: x86/mmu: Add existing trace points to TDP MMU
+Date:   Mon,  5 Apr 2021 10:54:09 +0200
+Message-Id: <20210405085033.945369436@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085022.562176619@linuxfoundation.org>
-References: <20210405085022.562176619@linuxfoundation.org>
+In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
+References: <20210405085031.040238881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,46 +40,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xℹ Ruoyao <xry111@mengyan1223.wang>
+From: Ben Gardon <bgardon@google.com>
 
-commit e3512fb67093fabdf27af303066627b921ee9bd8 upstream.
+[ Upstream commit 33dd3574f5fef57c2c6caccf98925d63aa2a8d09 ]
 
-The page table of AMDGPU requires an alignment to CPU page so we should
-check ioctl parameters for it.  Return -EINVAL if some parameter is
-unaligned to CPU page, instead of corrupt the page table sliently.
+The TDP MMU was initially implemented without some of the usual
+tracepoints found in mmu.c. Correct this discrepancy by adding the
+missing trace points to the TDP MMU.
 
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Xi Ruoyao <xry111@mengyan1223.wang>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Tested: ran the demand paging selftest on an Intel Skylake machine with
+	all the trace points used by the TDP MMU enabled and observed
+	them firing with expected values.
+
+This patch can be viewed in Gerrit at:
+https://linux-review.googlesource.com/c/virt/kvm/kvm/+/3812
+
+Signed-off-by: Ben Gardon <bgardon@google.com>
+Message-Id: <20201027175944.1183301-1-bgardon@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/x86/kvm/mmu/tdp_mmu.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-@@ -2076,8 +2076,8 @@ int amdgpu_vm_bo_map(struct amdgpu_devic
- 	uint64_t eaddr;
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index 0d17457f1c84..61be95c6db20 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -7,6 +7,8 @@
+ #include "tdp_mmu.h"
+ #include "spte.h"
  
- 	/* validate the parameters */
--	if (saddr & AMDGPU_GPU_PAGE_MASK || offset & AMDGPU_GPU_PAGE_MASK ||
--	    size == 0 || size & AMDGPU_GPU_PAGE_MASK)
-+	if (saddr & ~PAGE_MASK || offset & ~PAGE_MASK ||
-+	    size == 0 || size & ~PAGE_MASK)
- 		return -EINVAL;
++#include <trace/events/kvm.h>
++
+ #ifdef CONFIG_X86_64
+ static bool __read_mostly tdp_mmu_enabled = false;
+ module_param_named(tdp_mmu, tdp_mmu_enabled, bool, 0644);
+@@ -149,6 +151,8 @@ static struct kvm_mmu_page *alloc_tdp_mmu_page(struct kvm_vcpu *vcpu, gfn_t gfn,
+ 	sp->gfn = gfn;
+ 	sp->tdp_mmu_page = true;
  
- 	/* make sure object fit at this offset */
-@@ -2141,8 +2141,8 @@ int amdgpu_vm_bo_replace_map(struct amdg
- 	int r;
++	trace_kvm_mmu_get_page(sp, true);
++
+ 	return sp;
+ }
  
- 	/* validate the parameters */
--	if (saddr & AMDGPU_GPU_PAGE_MASK || offset & AMDGPU_GPU_PAGE_MASK ||
--	    size == 0 || size & AMDGPU_GPU_PAGE_MASK)
-+	if (saddr & ~PAGE_MASK || offset & ~PAGE_MASK ||
-+	    size == 0 || size & ~PAGE_MASK)
- 		return -EINVAL;
+@@ -319,6 +323,8 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+ 		pt = spte_to_child_pt(old_spte, level);
+ 		sp = sptep_to_sp(pt);
  
- 	/* make sure object fit at this offset */
++		trace_kvm_mmu_prepare_zap_page(sp);
++
+ 		list_del(&sp->link);
+ 
+ 		if (sp->lpage_disallowed)
+@@ -530,11 +536,13 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu, int write,
+ 	if (unlikely(is_noslot_pfn(pfn))) {
+ 		new_spte = make_mmio_spte(vcpu, iter->gfn, ACC_ALL);
+ 		trace_mark_mmio_spte(iter->sptep, iter->gfn, new_spte);
+-	} else
++	} else {
+ 		make_spte_ret = make_spte(vcpu, ACC_ALL, iter->level, iter->gfn,
+ 					 pfn, iter->old_spte, prefault, true,
+ 					 map_writable, !shadow_accessed_mask,
+ 					 &new_spte);
++		trace_kvm_mmu_set_spte(iter->level, iter->gfn, iter->sptep);
++	}
+ 
+ 	if (new_spte == iter->old_spte)
+ 		ret = RET_PF_SPURIOUS;
+@@ -740,6 +748,8 @@ static int age_gfn_range(struct kvm *kvm, struct kvm_memory_slot *slot,
+ 
+ 		tdp_mmu_set_spte_no_acc_track(kvm, &iter, new_spte);
+ 		young = 1;
++
++		trace_kvm_age_page(iter.gfn, iter.level, slot, young);
+ 	}
+ 
+ 	return young;
+-- 
+2.30.1
+
 
 
