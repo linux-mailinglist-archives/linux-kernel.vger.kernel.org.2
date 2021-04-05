@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB59353E2A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37D383540A3
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237902AbhDEJEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:04:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45052 "EHLO mail.kernel.org"
+        id S241061AbhDEJTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:19:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232798AbhDEJCn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:02:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5537C6138A;
-        Mon,  5 Apr 2021 09:02:37 +0000 (UTC)
+        id S240603AbhDEJPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:15:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AE5860FE4;
+        Mon,  5 Apr 2021 09:15:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613357;
-        bh=3RvgI5LOgaJ9pCg3C902TlaJFBu1nTkNrqR8S50ZJ9E=;
+        s=korg; t=1617614138;
+        bh=FFmaELydv2AGLZRe35Kl2b4qsf94M1QYABM91tFKrNc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=as2Xs0xG/q+v+ZmRUtoUFKaQzvHMdQ+//D3OPaawJBV1NdpLcwEJddzEO+ccWSPYy
-         qW+a9asVREzAnb8u+rEnVKv2Ar5UXV9evbnWkRyOmWwlER5LbvJOuHUBCHPXYXxQ1R
-         XhS+X4yhi+RB8GzrKTonEwzuRh/Rh32+AhPpbVt8=
+        b=MPqYkvZ3jUGUVVZKTJPvjNd5ji58G+aEtTT1oB53cIn8XhX8U4jjm4Q+HKuB9Md6L
+         KUTDAwQ6n/H3jcEeK+X2deUdMdjK8wrEWI/+2qhil5jevIwBjaAFj1WQWhRfdJnF5o
+         yAYk/q1cThK8K8DYlC93YO9XmCCbsxkRPzhKCBAo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 4.19 33/56] PM: runtime: Fix ordering in pm_runtime_get_suppliers()
-Date:   Mon,  5 Apr 2021 10:54:04 +0200
-Message-Id: <20210405085023.595776147@linuxfoundation.org>
+        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        Paul Fertser <fercerpav@gmail.com>,
+        Thierry Reding <treding@nvidia.com>
+Subject: [PATCH 5.11 096/152] drm/tegra: dc: Restore coupling of display controllers
+Date:   Mon,  5 Apr 2021 10:54:05 +0200
+Message-Id: <20210405085037.366337143@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085022.562176619@linuxfoundation.org>
-References: <20210405085022.562176619@linuxfoundation.org>
+In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
+References: <20210405085034.233917714@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adrian Hunter <adrian.hunter@intel.com>
+From: Thierry Reding <treding@nvidia.com>
 
-commit c0c33442f7203704aef345647e14c2fb86071001 upstream.
+commit a31500fe7055451ed9043c8fff938dfa6f70ee37 upstream.
 
-rpm_active indicates how many times the supplier usage_count has been
-incremented. Consequently it must be updated after pm_runtime_get_sync() of
-the supplier, not before.
+Coupling of display controllers used to rely on runtime PM to take the
+companion controller out of reset. Commit fd67e9c6ed5a ("drm/tegra: Do
+not implement runtime PM") accidentally broke this when runtime PM was
+removed.
 
-Fixes: 4c06c4e6cf63 ("driver core: Fix possible supplier PM-usage counter imbalance")
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Cc: 5.1+ <stable@vger.kernel.org> # 5.1+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Restore this functionality by reusing the hierarchical host1x client
+suspend/resume infrastructure that's similar to runtime PM and which
+perfectly fits this use-case.
+
+Fixes: fd67e9c6ed5a ("drm/tegra: Do not implement runtime PM")
+Reported-by: Dmitry Osipenko <digetx@gmail.com>
+Reported-by: Paul Fertser <fercerpav@gmail.com>
+Tested-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/base/power/runtime.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/tegra/dc.c |   20 ++++++++------------
+ 1 file changed, 8 insertions(+), 12 deletions(-)
 
---- a/drivers/base/power/runtime.c
-+++ b/drivers/base/power/runtime.c
-@@ -1572,8 +1572,8 @@ void pm_runtime_get_suppliers(struct dev
- 	list_for_each_entry_rcu(link, &dev->links.suppliers, c_node)
- 		if (link->flags & DL_FLAG_PM_RUNTIME) {
- 			link->supplier_preactivated = true;
--			refcount_inc(&link->rpm_active);
- 			pm_runtime_get_sync(link->supplier);
-+			refcount_inc(&link->rpm_active);
- 		}
+--- a/drivers/gpu/drm/tegra/dc.c
++++ b/drivers/gpu/drm/tegra/dc.c
+@@ -2501,22 +2501,18 @@ static int tegra_dc_couple(struct tegra_
+ 	 * POWER_CONTROL registers during CRTC enabling.
+ 	 */
+ 	if (dc->soc->coupled_pm && dc->pipe == 1) {
+-		u32 flags = DL_FLAG_PM_RUNTIME | DL_FLAG_AUTOREMOVE_CONSUMER;
+-		struct device_link *link;
+-		struct device *partner;
++		struct device *companion;
++		struct tegra_dc *parent;
  
- 	device_links_read_unlock(idx);
+-		partner = driver_find_device(dc->dev->driver, NULL, NULL,
+-					     tegra_dc_match_by_pipe);
+-		if (!partner)
++		companion = driver_find_device(dc->dev->driver, NULL, (const void *)0,
++					       tegra_dc_match_by_pipe);
++		if (!companion)
+ 			return -EPROBE_DEFER;
+ 
+-		link = device_link_add(dc->dev, partner, flags);
+-		if (!link) {
+-			dev_err(dc->dev, "failed to link controllers\n");
+-			return -EINVAL;
+-		}
++		parent = dev_get_drvdata(companion);
++		dc->client.parent = &parent->client;
+ 
+-		dev_dbg(dc->dev, "coupled to %s\n", dev_name(partner));
++		dev_dbg(dc->dev, "coupled to %s\n", dev_name(companion));
+ 	}
+ 
+ 	return 0;
 
 
