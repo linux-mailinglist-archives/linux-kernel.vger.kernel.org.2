@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90DAE353E21
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69C6B353FCE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237806AbhDEJEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:04:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44840 "EHLO mail.kernel.org"
+        id S239946AbhDEJO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:14:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237477AbhDEJCd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:02:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68CBF61393;
-        Mon,  5 Apr 2021 09:02:26 +0000 (UTC)
+        id S239441AbhDEJKz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:10:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84DCE61002;
+        Mon,  5 Apr 2021 09:10:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613347;
-        bh=FOUWKmo62WxxUz9R/4qxWeqHe9RZ5J51FPWgvRI7/A8=;
+        s=korg; t=1617613849;
+        bh=f96lpbS+FiZfQzIuYcRBdUvjKy6S4yIHpMyBasPY9DM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PGOP21O4EmZR2PqIRyA2M+VXGoNeQYcunKZwIkH03Yo1tnHSlQbn0cDUbHiXwoaYh
-         zMIaZ/aqoS5YXtO4LvMAgbTchz93WLKCee+XE6IBhgTzHgzGi4zayZ6KWXW08iru03
-         CjeMZMEpUeU3xNZD8TTVhQYddqXRs96ORPtWHwYw=
+        b=a+HUNMp8POHlnC4P26J3E2YyzaCMRgCzPvyBV5upmTgddDsazqn+bqXS8X4Z1dHtJ
+         ELcg2b3iJTXxXnd3LmLSUS0pxSlHfOxie8wmsksH4JlFxvctLfVYxQ1rhW6PB5+WeZ
+         vo7wf6qaofAN/wdYERm2RCMJEwNvW9t0SGqVWcqs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ikjoon Jang <ikjn@chromium.org>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 29/56] ALSA: usb-audio: Apply sample rate quirk to Logitech Connect
+        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        Paul Fertser <fercerpav@gmail.com>,
+        Thierry Reding <treding@nvidia.com>
+Subject: [PATCH 5.10 078/126] drm/tegra: dc: Restore coupling of display controllers
 Date:   Mon,  5 Apr 2021 10:54:00 +0200
-Message-Id: <20210405085023.466949570@linuxfoundation.org>
+Message-Id: <20210405085033.649222827@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085022.562176619@linuxfoundation.org>
-References: <20210405085022.562176619@linuxfoundation.org>
+In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
+References: <20210405085031.040238881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,35 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ikjoon Jang <ikjn@chromium.org>
+From: Thierry Reding <treding@nvidia.com>
 
-commit 625bd5a616ceda4840cd28f82e957c8ced394b6a upstream.
+commit a31500fe7055451ed9043c8fff938dfa6f70ee37 upstream.
 
-Logitech ConferenceCam Connect is a compound USB device with UVC and
-UAC. Not 100% reproducible but sometimes it keeps responding STALL to
-every control transfer once it receives get_freq request.
+Coupling of display controllers used to rely on runtime PM to take the
+companion controller out of reset. Commit fd67e9c6ed5a ("drm/tegra: Do
+not implement runtime PM") accidentally broke this when runtime PM was
+removed.
 
-This patch adds 046d:0x084c to a snd_usb_get_sample_rate_quirk list.
+Restore this functionality by reusing the hierarchical host1x client
+suspend/resume infrastructure that's similar to runtime PM and which
+perfectly fits this use-case.
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=203419
-Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210324105153.2322881-1-ikjn@chromium.org
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: fd67e9c6ed5a ("drm/tegra: Do not implement runtime PM")
+Reported-by: Dmitry Osipenko <digetx@gmail.com>
+Reported-by: Paul Fertser <fercerpav@gmail.com>
+Tested-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/usb/quirks.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/tegra/dc.c |   20 ++++++++------------
+ 1 file changed, 8 insertions(+), 12 deletions(-)
 
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1187,6 +1187,7 @@ bool snd_usb_get_sample_rate_quirk(struc
- 	case USB_ID(0x21B4, 0x0081): /* AudioQuest DragonFly */
- 	case USB_ID(0x2912, 0x30c8): /* Audioengine D1 */
- 	case USB_ID(0x413c, 0xa506): /* Dell AE515 sound bar */
-+	case USB_ID(0x046d, 0x084c): /* Logitech ConferenceCam Connect */
- 		return true;
+--- a/drivers/gpu/drm/tegra/dc.c
++++ b/drivers/gpu/drm/tegra/dc.c
+@@ -2499,22 +2499,18 @@ static int tegra_dc_couple(struct tegra_
+ 	 * POWER_CONTROL registers during CRTC enabling.
+ 	 */
+ 	if (dc->soc->coupled_pm && dc->pipe == 1) {
+-		u32 flags = DL_FLAG_PM_RUNTIME | DL_FLAG_AUTOREMOVE_CONSUMER;
+-		struct device_link *link;
+-		struct device *partner;
++		struct device *companion;
++		struct tegra_dc *parent;
+ 
+-		partner = driver_find_device(dc->dev->driver, NULL, NULL,
+-					     tegra_dc_match_by_pipe);
+-		if (!partner)
++		companion = driver_find_device(dc->dev->driver, NULL, (const void *)0,
++					       tegra_dc_match_by_pipe);
++		if (!companion)
+ 			return -EPROBE_DEFER;
+ 
+-		link = device_link_add(dc->dev, partner, flags);
+-		if (!link) {
+-			dev_err(dc->dev, "failed to link controllers\n");
+-			return -EINVAL;
+-		}
++		parent = dev_get_drvdata(companion);
++		dc->client.parent = &parent->client;
+ 
+-		dev_dbg(dc->dev, "coupled to %s\n", dev_name(partner));
++		dev_dbg(dc->dev, "coupled to %s\n", dev_name(companion));
  	}
  
+ 	return 0;
 
 
