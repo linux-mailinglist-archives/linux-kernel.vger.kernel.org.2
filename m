@@ -2,80 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DCCF354614
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 19:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B3E8354617
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 19:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238661AbhDERe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 13:34:27 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:44193 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232529AbhDEReZ (ORCPT
+        id S238866AbhDERgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 13:36:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238453AbhDERgK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 13:34:25 -0400
-Received: by mail-il1-f200.google.com with SMTP id j18so9931348ila.11
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 10:34:18 -0700 (PDT)
+        Mon, 5 Apr 2021 13:36:10 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEDBAC061788
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 10:36:03 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id 91-20020a9d08640000b0290237d9c40382so12038610oty.12
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 10:36:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uvBqI5LLvRFtdjvhHMzIwW+X8uV/Zp+Lovztxp6VJ4w=;
+        b=fUP3qK17/KaPMsE2LnwkmKTdx7+dSSORtmIVYZCrJOzgTpKiQy+fBhQVrREleOuwUK
+         kYOtGm/cn/+mHNRXZB1ftCoHg+6sUjmD3Pd1ZMaVKOxdESu8omPL0HPEXhfMbaogbGLD
+         Gs/HTPxWzhnlziLAGGxemZhXTPzgsglK8J8hhj1VF2oWBAdJPUDxM/SreGcQphJVbKs+
+         rlwscgf8fcFahwZJhrDeX9nnLPiKhUsB7yJWIobT83jyG29kxNqu3h1mODnWwKn/yalK
+         U1+N9rHXDLIgRxMxLCtltFh3VIj9Qm80LKNv2mdZPveYA6m+50v4ErsEgsDia4jLUZNZ
+         EnVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=vd51XgEIvP4DQDs0VI5+bjubW08Kj6vjDtH+/7eNtLk=;
-        b=X8DcCdQ9okugR6LzAWejWN6rj8sAEyF9lTDPTjANl8II2xrjUNKLUXIZ6tsHikJJS5
-         MGwXmSPTuG3tl3fWx+12h5ZpSS3RZUy9/ETUDT48q/kaMD40eJuYKB/ATW2u0b7tjwxE
-         eWRBm8y75h0/dgFtKW8XwDyKIfdUSge/TQBTzvZDkhRygViJWADP29FE1RdWJuPZcP14
-         B0LCvho7QNylGoN7s6jeNtzVq0xciK1WTfBsVfC9Tx+gJGm9JM3tqJAkbWlkj4quVz1+
-         Pkh/6kejQZpxyKFQiq5jGkGEtVZ3aBmx3tSO87/R51DPeIENRuzp5c/bVdbw1QA8RFDE
-         CArg==
-X-Gm-Message-State: AOAM530PU8O9g/gYE/pEiSCbzvidOSwYZLuq1UcPyh2wWjaBIfymhoNc
-        6Qm/e5CyqZwgTujQDQFEhpmpwtr2/JH1R/nca2k0gXkRQ82V
-X-Google-Smtp-Source: ABdhPJxoaysSvm/vwPCZE9vCdUOjIG9huA7+Z034KzCf5cRvCelFCyvZ8u9yGuK1MunvlnEZcan1x4bLAO6PZp/nV+pIRNS2I2e7
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uvBqI5LLvRFtdjvhHMzIwW+X8uV/Zp+Lovztxp6VJ4w=;
+        b=r6vWpMzkpHRIXQ6cwVeMe/UddE0MP8CICvq1k9W8hOdR8xddN4apQ9TJ/n7YyPxQPh
+         6ujUGZm7RrWPX0sVsy4FbbFZYAF/4h/VzDHRhK0mZwkHbTgNCm5LBit3f0rmE/860FYY
+         aQzm3iqo6vm81wvphhQBKD5EZ/U0eKrZWNYKb3l4HJsSiAh5WxmcRcQvpVvXyYdOJBnA
+         QiLcOTW7yz7bhp4j8/PldN2CfI7AvrUFrR3PjgqaXNvUoFjzJpoUH+TP8wwY9a8EAOi+
+         06UtFzGHCMygw5hfGIrMPrKFYPWRUyEOPdVyvBBmEgbBO71EgQhUZ0XgtNsA8ygty91i
+         mFMQ==
+X-Gm-Message-State: AOAM533axUJBj9uDG+HgnHAy6Ml7QWJ7VCASvk5cGoWhKo7Rz4O8QKIK
+        OhSvvfbPO2GiyNjv47PtBELOAPxNeN3AZw==
+X-Google-Smtp-Source: ABdhPJyOjPlUIIsRgTB1kbybdtdLayhuc6MByRfZJcmc55UCubZxqOpYUyINVOx69nj7sRjB4NHO3w==
+X-Received: by 2002:a9d:5191:: with SMTP id y17mr22900095otg.332.1617644163058;
+        Mon, 05 Apr 2021 10:36:03 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 7sm3173579ois.20.2021.04.05.10.36.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Apr 2021 10:36:02 -0700 (PDT)
+Date:   Mon, 5 Apr 2021 12:36:00 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/7] crypto: qce: common: Add MAC failed error checking
+Message-ID: <20210405173600.GZ904837@yoga>
+References: <20210225182716.1402449-1-thara.gopinath@linaro.org>
+ <20210225182716.1402449-2-thara.gopinath@linaro.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:149:: with SMTP id j9mr21536639ilr.57.1617644058638;
- Mon, 05 Apr 2021 10:34:18 -0700 (PDT)
-Date:   Mon, 05 Apr 2021 10:34:18 -0700
-In-Reply-To: <0000000000003798d705aedd870d@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007cfd9b05bf3d1b70@google.com>
-Subject: Re: [syzbot] memory leak in mgmt_cmd_status
-From:   syzbot <syzbot+80f5bab4eb14d14e7386@syzkaller.appspotmail.com>
-To:     anant.thazhemadam@gmail.com, davem@davemloft.net,
-        johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luiz.dentz@gmail.com, marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210225182716.1402449-2-thara.gopinath@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Thu 25 Feb 12:27 CST 2021, Thara Gopinath wrote:
 
-HEAD commit:    e49d033b Linux 5.12-rc6
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12579f11d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b8dbd3c72fdc7777
-dashboard link: https://syzkaller.appspot.com/bug?extid=80f5bab4eb14d14e7386
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=143b1696d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14c5a30ed00000
+> MAC_FAILED gets set in the status register if authenthication fails
+> for ccm algorithms(during decryption). Add support to catch and flag
+> this error.
+> 
+> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+> ---
+>  drivers/crypto/qce/common.c | 11 ++++++++---
+>  1 file changed, 8 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/crypto/qce/common.c b/drivers/crypto/qce/common.c
+> index dceb9579d87a..7c3cb483749e 100644
+> --- a/drivers/crypto/qce/common.c
+> +++ b/drivers/crypto/qce/common.c
+> @@ -403,7 +403,8 @@ int qce_start(struct crypto_async_request *async_req, u32 type)
+>  }
+>  
+>  #define STATUS_ERRORS	\
+> -		(BIT(SW_ERR_SHIFT) | BIT(AXI_ERR_SHIFT) | BIT(HSD_ERR_SHIFT))
+> +		(BIT(SW_ERR_SHIFT) | BIT(AXI_ERR_SHIFT) |	\
+> +		 BIT(HSD_ERR_SHIFT) | BIT(MAC_FAILED_SHIFT))
+>  
+>  int qce_check_status(struct qce_device *qce, u32 *status)
+>  {
+> @@ -417,8 +418,12 @@ int qce_check_status(struct qce_device *qce, u32 *status)
+>  	 * use result_status from result dump the result_status needs to be byte
+>  	 * swapped, since we set the device to little endian.
+>  	 */
+> -	if (*status & STATUS_ERRORS || !(*status & BIT(OPERATION_DONE_SHIFT)))
+> -		ret = -ENXIO;
+> +	if (*status & STATUS_ERRORS || !(*status & BIT(OPERATION_DONE_SHIFT))) {
+> +		if (*status & BIT(MAC_FAILED_SHIFT))
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+80f5bab4eb14d14e7386@syzkaller.appspotmail.com
+Afaict MAC_FAILED indicates a different category of errors from the
+others. So I would prefer that the conditionals are flattened.
 
-BUG: memory leak
-unreferenced object 0xffff88810ddf4700 (size 232):
-  comm "kworker/u5:2", pid 8406, jiffies 4294997792 (age 10.670s)
-  hex dump (first 32 bytes):
-    d0 f0 af 0e 81 88 ff ff d0 f0 af 0e 81 88 ff ff  ................
-    00 00 00 00 00 00 00 00 00 f0 af 0e 81 88 ff ff  ................
-  backtrace:
-    [<ffffffff8364af8f>] __alloc_skb+0x20f/0x280 net/core/skbuff.c:412
-    [<ffffffff83c5f871>] alloc_skb include/linux/skbuff.h:1103 [inline]
-    [<ffffffff83c5f871>] mgmt_cmd_status+0x31/0x160 net/bluetooth/mgmt_util.c:102
-    [<ffffffff83c2a669>] mgmt_set_discoverable_complete+0x1b9/0x1e0 net/bluetooth/mgmt.c:1357
-    [<ffffffff83c579d8>] discoverable_update_work+0x88/0xb0 net/bluetooth/hci_request.c:2806
-    [<ffffffff812595d9>] process_one_work+0x2c9/0x600 kernel/workqueue.c:2275
-    [<ffffffff81259ec9>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2421
-    [<ffffffff812615f8>] kthread+0x178/0x1b0 kernel/kthread.c:292
-    [<ffffffff8100227f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Is OPERATION_DONE set when MAC_FAILED?
 
+If so:
 
+if (errors || !done)
+	return -ENXIO;
+else if (*status & BIT(MAC_FAILED))
+	return -EBADMSG;
+
+Would be cleaner in my opinion.
+
+Regards,
+Bjorn
+
+> +			ret = -EBADMSG;
+> +		else
+> +			ret = -ENXIO;
+> +	}
+>  
+>  	return ret;
+>  }
+> -- 
+> 2.25.1
+> 
