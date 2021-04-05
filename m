@@ -2,445 +2,362 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CCA3546CA
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 20:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 112AA3546CB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 20:40:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235209AbhDESjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 14:39:07 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:7938 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235090AbhDESjF (ORCPT
+        id S235272AbhDESkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 14:40:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234701AbhDESkH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 14:39:05 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 135IXsEt021846;
-        Mon, 5 Apr 2021 11:38:51 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=Hhk5x3xlLU+Cglcu8rUidcEp8+gmw3w94FUAZdIBiTg=;
- b=cbVFv12IWFGGlz/XUONxE99ayao15zO+Li14yU/6O/lBZ+DUqFP9YYO6d/pg6QH25oDU
- z+AHBW2hFwJHKXxgb6hyXC8rXfB6qr2k4NCf+1/fYyhl26W/mCXwQTTmKFovT4Ixcxsi
- F8FXi4jxthzwiEN39/Vq2Buzk0fkIyEe6KQ= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 37qxc7jkpe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 05 Apr 2021 11:38:51 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 5 Apr 2021 11:38:49 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l4k/sc9KxD7mh9KW5XbgTWYrgDMMiFZiXOcU/raewN0Jn7yUqdI5QvxhYSre9HVnhL39unduyPgxnwHW1ubyfpk2p0gK99yZ5V+/OTTvIPdsm0DWnF68SyHgUHKgI/4Cam1MQ93isEsjqayo2IUBVoUkq74t6T6AUbGJrbqdFNNQEWGgdGGFjNvS2ggNddcPUKrhymWcviprGGM6Ekbnzgl2mAAw7kvEhSdfYpTnqlAIionamckXEsyx0hBzmd6xmSEwNw8xMpi5dQVwLIJvefQ0hmCnzIdyQyYPSrLm0Np0VsFidWkNcoKYJnHOWEA/n6AkgHVhkQlxJfqZLHJ7VA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Hhk5x3xlLU+Cglcu8rUidcEp8+gmw3w94FUAZdIBiTg=;
- b=Uq1lw5NXvZ2y1ayCQK8fgcpWdBLPvUj+PAZTRvpBV+q8siEsuvVEAfBmw3KbL6b6tkUcExJ+VFavPKLDxGomGxzY/i3Bh9hdY9Sd2a5Y6W4ZQvAGNWGbug1qdoCJz6/nu5cGCwyeu3mgKDLdSGYBetV984qDl5pwQEJBAPZdiDs5AItwfXfsFNVjvEkpY+Voodf3EA8j4di3G3FYcnlLF0sae0/SWVldOLCnyFTmqhOYIaSrQcl3arQdTb+pPyTn0KDtPlNVmlIsHcHYMFJIcmhD06Yx6PGN+tthXCuFhrDMjFeACb69peCHKgA/bWNdg4pqwTaCpUPUisHuSsetRQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB3351.namprd15.prod.outlook.com (2603:10b6:a03:10c::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.32; Mon, 5 Apr
- 2021 18:38:48 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::2c3d:df54:e11c:ee99]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::2c3d:df54:e11c:ee99%6]) with mapi id 15.20.3999.032; Mon, 5 Apr 2021
- 18:38:48 +0000
-Date:   Mon, 5 Apr 2021 11:38:44 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Yang Shi <shy828301@gmail.com>
-CC:     Bharata B Rao <bharata@linux.ibm.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        <aneesh.kumar@linux.ibm.com>
-Subject: Re: High kmalloc-32 slab cache consumption with 10k containers
-Message-ID: <YGtZNLhXjv8RegTK@carbon.dhcp.thefacebook.com>
-References: <20210405054848.GA1077931@in.ibm.com>
- <CAHbLzko-17bUWdxmOi-p2_MLSbsMCvhjKS1ktnBysC5dN_W90A@mail.gmail.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAHbLzko-17bUWdxmOi-p2_MLSbsMCvhjKS1ktnBysC5dN_W90A@mail.gmail.com>
-X-Originating-IP: [2620:10d:c090:400::5:c526]
-X-ClientProxiedBy: MWHPR20CA0006.namprd20.prod.outlook.com
- (2603:10b6:300:13d::16) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        Mon, 5 Apr 2021 14:40:07 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1466C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 11:39:58 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id r14-20020a05600c35ceb029010fe0f81519so4564626wmq.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 11:39:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=G8yFWb79A+f9Rm6R5nOamPLnCYJnizt6Qoeu+M+T4Os=;
+        b=AoEN52puaw4Grah7Fztfb0/x0ny+7Rxl+EvdcrV5Nam2KKCdwOgXYT4fGkhvoJ7oSQ
+         U0xsnfYFcNP+LcKJNSF3707Fse22yWTssZH8O+68vnqdXUq3WXEPmkShZKmlSr44dEt4
+         Kpm87/Q9yPLPlPYDKzxDO2OYSiYWPocYLJcnmKrXOuMQLRSePN0xo0ZU3tavfh8+5tIz
+         8TXEz63mpMZdWHxSxAlRaEmMfRhu1tbAeiomovkv0/Q8hNoTEXqx3gHAcIuj95eFR+73
+         V3qDcLJSdYnq+sD0Rya8JWzZNITS4hnOYlbfNzGBnKf5ow9ojMnAzeL4d9HbPBvSPAVf
+         dy6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=G8yFWb79A+f9Rm6R5nOamPLnCYJnizt6Qoeu+M+T4Os=;
+        b=eRpmnv+Ed3NoxbdJXxrFs9wWLoSJ2Reufm9fTcAWoX2mcw27kEBaHsgdSTjn+yZnKz
+         9WxpsmDXLGaUlAIbOREPHXm4x89fmBp877kedIv4bLhlHJnZxs/6V3Alu9eVCoc+zKBq
+         1LS0Ri1rtgNthJzSzK76BW1QOWLHhF3AF9mLxoPzcCSy2zo7iBPSVxsXBnWsl/N/Kume
+         I547MAWs8foWTpGzWJC27208f+EZAb4c6Pbxdli3MAgqdfAxp6mshMW5JFqEKFgVEqmG
+         GAkPxO6nGvwW3/fn5wdExS5h5MCJYMPULBMW4rJR2tCrPn8N6h+Pxvf5j7djTVaUAGuZ
+         fAxg==
+X-Gm-Message-State: AOAM533DDgqJc4xk/T3dX1WGmxaXrNv8knFQqznHW93b8jIhbs60jy72
+        gupDz56ckVGoXsRGkQZM0zI=
+X-Google-Smtp-Source: ABdhPJzLn4Lfz3aUV29L9HDO6djDzpwhkKfv8bxrbKwhzlThKJPxKt78M1n6jifqAyJpkTncgcg/GQ==
+X-Received: by 2002:a05:600c:358c:: with SMTP id p12mr403673wmq.19.1617647997382;
+        Mon, 05 Apr 2021 11:39:57 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id d5sm4740409wrx.0.2021.04.05.11.39.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Apr 2021 11:39:56 -0700 (PDT)
+Date:   Mon, 5 Apr 2021 20:39:54 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     linus.walleij@linaro.org, ulli.kroll@googlemail.com,
+        linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: gemini: sl3516: Mainlining of NS 2502
+Message-ID: <YGtZeofmBv7hXK+a@Red>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:c526) by MWHPR20CA0006.namprd20.prod.outlook.com (2603:10b6:300:13d::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27 via Frontend Transport; Mon, 5 Apr 2021 18:38:47 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 79d90131-7835-4714-3c1a-08d8f8620cdc
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3351:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3351FE37021EB7F2CA333E00BE779@BYAPR15MB3351.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WCkk1nAnfovMlcMvn/XbbqsgGda/Uze6x7/YGnEWUkey941a6hgMtggmjgT6nysgq46i2r7fg+KdKsdJvS4YgF0TbZXN4y8Y4s3tihorXl47lDaXJiR8Hk5+pvdq4E8Fx3MyrVh2C4a2e8c+Wy56X6vLIMZQ67BB//womNCmlYpqpWLo5+irlIchMEwu1cFpKdwbQ5Pki6MOeEtoySMUm3Wd8FdUyPwPDi9CtsfgeVEzJDclhjdHqMshKG5en6qp3rV8N9yOgSSDqtm90ZB4lRCfJS016+cY+TtKUwy5x1tQlEnzoqMx6MuU06fv3wKHGMINyYAMteqJmoK+zdnYSPTke7+13TPreBfjSnEYKIMkDKe4s49WxKCytLYlxtJGPyKeDBCHB2xmk+VyTI+xY/LtsCHC3QEtClI3wJB0favZ1hsfFkqFbByVFCmiVBj9SKsh2wrrEzu3xDvX1llR9ZBIFUjOx9FY0pUq4HkDVtf0/+zYDD7Gn/9XDliKKIOWUJbylLmLR4fLjiykWtH1omNMD3wP9/PL2xiu61GVKWMZTxycbTZpYp8v97IuZwCWzbvQHnwSOYHrn1BvXTBF+Kmu170YDjgxoRYvzdDGGzR5fLIn0+pme1sjUSZmiuLbVEXMUtXqTmhFMceTl8YI+Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(39860400002)(136003)(366004)(396003)(38100700001)(6916009)(7416002)(6666004)(52116002)(8936002)(54906003)(7696005)(478600001)(55016002)(9686003)(186003)(30864003)(4326008)(86362001)(8676002)(5660300002)(66476007)(316002)(66946007)(16526019)(66556008)(83380400001)(6506007)(2906002)(53546011);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?NmkuXGAHArM9KhFyOFlE3f9XY0YiYllaSBcs3NnrSkFkeBq8rp0aJgCDc5EY?=
- =?us-ascii?Q?bkUdEJb4qOmBWjSY+WWOYyj5kSd/RtQ0tnRtjJ2M0SLseFiywGW/KQS0EzP/?=
- =?us-ascii?Q?wVdT1914QXEN0q+eRwZo1TtQoG2hNtKhk0Pql2L7JO4j8rwmTYwPdOEHhtb+?=
- =?us-ascii?Q?IPm0xT1Rr7YVag9DEcQcRLRC2PelA+LjBLAaxIMRa6sqcJxshBRylBZ7hABl?=
- =?us-ascii?Q?IIfkJhjxzpcuAb6px+pKrpm6iSVWK1SrqN2XomwzY0YqB2AR+gBYWh9Jt9ri?=
- =?us-ascii?Q?4d2dUktZGg2Iic9x98SHWl+TwoIZ1+04hhc8UxqxkVsDxMm+iICBtv0fgILV?=
- =?us-ascii?Q?TA95CPgfvCK/FxVsbIv0E/UqKDpO0qcLvajSWym/NLCjPmsY5wrcJ72Pg35n?=
- =?us-ascii?Q?edskRnSbLhtaCoGCT2Dl1HSdIeX5Oy62UlGxYF2OLdK5nUauVwTYKaSL0oMS?=
- =?us-ascii?Q?z9ZYDjZtQ5yVJl3TatRjWyg1nwCZQpGcew69H50Bxut+XPZBnjfdqJtF6uRi?=
- =?us-ascii?Q?lpjdsSNMRSHQWUetP+ry9ekq5iLvIUN4BEkMK1Ai3YtwHdGcb74vtHh6RKuQ?=
- =?us-ascii?Q?ehBgZmDHYVKEoQKYlrQ2LSLJAbHAhbjmdgz1R3SbktC8boHrixBCn8/++4PB?=
- =?us-ascii?Q?nw5quFm7zUUgTt2cce1FWfi1nv9YESzkH817Dk4e2Y4RI9WO+9x2peu6I/eb?=
- =?us-ascii?Q?q3ax/kl0G08RpHE1Zyr2K2blqE985HFjZi6cGTs1s0UBdieDRcH57oP6vykl?=
- =?us-ascii?Q?WalqiXOlCenEZnNpzjNIhAe/o6wiIe6GLQPL6f+taG2xZaKdY0M+ldA+Cl5B?=
- =?us-ascii?Q?WIoqLGCsEwE3PYjs/YeYEm8POtYn8q8vXKDQ2vV4Kopgyol4Lbx/WVm9yf6D?=
- =?us-ascii?Q?wZUGZ+sr2aUVtbk6xc7D1KYwqxiStmczGrQpHU/lGsjTd2n3QDjnUAolL/JT?=
- =?us-ascii?Q?gXMcfT3dFaRxQxRYVQLi7yUba7Uk/pkEr6E7wNX65XMeqXXp/xDP/ZxzUA3K?=
- =?us-ascii?Q?uM/GSiA75DbKJZ4BEDW+58QRSFRzplzz4iy8qQ+UlB0w16DqOzfMcVj9xgyE?=
- =?us-ascii?Q?avOka5qqwPJr/FqYQfJMyinghndaewUA3L25a8PVAXIqkC00hquGg6nlYuX8?=
- =?us-ascii?Q?LhKGfI9wVEPqfDj+qifGlmM4PimspymqtiGSmtu70AukDOm1NKQya5B6x1s1?=
- =?us-ascii?Q?dqpnuLl6zC1pfDbokPiKTFiNK6gUILRC2bXqdSm7KoiEM4LcwocZPz1UEavh?=
- =?us-ascii?Q?XeA6yrkzg9Ujl/UfXz3rYPBh+R5qPHHuVqhdUpivMHRebLgYDY2fYPewZsLv?=
- =?us-ascii?Q?tuDt8nnWRjZdPEhuu3Yjyf8M/puo2yREQm0ycPCF9pFGLg=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 79d90131-7835-4714-3c1a-08d8f8620cdc
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Apr 2021 18:38:48.2206
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xVxZuMl8XA/0wlyfBf8N2pdrLf7Rm8AKphOv13uCGK9Z8woEdYLQxMo7OtXSHk2L
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3351
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: K8uWcbBti7vekdhA_YruvaWJwwALtYOj
-X-Proofpoint-GUID: K8uWcbBti7vekdhA_YruvaWJwwALtYOj
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-04-05_14:2021-04-01,2021-04-05 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1011
- lowpriorityscore=0 bulkscore=0 impostorscore=0 adultscore=0 suspectscore=0
- priorityscore=1501 mlxscore=0 malwarescore=0 spamscore=0 phishscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104030000 definitions=main-2104050119
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 11:08:26AM -0700, Yang Shi wrote:
-> On Sun, Apr 4, 2021 at 10:49 PM Bharata B Rao <bharata@linux.ibm.com> wrote:
-> >
-> > Hi,
-> >
-> > When running 10000 (more-or-less-empty-)containers on a bare-metal Power9
-> > server(160 CPUs, 2 NUMA nodes, 256G memory), it is seen that memory
-> > consumption increases quite a lot (around 172G) when the containers are
-> > running. Most of it comes from slab (149G) and within slab, the majority of
-> > it comes from kmalloc-32 cache (102G)
-> >
-> > The major allocator of kmalloc-32 slab cache happens to be the list_head
-> > allocations of list_lru_one list. These lists are created whenever a
-> > FS mount happens. Specially two such lists are registered by alloc_super(),
-> > one for dentry and another for inode shrinker list. And these lists
-> > are created for all possible NUMA nodes and for all given memcgs
-> > (memcg_nr_cache_ids to be particular)
-> >
-> > If,
-> >
-> > A = Nr allocation request per mount: 2 (one for dentry and inode list)
-> > B = Nr NUMA possible nodes
-> > C = memcg_nr_cache_ids
-> > D = size of each kmalloc-32 object: 32 bytes,
-> >
-> > then for every mount, the amount of memory consumed by kmalloc-32 slab
-> > cache for list_lru creation is A*B*C*D bytes.
-> 
-> Yes, this is exactly what the current implementation does.
-> 
-> >
-> > Following factors contribute to the excessive allocations:
-> >
-> > - Lists are created for possible NUMA nodes.
-> 
-> Yes, because filesystem caches (dentry and inode) are NUMA aware.
-> 
-> > - memcg_nr_cache_ids grows in bulk (see memcg_alloc_cache_id() and additional
-> >   list_lrus are created when it grows. Thus we end up creating list_lru_one
-> >   list_heads even for those memcgs which are yet to be created.
-> >   For example, when 10000 memcgs are created, memcg_nr_cache_ids reach
-> >   a value of 12286.
-> > - When a memcg goes offline, the list elements are drained to the parent
-> >   memcg, but the list_head entry remains.
-> > - The lists are destroyed only when the FS is unmounted. So list_heads
-> >   for non-existing memcgs remain and continue to contribute to the
-> >   kmalloc-32 allocation. This is presumably done for performance
-> >   reason as they get reused when new memcgs are created, but they end up
-> >   consuming slab memory until then.
-> 
-> The current implementation has list_lrus attached with super_block. So
-> the list can't be freed until the super block is unmounted.
-> 
-> I'm looking into consolidating list_lrus more closely with memcgs. It
-> means the list_lrus will have the same life cycles as memcgs rather
-> than filesystems. This may be able to improve some. But I'm supposed
-> the filesystem will be unmounted once the container exits and the
-> memcgs will get offlined for your usecase.
-> 
-> > - In case of containers, a few file systems get mounted and are specific
-> >   to the container namespace and hence to a particular memcg, but we
-> >   end up creating lists for all the memcgs.
-> 
-> Yes, because the kernel is *NOT* aware of containers.
-> 
-> >   As an example, if 7 FS mounts are done for every container and when
-> >   10k containers are created, we end up creating 2*7*12286 list_lru_one
-> >   lists for each NUMA node. It appears that no elements will get added
-> >   to other than 2*7=14 of them in the case of containers.
-> >
-> > One straight forward way to prevent this excessive list_lru_one
-> > allocations is to limit the list_lru_one creation only to the
-> > relevant memcg. However I don't see an easy way to figure out
-> > that relevant memcg from FS mount path (alloc_super())
-> >
-> > As an alternative approach, I have this below hack that does lazy
-> > list_lru creation. The memcg-specific list is created and initialized
-> > only when there is a request to add an element to that particular
-> > list. Though I am not sure about the full impact of this change
-> > on the owners of the lists and also the performance impact of this,
-> > the overall savings look good.
-> 
-> It is fine to reduce the memory consumption for your usecase, but I'm
-> not sure if this would incur any noticeable overhead for vfs
-> operations since list_lru_add() should be called quite often, but it
-> just needs to allocate the list for once (for each memcg +
-> filesystem), so the overhead might be fine.
-> 
-> And I'm wondering how much memory can be saved for real life workload.
-> I don't expect most containers are idle in production environments.
-> 
-> Added some more memcg/list_lru experts in this loop, they may have better ideas.
-> 
-> >
-> > Used memory
-> >                 Before          During          After
-> > W/o patch       23G             172G            40G
-> > W/  patch       23G             69G             29G
-> >
-> > Slab consumption
-> >                 Before          During          After
-> > W/o patch       1.5G            149G            22G
-> > W/  patch       1.5G            45G             10G
-> >
-> > Number of kmalloc-32 allocations
-> >                 Before          During          After
-> > W/o patch       178176          3442409472      388933632
-> > W/  patch       190464          468992          468992
-> >
-> > Any thoughts on other approaches to address this scenario and
-> > any specific comments about the approach that I have taken is
-> > appreciated. Meanwhile the patch looks like below:
-> >
-> > From 9444a0c6734c2853057b1f486f85da2c409fdc84 Mon Sep 17 00:00:00 2001
-> > From: Bharata B Rao <bharata@linux.ibm.com>
-> > Date: Wed, 31 Mar 2021 18:21:45 +0530
-> > Subject: [PATCH 1/1] mm: list_lru: Allocate list_lru_one only when required.
-> >
-> > Don't pre-allocate list_lru_one list heads for all memcg_cache_ids.
-> > Instead allocate and initialize it only when required.
-> >
-> > Signed-off-by: Bharata B Rao <bharata@linux.ibm.com>
-> > ---
-> >  mm/list_lru.c | 79 +++++++++++++++++++++++++--------------------------
-> >  1 file changed, 38 insertions(+), 41 deletions(-)
-> >
-> > diff --git a/mm/list_lru.c b/mm/list_lru.c
-> > index 6f067b6b935f..b453fa5008cc 100644
-> > --- a/mm/list_lru.c
-> > +++ b/mm/list_lru.c
-> > @@ -112,16 +112,32 @@ list_lru_from_kmem(struct list_lru_node *nlru, void *ptr,
-> >  }
-> >  #endif /* CONFIG_MEMCG_KMEM */
-> >
-> > +static void init_one_lru(struct list_lru_one *l)
-> > +{
-> > +       INIT_LIST_HEAD(&l->list);
-> > +       l->nr_items = 0;
-> > +}
-> > +
-> >  bool list_lru_add(struct list_lru *lru, struct list_head *item)
-> >  {
-> >         int nid = page_to_nid(virt_to_page(item));
-> >         struct list_lru_node *nlru = &lru->node[nid];
-> >         struct mem_cgroup *memcg;
-> >         struct list_lru_one *l;
-> > +       struct list_lru_memcg *memcg_lrus;
-> >
-> >         spin_lock(&nlru->lock);
-> >         if (list_empty(item)) {
-> >                 l = list_lru_from_kmem(nlru, item, &memcg);
-> > +               if (!l) {
-> > +                       l = kmalloc(sizeof(struct list_lru_one), GFP_ATOMIC);
-> > +                       if (!l)
-> > +                               goto out;
-> > +
-> > +                       init_one_lru(l);
-> > +                       memcg_lrus = rcu_dereference_protected(nlru->memcg_lrus, true);
-> > +                       memcg_lrus->lru[memcg_cache_id(memcg)] = l;
-> > +               }
-> >                 list_add_tail(item, &l->list);
-> >                 /* Set shrinker bit if the first element was added */
-> >                 if (!l->nr_items++)
-> > @@ -131,6 +147,7 @@ bool list_lru_add(struct list_lru *lru, struct list_head *item)
-> >                 spin_unlock(&nlru->lock);
-> >                 return true;
-> >         }
-> > +out:
-> >         spin_unlock(&nlru->lock);
-> >         return false;
-> >  }
-> > @@ -176,11 +193,12 @@ unsigned long list_lru_count_one(struct list_lru *lru,
-> >  {
-> >         struct list_lru_node *nlru = &lru->node[nid];
-> >         struct list_lru_one *l;
-> > -       unsigned long count;
-> > +       unsigned long count = 0;
-> >
-> >         rcu_read_lock();
-> >         l = list_lru_from_memcg_idx(nlru, memcg_cache_id(memcg));
-> > -       count = READ_ONCE(l->nr_items);
-> > +       if (l)
-> > +               count = READ_ONCE(l->nr_items);
-> >         rcu_read_unlock();
-> >
-> >         return count;
-> > @@ -207,6 +225,9 @@ __list_lru_walk_one(struct list_lru_node *nlru, int memcg_idx,
-> >         unsigned long isolated = 0;
-> >
-> >         l = list_lru_from_memcg_idx(nlru, memcg_idx);
-> > +       if (!l)
-> > +               goto out;
-> > +
-> >  restart:
-> >         list_for_each_safe(item, n, &l->list) {
-> >                 enum lru_status ret;
-> > @@ -251,6 +272,7 @@ __list_lru_walk_one(struct list_lru_node *nlru, int memcg_idx,
-> >                         BUG();
-> >                 }
-> >         }
-> > +out:
-> >         return isolated;
-> >  }
-> >
-> > @@ -312,12 +334,6 @@ unsigned long list_lru_walk_node(struct list_lru *lru, int nid,
-> >  }
-> >  EXPORT_SYMBOL_GPL(list_lru_walk_node);
-> >
-> > -static void init_one_lru(struct list_lru_one *l)
-> > -{
-> > -       INIT_LIST_HEAD(&l->list);
-> > -       l->nr_items = 0;
-> > -}
-> > -
-> >  #ifdef CONFIG_MEMCG_KMEM
-> >  static void __memcg_destroy_list_lru_node(struct list_lru_memcg *memcg_lrus,
-> >                                           int begin, int end)
-> > @@ -328,41 +344,16 @@ static void __memcg_destroy_list_lru_node(struct list_lru_memcg *memcg_lrus,
-> >                 kfree(memcg_lrus->lru[i]);
-> >  }
-> >
-> > -static int __memcg_init_list_lru_node(struct list_lru_memcg *memcg_lrus,
-> > -                                     int begin, int end)
-> > -{
-> > -       int i;
-> > -
-> > -       for (i = begin; i < end; i++) {
-> > -               struct list_lru_one *l;
-> > -
-> > -               l = kmalloc(sizeof(struct list_lru_one), GFP_KERNEL);
-> > -               if (!l)
-> > -                       goto fail;
-> > -
-> > -               init_one_lru(l);
-> > -               memcg_lrus->lru[i] = l;
-> > -       }
-> > -       return 0;
-> > -fail:
-> > -       __memcg_destroy_list_lru_node(memcg_lrus, begin, i);
-> > -       return -ENOMEM;
-> > -}
-> > -
-> >  static int memcg_init_list_lru_node(struct list_lru_node *nlru)
-> >  {
-> >         struct list_lru_memcg *memcg_lrus;
-> >         int size = memcg_nr_cache_ids;
-> >
-> > -       memcg_lrus = kvmalloc(sizeof(*memcg_lrus) +
-> > +       memcg_lrus = kvzalloc(sizeof(*memcg_lrus) +
-> >                               size * sizeof(void *), GFP_KERNEL);
-> >         if (!memcg_lrus)
-> >                 return -ENOMEM;
-> >
-> > -       if (__memcg_init_list_lru_node(memcg_lrus, 0, size)) {
-> > -               kvfree(memcg_lrus);
-> > -               return -ENOMEM;
-> > -       }
-> >         RCU_INIT_POINTER(nlru->memcg_lrus, memcg_lrus);
-> >
-> >         return 0;
-> > @@ -389,15 +380,10 @@ static int memcg_update_list_lru_node(struct list_lru_node *nlru,
-> >
-> >         old = rcu_dereference_protected(nlru->memcg_lrus,
-> >                                         lockdep_is_held(&list_lrus_mutex));
-> > -       new = kvmalloc(sizeof(*new) + new_size * sizeof(void *), GFP_KERNEL);
-> > +       new = kvzalloc(sizeof(*new) + new_size * sizeof(void *), GFP_KERNEL);
-> >         if (!new)
-> >                 return -ENOMEM;
-> >
-> > -       if (__memcg_init_list_lru_node(new, old_size, new_size)) {
-> > -               kvfree(new);
-> > -               return -ENOMEM;
-> > -       }
-> > -
-> >         memcpy(&new->lru, &old->lru, old_size * sizeof(void *));
-> >
-> >         /*
-> > @@ -526,6 +512,7 @@ static void memcg_drain_list_lru_node(struct list_lru *lru, int nid,
-> >         struct list_lru_node *nlru = &lru->node[nid];
-> >         int dst_idx = dst_memcg->kmemcg_id;
-> >         struct list_lru_one *src, *dst;
-> > +       struct list_lru_memcg *memcg_lrus;
-> >
-> >         /*
-> >          * Since list_lru_{add,del} may be called under an IRQ-safe lock,
-> > @@ -534,7 +521,17 @@ static void memcg_drain_list_lru_node(struct list_lru *lru, int nid,
-> >         spin_lock_irq(&nlru->lock);
-> >
-> >         src = list_lru_from_memcg_idx(nlru, src_idx);
-> > +       if (!src)
-> > +               goto out;
-> > +
-> >         dst = list_lru_from_memcg_idx(nlru, dst_idx);
-> > +       if (!dst) {
-> > +               /* TODO: Use __GFP_NOFAIL? */
-> > +               dst = kmalloc(sizeof(struct list_lru_one), GFP_ATOMIC);
-> > +               init_one_lru(dst);
-> > +               memcg_lrus = rcu_dereference_protected(nlru->memcg_lrus, true);
-> > +               memcg_lrus->lru[dst_idx] = dst;
-> > +       }
+Hello
 
-Hm, can't we just reuse src as dst in this case?
-We don't need src anymore and we're basically allocating dst to move all data from src.
-If not, we can allocate up to the root memcg every time to avoid having
-!dst case and fiddle with __GFP_NOFAIL.
+I own an Edimax NS 2502, which is a NAS based on StormLinix 3516.
 
-Otherwise I like the idea and I think it might reduce the memory overhead
-especially on (very) big machines.
+I successfully upgraded it with a recent Linux.
+The DTB I use is the following:
+/dts-v1/;
+#include "gemini.dtsi"
+#include <dt-bindings/input/input.h>
+/ {
+	model = "Edimax NS-2502";
+	compatible = "edimax,ns-2502", "cortina,gemini";
+	#address-cells = <1>;
+	#size-cells = <1>;
+	memory@0 {
+		/* 128 MB */
+		device_type = "memory";
+		reg = <0x00000000 0x8000000>;
+	};
+	chosen {
+		bootargs = "console=ttyS0,19200n8";
+		stdout-path = &uart0;
+	};
+	mdio0: ethernet-phy {
+		compatible = "virtual,mdio-gpio";
+		gpios = <&gpio0 22 GPIO_ACTIVE_HIGH>, /* MDC */
+			<&gpio0 21 GPIO_ACTIVE_HIGH>; /* MDIO */
+		#address-cells = <1>;
+		#size-cells = <0>;
+		phy0: ethernet-phy@1 {
+			reg = <1>;
+			device_type = "ethernet-phy";
+		};
+	};
+	soc {
+		flash@30000000 {
+			status = "okay";
+			/* 8MB of flash */
+			reg = <0x30000000 0x00800000>;
+			partition@0 {
+				label = "RedBoot";
+				reg = <0x00000000 0x00020000>;
+				read-only;
+			};
+			partition@20000 {
+				label = "kernel";
+				reg = <0x00020000 0x00700000>;
+			};
+			partition@720000 {
+				label = "VCTL";
+				reg = <0x00720000 0x00020000>;
+				read-only;
+			};
+			partition@740000 {
+				label = "CurConf";
+				reg = <0x00740000 0x000a0000>;
+				read-only;
+			};
+			partition@7e0000 {
+				label = "FIS";
+				reg = <0x007e0000 0x00010000>;
+				read-only;
+			};
+		};
+		syscon: syscon@40000000 {
+			pinctrl {
+				/*
+				 * gpio0agrp cover line 0-4
+				 * gpio0bgrp cover line 5
+				 */
+				gpio0_default_pins: pinctrl-gpio0 {
+					mux {
+						function = "gpio0";
+						groups = "gpio0agrp",
+						"gpio0bgrp";
+					};
+				};
+			};
+		};
+		gpio0: gpio@4d000000 {
+			pinctrl-names = "default";
+			pinctrl-0 = <&gpio0_default_pins>;
+		};
+		ethernet@60000000 {
+			status = "okay";
+			ethernet-port@0 {
+				phy-mode = "rgmii";
+				phy-handle = <&phy0>;
+			};
+			ethernet-port@1 {
+				/* Not used in this platform */
+			};
+		};
+		usb@68000000 {
+			status = "okay";
+		};
+		usb@69000000 {
+			status = "okay";
+		};
+	};
+};
 
-Thanks!
+This is a bit of copy paste of other DTB.
+With it I boot successfully to a shell.
+
+BUT neither ethernet nor USB works.
+This is the bootlog:
+Flash Block Size = 65536
+
+Storlink SL351x Boot Loader [Linux], version 1.0.9
+Built by linux, 10:50:46, Aug  6 2008
+
+Processor: SL3516c2
+CPU Rate: 300000000
+AHB Bus Clock:150MHz    Ratio:2/1
+MAC 1 Address: 00:00:25:02:00:00
+MAC 2 Address: 00:01:25:02:00:00
+inet addr: 192.168.1.237/255.255.255.0
+==> enter ^C to abort booting within 2 seconds ......
+Load Kern image from 0x30020000 to 0x800000 size 7340032
+Booting Linux on physical CPU 0x0
+Linux version 5.12.0-rc5-next-20210401+ (compile@Red) (armv7a-unknown-linux-gnueabihf-gcc (Gentoo 9.3.0-r2 p4) 9.3.0, GNU ld (Gentoo 2.34 p6) 2.34.0) #47 PREEMPT Mon Apr 5 20:20:27 CEST 2021
+CPU: FA526 [66015261] revision 1 (ARMv4), cr=0000397f
+CPU: VIVT data cache, VIVT instruction cache
+OF: fdt: Machine model: Edimax NS-2502
+Memory policy: Data cache writeback
+Zone ranges:
+  Normal   [mem 0x0000000000000000-0x0000000007ffffff]
+  HighMem  empty
+Movable zone start for each node
+Early memory node ranges
+  node   0: [mem 0x0000000000000000-0x0000000007ffffff]
+Initmem setup node 0 [mem 0x0000000000000000-0x0000000007ffffff]
+Built 1 zonelists, mobility grouping on.  Total pages: 32512
+Kernel command line: console=ttyS0,19200n8
+Dentry cache hash table entries: 16384 (order: 4, 65536 bytes, linear)
+Inode-cache hash table entries: 8192 (order: 3, 32768 bytes, linear)
+mem auto-init: stack:off, heap alloc:off, heap free:off
+Memory: 119300K/131072K available (4922K kernel code, 577K rwdata, 1344K rodata, 3340K init, 212K bss, 11772K reserved, 0K cma-reserved, 0K highmem)
+SLUB: HWalign=32, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
+rcu: Preemptible hierarchical RCU implementation.
+        Trampoline variant of Tasks RCU enabled.
+rcu: RCU calculated value of scheduler-enlistment delay is 10 jiffies.
+NR_IRQS: 16, nr_irqs: 16, preallocated irqs: 16
+random: get_random_bytes called from start_kernel+0x2fc/0x4f0 with crng_init=0
+clocksource: FTTMR010-TIMER2: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 76450417870 ns
+sched_clock: 32 bits at 25MHz, resolution 40ns, wraps every 85899345900ns
+Switching to timer-based delay loop, resolution 40ns
+Console: colour dummy device 80x30
+Calibrating delay loop (skipped), value calculated using timer frequency.. 50.00 BogoMIPS (lpj=250000)
+pid_max: default: 32768 minimum: 301
+Mount-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+Mountpoint-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+CPU: Testing write buffer coherency: ok
+Setting up static identity map for 0x81e0 - 0x8228
+rcu: Hierarchical SRCU implementation.
+devtmpfs: initialized
+clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604462750000 ns
+futex hash table entries: 256 (order: -1, 3072 bytes, linear)
+pinctrl core: initialized pinctrl subsystem
+NET: Registered protocol family 16
+DMA: preallocated 256 KiB pool for atomic coherent allocations
+thermal_sys: Registered thermal governor 'step_wise'
+No ATAGs?
+pinctrl-gemini 40000000.syscon:pinctrl: detected 3516 chip variant
+pinctrl-gemini 40000000.syscon:pinctrl: GLOBAL MISC CTRL at boot: 0x83c22037
+pinctrl-gemini 40000000.syscon:pinctrl: flash pin is not set
+pinctrl-gemini 40000000.syscon:pinctrl: initialized Gemini pin control driver
+random: fast init done
+pl08xdmac 67000000.dma-controller: FTDMAC020 1.16 rel 1
+pl08xdmac 67000000.dma-controller: FTDMAC020 4 channels, has built-in bridge, AHB0 and AHB1, supports linked lists
+pl08xdmac 67000000.dma-controller: initialized 4 virtual memcpy channels
+pl08xdmac 67000000.dma-controller: DMA: PL080 rev0 at 0x67000000 irq 27
+Gemini SoC 3516 revision c2, set arbitration 00200030
+SCSI subsystem initialized
+usbcore: registered new interface driver usbfs
+usbcore: registered new interface driver hub
+usbcore: registered new device driver usb
+clocksource: Switched to clocksource FTTMR010-TIMER2
+NET: Registered protocol family 2
+IP idents hash table entries: 2048 (order: 2, 16384 bytes, linear)
+tcp_listen_portaddr_hash hash table entries: 512 (order: 0, 4096 bytes, linear)
+TCP established hash table entries: 1024 (order: 0, 4096 bytes, linear)
+TCP bind hash table entries: 1024 (order: 0, 4096 bytes, linear)
+TCP: Hash tables configured (established 1024 bind 1024)
+UDP hash table entries: 256 (order: 0, 4096 bytes, linear)
+UDP-Lite hash table entries: 256 (order: 0, 4096 bytes, linear)
+NET: Registered protocol family 1
+Initialise system trusted keyrings
+workingset: timestamp_bits=30 max_order=15 bucket_order=0
+romfs: ROMFS MTD (C) 2007 Red Hat, Inc.
+NET: Registered protocol family 38
+Key type asymmetric registered
+Asymmetric key parser 'x509' registered
+Block layer SCSI generic (bsg) driver version 0.4 loaded (major 251)
+io scheduler mq-deadline registered
+io scheduler kyber registered
+ftgpio010-gpio 4d000000.gpio: FTGPIO010 @(ptrval) registered
+ftgpio010-gpio 4e000000.gpio: FTGPIO010 @(ptrval) registered
+ftgpio010-gpio 4f000000.gpio: FTGPIO010 @(ptrval) registered
+Serial: 8250/16550 driver, 1 ports, IRQ sharing disabled
+printk: console [ttyS0] disabled
+42000000.serial: ttyS0 at MMIO 0x42000000 (irq = 18, base_baud = 3000000) is a 16550A
+printk: console [ttyS0] enabled
+brd: module loaded
+physmap-flash 30000000.flash: no enabled pin control state
+physmap-flash 30000000.flash: no disabled pin control state
+physmap-flash 30000000.flash: initialized Gemini-specific physmap control
+physmap-flash 30000000.flash: physmap platform flash device: [mem 0x30000000-0x307fffff]
+30000000.flash: Found 1 x16 devices at 0x0 in 16-bit bank. Manufacturer ID 0x0000c2 Chip ID 0x0022cb
+Support for command set 0002 not present
+gen_probe: No supported Vendor Command Set found
+physmap-flash 30000000.flash: map_probe failed
+libphy: Fixed MDIO Bus: probed
+mdio-gpio ethernet-phy: failed to get alias id
+libphy: GPIO Bitbanged MDIO: probed
+tun: Universal TUN/TAP device driver, 1.6
+gmac-gemini 60000000.ethernet: Ethernet device ID: 0x000, revision 0x1
+gemini-ethernet-port 60008000.ethernet-port: probe 60008000.ethernet-port ID 0
+gemini-ethernet-port 60008000.ethernet-port: using a random ethernet address
+RTL8211B Gigabit Ethernet gpio-0:01: attached PHY driver (mii_bus:phy_addr=gpio-0:01, irq=POLL)
+gemini-ethernet-port 60008000.ethernet-port eth0: irq 30, DMA @ 0x0x60008000, GMAC @ 0x0x6000a000
+gemini-ethernet-port 6000c000.ethernet-port: probe 6000c000.ethernet-port ID 1
+gemini-ethernet-port 6000c000.ethernet-port: using a random ethernet address
+gemini-ethernet-port 6000c000.ethernet-port (unnamed net_device) (uninitialized): PHY init failed
+ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
+fotg210_hcd: FOTG210 Host Controller (EHCI) Driver
+fotg210-hcd 68000000.usb: Faraday USB2.0 Host Controller
+fotg210-hcd 68000000.usb: new USB bus registered, assigned bus number 1
+fotg210-hcd 68000000.usb: irq 28, io mem 0x68000000
+fotg210-hcd 68000000.usb: USB 2.0 started, EHCI 1.00
+hub 1-0:1.0: USB hub found
+hub 1-0:1.0: 1 port detected
+fotg210-hcd 69000000.usb: Faraday USB2.0 Host Controller
+fotg210-hcd 69000000.usb: new USB bus registered, assigned bus number 2
+fotg210-hcd 69000000.usb: irq 29, io mem 0x69000000
+fotg210-hcd 69000000.usb: USB 2.0 started, EHCI 1.00
+hub 2-0:1.0: USB hub found
+hub 2-0:1.0: 1 port detected
+usbcore: registered new interface driver usb-storage
+rtc-ftrtc010 45000000.rtc: registered as rtc0
+rtc-ftrtc010 45000000.rtc: setting system clock to 1970-01-01T00:00:00 UTC (0)
+gemini-poweroff 4b000000.power-controller: other power management IRQ
+gemini-poweroff 4b000000.power-controller: Gemini poweroff driver registered
+ftwdt010-wdt 41000000.watchdog: FTWDT010 watchdog driver enabled
+device-mapper: ioctl: 4.45.0-ioctl (2021-03-22) initialised: dm-devel@redhat.com
+NET: Registered protocol family 10
+Segment Routing with IPv6
+sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
+8021q: 802.1Q VLAN Support v1.8
+Loading compiled-in X.509 certificates
+Freeing unused kernel memory: 3340K
+Kernel memory protection not selected by kernel config.
+Run /init as init process
+Starting syslogd: OK
+Starting klogd: OK
+Running sysctl: OK
+Saving random seed: random: dd: uninitialized urandom read (512 bytes read)
+OK
+Starting network: OK
+random: crng init done
+ssh-keygen: generating new host keys: RSA DSA ECDSA ED25519
+Starting sshd: OK
+
+Welcome to Buildroot
+ns2502 login: root
+# ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop qlen 1000
+    link/ether b6:95:3c:18:98:62 brd ff:ff:ff:ff:ff:ff
+3: sit0@NONE: <NOARP> mtu 1480 qdisc noop qlen 1000
+    link/sit 0.0.0.0 brd 0.0.0.0
+# udhcpc -i eth0
+udhcpc: started, v1.33.0
+gmac-gemini 60000000.ethernet: allocate 512 pages for queue
+gemini-ethernet-port 60008000.ethernet-port eth0: Unsupported PHY speed (-1) on gpio-0:01
+gemini-ethernet-port 60008000.ethernet-port eth0: Link is Down
+gemini-ethernet-port 60008000.ethernet-port eth0: link flow control: none
+udhcpc: socket: Address family not supported by protocol
+# gemini-ethernet-port 60008000.ethernet-port eth0: Link is Up - 1Gbps/Full - flow control rx/tx
+gemini-ethernet-port 60008000.ethernet-port eth0: link flow control: tx
+IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
+
+# udhcpc -i eth0
+udhcpc: started, v1.33.0
+udhcpc: socket: Address family not supported by protocol
+
+
+Inserting an USB dongle give nothing.
+As shown, udhcp cannot get an IP.
+Setting one at hand does not fix anything, ping fail.
+
+Can someone help me bring up at least ethernet ?
+
+Thanks
