@@ -2,210 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE09354826
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 23:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 882AE35482D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 23:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235731AbhDEV2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 17:28:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35610 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232853AbhDEV2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 17:28:47 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D772A613C3;
-        Mon,  5 Apr 2021 21:28:40 +0000 (UTC)
-Date:   Mon, 5 Apr 2021 17:28:39 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        peterz@infradead.org
-Subject: Re: [PATCH v2 1/5] tracing: Define new ftrace event "func_repeats"
-Message-ID: <20210405172839.0dca7fe8@gandalf.local.home>
-In-Reply-To: <20210329130533.199507-2-y.karadz@gmail.com>
-References: <20210329130533.199507-1-y.karadz@gmail.com>
-        <20210329130533.199507-2-y.karadz@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S237180AbhDEVc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 17:32:57 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:34642 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236532AbhDEVcv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 17:32:51 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 61D101F44684
+Received: by earth.universe (Postfix, from userid 1000)
+        id 153853C0C96; Mon,  5 Apr 2021 23:32:41 +0200 (CEST)
+Date:   Mon, 5 Apr 2021 23:32:41 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>, linux-pm@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] power: supply: Add battery driver for Surface
+ Aggregator Module
+Message-ID: <20210405213241.r6xhtbaf4qkzylz2@earth.universe>
+References: <20210309000530.2165752-1-luzmaximilian@gmail.com>
+ <20210309000530.2165752-2-luzmaximilian@gmail.com>
+ <20210405153752.2r4ii5lguogchgl4@earth.universe>
+ <046f6149-55fd-431e-d582-cc5915d10e20@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="s2kgvvnmznjx3piv"
+Content-Disposition: inline
+In-Reply-To: <046f6149-55fd-431e-d582-cc5915d10e20@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Mar 2021 16:05:29 +0300
-"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-> The event aims to consolidate the function tracing record in the cases
-> when a single function is called number of times consecutively.
-> 
-> 	while (cond)
-> 		do_func();
-> 
-> This may happen in various scenarios (busy waiting for example).
-> The new ftrace event can be used to show repeated function events with
-> a single event and save space on the ring buffer
-> 
-> Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-> ---
->  kernel/trace/trace.h         |  3 +++
->  kernel/trace/trace_entries.h | 39 ++++++++++++++++++++++++++++++
->  kernel/trace/trace_output.c  | 47 ++++++++++++++++++++++++++++++++++++
->  3 files changed, 89 insertions(+)
-> 
-> diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-> index 5506424eae2a..6a5b4c2a0fa7 100644
-> --- a/kernel/trace/trace.h
-> +++ b/kernel/trace/trace.h
-> @@ -45,6 +45,7 @@ enum trace_type {
->  	TRACE_BPUTS,
->  	TRACE_HWLAT,
->  	TRACE_RAW_DATA,
-> +	TRACE_FUNC_REPEATS,
->  
->  	__TRACE_LAST_TYPE,
->  };
-> @@ -442,6 +443,8 @@ extern void __ftrace_bad_type(void);
->  			  TRACE_GRAPH_ENT);		\
->  		IF_ASSIGN(var, ent, struct ftrace_graph_ret_entry,	\
->  			  TRACE_GRAPH_RET);		\
-> +		IF_ASSIGN(var, ent, struct func_repeats_entry,		\
-> +			  TRACE_FUNC_REPEATS);				\
->  		__ftrace_bad_type();					\
->  	} while (0)
->  
-> diff --git a/kernel/trace/trace_entries.h b/kernel/trace/trace_entries.h
-> index 4547ac59da61..6f98c3b4e4fa 100644
-> --- a/kernel/trace/trace_entries.h
-> +++ b/kernel/trace/trace_entries.h
-> @@ -338,3 +338,42 @@ FTRACE_ENTRY(hwlat, hwlat_entry,
->  		 __entry->nmi_total_ts,
->  		 __entry->nmi_count)
->  );
-> +
-> +#define FUNC_REPEATS_GET_DELTA_TS(entry)					\
-> +(((u64)entry->top_delta_ts << 32) | entry->bottom_delta_ts)			\
-> +
-> +#define FUNC_REPEATS_SET_DELTA_TS(entry, delta)					\
+--s2kgvvnmznjx3piv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hmm, this isn't used anywhere. Why is it defined here?
+Hi,
 
-> +	do {									\
-> +		if (likely(!((u64)delta >> 32))) {				\
+On Mon, Apr 05, 2021 at 09:07:55PM +0200, Maximilian Luz wrote:
+> [...]
+> > > +static int spwr_battery_recheck_adapter(struct spwr_battery_device *=
+bat)
+> > > +{
+> > > +	/*
+> > > +	 * Handle battery update quirk: When the battery is fully charged (=
+or
+> > > +	 * charged up to the limit imposed by the UEFI battery limit) and t=
+he
+> > > +	 * adapter is plugged in or removed, the EC does not send a separate
+> > > +	 * event for the state (charging/discharging) change. Furthermore it
+> > > +	 * may take some time until the state is updated on the battery.
+> > > +	 * Schedule an update to solve this.
+> > > +	 */
+> >=20
+> > As long as the adapter plug event is being sent you can just add
+> > .external_power_changed() hook in this driver and update the battery
+> > status there instead of using this hack :)
+> >=20
+> > This requires populating .supplied_to in the charger driver, so that
+> > it will notify the battery device when power_supply_changed() is called
+> > for the charger. I will point this out when reviewing PATCH 2.
+>=20
+> I'll switch this to the .external_power_changed() callback, thanks for
+> pointing that out.
+>=20
+> I still need the delay though. The event for the charger is the same
+> event that we rely on here, so the charging/not-charging flag in the BST
+> data may still not be updated yet. So unfortunately still a bit of a
+> hack required.
 
-If statements are more expensive than shifts and masks, thus, this first if
-statement isn't needed. Because:
+Ah, too bad.
 
-	entry->bottom_delta_ts = delta & U32_MAX;
-	entry->top_delta_ts = (delta >> 32);
+> > > +	schedule_delayed_work(&bat->update_work, SPWR_AC_BAT_UPDATE_DELAY);
+> > > +	return 0;
+> > > +}
+> [...]
+> > > +static void spwr_battery_update_bst_workfn(struct work_struct *work)
+> > > +{
+> > > +	struct delayed_work *dwork =3D to_delayed_work(work);
+> > > +	struct spwr_battery_device *bat;
+> > > +	int status;
+> > > +
+> > > +	bat =3D container_of(dwork, struct spwr_battery_device, update_work=
+);
+> > > +
+> > > +	status =3D spwr_battery_update_bst(bat, false);
+> > > +	if (!status)
+> > > +		power_supply_changed(bat->psy);
+> >=20
+> > power_supply_changed should only be changed for 'important' changes
+> > (e.g. charging status changes, temperature or capacity threshold reache=
+d),
+> > not every 5 seconds.
+>=20
+> This work struct will only be scheduled when we receive an adapter event
+> and is required to handle the quirk above, so this should be an
+> important change (state changing from charging to not-charging or back)
+> and shouldn't repeat too often, or rather only when the user
+> plugs/unplugs the charger.
 
-Would produce the same faster as this conditional, but be generally faster.
+Ack.
 
+> [...]
+> > > +/* -- Alarm attribute. ---------------------------------------------=
+--------- */
+> > > +
+> > > +static ssize_t spwr_battery_alarm_show(struct device *dev, struct de=
+vice_attribute *attr, char *buf)
+> > > +{
+> > > +	struct power_supply *psy =3D dev_get_drvdata(dev);
+> > > +	struct spwr_battery_device *bat =3D power_supply_get_drvdata(psy);
+> > > +	int status;
+> > > +
+> > > +	mutex_lock(&bat->lock);
+> > > +	status =3D sysfs_emit(buf, "%d\n", bat->alarm * 1000);
+> > > +	mutex_unlock(&bat->lock);
+> > > +
+> > > +	return status;
+> > > +}
+> > > +
+> > > +static ssize_t spwr_battery_alarm_store(struct device *dev, struct d=
+evice_attribute *attr,
+> > > +					const char *buf, size_t count)
+> > > +{
+> > > +	struct power_supply *psy =3D dev_get_drvdata(dev);
+> > > +	struct spwr_battery_device *bat =3D power_supply_get_drvdata(psy);
+> > > +	unsigned long value;
+> > > +	int status;
+> > > +
+> > > +	status =3D kstrtoul(buf, 0, &value);
+> > > +	if (status)
+> > > +		return status;
+> > > +
+> > > +	mutex_lock(&bat->lock);
+> > > +
+> > > +	if (!spwr_battery_present(bat)) {
+> > > +		mutex_unlock(&bat->lock);
+> > > +		return -ENODEV;
+> > > +	}
+> > > +
+> > > +	status =3D spwr_battery_set_alarm_unlocked(bat, value / 1000);
+> > > +	if (status) {
+> > > +		mutex_unlock(&bat->lock);
+> > > +		return status;
+> > > +	}
+> > > +
+> > > +	mutex_unlock(&bat->lock);
+> > > +	return count;
+> > > +}
+> > > +
+> > > +static const struct device_attribute alarm_attr =3D {
+> > > +	.attr =3D {.name =3D "alarm", .mode =3D 0644},
+> > > +	.show =3D spwr_battery_alarm_show,
+> > > +	.store =3D spwr_battery_alarm_store,
+> > > +};
+> >=20
+> > DEVICE_ATTR_RW()
+> >=20
+> > custom property needs to be documented in
+> >=20
+> > Documentation/ABI/testing/sysfs-class-power-surface
+> >=20
+> > Also I'm not sure what is being stored here, but it looks like you
+> > can just use POWER_SUPPLY_PROP_CAPACITY_ALERT_MIN?
+>=20
+> This (and other handling of the alarm value) has essentially been copied
+> from drivers/acpi/battery.c and corresponds to ACPI _BTP/battery trip
+> point (the whole interface of this EC is essentially modeled after the
+> ACPI spec).
+>=20
+> The alarm value isn't strictly required to be a lower threshold, but is
+> (according to ACPI spec) a trip point that causes an event to be sent
+> when it is crossed in either direction. So I don't think we can directly
+> map this to POWER_SUPPLY_PROP_CAPACITY_ALERT_MIN as that seems to imply
+> a lower threshold only.
+>=20
+> I'll add documentation for this if that's allright.
 
-> +			entry->bottom_delta_ts = delta;				\
-> +			entry->top_delta_ts = 0;				\
-> +		} else {							\
-> +			if (likely(!((u64)delta >> 48))) {			\
-> +				entry->bottom_delta_ts = delta & U32_MAX;	\
-> +				entry->top_delta_ts = (delta >> 32);		\
-> +			} else {						\
-> +				/* Timestamp overflow. Set to max. */		\
-> +				entry->bottom_delta_ts = U32_MAX;		\
-> +				entry->top_delta_ts = U16_MAX;			\
+Ack.
 
-I'm almost thinking we should just ignore this as it should never happen,
-because 2^48 nanoseconds is 78 hours. If we are repeating the same function
-over and over again for over 78 hours, we have more issues to worry about
-;-)
+> [...]
+> > > +static void spwr_battery_unregister(struct spwr_battery_device *bat)
+> > > +{
+> > > +	ssam_notifier_unregister(bat->sdev->ctrl, &bat->notif);
+> > > +	cancel_delayed_work_sync(&bat->update_work);
+> > > +	device_remove_file(&bat->psy->dev, &alarm_attr);
+> > > +	power_supply_unregister(bat->psy);
+> >=20
+> > power_supply_unregister being the last function call is a clear
+> > sign, that devm_power_supply_register can be used instead.
+>=20
+> Right, that works here. I normally try to not mix devm code with
+> non-devm code (apart from maybe allocations).
 
--- Steve
+well allocations are usually done first and free'd last making
+them the first targets in the conversion and pretty much a no
+brainer.
 
-> +			}							\
-> +		}								\
-> +	} while (0);								\
-> +
-> +FTRACE_ENTRY(func_repeats, func_repeats_entry,
-> +
-> +	TRACE_FUNC_REPEATS,
-> +
-> +	F_STRUCT(
-> +		__field(	unsigned long,	ip		)
-> +		__field(	unsigned long,	parent_ip	)
-> +		__field(	u16	,	count		)
-> +		__field(	u16	,	top_delta_ts	)
-> +		__field(	u32	,	bottom_delta_ts	)
-> +	),
-> +
-> +	F_printk(" %ps <-%ps\t(repeats:%u  delta_ts: -%llu)",
-> +		 (void *)__entry->ip,
-> +		 (void *)__entry->parent_ip,
-> +		 __entry->count,
-> +		 FUNC_REPEATS_GET_DELTA_TS(__entry))
-> +);
-> diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
-> index a0146e1fffdf..55b08e146afc 100644
-> --- a/kernel/trace/trace_output.c
-> +++ b/kernel/trace/trace_output.c
-> @@ -1373,6 +1373,52 @@ static struct trace_event trace_raw_data_event = {
->  	.funcs		= &trace_raw_data_funcs,
->  };
->  
-> +static enum print_line_t
-> +trace_func_repeats_raw(struct trace_iterator *iter, int flags,
-> +			 struct trace_event *event)
-> +{
-> +	struct func_repeats_entry *field;
-> +	struct trace_seq *s = &iter->seq;
-> +
-> +	trace_assign_type(field, iter->ent);
-> +
-> +	trace_seq_printf(s, "%lu %lu %u %llu\n",
-> +			 field->ip,
-> +			 field->parent_ip,
-> +			 field->count,
-> +			 FUNC_REPEATS_GET_DELTA_TS(field));
-> +
-> +	return trace_handle_return(s);
-> +}
-> +
-> +static enum print_line_t
-> +trace_func_repeats_print(struct trace_iterator *iter, int flags,
-> +			 struct trace_event *event)
-> +{
-> +	struct func_repeats_entry *field;
-> +	struct trace_seq *s = &iter->seq;
-> +
-> +	trace_assign_type(field, iter->ent);
-> +
-> +	seq_print_ip_sym(s, field->ip, flags);
-> +	trace_seq_puts(s, " <-");
-> +	seq_print_ip_sym(s, field->parent_ip, flags);
-> +	trace_seq_printf(s, " (repeats: %u, delta_ts: -%llu)\n",
-> +			 field->count,
-> +			 FUNC_REPEATS_GET_DELTA_TS(field));
-> +
-> +	return trace_handle_return(s);
-> +}
-> +
-> +static struct trace_event_functions trace_func_repeats_funcs = {
-> +	.trace		= trace_func_repeats_print,
-> +	.raw		= trace_func_repeats_raw,
-> +};
-> +
-> +static struct trace_event trace_func_repeats_event = {
-> +	.type	 	= TRACE_FUNC_REPEATS,
-> +	.funcs		= &trace_func_repeats_funcs,
-> +};
->  
->  static struct trace_event *events[] __initdata = {
->  	&trace_fn_event,
-> @@ -1385,6 +1431,7 @@ static struct trace_event *events[] __initdata = {
->  	&trace_print_event,
->  	&trace_hwlat_event,
->  	&trace_raw_data_event,
-> +	&trace_func_repeats_event,
->  	NULL
->  };
->  
+Next merge window it's possible to easily go to full devm by
+using devm_delayed_work_autocancel(), which has been merged
+by Greg two weeks ago. Then last but not least do the ssam
+notifier unregister via devm_add_action_or_reset and its fully
+converted :)
 
+-- Sebastian
+
+--s2kgvvnmznjx3piv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBrgfIACgkQ2O7X88g7
++poIgw//eiNHJHzoFU774Y+VeSHxK+HM6QjOyuqGJ+kQDOF3Crzp3L/sAPr/Q2pt
+4vmYamGfYq7G7oFT65G30+AZpZ6xu8XmWWJzbErEm8OP9CglBJUfNptSE+DqaJkc
+h2Gn4Q2DUM16L+3V70BCMzBZJLHaaiKkcSb8nNYtB1S0+CFS4lecZRRn2tfeyt1R
+vOXhUsm3DCKUF69qxjl7OoXMhVu5mJwZCcLrBn57MW/8Ou87vblYvwSCJPKMXGmo
+osxfftbDXNVKMgQusJ3wPmUxqpEfYjLp/l6wdX9g1/e2zFLMyjuuT0A1sUInzShY
+/kTJqrJ//BPf0JjXtlhPsV+ijD8+jJXMhJb1AKyh6/D331VrblIKlQipmlwpxvD5
+695uKzejgzG3tMFug5tfCt73uXhMJjX7HEvT5brqO3bUoVPS2AdYZ4TZQEH3N2Qc
+91YJjUFX9M/Cv7AehCRPo+AuKilty8NroEk7VcO7wHidufh6jgLezj7ndSoUfO+G
+2rQt9tZgCHD6veyw0P3L+Zs5rGf0PcPeqmA179zxLFdmjdJZ0ri08KJvHJWb6cJ0
+ezAdmsyCTBBnUDxoYCAQx3QjphWu4XuerhjOhAQu7kIgzE3PBeY+lCoej/uG+oEb
+gBudGk+2JwZyuJxb/uW4mHwKkLDlgxNCCCtHHo1+2tfAM5Hwn/0=
+=8fEC
+-----END PGP SIGNATURE-----
+
+--s2kgvvnmznjx3piv--
