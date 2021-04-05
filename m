@@ -2,221 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 635E43545F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 19:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 429CA3545F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 19:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231312AbhDERV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 13:21:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49996 "EHLO
+        id S237620AbhDERVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 13:21:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237464AbhDERV1 (ORCPT
+        with ESMTP id S237464AbhDERVk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 13:21:27 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A69C061788;
-        Mon,  5 Apr 2021 10:21:21 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id e188so2196582ybb.13;
-        Mon, 05 Apr 2021 10:21:21 -0700 (PDT)
+        Mon, 5 Apr 2021 13:21:40 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFDA1C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 10:21:32 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id w3so17800863ejc.4
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 10:21:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D1j4GTXgVcvQqtBZ11yQ00wW6q8PqAarV4AdOOYag4E=;
-        b=fWNKlN4tH6BXb9nVGV9wlyjRl14zawifzMAmEc5tKEwxuEC2xq7nCLEr+ARfpa+nic
-         pJ+znioEvWbDv1kCcjA5/9zu+qLXwjfMkVEp5rKfVL2G4allvfl+nsPiI9GrsSaUGTeN
-         Qaz17QiB+xDnuwccQhcOalblW6jmE50dKTg1hnMG2iCXhdRcFcxmtea9yhbcihdiPUIj
-         baaRgmNrmjqJm+26o8UkLVyT0e+O3wttZMBejANMaNIWEbP4cY8AR5Z0t0Cya74lskts
-         EaLtxn/PFGKHTxFKKi11bRKhgEJyF0CNrNY48JC8GJT9/2GOGlL40WFfdQCOHYmAKvQl
-         ucLQ==
+         :cc:content-transfer-encoding;
+        bh=IXQ9NqG6Tt5Pe4reuledmIffXjGOsE+SSrfZAgUcvhI=;
+        b=oq/mJBO1nhi5C64fkN2PucUadzU31M31IP127ATnyAkvDQaVQUkeF64LfzpK+xilOg
+         A9kJkSWHFkm4MiWP09BEWchQCo/YPu/XhTOU2EtaAZyqFBUGyxmuTaK/jBv1xAxIOETh
+         UFU6yO5y+jPV7Sl9Ni3mEFauho6AbVgJCkSk0Z+9SM7CSuI1RQEP9Sa5geru5V73rRcp
+         4qlMACmB2ATNaD5wnBTIdxhK3JHoGuZnz9KPTXDRPKvMIItXMPXBW+WJ+v15FxUEPWRK
+         w8LjV1SrVPWhIyyrKHtk7NfIW7vWzLEAcCvqUEtTFXFw/9rZ1hhebN1Ro6JNjzOGzop1
+         hk2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D1j4GTXgVcvQqtBZ11yQ00wW6q8PqAarV4AdOOYag4E=;
-        b=IvNaASRKJxQZMFbaganeC8MPYF+/U7VxGQtragazSL9CUuwWyiYRbuvh5A+wFiYIYj
-         V6apsYCkLbCfgD4BSvHY7mHbJPiYnCQkO30CyV2OSFgVblrCPked4tst5OJnx0w151aB
-         phUl+KHlMpHbJ8gpHOcrMQLzh0gXF5NV3AQrhi5xX149EPz2yWVVNNougHiIW83pAxXk
-         alOXXi7ww5PectxBtu9EedJ8GHoD81/BtLBjp7xgHzUMEOuducZwrGVo9pcmSWumzlu9
-         nBoewOvBlbtbPMvVnxjoRYVsiA8P/dJF9gCS/8EifDr6hXGehfXxN0L3m4inKDUMNkRm
-         tbvA==
-X-Gm-Message-State: AOAM5324dC4STOZ6ymB2qi0qWx15dNe+HhgEfcDIsbVPY86h3pQns8R+
-        PX7e8/gNXH5tU/Q4QBWSh/Lxydv73u1Dy1LaoOc=
-X-Google-Smtp-Source: ABdhPJzi2Po5MbZ2DhUoKELA7Awk1h+3mM+hjwGAXeW6+e80CKnIfPYVIeXIHz9NGrmETcUQCKjeBLwXtKfJ98rlLoQ=
-X-Received: by 2002:a25:c4c5:: with SMTP id u188mr37329185ybf.425.1617643280740;
- Mon, 05 Apr 2021 10:21:20 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=IXQ9NqG6Tt5Pe4reuledmIffXjGOsE+SSrfZAgUcvhI=;
+        b=kaJliFEarzGVEr7lhDXvsUswUv2fQcvuOLw8jfrR0z/32o86R0f4o51kJUY+LrbaDf
+         Ugtty0L/z8ZMpjCzOdF3iNsomK1lns+E6nnt9obzoFH+8WABbhcZej3UvE0fTngg+x0f
+         eaa4Uasn99mGYZ+t5WlPNtJ5NlPvgn0UgID8OrFzWUcTOI6Vdy3/pvFrpCcUZdfSZZeh
+         EspaN/H2G7yj1+/ZO/DjV73O9W7wVGyl2r6yTEM1su+Kgf0Ii2yreSeflgJjZ7qWNGAU
+         Fu/R9AkBUNBRDtG7irOFPjdZ0Tr/t0A5mSabYAR3lecYUEx9PoHWfHobW8fXRrry6F0H
+         w7lg==
+X-Gm-Message-State: AOAM531PCPfn9wRUyEa/OFt7SoYrht0xHx/BYVf6Jj7grIqvihzhEO5g
+        yALSVmjpPvrK7VkXGft/Hf9DYUsWRwZLKxmXST5AxA==
+X-Google-Smtp-Source: ABdhPJxT1NshyPaLb1M0x2V+YQ5+Iwj1JWUSVu3xdjMRcCAxowMJQg1grpPQdSrkG2ShtH/V7qeB6FRjpLc3lv32QSU=
+X-Received: by 2002:a17:906:a052:: with SMTP id bg18mr29584552ejb.18.1617643291296;
+ Mon, 05 Apr 2021 10:21:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210325120020.236504-1-memxor@gmail.com> <20210325120020.236504-4-memxor@gmail.com>
- <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
- <20210328080648.oorx2no2j6zslejk@apollo> <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
- <48b99ccc-8ef6-4ba9-00f9-d7e71ae4fb5d@iogearbox.net> <20210331094400.ldznoctli6fljz64@apollo>
- <5d59b5ee-a21e-1860-e2e5-d03f89306fd8@iogearbox.net> <20210402152743.dbadpgcmrgjt4eca@apollo>
-In-Reply-To: <20210402152743.dbadpgcmrgjt4eca@apollo>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 5 Apr 2021 10:21:09 -0700
-Message-ID: <CAEf4Bzbk9t9Cx4DONzNu8reP+Fkdq8WA90syqesgQYgAQyCaLw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
+References: <20210405085034.233917714@linuxfoundation.org>
+In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 5 Apr 2021 22:51:19 +0530
+Message-ID: <CA+G9fYtt0XFfqut+ZQCsvN8UPS_9J8ATLPtVq=da6FkJo_zLPA@mail.gmail.com>
+Subject: Re: [PATCH 5.11 000/152] 5.11.12-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 2, 2021 at 8:27 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+On Mon, 5 Apr 2021 at 14:43, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> On Fri, Apr 02, 2021 at 05:49:29AM IST, Daniel Borkmann wrote:
-> > On 3/31/21 11:44 AM, Kumar Kartikeya Dwivedi wrote:
-> > > On Wed, Mar 31, 2021 at 02:55:47AM IST, Daniel Borkmann wrote:
-> > > > Do we even need the _block variant? I would rather prefer to take the chance
-> > > > and make it as simple as possible, and only iff really needed extend with
-> > > > other APIs, for example:
-> > >
-> > > The block variant can be dropped, I'll use the TC_BLOCK/TC_DEV alternative which
-> > > sets parent_id/ifindex properly.
-> > >
-> > > >    bpf_tc_attach(prog_fd, ifindex, {INGRESS,EGRESS});
-> > > >
-> > > > Internally, this will create the sch_clsact qdisc & cls_bpf filter instance
-> > > > iff not present yet, and attach to a default prio 1 handle 1, and _always_ in
-> > > > direct-action mode. This is /as simple as it gets/ and we don't need to bother
-> > > > users with more complex tc/cls_bpf internals unless desired. For example,
-> > > > extended APIs could add prio/parent so that multi-prog can be attached to a
-> > > > single cls_bpf instance, but even that could be a second step, imho.
-> > >
-> > > I am not opposed to clsact qdisc setup if INGRESS/EGRESS is supplied (not sure
-> > > how others feel about it).
-> >
-> > What speaks against it? It would be 100% clear from API side where the prog is
-> > being attached. Same as with tc cmdline where you specify 'ingress'/'egress'.
-> >
+> This is the start of the stable review cycle for the 5.11.12 release.
+> There are 152 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> Ok, I will add the qdisc setup in the next revision.
+> Responses should be made by Wed, 07 Apr 2021 08:50:09 +0000.
+> Anything received after that time might be too late.
 >
-> > > We could make direct_action mode default, and similarly choose prio
-> >
-> > To be honest, I wouldn't even support a mode from the lib/API side where direct_action
-> > is not set. It should always be forced to true. Everything else is rather broken
-> > setup-wise, imho, since it won't scale. We added direct_action a bit later to the
-> > kernel than original cls_bpf, but if I would do it again today, I'd make it the
-> > only available option. I don't see a reasonable use-case where you have it to false.
-> >
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.11.12-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.11.y
+> and the diffstat can be found below.
 >
-> I'm all for doing that, but in some sense that also speaks against SCHED_ACT
-> support. Currently, you can load SCHED_ACT programs using this series, but not
-> really bind them to classifier. I left that option open to a future patch, it
-> would just reuse the existing tc_act_add_action helper (also why I kept it in
-> its own function). Maybe we need to reconsider that, if direct action is the
-> only recommended way going forward (to discourage people from using SCHED_ACT),
-> or just add opts to do all the setup in low level API, instead of leaving it
-> incomplete.
+> thanks,
 >
-> > > as 1 by default instead of letting the kernel do it. Then you can just pass in
-> > > NULL for bpf_tc_cls_opts and be close to what you're proposing. For protocol we
-> > > can choose ETH_P_ALL by default too if the user doesn't set it.
-> >
-> > Same here with ETH_P_ALL, I'm not sure anyone uses anything other than ETH_P_ALL,
-> > so yes, that should be default.
->
-> Ack.
->
-> >
-> > > With these modifications, the equivalent would look like
-> > >     bpf_tc_cls_attach(prog_fd, TC_DEV(ifindex, INGRESS), NULL, &id);
-> >
-> > Few things compared to bpf_tc_attach(prog_fd, ifindex, {INGRESS,EGRESS}):
-> >
-> > 1) nit, but why even 'cls' in the name. I think we shouldn't expose such old-days
-> >    tc semantics to a user. Just bpf_tc_attach() is cleaner/simpler to understand.
->
-> Since it would make it clear this is for SCHED_CLS progs, likewise bpf_tc_act_*
-> is for SCHED_ACT progs. Not opposed to changing the name.
->
-> > 2) What's the 'TC_DEV(ifindex, INGRESS)' macro doing exactly? Looks unnecessary,
-> >    why not regular args to the API?
->
-> It is very easy to support BLOCK (I know it's not really popular here, but I
-> think if supporting it just requires adding a macro, then we can go ahead). So
-> the user can use TC_BLOCK(block_idx) instead of remembering ifindex is to be set
-> to TCM_IFINDEX_MAGIC_BLOCK and parent_id to actual block index. It will just
-> expand to:
->
-> #define TC_BLOCK(block_idx) TCM_IFINDEX_MAGIC_BLOCK, (block_idx)
->
-> TC_DEV macro can be dropped, since user can directly pass ifindex and parent_id.
-
-if _block variant is just a special ifindex value, then it should be
-fine for users to know such a detail (we can leave a comment
-mentioning this specifically), especially given it's not a very
-popular thing. Almost doubling amount of APIs just for this doesn't
-make much sense, IMO.
-
->
-> > 3) Exposed bpf_tc_attach() API could internally call a bpf_tc_attach_opts() API
-> >    with preset defaults, and the latter could have all the custom bits if the user
-> >    needs to go beyond the simple API, so from your bpf_tc_cls_attach() I'd also
-> >    drop the NULL.
->
-> Ok, this is probably better (but maybe we can do this for the high-level
-> bpf_program__attach that returns a bpf_link * instead of introducing yet
-> another function).
+> greg k-h
 
 
-If we know that we need variant with options, I'd vote for having just
-one bpf_tc_attach() API which always takes options. Passing NULL for
-opts is simple, no need for two APIs, I think.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
->
-> > 4) For the simple API I'd likely also drop the id (you could have a query API if
-> >    needed).
-> >
->
-> This would be fine, because it's not a fast path or anything, but right now we
-> return the id using the netlink response, otherwise for query we have to open
-> the socket, prepare the msg, send and recv again. So it's a minor optimization.
->
-> However, there's one other problem. In an earlier version of this series, I
-> didn't keep the id/index out parameters (to act as handle to the newly attached
-> filter/action). This lead to problems on query. Suppose a user doesn't properly
-> fill the opts during query (e.g. in case of filters). This means the netlink
-> dump includes all filters matching filled in attributes. If the prog_id for all
-> of these is same (e.g. all have same bpf classifier prog attached to them), it
-> becomes impossible to determine which one is the filter user asked for. It is
-> not possible to enforce filling in all kinds of attributes since some can be
-> left out and assigned by default in the kernel (priority, chain_index etc.). So
-> returning the newly created filter's id turned out to be the best option. This
-> is also used to stash filter related information in bpf_link to properly release
-> it later.
->
-> The same problem happens with actions, where we look up using the prog_id, we
-> multiple actions with different index can match on same prog_id. It is not
-> possible to determine which index corresponds to last loaded action.
->
-> So unless there's a better idea on how to deal with this, a query API won't work
-> for the case where same bpf prog is attached more than once. Returning the
-> id/index during attach seemed better than all other options we considered.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Which parts of that id struct is the data that caller might not know
-or can't know? Is it handle and chain_index? Or just one of them?
-Or?... If there is something that has to be returned back, I'd keep
-only that, instead of returning 6+ fields, most of which user should
-already know.
+## Build
+* kernel: 5.11.12-rc1
+* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stabl=
+e-rc.git',
+'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
+* git branch: linux-5.11.y
+* git commit: 74f1df3016246d321c3f58de40c0d64f5d5861a1
+* git describe: v5.11.11-153-g74f1df301624
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11.y/build/v5.11=
+.11-153-g74f1df301624
 
->
-> --
-> Kartikeya
+## No regressions (compared to v5.11.11-105-g79c43dab0491)
+
+## No fixes (compared to v5.11.11-105-g79c43dab0491)
+
+## Test result summary
+ total: 76190, pass: 64219, fail: 1734, skip: 9997, xfail: 240,
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 192 total, 192 passed, 0 failed
+* arm64: 26 total, 26 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 25 total, 25 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 42 total, 38 passed, 4 failed
+* s390: 27 total, 24 passed, 3 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 0 passed, 1 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 35 total, 34 passed, 1 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
