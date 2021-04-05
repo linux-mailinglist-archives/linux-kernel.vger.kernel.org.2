@@ -2,284 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C78D3545C4
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 19:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D1A53545C5
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 19:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232968AbhDERCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 13:02:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232877AbhDERC3 (ORCPT
+        id S233041AbhDERDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 13:03:18 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:46632 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232938AbhDERDR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 13:02:29 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09632C061756;
-        Mon,  5 Apr 2021 10:02:23 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id x2so12243616oiv.2;
-        Mon, 05 Apr 2021 10:02:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=ABRbsCX1jEMC1SjlaLIus8yukReuvU1jzZ48riQcml4=;
-        b=pHNrb0HKjA4iJCZYAaU2LkN2lkpDnQu1YBt+GInagTvEa4lP7ZRgdVjp2rlrKXhPMg
-         A8L/yMmJ+6tU3BAGlViUfxa2ncoqC4D5KugKlKJS5KV/JEqYmbwmYbPzet4lrC9RDCam
-         hj9dHHmNbLMKSxXkl6OhzEsD4j2Pe+jPT25Z4ZAtofdqYQe4IoqbkRjnnwKBXNpnwiDD
-         aIhjrx2TyXR6NV+DlFum1UQjjMIgO7In89T7zt36ObFYUzzocwz8NTuMAEKmbTnNbS3r
-         wJBWU18eKFPeQxdXNMSBGXN8Tl3M+kMpCByPzj1AUal5Qt8u6BpSrFadFQ3Q/SY0A75F
-         k4Xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition:user-agent;
-        bh=ABRbsCX1jEMC1SjlaLIus8yukReuvU1jzZ48riQcml4=;
-        b=RcaZ8mJ/HJV70h8y2s3vHWBJ80vPIosKbJHEvO1doHlIeHiXsWpjw6CgWCFu82/Ofl
-         f4QK4SffGVRxHFP4bBQeXLVNJh8dKgm6D32vJYzfGu0ZW4FKmTMrVCE8ypAkuYOCxDJm
-         0HB3huJ+OtqU76u+S3Ghb3MjTxatT97lDuc+IVjp7gPiFKPI4LJE5hJzL6Pnjhx08o8i
-         ByRtG6Vz0EPyRaA5+vgKZEHvOP0CyXo9w/1TE9KSSMK6+sJX1GLTFS0ICJwZQ4eeLV1q
-         VeUssVlApNtJpofQeh4eXgkaojrg582P4N0yT2iEDwVxoO2B2BhNXXBkWk6jo8DdEr4I
-         00mg==
-X-Gm-Message-State: AOAM530Xk1IfW3yOgYrsfekbQ7QImleKqWJQt+0mH5joAb2kCerruXCj
-        4pAM9rUne31YPeWGW+RK6u8=
-X-Google-Smtp-Source: ABdhPJxTzhcIw/kcBA44VLmacyEq8LHk1n0j+YPzcPx8UKAn9zKMyrJVL4LSYOA7KWIToi2jYUnVZg==
-X-Received: by 2002:aca:4487:: with SMTP id r129mr84141oia.106.1617642142356;
-        Mon, 05 Apr 2021 10:02:22 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p22sm4204736otf.25.2021.04.05.10.02.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 05 Apr 2021 10:02:21 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 5 Apr 2021 10:02:20 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     frowand.list@gmail.com
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        devicetree@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] of: properly check for error returned by
- fdt_get_name()
-Message-ID: <20210405170220.GA52569@roeck-us.net>
+        Mon, 5 Apr 2021 13:03:17 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lTSd3-00HQE2-Tq; Mon, 05 Apr 2021 11:03:10 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lTSd2-0000VS-UE; Mon, 05 Apr 2021 11:03:09 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Alexey Gladkov <gladkov.alexey@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        linux-mm@kvack.org, Alexey Gladkov <legion@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>
+References: <cover.1616533074.git.gladkov.alexey@gmail.com>
+Date:   Mon, 05 Apr 2021 12:03:05 -0500
+In-Reply-To: <cover.1616533074.git.gladkov.alexey@gmail.com> (Alexey Gladkov's
+        message of "Tue, 23 Mar 2021 21:59:09 +0100")
+Message-ID: <m17dlgll4m.fsf@fess.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-XM-SPF: eid=1lTSd2-0000VS-UE;;;mid=<m17dlgll4m.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18auhi4AyUcfdr4Byj9mZr34hCEOOzN8aw=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
+        version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa01 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa01 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Alexey Gladkov <gladkov.alexey@gmail.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 705 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 3.5 (0.5%), b_tie_ro: 2.4 (0.3%), parse: 1.17
+        (0.2%), extract_message_metadata: 15 (2.1%), get_uri_detail_list: 3.9
+        (0.5%), tests_pri_-1000: 14 (1.9%), tests_pri_-950: 1.55 (0.2%),
+        tests_pri_-900: 1.19 (0.2%), tests_pri_-90: 258 (36.6%), check_bayes:
+        256 (36.2%), b_tokenize: 15 (2.1%), b_tok_get_all: 11 (1.6%),
+        b_comp_prob: 3.5 (0.5%), b_tok_touch_all: 223 (31.6%), b_finish: 0.72
+        (0.1%), tests_pri_0: 400 (56.8%), check_dkim_signature: 0.48 (0.1%),
+        check_dkim_adsp: 2.3 (0.3%), poll_dns_idle: 0.78 (0.1%), tests_pri_10:
+        1.67 (0.2%), tests_pri_500: 5 (0.8%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v9 0/8] Count rlimits in each user namespace
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 04, 2021 at 10:28:45PM -0500, frowand.list@gmail.com wrote:
-> From: Frank Rowand <frank.rowand@sony.com>
-> 
-> fdt_get_name() returns error values via a parameter pointer
-> instead of in function return.  Fix check for this error value
-> in populate_node() and callers of populate_node().
-> 
-> Chasing up the caller tree showed callers of various functions
-> failing to initialize the value of pointer parameters that
-> can return error values.  Initialize those values to NULL.
-> 
-> The bug was introduced by
-> commit e6a6928c3ea1 ("of/fdt: Convert FDT functions to use libfdt")
-> but this patch can not be backported directly to that commit
-> because the relevant code has further been restructured by
-> commit dfbd4c6eff35 ("drivers/of: Split unflatten_dt_node()")
-> 
-> The bug became visible by triggering a crash on openrisc with:
-> commit 79edff12060f ("scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9")
-> as reported in:
-> https://lore.kernel.org/lkml/20210327224116.69309-1-linux@roeck-us.net/
-> 
-> Fixes: commit 79edff12060f ("scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9")
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Frank Rowand <frank.rowand@sony.com>
-> 
+Alexey Gladkov <gladkov.alexey@gmail.com> writes:
 
-With this patch applied, the kernel no longer crashes, and the log message
-is as expected:
+> Preface
+> -------
+> These patches are for binding the rlimit counters to a user in user namespace.
+> This patch set can be applied on top of:
+>
+> git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git v5.12-rc4
+>
+> Problem
+> -------
+> The RLIMIT_NPROC, RLIMIT_MEMLOCK, RLIMIT_SIGPENDING, RLIMIT_MSGQUEUE rlimits
+> implementation places the counters in user_struct [1]. These limits are global
+> between processes and persists for the lifetime of the process, even if
+> processes are in different user namespaces.
+>
+> To illustrate the impact of rlimits, let's say there is a program that does not
+> fork. Some service-A wants to run this program as user X in multiple containers.
+> Since the program never fork the service wants to set RLIMIT_NPROC=1.
+>
+> service-A
+>  \- program (uid=1000, container1, rlimit_nproc=1)
+>  \- program (uid=1000, container2, rlimit_nproc=1)
+>
+> The service-A sets RLIMIT_NPROC=1 and runs the program in container1. When the
+> service-A tries to run a program with RLIMIT_NPROC=1 in container2 it fails
+> since user X already has one running process.
+>
+> The problem is not that the limit from container1 affects container2. The
+> problem is that limit is verified against the global counter that reflects
+> the number of processes in all containers.
+>
+> This problem can be worked around by using different users for each container
+> but in this case we face a different problem of uid mapping when transferring
+> files from one container to another.
+>
+> Eric W. Biederman mentioned this issue [2][3].
+>
+> Introduced changes
+> ------------------
+> To address the problem, we bind rlimit counters to user namespace. Each counter
+> reflects the number of processes in a given uid in a given user namespace. The
+> result is a tree of rlimit counters with the biggest value at the root (aka
+> init_user_ns). The limit is considered exceeded if it's exceeded up in the tree.
+>
+> [1]: https://lore.kernel.org/containers/87imd2incs.fsf@x220.int.ebiederm.org/
+> [2]: https://lists.linuxfoundation.org/pipermail/containers/2020-August/042096.html
+> [3]: https://lists.linuxfoundation.org/pipermail/containers/2020-October/042524.html
+>
+> Changelog
+> ---------
+> v9:
+> * Used a negative value to check that the ucounts->count is close to overflow.
+> * Rebased onto v5.12-rc4.
+>
+> v8:
+> * Used atomic_t for ucounts reference counting. Also added counter overflow
+>   check (thanks to Linus Torvalds for the idea).
+> * Fixed other issues found by lkp-tests project in the patch that Reimplements
+>   RLIMIT_MEMLOCK on top of ucounts.
+>
+> v7:
+> * Fixed issues found by lkp-tests project in the patch that Reimplements
+>   RLIMIT_MEMLOCK on top of ucounts.
+>
+> v6:
+> * Fixed issues found by lkp-tests project.
+> * Rebased onto v5.11.
+>
+> v5:
+> * Split the first commit into two commits: change ucounts.count type to atomic_long_t
+>   and add ucounts to cred. These commits were merged by mistake during the rebase.
+> * The __get_ucounts() renamed to alloc_ucounts().
+> * The cred.ucounts update has been moved from commit_creds() as it did not allow
+>   to handle errors.
+> * Added error handling of set_cred_ucounts().
+>
+> v4:
+> * Reverted the type change of ucounts.count to refcount_t.
+> * Fixed typo in the kernel/cred.c
+>
+> v3:
+> * Added get_ucounts() function to increase the reference count. The existing
+>   get_counts() function renamed to __get_ucounts().
+> * The type of ucounts.count changed from atomic_t to refcount_t.
+> * Dropped 'const' from set_cred_ucounts() arguments.
+> * Fixed a bug with freeing the cred structure after calling cred_alloc_blank().
+> * Commit messages have been updated.
+> * Added selftest.
+>
+> v2:
+> * RLIMIT_MEMLOCK, RLIMIT_SIGPENDING and RLIMIT_MSGQUEUE are migrated to ucounts.
+> * Added ucounts for pair uid and user namespace into cred.
+> * Added the ability to increase ucount by more than 1.
+>
+> v1:
+> * After discussion with Eric W. Biederman, I increased the size of ucounts to
+>   atomic_long_t.
+> * Added ucount_max to avoid the fork bomb.
+>
+> --
+>
+> Alexey Gladkov (8):
+>   Increase size of ucounts to atomic_long_t
+>   Add a reference to ucounts for each cred
+>   Use atomic_t for ucounts reference counting
+>   Reimplement RLIMIT_NPROC on top of ucounts
+>   Reimplement RLIMIT_MSGQUEUE on top of ucounts
+>   Reimplement RLIMIT_SIGPENDING on top of ucounts
+>   Reimplement RLIMIT_MEMLOCK on top of ucounts
+>   kselftests: Add test to check for rlimit changes in different user namespaces
+>
 
-### dt-test ### start of unittest - you will see error messages
-### dt-test ### unittest_data_add: unflatten testcases tree failed
+Overall this looks good, and it is a very good sign that the automatic
+testing bots have not found anything.  I found a few little nits.
+But thing are looking very good.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+Eric
 
-Thanks,
-Guenter
-
-> ---
-> 
-> This patch papers over the unaligned pointer passed to
-> of_fdt_unflatten_tree() bug that Guenter reported in
-> https://lore.kernel.org/lkml/20210327224116.69309-1-linux@roeck-us.net/
-> 
-> I will create a separate patch to fix that problem.
-> 
->  drivers/of/fdt.c      | 36 +++++++++++++++++++++++-------------
->  drivers/of/overlay.c  |  2 +-
->  drivers/of/unittest.c | 15 ++++++++++-----
->  3 files changed, 34 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-> index dcc1dd96911a..adb26aff481d 100644
-> --- a/drivers/of/fdt.c
-> +++ b/drivers/of/fdt.c
-> @@ -205,7 +205,7 @@ static void populate_properties(const void *blob,
->  		*pprev = NULL;
->  }
->  
-> -static bool populate_node(const void *blob,
-> +static int populate_node(const void *blob,
->  			  int offset,
->  			  void **mem,
->  			  struct device_node *dad,
-> @@ -214,24 +214,24 @@ static bool populate_node(const void *blob,
->  {
->  	struct device_node *np;
->  	const char *pathp;
-> -	unsigned int l, allocl;
-> +	int len;
->  
-> -	pathp = fdt_get_name(blob, offset, &l);
-> +	pathp = fdt_get_name(blob, offset, &len);
->  	if (!pathp) {
->  		*pnp = NULL;
-> -		return false;
-> +		return len;
->  	}
->  
-> -	allocl = ++l;
-> +	len++;
->  
-> -	np = unflatten_dt_alloc(mem, sizeof(struct device_node) + allocl,
-> +	np = unflatten_dt_alloc(mem, sizeof(struct device_node) + len,
->  				__alignof__(struct device_node));
->  	if (!dryrun) {
->  		char *fn;
->  		of_node_init(np);
->  		np->full_name = fn = ((char *)np) + sizeof(*np);
->  
-> -		memcpy(fn, pathp, l);
-> +		memcpy(fn, pathp, len);
->  
->  		if (dad != NULL) {
->  			np->parent = dad;
-> @@ -295,6 +295,7 @@ static int unflatten_dt_nodes(const void *blob,
->  	struct device_node *nps[FDT_MAX_DEPTH];
->  	void *base = mem;
->  	bool dryrun = !base;
-> +	int ret;
->  
->  	if (nodepp)
->  		*nodepp = NULL;
-> @@ -322,9 +323,10 @@ static int unflatten_dt_nodes(const void *blob,
->  		    !of_fdt_device_is_available(blob, offset))
->  			continue;
->  
-> -		if (!populate_node(blob, offset, &mem, nps[depth],
-> -				   &nps[depth+1], dryrun))
-> -			return mem - base;
-> +		ret = populate_node(blob, offset, &mem, nps[depth],
-> +				   &nps[depth+1], dryrun);
-> +		if (ret < 0)
-> +			return ret;
->  
->  		if (!dryrun && nodepp && !*nodepp)
->  			*nodepp = nps[depth+1];
-> @@ -372,6 +374,10 @@ void *__unflatten_device_tree(const void *blob,
->  {
->  	int size;
->  	void *mem;
-> +	int ret;
-> +
-> +	if (mynodes)
-> +		*mynodes = NULL;
->  
->  	pr_debug(" -> unflatten_device_tree()\n");
->  
-> @@ -392,7 +398,7 @@ void *__unflatten_device_tree(const void *blob,
->  
->  	/* First pass, scan for size */
->  	size = unflatten_dt_nodes(blob, NULL, dad, NULL);
-> -	if (size < 0)
-> +	if (size <= 0)
->  		return NULL;
->  
->  	size = ALIGN(size, 4);
-> @@ -410,12 +416,16 @@ void *__unflatten_device_tree(const void *blob,
->  	pr_debug("  unflattening %p...\n", mem);
->  
->  	/* Second pass, do actual unflattening */
-> -	unflatten_dt_nodes(blob, mem, dad, mynodes);
-> +	ret = unflatten_dt_nodes(blob, mem, dad, mynodes);
-> +
->  	if (be32_to_cpup(mem + size) != 0xdeadbeef)
->  		pr_warn("End of tree marker overwritten: %08x\n",
->  			be32_to_cpup(mem + size));
->  
-> -	if (detached && mynodes) {
-> +	if (ret <= 0)
-> +		return NULL;
-> +
-> +	if (detached && mynodes && *mynodes) {
->  		of_node_set_flag(*mynodes, OF_DETACHED);
->  		pr_debug("unflattened tree is detached\n");
->  	}
-> diff --git a/drivers/of/overlay.c b/drivers/of/overlay.c
-> index 50bbe0edf538..e12c643b6ba8 100644
-> --- a/drivers/of/overlay.c
-> +++ b/drivers/of/overlay.c
-> @@ -1017,7 +1017,7 @@ int of_overlay_fdt_apply(const void *overlay_fdt, u32 overlay_fdt_size,
->  	const void *new_fdt;
->  	int ret;
->  	u32 size;
-> -	struct device_node *overlay_root;
-> +	struct device_node *overlay_root = NULL;
->  
->  	*ovcs_id = 0;
->  	ret = 0;
-> diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
-> index eb100627c186..f9b5b698249f 100644
-> --- a/drivers/of/unittest.c
-> +++ b/drivers/of/unittest.c
-> @@ -1408,7 +1408,7 @@ static void attach_node_and_children(struct device_node *np)
->  static int __init unittest_data_add(void)
->  {
->  	void *unittest_data;
-> -	struct device_node *unittest_data_node, *np;
-> +	struct device_node *unittest_data_node = NULL, *np;
->  	/*
->  	 * __dtb_testcases_begin[] and __dtb_testcases_end[] are magically
->  	 * created by cmd_dt_S_dtb in scripts/Makefile.lib
-> @@ -1417,10 +1417,10 @@ static int __init unittest_data_add(void)
->  	extern uint8_t __dtb_testcases_end[];
->  	const int size = __dtb_testcases_end - __dtb_testcases_begin;
->  	int rc;
-> +	void *ret;
->  
->  	if (!size) {
-> -		pr_warn("%s: No testcase data to attach; not running tests\n",
-> -			__func__);
-> +		pr_warn("%s: testcases is empty\n", __func__);
->  		return -ENODATA;
->  	}
->  
-> @@ -1429,9 +1429,14 @@ static int __init unittest_data_add(void)
->  	if (!unittest_data)
->  		return -ENOMEM;
->  
-> -	of_fdt_unflatten_tree(unittest_data, NULL, &unittest_data_node);
-> +	ret = of_fdt_unflatten_tree(unittest_data, NULL, &unittest_data_node);
-> +	if (!ret) {
-> +		pr_warn("%s: unflatten testcases tree failed\n", __func__);
-> +		kfree(unittest_data);
-> +		return -ENODATA;
-> +	}
->  	if (!unittest_data_node) {
-> -		pr_warn("%s: No tree to attach; not running tests\n", __func__);
-> +		pr_warn("%s: testcases tree is empty\n", __func__);
->  		kfree(unittest_data);
->  		return -ENODATA;
->  	}
-> -- 
-> Frank Rowand <frank.rowand@sony.com>
-> 
