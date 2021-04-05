@@ -2,87 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D2B3547EC
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 22:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0AEC3547EE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 22:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241164AbhDEU7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 16:59:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237407AbhDEU7Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 16:59:16 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E92CC061756
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 13:59:09 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id n8so12851726oie.10
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 13:59:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=rnZ/+SCFR6smzC4OOQsVNnFSMdYRMfjOaDE11Bdi33k=;
-        b=f1Y8RbPFc+agJhL3l2y37ACRHnZwWB8QD6d9sWjlu50E0ckwkK85rN181aWfrPNZKC
-         rU8wy2bhuXT01eVE/8IH9u1sKtNfHATWr87gFiJVQuLPE4iaYpF2xTkky4+wTlkOxOHz
-         POuYW4MRPX41JnoppCydFlM8SzadagpVXX1Z1Qc9COuYKz/l5D5kqhRcIwSHSUdO+pIZ
-         5+ddBKGLiZX4qvGiA4kAdDXAw990M0bY9BWQBgyRkSiSTGI4PfAgKrzkvyXYOvUwDI7C
-         o7D+tmKuNGbU4SqrudwQJK00S/uAZvAtxY5xzPpXwXNJgnGM9elmNbl33ZJgwZ1UhOUz
-         AKgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=rnZ/+SCFR6smzC4OOQsVNnFSMdYRMfjOaDE11Bdi33k=;
-        b=QhWNzcihB9a7BpVsuzeO21oGFNcMuFRvzzc0AlWFCMKEt6CoGD811ceuydHOpEkSqQ
-         LDISHEfGqy//e9hbQV5widvCo1AFeDBwLIUbMtPBUQxJFQnxCiY+Fo5M4/RW9eXaCJkp
-         hrLKj7MKilLf+wjWztZC2dpWVvZAYXR6s28FlxmboFKNsNRCHt0Cu/noc7DnJfCp8CvC
-         f5CUwvpo2JUQk58S+jFlZYuHqD9nXdqISoy90UzCXhN7VP+vQyxkjoSmPCEDbd9Ou5sv
-         moyudoohAT60U0oFRzWfUKrKa14X9Do2wXPvLhAwybxfcF3zuAyzcKgqUZrozkXWHCUJ
-         bagw==
-X-Gm-Message-State: AOAM532bVnldp2IA89TWeT/STuMEM5xgyguNQFwve7z6jPALnMj1URHS
-        PhnmQJWVX3rW7W8AfDbR9JJyR3KJdmHOJA==
-X-Google-Smtp-Source: ABdhPJw8XqvnE9iO/gZdxZ9J2iI8wd1L9o2jLq4BGDzHyU05O4EyAdGiO7cJBiVHE1tbtx7sE9Y8mg==
-X-Received: by 2002:aca:af43:: with SMTP id y64mr763978oie.46.1617656348908;
-        Mon, 05 Apr 2021 13:59:08 -0700 (PDT)
-Received: from fedora ([2806:2f0:7000:86b1:c1bc:6875:f962:d652])
-        by smtp.gmail.com with ESMTPSA id l26sm4225235otd.21.2021.04.05.13.59.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Apr 2021 13:59:08 -0700 (PDT)
-Date:   Mon, 5 Apr 2021 15:59:06 -0500
-From:   David Villasana =?iso-8859-1?Q?Jim=E9nez?= 
-        <davidvillasana14@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com
-Subject: [PATCH] staging: kpc2000: pcie.h: Remove extra blank line
-Message-ID: <YGt6GhZHqB62Y038@fedora>
+        id S241189AbhDEU7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 16:59:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59078 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237300AbhDEU7m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 16:59:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB186613C9;
+        Mon,  5 Apr 2021 20:59:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617656376;
+        bh=TOXP82cSi7pZ/YRoA63Y3vzvnmkHd+JRrUjlSNEhEMM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XVl2M99ABHEe63e6zsv9igyEzYgtY0wuDjZ40WPLw+aii6P8suCWweZVpD/ceyMv/
+         dCPjIMW9HO+QCMHp8/yVivHBJc3rioLMjlse/9CsfE0ii70UwrMeSw4J1K4rBbhK5/
+         6n3x1qUW1PLqOFo5/BhVt95w2vmVj1us8MHWllna9IEHA7QY2lmEttJKqnmtD6uZl0
+         ObSVbkPTVYJJmiQifuc//nNTBmTahhMfBIAmzZN2AAOFU7wZ1Gt/zq/drdbf5UlLhK
+         8CoiIO/cptwQq6eQixM+9axBMriUlHq60Ni9bGDg21jPLJOD2dA1W7zMPN9yS8nohb
+         wwZa6O90h6wJw==
+Date:   Mon, 5 Apr 2021 22:59:28 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: Re: [PATCH v1 0/2] mfd: =?utf-8?Q?intel=5F?=
+ =?utf-8?B?cXVhcmtfaTJjX2dwaW86IENvdmVydCBJwrJD?= part to software nodes
+Message-ID: <20210405205928.GF3945@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+References: <20210331154851.8456-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="w3uUfsyyY1Pqa/ej"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210331154851.8456-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Issue found by checkpatch.pl
 
-Signed-off-by: David Villasana Jiménez <davidvillasana14@gmail.com>
----
- drivers/staging/kpc2000/kpc2000/pcie.h | 1 -
- 1 file changed, 1 deletion(-)
+--w3uUfsyyY1Pqa/ej
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/staging/kpc2000/kpc2000/pcie.h b/drivers/staging/kpc2000/kpc2000/pcie.h
-index cb815c30faa4..f1fc91b4c704 100644
---- a/drivers/staging/kpc2000/kpc2000/pcie.h
-+++ b/drivers/staging/kpc2000/kpc2000/pcie.h
-@@ -6,7 +6,6 @@
- #include "../kpc.h"
- #include "dma_common_defs.h"
- 
--
- /*      System Register Map (BAR 1, Start Addr 0)
-  *
-  *  BAR Size:
--- 
-2.30.2
 
+> driver). In any case I guess the procedure is pretty much standard, i.e. Lee
+> creates an immutable branch that Wolfram can pull into his tree.
+
+Yes, that would be my favourite.
+
+
+--w3uUfsyyY1Pqa/ej
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBrei8ACgkQFA3kzBSg
+KbbINg/8CVcD5Av5Vyw5BckeTQ3ASOHMQGAH0Zz5UnB2mjKpbgUV2vuWjyfG5JqA
+5EosQoOsEa7080Yc6wtmRJw5tCM8y+MDLVO9b2XW1w5+rmM6+XOI19rq2eQ87fO2
+Mni/Jt80tC/N2AFwe23ztMAokv61mm9RymmBopcI8kFojhyJ3h3fBzUth08PS9l6
+gRakCpIt/mp4MVbLXk/wJBg0sJpsN79eZA81ibCf6rtHgwwGymtofSCfcqWn8Hx9
+IH5Cj508frGeINRkpV16Xk6mIb8Owmg8R1EEn4dEwFU5+CJjIWphcWBZbrumc7F2
+DmzZlBoLmgeFroL4mq7Hi8czqAs5NMm0Fcv1OIj0shSgErMD/II1xCDKHHabO5wg
+Rqn1EKijzEW1qOTAk7xOuvIWMteNv99gbKJMbsvW/tqYBmcZU9JpCZzJdu9ewdYO
+5oERaEIuLPYqSsJWs+TzQG6+V4nyAENx9cQ8l97lgz0qe4BSWdn+pbnykCRKYKAi
+WNlWCgm733fzOpJZVZdSja2d3sOQsL371PAqIIqI2FeU2wBza3gHpgcjhLrFCblP
+eY2YYDctKl7ls/NIlfTdYH3vOHXs18EuNqOIGTTxQQIQr8pjUmIjDwFQVvWLEezL
+wUTOInt1+IG7dtM/tws1Ju7GIkMuIho3uMIfVQsjRZX3T/RA8fU=
+=hGu1
+-----END PGP SIGNATURE-----
+
+--w3uUfsyyY1Pqa/ej--
