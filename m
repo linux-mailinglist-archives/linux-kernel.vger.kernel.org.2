@@ -2,124 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9AC535430C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 16:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B576735430F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 16:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236155AbhDEO4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 10:56:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235835AbhDEO4k (ORCPT
+        id S236223AbhDEO45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 10:56:57 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:48462 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235835AbhDEO44 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 10:56:40 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7164EC061756;
-        Mon,  5 Apr 2021 07:56:34 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso11612749otq.3;
-        Mon, 05 Apr 2021 07:56:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RRzPgjkJmWBByc4aA0l16Ys7DZ8rcO+4tzLBX0V3Xow=;
-        b=j0Jsu2LZ8WGKsD/2X/ZbI7Oc/Eal1+/eEixQCrxzrai01n+0gta0kZDh6HfwvO3/eS
-         C1l8f/AnlzFk7Y1nQfE043KeTlCIwfAFfhTzRWmEmSaiTnplpFBYNkg0Y9a0nYxpQTDB
-         EErMx5ef9aCDBo22dYjVlfmIcYHegKtzvMBdGwcQbyqXs2Dnc7ghQGiLAE3PPgR7Ru93
-         5HEy3CEIOc/bjHexCpvJABG/uMSDsjnuUEEno1OTc/eROG+QYowTYhzvvqKu+zgnIp4r
-         9C2lJUJEcqmvsv5PzmgHhnoRZxmEjv94WOXYLeg++L1AiY8lTsLxpiPyZEQLWNR6X2UH
-         BPTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=RRzPgjkJmWBByc4aA0l16Ys7DZ8rcO+4tzLBX0V3Xow=;
-        b=e9ADrIpFAF3DGFWzS8FlJMI1IS7WD7HwVs8hQ7LgSRCBk6TA/21RemMy652oYAIgqE
-         x0nVnt2p7DGUK2GP6aOkquZk8/mZ5h9twg5XpAUFWwrHh3IcHJ3QRqidpEx1/NpT3jHL
-         gmaBlpnRmI4u9O7k/KRG+rzarlV/JMsgN9b7B+hlJqL/JLM/MrnY+Qa5oZ9ub3OmDxqy
-         B4WWd8jT2UL2lVnBzUDRNe2ZHLqf5dH3NXSjurLyjvekIr11J142vFwKUewVu7PPwSIL
-         IdhhSwh87rAwUzl3h0F/fJSbcatrwS099Cu36OMXMiLjE0vpCJEbxP3p4qzoRcl/b1sj
-         Fd8w==
-X-Gm-Message-State: AOAM532ormDW6n55mzekSQMUMAWnyqT34otixr5n8qGomRhN5h28tBj7
-        Gm67+xFbmQMfzuk34pBbQmufpASQdMc=
-X-Google-Smtp-Source: ABdhPJzMHRvViA4ZFCYBPdkpC+th3/iP/N5B+PMJ1/9+hZDZOSObln8WQ6yPwTT9ItIzkRVqdHYkGQ==
-X-Received: by 2002:a9d:68c1:: with SMTP id i1mr22929319oto.169.1617634593464;
-        Mon, 05 Apr 2021 07:56:33 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p64sm3132172oib.57.2021.04.05.07.56.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Apr 2021 07:56:32 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 11/13] kconfig: do not use allnoconfig_y option
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        KP Singh <kpsingh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Terrell <terrelln@fb.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mips@vger.kernel.org
-References: <20210313194836.372585-1-masahiroy@kernel.org>
- <20210313194836.372585-11-masahiroy@kernel.org>
- <20210331171238.GA141362@roeck-us.net>
- <CAKwvOdmNUMJTjyc7hAhNRzmWmRQa5TCayTSpwiiVnO4HH-YTOQ@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <1e4295c5-9008-e161-c74e-19a317a562b4@roeck-us.net>
-Date:   Mon, 5 Apr 2021 07:56:30 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 5 Apr 2021 10:56:56 -0400
+Received: from [192.168.254.32] (unknown [47.187.194.202])
+        by linux.microsoft.com (Postfix) with ESMTPSA id B17FA20B5680;
+        Mon,  5 Apr 2021 07:56:49 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B17FA20B5680
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1617634610;
+        bh=Pd2aEm4Jogei2ZP/WP/ICidNHaEQSmRltw/NyI+NufA=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=PN2nKehFJ9UP22EHuP6ZMv55ZjU8fNNTGhCuv/ZMmS5n9KGJT+TtiB9m88HKcX2UR
+         it+JvqplG/kywOJpuij1/XIytSzKTzpZGL+/L0QiwASZyHAUUIi/OanCbrLApZIrXU
+         grYoQwFXw5NXSJtTUqJHiqbvi3utlD6RbCAzrssk=
+Subject: Re: [RFC PATCH v1 0/4] arm64: Implement stack trace reliability
+ checks
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, mark.rutland@arm.com,
+        broonie@kernel.org, jthierry@redhat.com, catalin.marinas@arm.com,
+        will@kernel.org, linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <77bd5edeea72d44533c769b1e8c0fea7a9d7eb3a>
+ <20210330190955.13707-1-madvenka@linux.microsoft.com>
+ <20210403170159.gegqjrsrg7jshlne@treble>
+ <bd13a433-c060-c501-8e76-5e856d77a225@linux.microsoft.com>
+ <20210405222436.4fda9a930676d95e862744af@kernel.org>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <7dda9af3-1ecf-5e6f-1e46-8870a2a5e550@linux.microsoft.com>
+Date:   Mon, 5 Apr 2021 09:56:48 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <CAKwvOdmNUMJTjyc7hAhNRzmWmRQa5TCayTSpwiiVnO4HH-YTOQ@mail.gmail.com>
+In-Reply-To: <20210405222436.4fda9a930676d95e862744af@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -127,113 +49,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/31/21 11:25 AM, Nick Desaulniers wrote:
-> On Wed, Mar 31, 2021 at 10:12 AM Guenter Roeck <linux@roeck-us.net> wrote:
+
+
+On 4/5/21 8:24 AM, Masami Hiramatsu wrote:
+> Hi Madhaven,
+> 
+> On Sat, 3 Apr 2021 22:29:12 -0500
+> "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com> wrote:
+> 
+> 
+>>>> Check for kretprobe
+>>>> ===================
+>>>>
+>>>> For functions with a kretprobe set up, probe code executes on entry
+>>>> to the function and replaces the return address in the stack frame with a
+>>>> kretprobe trampoline. Whenever the function returns, control is
+>>>> transferred to the trampoline. The trampoline eventually returns to the
+>>>> original return address.
+>>>>
+>>>> A stack trace taken while executing in the function (or in functions that
+>>>> get called from the function) will not show the original return address.
+>>>> Similarly, a stack trace taken while executing in the trampoline itself
+>>>> (and functions that get called from the trampoline) will not show the
+>>>> original return address. This means that the caller of the probed function
+>>>> will not show. This makes the stack trace unreliable.
+>>>>
+>>>> Add the kretprobe trampoline to special_functions[].
+>>>>
+>>>> FYI, each task contains a task->kretprobe_instances list that can
+>>>> theoretically be consulted to find the orginal return address. But I am
+>>>> not entirely sure how to safely traverse that list for stack traces
+>>>> not on the current process. So, I have taken the easy way out.
+>>>
+>>> For kretprobes, unwinding from the trampoline or kretprobe handler
+>>> shouldn't be a reliability concern for live patching, for similar
+>>> reasons as above.
+>>>
 >>
->> On Sun, Mar 14, 2021 at 04:48:34AM +0900, Masahiro Yamada wrote:
->>> allnoconfig_y is a bad hack that sets a symbol to 'y' by allnoconfig.
->>>
->>> allnoconfig does not mean a minimum set of CONFIG options because a
->>> bunch of prompts are hidden by 'if EMBEDDED' or 'if EXPERT', but I do
->>> not like to do a workaround this way.
->>>
->>> Use the pre-existing feature, KCONFIG_ALLCONFIG, to provide a one
->>> liner config fragment. CONFIG_EMBEDDED=y is still forced under
->>> allnoconfig.
->>>
->>> No change in the .config file produced by 'make tinyconfig'.
->>>
->>> The output of 'make allnoconfig' will be changed; we will get
->>> CONFIG_EMBEDDED=n because allnoconfig literally sets all symbols to n.
->>>
->>> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+>> Please see previous answer.
 >>
->> With this patch in place, mips:allnoconfig fails to build with
->> the following error.
+>>> Otherwise, when unwinding from a blocked task which has
+>>> 'kretprobe_trampoline' on the stack, the unwinder needs a way to get the
+>>> original return address.  Masami has been working on an interface to
+>>> make that possible for x86.  I assume something similar could be done
+>>> for arm64.
+>>>
 >>
->> Error log:
->> WARNING: modpost: vmlinux.o(.text+0x9c70): Section mismatch in reference from the function reserve_exception_space() to the function .meminit.text:memblock_reserve()
->> The function reserve_exception_space() references
->> the function __meminit memblock_reserve().
->> This is often because reserve_exception_space lacks a __meminit
->> annotation or the annotation of memblock_reserve is wrong.
->> ERROR: modpost: Section mismatches detected.
->> Set CONFIG_SECTION_MISMATCH_WARN_ONLY=y to allow them.
->> make[2]: *** [scripts/Makefile.modpost:62: vmlinux.symvers] Error 1
->> make[2]: *** Deleting file 'vmlinux.symvers'
->> make[1]: *** [Makefile:1292: vmlinux] Error 2
->> make: *** [Makefile:222: __sub-make] Error 2
+>> OK. Until that is available, this case needs to be addressed.
 > 
-> Thanks for the report. I suspect this is related to allnoconfig
-> disabling CONFIG_ARCH_KEEP_MEMBLOCK, which changes the definition of
-> __init_memblock in include/linux/memblock.h.
+> Actually, I've done that on arm64 :) See below patch.
+> (and I also have a similar code for arm32, what I'm considering is how
+> to unify x86/arm/arm64 kretprobe_find_ret_addr(), since those are very
+> similar.)
 > 
-> So allnoconfig would unselect CONFIG_ARCH_KEEP_MEMBLOCK, making
-> __init_memblock equivalent to __meminit triggering the above warning.
+> This is applicable on my x86 series v5
 > 
-> arch/mips/Kconfig
-> 14:     select ARCH_KEEP_MEMBLOCK if DEBUG_KERNEL
+> https://lore.kernel.org/bpf/161676170650.330141.6214727134265514123.stgit@devnote2/
 > 
-> so DEBUG_KERNEL is probably also disabled by allnoconfig.
+> Thank you,
 > 
-> commit a8c0f1c634507 ("MIPS: Select ARCH_KEEP_MEMBLOCK if DEBUG_KERNEL
-> to enable sysfs memblock debug")
-> 
-> probably should drop the `if DEBUG_KERNEL` part.
 > 
 
-Agreed.
+I took a brief look at your changes. Looks reasonable.
 
-Guenter
+However, for now, I am going to include the kretprobe_trampoline in the special_functions[]
+array until your changes are merged. At that point, it is just a matter of deleting
+kretprobe_trampoline from the special_functions[] array. That is all.
 
->>
->> Guenter
->>
->>> ---
->>>
->>>  init/Kconfig                    | 1 -
->>>  kernel/configs/tiny-base.config | 1 +
->>>  scripts/kconfig/Makefile        | 3 ++-
->>>  3 files changed, 3 insertions(+), 2 deletions(-)
->>>  create mode 100644 kernel/configs/tiny-base.config
->>>
->>> diff --git a/init/Kconfig b/init/Kconfig
->>> index 46b87ad73f6a..beb8314fdf96 100644
->>> --- a/init/Kconfig
->>> +++ b/init/Kconfig
->>> @@ -1769,7 +1769,6 @@ config DEBUG_RSEQ
->>>
->>>  config EMBEDDED
->>>       bool "Embedded system"
->>> -     option allnoconfig_y
->>>       select EXPERT
->>>       help
->>>         This option should be enabled if compiling the kernel for
->>> diff --git a/kernel/configs/tiny-base.config b/kernel/configs/tiny-base.config
->>> new file mode 100644
->>> index 000000000000..2f0e6bf6db2c
->>> --- /dev/null
->>> +++ b/kernel/configs/tiny-base.config
->>> @@ -0,0 +1 @@
->>> +CONFIG_EMBEDDED=y
->>> diff --git a/scripts/kconfig/Makefile b/scripts/kconfig/Makefile
->>> index 7df3c0e4c52e..46f2465177f0 100644
->>> --- a/scripts/kconfig/Makefile
->>> +++ b/scripts/kconfig/Makefile
->>> @@ -102,7 +102,8 @@ configfiles=$(wildcard $(srctree)/kernel/configs/$@ $(srctree)/arch/$(SRCARCH)/c
->>>
->>>  PHONY += tinyconfig
->>>  tinyconfig:
->>> -     $(Q)$(MAKE) -f $(srctree)/Makefile allnoconfig tiny.config
->>> +     $(Q)KCONFIG_ALLCONFIG=kernel/configs/tiny-base.config $(MAKE) -f $(srctree)/Makefile allnoconfig
->>> +     $(Q)$(MAKE) -f $(srctree)/Makefile tiny.config
->>>
->>>  # CHECK: -o cache_dir=<path> working?
->>>  PHONY += testconfig
->>> --
->>> 2.27.0
->>>
-> 
-> 
-> 
+I hope that is fine with everyone.
+
+Madhavan
 
