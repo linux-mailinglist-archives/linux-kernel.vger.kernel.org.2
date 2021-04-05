@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82550354073
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:36:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FBDD353D6E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239881AbhDEJSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:18:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33988 "EHLO mail.kernel.org"
+        id S237063AbhDEI7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 04:59:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239790AbhDEJOR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:14:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CFD3611C1;
-        Mon,  5 Apr 2021 09:14:10 +0000 (UTC)
+        id S232791AbhDEI65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:58:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E907860238;
+        Mon,  5 Apr 2021 08:58:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617614050;
-        bh=f5X60IfhNuIilOQ7s+6siO+BL2LEjV2i80PBB29Ydz8=;
+        s=korg; t=1617613130;
+        bh=mF5bYN2j0m5UzvpKLhrq4THLsPdyEBsxGdzThF1SPSo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hiPDc3ZJlGuUT+XfxvxsYC2ixpobbzN/TVRadfAm27yCqBB7L6d1BWlzC+oindGQ5
-         dFVTCfO6ZxtvgWf3XkzmmpdtZ9I5Uc34TqSqGe8YlSafKGDpWQWqQ8hpyMUr7IxJtY
-         de9OOw5+4Iii+Y/PBmXd/SxGShqBNj07BGCJjbKA=
+        b=quc6Qf2P9fsMXc2bXpJQgYvyoB+s8mKE0Sq31/NExmBtYKBx89ednXvl4Khru0Osb
+         1aq+tg8il0p7v0eNx/aLG3Petrb6mcLMi5Uv25vTXy17mHdC7MJf37VRHgcVgIRlhJ
+         jRdjglT57n1bIu4ZNoGMFDsUA5trZWloHX9QKuYg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alex Elder <elder@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Benjamin Rood <benjaminjrood@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 064/152] net: ipa: fix register write command validation
+Subject: [PATCH 4.14 07/52] ASoC: sgtl5000: set DAP_AVC_CTRL register to correct default value on probe
 Date:   Mon,  5 Apr 2021 10:53:33 +0200
-Message-Id: <20210405085036.354000736@linuxfoundation.org>
+Message-Id: <20210405085022.238112299@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
-References: <20210405085034.233917714@linuxfoundation.org>
+In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
+References: <20210405085021.996963957@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,100 +41,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Elder <elder@linaro.org>
+From: Benjamin Rood <benjaminjrood@gmail.com>
 
-[ Upstream commit 2d65ed76924bc772d3974b0894d870b1aa63b34a ]
+[ Upstream commit f86f58e3594fb0ab1993d833d3b9a2496f3c928c ]
 
-In ipa_cmd_register_write_valid() we verify that values we will
-supply to a REGISTER_WRITE IPA immediate command will fit in
-the fields that need to hold them.  This patch fixes some issues
-in that function and ipa_cmd_register_write_offset_valid().
+According to the SGTL5000 datasheet [1], the DAP_AVC_CTRL register has
+the following bit field definitions:
 
-The dev_err() call in ipa_cmd_register_write_offset_valid() has
-some printf format errors:
-  - The name of the register (corresponding to the string format
-    specifier) was not supplied.
-  - The IPA base offset and offset need to be supplied separately to
-    match the other format specifiers.
-Also make the ~0 constant used there to compute the maximum
-supported offset value explicitly unsigned.
+| BITS  | FIELD       | RW | RESET | DEFINITION                        |
+| 15    | RSVD        | RO | 0x0   | Reserved                          |
+| 14    | RSVD        | RW | 0x1   | Reserved                          |
+| 13:12 | MAX_GAIN    | RW | 0x1   | Max Gain of AVC in expander mode  |
+| 11:10 | RSVD        | RO | 0x0   | Reserved                          |
+| 9:8   | LBI_RESP    | RW | 0x1   | Integrator Response               |
+| 7:6   | RSVD        | RO | 0x0   | Reserved                          |
+| 5     | HARD_LMT_EN | RW | 0x0   | Enable hard limiter mode          |
+| 4:1   | RSVD        | RO | 0x0   | Reserved                          |
+| 0     | EN          | RW | 0x0   | Enable/Disable AVC                |
 
-There are two other issues in ipa_cmd_register_write_valid():
-  - There's no need to check the hash flush register for platforms
-    (like IPA v4.2) that do not support hashed tables
-  - The highest possible endpoint number, whose status register
-    offset is computed, is COUNT - 1, not COUNT.
+The original default value written to the DAP_AVC_CTRL register during
+sgtl5000_i2c_probe() was 0x0510.  This would incorrectly write values to
+bits 4 and 10, which are defined as RESERVED.  It would also not set
+bits 12 and 14 to their correct RESET values of 0x1, and instead set
+them to 0x0.  While the DAP_AVC module is effectively disabled because
+the EN bit is 0, this default value is still writing invalid values to
+registers that are marked as read-only and RESERVED as well as not
+setting bits 12 and 14 to their correct default values as defined by the
+datasheet.
 
-Fix these problems, and add some additional commentary.
+The correct value that should be written to the DAP_AVC_CTRL register is
+0x5100, which configures the register bits to the default values defined
+by the datasheet, and prevents any writes to bits defined as
+'read-only'.  Generally speaking, it is best practice to NOT attempt to
+write values to registers/bits defined as RESERVED, as it generally
+produces unwanted/undefined behavior, or errors.
 
-Signed-off-by: Alex Elder <elder@linaro.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Also, all credit for this patch should go to my colleague Dan MacDonald
+<dmacdonald@curbellmedical.com> for finding this error in the first
+place.
+
+[1] https://www.nxp.com/docs/en/data-sheet/SGTL5000.pdf
+
+Signed-off-by: Benjamin Rood <benjaminjrood@gmail.com>
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Link: https://lore.kernel.org/r/20210219183308.GA2117@ubuntu-dev
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ipa/ipa_cmd.c | 32 ++++++++++++++++++++++++--------
- 1 file changed, 24 insertions(+), 8 deletions(-)
+ sound/soc/codecs/sgtl5000.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ipa/ipa_cmd.c b/drivers/net/ipa/ipa_cmd.c
-index 002e51448510..eb65a11e33ea 100644
---- a/drivers/net/ipa/ipa_cmd.c
-+++ b/drivers/net/ipa/ipa_cmd.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- 
- /* Copyright (c) 2012-2018, The Linux Foundation. All rights reserved.
-- * Copyright (C) 2019-2020 Linaro Ltd.
-+ * Copyright (C) 2019-2021 Linaro Ltd.
-  */
- 
- #include <linux/types.h>
-@@ -244,11 +244,15 @@ static bool ipa_cmd_register_write_offset_valid(struct ipa *ipa,
- 	if (ipa->version != IPA_VERSION_3_5_1)
- 		bit_count += hweight32(REGISTER_WRITE_FLAGS_OFFSET_HIGH_FMASK);
- 	BUILD_BUG_ON(bit_count > 32);
--	offset_max = ~0 >> (32 - bit_count);
-+	offset_max = ~0U >> (32 - bit_count);
- 
-+	/* Make sure the offset can be represented by the field(s)
-+	 * that holds it.  Also make sure the offset is not outside
-+	 * the overall IPA memory range.
-+	 */
- 	if (offset > offset_max || ipa->mem_offset > offset_max - offset) {
- 		dev_err(dev, "%s offset too large 0x%04x + 0x%04x > 0x%04x)\n",
--				ipa->mem_offset + offset, offset_max);
-+			name, ipa->mem_offset, offset, offset_max);
- 		return false;
- 	}
- 
-@@ -261,12 +265,24 @@ static bool ipa_cmd_register_write_valid(struct ipa *ipa)
- 	const char *name;
- 	u32 offset;
- 
--	offset = ipa_reg_filt_rout_hash_flush_offset(ipa->version);
--	name = "filter/route hash flush";
--	if (!ipa_cmd_register_write_offset_valid(ipa, name, offset))
--		return false;
-+	/* If hashed tables are supported, ensure the hash flush register
-+	 * offset will fit in a register write IPA immediate command.
-+	 */
-+	if (ipa->version != IPA_VERSION_4_2) {
-+		offset = ipa_reg_filt_rout_hash_flush_offset(ipa->version);
-+		name = "filter/route hash flush";
-+		if (!ipa_cmd_register_write_offset_valid(ipa, name, offset))
-+			return false;
-+	}
- 
--	offset = IPA_REG_ENDP_STATUS_N_OFFSET(IPA_ENDPOINT_COUNT);
-+	/* Each endpoint can have a status endpoint associated with it,
-+	 * and this is recorded in an endpoint register.  If the modem
-+	 * crashes, we reset the status endpoint for all modem endpoints
-+	 * using a register write IPA immediate command.  Make sure the
-+	 * worst case (highest endpoint number) offset of that endpoint
-+	 * fits in the register write command field(s) that must hold it.
-+	 */
-+	offset = IPA_REG_ENDP_STATUS_N_OFFSET(IPA_ENDPOINT_COUNT - 1);
- 	name = "maximal endpoint status";
- 	if (!ipa_cmd_register_write_offset_valid(ipa, name, offset))
- 		return false;
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index d64cb28e8dc5..b7a0002d9872 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -75,7 +75,7 @@ static const struct reg_default sgtl5000_reg_defaults[] = {
+ 	{ SGTL5000_DAP_EQ_BASS_BAND4,		0x002f },
+ 	{ SGTL5000_DAP_MAIN_CHAN,		0x8000 },
+ 	{ SGTL5000_DAP_MIX_CHAN,		0x0000 },
+-	{ SGTL5000_DAP_AVC_CTRL,		0x0510 },
++	{ SGTL5000_DAP_AVC_CTRL,		0x5100 },
+ 	{ SGTL5000_DAP_AVC_THRESHOLD,		0x1473 },
+ 	{ SGTL5000_DAP_AVC_ATTACK,		0x0028 },
+ 	{ SGTL5000_DAP_AVC_DECAY,		0x0050 },
 -- 
 2.30.1
 
