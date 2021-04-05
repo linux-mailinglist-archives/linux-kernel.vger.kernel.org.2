@@ -2,69 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4E75354882
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 00:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82914354889
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 00:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242776AbhDEWKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 18:10:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40680 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242678AbhDEWKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 18:10:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id C699A613DC;
-        Mon,  5 Apr 2021 22:10:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617660609;
-        bh=JNJYD9b52dFWU2LT48z84lhgV/FbvuYQdrZmTYOkicQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=BpOirhVigPLeoNDVJAtJwnd39gosS74Jb7lMxdOwsu0ZG9iDa3hEzhgtVQZnhJvJ/
-         qDsudyMt9VFYceWUY9nWdka5OTtvb9RuRsmgZMaRMTASv64TnHEtVwWqf5omgPz+sQ
-         k/Yl0+Ld00YDni2wSJ+uhuumjyCLGuqvK9t4M/pdjVYQZF/GrOhr93l4CqwufZAwYI
-         YAZHP9XtdihUf9txPa8o86ZO07WOzPH+NTmz+aqvb4cfx0TlHToe8XBcP7Pnn1YGPX
-         DNA3RKj4/TYaGYUcxlszOEoxWwsKJllxwtf1kKLqfcLQlsOL4z2QVPYsoaCRN67Ud+
-         RxwdgVJybARnw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BED2C60A19;
-        Mon,  5 Apr 2021 22:10:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S242769AbhDEWL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 18:11:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242760AbhDEWLR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 18:11:17 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EAF0C061756;
+        Mon,  5 Apr 2021 15:11:10 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FDlGw2hLfz9sVb;
+        Tue,  6 Apr 2021 08:11:03 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1617660666;
+        bh=kuRAZMiod34p+qN7n4pECrCYOBQe/yt4odU0uCY2FsY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ZgbMAGDHl3Kc7G0DJr6ampRF68fFcXaKXWR2zOfQ6aU0aMkEf4hg6hnOX/6sfIotz
+         28ODIk52WBg+sVaGfYXBDgZnUHTivKobdfpmMKg2oSTn4s3uvVqm6AsZnJSzAxyu/k
+         wHt6nnsKbykeq/gZbxVOH8o6pyc98tBqakmmaSRcGC4CAjQWVY/tHehkHCSvhS0kCD
+         F7weCETqaVBNmexAzAGZM7FV5UnoAe8nyKA69PnT080pYRIOFDzfWwGTCCSOEVGouj
+         tuHguN1yYq3+akyWrcTzzpPZLafuMECmu5l+o0ZpaFYeUe9s1GhIdTt+HtG5lDaOWe
+         mfZq4wzSs0SeA==
+Date:   Tue, 6 Apr 2021 08:11:00 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>
+Cc:     Maxime Ripard <maxime@cerno.tech>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the arm-soc tree
+Message-ID: <20210406081100.4a866aa6@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: smsc911x: skip acpi_device_id table when !CONFIG_ACPI
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161766060977.24414.13288647159413382781.git-patchwork-notify@kernel.org>
-Date:   Mon, 05 Apr 2021 22:10:09 +0000
-References: <20210405181548.52501-1-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210405181548.52501-1-krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     steve.glendinning@shawell.net, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; boundary="Sig_/M6zNGhm0cDvXwhJGrbV+FK6";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+--Sig_/M6zNGhm0cDvXwhJGrbV+FK6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+Hi all,
 
-On Mon,  5 Apr 2021 20:15:48 +0200 you wrote:
-> The driver can match via multiple methods.  Its acpi_device_id table is
-> referenced via ACPI_PTR() so it will be unused for !CONFIG_ACPI builds:
-> 
->   drivers/net/ethernet/smsc/smsc911x.c:2652:36: warning:
->     ‘smsc911x_acpi_match’ defined but not used [-Wunused-const-variable=]
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> 
-> [...]
+Commit
 
-Here is the summary with links:
-  - net: smsc911x: skip acpi_device_id table when !CONFIG_ACPI
-    https://git.kernel.org/netdev/net-next/c/cc0626c2aaed
+  3b493ac0ac04 ("arm64: dts: allwinner: h6: Switch to macros for RSB clock/=
+reset indices")
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+is missing a Signed-off-by from its committer.
 
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/M6zNGhm0cDvXwhJGrbV+FK6
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBrivQACgkQAVBC80lX
+0GzIHAf/RETA4rxBkCQFWGBV7y7yA7magQWFzn3e7dMapzum674DUOSrsjd6eKIR
++Uv3HaKWHkuyEGGaYXx4oUHTQDa6Pmty9c2etAwdisEHLW5ZSiCkkd5v3a7euMu3
+3e2hkKUT6dWKw08wL068vbl+YsEVlDpgBasH0bDDQ6pKq0k3DEWf2GarODjpSAjp
+W+btACggrMdNqh6iUp5btt6fv1KoQt7EWE7H39AX0wHDsaovOVTeuREV2lHNxeFw
+/O7v0Rmo+90+gMXQ3EJxCkWzDIXE1i1vXxhw0lT/qSwEuq8enHbAAxoAvSRtt7LO
+OCnZCHre5V4s7f8AgL5zTudbI5B1qw==
+=i0vB
+-----END PGP SIGNATURE-----
+
+--Sig_/M6zNGhm0cDvXwhJGrbV+FK6--
