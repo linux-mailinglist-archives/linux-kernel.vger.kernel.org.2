@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2153E353D70
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D59AD353F2A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237077AbhDEI7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 04:59:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39396 "EHLO mail.kernel.org"
+        id S238950AbhDEJK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:10:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233720AbhDEI6x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 04:58:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65AE76138A;
-        Mon,  5 Apr 2021 08:58:47 +0000 (UTC)
+        id S238522AbhDEJH6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:07:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A705613A7;
+        Mon,  5 Apr 2021 09:07:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613127;
-        bh=OpEccYSIEvDifJWbaGyRKbJQ280uBLcrokr4+CzDmsY=;
+        s=korg; t=1617613671;
+        bh=jotek+SRzaCEu9EnIxNa2yv3f/sIcUy3CNiFrA2f5Ho=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DPEmS5/F2KQe4wK2yhWtm27r4OHbXhUVm0y0t/o7ZGUC/p+F+gsa+b2wcPcxaVXw3
-         0V0kFQd1o3TuFkt9BMWRPlDOAnT6m7ToL/sEIf3jDr3a+i8Jm4geeeGOjApwBXVv7X
-         8W93dAo8VkBYYF4ywTa0t8GIR7d3mgL3ad1uPbWE=
+        b=ShaYNX4g7UILuEMCSfMFkd+SNqd9XOrknGSinrgQ3KkkFDD5FhTdvLctkWcviEggE
+         +JIFUuOG+robLaRIFHN6c+T1iN22tyGrCrtKkbICjcra0Bq/nXQ28QfGdaUYvRrx8w
+         FuGQO2xG2exis4NAvr0XYgmaUlLIgR5g0MldjUXs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Alex Elder <elder@linaro.org>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 06/52] ASoC: rt5651: Fix dac- and adc- vol-tlv values being off by a factor of 10
+Subject: [PATCH 5.10 050/126] net: ipa: remove two unused register definitions
 Date:   Mon,  5 Apr 2021 10:53:32 +0200
-Message-Id: <20210405085022.207133755@linuxfoundation.org>
+Message-Id: <20210405085032.690438949@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
-References: <20210405085021.996963957@linuxfoundation.org>
+In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
+References: <20210405085031.040238881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Alex Elder <elder@linaro.org>
 
-[ Upstream commit eee51df776bd6cac10a76b2779a9fdee3f622b2b ]
+[ Upstream commit d5bc5015eb9d64cbd14e467db1a56db1472d0d6c ]
 
-The adc_vol_tlv volume-control has a range from -17.625 dB to +30 dB,
-not -176.25 dB to + 300 dB. This wrong scale is esp. a problem in userspace
-apps which translate the dB scale to a linear scale. With the logarithmic
-dB scale being of by a factor of 10 we loose all precision in the lower
-area of the range when apps translate things to a linear scale.
+We do not support inter-EE channel or event ring commands.  Inter-EE
+interrupts are disabled (and never re-enabled) for all channels and
+event rings, so we have no need for the GSI registers that clear
+those interrupt conditions.  So remove their definitions.
 
-E.g. the 0 dB default, which corresponds with a value of 47 of the
-0 - 127 range for the control, would be shown as 0/100 in alsa-mixer.
-
-Since the centi-dB values used in the TLV struct cannot represent the
-0.375 dB step size used by these controls, change the TLV definition
-for them to specify a min and max value instead of min + stepsize.
-
-Note this mirrors commit 3f31f7d9b540 ("ASoC: rt5670: Fix dac- and adc-
-vol-tlv values being off by a factor of 10") which made the exact same
-change to the rt5670 codec driver.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20210226143817.84287-3-hdegoede@redhat.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Alex Elder <elder@linaro.org>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5651.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ipa/gsi_reg.h | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index 57c2add323c4..38510fd06458 100644
---- a/sound/soc/codecs/rt5651.c
-+++ b/sound/soc/codecs/rt5651.c
-@@ -287,9 +287,9 @@ static bool rt5651_readable_register(struct device *dev, unsigned int reg)
- }
+diff --git a/drivers/net/ipa/gsi_reg.h b/drivers/net/ipa/gsi_reg.h
+index 8e0e9350c383..42e5a8b8d324 100644
+--- a/drivers/net/ipa/gsi_reg.h
++++ b/drivers/net/ipa/gsi_reg.h
+@@ -48,16 +48,6 @@
+ #define GSI_INTER_EE_N_SRC_EV_CH_IRQ_OFFSET(ee) \
+ 			(0x0000c01c + 0x1000 * (ee))
  
- static const DECLARE_TLV_DB_SCALE(out_vol_tlv, -4650, 150, 0);
--static const DECLARE_TLV_DB_SCALE(dac_vol_tlv, -65625, 375, 0);
-+static const DECLARE_TLV_DB_MINMAX(dac_vol_tlv, -6562, 0);
- static const DECLARE_TLV_DB_SCALE(in_vol_tlv, -3450, 150, 0);
--static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -17625, 375, 0);
-+static const DECLARE_TLV_DB_MINMAX(adc_vol_tlv, -1762, 3000);
- static const DECLARE_TLV_DB_SCALE(adc_bst_tlv, 0, 1200, 0);
- 
- /* {0, +20, +24, +30, +35, +40, +44, +50, +52} dB */
+-#define GSI_INTER_EE_SRC_CH_IRQ_CLR_OFFSET \
+-			GSI_INTER_EE_N_SRC_CH_IRQ_CLR_OFFSET(GSI_EE_AP)
+-#define GSI_INTER_EE_N_SRC_CH_IRQ_CLR_OFFSET(ee) \
+-			(0x0000c028 + 0x1000 * (ee))
+-
+-#define GSI_INTER_EE_SRC_EV_CH_IRQ_CLR_OFFSET \
+-			GSI_INTER_EE_N_SRC_EV_CH_IRQ_CLR_OFFSET(GSI_EE_AP)
+-#define GSI_INTER_EE_N_SRC_EV_CH_IRQ_CLR_OFFSET(ee) \
+-			(0x0000c02c + 0x1000 * (ee))
+-
+ #define GSI_CH_C_CNTXT_0_OFFSET(ch) \
+ 		GSI_EE_N_CH_C_CNTXT_0_OFFSET((ch), GSI_EE_AP)
+ #define GSI_EE_N_CH_C_CNTXT_0_OFFSET(ch, ee) \
 -- 
 2.30.1
 
