@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0B49353DD5
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC296353FD2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:36:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237475AbhDEJCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:02:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42940 "EHLO mail.kernel.org"
+        id S240018AbhDEJOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:14:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237014AbhDEJAy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:00:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 468A061394;
-        Mon,  5 Apr 2021 09:00:48 +0000 (UTC)
+        id S239479AbhDEJLE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:11:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7814761002;
+        Mon,  5 Apr 2021 09:10:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613248;
-        bh=JYSmO2ZB2NXrrtMmQsMmP2Ae51YXZ+4/sRpnRKMT/Ew=;
+        s=korg; t=1617613859;
+        bh=c489M/+1dRocyyjFIWmCDQRJV1jzQJ61lEA3Li+T3r8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0VNX4VAqgrbX2gTksBdkDf68HGjRnzHuGxpeDq/QFw5A45Cc985vy/11/okVcTmLt
-         oKnp6WZEYrLIBP+Txf3kCfzMvZrGS2NHvVoGGlfO4a81U4QJ6TU4piQYSB2FyuHOly
-         DO86Skl0xXpctGvp4qpnNMKXd52fsufc0it2rlXU=
+        b=siiFUloczmFR3Yga3tjgnh572FHsSrpAx912ECBxpZkghfn+RNXM0TXZRkGIQUp2R
+         lRX/Bxi0M+mre3Nv9P7ghqnyPaUzTsQwOUFS1GDMji8imT/6lv/MoP7UtZbx2Xtotq
+         gpMlb9TpIaUJCvVTYvkyrHQrIZi3Eyea8deypXPw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luca Pesce <luca.pesce@vimar.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 23/56] brcmfmac: clear EAP/association status bits on linkdown events
+        stable@vger.kernel.org,
+        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20 ?= 
+        <zhouyanjie@wanyeetech.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 072/126] mm: fix race by making init_zero_pfn() early_initcall
 Date:   Mon,  5 Apr 2021 10:53:54 +0200
-Message-Id: <20210405085023.276236586@linuxfoundation.org>
+Message-Id: <20210405085033.442510777@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085022.562176619@linuxfoundation.org>
-References: <20210405085022.562176619@linuxfoundation.org>
+In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
+References: <20210405085031.040238881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,63 +44,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luca Pesce <luca.pesce@vimar.com>
+From: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
 
-[ Upstream commit e862a3e4088070de352fdafe9bd9e3ae0a95a33c ]
+commit e720e7d0e983bf05de80b231bccc39f1487f0f16 upstream.
 
-This ensure that previous association attempts do not leave stale statuses
-on subsequent attempts.
+There are code paths that rely on zero_pfn to be fully initialized
+before core_initcall.  For example, wq_sysfs_init() is a core_initcall
+function that eventually results in a call to kernel_execve, which
+causes a page fault with a subsequent mmput.  If zero_pfn is not
+initialized by then it may not get cleaned up properly and result in an
+error:
 
-This fixes the WARN_ON(!cr->bss)) from __cfg80211_connect_result() when
-connecting to an AP after a previous connection failure (e.g. where EAP fails
-due to incorrect psk but association succeeded). In some scenarios, indeed,
-brcmf_is_linkup() was reporting a link up event too early due to stale
-BRCMF_VIF_STATUS_ASSOC_SUCCESS bit, thus reporting to cfg80211 a connection
-result with a zeroed bssid (vif->profile.bssid is still empty), causing the
-WARN_ON due to the call to cfg80211_get_bss() with the empty bssid.
+  BUG: Bad rss-counter state mm:(ptrval) type:MM_ANONPAGES val:1
 
-Signed-off-by: Luca Pesce <luca.pesce@vimar.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1608807119-21785-1-git-send-email-luca.pesce@vimar.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Here is an analysis of the race as seen on a MIPS device. On this
+particular MT7621 device (Ubiquiti ER-X), zero_pfn is PFN 0 until
+initialized, at which point it becomes PFN 5120:
+
+  1. wq_sysfs_init calls into kobject_uevent_env at core_initcall:
+       kobject_uevent_env+0x7e4/0x7ec
+       kset_register+0x68/0x88
+       bus_register+0xdc/0x34c
+       subsys_virtual_register+0x34/0x78
+       wq_sysfs_init+0x1c/0x4c
+       do_one_initcall+0x50/0x1a8
+       kernel_init_freeable+0x230/0x2c8
+       kernel_init+0x10/0x100
+       ret_from_kernel_thread+0x14/0x1c
+
+  2. kobject_uevent_env() calls call_usermodehelper_exec() which executes
+     kernel_execve asynchronously.
+
+  3. Memory allocations in kernel_execve cause a page fault, bumping the
+     MM reference counter:
+       add_mm_counter_fast+0xb4/0xc0
+       handle_mm_fault+0x6e4/0xea0
+       __get_user_pages.part.78+0x190/0x37c
+       __get_user_pages_remote+0x128/0x360
+       get_arg_page+0x34/0xa0
+       copy_string_kernel+0x194/0x2a4
+       kernel_execve+0x11c/0x298
+       call_usermodehelper_exec_async+0x114/0x194
+
+  4. In case zero_pfn has not been initialized yet, zap_pte_range does
+     not decrement the MM_ANONPAGES RSS counter and the BUG message is
+     triggered shortly afterwards when __mmdrop checks the ref counters:
+       __mmdrop+0x98/0x1d0
+       free_bprm+0x44/0x118
+       kernel_execve+0x160/0x1d8
+       call_usermodehelper_exec_async+0x114/0x194
+       ret_from_kernel_thread+0x14/0x1c
+
+To avoid races such as described above, initialize init_zero_pfn at
+early_initcall level.  Depending on the architecture, ZERO_PAGE is
+either constant or gets initialized even earlier, at paging_init, so
+there is no issue with initializing zero_pfn earlier.
+
+Link: https://lkml.kernel.org/r/CALCv0x2YqOXEAy2Q=hafjhHCtTHVodChv1qpM=niAXOpqEbt7w@mail.gmail.com
+Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: stable@vger.kernel.org
+Tested-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- .../net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c    | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ mm/memory.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-index bbdc6000afb9..96dc9e5ab23f 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-@@ -5282,7 +5282,8 @@ static bool brcmf_is_linkup(struct brcmf_cfg80211_vif *vif,
- 	return false;
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -154,7 +154,7 @@ static int __init init_zero_pfn(void)
+ 	zero_pfn = page_to_pfn(ZERO_PAGE(0));
+ 	return 0;
  }
+-core_initcall(init_zero_pfn);
++early_initcall(init_zero_pfn);
  
--static bool brcmf_is_linkdown(const struct brcmf_event_msg *e)
-+static bool brcmf_is_linkdown(struct brcmf_cfg80211_vif *vif,
-+			    const struct brcmf_event_msg *e)
+ void mm_trace_rss_stat(struct mm_struct *mm, int member, long count)
  {
- 	u32 event = e->event_code;
- 	u16 flags = e->flags;
-@@ -5291,6 +5292,8 @@ static bool brcmf_is_linkdown(const struct brcmf_event_msg *e)
- 	    (event == BRCMF_E_DISASSOC_IND) ||
- 	    ((event == BRCMF_E_LINK) && (!(flags & BRCMF_EVENT_MSG_LINK)))) {
- 		brcmf_dbg(CONN, "Processing link down\n");
-+		clear_bit(BRCMF_VIF_STATUS_EAP_SUCCESS, &vif->sme_state);
-+		clear_bit(BRCMF_VIF_STATUS_ASSOC_SUCCESS, &vif->sme_state);
- 		return true;
- 	}
- 	return false;
-@@ -5581,7 +5584,7 @@ brcmf_notify_connect_status(struct brcmf_if *ifp,
- 		} else
- 			brcmf_bss_connect_done(cfg, ndev, e, true);
- 		brcmf_net_setcarrier(ifp, true);
--	} else if (brcmf_is_linkdown(e)) {
-+	} else if (brcmf_is_linkdown(ifp->vif, e)) {
- 		brcmf_dbg(CONN, "Linkdown\n");
- 		if (!brcmf_is_ibssmode(ifp->vif)) {
- 			brcmf_bss_connect_done(cfg, ndev, e, false);
--- 
-2.30.1
-
 
 
