@@ -2,91 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 447A835425E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 15:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECCC6354261
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 15:35:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237433AbhDENeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 09:34:09 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:33976 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232694AbhDENeH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 09:34:07 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lTPMZ-00EvmM-Ns; Mon, 05 Apr 2021 15:33:55 +0200
-Date:   Mon, 5 Apr 2021 15:33:55 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Danilo Krummrich <danilokrummrich@dk-develop.de>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        davem@davemloft.net, hkallweit1@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jeremy.linton@arm.com
-Subject: Re: [PATCH 2/2] net: mdio: support c45 peripherals on c22 busses
-Message-ID: <YGsRwxwXILC1Tp2S@lunn.ch>
-References: <20210331141755.126178-1-danilokrummrich@dk-develop.de>
- <20210331141755.126178-3-danilokrummrich@dk-develop.de>
- <YGSi+b/r4zlq9rm8@lunn.ch>
- <6f1dfc28368d098ace9564e53ed92041@dk-develop.de>
- <20210331183524.GV1463@shell.armlinux.org.uk>
- <2f0ea3c3076466e197ca2977753b07f3@dk-develop.de>
- <20210401084857.GW1463@shell.armlinux.org.uk>
- <YGZvGfNSBBq/92D+@arch-linux>
- <20210402125858.GB1463@shell.armlinux.org.uk>
- <YGoSS7llrl5K6D+/@arch-linux>
+        id S241136AbhDENfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 09:35:50 -0400
+Received: from mxout01.lancloud.ru ([45.84.86.81]:52348 "EHLO
+        mxout01.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232694AbhDENft (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 09:35:49 -0400
+Received: from LanCloud
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxout01.lancloud.ru 8967D20E3CC1
+Received: from LanCloud
+Received: from LanCloud
+Received: from LanCloud
+Subject: Re: [PATCH 5.4 03/74] module: merge repetitive strings in
+ module_sig_check()
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <stable@vger.kernel.org>, Joe Perches <joe@perches.com>,
+        Miroslav Benes <mbenes@suse.cz>, Jessica Yu <jeyu@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+References: <20210405085024.703004126@linuxfoundation.org>
+ <20210405085024.812932452@linuxfoundation.org>
+From:   Sergey Shtylyov <s.shtylyov@omprussia.ru>
+Organization: Open Mobile Platform, LLC
+Message-ID: <35560933-d158-76ee-0034-0b5f43d9a3c2@omprussia.ru>
+Date:   Mon, 5 Apr 2021 16:35:40 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YGoSS7llrl5K6D+/@arch-linux>
+In-Reply-To: <20210405085024.812932452@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.11.198]
+X-ClientProxiedBy: LFEXT02.lancloud.ru (fd00:f066::142) To
+ LFEX1908.lancloud.ru (fd00:f066::208)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 04, 2021 at 09:23:55PM +0200, Danilo Krummrich wrote:
-> On Fri, Apr 02, 2021 at 01:58:58PM +0100, Russell King - ARM Linux admin wrote:
-> > On Fri, Apr 02, 2021 at 03:10:49AM +0200, Danilo Krummrich wrote:
-> > > On Thu, Apr 01, 2021 at 09:48:58AM +0100, Russell King - ARM Linux admin wrote:
-> > > > One could also argue this is a feature, and it allows userspace to
-> > > > know whether C45 cycles are supported or not.
-> > > >
-> > > No, if the userspace requests such a transfer although the MDIO controller
-> > > does not support real c45 framing the kernel will call mdiobus_c45_addr() to
-> > > join the devaddr and  and regaddr in one parameter and pass it to
-> > > mdiobus_read() or mdiobus_write(). A bus driver not supporting c45 framing
-> > > will not care and just mask/shift the joined value and write it to the
-> > > particular register. Obviously, this will result into complete garbage being
-> > > read or (even worse) written.
-> > 
-> > 
-> > We have established that MDIO drivers need to reject accesses for
-> > reads/writes that they do not support - this isn't something that
-> > they have historically checked for because it is only recent that
-> > phylib has really started to support clause 45 PHYs.
-> > 
-> I see, that's why you consider it a feature - because it is.
-> What do you think about adding a flag MDIO_PHY_ID_MMD (or similar) analog to
-> MDIO_PHY_ID_C45 for phy_mii_ioctl() to check for, such that userspace can ask
-> for an indirect access in order to save userspace doing the indirect access
-> itself. A nice side effect would be saving 3 syscalls per request.
+On 4/5/21 11:53 AM, Greg Kroah-Hartman wrote:
 
-We don't care about the performance of this IOCTL interface. It is for
-debug only, and you need to be very careful how you use it, because
-you can very easily shoot yourself in the foot.
-
-> So currently every driver should check for the flag MII_ADDR_C45 and report an
-> error in case it's unsupported.
+> From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 > 
-> What do you think about checking the bus' capabilities instead in
-> mdiobus_c45_*()? This way the check if C45 is supported can even happen before
-> calling the driver at all. I think that would be a little cleaner than having
-> two places where information of the bus' capabilities are stored (return value
-> of read/write functions and the capabilities field).
+> [ Upstream commit 705e9195187d85249fbb0eaa844b1604a98fbc9a ]
 > 
-> I think there are not too many drivers setting their capabilities though, but
-> it should be easy to derive this information from how and if they handle the
-> MII_ADDR_C45 flag.
+> The 'reason' variable in module_sig_check() points to 3 strings across
+> the *switch* statement, all needlessly starting with the same text.
+> Let's put the starting text into the pr_notice() call -- it saves 21
+> bytes of the object code (x86 gcc 10.2.1).
+> 
+> Suggested-by: Joe Perches <joe@perches.com>
+> Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+> Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+> Signed-off-by: Jessica Yu <jeyu@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  kernel/module.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/module.c b/kernel/module.c
+> index ab1f97cfe18d..9fe3e9b85348 100644
+> --- a/kernel/module.c
+> +++ b/kernel/module.c
+> @@ -2908,16 +2908,17 @@ static int module_sig_check(struct load_info *info, int flags)
+>  		 * enforcing, certain errors are non-fatal.
+>  		 */
+>  	case -ENODATA:
+> -		reason = "Loading of unsigned module";
+> +		reason = "unsigned module";
+>  		goto decide;
+>  	case -ENOPKG:
+> -		reason = "Loading of module with unsupported crypto";
+> +		reason = "module with unsupported crypto";
+>  		goto decide;
+>  	case -ENOKEY:
+> -		reason = "Loading of module with unavailable key";
+> +		reason = "module with unavailable key";
+>  	decide:
+>  		if (is_module_sig_enforced()) {
+> -			pr_notice("%s is rejected\n", reason);
+> +			pr_notice("%s: loading of %s is rejected\n",
+> +				  info->name, reason);
 
-I actually don't think anything needs to change. The Marvell PHY
-probably probes due to its C22 IDs. The driver will then requests C45
-access which automagically get converted into C45 over C22 for your
-hardware, but remain C45 access for bus drivers which support C45.
+   Mhm, in 5.4 there was no printing of 'info->name'...
 
-	  Andrew
+[...]
+
+MBR, Sergey
