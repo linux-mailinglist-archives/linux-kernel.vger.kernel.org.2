@@ -2,45 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E82B1354151
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:54:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B036B354136
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233160AbhDEKxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 06:53:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55054 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232499AbhDEKxs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 06:53:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86401613A5;
-        Mon,  5 Apr 2021 10:53:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617620021;
-        bh=l0e9s1dpY+QbZqKeVSavKbOxPxvM7v+brrMcRqFnR4Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=psPX0vh3NbjgQMeanq4mPwNeCR1L5FfrEoM/v53Co+ux86Yk/wuOuNe3cd+Il89lU
-         WSyJ15cLqJxkoRTFTRB1LXtn6kXugnhCCB0popj17SYiAHMwMuR/Q2zpLF+isBzmQ1
-         P+53ks6SIUoY89Rsp+3SCCj8/tSQ3PHWifO3zxkg=
-Date:   Mon, 5 Apr 2021 12:53:38 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Luiz Sampaio <sampaio.ime@gmail.com>
-Cc:     zbr@ioremap.net, corbet@lwn.net, rikard.falkeborn@gmail.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/9] w1: ds2438: adding support for calibration of
- current measurements
-Message-ID: <YGrsMmsI+Pvadow3@kroah.com>
-References: <20210403044821.390485-1-sampaio.ime@gmail.com>
- <20210405105009.420924-1-sampaio.ime@gmail.com>
+        id S232776AbhDEKko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 06:40:44 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15545 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232035AbhDEKkn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 06:40:43 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FDRv40C7czPnnS;
+        Mon,  5 Apr 2021 18:37:52 +0800 (CST)
+Received: from localhost.localdomain (10.175.104.82) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 5 Apr 2021 18:40:27 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH] net: nfc: Fix spelling errors in net/nfc module
+Date:   Mon, 5 Apr 2021 18:54:35 +0800
+Message-ID: <20210405105435.15747-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210405105009.420924-1-sampaio.ime@gmail.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 07:50:00AM -0300, Luiz Sampaio wrote:
-> The following patches aim to make a user able to calibrate the current measurement of the DS2438. This chip uses a offset register in page1, which is added to the current register to give the user the current measurement. If this value is wrong, the user will get an offset current value, even if the current is zero, for instance. This patch gives support for reading the page1 registers (including the offset register) and for writing to the offset register. The DS2438 datasheet shows a calibration routine, and with this patch, the user can do this quickly by writing the correct value to the offset register. This patch was tested on real hardware using a power supply and an electronic load.
-> Please help to review this series of patches.
+These patches fix a series of spelling errors in net/nfc module.
 
-Please linewrap your text here :(
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ net/nfc/digital_dep.c | 2 +-
+ net/nfc/nci/core.c    | 2 +-
+ net/nfc/nci/uart.c    | 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/net/nfc/digital_dep.c b/net/nfc/digital_dep.c
+index 5971fb6f51cc..1150731126e2 100644
+--- a/net/nfc/digital_dep.c
++++ b/net/nfc/digital_dep.c
+@@ -1217,7 +1217,7 @@ static void digital_tg_recv_dep_req(struct nfc_digital_dev *ddev, void *arg,
+ 
+ 		/* ACK */
+ 		if (ddev->atn_count) {
+-			/* The target has previously recevied one or more ATN
++			/* The target has previously received one or more ATN
+ 			 * PDUs.
+ 			 */
+ 			ddev->atn_count = 0;
+diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
+index 59257400697d..9a585332ea84 100644
+--- a/net/nfc/nci/core.c
++++ b/net/nfc/nci/core.c
+@@ -1507,7 +1507,7 @@ static void nci_rx_work(struct work_struct *work)
+ 		}
+ 	}
+ 
+-	/* check if a data exchange timout has occurred */
++	/* check if a data exchange timeout has occurred */
+ 	if (test_bit(NCI_DATA_EXCHANGE_TO, &ndev->flags)) {
+ 		/* complete the data exchange transaction, if exists */
+ 		if (test_bit(NCI_DATA_EXCHANGE, &ndev->flags))
+diff --git a/net/nfc/nci/uart.c b/net/nfc/nci/uart.c
+index 1204c438e87d..6af5752cde09 100644
+--- a/net/nfc/nci/uart.c
++++ b/net/nfc/nci/uart.c
+@@ -234,7 +234,7 @@ static void nci_uart_tty_wakeup(struct tty_struct *tty)
+  *     Called by tty low level driver when receive data is
+  *     available.
+  *
+- * Arguments:  tty          pointer to tty isntance data
++ * Arguments:  tty          pointer to tty instance data
+  *             data         pointer to received data
+  *             flags        pointer to flags for data
+  *             count        count of received data in bytes
+@@ -374,7 +374,7 @@ static int nci_uart_default_recv_buf(struct nci_uart *nu, const u8 *data,
+ 		data += chunk_len;
+ 		count -= chunk_len;
+ 
+-		/* Chcek if packet is fully received */
++		/* Check if packet is fully received */
+ 		if (nu->rx_packet_len == nu->rx_skb->len) {
+ 			/* Pass RX packet to driver */
+ 			if (nu->ops.recv(nu, nu->rx_skb) != 0)
+-- 
+2.25.1
 
