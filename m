@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B919353E7A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2AD353DE0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237831AbhDEJGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:06:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48046 "EHLO mail.kernel.org"
+        id S237490AbhDEJCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:02:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238234AbhDEJEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:04:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CB276138D;
-        Mon,  5 Apr 2021 09:04:30 +0000 (UTC)
+        id S236916AbhDEJBJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:01:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E975461398;
+        Mon,  5 Apr 2021 09:01:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613471;
-        bh=D/TdGHCz0nh2AkteC7zpmLlb/JMwRxAz+qcPmLQohVo=;
+        s=korg; t=1617613262;
+        bh=qlNPSD0v2axzEzc7mYlfNmvnClomzy38BEjQdUlMqXY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uNdKY5Tg1MxdXed0HUPCBVCCTybWqSHIdf4a0RM9fKxQ9hz/AEz6dTmwmdjmKeMpj
-         mhxdGj11gdRsAz4UJ/74HHgPFHgxqt+MEGb0GYi3XpQSTCATI5G2GpLL7SMknGz9oD
-         tWftRugEsEBAsrvsxgPSDSPffOuokU5CN9PsiX1I=
+        b=HQTAInj09jJvXUojnB1W59XPSw2MsY9Y6ibDWImSssDhKN7xQPXCa+C+LFpcrMEmo
+         xcHM/Z+DVmoUnfR/ImY4Yxm6jrhg5MwFY5hrc1YuiePy9r5HdocXwv54XCGfdG5rK1
+         drvIEj9PqL5bU+z+DbqB7kkv7FBbF+ao9nzFwbDg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 14/74] ASoC: es8316: Simplify adc_pga_gain_tlv table
+Subject: [PATCH 4.19 07/56] ASoC: rt5651: Fix dac- and adc- vol-tlv values being off by a factor of 10
 Date:   Mon,  5 Apr 2021 10:53:38 +0200
-Message-Id: <20210405085025.187981805@linuxfoundation.org>
+Message-Id: <20210405085022.786773028@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
-References: <20210405085024.703004126@linuxfoundation.org>
+In-Reply-To: <20210405085022.562176619@linuxfoundation.org>
+References: <20210405085022.562176619@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,44 +42,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit bb18c678754ce1514100fb4c0bf6113b5af36c48 ]
+[ Upstream commit eee51df776bd6cac10a76b2779a9fdee3f622b2b ]
 
-Most steps in this table are steps of 3dB (300 centi-dB), so we can
-simplify the table.
+The adc_vol_tlv volume-control has a range from -17.625 dB to +30 dB,
+not -176.25 dB to + 300 dB. This wrong scale is esp. a problem in userspace
+apps which translate the dB scale to a linear scale. With the logarithmic
+dB scale being of by a factor of 10 we loose all precision in the lower
+area of the range when apps translate things to a linear scale.
 
-This not only reduces the amount of space it takes inside the kernel,
-this also makes alsa-lib's mixer code actually accept the table, where
-as before this change alsa-lib saw the "ADC PGA Gain" control as a
-control without a dB scale.
+E.g. the 0 dB default, which corresponds with a value of 47 of the
+0 - 127 range for the control, would be shown as 0/100 in alsa-mixer.
+
+Since the centi-dB values used in the TLV struct cannot represent the
+0.375 dB step size used by these controls, change the TLV definition
+for them to specify a min and max value instead of min + stepsize.
+
+Note this mirrors commit 3f31f7d9b540 ("ASoC: rt5670: Fix dac- and adc-
+vol-tlv values being off by a factor of 10") which made the exact same
+change to the rt5670 codec driver.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20210228160441.241110-1-hdegoede@redhat.com
+Link: https://lore.kernel.org/r/20210226143817.84287-3-hdegoede@redhat.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/es8316.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ sound/soc/codecs/rt5651.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
-index 36eef1fb3d18..b781b28de012 100644
---- a/sound/soc/codecs/es8316.c
-+++ b/sound/soc/codecs/es8316.c
-@@ -63,13 +63,8 @@ static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(adc_pga_gain_tlv,
- 	1, 1, TLV_DB_SCALE_ITEM(0, 0, 0),
- 	2, 2, TLV_DB_SCALE_ITEM(250, 0, 0),
- 	3, 3, TLV_DB_SCALE_ITEM(450, 0, 0),
--	4, 4, TLV_DB_SCALE_ITEM(700, 0, 0),
--	5, 5, TLV_DB_SCALE_ITEM(1000, 0, 0),
--	6, 6, TLV_DB_SCALE_ITEM(1300, 0, 0),
--	7, 7, TLV_DB_SCALE_ITEM(1600, 0, 0),
--	8, 8, TLV_DB_SCALE_ITEM(1800, 0, 0),
--	9, 9, TLV_DB_SCALE_ITEM(2100, 0, 0),
--	10, 10, TLV_DB_SCALE_ITEM(2400, 0, 0),
-+	4, 7, TLV_DB_SCALE_ITEM(700, 300, 0),
-+	8, 10, TLV_DB_SCALE_ITEM(1800, 300, 0),
- );
+diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
+index 985852fd9723..318a4c9b380f 100644
+--- a/sound/soc/codecs/rt5651.c
++++ b/sound/soc/codecs/rt5651.c
+@@ -288,9 +288,9 @@ static bool rt5651_readable_register(struct device *dev, unsigned int reg)
+ }
  
- static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(hpout_vol_tlv,
+ static const DECLARE_TLV_DB_SCALE(out_vol_tlv, -4650, 150, 0);
+-static const DECLARE_TLV_DB_SCALE(dac_vol_tlv, -65625, 375, 0);
++static const DECLARE_TLV_DB_MINMAX(dac_vol_tlv, -6562, 0);
+ static const DECLARE_TLV_DB_SCALE(in_vol_tlv, -3450, 150, 0);
+-static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -17625, 375, 0);
++static const DECLARE_TLV_DB_MINMAX(adc_vol_tlv, -1762, 3000);
+ static const DECLARE_TLV_DB_SCALE(adc_bst_tlv, 0, 1200, 0);
+ 
+ /* {0, +20, +24, +30, +35, +40, +44, +50, +52} dB */
 -- 
 2.30.1
 
