@@ -2,224 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE3D3543BB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 17:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE603543B9
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 17:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241794AbhDEPys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 11:54:48 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:60014 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235800AbhDEPxy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 11:53:54 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 135FrakX026643;
-        Mon, 5 Apr 2021 10:53:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1617638016;
-        bh=XzdvO63rXWf3P2WtQR8d9niH7a/a7k2jE16Ocu2gFic=;
-        h=Date:From:To:CC:Subject;
-        b=ppEsL70szLYBp7luCxrvxqZx/ScT1y6H+LiyzessOaauRdvXk3NCC10aeFtniQA4X
-         QK6hpnSPWf6JCYuPwc86yhpWyFjNhBA9GuPVRlzrBgys5YxpFzdFxXCVpx9HdROZJP
-         mmwCi23/uD1vqLc+H6iu/xbACGjddGtkXs683+IM=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 135Frabm026079
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 5 Apr 2021 10:53:36 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 5 Apr
- 2021 10:53:36 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 5 Apr 2021 10:53:36 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 135FraXT048160;
-        Mon, 5 Apr 2021 10:53:36 -0500
-Date:   Mon, 5 Apr 2021 10:53:36 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        <arm@kernel.org>, <soc@kernel.org>
-CC:     Tero Kristo <kristo@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] arm64: dts: TI K3 updates for v5.13
-Message-ID: <20210405155336.smohb7uzkperqwuz@reflex>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jwcdnqty5rcpu6zp"
-Content-Disposition: inline
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        id S241786AbhDEPym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 11:54:42 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:50445 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241780AbhDEPyj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 11:54:39 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FDZwK35ngz9v0ry;
+        Mon,  5 Apr 2021 17:54:25 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id x9xim_CI_Y_2; Mon,  5 Apr 2021 17:54:25 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FDZwK1FY7z9v0rx;
+        Mon,  5 Apr 2021 17:54:25 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6F6208B790;
+        Mon,  5 Apr 2021 17:54:30 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id FeLwWG8j-6eD; Mon,  5 Apr 2021 17:54:30 +0200 (CEST)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1860C8B75B;
+        Mon,  5 Apr 2021 17:54:30 +0200 (CEST)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id BF4AF67692; Mon,  5 Apr 2021 15:54:29 +0000 (UTC)
+Message-Id: <743e8639e744bfd4a525db78d47e56b655210808.1617638050.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/kconfig: Restore alphabetic order of the selects
+ under CONFIG_PPC
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Mon,  5 Apr 2021 15:54:29 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---jwcdnqty5rcpu6zp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Commit a7d2475af7ae ("powerpc: Sort the selects under CONFIG_PPC")
+sorted all selects under CONFIG_PPC.
 
-Hi,
+4 years later, several items have been introduced at wrong place,
+a few other have been renamed without moving them to their correct
+place.
 
-Please pull the following device tree changes for v5.13 cycle.
+Reorder them now.
 
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+While we are at it, simplify the test for a couple of them:
+- PPC_64 && PPC_PSERIES is simplified in PPC_PSERIES
+- PPC_64 && PPC_BOOK3S is simplified in PPC_BOOK3S_64
 
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+Applies on today's merge-test (4f8f28b28d82a98f74e9881985d8b93ca9a4d203)
+---
+ arch/powerpc/Kconfig | 34 +++++++++++++++++-----------------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
 
-are available in the Git repository at:
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 3725850b2a6a..738d4827ae66 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -118,28 +118,29 @@ config PPC
+ 	# Please keep this list sorted alphabetically.
+ 	#
+ 	select ARCH_32BIT_OFF_T if PPC32
++	select ARCH_HAS_COPY_MC			if PPC64
+ 	select ARCH_HAS_DEBUG_VIRTUAL
+ 	select ARCH_HAS_DEBUG_VM_PGTABLE
+ 	select ARCH_HAS_DEVMEM_IS_ALLOWED
++	select ARCH_HAS_DMA_MAP_DIRECT 		if PPC_PSERIES
+ 	select ARCH_HAS_ELF_RANDOMIZE
+ 	select ARCH_HAS_FORTIFY_SOURCE
+ 	select ARCH_HAS_GCOV_PROFILE_ALL
+-	select ARCH_HAS_KCOV
+ 	select ARCH_HAS_HUGEPD			if HUGETLB_PAGE
++	select ARCH_HAS_KCOV
++	select ARCH_HAS_MEMBARRIER_CALLBACKS
++	select ARCH_HAS_MEMBARRIER_SYNC_CORE
+ 	select ARCH_HAS_MEMREMAP_COMPAT_ALIGN
+ 	select ARCH_HAS_MMIOWB			if PPC64
++	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+ 	select ARCH_HAS_PHYS_TO_DMA
+ 	select ARCH_HAS_PMEM_API
+-	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+ 	select ARCH_HAS_PTE_DEVMAP		if PPC_BOOK3S_64
+ 	select ARCH_HAS_PTE_SPECIAL
+-	select ARCH_HAS_MEMBARRIER_CALLBACKS
+-	select ARCH_HAS_MEMBARRIER_SYNC_CORE
+ 	select ARCH_HAS_SCALED_CPUTIME		if VIRT_CPU_ACCOUNTING_NATIVE && PPC_BOOK3S_64
+ 	select ARCH_HAS_STRICT_KERNEL_RWX	if ((PPC_BOOK3S_64 || PPC32) && !HIBERNATION)
+ 	select ARCH_HAS_TICK_BROADCAST		if GENERIC_CLOCKEVENTS_BROADCAST
+ 	select ARCH_HAS_UACCESS_FLUSHCACHE
+-	select ARCH_HAS_COPY_MC			if PPC64
+ 	select ARCH_HAS_UBSAN_SANITIZE_ALL
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+ 	select ARCH_KEEP_MEMBLOCK
+@@ -161,9 +162,8 @@ config PPC
+ 	select BUILDTIME_TABLE_SORT
+ 	select CLONE_BACKWARDS
+ 	select DCACHE_WORD_ACCESS		if PPC64 && CPU_LITTLE_ENDIAN
+-	select DMA_OPS				if PPC64
+ 	select DMA_OPS_BYPASS			if PPC64
+-	select ARCH_HAS_DMA_MAP_DIRECT 		if PPC64 && PPC_PSERIES
++	select DMA_OPS				if PPC64
+ 	select DYNAMIC_FTRACE			if FUNCTION_TRACER
+ 	select EDAC_ATOMIC_SCRUB
+ 	select EDAC_SUPPORT
+@@ -188,18 +188,16 @@ config PPC
+ 	select HAVE_ARCH_JUMP_LABEL_RELATIVE
+ 	select HAVE_ARCH_KASAN			if PPC32 && PPC_PAGE_SHIFT <= 14
+ 	select HAVE_ARCH_KASAN_VMALLOC		if PPC32 && PPC_PAGE_SHIFT <= 14
+-	select HAVE_ARCH_KGDB
+ 	select HAVE_ARCH_KFENCE			if PPC32
++	select HAVE_ARCH_KGDB
+ 	select HAVE_ARCH_MMAP_RND_BITS
+ 	select HAVE_ARCH_MMAP_RND_COMPAT_BITS	if COMPAT
+ 	select HAVE_ARCH_NVRAM_OPS
+ 	select HAVE_ARCH_SECCOMP_FILTER
+ 	select HAVE_ARCH_TRACEHOOK
+ 	select HAVE_ASM_MODVERSIONS
+-	select HAVE_C_RECORDMCOUNT
+-	select HAVE_STACKPROTECTOR		if PPC64 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r13)
+-	select HAVE_STACKPROTECTOR		if PPC32 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r2)
+ 	select HAVE_CONTEXT_TRACKING		if PPC64
++	select HAVE_C_RECORDMCOUNT
+ 	select HAVE_DEBUG_KMEMLEAK
+ 	select HAVE_DEBUG_STACKOVERFLOW
+ 	select HAVE_DYNAMIC_FTRACE
+@@ -213,10 +211,13 @@ config PPC
+ 	select HAVE_FUNCTION_TRACER
+ 	select HAVE_GCC_PLUGINS			if GCC_VERSION >= 50200   # plugin support on gcc <= 5.1 is buggy on PPC
+ 	select HAVE_GENERIC_VDSO
++	select HAVE_HARDLOCKUP_DETECTOR_ARCH	if PPC_BOOK3S_64 && SMP
++	select HAVE_HARDLOCKUP_DETECTOR_PERF	if PERF_EVENTS && HAVE_PERF_EVENTS_NMI && !HAVE_HARDLOCKUP_DETECTOR_ARCH
+ 	select HAVE_HW_BREAKPOINT		if PERF_EVENTS && (PPC_BOOK3S || PPC_8xx)
+ 	select HAVE_IDE
+ 	select HAVE_IOREMAP_PROT
+ 	select HAVE_IRQ_EXIT_ON_IRQ_STACK
++	select HAVE_IRQ_TIME_ACCOUNTING
+ 	select HAVE_KERNEL_GZIP
+ 	select HAVE_KERNEL_LZMA			if DEFAULT_UIMAGE
+ 	select HAVE_KERNEL_LZO			if DEFAULT_UIMAGE
+@@ -228,25 +229,24 @@ config PPC
+ 	select HAVE_LIVEPATCH			if HAVE_DYNAMIC_FTRACE_WITH_REGS
+ 	select HAVE_MOD_ARCH_SPECIFIC
+ 	select HAVE_NMI				if PERF_EVENTS || (PPC64 && PPC_BOOK3S)
+-	select HAVE_HARDLOCKUP_DETECTOR_ARCH	if PPC64 && PPC_BOOK3S && SMP
+ 	select HAVE_OPTPROBES			if PPC64
+ 	select HAVE_PERF_EVENTS
+ 	select HAVE_PERF_EVENTS_NMI		if PPC64
+-	select HAVE_HARDLOCKUP_DETECTOR_PERF	if PERF_EVENTS && HAVE_PERF_EVENTS_NMI && !HAVE_HARDLOCKUP_DETECTOR_ARCH
+ 	select HAVE_PERF_REGS
+ 	select HAVE_PERF_USER_STACK_DUMP
+-	select MMU_GATHER_RCU_TABLE_FREE
+-	select MMU_GATHER_PAGE_SIZE
+ 	select HAVE_REGS_AND_STACK_ACCESS_API
+ 	select HAVE_RELIABLE_STACKTRACE
++	select HAVE_RSEQ
+ 	select HAVE_SOFTIRQ_ON_OWN_STACK
++	select HAVE_STACKPROTECTOR		if PPC32 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r2)
++	select HAVE_STACKPROTECTOR		if PPC64 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r13)
+ 	select HAVE_SYSCALL_TRACEPOINTS
+ 	select HAVE_VIRT_CPU_ACCOUNTING
+-	select HAVE_IRQ_TIME_ACCOUNTING
+-	select HAVE_RSEQ
+ 	select IOMMU_HELPER			if PPC64
+ 	select IRQ_DOMAIN
+ 	select IRQ_FORCED_THREADING
++	select MMU_GATHER_PAGE_SIZE
++	select MMU_GATHER_RCU_TABLE_FREE
+ 	select MODULES_USE_ELF_RELA
+ 	select NEED_DMA_MAP_STATE		if PPC64 || NOT_COHERENT_CACHE
+ 	select NEED_SG_DMA_LENGTH
+-- 
+2.25.0
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git tags/ti-k3=
--dt-for-v5.13
-
-for you to fetch changes up to 112e5934ff3a7505e583365213a27f990922b76b:
-
-  arm64: dts: ti: k3-am64-main: Fix ospi compatible (2021-04-01 08:50:33 -0=
-500)
-
-----------------------------------------------------------------
-Devicetree changes for TI K3 platforms for v5.13 merge window:
-
-* New SoCs:
-  - AM642 mean for industrial control, motor control, remote IO, IoT gatewa=
-y etc.
-* New Boards:
-  - AM65: Siemens SIMATIC IOT2050 advanced and basic boards
-  - AM64: EVM and SK boards
-* New peripherals:
-  - AM65: watchdog
-  - AM65,J721E: ICSSG
-  - J7200: OSPI, GPIO
-* Fixes:
-  - AM65: pcie node fixup, ospi speed updates
-  - J721e, J7200: MMC speed updates, ospi speed updates and compatibles fix=
-ups.
-
-----------------------------------------------------------------
-Aswath Govindraju (7):
-      arm64: dts: ti: k3-j721e-main: Update the speed modes supported and t=
-heir itap delay values for MMCSD subsystems
-      arm64: dts: ti: k3-am642-evm: Add support for SPI EEPROM
-      arm64: dts: ti: k3-am64-main: Add DT node for USB subsystem
-      arm64: dts: ti: k3-am642-evm: Add USB support
-      arm64: dts: ti: k3-am64: Add GPIO DT nodes
-      arm64: dts: ti: k3-am642: reserve gpio in mcu domain for firmware usa=
-ge
-      arm64: dts: ti: k3-j7200: Add support for higher speed modes and upda=
-te delay select values for MMCSD subsystems
-
-Dave Gerlach (4):
-      dt-bindings: arm: ti: Add bindings for AM642 SoC
-      dt-bindings: pinctrl: k3: Introduce pinmux definitions for AM64
-      arm64: dts: ti: Add support for AM642 SoC
-      arm64: dts: ti: Add support for AM642 EVM
-
-Faiz Abbas (2):
-      arm64: dts: ti: k3-j7200: Add gpio nodes
-      arm64: dts: ti: k3-j7200-common-proc-board: Disable unused gpio modul=
-es
-
-Grygorii Strashko (1):
-      arm64: dts: ti: k3-am64-main: add main CPTS entry
-
-Jan Kiszka (5):
-      arm64: dts: ti: k3-am65-main: Add device_type to pcie*_rc nodes
-      arm64: dts: ti: k3-am65-mcu: Add RTI watchdog entry
-      dt-bindings: Add Siemens vendor prefix
-      dt-bindings: arm: ti: Add bindings for Siemens IOT2050 boards
-      arm64: dts: ti: Add support for Siemens IOT2050 boards
-
-Lokesh Vutla (2):
-      dt-bindings: arm: ti: Add bindings for AM642 SK
-      arm64: dts: ti: Add support for AM642 SK
-
-Peter Ujfalusi (1):
-      arm64: dts: ti: k3-am64-main: Enable DMA support
-
-Pratyush Yadav (6):
-      arm64: dts: ti: k3-j721e-som-p0: Enable 8D-8D-8D mode on OSPI
-      arm64: dts: ti: am654-base-board: Enable 8D-8D-8D mode on OSPI
-      arm64: dts: ti: k3-j7200-som-p0: Add nodes for OSPI0
-      arm64: dts: ti: k3-j721e-mcu: Fix ospi compatible
-      arm64: dts: ti: k3-j7200-mcu: Fix ospi compatible
-      arm64: dts: ti: k3-am64-main: Fix ospi compatible
-
-Suman Anna (5):
-      arm64: dts: ti: k3-am65-main: Add ICSSG nodes
-      arm64: dts: ti: k3-j721e-main: Add ICSSG nodes
-      arm64: dts: ti: k3-am64-main: Add hwspinlock node
-      arm64: dts: ti: k3-am64-main: Add mailbox cluster nodes
-      arm64: dts: ti: k3-am642-evm/sk: Add IPC sub-mailbox nodes
-
-Vignesh Raghavendra (6):
-      arm64: dts: ti: k3-am64-main: Add CPSW DT node
-      arm64: dts: ti: k3-am642-evm: add CPSW3g DT nodes
-      arm64: dts: ti: k3-am642-sk: Add CPSW DT nodes
-      arm64: dts: ti: k3-am64-main: Add ADC nodes
-      arm64: dts: ti: k3-am64-main: Add OSPI node
-      arm64: dts: ti: k3-am64-evm/sk: Add OSPI flash DT node
-
- Documentation/devicetree/bindings/arm/ti/k3.yaml   |   9 +
- .../devicetree/bindings/vendor-prefixes.yaml       |   2 +
- arch/arm64/boot/dts/ti/Makefile                    |   8 +-
- arch/arm64/boot/dts/ti/k3-am64-main.dtsi           | 675 +++++++++++++++++=
-++++
- arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi            | 103 ++++
- arch/arm64/boot/dts/ti/k3-am64.dtsi                | 105 ++++
- arch/arm64/boot/dts/ti/k3-am642-evm.dts            | 468 ++++++++++++++
- arch/arm64/boot/dts/ti/k3-am642-sk.dts             | 334 ++++++++++
- arch/arm64/boot/dts/ti/k3-am642.dtsi               |  65 ++
- arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi | 655 +++++++++++++++++=
-+++
- arch/arm64/boot/dts/ti/k3-am65-main.dtsi           | 395 ++++++++++++
- arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi            |   9 +
- arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dts |  61 ++
- arch/arm64/boot/dts/ti/k3-am654-base-board.dts     |   4 +-
- .../boot/dts/ti/k3-am6548-iot2050-advanced.dts     |  60 ++
- .../boot/dts/ti/k3-j7200-common-proc-board.dts     |  94 +++
- arch/arm64/boot/dts/ti/k3-j7200-main.dtsi          |  86 ++-
- arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi    |  51 ++
- arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi        |  36 ++
- arch/arm64/boot/dts/ti/k3-j721e-main.dtsi          | 279 ++++++++-
- arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi    |   4 +-
- arch/arm64/boot/dts/ti/k3-j721e-som-p0.dtsi        |   4 +-
- include/dt-bindings/pinctrl/k3.h                   |   5 +-
- 23 files changed, 3501 insertions(+), 11 deletions(-)
- create mode 100644 arch/arm64/boot/dts/ti/k3-am64-main.dtsi
- create mode 100644 arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi
- create mode 100644 arch/arm64/boot/dts/ti/k3-am64.dtsi
- create mode 100644 arch/arm64/boot/dts/ti/k3-am642-evm.dts
- create mode 100644 arch/arm64/boot/dts/ti/k3-am642-sk.dts
- create mode 100644 arch/arm64/boot/dts/ti/k3-am642.dtsi
- create mode 100644 arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
- create mode 100644 arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dts
- create mode 100644 arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts
---=20
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5=
- 849D 1736 249D
-
---jwcdnqty5rcpu6zp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE+KKGk1TrgjIXoxo03bWEnRc2JJ0FAmBrMnoACgkQ3bWEnRc2
-JJ3leQ/9Et1pA6dl4ie7sWlORWQDpc9DvJijI8xP0R8wZjLzhsZo+2KcrYaoHDOl
-npBnqezmgoN37dXt5O0DHKou/srLNlQSREGqFXjTHxMJCncDfOsH3tynIjk0EnIf
-Ss+hQRynCqa4vPjpVXfriqfwmUf8B6+IaVxMRcJnY1+36OQ+qDUYWmy7eqVxp4x0
-zjKlYuum875csGCPKyXbQafiGQGVa/5jfTNd1yuvB19iUW9kuExWmKVn5cKZ8K3K
-oN1P150JDiybEthc5I4ynqUeYcTprADJrBi3QAA2zguSY5Hognl3hCZNb7My+cMt
-Tr1+HFWxnBUAisNKv/HQI+x3xgeJsjdijHk46RS5c0AtivAKBBcFA01EyPVuwBkQ
-qEvhWcH0uvayj+kK4AgTcrW6b3Rmre3tvM/4YhEwrORfhGnWpcYMB0a+7524L2rN
-vLGxFaDoVPbJsPwgGeaf9I/lzXHRzlBzPsl7M5h7hKPe7L52gd4UYHSCONMhtcHc
-IFujPh3QwGYpELjG+RanKbsPwTqMkE5d/AzSsmoH2U8LhTx6JtP+JC0t/qveMtdf
-RJZWuy3gYr3iN0BDaU37+nCMKmLdomIF0SPX2C0BKh9Fk0R9Y2WEC0Ga85VAYNPM
-YKp/Mf+qlLQFVkvQsmcphPQ2BK8zKVp8+A8Zql3fiOWX4sVn/fw=
-=zMlz
------END PGP SIGNATURE-----
-
---jwcdnqty5rcpu6zp--
