@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A19753540C4
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F6BF353FDE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:36:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234579AbhDEJWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:22:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39006 "EHLO mail.kernel.org"
+        id S240245AbhDEJO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:14:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240806AbhDEJRH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:17:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF77E611C1;
-        Mon,  5 Apr 2021 09:17:00 +0000 (UTC)
+        id S238798AbhDEJLs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:11:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64EA0613C3;
+        Mon,  5 Apr 2021 09:11:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617614221;
-        bh=hnCyp1pY3A5BEjmo/pO28QU4NIJS5GIogwo0akaMA6Y=;
+        s=korg; t=1617613887;
+        bh=PrvXvLexksylJ5hd1iSur2YhtvHzTqsiS9WEgISJ7Qc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S4r45/O582q1uuB/Q2Zqo+etR9+ngjVcbzbi+8t3rxfxiHaJIG9TkJ+FZx+5zczOq
-         WnJYBJCaoDBCyLTGyS2AgxlgVNDTBEYKbFNFebmqNmbLF+VCqBZfEdvRRqMxup+m8p
-         zBc4Mn9rkHFiD7cDF0piNSNA8EGCEYCwYrKQH98M=
+        b=b6EaTSdoOypn2pKyWNxD1frRh87bVw4+SdOfqBJ6f5qc1IL63emFjs58AxoFQSSYZ
+         RFrV6fXP/bESy95ZFYTxGSTfn7UJjGtjRHYbbh0VTNYmEf2vT40qVEUkGN1PH4lDON
+         WEWZz6TPHmJuUoMmlsVT47pfTj7yZnGA6EkDVzFQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Murilo Opsfelder Araujo <muriloo@linux.ibm.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 128/152] powerpc/mm/book3s64: Use the correct storage key value when calling H_PROTECT
-Date:   Mon,  5 Apr 2021 10:54:37 +0200
-Message-Id: <20210405085038.386202343@linuxfoundation.org>
+        Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
+Subject: [PATCH 5.10 116/126] usb: dwc2: Prevent core suspend when port connection flag is 0
+Date:   Mon,  5 Apr 2021 10:54:38 +0200
+Message-Id: <20210405085034.881082871@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
-References: <20210405085034.233917714@linuxfoundation.org>
+In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
+References: <20210405085031.040238881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,102 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+From: Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
 
-[ Upstream commit 53f1d31708f6240e4615b0927df31f182e389e2f ]
+commit 93f672804bf2d7a49ef3fd96827ea6290ca1841e upstream.
 
-H_PROTECT expects the flag value to include flags:
-  AVPN, pp0, pp1, pp2, key0-key4, Noexec, CMO Option flags
+In host mode port connection status flag is "0" when loading
+the driver. After loading the driver system asserts suspend
+which is handled by "_dwc2_hcd_suspend()" function. Before
+the system suspend the port connection status is "0". As
+result need to check the "port_connect_status" if it is "0",
+then skipping entering to suspend.
 
-This patch updates hpte_updatepp() to fetch the storage key value from
-the linux page table and use the same in H_PROTECT hcall.
-
-native_hpte_updatepp() is not updated because the kernel doesn't clear
-the existing storage key value there. The kernel also doesn't use
-hpte_updatepp() callback for updating storage keys.
-
-This fixes the below kernel crash observed with KUAP enabled.
-
-  BUG: Unable to handle kernel data access on write at 0xc009fffffc440000
-  Faulting instruction address: 0xc0000000000b7030
-  Key fault AMR: 0xfcffffffffffffff IAMR: 0xc0000077bc498100
-  Found HPTE: v = 0x40070adbb6fffc05 r = 0x1ffffffffff1194
-  Oops: Kernel access of bad area, sig: 11 [#1]
-  LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
-  ...
-  CFAR: c000000000010100 DAR: c009fffffc440000 DSISR: 02200000 IRQMASK: 0
-  ...
-  NIP memset+0x68/0x104
-  LR  pcpu_alloc+0x54c/0xb50
-  Call Trace:
-    pcpu_alloc+0x55c/0xb50 (unreliable)
-    blk_stat_alloc_callback+0x94/0x150
-    blk_mq_init_allocated_queue+0x64/0x560
-    blk_mq_init_queue+0x54/0xb0
-    scsi_mq_alloc_queue+0x30/0xa0
-    scsi_alloc_sdev+0x1cc/0x300
-    scsi_probe_and_add_lun+0xb50/0x1020
-    __scsi_scan_target+0x17c/0x790
-    scsi_scan_channel+0x90/0xe0
-    scsi_scan_host_selected+0x148/0x1f0
-    do_scan_async+0x2c/0x2a0
-    async_run_entry_fn+0x78/0x220
-    process_one_work+0x264/0x540
-    worker_thread+0xa8/0x600
-    kthread+0x190/0x1a0
-    ret_from_kernel_thread+0x5c/0x6c
-
-With KUAP enabled the kernel uses storage key 3 for all its
-translations. But as shown by the debug print, in this specific case we
-have the hash page table entry created with key value 0.
-
-  Found HPTE: v = 0x40070adbb6fffc05 r = 0x1ffffffffff1194
-
-and DSISR indicates a key fault.
-
-This can happen due to parallel fault on the same EA by different CPUs:
-
-  CPU 0					CPU 1
-  fault on X
-
-  H_PAGE_BUSY set
-  					fault on X
-
-  finish fault handling and
-  clear H_PAGE_BUSY
-  					check for H_PAGE_BUSY
-  					continue with fault handling.
-
-This implies CPU1 will end up calling hpte_updatepp for address X and
-the kernel updated the hash pte entry with key 0
-
-Fixes: d94b827e89dc ("powerpc/book3s64/kuap: Use Key 3 for kernel mapping with hash translation")
-Reported-by: Murilo Opsfelder Araujo <muriloo@linux.ibm.com>
-Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Debugged-by: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210326070755.304625-1-aneesh.kumar@linux.ibm.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: <stable@vger.kernel.org> # 5.2
+Fixes: 6f6d70597c15 ("usb: dwc2: bus suspend/resume for hosts with DWC2_POWER_DOWN_PARAM_NONE")
+Signed-off-by: Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
+Link: https://lore.kernel.org/r/20210326102510.BDEDEA005D@mailhost.synopsys.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/platforms/pseries/lpar.c | 3 ++-
+ drivers/usb/dwc2/hcd.c |    3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/platforms/pseries/lpar.c b/arch/powerpc/platforms/pseries/lpar.c
-index 764170fdb0f7..3805519a6469 100644
---- a/arch/powerpc/platforms/pseries/lpar.c
-+++ b/arch/powerpc/platforms/pseries/lpar.c
-@@ -887,7 +887,8 @@ static long pSeries_lpar_hpte_updatepp(unsigned long slot,
+--- a/drivers/usb/dwc2/hcd.c
++++ b/drivers/usb/dwc2/hcd.c
+@@ -4322,7 +4322,8 @@ static int _dwc2_hcd_suspend(struct usb_
+ 	if (hsotg->op_state == OTG_STATE_B_PERIPHERAL)
+ 		goto unlock;
  
- 	want_v = hpte_encode_avpn(vpn, psize, ssize);
+-	if (hsotg->params.power_down > DWC2_POWER_DOWN_PARAM_PARTIAL)
++	if (hsotg->params.power_down != DWC2_POWER_DOWN_PARAM_PARTIAL ||
++	    hsotg->flags.b.port_connect_status == 0)
+ 		goto skip_power_saving;
  
--	flags = (newpp & 7) | H_AVPN;
-+	flags = (newpp & (HPTE_R_PP | HPTE_R_N | HPTE_R_KEY_LO)) | H_AVPN;
-+	flags |= (newpp & HPTE_R_KEY_HI) >> 48;
- 	if (mmu_has_feature(MMU_FTR_KERNEL_RO))
- 		/* Move pp0 into bit 8 (IBM 55) */
- 		flags |= (newpp & HPTE_R_PP0) >> 55;
--- 
-2.30.2
-
+ 	/*
 
 
