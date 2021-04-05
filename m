@@ -2,90 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09062353C85
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D06CF353C87
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232616AbhDEIrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 04:47:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60176 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232587AbhDEIrB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 04:47:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 112ED61398;
-        Mon,  5 Apr 2021 08:46:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617612415;
-        bh=lh5iHkLIHcRhEVH5XgYdg8sTt1UzoPbx65v8pw6Y5os=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VRA/3qDRVrIAhd+CiPu8CKTnPViEofn49SLE9Wa1IaH8nbqg/zQ0rULUpz9NLpkeM
-         NoRFqOHDhmIUR6DDTapE2yJ5AgydustWv8RrKELvfsAxCWqBFqNIPVFBmcQQo+gHeZ
-         dIw/VdNitNAxmCAPgH27T44Jw26gnhoW8z0WWN8m/pzLy4wgFAUh6W4UX0KBE2KnHS
-         lVYFQGqSv4vzzOjH1cCcWvFsteAViL/N/aCgpWnJXyitMan9wD+8/5JfuXX2OLuzHU
-         5Y0yTIR7uoxqErJaN580bgR4+cC2R/iXVqXpmI9VMziEBXKEgItdtDoIQz9QAc9cpa
-         eKCZoO0YPki7w==
-Date:   Mon, 5 Apr 2021 11:46:52 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Parav Pandit <parav@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-s390@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>
-Subject: Re: [PATCH rdma-next 1/8] RDMA/core: Check if client supports IB
- device or not
-Message-ID: <YGrOfCjtTLdwsElz@unreal>
-References: <20210405055000.215792-1-leon@kernel.org>
- <20210405055000.215792-2-leon@kernel.org>
- <43f5eb80-55b9-722b-1006-23d823108eb1@amazon.com>
+        id S232403AbhDEIxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 04:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229681AbhDEIxQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:53:16 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E755C061756;
+        Mon,  5 Apr 2021 01:53:10 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id m12so16420904lfq.10;
+        Mon, 05 Apr 2021 01:53:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=66eFVhQITP6e2usZV3iYiCUliC2/qX94Zfl0FBPlH+E=;
+        b=jHQ5A0edCkKm5HoDaDPKf6B8a1YXnkOdSPvlBlN2Spux/3ltSMbcP6KXqChhp9EYq3
+         4LQ4kz9NpZshwWki7t2apmP11IqkNWNTMEGjGlg6rCPKGZd9O0KCFbofu2zBU49eXcNR
+         e61qB6J0tINAcwaWb/xpt29tYpB2xBFNUUV40N2naZq73Bze2o/U1hciIROWOSO+gex+
+         5QjjBcw37bdIiXDQSMLhJ+sSglEIgwFO2jEYYS9ECNzDcq6N2eennielubP2BoHkRigt
+         Q4DIx80ENP8l+9sSTSetzw3JQVvY5ZGJJiEOVoEv2h8mHF1iDHNdiQJBNs6v6e7bNVzD
+         FwZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=66eFVhQITP6e2usZV3iYiCUliC2/qX94Zfl0FBPlH+E=;
+        b=IOAgTVqKrhTSGIrTIXLdYhZkJ0BGfQtwm5N7hc/53pSaMTlkS9t10URtkhZgJSztXS
+         PKBqXn8e5e0Xp2crctnNfwntAoB0vBx12NMWMBLDQXTl5RmOQzyIBP2CQR9pc5Ak1hww
+         OJoA39cVM8Dc81dnTOCxq73qWaNLsMVjCxB9JK2IP41P7Ymj22vri1DRVyOs0P6zG7yd
+         AjVdyqttIsY36W++08a3E8e7mB+nUNdGgcpX9f3yNDi3TZ39HVcu3zfOHEV+ux0/LaPO
+         X7AD94V4Z5ow7Of3ucZfrljE1sDqQ8cTq3v1+86aJYS6rUxQzLHoeYRqxfserMcfcdh7
+         RgUA==
+X-Gm-Message-State: AOAM530ewxgkzebXRxxEZ8tlO+N1QZlj88+fM/NVAehxB9jCpd/+M0mE
+        N5efYF15ueZA1g3XLzt9+IqdLlVGw2WtD/+nhGU=
+X-Google-Smtp-Source: ABdhPJxs9e9v8ObaK3QKnr4HhThJ4aLtN8wUIQCUc0ikxB4S7f9zjUR1pK6SDQ0nr63G1kHQTkUuQxWor4QjB4KTdHM=
+X-Received: by 2002:ac2:5f19:: with SMTP id 25mr17650197lfq.328.1617612788906;
+ Mon, 05 Apr 2021 01:53:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <43f5eb80-55b9-722b-1006-23d823108eb1@amazon.com>
+References: <20210405074459.4217-1-cnsztl@gmail.com> <CAGb2v66K3SFSkm9T_D6X5o7jSYOoYpYeS_yMp1k6nMonmjiHZA@mail.gmail.com>
+In-Reply-To: <CAGb2v66K3SFSkm9T_D6X5o7jSYOoYpYeS_yMp1k6nMonmjiHZA@mail.gmail.com>
+From:   Tianling Shen <cnsztl@gmail.com>
+Date:   Mon, 5 Apr 2021 16:52:57 +0800
+Message-ID: <CAOP2_Th4+ZXtYfrr2kWnnuuzzS-HdNvN6FVtMj=5-nk4QTOvnQ@mail.gmail.com>
+Subject: Re: [PATCH] rockchip: enabled LAN port on NanoPi R2S
+To:     wens@kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Johan Jonker <jbx6244@gmail.com>,
+        David Bauer <mail@david-bauer.net>,
+        Robin Murphy <robin.murphy@arm.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 09:20:32AM +0300, Gal Pressman wrote:
-> On 05/04/2021 8:49, Leon Romanovsky wrote:
-> > From: Parav Pandit <parav@nvidia.com>
-> > 
-> > RDMA devices are of different transport(iWarp, IB, RoCE) and have
-> > different attributes.
-> > Not all clients are interested in all type of devices.
-> > 
-> > Implement a generic callback that each IB client can implement to decide
-> > if client add() or remove() should be done by the IB core or not for a
-> > given IB device, client combination.
-> > 
-> > Signed-off-by: Parav Pandit <parav@nvidia.com>
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Hi Chen-Yu,
+
+On 2021-04-05 16:14, Chen-Yu Tsai <wens@kernel.org> wrote:
+>
+> Hi,
+>
+> On Mon, Apr 5, 2021 at 3:46 PM Tianling Shen <cnsztl@gmail.com> wrote:
+> >
+> > From: David Bauer <mail@david-bauer.net>
+> >
+> > Enable the USB3 port on the FriendlyARM NanoPi R2S.
+> > This is required for the USB3 attached LAN port to work.
+> >
+> > Signed-off-by: David Bauer <mail@david-bauer.net>
+> > Signed-off-by: Tianling Shen <cnsztl@gmail.com>
 > > ---
-> >  drivers/infiniband/core/device.c | 3 +++
-> >  include/rdma/ib_verbs.h          | 9 +++++++++
-> >  2 files changed, 12 insertions(+)
-> > 
-> > diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-> > index c660cef66ac6..c9af2deba8c1 100644
-> > --- a/drivers/infiniband/core/device.c
-> > +++ b/drivers/infiniband/core/device.c
-> > @@ -691,6 +691,9 @@ static int add_client_context(struct ib_device *device,
-> >  	if (!device->kverbs_provider && !client->no_kverbs_req)
-> >  		return 0;
-> >  
-> > +	if (client->is_supported && !client->is_supported(device))
-> > +		return 0;
-> 
-> Isn't it better to remove the kverbs_provider flag (from previous if statement)
-> and unify it with this generic support check?
+> >  .../boot/dts/rockchip/rk3328-nanopi-r2s.dts   | 23 +++++++++++++++++++
+> >  1 file changed, 23 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/rockchip/rk3328-nanopi-r2s.dts b/arch/arm64/boot/dts/rockchip/rk3328-nanopi-r2s.dts
+> > index faf496d789cf..6ba9799a95c5 100644
+> > --- a/arch/arm64/boot/dts/rockchip/rk3328-nanopi-r2s.dts
+> > +++ b/arch/arm64/boot/dts/rockchip/rk3328-nanopi-r2s.dts
+> > @@ -37,6 +37,18 @@
+> >                 };
+> >         };
+> >
+> > +       vcc_rtl8153: vcc-rtl8153-regulator {
+> > +               compatible = "regulator-fixed";
+> > +               gpio = <&gpio2 RK_PC6 GPIO_ACTIVE_HIGH>;
+> > +               pinctrl-names = "default";
+> > +               pinctrl-0 = <&rtl8153_en_drv>;
+> > +               regulator-always-on;
+> > +               regulator-name = "vcc_rtl8153";
+> > +               regulator-min-microvolt = <5000000>;
+> > +               regulator-max-microvolt = <5000000>;
+>
+> This is just a simple switch, not an actual regulator.
+> It would make more sense to drop the voltage range and
+> instead have the implementation pass-through voltage
+> constraints from its parent.
 
-I thought about it, but didn't find it worth. The kverbs_provider needs
-to be provided by device and all ULPs except uverbs will have the same check.
+Thanks, I'll remove them in v2.
 
-Thanks
+>
+> > +               enable-active-high;
+> > +       };
+> > +
+> >         leds {
+> >                 compatible = "gpio-leds";
+> >                 pinctrl-0 = <&lan_led_pin>,  <&sys_led_pin>, <&wan_led_pin>;
+> > @@ -265,6 +277,12 @@
+> >                         };
+> >                 };
+> >         };
+> > +
+> > +       usb {
+> > +               rtl8153_en_drv: rtl8153-en-drv {
+> > +                       rockchip,pins = <2 RK_PC6 RK_FUNC_GPIO &pcfg_pull_none>;
+> > +               };
+> > +       };
+> >  };
+> >
+> >  &io_domains {
+> > @@ -364,6 +382,11 @@
+> >         dr_mode = "host";
+> >  };
+> >
+> > +&usbdrd3 {
+> > +       dr_mode = "host";
+> > +       status = "okay";
+>
+> Please also add a device node for the actual Ethernet controller, and
+> set up an aliases node for it, so that the bootloader has some place
+> to fill in a MAC address.
+
+But there's no valid (unique) MAC address for both this or on-board ethernet...
+They're non-existent in design.
+
+Thanks,
+Tianling.
+
+>
+>
+> ChenYu
+>
+> > +};
+> > +
+> >  &usb_host0_ehci {
+> >         status = "okay";
+> >  };
+> > --
+> > 2.17.1
+> >
+> >
+> > _______________________________________________
+> > linux-arm-kernel mailing list
+> > linux-arm-kernel@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
