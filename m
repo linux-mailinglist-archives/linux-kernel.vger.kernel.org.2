@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 795B5353E78
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8DD353D7D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238707AbhDEJGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:06:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48004 "EHLO mail.kernel.org"
+        id S233717AbhDEJAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:00:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238171AbhDEJEc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:04:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD0E061393;
-        Mon,  5 Apr 2021 09:04:26 +0000 (UTC)
+        id S236380AbhDEI7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:59:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E574610E8;
+        Mon,  5 Apr 2021 08:59:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613467;
-        bh=VPepH3lB+07aJUU/cQb9TTP85ctGPdDGJmNYxrLsNT0=;
+        s=korg; t=1617613165;
+        bh=LCWSaQHMnnZ8NI1PzJa+uI+WTVkYP31BVnXnddpgca8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z/5Wc7xhR4p0BONnAioPG+/37ShKUE/YLY2KNhv7i4w2hqlgOK+FUwZ749WgTc+ls
-         YdHjqbNcRPZ6ts6JnYZwVlgGH8PDbcE2WdiAiPFh0XHYlJLYOPmtGQfqNLibl9nJSl
-         Kwq95cVb8P/Jehu+pzYKvS/2QEtKzMwV6JM58IL8=
+        b=dm3Bgivik/rcA96UI/4hhbX2M+AKp9wlDVTocT8VHDtI4xZQ05QNOYmeYvIwoF+y0
+         0HfukmlQxsyPGPg7hg0E7xK1LC1UYRPrAziDWK5smM3MwdrGDco1xtE7cou85UBXM1
+         z4P+ihi6BE9Gtzb1cS9S6lx3xFk7QZ4DjahkT5bw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Max Filippov <jcmvbkbc@gmail.com>
-Subject: [PATCH 5.4 46/74] xtensa: move coprocessor_flush to the .text section
+        stable@vger.kernel.org, Chunfeng Yun <chunfeng.yun@mediatek.com>
+Subject: [PATCH 4.14 44/52] usb: xhci-mtk: fix broken streams issue on 0.96 xHCI
 Date:   Mon,  5 Apr 2021 10:54:10 +0200
-Message-Id: <20210405085026.233495857@linuxfoundation.org>
+Message-Id: <20210405085023.407204255@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
-References: <20210405085024.703004126@linuxfoundation.org>
+In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
+References: <20210405085021.996963957@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,106 +38,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Max Filippov <jcmvbkbc@gmail.com>
+From: Chunfeng Yun <chunfeng.yun@mediatek.com>
 
-commit ab5eb336411f18fd449a1fb37d36a55ec422603f upstream.
+commit 6f978a30c9bb12dab1302d0f06951ee290f5e600 upstream.
 
-coprocessor_flush is not a part of fast exception handlers, but it uses
-parts of fast coprocessor handling code that's why it's in the same
-source file. It uses call0 opcode to invoke those parts so there are no
-limitations on their relative location, but the rest of the code calls
-coprocessor_flush with call8 and that doesn't work when vectors are
-placed in a different gigabyte-aligned area than the rest of the kernel.
+The MediaTek 0.96 xHCI controller on some platforms does not
+support bulk stream even HCCPARAMS says supporting, due to MaxPSASize
+is set a default value 1 by mistake, here use XHCI_BROKEN_STREAMS
+quirk to fix it.
 
-Move coprocessor_flush from the .exception.text section to the .text so
-that it's reachable from the rest of the kernel with call8.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+Fixes: 94a631d91ad3 ("usb: xhci-mtk: check hcc_params after adding primary hcd")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+Link: https://lore.kernel.org/r/1616482975-17841-4-git-send-email-chunfeng.yun@mediatek.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/xtensa/kernel/coprocessor.S |   64 ++++++++++++++++++++-------------------
- 1 file changed, 33 insertions(+), 31 deletions(-)
+ drivers/usb/host/xhci-mtk.c |   10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
---- a/arch/xtensa/kernel/coprocessor.S
-+++ b/arch/xtensa/kernel/coprocessor.S
-@@ -109,37 +109,6 @@
- 	.previous
+--- a/drivers/usb/host/xhci-mtk.c
++++ b/drivers/usb/host/xhci-mtk.c
+@@ -487,6 +487,13 @@ static void xhci_mtk_quirks(struct devic
+ 	xhci->quirks |= XHCI_SPURIOUS_SUCCESS;
+ 	if (mtk->lpm_support)
+ 		xhci->quirks |= XHCI_LPM_SUPPORT;
++
++	/*
++	 * MTK xHCI 0.96: PSA is 1 by default even if doesn't support stream,
++	 * and it's 3 when support it.
++	 */
++	if (xhci->hci_version < 0x100 && HCC_MAX_PSA(xhci->hcc_params) == 4)
++		xhci->quirks |= XHCI_BROKEN_STREAMS;
+ }
  
- /*
-- * coprocessor_flush(struct thread_info*, index)
-- *                             a2        a3
-- *
-- * Save coprocessor registers for coprocessor 'index'.
-- * The register values are saved to or loaded from the coprocessor area 
-- * inside the task_info structure.
-- *
-- * Note that this function doesn't update the coprocessor_owner information!
-- *
-- */
--
--ENTRY(coprocessor_flush)
--
--	/* reserve 4 bytes on stack to save a0 */
--	abi_entry(4)
--
--	s32i	a0, a1, 0
--	movi	a0, .Lsave_cp_regs_jump_table
--	addx8	a3, a3, a0
--	l32i	a4, a3, 4
--	l32i	a3, a3, 0
--	add	a2, a2, a4
--	beqz	a3, 1f
--	callx0	a3
--1:	l32i	a0, a1, 0
--
--	abi_ret(4)
--
--ENDPROC(coprocessor_flush)
--
--/*
-  * Entry condition:
-  *
-  *   a0:	trashed, original value saved on stack (PT_AREG0)
-@@ -261,6 +230,39 @@ ENTRY(fast_coprocessor)
+ /* called during probe() after chip reset completes */
+@@ -681,7 +688,8 @@ static int xhci_mtk_probe(struct platfor
+ 	if (ret)
+ 		goto put_usb3_hcd;
  
- ENDPROC(fast_coprocessor)
+-	if (HCC_MAX_PSA(xhci->hcc_params) >= 4)
++	if (HCC_MAX_PSA(xhci->hcc_params) >= 4 &&
++	    !(xhci->quirks & XHCI_BROKEN_STREAMS))
+ 		xhci->shared_hcd->can_do_streams = 1;
  
-+	.text
-+
-+/*
-+ * coprocessor_flush(struct thread_info*, index)
-+ *                             a2        a3
-+ *
-+ * Save coprocessor registers for coprocessor 'index'.
-+ * The register values are saved to or loaded from the coprocessor area
-+ * inside the task_info structure.
-+ *
-+ * Note that this function doesn't update the coprocessor_owner information!
-+ *
-+ */
-+
-+ENTRY(coprocessor_flush)
-+
-+	/* reserve 4 bytes on stack to save a0 */
-+	abi_entry(4)
-+
-+	s32i	a0, a1, 0
-+	movi	a0, .Lsave_cp_regs_jump_table
-+	addx8	a3, a3, a0
-+	l32i	a4, a3, 4
-+	l32i	a3, a3, 0
-+	add	a2, a2, a4
-+	beqz	a3, 1f
-+	callx0	a3
-+1:	l32i	a0, a1, 0
-+
-+	abi_ret(4)
-+
-+ENDPROC(coprocessor_flush)
-+
- 	.data
- 
- ENTRY(coprocessor_owner)
+ 	ret = usb_add_hcd(xhci->shared_hcd, irq, IRQF_SHARED);
 
 
