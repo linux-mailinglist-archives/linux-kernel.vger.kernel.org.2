@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6CE9353E7C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 807703540AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238778AbhDEJGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:06:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48088 "EHLO mail.kernel.org"
+        id S240181AbhDEJVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:21:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238267AbhDEJEl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:04:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B1CB461393;
-        Mon,  5 Apr 2021 09:04:35 +0000 (UTC)
+        id S240662AbhDEJQL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:16:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6E8D61002;
+        Mon,  5 Apr 2021 09:16:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613476;
-        bh=Q/Y4k2wcSNF73hgj4PURLtegrzDPPTwTGSpbTM8Vdso=;
+        s=korg; t=1617614165;
+        bh=bS9v8Sn+M9PdSho+hk1fWodUee1upM8TnfkiJCOAKg8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sXotVRcB5XpO7YE7ENwAAveMjQK6uiUQeY72XLz/PiNh+xsNeeupIkQy3Y0ZWjUHm
-         ugn/CE8UNLrnxufYBI67MTPWTL+dx2K2nkpRQ/RdIJZ+x+GDvB7BpXbu6ZgwLvzQyQ
-         LUgy7AvIuQN9f3HVjYUJx8kwfIo0qGcgX2kRvJv4=
+        b=JXDOg/0Hd2S7ca5mFSNqCW+ZMg8U22Sb2JdBZvtZeFN9vEzx0jFjEOk3Sm3Sz8rY6
+         4nd7ZfPYb5ZnhCkJOIRguJlMqTLQ/d6T5g78CLvg83SmQzIUVdyq8eXy4BECoiAu0Q
+         vBeY/4pPJ7ATyNPBtpUipEjv24Aw9hHw6xVkCjT4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Lucas Tanure <tanureal@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 16/74] ASoC: cs42l42: Fix channel width support
+        stable@vger.kernel.org, Ikjoon Jang <ikjn@chromium.org>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.11 071/152] ALSA: usb-audio: Apply sample rate quirk to Logitech Connect
 Date:   Mon,  5 Apr 2021 10:53:40 +0200
-Message-Id: <20210405085025.250432016@linuxfoundation.org>
+Message-Id: <20210405085036.583091435@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
-References: <20210405085024.703004126@linuxfoundation.org>
+In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
+References: <20210405085034.233917714@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,112 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lucas Tanure <tanureal@opensource.cirrus.com>
+From: Ikjoon Jang <ikjn@chromium.org>
 
-[ Upstream commit 2bdc4f5c6838f7c3feb4fe68e4edbeea158ec0a2 ]
+commit 625bd5a616ceda4840cd28f82e957c8ced394b6a upstream.
 
-Remove the hard coded 32 bits width and replace with the correct width
-calculated by params_width.
+Logitech ConferenceCam Connect is a compound USB device with UVC and
+UAC. Not 100% reproducible but sometimes it keeps responding STALL to
+every control transfer once it receives get_freq request.
 
-Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20210305173442.195740-3-tanureal@opensource.cirrus.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This patch adds 046d:0x084c to a snd_usb_get_sample_rate_quirk list.
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=203419
+Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210324105153.2322881-1-ikjn@chromium.org
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/codecs/cs42l42.c | 47 ++++++++++++++++++--------------------
- sound/soc/codecs/cs42l42.h |  1 -
- 2 files changed, 22 insertions(+), 26 deletions(-)
+ sound/usb/quirks.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index c78e2ce37930..26ca5acf0136 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -691,24 +691,6 @@ static int cs42l42_pll_config(struct snd_soc_component *component)
- 					CS42L42_CLK_OASRC_SEL_MASK,
- 					CS42L42_CLK_OASRC_SEL_12 <<
- 					CS42L42_CLK_OASRC_SEL_SHIFT);
--			/* channel 1 on low LRCLK, 32 bit */
--			snd_soc_component_update_bits(component,
--					CS42L42_ASP_RX_DAI0_CH1_AP_RES,
--					CS42L42_ASP_RX_CH_AP_MASK |
--					CS42L42_ASP_RX_CH_RES_MASK,
--					(CS42L42_ASP_RX_CH_AP_LOW <<
--					CS42L42_ASP_RX_CH_AP_SHIFT) |
--					(CS42L42_ASP_RX_CH_RES_32 <<
--					CS42L42_ASP_RX_CH_RES_SHIFT));
--			/* Channel 2 on high LRCLK, 32 bit */
--			snd_soc_component_update_bits(component,
--					CS42L42_ASP_RX_DAI0_CH2_AP_RES,
--					CS42L42_ASP_RX_CH_AP_MASK |
--					CS42L42_ASP_RX_CH_RES_MASK,
--					(CS42L42_ASP_RX_CH_AP_HI <<
--					CS42L42_ASP_RX_CH_AP_SHIFT) |
--					(CS42L42_ASP_RX_CH_RES_32 <<
--					CS42L42_ASP_RX_CH_RES_SHIFT));
- 			if (pll_ratio_table[i].mclk_src_sel == 0) {
- 				/* Pass the clock straight through */
- 				snd_soc_component_update_bits(component,
-@@ -824,14 +806,29 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_component *component = dai->component;
- 	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
--	int retval;
-+	unsigned int width = (params_width(params) / 8) - 1;
-+	unsigned int val = 0;
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1521,6 +1521,7 @@ bool snd_usb_get_sample_rate_quirk(struc
+ 	case USB_ID(0x21b4, 0x0081): /* AudioQuest DragonFly */
+ 	case USB_ID(0x2912, 0x30c8): /* Audioengine D1 */
+ 	case USB_ID(0x413c, 0xa506): /* Dell AE515 sound bar */
++	case USB_ID(0x046d, 0x084c): /* Logitech ConferenceCam Connect */
+ 		return true;
+ 	}
  
- 	cs42l42->srate = params_rate(params);
--	cs42l42->swidth = params_width(params);
- 
--	retval = cs42l42_pll_config(component);
-+	switch(substream->stream) {
-+	case SNDRV_PCM_STREAM_PLAYBACK:
-+		val |= width << CS42L42_ASP_RX_CH_RES_SHIFT;
-+		/* channel 1 on low LRCLK */
-+		snd_soc_component_update_bits(component, CS42L42_ASP_RX_DAI0_CH1_AP_RES,
-+							 CS42L42_ASP_RX_CH_AP_MASK |
-+							 CS42L42_ASP_RX_CH_RES_MASK, val);
-+		/* Channel 2 on high LRCLK */
-+		val |= CS42L42_ASP_RX_CH_AP_HI << CS42L42_ASP_RX_CH_AP_SHIFT;
-+		snd_soc_component_update_bits(component, CS42L42_ASP_RX_DAI0_CH2_AP_RES,
-+							 CS42L42_ASP_RX_CH_AP_MASK |
-+							 CS42L42_ASP_RX_CH_RES_MASK, val);
-+		break;
-+	default:
-+		break;
-+	}
- 
--	return retval;
-+	return cs42l42_pll_config(component);
- }
- 
- static int cs42l42_set_sysclk(struct snd_soc_dai *dai,
-@@ -896,9 +893,9 @@ static int cs42l42_digital_mute(struct snd_soc_dai *dai, int mute)
- 	return 0;
- }
- 
--#define CS42L42_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S18_3LE | \
--			SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S24_LE | \
--			SNDRV_PCM_FMTBIT_S32_LE)
-+#define CS42L42_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
-+			 SNDRV_PCM_FMTBIT_S24_LE |\
-+			 SNDRV_PCM_FMTBIT_S32_LE )
- 
- 
- static const struct snd_soc_dai_ops cs42l42_ops = {
-diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index 1f0d67c95a9a..9b017b76828a 100644
---- a/sound/soc/codecs/cs42l42.h
-+++ b/sound/soc/codecs/cs42l42.h
-@@ -757,7 +757,6 @@ struct  cs42l42_private {
- 	struct completion pdn_done;
- 	u32 sclk;
- 	u32 srate;
--	u32 swidth;
- 	u8 plug_state;
- 	u8 hs_type;
- 	u8 ts_inv;
--- 
-2.30.1
-
 
 
