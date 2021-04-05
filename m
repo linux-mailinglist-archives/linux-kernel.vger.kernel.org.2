@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAAB1354055
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B6F354056
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240813AbhDEJRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:17:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33168 "EHLO mail.kernel.org"
+        id S239654AbhDEJRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:17:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239537AbhDEJNi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:13:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2BF460FE4;
-        Mon,  5 Apr 2021 09:13:31 +0000 (UTC)
+        id S239541AbhDEJNl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:13:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B17BF61394;
+        Mon,  5 Apr 2021 09:13:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617614012;
-        bh=ZLeGXEyXYb4QvPkjoyKLep8EeDJQ/JdGLGf/HuyhyIk=;
+        s=korg; t=1617614015;
+        bh=yITPNZzBjplsd1eXeTpzp3N3uXgPE05ROAcjZ6lMKW4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WC+LGGFyOkAdJfvuqHps5eHAbvI4F8xWogxa8roZgjNexNSLyv6I1VMztMGaMacad
-         p/SQfHbw1Wbie/Sfr40JSUQNeriRNvbrjofzkL5G7NTiO3TJSHv4v+gNYfzpfxF+YS
-         9hdcRR5VlJmJ7PedzpwpCvr7CoSZhuCtOW3T27yo=
+        b=vxGoeD8gACRLFBKKJfaQNRJQsuMIKOCm/1+sMwYiUpKoIuFZnsTiNHTf/bpSIV9/p
+         lfNNLSCjugJ+4q9htZttnvEjOYTjuLK/8rX+f2+2/u8Gr1krFUXd1dDjVd3mt852/N
+         RvRXGC2x2FvpQHdTN4LXBYsKJqJckg0DvUUtbGUU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
-        Jia-Ju Bai <baijiaju1990@gmail.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 051/152] net: bonding: fix error return code of bond_neigh_init()
-Date:   Mon,  5 Apr 2021 10:53:20 +0200
-Message-Id: <20210405085035.941084892@linuxfoundation.org>
+Subject: [PATCH 5.11 052/152] mptcp: fix bit MPTCP_PUSH_PENDING tests
+Date:   Mon,  5 Apr 2021 10:53:21 +0200
+Message-Id: <20210405085035.969887353@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
 References: <20210405085034.233917714@linuxfoundation.org>
@@ -41,45 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jia-Ju Bai <baijiaju1990@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 2055a99da8a253a357bdfd359b3338ef3375a26c ]
+[ Upstream commit 2e5de7e0c8d2caa860e133ef71fc94671cb8e0bf ]
 
-When slave is NULL or slave_ops->ndo_neigh_setup is NULL, no error
-return code of bond_neigh_init() is assigned.
-To fix this bug, ret is assigned with -EINVAL in these cases.
+The MPTCP_PUSH_PENDING define is 6 and these tests should be testing if
+BIT(6) is set.
 
-Fixes: 9e99bfefdbce ("bonding: fix bond_neigh_init()")
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+Fixes: c2e6048fa1cf ("mptcp: fix race in release_cb")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/bonding/bond_main.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ net/mptcp/protocol.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index 5fe5232cc3f3..fba6b6d1b430 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -3917,11 +3917,15 @@ static int bond_neigh_init(struct neighbour *n)
+diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
+index 7cbb544c6d02..5932b0ebecc3 100644
+--- a/net/mptcp/protocol.c
++++ b/net/mptcp/protocol.c
+@@ -2947,7 +2947,7 @@ static void mptcp_release_cb(struct sock *sk)
+ 	for (;;) {
+ 		flags = 0;
+ 		if (test_and_clear_bit(MPTCP_PUSH_PENDING, &mptcp_sk(sk)->flags))
+-			flags |= MPTCP_PUSH_PENDING;
++			flags |= BIT(MPTCP_PUSH_PENDING);
+ 		if (!flags)
+ 			break;
  
- 	rcu_read_lock();
- 	slave = bond_first_slave_rcu(bond);
--	if (!slave)
-+	if (!slave) {
-+		ret = -EINVAL;
- 		goto out;
-+	}
- 	slave_ops = slave->dev->netdev_ops;
--	if (!slave_ops->ndo_neigh_setup)
-+	if (!slave_ops->ndo_neigh_setup) {
-+		ret = -EINVAL;
- 		goto out;
-+	}
+@@ -2960,7 +2960,7 @@ static void mptcp_release_cb(struct sock *sk)
+ 		 */
  
- 	/* TODO: find another way [1] to implement this.
- 	 * Passing a zeroed structure is fragile,
+ 		spin_unlock_bh(&sk->sk_lock.slock);
+-		if (flags & MPTCP_PUSH_PENDING)
++		if (flags & BIT(MPTCP_PUSH_PENDING))
+ 			__mptcp_push_pending(sk, 0);
+ 
+ 		cond_resched();
 -- 
 2.30.1
 
