@@ -2,100 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DAFD3544DA
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 18:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 371523544E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 18:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239496AbhDEQHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 12:07:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58974 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241991AbhDEQFr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 12:05:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47512613D8;
-        Mon,  5 Apr 2021 16:05:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617638740;
-        bh=Nw8MRyPv6hItzUsKE/Wox9Bq6mnbMARlYufUwDjARLk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=bs0O0CAk53M/qSeZGiM7AwMDewkCdl0vBh0LS8bqAedJ6MfX9IJ1AhOe6A2GIYWq0
-         0+ykWcgnPGQMm27T8u7fGbbTsaN4iwlqt9YmniWLppEG83m1Uhy/2l2vK5JtYmT0sd
-         XdmimLgtTjzTdK3n8dRzYp3xZnjv6nlFk9oHHvQjpQdhddKifFHrg+5CW2+x2OfSI9
-         BglkEDX0tGfI8/hzhOFyD0NBON7F3VVJ0ASIauu2pG8G4gZhroG58EfR/okI96VqiU
-         EZxl7Yq2yJ/6tJbLm9ThOaZG8qJ/Wqb81BhhsvshdV0HGSR8X+hu49s0ZNiciDZfH2
-         0W1bjUUV7Jv6A==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Liu Ying <victor.liu@nxp.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.4] drm/imx: imx-ldb: fix out of bounds array access warning
-Date:   Mon,  5 Apr 2021 12:05:37 -0400
-Message-Id: <20210405160538.269310-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S235694AbhDEQJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 12:09:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229832AbhDEQJ5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 12:09:57 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57FA6C061756;
+        Mon,  5 Apr 2021 09:09:51 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id C355F1F44A04
+Received: by earth.universe (Postfix, from userid 1000)
+        id 27F6D3C0C96; Mon,  5 Apr 2021 18:09:47 +0200 (CEST)
+Date:   Mon, 5 Apr 2021 18:09:47 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Ricardo Rivera-Matos <r-rivera-matos@ti.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] power: supply: bq25980 Apply datasheet revision
+ changes
+Message-ID: <20210405160947.l2i2yl6gbihbmv3g@earth.universe>
+References: <20210210225646.10055-1-r-rivera-matos@ti.com>
+ <20210211073603.fjguvzwpnna35hbw@kozik-lap>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cwo2xmcosnqf5vzm"
+Content-Disposition: inline
+In-Reply-To: <20210211073603.fjguvzwpnna35hbw@kozik-lap>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 33ce7f2f95cabb5834cf0906308a5cb6103976da ]
+--cwo2xmcosnqf5vzm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-When CONFIG_OF is disabled, building with 'make W=1' produces warnings
-about out of bounds array access:
+Hi,
 
-drivers/gpu/drm/imx/imx-ldb.c: In function 'imx_ldb_set_clock.constprop':
-drivers/gpu/drm/imx/imx-ldb.c:186:8: error: array subscript -22 is below array bounds of 'struct clk *[4]' [-Werror=array-bounds]
+On Thu, Feb 11, 2021 at 08:36:03AM +0100, Krzysztof Kozlowski wrote:
+> On Wed, Feb 10, 2021 at 04:56:45PM -0600, Ricardo Rivera-Matos wrote:
+> > The latest datasheet revision for BQ25980, BQ25975, and BQ25960 changed
+> >=20
+> > various register step sizes and offset values.=20
+> >=20
+> > This patch changes the following header file
+> >=20
+> > values for POWER_SUPPLY_PROP_CURRENT_NOW,=20
+> >=20
+> > POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT,
+> >=20
+> > POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE,
+> >=20
+> > POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT,
+> >=20
+> > POWER_SUPPLY_PROP_INPUT_VOLTAGE_LIMIT, and POWER_SUPPLY_PROP_VOLTAGE_NO=
+W.
+> >=20
+> > Additionally, this patch adjusts bq25980_get_input_curr_lim(),
+> >=20
+> > bq25980_set_input_curr_lim(), bq25980_get_const_charge_curr(), and
+> >=20
+> > bq25980_set_const_charge_curr() to perform the get/set math correctly.
+>=20
+> Your formatting is so odd, it is not readable. Please open "git log" and
+> try to write something similar to existing commits, e.g. without
+> additional blank line between lines.
 
-Add an error check before the index is used, which helps with the
-warning, as well as any possible other error condition that may be
-triggered at runtime.
+Ack. This is a paint to read.
 
-The warning could be fixed by adding a Kconfig depedency on CONFIG_OF,
-but Liu Ying points out that the driver may hit the out-of-bounds
-problem at runtime anyway.
+>=20
+> >=20
+> > Fixes: 5069185fc18e ("power: supply: bq25980: Add support for the BQ259=
+xx family")
+> > Signed-off-by: Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+> > ---
+> >  drivers/power/supply/bq25980_charger.c | 141 ++++++++++++++++++++-----
+> >  drivers/power/supply/bq25980_charger.h |  77 ++++++++++----
+> >  2 files changed, 173 insertions(+), 45 deletions(-)
+> >=20
+> > diff --git a/drivers/power/supply/bq25980_charger.c b/drivers/power/sup=
+ply/bq25980_charger.c
+> > index 530ff4025b31..7c489a9e8877 100644
+> > --- a/drivers/power/supply/bq25980_charger.c
+> > +++ b/drivers/power/supply/bq25980_charger.c
+> > @@ -52,6 +52,10 @@ struct bq25980_chip_info {
+> >  	int busocp_byp_max;
+> >  	int busocp_sc_min;
+> >  	int busocp_byp_min;
+> > +	int busocp_sc_step;
+> > +	int busocp_byp_step;
+> > +	int busocp_sc_offset;
+> > +	int busocp_byp_offset;
+>=20
+> Does not look like related to changing offsets of register values in
+> header.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Liu Ying <victor.liu@nxp.com>
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/gpu/drm/imx/imx-ldb.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+well looking at the change as a whole the problem is that each
+chip has different offset/step size now. Arguably this is an
+atomic change. I would have queued it (fixing the commit message
+while applying), but the patch also does some unrelated changes:
 
-diff --git a/drivers/gpu/drm/imx/imx-ldb.c b/drivers/gpu/drm/imx/imx-ldb.c
-index b9dc2ef64ed8..74585ba16501 100644
---- a/drivers/gpu/drm/imx/imx-ldb.c
-+++ b/drivers/gpu/drm/imx/imx-ldb.c
-@@ -217,6 +217,11 @@ static void imx_ldb_encoder_commit(struct drm_encoder *encoder)
- 	int dual = ldb->ldb_ctrl & LDB_SPLIT_MODE_EN;
- 	int mux = imx_drm_encoder_get_mux_id(imx_ldb_ch->child, encoder);
- 
-+	if (mux < 0 || mux >= ARRAY_SIZE(ldb->clk_sel)) {
-+		dev_warn(ldb->dev, "%s: invalid mux %d\n", __func__, mux);
-+		return;
-+	}
-+
- 	drm_panel_prepare(imx_ldb_ch->panel);
- 
- 	if (dual) {
-@@ -267,6 +272,11 @@ static void imx_ldb_encoder_mode_set(struct drm_encoder *encoder,
- 	unsigned long di_clk = mode->clock * 1000;
- 	int mux = imx_drm_encoder_get_mux_id(imx_ldb_ch->child, encoder);
- 
-+	if (mux < 0 || mux >= ARRAY_SIZE(ldb->clk_sel)) {
-+		dev_warn(ldb->dev, "%s: invalid mux %d\n", __func__, mux);
-+		return;
-+	}
-+
- 	if (mode->clock > 170000) {
- 		dev_warn(ldb->dev,
- 			 "%s: mode exceeds 170 MHz pixel clock\n", __func__);
--- 
-2.30.2
+ - introduced usage of clamp instead of min()/max() checks
+   (which is great, but should be separate commit!)
+ - rename variables to something more sensible in
+   bq25980_get_adc_vbat (again a great change, but should be
+   separate commit)
 
+Ricardo, please submit a new version with these changes splitted
+out.
+
+-- Sebastian
+
+--cwo2xmcosnqf5vzm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBrNkUACgkQ2O7X88g7
++prVghAAiW4U1RmvIsGe1wO8bxYr9eZQ4W/dhA3YRslkWOmRxA8icvfZgv3rjI9X
+E487nf+sLB/JEAs9txNEQzGtXQCJ0G9p17oVU2E/ZSM6ltRN9ec0NrcMHVfEXLNk
+aThWYNH1afP3SWInhV4fI+Et2guEsCjts7YLHfTFEss+QEvnGflandYSzg1f8tnJ
+N8jSuKkWB6bUjo13MZXiMG8Uy3SJyC4za0i3AhOfrSIIKJq8e1K4udghc3VQMpJ2
+HXpIIDVU3htMoGboLPuM+Fr8f0eDbLRV3lhtKSjOmivIU4ncHwHhPc559oHny7Br
+FmMPJJF3a5zfk/YZ8PPxjXdlJCSEeldCus3Gey8Fs/weW5G0d4UaXjNq7xF/MfcR
+TRzWyMoMceibbbpfw/CytsooGdCNyKKWiASLh93CeL9yUnc7dNQyKgPHhXEIOR23
+LMYm1vC2cg4xGxqmrTyGx3n7VpcZl7iwT/nkPFV3ixqwPDRUCD+NxXeGQLukAdqU
+8egmw/3l1L1lmJCderQGVq4GUWBq2AOQlkcvki1SlAaWOqvkMSgtSCBdEqcq2LrD
+Rg7wTKur68iuLLX4EICpBfsrq1dKFF4H9/sUGRD+Vi20ggr+ahIXrKRjchC37/Zo
+mc8YCh2faWrGrCW9O3iAp1WmqhY3cidGpqlGuBd2qIA0ArgEYZI=
+=WM2U
+-----END PGP SIGNATURE-----
+
+--cwo2xmcosnqf5vzm--
