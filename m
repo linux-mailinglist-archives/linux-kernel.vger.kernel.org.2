@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFAB5353F9F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8A08353DF6
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239480AbhDEJNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:13:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55370 "EHLO mail.kernel.org"
+        id S237597AbhDEJDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:03:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239261AbhDEJJn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:09:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A480961394;
-        Mon,  5 Apr 2021 09:09:36 +0000 (UTC)
+        id S237153AbhDEJCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:02:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5F0A60238;
+        Mon,  5 Apr 2021 09:01:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613777;
-        bh=naVzgU/39qd9FeDVN/IoWsUUSR2Ky4B0p8d3KJGJe38=;
+        s=korg; t=1617613289;
+        bh=xfLohfPhWmd0fYFVl0yHHyw7P6u+3ZNvJL33bj69CX4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zXDyoBmkErPVfjOzfILfnHLmas1DwmnWFiDvUvwiKH483G1H9H6l7MGfqB1pjnq44
-         W7dsU9aCRoG5cfLdJT5JICv6x27eZJnrzKlRRcmYxz42jX2vnrRoAnpl0GJ1FtPJac
-         74T1RXKdUNSFSr1lEJGthGxH0bGiTUEl/H76JpP4=
+        b=Erf61afxoMgcl1DiyPyw7ar+r+yBfAq83Y94UlsX82ftY3eoTEpX5jvQurrGM4OS7
+         h3S+oc2D2IwnQ6+xafrpCvTG367uAD0+JeBX+AcredMnGxuOO1mxPY9nJeV66elx/N
+         r0Ac+sb3aYF3RGQn0klYn6iGS4qi85objapWdmGo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Feiner <pfeiner@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ben Gardon <bgardon@google.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 088/126] KVM: x86/mmu: Add lockdep when setting a TDP MMU SPTE
+        stable@vger.kernel.org, Jianqun Xu <jay.xu@rock-chips.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Wang Panzhenzhuan <randy.wang@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 4.19 39/56] pinctrl: rockchip: fix restore error in resume
 Date:   Mon,  5 Apr 2021 10:54:10 +0200
-Message-Id: <20210405085033.984958362@linuxfoundation.org>
+Message-Id: <20210405085023.779801579@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
-References: <20210405085031.040238881@linuxfoundation.org>
+In-Reply-To: <20210405085022.562176619@linuxfoundation.org>
+References: <20210405085022.562176619@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,41 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Gardon <bgardon@google.com>
+From: Wang Panzhenzhuan <randy.wang@rock-chips.com>
 
-[ Upstream commit 3a9a4aa5657471a02ffb7f9b7f3b7a468b3f257b ]
+commit c971af25cda94afe71617790826a86253e88eab0 upstream.
 
-Add lockdep to __tdp_mmu_set_spte to ensure that SPTEs are only modified
-under the MMU lock.
+The restore in resume should match to suspend which only set for RK3288
+SoCs pinctrl.
 
-No functional change intended.
-
-Reviewed-by: Peter Feiner <pfeiner@google.com>
-Reviewed-by: Sean Christopherson <seanjc@google.com>
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Ben Gardon <bgardon@google.com>
-Message-Id: <20210202185734.1680553-4-bgardon@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 8dca933127024 ("pinctrl: rockchip: save and restore gpio6_c6 pinmux in suspend/resume")
+Reviewed-by: Jianqun Xu <jay.xu@rock-chips.com>
+Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+Signed-off-by: Wang Panzhenzhuan <randy.wang@rock-chips.com>
+Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+Link: https://lore.kernel.org/r/20210223100725.269240-1-jay.xu@rock-chips.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/mmu/tdp_mmu.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/pinctrl/pinctrl-rockchip.c |   13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 61be95c6db20..ad9f8f187045 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -363,6 +363,8 @@ static inline void __tdp_mmu_set_spte(struct kvm *kvm, struct tdp_iter *iter,
- 	struct kvm_mmu_page *root = sptep_to_sp(root_pt);
- 	int as_id = kvm_mmu_page_as_id(root);
+--- a/drivers/pinctrl/pinctrl-rockchip.c
++++ b/drivers/pinctrl/pinctrl-rockchip.c
+@@ -3353,12 +3353,15 @@ static int __maybe_unused rockchip_pinct
+ static int __maybe_unused rockchip_pinctrl_resume(struct device *dev)
+ {
+ 	struct rockchip_pinctrl *info = dev_get_drvdata(dev);
+-	int ret = regmap_write(info->regmap_base, RK3288_GRF_GPIO6C_IOMUX,
+-			       rk3288_grf_gpio6c_iomux |
+-			       GPIO6C6_SEL_WRITE_ENABLE);
++	int ret;
  
-+	lockdep_assert_held(&kvm->mmu_lock);
-+
- 	WRITE_ONCE(*iter->sptep, new_spte);
+-	if (ret)
+-		return ret;
++	if (info->ctrl->type == RK3288) {
++		ret = regmap_write(info->regmap_base, RK3288_GRF_GPIO6C_IOMUX,
++				   rk3288_grf_gpio6c_iomux |
++				   GPIO6C6_SEL_WRITE_ENABLE);
++		if (ret)
++			return ret;
++	}
  
- 	__handle_changed_spte(kvm, as_id, iter->gfn, iter->old_spte, new_spte,
--- 
-2.30.1
-
+ 	return pinctrl_force_default(info->pctl_dev);
+ }
 
 
