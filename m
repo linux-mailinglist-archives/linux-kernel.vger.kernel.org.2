@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24AE8353CC9
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD07353D33
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232918AbhDEI4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 04:56:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34824 "EHLO mail.kernel.org"
+        id S234187AbhDEI7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 04:59:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232910AbhDEI40 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 04:56:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AFB361245;
-        Mon,  5 Apr 2021 08:56:20 +0000 (UTC)
+        id S233652AbhDEI6X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:58:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA61E6124C;
+        Mon,  5 Apr 2021 08:58:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617612980;
-        bh=I2wM7d8m3gQj4oCpdlaDJdwdAUqStOU4cVPfVyEn7II=;
+        s=korg; t=1617613096;
+        bh=z21IlU+lKkau8KPURE4Y9aQ6vmLZzK1z65yZcOGlGd4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ECJ2djGjVhuM7WZClPSytH9LHcrOBw+mn8cheMm5ITSkE6GOcrl9mH5ch8eM4h0KU
-         huWD5S7sJyADBUj26fK9VhgT7gJINGe2nHBhvYBPdsNabnqNzMvLQO9SdfLyVlfQFW
-         I2W5my6iFNHfUnkZjHAQcFp6OcdPqj/FYHE3q2l4=
+        b=a8jOC3bz1Kxz1VfpuEouo4ckHifYVHFCgbdGWDVrkx81+gPw8qpiEKCh1hdXLWGmg
+         bGRticF4u5GRZT6G+gLaeziqgrBxqUbigi//2aXC27e3PWuuciHNNw/37rU6SZhXQE
+         N9C+/QK9/EbEWhD3HtJu/RMWxLL5uQetVvTqWJ/g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 09/28] scsi: qla2xxx: Fix broken #endif placement
-Date:   Mon,  5 Apr 2021 10:53:43 +0200
-Message-Id: <20210405085017.319504623@linuxfoundation.org>
+        stable@vger.kernel.org, "zhangyi (F)" <yi.zhang@huawei.com>,
+        Theodore Tso <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 18/52] ext4: do not iput inode under running transaction in ext4_rename()
+Date:   Mon,  5 Apr 2021 10:53:44 +0200
+Message-Id: <20210405085022.596069634@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085017.012074144@linuxfoundation.org>
-References: <20210405085017.012074144@linuxfoundation.org>
+In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
+References: <20210405085021.996963957@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,42 +39,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexey Dobriyan <adobriyan@gmail.com>
+From: zhangyi (F) <yi.zhang@huawei.com>
 
-[ Upstream commit 5999b9e5b1f8a2f5417b755130919b3ac96f5550 ]
+[ Upstream commit 5dccdc5a1916d4266edd251f20bbbb113a5c495f ]
 
-Only half of the file is under include guard because terminating #endif
-is placed too early.
+In ext4_rename(), when RENAME_WHITEOUT failed to add new entry into
+directory, it ends up dropping new created whiteout inode under the
+running transaction. After commit <9b88f9fb0d2> ("ext4: Do not iput inode
+under running transaction"), we follow the assumptions that evict() does
+not get called from a transaction context but in ext4_rename() it breaks
+this suggestion. Although it's not a real problem, better to obey it, so
+this patch add inode to orphan list and stop transaction before final
+iput().
 
-Link: https://lore.kernel.org/r/YE4snvoW1SuwcXAn@localhost.localdomain
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+Link: https://lore.kernel.org/r/20210303131703.330415-2-yi.zhang@huawei.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla2xxx/qla_target.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ext4/namei.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/scsi/qla2xxx/qla_target.h b/drivers/scsi/qla2xxx/qla_target.h
-index bca584ae45b7..7a6fafa8ba56 100644
---- a/drivers/scsi/qla2xxx/qla_target.h
-+++ b/drivers/scsi/qla2xxx/qla_target.h
-@@ -112,7 +112,6 @@
- 	(min(1270, ((ql) > 0) ? (QLA_TGT_DATASEGS_PER_CMD_24XX + \
- 		QLA_TGT_DATASEGS_PER_CONT_24XX*((ql) - 1)) : 0))
- #endif
--#endif
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index 647d4a8d6b68..b4ec5a41797b 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -3635,7 +3635,7 @@ static int ext4_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 	 */
+ 	retval = -ENOENT;
+ 	if (!old.bh || le32_to_cpu(old.de->inode) != old.inode->i_ino)
+-		goto end_rename;
++		goto release_bh;
  
- #define GET_TARGET_ID(ha, iocb) ((HAS_EXTENDED_IDS(ha))			\
- 			 ? le16_to_cpu((iocb)->u.isp2x.target.extended)	\
-@@ -323,6 +322,7 @@ struct ctio_to_2xxx {
- #ifndef CTIO_RET_TYPE
- #define CTIO_RET_TYPE	0x17		/* CTIO return entry */
- #define ATIO_TYPE7 0x06 /* Accept target I/O entry for 24xx */
-+#endif
+ 	if ((old.dir != new.dir) &&
+ 	    ext4_encrypted_inode(new.dir) &&
+@@ -3649,7 +3649,7 @@ static int ext4_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 	if (IS_ERR(new.bh)) {
+ 		retval = PTR_ERR(new.bh);
+ 		new.bh = NULL;
+-		goto end_rename;
++		goto release_bh;
+ 	}
+ 	if (new.bh) {
+ 		if (!new.inode) {
+@@ -3666,15 +3666,13 @@ static int ext4_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 		handle = ext4_journal_start(old.dir, EXT4_HT_DIR, credits);
+ 		if (IS_ERR(handle)) {
+ 			retval = PTR_ERR(handle);
+-			handle = NULL;
+-			goto end_rename;
++			goto release_bh;
+ 		}
+ 	} else {
+ 		whiteout = ext4_whiteout_for_rename(&old, credits, &handle);
+ 		if (IS_ERR(whiteout)) {
+ 			retval = PTR_ERR(whiteout);
+-			whiteout = NULL;
+-			goto end_rename;
++			goto release_bh;
+ 		}
+ 	}
  
- struct fcp_hdr {
- 	uint8_t  r_ctl;
+@@ -3782,16 +3780,18 @@ end_rename:
+ 			ext4_resetent(handle, &old,
+ 				      old.inode->i_ino, old_file_type);
+ 			drop_nlink(whiteout);
++			ext4_orphan_add(handle, whiteout);
+ 		}
+ 		unlock_new_inode(whiteout);
++		ext4_journal_stop(handle);
+ 		iput(whiteout);
+-
++	} else {
++		ext4_journal_stop(handle);
+ 	}
++release_bh:
+ 	brelse(old.dir_bh);
+ 	brelse(old.bh);
+ 	brelse(new.bh);
+-	if (handle)
+-		ext4_journal_stop(handle);
+ 	return retval;
+ }
+ 
 -- 
 2.30.1
 
