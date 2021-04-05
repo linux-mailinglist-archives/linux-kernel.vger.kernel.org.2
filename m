@@ -2,128 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0D6354952
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 01:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DCF1354957
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 01:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238565AbhDEXlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 19:41:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55768 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232109AbhDEXk5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 19:40:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE71261184;
-        Mon,  5 Apr 2021 23:40:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617666050;
-        bh=wXcvCpV5lngQfAsxhsTeGFb1bpyuoynRwRXUiAxBCzs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=I4gn9Yon5sGPKvk7Mne/CxcIV8unoQeeNrAeKR/0MkHJp0MziBaIuiPtp/5KpJOPM
-         9wsbVj3Mgy/11NGt52I8i2WCXgIVzLlZzMBNNquporc3nprlf0X6iJ9ucM9FIp3lyB
-         5hIeLWd2qb6sn+mbpK9v/+UyG6tnRZ/aNCt+2E4EUPJDgMQCkhgpXEGLU+3SxYSQKt
-         e5QVfGQlLicuQsbH8zAlJB0FCdwmmUAOLaTYSDPY1XIXPBRsbSOcPJ3s4GJ27mpPWS
-         s658IHY/HMbzuw77ZTLbazhfer1NiCOosQPYgxlYOviiJnn4bZLW8N2kKPrPV83R9S
-         B7uF/rKoc/ocQ==
-Date:   Tue, 6 Apr 2021 08:40:46 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, mark.rutland@arm.com,
-        broonie@kernel.org, jthierry@redhat.com, catalin.marinas@arm.com,
-        will@kernel.org, linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1 0/4] arm64: Implement stack trace reliability
- checks
-Message-Id: <20210406084046.4f0b946728dc01da09045338@kernel.org>
-In-Reply-To: <7dda9af3-1ecf-5e6f-1e46-8870a2a5e550@linux.microsoft.com>
-References: <77bd5edeea72d44533c769b1e8c0fea7a9d7eb3a>
-        <20210330190955.13707-1-madvenka@linux.microsoft.com>
-        <20210403170159.gegqjrsrg7jshlne@treble>
-        <bd13a433-c060-c501-8e76-5e856d77a225@linux.microsoft.com>
-        <20210405222436.4fda9a930676d95e862744af@kernel.org>
-        <7dda9af3-1ecf-5e6f-1e46-8870a2a5e550@linux.microsoft.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S241911AbhDEXmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 19:42:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232109AbhDEXl7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 19:41:59 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01661C06174A;
+        Mon,  5 Apr 2021 16:41:51 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id e7so14290341edu.10;
+        Mon, 05 Apr 2021 16:41:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=B35rLoHmGQZLUMghM7yXpUEqwEattMshTSUNBkk8ekI=;
+        b=EJe8ieHqHTtUPoTrMsRzrepU1dBfY0166Z0ooZeyGWUuRQV0w53Q6UqSE2FPPL3EKs
+         62+Apa+4PlcN9NB4LAtMfnYVNHJnEsIpF5X9Rr1Vo79oCICfiGAz6ifF/dTKm5bbSHSR
+         zPdpddnxaVTM5BvYfJxHVSoLtMIAMMwsYfTAhgEl4lN1eMJs2otPhzcfRsrQXZaZkTyI
+         07azUgr2Av5kddzqzKWPyujtXETMEygQtOlhPL1nth4fWBdJ+uI4aTLWnhIBuaXx8QRp
+         P7Fi6AEn+VVUdZsb3XUwRBVKWqdYzst4+DXDyeykBseD+6mYxi9UitmUkD6hjI0SFgsO
+         GkRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=B35rLoHmGQZLUMghM7yXpUEqwEattMshTSUNBkk8ekI=;
+        b=SDGa6Mp5EfFkizLMPIm5ru9zCBNaODfb0ZGYEAAKSuf1YyFsyeZ/Avy+aBGMBKLHip
+         aKvdZlN7lJBzqx8he2jXyVc50DE90WDPpFmGfaCFP/erR+cOb0jLDYLo9bivYB6CQ0dM
+         sjcLigzRO31qx1GSubYFGEC1CYsaqIyR2VVsQgQZ5ny03tctotsre1k7/pbrs0D147kG
+         f++iADXIjGmMqN+rsahkD5TwzqVR91n0uS0Igxi0/+fVmL2z0iH116w5pIhYr7Zf8xgs
+         q1p5TGreuMjjikwB43b0SkoGXlQoF0kkUQtaEaStHUpy4s85Rz5SVJkfzVP8hdpNjngR
+         ZR/g==
+X-Gm-Message-State: AOAM533vJbT1ee5ICdiOcVmFvoNnduIxudEUTCXsW7i0MU7o2YeYuqRj
+        vlOU/fbcOGmq4RuC7tdoses=
+X-Google-Smtp-Source: ABdhPJzIIsI2v+IDIEqVU2n4+uXqO4tuIzwG2MNMCPSAseBCM/PDOMjxAvEURORC8/vxFGSnmNxwNw==
+X-Received: by 2002:a05:6402:441:: with SMTP id p1mr21112671edw.298.1617666109821;
+        Mon, 05 Apr 2021 16:41:49 -0700 (PDT)
+Received: from xws.localdomain ([37.58.58.229])
+        by smtp.gmail.com with ESMTPSA id h21sm4747963ejb.31.2021.04.05.16.41.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Apr 2021 16:41:49 -0700 (PDT)
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+To:     Sebastian Reichel <sre@kernel.org>
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-pm@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] power: supply: Add battery and AC drivers for Surface devices
+Date:   Tue,  6 Apr 2021 01:41:24 +0200
+Message-Id: <20210405234126.667532-1-luzmaximilian@gmail.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Apr 2021 09:56:48 -0500
-"Madhavan T. Venkataraman" <madvenka@linux.microsoft.com> wrote:
+This series provides battery and AC drivers for Microsoft Surface
+devices, where this information is provided via an embedded controller
+(the Surface System Aggregator Module, SSAM) instead of the usual ACPI
+interface.
 
-> 
-> 
-> On 4/5/21 8:24 AM, Masami Hiramatsu wrote:
-> > Hi Madhaven,
-> > 
-> > On Sat, 3 Apr 2021 22:29:12 -0500
-> > "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com> wrote:
-> > 
-> > 
-> >>>> Check for kretprobe
-> >>>> ===================
-> >>>>
-> >>>> For functions with a kretprobe set up, probe code executes on entry
-> >>>> to the function and replaces the return address in the stack frame with a
-> >>>> kretprobe trampoline. Whenever the function returns, control is
-> >>>> transferred to the trampoline. The trampoline eventually returns to the
-> >>>> original return address.
-> >>>>
-> >>>> A stack trace taken while executing in the function (or in functions that
-> >>>> get called from the function) will not show the original return address.
-> >>>> Similarly, a stack trace taken while executing in the trampoline itself
-> >>>> (and functions that get called from the trampoline) will not show the
-> >>>> original return address. This means that the caller of the probed function
-> >>>> will not show. This makes the stack trace unreliable.
-> >>>>
-> >>>> Add the kretprobe trampoline to special_functions[].
-> >>>>
-> >>>> FYI, each task contains a task->kretprobe_instances list that can
-> >>>> theoretically be consulted to find the orginal return address. But I am
-> >>>> not entirely sure how to safely traverse that list for stack traces
-> >>>> not on the current process. So, I have taken the easy way out.
-> >>>
-> >>> For kretprobes, unwinding from the trampoline or kretprobe handler
-> >>> shouldn't be a reliability concern for live patching, for similar
-> >>> reasons as above.
-> >>>
-> >>
-> >> Please see previous answer.
-> >>
-> >>> Otherwise, when unwinding from a blocked task which has
-> >>> 'kretprobe_trampoline' on the stack, the unwinder needs a way to get the
-> >>> original return address.  Masami has been working on an interface to
-> >>> make that possible for x86.  I assume something similar could be done
-> >>> for arm64.
-> >>>
-> >>
-> >> OK. Until that is available, this case needs to be addressed.
-> > 
-> > Actually, I've done that on arm64 :) See below patch.
-> > (and I also have a similar code for arm32, what I'm considering is how
-> > to unify x86/arm/arm64 kretprobe_find_ret_addr(), since those are very
-> > similar.)
-> > 
-> > This is applicable on my x86 series v5
-> > 
-> > https://lore.kernel.org/bpf/161676170650.330141.6214727134265514123.stgit@devnote2/
-> > 
-> > Thank you,
-> > 
-> > 
-> 
-> I took a brief look at your changes. Looks reasonable.
-> 
-> However, for now, I am going to include the kretprobe_trampoline in the special_functions[]
-> array until your changes are merged. At that point, it is just a matter of deleting
-> kretprobe_trampoline from the special_functions[] array. That is all.
-> 
-> I hope that is fine with everyone.
+Specifically, 7th generation Surface devices, i.e. Surface Pro 7,
+Surface Book 3, Surface Laptop 3, as well as the Surface Laptop Go use
+this new interface.
 
-Agreed, that is reasonable unless my series is merged. 
+Note: This series depends on the
 
-Thank you,
+    platform/surface: Add Surface Aggregator device registry
 
+series. More specifically patch
+
+    platform/surface: Set up Surface Aggregator device registry
+
+The full series has been merged into the for-next branch of the
+platform-drivers-x86 tree and is available as immutable tag at
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-surface-aggregator-v5.13-1
+
+Maximilian Luz (2):
+  power: supply: Add battery driver for Surface Aggregator Module
+  power: supply: Add AC driver for Surface Aggregator Module
+
+ .../ABI/testing/sysfs-class-power-surface     |  15 +
+ MAINTAINERS                                   |   8 +
+ drivers/power/supply/Kconfig                  |  32 +
+ drivers/power/supply/Makefile                 |   2 +
+ drivers/power/supply/surface_battery.c        | 865 ++++++++++++++++++
+ drivers/power/supply/surface_charger.c        | 282 ++++++
+ 6 files changed, 1204 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-class-power-surface
+ create mode 100644 drivers/power/supply/surface_battery.c
+ create mode 100644 drivers/power/supply/surface_charger.c
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.31.1
+
