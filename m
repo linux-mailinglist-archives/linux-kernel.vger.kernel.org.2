@@ -2,107 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1014D3544FC
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 18:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A795354504
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 18:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242019AbhDEQOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 12:14:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34314 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242366AbhDEQOJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 12:14:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EFFE61025;
-        Mon,  5 Apr 2021 16:14:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617639243;
-        bh=+71CR4VPWaNxi6TkmQ3DsUkmoBmkMqvKWMBfCKtK+9E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AgllefME47CDaOfwozWGvxuUfjANDCamRS+6/f71FlvvKxMKT7T7oEmUqMB1MQi6F
-         VHTbduM2v1yYV3M/6BnczpuQmidyS2o4NeoQorDbZ8ASoiA1SBguZiB1XoZTLi2fz/
-         pgW3AZwGTJUd2WmZ6yq50oE907eZixK9QibKhI1D67iWFAcnRDubxDvn4kCE3s3Yeb
-         1pBSXZgh2CsAPCZxlIIBJZbR3PCQbTZ8QHwskhpjGXehLmkM52Jfti27hnGBkI2xk9
-         R/xSf0h3XkDh0YCY0WEJB+Dyqpyr0g5KJig3eUW/L+kGtbCdJupArRNVDySRCcwhiD
-         ftU84jHl3l0lg==
-Date:   Mon, 5 Apr 2021 12:14:02 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Sergey Shtylyov <s.shtylyov@omprussia.ru>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Joe Perches <joe@perches.com>, Miroslav Benes <mbenes@suse.cz>,
-        Jessica Yu <jeyu@kernel.org>
-Subject: Re: [PATCH 5.4 03/74] module: merge repetitive strings in
- module_sig_check()
-Message-ID: <YGs3SoEiLEW3pWOE@sashalap>
-References: <20210405085024.703004126@linuxfoundation.org>
- <20210405085024.812932452@linuxfoundation.org>
- <35560933-d158-76ee-0034-0b5f43d9a3c2@omprussia.ru>
- <YGsTZrlUSYufOk9N@kroah.com>
- <b54f4a70-60df-be44-c88f-1f60f338ff12@omprussia.ru>
+        id S242137AbhDEQO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 12:14:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238609AbhDEQOy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 12:14:54 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFEE9C061788;
+        Mon,  5 Apr 2021 09:14:47 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id B47591F44A08
+Received: by earth.universe (Postfix, from userid 1000)
+        id 40B3B3C0C96; Mon,  5 Apr 2021 18:14:44 +0200 (CEST)
+Date:   Mon, 5 Apr 2021 18:14:44 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] Immutable branch between MFD and Power due for the
+ v5.13 merge window
+Message-ID: <20210405161444.adgoalifr4cl23wx@earth.universe>
+References: <20210312083604.3708890-1-linus.walleij@linaro.org>
+ <20210323085748.GH2916463@dell>
+ <CACRpkdYK4m_zsa_FMYDOpYaBLPsWk=DG-V3yeOhq4hdBp4prwA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="iieyb7z3wubg5mkx"
 Content-Disposition: inline
-In-Reply-To: <b54f4a70-60df-be44-c88f-1f60f338ff12@omprussia.ru>
+In-Reply-To: <CACRpkdYK4m_zsa_FMYDOpYaBLPsWk=DG-V3yeOhq4hdBp4prwA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 05:11:13PM +0300, Sergey Shtylyov wrote:
->On 4/5/21 4:40 PM, Greg Kroah-Hartman wrote:
->
->[...]
->>>> [ Upstream commit 705e9195187d85249fbb0eaa844b1604a98fbc9a ]
->>>>
->>>> The 'reason' variable in module_sig_check() points to 3 strings across
->>>> the *switch* statement, all needlessly starting with the same text.
->>>> Let's put the starting text into the pr_notice() call -- it saves 21
->>>> bytes of the object code (x86 gcc 10.2.1).
->>>>
->>>> Suggested-by: Joe Perches <joe@perches.com>
->>>> Reviewed-by: Miroslav Benes <mbenes@suse.cz>
->>>> Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
->>>> Signed-off-by: Jessica Yu <jeyu@kernel.org>
->>>> Signed-off-by: Sasha Levin <sashal@kernel.org>
->>>> ---
->>>>  kernel/module.c | 9 +++++----
->>>>  1 file changed, 5 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/kernel/module.c b/kernel/module.c
->>>> index ab1f97cfe18d..9fe3e9b85348 100644
->>>> --- a/kernel/module.c
->>>> +++ b/kernel/module.c
->>>> @@ -2908,16 +2908,17 @@ static int module_sig_check(struct load_info *info, int flags)
->>>>  		 * enforcing, certain errors are non-fatal.
->>>>  		 */
->>>>  	case -ENODATA:
->>>> -		reason = "Loading of unsigned module";
->>>> +		reason = "unsigned module";
->>>>  		goto decide;
->>>>  	case -ENOPKG:
->>>> -		reason = "Loading of module with unsupported crypto";
->>>> +		reason = "module with unsupported crypto";
->>>>  		goto decide;
->>>>  	case -ENOKEY:
->>>> -		reason = "Loading of module with unavailable key";
->>>> +		reason = "module with unavailable key";
->>>>  	decide:
->>>>  		if (is_module_sig_enforced()) {
->>>> -			pr_notice("%s is rejected\n", reason);
->>>> +			pr_notice("%s: loading of %s is rejected\n",
->>>> +				  info->name, reason);
->>>
->>>    Mhm, in 5.4 there was no printing of 'info->name'...
->>
->> Is that now a problem?
->
->   Looking at 5.4.y, it probably shouldn't be a problem... but I had to go and look. :-)
->   I've found a simple commit that added 'info->name' printing (perhaps should also be
->considered for inclusion?):
->
->https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e9f35f634e099894f4d6c3b039cd3de5281ee637
 
-Ah yes, looks like I squashed it in by mistake. I'll fix it up in the
-queue. Thanks!
+--iieyb7z3wubg5mkx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
+Hi,
+
+On Tue, Mar 23, 2021 at 10:11:18AM +0100, Linus Walleij wrote:
+> On Tue, Mar 23, 2021 at 9:57 AM Lee Jones <lee.jones@linaro.org> wrote:
+>=20
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-powe=
+r-v5.13
+>=20
+> Thanks so much for fixing this Lee!
+>=20
+> Sebastian: if you decide to pull this in I can iterate some more
+> patches to the AB8500 BM code this merge window, else I will
+> just defer to after v5.13-rc1.
+
+I pulled this in, but it's probably too late for 5.13 now. But it
+means you do not need to wait before (re)sending the remaining
+patches.
+
 Thanks,
-Sasha
+
+-- Sebastian
+
+--iieyb7z3wubg5mkx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBrN3MACgkQ2O7X88g7
++ppnXQ/8DaArE0bE2zKYmxgYDMzY/S6Ylwi0D3gDBbVS8kYnJ5hUUELbNgEUlzah
+yNyrFfAG591fBhD/WD4FV+dT9dkGHV094CgWHEuxeK6QYUzH9SY08oWAxkuDvnV1
+fZTc8RqTuAfnWddkpiIplzkfM87wWjrR9loEIqkq6bvh6hOZQzpE7dPwLj4PhNbh
+kVGfkmqYrT6LNWY7WJdTTg6WZVsZtMGbJZgxPmQLbUwzyyvL17r9KX/Kooq64n3h
++dCWHTAPEC8Fm1z9l6w5oJxrM++cod8pUCwraKAF1fISoxTgj+HZphaWj9sJUcc1
+51N355UYTl/6BNYhb1JHMMEEW4aVOliwt1/V1kM781fvTG3bYXUONT9NstNaqacv
+8h+D9iHQ9UfS+WNIbSaaTKDkQyQeCKTnzd2xjhoN+H2jPe7Y4ac5P5w8um98lmi8
+VH/QYUW915RJ6+p/+oveEvQkyDFgTiyU3aBUNqYifP1LkWscMdj6Bgoe1ZxNtapZ
+BPPRDmVTqfky/Fgcju50CT0Wv/mbcLzvvdIYltg2l0BDry+BA/Jw6KrGBU7kC8+t
+8VdN/AbO+0Cse6a8IsoUlDsHwbFjx6B4LUourYY++P8ZECL1lqDXTCazr7gyyL8j
+41Ogi1pZbzAJGG7pD4eTWNgsAFT8jWIckOL9cUbjlC7Q5Lqge78=
+=ohxa
+-----END PGP SIGNATURE-----
+
+--iieyb7z3wubg5mkx--
