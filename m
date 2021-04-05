@@ -2,150 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E9B35460B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 19:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DCCF354614
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 19:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238406AbhDER3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 13:29:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238299AbhDER3f (ORCPT
+        id S238661AbhDERe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 13:34:27 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:44193 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232529AbhDEReZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 13:29:35 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B971C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 10:29:27 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id x15so2334342wrq.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 10:29:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=rcUgpTqj2kdU+YBskPn+v5vQYu9sPyQVI1xkvuqXoSs=;
-        b=Pcn1mDLVtc2ZToBS3hq3liVHxCZozL7WAC8eAFCcnnfpjQxtun1OD7nOkWsg03hmR8
-         YHOTEuom5dqrubW9YGhKDojT24v1KNUi7RFLDcG0onDJ0xg698AImgstOFj3uBWqsDKo
-         fb9pEqFiSeSpuIVxNPqlkiWuowNSFNJnK4celRjZHFYKsgdhpoyqWYzXyL/hQ+gkkkad
-         Uu9RSmDuvVT7fBMD9j8K3gKjaj7Vk/hFUISjnRq2kVO6HS48WYwVDoUUUuaFI5CoXUk1
-         CAhiLz3ym6DgWEx3EwDOP2h+ruEGSTgz6YXl+XTFCFfzCL1tPWDzxpGGaiK7uks61+jT
-         ojUA==
+        Mon, 5 Apr 2021 13:34:25 -0400
+Received: by mail-il1-f200.google.com with SMTP id j18so9931348ila.11
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 10:34:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rcUgpTqj2kdU+YBskPn+v5vQYu9sPyQVI1xkvuqXoSs=;
-        b=SlZv16lX90btQtNSZbFAcFklTMkZn6rwh+cQebVe/my4KZQnbPa/3k3rnD4q5lMl4E
-         aM819EsA8T8QrUmA5ZSPumriXcjNRXxUUTMSZ3luELNCXqkPssDHspZINXr/pIHsGeCy
-         Bi+eIS4pIlBSZm+gqzCpg1hs+crhdcu8PnbCxQougk0a2GYVeqZuFQxja26hobtA0I/e
-         uKQXitWL3AO4S73Ny9HGwqUyR33IRg9zq1d04IDyRI7zKse9sGA0zno39R0DGo1i7tI4
-         I4vK3J0sxj2Bs2e5FhjnRtVLMpaA32YoieTy9DermreBRdLaZ29QwLA61LPFwTMRmbE/
-         +iVg==
-X-Gm-Message-State: AOAM532G122Ju/ixnBf6oyKm2Sv+WPTwMVMjCr9XpoRseDQtMYP5zbQ1
-        H730PsqhLiA/ZcD81Y9Vrng=
-X-Google-Smtp-Source: ABdhPJy7Ct4lChRU7qyUfTa66278O83sBZDYlZ5pKVDoGqpu9qC5ZlV99o2ANuG4EsRwmS4uvAYu5w==
-X-Received: by 2002:a05:6000:c9:: with SMTP id q9mr3496265wrx.17.1617643765979;
-        Mon, 05 Apr 2021 10:29:25 -0700 (PDT)
-Received: from bcarvalho-Ubuntu.lan ([2001:818:de85:7e00:9a5b:98e6:2174:bf29])
-        by smtp.gmail.com with ESMTPSA id x1sm17858699wro.66.2021.04.05.10.29.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Apr 2021 10:29:25 -0700 (PDT)
-From:   Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
-To:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Subject: [PATCH 4/4] staging: rtl8723bs: core: align arguments with open parenthesis
-Date:   Mon,  5 Apr 2021 18:29:20 +0100
-Message-Id: <00250c746ed850f6a73ff0ad4c1735cbd019b58f.1617641790.git.martinsdecarvalhobeatriz@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1617641790.git.martinsdecarvalhobeatriz@gmail.com>
-References: <cover.1617641790.git.martinsdecarvalhobeatriz@gmail.com>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=vd51XgEIvP4DQDs0VI5+bjubW08Kj6vjDtH+/7eNtLk=;
+        b=X8DcCdQ9okugR6LzAWejWN6rj8sAEyF9lTDPTjANl8II2xrjUNKLUXIZ6tsHikJJS5
+         MGwXmSPTuG3tl3fWx+12h5ZpSS3RZUy9/ETUDT48q/kaMD40eJuYKB/ATW2u0b7tjwxE
+         eWRBm8y75h0/dgFtKW8XwDyKIfdUSge/TQBTzvZDkhRygViJWADP29FE1RdWJuPZcP14
+         B0LCvho7QNylGoN7s6jeNtzVq0xciK1WTfBsVfC9Tx+gJGm9JM3tqJAkbWlkj4quVz1+
+         Pkh/6kejQZpxyKFQiq5jGkGEtVZ3aBmx3tSO87/R51DPeIENRuzp5c/bVdbw1QA8RFDE
+         CArg==
+X-Gm-Message-State: AOAM530PU8O9g/gYE/pEiSCbzvidOSwYZLuq1UcPyh2wWjaBIfymhoNc
+        6Qm/e5CyqZwgTujQDQFEhpmpwtr2/JH1R/nca2k0gXkRQ82V
+X-Google-Smtp-Source: ABdhPJxoaysSvm/vwPCZE9vCdUOjIG9huA7+Z034KzCf5cRvCelFCyvZ8u9yGuK1MunvlnEZcan1x4bLAO6PZp/nV+pIRNS2I2e7
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:149:: with SMTP id j9mr21536639ilr.57.1617644058638;
+ Mon, 05 Apr 2021 10:34:18 -0700 (PDT)
+Date:   Mon, 05 Apr 2021 10:34:18 -0700
+In-Reply-To: <0000000000003798d705aedd870d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007cfd9b05bf3d1b70@google.com>
+Subject: Re: [syzbot] memory leak in mgmt_cmd_status
+From:   syzbot <syzbot+80f5bab4eb14d14e7386@syzkaller.appspotmail.com>
+To:     anant.thazhemadam@gmail.com, davem@davemloft.net,
+        johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luiz.dentz@gmail.com, marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cleans up checks of "Alignment should match open parenthesis"
-in file rtw_ap.c
+syzbot has found a reproducer for the following issue on:
 
-Signed-off-by: Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
----
- drivers/staging/rtl8723bs/core/rtw_ap.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+HEAD commit:    e49d033b Linux 5.12-rc6
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12579f11d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b8dbd3c72fdc7777
+dashboard link: https://syzkaller.appspot.com/bug?extid=80f5bab4eb14d14e7386
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=143b1696d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14c5a30ed00000
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_ap.c b/drivers/staging/rtl8723bs/core/rtw_ap.c
-index ca6fec52d213..73a35b3320fe 100644
---- a/drivers/staging/rtl8723bs/core/rtw_ap.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_ap.c
-@@ -439,7 +439,7 @@ void add_RATid(struct adapter *padapter, struct sta_info *psta, u8 rssi_level)
- 		arg[3] = psta->init_rate;
- 
- 		DBG_871X("%s => mac_id:%d , raid:%d , shortGIrate =%d, bitmap = 0x%x\n",
--			__func__, psta->mac_id, psta->raid, shortGIrate, tx_ra_bitmap);
-+			 __func__, psta->mac_id, psta->raid, shortGIrate, tx_ra_bitmap);
- 
- 		rtw_hal_add_ra_tid(padapter, tx_ra_bitmap, arg, rssi_level);
- 	} else {
-@@ -512,7 +512,7 @@ void update_bmc_sta(struct adapter *padapter)
- 			arg[3] = psta->init_rate;
- 
- 			DBG_871X("%s => mac_id:%d , raid:%d , bitmap = 0x%x\n",
--				__func__, psta->mac_id, psta->raid, tx_ra_bitmap);
-+				 __func__, psta->mac_id, psta->raid, tx_ra_bitmap);
- 
- 			rtw_hal_add_ra_tid(padapter, tx_ra_bitmap, arg, 0);
- 		}
-@@ -605,14 +605,14 @@ void update_sta_info_apmode(struct adapter *padapter, struct sta_info *psta)
- 
- 		/*  B0 Config LDPC Coding Capability */
- 		if (TEST_FLAG(phtpriv_ap->ldpc_cap, LDPC_HT_ENABLE_TX) &&
--			GET_HT_CAPABILITY_ELE_LDPC_CAP((u8 *)(&phtpriv_sta->ht_cap))) {
-+			      GET_HT_CAPABILITY_ELE_LDPC_CAP((u8 *)(&phtpriv_sta->ht_cap))) {
- 			SET_FLAG(cur_ldpc_cap, (LDPC_HT_ENABLE_TX | LDPC_HT_CAP_TX));
- 			DBG_871X("Enable HT Tx LDPC for STA(%d)\n", psta->aid);
- 		}
- 
- 		/*  B7 B8 B9 Config STBC setting */
- 		if (TEST_FLAG(phtpriv_ap->stbc_cap, STBC_HT_ENABLE_TX) &&
--			GET_HT_CAPABILITY_ELE_RX_STBC((u8 *)(&phtpriv_sta->ht_cap))) {
-+			      GET_HT_CAPABILITY_ELE_RX_STBC((u8 *)(&phtpriv_sta->ht_cap))) {
- 			SET_FLAG(cur_stbc_cap, (STBC_HT_ENABLE_TX | STBC_HT_CAP_TX));
- 			DBG_871X("Enable HT Tx STBC for STA(%d)\n", psta->aid);
- 		}
-@@ -1176,7 +1176,7 @@ int rtw_check_beacon_data(struct adapter *padapter, u8 *pbuf,  int len)
- 		);
- 
- 		if ((psecuritypriv->wpa_pairwise_cipher & WPA_CIPHER_CCMP) ||
--			(psecuritypriv->wpa2_pairwise_cipher & WPA_CIPHER_CCMP)) {
-+		     (psecuritypriv->wpa2_pairwise_cipher & WPA_CIPHER_CCMP)) {
- 			pht_cap->ampdu_params_info |= (IEEE80211_HT_CAP_AMPDU_DENSITY & (0x07 << 2));
- 		} else {
- 			pht_cap->ampdu_params_info |= (IEEE80211_HT_CAP_AMPDU_DENSITY & 0x00);
-@@ -1233,7 +1233,7 @@ int rtw_check_beacon_data(struct adapter *padapter, u8 *pbuf,  int len)
- 	pmlmepriv->htpriv.ht_option = false;
- 
- 	if ((psecuritypriv->wpa2_pairwise_cipher & WPA_CIPHER_TKIP) ||
--		      (psecuritypriv->wpa_pairwise_cipher & WPA_CIPHER_TKIP)) {
-+	     (psecuritypriv->wpa_pairwise_cipher & WPA_CIPHER_TKIP)) {
- 		/* todo: */
- 		/* ht_cap = false; */
- 	}
-@@ -1820,7 +1820,7 @@ static int rtw_ht_operation_update(struct adapter *padapter)
- 	}
- 
- 	DBG_871X("%s new operation mode = 0x%X changes =%d\n",
--		   __func__, pmlmepriv->ht_op_mode, op_mode_changes);
-+		 __func__, pmlmepriv->ht_op_mode, op_mode_changes);
- 
- 	return op_mode_changes;
- }
-@@ -1865,7 +1865,7 @@ void bss_cap_update_on_sta_join(struct adapter *padapter, struct sta_info *psta)
- 			pmlmepriv->num_sta_no_short_preamble++;
- 
- 			if ((pmlmeext->cur_wireless_mode > WIRELESS_11B) &&
--				(pmlmepriv->num_sta_no_short_preamble == 1)) {
-+			    (pmlmepriv->num_sta_no_short_preamble == 1)) {
- 				beacon_updated = true;
- 				update_beacon(padapter, 0xFF, NULL, true);
- 			}
--- 
-2.25.1
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+80f5bab4eb14d14e7386@syzkaller.appspotmail.com
+
+BUG: memory leak
+unreferenced object 0xffff88810ddf4700 (size 232):
+  comm "kworker/u5:2", pid 8406, jiffies 4294997792 (age 10.670s)
+  hex dump (first 32 bytes):
+    d0 f0 af 0e 81 88 ff ff d0 f0 af 0e 81 88 ff ff  ................
+    00 00 00 00 00 00 00 00 00 f0 af 0e 81 88 ff ff  ................
+  backtrace:
+    [<ffffffff8364af8f>] __alloc_skb+0x20f/0x280 net/core/skbuff.c:412
+    [<ffffffff83c5f871>] alloc_skb include/linux/skbuff.h:1103 [inline]
+    [<ffffffff83c5f871>] mgmt_cmd_status+0x31/0x160 net/bluetooth/mgmt_util.c:102
+    [<ffffffff83c2a669>] mgmt_set_discoverable_complete+0x1b9/0x1e0 net/bluetooth/mgmt.c:1357
+    [<ffffffff83c579d8>] discoverable_update_work+0x88/0xb0 net/bluetooth/hci_request.c:2806
+    [<ffffffff812595d9>] process_one_work+0x2c9/0x600 kernel/workqueue.c:2275
+    [<ffffffff81259ec9>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2421
+    [<ffffffff812615f8>] kthread+0x178/0x1b0 kernel/kthread.c:292
+    [<ffffffff8100227f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
 
