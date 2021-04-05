@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19D1E353E7F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 106B4353DA9
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238004AbhDEJGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:06:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48144 "EHLO mail.kernel.org"
+        id S237278AbhDEJB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:01:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238336AbhDEJEs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:04:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3078A6138D;
-        Mon,  5 Apr 2021 09:04:41 +0000 (UTC)
+        id S237179AbhDEJAX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:00:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C60B26124C;
+        Mon,  5 Apr 2021 09:00:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613481;
-        bh=hTaUs/AFJ1IfhtHqzUxdrQe0xhEMM47KW9UwRqj7Lo8=;
+        s=korg; t=1617613217;
+        bh=jV8Qh0a/nNuUyA6BX6n1VOUaTcmndklBGd6tE6qaqug=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sXpKmcoyB8BY7xUMTeuscS1iJEBviBg/aXOH/SD58w1uXLy1bjVV1ZDcke8pMIz0S
-         /M/MmMhuOJVbGsNXv8zJ3sso+Rr8YWxcjFeXceJojGwDsKmLYkY3cSz9NaxTVdm1mi
-         6WGH1MJWguuW8zHzDo9nLxNrZ9x7I+gIKxD0ZEHM=
+        b=pYu3LDVLPNOAhq8vrFRKZUxl3J5N8/BFQAvTAoJyCJkdbeNMaFhs2Xu8EcScZCjBR
+         J778my2oojL0N6wrQunSEQIKWA1GkCLDwKmxlrpl6+ay8EEP2wBqUf66yff8+Fz0Aq
+         Ur+TzkZM+pZBNHmqDSs3Q76iDhUc/dgPtUYBDlus=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Lucas Tanure <tanureal@opensource.cirrus.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 18/74] ASoC: cs42l42: Always wait at least 3ms after reset
+Subject: [PATCH 4.19 11/56] ASoC: cs42l42: Fix channel width support
 Date:   Mon,  5 Apr 2021 10:53:42 +0200
-Message-Id: <20210405085025.313530931@linuxfoundation.org>
+Message-Id: <20210405085022.911793049@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
-References: <20210405085024.703004126@linuxfoundation.org>
+In-Reply-To: <20210405085022.562176619@linuxfoundation.org>
+References: <20210405085022.562176619@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,53 +43,108 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lucas Tanure <tanureal@opensource.cirrus.com>
 
-[ Upstream commit 19325cfea04446bc79b36bffd4978af15f46a00e ]
+[ Upstream commit 2bdc4f5c6838f7c3feb4fe68e4edbeea158ec0a2 ]
 
-This delay is part of the power-up sequence defined in the datasheet.
-A runtime_resume is a power-up so must also include the delay.
+Remove the hard coded 32 bits width and replace with the correct width
+calculated by params_width.
 
 Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20210305173442.195740-6-tanureal@opensource.cirrus.com
+Link: https://lore.kernel.org/r/20210305173442.195740-3-tanureal@opensource.cirrus.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs42l42.c | 3 ++-
- sound/soc/codecs/cs42l42.h | 1 +
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/codecs/cs42l42.c | 47 ++++++++++++++++++--------------------
+ sound/soc/codecs/cs42l42.h |  1 -
+ 2 files changed, 22 insertions(+), 26 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 95930018a1a4..dcd2acb2c3ce 100644
+index c7baa19bf317..a5bd9cff7085 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -1796,7 +1796,7 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client,
- 		dev_dbg(&i2c_client->dev, "Found reset GPIO\n");
- 		gpiod_set_value_cansleep(cs42l42->reset_gpio, 1);
- 	}
--	mdelay(3);
-+	usleep_range(CS42L42_BOOT_TIME_US, CS42L42_BOOT_TIME_US * 2);
+@@ -695,24 +695,6 @@ static int cs42l42_pll_config(struct snd_soc_component *component)
+ 					CS42L42_CLK_OASRC_SEL_MASK,
+ 					CS42L42_CLK_OASRC_SEL_12 <<
+ 					CS42L42_CLK_OASRC_SEL_SHIFT);
+-			/* channel 1 on low LRCLK, 32 bit */
+-			snd_soc_component_update_bits(component,
+-					CS42L42_ASP_RX_DAI0_CH1_AP_RES,
+-					CS42L42_ASP_RX_CH_AP_MASK |
+-					CS42L42_ASP_RX_CH_RES_MASK,
+-					(CS42L42_ASP_RX_CH_AP_LOW <<
+-					CS42L42_ASP_RX_CH_AP_SHIFT) |
+-					(CS42L42_ASP_RX_CH_RES_32 <<
+-					CS42L42_ASP_RX_CH_RES_SHIFT));
+-			/* Channel 2 on high LRCLK, 32 bit */
+-			snd_soc_component_update_bits(component,
+-					CS42L42_ASP_RX_DAI0_CH2_AP_RES,
+-					CS42L42_ASP_RX_CH_AP_MASK |
+-					CS42L42_ASP_RX_CH_RES_MASK,
+-					(CS42L42_ASP_RX_CH_AP_HI <<
+-					CS42L42_ASP_RX_CH_AP_SHIFT) |
+-					(CS42L42_ASP_RX_CH_RES_32 <<
+-					CS42L42_ASP_RX_CH_RES_SHIFT));
+ 			if (pll_ratio_table[i].mclk_src_sel == 0) {
+ 				/* Pass the clock straight through */
+ 				snd_soc_component_update_bits(component,
+@@ -828,14 +810,29 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_soc_component *component = dai->component;
+ 	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
+-	int retval;
++	unsigned int width = (params_width(params) / 8) - 1;
++	unsigned int val = 0;
  
- 	/* Request IRQ */
- 	ret = devm_request_threaded_irq(&i2c_client->dev,
-@@ -1921,6 +1921,7 @@ static int cs42l42_runtime_resume(struct device *dev)
- 	}
+ 	cs42l42->srate = params_rate(params);
+-	cs42l42->swidth = params_width(params);
  
- 	gpiod_set_value_cansleep(cs42l42->reset_gpio, 1);
-+	usleep_range(CS42L42_BOOT_TIME_US, CS42L42_BOOT_TIME_US * 2);
+-	retval = cs42l42_pll_config(component);
++	switch(substream->stream) {
++	case SNDRV_PCM_STREAM_PLAYBACK:
++		val |= width << CS42L42_ASP_RX_CH_RES_SHIFT;
++		/* channel 1 on low LRCLK */
++		snd_soc_component_update_bits(component, CS42L42_ASP_RX_DAI0_CH1_AP_RES,
++							 CS42L42_ASP_RX_CH_AP_MASK |
++							 CS42L42_ASP_RX_CH_RES_MASK, val);
++		/* Channel 2 on high LRCLK */
++		val |= CS42L42_ASP_RX_CH_AP_HI << CS42L42_ASP_RX_CH_AP_SHIFT;
++		snd_soc_component_update_bits(component, CS42L42_ASP_RX_DAI0_CH2_AP_RES,
++							 CS42L42_ASP_RX_CH_AP_MASK |
++							 CS42L42_ASP_RX_CH_RES_MASK, val);
++		break;
++	default:
++		break;
++	}
  
- 	regcache_cache_only(cs42l42->regmap, false);
- 	regcache_sync(cs42l42->regmap);
+-	return retval;
++	return cs42l42_pll_config(component);
+ }
+ 
+ static int cs42l42_set_sysclk(struct snd_soc_dai *dai,
+@@ -900,9 +897,9 @@ static int cs42l42_digital_mute(struct snd_soc_dai *dai, int mute)
+ 	return 0;
+ }
+ 
+-#define CS42L42_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S18_3LE | \
+-			SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S24_LE | \
+-			SNDRV_PCM_FMTBIT_S32_LE)
++#define CS42L42_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
++			 SNDRV_PCM_FMTBIT_S24_LE |\
++			 SNDRV_PCM_FMTBIT_S32_LE )
+ 
+ 
+ static const struct snd_soc_dai_ops cs42l42_ops = {
 diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index 9b017b76828a..866d7c873e3c 100644
+index 9d04ed75e5c8..23b1a63315ca 100644
 --- a/sound/soc/codecs/cs42l42.h
 +++ b/sound/soc/codecs/cs42l42.h
-@@ -740,6 +740,7 @@
- #define CS42L42_FRAC2_VAL(val)	(((val) & 0xff0000) >> 16)
- 
- #define CS42L42_NUM_SUPPLIES	5
-+#define CS42L42_BOOT_TIME_US	3000
- 
- static const char *const cs42l42_supply_names[CS42L42_NUM_SUPPLIES] = {
- 	"VA",
+@@ -761,7 +761,6 @@ struct  cs42l42_private {
+ 	struct completion pdn_done;
+ 	u32 sclk;
+ 	u32 srate;
+-	u32 swidth;
+ 	u8 plug_state;
+ 	u8 hs_type;
+ 	u8 ts_inv;
 -- 
 2.30.1
 
