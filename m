@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3646E353D44
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C7E4353CDA
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236922AbhDEI7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 04:59:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39194 "EHLO mail.kernel.org"
+        id S232573AbhDEI5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 04:57:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234078AbhDEI6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 04:58:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3636B60238;
-        Mon,  5 Apr 2021 08:58:37 +0000 (UTC)
+        id S232513AbhDEI4t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:56:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42BA4613A0;
+        Mon,  5 Apr 2021 08:56:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613117;
-        bh=j1Zvfo4ongG7VWn/pMf2+vdCGaW3HBYAmJg1qQ0B8pM=;
+        s=korg; t=1617613003;
+        bh=/P+Vo1W0T6FOcxZ+Dr2e4zbpyOCW0AsFJRXvfd/YCww=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v5d9N1sTZunkQp3cE0T6Ii3G+4YtbPMC5tNWpSU6Lzo6s2cvRh5NEURpRiI3nadBf
-         GqGpKbNA/ILWJBMTSdqwGFsCkRo7J6DyE33njTnAf9eVchZKsYXxQwzofmkTsYEgyJ
-         2m95rp5e8gAfrOYL/JngLGnn/sC5a/Y3qyIKPbfs=
+        b=ZIP+QD+UCk4B7useZNnBDvSal7qViPKNMOYcckfPFKfROoImYZOAE3PgbLVQN9dm/
+         4SdHYFX6RvS1IAqEyIvvhVSkMnDbew6mKjbNGCrS5rocG+0XW/L5A76e7/WmAplphx
+         +IR6ohD6/uSMvZj4EpMqP42MpTbFzAKUp9IhP/tg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.14 25/52] ALSA: hda/realtek: fix a determine_headset_type issue for a Dell AIO
+        stable@vger.kernel.org, Doug Brown <doug@schmorgal.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 16/35] appletalk: Fix skb allocation size in loopback case
 Date:   Mon,  5 Apr 2021 10:53:51 +0200
-Message-Id: <20210405085022.813643027@linuxfoundation.org>
+Message-Id: <20210405085019.390095420@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
-References: <20210405085021.996963957@linuxfoundation.org>
+In-Reply-To: <20210405085018.871387942@linuxfoundation.org>
+References: <20210405085018.871387942@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,47 +40,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Wang <hui.wang@canonical.com>
+From: Doug Brown <doug@schmorgal.com>
 
-commit febf22565549ea7111e7d45e8f2d64373cc66b11 upstream.
+[ Upstream commit 39935dccb21c60f9bbf1bb72d22ab6fd14ae7705 ]
 
-We found a recording issue on a Dell AIO, users plug a headset-mic and
-select headset-mic from UI, but can't record any sound from
-headset-mic. The root cause is the determine_headset_type() returns a
-wrong type, e.g. users plug a ctia type headset, but that function
-returns omtp type.
+If a DDP broadcast packet is sent out to a non-gateway target, it is
+also looped back. There is a potential for the loopback device to have a
+longer hardware header length than the original target route's device,
+which can result in the skb not being created with enough room for the
+loopback device's hardware header. This patch fixes the issue by
+determining that a loopback will be necessary prior to allocating the
+skb, and if so, ensuring the skb has enough room.
 
-On this machine, the internal mic is not connected to the codec, the
-"Input Source" is headset mic by default. And when users plug a
-headset, the determine_headset_type() will be called immediately, the
-codec on this AIO is alc274, the delay time for this codec in the
-determine_headset_type() is only 80ms, the delay is too short to
-correctly determine the headset type, the fail rate is nearly 99% when
-users plug the headset with the normal speed.
+This was discovered while testing a new driver that creates a LocalTalk
+network interface (LTALK_HLEN = 1). It caused an skb_under_panic.
 
-Other codecs set several hundred ms delay time, so here I change the
-delay time to 850ms for alc2x4 series, after this change, the fail
-rate is zero unless users plug the headset slowly on purpose.
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
-Link: https://lore.kernel.org/r/20210320091542.6748-1-hui.wang@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Doug Brown <doug@schmorgal.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/appletalk/ddp.c | 33 +++++++++++++++++++++------------
+ 1 file changed, 21 insertions(+), 12 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4642,7 +4642,7 @@ static void alc_determine_headset_type(s
- 	case 0x10ec0274:
- 	case 0x10ec0294:
- 		alc_process_coef_fw(codec, coef0274);
--		msleep(80);
-+		msleep(850);
- 		val = alc_read_coef_idx(codec, 0x46);
- 		is_ctia = (val & 0x00f0) == 0x00f0;
- 		break;
+diff --git a/net/appletalk/ddp.c b/net/appletalk/ddp.c
+index 93209c009df5..a66de21671ac 100644
+--- a/net/appletalk/ddp.c
++++ b/net/appletalk/ddp.c
+@@ -1575,8 +1575,8 @@ static int atalk_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
+ 	struct sk_buff *skb;
+ 	struct net_device *dev;
+ 	struct ddpehdr *ddp;
+-	int size;
+-	struct atalk_route *rt;
++	int size, hard_header_len;
++	struct atalk_route *rt, *rt_lo = NULL;
+ 	int err;
+ 
+ 	if (flags & ~(MSG_DONTWAIT|MSG_CMSG_COMPAT))
+@@ -1639,7 +1639,22 @@ static int atalk_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
+ 	SOCK_DEBUG(sk, "SK %p: Size needed %d, device %s\n",
+ 			sk, size, dev->name);
+ 
+-	size += dev->hard_header_len;
++	hard_header_len = dev->hard_header_len;
++	/* Leave room for loopback hardware header if necessary */
++	if (usat->sat_addr.s_node == ATADDR_BCAST &&
++	    (dev->flags & IFF_LOOPBACK || !(rt->flags & RTF_GATEWAY))) {
++		struct atalk_addr at_lo;
++
++		at_lo.s_node = 0;
++		at_lo.s_net  = 0;
++
++		rt_lo = atrtr_find(&at_lo);
++
++		if (rt_lo && rt_lo->dev->hard_header_len > hard_header_len)
++			hard_header_len = rt_lo->dev->hard_header_len;
++	}
++
++	size += hard_header_len;
+ 	release_sock(sk);
+ 	skb = sock_alloc_send_skb(sk, size, (flags & MSG_DONTWAIT), &err);
+ 	lock_sock(sk);
+@@ -1647,7 +1662,7 @@ static int atalk_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
+ 		goto out;
+ 
+ 	skb_reserve(skb, ddp_dl->header_length);
+-	skb_reserve(skb, dev->hard_header_len);
++	skb_reserve(skb, hard_header_len);
+ 	skb->dev = dev;
+ 
+ 	SOCK_DEBUG(sk, "SK %p: Begin build.\n", sk);
+@@ -1698,18 +1713,12 @@ static int atalk_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
+ 		/* loop back */
+ 		skb_orphan(skb);
+ 		if (ddp->deh_dnode == ATADDR_BCAST) {
+-			struct atalk_addr at_lo;
+-
+-			at_lo.s_node = 0;
+-			at_lo.s_net  = 0;
+-
+-			rt = atrtr_find(&at_lo);
+-			if (!rt) {
++			if (!rt_lo) {
+ 				kfree_skb(skb);
+ 				err = -ENETUNREACH;
+ 				goto out;
+ 			}
+-			dev = rt->dev;
++			dev = rt_lo->dev;
+ 			skb->dev = dev;
+ 		}
+ 		ddp_dl->request(ddp_dl, skb, dev->dev_addr);
+-- 
+2.30.1
+
 
 
