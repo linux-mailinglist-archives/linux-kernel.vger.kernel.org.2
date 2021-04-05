@@ -2,53 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A4C83546A8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 20:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF633546AB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 20:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233279AbhDESLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 14:11:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232597AbhDESLm (ORCPT
+        id S233666AbhDESOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 14:14:19 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:33035 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233373AbhDESOR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 14:11:42 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72B3FC061756;
-        Mon,  5 Apr 2021 11:11:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=1DcSFcfs5hJKK+fhbOE6H8WkSNb3vT4ZfE9fsTtukpk=; b=L66P4A3PjIeQO6/jslYbDiXLnA
-        8eb/QUsH1loXTfTQALSOa05Sf52ZfS2KJ1YGHGohXvyc1+gGe6+3wqRcm8i56UtrpFsgkxCbN5rOx
-        DfNWA4n9cWJ5/VxeY8ycsADF7giR9RUNdvHBNwQ+hINErinYQfAQZar8jBYzpg5eHeY0JZfy3FP7i
-        EukTtAsvAauUGiZgRR+TWgxJE8xR9aJkvD+fP3v3AVfTrHDdOm2QvzXRWpqfLTSmL/uZgIJDjudhW
-        nMz4oPhMO60oFq6MwlKetYY2PTZnFaMhOfKL6/ykZN4YN9jV2NB1nnVtHMeVH1DAnRu5UZcBG2hrq
-        4tsZ2/Kg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lTTgr-00Bigl-Ew; Mon, 05 Apr 2021 18:11:14 +0000
-Date:   Mon, 5 Apr 2021 19:11:09 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 4.19 6/8] radix tree test suite: Fix compilation
-Message-ID: <20210405181109.GH2531743@casper.infradead.org>
-References: <20210405160515.269020-1-sashal@kernel.org>
- <20210405160515.269020-6-sashal@kernel.org>
+        Mon, 5 Apr 2021 14:14:17 -0400
+Received: from mail-wr1-f71.google.com ([209.85.221.71])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lTTjm-0004j9-E5
+        for linux-kernel@vger.kernel.org; Mon, 05 Apr 2021 18:14:10 +0000
+Received: by mail-wr1-f71.google.com with SMTP id b6so8624248wrq.22
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 11:14:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gG8foTXIek76KK7nrOQoCVDJLrfCMKqkVOw6WNO7XaE=;
+        b=srloeDhFbHgSdRfUeUwmQk9TzrSYkcYIJmRyFr9HMHW5FUXRjMI5hFasHKK0WuOLfS
+         35PXoHIDTpakqZHJ8lNhle/5q6OJINrUFQ7kq+b2iN2ySnNYcvALaNtWyzbN6P/qYuqk
+         3h4MJraYY3nsVGQo2zpeszkPntw5yor16RNb6NCsO8oabooL99Uuywn43qtG65pw+fyh
+         5JWW3A7/3A+hPZ4I3Ei1Y6YBB50nbCdyKmQngtw6NKmZJ9ok4iZFOTQWy2wQNGQL2gs3
+         wiOgbbtTVGGe5fIfpIiAQ5A394/UelgRiBtx0Re/91svBaSgO31JxxfRj6gyUuZLOSdJ
+         TEUg==
+X-Gm-Message-State: AOAM531jzPgsAHB8mNCzKHsiMWxKb57x9pOJ5FcY00SI9TYe4buIpr/y
+        fDF6Aqk4Kk8Nt5lZZtMCIxQTBcITgm6ysYyM/VIXYNpLrmnPFJLkxtPeRbOCWI42/Vn0l5iTa5U
+        lBT2ueSX0mc0jjmGzujZRPbcKO5Yifnry3y7E+87shQ==
+X-Received: by 2002:adf:f682:: with SMTP id v2mr6608047wrp.263.1617646450236;
+        Mon, 05 Apr 2021 11:14:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzN3QoJP7AbUP2fJpUtZvnPoTvp8sPGHtOVCpQs4vwVbulMlz7NKWTIrPsFa5QmNowx6rn/Dw==
+X-Received: by 2002:adf:f682:: with SMTP id v2mr6608037wrp.263.1617646450126;
+        Mon, 05 Apr 2021 11:14:10 -0700 (PDT)
+Received: from localhost.localdomain (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
+        by smtp.gmail.com with ESMTPSA id h62sm374140wmf.37.2021.04.05.11.14.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Apr 2021 11:14:09 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] i2c: exynos5: correct top kerneldoc
+Date:   Mon,  5 Apr 2021 20:14:05 +0200
+Message-Id: <20210405181405.52189-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210405160515.269020-6-sashal@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 12:05:13PM -0400, Sasha Levin wrote:
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> 
-> [ Upstream commit dd841a749d1ded8e2e5facc4242ee0b6779fc0cb ]
-> 
-> Introducing local_lock broke compilation; fix it all up.
+The top comment is not a kerneldoc, as W=1 build reports:
 
-I don't think local_lock has been backported to 4.19?
+  drivers/i2c/busses/i2c-exynos5.c:39: warning:
+    expecting prototype for i2c(). Prototype was for HSI2C_CTL() instead
+
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ drivers/i2c/busses/i2c-exynos5.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/i2c/busses/i2c-exynos5.c b/drivers/i2c/busses/i2c-exynos5.c
+index 5ac30d95650c..97d4f3ac0abd 100644
+--- a/drivers/i2c/busses/i2c-exynos5.c
++++ b/drivers/i2c/busses/i2c-exynos5.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-/**
++/*
+  * i2c-exynos5.c - Samsung Exynos5 I2C Controller Driver
+  *
+  * Copyright (C) 2013 Samsung Electronics Co., Ltd.
+-- 
+2.25.1
+
