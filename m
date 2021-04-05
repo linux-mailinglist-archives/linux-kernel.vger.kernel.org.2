@@ -2,96 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4840235422B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 14:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0303B354231
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 14:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237122AbhDEMqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 08:46:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229681AbhDEMqs (ORCPT
+        id S240671AbhDEMuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 08:50:46 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:36091 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229681AbhDEMuo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 08:46:48 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05D6CC061756
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 05:46:43 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id g24so8351150qts.6
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 05:46:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rr+qLI5dbOnzWTxPW+TcyOj2It+BpPtlzlZZi5K4QYg=;
-        b=OnQPSw9d7gRUp+cgQMef3+wT//a+NVtQMRp1ehvr+NZMvfCCapHSNeFwXTW4nTJFbo
-         4moyC5lEcUDrZVVhq4BUv8usbYvjiquW2O0T3A/twwT4+pmuHhxwM9x6AcPpcZGUHAce
-         BqVhKz9DbYrmbezF6Cgn97soqZd2Cy+LejNdza3pwFTOiUWHfwTy7ATQBTuuvt3PWkFZ
-         doyWFJMUdIfxnDn+6l3rSWX/fYXsx8Tcq+XA7xLJDsKccPjFMcfO0A6PW0slMV0nS0cX
-         LfXvyFGD4t6vU7jtYNlf/adYVmqb5fYaA5C6BQR3KGetJel1Mm6nkSbtMbiYun6ZwK4+
-         bMSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rr+qLI5dbOnzWTxPW+TcyOj2It+BpPtlzlZZi5K4QYg=;
-        b=GwmZtc2yhHJWgAtRd6VT9oMkIegJ/B45RNEDAvw/JTF3fA3FgpSqxnwdfZDtqKyhPG
-         i3LNehQLACyO99/H7FqidF9MR/xGqaUicjIegiup01Wp78hyY8hWzRzc1deYYy1JD1WY
-         eXFIgtYOqYDD7AmaKzVbYNhLiz5Fgoax6b9nUfS7IliramYJ/nZ/YkKYHwuQAqP5dDvB
-         ia50hPhIAzLXcNq3USsqY1LEa0swnkoI3ftQ9IzTtImE/uRt53jJWnbsszeyiUWIz14T
-         JOSrLubn4ClnH/xSjHqlfvGSbx994z2hye+AgDQX5s2+Dc//EIF7p3n3ZmGguUFjnGtL
-         K9tw==
-X-Gm-Message-State: AOAM530DEHtA1wrhyMSp28IKvBindVDU16q4Rn0171BYxNnn10chss75
-        3+kVYPQP2EGjidTe3QNyGJI=
-X-Google-Smtp-Source: ABdhPJz46PlWHN+ve9Yq+gPLhBoY940+Ff82NTNiRbIx/dGYiugqdS7LOTBhZ/ih3k8Bry6CD1XTVg==
-X-Received: by 2002:ac8:738c:: with SMTP id t12mr5792949qtp.332.1617626802296;
-        Mon, 05 Apr 2021 05:46:42 -0700 (PDT)
-Received: from LuizSampaio-PC.localdomain ([2804:214:8167:5000:d94c:b1e1:5a07:101c])
-        by smtp.gmail.com with ESMTPSA id x14sm10446472qkn.98.2021.04.05.05.46.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Apr 2021 05:46:42 -0700 (PDT)
-Date:   Mon, 5 Apr 2021 09:47:27 -0300
-From:   Luiz Sampaio <sampaio.ime@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     zbr@ioremap.net, corbet@lwn.net, rikard.falkeborn@gmail.com,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 6/9] w1: ds2438: fixed a coding style issue to
- preferred octal style
-Message-ID: <20210405124727.7kutpafoq7rh56oy@LuizSampaio-PC.localdomain>
-References: <20210403044821.390485-1-sampaio.ime@gmail.com>
- <20210405105009.420924-1-sampaio.ime@gmail.com>
- <20210405105009.420924-7-sampaio.ime@gmail.com>
- <YGrsIg9efV/8asDE@kroah.com>
+        Mon, 5 Apr 2021 08:50:44 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1617627033; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=o6/6nRqoSEiQHs7anxLscrtDjd5SX1zzlcf3tM5SWcT8ft0tVaUiiFZ8n2Z+Z5fx38
+    uLIsG0PYkHENHrA34oRKg85op8AjfMZrJ0E+vEgkuE6YGJySaaggoXOXVxy1Oe3VKZE3
+    eWR+DhBgKNt8mfYK8bLTT3i6VrPisHMl4usIcRBttvjQzTtg5hqzRGt2g8MgYnqN2Aqg
+    wQ/Bmj6J3nKuiuzSNhnbzUEk0xCotE3XGSfRIFwfu3wry2rN6D0h3oHXkQkMwOvPRau5
+    FbISfBDR6pOvLJ0zwlnXD88MWVp2rT26J+mrRAQBu11d7K9A1frBNN0NjEAFQy0dBIiA
+    fhAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1617627033;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=zJVagVFXfJKJUrYqmv9KADc0LD1OoaKGX0WdHTJaSjo=;
+    b=HxJA7nI8dxtqqvmJeR+0oIOTwDONZT6hhdoBm37rj0awuSczV8TA+hrFM/3d4/fOe5
+    qc8tJEWIdm9qzcMxR7dDftfBx/bEl260xazJs5Naf3KYhIN2rrGHueBoZnUx/XBbN8Zn
+    4aX6P4zFysZF+0uRlswCv4JIUFoJtxsVCnccyjOXPdmxyaMWWdPpFYUAQrF4LsCqlw2z
+    j+y7r0fAI6aQwlyCx+ZBNjn12WFjqGkdcjHx/nGFN3c0aYuOtxdX3Pb8mdbK5U94txUG
+    P3/B0bCwOKbdihzqz/qPn2PqTONd2H7WkBAbvv3JO6fii+N0xOduUvWOHQBLVtPGA5DI
+    7vkg==
+ARC-Authentication-Results: i=1; strato.com;
+    dkim=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1617627033;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=zJVagVFXfJKJUrYqmv9KADc0LD1OoaKGX0WdHTJaSjo=;
+    b=EgzdA9HGtAQuE7fgxCxKgzJpleF1WXWbrQ4K+4GpxFtnecG5GTj0C1alYXVoaNDWzq
+    0vQVUsp6bUaDoKW+FJjEtFu8zMOtsWWLwy/wpSKjePD0Cq3/0Tz73YzcWpgv+OLts5mt
+    nIGYDYmE7MtVXrTJ2aA0QNMT5FhLhQGkfkP+3zvHew3XK4lRCfSNYa/ImWm7AHryEJSy
+    iZsAH7CypGp/GOfx5FvqT2mw1HhOPKeP8WUcJ15Am1c2XBndCuYFluOPHd7Fg5VTMsOt
+    qFIA5llRv6aE5UBWhb9eICmOduz2TZvUSvaHGeE/YIADUCg7aFZEJwfPrCo9JJv/1nV7
+    F87Q==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j9IczAaYo="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 47.23.1 DYNA|AUTH)
+    with ESMTPSA id q0a3c1x35CoWAlX
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Mon, 5 Apr 2021 14:50:32 +0200 (CEST)
+Date:   Mon, 5 Apr 2021 14:50:26 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Elliot Berman <eberman@codeaurora.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Brian Masney <masneyb@onstation.org>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>
+Subject: Re: [PATCH v2] firmware: qcom_scm: Only compile legacy calls on ARM
+Message-ID: <YGsHkoNEaIvCRdpx@gerhold.net>
+References: <20210323224336.1311783-1-swboyd@chromium.org>
+ <6ec0ca8d-85c7-53d6-acf2-22c4ac13e805@codeaurora.org>
+ <161734672825.2260335.8472441215895199196@swboyd.mtv.corp.google.com>
+ <YGbvXFrMg6X7q3qL@gerhold.net>
+ <161738411853.2260335.5107124874054215375@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YGrsIg9efV/8asDE@kroah.com>
+In-Reply-To: <161738411853.2260335.5107124874054215375@swboyd.mtv.corp.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 12:53:22PM +0200, Greg KH wrote:
-> On Mon, Apr 05, 2021 at 07:50:06AM -0300, Luiz Sampaio wrote:
-> > Changed the permissions to preferred octal style.
+On Fri, Apr 02, 2021 at 10:21:58AM -0700, Stephen Boyd wrote:
+> Quoting Stephan Gerhold (2021-04-02 03:18:04)
+> > On Thu, Apr 01, 2021 at 11:58:48PM -0700, Stephen Boyd wrote:
+> > > [...]
+> > >
+> > > Maybe it would be better to catch that problem at the source and force
+> > > arm64 calling convention to be safe? I'm thinking of this patch, but it
+> > > could be even more fine tuned and probably the sc7180 check could be
+> > > removed in the process if the rest of this email makes sense.
+> > > 
+> > > If I understand correctly CONFIG_ARM64=y should never use legacy
+> > > convention (and never the 32-bit one either?), so we can figure that out
+> > > pretty easily and just force it to use 64-bit if the architecture is
+> > > arm64. If only the 64-bit convention is supported on arm64 then we
+> > > really don't even need to call into the firmware to figure it out on
+> > > arm64. We can do this convention detection stuff on arm32 (CONFIG_ARM)
+> > > and always assume 64-bit convention on CONFIG_ARM64. Is that right?
+> > > 
 > > 
-> > Signed-off-by: Luiz Sampaio <sampaio.ime@gmail.com>
-> > ---
-> >  drivers/w1/slaves/w1_ds2438.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > No, the detection is also needed on ARM64. On ARM32 there can be either
+> > legacy or SMC32, but on ARM64 there can be either SMC32 or SMC64.
+> > You cannot use SMC64 on 32-bit, but you can use SMC32 on ARM64 just
+> > fine. SMC32 is used on MSM8916 for example.
 > > 
-> > diff --git a/drivers/w1/slaves/w1_ds2438.c b/drivers/w1/slaves/w1_ds2438.c
-> > index 56e53a748059..ccb06b8c2d78 100644
-> > --- a/drivers/w1/slaves/w1_ds2438.c
-> > +++ b/drivers/w1/slaves/w1_ds2438.c
-> > @@ -388,7 +388,7 @@ static ssize_t vdd_read(struct file *filp, struct kobject *kobj,
-> >  	return ret;
-> >  }
-> >  
-> > -static BIN_ATTR(iad, S_IRUGO | S_IWUSR | S_IWGRP, iad_read, iad_write, 0);
-> > +static BIN_ATTR(iad, 0664, iad_read, iad_write, 0);
 > 
-> Why not BIN_ATTR_RW() instead?
-> 
-> thanks,
-> 
-> greg k-h
+> Ah right, the whole secure world running in 32-bit mode thing. Is
+> msm8916 the only SoC that's using that? Or are there more? If only
+> msm8916 is affected then we could use a combination of CONFIG_ARM64 and
+> the compatible string to differentiate and then if more SoCs use 32-bit
+> secure world then we could have a new compatible string like qcom,scm-32
+> that tells us this fact. Maybe this was all discussed before and I
+> missed it. Either way, I'm trying to get rid of this boot call so that
+> we don't have to bounce to the firmware an extra time to figure out
+> something we can figure out from the kernel arch and scm compatible
+> string.
 
-I agree! Thanks for the review. I will change for the next version.
+At least MSM8994 also uses SMC32 from what I heard. Overall it's
+probably quite hard to get that right now since all boards were tested
+with the dynamic detection so far. I suppose you could do the opposite,
+add an optional qcom,scm-64 to skip the detection step and force SMC64.
+
+Also note that this could even be firmware-specific, not necessarily
+SoC-specific. There are some ancient MSM8916 firmwares that have legacy
+instead of SMC32. I could also imagine that there is also some SoC where
+there are different firmware versions with SMC32 or SMC64.
+
+Plus, IMO the overhead for this detection is negligible. At least it
+ensures that we always use the right calling convention. The PSCI code
+probably does much more firmware calls to figure out all supported
+features.
+
+Stephan
