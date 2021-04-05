@@ -2,107 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2EA3548A5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 00:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 930C53548A8
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 00:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242812AbhDEWem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 18:34:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33210 "EHLO
+        id S242816AbhDEWf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 18:35:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233071AbhDEWei (ORCPT
+        with ESMTP id S233018AbhDEWf4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 18:34:38 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DADDC06174A;
-        Mon,  5 Apr 2021 15:34:31 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id x21so14180909eds.4;
-        Mon, 05 Apr 2021 15:34:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=U4kgsl4taTd1spNjzfQOZDGCoWUhUf9MRTnGCPFFMsE=;
-        b=ZvoT/L8gxJTUL3ZAmf3cRL6PMJy8DnmORY4t9HA2ir5euBGkYIDa13xBoLtIIEbJMs
-         Ge1eBIG31wglXosAAB81s+aBD2GU1AN+Ojqc3Thu6oVna7f1gXR9Pb/p6MEfDAj2qPQo
-         gWqmIsE79pQnosXxLGVea6VE717+2RV4XmZjE5N9/wYX9PJm9P7aw1Of+ukfT49K/gti
-         10fzBPafx1fRI9QE8PoedNGHEcJgj+VXVFJMWkHG/QvtbnKDG59a8MYAnSvzQnpiTGA2
-         MJfVREkAvk6etqNNmwp4JJ5VBfU4eE6D0oCyET1lOvpV5cImp6lNNl++WZlXEA1hrbG+
-         RcRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=U4kgsl4taTd1spNjzfQOZDGCoWUhUf9MRTnGCPFFMsE=;
-        b=UWi6seZbp4m0x3Dkggwagb4B4juGSOtIZeK6zvlWevE8sYYBPJbAmvLjmBhQIiS83h
-         qkBiciFRAcbb29R0w/aIOlAzAnOQCBrohIecjatgyDI56K/L9yT9y+IZIpXQNHlq160l
-         4GBvcyNZ7U66tZLztyYott+shxc9Ca+C5vuMIbgUO8qWQcaOpQkxjmHfOUW38twuNPMD
-         +KvbEd1gP+Dkm7402oFhsF6Z0tbYPhpgeIIpxWxuDdlvR7bkatuivvJcKAS+VAyzMeaX
-         Oq6lnJRIrLvuRpjVm2k+DUqVGotGBxjcPV8SulLTGTA1fnHIwKxdMja1xSyo1eQQJ7Jp
-         5+gA==
-X-Gm-Message-State: AOAM532hgA4x+88Wowklp6WAyvW05QrpLzS+xWho9AMmURwO7n0GO/gv
-        Kmf7xXRkIAnCzR0tOKF2RqqAGhT2WwM=
-X-Google-Smtp-Source: ABdhPJzW61Z5BJ7peH2efSGSBPH2NdvgItcx620zaEhMIzn4Lm4XK05hGl6LkhaoPC/ppxRpeNIEkA==
-X-Received: by 2002:a05:6402:3493:: with SMTP id v19mr35136604edc.355.1617662070060;
-        Mon, 05 Apr 2021 15:34:30 -0700 (PDT)
-Received: from [10.18.0.9] ([37.58.58.229])
-        by smtp.gmail.com with ESMTPSA id pg2sm9603384ejb.49.2021.04.05.15.34.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Apr 2021 15:34:29 -0700 (PDT)
-Subject: Re: [PATCH 1/2] power: supply: Add battery driver for Surface
- Aggregator Module
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>, linux-pm@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210309000530.2165752-1-luzmaximilian@gmail.com>
- <20210309000530.2165752-2-luzmaximilian@gmail.com>
- <20210405153752.2r4ii5lguogchgl4@earth.universe>
- <046f6149-55fd-431e-d582-cc5915d10e20@gmail.com>
- <20210405213241.r6xhtbaf4qkzylz2@earth.universe>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <5e6692b9-d043-8a18-8d76-afb235caddbb@gmail.com>
-Date:   Tue, 6 Apr 2021 00:34:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Mon, 5 Apr 2021 18:35:56 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F346AC06174A;
+        Mon,  5 Apr 2021 15:35:48 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FDlqQ2Rswz9sV5;
+        Tue,  6 Apr 2021 08:35:46 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1617662147;
+        bh=ZOuZOYa/bNcWpeTzNNm5XLxlS19DdjI5EG3m+2dxQB8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=L2tTJW1/nvTkGXpRfZ09PCLzyRwenY8gyLNucqkyHrc2cdYz62A8KMwovwBQBmkcZ
+         YW+J406+5Tf9rvv8cEc1r0OePpNA8HZs0mv25STrneu4fDyUHhWUBS9Ywjx0YgXeI8
+         9L0NYj6EnD2O+j3kku0SuTLZWq5iNdHxmhdq30vM3KEPiUBUCdvKKx4vOQ/FNiXECA
+         YhzbVAheu89bxf/69yeFL0Thl6sY0CRMZY2IoAvGVEsOwxlGX6Uf11/tJ6+lZEQM0M
+         oSBf1P8G96nlm71DvKRRToizhQhlrkknGM/lkISl+wxQmlUz6HwkN6l81SSKE0nhZV
+         W3t3QlrpejQtg==
+Date:   Tue, 6 Apr 2021 08:35:45 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>
+Cc:     Guangqing Zhu <zhuguangqing83@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the thermal tree
+Message-ID: <20210406083545.150ae47e@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210405213241.r6xhtbaf4qkzylz2@earth.universe>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/=AZ1JFqhiE+17XxXBC1YQal";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+--Sig_/=AZ1JFqhiE+17XxXBC1YQal
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 4/5/21 11:32 PM, Sebastian Reichel wrote:
-> [...]
->>>> +static void spwr_battery_unregister(struct spwr_battery_device *bat)
->>>> +{
->>>> +	ssam_notifier_unregister(bat->sdev->ctrl, &bat->notif);
->>>> +	cancel_delayed_work_sync(&bat->update_work);
->>>> +	device_remove_file(&bat->psy->dev, &alarm_attr);
->>>> +	power_supply_unregister(bat->psy);
->>>
->>> power_supply_unregister being the last function call is a clear
->>> sign, that devm_power_supply_register can be used instead.
->>
->> Right, that works here. I normally try to not mix devm code with
->> non-devm code (apart from maybe allocations).
-> 
-> well allocations are usually done first and free'd last making
-> them the first targets in the conversion and pretty much a no
-> brainer.
-> 
-> Next merge window it's possible to easily go to full devm by
-> using devm_delayed_work_autocancel(), which has been merged
-> by Greg two weeks ago. Then last but not least do the ssam
-> notifier unregister via devm_add_action_or_reset and its fully
-> converted :)
+Hi all,
 
-Neat, I'll have a look at maybe adding some devm versions for the
-SSAM notifiers. Should help in at least one other driver apart from
-these two.
+In commit
 
-Thanks,
-Max
+  5845dd350432 ("thermal/drivers/tsens: Fix missing put_device error")
+
+Fixes tag
+
+  Fixes: a7ff82976122 ("drivers: thermal: tsens: Merge tsens-common.c into
+
+has these problem(s):
+
+  - Subject has leading but no trailing parentheses
+  - Subject has leading but no trailing quotes
+
+Please do not split Fixes tages over more than one line.  Also, please
+keep all the commit message tags together at the end of the commit
+message.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/=AZ1JFqhiE+17XxXBC1YQal
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBrkMEACgkQAVBC80lX
+0GwodAf7BRitqAT35vNl2NvZmWUP3nXWggAYC+cEOr0pjkBC66YdGqOE8qrUcB6D
+CcoVbq7C9/VxH+fEc8nzz5JRTVeANNf208kJrqFh9c4e8Jk7K+FA87qLO1bgXfKl
+FXecsVie76xuKzz5RjoFZ/Y3j3PcDhSKpfGsSFQh0iSKgV3rt7K09VIXqYh/DKzS
+jIR2UjlJ2XoWlbOSX8/juLtCg8R+YNIAqfIdNLUe9QMavyan427Tgg2VAq/UwgdZ
+P7pmrLK/K/3bNYMyoTbFSmdyQcTGjya9zEQ1kQkvTb/BMc5RVt1rlYQfg43WH1sP
+BpsrzBAu20Xy9P491bp+VsjBsnYOfQ==
+=SvuW
+-----END PGP SIGNATURE-----
+
+--Sig_/=AZ1JFqhiE+17XxXBC1YQal--
