@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EEA43540A6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 664B2353D7A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241122AbhDEJTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:19:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36222 "EHLO mail.kernel.org"
+        id S237117AbhDEJAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:00:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238841AbhDEJPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:15:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA27D613C0;
-        Mon,  5 Apr 2021 09:15:45 +0000 (UTC)
+        id S233619AbhDEI70 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:59:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94DC260238;
+        Mon,  5 Apr 2021 08:59:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617614146;
-        bh=AfdecFrfGmOZYjAL2BqLAuvMuaEY/6RIiQT6dO47MiY=;
+        s=korg; t=1617613160;
+        bh=ssLj9Cg97ETf0FdLZhaGx+2uhY6HKRTP2jQW5w6Pllo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eyLl6XkcGo+RXlPdtlhwcJXBrlZQ/lQJYhra57WuiLZMG6BgVDjoKsLI1HF1Po45U
-         tUipo9HtnGBDH72GVtGiQgpT0MwDi2j+fng+9JO6Kv3/Ak+dvkGRDBa/dp6F3BJ5zd
-         VFWFC2DunFxi5Jk8YHMTTXJMJKfWgkKpXOV7+2eM=
+        b=aMu7war6hHkdxESTNoT0nwwLSB6xKlZ9brnR9ZMP3XgUtGqi756M9LZ3cdUIJK/la
+         RVhDkWOzsrwEBn0UaK6VqUaAE+c99z+hOmvTUx9F0hL5O0R6XTfYWspL9N8gE+tZQf
+         1/1h0xFUvAz0+YrjO6HPiE7xSykSzKLhYr5vLHHU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 5.11 099/152] pinctrl: microchip-sgpio: Fix wrong register offset for IRQ trigger
+        stable@vger.kernel.org, Vincent Palatin <vpalatin@chromium.org>
+Subject: [PATCH 4.14 42/52] USB: quirks: ignore remote wake-up on Fibocom L850-GL LTE modem
 Date:   Mon,  5 Apr 2021 10:54:08 +0200
-Message-Id: <20210405085037.463854199@linuxfoundation.org>
+Message-Id: <20210405085023.347748237@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
-References: <20210405085034.233917714@linuxfoundation.org>
+In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
+References: <20210405085021.996963957@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,34 +38,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lars Povlsen <lars.povlsen@microchip.com>
+From: Vincent Palatin <vpalatin@chromium.org>
 
-commit 5d5f2919273d1089a00556cad68e7f462f3dd2eb upstream.
+commit 0bd860493f81eb2a46173f6f5e44cc38331c8dbd upstream.
 
-This patch fixes using a wrong register offset when configuring an IRQ
-trigger type.
+This LTE modem (M.2 card) has a bug in its power management:
+there is some kind of race condition for U3 wake-up between the host and
+the device. The modem firmware sometimes crashes/locks when both events
+happen at the same time and the modem fully drops off the USB bus (and
+sometimes re-enumerates, sometimes just gets stuck until the next
+reboot).
 
-Fixes: be2dc859abd4 ("pinctrl: pinctrl-microchip-sgpio: Add irq support (for sparx5)")
-Reported-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Link: https://lore.kernel.org/r/20210203123825.611576-1-lars.povlsen@microchip.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Tested with the modem wired to the XHCI controller on an AMD 3015Ce
+platform. Without the patch, the modem dropped of the USB bus 5 times in
+3 days. With the quirk, it stayed connected for a week while the
+'runtime_suspended_time' counter incremented as excepted.
+
+Signed-off-by: Vincent Palatin <vpalatin@chromium.org>
+Link: https://lore.kernel.org/r/20210319124802.2315195-1-vpalatin@chromium.org
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pinctrl/pinctrl-microchip-sgpio.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/core/quirks.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/pinctrl/pinctrl-microchip-sgpio.c
-+++ b/drivers/pinctrl/pinctrl-microchip-sgpio.c
-@@ -572,7 +572,7 @@ static void microchip_sgpio_irq_settype(
- 	/* Type value spread over 2 registers sets: low, high bit */
- 	sgpio_clrsetbits(bank->priv, REG_INT_TRIGGER, addr.bit,
- 			 BIT(addr.port), (!!(type & 0x1)) << addr.port);
--	sgpio_clrsetbits(bank->priv, REG_INT_TRIGGER + SGPIO_MAX_BITS, addr.bit,
-+	sgpio_clrsetbits(bank->priv, REG_INT_TRIGGER, SGPIO_MAX_BITS + addr.bit,
- 			 BIT(addr.port), (!!(type & 0x2)) << addr.port);
+--- a/drivers/usb/core/quirks.c
++++ b/drivers/usb/core/quirks.c
+@@ -321,6 +321,10 @@ static const struct usb_device_id usb_qu
+ 	/* DJI CineSSD */
+ 	{ USB_DEVICE(0x2ca3, 0x0031), .driver_info = USB_QUIRK_NO_LPM },
  
- 	if (type == SGPIO_INT_TRG_LEVEL)
++	/* Fibocom L850-GL LTE Modem */
++	{ USB_DEVICE(0x2cb7, 0x0007), .driver_info =
++			USB_QUIRK_IGNORE_REMOTE_WAKEUP },
++
+ 	/* INTEL VALUE SSD */
+ 	{ USB_DEVICE(0x8086, 0xf1a5), .driver_info = USB_QUIRK_RESET_RESUME },
+ 
 
 
