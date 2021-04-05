@@ -2,101 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E1D3547E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 22:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 943CA3547E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 22:55:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236805AbhDEUzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 16:55:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57930 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236040AbhDEUzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 16:55:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 69DB161019;
-        Mon,  5 Apr 2021 20:54:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617656096;
-        bh=TZECcf04A+kZXqwkIon0Qe2mhbm/d9UADh5U5/niO2Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tg2M6LMYvMaN/q6MpkbS21TzTuSuzQiCGU4H4i75lMhc33tS97B/r/edS235IjCUo
-         +reYZogjlEfW7l8FA3Likvu9ad9ZaLFIMEdRuiuhpOyrLTivoW7FNSOEouZi0a1eiY
-         +Gy53dj8p0y0dmK340MKn0SBJ8zKzfruMgWCExBjHWMHLR7HVfeF4vS98yoe1F8a6f
-         MV9icQ5zGSv1lvhhi8N8/Ec03LRuPmx2vF0Y6bFcoaMfyWK96zLQffDUkcAq3dp9GR
-         OzZhcoRd6x6nJl5Unm49oRCpMYgwsvV0teqI0zey3TW376GFD+UrqN1+o6vwOmfUJi
-         9s2zKPJCNE77g==
-Date:   Mon, 5 Apr 2021 22:54:52 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Sanket Goswami <Sanket.Goswami@amd.com>
-Cc:     jarkko.nikula@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        mika.westerberg@linux.intel.com, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
-Subject: Re: [PATCH v4] i2c: designware: Add driver support for AMD NAVI GPU
-Message-ID: <20210405205452.GD3945@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Sanket Goswami <Sanket.Goswami@amd.com>,
-        jarkko.nikula@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        mika.westerberg@linux.intel.com, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
-References: <20210331140730.2058967-1-Sanket.Goswami@amd.com>
+        id S237442AbhDEUzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 16:55:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236040AbhDEUzs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 16:55:48 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32D3AC061756;
+        Mon,  5 Apr 2021 13:55:42 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id x17so13279686iog.2;
+        Mon, 05 Apr 2021 13:55:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/pl2zZp1doMtSTurK4t2K/SYdeF+JJEMQaZ0JlLiuBg=;
+        b=D8Rf66/lLIh1WUBvCEqNjZ3WXVXn1eGogGxvnOAnYlXhqjunF39UxzMoM0WC6+V+tT
+         tp/8cXUjWc+7kaq9qDGA7cEB1hab9WmsOMPbFeU7sG4yx4U5GyIceTg2DHZV/yORK0wX
+         6adZUF/tq4oqNy09B9I1QF7G6YAVnBH3onilFkf0M4NqRuJkkoa37tzjRP+lKrS128HL
+         QMSDAJuoozMjIEloApGLSm52QfwXoqm8Pdn0+4cHK66fpjX7B0lxmYl1rYPnCsCRnsWa
+         YTRfcZy0DmSZROzDoLPJTxZ6Oc9022Dpgo4BcFJWpM5dtOthg/dvk3zp9dYUJrfJwgLu
+         69zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/pl2zZp1doMtSTurK4t2K/SYdeF+JJEMQaZ0JlLiuBg=;
+        b=pLRtb5DE39ly2F/Ak/fhSe2e/in0x09vrpOx+XUzkTMsEHHQ7F5EA2Y5yi4qYZ28ca
+         0UFTRqpw37Uz4tch23qF7T3YLh6fIk42yQIOhZGyh1dSTyyHYcZBCSW9nLpR34xFisoM
+         luS+z6hlSp7IEhhb4ba3SBT19D2UKP3YYbCMbHfOS/v+J/jeTVDjOQdlQc1Uit8Ly3u9
+         A/RPSMA8Giw3TsHZAjkntTxUlc9YY4nzWb4obQwGXZO2KONn4YZl0iAHN/arFMJxJlOD
+         u7jYcaG5JZ9MW9BQgZepn/nPbE1yviVLgMC20hUV8lyt1mzaLPqIj1C6UyuNE6WV6ZHT
+         5SVA==
+X-Gm-Message-State: AOAM530nSLgByRJrqSrBukG4TMOX88ku9MJFb4Wntvg3X+37XXtd2ffO
+        TXsuyfVdQM+VLjL5ZDyepDfmVgtJBCe0hfnGUiI=
+X-Google-Smtp-Source: ABdhPJwnu0V3PtTwT2C7foXC/kfe25JyBEml2UQhZ1Oa0qeiPg/w0Snj0rQr01eCXlPS+fGI+4w/sfLu8CqCgXe8VCQ=
+X-Received: by 2002:a5d:848a:: with SMTP id t10mr21442006iom.68.1617656141715;
+ Mon, 05 Apr 2021 13:55:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="9UV9rz0O2dU/yYYn"
-Content-Disposition: inline
-In-Reply-To: <20210331140730.2058967-1-Sanket.Goswami@amd.com>
+References: <20210405031436.2465475-1-ilya.lipnitskiy@gmail.com>
+ <CAGETcx9ifDoWeBN1KR4zKfs-q73iGo9C-joz4UqayeE3euDQWg@mail.gmail.com>
+ <CALCv0x3-A3PruJJ6wmzBZ5544Zj8_R7wFXkOm6H-a5tG406wYQ@mail.gmail.com> <CAGETcx8tgKoWAoqSgEQS8DRyMqzd7fGDfsWwsBEywVAPXRo1_A@mail.gmail.com>
+In-Reply-To: <CAGETcx8tgKoWAoqSgEQS8DRyMqzd7fGDfsWwsBEywVAPXRo1_A@mail.gmail.com>
+From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Date:   Mon, 5 Apr 2021 13:55:31 -0700
+Message-ID: <CALCv0x0sSxdoLbqc9srSYWQQAZ56pgcWY1=3pDuCgeiNWO3Nmg@mail.gmail.com>
+Subject: Re: [PATCH] of: property: do not create device links from *nr-gpios
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Apr 5, 2021 at 1:19 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> On Mon, Apr 5, 2021 at 1:10 PM Ilya Lipnitskiy
+> <ilya.lipnitskiy@gmail.com> wrote:
+> >
+> > Hi Saravana,
+> >
+> > On Mon, Apr 5, 2021 at 1:01 PM Saravana Kannan <saravanak@google.com> wrote:
+> > >
+> > > On Sun, Apr 4, 2021 at 8:14 PM Ilya Lipnitskiy
+> > > <ilya.lipnitskiy@gmail.com> wrote:
+> > > >
+> > > > [<vendor>,]nr-gpios property is used by some GPIO drivers[0] to indicate
+> > > > the number of GPIOs present on a system, not define a GPIO. nr-gpios is
+> > > > not configured by #gpio-cells and can't be parsed along with other
+> > > > "*-gpios" properties.
+> > > >
+> > > > scripts/dtc/checks.c also has a special case for nr-gpio{s}. However,
+> > > > nr-gpio is not really special, so we only need to fix nr-gpios suffix
+> > > > here.
+> > >
+> > > The only example of this that I see is "snps,nr-gpios".
+> > arch/arm64/boot/dts/apm/apm-shadowcat.dtsi uses "apm,nr-gpios", with
+> > parsing code in drivers/gpio/gpio-xgene-sb.c. There is also code in
+> > drivers/gpio/gpio-adnp.c and drivers/gpio/gpio-mockup.c using
+> > "nr-gpios" without any vendor prefix.
+>
+> Ah ok. I just grepped the DT files. I'm not sure what Rob's position
+> is on supporting DT files not in upstream. Thanks for the
+> clarification.
+For the offending drivers and docs that don't have any dts/dtsi files
+in-tree, can we just "sed -i 's/nr-gpios/ngpios'" and call it good?
 
---9UV9rz0O2dU/yYYn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Looks like even the DT spec has an exception only for vendor,nr and not just nr.
+> https://github.com/devicetree-org/dt-schema/blob/master/schemas/gpio/gpio-consumer.yaml#L20
+Thanks for linking the spec. I can re-spin the patch with ",nr-gpios"
+as the special suffix to align with the spec.
 
-On Wed, Mar 31, 2021 at 07:37:30PM +0530, Sanket Goswami wrote:
-> The Latest AMD NAVI GPU card has an integrated Type-C controller and
-> Designware I2C with PCI Interface. The PD controller for USB Type-C can
-> be accessed over I2C. The client driver is part of the USB Type-C UCSI
-> driver.
->=20
-> Also, there exists a couple of notable IP limitations that are dealt as
-> workarounds:
-> - I2C transaction work on a polling mode as IP does not generate
-> interrupt.
-> - I2C read command sent twice to address the IP issues.
-> - AMD NAVI GPU based products are already in the commercial market,
->   hence some of the I2C parameters are statically programmed as they
->   can not be part of the ACPI table.
->=20
-> Reviewed-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
-> Co-developed-by: Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
-> Signed-off-by: Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
-> Signed-off-by: Sanket Goswami <Sanket.Goswami@amd.com>
-
-Applied to for-next, thanks!
-
-
---9UV9rz0O2dU/yYYn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBreRwACgkQFA3kzBSg
-KbZpmQ/+M/EzdpGfiogWWOy774LR7sr7Ie5c1RuEa4hbEFdltiTs997CJ09Xofsw
-VJigg6qFdYMFIRB8K2fdMN++hlHu4kPVK3TGtHcQ9pWT66eCiCQ9Wj1yhcQgJL1U
-yKU+BNyX/S/FBfYqEZMXymB0pTyoXYpbHdIE3PUGdqhvTrkpW6qvckkVgq4zVndn
-SD2M6c0VPNG+6Q/E+ghR/HczZYuzQnzvJb7pFdJ9nYcbIv3je9AURh7QMrkHCVNH
-hfyYTxEWNRHYkvhjiVkBEKrQFVb15xomVpi+ANSKTiFbFJ3/CaVeROJ6xja/83ZF
-J1yJ96B4Yt34jKycwuhOATOCGGh14lztbVfDNYL4mOjy96+ElxAqEENpSJ+mIMSH
-uLqkEj5g/Rbot+KRy+gUNaQJ/3v4uo3B7XgvQNYHnXKOE9qvklupy4e8qEn4D0lm
-B0N1u/pfNe4VdI3b3mfKVHCa0qjg7BII7IIQZVSaeiKB++r53Hhrp5fY9dSFOWxa
-zfbIS5k5LNykqxJI4QMkg8ivPraHategI8GofGj46xmd2t9jTLfI+qCLp/y3RY93
-9dmSEteXy/CKth4ua3M9NJ96pCYt8we078Tko6ethIgsdPN7UKZXNBvJj82yJ5+A
-3wBTQMl4yIQQx0rVXdBaxh06Af3Iq7nEn5u2A2sJcOFwH2sEl20=
-=J46Q
------END PGP SIGNATURE-----
-
---9UV9rz0O2dU/yYYn--
+Ilya
