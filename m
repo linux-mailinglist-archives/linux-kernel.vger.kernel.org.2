@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC2A43540AA
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E37353FA0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241202AbhDEJTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:19:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36962 "EHLO mail.kernel.org"
+        id S239491AbhDEJN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:13:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240639AbhDEJQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:16:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFD8E611C1;
-        Mon,  5 Apr 2021 09:15:53 +0000 (UTC)
+        id S239286AbhDEJJp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:09:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8492C61393;
+        Mon,  5 Apr 2021 09:09:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617614154;
-        bh=jcbj1Q8+JgeJdS6AC5orKeVcK28dN+QUa8VeHnO1x6U=;
+        s=korg; t=1617613780;
+        bh=e82XqluKRQYBxV/oPOYWpnnB6Sz7lv/TllE0kEpKSSw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bPF57pegJ4afwXZ6vzSzEAMwI0+5DWRW639iTMljEyazlFAQBSgDvBtf6wkhG8TKC
-         vJ7Qoing/pDjZKXXSS0F2n5nduboNbZOCoqFMyzVDUpdNujkD84f2rzxAErQnMj9HP
-         mIl/wpsJD//9/3KTlzXXD8u3Er8CFt/j+RJsVf6E=
+        b=LMEUqRTKeTtmNnGFHmYHfth90qGR6Qf8rvmx9ifpDJEvHb4E0zzzC9XYaUg/e22Ty
+         LAQU9j+D10DsnrjRc0vqOK+kXbwjdAtz9paUUf6AAM3t03yjKRr7fOWl9dVTKNJHCj
+         yXv/k78MnB7jmaYSz/J3YDWOIdpgF6THS6D5ooz4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 5.11 102/152] pinctrl: qcom: sc7280: Fix SDC1_RCLK configurations
+        stable@vger.kernel.org, Peter Feiner <pfeiner@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ben Gardon <bgardon@google.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 089/126] KVM: x86/mmu: Factor out handling of removed page tables
 Date:   Mon,  5 Apr 2021 10:54:11 +0200
-Message-Id: <20210405085037.557270134@linuxfoundation.org>
+Message-Id: <20210405085034.014120821@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
-References: <20210405085034.233917714@linuxfoundation.org>
+In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
+References: <20210405085031.040238881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,34 +41,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rajendra Nayak <rnayak@codeaurora.org>
+From: Ben Gardon <bgardon@google.com>
 
-commit d0f9f47c07fe52b34e2ff8590cf09e0a9d8d6f99 upstream.
+[ Upstream commit a066e61f13cf4b17d043ad8bea0cdde2b1e5ee49 ]
 
-Fix SDC1_RCLK configurations which are in a different register so fix the
-offset from 0xb3000 to 0xb3004.
+Factor out the code to handle a disconnected subtree of the TDP paging
+structure from the code to handle the change to an individual SPTE.
+Future commits will build on this to allow asynchronous page freeing.
 
-Fixes: ecb454594c43: ("pinctrl: qcom: Add sc7280 pinctrl driver")
-Reported-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/1614662511-26519-2-git-send-email-rnayak@codeaurora.org
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+No functional change intended.
+
+Reviewed-by: Peter Feiner <pfeiner@google.com>
+Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Ben Gardon <bgardon@google.com>
+
+Message-Id: <20210202185734.1680553-6-bgardon@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/qcom/pinctrl-sc7280.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/mmu/tdp_mmu.c | 71 ++++++++++++++++++++++----------------
+ 1 file changed, 42 insertions(+), 29 deletions(-)
 
---- a/drivers/pinctrl/qcom/pinctrl-sc7280.c
-+++ b/drivers/pinctrl/qcom/pinctrl-sc7280.c
-@@ -1440,7 +1440,7 @@ static const struct msm_pingroup sc7280_
- 	[173] = PINGROUP(173, qdss, _, _, _, _, _, _, _, _),
- 	[174] = PINGROUP(174, qdss, _, _, _, _, _, _, _, _),
- 	[175] = UFS_RESET(ufs_reset, 0xbe000),
--	[176] = SDC_QDSD_PINGROUP(sdc1_rclk, 0xb3000, 15, 0),
-+	[176] = SDC_QDSD_PINGROUP(sdc1_rclk, 0xb3004, 0, 6),
- 	[177] = SDC_QDSD_PINGROUP(sdc1_clk, 0xb3000, 13, 6),
- 	[178] = SDC_QDSD_PINGROUP(sdc1_cmd, 0xb3000, 11, 3),
- 	[179] = SDC_QDSD_PINGROUP(sdc1_data, 0xb3000, 9, 0),
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index ad9f8f187045..f52a22bc0fe8 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -234,6 +234,45 @@ static void handle_changed_spte_dirty_log(struct kvm *kvm, int as_id, gfn_t gfn,
+ 	}
+ }
+ 
++/**
++ * handle_removed_tdp_mmu_page - handle a pt removed from the TDP structure
++ *
++ * @kvm: kvm instance
++ * @pt: the page removed from the paging structure
++ *
++ * Given a page table that has been removed from the TDP paging structure,
++ * iterates through the page table to clear SPTEs and free child page tables.
++ */
++static void handle_removed_tdp_mmu_page(struct kvm *kvm, u64 *pt)
++{
++	struct kvm_mmu_page *sp = sptep_to_sp(pt);
++	int level = sp->role.level;
++	gfn_t gfn = sp->gfn;
++	u64 old_child_spte;
++	int i;
++
++	trace_kvm_mmu_prepare_zap_page(sp);
++
++	list_del(&sp->link);
++
++	if (sp->lpage_disallowed)
++		unaccount_huge_nx_page(kvm, sp);
++
++	for (i = 0; i < PT64_ENT_PER_PAGE; i++) {
++		old_child_spte = READ_ONCE(*(pt + i));
++		WRITE_ONCE(*(pt + i), 0);
++		handle_changed_spte(kvm, kvm_mmu_page_as_id(sp),
++			gfn + (i * KVM_PAGES_PER_HPAGE(level - 1)),
++			old_child_spte, 0, level - 1);
++	}
++
++	kvm_flush_remote_tlbs_with_address(kvm, gfn,
++					   KVM_PAGES_PER_HPAGE(level));
++
++	free_page((unsigned long)pt);
++	kmem_cache_free(mmu_page_header_cache, sp);
++}
++
+ /**
+  * handle_changed_spte - handle bookkeeping associated with an SPTE change
+  * @kvm: kvm instance
+@@ -254,10 +293,6 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+ 	bool was_leaf = was_present && is_last_spte(old_spte, level);
+ 	bool is_leaf = is_present && is_last_spte(new_spte, level);
+ 	bool pfn_changed = spte_to_pfn(old_spte) != spte_to_pfn(new_spte);
+-	u64 *pt;
+-	struct kvm_mmu_page *sp;
+-	u64 old_child_spte;
+-	int i;
+ 
+ 	WARN_ON(level > PT64_ROOT_MAX_LEVEL);
+ 	WARN_ON(level < PG_LEVEL_4K);
+@@ -319,31 +354,9 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+ 	 * Recursively handle child PTs if the change removed a subtree from
+ 	 * the paging structure.
+ 	 */
+-	if (was_present && !was_leaf && (pfn_changed || !is_present)) {
+-		pt = spte_to_child_pt(old_spte, level);
+-		sp = sptep_to_sp(pt);
+-
+-		trace_kvm_mmu_prepare_zap_page(sp);
+-
+-		list_del(&sp->link);
+-
+-		if (sp->lpage_disallowed)
+-			unaccount_huge_nx_page(kvm, sp);
+-
+-		for (i = 0; i < PT64_ENT_PER_PAGE; i++) {
+-			old_child_spte = READ_ONCE(*(pt + i));
+-			WRITE_ONCE(*(pt + i), 0);
+-			handle_changed_spte(kvm, as_id,
+-				gfn + (i * KVM_PAGES_PER_HPAGE(level - 1)),
+-				old_child_spte, 0, level - 1);
+-		}
+-
+-		kvm_flush_remote_tlbs_with_address(kvm, gfn,
+-						   KVM_PAGES_PER_HPAGE(level));
+-
+-		free_page((unsigned long)pt);
+-		kmem_cache_free(mmu_page_header_cache, sp);
+-	}
++	if (was_present && !was_leaf && (pfn_changed || !is_present))
++		handle_removed_tdp_mmu_page(kvm,
++				spte_to_child_pt(old_spte, level));
+ }
+ 
+ static void handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+-- 
+2.30.1
+
 
 
