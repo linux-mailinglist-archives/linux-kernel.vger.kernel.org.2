@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69957353DD1
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0333353DA3
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237457AbhDEJC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:02:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42772 "EHLO mail.kernel.org"
+        id S237252AbhDEJA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:00:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232860AbhDEJAt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:00:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6399B6124C;
-        Mon,  5 Apr 2021 09:00:43 +0000 (UTC)
+        id S237141AbhDEJAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:00:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E27EA6139C;
+        Mon,  5 Apr 2021 09:00:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613243;
-        bh=2q1iU9XeChlMWGNPT1kMFQPoe8xvbCDxHdcqTqfRRI8=;
+        s=korg; t=1617613209;
+        bh=KkX+a3EJBm9puBdGl63ZwLCFqc7hZbvS6WUcps0hT/Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lOQc9PT13EEjvcRnYfTgT3je5Mld8V8VLwyjmCEPhAElhz+wWkCjjlvl1rpN7iyXJ
-         1mS3WA0gU5hZzAbqdAhYmE/IKtWdd8xX6BoSPkfU5tgGnHn3TWyVKIYpxWoes7O2vf
-         CM+oiCTn2a3Ke+5tI3DP5uIDXTeQcHbbF+avMivI=
+        b=hqbtsUWJIH9nOEpH0TtlHMzSFNz0gABVdOcRDtlmfXKk35wWiiXpeUO7IwXGClVev
+         uvvo3VKSRWdofwdvZUabq52G5Re5ojkDy6cb6jojlOaN6anYkcyXpKzvCZn0rrTGz9
+         VOGLWBEmj3c+1U02cXRt0OnlqArD/AHqaCTzZ2Ho=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Waiman Long <longman@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 21/56] locking/ww_mutex: Simplify use_ww_ctx & ww_ctx handling
+        stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.14 26/52] ALSA: hda/realtek: call alc_update_headset_mode() in hp_automute_hook
 Date:   Mon,  5 Apr 2021 10:53:52 +0200
-Message-Id: <20210405085023.216103525@linuxfoundation.org>
+Message-Id: <20210405085022.845393774@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085022.562176619@linuxfoundation.org>
-References: <20210405085022.562176619@linuxfoundation.org>
+In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
+References: <20210405085021.996963957@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,134 +39,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Waiman Long <longman@redhat.com>
+From: Hui Wang <hui.wang@canonical.com>
 
-[ Upstream commit 5de2055d31ea88fd9ae9709ac95c372a505a60fa ]
+commit e54f30befa7990b897189b44a56c1138c6bfdbb5 upstream.
 
-The use_ww_ctx flag is passed to mutex_optimistic_spin(), but the
-function doesn't use it. The frequent use of the (use_ww_ctx && ww_ctx)
-combination is repetitive.
+We found the alc_update_headset_mode() is not called on some machines
+when unplugging the headset, as a result, the mode of the
+ALC_HEADSET_MODE_UNPLUGGED can't be set, then the current_headset_type
+is not cleared, if users plug a differnt type of headset next time,
+the determine_headset_type() will not be called and the audio jack is
+set to the headset type of previous time.
 
-In fact, ww_ctx should not be used at all if !use_ww_ctx.  Simplify
-ww_mutex code by dropping use_ww_ctx from mutex_optimistic_spin() an
-clear ww_ctx if !use_ww_ctx. In this way, we can replace (use_ww_ctx &&
-ww_ctx) by just (ww_ctx).
+On the Dell machines which connect the dmic to the PCH, if we open
+the gnome-sound-setting and unplug the headset, this issue will
+happen. Those machines disable the auto-mute by ucm and has no
+internal mic in the input source, so the update_headset_mode() will
+not be called by cap_sync_hook or automute_hook when unplugging, and
+because the gnome-sound-setting is opened, the codec will not enter
+the runtime_suspend state, so the update_headset_mode() will not be
+called by alc_resume when unplugging. In this case the
+hp_automute_hook is called when unplugging, so add
+update_headset_mode() calling to this function.
 
-Signed-off-by: Waiman Long <longman@redhat.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Davidlohr Bueso <dbueso@suse.de>
-Link: https://lore.kernel.org/r/20210316153119.13802-2-longman@redhat.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Link: https://lore.kernel.org/r/20210320091542.6748-2-hui.wang@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/locking/mutex.c | 25 ++++++++++++++-----------
- 1 file changed, 14 insertions(+), 11 deletions(-)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
-index 3f8a35104285..b3da782cdfbd 100644
---- a/kernel/locking/mutex.c
-+++ b/kernel/locking/mutex.c
-@@ -609,7 +609,7 @@ static inline int mutex_can_spin_on_owner(struct mutex *lock)
-  */
- static __always_inline bool
- mutex_optimistic_spin(struct mutex *lock, struct ww_acquire_ctx *ww_ctx,
--		      const bool use_ww_ctx, struct mutex_waiter *waiter)
-+		      struct mutex_waiter *waiter)
- {
- 	if (!waiter) {
- 		/*
-@@ -685,7 +685,7 @@ fail:
- #else
- static __always_inline bool
- mutex_optimistic_spin(struct mutex *lock, struct ww_acquire_ctx *ww_ctx,
--		      const bool use_ww_ctx, struct mutex_waiter *waiter)
-+		      struct mutex_waiter *waiter)
- {
- 	return false;
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4811,6 +4811,7 @@ static void alc_update_headset_jack_cb(s
+ 	struct alc_spec *spec = codec->spec;
+ 	spec->current_headset_type = ALC_HEADSET_TYPE_UNKNOWN;
+ 	snd_hda_gen_hp_automute(codec, jack);
++	alc_update_headset_mode(codec);
  }
-@@ -905,10 +905,13 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
- 	struct ww_mutex *ww;
- 	int ret;
  
-+	if (!use_ww_ctx)
-+		ww_ctx = NULL;
-+
- 	might_sleep();
- 
- 	ww = container_of(lock, struct ww_mutex, base);
--	if (use_ww_ctx && ww_ctx) {
-+	if (ww_ctx) {
- 		if (unlikely(ww_ctx == READ_ONCE(ww->ctx)))
- 			return -EALREADY;
- 
-@@ -925,10 +928,10 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
- 	mutex_acquire_nest(&lock->dep_map, subclass, 0, nest_lock, ip);
- 
- 	if (__mutex_trylock(lock) ||
--	    mutex_optimistic_spin(lock, ww_ctx, use_ww_ctx, NULL)) {
-+	    mutex_optimistic_spin(lock, ww_ctx, NULL)) {
- 		/* got the lock, yay! */
- 		lock_acquired(&lock->dep_map, ip);
--		if (use_ww_ctx && ww_ctx)
-+		if (ww_ctx)
- 			ww_mutex_set_context_fastpath(ww, ww_ctx);
- 		preempt_enable();
- 		return 0;
-@@ -939,7 +942,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
- 	 * After waiting to acquire the wait_lock, try again.
- 	 */
- 	if (__mutex_trylock(lock)) {
--		if (use_ww_ctx && ww_ctx)
-+		if (ww_ctx)
- 			__ww_mutex_check_waiters(lock, ww_ctx);
- 
- 		goto skip_wait;
-@@ -992,7 +995,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
- 			goto err;
- 		}
- 
--		if (use_ww_ctx && ww_ctx) {
-+		if (ww_ctx) {
- 			ret = __ww_mutex_check_kill(lock, &waiter, ww_ctx);
- 			if (ret)
- 				goto err;
-@@ -1005,7 +1008,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
- 		 * ww_mutex needs to always recheck its position since its waiter
- 		 * list is not FIFO ordered.
- 		 */
--		if ((use_ww_ctx && ww_ctx) || !first) {
-+		if (ww_ctx || !first) {
- 			first = __mutex_waiter_is_first(lock, &waiter);
- 			if (first)
- 				__mutex_set_flag(lock, MUTEX_FLAG_HANDOFF);
-@@ -1018,7 +1021,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
- 		 * or we must see its unlock and acquire.
- 		 */
- 		if (__mutex_trylock(lock) ||
--		    (first && mutex_optimistic_spin(lock, ww_ctx, use_ww_ctx, &waiter)))
-+		    (first && mutex_optimistic_spin(lock, ww_ctx, &waiter)))
- 			break;
- 
- 		spin_lock(&lock->wait_lock);
-@@ -1027,7 +1030,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
- acquired:
- 	__set_current_state(TASK_RUNNING);
- 
--	if (use_ww_ctx && ww_ctx) {
-+	if (ww_ctx) {
- 		/*
- 		 * Wound-Wait; we stole the lock (!first_waiter), check the
- 		 * waiters as anyone might want to wound us.
-@@ -1047,7 +1050,7 @@ skip_wait:
- 	/* got the lock - cleanup and rejoice! */
- 	lock_acquired(&lock->dep_map, ip);
- 
--	if (use_ww_ctx && ww_ctx)
-+	if (ww_ctx)
- 		ww_mutex_lock_acquired(ww, ww_ctx);
- 
- 	spin_unlock(&lock->wait_lock);
--- 
-2.30.1
-
+ static void alc_probe_headset_mode(struct hda_codec *codec)
 
 
