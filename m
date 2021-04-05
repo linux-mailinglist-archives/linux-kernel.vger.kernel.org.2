@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9542C354070
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:36:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B56C4353F1A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239847AbhDEJRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:17:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33938 "EHLO mail.kernel.org"
+        id S238741AbhDEJKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:10:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239693AbhDEJOL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:14:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02CC861002;
-        Mon,  5 Apr 2021 09:14:04 +0000 (UTC)
+        id S238423AbhDEJHy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:07:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8233D613A0;
+        Mon,  5 Apr 2021 09:07:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617614045;
-        bh=qjk8r1bBheai59afF9ZVTuqmfWrvRchtgqZnonUd7yU=;
+        s=korg; t=1617613669;
+        bh=F5M4lswSRCqM9j45ZUNNTIPNsts9Bq2SQKKkvRXMc20=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U4M1sBcF7zdbeWpWmx2/nfEXhsjKNp4pzUGnFwRMkfc+HJqngGpqm6jA43ZZQ6pfq
-         by33HL+I7iJUSeAOS2mfNIHmcTiY+crt/ZuOOXIp3V8/w/aMSe/Da3pXD26eEGfamM
-         r44v09CerwSbp6myqjY0pst7QqRSbNsRWBgAL6YI=
+        b=LBliimLcOTMtu2YXOaE4Ne+WitJKIC6lgcUkZUf5r4ErUHoJcj1TbHH8m+hKHI/u0
+         28aTGVx+jjfR7IbiOB7RXqjbX3CgVUvSvtbBbxQxf/agcKjHBUeHslTGxeno17Y6XK
+         WQxxN6rmdzmwYKtfZ8ghDm7GOTHliP99rPBZ6Wl8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alex Elder <elder@linaro.org>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Doug Brown <doug@schmorgal.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 062/152] net: ipa: remove two unused register definitions
+Subject: [PATCH 5.10 049/126] appletalk: Fix skb allocation size in loopback case
 Date:   Mon,  5 Apr 2021 10:53:31 +0200
-Message-Id: <20210405085036.293076161@linuxfoundation.org>
+Message-Id: <20210405085032.660245970@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
-References: <20210405085034.233917714@linuxfoundation.org>
+In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
+References: <20210405085031.040238881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +40,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Elder <elder@linaro.org>
+From: Doug Brown <doug@schmorgal.com>
 
-[ Upstream commit d5bc5015eb9d64cbd14e467db1a56db1472d0d6c ]
+[ Upstream commit 39935dccb21c60f9bbf1bb72d22ab6fd14ae7705 ]
 
-We do not support inter-EE channel or event ring commands.  Inter-EE
-interrupts are disabled (and never re-enabled) for all channels and
-event rings, so we have no need for the GSI registers that clear
-those interrupt conditions.  So remove their definitions.
+If a DDP broadcast packet is sent out to a non-gateway target, it is
+also looped back. There is a potential for the loopback device to have a
+longer hardware header length than the original target route's device,
+which can result in the skb not being created with enough room for the
+loopback device's hardware header. This patch fixes the issue by
+determining that a loopback will be necessary prior to allocating the
+skb, and if so, ensuring the skb has enough room.
 
-Signed-off-by: Alex Elder <elder@linaro.org>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+This was discovered while testing a new driver that creates a LocalTalk
+network interface (LTALK_HLEN = 1). It caused an skb_under_panic.
+
+Signed-off-by: Doug Brown <doug@schmorgal.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ipa/gsi_reg.h | 10 ----------
- 1 file changed, 10 deletions(-)
+ net/appletalk/ddp.c | 33 +++++++++++++++++++++------------
+ 1 file changed, 21 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/ipa/gsi_reg.h b/drivers/net/ipa/gsi_reg.h
-index 0e138bbd8205..299456e70f28 100644
---- a/drivers/net/ipa/gsi_reg.h
-+++ b/drivers/net/ipa/gsi_reg.h
-@@ -59,16 +59,6 @@
- #define GSI_INTER_EE_N_SRC_EV_CH_IRQ_OFFSET(ee) \
- 			(0x0000c01c + 0x1000 * (ee))
+diff --git a/net/appletalk/ddp.c b/net/appletalk/ddp.c
+index 1d48708c5a2e..c94b212d8e7c 100644
+--- a/net/appletalk/ddp.c
++++ b/net/appletalk/ddp.c
+@@ -1576,8 +1576,8 @@ static int atalk_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
+ 	struct sk_buff *skb;
+ 	struct net_device *dev;
+ 	struct ddpehdr *ddp;
+-	int size;
+-	struct atalk_route *rt;
++	int size, hard_header_len;
++	struct atalk_route *rt, *rt_lo = NULL;
+ 	int err;
  
--#define GSI_INTER_EE_SRC_CH_IRQ_CLR_OFFSET \
--			GSI_INTER_EE_N_SRC_CH_IRQ_CLR_OFFSET(GSI_EE_AP)
--#define GSI_INTER_EE_N_SRC_CH_IRQ_CLR_OFFSET(ee) \
--			(0x0000c028 + 0x1000 * (ee))
+ 	if (flags & ~(MSG_DONTWAIT|MSG_CMSG_COMPAT))
+@@ -1640,7 +1640,22 @@ static int atalk_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
+ 	SOCK_DEBUG(sk, "SK %p: Size needed %d, device %s\n",
+ 			sk, size, dev->name);
+ 
+-	size += dev->hard_header_len;
++	hard_header_len = dev->hard_header_len;
++	/* Leave room for loopback hardware header if necessary */
++	if (usat->sat_addr.s_node == ATADDR_BCAST &&
++	    (dev->flags & IFF_LOOPBACK || !(rt->flags & RTF_GATEWAY))) {
++		struct atalk_addr at_lo;
++
++		at_lo.s_node = 0;
++		at_lo.s_net  = 0;
++
++		rt_lo = atrtr_find(&at_lo);
++
++		if (rt_lo && rt_lo->dev->hard_header_len > hard_header_len)
++			hard_header_len = rt_lo->dev->hard_header_len;
++	}
++
++	size += hard_header_len;
+ 	release_sock(sk);
+ 	skb = sock_alloc_send_skb(sk, size, (flags & MSG_DONTWAIT), &err);
+ 	lock_sock(sk);
+@@ -1648,7 +1663,7 @@ static int atalk_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
+ 		goto out;
+ 
+ 	skb_reserve(skb, ddp_dl->header_length);
+-	skb_reserve(skb, dev->hard_header_len);
++	skb_reserve(skb, hard_header_len);
+ 	skb->dev = dev;
+ 
+ 	SOCK_DEBUG(sk, "SK %p: Begin build.\n", sk);
+@@ -1699,18 +1714,12 @@ static int atalk_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
+ 		/* loop back */
+ 		skb_orphan(skb);
+ 		if (ddp->deh_dnode == ATADDR_BCAST) {
+-			struct atalk_addr at_lo;
 -
--#define GSI_INTER_EE_SRC_EV_CH_IRQ_CLR_OFFSET \
--			GSI_INTER_EE_N_SRC_EV_CH_IRQ_CLR_OFFSET(GSI_EE_AP)
--#define GSI_INTER_EE_N_SRC_EV_CH_IRQ_CLR_OFFSET(ee) \
--			(0x0000c02c + 0x1000 * (ee))
+-			at_lo.s_node = 0;
+-			at_lo.s_net  = 0;
 -
- #define GSI_CH_C_CNTXT_0_OFFSET(ch) \
- 		GSI_EE_N_CH_C_CNTXT_0_OFFSET((ch), GSI_EE_AP)
- #define GSI_EE_N_CH_C_CNTXT_0_OFFSET(ch, ee) \
+-			rt = atrtr_find(&at_lo);
+-			if (!rt) {
++			if (!rt_lo) {
+ 				kfree_skb(skb);
+ 				err = -ENETUNREACH;
+ 				goto out;
+ 			}
+-			dev = rt->dev;
++			dev = rt_lo->dev;
+ 			skb->dev = dev;
+ 		}
+ 		ddp_dl->request(ddp_dl, skb, dev->dev_addr);
 -- 
 2.30.1
 
