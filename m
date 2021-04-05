@@ -2,155 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A603546B2
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 20:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A8D3546B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 20:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233619AbhDESQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 14:16:19 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:33093 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234693AbhDESQQ (ORCPT
+        id S234848AbhDESRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 14:17:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234693AbhDESRG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 14:16:16 -0400
-Received: from mail-wm1-f71.google.com ([209.85.128.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lTTlh-0004sm-7h
-        for linux-kernel@vger.kernel.org; Mon, 05 Apr 2021 18:16:09 +0000
-Received: by mail-wm1-f71.google.com with SMTP id v5so67339wml.9
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 11:16:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=M+LRPj/fCq0SEo4/VKey3X9K9DoRxq2h/ltKuYY7g0o=;
-        b=IsyJrriakr4UccYqfM7mRxrlYaqzS3rOsZaNLjIs/TV0jvpx9/AWlustrXaA47lbQc
-         6X6ApQMHo+QFA6oGHOAgVnjckFTfGYjMn77p60eVvVT9qDImnM9iD1QbH0pkShnrjkgE
-         IJAzsdOB/yx8lCuvgTd5IhmMcZCkD5ecLHQgkfzlqD5JpIAc95jQPZQFcRL2JyDCbMGC
-         HMN0EiBjovnt7On1vokHq/KyTBYzBCoDLegnKHLgdTYkSUCR20x/WX3kNhAkffakSBtL
-         sRFvBN7SmJCoIAWOZsRbVto+ShKKQC2gjyy0hYnVKePmSW5Yw9knGx/uBJq8u0YhHa+w
-         Fz+g==
-X-Gm-Message-State: AOAM531xqX1vNPc/7et8FFvJodC2WBgtSgJRekm/r7nsA6YaeFpHr2QZ
-        wqkldU0seVTTjNckc/IiyMSKTULiIe6XMTEgGQuB39mQt1bDfUCLBhkbccmsxIVRYS4RSgAnLX4
-        7uaqM75fh4QyPdkDlhMznEpS03wMKaDqBXHRsrQwUOQ==
-X-Received: by 2002:a05:6000:18cd:: with SMTP id w13mr30280780wrq.20.1617646569010;
-        Mon, 05 Apr 2021 11:16:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwKpeiK1vbwLjGL7whf06oPDq1IhygALHGmwF/FSN5Xa9HdtC0t5zWYCtOzZ5sXaQ8ZEOcVbw==
-X-Received: by 2002:a05:6000:18cd:: with SMTP id w13mr30280765wrq.20.1617646568854;
-        Mon, 05 Apr 2021 11:16:08 -0700 (PDT)
-Received: from localhost.localdomain (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
-        by smtp.gmail.com with ESMTPSA id b15sm28930075wrx.73.2021.04.05.11.16.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Apr 2021 11:16:08 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: exynos: correct kernel doc in platsmp
-Date:   Mon,  5 Apr 2021 20:16:05 +0200
-Message-Id: <20210405181605.52612-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 5 Apr 2021 14:17:06 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CAD8C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 11:17:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=++XNFzPyzd//NZ9BB9jWIKjHqHx8qgMkSHioi3eojXM=; b=MekK+rs8zjfA+vfgMWfe1SJsuY
+        zlEnHx35ARMQkUg8o0cC7pFO7EAKs1KXMgrEKOnOryxPdKpGEswbPG1OqKx+vrmiunM60M3gUSwWd
+        Q2tgYMsRHkO/qYVhc9XefxFuuEC3VpWUsT2zDz7WgIoCvsX1tXWFysYs96rAeFvecLrihaXbVF6CV
+        rwEMPuDX68tXr8aEiROdT3pIxh9b5axB8egeG1QS82G5VuQ2Hb+5HY1pk3GRvimNgR432DRvH/BGO
+        +BOY2rADrNPHwu6OUbnV57MyNSjKXmWOOQWUVijvP5tBY8jAHj9oOB/7QT8sSIT1i64YSAZVfLxFt
+        eyDgQMaw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lTTmA-00Bj2Y-LN; Mon, 05 Apr 2021 18:16:41 +0000
+Date:   Mon, 5 Apr 2021 19:16:38 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] include/linux/mm.h: remove duplicated declaration of
+ page_mapping()
+Message-ID: <20210405181638.GI2531743@casper.infradead.org>
+References: <20210405151355.9867-1-rppt@kernel.org>
+ <20210405151355.9867-3-rppt@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210405151355.9867-3-rppt@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Correct few kerneldoc issues, including W=1 compile warning:
+On Mon, Apr 05, 2021 at 06:13:55PM +0300, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> There are two declarations of page_mapping() in include/linux/mm.h a dozen
+> lines apart.
+> 
+> Remove the older one with unnecessary "extern".
 
-  arch/arm/mach-exynos/platsmp.c:89: warning:
-    expecting prototype for exynos_core_power_down(). Prototype was for exynos_cpu_power_down() instead
+This conflicts with
+https://lore.kernel.org/linux-mm/20210331184728.1188084-14-willy@infradead.org/
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- arch/arm/mach-exynos/platsmp.c | 28 +++++++++++++---------------
- 1 file changed, 13 insertions(+), 15 deletions(-)
-
-diff --git a/arch/arm/mach-exynos/platsmp.c b/arch/arm/mach-exynos/platsmp.c
-index ea0be59f469a..fb4a394ece3a 100644
---- a/arch/arm/mach-exynos/platsmp.c
-+++ b/arch/arm/mach-exynos/platsmp.c
-@@ -78,12 +78,11 @@ static inline void platform_do_lowpower(unsigned int cpu, int *spurious)
- #endif /* CONFIG_HOTPLUG_CPU */
- 
- /**
-- * exynos_core_power_down : power down the specified cpu
-- * @cpu : the cpu to power down
-+ * exynos_cpu_power_down() - power down the specified cpu
-+ * @cpu: the cpu to power down
-  *
-  * Power down the specified cpu. The sequence must be finished by a
-  * call to cpu_do_idle()
-- *
-  */
- void exynos_cpu_power_down(int cpu)
- {
-@@ -107,8 +106,8 @@ void exynos_cpu_power_down(int cpu)
- }
- 
- /**
-- * exynos_cpu_power_up : power up the specified cpu
-- * @cpu : the cpu to power up
-+ * exynos_cpu_power_up() - power up the specified cpu
-+ * @cpu: the cpu to power up
-  *
-  * Power up the specified cpu
-  */
-@@ -124,9 +123,8 @@ void exynos_cpu_power_up(int cpu)
- }
- 
- /**
-- * exynos_cpu_power_state : returns the power state of the cpu
-- * @cpu : the cpu to retrieve the power state from
-- *
-+ * exynos_cpu_power_state() - returns the power state of the cpu
-+ * @cpu: the cpu to retrieve the power state from
-  */
- int exynos_cpu_power_state(int cpu)
- {
-@@ -135,8 +133,8 @@ int exynos_cpu_power_state(int cpu)
- }
- 
- /**
-- * exynos_cluster_power_down : power down the specified cluster
-- * @cluster : the cluster to power down
-+ * exynos_cluster_power_down() - power down the specified cluster
-+ * @cluster: the cluster to power down
-  */
- void exynos_cluster_power_down(int cluster)
- {
-@@ -144,8 +142,8 @@ void exynos_cluster_power_down(int cluster)
- }
- 
- /**
-- * exynos_cluster_power_up : power up the specified cluster
-- * @cluster : the cluster to power up
-+ * exynos_cluster_power_up() - power up the specified cluster
-+ * @cluster: the cluster to power up
-  */
- void exynos_cluster_power_up(int cluster)
- {
-@@ -154,8 +152,8 @@ void exynos_cluster_power_up(int cluster)
- }
- 
- /**
-- * exynos_cluster_power_state : returns the power state of the cluster
-- * @cluster : the cluster to retrieve the power state from
-+ * exynos_cluster_power_state() - returns the power state of the cluster
-+ * @cluster: the cluster to retrieve the power state from
-  *
-  */
- int exynos_cluster_power_state(int cluster)
-@@ -165,7 +163,7 @@ int exynos_cluster_power_state(int cluster)
- }
- 
- /**
-- * exynos_scu_enable : enables SCU for Cortex-A9 based system
-+ * exynos_scu_enable() - enables SCU for Cortex-A9 based system
-  */
- void exynos_scu_enable(void)
- {
--- 
-2.25.1
-
+Andrew, please can we get the folio patches in?
