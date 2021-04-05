@@ -2,72 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3293547D9
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 22:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E1D3547E0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 22:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236693AbhDEUyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 16:54:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232553AbhDEUyW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 16:54:22 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2341CC061756;
-        Mon,  5 Apr 2021 13:54:16 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id e7so13919000edu.10;
-        Mon, 05 Apr 2021 13:54:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6LxZVp7twuk1JHL5Xp5YNmNLmYb9qEFDrvk0yyYE9tM=;
-        b=izPft1Q8DNWOqGOzh0EVVXbGudTKc/QkFQrq1vaPGy5hlQl1Rg832THF64ekd0mvTW
-         34MdJluVwdeY0nK9mBQgLsk3zXZaB99wZJZ8q8jfAwCttRTElIFj00xZOL5Flk/6d77y
-         +6lFSY1YrJnsZDgJhyDjwHaRneP1ZAUNpVaGiQodMjnUEWJE0UK9nhfDy/ipxUdJ3Mmb
-         ER5YZaLFrwdcRvxTHbB/esi0RqLhtVTKPNyu+GydJWBEBwoP70dEdXyC559whVj5tJ4t
-         wIp5ed1FCjSHHbjgppU6kODjFedGbHdB6mwUztVqZb+irWYqKDBwlem5T4tcW3Apb0/5
-         8EAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6LxZVp7twuk1JHL5Xp5YNmNLmYb9qEFDrvk0yyYE9tM=;
-        b=tOwTp7F2aJzpU5MKqG/Iel8biUBjGtwCegiMR7r3jAHe8Vp2q8tF9fcWCp/9jgPq6P
-         k5OxPMCJ5X48GotuWsCyRcThjqZ8VMaIkY1qiiDDOwBIZxRsl3m9RlgYw2/k/fN0aWg9
-         okkHw8Y55SGfUPtHwmXGB14/on6WQKQSBsBjbCLFoq+16dOnrnmk5TZf17Ea9b5XiWpy
-         4qqp+7p4whT809rlTo2Bp70E3QsZAoV5ad0x5QL2MfDxJUtzpZXU/1FhZq3WY8JQOZ6o
-         6NMjp3e5833n/woPFnPmdP7J2kJdflv3lvlTaZ/cLsoMiVrSNpsa6V7pfv9NVHeAvRVI
-         LK4Q==
-X-Gm-Message-State: AOAM531Tbi5t78kCgYWv257/VGmMTjl8ME5P/lfdntvS3vy9hh5NkaHW
-        87bgRgXZf4HVGPj9g92bKdRfJCdYjz+hAUTlXMs=
-X-Google-Smtp-Source: ABdhPJyN+vM2VPpcIcc/xtuCy7HPRYS7fw/LYDVq5myxQKYyLgsXAxiosFhNwD+Pjccyed4xUIMudTIf2EZntQWJgWo=
-X-Received: by 2002:a05:6402:1713:: with SMTP id y19mr33524220edu.52.1617656054852;
- Mon, 05 Apr 2021 13:54:14 -0700 (PDT)
+        id S236805AbhDEUzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 16:55:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57930 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236040AbhDEUzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 16:55:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69DB161019;
+        Mon,  5 Apr 2021 20:54:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617656096;
+        bh=TZECcf04A+kZXqwkIon0Qe2mhbm/d9UADh5U5/niO2Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tg2M6LMYvMaN/q6MpkbS21TzTuSuzQiCGU4H4i75lMhc33tS97B/r/edS235IjCUo
+         +reYZogjlEfW7l8FA3Likvu9ad9ZaLFIMEdRuiuhpOyrLTivoW7FNSOEouZi0a1eiY
+         +Gy53dj8p0y0dmK340MKn0SBJ8zKzfruMgWCExBjHWMHLR7HVfeF4vS98yoe1F8a6f
+         MV9icQ5zGSv1lvhhi8N8/Ec03LRuPmx2vF0Y6bFcoaMfyWK96zLQffDUkcAq3dp9GR
+         OzZhcoRd6x6nJl5Unm49oRCpMYgwsvV0teqI0zey3TW376GFD+UrqN1+o6vwOmfUJi
+         9s2zKPJCNE77g==
+Date:   Mon, 5 Apr 2021 22:54:52 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Sanket Goswami <Sanket.Goswami@amd.com>
+Cc:     jarkko.nikula@linux.intel.com, andriy.shevchenko@linux.intel.com,
+        mika.westerberg@linux.intel.com, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
+Subject: Re: [PATCH v4] i2c: designware: Add driver support for AMD NAVI GPU
+Message-ID: <20210405205452.GD3945@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Sanket Goswami <Sanket.Goswami@amd.com>,
+        jarkko.nikula@linux.intel.com, andriy.shevchenko@linux.intel.com,
+        mika.westerberg@linux.intel.com, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
+References: <20210331140730.2058967-1-Sanket.Goswami@amd.com>
 MIME-Version: 1.0
-References: <20210329161256.31171-1-christianshewitt@gmail.com> <20210329161256.31171-2-christianshewitt@gmail.com>
-In-Reply-To: <20210329161256.31171-2-christianshewitt@gmail.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Mon, 5 Apr 2021 22:54:04 +0200
-Message-ID: <CAFBinCCpUC4eYa=HdcmxLxfBU=4JRpSzr+qGUZoHQRq+u0Ok5g@mail.gmail.com>
-Subject: Re: [PATCH 1/3] arm64: dts: meson: remove extra tab from ODROID
- N2/N2+ ext_mdio node
-To:     Christian Hewitt <christianshewitt@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="9UV9rz0O2dU/yYYn"
+Content-Disposition: inline
+In-Reply-To: <20210331140730.2058967-1-Sanket.Goswami@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 1:17 AM Christian Hewitt
-<christianshewitt@gmail.com> wrote:
->
-> Remove an extra tab from the ext_mdio node in the ODROID N2/N2+ common
-> dtsi file.
->
-> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+
+--9UV9rz0O2dU/yYYn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Mar 31, 2021 at 07:37:30PM +0530, Sanket Goswami wrote:
+> The Latest AMD NAVI GPU card has an integrated Type-C controller and
+> Designware I2C with PCI Interface. The PD controller for USB Type-C can
+> be accessed over I2C. The client driver is part of the USB Type-C UCSI
+> driver.
+>=20
+> Also, there exists a couple of notable IP limitations that are dealt as
+> workarounds:
+> - I2C transaction work on a polling mode as IP does not generate
+> interrupt.
+> - I2C read command sent twice to address the IP issues.
+> - AMD NAVI GPU based products are already in the commercial market,
+>   hence some of the I2C parameters are statically programmed as they
+>   can not be part of the ACPI table.
+>=20
+> Reviewed-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+> Co-developed-by: Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
+> Signed-off-by: Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
+> Signed-off-by: Sanket Goswami <Sanket.Goswami@amd.com>
+
+Applied to for-next, thanks!
+
+
+--9UV9rz0O2dU/yYYn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBreRwACgkQFA3kzBSg
+KbZpmQ/+M/EzdpGfiogWWOy774LR7sr7Ie5c1RuEa4hbEFdltiTs997CJ09Xofsw
+VJigg6qFdYMFIRB8K2fdMN++hlHu4kPVK3TGtHcQ9pWT66eCiCQ9Wj1yhcQgJL1U
+yKU+BNyX/S/FBfYqEZMXymB0pTyoXYpbHdIE3PUGdqhvTrkpW6qvckkVgq4zVndn
+SD2M6c0VPNG+6Q/E+ghR/HczZYuzQnzvJb7pFdJ9nYcbIv3je9AURh7QMrkHCVNH
+hfyYTxEWNRHYkvhjiVkBEKrQFVb15xomVpi+ANSKTiFbFJ3/CaVeROJ6xja/83ZF
+J1yJ96B4Yt34jKycwuhOATOCGGh14lztbVfDNYL4mOjy96+ElxAqEENpSJ+mIMSH
+uLqkEj5g/Rbot+KRy+gUNaQJ/3v4uo3B7XgvQNYHnXKOE9qvklupy4e8qEn4D0lm
+B0N1u/pfNe4VdI3b3mfKVHCa0qjg7BII7IIQZVSaeiKB++r53Hhrp5fY9dSFOWxa
+zfbIS5k5LNykqxJI4QMkg8ivPraHategI8GofGj46xmd2t9jTLfI+qCLp/y3RY93
+9dmSEteXy/CKth4ua3M9NJ96pCYt8we078Tko6ethIgsdPN7UKZXNBvJj82yJ5+A
+3wBTQMl4yIQQx0rVXdBaxh06Af3Iq7nEn5u2A2sJcOFwH2sEl20=
+=J46Q
+-----END PGP SIGNATURE-----
+
+--9UV9rz0O2dU/yYYn--
