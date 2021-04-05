@@ -2,65 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE5A73545D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 19:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFE8C3545CD
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 19:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235484AbhDERIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 13:08:31 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15546 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234070AbhDERI0 (ORCPT
+        id S233762AbhDERHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 13:07:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232733AbhDERHg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 13:08:26 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FDcVH6Hh1zPnfd;
-        Tue,  6 Apr 2021 01:05:27 +0800 (CST)
-Received: from A190218597.china.huawei.com (10.47.69.183) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 6 Apr 2021 01:08:03 +0800
-From:   Salil Mehta <salil.mehta@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <salil.mehta@huawei.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <linuxarm@openeuler.org>
-Subject: [PATCH V2 net 2/2] net: hns3: Remove un-necessary 'else-if' in the hclge_reset_event()
-Date:   Mon, 5 Apr 2021 18:06:45 +0100
-Message-ID: <20210405170645.29620-3-salil.mehta@huawei.com>
-X-Mailer: git-send-email 2.8.3
-In-Reply-To: <20210405170645.29620-1-salil.mehta@huawei.com>
-References: <20210405170645.29620-1-salil.mehta@huawei.com>
+        Mon, 5 Apr 2021 13:07:36 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA11BC061756;
+        Mon,  5 Apr 2021 10:07:28 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id h8so5967843plt.7;
+        Mon, 05 Apr 2021 10:07:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RLfqM/4YIXZIGygat9vmW8mY7gaObgItiX8qoqBUvFM=;
+        b=vKScQsi48K81cCQB3BArJMMXH64fEPo6XNMxfDYOdDm7Hr+2nx1ABrak2wk6LP1qt4
+         AN1MHQaKcEa+nDGHFCY1xf5+6N5etpWKp5C+zq1TtU9VEQg5JXB+QeDFy2oYTklPlVYL
+         J8Ld45pQiIlVKmhHGzrlUPgdHONwyTu8XztYZ9985gXFLi3Xgqc1gui6F2Iqtfy1AgbQ
+         WbIL8r19uU4fOY+6ns45J9vVWra9ATh/7bIt2Eo9ulziV6iUZWWDoXN5BjEDCVZ7XATB
+         qhHvCSPd7xRDn+3HsOIVJDc7fwrVXWQzz47m1ybBSCou7R+n57/Mr/8/dGhpXStf1SHR
+         5gBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=RLfqM/4YIXZIGygat9vmW8mY7gaObgItiX8qoqBUvFM=;
+        b=Xw5awSFcbyQpiBf5CqTy8Exy8U9KSG4Hm9+KWCGHtiK5JvBL7gQXEEXK/VyUxdxDxl
+         wpLPvszVEfTdHSPEt242m82SuxkivOdNTiWDyQHW+tYN7iEwgPwFETMpa+wPteqt2bOi
+         +BVT3h4+XyNvbTIsPMntohMa+qYeLVXqNhoZ3MsicvdFdiJ20oEMiHtE3RomiSpykpg/
+         EGgllBF3NOgHvOCYfutLQBWfZWr7OUxhDX80vqrg102yzigk4VUvL1+y6SfPyk0+aF1x
+         7ywsCyiQpu/hygmMB7EojZDbup+VkNiB9Pt1ieSi+Bzgis7w4tv5GNK/x3S5ekRY+2/m
+         mABg==
+X-Gm-Message-State: AOAM532E87aq4ECZas/4PS9NYmefS8My27XKm9Y+Dc6KelrVH7xl/KHO
+        R9qLDxRruS0Ut7EczyZbd3Q=
+X-Google-Smtp-Source: ABdhPJyGSiFR05Bhvb/JuonUQqVWP6LEo2ZFxM4pFWlWuLFuRzOAIxqzzmm4i6WU9PMLSmDnL6Mc/w==
+X-Received: by 2002:a17:90a:e7d0:: with SMTP id kb16mr111631pjb.206.1617642447981;
+        Mon, 05 Apr 2021 10:07:27 -0700 (PDT)
+Received: from google.com ([2620:15c:211:201:30d6:b5a3:92ae:5a02])
+        by smtp.gmail.com with ESMTPSA id w23sm16270541pgi.63.2021.04.05.10.07.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Apr 2021 10:07:26 -0700 (PDT)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Mon, 5 Apr 2021 10:07:24 -0700
+From:   Minchan Kim <minchan@kernel.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     keescook@chromium.org, dhowells@redhat.com, hch@infradead.org,
+        mbenes@suse.com, gregkh@linuxfoundation.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
+ multistate
+Message-ID: <YGtDzH0dEfEngCij@google.com>
+References: <YEbjom8FIclEgRYv@google.com>
+ <20210310212128.GR4332@42.do-not-panic.com>
+ <YErOkGrvtQODXtB0@google.com>
+ <20210312183238.GW4332@42.do-not-panic.com>
+ <YEvA1dzDsFOuKdZ/@google.com>
+ <20210319190924.GK4332@42.do-not-panic.com>
+ <YFjHvUolScp3btJ9@google.com>
+ <20210322204156.GM4332@42.do-not-panic.com>
+ <YFkWMZ0m9nKCT69T@google.com>
+ <20210401235925.GR4332@42.do-not-panic.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.47.69.183]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401235925.GR4332@42.do-not-panic.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Code to defer the reset(which caps the frequency of the reset) schedules the
-timer and returns. Hence, following 'else-if' looks un-necessary.
+On Thu, Apr 01, 2021 at 11:59:25PM +0000, Luis Chamberlain wrote:
+> On Mon, Mar 22, 2021 at 03:12:01PM -0700, Minchan Kim wrote:
+> > On Mon, Mar 22, 2021 at 08:41:56PM +0000, Luis Chamberlain wrote:
+> > > 
+> > > I would not call it *every* syfs knob as not all deal with things which
+> > > are related to CPU hotplug multistate, right? Note that using just
+> > > try_module_get() alone (that is the second patch only, does not fix the
+> > > race I am describing above).
+> > 
+> > It wouldn't be CPU hotplug multistate issue but I'd like to call it
+> > as more "zram instance race" bug.
+> > What happens in this case?
+> > 
+> >         CPU 1                            CPU 2
+> > 
+> > destroy_devices
+> > ..
+> >                                  compact_store()
+> >                                  zram = dev_to_zram(dev);
+> > idr_for_each(zram_remove_cb
+> >   zram_remove
+> >   ..
+> >   kfree(zram)
+> >                                  down_read(&zram->init_lock);
+> > 
+> > 
+> >         CPU 1                            CPU 2
+> > 
+> > hot_remove_store
+> >                                  compact_store()
+> >                                  zram = dev_to_zram(dev);
+> >   zram_remove
+> >     kfree(zram)
+> >                                  down_read(&zram->init_lock);
+> >     				
+> > So, for me we need to close the zram instance create/removal
+> > with sysfs rather than focusing on CPU hotplug issue.
+> 
+> Sure, that's a good point.
+> 
+> The issue which I noted for the race which ends up in a deadlock is only
+> possible if a shared lock is used on removal but also on sysfs knobs.
+> 
+> At first glance, the issue you describe above *seems* to be just proper
+> care driver developers must take with structures used. It is certainly
+> yet another issue we need to address, and if we can generalize a
+> solution even better. I now recall I *think* I spotted that race a while
+> ago and mentioned it to Kees and David Howells but I didn't have a
+> solution for it yet. More on this below.
+> 
+> The issue you point out is real, however you cannot disregard the
+> CPU hoplug possible race as well, it is a design consideration which
+> the CPU hotplug multistate support warns for -- consider driver removal.
+> I agree that perhaps solving this "zram instance race" can fix he
+> hotplug race as well. If we can solves all 3 issues in one shot even
+> better. But let's evaluate that prospect...
+> 
+> > Maybe, we could reuse zram_index_mutex with modifying it with
+> > rw_semaphore. What do you think?
+> 
+> Although ideal given it would knock 3 birds with 1 stone, it ends up
+> actually making the sysfs attributes rather useless in light of the
+> requirements for each of the races. Namely, the sysfs deadlock race
+> *must* use a try lock approach, just as the try_module_get() case.
+> It must use this approach so to immediately just bail out if we have
+> our module being removed, and so on our __exit path. By trying to
+> repurpose zram_index_mutex we end up then just doing too much with it
+> and making the syfs attributes rather fragile for most uses:
+> 
+> Consider disksize_show(), that would have to become:
+> 
+> static ssize_t disksize_show(struct device *dev, struct device_attribute *attr, char *buf)
+> {
+> 	struct zram *zram = dev_to_zram(dev);
+> +	size_t disksize;
+> 
+> +	down_read(&zram_index_rwlock);
+> +	disksize = zram->disksize;
+> +	up_read(&zram_index_rwlock);
+> -	return scnprintf(buf, PAGE_SIZE, "%llu\n", zram->disksize);
+> +	return scnprintf(buf, PAGE_SIZE, "%llu\n", disksize);
+> }
+> 
+> What's wrong with this?
+> 
+> It can block during a write, yes, but there is a type of write which
+> will make this crash after the read lock is acquired. When the instance
+> is removed. What if we try down_read_trylock()?
+> 
+> static ssize_t disksize_show(struct device *dev, struct device_attribute *attr, char *buf)
+> {
+> 	struct zram *zram = dev_to_zram(dev);
+> +	size_t disksize;
+> 
+> +	if (!down_read_trylock(&zram_index_rwlock))
+> +		return -ENODEV;
+> +
+> +	disksize = zram->disksize;
+> +	up_read(&zram_index_rwlock);
+> -	return scnprintf(buf, PAGE_SIZE, "%llu\n", zram->disksize);
+> +	return scnprintf(buf, PAGE_SIZE, "%llu\n", disksize);
+> }
+> 
+> What's wrong with this?
+> 
+> If it got the lock, it should be OK as it is preventing writes from
+> taking the lock for a bit. But then this just becomes pretty fragile,
+> it will fail whenever another read or write is happening, triggering
+> perhaps quite a bit of regressions on tests.
+> 
+> And if we use write_trylock() we end up with the same fragile nature
+> of failing the read with ENODEV for any silly thing going on with the
+> driver.
+> 
+> And come to think of it the last patch I had sent with a new
+> DECLARE_RWSEM(zram_unload) also has this same issue making most
+> sysfs attributes rather fragile.
 
-Fixes: 9de0b86f6444 ("net: hns3: Prevent to request reset frequently")
-Signed-off-by: Salil Mehta <salil.mehta@huawei.com>
----
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Thanks for looking the way. I agree the single zram_index_rwlock is
+not the right approach to fix it. However, I still hope we find more
+generic solution to fix them at once since I see it's zram instance
+racing problem.
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-index 58d210bbb311..2dd2af269b46 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -3980,7 +3980,9 @@ static void hclge_reset_event(struct pci_dev *pdev, struct hnae3_handle *handle)
- 				  HCLGE_RESET_INTERVAL))) {
- 		mod_timer(&hdev->reset_timer, jiffies + HCLGE_RESET_INTERVAL);
- 		return;
--	} else if (hdev->default_reset_request) {
-+	}
-+
-+	if (hdev->default_reset_request) {
- 		hdev->reset_level =
- 			hclge_get_reset_level(ae_dev,
- 					      &hdev->default_reset_request);
--- 
-2.17.1
+A approach I am considering is to make struct zram include kobject
+and then make zram sysfs auto populated under the kobject. So, zram/sysfs
+lifetime should be under the kobject. With it, sysfs race probem I
+mentioned above should be gone. Furthermore, zram_remove should fail
+if one of the alive zram objects is existing
+(i.e., zram->kobject->refcount > 1) so module_exit will fail, too.
 
+I see one of the problems is how I could make new zram object's
+attribute group for zram knobs under /sys/block/zram0 since block
+layer already made zram0 kobject via device_add_disk.
