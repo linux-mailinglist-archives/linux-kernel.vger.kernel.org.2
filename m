@@ -2,149 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB87354652
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 19:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB293354655
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 19:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234540AbhDERyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 13:54:44 -0400
-Received: from p3plsmtpa06-03.prod.phx3.secureserver.net ([173.201.192.104]:36351
-        "EHLO p3plsmtpa06-03.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233999AbhDERyl (ORCPT
+        id S237487AbhDER4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 13:56:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232452AbhDER4j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 13:54:41 -0400
-Received: from [192.168.0.116] ([71.184.94.153])
-        by :SMTPAUTH: with ESMTPSA
-        id TTQklDwIKlaXaTTQklPVrj; Mon, 05 Apr 2021 10:54:34 -0700
-X-CMAE-Analysis: v=2.4 cv=eKjWMFl1 c=1 sm=1 tr=0 ts=606b4eda
- a=vbvdVb1zh1xTTaY8rfQfKQ==:117 a=vbvdVb1zh1xTTaY8rfQfKQ==:17
- a=IkcTkHD0fZMA:10 a=Ikd4Dj_1AAAA:8 a=Yaz6U4fXJU-nSkCjVyEA:9 a=QEXdDO2ut3YA:10
-X-SECURESERVER-ACCT: tom@talpey.com
-Subject: Re: [PATCH rdma-next 00/10] Enable relaxed ordering for ULPs
-To:     Leon Romanovsky <leon@kernel.org>, Christoph Hellwig <hch@lst.de>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Adit Ranadive <aditr@vmware.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Avihai Horon <avihaih@nvidia.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Jens Axboe <axboe@fb.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Keith Busch <kbusch@kernel.org>, Lijun Ou <oulijun@huawei.com>,
-        linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Michael Guralnik <michaelgur@nvidia.com>,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        netdev@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>,
-        rds-devel@oss.oracle.com, Sagi Grimberg <sagi@grimberg.me>,
-        samba-technical@lists.samba.org,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        Steve French <sfrench@samba.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-References: <20210405052404.213889-1-leon@kernel.org>
- <20210405134115.GA22346@lst.de> <YGsZ4Te1+DQODj34@unreal>
-From:   Tom Talpey <tom@talpey.com>
-Message-ID: <0aa2dfc1-58e4-ac54-4ac7-3229039d9c7d@talpey.com>
-Date:   Mon, 5 Apr 2021 13:54:30 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Mon, 5 Apr 2021 13:56:39 -0400
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D638C061756;
+        Mon,  5 Apr 2021 10:56:31 -0700 (PDT)
+Received: by mail-oo1-xc34.google.com with SMTP id i20-20020a4a8d940000b02901bc71746525so3048948ook.2;
+        Mon, 05 Apr 2021 10:56:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=TKrBbC33rTAg20tbUtTeyG0qCz7Kga/JcPNviUVOWes=;
+        b=iBdbeUT7BxKPqLQlx7dSYV1n7PxlsI9RT7GKAy6nyM1iNTvw0/3m6Bfxv6PxPLLIhO
+         sOeom9+hK/iapXrAvx9WI+9EXmSTagAZC7YhGwqUzG0SfPTdZHglGSGcX8W7jQ7OHbyY
+         +QnyqNKuSTKyI8oAjxvqZoU+KDvDYoIO1skw1q5oygyb0Jfh0XlCJioKqS1xZiBdutbN
+         WYMpHG7i25hLOYRp4SUUaMhY/xvNypdxyaKS9Ns7fsCBAOU/KgfwKdy1uNrK5JwKlddd
+         S5oGs2TuuDCPNJsmoR9aEiusdyXEwxVd3DidYzh03PzQN6huB375z8uicvcEtm4yYRyh
+         coOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=TKrBbC33rTAg20tbUtTeyG0qCz7Kga/JcPNviUVOWes=;
+        b=lXy2E6LWi7734403EZxe+kDRCPwq6Arvx8uh1J/uubhrZ4eWK5E9RzZa8BrM2W1/UB
+         U5KHgwHhx54kMrwZcRu2nT7QA/6TNuhncAaKa3VEe6KIzqSTWw+rkJb/iCIFjc1JZgFp
+         9/m/XQy7i/PN8kfXx88Ie5rJDdO//bwQOA7GXGFqWxQsF31mT7q9r2zxszIW0lASsRc3
+         pzPKJhUSt8/7vJk8qrcWbjNUH6L0YKKgf7PQJ51NGYjaCPcpiAIz7CwV3EIWFMihCKxR
+         97MGn7itJ+2DBB9ofG0QVJO26pvPCzfb9eWsej5yYJailRo1VHLo4cHJzn6/uJPdadwH
+         rSWQ==
+X-Gm-Message-State: AOAM532xnql8+O7ShZINXu31Z/HjgRxUf7VO9Yu2mxmg+A1KqHj7Y+mw
+        +ZtKzo+DSSlaKp3NHfUYCjo=
+X-Google-Smtp-Source: ABdhPJyZL2lIR9h1oinIX35CNzaSda5DMdAFRNKy88RUkqf90niqT2JDb48ckdDfX7KxO7cFPI2ShA==
+X-Received: by 2002:a4a:e8d1:: with SMTP id h17mr23048144ooe.20.1617645390947;
+        Mon, 05 Apr 2021 10:56:30 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id f192sm3205673oig.48.2021.04.05.10.56.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 05 Apr 2021 10:56:30 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 5 Apr 2021 10:56:29 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.9 00/35] 4.9.265-rc1 review
+Message-ID: <20210405175629.GB93485@roeck-us.net>
+References: <20210405085018.871387942@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <YGsZ4Te1+DQODj34@unreal>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfHeFvch9CXwEtdZ0IkSfSvDfJ61kGmHt9NGJgHNYQrySGqVVDuJ9ps49cslZGA73vKwNzEnCWV3k2oacgtBjOJFQVLAEGLod/GadB5w/PafttQ7Fq1jG
- hE+lbXhi2AOywYITjKNx1X1H/Wi9V5phrjJT9rYrPKyn8tmtMiOsfCwXSRUf4ZiRBPXg2e3M1oDqs3m37DE92cVI9vaW/dpSZGTLmHJmfNtQb3+k4QF8RcLP
- iyUJ6lm9LN8mw+S1HPCYMpzmfVhpHKz1RAqhhnvGjGOao7c185NfLdhZddyhpw0Eh2/u48pXLrcBZ7TwhhKOQ4HlaiAIwm+1RIQlNLh5QaOf/iB8Wa5XO/EG
- YUNFhC1yWzA4E1pTzHAgP4iuZ2rd0o76G21I94f7pqpmU9OPz/B0z3oCnEXCFq5wBymHvp1KFz4IKsIN8I0IXxIdbI+l/6hvf6H6D8vqKv5QRJ2VvddsIFiL
- xYi3HMgnqoZA2s5KLM2i5eyO7G6Lo8lKBmThRslCYvAhLmwo0ttovL/s7JgaGqVJDJmbxQRYu8ovMQvUwJIRFaBQjchUFP/+AL/LUwHaP1w9lc1l4eSqbHJb
- sdN24cKKGV3bepJejz6tOqNzAsHeV1Ms2ouGAiHn7hMSrEjNI0i8Df6sm4TkDtHhBC+jKLq0G/foFQjVw9Sg0ugmGS6G18r0rq+1HPWN2WOYhNyIN4OiEkn8
- GaxhrVXqVlcpfokuvTF+s4sxiRpY8tQPtd8F159lNAYJit7eUWkHOxb9/BzxTtwGAg2pLS0GoqhvEfZlwaNC2cFG4reJuFIT02yOVFUmexISspL7SPBEgCTl
- gCryGfJ1n0ahmuuBXJGWP5AeNzInDj4hZ+NJciO6RPnJOWcxKkJHD4FbeWbzU5jUkwiKddcQNdy2ynGxHHL/zJvgugay00T3LuHv+Igao3F7oE1V9dyaEaBA
- Fmpb+zhCA7ZvEyti5vfVkT6H11m8+mhMFTUZEFrDvnRE8MOs29gQZ+JHRR1kaDfgQmZhAvVddE4nEU913yHt12OpQygldpqzReP54Z75Z/M0iTsxhK4fiEnU
- 9JT9HzLT9lorwe7hCR/2owzoYe8l+sGjAUPRnCCvMda1Co9y1jfFeInBZC4o4oJrshDEWrR4FASyJ8P9f67T2oDp6kYiMXZo752VeeZMUEIgG/ZCW/50rXUd
- p1z6WWRt7HkdSHSIyR6854MYMQwWLCXTR/mXoV29uzHE1rKKB0ZV9hfBxM7OEq2ESAPIWzKflxfnkgi0hLHPX/pcs8qt1RabedqaElEMZG4tpUQT5x+1RYJy
- QLSG/eUxiYtJwWzhSSGGnPxp6tpPXwhHRCR2fS3hPunOc/BB4XDYAoRNbRQ8S9geX74vBfjR+7Mo/kEO+Ff1j/N/Pw/dPaSqM+s75erYzNEXE4uNr2yPjuFe
- RxZ54qOcm0eN4Kz/3MkrXc1qXWQIgqa8rMSPNIzcFXnHPXarf4r3mpzRtKaHqFVFd9+Ppmq8pTawFgx22hfqH6+2PrdpujOg9rLE1PSz4utM9m1qJ3ah/GrF
- dS3+E8jo80U5VFYoGJkRiSV7nEssBN/EHCDhggTQ8ObvhQpVhar3n28oCi5V4opOGfwPWz7BSvpdt/3wO6pKkM+X3oG5V4UjNkVXQ71Hxa9Mvjd4Q+1Ss96U
- yrrp3sVVys39o+RqZfQzme+urxFYVMYtau+xDORmNQy8ens2+eIIizgbX4qf8PnTbYwMX5GJWnF4VvFtqsrPU+co2qKDliR0AH4h73z5MIRf/29FBdxwZcnJ
- 2RY7d4Chv6V4B8lPxXoM8mypwKNqsD98EHFTJFfHQz3IHKpl8Ot6wKjTnOV1YELuQXDFm9K3JLqPHY7ARmRiIponvY2zNyT40SrjkJ/UZEtgkuYSO6Wp/RjQ
- JE39Fg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210405085018.871387942@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/5/2021 10:08 AM, Leon Romanovsky wrote:
-> On Mon, Apr 05, 2021 at 03:41:15PM +0200, Christoph Hellwig wrote:
->> On Mon, Apr 05, 2021 at 08:23:54AM +0300, Leon Romanovsky wrote:
->>> From: Leon Romanovsky <leonro@nvidia.com>
->>>
->>> >From Avihai,
->>>
->>> Relaxed Ordering is a PCIe mechanism that relaxes the strict ordering
->>> imposed on PCI transactions, and thus, can improve performance.
->>>
->>> Until now, relaxed ordering could be set only by user space applications
->>> for user MRs. The following patch series enables relaxed ordering for the
->>> kernel ULPs as well. Relaxed ordering is an optional capability, and as
->>> such, it is ignored by vendors that don't support it.
->>>
->>> The following test results show the performance improvement achieved
->>> with relaxed ordering. The test was performed on a NVIDIA A100 in order
->>> to check performance of storage infrastructure over xprtrdma:
->>
->> Isn't the Nvidia A100 a GPU not actually supported by Linux at all?
->> What does that have to do with storage protocols?
+On Mon, Apr 05, 2021 at 10:53:35AM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.9.265 release.
+> There are 35 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> This system is in use by our storage oriented customer who performed the
-> test. He runs drivers/infiniband/* stack from the upstream, simply backported
-> to specific kernel version.
+> Responses should be made by Wed, 07 Apr 2021 08:50:09 +0000.
+> Anything received after that time might be too late.
 > 
-> The performance boost is seen in other systems too.
 
-We need to see more information about this test, and platform.
+Build results:
+	total: 163 pass: 163 fail: 0
+Qemu test results:
+	total: 383 pass: 382 fail: 1
+Failed tests:
+	parisc:generic-32bit_defconfig:smp:net,pcnet:scsi[53C895A]:rootfs
 
-What correctness testing was done, and how was it verified? What
-PCI bus type(s) were tested, and with what adapters? What storage
-workload was generated, and were all possible RDMA exchanges by
-each ULP exercised?
+In the failing test, the network interfcace instantiates but fails to get
+an IP address. This is not a new problem but a new test. For some reason
+it only happens with this specific network interface, this specific SCSI
+controller, and with v4.9.y. No reason for concern; I'll try to track down
+what is going on.
 
->> Also if you enable this for basically all kernel ULPs, why not have
->> an opt-out into strict ordering for the cases that need it (if there are
->> any).
-> 
-> The RO property is optional, it can only improve. In addition, all in-kernel ULPs
-> don't need strict ordering. I can be mistaken here and Jason will correct me, it
-> is because of two things: ULP doesn't touch data before CQE and DMA API prohibits it.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-+1 on Christoph's comment.
-
-I woud hope most well-architected ULPs will support relaxed ordering,
-but storage workloads, in my experience, can find ways to cause failure
-in adapters. I would not suggest making this the default behavior
-without extensive testing.
-
-Tom.
+Guenter
