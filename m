@@ -2,349 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F4023354960
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 01:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 033B135495E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 01:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242034AbhDEXn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 19:43:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230421AbhDEXnZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 19:43:25 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 448F4C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 16:43:18 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id q26so13208269qkm.6
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 16:43:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jEUKJ/PIyMMKDAfTExQ02LL0Z2PCIXS5Q8oCaM3FZfI=;
-        b=cq+CnIL+5EcETuhClIuesXGkPk/HZx67gKReX0hzfe2bfSv81ph/hpZyZHGj+E20DS
-         Fzr4/H3ZHwYbjZtg9aQzf/QVWuIgjrLyMuf6iChp9Fs3wyHjudPnZLlAxHKikBC55MuK
-         +5FDOgFiBjP7vYF/BXdCom541fk2Map8vO+2diN2Z5zYm7R6So3VDScWYBw7vT6sAgFt
-         3lKVPQ4gh0eVxlMxz7BGGN/Auq1Cy906//UuT7jzBr5m3yfFrdjwaddULb7pn8J/sx8B
-         nI5cuAdmreznicc2gszXwejzPFpweHPEqA8Xl1GVlNL1iX3zxFyx9SbOgAoQ0FHN0NXq
-         9Y1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jEUKJ/PIyMMKDAfTExQ02LL0Z2PCIXS5Q8oCaM3FZfI=;
-        b=PXIRlnsgWHr3xEl1DTYENNPKpcoBiFhwxeks/N1gusVeRwUwSG+948R5Twbl3u2xAz
-         ieFadR0imJ3yDVIhAfO3nUjaVBKoAq11jAnOZYpcZXKl/wZcCFCO8lDO2wCC/zNwByDC
-         ldi7IlNjZyr2JFk3FIVIq++gd7WUlpRZMA1BH5ihgeIvhQHsM3Kj4zWb6/qns5NkbY9G
-         8rqxWPZd7ovA9dzslrCgeK6CJsleAtGv/VHPVYhqEsD5l3UI6GhxbEKUr9UYNKvzfKpe
-         IXoISnqD8TF7rOLtgVJuhCkImNtjjJt6uHkOgCbttdUYDSkUPeR8BTAON4lREjS0IzNc
-         /aeQ==
-X-Gm-Message-State: AOAM532pLrgfZz8do8HIVxJO1QwomjXIGshYsqZkBuLdeDV2eebG7WNh
-        SAIquVMvgY6KurzrPSnQ7vs=
-X-Google-Smtp-Source: ABdhPJzUGGar2mauwtHgLHD4t42J2+NAUau6D6XbaCC5mvB+VoSm9ZKNBpxTCnfXmPiTEt3XCpJGuA==
-X-Received: by 2002:a37:ae44:: with SMTP id x65mr26591806qke.9.1617666197415;
-        Mon, 05 Apr 2021 16:43:17 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id m16sm14439904qkm.100.2021.04.05.16.43.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Apr 2021 16:43:17 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 8C8E227C0054;
-        Mon,  5 Apr 2021 19:43:16 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Mon, 05 Apr 2021 19:43:16 -0400
-X-ME-Sender: <xms:k6BrYD6UqCeYGhRG66mt3AFrEkZCFh9FWl_ddLS2zWMwzg88wvduzg>
-    <xme:k6BrYGeuYrADVMVoHmDMlwdwZBKu7z1Idk7_MlDpuaGefGNqe2h6A0dVfUBaTzL5k
-    _Ok90C39Yz81Rnxbw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudejfedgvdegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    goufhushhpvggtthffohhmrghinhculdegledmnecujfgurhepfffhvffukfhfgggtuggj
-    sehttdertddttddvnecuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvg
-    hnghesghhmrghilhdrtghomheqnecuggftrfgrthhtvghrnhepfeduhfegieeufeeukeef
-    ffehjedvhfeuveekgedthfeuleefjeefleeutddtvdegnecuffhomhgrihhnpehshiiikh
-    grlhhlvghrrdgrphhpshhpohhtrdgtohhmpdhgohhoghhlvgdrtghomhenucfkphepudef
-    uddruddtjedrudegjedruddvieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhi
-    thihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmh
-    grihhlrdgtohhmsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:lKBrYA46WGrd9ePwBCq5ASnx3kr0NPQnJhjKfm3bFftNOmlFB8ANyw>
-    <xmx:lKBrYFsgVnzVkVNgHjfcUfsXPA8ZiTVXlITQv_KH6YuzrO6UYUEo2A>
-    <xmx:lKBrYIjo7mEqo98-CDxotGI4051J_0ErJzt47p88x7QxSLuKY4EVzQ>
-    <xmx:lKBrYJFTCj00IZBcNBAm3WfzPb4nGiL8LGrPrrnfWmtAfJqjVUgrJsDUj-U>
-Received: from localhost (unknown [131.107.147.126])
-        by mail.messagingengine.com (Postfix) with ESMTPA id BCC84108005F;
-        Mon,  5 Apr 2021 19:43:15 -0400 (EDT)
-Date:   Tue, 6 Apr 2021 07:42:06 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        syzbot <syzbot+88e4f02896967fe1ab0d@syzkaller.appspotmail.com>,
-        john.stultz@linaro.org, linux-kernel@vger.kernel.org,
-        sboyd@kernel.org, syzkaller-bugs@googlegroups.com,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [syzbot] WARNING: suspicious RCU usage in get_timespec64
-Message-ID: <YGugTjEWCCyul/iv@boqun-archlinux>
-References: <0000000000000e025b05bf2a430b@google.com>
- <87mtud4wfi.ffs@nanos.tec.linutronix.de>
- <20210404214030.GB2696@paulmck-ThinkPad-P72>
- <20210405030855.GG2531743@casper.infradead.org>
- <20210405040125.GF2696@paulmck-ThinkPad-P72>
- <20210405043038.GA31091@paulmck-ThinkPad-P72>
- <YGqe0tRRpibv3/Bd@boqun-archlinux>
- <20210405172752.GK2696@paulmck-ThinkPad-P72>
- <YGuceETAscvhhnqT@boqun-archlinux>
- <20210405233807.GO2696@paulmck-ThinkPad-P72>
-MIME-Version: 1.0
+        id S241976AbhDEXmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 19:42:42 -0400
+Received: from mail-dm6nam10on2059.outbound.protection.outlook.com ([40.107.93.59]:53063
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S241925AbhDEXmj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 19:42:39 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DiphAT2sMPvLUqUBflUlUuVVM9pCLisYnkd6nvjNCkxDwPH6jk+JItWoQMwAFSPIj8Mwm2I9LwVI6jpX03B2Q2wCeunW3IQvePaoN4a/QTFnxLv/TJBSqkFhJ5sb6LMhk2D22a2BqIIUF4tnhwQD0lHtNn0jv+99k5FM0nC+RqXbdp8lvAnDJN7eveqmBMUHrx4gyinN4d22E/eiTdrwKhXT/fLgkkt0ZbKvZfC8KJNCdaacPb4ee3o82b9PtPuX+6KfeFI/qNpBy6eaOmzrWR+ndh0xQl08H1VKTqQqTMbDg+4YTStc0yrD5BXZeZh90vZMpHJ2IOmEhFkMbT8Jjg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=O1RQeoDaVVHz6tzdTwIHAww8PRvtuS0cmUnaKDvh6LI=;
+ b=V99GDD6HWPFD7FQfcirsR4qdCCvdQi/fGU3+t4PcfC4lM7mWWwCsQT1vzljQNwXnyOj3djwdKyWTZQNMM6dTwKA+dJh/JU7BJqSQXS+Hzn2P1bieFF4HI2Kl+BR7MepIFy7P6gaijVo2SdqNtMvK6HAjONv6010MeM7FK7BrPahE+C38d4rG/MuZ8yFcAzhey6ujZJ6wgsCeN67MH7VOhTkiuLlZX/GqIjtOi7veWCYnPqLdqsEUUw2twlUIAGS2cMSjxPtlR1iWtIEnuVr/lxNoIwSqGN8AEBTdDWF7deTtNlNtmVYi3Im3qvH6gEMyLCuGJYK1US8+PXWvnrQzpA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=O1RQeoDaVVHz6tzdTwIHAww8PRvtuS0cmUnaKDvh6LI=;
+ b=j2KiEIywQUSWO8QrYNXGpMwyJOLyKsl1OUQBMKwUEYz/30kn60QGFk59gpe/Uz6EjA0wgNMGrLgVFADl0pbnD3q48Q0q8gCEddCCZBweEM9ulugWwSDUVZvcmXLQuRev26XroeDcQGNHLeIMOolY9NIR6vOC+Z8saqgVS5SfwkzZT3ODIWLKvACvw0W+QdmRICh7geqVPYbwJDFa23CvTiOC1xVyI25vu45F6Ejv/bbXCTxorNdIOKlrYaWLP0OBZRb9Vdu5gbv9NPXxXakMLWEB15SEkz6UMRsXW0Tj+YYR6OqcMk7N0gm+o3aHF/JQf/q8mfmEMwAIj21F8IyiHA==
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4356.namprd12.prod.outlook.com (2603:10b6:5:2aa::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28; Mon, 5 Apr
+ 2021 23:42:32 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3999.032; Mon, 5 Apr 2021
+ 23:42:32 +0000
+Date:   Mon, 5 Apr 2021 20:42:30 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jason Wang <jasowang@redhat.com>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210405234230.GF7405@nvidia.com>
+References: <20210319124645.GP2356281@nvidia.com>
+ <YFSqDNJ5yagk4eO+@myrica>
+ <20210319135432.GT2356281@nvidia.com>
+ <20210319112221.5123b984@jacob-builder>
+ <20210322120300.GU2356281@nvidia.com>
+ <20210324120528.24d82dbd@jacob-builder>
+ <20210329163147.GG2356281@nvidia.com>
+ <MWHPR11MB188639EE54B48B0E1321C8198C7D9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210330132830.GO2356281@nvidia.com>
+ <MWHPR11MB1886CAD48AFC156BFC7C1D398C7A9@MWHPR11MB1886.namprd11.prod.outlook.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210405233807.GO2696@paulmck-ThinkPad-P72>
+In-Reply-To: <MWHPR11MB1886CAD48AFC156BFC7C1D398C7A9@MWHPR11MB1886.namprd11.prod.outlook.com>
+X-Originating-IP: [142.162.115.133]
+X-ClientProxiedBy: MN2PR07CA0016.namprd07.prod.outlook.com
+ (2603:10b6:208:1a0::26) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR07CA0016.namprd07.prod.outlook.com (2603:10b6:208:1a0::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27 via Frontend Transport; Mon, 5 Apr 2021 23:42:31 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lTYrW-000x33-Hj; Mon, 05 Apr 2021 20:42:30 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5942bc92-b181-45a9-4a62-08d8f88c7b2a
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4356:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB4356E31776505D47635B6F1AC2779@DM6PR12MB4356.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LBZbXnu1+CjH0yP01nCiJq1cJOQWVqqDAjIbU3w1EW3BUOoLcfyvXzX2RtSBCExsUmqekgguyVS9M6hpFaZiZA6t/pzpjvVEen/jn7DEScfnq5AdLIzF72SD9DCX4Lpp9E0xetSRsBcFKymyQDL2DQn+NtgQ6i2lGcon/eref5Ydcc2s+mOriVOAe3d2B7QG4sbb93mmaAgSjkQQqX5LtHbNRrAqG6O1DXx5m3h4uGHL3lm/msm4oaJSrdQxt6mlXpfPYyWO+1kjt8bmcTVXimqX9/qWIxc/Co4iZ2FIcmuusCsXSNGadAAzLdKDqUSCvYX/OV0Q544+GkI+fs5T2r8kEeWuGmSjaVsX93jF9jMZF12BSDYBjTgQQPqMWDscQAgFMqF7LYmKFhWeD6m6yQhYUgzKfBdR2Mdb+E6Llb1tZo7XVdBNCIIAbLn/Yz4Wt5B3/oM95cNnIol4W8eQgLDHOIw75rSCYliTfv+5yGtOMeYhi3FaP3h7PNGwoEt+5AJOZPR+IBKpxskxX5om/GXM2gjqswZnf91ffZWxXHF4LniUD6lvTf5SZ8d4ExGW+gUaFmPORR2sfzP7Q8VJCn9jMvisXY/P7nN1CXaGapdFMXgriP4vWowck6w+07KhwitVCNAyGDPuJsDitDPscA+GHAxQH+r1SD9ngvMoRuc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(346002)(136003)(366004)(376002)(8936002)(86362001)(6916009)(4326008)(38100700001)(66476007)(8676002)(1076003)(186003)(33656002)(9746002)(5660300002)(66556008)(426003)(26005)(66946007)(316002)(2616005)(2906002)(36756003)(83380400001)(54906003)(9786002)(7416002)(478600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?SOwpEA0nUgW528J3Y33UHixOc4m0HIuLdL3gSRpZ4GvMfmZ8xOm8ZjizXaAk?=
+ =?us-ascii?Q?M+KGCU+2QsHSCwEwLhtuUzgvUddBtGf4LPYFLOT4wbsQI8Oq4sw5GppDmV+C?=
+ =?us-ascii?Q?pKVB50sDXcT5fE1RGXqSgVBQJEhZ7JqU2pF1hhLC4M/EF9cUO/IWeaU5R6wi?=
+ =?us-ascii?Q?evaToxhqKtQpxrKwY9tEadz21pLeA6TTfn3MVBsLXKNGaTptw8iJXghPbh9j?=
+ =?us-ascii?Q?4x8AdFk4UjaJMkZ9lKDiNoFQeZJ/jNY3kYSWQySWTihah+MsKpkc3xfKLezM?=
+ =?us-ascii?Q?lOwAYyu3vaZ++yL+FU9zQft7WTbfYnqrg1TcW0ixC870a5zK1zJej12VxTRP?=
+ =?us-ascii?Q?b4wo0+wZwEZAW/D3lMxCSBiL06hzwZ22vMM3zzisKQHXGO5FlJ35I4nKJpFB?=
+ =?us-ascii?Q?JrYrd3Ym9Sgr7cav1irDLCMacZMyAysBTEj9xAns5cyD+lbZ+SHJhKYvotLI?=
+ =?us-ascii?Q?MQxCK9S5jFTbaWCi14yKMZzo6VctIu1Tdw8GD/WWs1kZTiXhZOXO8lRP4Jtu?=
+ =?us-ascii?Q?6+dAvHKl9DE6jxJu1pImfrWlz7nejJoiVEOZ5S3X4fRit9pe3fsVmlBcVQnH?=
+ =?us-ascii?Q?cnwNvRxM3E4GU68G8iR4yU9I4Ni4xDf6ecfbQ3/IZHDzcB8A02HClHOJqt4t?=
+ =?us-ascii?Q?1IMY98K4nEtDvERJ7TwGmF+E0ovaWqIghuSfJQzs0Gys9HA1Vj19ukvJLFqN?=
+ =?us-ascii?Q?qc/E8HMMb2PKQvVqC0qHOOH9nbwqFD1fOi6tdXYRtruABqTW7hIbOBMyg5zE?=
+ =?us-ascii?Q?u/KuH1w9JK4TKvC3qZGNh3WkbkW0QVTWjXh+TMxPnj46+9sLhFeavUEWwLCW?=
+ =?us-ascii?Q?8LKblNtDKEFBxaTB4TQsfc7/cLk+fzNDajHqYFGyjgXj8gTGLjfWUSkaMXZF?=
+ =?us-ascii?Q?pzrSOsTCzSPcPAStzOhOkvMijlpBUjAs21m9ff13a+HqaodsxcX+kt84bLl1?=
+ =?us-ascii?Q?T2Bji4CeWe8X6qRfoFsLtypA9xYjBq6CEJmOVM2YmGOKFpQDALIx6ucfu9FN?=
+ =?us-ascii?Q?KPB/Omtuqcxp6C8PEwYdsLnc4dT+61xvZiCV5aU5XQ6CnZ4iNMWSPAvqq9WO?=
+ =?us-ascii?Q?YbYPQYLLRn8cYmp9F/nZrc+/0YrKB//rFVU50/ZxbA0eTZdw5OCZla0qvAjb?=
+ =?us-ascii?Q?WRa+HVYF/ejocJzrwumhhMlkMjlV+BpMlrxsbYjXjYbAC+mFQ2K02orbCCfS?=
+ =?us-ascii?Q?4mcAX1X99PzEhadPHdJLorlkAwqHgd+p88YFzbJTz74rspmQNT3dpxF4mnfF?=
+ =?us-ascii?Q?haOa0y5JP5itPqoik1mtSp8VQPxqZDwt0YXBuYvnYi3lrS47qan7UzLdhMev?=
+ =?us-ascii?Q?nmdFCbxEW5NRl5gcZSpdL8BVk1Zxnle+VOeZHsc6bt9Lqw=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5942bc92-b181-45a9-4a62-08d8f88c7b2a
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Apr 2021 23:42:32.2361
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +O+ywaV+Txz5L8s6xItXS0yIEW5Cr/C3011yCPztVxMT+VlnGTIAgXfV78O3n1w5
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4356
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 04:38:07PM -0700, Paul E. McKenney wrote:
-> On Tue, Apr 06, 2021 at 07:25:44AM +0800, Boqun Feng wrote:
-> > On Mon, Apr 05, 2021 at 10:27:52AM -0700, Paul E. McKenney wrote:
-> > > On Mon, Apr 05, 2021 at 01:23:30PM +0800, Boqun Feng wrote:
-> > > > On Sun, Apr 04, 2021 at 09:30:38PM -0700, Paul E. McKenney wrote:
-> > > > > On Sun, Apr 04, 2021 at 09:01:25PM -0700, Paul E. McKenney wrote:
-> > > > > > On Mon, Apr 05, 2021 at 04:08:55AM +0100, Matthew Wilcox wrote:
-> > > > > > > On Sun, Apr 04, 2021 at 02:40:30PM -0700, Paul E. McKenney wrote:
-> > > > > > > > On Sun, Apr 04, 2021 at 10:38:41PM +0200, Thomas Gleixner wrote:
-> > > > > > > > > On Sun, Apr 04 2021 at 12:05, syzbot wrote:
-> > > > > > > > > 
-> > > > > > > > > Cc + ...
-> > > > > > > > 
-> > > > > > > > And a couple more...
-> > > > > > > > 
-> > > > > > > > > > Hello,
-> > > > > > > > > >
-> > > > > > > > > > syzbot found the following issue on:
-> > > > > > > > > >
-> > > > > > > > > > HEAD commit:    5e46d1b7 reiserfs: update reiserfs_xattrs_initialized() co..
-> > > > > > > > > > git tree:       upstream
-> > > > > > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=1125f831d00000
-> > > > > > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=78ef1d159159890
-> > > > > > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=88e4f02896967fe1ab0d
-> > > > > > > > > >
-> > > > > > > > > > Unfortunately, I don't have any reproducer for this issue yet.
-> > > > > > > > > >
-> > > > > > > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > > > > > > > Reported-by: syzbot+88e4f02896967fe1ab0d@syzkaller.appspotmail.com
-> > > > > > > > > >
-> > > > > > > > > > =============================
-> > > > > > > > > > WARNING: suspicious RCU usage
-> > > > > > > > > > 5.12.0-rc5-syzkaller #0 Not tainted
-> > > > > > > > > > -----------------------------
-> > > > > > > > > > kernel/sched/core.c:8294 Illegal context switch in RCU-sched read-side critical section!
-> > > > > > > > > >
-> > > > > > > > > > other info that might help us debug this:
-> > > > > > > > > >
-> > > > > > > > > >
-> > > > > > > > > > rcu_scheduler_active = 2, debug_locks = 0
-> > > > > > > > > > 3 locks held by syz-executor.4/8418:
-> > > > > > > > > >  #0: 
-> > > > > > > > > > ffff8880751d2b28
-> > > > > > > > > >  (
-> > > > > > > > > > &p->pi_lock
-> > > > > > > > > > ){-.-.}-{2:2}
-> > > > > > > > > > , at: try_to_wake_up+0x98/0x14a0 kernel/sched/core.c:3345
-> > > > > > > > > >  #1: 
-> > > > > > > > > > ffff8880b9d35258
-> > > > > > > > > >  (
-> > > > > > > > > > &rq->lock
-> > > > > > > > > > ){-.-.}-{2:2}
-> > > > > > > > > > , at: rq_lock kernel/sched/sched.h:1321 [inline]
-> > > > > > > > > > , at: ttwu_queue kernel/sched/core.c:3184 [inline]
-> > > > > > > > > > , at: try_to_wake_up+0x5e6/0x14a0 kernel/sched/core.c:3464
-> > > > > > > > > >  #2: ffff8880b9d1f948 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_change+0x142/0x220 kernel/sched/psi.c:807
-> > > > > > > > 
-> > > > > > > > This looks similar to syzbot+dde0cc33951735441301@syzkaller.appspotmail.com
-> > > > > > > > in that rcu_sleep_check() sees an RCU lock held, but the later call to
-> > > > > > > > lockdep_print_held_locks() does not.  Did something change recently that
-> > > > > > > > could let the ->lockdep_depth counter get out of sync with the actual
-> > > > > > > > number of locks held?
-> > > > > > > 
-> > > > > > > Dmitri had a different theory here:
-> > > > > > > 
-> > > > > > > https://groups.google.com/g/syzkaller-bugs/c/FmYvfZCZzqA/m/nc2CXUgsAgAJ
-> > > > > > 
-> > > > > > There is always room for more than one bug.  ;-)
-> > > > > > 
-> > > > > > He says "one-off false positives".  I was afraid of that...
-> > > > > 
-> > > > > And both the examples I have been copied on today are consistent with
-> > > > > debug_locks getting zeroed (e.g., via a call to __debug_locks_off())
-> > > > > in the midst of a call to rcu_sleep_check().  But I would expect to see
-> > > > > a panic or another splat if that were to happen.
-> > > > > 
-> > > > > Dmitry's example did have an additional splat, but I would expect the
-> > > > > RCU-related one to come second.  Again, there is always room for more
-> > > > > than one bug.
-> > > > > 
-> > > > > On the other hand, there are a lot more callers to debug_locks_off()
-> > > > > than there were last I looked into this.  And both of these splats
-> > > > > are consistent with an interrupt in the middle of rcu_sleep_check(),
-> > > > > and that interrupt's handler invoking debug_locks_off(), but without
-> > > > > printing anything to the console.  Does that sequence of events ring a
-> > > > > bell for anyone?
-> > > > > 
-> > > > > If this is the new normal, I could make RCU_LOCKDEP_WARN() recheck
-> > > > > debug_lockdep_rcu_enabled() after evaluating the condition, but with
-> > > > > a memory barrier immediately before the recheck.  But I am not at all
-> > > > > excited by doing this on speculation.  Especially given that doing
-> > > > > so might be covering up some other bug.
-> > > > > 
-> > > > 
-> > > > Just check the original console log and find:
-> > > > 
-> > > > [  356.696686][ T8418] =============================
-> > > > [  356.696692][ T8418] WARNING: suspicious RCU usage
-> > > > [  356.700193][T14782] ====================================
-> > > > [  356.704548][ T8418] 5.12.0-rc5-syzkaller #0 Not tainted
-> > > > [  356.729981][ T8418] -----------------------------
-> > > > [  356.732473][T14782] WARNING: iou-sqp-14780/14782 still has locks held!
-> > > > 
-> > > > , so there are two warnnings here, one is from lockdep_rcu_suspisous()
-> > > > and the other is from print_held_locks_bug(). I think this is what
-> > > > happened:
-> > > > 
-> > > > in RCU_LOCKDEP_WARN():
-> > > > 
-> > > > 	if (debug_lockdep_rcu_enabled() // this is true and at this time debug_locks = 1
-> > > > 	<interrupted>
-> > > > 	// lockdep detects a lock bug, set debug_locks = 0
-> > > > 	<swicth back>
-> > > > 	    && !__warned // true
-> > > > 	    && (c))      // "c" is a lock_is_held(), which will always returns true if debug_locks == 0!
-> > > > 
-> > > > the cause of the problem is that RCU_LOCKDEP_WARN() in fact read
-> > > > debug_locks twice and get different values.
-> > > > 
-> > > > But if you change the ordering of two reads, probably can avoid the
-> > > > problem:
-> > > > 	
-> > > > First read:
-> > > > 	lock_is_held(); // true if 1) lock is really held or 2) lockdep is off
-> > > > 
-> > > > Second read:
-> > > > 	debug_lockdep_rcu_enabled(); // if lockdep is not off, we know
-> > > > 				     // that the first read got correct
-> > > > 				     // value, otherwise we just ignore
-> > > > 				     // the first read, because either
-> > > > 				     // there is a bug reported between
-> > > > 				     // two reads, or lockdep is already
-> > > > 				     // off when the first read happens.
-> > > > 
-> > > > So maybe something below:
-> > > > 
-> > > > Regards,
-> > > > Boqun
-> > > > 
-> > > > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> > > > index bd04f722714f..d11bee5d9347 100644
-> > > > --- a/include/linux/rcupdate.h
-> > > > +++ b/include/linux/rcupdate.h
-> > > > @@ -315,7 +315,7 @@ static inline int rcu_read_lock_any_held(void)
-> > > >  #define RCU_LOCKDEP_WARN(c, s)						\
-> > > >  	do {								\
-> > > >  		static bool __section(".data.unlikely") __warned;	\
-> > > > -		if (debug_lockdep_rcu_enabled() && !__warned && (c)) {	\
-> > > > +		if ((c) && debug_lockdep_rcu_enabled() && !__warned) {	\
-> > > >  			__warned = true;				\
-> > > >  			lockdep_rcu_suspicious(__FILE__, __LINE__, s);	\
-> > > >  		}							\
-> > > 
-> > > Good point -- if we check debug_lockdep_rcu_enabled() after the condition,
-> > > then we will reject false positives in cases where debug_locks was switched
-> > > to zero out from under us.
-> > > 
-> > > However, we do need ordering.  The "c" usually contains lock_is_held(),
-> > > which also checks debug_locks, but from some other translation unit.
-> > > Back in the day, the translation-unit boundaries would provide the needed
-> > > ordering, but LTO...
-> > > 
-> > > In addition, the "debug_locks = 0" was originally supposed to be a hint
-> > > that the report might be a false positive.  It is clear that this needs
-> > > to be made explicit.
-> > > 
-> > > Taking all this together, how about the following?  (The intent is
-> > > that the changes to lockdep_rcu_suspicious() will be in a separate
-> > > commit.)
+On Fri, Apr 02, 2021 at 08:22:28AM +0000, Tian, Kevin wrote:
+> > From: Jason Gunthorpe <jgg@nvidia.com>
+> > Sent: Tuesday, March 30, 2021 9:29 PM
 > > 
-> > Looks good to me ;-)
-> 
-> Whew!  May I add your Reviewed-by?
-> 
-
-Of course ;-)
-
-Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
-
-Regards,
-Boqun
-
-> 							Thanx, Paul
-> 
-> > Regards,
-> > Boqun
+> > >
+> > > First, userspace may use ioasid in a non-SVA scenario where ioasid is
+> > > bound to specific security context (e.g. a control vq in vDPA) instead of
+> > > tying to mm. In this case there is no pgtable binding initiated from user
+> > > space. Instead, ioasid is allocated from /dev/ioasid and then programmed
+> > > to the intended security context through specific passthrough framework
+> > > which manages that context.
 > > 
-> > > 							Thanx, Paul
-> > > 
-> > > ------------------------------------------------------------------------
-> > > 
-> > > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> > > index 9455476..1199ffd 100644
-> > > --- a/include/linux/rcupdate.h
-> > > +++ b/include/linux/rcupdate.h
-> > > @@ -315,7 +315,7 @@ static inline int rcu_read_lock_any_held(void)
-> > >  #define RCU_LOCKDEP_WARN(c, s)						\
-> > >  	do {								\
-> > >  		static bool __section(".data.unlikely") __warned;	\
-> > > -		if (debug_lockdep_rcu_enabled() && !__warned && (c)) {	\
-> > > +		if ((c) && debug_lockdep_rcu_enabled() && !__warned) {	\
-> > >  			__warned = true;				\
-> > >  			lockdep_rcu_suspicious(__FILE__, __LINE__, s);	\
-> > >  		}							\
-> > > diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-> > > index c6d0c1dc..80065cd 100644
-> > > --- a/kernel/locking/lockdep.c
-> > > +++ b/kernel/locking/lockdep.c
-> > > @@ -6387,6 +6387,7 @@ asmlinkage __visible void lockdep_sys_exit(void)
-> > >  void lockdep_rcu_suspicious(const char *file, const int line, const char *s)
-> > >  {
-> > >  	struct task_struct *curr = current;
-> > > +	int dl = READ_ONCE(debug_locks);
-> > >  
-> > >  	/* Note: the following can be executed concurrently, so be careful. */
-> > >  	pr_warn("\n");
-> > > @@ -6396,11 +6397,12 @@ void lockdep_rcu_suspicious(const char *file, const int line, const char *s)
-> > >  	pr_warn("-----------------------------\n");
-> > >  	pr_warn("%s:%d %s!\n", file, line, s);
-> > >  	pr_warn("\nother info that might help us debug this:\n\n");
-> > > -	pr_warn("\n%srcu_scheduler_active = %d, debug_locks = %d\n",
-> > > +	pr_warn("\n%srcu_scheduler_active = %d, debug_locks = %d\n%s",
-> > >  	       !rcu_lockdep_current_cpu_online()
-> > >  			? "RCU used illegally from offline CPU!\n"
-> > >  			: "",
-> > > -	       rcu_scheduler_active, debug_locks);
-> > > +	       rcu_scheduler_active, dl,
-> > > +	       dl ? "" : "Possible false positive due to lockdep disabling via debug_locks = 0\n");
-> > >  
-> > >  	/*
-> > >  	 * If a CPU is in the RCU-free window in idle (ie: in the section
-> > > diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-> > > index b95ae86..dd94a60 100644
-> > > --- a/kernel/rcu/update.c
-> > > +++ b/kernel/rcu/update.c
-> > > @@ -277,7 +277,7 @@ EXPORT_SYMBOL_GPL(rcu_callback_map);
-> > >  
-> > >  noinstr int notrace debug_lockdep_rcu_enabled(void)
-> > >  {
-> > > -	return rcu_scheduler_active != RCU_SCHEDULER_INACTIVE && debug_locks &&
-> > > +	return rcu_scheduler_active != RCU_SCHEDULER_INACTIVE && READ_ONCE(debug_locks) &&
-> > >  	       current->lockdep_recursion == 0;
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(debug_lockdep_rcu_enabled);
+> > This sounds like the exact opposite of what I'd like to see.
+> > 
+> > I do not want to see every subsystem gaining APIs to program a
+> > PASID. All of that should be consolidated in *one place*.
+> > 
+> > I do not want to see VDPA and VFIO have two nearly identical sets of
+> > APIs to control the PASID.
+> > 
+> > Drivers consuming a PASID, like VDPA, should consume the PASID and do
+> > nothing more than authorize the HW to use it.
+> > 
+> > quemu should have general code under the viommu driver that drives
+> > /dev/ioasid to create PASID's and manage the IO mapping according to
+> > the guest's needs.
+> > 
+> > Drivers like VDPA and VFIO should simply accept that PASID and
+> > configure/authorize their HW to do DMA's with its tag.
+> > 
+> 
+> I agree with you on consolidating things in one place (especially for the
+> general SVA support). But here I was referring to an usage without 
+> pgtable binding (Possibly Jason. W can say more here), where the 
+> userspace just wants to allocate PASIDs, program/accept PASIDs to 
+> various workqueues (device specific), and then use MAP/UNMAP 
+> interface to manage address spaces associated with each PASID. 
+> I just wanted to point out that the latter two steps are through 
+> VFIO/VDPA specific interfaces. 
+
+No, don't do that.
+
+VFIO and VDPA has no buisness having map/unmap interfaces once we have
+/dev/ioasid. That all belongs in the iosaid side.
+
+I know they have those interfaces today, but that doesn't mean we have
+to keep using them for PASID use cases, they should be replaced with a
+'do dma from this pasid on /dev/ioasid' interface certainly not a
+'here is a pasid from /dev/ioasid, go ahead and configure it youself'
+interface
+
+This is because PASID is *complicated* in the general case! For
+instance all the two level stuff you are talking about must not leak
+into every user!
+
+Jason
