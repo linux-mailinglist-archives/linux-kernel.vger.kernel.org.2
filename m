@@ -2,236 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 882AE35482D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 23:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE1ED354830
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 23:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237180AbhDEVc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 17:32:57 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:34642 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236532AbhDEVcv (ORCPT
+        id S237299AbhDEVdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 17:33:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232853AbhDEVdn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 17:32:51 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 61D101F44684
-Received: by earth.universe (Postfix, from userid 1000)
-        id 153853C0C96; Mon,  5 Apr 2021 23:32:41 +0200 (CEST)
-Date:   Mon, 5 Apr 2021 23:32:41 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>, linux-pm@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] power: supply: Add battery driver for Surface
- Aggregator Module
-Message-ID: <20210405213241.r6xhtbaf4qkzylz2@earth.universe>
-References: <20210309000530.2165752-1-luzmaximilian@gmail.com>
- <20210309000530.2165752-2-luzmaximilian@gmail.com>
- <20210405153752.2r4ii5lguogchgl4@earth.universe>
- <046f6149-55fd-431e-d582-cc5915d10e20@gmail.com>
+        Mon, 5 Apr 2021 17:33:43 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF6CC061756;
+        Mon,  5 Apr 2021 14:33:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wry8Jt8iN0Mer/EWMWcLYvNntsxmxMJzoHKncgg0YMw=; b=j5tqFDtw4Ez6xytQb1FvHDf3pZ
+        xDE7Axs2HVnmrdwKBV8FeyDDGhNEv7QvdwERMdg4ub6YpCPR/uVl+7GLIxb7ASSMutEg9+P6hSKG+
+        HrvwVOzB/6mi2+38HIJwSR0b1UCACmXsdKVxFd1RfOmtaigK2J1CteIXCxtF8K3FQel68F2uYetkv
+        /FC4JQype1iNxgL5cJsHvsynb5ay8dVX+sPuTATljSIO68GPnkWPNFjNCDgdea4fbHkvBC7cbtfZh
+        ySIZZGrcHdotRW2PfmjuV2vN79a1USCcMz4fhpEtpZmHmWAiwc6c4lnfHYMblpVUvT3wHY31VhZ6v
+        9hWcj8YA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lTWq0-00Btzh-KR; Mon, 05 Apr 2021 21:32:52 +0000
+Date:   Mon, 5 Apr 2021 22:32:48 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        akpm@linux-foundation.org, linux-mm@kvack.org, bpf@vger.kernel.org,
+        dave.hansen@linux.intel.com, peterz@infradead.org, luto@kernel.org,
+        jeyu@kernel.org, linux-kernel@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, hch@infradead.org,
+        x86@kernel.org
+Subject: Re: [RFC 2/3] vmalloc: Support grouped page allocations
+Message-ID: <20210405213248.GN2531743@casper.infradead.org>
+References: <20210405203711.1095940-1-rick.p.edgecombe@intel.com>
+ <20210405203711.1095940-3-rick.p.edgecombe@intel.com>
+ <971aae01-32a0-3f45-1810-010e3295b1c4@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="s2kgvvnmznjx3piv"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <046f6149-55fd-431e-d582-cc5915d10e20@gmail.com>
+In-Reply-To: <971aae01-32a0-3f45-1810-010e3295b1c4@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Apr 05, 2021 at 02:01:58PM -0700, Dave Hansen wrote:
+> On 4/5/21 1:37 PM, Rick Edgecombe wrote:
+> > +static void __dispose_pages(struct list_head *head)
+> > +{
+> > +	struct list_head *cur, *next;
+> > +
+> > +	list_for_each_safe(cur, next, head) {
+> > +		list_del(cur);
+> > +
+> > +		/* The list head is stored at the start of the page */
+> > +		free_page((unsigned long)cur);
+> > +	}
+> > +}
+> 
+> This is interesting.
+> 
+> While the page is in the allocator, you're using the page contents
+> themselves to store the list_head.  It took me a minute to figure out
+> what you were doing here because: "start of the page" is a bit
+> ambiguous.  It could mean:
+> 
+>  * the first 16 bytes in 'struct page'
+> or
+>  * the first 16 bytes in the page itself, aka *page_address(page)
+> 
+> The fact that this doesn't work on higmem systems makes this an OK thing
+> to do, but it is a bit weird.  It's also doubly susceptible to bugs
+> where there's a page_to_virt() or virt_to_page() screwup.
+> 
+> I was *hoping* there was still sufficient space in 'struct page' for
+> this second list_head in addition to page->lru.  I think there *should*
+> be.  That would at least make this allocator a bit more "normal" in not
+> caring about page contents while the page is free in the allocator.  If
+> you were able to do that you could do things like kmemcheck or page
+> alloc debugging while the page is in the allocator.
+> 
+> Anyway, I think I'd prefer that you *try* to use 'struct page' alone.
+> But, if that doesn't work out, please comment the snot out of this thing
+> because it _is_ weird.
 
---s2kgvvnmznjx3piv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi!  Current closest-thing-we-have-to-an-expert-on-struct-page here!
 
-Hi,
+I haven't read over these patches yet.  If these pages are in use by
+vmalloc, they can't use mapping+index because get_user_pages() will call
+page_mapping() and the list_head will confuse it.  I think it could use
+index+private for a list_head.
 
-On Mon, Apr 05, 2021 at 09:07:55PM +0200, Maximilian Luz wrote:
-> [...]
-> > > +static int spwr_battery_recheck_adapter(struct spwr_battery_device *=
-bat)
-> > > +{
-> > > +	/*
-> > > +	 * Handle battery update quirk: When the battery is fully charged (=
-or
-> > > +	 * charged up to the limit imposed by the UEFI battery limit) and t=
-he
-> > > +	 * adapter is plugged in or removed, the EC does not send a separate
-> > > +	 * event for the state (charging/discharging) change. Furthermore it
-> > > +	 * may take some time until the state is updated on the battery.
-> > > +	 * Schedule an update to solve this.
-> > > +	 */
-> >=20
-> > As long as the adapter plug event is being sent you can just add
-> > .external_power_changed() hook in this driver and update the battery
-> > status there instead of using this hack :)
-> >=20
-> > This requires populating .supplied_to in the charger driver, so that
-> > it will notify the battery device when power_supply_changed() is called
-> > for the charger. I will point this out when reviewing PATCH 2.
->=20
-> I'll switch this to the .external_power_changed() callback, thanks for
-> pointing that out.
->=20
-> I still need the delay though. The event for the charger is the same
-> event that we rely on here, so the charging/not-charging flag in the BST
-> data may still not be updated yet. So unfortunately still a bit of a
-> hack required.
+If the pages are in the buddy, I _think_ mapping+index are free.  private
+is in use for buddy order.  But I haven't read through the buddy code
+in a while.
 
-Ah, too bad.
-
-> > > +	schedule_delayed_work(&bat->update_work, SPWR_AC_BAT_UPDATE_DELAY);
-> > > +	return 0;
-> > > +}
-> [...]
-> > > +static void spwr_battery_update_bst_workfn(struct work_struct *work)
-> > > +{
-> > > +	struct delayed_work *dwork =3D to_delayed_work(work);
-> > > +	struct spwr_battery_device *bat;
-> > > +	int status;
-> > > +
-> > > +	bat =3D container_of(dwork, struct spwr_battery_device, update_work=
-);
-> > > +
-> > > +	status =3D spwr_battery_update_bst(bat, false);
-> > > +	if (!status)
-> > > +		power_supply_changed(bat->psy);
-> >=20
-> > power_supply_changed should only be changed for 'important' changes
-> > (e.g. charging status changes, temperature or capacity threshold reache=
-d),
-> > not every 5 seconds.
->=20
-> This work struct will only be scheduled when we receive an adapter event
-> and is required to handle the quirk above, so this should be an
-> important change (state changing from charging to not-charging or back)
-> and shouldn't repeat too often, or rather only when the user
-> plugs/unplugs the charger.
-
-Ack.
-
-> [...]
-> > > +/* -- Alarm attribute. ---------------------------------------------=
---------- */
-> > > +
-> > > +static ssize_t spwr_battery_alarm_show(struct device *dev, struct de=
-vice_attribute *attr, char *buf)
-> > > +{
-> > > +	struct power_supply *psy =3D dev_get_drvdata(dev);
-> > > +	struct spwr_battery_device *bat =3D power_supply_get_drvdata(psy);
-> > > +	int status;
-> > > +
-> > > +	mutex_lock(&bat->lock);
-> > > +	status =3D sysfs_emit(buf, "%d\n", bat->alarm * 1000);
-> > > +	mutex_unlock(&bat->lock);
-> > > +
-> > > +	return status;
-> > > +}
-> > > +
-> > > +static ssize_t spwr_battery_alarm_store(struct device *dev, struct d=
-evice_attribute *attr,
-> > > +					const char *buf, size_t count)
-> > > +{
-> > > +	struct power_supply *psy =3D dev_get_drvdata(dev);
-> > > +	struct spwr_battery_device *bat =3D power_supply_get_drvdata(psy);
-> > > +	unsigned long value;
-> > > +	int status;
-> > > +
-> > > +	status =3D kstrtoul(buf, 0, &value);
-> > > +	if (status)
-> > > +		return status;
-> > > +
-> > > +	mutex_lock(&bat->lock);
-> > > +
-> > > +	if (!spwr_battery_present(bat)) {
-> > > +		mutex_unlock(&bat->lock);
-> > > +		return -ENODEV;
-> > > +	}
-> > > +
-> > > +	status =3D spwr_battery_set_alarm_unlocked(bat, value / 1000);
-> > > +	if (status) {
-> > > +		mutex_unlock(&bat->lock);
-> > > +		return status;
-> > > +	}
-> > > +
-> > > +	mutex_unlock(&bat->lock);
-> > > +	return count;
-> > > +}
-> > > +
-> > > +static const struct device_attribute alarm_attr =3D {
-> > > +	.attr =3D {.name =3D "alarm", .mode =3D 0644},
-> > > +	.show =3D spwr_battery_alarm_show,
-> > > +	.store =3D spwr_battery_alarm_store,
-> > > +};
-> >=20
-> > DEVICE_ATTR_RW()
-> >=20
-> > custom property needs to be documented in
-> >=20
-> > Documentation/ABI/testing/sysfs-class-power-surface
-> >=20
-> > Also I'm not sure what is being stored here, but it looks like you
-> > can just use POWER_SUPPLY_PROP_CAPACITY_ALERT_MIN?
->=20
-> This (and other handling of the alarm value) has essentially been copied
-> from drivers/acpi/battery.c and corresponds to ACPI _BTP/battery trip
-> point (the whole interface of this EC is essentially modeled after the
-> ACPI spec).
->=20
-> The alarm value isn't strictly required to be a lower threshold, but is
-> (according to ACPI spec) a trip point that causes an event to be sent
-> when it is crossed in either direction. So I don't think we can directly
-> map this to POWER_SUPPLY_PROP_CAPACITY_ALERT_MIN as that seems to imply
-> a lower threshold only.
->=20
-> I'll add documentation for this if that's allright.
-
-Ack.
-
-> [...]
-> > > +static void spwr_battery_unregister(struct spwr_battery_device *bat)
-> > > +{
-> > > +	ssam_notifier_unregister(bat->sdev->ctrl, &bat->notif);
-> > > +	cancel_delayed_work_sync(&bat->update_work);
-> > > +	device_remove_file(&bat->psy->dev, &alarm_attr);
-> > > +	power_supply_unregister(bat->psy);
-> >=20
-> > power_supply_unregister being the last function call is a clear
-> > sign, that devm_power_supply_register can be used instead.
->=20
-> Right, that works here. I normally try to not mix devm code with
-> non-devm code (apart from maybe allocations).
-
-well allocations are usually done first and free'd last making
-them the first targets in the conversion and pretty much a no
-brainer.
-
-Next merge window it's possible to easily go to full devm by
-using devm_delayed_work_autocancel(), which has been merged
-by Greg two weeks ago. Then last but not least do the ssam
-notifier unregister via devm_add_action_or_reset and its fully
-converted :)
-
--- Sebastian
-
---s2kgvvnmznjx3piv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBrgfIACgkQ2O7X88g7
-+poIgw//eiNHJHzoFU774Y+VeSHxK+HM6QjOyuqGJ+kQDOF3Crzp3L/sAPr/Q2pt
-4vmYamGfYq7G7oFT65G30+AZpZ6xu8XmWWJzbErEm8OP9CglBJUfNptSE+DqaJkc
-h2Gn4Q2DUM16L+3V70BCMzBZJLHaaiKkcSb8nNYtB1S0+CFS4lecZRRn2tfeyt1R
-vOXhUsm3DCKUF69qxjl7OoXMhVu5mJwZCcLrBn57MW/8Ou87vblYvwSCJPKMXGmo
-osxfftbDXNVKMgQusJ3wPmUxqpEfYjLp/l6wdX9g1/e2zFLMyjuuT0A1sUInzShY
-/kTJqrJ//BPf0JjXtlhPsV+ijD8+jJXMhJb1AKyh6/D331VrblIKlQipmlwpxvD5
-695uKzejgzG3tMFug5tfCt73uXhMJjX7HEvT5brqO3bUoVPS2AdYZ4TZQEH3N2Qc
-91YJjUFX9M/Cv7AehCRPo+AuKilty8NroEk7VcO7wHidufh6jgLezj7ndSoUfO+G
-2rQt9tZgCHD6veyw0P3L+Zs5rGf0PcPeqmA179zxLFdmjdJZ0ri08KJvHJWb6cJ0
-ezAdmsyCTBBnUDxoYCAQx3QjphWu4XuerhjOhAQu7kIgzE3PBeY+lCoej/uG+oEb
-gBudGk+2JwZyuJxb/uW4mHwKkLDlgxNCCCtHHo1+2tfAM5Hwn/0=
-=8fEC
------END PGP SIGNATURE-----
-
---s2kgvvnmznjx3piv--
+Does it need to be a doubly linked list?  Can it be an hlist?
