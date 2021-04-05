@@ -2,139 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18AC6354296
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 16:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6589E35429D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 16:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241254AbhDEOIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 10:08:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232860AbhDEOID (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 10:08:03 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ABC7C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 07:07:57 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id c8so11024590wrq.11
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 07:07:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=JlbOqM+HKUif9ACJOM3T2e04ay7sz/FxW5cMBM8jD4k=;
-        b=ZGVLjSk84lCWVnojhyYzP1r+QhKbwr6wuQt/Rkasuop9Srm7CQuoFEZMqk+8qGevQj
-         7Ob6/BT8Pm4wa1+xWRbOsr2Rl2QHIIc1j5bTuEejSTCejh1jQPe76rT9Dx1rG7AhTWLp
-         FoDtUGCcd+FaQseLEcXBm36umL4cpJPmc47JnyI74lf/xZNAqKllEYiYpTxwCqTZ5CfK
-         68idM1b2kHu5lHEYp+v5kZ5EJPDJATfo9DleD+DaAZMZH9DA13WnUt30j+Qvc9LGlLha
-         vXwllPbh7shxYIdcLAphO4OBxA4LYw5ipPCZ1tOgnPw1pYUYnMX4nQ4/zYKwgQE1OB6q
-         7vyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=JlbOqM+HKUif9ACJOM3T2e04ay7sz/FxW5cMBM8jD4k=;
-        b=SmyiFDmD59O8VDknyDmabXEPvlYzSKxG2gCXh1YKp8offKA+P0FS+qBOYryQQtvoad
-         0yc3lchZrDLf2wObhL9Pd4vFhbJcmfDi4Nh40yRpMNT7i380ZTbuPaeXC6Tjs7nWTwc0
-         vqjnmhszdz8mJrCKwz8fGarcK57VirAdiGU0VTqiSgtEImn4JO7vkH/zDxH0ZS35tiH8
-         bI9NuZahI5sGc2a3HeJFzu4d2R+a8VJeSlNgYzLStCUun1Go14u4mNhrB+aUYTVpedIk
-         XCE2Q0sVb49RiZ5o6uby2AueclOlV2uWeRz+2Ct+kcgy096ZgBJif65n0AKGLrzPflMq
-         uo/Q==
-X-Gm-Message-State: AOAM533JGtVOlqfrfteFQQbjdRr4fPCjVhoza5Vf4ECJr29c9Lw9j8hi
-        5khmvhAuXHCRHl/eJmgq3mGQ/0stRs7GwQ==
-X-Google-Smtp-Source: ABdhPJxdPOR3HmxvlPuIlDCDtbTwQJhMoUaOz8NP0db4o07Fr7c+h4mgkzm1y8faKJ9cU397p/tQBQ==
-X-Received: by 2002:a5d:4884:: with SMTP id g4mr29215748wrq.191.1617631674693;
-        Mon, 05 Apr 2021 07:07:54 -0700 (PDT)
-Received: from ?IPv6:2001:818:de85:7e00:9a5b:98e6:2174:bf29? ([2001:818:de85:7e00:9a5b:98e6:2174:bf29])
-        by smtp.gmail.com with ESMTPSA id 61sm17381191wrn.25.2021.04.05.07.07.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Apr 2021 07:07:53 -0700 (PDT)
-Subject: Re: [Outreachy kernel] [PATCH] staging: emxx_udc: Ending line with
- argument
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-References: <20210401195457.24512-1-martinsdecarvalhobeatriz@gmail.com>
- <alpine.DEB.2.22.394.2104012314480.2908@hadrien>
-From:   Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
-Message-ID: <82580331-13dc-ed79-72e7-3984fd2f75f9@gmail.com>
-Date:   Mon, 5 Apr 2021 15:07:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S241277AbhDEOIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 10:08:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55574 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237431AbhDEOIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 10:08:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D99C613B1;
+        Mon,  5 Apr 2021 14:08:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617631717;
+        bh=LF0+zRsEi7jGYk/Bg8vQa1eqOiMQAgaqbYGUkXrouMw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=I6k7K+GugdLkntOIS/XDUjVAG89FAmzBko1fER7cc3uE9NDtxEXpfu2Xnwtq/0NxL
+         ckDn8FJGtmNFigRJklJ7KJ88kfm6kTIfkzu3K1al8GZ7hrG/NbQzaebZPrLuRPMKeV
+         AptGe6e5kFiM39xIw5oZeLhyTwrYwxKuFNMZKvbh6T+PyVEguwKyGNPBgMTiuZrCtk
+         1J4xCIyRWGlQcLyexllVaPJpVxprEGXSRehfPLV3q2bRKrFBLmzp+wrTu00d0Soctr
+         YYj1Q6Vs4W+Ds4QlJ6sIRBcayMiU899q/lysRyhZ5ut6I4xryD2Pm4kvUfyk5iXnMH
+         E6a7i+TLCgJHQ==
+Date:   Mon, 5 Apr 2021 17:08:33 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Jens Axboe <axboe@fb.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Keith Busch <kbusch@kernel.org>, Lijun Ou <oulijun@huawei.com>,
+        linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Michael Guralnik <michaelgur@nvidia.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        netdev@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>,
+        rds-devel@oss.oracle.com, Sagi Grimberg <sagi@grimberg.me>,
+        samba-technical@lists.samba.org,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Steve French <sfrench@samba.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next 00/10] Enable relaxed ordering for ULPs
+Message-ID: <YGsZ4Te1+DQODj34@unreal>
+References: <20210405052404.213889-1-leon@kernel.org>
+ <20210405134115.GA22346@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.22.394.2104012314480.2908@hadrien>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210405134115.GA22346@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Apr 05, 2021 at 03:41:15PM +0200, Christoph Hellwig wrote:
+> On Mon, Apr 05, 2021 at 08:23:54AM +0300, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> > 
+> > >From Avihai,
+> > 
+> > Relaxed Ordering is a PCIe mechanism that relaxes the strict ordering
+> > imposed on PCI transactions, and thus, can improve performance.
+> > 
+> > Until now, relaxed ordering could be set only by user space applications
+> > for user MRs. The following patch series enables relaxed ordering for the
+> > kernel ULPs as well. Relaxed ordering is an optional capability, and as
+> > such, it is ignored by vendors that don't support it.
+> > 
+> > The following test results show the performance improvement achieved
+> > with relaxed ordering. The test was performed on a NVIDIA A100 in order
+> > to check performance of storage infrastructure over xprtrdma:
+> 
+> Isn't the Nvidia A100 a GPU not actually supported by Linux at all?
+> What does that have to do with storage protocols?
 
-Em 01/04/21 22:16, Julia Lawall escreveu:
->
-> On Thu, 1 Apr 2021, Beatriz Martins de Carvalho wrote:
->
->> Cleans up check of "Lines should not end with a '('"
->> with argument present in next line in file emxx_udc.c
-> The coding style documentation encourages remaining within 80 characters.
-> I'm not sure that the ( warning is worth increading the excess beyond 80
-> characters (or introducing it in the last case).
->
-> julia
-Thanks, prof Julia, how the checkpath now warning only if line length of 
-100 characters, I used it for reference.
+This system is in use by our storage oriented customer who performed the
+test. He runs drivers/infiniband/* stack from the upstream, simply backported
+to specific kernel version.
 
-I will take the suggestions of checkpatch with more attention.
+The performance boost is seen in other systems too.
 
-Beatriz
+> 
+> Also if you enable this for basically all kernel ULPs, why not have
+> an opt-out into strict ordering for the cases that need it (if there are
+> any).
 
->> Signed-off-by: Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
->> ---
->>   drivers/staging/emxx_udc/emxx_udc.c | 11 ++++-------
->>   1 file changed, 4 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/staging/emxx_udc/emxx_udc.c b/drivers/staging/emxx_udc/emxx_udc.c
->> index 741147a4f0fe..20f53cf6e20f 100644
->> --- a/drivers/staging/emxx_udc/emxx_udc.c
->> +++ b/drivers/staging/emxx_udc/emxx_udc.c
->> @@ -1073,9 +1073,8 @@ static int _nbu2ss_epn_in_pio(struct nbu2ss_udc *udc, struct nbu2ss_ep *ep,
->>   		i_word_length = length / sizeof(u32);
->>   		if (i_word_length > 0) {
->>   			for (i = 0; i < i_word_length; i++) {
->> -				_nbu2ss_writel(
->> -					&preg->EP_REGS[ep->epnum - 1].EP_WRITE,
->> -					p_buf_32->dw);
->> +				_nbu2ss_writel(&preg->EP_REGS[ep->epnum - 1].EP_WRITE,
->> +					       p_buf_32->dw);
->>
->>   				p_buf_32++;
->>   			}
->> @@ -1225,8 +1224,7 @@ static void _nbu2ss_restert_transfer(struct nbu2ss_ep *ep)
->>   		return;
->>
->>   	if (ep->epnum > 0) {
->> -		length = _nbu2ss_readl(
->> -			&ep->udc->p_regs->EP_REGS[ep->epnum - 1].EP_LEN_DCNT);
->> +		length = _nbu2ss_readl(&ep->udc->p_regs->EP_REGS[ep->epnum - 1].EP_LEN_DCNT);
->>
->>   		length &= EPN_LDATA;
->>   		if (length < ep->ep.maxpacket)
->> @@ -1462,8 +1460,7 @@ static void _nbu2ss_epn_set_stall(struct nbu2ss_udc *udc,
->>   		for (limit_cnt = 0
->>   			; limit_cnt < IN_DATA_EMPTY_COUNT
->>   			; limit_cnt++) {
->> -			regdata = _nbu2ss_readl(
->> -				&preg->EP_REGS[ep->epnum - 1].EP_STATUS);
->> +			regdata = _nbu2ss_readl(&preg->EP_REGS[ep->epnum - 1].EP_STATUS);
->>
->>   			if ((regdata & EPN_IN_DATA) == 0)
->>   				break;
->> --
->> 2.25.1
->>
->> --
->> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
->> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
->> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/20210401195457.24512-1-martinsdecarvalhobeatriz%40gmail.com.
->>
+The RO property is optional, it can only improve. In addition, all in-kernel ULPs
+don't need strict ordering. I can be mistaken here and Jason will correct me, it
+is because of two things: ULP doesn't touch data before CQE and DMA API prohibits it.
+
+Thanks
