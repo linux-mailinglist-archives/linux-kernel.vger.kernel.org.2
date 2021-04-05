@@ -2,110 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 771C03546BB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 20:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566B13546BF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 20:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235084AbhDESVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 14:21:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34840 "EHLO
+        id S235126AbhDESYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 14:24:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234552AbhDESVI (ORCPT
+        with ESMTP id S232740AbhDESYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 14:21:08 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7603DC061756
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 11:21:00 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id r22so1016423edq.9
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 11:21:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ar3GZrsZAoxiwaAKwrinVn8bd57MclGABFFkui0oZ7I=;
-        b=G0UX1D8YfamriSLn3tfIkyF1l768/z4Xvh1tKbjmEG1uLpzn1fx/8gSAJlyUta81or
-         ruksmpskDrHNltCP+Q30iit0IzFAbdMRql6dB/3OOj047Lu2RLpkzkQTdQY4TKLjTjvE
-         jj/H5F+n5ItEubcI5J/cr+W6LimqipbYprxlP+zTWVCOwbbjJMPb35fNoFZqlE3HQ1Yw
-         rwRdq+vcPtf2CKnRBHcvEnXXtiSQBwdi11oRuM68qebKhKawmELORybovjV+kda2RuBj
-         BSs2rnokh73Q73EhJFbrlOQZdDhZvjm9ZwIEkqxbQKk1dcz4DPjbyM4ezEFAePIQ3/ll
-         frmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ar3GZrsZAoxiwaAKwrinVn8bd57MclGABFFkui0oZ7I=;
-        b=ul3+QUhagmvmaA4fpWRdma5LzHmYD7cjUrKABieqEwCP7yWeBz6cAZHKkVGOlV7Tbm
-         VQ8pVI6xiTzqLL3fgpUI/DyDtrr1ZEJQ6GhZzeW/gX3AmvIRSIOV23Y9wVrb42o1UOWC
-         oKGMuc5agmMuKOITKOyjKXMJ0i3bdvgHDUvchvx5nOfGk/sVcDE6TZj6/Qo83zIht/Of
-         +YkzvUjJDxcgj1uiAribXKLrWe63PmYmcwsfE3B8pU4aiMLxbxaQZlrKLYg9Eebkj56s
-         kuP8FdPdsHtrlZLvz4anqMhxy6UZWmqNb1iJz2iy95HY8alPQObIdi9LlmJF+E3NQiGb
-         Laog==
-X-Gm-Message-State: AOAM533soJkSZSJWOWWJA0IexTa+UcyyBFo9gdf/U/+V7qGr8tprHkVC
-        mY+502z4S7+JyMq3fjwwiPiu5hPP0+8j0dCRDpg=
-X-Google-Smtp-Source: ABdhPJz7QeRur+MyAqiN11SWCKHFaFv4fhHO+gOj977Bx3XnFcOx1Iochb84NWrFN+I8LYgq2RgLHqrI1mnc6UX9Hyo=
-X-Received: by 2002:a05:6402:518d:: with SMTP id q13mr33195428edd.313.1617646859199;
- Mon, 05 Apr 2021 11:20:59 -0700 (PDT)
+        Mon, 5 Apr 2021 14:24:01 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EED7CC061788;
+        Mon,  5 Apr 2021 11:23:54 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lTTt7-002nw9-Sh; Mon, 05 Apr 2021 18:23:49 +0000
+Date:   Mon, 5 Apr 2021 18:23:49 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        syzbot <syzbot+c88a7030da47945a3cc3@syzkaller.appspotmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, io-uring@vger.kernel.org
+Subject: Re: [syzbot] WARNING in mntput_no_expire (2)
+Message-ID: <YGtVtfbYXck3qPRl@zeniv-ca.linux.org.uk>
+References: <20210404113445.xo6ntgfpxigcb3x6@wittgenstein>
+ <YGnhkoTfVfMSMPpK@zeniv-ca.linux.org.uk>
+ <20210404164040.vtxdcfzgliuzghwk@wittgenstein>
+ <YGns1iPBHeeMAtn8@zeniv-ca.linux.org.uk>
+ <20210404170513.mfl5liccdaxjnpls@wittgenstein>
+ <YGoKYktYPA86Qwju@zeniv-ca.linux.org.uk>
+ <YGoe0VPs/Qmz/RxC@zeniv-ca.linux.org.uk>
+ <20210405114437.hjcojekyp5zt6huu@wittgenstein>
+ <YGs4clcRhyoXX8D0@zeniv-ca.linux.org.uk>
+ <20210405170801.zrdhnon6g4ggb6c7@wittgenstein>
 MIME-Version: 1.0
-References: <20210404153311.1460106-1-yanfei.xu@windriver.com> <20210404153311.1460106-3-yanfei.xu@windriver.com>
-In-Reply-To: <20210404153311.1460106-3-yanfei.xu@windriver.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Mon, 5 Apr 2021 11:20:47 -0700
-Message-ID: <CAHbLzkrSaODz+SeT+GY3tOS6Jm8NSznmknP83RUCrn+Sr9cAAg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mm: khugepaged: check MMF_DISABLE_THP ahead of
- iterating over vmas
-To:     yanfei.xu@windriver.com
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210405170801.zrdhnon6g4ggb6c7@wittgenstein>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 4, 2021 at 8:33 AM <yanfei.xu@windriver.com> wrote:
->
-> From: Yanfei Xu <yanfei.xu@windriver.com>
->
-> We could check MMF_DISABLE_THP ahead of iterating over all of vma.
-> Otherwise if some mm_struct contain a large number of vma, there will
-> be amounts meaningless cpu cycles cost.
->
-> BTW, drop an unnecessary cond_resched(), because there is a another
-> cond_resched() followed it and no consumed invocation between them.
->
-> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
-> ---
->  mm/khugepaged.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-> index 2efe1d0c92ed..c293ec4a94ea 100644
-> --- a/mm/khugepaged.c
-> +++ b/mm/khugepaged.c
-> @@ -2094,6 +2094,8 @@ static unsigned int khugepaged_scan_mm_slot(unsigned int pages,
->          */
->         if (unlikely(!mmap_read_trylock(mm)))
->                 goto breakouterloop_mmap_lock;
-> +       if (test_bit(MMF_DISABLE_THP, &mm->flags))
-> +               goto breakouterloop_mmap_lock;
+On Mon, Apr 05, 2021 at 07:08:01PM +0200, Christian Brauner wrote:
 
-It is fine to check this flag. But mmap_lock has been acquired so you
-should jump to breakouterloop.
+> Ah dentry count of -127 looks... odd.
 
->         if (likely(!khugepaged_test_exit(mm)))
->                 vma = find_vma(mm, khugepaged_scan.address);
->
-> @@ -2101,7 +2103,6 @@ static unsigned int khugepaged_scan_mm_slot(unsigned int pages,
->         for (; vma; vma = vma->vm_next) {
->                 unsigned long hstart, hend;
->
-> -               cond_resched();
+dead + 1...
 
-I don't have a strong opinion for removing this cond_resched(). But
-IIUC khugepaged is a best effort job there is no harm to keep it IMHO.
+void lockref_mark_dead(struct lockref *lockref)
+{
+        assert_spin_locked(&lockref->lock);
+	lockref->count = -128;
+}
 
->                 if (unlikely(khugepaged_test_exit(mm))) {
->                         progress++;
->                         break;
-> --
-> 2.27.0
->
->
+IOW, a leaked (uncounted) reference to dentry, that got dget() called on
+it after dentry had been freed.
+
+	IOW, current->fs->pwd.dentry happens to point to an already freed
+struct dentry here.  Joy...
+
+	Could you slap
+
+spin_lock(&current->fs->lock);
+WARN_ON(d_count(current->fs->pwd.dentry) < 0);
+spin_unlock(&current->fs->lock);
+
+before and after calls of io_issue_sqe() and see if it triggers?  We definitely
+are seeing buggered dentry refcounting here.
