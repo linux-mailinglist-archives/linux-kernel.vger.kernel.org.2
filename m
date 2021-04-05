@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA909353F91
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4830F353D77
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239427AbhDEJNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:13:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55310 "EHLO mail.kernel.org"
+        id S234039AbhDEI77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 04:59:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239168AbhDEJJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:09:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 802FB61398;
-        Mon,  5 Apr 2021 09:09:28 +0000 (UTC)
+        id S236891AbhDEI7X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:59:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E84006124C;
+        Mon,  5 Apr 2021 08:59:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613769;
-        bh=iN6Lw429U7jMpat5L5FTp2DCNAeLphgXzGe7s2adEBs=;
+        s=korg; t=1617613157;
+        bh=Yx3v3+Luu+n6Ib+g+kDFy7A8Xaf5dJ3/wdBGWY4YD/E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FnyW539uIvybtaMN3WMipehsxxMuR2L4W9R9o3JHn8vbOyLeJpBMmBb/MRYlMPuGu
-         pEOAHmOpT5DVP3596qhr3YZAYMxqQA1g2LvMW5pMgu38CVLHbXLBe2K8rp4Ba7hoWu
-         7/FLb5VoxxKMTb/QNcEDgGu+x2Zp05JUjtUwG4LA=
+        b=HHQnV366cdYfR/7BjXMEcNREQHce9hScvPE2yOyiQEgg7gMTzRzuxZN/EiBszN3ju
+         YvSn/52SMA8BOWoGnwmMrZYrjLaAajltBWgWv96BvrSLiGXKAclg1T7OlHQ5VYCvCg
+         tZA3UdwOZSr83dnhRv2mPHfAZR3M2ULzFf0S5c5I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Feiner <pfeiner@google.com>,
-        Ben Gardon <bgardon@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 085/126] KVM: x86/mmu: Ensure forward progress when yielding in TDP MMU iter
+        stable@vger.kernel.org,
+        syzbot+3dea30b047f41084de66@syzkaller.appspotmail.com,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH 4.14 41/52] usbip: vhci_hcd fix shift out-of-bounds in vhci_hub_control()
 Date:   Mon,  5 Apr 2021 10:54:07 +0200
-Message-Id: <20210405085033.876846640@linuxfoundation.org>
+Message-Id: <20210405085023.317033272@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
-References: <20210405085031.040238881@linuxfoundation.org>
+In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
+References: <20210405085021.996963957@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,147 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Gardon <bgardon@google.com>
+From: Shuah Khan <skhan@linuxfoundation.org>
 
-[ Upstream commit ed5e484b79e8a9b8be714bd85b6fc70bd6dc99a7 ]
+commit 1cc5ed25bdade86de2650a82b2730108a76de20c upstream.
 
-In some functions the TDP iter risks not making forward progress if two
-threads livelock yielding to one another. This is possible if two threads
-are trying to execute wrprot_gfn_range. Each could write protect an entry
-and then yield. This would reset the tdp_iter's walk over the paging
-structure and the loop would end up repeating the same entry over and
-over, preventing either thread from making forward progress.
+Fix shift out-of-bounds in vhci_hub_control() SetPortFeature handling.
 
-Fix this issue by only yielding if the loop has made forward progress
-since the last yield.
+UBSAN: shift-out-of-bounds in drivers/usb/usbip/vhci_hcd.c:605:42
+shift exponent 768 is too large for 32-bit type 'int'
 
-Fixes: a6a0b05da9f3 ("kvm: x86/mmu: Support dirty logging for the TDP MMU")
-Reviewed-by: Peter Feiner <pfeiner@google.com>
-Signed-off-by: Ben Gardon <bgardon@google.com>
-
-Message-Id: <20210202185734.1680553-14-bgardon@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: syzbot+3dea30b047f41084de66@syzkaller.appspotmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210324230654.34798-1-skhan@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/mmu/tdp_iter.c | 18 +-----------------
- arch/x86/kvm/mmu/tdp_iter.h |  7 ++++++-
- arch/x86/kvm/mmu/tdp_mmu.c  | 21 ++++++++++++++++-----
- 3 files changed, 23 insertions(+), 23 deletions(-)
+ drivers/usb/usbip/vhci_hcd.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/x86/kvm/mmu/tdp_iter.c b/arch/x86/kvm/mmu/tdp_iter.c
-index 9917c55b7d24..1a09d212186b 100644
---- a/arch/x86/kvm/mmu/tdp_iter.c
-+++ b/arch/x86/kvm/mmu/tdp_iter.c
-@@ -31,6 +31,7 @@ void tdp_iter_start(struct tdp_iter *iter, u64 *root_pt, int root_level,
- 	WARN_ON(root_level > PT64_ROOT_MAX_LEVEL);
- 
- 	iter->next_last_level_gfn = next_last_level_gfn;
-+	iter->yielded_gfn = iter->next_last_level_gfn;
- 	iter->root_level = root_level;
- 	iter->min_level = min_level;
- 	iter->level = root_level;
-@@ -158,23 +159,6 @@ void tdp_iter_next(struct tdp_iter *iter)
- 	iter->valid = false;
- }
- 
--/*
-- * Restart the walk over the paging structure from the root, starting from the
-- * highest gfn the iterator had previously reached. Assumes that the entire
-- * paging structure, except the root page, may have been completely torn down
-- * and rebuilt.
-- */
--void tdp_iter_refresh_walk(struct tdp_iter *iter)
--{
--	gfn_t next_last_level_gfn = iter->next_last_level_gfn;
--
--	if (iter->gfn > next_last_level_gfn)
--		next_last_level_gfn = iter->gfn;
--
--	tdp_iter_start(iter, iter->pt_path[iter->root_level - 1],
--		       iter->root_level, iter->min_level, next_last_level_gfn);
--}
--
- u64 *tdp_iter_root_pt(struct tdp_iter *iter)
- {
- 	return iter->pt_path[iter->root_level - 1];
-diff --git a/arch/x86/kvm/mmu/tdp_iter.h b/arch/x86/kvm/mmu/tdp_iter.h
-index b2dd269c631f..d480c540ee27 100644
---- a/arch/x86/kvm/mmu/tdp_iter.h
-+++ b/arch/x86/kvm/mmu/tdp_iter.h
-@@ -16,6 +16,12 @@ struct tdp_iter {
- 	 * for this GFN.
- 	 */
- 	gfn_t next_last_level_gfn;
-+	/*
-+	 * The next_last_level_gfn at the time when the thread last
-+	 * yielded. Only yielding when the next_last_level_gfn !=
-+	 * yielded_gfn helps ensure forward progress.
-+	 */
-+	gfn_t yielded_gfn;
- 	/* Pointers to the page tables traversed to reach the current SPTE */
- 	u64 *pt_path[PT64_ROOT_MAX_LEVEL];
- 	/* A pointer to the current SPTE */
-@@ -54,7 +60,6 @@ u64 *spte_to_child_pt(u64 pte, int level);
- void tdp_iter_start(struct tdp_iter *iter, u64 *root_pt, int root_level,
- 		    int min_level, gfn_t next_last_level_gfn);
- void tdp_iter_next(struct tdp_iter *iter);
--void tdp_iter_refresh_walk(struct tdp_iter *iter);
- u64 *tdp_iter_root_pt(struct tdp_iter *iter);
- 
- #endif /* __KVM_X86_MMU_TDP_ITER_H */
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 3b14d0008f92..f0bc5d3ce3d4 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -412,8 +412,9 @@ static inline void tdp_mmu_set_spte_no_dirty_log(struct kvm *kvm,
-  * TLB flush before yielding.
-  *
-  * If this function yields, it will also reset the tdp_iter's walk over the
-- * paging structure and the calling function should allow the iterator to
-- * continue its traversal from the paging structure root.
-+ * paging structure and the calling function should skip to the next
-+ * iteration to allow the iterator to continue its traversal from the
-+ * paging structure root.
-  *
-  * Return true if this function yielded and the iterator's traversal was reset.
-  * Return false if a yield was not needed.
-@@ -421,12 +422,22 @@ static inline void tdp_mmu_set_spte_no_dirty_log(struct kvm *kvm,
- static inline bool tdp_mmu_iter_cond_resched(struct kvm *kvm,
- 					     struct tdp_iter *iter, bool flush)
- {
-+	/* Ensure forward progress has been made before yielding. */
-+	if (iter->next_last_level_gfn == iter->yielded_gfn)
-+		return false;
-+
- 	if (need_resched() || spin_needbreak(&kvm->mmu_lock)) {
- 		if (flush)
- 			kvm_flush_remote_tlbs(kvm);
- 
- 		cond_resched_lock(&kvm->mmu_lock);
--		tdp_iter_refresh_walk(iter);
-+
-+		WARN_ON(iter->gfn > iter->next_last_level_gfn);
-+
-+		tdp_iter_start(iter, iter->pt_path[iter->root_level - 1],
-+			       iter->root_level, iter->min_level,
-+			       iter->next_last_level_gfn);
-+
- 		return true;
- 	}
- 
-@@ -466,8 +477,8 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
- 
- 		tdp_mmu_set_spte(kvm, &iter, 0);
- 
--		flush_needed = !can_yield ||
--			       !tdp_mmu_iter_cond_resched(kvm, &iter, true);
-+		flush_needed = !(can_yield &&
-+				 tdp_mmu_iter_cond_resched(kvm, &iter, true));
- 	}
- 	return flush_needed;
- }
--- 
-2.30.1
-
+--- a/drivers/usb/usbip/vhci_hcd.c
++++ b/drivers/usb/usbip/vhci_hcd.c
+@@ -608,6 +608,8 @@ static int vhci_hub_control(struct usb_h
+ 				pr_err("invalid port number %d\n", wIndex);
+ 				goto error;
+ 			}
++			if (wValue >= 32)
++				goto error;
+ 			if (hcd->speed == HCD_USB3) {
+ 				if ((vhci_hcd->port_status[rhport] &
+ 				     USB_SS_PORT_STAT_POWER) != 0) {
 
 
