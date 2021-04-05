@@ -2,87 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C34C354252
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 15:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EEB0354240
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 15:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235685AbhDENJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 09:09:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47686 "EHLO mail.kernel.org"
+        id S241049AbhDENL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 09:11:29 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:33942 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235568AbhDENJK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 09:09:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89F896139E;
-        Mon,  5 Apr 2021 13:09:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617628144;
-        bh=0/o1r7qzvMsvIJ/DrPM+ogHpHxdcaePjrlaMSyUSuZw=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=sLnZUfA/qsHgP6wgslai5yLV+TQwTCPvv9GL83ieSFcRgqK3idaeBNlGO3NOdcK3a
-         Fe8FREuOcIjT8u6a8p8KDugBF08IvkdX5WtHdxu5up5AIzRKwaoVUTB1De5VdS3vvw
-         JdsvzEhiWk8KJxFkhKUIKJOvQvQynJDxPOjdncnxcGZ2qIYheZmWjhv0WLTLxgQvXd
-         gpXCrYPzOczD9DsqtpYgGpXyHRuensHkH8O1TmZkd+eXD5mgxw9O5GGhTrYohulNNx
-         Ny6nh1SETZGjNooMY6ZQP33VL4jXkAFSZaz6CTgj+QfQmoW6ZzIM41b+MvCvk9SfAr
-         mQPSu24dN7pOQ==
-Subject: Re: [PATCHv2 RESEND] firmware: stratix10-svc: build only on 64-bit
- ARM
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        kernel test robot <lkp@intel.com>,
-        Richard Gong <richard.gong@linux.intel.com>
-References: <20210404124609.122377-1-dinguyen@kernel.org>
- <YGnIdZ5mbTJnREGB@kroah.com>
- <943c4179-409d-24f5-4324-7f2242920cc5@kernel.org>
- <YGrm2GFdX/PMXiwk@kroah.com>
-From:   Dinh Nguyen <dinguyen@kernel.org>
-Message-ID: <d944c802-00a3-30ba-6da8-f35b629bb5d3@kernel.org>
-Date:   Mon, 5 Apr 2021 08:09:02 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S235568AbhDENL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 09:11:27 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lTP0W-00EvY7-HE; Mon, 05 Apr 2021 15:11:08 +0200
+Date:   Mon, 5 Apr 2021 15:11:08 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
+Cc:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
+        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
+        mcoquelin.stm32@gmail.com, linux@armlinux.org.uk,
+        weifeng.voon@intel.com, boon.leong.ong@intel.com,
+        qiangqing.zhang@nxp.com, vee.khee.wong@intel.com,
+        fugang.duan@nxp.com, kim.tatt.chuah@intel.com,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        hkallweit1@gmail.com
+Subject: Re: [PATCH net-next v2 0/2] Enable 2.5Gbps speed for stmmac
+Message-ID: <YGsMbBW9h4H1y/T8@lunn.ch>
+References: <20210405112953.26008-1-michael.wei.hong.sit@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <YGrm2GFdX/PMXiwk@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210405112953.26008-1-michael.wei.hong.sit@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/5/21 5:30 AM, Greg KH wrote:
-> On Sun, Apr 04, 2021 at 10:20:26AM -0500, Dinh Nguyen wrote:
->>
->>
->> On 4/4/21 9:08 AM, Greg KH wrote:
->>> On Sun, Apr 04, 2021 at 07:46:09AM -0500, Dinh Nguyen wrote:
->>>> From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->>>>
->>>> The Stratix10 service layer and RCU drivers are useful only on
->>>> Stratix10, so on ARMv8.  Compile testing the RCU driver on 32-bit ARM
->>>> fails:
->>>>
->>>>     drivers/firmware/stratix10-rsu.c: In function 'rsu_status_callback':
->>>>     include/linux/compiler_types.h:320:38: error: call to '__compiletime_assert_179'
->>>>       declared with attribute error: FIELD_GET: type of reg too small for mask
->>>>       _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
->>>>     ...
->>>>     drivers/firmware/stratix10-rsu.c:96:26: note: in expansion of macro 'FIELD_GET'
->>>>       priv->status.version = FIELD_GET(RSU_VERSION_MASK,
->>>>
->>>> Fixes: 4483397b0353 ("ARM: socfpga: drop ARCH_SOCFPGA")
->>>
->>> Where is this commit id?  I don't see it in Linus's tree, is it
->>> somewhere else?
->>>
->>
->> It's in the for-next branch in the soc tree. This patch fixes a patch that
->> was just recently submitted by Krzysztof.
+On Mon, Apr 05, 2021 at 07:29:51PM +0800, Michael Sit Wei Hong wrote:
+> This patchset enables 2.5Gbps speed mode for stmmac.
+> Link speed mode is detected and configured at serdes power up sequence.
+> For 2.5G, we do not use SGMII in-band AN, we check the link speed mode
+> in the serdes and disable the in-band AN accordingly.
 > 
-> Then it needs to go through that tree, while you sent it "To:" me, and I
-> can't do anything with it at the moment :(
+> Changes:
+> v1 -> v2
+>  patch 1/2
+>  -Remove MAC supported link speed masking
 > 
+>  patch 2/2
+>  -Add supported link speed masking in the PCS
 
-Ah okay, got it, thanks!
+So there still some confusion here.
 
-Dinh
+------------            --------
+|MAC - PCS |---serdes---| PHY  |--- copper 
+------------            --------
+
+
+You have a MAC and an PCS in the stmmac IP block. That then has some
+sort of SERDES interface, running 1000BaseX, SGMII, SGMII overclocked
+at 2.5G or 25000BaseX. Connected to the SERDES you have a PHY which
+converts to copper, giving you 2500BaseT.
+
+You said earlier, that the PHY can only do 2500BaseT. So it should be
+the PHY driver which sets supported to 2500BaseT and no other speeds.
+
+You should think about when somebody uses this MAC with a different
+PHY, one that can do the full range of 10/half through to 2.5G
+full. What generally happens is that the PHY performs auto-neg to
+determine the link speed. For 10M-1G speeds the PHY will configure its
+SERDES interface to SGMII and phylink will ask the PCS to also be
+configured to SGMII. If the PHY negotiates 2500BaseT, it will
+configure its side of the SERDES to 2500BaseX or SGMII overclocked at
+2.5G. Again, phylink will ask the PCS to match what the PHY is doing.
+
+So, where exactly is the limitation in your hardware? PCS or PHY?
+
+     Andrew
