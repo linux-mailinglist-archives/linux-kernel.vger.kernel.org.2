@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3408D353FC6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B704E3540BD
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239797AbhDEJOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:14:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57214 "EHLO mail.kernel.org"
+        id S240563AbhDEJVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:21:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239424AbhDEJKp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:10:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EB4F613A1;
-        Mon,  5 Apr 2021 09:10:38 +0000 (UTC)
+        id S239960AbhDEJQu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:16:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94C3860FE4;
+        Mon,  5 Apr 2021 09:16:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613838;
-        bh=a5TpbOu3deqG8vgSiZmJu1Ki64q2WAiI1Rz2WzloT2o=;
+        s=korg; t=1617614205;
+        bh=WOFnRVbIdQDdvsjuUNmXBLwRkqJufNr/tLKtBWOjZL8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gMXIJbbe+61xcWL4gDUejwCtBYCkCPdU06NDn1iEc9pUdJAgQ5cHN65WV5JWmO7ZN
-         jeCO0/Lm9Bq6Zci2iXh7stAZXvoKoUtBZ1Hfkw4w6uo4QuxCksImszXVTfk35rdcRD
-         +HTMp0bcD9/AO4Uc+m0txI6nbLnygq8Rg0TcZ408=
+        b=eHWPBnf8X9sC06ysJHRLOU8csJ0p03m6gKfWKCPQZdE6vOLAia+NInV925okizU/L
+         8QPiPPmfCLPsykBKEqU+3L59VhkjVgabmLNjyZeluxEJsG8MUSGG0377Lk6ZRXW4xC
+         wDr/hlH8EjMW+51ng0PLNbkyGJ5a1NVT9uQ/sAhI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>
-Subject: [PATCH 5.10 109/126] cdc-acm: fix BREAK rx code path adding necessary calls
-Date:   Mon,  5 Apr 2021 10:54:31 +0200
-Message-Id: <20210405085034.646778138@linuxfoundation.org>
+        stable@vger.kernel.org, Richard Gong <richard.gong@intel.com>,
+        Tom Rix <trix@redhat.com>, Moritz Fischer <mdf@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 123/152] firmware: stratix10-svc: reset COMMAND_RECONFIG_FLAG_PARTIAL to 0
+Date:   Mon,  5 Apr 2021 10:54:32 +0200
+Message-Id: <20210405085038.229235788@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
-References: <20210405085031.040238881@linuxfoundation.org>
+In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
+References: <20210405085034.233917714@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,35 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Neukum <oneukum@suse.com>
+From: Richard Gong <richard.gong@intel.com>
 
-commit 08dff274edda54310d6f1cf27b62fddf0f8d146e upstream.
+[ Upstream commit 2e8496f31d0be8f43849b2980b069f3a9805d047 ]
 
-Counting break events is nice but we should actually report them to
-the tty layer.
+Clean up COMMAND_RECONFIG_FLAG_PARTIAL flag by resetting it to 0, which
+aligns with the firmware settings.
 
-Fixes: 5a6a62bdb9257 ("cdc-acm: add TIOCMIWAIT")
-Signed-off-by: Oliver Neukum <oneukum@suse.com>
-Link: https://lore.kernel.org/r/20210311133714.31881-1-oneukum@suse.com
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 36847f9e3e56 ("firmware: stratix10-svc: correct reconfig flag and timeout values")
+Signed-off-by: Richard Gong <richard.gong@intel.com>
+Reviewed-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Moritz Fischer <mdf@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/class/cdc-acm.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ include/linux/firmware/intel/stratix10-svc-client.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/class/cdc-acm.c
-+++ b/drivers/usb/class/cdc-acm.c
-@@ -313,8 +313,10 @@ static void acm_process_notification(str
- 			acm->iocount.dsr++;
- 		if (difference & ACM_CTRL_DCD)
- 			acm->iocount.dcd++;
--		if (newctrl & ACM_CTRL_BRK)
-+		if (newctrl & ACM_CTRL_BRK) {
- 			acm->iocount.brk++;
-+			tty_insert_flip_char(&acm->port, 0, TTY_BREAK);
-+		}
- 		if (newctrl & ACM_CTRL_RI)
- 			acm->iocount.rng++;
- 		if (newctrl & ACM_CTRL_FRAMING)
+diff --git a/include/linux/firmware/intel/stratix10-svc-client.h b/include/linux/firmware/intel/stratix10-svc-client.h
+index a93d85932eb9..f843c6a10cf3 100644
+--- a/include/linux/firmware/intel/stratix10-svc-client.h
++++ b/include/linux/firmware/intel/stratix10-svc-client.h
+@@ -56,7 +56,7 @@
+  * COMMAND_RECONFIG_FLAG_PARTIAL:
+  * Set to FPGA configuration type (full or partial).
+  */
+-#define COMMAND_RECONFIG_FLAG_PARTIAL	1
++#define COMMAND_RECONFIG_FLAG_PARTIAL	0
+ 
+ /**
+  * Timeout settings for service clients:
+-- 
+2.30.2
+
 
 
