@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF234353EFE
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E84C353FEF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:36:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239171AbhDEJJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:09:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52566 "EHLO mail.kernel.org"
+        id S240572AbhDEJPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:15:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238350AbhDEJHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:07:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9016261398;
-        Mon,  5 Apr 2021 09:07:16 +0000 (UTC)
+        id S239144AbhDEJMS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:12:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D81B61398;
+        Mon,  5 Apr 2021 09:12:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613637;
-        bh=xuUmS80t1X4JLO/dQPmcfEov7ygVrHQ0Zbrwlc7eCRo=;
+        s=korg; t=1617613932;
+        bh=5lkXy9QAJUzflm//ImAiJZsaODEjkF9zLcTFNlU8a1U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WFwW/onAIFnoYTAxtQcJeS8ZgDuK9gv03dE1+IeoVfc46rQNAKonDZgHvn5/CaWcg
-         d5xLFjEEjr/1RW6Xd172bEdDTjK4YQiKe8S9/SfiafuiSutvpIszmnNGbpuAxuTDa3
-         nCwCX6H8MfQ3FLRgQzyg+q5h2W4Bv3En0hn0Wqwo=
+        b=K4FqHtNKzj1bZlpkBpmBf3487EttmGFhU8yktDICBvlGto4WIqdkP/ZEzCRB0ngKZ
+         6xq/qBgXR6UlzlVNw0EJji9fV6h6wsKEfx/RmMsIPLeAq3SkGEYgVr/fLEI575ZkVM
+         8LaOg8NnDRC1V0GUWZczE9h6XXQzMXdfXlo7lgbU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julian Braha <julianbraha@gmail.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 006/126] fs: nfsd: fix kconfig dependency warning for NFSD_V4
-Date:   Mon,  5 Apr 2021 10:52:48 +0200
-Message-Id: <20210405085031.248050241@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 020/152] kernel: freezer should treat PF_IO_WORKER like PF_KTHREAD for freezing
+Date:   Mon,  5 Apr 2021 10:52:49 +0200
+Message-Id: <20210405085034.898718602@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
-References: <20210405085031.040238881@linuxfoundation.org>
+In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
+References: <20210405085034.233917714@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julian Braha <julianbraha@gmail.com>
+From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit 7005227369079963d25fb2d5d736d0feb2c44cf6 ]
+[ Upstream commit 15b2219facadec583c24523eed40fa45865f859f ]
 
-When NFSD_V4 is enabled and CRYPTO is disabled,
-Kbuild gives the following warning:
+Don't send fake signals to PF_IO_WORKER threads, they don't accept
+signals. Just treat them like kthreads in this regard, all they need
+is a wakeup as no forced kernel/user transition is needed.
 
-WARNING: unmet direct dependencies detected for CRYPTO_SHA256
-  Depends on [n]: CRYPTO [=n]
-  Selected by [y]:
-  - NFSD_V4 [=y] && NETWORK_FILESYSTEMS [=y] && NFSD [=y] && PROC_FS [=y]
-
-WARNING: unmet direct dependencies detected for CRYPTO_MD5
-  Depends on [n]: CRYPTO [=n]
-  Selected by [y]:
-  - NFSD_V4 [=y] && NETWORK_FILESYSTEMS [=y] && NFSD [=y] && PROC_FS [=y]
-
-This is because NFSD_V4 selects CRYPTO_MD5 and CRYPTO_SHA256,
-without depending on or selecting CRYPTO, despite those config options
-being subordinate to CRYPTO.
-
-Signed-off-by: Julian Braha <julianbraha@gmail.com>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfsd/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/freezer.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/nfsd/Kconfig b/fs/nfsd/Kconfig
-index dbbc583d6273..248f1459c039 100644
---- a/fs/nfsd/Kconfig
-+++ b/fs/nfsd/Kconfig
-@@ -73,6 +73,7 @@ config NFSD_V4
- 	select NFSD_V3
- 	select FS_POSIX_ACL
- 	select SUNRPC_GSS
-+	select CRYPTO
- 	select CRYPTO_MD5
- 	select CRYPTO_SHA256
- 	select GRACE_PERIOD
+diff --git a/kernel/freezer.c b/kernel/freezer.c
+index dc520f01f99d..1a2d57d1327c 100644
+--- a/kernel/freezer.c
++++ b/kernel/freezer.c
+@@ -134,7 +134,7 @@ bool freeze_task(struct task_struct *p)
+ 		return false;
+ 	}
+ 
+-	if (!(p->flags & PF_KTHREAD))
++	if (!(p->flags & (PF_KTHREAD | PF_IO_WORKER)))
+ 		fake_signal_wake_up(p);
+ 	else
+ 		wake_up_state(p, TASK_INTERRUPTIBLE);
 -- 
 2.30.1
 
