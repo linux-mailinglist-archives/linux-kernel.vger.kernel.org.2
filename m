@@ -2,101 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1324354140
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48EE0354141
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232910AbhDEKtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 06:49:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49312 "EHLO
+        id S232960AbhDEKtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 06:49:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232035AbhDEKta (ORCPT
+        with ESMTP id S232035AbhDEKte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 06:49:30 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A34DCC061756
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 03:49:24 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id c6so8166064qtc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 03:49:24 -0700 (PDT)
+        Mon, 5 Apr 2021 06:49:34 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2238FC061756
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 03:49:27 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id l13so8118518qtu.9
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 03:49:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/xfBkLHIPDesOBkx+QlD07DxWxc0MVnh3m1mC0mSR3Y=;
-        b=MKK2XMdH6mWhZHnqKMDfGoohDqBb6Mx97X977lVfVa4fN6XGI73bl7z1G5qDWxLoN9
-         yEM8fgGTT/m0PtiLGypnmAOvB9Rl/GInEydZla0QkjwMOA98ef6KbUZ25vKe2rMBZRAc
-         OGAl/YvNTvmh4PS4jaD6sddutQDYvCBf91o1bDBkPYUQ9dMlZ8CnNjWv5Psp3IayRc7h
-         jfpO7my+FMFKyDNOqBc8S79PsLOHM9sq+Hu9ZgSaUsvfe17CQvEEHjWIqZE0oZwkeAiD
-         B5KgHO9QuFt9GGXSKXau/aCuBReMh4PnuEP6HFeBq/CZRtzHx3FrNX36JMf11i9GCHzY
-         CK7A==
+        bh=zFzzeoYGIYM+Xfkak8/IpQyVsC5/nvHs2bkK5Oa/t/0=;
+        b=DLg4XTyaS91e+p/tUT8Qwr0hHxzftha50APdnRZp7XdvsmPRPqkolN8G29DJv30YQZ
+         x0lTzdlKdUKy2egZ889l/fNG0sc0WEaFu3S401CeC7p2LXqJDT8sFECd+oAgXjlB0QlT
+         /dLW/+R3jtD6Im/5hwqdnmWtM4QOPZSBaGIyOTZDpeVeiPjXA987qYaM7uEl4+MabNT9
+         6AsFbhHp2oQGdl4KP+5CfD4L02kAO/JQftKt+iCV8AptuAd7P5r24gyvp9dnCmkI2F59
+         BPmGFdpxpV5tOzZ7M4C8ik5gSOPkB21LarvvS2K+5XzapH2kpdVGh8OXSiP+6pxn9f2X
+         Ii0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/xfBkLHIPDesOBkx+QlD07DxWxc0MVnh3m1mC0mSR3Y=;
-        b=jAUwviYvPCfy2zwZkKA4LiFAh/GdTkb7JJZyoaB2kCpoGRghxtov3C1B9x+kEBasVL
-         iIq92c1Wuwrm3SaHX2G03qMZzrc/taVgPGPuzSCpgtcOwG521IrEmA21jZ8PHaoUnGNq
-         IXRCEOmjpN9fjGLBia2gpGVVaCLWatvOy8spCZ5E10yoJ6dfj07qJKuuKnrMpsuG3r7s
-         HU2lTY6Wq/ARKIDtH+4Jh+HpbGzHpRQmLlPaJKyFIeEWiHvgr2oUjmRh1DKWS8VsDeEb
-         xdVcA+w4otAcIeGm8Ag4ba7ZUYpk7ZCsuwvYiTJiRfK8+qRebNL9oIvgpPUEAnkrkaXj
-         rfjQ==
-X-Gm-Message-State: AOAM5307VV1cN7O0J4jHtNqFHOkZ5/+/95urnD618FEqNQcqQJOxN7bP
-        tZuf3l4ZanDiAYQ52KoNrHk=
-X-Google-Smtp-Source: ABdhPJyEVT4M43wiRtKkfLRWtIvLJ4irQddc5LFZ817p2Ge/KaR0wNCSgAiYdRk9GFPIEUPgsz9u2Q==
-X-Received: by 2002:ac8:7b8d:: with SMTP id p13mr21872351qtu.94.1617619763927;
-        Mon, 05 Apr 2021 03:49:23 -0700 (PDT)
+        bh=zFzzeoYGIYM+Xfkak8/IpQyVsC5/nvHs2bkK5Oa/t/0=;
+        b=jA5tQQB/gbHoahEvXTzEKubSGGnAJ9G003yV6kZBqIEJKy012n098o10+jiu1oXotE
+         ZW4hM3ELN9mmKEXh0Wek8ibOk3CuDa3VG6BR+mLA2aCfKhP5STS7i9ksiCKnnwNwqZrr
+         hbwY1j4kx2KrpdyojcXmO3llRriGbpJeCTuCtXRF5UcVJ7FGRUxbhe8w54gn8ApBAxn5
+         iITQg00y+0D+C7ob1W3PFvFmD8wWZlj/+vr+EtPO/7Cy0bTj/0eM3koUFw9wvYk8gYX3
+         Zf+03c8GhTkaJxpj8DN4KuR0MIuaCKvXr7Xnrek53ASedPJSwTLmd2hZaqlEeycxmZTT
+         gj+w==
+X-Gm-Message-State: AOAM532iB5p7XpUV7zqnV8xw75aKpJ9J6trx4dOcjBQ91Dc2BymqN5T7
+        DTKoBS9MDnyNv1KmTjNAU8A=
+X-Google-Smtp-Source: ABdhPJxCBAtYuCk3svSxxx+iZi46eAbo/PPPezWxJWKH+X6OxpXrPcx6CdahFeLQ/fvq5Q4ctUELQw==
+X-Received: by 2002:a05:622a:174f:: with SMTP id l15mr21725984qtk.197.1617619766386;
+        Mon, 05 Apr 2021 03:49:26 -0700 (PDT)
 Received: from LuizSampaio-PC.localdomain ([2804:214:8290:6b95:72bd:5607:9b84:56df])
-        by smtp.gmail.com with ESMTPSA id p66sm13349634qka.108.2021.04.05.03.49.21
+        by smtp.gmail.com with ESMTPSA id p66sm13349634qka.108.2021.04.05.03.49.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Apr 2021 03:49:23 -0700 (PDT)
+        Mon, 05 Apr 2021 03:49:26 -0700 (PDT)
 From:   Luiz Sampaio <sampaio.ime@gmail.com>
 To:     zbr@ioremap.net
 Cc:     corbet@lwn.net, rikard.falkeborn@gmail.com,
         gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
         Luiz Sampaio <sampaio.ime@gmail.com>
-Subject: [PATCH v4 0/9] w1: ds2438: adding support for calibration of current measurements
-Date:   Mon,  5 Apr 2021 07:50:00 -0300
-Message-Id: <20210405105009.420924-1-sampaio.ime@gmail.com>
+Subject: [PATCH v4 1/9] w1: ds2438: fixed a coding style issue after return
+Date:   Mon,  5 Apr 2021 07:50:01 -0300
+Message-Id: <20210405105009.420924-2-sampaio.ime@gmail.com>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210403044821.390485-1-sampaio.ime@gmail.com>
+In-Reply-To: <20210405105009.420924-1-sampaio.ime@gmail.com>
 References: <20210403044821.390485-1-sampaio.ime@gmail.com>
+ <20210405105009.420924-1-sampaio.ime@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following patches aim to make a user able to calibrate the current measurement of the DS2438. This chip uses a offset register in page1, which is added to the current register to give the user the current measurement. If this value is wrong, the user will get an offset current value, even if the current is zero, for instance. This patch gives support for reading the page1 registers (including the offset register) and for writing to the offset register. The DS2438 datasheet shows a calibration routine, and with this patch, the user can do this quickly by writing the correct value to the offset register. This patch was tested on real hardware using a power supply and an electronic load.
-Please help to review this series of patches.
+There is an if statement and, if the function goes into it, it returns.
+So, the next else is not required.
 
-Best regards!
-Sampaio
+Signed-off-by: Luiz Sampaio <sampaio.ime@gmail.com>
 ---
-Changes in v4:
-- Fixing different patches with identical subject lines as requested
+ drivers/w1/slaves/w1_ds2438.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Changes in v3:
-- I accidentally added a wrong line that would not compile. I'm sorry. Fixed it.
-
-Changes in v2:
-- Using git send-email to send the patches
-- Adding documentation as requested
-- Separating the coding style changes in different patches as requested
-
-Luiz Sampaio (9):
-  w1: ds2438: fixed a coding style issue
-  w1: ds2438: fixed a coding style issue
-  w1: ds2438: fixed a coding style issue
-  w1: ds2438: fixed a coding style issue
-  w1: ds2438: fixed a coding style issue
-  w1: ds2438: fixed a coding style issue
-  w1: ds2438: fixing bug that would always get page0
-  w1: ds2438: adding support for reading page1
-  w1: ds2438: support for writing to offset register
-
- Documentation/w1/slaves/w1_ds2438.rst |  19 +++-
- drivers/w1/slaves/w1_ds2438.c         | 122 ++++++++++++++++++++++----
- 2 files changed, 124 insertions(+), 17 deletions(-)
-
+diff --git a/drivers/w1/slaves/w1_ds2438.c b/drivers/w1/slaves/w1_ds2438.c
+index 5cfb0ae23e91..148921fb9702 100644
+--- a/drivers/w1/slaves/w1_ds2438.c
++++ b/drivers/w1/slaves/w1_ds2438.c
+@@ -154,11 +154,11 @@ static int w1_ds2438_change_config_bit(struct w1_slave *sl, u8 mask, u8 value)
+ 
+ 		if ((status & mask) == value)
+ 			return 0;	/* already set as requested */
+-		else {
+-			/* changing bit */
+-			status ^= mask;
+-			perform_write = 1;
+-		}
++
++		/* changing bit */
++		status ^= mask;
++		perform_write = 1;
++
+ 		break;
+ 	}
+ 
 -- 
 2.30.1
 
