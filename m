@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87EE1353E5A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E5FB354096
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238669AbhDEJFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:05:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47484 "EHLO mail.kernel.org"
+        id S240378AbhDEJTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:19:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237805AbhDEJEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:04:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE30E613A9;
-        Mon,  5 Apr 2021 09:03:52 +0000 (UTC)
+        id S240578AbhDEJPW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:15:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2099C61394;
+        Mon,  5 Apr 2021 09:15:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613433;
-        bh=q6EcpwSFRh4WOSWaHhP+2Nesd5T1O9X6Zyl9XpqIjl8=;
+        s=korg; t=1617614116;
+        bh=B6MEdc2m4jaRJeHFmab24wSz6Pnm4f72YLpwiEZmLs8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0weH439Rfxmi1r8Fvz1g5iUM7PwziORzluPXgrLPdgHmTz/sdtZNBgieoiaUrXZwt
-         Pr4/V1sQE0LC9E27JeaHnQ2lqe27bEc/gJyD/Jwh4EaFOuCp8zeHYu+oLOg7duYzSs
-         ZWDhX5ZLPzyuSNYSPLRw9RwBnkt+1Uu/CjEyoHMw=
+        b=Fhout3jJmUnt8Yh5bwNSIfJ9GEvhpWMwujwoFb2NY8K6G2abQzATCxWgU8k6w8mIz
+         ZQu02ahRbli3/p3m5tA9gkygsW/ZT98/6HcOuOjdOCUXUyRK7ZB3Iky2q4Xk2ktZAl
+         1JoaLwQsvwhMI0liiQ0oXVhVvspqUBSF5eUj1QnE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
-        Sean Nyekjaer <sean@geanix.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 34/74] can: tcan4x5x: fix max register value
+        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.11 089/152] drm/amd/pm: no need to force MCLK to highest when no display connected
 Date:   Mon,  5 Apr 2021 10:53:58 +0200
-Message-Id: <20210405085025.843745175@linuxfoundation.org>
+Message-Id: <20210405085037.143718916@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
-References: <20210405085024.703004126@linuxfoundation.org>
+In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
+References: <20210405085034.233917714@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,34 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Upstream commit 6e1caaf8ed22eb700cc47ec353816eee33186c1c ]
+From: Evan Quan <evan.quan@amd.com>
 
-This patch fixes the max register value for the regmap.
+commit acc7baafeb0b52a5b91be64c4776f827a163dda1 upstream.
 
-Reviewed-by: Dan Murphy <dmurphy@ti.com>
-Tested-by: Sean Nyekjaer <sean@geanix.com>
-Link: https://lore.kernel.org/r/20201215231746.1132907-12-mkl@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Correct the check for vblank short.
+
+Signed-off-by: Evan Quan <evan.quan@amd.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Tested-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/can/m_can/tcan4x5x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/m_can/tcan4x5x.c b/drivers/net/can/m_can/tcan4x5x.c
-index 32cb479fe6ac..0d66582bd356 100644
---- a/drivers/net/can/m_can/tcan4x5x.c
-+++ b/drivers/net/can/m_can/tcan4x5x.c
-@@ -88,7 +88,7 @@
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
+@@ -3330,7 +3330,8 @@ static int smu7_apply_state_adjust_rules
  
- #define TCAN4X5X_MRAM_START 0x8000
- #define TCAN4X5X_MCAN_OFFSET 0x1000
--#define TCAN4X5X_MAX_REGISTER 0x8fff
-+#define TCAN4X5X_MAX_REGISTER 0x8ffc
+ 	disable_mclk_switching_for_display = ((1 < hwmgr->display_config->num_display) &&
+ 						!hwmgr->display_config->multi_monitor_in_sync) ||
+-						smu7_vblank_too_short(hwmgr, hwmgr->display_config->min_vblank_time);
++						(hwmgr->display_config->num_display &&
++						smu7_vblank_too_short(hwmgr, hwmgr->display_config->min_vblank_time));
  
- #define TCAN4X5X_CLEAR_ALL_INT 0xffffffff
- #define TCAN4X5X_SET_ALL_INT 0xffffffff
--- 
-2.30.1
-
+ 	disable_mclk_switching = disable_mclk_switching_for_frame_lock ||
+ 					 disable_mclk_switching_for_display;
 
 
