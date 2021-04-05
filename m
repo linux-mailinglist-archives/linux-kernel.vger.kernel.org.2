@@ -2,34 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D8DD353D7D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFAB5353F9F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233717AbhDEJAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:00:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40386 "EHLO mail.kernel.org"
+        id S239480AbhDEJNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:13:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236380AbhDEI7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 04:59:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E574610E8;
-        Mon,  5 Apr 2021 08:59:24 +0000 (UTC)
+        id S239261AbhDEJJn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:09:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A480961394;
+        Mon,  5 Apr 2021 09:09:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613165;
-        bh=LCWSaQHMnnZ8NI1PzJa+uI+WTVkYP31BVnXnddpgca8=;
+        s=korg; t=1617613777;
+        bh=naVzgU/39qd9FeDVN/IoWsUUSR2Ky4B0p8d3KJGJe38=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dm3Bgivik/rcA96UI/4hhbX2M+AKp9wlDVTocT8VHDtI4xZQ05QNOYmeYvIwoF+y0
-         0HfukmlQxsyPGPg7hg0E7xK1LC1UYRPrAziDWK5smM3MwdrGDco1xtE7cou85UBXM1
-         z4P+ihi6BE9Gtzb1cS9S6lx3xFk7QZ4DjahkT5bw=
+        b=zXDyoBmkErPVfjOzfILfnHLmas1DwmnWFiDvUvwiKH483G1H9H6l7MGfqB1pjnq44
+         W7dsU9aCRoG5cfLdJT5JICv6x27eZJnrzKlRRcmYxz42jX2vnrRoAnpl0GJ1FtPJac
+         74T1RXKdUNSFSr1lEJGthGxH0bGiTUEl/H76JpP4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chunfeng Yun <chunfeng.yun@mediatek.com>
-Subject: [PATCH 4.14 44/52] usb: xhci-mtk: fix broken streams issue on 0.96 xHCI
+        stable@vger.kernel.org, Peter Feiner <pfeiner@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ben Gardon <bgardon@google.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 088/126] KVM: x86/mmu: Add lockdep when setting a TDP MMU SPTE
 Date:   Mon,  5 Apr 2021 10:54:10 +0200
-Message-Id: <20210405085023.407204255@linuxfoundation.org>
+Message-Id: <20210405085033.984958362@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
-References: <20210405085021.996963957@linuxfoundation.org>
+In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
+References: <20210405085031.040238881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,49 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunfeng Yun <chunfeng.yun@mediatek.com>
+From: Ben Gardon <bgardon@google.com>
 
-commit 6f978a30c9bb12dab1302d0f06951ee290f5e600 upstream.
+[ Upstream commit 3a9a4aa5657471a02ffb7f9b7f3b7a468b3f257b ]
 
-The MediaTek 0.96 xHCI controller on some platforms does not
-support bulk stream even HCCPARAMS says supporting, due to MaxPSASize
-is set a default value 1 by mistake, here use XHCI_BROKEN_STREAMS
-quirk to fix it.
+Add lockdep to __tdp_mmu_set_spte to ensure that SPTEs are only modified
+under the MMU lock.
 
-Fixes: 94a631d91ad3 ("usb: xhci-mtk: check hcc_params after adding primary hcd")
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-Link: https://lore.kernel.org/r/1616482975-17841-4-git-send-email-chunfeng.yun@mediatek.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+No functional change intended.
+
+Reviewed-by: Peter Feiner <pfeiner@google.com>
+Reviewed-by: Sean Christopherson <seanjc@google.com>
+Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Ben Gardon <bgardon@google.com>
+Message-Id: <20210202185734.1680553-4-bgardon@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/xhci-mtk.c |   10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ arch/x86/kvm/mmu/tdp_mmu.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/usb/host/xhci-mtk.c
-+++ b/drivers/usb/host/xhci-mtk.c
-@@ -487,6 +487,13 @@ static void xhci_mtk_quirks(struct devic
- 	xhci->quirks |= XHCI_SPURIOUS_SUCCESS;
- 	if (mtk->lpm_support)
- 		xhci->quirks |= XHCI_LPM_SUPPORT;
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index 61be95c6db20..ad9f8f187045 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -363,6 +363,8 @@ static inline void __tdp_mmu_set_spte(struct kvm *kvm, struct tdp_iter *iter,
+ 	struct kvm_mmu_page *root = sptep_to_sp(root_pt);
+ 	int as_id = kvm_mmu_page_as_id(root);
+ 
++	lockdep_assert_held(&kvm->mmu_lock);
 +
-+	/*
-+	 * MTK xHCI 0.96: PSA is 1 by default even if doesn't support stream,
-+	 * and it's 3 when support it.
-+	 */
-+	if (xhci->hci_version < 0x100 && HCC_MAX_PSA(xhci->hcc_params) == 4)
-+		xhci->quirks |= XHCI_BROKEN_STREAMS;
- }
+ 	WRITE_ONCE(*iter->sptep, new_spte);
  
- /* called during probe() after chip reset completes */
-@@ -681,7 +688,8 @@ static int xhci_mtk_probe(struct platfor
- 	if (ret)
- 		goto put_usb3_hcd;
- 
--	if (HCC_MAX_PSA(xhci->hcc_params) >= 4)
-+	if (HCC_MAX_PSA(xhci->hcc_params) >= 4 &&
-+	    !(xhci->quirks & XHCI_BROKEN_STREAMS))
- 		xhci->shared_hcd->can_do_streams = 1;
- 
- 	ret = usb_add_hcd(xhci->shared_hcd, irq, IRQF_SHARED);
+ 	__handle_changed_spte(kvm, as_id, iter->gfn, iter->old_spte, new_spte,
+-- 
+2.30.1
+
 
 
