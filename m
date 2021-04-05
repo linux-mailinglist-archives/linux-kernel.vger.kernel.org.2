@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AFED353F57
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4BC5353E38
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238606AbhDEJLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:11:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54548 "EHLO mail.kernel.org"
+        id S238203AbhDEJEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:04:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238546AbhDEJIo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:08:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3164061398;
-        Mon,  5 Apr 2021 09:08:37 +0000 (UTC)
+        id S237661AbhDEJD0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:03:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A3486138A;
+        Mon,  5 Apr 2021 09:03:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613718;
-        bh=EFlZX130TRgZWvw5J0PA2eaRxZjNLbQbMdSnzDH8e04=;
+        s=korg; t=1617613401;
+        bh=q/qmcPMCJsL44JMnNHKA3zvjlGA4zMMtaI9g0Jmagwc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XvdS8Iw+D+kVll48GjjdBLarBQtwVYQgckVMTigyqX+GYMt2RGgYWyq/KcqmNYlMG
-         DcF3xMVjEKQwUPsg5OiNaT2qero7JQhF51Y6XswcSlQrqZHNSuXTCRdcYAiPewkk3N
-         AycX1+Sb8eJvJyNz46ntGE+78G6PDlrvbu3kyTpA=
+        b=UlPxvGoFcGdWzoEPrC5B0QAOF19CGRr2bU9M6F/f6vIkyjPuO4HwzXUZ3NAPSNsS1
+         vkb9i9p6eQyUNw+4McDjOGPsZQKNAc5nhwqCRiDW5N3gBDfBW2ww7+moQ2AqGOZ0X8
+         IpCXfL70xvGBhjnlwqbefFE4KaAwgtthk39qBbdY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felix Wilhelm <fwilhelm@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.10 065/126] KVM: SVM: load control fields from VMCB12 before checking them
+        stable@vger.kernel.org,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 23/74] scsi: qla2xxx: Fix broken #endif placement
 Date:   Mon,  5 Apr 2021 10:53:47 +0200
-Message-Id: <20210405085033.210655053@linuxfoundation.org>
+Message-Id: <20210405085025.469822803@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
-References: <20210405085031.040238881@linuxfoundation.org>
+In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
+References: <20210405085024.703004126@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,66 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Bonzini <pbonzini@redhat.com>
+From: Alexey Dobriyan <adobriyan@gmail.com>
 
-commit a58d9166a756a0f4a6618e4f593232593d6df134 upstream.
+[ Upstream commit 5999b9e5b1f8a2f5417b755130919b3ac96f5550 ]
 
-Avoid races between check and use of the nested VMCB controls.  This
-for example ensures that the VMRUN intercept is always reflected to the
-nested hypervisor, instead of being processed by the host.  Without this
-patch, it is possible to end up with svm->nested.hsave pointing to
-the MSR permission bitmap for nested guests.
+Only half of the file is under include guard because terminating #endif
+is placed too early.
 
-This bug is CVE-2021-29657.
-
-Reported-by: Felix Wilhelm <fwilhelm@google.com>
-Cc: stable@vger.kernel.org
-Fixes: 2fcf4876ada ("KVM: nSVM: implement on demand allocation of the nested state")
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/YE4snvoW1SuwcXAn@localhost.localdomain
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/svm/nested.c |   10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/scsi/qla2xxx/qla_target.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/kvm/svm/nested.c
-+++ b/arch/x86/kvm/svm/nested.c
-@@ -246,7 +246,7 @@ static bool nested_vmcb_check_controls(s
- 	return true;
- }
+diff --git a/drivers/scsi/qla2xxx/qla_target.h b/drivers/scsi/qla2xxx/qla_target.h
+index d006f0a97b8c..2236751a3a56 100644
+--- a/drivers/scsi/qla2xxx/qla_target.h
++++ b/drivers/scsi/qla2xxx/qla_target.h
+@@ -116,7 +116,6 @@
+ 	(min(1270, ((ql) > 0) ? (QLA_TGT_DATASEGS_PER_CMD_24XX + \
+ 		QLA_TGT_DATASEGS_PER_CONT_24XX*((ql) - 1)) : 0))
+ #endif
+-#endif
  
--static bool nested_vmcb_checks(struct vcpu_svm *svm, struct vmcb *vmcb12)
-+static bool nested_vmcb_check_save(struct vcpu_svm *svm, struct vmcb *vmcb12)
- {
- 	struct kvm_vcpu *vcpu = &svm->vcpu;
- 	bool vmcb12_lma;
-@@ -271,7 +271,7 @@ static bool nested_vmcb_checks(struct vc
- 	if (kvm_valid_cr4(&svm->vcpu, vmcb12->save.cr4))
- 		return false;
+ #define GET_TARGET_ID(ha, iocb) ((HAS_EXTENDED_IDS(ha))			\
+ 			 ? le16_to_cpu((iocb)->u.isp2x.target.extended)	\
+@@ -244,6 +243,7 @@ struct ctio_to_2xxx {
+ #ifndef CTIO_RET_TYPE
+ #define CTIO_RET_TYPE	0x17		/* CTIO return entry */
+ #define ATIO_TYPE7 0x06 /* Accept target I/O entry for 24xx */
++#endif
  
--	return nested_vmcb_check_controls(&vmcb12->control);
-+	return true;
- }
- 
- static void load_nested_vmcb_control(struct vcpu_svm *svm,
-@@ -454,7 +454,6 @@ int enter_svm_guest_mode(struct vcpu_svm
- 	int ret;
- 
- 	svm->nested.vmcb12_gpa = vmcb12_gpa;
--	load_nested_vmcb_control(svm, &vmcb12->control);
- 	nested_prepare_vmcb_save(svm, vmcb12);
- 	nested_prepare_vmcb_control(svm);
- 
-@@ -501,7 +500,10 @@ int nested_svm_vmrun(struct vcpu_svm *sv
- 	if (WARN_ON_ONCE(!svm->nested.initialized))
- 		return -EINVAL;
- 
--	if (!nested_vmcb_checks(svm, vmcb12)) {
-+	load_nested_vmcb_control(svm, &vmcb12->control);
-+
-+	if (!nested_vmcb_check_save(svm, vmcb12) ||
-+	    !nested_vmcb_check_controls(&svm->nested.ctl)) {
- 		vmcb12->control.exit_code    = SVM_EXIT_ERR;
- 		vmcb12->control.exit_code_hi = 0;
- 		vmcb12->control.exit_info_1  = 0;
+ struct fcp_hdr {
+ 	uint8_t  r_ctl;
+-- 
+2.30.1
+
 
 
