@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6949353E27
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9E9353E47
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237838AbhDEJEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:04:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44398 "EHLO mail.kernel.org"
+        id S237870AbhDEJFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:05:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237356AbhDEJCq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:02:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 020DB613A0;
-        Mon,  5 Apr 2021 09:02:39 +0000 (UTC)
+        id S237767AbhDEJDu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:03:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 75FF9610E8;
+        Mon,  5 Apr 2021 09:03:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613360;
-        bh=Yd6lWn3LCpouNNs60e2STO1oiWrrKBwHcJm13xh+L24=;
+        s=korg; t=1617613425;
+        bh=yxu2rLt+McGZIGTsBpwbaF7LLcSMCtjstZfCs6BxFOk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L+JevxswaVoMaohZsiPHJAZE07nU/1ocJTe60P6k5llZN48WSehUBNQLNx2Lx2n/J
-         sY+8P8tNKxeYebeLS1xuu1uW0buKtnkMZYa07cnaM6uYXQENDV0klINZgm/HmfYXzf
-         ecWcRCDEAAnXKkAJaH2De8tdK6YP+uFnNiTPl2G0=
+        b=hfsUVKeLMUfyUNtcta5Z3lOZLGRl4870Mk3rxQAxE1G3qTPck5qggU31YEYYOpQaj
+         4+TLcdBnG8Z2qHlw5nksZTK2G5dn+9sBZamT94+q/sqOA0lL2Plm4zLPhDYhGrig8W
+         0a31WOoOFH0bBXyqjbQjMS+cLM9MPjDp0ku5QGWk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Shuang Li <shuali@redhat.com>,
+        Davide Caratti <dcaratti@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 24/56] ath10k: hold RCU lock when calling ieee80211_find_sta_by_ifaddr()
+Subject: [PATCH 5.4 31/74] flow_dissector: fix TTL and TOS dissection on IPv4 fragments
 Date:   Mon,  5 Apr 2021 10:53:55 +0200
-Message-Id: <20210405085023.315062869@linuxfoundation.org>
+Message-Id: <20210405085025.750786068@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085022.562176619@linuxfoundation.org>
-References: <20210405085022.562176619@linuxfoundation.org>
+In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
+References: <20210405085024.703004126@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,59 +41,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuah Khan <skhan@linuxfoundation.org>
+From: Davide Caratti <dcaratti@redhat.com>
 
-[ Upstream commit 09078368d516918666a0122f2533dc73676d3d7e ]
+[ Upstream commit d2126838050ccd1dadf310ffb78b2204f3b032b9 ]
 
-ieee80211_find_sta_by_ifaddr() must be called under the RCU lock and
-the resulting pointer is only valid under RCU lock as well.
+the following command:
 
-Fix ath10k_wmi_tlv_op_pull_peer_stats_info() to hold RCU lock before it
-calls ieee80211_find_sta_by_ifaddr() and release it when the resulting
-pointer is no longer needed.
+ # tc filter add dev $h2 ingress protocol ip pref 1 handle 101 flower \
+   $tcflags dst_ip 192.0.2.2 ip_ttl 63 action drop
 
-This problem was found while reviewing code to debug RCU warn from
-ath10k_wmi_tlv_parse_peer_stats_info().
+doesn't drop all IPv4 packets that match the configured TTL / destination
+address. In particular, if "fragment offset" or "more fragments" have non
+zero value in the IPv4 header, setting of FLOW_DISSECTOR_KEY_IP is simply
+ignored. Fix this dissecting IPv4 TTL and TOS before fragment info; while
+at it, add a selftest for tc flower's match on 'ip_ttl' that verifies the
+correct behavior.
 
-Link: https://lore.kernel.org/linux-wireless/7230c9e5-2632-b77e-c4f9-10eca557a5bb@linuxfoundation.org/
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210210212107.40373-1-skhan@linuxfoundation.org
+Fixes: 518d8a2e9bad ("net/flow_dissector: add support for dissection of misc ip header fields")
+Reported-by: Shuang Li <shuali@redhat.com>
+Signed-off-by: Davide Caratti <dcaratti@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ net/core/flow_dissector.c                     |  6 +--
+ .../selftests/net/forwarding/tc_flower.sh     | 38 ++++++++++++++++++-
+ 2 files changed, 40 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index a6f7bf28a8b2..04dc5714aa72 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -449,13 +449,13 @@ static void ath10k_wmi_event_tdls_peer(struct ath10k *ar, struct sk_buff *skb)
- 	case WMI_TDLS_TEARDOWN_REASON_TX:
- 	case WMI_TDLS_TEARDOWN_REASON_RSSI:
- 	case WMI_TDLS_TEARDOWN_REASON_PTR_TIMEOUT:
-+		rcu_read_lock();
- 		station = ieee80211_find_sta_by_ifaddr(ar->hw,
- 						       ev->peer_macaddr.addr,
- 						       NULL);
- 		if (!station) {
- 			ath10k_warn(ar, "did not find station from tdls peer event");
--			kfree(tb);
--			return;
-+			goto exit;
+diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
+index e3bdd859c895..da86c0e1b677 100644
+--- a/net/core/flow_dissector.c
++++ b/net/core/flow_dissector.c
+@@ -1028,6 +1028,9 @@ proto_again:
+ 			key_control->addr_type = FLOW_DISSECTOR_KEY_IPV4_ADDRS;
  		}
- 		arvif = ath10k_get_arvif(ar, __le32_to_cpu(ev->vdev_id));
- 		ieee80211_tdls_oper_request(
-@@ -466,6 +466,9 @@ static void ath10k_wmi_event_tdls_peer(struct ath10k *ar, struct sk_buff *skb)
- 					);
+ 
++		__skb_flow_dissect_ipv4(skb, flow_dissector,
++					target_container, data, iph);
++
+ 		if (ip_is_fragment(iph)) {
+ 			key_control->flags |= FLOW_DIS_IS_FRAGMENT;
+ 
+@@ -1044,9 +1047,6 @@ proto_again:
+ 			}
+ 		}
+ 
+-		__skb_flow_dissect_ipv4(skb, flow_dissector,
+-					target_container, data, iph);
+-
  		break;
  	}
-+
-+exit:
-+	rcu_read_unlock();
- 	kfree(tb);
+ 	case htons(ETH_P_IPV6): {
+diff --git a/tools/testing/selftests/net/forwarding/tc_flower.sh b/tools/testing/selftests/net/forwarding/tc_flower.sh
+index 058c746ee300..b11d8e6b5bc1 100755
+--- a/tools/testing/selftests/net/forwarding/tc_flower.sh
++++ b/tools/testing/selftests/net/forwarding/tc_flower.sh
+@@ -3,7 +3,7 @@
+ 
+ ALL_TESTS="match_dst_mac_test match_src_mac_test match_dst_ip_test \
+ 	match_src_ip_test match_ip_flags_test match_pcp_test match_vlan_test \
+-	match_ip_tos_test match_indev_test"
++	match_ip_tos_test match_indev_test match_ip_ttl_test"
+ NUM_NETIFS=2
+ source tc_common.sh
+ source lib.sh
+@@ -310,6 +310,42 @@ match_ip_tos_test()
+ 	log_test "ip_tos match ($tcflags)"
  }
  
++match_ip_ttl_test()
++{
++	RET=0
++
++	tc filter add dev $h2 ingress protocol ip pref 1 handle 101 flower \
++		$tcflags dst_ip 192.0.2.2 ip_ttl 63 action drop
++	tc filter add dev $h2 ingress protocol ip pref 2 handle 102 flower \
++		$tcflags dst_ip 192.0.2.2 action drop
++
++	$MZ $h1 -c 1 -p 64 -a $h1mac -b $h2mac -A 192.0.2.1 -B 192.0.2.2 \
++		-t ip "ttl=63" -q
++
++	$MZ $h1 -c 1 -p 64 -a $h1mac -b $h2mac -A 192.0.2.1 -B 192.0.2.2 \
++		-t ip "ttl=63,mf,frag=256" -q
++
++	tc_check_packets "dev $h2 ingress" 102 1
++	check_fail $? "Matched on the wrong filter (no check on ttl)"
++
++	tc_check_packets "dev $h2 ingress" 101 2
++	check_err $? "Did not match on correct filter (ttl=63)"
++
++	$MZ $h1 -c 1 -p 64 -a $h1mac -b $h2mac -A 192.0.2.1 -B 192.0.2.2 \
++		-t ip "ttl=255" -q
++
++	tc_check_packets "dev $h2 ingress" 101 3
++	check_fail $? "Matched on a wrong filter (ttl=63)"
++
++	tc_check_packets "dev $h2 ingress" 102 1
++	check_err $? "Did not match on correct filter (no check on ttl)"
++
++	tc filter del dev $h2 ingress protocol ip pref 2 handle 102 flower
++	tc filter del dev $h2 ingress protocol ip pref 1 handle 101 flower
++
++	log_test "ip_ttl match ($tcflags)"
++}
++
+ match_indev_test()
+ {
+ 	RET=0
 -- 
 2.30.1
 
