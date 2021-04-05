@@ -2,133 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C3E353D1E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE82F353CE1
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233826AbhDEI6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 04:58:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37622 "EHLO mail.kernel.org"
+        id S233120AbhDEI5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 04:57:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233373AbhDEI5y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 04:57:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C928E61393;
-        Mon,  5 Apr 2021 08:57:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613068;
-        bh=EHu03ADcVSThp0tnW4DpPUjxbQbEo0qZve+4tBck6wE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PGh0vKIerXmADj6JydH4a2WPxgUm1weuOIHbqJ+ONp1dEw5IlYiONrt6K9jhPkJ9x
-         kgOx21mTAqxMPeCfDLCcvFlCuR2KbCtOInjA5vAgH56QmWuuLL9f9baut77yF0FIjz
-         1NYkQhBOU/eT/bFqC/bJL5JRUw8vVLIXEl/cokAk=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, teroincn@gmail.com,
-        Richard Guy Briggs <rgb@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Wen Yang <wenyang@linux.alibaba.com>
-Subject: [PATCH 4.9 35/35] audit: fix a net reference leak in audit_list_rules_send()
-Date:   Mon,  5 Apr 2021 10:54:10 +0200
-Message-Id: <20210405085019.983552878@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085018.871387942@linuxfoundation.org>
-References: <20210405085018.871387942@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S233005AbhDEI47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:56:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8AF3613AE;
+        Mon,  5 Apr 2021 08:56:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617613013;
+        bh=kr/6sN8tuduA4F6HDFz4zOQ0J1pE2XlaVrY2dUMgOng=;
+        h=References:In-Reply-To:Reply-To:From:Date:Subject:To:Cc:From;
+        b=ggtKbw9Uu6ZqDi+Rns7FtXn8vDCMPLT3dMIrKmY69X8P0lx8S6jnmlUGLj7+JZdS9
+         wa9adIq+dlI/Zrj3OQD3fZdvYkd3DFHdx4/fx9bGsjtDaFFPJaGN29A+Z0+f+eA0KI
+         dmIauMgP7WuQ4dCJNZx90jQedY9ak0pvL+CML75oeODCMI4ATG1JSDqBS7EsHrSi0k
+         V0B5HPUijP5QykKJSD5TrG60R23FPBc/mHSdJMQfwp7C/d2gHd7bTKLSRAlWm1jaT9
+         1+piAASBaCEDvxrz5/MMy1FfParUoxsMh18qp6FLSh2iRgTVGahcyjjpsH91v55nui
+         uuAzgVAPd75uQ==
+Received: by mail-lj1-f177.google.com with SMTP id 184so11990778ljf.9;
+        Mon, 05 Apr 2021 01:56:52 -0700 (PDT)
+X-Gm-Message-State: AOAM530w1d5fYEEZHx4Nyr5eNPzX8T6SofMUcF0Jjn9YtdTxmsqaLbjm
+        xoE2GRdUKsCvQlXumVGF76Rqr4AayLiAWCysW7g=
+X-Google-Smtp-Source: ABdhPJxBkA9pgGCG626Kz6QwB6SBWAuWEQdgmh+HthBulgeoakBIc6Jr6MojiArKUKaWgfDKYu15IWLAc8QdS2mq990=
+X-Received: by 2002:a2e:7d04:: with SMTP id y4mr16080522ljc.94.1617613011247;
+ Mon, 05 Apr 2021 01:56:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210405074459.4217-1-cnsztl@gmail.com> <CAGb2v66K3SFSkm9T_D6X5o7jSYOoYpYeS_yMp1k6nMonmjiHZA@mail.gmail.com>
+ <CAOP2_Th4+ZXtYfrr2kWnnuuzzS-HdNvN6FVtMj=5-nk4QTOvnQ@mail.gmail.com>
+In-Reply-To: <CAOP2_Th4+ZXtYfrr2kWnnuuzzS-HdNvN6FVtMj=5-nk4QTOvnQ@mail.gmail.com>
+Reply-To: wens@kernel.org
+From:   Chen-Yu Tsai <wens@kernel.org>
+Date:   Mon, 5 Apr 2021 16:56:38 +0800
+X-Gmail-Original-Message-ID: <CAGb2v65c2jFQCuAg_PhqJA+_m5Vi-cX=f8yHZ41P=_XnhBvKNQ@mail.gmail.com>
+Message-ID: <CAGb2v65c2jFQCuAg_PhqJA+_m5Vi-cX=f8yHZ41P=_XnhBvKNQ@mail.gmail.com>
+Subject: Re: [PATCH] rockchip: enabled LAN port on NanoPi R2S
+To:     Tianling Shen <cnsztl@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Johan Jonker <jbx6244@gmail.com>,
+        David Bauer <mail@david-bauer.net>,
+        Robin Murphy <robin.murphy@arm.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Moore <paul@paul-moore.com>
+On Mon, Apr 5, 2021 at 4:53 PM Tianling Shen <cnsztl@gmail.com> wrote:
+>
+> Hi Chen-Yu,
+>
+> On 2021-04-05 16:14, Chen-Yu Tsai <wens@kernel.org> wrote:
+> >
+> > Hi,
+> >
+> > On Mon, Apr 5, 2021 at 3:46 PM Tianling Shen <cnsztl@gmail.com> wrote:
+> > >
+> > > From: David Bauer <mail@david-bauer.net>
+> > >
+> > > Enable the USB3 port on the FriendlyARM NanoPi R2S.
+> > > This is required for the USB3 attached LAN port to work.
+> > >
+> > > Signed-off-by: David Bauer <mail@david-bauer.net>
+> > > Signed-off-by: Tianling Shen <cnsztl@gmail.com>
+> > > ---
+> > >  .../boot/dts/rockchip/rk3328-nanopi-r2s.dts   | 23 +++++++++++++++++++
+> > >  1 file changed, 23 insertions(+)
+> > >
+> > > diff --git a/arch/arm64/boot/dts/rockchip/rk3328-nanopi-r2s.dts b/arch/arm64/boot/dts/rockchip/rk3328-nanopi-r2s.dts
+> > > index faf496d789cf..6ba9799a95c5 100644
+> > > --- a/arch/arm64/boot/dts/rockchip/rk3328-nanopi-r2s.dts
+> > > +++ b/arch/arm64/boot/dts/rockchip/rk3328-nanopi-r2s.dts
+> > > @@ -37,6 +37,18 @@
+> > >                 };
+> > >         };
+> > >
+> > > +       vcc_rtl8153: vcc-rtl8153-regulator {
+> > > +               compatible = "regulator-fixed";
+> > > +               gpio = <&gpio2 RK_PC6 GPIO_ACTIVE_HIGH>;
+> > > +               pinctrl-names = "default";
+> > > +               pinctrl-0 = <&rtl8153_en_drv>;
+> > > +               regulator-always-on;
+> > > +               regulator-name = "vcc_rtl8153";
+> > > +               regulator-min-microvolt = <5000000>;
+> > > +               regulator-max-microvolt = <5000000>;
+> >
+> > This is just a simple switch, not an actual regulator.
+> > It would make more sense to drop the voltage range and
+> > instead have the implementation pass-through voltage
+> > constraints from its parent.
+>
+> Thanks, I'll remove them in v2.
+>
+> >
+> > > +               enable-active-high;
+> > > +       };
+> > > +
+> > >         leds {
+> > >                 compatible = "gpio-leds";
+> > >                 pinctrl-0 = <&lan_led_pin>,  <&sys_led_pin>, <&wan_led_pin>;
+> > > @@ -265,6 +277,12 @@
+> > >                         };
+> > >                 };
+> > >         };
+> > > +
+> > > +       usb {
+> > > +               rtl8153_en_drv: rtl8153-en-drv {
+> > > +                       rockchip,pins = <2 RK_PC6 RK_FUNC_GPIO &pcfg_pull_none>;
+> > > +               };
+> > > +       };
+> > >  };
+> > >
+> > >  &io_domains {
+> > > @@ -364,6 +382,11 @@
+> > >         dr_mode = "host";
+> > >  };
+> > >
+> > > +&usbdrd3 {
+> > > +       dr_mode = "host";
+> > > +       status = "okay";
+> >
+> > Please also add a device node for the actual Ethernet controller, and
+> > set up an aliases node for it, so that the bootloader has some place
+> > to fill in a MAC address.
+>
+> But there's no valid (unique) MAC address for both this or on-board ethernet...
+> They're non-existent in design.
 
-commit 3054d06719079388a543de6adb812638675ad8f5 upstream.
+Correct. And thanks for confirming that it's not just me and Robin that
+got boards without the MAC address EEPROM...
 
-If audit_list_rules_send() fails when trying to create a new thread
-to send the rules it also fails to cleanup properly, leaking a
-reference to a net structure.  This patch fixes the error patch and
-renames audit_send_list() to audit_send_list_thread() to better
-match its cousin, audit_send_reply_thread().
-
-Reported-by: teroincn@gmail.com
-Reviewed-by: Richard Guy Briggs <rgb@redhat.com>
-Signed-off-by: Paul Moore <paul@paul-moore.com>
-Cc: <stable@vger.kernel.org> # 4.9.x
-Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- kernel/audit.c       |    2 +-
- kernel/audit.h       |    2 +-
- kernel/auditfilter.c |   13 ++++++-------
- 3 files changed, 8 insertions(+), 9 deletions(-)
-
---- a/kernel/audit.c
-+++ b/kernel/audit.c
-@@ -535,7 +535,7 @@ static int kauditd_thread(void *dummy)
- 	return 0;
- }
- 
--int audit_send_list(void *_dest)
-+int audit_send_list_thread(void *_dest)
- {
- 	struct audit_netlink_list *dest = _dest;
- 	struct sk_buff *skb;
---- a/kernel/audit.h
-+++ b/kernel/audit.h
-@@ -245,7 +245,7 @@ struct audit_netlink_list {
- 	struct sk_buff_head q;
- };
- 
--int audit_send_list(void *);
-+int audit_send_list_thread(void *);
- 
- struct audit_net {
- 	struct sock *nlsk;
---- a/kernel/auditfilter.c
-+++ b/kernel/auditfilter.c
-@@ -1139,10 +1139,8 @@ int audit_rule_change(int type, __u32 po
- int audit_list_rules_send(struct sk_buff *request_skb, int seq)
- {
- 	u32 portid = NETLINK_CB(request_skb).portid;
--	struct net *net = sock_net(NETLINK_CB(request_skb).sk);
- 	struct task_struct *tsk;
- 	struct audit_netlink_list *dest;
--	int err = 0;
- 
- 	/* We can't just spew out the rules here because we might fill
- 	 * the available socket buffer space and deadlock waiting for
-@@ -1150,10 +1148,10 @@ int audit_list_rules_send(struct sk_buff
- 	 * happen if we're actually running in the context of auditctl
- 	 * trying to _send_ the stuff */
- 
--	dest = kmalloc(sizeof(struct audit_netlink_list), GFP_KERNEL);
-+	dest = kmalloc(sizeof(*dest), GFP_KERNEL);
- 	if (!dest)
- 		return -ENOMEM;
--	dest->net = get_net(net);
-+	dest->net = get_net(sock_net(NETLINK_CB(request_skb).sk));
- 	dest->portid = portid;
- 	skb_queue_head_init(&dest->q);
- 
-@@ -1161,14 +1159,15 @@ int audit_list_rules_send(struct sk_buff
- 	audit_list_rules(portid, seq, &dest->q);
- 	mutex_unlock(&audit_filter_mutex);
- 
--	tsk = kthread_run(audit_send_list, dest, "audit_send_list");
-+	tsk = kthread_run(audit_send_list_thread, dest, "audit_send_list");
- 	if (IS_ERR(tsk)) {
- 		skb_queue_purge(&dest->q);
-+		put_net(dest->net);
- 		kfree(dest);
--		err = PTR_ERR(tsk);
-+		return PTR_ERR(tsk);
- 	}
- 
--	return err;
-+	return 0;
- }
- 
- int audit_comparator(u32 left, u32 op, u32 right)
+If the user sets some MAC address in the bootloader environment by hand,
+the bootloader could still potentially pass that MAC address to Linux
+through the device tree. Whether the board has a valid address or not
+is beside the point.
 
 
+ChenYu
+
+
+> Thanks,
+> Tianling.
+>
+> >
+> >
+> > ChenYu
+> >
+> > > +};
+> > > +
+> > >  &usb_host0_ehci {
+> > >         status = "okay";
+> > >  };
+> > > --
+> > > 2.17.1
+> > >
+> > >
+> > > _______________________________________________
+> > > linux-arm-kernel mailing list
+> > > linux-arm-kernel@lists.infradead.org
+> > > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
