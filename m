@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E6D353E23
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39E2E35409E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237819AbhDEJEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:04:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44950 "EHLO mail.kernel.org"
+        id S240959AbhDEJTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:19:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237487AbhDEJCj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:02:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFBBC6139E;
-        Mon,  5 Apr 2021 09:02:31 +0000 (UTC)
+        id S239245AbhDEJPe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:15:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D810960FE4;
+        Mon,  5 Apr 2021 09:15:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613352;
-        bh=yPgVW1uqPVUx53Py4ClW+KYejr92s71Pv+Wc1yJF7iE=;
+        s=korg; t=1617614127;
+        bh=+5SrYRVNhL/YDlt1KcL4hRwOiiG//MLFSe01ynDm7VI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nQwzPSBCn2aKOUz2BQUbq+V0u8LjYXlnG0wqSl9yFwJ05BXGQwZv8Ui54nNsNQh6M
-         8y8SUilyTenRAkLTeO2B5CKTQEgxWLl8a6r5GbtRrenZkWeKfkAQoFktOQvctuN1Eq
-         0+cNVNXJvzliyLb1RNvEOi0zDHI9UDxWPTe3G6ew=
+        b=nJB2RDSZAK/5hJsc9/1SDsjJqkcUanLvXLJytLV4d+H5VUNBUTFEhVlYtvvikW9Uk
+         /vHiW7ckpB3vNFg57rEk50BUeUqV2b8jM8CoAL0HZRUXnHLJL5scF+DRsMxkqD1PXL
+         sLXjq1b8psloPnhLxdnfd6LQv12QRlbdTOOIUB8o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 31/56] ALSA: hda/realtek: call alc_update_headset_mode() in hp_automute_hook
+        stable@vger.kernel.org,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Xi Ruoyao <xry111@mengyan1223.wang>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.11 093/152] drm/amdgpu: check alignment on CPU page for bo map
 Date:   Mon,  5 Apr 2021 10:54:02 +0200
-Message-Id: <20210405085023.525786954@linuxfoundation.org>
+Message-Id: <20210405085037.272012267@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085022.562176619@linuxfoundation.org>
-References: <20210405085022.562176619@linuxfoundation.org>
+In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
+References: <20210405085034.233917714@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,46 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Wang <hui.wang@canonical.com>
+From: Xℹ Ruoyao <xry111@mengyan1223.wang>
 
-commit e54f30befa7990b897189b44a56c1138c6bfdbb5 upstream.
+commit e3512fb67093fabdf27af303066627b921ee9bd8 upstream.
 
-We found the alc_update_headset_mode() is not called on some machines
-when unplugging the headset, as a result, the mode of the
-ALC_HEADSET_MODE_UNPLUGGED can't be set, then the current_headset_type
-is not cleared, if users plug a differnt type of headset next time,
-the determine_headset_type() will not be called and the audio jack is
-set to the headset type of previous time.
+The page table of AMDGPU requires an alignment to CPU page so we should
+check ioctl parameters for it.  Return -EINVAL if some parameter is
+unaligned to CPU page, instead of corrupt the page table sliently.
 
-On the Dell machines which connect the dmic to the PCH, if we open
-the gnome-sound-setting and unplug the headset, this issue will
-happen. Those machines disable the auto-mute by ucm and has no
-internal mic in the input source, so the update_headset_mode() will
-not be called by cap_sync_hook or automute_hook when unplugging, and
-because the gnome-sound-setting is opened, the codec will not enter
-the runtime_suspend state, so the update_headset_mode() will not be
-called by alc_resume when unplugging. In this case the
-hp_automute_hook is called when unplugging, so add
-update_headset_mode() calling to this function.
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
-Link: https://lore.kernel.org/r/20210320091542.6748-2-hui.wang@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Xi Ruoyao <xry111@mengyan1223.wang>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5054,6 +5054,7 @@ static void alc_update_headset_jack_cb(s
- 	struct alc_spec *spec = codec->spec;
- 	spec->current_headset_type = ALC_HEADSET_TYPE_UNKNOWN;
- 	snd_hda_gen_hp_automute(codec, jack);
-+	alc_update_headset_mode(codec);
- }
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+@@ -2195,8 +2195,8 @@ int amdgpu_vm_bo_map(struct amdgpu_devic
+ 	uint64_t eaddr;
  
- static void alc_probe_headset_mode(struct hda_codec *codec)
+ 	/* validate the parameters */
+-	if (saddr & AMDGPU_GPU_PAGE_MASK || offset & AMDGPU_GPU_PAGE_MASK ||
+-	    size == 0 || size & AMDGPU_GPU_PAGE_MASK)
++	if (saddr & ~PAGE_MASK || offset & ~PAGE_MASK ||
++	    size == 0 || size & ~PAGE_MASK)
+ 		return -EINVAL;
+ 
+ 	/* make sure object fit at this offset */
+@@ -2261,8 +2261,8 @@ int amdgpu_vm_bo_replace_map(struct amdg
+ 	int r;
+ 
+ 	/* validate the parameters */
+-	if (saddr & AMDGPU_GPU_PAGE_MASK || offset & AMDGPU_GPU_PAGE_MASK ||
+-	    size == 0 || size & AMDGPU_GPU_PAGE_MASK)
++	if (saddr & ~PAGE_MASK || offset & ~PAGE_MASK ||
++	    size == 0 || size & ~PAGE_MASK)
+ 		return -EINVAL;
+ 
+ 	/* make sure object fit at this offset */
 
 
