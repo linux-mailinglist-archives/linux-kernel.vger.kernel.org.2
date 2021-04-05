@@ -2,111 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB29354328
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 17:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0221535432A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 17:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241438AbhDEPHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 11:07:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48408 "EHLO
+        id S241444AbhDEPIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 11:08:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241428AbhDEPHF (ORCPT
+        with ESMTP id S237631AbhDEPH7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 11:07:05 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A564C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 08:06:59 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id mj7-20020a17090b3687b029014d162a65b6so2075581pjb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 08:06:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=nBPPSw2BQxZv3JDlctzmEukgrzYX1yJ+ZaCR4IZI8eQ=;
-        b=NI+p1o0Q/CMmczfcVuoWxmf3Ag3le4FRp9YUh+wTgeNm7hm6t2SdT8SMhF/WhnqhDC
-         1wyQSlMAxO1h7+9N1lc9VS8xbeqJc08aDb6XpltI6iXdgAVd0HdRaV5ia5X4EjAFxm/B
-         LrUpy8vj7tP/zQs/Q5Ls670smqXpVWCu3FiSlgHfrNb1zfF6jiOQph4F6WiUIuroIjOS
-         PDo1GG4V6wLhicRUHpO9Y2GYAcWInEE/+dsrVNfA4mlgiSC6ThfZgwsnOuI3DoPKRyT4
-         /5M/RkaJM7acKMan4+n5DC2pg0N4qwFAYEw0TUq+jqElU0djXNimbQZC/OgHl+In/CiZ
-         cGgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=nBPPSw2BQxZv3JDlctzmEukgrzYX1yJ+ZaCR4IZI8eQ=;
-        b=tim6LeSCCr7tgwmWvOCVHVE9GaB935r2uCXSbBw1Kdcizc7cksCbxWZ6qL6nBXYrSu
-         RdpwzFfL8bkPl0eV416Vc4hPbkHVlQ8E5h1/2vl4xab92rzS/y+JMgoU3CiufktiQqnf
-         lr78UcGK/tUaGh+PUlsNNvP9FYQMCM3X4kjQe3Y+rpF4goR+isSaWt4WMQ/PDo0C/Wp5
-         l+7wH3LhpgRk/riqC/DrwSq7aykP+FqA41cSXThhWt7BNDhpqWkeavwig31aDvF9d1py
-         pznp0TLiVgoYNGuEf5+LATylDL9U9cfk639gqjtWlV35xw40VxCYCfZFkwIZ+xFdiflF
-         b4sA==
-X-Gm-Message-State: AOAM533xmIoJfjB34Ujf5IkZN8hfaHOOB1VHrzGtZwK33c8CzYbBNx16
-        4VDrGZzfQaopnPjpwADRPy5jXA==
-X-Google-Smtp-Source: ABdhPJxZ9W4I9YiyB5+kofac4gwyWUVlvz+/SY21ytvS8APwanRKo2/mW4wfgUZ3G4lS9DZXDflNYQ==
-X-Received: by 2002:a17:902:988d:b029:e8:dd65:e2b5 with SMTP id s13-20020a170902988db02900e8dd65e2b5mr9896147plp.36.1617635218900;
-        Mon, 05 Apr 2021 08:06:58 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id v13sm15319156pfu.54.2021.04.05.08.06.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Apr 2021 08:06:58 -0700 (PDT)
-Date:   Mon, 5 Apr 2021 15:06:54 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        John Allen <john.allen@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>
-Subject: Re: [PATCH 3/5] crypto: ccp: Play nice with vmalloc'd memory for SEV
- command structs
-Message-ID: <YGsnjqFLoqXTrAHo@google.com>
-References: <20210402233702.3291792-1-seanjc@google.com>
- <20210402233702.3291792-4-seanjc@google.com>
- <8ea3744f-fdf7-1704-2860-40c2b8fb47e1@csgroup.eu>
+        Mon, 5 Apr 2021 11:07:59 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CF95C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 08:07:48 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 2431722205;
+        Mon,  5 Apr 2021 17:07:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1617635263;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Dkzk/XuxAoT4NuqBOZKEIzbWMyV0vN0c27tlDqeS7k4=;
+        b=UGXUJ9DWxlscAmuyflJXLDFekQainDg/YiAD84/cT4fpWR9Ps+mrcjUMpwAjk0iKEjmAkb
+        EBd/SVKXee7My08W37WEd1UuT3jrDwjbey/p9BVQOTqePbj3VzYyssdqcHg44Vrp/JpuQE
+        yK33FyyJ1NcmlY8jvN3BpqV8I/qHoJI=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8ea3744f-fdf7-1704-2860-40c2b8fb47e1@csgroup.eu>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 05 Apr 2021 17:07:42 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Tudor.Ambarus@microchip.com
+Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        p.yadav@ti.com, miquel.raynal@bootlin.com, richard@nod.at,
+        vigneshr@ti.com
+Subject: Re: [PATCH 1/2] mtd: spi-nor: sfdp: save a copy of the SFDP data
+In-Reply-To: <e28e7cd3-9728-3428-1bae-9cda258174bc@microchip.com>
+References: <20210318092406.5340-1-michael@walle.cc>
+ <20210318092406.5340-2-michael@walle.cc>
+ <e28e7cd3-9728-3428-1bae-9cda258174bc@microchip.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <5359aa6ade80ff6d39e969c3be2957dd@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 04, 2021, Christophe Leroy wrote:
-> 
-> Le 03/04/2021 à 01:37, Sean Christopherson a écrit :
-> > @@ -152,11 +153,21 @@ static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
-> >   	sev = psp->sev_data;
-> >   	buf_len = sev_cmd_buffer_len(cmd);
-> > -	if (WARN_ON_ONCE(!!data != !!buf_len))
-> > +	if (WARN_ON_ONCE(!!__data != !!buf_len))
-> >   		return -EINVAL;
-> > -	if (WARN_ON_ONCE(data && is_vmalloc_addr(data)))
-> > -		return -EINVAL;
-> > +	if (__data && is_vmalloc_addr(__data)) {
-> > +		/*
-> > +		 * If the incoming buffer is virtually allocated, copy it to
-> > +		 * the driver's scratch buffer as __pa() will not work for such
-> > +		 * addresses, vmalloc_to_page() is not guaranteed to succeed,
-> > +		 * and vmalloc'd data may not be physically contiguous.
-> > +		 */
-> > +		data = sev->cmd_buf;
-> > +		memcpy(data, __data, buf_len);
-> > +	} else {
-> > +		data = __data;
-> > +	}
-> 
-> I don't know how big commands are, but if they are small, it would probably
-> be more efficient to inconditionnally copy them to the buffer rather then
-> doing the test.
+Hi,
 
-Brijesh, I assume SNP support will need to copy the commands unconditionally? If
-yes, it probably makes sense to do so now and avoid vmalloc dependencies
-completely.  And I think that would allow for the removal of status_cmd_buf and
-init_cmd_buf, or is there another reason those dedicated buffers exist?
+Am 2021-04-05 15:11, schrieb Tudor.Ambarus@microchip.com:
+> On 3/18/21 11:24 AM, Michael Walle wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know 
+>> the content is safe
+>> 
+>> Due to possible mode switching to 8D-8D-8D, it might not be possible 
+>> to
+>> read the SFDP after the initial probe. To be able to dump the SFDP via
+>> sysfs afterwards, make a complete copy of it.
+>> 
+>> Signed-off-by: Michael Walle <michael@walle.cc>
+>> ---
+>>  drivers/mtd/spi-nor/core.h  | 10 ++++++++
+>>  drivers/mtd/spi-nor/sfdp.c  | 49 
+>> +++++++++++++++++++++++++++++++++++++
+>>  include/linux/mtd/spi-nor.h |  3 +++
+>>  3 files changed, 62 insertions(+)
+>> 
+>> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+>> index 4a3f7f150b5d..668f22011b1d 100644
+>> --- a/drivers/mtd/spi-nor/core.h
+>> +++ b/drivers/mtd/spi-nor/core.h
+>> @@ -407,6 +407,16 @@ struct spi_nor_manufacturer {
+>>         const struct spi_nor_fixups *fixups;
+>>  };
+>> 
+>> +/**
+>> + * struct sfdp - SFDP data
+>> + * @num_dwords: number of entries in the dwords array
+>> + * @dwords: array of double words of the SFDP data
+>> + */
+>> +struct sfdp {
+>> +       size_t  num_dwords;
+>> +       u32     *dwords;
+>> +};
+>> +
+>>  /* Manufacturer drivers. */
+>>  extern const struct spi_nor_manufacturer spi_nor_atmel;
+>>  extern const struct spi_nor_manufacturer spi_nor_catalyst;
+>> diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+>> index 25142ec4737b..2b6c96e02532 100644
+>> --- a/drivers/mtd/spi-nor/sfdp.c
+>> +++ b/drivers/mtd/spi-nor/sfdp.c
+>> @@ -16,6 +16,7 @@
+>>         (((p)->parameter_table_pointer[2] << 16) | \
+>>          ((p)->parameter_table_pointer[1] <<  8) | \
+>>          ((p)->parameter_table_pointer[0] <<  0))
+>> +#define SFDP_PARAM_HEADER_PARAM_LEN(p) ((p)->length * 4)
+>> 
+>>  #define SFDP_BFPT_ID           0xff00  /* Basic Flash Parameter Table 
+>> */
+>>  #define SFDP_SECTOR_MAP_ID     0xff81  /* Sector Map Table */
+>> @@ -1263,6 +1264,8 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
+>>         struct sfdp_parameter_header *param_headers = NULL;
+>>         struct sfdp_header header;
+>>         struct device *dev = nor->dev;
+>> +       struct sfdp *sfdp;
+>> +       size_t sfdp_size;
+>>         size_t psize;
+>>         int i, err;
+>> 
+>> @@ -1285,6 +1288,9 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
+>>             bfpt_header->major != SFDP_JESD216_MAJOR)
+>>                 return -EINVAL;
+>> 
+>> +       sfdp_size = SFDP_PARAM_HEADER_PTP(bfpt_header) +
+>> +                   SFDP_PARAM_HEADER_PARAM_LEN(bfpt_header);
+>> +
+>>         /*
+>>          * Allocate memory then read all parameter headers with a 
+>> single
+>>          * Read SFDP command. These parameter headers will actually be 
+>> parsed
+>> @@ -1311,6 +1317,49 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
+>>                 }
+>>         }
+>> 
+>> +       /*
+>> +        * Cache the complete SFDP data. It is not (easily) possible 
+>> to fetch
+>> +        * SFDP after probe time and we need it for the sysfs access.
+>> +        */
+>> +       for (i = 0; i < header.nph; i++) {
+>> +               param_header = &param_headers[i];
+>> +               sfdp_size = max_t(size_t, sfdp_size,
+>> +                                 SFDP_PARAM_HEADER_PTP(param_header) 
+>> +
+>> +                                 
+>> SFDP_PARAM_HEADER_PARAM_LEN(param_header));
+>> +       }
+> 
+> Michael, I like the idea of saving the SFDP data, but I think this can 
+> be
+> improved a little. For example, it is not mandatory for the tables to 
+> be
+> continuous in memory, there can be some gaps between BFPT and SMPT for 
+> example,
+> thus we can improve the memory allocation logic.
 
+I want to parse the SFDP as little as possible. Keep in mind, that this 
+should
+help to debug SFDP (errors). Therefore, I don't want to rely on the SFDP 
+saying
+"hey there is a hole, please skip it". Who knows if there is some useful 
+data?
+
+> Also, we can make the saved sfdp
+> data table-agnostic so that we don't duplicate the reads in
+> parse_bfpt/smpt/4bait.
+
+This falls into the same category as above. While it might be reused, 
+the
+primary use case is to have the SFDP data available to a developer/user. 
+Eg.
+what will you do with some holes in the sysfs read()? Return zeros?
+
+FWIW I'm planning to refactor the read code so the cached values are 
+used.
+
+-michael
