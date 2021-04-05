@@ -2,155 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3035435436D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 17:27:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B18354371
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 17:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238090AbhDEP12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 11:27:28 -0400
-Received: from mail-pj1-f49.google.com ([209.85.216.49]:52087 "EHLO
-        mail-pj1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232714AbhDEP10 (ORCPT
+        id S238155AbhDEP3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 11:29:20 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:43580 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232714AbhDEP3S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 11:27:26 -0400
-Received: by mail-pj1-f49.google.com with SMTP id s21so6260363pjq.1;
-        Mon, 05 Apr 2021 08:27:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=s6/xO6zDlOcf9rGpsVwdjh2veGTAn/Y535MvhVK0maI=;
-        b=h9EtD5dygBgSwlVuY9Jq6t+X2QFeSKBAkLNb8O5qKyvy3AGmgN7kScbfC7a9jLtSQi
-         Z1sS31l/OWdoApZgs07IyDTIt4Vt9unJzh2oUmBlZ1dcZbglfJyRHc343UVzS0J/gB69
-         Eia2NxXoItDcvXbhXr5JyUWefkOUynENpPCvCqLT9uJG+gOFHktluYVVAQujWgyZ1CXH
-         opKRO9ZSgM82jTPeMpxBKC0oaMvZJI5J2mbEq8lDlJOJniapJWlAacenFoG7FVAhIWso
-         riUNBcde/x8w0fA7n4Oc8Niicf6zMOAoLtUKfLTObExCAUybVvDZH1RCzngmYP1J1Z/E
-         BRNQ==
-X-Gm-Message-State: AOAM53271sAdFQyyNyFbp7r9nebheGfwuj34uN9tQFpPpqb7rY50RQiR
-        Js8Q6+WcdfOTSJSj21l2Ok0=
-X-Google-Smtp-Source: ABdhPJxlWm0Lzuy1NvlR6D9W30X3v6KfefWidA41cG0vntzFiFzAU4ozy7Gn2cAEzl4sPpga7IG/QA==
-X-Received: by 2002:a17:90b:33d0:: with SMTP id lk16mr14383989pjb.115.1617636440145;
-        Mon, 05 Apr 2021 08:27:20 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:20c0:5960:9793:8deb? ([2601:647:4000:d7:20c0:5960:9793:8deb])
-        by smtp.gmail.com with ESMTPSA id p11sm16137366pjo.48.2021.04.05.08.27.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Apr 2021 08:27:19 -0700 (PDT)
-Subject: Re: [PATCH rdma-next 01/10] RDMA: Add access flags to ib_alloc_mr()
- and ib_mr_pool_init()
-To:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     Avihai Horon <avihaih@nvidia.com>,
-        Adit Ranadive <aditr@vmware.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Jens Axboe <axboe@fb.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Keith Busch <kbusch@kernel.org>, Lijun Ou <oulijun@huawei.com>,
-        linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Michael Guralnik <michaelgur@nvidia.com>,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        netdev@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>,
-        rds-devel@oss.oracle.com, Sagi Grimberg <sagi@grimberg.me>,
-        samba-technical@lists.samba.org,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        Steve French <sfrench@samba.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-References: <20210405052404.213889-1-leon@kernel.org>
- <20210405052404.213889-2-leon@kernel.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <c21edd64-396c-4c7c-86f8-79045321a528@acm.org>
-Date:   Mon, 5 Apr 2021 08:27:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 5 Apr 2021 11:29:18 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 1F06D1C0B81; Mon,  5 Apr 2021 17:29:09 +0200 (CEST)
+Date:   Mon, 5 Apr 2021 17:29:08 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Eric Whitney <enwlinux@gmail.com>,
+        Theodore Tso <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 004/126] ext4: shrink race window in
+ ext4_should_retry_alloc()
+Message-ID: <20210405152908.GA32232@amd>
+References: <20210405085031.040238881@linuxfoundation.org>
+ <20210405085031.189492366@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20210405052404.213889-2-leon@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="vkogqOf2sHV7VnPd"
+Content-Disposition: inline
+In-Reply-To: <20210405085031.189492366@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/4/21 10:23 PM, Leon Romanovsky wrote:
-> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-> index bed4cfe50554..59138174affa 100644
-> --- a/include/rdma/ib_verbs.h
-> +++ b/include/rdma/ib_verbs.h
-> @@ -2444,10 +2444,10 @@ struct ib_device_ops {
->  				       struct ib_udata *udata);
->  	int (*dereg_mr)(struct ib_mr *mr, struct ib_udata *udata);
->  	struct ib_mr *(*alloc_mr)(struct ib_pd *pd, enum ib_mr_type mr_type,
-> -				  u32 max_num_sg);
-> +				  u32 max_num_sg, u32 access);
->  	struct ib_mr *(*alloc_mr_integrity)(struct ib_pd *pd,
->  					    u32 max_num_data_sg,
-> -					    u32 max_num_meta_sg);
-> +					    u32 max_num_meta_sg, u32 access);
->  	int (*advise_mr)(struct ib_pd *pd,
->  			 enum ib_uverbs_advise_mr_advice advice, u32 flags,
->  			 struct ib_sge *sg_list, u32 num_sge,
-> @@ -4142,11 +4142,10 @@ static inline int ib_dereg_mr(struct ib_mr *mr)
->  }
->  
->  struct ib_mr *ib_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
-> -			  u32 max_num_sg);
-> +			  u32 max_num_sg, u32 access);
->  
-> -struct ib_mr *ib_alloc_mr_integrity(struct ib_pd *pd,
-> -				    u32 max_num_data_sg,
-> -				    u32 max_num_meta_sg);
-> +struct ib_mr *ib_alloc_mr_integrity(struct ib_pd *pd, u32 max_num_data_sg,
-> +				    u32 max_num_meta_sg, u32 access);
->  
->  /**
->   * ib_update_fast_reg_key - updates the key portion of the fast_reg MR
-> diff --git a/include/rdma/mr_pool.h b/include/rdma/mr_pool.h
-> index e77123bcb43b..2a0ee791037d 100644
-> --- a/include/rdma/mr_pool.h
-> +++ b/include/rdma/mr_pool.h
-> @@ -11,7 +11,8 @@ struct ib_mr *ib_mr_pool_get(struct ib_qp *qp, struct list_head *list);
->  void ib_mr_pool_put(struct ib_qp *qp, struct list_head *list, struct ib_mr *mr);
->  
->  int ib_mr_pool_init(struct ib_qp *qp, struct list_head *list, int nr,
-> -		enum ib_mr_type type, u32 max_num_sg, u32 max_num_meta_sg);
-> +		    enum ib_mr_type type, u32 max_num_sg, u32 max_num_meta_sg,
-> +		    u32 access);
->  void ib_mr_pool_destroy(struct ib_qp *qp, struct list_head *list);
->  
->  #endif /* _RDMA_MR_POOL_H */
 
-Does the new 'access' argument only control whether or not PCIe relaxed
-ordering is enabled? It seems wrong to me to make enabling of PCIe
-relaxed ordering configurable. I think this mechanism should be enabled
-unconditionally if the HCA supports it.
+--vkogqOf2sHV7VnPd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
+Hi!
 
-Bart.
+> From: Eric Whitney <enwlinux@gmail.com>
+
+> A per filesystem percpu counter exported via sysfs is added to allow
+> users or developers to track the number of times the retry limit is
+> exceeded without resorting to debugging methods.  This should provide
+> some insight into worst case retry behavior.
+
+This adds new counter exported via sysfs, but no documentation of that
+counter...
+
+Best regards,
+								Pavel
+
+> @@ -257,6 +259,7 @@ static struct attribute *ext4_attrs[] =3D {
+>  	ATTR_LIST(session_write_kbytes),
+>  	ATTR_LIST(lifetime_write_kbytes),
+>  	ATTR_LIST(reserved_clusters),
+> +	ATTR_LIST(sra_exceeded_retry_limit),
+>  	ATTR_LIST(inode_readahead_blks),
+>  	ATTR_LIST(inode_goal),
+>  	ATTR_LIST(mb_stats),
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--vkogqOf2sHV7VnPd
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmBrLMQACgkQMOfwapXb+vKcZQCfeKMu/0dzWL9OYyGgoiXHOWP0
+OqsAn271Mi6QBmSukEo/oVgWp8apPipj
+=a/GM
+-----END PGP SIGNATURE-----
+
+--vkogqOf2sHV7VnPd--
