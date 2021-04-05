@@ -2,211 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D233547A8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 22:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C4E3547B7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 22:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237139AbhDEUks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 16:40:48 -0400
-Received: from mail-mw2nam12on2058.outbound.protection.outlook.com ([40.107.244.58]:19192
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235289AbhDEUkp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 16:40:45 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IYOs6IGqflxW3uQigDcAjwP7B8vcadYzvv2JnqkGzZ+bJYnMIBmy7DGGhmV5M9LnxpBzk0Q2y/lbYUt9rwNQSW7yYWluDNwBP9UlF0Nwh7CYi/dD+opOcTOZ1H6e+PfAxHIKbgX8yGF0FT62OSZgMd/uQrXiG+w1wy5bzbdvHHHMoe04M3i5SEchRVEQnM4F6GU5tqDLp/HflcOVmAynYzE5ghJQxGz6WU240Kmy/bS5MFibiOnC+p520X1ivciR2ruUygUpoWpfTsuHXv15V9P7Ho68mof4SF8IkDKchSzPqTd0tyAURo3UZ9ItJXFqXzJ+LhAty8d+2ZuD9MzDkg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kwggBMfJRdb6PvoedbOJgy5q2y0CmtkKVqX55sP0WGE=;
- b=bV1aT6klXfToCGVFiab1lVJ+SoDMehS8s6QUY7p0EflZt/DxcZOIfTGGEe7yYCUiJ3X/vSDBUPmVYioJlCCN04MMEppOUPF5CWpyM2E2s6CZyq3VgxMEcFglP92C+GQHo6JYXPSMBeeatS9vvsC01kMfBPqEqswhr4kDlwPFecGg279rYujGOQMAPabSPwnw7eJyC3u62qZxGqP+qzpCPaad01f2uaK5ZH7Cv1cyL7ugQgonZ8GkO8RXvmwoDSG7RFgTpgQb2UVyug7GJ095fApLRLH0lvrHAS+e8ZO0XbOjtuRfAt3t59Rsh5niLY1LDkYLYc2GHMvZ+i0m5Kin5Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kwggBMfJRdb6PvoedbOJgy5q2y0CmtkKVqX55sP0WGE=;
- b=2a3A57uM5lP2T8mmDBo3782LTdLEaPgTYcMuYdAsbpK4OHxmO3ntJLsLEsle7PoHhPF2Ps2dwf7SktTAr4iluTqMpSfPhBzwnZ9j+faoHJki+7TSCOL6ka6E3om2CgEZDhL765LtVvj5GxFEpHlGT5F7oD18nNTDlP1L/520DSc=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=vmware.com;
-Received: from BY5PR05MB7155.namprd05.prod.outlook.com (2603:10b6:a03:1bf::24)
- by SJ0PR05MB7341.namprd05.prod.outlook.com (2603:10b6:a03:278::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.8; Mon, 5 Apr
- 2021 20:40:32 +0000
-Received: from BY5PR05MB7155.namprd05.prod.outlook.com
- ([fe80::8c33:8eab:566:f63a]) by BY5PR05MB7155.namprd05.prod.outlook.com
- ([fe80::8c33:8eab:566:f63a%5]) with mapi id 15.20.4020.016; Mon, 5 Apr 2021
- 20:40:32 +0000
-Subject: Re: [PATCH rdma-next 02/10] RDMA/core: Enable Relaxed Ordering in
- __ib_alloc_pd()
-To:     Tom Talpey <tom@talpey.com>, Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Avihai Horon <avihaih@nvidia.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Jens Axboe <axboe@fb.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Keith Busch <kbusch@kernel.org>, Lijun Ou <oulijun@huawei.com>,
-        linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Michael Guralnik <michaelgur@nvidia.com>,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        netdev@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>,
-        rds-devel@oss.oracle.com, Sagi Grimberg <sagi@grimberg.me>,
-        samba-technical@lists.samba.org,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        Steve French <sfrench@samba.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-References: <20210405052404.213889-1-leon@kernel.org>
- <20210405052404.213889-3-leon@kernel.org>
- <befc60f3-d28a-5420-b381-0f408bd7cca9@talpey.com>
-From:   Adit Ranadive <aditr@vmware.com>
-Message-ID: <7246a8dc-d484-e022-0270-23e29eaea390@vmware.com>
-Date:   Mon, 5 Apr 2021 13:40:29 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.0
-In-Reply-To: <befc60f3-d28a-5420-b381-0f408bd7cca9@talpey.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [71.204.167.113]
-X-ClientProxiedBy: BY3PR04CA0017.namprd04.prod.outlook.com
- (2603:10b6:a03:217::22) To BY5PR05MB7155.namprd05.prod.outlook.com
- (2603:10b6:a03:1bf::24)
+        id S240681AbhDEUn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 16:43:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237190AbhDEUn0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 16:43:26 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3CDAC061756
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 13:43:18 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id x17so13249038iog.2
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 13:43:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NHI+xqVLK4P6n38OCQkQ71p7tX2h5LIjFaJxt/ywqAg=;
+        b=QDoJDXFcXsGFtpr2QfWzapOPvj3qJp7sdt8z8WaT9c2hyMzs3om0SfT8iB2vhH3CoS
+         uZXJYtmr53CRHh/P9NFM0rrjOQlu7NSWXq6oSYGLd1jzijfEp3DbwebDY5FjGD9wRNpJ
+         Me+7RNcvmoCUW6vdHocDjlIdYX8O9Zqng2jowTcoSJhfhIvFD+1dkjt2awtOK29Wb/VK
+         a7htutSZ9CJvQcmy1dGe5HK0hd85nYnOgLpr3hlH/vk99MzSXPqEtH9VrjsNOJIjz7T5
+         QVegaxE8XauiWVHWbSIUr9vQtOmR9+GvD90/i/DASmD/ty7mVOq3L/R2LeTPNnRWTEFx
+         Cpyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NHI+xqVLK4P6n38OCQkQ71p7tX2h5LIjFaJxt/ywqAg=;
+        b=nl4jrZM7JaKLHfKijfpjRwbOjdIDz3Nq6wMmM6Ko5wEaMms4/+A91+6v92pnyqHbwm
+         0ZNO7vrR3ihjYEWWjKqogz21kEuBA4cr7sLaU5tI0vguZNPbQNcVW9ifXtBIOECi6pEv
+         lRq/Yf2S8WBKMUWx/mKzx4b9GULCcpBcXDJMQM0Z10AfPwsY/5CyfallRJQQSwM1TLcR
+         ScSkMG2+p5xqpR/bK0z9EQdTrcCMUCs3uzylzafKmd3XDh0qNmvlcRuUHnEB6+VnQSKh
+         6VRT4GgruQsRLAWZyHfPB/a2JYryRMT1w5JjvDeIGqapma4JCDa6dwcmdrXR6bgtZ3tu
+         +JDQ==
+X-Gm-Message-State: AOAM530XXUql3lM4ZDocrSBr/n2xOxyCP/YXLt/s1+XJWcQbBJaUrO4I
+        rqK5nU45a8HLzXMfqb7YA6hoY1Kppx5iIEBqfIfgVg==
+X-Google-Smtp-Source: ABdhPJz6j0NEV6Exhmgjdz5KYswxalLHNoIEjFX2w5h3qnx5aeRqcblXA2aADyITeiVQb4Fk9lhZ6XBMHdrZboUM8BM=
+X-Received: by 2002:a02:c6c4:: with SMTP id r4mr24939912jan.77.1617655398273;
+ Mon, 05 Apr 2021 13:43:18 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from aditr-a02.vmware.com (71.204.167.113) by BY3PR04CA0017.namprd04.prod.outlook.com (2603:10b6:a03:217::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.26 via Frontend Transport; Mon, 5 Apr 2021 20:40:30 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 36e5738e-3a05-479b-44d9-08d8f8730e0b
-X-MS-TrafficTypeDiagnostic: SJ0PR05MB7341:
-X-LD-Processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SJ0PR05MB73411B3BEEA01D7DA54264BEC5779@SJ0PR05MB7341.namprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:580;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /vynTHLHZfa7GV83Z2iZ1hUCJuEz/L/0v7ppej4i30yCDay1NYNSfwDfTIFwp04YM16OnsRSe4TGswGYifQHvPxQaDiiyuALW/IjvMA7Ho25vYcrp3LX2zJtG8mHur8L3M7nUBK7NZEB99nYeMYkT7y+nbu3fOzRO2YG8LUc+Q48wrqUnlhiGO03ieYfTngcVDUAsYMTihHhz/Xr9AHp9EV6SJ23lFjWVxf1++fKXOIXsqUxdFqC8CJWbOvKgAtN229m7LP5nd87ThpqxU4Uepqfnf8lEmvXpOwG9YO1ulIhYOM491o+AOar6oDe5n2LEiKZ8ZaI0F08qRAjMW2llHNRTmT5Q7LmdJnnJWIuTJ5s+dkwwl4KLeH8BrJfG7cQpvie5C1NTnnERkWktbdX5r5V+waDqTPfxd4KOaI0XQLW1Q+WYo3lYHcoJ/dmk0+PDZJiZo8AFrvUYowmvtMq/IWGBtKKjQ/vAyXsUY2iNleW5afev3MpCHMZ2vJ/wJupxgvp3XCpnBMMX2JW0WQPjxRvVFfOj6StbCdyTfOcIjK/ge8zFcCwvtw8Dphz0AaS5GkDXqeCcPNElqCrc9exyzmCsFE2kz0+AoTrilFXid1oN4VPF4fORzMCpYE/4byLlBHQ3JIKeageG0ImvClMpPXSU0SjkTBPibiDlBzCwZSyNjW23VhUdrMDwqXJazgTbMhUM23JgXDjUBDuXqgUF1LPPnSc61IbSGxQSChnc9E=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR05MB7155.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(396003)(136003)(366004)(346002)(478600001)(6486002)(83380400001)(7696005)(36756003)(2616005)(31686004)(8936002)(186003)(66556008)(66476007)(66946007)(4326008)(16526019)(8676002)(86362001)(53546011)(110136005)(31696002)(54906003)(956004)(7406005)(7366002)(7416002)(5660300002)(26005)(316002)(2906002)(38100700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?RWxmdmo5RFZ0dEtVOFJWb3Y5TDQ3cUJmMTRveDlzNVhvTGVzQ0hHNldqTTAx?=
- =?utf-8?B?NTBwRVdvZHAxZUpkRUkwUXFhczVIWFUxaDV1YWtJSnViaG1FMWZBdUZQb2My?=
- =?utf-8?B?bDRYdThJNXp1anJOTCs5Z2VuL3p3eEtqV0JGZjZKYmthdzNPWFNLQkNuU0ZJ?=
- =?utf-8?B?TVpzYTJVdDRuVnlVcW1iRXVaOVh4bmtZWWdpcVVWSUNZdkdBM1dvaFRQUUtx?=
- =?utf-8?B?SmtSbFpWTXFQekpQWHUrY1FjUk5WSmpSU1l0Mm95aVYyZWFXK0tqZmtWU0Q4?=
- =?utf-8?B?QXJxZHRrVmNuV3FWdGNjWmQvenFSMytOczJoT1B1Qmg5UEwvSjREMWhXczk5?=
- =?utf-8?B?YlJlVWRXYnRRNHh5aXBVKzc1WUZCQXF5TWpqVHNpOHRCMVEzWmc0VmJvWjNF?=
- =?utf-8?B?Q0l6bXNaaktjWkw1RHhKS2RCVXJSK2lFWnJMNlhlUmtlN2lTcHhHMWIvTnRE?=
- =?utf-8?B?alZ1aEVHeC9kVXY1eXltRUFpVTl4bHdHazFlZ0tnYTI0cnJrOTkvL3UvbUd6?=
- =?utf-8?B?bUs2VHdRaEJ4ckRHL253MTNGUC84YmxWV0U2eklnMkdhVDJ0SWtkdmVjQ2s5?=
- =?utf-8?B?ck1NL1hWT1o3SHMyS2U1OUhZdHV1cGtPZnlxMU9uaUFDNFdPS2xrMmZUdG1T?=
- =?utf-8?B?Q0lrbUxOU1RCakJiQWZNRWtPcG4rMTd1cXVaWmJrRXp6bGJrV2JwNTVGbytV?=
- =?utf-8?B?RE9lSG1XUXcyYWRFQjhNNk1idHVuWTluTGJiU0ZmdlBMaFF2V1VMZGNoQWtr?=
- =?utf-8?B?R0M4ZkVnZ2s4MjQ4OHl6ckJIZ3Y2Wm54cEdiR3dTdThDKys4SG81Tjl6ZGV2?=
- =?utf-8?B?YTBMSXdKVnhPS2h1UWZ5Y0dxOW9xcG0rYk5jNkZsTHBsWUR2Mlc0OTBEQ3Ux?=
- =?utf-8?B?S3VrRUJpMjIrbkxvWnZ0MmNLMWV1K3VSSmFTaW0ydnlBb1NPTk43STI1YmlY?=
- =?utf-8?B?TnFEQ3lrUCtZOTY2UTh2b29IVU9temNlYmdMcCsrbDhlZ2cybUFuM3BpM09t?=
- =?utf-8?B?Y3RxVTNrMnlLQUNGTWM5aXNGMklUU2hRbEQyR3Qxd21CUHc4US9XVGxwU2pH?=
- =?utf-8?B?VE4xQmRsdUt3SUw5SVVwbUpKVGd3RnJZb0lkZ0NZOG9EL0hwTlhRWWxQSGsr?=
- =?utf-8?B?NTZXWVM4WXgyL0prRmVQYStvOHRwZ2srWDFELzZ5UGpCOHBaQnU4ZGszTGN1?=
- =?utf-8?B?a25EK0ZWVzYycEtNUFBpTnFHMGxqLzZraGNWRk13N0xoOUdTKzN4OVhIVW0v?=
- =?utf-8?B?QnZNMlZlYTRFR3pVRVZUM3hmdkExMS90dEZZd3grR0RJODE3UVhuRC9TbFl3?=
- =?utf-8?B?NUxHalk3SjVzM2o0VVZVMUdzSzlMNVFWYlpGYkk3dTV2Y0VBTFV5N2NxODNH?=
- =?utf-8?B?ZTFPRXNaQkxLWEJvSWRwZGFYcHB0TWlvS0RUaXBvQmg4ZG1yWit0alRMY09r?=
- =?utf-8?B?N3I4dnBycTZqZG5EUXhNazVnMEZKYmNSVUUwV0RYTlh1OTVldEJJTUQycDhi?=
- =?utf-8?B?VVFpNnU4VHAzcGc1TnBJL3R5bXVGOHJLdE5LOGNnRktLYXVRUmZXNUMrUTYr?=
- =?utf-8?B?ZlFKWVNGNER4QnE4R3VhdCtjNnp5UFZwNkQ0OStMcFp6NmQ5dEJBeEYwdDJt?=
- =?utf-8?B?VTZOTkFrdHNmTG5Zckd5VEV3MlNqU3lCcDdSa3M4dFdoSnZvVFFtMEg4UUpV?=
- =?utf-8?B?M2J6dklsUER3aHNQc2pSK1JON25WZjZyZUo5Qmt4YmxnL25neGFna0RMN1pJ?=
- =?utf-8?Q?f3yNfrpTtmHT80tb3Gd11K/3NJGciDGrN4bMcsV?=
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 36e5738e-3a05-479b-44d9-08d8f8730e0b
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR05MB7155.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Apr 2021 20:40:32.2157
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XAt9q7HxE8cbKfbH6TY/pIyZrAUq64tbkPnedCjIjPNuUXbYaeVmzb28O7EDFZmACBPBO07x39zb8Vk18SU4ug==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR05MB7341
+References: <cover.1617302792.git.ashish.kalra@amd.com> <4da0d40c309a21ba3952d06f346b6411930729c9.1617302792.git.ashish.kalra@amd.com>
+In-Reply-To: <4da0d40c309a21ba3952d06f346b6411930729c9.1617302792.git.ashish.kalra@amd.com>
+From:   Steve Rutherford <srutherford@google.com>
+Date:   Mon, 5 Apr 2021 13:42:42 -0700
+Message-ID: <CABayD+fF7+sn444rMuE_SNwN-SYSPwJr1mrW3qRYw4H7ryi-aw@mail.gmail.com>
+Subject: Re: [PATCH v11 08/13] KVM: X86: Introduce KVM_HC_PAGE_ENC_STATUS hypercall
+To:     Ashish Kalra <Ashish.Kalra@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
+        Borislav Petkov <bp@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Venu Busireddy <venu.busireddy@oracle.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Will Deacon <will@kernel.org>, maz@kernel.org,
+        Quentin Perret <qperret@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/5/21 11:01 AM, Tom Talpey wrote:
-> On 4/5/2021 1:23 AM, Leon Romanovsky wrote:
->> From: Avihai Horon <avihaih@nvidia.com>
->>
->> Enable Relaxed Ordering in __ib_alloc_pd() allocation of the
->> local_dma_lkey.
->>
->> This will take effect only for devices that don't pre-allocate the lkey
->> but allocate it per PD allocation.
->>
->> Signed-off-by: Avihai Horon <avihaih@nvidia.com>
->> Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
->> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
->> ---
->>   drivers/infiniband/core/verbs.c              | 3 ++-
->>   drivers/infiniband/hw/vmw_pvrdma/pvrdma_mr.c | 1 +
->>   2 files changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
->> index a1782f8a6ca0..9b719f7d6fd5 100644
->> --- a/drivers/infiniband/core/verbs.c
->> +++ b/drivers/infiniband/core/verbs.c
->> @@ -287,7 +287,8 @@ struct ib_pd *__ib_alloc_pd(struct ib_device *device, unsigned int flags,
->>       if (device->attrs.device_cap_flags & IB_DEVICE_LOCAL_DMA_LKEY)
->>           pd->local_dma_lkey = device->local_dma_lkey;
->>       else
->> -        mr_access_flags |= IB_ACCESS_LOCAL_WRITE;
->> +        mr_access_flags |=
->> +            IB_ACCESS_LOCAL_WRITE | IB_ACCESS_RELAXED_ORDERING;
+On Mon, Apr 5, 2021 at 7:28 AM Ashish Kalra <Ashish.Kalra@amd.com> wrote:
 >
-> So, do local_dma_lkey's get relaxed ordering unconditionally?
+> From: Ashish Kalra <ashish.kalra@amd.com>
 >
->>       if (flags & IB_PD_UNSAFE_GLOBAL_RKEY) {
->>           pr_warn("%s: enabling unsafe global rkey\n", caller);
->> diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_mr.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_mr.c
->> index b3fa783698a0..d74827694f92 100644
->> --- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_mr.c
->> +++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_mr.c
->> @@ -66,6 +66,7 @@ struct ib_mr *pvrdma_get_dma_mr(struct ib_pd *pd, int acc)
->>       int ret;
->>         /* Support only LOCAL_WRITE flag for DMA MRs */
->> +    acc &= ~IB_ACCESS_RELAXED_ORDERING;
->>       if (acc & ~IB_ACCESS_LOCAL_WRITE) {
->>           dev_warn(&dev->pdev->dev,
->>                "unsupported dma mr access flags %#x\n", acc);
+> This hypercall is used by the SEV guest to notify a change in the page
+> encryption status to the hypervisor. The hypercall should be invoked
+> only when the encryption attribute is changed from encrypted -> decrypted
+> and vice versa. By default all guest pages are considered encrypted.
 >
-> Why does the pvrdma driver require relaxed ordering to be off?
+> The hypercall exits to userspace to manage the guest shared regions and
+> integrate with the userspace VMM's migration code.
+>
+> The patch integrates and extends DMA_SHARE/UNSHARE hypercall to
+> userspace exit functionality (arm64-specific) patch from Marc Zyngier,
+> to avoid arch-specific stuff and have a common interface
+> from the guest back to the VMM and sharing of the host handling of the
+> hypercall to support use case for a guest to share memory with a host.
+>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Borislav Petkov <bp@suse.de>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: x86@kernel.org
+> Cc: kvm@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> ---
+>  Documentation/virt/kvm/api.rst        | 18 ++++++++
+>  Documentation/virt/kvm/hypercalls.rst | 15 +++++++
+>  arch/x86/include/asm/kvm_host.h       |  2 +
+>  arch/x86/kvm/svm/sev.c                | 61 +++++++++++++++++++++++++++
+>  arch/x86/kvm/svm/svm.c                |  2 +
+>  arch/x86/kvm/svm/svm.h                |  2 +
+>  arch/x86/kvm/vmx/vmx.c                |  1 +
+>  arch/x86/kvm/x86.c                    | 12 ++++++
+>  include/uapi/linux/kvm.h              |  8 ++++
+>  include/uapi/linux/kvm_para.h         |  1 +
+>  10 files changed, 122 insertions(+)
+>
+> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+> index 307f2fcf1b02..52bd7e475fd6 100644
+> --- a/Documentation/virt/kvm/api.rst
+> +++ b/Documentation/virt/kvm/api.rst
+> @@ -5475,6 +5475,24 @@ Valid values for 'type' are:
+>      Userspace is expected to place the hypercall result into the appropriate
+>      field before invoking KVM_RUN again.
+>
+> +::
+> +
+> +               /* KVM_EXIT_DMA_SHARE / KVM_EXIT_DMA_UNSHARE */
+> +               struct {
+> +                       __u64 addr;
+> +                       __u64 len;
+> +                       __u64 ret;
+> +               } dma_sharing;
+> +
+> +This defines a common interface from the guest back to the KVM to support
+> +use case for a guest to share memory with a host.
+> +
+> +The addr and len fields define the starting address and length of the
+> +shared memory region.
+> +
+> +Userspace is expected to place the hypercall result into the "ret" field
+> +before invoking KVM_RUN again.
+> +
+>  ::
+>
+>                 /* Fix the size of the union. */
+> diff --git a/Documentation/virt/kvm/hypercalls.rst b/Documentation/virt/kvm/hypercalls.rst
+> index ed4fddd364ea..7aff0cebab7c 100644
+> --- a/Documentation/virt/kvm/hypercalls.rst
+> +++ b/Documentation/virt/kvm/hypercalls.rst
+> @@ -169,3 +169,18 @@ a0: destination APIC ID
+>
+>  :Usage example: When sending a call-function IPI-many to vCPUs, yield if
+>                 any of the IPI target vCPUs was preempted.
+> +
+> +
+> +8. KVM_HC_PAGE_ENC_STATUS
+> +-------------------------
+> +:Architecture: x86
+> +:Status: active
+> +:Purpose: Notify the encryption status changes in guest page table (SEV guest)
+> +
+> +a0: the guest physical address of the start page
+> +a1: the number of pages
+> +a2: encryption attribute
+> +
+> +   Where:
+> +       * 1: Encryption attribute is set
+> +       * 0: Encryption attribute is cleared
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 3768819693e5..78284ebbbee7 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1352,6 +1352,8 @@ struct kvm_x86_ops {
+>         int (*complete_emulated_msr)(struct kvm_vcpu *vcpu, int err);
+>
+>         void (*vcpu_deliver_sipi_vector)(struct kvm_vcpu *vcpu, u8 vector);
+> +       int (*page_enc_status_hc)(struct kvm_vcpu *vcpu, unsigned long gpa,
+> +                                 unsigned long sz, unsigned long mode);
+>  };
+>
+>  struct kvm_x86_nested_ops {
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index c9795a22e502..fb3a315e5827 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -1544,6 +1544,67 @@ static int sev_receive_finish(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>         return ret;
+>  }
+>
+> +static int sev_complete_userspace_page_enc_status_hc(struct kvm_vcpu *vcpu)
+> +{
+> +       vcpu->run->exit_reason = 0;
+I don't believe you need to clear exit_reason: it's universally set on exit.
 
-PVRDMA doesn't support any other flags other than LOCAL_WRITE for
-DMA MRs so the MR creation will fail if any new unconditionally added
-flag isn't cleared.
+> +       kvm_rax_write(vcpu, vcpu->run->dma_sharing.ret);
+> +       ++vcpu->stat.hypercalls;
+> +       return kvm_skip_emulated_instruction(vcpu);
+> +}
+> +
+> +int svm_page_enc_status_hc(struct kvm_vcpu *vcpu, unsigned long gpa,
+> +                          unsigned long npages, unsigned long enc)
+> +{
+> +       kvm_pfn_t pfn_start, pfn_end;
+> +       struct kvm *kvm = vcpu->kvm;
+> +       gfn_t gfn_start, gfn_end;
+> +
+> +       if (!sev_guest(kvm))
+> +               return -EINVAL;
+> +
+> +       if (!npages)
+> +               return 0;
+> +
+> +       gfn_start = gpa_to_gfn(gpa);
+> +       gfn_end = gfn_start + npages;
+> +
+> +       /* out of bound access error check */
+> +       if (gfn_end <= gfn_start)
+> +               return -EINVAL;
+> +
+> +       /* lets make sure that gpa exist in our memslot */
+> +       pfn_start = gfn_to_pfn(kvm, gfn_start);
+> +       pfn_end = gfn_to_pfn(kvm, gfn_end);
+> +
+> +       if (is_error_noslot_pfn(pfn_start) && !is_noslot_pfn(pfn_start)) {
+> +               /*
+> +                * Allow guest MMIO range(s) to be added
+> +                * to the shared pages list.
+> +                */
+> +               return -EINVAL;
+> +       }
+> +
+> +       if (is_error_noslot_pfn(pfn_end) && !is_noslot_pfn(pfn_end)) {
+> +               /*
+> +                * Allow guest MMIO range(s) to be added
+> +                * to the shared pages list.
+> +                */
+> +               return -EINVAL;
+> +       }
+> +
+> +       if (enc)
+> +               vcpu->run->exit_reason = KVM_EXIT_DMA_UNSHARE;
+> +       else
+> +               vcpu->run->exit_reason = KVM_EXIT_DMA_SHARE;
+> +
+> +       vcpu->run->dma_sharing.addr = gfn_start;
+> +       vcpu->run->dma_sharing.len = npages * PAGE_SIZE;
+> +       vcpu->arch.complete_userspace_io =
+> +               sev_complete_userspace_page_enc_status_hc;
+> +
+> +       return 0;
+> +}
+> +
+>  int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+>  {
+>         struct kvm_sev_cmd sev_cmd;
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 58a45bb139f8..3cbf000beff1 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -4620,6 +4620,8 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
+>         .complete_emulated_msr = svm_complete_emulated_msr,
+>
+>         .vcpu_deliver_sipi_vector = svm_vcpu_deliver_sipi_vector,
+> +
+> +       .page_enc_status_hc = svm_page_enc_status_hc,
+>  };
+>
+>  static struct kvm_x86_init_ops svm_init_ops __initdata = {
+> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+> index 39e071fdab0c..9cc16d2c0b8f 100644
+> --- a/arch/x86/kvm/svm/svm.h
+> +++ b/arch/x86/kvm/svm/svm.h
+> @@ -451,6 +451,8 @@ int nested_svm_check_exception(struct vcpu_svm *svm, unsigned nr,
+>                                bool has_error_code, u32 error_code);
+>  int nested_svm_exit_special(struct vcpu_svm *svm);
+>  void sync_nested_vmcb_control(struct vcpu_svm *svm);
+> +int svm_page_enc_status_hc(struct kvm_vcpu *vcpu, unsigned long gpa,
+> +                          unsigned long npages, unsigned long enc);
+>
+>  extern struct kvm_x86_nested_ops svm_nested_ops;
+>
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 32cf8287d4a7..2c98a5ed554b 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -7748,6 +7748,7 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
+>         .can_emulate_instruction = vmx_can_emulate_instruction,
+>         .apic_init_signal_blocked = vmx_apic_init_signal_blocked,
+>         .migrate_timers = vmx_migrate_timers,
+> +       .page_enc_status_hc = NULL,
+>
+>         .msr_filter_changed = vmx_msr_filter_changed,
+>         .complete_emulated_msr = kvm_complete_insn_gp,
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index f7d12fca397b..ef5c77d59651 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -8273,6 +8273,18 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
+>                 kvm_sched_yield(vcpu->kvm, a0);
+>                 ret = 0;
+>                 break;
+> +       case KVM_HC_PAGE_ENC_STATUS: {
+> +               int r;
+> +
+> +               ret = -KVM_ENOSYS;
+> +               if (kvm_x86_ops.page_enc_status_hc) {
+> +                       r = kvm_x86_ops.page_enc_status_hc(vcpu, a0, a1, a2);
+> +                       if (r >= 0)
+> +                               return r;
+> +                       ret = r;
+Style nit: Why not just set ret, and return ret if ret >=0?
+
+This looks good. I just had a few nitpicks.
+Reviewed-by: Steve Rutherford <srutherford@google.com>
