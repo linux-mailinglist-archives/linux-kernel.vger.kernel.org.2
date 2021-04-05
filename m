@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E485B354098
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E804F353EEF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240841AbhDEJTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:19:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34084 "EHLO mail.kernel.org"
+        id S238794AbhDEJJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:09:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239929AbhDEJO2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:14:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D83AB60FE4;
-        Mon,  5 Apr 2021 09:14:20 +0000 (UTC)
+        id S238283AbhDEJGn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:06:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2C08613B9;
+        Mon,  5 Apr 2021 09:06:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617614061;
-        bh=ssoKzKFC+66OBKC5z+OK6y19dVXJjX1i3Snn7lGXxfI=;
+        s=korg; t=1617613596;
+        bh=lQLmD8mWJ5lbA1jcQr4LGTtmStNrM7Wj2L0lbI7A420=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SnFxbhuUc/TPyL6uxEX1RQ6907lpdLqzfZcp8bO2TzFDtuotKD9MR80m9W5p6IIKf
-         HvPNbtYvkQWD/4gqZ2UVk6T2kBvqGHGqze4MsUaY2KDIuqIA1OYRG5mZTawZec4CGL
-         mUI+rbO84IIfb2B83Xd6xh4Cp/GnKDxcPI8UObCw=
+        b=uczhTHBGMzsaBHpcLM+SDhzjX6TSFOLnTzRLHJuMpgYZ+531uArF/UhOwxtO3WBlr
+         WGmpMP8PPK+lNiW4ETPCTIAknLhFCGTchS97vmEnQAu9Oc/q2NvX3UpNy5s7Kzh1ue
+         tAGddfU7qpXXvjrMzS20f72+gb8+zL1G1p0gC1m0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Metzmacher <metze@samba.org>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 034/152] io_uring: imply MSG_NOSIGNAL for send[msg]()/recv[msg]() calls
+        stable@vger.kernel.org, Laurent Vivier <lvivier@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 021/126] vhost: Fix vhost_vq_reset()
 Date:   Mon,  5 Apr 2021 10:53:03 +0200
-Message-Id: <20210405085035.360327580@linuxfoundation.org>
+Message-Id: <20210405085031.726964194@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
-References: <20210405085034.233917714@linuxfoundation.org>
+In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
+References: <20210405085031.040238881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,60 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Metzmacher <metze@samba.org>
+From: Laurent Vivier <lvivier@redhat.com>
 
-[ Upstream commit 76cd979f4f38a27df22efb5773a0d567181a9392 ]
+[ Upstream commit beb691e69f4dec7bfe8b81b509848acfd1f0dbf9 ]
 
-We never want to generate any SIGPIPE, -EPIPE only is much better.
+vhost_reset_is_le() is vhost_init_is_le(), and in the case of
+cross-endian legacy, vhost_init_is_le() depends on vq->user_be.
 
-Signed-off-by: Stefan Metzmacher <metze@samba.org>
-Link: https://lore.kernel.org/r/38961085c3ec49fd21550c7788f214d1ff02d2d4.1615908477.git.metze@samba.org
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+vq->user_be is set by vhost_disable_cross_endian().
+
+But in vhost_vq_reset(), we have:
+
+    vhost_reset_is_le(vq);
+    vhost_disable_cross_endian(vq);
+
+And so user_be is used before being set.
+
+To fix that, reverse the lines order as there is no other dependency
+between them.
+
+Signed-off-by: Laurent Vivier <lvivier@redhat.com>
+Link: https://lore.kernel.org/r/20210312140913.788592-1-lvivier@redhat.com
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io_uring.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/vhost/vhost.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index aaf9b5d49c17..26b4af9831da 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -4648,7 +4648,7 @@ static int io_sendmsg(struct io_kiocb *req, bool force_nonblock,
- 		kmsg = &iomsg;
- 	}
- 
--	flags = req->sr_msg.msg_flags;
-+	flags = req->sr_msg.msg_flags | MSG_NOSIGNAL;
- 	if (flags & MSG_DONTWAIT)
- 		req->flags |= REQ_F_NOWAIT;
- 	else if (force_nonblock)
-@@ -4692,7 +4692,7 @@ static int io_send(struct io_kiocb *req, bool force_nonblock,
- 	msg.msg_controllen = 0;
- 	msg.msg_namelen = 0;
- 
--	flags = req->sr_msg.msg_flags;
-+	flags = req->sr_msg.msg_flags | MSG_NOSIGNAL;
- 	if (flags & MSG_DONTWAIT)
- 		req->flags |= REQ_F_NOWAIT;
- 	else if (force_nonblock)
-@@ -4886,7 +4886,7 @@ static int io_recvmsg(struct io_kiocb *req, bool force_nonblock,
- 				1, req->sr_msg.len);
- 	}
- 
--	flags = req->sr_msg.msg_flags;
-+	flags = req->sr_msg.msg_flags | MSG_NOSIGNAL;
- 	if (flags & MSG_DONTWAIT)
- 		req->flags |= REQ_F_NOWAIT;
- 	else if (force_nonblock)
-@@ -4944,7 +4944,7 @@ static int io_recv(struct io_kiocb *req, bool force_nonblock,
- 	msg.msg_iocb = NULL;
- 	msg.msg_flags = 0;
- 
--	flags = req->sr_msg.msg_flags;
-+	flags = req->sr_msg.msg_flags | MSG_NOSIGNAL;
- 	if (flags & MSG_DONTWAIT)
- 		req->flags |= REQ_F_NOWAIT;
- 	else if (force_nonblock)
+diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+index a262e12c6dc2..5ccb0705beae 100644
+--- a/drivers/vhost/vhost.c
++++ b/drivers/vhost/vhost.c
+@@ -332,8 +332,8 @@ static void vhost_vq_reset(struct vhost_dev *dev,
+ 	vq->error_ctx = NULL;
+ 	vq->kick = NULL;
+ 	vq->log_ctx = NULL;
+-	vhost_reset_is_le(vq);
+ 	vhost_disable_cross_endian(vq);
++	vhost_reset_is_le(vq);
+ 	vq->busyloop_timeout = 0;
+ 	vq->umem = NULL;
+ 	vq->iotlb = NULL;
 -- 
 2.30.1
 
