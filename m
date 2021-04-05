@@ -2,68 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FCED354641
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 19:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A51354627
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 19:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239474AbhDERmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 13:42:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54660 "EHLO
+        id S238985AbhDERmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 13:42:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239462AbhDERml (ORCPT
+        with ESMTP id S234136AbhDERmK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 13:42:41 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7624FC061756
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 10:42:34 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id y20-20020a1c4b140000b029011f294095d3so861653wma.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 10:42:34 -0700 (PDT)
+        Mon, 5 Apr 2021 13:42:10 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C191BC061756;
+        Mon,  5 Apr 2021 10:42:03 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id y32so5382229pga.11;
+        Mon, 05 Apr 2021 10:42:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=message-id:from:mime-version:content-transfer-encoding
-         :content-description:subject:to:date:reply-to;
-        bh=V+ZL6IBlYhDhqaW2K8qSQL0I2+furW7I5Lbh2PK3hX0=;
-        b=jYjwBKaTfvgG27iYyPW94uMrt1Hjo+PkzG5aen1BCzn0cr/pjBO8Z2nLyutbxpaRBH
-         ywwYD9ZlI/bbDoB8gqO5o2YRFknI/kuvipUrOMMQ6F1vJ7D/oE3mYdIfC/NxdN34VZF+
-         9e5aGKXx3PEGKMZ2un0k0A7RllT9HtOwNkj/Ntu4tXjXx47EQgHljhK/hKoXK8sqlfn5
-         4vsQcMbs8gAr5CHePN/C5aGiFcibCYNh7LWGHdMGEAGQK/s96MWatyLycn/ijQ1pNfOQ
-         Y2tBvduKpSyG0QDEyjfcLN9m5uLj39EIiXkiPnhpSGaxtFkwMJHm+BvBG78gVwKVYJ5J
-         9hMQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XHO0wyjY+FEn213Oc9Rxdq+fE2tksXvgBm7Zhcmxqbc=;
+        b=cHsdt3+3qTwnn66SUZ4zRx2PP97lFo9OEygRMaGT/sQhOjxfKSgBK+2B0VMAF1K1gM
+         CrjdyzcL+ZUu8sZf9npZmVmrhodCJCvf46eBhg6S6FJ4QEMgzr0o51IrApqdkaZwMdMl
+         5rcwyszN5+TyTDxRHDRRxVpzS5HjtlZYaxalyIQvIDk+JT2Rz7igDO60Furec1gQ6dzU
+         be0G2yu+6xrnn94cZ0KsPyL2DV4DfILcKIeb+B/W0YM2qlCX1N99yS4kdaKZf0vck0+h
+         8SQB1kK+KGoOnsY4w8VPZ04cOAKfQi/XZOONUjoLMNizau7QfcoSY76E5r1RGcrSNHSo
+         hiWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:from:mime-version
-         :content-transfer-encoding:content-description:subject:to:date
-         :reply-to;
-        bh=V+ZL6IBlYhDhqaW2K8qSQL0I2+furW7I5Lbh2PK3hX0=;
-        b=FaUs5Z93rudqQryYedIKFkGJtp6ydO5/LV2fbwpFUGiHr7strsjPV/DbF7EUTGbKj2
-         PB0w7QbCdpU/e23VmkU46EyMFrpecM4yzYtEkVdAA4sqGUI3T9ja8mNBnCb0kXEX9egh
-         otQ30r27m2etgqtxxuSt6gb3eg9zy3j4r4Gp2nXt6tr7NaqFTGqW7yROFkY4xdOO8UnD
-         cmmHITbXedj+tcz3XvgPyMoy9N5CUOvPM6s58ixHS07+H81u0j+UBpXRNu+XNuiRSvPB
-         QBzGBRr4nyVJ8jFjyom/UD2BfIgCrHt3Y5NxrUJelq/Q/vPhuH4tGcMYQJtqRJq3u8yh
-         phHg==
-X-Gm-Message-State: AOAM530ScnFEYovW8FLkV0FMVsbjKiGBCFbswaEyaejRctbn+gofuLY/
-        HLWhEgi1uoVylwU7gBWNuug=
-X-Google-Smtp-Source: ABdhPJyxiXUoBYPgzAtAElS90DBlhtGfFg4P++O8p72m8uP57iHe90pBbi22afGgNjIcSF7IOX2yEA==
-X-Received: by 2002:a05:600c:4b86:: with SMTP id e6mr239056wmp.78.1617644553267;
-        Mon, 05 Apr 2021 10:42:33 -0700 (PDT)
-Received: from [192.168.1.152] ([102.64.185.200])
-        by smtp.gmail.com with ESMTPSA id e9sm13584653wrv.92.2021.04.05.10.42.30
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Mon, 05 Apr 2021 10:42:32 -0700 (PDT)
-Message-ID: <606b4c08.1c69fb81.e59f9.1831@mx.google.com>
-From:   Vanina curt <theresavail90@gmail.com>
-X-Google-Original-From: Vanina curt
-Content-Type: text/plain; charset="iso-8859-1"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XHO0wyjY+FEn213Oc9Rxdq+fE2tksXvgBm7Zhcmxqbc=;
+        b=s2fcak9JejQv5rI7yHcTqXaYuzhcdqXXXuVFdUQ3pVRJzsdnwljPzzwpSF+gtM/PUX
+         BxPPD19bBsyfxVXXKazKdTvvbdIEi3BYIsBYY8Bedc+zpjtAF3w3GOIiXUgTEM0qkUXx
+         llOSrJxz8DT479JYqLZFnIN3TpgEXBwAuE6SH1S+sL4P6Ny13asEQYscs6RZP+H3bTsT
+         mKnqAmGUCJF4wVFR+SrqDV1ePbTYRXPJREBnfWSeffIFoL7BQTcGHrwj5FrpMU8VTFut
+         Vsq+ukyDQHtv7Bfd2lMQ4hNi4hHg9OnGQFDEAdNYIldr++I+gwQCAdmUhQl1ki6J3lIm
+         ElEA==
+X-Gm-Message-State: AOAM532GUt4blRysh5bbg8PQvNiDaSW82V8GFUWcCBvktAdsGuTAFzLo
+        tJ1ggsIU78V4bg/t0WsQEgg=
+X-Google-Smtp-Source: ABdhPJx1gyT8RHAnDJ9nm8PplSyEEAsnMs61ssxEYWIO86VFsIQv4AJ//yvpO2XaqD6VidV/Qvr+lQ==
+X-Received: by 2002:a63:1316:: with SMTP id i22mr23372774pgl.419.1617644523140;
+        Mon, 05 Apr 2021 10:42:03 -0700 (PDT)
+Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
+        by smtp.gmail.com with ESMTPSA id h68sm16859533pfe.111.2021.04.05.10.42.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Apr 2021 10:42:01 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Jordan Crouse <jordan@cosmicpenguin.net>,
+        Rob Clark <robdclark@chromium.org>,
+        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU),
+        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
+        linux-kernel@vger.kernel.org (open list),
+        Rob Clark <robdclark@gmail.com>
+Subject: [PATCH 0/8] drm/msm: Swappable GEM objects
+Date:   Mon,  5 Apr 2021 10:45:23 -0700
+Message-Id: <20210405174532.1441497-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: HI,
-To:     Recipients <Vanina@vger.kernel.org>
-Date:   Mon, 05 Apr 2021 17:42:26 +0000
-Reply-To: curtisvani9008@gmail.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-How are you? I'm Vanina. I picked interest in you and I would like to know =
-more about you and establish relationship with you. i will wait for your re=
-sponse. thank you.
+From: Rob Clark <robdclark@chromium.org>
+
+One would normally hope not to be under enough memory pressure to need
+to swap GEM objects to disk backed swap.  But memory backed zram swap
+(as enabled on chromebooks, for example) can actually be quite fast
+and useful on devices with less RAM.  On a 4GB device, opening up ~4
+memory intensive web pages (in separate windows rather than tabs, to try
+and prevent tab discard), I see ~500MB worth of GEM objects, of which
+maybe only 10% are active at any time, and with unpin/evict enabled,
+only about half resident (which is a number that gets much lower if you
+simulate extreme memory pressure).  Assuming a 2:1 compression ratio (I
+see a bit higher in practice, but cannot isolate swapped out GEM pages
+vs other), that is like having an extra 100+MB of RAM, or more under
+higher memory pressure.
+
+Rob Clark (8):
+  drm/msm: ratelimit GEM related WARN_ON()s
+  drm/msm: Reorganize msm_gem_shrinker_scan()
+  drm/msm: Clear msm_obj->sgt in put_pages()
+  drm/msm: Split iova purge and close
+  drm/msm: Add $debugfs/gem stats on resident objects
+  drm/msm: Track potentially evictable objects
+  drm/msm: Small msm_gem_purge() fix
+  drm/msm: Support evicting GEM objects to swap
+
+ drivers/gpu/drm/msm/msm_drv.c          |   2 +-
+ drivers/gpu/drm/msm/msm_drv.h          |  13 ++-
+ drivers/gpu/drm/msm/msm_gem.c          | 155 +++++++++++++++++--------
+ drivers/gpu/drm/msm/msm_gem.h          |  68 +++++++++--
+ drivers/gpu/drm/msm/msm_gem_shrinker.c | 129 ++++++++++++--------
+ drivers/gpu/drm/msm/msm_gpu_trace.h    |  13 +++
+ 6 files changed, 272 insertions(+), 108 deletions(-)
+
+-- 
+2.30.2
+
