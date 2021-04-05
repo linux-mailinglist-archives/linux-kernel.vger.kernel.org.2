@@ -2,437 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 603B135495C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 01:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EAE135495F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 01:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241944AbhDEXmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 19:42:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241925AbhDEXmE (ORCPT
+        id S242046AbhDEXmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 19:42:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34843 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241961AbhDEXmm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 19:42:04 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 290A4C061760;
-        Mon,  5 Apr 2021 16:41:53 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id ba6so6794121edb.1;
-        Mon, 05 Apr 2021 16:41:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=hp+wNCy40KXqQVhtPgTXPHAmWaLnsZ8TRyXXWQX2ijI=;
-        b=PLbTWMPPDMdL6TutXMwNVUQTJVZIn79Tb0+s0TdyR7HR9RMOieZVy1/F4um5Cb5H6/
-         g6ybzBu+x8LtwzKiNKNxJbpFJJszJDo4ZfAxDXMJiPx0louVSPHy0EyUjIcC8WYVKdX0
-         HasqYPmBCGDkzZoMsQiI92Tq635k1ncJ++1dhUeRFMng4el7piA1KlH8Rv85jo9mDEGK
-         6aKr9mFyw2VAN86T6ZnhGpf16gN9+jnTZ5lCcP/bCigIjHoKs5ZXGVEESU42frl33VnI
-         WW4EqY0ihIGI6kcO5McsziAyoHAMA3sMLtO562VxJqvMT8el4itd+ebfGxvgFLhOt4hb
-         J7xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hp+wNCy40KXqQVhtPgTXPHAmWaLnsZ8TRyXXWQX2ijI=;
-        b=H8+Ta/GZ5oF1fcQNYwI8VC/s1A4Mqy//ZmkO3JLEhZDQPijgPUFpWHMjbNulqd6FlE
-         NK/k0cNVfUjk0AKm1jb6nT69wm/9UuHJ65U7C/+xTczqt95P4iVkHC6PLmtdMh5LLD8c
-         6wP/gvk+s4LYaDxboecYiMCHq00FNUQMsCTKRA1xXl8ths9LlIRb4MPihnAai/ko4sFY
-         0J2f4ciJzp+HEm3nnUqsMZykAJnlQufC7QYqY51+9YhDLb11/LxH8gl54ZrnPPH35MRv
-         YDbqzXmCKUHmC6QW5+3x0lUW/0Y+oiSiqQ5bdSVqMy+S/FdnKcqeYGm8Cg/Sp3+3hLhc
-         WQvQ==
-X-Gm-Message-State: AOAM5318lZT5CZh9LaSRVBQEYUNVIaRxqE3K9vGT0DKE2iNPEBDFtQS2
-        6QGf3grsteRPSkBg6cDedew=
-X-Google-Smtp-Source: ABdhPJyfUNbbhAAmVhJKkmKfOz5Kpv4mdgAANLvaV3W5uoa6x6lDMyh0v70QXn2NMEFtCPGLRvUjqg==
-X-Received: by 2002:a05:6402:17e9:: with SMTP id t9mr34242402edy.211.1617666111896;
-        Mon, 05 Apr 2021 16:41:51 -0700 (PDT)
-Received: from xws.localdomain ([37.58.58.229])
-        by smtp.gmail.com with ESMTPSA id h21sm4747963ejb.31.2021.04.05.16.41.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Apr 2021 16:41:51 -0700 (PDT)
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-To:     Sebastian Reichel <sre@kernel.org>
-Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-pm@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] power: supply: Add AC driver for Surface Aggregator Module
-Date:   Tue,  6 Apr 2021 01:41:26 +0200
-Message-Id: <20210405234126.667532-3-luzmaximilian@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405234126.667532-1-luzmaximilian@gmail.com>
-References: <20210405234126.667532-1-luzmaximilian@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 5 Apr 2021 19:42:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617666155;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=NNHMSBQaRieLc4dNuOzG7rtghujWeXt8EkzxE1Qx9x8=;
+        b=fxsVzKYOvz1xLAemMf4IAV+BrrkJ6MnGNE9ay+jRBKN+fDH0RBlTJPEOP2qydVzuM8B9ng
+        elrgw/JZaGrpbkOjMNGnKoflDwzOGpfoIz3tYRznnqMMIQecnTBn3YGWL2rlbLuQEItEnT
+        1UkOi/XHtO5tkTm6Tw81SGS5VRi7JCk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-211-_gDRS--5PuuiTxGJtj2GlA-1; Mon, 05 Apr 2021 19:42:31 -0400
+X-MC-Unique: _gDRS--5PuuiTxGJtj2GlA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9C75A180FCA4;
+        Mon,  5 Apr 2021 23:42:29 +0000 (UTC)
+Received: from llong.com (ovpn-112-77.rdu2.redhat.com [10.10.112.77])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DD54114108;
+        Mon,  5 Apr 2021 23:42:14 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc:     Bharata B Rao <bharata@linux.vnet.ibm.com>,
+        Phil Auld <pauld@redhat.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        linux-kernel@vger.kernel.org, Waiman Long <longman@redhat.com>
+Subject: [PATCH v4] sched/debug: Use sched_debug_lock to serialize use of cgroup_path[] only
+Date:   Mon,  5 Apr 2021 19:42:03 -0400
+Message-Id: <20210405234203.23526-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On newer Microsoft Surface models (specifically 7th-generation, i.e.
-Surface Pro 7, Surface Book 3, Surface Laptop 3, and Surface Laptop Go),
-battery and AC status/information is no longer handled via standard ACPI
-devices, but instead directly via the Surface System Aggregator Module
-(SSAM), i.e. the embedded controller on those devices.
+The handling of sysrq key can be activated by echoing the key to
+/proc/sysrq-trigger or via the magic key sequence typed into a terminal
+that is connected to the system in some way (serial, USB or other mean).
+In the former case, the handling is done in a user context. In the
+latter case, it is likely to be in an interrupt context.
 
-While on previous generation models, AC status is also handled via SSAM,
-an ACPI shim was present to translate the standard ACPI AC interface to
-SSAM requests. The SSAM interface itself, which is modeled closely after
-the ACPI interface, has not changed.
+There should be no more than one instance of sysrq key processing via
+a terminal, but multiple instances of /proc/sysrq-trigger is possible.
 
-This commit introduces a new SSAM client device driver to support AC
-status/information via the aforementioned interface on said Surface
-models.
+Currently in print_cpu() of kernel/sched/debug.c, sched_debug_lock is
+taken with interrupt disabled for the whole duration of the calls to
+print_*_stats() and print_rq() which could last for the quite some time
+if the information dump happens on the serial console.
 
-Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+If the system has many cpus and the sched_debug_lock is somehow busy
+(e.g. parallel sysrq-t), the system may hit a hard lockup panic
+depending on the actually serial console implementation of the
+system. For instance,
+
+[ 7809.796262] Kernel panic - not syncing: Hard LOCKUP
+[ 7809.796264] CPU: 13 PID: 79867 Comm: reproducer.sh Kdump: loaded Tainted: G          I      --------- -  - 4.18.0-301.el8.x86_64 #1
+[ 7809.796264] Hardware name: Dell Inc. PowerEdge R640/0W23H8, BIOS 1.4.9 06/29/2018
+[ 7809.796265] Call Trace:
+[ 7809.796265]  <NMI>
+[ 7809.796266]  dump_stack+0x5c/0x80
+[ 7809.796266]  panic+0xe7/0x2a9
+[ 7809.796267]  nmi_panic.cold.9+0xc/0xc
+[ 7809.796267]  watchdog_overflow_callback.cold.7+0x5c/0x70
+[ 7809.796268]  __perf_event_overflow+0x52/0xf0
+[ 7809.796268]  handle_pmi_common+0x204/0x2a0
+[ 7809.796269]  ? __set_pte_vaddr+0x32/0x50
+[ 7809.796269]  ? __native_set_fixmap+0x24/0x30
+[ 7809.796270]  ? ghes_copy_tofrom_phys+0xd3/0x1c0
+[ 7809.796271]  intel_pmu_handle_irq+0xbf/0x160
+[ 7809.796271]  perf_event_nmi_handler+0x2d/0x50
+[ 7809.796272]  nmi_handle+0x63/0x110
+[ 7809.796272]  default_do_nmi+0x49/0x100
+[ 7809.796273]  do_nmi+0x17e/0x1e0
+[ 7809.796273]  end_repeat_nmi+0x16/0x6f
+[ 7809.796274] RIP: 0010:native_queued_spin_lock_slowpath+0x5b/0x1d0
+[ 7809.796275] Code: 6d f0 0f ba 2f 08 0f 92 c0 0f b6 c0 c1 e0 08 89 c2 8b 07 30 e4 09 d0 a9 00 01 ff ff 75 47 85 c0 74 0e 8b 07 84 c0 74 08 f3 90 <8b> 07 84 c0 75 f8 b8 01 00 00 00 66 89 07 c3 8b 37 81 fe 00 01 00
+[ 7809.796276] RSP: 0018:ffffaa54cd887df8 EFLAGS: 00000002
+[ 7809.796277] RAX: 0000000000000101 RBX: 0000000000000246 RCX: 0000000000000000
+[ 7809.796278] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff936b66d0
+[ 7809.796278] RBP: ffffffff9301fb40 R08: 0000000000000004 R09: 000000000000004f
+[ 7809.796279] R10: 0000000000000000 R11: ffffaa54cd887cc0 R12: ffff907fd0a29ec0
+[ 7809.796280] R13: 0000000000000000 R14: ffffffff926ab7c0 R15: 0000000000000000
+[ 7809.796280]  ? native_queued_spin_lock_slowpath+0x5b/0x1d0
+[ 7809.796281]  ? native_queued_spin_lock_slowpath+0x5b/0x1d0
+[ 7809.796281]  </NMI>
+[ 7809.796282]  _raw_spin_lock_irqsave+0x32/0x40
+[ 7809.796283]  print_cpu+0x261/0x7c0
+[ 7809.796283]  sysrq_sched_debug_show+0x34/0x50
+[ 7809.796284]  sysrq_handle_showstate+0xc/0x20
+[ 7809.796284]  __handle_sysrq.cold.11+0x48/0xfb
+[ 7809.796285]  write_sysrq_trigger+0x2b/0x30
+[ 7809.796285]  proc_reg_write+0x39/0x60
+[ 7809.796286]  vfs_write+0xa5/0x1a0
+[ 7809.796286]  ksys_write+0x4f/0xb0
+[ 7809.796287]  do_syscall_64+0x5b/0x1a0
+[ 7809.796287]  entry_SYSCALL_64_after_hwframe+0x65/0xca
+[ 7809.796288] RIP: 0033:0x7fabe4ceb648
+
+The purpose of sched_debug_lock is to serialize the use of the global
+cgroup_path[] buffer in print_cpu(). The rests of the printk calls don't
+need serialization from sched_debug_lock.
+
+Calling printk() with interrupt disabled can still be problematic if
+multiple instances are running. Allocating a stack buffer of PATH_MAX
+bytes is not feasible because of the limited size of the kernel stack.
+
+The print_cpu() function has two callers - sched_debug_show() and
+sysrq_sched_debug_show(). The solution implemented in this patch is to
+allow all sched_debug_show() callers to contend for sched_debug_lock and
+use the full size group_path[] as their SEQ_printf() calls will be much
+faster. However only one sysrq_sched_debug_show() caller that output to
+the slow console will be allowed to use group_path[]. Another parallel
+console writer will have to use a shorter stack buffer instead. Since
+the console output will be garbled anyway, truncation of some cgroup
+paths shouldn't be a big issue.
+
+Fixes: efe25c2c7b3a ("sched: Reinstate group names in /proc/sched_debug")
+Signed-off-by: Waiman Long <longman@redhat.com>
 ---
+ kernel/sched/debug.c | 54 +++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 41 insertions(+), 13 deletions(-)
 
-Changes in v2:
- - Use devm_power_supply_register()
- - Specify .supplied_to
- - Fix constness of property arrays
- - Drop mutex_destroy() call
- - Inline spwr_ac_unregister()
-
----
- MAINTAINERS                            |   1 +
- drivers/power/supply/Kconfig           |  16 ++
- drivers/power/supply/Makefile          |   1 +
- drivers/power/supply/surface_charger.c | 282 +++++++++++++++++++++++++
- 4 files changed, 300 insertions(+)
- create mode 100644 drivers/power/supply/surface_charger.c
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e989beffde99..bfb0ac2b642f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11867,6 +11867,7 @@ L:	linux-pm@vger.kernel.org
- L:	platform-driver-x86@vger.kernel.org
- S:	Maintained
- F:	drivers/power/supply/surface_battery.c
-+F:	drivers/power/supply/surface_charger.c
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 486f403a778b..5d021b247998 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -8,8 +8,6 @@
+  */
+ #include "sched.h"
  
- MICROSOFT SURFACE GPE LID SUPPORT DRIVER
- M:	Maximilian Luz <luzmaximilian@gmail.com>
-diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
-index 5b5054762194..e696364126f1 100644
---- a/drivers/power/supply/Kconfig
-+++ b/drivers/power/supply/Kconfig
-@@ -817,4 +817,20 @@ config BATTERY_SURFACE
- 	  Microsoft Surface devices, i.e. Surface Pro 7, Surface Laptop 3,
- 	  Surface Book 3, and Surface Laptop Go.
+-static DEFINE_SPINLOCK(sched_debug_lock);
+-
+ /*
+  * This allows printing both to /proc/sched_debug and
+  * to the console
+@@ -470,16 +468,49 @@ static void print_cfs_group_stats(struct seq_file *m, int cpu, struct task_group
+ #endif
  
-+config CHARGER_SURFACE
-+	tristate "AC driver for 7th-generation Microsoft Surface devices"
-+	depends on SURFACE_AGGREGATOR_REGISTRY
-+	help
-+	  Driver for AC devices connected via/managed by the Surface System
-+	  Aggregator Module (SSAM).
-+
-+	  This driver provides AC-information and -status support for Surface
-+	  devices where said data is not exposed via the standard ACPI devices.
-+	  On those models (7th-generation), AC-information is instead handled
-+	  directly via a SSAM client device and this driver.
-+
-+	  Say M or Y here to include AC status support for 7th-generation
-+	  Microsoft Surface devices, i.e. Surface Pro 7, Surface Laptop 3,
-+	  Surface Book 3, and Surface Laptop Go.
-+
- endif # POWER_SUPPLY
-diff --git a/drivers/power/supply/Makefile b/drivers/power/supply/Makefile
-index 134041538d2c..a7309a3d1a47 100644
---- a/drivers/power/supply/Makefile
-+++ b/drivers/power/supply/Makefile
-@@ -102,3 +102,4 @@ obj-$(CONFIG_CHARGER_WILCO)	+= wilco-charger.o
- obj-$(CONFIG_RN5T618_POWER)	+= rn5t618_power.o
- obj-$(CONFIG_BATTERY_ACER_A500)	+= acer_a500_battery.o
- obj-$(CONFIG_BATTERY_SURFACE)	+= surface_battery.o
-+obj-$(CONFIG_CHARGER_SURFACE)	+= surface_charger.o
-diff --git a/drivers/power/supply/surface_charger.c b/drivers/power/supply/surface_charger.c
-new file mode 100644
-index 000000000000..c2dd7e604d14
---- /dev/null
-+++ b/drivers/power/supply/surface_charger.c
-@@ -0,0 +1,282 @@
-+// SPDX-License-Identifier: GPL-2.0+
+ #ifdef CONFIG_CGROUP_SCHED
++static DEFINE_SPINLOCK(sched_debug_lock);
+ static char group_path[PATH_MAX];
++static enum {
++	TOKEN_NONE,
++	TOKEN_ACQUIRED,
++	TOKEN_NA	/* Not applicable */
++} console_token = TOKEN_ACQUIRED;
+ 
+-static char *task_group_path(struct task_group *tg)
++static void task_group_path(struct task_group *tg, char *path, int plen)
+ {
+-	if (autogroup_path(tg, group_path, PATH_MAX))
+-		return group_path;
++	if (autogroup_path(tg, path, plen))
++		return;
+ 
+-	cgroup_path(tg->css.cgroup, group_path, PATH_MAX);
++	cgroup_path(tg->css.cgroup, path, plen);
++}
+ 
+-	return group_path;
 +/*
-+ * AC driver for 7th-generation Microsoft Surface devices via Surface System
-+ * Aggregator Module (SSAM).
-+ *
-+ * Copyright (C) 2019-2021 Maximilian Luz <luzmaximilian@gmail.com>
++ * All the print_cpu() callers from sched_debug_show() will be allowed
++ * to contend for sched_debug_lock and use group_path[] as their SEQ_printf()
++ * calls will be much faster. However only one print_cpu() caller from
++ * sysrq_sched_debug_show() which outputs to the console will be allowed
++ * to use group_path[]. Another parallel console writer will have to use
++ * a shorter stack buffer instead. Since the console output will be garbled
++ * anyway, truncation of some cgroup paths shouldn't be a big issue.
 + */
-+
-+#include <asm/unaligned.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/mutex.h>
-+#include <linux/power_supply.h>
-+#include <linux/types.h>
-+
-+#include <linux/surface_aggregator/device.h>
-+
-+
-+/* -- SAM interface. -------------------------------------------------------- */
-+
-+enum sam_event_cid_bat {
-+	SAM_EVENT_CID_BAT_ADP   = 0x17,
-+};
-+
-+enum sam_battery_sta {
-+	SAM_BATTERY_STA_OK      = 0x0f,
-+	SAM_BATTERY_STA_PRESENT	= 0x10,
-+};
-+
-+/* Get battery status (_STA). */
-+SSAM_DEFINE_SYNC_REQUEST_CL_R(ssam_bat_get_sta, __le32, {
-+	.target_category = SSAM_SSH_TC_BAT,
-+	.command_id      = 0x01,
-+});
-+
-+/* Get platform power source for battery (_PSR / DPTF PSRC). */
-+SSAM_DEFINE_SYNC_REQUEST_CL_R(ssam_bat_get_psrc, __le32, {
-+	.target_category = SSAM_SSH_TC_BAT,
-+	.command_id      = 0x0d,
-+});
-+
-+
-+/* -- Device structures. ---------------------------------------------------- */
-+
-+struct spwr_psy_properties {
-+	const char *name;
-+	struct ssam_event_registry registry;
-+};
-+
-+struct spwr_ac_device {
-+	struct ssam_device *sdev;
-+
-+	char name[32];
-+	struct power_supply *psy;
-+	struct power_supply_desc psy_desc;
-+
-+	struct ssam_event_notifier notif;
-+
-+	struct mutex lock;  /* Guards access to state below. */
-+
-+	__le32 state;
-+};
-+
-+
-+/* -- State management. ----------------------------------------------------- */
-+
-+static int spwr_ac_update_unlocked(struct spwr_ac_device *ac)
-+{
-+	u32 old = ac->state;
-+	int status;
-+
-+	lockdep_assert_held(&ac->lock);
-+
-+	status = ssam_retry(ssam_bat_get_psrc, ac->sdev, &ac->state);
-+	if (status < 0)
-+		return status;
-+
-+	return old != ac->state;
-+}
-+
-+static int spwr_ac_update(struct spwr_ac_device *ac)
-+{
-+	int status;
-+
-+	mutex_lock(&ac->lock);
-+	status = spwr_ac_update_unlocked(ac);
-+	mutex_unlock(&ac->lock);
-+
-+	return status;
-+}
-+
-+static int spwr_ac_recheck(struct spwr_ac_device *ac)
-+{
-+	int status;
-+
-+	status = spwr_ac_update(ac);
-+	if (status > 0)
-+		power_supply_changed(ac->psy);
-+
-+	return status >= 0 ? 0 : status;
-+}
-+
-+static u32 spwr_notify_ac(struct ssam_event_notifier *nf, const struct ssam_event *event)
-+{
-+	struct spwr_ac_device *ac;
-+	int status;
-+
-+	ac = container_of(nf, struct spwr_ac_device, notif);
-+
-+	dev_dbg(&ac->sdev->dev, "power event (cid = %#04x, iid = %#04x, tid = %#04x)\n",
-+		event->command_id, event->instance_id, event->target_id);
-+
-+	/*
-+	 * Allow events of all targets/instances here. Global adapter status
-+	 * seems to be handled via target=1 and instance=1, but events are
-+	 * reported on all targets/instances in use.
-+	 *
-+	 * While it should be enough to just listen on 1/1, listen everywhere to
-+	 * make sure we don't miss anything.
-+	 */
-+
-+	switch (event->command_id) {
-+	case SAM_EVENT_CID_BAT_ADP:
-+		status = spwr_ac_recheck(ac);
-+		return ssam_notifier_from_errno(status) | SSAM_NOTIF_HANDLED;
-+
-+	default:
-+		return 0;
-+	}
-+}
-+
-+
-+/* -- Properties. ----------------------------------------------------------- */
-+
-+static const enum power_supply_property spwr_ac_props[] = {
-+	POWER_SUPPLY_PROP_ONLINE,
-+};
-+
-+static int spwr_ac_get_property(struct power_supply *psy, enum power_supply_property psp,
-+				union power_supply_propval *val)
-+{
-+	struct spwr_ac_device *ac = power_supply_get_drvdata(psy);
-+	int status;
-+
-+	mutex_lock(&ac->lock);
-+
-+	status = spwr_ac_update_unlocked(ac);
-+	if (status)
-+		goto out;
-+
-+	switch (psp) {
-+	case POWER_SUPPLY_PROP_ONLINE:
-+		val->intval = !!le32_to_cpu(ac->state);
-+		break;
-+
-+	default:
-+		status = -EINVAL;
-+		goto out;
-+	}
-+
-+out:
-+	mutex_unlock(&ac->lock);
-+	return status;
-+}
-+
-+
-+/* -- Device setup. --------------------------------------------------------- */
-+
-+static char *battery_supplied_to[] = {
-+	"BAT1",
-+	"BAT2",
-+};
-+
-+static void spwr_ac_init(struct spwr_ac_device *ac, struct ssam_device *sdev,
-+			 struct ssam_event_registry registry, const char *name)
-+{
-+	mutex_init(&ac->lock);
-+	strncpy(ac->name, name, ARRAY_SIZE(ac->name) - 1);
-+
-+	ac->sdev = sdev;
-+
-+	ac->notif.base.priority = 1;
-+	ac->notif.base.fn = spwr_notify_ac;
-+	ac->notif.event.reg = registry;
-+	ac->notif.event.id.target_category = sdev->uid.category;
-+	ac->notif.event.id.instance = 0;
-+	ac->notif.event.mask = SSAM_EVENT_MASK_NONE;
-+	ac->notif.event.flags = SSAM_EVENT_SEQUENCED;
-+
-+	ac->psy_desc.name = ac->name;
-+	ac->psy_desc.type = POWER_SUPPLY_TYPE_MAINS;
-+	ac->psy_desc.properties = spwr_ac_props;
-+	ac->psy_desc.num_properties = ARRAY_SIZE(spwr_ac_props);
-+	ac->psy_desc.get_property = spwr_ac_get_property;
-+}
-+
-+static int spwr_ac_register(struct spwr_ac_device *ac)
-+{
-+	struct power_supply_config psy_cfg = {};
-+	__le32 sta;
-+	int status;
-+
-+	/* Make sure the device is there and functioning properly. */
-+	status = ssam_retry(ssam_bat_get_sta, ac->sdev, &sta);
-+	if (status)
-+		return status;
-+
-+	if ((le32_to_cpu(sta) & SAM_BATTERY_STA_OK) != SAM_BATTERY_STA_OK)
-+		return -ENODEV;
-+
-+	psy_cfg.drv_data = ac;
-+	psy_cfg.supplied_to = battery_supplied_to;
-+	psy_cfg.num_supplicants = ARRAY_SIZE(battery_supplied_to);
-+
-+	ac->psy = devm_power_supply_register(&ac->sdev->dev, &ac->psy_desc, &psy_cfg);
-+	if (IS_ERR(ac->psy))
-+		return PTR_ERR(ac->psy);
-+
-+	return ssam_notifier_register(ac->sdev->ctrl, &ac->notif);
-+}
-+
-+
-+/* -- Driver setup. --------------------------------------------------------- */
-+
-+static int __maybe_unused surface_ac_resume(struct device *dev)
-+{
-+	return spwr_ac_recheck(dev_get_drvdata(dev));
-+}
-+SIMPLE_DEV_PM_OPS(surface_ac_pm_ops, NULL, surface_ac_resume);
-+
-+static int surface_ac_probe(struct ssam_device *sdev)
-+{
-+	const struct spwr_psy_properties *p;
-+	struct spwr_ac_device *ac;
-+
-+	p = ssam_device_get_match_data(sdev);
-+	if (!p)
-+		return -ENODEV;
-+
-+	ac = devm_kzalloc(&sdev->dev, sizeof(*ac), GFP_KERNEL);
-+	if (!ac)
-+		return -ENOMEM;
-+
-+	spwr_ac_init(ac, sdev, p->registry, p->name);
-+	ssam_device_set_drvdata(sdev, ac);
-+
-+	return spwr_ac_register(ac);
-+}
-+
-+static void surface_ac_remove(struct ssam_device *sdev)
-+{
-+	struct spwr_ac_device *ac = ssam_device_get_drvdata(sdev);
-+
-+	ssam_notifier_unregister(sdev->ctrl, &ac->notif);
-+}
-+
-+static const struct spwr_psy_properties spwr_psy_props_adp1 = {
-+	.name = "ADP1",
-+	.registry = SSAM_EVENT_REGISTRY_SAM,
-+};
-+
-+static const struct ssam_device_id surface_ac_match[] = {
-+	{ SSAM_SDEV(BAT, 0x01, 0x01, 0x01), (unsigned long)&spwr_psy_props_adp1 },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(ssam, surface_ac_match);
-+
-+static struct ssam_device_driver surface_ac_driver = {
-+	.probe = surface_ac_probe,
-+	.remove = surface_ac_remove,
-+	.match_table = surface_ac_match,
-+	.driver = {
-+		.name = "surface_ac",
-+		.pm = &surface_ac_pm_ops,
-+		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
-+	},
-+};
-+module_ssam_device_driver(surface_ac_driver);
-+
-+MODULE_AUTHOR("Maximilian Luz <luzmaximilian@gmail.com>");
-+MODULE_DESCRIPTION("AC driver for Surface System Aggregator Module");
-+MODULE_LICENSE("GPL");
++#define SEQ_printf_task_group_path(m, tg, fmt...)			\
++{									\
++	unsigned long flags;						\
++	int token = m ? TOKEN_NA					\
++		      : xchg_acquire(&console_token, TOKEN_NONE);	\
++									\
++	if (token == TOKEN_NONE) {					\
++		char buf[128];						\
++		task_group_path(tg, buf, sizeof(buf));			\
++		SEQ_printf(m, fmt, buf);				\
++	} else {							\
++		spin_lock_irqsave(&sched_debug_lock, flags);		\
++		task_group_path(tg, group_path, sizeof(group_path));	\
++		SEQ_printf(m, fmt, group_path);				\
++		spin_unlock_irqrestore(&sched_debug_lock, flags);	\
++		if (token == TOKEN_ACQUIRED)				\
++			smp_store_release(&console_token, token);	\
++	}								\
+ }
+ #endif
+ 
+@@ -506,7 +537,7 @@ print_task(struct seq_file *m, struct rq *rq, struct task_struct *p)
+ 	SEQ_printf(m, " %d %d", task_node(p), task_numa_group_id(p));
+ #endif
+ #ifdef CONFIG_CGROUP_SCHED
+-	SEQ_printf(m, " %s", task_group_path(task_group(p)));
++	SEQ_printf_task_group_path(m, task_group(p), " %s")
+ #endif
+ 
+ 	SEQ_printf(m, "\n");
+@@ -543,7 +574,7 @@ void print_cfs_rq(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq)
+ 
+ #ifdef CONFIG_FAIR_GROUP_SCHED
+ 	SEQ_printf(m, "\n");
+-	SEQ_printf(m, "cfs_rq[%d]:%s\n", cpu, task_group_path(cfs_rq->tg));
++	SEQ_printf_task_group_path(m, cfs_rq->tg, "cfs_rq[%d]:%s\n", cpu);
+ #else
+ 	SEQ_printf(m, "\n");
+ 	SEQ_printf(m, "cfs_rq[%d]:\n", cpu);
+@@ -614,7 +645,7 @@ void print_rt_rq(struct seq_file *m, int cpu, struct rt_rq *rt_rq)
+ {
+ #ifdef CONFIG_RT_GROUP_SCHED
+ 	SEQ_printf(m, "\n");
+-	SEQ_printf(m, "rt_rq[%d]:%s\n", cpu, task_group_path(rt_rq->tg));
++	SEQ_printf_task_group_path(m, rt_rq->tg, "rt_rq[%d]:%s\n", cpu);
+ #else
+ 	SEQ_printf(m, "\n");
+ 	SEQ_printf(m, "rt_rq[%d]:\n", cpu);
+@@ -666,7 +697,6 @@ void print_dl_rq(struct seq_file *m, int cpu, struct dl_rq *dl_rq)
+ static void print_cpu(struct seq_file *m, int cpu)
+ {
+ 	struct rq *rq = cpu_rq(cpu);
+-	unsigned long flags;
+ 
+ #ifdef CONFIG_X86
+ 	{
+@@ -717,13 +747,11 @@ do {									\
+ 	}
+ #undef P
+ 
+-	spin_lock_irqsave(&sched_debug_lock, flags);
+ 	print_cfs_stats(m, cpu);
+ 	print_rt_stats(m, cpu);
+ 	print_dl_stats(m, cpu);
+ 
+ 	print_rq(m, rq, cpu);
+-	spin_unlock_irqrestore(&sched_debug_lock, flags);
+ 	SEQ_printf(m, "\n");
+ }
+ 
 -- 
-2.31.1
+2.18.1
 
