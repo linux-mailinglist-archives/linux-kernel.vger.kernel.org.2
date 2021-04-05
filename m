@@ -2,108 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 495BC353B07
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 05:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13CB7353B09
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 05:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231905AbhDEDJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 23:09:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34680 "EHLO
+        id S231920AbhDEDKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 23:10:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231845AbhDEDJT (ORCPT
+        with ESMTP id S231782AbhDEDKP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 23:09:19 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED65AC061756
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Apr 2021 20:09:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BeBVpYmMi0EGHzD7xMjcprnZ4td+YmP9T+kOblzjlBk=; b=lYeZqHgzPQ0UlzMTrQq6rKOfpf
-        69YjhitIY1uvuGITASgqJZeQvddDixBd0MorCw2kceAEKyD8BPRolyl89fvLxoIazNkLFhkAlndk0
-        GAELP/qGD2IMGc21t92TFzR2MfPNj1dAXniDgPTijipbbPPAXRDuSPyVX7uE/NyFbvg26Cy3WkWMN
-        eMEiot6IZVqMm7mR1Ddgof1FdCw7RbLqKMQpRMRdHAUac6Aliwh3eWoY4Qe3JbFKKpsX4VA51YR68
-        0cwWsBofbhH3ahnR+tChwJTjUa99PaVqqI7zQRDdwSy08/KcXfGzFdKkqMGvVR1lMX3DFcaxXDUD5
-        IIm0MQUw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lTFbj-00ArN4-Ta; Mon, 05 Apr 2021 03:09:02 +0000
-Date:   Mon, 5 Apr 2021 04:08:55 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        syzbot <syzbot+88e4f02896967fe1ab0d@syzkaller.appspotmail.com>,
-        john.stultz@linaro.org, linux-kernel@vger.kernel.org,
-        sboyd@kernel.org, syzkaller-bugs@googlegroups.com,
-        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com
-Subject: Re: [syzbot] WARNING: suspicious RCU usage in get_timespec64
-Message-ID: <20210405030855.GG2531743@casper.infradead.org>
-References: <0000000000000e025b05bf2a430b@google.com>
- <87mtud4wfi.ffs@nanos.tec.linutronix.de>
- <20210404214030.GB2696@paulmck-ThinkPad-P72>
+        Sun, 4 Apr 2021 23:10:15 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 839B3C061756;
+        Sun,  4 Apr 2021 20:10:09 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id x21so11189243eds.4;
+        Sun, 04 Apr 2021 20:10:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/ybUuVGV/ftbkhaL6dd8KgunndxjqVlMExLpZx+2c90=;
+        b=TBxj+T6jtZc5CpRQnmGBEmipLj3LGjnLbVtSazOH3ZI2C5g1KFWQyeB2RBrYO/ZCfO
+         q0GRCulGutcnLE5RK/qST4tBRC7eavLYvCkYMzkg6ibmZKoyf+TjrVleSLVpaS9lxHnd
+         b/XYNOYc/pnPk6TiNu2Rkfp/JGrhnYmMKo853c+G3rPMeQMF61Ro6m41nRy4rNmdsm+T
+         OzjnmNkI/GlZ5/jKiHuapARuWARh1pEfTkjsJBI5YQPUsq44yyWkUnuWXX4WrmsxAH1+
+         7IxhWaCS7X5ZpZvL5GMAhtaQW5sv28COXO8NgjLRN/jBIKeH9Z7FSS1XvhO/kqteL7CQ
+         IEGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/ybUuVGV/ftbkhaL6dd8KgunndxjqVlMExLpZx+2c90=;
+        b=ZyGdWTEQeBhGDn9tAyhXz8TGKy5HQe93JfwPAKh3NB/CMn1qAGApBQ3zrShC15DGFS
+         ubl83JUu+5hTB9JuV81W6vzR2FR69O7PbessvXbdWi1tngjBVwqXkCuc54l/i1f46n52
+         lqop3QY9TQkRg9QyXwtQYIxVIeOxxnFQySaS/lY9w9V24xTF+9d+PKJPk3gkil1I9a0A
+         wgVEhCMaB/2wTnPHZ0WhvNCId16bfXprC69epMoDX/zSpO2zAcbhKoS1BFp4/lsz+YEg
+         p0bckVnu4ienGEdH+MccHnmRTdeaSn8Pgjr5/lTmQU50V1PBX3z336nStu68+k7AKKUg
+         IyZA==
+X-Gm-Message-State: AOAM533npnz4WTzGDlOl1tUH7Kpz0KgRql1ab6NCGZYfbd5U3o7KhsTX
+        S5WdIak8aoOmD1Vej8dsQHsSiKsG/K8RfeziH1YKzTsutXk=
+X-Google-Smtp-Source: ABdhPJwg/B1NRjSSo1xg3oKdxwJ92yV1R5GKrTHieEcyBsN+BTYRe6XN797UQa0m/k0bZPXnjg1v8A8eDPxRR8D8OF4=
+X-Received: by 2002:aa7:d813:: with SMTP id v19mr28961632edq.213.1617592208271;
+ Sun, 04 Apr 2021 20:10:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210404214030.GB2696@paulmck-ThinkPad-P72>
+References: <20210404175031.3834734-1-i.maximets@ovn.org> <84e7d112-f29f-022a-8863-69f1db157c10@ovn.org>
+In-Reply-To: <84e7d112-f29f-022a-8863-69f1db157c10@ovn.org>
+From:   Tonghao Zhang <xiangxia.m.yue@gmail.com>
+Date:   Mon, 5 Apr 2021 11:09:25 +0800
+Message-ID: <CAMDZJNXvqMaTxwF2M79ohos0VYpGvjKjMokBv4wrEgej=bdJrA@mail.gmail.com>
+Subject: Re: [ovs-dev] [PATCH net] openvswitch: fix send of uninitialized
+ stack memory in ct limit reply
+To:     Ilya Maximets <i.maximets@ovn.org>
+Cc:     Pravin B Shelar <pshelar@ovn.org>, ovs dev <dev@openvswitch.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 04, 2021 at 02:40:30PM -0700, Paul E. McKenney wrote:
-> On Sun, Apr 04, 2021 at 10:38:41PM +0200, Thomas Gleixner wrote:
-> > On Sun, Apr 04 2021 at 12:05, syzbot wrote:
-> > 
-> > Cc + ...
-> 
-> And a couple more...
-> 
-> > > Hello,
-> > >
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    5e46d1b7 reiserfs: update reiserfs_xattrs_initialized() co..
-> > > git tree:       upstream
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=1125f831d00000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=78ef1d159159890
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=88e4f02896967fe1ab0d
-> > >
-> > > Unfortunately, I don't have any reproducer for this issue yet.
-> > >
-> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > Reported-by: syzbot+88e4f02896967fe1ab0d@syzkaller.appspotmail.com
-> > >
-> > > =============================
-> > > WARNING: suspicious RCU usage
-> > > 5.12.0-rc5-syzkaller #0 Not tainted
-> > > -----------------------------
-> > > kernel/sched/core.c:8294 Illegal context switch in RCU-sched read-side critical section!
-> > >
-> > > other info that might help us debug this:
-> > >
-> > >
-> > > rcu_scheduler_active = 2, debug_locks = 0
-> > > 3 locks held by syz-executor.4/8418:
-> > >  #0: 
-> > > ffff8880751d2b28
-> > >  (
-> > > &p->pi_lock
-> > > ){-.-.}-{2:2}
-> > > , at: try_to_wake_up+0x98/0x14a0 kernel/sched/core.c:3345
-> > >  #1: 
-> > > ffff8880b9d35258
-> > >  (
-> > > &rq->lock
-> > > ){-.-.}-{2:2}
-> > > , at: rq_lock kernel/sched/sched.h:1321 [inline]
-> > > , at: ttwu_queue kernel/sched/core.c:3184 [inline]
-> > > , at: try_to_wake_up+0x5e6/0x14a0 kernel/sched/core.c:3464
-> > >  #2: ffff8880b9d1f948 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_change+0x142/0x220 kernel/sched/psi.c:807
-> 
-> This looks similar to syzbot+dde0cc33951735441301@syzkaller.appspotmail.com
-> in that rcu_sleep_check() sees an RCU lock held, but the later call to
-> lockdep_print_held_locks() does not.  Did something change recently that
-> could let the ->lockdep_depth counter get out of sync with the actual
-> number of locks held?
+On Mon, Apr 5, 2021 at 2:01 AM Ilya Maximets <i.maximets@ovn.org> wrote:
+>
+> CC: ovs-dev
+>
+> On 4/4/21 7:50 PM, Ilya Maximets wrote:
+> > 'struct ovs_zone_limit' has more members than initialized in
+> > ovs_ct_limit_get_default_limit().  The rest of the memory is a random
+> > kernel stack content that ends up being sent to userspace.
+> >
+> > Fix that by using designated initializer that will clear all
+> > non-specified fields.
+> >
+> > Fixes: 11efd5cb04a1 ("openvswitch: Support conntrack zone limit")
+> > Signed-off-by: Ilya Maximets <i.maximets@ovn.org>
+> > ---
+> >  net/openvswitch/conntrack.c | 8 ++++----
+> >  1 file changed, 4 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/net/openvswitch/conntrack.c b/net/openvswitch/conntrack.c
+> > index c29b0ef1fc27..cadb6a29b285 100644
+> > --- a/net/openvswitch/conntrack.c
+> > +++ b/net/openvswitch/conntrack.c
+> > @@ -2032,10 +2032,10 @@ static int ovs_ct_limit_del_zone_limit(struct nlattr *nla_zone_limit,
+> >  static int ovs_ct_limit_get_default_limit(struct ovs_ct_limit_info *info,
+> >                                         struct sk_buff *reply)
+> >  {
+> > -     struct ovs_zone_limit zone_limit;
+> > -
+> > -     zone_limit.zone_id = OVS_ZONE_LIMIT_DEFAULT_ZONE;
+> > -     zone_limit.limit = info->default_limit;
+> > +     struct ovs_zone_limit zone_limit = {
+> > +             .zone_id = OVS_ZONE_LIMIT_DEFAULT_ZONE,
+> > +             .limit   = info->default_limit,
+> > +     };
+I review the code, userspace don't use the count of ovs_zone_lime
+struct, but this patch looks to to me.
+Thanks Ilya.
+Acked-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+> >       return nla_put_nohdr(reply, sizeof(zone_limit), &zone_limit);
+> >  }
+> >
+>
+> _______________________________________________
+> dev mailing list
+> dev@openvswitch.org
+> https://mail.openvswitch.org/mailman/listinfo/ovs-dev
 
-Dmitri had a different theory here:
 
-https://groups.google.com/g/syzkaller-bugs/c/FmYvfZCZzqA/m/nc2CXUgsAgAJ
+
+-- 
+Best regards, Tonghao
