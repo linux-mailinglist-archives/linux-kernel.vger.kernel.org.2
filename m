@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 231A63540AB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66B84353E7B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239704AbhDEJUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:20:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37184 "EHLO mail.kernel.org"
+        id S238771AbhDEJGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:06:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240659AbhDEJQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:16:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E9F2761394;
-        Mon,  5 Apr 2021 09:16:01 +0000 (UTC)
+        id S238238AbhDEJEj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:04:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4603961393;
+        Mon,  5 Apr 2021 09:04:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617614162;
-        bh=tjAx589bEBE8kYkGljzJjJZgmpAQkko+RWmcPds6/R8=;
+        s=korg; t=1617613473;
+        bh=FPny33WIGWI8z6j+NK32dEtcK5m27U7Cvixh9HXLB70=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B5zEVdHYzGnfw0i6kXya0n9lKMLfddw9rB3jdiBUs+PUbHqoxhchNjE4iCxpTK37V
-         /6nHNEYdwJXaOUy2LBL0zyVMzlRZydoA2TNXwlQVbrkq5TUYLI+9kB1dZBtzd7Awym
-         RTgCV5RiCfc4U7vFVdl0WASeBftxMjx8hksMQuFw=
+        b=tMe5RNOMaeRrKifz0xCjgKrpzInY2xFT6eakp91yVdFkhCoOndN2ZskCN2DJGlR3e
+         da8uIdtdZQJvB8F7VW/vySQurSUJis7fFzb6SgBh8bsl6iGih5uxNRtwp1qkAyavm+
+         SmQt1kan0U3h3SMnB9VQ8JwQx6k7vhMitV3kmp6w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.11 070/152] ACPI: scan: Fix _STA getting called on devices with unmet dependencies
+        stable@vger.kernel.org,
+        Lucas Tanure <tanureal@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 15/74] ASoC: cs42l42: Fix Bitclock polarity inversion
 Date:   Mon,  5 Apr 2021 10:53:39 +0200
-Message-Id: <20210405085036.546779290@linuxfoundation.org>
+Message-Id: <20210405085025.220519953@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085034.233917714@linuxfoundation.org>
-References: <20210405085034.233917714@linuxfoundation.org>
+In-Reply-To: <20210405085024.703004126@linuxfoundation.org>
+References: <20210405085024.703004126@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,83 +41,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Lucas Tanure <tanureal@opensource.cirrus.com>
 
-commit 3e759425cc3cf9a43392309819d34c65a3644c59 upstream.
+[ Upstream commit e793c965519b8b7f2fea51a48398405e2a501729 ]
 
-Commit 71da201f38df ("ACPI: scan: Defer enumeration of devices with
-_DEP lists") dropped the following 2 lines from acpi_init_device_object():
+The driver was setting bit clock polarity opposite to intended polarity.
+Also simplify the code by grouping ADC and DAC clock configurations into
+a single field.
 
-	/* Assume there are unmet deps until acpi_device_dep_initialize() runs */
-	device->dep_unmet = 1;
-
-Leaving the initial value of dep_unmet at the 0 from the kzalloc(). This
-causes the acpi_bus_get_status() call in acpi_add_single_object() to
-actually call _STA, even though there maybe unmet deps, leading to errors
-like these:
-
-[    0.123579] ACPI Error: No handler for Region [ECRM] (00000000ba9edc4c)
-               [GenericSerialBus] (20170831/evregion-166)
-[    0.123601] ACPI Error: Region GenericSerialBus (ID=9) has no handler
-               (20170831/exfldio-299)
-[    0.123618] ACPI Error: Method parse/execution failed
-               \_SB.I2C1.BAT1._STA, AE_NOT_EXIST (20170831/psparse-550)
-
-Fix this by re-adding the dep_unmet = 1 initialization to
-acpi_init_device_object() and modifying acpi_bus_check_add() to make sure
-that dep_unmet always gets setup there, overriding the initial 1 value.
-
-This re-fixes the issue initially fixed by
-commit 63347db0affa ("ACPI / scan: Use acpi_bus_get_status() to initialize
-ACPI_TYPE_DEVICE devs"), which introduced the removed
-"device->dep_unmet = 1;" statement.
-
-This issue was noticed; and the fix tested on a Dell Venue 10 Pro 5055.
-
-Fixes: 71da201f38df ("ACPI: scan: Defer enumeration of devices with _DEP lists")
-Suggested-by: Rafael J. Wysocki <rafael@kernel.org>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Cc: 5.11+ <stable@vger.kernel.org> # 5.11+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20210305173442.195740-2-tanureal@opensource.cirrus.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/scan.c |   12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ sound/soc/codecs/cs42l42.c | 20 ++++++++------------
+ sound/soc/codecs/cs42l42.h | 11 ++++++-----
+ 2 files changed, 14 insertions(+), 17 deletions(-)
 
---- a/drivers/acpi/scan.c
-+++ b/drivers/acpi/scan.c
-@@ -1669,6 +1669,8 @@ void acpi_init_device_object(struct acpi
- 	device_initialize(&device->dev);
- 	dev_set_uevent_suppress(&device->dev, true);
- 	acpi_init_coherency(device);
-+	/* Assume there are unmet deps to start with. */
-+	device->dep_unmet = 1;
+diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
+index 5125bb9b37b5..c78e2ce37930 100644
+--- a/sound/soc/codecs/cs42l42.c
++++ b/sound/soc/codecs/cs42l42.c
+@@ -797,27 +797,23 @@ static int cs42l42_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	/* Bitclock/frame inversion */
+ 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+ 	case SND_SOC_DAIFMT_NB_NF:
++		asp_cfg_val |= CS42L42_ASP_SCPOL_NOR << CS42L42_ASP_SCPOL_SHIFT;
+ 		break;
+ 	case SND_SOC_DAIFMT_NB_IF:
+-		asp_cfg_val |= CS42L42_ASP_POL_INV <<
+-				CS42L42_ASP_LCPOL_IN_SHIFT;
++		asp_cfg_val |= CS42L42_ASP_SCPOL_NOR << CS42L42_ASP_SCPOL_SHIFT;
++		asp_cfg_val |= CS42L42_ASP_LCPOL_INV << CS42L42_ASP_LCPOL_SHIFT;
+ 		break;
+ 	case SND_SOC_DAIFMT_IB_NF:
+-		asp_cfg_val |= CS42L42_ASP_POL_INV <<
+-				CS42L42_ASP_SCPOL_IN_DAC_SHIFT;
+ 		break;
+ 	case SND_SOC_DAIFMT_IB_IF:
+-		asp_cfg_val |= CS42L42_ASP_POL_INV <<
+-				CS42L42_ASP_LCPOL_IN_SHIFT;
+-		asp_cfg_val |= CS42L42_ASP_POL_INV <<
+-				CS42L42_ASP_SCPOL_IN_DAC_SHIFT;
++		asp_cfg_val |= CS42L42_ASP_LCPOL_INV << CS42L42_ASP_LCPOL_SHIFT;
+ 		break;
+ 	}
+ 
+-	snd_soc_component_update_bits(component, CS42L42_ASP_CLK_CFG,
+-				CS42L42_ASP_MODE_MASK |
+-				CS42L42_ASP_SCPOL_IN_DAC_MASK |
+-				CS42L42_ASP_LCPOL_IN_MASK, asp_cfg_val);
++	snd_soc_component_update_bits(component, CS42L42_ASP_CLK_CFG, CS42L42_ASP_MODE_MASK |
++								      CS42L42_ASP_SCPOL_MASK |
++								      CS42L42_ASP_LCPOL_MASK,
++								      asp_cfg_val);
+ 
+ 	return 0;
  }
+diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
+index 9e3cc528dcff..1f0d67c95a9a 100644
+--- a/sound/soc/codecs/cs42l42.h
++++ b/sound/soc/codecs/cs42l42.h
+@@ -258,11 +258,12 @@
+ #define CS42L42_ASP_SLAVE_MODE		0x00
+ #define CS42L42_ASP_MODE_SHIFT		4
+ #define CS42L42_ASP_MODE_MASK		(1 << CS42L42_ASP_MODE_SHIFT)
+-#define CS42L42_ASP_SCPOL_IN_DAC_SHIFT	2
+-#define CS42L42_ASP_SCPOL_IN_DAC_MASK	(1 << CS42L42_ASP_SCPOL_IN_DAC_SHIFT)
+-#define CS42L42_ASP_LCPOL_IN_SHIFT	0
+-#define CS42L42_ASP_LCPOL_IN_MASK	(1 << CS42L42_ASP_LCPOL_IN_SHIFT)
+-#define CS42L42_ASP_POL_INV		1
++#define CS42L42_ASP_SCPOL_SHIFT		2
++#define CS42L42_ASP_SCPOL_MASK		(3 << CS42L42_ASP_SCPOL_SHIFT)
++#define CS42L42_ASP_SCPOL_NOR		3
++#define CS42L42_ASP_LCPOL_SHIFT		0
++#define CS42L42_ASP_LCPOL_MASK		(3 << CS42L42_ASP_LCPOL_SHIFT)
++#define CS42L42_ASP_LCPOL_INV		3
  
- void acpi_device_add_finalize(struct acpi_device *device)
-@@ -1934,6 +1936,8 @@ static void acpi_scan_dep_init(struct ac
- {
- 	struct acpi_dep_data *dep;
- 
-+	adev->dep_unmet = 0;
-+
- 	mutex_lock(&acpi_dep_list_lock);
- 
- 	list_for_each_entry(dep, &acpi_dep_list, node) {
-@@ -1981,7 +1985,13 @@ static acpi_status acpi_bus_check_add(ac
- 		return AE_CTRL_DEPTH;
- 
- 	acpi_scan_init_hotplug(device);
--	if (!check_dep)
-+	/*
-+	 * If check_dep is true at this point, the device has no dependencies,
-+	 * or the creation of the device object would have been postponed above.
-+	 */
-+	if (check_dep)
-+		device->dep_unmet = 0;
-+	else
- 		acpi_scan_dep_init(device);
- 
- out:
+ #define CS42L42_ASP_FRM_CFG		(CS42L42_PAGE_12 + 0x08)
+ #define CS42L42_ASP_STP_SHIFT		4
+-- 
+2.30.1
+
 
 
