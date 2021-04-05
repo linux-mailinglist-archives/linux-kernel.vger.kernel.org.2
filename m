@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E80B353DAE
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D17A353F54
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233874AbhDEJCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:02:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42106 "EHLO mail.kernel.org"
+        id S238997AbhDEJLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:11:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237153AbhDEJAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:00:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C632610E8;
-        Mon,  5 Apr 2021 09:00:24 +0000 (UTC)
+        id S238589AbhDEJIl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:08:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59C4F613AD;
+        Mon,  5 Apr 2021 09:08:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613224;
-        bh=uBIhWWjaumqUkT48h+0CFrN6UT3+lsecp0oxcgqB+l0=;
+        s=korg; t=1617613715;
+        bh=VmbfD/sW3PbcnzlK0CAiDiO0oijK/xUFWNYbsKk/sX4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y/zV3grINDFUtWSgmsCZXxo7ccVQo1gg83LL6fybmlwvjSvCGTnF+Tcv+ESNj1xnQ
-         2FsKNZY3dRKDTUfxMdR5jOkdt7NFK5FNyfnaYnOOW3qy5t2LB/ao8QmJXd0HUHc9vC
-         A9g7ij1IYgqdw/0c/4EZippsYVzoykigjd28UA6c=
+        b=NasALZwwlKdGfNAwjZQlewR+dmi6SiY+ACaxymqiyRYbRVS1YK9sF8e5XjG9K0b1A
+         Dp820iwpurplSMcg6d1LSTxouJzJEgmYMXTSTswj67R9w77GxajVYCw5za5Lj97CCd
+         RcQF0Vij/uzmbhok1EPiCwD1PsjjBefkxItYnt+4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Laurent Vivier <lvivier@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 14/56] vhost: Fix vhost_vq_reset()
-Date:   Mon,  5 Apr 2021 10:53:45 +0200
-Message-Id: <20210405085023.003725355@linuxfoundation.org>
+        stable@vger.kernel.org, Max Filippov <jcmvbkbc@gmail.com>
+Subject: [PATCH 5.10 064/126] xtensa: move coprocessor_flush to the .text section
+Date:   Mon,  5 Apr 2021 10:53:46 +0200
+Message-Id: <20210405085033.182899262@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085022.562176619@linuxfoundation.org>
-References: <20210405085022.562176619@linuxfoundation.org>
+In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
+References: <20210405085031.040238881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +38,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurent Vivier <lvivier@redhat.com>
+From: Max Filippov <jcmvbkbc@gmail.com>
 
-[ Upstream commit beb691e69f4dec7bfe8b81b509848acfd1f0dbf9 ]
+commit ab5eb336411f18fd449a1fb37d36a55ec422603f upstream.
 
-vhost_reset_is_le() is vhost_init_is_le(), and in the case of
-cross-endian legacy, vhost_init_is_le() depends on vq->user_be.
+coprocessor_flush is not a part of fast exception handlers, but it uses
+parts of fast coprocessor handling code that's why it's in the same
+source file. It uses call0 opcode to invoke those parts so there are no
+limitations on their relative location, but the rest of the code calls
+coprocessor_flush with call8 and that doesn't work when vectors are
+placed in a different gigabyte-aligned area than the rest of the kernel.
 
-vq->user_be is set by vhost_disable_cross_endian().
+Move coprocessor_flush from the .exception.text section to the .text so
+that it's reachable from the rest of the kernel with call8.
 
-But in vhost_vq_reset(), we have:
-
-    vhost_reset_is_le(vq);
-    vhost_disable_cross_endian(vq);
-
-And so user_be is used before being set.
-
-To fix that, reverse the lines order as there is no other dependency
-between them.
-
-Signed-off-by: Laurent Vivier <lvivier@redhat.com>
-Link: https://lore.kernel.org/r/20210312140913.788592-1-lvivier@redhat.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/vhost/vhost.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/xtensa/kernel/coprocessor.S |   64 ++++++++++++++++++++-------------------
+ 1 file changed, 33 insertions(+), 31 deletions(-)
 
-diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-index 98b6eb902df9..732327756ee1 100644
---- a/drivers/vhost/vhost.c
-+++ b/drivers/vhost/vhost.c
-@@ -322,8 +322,8 @@ static void vhost_vq_reset(struct vhost_dev *dev,
- 	vq->kick = NULL;
- 	vq->call_ctx = NULL;
- 	vq->log_ctx = NULL;
--	vhost_reset_is_le(vq);
- 	vhost_disable_cross_endian(vq);
-+	vhost_reset_is_le(vq);
- 	vq->busyloop_timeout = 0;
- 	vq->umem = NULL;
- 	vq->iotlb = NULL;
--- 
-2.30.1
-
+--- a/arch/xtensa/kernel/coprocessor.S
++++ b/arch/xtensa/kernel/coprocessor.S
+@@ -100,37 +100,6 @@
+ 	LOAD_CP_REGS_TAB(7)
+ 
+ /*
+- * coprocessor_flush(struct thread_info*, index)
+- *                             a2        a3
+- *
+- * Save coprocessor registers for coprocessor 'index'.
+- * The register values are saved to or loaded from the coprocessor area 
+- * inside the task_info structure.
+- *
+- * Note that this function doesn't update the coprocessor_owner information!
+- *
+- */
+-
+-ENTRY(coprocessor_flush)
+-
+-	/* reserve 4 bytes on stack to save a0 */
+-	abi_entry(4)
+-
+-	s32i	a0, a1, 0
+-	movi	a0, .Lsave_cp_regs_jump_table
+-	addx8	a3, a3, a0
+-	l32i	a4, a3, 4
+-	l32i	a3, a3, 0
+-	add	a2, a2, a4
+-	beqz	a3, 1f
+-	callx0	a3
+-1:	l32i	a0, a1, 0
+-
+-	abi_ret(4)
+-
+-ENDPROC(coprocessor_flush)
+-
+-/*
+  * Entry condition:
+  *
+  *   a0:	trashed, original value saved on stack (PT_AREG0)
+@@ -245,6 +214,39 @@ ENTRY(fast_coprocessor)
+ 
+ ENDPROC(fast_coprocessor)
+ 
++	.text
++
++/*
++ * coprocessor_flush(struct thread_info*, index)
++ *                             a2        a3
++ *
++ * Save coprocessor registers for coprocessor 'index'.
++ * The register values are saved to or loaded from the coprocessor area
++ * inside the task_info structure.
++ *
++ * Note that this function doesn't update the coprocessor_owner information!
++ *
++ */
++
++ENTRY(coprocessor_flush)
++
++	/* reserve 4 bytes on stack to save a0 */
++	abi_entry(4)
++
++	s32i	a0, a1, 0
++	movi	a0, .Lsave_cp_regs_jump_table
++	addx8	a3, a3, a0
++	l32i	a4, a3, 4
++	l32i	a3, a3, 0
++	add	a2, a2, a4
++	beqz	a3, 1f
++	callx0	a3
++1:	l32i	a0, a1, 0
++
++	abi_ret(4)
++
++ENDPROC(coprocessor_flush)
++
+ 	.data
+ 
+ ENTRY(coprocessor_owner)
 
 
