@@ -2,91 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A795354504
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 18:15:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04241354510
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 18:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242137AbhDEQO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 12:14:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35194 "EHLO
+        id S237975AbhDEQTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 12:19:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238609AbhDEQOy (ORCPT
+        with ESMTP id S242354AbhDEQTN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 12:14:54 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFEE9C061788;
-        Mon,  5 Apr 2021 09:14:47 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id B47591F44A08
-Received: by earth.universe (Postfix, from userid 1000)
-        id 40B3B3C0C96; Mon,  5 Apr 2021 18:14:44 +0200 (CEST)
-Date:   Mon, 5 Apr 2021 18:14:44 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] Immutable branch between MFD and Power due for the
- v5.13 merge window
-Message-ID: <20210405161444.adgoalifr4cl23wx@earth.universe>
-References: <20210312083604.3708890-1-linus.walleij@linaro.org>
- <20210323085748.GH2916463@dell>
- <CACRpkdYK4m_zsa_FMYDOpYaBLPsWk=DG-V3yeOhq4hdBp4prwA@mail.gmail.com>
+        Mon, 5 Apr 2021 12:19:13 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 499B0C061756;
+        Mon,  5 Apr 2021 09:19:07 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lTRwI-002mLy-UI; Mon, 05 Apr 2021 16:18:59 +0000
+Date:   Mon, 5 Apr 2021 16:18:58 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        syzbot <syzbot+c88a7030da47945a3cc3@syzkaller.appspotmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, io-uring@vger.kernel.org
+Subject: Re: [syzbot] WARNING in mntput_no_expire (2)
+Message-ID: <YGs4clcRhyoXX8D0@zeniv-ca.linux.org.uk>
+References: <YGYa0B4gabEYi2Tx@zeniv-ca.linux.org.uk>
+ <YGkloJhMFc4hEatk@zeniv-ca.linux.org.uk>
+ <20210404113445.xo6ntgfpxigcb3x6@wittgenstein>
+ <YGnhkoTfVfMSMPpK@zeniv-ca.linux.org.uk>
+ <20210404164040.vtxdcfzgliuzghwk@wittgenstein>
+ <YGns1iPBHeeMAtn8@zeniv-ca.linux.org.uk>
+ <20210404170513.mfl5liccdaxjnpls@wittgenstein>
+ <YGoKYktYPA86Qwju@zeniv-ca.linux.org.uk>
+ <YGoe0VPs/Qmz/RxC@zeniv-ca.linux.org.uk>
+ <20210405114437.hjcojekyp5zt6huu@wittgenstein>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="iieyb7z3wubg5mkx"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACRpkdYK4m_zsa_FMYDOpYaBLPsWk=DG-V3yeOhq4hdBp4prwA@mail.gmail.com>
+In-Reply-To: <20210405114437.hjcojekyp5zt6huu@wittgenstein>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Apr 05, 2021 at 01:44:37PM +0200, Christian Brauner wrote:
+> On Sun, Apr 04, 2021 at 08:17:21PM +0000, Al Viro wrote:
+> > On Sun, Apr 04, 2021 at 06:50:10PM +0000, Al Viro wrote:
+> > 
+> > > > Yeah, I have at least namei.o
+> > > > 
+> > > > https://drive.google.com/file/d/1AvO1St0YltIrA86DXjp1Xg3ojtS9owGh/view?usp=sharing
+> > > 
+> > > *grumble*
+> > > 
+> > > Is it reproducible without KASAN?  Would be much easier to follow the produced
+> > > asm...
+> > 
+> > 	Looks like inode_permission(_, NULL, _) from may_lookup(nd).  I.e.
+> > nd->inode == NULL.
+> 
+> Yeah, I already saw that.
+> 
+> > 
+> > 	Mind slapping BUG_ON(!nd->inode) right before may_lookup() call in
+> > link_path_walk() and trying to reproduce that oops?
+> 
+> Yep, no problem. If you run the reproducer in a loop for a little while
+> you eventually trigger the BUG_ON() and then you get the following splat
+> (and then an endless loop) in [1] with nd->inode NULL.
+> 
+> _But_ I managed to debug this further and was able to trigger the BUG_ON()
+> directly in path_init() in the AT_FDCWD branch (after all its AT_FDCWD(./file0)
+> with the patch in [3] (it's in LOOKUP_RCU) the corresponding splat is in [2].
+> So the crash happens for a PF_IO_WORKER thread with a NULL nd->inode for the
+> PF_IO_WORKER's pwd (The PF_IO_WORKER seems to be in async context.).
 
---iieyb7z3wubg5mkx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+So we find current->fs->pwd.dentry negative, with current->fs->seq sampled
+equal before and after that?  Lovely...  The only places where we assign
+anything to ->pwd.dentry are
+void set_fs_pwd(struct fs_struct *fs, const struct path *path)
+{
+        struct path old_pwd; 
 
-Hi,
+        path_get(path);
+        spin_lock(&fs->lock);
+        write_seqcount_begin(&fs->seq);
+        old_pwd = fs->pwd;
+        fs->pwd = *path;
+        write_seqcount_end(&fs->seq);
+        spin_unlock(&fs->lock);
 
-On Tue, Mar 23, 2021 at 10:11:18AM +0100, Linus Walleij wrote:
-> On Tue, Mar 23, 2021 at 9:57 AM Lee Jones <lee.jones@linaro.org> wrote:
->=20
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-powe=
-r-v5.13
->=20
-> Thanks so much for fixing this Lee!
->=20
-> Sebastian: if you decide to pull this in I can iterate some more
-> patches to the AB8500 BM code this merge window, else I will
-> just defer to after v5.13-rc1.
+        if (old_pwd.dentry)
+                path_put(&old_pwd);
+}
+where we have ->seq bumped between dget new/assignment/ dput old,
+copy_fs_struct() where we have
+                spin_lock(&old->lock);
+                fs->root = old->root;
+                path_get(&fs->root);
+                fs->pwd = old->pwd;
+                path_get(&fs->pwd);
+                spin_unlock(&old->lock);
+fs being freshly allocated instance that couldn't have been observed
+by anyone and chroot_fs_refs(), where we have
+                        spin_lock(&fs->lock);
+                        write_seqcount_begin(&fs->seq);
+                        hits += replace_path(&fs->root, old_root, new_root);
+                        hits += replace_path(&fs->pwd, old_root, new_root);
+                        write_seqcount_end(&fs->seq);
+                        while (hits--) {
+                                count++;
+                                path_get(new_root);
+                        }
+                        spin_unlock(&fs->lock);
+...
+static inline int replace_path(struct path *p, const struct path *old, const struct path *new)
+{
+        if (likely(p->dentry != old->dentry || p->mnt != old->mnt))
+                return 0;
+        *p = *new;
+        return 1;
+}
+Here we have new_root->dentry pinned from the very beginning,
+and assignments are wrapped into bumps of ->seq.  Moreover,
+we are holding ->lock through that sequence (as all writers
+do), so these references can't be dropped before path_get()
+bumps new_root->dentry refcount.
 
-I pulled this in, but it's probably too late for 5.13 now. But it
-means you do not need to wait before (re)sending the remaining
-patches.
+chroot_fs_refs() is called only by pivot_root(2):
+        chroot_fs_refs(&root, &new);
+and there new is set by
+        error = user_path_at(AT_FDCWD, new_root,
+                             LOOKUP_FOLLOW | LOOKUP_DIRECTORY, &new);
+        if (error)
+                goto out0;
+which pins new.dentry *and* verifies that it's positive and a directory,
+at that.  Since pinned positive dentry can't be made negative by anybody
+else, we know it will remain in that state until
+	path_put(&new);
+well downstream of chroot_fs_refs().  In copy_fs_struct() we are
+copying someone's ->pwd, so it's also pinned positive.  And it
+won't be dropped outside of old->lock, so by the time somebody
+manages to drop the reference in old, path_get() effects will be
+visible (old->lock serving as a barrier).
 
-Thanks,
+That leaves set_fs_pwd() calls:
+fs/init.c:54:           set_fs_pwd(current->fs, &path);
+	init_chdir(), path set by LOOKUP_DIRECTORY patwalk.  Pinned positive.
+fs/namespace.c:4207:    set_fs_pwd(current->fs, &root);
+	init_mount_tree(), root.dentry being ->mnt_root of rootfs.  Pinned
+positive (and it would've oopsed much earlier had that been it)
+fs/namespace.c:4485:    set_fs_pwd(fs, &root);
+	mntns_install(), root filled by successful LOOKUP_DOWN for "/"
+from mnt_ns->root.  Should be pinned positive.
+fs/open.c:501:  set_fs_pwd(current->fs, &path);
+	chdir(2), path set by LOOKUP_DIRECTORY pathwalk.  Pinned positive.
+fs/open.c:528:          set_fs_pwd(current->fs, &f.file->f_path);
+	fchdir(2), file->f_path of any opened file.  Pinned positive.
+kernel/usermode_driver.c:130:   set_fs_pwd(current->fs, &umd_info->wd);
+	umd_setup(), ->wd.dentry equal to ->wd.mnt->mnt_root, should be pinned positive.
+kernel/nsproxy.c:509:           set_fs_pwd(me->fs, &nsset->fs->pwd);
+	commit_nsset().  Let's see what's going on there...
 
--- Sebastian
+        if ((flags & CLONE_NEWNS) && (flags & ~CLONE_NEWNS)) {
+                set_fs_root(me->fs, &nsset->fs->root);
+                set_fs_pwd(me->fs, &nsset->fs->pwd);
+        }
+In those conditions nsset.fs has come from copy_fs_struct() done in
+prepare_nsset().  And the only thing that might've been done to it
+would be those set_fs_pwd() in mntns_install() (I'm not fond of the
+entire nsset->fs thing - looks like papering over bad calling
+conventions, but anyway)
 
---iieyb7z3wubg5mkx
-Content-Type: application/pgp-signature; name="signature.asc"
+Now, I might've missed some insanity (direct assignments to ->pwd.dentry,
+etc. - wouldn't be the first time io_uring folks went "layering? wassat?
+we'll just poke in whatever we can reach"), but I don't see anything
+obvious of that sort in the area...
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBrN3MACgkQ2O7X88g7
-+ppnXQ/8DaArE0bE2zKYmxgYDMzY/S6Ylwi0D3gDBbVS8kYnJ5hUUELbNgEUlzah
-yNyrFfAG591fBhD/WD4FV+dT9dkGHV094CgWHEuxeK6QYUzH9SY08oWAxkuDvnV1
-fZTc8RqTuAfnWddkpiIplzkfM87wWjrR9loEIqkq6bvh6hOZQzpE7dPwLj4PhNbh
-kVGfkmqYrT6LNWY7WJdTTg6WZVsZtMGbJZgxPmQLbUwzyyvL17r9KX/Kooq64n3h
-+dCWHTAPEC8Fm1z9l6w5oJxrM++cod8pUCwraKAF1fISoxTgj+HZphaWj9sJUcc1
-51N355UYTl/6BNYhb1JHMMEEW4aVOliwt1/V1kM781fvTG3bYXUONT9NstNaqacv
-8h+D9iHQ9UfS+WNIbSaaTKDkQyQeCKTnzd2xjhoN+H2jPe7Y4ac5P5w8um98lmi8
-VH/QYUW915RJ6+p/+oveEvQkyDFgTiyU3aBUNqYifP1LkWscMdj6Bgoe1ZxNtapZ
-BPPRDmVTqfky/Fgcju50CT0Wv/mbcLzvvdIYltg2l0BDry+BA/Jw6KrGBU7kC8+t
-8VdN/AbO+0Cse6a8IsoUlDsHwbFjx6B4LUourYY++P8ZECL1lqDXTCazr7gyyL8j
-41Ogi1pZbzAJGG7pD4eTWNgsAFT8jWIckOL9cUbjlC7Q5Lqge78=
-=ohxa
------END PGP SIGNATURE-----
-
---iieyb7z3wubg5mkx--
+OK, how about this: in path_init(), right after
+                        do {
+                                seq = read_seqcount_begin(&fs->seq);
+                                nd->path = fs->pwd;
+                                nd->inode = nd->path.dentry->d_inode;
+                                nd->seq = __read_seqcount_begin(&nd->path.dentry->d_seq);
+                        } while (read_seqcount_retry(&fs->seq, seq));
+slap
+			if (!nd->inode) {
+				// should never, ever happen
+				struct dentry *fucked = nd->path.dentry;
+				printk(KERN_ERR "%pd4 %d %x %p %d %d", fucked, d_count(fucked),
+							fucked->d_flags, fs, fs->users, seq);
+				BUG_ON(1);
+				return ERR_PTR(-EINVAL);
+			}
+and see what it catches?
