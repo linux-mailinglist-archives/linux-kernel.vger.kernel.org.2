@@ -2,143 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30AB7354968
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 01:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA16D354974
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Apr 2021 01:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242068AbhDEXqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 19:46:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237853AbhDEXq2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 19:46:28 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2661C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 16:46:21 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id s16-20020a0568301490b02901b83efc84a0so4021360otq.10
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 16:46:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CTdV629ZhMgRAehKkgmyuxBMkQiqLv+0INgoX/85OgY=;
-        b=QUzjliudZ5IBbeJ4LJDfU1XRaXig20/Dtad2yxZBNPAegCSx4hA8C2ovxzv2QgmQAA
-         4NIJu59Nyowyw8Gf6V7PBg626xMLNLCB5qxeo/FDJRfqD5tuYOK47LQBFe5PIwCOYukK
-         Tdvsrefr1sAjW45TI+/rSAPRPmwhyBqOJSqpJ8zXhWF2+tNNJ3fCugZN/WP30EaBjiJ4
-         kQuhWNQS+Y8vxkbERbIdAkaz5f1cALD8CbVWBeN1RPJUZpuUFgFurN1BQDT6UUonL/yR
-         7F9fsFcyoP1jdWBdpScVykiNRzYkQ/qh+neN7AGvrgHm03b2H7H07Luq5bEDzowDswWz
-         rIig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CTdV629ZhMgRAehKkgmyuxBMkQiqLv+0INgoX/85OgY=;
-        b=itGt/ge9mL3rGBXhp8KZEJ4Xh0ZtjAEwg3IidxnuC3ljzyoN+JlwPH5/hHim3lhE9L
-         EXtJo93UvMm9UCT5RE8bBOuEOvfFyao9VyCG5p3ZN7+cD/XZ2+p9x3fprXc/wDvrQIqW
-         w6m2DztdwBudFRBNQ2kjBtjM6mh06Mhzp7DJaHN0pMfkvE0TlP25VI02pkRZcNfiVbTC
-         Y7ABMN7wgiO9FzS4HT1A5HlEacVCuyiil15pJmuJZPz6Z3DVw6YUivwqh8SLydDKP7nR
-         ejHP9T3BRsTOkCf4Mf32494BL+qe3YlcqPER6UJy6HSJLa5p4yIf92u5kLlSqon64fSI
-         Sw3w==
-X-Gm-Message-State: AOAM531CDOJml1qbiXZW3f6i90kzOaVo4136RxZqkspmCcTI49oDXK3y
-        8vcpiRWq234Jk2/Z9jsvGSHw4Q00sSuyNMikhTisxA==
-X-Google-Smtp-Source: ABdhPJwCM1A2Jh9U35cxNbSDkipZ/Qb09Xy2Nr3JFPIBM/f6nAunfi1K81wAVxPZlUAkcJKtlWSNkxJu8mndUTxWhDg=
-X-Received: by 2002:a9d:5508:: with SMTP id l8mr24572016oth.233.1617666380817;
- Mon, 05 Apr 2021 16:46:20 -0700 (PDT)
+        id S242152AbhDEXuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 19:50:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57574 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237601AbhDEXuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 19:50:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 591AC613AE;
+        Mon,  5 Apr 2021 23:50:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617666611;
+        bh=O0RRvC67wyIxyVI9osywvj0pz7HWCPQTesV6bE2/GW8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XRk/SK45PHxpF77rVTHwvWbgd00Rast4vDP2RUocsZ5/he6DL7tdT33kVGjvQhKJQ
+         OiYhgIwEJ5ocuWrmOwC1kFOGw1Ap3vhzMWKjK/KKJ3sYDWEZRiKHWdN+GtEuGgvvyN
+         CMGh1ihb9ktQaFexK5FYBpsjMIZFH+qFjNZzltlfW+rF/fjiq5WgzECBl85E7xxVzh
+         +I1CAc7Qt49v5ARp2bp5d2SkxQ1UiIIJrA59+CHw4Qxy/MSJH/l2Yxt3gQwWDBlagX
+         tsUxHjhloGV95xz9ou075LzhgdFWO9PGSgnzQnabQLnXjJxUrdq5WArezA7rcQTtc8
+         6XiyY4PobdZhA==
+Date:   Mon, 5 Apr 2021 16:50:06 -0700
+From:   Keith Busch <kbusch@kernel.org>
+To:     Chuck Lever III <chuck.lever@oracle.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, Christoph Hellwig <hch@lst.de>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bruce Fields <bfields@fieldses.org>, Jens Axboe <axboe@fb.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Lijun Ou <oulijun@huawei.com>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Michael Guralnik <michaelgur@nvidia.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Steve French <sfrench@samba.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next 00/10] Enable relaxed ordering for ULPs
+Message-ID: <20210405235006.GA2014546@dhcp-10-100-145-180.wdc.com>
+References: <20210405052404.213889-1-leon@kernel.org>
+ <20210405134115.GA22346@lst.de>
+ <20210405200739.GB7405@nvidia.com>
+ <C2924F03-11C5-4839-A4F3-36872194EEA8@oracle.com>
 MIME-Version: 1.0
-References: <20210405220647.1965262-1-pcc@google.com> <CA+fCnZc=+d036Ve7k-4OdtZ+epSd4QywRs-qc9JWV72Z8Er1yw@mail.gmail.com>
-In-Reply-To: <CA+fCnZc=+d036Ve7k-4OdtZ+epSd4QywRs-qc9JWV72Z8Er1yw@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 6 Apr 2021 01:46:09 +0200
-Message-ID: <CANpmjNPBfowFu2vANXfHHaWZFYyLTD84sf4YWnfJ6AnnKYZ8XQ@mail.gmail.com>
-Subject: Re: [PATCH v2] kasan: fix kasan_byte_accessible() to be consistent
- with actual checks
-To:     Andrey Konovalov <andreyknvl@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Peter Collingbourne <pcc@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <C2924F03-11C5-4839-A4F3-36872194EEA8@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 6 Apr 2021 at 00:43, Andrey Konovalov <andreyknvl@gmail.com> wrote:
-> On Tue, Apr 6, 2021 at 12:07 AM Peter Collingbourne <pcc@google.com> wrote:
-> >
-> > We can sometimes end up with kasan_byte_accessible() being called
-> > on non-slab memory. For example ksize() and krealloc() may end up
-> > calling it on KFENCE allocated memory. In this case the memory will
-> > be tagged with KASAN_SHADOW_INIT, which a subsequent patch ("kasan:
-> > initialize shadow to TAG_INVALID for SW_TAGS") will set to the same
-> > value as KASAN_TAG_INVALID, causing kasan_byte_accessible() to fail
-> > when called on non-slab memory.
-> >
-> > This highlighted the fact that the check in kasan_byte_accessible()
-> > was inconsistent with checks as implemented for loads and stores
-> > (kasan_check_range() in SW tags mode and hardware-implemented
-> > checks in HW tags mode). kasan_check_range() does not have a
-> > check for KASAN_TAG_INVALID, and instead has a comparison against
-> > KASAN_SHADOW_START. In HW tags mode, we do not have either, but we
-> > do set TCR_EL1.TCMA which corresponds with the comparison against
-> > KASAN_TAG_KERNEL.
-> >
-> > Therefore, update kasan_byte_accessible() for both SW and HW tags
-> > modes to correspond with the respective checks on loads and stores.
-> >
-> > Link: https://linux-review.googlesource.com/id/Ic6d40803c57dcc6331bd97fbb9a60b0d38a65a36
-> > Signed-off-by: Peter Collingbourne <pcc@google.com>
-> > ---
-> >  mm/kasan/kasan.h   |  3 +--
-> >  mm/kasan/sw_tags.c | 10 +++++++---
-> >  2 files changed, 8 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-> > index 8c55634d6edd..e18e8da35255 100644
-> > --- a/mm/kasan/kasan.h
-> > +++ b/mm/kasan/kasan.h
-> > @@ -368,8 +368,7 @@ static inline bool kasan_byte_accessible(const void *addr)
-> >         u8 ptr_tag = get_tag(addr);
-> >         u8 mem_tag = hw_get_mem_tag((void *)addr);
-> >
-> > -       return (mem_tag != KASAN_TAG_INVALID) &&
-> > -               (ptr_tag == KASAN_TAG_KERNEL || ptr_tag == mem_tag);
-> > +       return ptr_tag == KASAN_TAG_KERNEL || ptr_tag == mem_tag;
-> >  }
-> >
-> >  #else /* CONFIG_KASAN_HW_TAGS */
-> > diff --git a/mm/kasan/sw_tags.c b/mm/kasan/sw_tags.c
-> > index 94c2d33be333..00ae8913fc74 100644
-> > --- a/mm/kasan/sw_tags.c
-> > +++ b/mm/kasan/sw_tags.c
-> > @@ -121,10 +121,14 @@ bool kasan_check_range(unsigned long addr, size_t size, bool write,
-> >  bool kasan_byte_accessible(const void *addr)
-> >  {
-> >         u8 tag = get_tag(addr);
-> > -       u8 shadow_byte = READ_ONCE(*(u8 *)kasan_mem_to_shadow(kasan_reset_tag(addr)));
-> > +       void *untagged_addr = kasan_reset_tag(addr);
-> > +       u8 shadow_byte;
-> >
-> > -       return (shadow_byte != KASAN_TAG_INVALID) &&
-> > -               (tag == KASAN_TAG_KERNEL || tag == shadow_byte);
-> > +       if (untagged_addr < kasan_shadow_to_mem((void *)KASAN_SHADOW_START))
-> > +               return false;
-> > +
-> > +       shadow_byte = READ_ONCE(*(u8 *)kasan_mem_to_shadow(untagged_addr));
-> > +       return tag == KASAN_TAG_KERNEL || tag == shadow_byte;
-> >  }
-> >
-> >  #define DEFINE_HWASAN_LOAD_STORE(size)                                 \
-> > --
-> > 2.31.0.208.g409f899ff0-goog
-> >
->
-> Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
->
-> Thank you, Peter!
+On Mon, Apr 05, 2021 at 11:42:31PM +0000, Chuck Lever III wrote:
+> > On Apr 5, 2021, at 4:07 PM, Jason Gunthorpe <jgg@nvidia.com> wrote:
+> > On Mon, Apr 05, 2021 at 03:41:15PM +0200, Christoph Hellwig wrote:
+> >> On Mon, Apr 05, 2021 at 08:23:54AM +0300, Leon Romanovsky wrote:
+> >>> From: Leon Romanovsky <leonro@nvidia.com>
+> >>> 
+> >>>> From Avihai,
+> >>> 
+> >>> Relaxed Ordering is a PCIe mechanism that relaxes the strict ordering
+> >>> imposed on PCI transactions, and thus, can improve performance.
+> >>> 
+> >>> Until now, relaxed ordering could be set only by user space applications
+> >>> for user MRs. The following patch series enables relaxed ordering for the
+> >>> kernel ULPs as well. Relaxed ordering is an optional capability, and as
+> >>> such, it is ignored by vendors that don't support it.
+> >>> 
+> >>> The following test results show the performance improvement achieved
+> >>> with relaxed ordering. The test was performed on a NVIDIA A100 in order
+> >>> to check performance of storage infrastructure over xprtrdma:
+> >> 
+> >> Isn't the Nvidia A100 a GPU not actually supported by Linux at all?
+> >> What does that have to do with storage protocols?
+> > 
+> > I think it is a typo (or at least mit makes no sense to be talking
+> > about NFS with a GPU chip) Probably it should be a DGX A100 which is a
+> > dual socket AMD server with alot of PCIe, and xptrtrdma is a NFS-RDMA
+> > workload.
+> 
+> We need to get a better idea what correctness testing has been done,
+> and whether positive correctness testing results can be replicated
+> on a variety of platforms.
+> 
+> I have an old Haswell dual-socket system in my lab, but otherwise
+> I'm not sure I have a platform that would be interesting for such a
+> test.
 
-Reviewed-by: Marco Elver <elver@google.com>
-
-Thanks!
+Not sure if Haswell will be useful for such testing. It looks like many
+of those subscribe to 'quirk_relaxedordering_disable'.
