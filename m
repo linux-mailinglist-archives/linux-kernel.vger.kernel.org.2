@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BF1A353B04
+	by mail.lfdr.de (Postfix) with ESMTP id E340C353B06
 	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 05:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231879AbhDEDEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Apr 2021 23:04:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33658 "EHLO
+        id S231894AbhDEDFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Apr 2021 23:05:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230089AbhDEDEb (ORCPT
+        with ESMTP id S230089AbhDEDFC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Apr 2021 23:04:31 -0400
+        Sun, 4 Apr 2021 23:05:02 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A93C061756
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Apr 2021 20:04:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90DBFC061756;
+        Sun,  4 Apr 2021 20:04:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=cN/Spv35x0pwWsjEgNwu5WxmajnEowdx5QFLvVqU3nk=; b=NBUEnMuljaH7bseZP/nM/BXy4l
-        dpVzSfQXkpoVGhvsoaYdbFLK0b/6Rg69PXgF+gcKYdhRI2SQjibmsjbjg58rzmq8doUsdofKBl6CH
-        rDTxafMRBRMhhY6ZicRngICI/VUpR5bFGxVbYCjzUaQpTmHVum0bActiJ/dOjB1al2zuLvZcIKw0K
-        C8JVSTVV35MhbmKpcmXi0njFVH7wYiCom+wOy6HsfxUxrDxFNWihZT/Dbq7DnqXjsqGFqGu4VQxtn
-        qCFeKMX1EgIk+lQjp9RVy3w7IEJdZfD9onvWHYWlv66eJvIMMNUsEls05VyddAkG6DjmP8Oe2x+K6
-        BQLMBlBA==;
+        bh=T4cf4ITid5Uw9btKpflcNe21wEChiEeglpEstacOk/Q=; b=gUuAnbQYjseOLeoHIILPujk6rJ
+        QO/lsrfrY3OUtvpd5UK6mPpVRjKaRdiOlhy30zjz9jsU7QovUwQuRfGkEc2t7VRiiMkkxAjvIjL9D
+        5yihykTM/M4LILUTMmNqbsw9VckhH1Kq82Pt41YV2WOmtvNSirSVUY163Ox+aF26Pvdb/rgsPo28X
+        gAj6FnqPtL1U+L96xcHqa+hByfETERlTRJLa+gsRQPU63v0I+8naz+Vjxknieul40acPH0IgW3YqS
+        Hxd/K3BzEHRCc8ygq9y25vJdOhWE1k3ZQr8s8+YuiI91w9OulBFdt9U4RWiutF4WwcmE8tWzQkDrI
+        wqhWPv4g==;
 Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lTFX7-00ArAo-Bo; Mon, 05 Apr 2021 03:04:14 +0000
-Date:   Mon, 5 Apr 2021 04:04:09 +0100
+        id 1lTFXi-00ArC6-E0; Mon, 05 Apr 2021 03:04:50 +0000
+Date:   Mon, 5 Apr 2021 04:04:46 +0100
 From:   Matthew Wilcox <willy@infradead.org>
-To:     syzbot <syzbot+26ad5e106ca477175819@syzkaller.appspotmail.com>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] WARNING: suspicious RCU usage in remove_vma (2)
-Message-ID: <20210405030409.GE2531743@casper.infradead.org>
-References: <00000000000019114805bf0fb1bc@google.com>
+To:     syzbot <syzbot+bdef67a6b28a89e6fe71@syzkaller.appspotmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Subject: Re: [syzbot] WARNING: suspicious RCU usage in dput
+Message-ID: <20210405030446.GF2531743@casper.infradead.org>
+References: <0000000000007a4aad05bf088d43@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <00000000000019114805bf0fb1bc@google.com>
+In-Reply-To: <0000000000007a4aad05bf088d43@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 #syz dup: WARNING: suspicious RCU usage in getname_flags
 
-On Sat, Apr 03, 2021 at 04:23:20AM -0700, syzbot wrote:
+On Fri, Apr 02, 2021 at 07:52:17PM -0700, syzbot wrote:
 > Hello,
 > 
 > syzbot found the following issue on:
 > 
 > HEAD commit:    1e43c377 Merge tag 'xtensa-20210329' of git://github.com/j..
 > git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1052e1d6d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=d1a3d65a48dbd1bc
-> dashboard link: https://syzkaller.appspot.com/bug?extid=26ad5e106ca477175819
+> console output: https://syzkaller.appspot.com/x/log.txt?x=16d76301d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=78ef1d159159890
+> dashboard link: https://syzkaller.appspot.com/bug?extid=bdef67a6b28a89e6fe71
 > 
 > Unfortunately, I don't have any reproducer for this issue yet.
 > 
 > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+26ad5e106ca477175819@syzkaller.appspotmail.com
+> Reported-by: syzbot+bdef67a6b28a89e6fe71@syzkaller.appspotmail.com
 > 
 > =============================
 > WARNING: suspicious RCU usage
@@ -71,39 +71,36 @@ On Sat, Apr 03, 2021 at 04:23:20AM -0700, syzbot wrote:
 > 
 > 
 > rcu_scheduler_active = 2, debug_locks = 0
-> no locks held by syz-executor.0/29105.
+> no locks held by systemd-udevd/4825.
 > 
 > stack backtrace:
-> CPU: 0 PID: 29105 Comm: syz-executor.0 Not tainted 5.12.0-rc5-syzkaller #0
+> CPU: 1 PID: 4825 Comm: systemd-udevd Not tainted 5.12.0-rc5-syzkaller #0
 > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 > Call Trace:
 >  __dump_stack lib/dump_stack.c:79 [inline]
 >  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
 >  ___might_sleep+0x229/0x2c0 kernel/sched/core.c:8294
->  remove_vma+0x44/0x170 mm/mmap.c:178
->  exit_mmap+0x33f/0x590 mm/mmap.c:3229
->  __mmput+0x122/0x470 kernel/fork.c:1090
->  mmput+0x58/0x60 kernel/fork.c:1111
->  exit_mm kernel/exit.c:501 [inline]
->  do_exit+0xb0a/0x2a60 kernel/exit.c:812
->  do_group_exit+0x125/0x310 kernel/exit.c:922
->  get_signal+0x47f/0x2150 kernel/signal.c:2781
->  arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:789
->  handle_signal_work kernel/entry/common.c:147 [inline]
->  exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
->  exit_to_user_mode_prepare+0x148/0x250 kernel/entry/common.c:208
->  __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
->  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
+>  dput+0x4d/0xbc0 fs/dcache.c:870
+>  step_into+0x2cf/0x1c80 fs/namei.c:1778
+>  walk_component+0x171/0x6a0 fs/namei.c:1945
+>  link_path_walk.part.0+0x712/0xc90 fs/namei.c:2266
+>  link_path_walk fs/namei.c:2190 [inline]
+>  path_lookupat+0xb7/0x830 fs/namei.c:2419
+>  filename_lookup+0x19f/0x560 fs/namei.c:2453
+>  do_readlinkat+0xcd/0x2f0 fs/stat.c:417
+>  __do_sys_readlinkat fs/stat.c:444 [inline]
+>  __se_sys_readlinkat fs/stat.c:441 [inline]
+>  __x64_sys_readlinkat+0x93/0xf0 fs/stat.c:441
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
 >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x466459
-> Code: Unable to access opcode bytes at RIP 0x46642f.
-> RSP: 002b:00007fdfaa117218 EFLAGS: 00000246
->  ORIG_RAX: 00000000000000ca
-> RAX: 0000000000000000 RBX: 000000000056bf68 RCX: 0000000000466459
-> RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000056bf68
-> RBP: 000000000056bf60 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf6c
-> R13: 00007fff64c569cf R14: 00007fdfaa117300 R15: 0000000000022000
+> RIP: 0033:0x7fb5a7e200ba
+> Code: 48 8b 0d e1 bd 2b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 0b 01 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ae bd 2b 00 f7 d8 64 89 01 48
+> RSP: 002b:00007ffc9c440e38 EFLAGS: 00000202 ORIG_RAX: 000000000000010b
+> RAX: ffffffffffffffda RBX: 00005604089e4380 RCX: 00007fb5a7e200ba
+> RDX: 00005604089e4380 RSI: 00007ffc9c440ec0 RDI: 00000000ffffff9c
+> RBP: 0000000000000064 R08: 00007fb5a80dcbc8 R09: 0000000000000070
+> R10: 0000000000000063 R11: 0000000000000202 R12: 00007ffc9c440ec0
+> R13: 00000000ffffff9c R14: 00007ffc9c440e90 R15: 0000000000000063
 > 
 > 
 > ---
@@ -113,4 +110,3 @@ On Sat, Apr 03, 2021 at 04:23:20AM -0700, syzbot wrote:
 > 
 > syzbot will keep track of this issue. See:
 > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
