@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0333353DA3
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9FE4353F6F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237252AbhDEJA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:00:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41772 "EHLO mail.kernel.org"
+        id S238875AbhDEJMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:12:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237141AbhDEJAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:00:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E27EA6139C;
-        Mon,  5 Apr 2021 09:00:08 +0000 (UTC)
+        id S238769AbhDEJI7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 05:08:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FCF961393;
+        Mon,  5 Apr 2021 09:08:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613209;
-        bh=KkX+a3EJBm9puBdGl63ZwLCFqc7hZbvS6WUcps0hT/Y=;
+        s=korg; t=1617613732;
+        bh=chm6YtL0NmH9DtgHajEjtlF/dcJlt3FvkVNXFak/v0I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hqbtsUWJIH9nOEpH0TtlHMzSFNz0gABVdOcRDtlmfXKk35wWiiXpeUO7IwXGClVev
-         uvvo3VKSRWdofwdvZUabq52G5Re5ojkDy6cb6jojlOaN6anYkcyXpKzvCZn0rrTGz9
-         VOGLWBEmj3c+1U02cXRt0OnlqArD/AHqaCTzZ2Ho=
+        b=QhxqxaKLjKCrV96LN4pFNCtKB76kihTIeF3lLZOXOj1cgt2f4U4CNF1a+AIqy7B6I
+         0s4YF5mAeaxHvqKlwTcPiYSkfQDb7+K/McTgsC/taXKcwZ1xo/Ii7pkx5Ei3gKKn4c
+         LIK8L/u+58iDgBMeYZIqwpZvHQtDnX0sn3fElUvM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.14 26/52] ALSA: hda/realtek: call alc_update_headset_mode() in hp_automute_hook
+        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>
+Subject: [PATCH 5.10 070/126] s390/vdso: copy tod_steering_delta value to vdso_data page
 Date:   Mon,  5 Apr 2021 10:53:52 +0200
-Message-Id: <20210405085022.845393774@linuxfoundation.org>
+Message-Id: <20210405085033.368322792@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
-References: <20210405085021.996963957@linuxfoundation.org>
+In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
+References: <20210405085031.040238881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,46 +38,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Wang <hui.wang@canonical.com>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-commit e54f30befa7990b897189b44a56c1138c6bfdbb5 upstream.
+commit 72bbc226ed2ef0a46c165a482861fff00dd6d4e1 upstream.
 
-We found the alc_update_headset_mode() is not called on some machines
-when unplugging the headset, as a result, the mode of the
-ALC_HEADSET_MODE_UNPLUGGED can't be set, then the current_headset_type
-is not cleared, if users plug a differnt type of headset next time,
-the determine_headset_type() will not be called and the audio jack is
-set to the headset type of previous time.
+When converting the vdso assembler code to C it was forgotten to
+actually copy the tod_steering_delta value to vdso_data page.
 
-On the Dell machines which connect the dmic to the PCH, if we open
-the gnome-sound-setting and unplug the headset, this issue will
-happen. Those machines disable the auto-mute by ucm and has no
-internal mic in the input source, so the update_headset_mode() will
-not be called by cap_sync_hook or automute_hook when unplugging, and
-because the gnome-sound-setting is opened, the codec will not enter
-the runtime_suspend state, so the update_headset_mode() will not be
-called by alc_resume when unplugging. In this case the
-hp_automute_hook is called when unplugging, so add
-update_headset_mode() calling to this function.
+Which in turn means that tod clock steering will not work correctly.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
-Link: https://lore.kernel.org/r/20210320091542.6748-2-hui.wang@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fix this by simply copying the value whenever it is updated.
+
+Fixes: 4bff8cb54502 ("s390: convert to GENERIC_VDSO")
+Cc: <stable@vger.kernel.org> # 5.10
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |    1 +
+ arch/s390/kernel/time.c |    1 +
  1 file changed, 1 insertion(+)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4811,6 +4811,7 @@ static void alc_update_headset_jack_cb(s
- 	struct alc_spec *spec = codec->spec;
- 	spec->current_headset_type = ALC_HEADSET_TYPE_UNKNOWN;
- 	snd_hda_gen_hp_automute(codec, jack);
-+	alc_update_headset_mode(codec);
- }
+--- a/arch/s390/kernel/time.c
++++ b/arch/s390/kernel/time.c
+@@ -398,6 +398,7 @@ static void clock_sync_global(unsigned l
+ 		      tod_steering_delta);
+ 	tod_steering_end = now + (abs(tod_steering_delta) << 15);
+ 	vdso_data->arch_data.tod_steering_end = tod_steering_end;
++	vdso_data->arch_data.tod_steering_delta = tod_steering_delta;
  
- static void alc_probe_headset_mode(struct hda_codec *codec)
+ 	/* Update LPAR offset. */
+ 	if (ptff_query(PTFF_QTO) && ptff(&qto, sizeof(qto), PTFF_QTO) == 0)
 
 
