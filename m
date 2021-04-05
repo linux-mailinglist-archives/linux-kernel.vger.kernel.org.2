@@ -2,79 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE127354120
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 054F4354121
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241684AbhDEKPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S241692AbhDEKPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 06:15:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241681AbhDEKPO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 5 Apr 2021 06:15:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51372 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241211AbhDEKPO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 06:15:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 480F86128A;
-        Mon,  5 Apr 2021 10:15:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617617706;
-        bh=P8lomj32o8yraY8npLXMx485HIZmeqshrSBgIy6QGmQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ze4plzDZcyvsSmX37TMYpWoB2DcYw9pOymwTO62bUPK2+hdWX9W5W3DXhyLWeT8iu
-         IgdAFSmLMplv/3Q9ELUbWy07Pvg2fbcKnXjDeVF1HPQGtmO0ueDkHHI08aFsupm4h6
-         ddRh39Q5O7BXalb7gM1IRwBeG45FmXMBSehD2U00=
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EA58C061756;
+        Mon,  5 Apr 2021 03:15:08 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 262EF1F44D7D
+Received: by earth.universe (Postfix, from userid 1000)
+        id C6AD83C0C96; Mon,  5 Apr 2021 12:15:04 +0200 (CEST)
 Date:   Mon, 5 Apr 2021 12:15:04 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     dev.dragon@bk.ru
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Staging: rtl8192u: ieee80211: fixed a trailing
- statements of condition.
-Message-ID: <YGrjKEjr9GJtJlO5@kroah.com>
-References: <20210404132613.5464-1-dev.dragon@bk.ru>
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] power: supply: Use true and false for bool variable
+Message-ID: <20210405101504.67fowho7fhfojcxp@earth.universe>
+References: <1612864723-57143-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="itravfoy4wvih4x2"
 Content-Disposition: inline
-In-Reply-To: <20210404132613.5464-1-dev.dragon@bk.ru>
+In-Reply-To: <1612864723-57143-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 04, 2021 at 04:26:14PM +0300, dev.dragon@bk.ru wrote:
-> From: Dmitrii Wolf <dev.dragon@bk.ru>
-> 
-> Fixed a coding style issue.
 
-Really?
+--itravfoy4wvih4x2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> Signed-off-by: Dmitrii Wolf <dev.dragon@bk.ru>
+Hi,
+
+On Tue, Feb 09, 2021 at 05:58:43PM +0800, Jiapeng Chong wrote:
+> Fix the following coccicheck warning:
+>=20
+> ./include/linux/power_supply.h:507:9-10: WARNING: return of 0/1 in
+> function 'power_supply_is_watt_property' with return type bool.
+>=20
+> ./include/linux/power_supply.h:479:9-10: WARNING: return of 0/1 in
+> function 'power_supply_is_amp_property' with return type bool.
+>=20
+> Reported-by: Abaci Robot<abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 > ---
->  drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c | 8 ++++----
+
+Thanks, queued.
+
+-- Sebastian
+
+>  include/linux/power_supply.h | 8 ++++----
 >  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
-> index 690b664df8fa..29a6ce20e2bd 100644
-> --- a/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
-> +++ b/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
-> @@ -2048,12 +2048,12 @@ void ieee80211_softmac_xmit(struct ieee80211_txb *txb, struct ieee80211_device *
->  	/* if xmit available, just xmit it immediately, else just insert it to the wait queue */
->  	for (i = 0; i < txb->nr_frags; i++) {
->  #ifdef USB_TX_DRIVER_AGGREGATION_ENABLE
-> -		if ((skb_queue_len(&ieee->skb_drv_aggQ[queue_index]) != 0) ||
-> +		if ((skb_queue_len(&ieee->skb_drv_aggQ[queue_index]) != 0)
->  #else
-> -		if ((skb_queue_len(&ieee->skb_waitQ[queue_index]) != 0) ||
-> +		if ((skb_queue_len(&ieee->skb_waitQ[queue_index]) != 0)
->  #endif
-> -		    (!ieee->check_nic_enough_desc(ieee->dev, queue_index)) || \
-> -		    (ieee->queue_stop)) {
-> +		 || (!ieee->check_nic_enough_desc(ieee->dev, queue_index)) \
-> +		 || (ieee->queue_stop)) {
+>=20
+> diff --git a/include/linux/power_supply.h b/include/linux/power_supply.h
+> index 81a55e9..029e6e9 100644
+> --- a/include/linux/power_supply.h
+> +++ b/include/linux/power_supply.h
+> @@ -476,12 +476,12 @@ static inline bool power_supply_is_amp_property(enu=
+m power_supply_property psp)
+>  	case POWER_SUPPLY_PROP_CURRENT_NOW:
+>  	case POWER_SUPPLY_PROP_CURRENT_AVG:
+>  	case POWER_SUPPLY_PROP_CURRENT_BOOT:
+> -		return 1;
+> +		return true;
+>  	default:
+>  		break;
+>  	}
+> =20
+> -	return 0;
+> +	return false;
+>  }
+> =20
+>  static inline bool power_supply_is_watt_property(enum power_supply_prope=
+rty psp)
+> @@ -504,12 +504,12 @@ static inline bool power_supply_is_watt_property(en=
+um power_supply_property psp)
+>  	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE:
+>  	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX:
+>  	case POWER_SUPPLY_PROP_POWER_NOW:
+> -		return 1;
+> +		return true;
+>  	default:
+>  		break;
+>  	}
+> =20
+> -	return 0;
+> +	return false;
+>  }
+> =20
+>  #ifdef CONFIG_POWER_SUPPLY_HWMON
+> --=20
+> 1.8.3.1
+>=20
 
-This feels really wrong.
+--itravfoy4wvih4x2
+Content-Type: application/pgp-signature; name="signature.asc"
 
-The || should be on the end of the line, why is checkpatch complaining
-about this?
+-----BEGIN PGP SIGNATURE-----
 
-And that '\' is not needed at all :(
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBq4ygACgkQ2O7X88g7
++po/wg//bH7c/cyVKOnSjDYR5ldUnEWi6WDYyNq8M1ygK864h57r++X0l4lI+8eC
+g2lqAVD3Wx5WrUNMEuIbR+zw5e8NNJCye3gUvcoTZBHfstt+PJgum+1EBBMy2Uco
+uqnaLQLLI/UT3QaIsOXC/4Gf/j4gi6zR7dyTylExtGSqm7oYVzwAK82N816td7+c
+qYKCEoDsL7kMn/X2THEgN9uW7A3B4ekjepXkhg6x/3FgrLyz8XmZuRfMfxJGnCp0
+fS25UKwnEGWwzDXF1L9aNJ0aXWd7trPeDfladk/qJM+R4Tz0+rePWB2ETPfWOVpe
+iy01QPzXLNQubGhEbLEBDGdvthQ5q8tiTXlIwSi18JLcv/oK0vAMYvfljC9pUA3R
+QZjWGdCWv9Wd9wSfX3mg4gpW/KWqm5pavEMxuZW8ifQFkvv0fdZ2QSDvl132p6+S
+k79hxyFal2XMkorY+tB12SCJttmeqFRrxTVfVqaawl3+lDWcwdB66QvpiniGXqGO
+mXpaFLPX3X4A6rmqU6tVbbXkunSYU0Cx6rh/bXneZiTUFiOZj34wAcwU9hznHNMs
+RhGH1JA0yOckFkni2lXX/9dTO/ta2ygjDI/NcAHWd+fTsdExsIV9QXqhJfRzglmR
+x9zN7OHZjuv93I49QBmmZ9mXycMNvYlFfKr/P/nCOXOUOU2/U0A=
+=Uj5I
+-----END PGP SIGNATURE-----
 
-thanks,
-
-greg k-h
+--itravfoy4wvih4x2--
