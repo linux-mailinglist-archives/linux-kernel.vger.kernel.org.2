@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E37353FA0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA22353D80
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 12:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239491AbhDEJN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 05:13:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55392 "EHLO mail.kernel.org"
+        id S237146AbhDEJAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 05:00:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239286AbhDEJJp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 05:09:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8492C61393;
-        Mon,  5 Apr 2021 09:09:39 +0000 (UTC)
+        id S236841AbhDEI7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:59:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 15D9C610E8;
+        Mon,  5 Apr 2021 08:59:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617613780;
-        bh=e82XqluKRQYBxV/oPOYWpnnB6Sz7lv/TllE0kEpKSSw=;
+        s=korg; t=1617613167;
+        bh=T3+hdNBhYshHi2hkgR6N2wWj4BaklXfdyEQ59LcYNt4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LMEUqRTKeTtmNnGFHmYHfth90qGR6Qf8rvmx9ifpDJEvHb4E0zzzC9XYaUg/e22Ty
-         LAQU9j+D10DsnrjRc0vqOK+kXbwjdAtz9paUUf6AAM3t03yjKRr7fOWl9dVTKNJHCj
-         yXv/k78MnB7jmaYSz/J3YDWOIdpgF6THS6D5ooz4=
+        b=DtV3x45BJNREtlSedRJlOTduzmZSfs+uj1RffnjGbqGECPLKAfm1omNxK3yZMUKIu
+         CVlekMlYcjrzNr/LXEzlrCXtGusisVI2UzXv3teLwoM6K8HhqgK7TTtBT65CnTBe2v
+         W5e21hAH18A4+RronaUmTYjqlYKzJiGFmjSJqB8E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Feiner <pfeiner@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ben Gardon <bgardon@google.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 089/126] KVM: x86/mmu: Factor out handling of removed page tables
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>
+Subject: [PATCH 4.14 45/52] cdc-acm: fix BREAK rx code path adding necessary calls
 Date:   Mon,  5 Apr 2021 10:54:11 +0200
-Message-Id: <20210405085034.014120821@linuxfoundation.org>
+Message-Id: <20210405085023.445432032@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085031.040238881@linuxfoundation.org>
-References: <20210405085031.040238881@linuxfoundation.org>
+In-Reply-To: <20210405085021.996963957@linuxfoundation.org>
+References: <20210405085021.996963957@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,125 +38,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Gardon <bgardon@google.com>
+From: Oliver Neukum <oneukum@suse.com>
 
-[ Upstream commit a066e61f13cf4b17d043ad8bea0cdde2b1e5ee49 ]
+commit 08dff274edda54310d6f1cf27b62fddf0f8d146e upstream.
 
-Factor out the code to handle a disconnected subtree of the TDP paging
-structure from the code to handle the change to an individual SPTE.
-Future commits will build on this to allow asynchronous page freeing.
+Counting break events is nice but we should actually report them to
+the tty layer.
 
-No functional change intended.
-
-Reviewed-by: Peter Feiner <pfeiner@google.com>
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Ben Gardon <bgardon@google.com>
-
-Message-Id: <20210202185734.1680553-6-bgardon@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 5a6a62bdb9257 ("cdc-acm: add TIOCMIWAIT")
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
+Link: https://lore.kernel.org/r/20210311133714.31881-1-oneukum@suse.com
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/mmu/tdp_mmu.c | 71 ++++++++++++++++++++++----------------
- 1 file changed, 42 insertions(+), 29 deletions(-)
+ drivers/usb/class/cdc-acm.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index ad9f8f187045..f52a22bc0fe8 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -234,6 +234,45 @@ static void handle_changed_spte_dirty_log(struct kvm *kvm, int as_id, gfn_t gfn,
- 	}
- }
- 
-+/**
-+ * handle_removed_tdp_mmu_page - handle a pt removed from the TDP structure
-+ *
-+ * @kvm: kvm instance
-+ * @pt: the page removed from the paging structure
-+ *
-+ * Given a page table that has been removed from the TDP paging structure,
-+ * iterates through the page table to clear SPTEs and free child page tables.
-+ */
-+static void handle_removed_tdp_mmu_page(struct kvm *kvm, u64 *pt)
-+{
-+	struct kvm_mmu_page *sp = sptep_to_sp(pt);
-+	int level = sp->role.level;
-+	gfn_t gfn = sp->gfn;
-+	u64 old_child_spte;
-+	int i;
-+
-+	trace_kvm_mmu_prepare_zap_page(sp);
-+
-+	list_del(&sp->link);
-+
-+	if (sp->lpage_disallowed)
-+		unaccount_huge_nx_page(kvm, sp);
-+
-+	for (i = 0; i < PT64_ENT_PER_PAGE; i++) {
-+		old_child_spte = READ_ONCE(*(pt + i));
-+		WRITE_ONCE(*(pt + i), 0);
-+		handle_changed_spte(kvm, kvm_mmu_page_as_id(sp),
-+			gfn + (i * KVM_PAGES_PER_HPAGE(level - 1)),
-+			old_child_spte, 0, level - 1);
-+	}
-+
-+	kvm_flush_remote_tlbs_with_address(kvm, gfn,
-+					   KVM_PAGES_PER_HPAGE(level));
-+
-+	free_page((unsigned long)pt);
-+	kmem_cache_free(mmu_page_header_cache, sp);
-+}
-+
- /**
-  * handle_changed_spte - handle bookkeeping associated with an SPTE change
-  * @kvm: kvm instance
-@@ -254,10 +293,6 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
- 	bool was_leaf = was_present && is_last_spte(old_spte, level);
- 	bool is_leaf = is_present && is_last_spte(new_spte, level);
- 	bool pfn_changed = spte_to_pfn(old_spte) != spte_to_pfn(new_spte);
--	u64 *pt;
--	struct kvm_mmu_page *sp;
--	u64 old_child_spte;
--	int i;
- 
- 	WARN_ON(level > PT64_ROOT_MAX_LEVEL);
- 	WARN_ON(level < PG_LEVEL_4K);
-@@ -319,31 +354,9 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
- 	 * Recursively handle child PTs if the change removed a subtree from
- 	 * the paging structure.
- 	 */
--	if (was_present && !was_leaf && (pfn_changed || !is_present)) {
--		pt = spte_to_child_pt(old_spte, level);
--		sp = sptep_to_sp(pt);
--
--		trace_kvm_mmu_prepare_zap_page(sp);
--
--		list_del(&sp->link);
--
--		if (sp->lpage_disallowed)
--			unaccount_huge_nx_page(kvm, sp);
--
--		for (i = 0; i < PT64_ENT_PER_PAGE; i++) {
--			old_child_spte = READ_ONCE(*(pt + i));
--			WRITE_ONCE(*(pt + i), 0);
--			handle_changed_spte(kvm, as_id,
--				gfn + (i * KVM_PAGES_PER_HPAGE(level - 1)),
--				old_child_spte, 0, level - 1);
--		}
--
--		kvm_flush_remote_tlbs_with_address(kvm, gfn,
--						   KVM_PAGES_PER_HPAGE(level));
--
--		free_page((unsigned long)pt);
--		kmem_cache_free(mmu_page_header_cache, sp);
--	}
-+	if (was_present && !was_leaf && (pfn_changed || !is_present))
-+		handle_removed_tdp_mmu_page(kvm,
-+				spte_to_child_pt(old_spte, level));
- }
- 
- static void handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
--- 
-2.30.1
-
+--- a/drivers/usb/class/cdc-acm.c
++++ b/drivers/usb/class/cdc-acm.c
+@@ -324,8 +324,10 @@ static void acm_process_notification(str
+ 			acm->iocount.dsr++;
+ 		if (difference & ACM_CTRL_DCD)
+ 			acm->iocount.dcd++;
+-		if (newctrl & ACM_CTRL_BRK)
++		if (newctrl & ACM_CTRL_BRK) {
+ 			acm->iocount.brk++;
++			tty_insert_flip_char(&acm->port, 0, TTY_BREAK);
++		}
+ 		if (newctrl & ACM_CTRL_RI)
+ 			acm->iocount.rng++;
+ 		if (newctrl & ACM_CTRL_FRAMING)
 
 
