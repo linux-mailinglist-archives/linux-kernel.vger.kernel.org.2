@@ -2,93 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6536354769
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 22:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E72F3354772
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 22:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240637AbhDEULJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 16:11:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58524 "EHLO
+        id S240695AbhDEUSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 16:18:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235370AbhDEULF (ORCPT
+        with ESMTP id S232602AbhDEUS2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 16:11:05 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8833DC061756;
-        Mon,  5 Apr 2021 13:10:58 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id c15so2315872ilj.1;
-        Mon, 05 Apr 2021 13:10:58 -0700 (PDT)
+        Mon, 5 Apr 2021 16:18:28 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E46C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 13:18:22 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id k8so8827320pgf.4
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Apr 2021 13:18:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yipPMaEHRBCVVLHFCEOHBoiBt4r0IqzPMd/p47fHFz8=;
-        b=kXRuxDPCx2X1t6vPGgEQFce+rxUsWibPfNujCMhY4lrrhQE2hFCAksFpimzWUkV8gf
-         b5i+XTx2jDeLrvQ0DCzyjwr1rq93K7ht8MaA+IkzzaNkQinH6zsNLhFSWHH0bvz1eCCV
-         MMbzEK6fqiM5u1B6dydC80VAvqHepjKH2CxZFG4rTrwGrCIQCXVq27AQSO1he18AJNDz
-         B1BskbqyayR3s2CezqEx3UDeBs9EXauCjDhD777+34ZcM52FpMWaN/OAhdW0kwr3czLy
-         CPw+TTKpzmxwWHj5WyYP79ynDgHYuit9zBHjvQihnehwTSCLoqbDEpWMhJs/FKYz+hZ9
-         WW5Q==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SzrATsd1l9iJ+1jsAg78YWOp1Uycls09AoxwwnTVB0A=;
+        b=cStO9sTfmivqiIsV8Qp4UfOSoFmcFgIkbfywRSltUsIJ4YxU8IySZexr/4fUvjfTol
+         YZ3nkdl9vO4T18y1DMIyR0rIUn2ZerL7H8kht1d7ljOJDhS9UbqqVz4tv9iycp+sP4Rx
+         15MC+yEIeazbFqlrW1o88SgNWPXwsL/3VXfnw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yipPMaEHRBCVVLHFCEOHBoiBt4r0IqzPMd/p47fHFz8=;
-        b=kSWIbuNiiXU4a5y00kxdVjAdpubCUvuol1KPFjZCkiObVHrFjRvyQYyuZ8jq1OIB3f
-         NjJINhOwN8womnGIAeuRrmI7RPb+0Lb0snJXRQQGrSWbFrK2uuVIBdRY2GeCyw0Soj+v
-         KtneofNKkoNgCjRfwkMD/K/d1Cjrpf0qE/gJwUq7po+6ToTvHMxqJivxHNORgPejhZQT
-         W2bRP/W5tZavelLqzdFGDX+ZVQ/9EZWjNF7n4t5uZsnF6MPMTyRk1/HW+8OG/VcrpyUI
-         9E0cMNFZOqBvZYbQNQALs5a9QyzMGXzXW+fvqVKiDKgzh1u+RePNRgTbqYJSxRMfU2M1
-         TG3w==
-X-Gm-Message-State: AOAM533bCTcdC5wFwGp8jbczcLON670hTpgLjwLc7zWu1515gUHfEcOj
-        UWwLHDtQpVAkZHF4z4EeXwvo6ry/IiQv7DjurD9QQ6URH55xW+wz
-X-Google-Smtp-Source: ABdhPJyUgVzb6RWclGt3JbqMEbsLVzUDNX+nBpGEUf004VfGHr05DyUKIhgb12qjPc2VShHEvczv9qGyLhf1wuQqowM=
-X-Received: by 2002:a05:6e02:104b:: with SMTP id p11mr20272403ilj.77.1617653457957;
- Mon, 05 Apr 2021 13:10:57 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SzrATsd1l9iJ+1jsAg78YWOp1Uycls09AoxwwnTVB0A=;
+        b=Y9mZO102DIU6bXUkz8dAjq4d48vyFs3T19HjJjhveaaPRLXpGZbTj/0FoAQOaB3Dp0
+         3z0rilvhlNrX5LFNQKhKFYeex7VXmKkJKeHzEhOmdOZ2879slQBp+5I+qMYXWbMZ13P9
+         Oa7ykFrfNp3YAoKv2QwJAkqOqglts3DMiIjYPYOjHdQIjoPfNd0nBksmSyDgVFOYcDvg
+         gw4nE8Qf5J0LfEsTI4uqLoTt7ogKyuIb/3oRSKbfeK+Ie1FFCyILZv10acI2tte66yqp
+         8+uV5T0DsO6g0tKZGJsHIEXgxZQ7gtCyg4EqjVhi+CSfYPvhzmnSws23Vtj4d79UTc9J
+         g2FA==
+X-Gm-Message-State: AOAM532YHHs/Gz9BtmJf4VOxJeoyVHF2Y4EDbx+kW68KHwCY3ilZSJQD
+        zNOurbCa2TT9GhwUVaWVuS99Lg==
+X-Google-Smtp-Source: ABdhPJzIGqAKrxzPOvps82jXYzrKweSAvuxLkVluJX5klP+J3JDb3KVgihZcPP9Xit3jNjHcaDBMCw==
+X-Received: by 2002:aa7:8a19:0:b029:1f6:6839:7211 with SMTP id m25-20020aa78a190000b02901f668397211mr24475341pfa.40.1617653901576;
+        Mon, 05 Apr 2021 13:18:21 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:455e:b8cf:5939:67da])
+        by smtp.gmail.com with UTF8SMTPSA id x125sm16240244pfd.124.2021.04.05.13.18.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Apr 2021 13:18:21 -0700 (PDT)
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Peter Chen <peter.chen@nxp.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-usb@vger.kernel.org,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Bastien Nocera <hadess@hadess.net>, devicetree@vger.kernel.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Al Cooper <alcooperx@gmail.com>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        linux-arm-msm@vger.kernel.org
+Subject: [PATCH v6 0/5] USB: misc: Add onboard_usb_hub driver
+Date:   Mon,  5 Apr 2021 13:18:12 -0700
+Message-Id: <20210405201817.3977893-1-mka@chromium.org>
+X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
 MIME-Version: 1.0
-References: <20210405031436.2465475-1-ilya.lipnitskiy@gmail.com> <CAGETcx9ifDoWeBN1KR4zKfs-q73iGo9C-joz4UqayeE3euDQWg@mail.gmail.com>
-In-Reply-To: <CAGETcx9ifDoWeBN1KR4zKfs-q73iGo9C-joz4UqayeE3euDQWg@mail.gmail.com>
-From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Date:   Mon, 5 Apr 2021 13:10:47 -0700
-Message-ID: <CALCv0x3-A3PruJJ6wmzBZ5544Zj8_R7wFXkOm6H-a5tG406wYQ@mail.gmail.com>
-Subject: Re: [PATCH] of: property: do not create device links from *nr-gpios
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
+This series adds:
+- the onboard_usb_hub_driver
+- glue in the xhci-plat driver to create the onboard_usb_hub
+  platform device if needed
+- a device tree binding for the Realtek RTS5411 USB hub controller
+- device tree changes that add RTS5411 entries for the QCA SC7180
+  based boards trogdor and lazor
+- a couple of stubs for platform device functions to avoid
+  unresolved symbols with certain kernel configs
 
-On Mon, Apr 5, 2021 at 1:01 PM Saravana Kannan <saravanak@google.com> wrote:
->
-> On Sun, Apr 4, 2021 at 8:14 PM Ilya Lipnitskiy
-> <ilya.lipnitskiy@gmail.com> wrote:
-> >
-> > [<vendor>,]nr-gpios property is used by some GPIO drivers[0] to indicate
-> > the number of GPIOs present on a system, not define a GPIO. nr-gpios is
-> > not configured by #gpio-cells and can't be parsed along with other
-> > "*-gpios" properties.
-> >
-> > scripts/dtc/checks.c also has a special case for nr-gpio{s}. However,
-> > nr-gpio is not really special, so we only need to fix nr-gpios suffix
-> > here.
->
-> The only example of this that I see is "snps,nr-gpios".
-arch/arm64/boot/dts/apm/apm-shadowcat.dtsi uses "apm,nr-gpios", with
-parsing code in drivers/gpio/gpio-xgene-sb.c. There is also code in
-drivers/gpio/gpio-adnp.c and drivers/gpio/gpio-mockup.c using
-"nr-gpios" without any vendor prefix.
+The main issue the driver addresses is that a USB hub needs to be
+powered before it can be discovered. For discrete onboard hubs (an
+example for such a hub is the Realtek RTS5411) this is often solved
+by supplying the hub with an 'always-on' regulator, which is kind
+of a hack. Some onboard hubs may require further initialization
+steps, like changing the state of a GPIO or enabling a clock, which
+requires even more hacks. This driver creates a platform device
+representing the hub which performs the necessary initialization.
+Currently it only supports switching on a single regulator, support
+for multiple regulators or other actions can be added as needed.
+Different initialization sequences can be supported based on the
+compatible string.
 
-I personally don't think causing regressions is good for any reason,
-so I think we need to fix this in stable releases. The patch can be
-reverted when nr-gpios is no longer special. The logic here should
-also be aligned with scripts/dtc/checks.c, I actually submitted a
-patch to warn about "nr-gpios" only and not "nr-gpio" in dtc as well:
-https://www.spinics.net/lists/devicetree-compiler/msg03619.html
+Besides performing the initialization the driver can be configured
+to power the hub off during system suspend. This can help to extend
+battery life on battery powered devices which have no requirements
+to keep the hub powered during suspend. The driver can also be
+configured to leave the hub powered when a wakeup capable USB device
+is connected when suspending, and power it off otherwise.
 
-Ilya
+Changes in v7:
+- series rebased on qcom/arm64-for-5.13
+
+Changes in v6:
+- updated summary
+
+Changes in v5:
+- cover letter added
+
+Matthias Kaehlcke (5):
+  dt-bindings: usb: Add binding for Realtek RTS5411 hub controller
+  USB: misc: Add onboard_usb_hub driver
+  of/platform: Add stubs for of_platform_device_create/destroy()
+  usb: host: xhci-plat: Create platform device for onboard hubs in
+    probe()
+  arm64: dts: qcom: sc7180-trogdor: Add nodes for onboard USB hub
+
+ .../sysfs-bus-platform-onboard-usb-hub        |   8 +
+ .../bindings/usb/realtek,rts5411.yaml         |  59 +++
+ MAINTAINERS                                   |   7 +
+ .../boot/dts/qcom/sc7180-trogdor-lazor-r0.dts |  19 +-
+ .../boot/dts/qcom/sc7180-trogdor-lazor-r1.dts |  11 +-
+ .../arm64/boot/dts/qcom/sc7180-trogdor-r1.dts |  19 +-
+ arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi  |  21 +-
+ drivers/usb/host/xhci-plat.c                  |  16 +
+ drivers/usb/misc/Kconfig                      |  17 +
+ drivers/usb/misc/Makefile                     |   1 +
+ drivers/usb/misc/onboard_usb_hub.c            | 415 ++++++++++++++++++
+ include/linux/of_platform.h                   |  22 +-
+ include/linux/usb/hcd.h                       |   2 +
+ include/linux/usb/onboard_hub.h               |  15 +
+ 14 files changed, 596 insertions(+), 36 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-platform-onboard-usb-hub
+ create mode 100644 Documentation/devicetree/bindings/usb/realtek,rts5411.yaml
+ create mode 100644 drivers/usb/misc/onboard_usb_hub.c
+ create mode 100644 include/linux/usb/onboard_hub.h
+
+-- 
+2.31.0.208.g409f899ff0-goog
+
