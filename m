@@ -2,166 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAA6835416E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 13:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECA28354181
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 13:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235034AbhDELJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 07:09:11 -0400
-Received: from mail-dm6nam12on2043.outbound.protection.outlook.com ([40.107.243.43]:57440
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235001AbhDELJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Apr 2021 07:09:07 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b784qMXnFJKDEOYH3CDx57v5D9DqCBDpcwAj+aFkMrdBJ/VrnlXv4ZYnqp8h03UZWKJyzl4XLfSmlPZ//zKwuySuKhoib5foM8GwRBqPUY3XeO4XivYQZM+dRxANPzIdUrVd2JhqhUHOeBbsYxT1ssyUuHBwUc3lBMjbvn40OHTs5IKdQNwYn9dBEFJvyRm+j8Ruwut7cTcr1n4xfVYKCqqin3m1RsQYG5daky4SeMXHNCQOBm/zPilROYslcyNAYMm/McLTxNlNCwutsEgsQUvO7dimsC/FFrkSqDinwvEpAd4DhpAtQ64v2R83iqpQ9Mw6t0lV6fpv1Ttma2NPFg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=V5mAq0ftgjECUYrGxp6GN5vYqJ+BCZQ9mChqhe7ZpMY=;
- b=GoehpyyQOD0rmgQY1744eY/wyoWLdStMoAOG2UMkgSBhl0FMlipUOI0EULf7COu2jEAT6p/gsUOR02POD6OHej5PDUyLkOUdLAfmN9Fc4qwxDw+v2kC3jOIbgpFnNbj9oDx2PsrTVmBNG8GrLxIkWn79BA2wCfEDrxzJ6FfyzfwSnEChStFJL4jzJjGY2+uT/Vy2Oa9snjefrd5sHVAyT/wATBnuDRqO94c+m2uBOMrsmkD5+w5j3FkpNsjeNxo/gFLRfGiPeB+/gBjmm6p9GUoh7zKwf7mtJI4KQdKWa421wd7isHZ9HhBEWuRbX9q5xQjWxJyTtQ6Vv3fOPltiqA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=V5mAq0ftgjECUYrGxp6GN5vYqJ+BCZQ9mChqhe7ZpMY=;
- b=0epg20Hu1Cp+bldulBVH3EbY4jwnUd9lZHRCxuY0vKTOkyqhC3zSjpWdUhi42thEwYHCxo+EuaYBPaS5Ucr2hAsfip5spsbvwdeRLwO82oCooWrBetH/WumXxhMUf5ej/QTRZb/RI28w/6vM5Lfu/uVIG+ig7WN3JXlIkuFlY0Y=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
- (2603:10b6:300:e4::23) by MW3PR12MB4361.namprd12.prod.outlook.com
- (2603:10b6:303:5a::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.29; Mon, 5 Apr
- 2021 11:08:58 +0000
-Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
- ([fe80::c977:4e9:66b8:a7e]) by MWHPR1201MB2557.namprd12.prod.outlook.com
- ([fe80::c977:4e9:66b8:a7e%11]) with mapi id 15.20.3999.032; Mon, 5 Apr 2021
- 11:08:58 +0000
-Subject: Re: [PATCH] ASoC: amd: Add support for ALC1015P codec in acp3x
- machine driver
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     alsa-devel@alsa-project.org, shumingf@realtek.com,
-        flove@realtek.com, kent_chen@realtek.com, jack.yu@realtek.com,
-        Alexander.Deucher@amd.com, Basavaraj.Hiregoudar@amd.com,
-        Sunil-kumar.Dommati@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Ravulapati Vishnu vardhan rao 
-        <Vishnuvardhanrao.Ravulapati@amd.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Akshu Agrawal <akshu.agrawal@amd.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1617095628-8324-1-git-send-email-Vijendar.Mukunda@amd.com>
- <82817878-a30d-2b0c-07f8-48bcca3ebc80@linux.intel.com>
- <a55c7a75-22ab-31fc-81b3-ed8fa24027f4@amd.com>
- <20210330153534.GF4976@sirena.org.uk>
- <cd0d87e0-caa5-b671-9c91-1c5f35c2f017@linux.intel.com>
-From:   "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Message-ID: <972d38d8-39c8-66d7-292d-37c1f0e027bd@amd.com>
-Date:   Mon, 5 Apr 2021 16:56:05 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <cd0d87e0-caa5-b671-9c91-1c5f35c2f017@linux.intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [165.204.159.242]
-X-ClientProxiedBy: PN2PR01CA0092.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:27::7) To MWHPR1201MB2557.namprd12.prod.outlook.com
- (2603:10b6:300:e4::23)
+        id S234654AbhDEL2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Apr 2021 07:28:09 -0400
+Received: from gateway21.websitewelcome.com ([192.185.45.228]:23842 "EHLO
+        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230032AbhDEL2I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 07:28:08 -0400
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+        by gateway21.websitewelcome.com (Postfix) with ESMTP id F0AA9400D5C84
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Apr 2021 06:28:00 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id TNOiltQL6L7DmTNOilEGLt; Mon, 05 Apr 2021 06:28:00 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=HaWJIx9QeSqGp2WKMyVfEtnUrLjEtHZaXIhZVm4fNpc=; b=eHKvRnIe33xRix7VMunTV+PXV3
+        okw/dXK3ZaF5dNLdTBX2EYLAaLi8U0w5t9m0i5mvBgjTF3IO9o6XAMeuc+ZaMwll0JPbzN9ULFuo6
+        p97YiDoosS94JVaqI64vktrUYTNRZGwthrI0QOiv1zeccTo8ES1//QtPBVkLyaBf/Z4VBRMhIvsxg
+        sOl/nPQXgtWFyqU9e/0clGT167Ix7T0jUnhs+ivFAc+N1TnfmQtZQMtHD2kci58tujgH9MdqVFpSY
+        zHFLa4ILMzjEtSLZzjZjEuMM+azESedOZKTKeKq/bucDtGXyFJmeOSwxspIW9Wt2eTkCEEFfGCZCf
+        hHTlwm6Q==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:55772 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lTNOi-0010hM-Fz; Mon, 05 Apr 2021 06:28:00 -0500
+Subject: Re: [PATCH][next] scsi: ufs: Fix out-of-bounds warnings in
+ ufshcd_exec_raw_upiu_cmd
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+References: <20210331224338.GA347171@embeddedor>
+ <DM6PR04MB65751397A9CCA9B677875B3EFC799@DM6PR04MB6575.namprd04.prod.outlook.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <60291521-2f71-8933-e90d-95b84c5f0be8@embeddedor.com>
+Date:   Mon, 5 Apr 2021 06:27:58 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.252.93.39] (165.204.159.242) by PN2PR01CA0092.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c01:27::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.26 via Frontend Transport; Mon, 5 Apr 2021 11:08:52 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2780d0b8-c8aa-40df-dc69-08d8f823358c
-X-MS-TrafficTypeDiagnostic: MW3PR12MB4361:
-X-LD-Processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MW3PR12MB436163482BE06BD229804B6A97779@MW3PR12MB4361.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pxwxzcRngWlqoSCLyvEPC+4qSXZ4bxzzRwCX4G57HmNr8Z48Dw7zImOovQ/ziaqeM41pJUMGplJPqHJf5DgUyOB3GHK4s+9xz0/CGjxTHmlzVpcMjnKMXStRqHXWmiOFbOBFpNaIZ1q0MhUcTcCGtc2kvc3LEXF/7cf4Wu3fiDOxNLwZMCIZ3fF87jbPUKokLMdXT/numxVpOWNESbSoKomUOuL5c8j2f/rsBXcvmRCR7mKLk38Leu3QT7aIMIsBWZGCbMlukidbc1rl1CJMzmLKCbQyjfWV/SZ4lMhoL4JwXmgUaNGfyYIDuOWNnT9HLpuLAS46tIgEgDGmc1oLrecxN+NSAgf+Radx03uAyNMGFbZe70GZz0mrLfHzKmgxwU756s41yZvZvJ7Sexni5+ykXlcgRxdRYoaI0U7fu2VB6x48Yo7FzoB+ZkXlWxnmwr5M8dOX4jNVFK0oAzL9YDuEhIwa2RDgb5zRdHCTfvJmQdeR3FbQRNJdHqnXjrHVeyd7Yu4rCj23lcmg1ggOZajHPNrs6myxmsMQa3xkn6Ju3leStrND5BrugxY1C407yUV772Im9h6AbI4vzoSu2DSeLrEp7H5d4+VgyTHFpM9gMoRYg1luVjxgZcIJ4C0azdgyzFfEsYlmo10ezOOF2rOZh/fyqyR+0HUd0Y4r50ahGxpXawx49x8rsvr5eNE950+A1Sp/wAsljMX4TEAEzgY8LQi/nE/2YCUFoNA3w6Ybg3TKu6nEiZjHODJaGGY1aIr4zZdfb4K90U4ACVjiIA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB2557.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(396003)(366004)(39860400002)(31686004)(38100700001)(8676002)(2616005)(16526019)(8936002)(316002)(52116002)(6666004)(110136005)(5660300002)(7416002)(86362001)(31696002)(186003)(54906003)(4326008)(66476007)(66556008)(6486002)(478600001)(66946007)(53546011)(956004)(36756003)(2906002)(16576012)(26005)(42413003)(32563001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?cdVltmO8isHGPCQXK6cEllHYDzo3boDEyPR4Oh3yoBacZYSJMF+4zi3A?=
- =?Windows-1252?Q?9GScRYaAe4eF1HI4N5S/KFVTQYu+/UCcLmcsg95ekQEe3g8xELnAkJ7n?=
- =?Windows-1252?Q?oINddutIOGpcsSHVZeDCvkQ7LtGFL1ykkIX0NWmVhJPt5eJFTtXSUknB?=
- =?Windows-1252?Q?/MUHvJk0jUlVKt0PtuVWgdXm8ekSR1n9pBqO95mib1TN/uG7XjrzTebd?=
- =?Windows-1252?Q?VLvO556f1xYQsjN7ovd6oeNHd2adxQ5dLK+zX0mhL440oCRofrK9n+Xi?=
- =?Windows-1252?Q?ExQy4bGWgkVaVWISVee2kYuQQkT3uD90UiqG1kC8R6Q4B1PoTqH30TCA?=
- =?Windows-1252?Q?aqDdRyzVA0BTD7jOqS2E0aDobULdcSSDTS1T/EjP5rolYO4hgxR25Lgg?=
- =?Windows-1252?Q?98IOYoWitnVuJeSF2pod7PtOq/pAohfB2LRDYaWYRt7GQp4XPzFpnPHh?=
- =?Windows-1252?Q?3OSAJngPtvqneafsMNIK+2c1bp0mDHb1i/k2IeDtVxLmaLo49kFL67vM?=
- =?Windows-1252?Q?/qeDnHIj+4PATftVyZ8mMdi3NzQsVv1xFju7wMj2Eybq9PXq45XMigYn?=
- =?Windows-1252?Q?SBK7XBXP5j6/fzNd7KM8pUwLaaHsfC1hJ4mU3rfGkgQqc9ECR3njSNPJ?=
- =?Windows-1252?Q?apeBWQSTLfgPO5WSXoDJdHD3lRjWE/McWzXpVLSA29wwzBvTY7d4cL9o?=
- =?Windows-1252?Q?Ti6KwE0yJ+EJhBLG/m7ZWEKErJMLbHGelGjO5yoQHm6Dp9fQCiPItvdw?=
- =?Windows-1252?Q?DjuV/Y+Nbs5C/1xnCS7eG2Oe4Ca1CxPa83JE2XOnmxTnate858UauqSo?=
- =?Windows-1252?Q?++H1+FWxjB5P7MTOcoP6K3Febkb/l07VIypyh/zUrrNS2UYXKz8cecg1?=
- =?Windows-1252?Q?rDmK8VIZ/YjOGXJiP73cAal5+Ndl4MCGmhEV75qU3D8TiNPE1mxn+A5v?=
- =?Windows-1252?Q?CzBmYyVZ53fAOo3xu7KNAJ8F8Hk6r3QbaDBJQNb+ju7/OKzI4bjkGCGU?=
- =?Windows-1252?Q?v5SvNp+odRPaKD2+eJIRCkBJi4xZoOtRpXjGKENoMQUXuzXhrtQjIwQL?=
- =?Windows-1252?Q?q2nt/MB7qSD1HKZ1a04yIH2yOZBjgEbpgwJvankuMt47pBrO+5i0Nklw?=
- =?Windows-1252?Q?YEtJLU40xL95W/qqHtirdxkv30kYeCyhAGBBKKzizFZo3Sno7ti1zjOz?=
- =?Windows-1252?Q?dMYuAdrgzuV2HI6/IDbEfZC123XXeS6v26uclg+oZ65a+LyL0kYwYQnT?=
- =?Windows-1252?Q?jCQJdTzOBIirsjKg1g1xqc9nmgIKtce0nqALhc4bYw6tjz+qa9pvn7+K?=
- =?Windows-1252?Q?/aYShoKXp3INB3ZWTQuWANLns5pZppfrHlyXID1TTUn6oXuN1ow0/0Hn?=
- =?Windows-1252?Q?FLOl7wOe73cvbqERn7kbpXt3MrhO4Umed6ApFPvvjRqLuJ28Xxt4TMnN?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2780d0b8-c8aa-40df-dc69-08d8f823358c
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB2557.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Apr 2021 11:08:58.2471
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3/iXvqzFKW0jp+deJbXbOT/8Gr8DsqDxIx6bQKoUpQGztyI8InpL4eQNAHli+gG1sxOaWKFjjRrB1ZwA7g92FQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4361
+In-Reply-To: <DM6PR04MB65751397A9CCA9B677875B3EFC799@DM6PR04MB6575.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lTNOi-0010hM-Fz
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:55772
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 7
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 3/30/21 9:57 PM, Pierre-Louis Bossart wrote:
+On 4/3/21 14:44, Avri Altman wrote:
+>>
+>> Fix the following out-of-bounds warnings by enclosing
+>> some structure members into new structure objects upiu_req
+>> and upiu_rsp:
+>>
+>> include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [29,
+>> 48] from the object at 'treq' is out of the bounds of referenced subobject
+>> 'req_header' with type 'struct utp_upiu_header' at offset 16 [-Warray-bounds]
+>> include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [61,
+>> 80] from the object at 'treq' is out of the bounds of referenced subobject
+>> 'rsp_header' with type 'struct utp_upiu_header' at offset 48 [-Warray-bounds]
+>> arch/m68k/include/asm/string.h:72:25: warning: '__builtin_memcpy' offset
+>> [29, 48] from the object at 'treq' is out of the bounds of referenced subobject
+>> 'req_header' with type 'struct utp_upiu_header' at offset 16 [-Warray-bounds]
+>> arch/m68k/include/asm/string.h:72:25: warning: '__builtin_memcpy' offset
+>> [61, 80] from the object at 'treq' is out of the bounds of referenced subobject
+>> 'rsp_header' with type 'struct utp_upiu_header' at offset 48 [-Warray-bounds]
+>>
+>> Refactor the code by making it more structured.
+>>
+>> The problem is that the original code is trying to copy data into a
+>> bunch of struct members adjacent to each other in a single call to
+>> memcpy(). Now that a new struct _upiu_req_ enclosing all those adjacent
+>> members is introduced, memcpy() doesn't overrun the length of
+>> &treq.req_header, because the address of the new struct object
+>> _upiu_req_ is used as the destination, instead. The same problem
+>> is present when memcpy() overruns the length of the source
+>> &treq.rsp_header; in this case the address of the new struct
+>> object _upiu_rsp_ is used, instead.
+>>
+>> Also, this helps with the ongoing efforts to enable -Warray-bounds
+>> and avoid confusing the compiler.
+>>
+>> Link: https://github.com/KSPP/linux/issues/109
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Build-tested-by: kernel test robot <lkp@intel.com>
+>> Link:
+>> https://lore.kernel.org/lkml/60640558.lsAxiK6otPwTo9rv%25lkp@intel.com/
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Reviewed-by: Avri Altman <avri.altman@wdc.com>
+
+Thanks, Avri. :)
+
+--
+Gustavo
+
 > 
+> Thanks,
+> Avri
 > 
-> On 3/30/21 10:35 AM, Mark Brown wrote:
->> On Tue, Mar 30, 2021 at 09:12:11PM +0530, Mukunda,Vijendar wrote:
->>> On 3/30/21 7:52 PM, Pierre-Louis Bossart wrote:
+>> ---
+>>  drivers/scsi/ufs/ufshcd.c | 28 ++++++++++++++++------------
+>>  drivers/scsi/ufs/ufshci.h | 22 +++++++++++++---------
+>>  2 files changed, 29 insertions(+), 21 deletions(-)
 >>
->>>>>    static const struct acpi_device_id acp3x_audio_acpi_match[] = {
->>>>>        { "AMDI5682", (unsigned long)&acp3x_5682},
->>>>>        { "AMDI1015", (unsigned long)&acp3x_1015},
->>>>> +    { "AMDP1015", (unsigned long)&acp3x_1015p},
+>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> index 7539a4ee9494..324eb641e66f 100644
+>> --- a/drivers/scsi/ufs/ufshcd.c
+>> +++ b/drivers/scsi/ufs/ufshcd.c
+>> @@ -336,11 +336,15 @@ static void ufshcd_add_tm_upiu_trace(struct
+>> ufs_hba *hba, unsigned int tag,
+>>                 return;
 >>
->>>> This isn't a valid ACPI ID. AMDP does not exist in
+>>         if (str_t == UFS_TM_SEND)
+>> -               trace_ufshcd_upiu(dev_name(hba->dev), str_t, &descp->req_header,
+>> -                                 &descp->input_param1, UFS_TSF_TM_INPUT);
+>> +               trace_ufshcd_upiu(dev_name(hba->dev), str_t,
+>> +                                 &descp->upiu_req.req_header,
+>> +                                 &descp->upiu_req.input_param1,
+>> +                                 UFS_TSF_TM_INPUT);
+>>         else
+>> -               trace_ufshcd_upiu(dev_name(hba->dev), str_t, &descp->rsp_header,
+>> -                                 &descp->output_param1, UFS_TSF_TM_OUTPUT);
+>> +               trace_ufshcd_upiu(dev_name(hba->dev), str_t,
+>> +                                 &descp->upiu_rsp.rsp_header,
+>> +                                 &descp->upiu_rsp.output_param1,
+>> +                                 UFS_TSF_TM_OUTPUT);
+>>  }
 >>
->> ...
+>>  static void ufshcd_add_uic_command_trace(struct ufs_hba *hba,
+>> @@ -6420,7 +6424,7 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba
+>> *hba,
+>>         spin_lock_irqsave(host->host_lock, flags);
+>>         task_tag = hba->nutrs + free_slot;
 >>
->>>> There was a similar issue with Intel platforms using this part, we had
->>>> to use a different HID.
+>> -       treq->req_header.dword_0 |= cpu_to_be32(task_tag);
+>> +       treq->upiu_req.req_header.dword_0 |= cpu_to_be32(task_tag);
 >>
->>> Is it okay if i use "AMDI1016" for ALC1015P?
+>>         memcpy(hba->utmrdl_base_addr + free_slot, treq, sizeof(*treq));
+>>         ufshcd_vops_setup_task_mgmt(hba, free_slot, tm_function);
+>> @@ -6493,16 +6497,16 @@ static int ufshcd_issue_tm_cmd(struct ufs_hba
+>> *hba, int lun_id, int task_id,
+>>         treq.header.dword_2 = cpu_to_le32(OCS_INVALID_COMMAND_STATUS);
 >>
->> That's valid, though obviously you might regret that later on if someone
->> releases a CODEC with a 1016 name (equally well ACPI being what it is
->> there's no good options for naming).
+>>         /* Configure task request UPIU */
+>> -       treq.req_header.dword_0 = cpu_to_be32(lun_id << 8) |
+>> +       treq.upiu_req.req_header.dword_0 = cpu_to_be32(lun_id << 8) |
+>>                                   cpu_to_be32(UPIU_TRANSACTION_TASK_REQ << 24);
+>> -       treq.req_header.dword_1 = cpu_to_be32(tm_function << 16);
+>> +       treq.upiu_req.req_header.dword_1 = cpu_to_be32(tm_function << 16);
+>>
+>>         /*
+>>          * The host shall provide the same value for LUN field in the basic
+>>          * header and for Input Parameter.
+>>          */
+>> -       treq.input_param1 = cpu_to_be32(lun_id);
+>> -       treq.input_param2 = cpu_to_be32(task_id);
+>> +       treq.upiu_req.input_param1 = cpu_to_be32(lun_id);
+>> +       treq.upiu_req.input_param2 = cpu_to_be32(task_id);
+>>
+>>         err = __ufshcd_issue_tm_cmd(hba, &treq, tm_function);
+>>         if (err == -ETIMEDOUT)
+>> @@ -6513,7 +6517,7 @@ static int ufshcd_issue_tm_cmd(struct ufs_hba *hba,
+>> int lun_id, int task_id,
+>>                 dev_err(hba->dev, "%s: failed, ocs = 0x%x\n",
+>>                                 __func__, ocs_value);
+>>         else if (tm_response)
+>> -               *tm_response = be32_to_cpu(treq.output_param1) &
+>> +               *tm_response = be32_to_cpu(treq.upiu_rsp.output_param1) &
+>>                                 MASK_TM_SERVICE_RESP;
+>>         return err;
+>>  }
+>> @@ -6693,7 +6697,7 @@ int ufshcd_exec_raw_upiu_cmd(struct ufs_hba
+>> *hba,
+>>                 treq.header.dword_0 = cpu_to_le32(UTP_REQ_DESC_INT_CMD);
+>>                 treq.header.dword_2 =
+>> cpu_to_le32(OCS_INVALID_COMMAND_STATUS);
+>>
+>> -               memcpy(&treq.req_header, req_upiu, sizeof(*req_upiu));
+>> +               memcpy(&treq.upiu_req, req_upiu, sizeof(*req_upiu));
+>>
+>>                 err = __ufshcd_issue_tm_cmd(hba, &treq, tm_f);
+>>                 if (err == -ETIMEDOUT)
+>> @@ -6706,7 +6710,7 @@ int ufshcd_exec_raw_upiu_cmd(struct ufs_hba
+>> *hba,
+>>                         break;
+>>                 }
+>>
+>> -               memcpy(rsp_upiu, &treq.rsp_header, sizeof(*rsp_upiu));
+>> +               memcpy(rsp_upiu, &treq.upiu_rsp, sizeof(*rsp_upiu));
+>>
+>>                 break;
+>>         default:
+>> diff --git a/drivers/scsi/ufs/ufshci.h b/drivers/scsi/ufs/ufshci.h
+>> index 6795e1f0e8f8..235236859285 100644
+>> --- a/drivers/scsi/ufs/ufshci.h
+>> +++ b/drivers/scsi/ufs/ufshci.h
+>> @@ -482,17 +482,21 @@ struct utp_task_req_desc {
+>>         struct request_desc_header header;
+>>
+>>         /* DW 4-11 - Task request UPIU structure */
+>> -       struct utp_upiu_header  req_header;
+>> -       __be32                  input_param1;
+>> -       __be32                  input_param2;
+>> -       __be32                  input_param3;
+>> -       __be32                  __reserved1[2];
+>> +       struct {
+>> +               struct utp_upiu_header  req_header;
+>> +               __be32                  input_param1;
+>> +               __be32                  input_param2;
+>> +               __be32                  input_param3;
+>> +               __be32                  __reserved1[2];
+>> +       } upiu_req;
+>>
+>>         /* DW 12-19 - Task Management Response UPIU structure */
+>> -       struct utp_upiu_header  rsp_header;
+>> -       __be32                  output_param1;
+>> -       __be32                  output_param2;
+>> -       __be32                  __reserved2[3];
+>> +       struct {
+>> +               struct utp_upiu_header  rsp_header;
+>> +               __be32                  output_param1;
+>> +               __be32                  output_param2;
+>> +               __be32                  __reserved2[3];
+>> +       } upiu_rsp;
+>>  };
+>>
+>>  #endif /* End of Header */
+>> --
+>> 2.27.0
 > 
-> wish granted, the 1016 already exists :-)
-> you may want to align with what we did for Intel and use the same HID: 
-> RTL1015
-
-As per RTK team inputs, "RTL1015" ACPI HID is in use for RT1015p codec 
-driver.
-RTK team suggested us to use "RTL1015A" as ACPI HID.
-Let us know, if we can use "RTL1015A" as an ACPI HID?
-
--
-Vijendar
-
-
