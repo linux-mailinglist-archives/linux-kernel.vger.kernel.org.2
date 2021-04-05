@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD3B353CCD
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D193353CBD
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Apr 2021 10:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232503AbhDEI4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Apr 2021 04:56:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34944 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232840AbhDEI4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232830AbhDEI4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 5 Apr 2021 04:56:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A1E761393;
-        Mon,  5 Apr 2021 08:56:25 +0000 (UTC)
+Received: from mail.kernel.org ([198.145.29.99]:34558 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232135AbhDEI4M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:56:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FB6A61394;
+        Mon,  5 Apr 2021 08:56:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617612986;
-        bh=5NSqw6IImF72vYiQf0bYirPP0rCSItz7clkiJB312rc=;
+        s=korg; t=1617612967;
+        bh=2mFaZjyJJSPxDxQmv6csQhvaVL+EYjAq5m2o6fOYWWg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=biQfoHzkBzYTTl26IlJMebEE34tNGR203X3eRPsvVt1CRd0JlE3xL3B0c26sAAzRy
-         yMomg+qvjmeFNSyle+K/gK0rdXdW2AGjGrir6mr/l5D/ck9YTIzO/eyNd3K2/rzvKN
-         q/73NFdsm0QYcVH340GUoV6leBtXKgER8yz9tSI0=
+        b=f4Y/SxdRkHD/KZ4x6KuElLAr1i8//MUybAQse9J6jCKklfMZyvurcIZ0KFiLLxnK0
+         +7sWBBHfIcSxktGfmJzRpQh4/bbqXt9XiTfSqyR46QnkgyK6xU9vqs5yjza1DgQWEU
+         jk28QrYIX77aok9CdXSs2bGk0lqAbD4Oy7M+QLNQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Brazdil <dbrazdil@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 01/35] selinux: vsock: Set SID for socket returned by accept()
-Date:   Mon,  5 Apr 2021 10:53:36 +0200
-Message-Id: <20210405085018.919933118@linuxfoundation.org>
+        stable@vger.kernel.org, Zhaolong Zhang <zhangzl2013@126.com>,
+        Theodore Tso <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 03/28] ext4: fix bh ref count on error paths
+Date:   Mon,  5 Apr 2021 10:53:37 +0200
+Message-Id: <20210405085017.126509779@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210405085018.871387942@linuxfoundation.org>
-References: <20210405085018.871387942@linuxfoundation.org>
+In-Reply-To: <20210405085017.012074144@linuxfoundation.org>
+References: <20210405085017.012074144@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,39 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Brazdil <dbrazdil@google.com>
+From: Zhaolong Zhang <zhangzl2013@126.com>
 
-[ Upstream commit 1f935e8e72ec28dddb2dc0650b3b6626a293d94b ]
+[ Upstream commit c915fb80eaa6194fa9bd0a4487705cd5b0dda2f1 ]
 
-For AF_VSOCK, accept() currently returns sockets that are unlabelled.
-Other socket families derive the child's SID from the SID of the parent
-and the SID of the incoming packet. This is typically done as the
-connected socket is placed in the queue that accept() removes from.
+__ext4_journalled_writepage should drop bhs' ref count on error paths
 
-Reuse the existing 'security_sk_clone' hook to copy the SID from the
-parent (server) socket to the child. There is no packet SID in this
-case.
-
-Fixes: d021c344051a ("VSOCK: Introduce VM Sockets")
-Signed-off-by: David Brazdil <dbrazdil@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Zhaolong Zhang <zhangzl2013@126.com>
+Link: https://lore.kernel.org/r/1614678151-70481-1-git-send-email-zhangzl2013@126.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/vmw_vsock/af_vsock.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/ext4/inode.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-index bd3a5ef8e59b..2fecdfe49bae 100644
---- a/net/vmw_vsock/af_vsock.c
-+++ b/net/vmw_vsock/af_vsock.c
-@@ -650,6 +650,7 @@ struct sock *__vsock_create(struct net *net,
- 		vsk->trusted = psk->trusted;
- 		vsk->owner = get_cred(psk->owner);
- 		vsk->connect_timeout = psk->connect_timeout;
-+		security_sk_clone(parent, sk);
- 	} else {
- 		vsk->trusted = ns_capable_noaudit(&init_user_ns, CAP_NET_ADMIN);
- 		vsk->owner = get_current_cred();
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 4c32a484f8bc..6551f08e89a7 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -1824,13 +1824,13 @@ static int __ext4_journalled_writepage(struct page *page,
+ 	if (!ret)
+ 		ret = err;
+ 
+-	if (!ext4_has_inline_data(inode))
+-		ext4_walk_page_buffers(NULL, page_bufs, 0, len,
+-				       NULL, bput_one);
+ 	ext4_set_inode_state(inode, EXT4_STATE_JDATA);
+ out:
+ 	unlock_page(page);
+ out_no_pagelock:
++	if (!inline_data && page_bufs)
++		ext4_walk_page_buffers(NULL, page_bufs, 0, len,
++				       NULL, bput_one);
+ 	brelse(inode_bh);
+ 	return ret;
+ }
 -- 
 2.30.1
 
